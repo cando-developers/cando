@@ -1,16 +1,16 @@
        
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "core/symbolSet.h"
-#include "plug.h"
-#include "candoDatabase.h"
-#include "core/cons.h"
-#include "coupling.h"
-#include "core/environment.h"
-#include "core/numbers.h"
-#include "constitution.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <clasp/core/symbolSet.h>
+#include <cando/chem/plug.h>
+#include <cando/chem/candoDatabase.h>
+#include <clasp/core/cons.h>
+#include <cando/chem/coupling.h>
+#include <clasp/core/environment.h>
+#include <clasp/core/numbers.h>
+#include <cando/chem/constitution.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace chem

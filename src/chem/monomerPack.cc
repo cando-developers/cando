@@ -1,20 +1,20 @@
        
 #define	DEBUG_LEVEL_NONE
 
-#include "core/common.h"
-#include "core/str.h"
-#include "core/stringSet.h"
-#include "monomerPack.h"
+#include <clasp/core/common.h>
+#include <clasp/core/str.h>
+#include <clasp/core/stringSet.h>
+#include <cando/chem/monomerPack.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "core/symbolSet.h"
-#include "core/symbolList.h"
-#include "core/environment.h"
-#include "candoDatabase.h"
-#include "core/numbers.h"
-#include "core/stringList.h"
-#include "alias.h"
-#include "core/wrappers.h"
+#include <clasp/core/symbolSet.h>
+#include <clasp/core/symbolList.h>
+#include <clasp/core/environment.h>
+#include <cando/chem/candoDatabase.h>
+#include <clasp/core/numbers.h>
+#include <clasp/core/stringList.h>
+#include <cando/chem/alias.h>
+#include <clasp/core/wrappers.h>
 
 namespace chem {
 

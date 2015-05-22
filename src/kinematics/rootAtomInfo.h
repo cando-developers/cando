@@ -1,9 +1,9 @@
 #ifndef _kinematics_rootAtomInfo_H
 #define _kinematics_rootAtomInfo_H
 
-#include "core/common.h"
-#include "chem/plug.fwd.h"
-#include "chem/constitutionAtoms.fwd.h"
+#include <clasp/core/common.h>
+#include <cando/chem/plug.fwd.h>
+#include <cando/chem/constitutionAtoms.fwd.h>
 
 namespace kinematics
 {

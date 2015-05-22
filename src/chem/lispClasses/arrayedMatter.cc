@@ -4,7 +4,7 @@
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
 #include "core/sort.h"
-#include "addon/coordinateArray.h"
+#include "candoBase/coordinateArray.h"
 #include "matter.h"
 #include "atom.h"
 #include "residue.h"
@@ -57,13 +57,13 @@ uint ArrayedAtom_O::calculateHash()
 }
 
 
-void ArrayedAtom_O::extractFromCoordinateArray(addon::CoordinateArrayWithHash_sp h, uint idx)
+void ArrayedAtom_O::extractFromCoordinateArray(candoBase::CoordinateArrayWithHash_sp h, uint idx)
 {_G();
     ASSERT(this->_Atom.pointerp());
     this->_Atom->setPosition(h->getElement(idx));
 }
 
-void ArrayedAtom_O::writeToCoordinateArray(addon::CoordinateArrayWithHash_sp h, uint idx)
+void ArrayedAtom_O::writeToCoordinateArray(candoBase::CoordinateArrayWithHash_sp h, uint idx)
 {_G();
     ASSERT(this->_Atom.pointerp());
     h->setElement(idx,this->_Atom->getPosition());
@@ -167,7 +167,7 @@ uint ArrayedResidue_O::calculateHash()
     return hash;
 }
 
-uint ArrayedResidue_O::extractFromCoordinateArray(addon::CoordinateArrayWithHash_sp hash, uint start)
+uint ArrayedResidue_O::extractFromCoordinateArray(candoBase::CoordinateArrayWithHash_sp hash, uint start)
 {_G();
     for ( gctools::Vec0<ArrayedAtom_sp>::iterator it=this->_SortedAtoms.begin();
     	it !=this->_SortedAtoms.end(); it++ )
@@ -178,7 +178,7 @@ uint ArrayedResidue_O::extractFromCoordinateArray(addon::CoordinateArrayWithHash
     return this->_SortedAtoms.size();
 }
 
-uint ArrayedResidue_O::writeToCoordinateArray(addon::CoordinateArrayWithHash_sp hash, uint start)
+uint ArrayedResidue_O::writeToCoordinateArray(candoBase::CoordinateArrayWithHash_sp hash, uint start)
 {_G();
     for ( gctools::Vec0<ArrayedAtom_sp>::iterator it=this->_SortedAtoms.begin();
     	it !=this->_SortedAtoms.end(); it++ )
@@ -289,17 +289,17 @@ uint	ArrayedMolecule_O::calculateHash()
 
 
 
-addon::CoordinateArrayWithHash_sp ArrayedMolecule_O::createCoordinateArray()
+candoBase::CoordinateArrayWithHash_sp ArrayedMolecule_O::createCoordinateArray()
 {_G();
     uint numberOfAtoms = this->getNumberOfAtoms();
-    addon::CoordinateArrayWithHash_sp ca;
-    ca = addon::CoordinateArrayWithHash_O::create(_lisp,numberOfAtoms);
+    candoBase::CoordinateArrayWithHash_sp ca;
+    ca = candoBase::CoordinateArrayWithHash_O::create(_lisp,numberOfAtoms);
     ca->setHash(this->_Hash);
     return ca;
 }
 
 
-void ArrayedMolecule_O::extractFromCoordinateArray(addon::CoordinateArrayWithHash_sp h)
+void ArrayedMolecule_O::extractFromCoordinateArray(candoBase::CoordinateArrayWithHash_sp h)
 {_G();
     if ( h->getHash() != this->_Hash )
     {
@@ -317,7 +317,7 @@ void ArrayedMolecule_O::extractFromCoordinateArray(addon::CoordinateArrayWithHas
     }
 }
 
-void ArrayedMolecule_O::writeToCoordinateArray(addon::CoordinateArrayWithHash_sp h)
+void ArrayedMolecule_O::writeToCoordinateArray(candoBase::CoordinateArrayWithHash_sp h)
 {_G();
     if ( h->getHash() != this->_Hash )
     {

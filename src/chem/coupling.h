@@ -15,16 +15,16 @@
 #ifndef COUPLING_H
 #define COUPLING_H
 
-#include "core/common.h"
-#include "core/str.h"
+#include <clasp/core/common.h>
+#include <clasp/core/str.h>
 #include <stdio.h>
 #include <string>
 #include <vector>
-#include "addon/vector3.h"
-#include "residue.fwd.h"
+#include <cando/candoBase/vector3.h>
+#include <cando/chem/residue.fwd.h>
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

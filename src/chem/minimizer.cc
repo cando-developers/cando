@@ -15,45 +15,45 @@
 #define	VALIDATE_FORCE_OFF	// Turn this on to compare analytical force to numerical force at every step
 
 #define	USE_NEW_CONJUGATE_GRADIENTS
-#include "core/common.h"
-#include "core/symbolTable.h"
-#include "symbolTable.h"
-#include "largeSquareMatrix.h"
-#include "minimizer.h"
+#include <clasp/core/common.h>
+#include <clasp/core/symbolTable.h>
+#include <cando/chem/symbolTable.h>
+#include <cando/chem/largeSquareMatrix.h>
+#include <cando/chem/minimizer.h>
 #include <iostream>
-#include "bond.h"
-#include "atom.h"
-#include "residue.h"
+#include <cando/chem/bond.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/residue.h>
 #if USE_POSIX_TIME
-#include "core/posixTime.h"
+#include <clasp/core/posixTime.h>
 #endif // USE_POSIX_TIME
-#include "nVector.h"
-#include "ffBaseDb.h"
+#include <cando/chem/nVector.h>
+#include <cando/chem/ffBaseDb.h>
 //#include "core/environment.h"
-#include "core/str.h"
-#include "ffTypesDb.h"
-#include "ffStretchDb.h"
-#include "ffAngleDb.h"
-#include "forceField.h"
-#include "energyFunction.h"
-#include "minimizerLog.h"
-#include "aggregate.h"
-#include "linearAlgebra.h"
+#include <clasp/core/str.h>
+#include <cando/chem/ffTypesDb.h>
+#include <cando/chem/ffStretchDb.h>
+#include <cando/chem/ffAngleDb.h>
+#include <cando/chem/forceField.h>
+#include <cando/chem/energyFunction.h>
+#include <cando/chem/minimizerLog.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/linearAlgebra.h>
 //#include "core/xmlSaveArchive.h"
-#include "matter.h"
+#include <cando/chem/matter.h>
 //#include "core/lispCallback.h"
-#include "forceField.h"
-#include "energyStretch.h"
+#include <cando/chem/forceField.h>
+#include <cando/chem/energyStretch.h>
 #if USE_ALL_ENERGY_COMPONENTS
-#include "energyAngle.h"
-#include "energyDihedral.h"
-#include "energyNonbond.h"
-#include "energyChiralRestraint.h"
-#include "energyAnchorRestraint.h"
-#include "energyImproperRestraint.h"
-#include "energyFixedNonbond.h"
+#include <cando/chem/energyAngle.h>
+#include <cando/chem/energyDihedral.h>
+#include <cando/chem/energyNonbond.h>
+#include <cando/chem/energyChiralRestraint.h>
+#include <cando/chem/energyAnchorRestraint.h>
+#include <cando/chem/energyImproperRestraint.h>
+#include <cando/chem/energyFixedNonbond.h>
 #endif
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 SYMBOL_EXPORT_SC_(ChemKwPkg,message);
@@ -2356,10 +2356,10 @@ namespace chem
     }
 
 
-    addon::QDomNode_sp	Minimizer_O::asXml()
+    candoBase::QDomNode_sp	Minimizer_O::asXml()
     {
-	addon::QDomNode_sp	xml;
-	xml = addon::QDomNode_O::create(_lisp,"Minimizer");
+	candoBase::QDomNode_sp	xml;
+	xml = candoBase::QDomNode_O::create(_lisp,"Minimizer");
 	xml->addAttributeDoubleScientific("InitialLineSearchStep",this->_InitialLineSearchStep);
 	xml->addAttributeInt("MaximumNumberOfSteepestDescentSteps",this->_NumberOfSteepestDescentSteps);
 	xml->addAttributeInt("MaximumNumberOfConjugateGradientSteps",this->_NumberOfConjugateGradientSteps);

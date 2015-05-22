@@ -4,17 +4,17 @@
 //     	chemInfo.cc
 //
 //
-#include "core/common.h"
-#include "core/stringSet.h"
-#include "core/hashTableEq.h"
-#include "chemInfo.h"
-#include "core/hashTableEqual.h"
+#include <clasp/core/common.h>
+#include <clasp/core/stringSet.h>
+#include <clasp/core/hashTableEq.h>
+#include <cando/chem/chemInfo.h>
+#include <clasp/core/hashTableEqual.h>
 //#include "core/archiveNode.h"
-#include "core/evaluator.h"
-#include "core/environment.h"
+#include <clasp/core/evaluator.h>
+#include <clasp/core/environment.h>
 //#include "boundFrame.h"
-#include "bond.h"
-#include "core/wrappers.h"
+#include <cando/chem/bond.h>
+#include <clasp/core/wrappers.h>
 
 
 

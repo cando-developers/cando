@@ -7,11 +7,11 @@
 #define	virtualSphere_H
 
 
-#include "core/common.h"
-#include "addon/vector3.h"
-#include "addon/matrix.h" 
+#include <clasp/core/common.h>
+#include <cando/candoBase/vector3.h>
+#include <cando/candoBase/matrix.h>
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

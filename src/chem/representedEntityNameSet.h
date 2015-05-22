@@ -5,10 +5,10 @@
 
 
 
-#include "entityNameSet.h"
+#include <cando/chem/entityNameSet.h>
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

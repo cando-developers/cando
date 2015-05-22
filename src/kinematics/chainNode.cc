@@ -1,14 +1,14 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "core/environment.h"
-#include "chem/monomer.h"
-#include "chem/coupling.h"
-#include "chem/oligomer.h"
-#include "monomerNode.h"
-#include "ringClosingMonomerNode.h"
-#include "chainNode.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <clasp/core/environment.h>
+#include <cando/chem/monomer.h>
+#include <cando/chem/coupling.h>
+#include <cando/chem/oligomer.h>
+#include <cando/kinematics/monomerNode.h>
+#include <cando/kinematics/ringClosingMonomerNode.h>
+#include <cando/kinematics/chainNode.h>
+#include <clasp/core/wrappers.h>
 namespace kinematics
 {
 

@@ -15,11 +15,11 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "addon/vector3.h"
-#include "energyComponent.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/vector3.h>
+#include <cando/chem/energyComponent.h>
 
-//#include "addon/render.fwd.h"// energyFixedNonbond.h wants DisplayList needs render.fwd.h
+//#include "candoBase/render.fwd.h"// energyFixedNonbond.h wants DisplayList needs render.fwd.h
 
 namespace chem
 {
@@ -49,7 +49,7 @@ public:
 	bool		_calcForce;
 	bool		_calcDiagonalHessian;
 	bool		_calcOffDiagonalHessian;
-#include "_FixedNonbond_debugEvalDeclares.cc"
+#include <cando/chem/_FixedNonbond_debugEvalDeclares.cc>
 #endif
 	Atom_sp	getFixedAtom() { return this->_FixedAtom; };
 	double	getDistance();
@@ -58,9 +58,9 @@ public:
 public:
 //	void	archive(core::ArchiveP node);
 public:
-	addon::QDomNode_sp	asXml(core::Lisp_sp);
-	void	parseFromXmlRelativeToContainer( addon::QDomNode_sp xml, Matter_sp parent );
-	void	parseFromXmlUsingAtomTable(addon::QDomNode_sp xml, AtomTable_sp atomTable );
+	candoBase::QDomNode_sp	asXml(core::Lisp_sp);
+	void	parseFromXmlRelativeToContainer( candoBase::QDomNode_sp xml, Matter_sp parent );
+	void	parseFromXmlUsingAtomTable(candoBase::QDomNode_sp xml, AtomTable_sp atomTable );
 
     FixedNonbondRestraint();
 	virtual ~FixedNonbondRestraint();
@@ -163,7 +163,7 @@ public:
 
     virtual string	beyondThresholdInteractionsAsString();
 
-//    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, addon::DisplayList_sp displayIn );
+//    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, candoBase::DisplayList_sp displayIn );
 
     virtual	double	getEnergy();
 

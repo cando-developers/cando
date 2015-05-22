@@ -1,21 +1,21 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "core/stringSet.h"
-#include "pdb.h"
+#include <clasp/core/common.h>
+#include <clasp/core/stringSet.h>
+#include <cando/chem/pdb.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "atom.h"
-#include "aggregate.h"
-#include "molecule.h"
-#include "core/symbolSet.h"
-#include "residue.h"
-#include "core/stringList.h"
-#include "core/str.h"
-#include "bond.h"
-#include "pdbMonomer.h"
-#include "loop.h"
-#include "core/wrappers.h"
+#include <cando/chem/atom.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/molecule.h>
+#include <clasp/core/symbolSet.h>
+#include <cando/chem/residue.h>
+#include <clasp/core/stringList.h>
+#include <clasp/core/str.h>
+#include <cando/chem/bond.h>
+#include <cando/chem/pdbMonomer.h>
+#include <cando/chem/loop.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {

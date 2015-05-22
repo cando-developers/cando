@@ -1,9 +1,9 @@
 #ifndef	angle_FWD_H
 #define angle_FWD_H
 
-#include "core/common.h"
+#include <clasp/core/common.h>
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem

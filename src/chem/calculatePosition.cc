@@ -1,10 +1,10 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "core/str.h"
-#include "calculatePosition.h"
-#include "residue.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <clasp/core/str.h>
+#include <cando/chem/calculatePosition.h>
+#include <cando/chem/residue.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {

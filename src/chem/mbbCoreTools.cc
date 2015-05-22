@@ -6,24 +6,24 @@
 
 #define	TURN_DEBUG_OFF
 
-#include "core/common.h"
+#include <clasp/core/common.h>
 
 #include <stdio.h>
 #include <string>
 #include <math.h>
-#include "addon/ovector3.h"
-#include "addon/omatrix.h"
-#include "core/exceptions.h"
-#include "matter.h"
-#include "aggregate.h"
-#include "molecule.h"
-#include "residue.h"
-#include "atom.h"
-#include "loop.h"
-#include "addon/vector3.h"
-#include "core/objectSet.h"
-#include "mbbCoreTools.h"
-#include "core/wrappers.h"
+#include <cando/candoBase/ovector3.h>
+#include <cando/candoBase/omatrix.h>
+#include <clasp/core/exceptions.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/molecule.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/loop.h>
+#include <cando/candoBase/vector3.h>
+#include <clasp/core/objectSet.h>
+#include <cando/chem/mbbCoreTools.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace chem

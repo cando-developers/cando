@@ -1,7 +1,7 @@
 #ifndef	mbbPackage_H
 #define mbbPackage_H
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 #include "core/lisp.fwd.h"// mbbPackage.h wants Lisp needs lisp.fwd.h
 #include "core/package.fwd.h"// mbbPackage.h wants Package needs package.fwd.h

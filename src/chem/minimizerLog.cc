@@ -1,12 +1,12 @@
 #define	DEBUG_LEVEL_FULL
 
 
-#include "minimizerLog.h"
+#include <cando/chem/minimizerLog.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "nVector.h"
-#include "minimizer.h"
-#include "core/wrappers.h"
+#include <cando/chem/nVector.h>
+#include <cando/chem/minimizer.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {

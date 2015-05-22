@@ -17,7 +17,7 @@
  *
  */
 
-#include "mol2.h"
+#include <cando/chem/mol2.h>
 #include <string.h>
 #include <iostream>
 #include <fstream>
@@ -25,15 +25,15 @@
 #include <queue>
 #include <stdio.h>
 #include <map>
-#include "core/foundation.h"
-#include "symbolTable.h"
-#include "loop.h"
-#include "molecule.h"
-#include "core/str.h"
-#include "chemPackage.fwd.h"
-#include "aggregate.h"
-#include "chemInfo.h"
-#include "typeAssignmentRules.h"
+#include <clasp/core/foundation.h>
+#include <cando/chem/symbolTable.h>
+#include <cando/chem/loop.h>
+#include <cando/chem/molecule.h>
+#include <clasp/core/str.h>
+#include <cando/chem/chemPackage.fwd.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/chemInfo.h>
+#include <cando/chem/typeAssignmentRules.h>
 
 namespace chem {
 

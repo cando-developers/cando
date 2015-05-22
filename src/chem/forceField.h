@@ -16,24 +16,24 @@
 #ifndef FORCEFIELD_H
 #define	FORCEFIELD_H
 
-#include "core/common.h"
-#include "stdio.h"
-#include "string"
-#include "vector"
-#include "set"
-#include "bond.h"
-#include "addon/vector3.h"
+#include <clasp/core/common.h>
+#include <stdio.h>
+#include <string>
+#include <vector>
+#include <set>
+#include <cando/chem/bond.h>
+#include <cando/candoBase/vector3.h>
 //#include	"conformation.h"
-#include "atom.h"
-#include "residue.h"
-#include "ffBaseDb.h"
-#include "ffTypesDb.h"
-#include "ffStretchDb.h"
-#include "ffAngleDb.h"
-#include "ffItorDb.h"
-#include "ffPtorDb.h"
-#include "ffNonbondDb.h"
-#include "ffVdwDb.h"
+#include <cando/chem/atom.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/ffBaseDb.h>
+#include <cando/chem/ffTypesDb.h>
+#include <cando/chem/ffStretchDb.h>
+#include <cando/chem/ffAngleDb.h>
+#include <cando/chem/ffItorDb.h>
+#include <cando/chem/ffPtorDb.h>
+#include <cando/chem/ffNonbondDb.h>
+#include <cando/chem/ffVdwDb.h>
 
 
 

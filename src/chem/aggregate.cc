@@ -5,27 +5,27 @@
 // (C) 2004 Christian E. Schafmeister
 //
 
-#include "core/common.h"
-#include "aggregate.h"
+#include <clasp/core/common.h>
+#include <cando/chem/aggregate.h>
 
 #include <iostream>
 #include <vector>
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-#include "loop.h"
-#include "moe.h"
-#include "mol2.h"
+#include <cando/chem/loop.h>
+#include <cando/chem/moe.h>
+#include <cando/chem/mol2.h>
 //#include "core/serialize.h"
-#include "core/numerics.h"
+#include <clasp/core/numerics.h>
 //#include "core/xmlSaveArchive.h"
 //#include "core/xmlLoadArchive.h"
-#include "chimera.h"
+#include <cando/chem/chimera.h>
 //#include "grPickableMatter.h"
-#include "restraint.h"
-#include "spanningLoop.h"
-#include "atomIdMap.h"
-#include "core/wrappers.h"
+#include <cando/chem/restraint.h>
+#include <cando/chem/spanningLoop.h>
+#include <cando/chem/atomIdMap.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {
@@ -602,7 +602,7 @@ namespace chem {
     }
 
 #ifdef RENDER
-    addon::Render_sp	Aggregate_O::rendered(core::Cons_sp options)
+    candoBase::Render_sp	Aggregate_O::rendered(core::Cons_sp options)
     {_G();
 	GrPickableMatter_sp	rend;
 	rend = GrPickableMatter_O::create();

@@ -1,16 +1,16 @@
 #ifndef	_kinematicsMonomerNode_H
 #define _kinematicsMonomerNode_H
 
-#include "core/common.h"
-#include "monomerBaseNode.h"
-#include "chainNode.fwd.h"
-#include "chem/coupling.fwd.h"
-#include "chem/candoDatabase.fwd.h"
-#include "chem/monomer.fwd.h"
-#include "chem/constitution.fwd.h"
-#include "chem/topology.fwd.h"
-#include "monomerNode.fwd.h"
-#include "kinematicsPackage.h"
+#include <clasp/core/common.h>
+#include <cando/kinematics/monomerBaseNode.h>
+#include <cando/kinematics/chainNode.fwd.h>
+#include <cando/chem/coupling.fwd.h>
+#include <cando/chem/candoDatabase.fwd.h>
+#include <cando/chem/monomer.fwd.h>
+#include <cando/chem/constitution.fwd.h>
+#include <cando/chem/topology.fwd.h>
+#include <cando/kinematics/monomerNode.fwd.h>
+#include <cando/kinematics/kinematicsPackage.h>
 
 namespace kinematics
 {

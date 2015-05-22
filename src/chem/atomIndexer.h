@@ -10,12 +10,12 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "core/holder.h"
-#include "core/symbolSet.fwd.h"
-#include "core/stringSet.fwd.h"
+#include <clasp/core/common.h>
+#include <clasp/core/holder.h>
+#include <clasp/core/symbolSet.fwd.h>
+#include <clasp/core/stringSet.fwd.h>
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 #include "core/stringList.fwd.h"// atomIndexer.h wants StringList needs stringList.fwd.h
 

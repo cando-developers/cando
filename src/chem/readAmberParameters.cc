@@ -1,14 +1,14 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "readAmberParameters.h"
+#include <cando/chem/readAmberParameters.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "core/numerics.h"
-#include "chemInfo.h"
-#include "units.h"
-#include "ffTypesDb.h"
-#include "forceField.h"
-#include "core/wrappers.h"
+#include <clasp/core/numerics.h>
+#include <cando/chem/chemInfo.h>
+#include <cando/chem/units.h>
+#include <cando/chem/ffTypesDb.h>
+#include <cando/chem/forceField.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {

@@ -11,12 +11,12 @@
  *	Maintains databases and structures to store types and type assignement
  *	rules.
  */
-#include "core/foundation.h"
-#include "core/hashTableEq.h"
-#include "ffNonbondDb.h"
-#include "loop.h"
-#include "units.h"
-#include "core/wrappers.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/hashTableEq.h>
+#include <cando/chem/ffNonbondDb.h>
+#include <cando/chem/loop.h>
+#include <cando/chem/units.h>
+#include <clasp/core/wrappers.h>
 
 
 
@@ -368,17 +368,17 @@ void FFNonbond_O::initialize()
 
 
 #if 0 //[
-addon::QDomNode_sp	FFNonbond_O::asXml(core::Lisp_sp env)
+candoBase::QDomNode_sp	FFNonbond_O::asXml(core::Lisp_sp env)
 {
-    addon::QDomNode_sp	node;
-    node = addon::QDomNode_O::create(env,"FFNonbond");
+    candoBase::QDomNode_sp	node;
+    node = candoBase::QDomNode_O::create(env,"FFNonbond");
     node->addAttributeString("type",this->_Type);
     node->addAttributeDoubleScientific("Radius",this->_Radius);
     node->addAttributeDoubleScientific("Well",this->_Well);
     return node;
 }
 
-void	FFNonbond_O::parseFromXml(addon::QDomNode_sp node)
+void	FFNonbond_O::parseFromXml(candoBase::QDomNode_sp node)
 {
     this->_Type = node->getAttributeString("type");
     this->_Radius = node->getAttributeDouble("Radius");

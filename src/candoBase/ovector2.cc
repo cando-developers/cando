@@ -1,13 +1,13 @@
 #define	DEBUG_LEVEL_FULL
-#include "core/foundation.h"
-#include "core/object.h"
-#include "core/lisp.h"
-#include "core/multipleValues.h"
-#include "ovector2.h"
-#include "vector2.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/object.h>
+#include <clasp/core/lisp.h>
+#include <clasp/core/multipleValues.h>
+#include <cando/candoBase/ovector2.h>
+#include <cando/candoBase/vector2.h>
 //#include "core/archiveNode.h"
-#include "core/environment.h"
-#include "core/wrappers.h"
+#include <clasp/core/environment.h>
+#include <clasp/core/wrappers.h>
 
 namespace candoBase {
 

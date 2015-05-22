@@ -17,13 +17,13 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "bond.h"
-#include "addon/vector3.h"
-#include "atom.h"
-#include "residue.h"
-#include "addon/quickDom.h"
-#include "ffBaseDb.h"
+#include <clasp/core/common.h>
+#include <cando/chem/bond.h>
+#include <cando/candoBase/vector3.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/residue.h>
+#include <cando/candoBase/quickDom.h>
+#include <cando/chem/ffBaseDb.h>
 
 
 
@@ -79,8 +79,8 @@ namespace       chem {
 	double		_rij;
 	double		_lnKij;
 
-	addon::QDomNode_sp	asXml(core::Lisp_sp);
-	void		parseFromXml(addon::QDomNode_sp xml);
+	candoBase::QDomNode_sp	asXml(core::Lisp_sp);
+	void		parseFromXml(candoBase::QDomNode_sp xml);
     };
 
 

@@ -7,24 +7,24 @@
 
 #ifndef MonomerContext_H  //[
 #define MonomerContext_H
-#include "core/common.h"
+#include <clasp/core/common.h>
 #include <stdio.h>
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "core/symbolSet.fwd.h"
-#include "bond.h"
-#include "addon/vector3.h"
+#include <clasp/core/common.h>
+#include <clasp/core/symbolSet.fwd.h>
+#include <cando/chem/bond.h>
+#include <cando/candoBase/vector3.h>
 //#include	"conformation.h"
-#include "atom.h"
-#include "core/stringSet.fwd.h"
-#include "residue.h"
-#include "candoDatabase.h"
-#include "entityNameSet.h"
+#include <cando/chem/atom.h>
+#include <clasp/core/stringSet.fwd.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/candoDatabase.h>
+#include <cando/chem/entityNameSet.h>
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

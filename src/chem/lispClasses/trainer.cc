@@ -9,7 +9,7 @@
 #include "core/bignum.h"
 #include "core/fileSystem.h"
 #include "core/binder.h"
-#include "addon/objectDictionary.h"
+#include "candoBase/objectDictionary.h"
 #include "monomerContext.h"
 #include "conformationExplorer.h"
 #include "core/wrappers.h"
@@ -225,7 +225,7 @@ void Trainer_O::setConformationExplorer(ConformationExplorer_sp str )
 };
 
 #if 0
-addon::Render_sp	Trainer_O::rendered(core::Cons_sp opts)
+candoBase::Render_sp	Trainer_O::rendered(core::Cons_sp opts)
 {_G();
     return this->_Data->rendered(opts);
 }

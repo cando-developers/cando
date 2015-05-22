@@ -1,8 +1,8 @@
 #ifndef	_BONDID_FWD_H
 #define _BONDID_FWD_H
 
-#include "core/common.h"
-#include "chem/atomId.h"
+#include <clasp/core/common.h>
+#include <cando/chem/atomId.h>
 
 namespace kinematics
 {

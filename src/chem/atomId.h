@@ -1,9 +1,9 @@
 #ifndef	chem_atomId_H
 #define chem_atomId_H
 
-#include "core/common.h"
-#include "chem/constitutionAtoms.fwd.h"
-#include "chemPackage.h"
+#include <clasp/core/common.h>
+#include <cando/chem/constitutionAtoms.fwd.h>
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem

@@ -1,10 +1,10 @@
 #ifndef	kinematics_bondedAtom_H
 #define kinematics_bondedAtom_H
 
-#include "core/foundation.h"
-#include "kinFoundation.h"
-#include "chem/atomId.h"
-#include "atom.h"
+#include <clasp/core/foundation.h>
+#include <cando/kinematics/kinFoundation.h>
+#include <cando/chem/atomId.h>
+#include <cando/kinematics/atom.h>
 
 
 

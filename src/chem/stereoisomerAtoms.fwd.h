@@ -2,8 +2,8 @@
 #define	StereoisomerAtoms_FWD_H
 
 
-#include "chemPackage.h"
-#include "constitutionAtoms.fwd.h"
+#include <cando/chem/chemPackage.h>
+#include <cando/chem/constitutionAtoms.fwd.h>
 
 namespace chem
 {

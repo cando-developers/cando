@@ -1,14 +1,14 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "core/environment.h"
-#include "conformation.h"
-#include "foldTree.h"
-#include "chainNode.h"
-#include "monomerNode.h"
-#include "atomTree.h"
-#include "chem/oligomer.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <clasp/core/environment.h>
+#include <cando/kinematics/conformation.h>
+#include <cando/kinematics/foldTree.h>
+#include <cando/kinematics/chainNode.h>
+#include <cando/kinematics/monomerNode.h>
+#include <cando/kinematics/atomTree.h>
+#include <cando/chem/oligomer.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace kinematics

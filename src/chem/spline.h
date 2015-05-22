@@ -29,8 +29,8 @@
 #include <vector>
 #include <map>
 #include <string>
-#include "core/common.h"
-#include "addon/vector3.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/vector3.h>
 
 
 
@@ -38,7 +38,7 @@
 #define	SPLINE_CATMULLROM	2
 //#define	SPLINE_FULLBSPLINE	3
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

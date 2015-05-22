@@ -1,10 +1,10 @@
 
 
-#include "core/common.h"
+#include <clasp/core/common.h>
 //#include "core/archive.h"
 //#include "core/archiveNode.h"
-#include "atom.h"
-#include "indirectAtomCoordinateReference.h"
+#include <cando/chem/atom.h>
+#include <cando/chem/indirectAtomCoordinateReference.h>
 
 namespace chem
 {

@@ -7,9 +7,9 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "core/stringList.h"
-#include "chemPackage.h"
+#include <clasp/core/common.h>
+#include <clasp/core/stringList.h>
+#include <cando/chem/chemPackage.h>
 //#include "conformationCollection.h"
 
 

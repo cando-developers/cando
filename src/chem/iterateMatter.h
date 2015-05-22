@@ -7,12 +7,12 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "loop.h"
-#include "core/iterator.h"
+#include <clasp/core/common.h>
+#include <cando/chem/loop.h>
+#include <clasp/core/iterator.h>
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem 

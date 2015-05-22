@@ -1,14 +1,14 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "core/environment.h"
+#include <clasp/core/common.h>
+#include <clasp/core/environment.h>
 //#include "core/serialize.h"
-#include "dimension.fwd.h"
-#include "addon/ovector3.h"
-#include "core/array.h"
-#include "quantity.h"
-#include "unit.h"
-#include "core/wrappers.h"
+#include <cando/units/dimension.fwd.h>
+#include <cando/candoBase/ovector3.h>
+#include <clasp/core/array.h>
+#include <cando/units/quantity.h>
+#include <cando/units/unit.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace units
@@ -242,7 +242,7 @@ namespace units
 	    uresult->_Amount *= other->_Amount;
 	    result = uresult;
 	} else if ( obj->isAssignableTo<core::Number_O>()
-		    || obj->isAssignableTo<addon::OVector3_O>()
+		    || obj->isAssignableTo<candoBase::OVector3_O>()
 		    || obj->isAssignableTo<core::Array_O>() )
 	{
 	    core::T_sp val = obj->deepCopy();

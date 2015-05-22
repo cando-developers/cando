@@ -1,17 +1,17 @@
 #define	DEBUG_LEVEL_FULL
 
 
-#include "monomerCoordinates.h"
-#include "coordSys.h"
-#include "aggregate.h"
-#include "superposableConformationCollection.h"
-#include "topology.h"
-#include "monomer.h"
-#include "core/environment.h"
-#include "constitution.h"
-#include "core/lispStream.h"
-#include "rotamer.h"
-#include "core/wrappers.h"
+#include <cando/chem/monomerCoordinates.h>
+#include <cando/chem/coordSys.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/superposableConformationCollection.h>
+#include <cando/chem/topology.h>
+#include <cando/chem/monomer.h>
+#include <clasp/core/environment.h>
+#include <cando/chem/constitution.h>
+#include <clasp/core/lispStream.h>
+#include <cando/chem/rotamer.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {

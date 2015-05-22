@@ -1,27 +1,27 @@
 #define	DEBUG_LEVEL_FULL
 
 #include <string.h>
-#include "core/common.h"
-#include "core/str.h"
-#include "core/symbolSet.h"
-#include "core/stringSet.h"
-#include "core/binder.h"
-#include "chemdraw.h"
-#include "addon/quickDom.h"
-#include "matter.h"
-#include "atom.h"
-#include "bond.h"
-#include "residue.h"
-#include "core/evaluator.h"
-#include "aggregate.h"
-#include "core/environment.h"
-#include "core/lispStream.h"
-#include "core/lispReader.h"
-#include "spanningLoop.h"
-#include "core/reader.h"
-#include "cipPrioritizer.h"
-#include "constitutionAtoms.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <clasp/core/str.h>
+#include <clasp/core/symbolSet.h>
+#include <clasp/core/stringSet.h>
+#include <clasp/core/binder.h>
+#include <cando/chem/chemdraw.h>
+#include <cando/candoBase/quickDom.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/bond.h>
+#include <cando/chem/residue.h>
+#include <clasp/core/evaluator.h>
+#include <cando/chem/aggregate.h>
+#include <clasp/core/environment.h>
+#include <clasp/core/lispStream.h>
+#include <clasp/core/lispReader.h>
+#include <cando/chem/spanningLoop.h>
+#include <clasp/core/reader.h>
+#include <cando/chem/cipPrioritizer.h>
+#include <cando/chem/constitutionAtoms.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace chem
@@ -51,15 +51,15 @@ namespace chem
 	this->_Atom = _Nil<Atom_O>();
     }
 
-    string	CDNode_O::_extractLabel(addon::QDomNode_sp node)
+    string	CDNode_O::_extractLabel(candoBase::QDomNode_sp node)
     {
 	string name;
 	if ( node->hasChildrenWithName("t") )
 	{
-	    addon::QDomNode_sp text = node->childWithName("t");
+	    candoBase::QDomNode_sp text = node->childWithName("t");
 	    if ( text->hasChildrenWithName("s") )
 	    {
-		addon::QDomNode_sp xmls = text->childWithName("s");
+		candoBase::QDomNode_sp xmls = text->childWithName("s");
 		string name = xmls->getData();
 		return name;
 	    }
@@ -85,7 +85,7 @@ namespace chem
 	}
 	LOG(BF("parsed[%s] into name[%s] ionization[%d]") % this->getLabel() % name % ionization );
     }
-    void	CDNode_O::parseFromXml(addon::QDomNode_sp xml)
+    void	CDNode_O::parseFromXml(candoBase::QDomNode_sp xml)
     {_OF();
 	this->_Id = xml->getAttributeInt("id");
 	this->_Label = this->_extractLabel(xml);
@@ -173,7 +173,7 @@ namespace chem
     }
 
 
-    void	CDBond_O::parseFromXml(addon::QDomNode_sp xml)
+    void	CDBond_O::parseFromXml(candoBase::QDomNode_sp xml)
     {
 	this->_IdBegin = xml->getAttributeInt("B");
 	this->_IdEnd = xml->getAttributeInt("E");
@@ -250,14 +250,14 @@ namespace chem
 
 
 
-    void	CDFragment_O::parseFromXml(addon::QDomNode_sp fragment)
+    void	CDFragment_O::parseFromXml(candoBase::QDomNode_sp fragment)
     {_G();
-	addon::QDomNode_O::iterator	it;
+	candoBase::QDomNode_O::iterator	it;
 	this->_Nodes.clear();
 	this->_AtomsToNodes.clear();
 	for ( it=fragment->begin_Children(); it!=fragment->end_Children(); it++ )
 	{
-	    addon::QDomNode_sp child = (*it);
+	    candoBase::QDomNode_sp child = (*it);
 	    if ( child->getLocalName() == "n" )
 	    {
 		GC_ALLOCATE(CDNode_O, node );
@@ -271,7 +271,7 @@ namespace chem
 	}
 	for ( it=fragment->begin_Children(); it!=fragment->end_Children(); it++ )
 	{
-	    addon::QDomNode_sp child = (*it);
+	    candoBase::QDomNode_sp child = (*it);
 	    if ( child->getLocalName() == "b" )
 	    {
 		GC_ALLOCATE(CDBond_O, bond );
@@ -779,9 +779,9 @@ namespace chem
 /*!
  * Text blocks should be list of key: value pairs separated by line feeds
  */
-    void	CDText_O::parseFromXml(addon::QDomNode_sp text, core::Lisp_sp lisp)
+    void	CDText_O::parseFromXml(candoBase::QDomNode_sp text, core::Lisp_sp lisp)
     {_G();
-	addon::QDomNode_sp sub = text->childWithName("s");
+	candoBase::QDomNode_sp sub = text->childWithName("s");
 	this->_Text = core::trimWhiteSpace(sub->getData());
 	if ( this->_Text[0] != '(' )
 	{
@@ -922,17 +922,17 @@ namespace chem
 
     void	ChemDraw_O::parseFromFileName( const string& fileName )
     {_G();
-	addon::QDomNode_sp xml = addon::QDomNode_O::open(fileName);
+	candoBase::QDomNode_sp xml = candoBase::QDomNode_O::open(fileName);
 	if ( !xml->hasChildrenWithName("page") )
 	{
 	    SIMPLE_ERROR(BF("Not a cdxml file" ));
 	}
-	addon::QDomNode_sp page = xml->childWithName("page");
-	addon::QDomNode_O::iterator	it;
+	candoBase::QDomNode_sp page = xml->childWithName("page");
+	candoBase::QDomNode_O::iterator	it;
 	this->_NamedFragments.clear();
 	for ( it=page->begin_Children(); it!=page->end_Children(); it++ )
 	{
-	    addon::QDomNode_sp child= (*it);
+	    candoBase::QDomNode_sp child= (*it);
 	    if ( child->getLocalName() == "fragment" )
 	    {_BLOCK_TRACE("Processing fragment node");
 		GC_ALLOCATE(CDFragment_O, fragment );
@@ -955,7 +955,7 @@ namespace chem
 	}
 	for ( it=page->begin_Children(); it!=page->end_Children(); it++ )
 	{
-	    addon::QDomNode_sp child= (*it);
+	    candoBase::QDomNode_sp child= (*it);
 	    if ( child->getLocalName() == "t" )
 	    {_BLOCK_TRACEF(BF("Processing text block"));
 		GC_ALLOCATE(CDText_O, text );

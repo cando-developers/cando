@@ -144,10 +144,10 @@ namespace chem
 
 #if 0
 #ifdef RENDER
-    addon::Render_sp TableEntry_O::rendered(core::Cons_sp opts)
+    candoBase::Render_sp TableEntry_O::rendered(core::Cons_sp opts)
     {_G();
-	addon::DisplayList_sp dl;
-	dl = addon::DisplayList_O::create();
+	candoBase::DisplayList_sp dl;
+	dl = candoBase::DisplayList_O::create();
         gctools::Vec0<core::T_sp>::iterator si;
 	uint idx;
 	for ( si=this->_Fields.begin(), idx=0;
@@ -155,7 +155,7 @@ namespace chem
 	{
 	    if ( (*si)->canRender() )
 	    {
-		addon::Render_sp rend = (*si)->rendered(opts);
+		candoBase::Render_sp rend = (*si)->rendered(opts);
 		rend->setName(this->getTable()->fieldSymbol(idx));
 		dl->append(rend);
 	    } else 
@@ -163,7 +163,7 @@ namespace chem
 		stringstream ss; 
 		ss << this->getTable()->fieldSymbol(idx)->fullName() << " -> ";
 		ss << (*si)->__repr__() << std::endl;
-		addon::RenderInformation_sp info = addon::RenderInformation_O::create(ss.str(),_lisp);
+		candoBase::RenderInformation_sp info = candoBase::RenderInformation_O::create(ss.str(),_lisp);
 		dl->append(info);
 	    }
 	}
@@ -529,17 +529,17 @@ namespace chem
     }
 
 #if 0
-    addon::Render_sp	Table_O::rendered(core::Cons_sp opts)
+    candoBase::Render_sp	Table_O::rendered(core::Cons_sp opts)
     {_G();
-	addon::FrameList_sp	frames;
-	frames = addon::FrameList_O::create();
+	candoBase::FrameList_sp	frames;
+	frames = candoBase::FrameList_O::create();
 	frames->setName(_lisp->internKeyword("entry"));
         gctools::Vec0<TableEntry_sp>::iterator si;
 	for ( si=this->_Entries.begin(); si!=this->_Entries.end(); si++ )
 	{
 	    if ( (*si)->canRender() )
 	    {
-		addon::Render_sp rend = (*si)->rendered(opts);
+		candoBase::Render_sp rend = (*si)->rendered(opts);
 		frames->append(rend);
 	    }
 	}

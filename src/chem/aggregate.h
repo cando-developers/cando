@@ -11,15 +11,15 @@
 #ifndef	AGGREGATE_H
 #define	AGGREGATE_H
 
-#include "core/common.h"
+#include <clasp/core/common.h>
 #include <string>
-#include "matter.h"
-#include "atomIdMap.fwd.h"
-#include "molecule.h"
+#include <cando/chem/matter.h>
+#include <cando/chem/atomIdMap.fwd.h>
+#include <cando/chem/molecule.h>
 
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 #include "core/lisp.fwd.h"// aggregate.h wants Lisp needs lisp.fwd.h
 
@@ -132,7 +132,7 @@ public:
 
     bool	canRender() { return true;}
 #ifdef RENDER
-    addon::Render_sp	rendered(core::Cons_sp opt);
+    candoBase::Render_sp	rendered(core::Cons_sp opt);
 #endif
 
 

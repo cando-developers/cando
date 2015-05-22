@@ -1,8 +1,8 @@
 #ifndef	kinematics_dofId_H
 #define	kinematics_dofId_H
 
-#include "core/foundation.h"
-#include "addon/vector3.h"
+#include <clasp/core/foundation.h>
+#include <cando/candoBase/vector3.h>
 
 namespace kinematics
 {

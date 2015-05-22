@@ -1,11 +1,11 @@
 #ifndef	kinematics_originJumpAtom_H
 #define kinematics_originJumpAtom_H
 
-#include "core/foundation.h"
-#include "atom.h"
-#include "jump.h"
-#include "jumpAtom.h"
-#include "chem/atomId.h"
+#include <clasp/core/foundation.h>
+#include <cando/kinematics/atom.h>
+#include <cando/kinematics/jump.h>
+#include <cando/kinematics/jumpAtom.h>
+#include <cando/chem/atomId.h>
 
 namespace kinematics
 {

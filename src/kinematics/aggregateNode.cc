@@ -1,10 +1,10 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "core/environment.h"
-#include "chainNode.h"
-#include "aggregateNode.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <clasp/core/environment.h>
+#include <cando/kinematics/chainNode.h>
+#include <cando/kinematics/aggregateNode.h>
+#include <clasp/core/wrappers.h>
 namespace kinematics
 {
 

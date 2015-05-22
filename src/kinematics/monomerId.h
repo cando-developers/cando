@@ -1,9 +1,9 @@
 #ifndef	kinematics_monomerId_H
 #define kinematics_monomerId_H
 
-#include "core/common.h"
-#include "chem/constitutionAtoms.fwd.h"
-#include "kinematicsPackage.h"
+#include <clasp/core/common.h>
+#include <cando/chem/constitutionAtoms.fwd.h>
+#include <cando/kinematics/kinematicsPackage.h>
 
 
 namespace kinematics

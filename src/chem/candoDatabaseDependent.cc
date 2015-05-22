@@ -1,11 +1,11 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "candoDatabaseDependent.h"
+#include <cando/chem/candoDatabaseDependent.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "candoDatabase.h"
-#include "constitution.h"
-#include "core/wrappers.h"
+#include <cando/chem/candoDatabase.h>
+#include <cando/chem/constitution.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {

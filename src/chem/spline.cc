@@ -15,9 +15,9 @@
 #include <stdio.h>
 #include <iomanip>
 
-#include "core/common.h"
-#include "addon/matrix.h"
-#include "spline.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/matrix.h>
+#include <cando/chem/spline.h>
 
 
 

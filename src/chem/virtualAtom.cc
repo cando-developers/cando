@@ -1,12 +1,12 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "virtualAtom.h"
+#include <cando/chem/virtualAtom.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "core/cons.h"
-#include "residue.h"
-#include "calculatePosition.h"
-#include "core/wrappers.h"
+#include <clasp/core/cons.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/calculatePosition.h>
+#include <clasp/core/wrappers.h>
 
 
 

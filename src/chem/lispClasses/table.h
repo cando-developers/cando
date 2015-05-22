@@ -9,7 +9,7 @@
 #include <vector>
 #include <set>
 #include "core/common.h"
-//#include "addon/render.fwd.h"
+//#include "candoBase/render.fwd.h"
 
 #include "chemPackage.h"
 
@@ -74,7 +74,7 @@ public:
 
 	bool	canRender() { return true; };
 #ifdef RENDER
-	addon::Render_sp rendered(core::Cons_sp options);
+	candoBase::Render_sp rendered(core::Cons_sp options);
 #endif
 
 	string __repr__() const;
@@ -191,7 +191,7 @@ public:
 
 	bool	canRender() { return true; };
 #ifdef RENDER
-	addon::Render_sp rendered(core::Cons_sp options);
+	candoBase::Render_sp rendered(core::Cons_sp options);
 #endif
 
 public:

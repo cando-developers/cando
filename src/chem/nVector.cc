@@ -15,8 +15,8 @@
 
 #include <iostream>
 #include <math.h>
-#include "nVector.h"
-#include "core/wrappers.h"
+#include <cando/chem/nVector.h>
+#include <clasp/core/wrappers.h>
 
 
 
@@ -400,10 +400,10 @@ double  dDot;
  *
  * List the term-by-term differences and return as an XML object
  */
-addon::QDomNode_sp	NVector_O::termDifferencesAsXml(const string& thisName, NVector_sp n, const string& otherName)
+candoBase::QDomNode_sp	NVector_O::termDifferencesAsXml(const string& thisName, NVector_sp n, const string& otherName)
 {
-    addon::QDomNode_sp xml = addon::QDomNode_O::create(_lisp,"Differences");
-    addon::QDomNode_sp part;
+    candoBase::QDomNode_sp xml = candoBase::QDomNode_O::create(_lisp,"Differences");
+    candoBase::QDomNode_sp part;
     uint		i;
     double	avg;
     vector<double>::iterator	resi, ni;
@@ -413,7 +413,7 @@ addon::QDomNode_sp	NVector_O::termDifferencesAsXml(const string& thisName, NVect
 	avg = (*resi+*ni)/2.0;
 	if ( avg < 0.0000001 ) continue;
 	if ( fabs(*resi-*ni)/avg > 0.1 ) {
-	    part = addon::QDomNode_O::create(_lisp,"V");
+	    part = candoBase::QDomNode_O::create(_lisp,"V");
 	    part->addAttributeInt("i",i);
 	    part->addAttributeDoubleScientific(thisName,*resi);
 	    part->addAttributeDoubleScientific(otherName,*ni);

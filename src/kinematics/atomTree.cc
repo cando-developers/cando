@@ -1,24 +1,24 @@
 #define DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "core/environment.h"
-#include "core/wrappers.h"
-#include "chem/chemPackage.h"
-#include "chem/constitution.h"
-#include "chem/constitutionAtoms.h"
-#include "chem/oligomer.h"
-#include "chem/topology.h"
-#include "chem/symbolTable.h"
-#include "core/evaluator.h"
-#include "core/binder.h"
-#include "chem/candoDatabase.h"
-#include "atomTemplate.h"
-#include "stub.h"
-#include "monomerNode.h"
-#include "chainNode.h"
-#include "atomo.h"
-#include "atom.h"
-#include "atomTree.h"
+#include <clasp/core/common.h>
+#include <clasp/core/environment.h>
+#include <clasp/core/wrappers.h>
+#include <cando/chem/chemPackage.h>
+#include <cando/chem/constitution.h>
+#include <cando/chem/constitutionAtoms.h>
+#include <cando/chem/oligomer.h>
+#include <cando/chem/topology.h>
+#include <cando/chem/symbolTable.h>
+#include <clasp/core/evaluator.h>
+#include <clasp/core/binder.h>
+#include <cando/chem/candoDatabase.h>
+#include <cando/kinematics/atomTemplate.h>
+#include <cando/kinematics/stub.h>
+#include <cando/kinematics/monomerNode.h>
+#include <cando/kinematics/chainNode.h>
+#include <cando/kinematics/atomo.h>
+#include <cando/kinematics/atom.h>
+#include <cando/kinematics/atomTree.h>
 
 namespace kinematics
 {

@@ -2,23 +2,23 @@
        
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "core/foundation.h"
-#include "core/hashTableEq.h"
-#include "units/symbolTable.h"
-#include "atom.h"
-#include "virtualAtom.h"
-#include "residue.h"
-#include "energyAtomTable.h"
-#include "energyComponent.h"
-#include "energyFunction.h"
-#include "forceField.h"
-#include "units/unitsPackage.h"
-#include "units/quantity.h"
-#include "loop.h"
-#include "spanningLoop.h"
-#include "ffNonbondDb.h"
-#include "core/profiler.h"
-#include "core/wrappers.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/hashTableEq.h>
+#include <cando/units/symbolTable.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/virtualAtom.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/energyAtomTable.h>
+#include <cando/chem/energyComponent.h>
+#include <cando/chem/energyFunction.h>
+#include <cando/chem/forceField.h>
+#include <cando/units/unitsPackage.h>
+#include <cando/units/quantity.h>
+#include <cando/chem/loop.h>
+#include <cando/chem/spanningLoop.h>
+#include <cando/chem/ffNonbondDb.h>
+#include <clasp/core/profiler.h>
+#include <clasp/core/wrappers.h>
 
 
 
@@ -54,11 +54,11 @@ void EnergyAtom::defineForAtom(ForceField_sp forceField, Atom_sp a1, uint coordi
 
 
 #if 0 //[
-    addon::QDomNode_sp	EnergyAtom::asXmlRelativeToContainer(chem::Matter_sp parent)
+    candoBase::QDomNode_sp	EnergyAtom::asXmlRelativeToContainer(chem::Matter_sp parent)
 {
-    addon::QDomNode_sp	node;
+    candoBase::QDomNode_sp	node;
     string	path;
-    node = chem::new_addon::QDomNode_sp("EnergyAtom");
+    node = chem::new_candoBase::QDomNode_sp("EnergyAtom");
     path = this->_Atom->getIdPath(parent);
     node->addAttributeString("storagePath",path);
     node->addAttributeString("atomName",this->_Atom->getName());
@@ -73,7 +73,7 @@ void EnergyAtom::defineForAtom(ForceField_sp forceField, Atom_sp a1, uint coordi
 }
 
 
-    void	EnergyAtom::parseFromXmlRelativeToContainer(addon::QDomNode_sp xml,
+    void	EnergyAtom::parseFromXmlRelativeToContainer(candoBase::QDomNode_sp xml,
 							chem::Matter_sp parent)
 {_G();
 string	path;

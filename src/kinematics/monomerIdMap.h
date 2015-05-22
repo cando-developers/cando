@@ -1,8 +1,8 @@
 #ifndef	_MonomerIdMap_H
 #define _MonomerIdMap_H
 
-#include "core/common.h"
-#include "monomerId.h"
+#include <clasp/core/common.h>
+#include <cando/kinematics/monomerId.h>
 
 namespace kinematics
 {

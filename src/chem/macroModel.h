@@ -17,14 +17,14 @@
 
 #include <iostream>
 #include <string>
-#include "core/common.h"
-#include "matter.h"
-#include "molecule.h"
-#include "residue.h"
-#include "atom.h"
+#include <clasp/core/common.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/molecule.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/atom.h>
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

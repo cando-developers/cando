@@ -1,10 +1,10 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "frameRecognizer.h"
-#include "core/str.h"
-#include "core/environment.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <cando/chem/frameRecognizer.h>
+#include <clasp/core/str.h>
+#include <clasp/core/environment.h>
+#include <clasp/core/wrappers.h>
 
 namespace chem {
 

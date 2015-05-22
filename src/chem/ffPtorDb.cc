@@ -11,10 +11,10 @@
  *
  *	Maintains a database of ptor terms
  */
-#include "ffPtorDb.h"
+#include <cando/chem/ffPtorDb.h>
 //#include "core/archiveNode.h"
-#include "core/wrappers.h"
-#include "units.h"
+#include <clasp/core/wrappers.h>
+#include <cando/chem/units.h>
 
 namespace chem
 {

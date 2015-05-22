@@ -1,8 +1,8 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "atomTree.h"
-#include "atomHandle.h"
+#include <clasp/core/common.h>
+#include <cando/kinematics/atomTree.h>
+#include <cando/kinematics/atomHandle.h>
 
 #define	DEBUG_REFCOUNT	0
 

@@ -108,4 +108,3 @@
  	EVAL_SET(ohx4z4, ohx4z4);
  	EVAL_SET(ohy4z4, ohy4z4);
  	EVAL_SET(DihedralDeviation, DihedralDeviation);
- 

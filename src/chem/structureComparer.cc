@@ -12,10 +12,10 @@
  *
  */
 
-#include "structureComparer.h"
-#include "loop.h"
-#include "superposeEngine.h"
-#include "core/wrappers.h"
+#include <cando/chem/structureComparer.h>
+#include <cando/chem/loop.h>
+#include <cando/chem/superposeEngine.h>
+#include <clasp/core/wrappers.h>
 
 
 
@@ -53,7 +53,7 @@ Atom_sp	a;
 void	StructureComparer_O::initializeFixedCoordinates()
 {_G();
 int		ia;
-this->_FixedCoordinates = addon::CoordinateArray_O::create(this->_SuperposeAtoms.size());
+this->_FixedCoordinates = candoBase::CoordinateArray_O::create(this->_SuperposeAtoms.size());
 gctools::SmallOrderedSet<Atom_sp>::iterator	oa;
     for ( oa=this->_SuperposeAtoms.begin(),ia=0; oa!=this->_SuperposeAtoms.end(); oa++,ia++ )
     {
@@ -94,7 +94,7 @@ SuperposeEngine_sp				superposer;
 gctools::Vec0<StructureComparerEntry_sp>::iterator	ei;
 Matrix					transform;
 int					i;
-addon::CoordinateArray_sp			moveableCoordinates;
+candoBase::CoordinateArray_sp			moveableCoordinates;
     if ( matter != this->_Matter )
     {
         SIMPLE_ERROR(BF("The Matter passed must be the same as the one defined for the StructureComparer"));
@@ -111,7 +111,7 @@ addon::CoordinateArray_sp			moveableCoordinates;
     	// Now check if the structure is new or not.
 	// First assemble the superposable coordinates of this conformation
 	//
-    moveableCoordinates= addon::CoordinateArray_O::create(this->_SuperposeAtoms.size());
+    moveableCoordinates= candoBase::CoordinateArray_O::create(this->_SuperposeAtoms.size());
     for ( ai=this->_SuperposeAtoms.begin(), i=0;
 		ai!=this->_SuperposeAtoms.end(); ai++, i++)
     {

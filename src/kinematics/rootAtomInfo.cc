@@ -1,11 +1,11 @@
 
 
-#include "core/common.h"
-#include "chem/plug.h"
-#include "chem/candoDatabase.h"
-#include "chem/constitution.h"
-#include "chem/constitutionAtoms.h"
-#include "rootAtomInfo.h"
+#include <clasp/core/common.h>
+#include <cando/chem/plug.h>
+#include <cando/chem/candoDatabase.h>
+#include <cando/chem/constitution.h>
+#include <cando/chem/constitutionAtoms.h>
+#include <cando/kinematics/rootAtomInfo.h>
 
 namespace kinematics
 {

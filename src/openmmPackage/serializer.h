@@ -1,8 +1,8 @@
 #ifndef	_omm_Serialize_H
 #define _omm_Serialize_H
 
-#include "core/common.h"
-#include "openmmPackage.h"
+#include <clasp/core/common.h>
+#include <cando/openmmPackage/openmmPackage.h>
 
 namespace omm
 {

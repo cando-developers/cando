@@ -11,27 +11,27 @@
 #include <vector>
 //#include	<strings>
 #include <stdio.h>
-#include "core/common.h"
-#include "core/stringSet.h"
-#include "matter.h"
-#include "addon/omatrix.h"
+#include <clasp/core/common.h>
+#include <clasp/core/stringSet.h>
+#include <cando/chem/matter.h>
+#include <cando/candoBase/omatrix.h>
 //#include "core/serialize.h"
-#include "core/str.h"
-#include "loop.h"
-#include "core/cons.h"
-#include "addon/ovector3.h"
-#include "restraint.h"
-#include "core/environment.h"
-#include "addon/boundingBox.h"
-#include "virtualAtom.h"
-#include "bond.h"
-#include "angle.h"
-#include "properTorsion.h"
-#include "improperTorsion.h"
-#include "atomIdMap.h"
-#include "alias.h"
-#include "core/translators.h"
-#include "core/wrappers.h"
+#include <clasp/core/str.h>
+#include <cando/chem/loop.h>
+#include <clasp/core/cons.h>
+#include <cando/candoBase/ovector3.h>
+#include <cando/chem/restraint.h>
+#include <clasp/core/environment.h>
+#include <cando/candoBase/boundingBox.h>
+#include <cando/chem/virtualAtom.h>
+#include <cando/chem/bond.h>
+#include <cando/chem/angle.h>
+#include <cando/chem/properTorsion.h>
+#include <cando/chem/improperTorsion.h>
+#include <cando/chem/atomIdMap.h>
+#include <cando/chem/alias.h>
+#include <clasp/core/translators.h>
+#include <clasp/core/wrappers.h>
 
 namespace chem
 {
@@ -764,7 +764,7 @@ namespace chem
     }
 
 
-    addon::BoundingBox_sp Matter_O::boundingBox(double pad) 
+    candoBase::BoundingBox_sp Matter_O::boundingBox(double pad) 
     {_G();
 	Vector3	sum;
 	int	count;
@@ -775,7 +775,7 @@ namespace chem
 	c = this->sharedThis<Matter_O>();
 	sum.set(0,0,0);
 	count = 0;
-	addon::BoundingBox_sp bbox = addon::BoundingBox_O::create();
+	candoBase::BoundingBox_sp bbox = candoBase::BoundingBox_O::create();
 	l.loopTopGoal( c, ATOMS );
 	while ((l.advanceLoopAndProcess())) {
 	    a = l.getAtom();
@@ -923,9 +923,9 @@ namespace chem
 /*! Subclass this method
  */
 #ifdef RENDER
-    addon::Render_sp Matter_O::rendered(core::Cons_sp kopts)
+    candoBase::Render_sp Matter_O::rendered(core::Cons_sp kopts)
     {
-	return _Nil<addon::Render_O>();
+	return _Nil<candoBase::Render_O>();
     };
 #endif
 

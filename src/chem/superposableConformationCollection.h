@@ -9,12 +9,12 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "conformationCollection.h"
-#include "core/stringList.h"
-#include "core/intArray.h"
+#include <clasp/core/common.h>
+#include <cando/chem/conformationCollection.h>
+#include <clasp/core/stringList.h>
+#include <clasp/core/intArray.h>
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {
@@ -77,7 +77,7 @@ public:
 
 	bool canRender() { return true; }
 #ifdef RENDER
-	addon::Render_sp rendered(core::Cons_sp options);
+	candoBase::Render_sp rendered(core::Cons_sp options);
 #endif
 
 

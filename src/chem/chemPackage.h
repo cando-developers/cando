@@ -1,10 +1,10 @@
 #ifndef	chemPackage_H
 #define chemPackage_H
 
-#include "core/foundation.h"
-#include "core/lisp.h"
-#include "chemPackage.fwd.h"
-#include "candoDatabase.fwd.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/lisp.h>
+#include <cando/chem/chemPackage.fwd.h>
+#include <cando/chem/candoDatabase.fwd.h>
 
 NAMESPACE_PACKAGE_ASSOCIATION(chemkw,ChemKwPkg,"CHEM-KEYWORD");
 NAMESPACE_PACKAGE_ASSOCIATION(chem,ChemPkg,"CHEM");

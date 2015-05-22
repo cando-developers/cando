@@ -9,12 +9,12 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "addon/vector3.h"
-#include "core/executables.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/vector3.h>
+#include <clasp/core/executables.h>
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem 

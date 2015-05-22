@@ -1,20 +1,20 @@
 #ifndef	openmmState_H //[
 #define openmmState_H
 
-#include "OpenMM.h"
+#include <OpenMM.h>
 
 
 #include <stdio.h>
 #include <string>
 #include <vector>
 #include <set>
-#include "foundation.h"
-#include "object.h"
-#include "ovector3.h"
-#include "units/quantity.fwd.h"
-#include "chem/matter.h"
-#include "openmmFoundation.h"
-#include "externalObject.h"
+#include <foundation.h>
+#include <object.h>
+#include <ovector3.h>
+#include <cando/units/quantity.fwd.h>
+#include <cando/chem/matter.h>
+#include <cando/openmmPackage/openmmFoundation.h>
+#include <externalObject.h>
 
 
 

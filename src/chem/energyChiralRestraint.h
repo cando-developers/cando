@@ -19,9 +19,9 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "addon/vector3.h"
-#include "energyComponent.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/vector3.h>
+#include <cando/chem/energyComponent.h>
 
 
 namespace chem
@@ -58,7 +58,7 @@ public:
 	bool		_calcForce;
 	bool		_calcDiagonalHessian;
 	bool		_calcOffDiagonalHessian;
-#include "_ChiralRestraint_debugEvalDeclares.cc"
+#include <cando/chem/_ChiralRestraint_debugEvalDeclares.cc>
 #endif
 	chem::Atom_sp	getAtom1() { return this->_Atom1; };
 	chem::Atom_sp	getAtom2() { return this->_Atom2; };
@@ -67,8 +67,8 @@ public:
 public:
 //	void	archive(core::ArchiveP node);
 public:
-	addon::QDomNode_sp	asXml(core::Lisp_sp);
-	void	parseFromXmlUsingAtomTable(addon::QDomNode_sp xml, AtomTable_sp atomTable );
+	candoBase::QDomNode_sp	asXml(core::Lisp_sp);
+	void	parseFromXmlUsingAtomTable(candoBase::QDomNode_sp xml, AtomTable_sp atomTable );
 public:
 	string	description();
     EnergyChiralRestraint();

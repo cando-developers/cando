@@ -1,9 +1,9 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "core/environment.h"
-#include "dimension.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <clasp/core/environment.h>
+#include <cando/units/dimension.h>
+#include <clasp/core/wrappers.h>
 namespace units
 {
 

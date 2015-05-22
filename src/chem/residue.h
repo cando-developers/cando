@@ -31,17 +31,17 @@
 #include <iostream>
 #include <string>
 #include <set>
-#include "core/common.h"
-#include "core/symbolSet.fwd.h"
-#include "core/lispStream.fwd.h"
-#include "core/stringSet.fwd.h"
-#include "matter.h"
-#include "residue.fwd.h"
-#include "candoDatabaseReference.h"
-#include "atomIdMap.fwd.h"
-#include "atom.h"
+#include <clasp/core/common.h>
+#include <clasp/core/symbolSet.fwd.h>
+#include <clasp/core/lispStream.fwd.h>
+#include <clasp/core/stringSet.fwd.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/residue.fwd.h>
+#include <cando/chem/candoDatabaseReference.h>
+#include <cando/chem/atomIdMap.fwd.h>
+#include <cando/chem/atom.h>
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

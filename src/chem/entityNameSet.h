@@ -7,26 +7,26 @@
 
 #ifndef MonomerRecognizer_H
 #define MonomerRecognizer_H
-#include "core/common.h"
+#include <clasp/core/common.h>
 #include <stdio.h>
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "core/symbolSet.fwd.h"
-#include "bond.h"
-#include "addon/vector3.h"
+#include <clasp/core/common.h>
+#include <clasp/core/symbolSet.fwd.h>
+#include <cando/chem/bond.h>
+#include <cando/candoBase/vector3.h>
 //#include	"conformation.h"
-#include "atom.h"
-#include "core/stringSet.fwd.h"
-#include "core/stringList.fwd.h"
-#include "core/symbol.fwd.h"
-#include "core/symbolList.fwd.h"
-#include "entity.h"
-#include "statusTracker.h"
+#include <cando/chem/atom.h>
+#include <clasp/core/stringSet.fwd.h>
+#include <clasp/core/stringList.fwd.h>
+#include <clasp/core/symbol.fwd.h>
+#include <clasp/core/symbolList.fwd.h>
+#include <cando/chem/entity.h>
+#include <cando/chem/statusTracker.h>
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 #include "core/symbolList.fwd.h"// entityNameSet.h wants SymbolList needs symbolList.fwd.h
 

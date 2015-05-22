@@ -17,13 +17,13 @@
 #include <stdio.h>
 #include <string>
 #include "core/common.h"
-#include "addon/vector3.h"
-#include "addon/ovector3.h"
+#include "candoBase/vector3.h"
+#include "candoBase/ovector3.h"
 #include "core/holder.h"
 #include "elements.h"
-#include "addon/coordinateArray.h"
+#include "candoBase/coordinateArray.h"
 #include "bond.h"
-#include "addon/highlightObject.h"
+#include "candoBase/highlightObject.h"
 #include "grPickableMatter.h"
 #include "chemPackage.h"
 
@@ -40,9 +40,9 @@ namespace chem
 
 
     SMART(RenderMatterAtom);
-    class RenderMatterAtom_O : public addon::HighlightedObject_O
+    class RenderMatterAtom_O : public candoBase::HighlightedObject_O
     {
-	LISP_BASE1(addon::HighlightedObject_O);
+	LISP_BASE1(candoBase::HighlightedObject_O);
 	LISP_CLASS(chem,ChemPkg,RenderMatterAtom_O,"RenderMatterAtom");
     public:
 	
@@ -53,14 +53,14 @@ namespace chem
 	bool		_ShowLabel;
 	string		_Label;
 	uint 		_NumberOfBonds;
-	addon::Color_sp		_Color;
+	candoBase::Color_sp		_Color;
 	Atom_sp		_Atom;
     private:
 	uint		_BondLineVertexIndex;
     public:
 	void	defineForAtom(Atom_sp atom, GrPickableMatter_sp renderMatter);
 	Atom_sp getAtom() { return this->_Atom;};
-	addon::Color_sp getColor() { return this->_Color;};
+	candoBase::Color_sp getColor() { return this->_Color;};
 	string& getLabel() { return this->_Label;};
 	bool getShowLabel() {return this->_ShowLabel;};
 	void setBondLineVertexIndex(uint i) { this->_BondLineVertexIndex=i;};
@@ -72,9 +72,9 @@ namespace chem
     };
 
     SMART(RenderMatterBond);
-    class RenderMatterBond_O : public addon::HighlightedObject_O
+    class RenderMatterBond_O : public candoBase::HighlightedObject_O
     {
-	LISP_BASE1(addon::HighlightedObject_O );
+	LISP_BASE1(candoBase::HighlightedObject_O );
 	LISP_CLASS(chem,ChemPkg,RenderMatterBond_O,"RenderMatterBond");
     public:
 //	void archiveBase(core::ArchiveP node);
@@ -93,15 +93,15 @@ namespace chem
     };
 
 
-    class RenderMatterResidue_O : public addon::HighlightedObject_O
+    class RenderMatterResidue_O : public candoBase::HighlightedObject_O
     {
-	LISP_BASE1(addon::HighlightedObject_O);
+	LISP_BASE1(candoBase::HighlightedObject_O);
 	LISP_CLASS(chem,ChemPkg,RenderMatterResidue_O,"RenderMatterResidue");
     public:
 	uint		_PickId;
 	Vector3		_Position;
 	string		_Label;
-	addon::Color_sp	_Color;
+	candoBase::Color_sp	_Color;
     public:
 //	void	archiveBase(core::ArchiveP node);
 	DEFAULT_CTOR_DTOR(RenderMatterResidue_O);
@@ -111,9 +111,9 @@ namespace chem
 
 
     SMART(GrPickableMatter);
-    class GrPickableMatter_O : public addon::Render_O
+    class GrPickableMatter_O : public candoBase::Render_O
     {
-	LISP_BASE1(addon::Render_O);
+	LISP_BASE1(candoBase::Render_O);
 	LISP_CLASS(chem,ChemPkg,GrPickableMatter_O,"GrPickableMatter");
     public:
     public:
@@ -127,17 +127,17 @@ namespace chem
         gctools::Vec0<RenderMatterBond_sp>	_Bonds;
         gctools::Vec0<RenderMatterResidue_sp>	_Residues;
     private:	// do not archive
-	addon::GrPickablePoints_sp		_AtomPoints;
-	addon::GrPickableLines_sp		_BondLines;
-	addon::GrLabels_sp			_Labels;
+	candoBase::GrPickablePoints_sp		_AtomPoints;
+	candoBase::GrPickableLines_sp		_BondLines;
+	candoBase::GrLabels_sp			_Labels;
     public:
-	addon::GrPickablePoints_sp	getAtomPoints() { return this->_AtomPoints;};
-	addon::GrPickableLines_sp	getBondLines() { return this->_BondLines;};
-	addon::GrLabels_sp		getLabels() { return this->_Labels;};
+	candoBase::GrPickablePoints_sp	getAtomPoints() { return this->_AtomPoints;};
+	candoBase::GrPickableLines_sp	getBondLines() { return this->_BondLines;};
+	candoBase::GrLabels_sp		getLabels() { return this->_Labels;};
     public:
 	virtual void ownChildren();
-	virtual void _walkAndDefineController(addon::RenderController_sp controller, bool suppressSwitch);
-	virtual void _walkAndDefineSliderRanges(addon::RenderController_sp controller);
+	virtual void _walkAndDefineController(candoBase::RenderController_sp controller, bool suppressSwitch);
+	virtual void _walkAndDefineSliderRanges(candoBase::RenderController_sp controller);
 
 //	virtual void	check();
 
@@ -145,7 +145,7 @@ namespace chem
     private:
 //	void	render();
     public:
-	static addon::Color_sp elementToColor(Element element, core::Lisp_sp);
+	static candoBase::Color_sp elementToColor(Element element, core::Lisp_sp);
     private:
 	void generateRenderObjects();
     public:
@@ -155,16 +155,16 @@ namespace chem
 	void	setShowLabels(bool t) { this->_ShowLabels = t;};
 	bool	getShowLabels() { return this->_ShowLabels;};
 #endif
-	addon::OVector3_sp centerOfRenderedGeometry();
+	candoBase::OVector3_sp centerOfRenderedGeometry();
 
-	virtual addon::Render_sp findChild(core::Cons_sp symbolPath, addon::RenderController_sp controller);
+	virtual candoBase::Render_sp findChild(core::Cons_sp symbolPath, candoBase::RenderController_sp controller);
 
 
-	void accumulateCenterOfGeometry(addon::CenterOfGeometryEnum cogType, addon::RenderController_sp rc, Vector3& sumPos, uint& sumPoints);
-	virtual void accumulateBoundingBox(const Matrix& transform, addon::CenterOfGeometryEnum cogType, addon::RenderController_sp rc,
-					   addon::BoundingBox_sp bbox);
+	void accumulateCenterOfGeometry(candoBase::CenterOfGeometryEnum cogType, candoBase::RenderController_sp rc, Vector3& sumPos, uint& sumPoints);
+	virtual void accumulateBoundingBox(const Matrix& transform, candoBase::CenterOfGeometryEnum cogType, candoBase::RenderController_sp rc,
+					   candoBase::BoundingBox_sp bbox);
 
-	void accumulateRenderInformation(stringstream& ss, addon::RenderController_sp cc);
+	void accumulateRenderInformation(stringstream& ss, candoBase::RenderController_sp cc);
 
 
 	DEFAULT_CTOR_DTOR(GrPickableMatter_O);

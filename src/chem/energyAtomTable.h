@@ -17,10 +17,10 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "units/quantity.fwd.h"
-#include "indirectAtomCoordinateReference.h"
-#include "addon/vector3.h"
+#include <clasp/core/common.h>
+#include <cando/units/quantity.fwd.h>
+#include <cando/chem/indirectAtomCoordinateReference.h>
+#include <cando/candoBase/vector3.h>
 
 
 namespace chem
@@ -62,8 +62,8 @@ public:
 		// methods
 	void		defineForAtom(ForceField_sp forceField, Atom_sp atom, uint coordinateIndex);
 	string		getResidueAndName();
-//	addon::QDomNode_sp	asXmlRelativeToContainer(chem::Matter_sp parent);
-//	void		parseFromXmlRelativeToContainer( addon::QDomNode_sp xml, chem::Matter_sp parent );
+//	candoBase::QDomNode_sp	asXmlRelativeToContainer(chem::Matter_sp parent);
+//	void		parseFromXmlRelativeToContainer( candoBase::QDomNode_sp xml, chem::Matter_sp parent );
 };
 
 

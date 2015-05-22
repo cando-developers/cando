@@ -16,10 +16,10 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "addon/vector3.h"
-#include "energyComponent.h"
-//#include "addon/render.fwd.h"// energyNonbond.h wants DisplayList needs render.fwd.h
+#include <clasp/core/common.h>
+#include <cando/candoBase/vector3.h>
+#include <cando/chem/energyComponent.h>
+//#include "candoBase/render.fwd.h"// energyNonbond.h wants DisplayList needs render.fwd.h
 
 namespace       chem {
 
@@ -65,7 +65,7 @@ public:
 	bool		_calcForce;
 	bool		_calcDiagonalHessian;
 	bool		_calcOffDiagonalHessian;
-#include "_Nonbond_debugEvalDeclares.cc"
+#include <cando/chem/_Nonbond_debugEvalDeclares.cc>
 #endif
 
 	Atom_sp	getAtom1() { return this->_Atom1; };
@@ -80,9 +80,9 @@ public:
 public:
 //	void	archive(core::ArchiveP node);
 public:
-	addon::QDomNode_sp	asXml(core::Lisp_sp);
-	void	parseFromXmlRelativeToContainer( addon::QDomNode_sp xml, Matter_sp parent );
-	void	parseFromXmlUsingAtomTable(addon::QDomNode_sp xml, AtomTable_sp atomTable );
+	candoBase::QDomNode_sp	asXml(core::Lisp_sp);
+	void	parseFromXmlRelativeToContainer( candoBase::QDomNode_sp xml, Matter_sp parent );
+	void	parseFromXmlUsingAtomTable(candoBase::QDomNode_sp xml, AtomTable_sp atomTable );
 
 public:
     EnergyNonbond();
@@ -166,7 +166,7 @@ public:
 
     virtual string	beyondThresholdInteractionsAsString();
 
-//    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, addon::DisplayList_sp displayIn, core::Lisp_sp );
+//    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, candoBase::DisplayList_sp displayIn, core::Lisp_sp );
 
     virtual	double	getEnergy();
 

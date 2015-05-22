@@ -1,12 +1,12 @@
          
 #define	DEBUG_LEVEL_FULL
 
-#include "zMatrix.h"
+#include <cando/chem/zMatrix.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "spanningLoop.h"
-#include "loop.h"
-#include "core/wrappers.h"
+#include <cando/chem/spanningLoop.h>
+#include <cando/chem/loop.h>
+#include <clasp/core/wrappers.h>
 
 namespace chem
 {

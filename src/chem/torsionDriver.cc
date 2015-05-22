@@ -11,13 +11,13 @@
 #include <string>
 #include <map>
 #include <exception>
-#include "core/boostSmartPointers.h"
-#include "matter.h"
-#include "core/exceptions.h"
-#include "loop.h"
-#include "spanningLoop.h"
-#include "torsionDriver.h"
-#include "coordSys.h"
+#include <core/boostSmartPointers.h>
+#include <cando/chem/matter.h>
+#include <clasp/core/exceptions.h>
+#include <cando/chem/loop.h>
+#include <cando/chem/spanningLoop.h>
+#include <cando/chem/torsionDriver.h>
+#include <cando/chem/coordSys.h>
 
 using namespace chem;
 
@@ -480,11 +480,11 @@ CoordinateSystem_sp			coord;
 //	drive for debugging.
 //
 //
-addon::QDomNode_sp	Dumb_TorsionDriver::renderXml()
+candoBase::QDomNode_sp	Dumb_TorsionDriver::renderXml()
 {
-addon::QDomNode_sp	graphics, aggGraphics;
-addon::QDomNode_sp	coords;
-addon::QDomNode_sp	gr;
+candoBase::QDomNode_sp	graphics, aggGraphics;
+candoBase::QDomNode_sp	coords;
+candoBase::QDomNode_sp	gr;
 vector<TorsionSegment>::iterator	pos;
 Vector3		origin, pnt;
 vector<TorsionAtom>::iterator		tai;

@@ -12,14 +12,14 @@
  *
  *	Maintains a database of stretch types
  */
-#include "core/foundation.h"
-#include "core/str.h"
-#include "ffAngleDb.h"
-#include "forceField.h"
-#include "ffStretchDb.h"
-#include "units.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/str.h>
+#include <cando/chem/ffAngleDb.h>
+#include <cando/chem/forceField.h>
+#include <cando/chem/ffStretchDb.h>
+#include <cando/chem/units.h>
 //#include "core/archiveNode.h"
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 namespace chem
@@ -57,10 +57,10 @@ namespace chem
 
 #if 0 //[
 void
-addon::QDomNode_sp	FFAngle_O::asXml(core::Lisp_sp env)
+candoBase::QDomNode_sp	FFAngle_O::asXml(core::Lisp_sp env)
 {
-    addon::QDomNode_sp	node;
-    node = addon::QDomNode_O::create(_lisp,XmlTag_FFAngle());
+    candoBase::QDomNode_sp	node;
+    node = candoBase::QDomNode_O::create(_lisp,XmlTag_FFAngle());
     node->addAttributeString("Type1",this->_Type1 );
     node->addAttributeString("Type2",this->_Type2 );
     node->addAttributeString("Type3",this->_Type3 );
@@ -69,7 +69,7 @@ addon::QDomNode_sp	FFAngle_O::asXml(core::Lisp_sp env)
     return node;
 }
 
-    void	FFAngle_O::parseFromXml( addon::QDomNode_sp node )
+    void	FFAngle_O::parseFromXml( candoBase::QDomNode_sp node )
 {
     this->_Type1 = node->getAttributeString("Type1");
     this->_Type2 = node->getAttributeString("Type2");

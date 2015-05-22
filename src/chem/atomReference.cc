@@ -1,15 +1,15 @@
 #define	DEBUG_LEVEL_FULL
 
 #include <string>
-#include "core/common.h"
-#include "core/useBoostRegex.h"
-#include "core/fileSystem.h"
+#include <clasp/core/common.h>
+#include <clasp/core/useBoostRegex.h>
+#include <clasp/core/fileSystem.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "core/environment.h"
-#include "addon/vector3.h"
-#include "atomReference.h"
-#include "core/wrappers.h"
+#include <clasp/core/environment.h>
+#include <cando/candoBase/vector3.h>
+#include <cando/chem/atomReference.h>
+#include <clasp/core/wrappers.h>
 
 
 

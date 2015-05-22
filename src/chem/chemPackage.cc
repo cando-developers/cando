@@ -1,109 +1,109 @@
-#include "core/common.h"
-#include "core/package.h"
-#include "chemPackage.h"
-#include "candoScript.h"
+#include <clasp/core/common.h>
+#include <clasp/core/package.h>
+#include <cando/chem/chemPackage.h>
+#include <cando/chem/candoScript.h>
 //#include "candoDatabase.h"
-#include "elements.h"
-#include "mbbCoreTools.h"
-#include "core/builtInClass.h"
+#include <cando/chem/elements.h>
+#include <cando/chem/mbbCoreTools.h>
+#include <clasp/core/builtInClass.h>
 //#define HEADER_INCLUDES
 //#include "chem_initClasses_inc.h"
-#include "ringFinder.h"
-#include "largeSquareMatrix.h"
-#include "alias.h"
-#include "angle.h"
+#include <cando/chem/ringFinder.h>
+#include <cando/chem/largeSquareMatrix.h>
+#include <cando/chem/alias.h>
+#include <cando/chem/angle.h>
 //#include "atomGrid.h"
-#include "atomIdMap.h"
-#include "atomId.h"
-#include "atomIndexer.h"
-#include "atomReference.h"
-#include "energyAtomTable.h"
-#include "bond.h"
-#include "chemdraw.h"
-#include "calculatePosition.h"
-#include "candoDatabaseReference.h"
+#include <cando/chem/atomIdMap.h>
+#include <cando/chem/atomId.h>
+#include <cando/chem/atomIndexer.h>
+#include <cando/chem/atomReference.h>
+#include <cando/chem/energyAtomTable.h>
+#include <cando/chem/bond.h>
+#include <cando/chem/chemdraw.h>
+#include <cando/chem/calculatePosition.h>
+#include <cando/chem/candoDatabaseReference.h>
 //#include "candoDatabase.h"
-#include "chemInfo.h"
-#include "cipPrioritizer.h"
-#include "command.h"
-#include "complexRestraints.h"
+#include <cando/chem/chemInfo.h>
+#include <cando/chem/cipPrioritizer.h>
+#include <cando/chem/command.h>
+#include <cando/chem/complexRestraints.h>
 //#include "conformationCollection.h"
 //#include "conformationExplorer.h"
-#include "constitutionAtoms.h"
-#include "coordSys.h"
-#include "coupling.h"
-#include "energyComponent.h"
-#include "energyFunction.h"
-#include "entity.h"
+#include <cando/chem/constitutionAtoms.h>
+#include <cando/chem/coordSys.h>
+#include <cando/chem/coupling.h>
+#include <cando/chem/energyComponent.h>
+#include <cando/chem/energyFunction.h>
+#include <cando/chem/entity.h>
 //#include "externalInterface.h"
-#include "ffBaseDb.h"
-#include "ffNonbondDb.h"
-#include "forceField.h"
-#include "frameRecognizer.h"
-#include "improperTorsion.h"
-#include "macroModel.h"
-#include "matter.h"
-#include "minimizerLog.h"
-#include "minimizer.h"
-#include "monomerContext.h"
-#include "monomerCoordinates.h"
-#include "nVector.h"
-#include "numericalFunction.h"
-#include "candoScript.h"
-#include "oligomer.h"
-#include "monomer.h"
-#include "typeAssignmentRules.h"
-#include "pdbMonomer.h"
-#include "pdb.h"
-#include "plug.h"
-#include "properTorsion.h"
-#include "readAmberParameters.h"
-#include "restraint.h"
-#include "rotamer.h"
-#include "searchStatistics.h"
-#include "spanningLoop.h"
-#include "specificContext.h"
-#include "statusTracker.h"
-#include "stereochemistry.h"
-#include "stereoisomerAtoms.h"
-#include "structureComparer.h"
-#include "structureList.h"
-#include "superposeEngine.h"
-#include "topology.h"
+#include <cando/chem/ffBaseDb.h>
+#include <cando/chem/ffNonbondDb.h>
+#include <cando/chem/forceField.h>
+#include <cando/chem/frameRecognizer.h>
+#include <cando/chem/improperTorsion.h>
+#include <cando/chem/macroModel.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/minimizerLog.h>
+#include <cando/chem/minimizer.h>
+#include <cando/chem/monomerContext.h>
+#include <cando/chem/monomerCoordinates.h>
+#include <cando/chem/nVector.h>
+#include <cando/chem/numericalFunction.h>
+#include <cando/chem/candoScript.h>
+#include <cando/chem/oligomer.h>
+#include <cando/chem/monomer.h>
+#include <cando/chem/typeAssignmentRules.h>
+#include <cando/chem/pdbMonomer.h>
+#include <cando/chem/pdb.h>
+#include <cando/chem/plug.h>
+#include <cando/chem/properTorsion.h>
+#include <cando/chem/readAmberParameters.h>
+#include <cando/chem/restraint.h>
+#include <cando/chem/rotamer.h>
+#include <cando/chem/searchStatistics.h>
+#include <cando/chem/spanningLoop.h>
+#include <cando/chem/specificContext.h>
+#include <cando/chem/statusTracker.h>
+#include <cando/chem/stereochemistry.h>
+#include <cando/chem/stereoisomerAtoms.h>
+#include <cando/chem/structureComparer.h>
+#include <cando/chem/structureList.h>
+#include <cando/chem/superposeEngine.h>
+#include <cando/chem/topology.h>
 //#include "trainerArchive.h"
 //#include "trainer.h"
 //#include "jobHistory.h"
-#include "trajectory.h"
-#include "twister.h"
-#include "virtualSphere.h"
-#include "zMatrix.h"
-#include "aggregate.h"
-#include "atom.h"
-#include "constitution.h"
-#include "energyAnchorRestraint.h"
-#include "energyAngle.h"
-#include "energyChiralRestraint.h"
-#include "energyDihedral.h"
-#include "energyFixedNonbond.h"
-#include "energyImproperRestraint.h"
-#include "energyNonbond.h"
-#include "energyStretch.h"
-#include "entityNameSet.h"
-#include "ffStretchDb.h"
-#include "ffAngleDb.h"
-#include "ffItorDb.h"
-#include "ffPtorDb.h"
-#include "ffTypesDb.h"
-#include "ffVdwDb.h"
-#include "iterateMatter.h"
-#include "iterateRestraints.h"
-#include "molecule.h"
+#include <cando/chem/trajectory.h>
+#include <cando/chem/twister.h>
+#include <cando/chem/virtualSphere.h>
+#include <cando/chem/zMatrix.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/constitution.h>
+#include <cando/chem/energyAnchorRestraint.h>
+#include <cando/chem/energyAngle.h>
+#include <cando/chem/energyChiralRestraint.h>
+#include <cando/chem/energyDihedral.h>
+#include <cando/chem/energyFixedNonbond.h>
+#include <cando/chem/energyImproperRestraint.h>
+#include <cando/chem/energyNonbond.h>
+#include <cando/chem/energyStretch.h>
+#include <cando/chem/entityNameSet.h>
+#include <cando/chem/ffStretchDb.h>
+#include <cando/chem/ffAngleDb.h>
+#include <cando/chem/ffItorDb.h>
+#include <cando/chem/ffPtorDb.h>
+#include <cando/chem/ffTypesDb.h>
+#include <cando/chem/ffVdwDb.h>
+#include <cando/chem/iterateMatter.h>
+#include <cando/chem/iterateRestraints.h>
+#include <cando/chem/molecule.h>
 //#include "grPickableMatter.h"
-#include "residue.h"
-#include "superposableConformationCollection.h"
-#include "virtualAtom.h"
-#include "monomerPack.h"
-#include "representedEntityNameSet.h"
+#include <cando/chem/residue.h>
+#include <cando/chem/superposableConformationCollection.h>
+#include <cando/chem/virtualAtom.h>
+#include <cando/chem/monomerPack.h>
+#include <cando/chem/representedEntityNameSet.h>
 
 namespace chemkw {
 
@@ -111,7 +111,7 @@ namespace chemkw {
 #pragma GCC visibility push(default)
 #define ChemKwPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include "symbols_scraped_inc.h"
+#include <symbols_scraped_inc.h>
 #undef DO_SYMBOL
 #undef ChemKwPkg_SYMBOLS
 #pragma GCC visibility pop
@@ -124,7 +124,7 @@ namespace chem {
 #pragma GCC visibility push(default)
 #define ChemPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include "symbols_scraped_inc.h"
+#include <symbols_scraped_inc.h>
 #undef DO_SYMBOL
 #undef ChemPkg_SYMBOLS
 #pragma GCC visibility pop
@@ -138,7 +138,7 @@ namespace chem
 #define EXPOSE_TO_CANDO
 #define Use_ChemPkg
 #define EXTERN_REGISTER
-#include "chem_initClasses_inc.h"
+#include <chem_initClasses_inc.h>
 #undef EXTERN_REGISTER
 #undef Use_ChemPkg
 #undef EXPOSE_TO_CANDO
@@ -171,14 +171,14 @@ namespace chem
 	{
 #define ChemKwPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {chemkw::cname = _lisp->internWithPackageName(pkg,lispname); chemkw::cname->exportYourself(exportp);}
-#include "symbols_scraped_inc.h"
+#include <symbols_scraped_inc.h>
 #undef DO_SYMBOL
 #undef ChemKwPkg_SYMBOLS
 
 
 #define ChemPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,lispname); cname->exportYourself(exportp);}
-#include "symbols_scraped_inc.h"
+#include <symbols_scraped_inc.h>
 #undef DO_SYMBOL
 #undef ChemPkg_SYMBOLS
 
@@ -190,7 +190,7 @@ namespace chem
 #define	Use_ChemPkg
 #define INVOKE_REGISTER
 #define LOOKUP_SYMBOL(pkg,name) _lisp->internWithPackageName(pkg,name)
-#include "chem_initClasses_inc.h"
+#include <chem_initClasses_inc.h>
 #undef INVOKE_REGISTER
 #undef Use_ChemPkg
 #undef ALL_STAGES
@@ -221,7 +221,7 @@ namespace chem
 #define _DBG(x)
 #define EXPOSE_TO_PYTHON
 #define	Use_ChemPkg
-#include "chem_initClasses_inc.h"
+#include <chem_initClasses_inc.h>
 #undef Use_ChemPkg
 #undef EXPOSE_TO_PYTHON
 #undef _DBG
@@ -273,7 +273,7 @@ namespace chem
 #define _CLASS_MACRO(_T_)				\
     STATIC_CLASS_INFO(_T_);			\
     INTRUSIVE_POINTER_REFERENCE_COUNT_ACCESSORS(_T_);
-#include "chem_initClasses_inc.h"
+#include <chem_initClasses_inc.h>
 #undef _CLASS_MACRO
 #undef EXPAND_CLASS_MACROS
 #endif

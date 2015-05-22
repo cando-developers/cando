@@ -21,4 +21,3 @@
  	node->attributeIfNotDefault("evalohx1z1", this->eval.ohx1z1, 0.0 );
  	node->attributeIfNotDefault("evalohy1z1", this->eval.ohy1z1, 0.0 );
  	node->attributeIfNotDefault("evalfixedNonbondDistance", this->eval.fixedNonbondDistance, 0.0 );
- 

@@ -15,15 +15,15 @@
 
 #include <iostream>
 #include <string>
-#include "core/common.h"
-#include "addon/vector3.h"
-#include "addon/matrix.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/vector3.h>
+#include <cando/candoBase/matrix.h>
 //#include "matter.h"
 //#include "atom.h"
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
-//#include "addon/render.fwd.h"// coordSys.h wants Render needs render.fwd.h
+//#include "candoBase/render.fwd.h"// coordSys.h wants Render needs render.fwd.h
 
 namespace chem {
 
@@ -108,7 +108,7 @@ public:
 
         virtual bool canRender() { return true; };
 #ifdef RENDER
-        virtual addon::Render_sp rendered(core::Cons_sp options);
+        virtual candoBase::Render_sp rendered(core::Cons_sp options);
 #endif
 
 	CoordinateSystem_O(const CoordinateSystem_O& orig);

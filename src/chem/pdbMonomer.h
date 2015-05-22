@@ -7,10 +7,10 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "core/stringSet.fwd.h"
+#include <clasp/core/common.h>
+#include <clasp/core/stringSet.fwd.h>
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

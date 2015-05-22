@@ -1,9 +1,9 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "core/numbers.h"
-#include "iterateRange.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <clasp/core/numbers.h>
+#include <cando/candoBase/iterateRange.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace candoBase {

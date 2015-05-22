@@ -10,26 +10,26 @@
 
 #ifndef Topology_H
 #define Topology_H
-#include "core/common.h"
+#include <clasp/core/common.h>
 #include <stdio.h>
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "core/symbolSet.fwd.h"
-#include "bond.h"
-#include "addon/vector2.h"
-#include "addon/vector3.h"
-#include "core/stringSet.fwd.h"
-#include "core/hashTableEq.h"
-#include "stereoisomerAtoms.fwd.h"
+#include <clasp/core/common.h>
+#include <clasp/core/symbolSet.fwd.h>
+#include <cando/chem/bond.h>
+#include <cando/candoBase/vector2.h>
+#include <cando/candoBase/vector3.h>
+#include <clasp/core/stringSet.fwd.h>
+#include <clasp/core/hashTableEq.h>
+#include <cando/chem/stereoisomerAtoms.fwd.h>
 //#include "kinematics/atomTemplate.fwd.h"
 //#include "kinematics/chiDihedrals.fwd.h"
-#include "topology.fwd.h"
-#include "constitutionAtoms.fwd.h"
+#include <cando/chem/topology.fwd.h>
+#include <cando/chem/constitutionAtoms.fwd.h>
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem

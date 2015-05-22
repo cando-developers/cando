@@ -1,13 +1,13 @@
        
 #define	DEBUG_LEVEL_NONE
 
-#include "energyFixedNonbond.h"
-#include "energyAtomTable.h"
-#include "energyFunction.h"
-#include "core/profiler.h"
-#include "ffNonbondDb.h"
-#include "largeSquareMatrix.h"
-#include "core/wrappers.h"
+#include <cando/chem/energyFixedNonbond.h>
+#include <cando/chem/energyAtomTable.h>
+#include <cando/chem/energyFunction.h>
+#include <clasp/core/profiler.h>
+#include <cando/chem/ffNonbondDb.h>
+#include <cando/chem/largeSquareMatrix.h>
+#include <clasp/core/wrappers.h>
 
 namespace chem {
 
@@ -29,7 +29,7 @@ FixedNonbondRestraint::~FixedNonbondRestraint()
     node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
     node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
     node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include "_FixedNonbond_debugEvalSerialize.cc"
+#include <cando/chem/_FixedNonbond_debugEvalSerialize.cc>
 #endif //]
 }
 #endif
@@ -37,14 +37,14 @@ FixedNonbondRestraint::~FixedNonbondRestraint()
 
 
 
-addon::QDomNode_sp	FixedNonbondRestraint::asXml(core::Lisp_sp env)
+candoBase::QDomNode_sp	FixedNonbondRestraint::asXml(core::Lisp_sp env)
 {
     IMPLEMENT_ME();
 #if 0
-    addon::QDomNode_sp	node;
+    candoBase::QDomNode_sp	node;
     Vector3	vdiff;
 
-    node = addon::QDomNode_O::create(env,XmlTag_Term());
+    node = candoBase::QDomNode_O::create(env,XmlTag_Term());
     node->addAttributeString("atom1Name",this->_Atom1->getName());
     node->addAttributeString("atom2Name",this->_Atom2->getName());
     node->addAttributeInt("I1",this->I1);
@@ -61,11 +61,11 @@ addon::QDomNode_sp	FixedNonbondRestraint::asXml(core::Lisp_sp env)
 //    diff = vdiff.length();
 //    node->addAttributeDouble("_r",diff,5,2);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    addon::QDomNode_sp xml = addon::QDomNode_O::create(_lisp,"Evaluated");
+    candoBase::QDomNode_sp xml = candoBase::QDomNode_O::create(_lisp,"Evaluated");
     xml->addAttributeBool("calcForce",this->_calcForce );
     xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
     xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
-#include "_FixedNonbond_debugEvalXml.cc"
+#include <_FixedNonbond_debugEvalXml.cc>
     node->addChild(xml);
 #endif
     node->addAttributeDoubleScientific("dA",this->dA);
@@ -78,7 +78,7 @@ addon::QDomNode_sp	FixedNonbondRestraint::asXml(core::Lisp_sp env)
 
 
 
-void	FixedNonbondRestraint::parseFromXmlUsingAtomTable(addon::QDomNode_sp	xml,
+void	FixedNonbondRestraint::parseFromXmlUsingAtomTable(candoBase::QDomNode_sp	xml,
 					AtomTable_sp at)
 {
     IMPLEMENT_ME();
@@ -133,9 +133,9 @@ double	_evaluateEnergyOnly_FixedNonbond(
 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include "_FixedNonbond_termDeclares.cc"
+#include <cando/chem/_FixedNonbond_termDeclares.cc>
 #pragma clang diagnostic pop
-#include "_FixedNonbond_termCode.cc"
+#include <cando/chem/_FixedNonbond_termCode.cc>
 
     return Energy;
 #endif
@@ -216,7 +216,7 @@ string					str1, str2, str3, str4;
 #endif
 
 #ifdef RENDER
-int EnergyFixedNonbondRestraint_O::countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, addon::DisplayList_sp displayIn)
+int EnergyFixedNonbondRestraint_O::countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, candoBase::DisplayList_sp displayIn)
 {_G();
 IMPLEMENT_ME();
 #if 0
@@ -231,7 +231,7 @@ double				dx,dy,dz;
 double				cutoff, distSquared;
 bool				render;
 RPGrColor			color;
-addon::GrLine_sp			line;
+candoBase::GrLine_sp			line;
 Vector3				v1,v2;
     render = false;
     ANN(displayIn);
@@ -268,7 +268,7 @@ Vector3				v1,v2;
 	    {
 	        v1.set(x1,y1,z1);
 	        v2.set(x2,y2,z2);
-	        line = addon::GrLine_O::create(v1,v2,_lisp);
+	        line = candoBase::GrLine_O::create(v1,v2,_lisp);
 		displayIn->add(line);
 	    }
 	    overlapCount++;

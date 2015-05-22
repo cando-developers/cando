@@ -1,12 +1,12 @@
 #define	DEBUG_LEVEL_NONE
 
 
-#include "core/common.h"
-#include "omatrix.h"
-#include "vector3.h"
-#include "ovector3.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/omatrix.h>
+#include <cando/candoBase/vector3.h>
+#include <cando/candoBase/ovector3.h>
 //#include "core/archiveNode.h"
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 namespace candoBase {

@@ -1,10 +1,10 @@
 #ifndef	_units_Quantity_H
 #define _units_Quantity_H
 
-#include "core/common.h"
-#include "addon/vector3.h"
-#include "unit.h"
-#include "unitsPackage.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/vector3.h>
+#include <cando/units/unit.h>
+#include <cando/units/unitsPackage.h>
 
 namespace units
 {

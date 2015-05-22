@@ -21,7 +21,7 @@
 
 #include "chemPackage.h"
 
-#include "addon/boundingBox.fwd.h"// atomGrid.h wants BoundingBox needs boundingBox.fwd.h
+#include "candoBase/boundingBox.fwd.h"// atomGrid.h wants BoundingBox needs boundingBox.fwd.h
 
 namespace chem {
 
@@ -37,7 +37,7 @@ class AtomGrid_O : public core::T_O
     LISP_CLASS(chem,ChemPkg,AtomGrid_O,"AtomGrid");
 #if INIT_TO_FACTORIES
  public:
-    static AtomGrid_sp make(Matter_sp matter, double gridResolution, double addRadius, addon::BoundingBox_sp boundingBox);
+    static AtomGrid_sp make(Matter_sp matter, double gridResolution, double addRadius, candoBase::BoundingBox_sp boundingBox);
 #else
     DECLARE_INIT()
 #endif
@@ -70,7 +70,7 @@ void	privateBuildGrid( 	Matter_sp container,
 				double	sphereRadius );
     bool paintAtom( const Vector3& pos, double addRadius );
 
-    void renderSquare( addon::DisplayList_sp dl, 
+    void renderSquare( candoBase::DisplayList_sp dl, 
 				double xn, double yn, double zn,
 				double x1, double y1, double z1,
 				double x2, double y2, double z2,
@@ -98,7 +98,7 @@ public:
     void	buildGridWithinBoundingBox( Matter_sp container,
 			double addRadius,
 			double stepSize,
-			addon::BoundingBox_sp bbox );
+			candoBase::BoundingBox_sp bbox );
 
     void invert();
 
@@ -117,7 +117,7 @@ public:
 
     bool canRender() { return true; };
 #ifdef RENDER
-    addon::Render_sp rendered(core::Cons_sp options);
+    candoBase::Render_sp rendered(core::Cons_sp options);
 #endif
 
 

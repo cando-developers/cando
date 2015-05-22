@@ -108,4 +108,3 @@
  	node->attributeIfNotDefault("evalohx4z4", this->eval.ohx4z4, 0.0 );
  	node->attributeIfNotDefault("evalohy4z4", this->eval.ohy4z4, 0.0 );
  	node->attributeIfNotDefault("evalDihedralDeviation", this->eval.DihedralDeviation, 0.0 );
- 

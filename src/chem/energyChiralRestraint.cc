@@ -2,20 +2,20 @@
 #define	DEBUG_LEVEL_NONE
 
 
-#include "energyChiralRestraint.h"
-#include "energyAtomTable.h"
-#include "energyFunction.h"
-#include "core/profiler.h"
-#include "bond.h"
-#include "matter.h"
-#include "atom.h"
-#include "residue.h"
-#include "aggregate.h"
-#include "nVector.h"
-#include "ffBaseDb.h"
-#include "ffTypesDb.h"
-#include "largeSquareMatrix.h"
-#include "core/wrappers.h"
+#include <cando/chem/energyChiralRestraint.h>
+#include <cando/chem/energyAtomTable.h>
+#include <cando/chem/energyFunction.h>
+#include <clasp/core/profiler.h>
+#include <cando/chem/bond.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/nVector.h>
+#include <cando/chem/ffBaseDb.h>
+#include <cando/chem/ffTypesDb.h>
+#include <cando/chem/largeSquareMatrix.h>
+#include <clasp/core/wrappers.h>
 
 
 
@@ -54,7 +54,7 @@ EnergyChiralRestraint::~EnergyChiralRestraint()
     node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
     node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
     node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include "_ChiralRestraint_debugEvalSerialize.cc"
+#include <cando/chem/_ChiralRestraint_debugEvalSerialize.cc>
 #endif //]
 }
 #endif
@@ -78,12 +78,12 @@ string	EnergyChiralRestraint::description()
 
 
 #if 0
-    addon::QDomNode_sp	EnergyChiralRestraint::asXml(core::Lisp_sp env)
+    candoBase::QDomNode_sp	EnergyChiralRestraint::asXml(core::Lisp_sp env)
 {
-    addon::QDomNode_sp	node,child;
+    candoBase::QDomNode_sp	node,child;
     Vector3	vdiff;
 
-    node = addon::QDomNode_O::create(env,"EnergyChiralRestraint");
+    node = candoBase::QDomNode_O::create(env,"EnergyChiralRestraint");
     node->addAttributeString("atom1Name",this->_Atom1->getName());
     node->addAttributeString("atom2Name",this->_Atom2->getName());
     node->addAttributeString("atom3Name",this->_Atom3->getName());
@@ -94,17 +94,17 @@ string	EnergyChiralRestraint::description()
     node->addAttributeInt("I4",this->term.I4);
     node->addAttributeDoubleScientific("K",this->term.K);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    addon::QDomNode_sp xml = addon::QDomNode_O::create(env,"Evaluated");
+    candoBase::QDomNode_sp xml = candoBase::QDomNode_O::create(env,"Evaluated");
     xml->addAttributeBool("calcForce",this->_calcForce );
     xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
     xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
-#include "_ChiralRestraint_debugEvalXml.cc"
+#include <_ChiralRestraint_debugEvalXml.cc>
     node->addChild(xml);
 #endif
     return node;
 }
 
-    void	EnergyChiralRestraint::parseFromXmlUsingAtomTable(addon::QDomNode_sp	xml,
+    void	EnergyChiralRestraint::parseFromXmlUsingAtomTable(candoBase::QDomNode_sp	xml,
 				AtomTable_sp at )
 {
     this->term.K = xml->getAttributeDouble("K");
@@ -150,9 +150,9 @@ double	_evaluateEnergyOnly_ChiralRestraint(
 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include "_ChiralRestraint_termDeclares.cc"
+#include <cando/chem/_ChiralRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-#include "_ChiralRestraint_termCode.cc"
+#include <cando/chem/_ChiralRestraint_termCode.cc>
 
     return Energy;
 }

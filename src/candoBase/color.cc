@@ -1,19 +1,19 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/foundation.h"
-#include "core/object.h"
-#include "core/lisp.h"
-#include "core/hashTableEq.h"
-#include "symbolTable.h"
-#include "core/environment.h"
-#include "core/binder.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/object.h>
+#include <clasp/core/lisp.h>
+#include <clasp/core/hashTableEq.h>
+#include <cando/candoBase/symbolTable.h>
+#include <clasp/core/environment.h>
+#include <clasp/core/binder.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "core/lisp.h"
-#include "color.h"
+#include <clasp/core/lisp.h>
+#include <cando/candoBase/color.h>
 
 // last include is wrappers.h
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 namespace candoBase

@@ -1,16 +1,16 @@
 #ifndef kinematics_atomHandle_H
 #define kinematics_atomHandle_H
 
-#include "core/foundation.h"
-#include "core/object.h"
-#include "core/lisp.h"
-#include "kinematicsPackage.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/object.h>
+#include <clasp/core/lisp.h>
+#include <cando/kinematics/kinematicsPackage.h>
 //#include "pool.h"
-#include "atomTree.fwd.h"
-#include "bondId.fwd.h"
-#include "atom.fwd.h"
-#include "chem/atomId.h"
-#include "bondId.h"
+#include <cando/kinematics/atomTree.fwd.h>
+#include <cando/kinematics/bondId.fwd.h>
+#include <cando/kinematics/atom.fwd.h>
+#include <cando/chem/atomId.h>
+#include <cando/kinematics/bondId.h>
 
 
 namespace kinematics

@@ -13,11 +13,11 @@
  *              Maintain NxM dimensional Sparse Matrices.
  */
 
-#include "core/common.h"
+#include <clasp/core/common.h>
 //#include	<malloc.h>
 #include <iostream>
 #include <math.h>
-#include "sparseMatrix.h"
+#include <cando/chem/sparseMatrix.h>
 
 
 using namespace chem;

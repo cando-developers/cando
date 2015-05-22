@@ -1,10 +1,10 @@
 #define DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "core/environment.h"
-#include "atomTree.h"
-#include "monomerId.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <clasp/core/environment.h>
+#include <cando/kinematics/atomTree.h>
+#include <cando/kinematics/monomerId.h>
+#include <clasp/core/wrappers.h>
 
 
 

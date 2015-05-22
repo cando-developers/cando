@@ -1,10 +1,10 @@
 #ifndef gaff_LocationType_H
 #define gaff_LocationType_H
 
-#include "core/foundation.h"
-#include "core/object.h"
-#include "core/lisp.h"
-#include "core/cons.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/object.h>
+#include <clasp/core/lisp.h>
+#include <clasp/core/cons.h>
 
 
 

@@ -10,12 +10,12 @@
  *
  *	Maintains a database of itor terms
  */
-#include "core/common.h"
-#include "core/str.h"
-#include "ffItorDb.h"
+#include <clasp/core/common.h>
+#include <clasp/core/str.h>
+#include <cando/chem/ffItorDb.h>
 //#include "core/archiveNode.h"
-#include "core/wrappers.h"
-#include "units.h"
+#include <clasp/core/wrappers.h>
+#include <cando/chem/units.h>
 
 
 namespace chem

@@ -13,11 +13,11 @@
 #include <boost/array.hpp>
 
 #include <string.h>
-#include "matrix.h"
+#include <cando/candoBase/matrix.h>
 #include <iostream>
-#include "core/foundation.h"
-#include "core/object.h"
-#include "core/lisp.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/object.h>
+#include <clasp/core/lisp.h>
 //#include "core/archiveNode.h"
 
 

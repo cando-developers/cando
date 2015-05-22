@@ -10,14 +10,14 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "bond.h"
-#include "addon/vector3.h"
+#include <clasp/core/common.h>
+#include <cando/chem/bond.h>
+#include <cando/candoBase/vector3.h>
 //#include	"conformation.h"
-#include "atom.h"
-#include "residue.h"
-#include "nVector.h"
-#include "addon/coordinateArray.h"
+#include <cando/chem/atom.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/nVector.h>
+#include <cando/candoBase/coordinateArray.h>
 
 
 
@@ -52,7 +52,7 @@ private:
 	Matter_sp				_Matter;
     gctools::SmallOrderedSet<Atom_sp>				_AllAtoms;
     gctools::SmallOrderedSet<Atom_sp>				_SuperposeAtoms;
-	addon::CoordinateArray_sp			_FixedCoordinates;
+	candoBase::CoordinateArray_sp			_FixedCoordinates;
 private:	// do not archive
 	Matrix					_TransformToFixed;
 

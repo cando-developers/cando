@@ -1,13 +1,13 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "entity.h"
-#include "candoDatabase.h"
-#include "core/hashTableEq.h"
-#include "core/binder.h"
-#include "representedEntityNameSet.h"
-#include "constitution.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <cando/chem/entity.h>
+#include <cando/chem/candoDatabase.h>
+#include <clasp/core/hashTableEq.h>
+#include <clasp/core/binder.h>
+#include <cando/chem/representedEntityNameSet.h>
+#include <cando/chem/constitution.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {

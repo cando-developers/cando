@@ -1,9 +1,9 @@
 #ifndef	_kinematicsAggregateNode_H
 #define _kinematicsAggregateNode_H
 
-#include "core/common.h"
-#include "monomerBaseNode.h"
-#include "kinematicsPackage.h"
+#include <clasp/core/common.h>
+#include <cando/kinematics/monomerBaseNode.h>
+#include <cando/kinematics/kinematicsPackage.h>
 
 namespace kinematics
 {

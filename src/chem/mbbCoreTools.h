@@ -10,16 +10,16 @@
 #define mbbCoreTools_H
 
 #include <string>
-#include "core/common.h"
-#include "matter.h"
-#include "aggregate.h"
-#include "molecule.h"
-#include "residue.h"
-#include "atom.h"
-#include "addon/vector3.h"
-#include "addon/matrix.h"
+#include <clasp/core/common.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/molecule.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/atom.h>
+#include <cando/candoBase/vector3.h>
+#include <cando/candoBase/matrix.h>
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 #include "core/objectSet.fwd.h"// mbbCoreTools.h wants ObjectSet needs objectSet.fwd.h
 

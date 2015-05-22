@@ -1,17 +1,17 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "core/symbolToEnumConverter.h"
-#include "core/environment.h"
-#include "core/binder.h"
-#include "core/symbolTable.h"
-#include "core/wrappers.h"
-#include "addon/color.h"
-#include "addon/symbolTable.h"
-#include "symbolTable.h"
-#include "addon/integerKeyObjectDictionary.h"
-#include "chemPackage.h"
-#include "elements.h"
+#include <clasp/core/common.h>
+#include <clasp/core/symbolToEnumConverter.h>
+#include <clasp/core/environment.h>
+#include <clasp/core/binder.h>
+#include <clasp/core/symbolTable.h>
+#include <clasp/core/wrappers.h>
+#include <cando/candoBase/color.h>
+#include <cando/candoBase/symbolTable.h>
+#include <cando/chem/symbolTable.h>
+#include <cando/candoBase/integerKeyObjectDictionary.h>
+#include <cando/chem/chemPackage.h>
+#include <cando/chem/elements.h>
 
 
 
@@ -346,15 +346,15 @@ void initializeElementsAndHybridization()
 
 
     core::Symbol_sp elementColors = _sym__PLUS_elementColors_PLUS_;
-    addon::IntegerKeyObjectDictionary_sp dict = addon::IntegerKeyObjectDictionary_O::create();
+    candoBase::IntegerKeyObjectDictionary_sp dict = candoBase::IntegerKeyObjectDictionary_O::create();
     _lisp->defvar(elementColors,dict);
-    dict->set(element_C,addon::Color_O::systemColor(kw::_sym_cyan));
-    dict->set(element_H,addon::Color_O::systemColor(kw::_sym_white));
-    dict->set(element_O,addon::Color_O::systemColor(kw::_sym_red));
-    dict->set(element_N,addon::Color_O::systemColor(kw::_sym_blue));
-    dict->set(element_S,addon::Color_O::systemColor(kw::_sym_yellow));
-    dict->set(element_P,addon::Color_O::systemColor(kw::_sym_yellow));
-    dict->set(element_Undefined,addon::Color_O::systemColor(kw::_sym_magenta));
+    dict->set(element_C,candoBase::Color_O::systemColor(kw::_sym_cyan));
+    dict->set(element_H,candoBase::Color_O::systemColor(kw::_sym_white));
+    dict->set(element_O,candoBase::Color_O::systemColor(kw::_sym_red));
+    dict->set(element_N,candoBase::Color_O::systemColor(kw::_sym_blue));
+    dict->set(element_S,candoBase::Color_O::systemColor(kw::_sym_yellow));
+    dict->set(element_P,candoBase::Color_O::systemColor(kw::_sym_yellow));
+    dict->set(element_Undefined,candoBase::Color_O::systemColor(kw::_sym_magenta));
 }
 
 

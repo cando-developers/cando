@@ -9,15 +9,15 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "bond.h"
-#include "core/stringSet.fwd.h"
-#include "addon/vector3.h"
-#include "core/intArray.h"
+#include <clasp/core/common.h>
+#include <cando/chem/bond.h>
+#include <clasp/core/stringSet.fwd.h>
+#include <cando/candoBase/vector3.h>
+#include <clasp/core/intArray.h>
 
-#include "core/environment.fwd.h"
-#include "addon/coordinateArray.fwd.h"
-#include "core/intArray.fwd.h"
+#include <clasp/core/environment.fwd.h>
+#include <cando/candoBase/coordinateArray.fwd.h>
+#include <clasp/core/intArray.fwd.h>
 
 namespace       chem {
 
@@ -53,7 +53,7 @@ private:
 	string				_StageName;
 	bool				_Complete;
 	ConformationExplorerEntry_wp	_WeakConformationExplorerEntry;
-        addon::CoordinateArray_sp	_FinalCoordinates;
+        candoBase::CoordinateArray_sp	_FinalCoordinates;
 	core::HashTableEq_sp			_Binder;
 			//! Energy of the conformation in kCal as calculated by the package/model
 	double				_EnergyKCal;
@@ -62,8 +62,8 @@ private:
 			//! Model is gaff, am1, pm3, b3lyp etc.
 	string				_Model;
 public:
-        void setFinalCoordinates(addon::CoordinateArray_sp ac);
-        addon::CoordinateArray_sp getFinalCoordinates() { return this->_FinalCoordinates; }
+        void setFinalCoordinates(candoBase::CoordinateArray_sp ac);
+        candoBase::CoordinateArray_sp getFinalCoordinates() { return this->_FinalCoordinates; }
 public:
 
 	double		getEnergyKCal() { return this->_EnergyKCal; };
@@ -108,7 +108,7 @@ public:
 #if 0
 	bool	canRender() { return true;};
 #ifdef RENDER
-	addon::Render_sp	rendered(core::Cons_sp options);
+	candoBase::Render_sp	rendered(core::Cons_sp options);
 #endif
 #endif
 	virtual	string	coordinatesAsString()	{_OF();SUBCLASS_MUST_IMPLEMENT();};
@@ -196,7 +196,7 @@ public:
 #if 0
 	bool	canRender() { return true;};
 #ifdef RENDER
-	addon::Render_sp	rendered(core::Cons_sp options);
+	candoBase::Render_sp	rendered(core::Cons_sp options);
 #endif
 #endif
 	virtual ConformationExplorerEntryStage_sp createEntryStage(string const& name);
@@ -242,7 +242,7 @@ public:
 	typedef	core::IntArray_O::iterator				superposeAtomIndexIterator;
 
 public:
-	addon::CoordinateArray_sp	_extractCoordinateArray(Matter_sp matter);
+	candoBase::CoordinateArray_sp	_extractCoordinateArray(Matter_sp matter);
 	core::IntArray_sp		_getSuperposeAtomIndices() { return this->_SuperposeAtomIndices;};
 public:
 
@@ -339,7 +339,7 @@ public:
 #if 0
 	bool canRender() { return true; }
 #ifdef RENDER
-	addon::Render_sp rendered(core::Cons_sp options);
+	candoBase::Render_sp rendered(core::Cons_sp options);
 #endif
 #endif
 	string __str__() ;

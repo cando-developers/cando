@@ -15,42 +15,42 @@ __END_DOC
  *
  */
 
-#include "core/common.h"
-#include "energyFunction.h"
-#include "loop.h"
-#include "core/environment.h"
-#include "minimizerLog.h"
-#include "restraint.h"
-#include "iterateRestraints.h"
-#include "addon/iterateCons.h"
-#include "ringFinder.h"
-#include "cipPrioritizer.h"
-#include "atom.h"
-#include "virtualAtom.h"
-#include "energyAtomTable.h"
-#include "energyStretch.h"
+#include <clasp/core/common.h>
+#include <cando/chem/energyFunction.h>
+#include <cando/chem/loop.h>
+#include <clasp/core/environment.h>
+#include <cando/chem/minimizerLog.h>
+#include <cando/chem/restraint.h>
+#include <cando/chem/iterateRestraints.h>
+#include <cando/candoBase/iterateCons.h>
+#include <cando/chem/ringFinder.h>
+#include <cando/chem/cipPrioritizer.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/virtualAtom.h>
+#include <cando/chem/energyAtomTable.h>
+#include <cando/chem/energyStretch.h>
 #if USE_ALL_ENERGY_COMPONENTS
-#include "energyAngle.h"
-#include "energyDihedral.h"
-#include "energyNonbond.h"
-#include "energyImproperRestraint.h"
-#include "energyChiralRestraint.h"
-#include "energyAnchorRestraint.h"
-#include "energyFixedNonbond.h"
+#include <cando/chem/energyAngle.h>
+#include <cando/chem/energyDihedral.h>
+#include <cando/chem/energyNonbond.h>
+#include <cando/chem/energyImproperRestraint.h>
+#include <cando/chem/energyChiralRestraint.h>
+#include <cando/chem/energyAnchorRestraint.h>
+#include <cando/chem/energyFixedNonbond.h>
 #endif
-#include "symbolTable.h"
-#include "ffBaseDb.h"
-#include "ffTypesDb.h"
-#include "ffStretchDb.h"
-#include "ffAngleDb.h"
-#include "ffItorDb.h"
-#include "ffPtorDb.h"
-#include "ffNonbondDb.h"
-#include "ffVdwDb.h"
-#include "forceField.h"
-#include "largeSquareMatrix.h"
-#include "chemInfo.h"
-#include "core/wrappers.h"
+#include <cando/chem/symbolTable.h>
+#include <cando/chem/ffBaseDb.h>
+#include <cando/chem/ffTypesDb.h>
+#include <cando/chem/ffStretchDb.h>
+#include <cando/chem/ffAngleDb.h>
+#include <cando/chem/ffItorDb.h>
+#include <cando/chem/ffPtorDb.h>
+#include <cando/chem/ffNonbondDb.h>
+#include <cando/chem/ffVdwDb.h>
+#include <cando/chem/forceField.h>
+#include <cando/chem/largeSquareMatrix.h>
+#include <cando/chem/chemInfo.h>
+#include <clasp/core/wrappers.h>
 
 
 #if 0
@@ -59,10 +59,10 @@ __END_DOC
 #define	PARMDEBUG	1
 #endif
 
-#include "core/profiler.h"
+#include <clasp/core/profiler.h>
 
 #ifdef	darwin
-#include "xmmintrin.h"
+#include <xmmintrin.h>
 #endif
 
 
@@ -1791,8 +1791,8 @@ int             coordinateIndex;
 
 void	EnergyFunction_O::addTermsForListOfRestraints(ForceField_sp forceField, core::Cons_sp restraintList)
 {_G();
-    addon::IterateCons_sp	iterate;
-    iterate = addon::IterateCons_O::create(restraintList);
+    candoBase::IterateCons_sp	iterate;
+    iterate = candoBase::IterateCons_O::create(restraintList);
     this->_applyRestraints(forceField,iterate);
 }
 
@@ -2007,7 +2007,7 @@ void EnergyFunction_O::disableDebug()
 
 
 #ifdef RENDER
-uint	EnergyFunction_O::countBadVdwInteractions(double scaleSumOfVdwRadii, addon::DisplayList_sp displayIn)
+uint	EnergyFunction_O::countBadVdwInteractions(double scaleSumOfVdwRadii, candoBase::DisplayList_sp displayIn)
 {_G();
 NVector_sp	pos;
 EnergyNonbond_sp	nbComponent;

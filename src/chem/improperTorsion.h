@@ -1,8 +1,8 @@
 #ifndef	_chem_ImproperTorsion_H
 #define _chem_ImproperTorsion_H
 
-#include "core/common.h"
-#include "chemPackage.h"
+#include <clasp/core/common.h>
+#include <cando/chem/chemPackage.h>
 
 namespace chem
 {

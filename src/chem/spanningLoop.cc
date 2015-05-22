@@ -5,20 +5,20 @@
 
 
 
-#include "core/common.h"
+#include <clasp/core/common.h>
 
 #include <stdio.h>
 
-#include "loop.h"
-#include "spanningLoop.h"
-#include "matter.h"
-#include "aggregate.h"
-#include "molecule.h"
-#include "residue.h"
-#include "core/environment.h"
-#include "atom.h"
-#include "bond.h"
-#include "core/wrappers.h"
+#include <cando/chem/loop.h>
+#include <cando/chem/spanningLoop.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/molecule.h>
+#include <cando/chem/residue.h>
+#include <clasp/core/environment.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/bond.h>
+#include <clasp/core/wrappers.h>
 
 namespace chem
 {

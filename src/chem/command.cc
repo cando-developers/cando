@@ -2,10 +2,10 @@
 
 #define	DEBUG_LEVEL_NONE
 
-#include "command.h"
+#include <cando/chem/command.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 

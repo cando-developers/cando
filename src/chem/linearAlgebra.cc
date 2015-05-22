@@ -1,8 +1,8 @@
        
 #define	TURN_DEBUG_OFF
-#include "core/common.h"
-#include "linearAlgebra.h"
-#include "core/profiler.h"
+#include <clasp/core/common.h>
+#include <cando/chem/linearAlgebra.h>
+#include <clasp/core/profiler.h>
 
 
 namespace chem {

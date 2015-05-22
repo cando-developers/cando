@@ -1,7 +1,7 @@
 #ifndef atom_FWD_H
 #define atom_FWD_H
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 /*! Defines whether each atom has a single built in Anchor restraint or
 if it maintains a list of restraints which can contain mulitple

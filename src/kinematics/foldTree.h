@@ -1,10 +1,10 @@
 #ifndef	_kinematicsFoldTree_H
 #define _kinematicsFoldTree_H
 
-#include "core/common.h"
-#include "chainNode.fwd.h"
-#include "monomerIdMap.h"
-#include "kinematicsPackage.h"
+#include <clasp/core/common.h>
+#include <cando/kinematics/chainNode.fwd.h>
+#include <cando/kinematics/monomerIdMap.h>
+#include <cando/kinematics/kinematicsPackage.h>
 
 namespace kinematics
 {

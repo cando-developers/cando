@@ -1,20 +1,20 @@
        
 #define	DEBUG_LEVEL_NONE
 
-#include "energyAnchorRestraint.h"
-#include "energyAtomTable.h"
-#include "energyFunction.h"
-#include "core/profiler.h"
-#include "largeSquareMatrix.h"
-#include "bond.h"
-#include "matter.h"
-#include "atom.h"
-#include "residue.h"
-#include "aggregate.h"
-#include "nVector.h"
-#include "ffBaseDb.h"
-#include "ffTypesDb.h"
-#include "core/wrappers.h"
+#include <cando/chem/energyAnchorRestraint.h>
+#include <cando/chem/energyAtomTable.h>
+#include <cando/chem/energyFunction.h>
+#include <clasp/core/profiler.h>
+#include <cando/chem/largeSquareMatrix.h>
+#include <cando/chem/bond.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/nVector.h>
+#include <cando/chem/ffBaseDb.h>
+#include <cando/chem/ffTypesDb.h>
+#include <clasp/core/wrappers.h>
 
 namespace chem {
 
@@ -40,18 +40,18 @@ EnergyAnchorRestraint::~EnergyAnchorRestraint()
     node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
     node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
     node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include "_AnchorRestraint_debugEvalSerialize.cc"
+#include <cando/chem/_AnchorRestraint_debugEvalSerialize.cc>
 #endif //]
 }
 #endif
 
 #if 0
-addon::QDomNode_sp	EnergyAnchorRestraint::asXml(core::Lisp_sp env)
+candoBase::QDomNode_sp	EnergyAnchorRestraint::asXml(core::Lisp_sp env)
 {
-    addon::QDomNode_sp	node,child;
+    candoBase::QDomNode_sp	node,child;
     Vector3	vdiff;
 
-    node = addon::QDomNode_O::create(env,"EnergyAnchorRestraint");
+    node = candoBase::QDomNode_O::create(env,"EnergyAnchorRestraint");
     node->addAttributeString("atomName",this->_Atom1->getName());
     node->addAttributeInt("I1",this->term.I1);
     node->addAttributeDoubleScientific("ka",this->term.ka);
@@ -59,17 +59,17 @@ addon::QDomNode_sp	EnergyAnchorRestraint::asXml(core::Lisp_sp env)
     node->addAttributeDoubleScientific("ya",this->term.ya);
     node->addAttributeDoubleScientific("za",this->term.za);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    addon::QDomNode_sp xml = addon::QDomNode_O::create(env,"Evaluated");
+    candoBase::QDomNode_sp xml = candoBase::QDomNode_O::create(env,"Evaluated");
     xml->addAttributeBool("calcForce",this->_calcForce );
     xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
     xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
-#include "_AnchorRestraint_debugEvalXml.cc"
+#include <_AnchorRestraint_debugEvalXml.cc>
     node->addChild(xml);
 #endif
     return node;
 }
 
-void	EnergyAnchorRestraint::parseFromXmlUsingAtomTable(addon::QDomNode_sp	xml,
+void	EnergyAnchorRestraint::parseFromXmlUsingAtomTable(candoBase::QDomNode_sp	xml,
 					AtomTable_sp at )
 {
     this->term.ka = xml->getAttributeDouble("ka");
@@ -107,9 +107,9 @@ double	_evaluateEnergyOnly_AnchorRestraint(
 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include "_AnchorRestraint_termDeclares.cc"
+#include <cando/chem/_AnchorRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-#include "_AnchorRestraint_termCode.cc"
+#include <cando/chem/_AnchorRestraint_termCode.cc>
 
     return Energy;
 }

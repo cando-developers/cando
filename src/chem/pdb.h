@@ -7,9 +7,9 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "chemPackage.h"
-#include "core/stringSet.fwd.h"
+#include <clasp/core/common.h>
+#include <cando/chem/chemPackage.h>
+#include <clasp/core/stringSet.fwd.h>
 
 
 namespace chem
@@ -22,7 +22,7 @@ namespace chem
     __ BEGIN_CLASS_DEFINITION(ChemPkg,PdbMonomerConnectivity_O,PdbMonomerConnectivity,core::T_O)
 	private:
 	string _PdbName;
-    addon::ObjectList_sp _HetNames;
+    candoBase::ObjectList_sp _HetNames;
     core::SymbolMap<core::StringSet_O> _Connections;
 public:
 

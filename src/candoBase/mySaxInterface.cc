@@ -5,10 +5,10 @@
 //
 
 #include <string.h>
-#include "core/foundation.h"
-#include "core/lisp.h"
-#include "core/lispStream.h"
-#include "mySaxInterface.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/lisp.h>
+#include <clasp/core/lispStream.h>
+#include <cando/candoBase/mySaxInterface.h>
 
 
 namespace candoBase {

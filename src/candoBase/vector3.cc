@@ -6,19 +6,19 @@
 //
 
 
-#include "core/foundation.h"
-#include "core/object.h"
-#include "core/lisp.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/object.h>
+#include <clasp/core/lisp.h>
 #include <iostream>
 #include <sstream>
-#include "vector3.h"
-#include "core/cons.h"
-#include "core/serialize.h"
-#include "math.h"
+#include <cando/candoBase/vector3.h>
+#include <clasp/core/cons.h>
+#include <clasp/core/serialize.h>
+#include <math.h>
 //#include "core/archiveNode.h"
-#include "core/lispStream.h"
-#include "matrix.h"
-#include "core/wrappers.h"
+#include <clasp/core/lispStream.h>
+#include <cando/candoBase/matrix.h>
+#include <clasp/core/wrappers.h>
 
 
 

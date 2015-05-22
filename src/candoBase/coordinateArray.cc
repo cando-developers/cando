@@ -3,18 +3,18 @@
 //
 // (C) 2004 Christian E. Schafmeister
 //
-#include "core/common.h"
-#include "coordinateArray.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/coordinateArray.h>
 //#include "core/archiveNode.h"
 //#include "core/serializerNode.h"
-#include "ovector3.h"
-#include "omatrix.h"
-#include "color.h"
-#include "core/lispStream.h"
+#include <cando/candoBase/ovector3.h>
+#include <cando/candoBase/omatrix.h>
+#include <cando/candoBase/color.h>
+#include <clasp/core/lispStream.h>
 #ifdef RENDER
-#include "candoBase/render.h"
+#include <candoBase/render.h>
 #endif
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 

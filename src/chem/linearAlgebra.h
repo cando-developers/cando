@@ -11,8 +11,8 @@
 #define	LinearAlgebra_H
 
 #include <string>
-#include "energyFunction.h"
-#include "largeSquareMatrix.h"
+#include <cando/chem/energyFunction.h>
+#include <cando/chem/largeSquareMatrix.h>
 
 namespace       chem {
 

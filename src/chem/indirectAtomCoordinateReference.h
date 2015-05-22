@@ -2,7 +2,7 @@
 #define indirectAtomCoordinate_H
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem

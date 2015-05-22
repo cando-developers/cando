@@ -13,14 +13,14 @@
  *
  */
 
-#include "core/common.h"
-#include "core/str.h"
-#include "forceField.h"
+#include <clasp/core/common.h>
+#include <clasp/core/str.h>
+#include <cando/chem/forceField.h>
 //#include "core/archive.h"
 //#include "core/xmlLoadArchive.h"
 //#include "core/xmlSaveArchive.h"
 //#include "core/archiveNode.h"
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 

@@ -1,22 +1,22 @@
        
 #define	DEBUG_LEVEL_NONE
 
-#include "energyAngle.h"
-#include "energyAtomTable.h"
-#include "energyFunction.h"
-#include "core/profiler.h"
-#include "matter.h"
-#include "atom.h"
-#include "bond.h"
-#include "residue.h"
-#include "aggregate.h"
-#include "nVector.h"
-#include "ffBaseDb.h"
-#include "ffTypesDb.h"
-#include "ffAngleDb.h"
-#include "ffAngleDb.h"
-#include "largeSquareMatrix.h"
-#include "core/wrappers.h"
+#include <cando/chem/energyAngle.h>
+#include <cando/chem/energyAtomTable.h>
+#include <cando/chem/energyFunction.h>
+#include <clasp/core/profiler.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/bond.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/nVector.h>
+#include <cando/chem/ffBaseDb.h>
+#include <cando/chem/ffTypesDb.h>
+#include <cando/chem/ffAngleDb.h>
+#include <cando/chem/ffAngleDb.h>
+#include <cando/chem/largeSquareMatrix.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {
@@ -56,7 +56,7 @@ EnergyAngle::~EnergyAngle()
     node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
     node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
     node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include "_Angle_debugEvalSerialize.cc"
+#include <cando/chem/_Angle_debugEvalSerialize.cc>
 #endif //]
 }
 #endif
@@ -108,12 +108,12 @@ double	angle;
 }
 
 #if 0
-    addon::QDomNode_sp	EnergyAngle::asXml(core::Lisp_sp env)
+    candoBase::QDomNode_sp	EnergyAngle::asXml(core::Lisp_sp env)
 {
-    addon::QDomNode_sp	node;
+    candoBase::QDomNode_sp	node;
     Vector3	vdiff;
 
-    node = addon::QDomNode_O::create(env,"EnergyAngle");
+    node = candoBase::QDomNode_O::create(env,"EnergyAngle");
     node->addAttributeString("atom1Name",this->_Atom1->getName());
     node->addAttributeString("atom2Name",this->_Atom2->getName());
     node->addAttributeString("atom3Name",this->_Atom3->getName());
@@ -126,17 +126,17 @@ double	angle;
     node->addAttributeDoubleScientific("kt",this->term.kt);
     node->addAttributeDoubleScientific("t0",this->term.t0);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    addon::QDomNode_sp xml = addon::QDomNode_O::create(env,"Evaluated");
+    candoBase::QDomNode_sp xml = candoBase::QDomNode_O::create(env,"Evaluated");
     xml->addAttributeBool("calcForce",this->_calcForce );
     xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
     xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
-#include "_Angle_debugEvalXml.cc"
+#include <_Angle_debugEvalXml.cc>
     node->addChild(xml);
 #endif
     return node;
 }
 
-    void	EnergyAngle::parseFromXmlUsingAtomTable(addon::QDomNode_sp	xml,
+    void	EnergyAngle::parseFromXmlUsingAtomTable(candoBase::QDomNode_sp	xml,
 					AtomTable_sp atomTable )
 {
     int i1 = xml->getAttributeInt("idx1");
@@ -179,7 +179,7 @@ double	_evaluateEnergyOnly_Angle(
 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include "_Angle_termDeclares.cc"
+#include <cando/chem/_Angle_termDeclares.cc>
 #pragma clang diagnostic pop
 #if !USE_EXPLICIT_DECLARES
 	double fx1;
@@ -195,7 +195,7 @@ double	_evaluateEnergyOnly_Angle(
     fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
     fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
     fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-#include "_Angle_termCode.cc"
+#include <cando/chem/_Angle_termCode.cc>
 
     return Energy;
 }

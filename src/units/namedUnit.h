@@ -5,9 +5,9 @@
 #define _NAMEDUNIT_H 1
 
 
-#include "core/common.h"
-#include "unit.h"
-#include "namedUnit.h"
+#include <clasp/core/common.h>
+#include <cando/units/unit.h>
+#include <cando/units/namedUnit.h>
 
 namespace units
 {

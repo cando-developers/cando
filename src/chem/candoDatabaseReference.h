@@ -7,10 +7,10 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "entity.h"
+#include <clasp/core/common.h>
+#include <cando/chem/entity.h>
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 #include "core/objRef.fwd.h"// candoDatabaseReference.h wants ObjRef needs objRef.fwd.h
 

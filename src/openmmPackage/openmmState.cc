@@ -1,23 +1,23 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "foundation.h"
-#include "object.h"
-#include "lisp.h"
-#include "openmmFoundation.h"
-#include "coordinateArray.h"
-#include "core/numbers.h"
-#include "chem/atom.h"
-#include "chem/loop.h"
-#include "chem/forceField.h"
-#include "chem/bond.h"
-#include "chem/angle.h"
-#include "chem/properTorsion.h"
-#include "chem/improperTorsion.h"
-#include "units/unitsPackage.h"
-#include "units/quantity.h"
-#include "openmmExpose.h"
-#include "openmmState.h"
-#include "wrappers.h"
+#include <foundation.h>
+#include <object.h>
+#include <lisp.h>
+#include <cando/openmmPackage/openmmFoundation.h>
+#include <coordinateArray.h>
+#include <clasp/core/numbers.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/loop.h>
+#include <cando/chem/forceField.h>
+#include <cando/chem/bond.h>
+#include <cando/chem/angle.h>
+#include <cando/chem/properTorsion.h>
+#include <cando/chem/improperTorsion.h>
+#include <cando/units/unitsPackage.h>
+#include <cando/units/quantity.h>
+#include <cando/openmmPackage/openmmExpose.h>
+#include <cando/openmmPackage/openmmState.h>
+#include <wrappers.h>
 
 
 

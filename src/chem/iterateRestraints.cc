@@ -1,10 +1,10 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "iterateRestraints.h"
+#include <cando/chem/iterateRestraints.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "restraint.h"
-#include "core/wrappers.h"
+#include <cando/chem/restraint.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {

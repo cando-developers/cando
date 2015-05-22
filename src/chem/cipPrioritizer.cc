@@ -1,18 +1,18 @@
 #define	DEBUG_LEVEL_NONE
 
-#include "cipPrioritizer.h"
+#include <cando/chem/cipPrioritizer.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "matter.h"
-#include "atom.h"
-#include "residue.h"
-#include "molecule.h"
-#include "aggregate.h"
-#include "loop.h"
-#include "core/sort.h"
-#include "bond.h"
-#include "virtualAtom.h"
-#include "core/wrappers.h"
+#include <cando/chem/matter.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/molecule.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/loop.h>
+#include <clasp/core/sort.h>
+#include <cando/chem/bond.h>
+#include <cando/chem/virtualAtom.h>
+#include <clasp/core/wrappers.h>
 
 
 

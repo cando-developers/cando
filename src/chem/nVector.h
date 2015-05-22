@@ -15,12 +15,12 @@
 #ifndef NVECTOR_H
 #define NVECTOR_H
 
-#include "core/common.h"
+#include <clasp/core/common.h>
 //#include "core/archiveNode.h"
 
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {
@@ -71,7 +71,7 @@ public:
 		//! Return the angle wrt other
 	double	angleWithVector(NVector_sp other);
 	void		writeMathematica(const string& name);
-//	addon::QDomNode_sp	termDifferencesAsXml(const string& thisName, NVector_sp other, const string& otherName );
+//	candoBase::QDomNode_sp	termDifferencesAsXml(const string& thisName, NVector_sp other, const string& otherName );
 	double	maxAbsValue();
 	double	minAbsValue();
 	double	maxValue();

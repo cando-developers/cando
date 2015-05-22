@@ -3,28 +3,28 @@
 // (C) 2004 Christian E. Schafmeister
 //
 #include <string.h>
-#include "core/common.h"
-#include "core/str.h"
-#include "symbolTable.h"
-#include "matter.h"
-#include "residue.h"
-#include "atom.h"
-#include "bond.h"
-#include "molecule.h"
-#include "restraint.h"
+#include <clasp/core/common.h>
+#include <clasp/core/str.h>
+#include <cando/chem/symbolTable.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/bond.h>
+#include <cando/chem/molecule.h>
+#include <cando/chem/restraint.h>
 //#include "core/serialize.h"
-#include "core/numerics.h"
+#include <clasp/core/numerics.h>
 //#include "core/archive.h"
 //#include "core/archiveNode.h"
-#include "addon/ovector3.h"
-#include "core/sort.h"
-#include "addon/omatrix.h"
-#include "core/numbers.h"
-#include "elements.h"
-#include "core/translators.h"
-#include "constitutionAtoms.h"
+#include <cando/candoBase/ovector3.h>
+#include <clasp/core/sort.h>
+#include <cando/candoBase/omatrix.h>
+#include <clasp/core/numbers.h>
+#include <cando/chem/elements.h>
+#include <clasp/core/translators.h>
+#include <cando/chem/constitutionAtoms.h>
 
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 namespace chem

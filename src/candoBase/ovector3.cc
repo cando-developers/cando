@@ -1,11 +1,11 @@
 #define	DEBUG_LEVEL_FULL
-#include "core/common.h"
-#include "core/symbolToEnumConverter.h"
-#include "ovector3.h"
-#include "core/multipleValues.h"
-#include "vector3.h"
+#include <clasp/core/common.h>
+#include <clasp/core/symbolToEnumConverter.h>
+#include <cando/candoBase/ovector3.h>
+#include <clasp/core/multipleValues.h>
+#include <cando/candoBase/vector3.h>
 //#include "core/serializerNode.h"
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 namespace candoBase {
 

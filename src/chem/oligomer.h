@@ -17,11 +17,11 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include "core/common.h"
-#include "core/symbolSet.fwd.h"
-#include "core/stringSet.fwd.h"
-#include "addon/vector2.h"
-#include "addon/vector3.h"
+#include <clasp/core/common.h>
+#include <clasp/core/symbolSet.fwd.h>
+#include <clasp/core/stringSet.fwd.h>
+#include <cando/candoBase/vector2.h>
+#include <cando/candoBase/vector3.h>
 
 
 //#include "bond.h"
@@ -31,7 +31,7 @@
 //#include "coupling.h"
 //#include "monomer.h"
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 #include "core/symbolSet.fwd.h"// oligomer.h wants SymbolSet needs symbolSet.fwd.h
 #include "core/objectSet.fwd.h"// oligomer.h wants ObjectSet needs objectSet.fwd.h
@@ -180,7 +180,7 @@ public:
     // Atomic oligomer modifying routines
     Monomer_sp	addMultiMonomerAsLeaf( CandoDatabase_sp,
 				       Monomer_sp monFrom, core::Symbol_sp couplingName,
-				       core::Symbol_sp representedEntityNameSetName, addon::Vector2 pos);
+				       core::Symbol_sp representedEntityNameSetName, candoBase::Vector2 pos);
     Monomer_sp	removeLeafMonomer(Monomer_sp monomerToRemove );
 
 

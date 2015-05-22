@@ -1,11 +1,11 @@
 #ifndef	_kinematicsConformation_H
 #define _kinematicsConformation_H
 
-#include "core/common.h"
-#include "core/model.h"
-#include "chem/oligomer.fwd.h"
-#include "symbolTable.h"
-#include "kinematicsPackage.h"
+#include <clasp/core/common.h>
+#include <core/model.h>
+#include <cando/chem/oligomer.fwd.h>
+#include <cando/kinematics/symbolTable.h>
+#include <cando/kinematics/kinematicsPackage.h>
 
 namespace kinematics
 {

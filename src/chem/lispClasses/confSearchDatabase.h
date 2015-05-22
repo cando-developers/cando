@@ -12,7 +12,7 @@
 #include <vector>
 #include <set>
 #include "core/common.h"
-#include "addon/vector3.h"
+#include "candoBase/vector3.h"
 #include "superposableConformationCollection.h"
 //#include "bond.h"
 //#include "atom.h"
@@ -22,9 +22,9 @@
 //#include "ffTypesDb.h"
 //#include "ffStretchDb.h"
 //#include "ffAngleDb.h"
-//#include "addon/coordinateArray.h"
+//#include "candoBase/coordinateArray.h"
 
-#include "addon/quickDom.fwd.h"// confSearchDatabase.h wants QDomNode needs quickDom.fwd.h
+#include "candoBase/quickDom.fwd.h"// confSearchDatabase.h wants QDomNode needs quickDom.fwd.h
 
 namespace chem
 {
@@ -55,8 +55,8 @@ private:
         double					_EnergyCutOff;
 
 private:
-	void	_fillAtoms(addon::QDomNode_sp node, Aggregate_sp agg, VectorAtom& atoms);
-	void	_fillEntries(addon::QDomNode_sp node);
+	void	_fillAtoms(candoBase::QDomNode_sp node, Aggregate_sp agg, VectorAtom& atoms);
+	void	_fillEntries(candoBase::QDomNode_sp node);
 	void	_writeEntryCoordinates(Aggregate_sp agg, int i);
 public:
 

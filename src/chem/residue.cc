@@ -5,29 +5,29 @@
 
 
 
-#include "residue.h"
+#include <cando/chem/residue.h>
 
 #include <iostream>
 #include <vector>
-#include "core/common.h"
-#include "core/str.h"
-#include "core/stringSet.h"
-#include "matter.h"
-#include "monomer.h"
+#include <clasp/core/common.h>
+#include <clasp/core/str.h>
+#include <clasp/core/stringSet.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/monomer.h>
 //#include "core/archiveNode.h"
 //#include "core/serialize.h"
-#include "candoDatabaseReference.h"
-#include "core/symbolSet.h"
-#include "core/stringSet.h"
-#include "restraint.h"
-#include "virtualAtom.h"
-#include "calculatePosition.h"
-#include "core/lispStream.h"
-#include "constitution.h"
-#include "bond.h"
-#include "atom.h"
-#include "atomIdMap.h"
-#include "core/wrappers.h"
+#include <cando/chem/candoDatabaseReference.h>
+#include <clasp/core/symbolSet.h>
+#include <clasp/core/stringSet.h>
+#include <cando/chem/restraint.h>
+#include <cando/chem/virtualAtom.h>
+#include <cando/chem/calculatePosition.h>
+#include <clasp/core/lispStream.h>
+#include <cando/chem/constitution.h>
+#include <cando/chem/bond.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/atomIdMap.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {

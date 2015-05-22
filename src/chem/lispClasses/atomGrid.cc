@@ -17,14 +17,14 @@
 #include <map>
 #include <exception>
 #include "core/exceptions.h"
-#include "addon/boundingBox.h"
+#include "candoBase/boundingBox.h"
 #include "matter.h"
 #include "mbbCoreTools.h"
 #include "loop.h"
-#include "addon/color.h"
-#include "addon/render.h"
+#include "candoBase/color.h"
+#include "candoBase/render.h"
 #include "core/environment.h"
-#include "addon/boundingBox.h"
+#include "candoBase/boundingBox.h"
 #include "atomGrid.h"
 #include "core/wrappers.h"
 
@@ -59,7 +59,7 @@ __END_DOC
 #define ARGS_AtomGrid_O_make "(matter grid_resolution add_radius bounding_box)"
 #define DECL_AtomGrid_O_make ""
 #define DOCS_AtomGrid_O_make "make AtomId args: matter grid_resolution add_radius bounding_box"
-    AtomGrid_sp AtomGrid_O::make(Matter_sp matter, double gridResolution, double addRadius, addon::BoundingBox_sp boundingBox)
+    AtomGrid_sp AtomGrid_O::make(Matter_sp matter, double gridResolution, double addRadius, candoBase::BoundingBox_sp boundingBox)
   {_G();
       GC_ALLOCATE(AtomGrid_O, me );
     if (boundingBox.notnilp())
@@ -80,7 +80,7 @@ __END_DOC
     Matter_sp matter = translate::from_object<Matter_sp>::convert(bargs->lookup(ChemPkg,"matter"));
     double stepSize = translate::from_object<core::DoubleFloat_sp>::convert(bargs->lookup(ChemPkg,"gridResolution"))->get();
     double addRadius = translate::from_object<core::DoubleFloat_sp>::convert(bargs->lookup(ChemPkg,"addRadius"))->get();
-    addon::BoundingBox_sp bbox = translate::from_object<addon::BoundingBox_sp>::convert(bargs->lookup(ChemPkg,"boundingBox"));
+    candoBase::BoundingBox_sp bbox = translate::from_object<candoBase::BoundingBox_sp>::convert(bargs->lookup(ChemPkg,"boundingBox"));
     if ( bbox.notnilp() )
     {
         this->buildGridWithinBoundingBox(matter,addRadius,stepSize,bbox);
@@ -383,7 +383,7 @@ void	AtomGrid_O::buildGridWithinSphere( Matter_sp container,
 void	AtomGrid_O::buildGridWithinBoundingBox( Matter_sp container,
 			double addRadius,
 			double stepSize,
-			addon::BoundingBox_sp bbox )
+			candoBase::BoundingBox_sp bbox )
 {_OF();
     ASSERT(bbox->isDefined());
     this->stepSize = stepSize;
@@ -456,7 +456,7 @@ _lisp->print(BF( "  grid Elements=%d") % (int)(this->grid.size()) );
     _lisp->print(BF("  The grid has %d elements on and %d elements off") %	iOn % iOff );
 }
 
-void AtomGrid_O::renderSquare( addon::DisplayList_sp dl,
+void AtomGrid_O::renderSquare( candoBase::DisplayList_sp dl,
 					double xn, double yn, double zn,
 					double x1, double y1, double z1,
 					double x2, double y2, double z2,
@@ -479,10 +479,10 @@ void AtomGrid_O::renderSquare( addon::DisplayList_sp dl,
     polygon->addVertex(v4);
     dl->add(polygon);
 #if 0	// if polygons dont work, try lines
-    dl->add(addon::GrLine_O::create(v1,v2,1));
-    dl->add(addon::GrLine_O::create(v2,v3,1));
-    dl->add(addon::GrLine_O::create(v3,v4,1));
-    dl->add(addon::GrLine_O::create(v4,v1,1));
+    dl->add(candoBase::GrLine_O::create(v1,v2,1));
+    dl->add(candoBase::GrLine_O::create(v2,v3,1));
+    dl->add(candoBase::GrLine_O::create(v3,v4,1));
+    dl->add(candoBase::GrLine_O::create(v4,v1,1));
 #endif
 #endif
 }
@@ -494,7 +494,7 @@ void AtomGrid_O::renderSquare( addon::DisplayList_sp dl,
  */
 
 #ifdef RENDER
-addon::Render_sp AtomGrid_O::rendered( core::Cons_sp options )
+candoBase::Render_sp AtomGrid_O::rendered( core::Cons_sp options )
 {_G();
 IMPLEMENT_ME();
 #if 0
@@ -507,7 +507,7 @@ double		halfStep;
 double		xmin, ymin, zmin;
 double		xmax;
 
-    addon::DisplayList_sp	result = addon::DisplayList_O::create();
+    candoBase::DisplayList_sp	result = candoBase::DisplayList_O::create();
     iTotal = 0;
     iOn = 0;
 
@@ -520,46 +520,46 @@ double		xmax;
     v1.set(this->xMin, this->yMin, this->zMin );
     v2.set(this->xMax, this->yMin, this->zMin );
     result->add(O_GrColor::systemColor(_lisp->symbol(_kw_red)));
-    result->add(addon::GrLine_O::create(v1,v2,2));
+    result->add(candoBase::GrLine_O::create(v1,v2,2));
     v1.set(this->xMin, this->yMin, this->zMin );
     v2.set(this->xMin, this->yMax, this->zMin );
-    result->add(addon::GrLine_O::create(v1,v2,2));
+    result->add(candoBase::GrLine_O::create(v1,v2,2));
     v1.set(this->xMin, this->yMin, this->zMin );
     v2.set(this->xMin, this->yMin, this->zMax );
-    result->add(addon::GrLine_O::create(v1,v2,2));
+    result->add(candoBase::GrLine_O::create(v1,v2,2));
 
     v1.set(this->xMax, this->yMax, this->zMax );
     v2.set(this->xMax, this->yMax, this->zMin );
-    result->add(addon::GrLine_O::create(v1,v2,2));
+    result->add(candoBase::GrLine_O::create(v1,v2,2));
     v1.set(this->xMax, this->yMax, this->zMax );
     v2.set(this->xMin, this->yMax, this->zMax );
-    result->add(addon::GrLine_O::create(v1,v2,2));
+    result->add(candoBase::GrLine_O::create(v1,v2,2));
     v1.set(this->xMax, this->yMax, this->zMax );
     v2.set(this->xMax, this->yMin, this->zMax );
-    result->add(addon::GrLine_O::create(v1,v2,2));
+    result->add(candoBase::GrLine_O::create(v1,v2,2));
 
     v1.set(this->xMax, this->yMin, this->zMin );
     v2.set(this->xMax, this->yMax, this->zMin );
-    result->add(addon::GrLine_O::create(v1,v2,2));
+    result->add(candoBase::GrLine_O::create(v1,v2,2));
     v1.set(this->xMax, this->yMin, this->zMin );
     v2.set(this->xMax, this->yMin, this->zMax );
-    result->add(addon::GrLine_O::create(v1,v2,2));
+    result->add(candoBase::GrLine_O::create(v1,v2,2));
 
     v1.set(this->xMin, this->yMax, this->zMin );
     v2.set(this->xMax, this->yMax, this->zMin );
-    result->add(addon::GrLine_O::create(v1,v2,2));
+    result->add(candoBase::GrLine_O::create(v1,v2,2));
     v1.set(this->xMin, this->yMax, this->zMin );
     v2.set(this->xMin, this->yMax, this->zMax );
-    result->add(addon::GrLine_O::create(v1,v2,2));
+    result->add(candoBase::GrLine_O::create(v1,v2,2));
 
     v1.set(this->xMin, this->yMin, this->zMax );
     v2.set(this->xMax, this->yMin, this->zMax );
-    result->add(addon::GrLine_O::create(v1,v2,2));
+    result->add(candoBase::GrLine_O::create(v1,v2,2));
     v1.set(this->xMin, this->yMin, this->zMax );
     v2.set(this->xMin, this->yMax, this->zMax );
-    result->add(addon::GrLine_O::create(v1,v2,2));
+    result->add(candoBase::GrLine_O::create(v1,v2,2));
 
-    RPGrColor color = O_GrColor::create(addon::Color_O::systemColor(_lisp->symbol(_kw_magenta)),_lisp);
+    RPGrColor color = O_GrColor::create(candoBase::Color_O::systemColor(_lisp->symbol(_kw_magenta)),_lisp);
     result->add(color);
     halfStep = this->stepSize/2.0;
     for ( zi=0; zi!=this->zSize; zi++ ) {

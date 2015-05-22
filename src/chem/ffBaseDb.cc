@@ -11,10 +11,10 @@
  *
  *	Maintain the base class for parameters
  */
-#include "ffBaseDb.h"
-#include "forceField.h"
+#include <cando/chem/ffBaseDb.h>
+#include <cando/chem/forceField.h>
 //#include "core/archiveNode.h"
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 namespace chem {
 

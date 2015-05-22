@@ -5,19 +5,19 @@
 
 #define	TURN_DEBUG_OFF
 
-#include "core/common.h"
-#include "core/str.h"
-#include "core/stringSet.h"
-#include "core/environment.h"
-#include "core/symbolSet.h"
-#include "core/stringList.h"
-#include "stereochemistry.h"
-#include "constitution.h"
-#include "representedEntityNameSet.h"
-#include "restraint.h"
-#include "complexRestraints.h"
-#include "entity.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <clasp/core/str.h>
+#include <clasp/core/stringSet.h>
+#include <clasp/core/environment.h>
+#include <clasp/core/symbolSet.h>
+#include <clasp/core/stringList.h>
+#include <cando/chem/stereochemistry.h>
+#include <cando/chem/constitution.h>
+#include <cando/chem/representedEntityNameSet.h>
+#include <cando/chem/restraint.h>
+#include <cando/chem/complexRestraints.h>
+#include <cando/chem/entity.h>
+#include <clasp/core/wrappers.h>
 
 
 

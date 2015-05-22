@@ -1,13 +1,13 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "core/environment.h"
-#include "addon/vector3.h"
-#include "addon/ovector3.h"
-#include "atomo.h"
-#include "core/multipleValues.h"
-#include "atomTree.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <clasp/core/environment.h>
+#include <cando/candoBase/vector3.h>
+#include <cando/candoBase/ovector3.h>
+#include <cando/kinematics/atomo.h>
+#include <clasp/core/multipleValues.h>
+#include <cando/kinematics/atomTree.h>
+#include <clasp/core/wrappers.h>
 namespace kinematics
 {
     EXPOSE_CLASS(kinematics,Atom_O);

@@ -9,9 +9,9 @@
  *	Maintains databases and structures to store types and type assignement
  *	rules.
  */
-#include "ffTypesDb.h"
-#include "loop.h"
-#include "core/wrappers.h"
+#include <cando/chem/ffTypesDb.h>
+#include <cando/chem/loop.h>
+#include <clasp/core/wrappers.h>
 
 
 

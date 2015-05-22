@@ -8,13 +8,13 @@
 
 #include <stdio.h>
 #include <math.h>
-#include "core/common.h"
-#include "core/symbolTable.h"
-#include "core/corePackage.h"
-#include "virtualSphere.h"
-#include "symbolTable.h"
+#include <clasp/core/common.h>
+#include <clasp/core/symbolTable.h>
+#include <clasp/core/corePackage.h>
+#include <cando/chem/virtualSphere.h>
+#include <cando/chem/symbolTable.h>
 //#include "core/archiveNode.h"
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 #define	SCALE_IN_VIRTUAL_SPHERE 1

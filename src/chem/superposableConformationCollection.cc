@@ -1,11 +1,11 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "superposableConformationCollection.h"
+#include <cando/chem/superposableConformationCollection.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "superposeEngine.h"
-#include "addon/color.h"
-#include "core/wrappers.h"
+#include <cando/chem/superposeEngine.h>
+#include <cando/candoBase/color.h>
+#include <clasp/core/wrappers.h>
 
 
 
@@ -124,7 +124,7 @@ ConformationCollectionEntry_sp	SuperposableConformationCollection_O::createEntry
 {_G();
     gctools::SmallOrderedSet<Atom_sp>::iterator			ai;
     gctools::SmallOrderedSet<Atom_sp>::iterator			lai;
-addon::CoordinateArray_sp			newConf;
+candoBase::CoordinateArray_sp			newConf;
 SuperposeEngine_sp				superposer;
 gctools::Vec0<ConformationCollectionEntry_sp>::iterator	ei;
 Matrix					transform;
@@ -153,7 +153,7 @@ ConformationCollectionEntry_sp		entry;
 	    superposer->setFixedPoints(this->_SuperposeAtomIndices,newConf);
 	    double rms;
             gctools::Vec0<ConformationCollectionEntry_sp>::iterator	ci;
-	    addon::CoordinateArray_sp				moveable;
+	    candoBase::CoordinateArray_sp				moveable;
 
 		//
 		// Loop through the low-high entry range and compare the structures
@@ -195,31 +195,31 @@ ConformationCollectionEntry_sp		entry;
 }
 
 #ifdef RENDER
-addon::Render_sp	SuperposableConformationCollection_O::rendered(core::Cons_sp opts)
+candoBase::Render_sp	SuperposableConformationCollection_O::rendered(core::Cons_sp opts)
 {_G();
     IMPLEMENT_ME();
 #if 0
-addon::FrameList_sp	frames;
-addon::DisplayList_sp	parts, dlSuperpose,dlAll;
+candoBase::FrameList_sp	frames;
+candoBase::DisplayList_sp	parts, dlSuperpose,dlAll;
 GrPickableMatter_sp		dlMatter;
-addon::Color_sp				color;
+candoBase::Color_sp				color;
 Matter_sp			matter;
 ConformationCollection_O::entryIterator	si;
 ConformationCollectionEntry_sp	entry;
-addon::CoordinateArray_sp		superposeCoords;
-addon::CoordinateArray_O::iterator	ci;
+candoBase::CoordinateArray_sp		superposeCoords;
+candoBase::CoordinateArray_O::iterator	ci;
 SuperposableConformationCollection_O::superposeAtomIndexIterator	ii;
-frames = addon::FrameList_O::create();
+frames = candoBase::FrameList_O::create();
     matter = this->getMatter();
     for ( si=this->begin_Entries(); si!=this->end_Entries(); si++ )
     {
         (*si)->writeCoordinatesToMatter(matter);
-	dlAll = addon::DisplayList_O::create();
+	dlAll = candoBase::DisplayList_O::create();
 	dlMatter = GrPickableMatter_O::create();
 	dlMatter->setName(_lisp->internKeyword("minimized"));
 	dlMatter->setFromMatter(matter);
 	dlAll->add(dlMatter);
-	dlSuperpose = addon::DisplayList_O::create();
+	dlSuperpose = candoBase::DisplayList_O::create();
 	dlSuperpose->setName(_lisp->internKeyword("superposeAtoms"));
 	dlSuperpose->add(O_GrColor::systemColor(_kw_yellow));
 	RPGrSphereList sphereList = O_GrSphereList::create();

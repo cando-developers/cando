@@ -1,6 +1,6 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "addon/render.h"
+#include "candoBase/render.h"
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
 #include "core/symbolTable.h"
@@ -8,18 +8,18 @@
 #include "loop.h"
 #include "bond.h"
 #include "core/str.h"
-#include "addon/color.h"
-#include "addon/symbolTable.h"
+#include "candoBase/color.h"
+#include "candoBase/symbolTable.h"
 #include "symbolTable.h"
 #include "core/cons.h"
 //#include "core/xmlLoadArchive.h"
 //#include "core/xmlSaveArchive.h"
-#include "addon/objectDictionary.h"
-#include "addon/ovector3.h"
+#include "candoBase/objectDictionary.h"
+#include "candoBase/ovector3.h"
 #include "core/symbolVector.h"
 #include "core/environment.h"
-#include "addon/integerKeyObjectDictionary.h"
-#include "addon/renderController.h"
+#include "candoBase/integerKeyObjectDictionary.h"
+#include "candoBase/renderController.h"
 #include "grPickableMatter.h"
 #include "core/wrappers.h"
 
@@ -67,10 +67,10 @@ void RenderMatterAtom_O::defineForAtom(Atom_sp atom,GrPickableMatter_sp renderMa
 	this->_Color = (GrPickableMatter_O::elementToColor(atom->getElement(),_lisp));
     } else
     {
-	addon::Color_sp color = atom->getPropertyOrDefault(kw::_sym_color,_Nil<addon::Color_O>()).as<addon::Color_O>();
+	candoBase::Color_sp color = atom->getPropertyOrDefault(kw::_sym_color,_Nil<candoBase::Color_O>()).as<candoBase::Color_O>();
 	if ( color.nilp() )
 	{
-	    this->_Color = addon::Color_O::systemColor(kw::_sym_magenta);
+	    this->_Color = candoBase::Color_O::systemColor(kw::_sym_magenta);
 	} else
 	{
 	    this->_Color = color;
@@ -189,15 +189,15 @@ void RenderMatterBond_O::setup(uint idx1, uint idx2, Atom_sp a1, Atom_sp a2)
 
     EXPOSE_CLASS(chem, GrPickableMatter_O );
 
-addon::Color_sp GrPickableMatter_O::elementToColor(Element element, core::Lisp_sp lisp)
+candoBase::Color_sp GrPickableMatter_O::elementToColor(Element element, core::Lisp_sp lisp)
 {_G();
     core::Symbol_sp sym = _sym__PLUS_elementColors_PLUS_;
-    addon::IntegerKeyObjectDictionary_sp elementColorMap = sym->symbolValue().as<addon::IntegerKeyObjectDictionary_O>();
+    candoBase::IntegerKeyObjectDictionary_sp elementColorMap = sym->symbolValue().as<candoBase::IntegerKeyObjectDictionary_O>();
     if ( elementColorMap->contains(element) )
     {
-	return elementColorMap->get(element).as<addon::Color_O>();
+	return elementColorMap->get(element).as<candoBase::Color_O>();
     }
-    return elementColorMap->get(element_Undefined).as<addon::Color_O>();
+    return elementColorMap->get(element_Undefined).as<candoBase::Color_O>();
 }
 
 
@@ -264,7 +264,7 @@ void GrPickableMatter_O::check()
     iterator	it;
     for ( it=this->_PartsDisplayList.begin(); it!=this->_PartsDisplayList.end(); it++ )
     {
-	if ( (*it)->isAssignableTo<addon::Render_O>() )
+	if ( (*it)->isAssignableTo<candoBase::Render_O>() )
 	{
 	    LOG(BF( "Child: %s")% (*it)->description().c_str() );
 	    if ( (*it)->_InitializationOwner.pointerp() )
@@ -272,13 +272,13 @@ void GrPickableMatter_O::check()
 		LOG(BF( "   (*it)->_InitializationOwner.lock().get() = %p")%
 		    (*it)->_InitializationOwner.lock().get() );
 	    }
-	    addon::Render_sp render = (*it).as<addon::Render_O>();
-	    LOG(BF( "    (*it)->getParent().get() = %p")% (*it).as<addon::Render_O>()->getParent().get() );
+	    candoBase::Render_sp render = (*it).as<candoBase::Render_O>();
+	    LOG(BF( "    (*it)->getParent().get() = %p")% (*it).as<candoBase::Render_O>()->getParent().get() );
 	    if ( render->getParent().get() != this )
 	    {
 		SIMPLE_ERROR(BF("A child of %s name(%s) specifically(%s) does not have it as a parent") % this->description() % this->getName() % (*it)->description() );
 	    }
-	    (*it).as<addon::Render_O>()->check();
+	    (*it).as<candoBase::Render_O>()->check();
 	}
     }
 }
@@ -286,9 +286,9 @@ void GrPickableMatter_O::check()
 
 
 
-addon::Render_sp GrPickableMatter_O::findChild(core::Cons_sp symbolPath, addon::RenderController_sp controller)
+candoBase::Render_sp GrPickableMatter_O::findChild(core::Cons_sp symbolPath, candoBase::RenderController_sp controller)
 {_OF();
-    if ( !this->isOn(controller) ) return _Nil<addon::Render_O>();
+    if ( !this->isOn(controller) ) return _Nil<candoBase::Render_O>();
     if ( this->_Name.nilp() )
     {
 	IMPLEMENT_ME();
@@ -297,9 +297,9 @@ addon::Render_sp GrPickableMatter_O::findChild(core::Cons_sp symbolPath, addon::
        if our name matches the path */
     if ( symbolPath->cdr().nilp() )
     {
-	if ( symbolPath->car<core::Symbol_O>() == this->_Name ) return this->sharedThis<addon::Render_O>();
+	if ( symbolPath->car<core::Symbol_O>() == this->_Name ) return this->sharedThis<candoBase::Render_O>();
     }
-    return _Nil<addon::Render_O>();
+    return _Nil<candoBase::Render_O>();
 }
 
 
@@ -307,11 +307,11 @@ addon::Render_sp GrPickableMatter_O::findChild(core::Cons_sp symbolPath, addon::
 
 
 
-void	GrPickableMatter_O::_walkAndDefineSliderRanges(addon::RenderController_sp controller)
+void	GrPickableMatter_O::_walkAndDefineSliderRanges(candoBase::RenderController_sp controller)
 {_G();
 }
 
-void	GrPickableMatter_O::_walkAndDefineController(addon::RenderController_sp controller,bool suppressSwitch)
+void	GrPickableMatter_O::_walkAndDefineController(candoBase::RenderController_sp controller,bool suppressSwitch)
 {_G();
     if ( this->getName().notnilp() )
     {
@@ -321,7 +321,7 @@ void	GrPickableMatter_O::_walkAndDefineController(addon::RenderController_sp con
 }
 
 #if 0
-addon::Render_O::iterator GrPickableMatter_O::beginRender(addon::RenderController_sp controller)
+candoBase::Render_O::iterator GrPickableMatter_O::beginRender(candoBase::RenderController_sp controller)
 {
     core::SymbolVector_sp fullName = this->getFullSwitchName();
     if ( controller->isSwitchOn(fullName) )
@@ -331,7 +331,7 @@ addon::Render_O::iterator GrPickableMatter_O::beginRender(addon::RenderControlle
     return this->_PartsDisplayList.end();
 }
 
-addon::Render_O::iterator GrPickableMatter_O::endRender(addon::RenderController_sp controller)
+candoBase::Render_O::iterator GrPickableMatter_O::endRender(candoBase::RenderController_sp controller)
 {
     return this->_PartsDisplayList.end();
 }
@@ -339,7 +339,7 @@ addon::Render_O::iterator GrPickableMatter_O::endRender(addon::RenderController_
 
 
 
-addon::OVector3_sp GrPickableMatter_O::centerOfRenderedGeometry()
+candoBase::OVector3_sp GrPickableMatter_O::centerOfRenderedGeometry()
 {_G();
     gctools::Vec0<RenderMatterAtom_sp>::iterator ai;
     Vector3 sum;
@@ -351,26 +351,26 @@ addon::OVector3_sp GrPickableMatter_O::centerOfRenderedGeometry()
 	sum = sum + atom->getPosition();
 	num++;
     }
-    if ( num == 0 ) return _Nil<addon::OVector3_O>();
+    if ( num == 0 ) return _Nil<candoBase::OVector3_O>();
     sum = sum.multiplyByScalar(1.0/((double)(num)));
-    return addon::OVector3_O::createFromVector3(_lisp,sum);
+    return candoBase::OVector3_O::createFromVector3(_lisp,sum);
 }
 
 
 void	GrPickableMatter_O::generateRenderObjects()
 {_G();
-    this->_AtomPoints = addon::GrPickablePoints_O::create();
+    this->_AtomPoints = candoBase::GrPickablePoints_O::create();
     gctools::Vec0<RenderMatterAtom_sp>::iterator ai;
     for ( ai=this->_Atoms.begin(); ai!=this->_Atoms.end(); ai++ )
     {
         LOG(BF( "Atom %s _NumberOfBonds = %d")% (*ai)->_Label % (*ai)->_NumberOfBonds );
 	Vector3 pos = (*ai)->getAtom()->getPosition();
-	addon::Color_sp color = (*ai)->getColor();
+	candoBase::Color_sp color = (*ai)->getColor();
 	this->_AtomPoints->appendPickablePoint(pos,color,*ai);
 	(*ai)->setBondLineVertexIndex(UndefinedUnsignedInt);
     }
     gctools::Vec0<RenderMatterBond_sp>::iterator	bi;
-    this->_BondLines = addon::GrPickableLines_O::create();
+    this->_BondLines = candoBase::GrPickableLines_O::create();
     for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ )
     {
 	uint ai1 = (*bi)->getAtom1Index();
@@ -379,8 +379,8 @@ void	GrPickableMatter_O::generateRenderObjects()
 	RenderMatterAtom_sp ra2 = this->_Atoms[ai2];
 	Vector3 p1 = ra1->getAtom()->getPosition();
 	Vector3 p2 = ra2->getAtom()->getPosition();
-	addon::Color_sp c1 = ra1->getColor();
-	addon::Color_sp c2 = ra2->getColor();
+	candoBase::Color_sp c1 = ra1->getColor();
+	candoBase::Color_sp c2 = ra2->getColor();
 	Vector3& center = (*bi)->getCenter();
 	uint bondLineVertexIndex1 = ra1->getBondLineVertexIndex();
 	if ( bondLineVertexIndex1 == UndefinedUnsignedInt )
@@ -406,14 +406,14 @@ void	GrPickableMatter_O::generateRenderObjects()
 	}
     }
     {
-	this->_Labels = addon::GrLabels_O::create();
+	this->_Labels = candoBase::GrLabels_O::create();
 	for ( ai=this->_Atoms.begin(); ai!=this->_Atoms.end(); ai++ )
 	{
 	    if ( (*ai)->getShowLabel() )
 	    {
 		Vector3& pos = (*ai)->getAtom()->getPositionRef();
 		string& label = (*ai)->getLabel();
-		addon::Color_sp color = (*ai)->getColor();
+		candoBase::Color_sp color = (*ai)->getColor();
 		this->_Labels->appendLabel(pos,label,color);
 	    }
 	}
@@ -463,7 +463,7 @@ void	GrPickableMatter_O::setFromMatter(Matter_sp matter )
     this->generateRenderObjects();
 }
 
-    void GrPickableMatter_O::accumulateCenterOfGeometry(addon::CenterOfGeometryEnum cogType, addon::RenderController_sp rc, Vector3& sumPos, uint& sumPoints )
+    void GrPickableMatter_O::accumulateCenterOfGeometry(candoBase::CenterOfGeometryEnum cogType, candoBase::RenderController_sp rc, Vector3& sumPos, uint& sumPoints )
 {
     if ( !this->isOn(rc) ) return;
     this->_AtomPoints->accumulateCenterOfGeometry(cogType,rc,sumPos,sumPoints);
@@ -471,13 +471,13 @@ void	GrPickableMatter_O::setFromMatter(Matter_sp matter )
 }
 
 
-    void GrPickableMatter_O::accumulateBoundingBox(const Matrix& transform, addon::CenterOfGeometryEnum cogType, addon::RenderController_sp rc, addon::BoundingBox_sp bbox)
+    void GrPickableMatter_O::accumulateBoundingBox(const Matrix& transform, candoBase::CenterOfGeometryEnum cogType, candoBase::RenderController_sp rc, candoBase::BoundingBox_sp bbox)
 {
     if ( !this->isOn(rc) ) return;
     this->_AtomPoints->accumulateBoundingBox(transform,cogType,rc,bbox);
 }
 
-    void GrPickableMatter_O::accumulateRenderInformation(stringstream& ss, addon::RenderController_sp cc)
+    void GrPickableMatter_O::accumulateRenderInformation(stringstream& ss, candoBase::RenderController_sp cc)
     {
 	// nothing
     }

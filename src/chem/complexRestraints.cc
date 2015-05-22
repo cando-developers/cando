@@ -1,17 +1,17 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "complexRestraints.h"
+#include <cando/chem/complexRestraints.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "core/str.h"
-#include "restraint.h"
-#include "symbolTable.h"
-#include "residue.h"
-#include "atom.h"
-#include "chemInfo.h"
+#include <clasp/core/str.h>
+#include <cando/chem/restraint.h>
+#include <cando/chem/symbolTable.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/chemInfo.h>
 #
 // last include is wrappers.h
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {

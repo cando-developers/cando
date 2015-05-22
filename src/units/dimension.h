@@ -1,9 +1,9 @@
 #ifndef	_units_Dimension_H
 #define _units_Dimension_H
 
-#include "core/common.h"
-#include "unitsPackage.h"
-#include "dimension.fwd.h"
+#include <clasp/core/common.h>
+#include <cando/units/unitsPackage.h>
+#include <cando/units/dimension.fwd.h>
 namespace units
 {
 

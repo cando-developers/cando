@@ -1,8 +1,8 @@
 #ifndef	_ATOMIDMAP_H
 #define _ATOMIDMAP_H
 
-#include "core/common.h"
-#include "atomId.h"
+#include <clasp/core/common.h>
+#include <cando/chem/atomId.h>
 
 namespace chem
 {

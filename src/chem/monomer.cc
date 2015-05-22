@@ -10,30 +10,30 @@
 #include <vector>
 #include <set>
 #include <stdio.h>
-#include "core/common.h"
-#include "core/stringSet.h"
-#include "core/symbolSet.h"
-#include "core/holder.h"
-#include "core/environment.h"
-#include "monomer.h"
-#include "matter.h"
-#include "atom.h"
-#include "residue.h"
-#include "loop.h"
-#include "oligomer.h"
-#include "core/objectSet.h"
-#include "core/symbolList.h"
-#include "coupling.h"
-#include "candoDatabase.h"
-#include "monomerPack.h"
-#include "monomerContext.h"
-#include "representedEntityNameSet.h"
-#include "plug.h"
-#include "constitution.h"
-#include "core/numerics.h"
-#include "alias.h"
-#include "topology.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <clasp/core/stringSet.h>
+#include <clasp/core/symbolSet.h>
+#include <clasp/core/holder.h>
+#include <clasp/core/environment.h>
+#include <cando/chem/monomer.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/loop.h>
+#include <cando/chem/oligomer.h>
+#include <clasp/core/objectSet.h>
+#include <clasp/core/symbolList.h>
+#include <cando/chem/coupling.h>
+#include <cando/chem/candoDatabase.h>
+#include <cando/chem/monomerPack.h>
+#include <cando/chem/monomerContext.h>
+#include <cando/chem/representedEntityNameSet.h>
+#include <cando/chem/plug.h>
+#include <cando/chem/constitution.h>
+#include <clasp/core/numerics.h>
+#include <cando/chem/alias.h>
+#include <cando/chem/topology.h>
+#include <clasp/core/wrappers.h>
 
 
 
@@ -76,7 +76,7 @@ namespace chem {
 	node->attributeIfNotDefault("tempInt", this->_TemporaryInt,0);
 	node->attribute("sequenceNumber",this->_SequenceNumber);
 	node->attributeIfNotNil("status",this->_Status);
-	node->archivePlainObject<addon::Vector2>( "pos2","Vector2",
+	node->archivePlainObject<candoBase::Vector2>( "pos2","Vector2",
 						 this->_Position2D );
 	node->attribute("selected",this->_Selected );
 	if ( node->loading() )

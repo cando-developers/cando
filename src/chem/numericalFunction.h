@@ -7,14 +7,14 @@
 #ifndef	NumericalFunction_H
 #define NumericalFunction_H
 
-#include "core/common.h"
+#include <clasp/core/common.h>
 #include <stdio.h>
 #include <string>
 #include <vector>
 #include <set>
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

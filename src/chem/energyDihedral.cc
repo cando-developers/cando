@@ -1,23 +1,23 @@
 #define	DEBUG_LEVEL_FULL
 
 
-#include "energyDihedral.h"
-#include "energyAtomTable.h"
-#include "energyFunction.h"
-#include "core/profiler.h"
-#include "bond.h"
-#include "matter.h"
-#include "atom.h"
-#include "residue.h"
-#include "aggregate.h"
-#include "nVector.h"
-#include "ffBaseDb.h"
-#include "ffTypesDb.h"
-#include "ffPtorDb.h"
-#include "ffItorDb.h"
-#include "ffAngleDb.h"
-#include "largeSquareMatrix.h"
-#include "core/wrappers.h"
+#include <cando/chem/energyDihedral.h>
+#include <cando/chem/energyAtomTable.h>
+#include <cando/chem/energyFunction.h>
+#include <clasp/core/profiler.h>
+#include <cando/chem/bond.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/nVector.h>
+#include <cando/chem/ffBaseDb.h>
+#include <cando/chem/ffTypesDb.h>
+#include <cando/chem/ffPtorDb.h>
+#include <cando/chem/ffItorDb.h>
+#include <cando/chem/ffAngleDb.h>
+#include <cando/chem/largeSquareMatrix.h>
+#include <clasp/core/wrappers.h>
 
 namespace chem {
 
@@ -59,7 +59,7 @@ EnergyDihedral::~EnergyDihedral()
     node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
     node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
     node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include "_Dihedral_debugEvalSerialize.cc"
+#include <cando/chem/_Dihedral_debugEvalSerialize.cc>
 #endif //]
 }
 #endif
@@ -168,12 +168,12 @@ void	EnergyDihedral::defineMissingProper( EnergyAtom *ea1, EnergyAtom *ea2, Ener
 
 
 #if 0
-addon::QDomNode_sp	EnergyDihedral::asXml(core::Lisp_sp env)
+candoBase::QDomNode_sp	EnergyDihedral::asXml(core::Lisp_sp env)
 {
-addon::QDomNode_sp	node;
+candoBase::QDomNode_sp	node;
 Vector3	vdiff;
 
-    node = addon::QDomNode_O::create(env,"EnergyDihedral");
+    node = candoBase::QDomNode_O::create(env,"EnergyDihedral");
     node->addAttributeBool("proper",this->_Proper );
     node->addAttributeString("atom1Name",this->_Atom1->getName());
     node->addAttributeString("atom2Name",this->_Atom2->getName());
@@ -192,17 +192,17 @@ Vector3	vdiff;
     node->addAttributeDoubleScientific("V",this->term.V);
     node->addAttributeDoubleScientific("PhaseRad",this->_PhaseRad);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    addon::QDomNode_sp xml = addon::QDomNode_O::create(env,"Evaluated");
+    candoBase::QDomNode_sp xml = candoBase::QDomNode_O::create(env,"Evaluated");
     xml->addAttributeBool("calcForce",this->_calcForce );
     xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
     xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
-#include "_Dihedral_debugEvalXml.cc"
+#include <_Dihedral_debugEvalXml.cc>
     node->addChild(xml);
 #endif
     return node;
 }
 
-void	EnergyDihedral::parseFromXmlUsingAtomTable(addon::QDomNode_sp	xml,
+void	EnergyDihedral::parseFromXmlUsingAtomTable(candoBase::QDomNode_sp	xml,
 					AtomTable_sp at )
 {
     this->term.I1 = xml->getAttributeInt("I1");
@@ -253,13 +253,13 @@ double	SinNPhi, CosNPhi;
 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include "_Dihedral_termDeclares.cc"
+#include <cando/chem/_Dihedral_termDeclares.cc>
 #pragma clang diagnostic pop
 	fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
 	fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
 	fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
 	fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
-#include "_Dihedral_termCode.cc"
+#include <cando/chem/_Dihedral_termCode.cc>
 
     return Energy;
 }

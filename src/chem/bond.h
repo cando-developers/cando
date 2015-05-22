@@ -10,13 +10,13 @@
 #ifndef	BOND_H
 #define	BOND_H
 
-#include "core/common.h"
-#include "bond.fwd.h"
-#include "matter.h"
+#include <clasp/core/common.h>
+#include <cando/chem/bond.fwd.h>
+#include <cando/chem/matter.h>
 
-#include "constitutionAtoms.fwd.h"
+#include <cando/chem/constitutionAtoms.fwd.h>
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

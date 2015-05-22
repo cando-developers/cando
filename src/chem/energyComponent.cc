@@ -1,12 +1,12 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "energyComponent.h"
+#include <clasp/core/common.h>
+#include <cando/chem/energyComponent.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
 #
 // last include is wrappers.h
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {

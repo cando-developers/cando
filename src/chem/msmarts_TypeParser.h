@@ -5,9 +5,9 @@
 #ifndef msmarts_TypeParser_H
 #define msmarts_TypeParser_H
 
-#include "core/common.h"
-#include "core/cons.h"
-#include "hold.h"
+#include <clasp/core/common.h>
+#include <clasp/core/cons.h>
+#include <cando/chem/hold.h>
 
 typedef union
 {

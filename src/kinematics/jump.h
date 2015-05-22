@@ -1,11 +1,11 @@
 #ifndef	kinematics_jump_H
 #define kinematics_jump_H
 
-#include "core/foundation.h"
-#include "addon/matrix.h"
-#include "stub.fwd.h"
-#include "dofType.h"
-#include "kinFoundation.h"
+#include <clasp/core/foundation.h>
+#include <cando/candoBase/matrix.h>
+#include <cando/kinematics/stub.fwd.h>
+#include <cando/kinematics/dofType.h>
+#include <cando/kinematics/kinFoundation.h>
 
 namespace kinematics
 {

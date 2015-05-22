@@ -10,14 +10,14 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "bond.h"
-#include "addon/vector3.h"
+#include <clasp/core/common.h>
+#include <cando/chem/bond.h>
+#include <cando/candoBase/vector3.h>
 //#include	"conformation.h"
-#include "atom.h"
-#include "residue.h"
-#include "nVector.h"
-#include "addon/coordinateArray.h"
+#include <cando/chem/atom.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/nVector.h>
+#include <cando/candoBase/coordinateArray.h>
 
 
 
@@ -45,8 +45,8 @@ public:
 static Structure_Old_ListEntry_sp	create(Structure_Old_List_sp s,core::Lisp_sp e);
 public:
 	Structure_Old_List_wp		_WeakStructureList;
-        addon::CoordinateArray_sp	_AllCoordinates;
-        addon::CoordinateArray_sp	_SuperposeCoordinates;
+        candoBase::CoordinateArray_sp	_AllCoordinates;
+        candoBase::CoordinateArray_sp	_SuperposeCoordinates;
     core::HashTableEq_sp 	_Data;
 	uint			_Members;
 
@@ -66,10 +66,10 @@ public:
 
     core::HashTableEq_sp getData() { return this->_Data;};
 
-        void setAllCoordinates(addon::CoordinateArray_sp ac);
-        addon::CoordinateArray_sp getAllCoordinates() { return this->_AllCoordinates; }
-        void setSuperposeCoordinates(addon::CoordinateArray_sp ac);
-        addon::CoordinateArray_sp getSuperposeCoordinates() { return this->_SuperposeCoordinates; }
+        void setAllCoordinates(candoBase::CoordinateArray_sp ac);
+        candoBase::CoordinateArray_sp getAllCoordinates() { return this->_AllCoordinates; }
+        void setSuperposeCoordinates(candoBase::CoordinateArray_sp ac);
+        candoBase::CoordinateArray_sp getSuperposeCoordinates() { return this->_SuperposeCoordinates; }
 
 	void		applyAllCoordinatesToMatter(Matter_sp agg) { IMPLEMENT_ME();};
 	void		applySuperposeCoordinatesToMatter(Matter_sp agg) { IMPLEMENT_ME();};
@@ -183,7 +183,7 @@ public:
 
     virtual bool canRender() { return true; };
 #ifdef RENDER
-    virtual addon::Render_sp rendered(core::Cons_sp options);
+    virtual candoBase::Render_sp rendered(core::Cons_sp options);
 #endif
 
 

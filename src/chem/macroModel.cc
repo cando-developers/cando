@@ -15,13 +15,13 @@
 #include <string>
 #include <map>
 #include <iostream>
-#include "core/common.h"
-#include "matter.h"
-#include "molecule.h"
-#include "residue.h"
-#include "atom.h"
-#include "macroModel.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/molecule.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/macroModel.h>
+#include <clasp/core/wrappers.h>
 
 namespace chem
 {

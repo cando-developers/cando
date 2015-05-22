@@ -1,7 +1,7 @@
 
 
-#include "core/foundation.h"
-#include "dofType.h"
+#include <clasp/core/foundation.h>
+#include <cando/kinematics/dofType.h>
 
 namespace kinematics
 {

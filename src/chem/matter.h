@@ -14,27 +14,27 @@
 
 #ifndef Matter_H
 #define	Matter_H
-#include "core/common.h"
+#include <clasp/core/common.h>
 
 #include <iostream>
 #include <vector>
 #include <string>
-#include "addon/matrix.h"
-//#include "addon/objectList.fwd.h"
-#include "addon/boundingBox.fwd.h"
+#include <cando/candoBase/matrix.h>
+//#include "candoBase/objectList.fwd.h"
+#include <cando/candoBase/boundingBox.fwd.h>
 #ifdef RENDER
-//#include "addon/render.fwd.h"
+//#include "candoBase/render.fwd.h"
 #endif
 
-#include "matter.fwd.h"
-#include "atomIdMap.fwd.h"
-#include "atomId.fwd.h"
-#include "elements.h"
-#include "core/hashTable.fwd.h"
-#include "core/lispVector.h"
-#include "core/holder.h"
-#include "restraint.fwd.h"
-//#include	"addon/vector3.h"
+#include <cando/chem/matter.fwd.h>
+#include <cando/chem/atomIdMap.fwd.h>
+#include <cando/chem/atomId.fwd.h>
+#include <cando/chem/elements.h>
+#include <clasp/core/hashTable.fwd.h>
+#include <clasp/core/lispVector.h>
+#include <clasp/core/holder.h>
+#include <cando/chem/restraint.fwd.h>
+//#include	"candoBase/vector3.h"
 
 
 #define	MATTER_CLASS		99	//	'c'
@@ -46,7 +46,7 @@
 #define	BOND_CLASS		98	//	'b'
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {
@@ -321,12 +321,12 @@ virtual	string	description() const { stringstream ss; ss << "container("<<this->
 Vector3		geometricCenter();
 		/*! Return a bounding box for the matter padded with (pad).
 		 */
-	addon::BoundingBox_sp	boundingBox(double pad);
+	candoBase::BoundingBox_sp	boundingBox(double pad);
 
 	void		reparent(Matter_sp c);
 
 #ifdef RENDER
-	addon::Render_sp rendered(core::Cons_sp kopts);
+	candoBase::Render_sp rendered(core::Cons_sp kopts);
 #endif
 
 	/*! Return all atoms as a Cons of atoms. */

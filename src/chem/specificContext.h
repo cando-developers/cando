@@ -8,11 +8,11 @@
 #include <vector>
 #include <set>
 #include <stack>
-#include "core/common.h"
-#include "core/holder.h"
-#include "core/stringSet.fwd.h"
-#include "core/symbolSet.fwd.h"
-#include "chemPackage.h"
+#include <clasp/core/common.h>
+#include <clasp/core/holder.h>
+#include <clasp/core/stringSet.fwd.h>
+#include <clasp/core/symbolSet.fwd.h>
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

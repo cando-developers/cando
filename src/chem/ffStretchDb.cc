@@ -11,12 +11,12 @@
  *
  *	Maintains a database of stretch types
  */
-#include "core/common.h"
-#include "core/str.h"
-#include "ffStretchDb.h"
-#include "units.h"
+#include <clasp/core/common.h>
+#include <clasp/core/str.h>
+#include <cando/chem/ffStretchDb.h>
+#include <cando/chem/units.h>
 //#include "core/archiveNode.h"
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 
@@ -31,10 +31,10 @@ namespace chem
 
 
 
-addon::QDomNode_sp	EstimateStretch::asXml(core::Lisp_sp env)
+candoBase::QDomNode_sp	EstimateStretch::asXml(core::Lisp_sp env)
 {
-    addon::QDomNode_sp	node;
-    node = addon::QDomNode_O::create(env,"EstimateStretch");
+    candoBase::QDomNode_sp	node;
+    node = candoBase::QDomNode_O::create(env,"EstimateStretch");
     node->addAttributeString("ti",this->_ti);
     node->addAttributeString("tj",this->_tj);
     node->addAttributeDoubleScientific("rij",this->_rij);
@@ -43,7 +43,7 @@ addon::QDomNode_sp	EstimateStretch::asXml(core::Lisp_sp env)
 }
 
 
-void	EstimateStretch::parseFromXml(addon::QDomNode_sp node)
+void	EstimateStretch::parseFromXml(candoBase::QDomNode_sp node)
 {
     this->_ti = node->getAttributeString("ti");
     this->_tj = node->getAttributeString("tj");

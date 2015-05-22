@@ -1,20 +1,20 @@
 #include <boost/mpl/list.hpp>
 
 
-#include "foundation.h"
-#include "object.h"
-#include "lisp.h"
-#include "core/corePackage.h"
-#include "core/vector3.h"
-#include "core/builtInClass.h"
-#include "openmmPackage.h"
-#include "serializer.h"
-#include "openmmExpose.h"
-#include "core/wrappers.h"
+#include <foundation.h>
+#include <object.h>
+#include <lisp.h>
+#include <clasp/core/corePackage.h>
+#include <core/vector3.h>
+#include <clasp/core/builtInClass.h>
+#include <cando/openmmPackage/openmmPackage.h>
+#include <cando/openmmPackage/serializer.h>
+#include <cando/openmmPackage/openmmExpose.h>
+#include <clasp/core/wrappers.h>
 
 
 #define HEADER_INCLUDES
-#include "initClasses.inc"
+#include <initClasses.inc>
 #undef HEADER_INCLUDES
 
 
@@ -27,7 +27,7 @@ namespace omm
 {
 
 #define SYMBOLS_STATIC
-#include "symbols_scraped.inc"
+#include <symbols_scraped.inc>
 
 
     extern void initializeOpenmmConstants(Lisp_sp lisp);
@@ -40,11 +40,11 @@ namespace omm
 	{
 #define SYMBOLS_CREATE
 #define SYMBOLS_EXPORT_LISP
-#include "symbols_scraped.inc"
+#include <symbols_scraped.inc>
 
 #define ALL_STAGES
 #define Use_OmmPkg
-#include "initClasses.inc"
+#include <initClasses.inc>
 #undef Use_OmmPkg
 	    initializeSerializers(_lisp);
 	}	

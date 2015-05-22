@@ -12,13 +12,13 @@
  *
  */
 
-#include "conformationCollection.h"
-#include "loop.h"
+#include <cando/chem/conformationCollection.h>
+#include <cando/chem/loop.h>
 //#include "core/xmlSaveArchive.h"
 //#include "core/xmlLoadArchive.h"
-#include "superposeEngine.h"
-#include "conformationExplorer.h"
-#include "core/wrappers.h"
+#include <cando/chem/superposeEngine.h>
+#include <cando/chem/conformationExplorer.h>
+#include <clasp/core/wrappers.h>
 
 
 
@@ -34,7 +34,7 @@ void	ConformationCollectionEntry_O::initialize()
 {
     this->Base::initialize();
     this->_Data = core::HashTableEq_O::create_default();
-    this->_AllCoordinates = addon::CoordinateArray_O::create();
+    this->_AllCoordinates = candoBase::CoordinateArray_O::create();
 }
 
 
@@ -63,18 +63,18 @@ void	ConformationCollectionEntry_O::initialize()
 
 void	ConformationCollectionEntry_O::setConformationCollection(ConformationCollection_sp s)
 {_G();
-addon::CoordinateArray_sp	ca;
+candoBase::CoordinateArray_sp	ca;
     this->_WeakConformationCollection = s;
-    ca = addon::CoordinateArray_O::create(s->numberOfAllAtoms());
+    ca = candoBase::CoordinateArray_O::create(s->numberOfAllAtoms());
     this->_AllCoordinates = ca;
 }
 
 
-void	ConformationCollectionEntry_O::setAllCoordinates(addon::CoordinateArray_sp ac)
+void	ConformationCollectionEntry_O::setAllCoordinates(candoBase::CoordinateArray_sp ac)
 {_G();
     ASSERTNOTNULL(ac);
     LOG(BF("setAllCoordinates:%s") % (ac->asXmlString().c_str() ) );
-    LOG(BF("The address of the addon::CoordinateArray_sp is in o") );
+    LOG(BF("The address of the candoBase::CoordinateArray_sp is in o") );
     this->_AllCoordinates = ac;
 }
 
@@ -105,7 +105,7 @@ gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
     sl = this->getConformationCollection();
     LOG(BF("Got ConformationCollection") );
     ASSERTNOTNULL(sl);
-    addon::CoordinateArray_sp coords = sl->_extractCoordinateArray(matter);
+    candoBase::CoordinateArray_sp coords = sl->_extractCoordinateArray(matter);
     ASSERTNOTNULL(coords);
     this->_AllCoordinates = coords;
 }
@@ -128,7 +128,7 @@ void	ConformationCollection_O::clearEntries()
 
 
 
-addon::CoordinateArray_sp ConformationCollection_O::_extractCoordinateArray(Matter_sp agg)
+candoBase::CoordinateArray_sp ConformationCollection_O::_extractCoordinateArray(Matter_sp agg)
 {_G();
     vector<Vector3>::iterator	ci;
     gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
@@ -137,7 +137,7 @@ addon::CoordinateArray_sp ConformationCollection_O::_extractCoordinateArray(Matt
 #endif
     LOG(BF("About to get ConformationCollection") );
     LOG(BF("About to iterate over atoms and get positions") );
-    addon::CoordinateArray_sp coords = addon::CoordinateArray_O::create(this->numberOfAllAtoms());
+    candoBase::CoordinateArray_sp coords = candoBase::CoordinateArray_O::create(this->numberOfAllAtoms());
     ASSERTNOTNULL(coords);
     for ( ai=this->begin_AllAtoms(),ci=coords->begin(); ai!=this->end_AllAtoms(); ai++, ci++ )
     {
@@ -260,18 +260,18 @@ ConformationCollectionEntry_sp			entry;
 
 
 #ifdef RENDER
-addon::Render_sp	ConformationCollection_O::rendered(core::Cons_sp opts)
+candoBase::Render_sp	ConformationCollection_O::rendered(core::Cons_sp opts)
 {_G();
-addon::FrameList_sp	frames;
-addon::DisplayList_sp	parts, dlSuperpose;
+candoBase::FrameList_sp	frames;
+candoBase::DisplayList_sp	parts, dlSuperpose;
 GrPickableMatter_sp		dlMatter;
-addon::Color_sp				color;
+candoBase::Color_sp				color;
 Matter_sp			matter;
 ConformationCollection_O::entryIterator	si;
 ConformationCollectionEntry_sp	entry;
-addon::CoordinateArray_sp		superposeCoords;
-addon::CoordinateArray_O::iterator	ci;
-frames = addon::FrameList_O::create();
+candoBase::CoordinateArray_sp		superposeCoords;
+candoBase::CoordinateArray_O::iterator	ci;
+frames = candoBase::FrameList_O::create();
     matter = this->getMatter();
     for ( si=this->begin_Entries(); si!=this->end_Entries(); si++ )
     {

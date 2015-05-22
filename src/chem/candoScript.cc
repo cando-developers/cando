@@ -1,36 +1,36 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "stdlib.h"
-#include "boost/format.hpp"
-#include "boost/filesystem.hpp"
-#include "core/common.h"
-#include "core/str.h"
-#include "core/stringSet.h"
-#include "core/binder.h"
-#include "symbolTable.h"
-#include "addon/ovector3.h"
-#include "core/executables.h"
-#include "core/fileSystem.h"
+#include <stdlib.h>
+#include <boost/format.hpp>
+#include <boost/filesystem.hpp>
+#include <clasp/core/common.h>
+#include <clasp/core/str.h>
+#include <clasp/core/stringSet.h>
+#include <clasp/core/binder.h>
+#include <cando/chem/symbolTable.h>
+#include <cando/candoBase/ovector3.h>
+#include <clasp/core/executables.h>
+#include <clasp/core/fileSystem.h>
 //#include "core/xmlLoadArchive.h"
 //#include "core/xmlSaveArchive.h"
-#include "core/stringList.h"
-#include "core/designators.h"
-#include "core/bundle.h"
-#include "candoScript.h"
-#include "candoDatabase.h"
-#include "monomer.h"
-#include "oligomer.h"
-#include "mol2.h"
-#include "loop.h"
+#include <clasp/core/stringList.h>
+#include <clasp/core/designators.h>
+#include <clasp/core/bundle.h>
+#include <cando/chem/candoScript.h>
+#include <cando/chem/candoDatabase.h>
+#include <cando/chem/monomer.h>
+#include <cando/chem/oligomer.h>
+#include <cando/chem/mol2.h>
+#include <cando/chem/loop.h>
 //#include "monomerCoordinates.h"
 //#include "groupPart.h"
 //#include "fragmentCoordinates.h"
-#include "calculatePosition.h"
-#include "constitutionAtoms.h"
-#include "plug.h"
-#include "constitution.h"
-#include "chemPackage.h"
-#include "core/wrappers.h"
+#include <cando/chem/calculatePosition.h>
+#include <cando/chem/constitutionAtoms.h>
+#include <cando/chem/plug.h>
+#include <cando/chem/constitution.h>
+#include <cando/chem/chemPackage.h>
+#include <clasp/core/wrappers.h>
 
 #ifdef	READLINE
 extern "C" char *readline( const char* prompt);
@@ -702,7 +702,7 @@ core::T_sp af_atomPos(core::Cons_sp args)
 	{
 	    LOG(BF("Found atom with name: %s") % atomName->get().c_str()  );
 	    Vector3 pos = foundResidue->atomWithName(atomName->get())->getPosition();
-	    addon::OVector3_sp v = addon::OVector3_O::create();
+	    candoBase::OVector3_sp v = candoBase::OVector3_O::create();
 	    v->setAll(pos.getX(),pos.getY(),pos.getZ());
 	    return v;
 	}
@@ -821,7 +821,7 @@ core::T_sp af_calculatePoint()
 				      angleDegrees*0.0174533,posAngleAtom,
 				      dihedralDegrees*0.0174533,posDihedralAtom);
     LOG(BF("Generated point: %s") % pnt.asString().c_str()  );
-    return addon::OVector3_O::createFromVector3(lisp,pnt);
+    return candoBase::OVector3_O::createFromVector3(lisp,pnt);
 #endif
 #endif
 }

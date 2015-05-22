@@ -1,46 +1,46 @@
 #define DEBUG_LEVEL_FULL
 
 
-#include "core/common.h"
-#include "core/str.h"
-#include "core/cons.h"
-#include "core/evaluator.h"
-#include "core/package.h"
-#include "core/stringList.h"
-#include "core/environment.h"
-#include "core/renderController.h"
-#include "core/lambdaListHandler.h"
-#include "core/numbers.h"
-#include "chem/atom.h"
-#include "units/unitsPackage.h"
-#include "units/quantity.h"
-#include "chem/bond.h"
-#include "chem/angle.h"
-#include "chem/properTorsion.h"
-#include "chem/improperTorsion.h"
-#include "openmmPackage.h"
-#include "openmmState.h"
-#include "openmmExpose.h"
-#include "external_wrappers.h"
-#include "chem/forceField.h"
-#include "chem/ffPtorDb.h"
-#include "wrappers.h"
+#include <clasp/core/common.h>
+#include <clasp/core/str.h>
+#include <clasp/core/cons.h>
+#include <clasp/core/evaluator.h>
+#include <clasp/core/package.h>
+#include <clasp/core/stringList.h>
+#include <clasp/core/environment.h>
+#include <core/renderController.h>
+#include <clasp/core/lambdaListHandler.h>
+#include <clasp/core/numbers.h>
+#include <cando/chem/atom.h>
+#include <cando/units/unitsPackage.h>
+#include <cando/units/quantity.h>
+#include <cando/chem/bond.h>
+#include <cando/chem/angle.h>
+#include <cando/chem/properTorsion.h>
+#include <cando/chem/improperTorsion.h>
+#include <cando/openmmPackage/openmmPackage.h>
+#include <cando/openmmPackage/openmmState.h>
+#include <cando/openmmPackage/openmmExpose.h>
+#include <external_wrappers.h>
+#include <cando/chem/forceField.h>
+#include <cando/chem/ffPtorDb.h>
+#include <wrappers.h>
 
 namespace omm
 {
 
 
 #define omm_StorePredefinedSymbols
-#include "openmmExpose.scrape.inc"
+#include <openmmExpose.scrape.inc>
 
 #define omm_code
-#include "openmmExpose.scrape.inc"
+#include <openmmExpose.scrape.inc>
 #undef omm_code
 };
 namespace omm
 {
 #define omm_expose
-#include "openmmExpose.scrape.inc"
+#include <openmmExpose.scrape.inc>
 #undef omm_expose
 };
 
@@ -51,7 +51,7 @@ namespace omm
 
 
 #define omm_globalInitCode
-#include "openmmExpose.scrape.inc"
+#include <openmmExpose.scrape.inc>
 
 
 
@@ -67,14 +67,14 @@ namespace omm
 	lisp->inPackage(OmmPkg);
 
 #define omm_CreatePredefinedSymbols
-#include "openmmExpose.scrape.inc"
+#include <openmmExpose.scrape.inc>
 
 #define omm_constants
-#include "openmmExpose.scrape.inc"
+#include <openmmExpose.scrape.inc>
 #undef omm_constants
 
 #define omm_Functions
-#include "openmmExpose.scrape.inc"
+#include <openmmExpose.scrape.inc>
 
     }
 

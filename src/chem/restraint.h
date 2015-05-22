@@ -17,13 +17,13 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "core/common.h"
-#include "addon/vector3.h"
-#include "core/sequence.h"
-#include "core/holder.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/vector3.h>
+#include <clasp/core/sequence.h>
+#include <clasp/core/holder.h>
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

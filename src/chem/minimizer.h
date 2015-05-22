@@ -19,13 +19,13 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
+#include <clasp/core/common.h>
 //#include "bond.h"
-#include "addon/vector3.h"
-#include "matter.fwd.h"
+#include <cando/candoBase/vector3.h>
+#include <cando/chem/matter.fwd.h>
 
 
-#include "addon/quickDom.fwd.h"// minimizer.h wants QDomNode needs quickDom.fwd.h
+#include "candoBase/quickDom.fwd.h"// minimizer.h wants QDomNode needs quickDom.fwd.h
 #include "core/posixTime.fwd.h"// minimizer.h wants PosixTime needs posixTime.fwd.h
 //#include "core/lispCallback.fwd.h"// minimizer.h wants LispCallback needs lispCallback.fwd.h
 
@@ -206,7 +206,7 @@ public:
 	void	validateForce(NVector_sp pos, NVector_sp force);
 
 	void	debugBeginIteration(int i);
-//	void	debugAdd(addon::QDomNode_sp	node);
+//	void	debugAdd(candoBase::QDomNode_sp	node);
 	void	debugAccumulateMessage( const char* str );
 	void	debugEndIteration();
 
@@ -287,7 +287,7 @@ public:
 	void	minimize();
 	void	evaluateEnergyAndForceManyTimes(int times);
 
-	addon::QDomNode_sp	asXml();
+	candoBase::QDomNode_sp	asXml();
 
 	DEFAULT_CTOR_DTOR(Minimizer_O);
     };

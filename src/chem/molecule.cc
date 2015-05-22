@@ -7,15 +7,15 @@
 
 
 
-#include "molecule.h"
-#include "loop.h"
-#include "core/numerics.h"
+#include <cando/chem/molecule.h>
+#include <cando/chem/loop.h>
+#include <clasp/core/numerics.h>
 //#include "core/serialize.h"
-#include "restraint.h"
-#include "bond.h"
-#include "core/translators.h"
-#include "atomIdMap.h"
-#include "core/wrappers.h"
+#include <cando/chem/restraint.h>
+#include <cando/chem/bond.h>
+#include <clasp/core/translators.h>
+#include <cando/chem/atomIdMap.h>
+#include <clasp/core/wrappers.h>
 
 
 
@@ -345,7 +345,7 @@ VectorResidue	Molecule_O::getResiduesWithName(MatterName name ) {
 
 
 #ifdef RENDER
-    addon::Render_sp	Molecule_O::rendered(core::Cons_sp opts)
+    candoBase::Render_sp	Molecule_O::rendered(core::Cons_sp opts)
     {_G();
 	GrPickableMatter_sp	rend;
 	rend = GrPickableMatter_O::create();

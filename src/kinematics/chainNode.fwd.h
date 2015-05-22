@@ -4,8 +4,8 @@
 #ifndef _kinematics_ChainNode_fwd_H
 #define _kinematics_ChainNode_fwd_H
 
-#include "chem/monomer.fwd.h"
-#include "monomerNode.fwd.h"
+#include <cando/chem/monomer.fwd.h>
+#include <cando/kinematics/monomerNode.fwd.h>
 
 namespace kinematics
 {

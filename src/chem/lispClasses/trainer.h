@@ -186,7 +186,7 @@ namespace       chem
 	KeyValueIterator end_Data() { return this->_Data->end_keyValue(); };
 	bool	canRender() { return true;};
 #ifdef RENDER
-	addon::Render_sp rendered(core::Cons_sp options);
+	candoBase::Render_sp rendered(core::Cons_sp options);
 #endif
 #endif
 

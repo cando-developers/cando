@@ -1,26 +1,26 @@
 #ifndef	openmmExpose_H //[
 #define openmmExpose_H
 
-#include "openmm/include/OpenMM.h"
+#include <openmm/include/OpenMM.h>
 
 
 #include <stdio.h>
 #include <string>
 #include <vector>
 #include <set>
-#include "core/foundation.h"
-#include "core/object.h"
-#include "core/ovector3.h"
-#include "core/vector3.h"
-#include "core/externalObject.h"
-#include "core/coordinateArray.h"
-#include "units/quantity.fwd.h"
-#include "chem/atom.fwd.h"
-#include "chem/bond.fwd.h"
-#include "chem/angle.fwd.h"
-#include "chem/properTorsion.fwd.h"
-#include "chem/improperTorsion.fwd.h"
-#include "chem/forceField.fwd.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/object.h>
+#include <core/ovector3.h>
+#include <core/vector3.h>
+#include <clasp/core/externalObject.h>
+#include <core/coordinateArray.h>
+#include <cando/units/quantity.fwd.h>
+#include <cando/chem/atom.fwd.h>
+#include <cando/chem/bond.fwd.h>
+#include <cando/chem/angle.fwd.h>
+#include <cando/chem/properTorsion.fwd.h>
+#include <cando/chem/improperTorsion.fwd.h>
+#include <cando/chem/forceField.fwd.h>
 
 
 
@@ -32,7 +32,7 @@ namespace omm
 
 
 #define omm_DeclarePredefinedSymbols
-#include "openmmExpose.scrape.inc"
+#include <openmmExpose.scrape.inc>
 
 
 
@@ -107,7 +107,7 @@ struct	to_object<wxString>
 
 
 #define	omm_header
-#include "openmmExpose.scrape.inc"
+#include <openmmExpose.scrape.inc>
 #undef omm_header
 
 };
@@ -209,7 +209,7 @@ namespace translate
 
 };
 #define	omm_Translate
-#include "openmmExpose.scrape.inc"
+#include <openmmExpose.scrape.inc>
 #undef omm_Translate
 
 

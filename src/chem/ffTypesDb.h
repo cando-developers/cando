@@ -18,16 +18,16 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "bond.h"
-#include "addon/vector3.h"
-#include "atom.h"
-#include "residue.h"
-#include "chemInfo.h"
-#include "ffBaseDb.h"
+#include <clasp/core/common.h>
+#include <cando/chem/bond.h>
+#include <cando/candoBase/vector3.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/chemInfo.h>
+#include <cando/chem/ffBaseDb.h>
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

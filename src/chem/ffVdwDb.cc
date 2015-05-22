@@ -2,9 +2,9 @@
 
 #define	DEBUG_LEVEL_NONE
 
-#include "ffVdwDb.h"
+#include <cando/chem/ffVdwDb.h>
 //#include "core/archiveNode.h"
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 

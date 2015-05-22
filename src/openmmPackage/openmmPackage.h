@@ -2,7 +2,7 @@
 #ifndef	openmmCando_H
 #define openmmCando_H
 
-#include "core/common.h"
+#include <clasp/core/common.h>
 
 
 
@@ -16,7 +16,7 @@ namespace omm
 
 
 #define SYMBOLS_EXTERN
-#include "symbols_scraped.inc"
+#include <symbols_scraped.inc>
 
 
 

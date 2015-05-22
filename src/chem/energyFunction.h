@@ -20,19 +20,19 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "addon/vector3.h"
-#include "atom.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/vector3.h>
+#include <cando/chem/atom.h>
 
 
 
 
-#include "addon/quickDom.fwd.h"// energyFunction.h wants QDomNode needs quickDom.fwd.h
-//#include "addon/render.fwd.h"// energyFunction.h wants DisplayList needs render.fwd.h
+#include "candoBase/quickDom.fwd.h"// energyFunction.h wants QDomNode needs quickDom.fwd.h
+//#include "candoBase/render.fwd.h"// energyFunction.h wants DisplayList needs render.fwd.h
 #include "core/iterator.fwd.h"// energyFunction.h wants Iterator needs iterator.fwd.h
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 namespace       chem
 {
@@ -179,8 +179,8 @@ public:
     uint	getNVectorSize();
     double	evaluateRaw( NVector_sp pos, NVector_sp force );
     double	evaluate( NVector_sp pos, NVector_sp force, bool calculateForce );
-    addon::QDomNode_sp	identifyTermsBeyondThreshold();
-//    uint	countBadVdwInteractions(double scaleSumOfVdwRadii, addon::DisplayList_sp displayIn);
+    candoBase::QDomNode_sp	identifyTermsBeyondThreshold();
+//    uint	countBadVdwInteractions(double scaleSumOfVdwRadii, candoBase::DisplayList_sp displayIn);
 
     ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force );
 
@@ -285,8 +285,8 @@ public:
     string	summarizeEnergyAsString();
 
 
-//		addon::QDomNode_sp	rawAccumulateTermsBeyondThresholdAsXml(uint& count);
-//		addon::QDomNode_sp	accumulateTermsBeyondThresholdAsXml();
+//		candoBase::QDomNode_sp	rawAccumulateTermsBeyondThresholdAsXml(uint& count);
+//		candoBase::QDomNode_sp	accumulateTermsBeyondThresholdAsXml();
     uint		countTermsBeyondThreshold();
 
     void	evaluateNumericalForce(NVector_sp pos, NVector_sp numForce, double delta );

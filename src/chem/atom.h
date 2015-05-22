@@ -11,26 +11,26 @@
 
 #ifndef	ATOM_H
 #define	ATOM_H
-#include "core/common.h"
+#include <clasp/core/common.h>
 
 #include <string>
 #include <vector>
-#include "matter.h"
-#include "addon/vector3.h"
-#include "atom.fwd.h"
-#include "elements.h"
-#include "addon/matrix.h"
+#include <cando/chem/matter.h>
+#include <cando/candoBase/vector3.h>
+#include <cando/chem/atom.fwd.h>
+#include <cando/chem/elements.h>
+#include <cando/candoBase/matrix.h>
 
-#include "constitutionAtoms.fwd.h"
-#include "bond.fwd.h"
-#include "atom.fwd.h"
-#include "atomIdMap.fwd.h"
-#include "core/serialize.h"
-#include "atomId.fwd.h"
-#include "chemPackage.h"
+#include <cando/chem/constitutionAtoms.fwd.h>
+#include <cando/chem/bond.fwd.h>
+#include <cando/chem/atom.fwd.h>
+#include <cando/chem/atomIdMap.fwd.h>
+#include <clasp/core/serialize.h>
+#include <cando/chem/atomId.fwd.h>
+#include <cando/chem/chemPackage.h>
 
 #if !BUILT_IN_RESTRAINT_LIST
-#include "restraint.fwd.h"
+#include <cando/chem/restraint.fwd.h>
 #endif
 
 namespace chem
@@ -53,7 +53,7 @@ namespace chem
 
     extern uint nextUniqueAtomOrder();
 
-#include "elements.h"
+#include <cando/chem/elements.h>
 
 
 #if ATOMIC_ANCHOR
@@ -462,7 +462,7 @@ namespace chem
 	void	addUniqueInterResidueBondCopiesToBondList(BondList_sp list);
 
 	//! Downgrade this
-//	void	addUniqueIntraResidueBondsToQDomNodeAsChildren(addon::QDomNode_sp node);
+//	void	addUniqueIntraResidueBondsToQDomNodeAsChildren(candoBase::QDomNode_sp node);
 	//! Downgrade this
 	void	addUniqueIntraResidueBondsToVectorBonds(VectorBond& bonds);
 	//! Downgrade this

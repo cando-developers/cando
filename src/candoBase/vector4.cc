@@ -6,11 +6,11 @@
 
 
 
-#include "core/foundation.h"
-#include "core/object.h"
-#include "core/lisp.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/object.h>
+#include <clasp/core/lisp.h>
 #include <iostream>
-#include "vector4.h"
+#include <cando/candoBase/vector4.h>
 //#include "core/omath.h"
 
 

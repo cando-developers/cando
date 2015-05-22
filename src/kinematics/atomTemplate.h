@@ -2,18 +2,18 @@
 #ifndef	kinematics_atomTemplate_H
 #define kinematics_atomTemplate_H
 
-#include "core/common.h"
-#include "addon/vector3.h"
-#include "core/holder.h"
-#include "chem/plug.h"
-#include "chem/constitutionAtoms.h"
-#include "kinematicsPackage.h"
-#include "atomTree.fwd.h"
-#include "atomTemplate.fwd.h"
-#include "atom.fwd.h"
-#include "chem/atomId.h"
-#include "bondId.h"
-#include "pool.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/vector3.h>
+#include <clasp/core/holder.h>
+#include <cando/chem/plug.h>
+#include <cando/chem/constitutionAtoms.h>
+#include <cando/kinematics/kinematicsPackage.h>
+#include <cando/kinematics/atomTree.fwd.h>
+#include <cando/kinematics/atomTemplate.fwd.h>
+#include <cando/kinematics/atom.fwd.h>
+#include <cando/chem/atomId.h>
+#include <cando/kinematics/bondId.h>
+#include <cando/kinematics/pool.h>
 
 
 // Currently a maximum of 5 children hanging off of any atom

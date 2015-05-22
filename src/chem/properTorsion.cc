@@ -1,11 +1,11 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "core/environment.h"
-#include "symbolTable.h"
-#include "atom.h"
-#include "properTorsion.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <clasp/core/environment.h>
+#include <cando/chem/symbolTable.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/properTorsion.h>
+#include <clasp/core/wrappers.h>
 namespace chem
 {
 

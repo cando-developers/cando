@@ -11,21 +11,21 @@ __END_DOC
 
 
 
-#include "core/foundation.h"
-#include "core/str.h"
-#include "core/hashTableEql.h"
-#include "ringFinder.h"
-#include "core/bitVector.h"
-#include "atom.h"
-#include "residue.h"
-#include "core/objectSet.h"
-#include "loop.h"
-#include "core/hashTableEq.h"
-#include "virtualAtom.h"
-#include "bond.h"
-#include "core/vectorObjectsWithFillPtr.h"
-#include "core/lispDefinitions.h"
-#include "core/wrappers.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/str.h>
+#include <clasp/core/hashTableEql.h>
+#include <cando/chem/ringFinder.h>
+#include <clasp/core/bitVector.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/residue.h>
+#include <clasp/core/objectSet.h>
+#include <cando/chem/loop.h>
+#include <clasp/core/hashTableEq.h>
+#include <cando/chem/virtualAtom.h>
+#include <cando/chem/bond.h>
+#include <clasp/core/vectorObjectsWithFillPtr.h>
+#include <clasp/core/lispDefinitions.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {

@@ -1,10 +1,10 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "integerKeyObjectDictionary.h"
-#include "core/numbers.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/integerKeyObjectDictionary.h>
+#include <clasp/core/numbers.h>
 //#i n c l u d e "render.h"
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 namespace candoBase {
 

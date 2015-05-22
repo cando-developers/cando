@@ -13,12 +13,12 @@
 
 #include <iostream>
 #include <sstream>
-#include "core/common.h"
-#include "matter.h"
-#include "atomIdMap.fwd.h"
-#include "residue.h"
+#include <clasp/core/common.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/atomIdMap.fwd.h>
+#include <cando/chem/residue.h>
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {
@@ -88,7 +88,7 @@ virtual	string	description() const { stringstream ss; ss << "molecule("<<this->g
 
 	bool	canRender() { return true;}
 #ifdef RENDER
-	addon::Render_sp	rendered(core::Cons_sp options);
+	candoBase::Render_sp	rendered(core::Cons_sp options);
 #endif
 
 	virtual uint	numberOfAtoms( );

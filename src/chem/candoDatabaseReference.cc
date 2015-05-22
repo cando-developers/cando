@@ -1,11 +1,11 @@
 #define	DEBUG_LEVEL_NONE
 
-#include "candoDatabaseReference.h"
+#include <cando/chem/candoDatabaseReference.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "candoDatabase.h"
-#include "core/objRef.h"
-#include "core/wrappers.h"
+#include <cando/chem/candoDatabase.h>
+#include <clasp/core/objRef.h>
+#include <clasp/core/wrappers.h>
 
 
 

@@ -1,10 +1,10 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "alias.h"
+#include <cando/chem/alias.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "core/environment.h"
-#include "core/wrappers.h"
+#include <clasp/core/environment.h>
+#include <clasp/core/wrappers.h>
 
 namespace chem 
 {

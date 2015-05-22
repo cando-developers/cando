@@ -66,4 +66,3 @@
  	EVAL_SET(ohx3z3, ohx3z3);
  	EVAL_SET(ohy3z3, ohy3z3);
  	EVAL_SET(AngleDeviation, AngleDeviation);
- 

@@ -9,17 +9,17 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-#include "core/foundation.h"
-#include "core/lisp.h"
-#include "core/multipleValues.h"
-#include "core/str.h"
-#include "core/fileSystem.h"
-#include "core/lispStream.h"
-#include "core/pathname.h"
-#include "mySaxInterface.h"
-#include "quickDom.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/lisp.h>
+#include <clasp/core/multipleValues.h>
+#include <clasp/core/str.h>
+#include <clasp/core/fileSystem.h>
+#include <clasp/core/lispStream.h>
+#include <clasp/core/pathname.h>
+#include <cando/candoBase/mySaxInterface.h>
+#include <cando/candoBase/quickDom.h>
 //#i n c l u d e "stringSet.h"
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 namespace candoBase {

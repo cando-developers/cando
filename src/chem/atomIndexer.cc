@@ -1,13 +1,13 @@
        
 #define	DEBUG_LEVEL_NONE
-#include "core/common.h"
-#include "core/str.h"
-#include "core/symbolSet.h"
-#include "atomIndexer.h"
+#include <clasp/core/common.h>
+#include <clasp/core/str.h>
+#include <clasp/core/symbolSet.h>
+#include <cando/chem/atomIndexer.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "core/stringList.h"
-#include "core/wrappers.h"
+#include <clasp/core/stringList.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {

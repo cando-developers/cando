@@ -1,16 +1,16 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/hashTableEq.h"
-#include "trajectory.h"
+#include <clasp/core/hashTableEq.h>
+#include <cando/chem/trajectory.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "matter.h"
-#include "atom.h"
-#include "loop.h"
-#include "addon/coordinateArray.h"
+#include <cando/chem/matter.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/loop.h>
+#include <cando/candoBase/coordinateArray.h>
 
 // last include is wrappers.h
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {
@@ -72,8 +72,8 @@ void	TrajectoryFrame_O::initialize()
 
     void TrajectoryFrame_O::fillFromMatter(gctools::Vec0<Atom_sp>& atomList )
 {
-    this->_Coordinates = addon::CoordinateArray_O::create(atomList.size());
-    addon::CoordinateArray_O::iterator ci;
+    this->_Coordinates = candoBase::CoordinateArray_O::create(atomList.size());
+    candoBase::CoordinateArray_O::iterator ci;
     gctools::Vec0<Atom_sp>::const_iterator ai;
     for ( ai=atomList.begin(), ci = this->_Coordinates->begin(); ai!=atomList.end(); ai++, ci++ )
     {
@@ -86,7 +86,7 @@ void	TrajectoryFrame_O::initialize()
     void	TrajectoryFrame_O::applyToMatter(gctools::Vec0<Atom_sp>& atomList )
 {_OF();
     ASSERT_eq(this->_Coordinates->size(),atomList.size());
-    addon::CoordinateArray_O::iterator ci;
+    candoBase::CoordinateArray_O::iterator ci;
     gctools::Vec0<Atom_sp>::iterator ai;
     for ( ai=atomList.begin(), ci = this->_Coordinates->begin(); ai!=atomList.end(); ai++, ci++ )
     {
@@ -190,9 +190,9 @@ TrajectoryFrame_sp Trajectory_O::getTrajectoryFrame(uint i)
 }
 
 #if 0
-addon::Render_sp Trajectory_O::rendered(core::Cons_sp kargs)
+candoBase::Render_sp Trajectory_O::rendered(core::Cons_sp kargs)
 {_G();
-    addon::FrameList_sp frames = addon::FrameList_O::create();
+    candoBase::FrameList_sp frames = candoBase::FrameList_O::create();
     for ( gctools::Vec0<TrajectoryFrame_sp>::iterator it=this->_Frames.begin(); it!=this->_Frames.end(); it++ )
     {
 	this->applyTrajectoryFrameToMatter(*it);

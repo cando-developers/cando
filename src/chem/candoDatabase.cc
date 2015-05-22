@@ -6,7 +6,7 @@
 //
 
 
-#include "candoDatabase.h"
+#include <cando/chem/candoDatabase.h>
 
 #include <iostream>
 #include <fstream>
@@ -14,32 +14,32 @@
 #include <vector>
 #include <set>
 #include <stdio.h>
-#include "core/common.h"
-#include "core/str.h"
-#include "core/symbolSet.h"
-#include "core/environment.h"
-#include "core/stringSet.h"
-#include "matter.h"
-#include "symbolTable.h"
-#include "specificContext.h"
-#include "atom.h"
-#include "residue.h"
-#include "loop.h"
-#include "representedEntityNameSet.h"
+#include <clasp/core/common.h>
+#include <clasp/core/str.h>
+#include <clasp/core/symbolSet.h>
+#include <clasp/core/environment.h>
+#include <clasp/core/stringSet.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/symbolTable.h>
+#include <cando/chem/specificContext.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/loop.h>
+#include <cando/chem/representedEntityNameSet.h>
 //#include "monomerCoordinates.h"
-#include "core/objRef.h"
+#include <clasp/core/objRef.h>
 //#include "core/xmlSaveArchive.h"
-#include "coupling.h"
-#include "frameRecognizer.h"
-#include "monomerPack.h"
-#include "constitution.h"
-#include "monomerCoordinates.h"
-#include "topology.h"
-#include "plug.h"
-#include "specificContext.h"
-#include "stereochemistry.h"
-#include "candoDatabaseDependent.h"
-#include "core/wrappers.h"
+#include <cando/chem/coupling.h>
+#include <cando/chem/frameRecognizer.h>
+#include <cando/chem/monomerPack.h>
+#include <cando/chem/constitution.h>
+#include <cando/chem/monomerCoordinates.h>
+#include <cando/chem/topology.h>
+#include <cando/chem/plug.h>
+#include <cando/chem/specificContext.h>
+#include <cando/chem/stereochemistry.h>
+#include <cando/chem/candoDatabaseDependent.h>
+#include <clasp/core/wrappers.h>
 
 //REGISTER_CLASS(chem, O_NamesCrossReference );
 
@@ -321,7 +321,7 @@ namespace chem
     RepresentativeList_sp CandoDatabase_O::expandEntityNameToListOfRepresentatives(core::Symbol_sp nm)
     { _G();
 	Entity_sp obj;
-	addon::ObjectList_sp 	ll;
+	candoBase::ObjectList_sp 	ll;
 	LOG(BF("Looking for name(%s)") % nm->__repr__()  );
 	ASSERT(this->recognizesEntityName(nm));
 	obj = this->getEntity(nm);

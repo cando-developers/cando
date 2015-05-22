@@ -1,14 +1,14 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "range.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/range.h>
 //#include "core/archiveNode.h"
-#include "core/symbolTable.h"
-#include "core/multipleValues.h"
+#include <clasp/core/symbolTable.h>
+#include <clasp/core/multipleValues.h>
 //#include "core/archive.h"
-#include "core/lisp.h"
-#include "core/environment.h"
-#include "core/wrappers.h"
+#include <clasp/core/lisp.h>
+#include <clasp/core/environment.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace candoBase {

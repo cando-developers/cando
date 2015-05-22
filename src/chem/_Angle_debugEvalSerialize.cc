@@ -66,4 +66,3 @@
  	node->attributeIfNotDefault("evalohx3z3", this->eval.ohx3z3, 0.0 );
  	node->attributeIfNotDefault("evalohy3z3", this->eval.ohy3z3, 0.0 );
  	node->attributeIfNotDefault("evalAngleDeviation", this->eval.AngleDeviation, 0.0 );
- 

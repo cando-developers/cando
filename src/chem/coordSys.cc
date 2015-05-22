@@ -8,15 +8,15 @@
 //
 // coordSys.cc
 //
-#include "core/common.h"
-#include "coordSys.h"
-#include "core/numerics.h"
-#include "addon/ovector3.h"
-#include "addon/omatrix.h"
+#include <clasp/core/common.h>
+#include <cando/chem/coordSys.h>
+#include <clasp/core/numerics.h>
+#include <cando/candoBase/ovector3.h>
+#include <cando/candoBase/omatrix.h>
 //#include "core/archiveNode.h"
-#include "addon/color.h"
-#include "atom.h"
-#include "core/wrappers.h"
+#include <cando/candoBase/color.h>
+#include <cando/chem/atom.h>
+#include <clasp/core/wrappers.h>
 
 #define	PI		3.1415926535897932
 #define	DEGTORAD	0.0174533
@@ -870,11 +870,11 @@ void	CoordinateSystem_O::transformWithMatrixPointer( Matrix* m )
 //
 //	Render the coordinate system in XML format
 //
-addon::QDomNode_sp	CoordinateSystem_O::renderXml( double width,
+candoBase::QDomNode_sp	CoordinateSystem_O::renderXml( double width,
 							double axisLength)
 {
 IMPLEMENT_ME();
-addon::QDomNode_sp	graalphacs, line;
+candoBase::QDomNode_sp	graalphacs, line;
 #if 0 //[
 
     graalphacs = xmlBlock();
@@ -935,17 +935,17 @@ bool	CoordinateSystem_O::sameAs(CoordinateSystem_sp c)
 }
 
 #ifdef RENDER
-addon::Render_sp CoordinateSystem_O::rendered(core::Cons_sp koptions)
+candoBase::Render_sp CoordinateSystem_O::rendered(core::Cons_sp koptions)
 {_G();
-    addon::GrLines_sp lines = addon::GrLines_O::create();
-    uint idxOrigin = lines->appendVertex(this->origin,addon::Color_O::white(_lisp));
-    uint idxX = lines->appendVertex(this->origin+this->x,addon::Color_O::red(_lisp));
-    uint idxY = lines->appendVertex(this->origin+this->y,addon::Color_O::green(_lisp));
-    uint idxZ = lines->appendVertex(this->origin+this->z,addon::Color_O::blue(_lisp));
+    candoBase::GrLines_sp lines = candoBase::GrLines_O::create();
+    uint idxOrigin = lines->appendVertex(this->origin,candoBase::Color_O::white(_lisp));
+    uint idxX = lines->appendVertex(this->origin+this->x,candoBase::Color_O::red(_lisp));
+    uint idxY = lines->appendVertex(this->origin+this->y,candoBase::Color_O::green(_lisp));
+    uint idxZ = lines->appendVertex(this->origin+this->z,candoBase::Color_O::blue(_lisp));
     lines->appendLine(idxOrigin,idxX);
     lines->appendLine(idxOrigin,idxY);
     lines->appendLine(idxOrigin,idxZ);
-    addon::DisplayList_sp prims = addon::DisplayList_O::create();
+    candoBase::DisplayList_sp prims = candoBase::DisplayList_O::create();
     prims->append(lines);
     return prims;
 }

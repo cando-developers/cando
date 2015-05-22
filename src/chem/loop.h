@@ -15,12 +15,12 @@
 #ifndef	LOOP_H
 #define	LOOP_H
 
-#include "core/common.h"
-#include "matter.h"
-#include "atom.h"
-#include "residue.h"
-#include "molecule.h"
-#include "aggregate.h"
+#include <clasp/core/common.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/molecule.h>
+#include <cando/chem/aggregate.h>
 
 
 #define GOALONLY		0x0000FFFF
@@ -61,7 +61,7 @@
 
 #define	MAXLOOPS	5
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

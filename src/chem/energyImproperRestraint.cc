@@ -2,21 +2,21 @@
 #define	DEBUG_LEVEL_NONE
 
 
-#include "largeSquareMatrix.h"
-#include "energyImproperRestraint.h"
-#include "energyAtomTable.h"
-#include "energyFunction.h"
-#include "core/profiler.h"
-#include "bond.h"
-#include "addon/vector3.h"
-#include "matter.h"
-#include "atom.h"
-#include "residue.h"
-#include "aggregate.h"
-#include "nVector.h"
-#include "ffBaseDb.h"
-#include "ffTypesDb.h"
-#include "core/wrappers.h"
+#include <cando/chem/largeSquareMatrix.h>
+#include <cando/chem/energyImproperRestraint.h>
+#include <cando/chem/energyAtomTable.h>
+#include <cando/chem/energyFunction.h>
+#include <clasp/core/profiler.h>
+#include <cando/chem/bond.h>
+#include <cando/candoBase/vector3.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/nVector.h>
+#include <cando/chem/ffBaseDb.h>
+#include <cando/chem/ffTypesDb.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {
@@ -55,7 +55,7 @@ EnergyImproperRestraint::~EnergyImproperRestraint()
     node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
     node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
     node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include "_ImproperRestraint_debugEvalSerialize.cc"
+#include <cando/chem/_ImproperRestraint_debugEvalSerialize.cc>
 #endif //]
 }
 #endif
@@ -74,12 +74,12 @@ double	EnergyImproperRestraint::getAngle()
 
 
 #if 0
-    addon::QDomNode_sp	EnergyImproperRestraint::asXml(core::Lisp_sp env)
+    candoBase::QDomNode_sp	EnergyImproperRestraint::asXml(core::Lisp_sp env)
 {
-    addon::QDomNode_sp	node,child;
+    candoBase::QDomNode_sp	node,child;
     Vector3	vdiff;
 
-    node = addon::QDomNode_O::create(env,"EnergyImproperRestraint");
+    node = candoBase::QDomNode_O::create(env,"EnergyImproperRestraint");
     node->addAttributeString("atom1Name",this->_Atom1->getName());
     node->addAttributeString("atom2Name",this->_Atom2->getName());
     node->addAttributeString("atom3Name",this->_Atom3->getName());
@@ -94,7 +94,7 @@ double	EnergyImproperRestraint::getAngle()
     node->addAttributeDoubleScientific("L",this->term.L);
     node->addAttributeDoubleScientific("K",this->term.K);
     if ( this->_AboveThreshold ) {
-	child = addon::QDomNode_O::create(env,"AboveThreshold");
+	child = candoBase::QDomNode_O::create(env,"AboveThreshold");
 	child->addAttributeDoubleScientific("Phi",this->_AboveThreshold_Phi );
 	child->addAttributeDouble("PhiDeg",this->_AboveThreshold_Phi/0.0174533,6,2 );
 	stringstream ss;
@@ -105,17 +105,17 @@ double	EnergyImproperRestraint::getAngle()
 	node->addChild(child);
     }
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    addon::QDomNode_sp xml = addon::QDomNode_O::create(env,"Evaluated");
+    candoBase::QDomNode_sp xml = candoBase::QDomNode_O::create(env,"Evaluated");
     xml->addAttributeBool("calcForce",this->_calcForce );
     xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
     xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
-#include "_ImproperRestraint_debugEvalXml.cc"
+#include <_ImproperRestraint_debugEvalXml.cc>
     node->addChild(xml);
 #endif
     return node;
 }
 
-    void	EnergyImproperRestraint::parseFromXmlUsingAtomTable(addon::QDomNode_sp	xml,
+    void	EnergyImproperRestraint::parseFromXmlUsingAtomTable(candoBase::QDomNode_sp	xml,
 					AtomTable_sp at)
 {
     this->term.U = xml->getAttributeDouble("U");
@@ -168,9 +168,9 @@ bool	RestraintActive;
 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include "_ImproperRestraint_termDeclares.cc"
+#include <cando/chem/_ImproperRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-#include "_ImproperRestraint_termCode.cc"
+#include <cando/chem/_ImproperRestraint_termCode.cc>
 
     return Energy;
 }

@@ -16,7 +16,7 @@
  *
  */
 #include <string.h>
-#include "core/common.h"
+#include <clasp/core/common.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -26,14 +26,14 @@
 #include <queue>
 #include <stdio.h>
 #include <map>
-#include "matter.h"
-#include "aggregate.h"
-#include "molecule.h"
-#include "residue.h"
-#include "atom.h"
-#include "loop.h"
-#include "moe.h"
-#include "restraint.h"
+#include <cando/chem/matter.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/molecule.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/loop.h>
+#include <cando/chem/moe.h>
+#include <cando/chem/restraint.h>
 
 
 namespace chem {

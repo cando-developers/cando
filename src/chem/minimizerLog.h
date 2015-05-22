@@ -8,10 +8,10 @@
 #ifndef MinimizerLog_H
 #define	MinimizerLog_H
 
-#include "core/common.h"
-#include "numericalFunction.h"
-#include "nVector.h"
-#include "core/holder.h"
+#include <clasp/core/common.h>
+#include <cando/chem/numericalFunction.h>
+#include <cando/chem/nVector.h>
+#include <clasp/core/holder.h>
 
 #include <ctime>
 

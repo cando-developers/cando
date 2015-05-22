@@ -15,12 +15,12 @@
 #include <string>
 #include <map>
 #include <exception>
-#include "core/common.h"
-#include "core/numerics.h"
+#include <clasp/core/common.h>
+#include <clasp/core/numerics.h>
 //#include "matter.h"
 //#include "coordSys.h"
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {
@@ -114,7 +114,7 @@ public:
 
     void	prepareToDriveTorsions();
 
-//    addon::QDomNode_sp	renderXml();
+//    candoBase::QDomNode_sp	renderXml();
 
 
     core::LongLongInt countConformations() { return this->basicCountConformations(1);};

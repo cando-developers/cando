@@ -14,13 +14,13 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "addon/vector3.h"
-#include "energyComponent.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/vector3.h>
+#include <cando/chem/energyComponent.h>
 
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {
@@ -70,7 +70,7 @@ public:
 	bool		_calcForce;
 	bool		_calcDiagonalHessian;
 	bool		_calcOffDiagonalHessian;
-#include "_Dihedral_debugEvalDeclares.cc"
+#include <cando/chem/_Dihedral_debugEvalDeclares.cc>
 #endif
 	double		_CalculatedDihedralDeviation;
 
@@ -85,8 +85,8 @@ public:
 public:
 //	void	archive(core::ArchiveP node);
 public:
-	addon::QDomNode_sp	asXml(core::Lisp_sp);
-	void	parseFromXmlUsingAtomTable(addon::QDomNode_sp xml, AtomTable_sp atomTable );
+	candoBase::QDomNode_sp	asXml(core::Lisp_sp);
+	void	parseFromXmlUsingAtomTable(candoBase::QDomNode_sp xml, AtomTable_sp atomTable );
 
         void defineFrom( int n, FFPtor_sp term, EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, EnergyAtom *ea4, double scale);
 	void defineMissingProper( EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, EnergyAtom *ea4);

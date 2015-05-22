@@ -1,13 +1,13 @@
 #ifndef	elements_H
 #define elements_H
 
-#include "core/common.h"
-#include "core/symbol.h"
+#include <clasp/core/common.h>
+#include <clasp/core/symbol.h>
 
-#include "elements.fwd.h"
+#include <cando/chem/elements.fwd.h>
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem

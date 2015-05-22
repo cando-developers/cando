@@ -7,18 +7,18 @@
 
 
 #include <string>
-#include "core/common.h"
-#include "core/stringSet.h"
-#include "core/environment.h"
+#include <clasp/core/common.h>
+#include <clasp/core/stringSet.h>
+#include <clasp/core/environment.h>
 //#include "core/archiveNode.h"
-#include "core/stringList.h"
-#include "core/symbolSet.h"
-#include "core/symbolList.h"
+#include <clasp/core/stringList.h>
+#include <clasp/core/symbolSet.h>
+#include <clasp/core/symbolList.h>
 //#include "core/archive.h"
-#include "entityNameSet.h"
-#include "candoDatabase.h"
-#include "alias.h"
-#include "core/wrappers.h"
+#include <cando/chem/entityNameSet.h>
+#include <cando/chem/candoDatabase.h>
+#include <cando/chem/alias.h>
+#include <clasp/core/wrappers.h>
 
 
 

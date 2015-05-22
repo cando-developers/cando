@@ -5,23 +5,23 @@
 // (C) 2004 Christian E. Schafmeister
 //
 
-#include "oligomer.h"
-#include "core/str.h"
-#include "molecule.h"
-#include "core/numerics.h"
-#include "candoScript.h"
-#include "core/symbolSet.h"
-#include "core/binder.h"
-#include "topology.h"
-#include "core/environment.h"
-#include "monomerContext.h"
-#include "monomer.h"
-#include "coupling.h"
-#include "core/objectSet.h"
-#include "core/lispStream.h"
-#include "plug.h"
-#include "specificContext.h"
-#include "core/wrappers.h"
+#include <cando/chem/oligomer.h>
+#include <clasp/core/str.h>
+#include <cando/chem/molecule.h>
+#include <clasp/core/numerics.h>
+#include <cando/chem/candoScript.h>
+#include <clasp/core/symbolSet.h>
+#include <clasp/core/binder.h>
+#include <cando/chem/topology.h>
+#include <clasp/core/environment.h>
+#include <cando/chem/monomerContext.h>
+#include <cando/chem/monomer.h>
+#include <cando/chem/coupling.h>
+#include <clasp/core/objectSet.h>
+#include <clasp/core/lispStream.h>
+#include <cando/chem/plug.h>
+#include <cando/chem/specificContext.h>
+#include <clasp/core/wrappers.h>
 
 /*! \page oligomerBuilding  How to build oligomers
  * Building oligomers requires the following steps.
@@ -329,7 +329,7 @@ Oligomer_O::monomerIterator	mi;
  */
 Monomer_sp	Oligomer_O::addMultiMonomerAsLeaf( CandoDatabase_sp db,
 						   Monomer_sp monFrom, core::Symbol_sp couplingName,
-						   core::Symbol_sp representedEntityNameSetName, addon::Vector2 pos )
+						   core::Symbol_sp representedEntityNameSetName, candoBase::Vector2 pos )
 {_G();
 DirectionalCoupling_sp 	coup;
 MultiMonomer_sp	monTo;

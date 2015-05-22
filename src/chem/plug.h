@@ -5,16 +5,16 @@
 
 
 
-#include "core/common.h"
+#include <clasp/core/common.h>
 
 
-#include "entityNameSet.h"
-#include "core/holder.h"
+#include <cando/chem/entityNameSet.h>
+#include <clasp/core/holder.h>
 
 
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem

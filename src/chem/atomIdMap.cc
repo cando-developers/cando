@@ -1,11 +1,11 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "core/environment.h"
-#include "atomId.h"
-#include "atomIdMap.h"
-#include "atom.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <clasp/core/environment.h>
+#include <cando/chem/atomId.h>
+#include <cando/chem/atomIdMap.h>
+#include <cando/chem/atom.h>
+#include <clasp/core/wrappers.h>
 namespace chem
 {
 

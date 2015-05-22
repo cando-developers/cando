@@ -1,12 +1,12 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "iterateCons.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/iterateCons.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "core/lisp.h"
-#include "core/cons.h"
-#include "core/wrappers.h"
+#include <clasp/core/lisp.h>
+#include <clasp/core/cons.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace candoBase {

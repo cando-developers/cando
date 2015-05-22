@@ -1,8 +1,8 @@
 #ifndef	kinematicsPackage_H
 #define kinematicsPackage_H
 
-#include "core/foundation.h"
-#include "core/lisp.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/lisp.h>
 
 
 
@@ -16,7 +16,7 @@ namespace kinematics
 
 
 #define SYMBOLS_EXTERN
-#include "symbols_scraped_inc.h"
+#include <symbols_scraped_inc.h>
 
 
     class KinematicsExposer : public core::PackageExposer

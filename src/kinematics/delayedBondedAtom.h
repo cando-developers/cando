@@ -1,10 +1,10 @@
 #ifndef	kinematics_delayedBondedAtom_H
 #define kinematics_delayedBondedAtom_H
 
-#include "core/foundation.h"
-#include "kinFoundation.h"
-#include "chem/atomId.h"
-#include "bondedAtom.h"
+#include <clasp/core/foundation.h>
+#include <cando/kinematics/kinFoundation.h>
+#include <cando/chem/atomId.h>
+#include <cando/kinematics/bondedAtom.h>
 
 
 

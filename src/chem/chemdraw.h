@@ -7,17 +7,17 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "core/holder.h"
-#include "core/symbolSet.fwd.h"
-#include "bond.fwd.h"
-#include "constitutionAtoms.fwd.h"
-#include "chemPackage.h"
+#include <clasp/core/common.h>
+#include <clasp/core/holder.h>
+#include <clasp/core/symbolSet.fwd.h>
+#include <cando/chem/bond.fwd.h>
+#include <cando/chem/constitutionAtoms.fwd.h>
+#include <cando/chem/chemPackage.h>
 #include "core/environment.fwd.h"// chemdraw.h wants Binder needs environment.fwd.h
-#include "addon/quickDom.fwd.h"// chemdraw.h wants QDomNode needs quickDom.fwd.h
+#include "candoBase/quickDom.fwd.h"// chemdraw.h wants QDomNode needs quickDom.fwd.h
 #include "core/lisp.fwd.h"// chemdraw.h wants Lisp needs lisp.fwd.h
-#include "atom.fwd.h"
-#include "aggregate.fwd.h"
+#include <cando/chem/atom.fwd.h>
+#include <cando/chem/aggregate.fwd.h>
 namespace chem
 {
 
@@ -64,7 +64,7 @@ private:	// generated
 public:
 	void	initialize();
 private:
-	string	_extractLabel(addon::QDomNode_sp node);
+	string	_extractLabel(candoBase::QDomNode_sp node);
 	void	unidirectionalBondTo(CDNode_sp neighbor, CDBondOrder order);
 public:
 	uint	getId() const { return this->_Id;};
@@ -75,7 +75,7 @@ public:
 	void setLabel(const string& l) { this->_Label = l;};
 	Atom_sp	getAtom() const { return this->_Atom;};
 	void setAtom(Atom_sp a) { this->_Atom = a;};
-	void	parseFromXml(addon::QDomNode_sp xml);
+	void	parseFromXml(candoBase::QDomNode_sp xml);
 
 	void	bondTo( CDNode_sp neighbor, CDBondOrder order);
 
@@ -112,7 +112,7 @@ public:
 	void	setEndNode(CDNode_sp n) { this->_EndNode = n;};
 	CDNode_sp getEndNode() {_OF(); ANN(this->_EndNode);return this->_EndNode.lock();};
 
-	void	parseFromXml(addon::QDomNode_sp xml);
+	void	parseFromXml(candoBase::QDomNode_sp xml);
 
 	CDBond_O( const CDBond_O& ss ); //!< Copy constructor
 
@@ -154,7 +154,7 @@ public:
     Atom_sp createOneAtom(CDNode_sp n);
     void	createAtoms();
     void	createImplicitHydrogen(CDNode_sp from, const string& name);
-    void	parseFromXml(addon::QDomNode_sp xml);
+    void	parseFromXml(candoBase::QDomNode_sp xml);
     /*! Return false if the fragment couldn't be interpreted */
     bool	interpret();
 
@@ -202,7 +202,7 @@ public:
 	void	initialize();
 public:
 
-	void	parseFromXml(addon::QDomNode_sp xml, core::Lisp_sp);
+	void	parseFromXml(candoBase::QDomNode_sp xml, core::Lisp_sp);
 
 	bool	hasProperties();
 	core::HashTableEq_sp getProperties() { return this->_Properties; };
@@ -242,7 +242,7 @@ private:
 public:
     static ChemDraw_sp open(const string& fileName);
 private:
-	string	_getAtomName(addon::QDomNode_sp node);
+	string	_getAtomName(candoBase::QDomNode_sp node);
 public:
 	void	parseFromFileName(const string& fileName);
 

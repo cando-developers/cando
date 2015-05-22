@@ -24,17 +24,17 @@
 //
 #include <stdlib.h>
 //#include	<malloc.h>
-#include "matter.h"
-#include "addon/ovector3.h"
-#include "aggregate.h"
-#include "molecule.h"
-#include "residue.h"
-#include "atom.h"
-#include "restraint.h"
+#include <cando/chem/matter.h>
+#include <cando/candoBase/ovector3.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/molecule.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/restraint.h>
 //#include "core/archiveNode.h"
 //#include "core/serialize.h"
 //#include "core/archive.h"
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 

@@ -12,13 +12,13 @@
  *
  */
 
-#include "structureList.h"
-#include "loop.h"
-#include "superposeEngine.h"
+#include <cando/chem/structureList.h>
+#include <cando/chem/loop.h>
+#include <cando/chem/superposeEngine.h>
 //#include "core/xmlSaveArchive.h"
 //#include "core/xmlLoadArchive.h"
-#include "addon/color.h"
-#include "core/wrappers.h"
+#include <cando/candoBase/color.h>
+#include <clasp/core/wrappers.h>
 
 
 
@@ -40,8 +40,8 @@ void	Structure_Old_ListEntry_O::initialize()
     this->Base::initialize();
     LOG(BF("Created StructureListEntry") );
     this->_Members = 0;
-    this->_AllCoordinates = addon::CoordinateArray_O::create();
-    this->_SuperposeCoordinates = addon::CoordinateArray_O::create();
+    this->_AllCoordinates = candoBase::CoordinateArray_O::create();
+    this->_SuperposeCoordinates = candoBase::CoordinateArray_O::create();
     this->_Data = core::HashTableEq_O::create_default();
 }
 
@@ -68,15 +68,15 @@ void	Structure_Old_ListEntry_O::initialize()
 }
 #endif
 
-void	Structure_Old_ListEntry_O::setAllCoordinates(addon::CoordinateArray_sp ac)
+void	Structure_Old_ListEntry_O::setAllCoordinates(candoBase::CoordinateArray_sp ac)
 {_G();
     ASSERTNOTNULL(ac);
     LOG(BF("setAllCoordinates:%s") % (ac->asXmlString().c_str() ) );
-    LOG(BF("The address of the addon::CoordinateArray_sp is in o") );
+    LOG(BF("The address of the candoBase::CoordinateArray_sp is in o") );
     this->_AllCoordinates = ac;
 }
 
-void	Structure_Old_ListEntry_O::setSuperposeCoordinates(addon::CoordinateArray_sp ac)
+void	Structure_Old_ListEntry_O::setSuperposeCoordinates(candoBase::CoordinateArray_sp ac)
 {_G();
     LOG(BF("setSuperposeCoordinates:%s") % (ac->asXmlString().c_str() ) );
     this->_SuperposeCoordinates = ac;
@@ -183,7 +183,7 @@ Structure_Old_ListEntry_sp Structure_Old_List_O::createStructureListEntryIfConfo
 {_G();
     gctools::SmallOrderedSet<Atom_sp>::iterator			ai;
     gctools::SmallOrderedSet<Atom_sp>::iterator			lai;
-addon::CoordinateArray_sp			newConf;
+candoBase::CoordinateArray_sp			newConf;
 SuperposeEngine_sp				superposer;
 gctools::Vec0<Structure_spld_ListEntry_O>::iterator	ei;
 Matrix					transform;
@@ -205,7 +205,7 @@ Structure_Old_ListEntry_sp			entry;
     	// Now check if the structure is new or not.
 	// First assemble the superposable coordinates of this conformation
 	//
-    newConf = addon::CoordinateArray_O::create(this->_SuperposeAtoms.size());
+    newConf = candoBase::CoordinateArray_O::create(this->_SuperposeAtoms.size());
     for ( ai=this->_SuperposeAtoms.begin(), i=0;
 		ai!=this->_SuperposeAtoms.end(); ai++, i++)
     {
@@ -227,7 +227,7 @@ Structure_Old_ListEntry_sp			entry;
 	    superposer->setFixedAllPoints(newConf);
 	    double rms;
             gctools::Vec0<Structure_spld_ListEntry_O>::iterator	ci;
-	    addon::CoordinateArray_sp				moveable;
+	    candoBase::CoordinateArray_sp				moveable;
 
 		//
 		// Loop through the low-high entry range and compare the structures
@@ -266,7 +266,7 @@ Structure_Old_ListEntry_sp			entry;
 		// Put all of the atom coordinates into a coordinate array
 		// and put that into the database
 		//
-    newConf = addon::CoordinateArray_O::create(this->_AllAtoms.size());
+    newConf = candoBase::CoordinateArray_O::create(this->_AllAtoms.size());
     for ( lai=this->_AllAtoms.begin(),i=0;
 		lai!=this->_AllAtoms.end(); lai++, i++)
     {
@@ -277,7 +277,7 @@ Structure_Old_ListEntry_sp			entry;
 		// Put all of the superpose coordinates into a coordinate array
 		// and put that into the database
 		//
-    newConf = addon::CoordinateArray_O::create(this->_SuperposeAtoms.size());
+    newConf = candoBase::CoordinateArray_O::create(this->_SuperposeAtoms.size());
     for ( ai=this->_SuperposeAtoms.begin(),i=0;
 		ai!=this->_SuperposeAtoms.end(); ai++, i++)
     {
@@ -396,21 +396,21 @@ void	Structure_Old_List_O::saveAs(const string& fn)
 #endif
 
 #ifdef RENDER
-addon::Render_sp	Structure_Old_List_O::rendered(core::Cons_sp opts)
+candoBase::Render_sp	Structure_Old_List_O::rendered(core::Cons_sp opts)
 {_G();
     IMPLEMENT_ME();
 #if 0
-addon::FrameList_sp	frames;
-addon::DisplayList_sp	parts, dlSuperpose;
+candoBase::FrameList_sp	frames;
+candoBase::DisplayList_sp	parts, dlSuperpose;
 GrPickableMatter_sp		dlMatter;
 RPGrColor			grColor;
 RPGrSphereList			grSpheres;
 Matter_sp			matter;
 Structure_Old_List_O::entryIterator	si;
 Structure_Old_ListEntry_sp		entry;
-addon::CoordinateArray_sp		superposeCoords;
-addon::CoordinateArray_O::iterator	ci;
-frames = addon::FrameList_O::create();
+candoBase::CoordinateArray_sp		superposeCoords;
+candoBase::CoordinateArray_O::iterator	ci;
+frames = candoBase::FrameList_O::create();
     matter = this->getMatter();
     if ( this->_Entries.size() == 0 )
     {
@@ -422,13 +422,13 @@ frames = addon::FrameList_O::create();
     {
 	for ( si=this->begin_Entries(); si!=this->end_Entries(); si++ )
 	{
-	    parts = addon::DisplayList_O::create();
+	    parts = candoBase::DisplayList_O::create();
 	    (*si)->writeCoordinatesToMatter(matter);
 	    dlMatter = GrPickableMatter_O::create();
 	    dlMatter->setName(_lisp->internKeyword("molecule"));
 	    dlMatter->setFromMatter(matter);
 	    parts->append(dlMatter);
-	    dlSuperpose = addon::DisplayList_O::create();
+	    dlSuperpose = candoBase::DisplayList_O::create();
 	    dlSuperpose->setName(_lisp->internKeyword("superpose"));
 	    grColor = O_GrColor::systemColor(_kw_green);
 	    dlSuperpose->append(grColor);

@@ -36,4 +36,3 @@
  	node->attributeIfNotDefault("evalohx2z2", this->eval.ohx2z2, 0.0 );
  	node->attributeIfNotDefault("evalohy2z2", this->eval.ohy2z2, 0.0 );
  	node->attributeIfNotDefault("evalStretchDeviation", this->eval.StretchDeviation, 0.0 );
- 

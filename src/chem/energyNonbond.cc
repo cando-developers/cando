@@ -1,26 +1,26 @@
 #define	DEBUG_LEVEL_FULL
 
 
-#include "energyNonbond.h"
-#include "energyAtomTable.h"
-#include "energyFunction.h"
-#include "core/profiler.h"
-#include "addon/color.h"
-#include "addon/symbolTable.h"
-#include "core/symbolTable.h"
-#include "matter.h"
-#include "bond.h"
-#include "atom.h"
-#include "residue.h"
-#include "aggregate.h"
-#include "nVector.h"
-#include "ffBaseDb.h"
-#include "ffTypesDb.h"
-#include "ffNonbondDb.h"
-#include "ffAngleDb.h"
-#include "forceField.h"
-#include "largeSquareMatrix.h"
-#include "core/wrappers.h"
+#include <cando/chem/energyNonbond.h>
+#include <cando/chem/energyAtomTable.h>
+#include <cando/chem/energyFunction.h>
+#include <clasp/core/profiler.h>
+#include <cando/candoBase/color.h>
+#include <cando/candoBase/symbolTable.h>
+#include <clasp/core/symbolTable.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/bond.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/nVector.h>
+#include <cando/chem/ffBaseDb.h>
+#include <cando/chem/ffTypesDb.h>
+#include <cando/chem/ffNonbondDb.h>
+#include <cando/chem/ffAngleDb.h>
+#include <cando/chem/forceField.h>
+#include <cando/chem/largeSquareMatrix.h>
+#include <clasp/core/wrappers.h>
 
 namespace chem
 {
@@ -50,7 +50,7 @@ namespace chem
 	node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
 	node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
 	node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include "_Nonbond_debugEvalSerialize.cc"
+#include <cando/chem/_Nonbond_debugEvalSerialize.cc>
 #endif //]
     }
 #endif
@@ -136,12 +136,12 @@ namespace chem
 
 
 #if 0
-    addon::QDomNode_sp	EnergyNonbond::asXml(core::Lisp_sp lisp)
+    candoBase::QDomNode_sp	EnergyNonbond::asXml(core::Lisp_sp lisp)
     {
-	addon::QDomNode_sp	node;
+	candoBase::QDomNode_sp	node;
 	Vector3	vdiff;
 
-	node = addon::QDomNode_O::create(lisp,"EnergyNonbond");
+	node = candoBase::QDomNode_O::create(lisp,"EnergyNonbond");
 	node->addAttributeString("atom1Name",this->_Atom1->getName());
 	node->addAttributeString("atom2Name",this->_Atom2->getName());
 	node->addAttributeInt("I1",this->term.I1);
@@ -158,11 +158,11 @@ namespace chem
 //    diff = vdiff.length();
 //    node->addAttributeDouble("_r",diff,5,2);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-	addon::QDomNode_sp xml = addon::QDomNode_O::create(lisp,"Evaluated");
+	candoBase::QDomNode_sp xml = candoBase::QDomNode_O::create(lisp,"Evaluated");
 	xml->addAttributeBool("calcForce",this->_calcForce );
 	xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
 	xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
-#include "_Nonbond_debugEvalXml.cc"
+#include <_Nonbond_debugEvalXml.cc>
 	node->addChild(xml);
 #endif
 	node->addAttributeDoubleScientific("dA",this->term.dA);
@@ -174,7 +174,7 @@ namespace chem
 
 
 
-    void	EnergyNonbond::parseFromXmlUsingAtomTable(addon::QDomNode_sp	xml,
+    void	EnergyNonbond::parseFromXmlUsingAtomTable(candoBase::QDomNode_sp	xml,
 							  AtomTable_sp at)
     {
 	this->term.dA = xml->getAttributeDouble("dA");
@@ -224,9 +224,9 @@ namespace chem
 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include "_Nonbond_termDeclares.cc"
+#include <cando/chem/_Nonbond_termDeclares.cc>
 #pragma clang diagnostic pop
-#include "_Nonbond_termCode.cc"
+#include <cando/chem/_Nonbond_termCode.cc>
 
 	return Energy;
     }
@@ -276,7 +276,7 @@ namespace chem
 
 
 #ifdef RENDER
-    int EnergyNonbond_O::countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, addon::DisplayList_sp displayIn, core::Lisp_sp lisp)
+    int EnergyNonbond_O::countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, candoBase::DisplayList_sp displayIn, core::Lisp_sp lisp)
     {_G();
         gctools::Vec0<EnergyNonbond>::iterator	eni;
 	string				as1,as2,as3,as4;
@@ -289,16 +289,16 @@ namespace chem
 	double				cutoff, distSquared;
 	bool				render;
 	Vector3				v1,v2;
-	addon::Color_sp				color;
-	addon::GrLines_sp			lines;
-	lines = addon::GrLines_O::create();
+	candoBase::Color_sp				color;
+	candoBase::GrLines_sp			lines;
+	lines = candoBase::GrLines_O::create();
 	render = false;
 	ANN(displayIn);
 	if ( displayIn.notnilp() )
 	{
 	    render = true;
 	    displayIn->clear();
-	    color = addon::Color_O::systemColor(kw::_sym_yellow);
+	    color = candoBase::Color_O::systemColor(kw::_sym_yellow);
 	}
 	for ( eni=this->_Terms.begin();
 	      eni!=this->_Terms.end(); eni++ )
@@ -424,7 +424,7 @@ namespace chem
 		LOG(BF("Nonbond component is enabled") );
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include "_Nonbond_termDeclares.cc"
+#include <cando/chem/_Nonbond_termDeclares.cc>
 #pragma clang diagnostic pop
 		double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
 		int	I1, I2,i;
@@ -439,14 +439,14 @@ namespace chem
 			}
 		    }
 #endif
-#include	"_Nonbond_termCode.cc"
+#include <cando/chem/_Nonbond_termCode.cc>
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
 		    nbi->_calcForce = calcForce;
 		    nbi->_calcDiagonalHessian = calcDiagonalHessian;
 		    nbi->_calcOffDiagonalHessian = calcOffDiagonalHessian;
 #undef EVAL_SET
 #define	EVAL_SET(var,val)	{ nbi->eval.var=val;};
-#include	"_Nonbond_debugEvalSet.cc"
+#include <cando/chem/_Nonbond_debugEvalSet.cc>
 #endif //]
 
 		    if ( calcForce ) {
@@ -536,16 +536,16 @@ namespace chem
 	    _BLOCK_TRACE("NonbondEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include "_Nonbond_termDeclares.cc"
+#include <cando/chem/_Nonbond_termDeclares.cc>
 #pragma clang diagnostic pop
 	    double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
 	    int	I1, I2,i;
             gctools::Vec0<EnergyNonbond>::iterator nbi;
 	    for ( i=0,nbi=this->_Terms.begin();
 		  nbi!=this->_Terms.end(); nbi++,i++ ) {
-#include	"_Nonbond_termCode.cc"
+#include <cando/chem/_Nonbond_termCode.cc>
 		int index = i;
-#include "_Nonbond_debugFiniteDifference.cc"
+#include <cando/chem/_Nonbond_debugFiniteDifference.cc>
 
 	    }
 	}
@@ -592,7 +592,7 @@ namespace chem
 	    _BLOCK_TRACE("NonbondEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include "_Nonbond_termDeclares.cc"
+#include <cando/chem/_Nonbond_termDeclares.cc>
 #pragma clang diagnostic pop
 	    double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
 	    int	I1, I2,i;
@@ -600,7 +600,7 @@ namespace chem
 	    for ( i=0,nbi=this->_Terms.begin();
 		  nbi!=this->_Terms.end(); nbi++,i++ ) 
 	    {
-#include	"_Nonbond_termCode.cc"
+#include <cando/chem/_Nonbond_termCode.cc>
 		if ( NonbondDistance < this->_ErrorThreshold ) {
 		    Atom_sp a1, a2;
 		    a1 = (*nbi)._Atom1;

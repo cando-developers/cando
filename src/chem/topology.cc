@@ -5,22 +5,22 @@
 // (C) 2004 Christian E. Schafmeister
 //
 
-#include "core/common.h"
-#include "core/stringSet.h"
-#include "core/symbolSet.h"
-#include "topology.h"
-#include "coupling.h"
-#include "monomer.h"
-#include "monomerContext.h"
-#include "plug.h"
-#include "constitution.h"
-#include "core/environment.h"
-#include "core/binder.h"
+#include <clasp/core/common.h>
+#include <clasp/core/stringSet.h>
+#include <clasp/core/symbolSet.h>
+#include <cando/chem/topology.h>
+#include <cando/chem/coupling.h>
+#include <cando/chem/monomer.h>
+#include <cando/chem/monomerContext.h>
+#include <cando/chem/plug.h>
+#include <cando/chem/constitution.h>
+#include <clasp/core/environment.h>
+#include <clasp/core/binder.h>
 //#include "kinematics/atomTemplate.h"
 //#include "kinematics/chiDihedrals.h"
-#include "constitutionAtoms.h"
-#include "stereoisomerAtoms.h"
-#include "core/wrappers.h"
+#include <cando/chem/constitutionAtoms.h>
+#include <cando/chem/stereoisomerAtoms.h>
+#include <clasp/core/wrappers.h>
 
 
 

@@ -36,4 +36,3 @@
  	EVAL_SET(ohx2z2, ohx2z2);
  	EVAL_SET(ohy2z2, ohy2z2);
  	EVAL_SET(StretchDeviation, StretchDeviation);
- 

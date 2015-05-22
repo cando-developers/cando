@@ -2,8 +2,8 @@
 #define	DEBUG_LEVEL_NONE
 
 
-#include "core/common.h"
-#include "chimera.h"
+#include <clasp/core/common.h>
+#include <cando/chem/chimera.h>
 #include <string>
 
 namespace chem

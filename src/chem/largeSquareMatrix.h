@@ -15,10 +15,10 @@
 #ifndef LARGE_MATRIX_H
 #define LARGE_MATRIX_H
 
-#include "core/common.h"
-#include "nVector.h"
+#include <clasp/core/common.h>
+#include <cando/chem/nVector.h>
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

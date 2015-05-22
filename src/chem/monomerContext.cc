@@ -4,15 +4,15 @@
 //
 // (C) 2004 Christian E. Schafmeister
 //
-#include "core/common.h"
-#include "core/symbolSet.h"
-#include "core/stringSet.h"
-#include "monomerContext.h"
+#include <clasp/core/common.h>
+#include <clasp/core/symbolSet.h>
+#include <clasp/core/stringSet.h>
+#include <cando/chem/monomerContext.h>
 //#include	"monomerCoordinates.h"
-#include "specificContext.h"
-#include "monomer.h"
-#include "coupling.h"
-#include "core/wrappers.h"
+#include <cando/chem/specificContext.h>
+#include <cando/chem/monomer.h>
+#include <cando/chem/coupling.h>
+#include <clasp/core/wrappers.h>
 
 
 #define	COUPLING_CHAR	"."

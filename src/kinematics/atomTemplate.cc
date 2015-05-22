@@ -1,16 +1,16 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "atomTemplate.h"
-#include "chem/plug.h"
-#include "core/environment.h"
-#include "chem/candoDatabase.h"
-#include "chem/constitution.h"
-#include "chem/constitutionAtoms.h"
-#include "atomo.h"
-#include "bondedAtom.h"
-#include "atomTree.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <cando/kinematics/atomTemplate.h>
+#include <cando/chem/plug.h>
+#include <clasp/core/environment.h>
+#include <cando/chem/candoDatabase.h>
+#include <cando/chem/constitution.h>
+#include <cando/chem/constitutionAtoms.h>
+#include <cando/kinematics/atomo.h>
+#include <cando/kinematics/bondedAtom.h>
+#include <cando/kinematics/atomTree.h>
+#include <clasp/core/wrappers.h>
 
 
 

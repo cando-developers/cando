@@ -1,16 +1,16 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "core/stringSet.h"
-#include "core/symbolSet.h"
-#include "stereoisomerAtoms.h"
-#include "constitutionAtoms.h"
-#include "matter.h"
-#include "residue.h"
-#include "calculatePosition.h"
-#include "atom.h"
-#include "bond.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <clasp/core/stringSet.h>
+#include <clasp/core/symbolSet.h>
+#include <cando/chem/stereoisomerAtoms.h>
+#include <cando/chem/constitutionAtoms.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/calculatePosition.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/bond.h>
+#include <clasp/core/wrappers.h>
 
 namespace chem
 {

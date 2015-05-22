@@ -6,11 +6,11 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "core/cons.h"
-#include "core/bitVector.h"
+#include <clasp/core/common.h>
+#include <clasp/core/cons.h>
+#include <clasp/core/bitVector.h>
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 #include "core/objectSet.fwd.h"// ringFinder.h wants ObjectSet needs objectSet.fwd.h
 

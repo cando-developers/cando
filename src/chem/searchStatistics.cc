@@ -1,11 +1,11 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "searchStatistics.h"
+#include <cando/chem/searchStatistics.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
 #
 // last include is wrappers.h
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {

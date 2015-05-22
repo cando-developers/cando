@@ -1,7 +1,7 @@
 #ifndef entity_fwd_H
 #define entity_fwd_H
 
-#include "core/lispVector.fwd.h"
+#include <clasp/core/lispVector.fwd.h>
 
 namespace  chem
 {

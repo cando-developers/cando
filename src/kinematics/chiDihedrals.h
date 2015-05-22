@@ -1,10 +1,10 @@
 #ifndef	_kinematics_ChiDihedral_H
 #define _kinematics_ChiDihedral_H
 
-#include "core/common.h"
-#include "chem/constitution.fwd.h"
-#include "core/multipleValues.fwd.h"
-#include "kinematicsPackage.h"
+#include <clasp/core/common.h>
+#include <cando/chem/constitution.fwd.h>
+#include <clasp/core/multipleValues.fwd.h>
+#include <cando/kinematics/kinematicsPackage.h>
 
 namespace kinematics
 {

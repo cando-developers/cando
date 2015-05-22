@@ -7,17 +7,17 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "core/stringSet.fwd.h"
-#include "core/symbolSet.fwd.h"
-#include "atom.fwd.h"
-#include "bond.fwd.h"
-#include "residue.fwd.h"
-#include "stereoisomerAtoms.fwd.h"
-#include "calculatePosition.fwd.h"
-#include "elements.fwd.h"
+#include <clasp/core/common.h>
+#include <clasp/core/stringSet.fwd.h>
+#include <clasp/core/symbolSet.fwd.h>
+#include <cando/chem/atom.fwd.h>
+#include <cando/chem/bond.fwd.h>
+#include <cando/chem/residue.fwd.h>
+#include <cando/chem/stereoisomerAtoms.fwd.h>
+#include <cando/chem/calculatePosition.fwd.h>
+#include <cando/chem/elements.fwd.h>
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem

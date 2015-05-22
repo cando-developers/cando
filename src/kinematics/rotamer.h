@@ -1,9 +1,9 @@
 #ifndef	_kinematics_Rotamer_H
 #define _kinematics_Rotamer_H
 
-#include "core/common.h"
-#include "kinematicsPackage.h"
-#include "core/holder.h"
+#include <clasp/core/common.h>
+#include <cando/kinematics/kinematicsPackage.h>
+#include <clasp/core/holder.h>
 
 namespace kinematics
 {

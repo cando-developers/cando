@@ -2,11 +2,11 @@
 
 
 
-#include "core/foundation.h"
-#include "core/object.h"
-#include "core/lisp.h"
-#include "symbolTable.h"
-#include "rootBondedAtom.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/object.h>
+#include <clasp/core/lisp.h>
+#include <cando/kinematics/symbolTable.h>
+#include <cando/kinematics/rootBondedAtom.h>
 
 namespace kinematics
 {

@@ -14,20 +14,20 @@
 
 #ifndef Stereochemistry_H
 #define Stereochemistry_H
-#include "core/common.h"
+#include <clasp/core/common.h>
 
 #include <stdio.h>
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "core/symbolSet.fwd.h"
-#include "addon/vector2.h"
-#include "addon/vector3.h"
-#include "entity.h"
+#include <clasp/core/common.h>
+#include <clasp/core/symbolSet.fwd.h>
+#include <cando/candoBase/vector2.h>
+#include <cando/candoBase/vector3.h>
+#include <cando/chem/entity.h>
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem

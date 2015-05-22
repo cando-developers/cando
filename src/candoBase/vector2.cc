@@ -8,9 +8,9 @@
 
 #include <iostream>
 #include <sstream>
-#include "core/foundation.h"
-#include "vector2.h"
-#include "math.h"
+#include <clasp/core/foundation.h>
+#include <cando/candoBase/vector2.h>
+#include <math.h>
 
 
 

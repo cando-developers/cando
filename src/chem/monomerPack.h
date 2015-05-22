@@ -6,12 +6,12 @@
 
 
 
-#include "core/foundation.h"
-#include "entityNameSet.h"
-#include "atomIndexer.h"
+#include <clasp/core/foundation.h>
+#include <cando/chem/entityNameSet.h>
+#include <cando/chem/atomIndexer.h>
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 #include "core/cons.fwd.h"// monomerPack.h wants Cons needs cons.fwd.h
 #include "core/symbolList.fwd.h"// monomerPack.h wants SymbolList needs symbolList.fwd.h

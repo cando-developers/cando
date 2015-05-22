@@ -1,12 +1,12 @@
 #define DEBUG_LEVEL_FULL
 
 
-#include "core/foundation.h"
-#include "symbolTable.h"
-#include "atomTree.h"
-#include "atomo.h"
-#include "stub.h"
-#include "atom.h"
+#include <clasp/core/foundation.h>
+#include <cando/kinematics/symbolTable.h>
+#include <cando/kinematics/atomTree.h>
+#include <cando/kinematics/atomo.h>
+#include <cando/kinematics/stub.h>
+#include <cando/kinematics/atom.h>
 
 namespace kinematics
 {

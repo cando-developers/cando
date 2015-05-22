@@ -1,9 +1,9 @@
 #ifndef	_kinematicsRingClosingMonomerNode_H
 #define _kinematicsRingClosingMonomerNode_H
 
-#include "core/common.h"
-#include "monomerNode.h"
-#include "kinematicsPackage.h"
+#include <clasp/core/common.h>
+#include <cando/kinematics/monomerNode.h>
+#include <cando/kinematics/kinematicsPackage.h>
 
 namespace kinematics
 {

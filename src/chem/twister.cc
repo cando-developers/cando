@@ -5,22 +5,22 @@
 
 
 
-#include "core/common.h"
+#include <clasp/core/common.h>
 
 #include <stdio.h>
 #include <math.h>
 #include <string>
 #include <map>
 #include <exception>
-#include "matter.h"
-#include "core/exceptions.h"
-#include "loop.h"
-#include "spanningLoop.h"
+#include <cando/chem/matter.h>
+#include <clasp/core/exceptions.h>
+#include <cando/chem/loop.h>
+#include <cando/chem/spanningLoop.h>
 //#include	"xmlGraphics.h"
-#include "twister.h"
-#include "core/numerics.h"
-#include "spanningLoop.h"
-#include "core/wrappers.h"
+#include <cando/chem/twister.h>
+#include <clasp/core/numerics.h>
+#include <cando/chem/spanningLoop.h>
+#include <clasp/core/wrappers.h>
 
 namespace chem {
 

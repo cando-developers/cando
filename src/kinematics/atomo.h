@@ -1,15 +1,15 @@
 #ifndef	_kinematics_AtomO_H
 #define _kinematics_AtomO_H
 
-#include "core/common.h"
-#include "addon/vector3.h"
-#include "core/multipleValues.fwd.h"
-#include "atom.fwd.h"
-#include "chainNode.fwd.h"
-#include "atomTree.fwd.h"
-#include "chem/atomId.h"
-#include "atomHandle.h"
-#include "kinematicsPackage.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/vector3.h>
+#include <clasp/core/multipleValues.fwd.h>
+#include <cando/kinematics/atom.fwd.h>
+#include <cando/kinematics/chainNode.fwd.h>
+#include <cando/kinematics/atomTree.fwd.h>
+#include <cando/chem/atomId.h>
+#include <cando/kinematics/atomHandle.h>
+#include <cando/kinematics/kinematicsPackage.h>
 
 namespace kinematics
 {

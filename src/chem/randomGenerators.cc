@@ -1,7 +1,7 @@
 #define	TURN_DEBUG_OFF
 
 
-#include "randomGenerators.h"
+#include <cando/chem/randomGenerators.h>
 
 
 

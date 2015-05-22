@@ -16,15 +16,15 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "core/common.h"
-#include "core/stringList.fwd.h"
-#include "core/symbolSet.fwd.h"
-#include "monomer.h"
-#include "core/holder.h"
-#include "addon/vector3.h"
-#include "core/objRef.fwd.h"
-#include "entity.fwd.h"
-#include "chemPackage.h"
+#include <clasp/core/common.h>
+#include <clasp/core/stringList.fwd.h>
+#include <clasp/core/symbolSet.fwd.h>
+#include <cando/chem/monomer.h>
+#include <clasp/core/holder.h>
+#include <cando/candoBase/vector3.h>
+#include <clasp/core/objRef.fwd.h>
+#include <cando/chem/entity.fwd.h>
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

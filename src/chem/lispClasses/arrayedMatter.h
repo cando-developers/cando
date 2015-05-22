@@ -12,7 +12,7 @@
 
 #include "chemPackage.h"
 
-#include "addon/coordinateArray.fwd.h"
+#include "candoBase/coordinateArray.fwd.h"
 
 namespace chem {
 
@@ -46,8 +46,8 @@ public:
 
 public:
 	ArrayedAtom_O( const ArrayedAtom_O& ss ); //!< Copy constructor
-	void extractFromCoordinateArray(addon::CoordinateArrayWithHash_sp h, uint start);
-	void writeToCoordinateArray(addon::CoordinateArrayWithHash_sp h, uint start);
+	void extractFromCoordinateArray(candoBase::CoordinateArrayWithHash_sp h, uint start);
+	void writeToCoordinateArray(candoBase::CoordinateArrayWithHash_sp h, uint start);
 public:
 	void setAtom(Atom_sp a);
 	DEFAULT_CTOR_DTOR(ArrayedAtom_O);
@@ -75,8 +75,8 @@ public:	// Creation class functions
 
 public:
 	uint calculateHash();
-	uint extractFromCoordinateArray(addon::CoordinateArrayWithHash_sp h, uint start);
-	uint writeToCoordinateArray(addon::CoordinateArrayWithHash_sp h, uint start);
+	uint extractFromCoordinateArray(candoBase::CoordinateArrayWithHash_sp h, uint start);
+	uint writeToCoordinateArray(candoBase::CoordinateArrayWithHash_sp h, uint start);
 public:
 	ArrayedResidue_O( const ArrayedResidue_O& ss ); //!< Copy constructor
 public:
@@ -118,9 +118,9 @@ public:
 
 	uint	getNumberOfAtoms();
 
-	addon::CoordinateArrayWithHash_sp	createCoordinateArray();
-	void extractFromCoordinateArray(addon::CoordinateArrayWithHash_sp h);
-	void writeToCoordinateArray(addon::CoordinateArrayWithHash_sp h);
+	candoBase::CoordinateArrayWithHash_sp	createCoordinateArray();
+	void extractFromCoordinateArray(candoBase::CoordinateArrayWithHash_sp h);
+	void writeToCoordinateArray(candoBase::CoordinateArrayWithHash_sp h);
 
 	DEFAULT_CTOR_DTOR(ArrayedMolecule_O);
 };

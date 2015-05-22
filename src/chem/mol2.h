@@ -15,20 +15,20 @@
 #ifndef	MOL2_H
 #define MOL2_H
 
-#include "core/common.h"
+#include <clasp/core/common.h>
 
 
 #include <iostream>
 #include <fstream>
 #include <string>
-#include "matter.h"
-#include "aggregate.h"
-#include "molecule.h"
-#include "residue.h"
-#include "atom.h"
+#include <cando/chem/matter.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/molecule.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/atom.h>
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

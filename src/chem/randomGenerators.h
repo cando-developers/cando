@@ -3,10 +3,10 @@
 #ifndef	RandomGenerators_H
 #define RandomGenerators_H
 
-#include "core/common.h"
+#include <clasp/core/common.h>
 #include <boost/random.hpp>
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

@@ -3,10 +3,10 @@
 
 
 //#define	DEBUG_VIA_PRINTF
-#include "largeSquareMatrix.h"
+#include <cando/chem/largeSquareMatrix.h>
 #include <iostream>
 #include <iomanip>
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {

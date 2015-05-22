@@ -1,26 +1,26 @@
 #ifndef kinematics_atomTree_H
 #define kinematics_atomTree_H
 
-#include "core/foundation.h"
-#include "core/object.h"
-#include "core/lisp.h"
-#include "core/executables.h"
-#include "chem/oligomer.fwd.h"
-#include "kinematicsPackage.h"
-#include "pool.h"
-#include "chem/atomIdMap.h"
-#include "atomTree.fwd.h"
-#include "bondId.fwd.h"
-#include "chem/plug.fwd.h"
-#include "atom.fwd.h"
-#include "bondedAtom.h"
-#include "rootBondedAtom.h"
-#include "chainNode.fwd.h"
-#include "delayedBondedAtom.h"
-#include "jumpAtom.h"
-#include "originJumpAtom.h"
-#include "chem/atomId.h"
-#include "bondId.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/object.h>
+#include <clasp/core/lisp.h>
+#include <clasp/core/executables.h>
+#include <cando/chem/oligomer.fwd.h>
+#include <cando/kinematics/kinematicsPackage.h>
+#include <cando/kinematics/pool.h>
+#include <cando/chem/atomIdMap.h>
+#include <cando/kinematics/atomTree.fwd.h>
+#include <cando/kinematics/bondId.fwd.h>
+#include <cando/chem/plug.fwd.h>
+#include <cando/kinematics/atom.fwd.h>
+#include <cando/kinematics/bondedAtom.h>
+#include <cando/kinematics/rootBondedAtom.h>
+#include <cando/kinematics/chainNode.fwd.h>
+#include <cando/kinematics/delayedBondedAtom.h>
+#include <cando/kinematics/jumpAtom.h>
+#include <cando/kinematics/originJumpAtom.h>
+#include <cando/chem/atomId.h>
+#include <cando/kinematics/bondId.h>
 
 
 namespace kinematics

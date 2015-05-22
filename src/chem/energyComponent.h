@@ -17,8 +17,8 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "addon/vector3.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/vector3.h>
 //#include "atom.h"
 //#include "bond.h"
 //#include "largeSquareMatrix.h"
@@ -26,10 +26,10 @@
 //#include "ffTypesDb.h"
 //#include "ffStretchDb.h"
 //#include "ffAngleDb.h"
-#include "addon/quickDom.h"
-#include "energyAtomTable.h"
-#include "nVector.h"
-#include "residue.h"
+#include <cando/candoBase/quickDom.h>
+#include <cando/chem/energyAtomTable.h>
+#include <cando/chem/nVector.h>
+#include <cando/chem/residue.h>
 
 		//
 		// SCALE FACTOR FOR ELECTROSTIC INTERACTIONS???
@@ -52,7 +52,7 @@ const double ELECTROSTATIC_MODIFIER = (93865.10/3.53*93865.10/93958.78);
 #ifndef	delta2
 #define		delta2	0.00001
 #endif
-#include "addon/quickDom.fwd.h"// energyComponent.h wants QDomNode needs quickDom.fwd.h
+#include "candoBase/quickDom.fwd.h"// energyComponent.h wants QDomNode needs quickDom.fwd.h
 
 namespace       chem {
 
@@ -109,25 +109,25 @@ virtual	void	customInitialize();
 	    this->_Terms.push_back(term); 
 	};
 
-	void	asXmlFillEnergy(addon::QDomNode_sp node) {
+	void	asXmlFillEnergy(candoBase::QDomNode_sp node) {
 		stringstream ss;
 		ss << this->getName()<<"TotalEnergy";
 		node->addAttributeDoubleScientific(ss.str(),this->_TotalEnergy);
 	};
 
-	void	parseXmlEnergy(addon::QDomNode_sp node) {
+	void	parseXmlEnergy(candoBase::QDomNode_sp node) {
 		stringstream ss;
 		ss << this->getName()<<"TotalEnergy";
 		this->_TotalEnergy = node->getAttributeDouble(ss.str());
 	};
 
 
-addon::QDomNode_sp	asXmlLimitedTerms(core::Lisp_sp lisp, int numTerms)
+candoBase::QDomNode_sp	asXmlLimitedTerms(core::Lisp_sp lisp, int numTerms)
 {
-addon::QDomNode_sp tnode, child;
+candoBase::QDomNode_sp tnode, child;
 int		t;
     viter si;
-    tnode = addon::QDomNode_O::create(this->getName());
+    tnode = candoBase::QDomNode_O::create(this->getName());
     tnode->addAttributeInt("numberOfTerms",this->_Terms.size());
     for (t=0,si=this->_Terms.begin();
 	    si!=this->_Terms.end();si++,t++){
@@ -145,7 +145,7 @@ int		t;
 
 
 
-void	parseFromXmlUsingAtomTable(addon::QDomNode_sp node, AtomTable_sp atomTable )
+void	parseFromXmlUsingAtomTable(candoBase::QDomNode_sp node, AtomTable_sp atomTable )
 {_G();
 VectorQDomNodes	children;
 VectorQDomNodes::iterator	child;
@@ -162,7 +162,7 @@ VectorQDomNodes::iterator	child;
     }
 }
 
-addon::QDomNode_sp	asXmlMissingTerms();
+candoBase::QDomNode_sp	asXmlMissingTerms();
 
 
 

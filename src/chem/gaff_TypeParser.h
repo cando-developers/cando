@@ -5,10 +5,10 @@
 #ifndef gaff_TypeParser_H
 #define gaff_TypeParser_H
 
-#include "core/foundation.h"
-#include "core/lisp.h"
-#include "core/object.h"
-#include "core/cons.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/lisp.h>
+#include <clasp/core/object.h>
+#include <clasp/core/cons.h>
 
 
 typedef union

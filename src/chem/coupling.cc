@@ -8,18 +8,18 @@
 
 
 
-#include "core/common.h"
-#include "coupling.h"
-#include "monomerContext.h"
-#include "monomer.h"
-#include "oligomer.h"
-#include "core/package.h"
-#include "candoDatabase.h"
-#include "plug.h"
-#include "bond.h"
+#include <clasp/core/common.h>
+#include <cando/chem/coupling.h>
+#include <cando/chem/monomerContext.h>
+#include <cando/chem/monomer.h>
+#include <cando/chem/oligomer.h>
+#include <clasp/core/package.h>
+#include <cando/chem/candoDatabase.h>
+#include <cando/chem/plug.h>
+#include <cando/chem/bond.h>
 //#include	"alchemists.h"
-#include "oligomer.h"
-#include "core/wrappers.h"
+#include <cando/chem/oligomer.h>
+#include <clasp/core/wrappers.h>
 
 namespace chem {
 

@@ -8,13 +8,13 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "core/iterator.h"
-#include "iterateMatter.h"
+#include <clasp/core/common.h>
+#include <clasp/core/iterator.h>
+#include <cando/chem/iterateMatter.h>
 
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

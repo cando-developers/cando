@@ -11,13 +11,13 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "monomerContext.h"
-#include "conformationExplorer.h"
+#include <clasp/core/common.h>
+#include <cando/chem/monomerContext.h>
+#include <cando/chem/conformationExplorer.h>
 
 
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

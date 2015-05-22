@@ -1,13 +1,13 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "core/stringSet.h"
-#include "core/symbolSet.h"
-#include "specificContext.h"
+#include <clasp/core/common.h>
+#include <clasp/core/stringSet.h>
+#include <clasp/core/symbolSet.h>
+#include <cando/chem/specificContext.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "candoDatabase.h"
-#include "core/wrappers.h"
+#include <cando/chem/candoDatabase.h>
+#include <clasp/core/wrappers.h>
 
 
 namespace chem {

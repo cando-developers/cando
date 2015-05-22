@@ -5,12 +5,12 @@
 #define	FrameRecognizer_H
 
 
-#include "core/common.h"
+#include <clasp/core/common.h>
 #include <string>
 ////#include "core/archiveNode.h"
-#include "chemInfo.h"
+#include <cando/chem/chemInfo.h>
 
-#include "chemPackage.h"
+#include <cando/chem/chemPackage.h>
 
 
 namespace chem {

@@ -3,18 +3,18 @@
 //
 // (C) 2004 Christian E. Schafmeister
 //
-#include "core/foundation.h"
-#include "core/object.h"
-#include "core/lisp.h"
-#include "coloredVertexList.h"
+#include <clasp/core/foundation.h>
+#include <clasp/core/object.h>
+#include <clasp/core/lisp.h>
+#include <cando/candoBase/coloredVertexList.h>
 //#include "core/archiveNode.h"
-#include "ovector3.h"
-#include "core/environment.h"
-#include "color.h"
+#include <cando/candoBase/ovector3.h>
+#include <clasp/core/environment.h>
+#include <cando/candoBase/color.h>
 #ifdef RENDER
-#include "candoBase/render.h"
+#include <candoBase/render.h>
 #endif
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 

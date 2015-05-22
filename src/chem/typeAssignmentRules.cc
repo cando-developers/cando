@@ -1,10 +1,10 @@
        
 #define	DEBUG_LEVEL_FULL
 
-#include "typeAssignmentRules.h"
+#include <cando/chem/typeAssignmentRules.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 

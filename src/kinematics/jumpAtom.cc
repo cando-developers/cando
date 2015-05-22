@@ -2,11 +2,11 @@
 
 
 
-#include "core/foundation.h"
-#include "atomTree.h"
-#include "symbolTable.h"
-#include "stub.h"
-#include "jumpAtom.h"
+#include <clasp/core/foundation.h>
+#include <cando/kinematics/atomTree.h>
+#include <cando/kinematics/symbolTable.h>
+#include <cando/kinematics/stub.h>
+#include <cando/kinematics/jumpAtom.h>
 
 namespace kinematics
 {

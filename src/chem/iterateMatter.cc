@@ -1,10 +1,10 @@
 #define	DEBUG_LEVEL_FULL
-#include "core/common.h"
-#include "iterateMatter.h"
-#include "symbolTable.h"
+#include <clasp/core/common.h>
+#include <cando/chem/iterateMatter.h>
+#include <cando/chem/symbolTable.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "core/wrappers.h"
+#include <clasp/core/wrappers.h>
 
 
 namespace chem

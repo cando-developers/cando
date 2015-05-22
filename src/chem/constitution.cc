@@ -3,24 +3,24 @@
 // (C) 2004 Christian E. Schafmeister
 //
 
-#include "core/common.h"
-#include "core/symbolSet.h"
-#include "core/symbol.h"
-#include "core/stringList.h"
-#include "core/environment.h"
-#include "symbolTable.h"
-#include "constitution.h"
-#include "candoDatabase.h"
-#include "loop.h"
-#include "representedEntityNameSet.h"
-#include "monomer.h"
-#include "plug.h"
-#include "complexRestraints.h"
-#include "topology.h"
-#include "stereochemistry.h"
-#include "monomerContext.h"
-#include "constitutionAtoms.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <clasp/core/symbolSet.h>
+#include <clasp/core/symbol.h>
+#include <clasp/core/stringList.h>
+#include <clasp/core/environment.h>
+#include <cando/chem/symbolTable.h>
+#include <cando/chem/constitution.h>
+#include <cando/chem/candoDatabase.h>
+#include <cando/chem/loop.h>
+#include <cando/chem/representedEntityNameSet.h>
+#include <cando/chem/monomer.h>
+#include <cando/chem/plug.h>
+#include <cando/chem/complexRestraints.h>
+#include <cando/chem/topology.h>
+#include <cando/chem/stereochemistry.h>
+#include <cando/chem/monomerContext.h>
+#include <cando/chem/constitutionAtoms.h>
+#include <clasp/core/wrappers.h>
 
 
 

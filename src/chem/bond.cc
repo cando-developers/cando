@@ -6,20 +6,20 @@
 
 
 // Comment
-#include "core/common.h"
-#include "core/exceptions.h"
-#include "core/stringSet.h"
-#include "bond.h"
-#include "matter.h"
-#include "atom.h"
-#include "residue.h"
-#include "core/hashTableEq.h"
+#include <clasp/core/common.h>
+#include <clasp/core/exceptions.h>
+#include <clasp/core/stringSet.h>
+#include <cando/chem/bond.h>
+#include <cando/chem/matter.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/residue.h>
+#include <clasp/core/hashTableEq.h>
 //#include "core/serialize.h"
 //#include "core/archive.h"
 //#include "core/archiveNode.h"
-#include "symbolTable.h"
-#include "constitutionAtoms.h"
-#include "core/wrappers.h"
+#include <cando/chem/symbolTable.h>
+#include <cando/chem/constitutionAtoms.h>
+#include <clasp/core/wrappers.h>
 
 
 

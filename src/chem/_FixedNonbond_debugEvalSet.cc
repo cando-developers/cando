@@ -21,4 +21,3 @@
  	EVAL_SET(ohx1z1, ohx1z1);
  	EVAL_SET(ohy1z1, ohy1z1);
  	EVAL_SET(fixedNonbondDistance, fixedNonbondDistance);
- 

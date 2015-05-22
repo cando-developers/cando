@@ -16,8 +16,8 @@
 #include <string>
 #include <vector>
 #include <set>
-#include "core/common.h"
-#include "energyComponent.h"
+#include <clasp/core/common.h>
+#include <cando/chem/energyComponent.h>
 
 
 
@@ -55,7 +55,7 @@ public:
 	bool		_calcForce;
 	bool		_calcDiagonalHessian;
 	bool		_calcOffDiagonalHessian;
-#include "_ImproperRestraint_debugEvalDeclares.cc"
+#include <cando/chem/_ImproperRestraint_debugEvalDeclares.cc>
 #endif
 
 	Atom_sp	getAtom1() { return this->_Atom1; };
@@ -66,8 +66,8 @@ public:
 public:
 //	void	archive(core::ArchiveP node);
 public:
-	addon::QDomNode_sp	asXml(core::Lisp_sp);
-	void	parseFromXmlUsingAtomTable(addon::QDomNode_sp xml, AtomTable_sp atomTable );
+	candoBase::QDomNode_sp	asXml(core::Lisp_sp);
+	void	parseFromXmlUsingAtomTable(candoBase::QDomNode_sp xml, AtomTable_sp atomTable );
 
     EnergyImproperRestraint();
 	virtual ~EnergyImproperRestraint();

@@ -1,10 +1,10 @@
 #define	DEBUG_LEVEL_FULL
 
-#include "core/common.h"
-#include "core/environment.h"
-#include "chiDihedrals.h"
-#include "core/multipleValues.h"
-#include "core/wrappers.h"
+#include <clasp/core/common.h>
+#include <clasp/core/environment.h>
+#include <cando/kinematics/chiDihedrals.h>
+#include <clasp/core/multipleValues.h>
+#include <clasp/core/wrappers.h>
 namespace kinematics
 {
 

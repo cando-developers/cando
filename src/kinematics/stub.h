@@ -1,10 +1,10 @@
 #ifndef	_kinematics_Stub_H
 #define _kinematics_Stub_H
 
-#include "core/common.h"
-#include "addon/matrix.h"
-#include "stub.fwd.h"
-#include "kinematicsPackage.h"
+#include <clasp/core/common.h>
+#include <cando/candoBase/matrix.h>
+#include <cando/kinematics/stub.fwd.h>
+#include <cando/kinematics/kinematicsPackage.h>
 
 namespace kinematics
 {
