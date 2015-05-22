@@ -1,0 +1,55 @@
+import bundler ;
+local dir = $(__file__:D) ;
+
+#
+# if you want debugging messages in release version turn on
+# <variant>release:<define>SOURCE_DEBUG
+#
+project kinematics : requirements
+	<include>./
+	<target-os>darwin:<linkflags>"-dynamiclib"
+	;
+
+
+local sources = 
+	atomTemplate.cc
+	chiDihedrals.cc
+	rotamer.cc
+	rootAtomInfo.cc
+	dofType.cc
+	stub.cc
+	jump.cc
+	monomerNode.cc
+	ringClosingMonomerNode.cc
+	chainNode.cc
+	monomerBaseNode.cc
+	aggregateNode.cc
+	atomHandle.cc
+	foldTree.cc
+	conformation.cc
+	kinematicsPackage.cc
+	atomTree.cc
+	atom.cc
+	atomo.cc
+	monomerId.cc
+	bondId.cc
+	bondedAtom.cc
+	delayedBondedAtom.cc
+	jumpAtom.cc
+	originJumpAtom.cc
+	rootBondedAtom.cc
+	/externals//boostAndExpatLibs
+	/internals/core//bundle/<link>static
+	/modules/addon//bundle/<link>static
+	/modules/chem//bundle/<link>static
+		;
+
+
+bundler.bundle $(dir) :
+	     $(sources) :
+	     <link>static
+	     <implicit-dependency>/internals/core//symbol_apply_inc
+	     <implicit-dependency>/internals/llvmo//mi
+	     <implicit-dependency>/modules/chem//mi
+	     <implicit-dependency>mi : :
+	     <toolset>darwin:<cxxflags>"-g3" ;

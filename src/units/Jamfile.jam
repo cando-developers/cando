@@ -1,0 +1,34 @@
+import bundler ;
+local dir = $(__file__:D) ;
+
+#
+# if you want debugging messages in release version turn on
+# <variant>release:<define>SOURCE_DEBUG
+#
+project projects/cando/units : requirements
+	<define>EXPAT
+	<toolset>darwin:<define>READLINE
+	<threading>single
+	<include>./
+	<include>../
+	<toolset>darwin:<define>darwin
+	<toolset>darwin:<cxxflags>"-Wno-unused-variable"
+	<toolset>darwin:<linkflags>"-framework IOKit -framework Carbon -framework Cocoa -framework System -framework OpenGL -framework Glut -framework AGL -L/usr/local/lib/x86_64 -lgomp"
+	<toolset>gcc:<cxxflags>"-Wno-unused-variable"
+	<toolset>pathscale:<cxxflags>"-Wno-unused-variable -fopenmp"
+	<toolset>pgi:<cxxflags>"-mp -gopt"
+	<toolset>pgi:<linkflags>"-mp -gopt"
+	<target-os>darwin:<linkflags>"-dynamiclib"
+
+	     ;
+
+local sources = dimension.cc
+	unit.cc
+	namedUnit.cc
+	quantity.cc
+	unitsPackage.cc
+	/externals//boostAndExpatLibs
+	/internals//core/
+	cando//addon
+;
+

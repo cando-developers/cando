@@ -1,0 +1,151 @@
+import bundler ;
+using bison ;
+local dir = $(__file__:D) ;
+
+#
+# if you want debugging messages in release version turn on
+# <variant>release:<define>SOURCE_DEBUG
+#
+project chem : requirements
+	<include>./
+	<target-os>darwin:<linkflags>"-dynamiclib"
+	;
+
+cpp _msmarts_Parser : msmarts_Parser.yy : <bison.prefix>"msmarts -v" ;
+cpp _gaff_Parser : gaff_Parser.yy : <bison.prefix>"gaff -v -t" ;
+
+alias parsers : _msmarts_Parser _gaff_Parser ;
+
+local sources = 	
+              chemPackage.cc
+		matter.cc 
+		aggregate.cc 
+		molecule.cc 
+		residue.cc 
+		atom.cc 
+		bond.cc 
+		minimizer.cc
+	     	atomIdMap.cc
+		angle.cc
+		properTorsion.cc
+		improperTorsion.cc
+		atomId.cc
+		topology.cc 
+		candoDatabase.cc 
+		constitution.cc 
+	     	monomerCoordinates.cc
+		frameRecognizer.cc
+		rotamer.cc
+	     	chemPackage.cc
+		atomReference.cc
+     		entity.cc
+		elements.cc
+		coordSys.cc
+		pdbMonomer.cc
+		constitutionAtoms.cc
+		stereoisomerAtoms.cc
+	    	loop.cc
+#	        tableOperations.cc
+#		table.cc
+		trajectory.cc
+		indirectAtomCoordinateReference.cc
+		energyComponent.cc
+		energyStretch.cc
+		energyAngle.cc
+		energyDihedral.cc
+		energyNonbond.cc
+		energyChiralRestraint.cc
+		energyAnchorRestraint.cc
+		energyImproperRestraint.cc
+		energyFixedNonbond.cc
+		energyAtomTable.cc
+		energyFunction.cc
+		complexRestraints.cc
+		searchStatistics.cc
+		plug.cc 
+#		arrayedMatter.cc
+		specificContext.cc
+		calculatePosition.cc
+		virtualAtom.cc
+		coordSys.cc 
+		coupling.cc 
+		mbbCoreTools.cc 
+		nVector.cc 
+		oligomer.cc 
+		restraint.cc 
+		spanningLoop.cc 
+		spline.cc 
+		superposeEngine.cc 
+		virtualSphere.cc 
+		moe.cc 
+		mol2.cc 
+	        numericalFunction.cc 
+#		confSearchDatabase.cc
+		ffAngleDb.cc
+		ffBaseDb.cc
+		ffItorDb.cc
+		ffNonbondDb.cc
+		forceField.cc
+		linearAlgebra.cc
+		minimizerLog.cc
+		iterateRestraints.cc 
+		pdb.cc 
+		ringFinder.cc 
+		iterateMatter.cc 
+		candoDatabaseReference.cc 
+		macroModel.cc 
+		typeAssignmentRules.cc 
+		alias.cc 
+#		conformationExplorer.cc 
+		superposableConformationCollection.cc 
+		zMatrix.cc 
+#		conformationCollection.cc 
+		structureComparer.cc 
+		chimera.cc 
+		command.cc 
+		monomerPack.cc 
+		statusTracker.cc 
+		atomIndexer.cc 
+		structureList.cc 
+		twister.cc 
+		largeSquareMatrix.cc 
+		randomGenerators.cc 
+		stereochemistry.cc 
+		entityNameSet.cc 
+		monomerContext.cc 
+		representedEntityNameSet.cc 
+		readAmberParameters.cc
+		cipPrioritizer.cc
+		chemdraw.cc
+	     	candoScript.cc
+		chemInfo.cc 
+		monomer.cc 
+		ffPtorDb.cc
+		ffStretchDb.cc
+		ffTypesDb.cc
+		ffVdwDb.cc
+		parsers
+		/externals//boostAndExpatLibs
+		/internals/core//bundle/<link>static
+		/cando/addon//bundle/<link>static
+		/cando/units//bundle/<link>static
+;
+
+#		/internals/core//bundle
+#		/internals/units//bundle ;
+
+bundler.bundle $(dir) :
+	     $(sources) :
+	     <link>static
+	     <implicit-dependency>/internals/core//mi
+	     <implicit-dependency>/internals/llvmo//mi
+	     <implicit-dependency>/cando/addon//mi
+	     <implicit-dependency>/cando/units//mi
+	     <implicit-dependency>mi : :
+	     <toolset>darwin:<cxxflags>"-g3" ;
+
+#
+# Precompiled headers
+#
+
+#cpp-pch pch : pch.h ;

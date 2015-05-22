@@ -1,0 +1,1069 @@
+atomIdMap.h:82:	    THROW(_lisp->error(BF("moleculeId[%d] is out of range - it must be less than %d") % atomId.moleculeId() % this->_MoleculeMap.size() ));
+atomIdMap.h:90:	    THROW(_lisp->error(BF("residueId[%d] is out of range - it must be less than %d") % atomId.residueId() % numResidues ));
+atomIdMap.h:99:	    THROW(_lisp->error(BF("atomId[%d] is out of range - it must be less than %d") % atomId.atomId() % numAtoms ));
+_gaff_Parser.cc:2752:	THROW(_lisp->create<LispError_O>(BF("%s") % (p.gaffErrorStream->str())));
+_msmarts_Parser.cc:1792:	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>((chem::AtomTest_O::create(chem::SAPElement, MP()->lisp->internKeyword((yyvsp[(1) - (1)].eval)),MP()->lisp))); 
+_msmarts_Parser.cc:1803:	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>((chem::AtomTest_O::create(chem::SAPAromaticElement, MP()->lisp->internKeyword(elementName),MP()->lisp))); 
+_msmarts_Parser.cc:1988:	    core::Symbol_sp sym = MP()->lisp->intern(symStr);
+_msmarts_Parser.cc:2252:	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPElement, MP()->lisp->internKeyword((yyvsp[(1) - (1)].eval)) ,MP()->lisp)); 
+_msmarts_Parser.cc:2263:	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPAromaticElement, MP()->lisp->internKeyword(elementName) ,MP()->lisp)); 
+_msmarts_Parser.cc:2272:	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPElement, MP()->lisp->internKeyword((yyvsp[(1) - (1)].eval)) ,MP()->lisp)); 
+_msmarts_Parser.cc:3137:	THROW(_lisp->create<core::LispError_O>(BF("%s") % (p.msmartsErrorStream->str())));
+a.cc:311:	    THROW(_lisp->create<core::LispError_O>("There is an error in a ChemDraw file, the string["+label+"] should be a key:value pair"));
+a.cc:318:	keyword = _lisp->internKeyword(trimKey);
+a.cc:319:	obj = _lisp->create<core::Str_O>(trimValue);
+a.cc:336:	    THROW(_lisp->create<core::LispError_O>(BF("You have already set the property(%s) it has the value(%s) and you are trying to set it with(%s)") % key->__repr__() % this->_Properties->lookup(key)->__repr__() % obj->__repr__()  ));
+a.cc:380:	core::StringSet_sp allNames = _lisp->create<core::StringSet_O>();
+a.cc:381:	this->_Properties = _lisp->create<core::Binder_O>();
+a.cc:399:		    this->_Properties->extend(_lisp->internKeyword(propertyStr),core::Str_O::create(valueStr,_lisp));
+a.cc:427:			    THROW(_lisp->create<core::LispError_O>("Invalid hash bond ("
+a.cc:443:			THROW(_lisp->create<core::LispError_O>(serr.str()));
+a.cc:445:		    core::Symbol_sp sym = _lisp->intern(objPart->as<core::Str_O>()->get());
+a.cc:494:	this->setProperty(_lisp->internKeyword("constitutionAtoms"),ca);
+a.cc:496:	this->setProperty(_lisp->internKeyword("builtResidue"),builtResidue);
+a.cc:559:	    THROW(_lisp->create<core::LispError_O>(serr.str()));
+a.cc:705:	return _lisp->create<ConstitutionAtoms_O>(residue);
+a.cc:726:	core::Cons_sp props = env->lookup(lisp->internWithPackageName(ChemPkg,"props"))->as<core::Cons_O>();
+a.cc:727:	core::Binder_sp kprops = env->lookup(lisp->internWithPackageName(ChemPkg,"kprops"))->as<core::Binder_O>();
+a.cc:767:	    THROW(_lisp->create<core::LispError_O>("Error compiling code:\n"+this->_Text));
+a.cc:778:	core::class_<ChemDraw_O>(lisp->lisp())
+a.cc:840:	string fileName = env->lookup(lisp->internWithPackageName(ChemPkg,"fileName"))->as<core::Str_O>()->get();
+a.cc:869:	    THROW(_lisp->create<core::LispError_O>(ss.str()));
+a.cc:876:	    THROW(_lisp->create<core::LispError_O>(ss.str()));
+a.cc:888:	    THROW(_lisp->create<core::LispError_O>("Not a cdxml file" ));
+a.cc:903:		    if ( !properties->contains(_lisp->internKeyword("name") ))
+a.cc:905:			THROW(_lisp->create<core::LispError_O>("Every fragment must have a property(name:)"));
+a.cc:907:		    core::Symbol_sp constitutionName = properties->lookup(_lisp->internKeyword("name"))->as<core::Symbol_O>();
+a.cc:925:		    if (!properties->contains(_lisp->internKeyword("name")) )
+a.cc:927:			THROW(_lisp->create<core::LispError_O>("Every properties block must have a property(name:)"));
+a.cc:929:		    core::Symbol_sp constitutionName = properties->lookup(_lisp->internKeyword("name"))->as<core::Symbol_O>();
+a.cc:932:			THROW(_lisp->create<core::LispError_O>("Could not find fragment with name("+constitutionName->__repr__()+")"));
+a.cc:975:	    THROW(_lisp->create<core::LispError_O>(ss.str()));
+a.cc:986:	    core::class_<CDFragment_O>(lisp->lisp())
+aggregate.cc:59:	    THROW(_lisp->create<core::LispError_O>( boost::format("Cannot read aggregate from unknown fileType: %s") % fileName ));
+aggregate.cc:87:	AtomIdToAtomMap_sp atomIdMap = _lisp->create<AtomIdToAtomMap_O>();
+aggregate.cc:116:	THROW(_lisp->error(BF("Illegal moleculeId[%d] must be less than %d") % molId % this->_contents.size() ));
+aggregate.cc:247:	    THROW(_lisp->create<core::LispError_O>("You can only transfer coordinates to a Aggregate from another Aggregate"));
+aggregate.cc:252:	    THROW(_lisp->create<core::LispError_O>("You can only transfer coordinates if the two Aggregates have the same number of contents"));
+aggregate.cc:380:	THROW(_lisp->create<core::LispError_O>( boost::format("Aggregate does not contain molecule: %s") % a->getName() ) );
+aggregate.cc:463:	    THROW(_lisp->create<core::LispError_O>(boost::format("Could not find atom with name: %s")% name ));
+aggregate.cc:489:	    THROW(_lisp->create<core::LispError_O>(boost::format("Cannot write aggregate to unknown fileType: %s")% fileName ));
+aggregate.cc:577:			_lisp->print(BF( "Aggregate_O::perturbAtomPositions>> Atoms are too close and being randomized!!!" ));
+aggregate.cc:596:			_lisp->print(BF( "Aggregate_O::perturbAtomPositions>> Atoms are close and being nudged out!!!" ));
+aggregate.cc:611:		_lisp->print(BF("MADE MORE THAN %d ADJUSTMENT CYCLES WHEN PERTURBING ATOMS") % MAX_ADJUST_CYCLES);
+aggregate.cc:630:	core::class_<Aggregate_O>(lisp->lisp())
+alias.cc:132:	core::class_<Alias_O>(lisp->lisp())
+angle.cc:18:	core::class_<Angle_O>(lisp->lisp())
+arrayedMatter.cc:77:    core::class_<ArrayedAtom_O>(lisp->lisp())
+arrayedMatter.cc:129:	THROW(_lisp->create<core::LispError_O>("Every ArrayedResidue must have a label"));
+arrayedMatter.cc:195:    core::class_<ArrayedResidue_O>(lisp->lisp())
+arrayedMatter.cc:300:	THROW(_lisp->create<core::LispError_O>("The hashes don't match"));
+arrayedMatter.cc:304:	THROW(_lisp->create<core::LispError_O>("The number of atoms don't match"));
+arrayedMatter.cc:318:	THROW(_lisp->create<core::LispError_O>("The hashes don't match"));
+arrayedMatter.cc:322:	THROW(_lisp->create<core::LispError_O>("The number of atoms don't match"));
+arrayedMatter.cc:337:    core::class_<ArrayedMolecule_O>(lisp->lisp())
+atom.cc:101:	core::class_<Atom_O>(lisp->lisp())
+atom.cc:573:	    THROW(_lisp->create<core::LispError_O>(BF("This atom(%s) is not equal to %s so you cannot transfer coordinates")%this->description() % obj->description() ));
+atom.cc:720:	    core::Cons_sp one = core::Cons_O::create(_lisp->create<core::Str_O>("H"+nameSuffix),core::Cons_O::_nil,_lisp);
+atom.cc:729:	    core::Cons_sp one = core::Cons_O::create(_lisp->create<core::Str_O,string>(ss.str()),core::Cons_O::_nil,_lisp);
+atom.cc:839:	THROW(_lisp->error(BF("Could not find bond")));
+atom.cc:863:		THROW(_lisp->error(BF("You tried to form a bond from[%s]-to[%s] but there is already one there!!") 
+atom.cc:1056:	THROW(_lisp->create<core::LispError_O>("This should never be called for an Atom_sp"));
+atom.cc:1077:	THROW(_lisp->create<core::LispError_O>(ss.str()));
+atom.cc:1509:		_lisp->print(BF( "Atom_O::testConsistancy failed" ));
+atom.cc:1520:	THROW(_lisp->error(BF("Don't copy single atoms - bonds will be messed up")));
+atom.cc:1644:	    THROW(_lisp->create<core::LispError_O>("The total bond order for "+this->description()+" will not be a whole number"));
+atom.cc:1833:	core::Cons_sp localTree = _lisp->create<core::Cons_O>(incomingBond);
+atom.cc:1849:	core::Cons_sp localTree = _lisp->create<core::Cons_O>(this->sharedThis<Atom_O>());
+atom.cc:1942:	    THROW(_lisp->create<core::LispError_O>("This atom isnt contained by anything"));
+atom.cc:2015:    THROW(_lisp->error(BF("Atom should never buildAtomIdMap")));
+atom.cc:2021:    THROW(_lisp->error(BF("Atom should never return atomWithAtomId")));
+atom.cc:2040:	    THROW(_lisp->create<core::LispError_O>(boost::format("INVALID %s")% this->description()));
+atom.cc:2077:	ConstitutionAtom_sp ca = _lisp->create<ConstitutionAtom_O>(this->getName(),this->_Element,index);
+atomGrid.cc:440:_lisp->print(BF( "AtomGrid dump" ));
+atomGrid.cc:441:_lisp->print(BF("  size= ( %d, %d, %d )") % this->xSize % this->ySize % this->zSize );
+atomGrid.cc:442:_lisp->print(BF( "  min=(%lf, %lf, %lf)") % this->xMin % this->yMin % this->zMin );
+atomGrid.cc:443:_lisp->print(BF( "  max=(%lf, %lf, %lf)") % this->xMax % this->yMax % this->zMax );
+atomGrid.cc:444:_lisp->print(BF( "  ballRadius=%lf") % this->ballRadius );
+atomGrid.cc:445:_lisp->print(BF( "  stepSize=%lf") % this->stepSize );
+atomGrid.cc:446:_lisp->print(BF( "  grid Elements=%d") % (int)(this->grid.size()) );
+atomGrid.cc:453:    _lisp->print(BF("  The grid has %d elements on and %d elements off") %	iOn % iOff );
+atomGrid.cc:479:    dl->add(_lisp->create<addon::GrLine_O>(v1,v2,1));
+atomGrid.cc:480:    dl->add(_lisp->create<addon::GrLine_O>(v2,v3,1));
+atomGrid.cc:481:    dl->add(_lisp->create<addon::GrLine_O>(v3,v4,1));
+atomGrid.cc:482:    dl->add(_lisp->create<addon::GrLine_O>(v4,v1,1));
+atomGrid.cc:518:    result->add(O_GrColor::systemColor(_lisp->symbol(_kw_red)));
+atomGrid.cc:519:    result->add(_lisp->create<addon::GrLine_O>(v1,v2,2));
+atomGrid.cc:522:    result->add(_lisp->create<addon::GrLine_O>(v1,v2,2));
+atomGrid.cc:525:    result->add(_lisp->create<addon::GrLine_O>(v1,v2,2));
+atomGrid.cc:529:    result->add(_lisp->create<addon::GrLine_O>(v1,v2,2));
+atomGrid.cc:532:    result->add(_lisp->create<addon::GrLine_O>(v1,v2,2));
+atomGrid.cc:535:    result->add(_lisp->create<addon::GrLine_O>(v1,v2,2));
+atomGrid.cc:539:    result->add(_lisp->create<addon::GrLine_O>(v1,v2,2));
+atomGrid.cc:542:    result->add(_lisp->create<addon::GrLine_O>(v1,v2,2));
+atomGrid.cc:546:    result->add(_lisp->create<addon::GrLine_O>(v1,v2,2));
+atomGrid.cc:549:    result->add(_lisp->create<addon::GrLine_O>(v1,v2,2));
+atomGrid.cc:553:    result->add(_lisp->create<addon::GrLine_O>(v1,v2,2));
+atomGrid.cc:556:    result->add(_lisp->create<addon::GrLine_O>(v1,v2,2));
+atomGrid.cc:558:    RPGrColor color = O_GrColor::create(addon::Color_O::systemColor(_lisp->symbol(_kw_magenta)),_lisp);
+atomGrid.cc:686:    core::class_<AtomGrid_O>(lisp->lisp())
+atomId.cc:28:	core::class_<AtomId_O>(lisp->lisp())
+atomIdMap.cc:19:	core::class_<AtomIdToAtomMap_O>(lisp->lisp())
+atomIndexer.cc:42:    THROW(_lisp->create<core::LispError_O>("The atom name("+name+") is already in the AtomIndexer"));
+atomIndexer.cc:117:    THROW(_lisp->create<core::LispError_O>("Could not find name("+name+") in AtomIndexer"));
+atomReference.cc:21:	core::class_<AtomReferenceBase_O>(lisp->lisp())
+atomReference.cc:47:	core::class_<AtomReference_O>(lisp->lisp())
+bond.cc:75:	THROW(_lisp->error(BF("Atom[%s] is neither atom1[%s] or atom2[%s] of bond")
+bond.cc:128:	    THROW(_lisp->create<core::LispError_O>("From atom isnt in a residue"));
+bond.cc:136:	    THROW(_lisp->create<core::LispError_O>("To atom isnt in a residue"));
+bond.cc:255:	this->_Properties.set(prop,_lisp->_boolean(true));
+bond.cc:264:	    THROW(_lisp->error(BF("You asked for an unknown property[%s] for matter[%s@%p] - the available properties are[%s]")
+bond.cc:292:	THROW(_lisp->error(BF("Illegal getOtherAtom because from atom[%s] is not part of bond: %s") % atom->description() % this->description() ));
+bond.cc:354:	    THROW(_lisp->create<core::LispError_O>(boost::format("INVALID %s")%this->description()));
+bond.cc:368:	    THROW(_lisp->create<core::LispError_O>("redirectToAtomCopies _WeakAtom1 is NULL"));
+bond.cc:373:	    THROW(_lisp->create<core::LispError_O>("redirectToAtomCopies _WeakAtom2 is NULL"));
+bond.cc:403:	    THROW(_lisp->error(BF("Could not find atom[%s] in atomMap")));
+bond.cc:406:	ConstitutionBond_sp cb = _lisp->create<ConstitutionBond_O>(this->getOrder(),index);
+bond.cc:559:	THROW(_lisp->error(BF("Could not find bond between %s and %s in bondList: %s") % a->description() % b->description() % this->description() ));
+bond.cc:657:	en.value(_sym_noBond, _lisp->intern("none"), singleBond );
+bond.cc:658:	en.value(_sym_singleBond, _lisp->intern("s"), singleBond );
+bond.cc:659:	en.value(_sym_doubleBond, _lisp->intern("d"), doubleBond );
+bond.cc:660:	en.value(_sym_tripleBond, _lisp->intern("t"), tripleBond );
+bond.cc:661:	en.value(_sym_aromaticBond, _lisp->intern("a"), aromaticBond );
+bond.cc:662:	en.value(_sym_hydrogenBond, _lisp->intern("h"), hydrogenBond );
+bond.cc:663:	en.value(_sym_virtualBond,_lisp->intern("v"),virtualBond);
+bond.cc:664:	en.value(_sym_dashedSingleBond,_lisp->intern("ds"),dashedSingleBond);
+bond.cc:665:	en.value(_sym_dashedDoubleBond,_lisp->intern("dd"),dashedDoubleBond);
+bond.cc:672:	core::class_<Bond_O>(lisp->lisp())
+bond.cc:706:	core::class_<BondList_O>(lisp->lisp());
+calculatePosition.cc:47:    this->_DistanceAtomName = env->lookup(lisp->internWithPackageName(ChemPkg,"distanceAtomName"))->as<core::Str_O>()->get();
+calculatePosition.cc:48:    this->_AngleAtomName = env->lookup(lisp->internWithPackageName(ChemPkg,"angleAtomName"))->as<core::Str_O>()->get();
+calculatePosition.cc:49:    this->_DihedralAtomName = env->lookup(lisp->internWithPackageName(ChemPkg,"dihedralAtomName"))->as<core::Str_O>()->get();
+calculatePosition.cc:50:    this->_Distance = env->lookup(lisp->internWithPackageName(ChemPkg,"distance"))->as<core::DoubleFloat_O>()->get();
+calculatePosition.cc:51:    this->_AngleDegrees = env->lookup(lisp->internWithPackageName(ChemPkg,"angleDegrees"))->as<core::DoubleFloat_O>()->get();
+calculatePosition.cc:52:    this->_DihedralDegrees = env->lookup(lisp->internWithPackageName(ChemPkg,"dihedralDegrees"))->as<core::DoubleFloat_O>()->get();
+calculatePosition.cc:100:	THROW(_lisp->create<core::LispError_O>("Unacceptable positionLookup class"));
+calculatePosition.cc:132:    this->_FromAtomName = env->lookup(lisp->internWithPackageName(ChemPkg,"fromAtomName"))->as<core::Str_O>()->get();
+calculatePosition.cc:133:    this->_ToAtomName = env->lookup(lisp->internWithPackageName(ChemPkg,"toAtomName"))->as<core::Str_O>()->get();
+calculatePosition.cc:134:    this->_ExtendDistance = env->lookup(lisp->internWithPackageName(ChemPkg,"extendDistance"))->as<core::DoubleFloat_O>()->get();
+calculatePosition.cc:182:	THROW(_lisp->create<core::LispError_O>("Unacceptable positionLookup class"));
+calculatePosition.cc:220:    this->_OriginAtomName = env->lookup(lisp->internWithPackageName(ChemPkg,"originAtomName"))->as<core::Str_O>()->get();
+calculatePosition.cc:221:    this->_ToAtomName = env->lookup(lisp->internWithPackageName(ChemPkg,"toAtomName"))->as<core::Str_O>()->get();
+calculatePosition.cc:222:    this->_ExtendDistance = env->lookup(lisp->internWithPackageName(ChemPkg,"extendDistance"))->as<core::DoubleFloat_O>()->get();
+calculatePosition.cc:274:	THROW(_lisp->create<core::LispError_O>("Unacceptable positionLookup class"));
+calculatePosition.cc:299:    core::class_<CalculatePosition_O>(lisp->lisp())
+calculatePosition.cc:317:    core::class_<CalculatePositionUsingInternals_O>(lisp->lisp())
+calculatePosition.cc:336:    core::class_<CalculatePositionAlongBond_O>(lisp->lisp())
+calculatePosition.cc:354:    core::class_<CalculatePositionRelativeToOrigin_O>(lisp->lisp())
+candoDatabase.cc:75:		result = _lisp->create<core::Cons_O>(it->second,result);
+candoDatabase.cc:109:	return this->recognizesEntitySubClassOf(name,_lisp->findClass(Stereoisomer_O::static_classSymbol()));
+candoDatabase.cc:126:	return this->entitiesSubClassOfAsCons(_lisp->findClass(RepresentedEntityNameSet_O::static_classSymbol()));
+candoDatabase.cc:137:	return this->recognizesEntityOfClass(name,_lisp->findClass(RepresentedEntityNameSet_O::static_classSymbol()));
+candoDatabase.cc:168:	THROW(_lisp->create<core::LispError_O>("Unknown CandoDatabase Resource("+resource+"/"+name->__repr__()+")"));
+candoDatabase.cc:201:	THROW(_lisp->create<core::ContentException_O>("Unknown ObjRef selector: "+ref->getSelector() ));
+candoDatabase.cc:209:	return this->recognizesEntityOfClass(nm,_lisp->findClass(EntityNameSet_O::static_classSymbol()));
+candoDatabase.cc:214:	return this->getEntityOfClass(nm,_lisp->findClass(EntityNameSet_O::static_classSymbol()))->as<EntityNameSet_O>();
+candoDatabase.cc:221:	return this->getEntityOfClass(nm,_lisp->findClass(RepresentedEntityNameSet_O::static_classSymbol()))->as<RepresentedEntityNameSet_O>();
+candoDatabase.cc:250:	    THROW(_lisp->error(BF("You asked for Entity[%s] of class[%s] and there is one with that name but it has the wrong class[%s]")
+candoDatabase.cc:264:	core::SymbolSet_sp names = _lisp->create<core::SymbolSet_O>();
+candoDatabase.cc:300:	    THROW(_lisp->create<core::LispError_O>("You must load a CandoDatabase"));
+candoDatabase.cc:479:		THROW(_lisp->create<core::LispError_O>(BF("While adding constitution(%s) a stereoisomer had a blank name!!") % sum->getName() ));
+candoDatabase.cc:485:		THROW(_lisp->create<core::LispError_O>(BF("While adding constitution(%s) a stereoisomer had a blank pdb name!!") % sum->getName() ));
+candoDatabase.cc:514:	    THROW(_lisp->create<core::LispError_O>("The global fragment: ", frag->getName()," has already been defined"));
+candoDatabase.cc:522:	    THROW(_lisp->create<core::LispError_O>("Could not find global fragment with name: ", nm ));
+candoDatabase.cc:535:	    THROW(_lisp->create<core::LispError_O>("The global fragment: ", frag->getName()," has already been defined"));
+candoDatabase.cc:543:	    THROW(_lisp->create<core::LispError_O>("Could not find global fragment with name: ", nm ));
+candoDatabase.cc:554:	    THROW(_lisp->create<core::LispError_O>(boost::format("You tried to create a group with a name that is already used: %s") % group->getName() ));
+candoDatabase.cc:621://    _lisp->print(BF("%s %u addMonomerCoordinates context:\n%s") % __FILE__% __LINE__ % context->asXmlString().c_str() );
+candoDatabase.cc:624://    _lisp->print(BF("%s %u There are %u specific contexts") % __FILE__% __LINE__ % allContexts->size() );
+candoDatabase.cc:628://        _lisp->print(BF("    %s %u Looking at specific contexts: %s") % __FILE__% __LINE__ % si->first.c_str() );
+candoDatabase.cc:631://	    _lisp->print(BF("      %s %u  Adding it") % __FILE__ % __LINE__ );
+candoDatabase.cc:637://	    _lisp->print(BF("      %s %u  Ignoring it") % __FILE__ % __LINE__ );
+candoDatabase.cc:733:	SpecificContextSet_sp necessary = _lisp->create<SpecificContextSet_O>();
+candoDatabase.cc:774:	    THROW(_lisp->create<core::LispError_O>(serr.str()));
+candoDatabase.cc:873:	core::class_<CandoDatabase_O>(lisp->lisp())
+candoDatabaseDependent.cc:92:    core::class_<CandoDatabase_ODependent>(lisp->lisp())
+candoScript.cc:87:	    THROW(_lisp->create<core::LispError_O>("The 'candoDatabase' object is not of class CandoDatabase"));
+candoScript.cc:95:	    THROW(_lisp->create<core::LispError_O>("The 'only' object is not of class CandoDatabase"));
+candoScript.cc:100:	THROW(_lisp->create<core::LispError_O>("Could not find database in file: "+fileName ) );
+candoScript.cc:196:	boost::filesystem::path filePath  = _lisp->bundle().getDatabasesDir() / name.str();
+candoScript.cc:219:    boost::filesystem::path filePath  = _lisp->bundle().getDatabasesDir() / pathName->asString();
+candoScript.cc:257:	THROW(_lisp->create<core::LispError_O>("You must define a AlchemistDatabse"));
+candoScript.cc:280:	    lisp->print(BF( "%s") % mit->second->getComment().c_str() );
+candoScript.cc:281:	    lisp->print(BF("     Found %d times first: %s") %times % firstFind.c_str() );
+candoScript.cc:323:	lisp->print(BF(" Constitution: %12s -- %s") % con->getName()->__repr__() % stereoisomers );
+candoScript.cc:373:		ConstitutionVirtualAtom_sp virt = _lisp->create<ConstitutionVirtualAtom_O>(virtualAtomName,calcPos);
+candoScript.cc:384:	THROW(_lisp->create<core::LispError_O>("Could not find constitution: "+constitutionName));
+candoScript.cc:436:		    THROW(_lisp->create<core::LispError_O>("In createVirtualAtom: Unrecognized fragmentCoordinates name("+fragmentName+")"));
+candoScript.cc:447:    lisp->print(BF("Added virtual atom(%s) for constitution(%s)") % virtualAtomName % constitutionName );
+candoScript.cc:450:        lisp->print(BF(" saw %d collisions") % collisions );
+candoScript.cc:452:    lisp->print(BF(""));
+candoScript.cc:482:    if ( kargs->numberOfPositionalArguments()!=2 ) THROW(_lisp->create<core::LispError_O>("You must provide the object and file name"));
+candoScript.cc:629:    	THROW(_lisp->create<core::LispError_O>("You must provide a molecule, residueId" ));
+candoScript.cc:636:	THROW(_lisp->create<core::LispError_O>(serr.str()));
+candoScript.cc:680:    	THROW(_lisp->create<core::LispError_O>("You must provide a molecule, residueId and atom name"));
+candoScript.cc:693:	THROW(_lisp->create<core::LispError_O>("Residue does not contain atom named: "+atomName->get()));
+candoScript.cc:697:    THROW(_lisp->create<core::LispError_O>(serr.str()));
+candoScript.cc:706:#define	FuncError(x) THROW(_lisp->create<core::LispError_O>(x))
+candoScript.cc:798:	THROW(_lisp->create<core::LispError_O>("Unacceptable positionLookup class"));
+candoScript.cc:838:	    if ( !monomerMap->contains(mon1Id) ) THROW(_lisp->error(BF("Unknown monomer id: %s")%mon1Id->__repr__()));
+candoScript.cc:839:	    if ( !monomerMap->contains(mon2Id) ) THROW(_lisp->error(BF("Unknown monomer id: %s")%mon2Id->__repr__()));
+chemInfo.cc:129:		THROW(_lisp->error(BF("The ChemInfoMatch is invalid - the matching algorithm or the SMARTS pattern match gave tags with the same atoms: %s") % this->__repr__() ));
+chemInfo.cc:159:	THROW(_lisp->create<core::LispError_O>(serr.str()));
+chemInfo.cc:174:	_lisp->print(BF("  tag(%s) = %s") % it->first.c_str() % it->second->description().c_str() );
+chemInfo.cc:183:	THROW(_lisp->create<core::LispError_O>("I cannot create a bound frame because there was no ChemInfo match"));
+chemInfo.cc:215:        THROW(_lisp->create<core::LispError_O>(boost::format("Could not find wild card name(%s)") % wildName ));
+chemInfo.cc:229:        THROW(_lisp->create<core::LispError_O>(boost::format("Unrecognized wild card name(%s)")% name));
+chemInfo.cc:378:	THROW(_lisp->create<core::LispError_O>("The ChemInfo root is nil!"));
+chemInfo.cc:609:	    THROW(_lisp->create<core::LispError_O>(err.str()));
+chemInfo.cc:641:	    THROW(_lisp->create<core::LispError_O>(err.str()));
+chemInfo.cc:717:        THROW(_lisp->create<core::LispError_O>("Trying to carry out a TagSet with a non Smarts root"));
+chemInfo.cc:769:        THROW(_lisp->create<core::LispError_O>("Trying to carry out a RingTest with a non Smarts root"));
+chemInfo.cc:784:	THROW(_lisp->create<core::LispError_O>("We are trying to test the atomTag ("+this->_RingTag+") but it doesn't exist!" ));
+chemInfo.cc:840:        THROW(_lisp->create<core::LispError_O>("Trying to carry out a ResidueTest with a non Smarts root"));
+chemInfo.cc:855:	THROW(_lisp->create<core::LispError_O>("We are trying to test the atomTag ("+this->_RingTag+") but it doesn't exist!" ));
+chemInfo.cc:862:	THROW(_lisp->create<core::LispError_O>(atom->description()+" failed containedByValid()"));
+chemInfo.cc:866:	THROW(_lisp->create<core::LispError_O>(ringAtom->description()+" failed containedByValid()"));
+chemInfo.cc:933:	    THROW(_lisp->create<core::LispError_O>("Must implement SingleDirectionalDownOrUnspecified"));
+chemInfo.cc:935:	    THROW(_lisp->create<core::LispError_O>("Must implement SingleDirectionalUpOrUnspecified"));
+chemInfo.cc:938:	    THROW(_lisp->create<core::LispError_O>("Must implement directional bonds"));
+chemInfo.cc:1144:	    THROW(_lisp->create<core::LispError_O>("We are trying to test the atomTag ("
+chemInfo.cc:1161:	    THROW(_lisp->create<core::LispError_O>("We are trying to test the atomTag ("
+chemInfo.cc:1251:	THROW(_lisp->create<core::LispError_O>(ss.str() ));
+chemInfo.cc:1613:    THROW(_lisp->create<core::LispError_O>("Must implement"));
+chemInfo.cc:1665:            THROW(_lisp->create<core::LispError_O>("Testing NumberOfElectronWithdrawingGroups must have one bond"));
+chemInfo.cc:1737:        THROW(_lisp->create<core::LispError_O>("AntechamberBondTest::matches requires an AntechamberRoot"));
+chemInfo.cc:1762:        THROW(_lisp->create<core::LispError_O>(ss.str()));
+chemInfo.cc:1854:	THROW(_lisp->error(BF("Could not find named ChemInfo/Smarts test[%s] in Smarts object - available named tests are[%s]") % testSym->__repr__() % this->_Tests->allKeysAsString() ));
+chemInfo.cc:2064:	  THROW(_lisp->error(BF("%s") % me->compilerMessage()));
+chemInfo.cc:2079:	THROW(_lisp->create<core::LispError_O>(this->compilerMessage()));
+chemInfo.cc:2100:    core::class_<ChemInfoMatch_O>(lisp->lisp())
+chemInfo.cc:2128:    core::class_<WildElementDict_O>(lisp->lisp())
+chemInfo.cc:2150:    core::class_<ChemInfo_O>(lisp->lisp())
+chemPackage.cc:36://	    _lisp->usePackage(CorePkg);
+chemPackage.cc:50:	    defNoWrapPackage(ChemPkg,"atomAliases", &core::prim_list ,_lisp->lisp());
+chemPackage.cc:51:	    defNoWrapPackage(ChemPkg,"aliasAtoms", &core::prim_list ,_lisp->lisp());
+chemPackage.cc:52:	    defNoWrapPackage(ChemPkg,"addPart", &core::prim_list ,_lisp->lisp());
+chemPackage.cc:53:	    defNoWrapPackage(ChemPkg,"parts", &core::prim_list ,_lisp->lisp());
+chemPackage.cc:54:	    defNoWrapPackage(ChemPkg,"monomerAlias", &core::prim_list ,_lisp->lisp());
+chemPackage.cc:64:	    _lisp->defvar(_sym_candoDatabase,cdb);
+chemPackage.cc:111:	    _lisp->installPackage(chemPkgP);
+chemdraw.cc:319:	    THROW(_lisp->create<core::LispError_O>("There is an error in a ChemDraw file, the string["+label+"] should be a key:value pair"));
+chemdraw.cc:326:	keyword = _lisp->internKeyword(trimKey);
+chemdraw.cc:327:	obj = _lisp->create<core::Str_O>(trimValue);
+chemdraw.cc:344:	    THROW(_lisp->create<core::LispError_O>(BF("You have already set the property(%s) it has the value(%s) and you are trying to set it with(%s)") % key->__repr__() % this->_Properties->lookup(key)->__repr__() % obj->__repr__()  ));
+chemdraw.cc:389:	core::StringSet_sp allNames = _lisp->create<core::StringSet_O>();
+chemdraw.cc:390:	this->_Properties = _lisp->create<core::Binder_O>();
+chemdraw.cc:408:		    this->_Properties->extend(_lisp->internKeyword(propertyStr),core::Str_O::create(valueStr,_lisp));
+chemdraw.cc:436:			    THROW(_lisp->create<core::LispError_O>("Invalid hash bond ("
+chemdraw.cc:452:			THROW(_lisp->create<core::LispError_O>(serr.str()));
+chemdraw.cc:454:		    core::Symbol_sp sym = _lisp->intern(objPart->as<core::Str_O>()->get());
+chemdraw.cc:503:	this->setProperty(_lisp->internKeyword("constitutionAtoms"),ca);
+chemdraw.cc:505:	this->setProperty(_lisp->internKeyword("builtResidue"),builtResidue);
+chemdraw.cc:568:	    THROW(_lisp->create<core::LispError_O>(serr.str()));
+chemdraw.cc:714:	return _lisp->create<ConstitutionAtoms_O>(residue);
+chemdraw.cc:751:	core::Cons_sp props = env->lookup(lisp->internWithPackageName(ChemPkg,"props"))->as<core::Cons_O>();
+chemdraw.cc:752:	core::Binder_sp kprops = env->lookup(lisp->internWithPackageName(ChemPkg,"kprops"))->as<core::Binder_O>();
+chemdraw.cc:798:	    THROW(_lisp->create<core::LispError_O>("Error compiling code:\n"+this->_Text));
+chemdraw.cc:809:	core::class_<ChemDraw_O>(lisp->lisp())
+chemdraw.cc:871:	string fileName = env->lookup(lisp->internWithPackageName(ChemPkg,"fileName"))->as<core::Str_O>()->get();
+chemdraw.cc:901:	    THROW(_lisp->create<core::LispError_O>(ss.str()));
+chemdraw.cc:908:	    THROW(_lisp->create<core::LispError_O>(ss.str()));
+chemdraw.cc:920:	    THROW(_lisp->create<core::LispError_O>("Not a cdxml file" ));
+chemdraw.cc:935:		    if ( !properties->contains(_lisp->internKeyword("name") ))
+chemdraw.cc:937:			THROW(_lisp->create<core::LispError_O>("Every fragment must have a property(name:)"));
+chemdraw.cc:939:		    core::Symbol_sp constitutionName = properties->lookup(_lisp->internKeyword("name"))->as<core::Symbol_O>();
+chemdraw.cc:957:		    if (!properties->contains(_lisp->internKeyword("name")) )
+chemdraw.cc:959:			THROW(_lisp->create<core::LispError_O>("Every properties block must have a property(name:)"));
+chemdraw.cc:961:		    core::Symbol_sp constitutionName = properties->lookup(_lisp->internKeyword("name"))->as<core::Symbol_O>();
+chemdraw.cc:964:			THROW(_lisp->create<core::LispError_O>("Could not find fragment with name("+constitutionName->__repr__()+")"));
+chemdraw.cc:977:	Aggregate_sp agg = _lisp->create<Aggregate_O>();
+chemdraw.cc:980:	    Molecule_sp mol = _lisp->create<Molecule_O>();
+chemdraw.cc:983:	    string name = frag->getProperty(_lisp->internKeyword("name"))->as<core::Symbol_O>()->symbolName();
+chemdraw.cc:1025:	    THROW(_lisp->create<core::LispError_O>(ss.str()));
+chemdraw.cc:1036:	    core::class_<CDFragment_O>(lisp->lisp())
+chimera.cc:18:	    THROW(_lisp->create<core::LispError_O>("Illegal Chimera atom specification"));
+cipPrioritizer.cc:551:    core::class_<CipPrioritizer_O>(lisp->lisp())
+complexRestraints.cc:122:	THROW(_lisp->create<core::LispError_O>("config:  must be ""E"" or ""Z""" ));
+complexRestraints.cc:126:	THROW(_lisp->create<core::LispError_O>("You must supply two atom names in piAtoms: argument"));
+complexRestraints.cc:141:	THROW(_lisp->create<core::LispError_O>("config:  must be ""E"" or ""Z""" ));
+complexRestraints.cc:145:	THROW(_lisp->create<core::LispError_O>("You must supply two atom names in piAtoms: argument"));
+complexRestraints.cc:204:	THROW(_lisp->create<core::ContentException_O>(ss.str() ));
+complexRestraints.cc:211:	THROW(_lisp->create<core::ContentException_O>(ss.str() ));
+complexRestraints.cc:250:	THROW(_lisp->create<core::ContentException_O>("Illegal Pi bond configuration: "+config+" must be E or Z"));
+complexRestraints.cc:281:	    THROW(_lisp->create<core::LispError_O>("Error compiling SMARTS code for _AtomExoToSixMemberedRing"));
+complexRestraints.cc:326:	THROW(_lisp->create<core::LispError_O>(boost::format("Residue(%s) doesn't have atom with name(%s)") % residue->description() % this->_ExoCyclicAtomName ));
+complexRestraints.cc:333:	THROW(_lisp->create<core::LispError_O>(boost::format("In residue(%s) the atom with name(%s) is not exo-cyclic to a six-membered ring") % residue->description() % this->_ExoCyclicAtomName ));
+confSearchDatabase.cc:113:    superposer = _lisp->create<SuperposeEngine_O>();
+confSearchDatabase.cc:157:	    _lisp->print(BF("CONFSEARCH: Entry %d  energy(%lf) rms(%lf)") % i% energy % rms );
+confSearchDatabase.cc:165:	    _lisp->print(BF( "CONFSEARCH: Trimming search entry table to %d elements") % (lastUsefulEntry+1) );
+conformationCollection.cc:38:    this->_Data = _lisp->create<addon::ObjectDictionary_O>();
+conformationCollection.cc:39:    this->_AllCoordinates = _lisp->create<addon::CoordinateArray_O>();
+conformationCollection.cc:68:    ca = _lisp->create<addon::CoordinateArray_O>(s->numberOfAllAtoms());
+conformationCollection.cc:119:    this->_Data = _lisp->create<addon::ObjectDictionary_O>();
+conformationCollection.cc:140:    addon::CoordinateArray_sp coords = _lisp->create<addon::CoordinateArray_O>(this->numberOfAllAtoms());
+conformationCollection.cc:269:    frames = _lisp->create<addon::FrameList_O>();
+conformationCollection.cc:274:	dlMatter = _lisp->create<GrPickableMatter_O>();
+conformationCollection.cc:275:	dlMatter->setName(_lisp->internKeyword("gaussianMinimized"));
+conformationCollection.cc:294:    xml = _lisp->create<core::XmlSaveArchive_O>();
+conformationCollection.cc:311:    THROW(_lisp->create<core::LispError_O>("Could not find entry in ConformationCollection"));
+conformationExplorer.cc:46:	this->_Binder = _lisp->create<core::Binder_O>();
+conformationExplorer.cc:47:	this->_FinalCoordinates = _lisp->create<addon::CoordinateArray_O>();
+conformationExplorer.cc:113:	SuperposeEngine_sp superposer = _lisp->create<SuperposeEngine_O>();
+conformationExplorer.cc:134:	dlAll = _lisp->create<addon::DisplayList_O>();
+conformationExplorer.cc:135:	dlAll->setName(_lisp->internKeyword(this->_StageName));
+conformationExplorer.cc:140:	    dlMatter = _lisp->create<GrPickableMatter_O>();
+conformationExplorer.cc:142:	    dlMatter->setName(_lisp->internKeyword("molFrame"));
+conformationExplorer.cc:152:	    addon::DisplayList_sp prims = _lisp->create<addon::DisplayList_O>();
+conformationExplorer.cc:153:	    prims->setName(_lisp->internKeyword("superposeAtoms"));
+conformationExplorer.cc:154:	    addon::GrSpheres_sp sphereList = _lisp->create<addon::GrSpheres_O>();
+conformationExplorer.cc:288:	this->_Binder = _lisp->create<core::Binder_O>();
+conformationExplorer.cc:407:	THROW(_lisp->create<core::LispError_O>("Only the last stage can be incomplete"));
+conformationExplorer.cc:437:	THROW(_lisp->create<core::LispError_O>("Could not find key: "+key));
+conformationExplorer.cc:448:	dlAll = _lisp->create<addon::DisplayList_O>();
+conformationExplorer.cc:449:	dlAll->setName(_lisp->internKeyword("stages"));
+conformationExplorer.cc:484:	this->_Binder = _lisp->create<core::Binder_O>();
+conformationExplorer.cc:516:	addon::CoordinateArray_sp coords = _lisp->create<addon::CoordinateArray_O>(numberOfAtoms);
+conformationExplorer.cc:524:		THROW(_lisp->create<core::LispError_O>(BF("You asked a ConformationExplorer to extract coordinates from the Matter(%s) but the ConformationExplorer atom(%s) is not contained within that Matter")%agg->description()%(*ai)->description()));
+conformationExplorer.cc:612:	addon::DisplayList_sp dlAll = _lisp->create<addon::DisplayList_O>();
+conformationExplorer.cc:614:	frames = _lisp->create<addon::FrameList_O>();
+conformationExplorer.cc:615:	frames->setName(_lisp->internKeyword("conformation"));
+conformationExplorer.cc:670:	THROW(_lisp->create<core::LispError_O>("You cannot add superpose atom: "+a->description()+" because it isn't in the ConformationCollection"));
+conformationExplorer.cc:759:	xml = _lisp->create<core::XmlSaveArchive_O>();
+conformationExplorer.cc:776:	THROW(_lisp->create<core::LispError_O>("Could not find entry in ConformationExplorer"));
+conformationExplorer.cc:849:	    THROW(_lisp->create<core::LispError_O>("There must be at least one superpose atom"));
+conformationExplorer.cc:867:	    superposer = _lisp->create<SuperposeEngine_O>();
+conformationExplorer.cc:969:	    THROW(_lisp->create<core::LispError_O>(BF("You have to have the stageName(%s) in all entries")%stageName));
+conformationExplorer.cc:973:	    THROW(_lisp->create<core::LispError_O>("You have to have at least one entry"));
+conformationExplorer.cc:1019:	core::class_<ConformationExplorerEntryStage_O>(lisp->lisp())
+conformationExplorer.cc:1075:    core::class_<ConformationExplorerEntry_O>(lisp->lisp())
+conformationExplorer.cc:1119:    core::class_<ConformationExplorer_O>(lisp->lisp())
+conformationExplorer.cc:1188:    core::class_<ConformationExplorerMatch_O>(lisp->lisp())
+constitution.cc:58:		  THROW(_lisp->error(BF("There is already a plug named: %s") %p->getName()->__repr__() ));
+constitution.cc:75:		  THROW(_lisp->create<core::LispError_O>("There is already a topology named: "+t->getName()->__repr__() ));
+constitution.cc:105:		THROW(_lisp->create<core::LispError_O>("There is already a plug named: "+p->getName()->__repr__() ));
+constitution.cc:122:		THROW(_lisp->create<core::LispError_O>("There is already a topology named: "+t->getName()->__repr__() ));
+constitution.cc:161:	THROW(_lisp->create<core::LispError_O>(boost::format("The residue constitution(%s) is different from the "
+constitution.cc:208:    RepresentativeList_sp allRepresentatives  = _lisp->create<RepresentativeList_O>();
+constitution.cc:243:	THROW(_lisp->create<core::LispError_O>(ss.str() ));
+constitution.cc:247:	THROW(_lisp->create<core::LispError_O>(BF("There are no Topologies with missing ring closing plugs")));
+constitution.cc:680:    this->_ConstitutionAtoms = _lisp->create<ConstitutionAtoms_O>();
+constitution.cc:681:    this->_StereoInformation = _lisp->create<StereoInformation_O>();
+constitution.cc:730:    core::class_<Constitution_O>(lisp->lisp())
+constitutionAtoms.cc:19:	core::class_<ConstitutionBond_O>(lisp->lisp())
+constitutionAtoms.cc:58:	core::class_<ConstitutionAtom_O>(lisp->lisp())
+constitutionAtoms.cc:76:	ConstitutionAtom_sp ta = lisp->create<ConstitutionAtom_O>();
+constitutionAtoms.cc:115:	core::class_<ConstitutionVirtualAtom_O>(lisp->lisp())
+constitutionAtoms.cc:129:	ConstitutionVirtualAtom_sp ta = lisp->create<ConstitutionVirtualAtom_O>();
+constitutionAtoms.cc:139:	ConstitutionVirtualAtom_sp ta = lisp->create<ConstitutionVirtualAtom_O>();
+constitutionAtoms.cc:166:	core::class_<ConstitutionAtoms_O>(lisp->lisp())
+constitutionAtoms.cc:236:	core::StringSet_sp ss = _lisp->create<core::StringSet_O>();
+constitutionAtoms.cc:265:	THROW(_lisp->error(BF("Could not find ConstitutionAtom with name[%s]") % nm ));
+constitutionAtoms.cc:281:	THROW(_lisp->error(BF("Unknown atom[%s]") % name ));
+constitutionAtoms.cc:286:	Residue_sp res = _lisp->create<Residue_O>();
+constitutionAtoms.cc:294:	    Atom_sp atom = _lisp->create<Atom_O>();
+coordSys.cc:257:    c = _lisp->create<CoordinateSystem_O>();
+coordSys.cc:422:    c = _lisp->create<CoordinateSystem_O>();
+coordSys.cc:907:    _lisp->print(BF("origin: ( %lf, %lf, %lf )") %	this->origin.getX()% this->origin.getY() % this->origin.getZ() );
+coordSys.cc:908:    _lisp->print(BF("x-axis: ( %lf, %lf, %lf )") %	this->x.getX()% this->x.getY() % this->x.getZ() );
+coordSys.cc:909:    _lisp->print(BF("y-axis: ( %lf, %lf, %lf )") %	this->y.getX()% this->y.getY() % this->y.getZ() );
+coordSys.cc:910:    _lisp->print(BF("z-axis: ( %lf, %lf, %lf )") %	this->z.getX()% this->z.getY() % this->z.getZ() );
+coordSys.cc:977:	core::class_<CoordinateSystem_O>(lisp->lisp())
+coupling.cc:101:	return lisp->intern(rest,name->getPackage());
+coupling.cc:110:	return lisp->intern(ss.str(),name->getPackage());
+coupling.cc:120:    return lisp->intern(ss.str(),name->getPackage());
+coupling.cc:135:	return lisp->intern(ss.str(),name->getPackage());
+coupling.cc:237:    THROW(_lisp->create<core::ContentException_O>(boost::format("Bad coupling %s") % this->sharedThis<DirectionalCoupling_O>()->description() ));
+coupling.cc:408:    THROW(_lisp->create<core::ContentException_O>(boost::format("Monomer is not in coupling %s") % mon->description()));
+coupling.cc:511:THROW(_lisp->create<core::LispError_O>("I wasn't sure if this was ever called.  Take out this THROW if it is"));
+coupling.cc:551:    return _lisp->intern(name,this->_Plug1->getPackage());
+coupling.cc:601:    THROW(_lisp->create<core::ContentException_O>(boost::format("Monomer is not in coupling %s" ) % mon->description()));
+coupling.cc:668:    THROW(_lisp->create<core::ContentException_O>(boost::format("Bad coupling %s" ) % this->sharedThis<RingCoupling_O>()->description() ));
+coupling.cc:792:    core::class_<Coupling_O>(lisp->lisp())
+coupling.cc:823:    core::class_<DirectionalCoupling_O>(lisp->lisp())
+coupling.cc:868:    core::class_<RingCoupling_O>(lisp->lisp())
+elements.cc:310:    core::SymbolToEnumConverter_sp elementConverter = lisp->create<core::SymbolToEnumConverter_O>("Element");
+elements.cc:315:	    core::Symbol_sp sym = lisp->internKeyword(ai->_AtomicSymbol);
+elements.cc:316:	    elementConverter->addSymbolEnumPair(sym,_lisp->intern(ai->_AtomicSymbol),ai->_ElementEnum);
+elements.cc:319:    lisp->hiddenBinder()->extend(_sym_elementToSymbolConverter,elementConverter);
+elements.cc:324:    core::SymbolToEnumConverter_sp hybridizationConverter = lisp->create<core::SymbolToEnumConverter_O>("Hybridization");
+elements.cc:327:	core::Symbol_sp sym = lisp->internKeyword(hi->_HybridizationSymbol);
+elements.cc:328:	hybridizationConverter->addSymbolEnumPair(sym,_lisp->intern(hi->_HybridizationSymbol),hi->_HybridizationEnum);
+elements.cc:330:    lisp->hiddenBinder()->extend(_sym_hybridizationToSymbolConverter,hybridizationConverter);
+elements.cc:336:    core::IntegerKeyObjectDictionary_sp dict = lisp->create<core::IntegerKeyObjectDictionary_O>();
+elements.cc:337:    lisp->defvar(elementColors,dict);
+elements.cc:354:    core::SymbolToEnumConverter_sp elementConverter = lisp->hiddenBinder()->lookup(_sym_elementToSymbolConverter)->as<core::SymbolToEnumConverter_O>();
+elements.cc:363:    core::SymbolToEnumConverter_sp hybridizationConverter = lisp->hiddenBinder()->lookup(_sym_hybridizationToSymbolConverter)->as<core::SymbolToEnumConverter_O>();
+elements.cc:380:    core::SymbolToEnumConverter_sp elementConverter = lisp->hiddenBinder()->lookup(_sym_elementToSymbolConverter)->as<core::SymbolToEnumConverter_O>();
+elements.cc:387:    core::SymbolToEnumConverter_sp hybridizationConverter = lisp->hiddenBinder()->lookup(_sym_hybridizationToSymbolConverter)->as<core::SymbolToEnumConverter_O>();
+elements.cc:394:    core::SymbolToEnumConverter_sp hybridizationConverter = lisp->hiddenBinder()->lookup(_sym_hybridizationToSymbolConverter)->as<core::SymbolToEnumConverter_O>();
+elements.cc:395:    return hybridizationConverter->enumForSymbol<Hybridization>(_lisp->intern(sym));
+elements.cc:401:    core::SymbolToEnumConverter_sp hybridizationConverter = lisp->hiddenBinder()->lookup(_sym_hybridizationToSymbolConverter)->as<core::SymbolToEnumConverter_O>();
+elements.cc:407:    core::SymbolToEnumConverter_sp elementConverter = lisp->hiddenBinder()->lookup(_sym_elementToSymbolConverter)->as<core::SymbolToEnumConverter_O>();
+elements.cc:440:    core::SymbolToEnumConverter_sp elementConverter = lisp->hiddenBinder()->lookup(_sym_elementToSymbolConverter)->as<core::SymbolToEnumConverter_O>();
+energyAnchorRestraint.cc:281:		    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
+energyAnchorRestraint.cc:282:		    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
+energyAnchorRestraint.cc:283:		    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
+energyAngle.cc:235:	_lisp->print(BF("TERM 2ANG %-9s - %-9s - %-9s %8.2lf %8.2lf")
+energyAngle.cc:422:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
+energyAngle.cc:423:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
+energyAngle.cc:424:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
+energyAngle.cc:425:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx2>10000.0);
+energyAngle.cc:426:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy2>10000.0);
+energyAngle.cc:427:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz2>10000.0);
+energyAngle.cc:428:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx3>10000.0);
+energyAngle.cc:429:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy3>10000.0);
+energyAngle.cc:430:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz3>10000.0);
+energyAtomTable.cc:111:	    THROW(_lisp->error(BF("Could not find atom[%s] in AtomTable") % a->__repr__() ));
+energyAtomTable.cc:157:	core::class_<AtomTable_O>(lisp->lisp())
+energyAtomTable.cc:180:	_lisp->print(BF("(TERM 0ATOM %-9s %-9s :charge %8.5lf :mass %8.5lf :typeIndex %d)")
+energyChiralRestraint.cc:355:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
+energyChiralRestraint.cc:356:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
+energyChiralRestraint.cc:357:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
+energyChiralRestraint.cc:358:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx2>10000.0);
+energyChiralRestraint.cc:359:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy2>10000.0);
+energyChiralRestraint.cc:360:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz2>10000.0);
+energyChiralRestraint.cc:361:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx3>10000.0);
+energyChiralRestraint.cc:362:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy3>10000.0);
+energyChiralRestraint.cc:363:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz3>10000.0);
+energyChiralRestraint.cc:364:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx4>10000.0);
+energyChiralRestraint.cc:365:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy4>10000.0);
+energyChiralRestraint.cc:366:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz4>10000.0);
+energyDihedral.cc:323:	_lisp->print(BF("TERM 3DIH %s %-9s - %-9s - %-9s - %-9s %8.2lf %8.2lf %2.0lf")
+energyDihedral.cc:533:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
+energyDihedral.cc:534:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
+energyDihedral.cc:535:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
+energyDihedral.cc:536:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx2>10000.0);
+energyDihedral.cc:537:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy2>10000.0);
+energyDihedral.cc:538:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz2>10000.0);
+energyDihedral.cc:539:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx3>10000.0);
+energyDihedral.cc:540:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy3>10000.0);
+energyDihedral.cc:541:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz3>10000.0);
+energyDihedral.cc:542:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx4>10000.0);
+energyDihedral.cc:543:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy4>10000.0);
+energyDihedral.cc:544:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz4>10000.0);
+energyFixedNonbond.cc:195:	THROW(_lisp->create<core::LispError_O>(serr.str()));
+energyFixedNonbond.cc:213:	_lisp->print(BF( "TERM 6FIXED_NONBOND %-9s") % as1.c_str() );
+energyFixedNonbond.cc:241:	color = O_GrColor::systemColor(_lisp->symbol(_kw_yellow));
+energyFixedNonbond.cc:389:			    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
+energyFixedNonbond.cc:390:			    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
+energyFixedNonbond.cc:391:			    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
+energyFunction.cc:108:	THROW(_lisp->create<core::LispError_O>("Error compiling secondary amide MSMARTS"));
+energyFunction.cc:114:	core::class_<EnergyFunction_O>(lisp->lisp())
+energyFunction.cc:279:	    THROW(_lisp->error(BF("You must provide a forceField if you provide a matter object")));
+energyFunction.cc:290:    Matter_sp matter = env->lookup(_lisp->internWithPackageName(ChemPkg,"matter"))->as<Matter_O>();
+energyFunction.cc:291:    ForceField_sp forceField = env->lookup(_lisp->internWithPackageName(ChemPkg,"forceField"))->as<ForceField_O>();
+energyFunction.cc:299:	    THROW(_lisp->error(BF("You must provide a forceField if you provide a matter object")));
+energyFunction.cc:422:	THROW(_lisp->error(BF("Unknown EnergyFunction setOption keyword[%s]") % option->__repr__() ));
+energyFunction.cc:515:    _lisp->profiler().timer(core::timerPreconditioner).start();
+energyFunction.cc:516:    _lisp->profiler().timer(core::timerPreconditionerSetup).start();
+energyFunction.cc:532:    _lisp->profiler().timer(core::timerPreconditionerSetup).stop();
+energyFunction.cc:533:    _lisp->profiler().timer(core::timerPreconditioner).stop();
+energyFunction.cc:546:    THROW(_lisp->create<core::LispError_O>("Should there be something here?"));
+energyFunction.cc:618:	THROW(_lisp->create<core::LispError_O>("Force does not have the necessary dimensions"));
+energyFunction.cc:623:	THROW(_lisp->create<core::LispError_O>("Inconsistant arguments: if you want to calcDiagonalHessian or calcOffDiagonalHessian you must calcForce"));
+energyFunction.cc:626:	THROW(_lisp->create<core::LispError_O>("Inconsistant arguments: if you want to calcOffDiagonalHessian you must calcDiagonalHessian"));
+energyFunction.cc:629:    _lisp->profiler().pushTimerStates();
+energyFunction.cc:641:	_lisp->profiler().timer(core::timerEnergy).start();
+energyFunction.cc:643:	_lisp->profiler().timer(core::timerBondAngleDihedral).start();
+energyFunction.cc:648:	_lisp->profiler().timer(core::timerBond).start();
+energyFunction.cc:653:	_lisp->profiler().timer(core::timerBond).stop();
+energyFunction.cc:655:	_lisp->profiler().timer(core::timerAngle).start();
+energyFunction.cc:660:	_lisp->profiler().timer(core::timerAngle).stop();
+energyFunction.cc:662:	_lisp->profiler().timer(core::timerDihedral).start();
+energyFunction.cc:667:	_lisp->profiler().timer(core::timerDihedral).stop();
+energyFunction.cc:668:	_lisp->profiler().timer(core::timerBondAngleDihedral).stop();
+energyFunction.cc:670:	_lisp->profiler().timer(core::timerNonbond).start();
+energyFunction.cc:673:	_lisp->profiler().timer(core::timerNonbond).stop();
+energyFunction.cc:675:	_lisp->profiler().timer(core::timerImproperRestraint).start();
+energyFunction.cc:678:	_lisp->profiler().timer(core::timerImproperRestraint).stop();
+energyFunction.cc:680:	_lisp->profiler().timer(core::timerChiralRestraint).start();
+energyFunction.cc:683:	_lisp->profiler().timer(core::timerChiralRestraint).stop();
+energyFunction.cc:685:	_lisp->profiler().timer(core::timerAnchorRestraint).start();
+energyFunction.cc:688:	_lisp->profiler().timer(core::timerAnchorRestraint).stop();
+energyFunction.cc:690:	_lisp->profiler().timer(core::timerFixedNonbondRestraint).start();
+energyFunction.cc:693:	_lisp->profiler().timer(core::timerFixedNonbondRestraint).stop();
+energyFunction.cc:706:	_lisp->profiler().timer(core::timerEnergy).stop();
+energyFunction.cc:709:        _lisp->profiler().popTimerStates();
+energyFunction.cc:710:	THROW(_lisp->create<core::LispError_O>(BF("Interaction problem: %s")% ld.message() ));
+energyFunction.cc:712:    _lisp->profiler().popTimerStates();
+energyFunction.cc:1024:	THROW(_lisp->create<core::LispError_O>(BF("evaluateNumericalHessian must have the right size")));
+energyFunction.cc:1058:    report = _lisp->create<ForceMatchReport_O>();
+energyFunction.cc:1328:        THROW(_lisp->create<core::LispError_O>("You can only define energy functions for Aggregates or Molecules"));
+energyFunction.cc:1363:    lisp->print(BF("%s:%d There were %d atoms") % __FILE__ % __LINE__ % this->_AtomTable.size() );
+energyFunction.cc:1386:    lisp->print(BF("%s:%d There were %d stretch terms") % __FILE__ % __LINE__ % this->_Stretch.size() );
+energyFunction.cc:1440:		_lisp->print(BF("%s") % ss.str() );
+energyFunction.cc:1442:		THROW(_lisp->create<core::LispError_O>(ss.str()));
+energyFunction.cc:1617:			THROW(_lisp->create<core::LispError_O>(BF("Chiral center (%s) with configuration settings[%s] doesn't have its configuration set")
+energyFunction.cc:1791:	THROW(_lisp->create<core::LispError_O>("NVector is the incorrect length"));
+energyFunction.cc:1902:	    THROW(_lisp->create<core::LispError_O>("EnergyFunction_O::dealWithProblem>> I am not handling this problem yet"));
+energyImproperRestraint.cc:391:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
+energyImproperRestraint.cc:392:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
+energyImproperRestraint.cc:393:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
+energyImproperRestraint.cc:394:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx2>10000.0);
+energyImproperRestraint.cc:395:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy2>10000.0);
+energyImproperRestraint.cc:396:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz2>10000.0);
+energyImproperRestraint.cc:397:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx3>10000.0);
+energyImproperRestraint.cc:398:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy3>10000.0);
+energyImproperRestraint.cc:399:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz3>10000.0);
+energyImproperRestraint.cc:400:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx4>10000.0);
+energyImproperRestraint.cc:401:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy4>10000.0);
+energyImproperRestraint.cc:402:		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz4>10000.0);
+energyNonbond.cc:83://     	THROW(_lisp->create<core::LispError_O>("Unknown force field type(",iea1->_Atom->getTypeString().c_str(),") for non-bonded interaction"));
+energyNonbond.cc:89://     	THROW(_lisp->create<core::LispError_O>("Unknown force field type(",iea2->_Atom->getTypeString().c_str(),") for non-bonded interaction"));
+energyNonbond.cc:266:		_lisp->print(BF("TERM 4CALC14 %-9s - %-9s") %	str1 % str2 );
+energyNonbond.cc:268:		_lisp->print(BF("TERM 5NONBOND %-9s - %-9s") %	str1 % str2 );
+energyNonbond.cc:297:	    color = addon::Color_O::systemColor(_lisp->symbol(addon::_kw_yellow));
+energyNonbond.cc:351:	THROW(_lisp->create<core::LispError_O>("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!"));
+energyNonbond.cc:448:			_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
+energyNonbond.cc:449:			_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
+energyNonbond.cc:450:			_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
+energyNonbond.cc:451:			_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx2>10000.0);
+energyNonbond.cc:452:			_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy2>10000.0);
+energyNonbond.cc:453:			_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz2>10000.0);
+energyStretch.cc:333:	    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
+energyStretch.cc:334:	    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
+energyStretch.cc:335:	    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
+energyStretch.cc:336:	    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx2>10000.0);
+energyStretch.cc:337:	    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy2>10000.0);
+energyStretch.cc:338:	    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz2>10000.0);
+energyStretch.cc:493:	_lisp->print(BF("TERM 1BND %-9s - %-9s %8.2lf %8.2lf") 
+entity.cc:66:	core::Binder_sp binder = _lisp->create<core::Binder_O>();
+entity.cc:84:	RepresentativeList_sp minimalList = _lisp->create<RepresentativeList_O>();
+entity.cc:96:    core::class_<Entity_O>(lisp->lisp())
+entityNameSet.cc:72:	core::SymbolSet_sp entityNames = _lisp->create<core::SymbolSet_O>();
+entityNameSet.cc:86:	    core::SymbolSet_sp entityNames = _lisp->create<core::SymbolSet_O>();
+entityNameSet.cc:122:	THROW(_lisp->create<core::LispError_O>("Subclass must implement for alias: "+alias->__repr__()));
+entityNameSet.cc:197:	allRepresentatives = _lisp->create<RepresentativeList_O>();
+entityNameSet.cc:246:	    THROW(_lisp->create<core::LispError_O>("Unknown monomer name: "+nm->__repr__()));
+entityNameSet.cc:345:	    THROW(_lisp->create<core::LispError_O>("There must be only one equivalent name"));
+entityNameSet.cc:481:	this->_Name = _lisp->intern("undefinedEntityNameSetName");
+entityNameSet.cc:583:	core::class_<EntityNameSetBase_O>(lisp->lisp())
+entityNameSet.cc:657:	core::class_<EntityNameSet_O>(lisp->lisp())
+entityNameSet.cc:681:	core::class_<EntityNameSetWithCap_O>(lisp->lisp())
+externalInterface.cc:35:	this->_Data = _lisp->create<addon::ObjectDictionary_O>();
+externalInterface.cc:210:		    THROW(_lisp->create<core::LispError_O>("In summary file: "+fileName.string()+" did not recognize atom named: "+atomName));
+externalInterface.cc:222:	    THROW(_lisp->create<core::LispError_O>("Not enough coordinates"));
+externalInterface.cc:230:	core::class_<ExternalInterface_O>(lisp->lisp())
+ffAngleDb.cc:185:    //THROW(_lisp->create<core::LispError_O>(ss.str()));
+ffAngleDb.cc:261:    angle = _lisp->create<FFAngle_O>();
+ffAngleDb.cc:270:    angle = _lisp->create<FFAngle_O>();
+ffBaseDb.cc:69:    core::class_<FFParameter_O>(lisp->lisp())
+ffBaseDb.cc:88:    core::class_<FFBaseDb_O>(lisp->lisp())
+ffItorDb.cc:80:        THROW(_lisp->create<core::LispError_O>("Illegal index for getV"));
+ffItorDb.cc:88:        THROW(_lisp->create<core::LispError_O>("Illegal index for setV"));
+ffItorDb.cc:117:        THROW(_lisp->create<core::LispError_O>("Illegal index for getPhaseRad"));
+ffItorDb.cc:125:        THROW(_lisp->create<core::LispError_O>("Illegal index for setPhaseRad"));
+ffItorDb.cc:263:    THROW(_lisp->create<core::LispError_O>(ss.str()));
+ffNonbondDb.cc:216:        THROW(_lisp->create<core::LispError_O>(boost::format("Adding nonbonded( %s ) to database but it's already there") % nb->getType() ));
+ffNonbondDb.cc:254:	THROW(_lisp->create<core::LispError_O>("Unknown type("+type+")"));
+ffPtorDb.cc:67:    THROW(_lisp->create<core::LispError_O>(ss.str()));
+ffPtorDb.cc:100:        THROW(_lisp->create<core::LispError_O>("Illegal periodicity for hasPeriodicity"));
+ffPtorDb.cc:111:        THROW(_lisp->create<core::LispError_O>("Illegal periodicity for getV"));
+ffPtorDb.cc:119:        THROW(_lisp->create<core::LispError_O>("Illegal periodicity for setV"));
+ffPtorDb.cc:139:        THROW(_lisp->create<core::LispError_O>(BF("Illegal periodicity[%d] for getPhaseRad - must be in [1,%d]") % idx % MaxPeriodicity ));
+ffPtorDb.cc:147:        THROW(_lisp->create<core::LispError_O>("Illegal periodicity for setPhaseRad"));
+ffStretchDb.cc:58:	core::class_<FFStretchDb_O>(lisp->lisp())
+ffStretchDb.cc:117:    THROW(_lisp->create<core::LispError_O>(ss.str()));
+ffStretchDb.cc:145:    THROW(_lisp->create<core::LispError_O>(ss.str()));
+ffStretchDb.cc:214:	core::class_<FFStretch_O>(lisp->lisp())
+ffTypesDb.cc:96:    core::class_<FFTypesDb_O>(lisp->lisp())
+forceField.cc:93:    xml = _lisp->create<core::XmlSaveArchive_O>();
+forceField.cc:167:    core::class_<ForceField_O>(lisp->lisp())
+frameRecognizer.cc:25:	THROW(_lisp->create<core::LispError_O>(BF("Error compiling ChemInfo: %s") % this->_ChemInfo));
+frameRecognizer.cc:61:	    THROW(_lisp->create<core::ArchiveError_O>(BF("Could not parse Smarts code for %s %s")% this->_Smarts % err.message(), node ));
+frameRecognizer.cc:146:	THROW(_lisp->create<core::LispError_O>(me->_ChemInfo->compilerMessage()));
+frameRecognizer.cc:162:	THROW(_lisp->create<core::LispError_O>(this->_ChemInfo->compilerMessage()));
+frameRecognizer.cc:171:    core::class_<FrameRecognizer_O>(lisp->lisp())
+grPickableMatter.cc:35:	core::class_<RenderMatterAtom_O>(lisp->lisp())
+grPickableMatter.cc:51:    this->_ShowLabel = atom->getPropertyOrDefault(addon::_kw_showLabel,_lisp->_false())->isTrue();
+grPickableMatter.cc:61:    bool colorByElement = atom->getPropertyOrDefault(addon::_kw_colorByElement,_lisp->_true())->isTrue();
+grPickableMatter.cc:117:	core::class_<RenderMatterBond_O>(lisp->lisp())
+grPickableMatter.cc:159:	core::class_<RenderMatterResidue_O>(lisp->lisp())
+grPickableMatter.cc:193:    core::class_<GrPickableMatter_O>(lisp->lisp())
+grPickableMatter.cc:210:    this->setName(_lisp->internKeyword("matter"));
+grPickableMatter.cc:264:		    THROW(_lisp->error(BF("A child of %s name(%s) specifically(%s) does not have it as a parent") % this->description() % this->getName() % (*it)->description() ));
+grPickableMatter.cc:351:    this->_AtomPoints = _lisp->create<addon::GrPickablePoints_O>();
+grPickableMatter.cc:362:    this->_BondLines = _lisp->create<addon::GrPickableLines_O>();
+grPickableMatter.cc:428:	    grMatterAtom = _lisp->create<RenderMatterAtom_O>();
+grPickableMatter.cc:438:	grMatterBond = _lisp->create<RenderMatterBond_O>();
+grPickableMatter.cc:449:	    THROW(_lisp->create<core::LispError_O>("A bond was found that contained an atom that hasn't been seen"));
+improperTorsion.cc:18:	core::class_<ImproperTorsion_O>(lisp->lisp())
+iterateMatter.cc:17:	core::class_<IterateMatter_O>(lisp->lisp())
+iterateMatter.cc:171:	Matter_sp matter = env->lookup(lisp->internWithPackageName(ChemPkg,"matter"))->as<Matter_O>();
+iterateMatter.cc:284:	    core::class_<IterateAtoms_O>(lisp->lisp())
+iterateMatter.cc:306:	core::class_<IterateResidues_O>(lisp->lisp())
+iterateMatter.cc:328:	core::class_<IterateBonds_O>(lisp->lisp())
+iterateRestraints.cc:79:    core::class_<IterateRestraints_O>(lisp->lisp())
+jobHistory.cc:74:    core::class_<TrainerHistoryEntry_O>(lisp->lisp())
+jobHistory.cc:105:    core::class_<TrainerHistory_O>(lisp->lisp())
+largeSquareMatrix.cc:80:	THROW(_lisp->create<core::LispError_O>(BF("Illegal coordinates for %s[%u,%u]") % this->className() % x % y ));
+largeSquareMatrix.cc:151:		_lisp->print(BF(" "));
+largeSquareMatrix.cc:153:	    _lisp->print(BF("%12.7lf") % this->element(x,y));
+largeSquareMatrix.cc:155:	_lisp->print(BF(""));
+largeSquareMatrix.cc:166:	THROW(_lisp->create<core::LispError_O>("Result vector does not have the correct dimension"));
+largeSquareMatrix.cc:169:	THROW(_lisp->create<core::LispError_O>("Argument vector does not have the correct dimension"));
+largeSquareMatrix.cc:285:	THROW(_lisp->create<core::LispError_O>("Out of bounds in indicesFromValuePtr"));
+largeSquareMatrix.cc:306:	THROW(_lisp->create<core::LispError_O>("Test this function rigorously before using it"));
+largeSquareMatrix.cc:308:	THROW(_lisp->create<core::LispError_O>("Illegal triangle type"));
+largeSquareMatrix.cc:419:	THROW(_lisp->create<core::LispError_O>("SparseMatrix InsertionIsComplete so no more entries may be inserted"));
+largeSquareMatrix.cc:422:	THROW(_lisp->create<core::LispError_O>("Overflow in matrix operation"));
+largeSquareMatrix.cc:529:        _lisp->print(BF("Out of bounds at: %s line: %d") % __FILE__% __LINE__ );
+largeSquareMatrix.cc:530:	_lisp->print(BF("Looking for point: %u, %u") % x% y );
+largeSquareMatrix.cc:531:	_lisp->print(BF("Calculated: %u") % ret );
+largeSquareMatrix.cc:532:	_lisp->print(BF("this->_Values.size() = %u") % this->_Values.size() );
+largeSquareMatrix.cc:534:	THROW(_lisp->create<core::LispError_O>("Calculated a position that is beyond the range of Values"));
+largeSquareMatrix.cc:567:    _lisp->print(BF("this->_Rows = %d") % this->_Rows );
+largeSquareMatrix.cc:568:    _lisp->print(BF("this->_Columns = %d") % this->_Columns );
+largeSquareMatrix.cc:572:	_lisp->print(BF("Row%3d [%3d-%3d]: ") % r % ib % ie );
+largeSquareMatrix.cc:575:	    _lisp->print(BF(" x%d@%-3d") % this->_ColumnForValue[i] % i );
+largeSquareMatrix.cc:577:	_lisp->print(BF( "" ));
+largeSquareMatrix.cc:579:    _lisp->print(BF("Columns: "));
+largeSquareMatrix.cc:581:	_lisp->prin1(BF("x%d@%d ") % this->_ColumnForValue[i] % i);
+largeSquareMatrix.cc:583:    _lisp->print(BF("Number of values: %u") % this->_Values.size() );
+largeSquareMatrix.cc:604:		THROW(_lisp->create<core::LispError_O>(ss.str()));
+largeSquareMatrix.cc:625:		THROW(_lisp->create<core::LispError_O>(ss.str()));
+largeSquareMatrix.cc:635:	    _lisp->print(BF("Failing in %s line: %d") % __FILE__% __LINE__ );
+largeSquareMatrix.cc:636:	    _lisp->print(BF("Trying to add to element at: %u, %u") % x% y );
+largeSquareMatrix.cc:637:	    _lisp->print(BF( "inserted dp = %u") % dp );
+largeSquareMatrix.cc:638:	    _lisp->print(BF( "initial dp = %u") % idp );
+largeSquareMatrix.cc:639:	    _lisp->print(BF( "inserted = %d") % inserted );
+largeSquareMatrix.cc:640:	    _lisp->print(BF( "this->_Values.size() = %u") % this->_Values.size() );
+largeSquareMatrix.cc:641:	    _lisp->print(BF( "this->_InsertionIsComplete = %d") % this->_InsertionIsComplete );
+linearAlgebra.cc:54:_lisp->profiler().timer(core::timerPreconditioner).start();
+linearAlgebra.cc:55:_lisp->profiler().timer(core::timerPreconditionerSolver).start();
+linearAlgebra.cc:56:_lisp->profiler().timer(core::timerPreconditionerSolverFactor).start();
+linearAlgebra.cc:89:        _lisp->profiler().timer(core::timerPreconditionerSolverFactorFocus).start();
+linearAlgebra.cc:147:		THROW(_lisp->create<core::LispError_O>(ss.str().c_str()));
+linearAlgebra.cc:155:        _lisp->profiler().timer(core::timerPreconditionerSolverFactorFocus).stop();
+linearAlgebra.cc:181:    _lisp->profiler().timer(core::timerPreconditionerSolverFactor).stop();
+linearAlgebra.cc:182:    _lisp->profiler().timer(core::timerPreconditionerSolver).stop();
+linearAlgebra.cc:183:    _lisp->profiler().timer(core::timerPreconditioner).stop();
+linearAlgebra.cc:193:    _lisp->profiler().timer(core::timerPreconditioner).start();
+linearAlgebra.cc:194:    _lisp->profiler().timer(core::timerPreconditionerSolver).start();
+linearAlgebra.cc:195:    _lisp->profiler().timer(core::timerPreconditionerSolverBackSubstitute).start();
+linearAlgebra.cc:221:    _lisp->profiler().timer(core::timerPreconditionerSolverBackSubstitute).stop();
+linearAlgebra.cc:222:    _lisp->profiler().timer(core::timerPreconditionerSolver).stop();
+linearAlgebra.cc:223:    _lisp->profiler().timer(core::timerPreconditioner).stop();
+loop.cc:221:	THROW(_lisp->create<core::LispError_O>("Attempt to loop over null object"));
+macroModel.cc:60:	core::class_<MacroModelFile_O>(lisp->lisp())
+macroModel.cc:373:    mol = _lisp->create<Molecule_O>();
+macroModel.cc:380:	    res = _lisp->create<Residue_O>();
+macroModel.cc:396:	aPAtom = _lisp->create<Atom_O>();
+matter.cc:155:	    this->_Restraints = _lisp->create<RestraintList_O>();
+matter.cc:203:	this->_Properties.set(prop,_lisp->_boolean(true));
+matter.cc:212:	    THROW(_lisp->error(BF("You asked for an unknown property[%s] for matter[%s@%p] - the available properties are[%s]") % prop->__repr__() % this->__repr__() % this % props.str()  ));
+matter.cc:245:	THROW(_lisp->create<core::ContentException_O>("Could not find atom with name: "+name));
+matter.cc:315:	THROW(_lisp->create<core::ContentException_O>(ss.str()));
+matter.cc:393:	THROW(_lisp->create<core::LispError_O>(ss.str()));
+matter.cc:415:	THROW(_lisp->create<core::LispError_O>(ss.str()));
+matter.cc:459:	THROW(_lisp->create<core::LispError_O>(ss.str()));
+matter.cc:502:	THROW(_lisp->create<core::LispError_O>("Content with id was not found"));
+matter.cc:528:	THROW(_lisp->create<core::LispError_O>("Content not found" ));
+matter.cc:744:	    THROW(_lisp->create<core::LispError_O>("Needs Aggregate, Molecule or Residue"));
+matter.cc:753:		THROW(_lisp->create<core::LispError_O>("Each entry must have two elements: "+oneExtend->__repr__() ));
+matter.cc:850:	atoms = _lisp->create<addon::ObjectList_O>();
+matter.cc:865:	atoms = _lisp->create<addon::ObjectList_O>();
+matter.cc:897:	THROW(_lisp->create<core::LispError_O>("could not find aliasResidue"));
+matter.cc:911:	THROW(_lisp->create<core::LispError_O>("could not find aliasAtom"));
+matter.cc:1178:	core::class_<Matter_O>(lisp->lisp())
+mbbCoreTools.cc:212://	lisp->print(BF("Number of unconnected atoms(%d)") % atoms.size() );
+mbbCoreTools.cc:213://	lisp->print(BF("Number of atoms connected by vdw overlap(%d)") % numVdwConnected);
+minimizer.cc:75:	core::class_<MinimizerError_O>(lisp->lisp())
+minimizer.cc:100:	core::class_<MinimizerExceededMaxSteps_O>(lisp->lisp())
+minimizer.cc:124:	core::class_<MinimizerStuck_O>(lisp->lisp())
+minimizer.cc:225:	core::class_<Minimizer_O>(lisp->lisp())
+minimizer.cc:357:	THROW(_lisp->create<core::LispError_O>("When initializing a Minimizer object you must either provide an (energyFunction) or a (Matter/ForceField) pair"));
+minimizer.cc:368:	Matter_sp matter = env->lookup(lisp->internWithPackageName(ChemPkg,"matter"))->as<Matter_O>();
+minimizer.cc:369:	ForceField_sp forceField = env->lookup(lisp->internWithPackageName(ChemPkg,"forceField"))->as<ForceField_O>();
+minimizer.cc:370:	EnergyFunction_sp givenEnergyFunction = env->lookup(lisp->internWithPackageName(ChemPkg,"energyFunction"))->as<EnergyFunction_O>();
+minimizer.cc:390:	    THROW(_lisp->create<core::LispError_O>("When initializing a Minimizer object you must either provide an (energyFunction) or a (Matter/ForceField) pair"));
+minimizer.cc:878:    THROW(_lisp->create<MinimizerExceededMaxSteps_O>("test throw of MinimizerExceededMaxSteps"));
+minimizer.cc:883:    THROW(_lisp->create<MinimizerStuck_O>("test throw of MinimizerStuck"));
+minimizer.cc:889:    THROW(_lisp->create<MinimizerError_O>("test throw of MinimizerError"));
+minimizer.cc:1047:	_lisp->print(BF("%s") % sout.str() );
+minimizer.cc:1134:	    THROW(_lisp->create<core::LispError_O>("Unsupported preconditioner"));
+minimizer.cc:1146:	    _lisp->print(BF( "======= Starting Steepest Descent Minimizer" ));
+minimizer.cc:1161:			_lisp->print(BF("DONE absolute force test:\nforceRmsMag(%lf).LT.forceTolerance(%lf)") % forceRmsMag % forceTolerance );
+minimizer.cc:1247:			_lisp->print(BF("Minimizer_O::steepestDescentWithPreconditioner>> energy function messages: %s")%
+minimizer.cc:1290:			THROW(_lisp->create<core::LispError_O>("Unsupported preconditioner"));
+minimizer.cc:1329:	    THROW(_lisp->create<MinimizerExceededMaxSteps_O>(fail.message()));
+minimizer.cc:1422:	THROW(_lisp->create<core::LispError_O>("Unknown preconditioner option"));
+minimizer.cc:1435:	_lisp->print(BF( "======= Starting Conjugate Gradient Minimizer" ));
+minimizer.cc:1449:		    _lisp->print(BF("DONE absolute force test:\nforceRmsMag(%lf).LT.forceTolerance(%lf)")% forceRmsMag % forceTolerance );
+minimizer.cc:1460:			_lisp->print(BF( "Exceeded max number of steps(%d)") % numSteps );
+minimizer.cc:1582:		    THROW(_lisp->create<core::LispError_O>("Unknown preconditioner option"));
+minimizer.cc:1625:	THROW(_lisp->create<MinimizerExceededMaxSteps_O>(fail.message()));
+minimizer.cc:1642:	THROW(_lisp->create<MinimizerStuck_O>(fail.message()));
+minimizer.cc:1907://	_lisp->print(BF("======= Starting Steepest Descent Minimizer\nn" );
+minimizer.cc:1908://	_lisp->print(BF( "======= Starting Conjugate Gradient Minimizer" ));
+minimizer.cc:1909:	_lisp->print(BF( "======= Starting Truncated Newton Minimizer" ));
+minimizer.cc:1978:		    _lisp->print(BF( "search complete according to b1aTest" ));
+minimizer.cc:1987:		    _lisp->print(BF( "search complete according to b1bTest" ));
+minimizer.cc:1995:		    _lisp->print(BF( "search complete according to absolute force test" ));
+minimizer.cc:2006:		    _lisp->print(BF( "search complete according to b1cTest" ));
+minimizer.cc:2013:		    _lisp->print(BF( "search complete according to b1dTest" ));
+minimizer.cc:2062:	THROW(_lisp->create<MinimizerExceededMaxSteps_O>(fail.message()));
+minimizer.cc:2125:	    _lisp->print(BF("Evaluating energy step#%d") % iCount );
+minimizer.cc:2234:	THROW(_lisp->create<core::LispError_O>("You must define an energy function to minimize"));
+minimizer.cc:2254:	THROW(_lisp->create<core::LispError_O>("You must define an energy function to minimize"));
+minimizer.cc:2270:		    _lisp->print(BF("Dealt with problem(%s)") % ld._Message.c_str());
+minimizer.cc:2279:	THROW(_lisp->create<MinimizerExceededMaxSteps_O>(this->_Message.str()));
+minimizer.cc:2284:	THROW(_lisp->create<MinimizerError_O>(this->_Message.str()));
+minimizer.cc:2300:	THROW(_lisp->create<core::LispError_O>("You must define an energy function to minimize"));
+minimizer.cc:2316:		    _lisp->print(BF("Dealt with problem(%s)") % ld._Message.c_str());
+minimizer.cc:2325:	THROW(_lisp->create<MinimizerExceededMaxSteps_O>(this->_Message.str()));
+minimizer.cc:2330:	THROW(_lisp->create<MinimizerStuck_O>(this->_Message.str()));
+minimizer.cc:2335:	THROW(_lisp->create<MinimizerError_O>(this->_Message.str()));
+minimizer.cc:2357:	THROW(_lisp->create<core::LispError_O>("You must define an energy function to minimize"));
+minimizer.cc:2383:		    _lisp->print(BF("Dealt with problem(%s)") % ld._Message.c_str());
+minimizer.cc:2392:	THROW(_lisp->create<MinimizerExceededMaxSteps_O>(this->_Message.str()));
+minimizer.cc:2397:	THROW(_lisp->create<MinimizerStuck_O>(this->_Message.str()));
+minimizer.cc:2402:	THROW(_lisp->create<MinimizerError_O>(this->_Message.str()));
+moe.cc:417:	THROW(_lisp->create<core::LispError_O>("Invalid moe header"));
+moe.cc:502:	    THROW(_lisp->create<core::LispError_O>(boost::format("Could not open MOE file: %s") % errStr ));
+moe.cc:701:		THROW(_lisp->create<core::LispError_O>(err.str()));
+moe.cc:840:			THROW(_lisp->create<core::LispError_O>("Unknown bond order type: "+f.nextParaTableFieldType(2)));
+moe.cc:843:		    THROW(_lisp->create<core::LispError_O>("Invalid bond entry in moe file" ));
+moe.cc:1291:	    THROW(_lisp->create<core::LispError_O>( "moeReadAggregateWithAtomTypesFromFileName-- there were no types in the file" ));
+mol2.cc:85:	    THROW(_lisp->create<core::LispError_O>(boost::format("Mol2 file doesn't exist: %s" ) % fileName ));
+mol2.cc:260:	    THROW(_lisp->create<core::LispError_O>(boost::format("Mol2 file encountered data line when expecting command line in top level: %s") % fIn.line().str() ));
+mol2.cc:281:	        THROW(_lisp->create<core::LispError_O>(boost::format("Mol2 file encountered cmd line when expecting data line: %s") % fIn.line().str() ));
+mol2.cc:358:		    THROW(_lisp->create<core::LispError_O>("First entry of SUBSTRUCTURE records are not valid"));
+mol2.cc:406:	    _lisp->print(BF("Ignoring mol2 command: %s") % line.c_str() );
+mol2.cc:418:	THROW(_lisp->create<core::LispError_O>("There can be only one @<TRIPOS>MOLECULE entry"));
+mol2.cc:507:		    THROW(_lisp->create<core::LispError_O>(boost::format("Could not find molecule with chain=%s") % si->chain.c_str()));
+mol2.cc:517:		    THROW(_lisp->create<core::LispError_O>(serr.str()));
+mol2.cc:748:    THROW(_lisp->create<core::ContentException_O>("You must pass a Molecule or Aggregate"));
+molecule.cc:68:		    bond = _lisp->create<Bond_O>(a1,a2,o);
+molecule.cc:115:		    bond = _lisp->create<Bond_O>(a1,a2,o);
+molecule.cc:199:	THROW(_lisp->create<core::LispError_O>( "removeResidue: Molecule does not contain residue: %s", a->getName() ) );
+molecule.cc:222:	    THROW(_lisp->create<core::LispError_O>("You can only transfer coordinates to a Molecule from another Molecule"));
+molecule.cc:227:	    THROW(_lisp->create<core::LispError_O>("You can only transfer coordinates if the two Molecules have the same number of contents"));
+molecule.cc:346:	THROW(_lisp->create<core::LispError_O>(boost::format("getFirstResidueWithName: Molecule does not contain residues with name: %s")% name ));
+molecule.cc:354:	rend = _lisp->create<GrPickableMatter_O>();
+molecule.cc:376:	AtomIdToAtomMap_sp atomIdMap = _lisp->create<AtomIdToAtomMap_O>();
+molecule.cc:402:	THROW(_lisp->error(BF("Illegal residueId[%d] must be less than %d") % resId % this->_contents.size() ));
+molecule.cc:411:	core::class_<Molecule_O>(lisp->lisp())
+monomer.cc:85:		this->_Status = _lisp->create<StatusTracker_O>();
+monomer.cc:105:	    THROW(_lisp->create<core::ContentException_O>("Monomer context is invalid", this->sharedThis<Monomer_O>()->description() ));
+monomer.cc:108:	context = _lisp->create<MonomerContext_O>();
+monomer.cc:204:	    THROW(_lisp->create<core::LispError_O>(ss.str()));
+monomer.cc:209:	    THROW(_lisp->create<core::LispError_O>("The frame must return an AtomBoundFrame but instead it returned a "+bound->description()));
+monomer.cc:268:	    THROW(_lisp->create<core::ContentException_O>("Bad connections for monomer", this->sharedThis<Monomer_O>()->description()));
+monomer.cc:296:	    THROW(_lisp->create<core::ContentException_O>("Monomer context is invalid", this->sharedThis<Monomer_O>()->description() ));
+monomer.cc:299:	context = _lisp->create<MonomerContext_O>();
+monomer.cc:370:	this->_Status = _lisp->create<StatusTracker_O>();
+monomer.cc:448:	    THROW(_lisp->create<core::LispError_O>(ss.str()));
+monomer.cc:587:	    THROW(_lisp->create<core::ContentException_O>("Could not find coupling to monomer: "+mon->description(), this->sharedThis<Monomer_O>()->description() ));
+monomer.cc:617:	    THROW(_lisp->create<core::ContentException_O>("Could not find coupling : "+coup->description(), this->sharedThis<Monomer_O>()->description() ));
+monomer.cc:659:	    THROW(_lisp->create<core::ContentException_O>("Could not find coupling: "+coup->description(), this->sharedThis<Monomer_O>()->description() ));
+monomer.cc:843:	    THROW(_lisp->error(BF("I cannot randomize a MultiMonomer that has only one member")));
+monomer.cc:868:	    THROW(_lisp->create<core::LispError_O>("There are no monomers defined for MultiMonomer group("+this->_GroupName->__repr__()+")"));
+monomer.cc:886:	    THROW(_lisp->create<core::LispError_O>(BF("Residue created with a different constitution(%s) from the one it was created from constitution(%s)") % residueConstitution->__repr__() % con->__repr__() ));
+monomer.cc:923:		    _lisp->print(BF("%s"), ss.str());
+monomer.cc:995:	atomIndexer = _lisp->create<AtomIndexer_O>();
+monomer.cc:1049:		THROW(_lisp->create<core::LispError_O>(BF("The monomer[%s] doesn't have monomer aliases but it has atom aliases(%s) - this should never happen") % this->getName() % this->allAtomAliases()->asString() ));
+monomer.cc:1136:	core::class_<Monomer_O>(lisp->lisp())
+monomer.cc:1232:    core::class_<OneMonomer_O>(lisp->lisp());
+monomer.cc:1246:    core::class_<MultiMonomer_O>(lisp->lisp())
+monomerContext.cc:126:		ss->insert(_lisp->intern("undef"));
+monomerContext.cc:167:		ss->insert(_lisp->intern("undef"));
+monomerContext.cc:371:	core::SymbolSet_sp names = _lisp->create<core::SymbolSet_O>();
+monomerContext.cc:385:	    THROW(_lisp->error(BF("Unknown MonomerContext-plugName[%s]") % name->__repr__() ));
+monomerContext.cc:403:	core::class_<MonomerContext_O>(lisp->lisp())
+monomerCoordinates.cc:165:		THROW(_lisp->create<core::ContentException_O>(ss.str()));
+monomerCoordinates.cc:169:	    coreFragmentCoordinates = _lisp->create<FragmentCoordinates_O>();
+monomerCoordinates.cc:178:	    scaffoldList = _lisp->create<ScaffoldList_O>();
+monomerCoordinates.cc:198:	    fragmentCoordinates = _lisp->create<FragmentCoordinates_O>();
+monomerCoordinates.cc:258://	    RETHROW(_lisp->create<core::LispError_O>(BF("An error was caught in MonomerCoordinates_O::testExtraction - here it is: %s") % e.message() ) );
+monomerCoordinates.cc:264:    core::Cons_sp results = core::Cons_O::createList(_lisp->internKeyword("sawProblems"),
+monomerCoordinates.cc:265:					 _lisp->_boolean(sawProblem),
+monomerCoordinates.cc:266:					 _lisp->internKeyword("problems"),
+monomerCoordinates.cc:283:    core::class_<MonomerCoordinates_O>(lisp->lisp())
+monomerPack.cc:61:	    THROW(_lisp->create<core::LispError_O>("monomerPack("+packName->get()+") is already defined"));
+monomerPack.cc:63:	MonomerPack_sp monomerPack = _lisp->create<MonomerPack_O>();
+monomerPack.cc:108:	    THROW(_lisp->create<core::LispError_O>("monomerPack("+packName->__repr__()+") has not been defined"));
+monomerPack.cc:169:    this->_AtomIndexers = _lisp->create<MapOfMonomerNamesToAtomIndexers_O>();
+monomerPack.cc:201:	if ( entry->length() <1 ) THROW(_lisp->create<core::LispError_O>("monomerPack Entry contains no monomer name"));
+monomerPack.cc:206:	    if ( entry->length() < 2 ) THROW(_lisp->create<core::LispError_O>("You defined atom aliases to each monomer must have interesting atom names"));
+monomerPack.cc:226:	    THROW(_lisp->create<core::LispError_O>("Each extendAliases entry must have two elements: "+oneExtend->__repr__() ));
+monomerPack.cc:233:	    THROW(_lisp->create<core::LispError_O>("MonomerPack("+this->getName()->__repr__()+") does not recognize monomer name("+monomerName->__repr__()+")"));
+monomerPack.cc:244:	    THROW(_lisp->create<core::LispError_O>(ss.str()));
+monomerPack.cc:254:	THROW(_lisp->create<core::LispError_O>(ss.str()));
+monomerPack.cc:271:        THROW(_lisp->create<core::ContentException_O>(boost::format("Unrecognized monomer name: %s %s") % monomerName % this->description() ));
+monomerPack.cc:273:    indexer = _lisp->create<AtomIndexer_O>();
+monomerPack.cc:291:        THROW(_lisp->create<core::ContentException_O>(boost::format("Unrecognized monomer name: %s %s") % monomerName % this->description() ));
+monomerPack.cc:293:    indexer = _lisp->create<AtomIndexer_O>();
+monomerPack.cc:310:        THROW(_lisp->create<core::ContentException_O>(boost::format("Unrecognized monomer name: %s %s") % monomerName % this->sharedThis<CandoDatabase_O>()->description() ));
+monomerPack.cc:312:    indexer = _lisp->create<AtomIndexer_O>();
+monomerPack.cc:417:        THROW(_lisp->create<core::ContentException_O>(boost::format("Unrecognized monomer name: %s %s")% nm % this->sharedThis<CandoDatabase_O>()->description() ));
+monomerPack.cc:449:    core::class_<MonomerPack_O>(lisp->lisp())
+numericalFunction.cc:223:	    THROW(_lisp->create<core::LispError_O>("Index beyond the end of line" ));
+numericalFunction.cc:228:	    THROW(_lisp->create<core::LispError_O>("Index beyond the end of line" ));
+numericalFunction.cc:261:	THROW(_lisp->create<core::LispError_O>(ss.str()));
+numericalFunction.cc:275:    newFunc = _lisp->create<NumericalFunction_O>();
+numericalFunction.cc:304:	THROW(_lisp->create<core::LispError_O>(ss.str()));
+numericalFunction.cc:318:    newFunc = _lisp->create<NumericalFunction_O>();
+oligomer.cc:337:    monTo = _lisp->create<MultiMonomer_O>();
+oligomer.cc:365:        THROW(_lisp->create<core::ContentException_O>(BF("Trying to remove a leaf monomer that has no in coupling!") %monomerToRemove->description()));
+oligomer.cc:370:        THROW(_lisp->create<core::ContentException_O>(BF("Trying to remove a leaf monomer but it has out couplings!")%monomerToRemove->description()));
+oligomer.cc:481:	THROW(_lisp->create<core::LispError_O>("Could not find first monomer in oligomer"));
+oligomer.cc:484:	THROW(_lisp->create<core::LispError_O>("Could not find second monomer in oligomer"));
+oligomer.cc:488:	THROW(_lisp->create<core::LispError_O>("The second monomer already has an in coupling"));
+oligomer.cc:492:	THROW(_lisp->create<core::LispError_O>(boost::format("The first monomer[%s] already has an out coupling with the name: %s") % inMon->getName() % name ));
+oligomer.cc:524:	THROW(_lisp->create<core::LispError_O>("Could not find monomer1 in oligomer"));
+oligomer.cc:528:	THROW(_lisp->create<core::LispError_O>("Could not find monomer2 in oligomer"));
+oligomer.cc:533:	THROW(_lisp->create<core::LispError_O>(BF("The %s can not make a ring closing coupling")
+oligomer.cc:539:	THROW(_lisp->create<core::LispError_O>(BF("The %s can not make a ring closing coupling")
+oligomer.cc:564:	THROW(_lisp->create<core::LispError_O>("The molecule can not be returned, the Oligomer has an error"));
+oligomer.cc:568:    mol = _lisp->create<Molecule_O>();
+oligomer.cc:658:	THROW(_lisp->error(BF("There are no multimonomers to perturb")));
+oligomer.cc:930:	    if ( !monomerMap->contains(mon1Id) ) THROW(_lisp->error(BF("Unknown monomer id: %s")%mon1Id));
+oligomer.cc:931:	    if ( !monomerMap->contains(mon2Id) ) THROW(_lisp->error(BF("Unknown monomer id: %s")%mon2Id));
+oligomer.cc:978:    Oligomer_sp olig = _lisp->create<Oligomer_O>();
+oligomer.cc:984://    lisp->globalEnvironment()->extend(sym,olig);
+oligomer.cc:992:    core::class_<Oligomer_O>(lisp->lisp())
+pdb.cc:225:	Aggregate_sp agg = lisp->create<Aggregate_O>();
+pdb.cc:240:		    Molecule_sp mol = lisp->create<Molecule_O>();
+pdb.cc:255:		    Residue_sp res = lisp->create<Residue_O>();
+pdb.cc:342:	PdbReader_sp pdb = lisp->create<PdbReader_O>();
+pdb.cc:349:	PdbReader_sp pdb = lisp->create<PdbReader_O>();
+pdb.cc:386:	    THROW(_lisp->create<core::LispError_O>("File not found: "+fileName));
+pdb.cc:443:	string fn = env->lookup(_lisp->internWithPackageName(ChemPkg,"fileName"))->as<core::Str_O>()->get();
+pdb.cc:619:	    core::class_<PdbReader_O>(lisp->lisp())
+pdb.cc:638:	core::class_<PdbWriter_O>(lisp->lisp())
+pdbMonomer.cc:126:	PdbMonomerDatabase_sp monomerDatabase = lisp->create<PdbMonomerDatabase_O>();
+pdbMonomer.cc:129:	    THROW(_lisp->create<core::LispError_O>("Monomer connectivity database file not found: "+fileName));
+pdbMonomer.cc:142:		    PdbMonomerConnectivity_sp oneMonomer = lisp->create<PdbMonomerConnectivity_O>();
+pdbMonomer.cc:161:			    THROW(lisp->create<core::LispError_O>(BF("Illegal record(%s) in monomer connection database") % recordName ) );
+pdbMonomer.cc:182:	core::class_<PdbMonomerConnectivity_O>(lisp->lisp())
+pdbMonomer.cc:198:	this->_LongNames = _lisp->create<addon::ObjectList_O>();
+pdbMonomer.cc:278:	this->_LongNames->append(_lisp->create<core::Str_O>(longName));
+pdbMonomer.cc:313:	core::class_<PdbMonomerDatabase_O>(lisp->lisp())
+pdbMonomer.cc:408:	_lisp->print(BF("Number of unconnected atoms(%d)") % unconnectedAtoms.size() );
+pdbMonomer.cc:409:	_lisp->print(BF("Number of atoms connected by monomer connectivity(%d)") % numConnect );
+pdbMonomer.cc:410:	_lisp->print(BF("Number of atoms connected by vdw overlap(%d)") % numVdwConnected);
+plug.cc:33:	return _lisp->intern("UnnamedRingClosingMate");
+plug.cc:546:	core::class_<JumpPlug_O>(lisp->lisp())
+plug.cc:730:	core::class_<RingClosingMate_O>(lisp->lisp())
+plug.cc:747:	core::class_<Mate_O>(lisp->lisp())
+plug.cc:791:	core::class_<Plug_O>(lisp->lisp())
+plug.cc:821:	core::class_<PlugWithMates_O>(lisp->lisp())
+plug.cc:844:	core::class_<OutPlug_O>(lisp->lisp())
+plug.cc:864:	core::class_<InPlug_O>(lisp->lisp())
+plug.cc:881:	core::class_<RingClosingPlug_O>(lisp->lisp())
+properTorsion.cc:37:	core::class_<ProperTorsion_O>(lisp->lisp())
+readAmberParameters.cc:68:	THROW(_lisp->create<core::LispError_O>("Could not open file: "+fileName ));
+readAmberParameters.cc:103:	    THROW(_lisp->create<core::LispError_O>("Antechamber compile failed on: "+ei->second+"\n"+typeRule->compilerMessage() ));
+readAmberParameters.cc:325:	THROW(_lisp->create<core::LispError_O>("Nonbond parameters must be of kindnb=RE this file has kindnb="+kindnb));
+readAmberParameters.cc:344:		THROW(_lisp->create<core::LispError_O>("Could not find type: "+type));
+readAmberParameters.cc:371:	THROW(_lisp->create<core::LispError_O>("Could not open file: "+parametersFileName ));
+readAmberParameters.cc:476:    core::class_<ReadAmberParameters_O>(lisp->lisp())
+representedEntityNameSet.cc:112:	objList = _lisp->create<RepresentativeList_O>();
+representedEntityNameSet.cc:147:	core::class_<RepresentedEntityNameSet_O>(lisp->lisp())
+residue.cc:83:	THROW(_lisp->create<core::LispError_O>("You can only transfer coordinates to a Residue from another Residue"));
+residue.cc:88:	THROW(_lisp->create<core::LispError_O>("You can only transfer coordinates if the two residues have the same number of atoms"));
+residue.cc:161:	THROW(_lisp->create<core::LispError_O>(ss.str()));
+residue.cc:404:    THROW(_lisp->create<core::LispError_O>("Residue does not contain atom for removal"));
+residue.cc:441:    THROW(_lisp->create<core::LispError_O>("You are asking to remove an atom from a residue that doesn't contain it"));
+residue.cc:532:		    THROW(_lisp->create<core::LispError_O>("There were more than 1000 fails trying to identify a unique atom name"));
+residue.cc:670:    THROW(_lisp->create<core::ContentException_O>(ss.str()));
+residue.cc:694:	THROW(_lisp->create<core::LispError_O>(boost::format("INVALID %s")% this->description()));
+residue.cc:723:	AtomIdToAtomMap_sp atomIdMap = _lisp->create<AtomIdToAtomMap_O>();
+residue.cc:748:	THROW(_lisp->error(BF("Illegal atomId[%d] must be less than %d") % aid % this->_contents.size() ));
+residue.cc:756:	core::class_<Residue_O>(lisp->lisp())
+restraint.cc:200:	core::class_<RestraintAngle_O>(lisp->lisp())
+restraint.cc:446:    core::class_<Restraint_O>(lisp->lisp())
+restraint.cc:468:    core::class_<RestraintChiral_O>(lisp->lisp())
+restraint.cc:485:    core::class_<RestraintDihedral_O>(lisp->lisp())
+restraint.cc:503:    core::class_<RestraintDistance_O>(lisp->lisp())
+restraint.cc:522:    core::class_<RestraintAnchor_O>(lisp->lisp())
+restraint.cc:543:    core::class_<RestraintList_O>(lisp->lisp())
+ringFinder.cc:129:    _lisp->print(BF("Ring start: %d:%s end: %d:%s") % firstResidue %  firstName
+ringFinder.cc:132:    _lisp->print(BF("Edges: "));
+ringFinder.cc:144:	_lisp->print(BF("    %d:%s - %d:%s") % r1% s1.c_str()% r2% s2.c_str() );
+ringFinder.cc:235:	_lisp->prin1(BF("%s ") % cur->car<AGVertex_O>()->getAtom()->getName() );
+ringFinder.cc:237:    _lisp->print(BF(""));
+ringFinder.cc:537:	    THROW(_lisp->create<core::ContentException_O>("Non unique atom id"));
+ringFinder.cc:583:    _lisp->print(BF("There are %d atoms") % cnt );
+ringFinder.cc:667:	    THROW(_lisp->error(BF("We advanced the ring search way beyond the number of times we should have needed to - there are %d atoms and %d rings expected and we advanced the search %d times") % numAtoms % numberOfRingsExpected % stage ));
+ringFinder.cc:784:		THROW(_lisp->create<core::LispError_O>(ss.str() ));
+ringFinder.cc:855:    THROW(_lisp->create<core::LispError_O>("You can only find rings in aggregates or molecules"));
+ringFinder.cc:902:    core::class_<RingFinder_O>(lisp->lisp())
+rotamer.cc:41:	core::class_<Rotamer_O>(lisp->lisp())
+searchStatistics.cc:70:        _lisp->print(BF("SearchStatistics_O::incrementBuilds>>%s") % this->description().c_str() );
+searchStatistics.cc:111:    core::class_<SearchStatistics_O>(lisp->lisp())
+spanningLoop.cc:355:	core::class_<SpanningLoop_O>(lisp->lisp())
+sparseMatrix.cc:124:	THROW(_lisp->create<core::LispError_O>("Overflow in matrix operation"));
+specificContext.cc:226:    core::class_<SpecificContext_O>(lisp->lisp())
+specificContext.cc:254:    core::class_<SpecificContextSet_O>(lisp->lisp())
+spline.cc:129:    _lisp->print(BF( "spline type = %d") % this->iType );
+spline.cc:130:    _lisp->print(BF( "gmMatrices ======>" ));
+spline.cc:133:	_lisp->print(BF( "--------------" ));
+spline.cc:135:    _lisp->print(BF( "mbAMatrix ======>" ));
+spline.cc:137:    _lisp->print(BF( "mbBMatrix ======>" ));
+spline.cc:139:    _lisp->print(BF( "mbsMatrix ======>" ));
+spline.cc:141:    _lisp->print(BF( "mbYMatrix ======>" ));
+spline.cc:143:    _lisp->print(BF( "mbZMatrix ======>" ));
+stereochemistry.cc:129:		one = core::Cons_O::create(lisp->create<core::Str_O>("R"),one,lisp);
+stereochemistry.cc:132:		one = core::Cons_O::create(lisp->create<core::Str_O>("S"),one,lisp);
+stereochemistry.cc:195:    RepresentativeList_sp ss = _lisp->create<RepresentativeList_O>();
+stereochemistry.cc:196:    RepresentedEntityNameSet_sp gr = _lisp->create<RepresentedEntityNameSet_O>();
+stereochemistry.cc:200:    ss = _lisp->create<RepresentativeList_O>();
+stereochemistry.cc:308:	THROW(_lisp->create<core::LispError_O>(boost::format("addStereoisomer monomer name (%s) has already been used") % s->getName()));
+stereochemistry.cc:311:	THROW(_lisp->create<core::LispError_O>(boost::format("addStereoisomer pdb name (%s) has already been used") % s->getPdb() ));
+stereochemistry.cc:325:	    THROW(_lisp->create<core::LispError_O>("StereoInformation has stereoisomer with blank name"));
+stereochemistry.cc:329:	    THROW(_lisp->create<core::LispError_O>("StereoInformation has stereoisomer with blank pdb name"));
+stereochemistry.cc:403:	    THROW(_lisp->create<core::LispError_O>("Stereoisomer name: "+(*it)->getName()->__repr__()+" has already been defined"));
+stereochemistry.cc:407:	    THROW(_lisp->create<core::LispError_O>("Stereoisomer pdb: "+(*it)->getPdb()->__repr__()+" has already been defined"));
+stereochemistry.cc:430:	    THROW(_lisp->create<core::LispError_O>("Stereoisomer name: "+(*it)->getName()->__repr__()+" has already been defined"));
+stereochemistry.cc:434:	    THROW(_lisp->create<core::LispError_O>("Stereoisomer pdb: "+(*it)->getPdb()->__repr__()+" has already been defined"));
+stereochemistry.cc:505:	    .value(_lisp->intern("undefinedConfiguration"), _lisp->intern("U"), undefinedConfiguration )
+stereochemistry.cc:506:	    .value(_lisp->intern("S"), S_Configuration )
+stereochemistry.cc:507:	    .value(_lisp->intern("R"), R_Configuration )
+stereochemistry.cc:510:	    .value(_lisp->intern("undefChirality"), _lisp->intern("u"),undefinedCenter)
+stereochemistry.cc:511:	    .value(_lisp->intern("chiral"), _lisp->intern("c"), chiralCenter)
+stereochemistry.cc:512:	    .value(_lisp->intern("prochiral"), _lisp->intern("p"), prochiralCenter)
+stereochemistry.cc:518:	core::class_<StereoConfiguration_O>(lisp->lisp())
+stereochemistry.cc:528://	def("stereochemicalPermutations",&StereoConfiguration_O::stereochemicalPermutations,lisp->lisp());
+stereochemistry.cc:541://	defNoWrapPackage(ChemPkg,"stereochemicalPermutations",&prim_stereochemicalPermutations,lisp->lisp());
+stereochemistry.cc:542://	defNoWrapPackage(ChemPkg,"StereoConfiguration_createMultiple",&prim_StereoConfiguration_create_multiple,lisp->lisp());
+stereochemistry.cc:543://	def("stereochemicalPermutations",&StereoConfiguration_O::stereochemicalPermutations,lisp->lisp());
+stereochemistry.cc:553:	core::class_<Stereoisomer_O>(lisp->lisp())
+stereochemistry.cc:578:	core::class_<StereoInformation_O>(lisp->lisp())
+stereoisomerAtoms.cc:21:	core::class_<StereoisomerAtom_O>(lisp->lisp())
+stereoisomerAtoms.cc:94:	core::class_<StereoisomerVirtualAtom_O>(lisp->lisp())
+stereoisomerAtoms.cc:111:	StereoisomerVirtualAtom_sp ta = lisp->create<StereoisomerVirtualAtom_O>();
+stereoisomerAtoms.cc:137:	core::class_<StereoisomerAtoms_O>(lisp->lisp())
+stereoisomerAtoms.cc:189:	core::StringSet_sp ss = _lisp->create<core::StringSet_O>();
+stereoisomerAtoms.cc:216:	THROW(_lisp->error(BF("Could not find StereoisomerAtom with name[%s]") % nm ));
+stereoisomerAtoms.cc:232:	THROW(_lisp->error(BF("Unknown atom[%s]") % name ));
+structureComparer.cc:56:    this->_FixedCoordinates = _lisp->create<addon::CoordinateArray_O>(this->_SuperposeAtoms.size());
+structureComparer.cc:100:        THROW(_lisp->create<core::LispError_O>("The Matter passed must be the same as the one defined for the StructureComparer"));
+structureComparer.cc:105:	THROW(_lisp->create<core::LispError_O>("You must have defined at least three atoms to superpose"));
+structureComparer.cc:114:    moveableCoordinates= _lisp->create<addon::CoordinateArray_O>(this->_SuperposeAtoms.size());
+structureComparer.cc:126:    superposer = _lisp->create<SuperposeEngine_O>();
+structureList.cc:44:    this->_AllCoordinates = _lisp->create<addon::CoordinateArray_O>();
+structureList.cc:45:    this->_SuperposeCoordinates = _lisp->create<addon::CoordinateArray_O>();
+structureList.cc:46:    this->_Data = _lisp->create<addon::ObjectDictionary_O>();
+structureList.cc:102:    this->_Data = _lisp->create<addon::ObjectDictionary_O>();
+structureList.cc:193:        THROW(_lisp->create<core::LispError_O>("The Matter passed must be the same as the one defined for the StructureList"));
+structureList.cc:198:	THROW(_lisp->create<core::LispError_O>("You must have defined at least three atoms to superpose"));
+structureList.cc:225:	    superposer = _lisp->create<SuperposeEngine_O>();
+structureList.cc:374:    xml = _lisp->create<core::XmlLoadArchive_O>();
+structureList.cc:387:    xml = _lisp->create<core::XmlSaveArchive_O>();
+structureList.cc:407:    frames = _lisp->create<addon::FrameList_O>();
+structureList.cc:411:	dlMatter = _lisp->create<GrPickableMatter_O>();
+structureList.cc:412:	dlMatter->setName(_lisp->internKeyword("molecule"));
+structureList.cc:419:	    parts = _lisp->create<addon::DisplayList_O>();
+structureList.cc:421:	    dlMatter = _lisp->create<GrPickableMatter_O>();
+structureList.cc:422:	    dlMatter->setName(_lisp->internKeyword("molecule"));
+structureList.cc:425:	    dlSuperpose = _lisp->create<addon::DisplayList_O>();
+structureList.cc:426:	    dlSuperpose->setName(_lisp->internKeyword("superpose"));
+structureList.cc:430:	    grSpheres = _lisp->create<O_GrSphereList>();
+superposableConformationCollection.cc:70:    THROW(_lisp->create<core::LispError_O>("You cannot add superpose atom: "+a->description()+" because it isn't in the ConformationCollection"));
+superposableConformationCollection.cc:151:	    superposer = _lisp->create<SuperposeEngine_O>();
+superposableConformationCollection.cc:210:    frames = _lisp->create<addon::FrameList_O>();
+superposableConformationCollection.cc:215:	dlAll = _lisp->create<addon::DisplayList_O>();
+superposableConformationCollection.cc:216:	dlMatter = _lisp->create<GrPickableMatter_O>();
+superposableConformationCollection.cc:217:	dlMatter->setName(_lisp->internKeyword("minimized"));
+superposableConformationCollection.cc:220:	dlSuperpose = _lisp->create<addon::DisplayList_O>();
+superposableConformationCollection.cc:221:	dlSuperpose->setName(_lisp->internKeyword("superposeAtoms"));
+superposableConformationCollection.cc:223:	RPGrSphereList sphereList = _lisp->create<O_GrSphereList>();
+superposeEngine.cc:135:    this->_FixedIndices = _lisp->create<core::IntArray_O>();
+superposeEngine.cc:136:    this->_MoveableIndices = _lisp->create<core::IntArray_O>();
+superposeEngine.cc:137:    this->_FixedCoordinates = _lisp->create<addon::CoordinateArray_O>();
+superposeEngine.cc:138:    this->_MoveableCoordinates = _lisp->create<addon::CoordinateArray_O>();
+superposeEngine.cc:216:	THROW(_lisp->create<core::LispError_O>("Number of MoveableIndices must be greater than 3"));
+superposeEngine.cc:451:	THROW(_lisp->create<core::ContentException_O>(ss.str()));
+superposeEngine.cc:560:	if ( a->getPropertyOrDefault(superposeSymbol,_lisp->_boolean(true))->isTrue() )
+superposeEngine.cc:591:	THROW(_lisp->create<core::LispError_O>("The Matters are not equal"));
+superposeEngine.cc:595:    addon::CoordinateArray_sp coords = _lisp->create<addon::CoordinateArray_O>(this->_SuperposeAtoms.size());
+table.cc:50:	TableEntry_sp entry = lisp->create<TableEntry_O>();
+table.cc:271:		core::Symbol_sp fieldSymbol = _lisp->intern(*si);
+table.cc:273:		core::Class_sp mc = _lisp->classFromClassName(*ci);
+table.cc:276:		    core::Symbol_sp classSymbol = _lisp->intern(*ci);
+table.cc:279:		    mc = _lisp->defineStandardClass(classSymbol,core::T_O::_nil,core::Cons_O::_nil);
+table.cc:305:	    THROW(_lisp->create<core::LispError_O>(BF("This table doesn't contain the field(%s)") % positionSymbol->fullName() ));
+table.cc:330:	    THROW(_lisp->create<core::LispError_O>(BF("This table already contains a field named(%s)") % fieldSymbol->fullName() ));
+table.cc:379:	    THROW(_lisp->create<core::LispError_O>(BF("You tried to put a value of class(%s) into a field of a table that expected a %s") % val->className() % this->_FieldClasses[fieldIdx]->instanceClassName() ));
+table.cc:478:	    THROW(_lisp->create<core::LispError_O>(ss.str()));
+table.cc:529:	frames->setName(_lisp->internKeyword("entry"));
+tableOperations.cc:48:	    THROW(_lisp->create<core::LispError_O>("The tables field for writing the RMSD is not Real!"));
+tableOperations.cc:52:	    THROW(_lisp->create<core::LispError_O>("If you want to superpose fields of a table they must all be equal and these are not"));
+topology.cc:118:	this->_ChiList = env->lookup(_lisp->internWithPackageName(ChemPkg,"chiList"))->as<kinematics::ChiList_O>();
+topology.cc:177:	    THROW(_lisp->create<core::LispError_O>(ss.str()));
+topology.cc:198:	    THROW(_lisp->create<core::LispError_O>(se.str()));
+topology.cc:206:	MonomerContext_sp context = _lisp->create<MonomerContext_O>();
+topology.cc:222:	THROW(_lisp->create<core::LispError_O>("Depreciated, all Topology's have inPlug now"));
+topology.cc:334:	core::SymbolSet_sp myPlugSet = _lisp->create<core::SymbolSet_O>();
+topology.cc:511:	core::class_<Topology_O>(lisp->lisp())
+torsionDriver.cc:61:	THROW(_lisp->create<core::LispError_O>("Could not find atom with name: ", name ));
+torsionDriver.cc:190:	THROW(_lisp->create<core::LispError_O>(boost::format("Could not find atom name: %s in aggregate") % rootName ));
+torsionDriver.cc:232:	THROW(_lisp->create<core::LispError_O>( "You can't add torsions once you've started driving torsions" ));
+torsionDriver.cc:237:	THROW(_lisp->create<core::LispError_O>( "You must have defined the aggregate and root before adding torsions to drive."));
+torsionDriver.cc:240:	THROW(_lisp->create<core::LispError_O>( boost::format("There must be a unique atom with the name: %s") % atom1 ));
+torsionDriver.cc:243:	THROW(_lisp->create<core::LispError_O>( boost::format("There must be a unique atom with the name: ") % atom2 ));
+torsionDriver.cc:255:    THROW(_lisp->create<core::LispError_O>("Movable atom has to point back to the fixed atom" ));
+torsionDriver.cc:284:	THROW(_lisp->create<core::LispError_O>( "You can't prepare to drive torsions when you're already driving them" ));
+torsionDriver.cc:296:	    THROW(_lisp->create<core::LispError_O>(boost::format("The two atoms of a torsion must be bonded. Atom: %s is not bonded to %s") % pos->fixed->getName() % pos->movable->getName() ));
+torsionDriver.cc:316:    spanning = _lisp->create<SpanningLoop_O>();
+torsionDriver.cc:387:		THROW(_lisp->create<core::LispError_O>(boost::format("The torsion around %s and %s won't roate anything. Please remove it") 
+torsionDriver.cc:495:	THROW(_lisp->create<core::LispError_O>( "TorsionDriver must be in drive mode to render graphics" ) );
+torsionDriver.cc:632:	_lisp->print(BF( "Torsion driver in DRIVE mode" ));
+torsionDriver.cc:634:	_lisp->print(BF( "Torsion driver in ADD_TORSION mode" ));
+torsionDriver.cc:639:	    _lisp->print(BF( "  Parent: %d") % pos->parent );
+torsionDriver.cc:640:	    _lisp->print(BF( "      Fixed: %s") % pos->fixed->getName().c_str() );
+torsionDriver.cc:641:	    _lisp->print(BF( "    Movable: %s") % pos->movable->getName().c_str() );
+torsionDriver.cc:642:	    _lisp->print(BF( "      Steps: %d") % pos->steps );
+torsionDriver.cc:643:	    _lisp->print(BF("      Atoms: " );
+torsionDriver.cc:645:		_lisp->print(BF(" %s", ap->getAtom()->getName().c_str() );
+torsionDriver.cc:647:	    _lisp->print(BF( "" ));
+torsionDriver.cc:648:		_lisp->print(BF("      Children: " );
+torsionDriver.cc:650:		_lisp->print(BF(" %3d", *ip );
+torsionDriver.cc:652:	    _lisp->print(BF( "" ));
+torsionDriver.cc:653:	    _lisp->print(BF( "      coordinate system:" ));
+torsionDriver.cc:655:	    _lisp->print(BF( "      relative matrix: " ));
+torsionDriver.cc:658://		_lisp->print(BF( "      rotation matrix %d: ") % mp-pos->rotations.begin() );
+torsionDriver.cc:661://	    _lisp->print(BF( "      current rotation: %d") % pos->rotation-pos->rotations.begin() );
+torsionDriver.cc:664:	_lisp->print(BF( "      accumulated matrix: " ));
+torsionDriver.cc:666:	_lisp->print(BF( "" ));
+trainer.cc:87:	core::Path_sp path = _lisp->create<core::Path_O>(this->_Path->getPath());
+trainer.cc:139:    this->_Data = _lisp->create<core::Binder_O>();
+trainer.cc:141:    this->_History = _lisp->create<TrainerHistory_O>();
+trainer.cc:194:    this->_Data = _lisp->create<core::Binder_O>();
+trainer.cc:205:    core::XmlSaveArchive_sp a = _lisp->create<core::XmlSaveArchive_O>();
+trainer.cc:213:    return downcast<ConformationExplorer_O>(this->getData(_lisp->internWithPackageName(ChemPkg,"_ConformationExplorer")));
+trainer.cc:217:    this->setData(_lisp->internWithPackageName(ChemPkg,"_ConformationExplorer"),str);
+trainer.cc:262:	THROW(_lisp->create<core::LispError_O>("Could not open file: "+fileName));
+trainer.cc:266:    core::Class_sp trainerHeaderClass = lisp->classFromClassName(TrainerHeader_O::static_className());
+trainer.cc:273:	    THROW(_lisp->create<core::LispError_O>(BF("Could not find (%s) in the first 100 lines")%search));
+trainer.cc:293:	dict->put(onePair[0],lisp->create<core::Str_O>(onePair[1].substr(1,onePair[1].size()-2)));
+trainer.cc:319:    a = lisp->create<core::XmlLoadArchive_O>();
+trainer.cc:418:   val = _lisp->create<core::Str_O>(topDir);
+trainer.cc:419:   this->_Data->extend(_lisp->internWithPackageName(ChemPkg,"_TopDirectory"), val );
+trainer.cc:423:    return (downcast<core::Str_O>(this->_Data->lookup(_lisp->internWithPackageName(ChemPkg,"_TopDirectory"))))->get();
+trainer.cc:428:    val = _lisp->create<core::Str_O>(str);
+trainer.cc:429:    this->_Data->extend(_lisp->internWithPackageName(ChemPkg,"_CandoDatabaseFileName"), val );
+trainer.cc:500:	core::Cons_sp one = core::Cons_O::createList(_lisp->create<core::Str_O>(it->first),it->second,_lisp);
+trainer.cc:529:    archive = lisp->create<core::XmlLoadArchive_O>();
+trainer.cc:554:    core::class_<TrainerHeader_O>(lisp->lisp())
+trainer.cc:631:    core::class_<Trainer_O>(lisp->lisp())
+trainer.cc:678:    core::class_<TrainerOrganizer_O>(lisp->lisp())
+trajectory.cc:74:    this->_Coordinates = _lisp->create<addon::CoordinateArray_O>(atomList.size());
+twister.cc:196:	THROW(_lisp->create<core::ContentException_O>("For absolute rotations the reference atoms of the twister must be defined"));
+twister.cc:205:    _lisp->print(BF("current dihedral = %8.3lf  desired dihedral = %8.3lf delta=%8.3lf") % (currentAngle/0.0174533) % (angle/0.0174533) % (delta/0.0174533) );
+twister.cc:213:    _lisp->print(BF("      result dihedral = %8.3lf") % (resultAngle/0.0174533) );
+twister.cc:274:    core::class_<Twister_O>(lisp->lisp())
+twister.cc:302:    core::class_<TwisterDriver_O>(lisp->lisp())
+virtualAtom.cc:111:    core::class_<VirtualAtom_O>(lisp->lisp())
+virtualSphere.cc:185:    core::class_<VirtualSphere_O>(lisp->lisp())
+zMatrix.cc:26:	core::class_<ZMatrixInternal_O>(lisp->lisp())
+zMatrix.cc:89:	core::class_<ZMatrixBondInternal_O>(lisp->lisp())
+zMatrix.cc:185:	core::class_<ZMatrixAngleInternal_O>(lisp->lisp())
+zMatrix.cc:290:	core::class_<ZMatrixDihedralInternal_O>(lisp->lisp())
+zMatrix.cc:415:	core::class_<ZMatrixEntry_O>(lisp->lisp())
+zMatrix.cc:494:	core::class_<ZMatrix_O>(lisp->lisp())
+zMatrix.cc:594:	span = _lisp->create<SpanningLoop_O>();
+zMatrix.cc:635:		    THROW(_lisp->create<core::LispError_O>("There are too many entries to run out of a dihedral atom"));

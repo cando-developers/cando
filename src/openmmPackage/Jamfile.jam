@@ -1,0 +1,96 @@
+
+
+
+import os ;
+local cando_app_bin_dir = [ os.environ CANDO_APP_BIN_DIR ] ;
+echo cando_app_bin_dir == $(cando_app_bin_dir) ;
+echo pwd == [ SHELL "pwd" ] ;
+
+
+local cando_app_lib_dir = [ os.environ CANDO_APP_LIB_DIR ] ;
+echo cando_app_lib_dir == $(cando_app_lib_dir) ;
+
+local openmm_include_dir = [ os.environ OS_BUILDTOP ] ;
+echo openmm_include_dir == $(openmm_include_dir) ;
+
+use-project boost
+  : [ os.environ BOOST_BUILD_ROOT ] ;
+
+
+
+#
+# if you want debugging messages in release version turn on
+# <variant>release:<define>SOURCE_DEBUG
+#
+project : requirements
+	<library>/boost/python//boost_python
+	<define>USEBOOSTPYTHON
+	<define>EXPAT
+	<toolset>darwin:<define>READLINE
+	<threading>single
+	<include>./
+	<include>../core
+	<include>$(openmm_include_dir)
+	<include>$(openmm_include_dir)/openmm/include
+	<toolset>darwin:<define>darwin
+	<toolset>darwin:<cxxflags>"-Wno-unused-variable"
+	<toolset>darwin:<linkflags>"-framework IOKit -framework Carbon -framework Cocoa -framework System -framework OpenGL -framework Glut -framework AGL -L/usr/local/lib/x86_64 -lgomp"
+	<toolset>gcc:<cxxflags>"-Wno-unused-variable"
+	<toolset>pathscale:<cxxflags>"-Wno-unused-variable -fopenmp"
+	<toolset>pgi:<cxxflags>"-mp -gopt"
+	<toolset>pgi:<linkflags>"-mp -gopt"
+	;
+
+
+sources = 
+	openmmExpose.cc
+	serializer.cc
+	openmmState.cc
+	openmmPackage.cc
+		;
+
+
+
+
+
+lib openmmPackage : $(sources)
+    	 /externals//boostAndExpatLibs
+	 /externals//openmm
+	 /externals//openmmSerialization
+	 /internals//core
+	 /internals//chem
+	 /internals//unitsPackage
+	 : 
+	 <variant>release
+    ;
+
+
+lib openmmPackage_d : $(sources)
+    	   /externals//boostAndExpatLibs
+	   /externals//openmm
+	   /externals//openmmSerialization
+	   /internals//core_d
+	   /internals//chem_d
+	   /internals//unitsPackage_d
+	   :
+	   <variant>debug
+	   <define>SOURCE_DEBUG
+	   <toolset>darwin:<cxxflags>"-g3"
+    ;
+
+
+
+
+
+
+alias install :  install-lib_d install-lib ;
+#
+#
+install install-lib : openmmPackage :
+	<location>./libs #$(cando_app_lib_dir)
+	;
+
+install install-lib_d : openmmPackage_d :
+	<location>./libs # $(cando_app_lib_dir)
+	;
+

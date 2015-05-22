@@ -1,0 +1,450 @@
+Namespace changed to core - -nofile-:0
+    CurrentPackage set to None
+!!!!! Reading fileName(kinematicsPackage.h)
+!!!!! Associating namespace(kinematics) with package(KinPkg)
+Namespace changed to kinematics - kinematicsPackage.h:14
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(otherPackageClasses.h)
+!!!!! Reading fileName(aggregateNode.h)
+Namespace changed to kinematics - aggregateNode.h:8
+    CurrentPackage set to KinPkg
+In fileName: aggregateNode.h parsed cppClassDefinition line: class AggregateNode_O : public MonomerBaseNode_O
+Creating one Initializer(kinematics::AggregateNode_O) baseInitializer(['kinematics::MonomerBaseNode_O'])
+createOnClass@aggregateNode.h:13 --> kinematics::AggregateNode_O
+In fileName: aggregateNode.h parsed lispBase1 line: LISP_BASE1(MonomerBaseNode_O);
+In fileName: aggregateNode.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,AggregateNode_O,"AggregateNode");
+updateLatestClass info for class[kinematics::AggregateNode_O] packageName[KinPkg]
+!!!!! Reading fileName(atom.fwd.h)
+Namespace changed to kinematics - atom.fwd.h:4
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(atom.h)
+Namespace changed to kinematics - atom.h:18
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(atomHandle.h)
+Namespace changed to kinematics - atomHandle.h:16
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(atomTemplate.fwd.h)
+Namespace changed to kinematics - atomTemplate.fwd.h:7
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(atomTemplate.h)
+Namespace changed to kinematics - atomTemplate.h:22
+    CurrentPackage set to KinPkg
+In fileName: atomTemplate.h parsed cppClassDefinition line: class Checkpoint_O : public core::T_O
+Creating one Initializer(kinematics::Checkpoint_O) baseInitializer(['core::T_O'])
+createOnClass@atomTemplate.h:31 --> kinematics::Checkpoint_O
+In fileName: atomTemplate.h parsed lispBase1 line: LISP_BASE1(core::T_O);
+In fileName: atomTemplate.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,Checkpoint_O,"Checkpoint");
+updateLatestClass info for class[kinematics::Checkpoint_O] packageName[KinPkg]
+In fileName: atomTemplate.h parsed cppClassDefinition line: class CheckpointAtom_O : public Checkpoint_O
+Creating one Initializer(kinematics::CheckpointAtom_O) baseInitializer(['kinematics::Checkpoint_O'])
+createOnClass@atomTemplate.h:51 --> kinematics::CheckpointAtom_O
+In fileName: atomTemplate.h parsed lispBase1 line: LISP_BASE1(Checkpoint_O);
+In fileName: atomTemplate.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,CheckpointAtom_O,"CheckpointAtom");
+updateLatestClass info for class[kinematics::CheckpointAtom_O] packageName[KinPkg]
+In fileName: atomTemplate.h parsed cppClassDefinition line: class CheckpointOutPlugAtom_O : public Checkpoint_O
+Creating one Initializer(kinematics::CheckpointOutPlugAtom_O) baseInitializer(['kinematics::Checkpoint_O'])
+createOnClass@atomTemplate.h:73 --> kinematics::CheckpointOutPlugAtom_O
+In fileName: atomTemplate.h parsed lispBase1 line: LISP_BASE1(Checkpoint_O);
+In fileName: atomTemplate.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,CheckpointOutPlugAtom_O,"CheckpointOutPlugAtom");
+updateLatestClass info for class[kinematics::CheckpointOutPlugAtom_O] packageName[KinPkg]
+In fileName: atomTemplate.h parsed cppClassDefinition line: class AtomTemplate_O : public core::T_O
+Creating one Initializer(kinematics::AtomTemplate_O) baseInitializer(['core::T_O'])
+createOnClass@atomTemplate.h:101 --> kinematics::AtomTemplate_O
+In fileName: atomTemplate.h parsed lispBase1 line: LISP_BASE1(core::T_O);
+In fileName: atomTemplate.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,AtomTemplate_O,"AtomTemplate");
+updateLatestClass info for class[kinematics::AtomTemplate_O] packageName[KinPkg]
+In fileName: atomTemplate.h parsed cppClassDefinition line: class BondedAtomTemplate_O : public AtomTemplate_O
+Creating one Initializer(kinematics::BondedAtomTemplate_O) baseInitializer(['kinematics::AtomTemplate_O'])
+createOnClass@atomTemplate.h:157 --> kinematics::BondedAtomTemplate_O
+In fileName: atomTemplate.h parsed lispBase1 line: LISP_BASE1(AtomTemplate_O);
+In fileName: atomTemplate.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,BondedAtomTemplate_O,"BondedAtomTemplate");
+updateLatestClass info for class[kinematics::BondedAtomTemplate_O] packageName[KinPkg]
+In fileName: atomTemplate.h parsed cppClassDefinition line: class DelayedBondedAtomTemplate_O : public BondedAtomTemplate_O
+Creating one Initializer(kinematics::DelayedBondedAtomTemplate_O) baseInitializer(['kinematics::BondedAtomTemplate_O'])
+createOnClass@atomTemplate.h:218 --> kinematics::DelayedBondedAtomTemplate_O
+In fileName: atomTemplate.h parsed lispBase1 line: LISP_BASE1(BondedAtomTemplate_O);
+In fileName: atomTemplate.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,DelayedBondedAtomTemplate_O,"DelayedBondedAtomTemplate");
+updateLatestClass info for class[kinematics::DelayedBondedAtomTemplate_O] packageName[KinPkg]
+In fileName: atomTemplate.h parsed cppClassDefinition line: class RootBondedAtomTemplate_O : public BondedAtomTemplate_O
+Creating one Initializer(kinematics::RootBondedAtomTemplate_O) baseInitializer(['kinematics::BondedAtomTemplate_O'])
+createOnClass@atomTemplate.h:259 --> kinematics::RootBondedAtomTemplate_O
+In fileName: atomTemplate.h parsed lispBase1 line: LISP_BASE1(BondedAtomTemplate_O);
+In fileName: atomTemplate.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,RootBondedAtomTemplate_O,"RootBondedAtomTemplate");
+updateLatestClass info for class[kinematics::RootBondedAtomTemplate_O] packageName[KinPkg]
+!!!!! Reading fileName(atomTree.fwd.h)
+Namespace changed to kinematics - atomTree.fwd.h:7
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(atomTree.h)
+Namespace changed to kinematics - atomTree.h:26
+    CurrentPackage set to KinPkg
+In fileName: atomTree.h parsed cppClassDefinition line: class AtomTree_O : public core::T_O
+Creating one Initializer(kinematics::AtomTree_O) baseInitializer(['core::T_O'])
+createOnClass@atomTree.h:91 --> kinematics::AtomTree_O
+In fileName: atomTree.h parsed lispBase1 line: LISP_BASE1(core::T_O);
+In fileName: atomTree.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,AtomTree_O,"AtomTree");
+updateLatestClass info for class[kinematics::AtomTree_O] packageName[KinPkg]
+!!!!! Reading fileName(atomo.h)
+Namespace changed to kinematics - atomo.h:14
+    CurrentPackage set to KinPkg
+In fileName: atomo.h parsed cppClassDefinition line: class Atom_O : public core::T_O
+Creating one Initializer(kinematics::Atom_O) baseInitializer(['core::T_O'])
+createOnClass@atomo.h:22 --> kinematics::Atom_O
+In fileName: atomo.h parsed lispBase1 line: LISP_BASE1(core::T_O);
+In fileName: atomo.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,Atom_O,"Atom");
+updateLatestClass info for class[kinematics::Atom_O] packageName[KinPkg]
+!!!!! Reading fileName(bondId.fwd.h)
+Namespace changed to kinematics - bondId.fwd.h:7
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(bondId.h)
+Namespace changed to kinematics - bondId.h:11
+    CurrentPackage set to KinPkg
+In fileName: bondId.h parsed cppClassDefinition line: class BondId_O : public core::T_O
+Creating one Initializer(kinematics::BondId_O) baseInitializer(['core::T_O'])
+createOnClass@bondId.h:16 --> kinematics::BondId_O
+In fileName: bondId.h parsed lispBase1 line: LISP_BASE1(core::T_O);
+In fileName: bondId.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,BondId_O,"BondId");
+updateLatestClass info for class[kinematics::BondId_O] packageName[KinPkg]
+!!!!! Reading fileName(bondedAtom.h)
+Namespace changed to kinematics - bondedAtom.h:11
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(chainNode.fwd.h)
+Namespace changed to kinematics - chainNode.fwd.h:10
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(chainNode.h)
+Namespace changed to kinematics - chainNode.h:12
+    CurrentPackage set to KinPkg
+In fileName: chainNode.h parsed cppClassDefinition line: class ChainNode_O : public MonomerBaseNode_O
+Creating one Initializer(kinematics::ChainNode_O) baseInitializer(['kinematics::MonomerBaseNode_O'])
+createOnClass@chainNode.h:16 --> kinematics::ChainNode_O
+In fileName: chainNode.h parsed lispBase1 line: LISP_BASE1(MonomerBaseNode_O);
+In fileName: chainNode.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,ChainNode_O,"ChainNode");
+updateLatestClass info for class[kinematics::ChainNode_O] packageName[KinPkg]
+!!!!! Reading fileName(chiDihedrals.fwd.h)
+Namespace changed to kinematics - chiDihedrals.fwd.h:4
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(chiDihedrals.h)
+Namespace changed to kinematics - chiDihedrals.h:9
+    CurrentPackage set to KinPkg
+In fileName: chiDihedrals.h parsed cppClassDefinition line: class ChiDihedral_O : public core::T_O
+Creating one Initializer(kinematics::ChiDihedral_O) baseInitializer(['core::T_O'])
+createOnClass@chiDihedrals.h:19 --> kinematics::ChiDihedral_O
+In fileName: chiDihedrals.h parsed lispBase1 line: LISP_BASE1(core::T_O);
+In fileName: chiDihedrals.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,ChiDihedral_O,"ChiDihedral");
+updateLatestClass info for class[kinematics::ChiDihedral_O] packageName[KinPkg]
+In fileName: chiDihedrals.h parsed cppClassDefinition line: class ChiList_O : public core::T_O
+Creating one Initializer(kinematics::ChiList_O) baseInitializer(['core::T_O'])
+createOnClass@chiDihedrals.h:59 --> kinematics::ChiList_O
+In fileName: chiDihedrals.h parsed lispBase1 line: LISP_BASE1(core::T_O);
+In fileName: chiDihedrals.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,ChiList_O,"ChiList");
+updateLatestClass info for class[kinematics::ChiList_O] packageName[KinPkg]
+!!!!! Reading fileName(conformation.fwd.h)
+Namespace changed to kinematics - conformation.fwd.h:7
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(conformation.h)
+Namespace changed to kinematics - conformation.h:10
+    CurrentPackage set to KinPkg
+In fileName: conformation.h parsed cppClassDefinition line: class Conformation_O : public core::Model_O
+Creating one Initializer(kinematics::Conformation_O) baseInitializer(['core::Model_O'])
+createOnClass@conformation.h:24 --> kinematics::Conformation_O
+In fileName: conformation.h parsed lispBase1 line: LISP_BASE1(core::Model_O);
+In fileName: conformation.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,Conformation_O,"Conformation");
+updateLatestClass info for class[kinematics::Conformation_O] packageName[KinPkg]
+!!!!! Reading fileName(delayedBondedAtom.h)
+Namespace changed to kinematics - delayedBondedAtom.h:11
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(dofId.h)
+Namespace changed to kinematics - dofId.h:7
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(dofType.h)
+Namespace changed to kinematics - dofType.h:4
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(foldTree.h)
+Namespace changed to kinematics - foldTree.h:9
+    CurrentPackage set to KinPkg
+In fileName: foldTree.h parsed cppClassDefinition line: class FoldTree_O : public core::T_O
+Creating one Initializer(kinematics::FoldTree_O) baseInitializer(['core::T_O'])
+createOnClass@foldTree.h:16 --> kinematics::FoldTree_O
+In fileName: foldTree.h parsed lispBase1 line: LISP_BASE1(core::T_O);
+In fileName: foldTree.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,FoldTree_O,"FoldTree");
+updateLatestClass info for class[kinematics::FoldTree_O] packageName[KinPkg]
+!!!!! Reading fileName(jump.h)
+Namespace changed to kinematics - jump.h:10
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(jumpAtom.h)
+Namespace changed to kinematics - jumpAtom.h:9
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(kinFoundation.h)
+Namespace changed to kinematics - kinFoundation.h:6
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(kinematicsPackage.h)
+!!!!! Associating namespace(kinematics) with package(KinPkg)
+Namespace changed to kinematics - kinematicsPackage.h:14
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(monomerBaseNode.fwd.h)
+Namespace changed to kinematics - monomerBaseNode.fwd.h:4
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(monomerBaseNode.h)
+Namespace changed to kinematics - monomerBaseNode.h:8
+    CurrentPackage set to KinPkg
+In fileName: monomerBaseNode.h parsed cppClassDefinition line: class MonomerBaseNode_O : public core::T_O
+Creating one Initializer(kinematics::MonomerBaseNode_O) baseInitializer(['core::T_O'])
+createOnClass@monomerBaseNode.h:12 --> kinematics::MonomerBaseNode_O
+In fileName: monomerBaseNode.h parsed lispBase1 line: LISP_BASE1(core::T_O);
+In fileName: monomerBaseNode.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,MonomerBaseNode_O,"MonomerBaseNode");
+updateLatestClass info for class[kinematics::MonomerBaseNode_O] packageName[KinPkg]
+!!!!! Reading fileName(monomerId.h)
+Namespace changed to kinematics - monomerId.h:9
+    CurrentPackage set to KinPkg
+In fileName: monomerId.h parsed cppClassDefinition line: class MonomerId_O : public core::T_O
+Creating one Initializer(kinematics::MonomerId_O) baseInitializer(['core::T_O'])
+createOnClass@monomerId.h:40 --> kinematics::MonomerId_O
+In fileName: monomerId.h parsed lispBase1 line: LISP_BASE1(core::T_O);
+In fileName: monomerId.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,MonomerId_O,"MonomerId");
+updateLatestClass info for class[kinematics::MonomerId_O] packageName[KinPkg]
+Namespace changed to translate - monomerId.h:64
+    CurrentPackage set to None
+!!!!! Reading fileName(monomerIdMap.h)
+Namespace changed to kinematics - monomerIdMap.h:7
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(monomerNode.fwd.h)
+Namespace changed to kinematics - monomerNode.fwd.h:8
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(monomerNode.h)
+Namespace changed to kinematics - monomerNode.h:15
+    CurrentPackage set to KinPkg
+In fileName: monomerNode.h parsed cppClassDefinition line: class MonomerNode_O : public MonomerBaseNode_O
+Creating one Initializer(kinematics::MonomerNode_O) baseInitializer(['kinematics::MonomerBaseNode_O'])
+createOnClass@monomerNode.h:19 --> kinematics::MonomerNode_O
+In fileName: monomerNode.h parsed lispBase1 line: LISP_BASE1(MonomerBaseNode_O);
+In fileName: monomerNode.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,MonomerNode_O,"MonomerNode");
+updateLatestClass info for class[kinematics::MonomerNode_O] packageName[KinPkg]
+!!!!! Reading fileName(originJumpAtom.h)
+Namespace changed to kinematics - originJumpAtom.h:10
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(otherPackageClasses.h)
+!!!!! Reading fileName(pool.h)
+Namespace changed to kinematics - pool.h:8
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(ringClosingMonomerNode.h)
+Namespace changed to kinematics - ringClosingMonomerNode.h:8
+    CurrentPackage set to KinPkg
+In fileName: ringClosingMonomerNode.h parsed cppClassDefinition line: class RingClosingMonomerNode_O : public MonomerNode_O
+Creating one Initializer(kinematics::RingClosingMonomerNode_O) baseInitializer(['kinematics::MonomerNode_O'])
+createOnClass@ringClosingMonomerNode.h:12 --> kinematics::RingClosingMonomerNode_O
+In fileName: ringClosingMonomerNode.h parsed lispBase1 line: LISP_BASE1(MonomerNode_O);
+In fileName: ringClosingMonomerNode.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,RingClosingMonomerNode_O,"RingClosingMonomerNode");
+updateLatestClass info for class[kinematics::RingClosingMonomerNode_O] packageName[KinPkg]
+!!!!! Reading fileName(rootAtomInfo.h)
+Namespace changed to kinematics - rootAtomInfo.h:8
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(rootBondedAtom.h)
+Namespace changed to kinematics - rootBondedAtom.h:12
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(rotamer.h)
+Namespace changed to kinematics - rotamer.h:8
+    CurrentPackage set to KinPkg
+In fileName: rotamer.h parsed cppClassDefinition line: class Rotamer_O : public core::T_O
+Creating one Initializer(kinematics::Rotamer_O) baseInitializer(['core::T_O'])
+createOnClass@rotamer.h:12 --> kinematics::Rotamer_O
+In fileName: rotamer.h parsed lispBase1 line: LISP_BASE1(core::T_O);
+In fileName: rotamer.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,Rotamer_O,"Rotamer");
+updateLatestClass info for class[kinematics::Rotamer_O] packageName[KinPkg]
+In fileName: rotamer.h parsed cppClassDefinition line: class RotamerSetBase_O : public core::T_O
+Creating one Initializer(kinematics::RotamerSetBase_O) baseInitializer(['core::T_O'])
+createOnClass@rotamer.h:41 --> kinematics::RotamerSetBase_O
+In fileName: rotamer.h parsed lispBase1 line: LISP_BASE1(core::T_O);
+In fileName: rotamer.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,RotamerSetBase_O,"RotamerSetBase");
+updateLatestClass info for class[kinematics::RotamerSetBase_O] packageName[KinPkg]
+In fileName: rotamer.h parsed cppClassDefinition line: class RotamerSet_O : public RotamerSetBase_O
+Creating one Initializer(kinematics::RotamerSet_O) baseInitializer(['kinematics::RotamerSetBase_O'])
+createOnClass@rotamer.h:69 --> kinematics::RotamerSet_O
+In fileName: rotamer.h parsed lispBase1 line: LISP_BASE1(RotamerSetBase_O);
+In fileName: rotamer.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,RotamerSet_O,"RotamerSet");
+updateLatestClass info for class[kinematics::RotamerSet_O] packageName[KinPkg]
+In fileName: rotamer.h parsed cppClassDefinition line: class BackboneDependentRotamerSet_O : public RotamerSetBase_O
+Creating one Initializer(kinematics::BackboneDependentRotamerSet_O) baseInitializer(['kinematics::RotamerSetBase_O'])
+createOnClass@rotamer.h:90 --> kinematics::BackboneDependentRotamerSet_O
+In fileName: rotamer.h parsed lispBase1 line: LISP_BASE1(RotamerSetBase_O);
+In fileName: rotamer.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,BackboneDependentRotamerSet_O,"BackboneDependentRotamerSet");
+updateLatestClass info for class[kinematics::BackboneDependentRotamerSet_O] packageName[KinPkg]
+In fileName: rotamer.h parsed cppClassDefinition line: class BackboneDependentRotamerLibrary_O : public core::T_O
+Creating one Initializer(kinematics::BackboneDependentRotamerLibrary_O) baseInitializer(['core::T_O'])
+createOnClass@rotamer.h:126 --> kinematics::BackboneDependentRotamerLibrary_O
+In fileName: rotamer.h parsed lispBase1 line: LISP_BASE1(core::T_O);
+In fileName: rotamer.h parsed lispClass line: LISP_CLASS(kinematics,KinPkg,BackboneDependentRotamerLibrary_O,"BackboneDependentRotamerLibrary");
+updateLatestClass info for class[kinematics::BackboneDependentRotamerLibrary_O] packageName[KinPkg]
+!!!!! Reading fileName(stub.fwd.h)
+Namespace changed to kinematics - stub.fwd.h:4
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(stub.h)
+Namespace changed to kinematics - stub.h:9
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(symbolTable.h)
+Namespace changed to kinematics - symbolTable.h:6
+    CurrentPackage set to KinPkg
+Namespace changed to kw - symbolTable.h:18
+    CurrentPackage set to None
+!!!!! Reading fileName(symbols_scraped_inc.h)
+!!!!! Reading fileName(../../modules/kinematics/bin/clang-darwin-4.2.1/debug/kinematics_initClasses_inc.h)
+!!!!! Reading fileName(../../modules/kinematics/bin/clang-darwin-4.2.1/debug/kinematics_initScripting_inc.h)
+!!!!! Reading fileName(../../modules/kinematics/bin/clang-darwin-4.2.1/debug/kinematics_scrape_flag.h)
+!!!!! Reading fileName(aggregateNode.cc)
+Namespace changed to kinematics - aggregateNode.cc:8
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(atom.cc)
+Namespace changed to kinematics - atom.cc:11
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(atomHandle.cc)
+Namespace changed to kinematics - atomHandle.cc:9
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(atomTemplate.cc)
+Namespace changed to kinematics - atomTemplate.cc:17
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(atomTree.cc)
+Namespace changed to kinematics - atomTree.cc:23
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(atomo.cc)
+Namespace changed to kinematics - atomo.cc:11
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(bondId.cc)
+Namespace changed to kinematics - bondId.cc:7
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(bondedAtom.cc)
+Namespace changed to kinematics - bondedAtom.cc:15
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(chainNode.cc)
+Namespace changed to kinematics - chainNode.cc:12
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(chiDihedrals.cc)
+Namespace changed to kinematics - chiDihedrals.cc:8
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(conformation.cc)
+Namespace changed to kinematics - conformation.cc:14
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(delayedBondedAtom.cc)
+Namespace changed to kinematics - delayedBondedAtom.cc:13
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(dofType.cc)
+Namespace changed to kinematics - dofType.cc:6
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(foldTree.cc)
+Namespace changed to kinematics - foldTree.cc:11
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(jump.cc)
+Namespace changed to kinematics - jump.cc:8
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(jumpAtom.cc)
+Namespace changed to kinematics - jumpAtom.cc:11
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(kinematicsPackage.cc)
+Namespace changed to kw - kinematicsPackage.cc:16
+    CurrentPackage set to None
+Namespace changed to kinematics - kinematicsPackage.cc:29
+    CurrentPackage set to KinPkg
+Namespace changed to kinematics - kinematicsPackage.cc:42
+    CurrentPackage set to KinPkg
+Namespace changed to kinematics - kinematicsPackage.cc:58
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(monomerBaseNode.cc)
+Namespace changed to kinematics - monomerBaseNode.cc:7
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(monomerId.cc)
+Namespace changed to kinematics - monomerId.cc:11
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(monomerNode.cc)
+Namespace changed to kinematics - monomerNode.cc:14
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(originJumpAtom.cc)
+Namespace changed to kinematics - originJumpAtom.cc:12
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(ringClosingMonomerNode.cc)
+Namespace changed to kinematics - ringClosingMonomerNode.cc:7
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(rootAtomInfo.cc)
+Namespace changed to kinematics - rootAtomInfo.cc:10
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(rootBondedAtom.cc)
+Namespace changed to kinematics - rootBondedAtom.cc:11
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(rotamer.cc)
+Namespace changed to kinematics - rotamer.cc:8
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(stub.cc)
+Namespace changed to kinematics - stub.cc:7
+    CurrentPackage set to KinPkg
+!!!!! Reading fileName(../../modules/kinematics/bin/clang-darwin-4.2.1/debug/*.cc)
+Skipping file[../../modules/kinematics/bin/clang-darwin-4.2.1/debug/*.cc] - it doesn't exist
+-------- loaded everything -------- now processing
+============= Writing classInitializers
+Class[core::Model_O] was not defined
+Class[core::T_O] was not defined
+Class[core::Model_O] was not defined
+Class[core::T_O] was not defined
+Class[core::Model_O] was not defined
+Class[core::T_O] was not defined
+Class[core::Model_O] was not defined
+Class[core::T_O] was not defined
+Class[core::Model_O] was not defined
+Class[core::T_O] was not defined
+For class[kinematics::AtomTemplate_O] requirements = set(['core::T_O'])
+Returning bases[['core::T_O']]
+For class[kinematics::AtomTree_O] requirements = set(['core::T_O'])
+Returning bases[['core::T_O']]
+For class[kinematics::Atom_O] requirements = set(['core::T_O'])
+Returning bases[['core::T_O']]
+For class[kinematics::BackboneDependentRotamerLibrary_O] requirements = set(['core::T_O'])
+Returning bases[['core::T_O']]
+For class[kinematics::BondId_O] requirements = set(['core::T_O'])
+Returning bases[['core::T_O']]
+For class[kinematics::Checkpoint_O] requirements = set(['core::T_O'])
+Returning bases[['core::T_O']]
+For class[kinematics::ChiDihedral_O] requirements = set(['core::T_O'])
+Returning bases[['core::T_O']]
+For class[kinematics::ChiList_O] requirements = set(['core::T_O'])
+Returning bases[['core::T_O']]
+For class[kinematics::Conformation_O] requirements = set(['core::Model_O'])
+Returning bases[['core::Model_O']]
+For class[kinematics::FoldTree_O] requirements = set(['core::T_O'])
+Returning bases[['core::T_O']]
+For class[kinematics::MonomerBaseNode_O] requirements = set(['core::T_O'])
+Returning bases[['core::T_O']]
+For class[kinematics::MonomerId_O] requirements = set(['core::T_O'])
+Returning bases[['core::T_O']]
+For class[kinematics::RotamerSetBase_O] requirements = set(['core::T_O'])
+Returning bases[['core::T_O']]
+For class[kinematics::Rotamer_O] requirements = set(['core::T_O'])
+Returning bases[['core::T_O']]
+For class[kinematics::AggregateNode_O] requirements = set(['kinematics::MonomerBaseNode_O'])
+Returning bases[['kinematics::MonomerBaseNode_O']]
+For class[kinematics::BackboneDependentRotamerSet_O] requirements = set(['kinematics::RotamerSetBase_O'])
+Returning bases[['kinematics::RotamerSetBase_O']]
+For class[kinematics::BondedAtomTemplate_O] requirements = set(['kinematics::AtomTemplate_O'])
+Returning bases[['kinematics::AtomTemplate_O']]
+For class[kinematics::ChainNode_O] requirements = set(['kinematics::MonomerBaseNode_O'])
+Returning bases[['kinematics::MonomerBaseNode_O']]
+For class[kinematics::CheckpointAtom_O] requirements = set(['kinematics::Checkpoint_O'])
+Returning bases[['kinematics::Checkpoint_O']]
+For class[kinematics::CheckpointOutPlugAtom_O] requirements = set(['kinematics::Checkpoint_O'])
+Returning bases[['kinematics::Checkpoint_O']]
+For class[kinematics::MonomerNode_O] requirements = set(['kinematics::MonomerBaseNode_O'])
+Returning bases[['kinematics::MonomerBaseNode_O']]
+For class[kinematics::RotamerSet_O] requirements = set(['kinematics::RotamerSetBase_O'])
+Returning bases[['kinematics::RotamerSetBase_O']]
+For class[kinematics::DelayedBondedAtomTemplate_O] requirements = set(['kinematics::BondedAtomTemplate_O'])
+Returning bases[['kinematics::BondedAtomTemplate_O']]
+For class[kinematics::RingClosingMonomerNode_O] requirements = set(['kinematics::MonomerNode_O'])
+Returning bases[['kinematics::MonomerNode_O']]
+For class[kinematics::RootBondedAtomTemplate_O] requirements = set(['kinematics::BondedAtomTemplate_O'])
+Returning bases[['kinematics::BondedAtomTemplate_O']]
+Class[core::Model_O] was not defined
+Class[core::T_O] was not defined
+Class[core::Model_O] was not defined
+Class[core::T_O] was not defined
+Class[core::Model_O] was not defined
+Class[core::T_O] was not defined
+Writing macros
+Class[core::Model_O] was not defined
+Class[core::T_O] was not defined
+------------- Done classInitializers
+Writing output now to ../../modules/kinematics/bin/clang-darwin-4.2.1/debug/kinematics_initScripting_inc.h
+===============  afterInitializers
