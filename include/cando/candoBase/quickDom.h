@@ -132,7 +132,7 @@ public:
     void	addChild(QDomNode_sp child );
     int		numberOfChildren() { return this->_children.size();};
 
-    core::Cons_sp children();
+    core::List_sp children();
 
     bool	hasAttribute(const string& at ) {
 	return this->attributes.count(at)>0;

@@ -10,7 +10,7 @@ namespace candoBase
 
 
 #define SYMBOLS_EXTERN
-#include <symbols_scraped_inc.h>
+#include <cando/candoBase/generated/symbols_scraped_inc.h>
 
     extern const char* CandoBase_nicknames[];
 

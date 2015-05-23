@@ -39,7 +39,6 @@ public:
 	Matrix operator*( double v ) const;
 	Matrix operator+( const Matrix& m );
 	Matrix operator-( const Matrix& m );
-	double& operator[] (int x) { return this->elements[x];}
 	Matrix multiplyByMatrix( const Matrix& m ) { return (*this)*m; };
 	Vector3 multiplyByVector3( const Vector3& m ) const{ return (*this)*m; };
 //	Vector3 multiply3x3ByVector3( Vector3 m );
@@ -91,6 +90,9 @@ public:
 	void rightHandedRotationZ(double radians);
 	double trace();
 
+        double& operator[](size_t i) { return this->elements[i]; };
+        double const & operator[](size_t i) const { return this->elements[i]; };
+        
 	/*! Return true if the upper 3x3 rotation matrix is orthogonal within tol */
 	bool is3x3Orthogonal(double tol) const;
 

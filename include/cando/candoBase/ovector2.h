@@ -21,7 +21,7 @@ public:
 public:
 	static OVector2_sp createFromVector2( const Vector2& pos);
     /*! Carry out a vector sum */
-	static OVector2_sp sum(core::Cons_sp args);
+	static OVector2_sp sum(core::List_sp args);
 public:
 	string __repr__() const;
 	string __str__() ;
@@ -44,7 +44,7 @@ public:
 
 	/*! add two vectors
 	 */
-	core::T_sp add(core::Cons_sp points);
+	core::T_sp add(core::List_sp points);
 	Vector2 timesScalar(double s);
 
 	DEFAULT_CTOR_DTOR(OVector2_O);

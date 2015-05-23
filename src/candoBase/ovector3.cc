@@ -15,14 +15,14 @@ namespace candoBase {
     OVector3_sp OVector3_O::createFromVector3(const Vector3& pnt)
 {
     GC_ALLOCATE(OVector3_O,ov);
-    ov->setAll(pnt.getX(),pnt.getY(),pnt.getZ());
+    ov->setAll3(pnt.getX(),pnt.getY(),pnt.getZ());
     return ov;
 }
 
     OVector3_sp OVector3_O::create(Vector3 const& pnt)
 {
     GC_ALLOCATE(OVector3_O,ov);
-    ov->setAll(pnt.getX(),pnt.getY(),pnt.getZ());
+    ov->setAll3(pnt.getX(),pnt.getY(),pnt.getZ());
     return ov;
 }
 
@@ -30,9 +30,9 @@ namespace candoBase {
     {_G();
     ASSERTF(pnt->length()==3,BF("Poorly formed Vector"));
     GC_ALLOCATE(OVector3_O,ov);
-    ov->setAll(core::oCar(pnt).as<core::Number_O>()->as_double(),
-	       core::oCadr(pnt).as<core::Number_O>()->as_double(),
-	       core::oCaddr(pnt).as<core::Number_O>()->as_double());
+    ov->setAll3(core::clasp_to_double(core::oCar(pnt).as<core::Number_O>()),
+	       core::clasp_to_double(core::oCadr(pnt).as<core::Number_O>()),
+	       core::clasp_to_double(core::oCaddr(pnt).as<core::Number_O>()));
     return ov;
 }
 
@@ -71,17 +71,16 @@ namespace candoBase {
 }
 #endif
 
-
-string	OVector3_O::__repr__() const
-{
-    stringstream ss;
-    ss << this->_Value.getX() << " ";
-    ss << this->_Value.getY() << " ";
-    ss << this->_Value.getZ();
-    return ss.str();
+string OVector3_O::__repr__() const {
+  stringstream ss;
+  ss << "[ ";
+  ss << this->_Value.getX() << " ";
+  ss << this->_Value.getY() << " ";
+  ss << this->_Value.getZ();
+  ss << " ]";
+  return ss.str();
 }
-string	OVector3_O::__str__()
-{
+string OVector3_O::__str__() {
     return this->__repr__();
 }
 
@@ -110,12 +109,12 @@ string	OVector3_O::__str__()
     }
 
 
-    OVector3_sp OVector3_O::sum(core::Cons_sp args)
+    OVector3_sp OVector3_O::sum(core::List_sp args)
     {
 	Vector3 sum(0.0,0.0,0.0);
 	while ( args.notnilp() )
 	{
-	    OVector3_sp one = args.as<OVector3_O>();
+          OVector3_sp one = gc::As<OVector3_sp>(args);
 	    sum = sum.add(one->get());
 	}
 	return OVector3_O::createFromVector3(sum);
@@ -134,20 +133,17 @@ string	OVector3_O::__str__()
 #define ARGS_OVector3_O_add "((self ovector3) &rest points)"
 #define DECL_OVector3_O_add ""
 #define DOCS_OVector3_O_add "OVector3_O_add"
-    core::T_sp OVector3_O::add(core::Cons_sp points)
-    {_G();
-	Vector3 result = Vector3(this->getX(),this->getY(),this->getZ());
-	core::Cons_sp cur = points;
-	while ( cur.notnilp() )
-	{
-	    OVector3_sp o = cur->car<OVector3_O>();
-	    result = result.add(o->get());
-	    LOG(BF("Adding %s") % o->__repr__() );
-	    LOG(BF("Intermediate result %s") % result.asString() );
-	    cur = cur->cdr();
-	}
-	return OVector3_O::createFromVector3(result);
-    }
+core::T_sp OVector3_O::add(core::List_sp points)
+{_G();
+  Vector3 result = Vector3(this->getX(),this->getY(),this->getZ());
+  for ( auto cur : points ) {
+    OVector3_sp o = oCar(cur).as<OVector3_O>();
+    result = result.add(o->get());
+    LOG(BF("Adding %s") % o->__repr__() );
+    LOG(BF("Intermediate result %s") % result.asString() );
+  }
+  return OVector3_O::createFromVector3(result);
+}
 
 
 
@@ -158,10 +154,10 @@ Vector3 OVector3_O::timesScalar(double d)
 }
 
 
-    Vector3 OVector3_O::normalized()
-    {
-	return this->_Value.normalized(_lisp);
-    }
+Vector3 OVector3_O::normalized()
+{
+  return this->_Value.normalized(_lisp);
+}
 
 double	OVector3_O::dihedral( const Vector3& vb, const Vector3& vc, const Vector3& vd )
 {
@@ -179,11 +175,27 @@ double	OVector3_O::distance( const Vector3& vb )
 }
 
 
+core::Cons_sp OVector3_O::encode() const {
+  core::Vector_sp v = core::core_make_vector(cl::_sym_DoubleFloat_O,3);
+  (*v)[0] = core::clasp_make_double_float(this->_Value[0]);
+  (*v)[1] = core::clasp_make_double_float(this->_Value[1]);
+  (*v)[2] = core::clasp_make_double_float(this->_Value[2]);
+  printf("%s:%d encoded: %s\n", __FILE__, __LINE__, _rep_(v).c_str());
+  return core::Cons_O::create(_Nil<T_O>(),v);
+}
+
+void OVector3_O::decode(core::Cons_sp r) {
+  core::Vector_sp v = gc::As<core::Vector_sp>(oCdr(r));
+  this->_Value[0] = core::clasp_to_double((*v)[0]);
+  this->_Value[1] = core::clasp_to_double((*v)[1]);
+  this->_Value[2] = core::clasp_to_double((*v)[2]);
+}
+
 
     void OVector3_O::exposeCando(core::Lisp_sp lisp)
     {
 	core::class_<OVector3_O>()
-		.def("setAll", &OVector3_O::setAll )
+		.def("setAll3", &OVector3_O::setAll3 )
 		.def("x", &OVector3_O::getX )
 		.def("y", &OVector3_O::getY )
 		.def("z", &OVector3_O::getZ )
@@ -204,7 +216,7 @@ double	OVector3_O::distance( const Vector3& vb )
     {_G();
 #ifdef USEBOOSTPYTHON
 	PYTHON_CLASS(CorePkg,OVector3,"","",_lisp)
-		.def("setAll", &OVector3_O::setAll )
+		.def("setAll3", &OVector3_O::setAll3 )
 		.def("x", &OVector3_O::getX )
 		.def("y", &OVector3_O::getY )
 		.def("z", &OVector3_O::getZ )

@@ -16,6 +16,9 @@ namespace candoBase {
 	friend class OMatrix_O;
 	LISP_BASE1(core::T_O);
 	LISP_CLASS(candoBase,CandoBasePkg,OVector3_O,"OVector3");
+    public:
+        core::Cons_sp encode() const;
+        void decode(core::Cons_sp);
 public:
 	Vector3	_Value;
     public:
@@ -29,14 +32,14 @@ public:
     /*! Create from 3 element Cons */
 	static OVector3_sp create(core::Cons_sp pos);
     /*! Carry out a vector sum */
-	static OVector3_sp sum(core::Cons_sp args);
+	static OVector3_sp sum(core::List_sp args);
 public:
     /*! Return a deep copy of this value */
 	core::T_sp deepCopy() const;
 	core::T_sp shallowCopy() const { return this->deepCopy();};
     string __repr__() const;
 	string __str__() ;
-	void setAll(double x, double y, double z) { this->_Value.set(x,y,z); };
+	void setAll3(double x, double y, double z) { this->_Value.set(x,y,z); };
 	double getX() { return this->_Value.getX(); };
 	double getY() { return this->_Value.getY(); };
 	double getZ() { return this->_Value.getZ(); };
@@ -61,7 +64,7 @@ public:
 
 	/*! add two vectors
 	 */
-	core::T_sp add(core::Cons_sp points);
+	core::T_sp add(core::List_sp points);
 	Vector3 timesScalar(double s);
 
 	DEFAULT_CTOR_DTOR(OVector3_O);
@@ -85,7 +88,7 @@ namespace translate
 	DeclareType _v;
 	from_object(core::T_sp o)
 	{
-	    candoBase::OVector3_sp v = o.as<candoBase::OVector3_O>();
+          candoBase::OVector3_sp v = gc::As<candoBase::OVector3_sp>(o);
 	    _v.set(v->getX(),v->getY(),v->getZ());
 	}
     };
@@ -98,27 +101,26 @@ namespace translate
 	from_object(core::T_sp o)
 	{
 	    if ( candoBase::OVector3_sp ov3 = o.asOrNull<candoBase::OVector3_O>() ) {
-		candoBase::OVector3_sp v = o.as<candoBase::OVector3_O>();
-		_v.set(v->getX(),v->getY(),v->getZ());
+              _v.set(ov3->getX(),ov3->getY(),ov3->getZ());
 	    } else if ( core::Vector_sp vec = o.asOrNull<core::Vector_O>() ) {
-		if ( vec->length() != 3 ) {
+              if ( core::cl_length(vec) != 3 ) {
 		    SIMPLE_ERROR(BF("ovector3 can only have three elements"));
 		}
-	        _v.set(vec->operator[](0).as<core::Number_O>()->as_double(),
-		       vec->operator[](1).as<core::Number_O>()->as_double(),
-		       vec->operator[](2).as<core::Number_O>()->as_double());
-	    } else if ( core::Cons_sp list = o.asOrNull<core::Cons_O>() ) {
-		if ( list->length() != 3 ) {
+	        _v.set(clasp_to_double(gc::As<core::Number_sp>((*vec)[0])),
+		       clasp_to_double(gc::As<core::Number_sp>((*vec)[1])),
+		       clasp_to_double(gc::As<core::Number_sp>((*vec)[2])));
+	    } else if ( core::List_sp list = o.asOrNull<core::List_V>() ) {
+              if ( core::cl_length(list) != 3 ) {
 		    SIMPLE_ERROR(BF("ovector3 can only have three elements"));
 		}
 		core::T_sp e1 = oCar(list);
-		list = cCdr(list);
+		list = oCdr(list);
 		core::T_sp e2 = oCar(list);
-		list = cCdr(list);
+		list = oCdr(list);
 		core::T_sp e3 = oCar(list);
-	        _v.set(e1.as<core::Number_O>()->as_double(),
-		       e2.as<core::Number_O>()->as_double(),
-		       e3.as<core::Number_O>()->as_double());
+	        _v.set(core::clasp_to_double(e1.as<core::Number_O>()),
+		       core::clasp_to_double(e2.as<core::Number_O>()),
+		       core::clasp_to_double(e3.as<core::Number_O>()));
 	    } else {
 		SIMPLE_ERROR(BF("Illegal type for ovector3"));
 	    }
@@ -134,7 +136,7 @@ namespace translate
 	static core::T_sp convert(Vector3 pos)
 	{_G();
 	    candoBase::OVector3_sp ov = candoBase::OVector3_O::create();
-	    ov->setAll(pos.getX(),pos.getY(),pos.getZ());
+	    ov->setAll3(pos.getX(),pos.getY(),pos.getZ());
 	    return (ov);
 	}
     };
@@ -150,7 +152,7 @@ namespace translate
 	static core::T_sp convert(Vector3 pos)
 	{_G();
 	    candoBase::OVector3_sp ov = candoBase::OVector3_O::create();
-	    ov->setAll(pos.getX(),pos.getY(),pos.getZ());
+	    ov->setAll3(pos.getX(),pos.getY(),pos.getZ());
 	    return (ov);
 	}
     };

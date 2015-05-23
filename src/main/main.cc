@@ -51,6 +51,8 @@ THE SOFTWARE.
 #include <clasp/sockets/socketsPackage.h>
 #include <clasp/serveEvent/serveEventPackage.h>
 #include <clasp/asttooling/asttoolingPackage.h>
+#include <cando/candoBase/candoBasePackage.h>
+
 #ifdef USE_MPI
 #include <clasp/mpip/mpiPackage.h>
 #include <clasp/mpip/claspMpi.h>
@@ -88,6 +90,9 @@ int startup(int argc, char *argv[], bool &mpiEnabled, int &mpiRank, int &mpiSize
 
     asttooling::AsttoolingExposer AsttoolingPkg(_lisp);
     _lisp->installPackage(&AsttoolingPkg);
+
+    candoBase::CandoBaseExposer CandoBasePkg(_lisp);
+    _lisp->installPackage(&CandoBasePkg);
 
 #ifdef USE_MPI
     mpip::MpiExposer TheMpiPkg(_lisp);

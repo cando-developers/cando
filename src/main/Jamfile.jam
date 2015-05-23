@@ -1,7 +1,7 @@
 
 #
 #
-project projects/cando/main : requirements
+project main : requirements
 	<define>EXPAT
 	<toolset>darwin:<define>READLINE
 	<include>./
@@ -29,6 +29,7 @@ sources =
 		/internals//sockets     #//bundle/<link>static
 		/internals//serveEvent  #//bundle/<link>static
 		/internals//asttooling  #//bundle/<link>static
+                /cando/candoBase
 		/externals//llvm_lib/<link>static
 		/externals//clang_lib/<link>static
 		/externals//boostAndExpatLibs/<link>static
@@ -39,4 +40,9 @@ sources =
 exe cando_boehm_o : main.cc $(sources)
      /externals//lib_boehm
      : <gc>boehm <variant>release
+     ;
+
+exe cando_boehm_d : main.cc $(sources)
+     /externals//lib_boehm
+     : <gc>boehm <variant>debug
      ;

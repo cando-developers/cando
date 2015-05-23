@@ -63,15 +63,15 @@ string	OVector2_O::__str__()
     }
 
 
-    OVector2_sp OVector2_O::sum(core::Cons_sp args)
+    OVector2_sp OVector2_O::sum(core::List_sp args)
     {
-	Vector2 sum(0.0,0.0);
-	while ( args.notnilp() )
-	{
-	    OVector2_sp one = oCar(args).as<OVector2_O>();
-	    sum = sum.add(one->get());
-	}
-	return OVector2_O::createFromVector2(sum);
+      Vector2 sum(0.0,0.0);
+      while ( args.notnilp() )
+      {
+        OVector2_sp one = gc::As<OVector2_sp>(oCar(args));
+        sum = sum.add(one->get());
+      }
+      return OVector2_O::createFromVector2(sum);
     }
 
 
@@ -79,18 +79,15 @@ string	OVector2_O::__str__()
 #define ARGS_OVector2_O_add "((self ovector2) &rest points)"
 #define DECL_OVector2_O_add ""
 #define DOCS_OVector2_O_add "Add a collection of points together"
-    core::T_sp OVector2_O::add(core::Cons_sp points)
+    core::T_sp OVector2_O::add(core::List_sp points)
     {_G();
 	Vector2 result = Vector2(this->getX(),this->getY());
 	LOG(BF("First add = %s") % result.asString() );
-	core::Cons_sp cur = points;
-	while ( cur.notnilp() )
-	{
+	for ( auto cur : points ) {
 	    OVector2_sp o = cur->car<OVector2_O>();
 	    result = result.add(o->get());
 	    LOG(BF("Adding %s") % o->__repr__() );
 	    LOG(BF("Intermediate result %s") % result.asString() );
-	    cur = cur->cdr();
 	}
 	return OVector2_O::createFromVector2(result);
     }

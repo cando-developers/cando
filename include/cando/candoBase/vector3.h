@@ -89,7 +89,7 @@ public:
 	void	parseFromCharacterArray(char* line);
 
 	/*! Fill from a cons of three Numbers */
-	void	fillFromCons(core::Cons_sp vals,core::Lisp_sp lisp);
+	void	fillFromCons(core::Cons_sp vals);
 };
 
 

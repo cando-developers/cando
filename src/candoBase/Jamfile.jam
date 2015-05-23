@@ -5,7 +5,8 @@ local dir = $(__file__:D) ;
 # if you want debugging messages in release version turn on
 # <variant>release:<define>SOURCE_DEBUG
 #
-project cando/candoBase 
+project candoBase : requirements
+        <include>./
 	;
 
 local sources = 

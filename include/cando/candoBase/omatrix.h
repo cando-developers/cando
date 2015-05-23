@@ -8,52 +8,58 @@
 
 namespace candoBase {
 
-    SMART(OMatrix );
-    class OMatrix_O : public core::T_O
-    {
-	LISP_BASE1(core::T_O);
-	LISP_CLASS(candoBase,CandoBasePkg,OMatrix_O,"OMatrix");
-public:
-	Matrix	_Value;
-public:
-//	void	archiveBase(core::ArchiveP node);
-public:
-	string __repr__() const;
-	string __str__() ;
+  SMART(OMatrix );
+  class OMatrix_O : public core::T_O
+  {
+    LISP_BASE1(core::T_O);
+    LISP_CLASS(candoBase,CandoBasePkg,OMatrix_O,"OMatrix");
+  public:
+    Matrix	_Value;
+  public:
+    virtual core::Cons_sp encode() const;
+    virtual void decode(core::Cons_sp);
+  public:
+        //! Create a 4x4 matrix uninitialized (identity=false) or identity if true
+    static OMatrix_sp make(bool identity);
+  public:
+    string __repr__() const;
+    string __str__() ;
 
 	//! Create a clone of this matrix
-	OMatrix_sp clone() const;
+    OMatrix_sp clone() const;
 
-	void setToIdentity();
-	void setToIndexAsValue();
-	void translate(Vector3 pos);
+    void setToIdentity();
+    void setToIndexAsValue();
+    void translate(Vector3 pos);
 
-	void setFromString(const string& s);
-	void setFromStringFast(const string& s);
-	string asString();
-	string asStringFast();
+    void setFromString(const string& s);
+    void setFromStringFast(const string& s);
+    string asString();
+    string asStringFast();
 
-	void rotationX(double radians);
-	void rotationY(double radians);
-	void rotationZ(double radians);
+    void rotationX(double radians);
+    void rotationY(double radians);
+    void rotationZ(double radians);
 
-	Matrix mul(const Matrix& other) const;
-	Vector3 mul(const Vector3& vec) const;
+    Matrix mul(const Matrix& other) const;
+    Vector3 mul(const Vector3& vec) const;
 
-	Matrix extract3x3() const { return this->_Value.extract3x3();};
-	Matrix transposed3x3() const { return this->_Value.transposed3x3();};
+    Matrix extract3x3() const { return this->_Value.extract3x3();};
+    Matrix transposed3x3() const { return this->_Value.transposed3x3();};
 
-	double atRowColGet(int row, int col) { return this->_Value.atRowCol(row,col);};
-	void atRowColPut(int row, int col, double v) { return this->_Value.atRowColPut(row,col,v);};
-	Matrix getMatrix() { return this->_Value; };
-	void setAll(const Matrix& m);
-	const Matrix& ref() const { return this->_Value;};
+    double atRowColGet(int row, int col) { return this->_Value.atRowCol(row,col);};
+    void atRowColPut(int row, int col, double v) { return this->_Value.atRowColPut(row,col,v);};
+    Matrix getMatrix() { return this->_Value; };
+    void setAll(const Matrix& m);
+    const Matrix& ref() const { return this->_Value;};
 
 	/*! Return true if the upper 3x3 rotation matrix is orthogonal */
-	bool is3x3Orthogonal(double tol) const { return this->_Value.is3x3Orthogonal(tol);};
+    bool is3x3Orthogonal(double tol) const { return this->_Value.is3x3Orthogonal(tol);};
 
-	DEFAULT_CTOR_DTOR(OMatrix_O);
-    };
+    OMatrix_O() {};
+  OMatrix_O(bool identity) : _Value(identity) {};
+    virtual ~OMatrix_O() {};
+  };
 
 
 

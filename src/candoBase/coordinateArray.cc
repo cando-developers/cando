@@ -9,9 +9,9 @@
 //#include "core/serializerNode.h"
 #include <cando/candoBase/ovector3.h>
 #include <cando/candoBase/omatrix.h>
-#include <cando/candoBase/color.h>
 #include <clasp/core/lispStream.h>
 #ifdef RENDER
+#include <cando/candoBase/color.h>
 #include <candoBase/render.h>
 #endif
 #include <clasp/core/wrappers.h>
@@ -22,10 +22,10 @@ namespace candoBase
 {
 
 
-#define ARGS_CoordinateArray_O_make "(fnsize vals)"
+#define ARGS_CoordinateArray_O_make "(fnsize &optional vals)"
 #define DECL_CoordinateArray_O_make ""
 #define DOCS_CoordinateArray_O_make "fnsize vals"
-    CoordinateArray_sp CoordinateArray_O::make(core::Fixnum_sp fnsize, core::Cons_sp vals)
+CoordinateArray_sp CoordinateArray_O::make(gc::Nilable<core::Fixnum_sp> fnsize, core::List_sp vals)
     {_G();
 	if ( fnsize.notnilp() && vals.notnilp() )
 	{
@@ -34,11 +34,10 @@ namespace candoBase
 	GC_ALLOCATE(CoordinateArray_O,me);
 	if ( fnsize.notnilp() )
 	{
-	    int size = fnsize->as_int();
+          core::Fixnum size = core::clasp_to_fixnum(fnsize);
 	    me->resize(size);
-	} else if ( vals.notnilp() )
-	{
-	    me->fillFromCons(vals);
+	} else if ( vals.notnilp() ) {
+	    me->fillFromList(vals);
 	}
 	return me;
     }
@@ -47,34 +46,28 @@ namespace candoBase
 
 
 
-    void CoordinateArray_O::fillFromCons(core::Cons_sp vals)
-    {_OF();
-	if ( this->size() != 0 )
-	{
-	    SIMPLE_ERROR(BF("Coordinate array must be empty to fillFromCons"));
-	}
-	if ( vals.notnilp() )
-	{
-	    for ( ; vals.notnilp(); vals = vals->cdr() )
-	    {
-		core::T_sp obj = core::oCar(vals);
-		if ( core::af_consP(obj) )
-		{
-		    core::Cons_sp consVec = obj.as<core::Cons_O>();
-		    Vector3 vec;
-		    vec.fillFromCons(consVec,_lisp);
-		    this->appendElement(vec);
-		} else if ( obj->isAssignableTo<OVector3_O>())
-		{
-		    OVector3_sp ovec = obj.as<OVector3_O>();
-		    this->appendElement(ovec->value());
-		} else
-		{
-		    SIMPLE_ERROR(BF("Cannot convert value[%s] to Vector3") % obj->__repr__() );
-		}
-	    }
-	}
+void CoordinateArray_O::fillFromList(core::List_sp vals)
+{
+  if ( this->size() != 0 ) {
+    SIMPLE_ERROR(BF("Coordinate array must be empty to fillFromCons"));
+  }
+  if ( vals.notnilp() ) {
+    for ( auto cur : vals ) {
+      core::T_sp obj = core::oCar(cur);
+      if ( core::cl_consp(obj) )
+      {
+        core::Cons_sp consVec = obj.as<core::Cons_O>();
+        Vector3 vec;
+        vec.fillFromCons(consVec);
+        this->appendElement(vec);
+      } else if ( OVector3_sp ovec = obj.asOrNull<OVector3_O>()) {
+        this->appendElement(ovec->value());
+      } else {
+        SIMPLE_ERROR(BF("Cannot convert value[%s] to Vector3") % obj->__repr__() );
+      }
     }
+  }
+}
 
     void CoordinateArray_O::initialize()
     {
@@ -83,25 +76,24 @@ namespace candoBase
     }
 
 
-    CoordinateArray_sp CoordinateArray_O::create(core::Cons_sp elements, core::Lisp_sp env)
-    {
-	uint sz = elements->length();
-	CoordinateArray_sp res = CoordinateArray_O::create(sz);
-	uint idx = 0;
-	for ( ; elements.notnilp(); elements = elements->cdr() )
-	{
-	    res->setElement(idx,core::oCar(elements).as<OVector3_O>()->get());
-	    idx++;
-	}
-	return res;
-    }
+CoordinateArray_sp CoordinateArray_O::create(core::List_sp elements)
+{
+  size_t sz = core::cl_length(elements);
+  CoordinateArray_sp res = CoordinateArray_O::create(sz);
+  uint idx = 0;
+  for ( auto cur : elements ) {
+    res->setElement(idx,core::oCar(cur).as<OVector3_O>()->get());
+    idx++;
+  }
+  return res;
+}
 
-    void CoordinateArray_O::resize(int iElement)
-    {_G();
-	Vector3	zero;
-	zero.set(0.0,0.0,0.0);
-	this->_Points.resize(iElement,zero);
-    }
+void CoordinateArray_O::resize(int iElement)
+{_G();
+  Vector3	zero;
+  zero.set(0.0,0.0,0.0);
+  this->_Points.resize(iElement,zero);
+}
 
     CoordinateArray_O::iterator CoordinateArray_O::begin()
     {
@@ -413,6 +405,34 @@ namespace candoBase
 #endif
 
 
+core::Cons_sp CoordinateArray_O::encode() const {
+  core::Vector_sp v = core::core_make_vector(cl::_sym_DoubleFloat_O,3*this->_Points.size());
+  size_t cur(0);
+  for ( size_t i(0); i<this->_Points.size(); ++i ) {
+    (*v)[cur++] = core::clasp_make_double_float(this->_Points[i].getX());
+    (*v)[cur++] = core::clasp_make_double_float(this->_Points[i].getY());
+    (*v)[cur++] = core::clasp_make_double_float(this->_Points[i].getZ());
+  }
+  return core::Cons_O::createList(core::Cons_O::create(_Nil<T_O>(),core::clasp_make_fixnum(this->_Points.size())),
+                                  core::Cons_O::create(_Nil<T_O>(),v));
+}
+
+void CoordinateArray_O::decode(core::Cons_sp c) {
+  core::Fixnum_sp fn_size = gc::As<core::Fixnum_sp>(oCdr(oFirst(c)));
+  core::Vector_sp v = gc::As<core::Vector_sp>(oCdr(oSecond(c)));
+  this->resize(core::clasp_to_fixnum(fn_size));
+  size_t cur(0);
+  for ( size_t i(0); i<this->_Points.size(); ++i ) {
+    // TODO: Optimize this if v is a specialized vector of doubles
+    double x = core::clasp_to_double((*v)[cur++]);
+    double y = core::clasp_to_double((*v)[cur++]);
+    double z = core::clasp_to_double((*v)[cur++]);
+    Vector3 v3(x,y,z);
+    this->_Points[i] = v3;
+  }
+}
+
+
     void CoordinateArray_O::exposeCando(core::Lisp_sp lisp)
     {
 	core::class_<CoordinateArray_O>()
@@ -429,6 +449,7 @@ namespace candoBase
 //	    .def("read-from-stream",&CoordinateArray_O::parseFromStream)
 	    .def("multiplyByScalar",&CoordinateArray_O::multiplyByScalar)
 	    ;
+        Defun_maker(CandoBasePkg,CoordinateArray);
     }
     void CoordinateArray_O::exposePython(core::Lisp_sp lisp)
     {_G();

@@ -1,5 +1,5 @@
 
-include	$(CANDO_HOME)/makefile.inc
+include	$(CLASP_HOME)/makefile.inc
 
 
 NEEDS=symbols.inc

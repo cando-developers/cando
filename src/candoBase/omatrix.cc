@@ -20,6 +20,12 @@ namespace candoBase {
     }
 #endif
 
+OMatrix_sp OMatrix_O::make(bool identity)
+{
+  GC_ALLOCATE_VARIADIC(OMatrix_O,om,identity);
+  return om;
+};
+  
 
     string	OMatrix_O::__repr__() const
     {
@@ -82,6 +88,21 @@ namespace candoBase {
     }
 
 
+core::Cons_sp OMatrix_O::encode() const {
+  core::Vector_sp v = core::core_make_vector(cl::_sym_DoubleFloat_O,16);
+  for ( size_t i(0); i<16; ++i ) {
+    (*v)[i] = core::clasp_make_double_float(this->_Value[i]);
+  }
+  return core::Cons_O::create(_Nil<T_O>(),v);
+}
+
+void OMatrix_O::decode(core::Cons_sp c) {
+  core::Vector_sp v = gc::As<core::Vector_sp>(oCdr(c));
+  for ( size_t i(0); i<16; ++i ) {
+    this->_Value[i] = core::clasp_to_double((*v)[i]);
+  }
+}
+
 
 
     void OMatrix_O::exposeCando(core::Lisp_sp lisp)
@@ -103,6 +124,7 @@ namespace candoBase {
 	    .def("transposed3x3",&OMatrix_O::transposed3x3)
 	    .def("is3x3Orthogonal",&OMatrix_O::is3x3Orthogonal)
 	    ;
+        core::af_def(CandoBasePkg,"make-omatrix",&OMatrix_O::make);
     }
 
     void OMatrix_O::exposePython(core::Lisp_sp lisp)

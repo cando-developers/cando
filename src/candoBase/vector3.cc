@@ -289,14 +289,14 @@ void Vector3::serialize(core::SerializerNode node)
 	;
 }
 #endif
-void Vector3::fillFromCons(core::Cons_sp vals,core::Lisp_sp lisp)
-{_G();
-    double x = core::oFirst(vals).as<core::Number_O>()->as_double();
-    double y = core::oSecond(vals).as<core::Number_O>()->as_double();
-    double z = core::oThird(vals).as<core::Number_O>()->as_double();
-    this->coords[0] = x;
-    this->coords[1] = y;
-    this->coords[2] = z;
+void Vector3::fillFromCons(core::Cons_sp vals)
+{
+  double x = core::clasp_to_double(core::oFirst(vals).as<core::Number_O>());
+  double y = core::clasp_to_double(core::oSecond(vals).as<core::Number_O>());
+  double z = core::clasp_to_double(core::oThird(vals).as<core::Number_O>());
+  this->coords[0] = x;
+  this->coords[1] = y;
+  this->coords[2] = z;
 }
     
 

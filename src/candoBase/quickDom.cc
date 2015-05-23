@@ -209,10 +209,10 @@ int			newLines;
 	return this->_children.size() == 0;
     }
 
-    core::Cons_sp QDomNode_O::children()
-{_OF();
+core::List_sp QDomNode_O::children()
+{
     core::Cons_sp first, cur;
-    first = _lisp->create<core::Cons_O>();
+    first = core::Cons_O::create();
     cur = first;
     for ( QDomNode_O::iterator ci=this->begin_Children(); ci!=this->end_Children(); ci++ )
     {
@@ -220,7 +220,7 @@ int			newLines;
 	cur->setCdr(one);
 	cur = one;
     }
-    return first->cdr();
+    return oCdr(first);
 }
 
 
