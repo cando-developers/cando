@@ -12,12 +12,12 @@
 #include <set>
 #include <clasp/core/common.h>
 #include <cando/chem/bond.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 //#include	"conformation.h"
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
 #include <cando/chem/nVector.h>
-#include <cando/candoBase/coordinateArray.h>
+#include <cando/geom/coordinateArray.h>
 
 
 
@@ -52,7 +52,7 @@ private:
 	Matter_sp				_Matter;
     gctools::SmallOrderedSet<Atom_sp>				_AllAtoms;
     gctools::SmallOrderedSet<Atom_sp>				_SuperposeAtoms;
-	candoBase::CoordinateArray_sp			_FixedCoordinates;
+	geom::CoordinateArray_sp			_FixedCoordinates;
 private:	// do not archive
 	Matrix					_TransformToFixed;
 

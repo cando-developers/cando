@@ -11,8 +11,8 @@
 #include <stdio.h>
 #include <string>
 #include <math.h>
-#include <cando/candoBase/ovector3.h>
-#include <cando/candoBase/omatrix.h>
+#include <cando/geom/ovector3.h>
+#include <cando/geom/omatrix.h>
 #include <clasp/core/exceptions.h>
 #include <cando/chem/matter.h>
 #include <cando/chem/aggregate.h>
@@ -20,7 +20,7 @@
 #include <cando/chem/residue.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/loop.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 #include <clasp/core/objectSet.h>
 #include <cando/chem/mbbCoreTools.h>
 #include <clasp/core/wrappers.h>

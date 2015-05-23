@@ -71,7 +71,7 @@ public:
 		//! Return the angle wrt other
 	double	angleWithVector(NVector_sp other);
 	void		writeMathematica(const string& name);
-//	candoBase::QDomNode_sp	termDifferencesAsXml(const string& thisName, NVector_sp other, const string& otherName );
+//	geom::QDomNode_sp	termDifferencesAsXml(const string& thisName, NVector_sp other, const string& otherName );
 	double	maxAbsValue();
 	double	minAbsValue();
 	double	maxValue();

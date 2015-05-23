@@ -480,11 +480,11 @@ CoordinateSystem_sp			coord;
 //	drive for debugging.
 //
 //
-candoBase::QDomNode_sp	Dumb_TorsionDriver::renderXml()
+geom::QDomNode_sp	Dumb_TorsionDriver::renderXml()
 {
-candoBase::QDomNode_sp	graphics, aggGraphics;
-candoBase::QDomNode_sp	coords;
-candoBase::QDomNode_sp	gr;
+geom::QDomNode_sp	graphics, aggGraphics;
+geom::QDomNode_sp	coords;
+geom::QDomNode_sp	gr;
 vector<TorsionSegment>::iterator	pos;
 Vector3		origin, pnt;
 vector<TorsionAtom>::iterator		tai;

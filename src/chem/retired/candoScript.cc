@@ -8,7 +8,7 @@
 #include <clasp/core/stringSet.h>
 #include <clasp/core/binder.h>
 #include <cando/chem/symbolTable.h>
-#include <cando/candoBase/ovector3.h>
+#include <cando/geom/ovector3.h>
 #include <clasp/core/executables.h>
 #include <clasp/core/fileSystem.h>
 //#include "core/xmlLoadArchive.h"
@@ -702,7 +702,7 @@ core::T_sp af_atomPos(core::Cons_sp args)
 	{
 	    LOG(BF("Found atom with name: %s") % atomName->get().c_str()  );
 	    Vector3 pos = foundResidue->atomWithName(atomName->get())->getPosition();
-	    candoBase::OVector3_sp v = candoBase::OVector3_O::create();
+	    geom::OVector3_sp v = geom::OVector3_O::create();
 	    v->setAll(pos.getX(),pos.getY(),pos.getZ());
 	    return v;
 	}
@@ -821,7 +821,7 @@ core::T_sp af_calculatePoint()
 				      angleDegrees*0.0174533,posAngleAtom,
 				      dihedralDegrees*0.0174533,posDihedralAtom);
     LOG(BF("Generated point: %s") % pnt.asString().c_str()  );
-    return candoBase::OVector3_O::createFromVector3(lisp,pnt);
+    return geom::OVector3_O::createFromVector3(lisp,pnt);
 #endif
 #endif
 }

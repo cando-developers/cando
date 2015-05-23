@@ -77,7 +77,7 @@ public:
 
 	bool canRender() { return true; }
 #ifdef RENDER
-	candoBase::Render_sp rendered(core::Cons_sp options);
+	geom::Render_sp rendered(core::Cons_sp options);
 #endif
 
 

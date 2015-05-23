@@ -15,9 +15,9 @@
 #include <stdio.h>
 #include <math.h>
 #include <clasp/core/common.h>
-#include <cando/candoBase/vector3.h>
-#include <cando/candoBase/matrix.h>
-#include <cando/candoBase/omatrix.h>
+#include <cando/geom/vector3.h>
+#include <cando/geom/matrix.h>
+#include <cando/geom/omatrix.h>
 #include <cando/chem/symbolTable.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
@@ -116,7 +116,7 @@ namespace chem
 //
 //	geometricCenterOfPoints
 //
-    Vector3	geometricCenterOfPointsIndirect( core::IntArray_sp indices, candoBase::CoordinateArray_sp pnts)
+    Vector3	geometricCenterOfPointsIndirect( core::IntArray_sp indices, geom::CoordinateArray_sp pnts)
 { _G();
     Vector3				pos;
     core::IntArray_O::iterator		it;
@@ -139,8 +139,8 @@ void SuperposeEngine_O::initialize()
     this->Base::initialize();
     this->_FixedIndices = core::IntArray_O::create();
     this->_MoveableIndices = core::IntArray_O::create();
-    this->_FixedCoordinates = candoBase::CoordinateArray_O::create();
-    this->_MoveableCoordinates = candoBase::CoordinateArray_O::create();
+    this->_FixedCoordinates = geom::CoordinateArray_O::create();
+    this->_MoveableCoordinates = geom::CoordinateArray_O::create();
 }
 
 
@@ -441,7 +441,7 @@ double	SuperposeEngine_O::rootMeanSquareDifference()
 
 
 
-void	SuperposeEngine_O::setFixedPoints( core::IntArray_sp fi, candoBase::CoordinateArray_sp fc )
+void	SuperposeEngine_O::setFixedPoints( core::IntArray_sp fi, geom::CoordinateArray_sp fc )
 { _G();
     LOG(BF("SuperposeEngine_O::setFixedPoints --> number of points=%d") % fc->size()  );
     if ( !((fi->size()>=3) && ((fi->size()<=fc->size()))) )
@@ -461,7 +461,7 @@ void	SuperposeEngine_O::setFixedPoints( core::IntArray_sp fi, candoBase::Coordin
 
 
 
-void	SuperposeEngine_O::setFixedAllPoints( candoBase::CoordinateArray_sp fc )
+void	SuperposeEngine_O::setFixedAllPoints( geom::CoordinateArray_sp fc )
 {_G();
     core::IntArray_O::iterator	ia;
     uint		ii;
@@ -477,7 +477,7 @@ void	SuperposeEngine_O::setFixedAllPoints( candoBase::CoordinateArray_sp fc )
 
 
 
-void	SuperposeEngine_O::setMoveablePoints( core::IntArray_sp mi, candoBase::CoordinateArray_sp mc )
+void	SuperposeEngine_O::setMoveablePoints( core::IntArray_sp mi, geom::CoordinateArray_sp mc )
 { _G();
     VectorVector3s::iterator	cur;
     LOG(BF("SuperposeEngine_O::setMoveablePoints --> number of points=%d") % mc->size()  );
@@ -487,7 +487,7 @@ void	SuperposeEngine_O::setMoveablePoints( core::IntArray_sp mi, candoBase::Coor
     this->_MoveableCoordinates = mc->copy();
 }
 
-void	SuperposeEngine_O::setMoveableAllPoints( candoBase::CoordinateArray_sp mc )
+void	SuperposeEngine_O::setMoveableAllPoints( geom::CoordinateArray_sp mc )
 {_G();
     core::IntArray_O::iterator	ia;
     uint		ii;
@@ -594,7 +594,7 @@ void SuperposeSelectedAtoms_O::setMatterWithSelectedAtoms(Matter_sp matter)
 
 
 
-candoBase::CoordinateArray_sp SuperposeSelectedAtoms_O::extractCoordinates(Matter_sp matter)
+geom::CoordinateArray_sp SuperposeSelectedAtoms_O::extractCoordinates(Matter_sp matter)
 {_G();
     if ( !this->_Matter->equal(matter) )
     {
@@ -602,7 +602,7 @@ candoBase::CoordinateArray_sp SuperposeSelectedAtoms_O::extractCoordinates(Matte
     }
     this->_Matter->transferCoordinates(matter);
     ASSERT_gt(this->_SuperposeAtoms.size(),0);
-    candoBase::CoordinateArray_sp coords = candoBase::CoordinateArray_O::create(this->_SuperposeAtoms.size());
+    geom::CoordinateArray_sp coords = geom::CoordinateArray_O::create(this->_SuperposeAtoms.size());
     uint idx = 0;
     for (gctools::Vec0<Atom_sp>::iterator ai=this->_SuperposeAtoms.begin(); ai!=this->_SuperposeAtoms.end(); ai++, idx++ )
     {
@@ -619,14 +619,14 @@ Matter_sp SuperposeSelectedAtoms_O::getMatter()
 
 void SuperposeSelectedAtoms_O::copyMatterCoordinatesIntoFixedCoordinates(Matter_sp matter)
 {_G();
-    candoBase::CoordinateArray_sp ca = this->extractCoordinates(matter);
+    geom::CoordinateArray_sp ca = this->extractCoordinates(matter);
     ASSERT_gt(ca->size(),0);
     this->setFixedAllPoints(ca);
 }
 
 void SuperposeSelectedAtoms_O::copyMatterCoordinatesIntoMoveableCoordinates(Matter_sp matter)
 {_G();
-    candoBase::CoordinateArray_sp ca = this->extractCoordinates(matter);
+    geom::CoordinateArray_sp ca = this->extractCoordinates(matter);
     ASSERT_gt(ca->size(),0);
     this->setMoveableAllPoints(ca);
 }

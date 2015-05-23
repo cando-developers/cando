@@ -19,10 +19,10 @@
 #include <set>
 #include <clasp/core/common.h>
 #include <cando/chem/bond.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
-#include <cando/candoBase/quickDom.h>
+#include <cando/geom/quickDom.h>
 #include <cando/chem/ffBaseDb.h>
 
 
@@ -79,8 +79,8 @@ namespace       chem {
 	double		_rij;
 	double		_lnKij;
 
-	candoBase::QDomNode_sp	asXml(core::Lisp_sp);
-	void		parseFromXml(candoBase::QDomNode_sp xml);
+	geom::QDomNode_sp	asXml(core::Lisp_sp);
+	void		parseFromXml(geom::QDomNode_sp xml);
     };
 
 

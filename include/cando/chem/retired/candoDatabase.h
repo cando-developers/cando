@@ -21,7 +21,7 @@
 #include <clasp/core/symbolSet.fwd.h>
 #include <cando/chem/monomer.h>
 #include <clasp/core/holder.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 #include <clasp/core/objRef.fwd.h>
 #include <cando/chem/entity.fwd.h>
 #include <cando/chem/chemPackage.h>

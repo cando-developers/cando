@@ -10,15 +10,15 @@
 
 
 #include <clasp/core/common.h>
-#include <cando/candoBase/vector3.h>
-#include <cando/candoBase/matrix.h>
-#include <cando/candoBase/coordinateArray.h>
+#include <cando/geom/vector3.h>
+#include <cando/geom/matrix.h>
+#include <cando/geom/coordinateArray.h>
 
 
 #include <cando/chem/chemPackage.h>
 
 #include "core/intArray.fwd.h"// superposeEngine.h wants IntArray needs intArray.fwd.h
-#include "candoBase/coordinateArray.fwd.h"// superposeEngine.h wants CoordinateArray needs coordinateArray.fwd.h
+#include "geom/coordinateArray.fwd.h"// superposeEngine.h wants CoordinateArray needs coordinateArray.fwd.h
 
 namespace chem
 {
@@ -59,32 +59,32 @@ public:
 //	void	archiveBase(core::ArchiveP node);
 private:
 	core::IntArray_sp		_FixedIndices;
-	candoBase::CoordinateArray_sp	_FixedCoordinates;
+	geom::CoordinateArray_sp	_FixedCoordinates;
 	core::IntArray_sp		_MoveableIndices;
-	candoBase::CoordinateArray_sp	_MoveableCoordinates;
+	geom::CoordinateArray_sp	_MoveableCoordinates;
 private://do not archive
 	Matrix			_Transform;
 public:
 	string	debugString();
-	void	setFixedPoints(core::IntArray_sp indices, candoBase::CoordinateArray_sp fp );
-	void	setMoveablePoints(core::IntArray_sp indices, candoBase::CoordinateArray_sp mp);
+	void	setFixedPoints(core::IntArray_sp indices, geom::CoordinateArray_sp fp );
+	void	setMoveablePoints(core::IntArray_sp indices, geom::CoordinateArray_sp mp);
 
-	void	setFixedAllPoints(candoBase::CoordinateArray_sp fp );
-	void	setMoveableAllPoints(candoBase::CoordinateArray_sp mp);
+	void	setFixedAllPoints(geom::CoordinateArray_sp fp );
+	void	setMoveableAllPoints(geom::CoordinateArray_sp mp);
 
 	void	eraseMoveablePoints();
 	void	appendMoveablePoint(const Vector3& pos);
 	void	eraseFixedPoints();
 	void	appendFixedPoint(const Vector3& pos);
 
-//	candoBase::CoordinateArray_sp	getFixedCoordinates();
-	candoBase::CoordinateArray_sp	getMoveableCoordinates();
+//	geom::CoordinateArray_sp	getFixedCoordinates();
+	geom::CoordinateArray_sp	getMoveableCoordinates();
 
 //	void	setMoveableIndex(const vector<int> vi);
 	int	getNumberOfFixedPoints();
 	int	getNumberOfMoveablePoints();
 
-//	candoBase::CoordinateArray_sp	getMoveablePoints() {_OF(); ASSERTNOTNULL(this->_Moveable);return this->_Moveable; };
+//	geom::CoordinateArray_sp	getMoveablePoints() {_OF(); ASSERTNOTNULL(this->_Moveable);return this->_Moveable; };
 	Matrix	superpose();
 
 //	double	sumOfSquaresOfDifferences(ScorerState_sp scorerState);
@@ -99,7 +99,7 @@ public:
 	DEFAULT_CTOR_DTOR(SuperposeEngine_O);
 };
 
-inline	candoBase::CoordinateArray_sp	SuperposeEngine_O::getMoveableCoordinates()
+inline	geom::CoordinateArray_sp	SuperposeEngine_O::getMoveableCoordinates()
 {_OF();
     ASSERTNOTNULL(this->_MoveableCoordinates);
     return this->_MoveableCoordinates;
@@ -122,7 +122,7 @@ private:
 	Matter_sp		_Matter;
     gctools::Vec0<Atom_sp>		_SuperposeAtoms;
 private:
-	candoBase::CoordinateArray_sp extractCoordinates(Matter_sp matter);
+	geom::CoordinateArray_sp extractCoordinates(Matter_sp matter);
 public:
 		/*! Set the Matter to superpose
 		 * Initially all _SuperposeAtoms will be empty and

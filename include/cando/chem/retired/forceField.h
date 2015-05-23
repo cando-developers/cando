@@ -22,7 +22,7 @@
 #include <vector>
 #include <set>
 #include <cando/chem/bond.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 //#include	"conformation.h"
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>

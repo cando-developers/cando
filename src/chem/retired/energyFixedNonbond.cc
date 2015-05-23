@@ -37,14 +37,14 @@ FixedNonbondRestraint::~FixedNonbondRestraint()
 
 
 
-candoBase::QDomNode_sp	FixedNonbondRestraint::asXml(core::Lisp_sp env)
+geom::QDomNode_sp	FixedNonbondRestraint::asXml(core::Lisp_sp env)
 {
     IMPLEMENT_ME();
 #if 0
-    candoBase::QDomNode_sp	node;
+    geom::QDomNode_sp	node;
     Vector3	vdiff;
 
-    node = candoBase::QDomNode_O::create(env,XmlTag_Term());
+    node = geom::QDomNode_O::create(env,XmlTag_Term());
     node->addAttributeString("atom1Name",this->_Atom1->getName());
     node->addAttributeString("atom2Name",this->_Atom2->getName());
     node->addAttributeInt("I1",this->I1);
@@ -61,7 +61,7 @@ candoBase::QDomNode_sp	FixedNonbondRestraint::asXml(core::Lisp_sp env)
 //    diff = vdiff.length();
 //    node->addAttributeDouble("_r",diff,5,2);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    candoBase::QDomNode_sp xml = candoBase::QDomNode_O::create(_lisp,"Evaluated");
+    geom::QDomNode_sp xml = geom::QDomNode_O::create(_lisp,"Evaluated");
     xml->addAttributeBool("calcForce",this->_calcForce );
     xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
     xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
@@ -78,7 +78,7 @@ candoBase::QDomNode_sp	FixedNonbondRestraint::asXml(core::Lisp_sp env)
 
 
 
-void	FixedNonbondRestraint::parseFromXmlUsingAtomTable(candoBase::QDomNode_sp	xml,
+void	FixedNonbondRestraint::parseFromXmlUsingAtomTable(geom::QDomNode_sp	xml,
 					AtomTable_sp at)
 {
     IMPLEMENT_ME();
@@ -216,7 +216,7 @@ string					str1, str2, str3, str4;
 #endif
 
 #ifdef RENDER
-int EnergyFixedNonbondRestraint_O::countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, candoBase::DisplayList_sp displayIn)
+int EnergyFixedNonbondRestraint_O::countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn)
 {_G();
 IMPLEMENT_ME();
 #if 0
@@ -231,7 +231,7 @@ double				dx,dy,dz;
 double				cutoff, distSquared;
 bool				render;
 RPGrColor			color;
-candoBase::GrLine_sp			line;
+geom::GrLine_sp			line;
 Vector3				v1,v2;
     render = false;
     ANN(displayIn);
@@ -268,7 +268,7 @@ Vector3				v1,v2;
 	    {
 	        v1.set(x1,y1,z1);
 	        v2.set(x2,y2,z2);
-	        line = candoBase::GrLine_O::create(v1,v2,_lisp);
+	        line = geom::GrLine_O::create(v1,v2,_lisp);
 		displayIn->add(line);
 	    }
 	    overlapCount++;

@@ -14,15 +14,15 @@
 #include <clasp/core/common.h>
 #include <clasp/core/stringSet.h>
 #include <cando/chem/matter.h>
-#include <cando/candoBase/omatrix.h>
+#include <cando/geom/omatrix.h>
 //#include "core/serialize.h"
 #include <clasp/core/str.h>
 #include <cando/chem/loop.h>
 #include <clasp/core/cons.h>
-#include <cando/candoBase/ovector3.h>
+#include <cando/geom/ovector3.h>
 #include <cando/chem/restraint.h>
 #include <clasp/core/environment.h>
-#include <cando/candoBase/boundingBox.h>
+#include <cando/geom/boundingBox.h>
 #include <cando/chem/virtualAtom.h>
 #include <cando/chem/bond.h>
 #include <cando/chem/angle.h>
@@ -764,7 +764,7 @@ namespace chem
     }
 
 
-    candoBase::BoundingBox_sp Matter_O::boundingBox(double pad) 
+    geom::BoundingBox_sp Matter_O::boundingBox(double pad) 
     {_G();
 	Vector3	sum;
 	int	count;
@@ -775,7 +775,7 @@ namespace chem
 	c = this->sharedThis<Matter_O>();
 	sum.set(0,0,0);
 	count = 0;
-	candoBase::BoundingBox_sp bbox = candoBase::BoundingBox_O::create();
+	geom::BoundingBox_sp bbox = geom::BoundingBox_O::create();
 	l.loopTopGoal( c, ATOMS );
 	while ((l.advanceLoopAndProcess())) {
 	    a = l.getAtom();
@@ -923,9 +923,9 @@ namespace chem
 /*! Subclass this method
  */
 #ifdef RENDER
-    candoBase::Render_sp Matter_O::rendered(core::Cons_sp kopts)
+    geom::Render_sp Matter_O::rendered(core::Cons_sp kopts)
     {
-	return _Nil<candoBase::Render_O>();
+	return _Nil<geom::Render_O>();
     };
 #endif
 

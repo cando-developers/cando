@@ -66,8 +66,8 @@ public:
 public:
 //	void	archive(core::ArchiveP node);
 public:
-	candoBase::QDomNode_sp	asXml(core::Lisp_sp);
-	void	parseFromXmlUsingAtomTable(candoBase::QDomNode_sp xml, AtomTable_sp atomTable );
+	geom::QDomNode_sp	asXml(core::Lisp_sp);
+	void	parseFromXmlUsingAtomTable(geom::QDomNode_sp xml, AtomTable_sp atomTable );
 
     EnergyImproperRestraint();
 	virtual ~EnergyImproperRestraint();

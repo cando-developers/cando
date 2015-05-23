@@ -18,7 +18,7 @@
 //#include "core/xmlSaveArchive.h"
 //#include "core/xmlLoadArchive.h"
 #include <clasp/core/hashTableEq.h>
-#include <cando/candoBase/color.h>
+#include <cando/geom/color.h>
 #include <cando/chem/superposeEngine.h>
 #include <clasp/core/sort.h>
 #include <clasp/core/binder.h>
@@ -26,7 +26,7 @@
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
 #include <cando/chem/nVector.h>
-#include <cando/candoBase/coordinateArray.h>
+#include <cando/geom/coordinateArray.h>
 #include <clasp/core/numbers.h>
 #include <clasp/core/wrappers.h>
 
@@ -40,7 +40,7 @@ namespace chem
     {
 	this->Base::initialize();
 	this->_Binder = core::HashTableEq_O::create_default();
-	this->_FinalCoordinates = candoBase::CoordinateArray_O::create();
+	this->_FinalCoordinates = geom::CoordinateArray_O::create();
 	this->_WeakConformationExplorerEntry = _Nil<ConformationExplorerEntry_O>();
 	this->_Complete = true;
 	this->_EnergyKCal = 0.0;
@@ -118,16 +118,16 @@ namespace chem
 
 
 #if 0
-    candoBase::Render_sp	ConformationExplorerEntryStage_O::rendered(core::Cons_sp opts)
+    geom::Render_sp	ConformationExplorerEntryStage_O::rendered(core::Cons_sp opts)
     {_G();
 	ConformationExplorer_sp		explorer;
-	candoBase::DisplayList_sp			dlAll;
+	geom::DisplayList_sp			dlAll;
 	GrPickableMatter_sp		dlMatter;
 	Matter_sp			matter;
-	candoBase::CoordinateArray_sp		superposeCoords;
+	geom::CoordinateArray_sp		superposeCoords;
 	core::IntArray_O::iterator		ii;
 	explorer = this->getConformationExplorer();
-	dlAll = candoBase::DisplayList_O::create();
+	dlAll = geom::DisplayList_O::create();
 	FIX_ME(); dlAll->setName(_lisp->internKeyword(this->_StageName));
 	{
 	    LOG(BF("Writing coordinates to matter"));
@@ -145,17 +145,17 @@ namespace chem
 	{
 	    LOG(BF("Rendering superposed atoms as spheres" ));
 	    // Render the superposed atom positions
-	    candoBase::DisplayList_sp prims = candoBase::DisplayList_O::create();
+	    geom::DisplayList_sp prims = geom::DisplayList_O::create();
 	    FIX_ME(); prims->setName(_lisp->internKeyword("superposeAtoms"));
-	    candoBase::GrSpheres_sp sphereList = candoBase::GrSpheres_O::create();
+	    geom::GrSpheres_sp sphereList = geom::GrSpheres_O::create();
 	    for ( ii=explorer->superposeAtomIndices_begin(); ii!=explorer->superposeAtomIndices_end(); ii++ )
 	    {
-		sphereList->appendSphere(explorer->_getAtomAtIndex(*ii)->getPosition(),0.2,candoBase::Color_O::yellow(_lisp));
+		sphereList->appendSphere(explorer->_getAtomAtIndex(*ii)->getPosition(),0.2,geom::Color_O::yellow(_lisp));
 	    }
 	    prims->append(sphereList);
 	    dlAll->append(prims);
 	}
-	candoBase::RenderInformation_sp info;
+	geom::RenderInformation_sp info;
 	stringstream sinfo;
 	sinfo << "=====================================" << std::endl;
 	sinfo << "Stage name: "<< this->_StageName << std::endl;
@@ -170,9 +170,9 @@ namespace chem
 	{
 	    sinfo << this->getBinder()->lookup(_sym_convergence).as<core::Str_O>()->get();
 	}
-	info = candoBase::RenderInformation_O::create(sinfo.str(),_lisp);
+	info = geom::RenderInformation_O::create(sinfo.str(),_lisp);
 	dlAll->append(info);
-	candoBase::Render_sp dlDict = this->getBinder()->rendered(opts);
+	geom::Render_sp dlDict = this->getBinder()->rendered(opts);
 	dlAll->append(dlDict);
 	return dlAll;
     }
@@ -203,20 +203,20 @@ namespace chem
 
     void	ConformationExplorerEntryStage_O::setConformationExplorerEntry(ConformationExplorerEntry_sp s)
     {_G();
-	candoBase::CoordinateArray_sp	ca;
+	geom::CoordinateArray_sp	ca;
 	ConformationExplorer_sp	explorer;
 	this->_WeakConformationExplorerEntry = s;
 	explorer = this->getConformationExplorer();
-	ca = candoBase::CoordinateArray_O::create(explorer->numberOfAllAtoms());
+	ca = geom::CoordinateArray_O::create(explorer->numberOfAllAtoms());
 	this->_FinalCoordinates = ca;
     }
 
 
-    void	ConformationExplorerEntryStage_O::setFinalCoordinates(candoBase::CoordinateArray_sp ac)
+    void	ConformationExplorerEntryStage_O::setFinalCoordinates(geom::CoordinateArray_sp ac)
     {_G();
 	ASSERTNOTNULL(ac);
 	LOG(BF("setFinalCoordinates:%s") % (ac->asXmlString().c_str() ) );
-	LOG(BF("The address of the candoBase::CoordinateArray_sp is in o") );
+	LOG(BF("The address of the geom::CoordinateArray_sp is in o") );
 	this->_FinalCoordinates = ac;
     }
 
@@ -255,7 +255,7 @@ namespace chem
 	sl = this->getConformationExplorer();
 	LOG(BF("Got ConformationExplorer") );
 	ASSERTNOTNULL(sl);
-	candoBase::CoordinateArray_sp coords = sl->_extractCoordinateArray(matter);
+	geom::CoordinateArray_sp coords = sl->_extractCoordinateArray(matter);
 	ASSERTNOTNULL(coords);
 	this->_FinalCoordinates = coords;
     }
@@ -332,7 +332,7 @@ namespace chem
 
     void	ConformationExplorerEntry_O::setConformationExplorer(ConformationExplorer_sp s)
     {_G();
-	candoBase::CoordinateArray_sp	ca;
+	geom::CoordinateArray_sp	ca;
 	this->_WeakConformationExplorer = s;
     }
 
@@ -438,12 +438,12 @@ namespace chem
 
 
 #if 0
-    candoBase::Render_sp	ConformationExplorerEntry_O::rendered(core::Cons_sp opts)
+    geom::Render_sp	ConformationExplorerEntry_O::rendered(core::Cons_sp opts)
     {_G();
-	candoBase::DisplayList_sp	dlAll;
-	candoBase::Render_sp		dlStage;
+	geom::DisplayList_sp	dlAll;
+	geom::Render_sp		dlStage;
 	stageIterator		si;
-	dlAll = candoBase::DisplayList_O::create();
+	dlAll = geom::DisplayList_O::create();
 	FIX_ME(); dlAll->setName(_lisp->internKeyword("stages"));
 	LOG(BF("Rendering %d stages")%this->_Stages.size());
 	for ( si=this->_Stages.begin(); si!=this->_Stages.end(); si++ )
@@ -501,7 +501,7 @@ namespace chem
 
 
 
-    candoBase::CoordinateArray_sp ConformationExplorer_O::_extractCoordinateArray(Matter_sp agg)
+    geom::CoordinateArray_sp ConformationExplorer_O::_extractCoordinateArray(Matter_sp agg)
     {_G();
 	vector<Vector3>::iterator	ci;
         gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
@@ -511,7 +511,7 @@ namespace chem
 	LOG(BF("About to get ConformationExplorer"));
 	LOG(BF("About to iterate over atoms and get positions"));
 	uint numberOfAtoms = agg->numberOfAtoms();
-	candoBase::CoordinateArray_sp coords = candoBase::CoordinateArray_O::create(numberOfAtoms);
+	geom::CoordinateArray_sp coords = geom::CoordinateArray_O::create(numberOfAtoms);
 	ASSERTNOTNULL(coords);
 	uint aidx = 0;
 	for ( ai=this->begin_AllAtoms(),ci=coords->begin(); ai!=this->end_AllAtoms(); ai++, ci++ )
@@ -599,19 +599,19 @@ namespace chem
 
 
 #if 0
-    candoBase::Render_sp	ConformationExplorer_O::rendered(core::Cons_sp opts)
+    geom::Render_sp	ConformationExplorer_O::rendered(core::Cons_sp opts)
     {_G();
-	candoBase::FrameList_sp	frames;
-	candoBase::Render_sp		dlEntry;
+	geom::FrameList_sp	frames;
+	geom::Render_sp		dlEntry;
 	_LINE();
 	ConformationExplorer_O::entryIterator	si;
 	ConformationExplorerEntry_sp	entry;
-	candoBase::CoordinateArray_sp		superposeCoords;
-	candoBase::CoordinateArray_O::iterator	ci;
+	geom::CoordinateArray_sp		superposeCoords;
+	geom::CoordinateArray_O::iterator	ci;
 	_LINE();
-	candoBase::DisplayList_sp dlAll = candoBase::DisplayList_O::create();
+	geom::DisplayList_sp dlAll = geom::DisplayList_O::create();
 	_LINE();
-	frames = candoBase::FrameList_O::create();
+	frames = geom::FrameList_O::create();
 	FIX_ME(); frames->setName(_lisp->internKeyword("conformation"));
 	_LINE();
 	if ( this->numberOfEntries() == 0 )
@@ -839,7 +839,7 @@ namespace chem
 	double					rms;
 	bool					gotBest;
 	SuperposeEngine_sp			superposer;
-	candoBase::CoordinateArray_sp			matterConf;
+	geom::CoordinateArray_sp			matterConf;
 	bestStage = _Nil<ConformationExplorerEntryStage_O>();
 	bestRms = 9.9e99;
 	gotBest = false;

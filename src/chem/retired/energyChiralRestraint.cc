@@ -78,12 +78,12 @@ string	EnergyChiralRestraint::description()
 
 
 #if 0
-    candoBase::QDomNode_sp	EnergyChiralRestraint::asXml(core::Lisp_sp env)
+    geom::QDomNode_sp	EnergyChiralRestraint::asXml(core::Lisp_sp env)
 {
-    candoBase::QDomNode_sp	node,child;
+    geom::QDomNode_sp	node,child;
     Vector3	vdiff;
 
-    node = candoBase::QDomNode_O::create(env,"EnergyChiralRestraint");
+    node = geom::QDomNode_O::create(env,"EnergyChiralRestraint");
     node->addAttributeString("atom1Name",this->_Atom1->getName());
     node->addAttributeString("atom2Name",this->_Atom2->getName());
     node->addAttributeString("atom3Name",this->_Atom3->getName());
@@ -94,7 +94,7 @@ string	EnergyChiralRestraint::description()
     node->addAttributeInt("I4",this->term.I4);
     node->addAttributeDoubleScientific("K",this->term.K);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    candoBase::QDomNode_sp xml = candoBase::QDomNode_O::create(env,"Evaluated");
+    geom::QDomNode_sp xml = geom::QDomNode_O::create(env,"Evaluated");
     xml->addAttributeBool("calcForce",this->_calcForce );
     xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
     xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
@@ -104,7 +104,7 @@ string	EnergyChiralRestraint::description()
     return node;
 }
 
-    void	EnergyChiralRestraint::parseFromXmlUsingAtomTable(candoBase::QDomNode_sp	xml,
+    void	EnergyChiralRestraint::parseFromXmlUsingAtomTable(geom::QDomNode_sp	xml,
 				AtomTable_sp at )
 {
     this->term.K = xml->getAttributeDouble("K");

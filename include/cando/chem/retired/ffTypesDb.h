@@ -20,7 +20,7 @@
 #include <set>
 #include <clasp/core/common.h>
 #include <cando/chem/bond.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
 #include <cando/chem/chemInfo.h>

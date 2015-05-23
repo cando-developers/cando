@@ -16,14 +16,14 @@
 #include <iostream>
 #include <string>
 #include <clasp/core/common.h>
-#include <cando/candoBase/vector3.h>
-#include <cando/candoBase/matrix.h>
+#include <cando/geom/vector3.h>
+#include <cando/geom/matrix.h>
 //#include "matter.h"
 //#include "atom.h"
 
 #include <cando/chem/chemPackage.h>
 
-//#include "candoBase/render.fwd.h"// coordSys.h wants Render needs render.fwd.h
+//#include "geom/render.fwd.h"// coordSys.h wants Render needs render.fwd.h
 
 namespace chem {
 
@@ -108,7 +108,7 @@ public:
 
         virtual bool canRender() { return true; };
 #ifdef RENDER
-        virtual candoBase::Render_sp rendered(core::Cons_sp options);
+        virtual geom::Render_sp rendered(core::Cons_sp options);
 #endif
 
 	CoordinateSystem_O(const CoordinateSystem_O& orig);

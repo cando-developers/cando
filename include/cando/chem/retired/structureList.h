@@ -12,12 +12,12 @@
 #include <set>
 #include <clasp/core/common.h>
 #include <cando/chem/bond.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 //#include	"conformation.h"
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
 #include <cando/chem/nVector.h>
-#include <cando/candoBase/coordinateArray.h>
+#include <cando/geom/coordinateArray.h>
 
 
 
@@ -45,8 +45,8 @@ public:
 static Structure_Old_ListEntry_sp	create(Structure_Old_List_sp s,core::Lisp_sp e);
 public:
 	Structure_Old_List_wp		_WeakStructureList;
-        candoBase::CoordinateArray_sp	_AllCoordinates;
-        candoBase::CoordinateArray_sp	_SuperposeCoordinates;
+        geom::CoordinateArray_sp	_AllCoordinates;
+        geom::CoordinateArray_sp	_SuperposeCoordinates;
     core::HashTableEq_sp 	_Data;
 	uint			_Members;
 
@@ -66,10 +66,10 @@ public:
 
     core::HashTableEq_sp getData() { return this->_Data;};
 
-        void setAllCoordinates(candoBase::CoordinateArray_sp ac);
-        candoBase::CoordinateArray_sp getAllCoordinates() { return this->_AllCoordinates; }
-        void setSuperposeCoordinates(candoBase::CoordinateArray_sp ac);
-        candoBase::CoordinateArray_sp getSuperposeCoordinates() { return this->_SuperposeCoordinates; }
+        void setAllCoordinates(geom::CoordinateArray_sp ac);
+        geom::CoordinateArray_sp getAllCoordinates() { return this->_AllCoordinates; }
+        void setSuperposeCoordinates(geom::CoordinateArray_sp ac);
+        geom::CoordinateArray_sp getSuperposeCoordinates() { return this->_SuperposeCoordinates; }
 
 	void		applyAllCoordinatesToMatter(Matter_sp agg) { IMPLEMENT_ME();};
 	void		applySuperposeCoordinatesToMatter(Matter_sp agg) { IMPLEMENT_ME();};
@@ -183,7 +183,7 @@ public:
 
     virtual bool canRender() { return true; };
 #ifdef RENDER
-    virtual candoBase::Render_sp rendered(core::Cons_sp options);
+    virtual geom::Render_sp rendered(core::Cons_sp options);
 #endif
 
 

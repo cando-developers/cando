@@ -8,8 +8,8 @@
 
 
 #include <clasp/core/common.h>
-#include <cando/candoBase/vector3.h>
-#include <cando/candoBase/matrix.h>
+#include <cando/geom/vector3.h>
+#include <cando/geom/matrix.h>
 
 #include <cando/chem/chemPackage.h>
 

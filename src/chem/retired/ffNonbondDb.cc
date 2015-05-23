@@ -368,17 +368,17 @@ void FFNonbond_O::initialize()
 
 
 #if 0 //[
-candoBase::QDomNode_sp	FFNonbond_O::asXml(core::Lisp_sp env)
+geom::QDomNode_sp	FFNonbond_O::asXml(core::Lisp_sp env)
 {
-    candoBase::QDomNode_sp	node;
-    node = candoBase::QDomNode_O::create(env,"FFNonbond");
+    geom::QDomNode_sp	node;
+    node = geom::QDomNode_O::create(env,"FFNonbond");
     node->addAttributeString("type",this->_Type);
     node->addAttributeDoubleScientific("Radius",this->_Radius);
     node->addAttributeDoubleScientific("Well",this->_Well);
     return node;
 }
 
-void	FFNonbond_O::parseFromXml(candoBase::QDomNode_sp node)
+void	FFNonbond_O::parseFromXml(geom::QDomNode_sp node)
 {
     this->_Type = node->getAttributeString("type");
     this->_Radius = node->getAttributeDouble("Radius");

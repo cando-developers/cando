@@ -19,7 +19,7 @@
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 #include <cando/chem/energyComponent.h>
 
 
@@ -79,8 +79,8 @@ public:
 	double	getTDegrees()	{return this->getT()/0.0174533;};
 	double	getThetaDegrees(){return this->getTDegrees();};
 
-	candoBase::QDomNode_sp	asXml(core::Lisp_sp);
-	void		parseFromXmlUsingAtomTable(candoBase::QDomNode_sp xml,
+	geom::QDomNode_sp	asXml(core::Lisp_sp);
+	void		parseFromXmlUsingAtomTable(geom::QDomNode_sp xml,
 					AtomTable_sp	atomTable );
         void defineFrom( FFAngle_sp term, EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, double scale);
 	void defineMissing( EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3);

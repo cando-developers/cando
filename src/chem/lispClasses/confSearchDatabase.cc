@@ -99,7 +99,7 @@ double				lowestEnergy, newEnergy;
  */
 void	ConformationalSearchDatabase_O::finishSearch()
 {_G();
-    candoBase::CoordinateArray_sp			newConf;
+    geom::CoordinateArray_sp			newConf;
 double					energy;
 chem::SuperposeEngine_sp			superposer;
 ConformationCollectionEntry_sp		firstEntry, entry;

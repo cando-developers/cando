@@ -29,7 +29,7 @@ sources =
 		/internals//sockets     #//bundle/<link>static
 		/internals//serveEvent  #//bundle/<link>static
 		/internals//asttooling  #//bundle/<link>static
-                /cando/candoBase
+                /cando/geom
 		/externals//llvm_lib/<link>static
 		/externals//clang_lib/<link>static
 		/externals//boostAndExpatLibs/<link>static

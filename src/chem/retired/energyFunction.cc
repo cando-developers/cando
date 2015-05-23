@@ -22,7 +22,7 @@ __END_DOC
 #include <cando/chem/minimizerLog.h>
 #include <cando/chem/restraint.h>
 #include <cando/chem/iterateRestraints.h>
-#include <cando/candoBase/iterateCons.h>
+#include <cando/geom/iterateCons.h>
 #include <cando/chem/ringFinder.h>
 #include <cando/chem/cipPrioritizer.h>
 #include <cando/chem/atom.h>
@@ -1791,8 +1791,8 @@ int             coordinateIndex;
 
 void	EnergyFunction_O::addTermsForListOfRestraints(ForceField_sp forceField, core::Cons_sp restraintList)
 {_G();
-    candoBase::IterateCons_sp	iterate;
-    iterate = candoBase::IterateCons_O::create(restraintList);
+    geom::IterateCons_sp	iterate;
+    iterate = geom::IterateCons_O::create(restraintList);
     this->_applyRestraints(forceField,iterate);
 }
 
@@ -2007,7 +2007,7 @@ void EnergyFunction_O::disableDebug()
 
 
 #ifdef RENDER
-uint	EnergyFunction_O::countBadVdwInteractions(double scaleSumOfVdwRadii, candoBase::DisplayList_sp displayIn)
+uint	EnergyFunction_O::countBadVdwInteractions(double scaleSumOfVdwRadii, geom::DisplayList_sp displayIn)
 {_G();
 NVector_sp	pos;
 EnergyNonbond_sp	nbComponent;

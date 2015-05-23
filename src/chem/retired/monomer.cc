@@ -76,7 +76,7 @@ namespace chem {
 	node->attributeIfNotDefault("tempInt", this->_TemporaryInt,0);
 	node->attribute("sequenceNumber",this->_SequenceNumber);
 	node->attributeIfNotNil("status",this->_Status);
-	node->archivePlainObject<candoBase::Vector2>( "pos2","Vector2",
+	node->archivePlainObject<geom::Vector2>( "pos2","Vector2",
 						 this->_Position2D );
 	node->attribute("selected",this->_Selected );
 	if ( node->loading() )

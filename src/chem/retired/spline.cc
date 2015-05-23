@@ -16,7 +16,7 @@
 #include <iomanip>
 
 #include <clasp/core/common.h>
-#include <cando/candoBase/matrix.h>
+#include <cando/geom/matrix.h>
 #include <cando/chem/spline.h>
 
 

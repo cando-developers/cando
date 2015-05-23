@@ -11,11 +11,11 @@
 #include <set>
 #include <clasp/core/common.h>
 #include <cando/chem/bond.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
 #include <cando/chem/nVector.h>
-#include <cando/candoBase/coordinateArray.h>
+#include <cando/geom/coordinateArray.h>
 
 
 
@@ -44,12 +44,12 @@ public:
 //    void	archive(core::ArchiveP node);
 private:
 	ConformationCollection_wp	_WeakConformationCollection;
-        candoBase::CoordinateArray_sp		_AllCoordinates;
+        geom::CoordinateArray_sp		_AllCoordinates;
 //	core::HashTableEq_sp		_Data;
 
 public:
-        void setAllCoordinates(candoBase::CoordinateArray_sp ac);
-        candoBase::CoordinateArray_sp getAllCoordinates() { return this->_AllCoordinates; }
+        void setAllCoordinates(geom::CoordinateArray_sp ac);
+        geom::CoordinateArray_sp getAllCoordinates() { return this->_AllCoordinates; }
 public:
 
 	ConformationCollection_sp	getConformationCollection() {_OF(); ASSERTNOTNULL(this->_WeakConformationCollection);return this->_WeakConformationCollection.lock();};
@@ -113,7 +113,7 @@ public:
     typedef	gctools::SmallOrderedSet<Atom_sp>::iterator	atomIterator;
 
 public:
-	candoBase::CoordinateArray_sp	_extractCoordinateArray(Matter_sp matter);
+	geom::CoordinateArray_sp	_extractCoordinateArray(Matter_sp matter);
 
 public:
 
@@ -169,7 +169,7 @@ public:
 
 	bool canRender() { return true; }
 #ifdef RENDER
-	candoBase::Render_sp rendered(core::Cons_sp options);
+	geom::Render_sp rendered(core::Cons_sp options);
 #endif
 
 		/*! Create a new entry but dont add it yet

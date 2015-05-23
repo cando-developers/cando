@@ -20,7 +20,7 @@
 #include <clasp/core/common.h>
 #include <cando/units/quantity.fwd.h>
 #include <cando/chem/indirectAtomCoordinateReference.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 
 
 namespace chem
@@ -62,8 +62,8 @@ public:
 		// methods
 	void		defineForAtom(ForceField_sp forceField, Atom_sp atom, uint coordinateIndex);
 	string		getResidueAndName();
-//	candoBase::QDomNode_sp	asXmlRelativeToContainer(chem::Matter_sp parent);
-//	void		parseFromXmlRelativeToContainer( candoBase::QDomNode_sp xml, chem::Matter_sp parent );
+//	geom::QDomNode_sp	asXmlRelativeToContainer(chem::Matter_sp parent);
+//	void		parseFromXmlRelativeToContainer( geom::QDomNode_sp xml, chem::Matter_sp parent );
 };
 
 

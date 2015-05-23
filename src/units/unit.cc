@@ -4,7 +4,7 @@
 #include <clasp/core/environment.h>
 //#include "core/serialize.h"
 #include <cando/units/dimension.fwd.h>
-#include <cando/candoBase/ovector3.h>
+#include <cando/geom/ovector3.h>
 #include <clasp/core/array.h>
 #include <cando/units/quantity.h>
 #include <cando/units/unit.h>
@@ -242,7 +242,7 @@ namespace units
 	    uresult->_Amount *= other->_Amount;
 	    result = uresult;
 	} else if ( obj->isAssignableTo<core::Number_O>()
-		    || obj->isAssignableTo<candoBase::OVector3_O>()
+		    || obj->isAssignableTo<geom::OVector3_O>()
 		    || obj->isAssignableTo<core::Array_O>() )
 	{
 	    core::T_sp val = obj->deepCopy();

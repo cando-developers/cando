@@ -5,8 +5,8 @@
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>
 #include <clasp/core/profiler.h>
-#include <cando/candoBase/color.h>
-#include <cando/candoBase/symbolTable.h>
+#include <cando/geom/color.h>
+#include <cando/geom/symbolTable.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/chem/matter.h>
 #include <cando/chem/bond.h>
@@ -136,12 +136,12 @@ namespace chem
 
 
 #if 0
-    candoBase::QDomNode_sp	EnergyNonbond::asXml(core::Lisp_sp lisp)
+    geom::QDomNode_sp	EnergyNonbond::asXml(core::Lisp_sp lisp)
     {
-	candoBase::QDomNode_sp	node;
+	geom::QDomNode_sp	node;
 	Vector3	vdiff;
 
-	node = candoBase::QDomNode_O::create(lisp,"EnergyNonbond");
+	node = geom::QDomNode_O::create(lisp,"EnergyNonbond");
 	node->addAttributeString("atom1Name",this->_Atom1->getName());
 	node->addAttributeString("atom2Name",this->_Atom2->getName());
 	node->addAttributeInt("I1",this->term.I1);
@@ -158,7 +158,7 @@ namespace chem
 //    diff = vdiff.length();
 //    node->addAttributeDouble("_r",diff,5,2);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-	candoBase::QDomNode_sp xml = candoBase::QDomNode_O::create(lisp,"Evaluated");
+	geom::QDomNode_sp xml = geom::QDomNode_O::create(lisp,"Evaluated");
 	xml->addAttributeBool("calcForce",this->_calcForce );
 	xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
 	xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
@@ -174,7 +174,7 @@ namespace chem
 
 
 
-    void	EnergyNonbond::parseFromXmlUsingAtomTable(candoBase::QDomNode_sp	xml,
+    void	EnergyNonbond::parseFromXmlUsingAtomTable(geom::QDomNode_sp	xml,
 							  AtomTable_sp at)
     {
 	this->term.dA = xml->getAttributeDouble("dA");
@@ -276,7 +276,7 @@ namespace chem
 
 
 #ifdef RENDER
-    int EnergyNonbond_O::countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, candoBase::DisplayList_sp displayIn, core::Lisp_sp lisp)
+    int EnergyNonbond_O::countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn, core::Lisp_sp lisp)
     {_G();
         gctools::Vec0<EnergyNonbond>::iterator	eni;
 	string				as1,as2,as3,as4;
@@ -289,16 +289,16 @@ namespace chem
 	double				cutoff, distSquared;
 	bool				render;
 	Vector3				v1,v2;
-	candoBase::Color_sp				color;
-	candoBase::GrLines_sp			lines;
-	lines = candoBase::GrLines_O::create();
+	geom::Color_sp				color;
+	geom::GrLines_sp			lines;
+	lines = geom::GrLines_O::create();
 	render = false;
 	ANN(displayIn);
 	if ( displayIn.notnilp() )
 	{
 	    render = true;
 	    displayIn->clear();
-	    color = candoBase::Color_O::systemColor(kw::_sym_yellow);
+	    color = geom::Color_O::systemColor(kw::_sym_yellow);
 	}
 	for ( eni=this->_Terms.begin();
 	      eni!=this->_Terms.end(); eni++ )

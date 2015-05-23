@@ -2356,10 +2356,10 @@ namespace chem
     }
 
 
-    candoBase::QDomNode_sp	Minimizer_O::asXml()
+    geom::QDomNode_sp	Minimizer_O::asXml()
     {
-	candoBase::QDomNode_sp	xml;
-	xml = candoBase::QDomNode_O::create(_lisp,"Minimizer");
+	geom::QDomNode_sp	xml;
+	xml = geom::QDomNode_O::create(_lisp,"Minimizer");
 	xml->addAttributeDoubleScientific("InitialLineSearchStep",this->_InitialLineSearchStep);
 	xml->addAttributeInt("MaximumNumberOfSteepestDescentSteps",this->_NumberOfSteepestDescentSteps);
 	xml->addAttributeInt("MaximumNumberOfConjugateGradientSteps",this->_NumberOfConjugateGradientSteps);

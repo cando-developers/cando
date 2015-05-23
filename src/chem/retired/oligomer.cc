@@ -329,7 +329,7 @@ Oligomer_O::monomerIterator	mi;
  */
 Monomer_sp	Oligomer_O::addMultiMonomerAsLeaf( CandoDatabase_sp db,
 						   Monomer_sp monFrom, core::Symbol_sp couplingName,
-						   core::Symbol_sp representedEntityNameSetName, candoBase::Vector2 pos )
+						   core::Symbol_sp representedEntityNameSetName, geom::Vector2 pos )
 {_G();
 DirectionalCoupling_sp 	coup;
 MultiMonomer_sp	monTo;

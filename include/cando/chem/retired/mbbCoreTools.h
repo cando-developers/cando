@@ -16,8 +16,8 @@
 #include <cando/chem/molecule.h>
 #include <cando/chem/residue.h>
 #include <cando/chem/atom.h>
-#include <cando/candoBase/vector3.h>
-#include <cando/candoBase/matrix.h>
+#include <cando/geom/vector3.h>
+#include <cando/geom/matrix.h>
 
 #include <cando/chem/chemPackage.h>
 

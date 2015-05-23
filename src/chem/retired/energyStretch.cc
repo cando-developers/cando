@@ -72,11 +72,11 @@ namespace chem {
     }
 
 #if 0
-    candoBase::QDomNode_sp	EnergyStretch::asXml(core::Lisp_sp env)
+    geom::QDomNode_sp	EnergyStretch::asXml(core::Lisp_sp env)
     {
-	candoBase::QDomNode_sp	node;
+	geom::QDomNode_sp	node;
 	Vector3	vdiff;
-	node = candoBase::QDomNode_O::create(env,"EnergyStretch");
+	node = geom::QDomNode_O::create(env,"EnergyStretch");
 	node->addAttributeHex("address",(unsigned long)(this));
 	node->addAttributeString("atom1Name",this->_Atom1->getName());
 	node->addAttributeString("atom2Name",this->_Atom2->getName());
@@ -87,7 +87,7 @@ namespace chem {
 	node->addAttributeDoubleScientific("r0",this->term.r0);
 	node->addAttributeDoubleScientific("kb",this->term.kb);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-	candoBase::QDomNode_sp xml = candoBase::QDomNode_O::create(env,"Evaluated");
+	geom::QDomNode_sp xml = geom::QDomNode_O::create(env,"Evaluated");
 	xml->addAttributeBool("calcForce",this->_calcForce );
 	xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
 	xml->addAttributeBool("calcOffDiagonalHessian",
@@ -103,7 +103,7 @@ namespace chem {
     }
 #endif
 
-    void	EnergyStretch::parseFromXmlUsingAtomTable(candoBase::QDomNode_sp	xml, AtomTable_sp atomTable )
+    void	EnergyStretch::parseFromXmlUsingAtomTable(geom::QDomNode_sp	xml, AtomTable_sp atomTable )
     {_G();
 	int	i1, i2;
 	i1 = xml->getAttributeInt("idx1");

@@ -7,7 +7,7 @@
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
 #include <clasp/core/environment.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 #include <cando/chem/atomReference.h>
 #include <clasp/core/wrappers.h>
 

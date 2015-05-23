@@ -33,8 +33,8 @@
 #include <clasp/core/common.h>
 #include <clasp/core/symbolSet.fwd.h>
 #include <clasp/core/holder.h>
-#include <cando/candoBase/vector2.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector2.h>
+#include <cando/geom/vector3.h>
 #include <cando/chem/entity.h>
 
 #include <cando/chem/chemPackage.h>
@@ -112,7 +112,7 @@ namespace chem {
          * accessed through those aliases are have unique names across those monomers.
          */
 	core::SymbolSet_sp			_Aliases; //!< this will identify monomers for searches
-	candoBase::Vector2				_Position2D;
+	geom::Vector2				_Position2D;
 	bool				_Selected;
     public: // Do not archive/in error information
         /*! If there is a problem with anythin register errors here */
@@ -180,8 +180,8 @@ namespace chem {
 	};
 
 	void	setPosition2D_xy(double x, double y) { this->_Position2D.set(x,y);}; // this->notify(Monomer_changed2D);;
-	void	setPosition2D(const candoBase::Vector2& pos ) { this->_Position2D = pos;}; //  this->notify(Monomer_changed2D);;
-	candoBase::Vector2 getPosition2D() { return this->_Position2D; };
+	void	setPosition2D(const geom::Vector2& pos ) { this->_Position2D = pos;}; //  this->notify(Monomer_changed2D);;
+	geom::Vector2 getPosition2D() { return this->_Position2D; };
 	void	setSequenceNumber(uint idx) { this->_SequenceNumber = idx;};
 	uint	getSequenceNumber() { return this->_SequenceNumber; };
 

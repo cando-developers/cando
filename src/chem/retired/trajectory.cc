@@ -7,7 +7,7 @@
 #include <cando/chem/matter.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/loop.h>
-#include <cando/candoBase/coordinateArray.h>
+#include <cando/geom/coordinateArray.h>
 
 // last include is wrappers.h
 #include <clasp/core/wrappers.h>
@@ -72,8 +72,8 @@ void	TrajectoryFrame_O::initialize()
 
     void TrajectoryFrame_O::fillFromMatter(gctools::Vec0<Atom_sp>& atomList )
 {
-    this->_Coordinates = candoBase::CoordinateArray_O::create(atomList.size());
-    candoBase::CoordinateArray_O::iterator ci;
+    this->_Coordinates = geom::CoordinateArray_O::create(atomList.size());
+    geom::CoordinateArray_O::iterator ci;
     gctools::Vec0<Atom_sp>::const_iterator ai;
     for ( ai=atomList.begin(), ci = this->_Coordinates->begin(); ai!=atomList.end(); ai++, ci++ )
     {
@@ -86,7 +86,7 @@ void	TrajectoryFrame_O::initialize()
     void	TrajectoryFrame_O::applyToMatter(gctools::Vec0<Atom_sp>& atomList )
 {_OF();
     ASSERT_eq(this->_Coordinates->size(),atomList.size());
-    candoBase::CoordinateArray_O::iterator ci;
+    geom::CoordinateArray_O::iterator ci;
     gctools::Vec0<Atom_sp>::iterator ai;
     for ( ai=atomList.begin(), ci = this->_Coordinates->begin(); ai!=atomList.end(); ai++, ci++ )
     {
@@ -190,9 +190,9 @@ TrajectoryFrame_sp Trajectory_O::getTrajectoryFrame(uint i)
 }
 
 #if 0
-candoBase::Render_sp Trajectory_O::rendered(core::Cons_sp kargs)
+geom::Render_sp Trajectory_O::rendered(core::Cons_sp kargs)
 {_G();
-    candoBase::FrameList_sp frames = candoBase::FrameList_O::create();
+    geom::FrameList_sp frames = geom::FrameList_O::create();
     for ( gctools::Vec0<TrajectoryFrame_sp>::iterator it=this->_Frames.begin(); it!=this->_Frames.end(); it++ )
     {
 	this->applyTrajectoryFrameToMatter(*it);

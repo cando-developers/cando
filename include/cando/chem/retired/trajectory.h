@@ -9,9 +9,9 @@
 #include <set>
 #include <clasp/core/common.h>
 #include <clasp/core/holder.h>
-//#include "candoBase/objectDictionary.fwd.h"
+//#include "geom/objectDictionary.fwd.h"
 #include <cando/chem/chemPackage.h>
-#include "candoBase/coordinateArray.fwd.h"// trajectory.h wants CoordinateArray needs coordinateArray.fwd.h
+#include "geom/coordinateArray.fwd.h"// trajectory.h wants CoordinateArray needs coordinateArray.fwd.h
 
 namespace chem {
 
@@ -40,7 +40,7 @@ public: // virtual functions inherited from Object
 //	string	__repr__() const;
 
 private: // instance variables
-	candoBase::CoordinateArray_sp	_Coordinates;
+	geom::CoordinateArray_sp	_Coordinates;
 
 public:	// Creation class functions
 
@@ -48,7 +48,7 @@ protected:
     void fillFromMatter(gctools::Vec0<Atom_sp>& atomList );
     void applyToMatter(gctools::Vec0<Atom_sp>& atomList );
 public:
-	void setCoordinates(candoBase::CoordinateArray_sp ca) { this->_Coordinates = ca;};
+	void setCoordinates(geom::CoordinateArray_sp ca) { this->_Coordinates = ca;};
 
 	TrajectoryFrame_O( const TrajectoryFrame_O& ss ); //!< Copy constructor
 
@@ -116,7 +116,7 @@ public:
 #if 0
 	bool canRender() { return true; };
 #ifdef RENDER
-	candoBase::Render_sp rendered(core::Cons_sp kargs);
+	geom::Render_sp rendered(core::Cons_sp kargs);
 #endif
 #endif
 

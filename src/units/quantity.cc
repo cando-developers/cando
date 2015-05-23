@@ -3,8 +3,8 @@
 #include <clasp/core/common.h>
 #include <clasp/core/environment.h>
 //#include "core/serialize.h"
-#include <cando/candoBase/coordinateArray.h>
-#include <cando/candoBase/ovector3.h>
+#include <cando/geom/coordinateArray.h>
+#include <cando/geom/ovector3.h>
 #include <clasp/core/array.h>
 #include <cando/units/quantity.h>
 #include <clasp/core/wrappers.h>
@@ -19,7 +19,7 @@ namespace units
     void Quantity_O::throwOnInvalidValue(core::T_sp obj,core::Lisp_sp lisp)
     {_G();
 	if ( obj->isAssignableTo<core::Number_O>() ) return;
-	if ( obj->isAssignableTo<candoBase::OVector3_O>() ) return;
+	if ( obj->isAssignableTo<geom::OVector3_O>() ) return;
 	if ( obj->isAssignableTo<core::Array_O>() ) return;
 	SIMPLE_ERROR(BF("Illegal value type[%s] for Quantity") % obj->__class()->classNameAsString() );
     }
@@ -31,10 +31,10 @@ namespace units
 	{
 	    core::DoubleFloat_sp rval = core::DoubleFloat_O::create(obj.as<core::DoubleFloat_O>()->get()*conversion);
 	    return rval;
-	} else if ( obj->isAssignableTo<candoBase::OVector3_O>() )
+	} else if ( obj->isAssignableTo<geom::OVector3_O>() )
 	{
-	    candoBase::OVector3_sp oval = obj.as<candoBase::OVector3_O>();
-	    candoBase::OVector3_sp nval = lisp->create<candoBase::OVector3_O>(oval->get().multiplyByScalar(conversion));
+	    geom::OVector3_sp oval = obj.as<geom::OVector3_O>();
+	    geom::OVector3_sp nval = lisp->create<geom::OVector3_O>(oval->get().multiplyByScalar(conversion));
 	    return nval;
 	} else if ( obj->isAssignableTo<core::Array_O>() )
 	{
@@ -93,7 +93,7 @@ namespace units
 	if ( obj->isAssignableTo<core::DoubleFloat_O>() )
 	{
 	    return 1;
-	} else if ( obj->isAssignableTo<candoBase::OVector3_O>() )
+	} else if ( obj->isAssignableTo<geom::OVector3_O>() )
 	{
 	    return 1;
 	} else if ( obj->isAssignableTo<core::Vector_O>() )
@@ -112,7 +112,7 @@ namespace units
 	{
 	    return obj.as<core::DoubleFloat_O>()->isnan();
 #if 0
-	} else if ( obj->isAssignableTo<candoBase::OVector3_O>() )
+	} else if ( obj->isAssignableTo<geom::OVector3_O>() )
 	{
 	    return
 	} else if ( obj->isAssignableTo<core::Vector_O>() )
@@ -270,7 +270,7 @@ namespace units
 
     Vector3 Quantity_O::getElement_in_unit_asVector3(uint index, Unit_sp other) const
     {_OF();
-	candoBase::OVector3_sp element = this->getElement_in_unit(index,other).as<candoBase::OVector3_O>();
+	geom::OVector3_sp element = this->getElement_in_unit(index,other).as<geom::OVector3_O>();
 	return element->get();
     }
 
@@ -291,11 +291,11 @@ namespace units
 	    double otherdbl = other.as<core::DoubleFloat_O>()->get();
 	    core::T_sp newVal = Quantity_O::copyAndScaleValue(this->_Value,otherdbl,_lisp);
 	    return Quantity_O::create(newVal,this->_Unit,_lisp);
-	} else if ( other->isAssignableTo<candoBase::OVector3_O>() )
+	} else if ( other->isAssignableTo<geom::OVector3_O>() )
 	{
 	    if ( this->_Value->isAssignableTo<core::Number_O>() )
 	    {
-		candoBase::OVector3_sp vother = other.as<candoBase::OVector3_O>();
+		geom::OVector3_sp vother = other.as<geom::OVector3_O>();
 		double mydbl = this->_Value.as<core::Number_O>()->as_double();
 		core::T_sp newVal = Quantity_O::copyAndScaleValue(vother,mydbl,_lisp);
 		return Quantity_O::create(newVal,this->_Unit,_lisp);

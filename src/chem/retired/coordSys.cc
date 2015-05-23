@@ -11,10 +11,10 @@
 #include <clasp/core/common.h>
 #include <cando/chem/coordSys.h>
 #include <clasp/core/numerics.h>
-#include <cando/candoBase/ovector3.h>
-#include <cando/candoBase/omatrix.h>
+#include <cando/geom/ovector3.h>
+#include <cando/geom/omatrix.h>
 //#include "core/archiveNode.h"
-#include <cando/candoBase/color.h>
+#include <cando/geom/color.h>
 #include <cando/chem/atom.h>
 #include <clasp/core/wrappers.h>
 
@@ -870,11 +870,11 @@ void	CoordinateSystem_O::transformWithMatrixPointer( Matrix* m )
 //
 //	Render the coordinate system in XML format
 //
-candoBase::QDomNode_sp	CoordinateSystem_O::renderXml( double width,
+geom::QDomNode_sp	CoordinateSystem_O::renderXml( double width,
 							double axisLength)
 {
 IMPLEMENT_ME();
-candoBase::QDomNode_sp	graalphacs, line;
+geom::QDomNode_sp	graalphacs, line;
 #if 0 //[
 
     graalphacs = xmlBlock();
@@ -935,17 +935,17 @@ bool	CoordinateSystem_O::sameAs(CoordinateSystem_sp c)
 }
 
 #ifdef RENDER
-candoBase::Render_sp CoordinateSystem_O::rendered(core::Cons_sp koptions)
+geom::Render_sp CoordinateSystem_O::rendered(core::Cons_sp koptions)
 {_G();
-    candoBase::GrLines_sp lines = candoBase::GrLines_O::create();
-    uint idxOrigin = lines->appendVertex(this->origin,candoBase::Color_O::white(_lisp));
-    uint idxX = lines->appendVertex(this->origin+this->x,candoBase::Color_O::red(_lisp));
-    uint idxY = lines->appendVertex(this->origin+this->y,candoBase::Color_O::green(_lisp));
-    uint idxZ = lines->appendVertex(this->origin+this->z,candoBase::Color_O::blue(_lisp));
+    geom::GrLines_sp lines = geom::GrLines_O::create();
+    uint idxOrigin = lines->appendVertex(this->origin,geom::Color_O::white(_lisp));
+    uint idxX = lines->appendVertex(this->origin+this->x,geom::Color_O::red(_lisp));
+    uint idxY = lines->appendVertex(this->origin+this->y,geom::Color_O::green(_lisp));
+    uint idxZ = lines->appendVertex(this->origin+this->z,geom::Color_O::blue(_lisp));
     lines->appendLine(idxOrigin,idxX);
     lines->appendLine(idxOrigin,idxY);
     lines->appendLine(idxOrigin,idxZ);
-    candoBase::DisplayList_sp prims = candoBase::DisplayList_O::create();
+    geom::DisplayList_sp prims = geom::DisplayList_O::create();
     prims->append(lines);
     return prims;
 }

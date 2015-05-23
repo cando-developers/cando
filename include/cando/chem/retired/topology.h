@@ -18,8 +18,8 @@
 #include <clasp/core/common.h>
 #include <clasp/core/symbolSet.fwd.h>
 #include <cando/chem/bond.h>
-#include <cando/candoBase/vector2.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector2.h>
+#include <cando/geom/vector3.h>
 #include <clasp/core/stringSet.fwd.h>
 #include <clasp/core/hashTableEq.h>
 #include <cando/chem/stereoisomerAtoms.fwd.h>

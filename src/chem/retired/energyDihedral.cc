@@ -168,12 +168,12 @@ void	EnergyDihedral::defineMissingProper( EnergyAtom *ea1, EnergyAtom *ea2, Ener
 
 
 #if 0
-candoBase::QDomNode_sp	EnergyDihedral::asXml(core::Lisp_sp env)
+geom::QDomNode_sp	EnergyDihedral::asXml(core::Lisp_sp env)
 {
-candoBase::QDomNode_sp	node;
+geom::QDomNode_sp	node;
 Vector3	vdiff;
 
-    node = candoBase::QDomNode_O::create(env,"EnergyDihedral");
+    node = geom::QDomNode_O::create(env,"EnergyDihedral");
     node->addAttributeBool("proper",this->_Proper );
     node->addAttributeString("atom1Name",this->_Atom1->getName());
     node->addAttributeString("atom2Name",this->_Atom2->getName());
@@ -192,7 +192,7 @@ Vector3	vdiff;
     node->addAttributeDoubleScientific("V",this->term.V);
     node->addAttributeDoubleScientific("PhaseRad",this->_PhaseRad);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    candoBase::QDomNode_sp xml = candoBase::QDomNode_O::create(env,"Evaluated");
+    geom::QDomNode_sp xml = geom::QDomNode_O::create(env,"Evaluated");
     xml->addAttributeBool("calcForce",this->_calcForce );
     xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
     xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
@@ -202,7 +202,7 @@ Vector3	vdiff;
     return node;
 }
 
-void	EnergyDihedral::parseFromXmlUsingAtomTable(candoBase::QDomNode_sp	xml,
+void	EnergyDihedral::parseFromXmlUsingAtomTable(geom::QDomNode_sp	xml,
 					AtomTable_sp at )
 {
     this->term.I1 = xml->getAttributeInt("I1");

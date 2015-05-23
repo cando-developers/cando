@@ -114,7 +114,7 @@ public:
 
     void	prepareToDriveTorsions();
 
-//    candoBase::QDomNode_sp	renderXml();
+//    geom::QDomNode_sp	renderXml();
 
 
     core::LongLongInt countConformations() { return this->basicCountConformations(1);};

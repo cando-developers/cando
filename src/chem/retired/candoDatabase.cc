@@ -321,7 +321,7 @@ namespace chem
     RepresentativeList_sp CandoDatabase_O::expandEntityNameToListOfRepresentatives(core::Symbol_sp nm)
     { _G();
 	Entity_sp obj;
-	candoBase::ObjectList_sp 	ll;
+	geom::ObjectList_sp 	ll;
 	LOG(BF("Looking for name(%s)") % nm->__repr__()  );
 	ASSERT(this->recognizesEntityName(nm));
 	obj = this->getEntity(nm);

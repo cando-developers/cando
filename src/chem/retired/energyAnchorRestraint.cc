@@ -46,12 +46,12 @@ EnergyAnchorRestraint::~EnergyAnchorRestraint()
 #endif
 
 #if 0
-candoBase::QDomNode_sp	EnergyAnchorRestraint::asXml(core::Lisp_sp env)
+geom::QDomNode_sp	EnergyAnchorRestraint::asXml(core::Lisp_sp env)
 {
-    candoBase::QDomNode_sp	node,child;
+    geom::QDomNode_sp	node,child;
     Vector3	vdiff;
 
-    node = candoBase::QDomNode_O::create(env,"EnergyAnchorRestraint");
+    node = geom::QDomNode_O::create(env,"EnergyAnchorRestraint");
     node->addAttributeString("atomName",this->_Atom1->getName());
     node->addAttributeInt("I1",this->term.I1);
     node->addAttributeDoubleScientific("ka",this->term.ka);
@@ -59,7 +59,7 @@ candoBase::QDomNode_sp	EnergyAnchorRestraint::asXml(core::Lisp_sp env)
     node->addAttributeDoubleScientific("ya",this->term.ya);
     node->addAttributeDoubleScientific("za",this->term.za);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    candoBase::QDomNode_sp xml = candoBase::QDomNode_O::create(env,"Evaluated");
+    geom::QDomNode_sp xml = geom::QDomNode_O::create(env,"Evaluated");
     xml->addAttributeBool("calcForce",this->_calcForce );
     xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
     xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
@@ -69,7 +69,7 @@ candoBase::QDomNode_sp	EnergyAnchorRestraint::asXml(core::Lisp_sp env)
     return node;
 }
 
-void	EnergyAnchorRestraint::parseFromXmlUsingAtomTable(candoBase::QDomNode_sp	xml,
+void	EnergyAnchorRestraint::parseFromXmlUsingAtomTable(geom::QDomNode_sp	xml,
 					AtomTable_sp at )
 {
     this->term.ka = xml->getAttributeDouble("ka");

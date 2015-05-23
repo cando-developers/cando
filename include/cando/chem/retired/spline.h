@@ -30,7 +30,7 @@
 #include <map>
 #include <string>
 #include <clasp/core/common.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 
 
 

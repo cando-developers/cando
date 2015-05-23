@@ -400,10 +400,10 @@ double  dDot;
  *
  * List the term-by-term differences and return as an XML object
  */
-candoBase::QDomNode_sp	NVector_O::termDifferencesAsXml(const string& thisName, NVector_sp n, const string& otherName)
+geom::QDomNode_sp	NVector_O::termDifferencesAsXml(const string& thisName, NVector_sp n, const string& otherName)
 {
-    candoBase::QDomNode_sp xml = candoBase::QDomNode_O::create(_lisp,"Differences");
-    candoBase::QDomNode_sp part;
+    geom::QDomNode_sp xml = geom::QDomNode_O::create(_lisp,"Differences");
+    geom::QDomNode_sp part;
     uint		i;
     double	avg;
     vector<double>::iterator	resi, ni;
@@ -413,7 +413,7 @@ candoBase::QDomNode_sp	NVector_O::termDifferencesAsXml(const string& thisName, N
 	avg = (*resi+*ni)/2.0;
 	if ( avg < 0.0000001 ) continue;
 	if ( fabs(*resi-*ni)/avg > 0.1 ) {
-	    part = candoBase::QDomNode_O::create(_lisp,"V");
+	    part = geom::QDomNode_O::create(_lisp,"V");
 	    part->addAttributeInt("i",i);
 	    part->addAttributeDoubleScientific(thisName,*resi);
 	    part->addAttributeDoubleScientific(otherName,*ni);

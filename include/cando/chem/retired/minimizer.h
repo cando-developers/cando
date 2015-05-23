@@ -21,11 +21,11 @@
 #include <set>
 #include <clasp/core/common.h>
 //#include "bond.h"
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 #include <cando/chem/matter.fwd.h>
 
 
-#include "candoBase/quickDom.fwd.h"// minimizer.h wants QDomNode needs quickDom.fwd.h
+#include "geom/quickDom.fwd.h"// minimizer.h wants QDomNode needs quickDom.fwd.h
 #include "core/posixTime.fwd.h"// minimizer.h wants PosixTime needs posixTime.fwd.h
 //#include "core/lispCallback.fwd.h"// minimizer.h wants LispCallback needs lispCallback.fwd.h
 
@@ -206,7 +206,7 @@ public:
 	void	validateForce(NVector_sp pos, NVector_sp force);
 
 	void	debugBeginIteration(int i);
-//	void	debugAdd(candoBase::QDomNode_sp	node);
+//	void	debugAdd(geom::QDomNode_sp	node);
 	void	debugAccumulateMessage( const char* str );
 	void	debugEndIteration();
 
@@ -287,7 +287,7 @@ public:
 	void	minimize();
 	void	evaluateEnergyAndForceManyTimes(int times);
 
-	candoBase::QDomNode_sp	asXml();
+	geom::QDomNode_sp	asXml();
 
 	DEFAULT_CTOR_DTOR(Minimizer_O);
     };

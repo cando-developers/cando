@@ -22,8 +22,8 @@
 #include <set>
 #include <clasp/core/common.h>
 #include <clasp/core/symbolSet.fwd.h>
-#include <cando/candoBase/vector2.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector2.h>
+#include <cando/geom/vector3.h>
 #include <cando/chem/entity.h>
 
 

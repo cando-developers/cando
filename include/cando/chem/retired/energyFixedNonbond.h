@@ -16,10 +16,10 @@
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 #include <cando/chem/energyComponent.h>
 
-//#include "candoBase/render.fwd.h"// energyFixedNonbond.h wants DisplayList needs render.fwd.h
+//#include "geom/render.fwd.h"// energyFixedNonbond.h wants DisplayList needs render.fwd.h
 
 namespace chem
 {
@@ -58,9 +58,9 @@ public:
 public:
 //	void	archive(core::ArchiveP node);
 public:
-	candoBase::QDomNode_sp	asXml(core::Lisp_sp);
-	void	parseFromXmlRelativeToContainer( candoBase::QDomNode_sp xml, Matter_sp parent );
-	void	parseFromXmlUsingAtomTable(candoBase::QDomNode_sp xml, AtomTable_sp atomTable );
+	geom::QDomNode_sp	asXml(core::Lisp_sp);
+	void	parseFromXmlRelativeToContainer( geom::QDomNode_sp xml, Matter_sp parent );
+	void	parseFromXmlUsingAtomTable(geom::QDomNode_sp xml, AtomTable_sp atomTable );
 
     FixedNonbondRestraint();
 	virtual ~FixedNonbondRestraint();
@@ -163,7 +163,7 @@ public:
 
     virtual string	beyondThresholdInteractionsAsString();
 
-//    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, candoBase::DisplayList_sp displayIn );
+//    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn );
 
     virtual	double	getEnergy();
 

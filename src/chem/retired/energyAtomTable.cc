@@ -54,11 +54,11 @@ void EnergyAtom::defineForAtom(ForceField_sp forceField, Atom_sp a1, uint coordi
 
 
 #if 0 //[
-    candoBase::QDomNode_sp	EnergyAtom::asXmlRelativeToContainer(chem::Matter_sp parent)
+    geom::QDomNode_sp	EnergyAtom::asXmlRelativeToContainer(chem::Matter_sp parent)
 {
-    candoBase::QDomNode_sp	node;
+    geom::QDomNode_sp	node;
     string	path;
-    node = chem::new_candoBase::QDomNode_sp("EnergyAtom");
+    node = chem::new_geom::QDomNode_sp("EnergyAtom");
     path = this->_Atom->getIdPath(parent);
     node->addAttributeString("storagePath",path);
     node->addAttributeString("atomName",this->_Atom->getName());
@@ -73,7 +73,7 @@ void EnergyAtom::defineForAtom(ForceField_sp forceField, Atom_sp a1, uint coordi
 }
 
 
-    void	EnergyAtom::parseFromXmlRelativeToContainer(candoBase::QDomNode_sp xml,
+    void	EnergyAtom::parseFromXmlRelativeToContainer(geom::QDomNode_sp xml,
 							chem::Matter_sp parent)
 {_G();
 string	path;

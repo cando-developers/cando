@@ -22,7 +22,7 @@ namespace chem
     __ BEGIN_CLASS_DEFINITION(ChemPkg,PdbMonomerConnectivity_O,PdbMonomerConnectivity,core::T_O)
 	private:
 	string _PdbName;
-    candoBase::ObjectList_sp _HetNames;
+    geom::ObjectList_sp _HetNames;
     core::SymbolMap<core::StringSet_O> _Connections;
 public:
 

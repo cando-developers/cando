@@ -108,12 +108,12 @@ double	angle;
 }
 
 #if 0
-    candoBase::QDomNode_sp	EnergyAngle::asXml(core::Lisp_sp env)
+    geom::QDomNode_sp	EnergyAngle::asXml(core::Lisp_sp env)
 {
-    candoBase::QDomNode_sp	node;
+    geom::QDomNode_sp	node;
     Vector3	vdiff;
 
-    node = candoBase::QDomNode_O::create(env,"EnergyAngle");
+    node = geom::QDomNode_O::create(env,"EnergyAngle");
     node->addAttributeString("atom1Name",this->_Atom1->getName());
     node->addAttributeString("atom2Name",this->_Atom2->getName());
     node->addAttributeString("atom3Name",this->_Atom3->getName());
@@ -126,7 +126,7 @@ double	angle;
     node->addAttributeDoubleScientific("kt",this->term.kt);
     node->addAttributeDoubleScientific("t0",this->term.t0);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    candoBase::QDomNode_sp xml = candoBase::QDomNode_O::create(env,"Evaluated");
+    geom::QDomNode_sp xml = geom::QDomNode_O::create(env,"Evaluated");
     xml->addAttributeBool("calcForce",this->_calcForce );
     xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
     xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
@@ -136,7 +136,7 @@ double	angle;
     return node;
 }
 
-    void	EnergyAngle::parseFromXmlUsingAtomTable(candoBase::QDomNode_sp	xml,
+    void	EnergyAngle::parseFromXmlUsingAtomTable(geom::QDomNode_sp	xml,
 					AtomTable_sp atomTable )
 {
     int i1 = xml->getAttributeInt("idx1");

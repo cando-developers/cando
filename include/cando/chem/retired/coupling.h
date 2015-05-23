@@ -20,7 +20,7 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 #include <cando/chem/residue.fwd.h>
 
 

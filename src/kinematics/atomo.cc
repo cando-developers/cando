@@ -2,8 +2,8 @@
 
 #include <clasp/core/common.h>
 #include <clasp/core/environment.h>
-#include <cando/candoBase/vector3.h>
-#include <cando/candoBase/ovector3.h>
+#include <cando/geom/vector3.h>
+#include <cando/geom/ovector3.h>
 #include <cando/kinematics/atomo.h>
 #include <clasp/core/multipleValues.h>
 #include <cando/kinematics/atomTree.h>

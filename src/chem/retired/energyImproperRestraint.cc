@@ -8,7 +8,7 @@
 #include <cando/chem/energyFunction.h>
 #include <clasp/core/profiler.h>
 #include <cando/chem/bond.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 #include <cando/chem/matter.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
@@ -74,12 +74,12 @@ double	EnergyImproperRestraint::getAngle()
 
 
 #if 0
-    candoBase::QDomNode_sp	EnergyImproperRestraint::asXml(core::Lisp_sp env)
+    geom::QDomNode_sp	EnergyImproperRestraint::asXml(core::Lisp_sp env)
 {
-    candoBase::QDomNode_sp	node,child;
+    geom::QDomNode_sp	node,child;
     Vector3	vdiff;
 
-    node = candoBase::QDomNode_O::create(env,"EnergyImproperRestraint");
+    node = geom::QDomNode_O::create(env,"EnergyImproperRestraint");
     node->addAttributeString("atom1Name",this->_Atom1->getName());
     node->addAttributeString("atom2Name",this->_Atom2->getName());
     node->addAttributeString("atom3Name",this->_Atom3->getName());
@@ -94,7 +94,7 @@ double	EnergyImproperRestraint::getAngle()
     node->addAttributeDoubleScientific("L",this->term.L);
     node->addAttributeDoubleScientific("K",this->term.K);
     if ( this->_AboveThreshold ) {
-	child = candoBase::QDomNode_O::create(env,"AboveThreshold");
+	child = geom::QDomNode_O::create(env,"AboveThreshold");
 	child->addAttributeDoubleScientific("Phi",this->_AboveThreshold_Phi );
 	child->addAttributeDouble("PhiDeg",this->_AboveThreshold_Phi/0.0174533,6,2 );
 	stringstream ss;
@@ -105,7 +105,7 @@ double	EnergyImproperRestraint::getAngle()
 	node->addChild(child);
     }
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    candoBase::QDomNode_sp xml = candoBase::QDomNode_O::create(env,"Evaluated");
+    geom::QDomNode_sp xml = geom::QDomNode_O::create(env,"Evaluated");
     xml->addAttributeBool("calcForce",this->_calcForce );
     xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
     xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
@@ -115,7 +115,7 @@ double	EnergyImproperRestraint::getAngle()
     return node;
 }
 
-    void	EnergyImproperRestraint::parseFromXmlUsingAtomTable(candoBase::QDomNode_sp	xml,
+    void	EnergyImproperRestraint::parseFromXmlUsingAtomTable(geom::QDomNode_sp	xml,
 					AtomTable_sp at)
 {
     this->term.U = xml->getAttributeDouble("U");

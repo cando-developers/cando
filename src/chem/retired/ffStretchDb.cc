@@ -31,10 +31,10 @@ namespace chem
 
 
 
-candoBase::QDomNode_sp	EstimateStretch::asXml(core::Lisp_sp env)
+geom::QDomNode_sp	EstimateStretch::asXml(core::Lisp_sp env)
 {
-    candoBase::QDomNode_sp	node;
-    node = candoBase::QDomNode_O::create(env,"EstimateStretch");
+    geom::QDomNode_sp	node;
+    node = geom::QDomNode_O::create(env,"EstimateStretch");
     node->addAttributeString("ti",this->_ti);
     node->addAttributeString("tj",this->_tj);
     node->addAttributeDoubleScientific("rij",this->_rij);
@@ -43,7 +43,7 @@ candoBase::QDomNode_sp	EstimateStretch::asXml(core::Lisp_sp env)
 }
 
 
-void	EstimateStretch::parseFromXml(candoBase::QDomNode_sp node)
+void	EstimateStretch::parseFromXml(geom::QDomNode_sp node)
 {
     this->_ti = node->getAttributeString("ti");
     this->_tj = node->getAttributeString("tj");

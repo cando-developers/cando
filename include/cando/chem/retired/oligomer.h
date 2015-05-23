@@ -20,8 +20,8 @@
 #include <clasp/core/common.h>
 #include <clasp/core/symbolSet.fwd.h>
 #include <clasp/core/stringSet.fwd.h>
-#include <cando/candoBase/vector2.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector2.h>
+#include <cando/geom/vector3.h>
 
 
 //#include "bond.h"
@@ -180,7 +180,7 @@ public:
     // Atomic oligomer modifying routines
     Monomer_sp	addMultiMonomerAsLeaf( CandoDatabase_sp,
 				       Monomer_sp monFrom, core::Symbol_sp couplingName,
-				       core::Symbol_sp representedEntityNameSetName, candoBase::Vector2 pos);
+				       core::Symbol_sp representedEntityNameSetName, geom::Vector2 pos);
     Monomer_sp	removeLeafMonomer(Monomer_sp monomerToRemove );
 
 

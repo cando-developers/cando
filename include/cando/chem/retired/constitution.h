@@ -33,15 +33,15 @@
 #include <clasp/core/common.h>
 #include <clasp/core/symbolSet.fwd.h>
 #include <clasp/core/stringList.fwd.h>
-#include <cando/candoBase/vector2.h>
-#include <cando/candoBase/vector3.h>
-#include <cando/candoBase/quickDom.fwd.h>
+#include <cando/geom/vector2.h>
+#include <cando/geom/vector3.h>
+#include <cando/geom/quickDom.fwd.h>
 #include <cando/chem/entity.h>
 #include <cando/chem/constitution.fwd.h>
 #include <cando/chem/constitutionAtoms.fwd.h>
 #include <cando/chem/chemPackage.h>
 #include "core/cons.fwd.h"// constitution.h wants Cons needs cons.fwd.h
-#include "candoBase/quickDom.fwd.h"// constitution.h wants QDomNode needs quickDom.fwd.h
+#include "geom/quickDom.fwd.h"// constitution.h wants QDomNode needs quickDom.fwd.h
 #include <cando/chem/residue.fwd.h>
 
 
@@ -113,7 +113,7 @@ namespace chem
 	    TopologyMap				_Topologies;
 	    StereoInformation_sp		_StereoInformation;
 	private:
-//	    Residue_sp	loadResidue(candoBase::QDomNode_sp node);
+//	    Residue_sp	loadResidue(geom::QDomNode_sp node);
 
 	public:
 	    typedef gctools::Vec0<Stereoisomer_sp>::iterator	stereoisomerIterator;

@@ -18,7 +18,7 @@
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 //#include "atom.h"
 //#include "bond.h"
 //#include "largeSquareMatrix.h"
@@ -26,7 +26,7 @@
 //#include "ffTypesDb.h"
 //#include "ffStretchDb.h"
 //#include "ffAngleDb.h"
-#include <cando/candoBase/quickDom.h>
+#include <cando/geom/quickDom.h>
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/nVector.h>
 #include <cando/chem/residue.h>
@@ -52,7 +52,7 @@ const double ELECTROSTATIC_MODIFIER = (93865.10/3.53*93865.10/93958.78);
 #ifndef	delta2
 #define		delta2	0.00001
 #endif
-#include "candoBase/quickDom.fwd.h"// energyComponent.h wants QDomNode needs quickDom.fwd.h
+#include "geom/quickDom.fwd.h"// energyComponent.h wants QDomNode needs quickDom.fwd.h
 
 namespace       chem {
 
@@ -109,25 +109,25 @@ virtual	void	customInitialize();
 	    this->_Terms.push_back(term); 
 	};
 
-	void	asXmlFillEnergy(candoBase::QDomNode_sp node) {
+	void	asXmlFillEnergy(geom::QDomNode_sp node) {
 		stringstream ss;
 		ss << this->getName()<<"TotalEnergy";
 		node->addAttributeDoubleScientific(ss.str(),this->_TotalEnergy);
 	};
 
-	void	parseXmlEnergy(candoBase::QDomNode_sp node) {
+	void	parseXmlEnergy(geom::QDomNode_sp node) {
 		stringstream ss;
 		ss << this->getName()<<"TotalEnergy";
 		this->_TotalEnergy = node->getAttributeDouble(ss.str());
 	};
 
 
-candoBase::QDomNode_sp	asXmlLimitedTerms(core::Lisp_sp lisp, int numTerms)
+geom::QDomNode_sp	asXmlLimitedTerms(core::Lisp_sp lisp, int numTerms)
 {
-candoBase::QDomNode_sp tnode, child;
+geom::QDomNode_sp tnode, child;
 int		t;
     viter si;
-    tnode = candoBase::QDomNode_O::create(this->getName());
+    tnode = geom::QDomNode_O::create(this->getName());
     tnode->addAttributeInt("numberOfTerms",this->_Terms.size());
     for (t=0,si=this->_Terms.begin();
 	    si!=this->_Terms.end();si++,t++){
@@ -145,7 +145,7 @@ int		t;
 
 
 
-void	parseFromXmlUsingAtomTable(candoBase::QDomNode_sp node, AtomTable_sp atomTable )
+void	parseFromXmlUsingAtomTable(geom::QDomNode_sp node, AtomTable_sp atomTable )
 {_G();
 VectorQDomNodes	children;
 VectorQDomNodes::iterator	child;
@@ -162,7 +162,7 @@ VectorQDomNodes::iterator	child;
     }
 }
 
-candoBase::QDomNode_sp	asXmlMissingTerms();
+geom::QDomNode_sp	asXmlMissingTerms();
 
 
 

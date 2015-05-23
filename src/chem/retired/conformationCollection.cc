@@ -34,7 +34,7 @@ void	ConformationCollectionEntry_O::initialize()
 {
     this->Base::initialize();
     this->_Data = core::HashTableEq_O::create_default();
-    this->_AllCoordinates = candoBase::CoordinateArray_O::create();
+    this->_AllCoordinates = geom::CoordinateArray_O::create();
 }
 
 
@@ -63,18 +63,18 @@ void	ConformationCollectionEntry_O::initialize()
 
 void	ConformationCollectionEntry_O::setConformationCollection(ConformationCollection_sp s)
 {_G();
-candoBase::CoordinateArray_sp	ca;
+geom::CoordinateArray_sp	ca;
     this->_WeakConformationCollection = s;
-    ca = candoBase::CoordinateArray_O::create(s->numberOfAllAtoms());
+    ca = geom::CoordinateArray_O::create(s->numberOfAllAtoms());
     this->_AllCoordinates = ca;
 }
 
 
-void	ConformationCollectionEntry_O::setAllCoordinates(candoBase::CoordinateArray_sp ac)
+void	ConformationCollectionEntry_O::setAllCoordinates(geom::CoordinateArray_sp ac)
 {_G();
     ASSERTNOTNULL(ac);
     LOG(BF("setAllCoordinates:%s") % (ac->asXmlString().c_str() ) );
-    LOG(BF("The address of the candoBase::CoordinateArray_sp is in o") );
+    LOG(BF("The address of the geom::CoordinateArray_sp is in o") );
     this->_AllCoordinates = ac;
 }
 
@@ -105,7 +105,7 @@ gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
     sl = this->getConformationCollection();
     LOG(BF("Got ConformationCollection") );
     ASSERTNOTNULL(sl);
-    candoBase::CoordinateArray_sp coords = sl->_extractCoordinateArray(matter);
+    geom::CoordinateArray_sp coords = sl->_extractCoordinateArray(matter);
     ASSERTNOTNULL(coords);
     this->_AllCoordinates = coords;
 }
@@ -128,7 +128,7 @@ void	ConformationCollection_O::clearEntries()
 
 
 
-candoBase::CoordinateArray_sp ConformationCollection_O::_extractCoordinateArray(Matter_sp agg)
+geom::CoordinateArray_sp ConformationCollection_O::_extractCoordinateArray(Matter_sp agg)
 {_G();
     vector<Vector3>::iterator	ci;
     gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
@@ -137,7 +137,7 @@ candoBase::CoordinateArray_sp ConformationCollection_O::_extractCoordinateArray(
 #endif
     LOG(BF("About to get ConformationCollection") );
     LOG(BF("About to iterate over atoms and get positions") );
-    candoBase::CoordinateArray_sp coords = candoBase::CoordinateArray_O::create(this->numberOfAllAtoms());
+    geom::CoordinateArray_sp coords = geom::CoordinateArray_O::create(this->numberOfAllAtoms());
     ASSERTNOTNULL(coords);
     for ( ai=this->begin_AllAtoms(),ci=coords->begin(); ai!=this->end_AllAtoms(); ai++, ci++ )
     {
@@ -260,18 +260,18 @@ ConformationCollectionEntry_sp			entry;
 
 
 #ifdef RENDER
-candoBase::Render_sp	ConformationCollection_O::rendered(core::Cons_sp opts)
+geom::Render_sp	ConformationCollection_O::rendered(core::Cons_sp opts)
 {_G();
-candoBase::FrameList_sp	frames;
-candoBase::DisplayList_sp	parts, dlSuperpose;
+geom::FrameList_sp	frames;
+geom::DisplayList_sp	parts, dlSuperpose;
 GrPickableMatter_sp		dlMatter;
-candoBase::Color_sp				color;
+geom::Color_sp				color;
 Matter_sp			matter;
 ConformationCollection_O::entryIterator	si;
 ConformationCollectionEntry_sp	entry;
-candoBase::CoordinateArray_sp		superposeCoords;
-candoBase::CoordinateArray_O::iterator	ci;
-frames = candoBase::FrameList_O::create();
+geom::CoordinateArray_sp		superposeCoords;
+geom::CoordinateArray_O::iterator	ci;
+frames = geom::FrameList_O::create();
     matter = this->getMatter();
     for ( si=this->begin_Entries(); si!=this->end_Entries(); si++ )
     {

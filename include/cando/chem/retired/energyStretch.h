@@ -19,7 +19,7 @@
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 #include <cando/chem/energyComponent.h>
 
 namespace       chem {
@@ -64,8 +64,8 @@ public:
 public:
 //	void	archive(core::ArchiveP node);
 public:
-	candoBase::QDomNode_sp	asXml(core::Lisp_sp);
-	void	parseFromXmlUsingAtomTable(candoBase::QDomNode_sp xml, AtomTable_sp atomTable );
+	geom::QDomNode_sp	asXml(core::Lisp_sp);
+	void	parseFromXmlUsingAtomTable(geom::QDomNode_sp xml, AtomTable_sp atomTable );
 
 
 	EnergyStretch();

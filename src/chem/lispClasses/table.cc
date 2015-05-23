@@ -144,10 +144,10 @@ namespace chem
 
 #if 0
 #ifdef RENDER
-    candoBase::Render_sp TableEntry_O::rendered(core::Cons_sp opts)
+    geom::Render_sp TableEntry_O::rendered(core::Cons_sp opts)
     {_G();
-	candoBase::DisplayList_sp dl;
-	dl = candoBase::DisplayList_O::create();
+	geom::DisplayList_sp dl;
+	dl = geom::DisplayList_O::create();
         gctools::Vec0<core::T_sp>::iterator si;
 	uint idx;
 	for ( si=this->_Fields.begin(), idx=0;
@@ -155,7 +155,7 @@ namespace chem
 	{
 	    if ( (*si)->canRender() )
 	    {
-		candoBase::Render_sp rend = (*si)->rendered(opts);
+		geom::Render_sp rend = (*si)->rendered(opts);
 		rend->setName(this->getTable()->fieldSymbol(idx));
 		dl->append(rend);
 	    } else 
@@ -163,7 +163,7 @@ namespace chem
 		stringstream ss; 
 		ss << this->getTable()->fieldSymbol(idx)->fullName() << " -> ";
 		ss << (*si)->__repr__() << std::endl;
-		candoBase::RenderInformation_sp info = candoBase::RenderInformation_O::create(ss.str(),_lisp);
+		geom::RenderInformation_sp info = geom::RenderInformation_O::create(ss.str(),_lisp);
 		dl->append(info);
 	    }
 	}
@@ -529,17 +529,17 @@ namespace chem
     }
 
 #if 0
-    candoBase::Render_sp	Table_O::rendered(core::Cons_sp opts)
+    geom::Render_sp	Table_O::rendered(core::Cons_sp opts)
     {_G();
-	candoBase::FrameList_sp	frames;
-	frames = candoBase::FrameList_O::create();
+	geom::FrameList_sp	frames;
+	frames = geom::FrameList_O::create();
 	frames->setName(_lisp->internKeyword("entry"));
         gctools::Vec0<TableEntry_sp>::iterator si;
 	for ( si=this->_Entries.begin(); si!=this->_Entries.end(); si++ )
 	{
 	    if ( (*si)->canRender() )
 	    {
-		candoBase::Render_sp rend = (*si)->rendered(opts);
+		geom::Render_sp rend = (*si)->rendered(opts);
 		frames->append(rend);
 	    }
 	}

@@ -1,0 +1,39 @@
+local dir = $(__file__:D) ;
+
+
+#
+# if you want debugging messages in release version turn on
+# <variant>release:<define>SOURCE_DEBUG
+#
+project geom : requirements
+        <include>./
+	;
+
+local sources = 
+      quickDom.cc
+      mySaxInterface.cc
+#	    iterateRange.cc
+	    candoBasePackage.cc
+	    ovector3.cc 
+	    ovector2.cc
+#	    highlightObject.cc
+#	    color.cc
+#	    render.cc
+	    matrix.cc
+#            range.cc
+	    vector2.cc 
+	    vector3.cc 
+	    vector4.cc 
+#	    container.cc
+	    omatrix.cc
+	    boundingBox.cc
+#	    coloredVertexList.cc
+	    coordinateArray.cc
+#	    integerKeyObjectDictionary.cc
+	    /externals//boostAndExpatLibs
+            /internals//core
+	    /internals//gctools
+;
+
+
+lib candoBase : $(sources) ;
