@@ -20,7 +20,7 @@ namespace kw {
 #pragma GCC visibility push(default)
 #define KeywordPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include <symbols_scraped_inc.h>
+#include <cando/units/generated/symbols_scraped_inc.h>
 #undef DO_SYMBOL
 #undef KeywordPkg_SYMBOLS
 #pragma GCC visibility pop
@@ -33,7 +33,7 @@ namespace units
 #pragma GCC visibility push(default)
 #define UnitsPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include <symbols_scraped_inc.h>
+#include <cando/units/generated/symbols_scraped_inc.h>
 #undef DO_SYMBOL
 #undef UnitsPkg_SYMBOLS
 #pragma GCC visibility pop
@@ -46,7 +46,7 @@ namespace units
 #define EXPOSE_TO_CANDO
 #define Use_UnitsPkg
 #define EXTERN_REGISTER
-#include <units_initClasses_inc.h>
+#include <cando/units/generated/initClasses_inc.h>
 #undef EXTERN_REGISTER
 #undef Use_UnitsPkg
 #undef EXPOSE_TO_CANDO
@@ -60,7 +60,7 @@ namespace units
 namespace units
 {
 
-    const char* Units_nicknames[] = { "" };
+const char* Units_nicknames[] = { "" };
 
 SYMBOL_EXPORT_SC_(UnitsPkg,meters);
 SYMBOL_EXPORT_SC_(UnitsPkg,kilometers);
@@ -119,14 +119,14 @@ SYMBOL_EXPORT_SC_(UnitsPkg,nm_per_ps);
 	{
 #define KeywordPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,lispname); cname->exportYourself(exportp);}
-#include <symbols_scraped_inc.h>
+#include <cando/units/generated/symbols_scraped_inc.h>
 #undef DO_SYMBOL
 #undef KeywordPkg_SYMBOLS
 
 
 #define UnitsPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,lispname); cname->exportYourself(exportp);}
-#include <symbols_scraped_inc.h>
+#include <cando/units/generated/symbols_scraped_inc.h>
 #undef DO_SYMBOL
 #undef UnitsPkg_SYMBOLS
 
@@ -137,7 +137,7 @@ SYMBOL_EXPORT_SC_(UnitsPkg,nm_per_ps);
 #define Use_UnitsPkg
 #define INVOKE_REGISTER
 #define LOOKUP_SYMBOL(pkg,name) _lisp->internWithPackageName(pkg,name)
-#include <units_initClasses_inc.h>
+#include <cando/units/generated/initClasses_inc.h>
 #undef INVOKE_REGISTER
 #undef Use_UnitsPkg
 #undef ALL_STAGES
@@ -150,8 +150,10 @@ SYMBOL_EXPORT_SC_(UnitsPkg,nm_per_ps);
 	break;
 	case candoGlobals:
 	{
-#define DEFDIM(sym,scale,code,dim,pwr) Unit_sp unit_##sym = (_sym_##sym)->exportYourself()->defparameter(NamedUnit_O::create(_sym_##sym,scale,dim,pwr,code,code,_lisp)).as<Unit_O>();
+#define DEFDIM(sym,scale,code,dim,pwr) Unit_sp unit_##sym = (_sym_##sym)->exportYourself()->defparameter(NamedUnit_O::create(_sym_##sym,scale,dim,pwr,code,code)).as<Unit_O>();
 
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-variable"
 	    DEFDIM(meters,1.0,"m",distanceMeter,1);
 	    DEFDIM(kilometers,1000.0,"km",distanceMeter,1);
 	    DEFDIM(millimeters,1.0e-3,"mm",distanceMeter,1);
@@ -173,14 +175,14 @@ SYMBOL_EXPORT_SC_(UnitsPkg,nm_per_ps);
 	    DEFDIM(per_picosecond,1.0e+12, "per_ps",timeSecond,-1);
 
 	    DEFDIM(amperes,1.0,"A",currentAmpere,1);
-	    NamedUnit_sp unit_coulomb = NamedUnit_O::create(_sym_coulomb,"coulomb","C",_lisp);
+	    NamedUnit_sp unit_coulomb = NamedUnit_O::create(_sym_coulomb,"coulomb","C");
 	    unit_coulomb->incorporateUnit(unit_amperes,1.0,1);
 	    unit_coulomb->incorporateUnit(unit_seconds,1.0,-1);
 	    _sym_coulomb->exportYourself()->defparameter(unit_coulomb);
 
 	    NamedUnit_sp unit_elementaryCharge = NamedUnit_O::create(_sym_elementaryCharge,
 								1.60217656535e-19, unit_coulomb,
-								"elementaryCharge","e",_lisp);
+								"elementaryCharge","e");
 	    _sym_elementaryCharge->exportYourself()->defparameter(unit_elementaryCharge);
 	    
 	    DEFDIM(kelvin,1.0,"K",temperatureKelvin,1);
@@ -189,39 +191,40 @@ SYMBOL_EXPORT_SC_(UnitsPkg,nm_per_ps);
 
 	    DEFDIM(moles,1.0,"mol",amountMole,1);
 
-	    NamedUnit_sp unit_joules = NamedUnit_O::create(_sym_joules,"joules","J",_lisp);
+	    NamedUnit_sp unit_joules = NamedUnit_O::create(_sym_joules,"joules","J");
 	    unit_joules->incorporateUnit(unit_kilograms,1.0,1);
 	    unit_joules->incorporateUnit(unit_meters,1.0,2);
 	    unit_joules->incorporateUnit(unit_seconds,1.0,-2);
 	    _sym_joules->exportYourself()->defparameter(unit_joules);
 	    NamedUnit_sp unit_kilojoules = NamedUnit_O::create(_sym_kilojoules,
 							       1000.0, unit_joules,
-							       "kilojoules","kJ",_lisp);
+							       "kilojoules","kJ");
 	    _sym_kilojoules->exportYourself()->defparameter(unit_kilojoules);
 
 	    NamedUnit_sp unit_kilojoules_per_mole = NamedUnit_O::create(_sym_kilojoules_per_mole,
 								   1.0, unit_kilojoules,
-								   "kiloJoules_per_mole","kJ/mole",_lisp);
+								   "kiloJoules_per_mole","kJ/mole");
 	    unit_kilojoules_per_mole->incorporateUnit(unit_moles,1.0,-1);
 	    _sym_kilojoules_per_mole->exportYourself()->defparameter(unit_kilojoules_per_mole);
 
 	    NamedUnit_sp unit_kilocalories_per_mole = NamedUnit_O::create(_sym_kilocalories_per_mole,
 									  4.184,unit_kilojoules_per_mole,
-									  "kilocalories_per_mole","kcal/mole",_lisp);
+									  "kilocalories_per_mole","kcal/mole");
 	    _sym_kilocalories_per_mole->exportYourself()->defparameter(unit_kilocalories_per_mole);
 
 	    NamedUnit_sp unit_nm_per_ps = NamedUnit_O::create(_sym_nm_per_ps,
-							      "nanometers_per_picosecond","nm/ps",_lisp);
+							      "nanometers_per_picosecond","nm/ps");
 	    unit_nm_per_ps->incorporateUnit(unit_nanometers,1.0,1);
 	    unit_nm_per_ps->incorporateUnit(unit_picoseconds,1.0,-1);
 	    _sym_nm_per_ps->exportYourself()->defparameter(unit_nm_per_ps);
 
 	    NamedUnit_sp unit_daltons = NamedUnit_O::create(_sym_daltons,
-						       "Daltons","Da",_lisp);
+						       "Daltons","Da");
 	    unit_daltons->incorporateUnit(unit_grams,1.0,1);
 	    unit_daltons->incorporateUnit(unit_moles,1.0,-1);
 	    _sym_daltons->exportYourself()->defparameter(unit_daltons);
 
+#pragma clang diagnostic pop
 	}
 	break;
 	case pythonClasses:
@@ -229,7 +232,7 @@ SYMBOL_EXPORT_SC_(UnitsPkg,nm_per_ps);
 #define _DBG(x)
 #define EXPOSE_TO_PYTHON
 #define Use_UnitsPkg
-#include <units_initClasses_inc.h>
+#include <cando/units/generated/initClasses_inc.h>
 #undef Use_UnitsPkg
 #undef EXPOSE_TO_PYTHON
 	}
@@ -275,7 +278,7 @@ extern "C"
 #define _CLASS_MACRO(_T_)				\
     STATIC_CLASS_INFO(_T_);			\
     INTRUSIVE_POINTER_REFERENCE_COUNT_ACCESSORS(_T_);
-#include <units_initClasses_inc.h>
+#include <cando/units/generated/initClasses_inc.h>
 #undef _CLASS_MACRO
 #undef EXPAND_CLASS_MACROS
 #endif

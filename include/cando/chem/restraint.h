@@ -88,7 +88,7 @@ public:
 	{
 	    this->_AnchorPos = pos;
 	};
-	Atom_sp	getAtom() {_OF();ASSERTNOTNULL(this->_A);return this->_A.lock();};
+	Atom_sp	getAtom() {_OF();ASSERTNOTNULL(this->_A);return this->_A;};
 	void	setAtom(Atom_sp a) {this->_A=a;};
 
 	Vector3 getAnchorPos() { return this->_AnchorPos; };
@@ -125,7 +125,7 @@ public:
 	{
 	    this->_Chirality = c;
 	};
-	Atom_sp	getAtomA() {_OF();ASSERTNOTNULL(this->_A);return this->_A.lock();};
+	Atom_sp	getAtomA() {_OF();ASSERTNOTNULL(this->_A);return this->_A;};
 	void	setAtomA(Atom_sp a) {this->_A=a;};
 
 	int	getChirality() { return this->_Chirality; };
@@ -170,9 +170,9 @@ public:
 			this->_Max=mx;
 			this->_Weight=wt;
 	};
-	Atom_sp	getAtomA() {_OF();ASSERTNOTNULL(this->_A);return this->_A.lock();};
+	Atom_sp	getAtomA() {_OF();ASSERTNOTNULL(this->_A);return this->_A;};
 	void	setAtomA(Atom_sp a) {this->_A=a;};
-	Atom_sp	getAtomB() {_OF();ASSERTNOTNULL(this->_B);return this->_B.lock();};
+	Atom_sp	getAtomB() {_OF();ASSERTNOTNULL(this->_B);return this->_B;};
 	void	setAtomB(Atom_sp a) {this->_B=a;};
 
 	double	getMin() {return this->_Min;};
@@ -215,11 +215,11 @@ public:
 			this->_MaxRad=mx;
 			this->_Weight=wt;
 	};
-	Atom_sp	getAtomA() {_OF();ASSERTNOTNULL(this->_A);return this->_A.lock();};
+	Atom_sp	getAtomA() {_OF();ASSERTNOTNULL(this->_A);return this->_A;};
 	void	setAtomA(Atom_sp a) {this->_A=a;};
-	Atom_sp	getAtomB() {_OF();ASSERTNOTNULL(this->_B);return this->_B.lock();};
+	Atom_sp	getAtomB() {_OF();ASSERTNOTNULL(this->_B);return this->_B;};
 	void	setAtomB(Atom_sp a) {this->_B=a;};
-	Atom_sp	getAtomC() {_OF();ASSERTNOTNULL(this->_C);return this->_C.lock();};
+	Atom_sp	getAtomC() {_OF();ASSERTNOTNULL(this->_C);return this->_C;};
 	void	setAtomC(Atom_sp a) {this->_C=a;};
 
 	double	getMin() {return this->_MinRad;};
@@ -274,10 +274,10 @@ public:
 			this->_MaxDegrees=mx;
 			this->_Weight=wt;
 	};
-	Atom_sp	getAtomA() {_OF();ASSERTNOTNULL(this->_A);return this->_A.lock();};
-	Atom_sp	getAtomB() {_OF();ASSERTNOTNULL(this->_B);return this->_B.lock();};
-	Atom_sp	getAtomC() {_OF();ASSERTNOTNULL(this->_C);return this->_C.lock();};
-	Atom_sp	getAtomD() {_OF();ASSERTNOTNULL(this->_D);return this->_D.lock();};
+	Atom_sp	getAtomA() {_OF();ASSERTNOTNULL(this->_A);return this->_A;};
+	Atom_sp	getAtomB() {_OF();ASSERTNOTNULL(this->_B);return this->_B;};
+	Atom_sp	getAtomC() {_OF();ASSERTNOTNULL(this->_C);return this->_C;};
+	Atom_sp	getAtomD() {_OF();ASSERTNOTNULL(this->_D);return this->_D;};
 	void	setAtomA(Atom_sp a) {this->_A=a;};
 	void	setAtomB(Atom_sp a) {this->_B=a;};
 	void	setAtomC(Atom_sp a) {this->_C=a;};

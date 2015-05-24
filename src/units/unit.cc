@@ -24,11 +24,12 @@ namespace units
 	::core::class_<Unit_O>()
 //	    .def_raw("__init__",&Unit_O::__init__,"(self &rest args)")
 	    .def("test_set_amount",&Unit_O::test_set_amount)
-	    .def("is_compatible",&Unit_O::is_compatible)
+	    .def("unit_is_compatible",&Unit_O::is_compatible)
 	    .def("conversion_factor_to",&Unit_O::conversion_factor_to)
 	    .def("*",&Unit_O::operator*)
 	    .def("/",&Unit_O::operator/)
 	;
+      core::af_def(UnitsPkg,"make-unit",&Unit_O::make);
     }
 
     void Unit_O::exposePython(core::Lisp_sp lisp)
@@ -42,16 +43,16 @@ namespace units
 
 
 
-    Unit_sp Unit_O::create(Unit_sp orig, int power, core::Lisp_sp lisp)
+Unit_sp Unit_O::create(Unit_sp orig, int power)
     {_G();
-	Unit_sp unit = lisp->create<Unit_O>();
+      Unit_sp unit = Unit_O::create();
 	unit->incorporateUnit(orig,1.0,power);
 	return unit;
     }
 
-    Unit_sp Unit_O::createSquareRoot(Unit_sp orig, core::Lisp_sp lisp)
+Unit_sp Unit_O::createSquareRoot(Unit_sp orig)
     {_G();
-	Unit_sp unit = lisp->create<Unit_O>();
+      Unit_sp unit = Unit_O::create();
 	unit->_Amount = ::sqrt(orig->_Amount);
 	for ( int i=0; i<NumBaseDimensions; i++ )
 	{
@@ -65,7 +66,10 @@ namespace units
     }
 
 
-    Unit_sp Unit_O::make(core::Cons_sp args)
+/*! Create a new unit by combining other units with powers.
+eg: (make-unit (list units:meters 1 units:seconds -1))
+*/
+    Unit_sp Unit_O::make(core::List_sp args)
     {_G();
 	GC_ALLOCATE(Unit_O,u);
 	Unit_O::parseUnitList(u->_Amount,u->_Powers,args);
@@ -73,30 +77,30 @@ namespace units
     }
 
 
-    void Unit_O::parseUnitList(double& amountScale, int powers[NumBaseDimensions], core::Cons_sp list)
+    void Unit_O::parseUnitList(double& amountScale, int powers[NumBaseDimensions], core::List_sp list)
     {_G();
 	LOG(BF("Creating unit with arguments[%s]") % lisp->__repr__() );
 //	core::Binder_sp unitDatabase = _lisp->symbol(_sym_UnitsPkg_StarUnitDatabaseStar)->symbolValue().as<core::Binder_O>();
-	core::Cons_sp dimCur = list;
+	core::List_sp dimCur = list;
 	while (dimCur.notnilp())
 	{
 	    core::T_sp odim = core::oCar(dimCur);
-	    if ( odim->isAssignableTo<Unit_O>() )
+	    if ( odim.isA<Unit_O>() )
 	    {
 		Unit_sp u = odim.as<Unit_O>();
 		int power = 1;
-		if ( core::oCadr(dimCur)->isAssignableTo<core::Rational_O>() )
+		if ( core::oCadr(dimCur).isA<core::Rational_O>() )
 		{
-		    power = core::oCadr(dimCur).as<core::Rational_O>()->as_int();
+                  power = core::clasp_to_fixnum(core::oCadr(dimCur).as<core::Rational_O>());
 		    LOG(BF("Got power[%d]") % power);
-		    dimCur = core::cCdr(dimCur);
+		    dimCur = core::oCdr(dimCur);
 		}
 		u->adjustPowersAndAmountScale(power,powers,amountScale);
 	    } else
 	    {
 		SIMPLE_ERROR(BF("Unknown unit[%s]") % odim->__repr__());
 	    }
-	    dimCur = dimCur->cdr();
+	    dimCur = core::oCdr(dimCur);
 	}
 	LOG(BF("The amountScale[%lf]") % amountScale );
     }
@@ -188,7 +192,7 @@ namespace units
 	{
 	    if ( this->_Powers[i] != 0 )
 	    {
-		units << Dimension_O::baseDimensionUnitName(i,_lisp);
+		units << Dimension_O::baseDimensionUnitName(i);
 		if ( this->_Powers[i] != 1)
 		{
 		    units << "^" << this->_Powers[i];
@@ -231,7 +235,7 @@ namespace units
     core::T_sp Unit_O::operator*(core::T_sp obj) const
     {_OF();
 	core::T_sp result;
-	if ( obj->isAssignableTo<Unit_O>() )
+	if ( obj.isA<Unit_O>() )
 	{
 	    Unit_sp other = obj.as<Unit_O>();
 	    Unit_sp uresult = this->copyWithoutName();
@@ -241,13 +245,13 @@ namespace units
 	    }
 	    uresult->_Amount *= other->_Amount;
 	    result = uresult;
-	} else if ( obj->isAssignableTo<core::Number_O>()
-		    || obj->isAssignableTo<geom::OVector3_O>()
-		    || obj->isAssignableTo<core::Array_O>() )
+	} else if ( obj.isA<core::Number_O>()
+		    || obj.isA<geom::OVector3_O>()
+		    || obj.isA<core::Array_O>() )
 	{
 	    core::T_sp val = obj->deepCopy();
-	    result = Quantity_O::create(val,this->const_sharedThis<Unit_O>(),_lisp);
-	} else if ( obj->isAssignableTo<Quantity_O>() )
+	    result = Quantity_O::create(val,this->const_sharedThis<Unit_O>());
+	} else if ( obj.isA<Quantity_O>() )
 	{
 	    SIMPLE_ERROR(BF("Handle Unit*Quantity"));
 	} else
@@ -260,7 +264,7 @@ namespace units
 
     core::T_sp Unit_O::operator/(core::T_sp obj) const
     {_OF();
-	if ( obj->isAssignableTo<Unit_O>() )
+	if ( obj.isA<Unit_O>() )
 	{
 	    Unit_sp other = obj.as<Unit_O>();
 	    Unit_sp result = this->copyWithoutName();

@@ -52,6 +52,7 @@ THE SOFTWARE.
 #include <clasp/serveEvent/serveEventPackage.h>
 #include <clasp/asttooling/asttoolingPackage.h>
 #include <cando/geom/geomPackage.h>
+#include <cando/units/unitsPackage.h>
 
 #ifdef USE_MPI
 #include <clasp/mpip/mpiPackage.h>
@@ -93,6 +94,9 @@ int startup(int argc, char *argv[], bool &mpiEnabled, int &mpiRank, int &mpiSize
 
     geom::GeomExposer GeomPkg(_lisp);
     _lisp->installPackage(&GeomPkg);
+
+    units::UnitsExposer UnitsPkg(_lisp);
+    _lisp->installPackage(&UnitsPkg);
 
 #ifdef USE_MPI
     mpip::MpiExposer TheMpiPkg(_lisp);

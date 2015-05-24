@@ -122,7 +122,7 @@ core::Cons_sp IntegerKeyObjectDictionary_O::keysAsCons()
     core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::Cons_O>());
     core::Cons_sp cur = first;
     for ( vi=this->_Map.begin(); vi!=this->_Map.end(); vi++ ) {
-	core::Cons_sp one = core::Cons_O::create(core::Fixnum_O::create(vi->first),_Nil<core::Cons_O>());
+	core::Cons_sp one = core::Cons_O::create(core::clasp_make_fixnum(vi->first),_Nil<core::Cons_O>());
 	cur->setCdr(one);
 	cur=one;
     }
@@ -213,7 +213,7 @@ core::Cons_sp IntegerKeyObjectDictionary_O::keysAsList()
 map<int,core::T_sp>::iterator	vi;
 core::Cons_sp list = _Nil<core::Cons_O>();
     for ( vi=this->_Map.begin(); vi!=this->_Map.end(); vi++ ) {
-        list = core::Cons_O::create(core::Fixnum_O::create(vi->first),list);
+        list = core::Cons_O::create(core::clasp_make_fixnum(vi->first),list);
     }
     return list;
 }

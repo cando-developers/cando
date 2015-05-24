@@ -108,7 +108,7 @@ protected:
 	int			_Id;
 	int			_TempFileId;	//!< Use to define temporary index while reading/writing to non XML formats
     MatterName			name;
-	Matter_sp		containerContainedBy;
+    gc::Nilable<Matter_sp>	containerContainedBy;
 	MatterVector		_contents;	// KEEP THIS as a vector
 						// A lot depends on residues
 						// maintaining an identical
@@ -117,7 +117,7 @@ protected:
 						// building process
 		/*! Store Symbol keyed properties of matter
 		 */
-    core::Cons_sp   	_Properties;
+    core::List_sp   	_Properties;
 private:
 	/*! Maintain a list of restraints that span this Matter_O object */
 	RestraintList_sp	_Restraints;
@@ -231,10 +231,10 @@ public:
 	void	setContainedBy(Matter_sp p){this->containerContainedBy= p;};
     void	setContainedByNothing(){this->containerContainedBy = _Nil<Matter_O>(); };
 		// Check containedByValid before touching containedBy
-    bool		containedByValid() const {return (this->containerContainedBy.lock().pointerp()); };
+    bool		containedByValid() const {return (this->containerContainedBy.objectp()); };
 	Matter_sp	containedBy() const	{_G();ASSERTNOTNULL(this->containerContainedBy);return this->containerContainedBy;};
-	Matter_sp	containedByLock()	{_G();ASSERTNOTNULL(this->containerContainedBy); return this->containerContainedBy.lock(); };
-	Matter_sp	containedByLock_const() const	{_G();ASSERTNOTNULL(this->containerContainedBy); return this->containerContainedBy.lock(); };
+	Matter_sp	containedByLock()	{_G();ASSERTNOTNULL(this->containerContainedBy); return this->containerContainedBy; };
+	Matter_sp	containedByLock_const() const	{_G();ASSERTNOTNULL(this->containerContainedBy); return this->containerContainedBy; };
 	bool		isContainedBy(Matter_sp matter);
 
 	MatterVector&	getContents()	{return(this->_contents);};
@@ -317,7 +317,7 @@ virtual bool	testConsistancy(Matter_sp c);
 virtual	string	subMatter() {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
 virtual	int	totalNetResidueCharge();
 
-virtual	string	description() const { stringstream ss; ss << "container("<<this->name<<")@"<<std::hex<<this<<std::dec; return ss.str();}
+ virtual	string	description() const { stringstream ss; ss << "container("<<_rep_(this->name)<<")@"<<std::hex<<this<<std::dec; return ss.str();}
 Vector3		geometricCenter();
 		/*! Return a bounding box for the matter padded with (pad).
 		 */

@@ -27,9 +27,9 @@ namespace kinematics
 
 
 	/*! The stubAtoms of an OriginJumpAtom are all myself */
-	RefCountedAtomHandle stubAtom1() const { return this->_Me.lock();};
-	RefCountedAtomHandle stubAtom2() const { return this->_Me.lock();};
-	RefCountedAtomHandle stubAtom3(AtomTree_sp at) const { return this->_Me.lock();};
+	RefCountedAtomHandle stubAtom1() const { return this->_Me;};
+	RefCountedAtomHandle stubAtom2() const { return this->_Me;};
+	RefCountedAtomHandle stubAtom3(AtomTree_sp at) const { return this->_Me;};
 
 	/*! Update the internal coordinates */
 	virtual void updateInternalCoords(Stub& stub,

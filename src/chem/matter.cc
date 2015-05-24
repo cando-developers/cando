@@ -279,7 +279,7 @@ namespace chem
 	}
 	LOG(BF("Matter(%s) with %d contents does not contain content with name(%s)") % this->name.c_str() % this->_contents.size() % sName.c_str()  );
 	stringstream ss;
-	ss << this->className() << " (" << this->name << ") does not contain name(" << sName << ")";
+	ss << this->className() << " (" << _rep_(this->name) << ") does not contain name(" << _rep_(sName) << ")";
 	SIMPLE_ERROR(BF(ss.str()));
     }
 
@@ -357,7 +357,7 @@ namespace chem
 	    }
 	}
 	stringstream ss;
-	ss << this->description() <<") does not contain name("<<sName<<")";
+	ss << this->description() <<") does not contain name("<<_rep_(sName)<<")";
 	SIMPLE_ERROR(BF("%s")%ss.str());
     }
 

@@ -17,7 +17,7 @@
 //#include "core/archiveNode.h"
 //#include "core/serialize.h"
 #include <cando/chem/candoDatabaseReference.h>
-#include <clasp/core/symbolSet.h>
+#include <cando/chem/adapters.h>
 #include <clasp/core/stringSet.h>
 #include <cando/chem/restraint.h>
 #include <cando/chem/virtualAtom.h>

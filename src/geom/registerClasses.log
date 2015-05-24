@@ -11,7 +11,7 @@ Namespace changed to geom - include/boundingBox.h:16
     CurrentPackage set to None
 In fileName: include/boundingBox.h parsed cppClassDefinition line: class BoundingBox_O : public core::T_O
 Creating one Initializer(geom::BoundingBox_O) baseInitializer(['core::T_O'])
-Group: <__main__.ClassGroup instance at 0x10e2e2248>  target: geom::BoundingBox_O   filename: include/boundingBox.h
+Group: <__main__.ClassGroup instance at 0x1010d9d88>  target: geom::BoundingBox_O   filename: include/boundingBox.h
 createOnClass@include/boundingBox.h:19 --> geom::BoundingBox_O
 In fileName: include/boundingBox.h parsed lispBase1 line: LISP_BASE1(core::T_O);
 In fileName: include/boundingBox.h parsed lispClass line: LISP_CLASS(geom,GeomPkg,BoundingBox_O,"BoundingBox");
@@ -24,14 +24,14 @@ Namespace changed to geom - include/coordinateArray.h:30
     CurrentPackage set to None
 In fileName: include/coordinateArray.h parsed cppClassDefinition line: class CoordinateArray_O : public core::Vector_O
 Creating one Initializer(geom::CoordinateArray_O) baseInitializer(['core::Vector_O'])
-Group: <__main__.ClassGroup instance at 0x10e2e2248>  target: geom::CoordinateArray_O   filename: include/coordinateArray.h
+Group: <__main__.ClassGroup instance at 0x1010d9d88>  target: geom::CoordinateArray_O   filename: include/coordinateArray.h
 createOnClass@include/coordinateArray.h:35 --> geom::CoordinateArray_O
 In fileName: include/coordinateArray.h parsed lispBase1 line: LISP_BASE1(core::Vector_O);
 In fileName: include/coordinateArray.h parsed lispClass line: LISP_CLASS(geom,GeomPkg,CoordinateArray_O,"CoordinateArray");
 updateLatestClass info for class[geom::CoordinateArray_O] packageName[GeomPkg]
 In fileName: include/coordinateArray.h parsed cppClassDefinition line: class CoordinateArrayWithHash_O : public CoordinateArray_O
 Creating one Initializer(geom::CoordinateArrayWithHash_O) baseInitializer(['geom::CoordinateArray_O'])
-Group: <__main__.ClassGroup instance at 0x10e2e2248>  target: geom::CoordinateArrayWithHash_O   filename: include/coordinateArray.h
+Group: <__main__.ClassGroup instance at 0x1010d9d88>  target: geom::CoordinateArrayWithHash_O   filename: include/coordinateArray.h
 createOnClass@include/coordinateArray.h:119 --> geom::CoordinateArrayWithHash_O
 In fileName: include/coordinateArray.h parsed lispBase1 line: LISP_BASE1(CoordinateArray_O);
 In fileName: include/coordinateArray.h parsed lispClass line: LISP_CLASS(geom,GeomPkg,CoordinateArrayWithHash_O,"CoordinateArrayWithHash");
@@ -55,7 +55,7 @@ Namespace changed to geom - include/omatrix.h:9
     CurrentPackage set to GeomPkg
 In fileName: include/omatrix.h parsed cppClassDefinition line: class OMatrix_O : public core::T_O
 Creating one Initializer(geom::OMatrix_O) baseInitializer(['core::T_O'])
-Group: <__main__.ClassGroup instance at 0x10e2e2248>  target: geom::OMatrix_O   filename: include/omatrix.h
+Group: <__main__.ClassGroup instance at 0x1010d9d88>  target: geom::OMatrix_O   filename: include/omatrix.h
 createOnClass@include/omatrix.h:12 --> geom::OMatrix_O
 In fileName: include/omatrix.h parsed lispBase1 line: LISP_BASE1(core::T_O);
 In fileName: include/omatrix.h parsed lispClass line: LISP_CLASS(geom,GeomPkg,OMatrix_O,"OMatrix");
@@ -71,7 +71,7 @@ Namespace changed to geom - include/ovector2.h:9
     CurrentPackage set to GeomPkg
 In fileName: include/ovector2.h parsed cppClassDefinition line: class OVector2_O : public core::T_O
 Creating one Initializer(geom::OVector2_O) baseInitializer(['core::T_O'])
-Group: <__main__.ClassGroup instance at 0x10e2e2248>  target: geom::OVector2_O   filename: include/ovector2.h
+Group: <__main__.ClassGroup instance at 0x1010d9d88>  target: geom::OVector2_O   filename: include/ovector2.h
 createOnClass@include/ovector2.h:12 --> geom::OVector2_O
 In fileName: include/ovector2.h parsed lispBase1 line: LISP_BASE1(core::T_O);
 In fileName: include/ovector2.h parsed lispClass line: LISP_CLASS(geom,GeomPkg,OVector2_O,"OVector2");
@@ -86,7 +86,7 @@ Namespace changed to geom - include/ovector3.h:11
     CurrentPackage set to GeomPkg
 In fileName: include/ovector3.h parsed cppClassDefinition line: class OVector3_O : public core::T_O
 Creating one Initializer(geom::OVector3_O) baseInitializer(['core::T_O'])
-Group: <__main__.ClassGroup instance at 0x10e2e2248>  target: geom::OVector3_O   filename: include/ovector3.h
+Group: <__main__.ClassGroup instance at 0x1010d9d88>  target: geom::OVector3_O   filename: include/ovector3.h
 createOnClass@include/ovector3.h:14 --> geom::OVector3_O
 In fileName: include/ovector3.h parsed lispBase1 line: LISP_BASE1(core::T_O);
 In fileName: include/ovector3.h parsed lispClass line: LISP_CLASS(geom,GeomPkg,OVector3_O,"OVector3");
@@ -101,7 +101,7 @@ Namespace changed to geom - include/quickDom.h:28
     CurrentPackage set to GeomPkg
 In fileName: include/quickDom.h parsed cppClassDefinition line: class QDomNode_O : public core::T_O
 Creating one Initializer(geom::QDomNode_O) baseInitializer(['core::T_O'])
-Group: <__main__.ClassGroup instance at 0x10e2e2248>  target: geom::QDomNode_O   filename: include/quickDom.h
+Group: <__main__.ClassGroup instance at 0x1010d9d88>  target: geom::QDomNode_O   filename: include/quickDom.h
 createOnClass@include/quickDom.h:37 --> geom::QDomNode_O
 In fileName: include/quickDom.h parsed lispBase1 line: LISP_BASE1(core::T_O);
 In fileName: include/quickDom.h parsed lispClass line: LISP_CLASS(geom,GeomPkg,QDomNode_O,"QDomNode");
@@ -118,23 +118,8 @@ Namespace changed to geom - include/vector2.h:18
 Namespace changed to serialize - include/vector3.h:140
     CurrentPackage set to None
 !!!!! Reading fileName(include/vector4.h)
-!!!!! Reading fileName(coordinateArray.h)
-Namespace changed to candoBase - coordinateArray.h:30
-    CurrentPackage set to None
-In fileName: coordinateArray.h parsed cppClassDefinition line: class CoordinateArray_O : public core::Vector_O
-Creating one Initializer(candoBase::CoordinateArray_O) baseInitializer(['core::Vector_O'])
-Group: <__main__.ClassGroup instance at 0x10e2e2248>  target: candoBase::CoordinateArray_O   filename: coordinateArray.h
-createOnClass@coordinateArray.h:34 --> candoBase::CoordinateArray_O
-In fileName: coordinateArray.h parsed lispBase1 line: LISP_BASE1(core::Vector_O);
-In fileName: coordinateArray.h parsed lispClass line: LISP_CLASS(candoBase,AddonPkg,CoordinateArray_O,"CoordinateArray");
-updateLatestClass info for class[candoBase::CoordinateArray_O] packageName[AddonPkg]
-In fileName: coordinateArray.h parsed cppClassDefinition line: class CoordinateArrayWithHash_O : public CoordinateArray_O
-Creating one Initializer(candoBase::CoordinateArrayWithHash_O) baseInitializer(['candoBase::CoordinateArray_O'])
-Group: <__main__.ClassGroup instance at 0x10e2e2248>  target: candoBase::CoordinateArrayWithHash_O   filename: coordinateArray.h
-createOnClass@coordinateArray.h:116 --> candoBase::CoordinateArrayWithHash_O
-In fileName: coordinateArray.h parsed lispBase1 line: LISP_BASE1(CoordinateArray_O);
-In fileName: coordinateArray.h parsed lispClass line: LISP_CLASS(candoBase,AddonPkg,CoordinateArrayWithHash_O,"CoordinateArrayWithHash");
-updateLatestClass info for class[candoBase::CoordinateArrayWithHash_O] packageName[AddonPkg]
+!!!!! Reading fileName(*.h)
+Skipping file[*.h] - it doesn't exist
 !!!!! Reading fileName(boundingBox.cc)
 Namespace changed to geom - boundingBox.cc:10
     CurrentPackage set to GeomPkg
@@ -191,8 +176,6 @@ Class[core::T_O] was not defined
 Class[core::Vector_O] was not defined
 Class[core::T_O] was not defined
 Class[core::Vector_O] was not defined
-For class[candoBase::CoordinateArray_O] requirements = set(['core::Vector_O'])
-Returning bases[['core::Vector_O']]
 For class[geom::BoundingBox_O] requirements = set(['core::T_O'])
 Returning bases[['core::T_O']]
 For class[geom::CoordinateArray_O] requirements = set(['core::Vector_O'])
@@ -205,8 +188,6 @@ For class[geom::OVector3_O] requirements = set(['core::T_O'])
 Returning bases[['core::T_O']]
 For class[geom::QDomNode_O] requirements = set(['core::T_O'])
 Returning bases[['core::T_O']]
-For class[candoBase::CoordinateArrayWithHash_O] requirements = set(['candoBase::CoordinateArray_O'])
-Returning bases[['candoBase::CoordinateArray_O']]
 For class[geom::CoordinateArrayWithHash_O] requirements = set(['geom::CoordinateArray_O'])
 Returning bases[['geom::CoordinateArray_O']]
 Class[core::T_O] was not defined

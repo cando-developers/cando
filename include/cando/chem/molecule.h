@@ -64,9 +64,9 @@ virtual	char	getClass() { return moleculeId;};
 	virtual bool equal(core::T_sp obj) const;
 virtual void	transferCoordinates(Matter_sp other);
 
-	Residue_sp	firstResidue() {return downcast<Residue_O>(this->contentAt(0));};
-	Residue_sp	getResidue(int i) {return downcast<Residue_O>(this->contentAt(i));};
-	Residue_sp	residueWithId( int lid ) { return downcast<Residue_O>(this->contentWithId(lid)); };
+ Residue_sp	firstResidue() {return this->contentAt(0).as<Residue_O>();};
+ Residue_sp	getResidue(int i) {return this->contentAt(i).as<Residue_O>();};
+ Residue_sp	residueWithId( int lid ) { return this->contentWithId(lid).as<Residue_O>(); };
 	bool		hasResidueWithId( int lid ) { return this->hasContentWithId(lid); };
 
 	int		numberOfResiduesWithName(MatterName name);
@@ -82,7 +82,7 @@ virtual void	transferCoordinates(Matter_sp other);
 	void		moveAllAtomsIntoFirstResidue();
 
 virtual string	subMatter() { return Residue_O::static_className(); };
-virtual	string	description() const { stringstream ss; ss << "molecule("<<this->getName()<<")@"<<std::hex<<this<<std::dec; return ss.str();};
+ virtual	string	description() const { stringstream ss; ss << "molecule("<<_rep_(this->getName())<<")@"<<std::hex<<this<<std::dec; return ss.str();};
 
 	bool		testMoleculeConsistancy() {IMPLEMENT_ME();};
 

@@ -33,7 +33,7 @@ namespace geom {
 void	IterateRange_O::initialize()
 {
     this->Base::initialize();
-    this->_Cur = core::Fixnum_O::create(0);
+    this->_Cur = core::clasp_make_fixnum(0);
 }
 
 
@@ -52,7 +52,7 @@ void IterateRange_O::first()
 
 void IterateRange_O::next() 
 {
-    this->_Cur = core::Fixnum_O::create(this->_Cur->as_int()+this->_Step);
+    this->_Cur = core::clasp_make_fixnum(this->_Cur->as_int()+this->_Step);
 };
 
 bool IterateRange_O::isDone() 

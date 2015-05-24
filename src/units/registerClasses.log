@@ -1,68 +1,71 @@
 Namespace changed to core - -nofile-:0
     CurrentPackage set to None
-!!!!! Reading fileName(unitsPackage.h)
+!!!!! Reading fileName(include/unitsPackage.h)
 !!!!! Associating namespace(units) with package(UnitsPkg)
-Namespace changed to units - unitsPackage.h:14
+Namespace changed to units - include/unitsPackage.h:14
     CurrentPackage set to UnitsPkg
-!!!!! Reading fileName(otherPackageClasses.h)
-!!!!! Reading fileName(dimension.fwd.h)
-Namespace changed to units - dimension.fwd.h:8
+!!!!! Reading fileName(include/dimension.fwd.h)
+Namespace changed to units - include/dimension.fwd.h:8
     CurrentPackage set to UnitsPkg
-!!!!! Reading fileName(dimension.h)
-Namespace changed to units - dimension.h:7
+!!!!! Reading fileName(include/dimension.h)
+Namespace changed to units - include/dimension.h:7
     CurrentPackage set to UnitsPkg
-In fileName: dimension.h parsed cppClassDefinition line: class Dimension_O : public core::T_O
+In fileName: include/dimension.h parsed cppClassDefinition line: class Dimension_O : public core::T_O
 Creating one Initializer(units::Dimension_O) baseInitializer(['core::T_O'])
-createOnClass@dimension.h:11 --> units::Dimension_O
-In fileName: dimension.h parsed lispBase1 line: LISP_BASE1(core::T_O);
-In fileName: dimension.h parsed lispClass line: LISP_CLASS(units,UnitsPkg,Dimension_O,"Dimension");
+Group: <__main__.ClassGroup instance at 0x102a25dd0>  target: units::Dimension_O   filename: include/dimension.h
+createOnClass@include/dimension.h:11 --> units::Dimension_O
+In fileName: include/dimension.h parsed lispBase1 line: LISP_BASE1(core::T_O);
+In fileName: include/dimension.h parsed lispClass line: LISP_CLASS(units,UnitsPkg,Dimension_O,"Dimension");
 updateLatestClass info for class[units::Dimension_O] packageName[UnitsPkg]
-!!!!! Reading fileName(kinFoundation.h)
-Namespace changed to kinematics - kinFoundation.h:6
+!!!!! Reading fileName(include/kinFoundation.h)
+Namespace changed to kinematics - include/kinFoundation.h:6
     CurrentPackage set to None
-!!!!! Reading fileName(namedUnit.h)
-Namespace changed to units - namedUnit.h:12
+!!!!! Reading fileName(include/namedUnit.h)
+Namespace changed to units - include/namedUnit.h:12
     CurrentPackage set to UnitsPkg
-In fileName: namedUnit.h parsed cppClassDefinition line: class NamedUnit_O : public Unit_O
+In fileName: include/namedUnit.h parsed cppClassDefinition line: class NamedUnit_O : public Unit_O
 Creating one Initializer(units::NamedUnit_O) baseInitializer(['units::Unit_O'])
-createOnClass@namedUnit.h:16 --> units::NamedUnit_O
-In fileName: namedUnit.h parsed lispBase1 line: LISP_BASE1(Unit_O);
-In fileName: namedUnit.h parsed lispClass line: LISP_CLASS(units,UnitsPkg,NamedUnit_O,"NamedUnit");
+Group: <__main__.ClassGroup instance at 0x102a25dd0>  target: units::NamedUnit_O   filename: include/namedUnit.h
+createOnClass@include/namedUnit.h:16 --> units::NamedUnit_O
+In fileName: include/namedUnit.h parsed lispBase1 line: LISP_BASE1(Unit_O);
+In fileName: include/namedUnit.h parsed lispClass line: LISP_CLASS(units,UnitsPkg,NamedUnit_O,"NamedUnit");
 updateLatestClass info for class[units::NamedUnit_O] packageName[UnitsPkg]
-!!!!! Reading fileName(otherPackageClasses.h)
-!!!!! Reading fileName(quantity.fwd.h)
-Namespace changed to units - quantity.fwd.h:8
+!!!!! Reading fileName(include/otherPackageClasses.h)
+!!!!! Reading fileName(include/quantity.fwd.h)
+Namespace changed to units - include/quantity.fwd.h:8
     CurrentPackage set to UnitsPkg
-!!!!! Reading fileName(quantity.h)
-Namespace changed to units - quantity.h:9
+!!!!! Reading fileName(include/quantity.h)
+Namespace changed to units - include/quantity.h:9
     CurrentPackage set to UnitsPkg
-In fileName: quantity.h parsed cppClassDefinition line: class Quantity_O : public core::T_O
+In fileName: include/quantity.h parsed cppClassDefinition line: class Quantity_O : public core::T_O
 Creating one Initializer(units::Quantity_O) baseInitializer(['core::T_O'])
-createOnClass@quantity.h:13 --> units::Quantity_O
-In fileName: quantity.h parsed lispBase1 line: LISP_BASE1(core::T_O);
-In fileName: quantity.h parsed lispClass line: LISP_CLASS(units,UnitsPkg,Quantity_O,"Quantity");
+Group: <__main__.ClassGroup instance at 0x102a25dd0>  target: units::Quantity_O   filename: include/quantity.h
+createOnClass@include/quantity.h:13 --> units::Quantity_O
+In fileName: include/quantity.h parsed lispBase1 line: LISP_BASE1(core::T_O);
+In fileName: include/quantity.h parsed lispClass line: LISP_CLASS(units,UnitsPkg,Quantity_O,"Quantity");
 updateLatestClass info for class[units::Quantity_O] packageName[UnitsPkg]
-!!!!! Reading fileName(symbolTable.h)
-Namespace changed to units - symbolTable.h:6
+!!!!! Reading fileName(include/symbolTable.h)
+Namespace changed to units - include/symbolTable.h:6
     CurrentPackage set to UnitsPkg
-!!!!! Reading fileName(symbols_scraped_inc.h)
-!!!!! Reading fileName(unit.h)
-Namespace changed to units - unit.h:8
+!!!!! Reading fileName(include/unit.h)
+Namespace changed to units - include/unit.h:8
     CurrentPackage set to UnitsPkg
-In fileName: unit.h parsed cppClassDefinition line: class Unit_O : public core::T_O
+In fileName: include/unit.h parsed cppClassDefinition line: class Unit_O : public core::T_O
 Creating one Initializer(units::Unit_O) baseInitializer(['core::T_O'])
-createOnClass@unit.h:12 --> units::Unit_O
-In fileName: unit.h parsed lispBase1 line: LISP_BASE1(core::T_O);
-In fileName: unit.h parsed lispClass line: LISP_CLASS(units,UnitsPkg,Unit_O,"Unit");
+Group: <__main__.ClassGroup instance at 0x102a25dd0>  target: units::Unit_O   filename: include/unit.h
+createOnClass@include/unit.h:12 --> units::Unit_O
+In fileName: include/unit.h parsed lispBase1 line: LISP_BASE1(core::T_O);
+In fileName: include/unit.h parsed lispClass line: LISP_CLASS(units,UnitsPkg,Unit_O,"Unit");
 updateLatestClass info for class[units::Unit_O] packageName[UnitsPkg]
-!!!!! Reading fileName(unitsFoundation.h)
-Namespace changed to kinematics - unitsFoundation.h:6
+!!!!! Reading fileName(include/unitsFoundation.h)
+Namespace changed to kinematics - include/unitsFoundation.h:6
     CurrentPackage set to None
-!!!!! Reading fileName(unitsPackage.h)
+!!!!! Reading fileName(include/unitsPackage.h)
 !!!!! Associating namespace(units) with package(UnitsPkg)
-Namespace changed to units - unitsPackage.h:14
+Namespace changed to units - include/unitsPackage.h:14
     CurrentPackage set to UnitsPkg
-!!!!! Reading fileName(../../cando/units/bin/boehm/clang-darwin-4.2.1/release/link-static/units_scrape_flag.h)
+!!!!! Reading fileName(*.h)
+Skipping file[*.h] - it doesn't exist
 !!!!! Reading fileName(dimension.cc)
 Namespace changed to units - dimension.cc:7
     CurrentPackage set to UnitsPkg
@@ -84,8 +87,6 @@ Namespace changed to units - unitsPackage.cc:44
     CurrentPackage set to UnitsPkg
 Namespace changed to units - unitsPackage.cc:60
     CurrentPackage set to UnitsPkg
-!!!!! Reading fileName(../../cando/units/bin/boehm/clang-darwin-4.2.1/release/link-static/*.cc)
-Skipping file[../../cando/units/bin/boehm/clang-darwin-4.2.1/release/link-static/*.cc] - it doesn't exist
 -------- loaded everything -------- now processing
 ============= Writing classInitializers
 Class[core::T_O] was not defined
@@ -107,5 +108,4 @@ Class[core::T_O] was not defined
 Writing macros
 Class[core::T_O] was not defined
 ------------- Done classInitializers
-Writing output now to ../../cando/units/bin/boehm/clang-darwin-4.2.1/release/link-static/units_initScripting_inc.h
 ===============  afterInitializers

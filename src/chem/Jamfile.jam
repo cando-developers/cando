@@ -119,8 +119,8 @@ local sources =
 #		parsers
 		/externals//boostAndExpatLibs
 		/internals//core
-		/cando//geom
-		/cando//units
+		/cando/geom
+#		/cando//units
 ;
 
 #	        tableOperations.cc

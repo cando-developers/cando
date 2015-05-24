@@ -13,7 +13,7 @@ namespace units
 
     EXPOSE_CLASS(units,NamedUnit_O);
 
-    NamedUnit_sp NamedUnit_O::create(core::Symbol_sp symbolId, double scale, Unit_sp unit, string const& label, string const& code, core::Lisp_sp lisp)
+    NamedUnit_sp NamedUnit_O::create(core::Symbol_sp symbolId, double scale, Unit_sp unit, string const& label, string const& code)
     {_G();
 	NamedUnit_sp n = _lisp->create<NamedUnit_O>();
 	n->_Symbol = symbolId;
@@ -26,7 +26,7 @@ namespace units
 
 
 
-    NamedUnit_sp NamedUnit_O::create(core::Symbol_sp symbolId, double scale, int baseDimension, int power, string const& label, string const& code, core::Lisp_sp lisp)
+    NamedUnit_sp NamedUnit_O::create(core::Symbol_sp symbolId, double scale, int baseDimension, int power, string const& label, string const& code)
     {_G();
 	NamedUnit_sp n = _lisp->create<NamedUnit_O>();
 	n->_Symbol = symbolId;
@@ -39,7 +39,7 @@ namespace units
 
 
 
-    NamedUnit_sp NamedUnit_O::create(core::Symbol_sp symbolId, string const& label, string const& code, core::Lisp_sp lisp)
+    NamedUnit_sp NamedUnit_O::create(core::Symbol_sp symbolId, string const& label, string const& code)
     {_G();
 	NamedUnit_sp n = _lisp->create<NamedUnit_O>();
 	n->_Symbol = symbolId;
@@ -68,7 +68,7 @@ namespace units
     }
 
 #if 0
-    core::T_sp NamedUnit_O::__init__(::core::Function_sp exec, ::core::Cons_sp args, ::core::Environment_sp env, ::core::Lisp_sp lisp)
+    core::T_sp NamedUnit_O::__init__(::core::Function_sp exec, ::core::Cons_sp args, ::core::Environment_sp env)
     {_G();
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));

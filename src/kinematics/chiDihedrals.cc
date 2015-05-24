@@ -87,10 +87,10 @@ namespace kinematics
     core::T_mv ChiDihedral_O::atomIndices() const
     {_OF();
 	return Values(
-	    core::Fixnum_O::create(this->_Atom1),
-	    core::Fixnum_O::create(this->_Atom2),
-	    core::Fixnum_O::create(this->_Atom3),
-	    core::Fixnum_O::create(this->_Atom4));
+	    core::clasp_make_fixnum(this->_Atom1),
+	    core::clasp_make_fixnum(this->_Atom2),
+	    core::clasp_make_fixnum(this->_Atom3),
+	    core::clasp_make_fixnum(this->_Atom4));
     }
     
 

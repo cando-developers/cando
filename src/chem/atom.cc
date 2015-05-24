@@ -660,36 +660,35 @@ namespace chem
  *       CB                     2                       HB1, HB2
  *       CC1                    3                       HC11, HC12, HC13 
  */ 
-    core::Cons_sp Atom_O::createImplicitHydrogenNamesOnCarbon()
+    core::List_sp Atom_O::createImplicitHydrogenNamesOnCarbon()
     {
 	core::Cons_sp first, cons;
-	first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::Cons_O>());
+	first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	cons = first;
-	if ( this->getElement() != element_C ) return _Nil<core::Cons_O>();
-	
-	if ( this->getIonization() != 0 ) return _Nil<core::Cons_O>();
+	if ( this->getElement() != element_C ) return _Nil<core::T_O>();
+	if ( this->getIonization() != 0 ) return _Nil<core::T_O>();
 	uint totalBondOrder = this->totalBondOrder();
-	if ( totalBondOrder == 4 ) return _Nil<core::Cons_O>();
+	if ( totalBondOrder == 4 ) return _Nil<core::T_O>();
 	uint addHydrogens = 4 - totalBondOrder;
 	string nameSuffix = this->getName()->symbolName()->get().substr(1,9999);
 	if ( addHydrogens == 1 )
 	{
             MatterName hname = chemkw_intern("H"+nameSuffix);
-	    core::Cons_sp one = core::Cons_O::create(hname,_Nil<core::Cons_O>());
+	    core::Cons_sp one = core::Cons_O::create(hname,_Nil<core::T_O>());
 	    cons->setCdr(one);
 	    cons = one;
-	    return first->cdr();
+	    return oCdr(first);
 	}
 	for ( uint i=0; i<addHydrogens; i++ )
 	{
 	    stringstream ss;
 	    ss << "H" << nameSuffix << (i+1);
             MatterName hname = chemkw_intern(ss.str());
-	    core::Cons_sp one = core::Cons_O::create(hname,_Nil<core::Cons_O>());
+	    core::Cons_sp one = core::Cons_O::create(hname,_Nil<core::T_O>());
 	    cons->setCdr(one);
 	    cons = one;
 	}
-	return first->cdr();
+	return oCdr(first);
     }
 
 
@@ -697,10 +696,9 @@ namespace chem
 
     void Atom_O::fillInImplicitHydrogensOnCarbon()
     {_G();
-	core::Cons_sp names = this->createImplicitHydrogenNamesOnCarbon();
+	core::List_sp names = this->createImplicitHydrogenNamesOnCarbon();
 	if ( names.nilp() ) return;
-	for ( core::Cons_sp cur = names; cur.notnilp(); cur = cur->cdr() )
-	{
+	for ( auto cur : names ) {
 	    this->_addHydrogenWithName(oCar(cur).as<MatterName::Type>());
 	}
     }
@@ -747,7 +745,7 @@ namespace chem
 
 
 
-    Atom_sp	Atom_O::highestPriorityNeighborThatIsnt(Atom_sp avoid)
+gc::Nilable<Atom_sp> Atom_O::highestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> avoid)
     {_G();
 	Atom_sp bestAtom = _Nil<Atom_O>();
 	Atom_sp atom;
@@ -764,26 +762,22 @@ namespace chem
     }
     
 
-    Atom_sp	Atom_O::lowestPriorityNeighborThatIsnt(Atom_sp avoid)
-    {_G();
-	Atom_sp bestAtom = _Nil<Atom_O>();
-	Atom_sp atom;
-	VectorBond::iterator	b;
-	for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
-	    atom = (*b)->getOtherAtom(this->sharedThis<Atom_O>());
-	    if ( avoid.notnilp() && atom == avoid ) continue;
-	    if ( bestAtom.nilp() )
-	    {
-		bestAtom = atom;
-		continue;
-	    }
-	    if ( priorityOrder(atom,bestAtom)<0 )
-	    {
-		bestAtom = atom;
-	    }
-	}
-	return bestAtom;
+gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> avoid)
+{
+  gc::Nilable<Atom_sp> bestAtom = _Nil<core::T_O>();
+  Atom_sp atom;
+  VectorBond::iterator	b;
+  for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
+    atom = (*b)->getOtherAtom(this->sharedThis<Atom_O>());
+    if ( avoid.notnilp() && atom == avoid ) continue;
+    if ( bestAtom.nilp() ) {
+      bestAtom = atom;
+      continue;
     }
+    if ( priorityOrder(atom,bestAtom)<0 ) bestAtom = atom;
+  }
+  return bestAtom;
+}
 
 
 
@@ -863,7 +857,7 @@ namespace chem
 	{
 	    if ( x->getRelativePriority()<y->getRelativePriority() ) return true;
 	    if ( x->getRelativePriority()>y->getRelativePriority() ) return false;
-	    if ( x->getName()<y->getName() ) return true;
+	    if ( x->getName()->symbolNameAsString()<y->getName()->symbolNameAsString() ) return true;
 	    return false;
 	}
     };
@@ -1002,7 +996,7 @@ namespace chem
 			if ( a2 == this->sharedThis<Atom_O>() ) continue;
 			if ( a2->getElement() == el2 ) 
 			{
-			    if ( (*b2)->getTo().lock()->getHybridization() == hy2 ) return true;
+			    if ( (*b2)->getTo()->getHybridization() == hy2 ) return true;
 			}
 		    }
 		}
@@ -1265,18 +1259,18 @@ namespace chem
 	    Molecule_sp mol = _Nil<Molecule_O>();
 	    if ( this->containedByValid() )
 	    {
-		res = this->containedBy().lock().as<Residue_O>();
+		res = this->containedBy().as<Residue_O>();
 		if ( res->containedByValid() )
 		{
-		    mol = res->containedBy().lock().as<Molecule_O>();
+		    mol = res->containedBy().as<Molecule_O>();
 		}
 	    }
 	    string molName = (mol.nilp())?"":mol->getName()->symbolName()->get();
 	    string resName = (res.nilp())?"":res->getName()->symbolName()->get();
-	    ss << "#<" <<this->className() << ":" << molName << ":" << resName << "@" << this->name << "@" << this << ">";
+	    ss << "#<" << this->className() << ":" << molName << ":" << resName << "@" << this->name << "@" << (void*)this << ">";
 	} else
 	{
-	    ss << "#<" << this->className() << " :invalidContainer! :name \"" << this->name << "@" << this << ">";
+          ss << "#<" << this->className() << " :invalidContainer! :name \"" << this->name << "@" << (void*)this << ">";
 	}
 	return ss.str();
     }
@@ -1285,16 +1279,9 @@ namespace chem
     {
 	stringstream ss;
 	ss << this->className() << "("<<this->getName();
-	if ( this->containerContainedBy.pointerp() ) 
-	{
-	    if ( this->containedBy().lock().nilp() )
-	    {
-		ss<<"[residue-UNDEFINED-]";
-	    } else {
-		ss <<"["<<this->getResidueContainedBy_const()->description()<<"]";
-	    }
-	} else
-	{
+	if ( this->containerContainedBy.notnilp() ) {
+          ss <<"["<<this->getResidueContainedBy_const()->description()<<"]";
+	} else {
 	    ss << "[residue-NULL-]";
 	}
 	ss << "bonds[" << this->numberOfBonds() << "]";
@@ -1757,7 +1744,7 @@ namespace chem
 	{
 	    this->_BackSpan = _Nil<Atom_O>();
 	}
-	return this->_BackSpan.lock();
+	return this->_BackSpan;
     }
 
 
@@ -1767,7 +1754,7 @@ namespace chem
 	{
 	    this->_NextSpan = _Nil<Atom_O>();
 	}
-	return this->_NextSpan.lock();
+	return this->_NextSpan;
     }
 
 
@@ -1880,14 +1867,14 @@ namespace chem
 	Residue_sp	residue;
 	ASSERTNOTNULL(this->containedBy());
 	containedBy = this->containedBy();
-	if ( containedBy.lock().nilp() )
+	if ( containedBy.nilp() )
 	{
 	    SIMPLE_ERROR(BF("This atom isnt contained by anything"));
 	}
 	return containedBy;
 
 //    wpresidue = downcast <Residue_O> (containedBy);
-//    residue = wpresidue.lock();
+//    residue = wpresidue;
 //    return residue;
     }
 

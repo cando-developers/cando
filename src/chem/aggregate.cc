@@ -363,7 +363,7 @@ namespace chem {
 		return;
 	    }
 	}
-	SIMPLE_ERROR(BF("Aggregate does not contain molecule: %s") % a->getName() );
+	SIMPLE_ERROR(BF("Aggregate does not contain molecule: %s") % _rep_(a->getName()) );
     }
 
 
@@ -446,7 +446,7 @@ namespace chem {
 	    }
 	}
 	if ( !gotAtom ) {
-	    SIMPLE_ERROR(BF("Could not find atom with name: %s")% name );
+          SIMPLE_ERROR(BF("Could not find atom with name: %s")% _rep_(name) );
 	}
 	return a;
     }

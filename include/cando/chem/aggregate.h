@@ -21,8 +21,6 @@
 
 #include <cando/chem/chemPackage.h>
 
-#include "core/lisp.fwd.h"// aggregate.h wants Lisp needs lisp.fwd.h
-
 namespace chem {
 
 
@@ -137,7 +135,7 @@ public:
 
 
     virtual string	subMatter() { return Molecule_O::static_className(); };
-    virtual	string	description() const { stringstream ss; ss << "aggregate("<<this->getName()<<")@"<<std::hex<<this<<std::dec; return ss.str();};
+    virtual	string	description() const { stringstream ss; ss << "aggregate("<<_rep_(this->getName())<<")@"<<std::hex<<this<<std::dec; return ss.str();};
 
 
     void		duplicate(const Aggregate_O * x );

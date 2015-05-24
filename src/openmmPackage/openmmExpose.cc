@@ -194,7 +194,7 @@ namespace omm
     {_OF();
 	double mass = atom->getAtomicWeight();
 	int index = this->wrappedPtr()->addParticle(mass);
-	atom->setProperty(_lisp->internWithPackageName(Pkg(),ParticleIndex),core::Fixnum_O::create(index));
+	atom->setProperty(_lisp->internWithPackageName(Pkg(),ParticleIndex),core::clasp_make_fixnum(index));
 	return index;
     }
 
@@ -203,8 +203,8 @@ namespace omm
 	int particle1, particle2;
 	double distance;
 	this->wrappedPtr()->getConstraintParameters(index,particle1,particle2,distance);
-	core::Cons_sp res = core::Cons_O::createList(core::Fixnum_O::create(particle1),
-					core::Fixnum_O::create(particle2),
+	core::Cons_sp res = core::Cons_O::createList(core::clasp_make_fixnum(particle1),
+					core::clasp_make_fixnum(particle2),
 					core::DoubleFloat_O::create(distance),
 					_lisp);
 	return res;
@@ -361,8 +361,8 @@ namespace omm
 	ASSERT(this->_Force!=NULL);
 	this->_Force->getBondParameters(index,particle1,particle2,length,k);
 	core::Cons_sp result = core::Cons_O::createList(
-	    core::Fixnum_O::create(particle1),
-	    core::Fixnum_O::create(particle2),
+	    core::clasp_make_fixnum(particle1),
+	    core::clasp_make_fixnum(particle2),
 	    core::DoubleFloat_O::create(length),
 	    core::DoubleFloat_O::create(k),_lisp);
 	return result;
@@ -395,9 +395,9 @@ namespace omm
 	ASSERT(this->_Force!=NULL);
 	this->_Force->getAngleParameters(index,particle1,particle2,particle3,angle,k);
 	core::Cons_sp result = core::Cons_O::createList(
-	    core::Fixnum_O::create(particle1),
-	    core::Fixnum_O::create(particle2),
-	    core::Fixnum_O::create(particle3),
+	    core::clasp_make_fixnum(particle1),
+	    core::clasp_make_fixnum(particle2),
+	    core::clasp_make_fixnum(particle3),
 	    core::DoubleFloat_O::create(angle),
 	    core::DoubleFloat_O::create(k),_lisp);
 	return result;
@@ -448,7 +448,7 @@ namespace omm
 		int i4 = a4->getProperty(particleIndexSymbol).as<core::Fixnum_O>()->get();
 		int idx = this->wrappedPtr()->addTorsion(i1,i2,i3,i4,period,ffPtor->getPhaseRad(period),
 					    ffPtor->getV_kJ(period));
-		core::Cons_sp one = _lisp->create<core::Cons_O>(core::Fixnum_O::create(idx));
+		core::Cons_sp one = _lisp->create<core::Cons_O>(core::clasp_make_fixnum(idx));
 		cur->setCdr(one);
 		cur = one;
 	    }
@@ -489,7 +489,7 @@ namespace omm
 		    int i4 = a4->getProperty(particleIndexSymbol).as<core::Fixnum_O>()->get();
 		    int idx = this->wrappedPtr()->addTorsion(i1,i2,i3,i4,n,ffItor->getPhaseRad(n),
 							  ffItor->getV_kJ(n));
-		    core::Cons_sp one = _lisp->create<core::Cons_O>(core::Fixnum_O::create(idx));
+		    core::Cons_sp one = _lisp->create<core::Cons_O>(core::clasp_make_fixnum(idx));
 		    cur->setCdr(one);
 		    cur = one;
 		}
@@ -606,8 +606,8 @@ namespace omm
 	int part1, part2;
 	double chargeProd, sigma, epsilon;
 	this->wrappedPtr()->getExceptionParameters(p,part1,part2,chargeProd,sigma,epsilon);
-	core::Cons_sp res = core::Cons_O::createList(core::Fixnum_O::create(part1),
-						     core::Fixnum_O::create(part2),
+	core::Cons_sp res = core::Cons_O::createList(core::clasp_make_fixnum(part1),
+						     core::clasp_make_fixnum(part2),
 						     core::DoubleFloat_O::create(chargeProd),
 						     core::DoubleFloat_O::create(sigma),
 						     core::DoubleFloat_O::create(epsilon),_lisp);

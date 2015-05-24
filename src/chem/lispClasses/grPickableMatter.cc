@@ -269,8 +269,8 @@ void GrPickableMatter_O::check()
 	    LOG(BF( "Child: %s")% (*it)->description().c_str() );
 	    if ( (*it)->_InitializationOwner.pointerp() )
 	    {
-		LOG(BF( "   (*it)->_InitializationOwner.lock().get() = %p")%
-		    (*it)->_InitializationOwner.lock().get() );
+		LOG(BF( "   (*it)->_InitializationOwner.get() = %p")%
+		    (*it)->_InitializationOwner.get() );
 	    }
 	    geom::Render_sp render = (*it).as<geom::Render_O>();
 	    LOG(BF( "    (*it)->getParent().get() = %p")% (*it).as<geom::Render_O>()->getParent().get() );

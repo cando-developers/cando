@@ -41,7 +41,7 @@ private:
     Atom_sp		_Atom1;
     Atom_sp		_Atom2;
     /*! Store Symbol keyed properties of bond in alist */
-    core::Cons_sp	_Properties;
+    core::List_sp	_Properties;
 public:
 	void initialize();
 //	void	archiveBase(core::ArchiveP node);

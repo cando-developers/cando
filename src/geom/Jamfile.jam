@@ -17,7 +17,7 @@ local sources =
 	    ovector3.cc 
 	    ovector2.cc
 #	    highlightObject.cc
-#	    color.cc
+	    color.cc
 #	    render.cc
 	    matrix.cc
 #            range.cc
@@ -36,4 +36,4 @@ local sources =
 ;
 
 
-lib candoBase : $(sources) ;
+lib geom : $(sources) ;

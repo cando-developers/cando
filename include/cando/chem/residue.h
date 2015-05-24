@@ -170,7 +170,7 @@ namespace chem {
         BondList_sp	getOutGoingBonds();
 
         virtual string	subMatter() { return Atom_O::static_className(); };
-        virtual string 	description() const { stringstream ss; ss << "residue("<<this->getName()<<")@"<<std::hex<<this<<std::dec; return ss.str();};
+        virtual string 	description() const { stringstream ss; ss << "residue("<<_rep_(this->getName())<<")@"<<std::hex<<this<<std::dec; return ss.str();};
 
 	Atom_sp		atomWithName(MatterName sName ) { return this->contentWithName(sName).as<Atom_O>(); };
 	Atom_sp		atomWithAlias(AtomAliasName sName );
@@ -199,7 +199,7 @@ namespace chem {
 
 	void fillInImplicitHydrogensOnCarbon();
 
-	Atom_sp		firstAtom() { return downcast<Atom_O>(this->contentAt(0)); };
+	Atom_sp		firstAtom() { return this->contentAt(0).as<Atom_O>(); };
 
 	void	makeAllAtomNamesInEachResidueUnique();
 

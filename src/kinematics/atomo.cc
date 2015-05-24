@@ -103,9 +103,9 @@ namespace kinematics
     core::T_mv Atom_O::atomIdValues() const
     {_OF();
 	return Values(
-	    core::Fixnum_O::create(this->get()->id().moleculeId()),
-	    core::Fixnum_O::create(this->get()->id().residueId()),
-	    core::Fixnum_O::create(this->get()->id().atomId()));
+	    core::clasp_make_fixnum(this->get()->id().moleculeId()),
+	    core::clasp_make_fixnum(this->get()->id().residueId()),
+	    core::clasp_make_fixnum(this->get()->id().atomId()));
     }
 
     core::Symbol_sp Atom_O::typeSymbol() const

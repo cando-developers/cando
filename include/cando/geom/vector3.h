@@ -182,7 +182,7 @@ namespace serialize
 	PODNode_p pod = this->insertPODNodeAfterCursorAndAdvanceCursor();
 	core::Symbol_sp head = _lisp->internKeyword("VectorVector3");
 	pod->saveObject(head);
-	core::Fixnum_sp iv = core::Fixnum_O::create((int)vals.size());
+	core::Fixnum_sp iv = core::clasp_make_fixnum(vals.size());
 	pod->saveObject(iv);
 	for (uint i=0; i<vals.size(); i++ ) pod->savePOD(vals[i]);
 	return pod;

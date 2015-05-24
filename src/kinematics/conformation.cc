@@ -121,9 +121,9 @@ namespace kinematics
 	this->_AtomTree->resizeMolecules(numMolecules);
 	this->notify(_sym_resizeMoleculesEvent,
 		     core::Cons_O::createList(kw::_sym_newValue,
-					      core::Fixnum_O::create(numMolecules),
+					      core::clasp_make_fixnum(numMolecules),
 					      kw::_sym_oldValue,
-					      core::Fixnum_O::create(oldNumberOfMolecules)));
+					      core::clasp_make_fixnum(oldNumberOfMolecules)));
     }
 
 
@@ -136,7 +136,7 @@ namespace kinematics
 	LOG(BF("Built FoldTree--->\n%s")%chainNode->_RootMonomerNode->asString());
 	this->_AtomTree->buildMoleculeUsingChainNode(moleculeId,chainNode,oligomer);
 	this->notify(_sym_buildMoleculeUsingOligomerEvent,
-		     core::Cons_O::create(core::Fixnum_O::create(moleculeId),_lisp));
+		     core::Cons_O::create(core::clasp_make_fixnum(moleculeId),_lisp));
     }
 
 

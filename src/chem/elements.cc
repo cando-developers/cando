@@ -9,7 +9,7 @@
 #include <cando/geom/color.h>
 #include <cando/geom/symbolTable.h>
 #include <cando/chem/symbolTable.h>
-#include <cando/geom/integerKeyObjectDictionary.h>
+#include <clasp/core/hashTableEql.h>
 #include <cando/chem/chemPackage.h>
 #include <cando/chem/elements.h>
 
@@ -346,15 +346,15 @@ void initializeElementsAndHybridization()
 
 
     core::Symbol_sp elementColors = _sym__PLUS_elementColors_PLUS_;
-    geom::IntegerKeyObjectDictionary_sp dict = geom::IntegerKeyObjectDictionary_O::create();
-    _lisp->defvar(elementColors,dict);
-    dict->set(element_C,geom::Color_O::systemColor(kw::_sym_cyan));
-    dict->set(element_H,geom::Color_O::systemColor(kw::_sym_white));
-    dict->set(element_O,geom::Color_O::systemColor(kw::_sym_red));
-    dict->set(element_N,geom::Color_O::systemColor(kw::_sym_blue));
-    dict->set(element_S,geom::Color_O::systemColor(kw::_sym_yellow));
-    dict->set(element_P,geom::Color_O::systemColor(kw::_sym_yellow));
-    dict->set(element_Undefined,geom::Color_O::systemColor(kw::_sym_magenta));
+    core::HashTableEql_sp dict = core::HashTableEql_O::create_default();
+    dict->setf_gethash(core::clasp_make_fixnum(element_C),geom::Color_O::systemColor(kw::_sym_cyan));
+    dict->setf_gethash(core::clasp_make_fixnum(element_H),geom::Color_O::systemColor(kw::_sym_white));
+    dict->setf_gethash(core::clasp_make_fixnum(element_O),geom::Color_O::systemColor(kw::_sym_red));
+    dict->setf_gethash(core::clasp_make_fixnum(element_N),geom::Color_O::systemColor(kw::_sym_blue));
+    dict->setf_gethash(core::clasp_make_fixnum(element_S),geom::Color_O::systemColor(kw::_sym_yellow));
+    dict->setf_gethash(core::clasp_make_fixnum(element_P),geom::Color_O::systemColor(kw::_sym_yellow));
+    dict->setf_gethash(core::clasp_make_fixnum(element_Undefined),geom::Color_O::systemColor(kw::_sym_magenta));
+    elementColors->defparameter(dict);
 }
 
 

@@ -85,7 +85,7 @@ namespace kinematics
 #endif
 	{};
 
-	RefCountedAtomHandle atomHandle() const { return this->_Me.lock();};
+	RefCountedAtomHandle atomHandle() const { return this->_Me;};
 	/*! Set the AtomHandle */
 	void __setAtomHandle(const WeakAtomHandle& handle) { this->_Me = handle;};
 
@@ -105,7 +105,7 @@ namespace kinematics
 	void setParent(const RefCountedAtomHandle& parent) { this->_Parent = parent;};
 
 	/*! Return a RefCountedAtomHandle for the parent */
-	RefCountedAtomHandle parent() const { return this->_Parent.lock(); };
+	RefCountedAtomHandle parent() const { return this->_Parent; };
 
 	/*! Insert the child before the (before) index. */
 	void insertChild( int before, RefCountedAtomHandle& child );

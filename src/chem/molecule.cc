@@ -200,18 +200,19 @@ namespace chem {
 
     bool	Molecule_O::equal(core::T_sp obj) const
     {_G();
-	if ( this->eq(obj) ) return true;
-	if ( !obj.isA<Molecule_O>() ) return false;
-	Molecule_sp other = obj.as<Molecule_O>();
+      if ( this->eq(obj) ) return true;
+      if ( Molecule_sp other = obj.asOrNull<Molecule_O>() ) {
 	if ( other->getName() != this->getName() ) return false;
 	if ( other->_contents.size() != this->_contents.size() ) return false;
 	Matter_O::const_contentIterator tit = this->_contents.begin();
 	Matter_O::const_contentIterator oit = this->_contents.begin();
 	for ( ; tit!=this->_contents.end(); tit++, oit++ )
 	{
-	    if ( ! (*tit)->equal(*oit) ) return false;
+          if ( ! (*tit)->equal(*oit) ) return false;
 	}
 	return true;
+      }
+      return false;
     }
     void Molecule_O::transferCoordinates(Matter_sp obj)
     {_G();
@@ -339,7 +340,7 @@ VectorResidue	Molecule_O::getResiduesWithName(MatterName name ) {
 	if ( residues.size() > 0 ) {
 	    return *(residues.begin());
 	}
-	SIMPLE_ERROR(BF("getFirstResidueWithName: Molecule does not contain residues with name: %s")% name );
+	SIMPLE_ERROR(BF("getFirstResidueWithName: Molecule does not contain residues with name: %s")% _rep_(name) );
     }
 
 

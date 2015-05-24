@@ -30,7 +30,7 @@ namespace units
 
 
 #if 0
-    core::T_sp Dimension_O::__init__(::core::Function_sp exec, ::core::Cons_sp args, ::core::Environment_sp env, ::core::Lisp_sp lisp)
+    core::T_sp Dimension_O::__init__(::core::Function_sp exec, ::core::Cons_sp args, ::core::Environment_sp env)
     {_G();
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
@@ -70,7 +70,7 @@ namespace units
     }
 
 
-    string Dimension_O::baseDimensionUnitName(int i, core::Lisp_sp lisp)
+string Dimension_O::baseDimensionUnitName(int i)
     {_G();
 	ASSERTF(NumBaseDimensions==8,BF("When you change NumBaseDimensions you must update Dimension_O::baseDimensionUnitName"));
 	ASSERTF(i>=0 && i < NumBaseDimensions,BF("Illegal base dimension index[%d]") % i);

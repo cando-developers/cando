@@ -118,7 +118,7 @@ namespace chem
 	LOG(BF("from atom = %s") % a1->description() );
 	wfromCont = a1->getResidueContainedBy();
 	ASSERTNOTNULL(wfromCont);
-	if ( wfromCont.lock().nilp() )
+	if ( wfromCont.nilp() )
 	{
 	    SIMPLE_ERROR(BF("From atom isnt in a residue"));
 	}
@@ -126,12 +126,12 @@ namespace chem
 	ASSERTNOTNULLP(a2, "Bond_O::isInterResidueBond to atom is undefined!");
 	wtoCont = a2->getResidueContainedBy();
 	ASSERTNOTNULL(wtoCont);
-	if ( wtoCont.lock().nilp() )
+	if ( wtoCont.nilp() )
 	{
 	    SIMPLE_ERROR(BF("To atom isnt in a residue"));
 	}
-	fromCont = wfromCont.lock();
-	toCont = wtoCont.lock();
+	fromCont = wfromCont;
+	toCont = wtoCont;
 	return ( fromCont != toCont );
     }
 
@@ -249,7 +249,7 @@ namespace chem
 
     core::T_sp Bond_O::getProperty(core::Symbol_sp prop, core::T_sp defval)
     {_G();
-        core::Cons_sp match = core::alist_get(this->_Properties,prop);
+        core::List_sp match = core::alist_get(this->_Properties,prop);
         if ( match.nilp() ) {
             return defval;
         }
@@ -258,7 +258,7 @@ namespace chem
 
     bool Bond_O::hasProperty(core::Symbol_sp prop)
     {_G();
-        core::Cons_sp match = core::alist_get(this->_Properties,prop);
+        core::List_sp match = core::alist_get(this->_Properties,prop);
         return match.notnilp();
     }
 
@@ -296,11 +296,11 @@ namespace chem
 	ss << "Bond(";
 	Atom_wp wa1 = this->_Atom1;
 	ANN(wa1);
-	ss << wa1.lock()->description();
+	ss << wa1->description();
 	ss << bondOrderToChar(this->order);
 	Atom_wp wa2 = this->_Atom2;
 	ANN(wa2);
-	ss << wa2.lock()->description();
+	ss << wa2->description();
 	ss << ")@"<<std::hex<<this<<std::dec;
 	return ss.str();
     }
@@ -355,10 +355,10 @@ namespace chem
 #endif
 	Atom_wp fc = fa->getCopyAtom();
 	ASSERTNOTNULL(fc);
-	LOG(BF("    new from %s") % fc.lock()->description() );
+	LOG(BF("    new from %s") % fc->description() );
 	Atom_wp tc = ta->getCopyAtom();
 	ASSERTNOTNULL(tc);
-	LOG(BF("    new   to %s") % tc.lock()->description() );
+	LOG(BF("    new   to %s") % tc->description() );
 	this->_Atom1 = fc;
 	this->_Atom2 = tc;
     }
@@ -400,7 +400,7 @@ namespace chem
 #if 0
 	ASSERTNOTNULLP(this->fromAtom,"Bond_O::joinYourAtoms from atom is undefined!");
 	ASSERTNOTNULLP(this->toAtom,"Bond_O::joinYourAtoms to atom is undefined!");
-	this->fromAtom.lock()->bondTo(this->toAtom.lock(),this->order);
+	this->fromAtom->bondTo(this->toAtom,this->order);
 #endif
     }
 

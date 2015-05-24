@@ -30,6 +30,7 @@ sources =
 		/internals//serveEvent  #//bundle/<link>static
 		/internals//asttooling  #//bundle/<link>static
                 /cando/geom
+                /cando/units
 		/externals//llvm_lib/<link>static
 		/externals//clang_lib/<link>static
 		/externals//boostAndExpatLibs/<link>static

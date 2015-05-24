@@ -119,7 +119,7 @@ namespace kinematics
 
     RefCountedAtomHandle AtomTree_O::lookup(const chem::AtomId& atomId) const
     {
-	RefCountedAtomHandle handle = this->_AtomMap[atomId].lock();
+	RefCountedAtomHandle handle = this->_AtomMap[atomId];
 	return handle;
     }
 

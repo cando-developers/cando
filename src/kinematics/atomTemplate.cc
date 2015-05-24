@@ -290,7 +290,7 @@ namespace kinematics
     AtomTemplate_sp AtomTemplate_O::parent() const
     {_OF();
 	if ( !this->_Parent.pointerp() ) return _Nil<AtomTemplate_O>();
-	return this->_Parent.lock();
+	return this->_Parent;
     }
 	
 

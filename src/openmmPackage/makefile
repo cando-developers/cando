@@ -1,7 +1,7 @@
 
 
 
-include	$(CANDO_HOME)/makefile.inc
+include	$(CLASP_HOME)/makefile.inc
 
 
 M4_NEEDS = openmmExpose.scrape.inc

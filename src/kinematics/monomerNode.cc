@@ -106,7 +106,7 @@ namespace kinematics
 	for ( chem::Monomer_O::Couplings::const_iterator it=monomer->begin_WeakCouplings();
 	      it!=monomer->end_WeakCouplings(); it++ )
 	{
-	    chem::Coupling_sp coupling = it->second.lock();
+	    chem::Coupling_sp coupling = it->second;
 	    if ( coupling->isRingClosing() ) continue;
 	    /*! Skip InPlugs */
 	    chem::DirectionalCoupling_sp dirCoupling = coupling.as<chem::DirectionalCoupling_O>();

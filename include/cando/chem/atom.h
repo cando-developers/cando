@@ -268,8 +268,8 @@ namespace chem
 
 
 	virtual bool isAtom() { return true;};
-	Atom_sp highestPriorityNeighborThatIsnt(Atom_sp a);
-	Atom_sp lowestPriorityNeighborThatIsnt(Atom_sp a);
+        gc::Nilable<Atom_sp> highestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> a);
+        gc::Nilable<Atom_sp> lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> a);
 
 	bool	hasAtomNameAttribute(char c);
 
@@ -359,7 +359,7 @@ namespace chem
 	void	setBackCount(int i) {this->backCount=i;};
 	int	getBackCount() {return this->backCount;};
 	void	invalidateBackSpan() {this->_BackSpan = _Nil<Atom_O>(); };// = false;
-	bool	isBackSpanValid() {_OF();ANN(this->_BackSpan);return this->_BackSpan.lock().notnilp(); };
+	bool	isBackSpanValid() {_OF();ANN(this->_BackSpan);return this->_BackSpan.notnilp(); };
 	void	setBackSpan(Atom_sp a) {this->_BackSpan=a;}//this->validBackSpan=true;
 	Atom_sp	getBackSpan();
 	void	invalidateNextSpan() {this->_NextSpan = _Nil<Atom_O>(); };
@@ -415,7 +415,7 @@ namespace chem
 	/*! Total all of the bond orders.  */
 	uint totalBondOrder();
 	uint maxTotalBondOrder();
-	core::Cons_sp createImplicitHydrogenNamesOnCarbon();
+	core::List_sp createImplicitHydrogenNamesOnCarbon();
 	void fillInImplicitHydrogensOnCarbon();
 
 	void randomizeAtomPositions();

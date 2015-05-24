@@ -97,9 +97,9 @@ namespace translate
 	typedef	const chem::AtomId&		ExpectedType;
 	typedef	chem::AtomId			DeclareType;
 	DeclareType _v;
-	from_object(core::T_sp o) : _v(core::oCar(o).as<core::Rational_O>()->as_int(),
-				       core::oCadr(o).as<core::Rational_O>()->as_int(),
-				       core::oCaddr(o).as<core::Rational_O>()->as_int())
+    from_object(core::T_sp o) : _v(core::clasp_to_fixnum(gc::As<core::Fixnum_sp>(core::oCar(o))),
+                                   core::clasp_to_fixnum(core::oCadr(o).as<core::Fixnum_I>()),
+                                   core::clasp_to_fixnum(core::oCaddr(o).as<core::Fixnum_I>()))
 	{
 #if 0
 	    core::Cons_sp args = o.as<core::Cons_O>();
@@ -122,9 +122,9 @@ namespace translate
 	static core::T_sp convert(chem::AtomId v)
 	{_G();
 	    ExpectedType res = core::Cons_O::createList(
-		core::Fixnum_O::create(v.moleculeId()),
-		core::Fixnum_O::create(v.residueId()),
-		core::Fixnum_O::create(v.atomId()));
+		core::clasp_make_fixnum(v.moleculeId()),
+		core::clasp_make_fixnum(v.residueId()),
+		core::clasp_make_fixnum(v.atomId()));
 	    return (res);
 	}
     };

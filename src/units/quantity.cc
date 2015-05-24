@@ -16,27 +16,27 @@ namespace units
 
     
 
-    void Quantity_O::throwOnInvalidValue(core::T_sp obj,core::Lisp_sp lisp)
+    void Quantity_O::throwOnInvalidValue(core::T_sp obj)
     {_G();
-	if ( obj->isAssignableTo<core::Number_O>() ) return;
-	if ( obj->isAssignableTo<geom::OVector3_O>() ) return;
-	if ( obj->isAssignableTo<core::Array_O>() ) return;
+	if ( obj.isA<core::Number_O>() ) return;
+	if ( obj.isA<geom::OVector3_O>() ) return;
+	if ( obj.isA<core::Array_O>() ) return;
 	SIMPLE_ERROR(BF("Illegal value type[%s] for Quantity") % obj->__class()->classNameAsString() );
     }
 
 
-    core::T_sp Quantity_O::copyAndScaleValue(core::T_sp obj, double conversion, core::Lisp_sp lisp)
+    core::T_sp Quantity_O::copyAndScaleValue(core::T_sp obj, double conversion)
     {_G();
-	if ( obj->isAssignableTo<core::DoubleFloat_O>() )
+	if ( obj.isA<core::DoubleFloat_O>() )
 	{
 	    core::DoubleFloat_sp rval = core::DoubleFloat_O::create(obj.as<core::DoubleFloat_O>()->get()*conversion);
 	    return rval;
-	} else if ( obj->isAssignableTo<geom::OVector3_O>() )
+	} else if ( obj.isA<geom::OVector3_O>() )
 	{
 	    geom::OVector3_sp oval = obj.as<geom::OVector3_O>();
-	    geom::OVector3_sp nval = lisp->create<geom::OVector3_O>(oval->get().multiplyByScalar(conversion));
+	    geom::OVector3_sp nval = geom::OVector3_O::create(oval->get().multiplyByScalar(conversion));
 	    return nval;
-	} else if ( obj->isAssignableTo<core::Array_O>() )
+	} else if ( obj.isA<core::Array_O>() )
 	{
 	    core::Array_sp array = obj.as<core::Array_O>();
 	    core::Array_sp narray = array->deepCopy().as<core::Array_O>();
@@ -48,22 +48,21 @@ namespace units
 	
 
     core::T_sp Quantity_O::copyAndScaleValueElement(core::T_sp obj, uint index,
-						   double conversion, core::Lisp_sp lisp)
+						   double conversion)
     {_G();
-	if ( obj->isAssignableTo<core::Vector_O>() )
+	if ( obj.isA<core::Vector_O>() )
 	{
 	    core::Vector_sp vec = obj.as<core::Vector_O>();
 	    core::T_sp element = vec->elt(index);
-	    return Quantity_O::copyAndScaleValue(element,conversion,lisp);
+	    return Quantity_O::copyAndScaleValue(element,conversion);
 	}
 	SIMPLE_ERROR(BF("Illegal value type[%s] for copyAndScaleValueElement") % obj->__class()->classNameAsString() );
     }
 
 
-    core::T_sp Quantity_O::copyValueElement(core::T_sp obj, uint index,
-					   core::Lisp_sp lisp)
+    core::T_sp Quantity_O::copyValueElement(core::T_sp obj, uint index)
     {_G();
-	if ( obj->isAssignableTo<core::Vector_O>() )
+	if ( obj.isA<core::Vector_O>() )
 	{
 	    core::Vector_sp vec = obj.as<core::Vector_O>();
 	    core::T_sp element = vec->elt(index)->deepCopy();
@@ -75,9 +74,9 @@ namespace units
 
 
     void Quantity_O::setValueElement(core::T_sp obj, uint index,
-				     core::T_sp newVal, core::Lisp_sp lisp)
+				     core::T_sp newVal)
     {_G();
-	if ( obj->isAssignableTo<core::Vector_O>() )
+	if ( obj.isA<core::Vector_O>() )
 	{
 	    core::Vector_sp vec = obj.as<core::Vector_O>();
 	    vec->setf_elt(index,newVal);
@@ -88,15 +87,15 @@ namespace units
     }
 
 
-    uint Quantity_O::sizeOfValue(core::T_sp obj, core::Lisp_sp lisp)
+    uint Quantity_O::sizeOfValue(core::T_sp obj)
     {_G();
-	if ( obj->isAssignableTo<core::DoubleFloat_O>() )
+	if ( obj.isA<core::DoubleFloat_O>() )
 	{
 	    return 1;
-	} else if ( obj->isAssignableTo<geom::OVector3_O>() )
+	} else if ( obj.isA<geom::OVector3_O>() )
 	{
 	    return 1;
-	} else if ( obj->isAssignableTo<core::Vector_O>() )
+	} else if ( obj.isA<core::Vector_O>() )
 	{
 	    core::Vector_sp vector = obj.as<core::Vector_O>();
 	    return vector->length();
@@ -106,16 +105,16 @@ namespace units
 	
 
 
-    bool Quantity_O::isnanValue(core::T_sp obj, core::Lisp_sp lisp)
+    bool Quantity_O::isnanValue(core::T_sp obj)
     {_G();
-	if ( obj->isAssignableTo<core::DoubleFloat_O>() )
+	if ( obj.isA<core::DoubleFloat_O>() )
 	{
 	    return obj.as<core::DoubleFloat_O>()->isnan();
 #if 0
-	} else if ( obj->isAssignableTo<geom::OVector3_O>() )
+	} else if ( obj.isA<geom::OVector3_O>() )
 	{
 	    return
-	} else if ( obj->isAssignableTo<core::Vector_O>() )
+	} else if ( obj.isA<core::Vector_O>() )
 	{
 	    core::Vector_sp vector = obj.as<core::Vector_O>();
 	    return vector->length();
@@ -126,22 +125,22 @@ namespace units
 	
 
 
-    Quantity_sp Quantity_O::create( core::T_sp obj, Unit_sp unit, core::Lisp_sp lisp)
+    Quantity_sp Quantity_O::create( core::T_sp obj, Unit_sp unit)
     {_G();
-	Quantity_sp q = lisp->create<Quantity_O>();
-	Quantity_O::throwOnInvalidValue(obj,_lisp);
+      Quantity_sp q = Quantity_O::create();
+	Quantity_O::throwOnInvalidValue(obj);
 	q->_Value = obj;
 	q->_Unit = unit;
 	return q;
     }
 
-    Quantity_sp Quantity_O::create( double dbl, Unit_sp unit, core::Lisp_sp lisp)
-    {_G();
-	Quantity_sp q = lisp->create<Quantity_O>();
-	q->_Value = core::DoubleFloat_O::create(dbl);
-	q->_Unit = unit;
-	return q;
-    }
+Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
+{
+  Quantity_sp q = Quantity_O::create();
+  q->_Value = core::DoubleFloat_O::create(dbl);
+  q->_Unit = unit;
+  return q;
+}
 
 
 
@@ -180,7 +179,7 @@ namespace units
     string Quantity_O::rawAsString() const
     {_OF();
 	stringstream ss;
-	if ( this->_Value->isAssignableTo<core::DoubleFloat_O>() )
+	if ( this->_Value.isA<core::DoubleFloat_O>() )
 	{
 	    ss << this->_Value.as<core::DoubleFloat_O>()->get()*this->_Unit->_Amount;
 	    ss << "->";
@@ -196,7 +195,7 @@ namespace units
     string Quantity_O::__repr__() const
     {_OF();
 	stringstream ss;
-	core::T_sp valueCopy = Quantity_O::copyAndScaleValue(this->_Value,this->_Unit->_Amount,_lisp);
+	core::T_sp valueCopy = Quantity_O::copyAndScaleValue(this->_Value,this->_Unit->_Amount);
 	ss << valueCopy->__repr__();
 	string unitstr = this->_Unit->unitsOnlyAsString();
 	if ( unitstr != "" )
@@ -209,11 +208,11 @@ namespace units
 
     bool Quantity_O::is_compatible(core::T_sp other) const
     {_OF();
-	if ( other->isAssignableTo<Unit_O>() )
+	if ( other.isA<Unit_O>() )
 	{
 	    Unit_sp uother = other.as<Unit_O>();
 	    return this->_Unit->is_compatible(uother);
-	} else if ( other->isAssignableTo<Quantity_O>() )
+	} else if ( other.isA<Quantity_O>() )
 	{
 	    Unit_sp uother = other.as<Quantity_O>()->_Unit;
 	    return this->_Unit->is_compatible(uother);
@@ -224,7 +223,7 @@ namespace units
     core::T_sp Quantity_O::value_in_unit(Unit_sp other, int power) const
     {_OF();
 	double conversion = this->_Unit->conversion_factor_to(other,power);
-	core::T_sp valueCopy = Quantity_O::copyAndScaleValue(this->_Value,conversion,_lisp);
+	core::T_sp valueCopy = Quantity_O::copyAndScaleValue(this->_Value,conversion);
 	return valueCopy;
     }
 
@@ -239,14 +238,14 @@ namespace units
 
     Quantity_sp Quantity_O::getElement(uint i) const
     {_OF();
-	core::T_sp val = Quantity_O::copyValueElement(this->_Value,i,_lisp);
-	return Quantity_O::create(val,this->_Unit,_lisp);
+	core::T_sp val = Quantity_O::copyValueElement(this->_Value,i);
+	return Quantity_O::create(val,this->_Unit);
     }
 
     core::T_sp Quantity_O::getElement_in_unit(uint index, Unit_sp other ) const
     {_OF();
 	double conversion = this->_Unit->conversion_factor_to(other);
-	core::T_sp valueCopy = Quantity_O::copyAndScaleValueElement(this->_Value,index,conversion,_lisp);
+	core::T_sp valueCopy = Quantity_O::copyAndScaleValueElement(this->_Value,index,conversion);
 	return valueCopy;
     }
 
@@ -259,8 +258,8 @@ namespace units
 	if ( this->_Unit->is_compatible(other->_Unit) )
 	{
 	    double conversion = other->_Unit->conversion_factor_to(this->_Unit);
-	    core::T_sp newVal = Quantity_O::copyAndScaleValue(other->_Value,conversion,_lisp);
-	    Quantity_O::setValueElement(this->_Value,index,newVal,_lisp);
+	    core::T_sp newVal = Quantity_O::copyAndScaleValue(other->_Value,conversion);
+	    Quantity_O::setValueElement(this->_Value,index,newVal);
 	} else
 	{
 	    SIMPLE_ERROR(BF("Incompatible units - you cannot put an %s with units[%s] into a Quantity with units[%s]") % other->_Value->__class()->classNameAsString() % other->_Unit->__repr__() % this->_Unit->__repr__() );
@@ -277,7 +276,7 @@ namespace units
 
     int Quantity_O::size() const
     {_OF();
-	return Quantity_O::sizeOfValue(this->_Value,_lisp);
+	return Quantity_O::sizeOfValue(this->_Value);
     }
 
 
@@ -286,40 +285,40 @@ namespace units
     core::T_sp Quantity_O::operator*(core::T_sp other) const
     {_OF();
 	if ( other.nilp() ) return this->const_sharedThis<Quantity_O>();
-	if ( other->isAssignableTo<core::DoubleFloat_O>() )
+	if ( other.isA<core::DoubleFloat_O>() )
 	{
 	    double otherdbl = other.as<core::DoubleFloat_O>()->get();
-	    core::T_sp newVal = Quantity_O::copyAndScaleValue(this->_Value,otherdbl,_lisp);
-	    return Quantity_O::create(newVal,this->_Unit,_lisp);
-	} else if ( other->isAssignableTo<geom::OVector3_O>() )
+	    core::T_sp newVal = Quantity_O::copyAndScaleValue(this->_Value,otherdbl);
+	    return Quantity_O::create(newVal,this->_Unit);
+	} else if ( other.isA<geom::OVector3_O>() )
 	{
-	    if ( this->_Value->isAssignableTo<core::Number_O>() )
+	    if ( this->_Value.isA<core::Number_O>() )
 	    {
 		geom::OVector3_sp vother = other.as<geom::OVector3_O>();
-		double mydbl = this->_Value.as<core::Number_O>()->as_double();
-		core::T_sp newVal = Quantity_O::copyAndScaleValue(vother,mydbl,_lisp);
-		return Quantity_O::create(newVal,this->_Unit,_lisp);
+		double mydbl = core::clasp_to_double(this->_Value.as<core::Number_O>());
+		core::T_sp newVal = Quantity_O::copyAndScaleValue(vother,mydbl);
+		return Quantity_O::create(newVal,this->_Unit);
 	    } else
 	    {
 		SIMPLE_ERROR(BF("Currently a Quantity has to be a Number if you are going to multiply it by an OVector3 - the Quantity is a %s") % this->_Value->__class()->classNameAsString() );
 	    }
-	} else if ( other->isAssignableTo<Unit_O>() )
+	} else if ( other.isA<Unit_O>() )
 	{
 	    Unit_sp otherUnit = other.as<Unit_O>();
 	    double otherdbl = otherUnit->_Amount;
 	    Quantity_sp q = Quantity_O::create();
-	    q->_Value = Quantity_O::copyAndScaleValue(this->_Value,otherdbl,_lisp);
-	    q->_Unit = Unit_O::create(this->_Unit,1,_lisp);
+	    q->_Value = Quantity_O::copyAndScaleValue(this->_Value,otherdbl);
+	    q->_Unit = Unit_O::create(this->_Unit,1);
 	    q->_Unit->incorporateUnit(otherUnit,1.0,1);
 	    return q;
-	} else if ( other->isAssignableTo<Quantity_O>() )
+	} else if ( other.isA<Quantity_O>() )
 	{	// Currently only handle other being a Scalar
 	    Quantity_sp otherQuant = other.as<Quantity_O>();
 	    Unit_sp otherUnit = otherQuant->_Unit;
 	    double otherval = otherQuant->_Value.as<core::DoubleFloat_O>()->get();
 	    Quantity_sp q = Quantity_O::create();
-	    q->_Value = Quantity_O::copyAndScaleValue(this->_Value,otherval,_lisp);
-	    q->_Unit = Unit_O::create(this->_Unit,1,_lisp);
+	    q->_Value = Quantity_O::copyAndScaleValue(this->_Value,otherval);
+	    q->_Unit = Unit_O::create(this->_Unit,1);
 	    q->_Unit->incorporateUnit(otherUnit,1.0,1);
 	    return q;
 	}
@@ -332,28 +331,28 @@ namespace units
     core::T_sp Quantity_O::operator/(core::T_sp other) const
     {_OF();
 	if ( other.nilp() ) return this->const_sharedThis<Quantity_O>();
-	if ( other->isAssignableTo<core::DoubleFloat_O>() )
+	if ( other.isA<core::DoubleFloat_O>() )
 	{
 	    double otherdbl = other.as<core::DoubleFloat_O>()->get();
-	    core::T_sp newVal = Quantity_O::copyAndScaleValue(this->_Value,1.0/otherdbl,_lisp);
-	    return Quantity_O::create(newVal,this->_Unit,_lisp);
-	} else if ( other->isAssignableTo<Unit_O>() )
+	    core::T_sp newVal = Quantity_O::copyAndScaleValue(this->_Value,1.0/otherdbl);
+	    return Quantity_O::create(newVal,this->_Unit);
+	} else if ( other.isA<Unit_O>() )
 	{
 	    Unit_sp otherUnit = other.as<Unit_O>();
 	    double otherdbl = otherUnit->_Amount;
 	    Quantity_sp q = Quantity_O::create();
-	    q->_Value = Quantity_O::copyAndScaleValue(this->_Value,1.0/otherdbl,_lisp);
-	    q->_Unit = Unit_O::create(this->_Unit,1,_lisp);
+	    q->_Value = Quantity_O::copyAndScaleValue(this->_Value,1.0/otherdbl);
+	    q->_Unit = Unit_O::create(this->_Unit,1);
 	    q->_Unit->incorporateUnit(otherUnit,1.0,-1);
 	    return q;
-	} else if ( other->isAssignableTo<Quantity_O>() )
+	} else if ( other.isA<Quantity_O>() )
 	{	// Currently only handle other being a Scalar
 	    Quantity_sp otherQuant = other.as<Quantity_O>();
 	    Unit_sp otherUnit = otherQuant->_Unit;
 	    double otherval = otherQuant->_Value.as<core::DoubleFloat_O>()->get();
 	    Quantity_sp q = Quantity_O::create();
-	    q->_Value = Quantity_O::copyAndScaleValue(this->_Value,1.0/otherval,_lisp);
-	    q->_Unit = Unit_O::create(this->_Unit,1,_lisp);
+	    q->_Value = Quantity_O::copyAndScaleValue(this->_Value,1.0/otherval);
+	    q->_Unit = Unit_O::create(this->_Unit,1);
 	    q->_Unit->incorporateUnit(otherUnit,1.0,-1);
 	    return q;
 	}
@@ -364,17 +363,17 @@ namespace units
     core::T_sp Quantity_O::operator+(core::T_sp other) const
     {_OF();
 	if ( other.nilp() ) return this->const_sharedThis<Quantity_O>();
-	if ( other->isAssignableTo<Quantity_O>() )
+	if ( other.isA<Quantity_O>() )
 	{
 	    Quantity_sp qother = other.as<Quantity_O>();
-	    if ( this->_Value->isAssignableTo<core::Number_O>()
-		 && qother->_Value->isAssignableTo<core::Number_O>() )
+	    if ( this->_Value.isA<core::Number_O>()
+		 && qother->_Value.isA<core::Number_O>() )
 	    {
-		double myValue = this->_Value.as<core::Number_O>()->as_double();
+              double myValue = core::clasp_to_double(this->_Value.as<core::Number_O>());
 		double otherValue = qother->value_in_unit_asReal(this->_Unit);
 		double newValue = myValue + otherValue;
 		return Quantity_O::create(core::DoubleFloat_O::create(newValue),
-					  this->_Unit,_lisp);
+					  this->_Unit);
 	    }
 	    else
 	    {
@@ -390,17 +389,17 @@ namespace units
     core::T_sp Quantity_O::operator-(core::T_sp other) const
     {_OF();
 	if ( other.nilp() ) return this->const_sharedThis<Quantity_O>();
-	if ( other->isAssignableTo<Quantity_O>() )
+	if ( other.isA<Quantity_O>() )
 	{
 	    Quantity_sp qother = other.as<Quantity_O>();
-	    if ( this->_Value->isAssignableTo<core::Number_O>()
-		 && qother->_Value->isAssignableTo<core::Number_O>() )
+	    if ( this->_Value.isA<core::Number_O>()
+		 && qother->_Value.isA<core::Number_O>() )
 	    {
-		double myValue = this->_Value.as<core::Number_O>()->as_double();
+              double myValue = core::clasp_to_double(this->_Value.as<core::Number_O>());
 		double otherValue = qother->value_in_unit_asReal(this->_Unit);
 		double newValue = myValue - otherValue;
 		return Quantity_O::create(core::DoubleFloat_O::create(newValue),
-					  this->_Unit,_lisp);
+					  this->_Unit);
 	    }
 	    else
 	    {
@@ -417,22 +416,22 @@ namespace units
 
     core::T_sp Quantity_O::power(int pwr) const
     {_OF();
-	if ( this->_Value->isAssignableTo<core::Number_O>() )
+	if ( this->_Value.isA<core::Number_O>() )
 	{
-	    double myValue = ::pow(this->_Value.as<core::Number_O>()->as_double(),(double)pwr);
-	    Unit_sp newUnit = Unit_O::create(this->_Unit,pwr,_lisp);
-	    return Quantity_O::create(core::DoubleFloat_O::create(myValue),newUnit,_lisp);
+          double myValue = ::pow(core::clasp_to_double(this->_Value.as<core::Number_O>()),(double)pwr);
+	    Unit_sp newUnit = Unit_O::create(this->_Unit,pwr);
+	    return Quantity_O::create(core::DoubleFloat_O::create(myValue),newUnit);
 	}
 	SIMPLE_ERROR(BF("Currently I can only take powers of Numbers - you tried to take a power of a %s") % this->_Value->__class()->classNameAsString());
     }
 
     core::T_sp Quantity_O::sqrt() const
     {_OF();
-	if ( this->_Value->isAssignableTo<core::Number_O>() )
+	if ( this->_Value.isA<core::Number_O>() )
 	{
-	    double myValue = ::sqrt(this->_Value.as<core::Number_O>()->as_double());
-	    Unit_sp newUnit = Unit_O::createSquareRoot(this->_Unit,_lisp);
-	    return Quantity_O::create(core::DoubleFloat_O::create(myValue),newUnit,_lisp);
+          double myValue = ::sqrt(core::clasp_to_double(this->_Value.as<core::Number_O>()));
+	    Unit_sp newUnit = Unit_O::createSquareRoot(this->_Unit);
+	    return Quantity_O::create(core::DoubleFloat_O::create(myValue),newUnit);
 	}
 	SIMPLE_ERROR(BF("Currently I can only take square root of Numbers - you tried to take square root of a %s") % this->_Value->__class()->classNameAsString());
     }
@@ -440,14 +439,14 @@ namespace units
 
     bool Quantity_O::isnan() const
     {_OF();
-	return Quantity_O::isnanValue(this->_Value,_lisp);
+	return Quantity_O::isnanValue(this->_Value);
     }
 
 
     core::T_sp Quantity_O::deepCopy() const
     {_OF();
 	/* units are immutable so we don't need to copy them */
-	return Quantity_O::create(this->_Value->deepCopy(),this->_Unit,_lisp);
+	return Quantity_O::create(this->_Value->deepCopy(),this->_Unit);
     }
 
 
@@ -456,7 +455,7 @@ namespace units
 
     bool Quantity_O::operator<(core::T_sp other) const
     {_OF();
-	if ( other->isAssignableTo<Quantity_O>() )
+	if ( other.isA<Quantity_O>() )
 	{
 	    Quantity_sp qother = other.as<Quantity_O>();
 	    return this->_Value->operator<(qother->value_in_unit(this->_Unit,1));
@@ -466,7 +465,7 @@ namespace units
 
     bool Quantity_O::operator<=(core::T_sp other) const
     {_OF();
-	if ( other->isAssignableTo<Quantity_O>() )
+	if ( other.isA<Quantity_O>() )
 	{
 	    Quantity_sp qother = other.as<Quantity_O>();
 	    return this->_Value->operator<=(qother->value_in_unit(this->_Unit,1));
@@ -477,7 +476,7 @@ namespace units
 
     bool Quantity_O::operator>(core::T_sp other) const
     {_OF();
-	if ( other->isAssignableTo<Quantity_O>() )
+	if ( other.isA<Quantity_O>() )
 	{
 	    Quantity_sp qother = other.as<Quantity_O>();
 	    return this->_Value->operator>(qother->value_in_unit(this->_Unit,1));
@@ -487,7 +486,7 @@ namespace units
 
     bool Quantity_O::operator>=(core::T_sp other) const
     {_OF();
-	if ( other->isAssignableTo<Quantity_O>() )
+	if ( other.isA<Quantity_O>() )
 	{
 	    Quantity_sp qother = other.as<Quantity_O>();
 	    return this->_Value->operator>=(qother->value_in_unit(this->_Unit,1));
@@ -506,7 +505,7 @@ namespace units
 	::core::class_<Quantity_O>()
 //	.initArgs("(self)")
 //	    .def_raw("__init__",&Quantity_O::__init__,"(self units::value units::unit)")
-	    .def("is_compatible",&Quantity_O::is_compatible)
+	    .def("quantity_is_compatible",&Quantity_O::is_compatible)
 	    .def("value_in_unit",&Quantity_O::value_in_unit)
 	    .def("setElement",&Quantity_O::setElement)
 	    .def("getElement_in_unit",&Quantity_O::getElement_in_unit)
@@ -526,6 +525,7 @@ namespace units
 	    .def(">",&Quantity_O::operator>)
 	    .def(">=",&Quantity_O::operator>=)
 	;
+      core::af_def(UnitsPkg,"make-quantity",&Quantity_O::make);
     }
 
 
