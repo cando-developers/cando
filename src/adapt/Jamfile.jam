@@ -1,0 +1,29 @@
+local dir = $(__file__:D) ;
+
+
+#
+# if you want debugging messages in release version turn on
+# <variant>release:<define>SOURCE_DEBUG
+#
+project adapt : requirements
+        <include>./
+	;
+
+local sources = 
+      quickDom.cc
+      mySaxInterface.cc
+      symbolSet.cc
+      objectSet.cc
+#      objRef.cc
+      smallMap.cc
+      stringList.cc
+      stringSet.cc
+      symbolList.cc
+      symbolSet.cc
+	    /externals//boostAndExpatLibs
+            /internals//core
+	    /internals//gctools
+;
+
+
+lib adapt : $(sources) ;
