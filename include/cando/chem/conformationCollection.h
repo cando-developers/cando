@@ -169,7 +169,7 @@ public:
 
 	bool canRender() { return true; }
 #ifdef RENDER
-	geom::Render_sp rendered(core::Cons_sp options);
+	geom::Render_sp rendered(core::List_sp options);
 #endif
 
 		/*! Create a new entry but dont add it yet

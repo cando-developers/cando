@@ -1,8 +1,8 @@
 #define	DEBUG_LEVEL_FULL
 
 #include <clasp/core/common.h>
-#include <clasp/core/stringSet.h>
-#include <cando/chem/adapters.h>
+#include <cando/adapt/stringSet.h>
+#include <cando/adapt/adapters.h>
 #include <cando/chem/stereoisomerAtoms.h>
 #include <cando/chem/constitutionAtoms.h>
 #include <cando/chem/matter.h>

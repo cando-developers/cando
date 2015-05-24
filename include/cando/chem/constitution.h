@@ -31,16 +31,15 @@
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
-#include <cando/chem/adapters.fwd.h>
-#include <clasp/core/stringList.fwd.h>
+#include <cando/adapt/stringList.fwd.h>
 #include <cando/geom/vector2.h>
 #include <cando/geom/vector3.h>
-#include <cando/geom/quickDom.fwd.h>
+#include <cando/adapt/quickDom.fwd.h>
 #include <cando/chem/entity.h>
 #include <cando/chem/constitution.fwd.h>
 #include <cando/chem/constitutionAtoms.fwd.h>
 #include <cando/chem/chemPackage.h>
-#include "core/cons.fwd.h"// constitution.h wants Cons needs cons.fwd.h
+#include <clasp/core/cons.fwd.h>// constitution.h wants Cons needs cons.fwd.h
 #include <cando/chem/residue.fwd.h>
 
 
@@ -86,7 +85,7 @@ namespace chem
 	    LISP_CLASS(chem,ChemPkg,Constitution_O,"Constitution");
 #if INIT_TO_FACTORIES
 	public:
-	    static Constitution_sp make(core::Symbol_sp name, const string& comment, core::Symbol_sp metaConstitution, ConstitutionAtoms_sp constitutionAtoms, StereoInformation_sp stereoInformation, core::Cons_sp plugs, core::Cons_sp topologies);
+	    static Constitution_sp make(core::Symbol_sp name, const string& comment, core::Symbol_sp metaConstitution, ConstitutionAtoms_sp constitutionAtoms, StereoInformation_sp stereoInformation, core::List_sp plugs, core::List_sp topologies);
 #else
 	    DECLARE_INIT();
 #endif
@@ -123,10 +122,10 @@ namespace chem
 
 
 
-	    core::Cons_sp stereoisomersAsCons();
-	    core::Cons_sp topologiesAsCons();
-	    core::Cons_sp plugsAsCons();
-	    core::Cons_sp plugsWithMatesAsCons();
+	    core::List_sp stereoisomersAsCons();
+	    core::List_sp topologiesAsCons();
+	    core::List_sp plugsAsCons();
+	    core::List_sp plugsWithMatesAsCons();
 
 	    stereoisomerIterator begin_Stereoisomers();
 	    stereoisomerIterator end_Stereoisomers();

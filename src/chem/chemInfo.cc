@@ -5,7 +5,7 @@
 //
 //
 #include <clasp/core/common.h>
-#include <clasp/core/stringSet.h>
+#include <cando/adapt/stringSet.h>
 #include <clasp/core/hashTableEq.h>
 #include <cando/chem/chemInfo.h>
 #include <clasp/core/hashTableEqual.h>
@@ -315,11 +315,11 @@ namespace chem {
 
 
 
-    void ChemInfo_O::defineTests(core::Cons_sp tests)
+    void ChemInfo_O::defineTests(core::List_sp tests)
     {_OF();
 	ASSERTNOTNULL(this->_Root);
 	ASSERTF(this->_Root.notnilp(),BF("Root must be defined to define tests"));
-	for ( core::Cons_sp cur = tests; cur.notnilp(); cur = cur->cddr().as<core::Cons_O>() )
+	for ( core::List_sp cur = tests; cur.notnilp(); cur = cur->cddr().as<core::List_V>() )
 	{
 	    core::Symbol_sp testSymbol = cur->car<core::Symbol_O>();
 	    core::Function_sp testCode = cur->ocadr().as<core::Function_O>();
@@ -1840,7 +1840,7 @@ namespace chem {
 	core::Function_sp testCode = this->_Tests->indexed_value(it->second).as<core::Function_O>();
 	ASSERTF(testCode.notnilp(),BF("testCode was nil - it should never be"));
 	ASSERTF(atom.notnilp(),BF("The atom arg should never be nil"));
-	core::Cons_sp exp = core::Cons_O::createList(testCode,atom);
+	core::List_sp exp = core::Cons_O::createList(testCode,atom);
 	LOG(BF("evaluating test: %s") % exp->__repr__() );
 	core::T_sp res = core::eval::evaluate(exp,_Nil<core::Environment_O>());
 	return res.isTrue();
@@ -2033,7 +2033,7 @@ namespace chem {
 #define ARGS_ChemInfo_O_make "(tests smarts)"
 #define DECL_ChemInfo_O_make ""
 #define DOCS_ChemInfo_O_make "make ChemInfo"
-    ChemInfo_sp ChemInfo_O::make(core::Cons_sp tests, const string& smarts)
+    ChemInfo_sp ChemInfo_O::make(core::List_sp tests, const string& smarts)
     {_G();
 	GC_ALLOCATE(ChemInfo_O, me );
 	me->compileSmarts(smarts);

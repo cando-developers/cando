@@ -334,15 +334,15 @@ namespace chem
     }
 
 
-    core::Cons_sp	SpanningLoop_O::allAtoms()
+    core::List_sp	SpanningLoop_O::allAtoms()
     {
-	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::Cons_O>());
+	core::Cons_sp first = core::T_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
 	Atom_sp theTop = this->top;
 	this->setTop(theTop);
 	while ( this->advanceLoopAndProcess() )
 	{
-	    core::Cons_sp one = core::Cons_O::create(this->getAtom(),_Nil<core::Cons_O>());
+	    core::Cons_sp one = core::T_O::create(this->getAtom(),_Nil<core::T_O>());
 	    cur->setCdr(one);
 	    cur = one;
 	}

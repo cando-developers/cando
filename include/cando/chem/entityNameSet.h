@@ -13,22 +13,21 @@
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
-#include <cando/chem/adapters.fwd.h>
 #include <cando/chem/bond.h>
 #include <cando/geom/vector3.h>
 //#include	"conformation.h"
 #include <cando/chem/atom.h>
-#include <clasp/core/stringSet.fwd.h>
-#include <clasp/core/stringList.fwd.h>
+#include <cando/adapt/stringSet.fwd.h>
+#include <cando/adapt/stringList.fwd.h>
 #include <clasp/core/symbol.fwd.h>
-#include <clasp/core/symbolList.fwd.h>
+#include <cando/adapt/symbolList.fwd.h>
 #include <cando/chem/entity.h>
 #include <cando/chem/statusTracker.h>
 
 
 #include <cando/chem/chemPackage.h>
 
-#include "core/symbolList.fwd.h"// entityNameSet.h wants SymbolList needs symbolList.fwd.h
+#include <cando/adapt/symbolList.fwd.h>// entityNameSet.h wants SymbolList needs symbolList.fwd.h
 
 namespace chem {
 
@@ -44,7 +43,7 @@ class EntityNameSetBase_O : public Entity_O
     LISP_CLASS(chem,ChemPkg,EntityNameSetBase_O,"EntityNameSetBase");
 #if INIT_TO_FACTORIES
  public:
-    static EntityNameSetBase_sp make(core::Cons_sp entityNamesCons);
+    static EntityNameSetBase_sp make(core::List_sp entityNamesCons);
 #else
 public:
     DECLARE_INIT();

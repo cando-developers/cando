@@ -21,7 +21,7 @@
 #include <cando/chem/bond.h>
 #include <cando/chem/chemdraw.h>
 #include <cando/chem/calculatePosition.h>
-#include <cando/chem/candoDatabaseReference.h>
+//#include <cando/chem/candoDatabaseReference.h>
 //#include "candoDatabase.h"
 #include <cando/chem/chemInfo.h>
 #include <cando/chem/cipPrioritizer.h>

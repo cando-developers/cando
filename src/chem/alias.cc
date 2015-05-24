@@ -66,7 +66,7 @@ namespace chem
 
 #else
 
-    core::T_sp Alias_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp bargs, core::Lisp_sp lisp)
+    core::T_sp Alias_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp bargs, core::Lisp_sp lisp)
     {_G();
 	this->_MonomerAlias = translate::from_object<core::Symbol_sp>::convert(bargs->lookup(ChemPkg,"monomerSym"));
 	this->_AtomAlias = translate::from_object<core::Symbol_sp>::convert(bargs->lookup(ChemPkg,"atomSym"));

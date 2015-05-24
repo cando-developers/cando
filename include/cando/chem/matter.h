@@ -268,8 +268,8 @@ public:
 	bool		hasContentWithId( int lid );
 	int		contentIndexWithId( int lid );
 
-	core::Cons_sp		contentsAsCons();
-	core::Cons_sp		contents() { return this->contentsAsCons();};
+	core::List_sp		contentsAsCons();
+	core::List_sp		contents() { return this->contentsAsCons();};
 
 	virtual bool	isAggregate() { return false;}
 	virtual bool	isMolecule() { return false;}
@@ -295,7 +295,7 @@ public:
 
     core::Vector_sp	allAtoms();
     core::Vector_sp	allAtomsOfElement(Element element);
-	core::Cons_sp 		allAtomsOfElementAsList(Element element);
+	core::List_sp 		allAtomsOfElementAsList(Element element);
 
 	void calculateVirtualAtomPositions();
 
@@ -309,7 +309,7 @@ public:
 
 	void	translateAllAtoms(Vector3 v);
 
-	void	setAtomAliasesForResiduesNamed(core::Cons_sp residueAliasAtoms, core::Cons_sp atomAliases );
+	void	setAtomAliasesForResiduesNamed(core::List_sp residueAliasAtoms, core::List_sp atomAliases );
 
 
 virtual void	applyTransformToAtoms( const Matrix& m );
@@ -326,23 +326,23 @@ Vector3		geometricCenter();
 	void		reparent(Matter_sp c);
 
 #ifdef RENDER
-	geom::Render_sp rendered(core::Cons_sp kopts);
+	geom::Render_sp rendered(core::List_sp kopts);
 #endif
 
 	/*! Return all atoms as a Cons of atoms. */
-	core::Cons_sp allAtomsAsCons(bool allowVirtualAtoms) const;
+	core::List_sp allAtomsAsCons(bool allowVirtualAtoms) const;
 
 	/*! Return all bonds as Cons of Cons (each entry is a Bond object) */
-	core::Cons_sp allBondsAsCons(bool allowVirtualAtoms) const;
+	core::List_sp allBondsAsCons(bool allowVirtualAtoms) const;
 
 	/*! Return all angles as Cons of Cons (each entry is an Angle) */
-	core::Cons_sp allAnglesAsCons(bool allowVirtualAtoms) const;
+	core::List_sp allAnglesAsCons(bool allowVirtualAtoms) const;
 
 	/*! Return all proper torsions as Cons of Cons (each entry is ProperTorsion) */
-	core::Cons_sp allProperTorsionsAsCons(bool allowVirtualAtoms) const;
+	core::List_sp allProperTorsionsAsCons(bool allowVirtualAtoms) const;
 
 	/*! Return all improper torsions as Cons of Cons (each entry is an ImproperTorsion ) */
-	core::Cons_sp allImproperTorsionsAsCons(bool allowVirtualAtoms) const;
+	core::List_sp allImproperTorsionsAsCons(bool allowVirtualAtoms) const;
 
 	/*! Build a map of AtomIds to Atoms */
 	virtual AtomIdToAtomMap_sp buildAtomIdMap() const;

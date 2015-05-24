@@ -12,8 +12,7 @@
 #include <set>
 #include <clasp/core/common.h>
 #include <clasp/core/holder.h>
-#include <cando/chem/adapters.fwd.h>
-#include <clasp/core/stringSet.fwd.h>
+#include <cando/adapt/stringSet.fwd.h>
 
 #include <cando/chem/chemPackage.h>
 
@@ -54,7 +53,7 @@ public:
 	void	setFromAtomNames(const string& names);
 
 		/*! Append a Cons of Text objects */
-	void	appendConsOfTexts(core::Cons_sp list);
+	void	appendConsOfTexts(core::List_sp list);
 
 		/*! Set from a list of names in StringList*/
 	void	setFromStringList(core::T_sp names);

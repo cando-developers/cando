@@ -11,7 +11,7 @@
 #include <set>
 #include <clasp/core/common.h>
 #include <cando/chem/conformationCollection.h>
-#include <clasp/core/stringList.h>
+#include <cando/adapt/stringList.h>
 #include <clasp/core/intArray.h>
 
 #include <cando/chem/chemPackage.h>
@@ -77,7 +77,7 @@ public:
 
 	bool canRender() { return true; }
 #ifdef RENDER
-	geom::Render_sp rendered(core::Cons_sp options);
+	geom::Render_sp rendered(core::List_sp options);
 #endif
 
 

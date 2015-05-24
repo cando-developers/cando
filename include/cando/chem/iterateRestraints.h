@@ -29,8 +29,8 @@ public:
 	void	initialize();
 private:
 	Matter_sp			_Top;
-	core::Cons_sp				_Restraints;
-	core::Cons_sp				_CurRestraint;
+	core::List_sp				_Restraints;
+	core::List_sp				_CurRestraint;
 private:
     void _accumulateRestraints(Matter_sp m);
 

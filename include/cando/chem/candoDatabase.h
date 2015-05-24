@@ -17,8 +17,7 @@
 #include <string>
 #include <vector>
 #include <clasp/core/common.h>
-#include <clasp/core/stringList.fwd.h>
-#include <cando/chem/adapters.fwd.h>
+#include <cando/adapt/stringList.fwd.h>
 #include <cando/chem/monomer.h>
 #include <clasp/core/holder.h>
 #include <cando/geom/vector3.h>
@@ -67,7 +66,7 @@ class CandoDatabase_O : public core::T_O
     LISP_CLASS(chem,ChemPkg,CandoDatabase_O,"CandoDatabase");
 #if INIT_TO_FACTORIES
  public:
-    static CandoDatabase_sp make(core::Symbol_sp name, core::Cons_sp frameRecognizers, core::Cons_sp representedEntityNameSets, core::Cons_sp constitutions);
+    static CandoDatabase_sp make(core::Symbol_sp name, core::List_sp frameRecognizers, core::List_sp representedEntityNameSets, core::List_sp constitutions);
 #else
     DECLARE_INIT();
 #endif
@@ -104,7 +103,7 @@ private:
 	bool recognizesEntityOfClass(core::Symbol_sp name, core::Class_sp mc);
 
 	/*! Return a Cons of all entities that are of class (classId) */
-	core::Cons_sp entitiesSubClassOfAsCons(core::Class_sp mc);
+	core::List_sp entitiesSubClassOfAsCons(core::Class_sp mc);
 
 
 	/*! Return the entity with the given name and classId and if it doesn't exist throw an exception */
@@ -137,9 +136,9 @@ public:
 
 
 
-	core::Cons_sp  representedEntityNameSetsAsCons();
+	core::List_sp  representedEntityNameSetsAsCons();
 
-	core::Cons_sp	constitutionsAsCons();
+	core::List_sp	constitutionsAsCons();
 
 
 	bool recognizesNameOrPdb(core::Symbol_sp name);
@@ -215,7 +214,7 @@ core::SymbolSet_sp allUniqueCouplingNames();
 	void	giveYourDependantObjectsTo(CandoDatabase_sp newDb);
 
 
-    core::Cons_sp	allMonomerNamesOrdered();
+    core::List_sp	allMonomerNamesOrdered();
     void		testConsistency(std::ostream& out);
 
 public:
@@ -249,8 +248,8 @@ public:
 	MonomerCoordinates_sp	getMonomerCoordinatesWithKey(MonomerName key);
 	bool			recognizesMonomerCoordinatesKey(MonomerName key);
 
-	core::Cons_sp uniqueMonomerCoordinatesAsCons();
-	core::Cons_sp monomerCoordinatesKeysAsCons();
+	core::List_sp uniqueMonomerCoordinatesAsCons();
+	core::List_sp monomerCoordinatesKeysAsCons();
 
 	SpecificContextSet_sp allSpecificMonomerContexts();
 
@@ -261,7 +260,7 @@ public:
 
 #if 0
 	// I'll need to add this back once I figure out what Alchemists do
-	void removeMonomerCoordinatesNotRequiredByAlchemists(core::Cons_sp alchemists);
+	void removeMonomerCoordinatesNotRequiredByAlchemists(core::List_sp alchemists);
 #endif
 public:
 

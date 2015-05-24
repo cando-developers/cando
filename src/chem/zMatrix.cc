@@ -717,7 +717,7 @@ namespace chem
 
 
 
-    core::Cons_sp ZMatrix_O::entriesAsCons() const
+    core::List_sp ZMatrix_O::entriesAsCons() const
     {_OF();
 	return core::Cons_O::createFromVec0(this->_ZMatrix);
     };

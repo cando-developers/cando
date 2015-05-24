@@ -8,7 +8,7 @@
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
-#include <clasp/core/stringList.h>
+#include <cando/adapt/stringList.h>
 #include <cando/chem/chemPackage.h>
 //#include "conformationCollection.h"
 
@@ -286,7 +286,7 @@ namespace chem
 	string getZMatrixAtomNameAtIndex(uint i) const;
 
 	/*! Return the entries as a Cons */
-	core::Cons_sp entriesAsCons() const;
+	core::List_sp entriesAsCons() const;
 
 	const_zMatrixEntryIterator	begin_ZMatrixEntries() const	{ return this->_ZMatrix.begin(); };
 	const_zMatrixEntryIterator	end_ZMatrixEntries() const	{ return this->_ZMatrix.end(); };

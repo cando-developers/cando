@@ -1,14 +1,14 @@
 #define	DEBUG_LEVEL_FULL
 
 #include <clasp/core/common.h>
-#include <clasp/core/stringSet.h>
+#include <cando/adapt/stringSet.h>
 #include <cando/chem/pdb.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
 #include <cando/chem/atom.h>
 #include <cando/chem/aggregate.h>
 #include <cando/chem/molecule.h>
-#include <cando/chem/adapters.h>
+#include <cando/adapt/adapters.h>
 #include <cando/chem/residue.h>
 #include <clasp/core/stringList.h>
 #include <clasp/core/str.h>

@@ -443,7 +443,7 @@ of the form [: 'symbol value ]
 [ 'nonbond true/false ]\par
 __END_DOC
 */
-void	EnergyFunction_O::setOptions( core::Cons_sp options )
+void	EnergyFunction_O::setOptions( core::List_sp options )
 {_G();
     while ( options.notnilp() )
     {
@@ -1632,9 +1632,9 @@ int             coordinateIndex;
 							       % a1->getConfigurationAsString() );
 		    }
 		}
-		core::Cons_sp priority = a1->getNeighborsByRelativePriority();
+		core::List_sp priority = a1->getNeighborsByRelativePriority();
 		ASSERTP(priority->length() == 4, "There must be 4 neighbors to assign stereochemistry");
-		core::Cons_sp cur = priority;
+		core::List_sp cur = priority;
 		n1 = cur->car<Atom_O>();
 		cur = cur->cdr();
 		n2 = cur->car<Atom_O>();
@@ -1789,7 +1789,7 @@ int             coordinateIndex;
 
 
 
-void	EnergyFunction_O::addTermsForListOfRestraints(ForceField_sp forceField, core::Cons_sp restraintList)
+void	EnergyFunction_O::addTermsForListOfRestraints(ForceField_sp forceField, core::List_sp restraintList)
 {_G();
     geom::IterateCons_sp	iterate;
     iterate = geom::IterateCons_O::create(restraintList);

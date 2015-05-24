@@ -147,7 +147,7 @@ public:
     virtual int		numberOfMates() { return 0; };
 //    virtual bool	recognizesMateNameOrPdb(const string& name) { return false;};
 
-    virtual core::Cons_sp	matesAsCons() { return _Nil<core::Cons_O>(); };
+    virtual core::List_sp	matesAsCons() { return _Nil<core::T_O>(); };
 
     Plug_O( const Plug_O& ss ); //!< Copy constructor
 
@@ -165,7 +165,7 @@ class PlugWithMates_O : public Plug_O
     LISP_CLASS(chem,ChemPkg,PlugWithMates_O,"PlugWithMates");
 #if INIT_TO_FACTORIES
  public:
-    static PlugWithMates_sp make(core::Symbol_sp bond0, core::Symbol_sp bond1, core::Cons_sp mates);
+    static PlugWithMates_sp make(core::Symbol_sp bond0, core::Symbol_sp bond1, core::List_sp mates);
 #else
     DECLARE_INIT();
 #endif
@@ -210,7 +210,7 @@ public:
     int		numberOfMates() { return this->_Mates.size(); };
     bool	recognizesMateNameOrPdb(core::Symbol_sp name);
 
-    core::Cons_sp	matesAsCons() { return core::Cons_O::createFromVec0(this->_Mates); };
+    core::List_sp	matesAsCons() { return core::Cons_O::createFromVec0(this->_Mates); };
 
     PlugWithMates_O( const PlugWithMates_O& ss ); //!< Copy constructor
 
@@ -329,7 +329,7 @@ class RingClosingPlug_O : public OutPlug_O
     LISP_CLASS(chem,ChemPkg,RingClosingPlug_O,"RingClosingPlug");
 #if INIT_TO_FACTORIES
  public:
-    static RingClosingPlug_sp make(core::Cons_sp ringClosingMates);
+    static RingClosingPlug_sp make(core::List_sp ringClosingMates);
 #else
     DECLARE_INIT();
 #endif
@@ -344,7 +344,7 @@ public:
 	bool getIsIn() { return false;};
 	virtual bool getIsRingClosing() { return true; };
 	bool recognizesRingClosingMate(core::Symbol_sp mateName);
-	core::Cons_sp ringClosingMatesAsCons();
+	core::List_sp ringClosingMatesAsCons();
 	RingClosingPlug_O( const RingClosingPlug_O& ss ); //!< Copy constructor
 	DEFAULT_CTOR_DTOR(RingClosingPlug_O);
 };

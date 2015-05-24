@@ -88,7 +88,7 @@ virtual string	subMatter() { return Residue_O::static_className(); };
 
 	bool	canRender() { return true;}
 #ifdef RENDER
-	geom::Render_sp	rendered(core::Cons_sp options);
+	geom::Render_sp	rendered(core::List_sp options);
 #endif
 
 	virtual uint	numberOfAtoms( );

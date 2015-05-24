@@ -21,7 +21,7 @@
 #include <cando/chem/atom.h>
 #include <cando/chem/loop.h>
 #include <cando/geom/vector3.h>
-#include <cando/chem/adapters.h>
+#include <cando/adapt/adapters.h>
 #include <cando/chem/mbbCoreTools.h>
 #include <clasp/core/wrappers.h>
 

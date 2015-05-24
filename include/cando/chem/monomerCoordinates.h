@@ -73,7 +73,7 @@ public:
 	 * and (problems: (StringStream))
 	 */
 
-	 core::Cons_sp testExtraction( Topology_sp topology, 
+	 core::List_sp testExtraction( Topology_sp topology, 
 			Aggregate_sp aggregate, 
 			Monomer_sp focusMonomer );
 	

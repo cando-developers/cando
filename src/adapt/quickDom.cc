@@ -16,8 +16,8 @@
 #include <clasp/core/fileSystem.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/pathname.h>
-#include <cando/geom/mySaxInterface.h>
-#include <cando/geom/quickDom.h>
+#include <cando/adapt/mySaxInterface.h>
+#include <cando/adapt/quickDom.h>
 //#i n c l u d e "stringSet.h"
 #include <clasp/core/wrappers.h>
 

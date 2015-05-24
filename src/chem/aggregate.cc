@@ -602,7 +602,7 @@ namespace chem {
     }
 
 #ifdef RENDER
-    geom::Render_sp	Aggregate_O::rendered(core::Cons_sp options)
+    geom::Render_sp	Aggregate_O::rendered(core::List_sp options)
     {_G();
 	GrPickableMatter_sp	rend;
 	rend = GrPickableMatter_O::create();

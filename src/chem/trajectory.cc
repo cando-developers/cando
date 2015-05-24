@@ -190,7 +190,7 @@ TrajectoryFrame_sp Trajectory_O::getTrajectoryFrame(uint i)
 }
 
 #if 0
-geom::Render_sp Trajectory_O::rendered(core::Cons_sp kargs)
+geom::Render_sp Trajectory_O::rendered(core::List_sp kargs)
 {_G();
     geom::FrameList_sp frames = geom::FrameList_O::create();
     for ( gctools::Vec0<TrajectoryFrame_sp>::iterator it=this->_Frames.begin(); it!=this->_Frames.end(); it++ )

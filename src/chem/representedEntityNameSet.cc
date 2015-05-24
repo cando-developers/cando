@@ -1,7 +1,7 @@
 #define	DEBUG_LEVEL_FULL
 #include <clasp/core/common.h>
-#include <clasp/core/stringSet.h>
-#include <cando/chem/adapters.h>
+#include <cando/adapt/stringSet.h>
+#include <cando/adapt/adapters.h>
 #include <clasp/core/environment.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"

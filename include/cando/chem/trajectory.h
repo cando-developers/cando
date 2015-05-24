@@ -11,7 +11,7 @@
 #include <clasp/core/holder.h>
 //#include "geom/objectDictionary.fwd.h"
 #include <cando/chem/chemPackage.h>
-#include "geom/coordinateArray.fwd.h"// trajectory.h wants CoordinateArray needs coordinateArray.fwd.h
+#include <cando/geom/coordinateArray.fwd.h>
 
 namespace chem {
 
@@ -104,7 +104,7 @@ public:
 
 	TrajectoryFrame_sp addFrame(Matter_sp matter);
 
-	core::Cons_sp trajectoryFramesAsCons();
+	core::List_sp trajectoryFramesAsCons();
 
 	uint numberOfTrajectoryFrames();
 
@@ -116,7 +116,7 @@ public:
 #if 0
 	bool canRender() { return true; };
 #ifdef RENDER
-	geom::Render_sp rendered(core::Cons_sp kargs);
+	geom::Render_sp rendered(core::List_sp kargs);
 #endif
 #endif
 

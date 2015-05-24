@@ -4,7 +4,7 @@
 //
 
 #include <clasp/core/common.h>
-#include <cando/chem/adapters.h>
+#include <cando/adapt/adapters.h>
 #include <clasp/core/symbol.h>
 #include <clasp/core/stringList.h>
 #include <clasp/core/environment.h>
@@ -32,7 +32,7 @@ namespace chem {
 #define ARGS_Constitution_O_make "(name comment meta_constitution constitution_atoms stereo_information plugs topologies)"
 #define DECL_Constitution_O_make ""
 #define DOCS_Constitution_O_make "make Constitution"
-    Constitution_sp Constitution_O::make(core::Symbol_sp name, const string& comment, core::Symbol_sp metaConstitution, ConstitutionAtoms_sp constitutionAtoms, StereoInformation_sp stereoInformation, core::Cons_sp plugs, core::Cons_sp topologies)
+    Constitution_sp Constitution_O::make(core::Symbol_sp name, const string& comment, core::Symbol_sp metaConstitution, ConstitutionAtoms_sp constitutionAtoms, StereoInformation_sp stereoInformation, core::List_sp plugs, core::Cons_sp topologies)
   {_G();
       GC_ALLOCATE(Constitution_O, me );
       me->_Name = name;
@@ -93,7 +93,7 @@ namespace chem {
     this->_StereoInformation->setOwner(this->sharedThis<Constitution_O>());
     this->_StereoInformation->validate();
     {_BLOCK_TRACE("Adding plugs to Constitution");
-	core::Cons_sp c = translate::from_object<core::Cons_O>::convert(env->lookup(ChemPkg,"plugs"));
+	core::List_sp c = translate::from_object<core::Cons_O>::convert(env->lookup(ChemPkg,"plugs"));
 	c->setOwnerOfAllEntries(this->sharedThis<Constitution_O>());
 	this->_PlugsByName.clear();
 	for ( ; c.notnilp(); c = c->cdr() )
@@ -110,7 +110,7 @@ namespace chem {
 	}
     }
     {_BLOCK_TRACE("Adding topologies to Constitution");
-	core::Cons_sp c = translate::from_object<core::Cons_O>::convert(env->lookup(ChemPkg,"topologies"));
+	core::List_sp c = translate::from_object<core::List_V>::convert(env->lookup(ChemPkg,"topologies"));
 	c->setOwnerOfAllEntries(this->sharedThis<Constitution_O>());
 	this->_Topologies.clear();
 	for ( ; c.notnilp(); c = c->cdr() )
@@ -307,25 +307,25 @@ core::StringList_sp Constitution_O::getPdbNamesAsStringList() {
 
 
 
-core::Cons_sp Constitution_O::stereoisomersAsCons() { return this->_StereoInformation->stereoisomersAsCons(); };
-core::Cons_sp Constitution_O::topologiesAsCons() {
-    core::Cons_sp result = _Nil<core::Cons_O>();
+core::List_sp Constitution_O::stereoisomersAsCons() { return this->_StereoInformation->stereoisomersAsCons(); };
+core::List_sp Constitution_O::topologiesAsCons() {
+    core::List_sp result = _Nil<core::T_O>();
     for ( TopologyMap::iterator it = this->_Topologies.begin(); it!=this->_Topologies.end(); ++it ) {
         result = core::Cons_O::create(it->second,result);
     }
     return result;
 }
 
-core::Cons_sp Constitution_O::plugsAsCons() {
-    core::Cons_sp result = _Nil<core::Cons_O>();
+core::List_sp Constitution_O::plugsAsCons() {
+    core::List_sp result = _Nil<core::T_O>();
     for ( PlugMap::iterator it = this->_PlugsByName.begin(); it!=this->_PlugsByName.end(); ++it ) {
         result = core::Cons_O::create(it->second,result);
     }
     return result;
 }
-core::Cons_sp Constitution_O::plugsWithMatesAsCons()
+core::List_sp Constitution_O::plugsWithMatesAsCons()
 {_G();
-    core::Cons_sp first = _Nil<core::Cons_O>();
+    core::List_sp first = _Nil<core::T_O>();
     PlugMap::iterator mi;
     for ( mi=this->_PlugsByName.begin(); mi!=this->_PlugsByName.end(); mi++ )
     {

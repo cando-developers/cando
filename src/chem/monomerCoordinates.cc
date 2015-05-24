@@ -58,7 +58,7 @@ void	MonomerCoordinates_O::initialize()
 
 #else
 
-core::T_sp MonomerCoordinates_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+core::T_sp MonomerCoordinates_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp env, core::Lisp_sp lisp)
 {_G();
     MonomerContext_sp context = translate::from_object<MonomerContext_O>::convert(env->lookup(Pkg(),"context"));
     this->setContext(context);
@@ -229,7 +229,7 @@ void	MonomerCoordinates_O::defineFromConformationExplorer(
  * :sawProblems xxx  and :problems yyy pairs
  */
 
-core::Cons_sp	MonomerCoordinates_O::testExtraction(
+core::List_sp	MonomerCoordinates_O::testExtraction(
 				Topology_sp	topology,
 				Aggregate_sp	aggregate,
 				Monomer_sp focusMonomer )

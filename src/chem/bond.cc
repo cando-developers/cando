@@ -8,7 +8,7 @@
 // Comment
 #include <clasp/core/common.h>
 #include <clasp/core/exceptions.h>
-#include <clasp/core/stringSet.h>
+#include <cando/adapt/stringSet.h>
 #include <cando/chem/bond.h>
 #include <cando/chem/matter.h>
 #include <cando/chem/atom.h>

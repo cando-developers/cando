@@ -7,9 +7,9 @@
 
 #include <clasp/core/common.h>
 #include <clasp/core/str.h>
-#include <clasp/core/stringSet.h>
+#include <cando/adapt/stringSet.h>
 #include <clasp/core/environment.h>
-#include <cando/chem/adapters.h>
+#include <cando/adapt/adapters.h>
 #include <clasp/core/stringList.h>
 #include <cando/chem/stereochemistry.h>
 #include <cando/chem/constitution.h>
@@ -87,12 +87,12 @@ StereoConfiguration_sp StereoConfiguration_O::make(string atomName, string confi
 /*! Create a list of StereoConfiguration(s)
  * Match atom names to configurations
  */
-core::Cons_sp StereoConfiguration_O::create_multiple(core::Cons_sp atomNames, core::Cons_sp configurations, core::Lisp_sp lisp )
+core::List_sp StereoConfiguration_O::create_multiple(core::Cons_sp atomNames, core::Cons_sp configurations, core::Lisp_sp lisp )
 {_G();
     ASSERT_eq(atomNames->length(), configurations->length() );
-    core::Cons_sp list = _Nil<core::Cons_O>();
-    core::Cons_sp curName = atomNames;
-    core::Cons_sp curConfig = configurations;
+    core::List_sp list = _Nil<core::T_O>();
+    core::List_sp curName = atomNames;
+    core::List_sp curConfig = configurations;
     while ( curName.notnilp() )
     {
 	GC_ALLOCATE(StereoConfiguration_O, one );
@@ -112,19 +112,19 @@ core::Cons_sp StereoConfiguration_O::create_multiple(core::Cons_sp atomNames, co
 #define ARGS_af_StereoConfiguration_create_multiple "(atomNames configurations)"
 #define DECL_af_StereoConfiguration_create_multiple ""
 #define DOCS_af_StereoConfiguration_create_multiple "StereoConfiguration_create_multiple"
-    core::T_sp af_StereoConfiguration_create_multiple(core::Cons_sp atomNames, core::Cons_sp configurations)
+    core::T_sp af_StereoConfiguration_create_multiple(core::List_sp atomNames, core::List_sp configurations)
     {_G();
 	return StereoConfiguration_O::create_multiple(atomNames,configurations,_lisp);
     }
 
 core::Cons_sp StereoConfiguration_O::stereochemicalPermutations(uint numberOfCenters,core::Lisp_sp lisp)
 {_G();
-    core::Cons_sp list = _Nil<core::Cons_O>();
+    core::List_sp list = _Nil<core::T_O>();
     uint pow = 1 << numberOfCenters;
     for ( uint i=0; i<pow; i++ )
     {
 	uint map = i;
-	core::Cons_sp one = _Nil<core::Cons_O>();
+	core::List_sp one = _Nil<core::T_O>();
 	for ( uint ix=0; ix<numberOfCenters; ix++ )
 	{
 	    if ( map & 1 )
@@ -152,7 +152,7 @@ core::Cons_sp StereoConfiguration_O::stereochemicalPermutations(uint numberOfCen
     core::T_sp af_stereochemicalPermutations(core::Fixnum_sp numcenters)
     {_G();
 	uint numberOfCenters = numcenters->get();
-	core::Cons_sp results = StereoConfiguration_O::stereochemicalPermutations(numberOfCenters,_lisp);
+	core::List_sp results = StereoConfiguration_O::stereochemicalPermutations(numberOfCenters,_lisp);
 	return results;
     }
 
@@ -253,7 +253,7 @@ __END_DOC
 #define ARGS_Stereoisomer_O_make "(name pdb configs)"
 #define DECL_Stereoisomer_O_make ""
 #define DOCS_Stereoisomer_O_make "make ChemDraw"
-Stereoisomer_sp Stereoisomer_O::make(core::Symbol_sp name, core::Symbol_sp pdb, core::Cons_sp configs)
+Stereoisomer_sp Stereoisomer_O::make(core::Symbol_sp name, core::Symbol_sp pdb, core::List_sp configs)
   {_G();
       GC_ALLOCATE(Stereoisomer_O, me );
     me->_Name = name;
@@ -270,11 +270,11 @@ Stereoisomer_sp Stereoisomer_O::make(core::Symbol_sp name, core::Symbol_sp pdb, 
 
 #else
 
-    core::T_sp Stereoisomer_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp Stereoisomer_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp env, core::Lisp_sp lisp)
 {_G();
     this->_Name = translate::from_object<core::Symbol_O>::convert(env->lookup(Pkg(),"name"));
     this->_Pdb = translate::from_object<core::Symbol_O>::convert(env->lookup(Pkg(),"pdb"));
-    core::Cons_sp configs = translate::from_object<core::Cons_O>::convert(env->lookup(Pkg(),"configs"));
+    core::List_sp configs = translate::from_object<core::Cons_O>::convert(env->lookup(Pkg(),"configs"));
     configs->setOwnerOfAllEntries(this->sharedThis<Stereoisomer_O>());
     this->_Configurations.clear();
     for ( ; configs.notnilp(); configs = configs->cdr() )
@@ -298,7 +298,7 @@ __END_DOC
 #define ARGS_af_multiStereoisomers "(name-template centers configs)"
 #define DECL_af_multiStereoisomers ""
 #define DOCS_af_multiStereoisomers "multiStereoisomers"
-core::T_sp af_multiStereoisomers(const string& nameTemplate, core::Cons_sp centers, core::Cons_sp configs)
+core::T_sp af_multiStereoisomers(const string& nameTemplate, core::List_sp centers, core::List_sp configs)
 {_G();
     IMPLEMENT_MEF(BF("Implement multiStereoisomers"));
 };
@@ -397,7 +397,7 @@ __END_DOC
 #define ARGS_StereoInformation_O_make "(stereoisomers restraints)"
 #define DECL_StereoInformation_O_make ""
 #define DOCS_StereoInformation_O_make "make StereoInformation"
-StereoInformation_sp StereoInformation_O::make(core::Cons_sp stereoisomers, core::Cons_sp restraints)
+StereoInformation_sp StereoInformation_O::make(core::List_sp stereoisomers, core::List_sp restraints)
   {_G();
       GC_ALLOCATE(StereoInformation_O, me );
     me->_Stereoisomers.fillFromCons(stereoisomers);
@@ -447,7 +447,7 @@ StereoInformation_sp StereoInformation_O::make(core::Cons_sp stereoisomers, core
 	return _Nil<core::T_O>();
     }
 
-//    core::Cons_sp proChiralCenters = dict->getAndRemoveOrDefault("proChiralCenters",_Nil<core::Cons_O>()).as<core::Cons_O>();
+//    core::Cons_sp proChiralCenters = dict->getAndRemoveOrDefault("proChiralCenters",_Nil<core::T_O>()).as<core::Cons_O>();
 //    proChiralCenters->setOwnerOfAllEntries(this->sharedThis<StereoInformation_O>());
 //    this->_ProChiralCenters.fillFromCons(proChiralCenters);
     restraints->setOwnerOfAllEntries(this->sharedThis<StereoInformation_O>());

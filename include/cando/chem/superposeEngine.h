@@ -17,8 +17,8 @@
 
 #include <cando/chem/chemPackage.h>
 
-#include "core/intArray.fwd.h"// superposeEngine.h wants IntArray needs intArray.fwd.h
-#include "geom/coordinateArray.fwd.h"// superposeEngine.h wants CoordinateArray needs coordinateArray.fwd.h
+#include <clasp/core/intArray.fwd.h>
+#include <cando/geom/coordinateArray.fwd.h>// superposeEngine.h wants CoordinateArray needs coordinateArray.fwd.h
 
 namespace chem
 {

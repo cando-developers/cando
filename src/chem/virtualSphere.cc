@@ -343,7 +343,7 @@ Matrix	mtemp;
 	this->_StartX = this->_MouseX;
 	this->_StartY = this->_MouseY;
 	this->_Recalculate = true;
-        FIX_ME(); //this->notify(chemkw::_sym_changed,_Nil<core::Cons_O>());
+        FIX_ME(); //this->notify(chemkw::_sym_changed,_Nil<core::T_O>());
 	break;
     case vsTranslate:
 	this->convertToRelative( this->_StartX, this->_StartY, sx,sy );
@@ -358,7 +358,7 @@ Matrix	mtemp;
 	this->_StartX = this->_MouseX;
 	this->_StartY = this->_MouseY;
 	this->_Recalculate = true;
-	FIX_ME(); // this->notify(chemkw::_sym_changed,_Nil<core::Cons_O>());
+	FIX_ME(); // this->notify(chemkw::_sym_changed,_Nil<core::T_O>());
 	break;
     case vsScale:
 	this->convertToRelative( this->_StartX, this->_StartY, sx,sy );

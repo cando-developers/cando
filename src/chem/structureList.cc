@@ -396,7 +396,7 @@ void	Structure_Old_List_O::saveAs(const string& fn)
 #endif
 
 #ifdef RENDER
-geom::Render_sp	Structure_Old_List_O::rendered(core::Cons_sp opts)
+geom::Render_sp	Structure_Old_List_O::rendered(core::List_sp opts)
 {_G();
     IMPLEMENT_ME();
 #if 0

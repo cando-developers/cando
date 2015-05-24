@@ -1,8 +1,8 @@
 #define	DEBUG_LEVEL_FULL
 
 #include <clasp/core/common.h>
-#include <clasp/core/stringSet.h>
-#include <cando/chem/adapters.h>
+#include <cando/adapt/stringSet.h>
+#include <cando/adapt/adapters.h>
 #include <cando/chem/specificContext.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
@@ -212,14 +212,14 @@ core::SymbolSet_sp SpecificContextSet_O::asSymbolSetOfKeys()
 
 
 
-core::Cons_sp SpecificContextSet_O::asCons()
+core::List_sp SpecificContextSet_O::asCons()
 {_G();
-    core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::Cons_O>());
+    core::Cons_sp first = core::T_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
     core::Cons_sp cur = first;
     SpecificContextSet_O::iterator it;
     for ( it=this->begin(); it!=this->end(); it++ )
     {
-	core::Cons_sp one = core::Cons_O::create(it->second,_Nil<core::Cons_O>());
+	core::Cons_sp one = core::T_O::create(it->second,_Nil<core::T_O>());
 	cur->setCdr(one);
 	cur = one;
     }

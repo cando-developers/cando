@@ -183,7 +183,7 @@ public:
 
     virtual bool canRender() { return true; };
 #ifdef RENDER
-    virtual geom::Render_sp rendered(core::Cons_sp options);
+    virtual geom::Render_sp rendered(core::List_sp options);
 #endif
 
 

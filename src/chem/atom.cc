@@ -402,7 +402,7 @@ namespace chem
     ConfigurationEnum Atom_O::calculateStereochemicalConfiguration()
     {_G();
 	if ( this->numberOfBonds() != 4 ) return undefinedConfiguration;
-	core::Cons_sp neighborsByPriority = this->getNeighborsByRelativePriority();
+	core::List_sp neighborsByPriority = this->getNeighborsByRelativePriority();
 	Atom_sp a4 = core::oCar(neighborsByPriority).as<Atom_O>();
 	Atom_sp a3 = core::oCadr(neighborsByPriority).as<Atom_O>();
 	Atom_sp a2 = core::oCaddr(neighborsByPriority).as<Atom_O>();
@@ -862,7 +862,7 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 	}
     };
 
-    core::Cons_sp	Atom_O::getNeighborsByRelativePriority()
+    core::List_sp	Atom_O::getNeighborsByRelativePriority()
     {_G();
 	LOG(BF("Ordering neighbors around(%s) by priority and name") % this->getName()  );
 	VectorAtom	reversedNeighbors;
@@ -871,7 +871,7 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 	    reversedNeighbors.push_back((*b)->getOtherAtom(this->sharedThis<Atom_O>()));
 	}
 	OrderByPriorityAndName orderer;
-	core::Cons_sp ncons = _Nil<core::Cons_O>();
+	core::List_sp ncons = _Nil<core::T_O>();
         core::sort::quickSort(reversedNeighbors.begin(),reversedNeighbors.end(),orderer);
 	// At this point the sorted in reverse order
 	// 
@@ -1514,9 +1514,9 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 	return vAtoms;
     }
 
-    core::Cons_sp Atom_O::bondedAtomsAsList()
+    core::List_sp Atom_O::bondedAtomsAsList()
     {
-	core::Cons_sp list = _Nil<core::Cons_O>();
+	core::List_sp list = _Nil<core::T_O>();
 	VectorBond::iterator	b;
 	Atom_sp me = this->sharedThis<Atom_O>();
 	for (b=this->bonds.begin();b!=this->bonds.end(); b++ )
@@ -1558,7 +1558,7 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
     uint Atom_O::totalBondOrder()
     {_OF();
 	VectorBond::iterator	b;
-	core::Cons_sp				list;
+	core::List_sp		list;
 	uint twice = 0;
 	for (b=this->bonds.begin();b!=this->bonds.end(); b++ ) 
 	{
@@ -1578,11 +1578,11 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
     }
 
 
-    core::Cons_sp Atom_O::bondsAsList()
+    core::List_sp Atom_O::bondsAsList()
     {
 	VectorBond::iterator	b;
-	core::Cons_sp				list;
-	list = _Nil<core::Cons_O>();
+	core::List_sp		list;
+	list = _Nil<core::T_O>();
 	for (b=this->bonds.begin();b!=this->bonds.end(); b++ ) {
 	    list = core::Cons_O::create(*b,list);
 	}
@@ -1740,57 +1740,51 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 
     Atom_sp Atom_O::getBackSpan()
     {_G();
-	if ( this->_BackSpan.not_pointerp() )
-	{
-	    this->_BackSpan = _Nil<Atom_O>();
-	}
-	return this->_BackSpan;
+      ASSERT(this->_BackSpan);
+      return this->_BackSpan;
     }
 
 
     Atom_sp Atom_O::getNextSpan()
     {_G();
-	if ( this->_NextSpan.not_pointerp() )
-	{
-	    this->_NextSpan = _Nil<Atom_O>();
-	}
-	return this->_NextSpan;
+      ASSERT(this->_NextSpan);
+      return this->_NextSpan;
     }
 
 
-    core::Cons_sp Atom_O::_expandLocalSpanningTree(Atom_sp avoidAtom, Bond_sp incomingBond, uint depth)
+    core::List_sp Atom_O::_expandLocalSpanningTree(Atom_sp avoidAtom, Bond_sp incomingBond, uint depth)
     {
 	core::Cons_sp localTree = core::Cons_O::create(incomingBond);
 	if ( depth <= 0 ) return localTree;
-	core::Cons_sp tail = localTree;
+	core::List_sp tail = localTree;
 	for ( VectorBond::iterator bi=this->bonds.begin(); bi!=this->bonds.end(); bi++ )
 	{
 	    Atom_sp neighborAtom = (*bi)->getOtherAtom(this->sharedThis<Atom_O>());
 	    if ( neighborAtom == avoidAtom ) continue;
-	    core::Cons_sp one = neighborAtom->_expandLocalSpanningTree(this->sharedThis<Atom_O>(),*bi,depth-1);
-	    tail->setCdr(one);
+	    core::List_sp one = neighborAtom->_expandLocalSpanningTree(this->sharedThis<Atom_O>(),*bi,depth-1);
+	    tail.asCons()->setCdr(one);
 	    tail = one;
 	}
 	return localTree;
     }
 
-    core::Cons_sp Atom_O::localSpanningTree(uint depth)
+    core::List_sp Atom_O::localSpanningTree(uint depth)
     {_G();
 	core::Cons_sp localTree = core::Cons_O::create(this->sharedThis<Atom_O>());
 	if ( depth <= 0 ) return localTree;
-	core::Cons_sp tail = localTree;
+	core::List_sp tail = localTree;
 	for ( VectorBond::iterator bi=this->bonds.begin(); bi!=this->bonds.end(); bi++ )
 	{
 	    Atom_sp neighborAtom = (*bi)->getOtherAtom(this->sharedThis<Atom_O>());
-	    core::Cons_sp one = neighborAtom->_expandLocalSpanningTree(this->sharedThis<Atom_O>(),*bi,depth-1);
-	    tail->setCdr(one);
+	    core::List_sp one = neighborAtom->_expandLocalSpanningTree(this->sharedThis<Atom_O>(),*bi,depth-1);
+	    tail.asCons()->setCdr(one);
 	    tail = one;
 	}
 	return localTree;
     }
 
 
-    bool	Atom_O::isConfigurable()
+    bool Atom_O::isConfigurable()
     {
 	return this->_StereochemistryType != undefinedCenter;
     }

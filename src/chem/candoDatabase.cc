@@ -16,9 +16,9 @@
 #include <stdio.h>
 #include <clasp/core/common.h>
 #include <clasp/core/str.h>
-#include <cando/chem/adapters.h>
+#include <cando/adapt/adapters.h>
 #include <clasp/core/environment.h>
-#include <clasp/core/stringSet.h>
+#include <cando/adapt/stringSet.h>
 #include <cando/chem/matter.h>
 #include <cando/chem/symbolTable.h>
 #include <cando/chem/specificContext.h>
@@ -63,9 +63,9 @@ namespace chem
     }
 
 
-    core::Cons_sp CandoDatabase_O::entitiesSubClassOfAsCons(core::Class_sp mc)
+    core::List_sp CandoDatabase_O::entitiesSubClassOfAsCons(core::Class_sp mc)
     {_OF();
-	core::Cons_sp result = _Nil<core::Cons_O>();
+	core::List_sp result = _Nil<core::T_O>();
 	for ( Entities::const_iterator it=this->_Entities.begin();
 	      it!=this->_Entities.end(); it++ )
 	{
@@ -98,7 +98,7 @@ namespace chem
 
 
 
-    core::Cons_sp	CandoDatabase_O::constitutionsAsCons() 
+    core::List_sp	CandoDatabase_O::constitutionsAsCons() 
     {_OF();
 	return this->entitiesSubClassOfAsCons(af_findClass(Constitution_O::static_classSymbol()));
     };
@@ -121,7 +121,7 @@ namespace chem
     }
 
 
-    core::Cons_sp CandoDatabase_O::representedEntityNameSetsAsCons()
+    core::List_sp CandoDatabase_O::representedEntityNameSetsAsCons()
     {_OF();
 	return this->entitiesSubClassOfAsCons(af_findClass(RepresentedEntityNameSet_O::static_classSymbol()));
     }
@@ -634,10 +634,10 @@ namespace chem
     }
 
 
-    core::Cons_sp CandoDatabase_O::uniqueMonomerCoordinatesAsCons()
+    core::List_sp CandoDatabase_O::uniqueMonomerCoordinatesAsCons()
     {_G();
 	core::Cons_sp first, cur;
-	first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::Cons_O>());
+	first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	cur = first;
 	monomerCoordinatesIterator it;
         gctools::SmallOrderedSet<MonomerCoordinates_sp> unique;
@@ -647,22 +647,22 @@ namespace chem
 	}
 	for ( gctools::SmallOrderedSet<MonomerCoordinates_sp>::iterator ui=unique.begin(); ui!=unique.end(); ui++ )
 	{
-	    core::Cons_sp one = core::Cons_O::create((*ui),_Nil<core::Cons_O>());
+	    core::Cons_sp one = core::T_O::create((*ui),_Nil<core::T_O>());
 	    cur->setCdr(one);
 	    cur = one;
 	}
 	return first->cdr();
     }
 
-    core::Cons_sp CandoDatabase_O::monomerCoordinatesKeysAsCons()
+    core::List_sp CandoDatabase_O::monomerCoordinatesKeysAsCons()
     {_G();
 	core::Cons_sp first, cur;
-	first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::Cons_O>());
+	first = core::T_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	cur = first;
 	monomerCoordinatesIterator it;
 	for ( it=this->begin_MonomerCoordinates(); it!=this->end_MonomerCoordinates(); it++ )
 	{
-	    core::Cons_sp one = core::Cons_O::create(core::Str_O::create(it->first),_Nil<core::Cons_O>());
+	    core::Cons_sp one = core::T_O::create(core::Str_O::create(it->first),_Nil<core::T_O>());
 	    cur->setCdr(one);
 	    cur = one;
 	}
@@ -718,7 +718,7 @@ namespace chem
 #endif
     }
 #if 0
-    void CandoDatabase_O::removeMonomerCoordinatesNotRequiredByAlchemists(core::Cons_sp alchemists)
+    void CandoDatabase_O::removeMonomerCoordinatesNotRequiredByAlchemists(core::List_sp alchemists)
     {_G();
 	SpecificContextSet_sp necessary = SpecificContextSet_O::create();
 	while ( alchemists.notnilp() )
@@ -789,13 +789,12 @@ namespace chem
 #define ARGS_CandoDatabase_O_make "(name frame_recognizers represented_entity_name_sets constitutions)"
 #define DECL_CandoDatabase_O_make ""
 #define DOCS_CandoDatabase_O_make "make AtomReference args: name frame_recognizers represented_entity_name_sets constitutions"
-    CandoDatabase_sp CandoDatabase_O::make(core::Symbol_sp name, core::Cons_sp frameRecognizers, core::Cons_sp representedEntityNameSets, core::Cons_sp constitutions)
+    CandoDatabase_sp CandoDatabase_O::make(core::Symbol_sp name, core::List_sp frameRecognizers, core::Cons_sp representedEntityNameSets, core::Cons_sp constitutions)
     {_G();
         GC_ALLOCATE(CandoDatabase_O, me );
 	me->_Name = name;
 	me->_frameRecognizers.clear();
-	for ( core::Cons_sp cur = frameRecognizers; cur.notnilp(); cur = cur->cdr() )
-	{
+        for ( auto cur : frameRecognizers ) {
 	    FrameRecognizer_sp fr = cur->car<FrameRecognizer_O>();
 	    core::Symbol_sp name = fr->getRecognizerName();
 	    me->_frameRecognizers.set(name,fr);
@@ -804,17 +803,15 @@ namespace chem
 	}
 #if 0
 	// System Monomer groups
-	core::Cons_sp monomerPacks = representedEntityNameSets;
+	core::List_sp monomerPacks = representedEntityNameSets;
 	me->_SystemRepresentedEntityNameSets.clear();
-	for ( core::Cons_sp cur = monomerPacks; cur.notnilp(); cur = cur->cdr() )
-	{
+        for ( auto cur : monomerPacks ) {
 	    RepresentedEntityNameSet_sp group = cur->car<RepresentedEntityNameSet_O>();
 	    me->_SystemRepresentedEntityNameSets.set(group->getName(),group);
 	}
 #endif
 	// Constitutions
-	for ( core::Cons_sp cur = constitutions; cur.notnilp(); cur = cur->cdr() )
-	{
+        for ( auto cur : constitutions ) {
 	    Constitution_sp constitution = cur->car<Constitution_O>();
 	    me->addEntity(constitution);
 	}
@@ -828,8 +825,7 @@ namespace chem
 	this->_Name = translate::from_object<string>::convert(env->lookup(Package(),"name"));
 	core::Cons_sp frameRecognizers = translate::from_object<core::Cons_O>::convert(env->lookup(Package(),"frameRecognizers"));
 	this->_frameRecognizers.clear();
-	for ( core::Cons_sp cur = frameRecognizers; cur.notnilp(); cur = cur->cdr() )
-	{
+	for ( auto cur : frameRecognizers ) {
 	    FrameRecognizer_sp fr = cur->car<FrameRecognizer_O>();
 	    core::Symbol_sp name = fr->getRecognizerName();
 	    this->_frameRecognizers.set(name,fr);
@@ -837,18 +833,16 @@ namespace chem
 	}
 #if 0
 	// System Monomer groups
-	core::Cons_sp monomerPacks = translate::from_object<core::Cons_O>::convert(env->lookup(Package(),"representedEntityNameSets"));
+	core::List_sp monomerPacks = translate::from_object<core::Cons_O>::convert(env->lookup(Package(),"representedEntityNameSets"));
 	this->_SystemRepresentedEntityNameSets.clear();
-	for ( core::Cons_sp cur = monomerPacks; cur.notnilp(); cur = cur->cdr() )
-	{
+	for ( auto cur : monomerPacks ) {
 	    RepresentedEntityNameSet_sp group = cur->car<RepresentedEntityNameSet_O>();
 	    this->_SystemRepresentedEntityNameSets.set(group->getName(),group);
 	}
 #endif
 	// Constitutions
 	core::Cons_sp constitutions =  translate::from_object<core::Cons_O>::convert(env->lookup(Pkg(),"constitutions"));
-	for ( core::Cons_sp cur = constitutions; cur.notnilp(); cur = cur->cdr() )
-	{
+        for ( auto cur : constitutions ) {
 	    Constitution_sp constitution = cur->car<Constitution_O>();
 	    this->addEntity(constitution);
 	}

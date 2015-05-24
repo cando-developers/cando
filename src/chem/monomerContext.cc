@@ -5,8 +5,8 @@
 // (C) 2004 Christian E. Schafmeister
 //
 #include <clasp/core/common.h>
-#include <cando/chem/adapters.h>
-#include <clasp/core/stringSet.h>
+#include <cando/adapt/adapters.h>
+#include <cando/adapt/stringSet.h>
 #include <cando/chem/monomerContext.h>
 //#include	"monomerCoordinates.h"
 #include <cando/chem/specificContext.h>

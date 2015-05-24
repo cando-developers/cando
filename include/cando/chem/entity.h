@@ -10,7 +10,6 @@
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
-#include <cando/chem/adapters.fwd.h>
 #include <cando/chem/entity.fwd.h>
 //#include "geom/objectList.fwd.h"
 

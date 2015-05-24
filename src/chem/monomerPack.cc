@@ -3,11 +3,11 @@
 
 #include <clasp/core/common.h>
 #include <clasp/core/str.h>
-#include <clasp/core/stringSet.h>
+#include <cando/adapt/stringSet.h>
 #include <cando/chem/monomerPack.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include <cando/chem/adapters.h>
+#include <cando/adapt/adapters.h>
 #include <clasp/core/symbolList.h>
 #include <clasp/core/environment.h>
 #include <cando/chem/candoDatabase.h>
@@ -51,7 +51,7 @@ __END_DOC
 #define ARGS_af_defineMonomerPack "(packName parts &optional atomAliases)"
 #define DECL_af_defineMonomerPack ""
 #define DOCS_af_defineMonomerPack "defineMonomerPack"
-    core::T_sp af_defineMonomerPack(core::Symbol_sp packName, core::Cons_sp parts, core::Cons_sp atomAliases )
+    core::T_sp af_defineMonomerPack(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomAliases )
     {_G();
 	CandoDatabase_sp	bdb;
 	core::T_sp		oarg1;
@@ -98,7 +98,7 @@ __END_DOC
 #define ARGS_af_extendAliases "(packName parts atomAliases)"
 #define DECL_af_extendAliases ""
 #define DOCS_af_extendAliases "extendAliases"
-    core::T_sp af_extendAliases(core::Symbol_sp packName, core::Cons_sp parts, core::Cons_sp atomAliases)
+    core::T_sp af_extendAliases(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomAliases)
     {_G();
 	CandoDatabase_sp	bdb;
 	core::T_sp		oarg1;
@@ -140,7 +140,7 @@ __END_DOC
 #define ARGS_af_setMonomerPack "(packName parts &optional atomAliases)"
 #define DECL_af_setMonomerPack ""
 #define DOCS_af_setMonomerPack "setMonomerPack"
-    core::T_sp af_setMonomerPack(core::Symbol_sp packName, core::Cons_sp parts, core::Cons_sp atomNames )
+    core::T_sp af_setMonomerPack(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomNames )
     {_G();
 	core::T_sp opack = af_defineMonomerPack(packName,parts,atomNames);
 	MonomerPack_sp pack = downcast<MonomerPack_O>(opack);
@@ -184,9 +184,9 @@ void	MonomerPack_O::initialize()
 
 
 
-void	MonomerPack_O::defineContentsFromCons(core::Cons_sp atomAliases, core::Cons_sp parts)
+void	MonomerPack_O::defineContentsFromCons(core::List_sp atomAliases, core::Cons_sp parts)
 {_G();
-core::Cons_sp		p;
+core::List_sp		p;
 core::SymbolList_sp	aliases;
 core::Symbol_sp	name;
 	// Create a string list of all the atom aliases
@@ -199,7 +199,7 @@ core::Symbol_sp	name;
     this->setInterestingAtomAliasesFromSymbolList(aliases);
     for ( p=parts; p.notnilp(); p = p->cdr() )
     {
-	core::Cons_sp entry = p->car<core::Cons_O>();
+      core::List_sp entry = oCar(p);
 	if ( entry->length() <1 ) SIMPLE_ERROR(BF("monomerPack Entry contains no monomer name"));
 	core::Symbol_sp monomerName = entry->car<core::Symbol_O>();
 	this->addMonomerName(monomerName);
@@ -215,20 +215,19 @@ core::Symbol_sp	name;
 
 
 
-void MonomerPack_O::extendAliases( core::Cons_sp atomAliases, core::Cons_sp parts)
+void MonomerPack_O::extendAliases( core::List_sp atomAliases, core::List_sp parts)
 {_OF();
     core::SymbolSet_sp extendMonomers = core::SymbolSet_O::create();
     uint numberOfAtomAliases = atomAliases->length();
     this->_InterestingAtomAliases->appendConsOfStrings(atomAliases);
-    for ( core::Cons_sp cur = parts; cur.notnilp(); cur=cur->cdr() )
-    {
-	core::Cons_sp oneExtend = cur->car<core::Cons_O>();
+    for ( auto cur : parts ) {
+      core::List_sp oneExtend = oCar(cur);
 	if ( oneExtend->length() != 2 )
 	{
 	    SIMPLE_ERROR(BF("Each extendAliases entry must have two elements: "+oneExtend->__repr__() ));
 	}
-	core::Symbol_sp monomerName = oneExtend->car<core::Symbol_O>();
-	core::Cons_sp aliasAtoms = oneExtend->ocadr().as<core::Cons_O>();
+	core::Symbol_sp monomerName = oCar(oneExtend).as<core::Symbol_O>();
+	core::List_sp aliasAtoms = oCadr(oneExtend);
 	extendMonomers->insert(monomerName);
 	if ( !this->_AtomIndexers->recognizesMonomerName(monomerName) )
 	{
@@ -299,7 +298,7 @@ core::StringSet_O::iterator		it;
 }
 
 void	MonomerPack_O::setInterestingAtomNamesForMonomerNameFromCons(
-			core::Symbol_sp monomerName, core::Cons_sp names )
+			core::Symbol_sp monomerName, core::List_sp names )
 { _G();
 core::StringSet_O::smart_ptr		monomerNames;
 CandoDatabase_sp		bdb;
@@ -312,8 +311,7 @@ core::StringSet_O::iterator		it;
         SIMPLE_ERROR(BF("Unrecognized monomer name: %s %s") % monomerName % this->sharedThis<MonomerPack_O>()->description() );
     }
     indexer = AtomIndexer_O::create();
-    for ( core::Cons_sp p=names; p.notnilp(); p=p->cdr() )
-    {
+    for ( auto p : names ) {
 	core::Str_sp	interest = p->car<core::Str_O>();
 	indexer->addAtomName(interest->get());
     }

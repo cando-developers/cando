@@ -46,7 +46,7 @@ namespace chem
 	    a->setAtomAlias(atomAlias);
 	    return a;
 	}
-	static core::T_sp prim_alias(core::Function_sp, core::Cons_sp args, core::Environment_sp environ, core::Lisp_sp lisp );
+	static core::T_sp prim_alias(core::Function_sp, core::List_sp args);
     private:
 	core::Symbol_sp	_MonomerAlias;
 	core::Symbol_sp	_AtomAlias;

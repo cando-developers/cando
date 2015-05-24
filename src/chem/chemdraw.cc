@@ -3,8 +3,8 @@
 #include <string.h>
 #include <clasp/core/common.h>
 #include <clasp/core/str.h>
-#include <cando/chem/adapters.h>
-#include <clasp/core/stringSet.h>
+#include <cando/adapt/adapters.h>
+#include <cando/adapt/stringSet.h>
 #include <clasp/core/binder.h>
 #include <cando/chem/chemdraw.h>
 #include <cando/geom/quickDom.h>
@@ -470,17 +470,15 @@ namespace chem
 	// Now build the residue and fill in the implicit
 	// hydrogens on carbon
 	Residue_sp res = this->getEntireResidue();
-	core::Cons_sp carbons = res->allAtomsOfElementAsList(element_C);
+	core::List_sp carbons = res->allAtomsOfElementAsList(element_C);
 	{_BLOCK_TRACEF(BF("Creating implicit hydrogens"));
-	    for ( core::Cons_sp cur = carbons; cur.notnilp(); cur=cur->cdr() )
-	    {
+          for ( auto cur : carbons ) {
 		Atom_sp c = cur->car<Atom_O>();
 		ASSERT(this->_AtomsToNodes.count(c)>0);
 		CDNode_sp fromNode = this->_AtomsToNodes[c];
-		core::Cons_sp hydrogens = c->createImplicitHydrogenNamesOnCarbon();
+		core::List_sp hydrogens = c->createImplicitHydrogenNamesOnCarbon();
 		LOG(BF("Creating implicit hydrogens for %s named %s") % c->description() % hydrogens->__repr__()  );
-		for ( core::Cons_sp ih=hydrogens; ih.notnilp(); ih=ih->cdr() )
-		{
+		for ( auto ih : hydrogens ) {
 		    string name = ih->car<core::Str_O>()->get();
 		    this->createImplicitHydrogen(fromNode,name);
 		}
@@ -793,7 +791,7 @@ namespace chem
 	core::Reader_sp reader = core::Reader_O::create(sin,lisp);
 	core::Cons_sp block = reader->read(true,_Nil<core::T_O>()).as<core::Cons_O>();
 #endif
-	core::Cons_sp block = read_lisp_object(sin,true,_Nil<core::T_O>(),false).as<core::Cons_O>();
+	core::List_sp block = read_lisp_object(sin,true,_Nil<core::T_O>(),false);
 	sin->close();
 
 	LOG(BF("Parsed text block: %s\n") % this->_Text);
@@ -890,7 +888,7 @@ namespace chem
 #endif
 
 
-    void ChemDraw_O::setFragmentProperties(core::Symbol_sp name, core::Cons_sp properties)
+    void ChemDraw_O::setFragmentProperties(core::Symbol_sp name, core::List_sp properties)
     {_OF();
 	CDFragment_sp frag = this->_NamedFragments.get(name);
 	core::HashTableEq_sp propertiesAsBinder = core::HashTableEq_O::createFromKeywordCons(properties,validChemdrawKeywords);
@@ -898,7 +896,7 @@ namespace chem
     }
 
 #if 0
-    void	ChemDraw_O::setFragmentProperties(core::Cons_sp props)
+    void	ChemDraw_O::setFragmentProperties(core::List_sp props)
     {_G();
 	DEPRECIATED();
 	core::HashTableEq_sp kargs = core::HashTableEq_O::createFromKeywordCons(props,validChemdrawKeywords,_lisp);
@@ -983,10 +981,9 @@ namespace chem
 
     Aggregate_sp ChemDraw_O::asAggregate()
     {_OF();
-	core::Cons_sp fragments = this->allFragmentsAsCons();
+	core::List_sp fragments = this->allFragmentsAsCons();
 	Aggregate_sp agg = Aggregate_O::create();
-	for ( core::Cons_sp cur = fragments; cur.notnilp(); cur=cur->cdr() )
-	{
+	for ( auto cur : fragments ) {
 	    Molecule_sp mol = Molecule_O::create();
 	    CDFragment_sp frag = core::oCar(cur).as<CDFragment_O>();
 	    Residue_sp res = frag->getEntireResidue();
@@ -1000,12 +997,11 @@ namespace chem
 	return agg;
     }
 
-    core::Cons_sp	ChemDraw_O::getFragments()
+    core::List_sp	ChemDraw_O::getFragments()
     {_G();
-	core::Cons_sp	frags = _Nil<core::Cons_O>();
+	core::List_sp	frags = _Nil<core::T_O>();
 	Fragments::iterator	fi;
-	for ( fi=this->_AllFragments.begin(); fi!=this->_AllFragments.end(); fi++ )
-	{
+	for ( fi=this->_AllFragments.begin(); fi!=this->_AllFragments.end(); fi++ ) {
 	    core::Cons_sp n = core::Cons_O::create(*fi,frags);
 	    frags = n;
 	}
@@ -1013,9 +1009,9 @@ namespace chem
     }
 
 
-    core::Cons_sp	ChemDraw_O::getSubSetOfFragments(core::SymbolSet_sp namesOfSubSet)
+    core::List_sp	ChemDraw_O::getSubSetOfFragments(core::SymbolSet_sp namesOfSubSet)
     {_G();
-	core::Cons_sp	frags = _Nil<core::Cons_O>();
+	core::List_sp	frags = _Nil<core::T_O>();
 	core::SymbolSet_sp namesChosen = core::SymbolSet_O::create();
 	NamedFragments::iterator	fi;
 	for ( fi=this->_NamedFragments.begin(); fi!=this->_NamedFragments.end(); fi++ )

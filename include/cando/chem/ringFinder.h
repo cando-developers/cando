@@ -9,10 +9,7 @@
 #include <clasp/core/common.h>
 #include <clasp/core/cons.h>
 #include <clasp/core/bitVector.h>
-
 #include <cando/chem/chemPackage.h>
-
-#include <cando/chem/adapters.fwd.h>// ringFinder.h wants ObjectSet needs objectSet.fwd.h
 
 namespace chem {
 
@@ -52,7 +49,7 @@ public:
     void updateLastVertex(AGVertex_sp vert);
     void update(AGEdge_sp edge, AGVertex_sp vertex );
     void dump();
-    core::Cons_sp getAtoms();
+    core::List_sp getAtoms();
     core::SimpleBitVector_sp	beep();
 
     PathMessage_O(const PathMessage_O& );
@@ -78,15 +75,15 @@ private:
     uint			_seenId;
     uint			_backSpan;
     uint			_backCount;
-    core::Cons_sp		_sendBuffer;
-    core::Cons_sp		_receiveBuffer;
+    core::List_sp		_sendBuffer;
+    core::List_sp		_receiveBuffer;
 public:
     static AGVertex_sp create(RingFinder_sp graph, Atom_sp atom);
 public:
 
     RingFinder_sp getGraph() {_OF(); ANN(this->_graph);return this->_graph; };
     void*	getId();
-    core::Cons_sp	getConnectedVertices();
+    core::List_sp	getConnectedVertices();
     void	dump();
     Atom_sp	getAtom();
     string description() const;
@@ -137,7 +134,7 @@ class RingFinder_O : public core::T_O
 private:
     core::HashTable_sp			_vertices;
     gctools::Vec0<AGEdge_sp>		_edges;
-    core::HashTableEql_sp               _rings; // m a p<uint,core::Cons_sp>		_rings;
+    core::HashTableEql_sp               _rings; // m a p<uint,core::List_sp>		_rings;
     gctools::Vec0<PathMessage_sp>		_finalRings;
     gctools::Vec0<core::SimpleBitVector_sp>	_gaussian;
 public:
@@ -146,15 +143,15 @@ public:
 	* and set the ring flags for the atoms
 	* Return the rings as a Cons of Conses that contain the atoms for each ring
 	*/
-    static core::Cons_sp identifyRings(Matter_sp matter);
+    static core::List_sp identifyRings(Matter_sp matter);
 	/*! Identify the SSSR (Smallest Set of Smallest Rings) for a Molecule
 	* and set the ring flags for the atoms
 	* Return the rings as a Cons of Conses that contain the atoms for each ring
 	*/
-    static core::Cons_sp identifyRingsInMolecule(Molecule_sp matter);
+    static core::List_sp identifyRingsInMolecule(Molecule_sp matter);
     /*! Convert the Cons of atoms in one ring into a Cons of bonds that
       join them */
-    static core::Cons_sp ringBonds(core::Cons_sp atoms);
+    static core::List_sp ringBonds(core::List_sp atoms);
       
 public:
     void defineForMolecule(Molecule_sp mol);
@@ -172,7 +169,7 @@ public:
     void advanceRingSearch(uint stage);
     void findRings(int numAtoms);
     bool linearlyIndependentRing(PathMessage_sp ring);
-    core::Cons_sp getAllRingsAsListsOfAtoms();
+    core::List_sp getAllRingsAsListsOfAtoms();
 
     DEFAULT_CTOR_DTOR(RingFinder_O);
 };

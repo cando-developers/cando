@@ -2,7 +2,7 @@
 #define	DEBUG_LEVEL_FULL
 
 #include <clasp/core/common.h>
-#include <cando/chem/adapters.h>
+#include <cando/adapt/adapters.h>
 #include <cando/chem/plug.h>
 #include <cando/chem/candoDatabase.h>
 #include <clasp/core/cons.h>
@@ -354,7 +354,7 @@ namespace chem
 #define ARGS_PlugWithMates_O_make "(bond0 bond1 mates)"
 #define DECL_PlugWithMates_O_make ""
 #define DOCS_PlugWithMates_O_make "make PlugWithMates"
-  PlugWithMates_sp PlugWithMates_O::make(core::Symbol_sp bond0, core::Symbol_sp bond1, core::Cons_sp mates)
+  PlugWithMates_sp PlugWithMates_O::make(core::Symbol_sp bond0, core::Symbol_sp bond1, core::List_sp mates)
   {_G();
       GC_ALLOCATE(PlugWithMates_O, me );
       me->_B0 = bond0;
@@ -366,12 +366,12 @@ namespace chem
 
 #else
 
-    core::T_sp PlugWithMates_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp PlugWithMates_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp env, core::Lisp_sp lisp)
     {_OF();
 	this->Base::__init__(exec,args,env,lisp);
 	this->_B0 = translate::from_object<string>::convert(env->lookup(ChemPkg,"bond0"));
 	this->_B1 = translate::from_object<string>::convert(env->lookup(ChemPkg,"bond1"));
-	core::Cons_sp mates = translate::from_object<core::Cons_O>::convert(env->lookup(ChemPkg,"mates"));
+	core::List_sp mates = translate::from_object<core::List_O>::convert(env->lookup(ChemPkg,"mates"));
         mates->fillVec0(this->_Mates);
 	return _Nil<core::T_O>();
     }
@@ -674,7 +674,7 @@ namespace chem
 #define ARGS_RingClosingPlug_O_make "(ring_closing_mates)"
 #define DECL_RingClosingPlug_O_make ""
 #define DOCS_RingClosingPlug_O_make "make RingClosingPlug"
-  RingClosingPlug_sp RingClosingPlug_O::make(core::Cons_sp ringClosingMates)
+  RingClosingPlug_sp RingClosingPlug_O::make(core::List_sp ringClosingMates)
   {_G();
       GC_ALLOCATE(RingClosingPlug_O, me );
       ringClosingMates->fillVec0(me->_RingClosingMates);
@@ -919,7 +919,7 @@ namespace chem
 
 
 
-    core::Cons_sp RingClosingPlug_O::ringClosingMatesAsCons()
+    core::List_sp RingClosingPlug_O::ringClosingMatesAsCons()
     {_OF();
 	return core::Cons_O::createFromVec0(this->_RingClosingMates);
     }

@@ -5,7 +5,7 @@
 #include <boost/filesystem.hpp>
 #include <clasp/core/common.h>
 #include <clasp/core/str.h>
-#include <clasp/core/stringSet.h>
+#include <cando/adapt/stringSet.h>
 #include <clasp/core/binder.h>
 #include <cando/chem/symbolTable.h>
 #include <cando/geom/ovector3.h>
@@ -326,12 +326,12 @@ __BEGIN_DOC(candoScript.database.describeDatabase,subsection,describeDatabase)
 Describe the contents of the database.
 __END_DOC
 */
-core::T_sp	prim_describeDatabase(core::Function_sp e, core::Cons_sp args, core::Environment_sp environ, core::Lisp_sp lisp)
+core::T_sp	prim_describeDatabase(core::Function_sp e, core::List_sp args, core::Environment_sp environ, core::Lisp_sp lisp)
 {_G();
 core::Str_sp		fileName;
 CandoDatabase_sp	bdb;
     bdb = getCandoDatabase();
-    core::Cons_sp cur = bdb->constitutionsAsCons();
+    core::List_sp cur = bdb->constitutionsAsCons();
     for ( ; cur.notnilp(); cur = cur->cdr() )
     {
 	Constitution_sp con = core::oCar(cur).as<Constitution_O>();
@@ -624,7 +624,7 @@ __END_DOC
 #define ARGS_af_findResidue "(&rest args)"
 #define DECL_af_findResidue ""
 #define DOCS_af_findResidue "findResidue"
-core::T_sp af_findResidue(core::Cons_sp args)
+core::T_sp af_findResidue(core::List_sp args)
 {_G();
     Molecule_sp molecule;
     core::Fixnum_sp	residueSequenceNumber;
@@ -673,7 +673,7 @@ __END_DOC
 #define ARGS_af_atomPos "(&rest args)"
 #define DECL_af_atomPos ""
 #define DOCS_af_atomPos "atomPos"
-core::T_sp af_atomPos(core::Cons_sp args)
+core::T_sp af_atomPos(core::List_sp args)
 {_G();
     Molecule_sp molecule;
     core::Fixnum_sp	residueSequenceNumber;
@@ -732,7 +732,7 @@ core::T_sp af_atomPos(core::Cons_sp args)
 #define ARGS_af_monomer "(monomerId groupName &optional monomerAliases comment)"
 #define DECL_af_monomer ""
 #define DOCS_af_monomer "monomer"
-core::T_sp af_monomer(core::Symbol_sp monomerId, core::Symbol_sp groupName, core::Cons_sp monomerAliases, core::Str_sp comment)
+core::T_sp af_monomer(core::Symbol_sp monomerId, core::Symbol_sp groupName, core::List_sp monomerAliases, core::Str_sp comment)
 {_G();
     OligomerPart_Monomer_sp newMon;
     newMon = OligomerPart_Monomer_O::create();
@@ -834,14 +834,13 @@ core::T_sp af_calculatePoint()
 #define ARGS_af_oligomer "(oligomerName parts)"
 #define DECL_af_oligomer ""
 #define DOCS_af_oligomer "oligomer"
-core::T_sp af_oligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::Cons_sp parts)
+core::T_sp af_oligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_sp parts)
 {_G();
     Oligomer_sp olig = Oligomer_O::create();
     olig->setName(oligomerName);
     core::HashTableEq_sp monomerMap = core::HashTableEq_O::create_default();
     CandoDatabase_sp bdb = getCandoDatabase();
-    for ( core::Cons_sp p=parts; p.notnilp(); p=p->cdr() )
-    {
+    for ( auto p : parts ) {
 	OligomerPart_Base_sp oligPart = p->car<OligomerPart_Base_O>();
 	MultiMonomer_sp mon = oligPart->createMonomer(bdb);
 	olig->addMonomer(mon);

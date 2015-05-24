@@ -49,7 +49,7 @@ private: // Do not archive
 public:
 
 public: // Lisp creation
-	static core::T_sp prim_LispCreate(core::Function_sp e, core::Cons_sp args, core::Environment_sp environ, core::Lisp_sp lisp );
+	static core::T_sp prim_LispCreate(core::Function_sp e, core::List_sp args);
 
 
 public:	// ----------------------------------------------------------

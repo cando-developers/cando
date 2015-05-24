@@ -18,8 +18,7 @@
 #include <iostream>
 #include <vector>
 #include <clasp/core/common.h>
-#include <cando/chem/adapters.fwd.h>
-#include <clasp/core/stringSet.fwd.h>
+#include <cando/adapt/stringSet.fwd.h>
 #include <cando/geom/vector2.h>
 #include <cando/geom/vector3.h>
 
@@ -33,7 +32,6 @@
 
 #include <cando/chem/chemPackage.h>
 
-#include <cando/chem/adapters.fwd.h>// oligomer.h wants ObjectSet needs objectSet.fwd.h
 
 namespace chem {
 
@@ -64,7 +62,7 @@ class Oligomer_O : public core::T_O
     LISP_CLASS(chem,ChemPkg,Oligomer_O,"Oligomer");
 #if INIT_TO_FACTORIES
  public:
-    static Oligomer_sp make(core::Cons_sp parts);
+    static Oligomer_sp make(core::List_sp parts);
 #else
     DECLARE_INIT();
 #endif
@@ -80,7 +78,7 @@ protected:
 
 public:
     typedef core::Symbol_O			NameType;
-    friend core::T_sp af_setOligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::Cons_sp parts);
+    friend core::T_sp af_setOligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_sp parts);
     friend core::T_sp af_oligomerSequence(Oligomer_sp olig);
 protected:
     NameType::smart_ptr			_Name;
@@ -112,7 +110,7 @@ protected:
     void _fillSequenceAsStringForChildren(Monomer_sp mon, stringstream& seq);
     void _fillMonomerAsString(Monomer_sp mon, stringstream& seq);
     void _fillSequenceAsFileNameForChildren(Monomer_sp rootMonomer, stringstream& seq);
-    void _assembleFromParts(core::Cons_sp parts,CandoDatabase_sp bdb);
+    void _assembleFromParts(core::List_sp parts,CandoDatabase_sp bdb);
 public:
 public:
     typedef	gctools::Vec0<Monomer_sp>::iterator	monomerIterator;
@@ -123,7 +121,7 @@ public:	// /////////////////////////////////////////////////////////////////
     bool	hasLastMultiMonomerChanged();
     MultiMonomer_sp getLastMultiMonomerChanged();
 
-    core::Cons_sp monomersAsCons();
+    core::List_sp monomersAsCons();
 
     monomerIterator begin_Monomers() { return this->_Monomers.begin(); };
     monomerIterator end_Monomers() { return this->_Monomers.end(); };
@@ -213,7 +211,7 @@ public:
 
     void	signalConnectivityChanged();
 
-    virtual void catchSignal(core::Symbol_sp sig, core::Model_sp source, core::Cons_sp data );
+    virtual void catchSignal(core::Symbol_sp sig, core::Model_sp source, core::List_sp data );
     virtual void propagateSignal(core::Symbol_sp signal);
 
     /*!

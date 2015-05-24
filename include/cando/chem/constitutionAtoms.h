@@ -12,7 +12,6 @@
 #include <cando/chem/atom.fwd.h>
 #include <cando/chem/bond.fwd.h>
 #include <cando/chem/residue.fwd.h>
-#include <cando/chem/adapters.fwd.h>
 #include <cando/chem/constitutionAtoms.fwd.h>
 #include <cando/chem/calculatePosition.fwd.h>
 #include <cando/chem/elements.fwd.h>

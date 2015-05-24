@@ -935,7 +935,7 @@ bool	CoordinateSystem_O::sameAs(CoordinateSystem_sp c)
 }
 
 #ifdef RENDER
-geom::Render_sp CoordinateSystem_O::rendered(core::Cons_sp koptions)
+geom::Render_sp CoordinateSystem_O::rendered(core::List_sp koptions)
 {_G();
     geom::GrLines_sp lines = geom::GrLines_O::create();
     uint idxOrigin = lines->appendVertex(this->origin,geom::Color_O::white(_lisp));

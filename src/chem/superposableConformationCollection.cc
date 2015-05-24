@@ -195,7 +195,7 @@ ConformationCollectionEntry_sp		entry;
 }
 
 #ifdef RENDER
-geom::Render_sp	SuperposableConformationCollection_O::rendered(core::Cons_sp opts)
+geom::Render_sp	SuperposableConformationCollection_O::rendered(core::List_sp opts)
 {_G();
     IMPLEMENT_ME();
 #if 0

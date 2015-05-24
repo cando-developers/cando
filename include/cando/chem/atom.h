@@ -374,9 +374,9 @@ namespace chem
 	 *   - 1 means return yourself and immediatly attached neighbors
 	 */
     private:
-	core::Cons_sp 	_expandLocalSpanningTree(Atom_sp avoid, Bond_sp bond, uint depth);
+	core::List_sp 	_expandLocalSpanningTree(Atom_sp avoid, Bond_sp bond, uint depth);
     public:
-	core::Cons_sp	localSpanningTree(uint depth);
+	core::List_sp	localSpanningTree(uint depth);
 
 
 	Atom_sp	aliasAtomOrNil(Alias_sp alias) {IMPLEMENT_ME();};
@@ -386,7 +386,7 @@ namespace chem
 	void	applyTransformToAtoms(const Matrix& m);
 	VectorBond& getBonds()		{return this->bonds; };
         VectorAtom getBondedAtoms();
-	core::Cons_sp	bondedAtomsAsList();
+	core::List_sp	bondedAtomsAsList();
 
 	Bond_sp	basicBondTo(  Atom_sp a, BondOrder o );
 	Bond_sp	bondTo(  Atom_sp a, BondOrder o );
@@ -427,7 +427,7 @@ namespace chem
 	ConfigurationEnum calculateStereochemicalConfiguration();
 	string calculateStereochemicalConfigurationAsString();
 
-	core::Cons_sp	bondsAsList();
+	core::List_sp	bondsAsList();
 	BondList_sp	getBondList();
 	bool		isHeavyAtom();
 	BondList_sp	getHeavyAtomBondList();
@@ -441,7 +441,7 @@ namespace chem
 	// Configuration
 	//
 	//! If the atom can have a stereochemical configuration return true
-	core::Cons_sp	getNeighborsByRelativePriority();
+	core::List_sp	getNeighborsByRelativePriority();
 	uint	getRelativePriority() { return this->_RelativePriority;};
 	void	setRelativePriority(uint p) { this->_RelativePriority = p;};
 	bool	isConfigurable();

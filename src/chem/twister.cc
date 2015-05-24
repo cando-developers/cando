@@ -75,21 +75,21 @@ void	Twister_O::_defineForDihedral(Atom_sp a1ref, Atom_sp a1, Atom_sp a2, Atom_s
 		//
 		// Accumulate the atoms on each side of the bond
 		//
-    core::Cons_sp a1Atoms = _Nil<core::Cons_O>();
+    core::List_sp a1Atoms = _Nil<core::T_O>();
     SpanningLoop_sp span1 = SpanningLoop_O::create();
     span1->setTop(a1);
     while ( span1->advance() )
     {
 	a1Atoms = core::Cons_O::create(span1->getAtom(),a1Atoms);
     }
-    core::Cons_sp a2Atoms = _Nil<core::Cons_O>();
+    core::List_sp a2Atoms = _Nil<core::T_O>();
     SpanningLoop_sp span2 = SpanningLoop_O::create();
     span2->setTop(a2);
     while ( span2->advance() )
     {
 	a2Atoms = core::Cons_O::create(span2->getAtom(),a2Atoms);
     }
-    core::Cons_sp twistAtoms;
+    core::List_sp twistAtoms;
     Atom_sp twistFixed, twistMovable, twistFixedRef, twistMovableRef;
     if ( force2Mobile )
     {
@@ -127,8 +127,7 @@ void	Twister_O::_defineForDihedral(Atom_sp a1ref, Atom_sp a1, Atom_sp a2, Atom_s
     this->setFixedAndMovable(twistFixed,twistMovable);
     this->_FixedRef = twistFixedRef;
     this->_MovableRef = twistMovableRef;
-    for ( core::Cons_sp cur=twistAtoms; cur.notnilp(); cur = cur->cdr() )
-    {
+    for ( auto cur : twistAtoms ) {
 	this->addAtom(cur->car<Atom_O>());
     }
 }

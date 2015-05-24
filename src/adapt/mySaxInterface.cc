@@ -8,7 +8,7 @@
 #include <clasp/core/foundation.h>
 #include <clasp/core/lisp.h>
 #include <clasp/core/lispStream.h>
-#include <cando/geom/mySaxInterface.h>
+#include <cando/adapt/mySaxInterface.h>
 
 
 namespace geom {

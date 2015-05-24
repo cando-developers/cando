@@ -12,7 +12,7 @@
 //#include	<strings>
 #include <stdio.h>
 #include <clasp/core/common.h>
-#include <clasp/core/stringSet.h>
+#include <cando/adapt/stringSet.h>
 #include <cando/chem/matter.h>
 #include <cando/geom/omatrix.h>
 //#include "core/serialize.h"
@@ -51,7 +51,7 @@ namespace chem
 	this->_NextContentId = 1;
 	this->setContainedByNothing();
 	this->_Restraints = _Nil<RestraintList_O>();
-        this->_Properties = _Nil<core::Cons_O>();
+        this->_Properties = _Nil<core::T_O>();
     }
 
     string Matter_O::__repr__() const
@@ -691,7 +691,7 @@ namespace chem
   \end{verbatim}
   __END_DOC
 */
-    void	Matter_O::setAtomAliasesForResiduesNamed(core::Cons_sp parts, core::Cons_sp atomAliases )
+    void	Matter_O::setAtomAliasesForResiduesNamed(core::List_sp parts, core::List_sp atomAliases )
     {_G();
         FIX_ME();
 #if 0
@@ -700,16 +700,15 @@ namespace chem
 	    SIMPLE_ERROR(BF("Needs Aggregate, Molecule or Residue"));
 	}
 	LOG(BF("setAtomAliasesForResiduesNamed with parts(%s) atomAliases(%s)") % parts->__repr__().c_str() % atomAliases->__repr__().c_str()  );
-        gctools::SmallMap<MatterName,core::Cons_sp> residueNamesToAliasAtoms;
-	for ( core::Cons_sp cur = parts; cur.notnilp(); cur=cur->cdr() )
-	{
-	    core::Cons_sp oneExtend = cur->car<core::Cons_O>();
+        gctools::SmallMap<MatterName,core::List_sp> residueNamesToAliasAtoms;
+	for ( auto cur : parts ) {
+          core::List_sp oneExtend = oCar(cur);
 	    if ( oneExtend->length() != 2 )
 	    {
 		SIMPLE_ERROR(BF("Each entry must have two elements: "+oneExtend->__repr__() ));
 	    }
 	    core::Str_sp residueName = oneExtend->car<core::Str_O>();
-	    core::Cons_sp aliasAtoms = oneExtend->ocadr().as<core::Cons_O>();
+	    core::List_sp aliasAtoms = oCadr(oneExtend);
 	    LOG(BF("residueName(%s) aliasAtoms(%s)") % residueName->get().c_str() % aliasAtoms->__repr__().c_str() );
 	    residueNamesToAliasAtoms[residueName->get()] = aliasAtoms;
 	}
@@ -724,7 +723,7 @@ namespace chem
 	    if ( residueNamesToAliasAtoms.count(res->getName())>0 )
 	    {
 		LOG(BF("%s:%d Setting aliases for residue(%s)") % (__FILE__) % (__LINE__) % (res->getName().c_str()) );
-		core::Cons_sp aliasAtoms = residueNamesToAliasAtoms[res->getName()];
+		core::List_sp aliasAtoms = residueNamesToAliasAtoms[res->getName()];
 		LOG(BF("setting aliases for residueName(%s) aliasAtoms(%s) atomAliases(%s)") % res->getName().c_str() % aliasAtoms->__repr__().c_str() % atomAliases->__repr__().c_str() );
 		res->setAliasesForAtoms(aliasAtoms,atomAliases);
 	    } else
@@ -787,9 +786,9 @@ namespace chem
     }
 
 
-    core::Cons_sp Matter_O::contentsAsCons()
+    core::List_sp Matter_O::contentsAsCons()
     {_G();
-	core::Cons_sp cur = _Nil<core::Cons_O>();
+	core::List_sp cur = _Nil<core::T_O>();
 	contentIterator	it;
 	for ( it=this->_contents.end()-1; it>=this->_contents.begin(); it-- )
 	{
@@ -870,12 +869,11 @@ namespace chem
 
 
 
-    core::Cons_sp Matter_O::allAtomsOfElementAsList(Element element)
+    core::List_sp Matter_O::allAtomsOfElementAsList(Element element)
     {_G();
-	core::Cons_sp		list;
+      core::List_sp		list(_Nil<core::T_O>());
 	Loop		la;
 	Atom_sp		a;
-	list = _Nil<core::Cons_O>();
 	la.loopTopGoal(this->sharedThis<Matter_O>(),ATOMS);
 	while ( la.advanceLoopAndProcess() )
 	{
@@ -923,7 +921,7 @@ namespace chem
 /*! Subclass this method
  */
 #ifdef RENDER
-    geom::Render_sp Matter_O::rendered(core::Cons_sp kopts)
+    geom::Render_sp Matter_O::rendered(core::List_sp kopts)
     {
 	return _Nil<geom::Render_O>();
     };
@@ -931,9 +929,9 @@ namespace chem
 
 
 
-    core::Cons_sp Matter_O::allAtomsAsCons(bool allowVirtualAtoms ) const
+    core::List_sp Matter_O::allAtomsAsCons(bool allowVirtualAtoms ) const
     {_OF();
-	core::Cons_sp result = _Nil<core::Cons_O>();
+	core::List_sp result = _Nil<core::T_O>();
 	Loop l(this->const_sharedThis<Matter_O>(),ATOMS);
 	while ( l.advance() )
 	{
@@ -946,9 +944,9 @@ namespace chem
 
 
 
-    core::Cons_sp Matter_O::allBondsAsCons(bool allowVirtualAtoms ) const
+    core::List_sp Matter_O::allBondsAsCons(bool allowVirtualAtoms ) const
     {_OF();
-	core::Cons_sp result = _Nil<core::Cons_O>();
+	core::List_sp result = _Nil<core::List_V>();
 	Loop l(this->const_sharedThis<Matter_O>(),BONDS);
 	while ( l.advance() )
 	{
@@ -964,9 +962,9 @@ namespace chem
 
 
 
-    core::Cons_sp Matter_O::allAnglesAsCons(bool allowVirtualAtoms ) const
+    core::List_sp Matter_O::allAnglesAsCons(bool allowVirtualAtoms ) const
     {_OF();
-	core::Cons_sp result = _Nil<core::Cons_O>();
+	core::List_sp result = _Nil<core::T_O>();
 	Loop l(this->const_sharedThis<Matter_O>(),ANGLES);
 	while ( l.advance() )
 	{
@@ -984,9 +982,9 @@ namespace chem
     }
 
 
-    core::Cons_sp Matter_O::allImproperTorsionsAsCons(bool allowVirtualAtoms ) const
+    core::List_sp Matter_O::allImproperTorsionsAsCons(bool allowVirtualAtoms ) const
     {_OF();
-	core::Cons_sp result = _Nil<core::Cons_O>();
+	core::List_sp result = _Nil<core::List_V>();
 	Loop l(this->const_sharedThis<Matter_O>(),IMPROPERS);
 	{_BLOCK_TRACE("Iterating over loop");
 	    int count=0;
@@ -1012,9 +1010,9 @@ namespace chem
 
 
 
-    core::Cons_sp Matter_O::allProperTorsionsAsCons(bool allowVirtualAtoms ) const
+    core::List_sp Matter_O::allProperTorsionsAsCons(bool allowVirtualAtoms ) const
     {_OF();
-	core::Cons_sp result = _Nil<core::Cons_O>();
+	core::List_sp result = _Nil<core::T_O>();
 	Loop l(this->const_sharedThis<Matter_O>(),PROPERS);
 	while ( l.advance() )
 	{

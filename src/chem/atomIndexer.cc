@@ -2,7 +2,7 @@
 #define	DEBUG_LEVEL_NONE
 #include <clasp/core/common.h>
 #include <clasp/core/str.h>
-#include <cando/chem/adapters.h>
+#include <cando/adapt/adapters.h>
 #include <cando/chem/atomIndexer.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
@@ -74,11 +74,10 @@ core::StringList_O::iterator		it;
     }
 }
 
-void	AtomIndexer_O::appendConsOfTexts(core::Cons_sp sl)
+void	AtomIndexer_O::appendConsOfTexts(core::List_sp sl)
 {_G();
     LOG(BF("Appending atom names: %s") % sl->__repr__().c_str()  );
-    for ( core::Cons_sp cur=sl; cur.notnilp(); cur=cur->cdr() )
-    {
+    for ( auto cur : sl ) {
         this->_Names.push_back(cur->car<core::Str_O>()->get());
     }
 }

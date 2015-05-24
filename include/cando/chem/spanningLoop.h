@@ -88,7 +88,7 @@ public:
 	bool		advance() { return this->advanceLoopAndProcess(); };
 	Atom_sp		getAtom();
 
-	core::Cons_sp		allAtoms();
+	core::List_sp		allAtoms();
 
 
 

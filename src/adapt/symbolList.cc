@@ -36,8 +36,8 @@ THE SOFTWARE.
 #include <clasp/core/object.h>
 #include <clasp/core/metaClass.h>
 #include <clasp/core/str.h>
-#include <clasp/core/symbolList.h>
-#include <clasp/core/symbolSet.h>
+#include <cando/adapt/symbolList.h>
+#include <cando/adapt/symbolSet.h>
 #include <clasp/core/wrappers.h>
 
 #define GCINFO_KIND_GCVECTOR_gctools__GCVector_moveable_class_mem__smart_ptr_class_core__Symbol_O__

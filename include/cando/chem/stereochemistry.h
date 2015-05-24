@@ -21,7 +21,7 @@
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
-#include <clasp/core/symbolSet.fwd.h>
+#include <cando/adapt/symbolSet.fwd.h>
 #include <cando/geom/vector2.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/entity.h>
@@ -61,8 +61,8 @@ namespace chem
             core::Symbol_sp 	_Configuration;
 
 	public:
-	    static	core::Cons_sp stereochemicalPermutations(uint numberOfCenters, core::Lisp_sp e);
-	    static	core::Cons_sp create_multiple(core::Cons_sp atomNames, core::Cons_sp configurations, core::Lisp_sp e);
+	    static	core::List_sp stereochemicalPermutations(uint numberOfCenters);
+	    static	core::List_sp create_multiple(core::List_sp atomNames, core::Cons_sp configurations);
 
 	public:
 	    MatterName	getAtomName()	{return this->_AtomName;};
@@ -90,7 +90,7 @@ namespace chem
 	    LISP_CLASS(chem,ChemPkg,Stereoisomer_O,"Stereoisomer");
 #if INIT_TO_FACTORIES
 	public:
-	    static Stereoisomer_sp make(core::Symbol_sp name, core::Symbol_sp pdb, core::Cons_sp configs);
+	    static Stereoisomer_sp make(core::Symbol_sp name, core::Symbol_sp pdb, core::List_sp configs);
 #else
 	    DECLARE_INIT();
 #endif
@@ -142,7 +142,7 @@ namespace chem
 	    LISP_CLASS(chem,ChemPkg,StereoInformation_O,"StereoInformation");
 #if INIT_TO_FACTORIES
 	public:
-	    static StereoInformation_sp make(core::Cons_sp stereoisomers, core::Cons_sp restraints);
+	    static StereoInformation_sp make(core::List_sp stereoisomers, core::List_sp restraints);
 #else
 	    DECLARE_INIT();
 #endif
@@ -170,7 +170,7 @@ namespace chem
             gctools::Vec0<ComplexRestraint_sp>::iterator begin_ComplexRestraints() { return this->_ComplexRestraints.begin();};
             gctools::Vec0<ComplexRestraint_sp>::iterator end_ComplexRestraints() { return this->_ComplexRestraints.end();};
 
-	    core::Cons_sp stereoisomersAsCons() { return core::Cons_O::createFromVec0(this->_Stereoisomers); };
+	    core::List_sp stereoisomersAsCons() { return core::Cons_O::createFromVec0(this->_Stereoisomers); };
 
 	    void validate();
 

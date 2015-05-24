@@ -53,7 +53,7 @@ public:
 public:	// Leave everything exposed to simplify getting values in and out
 	core::Symbol_sp _MonomerId;
 	core::Symbol_sp	_GroupName;
-	core::Cons_sp	_MonomerAliases;
+	core::List_sp	_MonomerAliases;
 	string	_Comment;
 public:
 public:

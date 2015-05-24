@@ -11,14 +11,14 @@
 #include <vector>
 #include <clasp/core/common.h>
 #include <clasp/core/str.h>
-#include <clasp/core/stringSet.h>
+#include <cando/adapt/stringSet.h>
 #include <cando/chem/matter.h>
 #include <cando/chem/monomer.h>
 //#include "core/archiveNode.h"
 //#include "core/serialize.h"
-#include <cando/chem/candoDatabaseReference.h>
-#include <cando/chem/adapters.h>
-#include <clasp/core/stringSet.h>
+//#include <cando/chem/candoDatabaseReference.h>
+#include <cando/adapt/stringSet.h>
+#include <cando/adapt/symbolSet.h>
 #include <cando/chem/restraint.h>
 #include <cando/chem/virtualAtom.h>
 #include <cando/chem/calculatePosition.h>
@@ -354,14 +354,13 @@ Matter_sp Residue_O::copy()
 
 
 
-void Residue_O::removeAtomsWithNames(core::Cons_sp c)
+void Residue_O::removeAtomsWithNames(core::List_sp args)
 {_G();
-    for ( ; c.notnilp(); c = cCdr(c) )
-    {
-	MatterName atomName = oCar(c).as<MatterName::Type>();
-	Atom_sp a = this->atomWithName(atomName);
-	this->removeAtomDeleteBonds(a);
-    }
+  for ( auto c : args ) {
+    MatterName atomName = oCar(c).as<MatterName::Type>();
+    Atom_sp a = this->atomWithName(atomName);
+    this->removeAtomDeleteBonds(a);
+  }
 }
 
 //
@@ -491,15 +490,15 @@ void Residue_O::makeAllAtomNamesInEachResidueUnique()
 	LOG(BF("Looking at atom name(%s)") % _rep_(atom->getName())  );
         allNames->insert(atom->getName());
 	allNamesAccumulate->insert(atom->getName());
-        core::Cons_sp atoms = atomsThatShareName->gethash(atom->getName()
-                                                          ,_Nil<core::Cons_O>()).as<core::Cons_O>();
+        core::List_sp atoms = atomsThatShareName->gethash(atom->getName()
+                                                          ,_Nil<core::T_O>()).as<core::Cons_O>();
         atoms = core::Cons_O::create(atom,atoms);
         atomsThatShareName->setf_gethash(atom->getName(),atoms);
     }
     allNames->map( [&allNames,&allNamesAccumulate,&atomsThatShareName] (core::Symbol_sp name) {
-            core::Cons_sp atomsWithName = atomsThatShareName->gethash(name);
+            core::List_sp atomsWithName = atomsThatShareName->gethash(name);
             uint numberSuffix = 1;
-            for ( core::Cons_sp cur = atomsWithName; cur.notnilp(); cur=cCdr(cur) ) {
+            for ( auto cur : atomsWithName ) {
                 stringstream newName;
                 uint fails = 0;
                 while ( 1 ) 
@@ -529,7 +528,7 @@ void Residue_O::makeAllAtomNamesInEachResidueUnique()
 }
 
 
-void Residue_O::setAliasesForAtoms(core::Cons_sp aliasAtoms, core::Cons_sp atomAliases)
+void Residue_O::setAliasesForAtoms(core::List_sp aliasAtoms, core::List_sp atomAliases)
 {_G();
     ASSERT_eq(aliasAtoms->length(),atomAliases->length());
     while ( aliasAtoms.notnilp() )
@@ -538,8 +537,8 @@ void Residue_O::setAliasesForAtoms(core::Cons_sp aliasAtoms, core::Cons_sp atomA
 	MatterName atomAlias = oCar(atomAliases).as<MatterName::Type>();
 	Atom_sp a = this->atomWithName(aliasAtom);
 	a->setAlias(atomAlias);
-	aliasAtoms = cCdr(aliasAtoms);
-	atomAliases = cCdr(atomAliases);
+	aliasAtoms = oCdr(aliasAtoms);
+	atomAliases = oCdr(atomAliases);
     }
 }
 

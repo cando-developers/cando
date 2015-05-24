@@ -11,7 +11,7 @@
 #include <set>
 #include <clasp/core/common.h>
 #include <cando/chem/bond.h>
-#include <clasp/core/stringSet.fwd.h>
+#include <cando/adapt/stringSet.fwd.h>
 #include <cando/geom/vector3.h>
 #include <clasp/core/intArray.h>
 
@@ -108,7 +108,7 @@ public:
 #if 0
 	bool	canRender() { return true;};
 #ifdef RENDER
-	geom::Render_sp	rendered(core::Cons_sp options);
+	geom::Render_sp	rendered(core::List_sp options);
 #endif
 #endif
 	virtual	string	coordinatesAsString()	{_OF();SUBCLASS_MUST_IMPLEMENT();};
@@ -196,7 +196,7 @@ public:
 #if 0
 	bool	canRender() { return true;};
 #ifdef RENDER
-	geom::Render_sp	rendered(core::Cons_sp options);
+	geom::Render_sp	rendered(core::List_sp options);
 #endif
 #endif
 	virtual ConformationExplorerEntryStage_sp createEntryStage(string const& name);
@@ -284,7 +284,7 @@ public:
 		//! Return the index of the entry
 	unsigned getEntryIndex(ConformationExplorerEntry_sp entry);
 
-	core::Cons_sp entriesAsCons();
+	core::List_sp entriesAsCons();
 
 	virtual void	clearEntries();
 	ConformationExplorerEntry_sp getEntry(unsigned i);
@@ -339,7 +339,7 @@ public:
 #if 0
 	bool canRender() { return true; }
 #ifdef RENDER
-	geom::Render_sp rendered(core::Cons_sp options);
+	geom::Render_sp rendered(core::List_sp options);
 #endif
 #endif
 	string __str__() ;

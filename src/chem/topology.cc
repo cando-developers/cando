@@ -6,8 +6,8 @@
 //
 
 #include <clasp/core/common.h>
-#include <clasp/core/stringSet.h>
-#include <cando/chem/adapters.h>
+#include <cando/adapt/stringSet.h>
+#include <cando/adapt/adapters.h>
 #include <cando/chem/topology.h>
 #include <cando/chem/coupling.h>
 #include <cando/chem/monomer.h>
@@ -65,7 +65,7 @@ namespace chem
 #define ARGS_Topology_O_make "(name net_charge properties plugs residue)"
 #define DECL_Topology_O_make ""
 #define DOCS_Topology_O_make "make Topology"
-    Topology_sp Topology_O::make(core::Symbol_sp name, int netCharge, core::HashTableEq_sp properties, core::Cons_sp curPlugs, ConstitutionAtoms_sp residue ) //, kinematics::AtomTemplate_sp atomTreeTemplate, kinematics::ChiList_sp chiList)
+    Topology_sp Topology_O::make(core::Symbol_sp name, int netCharge, core::HashTableEq_sp properties, core::List_sp curPlugs, ConstitutionAtoms_sp residue ) //, kinematics::AtomTemplate_sp atomTreeTemplate, kinematics::ChiList_sp chiList)
   {_G();
       GC_ALLOCATE(Topology_O, me );
     me->_Name = name;
@@ -75,7 +75,7 @@ namespace chem
     // change the name to "outPlugs"
     //
     me->_Plugs.clear();
-    core::Cons_sp curPlug;
+    core::List_sp curPlug;
     for ( ; curPlug.notnilp(); curPlug = curPlug->cdr() )
       {
 	plugType p = curPlug->car<plugOType>();
@@ -97,7 +97,7 @@ namespace chem
   
 #else
 
-   core::T_sp Topology_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+   core::T_sp Topology_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp env, core::Lisp_sp lisp)
     {_G();
 	this->_Name = translate::from_object<core::Symbol_O>::convert(env->lookup(ChemPkg,"name"));
 	this->_ResidueNetCharge = translate::from_object<int>::convert(env->lookup(ChemPkg,"netCharge"));
@@ -106,7 +106,7 @@ namespace chem
 	// If "plugs" option is outgoing plugs only then we should
 	// change the name to "outPlugs"
 	//
-	core::Cons_sp curPlug = translate::from_object<core::Cons_O>::convert(env->lookup(ChemPkg,"plugs"));
+	core::List_sp curPlug = translate::from_object<core::List_O>::convert(env->lookup(ChemPkg,"plugs"));
 	this->_Plugs.clear();
 	for ( ; curPlug.notnilp(); curPlug = curPlug->cdr() )
 	{
@@ -247,15 +247,15 @@ namespace chem
     }
 
 
-    core::Cons_sp Topology_O::plugsAsCons()
+    core::List_sp Topology_O::plugsAsCons()
     {_OF();
-	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::Cons_O>());
+	core::Cons_sp first = core::T_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
 	LOG(BF("The number of plugs = %d") % this->_Plugs.size()  );
 	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
 	{
 	    LOG(BF("Adding plug: %s") % i->second->getName());
-	    core::Cons_sp one = core::Cons_O::create(i->second,_Nil<core::Cons_O>());
+	    core::Cons_sp one = core::T_O::create(i->second,_Nil<core::T_O>());
 	    cur->setCdr(one);
 	    cur = one;
 	}
@@ -264,9 +264,9 @@ namespace chem
     }
 
 
-    core::Cons_sp Topology_O::plugsWithMatesAsCons()
+    core::List_sp Topology_O::plugsWithMatesAsCons()
     {_G();
-	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::Cons_O>());
+	core::Cons_sp first = core::T_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
 	LOG(BF("The number of plugs = %d") % this->_Plugs.size()  );
 	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
@@ -274,7 +274,7 @@ namespace chem
 	    // skip origin plugs
 	    if ( !i->second->isAssignableTo<PlugWithMates_O>() ) continue;
 	    LOG(BF("Adding plug: %s") % i->second->__repr__() );
-	    core::Cons_sp one = core::Cons_O::create(i->second,_Nil<core::Cons_O>());
+	    core::Cons_sp one = core::T_O::create(i->second,_Nil<core::T_O>());
 	    cur->setCdr(one);
 	    cur = one;
 	}
@@ -282,16 +282,16 @@ namespace chem
 	return first->cdr();
     }
 
-    core::Cons_sp Topology_O::outPlugsAsCons()
+    core::List_sp Topology_O::outPlugsAsCons()
     {_G();
-	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::Cons_O>());
+	core::Cons_sp first = core::T_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
 	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
 	{
 	    Plug_sp plug = i->second;
 	    if ( !plug->getIsIn() )
 	    {
-		core::Cons_sp one = core::Cons_O::create(i->second,_Nil<core::Cons_O>());
+		core::Cons_sp one = core::T_O::create(i->second,_Nil<core::T_O>());
 		cur->setCdr(one);
 		cur = one;
 	    }

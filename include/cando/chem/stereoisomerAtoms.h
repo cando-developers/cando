@@ -8,8 +8,8 @@
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
-#include <clasp/core/stringSet.fwd.h>
-#include <clasp/core/symbolSet.fwd.h>
+#include <cando/adapt/stringSet.fwd.h>
+#include <cando/adapt/symbolSet.fwd.h>
 #include <cando/chem/atom.fwd.h>
 #include <cando/chem/bond.fwd.h>
 #include <cando/chem/residue.fwd.h>

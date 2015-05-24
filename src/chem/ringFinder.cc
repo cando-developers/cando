@@ -18,7 +18,7 @@ __END_DOC
 #include <clasp/core/bitVector.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
-#include <cando/chem/adapters.h>
+#include <cando/adapt/adapters.h>
 #include <cando/chem/loop.h>
 #include <clasp/core/hashTableEq.h>
 #include <cando/chem/virtualAtom.h>
@@ -148,7 +148,7 @@ void PathMessage_O::dump()
 }
 
 
-core::Cons_sp PathMessage_O::getAtoms()
+core::List_sp PathMessage_O::getAtoms()
 {_G();
     core::ObjectSet_sp verts = core::ObjectSet_O::create();
     gctools::SmallOrderedSet<Atom_sp>	atoms;
@@ -165,7 +165,7 @@ core::Cons_sp PathMessage_O::getAtoms()
 	atoms.insert(a2);
     }
     LOG(BF("Building list") );
-    core::Cons_sp  list = _Nil<core::Cons_O>();
+    core::List_sp  list = _Nil<core::T_O>();
     for ( gctools::SmallOrderedSet<Atom_sp>::iterator si=atoms.begin(); si!=atoms.end(); si++ )
     {
 	list = core::Cons_O::create(*si,list);
@@ -207,9 +207,9 @@ void*	AGVertex_O::getId()
     return this->_atom.get();
 };
 
-core::Cons_sp	AGVertex_O::getConnectedVertices()
+core::List_sp	AGVertex_O::getConnectedVertices()
 {_G();
-    core::Cons_sp	verts = _Nil<core::Cons_O>();
+    core::List_sp	verts = _Nil<core::T_O>();
     for ( uint i=0, iEnd(this->_edges.size()); i<iEnd; ++i ) {
 	verts = core::Cons_O::create(this->_edges[i],verts);
     }
@@ -228,8 +228,7 @@ string AGVertex_O::description() const
 void	AGVertex_O::dump()
 {_G();
     this->_atom->dump();
-    core::Cons_sp cur;
-    for ( cur=this->getConnectedVertices(); cur.notnilp(); cur = cur->cdr() )
+    for ( auto cur : this->getConnectedVertices() ) {
     {
 	_lisp->prin1(BF("%s ") % cur->car<AGVertex_O>()->getAtom()->getName() );
     }
@@ -250,13 +249,13 @@ void AGVertex_O::addEdge(AGEdge_sp edge)
 
 void AGVertex_O::emptySendBuffer()
 {_G();
-    this->_sendBuffer = _Nil<core::Cons_O>();
+    this->_sendBuffer = _Nil<core::T_O>();
 }
 
 
 void AGVertex_O::emptyReceiveBuffer()
 {_G();
-    this->_receiveBuffer = _Nil<core::Cons_O>();
+    this->_receiveBuffer = _Nil<core::T_O>();
 }
 
 
@@ -279,9 +278,7 @@ void AGVertex_O::send()
 	AGEdge_sp edge = this->_edges[i];
 	AGVertex_sp neighbor = (edge)->otherVertex(this);
 	_BLOCK_TRACEF(BF("sending messages to Vertex: %s") % neighbor->description().c_str() );
-	core::Cons_sp msgCur;
-	for ( msgCur=this->_sendBuffer; msgCur.notnilp(); msgCur=msgCur->cdr())
-	{
+	for ( auto msgCur : this->_sendBuffer ) {
 	    PathMessage_sp msg = msgCur->car<PathMessage_O>();
 	    LOG(BF("Sending message: %s") % msg->beep()->__repr__() );
 	    	// If the message most recently came from the neighbor,
@@ -318,13 +315,11 @@ void AGVertex_O::receive(uint stage)
     RingFinder_sp		graph = this->getGraph();
     edgeArray0.resize(graph->getNumberOfEdges(), _Nil<PathMessage_O>());
     edgeArray1.resize(graph->getNumberOfEdges(), _Nil<PathMessage_O>());
-    core::Cons_sp msgCur;
     LOG(BF("Stage(%d) Vertex(%s) distributing receiveBuffer, there are %d messages") % stage % this->_atom->description().c_str() % this->_receiveBuffer->length() );
     uint addedMessages = 0;
     		// isolated atoms will have empty receive buffers
     ASSERTP(this->_receiveBuffer.notnilp(),"The receive buffer is empty for atom("+this->_atom->description()+")!");
-    for ( msgCur = this->_receiveBuffer; msgCur.notnilp(); msgCur=msgCur->cdr())
-    {
+    for ( auto msgCur : this->_receiveBuffer ) {
 	PathMessage_sp msg = msgCur->car<PathMessage_O>();
 	_BLOCK_TRACEF(BF("Stage(%d) Vertex(%s) received bitVector: %s") % stage % this->_atom->getName() % msg->beep()->__repr__() );
 	AGEdge_sp edge = msg->getFirstEdge();
@@ -395,7 +390,7 @@ void AGVertex_O::receive(uint stage)
 		    vertexDict[nodeId] = core::Cons_O::create(msg,vertexDict[nodeId]);
 		} else
 		{
-		    vertexDict[nodeId]=core::Cons_O::create(msg,_Nil<core::Cons_O>());
+		    vertexDict[nodeId]=core::T_O::create(msg,_Nil<core::T_O>());
 		}
 	    }
 	    if ( edgeArray1[i].notnilp() )
@@ -407,7 +402,7 @@ void AGVertex_O::receive(uint stage)
 		    vertexDict[nodeId] = core::Cons_O::create(msg,vertexDict[nodeId]);
 		} else
 		{
-		    vertexDict[nodeId]=core::Cons_O::create(msg,_Nil<core::Cons_O>());
+		    vertexDict[nodeId]=core::T_O::create(msg,_Nil<core::T_O>());
 		}
 	    }
 	}
@@ -723,7 +718,7 @@ void RingFinder_O::addRing(PathMessage_sp ring, uint stage)
     core::HashGenerator hg;
     beep->sxhash(hg);
     uint hash = hg.hash();
-    core::Cons_sp ringList = _Nil<core::Cons_O>();
+    core::List_sp ringList = _Nil<core::T_O>();
     FIX_ME(); // fix below
 #if 0
     if ( this->_rings.count(hash) != 0 )
@@ -731,7 +726,7 @@ void RingFinder_O::addRing(PathMessage_sp ring, uint stage)
 	ringList = this->_rings[hash];
     } else
     {
-	this->_rings[hash] = _Nil<core::Cons_O>();
+	this->_rings[hash] = _Nil<core::T_O>();
     }
     	// If this new ring is identical to an existing ring then
 	// just return
@@ -797,14 +792,14 @@ bool RingFinder_O::linearlyIndependentRing(PathMessage_sp ring)
 }
 
 
-core::Cons_sp RingFinder_O::getAllRingsAsListsOfAtoms()
+core::List_sp RingFinder_O::getAllRingsAsListsOfAtoms()
 {_G();
-    core::Cons_sp lists = _Nil<core::Cons_O>();
+    core::List_sp lists = _Nil<core::T_O>();
     gctools::Vec0<PathMessage_sp>::iterator	it;
     uint ridx=0;
     for ( it=this->_finalRings.begin(); it!=this->_finalRings.end(); it++ )
     {
-	core::Cons_sp oneRing = (*it)->getAtoms();
+	core::List_sp oneRing = (*it)->getAtoms();
 	lists = core::Cons_O::create(oneRing,lists);
 	LOG(BF("Ring #%d = size(%d) %s") % ridx % oneRing->length() % oneRing->__repr__().c_str()  );
 	ridx++;
@@ -814,7 +809,7 @@ core::Cons_sp RingFinder_O::getAllRingsAsListsOfAtoms()
 
 
 
-core::Cons_sp RingFinder_O::identifyRingsInMolecule(Molecule_sp molecule)
+core::List_sp RingFinder_O::identifyRingsInMolecule(Molecule_sp molecule)
 {_G();
      	//
 	// First clear all ring flags
@@ -843,16 +838,14 @@ core::Cons_sp RingFinder_O::identifyRingsInMolecule(Molecule_sp molecule)
     {_BLOCK_TRACE("Looking for rings");
 	atomGraph->findRings(numAtoms);
     }
-    core::Cons_sp rings = _Nil<core::Cons_O>();
+    core::List_sp rings = _Nil<core::T_O>();
     {_BLOCK_TRACE("Assigning ring membership");
 	rings = atomGraph->getAllRingsAsListsOfAtoms();
-	for ( core::Cons_sp curRing=rings; curRing.notnilp(); curRing = curRing->cdr() )
-	{
-	    core::Cons_sp atoms = curRing->car<core::Cons_O>();
+	for ( auto curRing : rings ) {
+          core::List_sp atoms = oCar(curRing);
 	    uint ringSize = atoms->length();
-	    for ( core::Cons_sp atomCons = atoms; atomCons.notnilp(); atomCons = atomCons->cdr() )
-	    {
-		Atom_sp atom = atomCons->car<Atom_O>();
+	    for ( auto atomCons : atoms ) {
+              Atom_sp atom = oCar(atomCons).as<Atom_O>();
 		atom->setInRingOfSize(ringSize);
 		atom->incrementRingMembershipCount();
 		LOG(BF("Set %s as part of ring[%d]") % atom->description() % ringSize);
@@ -875,27 +868,27 @@ Identify the Smallest Set of Smallest Rings (SSSR) for the Molecule or Aggregate
 Set the ring membership flags of the atoms that are in rings.
 __END_DOC
 */
-core::Cons_sp RingFinder_O::identifyRings(Matter_sp matter)
+core::List_sp RingFinder_O::identifyRings(Matter_sp matter)
 {_G();
     if ( matter.isA<Molecule_O>() )
     {
         Molecule_sp mol = downcast<Molecule_O>(matter);
-	core::Cons_sp rings = RingFinder_O::identifyRingsInMolecule(mol);
+	core::List_sp rings = RingFinder_O::identifyRingsInMolecule(mol);
 	return rings;
     }
     if ( matter.isA<Aggregate_O>() )
     {
-	core::Cons_sp allRings = _Nil<core::Cons_O>();
+	core::List_sp allRings = _Nil<core::T_O>();
 	Loop molecules;
 	molecules.loopTopGoal(matter,MOLECULES);
 	while ( molecules.advance() )
 	{
 	    Molecule_sp mol = molecules.getMolecule();
-	    core::Cons_sp rings = RingFinder_O::identifyRingsInMolecule(mol);
+	    core::List_sp rings = RingFinder_O::identifyRingsInMolecule(mol);
 	    // Transfer the rings in rings into allRings
 	    while ( rings.notnilp() )
 	    {
-		core::Cons_sp one = rings;
+		core::List_sp one = rings;
 		rings = rings->cdr();
 		one->setCdr(allRings);
 		allRings = one;
@@ -908,13 +901,12 @@ core::Cons_sp RingFinder_O::identifyRings(Matter_sp matter)
 
 
 
-core::Cons_sp RingFinder_O::ringBonds(core::Cons_sp atoms)
+core::List_sp RingFinder_O::ringBonds(core::Cons_sp atoms)
 {_G();
-    core::Cons_sp ringBonds = _Nil<core::Cons_O>();
+    core::List_sp ringBonds = _Nil<core::T_O>();
     gctools::SmallOrderedSet<Atom_sp> atomSet;
     {_BLOCK_TRACE(BF("Put atoms into set"));
-	for ( core::Cons_sp cur=atoms; cur.notnilp(); cur = cur->cdr() )
-	{
+      for ( auto cur : atoms ) {
 	    Atom_sp atom = cur->car<Atom_O>();
 	    LOG(BF("Atom in ring: %s") % atom->description());
 	    atomSet.insert(cur->car<Atom_O>());
@@ -922,22 +914,21 @@ core::Cons_sp RingFinder_O::ringBonds(core::Cons_sp atoms)
     }
     int num = 0;
     {_BLOCK_TRACE(BF("Loop over all bonds and find those that join ring atoms"));
-	for ( core::Cons_sp cur=atoms; cur.notnilp(); cur=cur->cdr() )
-	{
-	    Atom_sp atom = cur->car<Atom_O>();
-	    VectorBond bonds = atom->getBonds();
-	    for ( gctools::Vec0<Bond_sp>::const_iterator bi=bonds.begin();bi!=bonds.end(); bi++)
-	    {
-		LOG(BF("Testing %s") % (*bi)->describeOther(atom));
-		if ( atomSet.count((*bi)->getAtom1()) && atomSet.count((*bi)->getAtom2()))
-		{
-		    LOG(BF("It's part of the ring!!!"));
-		    core::Cons_sp one = core::Cons_O::create((*bi),ringBonds);
-		    ringBonds = one;
-		    num++;
-		}
-	    }
-	}
+      for ( auto cur : atoms ) {
+        Atom_sp atom = oCar(cur).as<Atom_O>();
+        VectorBond bonds = atom->getBonds();
+        for ( gctools::Vec0<Bond_sp>::const_iterator bi=bonds.begin();bi!=bonds.end(); bi++)
+        {
+          LOG(BF("Testing %s") % (*bi)->describeOther(atom));
+          if ( atomSet.count((*bi)->getAtom1()) && atomSet.count((*bi)->getAtom2()))
+          {
+            LOG(BF("It's part of the ring!!!"));
+            core::Cons_sp one = core::Cons_O::create((*bi),ringBonds);
+            ringBonds = one;
+            num++;
+          }
+        }
+      }
     }
     LOG(BF("There were %d bonds in the ring") % num );
     return ringBonds;

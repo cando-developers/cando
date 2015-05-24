@@ -102,7 +102,7 @@ namespace translate
                                    core::clasp_to_fixnum(core::oCaddr(o).as<core::Fixnum_I>()))
 	{
 #if 0
-	    core::Cons_sp args = o.as<core::Cons_O>();
+	    core::List_sp args = o.as<core::Cons_O>();
 	    int moleculeId = core::oCar(args).as<core::Rational_O>()->as_int();
 	    int residueId = args->ocadr().as<core::Rational_O>()->as_int();
 	    int atomId = args->ocaddr().as<core::Rational_O>()->as_int();
@@ -117,8 +117,8 @@ namespace translate
     template <>
     struct	to_object<chem::AtomId>
     {
-	typedef	core::Cons_sp		ExpectedType;
-	typedef	core::Cons_sp		DeclareType;
+	typedef	core::List_sp		ExpectedType;
+	typedef	core::List_sp		DeclareType;
 	static core::T_sp convert(chem::AtomId v)
 	{_G();
 	    ExpectedType res = core::Cons_O::createList(

@@ -22,7 +22,7 @@
 #include <cando/geom/vector3.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
-#include <cando/geom/quickDom.h>
+#include <cando/adapt/quickDom.h>
 #include <cando/chem/ffBaseDb.h>
 
 

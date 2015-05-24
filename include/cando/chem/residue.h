@@ -32,12 +32,12 @@
 #include <string>
 #include <set>
 #include <clasp/core/common.h>
-#include <clasp/core/symbolSet.fwd.h>
+#include <cando/adapt/symbolSet.fwd.h>
 #include <clasp/core/lispStream.fwd.h>
-#include <clasp/core/stringSet.fwd.h>
+#include <cando/adapt/stringSet.fwd.h>
 #include <cando/chem/matter.h>
 #include <cando/chem/residue.fwd.h>
-#include <cando/chem/candoDatabaseReference.h>
+//#include <cando/chem/candoDatabaseReference.h>
 #include <cando/chem/atomIdMap.fwd.h>
 #include <cando/chem/atom.h>
 
@@ -152,7 +152,7 @@ namespace chem {
 
 	void		addAtom(Atom_sp a );
 	void		addAtomRetainId(Atom_sp a ) {this->addMatterRetainId(Matter_sp(a));};
-	void		removeAtomsWithNames( core::Cons_sp atomNames );
+	void		removeAtomsWithNames( core::List_sp atomNames );
 	void		removeAtomDeleteBonds( Atom_sp a );
 	void		removeAtomDontDeleteBonds( Atom_sp a );
 
@@ -183,7 +183,7 @@ namespace chem {
 	Vector3		positionOfAtomWithName(MatterName sName );
 	bool		hasAtomWithName(MatterName sName ) { return (this->hasContentWithName(sName)); };
 
-	void setAliasesForAtoms(core::Cons_sp aliasAtoms, core::Cons_sp atomAliases);
+	void setAliasesForAtoms(core::List_sp aliasAtoms, core::List_sp atomAliases);
 
 //	bool		hasAtomWithAlias(const string& anAlias);
 //	Atom_sp		atomWithAlias(const string& anAlias);

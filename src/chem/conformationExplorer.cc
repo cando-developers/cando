@@ -12,7 +12,7 @@
  */
 #include <clasp/core/common.h>
 #include <clasp/core/str.h>
-#include <clasp/core/stringSet.h>
+#include <cando/adapt/stringSet.h>
 #include <cando/chem/conformationExplorer.h>
 #include <cando/chem/loop.h>
 //#include "core/xmlSaveArchive.h"
@@ -118,7 +118,7 @@ namespace chem
 
 
 #if 0
-    geom::Render_sp	ConformationExplorerEntryStage_O::rendered(core::Cons_sp opts)
+    geom::Render_sp	ConformationExplorerEntryStage_O::rendered(core::List_sp opts)
     {_G();
 	ConformationExplorer_sp		explorer;
 	geom::DisplayList_sp			dlAll;
@@ -438,7 +438,7 @@ namespace chem
 
 
 #if 0
-    geom::Render_sp	ConformationExplorerEntry_O::rendered(core::Cons_sp opts)
+    geom::Render_sp	ConformationExplorerEntry_O::rendered(core::List_sp opts)
     {_G();
 	geom::DisplayList_sp	dlAll;
 	geom::Render_sp		dlStage;
@@ -559,14 +559,14 @@ namespace chem
     }
 
 
-    core::Cons_sp ConformationExplorer_O::entriesAsCons()
+    core::List_sp ConformationExplorer_O::entriesAsCons()
     {_G();
-	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(), _Nil<core::Cons_O>());
+	core::Cons_sp first = core::T_O::create(_Nil<core::T_O>(), _Nil<core::T_O>());
 	core::Cons_sp cur = first;
 	ConformationExplorer_O::entryIterator si;
 	for ( si=this->begin_Entries(); si!=this->end_Entries(); si++ )
 	{
-	    core::Cons_sp newCons = core::Cons_O::create(*si,_Nil<core::Cons_O>());
+	    core::Cons_sp newCons = core::T_O::create(*si,_Nil<core::T_O>());
 	    cur->setCdr(newCons);
 	    cur = newCons;
 	}
@@ -599,7 +599,7 @@ namespace chem
 
 
 #if 0
-    geom::Render_sp	ConformationExplorer_O::rendered(core::Cons_sp opts)
+    geom::Render_sp	ConformationExplorer_O::rendered(core::List_sp opts)
     {_G();
 	geom::FrameList_sp	frames;
 	geom::Render_sp		dlEntry;

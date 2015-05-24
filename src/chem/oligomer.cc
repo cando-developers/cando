@@ -10,14 +10,14 @@
 #include <cando/chem/molecule.h>
 #include <clasp/core/numerics.h>
 #include <cando/chem/candoScript.h>
-#include <cando/chem/adapters.h>
+#include <cando/adapt/adapters.h>
 #include <clasp/core/binder.h>
 #include <cando/chem/topology.h>
 #include <clasp/core/environment.h>
 #include <cando/chem/monomerContext.h>
 #include <cando/chem/monomer.h>
 #include <cando/chem/coupling.h>
-#include <cando/chem/adapters.h>
+#include <cando/adapt/adapters.h>
 #include <clasp/core/lispStream.h>
 #include <cando/chem/plug.h>
 #include <cando/chem/specificContext.h>
@@ -77,7 +77,7 @@ void	Oligomer_O::signalConnectivityChanged()
 #endif
 
 
-    void Oligomer_O::catchSignal(core::Symbol_sp signal, core::Model_sp source, core::Cons_sp data)
+    void Oligomer_O::catchSignal(core::Symbol_sp signal, core::Model_sp source, core::List_sp data)
 {_G();
     MultiMonomer_sp		monomer;
 //    this->core::Model_O::catchSignal(signal,source,data);
@@ -142,9 +142,9 @@ void Oligomer_O::setCandoDatabase(CandoDatabase_sp bdb)
 #endif
 
 
-core::Cons_sp Oligomer_O::monomersAsCons()
+core::List_sp Oligomer_O::monomersAsCons()
 {_G();
-    core::Cons_sp cons = _Nil<core::Cons_O>();
+    core::List_sp cons = _Nil<core::T_O>();
     gctools::Vec0<Monomer_sp>::iterator	mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
     {
@@ -913,11 +913,10 @@ core::T_sp af_oligomerSequence(Oligomer_sp olig)
 }
 
 
-void	Oligomer_O::_assembleFromParts(core::Cons_sp parts, CandoDatabase_sp bdb)
+void	Oligomer_O::_assembleFromParts(core::List_sp parts, CandoDatabase_sp bdb)
 {_G();
     core::HashTableEq_sp monomerMap = core::HashTableEq_O::create_default();
-    for ( core::Cons_sp p=parts; p.notnilp(); p=p->cdr() )
-    {
+    for ( auto p : parts ) {
 	OligomerPart_Base_sp oligPart = p->car<OligomerPart_Base_O>();
 	MultiMonomer_sp mon = oligPart->createMonomer(bdb);
 	this->addMonomer(mon);
@@ -941,7 +940,7 @@ void	Oligomer_O::_assembleFromParts(core::Cons_sp parts, CandoDatabase_sp bdb)
 #define ARGS_Oligomer_O_make "(parts)"
 #define DECL_Oligomer_O_make ""
 #define DOCS_Oligomer_O_make "make Oligomer"
-Oligomer_sp Oligomer_O::make(core::Cons_sp parts)
+Oligomer_sp Oligomer_O::make(core::List_sp parts)
   {_G();
       GC_ALLOCATE(Oligomer_O, me );
     if ( parts.notnilp() )
@@ -954,9 +953,9 @@ Oligomer_sp Oligomer_O::make(core::Cons_sp parts)
 
 #else
 
-core::T_sp Oligomer_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+core::T_sp Oligomer_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp env, core::Lisp_sp lisp)
 {_OF();
-    core::Cons_sp parts = translate::from_object<core::Cons_O>::convert(env->lookup(Pkg(),"parts"));
+    core::List_sp parts = translate::from_object<core::Cons_O>::convert(env->lookup(Pkg(),"parts"));
     if ( parts.notnilp() )
     {
 	CandoDatabase_sp bdb = getCandoDatabase(lisp);
@@ -973,7 +972,7 @@ core::T_sp Oligomer_O::__init__(core::Function_sp exec, core::Cons_sp args, core
 #define ARGS_af_setOligomer "(oligomerName parts)"
 #define DECL_af_setOligomer ""
 #define DOCS_af_setOligomer "setOligomer"
-core::T_sp af_setOligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::Cons_sp parts)
+core::T_sp af_setOligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_sp parts)
 {_G();
     Oligomer_sp olig = Oligomer_O::create();
     olig->setName(oligomerName);

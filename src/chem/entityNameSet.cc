@@ -8,11 +8,11 @@
 
 #include <string>
 #include <clasp/core/common.h>
-#include <clasp/core/stringSet.h>
+#include <cando/adapt/stringSet.h>
 #include <clasp/core/environment.h>
 //#include "core/archiveNode.h"
 #include <clasp/core/stringList.h>
-#include <cando/chem/adapters.h>
+#include <cando/adapt/adapters.h>
 #include <clasp/core/symbolList.h>
 //#include "core/archive.h"
 #include <cando/chem/entityNameSet.h>
@@ -63,7 +63,7 @@ namespace chem
 #define ARGS_EntityNameSetBase_O_make "(entity_names_cons)"
 #define DECL_EntityNameSetBase_O_make ""
 #define DOCS_EntityNameSetBase_O_make "make EntityNameSetBase"
-  EntityNameSetBase_sp EntityNameSetBase_O::make(core::Cons_sp entityNamesCons)
+  EntityNameSetBase_sp EntityNameSetBase_O::make(core::List_sp entityNamesCons)
   {_G();
       GC_ALLOCATE(EntityNameSetBase_O, me );
     if ( entityNamesCons.notnilp() )
@@ -79,7 +79,7 @@ namespace chem
 
     core::T_sp EntityNameSetBase_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp environ, core::Lisp_sp lisp)
     {_OF();
-	core::Cons_sp entityNamesCons = translate::from_object<core::Cons_O>::convert(environ->lookup(Pkg(),"entityNames"));
+	core::List_sp entityNamesCons = translate::from_object<core::List_V>::convert(environ->lookup(Pkg(),"entityNames"));
 	if ( entityNamesCons.notnilp() )
 	{
 	    core::SymbolSet_sp entityNames = core::SymbolSet_O::create();

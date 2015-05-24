@@ -13,8 +13,8 @@
 
 #include <cando/chem/chemPackage.h>
 
-#include "core/cons.fwd.h"// monomerPack.h wants Cons needs cons.fwd.h
-#include "core/symbolList.fwd.h"// monomerPack.h wants SymbolList needs symbolList.fwd.h
+#include <clasp/core/cons.fwd.h>// monomerPack.h wants Cons needs cons.fwd.h
+#include <cando/adapt/symbolList.fwd.h>// entityNameSet.h wants SymbolList needs symbolList.fwd.h
 
 namespace chem {
 
@@ -54,16 +54,16 @@ public:
 	void	removeMonomerName(core::Symbol_sp nm);
 
 		/*! Build the contents from information in a Cons */
-	void	defineContentsFromCons(core::Cons_sp atomAliases, core::Cons_sp parts);
+	void	defineContentsFromCons(core::List_sp atomAliases, core::List_sp parts);
 
 	virtual string	getMonomerNameWithAtoms(core::Symbol_sp nm);
 
-	void extendAliases( core::Cons_sp atomAliases, core::Cons_sp parts);
+	void extendAliases( core::List_sp atomAliases, core::List_sp parts);
 
     virtual	bool	supportsInterestingAtomAliases() { return true;};
     virtual void setInterestingAtomNamesForMonomerName(core::Symbol_sp monomerName, const string& atomIndexerNames);
     virtual void setInterestingAtomNamesForMonomerNameStringList(core::Symbol_sp monomerName, core::StringList_sp atomIndexerNames);
-    virtual void setInterestingAtomNamesForMonomerNameFromCons(core::Symbol_sp, core::Cons_sp atomIndexerNames);
+    virtual void setInterestingAtomNamesForMonomerNameFromCons(core::Symbol_sp, core::List_sp atomIndexerNames);
     virtual string getInterestingAtomNamesForMonomerName(core::Symbol_sp name);
     virtual bool hasInterestingAtomAlias(Alias_sp alias);
     virtual int getInterestingAtomAliasIndex(Alias_sp alias);

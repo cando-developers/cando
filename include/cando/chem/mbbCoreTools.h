@@ -16,12 +16,12 @@
 #include <cando/chem/molecule.h>
 #include <cando/chem/residue.h>
 #include <cando/chem/atom.h>
+#include <cando/adapt/objectSet.h>
 #include <cando/geom/vector3.h>
 #include <cando/geom/matrix.h>
 
 #include <cando/chem/chemPackage.h>
 
-#include <cando/chem/adapters.fwd.h>
 
 namespace chem {
 

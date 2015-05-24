@@ -42,7 +42,7 @@ void	IterateRestraints_O::_accumulateRestraints(Matter_sp m)
 
 void	IterateRestraints_O::initTop(Matter_sp m)
 {_G();
-    this->_Restraints = _Nil<core::Cons_O>();
+    this->_Restraints = _Nil<core::T_O>();
     this->_accumulateRestraints(m);
 }
 

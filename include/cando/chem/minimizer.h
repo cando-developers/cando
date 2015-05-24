@@ -25,7 +25,7 @@
 #include <cando/chem/matter.fwd.h>
 
 
-#include <cando/geom/quickDom.fwd.h>// minimizer.h wants QDomNode needs quickDom.fwd.h
+#include <cando/adapt/quickDom.fwd.h>// minimizer.h wants QDomNode needs quickDom.fwd.h
 #include <clasp/core/posixTime.fwd.h>// minimizer.h wants PosixTime needs posixTime.fwd.h
 //#include "core/lispCallback.fwd.h"// minimizer.h wants LispCallback needs lispCallback.fwd.h
 
@@ -246,7 +246,7 @@ public:
 	EnergyFunction_sp	getEnergyFunction() {_OF(); ASSERTNOTNULL(this->_EnergyFunction); return this->_EnergyFunction; };
 	void	useDefaultSettings();
 
-	void	changeOptions(core::Cons_sp options);
+	void	changeOptions(core::List_sp options);
 
 	MinimizerStatus status()	{return this->_Status;};
 	int statusAsInt()	{return (int)(this->_Status);};

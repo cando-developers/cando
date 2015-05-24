@@ -31,7 +31,6 @@
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
-#include <cando/chem/adapters.fwd.h>
 #include <clasp/core/holder.h>
 #include <cando/geom/vector2.h>
 #include <cando/geom/vector3.h>
@@ -39,7 +38,8 @@
 
 #include <cando/chem/chemPackage.h>
 
-#include <cando/chem/adapters.fwd.h>// monomer.h wants SymbolSet needs symbolSet.fwd.h
+#include <cando/adapt/symbolSet.fwd.h>
+#include <cando/adapt/objectSet.fwd.h>
 
 #include <cando/chem/residue.fwd.h>
 
@@ -158,7 +158,7 @@ namespace chem {
 	void	initialize();
 
     public:
-	core::Cons_sp plugNamesAndCouplingsAsCons();
+	core::List_sp plugNamesAndCouplingsAsCons();
 
 	core::SymbolSet_sp	plugNames() const;
 

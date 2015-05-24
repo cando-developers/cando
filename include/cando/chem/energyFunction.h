@@ -27,7 +27,7 @@
 
 
 
-#include <cando/geom/quickDom.fwd.h>// energyFunction.h wants QDomNode needs quickDom.fwd.h
+#include <cando/adapt/quickDom.fwd.h>// energyFunction.h wants QDomNode needs quickDom.fwd.h
 //#include "geom/render.fwd.h"// energyFunction.h wants DisplayList needs render.fwd.h
 #include <clasp/core/iterator.fwd.h>// energyFunction.h wants Iterator needs iterator.fwd.h
 
@@ -194,7 +194,7 @@ public:
 
 
     /*! Set the energy function options. List the options as a flat list of keyword/value pairs */
-    void	setOptions( core::Cons_sp options );
+    void	setOptions( core::List_sp options );
 
     EnergyStretch_sp	getStretchComponent() { return this->_Stretch; };
 #if USE_ALL_ENERGY_COMPONENTS
@@ -251,7 +251,7 @@ public:
      * This allows restraints to be applied to the system
      * without having to add them to the molecule/aggregate.
      */
-    void	addTermsForListOfRestraints( ForceField_sp forceField,  core::Cons_sp restraintList );
+    void	addTermsForListOfRestraints( ForceField_sp forceField,  core::List_sp restraintList );
 
 
     double	calculateNumericalDerivative(NVector_sp pos, double delta, uint i );

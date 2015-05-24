@@ -121,7 +121,7 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,Z);
 #define ARGS_RestrainedPiBond_O_make "(config pi_atoms)"
 #define DECL_RestrainedPiBond_O_make ""
 #define DOCS_RestrainedPiBond_O_make "make RestrainedPiBond"
-RestrainedPiBond_sp RestrainedPiBond_O::make(core::Symbol_sp config, core::Cons_sp piAtoms)
+RestrainedPiBond_sp RestrainedPiBond_O::make(core::Symbol_sp config, core::List_sp piAtoms)
   {_G();
       GC_ALLOCATE(RestrainedPiBond_O, me );
     me->_Configuration = config;

@@ -346,7 +346,7 @@ VectorResidue	Molecule_O::getResiduesWithName(MatterName name ) {
 
 
 #ifdef RENDER
-    geom::Render_sp	Molecule_O::rendered(core::Cons_sp opts)
+    geom::Render_sp	Molecule_O::rendered(core::List_sp opts)
     {_G();
 	GrPickableMatter_sp	rend;
 	rend = GrPickableMatter_O::create();

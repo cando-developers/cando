@@ -16,11 +16,11 @@
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
-#include <clasp/core/symbolSet.fwd.h>
+#include <cando/adapt/symbolSet.fwd.h>
 #include <cando/chem/bond.h>
 #include <cando/geom/vector2.h>
 #include <cando/geom/vector3.h>
-#include <clasp/core/stringSet.fwd.h>
+#include <cando/adapt/stringSet.fwd.h>
 #include <clasp/core/hashTableEq.h>
 #include <cando/chem/stereoisomerAtoms.fwd.h>
 //#include "kinematics/atomTemplate.fwd.h"
@@ -75,7 +75,7 @@ class Topology_O : public core::T_O
     LISP_CLASS(chem,ChemPkg,Topology_O,"Topology"); 
 #if INIT_TO_FACTORIES
 public:
-    static Topology_sp make(core::Symbol_sp name, int netCharge, core::HashTableEq_sp properties, core::Cons_sp curPlugs, ConstitutionAtoms_sp residue ); // , kinematics::AtomTemplate_sp atomTreeTemplate, kinematics::ChiList_sp chiList);
+    static Topology_sp make(core::Symbol_sp name, int netCharge, core::HashTableEq_sp properties, core::List_sp curPlugs, ConstitutionAtoms_sp residue ); // , kinematics::AtomTemplate_sp atomTreeTemplate, kinematics::ChiList_sp chiList);
 #else
     DECLARE_INIT();
 #endif
@@ -133,17 +133,17 @@ public:
     bool suppressTrainers() const { return this->_SuppressTrainers;};
 
     //! Return all plugs as a Cons
-    core::Cons_sp	plugsAsCons();
+    core::List_sp	plugsAsCons();
 
     //! Return a Cons of Plugs that have Mates
-    core::Cons_sp	plugsWithMatesAsCons();
+    core::List_sp	plugsWithMatesAsCons();
 
     //! Return a Cons of out plugs
-    core::Cons_sp	outPlugsAsCons();
+    core::List_sp	outPlugsAsCons();
 
     /// @brief Return all of the Incomplete Frames as Cons
     /// @return Cons of Incomplete Frames
-    core::Cons_sp	incompleteFramesAsCons();
+    core::List_sp	incompleteFramesAsCons();
 
     /// @brief Return the name of the Topology
     core::Symbol_sp	getName() const {return (this->_Name);};
@@ -173,7 +173,7 @@ public:
 
     void mapPlugs(std::function<void(Plug_sp)> );
 
-    core::Cons_sp extractFragmentsAsCons();
+    core::List_sp extractFragmentsAsCons();
 
     void throwIfExtractFragmentsAreNotExclusive(ConstitutionAtoms_sp constitutionAtoms);
 

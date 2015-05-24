@@ -26,7 +26,7 @@
 //#include "ffTypesDb.h"
 //#include "ffStretchDb.h"
 //#include "ffAngleDb.h"
-#include <cando/geom/quickDom.h>
+#include <cando/adapt/quickDom.h>
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/nVector.h>
 #include <cando/chem/residue.h>
@@ -52,7 +52,7 @@ const double ELECTROSTATIC_MODIFIER = (93865.10/3.53*93865.10/93958.78);
 #ifndef	delta2
 #define		delta2	0.00001
 #endif
-#include <cando/geom/quickDom.fwd.h>// energyComponent.h wants QDomNode needs quickDom.fwd.h
+#include <cando/adapt/quickDom.fwd.h>// energyComponent.h wants QDomNode needs quickDom.fwd.h
 
 namespace       chem {
 

@@ -9,11 +9,10 @@
 #include <set>
 #include <clasp/core/common.h>
 #include <clasp/core/holder.h>
-#include <cando/chem/adapters.fwd.h>
 #include <cando/chem/bond.fwd.h>
 #include <cando/chem/constitutionAtoms.fwd.h>
 #include <cando/chem/chemPackage.h>
-#include <cando/geom/quickDom.fwd.h>// chemdraw.h wants QDomNode needs quickDom.fwd.h
+#include <cando/adapt/quickDom.fwd.h>// chemdraw.h wants QDomNode needs quickDom.fwd.h
 #include <cando/chem/atom.fwd.h>
 #include <cando/chem/aggregate.fwd.h>
 namespace chem
@@ -247,12 +246,12 @@ public:
 	/*! Set the properties for the named fragment.
 	  @param fragmentName The name of the fragment whose properties are being set
 	  @param properties is a property list (keyword symbol/object pairs) */
-	void setFragmentProperties( core::Symbol_sp fragment, core::Cons_sp properties);
+	void setFragmentProperties( core::Symbol_sp fragment, core::List_sp properties);
 
 
-	core::Cons_sp getFragments();
-	core::Cons_sp allFragmentsAsCons() { return this->getFragments();};
-	core::Cons_sp getSubSetOfFragments(core::SymbolSet_sp subsetNames );
+	core::List_sp getFragments();
+	core::List_sp allFragmentsAsCons() { return this->getFragments();};
+	core::List_sp getSubSetOfFragments(core::SymbolSet_sp subsetNames );
 
 
     /*! Return the entire ChemDraw file as an Aggregate and each structure

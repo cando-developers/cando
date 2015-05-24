@@ -36,6 +36,7 @@ THE SOFTWARE.
 #include <vector>
 #include <set>
 #include <clasp/core/foundation.h>
+#include <cando/adapt/stringSet.h>
 #include <clasp/core/object.h>
 
 namespace core {

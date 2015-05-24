@@ -157,7 +157,7 @@ namespace chem
 
 
     const char* minimizerOptions[] = {":showElapsedTime",""};
-    void	Minimizer_O::changeOptions(core::Cons_sp optionCons)
+    void	Minimizer_O::changeOptions(core::List_sp optionCons)
     {_G();
     IMPLEMENT_ME();
 #if 0
@@ -202,7 +202,7 @@ namespace chem
 
 #else
 
-    core::T_sp  Minimizer_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp  Minimizer_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp env, core::Lisp_sp lisp)
     {_G();
 	this->Base::__init__(exec,args,env,lisp);
 	bool initialized = false;

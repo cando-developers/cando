@@ -11,8 +11,8 @@
 #include <set>
 #include <stdio.h>
 #include <clasp/core/common.h>
-#include <clasp/core/stringSet.h>
-#include <cando/chem/adapters.h>
+#include <cando/adapt/stringSet.h>
+#include <cando/adapt/adapters.h>
 #include <clasp/core/holder.h>
 #include <clasp/core/environment.h>
 #include <cando/chem/monomer.h>
@@ -21,7 +21,7 @@
 #include <cando/chem/residue.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/oligomer.h>
-#include <cando/chem/adapters.h>
+#include <cando/adapt/adapters.h>
 #include <clasp/core/symbolList.h>
 #include <cando/chem/coupling.h>
 #include <cando/chem/candoDatabase.h>
@@ -133,9 +133,9 @@ namespace chem {
     void	Monomer_O::addStatusMessage(const string& s) {this->_Status->addMessage(s);};
     StatusTracker_sp	Monomer_O::getStatusTracker() { return this->_Status;};
 
-    core::Cons_sp	Monomer_O::plugNamesAndCouplingsAsCons()
+    core::List_sp	Monomer_O::plugNamesAndCouplingsAsCons()
     {_G();
-	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::Cons_O>());
+	core::Cons_sp first = core::T_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
 	Monomer_O::Couplings::iterator	ci;
 	for ( ci=this->_Couplings.begin(); ci!=this->_Couplings.end(); ci++ )
@@ -172,7 +172,7 @@ namespace chem {
     }
 
 
-    void	Monomer_O::setAliasesFromCons(core::Cons_sp aliases)
+    void	Monomer_O::setAliasesFromCons(core::List_sp aliases)
     {_G();
 	this->_Aliases->clear();
 	this->_Aliases->insertConsSymbols(aliases);
@@ -714,7 +714,7 @@ namespace chem {
 
 #else
 
-    core::T_sp MultiMonomer_O::__init__(core::Function_sp exec, core::Cons_sp args,
+    core::T_sp MultiMonomer_O::__init__(core::Function_sp exec, core::List_sp args,
 				  core::Environment_sp env, core::Lisp_sp lisp)
     {_G();
 	core::Symbol_sp name = translate::from_object<core::Symbol_O>::convert(env->lookup(Package(),"name"));

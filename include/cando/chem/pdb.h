@@ -9,7 +9,7 @@
 #include <set>
 #include <clasp/core/common.h>
 #include <cando/chem/chemPackage.h>
-#include <clasp/core/stringSet.fwd.h>
+#include <cando/adapt/stringSet.fwd.h>
 
 
 namespace chem

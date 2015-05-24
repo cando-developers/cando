@@ -12,7 +12,7 @@
 #include <string>
 
 #include <clasp/core/common.h>
-#include <clasp/core/stringSet.fwd.h>
+#include <cando/adapt/stringSet.fwd.h>
 #include <cando/chem/atom.h>
 #include <clasp/core/holder.h>
 
@@ -1058,7 +1058,7 @@ class ChemInfo_O : public core::T_O
     LISP_CLASS(chem,ChemPkg,ChemInfo_O,"ChemInfo");
 #if INIT_TO_FACTORIES
  public:
-    static ChemInfo_sp make(core::Cons_sp tests, const string& smarts);
+    static ChemInfo_sp make(core::List_sp tests, const string& smarts);
 #else
     DECLARE_INIT();
 #endif
@@ -1074,13 +1074,13 @@ private:
 public:
 
 public: // Factory creation
-//	static core::T_sp prim_ChemInfo(core::Function_sp e, core::Cons_sp args, core::Environment_sp environ, core: );
+//	static core::T_sp prim_ChemInfo(core::Function_sp e, core::List_sp args, core::Environment_sp environ, core: );
 
 public:
 	bool	compileSmarts(const string& code );
 	bool	compileAntechamber(const string& code, WildElementDict_sp dict );
 	string	compilerMessage() { return this->_CompilerMessage;};
-	void defineTests(core::Cons_sp tests);
+	void defineTests(core::List_sp tests);
 
 	bool	matches(chem::Atom_sp atom);
 	ChemInfoMatch_sp getMatch();

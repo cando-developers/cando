@@ -105,7 +105,7 @@ public:
     virtual bool isAggregate() { return true;};
 
     /*! Return a Cons with all molecules */
-    core::Cons_sp molecules() { return this->contentsAsCons(); };
+    core::List_sp molecules() { return this->contentsAsCons(); };
 
     /*! When a structure is loaded and all the atoms are dumped into the same
      * molecule and same residue then we may want to separate out the molecules
@@ -130,7 +130,7 @@ public:
 
     bool	canRender() { return true;}
 #ifdef RENDER
-    geom::Render_sp	rendered(core::Cons_sp opt);
+    geom::Render_sp	rendered(core::List_sp opt);
 #endif
 
 

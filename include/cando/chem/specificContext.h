@@ -10,8 +10,8 @@
 #include <stack>
 #include <clasp/core/common.h>
 #include <clasp/core/holder.h>
-#include <clasp/core/stringSet.fwd.h>
-#include <clasp/core/symbolSet.fwd.h>
+#include <cando/adapt/stringSet.fwd.h>
+#include <cando/adapt/symbolSet.fwd.h>
 #include <cando/chem/chemPackage.h>
 
 
@@ -102,7 +102,7 @@ public:
 	SpecificContextSet_O::iterator begin() { return this->_KeySets.begin(); };
 	SpecificContextSet_O::iterator end() { return this->_KeySets.end(); };
 
-	core::Cons_sp asCons();
+	core::List_sp asCons();
 
 	uint size() { return this->_KeySets.size(); };
 

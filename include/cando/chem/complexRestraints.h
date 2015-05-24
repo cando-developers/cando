@@ -120,7 +120,7 @@ class RestrainedPiBond_O : public ComplexRestraint_O
     LISP_CLASS(chem,ChemPkg,RestrainedPiBond_O,"RestrainedPiBond");
 #if INIT_TO_FACTORIES
  public:
-    static RestrainedPiBond_sp make(core::Symbol_sp config, core::Cons_sp piAtoms);
+    static RestrainedPiBond_sp make(core::Symbol_sp config, core::List_sp piAtoms);
 #else
     DECLARE_INIT();
 #endif

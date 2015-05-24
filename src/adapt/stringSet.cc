@@ -33,10 +33,10 @@ THE SOFTWARE.
 #include <clasp/core/common.h>
 #include <clasp/core/object.h>
 #include <clasp/core/lisp.h>
-#include <clasp/core/stringSet.h>
+#include <cando/adapt/stringSet.h>
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/multipleValues.h>
-#include <clasp/core/stringList.h>
+#include <cando/adapt/stringList.h>
 #include <clasp/core/str.h>
 #include <clasp/core/serialize.h>
 #include <clasp/core/cons.h>

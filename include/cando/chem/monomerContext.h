@@ -13,14 +13,13 @@
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
-#include <cando/chem/adapters.fwd.h>
 #include <cando/chem/bond.h>
 #include <cando/geom/vector3.h>
 //#include	"conformation.h"
 #include <cando/chem/atom.h>
-#include <clasp/core/stringSet.fwd.h>
+#include <cando/adapt/stringSet.fwd.h>
 #include <cando/chem/residue.h>
-#include <cando/chem/candoDatabase.h>
+//#include <cando/chem/candoDatabase.h>
 #include <cando/chem/entityNameSet.h>
 
 
