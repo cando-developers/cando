@@ -1,0 +1,58 @@
+// FINITE_DIFFERENCE_TEST 
+TEST_FORCE( _evaluateEnergyOnly_AnchorRestraint,  delta2*2.0,
+(-delta2 + x1, y1, z1, xa, ya, za, ka),
+(delta2 + x1, y1, z1, xa, ya, za, ka),
+fx1,
+index);
+TEST_FORCE( _evaluateEnergyOnly_AnchorRestraint,  delta2*2.0,
+(x1, -delta2 + y1, z1, xa, ya, za, ka),
+(x1, delta2 + y1, z1, xa, ya, za, ka),
+fy1,
+index);
+TEST_FORCE( _evaluateEnergyOnly_AnchorRestraint,  delta2*2.0,
+(x1, y1, -delta2 + z1, xa, ya, za, ka),
+(x1, y1, delta2 + z1, xa, ya, za, ka),
+fz1,
+index);
+TEST_DIAGONAL_HESSIAN( _evaluateEnergyOnly_AnchorRestraint, delta2*2.0,
+(-delta2 + x1, y1, z1, xa, ya, za, ka),
+(x1, y1, z1, xa, ya, za, ka),
+(delta2 + x1, y1, z1, xa, ya, za, ka),
+dhx1x1,
+index);
+TEST_OFF_DIAGONAL_HESSIAN( _evaluateEnergyOnly_AnchorRestraint,
+delta2*2.0,
+(-delta2 + x1, -delta2 + y1, z1, xa, ya, za, ka),
+(delta2 + x1, -delta2 + y1, z1, xa, ya, za, ka),
+(-delta2 + x1, delta2 + y1, z1, xa, ya, za, ka),
+(delta2 + x1, delta2 + y1, z1, xa, ya, za, ka),
+ohx1y1,
+index);
+TEST_OFF_DIAGONAL_HESSIAN( _evaluateEnergyOnly_AnchorRestraint,
+delta2*2.0,
+(-delta2 + x1, y1, -delta2 + z1, xa, ya, za, ka),
+(delta2 + x1, y1, -delta2 + z1, xa, ya, za, ka),
+(-delta2 + x1, y1, delta2 + z1, xa, ya, za, ka),
+(delta2 + x1, y1, delta2 + z1, xa, ya, za, ka),
+ohx1z1,
+index);
+TEST_DIAGONAL_HESSIAN( _evaluateEnergyOnly_AnchorRestraint, delta2*2.0,
+(x1, -delta2 + y1, z1, xa, ya, za, ka),
+(x1, y1, z1, xa, ya, za, ka),
+(x1, delta2 + y1, z1, xa, ya, za, ka),
+dhy1y1,
+index);
+TEST_OFF_DIAGONAL_HESSIAN( _evaluateEnergyOnly_AnchorRestraint,
+delta2*2.0,
+(x1, -delta2 + y1, -delta2 + z1, xa, ya, za, ka),
+(x1, delta2 + y1, -delta2 + z1, xa, ya, za, ka),
+(x1, -delta2 + y1, delta2 + z1, xa, ya, za, ka),
+(x1, delta2 + y1, delta2 + z1, xa, ya, za, ka),
+ohy1z1,
+index);
+TEST_DIAGONAL_HESSIAN( _evaluateEnergyOnly_AnchorRestraint, delta2*2.0,
+(x1, y1, -delta2 + z1, xa, ya, za, ka),
+(x1, y1, z1, xa, ya, za, ka),
+(x1, y1, delta2 + z1, xa, ya, za, ka),
+dhz1z1,
+index);

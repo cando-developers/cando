@@ -1,0 +1,58 @@
+// FINITE_DIFFERENCE_TEST 
+TEST_FORCE( _evaluateEnergyOnly_FixedNonbond,  delta2*2.0,
+(-delta2 + x1, y1, z1, xf, yf, zf, dA, dC, dQ1Q2),
+(delta2 + x1, y1, z1, xf, yf, zf, dA, dC, dQ1Q2),
+fx1,
+index);
+TEST_FORCE( _evaluateEnergyOnly_FixedNonbond,  delta2*2.0,
+(x1, -delta2 + y1, z1, xf, yf, zf, dA, dC, dQ1Q2),
+(x1, delta2 + y1, z1, xf, yf, zf, dA, dC, dQ1Q2),
+fy1,
+index);
+TEST_FORCE( _evaluateEnergyOnly_FixedNonbond,  delta2*2.0,
+(x1, y1, -delta2 + z1, xf, yf, zf, dA, dC, dQ1Q2),
+(x1, y1, delta2 + z1, xf, yf, zf, dA, dC, dQ1Q2),
+fz1,
+index);
+TEST_DIAGONAL_HESSIAN( _evaluateEnergyOnly_FixedNonbond, delta2*2.0,
+(-delta2 + x1, y1, z1, xf, yf, zf, dA, dC, dQ1Q2),
+(x1, y1, z1, xf, yf, zf, dA, dC, dQ1Q2),
+(delta2 + x1, y1, z1, xf, yf, zf, dA, dC, dQ1Q2),
+dhx1x1,
+index);
+TEST_OFF_DIAGONAL_HESSIAN( _evaluateEnergyOnly_FixedNonbond,
+delta2*2.0,
+(-delta2 + x1, -delta2 + y1, z1, xf, yf, zf, dA, dC, dQ1Q2),
+(delta2 + x1, -delta2 + y1, z1, xf, yf, zf, dA, dC, dQ1Q2),
+(-delta2 + x1, delta2 + y1, z1, xf, yf, zf, dA, dC, dQ1Q2),
+(delta2 + x1, delta2 + y1, z1, xf, yf, zf, dA, dC, dQ1Q2),
+ohx1y1,
+index);
+TEST_OFF_DIAGONAL_HESSIAN( _evaluateEnergyOnly_FixedNonbond,
+delta2*2.0,
+(-delta2 + x1, y1, -delta2 + z1, xf, yf, zf, dA, dC, dQ1Q2),
+(delta2 + x1, y1, -delta2 + z1, xf, yf, zf, dA, dC, dQ1Q2),
+(-delta2 + x1, y1, delta2 + z1, xf, yf, zf, dA, dC, dQ1Q2),
+(delta2 + x1, y1, delta2 + z1, xf, yf, zf, dA, dC, dQ1Q2),
+ohx1z1,
+index);
+TEST_DIAGONAL_HESSIAN( _evaluateEnergyOnly_FixedNonbond, delta2*2.0,
+(x1, -delta2 + y1, z1, xf, yf, zf, dA, dC, dQ1Q2),
+(x1, y1, z1, xf, yf, zf, dA, dC, dQ1Q2),
+(x1, delta2 + y1, z1, xf, yf, zf, dA, dC, dQ1Q2),
+dhy1y1,
+index);
+TEST_OFF_DIAGONAL_HESSIAN( _evaluateEnergyOnly_FixedNonbond,
+delta2*2.0,
+(x1, -delta2 + y1, -delta2 + z1, xf, yf, zf, dA, dC, dQ1Q2),
+(x1, delta2 + y1, -delta2 + z1, xf, yf, zf, dA, dC, dQ1Q2),
+(x1, -delta2 + y1, delta2 + z1, xf, yf, zf, dA, dC, dQ1Q2),
+(x1, delta2 + y1, delta2 + z1, xf, yf, zf, dA, dC, dQ1Q2),
+ohy1z1,
+index);
+TEST_DIAGONAL_HESSIAN( _evaluateEnergyOnly_FixedNonbond, delta2*2.0,
+(x1, y1, -delta2 + z1, xf, yf, zf, dA, dC, dQ1Q2),
+(x1, y1, z1, xf, yf, zf, dA, dC, dQ1Q2),
+(x1, y1, delta2 + z1, xf, yf, zf, dA, dC, dQ1Q2),
+dhz1z1,
+index);
