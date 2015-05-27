@@ -6,7 +6,7 @@
 #include <cando/chem/atomIndexer.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include <clasp/core/stringList.h>
+#include <cando/adapt/stringList.h>
 #include <clasp/core/wrappers.h>
 
 
@@ -31,7 +31,7 @@ namespace chem {
 #endif
 
 
-int	AtomIndexer_O::addAtomName(const string& name)
+int	AtomIndexer_O::addAtomName(core::Symbol_sp name)
 {_G();
 //    this->_IndexAll = false;
     if ( !this->containsAtomName(name) )
@@ -41,7 +41,7 @@ int	AtomIndexer_O::addAtomName(const string& name)
 	LOG(BF("Added atom with name(%s) gave it id(%d)") % name.c_str() % id );
 	return id;
     }
-    SIMPLE_ERROR(BF("The atom name("+name+") is already in the AtomIndexer"));
+    SIMPLE_ERROR(BF("The atom name (%s) is already in the AtomIndexer") % _rep_(name));
 }
 
 void	AtomIndexer_O::setFromAtomNames(const string& names)
@@ -55,21 +55,21 @@ vector<string>::iterator	it;
     {
 	if ( (*it).size()!= 0 )
 	{
-	    this->_Names.push_back(*it);
+          this->_Names.push_back(chemkw_intern(*it));
 	}
     }
 }
 
 
-void	AtomIndexer_O::setFromStringList(core::StringList_sp sl)
+void	AtomIndexer_O::setFromStringList(adapt::StringList_sp sl)
 {_G();
-core::StringList_O::iterator		it;
+adapt::StringList_O::iterator		it;
     LOG(BF("Setting from atom names: %s") % sl->asString().c_str()  );
     for ( it = sl->begin(); it!=sl->end(); it++ )
     {
 	if ( (*it).size()!= 0 )
 	{
-	    this->_Names.push_back(*it);
+          this->_Names.push_back(chemkw_intern(*it));
 	}
     }
 }
@@ -78,7 +78,7 @@ void	AtomIndexer_O::appendConsOfTexts(core::List_sp sl)
 {_G();
     LOG(BF("Appending atom names: %s") % sl->__repr__().c_str()  );
     for ( auto cur : sl ) {
-        this->_Names.push_back(cur->car<core::Str_O>()->get());
+      this->_Names.push_back(oCar(cur).as<core::Symbol_O>());
     }
 }
 
@@ -86,14 +86,11 @@ void	AtomIndexer_O::appendConsOfTexts(core::List_sp sl)
 
 
 
-bool	AtomIndexer_O::containsAtomName(const string& name)
+bool	AtomIndexer_O::containsAtomName(core::Symbol_sp name)
 {_G();
-vector<string>::iterator	mi;
 //    if ( this->_IndexAll ) return true;
-    for ( mi=this->_Names.begin(); mi!=this->_Names.end(); mi++ )
-    {
-        if ( (*mi)==name )
-	{
+    for ( auto mi=this->_Names.begin(); mi!=this->_Names.end(); mi++ ) {
+        if ( (*mi)==name ) {
 	    LOG(BF("Yes") );
 	    return true;
 	}
@@ -102,34 +99,28 @@ vector<string>::iterator	mi;
     return false;
 }
 
-int AtomIndexer_O::indexForAtomName(const string& name)
+int AtomIndexer_O::indexForAtomName(core::Symbol_sp name)
 {_G();
-vector<string>::iterator	mi;
 int				idx;
     idx = 0;
-    for ( mi=this->_Names.begin(); mi!=this->_Names.end(); mi++ )
-    {
-        if ( (*mi)==name )
-	{
-	    return idx;
-	}
-	idx++;
+    for ( auto mi=this->_Names.begin(); mi!=this->_Names.end(); mi++ ) {
+      if ( (*mi)==name ) return idx;
+      idx++;
     }
-    SIMPLE_ERROR(BF("Could not find name("+name+") in AtomIndexer"));
+    SIMPLE_ERROR(BF("Could not find name(%s) in AtomIndexer") % _rep_(name));
 }
 
 
 string AtomIndexer_O::asString() const
 {_G();
-stringstream ss;
-vector<string>::const_iterator	mi;
+  stringstream ss;
     ss.str("");
     if ( this->_Names.size() > 0 )
     {
         ss << *(this->_Names.begin());
-	for ( mi=this->_Names.begin()+1; mi!=this->_Names.end(); mi++ )
+	for ( auto mi=this->_Names.begin()+1; mi!=this->_Names.end(); mi++ )
 	{
-	    ss << " " << *mi;
+          ss << " " << _rep_(*mi);
 	}
     }
     return ss.str();
@@ -176,9 +167,9 @@ void	MapOfMonomerNamesToAtomIndexers_O::set(core::Symbol_sp nm, AtomIndexer_O::s
     this->_AtomIndexers.set(nm,ai);
 }
 
-    core::SymbolSet_sp MapOfMonomerNamesToAtomIndexers_O::getMonomerNamesAsSymbolSet() const
+    adapt::SymbolSet_sp MapOfMonomerNamesToAtomIndexers_O::getMonomerNamesAsSymbolSet() const
     {_OF();
-	return core::SymbolSet_O::create_fromKeysOfSymbolMap(this->_AtomIndexers);
+	return adapt::SymbolSet_O::createFromKeysOfSymbolMap(this->_AtomIndexers);
     }
 
     bool MapOfMonomerNamesToAtomIndexers_O::recognizesMonomerName(core::Symbol_sp nm) const
@@ -203,7 +194,7 @@ void	MapOfMonomerNamesToAtomIndexers_O::set(core::Symbol_sp nm, AtomIndexer_O::s
 
 void	MapOfMonomerNamesToAtomIndexers_O::eraseEntryForMonomer(core::Symbol_sp nm)
 {_G();
-    this->_AtomIndexers.erase(nm);
+    this->_AtomIndexers.remove(nm);
 }
 
 };

@@ -39,7 +39,7 @@ THE SOFTWARE.
 #include <cando/adapt/stringSet.h>
 #include <clasp/core/object.h>
 
-namespace core {
+namespace adapt {
 
 SMART(StringList);
 
@@ -49,7 +49,7 @@ SMART(StringList);
 SMART(StringList);
 class StringList_O : public T_O {
   LISP_BASE1(T_O);
-  LISP_CLASS(core, CorePkg, StringList_O, "StringList");
+  LISP_CLASS(adapt, AdaptPkg, StringList_O, "StringList");
 
 public:
 #if defined(XML_ARCHIVE)
@@ -95,5 +95,5 @@ public:
 };
 };
 
-TRANSLATE(core::StringList_O);
+TRANSLATE(adapt::StringList_O);
 #endif

@@ -13,7 +13,7 @@ namespace chem {
 
     FixedNonbondRestraint::FixedNonbondRestraint()
 {
-    this->_FixedAtom.reset();
+  this->_FixedAtom = _Nil<core::T_O>();
 }
 
 FixedNonbondRestraint::~FixedNonbondRestraint()
@@ -29,7 +29,7 @@ FixedNonbondRestraint::~FixedNonbondRestraint()
     node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
     node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
     node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include <cando/chem/_FixedNonbond_debugEvalSerialize.cc>
+#include <cando/chem/energy_functions/_FixedNonbond_debugEvalSerialize.cc>
 #endif //]
 }
 #endif
@@ -37,14 +37,14 @@ FixedNonbondRestraint::~FixedNonbondRestraint()
 
 
 
-geom::QDomNode_sp	FixedNonbondRestraint::asXml(core::Lisp_sp env)
+adapt::QDomNode_sp	FixedNonbondRestraint::asXml()
 {
     IMPLEMENT_ME();
 #if 0
-    geom::QDomNode_sp	node;
+    adapt::QDomNode_sp	node;
     Vector3	vdiff;
 
-    node = geom::QDomNode_O::create(env,XmlTag_Term());
+    node = adapt::QDomNode_O::create(env,XmlTag_Term());
     node->addAttributeString("atom1Name",this->_Atom1->getName());
     node->addAttributeString("atom2Name",this->_Atom2->getName());
     node->addAttributeInt("I1",this->I1);
@@ -61,7 +61,7 @@ geom::QDomNode_sp	FixedNonbondRestraint::asXml(core::Lisp_sp env)
 //    diff = vdiff.length();
 //    node->addAttributeDouble("_r",diff,5,2);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    geom::QDomNode_sp xml = geom::QDomNode_O::create(_lisp,"Evaluated");
+    adapt::QDomNode_sp xml = adapt::QDomNode_O::create("Evaluated");
     xml->addAttributeBool("calcForce",this->_calcForce );
     xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
     xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
@@ -78,7 +78,7 @@ geom::QDomNode_sp	FixedNonbondRestraint::asXml(core::Lisp_sp env)
 
 
 
-void	FixedNonbondRestraint::parseFromXmlUsingAtomTable(geom::QDomNode_sp	xml,
+void	FixedNonbondRestraint::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
 					AtomTable_sp at)
 {
     IMPLEMENT_ME();
@@ -133,9 +133,9 @@ double	_evaluateEnergyOnly_FixedNonbond(
 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/_FixedNonbond_termDeclares.cc>
+#include <cando/chem/energy_functions/_FixedNonbond_termDeclares.cc>
 #pragma clang diagnostic pop
-#include <cando/chem/_FixedNonbond_termCode.cc>
+#include <cando/chem/energy_functions/_FixedNonbond_termCode.cc>
 
     return Energy;
 #endif
@@ -268,7 +268,7 @@ Vector3				v1,v2;
 	    {
 	        v1.set(x1,y1,z1);
 	        v2.set(x2,y2,z2);
-	        line = geom::GrLine_O::create(v1,v2,_lisp);
+	        line = geom::GrLine_O::create(v1,v2);
 		displayIn->add(line);
 	    }
 	    overlapCount++;
@@ -347,7 +347,7 @@ void	EnergyFixedNonbondRestraint_O::evaluateAll(
 	    LOG(BF("FixedNonbond component is enabled") );
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	    #include "_FixedNonbond_termDeclares.cc"
+#include <cando/chem/energy_functions/_FixedNonbond_termDeclares.cc>
 #pragma clang diagnostic pop
 	    double x1,y1,z1,xf,yf,zf, dQ1Q2;
 	    uint I1;
@@ -376,14 +376,14 @@ void	EnergyFixedNonbondRestraint_O::evaluateAll(
 			FFNonbondCrossTerm crossTerm = this->_NonbondCrossTermTable->nonbondCrossTerm(crossTermIndex);
 			double dA = crossTerm._A*this->getVdwScale();
 			double dC = crossTerm._C*this->getVdwScale();
-			#include	"_FixedNonbond_termCode.cc"
+#include	<cando/chem/energy_functions/_FixedNonbond_termCode.cc>
 			#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
 			    fixedAtomEntry._calcForce = calcForce;
 			    fixedAtomEntry._calcDiagonalHessian = calcDiagonalHessian;
 			    fixedAtomEntry._calcOffDiagonalHessian = calcOffDiagonalHessian;
 			    #undef EVAL_SET
 			    #define	EVAL_SET(var,val)	{ fixedAtomEntry.eval.var=val;};
-			    #include	"_FixedNonbond_debugEvalSet.cc"
+#include	<cando/chem/energy_functions/_FixedNonbond_debugEvalSet.cc>
 			#endif //]
 
 			if ( calcForce ) {
@@ -475,16 +475,16 @@ bool	calcOffDiagonalHessian = true;
 		_BLOCK_TRACE("FixedNonbondRestraint finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	    #include "_FixedNonbond_termDeclares.cc"
+#include <cando/chem/energy_functions/_FixedNonbond_termDeclares.cc>
 #pragma clang diagnostic pop
 	    double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
 	    int	I1, I2,i;
 	    vector<FixedNonbondRestraint>::iterator nbi;
 	    for ( i=0,nbi=this->_Terms.begin();
 			nbi!=this->_Terms.end(); nbi++,i++ ) {
-		#include	"_FixedNonbond_termCode.cc"
+#include	<cando/chem/energy_functions/_FixedNonbond_termCode.cc>
 		int index = i;
-		#include "_FixedNonbond_debugFiniteDifference.cc"
+#include <cando/chem/energy_functions/_FixedNonbond_debugFiniteDifference.cc>
 
 	    }
 	}
@@ -528,7 +528,7 @@ int	fails = 0;
     { _BLOCK_TRACE("FixedNonbondRestraint finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	#include "_FixedNonbond_termDeclares.cc"
+#include <cando/chem/energy_functions/_FixedNonbond_termDeclares.cc>
 #pragma clang diagnostic pop
 	double x1,y1,z1,xf,yf,zf,dQ1Q2;
 	int	I1;
@@ -556,7 +556,7 @@ int	fails = 0;
 		    FFNonbondCrossTerm crossTerm = this->_NonbondCrossTermTable->nonbondCrossTerm(crossTermIndex);
 		    double dA = crossTerm._A*this->getVdwScale();
 		    double dC = crossTerm._C*this->getVdwScale();
-		    #include	"_FixedNonbond_termCode.cc"
+#include	<cando/chem/energy_functions/_FixedNonbond_termCode.cc>
 		    if ( NonbondDistance < this->_ErrorThreshold ) 
 		    {
 			Atom_sp a1, af;

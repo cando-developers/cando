@@ -77,10 +77,10 @@ class	InteractionProblem
 public:
     string _Message;
 	InteractionProblemType	_Type;
-	Atom_sp		_Atom1;
-	Atom_sp		_Atom2;
-	Atom_sp		_Atom3;
-	Atom_sp		_Atom4;
+gc::Nilable<Atom_sp>		_Atom1;
+gc::Nilable<Atom_sp>		_Atom2;
+gc::Nilable<Atom_sp>		_Atom3;
+gc::Nilable<Atom_sp>		_Atom4;
 
 	string	message() { return this->_Message;};
 	InteractionProblem() {};
@@ -179,7 +179,7 @@ public:
     uint	getNVectorSize();
     double	evaluateRaw( NVector_sp pos, NVector_sp force );
     double	evaluate( NVector_sp pos, NVector_sp force, bool calculateForce );
-    geom::QDomNode_sp	identifyTermsBeyondThreshold();
+    adapt::QDomNode_sp	identifyTermsBeyondThreshold();
 //    uint	countBadVdwInteractions(double scaleSumOfVdwRadii, geom::DisplayList_sp displayIn);
 
     ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force );
@@ -285,8 +285,8 @@ public:
     string	summarizeEnergyAsString();
 
 
-//		geom::QDomNode_sp	rawAccumulateTermsBeyondThresholdAsXml(uint& count);
-//		geom::QDomNode_sp	accumulateTermsBeyondThresholdAsXml();
+//		adapt::QDomNode_sp	rawAccumulateTermsBeyondThresholdAsXml(uint& count);
+//		adapt::QDomNode_sp	accumulateTermsBeyondThresholdAsXml();
     uint		countTermsBeyondThreshold();
 
     void	evaluateNumericalForce(NVector_sp pos, NVector_sp numForce, double delta );
@@ -296,7 +296,7 @@ public:
 
     string	debugLogAsString();
 
-    void	dealWithProblem(const InteractionProblem& problem);
+    void	dealWithProblem(InteractionProblem& problem);
     DEFAULT_CTOR_DTOR(EnergyFunction_O);
 };
 

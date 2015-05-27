@@ -51,8 +51,8 @@ public:
                 // Parameters
                 // Variables
 	bool		_Is14;
-        Atom_sp      	_Atom1;
-        Atom_sp      	_Atom2;
+        gc::Nilable<Atom_sp>      	_Atom1;
+        gc::Nilable<Atom_sp>      	_Atom2;
 	double		_A;
 	double		_C;
 	double		_Charge1;
@@ -65,11 +65,11 @@ public:
 	bool		_calcForce;
 	bool		_calcDiagonalHessian;
 	bool		_calcOffDiagonalHessian;
-#include <cando/chem/_Nonbond_debugEvalDeclares.cc>
+#include <cando/chem/energy_functions/_Nonbond_debugEvalDeclares.cc>
 #endif
 
-	Atom_sp	getAtom1() { return this->_Atom1; };
-	Atom_sp	getAtom2() { return this->_Atom2; };
+        gc::Nilable<Atom_sp>	getAtom1() { return this->_Atom1; };
+        gc::Nilable<Atom_sp>	getAtom2() { return this->_Atom2; };
 	double	getDistance();
 	bool	defineFrom(ForceField_sp	forceField,
 					bool		is14,
@@ -80,9 +80,9 @@ public:
 public:
 //	void	archive(core::ArchiveP node);
 public:
-	geom::QDomNode_sp	asXml(core::Lisp_sp);
-	void	parseFromXmlRelativeToContainer( geom::QDomNode_sp xml, Matter_sp parent );
-	void	parseFromXmlUsingAtomTable(geom::QDomNode_sp xml, AtomTable_sp atomTable );
+	adapt::QDomNode_sp	asXml();
+	void	parseFromXmlRelativeToContainer( adapt::QDomNode_sp xml, Matter_sp parent );
+	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
 
 public:
     EnergyNonbond();

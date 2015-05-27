@@ -156,7 +156,7 @@ public:
 		//
 	void	eigenSystem(Vector4& evals, Matrix& evecs );
 
-	void setFromString(const string& s, const core::Lisp_sp& lisp);
+	void setFromString(const string& s);
 //	void setFromStringFast(const string& s,const core::Lisp_sp& lisp);
 
 	string	asString() const;

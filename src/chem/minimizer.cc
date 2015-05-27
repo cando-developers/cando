@@ -161,7 +161,7 @@ namespace chem
     {_G();
     IMPLEMENT_ME();
 #if 0
-    core::HashTableEq_sp options = core::HashTableEq_O::createFromKeywordCons(optionCons,minimizerOptions,_lisp);
+    core::HashTableEq_sp options = core::HashTableEq_O::createFromKeywordCons(optionCons,minimizerOptions);
     options->setBoolValueIfAvailable(this->_ShowElapsedTime,":showElapsedTime");
 #endif
 }
@@ -794,15 +794,15 @@ namespace chem
 	double xinc = (dxc-dxa)/100.0;
 	report->_LineSearchPosition = nvPos->deepCopy().as<NVector_O>();
 	report->_LineSearchDirection = nvDir->deepCopy().as<NVector_O>();
-	report->_TotalEnergyFn = NumericalFunction_O::create("Alpha","Total",xmin,xinc,_lisp);
-	report->_StretchEnergyFn = NumericalFunction_O::create("Alpha","Stretch",xmin,xinc,_lisp);
-	report->_AngleEnergyFn = NumericalFunction_O::create("Alpha","Angle",xmin,xinc,_lisp);
-	report->_DihedralEnergyFn = NumericalFunction_O::create("Alpha","Dihedral",xmin,xinc,_lisp);
-	report->_NonbondEnergyFn = NumericalFunction_O::create("Alpha","Nonbond",xmin,xinc,_lisp);
-	report->_ImproperEnergyFn = NumericalFunction_O::create("Alpha","Improper",xmin,xinc,_lisp);
-	report->_ChiralRestraintEnergyFn = NumericalFunction_O::create("Alpha","ChiralRestraint",xmin,xinc,_lisp);
-	report->_AnchorRestraintEnergyFn = NumericalFunction_O::create("Alpha","AnchorRestraint",xmin,xinc,_lisp);
-	report->_FixedNonbondRestraintEnergyFn = NumericalFunction_O::create("Alpha","FixedNonbondRestraint",xmin,xinc,_lisp);
+	report->_TotalEnergyFn = NumericalFunction_O::create("Alpha","Total",xmin,xinc);
+	report->_StretchEnergyFn = NumericalFunction_O::create("Alpha","Stretch",xmin,xinc);
+	report->_AngleEnergyFn = NumericalFunction_O::create("Alpha","Angle",xmin,xinc);
+	report->_DihedralEnergyFn = NumericalFunction_O::create("Alpha","Dihedral",xmin,xinc);
+	report->_NonbondEnergyFn = NumericalFunction_O::create("Alpha","Nonbond",xmin,xinc);
+	report->_ImproperEnergyFn = NumericalFunction_O::create("Alpha","Improper",xmin,xinc);
+	report->_ChiralRestraintEnergyFn = NumericalFunction_O::create("Alpha","ChiralRestraint",xmin,xinc);
+	report->_AnchorRestraintEnergyFn = NumericalFunction_O::create("Alpha","AnchorRestraint",xmin,xinc);
+	report->_FixedNonbondRestraintEnergyFn = NumericalFunction_O::create("Alpha","FixedNonbondRestraint",xmin,xinc);
 
 	for ( zx=dxa;zx<=dxc;zx+=(dxc-dxa)/100.0 ) {
 	    zy = this->d1DTotalEnergy(zx);
@@ -1046,12 +1046,12 @@ namespace chem
 
 	iRestartSteps = x->size();
 	// Define NVectors
-	force = NVector_O::create(iRestartSteps,_lisp);
-	s = NVector_O::create(iRestartSteps,_lisp);
+	force = NVector_O::create(iRestartSteps);
+	s = NVector_O::create(iRestartSteps);
 	LOG(BF("step") );
-	dir = NVector_O::create(iRestartSteps,_lisp);
-	tv1 = NVector_O::create(iRestartSteps,_lisp);
-	tv2 = NVector_O::create(iRestartSteps,_lisp);
+	dir = NVector_O::create(iRestartSteps);
+	tv1 = NVector_O::create(iRestartSteps);
+	tv2 = NVector_O::create(iRestartSteps);
 	LOG(BF("step") );
 	// Done
 	innerSteps = MIN(iRestartSteps,ITMAX);
@@ -1341,11 +1341,11 @@ namespace chem
 
     iRestartSteps = x->size();
     // Define NVectors
-    force = NVector_O::create(iRestartSteps,_lisp);
-    s = NVector_O::create(iRestartSteps,_lisp);
-    d = NVector_O::create(iRestartSteps,_lisp);
-    tv1 = NVector_O::create(iRestartSteps,_lisp);
-    tv2 = NVector_O::create(iRestartSteps,_lisp);
+    force = NVector_O::create(iRestartSteps);
+    s = NVector_O::create(iRestartSteps);
+    d = NVector_O::create(iRestartSteps);
+    tv1 = NVector_O::create(iRestartSteps);
+    tv2 = NVector_O::create(iRestartSteps);
     // Done
     innerSteps = MIN(iRestartSteps,ITMAX);
     double fp = dTotalEnergyForce( x, force );
@@ -1359,7 +1359,7 @@ namespace chem
 	s->copy(force);
 	break;
     case diagonalPreconditioner:
-	diag = NVector_O::create(iRestartSteps,_lisp);
+	diag = NVector_O::create(iRestartSteps);
 	this->_EnergyFunction->setupDiagonalPreconditioner(x,diag);
 	LOG(BF("Preconditioner max value: %lf") % diag->maxValue() );
 	LOG(BF("Preconditioner min value: %lf") % diag->minValue() );
@@ -1822,23 +1822,23 @@ namespace chem
     // Define NVectors
     LOG(BF("Defining NVectors") );
     iDimensions = xK->size();
-    forceK = NVector_O::create(iDimensions,_lisp);
+    forceK = NVector_O::create(iDimensions);
     LOG(BF("Defining NVectors xKNext") );
-    xKNext = NVector_O::create(iDimensions,_lisp);
+    xKNext = NVector_O::create(iDimensions);
     LOG(BF("status") );
-    pK = NVector_O::create(iDimensions,_lisp);
+    pK = NVector_O::create(iDimensions);
     LOG(BF("status") );
     pK->zero();
     LOG(BF("Defining NVectors pjNext") );
-    pjNext = NVector_O::create(iDimensions,_lisp);
+    pjNext = NVector_O::create(iDimensions);
     LOG(BF("Defining NVectors rj,dj,zj,qj") );
-    rj = NVector_O::create(iDimensions,_lisp);
-    dj = NVector_O::create(iDimensions,_lisp);
-    zj = NVector_O::create(iDimensions,_lisp);
-    qj = NVector_O::create(iDimensions,_lisp);
-    kSum = NVector_O::create(iDimensions,_lisp);
-    mprecon = SparseLargeSquareMatrix_O::create(_lisp,iDimensions,SymmetricUpperDiagonal);
-    ldlt=SparseLargeSquareMatrix_O::create(_lisp,iDimensions,SymmetricUpperDiagonal);
+    rj = NVector_O::create(iDimensions);
+    dj = NVector_O::create(iDimensions);
+    zj = NVector_O::create(iDimensions);
+    qj = NVector_O::create(iDimensions);
+    kSum = NVector_O::create(iDimensions);
+    mprecon = SparseLargeSquareMatrix_O::create(iDimensions,SymmetricUpperDiagonal);
+    ldlt=SparseLargeSquareMatrix_O::create(iDimensions,SymmetricUpperDiagonal);
     mprecon->fill(0.0);
     ldlt->fill(0.0);
     //
@@ -2063,11 +2063,11 @@ namespace chem
     dRms = 0.0;
     dX = 1.0;
     iSize = nvPos->size();
-    nvDir       = NVector_O::create( iSize ,_lisp);
-    nvNewPos    = NVector_O::create( iSize ,_lisp);
-    nvNewForce = NVector_O::create( iSize ,_lisp);
-    nvTempPos   = NVector_O::create( iSize ,_lisp);
-    nvTempForce= NVector_O::create( iSize ,_lisp);
+    nvDir       = NVector_O::create( iSize );
+    nvNewPos    = NVector_O::create( iSize );
+    nvNewForce = NVector_O::create( iSize );
+    nvTempPos   = NVector_O::create( iSize );
+    nvTempForce= NVector_O::create( iSize );
 
     iCount = 0;
     this->_Iteration = 1;
@@ -2186,7 +2186,7 @@ namespace chem
 	SIMPLE_ERROR(BF("You must define an energy function to minimize"));
     }
     this->_Iteration = 1;
-    pos = NVector_O::create(this->_EnergyFunction->getNVectorSize(),_lisp);
+    pos = NVector_O::create(this->_EnergyFunction->getNVectorSize());
     this->_EnergyFunction->extractCoordinatesFromAtoms(pos);
     this->_evaluateEnergyAndForceManyTimes(numSteps,pos);
     }
@@ -2199,13 +2199,13 @@ namespace chem
     int		retries;
     bool		sawProblem;
 #if USE_POSIX_TIME
-    this->_StartTime = core::PosixTime_O::createNow(_lisp);
+    this->_StartTime = core::PosixTime_O::createNow();
 #endif
     if ( this->_EnergyFunction.nilp() )
     {
 	SIMPLE_ERROR(BF("You must define an energy function to minimize"));
     }
-    pos = NVector_O::create(this->_EnergyFunction->getNVectorSize(),_lisp);
+    pos = NVector_O::create(this->_EnergyFunction->getNVectorSize());
     retries = 100;
     try {
 	do {
@@ -2245,13 +2245,13 @@ namespace chem
 	int		retries;
 	bool		sawProblem;
 #if USE_POSIX_TIME
-	this->_StartTime = core::PosixTime_O::createNow(_lisp);
+	this->_StartTime = core::PosixTime_O::createNow();
 #endif
 	if ( this->_EnergyFunction.nilp() )
 	{
 	    SIMPLE_ERROR(BF("You must define an energy function to minimize"));
 	}
-	pos = NVector_O::create(this->_EnergyFunction->getNVectorSize(),_lisp);
+	pos = NVector_O::create(this->_EnergyFunction->getNVectorSize());
 	retries = 100;
 	try {
 	    do {
@@ -2302,13 +2302,13 @@ namespace chem
     int		retries;
     bool		sawProblem;
 #if USE_POSIX_TIME
-    this->_StartTime = core::PosixTime_O::createNow(_lisp);
+    this->_StartTime = core::PosixTime_O::createNow();
 #endif
     if ( this->_EnergyFunction.nilp() )
     {
 	SIMPLE_ERROR(BF("You must define an energy function to minimize"));
     }
-    pos = NVector_O::create(this->_EnergyFunction->getNVectorSize(),_lisp);
+    pos = NVector_O::create(this->_EnergyFunction->getNVectorSize());
     retries = 100;
     try {
 	do {
@@ -2356,10 +2356,10 @@ namespace chem
     }
 
 
-    geom::QDomNode_sp	Minimizer_O::asXml()
+    adapt::QDomNode_sp	Minimizer_O::asXml()
     {
-	geom::QDomNode_sp	xml;
-	xml = geom::QDomNode_O::create(_lisp,"Minimizer");
+	adapt::QDomNode_sp	xml;
+	xml = adapt::QDomNode_O::create("Minimizer");
 	xml->addAttributeDoubleScientific("InitialLineSearchStep",this->_InitialLineSearchStep);
 	xml->addAttributeInt("MaximumNumberOfSteepestDescentSteps",this->_NumberOfSteepestDescentSteps);
 	xml->addAttributeInt("MaximumNumberOfConjugateGradientSteps",this->_NumberOfConjugateGradientSteps);

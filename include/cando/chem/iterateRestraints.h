@@ -35,7 +35,7 @@ private:
     void _accumulateRestraints(Matter_sp m);
 
 public:
-    static IterateRestraints_sp create(core::Lisp_sp e,Matter_sp matter);
+    static IterateRestraints_sp create(Matter_sp matter);
 public:
 	void initTop(Matter_sp matter);
 	void first();

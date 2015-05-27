@@ -1,7 +1,5 @@
-
-
-
 include	$(CLASP_HOME)/makefile.inc
+include	../../makefile.inc
 
 NEEDS=initClasses.inc symbols.inc
 
@@ -49,3 +47,10 @@ subClean sc:
 
 totalClean:
 	rm -rf bin install_release
+
+
+
+sub-prebuild:
+	make scrape-symbols
+	make scrape-classes
+

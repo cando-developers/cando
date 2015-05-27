@@ -117,13 +117,7 @@ string FrameRecognizer_O::description() const
 {
     stringstream ss;
     ss << "( " << this->className() << " ";
-    if ( this->_Name.pointerp() )
-    {
-	ss << " :name " << this->_Name->__repr__();
-    } else 
-    {
-	ss << " :name -UNDEFINED-";
-    }
+    ss << _rep_(this->_Name);
     ss << " :groupName \"" << this->_GroupName->__repr__() << "\"";
     ss << " :smarts " << "\"" << this->_Smarts << "\" )";
     return ss.str();

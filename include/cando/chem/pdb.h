@@ -23,7 +23,7 @@ namespace chem
 	private:
 	string _PdbName;
     geom::ObjectList_sp _HetNames;
-    core::SymbolMap<core::StringSet_O> _Connections;
+    adapt::SymbolMap<adapt::StringSet_O> _Connections;
 public:
 
     __END_CLASS_DEFINITION(PdbMonomerConnectivity_O)

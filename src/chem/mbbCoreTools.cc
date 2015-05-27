@@ -217,10 +217,10 @@ Residue_sp		res;
 
     /*! Return all of the atoms in the matter that are within the sphere indicated by center/radius
      */
-    core::ObjectSet_sp atomsWithinSphereAsObjectSet( Matter_sp matter, Vector3 center, double radius )
+    adapt::ObjectSet_sp atomsWithinSphereAsObjectSet( Matter_sp matter, Vector3 center, double radius )
     {_G();
 	LOG(BF("Looking for atoms in sphere with center(%s) and radius(%lf)") % center.asString() % radius );
-	core::ObjectSet_sp result = core::ObjectSet_O::create();
+	adapt::ObjectSet_sp result = adapt::ObjectSet_O::create();
 	Loop lAtoms;
 	lAtoms.loopTopGoal(matter,ATOMS);
 	while ( lAtoms.advance() )
@@ -242,9 +242,9 @@ Residue_sp		res;
 
     /*! Return all of the atoms in the matter that are within the sphere indicated by center/radius
      */
-    core::ObjectSet_sp atomsInMatterAsObjectSet( Matter_sp matter)
+    adapt::ObjectSet_sp atomsInMatterAsObjectSet( Matter_sp matter)
     {
-	core::ObjectSet_sp result = core::ObjectSet_O::create();
+	adapt::ObjectSet_sp result = adapt::ObjectSet_O::create();
 	Loop lAtoms;
 	lAtoms.loopTopGoal(matter,ATOMS);
 	while ( lAtoms.advance() )

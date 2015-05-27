@@ -133,7 +133,7 @@ private:
 	void	setup(uint dim, TriangleType type);
 
 public:
-    static FullLargeSquareMatrix_sp	create(core::Lisp_sp e,uint dim, TriangleType type);
+    static FullLargeSquareMatrix_sp	create(uint dim, TriangleType type);
 
 virtual	uint	indexBegin()	{ return 0;};
 virtual	uint	indexEnd() {return this->_ActiveElements;};
@@ -188,7 +188,7 @@ private:
 	vector<uint> 	_ColumnForValue;
 	vector<double> 	_Values;
 public:
-    static SparseLargeSquareMatrix_sp	create(core::Lisp_sp e,uint dim, TriangleType type);
+    static SparseLargeSquareMatrix_sp	create(uint dim, TriangleType type);
 private:
 	void	initializeStorage();
 	void	expandStorage();

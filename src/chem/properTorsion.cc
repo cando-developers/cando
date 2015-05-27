@@ -15,7 +15,7 @@ namespace chem
     EXPOSE_CLASS(chem,ProperTorsion_O);
 
 
-    ProperTorsion_sp ProperTorsion_O::create(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, core::Lisp_sp lisp)
+    ProperTorsion_sp ProperTorsion_O::create(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4)
     {_G();
 	GC_ALLOCATE(ProperTorsion_O, obj );
 	obj->setup(a1,a2,a3,a4);

@@ -21,7 +21,9 @@
 #include <cando/adapt/stringSet.fwd.h>
 #include <cando/geom/vector2.h>
 #include <cando/geom/vector3.h>
-
+#include <clasp/core/smallMap.h>
+#include <cando/adapt/symbolSet.h>
+#include <cando/adapt/objectSet.h>
 
 //#include "bond.h"
 //#include "conformation.h"
@@ -38,7 +40,6 @@ namespace chem {
 SMART(CandoDatabase);
 SMART(Oligomer);
 SMART(Monomer);
-SMART(SymbolSet);
 SMART(MultiMonomer);
 SMART(Coupling);
 SMART(SpecificContextSet);
@@ -128,8 +129,8 @@ public:	// /////////////////////////////////////////////////////////////////
 
     uint	numberOfMonomers() { return this->_Monomers.size(); };
 
-    core::SymbolSet_sp allMonomerAliases();
-    core::ObjectSet_sp getAllAliases();
+    adapt::SymbolSet_sp allMonomerAliases();
+    adapt::ObjectSet_sp getAllAliases();
 
     couplingIterator begin_Couplings() { return this->_Couplings.begin(); };
     couplingIterator end_Couplings() { return this->_Couplings.end(); };
@@ -171,7 +172,7 @@ public:
     void	checkMonomersAndNeighborsForErrors(CandoDatabase_sp bdb, gctools::SmallOrderedSet<Monomer_sp>& monomers ); // s e t<Monomer_sp> monomers);
     void	checkMonomersAndNotNeighborsForErrors(CandoDatabase_sp bdb, gctools::SmallOrderedSet<Monomer_sp>& monomers ); // s e t<Monomer_sp> monomers);
     void	signal_monomerContentsChanged();
-    core::StringSet_sp allAliases();
+    adapt::StringSet_sp allAliases();
 
 public:
     // Atomic oligomer modifying routines

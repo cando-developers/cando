@@ -193,7 +193,7 @@ void	backSubstituteLDLt(AbstractLargeSquareMatrix_sp ldlt,
 //    _lisp->profiler().timer(core::timerPreconditioner).start();
 //    _lisp->profiler().timer(core::timerPreconditionerSolver).start();
 //    _lisp->profiler().timer(core::timerPreconditionerSolverBackSubstitute).start();
-    tx = NVector_O::create(b->size(),ldlt->lisp());
+    tx = NVector_O::create(b->size());
 //	backSubstituteL(ldlt,s,b);
     for ( y=0; y<b->size(); y++ ) {
 	sum = 0.0;

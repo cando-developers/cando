@@ -24,4 +24,12 @@ namespace chemkw
 #undef ChemKwPkg_SYMBOLS
 }; /* chemkw */
 
+namespace kw {
+#define KeywordPkg_SYMBOLS
+#define DO_SYMBOL(cname, idx, pkg, lispname, export) extern core::Symbol_sp cname;
+#include <cando/chem/generated/symbols_scraped_inc.h>
+#undef DO_SYMBOL
+#undef KeywordPkg_SYMBOLS
+}; /* kw package */
+
 #endif /* _chem_symbolTable_H */

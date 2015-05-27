@@ -679,7 +679,7 @@ namespace client
     //  more information
     ///////////////////////////////////////////////////////////////////////////
     template <typename Iterator>
-    bool parse_numbers(Iterator first, Iterator last, Matrix& m, const core::Lisp_sp& lisp)
+    bool parse_numbers(Iterator first, Iterator last, Matrix& m)
     {_G();
         using qi::double_;
         using qi::phrase_parse;
@@ -830,7 +830,7 @@ void	Matrix::setFromStringFast(const string& input,const core::Lisp_sp& lisp)
     ASSERTP(r,"Could not parse matrix from: "+input);
 }
 #endif
-void	Matrix::setFromString(const string& str, const core::Lisp_sp& lisp) 
+void	Matrix::setFromString(const string& str) 
 {_G();
 double		vals[16];
 vector<string>	tokens;

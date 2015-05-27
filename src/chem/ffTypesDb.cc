@@ -73,13 +73,13 @@ string 		                        name;
 }
 
 
-
+#ifdef XML_ARCHIVE
     void	FFTypesDb_O::archiveBase(core::ArchiveP node)
     {	
 	this->FFBaseDb_O::archiveBase(node);
 	node->attributeVector0(KW("type-rules"), this->_TypeAssignmentRules);
     }
-
+#endif
 
 chem::ChemInfo_sp	FFTypesDb_O::getRule(uint index)
 {_OF();

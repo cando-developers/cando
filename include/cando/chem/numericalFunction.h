@@ -55,7 +55,7 @@ private:
 public:
 	static NumericalFunction_sp create(const string& xaxis,
 				const string& yaxis,
-				double xstart, double xinc, core::Lisp_sp e ) ;
+				double xstart, double xinc) ;
 public:
 
 
@@ -128,7 +128,7 @@ public:
 
 inline	NumericalFunction_sp NumericalFunction_O::create(const string& xaxis,
 				const string& yaxis,
-				double xstart, double xinc, core::Lisp_sp e ) 
+				double xstart, double xinc) 
 {
     GC_ALLOCATE(NumericalFunction_O, f ); // RP_Create<NumericalFunction_O>(e);
     f->setXAxisName(xaxis);

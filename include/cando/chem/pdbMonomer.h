@@ -40,7 +40,7 @@ public:
 public:
     core::Symbol_sp getPdbName() { return this->_PdbName;};
     void addLongName(MatterName longName);
-    void addConnect(MatterName mainAtom, core::SymbolSet_sp neighborNames );
+    void addConnect(MatterName mainAtom, adapt::SymbolSet_sp neighborNames );
     void setPdbName(MatterName pdbName);
     bool hasConnection(MatterName name1, MatterName name2);
     uint connectAtomsAndReturnUnconnected(Residue_sp res, VectorAtom& unconnected);
@@ -62,7 +62,7 @@ public:
 //    void archiveBase(core::ArchiveP node);
 
     private:
-        core::SymbolMap<PdbMonomerConnectivity_O>   _Database; // was StringMap
+        adapt::SymbolMap<PdbMonomerConnectivity_O>   _Database; // was StringMap
 public:
 void addMonomer(PdbMonomerConnectivity_sp);
         PdbMonomerConnectivity_sp findMonomer(core::Symbol_sp pdbName);

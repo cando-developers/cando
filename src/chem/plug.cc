@@ -19,7 +19,7 @@ namespace chem
 
 
 #if 0
-    RingClosingMate_sp RingClosingMate_O::create(core::Lisp_sp e,CandoDatabase_sp db)
+    RingClosingMate_sp RingClosingMate_O::create(CandoDatabase_sp db)
     {
 	GC_ALLOCATE(RingClosingMate_O, mate );
 //    mate->setCandoDatabase(db);
@@ -91,7 +91,7 @@ namespace chem
 
 
 #if 0
-    Mate_sp Mate_O::create(core::Lisp_sp e,CandoDatabase_sp db)
+    Mate_sp Mate_O::create(CandoDatabase_sp db)
     {
 	GC_ALLOCATE(Mate_O, mate );
 	mate->setCandoDatabase(db);
@@ -359,8 +359,7 @@ namespace chem
       GC_ALLOCATE(PlugWithMates_O, me );
       me->_B0 = bond0;
       me->_B1 = bond1;
-      me->_Mates.clear();
-      mates->fillVec0(me->_Mates); // me->_Mates.fillFromCons(mates);
+      core::fillVec0(mates,me->_Mates);
       return me;
   };
 
@@ -677,7 +676,7 @@ namespace chem
   RingClosingPlug_sp RingClosingPlug_O::make(core::List_sp ringClosingMates)
   {_G();
       GC_ALLOCATE(RingClosingPlug_O, me );
-      ringClosingMates->fillVec0(me->_RingClosingMates);
+      core::fillVec0(gc::As<core::Cons_sp>(ringClosingMates),me->_RingClosingMates);
     return me;
   };
 
@@ -788,13 +787,7 @@ namespace chem
 		ss << " :name " << this->getName()->__repr__();
 	    }
 	}
-	if ( this->_EntityNames.pointerp() )
-	{
-	    ss << " :contents " << this->_EntityNames->asString();
-	} else
-	{
-	    ss << " :contents -UNDEFINED-";
-	}
+	ss << _rep_(this->_EntityNames);
 	ss << " )";
 	return ss.str();
 

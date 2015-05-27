@@ -114,7 +114,7 @@ namespace chem
 	Matter_wp	wfromCont, wtoCont;
 	Matter_sp	fromCont, toCont;
 	Atom_sp a1 = this->_Atom1;
-	ASSERTP(a1.pointerp(), "Bond_O::isInterResidueBond from atom is undefined!");
+	ASSERTP(a1.objectp(), "Bond_O::isInterResidueBond from atom is undefined!");
 	LOG(BF("from atom = %s") % a1->description() );
 	wfromCont = a1->getResidueContainedBy();
 	ASSERTNOTNULL(wfromCont);
@@ -344,11 +344,11 @@ namespace chem
 	Atom_sp fa =  this->_Atom1;
 	Atom_sp ta = this->_Atom2;
 #ifdef	DEBUG_ON
-	if ( fa.not_pointerp() ) {
+	if ( !fa.objectp() ) {
 	    SIMPLE_ERROR(BF("redirectToAtomCopies _Atom1 is NULL"));
 	}
 	LOG(BF("  original from atom@%p") % fa.get() ); //
-	if ( ta.not_pointerp() ) {
+	if ( !ta.objectp() ) {
 	    SIMPLE_ERROR(BF("redirectToAtomCopies _Atom2 is NULL"));
 	}
 	LOG(BF("  original   to atom@%p") % ta.get() ); //

@@ -45,7 +45,7 @@ namespace chem
 
         AtomPdbRec() : _atom(_Nil<Atom_O>()) {};
 	void write(core::T_sp stream);
-	virtual ~AtomPdbRec() {this->_atom.reset();};
+	virtual ~AtomPdbRec() {};
 	void parse(const string& line);
 	Atom_sp createAtom();
     };
@@ -128,7 +128,7 @@ namespace chem
 	{
 	    name = " " + this->_name->symbolName()->get();
 	}
-        core::clasp_write(boost::format( "ATOM%7d %-4s %3s %1s%4d    %8.3f%8.3f%8.3f %5.2f %5.2f           %2s\n" ) % this->_serial % name % this->_resName % this->_chainId % this->_resSeq % this->_x % this->_y % this->_z % this->_occupancy % this->_tempFactor % this->_element, fout);
+        core::clasp_write_format(boost::format( "ATOM%7d %-4s %3s %1s%4d    %8.3f%8.3f%8.3f %5.2f %5.2f           %2s\n" ) % this->_serial % name % this->_resName % this->_chainId % this->_resSeq % this->_x % this->_y % this->_z % this->_occupancy % this->_tempFactor % this->_element, fout);
     }
 
     void	EntirePdbRec::addAtomPdbRec(AtomPdbRec& atom)
@@ -215,7 +215,7 @@ namespace chem
 	    }
 	}
 	fout << std::endl;
-        core::clasp_write(BF("%s")% fout.str(),stream);
+        core::clasp_write_format(BF("%s")% fout.str(),stream);
     }
 
 
@@ -541,7 +541,7 @@ namespace chem
 	{
 	    ci->write(fout);
 	}
-        core::clasp_write(BF("TER\n"), fout );
+        core::clasp_write_format(BF("TER\n"), fout );
     }
 
 
@@ -587,16 +587,15 @@ namespace chem
 
     void PdbWriter_O::writeModel(Matter_sp matter, int model)
     {_OF();
-        core::clasp_write(BF("MODEL     %d\n") % model, this->_Out);
+        core::clasp_write_format(BF("MODEL     %d\n") % model, this->_Out);
 	this->write(matter);
-        core::clasp_write(BF("ENDMDL\n"),this->_Out);
+        core::clasp_write_format(BF("ENDMDL\n"),this->_Out);
     }
 
     void PdbWriter_O::close()
     {
-	if ( this->_Out != NULL )
-	{
-            core::clasp_write(BF("END\n"), this->_Out);
+      if ( this->_Out.notnilp() ) {
+            core::clasp_write_format(BF("END\n"), this->_Out);
             core::cl_close(this->_Out);
 	}
     }

@@ -60,24 +60,24 @@ public:
 //	string		_Type4;
 	bool		_Proper;
                 // Variables
-        Atom_sp      _Atom1;
-        Atom_sp      _Atom2;
-        Atom_sp      _Atom3;
-        Atom_sp      _Atom4;
+        gc::Nilable<Atom_sp>      _Atom1;
+        gc::Nilable<Atom_sp>      _Atom2;
+        gc::Nilable<Atom_sp>      _Atom3;
+        gc::Nilable<Atom_sp>      _Atom4;
 	double		_PhaseRad;
 	TermDihedral	term;
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
 	bool		_calcForce;
 	bool		_calcDiagonalHessian;
 	bool		_calcOffDiagonalHessian;
-#include <cando/chem/_Dihedral_debugEvalDeclares.cc>
+#include <cando/chem/energy_functions/_Dihedral_debugEvalDeclares.cc>
 #endif
 	double		_CalculatedDihedralDeviation;
 
-	Atom_sp		getAtom1() { return this->_Atom1; };
-	Atom_sp		getAtom2() { return this->_Atom2; };
-	Atom_sp		getAtom3() { return this->_Atom3; };
-	Atom_sp		getAtom4() { return this->_Atom4; };
+        gc::Nilable<Atom_sp>		getAtom1() { return this->_Atom1; };
+        gc::Nilable<Atom_sp>		getAtom2() { return this->_Atom2; };
+        gc::Nilable<Atom_sp>		getAtom3() { return this->_Atom3; };
+        gc::Nilable<Atom_sp>		getAtom4() { return this->_Atom4; };
 	double		getDihedral();
 	double		getDihedralDeviation();
 	double		getCalculatedDihedralDeviation() { return this->_CalculatedDihedralDeviation;};
@@ -85,8 +85,8 @@ public:
 public:
 //	void	archive(core::ArchiveP node);
 public:
-	geom::QDomNode_sp	asXml(core::Lisp_sp);
-	void	parseFromXmlUsingAtomTable(geom::QDomNode_sp xml, AtomTable_sp atomTable );
+	adapt::QDomNode_sp	asXml();
+	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
 
         void defineFrom( int n, FFPtor_sp term, EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, EnergyAtom *ea4, double scale);
 	void defineMissingProper( EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, EnergyAtom *ea4);

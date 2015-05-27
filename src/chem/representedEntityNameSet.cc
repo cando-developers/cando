@@ -49,7 +49,7 @@ namespace chem
 
     EntityNameSetBase_sp RepresentedEntityNameSet_O::copy() const
     {
-	GC_COPY(RepresentedEntityNameSet_O, newCopy, this->const_sharedThis<RepresentedEntityNameSet_O>() ); // = RP_Copy<RepresentedEntityNameSet_O>(this->const_sharedThis<RepresentedEntityNameSet_O>());
+      GC_COPY(RepresentedEntityNameSet_O, newCopy, *this ); // = RP_Copy<RepresentedEntityNameSet_O>(this->const_sharedThis<RepresentedEntityNameSet_O>());
 	return newCopy;
     }
 
@@ -72,7 +72,7 @@ namespace chem
     RepresentedEntityNameSet_sp RepresentedEntityNameSet_O::asUnexpandedRepresentedEntityNameSet()
     {_G();
 	GC_COPY(RepresentedEntityNameSet_O, newGroup, this->sharedThis<RepresentedEntityNameSet_O>() ); // = RP_Copy<RepresentedEntityNameSet_O>(this->sharedThis<RepresentedEntityNameSet_O>());
-	newGroup->_ContainedNames = core::StringSet_O::create();
+	newGroup->_ContainedNames = adapt::StringSet_O::create();
 	newGroup->_ContainedNames->insert(this->_Name);
 	return newGroup;
     }
@@ -111,7 +111,7 @@ namespace chem
 	GC_COPY(RepresentedEntityNameSet_O, expanded , *this); // = RP_Copy<RepresentedEntityNameSet_O>(this);
 	expanded->expandToTerminalEntityNames();
 	LOG(BF("I have a representative[%s] so I'm created a RepresentedEntityNameSet: %s") % expanded->__repr__() );
-	objList->append(expanded);
+	objList->vectorPushExtend(expanded);
 	return objList;
     }
 

@@ -15,14 +15,15 @@
 #include <clasp/core/common.h>
 #include <cando/chem/bond.h>
 #include <cando/geom/vector3.h>
+#include <cando/adapt/symbolMap.h>
 //#include	"conformation.h"
 #include <cando/chem/atom.h>
+#include <cando/chem/monomer.fwd.h>
 #include <cando/adapt/stringSet.fwd.h>
 #include <cando/chem/residue.h>
 //#include <cando/chem/candoDatabase.h>
+#include <clasp/core/smallMap.h>
 #include <cando/chem/entityNameSet.h>
-
-
 #include <cando/chem/chemPackage.h>
 
 
@@ -67,7 +68,7 @@ public:
 
 
 public:
-	typedef	core::SymbolMap<EntityNameSetBase_O>	NeighborMap;
+	typedef	adapt::SymbolMap<EntityNameSetBase_O>	NeighborMap;
 private: // archive
 	EntityNameSetBase_sp		_Self;
 		//! Map coupling names to monomers
@@ -79,7 +80,7 @@ private:
 				SpecificContextSet_sp list,
 				SpecificContext_sp name );
 	void	expandOuts(NeighborMap::iterator mit,
-				core::StringSet_sp list,
+				adapt::StringSet_sp list,
 				MCStringStack& name);
 public:
 
@@ -92,7 +93,7 @@ public:
 	bool	hasNeighborWithCouplingName(core::Symbol_sp plugName ) { return this->_Neighbors.contains(plugName);};
 	uint	numberOfNeighbors() { return this->_Neighbors.size(); };
 	EntityNameSetBase_sp getNeighbor(core::Symbol_sp plugName) const;
-	core::SymbolSet_sp getPlugNames() const;
+	adapt::SymbolSet_sp getPlugNames() const;
 
 	EntityNameSetBase_sp	getFocus() { return this->_Self; };
 
@@ -121,7 +122,7 @@ public:
 		 * recognizes.  This is done by expanding all 
 		 * group names to monomer names. 
 		 */
-	core::SymbolSet_sp	getAllSpecificKeys();
+	adapt::SymbolSet_sp	getAllSpecificKeys();
 		//! Return the first specific key
     core::Symbol_sp		getFirstSpecificKey();
 

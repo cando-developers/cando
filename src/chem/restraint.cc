@@ -382,7 +382,7 @@ void	RestraintFixedNonbond_O::exposeCando(core::Lisp_sp e)
 }
 
 
-RestraintFixedNonbond_sp RestraintFixedNonbond_O::create(core::Lisp_sp e,Matter_sp matter)
+RestraintFixedNonbond_sp RestraintFixedNonbond_O::create(Matter_sp matter)
 {
     GC_ALLOCATE(RestraintFixedNonbond_O, nb );
     nb->setMatter(matter);

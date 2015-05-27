@@ -46,26 +46,26 @@ public:
 	string	className()	{ return "EnergyStretch"; };
 public:
 	TermStretch	term;
-	Atom_sp		_Atom1;
-	Atom_sp		_Atom2;
+        gc::Nilable<Atom_sp>		_Atom1;
+        gc::Nilable<Atom_sp>		_Atom2;
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
 	bool		_calcForce;
 	bool		_calcDiagonalHessian;
 	bool		_calcOffDiagonalHessian;
-#include <cando/chem/_Stretch_debugEvalDeclares.cc>
+#include <cando/chem/energy_functions/_Stretch_debugEvalDeclares.cc>
 #endif
 
 
-	chem::Atom_sp	getAtom1() {return this->_Atom1;};
-	chem::Atom_sp	getAtom2() {return this->_Atom2;};
+	gc::Nilable<Atom_sp>	getAtom1() {return this->_Atom1;};
+        gc::Nilable<Atom_sp>	getAtom2() {return this->_Atom2;};
 	double	getR0()	{return this->term.r0;};
 	double	getR();
 
 public:
 //	void	archive(core::ArchiveP node);
 public:
-	geom::QDomNode_sp	asXml(core::Lisp_sp);
-	void	parseFromXmlUsingAtomTable(geom::QDomNode_sp xml, AtomTable_sp atomTable );
+	adapt::QDomNode_sp	asXml();
+	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
 
 
 	EnergyStretch();

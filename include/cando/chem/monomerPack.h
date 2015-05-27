@@ -35,7 +35,7 @@ public:
 
 private:
 		//! Store the unique IDs of the Interesting atoms for each monomer
-	core::SymbolList_sp				_InterestingAtomAliases;
+	adapt::SymbolList_sp				_InterestingAtomAliases;
 	MapOfMonomerNamesToAtomIndexers_sp	_AtomIndexers;
 
 private:
@@ -44,10 +44,10 @@ private:
 public:
 
 //	void	setInterestingAtomAliasesFromString(const string& nm);
-	void	setInterestingAtomAliasesFromSymbolList(core::SymbolList_sp nm);
+	void	setInterestingAtomAliasesFromSymbolList(adapt::SymbolList_sp nm);
 	string	getInterestingAtomAliasesAsString();
 
-    virtual core::SymbolList_sp getInterestingAtomAliases() { return this->_InterestingAtomAliases; };
+    virtual adapt::SymbolList_sp getInterestingAtomAliases() { return this->_InterestingAtomAliases; };
 
 	void	setMonomerNameOrPdb(core::Symbol_sp nm);
 	void	addMonomerName(core::Symbol_sp nm);
@@ -62,7 +62,7 @@ public:
 
     virtual	bool	supportsInterestingAtomAliases() { return true;};
     virtual void setInterestingAtomNamesForMonomerName(core::Symbol_sp monomerName, const string& atomIndexerNames);
-    virtual void setInterestingAtomNamesForMonomerNameStringList(core::Symbol_sp monomerName, core::StringList_sp atomIndexerNames);
+    virtual void setInterestingAtomNamesForMonomerNameStringList(core::Symbol_sp monomerName, adapt::StringList_sp atomIndexerNames);
     virtual void setInterestingAtomNamesForMonomerNameFromCons(core::Symbol_sp, core::List_sp atomIndexerNames);
     virtual string getInterestingAtomNamesForMonomerName(core::Symbol_sp name);
     virtual bool hasInterestingAtomAlias(Alias_sp alias);

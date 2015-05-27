@@ -13,7 +13,7 @@
 #include <clasp/core/fileSystem.h>
 //#include "core/xmlLoadArchive.h"
 //#include "core/xmlSaveArchive.h"
-#include <clasp/core/stringList.h>
+#include <cando/adapt/stringList.h>
 #include <clasp/core/designators.h>
 #include <clasp/core/bundle.h>
 #include <cando/chem/candoScript.h>
@@ -231,7 +231,7 @@ core::T_sp af_bundleDatabasePath(core::T_sp pathDesig)
 #ifdef XML_ARCHIVE
     core::Path_sp pathName = core::coerce::pathDesignator(pathDesig);
     boost_filesystem::path filePath  = _lisp->bundle().getDatabasesDir() / pathName->asString();
-    core::Str_sp fullPathName = core::Str_O::create(filePath.string(),_lisp );
+    core::Str_sp fullPathName = core::Str_O::create(filePath.string());
     return fullPathName;
 #endif
     return _Nil<core::T_O>();
@@ -279,10 +279,10 @@ string	part;
     		mit != bdb->end_MonomerCoordinates_keyValue(); mit++ )
     {
 	MonomerContext_sp context = mit->second->getContext();
-	core::StringSet_sp allKeys = context->getAllSpecificKeys();
+	adapt::StringSet_sp allKeys = context->getAllSpecificKeys();
 	uint times = 0;
 	string firstFind;
-        core::StringSet_O::iterator sit;
+        adapt::StringSet_O::iterator sit;
 	for ( sit=allKeys->begin(); sit!=allKeys->end(); sit++ )
 	{
 	    if ( (*sit).find(part) != string::npos )
@@ -571,8 +571,8 @@ core::Str_sp	atomName;
 
 	    // downcast the identifer to a Symbol and an Int object
 	    // one of them will be nil and the other will have a value
-    core::Symbol_sp resIdName = residueIdentifier->asOrNull<core::Symbol_O>();
-    core::Fixnum_sp resIdSeqNum = residueIdentifier->asOrNull<core::Fixnum_O>();
+    core::Symbol_sp resIdName = residueIdentifier.asOrNull<core::Symbol_O>();
+    core::Fixnum_sp resIdSeqNum = residueIdentifier.asOrNull<core::Fixnum_O>();
     Loop l;
     l.loopTopGoal(matter,RESIDUES);
     while ( l.advanceLoopAndProcess() )
@@ -595,7 +595,7 @@ core::Str_sp	atomName;
 	} else if ( resIdSeqNum )
 	{
 	    LOG(BF("Checking if residue has fileSequenceNumber(%d) that matches(%d)") % res->getFileSequenceNumber() % resIdSeqNum->get()  );
-	    if ( (int)(res->getFileSequenceNumber()) == resIdSeqNum->get() )
+	    if ( (int)(res->getFileSequenceNumber()) == core::clasp_to_fixnum(gc::As<core::Fixnum_sp>(resIdSeqNum)) )
 	    {
 	        LOG(BF("Found residue with sequence number: %s") % resIdSeqNum->get()  );
 		foundResidue = true;
@@ -630,16 +630,16 @@ core::T_sp af_findResidue(core::List_sp args)
     core::Fixnum_sp	residueSequenceNumber;
     core::Str_sp	atomName;
     core::T_sp residueIdentifier;
-    if ( args->length()==3 ) 
+    if ( core::cl_length(args)==3 ) 
     {
-        Aggregate_sp agg = args->listref<Aggregate_O>(0);
-	core::Str_sp chain = args->listref<core::Str_O>(1);
-	residueIdentifier = args->listref<core::T_O>(2);
-	molecule = safe_downcast<Molecule_O>(agg->contentWithName(chain->get()));
-    } else if ( args->length()==2 ) 
+      Aggregate_sp agg = args.asCons()->onth(0).as<Aggregate_O>();
+      core::Str_sp chain = args.asCons()->onth(1).as<core::Str_O>();
+      residueIdentifier = args.asCons()->onth(2).as<core::T_O>();
+      molecule = gc::As<Molecule_sp>(agg->contentWithName(_lisp->intern(chain->get(),ChemKwPkg)));
+    } else if ( core::cl_length(args)==2 ) 
     {
-        molecule = args->listref<Molecule_O>(0);
-	residueIdentifier = args->listref<core::T_O>(1);
+      molecule = args.asCons()->onth(0).as<Molecule_O>();
+      residueIdentifier = args.asCons()->onth(1).as<core::T_O>();
     } else
     {
     	SIMPLE_ERROR(BF("You must provide a molecule, residueId" ));
@@ -677,20 +677,20 @@ core::T_sp af_atomPos(core::List_sp args)
 {_G();
     Molecule_sp molecule;
     core::Fixnum_sp	residueSequenceNumber;
-    core::Str_sp	atomName;
+    core::Symbol_sp	atomName;
     core::T_sp residueIdentifier;
-    if ( args->length()==4 ) 
+    if ( core::cl_length(args)==4 ) 
     {
-        Aggregate_sp agg = args->listref<Aggregate_O>(0);
-	core::Str_sp chain = args->listref<core::Str_O>(1);
-	residueIdentifier = args->listref<core::T_O>(2);
-	atomName = args->listref<core::Str_O>(3);
-	molecule = safe_downcast<Molecule_O>(agg->contentWithName(chain->get()));
-    } else if ( args->length()==3 ) 
+      Aggregate_sp agg = args.asCons()->onth(0).as<Aggregate_O>();
+      core::Str_sp chain = args.asCons()->onth(1).as<core::Str_O>();
+      residueIdentifier = args.asCons()->onth(2).as<core::T_O>();
+      atomName = args.asCons()->onth(3).as<core::Symbol_O>();
+      molecule = gc::As<Molecule_sp>(agg->contentWithName(_lisp->intern(chain->get(),ChemKwPkg)));
+    } else if ( core::cl_length(args)==3 ) 
     {
-        molecule = args->listref<Molecule_O>(0);
-	residueIdentifier = args->listref<core::T_O>(1);
-	atomName = args->listref<core::Str_O>(2);
+      molecule = args.asCons()->onth(0).as<Molecule_O>();
+      residueIdentifier = args.asCons()->onth(1).as<core::T_O>();
+      atomName = args.asCons()->onth(2).as<core::Symbol_O>();
     } else
     {
     	SIMPLE_ERROR(BF("You must provide a molecule, residueId and atom name"));
@@ -698,19 +698,16 @@ core::T_sp af_atomPos(core::List_sp args)
     Residue_sp foundResidue = findResidue(molecule,residueIdentifier);
     if ( foundResidue.notnilp() )
     {
-	if ( foundResidue->hasAtomWithName(atomName->get() ) )
-	{
-	    LOG(BF("Found atom with name: %s") % atomName->get().c_str()  );
-	    Vector3 pos = foundResidue->atomWithName(atomName->get())->getPosition();
+      if ( foundResidue->hasAtomWithName(atomName)) {
+          LOG(BF("Found atom with name: %s") % _rep_(atomName)  );
+	    Vector3 pos = foundResidue->atomWithName(atomName)->getPosition();
 	    geom::OVector3_sp v = geom::OVector3_O::create();
-	    v->setAll(pos.getX(),pos.getY(),pos.getZ());
+	    v->setAll3(pos.getX(),pos.getY(),pos.getZ());
 	    return v;
 	}
-	SIMPLE_ERROR(BF("Residue does not contain atom named: "+atomName->get()));
+      SIMPLE_ERROR(BF("Residue does not contain atom named: %s") % _rep_(atomName));
     }
-    stringstream serr;
-    serr << "Molecule does not contain residue with identifier: " << residueIdentifier->__repr__().c_str() ;
-    SIMPLE_ERROR(BF(serr.str()));
+    SIMPLE_ERROR(BF("Molecule does not contain residue with identifier: %s") % _rep_(residueIdentifier));
 }
 
 
@@ -844,16 +841,16 @@ core::T_sp af_oligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_
 	OligomerPart_Base_sp oligPart = p->car<OligomerPart_Base_O>();
 	MultiMonomer_sp mon = oligPart->createMonomer(bdb);
 	olig->addMonomer(mon);
-	monomerMap->extend(mon->getId(), mon);
+	monomerMap->setf_gethash(mon->getId(), mon);
 	if ( oligPart.isA<OligomerPart_Link_O>() )
 	{
-	    OligomerPart_Link_sp link = safe_downcast<OligomerPart_Link_O>(oligPart);
+          OligomerPart_Link_sp link = gc::As<OligomerPart_Link_sp>(oligPart);
 	    core::Symbol_sp	mon1Id = link->_Monomer1Id;
 	    core::Symbol_sp	mon2Id = link->_Monomer2->_MonomerId;
 	    if ( !monomerMap->contains(mon1Id) ) SIMPLE_ERROR(BF("Unknown monomer id: %s")%mon1Id->__repr__());
 	    if ( !monomerMap->contains(mon2Id) ) SIMPLE_ERROR(BF("Unknown monomer id: %s")%mon2Id->__repr__());
-	    MultiMonomer_sp mon1 = monomerMap->lookup(mon1Id).as<MultiMonomer_O>();
-	    MultiMonomer_sp mon2 = monomerMap->lookup(mon2Id).as<MultiMonomer_O>();
+	    MultiMonomer_sp mon1 = monomerMap->gethash(mon1Id).as<MultiMonomer_O>();
+	    MultiMonomer_sp mon2 = monomerMap->gethash(mon2Id).as<MultiMonomer_O>();
 	    olig->couple(mon1,link->_Coupling,mon2);
 	}
     }

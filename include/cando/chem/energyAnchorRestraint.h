@@ -41,23 +41,23 @@ public:
 public:
 	TermAnchorRestraint	term;
 		// Variables
-        Atom_sp      _Atom1;
+        gc::Nilable<Atom_sp>      _Atom1;
 		// Threshold
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
 	bool		_calcForce;
 	bool		_calcDiagonalHessian;
 	bool		_calcOffDiagonalHessian;
-#include <cando/chem/_AnchorRestraint_debugEvalDeclares.cc>
+#include <cando/chem/energy_functions/_AnchorRestraint_debugEvalDeclares.cc>
 #endif
-	Atom_sp	getAtom() { return this->_Atom1; };
+        gc::Nilable<Atom_sp>	getAtom() { return this->_Atom1; };
 	double		getXa() { return this->term.xa; };
 	double		getYa() { return this->term.ya; };
 	double		getZa() { return this->term.za; };
 public:
 //	void	archive(core::ArchiveP node);
 public:
-	geom::QDomNode_sp	asXml(core::Lisp_sp);
-	void	parseFromXmlUsingAtomTable(geom::QDomNode_sp xml, AtomTable_sp atomTable );
+	adapt::QDomNode_sp	asXml();
+	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
 
     EnergyAnchorRestraint();
 	virtual ~EnergyAnchorRestraint();

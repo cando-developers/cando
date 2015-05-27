@@ -1,203 +1,205 @@
 Namespace changed to core - -nofile-:0
     CurrentPackage set to None
-!!!!! Reading fileName(include/geomPackage.h)
-Namespace changed to geom - include/geomPackage.h:8
+!!!!! Reading fileName(include/adaptPackage.h)
+Namespace changed to adapt - include/adaptPackage.h:8
     CurrentPackage set to None
-!!!!! Reading fileName(include/boundingBox.fwd.h)
-Namespace changed to geom - include/boundingBox.fwd.h:3
-    CurrentPackage set to None
-!!!!! Reading fileName(include/boundingBox.h)
-Namespace changed to geom - include/boundingBox.h:16
-    CurrentPackage set to None
-In fileName: include/boundingBox.h parsed cppClassDefinition line: class BoundingBox_O : public core::T_O
-Creating one Initializer(geom::BoundingBox_O) baseInitializer(['core::T_O'])
-Group: <__main__.ClassGroup instance at 0x1010d9d88>  target: geom::BoundingBox_O   filename: include/boundingBox.h
-createOnClass@include/boundingBox.h:19 --> geom::BoundingBox_O
-In fileName: include/boundingBox.h parsed lispBase1 line: LISP_BASE1(core::T_O);
-In fileName: include/boundingBox.h parsed lispClass line: LISP_CLASS(geom,GeomPkg,BoundingBox_O,"BoundingBox");
-updateLatestClass info for class[geom::BoundingBox_O] packageName[GeomPkg]
-!!!!! Reading fileName(include/coordinateArray.fwd.h)
-Namespace changed to geom - include/coordinateArray.fwd.h:3
-    CurrentPackage set to None
-!!!!! Reading fileName(include/coordinateArray.h)
-Namespace changed to geom - include/coordinateArray.h:30
-    CurrentPackage set to None
-In fileName: include/coordinateArray.h parsed cppClassDefinition line: class CoordinateArray_O : public core::Vector_O
-Creating one Initializer(geom::CoordinateArray_O) baseInitializer(['core::Vector_O'])
-Group: <__main__.ClassGroup instance at 0x1010d9d88>  target: geom::CoordinateArray_O   filename: include/coordinateArray.h
-createOnClass@include/coordinateArray.h:35 --> geom::CoordinateArray_O
-In fileName: include/coordinateArray.h parsed lispBase1 line: LISP_BASE1(core::Vector_O);
-In fileName: include/coordinateArray.h parsed lispClass line: LISP_CLASS(geom,GeomPkg,CoordinateArray_O,"CoordinateArray");
-updateLatestClass info for class[geom::CoordinateArray_O] packageName[GeomPkg]
-In fileName: include/coordinateArray.h parsed cppClassDefinition line: class CoordinateArrayWithHash_O : public CoordinateArray_O
-Creating one Initializer(geom::CoordinateArrayWithHash_O) baseInitializer(['geom::CoordinateArray_O'])
-Group: <__main__.ClassGroup instance at 0x1010d9d88>  target: geom::CoordinateArrayWithHash_O   filename: include/coordinateArray.h
-createOnClass@include/coordinateArray.h:119 --> geom::CoordinateArrayWithHash_O
-In fileName: include/coordinateArray.h parsed lispBase1 line: LISP_BASE1(CoordinateArray_O);
-In fileName: include/coordinateArray.h parsed lispClass line: LISP_CLASS(geom,GeomPkg,CoordinateArrayWithHash_O,"CoordinateArrayWithHash");
-updateLatestClass info for class[geom::CoordinateArrayWithHash_O] packageName[GeomPkg]
-!!!!! Reading fileName(include/geomPackage.fwd.h)
-!!!!! Associating namespace(geom) with package(GeomPkg)
-Namespace changed to geom - include/geomPackage.fwd.h:10
-    CurrentPackage set to GeomPkg
-!!!!! Reading fileName(include/geomPackage.h)
-Namespace changed to geom - include/geomPackage.h:8
-    CurrentPackage set to GeomPkg
-!!!!! Reading fileName(include/matrix.h)
+!!!!! Reading fileName(include/adaptPackage.fwd.h)
+!!!!! Associating namespace(adapt) with package(AdaptPkg)
+Namespace changed to adapt - include/adaptPackage.fwd.h:10
+    CurrentPackage set to AdaptPkg
+!!!!! Reading fileName(include/adaptPackage.h)
+Namespace changed to adapt - include/adaptPackage.h:8
+    CurrentPackage set to AdaptPkg
+!!!!! Reading fileName(include/adapters.h)
+!!!!! Reading fileName(include/iterateCons.fwd.h)
+Namespace changed to adapt - include/iterateCons.fwd.h:3
+    CurrentPackage set to AdaptPkg
+!!!!! Reading fileName(include/iterateCons.h)
+Namespace changed to adapt - include/iterateCons.h:15
+    CurrentPackage set to AdaptPkg
+In fileName: include/iterateCons.h parsed cppClassDefinition line: class IterateCons_O : public core::Iterator_O
+Creating one Initializer(adapt::IterateCons_O) baseInitializer(['core::Iterator_O'])
+Group: <__main__.ClassGroup instance at 0x100a0d1b8>  target: adapt::IterateCons_O   filename: include/iterateCons.h
+createOnClass@include/iterateCons.h:22 --> adapt::IterateCons_O
+In fileName: include/iterateCons.h parsed lispBase1 line: LISP_BASE1(core::Iterator_O);
+In fileName: include/iterateCons.h parsed lispClass line: LISP_CLASS(adapt,AdaptPkg,IterateCons_O,"IterateCons");
+updateLatestClass info for class[adapt::IterateCons_O] packageName[AdaptPkg]
 !!!!! Reading fileName(include/mySaxInterface.h)
-Namespace changed to geom - include/mySaxInterface.h:19
-    CurrentPackage set to GeomPkg
-!!!!! Reading fileName(include/omatrix.fwd.h)
-Namespace changed to geom - include/omatrix.fwd.h:3
-    CurrentPackage set to GeomPkg
-!!!!! Reading fileName(include/omatrix.h)
-Namespace changed to geom - include/omatrix.h:9
-    CurrentPackage set to GeomPkg
-In fileName: include/omatrix.h parsed cppClassDefinition line: class OMatrix_O : public core::T_O
-Creating one Initializer(geom::OMatrix_O) baseInitializer(['core::T_O'])
-Group: <__main__.ClassGroup instance at 0x1010d9d88>  target: geom::OMatrix_O   filename: include/omatrix.h
-createOnClass@include/omatrix.h:12 --> geom::OMatrix_O
-In fileName: include/omatrix.h parsed lispBase1 line: LISP_BASE1(core::T_O);
-In fileName: include/omatrix.h parsed lispClass line: LISP_CLASS(geom,GeomPkg,OMatrix_O,"OMatrix");
-updateLatestClass info for class[geom::OMatrix_O] packageName[GeomPkg]
-Namespace changed to translate - include/omatrix.h:72
-    CurrentPackage set to None
-!!!!! Reading fileName(include/otherPackageClasses.h)
-!!!!! Reading fileName(include/ovector2.fwd.h)
-Namespace changed to geom - include/ovector2.fwd.h:3
-    CurrentPackage set to GeomPkg
-!!!!! Reading fileName(include/ovector2.h)
-Namespace changed to geom - include/ovector2.h:9
-    CurrentPackage set to GeomPkg
-In fileName: include/ovector2.h parsed cppClassDefinition line: class OVector2_O : public core::T_O
-Creating one Initializer(geom::OVector2_O) baseInitializer(['core::T_O'])
-Group: <__main__.ClassGroup instance at 0x1010d9d88>  target: geom::OVector2_O   filename: include/ovector2.h
-createOnClass@include/ovector2.h:12 --> geom::OVector2_O
-In fileName: include/ovector2.h parsed lispBase1 line: LISP_BASE1(core::T_O);
-In fileName: include/ovector2.h parsed lispClass line: LISP_CLASS(geom,GeomPkg,OVector2_O,"OVector2");
-updateLatestClass info for class[geom::OVector2_O] packageName[GeomPkg]
-Namespace changed to translate - include/ovector2.h:68
-    CurrentPackage set to None
-!!!!! Reading fileName(include/ovector3.fwd.h)
-Namespace changed to geom - include/ovector3.fwd.h:3
-    CurrentPackage set to GeomPkg
-!!!!! Reading fileName(include/ovector3.h)
-Namespace changed to geom - include/ovector3.h:11
-    CurrentPackage set to GeomPkg
-In fileName: include/ovector3.h parsed cppClassDefinition line: class OVector3_O : public core::T_O
-Creating one Initializer(geom::OVector3_O) baseInitializer(['core::T_O'])
-Group: <__main__.ClassGroup instance at 0x1010d9d88>  target: geom::OVector3_O   filename: include/ovector3.h
-createOnClass@include/ovector3.h:14 --> geom::OVector3_O
-In fileName: include/ovector3.h parsed lispBase1 line: LISP_BASE1(core::T_O);
-In fileName: include/ovector3.h parsed lispClass line: LISP_CLASS(geom,GeomPkg,OVector3_O,"OVector3");
-updateLatestClass info for class[geom::OVector3_O] packageName[GeomPkg]
-Namespace changed to translate - include/ovector3.h:81
-    CurrentPackage set to None
+Namespace changed to adapt - include/mySaxInterface.h:19
+    CurrentPackage set to AdaptPkg
+!!!!! Reading fileName(include/objectSet.fwd.h)
+Namespace changed to adapt - include/objectSet.fwd.h:29
+    CurrentPackage set to AdaptPkg
+!!!!! Reading fileName(include/objectSet.h)
+Namespace changed to adapt - include/objectSet.h:35
+    CurrentPackage set to AdaptPkg
+In fileName: include/objectSet.h parsed cppClassDefinition line: class ObjectSet_O : public T_O {
+Creating one Initializer(adapt::ObjectSet_O) baseInitializer(['adapt::T_O'])
+Group: <__main__.ClassGroup instance at 0x100a0d1b8>  target: adapt::ObjectSet_O   filename: include/objectSet.h
+createOnClass@include/objectSet.h:44 --> adapt::ObjectSet_O
+In fileName: include/objectSet.h parsed lispBase1 line: LISP_BASE1(T_O);
+In fileName: include/objectSet.h parsed lispClass line: LISP_CLASS(adapt, AdaptPkg, ObjectSet_O, "ObjectSet");
+updateLatestClass info for class[adapt::ObjectSet_O] packageName[AdaptPkg]
 !!!!! Reading fileName(include/quickDom.fwd.h)
-Namespace changed to geom - include/quickDom.fwd.h:3
-    CurrentPackage set to GeomPkg
+Namespace changed to adapt - include/quickDom.fwd.h:3
+    CurrentPackage set to AdaptPkg
 !!!!! Reading fileName(include/quickDom.h)
-Namespace changed to geom - include/quickDom.h:28
-    CurrentPackage set to GeomPkg
+Namespace changed to adapt - include/quickDom.h:28
+    CurrentPackage set to AdaptPkg
 In fileName: include/quickDom.h parsed cppClassDefinition line: class QDomNode_O : public core::T_O
-Creating one Initializer(geom::QDomNode_O) baseInitializer(['core::T_O'])
-Group: <__main__.ClassGroup instance at 0x1010d9d88>  target: geom::QDomNode_O   filename: include/quickDom.h
-createOnClass@include/quickDom.h:37 --> geom::QDomNode_O
+Creating one Initializer(adapt::QDomNode_O) baseInitializer(['core::T_O'])
+Group: <__main__.ClassGroup instance at 0x100a0d1b8>  target: adapt::QDomNode_O   filename: include/quickDom.h
+createOnClass@include/quickDom.h:37 --> adapt::QDomNode_O
 In fileName: include/quickDom.h parsed lispBase1 line: LISP_BASE1(core::T_O);
-In fileName: include/quickDom.h parsed lispClass line: LISP_CLASS(geom,GeomPkg,QDomNode_O,"QDomNode");
-updateLatestClass info for class[geom::QDomNode_O] packageName[GeomPkg]
-!!!!! Reading fileName(include/symbolTable.h)
-Namespace changed to geom - include/symbolTable.h:6
-    CurrentPackage set to GeomPkg
-Namespace changed to kw - include/symbolTable.h:18
-    CurrentPackage set to None
-!!!!! Reading fileName(include/vector2.h)
-Namespace changed to geom - include/vector2.h:18
-    CurrentPackage set to GeomPkg
-!!!!! Reading fileName(include/vector3.h)
-Namespace changed to serialize - include/vector3.h:140
-    CurrentPackage set to None
-!!!!! Reading fileName(include/vector4.h)
+In fileName: include/quickDom.h parsed lispClass line: LISP_CLASS(adapt,AdaptPkg,QDomNode_O,"QDomNode");
+updateLatestClass info for class[adapt::QDomNode_O] packageName[AdaptPkg]
+!!!!! Reading fileName(include/smallMap.h)
+Namespace changed to adapt - include/smallMap.h:45
+    CurrentPackage set to AdaptPkg
+In fileName: include/smallMap.h parsed cppClassDefinition line: class SmallMap_O : public T_O {
+Creating one Initializer(adapt::SmallMap_O) baseInitializer(['adapt::T_O'])
+Group: <__main__.ClassGroup instance at 0x100a0d1b8>  target: adapt::SmallMap_O   filename: include/smallMap.h
+createOnClass@include/smallMap.h:48 --> adapt::SmallMap_O
+In fileName: include/smallMap.h parsed lispBase1 line: LISP_BASE1(T_O);
+In fileName: include/smallMap.h parsed lispClass line: LISP_CLASS(adapt, AdaptPkg, SmallMap_O, "SmallMap");
+updateLatestClass info for class[adapt::SmallMap_O] packageName[AdaptPkg]
+Namespace changed to adapt - include/smallMap.h:67
+    CurrentPackage set to AdaptPkg
+!!!!! Reading fileName(include/stringList.fwd.h)
+Namespace changed to adapt - include/stringList.fwd.h:29
+    CurrentPackage set to AdaptPkg
+!!!!! Reading fileName(include/stringList.h)
+Namespace changed to adapt - include/stringList.h:42
+    CurrentPackage set to AdaptPkg
+In fileName: include/stringList.h parsed cppClassDefinition line: class StringList_O : public T_O {
+Creating one Initializer(adapt::StringList_O) baseInitializer(['adapt::T_O'])
+Group: <__main__.ClassGroup instance at 0x100a0d1b8>  target: adapt::StringList_O   filename: include/stringList.h
+createOnClass@include/stringList.h:50 --> adapt::StringList_O
+In fileName: include/stringList.h parsed lispBase1 line: LISP_BASE1(T_O);
+In fileName: include/stringList.h parsed lispClass line: LISP_CLASS(adapt, AdaptPkg, StringList_O, "StringList");
+updateLatestClass info for class[adapt::StringList_O] packageName[AdaptPkg]
+!!!!! Reading fileName(include/stringSet.fwd.h)
+Namespace changed to adapt - include/stringSet.fwd.h:29
+    CurrentPackage set to AdaptPkg
+!!!!! Reading fileName(include/stringSet.h)
+Namespace changed to adapt - include/stringSet.h:44
+    CurrentPackage set to AdaptPkg
+In fileName: include/stringSet.h parsed cppClassDefinition line: class StringSet_O : public core::T_O {
+Creating one Initializer(adapt::StringSet_O) baseInitializer(['core::T_O'])
+Group: <__main__.ClassGroup instance at 0x100a0d1b8>  target: adapt::StringSet_O   filename: include/stringSet.h
+createOnClass@include/stringSet.h:54 --> adapt::StringSet_O
+In fileName: include/stringSet.h parsed lispBase1 line: LISP_BASE1(core::T_O);
+In fileName: include/stringSet.h parsed lispClass line: LISP_CLASS(adapt, AdaptPkg, StringSet_O, "StringSet");
+updateLatestClass info for class[adapt::StringSet_O] packageName[AdaptPkg]
+!!!!! Reading fileName(include/symbolList.fwd.h)
+Namespace changed to adapt - include/symbolList.fwd.h:29
+    CurrentPackage set to AdaptPkg
+!!!!! Reading fileName(include/symbolList.h)
+Namespace changed to adapt - include/symbolList.h:41
+    CurrentPackage set to AdaptPkg
+In fileName: include/symbolList.h parsed cppClassDefinition line: class SymbolList_O : public T_O {
+Creating one Initializer(adapt::SymbolList_O) baseInitializer(['adapt::T_O'])
+Group: <__main__.ClassGroup instance at 0x100a0d1b8>  target: adapt::SymbolList_O   filename: include/symbolList.h
+createOnClass@include/symbolList.h:51 --> adapt::SymbolList_O
+In fileName: include/symbolList.h parsed lispBase1 line: LISP_BASE1(T_O);
+In fileName: include/symbolList.h parsed lispClass line: LISP_CLASS(adapt, AdaptPkg, SymbolList_O, "SymbolList");
+updateLatestClass info for class[adapt::SymbolList_O] packageName[AdaptPkg]
+!!!!! Reading fileName(include/symbolSet.fwd.h)
+Namespace changed to adapt - include/symbolSet.fwd.h:29
+    CurrentPackage set to AdaptPkg
+!!!!! Reading fileName(include/symbolSet.h)
+Namespace changed to adapt - include/symbolSet.h:45
+    CurrentPackage set to AdaptPkg
+In fileName: include/symbolSet.h parsed cppClassDefinition line: class SymbolSet_O : public T_O {
+Creating one Initializer(adapt::SymbolSet_O) baseInitializer(['adapt::T_O'])
+Group: <__main__.ClassGroup instance at 0x100a0d1b8>  target: adapt::SymbolSet_O   filename: include/symbolSet.h
+createOnClass@include/symbolSet.h:60 --> adapt::SymbolSet_O
+In fileName: include/symbolSet.h parsed lispBase1 line: LISP_BASE1(T_O);
+In fileName: include/symbolSet.h parsed lispClass line: LISP_CLASS(adapt, AdaptPkg, SymbolSet_O, "SymbolSet");
+updateLatestClass info for class[adapt::SymbolSet_O] packageName[AdaptPkg]
 !!!!! Reading fileName(*.h)
 Skipping file[*.h] - it doesn't exist
-!!!!! Reading fileName(boundingBox.cc)
-Namespace changed to geom - boundingBox.cc:10
-    CurrentPackage set to GeomPkg
-!!!!! Reading fileName(candoBasePackage.cc)
-Namespace changed to kw - candoBasePackage.cc:13
+!!!!! Reading fileName(adaptPackage.cc)
+Namespace changed to kw - adaptPackage.cc:13
     CurrentPackage set to None
-Namespace changed to geom - candoBasePackage.cc:24
-    CurrentPackage set to GeomPkg
-Namespace changed to geom - candoBasePackage.cc:39
-    CurrentPackage set to GeomPkg
-Namespace changed to geom - candoBasePackage.cc:54
-    CurrentPackage set to GeomPkg
-!!!!! Reading fileName(coordinateArray.cc)
-Namespace changed to geom - coordinateArray.cc:21
-    CurrentPackage set to GeomPkg
-!!!!! Reading fileName(matrix.cc)
-Namespace changed to client - matrix.cc:671
-    CurrentPackage set to None
-Namespace changed to qi - matrix.cc:673
-    CurrentPackage set to None
-Namespace changed to karma - matrix.cc:674
-    CurrentPackage set to None
-Namespace changed to ascii - matrix.cc:675
-    CurrentPackage set to None
+Namespace changed to adapt - adaptPackage.cc:24
+    CurrentPackage set to AdaptPkg
+Namespace changed to adapt - adaptPackage.cc:39
+    CurrentPackage set to AdaptPkg
+Namespace changed to adapt - adaptPackage.cc:54
+    CurrentPackage set to AdaptPkg
+!!!!! Reading fileName(iterateCons.cc)
+Namespace changed to adapt - iterateCons.cc:12
+    CurrentPackage set to AdaptPkg
 !!!!! Reading fileName(mySaxInterface.cc)
-Namespace changed to geom - mySaxInterface.cc:14
-    CurrentPackage set to GeomPkg
-!!!!! Reading fileName(omatrix.cc)
-Namespace changed to geom - omatrix.cc:12
-    CurrentPackage set to GeomPkg
-!!!!! Reading fileName(ovector2.cc)
-Namespace changed to geom - ovector2.cc:12
-    CurrentPackage set to GeomPkg
-!!!!! Reading fileName(ovector3.cc)
-Namespace changed to geom - ovector3.cc:10
-    CurrentPackage set to GeomPkg
+Namespace changed to adapt - mySaxInterface.cc:14
+    CurrentPackage set to AdaptPkg
+!!!!! Reading fileName(objectSet.cc)
+Namespace changed to core - objectSet.cc:36
+    CurrentPackage set to None
 !!!!! Reading fileName(quickDom.cc)
-Namespace changed to geom - quickDom.cc:25
-    CurrentPackage set to GeomPkg
-!!!!! Reading fileName(vector2.cc)
-Namespace changed to geom - vector2.cc:18
-    CurrentPackage set to GeomPkg
-!!!!! Reading fileName(vector3.cc)
-!!!!! Reading fileName(vector4.cc)
+Namespace changed to adapt - quickDom.cc:25
+    CurrentPackage set to AdaptPkg
+!!!!! Reading fileName(smallMap.cc)
+Namespace changed to core - smallMap.cc:46
+    CurrentPackage set to None
+!!!!! Reading fileName(stringList.cc)
+Namespace changed to core - stringList.cc:42
+    CurrentPackage set to None
+!!!!! Reading fileName(stringSet.cc)
+Namespace changed to core - stringSet.cc:46
+    CurrentPackage set to None
+!!!!! Reading fileName(symbolList.cc)
+Namespace changed to core - symbolList.cc:47
+    CurrentPackage set to None
+!!!!! Reading fileName(symbolSet.cc)
+Namespace changed to core - symbolSet.cc:46
+    CurrentPackage set to None
 -------- loaded everything -------- now processing
 ============= Writing classInitializers
+Class[adapt::T_O] was not defined
+Class[core::Iterator_O] was not defined
 Class[core::T_O] was not defined
-Class[core::Vector_O] was not defined
+Class[adapt::T_O] was not defined
+Class[core::Iterator_O] was not defined
 Class[core::T_O] was not defined
-Class[core::Vector_O] was not defined
+Class[adapt::T_O] was not defined
+Class[core::Iterator_O] was not defined
 Class[core::T_O] was not defined
-Class[core::Vector_O] was not defined
+Class[adapt::T_O] was not defined
+Class[core::Iterator_O] was not defined
 Class[core::T_O] was not defined
-Class[core::Vector_O] was not defined
+Class[adapt::T_O] was not defined
+Class[core::Iterator_O] was not defined
 Class[core::T_O] was not defined
-Class[core::Vector_O] was not defined
-For class[geom::BoundingBox_O] requirements = set(['core::T_O'])
+For class[adapt::IterateCons_O] requirements = set(['core::Iterator_O'])
+Returning bases[['core::Iterator_O']]
+For class[adapt::ObjectSet_O] requirements = set(['adapt::T_O'])
+Returning bases[['adapt::T_O']]
+For class[adapt::QDomNode_O] requirements = set(['core::T_O'])
 Returning bases[['core::T_O']]
-For class[geom::CoordinateArray_O] requirements = set(['core::Vector_O'])
-Returning bases[['core::Vector_O']]
-For class[geom::OMatrix_O] requirements = set(['core::T_O'])
+For class[adapt::SmallMap_O] requirements = set(['adapt::T_O'])
+Returning bases[['adapt::T_O']]
+For class[adapt::StringList_O] requirements = set(['adapt::T_O'])
+Returning bases[['adapt::T_O']]
+For class[adapt::StringSet_O] requirements = set(['core::T_O'])
 Returning bases[['core::T_O']]
-For class[geom::OVector2_O] requirements = set(['core::T_O'])
-Returning bases[['core::T_O']]
-For class[geom::OVector3_O] requirements = set(['core::T_O'])
-Returning bases[['core::T_O']]
-For class[geom::QDomNode_O] requirements = set(['core::T_O'])
-Returning bases[['core::T_O']]
-For class[geom::CoordinateArrayWithHash_O] requirements = set(['geom::CoordinateArray_O'])
-Returning bases[['geom::CoordinateArray_O']]
+For class[adapt::SymbolList_O] requirements = set(['adapt::T_O'])
+Returning bases[['adapt::T_O']]
+For class[adapt::SymbolSet_O] requirements = set(['adapt::T_O'])
+Returning bases[['adapt::T_O']]
+Class[adapt::T_O] was not defined
+Class[core::Iterator_O] was not defined
 Class[core::T_O] was not defined
-Class[core::Vector_O] was not defined
+Class[adapt::T_O] was not defined
+Class[core::Iterator_O] was not defined
 Class[core::T_O] was not defined
-Class[core::Vector_O] was not defined
+Class[adapt::T_O] was not defined
+Class[core::Iterator_O] was not defined
 Class[core::T_O] was not defined
-Class[core::Vector_O] was not defined
 Writing macros
+Class[adapt::T_O] was not defined
+Class[core::Iterator_O] was not defined
 Class[core::T_O] was not defined
-Class[core::Vector_O] was not defined
 ------------- Done classInitializers
 ===============  afterInitializers

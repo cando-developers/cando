@@ -20,7 +20,7 @@ namespace chem {
 
     EnergyAnchorRestraint::EnergyAnchorRestraint()
 {
-    this->_Atom1.reset();
+  this->_Atom1 = _Nil<core::T_O>();
 }
 
 EnergyAnchorRestraint::~EnergyAnchorRestraint()
@@ -40,18 +40,18 @@ EnergyAnchorRestraint::~EnergyAnchorRestraint()
     node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
     node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
     node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include <cando/chem/_AnchorRestraint_debugEvalSerialize.cc>
+#include <cando/chem/energy_functions/_AnchorRestraint_debugEvalSerialize.cc>
 #endif //]
 }
 #endif
 
 #if 0
-geom::QDomNode_sp	EnergyAnchorRestraint::asXml(core::Lisp_sp env)
+adapt::QDomNode_sp	EnergyAnchorRestraint::asXml()
 {
-    geom::QDomNode_sp	node,child;
+    adapt::QDomNode_sp	node,child;
     Vector3	vdiff;
 
-    node = geom::QDomNode_O::create(env,"EnergyAnchorRestraint");
+    node = adapt::QDomNode_O::create(env,"EnergyAnchorRestraint");
     node->addAttributeString("atomName",this->_Atom1->getName());
     node->addAttributeInt("I1",this->term.I1);
     node->addAttributeDoubleScientific("ka",this->term.ka);
@@ -59,7 +59,7 @@ geom::QDomNode_sp	EnergyAnchorRestraint::asXml(core::Lisp_sp env)
     node->addAttributeDoubleScientific("ya",this->term.ya);
     node->addAttributeDoubleScientific("za",this->term.za);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    geom::QDomNode_sp xml = geom::QDomNode_O::create(env,"Evaluated");
+    adapt::QDomNode_sp xml = adapt::QDomNode_O::create(env,"Evaluated");
     xml->addAttributeBool("calcForce",this->_calcForce );
     xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
     xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
@@ -69,7 +69,7 @@ geom::QDomNode_sp	EnergyAnchorRestraint::asXml(core::Lisp_sp env)
     return node;
 }
 
-void	EnergyAnchorRestraint::parseFromXmlUsingAtomTable(geom::QDomNode_sp	xml,
+void	EnergyAnchorRestraint::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
 					AtomTable_sp at )
 {
     this->term.ka = xml->getAttributeDouble("ka");
@@ -107,9 +107,9 @@ double	_evaluateEnergyOnly_AnchorRestraint(
 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/_AnchorRestraint_termDeclares.cc>
+#include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-#include <cando/chem/_AnchorRestraint_termCode.cc>
+#include <cando/chem/energy_functions/_AnchorRestraint_termCode.cc>
 
     return Energy;
 }
@@ -175,14 +175,14 @@ bool		calcOffDiagonalHessian = true;
     if ( this->isEnabled() ) {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	#include "_AnchorRestraint_termDeclares.cc"
+#include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
 	;
 	double x1,y1,z1,xa,ya,za,ka;
 	int	I1;
 	for ( gctools::Vec0<EnergyAnchorRestraint>::iterator cri=this->_Terms.begin();
 		    cri!=this->_Terms.end(); cri++ ) {
-	    #include "_AnchorRestraint_termCode.cc"
+#include <cando/chem/energy_functions/_AnchorRestraint_termCode.cc>
 	}
     }
 
@@ -243,7 +243,7 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 	if ( this->isEnabled() ) {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	    #include "_AnchorRestraint_termDeclares.cc"
+#include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
 	    double x1,y1,z1,xa,ya,za,ka;
 	    int	I1, i;
@@ -260,7 +260,7 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 
 			    /* Obtain all the parameters necessary to calculate */
 			    /* the amber and forces */
-	        #include "_AnchorRestraint_termCode.cc"
+#include <cando/chem/energy_functions/_AnchorRestraint_termCode.cc>
 
 	        #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
 		    cri->_calcForce = calcForce;
@@ -269,7 +269,7 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 			// Now write all of the calculated values into the eval structure
 		    #undef EVAL_SET
 		    #define	EVAL_SET(var,val)	{ cri->eval.var=val;};
-		    #include "_AnchorRestraint_debugEvalSet.cc"
+#include <cando/chem/energy_functions/_AnchorRestraint_debugEvalSet.cc>
 	        #endif //]
 
 			    /* Add the forces */
@@ -331,7 +331,7 @@ bool	calcOffDiagonalHessian = true;
 		_BLOCK_TRACE("AnchorRestraintEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	    #include "_AnchorRestraint_termDeclares.cc"
+#include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
 	    double x1,y1,z1,xa,ya,za,ka;
 	    int	I1, i;
@@ -340,7 +340,7 @@ bool	calcOffDiagonalHessian = true;
 			cri!=this->_Terms.end(); cri++,i++ ) {
 			  /* Obtain all the parameters necessary to calculate */
 			  /* the amber and forces */
-	        #include "_AnchorRestraint_termCode.cc"
+#include <cando/chem/energy_functions/_AnchorRestraint_termCode.cc>
 		LOG(BF("fx1 = %le") % fx1 );
 		LOG(BF("fy1 = %le") % fy1 );
 		LOG(BF("fz1 = %le") % fz1 );
@@ -356,7 +356,7 @@ bool	calcOffDiagonalHessian = true;
 		double dhz1z1 = 0.0;
 		double ohx1z1 = 0.0;
 #endif
-		#include "_AnchorRestraint_debugFiniteDifference.cc"
+#include <cando/chem/energy_functions/_AnchorRestraint_debugFiniteDifference.cc>
 
 	    }
 	}
@@ -400,7 +400,7 @@ int	fails = 0;
 		_BLOCK_TRACE("AnchorRestraintEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	    #include "_AnchorRestraint_termDeclares.cc"
+#include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
 	    double x1,y1,z1,xa,ya,za,ka;
 	    int	I1, i;
@@ -409,7 +409,7 @@ int	fails = 0;
 			cri!=this->_Terms.end(); cri++,i++ ) {
 			  /* Obtain all the parameters necessary to calculate */
 			  /* the amber and forces */
-	        #include "_AnchorRestraint_termCode.cc"
+#include <cando/chem/energy_functions/_AnchorRestraint_termCode.cc>
 		if ( AnchorDeviation>this->_ErrorThreshold ) {
 		    Atom_sp a1, a2, a3, a4;
 		    a1 = (*cri)._Atom1;

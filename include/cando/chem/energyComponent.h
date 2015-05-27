@@ -109,25 +109,25 @@ virtual	void	customInitialize();
 	    this->_Terms.push_back(term); 
 	};
 
-	void	asXmlFillEnergy(geom::QDomNode_sp node) {
+	void	asXmlFillEnergy(adapt::QDomNode_sp node) {
 		stringstream ss;
 		ss << this->getName()<<"TotalEnergy";
 		node->addAttributeDoubleScientific(ss.str(),this->_TotalEnergy);
 	};
 
-	void	parseXmlEnergy(geom::QDomNode_sp node) {
+	void	parseXmlEnergy(adapt::QDomNode_sp node) {
 		stringstream ss;
 		ss << this->getName()<<"TotalEnergy";
 		this->_TotalEnergy = node->getAttributeDouble(ss.str());
 	};
 
 
-geom::QDomNode_sp	asXmlLimitedTerms(core::Lisp_sp lisp, int numTerms)
+adapt::QDomNode_sp	asXmlLimitedTerms( int numTerms)
 {
-geom::QDomNode_sp tnode, child;
+adapt::QDomNode_sp tnode, child;
 int		t;
     viter si;
-    tnode = geom::QDomNode_O::create(this->getName());
+    tnode = adapt::QDomNode_O::create(this->getName());
     tnode->addAttributeInt("numberOfTerms",this->_Terms.size());
     for (t=0,si=this->_Terms.begin();
 	    si!=this->_Terms.end();si++,t++){
@@ -145,7 +145,7 @@ int		t;
 
 
 
-void	parseFromXmlUsingAtomTable(geom::QDomNode_sp node, AtomTable_sp atomTable )
+void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp node, AtomTable_sp atomTable )
 {_G();
 VectorQDomNodes	children;
 VectorQDomNodes::iterator	child;
@@ -162,7 +162,7 @@ VectorQDomNodes::iterator	child;
     }
 }
 
-geom::QDomNode_sp	asXmlMissingTerms();
+adapt::QDomNode_sp	asXmlMissingTerms();
 
 
 

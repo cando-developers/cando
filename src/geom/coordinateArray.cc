@@ -368,7 +368,7 @@ void CoordinateArray_O::resize(int iElement)
 
 
 
-    CoordinateArrayWithHash_sp CoordinateArrayWithHash_O::create(core::Lisp_sp e,uint sz)
+    CoordinateArrayWithHash_sp CoordinateArrayWithHash_O::create(uint sz)
     {
 	GC_ALLOCATE(CoordinateArrayWithHash_O,h);
 	h->resize(sz);

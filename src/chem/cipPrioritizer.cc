@@ -278,7 +278,7 @@ void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Mat
 			}
 		    }
 		    LOG(BF("About to sort %d mys objects") % mys.size()  );
-		    core::sort::quickSort(mys.begin(),mys.end(),_lisp);
+		    core::sort::quickSort(mys.begin(),mys.end());
 		    LOG(BF("Done sort") );
 		    core::sort::reverse(mys.begin(),mys.end());
 		    LOG(BF("Done reverse") );
@@ -351,7 +351,7 @@ void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Mat
 			    LOG(BF("    %s") % (*ssi)->description().c_str() );
 			}
 #endif
-			core::sort::quickSort(S.begin(),S.end(),byS,_lisp);
+			core::sort::quickSort(S.begin(),S.end(),byS);
 			LOG(BF("done sort") );
 		    }
 //		    int i = 0;
@@ -478,7 +478,7 @@ bool orderByPriority( Atom_sp p1, Atom_sp p2 )
 
 bool orderByName( Atom_sp p1, Atom_sp p2 )
 {
-    return p1->getName() < p2->getName();
+  return core::SymbolComparer::order(p1->getName(),p2->getName())<=0;
 }
 
 
@@ -501,7 +501,7 @@ void CipPrioritizer_O::defineStereochemicalConfigurationsForAllAtoms(Matter_sp m
 	    {
 		priority.push_back((*bi)->getOtherAtom(a));
 	    }
-	    core::sort::quickSort(priority.begin(), priority.end(), orderByPriority, _lisp );
+	    core::sort::quickSort(priority.begin(), priority.end(), orderByPriority);
 
 	    //  now figure out if they are four different priorities
 	    uint prevPriority = UndefinedUnsignedInt;

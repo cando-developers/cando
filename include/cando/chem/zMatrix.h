@@ -19,7 +19,7 @@
 namespace chem
 {
 
-
+  SMART(Atom);
     SMART(ZMatrix);
 
     SMART(ZMatrixInternal );
@@ -77,7 +77,7 @@ namespace chem
     private:
 	uint	_AtomBond;
     public:
-	static ZMatrixBondInternal_sp create(core::Lisp_sp e,Atom_sp newAtom, Atom_sp bondToAtom,
+	static ZMatrixBondInternal_sp create(Atom_sp newAtom, Atom_sp bondToAtom,
 					     ZMatrixInternal_O::atomMap atomIndices, ZMatrix_sp zMatrix );
     public:
 	void setup(Atom_sp newAtom, Atom_sp bondToAtom,
@@ -95,7 +95,7 @@ namespace chem
 	DEFAULT_CTOR_DTOR(ZMatrixBondInternal_O);
     };
 
-    inline ZMatrixBondInternal_sp ZMatrixBondInternal_O::create(core::Lisp_sp e,Atom_sp newAtom, Atom_sp bondToAtom,
+    inline ZMatrixBondInternal_sp ZMatrixBondInternal_O::create(Atom_sp newAtom, Atom_sp bondToAtom,
 								ZMatrixInternal_O::atomMap atomIndices, ZMatrix_sp zMatrix )
     {_G();
 	GC_ALLOCATE(ZMatrixBondInternal_O, zz ); // RP_Create<ZMatrixBondInternal_O>(e);
@@ -121,7 +121,7 @@ namespace chem
 	static ZMatrixAngleInternal_sp create(Atom_sp newAtom, Atom_sp bondToAtom,
 					      Atom_sp angleToAtom,
 					      ZMatrixInternal_O::atomMap atomIndices,
-					      ZMatrix_sp zMatrix, core::Lisp_sp e );
+					      ZMatrix_sp zMatrix );
     public:
     	void setup(Atom_sp newAtom, Atom_sp bondToAtom,
 		   Atom_sp angleToAtom,
@@ -146,7 +146,7 @@ namespace chem
 
     inline ZMatrixAngleInternal_sp ZMatrixAngleInternal_O::create(Atom_sp newAtom, Atom_sp bondToAtom,
 								  Atom_sp angleToAtom,
-								  ZMatrixInternal_O::atomMap atomIndices, ZMatrix_sp zMatrix , core::Lisp_sp e)
+								  ZMatrixInternal_O::atomMap atomIndices, ZMatrix_sp zMatrix)
     {_G();
 	GC_ALLOCATE(ZMatrixAngleInternal_O, zz ); // RP_Create<ZMatrixAngleInternal_O>(e);
 	zz->setZMatrix(zMatrix);
@@ -170,8 +170,8 @@ namespace chem
     public:
 	static ZMatrixDihedralInternal_sp create(Atom_sp newAtom, Atom_sp bondToAtom,
 						 Atom_sp angleToAtom, Atom_sp dihedralToAtom,
-						 ZMatrixInternal_O::atomMap atomIndices, ZMatrix_sp zMatrix,
-						 core::Lisp_sp e );
+						 ZMatrixInternal_O::atomMap atomIndices, ZMatrix_sp zMatrix );
+						 
     public:
     	void setup(Atom_sp newAtom, Atom_sp bondToAtom,
 		   Atom_sp angleToAtom, Atom_sp dihedralToAtom,
@@ -198,7 +198,7 @@ namespace chem
 
     inline ZMatrixDihedralInternal_sp ZMatrixDihedralInternal_O::create(Atom_sp newAtom, Atom_sp bondToAtom,
 									Atom_sp angleToAtom, Atom_sp dihedralToAtom,
-									ZMatrixInternal_O::atomMap atomIndices, ZMatrix_sp zMatrix, core::Lisp_sp e)
+									ZMatrixInternal_O::atomMap atomIndices, ZMatrix_sp zMatrix)
     {_G();
 	GC_ALLOCATE(ZMatrixDihedralInternal_O, zz ); // RP_Create<ZMatrixDihedralInternal_O>(e);
 	zz->setZMatrix(zMatrix);
@@ -226,7 +226,7 @@ namespace chem
 	ZMatrixAngleInternal_sp		_Angle;
 	ZMatrixDihedralInternal_sp	_Dihedral;
     public:
-	static ZMatrixEntry_sp create(Atom_sp atom, ZMatrixInternal_O::atomMap atomIndices, core::Lisp_sp lisp);
+	static ZMatrixEntry_sp create(Atom_sp atom, ZMatrixInternal_O::atomMap atomIndices);
 	void setup(Atom_sp atom, ZMatrixInternal_O::atomMap atomIndices);
     public:
 	Atom_sp	getAtom() { return this->_Atom;};

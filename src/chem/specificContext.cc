@@ -199,9 +199,9 @@ void	SpecificContextSet_O::remove(SpecificContextSet_sp s)
     }
 }
 
-core::SymbolSet_sp SpecificContextSet_O::asSymbolSetOfKeys()
+adapt::SymbolSet_sp SpecificContextSet_O::asSymbolSetOfKeys()
 {_G();
-    core::SymbolSet_sp keys = core::SymbolSet_O::create();
+    adapt::SymbolSet_sp keys = adapt::SymbolSet_O::create();
     SpecificContextSet_O::iterator it;
     for ( it=this->begin(); it!=this->end(); it++ )
     {
@@ -214,12 +214,12 @@ core::SymbolSet_sp SpecificContextSet_O::asSymbolSetOfKeys()
 
 core::List_sp SpecificContextSet_O::asCons()
 {_G();
-    core::Cons_sp first = core::T_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+    core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
     core::Cons_sp cur = first;
     SpecificContextSet_O::iterator it;
     for ( it=this->begin(); it!=this->end(); it++ )
     {
-	core::Cons_sp one = core::T_O::create(it->second,_Nil<core::T_O>());
+	core::Cons_sp one = core::Cons_O::create(it->second,_Nil<core::T_O>());
 	cur->setCdr(one);
 	cur = one;
     }

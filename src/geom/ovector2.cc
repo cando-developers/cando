@@ -103,18 +103,18 @@ Vector2 OVector2_O::timesScalar(double d)
 
     Vector2 OVector2_O::normalized()
     {
-	return this->_Value.normalized(_lisp);
+	return this->_Value.normalized();
     }
 
 
 double	OVector2_O::angle( const Vector2& vb, const Vector2& vc)
 {
-    return calculateAngle(this->_Value,vb,vc,_lisp);
+    return calculateAngle(this->_Value,vb,vc);
 }
 
 double	OVector2_O::distance( const Vector2& vb )
 {
-    return calculateDistance(this->_Value,vb,_lisp);
+    return calculateDistance(this->_Value,vb);
 }
 
 

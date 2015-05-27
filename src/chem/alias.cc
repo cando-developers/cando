@@ -38,7 +38,7 @@ namespace chem
 #define DOCS_af_alias "alias"
     core::T_sp af_alias(core::Symbol_sp monAlias, core::Symbol_sp atomAlias)
     {_G();
-	return Alias_O::create(_lisp,monAlias,atomAlias);
+	return Alias_O::create(monAlias,atomAlias);
     }
 
 

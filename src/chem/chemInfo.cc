@@ -13,6 +13,8 @@
 #include <clasp/core/evaluator.h>
 #include <clasp/core/environment.h>
 //#include "boundFrame.h"
+#include <cando/adapt/symbolMap.h>
+#include <cando/adapt/symbolSet.h>
 #include <cando/chem/bond.h>
 #include <clasp/core/wrappers.h>
 
@@ -129,54 +131,48 @@ namespace chem {
     void ChemInfoMatch_O::throwIfInvalid()
     {_OF();
         gctools::SmallOrderedSet<Atom_sp> satoms;
-	for ( core::SymbolMap<Atom_O>::iterator it=this->_TagLookup.begin(); it != this->_TagLookup.end(); it++ )
-	{
-	    if ( satoms.count(it->second))
-	    {
+        this->_TagLookup->mapHash( [this,&satoms] (core::Symbol_sp key, Atom_sp atom) {
+	    if ( satoms.count(atom) ) {
 		SIMPLE_ERROR(BF("The ChemInfoMatch is invalid - the matching algorithm or the SMARTS pattern match gave tags with the same atoms: %s") % this->__repr__() );
 	    }
-	    satoms.insert(it->second);
-	}
+	    satoms.insert(atom);
+          } );
     }
 
-    bool ChemInfoMatch_O::hasAtomWithTag(const string& tag)
+bool ChemInfoMatch_O::hasAtomWithTag(core::Symbol_sp tag)
     {_G();
-	return this->_TagLookup.count(tag)>0;
+      return this->_TagLookup->gethash(tag).notnilp();
     }
 
-    Atom_sp ChemInfoMatch_O::getAtomWithTagOrNil(const string& tag)
+gc::Nilable<Atom_sp> ChemInfoMatch_O::getAtomWithTagOrNil(core::Symbol_sp tag)
     {
-	if ( !this->hasAtomWithTag(tag) )
-	{
-	    return _Nil<Atom_O>();
-	}
-	return this->getAtomWithTag(tag);
+      if ( !this->hasAtomWithTag(tag) ) return _Nil<core::T_O>();
+      return this->getAtomWithTag(tag);
     }
 
 
-    Atom_sp ChemInfoMatch_O::getAtomWithTag(const string& tag)
+Atom_sp ChemInfoMatch_O::getAtomWithTag(core::Symbol_sp tag)
     {_G();
-	if ( this->_TagLookup.count(tag) == 0 )
-	{
-	    stringstream serr;
-	    serr << "The ChemInfoMatch doesn't recognize tag[" << tag << "]" << std::endl;
-	    serr << "Available tags(" << core::StringSet_O::create_fromKeysOfStringMap(this->_TagLookup)->asString() << ")" <<std::endl;
-	    SIMPLE_ERROR(BF("%s") % serr.str());
-	}
-	return this->_TagLookup.get(tag);
+      core::T_mv tatom = this->_TagLookup->gethash(tag);
+      if ( tatom.nilp() ) {
+        SIMPLE_ERROR(BF("The ChemInfoMatch doesn't recognize tag[%s]\n"
+                        "Available tags(%s)\n")
+                     % _rep_(tag) 
+                     % this->_TagLookup->keysAsString() );
+      }
+      return tatom.as<Atom_O>();
     }
 
-    void ChemInfoMatch_O::forgetAtomTag(const string& tag)
-    {_G();
-	this->_TagLookup.erase(tag);
-    }
+void ChemInfoMatch_O::forgetAtomTag(core::Symbol_sp tag)
+{
+  this->_TagLookup->remhash(tag);
+}
 
     void ChemInfoMatch_O::describeClosestMatch()
-    {_G();
-	for ( core::SymbolMap<Atom_O>::iterator it=this->_ClosestMatch.begin(); it != this->_ClosestMatch.end(); it++ )
-	{
-	    _lisp->print(BF("  tag(%s) = %s") % it->first.c_str() % it->second->description().c_str() );
-	}
+    {
+      this->_ClosestMatch->mapHash( [] (core::T_sp key, core::T_sp val) {
+          _lisp->print(BF("  tag(%s) = %s") % _rep_(key) % _rep_(val) );
+	} );
     }
 
 #if 0
@@ -205,39 +201,41 @@ namespace chem {
         this->_AtomWildCards = core::HashTableEqual_O::create_default();
     }
 
-    void    WildElementDict_O::addWildName(const string& name)
-    {
-	core::StringSet_sp	maps;
-	maps = core::StringSet_O::create();
-	this->_AtomWildCards->setf_gethash(core::str_create(name),maps);
-    }
+void    WildElementDict_O::addWildName(core::Symbol_sp name)
+{
+  adapt::SymbolSet_sp m = adapt::SymbolSet_O::create();
+  this->_AtomWildCards->setf_gethash(name,m);
+}
 
-    void    WildElementDict_O::addWildNameMap(core::Str_sp wildName, core::Str_sp elementName)
+    void    WildElementDict_O::addWildNameMap(core::Symbol_sp wildName, core::Symbol_sp elementName)
     {_OF();
-	if ( this->_AtomWildCards->count(wildName) == 0 ) {
-            ERROR(_sym_chemError,"Could not find wild-card ~a", core::Cons_O::createList(swildName));
+	if ( !this->_AtomWildCards->contains(wildName) ) {
+          SIMPLE_ERROR(BF("Could not find wild-card %s") % _rep_(core::Cons_O::createList(wildName)));
 	}
-        core::StringSet_sp ss = this->_AtomWildCards->gethash(swildName);
-        if ( ss.nilp() ) {
+        core::T_sp tss = this->_AtomWildCards->gethash(wildName).as<adapt::SymbolSet_O>();
+        if ( tss.nilp() ) {
+          SIMPLE_ERROR(BF("Could not find AtomWildCards for %s") % _rep_(wildName) );
         }
-        ss->insert(core::str_create(elementName));
-	this->_AtomWildCards.get(wildName)->insert(elementName);
+        adapt::SymbolSet_sp ss = tss.as<adapt::SymbolSet_O>();
+        ss->insert(elementName);
+	this->_AtomWildCards->gethash(wildName).as<adapt::SymbolSet_O>()->insert(elementName);
     }
 
-    bool    WildElementDict_O::recognizesWildName(string name)
+bool    WildElementDict_O::recognizesWildName(core::Symbol_sp name)
     {
-	if ( this->_AtomWildCards.count(name) == 0 ) return false;
+      if ( this->_AtomWildCards->gethash(name).nilp() ) return false;
 	return true;
     }
 
-    bool    WildElementDict_O::recognizesWildNameElement(string name, string element)
-    {_OF();
-	if ( this->_AtomWildCards.count(name) == 0 ) {
-	    SIMPLE_ERROR(BF("Unrecognized wild card name(%s)")% name);
-	}
-	if ( this->_AtomWildCards.get(name)->contains(element)!= 0 ) return true;
-	return false;
-    }
+bool    WildElementDict_O::recognizesWildNameElement(core::Symbol_sp name, core::Symbol_sp element)
+{
+  core::T_sp symset = this->_AtomWildCards->gethash(name);
+  if ( symset.nilp() ) {
+    SIMPLE_ERROR(BF("Unrecognized wild card name(%s)")% _rep_(name));
+  }
+  if ( symset.as<adapt::SymbolSet_O>()->contains(element)!= 0 ) return true;
+  return false;
+}
 
 
     bool    WildElementDict_O::lexWildNameMatches2Char(char c1, char c2)
@@ -245,18 +243,21 @@ namespace chem {
 	string  name;
 	name = c1;
 	name += c2;
-	return (this->_AtomWildCards.count(name)!= 0);
+        core::Symbol_sp sname = chemkw_intern(name);
+	return (this->_AtomWildCards->contains(sname));
     }
 
     bool    WildElementDict_O::lexWildNameMatches1Char(char c1)
     {
 	string  name;
 	name = c1;
-	return (this->_AtomWildCards.count(name)!= 0);
+        core::Symbol_sp sname = chemkw_intern(name);
+	return (this->_AtomWildCards->contains(sname));
     }
 
 
-    void WildElementDict_O::archiveBase(core::ArchiveP node)
+#ifdef XML_ARCHIVE
+void WildElementDict_O::archiveBase(core::ArchiveP node)
     {
 	node->attributeStringMap(KW("data"),this->_AtomWildCards);
     }
@@ -267,7 +268,7 @@ namespace chem {
     {
 	// do nothing
     }
-
+#endif
 
 
 
@@ -315,19 +316,19 @@ namespace chem {
 
 
 
-    void ChemInfo_O::defineTests(core::List_sp tests)
-    {_OF();
-	ASSERTNOTNULL(this->_Root);
-	ASSERTF(this->_Root.notnilp(),BF("Root must be defined to define tests"));
-	for ( core::List_sp cur = tests; cur.notnilp(); cur = cur->cddr().as<core::List_V>() )
-	{
-	    core::Symbol_sp testSymbol = cur->car<core::Symbol_O>();
-	    core::Function_sp testCode = cur->ocadr().as<core::Function_O>();
-	    ASSERTF(testSymbol.notnilp(),BF("The testSymbol was nil"));
-	    ASSERTF(testCode.notnilp(),BF("The test code was nil"));
-	    this->_Root->addTest(testSymbol,testCode);
-	}
-    }
+void ChemInfo_O::defineTests(core::List_sp tests)
+{
+  ASSERTNOTNULL(this->_Root);
+  ASSERTF(this->_Root.notnilp(),BF("Root must be defined to define tests"));
+  for ( core::List_sp cur = tests; cur.notnilp(); cur = oCddr(cur) )
+  {
+    core::Symbol_sp testSymbol = oCar(cur).as<core::Symbol_O>();
+    core::Function_sp testCode = oCadr(cur).as<core::Function_O>();
+    ASSERTF(testSymbol.notnilp(),BF("The testSymbol was nil"));
+    ASSERTF(testCode.notnilp(),BF("The test code was nil"));
+    this->_Root->addTest(testSymbol,testCode);
+  }
+}
     bool	ChemInfo_O::compileAntechamber(const string& code, WildElementDict_sp dict )
     {_G();
 	AntechamberRoot_sp	root;
@@ -638,13 +639,14 @@ namespace chem {
 	{ "", -1 }
     };
 
+#ifdef XML_ARCHIVE
     void	Logical_O::archiveBase(core::ArchiveP node)
     {
 	node->attributeEnum( KW("op"), this->_Operator);
 	node->attribute( "left", this->_Left );
 	node->attributeIfNotNil( "right", this->_Right );
     }
-
+#endif
 
 
 
@@ -675,7 +677,7 @@ namespace chem {
 	this->Base::initialize();
 //    this->_Bond = SABAnyBond;
 	this->_AtomTest = _Nil<AtomOrBondMatchNode_O>();
-	this->_RingTag = "";
+	this->_RingTag = _Nil<core::Symbol_O>();
     }
 
 
@@ -738,7 +740,7 @@ namespace chem {
 	this->Base::initialize();
 	this->_Bond = SABAnyBond;
 	this->_AtomTest = _Nil<AtomOrBondMatchNode_O>();
-	this->_RingTag = "";
+	this->_RingTag = _Nil<core::Symbol_O>();
     }
 
 
@@ -763,7 +765,7 @@ namespace chem {
 	// and then have the root forget the atom
 	if ( !smartsRoot->getMatch()->recognizesAtomTag(this->_RingTag) )
 	{
-	    SIMPLE_ERROR(BF("We are trying to test the atomTag ("+this->_RingTag+") but it doesn't exist!" ));
+          SIMPLE_ERROR(BF("We are trying to test the atomTag %s but it doesn't exist") % _rep_(this->_RingTag) );
 	}
 	LOG(BF("      RingTest check close") );
 	ringStartAtom = smartsRoot->getMatch()->getAtomWithTag(this->_RingTag);
@@ -802,7 +804,7 @@ namespace chem {
 	this->Base::initialize();
 	this->_Bond = SABAnyBond;
 	this->_AtomTest = _Nil<AtomOrBondMatchNode_O>();
-	this->_RingTag = "";
+	this->_RingTag = _Nil<core::Symbol_O>();
     }
 
 
@@ -835,7 +837,7 @@ namespace chem {
 	// and then have the root forget the atom
 	if ( !smartsRoot->getMatch()->recognizesAtomTag(this->_RingTag) )
 	{
-	    SIMPLE_ERROR(BF("We are trying to test the atomTag ("+this->_RingTag+") but it doesn't exist!" ));
+          SIMPLE_ERROR(BF("We are trying to test the atomTag (%s) but it doesn't exist!" ) % _rep_(this->_RingTag));
 	}
 	LOG(BF("      ResidueTest check close") );
 	ringAtom = smartsRoot->getMatch()->getAtomWithTag(this->_RingTag);
@@ -1124,13 +1126,13 @@ namespace chem {
 	    break;
 	case SAPRingTest:
 	    LOG(BF("SAPRingTest looking for tag: %s") % this->_StringArg );
-	    if ( !root->getMatch()->recognizesAtomTag(this->_StringArg) )
+	    if ( !root->getMatch()->recognizesAtomTag(chemkw_intern(this->_StringArg)) )
 	    {
 		SIMPLE_ERROR(BF("We are trying to test the atomTag ("
 				+this->_StringArg+") but it doesn't exist!" ));
 	    }
 	    LOG(BF("      SAPRingTest check close") ); //
-	    ringStartAtom = root->getMatch()->getAtomWithTag(this->_StringArg);
+	    ringStartAtom = root->getMatch()->getAtomWithTag(chemkw_intern(this->_StringArg));
 	    LOG(BF("      checking if %s matches ringStart atom: %s")
 		% atom->description().c_str() % ringStartAtom->description().c_str()  ); //
 	    if ( atom == ringStartAtom )
@@ -1141,13 +1143,13 @@ namespace chem {
 	    break;
 	case SAPResidueTest:
 	    LOG(BF("SAPResidueTest looking for tag: %s") % this->_StringArg );
-	    if ( !root->getMatch()->recognizesAtomTag(this->_StringArg) )
+	    if ( !root->getMatch()->recognizesAtomTag(chemkw_intern(this->_StringArg)) )
 	    {
 		SIMPLE_ERROR(BF("We are trying to test the atomTag ("
 				+this->_StringArg+") but it doesn't exist!" ));
 	    }
 	    LOG(BF("      SAPResidueTest check close") ); //
-	    ringStartAtom = root->getMatch()->getAtomWithTag(this->_StringArg);
+	    ringStartAtom = root->getMatch()->getAtomWithTag(chemkw_intern(this->_StringArg));
 	    LOG(BF("      checking if residue for %s matches residue for ringStart atom: %s")
 		% atom->description().c_str() % ringStartAtom->description().c_str()  ); //
 	    if ( atom->containedByLock().get() == ringStartAtom->containedByLock().get() )
@@ -1400,6 +1402,7 @@ namespace chem {
 	return "-unknownTest-";
     }
 
+#ifdef XML_ARCHIVE
     void	AtomTest_O::archiveBase(core::ArchiveP node)
     {
 	node->attributeEnum( KW("test"), this->_Test);
@@ -1408,7 +1411,7 @@ namespace chem {
 	node->attributeIfNotDefault<string>( "str", this->_StringArg, "" );
 	node->attributeIfNotNil("sym",this->_SymbolArg);
     }
-
+#endif
 
 
 
@@ -1476,12 +1479,13 @@ namespace chem {
 	return true;
     }
 
+#ifdef XML_ARCHIVE
     void	Chain_O::archiveBase(core::ArchiveP node)
     {
 	node->attributeIfNotNil("head",this->_Head);
 	node->attributeIfNotNil("tail",this->_Tail);
     }
-
+#endif
 
 
 
@@ -1556,13 +1560,13 @@ namespace chem {
     }
 
 
-
+#ifdef XML_ARCHIVE
     void	Branch_O::archiveBase(core::ArchiveP node)
     {
 	node->attribute("left",this->_Left);
 	node->attributeIfNotNil("right",this->_Right);
     }
-
+#endif
 
 //      AfterMatchBondNode
 
@@ -1578,8 +1582,8 @@ namespace chem {
 
     void AfterMatchBondTest_O::initialize()
     {_OF();
-	this->_AtomTag1 = "";
-	this->_AtomTag2 = "";
+      this->_AtomTag1 = _Nil<core::Symbol_O>();
+      this->_AtomTag2 = _Nil<core::Symbol_O>();
 	this->_Bond = SABNoBond;
     }
 
@@ -1617,6 +1621,7 @@ namespace chem {
     }
 
 
+#ifdef XML_ARCHIVE
     void	AntechamberFocusAtomMatch_O::archiveBase(core::ArchiveP node)
     {
 	node->attributeIfNotNil("residueNames",this->_ResidueNames);
@@ -1626,7 +1631,7 @@ namespace chem {
 	node->attribute("attachedHs",this->_NumberOfAttachedHydrogens);
 	node->attribute("attachedEWGs",this->_NumberOfElectronWithdrawingGroups);
     }
-
+#endif
 
 
 
@@ -1694,20 +1699,20 @@ namespace chem {
 	{
 	    if ( dict->recognizesWildName(this->_Element) ) {
 		LOG(BF("Matching wildcard element has(%s) == expecting (%s)") % atom->getElementAsString().c_str() % this->_Element.c_str() );
-		if ( !dict->recognizesWildNameElement(this->_Element,atom->getElementAsString() ) ) goto FAIL;
+		if ( !dict->recognizesWildNameElement(this->_Element,atom->getElementAsSymbol() ) ) goto FAIL;
 		gotElement = true;
 
 	    }
 	}
 	if ( !gotElement ) {
-	    LOG(BF("Trying to match regular element(%s) == expected(%s)") % atom->getElementAsString().c_str() % this->_Element.c_str() );
-	    if ( atom->getElementAsString() != this->_Element ) goto FAIL;
+          LOG(BF("Trying to match regular element(%s) == expected(%s)") % atom->getElementAsString().c_str() % _rep_(this->_Element) );
+	    if ( atom->getElementAsSymbol() != this->_Element ) goto FAIL;
 	}
 	LOG(BF("Trying to match number of bonds(%d) == expected(%d)") % atom->numberOfBonds() % this->_Neighbors );
 	if ( this->_Neighbors >=0 ) {
 	    if ( atom->numberOfBonds() != this->_Neighbors ) goto FAIL;
 	}
-	if ( this->_Tag != "" ) {
+	if ( this->_Tag.notnilp() ) {
 	    root->getMatch()->defineAtomTag( atom, this->_Tag );
 	}
 //SUCCESS:
@@ -1768,23 +1773,23 @@ namespace chem {
     void	AntechamberBondTest_O::initialize()
     {
 	this->Base::initialize();
-	this->_Element = "";
+	this->_Element = _Nil<core::Symbol_O>();
 	this->_Neighbors = 0;
-	this->_AtomProperties.reset();
-	this->_Tag = "";
+	this->_Tag = _Nil<core::Symbol_O>();
 	this->_AtomProperties = _Nil<AtomOrBondMatchNode_O>();
     }
 
 
 
-    void	AntechamberBondTest_O::archiveBase(core::ArchiveP node)
+#ifdef XML_ARCHIVE
+void	AntechamberBondTest_O::archiveBase(core::ArchiveP node)
     {
 	node->attribute("element",this->_Element);
 	node->attribute("neighbors", this->_Neighbors );
 	node->attribute("tag",this->_Tag);
 	node->attributeIfNotNil("atomProps", this->_AtomProperties);
     }
-
+#endif
 
 
 
@@ -1824,7 +1829,7 @@ namespace chem {
     void Root_O::addTest(core::Symbol_sp testSym, core::Function_sp testCode)
     {_OF();
 	LOG(BF("Adding test<%s> with code: %s") % testSym->__repr__() % testCode->__repr__() );
-	this->_Tests->extend(testSym,testCode);
+	this->_Tests->setf_gethash(testSym,testCode);
     }
 
 
@@ -1832,12 +1837,11 @@ namespace chem {
     {_OF();
 	ASSERTF(testSym.notnilp(),BF("The test symbol was nil! - this should never occur"));
 	LOG(BF("Looking up test with symbol<%s>") % testSym->__repr__() );
-	core::HashTableEq_O::iterator it = this->_Tests->find(testSym);
-	if ( it == this->_Tests->end() )
-	{
-	    SIMPLE_ERROR(BF("Could not find named ChemInfo/Smarts test[%s] in Smarts object - available named tests are[%s]") % testSym->__repr__() % this->_Tests->allKeysAsString() );
+        core::T_mv find = this->_Tests->gethash(testSym);
+	if ( find.second().nilp() ) {
+	    SIMPLE_ERROR(BF("Could not find named ChemInfo/Smarts test[%s] in Smarts object - available named tests are[%s]") % testSym->__repr__() % this->_Tests->keysAsString() );
 	}
-	core::Function_sp testCode = this->_Tests->indexed_value(it->second).as<core::Function_O>();
+	core::Function_sp testCode = this->_Tests->gethash(find).as<core::Function_O>();
 	ASSERTF(testCode.notnilp(),BF("testCode was nil - it should never be"));
 	ASSERTF(atom.notnilp(),BF("The atom arg should never be nil"));
 	core::List_sp exp = core::Cons_O::createList(testCode,atom);
@@ -1849,7 +1853,8 @@ namespace chem {
 
 
 
-    void	Root_O::archiveBase(core::ArchiveP node)
+#ifdef XML_ARCHIVE
+void	Root_O::archiveBase(core::ArchiveP node)
     {_G();
 	node->attributeIfNotNil("firstTest",this->_FirstTest);
 	node->attributeIfNotNil("chain",this->_Chain);
@@ -1858,7 +1863,7 @@ namespace chem {
 	LOG(BF("After load chain=%s") % this->_Chain->description().c_str()  );
 #endif
     }
-
+#endif
 
     bool Root_O::matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond ) 
     {_OF();
@@ -1909,11 +1914,12 @@ namespace chem {
 
 
 
-    void	SmartsRoot_O::archiveBase(core::ArchiveP node)
+#ifdef XML_ARCHIVE
+void	SmartsRoot_O::archiveBase(core::ArchiveP node)
     {
 	this->archiveBase(node);
     }
-
+#endif
 
 
     bool SmartsRoot_O::matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond ) 
@@ -1942,19 +1948,20 @@ namespace chem {
     void	AntechamberRoot_O::initialize()
     {
 	this->Base::initialize();
-	this->_AssignType = "";
+	this->_AssignType = _Nil<core::Symbol_O>();
 	this->_AfterMatchTests = _Nil<RootMatchNode_O>();
 	this->_WildElementDictionary = _Nil<WildElementDict_O>();
     }
 
-    void	AntechamberRoot_O::archiveBase(core::ArchiveP node)
+#ifdef XML_ARCHIVE
+void	AntechamberRoot_O::archiveBase(core::ArchiveP node)
     {
 	this->Base::archiveBase(node);
 	node->attribute( "assignType", this->_AssignType );
 	node->attributeIfNotNil( "afterMatchTests", this->_AfterMatchTests );
 	node->attributeIfNotNil( "wildDict", this->_WildElementDictionary);
     }
-
+#endif
 
 
 

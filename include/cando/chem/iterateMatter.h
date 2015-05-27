@@ -43,7 +43,7 @@ protected:
 	Loop	_Loop;
 	bool	_IsDone;
 public:
-    static IterateMatter_sp create(core::Lisp_sp e,Matter_sp top, int goal );
+    static IterateMatter_sp create(Matter_sp top, int goal );
 
 public:
 
@@ -80,7 +80,7 @@ class IterateAtoms_O : public IterateMatter_O
 #endif
 public:
 public:
-    static IterateAtoms_sp create(Matter_sp top, core::Lisp_sp e);
+    static IterateAtoms_sp create(Matter_sp top);
     static core::T_sp createForMatter(Matter_sp matter);
 public:
 
@@ -102,7 +102,7 @@ class IterateResidues_O : public IterateMatter_O
 public:
 private:
 public:
-    static IterateResidues_sp create(core::Lisp_sp e,Matter_sp top);
+    static IterateResidues_sp create(Matter_sp top);
     static core::T_sp createForMatter(Matter_sp matter);
 
 public:
@@ -123,7 +123,7 @@ class IterateBonds_O : public IterateMatter_O
 public:
 private:
 public:
-    static IterateBonds_sp create(core::Lisp_sp e,Matter_sp top);
+    static IterateBonds_sp create(Matter_sp top);
     static core::T_sp createForMatter(Matter_sp matter);
 
 public:

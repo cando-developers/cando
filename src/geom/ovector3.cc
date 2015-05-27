@@ -156,22 +156,22 @@ Vector3 OVector3_O::timesScalar(double d)
 
 Vector3 OVector3_O::normalized()
 {
-  return this->_Value.normalized(_lisp);
+  return this->_Value.normalized();
 }
 
 double	OVector3_O::dihedral( const Vector3& vb, const Vector3& vc, const Vector3& vd )
 {
-    return calculateDihedral(this->_Value,vb,vc,vd,_lisp);
+    return calculateDihedral(this->_Value,vb,vc,vd);
 }
 
 double	OVector3_O::angle( const Vector3& vb, const Vector3& vc)
 {
-    return calculateAngle(this->_Value,vb,vc,_lisp);
+    return calculateAngle(this->_Value,vb,vc);
 }
 
 double	OVector3_O::distance( const Vector3& vb )
 {
-    return calculateDistance(this->_Value,vb,_lisp);
+    return calculateDistance(this->_Value,vb);
 }
 
 

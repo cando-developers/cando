@@ -23,9 +23,9 @@ namespace chem {
 
     EnergyAngle::EnergyAngle()
 {
-    this->_Atom1.reset();
-    this->_Atom2.reset();
-    this->_Atom3.reset();
+  this->_Atom1 = _Nil<core::T_O>();
+  this->_Atom2 = _Nil<core::T_O>();
+  this->_Atom3 = _Nil<core::T_O>();
 }
 
 
@@ -56,7 +56,7 @@ EnergyAngle::~EnergyAngle()
     node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
     node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
     node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include <cando/chem/_Angle_debugEvalSerialize.cc>
+#include <cando/chem/energy_functions/_Angle_debugEvalSerialize.cc>
 #endif //]
 }
 #endif
@@ -103,17 +103,17 @@ double	angle;
     pos1 = this->_Atom1->getPosition();
     pos2 = this->_Atom2->getPosition();
     pos3 = this->_Atom3->getPosition();
-    angle = calculateAngle( pos1, pos2, pos3,_lisp );
+    angle = calculateAngle( pos1, pos2, pos3 );
     return angle;
 }
 
 #if 0
-    geom::QDomNode_sp	EnergyAngle::asXml(core::Lisp_sp env)
+    adapt::QDomNode_sp	EnergyAngle::asXml()
 {
-    geom::QDomNode_sp	node;
+    adapt::QDomNode_sp	node;
     Vector3	vdiff;
 
-    node = geom::QDomNode_O::create(env,"EnergyAngle");
+    node = adapt::QDomNode_O::create(env,"EnergyAngle");
     node->addAttributeString("atom1Name",this->_Atom1->getName());
     node->addAttributeString("atom2Name",this->_Atom2->getName());
     node->addAttributeString("atom3Name",this->_Atom3->getName());
@@ -126,7 +126,7 @@ double	angle;
     node->addAttributeDoubleScientific("kt",this->term.kt);
     node->addAttributeDoubleScientific("t0",this->term.t0);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    geom::QDomNode_sp xml = geom::QDomNode_O::create(env,"Evaluated");
+    adapt::QDomNode_sp xml = adapt::QDomNode_O::create(env,"Evaluated");
     xml->addAttributeBool("calcForce",this->_calcForce );
     xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
     xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
@@ -136,7 +136,7 @@ double	angle;
     return node;
 }
 
-    void	EnergyAngle::parseFromXmlUsingAtomTable(geom::QDomNode_sp	xml,
+    void	EnergyAngle::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
 					AtomTable_sp atomTable )
 {
     int i1 = xml->getAttributeInt("idx1");
@@ -179,7 +179,7 @@ double	_evaluateEnergyOnly_Angle(
 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/_Angle_termDeclares.cc>
+#include <cando/chem/energy_functions/_Angle_termDeclares.cc>
 #pragma clang diagnostic pop
 #if !USE_EXPLICIT_DECLARES
 	double fx1;
@@ -195,7 +195,7 @@ double	_evaluateEnergyOnly_Angle(
     fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
     fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
     fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-#include <cando/chem/_Angle_termCode.cc>
+#include <cando/chem/energy_functions/_Angle_termCode.cc>
 
     return Energy;
 }
@@ -281,7 +281,7 @@ bool		calcOffDiagonalHessian = true;
     if ( this->isEnabled() ) {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	#include	"_Angle_termDeclares.cc"
+#include	<cando/chem/energy_functions/_Angle_termDeclares.cc>
 #pragma clang diagnostic pop
 	fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
 	fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
@@ -291,7 +291,7 @@ bool		calcOffDiagonalHessian = true;
 	for ( gctools::Vec0<EnergyAngle>::iterator ai=this->_Terms.begin();
 		    ai!=this->_Terms.end(); ai++ )
 	{
-	    #include	"_Angle_termCode.cc"
+#include	<cando/chem/energy_functions/_Angle_termCode.cc>
 	}
     }
 
@@ -352,7 +352,7 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
     {_BLOCK_TRACE("Angle");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	#include "_Angle_termDeclares.cc"
+#include <cando/chem/energy_functions/_Angle_termDeclares.cc>
 #pragma clang diagnostic pop
 	fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
 	fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
@@ -370,7 +370,7 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 		    }
 		}
 	    #endif
-	    #include	"_Angle_termCode.cc"
+#include	<cando/chem/energy_functions/_Angle_termCode.cc>
 	    if ( IllegalAngle ) {
 //		    EnergyInteractionProblem prob;
 		InteractionProblem prob;
@@ -387,7 +387,7 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 		ai->_calcOffDiagonalHessian = calcOffDiagonalHessian;
 		#undef	EVAL_SET
 		#define	EVAL_SET(var,val)	{ ai->eval.var=val;};
-		#include	"_Angle_debugEvalSet.cc"
+#include	<cando/chem/energy_functions/_Angle_debugEvalSet.cc>
 	    #endif //]
 	    if ( this->_DebugEnergy ) 
 	    {
@@ -478,7 +478,7 @@ bool	calcOffDiagonalHessian = true;
 		_BLOCK_TRACE("AngleEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	    #include "_Angle_termDeclares.cc"
+#include <cando/chem/energy_functions/_Angle_termDeclares.cc>
 #pragma clang diagnostic pop
 	    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
 	    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
@@ -500,7 +500,7 @@ bool	calcOffDiagonalHessian = true;
 		LOG(BF("ai->x3 = %le") % pos->element(ai->term.I3 ) );
 		LOG(BF("ai->y3 = %le") % pos->element(ai->term.I3+1 ) );
 		LOG(BF("ai->z3 = %le") % pos->element(ai->term.I3+2 ) );
-		#include	"_Angle_termCode.cc"
+#include	<cando/chem/energy_functions/_Angle_termCode.cc>
 		LOG(BF("Energy = %le") % Energy  );
 		LOG(BF("x1 = %le") % x1  );
 		LOG(BF("y1 = %le") % y1  );
@@ -512,7 +512,7 @@ bool	calcOffDiagonalHessian = true;
 		LOG(BF("y3 = %le") % y3  );
 		LOG(BF("z3 = %le") % z3  );
 		int index = i;
-		#include "_Angle_debugFiniteDifference.cc"
+#include <cando/chem/energy_functions/_Angle_debugFiniteDifference.cc>
 	    }
 	}
 
@@ -556,7 +556,7 @@ bool	calcOffDiagonalHessian = false;
 		_BLOCK_TRACE("AngleEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	    #include "_Angle_termDeclares.cc"
+#include <cando/chem/energy_functions/_Angle_termDeclares.cc>
 #pragma clang diagnostic pop
 	    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
 	    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
@@ -567,7 +567,7 @@ bool	calcOffDiagonalHessian = false;
 	    gctools::Vec0<EnergyAngle>::iterator ai;
 	    for ( i=0,ai=this->_Terms.begin();
 			ai!=this->_Terms.end(); ai++,i++ ) {
-		#include	"_Angle_termCode.cc"
+#include	<cando/chem/energy_functions/_Angle_termCode.cc>
 		if ( fabs(AngleDeviation)/t0 > this->_ErrorThreshold ) {
 		    chem::Atom_sp a1, a2, a3;
 		    a1 = (*ai)._Atom1;

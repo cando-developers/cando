@@ -24,10 +24,10 @@ namespace chem {
 
     EnergyImproperRestraint::EnergyImproperRestraint()
 {
-    this->_Atom1.reset();
-    this->_Atom2.reset();
-    this->_Atom3.reset();
-    this->_Atom4.reset();
+  this->_Atom1 = _Nil<core::T_O>();
+  this->_Atom2 = _Nil<core::T_O>();
+  this->_Atom3 = _Nil<core::T_O>();
+  this->_Atom4 = _Nil<core::T_O>();
 }
 
 
@@ -55,7 +55,7 @@ EnergyImproperRestraint::~EnergyImproperRestraint()
     node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
     node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
     node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include <cando/chem/_ImproperRestraint_debugEvalSerialize.cc>
+#include <cando/chem/energy_functions/_ImproperRestraint_debugEvalSerialize.cc>
 #endif //]
 }
 #endif
@@ -69,17 +69,17 @@ double	EnergyImproperRestraint::getAngle()
     pos2 = this->_Atom2->getPosition();
     pos3 = this->_Atom3->getPosition();
     pos4 = this->_Atom4->getPosition();
-    return calculateDihedral(pos1,pos2,pos3,pos4,_lisp);
+    return calculateDihedral(pos1,pos2,pos3,pos4);
 }
 
 
 #if 0
-    geom::QDomNode_sp	EnergyImproperRestraint::asXml(core::Lisp_sp env)
+    adapt::QDomNode_sp	EnergyImproperRestraint::asXml()
 {
-    geom::QDomNode_sp	node,child;
+    adapt::QDomNode_sp	node,child;
     Vector3	vdiff;
 
-    node = geom::QDomNode_O::create(env,"EnergyImproperRestraint");
+    node = adapt::QDomNode_O::create(env,"EnergyImproperRestraint");
     node->addAttributeString("atom1Name",this->_Atom1->getName());
     node->addAttributeString("atom2Name",this->_Atom2->getName());
     node->addAttributeString("atom3Name",this->_Atom3->getName());
@@ -94,7 +94,7 @@ double	EnergyImproperRestraint::getAngle()
     node->addAttributeDoubleScientific("L",this->term.L);
     node->addAttributeDoubleScientific("K",this->term.K);
     if ( this->_AboveThreshold ) {
-	child = geom::QDomNode_O::create(env,"AboveThreshold");
+	child = adapt::QDomNode_O::create(env,"AboveThreshold");
 	child->addAttributeDoubleScientific("Phi",this->_AboveThreshold_Phi );
 	child->addAttributeDouble("PhiDeg",this->_AboveThreshold_Phi/0.0174533,6,2 );
 	stringstream ss;
@@ -105,7 +105,7 @@ double	EnergyImproperRestraint::getAngle()
 	node->addChild(child);
     }
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    geom::QDomNode_sp xml = geom::QDomNode_O::create(env,"Evaluated");
+    adapt::QDomNode_sp xml = adapt::QDomNode_O::create(env,"Evaluated");
     xml->addAttributeBool("calcForce",this->_calcForce );
     xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
     xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
@@ -115,7 +115,7 @@ double	EnergyImproperRestraint::getAngle()
     return node;
 }
 
-    void	EnergyImproperRestraint::parseFromXmlUsingAtomTable(geom::QDomNode_sp	xml,
+    void	EnergyImproperRestraint::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
 					AtomTable_sp at)
 {
     this->term.U = xml->getAttributeDouble("U");
@@ -168,9 +168,9 @@ bool	RestraintActive;
 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/_ImproperRestraint_termDeclares.cc>
+#include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-#include <cando/chem/_ImproperRestraint_termCode.cc>
+#include <cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
 
     return Energy;
 }
@@ -234,7 +234,7 @@ bool		calcOffDiagonalHessian = true;
     if ( this->isEnabled() ) {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	#include	"_ImproperRestraint_termDeclares.cc"
+#include	<cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
 	double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
 	double K,U,L;
@@ -243,7 +243,7 @@ bool		calcOffDiagonalHessian = true;
 	int	I1, I2, I3, I4;
 	for ( gctools::Vec0<EnergyImproperRestraint>::iterator iri=this->_Terms.begin();
 		    iri!=this->_Terms.end(); iri++ ) {
-	    #include	"_ImproperRestraint_termCode.cc"
+#include	<cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
 	}
     }
 }
@@ -301,7 +301,7 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
     if ( this->isEnabled() ) {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	#include "_ImproperRestraint_termDeclares.cc"
+#include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
 	double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
 	double K,U,L;
@@ -318,7 +318,7 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 		    }
 		}
 	    #endif
-	    #include "_ImproperRestraint_termCode.cc"
+#include <cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
 	    if ( EraseLinearDihedral == 0.0 ) {
 	       InteractionProblem problem;
 	       problem._Atom1 = iri->_Atom1;
@@ -336,7 +336,7 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 		iri->_calcOffDiagonalHessian = calcOffDiagonalHessian;
 		#undef EVAL_SET
 		#define EVAL_SET(var,val)	{ iri->eval.var=val;};
-		#include "_ImproperRestraint_debugEvalSet.cc"
+#include <cando/chem/energy_functions/_ImproperRestraint_debugEvalSet.cc>
 	    #endif //]
 
 	    if ( this->_DebugEnergy ) 
@@ -452,7 +452,7 @@ bool	calcOffDiagonalHessian = true;
 		_BLOCK_TRACE("ImproperRestraintEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	    #include "_ImproperRestraint_termDeclares.cc"
+#include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
 	    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
 	    double K,U,L;
@@ -462,9 +462,9 @@ bool	calcOffDiagonalHessian = true;
             gctools::Vec0<EnergyImproperRestraint>::iterator iri;
 	    for ( i=0,iri =this->_Terms.begin();
 			iri!=this->_Terms.end(); iri++,i++ ) {
-		#include "_ImproperRestraint_termCode.cc"
+#include <cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
 		int index = i;
-		#include "_ImproperRestraint_debugFiniteDifference.cc"
+#include <cando/chem/energy_functions/_ImproperRestraint_debugFiniteDifference.cc>
 	    }
 	}
 
@@ -507,7 +507,7 @@ int	fails = 0;
 		_BLOCK_TRACE("ImproperRestraintEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	    #include "_ImproperRestraint_termDeclares.cc"
+#include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
 	    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
 	    double K,U,L;
@@ -517,7 +517,7 @@ int	fails = 0;
             gctools::Vec0<EnergyImproperRestraint>::iterator iri;
 	    for ( i=0,iri =this->_Terms.begin();
 			iri!=this->_Terms.end(); iri++,i++ ) {
-		#include "_ImproperRestraint_termCode.cc"
+#include <cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
 		if ( RestraintActive ) {
 		    chem::Atom_sp a1, a2, a3, a4;
 		    a1 = (*iri)._Atom1;

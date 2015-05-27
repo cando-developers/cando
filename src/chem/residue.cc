@@ -54,7 +54,7 @@ void	Residue_O::setConstitution(Constitution_sp cc)
 #if 0
    ANN(cc);
    CandoDatabase_sp bdb = cc->getCandoDatabase();
-   this->_Constitution = CandoDatabaseReference_O::create(_lisp,bdb,"Constitution="+cc->getName());
+   this->_Constitution = CandoDatabaseReference_O::create(bdb,"Constitution="+cc->getName());
 #endif
 }
 
@@ -128,7 +128,7 @@ bool Residue_O::recognizesMonomerAlias(core::Symbol_sp s)
     return this->_MonomerAliases->contains(s);
 }
 
-void	Residue_O::setMonomerAliases(core::SymbolSet_sp s)
+void	Residue_O::setMonomerAliases(adapt::SymbolSet_sp s)
 {_G();
     this->_MonomerAliases = s;
 }
@@ -137,14 +137,14 @@ void Residue_O::addMonomerAlias(core::Symbol_sp s)
 {_G();
     if (this->_MonomerAliases.nilp() )
     {
-	this->_MonomerAliases = core::SymbolSet_O::create();
+	this->_MonomerAliases = adapt::SymbolSet_O::create();
     }
     this->_MonomerAliases->insert(s);
 }
 
 
 
-core::SymbolSet_sp Residue_O::getMonomerAliases()
+adapt::SymbolSet_sp Residue_O::getMonomerAliases()
 {_G();
     ASSERTNOTNULL(this->_MonomerAliases);
     return this->_MonomerAliases;
@@ -269,7 +269,7 @@ void	Residue_O::initialize()
 //    this->_Constitution = _Nil<CandoDatabaseReference_O>();
     this->_FileSequenceNumber = -1;
     this->_NetCharge = 0;
-    this->_MonomerAliases = _Nil<core::SymbolSet_O>();
+    this->_MonomerAliases = _Nil<adapt::SymbolSet_O>();
     this->_UniqueLabel = _Nil<core::Symbol_O>();
     this->pdbName = _Nil<core::Symbol_O>();
 }
@@ -480,8 +480,8 @@ bool Residue_O::testIfAllAtomNamesAreUnique(core::T_sp problemStream)
 void Residue_O::makeAllAtomNamesInEachResidueUnique()
 {_OF();
     contentIterator ai;
-    core::SymbolSet_sp allNames = core::SymbolSet_O::create();
-    core::SymbolSet_sp allNamesAccumulate = core::SymbolSet_O::create();
+    adapt::SymbolSet_sp allNames = adapt::SymbolSet_O::create();
+    adapt::SymbolSet_sp allNamesAccumulate = adapt::SymbolSet_O::create();
     core::HashTableEq_sp atomsThatShareName = core::HashTableEq_O::create_default();
 //    multimap<string,Atom_sp>	atomsThatShareName;
     for ( ai=this->getContents().begin();
@@ -530,7 +530,7 @@ void Residue_O::makeAllAtomNamesInEachResidueUnique()
 
 void Residue_O::setAliasesForAtoms(core::List_sp aliasAtoms, core::List_sp atomAliases)
 {_G();
-    ASSERT_eq(aliasAtoms->length(),atomAliases->length());
+  ASSERT_eq(core::cl_length(aliasAtoms),core::cl_length(atomAliases));
     while ( aliasAtoms.notnilp() )
     {
 	MatterName aliasAtom = oCar(aliasAtoms).as<MatterName::Type>();
@@ -547,11 +547,11 @@ void Residue_O::setAliasesForAtoms(core::List_sp aliasAtoms, core::List_sp atomA
 //	getAllUniqueAtomNames
 //
 //	Return a set of all unique atom names
-core::SymbolSet_sp	Residue_O::getAtomNamesAsSymbolSet()
+adapt::SymbolSet_sp	Residue_O::getAtomNamesAsSymbolSet()
 {_G();
 contentIterator	atom;
 Atom_sp				aTemp;
-core::SymbolSet_sp unique = core::SymbolSet_O::create();
+adapt::SymbolSet_sp unique = adapt::SymbolSet_O::create();
     for ( atom=this->getContents().begin();
 		atom != this->getContents().end(); atom++ ) {
 	aTemp = (*atom).as<Atom_O>();
@@ -565,9 +565,9 @@ core::SymbolSet_sp unique = core::SymbolSet_O::create();
 //	getAllUniqueAtomNames
 //
 //	Return a set of all unique atom names
-core::SymbolSet_sp	Residue_O::getAllUniqueAtomNames()
+adapt::SymbolSet_sp	Residue_O::getAllUniqueAtomNames()
 {
-    core::SymbolSet_sp unique;
+    adapt::SymbolSet_sp unique;
 contentIterator	atom;
 Atom_sp				aTemp;
     for ( atom=this->getContents().begin();

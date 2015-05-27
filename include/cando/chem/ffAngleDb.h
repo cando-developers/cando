@@ -20,10 +20,11 @@
 #include <clasp/core/common.h>
 #include <cando/chem/bond.h>
 #include <cando/geom/vector3.h>
+#include <cando/adapt/symbolMap.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
 #include <cando/chem/ffBaseDb.h>
-
+#include <clasp/core/smallMap.h>
 #include <cando/chem/chemPackage.h>
 
 
@@ -93,9 +94,9 @@ public:
     typedef	gctools::Vec0<FFAngle_sp>::iterator FFAngle_spIterator;
 	string			_AngleFunction;
     gctools::Vec0<FFAngle_sp>	_Terms;
-	core::SymbolMap<FFAngle_O>          _Lookup;
-	core::SymbolMap<core::DoubleFloat_O>		_ZConstants;	//<! Angle parameter constants from Wang et al. J. Comput. Chem 25, 1157-1174 (2004)
-	core::SymbolMap<core::DoubleFloat_O>		_CConstants;	//<! Angle parameter constants from Wang et al. J. Comput. Chem 25, 1157-1174 (2004)
+	adapt::SymbolMap<FFAngle_O>          _Lookup;
+	adapt::SymbolMap<core::DoubleFloat_O>		_ZConstants;	//<! Angle parameter constants from Wang et al. J. Comput. Chem 25, 1157-1174 (2004)
+	adapt::SymbolMap<core::DoubleFloat_O>		_CConstants;	//<! Angle parameter constants from Wang et al. J. Comput. Chem 25, 1157-1174 (2004)
 
 public:
 	void	setAngleFunction(const string& st) {this->_AngleFunction = st;};

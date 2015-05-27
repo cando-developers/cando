@@ -37,7 +37,7 @@
 #include <cando/chem/entity.h>
 
 #include <cando/chem/chemPackage.h>
-
+#include <cando/adapt/symbolList.fwd.h>
 #include <cando/adapt/symbolSet.fwd.h>
 #include <cando/adapt/objectSet.fwd.h>
 
@@ -87,7 +87,7 @@ namespace chem {
 	friend class AlchemistState_O;
 	friend class AlchemistFingerprint_O;
     public:
-        typedef gctools::SmallMap<core::Symbol_sp,Coupling_sp> Couplings; // This needs to be a multimap
+        typedef gctools::SmallMultimap<core::Symbol_sp,Coupling_sp,core::SymbolComparer> Couplings;
     public:
 //	void	archiveBase(core::ArchiveP node);
     private:
@@ -108,7 +108,7 @@ namespace chem {
          * Multiple monomers can share aliases as long as the atoms that are to be
          * accessed through those aliases are have unique names across those monomers.
          */
-	core::SymbolSet_sp			_Aliases; //!< this will identify monomers for searches
+	adapt::SymbolSet_sp			_Aliases; //!< this will identify monomers for searches
 	geom::Vector2				_Position2D;
 	bool				_Selected;
     public: // Do not archive/in error information
@@ -123,7 +123,7 @@ namespace chem {
 	{
 	    this->_TempResidue = res;
 	};
-	core::SymbolSet_sp getMonomerAliases()	{_OF(); ANN(this->_Aliases);return this->_Aliases; };
+	adapt::SymbolSet_sp getMonomerAliases()	{_OF(); ANN(this->_Aliases);return this->_Aliases; };
 	virtual uint getMonomerIndex() {return 0;};
 	virtual void setMonomerIndex(uint i) {_OF(); SUBCLASS_MUST_IMPLEMENT();};
         //! Return true if inc worked and false if we carry
@@ -150,7 +150,7 @@ namespace chem {
 	uint	getTemporaryInt() { return this->_TemporaryInt; }
 	void	setTemporaryInt(uint i) { this->_TemporaryInt = i; }
 	bool hasTemporaryResidue();
-        virtual core::List_sp allAtomAliases() {_OF();SUBCLASS_MUST_IMPLEMENT();};
+        virtual adapt::SymbolList_sp allAtomAliases() {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
         //! Return true if we recognize the alias with the form "![monomerAlias]@[atomAlias]"
 	virtual bool recognizesAlias(Alias_sp alias) { return false; };
@@ -160,12 +160,12 @@ namespace chem {
     public:
 	core::List_sp plugNamesAndCouplingsAsCons();
 
-	core::SymbolSet_sp	plugNames() const;
+	adapt::SymbolSet_sp	plugNames() const;
 
 	void	setComment(const string& s) { this->_Comment = s;};
 	string	getComment() { return this->_Comment; };
 
-	void	setAliasesFromSymbolList(core::List_sp aliases);
+	void	setAliasesFromSymbolList(adapt::SymbolList_sp aliases);
 	void	setAliasesFromCons(core::List_sp aliases);
 //	void	setAliasesFromString(const string& s);
 	string	getAliasesAsString();
@@ -258,7 +258,7 @@ namespace chem {
 	void	setOligomer(Oligomer_sp o );
 	virtual AtomIndexer_sp getInterestingAtomIndexer() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
 
-        virtual core::ObjectSet_sp getAllAliases();
+        virtual adapt::ObjectSet_sp getAllAliases();
 
 
     public:
@@ -350,7 +350,7 @@ namespace chem {
         bool incrementMonomerIndex();
 
 
-        virtual core::List_sp allAtomAliases();
+        virtual adapt::SymbolList_sp allAtomAliases();
 
         //! Return true if we recognize the alias with the form ";[monomerAlias]@[atomAlias]"
         virtual bool recognizesAlias(Alias_sp alias);

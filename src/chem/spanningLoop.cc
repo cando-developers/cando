@@ -95,14 +95,16 @@ namespace chem
 	/* Used to construct spanning trees that do not pass a */
 	/* certian ATOM_CLASS, good for looping over side chains */
 
-	if ( this->aInvisibleAtom.pointerp() )
+        if ( this->aInvisibleAtom == aAtom ) return false;
+#if 0        
+	if ( this->aInvisibleAtom.otherp() )
 	{
 	    if ( this->aInvisibleAtom == aAtom ) 
 	    {
 		return(false);
 	    }
 	}
-
+#endif
 	return(true);
     }
 
@@ -336,13 +338,13 @@ namespace chem
 
     core::List_sp	SpanningLoop_O::allAtoms()
     {
-	core::Cons_sp first = core::T_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
 	Atom_sp theTop = this->top;
 	this->setTop(theTop);
 	while ( this->advanceLoopAndProcess() )
 	{
-	    core::Cons_sp one = core::T_O::create(this->getAtom(),_Nil<core::T_O>());
+	    core::Cons_sp one = core::Cons_O::create(this->getAtom(),_Nil<core::T_O>());
 	    cur->setCdr(one);
 	    cur = one;
 	}

@@ -11,7 +11,7 @@
 #include <cando/adapt/mySaxInterface.h>
 
 
-namespace geom {
+namespace adapt {
 ////////////////////////////////////////////////////////////////
 //
 //

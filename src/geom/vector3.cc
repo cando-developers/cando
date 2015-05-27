@@ -57,9 +57,9 @@ Vector3 Vector3::inNanometers() const
 }
 
 
-void Vector3::dump(const core::Lisp_sp& lisp)
+void Vector3::dump()
 {
-    lisp->print(BF("<%lf,%lf,%lf>") % this->coords[0] % this->coords[1] % this->coords[2] );
+    _lisp->print(BF("<%lf,%lf,%lf>") % this->coords[0] % this->coords[1] % this->coords[2] );
 }
 
 void Vector3::writeToStream( std::ostream& out )
@@ -93,25 +93,10 @@ double	x,y,z;
 	return Vector3(x,y,z);
 }
 
+
+
+
 Vector3 Vector3::normalized() const
-{
-double	l;
-Vector3	v;
-
-    l = this->length();
-    if ( l > 0.0 ) {
-	v.coords[0] = this->coords[0]/l;
-	v.coords[1] = this->coords[1]/l;
-	v.coords[2] = this->coords[2]/l;
-	return v;
-    }
-    THROW_HARD_ERROR(BF("Attempted to normalize the vector (0,0,0)"));
-}
-
-
-
-
-Vector3 Vector3::normalized(const core::Lisp_sp& lisp) const
 {_G();
 double	l;
 Vector3	v;
@@ -249,7 +234,7 @@ Vector3	diff;
 }
 
 
-double	Vector3::angleToVectorAboutNormal(const Vector3& toVector, const Vector3& aboutNormal, const core::Lisp_sp& lisp )
+double	Vector3::angleToVectorAboutNormal(const Vector3& toVector, const Vector3& aboutNormal)
 {_G();
 	Vector3 men = this->normalizedOrZero();
 	LOG(BF("me.normalized{%lf,%lf,%lf} ") % men.getX() % men.getY() % men.getZ() );
@@ -302,8 +287,7 @@ void Vector3::fillFromCons(core::Cons_sp vals)
 
 
 double	calculateDistance( const Vector3& va,
-			   const Vector3& vb,
-			   const core::Lisp_sp& lisp)
+			   const Vector3& vb)
 {
     Vector3 vc = va - vb;
     return vc.length();
@@ -321,11 +305,10 @@ double	calculateDistanceSquared( const Vector3& va,
  */
 double calculateAngle( const Vector3& va,
 			const Vector3& vb,
-		       const Vector3& vc,
-		       const core::Lisp_sp& lisp)
+		       const Vector3& vc )
 {
-    Vector3	vab = (va-vb).normalized(lisp);
-    Vector3	vcb = (vc-vb).normalized(lisp);
+    Vector3	vab = (va-vb).normalized();
+    Vector3	vcb = (vc-vb).normalized();
     double ang = acos(vab.dotProduct(vcb));
     return ang;
 }
@@ -336,15 +319,14 @@ double calculateAngle( const Vector3& va,
 double calculateDihedral( const Vector3& va,
 			const Vector3& vb,
 			const Vector3& vc,
-			const Vector3& vd,
-			  const core::Lisp_sp& lisp )
+                          const Vector3& vd)
 {
     Vector3 vab = (va - vb);
     Vector3 vcb = (vc - vb);
     Vector3 vdc = (vd - vc);
-    Vector3 vacCross = (vab.crossProduct(vcb)).normalized(lisp);
+    Vector3 vacCross = (vab.crossProduct(vcb)).normalized();
     LOG(BF("vacCross = %lf,%lf,%lf") % (vacCross.getX()) % (vacCross.getY()) % (vacCross.getZ() ) );
-    Vector3 vdcCross = (vdc.crossProduct(vcb)).normalized(lisp);
+    Vector3 vdcCross = (vdc.crossProduct(vcb)).normalized();
     LOG(BF("vdcCross = %lf,%lf,%lf") % (vdcCross.getX()) % (vdcCross.getY()) % (vdcCross.getZ() ) );
     Vector3 vCross = vacCross.crossProduct(vdcCross);
     LOG(BF("vCross = %lf,%lf,%lf") % (vCross.getX()) % (vCross.getY()) % (vCross.getZ() ) );
@@ -372,12 +354,12 @@ Vector3	vTarget;
 
 //! Build a vector at distance from vb and angle from v
 Vector3 buildUsingBondAngle( double distance, const Vector3& vb,
-			     double angle, const Vector3& va, const core::Lisp_sp& lisp )
+			     double angle, const Vector3& va)
 {
 Vector3 vd, vdn, vr;
 double	ca, sa;
     vd = va-vb;
-    vdn = vd.normalized(lisp);
+    vdn = vd.normalized();
     ca = cos(angle);
     sa = sin(angle);
     vr = Vector3(vdn.getX()*cos(angle)+vdn.getY()*sin(angle),
@@ -390,11 +372,11 @@ double	ca, sa;
 
 Vector3 buildUsingBondAngleDihedral( double distance, const Vector3& vc,
 					double angle, const Vector3& vb,
-				     double dihedral, const Vector3& va, const core::Lisp_sp& lisp )
+				     double dihedral, const Vector3& va)
 {
     Vector3 bcDir = vb-vc;
     if ( bcDir.length() == 0.0 ) return Vector3(0.0,0.0,0.0);
-    Vector3 bcDirNorm = bcDir.normalized(lisp);
+    Vector3 bcDirNorm = bcDir.normalized();
     Vector3 dPosDist = bcDirNorm.multiplyByScalar(distance);
     //
     // Now find the axis around which to rotate the bond angle

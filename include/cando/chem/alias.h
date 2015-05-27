@@ -39,7 +39,7 @@ namespace chem
 	void	initialize();
 //	void	archiveBase(core::ArchiveP node);
     public:
-	static Alias_sp create(core::Lisp_sp e, core::Symbol_sp monomerAlias, core::Symbol_sp atomAlias )
+	static Alias_sp create(core::Symbol_sp monomerAlias, core::Symbol_sp atomAlias )
 	{
 	    GC_ALLOCATE(Alias_O, a ); // RP_Create<Alias_O>(e);
 	    a->setMonomerAlias(monomerAlias);

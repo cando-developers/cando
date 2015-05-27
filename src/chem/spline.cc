@@ -122,7 +122,7 @@ int	i;
     }
 }
 
-void	Dumb_Spline::describe(core::Lisp_sp lisp)
+void	Dumb_Spline::describe()
 {_G();
     Matrix	m, gm;
     uint	i;

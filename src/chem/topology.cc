@@ -76,9 +76,8 @@ namespace chem
     //
     me->_Plugs.clear();
     core::List_sp curPlug;
-    for ( ; curPlug.notnilp(); curPlug = curPlug->cdr() )
-      {
-	plugType p = curPlug->car<plugOType>();
+    for ( auto curPlug : curPlugs ) {
+      plugType p = oCar(curPlug).as<plugOType>();
 	me->addPlug(p->getName(),p);
       }
 #if 0
@@ -134,12 +133,12 @@ namespace chem
     };
 
 #if 0
-    void __checkExtractFragment(ExtractFragmentBase_sp extractFrag,core::StringSet_sp missingAtomNames, map<string,OverlappingFragments>& overlaps)
+    void __checkExtractFragment(ExtractFragmentBase_sp extractFrag,adapt::StringSet_sp missingAtomNames, map<string,OverlappingFragments>& overlaps)
     {_G();
 
 	Fragment_sp frag = extractFrag->getFragment();
-	core::StringSet_sp atomNames = frag->getAtomNames();
-	for ( core::StringSet_O::iterator ni = atomNames->begin(); ni!=atomNames->end(); ni++ )
+	adapt::StringSet_sp atomNames = frag->getAtomNames();
+	for ( adapt::StringSet_O::iterator ni = atomNames->begin(); ni!=atomNames->end(); ni++ )
 	{
 	    if ( missingAtomNames->contains(*ni) )
 	    {
@@ -165,7 +164,7 @@ namespace chem
     {_G();
 	uint numAtoms;
 	map<string,OverlappingFragments>	overlaps;
-	core::StringSet_sp missingAtomNames = residue->atomNamesAsStringSet();
+	adapt::StringSet_sp missingAtomNames = residue->atomNamesAsStringSet();
 
 	__checkExtractFragment(this->_ExtractCoreFragment,missingAtomNames,overlaps);
 	for ( gctools::Vec0<ExtractFragment_sp>::iterator it=this->_ExtractFragments.begin();
@@ -249,13 +248,13 @@ namespace chem
 
     core::List_sp Topology_O::plugsAsCons()
     {_OF();
-	core::Cons_sp first = core::T_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
 	LOG(BF("The number of plugs = %d") % this->_Plugs.size()  );
 	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
 	{
 	    LOG(BF("Adding plug: %s") % i->second->getName());
-	    core::Cons_sp one = core::T_O::create(i->second,_Nil<core::T_O>());
+	    core::Cons_sp one = core::Cons_O::create(i->second,_Nil<core::T_O>());
 	    cur->setCdr(one);
 	    cur = one;
 	}
@@ -266,7 +265,7 @@ namespace chem
 
     core::List_sp Topology_O::plugsWithMatesAsCons()
     {_G();
-	core::Cons_sp first = core::T_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
 	LOG(BF("The number of plugs = %d") % this->_Plugs.size()  );
 	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
@@ -274,7 +273,7 @@ namespace chem
 	    // skip origin plugs
 	    if ( !i->second->isAssignableTo<PlugWithMates_O>() ) continue;
 	    LOG(BF("Adding plug: %s") % i->second->__repr__() );
-	    core::Cons_sp one = core::T_O::create(i->second,_Nil<core::T_O>());
+	    core::Cons_sp one = core::Cons_O::create(i->second,_Nil<core::T_O>());
 	    cur->setCdr(one);
 	    cur = one;
 	}
@@ -284,14 +283,14 @@ namespace chem
 
     core::List_sp Topology_O::outPlugsAsCons()
     {_G();
-	core::Cons_sp first = core::T_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
 	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
 	{
 	    Plug_sp plug = i->second;
 	    if ( !plug->getIsIn() )
 	    {
-		core::Cons_sp one = core::T_O::create(i->second,_Nil<core::T_O>());
+		core::Cons_sp one = core::Cons_O::create(i->second,_Nil<core::T_O>());
 		cur->setCdr(one);
 		cur = one;
 	    }
@@ -333,9 +332,9 @@ namespace chem
     }
 
 
-    bool Topology_O::hasMatchingPlugsWithMates(core::SymbolSet_sp plugSet)
+    bool Topology_O::hasMatchingPlugsWithMates(adapt::SymbolSet_sp plugSet)
     {_G();
-	core::SymbolSet_sp myPlugSet = core::SymbolSet_O::create();
+	adapt::SymbolSet_sp myPlugSet = adapt::SymbolSet_O::create();
 	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
 	{
 	    LOG(BF("Looking at plug[%s]") % i->second->getName()->__repr__() );
@@ -442,7 +441,7 @@ namespace chem
     {_OF();
 	LOG(BF("Looking for plug name[%s] available keys[%s]")
 	    % name->__repr__()
-	    % core::StringSet_O::create_fromKeysOfSymbolMap(this->_Plugs,_lisp)->asString());
+	    % adapt::StringSet_O::create_fromKeysOfSymbolMap(this->_Plugs)->asString());
 	bool res = this->_Plugs.contains(name);
 	LOG(BF("Result = %d") % res );
 	if ( !res ) return _Nil<Plug_O>();
@@ -482,7 +481,7 @@ namespace chem
 
     StereoisomerAtoms_sp Topology_O::lookupOrCreateStereoisomerAtoms(core::Symbol_sp stereoisomerName)
     {_OF();
-	core::SymbolMap<StereoisomerAtoms_O>::iterator it= this->_StereoisomerAtomProperties.find(stereoisomerName);
+	adapt::SymbolMap<StereoisomerAtoms_O>::iterator it= this->_StereoisomerAtomProperties.find(stereoisomerName);
 	StereoisomerAtoms_sp result;
 	if ( it==this->_StereoisomerAtomProperties.end() )
 	{

@@ -26,7 +26,7 @@ THE SOFTWARE.
 /* -^- */
 #ifndef symbolSet_fwd_H
 #define symbolSet_fwd_H
-namespace core {
+namespace adapt {
 FORWARD(SymbolSet);
 }
 #endif

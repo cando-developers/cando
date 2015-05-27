@@ -88,10 +88,10 @@ public: // virtual functions inherited from Object
 //	string	__repr__() const;
 
 private: // instance variables
-	core::SymbolMap<SpecificContext_O>	_KeySets;
+	adapt::SymbolMap<SpecificContext_O>	_KeySets;
 
 public:
-	typedef core::SymbolMap<SpecificContext_O>::iterator	iterator;
+	typedef adapt::SymbolMap<SpecificContext_O>::iterator	iterator;
 
 public:	// Creation class functions
 
@@ -114,7 +114,7 @@ public:
 		 */
 	void remove(SpecificContextSet_sp subSet);
 
-	core::SymbolSet_sp asSymbolSetOfKeys();
+	adapt::SymbolSet_sp asSymbolSetOfKeys();
 
 	SpecificContextSet_O( const SpecificContextSet_O& ss ); //!< Copy constructor
 

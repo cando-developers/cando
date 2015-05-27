@@ -6,7 +6,7 @@
 #include <clasp/core/common.h>
 #include <cando/adapt/adapters.h>
 #include <clasp/core/symbol.h>
-#include <clasp/core/stringList.h>
+#include <cando/adapt/stringList.h>
 #include <clasp/core/environment.h>
 #include <cando/chem/symbolTable.h>
 #include <cando/chem/constitution.h>
@@ -32,7 +32,7 @@ namespace chem {
 #define ARGS_Constitution_O_make "(name comment meta_constitution constitution_atoms stereo_information plugs topologies)"
 #define DECL_Constitution_O_make ""
 #define DOCS_Constitution_O_make "make Constitution"
-    Constitution_sp Constitution_O::make(core::Symbol_sp name, const string& comment, core::Symbol_sp metaConstitution, ConstitutionAtoms_sp constitutionAtoms, StereoInformation_sp stereoInformation, core::List_sp plugs, core::Cons_sp topologies)
+    Constitution_sp Constitution_O::make(core::Symbol_sp name, const string& comment, core::Symbol_sp metaConstitution, ConstitutionAtoms_sp constitutionAtoms, StereoInformation_sp stereoInformation, core::List_sp plugs, core::List_sp topologies)
   {_G();
       GC_ALLOCATE(Constitution_O, me );
       me->_Name = name;
@@ -49,9 +49,8 @@ namespace chem {
 	  IMPLEMENT_MEF(BF("Handle setOwnerOfAllEntries"));
 //	  plugs->setOwnerOfAllEntries(me);
 	  me->_PlugsByName.clear();
-	  for ( ; plugs.notnilp(); plugs = plugs->cdr() )
-	  {
-	      Plug_sp p = plugs->car<Plug_O>();
+          for ( auto cur : plugs ) {
+            Plug_sp p = oCar(cur).as<Plug_O>();
 	      _BLOCK_TRACEF(BF("Adding plug[%s]") % p->getName() );
 	      if ( me->_PlugsByName.count(p->getName())>0 )
 	      {
@@ -59,16 +58,15 @@ namespace chem {
 	      }
 	      core::Symbol_sp key = p->getName();
 	      ASSERTF(!key->isKeywordSymbol(),BF("Don't use keyword symbols for plug names"));
-	      me->_PlugsByName.set(p->getName(),p);
+	      me->_PlugsByName.set(key,p);
 	  }
       }
       {_BLOCK_TRACE("Adding topologies to Constitution");
 	  IMPLEMENT_MEF(BF("Handle setOwnerOfAllEntries"));
 //	  topologies->setOwnerOfAllEntries(me);
 	  me->_Topologies.clear();
-	  for ( ; topologies.notnilp(); topologies = topologies->cdr() )
-	  {
-	      Topology_sp t = topologies->car<Topology_O>();
+          for ( auto cur : topologies ) {
+            Topology_sp t = oCar(cur).as<Topology_O>();
 	      _BLOCK_TRACEF(BF("Adding topology[%s]@%p") % t->getName() % (void*)(t.get()) );
 	      if ( me->_Topologies.count(t->getName())>0 )
 	      {
@@ -255,16 +253,16 @@ RepresentativeList_sp	Constitution_O::expandedRepresentativeList() const
     };
 
 
-core::StringList_sp Constitution_O::getMonomerNamesAsStringList()
+adapt::StringList_sp Constitution_O::getMonomerNamesAsStringList()
 {
 	return this->_StereoInformation->getMonomerNamesAsStringList();
 };
-core::SymbolSet_sp	Constitution_O::getMonomerNamesAsSymbolSet()
+adapt::SymbolSet_sp	Constitution_O::getMonomerNamesAsSymbolSet()
 {
     return this->_StereoInformation->getMonomerNamesAsSymbolSet();
 };
 
-core::StringList_sp Constitution_O::getPdbNamesAsStringList() {
+adapt::StringList_sp Constitution_O::getPdbNamesAsStringList() {
 	return this->_StereoInformation->getPdbNamesAsStringList();
 };
 
@@ -382,16 +380,15 @@ string	Constitution_O::description() const
 stringstream	ss;
     ss << this->className() << "[";
     ss << "Name(";
-    if ( this->_Name.not_pointerp() ) ss << "--UNDEFINED--";
-    else ss << this->_Name->__repr__();
+    ss << _rep_(this->_Name);
     ss <<") ";
     ss << "]";
     return ss.str();
 }
 
-core::SymbolSet_sp Constitution_O::getPlugNames()
+adapt::SymbolSet_sp Constitution_O::getPlugNames()
 {_G();
-    core::SymbolSet_sp ss = core::SymbolSet_O::create();
+    adapt::SymbolSet_sp ss = adapt::SymbolSet_O::create();
     PlugMap::iterator pi;
     for ( pi=this->_PlugsByName.begin(); pi!=this->_PlugsByName.end(); pi++ )
     {

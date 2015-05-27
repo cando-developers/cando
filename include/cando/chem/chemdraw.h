@@ -48,7 +48,7 @@ class CDNode_O : public core::T_O
     LISP_CLASS(chem,ChemPkg,CDNode_O,"CDNode");
 private:
 	uint					_Id;
-	string					_Label;
+        string           			_Label;
 	StereochemistryType			_StereochemistryType;
 	ConfigurationEnum			_Configuration;
 private:	// generated
@@ -61,18 +61,18 @@ private:	// generated
 public:
 	void	initialize();
 private:
-	string	_extractLabel(geom::QDomNode_sp node);
+	string	_extractLabel(adapt::QDomNode_sp node);
 	void	unidirectionalBondTo(CDNode_sp neighbor, CDBondOrder order);
 public:
 	uint	getId() const { return this->_Id;};
 	void    setId(uint i) { this->_Id = i; };
-	string getLabel() const { return this->_Label;};
+        string getLabel() const { return this->_Label;};
 	/*! Parse the label into a name and ionization component "name/[+-] */
 	void getParsedLabel(string& name, int& ionization) const;
 	void setLabel(const string& l) { this->_Label = l;};
 	Atom_sp	getAtom() const { return this->_Atom;};
 	void setAtom(Atom_sp a) { this->_Atom = a;};
-	void	parseFromXml(geom::QDomNode_sp xml);
+	void	parseFromXml(adapt::QDomNode_sp xml);
 
 	void	bondTo( CDNode_sp neighbor, CDBondOrder order);
 
@@ -109,7 +109,7 @@ public:
 	void	setEndNode(CDNode_sp n) { this->_EndNode = n;};
 	CDNode_sp getEndNode() {_OF(); ANN(this->_EndNode);return this->_EndNode;};
 
-	void	parseFromXml(geom::QDomNode_sp xml);
+	void	parseFromXml(adapt::QDomNode_sp xml);
 
 	CDBond_O( const CDBond_O& ss ); //!< Copy constructor
 
@@ -151,7 +151,7 @@ public:
     Atom_sp createOneAtom(CDNode_sp n);
     void	createAtoms();
     void	createImplicitHydrogen(CDNode_sp from, const string& name);
-    void	parseFromXml(geom::QDomNode_sp xml);
+    void	parseFromXml(adapt::QDomNode_sp xml);
     /*! Return false if the fragment couldn't be interpreted */
     bool	interpret();
 
@@ -199,7 +199,7 @@ public:
 	void	initialize();
 public:
 
-	void	parseFromXml(geom::QDomNode_sp xml, core::Lisp_sp);
+	void	parseFromXml(adapt::QDomNode_sp xml);
 
 	bool	hasProperties();
 	core::HashTableEq_sp getProperties() { return this->_Properties; };
@@ -227,7 +227,7 @@ class ChemDraw_O : public core::T_O
 	static void lisp_initGlobals(core::Lisp_sp lisp);
 public:
     typedef	gctools::Vec0<CDFragment_sp>	Fragments;
-	typedef core::SymbolMap<CDFragment_O>	NamedFragments;
+	typedef adapt::SymbolMap<CDFragment_O>	NamedFragments;
 private:
 	Fragments	_AllFragments;
 	NamedFragments	_NamedFragments;
@@ -239,19 +239,29 @@ private:
 public:
     static ChemDraw_sp open(const string& fileName);
 private:
-	string	_getAtomName(geom::QDomNode_sp node);
+	string	_getAtomName(adapt::QDomNode_sp node);
 public:
 	void	parseFromFileName(const string& fileName);
 
 	/*! Set the properties for the named fragment.
 	  @param fragmentName The name of the fragment whose properties are being set
 	  @param properties is a property list (keyword symbol/object pairs) */
-	void setFragmentProperties( core::Symbol_sp fragment, core::List_sp properties);
+        void setFragmentProperties(core::Symbol_sp name
+                                       , core::T_sp comment
+                                       , core::T_sp chiral_centers
+                                       , core::T_sp group
+                                       , core::T_sp name_template
+                                       , core::T_sp pdb_template
+                                       , core::T_sp restraints
+                                       , core::T_sp residue_charge
+                                       , core::T_sp restrained_pi_bonds
+                                       , core::T_sp caps);
+
 
 
 	core::List_sp getFragments();
 	core::List_sp allFragmentsAsCons() { return this->getFragments();};
-	core::List_sp getSubSetOfFragments(core::SymbolSet_sp subsetNames );
+	core::List_sp getSubSetOfFragments(adapt::SymbolSet_sp subsetNames );
 
 
     /*! Return the entire ChemDraw file as an Aggregate and each structure

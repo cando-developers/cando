@@ -569,13 +569,13 @@ void	CoordinateSystem_O::defineForAtoms( Atom_sp aorigin, Atom_sp ax, Atom_sp ax
     Vector3	vo, vx, vxy, vz, vy;
     vo = aorigin->getPosition();
     LOG(BF("vo=%lf,%lf,%lf") % vo.getX() % vo.getY() % vo.getZ() );
-    vx = (ax->getPosition() - vo).normalized(_lisp);
+    vx = (ax->getPosition() - vo).normalized();
     LOG(BF("vx=%lf,%lf,%lf") % vx.getX() % vx.getY() % vx.getZ() );
-    vxy = (axy->getPosition() - vo).normalized(_lisp);
+    vxy = (axy->getPosition() - vo).normalized();
     LOG(BF("vxy=%lf,%lf,%lf") % vxy.getX() % vxy.getY() % vxy.getZ() );
-    vz = (vx.crossProduct(vxy)).normalized(_lisp);
+    vz = (vx.crossProduct(vxy)).normalized();
     LOG(BF("vz=%lf,%lf,%lf") % vz.getX() % vz.getY() % vz.getZ() );
-    vy = (vz.crossProduct(vx)).normalized(_lisp);
+    vy = (vz.crossProduct(vx)).normalized();
     LOG(BF("vy=%lf,%lf,%lf") % vy.getX() % vy.getY() % vy.getZ() );
     this->origin = vo;
     this->x = vx;
@@ -597,15 +597,15 @@ void	CoordinateSystem_O::defineForAtomVectors( const Vector3& vo,
 						  const Vector3& vaxy )
 {_G();
     Vector3	vx, vxy, vz, vy;
-vx = (vax.sub(vo)).normalized(_lisp);
-vxy = (vaxy.sub(vo)).normalized(_lisp);
+vx = (vax.sub(vo)).normalized();
+vxy = (vaxy.sub(vo)).normalized();
     LOG(BF("vo=%lf,%lf,%lf") % vo.getX() % vo.getY() % vo.getZ() );
     LOG(BF("vx=%lf,%lf,%lf") % vx.getX() % vx.getY() % vx.getZ() );
     LOG(BF("vxy=%lf,%lf,%lf") % vxy.getX() % vxy.getY() % vxy.getZ() );
 
-    vz = (vx.crossProduct(vxy)).normalized(_lisp);
+    vz = (vx.crossProduct(vxy)).normalized();
     LOG(BF("vz=%lf,%lf,%lf") % vz.getX() % vz.getY() % vz.getZ() );
-    vy = (vz.crossProduct(vx)).normalized(_lisp);
+    vy = (vz.crossProduct(vx)).normalized();
     LOG(BF("vy=%lf,%lf,%lf") % vy.getX() % vy.getY() % vy.getZ() );
     this->origin = vo;
     this->x = vx;
@@ -625,24 +625,24 @@ void	CoordinateSystem_O::defineForTwoAtomVectors( const Vector3& vo,
 						     const Vector3& vax )
 {_G();
     Vector3	vx, vz, vy;
-vx = (vax.sub(vo)).normalized(_lisp);
+vx = (vax.sub(vo)).normalized();
     LOG(BF("vo=%lf,%lf,%lf") % vo.getX() % vo.getY() % vo.getZ() );
     LOG(BF("vx=%lf,%lf,%lf") % vx.getX() % vx.getY() % vx.getZ() );
     Vector3 vOffset;
     vOffset.set(0.0,0.5,0.0);
-    vy = (vx.add(vOffset)).normalized(_lisp);
+    vy = (vx.add(vOffset)).normalized();
     	// Check if vy is a little offset from vx
     vz = ( vx.crossProduct(vy) );
     if ( vz.dotProduct(vz) < 0.0001 )
     {
 	vOffset.set(0.5,0.0,0.0);
-	vy = (vx.add(vOffset)).normalized(_lisp);
-	vz = ( vx.crossProduct(vy) ).normalized(_lisp);
+	vy = (vx.add(vOffset)).normalized();
+	vz = ( vx.crossProduct(vy) ).normalized();
     } else
     {
-	vz = vz.normalized(_lisp);
+	vz = vz.normalized();
     }
-    vy = (vz.crossProduct(vx)).normalized(_lisp);
+    vy = (vz.crossProduct(vx)).normalized();
     LOG(BF("vy=%lf,%lf,%lf") % vy.getX() % vy.getY() % vy.getZ() );
     LOG(BF("vz=%lf,%lf,%lf") % vz.getX() % vz.getY() % vz.getZ() );
     this->origin = vo;
@@ -684,10 +684,10 @@ void	CoordinateSystem_O::defineForVectorsOriginXDirYDir(
 {
     Vector3	vzt;
     this->origin = orig;
-    this->x = xDir.normalized(_lisp);
-    this->y = yDir.normalized(_lisp);
+    this->x = xDir.normalized();
+    this->y = yDir.normalized();
     vzt = (this->x).crossProduct(this->y);
-    this->z = vzt.normalized(_lisp);
+    this->z = vzt.normalized();
 }
 
 
@@ -705,12 +705,12 @@ void	CoordinateSystem_O::defineForVectorsOriginXDirXYPlane(
 {
     Vector3	vzt,vxy,vyt;
     this->origin = orig;
-    this->x = xDir.normalized(_lisp);
-    vxy = xyPlane.normalized(_lisp);
+    this->x = xDir.normalized();
+    vxy = xyPlane.normalized();
     vzt = (this->x).crossProduct(vxy);
-    this->z = vzt.normalized(_lisp);
+    this->z = vzt.normalized();
     vyt = (this->z).crossProduct(this->x);
-    this->y = vyt.normalized(_lisp);
+    this->y = vyt.normalized();
 }
 
 //
@@ -727,12 +727,12 @@ void	CoordinateSystem_O::defineForVectorsOriginZDirXZPlane(
 {
     Vector3		vyt,vxz,vxt;
     this->origin = orig;
-    this->z = zDir.normalized(_lisp);
-    vxz = xzPlane.normalized(_lisp);
+    this->z = zDir.normalized();
+    vxz = xzPlane.normalized();
     vyt = (this->z).crossProduct(vxz);
-    this->y = vyt.normalized(_lisp);
+    this->y = vyt.normalized();
     vxt = (this->y).crossProduct(this->z);
-    this->x = vxt.normalized(_lisp);
+    this->x = vxt.normalized();
 }
 
 
@@ -752,10 +752,10 @@ void	CoordinateSystem_O::defineForVectorsOriginXDirZDir(
 {
     Vector3	vyt;
     this->origin = orig;
-    this->x = xDir.normalized(_lisp);
-    this->z = zDir.normalized(_lisp);
+    this->x = xDir.normalized();
+    this->z = zDir.normalized();
     vyt = (this->z).crossProduct(this->x);
-    this->y = vyt.normalized(_lisp);
+    this->y = vyt.normalized();
 }
 
 
@@ -774,7 +774,7 @@ z = core::randomNumber01()*RANGE - (RANGE/2.0);
 	this->x.set(x,y,z);
 	if ( this->x.length() > 0.00001 ) break;
     }
-    this->x = this->x.normalized(_lisp);
+    this->x = this->x.normalized();
     while (1) {
 	x = core::randomNumber01()*2.0-1.0;
 	y = core::randomNumber01()*2.0-1.0;
@@ -783,7 +783,7 @@ z = core::randomNumber01()*RANGE - (RANGE/2.0);
 	if ( this->y.length() > 0.00001 ) break;
     }
     this->z = this->x.crossProduct(this->y);
-    this->z = this->z.normalized(_lisp);
+    this->z = this->z.normalized();
     this->y = this->z.crossProduct(this->x);
 }
 
@@ -870,11 +870,11 @@ void	CoordinateSystem_O::transformWithMatrixPointer( Matrix* m )
 //
 //	Render the coordinate system in XML format
 //
-geom::QDomNode_sp	CoordinateSystem_O::renderXml( double width,
+adapt::QDomNode_sp	CoordinateSystem_O::renderXml( double width,
 							double axisLength)
 {
 IMPLEMENT_ME();
-geom::QDomNode_sp	graalphacs, line;
+adapt::QDomNode_sp	graalphacs, line;
 #if 0 //[
 
     graalphacs = xmlBlock();

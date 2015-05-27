@@ -206,7 +206,7 @@ public:
 	void	validateForce(NVector_sp pos, NVector_sp force);
 
 	void	debugBeginIteration(int i);
-//	void	debugAdd(geom::QDomNode_sp	node);
+//	void	debugAdd(adapt::QDomNode_sp	node);
 	void	debugAccumulateMessage( const char* str );
 	void	debugEndIteration();
 
@@ -287,7 +287,7 @@ public:
 	void	minimize();
 	void	evaluateEnergyAndForceManyTimes(int times);
 
-	geom::QDomNode_sp	asXml();
+	adapt::QDomNode_sp	asXml();
 
 	DEFAULT_CTOR_DTOR(Minimizer_O);
     };

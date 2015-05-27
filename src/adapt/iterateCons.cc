@@ -1,7 +1,7 @@
 #define	DEBUG_LEVEL_FULL
 
 #include <clasp/core/common.h>
-#include <cando/geom/iterateCons.h>
+#include <cando/adapt/iterateCons.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
 #include <clasp/core/lisp.h>
@@ -9,7 +9,7 @@
 #include <clasp/core/wrappers.h>
 
 
-namespace geom {
+namespace adapt {
 
 
 
@@ -27,7 +27,7 @@ void IterateCons_O::first()
 };
 void IterateCons_O::next() 
 {
-    this->_Cur = this->_Cur->cdr();
+  this->_Cur = oCdr(this->_Cur);
 };
 bool IterateCons_O::isDone() 
 {_OF();
@@ -57,7 +57,7 @@ bool IterateCons_O::isDone()
 #endif //]
 }
 
-    EXPOSE_CLASS(geom,IterateCons_O);
+    EXPOSE_CLASS(adapt,IterateCons_O);
 };
 
 

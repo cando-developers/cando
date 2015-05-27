@@ -21,8 +21,7 @@ namespace geom
 
 
 double	calculateDistance( const Vector2& va,
-			   const Vector2& vb,
-			   const core::Lisp_sp& lisp)
+			   const Vector2& vb)
 {
     Vector2 vc = va - vb;
     return vc.length();
@@ -40,11 +39,10 @@ double	calculateDistanceSquared( const Vector2& va,
  */
 double calculateAngle( const Vector2& va,
 			const Vector2& vb,
-		       const Vector2& vc,
-		       const core::Lisp_sp& lisp)
+		       const Vector2& vc)
 {
-    Vector2	vab = (va-vb).normalized(lisp);
-    Vector2	vcb = (vc-vb).normalized(lisp);
+    Vector2	vab = (va-vb).normalized();
+    Vector2	vcb = (vc-vb).normalized();
     double ang = acos(vab.dotProduct(vcb));
     return ang;
 }
@@ -109,7 +107,7 @@ bool Vector2::isDefined()
 
 
 
-    Vector2 Vector2::normalized(core::Lisp_sp lisp) const
+    Vector2 Vector2::normalized() const
 {_G();
 double	l;
 Vector2	v;

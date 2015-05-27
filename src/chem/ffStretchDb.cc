@@ -30,27 +30,27 @@ namespace chem
 
 
 
-
-geom::QDomNode_sp	EstimateStretch::asXml(core::Lisp_sp env)
+#ifdef XML_ARCHIVE
+adapt::QDomNode_sp	EstimateStretch::asXml()
 {
-    geom::QDomNode_sp	node;
-    node = geom::QDomNode_O::create(env,"EstimateStretch");
-    node->addAttributeString("ti",this->_ti);
-    node->addAttributeString("tj",this->_tj);
+    adapt::QDomNode_sp	node;
+    node = adapt::QDomNode_O::create("EstimateStretch");
+    node->addAttributeSymbol("ti",this->_ti);
+    node->addAttributeSymbol("tj",this->_tj);
     node->addAttributeDoubleScientific("rij",this->_rij);
     node->addAttributeDoubleScientific("lnKij",this->_lnKij);
     return node;
 }
 
 
-void	EstimateStretch::parseFromXml(geom::QDomNode_sp node)
+void	EstimateStretch::parseFromXml(adapt::QDomNode_sp node)
 {
     this->_ti = node->getAttributeString("ti");
     this->_tj = node->getAttributeString("tj");
     this->_rij = node->getAttributeDouble("rij");
     this->_lnKij = node->getAttributeDouble("lnKij");
 }
-
+#endif
 
 
 
@@ -86,7 +86,7 @@ void	FFStretchDb_O::initialize()
     core::Symbol_sp stretchKey(core::Symbol_sp t1
                                , core::Symbol_sp t2 )
     {
-        return chem_intern(t1->symbolName()->get()+"-"
+        return chemkw_intern(t1->symbolName()->get()+"-"
                            + t2->symbolName()->get());
     }
 
@@ -105,7 +105,7 @@ void    FFStretchDb_O::add(FFStretch_sp term)
 FFStretch_sp	FFStretchDb_O::findTerm(chem::Atom_sp a1, chem::Atom_sp a2)
 {_G();
 FFStretch_sp			match;
-string                          key;
+ core::Symbol_sp                          key;
 core::Symbol_sp				t1, t2;
 
     t1 = a1->getType();
@@ -164,29 +164,30 @@ void	FFStretchDb_O::clearEstimateStretch()
 
 void	FFStretchDb_O::_addEstimateStretch(const EstimateStretch& esi)
 {
-string		tt;
+  core::Symbol_sp		tt;
 EstimateStretch	es;
     es = esi;
-    if ( es._ti>es._tj ) {
-	tt = es._ti;
+    if ( core::SymbolComparer::order(es._ti,es._tj) == 1 ) {
+      es._ti.swap(es._tj);
+#if 0
+      tt = es._ti;
 	es._ti = es._tj;
 	es._tj = tt;
+#endif
     }
-    tt = es._ti+"-"+es._tj;
+    tt = chemkw_intern(es._ti->symbolNameAsString()+"-"+es._tj->symbolNameAsString());
     this->_EstimateStretch[tt] = es;
 }
 
 
 
 
-void	FFStretchDb_O::addEstimateStretch(string ti, string tj, double rij, double lnKij ) {
-string		tt;
+void	FFStretchDb_O::addEstimateStretch(core::Symbol_sp ti, core::Symbol_sp tj, double rij, double lnKij ) {
 EstimateStretch	es;
     es._ti = ti;
     es._tj = tj;
     es._rij = rij;
     es._lnKij = lnKij;
-    tt = ti+"-"+tj;
     this->_addEstimateStretch(es);
 }
 
@@ -200,14 +201,14 @@ EstimateStretch	es;
 	node->attribute( "kb", this->_Kb_kJPerNanometerSquared );
     }
 
-
+#ifdef XML_ARCHIVE
     void	FFStretchDb_O::archiveBase(core::ArchiveP node)
     {
 	this->FFBaseDb_O::archiveBase(node);
 	node->attributeVector0<FFStretch_O>(KW("stretches"),this->_Terms );
 	node->attributeStringMap<FFStretch_O>(KW("map"),this->_Lookup );
     }
-
+#endif
 
 
 
@@ -239,8 +240,8 @@ EstimateStretch	es;
 void FFStretch_O::initialize()
 {
     this->Base::initialize();
-    this->_Type1 = "";
-    this->_Type2 = "";
+    this->_Type1 = _Nil<core::T_O>();
+    this->_Type2 = _Nil<core::T_O>();
     this->_R0_Nanometer = 0.0;
     this->_Kb_kJPerNanometerSquared = 0.0;
 //    this->_K3 = 0.0;

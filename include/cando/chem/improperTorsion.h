@@ -31,7 +31,7 @@ private: // instance variables here
 	Atom_sp	_a3central;
 	Atom_sp	_a4;
 public:
-	static ImproperTorsion_sp create(Atom_sp a1, Atom_sp a2, Atom_sp central, Atom_sp a4,core::Lisp_sp lisp);
+	static ImproperTorsion_sp create(Atom_sp a1, Atom_sp a2, Atom_sp central, Atom_sp a4);
 public: // Functions here
 
 	void setup(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4);

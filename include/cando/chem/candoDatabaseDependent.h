@@ -46,7 +46,7 @@ public:
 
     		/*! Return a list of names that is expanded recursively as much as possible
 		 */
-    virtual core::SymbolSet_sp	expandedNameSet() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
+    virtual adapt::SymbolSet_sp	expandedNameSet() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
     		/*! Return a list of names that is expanded recursively but terminate with
 		 * representative names.
 		 */

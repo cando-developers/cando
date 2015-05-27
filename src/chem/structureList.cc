@@ -17,6 +17,7 @@
 #include <cando/chem/superposeEngine.h>
 //#include "core/xmlSaveArchive.h"
 //#include "core/xmlLoadArchive.h"
+#include <clasp/core/hashTableEq.h>
 #include <cando/geom/color.h>
 #include <clasp/core/wrappers.h>
 
@@ -28,7 +29,7 @@ namespace chem {
     REGISTER_CLASS(chem, Structure_Old_ListEntry_O );
     REGISTER_CLASS(chem, Structure_Old_List_O );
 
-Structure_Old_ListEntry_sp	Structure_Old_ListEntry_O::create(Structure_Old_List_sp s,core::Lisp_sp e)
+Structure_Old_ListEntry_sp	Structure_Old_ListEntry_O::create(Structure_Old_List_sp s)
 {
     IMPLEMENT_ME();
 }
@@ -185,7 +186,6 @@ Structure_Old_ListEntry_sp Structure_Old_List_O::createStructureListEntryIfConfo
     gctools::SmallOrderedSet<Atom_sp>::iterator			lai;
 geom::CoordinateArray_sp			newConf;
 SuperposeEngine_sp				superposer;
-gctools::Vec0<Structure_spld_ListEntry_O>::iterator	ei;
 Matrix					transform;
 uint					i;
 Structure_Old_ListEntry_sp			entry;
@@ -226,14 +226,13 @@ Structure_Old_ListEntry_sp			entry;
 	    superposer = SuperposeEngine_O::create();
 	    superposer->setFixedAllPoints(newConf);
 	    double rms;
-            gctools::Vec0<Structure_spld_ListEntry_O>::iterator	ci;
 	    geom::CoordinateArray_sp				moveable;
 
 		//
 		// Loop through the low-high entry range and compare the structures
 		// If this one is the same as any of those return that we've seen this structure before
 		//
-	    for ( ci=this->_Entries.begin(); ci!=this->_Entries.end(); ci++ )
+	    for ( auto ci=this->_Entries.begin(); ci!=this->_Entries.end(); ci++ )
 	    {
 	        moveable = (*ci)->getSuperposeCoordinates();
 		LOG(BF("Moveable points before superpose:%s") % (moveable->asXmlString().c_str() ) );
@@ -260,7 +259,7 @@ Structure_Old_ListEntry_sp			entry;
     	//
 	// Ok, this is a new structure, so insert it into the list
 	//
-    entry = Structure_Old_ListEntry_O::create(this->sharedThis<Structure_Old_List_O>(),_lisp);
+    entry = Structure_Old_ListEntry_O::create(this->sharedThis<Structure_Old_List_O>());
     entry->setMembers(1);
 		//
 		// Put all of the atom coordinates into a coordinate array
@@ -290,7 +289,7 @@ Structure_Old_ListEntry_sp			entry;
 
 uint Structure_Old_List_O::addEntry(Structure_Old_ListEntry_sp entry)
 {_G();
-    this->_Entries.append(entry);
+    this->_Entries.push_back(entry);
     return 1;
 }
 

@@ -26,7 +26,7 @@ THE SOFTWARE.
 /* -^- */
 #ifndef objectSet_fwd_H
 #define objectSet_fwd_H
-namespace core {
+namespace adapt {
 FORWARD(ObjectSet);
 }
 #endif

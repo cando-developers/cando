@@ -312,7 +312,7 @@ public:
 protected:
 	Matter_sp	_Matter;
 public:
-    static RestraintFixedNonbond_sp create(core::Lisp_sp e,Matter_sp matter);
+    static RestraintFixedNonbond_sp create(Matter_sp matter);
 public:
 	void setMatter(Matter_sp matter) { this->_Matter = matter;};
 	Matter_sp getMatter() { return this->_Matter;};

@@ -7,7 +7,7 @@
 #include <cando/adapt/stringSet.h>
 #include <clasp/core/binder.h>
 #include <cando/chem/chemdraw.h>
-#include <cando/geom/quickDom.h>
+#include <cando/adapt/quickDom.h>
 #include <cando/chem/matter.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/bond.h>
@@ -17,6 +17,7 @@
 #include <clasp/core/environment.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/lispReader.h>
+#include <cando/chem/symbolTable.h>
 #include <cando/chem/spanningLoop.h>
 #include <clasp/core/reader.h>
 #include <cando/chem/cipPrioritizer.h>
@@ -29,20 +30,6 @@ namespace chem
 
     SYMBOL_EXPORT_SC_(ChemPkg,name);
 
-    /*! Empty string terminated list of valid keyword symbols
-     * that can be embedded in ChemDraw text blocks to describe fragments
-     */
-    const char* validChemdrawKeywords[] = {
-	":name",
-	":comment",
-	":chiralCenters",
-	":group",
-	":nameTemplate",
-	":pdbTemplate",
-	":restraints",
-	":residueCharge",
-	":restrainedPiBonds",
-	":caps","" };
 
 
     void	CDNode_O::initialize()
@@ -51,15 +38,15 @@ namespace chem
 	this->_Atom = _Nil<Atom_O>();
     }
 
-    string	CDNode_O::_extractLabel(geom::QDomNode_sp node)
+    string	CDNode_O::_extractLabel(adapt::QDomNode_sp node)
     {
 	string name;
 	if ( node->hasChildrenWithName("t") )
 	{
-	    geom::QDomNode_sp text = node->childWithName("t");
+	    adapt::QDomNode_sp text = node->childWithName("t");
 	    if ( text->hasChildrenWithName("s") )
 	    {
-		geom::QDomNode_sp xmls = text->childWithName("s");
+		adapt::QDomNode_sp xmls = text->childWithName("s");
 		string name = xmls->getData();
 		return name;
 	    }
@@ -69,23 +56,23 @@ namespace chem
 
 
     void CDNode_O::getParsedLabel(string& name, int& ionization) const
-    {_OF();
-	vector<string> parts = core::split(this->getLabel(),"/");
-	name = parts[0];
-	ionization = 0;
-        string ionstr = "";
-	if ( parts.size() == 2 )
-	{
-	    ionstr = parts[1];
-	    for ( size_t i=0; i<ionstr.size(); i++ )
-	    {
-		if ( ionstr[i] == '+' ) ionization++;
-		if ( ionstr[i] == '-' ) ionization--;
-	    }
-	}
-	LOG(BF("parsed[%s] into name[%s] ionization[%d]") % this->getLabel() % name % ionization );
+    {
+      vector<string> parts = core::split(this->getLabel(),"/");
+      name = parts[0];
+      ionization = 0;
+      string ionstr = "";
+      if ( parts.size() == 2 )
+      {
+        ionstr = parts[1];
+        for ( size_t i=0; i<ionstr.size(); i++ )
+        {
+          if ( ionstr[i] == '+' ) ionization++;
+          if ( ionstr[i] == '-' ) ionization--;
+        }
+      }
+      LOG(BF("parsed[%s] into name[%s] ionization[%d]") % this->getLabel() % name % ionization );
     }
-    void	CDNode_O::parseFromXml(geom::QDomNode_sp xml)
+    void	CDNode_O::parseFromXml(adapt::QDomNode_sp xml)
     {_OF();
 	this->_Id = xml->getAttributeInt("id");
 	this->_Label = this->_extractLabel(xml);
@@ -173,7 +160,7 @@ namespace chem
     }
 
 
-    void	CDBond_O::parseFromXml(geom::QDomNode_sp xml)
+    void	CDBond_O::parseFromXml(adapt::QDomNode_sp xml)
     {
 	this->_IdBegin = xml->getAttributeInt("B");
 	this->_IdEnd = xml->getAttributeInt("E");
@@ -222,13 +209,13 @@ namespace chem
     }
 
 
-    void CDFragment_O::createImplicitHydrogen(CDNode_sp fromNode, const string& name)
+void CDFragment_O::createImplicitHydrogen(CDNode_sp fromNode, const string& name)
     {_G();
 	Atom_sp fromAtom = fromNode->getAtom();
 	LOG(BF("From %s") % fromAtom->description() );
 	Atom_sp a = Atom_O::create();
-	a->setContainedBy(Residue_O::_nil);
-	a->setName(name);
+	a->setContainedBy(_Nil<core::T_O>());
+	a->setName(_lisp->intern(name,ChemKwPkg));
 	a->setElement(element_H);
 	LOG(BF("Created implicit hydrogen (%s)") % name  );
 	fromAtom->bondTo(a,singleBond);
@@ -250,14 +237,14 @@ namespace chem
 
 
 
-    void	CDFragment_O::parseFromXml(geom::QDomNode_sp fragment)
+    void	CDFragment_O::parseFromXml(adapt::QDomNode_sp fragment)
     {_G();
-	geom::QDomNode_O::iterator	it;
+	adapt::QDomNode_O::iterator	it;
 	this->_Nodes.clear();
 	this->_AtomsToNodes.clear();
 	for ( it=fragment->begin_Children(); it!=fragment->end_Children(); it++ )
 	{
-	    geom::QDomNode_sp child = (*it);
+	    adapt::QDomNode_sp child = (*it);
 	    if ( child->getLocalName() == "n" )
 	    {
 		GC_ALLOCATE(CDNode_O, node );
@@ -271,7 +258,7 @@ namespace chem
 	}
 	for ( it=fragment->begin_Children(); it!=fragment->end_Children(); it++ )
 	{
-	    geom::QDomNode_sp child = (*it);
+	    adapt::QDomNode_sp child = (*it);
 	    if ( child->getLocalName() == "b" )
 	    {
 		GC_ALLOCATE(CDBond_O, bond );
@@ -293,9 +280,11 @@ namespace chem
 
 
 
-    void	CDFragment_O::addProperties(core::HashTableEq_sp d)
+    void CDFragment_O::addProperties(core::HashTableEq_sp d)
     {_G();
-	this->_Properties->addAllBindings(d);
+      d->mapHash([this] (core::T_sp key, core::T_sp value) {
+          this->_Properties->setf_gethash(key,value);
+        } );
     }
 
 
@@ -341,10 +330,10 @@ namespace chem
     {_G();
 	if ( this->hasProperty(key) )
 	{
-	    SIMPLE_ERROR(BF("You have already set the property(%s) it has the value(%s) and you are trying to set it with(%s)") % key->__repr__() % this->_Properties->lookup(key)->__repr__() % obj->__repr__()  );
+	    SIMPLE_ERROR(BF("You have already set the property(%s) it has the value(%s) and you are trying to set it with(%s)") % key->__repr__() % this->_Properties->gethash(key)->__repr__() % obj->__repr__()  );
 	}
 	LOG(BF("Setting variable(%s) class(%s) to %s") % key % obj->className() % obj->__repr__() );
-	this->_Properties->extend(key,obj);
+	this->_Properties->setf_gethash(key,obj);
 	return obj;
     }
 
@@ -353,11 +342,9 @@ namespace chem
     string	CDFragment_O::describeProperties()
     {_G();
 	stringstream ss;
-	for ( core::HashTableEq_O::iterator mi=this->_Properties->begin(); mi!=this->_Properties->end(); mi++ )
-	{
-	    ss << mi->first->__repr__() << " classname(" << this->_Properties->indexed_value(mi->second)->className()
-	       << ") value=" << this->_Properties->indexed_value(mi->second)->__repr__() << std::endl;
-	}
+        this->_Properties->mapHash( [&ss] (core::T_sp key, core::T_sp value) {
+	    ss << _rep_(key) << "  value=" << _rep_(value);
+          } );
 	LOG(BF("%s")%ss.str());
 	return ss.str();
     }
@@ -386,7 +373,7 @@ namespace chem
 	LOG(BF("Starting a new fragment, number of bonds = %d") % this->_Bonds.size() );
 	CDBonds::iterator bi;
 	bool foundHashedBond = false;
-	core::StringSet_sp allNames = core::StringSet_O::create();
+	adapt::StringSet_sp allNames = adapt::StringSet_O::create();
 	this->_Properties = core::HashTableEq_O::create_default();
 	{_BLOCK_TRACEF(BF("Processing bonds"));
 	    for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ )
@@ -401,12 +388,11 @@ namespace chem
 		//
 		if ( (*bi)->getOrder() == dativeCDBond )
 		{_BLOCK_TRACE("dative bond");
-		    string beginLabel = (*bi)->getBeginNode()->getLabel();
-		    string endLabel = (*bi)->getEndNode()->getLabel();
-		    string propertyStr = core::trimWhiteSpace(beginLabel);
-		    string valueStr = core::trimWhiteSpace(endLabel);
-		    FIX_ME();
-                    this->_Properties->extend(_lisp->internKeyword(propertyStr),core::Str_O::create(valueStr));
+                  string beginLabel = (*bi)->getBeginNode()->getLabel();
+                  string endLabel = (*bi)->getEndNode()->getLabel();
+                  string propertyStr = core::trimWhiteSpace(beginLabel);
+                  string valueStr = core::trimWhiteSpace(endLabel);
+                  this->_Properties->setf_gethash(_lisp->intern(propertyStr,ChemKwPkg),core::Str_O::create(valueStr));
 		    LOG(BF("Created property(%s)") % propertyStr  );
 		} else if ( (*bi)->getOrder() == hashCDBond )
 		{ _BLOCK_TRACE("hash bond");
@@ -454,7 +440,7 @@ namespace chem
 		    }
 		    FIX_ME();
                     core::Symbol_sp sym = _lisp->intern(objPart.as<core::Str_O>()->get());
-		    this->_Properties->extend(kwPart,sym);
+		    this->_Properties->setf_gethash(kwPart,sym);
 		    this->_RootNode = rootNode;
 		    LOG(BF("Assigned rootNode: %s") % sym->__repr__() );
 		    foundHashedBond = true;
@@ -512,14 +498,14 @@ namespace chem
     Atom_sp CDFragment_O::createOneAtom(CDNode_sp n)
     {_OF();
 	Atom_sp a = Atom_O::create();
-	a->setContainedBy(Residue_O::_nil);
+	a->setContainedBy(_Nil<core::T_O>());
 	n->setAtom(a);
 	string name;
 	int ionization;
 	n->getParsedLabel(name,ionization);
-	a->setName(name);
+	a->setName(_lisp->intern(name,ChemKwPkg));
 	a->setIonization(ionization);
-	a->setElementFromName();
+	a->setElementFromAtomName();
 	a->setStereochemistryType(n->_StereochemistryType);
 	a->setConfiguration(n->_Configuration);
 	LOG(BF("Just set configuration of atom[%s] to config[%s]")
@@ -530,7 +516,6 @@ namespace chem
 
     void CDFragment_O::createAtoms()
     {_G();
-        gctools::SmallMap<int,CDNode_sp>::iterator	ni;
 	// First create atoms that are on the ends
 	// of solid and dashed bonds
 	// 
@@ -566,10 +551,11 @@ namespace chem
 	    stringstream serr;
 	    serr << "Fragment(" << this->getConstitutionName()->__repr__() << ") is missing property: " << s->__repr__() << std::endl;
 	    serr << " available property names are: " << std::endl;
-	    serr << dict->summaryOfContents() << std::endl;
+            dict->mapHash([&serr](core::T_sp key, core::T_sp val) {
+                serr << _rep_(key) << " : " << _rep_(val) << std::endl; } );
 	    SIMPLE_ERROR(BF(serr.str()));
 	}
-	return dict->lookup(s);
+	return dict->gethash(s);
     }
 
     core::T_sp	CDFragment_O::getPropertyOrDefault(core::Symbol_sp s, core::T_sp df)
@@ -577,7 +563,7 @@ namespace chem
 	core::HashTableEq_sp dict = this->getProperties();
 	if ( dict->contains(s) )
 	{
-	    return dict->lookup(s);
+	    return dict->gethash(s);
 	}
 	return df;
     }
@@ -670,7 +656,6 @@ namespace chem
 	// Select the atoms that we want to put into
 	// the residue
 	{_BLOCK_TRACE("Selecting residue atoms");
-	    Residue_sp res = Residue_O::create();
 	    SpanningLoop_sp span = SpanningLoop_O::create();
 	    span->setOnlyFollowRealBonds(constitutionOnly);
 	    ASSERTNOTNULL(this->_RootNode);
@@ -777,46 +762,79 @@ namespace chem
 /*!
  * Text blocks should be list of key: value pairs separated by line feeds
  */
-    void	CDText_O::parseFromXml(geom::QDomNode_sp text, core::Lisp_sp lisp)
-    {_G();
-	geom::QDomNode_sp sub = text->childWithName("s");
-	this->_Text = core::trimWhiteSpace(sub->getData());
-	if ( this->_Text[0] != '(' )
-	{
-	    LOG(BF("Text block is not code") );
-	    return;
-	}
-	core::StringInputStream_sp sin = core::StringInputStream_O::create(this->_Text);
+void	CDText_O::parseFromXml(adapt::QDomNode_sp text)
+    {
+      adapt::QDomNode_sp sub = text->childWithName("s");
+      this->_Text = core::trimWhiteSpace(sub->getData());
+      if ( this->_Text[0] != '(' )
+      {
+        LOG(BF("Text block is not code") );
+        return;
+      }
+      core::StringInputStream_sp sin = core::cl_make_string_input_stream(core::Str_O::create(this->_Text)
+                                                                         ,core::clasp_make_fixnum(0)
+                                                                         ,_Nil<core::T_O>());
 #if 0
-	core::Reader_sp reader = core::Reader_O::create(sin,lisp);
-	core::Cons_sp block = reader->read(true,_Nil<core::T_O>()).as<core::Cons_O>();
+      core::Reader_sp reader = core::Reader_O::create(sin,lisp);
+      core::Cons_sp block = reader->read(true,_Nil<core::T_O>()).as<core::Cons_O>();
 #endif
-	core::List_sp block = read_lisp_object(sin,true,_Nil<core::T_O>(),false);
-	sin->close();
+      core::List_sp block = read_lisp_object(sin,true,_Nil<core::T_O>(),false);
+      core::cl_close(sin);
 
-	LOG(BF("Parsed text block: %s\n") % this->_Text);
-	if ( block.nilp() )
-	{
-	    SIMPLE_ERROR(BF("Error compiling code:\n"+this->_Text));
-	}
-	LOG(BF("About to evaluate CDText: %s") % block->__repr__() );
-	core::T_sp result = core::eval::evaluate(block,_Nil<core::Environment_O>());
-	this->_Properties = core::HashTableEq_O::createFromKeywordCons(result.as<core::Cons_O>(),validChemdrawKeywords,lisp);
+      LOG(BF("Parsed text block: %s\n") % this->_Text);
+      if ( block.nilp() )
+      {
+        SIMPLE_ERROR(BF("Error compiling code:\n"+this->_Text));
+      }
+      LOG(BF("About to evaluate CDText: %s") % block->__repr__() );
+      core::List_sp result = core::eval::evaluate(block,_Nil<core::Environment_O>());
+      this->_Properties = core::HashTableEq_O::create_default();
+      while (result.notnilp()) {
+        core::T_sp key = oCar(result);
+        core::T_sp value = oCadr(result);
+        result = oCddr(result);
+        if ( chem::_sym__PLUS_validChemdrawKeywords_PLUS_->symbolValue().as<core::HashTable_O>()->gethash(key).notnilp() ) {
+          this->_Properties->setf_gethash(key,value);
+        } else SIMPLE_ERROR(BF("Illegal chemdraw keyword: %s value: %s") % _rep_(key) % _rep_(value) );
+      }
     }
 
 
 
     void ChemDraw_O::exposeCando(core::Lisp_sp lisp)
     {
-	core::class_<ChemDraw_O>()
+      core::class_<ChemDraw_O>()
 //	    .def_raw("core:__init__",&ChemDraw_O::__init__,"(self fileName)")
-	    .def("parseFromFileName",&ChemDraw_O::parseFromFileName)
-	    .def("getFragments",&ChemDraw_O::getFragments)
-	    .def("allFragmentsAsCons",&ChemDraw_O::allFragmentsAsCons)
-	    .def("getSubSetOfFragments",&ChemDraw_O::getSubSetOfFragments)
-	    .def("setFragmentProperties",&ChemDraw_O::setFragmentProperties)
-	    .def("asAggregate",&ChemDraw_O::asAggregate)
-	    ;
+        .def("parseFromFileName",&ChemDraw_O::parseFromFileName)
+        .def("getFragments",&ChemDraw_O::getFragments)
+        .def("allFragmentsAsCons",&ChemDraw_O::allFragmentsAsCons)
+        .def("getSubSetOfFragments",&ChemDraw_O::getSubSetOfFragments)
+        .def("setFragmentProperties",&ChemDraw_O::setFragmentProperties)
+        .def("asAggregate",&ChemDraw_O::asAggregate)
+        ;
+      SYMBOL_EXPORT_SC_(KeywordPkg,name);
+      SYMBOL_EXPORT_SC_(KeywordPkg,comment);
+      SYMBOL_EXPORT_SC_(KeywordPkg,chiral_centers);
+      SYMBOL_EXPORT_SC_(KeywordPkg,group);
+      SYMBOL_EXPORT_SC_(KeywordPkg,name_template);
+      SYMBOL_EXPORT_SC_(KeywordPkg,pdb_template);
+      SYMBOL_EXPORT_SC_(KeywordPkg,restraints);
+      SYMBOL_EXPORT_SC_(KeywordPkg,residue_charge);
+      SYMBOL_EXPORT_SC_(KeywordPkg,restrained_pi_bonds);
+      SYMBOL_EXPORT_SC_(KeywordPkg,caps);
+      SYMBOL_EXPORT_SC_(ChemPkg,_PLUS_validChemdrawKeywords_PLUS_);
+      adapt::SymbolSet_sp vck = adapt::SymbolSet_O::create();
+      vck->insert(kw::_sym_name);
+      vck->insert(kw::_sym_comment);
+      vck->insert(kw::_sym_chiral_centers);
+      vck->insert(kw::_sym_group);
+      vck->insert(kw::_sym_name_template);
+      vck->insert(kw::_sym_pdb_template);
+      vck->insert(kw::_sym_restraints);
+      vck->insert(kw::_sym_residue_charge);
+      vck->insert(kw::_sym_restrained_pi_bonds);
+      vck->insert(kw::_sym_caps);
+      chem::_sym__PLUS_validChemdrawKeywords_PLUS_->defparameter(vck);
     }
 
     void ChemDraw_O::exposePython(core::Lisp_sp lisp)
@@ -888,18 +906,41 @@ namespace chem
 #endif
 
 
-    void ChemDraw_O::setFragmentProperties(core::Symbol_sp name, core::List_sp properties)
+
+#define ARGS_core_ "(name &key comment chiral-centers group name-template pdb-template restraints residue-charge restrained-pi-bonds caps)"
+#define DECL_core_ ""
+#define DOCS_core_ ""
+void ChemDraw_O::setFragmentProperties(core::Symbol_sp name
+                                       , core::T_sp comment
+                                       , core::T_sp chiral_centers
+                                       , core::T_sp group
+                                       , core::T_sp name_template
+                                       , core::T_sp pdb_template
+                                       , core::T_sp restraints
+                                       , core::T_sp residue_charge
+                                       , core::T_sp restrained_pi_bonds
+                                       , core::T_sp caps
+                                       )
     {_OF();
 	CDFragment_sp frag = this->_NamedFragments.get(name);
-	core::HashTableEq_sp propertiesAsBinder = core::HashTableEq_O::createFromKeywordCons(properties,validChemdrawKeywords);
-	frag->addProperties(propertiesAsBinder);
+	core::HashTableEq_sp properties = core::HashTableEq_O::create_default();
+        if ( comment.notnilp() ) properties->setf_gethash(kw::_sym_comment, comment );
+        if ( chiral_centers.notnilp() ) properties->setf_gethash(kw::_sym_chiral_centers, chiral_centers );
+        if ( group.notnilp() ) properties->setf_gethash(kw::_sym_group, group );
+        if ( name_template.notnilp() ) properties->setf_gethash(kw::_sym_name_template, name_template );
+        if ( pdb_template.notnilp() ) properties->setf_gethash(kw::_sym_pdb_template, pdb_template );
+        if ( restraints.notnilp() ) properties->setf_gethash(kw::_sym_restraints, restraints );
+        if ( residue_charge.notnilp() ) properties->setf_gethash(kw::_sym_residue_charge, residue_charge );
+        if ( restrained_pi_bonds.notnilp() ) properties->setf_gethash(kw::_sym_restrained_pi_bonds, restrained_pi_bonds );
+        if ( caps.notnilp() ) properties->setf_gethash(kw::_sym_caps, caps );
+        frag->addProperties(properties);
     }
 
 #if 0
     void	ChemDraw_O::setFragmentProperties(core::List_sp props)
     {_G();
 	DEPRECIATED();
-	core::HashTableEq_sp kargs = core::HashTableEq_O::createFromKeywordCons(props,validChemdrawKeywords,_lisp);
+	core::HashTableEq_sp kargs = core::HashTableEq_O::createFromKeywordCons(props,validChemdrawKeywords);
 	if ( !kargs->contains(_kw_name) )
 	{
 	    stringstream ss;
@@ -920,17 +961,17 @@ namespace chem
 
     void	ChemDraw_O::parseFromFileName( const string& fileName )
     {_G();
-	geom::QDomNode_sp xml = geom::QDomNode_O::open(fileName);
+	adapt::QDomNode_sp xml = adapt::QDomNode_O::open(fileName);
 	if ( !xml->hasChildrenWithName("page") )
 	{
 	    SIMPLE_ERROR(BF("Not a cdxml file" ));
 	}
-	geom::QDomNode_sp page = xml->childWithName("page");
-	geom::QDomNode_O::iterator	it;
+	adapt::QDomNode_sp page = xml->childWithName("page");
+	adapt::QDomNode_O::iterator	it;
 	this->_NamedFragments.clear();
 	for ( it=page->begin_Children(); it!=page->end_Children(); it++ )
 	{
-	    geom::QDomNode_sp child= (*it);
+	    adapt::QDomNode_sp child= (*it);
 	    if ( child->getLocalName() == "fragment" )
 	    {_BLOCK_TRACE("Processing fragment node");
 		GC_ALLOCATE(CDFragment_O, fragment );
@@ -944,16 +985,16 @@ namespace chem
 			SIMPLE_ERROR(BF("Every fragment must have a property(name:)"));
 		    }
 		    FIX_ME();
-                    core::Symbol_sp constitutionName = properties->lookup(_lisp->internKeyword("name")).as<core::Symbol_O>();
+                    core::Symbol_sp constitutionName = properties->gethash(_lisp->internKeyword("name")).as<core::Symbol_O>();
 		    fragment->setConstitutionName(constitutionName);
 		    this->_NamedFragments.set(constitutionName,fragment);
-		    this->_AllFragments.append(fragment);
+		    this->_AllFragments.push_back(fragment);
 		}
 	    }
 	}
 	for ( it=page->begin_Children(); it!=page->end_Children(); it++ )
 	{
-	    geom::QDomNode_sp child= (*it);
+	    adapt::QDomNode_sp child= (*it);
 	    if ( child->getLocalName() == "t" )
 	    {_BLOCK_TRACEF(BF("Processing text block"));
 		GC_ALLOCATE(CDText_O, text );
@@ -966,7 +1007,7 @@ namespace chem
 		    {
 			SIMPLE_ERROR(BF("Every properties block must have a property(name:)"));
 		    }
-		    FIX_ME(); core::Symbol_sp constitutionName = properties->lookup(_lisp->internKeyword("name")).as<core::Symbol_O>();
+		    FIX_ME(); core::Symbol_sp constitutionName = properties->gethash(_lisp->internKeyword("name")).as<core::Symbol_O>();
 		    if ( !this->_NamedFragments.contains(constitutionName) )
 		    {
 			SIMPLE_ERROR(BF("Could not find fragment with name("+constitutionName->__repr__()+")"));
@@ -988,7 +1029,7 @@ namespace chem
 	    CDFragment_sp frag = core::oCar(cur).as<CDFragment_O>();
 	    Residue_sp res = frag->getEntireResidue();
             SYMBOL_EXPORT_SC_(name,ChemKwPkg);
-            string name = frag->getProperty(chemkw::_sym_name).as<core::Symbol_O>()->symbolNameAsString();
+            core::Symbol_sp name = frag->getProperty(kw::_sym_name).as<core::Symbol_O>();
 	    res->setName(name);
 	    mol->setName(name);
 	    mol->addMatter(res);
@@ -1009,10 +1050,10 @@ namespace chem
     }
 
 
-    core::List_sp	ChemDraw_O::getSubSetOfFragments(core::SymbolSet_sp namesOfSubSet)
+    core::List_sp	ChemDraw_O::getSubSetOfFragments(adapt::SymbolSet_sp namesOfSubSet)
     {_G();
 	core::List_sp	frags = _Nil<core::T_O>();
-	core::SymbolSet_sp namesChosen = core::SymbolSet_O::create();
+	adapt::SymbolSet_sp namesChosen = adapt::SymbolSet_O::create();
 	NamedFragments::iterator	fi;
 	for ( fi=this->_NamedFragments.begin(); fi!=this->_NamedFragments.end(); fi++ )
 	{
@@ -1025,7 +1066,7 @@ namespace chem
 	}
 	if ( namesChosen->size() != namesOfSubSet->size() )
 	{
-	    core::SymbolSet_sp diff = namesOfSubSet->relativeComplement(namesChosen);
+	    adapt::SymbolSet_sp diff = namesOfSubSet->relativeComplement(namesChosen);
 	    stringstream ss;
 	    ss << "The following names were not found in the ChemDraw object: ";
 	    ss << diff->asString();

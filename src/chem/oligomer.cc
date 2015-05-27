@@ -767,7 +767,7 @@ void Oligomer_O::_fillMonomerAsString(Monomer_sp mon, stringstream& seq)
     } else {
 	seq << " (GroupPart :group '" << mon->getGroupName()->symbolName() <<" :part '" <<mon->getName()->symbolName() << ")";
     }
-    core::SymbolSet_sp aliases = mon->getMonomerAliases();
+    adapt::SymbolSet_sp aliases = mon->getMonomerAliases();
     if ( aliases->size() > 0 )
     {
 	seq << " :aliases '(" << aliases->asString() << " ) ";
@@ -848,25 +848,25 @@ void Oligomer_O::_fillSequenceAsFileNameForChildren(Monomer_sp rootMonomer, stri
 }
 
 
-core::ObjectSet_sp Oligomer_O::getAllAliases()
+adapt::ObjectSet_sp Oligomer_O::getAllAliases()
 {_G();
-    core::ObjectSet_sp aliases = core::ObjectSet_O::create();
+    adapt::ObjectSet_sp aliases = adapt::ObjectSet_O::create();
     Oligomer_O::monomerIterator mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
     {
-	core::ObjectSet_sp oneMonomerAliases = (*mi)->getAllAliases();
+	adapt::ObjectSet_sp oneMonomerAliases = (*mi)->getAllAliases();
 	aliases->addObjects(oneMonomerAliases);
     }
     return aliases;
 }
 
-core::SymbolSet_sp Oligomer_O::allMonomerAliases()
+adapt::SymbolSet_sp Oligomer_O::allMonomerAliases()
 {_G();
-    core::SymbolSet_sp aliases = core::SymbolSet_O::create();
+    adapt::SymbolSet_sp aliases = adapt::SymbolSet_O::create();
     Oligomer_O::monomerIterator mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
     {
-	core::SymbolSet_sp oneMonomerAliases = (*mi)->getMonomerAliases();
+	adapt::SymbolSet_sp oneMonomerAliases = (*mi)->getMonomerAliases();
 	aliases->insertSymbolSet(oneMonomerAliases);
     }
     return aliases;
@@ -923,7 +923,7 @@ void	Oligomer_O::_assembleFromParts(core::List_sp parts, CandoDatabase_sp bdb)
 	monomerMap->setf_gethash(mon->getId(), mon);
 	if ( oligPart.isA<OligomerPart_Link_O>() )
 	{
-	    OligomerPart_Link_sp link = safe_downcast<OligomerPart_Link_O>(oligPart);
+          OligomerPart_Link_sp link = gc::As<OligomerPart_Link_sp>(oligPart);
 	    core::Symbol_sp	mon1Id = link->_Monomer1Id;
 	    core::Symbol_sp	mon2Id = link->_Monomer2->_MonomerId;
 	    if ( !monomerMap->contains(mon1Id) ) SIMPLE_ERROR(BF("Unknown monomer id: %s")%mon1Id);

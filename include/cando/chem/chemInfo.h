@@ -55,7 +55,7 @@ namespace chem {
 	void	defineAtomTag(Atom_sp a, core::Symbol_sp tag );
 	bool hasAtomWithTag(core::Symbol_sp tag );
 	chem::Atom_sp getAtomWithTag(core::Symbol_sp tag);
-	chem::Atom_sp getAtomWithTagOrNil(core::Symbol_sp tag);
+        gc::Nilable<chem::Atom_sp> getAtomWithTagOrNil(core::Symbol_sp tag);
 	chem::Atom_sp tag(core::Symbol_sp tag) { return this->getAtomWithTag(tag);};
 	void forgetAtomTag(core::Symbol_sp tag);
 
@@ -85,7 +85,7 @@ namespace chem {
     public:
 	void	archiveBase(core::ArchiveP node);
     private:
-        core::HashTableEqual_sp _AtomWildCards; // core::StringMap<core::StringSet_O>	_AtomWildCards;
+        core::HashTableEqual_sp _AtomWildCards; // core::StringMap<adapt::StringSet_O>	_AtomWildCards;
     public:
         void    addWildName(core::Symbol_sp  wildName);
         void    addWildNameMap(core::Symbol_sp wildName, core::Symbol_sp elementName );
@@ -93,8 +93,8 @@ namespace chem {
         bool    lexWildNameMatches1Char(char wildName);
         bool    recognizesWildName(core::Symbol_sp name);
         bool    recognizesWildNameElement(core::Symbol_sp wildName, core::Symbol_sp element);
-//        geom::QDomNode_sp      asXml(string name=XmlTag_WildElementDict());
-//	void	parseFromXml(geom::QDomNode_sp node);
+//        adapt::QDomNode_sp      asXml(string name=XmlTag_WildElementDict());
+//	void	parseFromXml(adapt::QDomNode_sp node);
 
 	DEFAULT_CTOR_DTOR(WildElementDict_O);
     };
@@ -319,8 +319,8 @@ public:
 public:
 
 
-//virtual	geom::QDomNode_sp	asXml(string name=XmlTag_Logical());
-//virtual	void	parseFromXml(geom::QDomNode_sp node);
+//virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_Logical());
+//virtual	void	parseFromXml(adapt::QDomNode_sp node);
 virtual	ChemInfoType	type() { return logical; };
 virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
 virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
@@ -463,7 +463,7 @@ public:
 
 	BondEnum	bondType() { return this->_Bond; };
 
-// virtual	geom::QDomNode_sp	asXml(string name=XmlTag_BondTest());
+// virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_BondTest());
 virtual	ChemInfoType	type() { return bondTest;};
 virtual	bool	matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
 virtual string asSmarts() const;
@@ -485,7 +485,7 @@ public:
 private:
     core::Symbol_sp                   _Element;
         int                     _Neighbors;
-	AtomOrBondMatchNode_sp	_AtomProperties;
+        gc::Nilable<AtomOrBondMatchNode_sp>	_AtomProperties;
     core::Symbol_sp                   _Tag;
 public:
 	static AntechamberBondTest_sp create( core::Symbol_sp element, int neighbors,
@@ -500,8 +500,8 @@ public:
 	};
 public:
 
-//virtual	geom::QDomNode_sp	asXml(string name=XmlTag_AntechamberBondTest());
-//virtual	void	parseFromXml(geom::QDomNode_sp node );
+//virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_AntechamberBondTest());
+//virtual	void	parseFromXml(adapt::QDomNode_sp node );
 virtual	ChemInfoType	type() { return antechamberBondTest;};
         bool	matchBasic( AntechamberRoot_sp root, chem::Atom_sp atom );
 	virtual	bool	matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
@@ -720,8 +720,8 @@ public:
 public:
 
 
-//virtual	geom::QDomNode_sp	asXml(string name=XmlTag_AntechamberFocusAtomMatch());
-//virtual	void	parseFromXml(geom::QDomNode_sp node);
+//virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_AntechamberFocusAtomMatch());
+//virtual	void	parseFromXml(adapt::QDomNode_sp node);
 virtual	bool	matches( Root_sp root, chem::Atom_sp atom );
 virtual ChemInfoType    type() { return antechamberFocusAtomMatch; };
 
@@ -815,8 +815,8 @@ public:
 
 virtual	ChemInfoType	type() { return branch; };
 virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::BondList_sp neighbors );  /* CHECK CODE TO SEE IF IT HANDLES RIGHT=NULL */
-//virtual	geom::QDomNode_sp	asXml(string name=XmlTag_Branch());
-//virtual	void	parseFromXml(geom::QDomNode_sp node);
+//virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_Branch());
+//virtual	void	parseFromXml(adapt::QDomNode_sp node);
 
 DEFAULT_CTOR_DTOR(Branch_O);
 };
@@ -828,7 +828,7 @@ class	AfterMatchTestNode : ChemInfoNode_O
 private:
 public:
 	AfterMatchTestNode();
-//virtual	geom::QDomNode_sp	asXml(string name) = 0;
+//virtual	adapt::QDomNode_sp	asXml(string name) = 0;
 	virtual	bool  		matches( Root_sp root ) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
 	virtual	~AfterMatchTestNode();
 };
@@ -861,7 +861,7 @@ public:
 		return obj;
 	};
 public:
-// virtual	geom::QDomNode_sp	        asXml(string name=XmlTag_AfterMatchBondTest());
+// virtual	adapt::QDomNode_sp	        asXml(string name=XmlTag_AfterMatchBondTest());
 virtual	ChemInfoType            type() { return afterMatchBondTest; };
 virtual	bool    		matches( Root_sp root );
 
@@ -918,8 +918,8 @@ virtual string asSmarts() const;
 public:
 
 
-//virtual	geom::QDomNode_sp	asXml(string name=XmlTag_Root());
-//virtual	void	parseFromXml(geom::QDomNode_sp node);
+//virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_Root());
+//virtual	void	parseFromXml(adapt::QDomNode_sp node);
 virtual	ChemInfoType	type() { return root; };
 virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
 virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
@@ -1037,8 +1037,8 @@ public:
         WildElementDict_sp getElementWildCardDictionary() {
                                 return this->_WildElementDictionary; };
 
-//virtual	geom::QDomNode_sp	asXml(string name=XmlTag_AntechamberRoot());
-//virtual	void		parseFromXml(geom::QDomNode_sp node);
+//virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_AntechamberRoot());
+//virtual	void		parseFromXml(adapt::QDomNode_sp node);
 virtual	ChemInfoType	type() { return antechamberRoot; };
 virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
 virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );

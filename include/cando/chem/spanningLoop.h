@@ -73,7 +73,7 @@ private:
 	Atom_sp		nextSpanningAtom();
 
 public:
-	static SpanningLoop_sp create(core::Lisp_sp e,Atom_sp t) {
+	static SpanningLoop_sp create(Atom_sp t) {
 	    GC_ALLOCATE(SpanningLoop_O, s );
 	    s->setTop(t);
 	    return s;

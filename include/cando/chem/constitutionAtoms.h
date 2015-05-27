@@ -151,7 +151,7 @@ namespace chem
 	void addConstitutionVirtualAtom(ConstitutionVirtualAtom_sp cva);
 
 	//! Return a StringSet of the ConstitutionAtom names
-	core::SymbolSet_sp atomNamesAsSymbolSet();
+	adapt::SymbolSet_sp atomNamesAsSymbolSet();
 
 
 	/*! Create a Residue that has all the atoms/bonds and all the necessary atom/bond

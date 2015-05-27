@@ -18,6 +18,7 @@
 #include <clasp/core/common.h>
 #include <cando/adapt/symbolSet.fwd.h>
 #include <cando/chem/bond.h>
+#include <cando/chem/candoDatabase.h>
 #include <cando/geom/vector2.h>
 #include <cando/geom/vector3.h>
 #include <cando/adapt/stringSet.fwd.h>
@@ -98,14 +99,14 @@ private:
     gctools::SmallOrderedSet<core::Symbol_sp> 	_Flags;
     bool					_SuppressTrainers;
     Plugs					_Plugs;
-    core::SymbolMap<StereoisomerAtoms_O>       	_StereoisomerAtomProperties;
+    adapt::SymbolMap<StereoisomerAtoms_O>       	_StereoisomerAtomProperties;
     core::HashTableEq_sp			_Properties;
 private:	// Do not archive
     core::T_sp				_TemporaryObject;
 	
 public:
     typedef gctools::Vec0<ExtractFragment_sp>::iterator	iterateExtractFragments;
-//	typedef core::SymbolMap<ExtractScaffold_O>::iterator	iterateExtractScaffolds;
+//	typedef adapt::SymbolMap<ExtractScaffold_O>::iterator	iterateExtractScaffolds;
 protected:
     void setFromMonomer(Monomer_sp mon);
 public:
@@ -162,7 +163,7 @@ public:
     plugType getInPlug();
 
     /*! Return true if this Topology has all of the plugs in (plugSet) */
-    bool	hasMatchingPlugsWithMates(core::SymbolSet_sp plugSet);
+    bool	hasMatchingPlugsWithMates(adapt::SymbolSet_sp plugSet);
 
     bool	matchesMonomerEnvironment( Monomer_sp mon );
     RingClosingPlug_sp provideMissingRingClosingPlug( Monomer_sp mon );

@@ -10,8 +10,6 @@ project geom : requirements
 	;
 
 local sources = 
-      quickDom.cc
-      mySaxInterface.cc
 #	    iterateRange.cc
 	    candoBasePackage.cc
 	    ovector3.cc 

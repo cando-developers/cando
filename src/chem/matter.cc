@@ -975,7 +975,7 @@ namespace chem
 					 || a2->isVirtual()
 					 || a3->isVirtual()
 		     ) ) continue;
-	    Angle_sp entry = Angle_O::create(a1,a2,a3,_lisp);
+	    Angle_sp entry = Angle_O::create(a1,a2,a3);
 	    result = core::Cons_O::create(entry,result);
 	}
 	return result;
@@ -999,7 +999,7 @@ namespace chem
 					     || a2->isVirtual()
 					     || a3->isVirtual()
 					     || a4->isVirtual() ) ) continue;
-		ImproperTorsion_sp entry = ImproperTorsion_O::create(a1,a2,a3,a4,_lisp);
+		ImproperTorsion_sp entry = ImproperTorsion_O::create(a1,a2,a3,a4);
 		result = core::Cons_O::create(entry,result);
 	    }
 	    LOG(BF("There were %d improper torsions iterated over") % count );
@@ -1024,7 +1024,7 @@ namespace chem
 					 || a2->isVirtual()
 					 || a3->isVirtual()
 					 || a4->isVirtual() ) ) continue;
-	    ProperTorsion_sp entry = ProperTorsion_O::create(a1,a2,a3,a4,_lisp);
+	    ProperTorsion_sp entry = ProperTorsion_O::create(a1,a2,a3,a4);
 	    result = core::Cons_O::create(entry,result);
 	}
 	return result;

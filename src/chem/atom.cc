@@ -804,7 +804,6 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 
     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o )
     {_OF();
-	ASSERTP(to.pointerp(),"Atom_O::basicBondTo to atom is undefined");
 	// Check if there is already a bond to this atom and
 	// throw an exception if there is
 	Atom_sp from = this->sharedThis<Atom_O>();

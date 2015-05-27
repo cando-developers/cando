@@ -76,13 +76,13 @@ namespace chem
 	    this->_MoleculeMap[mol][res].resize(natoms);
 	}
 
-	void throwIfInvalidMoleculeId(const AtomId& atomId, core::Lisp_sp lisp) const
+	void throwIfInvalidMoleculeId(const AtomId& atomId) const
 	{_G();
 	    if ( atomId.moleculeId() < (int)this->_MoleculeMap.size() ) return;
 	    SIMPLE_ERROR(BF("moleculeId[%d] is out of range - it must be less than %d") % atomId.moleculeId() % this->_MoleculeMap.size() );
 	}
 
-	void throwIfInvalidResidueId(const AtomId& atomId, core::Lisp_sp lisp) const
+	void throwIfInvalidResidueId(const AtomId& atomId) const
 	{_G();
 	    ASSERT(atomId.moleculeId() < (int)this->_MoleculeMap.size() );
 	    int numResidues = this->_MoleculeMap[atomId.moleculeId()].size();
@@ -90,7 +90,7 @@ namespace chem
 	    SIMPLE_ERROR(BF("residueId[%d] is out of range - it must be less than %d") % atomId.residueId() % numResidues );
 	}
 
-	void throwIfInvalidAtomId(const AtomId& atomId, core::Lisp_sp lisp) const
+	void throwIfInvalidAtomId(const AtomId& atomId) const
 	{_G();
 	    ASSERT(atomId.moleculeId() < (int)this->_MoleculeMap.size() );
 	    ASSERT(atomId.residueId() < (int)this->_MoleculeMap[atomId.moleculeId()].size());

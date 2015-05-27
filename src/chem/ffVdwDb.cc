@@ -25,13 +25,13 @@ namespace chem {
     };
 
 
-
+#ifdef XML_ARCHIVE
     void	FFVdwDb_O::archiveBase(core::ArchiveP node)
     {
 	this->FFBaseDb_O::archiveBase(node);
 	node->attributeVector0(KW("Vdw"),this->_Terms);
     };
-
+#endif
 
 
 };

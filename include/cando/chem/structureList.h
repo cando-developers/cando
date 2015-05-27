@@ -42,7 +42,7 @@ public:
 //    void	archive(core::ArchiveP node);
 	void	initialize();
 public:
-static Structure_Old_ListEntry_sp	create(Structure_Old_List_sp s,core::Lisp_sp e);
+static Structure_Old_ListEntry_sp	create(Structure_Old_List_sp s);
 public:
 	Structure_Old_List_wp		_WeakStructureList;
         geom::CoordinateArray_sp	_AllCoordinates;
@@ -102,7 +102,7 @@ public:
 //	void	archive(core::ArchiveP node);
 protected:
 	Matter_sp				_Matter;
-    gctools::Vec0<Structure_Old_ListEntry_O>		_Entries;
+    gctools::Vec0<Structure_Old_ListEntry_sp>		_Entries;
     gctools::SmallOrderedSet<Atom_sp>			_AllAtoms;
     gctools::SmallOrderedSet<Atom_sp>			_SuperposeAtoms;
 	double					_RmsCutOff;
@@ -115,7 +115,7 @@ public:
 public:
 
     core::HashTableEq_sp	getData() { return this->_Data;};
-    typedef	gctools::Vec0<Structure_Old_ListEntry_O>::iterator	entryIterator;
+    typedef	gctools::Vec0<Structure_Old_ListEntry_sp>::iterator	entryIterator;
 
 	void	saveAs(const string& fn);
 

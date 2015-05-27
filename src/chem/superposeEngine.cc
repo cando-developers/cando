@@ -466,7 +466,7 @@ void	SuperposeEngine_O::setFixedAllPoints( geom::CoordinateArray_sp fc )
     core::IntArray_O::iterator	ia;
     uint		ii;
     this->_FixedCoordinates = fc;
-    this->_FixedIndices = core::IntArray_O::create(fc->size(),_lisp);
+    this->_FixedIndices = core::IntArray_O::create(fc->size());
     ii = 0;
     for ( ii=0; ii<fc->size(); ii++ )
     {
@@ -493,7 +493,7 @@ void	SuperposeEngine_O::setMoveableAllPoints( geom::CoordinateArray_sp mc )
     uint		ii;
     ASSERTF(mc->size()>=3,BF("You must have at least three moveable points and there are only %d") % mc->size() );
     this->_MoveableCoordinates = mc;
-    this->_MoveableIndices = core::IntArray_O::create(mc->size(),_lisp);
+    this->_MoveableIndices = core::IntArray_O::create(mc->size());
     for ( ii=0; ii<mc->size(); ii++ )
     {
         this->_MoveableIndices->put(ii,ii);

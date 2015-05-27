@@ -54,11 +54,11 @@ void EnergyAtom::defineForAtom(ForceField_sp forceField, Atom_sp a1, uint coordi
 
 
 #if 0 //[
-    geom::QDomNode_sp	EnergyAtom::asXmlRelativeToContainer(chem::Matter_sp parent)
+    adapt::QDomNode_sp	EnergyAtom::asXmlRelativeToContainer(chem::Matter_sp parent)
 {
-    geom::QDomNode_sp	node;
+    adapt::QDomNode_sp	node;
     string	path;
-    node = chem::new_geom::QDomNode_sp("EnergyAtom");
+    node = chem::new_adapt::QDomNode_sp("EnergyAtom");
     path = this->_Atom->getIdPath(parent);
     node->addAttributeString("storagePath",path);
     node->addAttributeString("atomName",this->_Atom->getName());
@@ -73,7 +73,7 @@ void EnergyAtom::defineForAtom(ForceField_sp forceField, Atom_sp a1, uint coordi
 }
 
 
-    void	EnergyAtom::parseFromXmlRelativeToContainer(geom::QDomNode_sp xml,
+    void	EnergyAtom::parseFromXmlRelativeToContainer(adapt::QDomNode_sp xml,
 							chem::Matter_sp parent)
 {_G();
 string	path;
@@ -121,7 +121,7 @@ string		EnergyAtom::getResidueAndName()
 	{
 	    SIMPLE_ERROR(BF("Could not find atom[%s] in AtomTable") % a->__repr__() );
 	}
-	return &this->_Atoms[it.as<core::Fixnum_O>()->get()];
+	return &this->_Atoms[core::clasp_to_fixnum(it.as<core::Fixnum_O>())];
     }
 
     int AtomTable_O::addAtomInfo(Atom_sp atom, units::Quantity_sp charge, units::Quantity_sp mass, int typeIndex )
@@ -224,7 +224,7 @@ core::Symbol_sp				str1, str2, str3, str4;
 		this->_AtomTableIndices->setf_gethash(a1,core::clasp_make_fixnum(idx));
 		EnergyAtom ea(forceField,a1,coordinateIndex);
 		{_BLOCK_TRACE("Building spanning tree for atom");
-		    SpanningLoop_sp span = SpanningLoop_O::create(_lisp,a1);
+		    SpanningLoop_sp span = SpanningLoop_O::create(a1);
 		    Atom_sp bonded;
 		    while ( span->advance() )
 		    {

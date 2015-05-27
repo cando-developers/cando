@@ -11,9 +11,9 @@
 #include <cando/adapt/stringSet.h>
 #include <clasp/core/environment.h>
 //#include "core/archiveNode.h"
-#include <clasp/core/stringList.h>
+#include <cando/adapt/stringList.h>
 #include <cando/adapt/adapters.h>
-#include <clasp/core/symbolList.h>
+#include <cando/adapt/symbolList.h>
 //#include "core/archive.h"
 #include <cando/chem/entityNameSet.h>
 #include <cando/chem/candoDatabase.h>
@@ -34,7 +34,7 @@ namespace chem
 
 
 
-    EntityNameSetBase_sp EntityNameSetBase_O::create2(core::Symbol_sp nm, core::Lisp_sp lisp)
+    EntityNameSetBase_sp EntityNameSetBase_O::create2(core::Symbol_sp nm)
     {
 	EntityNameSetBase_sp	rec;
 	rec = EntityNameSetBase_O::create();
@@ -49,11 +49,11 @@ namespace chem
     void	EntityNameSetBase_O::initialize()
     {
 	this->Base::initialize();
-	this->_EntityNames = core::SymbolSet_O::create();
+	this->_EntityNames = adapt::SymbolSet_O::create();
 	this->_Optional = false;
     };
 
-    core::SymbolSet_sp	EntityNameSetBase_O::getUnExpandedNames()
+    adapt::SymbolSet_sp	EntityNameSetBase_O::getUnExpandedNames()
     {
 	return this->_EntityNames;
     }
@@ -68,7 +68,7 @@ namespace chem
       GC_ALLOCATE(EntityNameSetBase_O, me );
     if ( entityNamesCons.notnilp() )
       {
-	  core::SymbolSet_sp entityNames = core::SymbolSet_O::create();
+	  adapt::SymbolSet_sp entityNames = adapt::SymbolSet_O::create();
 	entityNames->insertConsSymbols(entityNamesCons);
 	me->_EntityNames = entityNames;
       }
@@ -82,7 +82,7 @@ namespace chem
 	core::List_sp entityNamesCons = translate::from_object<core::List_V>::convert(environ->lookup(Pkg(),"entityNames"));
 	if ( entityNamesCons.notnilp() )
 	{
-	    core::SymbolSet_sp entityNames = core::SymbolSet_O::create();
+	    adapt::SymbolSet_sp entityNames = adapt::SymbolSet_O::create();
 	    entityNames->insertConsSymbols(entityNamesCons);
 	    this->_EntityNames = entityNames;
 	}
@@ -103,7 +103,7 @@ namespace chem
     EntityNameSetBase_O::EntityNameSetBase_O( const EntityNameSetBase_O& emr ) : Base(emr)
     {
 	this->_Optional = emr._Optional;
-	GC_COPY(core::SymbolSet_O, symset , *emr._EntityNames); // = RP_Copy<core::SymbolSet_O>(emr._EntityNames);
+	GC_COPY(adapt::SymbolSet_O, symset , *emr._EntityNames); // = RP_Copy<adapt::SymbolSet_O>(emr._EntityNames);
 	this->_EntityNames = symset;
     }
 
@@ -111,9 +111,9 @@ namespace chem
 
 
 
-    core::SymbolList_sp EntityNameSetBase_O::getInterestingAtomAliases()
+    adapt::SymbolList_sp EntityNameSetBase_O::getInterestingAtomAliases()
     {
-	return _Nil<core::SymbolList_O>();
+	return _Nil<adapt::SymbolList_O>();
     }
 
 
@@ -133,21 +133,17 @@ namespace chem
 
 
 
-    core::SymbolSet_sp	EntityNameSetBase_O::expandedNameSet()
+    adapt::SymbolSet_sp	EntityNameSetBase_O::expandedNameSet()
     {_G();
-	core::SymbolSet_sp		names;
-	core::SymbolSet_sp		allNames;
-	core::SymbolSet_O::iterator	ni;
+	adapt::SymbolSet_sp		allNames;
 	CandoDatabase_sp	bdb;
-
-	allNames = core::SymbolSet_O::create();
+	allNames = adapt::SymbolSet_O::create();
 	bdb = getCandoDatabase();
-	for ( ni=this->_EntityNames->begin(); ni!=this->_EntityNames->end(); ni++ )
-	{
-	    Entity_sp entity = bdb->getEntity(*ni);
-	    names = entity->expandedNameSet();
+        this->_EntityNames->map([&bdb,&allNames] (core::Symbol_sp key) {
+	    Entity_sp entity = bdb->getEntity(key);
+            adapt::SymbolSet_sp names = entity->expandedNameSet();
 	    allNames->insertSymbolSet(names);
-	}
+          } );
 	return allNames;
     }
 
@@ -155,34 +151,32 @@ namespace chem
 
     void EntityNameSetBase_O::expandToTerminalEntityNames()
     {_OF();
-	core::SymbolSet_sp expandedEntityNames = this->expandedNameSet();
+	adapt::SymbolSet_sp expandedEntityNames = this->expandedNameSet();
 	this->_EntityNames = expandedEntityNames;
     }
 
 
-    void EntityNameSetBase_O::contractEntityNames(core::SymbolSet_sp entityNames)
+    void EntityNameSetBase_O::contractEntityNames(adapt::SymbolSet_sp entityNames)
     {_OF();
-	core::SymbolSet_sp myExpanded = this->expandedNameSet();
+	adapt::SymbolSet_sp myExpanded = this->expandedNameSet();
 	CandoDatabase_sp cdb = getCandoDatabase();
-	for ( core::SymbolSet_O::iterator it=entityNames->begin();
-	      it!=entityNames->end(); it++ )
-	{
-	    core::Symbol_sp otherName = (*it);
+        entityNames->map([&cdb,&myExpanded] (core::Symbol_sp it) {
+	    core::Symbol_sp otherName = (it);
 	    EntityNameSetBase_sp other = cdb->getEntity(otherName).as<EntityNameSetBase_O>();
-	    core::SymbolSet_sp otherExpanded = other->expandedNameSet();
+	    adapt::SymbolSet_sp otherExpanded = other->expandedNameSet();
 	    if ( myExpanded->containsSubset(otherExpanded) )
 	    {
 		myExpanded = myExpanded->relativeComplement(otherExpanded);
 		myExpanded->insert(otherName);
 	    }
-	}
+          } );
 	this->_EntityNames = myExpanded;
     }
 
 
     void EntityNameSetBase_O::mergeEntityNames(Entity_sp other)
     {_OF();
-	core::SymbolSet_sp os = other->expandedNameSet();
+	adapt::SymbolSet_sp os = other->expandedNameSet();
 	this->_EntityNames->insertSymbolSet(os);
     }
 
@@ -190,22 +184,20 @@ namespace chem
 
 
     RepresentativeList_sp	EntityNameSetBase_O::expandedRepresentativeList() const
-    {_OF();
-	RepresentativeList_sp		allRepresentatives;
-	core::SymbolSet_O::iterator	ni;
-	CandoDatabase_sp	bdb;
-	allRepresentatives = RepresentativeList_O::create();
-	bdb = getCandoDatabase();
-	for ( ni=this->_EntityNames->begin(); ni!=this->_EntityNames->end(); ni++ )
-	{
-	    ASSERT(bdb->recognizesEntityName(*ni));
-	    Entity_sp entity = bdb->getEntity(*ni);
-	    RepresentativeList_sp objs = entity->expandedRepresentativeList();
-	    LOG(BF("Expanded representative list for entity[%s] is: %s") % entity->__repr__()
-		% objs->__repr__() );
-	    allRepresentatives->extend(objs);
-	}
-	return allRepresentatives;
+    {
+      RepresentativeList_sp		allRepresentatives;
+      CandoDatabase_sp	bdb;
+      allRepresentatives = RepresentativeList_O::create();
+      bdb = getCandoDatabase();
+      this->_EntityNames->map( [&bdb,&allRepresentatives] (core::Symbol_sp ni) {
+          ASSERT(bdb->recognizesEntityName(ni));
+          Entity_sp entity = bdb->getEntity(ni);
+          RepresentativeList_sp objs = entity->expandedRepresentativeList();
+          LOG(BF("Expanded representative list for entity[%s] is: %s") % entity->__repr__()
+              % objs->__repr__() );
+          allRepresentatives->vectorPushExtend(objs);
+        } );
+      return allRepresentatives;
     }
 
 
@@ -213,9 +205,9 @@ namespace chem
 
 
 #if 0
-    void	EntityNameSetBase_O::_insertStringSet(core::StringSet_sp ss)
+    void	EntityNameSetBase_O::_insertStringSet(adapt::StringSet_sp ss)
     {_G();
-	core::StringSet_O::iterator	si;
+	adapt::StringSet_O::iterator	si;
 	CandoDatabase_sp	bdb;
 	ASSERTNOTNULL(this->_EntityNames);
 	bdb = getCandoDatabase();
@@ -237,7 +229,7 @@ namespace chem
     void	EntityNameSetBase_O::addMonomerName(core::Symbol_sp nm)
     {_G();
 	CandoDatabase_sp	bdb;
-	core::StringSet_sp		monomerNames;
+	adapt::StringSet_sp		monomerNames;
 	ASSERTNOTNULL(this->_EntityNames);
 	if ( this->recognizesMonomerName(nm) ) return;
 	bdb = getCandoDatabase();
@@ -249,7 +241,7 @@ namespace chem
     }
 
 
-    void	EntityNameSetBase_O::setGroupNames(core::SymbolSet_sp s)
+    void	EntityNameSetBase_O::setGroupNames(adapt::SymbolSet_sp s)
     {
 	this->_EntityNames = s;
     }
@@ -275,9 +267,9 @@ namespace chem
     }
 
 #if 0
-    core::StringSet_sp	EntityNameSetBase_O::combineMonomerNames(string coupling, EntityNameSetBase_sp e )
+    adapt::StringSet_sp	EntityNameSetBase_O::combineMonomerNames(string coupling, EntityNameSetBase_sp e )
     {_G();
-	core::SymbolSet_sp	s1, s2, s3;
+	adapt::SymbolSet_sp	s1, s2, s3;
 	string		ins;
 	s1 = this->getMonomerNames();
 	s2 = e->getMonomerNames();
@@ -288,23 +280,22 @@ namespace chem
 #endif
 
 
-    string	EntityNameSetBase_O::getKey()
+core::Symbol_sp EntityNameSetBase_O::getKey()
     {_G();
 	stringstream			ss;
 	set<string>			keys;
 	set<string>::iterator		ki;
-	core::SymbolSet_O::iterator	si;
 	bool 				first;
-	core::SymbolSet_sp		expanded;
+	adapt::SymbolSet_sp		expanded;
 	ss << "[";
 	keys.clear();
 	expanded = this->expandedNameSet();
 	ASSERTF(expanded->size()>0,
 		BF("There must be at least one monomer name in the EntityNameSet"
 		   " %s but it is completely empty")% this->description() );
-	for ( si=expanded->begin(); si!=expanded->end();si++ ) {
-	    keys.insert((*si)->symbolNameAsString());
-	}
+        expanded->map( [&keys] (core::Symbol_sp si) {
+	    keys.insert((si)->symbolNameAsString());
+          } );
 	first=true;
 	for ( ki=keys.begin(); ki!=keys.end(); ki++ ) {
 	    if ( first ) {
@@ -316,22 +307,22 @@ namespace chem
 	    ss << *ki;
 	}
 	ss << "]";
-	return ss.str();
+	return _lisp->intern(ss.str(),ChemKwPkg);
     }
 
 
 
 
-    core::SymbolSet_sp	EntityNameSetBase_O::getMonomerNames()
+    adapt::SymbolSet_sp	EntityNameSetBase_O::getMonomerNames()
     {_G();
-	core::SymbolSet_sp names;
+	adapt::SymbolSet_sp names;
 	names = this->expandedNameSet();
 	return names;
     }
 
     string	EntityNameSetBase_O::getMonomerNamesAsString()
     {_G();
-	core::SymbolSet_sp names;
+	adapt::SymbolSet_sp names;
 	names = this->expandedNameSet();
 	return names->asString();
 // OLD   return this->_MonomerNames->asString();
@@ -339,7 +330,7 @@ namespace chem
 
     core::Symbol_sp EntityNameSetBase_O::getOnlyMonomerName()
     {_G();
-	core::SymbolSet_sp names;
+	adapt::SymbolSet_sp names;
 	names = this->expandedNameSet();
 	if ( names->size() != 1 ) {
 	    SIMPLE_ERROR(BF("There must be only one equivalent name"));
@@ -380,7 +371,7 @@ namespace chem
 */
     bool	EntityNameSetBase_O::recognizesMonomerName(core::Symbol_sp nm)
     {_G();
-	core::SymbolSet_sp		names;
+	adapt::SymbolSet_sp		names;
 	names = this->expandedNameSet();
 	return names->contains(nm);
     }
@@ -397,7 +388,7 @@ namespace chem
 	bdb = getCandoDatabase();
 	ASSERT(bdb->recognizesNameOrPdb(nm));
 	core::Symbol_sp name = bdb->getMonomerNameForNameOrPdb(nm);
-	core::SymbolSet_sp names = this->expandedNameSet();
+	adapt::SymbolSet_sp names = this->expandedNameSet();
 	return names->contains(name);
     }
 
@@ -413,16 +404,16 @@ namespace chem
 #endif
 
 
-    core::StringList_sp	EntityNameSetBase_O::getUnrecognizedMonomerNamesOrdered()
+    adapt::StringList_sp	EntityNameSetBase_O::getUnrecognizedMonomerNamesOrdered()
     {
 	IMPLEMENT_ME();
 #if 0
-	core::StringList_sp	res, allNames;
+	adapt::StringList_sp	res, allNames;
 	CandoDatabase_sp	bdb;
-	core::StringList_O::iterator	sli;
+	adapt::StringList_O::iterator	sli;
 	bdb = getCandoDatabase();
 	allNames = bdb->allMonomerNamesOrdered();
-	res = core::StringList_O::create();
+	res = adapt::StringList_O::create();
 	for(sli=allNames->begin();sli!=allNames->end();sli++ )
 	{
 	    if ( !this->_MonomerNames->contains(*sli) )
@@ -441,16 +432,16 @@ namespace chem
     };
 
 
-    core::StringList_sp	EntityNameSetBase_O::getMonomerNamesOrdered()
+    adapt::StringList_sp	EntityNameSetBase_O::getMonomerNamesOrdered()
     {
 	IMPLEMENT_ME();
 #if 0
-	core::StringList_sp	res, allNames;
+	adapt::StringList_sp	res, allNames;
 	CandoDatabase_sp	bdb;
-	core::StringList_O::iterator	sli;
+	adapt::StringList_O::iterator	sli;
 	bdb = getCandoDatabase();
 	allNames = bdb->allMonomerNamesOrdered();
-	res = core::StringList_O::create();
+	res = adapt::StringList_O::create();
 	for(sli=allNames->begin();sli!=allNames->end();sli++ )
 	{
 	    if ( this->_MonomerNames->contains(*sli) )
@@ -465,7 +456,7 @@ namespace chem
 
 
 
-    EntityNameSet_sp EntityNameSet_O::create2(core::Symbol_sp nm, core::Lisp_sp lisp)
+    EntityNameSet_sp EntityNameSet_O::create2(core::Symbol_sp nm)
     {
 	EntityNameSet_sp rec;
 	rec = EntityNameSet_O::create();
@@ -571,7 +562,7 @@ namespace chem
     void	EntityNameSetWithCap_O::addGroupName(core::Symbol_sp nm)
     {_G();
 	CandoDatabase_sp	bdb;
-	core::StringSet_sp		monomerNames;
+	adapt::StringSet_sp		monomerNames;
 	this->addMonomerName(nm);
     }
 

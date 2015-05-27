@@ -391,7 +391,7 @@ namespace chem {
 	    Residue_sp res = Residue_O::create();
 	    molecule->addMatter(res);
 	    Atom_sp top = *(unassignedAtoms.begin());
-	    SpanningLoop_sp spanner = SpanningLoop_O::create(_lisp,top);
+	    SpanningLoop_sp spanner = SpanningLoop_O::create(top);
 	    while ( spanner->advance() )
 	    {
 		Atom_sp a = spanner->getAtom();
@@ -496,7 +496,6 @@ namespace chem {
 	Matter_sp c;
 	ASSERTP(this->_contents.size()>0,"Aggregate_O::firstMoleculeName contains no molecules");
 	c = this->contentAt(0);
-	ASSERTP(c.pointerp(),"Aggregate_O::firstMoleculeName first content is invalid");
 	LOG(BF("about to downcast mol") );
 	mol = downcast<Molecule_O>(c);
 	LOG(BF("about to return name") );

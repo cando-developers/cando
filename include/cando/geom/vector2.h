@@ -56,7 +56,7 @@ public:
 	};
 	double	dotProduct( Vector2 v );
 	double	length() const;
-    Vector2	normalized(core::Lisp_sp lisp) const;
+    Vector2	normalized() const;
 
 	void	dump();
 //    void	archive( core::ArchiveP node );
@@ -77,12 +77,10 @@ typedef	vector<Vector2>	VectorVector2s;
 
 double	calculateAngle( const Vector2& va,
 			const Vector2& vb,
-			const Vector2& vc,
-			const core::Lisp_sp& lisp );
+			const Vector2& vc);
 
 double	calculateDistance( const Vector2& va,
-			   const Vector2& vb,
-			   const core::Lisp_sp& lisp );
+			   const Vector2& vb);
 
 
 

@@ -128,7 +128,7 @@ namespace geom
   private:
     uint	_Hash;
   public:
-    static CoordinateArrayWithHash_sp create(core::Lisp_sp e,uint sz);
+    static CoordinateArrayWithHash_sp create(uint sz);
   public:
     CoordinateArrayWithHash_O( const CoordinateArrayWithHash_O& orig );
 

@@ -256,7 +256,7 @@ FFNonbond_sp   FFNonbondDb_O::findType(core::Symbol_sp type)
 {
     if ( !this->_Lookup->contains(type) )
     {
-	uint index = this->_Lookup->gethash(type).as<core::Fixnum_O>()->get();
+      uint index = core::clasp_to_fixnum(this->_Lookup->gethash(type).as<core::Fixnum_O>());
         return this->_Terms[index];
     }
     return _Nil<FFNonbond_O>();
@@ -266,8 +266,8 @@ uint FFNonbondDb_O::findTypeIndex(core::Symbol_sp type)
 {
     if ( !this->_Lookup->contains(type) )
     {
-	uint index = this->_Lookup->gethash(type).as<core::Fixnum_O>()->get();
-        return index;
+      uint index = core::clasp_to_fixnum(this->_Lookup->gethash(type).as<core::Fixnum_O>());
+      return index;
     }
     return UndefinedUnsignedInt;
 }
@@ -285,7 +285,7 @@ uint FFNonbondDb_O::findTypeMajorIndex(core::Symbol_sp type)
 {
     if ( !this->_Lookup->contains(type))
     {
-	uint index = this->_Lookup->gethash(type).as<core::Fixnum_O>()->get()*this->_Terms.size();;
+      uint index = core::clasp_to_fixnum(this->_Lookup->gethash(type).as<core::Fixnum_I>())*this->_Terms.size();;
         return index;
     }
     return UndefinedUnsignedInt;
@@ -368,17 +368,17 @@ void FFNonbond_O::initialize()
 
 
 #if 0 //[
-geom::QDomNode_sp	FFNonbond_O::asXml(core::Lisp_sp env)
+adapt::QDomNode_sp	FFNonbond_O::asXml()
 {
-    geom::QDomNode_sp	node;
-    node = geom::QDomNode_O::create(env,"FFNonbond");
+    adapt::QDomNode_sp	node;
+    node = adapt::QDomNode_O::create(env,"FFNonbond");
     node->addAttributeString("type",this->_Type);
     node->addAttributeDoubleScientific("Radius",this->_Radius);
     node->addAttributeDoubleScientific("Well",this->_Well);
     return node;
 }
 
-void	FFNonbond_O::parseFromXml(geom::QDomNode_sp node)
+void	FFNonbond_O::parseFromXml(adapt::QDomNode_sp node)
 {
     this->_Type = node->getAttributeString("type");
     this->_Radius = node->getAttributeDouble("Radius");

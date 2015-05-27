@@ -34,7 +34,7 @@ namespace chem {
 public:
 	void initialize();
 public:
-	static NVector_sp create(uint sz,core::Lisp_sp);
+	static NVector_sp create(uint sz);
 public:
 	uint     	_Size;
 	vector<double>	_Values;
@@ -71,7 +71,7 @@ public:
 		//! Return the angle wrt other
 	double	angleWithVector(NVector_sp other);
 	void		writeMathematica(const string& name);
-//	geom::QDomNode_sp	termDifferencesAsXml(const string& thisName, NVector_sp other, const string& otherName );
+//	adapt::QDomNode_sp	termDifferencesAsXml(const string& thisName, NVector_sp other, const string& otherName );
 	double	maxAbsValue();
 	double	minAbsValue();
 	double	maxValue();

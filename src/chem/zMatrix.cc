@@ -150,7 +150,7 @@ namespace chem
 	atomNew = this->getAtomNew();
 	atomBond = this->getZMatrix()->_getAtomAtIndex(this->_AtomBond);
 	value = calculateDistance(atomNew->getPosition(),
-				  atomBond->getPosition(),_lisp);
+				  atomBond->getPosition());
 	this->setValue(value);
     }
 
@@ -257,7 +257,7 @@ namespace chem
 	atomAngle = this->getZMatrix()->_getAtomAtIndex(this->_AtomAngle);
 	value = calculateAngle(atomNew->getPosition(),
 			       atomBond->getPosition(),
-			       atomAngle->getPosition(), _lisp );
+			       atomAngle->getPosition() );
 	this->setValue(value);
     }
 
@@ -375,8 +375,7 @@ namespace chem
 	value = calculateDihedral(atomNew->getPosition(),
 				  atomBond->getPosition(),
 				  atomAngle->getPosition(),
-				  atomDihedral->getPosition(), _lisp
-	    );
+				  atomDihedral->getPosition());
 	this->setValue(value);
     }
 
@@ -464,7 +463,7 @@ namespace chem
 //
 
 
-    ZMatrixEntry_sp ZMatrixEntry_O::create(Atom_sp atom, ZMatrixInternal_O::atomMap atomIndices, core::Lisp_sp lisp)
+    ZMatrixEntry_sp ZMatrixEntry_O::create(Atom_sp atom, ZMatrixInternal_O::atomMap atomIndices)
     {_G();
 	GC_ALLOCATE(ZMatrixEntry_O,	entry );
 	stringstream name;
@@ -622,7 +621,7 @@ namespace chem
 	    newAtom = span->getAtom();
 	    _BLOCK_TRACEF(BF("ZMatrix entry for: %s") % newAtom->description().c_str() );
 	    atomIndices[newAtom] = this->_ZMatrix.size();
-	    entry = ZMatrixEntry_O::create(newAtom,atomIndices,_lisp);
+	    entry = ZMatrixEntry_O::create(newAtom,atomIndices);
 	    this->_ZMatrix.push_back(entry);
 	    numberOfEntries = this->_ZMatrix.size();
 	    if ( ! newAtom->isBackSpanValid() )
@@ -631,7 +630,7 @@ namespace chem
 	    }
 	    bondToAtom = newAtom->getBackSpan();
 	    LOG(BF("bondToAtom = %s") % bondToAtom->description().c_str() );
-	    bondInternal = ZMatrixBondInternal_O::create(_lisp,newAtom,bondToAtom,atomIndices,this->sharedThis<ZMatrix_O>());
+	    bondInternal = ZMatrixBondInternal_O::create(newAtom,bondToAtom,atomIndices,this->sharedThis<ZMatrix_O>());
 	    this->_Internals.push_back(bondInternal);
 	    entry->_Bond = bondInternal;
 	    if ( !bondToAtom->isBackSpanValid() )
@@ -642,7 +641,7 @@ namespace chem
 	    angleToAtom = bondToAtom->getBackSpan();
 	    LOG(BF("angleToAtom = %s") % angleToAtom->description().c_str() );
 	    angleInternal = ZMatrixAngleInternal_O::create(newAtom,bondToAtom,
-							   angleToAtom,atomIndices,this->sharedThis<ZMatrix_O>(), _lisp);
+							   angleToAtom,atomIndices,this->sharedThis<ZMatrix_O>());
 	    this->_Internals.push_back(angleInternal);
 	    entry->_Angle = angleInternal;
 	    if ( !angleToAtom->isBackSpanValid() )
@@ -663,7 +662,7 @@ namespace chem
 	    }
 	    LOG(BF("dihedralToAtom = %s") % dihedralToAtom->description().c_str() );
 	    dihedralInternal = ZMatrixDihedralInternal_O::create(newAtom,bondToAtom,
-								 angleToAtom,dihedralToAtom,atomIndices,this->sharedThis<ZMatrix_O>(),_lisp);
+								 angleToAtom,dihedralToAtom,atomIndices,this->sharedThis<ZMatrix_O>());
 	    LOG(BF("Appending dihedral") );
 	    this->_Internals.push_back(dihedralInternal);
 	    LOG(BF("Setting entry->_Dihedral") );

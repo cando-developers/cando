@@ -734,21 +734,17 @@ void	mol2WriteAggregateToFileName( Aggregate_sp agg, const string& fname )
 
 void	mol2WriteMatterToFileName(Matter_sp matter, const string& fileName )
 {_G();
-    if ( matter.isA<Aggregate_O>() )
-    {
-        Aggregate_sp agg = safe_downcast<Aggregate_O>(matter);
-        mol2WriteAggregateToFileName(agg,fileName);
-	return;
-    }
-    if ( matter.isA<Molecule_O>() )
-    {
-        Molecule_sp mol= safe_downcast<Molecule_O>(matter);
-	Aggregate_sp agg = Aggregate_O::create();
-	agg->addMolecule(mol);
-        mol2WriteAggregateToFileName(agg,fileName);
-	return;
-    }
-    SIMPLE_ERROR(BF("You must pass a Molecule or Aggregate"));
+  if ( Aggregate_sp agg = matter.asOrNull<Aggregate_O>() ) {
+    mol2WriteAggregateToFileName(agg,fileName);
+    return;
+  }
+  if ( Molecule_sp mol = matter.asOrNull<Molecule_O>() ) {
+    Aggregate_sp agg = Aggregate_O::create();
+    agg->addMolecule(mol);
+    mol2WriteAggregateToFileName(agg,fileName);
+    return;
+  }
+  SIMPLE_ERROR(BF("You must pass a Molecule or Aggregate"));
 }
 
 

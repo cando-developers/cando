@@ -100,7 +100,7 @@ void	Twister_O::_defineForDihedral(Atom_sp a1ref, Atom_sp a1, Atom_sp a2, Atom_s
 	twistMovableRef = a2ref;
     } else
     {
-	if ( a1Atoms->length() < a2Atoms->length() )
+      if ( core::cl_length(a1Atoms) < core::cl_length(a2Atoms) )
 	{
 	    twistAtoms = a1Atoms;
 	    twistFixedRef = a2ref;
@@ -164,7 +164,7 @@ void	Twister_O::rotate(double angle)
     ASSERTNOTNULLP(this->_Movable,"Movable atom is undefined");
     ASSERTP(this->_Atoms.size()>0,"There must be atoms to rotate");
     rotVec = this->_Movable->getPosition()-this->_Fixed->getPosition();
-    rotVec = rotVec.normalized(_lisp);
+    rotVec = rotVec.normalized();
     tv = this->_Movable->getPosition();
     tv = tv.multiplyByScalar(-1.0);
     transform.translate(&tv);
@@ -200,7 +200,7 @@ void	Twister_O::rotateAbsolute(double angle)
     Vector3 v3 = this->_Movable->getPosition();
     Vector3 v4 = this->_MovableRef->getPosition();
 
-    double currentAngle = calculateDihedral(v1,v2,v3,v4,_lisp);
+    double currentAngle = calculateDihedral(v1,v2,v3,v4);
     double delta = angle - currentAngle;
     _lisp->print(BF("current dihedral = %8.3lf  desired dihedral = %8.3lf delta=%8.3lf") % (currentAngle/0.0174533) % (angle/0.0174533) % (delta/0.0174533) );
     this->rotate(delta);
@@ -209,7 +209,7 @@ void	Twister_O::rotateAbsolute(double angle)
     v2 = this->_Fixed->getPosition();
     v3 = this->_Movable->getPosition();
     v4 = this->_MovableRef->getPosition();
-    double resultAngle = calculateDihedral(v1,v2,v3,v4,_lisp);
+    double resultAngle = calculateDihedral(v1,v2,v3,v4);
     _lisp->print(BF("      result dihedral = %8.3lf") % (resultAngle/0.0174533) );
 #endif
 }

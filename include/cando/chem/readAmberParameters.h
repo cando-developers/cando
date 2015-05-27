@@ -37,18 +37,18 @@ private:
 	// instance variables
 public:
 private:
-    FFTypesDb_sp parseTypeRules(const string& fileName);
+        FFTypesDb_sp parseTypeRules(core::T_sp fin);
     FFNonbondDb_sp parseFirstNonbondDb(core::T_sp fin);
     FFStretchDb_sp parseStretchDb(core::T_sp fin);
     FFAngleDb_sp parseAngleDb(core::T_sp fin);
     FFPtorDb_sp parsePtorDb(core::T_sp fin);
     FFItorDb_sp parseItorDb(core::T_sp fin);
     void parseNonbondDb(core::T_sp fin, FFNonbondDb_sp );
-    ForceField_sp parseAmberFormattedForceField(const string& parametersFileName);
+    ForceField_sp parseAmberFormattedForceField(core::T_sp strm);
 public:
 
-    void readTypes(const string& fileName);
-    void readParameters(const string& fileName);
+    void readTypes(core::T_sp fin);
+    void readParameters(core::T_sp fileName);
 
     FFTypesDb_sp getTypeRules() { return this->_Types; };
     ForceField_sp getForceField();

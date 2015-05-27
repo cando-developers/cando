@@ -9,13 +9,14 @@ project adapt : requirements
         <include>./
 	;
 
-local sources = 
+local sources =
+      adaptPackage.cc
       quickDom.cc
       mySaxInterface.cc
       symbolSet.cc
       objectSet.cc
+      iterateCons.cc
 #      objRef.cc
-      smallMap.cc
       stringList.cc
       stringSet.cc
       symbolList.cc

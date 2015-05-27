@@ -55,20 +55,20 @@ public:
 public:
 //    void	archiveBase(core::ArchiveP node);
 public:
-    typedef	core::SymbolSet_sp	EntityNames;
+    typedef	adapt::SymbolSet_sp	EntityNames;
 protected:
     /*!Ring closing plugs have optional neighbors */
     bool		_Optional;
-    core::SymbolSet_sp	_EntityNames;
+    adapt::SymbolSet_sp	_EntityNames;
 protected:
     void _clear();
     void _removeMonomerName(core::Symbol_sp nm);
 public:
-    static EntityNameSetBase_sp	create2(core::Symbol_sp nm, core::Lisp_sp lisp);
+    static EntityNameSetBase_sp	create2(core::Symbol_sp nm);
 public:
 //	virtual void setCandoDatabase(CandoDatabase_sp db);
 
-    virtual core::SymbolSet_sp	expandedNameSet();
+    virtual adapt::SymbolSet_sp	expandedNameSet();
     virtual RepresentativeList_sp expandedRepresentativeList() const;
 
     /*! Expand other and merge its names with mine */
@@ -82,13 +82,13 @@ public:
     void setOptional(bool b) { this->_Optional = b; };
     bool getOptional() { return this->_Optional; };
 
-    void	setGroupNames(core::SymbolSet_sp s);
+    void	setGroupNames(adapt::SymbolSet_sp s);
 
 
     /*! Return all other monomer names that are not recognized by
      * this EntityNameSetBase
      */
-    core::SymbolSet_sp	getUnrecognizedMonomerNames();
+    adapt::SymbolSet_sp	getUnrecognizedMonomerNames();
 
     /*!Set this EntityNameSetBase up containing one monomer and
      * give it the same name as the monomer
@@ -107,13 +107,13 @@ public:
     //! Converts nameOrPdb to monomer name and checks if we recognize it
     bool	recognizesNameOrPdb(core::Symbol_sp nameOrPdb );
 
-    core::SymbolSet_sp	getUnExpandedNames();
+    adapt::SymbolSet_sp	getUnExpandedNames();
 
-    core::SymbolSet_sp	getMonomerNames();
+    adapt::SymbolSet_sp	getMonomerNames();
     string		getMonomerNamesAsString();
 
     //! String together group and monomer names
-    virtual string		getKey();
+    virtual core::Symbol_sp getKey();
 
 
     /*! Return a StringSet that combines every equivalentName
@@ -122,7 +122,7 @@ public:
       This generates a list of monomer pairs that can be
       coupled by a certain coupling.
     */
-//    core::StringSet_sp combineMonomerNames(string ins, EntityNameSetBase_sp e);
+//    adapt::StringSet_sp combineMonomerNames(string ins, EntityNameSetBase_sp e);
 
 
 
@@ -139,12 +139,12 @@ public:
     virtual bool hasInterestingAtomAlias(Alias_sp alias);
     virtual int getInterestingAtomAliasIndex(Alias_sp alias);
     virtual AtomIndexer_sp getAtomIndexerForMonomerName(core::Symbol_sp nm) {_OF();SUBCLASS_MUST_IMPLEMENT();};
-    virtual core::SymbolList_sp getInterestingAtomAliases();
+    virtual adapt::SymbolList_sp getInterestingAtomAliases();
 
     virtual string getInterestingAtomAliasesAsString() { return "";};
 
-    core::StringList_sp	getMonomerNamesOrdered();
-    core::StringList_sp	getUnrecognizedMonomerNamesOrdered();
+    adapt::StringList_sp	getMonomerNamesOrdered();
+    adapt::StringList_sp	getUnrecognizedMonomerNamesOrdered();
 
 
 
@@ -153,7 +153,7 @@ public:
 
 
     /*! Contract the Entity names */
-    void contractEntityNames(core::SymbolSet_sp entityNameSets);
+    void contractEntityNames(adapt::SymbolSet_sp entityNameSets);
 
 
     string	testEntityNameSetBase() { return "testEntityNameSetBase"; };
@@ -184,7 +184,7 @@ public:
 	void initialize();
 	string description() const;
 public:
-	static EntityNameSet_sp	create2(core::Symbol_sp nm,core::Lisp_sp lisp);
+	static EntityNameSet_sp	create2(core::Symbol_sp nm);
 public:
 //    void	archiveBase(core::ArchiveP node);
 protected:

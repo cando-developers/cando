@@ -41,13 +41,13 @@ OMatrix_sp OMatrix_O::make(bool identity)
 
     void	OMatrix_O::setFromString(const string& s)
     {_G();
-	this->_Value.setFromString(s,_lisp);
+	this->_Value.setFromString(s);
     }
 
 #if 0
     void	OMatrix_O::setFromStringFast(const string& s)
     {_G();
-	this->_Value.setFromStringFast(s,_lisp);
+	this->_Value.setFromStringFast(s);
     }
 #endif
 

@@ -180,13 +180,13 @@ void	DirectionalCoupling_O::resetOut()
     if ( this->_InMonomer.nilp() )
     {
         this->setHasError(true);
-	clasp_write(BF("InMonomer is NULL\n"), statusMessageStream);
+        core::clasp_write_format(BF("InMonomer is NULL\n"), statusMessageStream);
     }
     ANN(this->_OutMonomer);
     if ( this->_OutMonomer.nilp() )
     {
         this->setHasError(true);
-	clasp_write(BF("OutMonomer is NULL\n"), statusMessageStream);
+        core::clasp_write_format(BF("OutMonomer is NULL\n"), statusMessageStream);
     }
 }
 
@@ -614,13 +614,13 @@ void	RingCoupling_O::checkForErrors(core::T_sp errorStream)
     if ( this->_Monomer1.nilp() )
     {
         this->setHasError(true);
-        core::clasp_write(BF("Monomer1 is NULL\n"), errorStream);
+        core::clasp_write_format(BF("Monomer1 is NULL\n"), errorStream);
     }
     ANN(this->_Monomer2);
     if ( this->_Monomer2.nilp() )
     {
         this->setHasError(true);
-        core::clasp_write(BF("Monomer2 is NULL\n"), errorStream);
+        core::clasp_write_format(BF("Monomer2 is NULL\n"), errorStream);
     }
 }
 

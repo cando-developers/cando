@@ -31,9 +31,9 @@ THE SOFTWARE.
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
 #include <clasp/core/hashTableEq.h>
-
-namespace core {
-
+#include <cando/adapt/adaptPackage.fwd.h>
+namespace adapt {
+  using namespace core;
 class ObjectSetCartesianProductWrapper {
 public:
   virtual T_sp operator()(T_sp obj1, T_sp obj2) const = 0;
@@ -43,7 +43,7 @@ SMART(ObjectSet);
 
 class ObjectSet_O : public T_O {
   LISP_BASE1(T_O);
-  LISP_CLASS(core, CorePkg, ObjectSet_O, "ObjectSet");
+  LISP_CLASS(adapt, AdaptPkg, ObjectSet_O, "ObjectSet");
   DECLARE_INIT();
   void initialize();
 
@@ -100,5 +100,5 @@ public:
 };
 };
 
-TRANSLATE(core::ObjectSet_O);
+TRANSLATE(adapt::ObjectSet_O);
 #endif //]

@@ -26,10 +26,10 @@ namespace chem {
 
     EnergyChiralRestraint::EnergyChiralRestraint()
 {
-    this->_Atom1.reset();
-    this->_Atom2.reset();
-    this->_Atom3.reset();
-    this->_Atom4.reset();
+  this->_Atom1 = _Nil<core::T_O>();
+  this->_Atom2 = _Nil<core::T_O>();
+  this->_Atom3 = _Nil<core::T_O>();
+  this->_Atom4 = _Nil<core::T_O>();
 }
 
 EnergyChiralRestraint::~EnergyChiralRestraint()
@@ -54,7 +54,7 @@ EnergyChiralRestraint::~EnergyChiralRestraint()
     node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
     node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
     node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include <cando/chem/_ChiralRestraint_debugEvalSerialize.cc>
+#include <cando/chem/energy_functions/_ChiralRestraint_debugEvalSerialize.cc>
 #endif //]
 }
 #endif
@@ -78,12 +78,12 @@ string	EnergyChiralRestraint::description()
 
 
 #if 0
-    geom::QDomNode_sp	EnergyChiralRestraint::asXml(core::Lisp_sp env)
+    adapt::QDomNode_sp	EnergyChiralRestraint::asXml()
 {
-    geom::QDomNode_sp	node,child;
+    adapt::QDomNode_sp	node,child;
     Vector3	vdiff;
 
-    node = geom::QDomNode_O::create(env,"EnergyChiralRestraint");
+    node = adapt::QDomNode_O::create(env,"EnergyChiralRestraint");
     node->addAttributeString("atom1Name",this->_Atom1->getName());
     node->addAttributeString("atom2Name",this->_Atom2->getName());
     node->addAttributeString("atom3Name",this->_Atom3->getName());
@@ -94,7 +94,7 @@ string	EnergyChiralRestraint::description()
     node->addAttributeInt("I4",this->term.I4);
     node->addAttributeDoubleScientific("K",this->term.K);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    geom::QDomNode_sp xml = geom::QDomNode_O::create(env,"Evaluated");
+    adapt::QDomNode_sp xml = adapt::QDomNode_O::create(env,"Evaluated");
     xml->addAttributeBool("calcForce",this->_calcForce );
     xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
     xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
@@ -104,7 +104,7 @@ string	EnergyChiralRestraint::description()
     return node;
 }
 
-    void	EnergyChiralRestraint::parseFromXmlUsingAtomTable(geom::QDomNode_sp	xml,
+    void	EnergyChiralRestraint::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
 				AtomTable_sp at )
 {
     this->term.K = xml->getAttributeDouble("K");
@@ -150,9 +150,9 @@ double	_evaluateEnergyOnly_ChiralRestraint(
 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/_ChiralRestraint_termDeclares.cc>
+#include <cando/chem/energy_functions/_ChiralRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-#include <cando/chem/_ChiralRestraint_termCode.cc>
+#include <cando/chem/energy_functions/_ChiralRestraint_termCode.cc>
 
     return Energy;
 }
@@ -229,13 +229,13 @@ bool		calcOffDiagonalHessian = true;
     if ( this->isEnabled() ) {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	#include	"_ChiralRestraint_termDeclares.cc"
+#include	<cando/chem/energy_functions/_ChiralRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
 	double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,K, CO;
 	int	I1, I2, I3, I4, i;
 	for ( gctools::Vec0<EnergyChiralRestraint>::iterator cri=this->_Terms.begin();
 		    cri!=this->_Terms.end(); cri++ ) {
-	    #include	"_ChiralRestraint_termCode.cc"
+#include	<cando/chem/energy_functions/_ChiralRestraint_termCode.cc>
 	}
     }
 
@@ -300,7 +300,7 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
     if ( this->isEnabled() ) {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	#include "_ChiralRestraint_termDeclares.cc"
+#include <cando/chem/energy_functions/_ChiralRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
 	double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,K, CO;
 	int	I1, I2, I3, I4, i;
@@ -317,7 +317,7 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 
 			/* Obtain all the parameters necessary to calculate */
 			/* the amber and forces */
-	    #include "_ChiralRestraint_termCode.cc"
+#include <cando/chem/energy_functions/_ChiralRestraint_termCode.cc>
 
 	    #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
 		cri->_calcForce = calcForce;
@@ -326,7 +326,7 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 		    // Now write all of the calculated values into the eval structure
 		#undef EVAL_SET
 		#define	EVAL_SET(var,val)	{ cri->eval.var=val;};
-		#include	"_ChiralRestraint_debugEvalSet.cc"
+#include	<cando/chem/energy_functions/_ChiralRestraint_debugEvalSet.cc>
 	    #endif //]
 
 	    if ( this->_DebugEnergy ) {
@@ -430,7 +430,7 @@ bool	calcOffDiagonalHessian = true;
 		_BLOCK_TRACE("ChiralRestraintEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	    #include "_ChiralRestraint_termDeclares.cc"
+#include <cando/chem/energy_functions/_ChiralRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
 	    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,K, CO;
 	    int	I1, I2, I3, I4, i;
@@ -439,7 +439,7 @@ bool	calcOffDiagonalHessian = true;
 			cri!=this->_Terms.end(); cri++,i++ ) {
 			  /* Obtain all the parameters necessary to calculate */
 			  /* the amber and forces */
-	        #include "_ChiralRestraint_termCode.cc"
+#include <cando/chem/energy_functions/_ChiralRestraint_termCode.cc>
 		LOG(BF("fx1 = %le") % fx1 );
 		LOG(BF("fy1 = %le") % fy1 );
 		LOG(BF("fz1 = %le") % fz1 );
@@ -453,7 +453,7 @@ bool	calcOffDiagonalHessian = true;
 		LOG(BF("fy4 = %le") % fy4 );
 		LOG(BF("fz4 = %le") % fz4 );
 		int index = i;
-		#include "_ChiralRestraint_debugFiniteDifference.cc"
+#include <cando/chem/energy_functions/_ChiralRestraint_debugFiniteDifference.cc>
 
 	    }
 	}
@@ -500,7 +500,7 @@ bool	calcOffDiagonalHessian = false;
 	    _BLOCK_TRACE("ChiralRestraintEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	#include "_ChiralRestraint_termDeclares.cc"
+#include <cando/chem/energy_functions/_ChiralRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
 	double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,K, CO;
 	int	I1, I2, I3, I4, i;
@@ -511,7 +511,7 @@ bool	calcOffDiagonalHessian = false;
 		      /* Obtain all the parameters necessary to calculate */
 		      /* the amber and forces */
 	    LOG(BF("Checking term# %d") % i  );
-	    #include "_ChiralRestraint_termCode.cc"
+#include <cando/chem/energy_functions/_ChiralRestraint_termCode.cc>
 	    LOG(BF("Status") );
 	    if ( ChiralTest>0.0 ) {
 		chem::Atom_sp a1, a2, a3, a4;

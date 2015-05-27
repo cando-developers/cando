@@ -47,7 +47,7 @@ namespace chem
 	    LISP_CLASS(chem,ChemPkg,StereoConfiguration_O,"StereoConfiguration");
 #if INIT_TO_FACTORIES
 	public:
-	    static StereoConfiguration_sp make(string atomName, string config);
+	    static StereoConfiguration_sp make(core::Symbol_sp atomName, core::Symbol_sp config);
 #else
 	    DECLARE_INIT();
 #endif
@@ -62,7 +62,7 @@ namespace chem
 
 	public:
 	    static	core::List_sp stereochemicalPermutations(uint numberOfCenters);
-	    static	core::List_sp create_multiple(core::List_sp atomNames, core::Cons_sp configurations);
+	    static	core::List_sp create_multiple(core::List_sp atomNames, core::List_sp configurations);
 
 	public:
 	    MatterName	getAtomName()	{return this->_AtomName;};
@@ -112,10 +112,10 @@ namespace chem
 	    bool	isTerminalName() { return true; };
 	    bool	hasConstitution() { return true; };
 	    Constitution_sp constitution() { return this->getConstitution(); };
-	    core::SymbolSet_sp	expandedNameSet();
+	    adapt::SymbolSet_sp	expandedNameSet();
 	    RepresentativeList_sp expandedRepresentativeList() const;
 
-	    string getConfigurationForCenter(const string& centerName );
+            core::Symbol_sp getConfigurationForCenter(core::Symbol_sp centerName );
 	public:
 	    Constitution_sp	getConstitution();
 
@@ -152,7 +152,7 @@ namespace chem
 //	    bool loadFinalize(core::ArchiveP node);
 	private:
             gctools::Vec0<Stereoisomer_sp>		_Stereoisomers;
-	    core::SymbolMap<Stereoisomer_O>	_NameOrPdbToStereoisomer;
+	    adapt::SymbolMap<Stereoisomer_O>	_NameOrPdbToStereoisomer;
             gctools::Vec0<ComplexRestraint_sp>	_ComplexRestraints;
 	public:
 	public:
@@ -203,10 +203,10 @@ namespace chem
 	    };
 
 	    //! Return the names of Monomers that can be created from this constitution
-	    core::StringList_sp getMonomerNamesAsStringList();
-	    core::SymbolSet_sp getMonomerNamesAsSymbolSet();
+	    adapt::StringList_sp getMonomerNamesAsStringList();
+	    adapt::SymbolSet_sp getMonomerNamesAsSymbolSet();
 	    //! Return the pdb names of Monomers that can be created from this constitution
-	    core::StringList_sp getPdbNamesAsStringList();
+	    adapt::StringList_sp getPdbNamesAsStringList();
 	    DEFAULT_CTOR_DTOR(StereoInformation_O);
 	};
 

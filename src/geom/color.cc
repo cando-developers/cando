@@ -103,14 +103,14 @@ namespace geom
 
 
 
-    Color_sp Color_O::white(core::Lisp_sp lisp){return Color_O::systemColor(kw::_sym_white);}
-    Color_sp Color_O::yellow(core::Lisp_sp lisp){return Color_O::systemColor(kw::_sym_yellow);}
-    Color_sp Color_O::red(core::Lisp_sp lisp){return Color_O::systemColor(kw::_sym_red);}
-    Color_sp Color_O::green(core::Lisp_sp lisp){return Color_O::systemColor(kw::_sym_green);}
-    Color_sp Color_O::blue(core::Lisp_sp lisp){return Color_O::systemColor(kw::_sym_blue);}
-    Color_sp Color_O::cyan(core::Lisp_sp lisp){return Color_O::systemColor(kw::_sym_cyan);}
-    Color_sp Color_O::magenta(core::Lisp_sp lisp){return Color_O::systemColor(kw::_sym_magenta);}
-    Color_sp Color_O::black(core::Lisp_sp lisp){return Color_O::systemColor(kw::_sym_black);}
+    Color_sp Color_O::white(){return Color_O::systemColor(kw::_sym_white);}
+    Color_sp Color_O::yellow(){return Color_O::systemColor(kw::_sym_yellow);}
+    Color_sp Color_O::red(){return Color_O::systemColor(kw::_sym_red);}
+    Color_sp Color_O::green(){return Color_O::systemColor(kw::_sym_green);}
+    Color_sp Color_O::blue(){return Color_O::systemColor(kw::_sym_blue);}
+    Color_sp Color_O::cyan(){return Color_O::systemColor(kw::_sym_cyan);}
+    Color_sp Color_O::magenta(){return Color_O::systemColor(kw::_sym_magenta);}
+    Color_sp Color_O::black(){return Color_O::systemColor(kw::_sym_black);}
 
 
     Color_sp Color_O::systemColor(core::Symbol_sp sym)

@@ -22,7 +22,7 @@
 #include <clasp/core/wrappers.h>
 
 
-namespace geom {
+namespace adapt {
 
 
 class MySaxDomHandler : public MySaxHandlerDefault // , private XMLFormatTarget
@@ -826,7 +826,7 @@ void QDomNode_O::exposeCando(core::Lisp_sp lisp)
 void QDomNode_O::exposePython(core::Lisp_sp lisp)
 {_G();
 #ifdef	USEBOOSTPYTHON
-    PYTHON_CLASS(GeomPkg,QDomNode,"","",_lisp)
+    PYTHON_CLASS(AdaptPkg,QDomNode,"","",_lisp)
 #if 0
 	.def(boost::python::init<string>())
 	.def(boost::python::init<string,string>())
@@ -874,7 +874,7 @@ void QDomNode_O::exposePython(core::Lisp_sp lisp)
 }
 
 
-EXPOSE_CLASS(geom,QDomNode_O);
+EXPOSE_CLASS(adapt,QDomNode_O);
 
 };
 

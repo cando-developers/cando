@@ -97,7 +97,7 @@ namespace chem {
          * be copied from either molecule to the other.
          */
         MatterName		_UniqueLabel;
-	core::SymbolSet_sp	_MonomerAliases;
+	adapt::SymbolSet_sp	_MonomerAliases;
     public:
         static Residue_sp make(MatterName name);
     private:
@@ -118,9 +118,9 @@ namespace chem {
 	virtual bool isResidue() { return true;};
 
 
-	core::SymbolSet_sp getMonomerAliases();
+	adapt::SymbolSet_sp getMonomerAliases();
 	bool recognizesMonomerAlias(core::Symbol_sp s);
-	void setMonomerAliases(core::SymbolSet_sp s);
+	void setMonomerAliases(adapt::SymbolSet_sp s);
 	void addMonomerAlias(core::Symbol_sp s);
 
 	/*! Return true if this residue contains the atom a
@@ -148,7 +148,7 @@ namespace chem {
 
 	int		getTempInt() {return this->tempInt;};
 	void		setTempInt(int j) {this->tempInt = j;};
-        core::SymbolSet_sp	getAtomNamesAsSymbolSet();
+        adapt::SymbolSet_sp	getAtomNamesAsSymbolSet();
 
 	void		addAtom(Atom_sp a );
 	void		addAtomRetainId(Atom_sp a ) {this->addMatterRetainId(Matter_sp(a));};
@@ -190,7 +190,7 @@ namespace chem {
 
         Atom_sp		atomWithId( int lid ) { return this->contentWithId(lid).as<Atom_O>(); };
 	bool		hasAtomWithId( int lid ) { return this->hasContentWithId(lid); };
-        core::SymbolSet_sp 	getAllUniqueAtomNames();
+        adapt::SymbolSet_sp 	getAllUniqueAtomNames();
 
         /*! Return true if all the atom names are unique
          * If not describe the atoms with overlapping names in (problems).

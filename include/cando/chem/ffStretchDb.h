@@ -23,6 +23,8 @@
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
 #include <cando/adapt/quickDom.h>
+#include <cando/adapt/symbolMap.h>
+#include <clasp/core/smallMap.h>
 #include <cando/chem/ffBaseDb.h>
 
 
@@ -43,8 +45,8 @@ namespace       chem {
 	void	archiveBase(core::ArchiveP node);
 
     public:
-	string		_Type1;
-	string		_Type2;
+        core::Symbol_sp	_Type1;
+        core::Symbol_sp	_Type2;
 	double		_R0_Nanometer;
 	double		_Kb_kJPerNanometerSquared;
 //	double		_K3;
@@ -74,13 +76,13 @@ namespace       chem {
 
     class	EstimateStretch {
     public:
-	string		_ti;
-	string		_tj;
-	double		_rij;
-	double		_lnKij;
+      core::Symbol_sp		_ti;
+      core::Symbol_sp		_tj;
+      double		_rij;
+      double		_lnKij;
 
-	geom::QDomNode_sp	asXml(core::Lisp_sp);
-	void		parseFromXml(geom::QDomNode_sp xml);
+	adapt::QDomNode_sp	asXml();
+	void		parseFromXml(adapt::QDomNode_sp xml);
     };
 
 
@@ -100,13 +102,13 @@ namespace       chem {
     public:
 	typedef	gctools::Vec0<FFStretch_sp>::iterator	FFStretch_spIterator;
         gctools::Vec0<FFStretch_sp>		_Terms;
-	core::SymbolMap<FFStretch_O>	        _Lookup;
+	adapt::SymbolMap<FFStretch_O>	        _Lookup;
         gctools::SmallMap<core::Symbol_sp,EstimateStretch>	_EstimateStretch;
 
 
 
 	void	clearEstimateStretch();
-	void	addEstimateStretch(string ti, string tj, double rij, double lnKij );
+	void	addEstimateStretch(core::Symbol_sp ti, core::Symbol_sp tj, double rij, double lnKij );
 	void	_addEstimateStretch(const EstimateStretch& es);
 
 

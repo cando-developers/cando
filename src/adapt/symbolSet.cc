@@ -301,6 +301,19 @@ void SymbolSet_O::map(std::function<void(Symbol_sp)> const &fn) const {
   });
 }
 
+
+void SymbolSet_O::map_while_true(std::function<bool(Symbol_sp)> const &fn) {
+  this->_Symbols->map_while_true([&fn](T_sp key, T_sp val) -> bool {
+      return fn(gc::As<Symbol_sp>(key));
+  });
+}
+
+void SymbolSet_O::map_while_true(std::function<bool(Symbol_sp)> const &fn) const {
+  this->_Symbols->map_while_true([&fn](T_sp key, T_sp val) -> bool {
+      return fn(gc::As<Symbol_sp>(key));
+  });
+}
+
 void SymbolSet_O::exposeCando(Lisp_sp lisp) {
   class_<SymbolSet_O>()
       .def("size", &SymbolSet_O::size)

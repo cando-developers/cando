@@ -12,7 +12,10 @@
 #include <set>
 #include <clasp/core/common.h>
 #include <clasp/core/holder.h>
+#include <cando/adapt/symbolSet.h>
 #include <cando/adapt/stringSet.fwd.h>
+#include <cando/adapt/stringList.fwd.h>
+#include <clasp/core/smallMap.h>
 
 #include <cando/chem/chemPackage.h>
 
@@ -31,9 +34,9 @@ class AtomIndexer_O : public core::T_O
 public:
 //    void	archive(core::ArchiveP node);
 private:
-	vector<string>	_Names;
+    gc::Vec0<core::Symbol_sp>	_Names;
 public:
-	typedef	vector<string>::iterator	atomNameIterator;
+    typedef gc::Vec0<core::Symbol_sp>::iterator	atomNameIterator;
 
 public:
 
@@ -48,7 +51,7 @@ public:
 		/*! Add the name to the _Names list
 		 * make sure that it is unique.
 		 */
-	int	addAtomName(const string& name);
+	int	addAtomName(core::Symbol_sp name);
 		/*! Set from a list of names separated by spaces */
 	void	setFromAtomNames(const string& names);
 
@@ -56,16 +59,16 @@ public:
 	void	appendConsOfTexts(core::List_sp list);
 
 		/*! Set from a list of names in StringList*/
-	void	setFromStringList(core::T_sp names);
+	void	setFromStringList(adapt::StringList_sp names);
 
 	string	description() const;
 
 	string	asString() const;
 
 	int	numberOfAtomNames() { return this->_Names.size(); };
-	bool	containsAtomName(const string& name);
+	bool	containsAtomName(core::Symbol_sp name);
 
-	int	indexForAtomName(const string& name);
+	int	indexForAtomName(core::Symbol_sp name);
 
 
 
@@ -84,15 +87,15 @@ class MapOfMonomerNamesToAtomIndexers_O : public core::T_O
 public:
 //    void	archive(core::ArchiveP node);
 private:
-    core::SymbolMap<AtomIndexer_O>	_AtomIndexers;
+    adapt::SymbolMap<AtomIndexer_O>	_AtomIndexers;
 public:
-    typedef	core::SymbolMap<AtomIndexer_O>::iterator	iterator;
+    typedef	adapt::SymbolMap<AtomIndexer_O>::iterator	iterator;
 
 public:
 	iterator	begin() { return this->_AtomIndexers.begin(); };
 	iterator	end() { return this->_AtomIndexers.end(); };
 
-	core::SymbolSet_sp	getMonomerNamesAsSymbolSet() const;
+	adapt::SymbolSet_sp	getMonomerNamesAsSymbolSet() const;
 	bool		recognizesMonomerName(core::Symbol_sp nm) const;
 
 	AtomIndexer_sp	getAtomIndexerForMonomerName(core::Symbol_sp name) const;

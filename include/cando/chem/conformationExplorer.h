@@ -171,7 +171,7 @@ public:
 		/*! Set the selected stage, throws error if its not one of this entries stages */
 	void	setSelectedStage(ConformationExplorerEntryStage_sp stage);
 
-	core::StringSet_sp	getEntryStageNames();
+	adapt::StringSet_sp	getEntryStageNames();
 
 	int	getUniqueEntryIndex() const { return this->_UniqueEntryIndex;};
 

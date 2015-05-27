@@ -119,15 +119,15 @@ namespace chem
 	    name->pushNeighbor(mit->first,_Nil<core::Symbol_O>());
 //	name->pushNeighbor(mit->first,"");
 	    LOG(BF("Getting equivalent names") );
-	    core::SymbolSet_sp ss = mit->second->getMonomerNames();
+	    adapt::SymbolSet_sp ss = mit->second->getMonomerNames();
 	    LOG(BF("There are %d equivalent names") % ss->size() );
 //	ASSERTP(ss->size()!=0,"Problem, there are no equivalent names");
 	    if ( ss->size() == 0 )
 	    {
-		ss = core::StringSet_O::create();
+		ss = adapt::StringSet_O::create();
 		ss->insert(_lisp->intern("undef"));
 	    }
-	    for (core::SymbolSet_O::iterator it=ss->begin(); it!=ss->end(); it++ ) 
+	    for (adapt::SymbolSet_O::iterator it=ss->begin(); it!=ss->end(); it++ ) 
 	    {
 		name->setLastNeighborName(*it);
 		LOG(BF("Pushed equivalent name: %s") % (*it)->__repr__() );
@@ -144,13 +144,13 @@ namespace chem
 
 
     void	MonomerContext_O::expandOuts(NeighborMap::iterator mit,
-					     core::StringSet_sp list,
+					     adapt::StringSet_sp list,
 					     MCStringStack& name )
     {_G();
 	IMPLEMENT_ME(); // work with new symbol based names
 #if 0
-	core::SymbolSet_O::iterator	it;
-	core::SymbolSet_sp		ss;
+	adapt::SymbolSet_O::iterator	it;
+	adapt::SymbolSet_sp		ss;
 	NeighborMap::iterator mitNext;
 	if ( mit==this->_Neighbors.end() ) {
 	    LOG(BF("Pushing back name: %s") % name.all().c_str()  );
@@ -165,7 +165,7 @@ namespace chem
 //	ASSERTP(ss->size()!=0,"Problem, there are no equivalent names");
 	    if ( ss->size() == 0 )
 	    {
-		ss = core::StringSet_O::create();
+		ss = adapt::StringSet_O::create();
 		ss->insert(_lisp->intern("undef"));
 	    }
 	    for ( it=ss->begin(); it!=ss->end(); it++ ) {
@@ -187,65 +187,59 @@ namespace chem
     }
 
 
-    string	MonomerContext_O::getKey()
+core::Symbol_sp MonomerContext_O::getKey()
     {_G();
 	stringstream	ss, si, so;
 	NeighborMap::iterator	ci;
-
-
 	ss << "!"
-	   << _rep_(this->_Self->getKey());
-	for ( ci=this->_Neighbors.begin(); ci!=this->_Neighbors.end(); ci++ )
-	{
+	   << core::_rep_(this->_Self->getKey());
+	for ( ci=this->_Neighbors.begin(); ci!=this->_Neighbors.end(); ci++ ) {
 	    ss << ci->first->symbolNameAsString() << COUPLING_CHAR << _rep_(ci->second->getKey());
 	}
-	return ss.str();
+        core::Symbol_sp keyAsSymbol = _lisp->intern(ss.str(),ChemKwPkg);
+	return keyAsSymbol;
     }
 
 
 
 
-    core::StringSet_sp	MonomerContext_O::getAllSpecificKeys()
+    adapt::SymbolSet_sp	MonomerContext_O::getAllSpecificKeys()
     {_G();
-	core::StringSet_sp	expandedList;
-	core::SymbolSet_sp	selfNames;
+	adapt::SymbolSet_sp	expandedList;
+	adapt::SymbolSet_sp	selfNames;
 	MCStringStack	name;
-	core::SymbolSet_O::iterator si;
 	LOG(BF("Getting context strings for context: %s") % this->asXmlString().c_str()  );
-	expandedList = core::StringSet_O::create();
+	expandedList = adapt::StringSet_O::create();
 	name.clear();
 	selfNames = this->_Self->getMonomerNames();
 	LOG(BF("There are %d selfNames") % selfNames->size()  );
-	for ( si=selfNames->begin(); si!=selfNames->end(); si++ ) 
-	{
+	selfNames->map( [&name,this,&expandedList] (core::Symbol_sp si) {
 	    LOG(BF("Push self name: %s") % (*si)->__repr__() );
 	    name.push("![");
-	    name.push((*si)->symbolNameAsString());
+	    name.push((si)->symbolNameAsString());
 	    name.push("]");
 	    this->expandOuts(this->_Neighbors.begin(), expandedList, name );
 	    name.pop();
 	    name.pop();
 	    name.pop();
-	}
+          });
 	return expandedList;
     }
 
     SpecificContextSet_sp MonomerContext_O::getAllSpecificContexts()
     {_G();
-	core::SymbolSet_sp	selfNames;
-	core::SymbolSet_O::iterator si;
+	adapt::SymbolSet_sp	selfNames;
 	LOG(BF("Getting context strings for context: %s") % this->asXmlString().c_str()  );
 	SpecificContextSet_sp expandedList = SpecificContextSet_O::create();
 	SpecificContext_sp one = SpecificContext_O::create();
 	one->clear();
 	selfNames = this->_Self->getMonomerNames();
 	LOG(BF("There are %d selfNames") % selfNames->size()  );
-	for ( si=selfNames->begin(); si!=selfNames->end(); si++ ) 
-	{
-	    LOG(BF("Push self name: %s") % (*si)->__repr__() );
-	    one->setSelfName(*si);
+	selfNames->map( [&one,this,&expandedList] (core::Symbol_sp si) {
+	    LOG(BF("Push self name: %s") % (si)->__repr__() );
+	    one->setSelfName(si);
 	    this->expandOutsSpecificContexts(this->_Neighbors.begin(), expandedList, one );
-	}
+          } );
 	return expandedList;
     }
 
@@ -253,22 +247,21 @@ namespace chem
 
 
 
-    string	MonomerContext_O::getFirstSpecificKey()
+core::Symbol_sp MonomerContext_O::getFirstSpecificKey()
     {_G();
-	core::StringSet_sp	selfNames;
-	core::StringSet_sp	inNames;
-	core::StringSet_sp	outNames;
+	adapt::StringSet_sp	selfNames;
+	adapt::StringSet_sp	inNames;
+	adapt::StringSet_sp	outNames;
 	MCStringStack	name;
-	core::StringSet_sp	expandedList;
-	core::StringSet_O::iterator	si, ii;
+	adapt::StringSet_sp	expandedList;
+	adapt::StringSet_O::iterator	si, ii;
 	string		res;
-
-	expandedList = core::StringSet_O::create();
+	expandedList = adapt::StringSet_O::create();
 	expandedList = this->getAllSpecificKeys();
 	res = *(expandedList->begin());
 //RETURN:
 	LOG(BF("Returning") );
-	return res;
+        return _lisp->intern(res,ChemKwPkg);
     }
 
 
@@ -280,9 +273,8 @@ namespace chem
  */
     bool	MonomerContext_O::containsMonomerContext(MonomerContext_sp testSub)
     {_G();
-	NeighborMap::iterator		ti, mi;
 	EntityNameSetBase_sp			testSubRecognizer;
-	core::SymbolSet_sp				monomerNames;
+	adapt::SymbolSet_sp				monomerNames;
 	if ( !this->_Self->recognizesNameOrPdb(
 		 testSub->_Self->getMonomerNames()->first()) ) {
 	    LOG(BF("MonomerContext doesn't recognize self") );
@@ -292,7 +284,7 @@ namespace chem
 	    LOG(BF("MonomerContexts have different number of neighbors") );
 	    return false;
 	}
-	for ( ti = this->_Neighbors.begin();
+	for ( auto ti = this->_Neighbors.begin();
 	      ti != this->_Neighbors.end(); ti++ ) 
 	{
 	    if ( !testSub->_Neighbors.contains(ti->first) ) {
@@ -300,8 +292,8 @@ namespace chem
 		return false;
 	    }
 	    testSubRecognizer = testSub->_Neighbors.get(ti->first);
-	    core::SymbolSet_sp myNames = ti->second->getMonomerNames();
-	    core::SymbolSet_sp testSubNames = testSubRecognizer->getMonomerNames();
+	    adapt::SymbolSet_sp myNames = ti->second->getMonomerNames();
+	    adapt::SymbolSet_sp testSubNames = testSubRecognizer->getMonomerNames();
 	    if ( !myNames->containsSubset(testSubNames) )
 	    {
 		LOG(BF("testSub is not a subset of this monomer context") );
@@ -318,6 +310,8 @@ namespace chem
 
     bool	MonomerContext_O::recognizesMonomerAndEnvironment(Monomer_sp mon)
     {_G();
+      IMPLEMENT_MEF(BF("Handle new symbol names and monomer couplings are supposed to be a multimap!!!!!!"));
+#if 0
 	NeighborMap::iterator	ti;
 	Coupling_sp			coup;
 	if ( !this->_Self->recognizesNameOrPdb(mon->getName() )) {
@@ -332,9 +326,7 @@ namespace chem
 	LOG(BF("STATUS monomer = %s") % (mon->getName()->__repr__() ) );
 	LOG(BF("Monomer has %d couplings") % (mon->numberOfCouplings() ) );
 	LOG(BF("MonomerContext has %d neighbors") % (this->_Neighbors.size() ) );
-	Monomer_O::Couplings::iterator	oi;
-	// WeakMap<Coupling_O>::iterator	oi;
-	for ( oi=mon->begin_WeakCouplings(); oi!=mon->end_WeakCouplings(); oi++ )
+	for ( auto oi=mon->begin_WeakCouplings(); oi!=mon->end_WeakCouplings(); oi++ )
 	{
 	    Coupling_sp coup = (oi->second);
 	    if (coup.isA<DirectionalCoupling_O>() )
@@ -353,6 +345,7 @@ namespace chem
 	    }
 	}
 	return true;
+#endif
     }
 
 
@@ -368,9 +361,9 @@ namespace chem
     }
 
 
-    core::SymbolSet_sp MonomerContext_O::getPlugNames() const
+    adapt::SymbolSet_sp MonomerContext_O::getPlugNames() const
     {_OF();
-	core::SymbolSet_sp names = core::SymbolSet_O::create();
+	adapt::SymbolSet_sp names = adapt::SymbolSet_O::create();
 	for ( NeighborMap::const_iterator it=this->_Neighbors.begin();
 	      it!=this->_Neighbors.end(); it++ )
 	{

@@ -31,6 +31,7 @@ sources =
 		/internals//asttooling  #//bundle/<link>static
                 /cando/geom
                 /cando/units
+                /cando/chem
 		/externals//llvm_lib/<link>static
 		/externals//clang_lib/<link>static
 		/externals//boostAndExpatLibs/<link>static

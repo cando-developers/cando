@@ -57,10 +57,10 @@ namespace chem
 
 #if 0 //[
 void
-geom::QDomNode_sp	FFAngle_O::asXml(core::Lisp_sp env)
+adapt::QDomNode_sp	FFAngle_O::asXml()
 {
-    geom::QDomNode_sp	node;
-    node = geom::QDomNode_O::create(_lisp,XmlTag_FFAngle());
+    adapt::QDomNode_sp	node;
+    node = adapt::QDomNode_O::create(XmlTag_FFAngle());
     node->addAttributeString("Type1",this->_Type1 );
     node->addAttributeString("Type2",this->_Type2 );
     node->addAttributeString("Type3",this->_Type3 );
@@ -69,7 +69,7 @@ geom::QDomNode_sp	FFAngle_O::asXml(core::Lisp_sp env)
     return node;
 }
 
-    void	FFAngle_O::parseFromXml( geom::QDomNode_sp node )
+    void	FFAngle_O::parseFromXml( adapt::QDomNode_sp node )
 {
     this->_Type1 = node->getAttributeString("Type1");
     this->_Type2 = node->getAttributeString("Type2");

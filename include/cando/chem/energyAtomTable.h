@@ -62,8 +62,8 @@ public:
 		// methods
 	void		defineForAtom(ForceField_sp forceField, Atom_sp atom, uint coordinateIndex);
 	string		getResidueAndName();
-//	geom::QDomNode_sp	asXmlRelativeToContainer(chem::Matter_sp parent);
-//	void		parseFromXmlRelativeToContainer( geom::QDomNode_sp xml, chem::Matter_sp parent );
+//	adapt::QDomNode_sp	asXmlRelativeToContainer(chem::Matter_sp parent);
+//	void		parseFromXmlRelativeToContainer( adapt::QDomNode_sp xml, chem::Matter_sp parent );
 };
 
 

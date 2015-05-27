@@ -10,7 +10,7 @@
 namespace chem {
 
 
-IterateRestraints_sp IterateRestraints_O::create(core::Lisp_sp e,Matter_sp matter)
+IterateRestraints_sp IterateRestraints_O::create(Matter_sp matter)
 {_G();
     GC_ALLOCATE(IterateRestraints_O, m );
     m->initTop(matter);
@@ -55,7 +55,7 @@ void	IterateRestraints_O::next()
 {_G();
     if ( this->_CurRestraint.notnilp() )
     {
-        this->_CurRestraint = this->_CurRestraint->cdr();
+      this->_CurRestraint = oCdr(this->_CurRestraint);
     }
 }
 

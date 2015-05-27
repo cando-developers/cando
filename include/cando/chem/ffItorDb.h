@@ -20,10 +20,11 @@
 #include <clasp/core/common.h>
 #include <cando/chem/bond.h>
 #include <cando/geom/vector3.h>
+#include <cando/adapt/symbolMap.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
 #include <cando/chem/ffBaseDb.h>
-
+#include <clasp/core/smallMap.h>
 
 namespace       chem
 {
@@ -89,7 +90,7 @@ namespace       chem
     public:
 	typedef	gctools::Vec0<FFItor_sp>::iterator	FFItor_spIterator;
         gctools::Vec0<FFItor_sp>		_Terms;
-	core::SymbolMap<FFItor_O>		_Lookup;
+	adapt::SymbolMap<FFItor_O>		_Lookup;
 
 	FFItor_spIterator	begin() { return this->_Terms.begin();};
 	FFItor_spIterator	end() { return this->_Terms.end();};

@@ -38,7 +38,7 @@ THE SOFTWARE.
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
 
-namespace core {
+namespace adapt {
 
 SMART(Residue);
 SMART(SymbolSet);
@@ -50,7 +50,7 @@ SMART(SymbolList);
 SMART(SymbolList);
 class SymbolList_O : public T_O {
   LISP_BASE1(T_O);
-  LISP_CLASS(core, CorePkg, SymbolList_O, "SymbolList");
+  LISP_CLASS(adapt, AdaptPkg, SymbolList_O, "SymbolList");
 
 public:
 #if defined(XML_ARCHIVE)
@@ -96,5 +96,5 @@ public:
 };
 };
 
-TRANSLATE(core::SymbolList_O);
+TRANSLATE(adapt::SymbolList_O);
 #endif

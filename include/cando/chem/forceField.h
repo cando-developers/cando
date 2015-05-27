@@ -62,7 +62,7 @@ public:
     void	archiveBase(core::ArchiveP node);
 
 public:
-    core::SymbolMap<core::Str_O>	_database;
+    adapt::SymbolMap<core::Str_O>	_database;
 public:
 
     void	addInfo( core::Symbol_sp key, const string& data );
@@ -95,7 +95,7 @@ public:
 	string				_Ref;
     gctools::Vec0<core::Symbol_sp>		_SingleBondMultiBondDistinctions;
 	InfoDb_sp			_Info;
-	FFTypesDb_sp			_Types;
+        gc::Nilable<FFTypesDb_sp>	_Types;
 	FFStretchDb_sp			_Stretches;
 	FFAngleDb_sp			_Angles;
 	FFItorDb_sp			_Itors;

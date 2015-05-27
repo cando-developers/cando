@@ -67,19 +67,16 @@ public:
     bool	isDefined() { return ( this->coords[0]!=0.0 || this->coords[1]!=0.0 || this->coords[2]!=0.0 ); };
     void	archive( core::ArchiveP node );
 
-	/*! Normalize the Vector3 and throw a hard exception if it cannot be */
 	Vector3	normalized() const;
-
-	Vector3	normalized(const core::Lisp_sp& lisp) const;
 		//! Normalize the vector and if it is zero then return a zero vector
 	Vector3	normalizedOrZero() const;
 
-	double	angleToVectorAboutNormal(const Vector3& toVector, const Vector3& aboutNormal, const core::Lisp_sp& lisp);
+	double	angleToVectorAboutNormal(const Vector3& toVector, const Vector3& aboutNormal);
 #if 0 //[
 	QDomNode_sp	asXml(string nm="V3");
 	void		parseFromXml(QDomNode_sp node);
 #endif //]
-	void	dump(const core::Lisp_sp& lisp);
+	void	dump();
 	bool	sameAs(const Vector3& x);
 
     void	writeToStream( std::ostream& out );
@@ -100,17 +97,14 @@ typedef	vector<Vector3>	VectorVector3s;
 double	calculateDihedral( const Vector3& va,
 				const Vector3& vb,
 				const Vector3& vc,
-			   const Vector3& vd,
-			   const core::Lisp_sp& lisp);
+			   const Vector3& vd );
 
 double	calculateAngle( const Vector3& va,
 				const Vector3& vb,
-			const Vector3& vc,
-			const core::Lisp_sp& lisp );
+			const Vector3& vc );
 
 double	calculateDistance( const Vector3& va,
-			   const Vector3& vb,
-			   const core::Lisp_sp& lisp );
+			   const Vector3& vb );
 
 /*! Faster than calculateDistance because it doesnt
  * require a square root
@@ -120,15 +114,13 @@ double	calculateDistanceSquared( const Vector3& va,
 
 
 
-Vector3	buildOrigin(const core::Lisp_sp& lisp);
+Vector3	buildOrigin();
 
-Vector3	buildUsingBond( double distance, const Vector3& vb,
-			const core::Lisp_sp& lisp);
+Vector3	buildUsingBond( double distance, const Vector3& vb );
 
 //! Build a vector at distance from vb and angle from v
 Vector3 buildUsingBondAngle( double distance, const Vector3& vb,
-			     double angleRad, const Vector3& va,
-			     const core::Lisp_sp& lisp);
+			     double angleRad, const Vector3& va );
 
 Vector3 buildUsingBondAngleDihedral( double distance, const Vector3& vc,
 					double angleRad, const Vector3& vb,

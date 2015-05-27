@@ -22,7 +22,7 @@
 #include <cando/chem/loop.h>
 #include <cando/chem/oligomer.h>
 #include <cando/adapt/adapters.h>
-#include <clasp/core/symbolList.h>
+#include <cando/adapt/symbolList.h>
 #include <cando/chem/coupling.h>
 #include <cando/chem/candoDatabase.h>
 #include <cando/chem/monomerPack.h>
@@ -135,7 +135,7 @@ namespace chem {
 
     core::List_sp	Monomer_O::plugNamesAndCouplingsAsCons()
     {_G();
-	core::Cons_sp first = core::T_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
 	Monomer_O::Couplings::iterator	ci;
 	for ( ci=this->_Couplings.begin(); ci!=this->_Couplings.end(); ci++ )
@@ -162,9 +162,9 @@ namespace chem {
 
 
 
-    core::SymbolSet_sp Monomer_O::plugNames() const
+    adapt::SymbolSet_sp Monomer_O::plugNames() const
     {_OF();
-        core::SymbolSet_sp ss = core::SymbolSet_O::create();
+        adapt::SymbolSet_sp ss = adapt::SymbolSet_O::create();
         for ( Couplings::const_iterator it = this->_Couplings.begin(); it!=this->_Couplings.end(); ++it ) {
             ss->insert(it->first);
         }
@@ -235,7 +235,7 @@ namespace chem {
 
 
 
-    void	Monomer_O::setAliasesFromSymbolList(core::SymbolList_sp aliases)
+    void	Monomer_O::setAliasesFromSymbolList(adapt::SymbolList_sp aliases)
     {_G();
 	this->_Aliases->clear();
 	this->_Aliases->insertSymbolList(aliases);
@@ -317,6 +317,7 @@ namespace chem {
 	    } else
 	    {
 		RingCoupling_sp rc = coupling.as<RingCoupling_O>();
+                (void)rc;
 		LOG(BF("Ignoring out coupling for RingCoupling: %s") % rc->getName()->__repr__() );
 	    }
 	}
@@ -373,7 +374,7 @@ namespace chem {
 //        this->_Couplings = core::HashTableEq_O::create_default();
 	this->setComment("");
 	this->_Id = _Nil<core::Symbol_O>();
-	this->_Aliases = core::SymbolSet_O::create();
+	this->_Aliases = adapt::SymbolSet_O::create();
 	this->_Verbose = false;
 	this->_TemporaryInt = 0;
 	this->_SequenceNumber = 0;
@@ -745,7 +746,7 @@ namespace chem {
 
     void	MultiMonomer_O::_expandGroupName()
     {_G();
-	core::SymbolSet_sp		monomerNames;
+	adapt::SymbolSet_sp		monomerNames;
 	CandoDatabase_sp	bdb;
 	core::Symbol_sp			name;
 
@@ -762,12 +763,10 @@ namespace chem {
 	LOG(BF("Legal group name(%s)") % name->__repr__() );
 	monomerNames = bdb->expandEntityNameToTerminals(name);
 	LOG(BF("Got %d monomer names") % monomerNames->size() );
-	core::SymbolSet_O::iterator si;
-	for ( si=monomerNames->begin(); si!=monomerNames->end(); si++ )
-	{
-	    LOG(BF("Adding monomer named(%s)") % (*si)->__repr__() );
-	    this->addMonomerName(*si);
-	}
+	monomerNames->map( [this] (core::Symbol_sp si) {
+	    LOG(BF("Adding monomer named(%s)") % (si)->__repr__() );
+	    this->addMonomerName(si);
+          } );
 	if ( this->_CurrentMonomerIndex >= this->_Monomers.size() )
 	{
 	    this->_CurrentMonomerIndex = 0;
@@ -789,8 +788,7 @@ namespace chem {
  */
     void	MultiMonomer_O::checkForErrorsAndUnknownContexts(CandoDatabase_sp cdb)
     {_G();
-	core::StringSet_sp	allSpecificContextKeys;
-	core::StringSet_O::iterator	sit;
+	adapt::SymbolSet_sp	allSpecificContextKeys;
 	MonomerContext_sp	context;
 	bool			allContextsRecognized = true;
 	this->addStatusMessage("MultiMonomer_O::checkForErrorsAndUnknownContexts");
@@ -818,17 +816,15 @@ namespace chem {
 	    this->addErrorMessage("There are no legal specific contexts");
 	} else
 	{
-	    for ( sit=allSpecificContextKeys->begin(); sit!=allSpecificContextKeys->end(); sit++ )
-	    {
-		if ( !cdb->recognizesMonomerCoordinatesKey(*sit) )
-		{
-		    this->addErrorMessage("Monomer->Unrecognized context: "+*sit);
-		    allContextsRecognized = false;
-		    break;
-		}
-	    }
-	    if ( allContextsRecognized )
-	    {
+          allSpecificContextKeys->map_while_true( [&cdb,this,&allContextsRecognized] (core::Symbol_sp sit) {
+              if ( !cdb->recognizesMonomerCoordinatesKey(sit) ) {
+                this->addErrorMessage("Monomer->Unrecognized context: "+_rep_(sit));
+                allContextsRecognized = false;
+                return false;
+              }
+              return true;
+	    } );
+	    if ( allContextsRecognized ) {
 		this->addStatusMessage("All contexts are recognized.");
 	    }
 	}
@@ -905,18 +901,18 @@ namespace chem {
 	// according to the _GroupName
 	//
 	res->setMonomerAliases(this->_Aliases);
-	res->setUniqueLabel(this->_Id->symbolNameAsString());
+	res->setUniqueLabel(this->_Id);
 	if ( getCandoDatabase()->recognizesEntityNameSetName(this->_GroupName) )
 	{
 	    EntityNameSet_sp monomerPack = getCandoDatabase()->getEntity(this->_GroupName).as<EntityNameSet_O>();
 	    if ( monomerPack->supportsInterestingAtomAliases() )
 	    {
-		core::SymbolList_sp atomAliases = monomerPack->getInterestingAtomAliases();
+		adapt::SymbolList_sp atomAliases = monomerPack->getInterestingAtomAliases();
 		AtomIndexer_sp aliasAtoms = monomerPack->getAtomIndexerForMonomerName(this->getName());
 		ASSERTP(atomAliases->size() == aliasAtoms->numberOfAtomNames(),
 			"The number of atom names has to match the number of atom aliases");
 		AtomIndexer_O::atomNameIterator ii;
-		core::SymbolList_O::iterator ai;
+		adapt::SymbolList_O::iterator ai;
 		for ( ii = aliasAtoms->begin_AtomNames(), ai=atomAliases->begin();
 		      ii != aliasAtoms->end_AtomNames(); ii++, ai++ )
 		{
@@ -946,15 +942,13 @@ namespace chem {
     string MultiMonomer_O::description() const
     {//_G();
 	stringstream			ss;
-        gctools::Vec0<OneMonomer_sp>::iterator	it;
 	ss.str("");
 	ss << "MultiMonomer(";
 	ss << "["<<this->getGroupName()<<" id:" << this->_Id->__repr__() << "]=";
 	ss << " plugs: ";
 	Couplings::const_iterator	ci;
-	for ( ci=this->_Couplings.begin(); ci!=this->_Couplings.end(); ci++ )
-	{
-	    ss << ci->first << ",";
+	for ( ci=this->_Couplings.begin(); ci!=this->_Couplings.end(); ci++ ) {
+          ss << _rep_(ci->first) << ",";
 	}
 	ss << ")";
 	return ss.str();
@@ -964,7 +958,7 @@ namespace chem {
     bool Monomer_O::isMonomerContextValid()
     {_G();
 	LOG(BF("status") );
-        core::SymbolSet_sp keys = core::SymbolSet_O::create();
+        adapt::SymbolSet_sp keys = adapt::SymbolSet_O::create();
         for ( Couplings::const_iterator it = this->_Couplings.begin(); it!=this->_Couplings.end(); ++it ) {
             keys->insert(it->first);
         }
@@ -1013,7 +1007,7 @@ namespace chem {
 
 
 
-    core::SymbolList_sp MultiMonomer_O::allAtomAliases()
+    adapt::SymbolList_sp MultiMonomer_O::allAtomAliases()
     {_G();
 	EntityNameSet_sp		entityNameSet;
 	CandoDatabase_sp	bdb;
@@ -1024,7 +1018,7 @@ namespace chem {
 	{
 	    LOG(BF("Recognized the EntityNameSetName(%s)")% this->getGroupName() );
 	    entityNameSet = bdb->getEntityNameSet(this->getGroupName());
-	    core::SymbolList_sp aliases = entityNameSet->getInterestingAtomAliases();
+	    adapt::SymbolList_sp aliases = entityNameSet->getInterestingAtomAliases();
 	    LOG(BF("Returning with aliases(%s)")% aliases->asString() );
 	    return aliases;
 	} else 
@@ -1032,29 +1026,23 @@ namespace chem {
 	    LOG(BF("Did not recognize the EntityNameSetName(%s)")% this->getGroupName());
 	}
 	LOG(BF("Returning with nothing"));
-	return _Nil<core::SymbolList_O>();
+	return _Nil<adapt::SymbolList_O>();
     }
 
 
 
-    class AliasWrapper : public core::SymbolSetCartesianProductWrapper
+    class AliasWrapper : public adapt::SymbolSetCartesianProductWrapper
     {
-    private:
-	core::Lisp_sp	_Lisp;
     public:
-	AliasWrapper(core::Lisp_sp lisp)
-	{
-	    this->_Lisp = lisp;
-	}
 	core::T_sp operator()(core::Symbol_sp obj1, core::Symbol_sp obj2) const
 	{
-	    Alias_sp alias = Alias_O::create(this->_Lisp,obj1,obj2);
+	    Alias_sp alias = Alias_O::create(obj1,obj2);
 	    return alias;
 	}
     };
 
 
-    core::ObjectSet_sp Monomer_O::getAllAliases()
+    adapt::ObjectSet_sp Monomer_O::getAllAliases()
     {_G();
 	ASSERTNOTNULL(this->_Aliases);
 	if ( this->_Aliases->size() == 0 )
@@ -1063,14 +1051,14 @@ namespace chem {
 	    {
 		SIMPLE_ERROR(BF("The monomer[%s] doesn't have monomer aliases but it has atom aliases(%s) - this should never happen") % this->getName() % this->allAtomAliases()->asString() );
 	    }
-	    return _Nil<core::ObjectSet_O>();
+	    return _Nil<adapt::ObjectSet_O>();
 	}
 	ASSERT_gt(this->_Aliases->size(),0);
-	core::SymbolSet_sp atomAliases = core::SymbolSet_O::create();
-	core::SymbolList_sp atomAliasesList = this->allAtomAliases();
+	adapt::SymbolSet_sp atomAliases = adapt::SymbolSet_O::create();
+	adapt::SymbolList_sp atomAliasesList = this->allAtomAliases();
 	atomAliases->insertSymbolList(atomAliasesList);
-	AliasWrapper wrapper(_lisp);
-	core::ObjectSet_sp allAliases = this->_Aliases->cartesianProductWrapped(atomAliases,wrapper);
+	AliasWrapper wrapper;
+	adapt::ObjectSet_sp allAliases = this->_Aliases->cartesianProductWrapped(atomAliases,wrapper);
 	return allAliases;
     }
 
@@ -1139,7 +1127,7 @@ namespace chem {
 	    {
 		ASSERTNOTNULL(wci->second);
 		coup = wci->second;
-		outCouplings.append(coup);
+		outCouplings.push_back(coup);
 	    }
 	}
 	return outCouplings;

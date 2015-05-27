@@ -40,9 +40,9 @@ THE SOFTWARE.
 #include <clasp/core/holder.h>
 #include <clasp/core/lispVector.h>
 #include <clasp/core/cons.h>
-
-namespace core {
-
+#include <cando/adapt/adaptPackage.fwd.h>
+namespace adapt {
+  using namespace core;
 SMART(Residue);
 SMART(StringSet);
 SMART(StringList);
@@ -51,14 +51,14 @@ SMART(StringList);
 	A class that stores a set of strings
 */
 SMART(StringSet);
-class StringSet_O : public T_O {
-  LISP_BASE1(T_O);
-  LISP_CLASS(core, CorePkg, StringSet_O, "StringSet");
+ class StringSet_O : public core::T_O {
+   LISP_BASE1(core::T_O);
+  LISP_CLASS(adapt, AdaptPkg, StringSet_O, "StringSet");
   DECLARE_INIT();
 
 public:
   void initialize();
-  void archiveBase(ArchiveP node);
+  void archiveBase(core::ArchiveP node);
 
 private:
   set<string> strs;
@@ -79,13 +79,13 @@ public:
   bool contains(const string &s);
   bool containsSubset(StringSet_sp sub);
   void insert(const string &s) { this->strs.insert(s); };
-  void insertVectorStrings(VectorStrings s);
+  void insertVectorStrings(core::VectorStrings s);
   void insertStringSet(StringSet_sp ss);
   void insertStringList(StringList_sp ss);
-  StringSet_sp insertConsStrings(List_sp list);
+  StringSet_sp insertConsStrings(core::List_sp list);
   void clear();
 
-  List_sp asCons() const;
+  core::List_sp asCons() const;
   Vector_sp asVector() const;
 
   bool equal(T_sp ss) const;
@@ -135,5 +135,5 @@ public:
 };
 };
 
-TRANSLATE(core::StringSet_O);
+TRANSLATE(adapt::StringSet_O);
 #endif

@@ -2,7 +2,7 @@
 #include <clasp/core/package.h>
 #include <cando/chem/chemPackage.h>
 #include <cando/chem/candoScript.h>
-//#include "candoDatabase.h"
+#include <cando/chem/candoDatabase.h>
 #include <cando/chem/elements.h>
 #include <cando/chem/mbbCoreTools.h>
 #include <clasp/core/builtInClass.h>
@@ -105,13 +105,17 @@
 #include <cando/chem/monomerPack.h>
 #include <cando/chem/representedEntityNameSet.h>
 
+
+SYMBOL_EXPORT_SC_(ChemPkg,R);
+SYMBOL_EXPORT_SC_(ChemPkg,S);
+SYMBOL_EXPORT_SC_(ChemPkg,UnknownConfiguration);
 namespace chemkw {
 
 
 #pragma GCC visibility push(default)
 #define ChemKwPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include <symbols_scraped_inc.h>
+#include <cando/chem/generated/symbols_scraped_inc.h>
 #undef DO_SYMBOL
 #undef ChemKwPkg_SYMBOLS
 #pragma GCC visibility pop
@@ -124,7 +128,7 @@ namespace chem {
 #pragma GCC visibility push(default)
 #define ChemPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include <symbols_scraped_inc.h>
+#include <cando/chem/generated/symbols_scraped_inc.h>
 #undef DO_SYMBOL
 #undef ChemPkg_SYMBOLS
 #pragma GCC visibility pop
@@ -138,7 +142,7 @@ namespace chem
 #define EXPOSE_TO_CANDO
 #define Use_ChemPkg
 #define EXTERN_REGISTER
-#include <chem_initClasses_inc.h>
+#include <cando/chem/generated/initClasses_inc.h>
 #undef EXTERN_REGISTER
 #undef Use_ChemPkg
 #undef EXPOSE_TO_CANDO
@@ -171,14 +175,14 @@ namespace chem
 	{
 #define ChemKwPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {chemkw::cname = _lisp->internWithPackageName(pkg,lispname); chemkw::cname->exportYourself(exportp);}
-#include <symbols_scraped_inc.h>
+#include <cando/chem/generated/symbols_scraped_inc.h>
 #undef DO_SYMBOL
 #undef ChemKwPkg_SYMBOLS
 
 
 #define ChemPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,lispname); cname->exportYourself(exportp);}
-#include <symbols_scraped_inc.h>
+#include <cando/chem/generated/symbols_scraped_inc.h>
 #undef DO_SYMBOL
 #undef ChemPkg_SYMBOLS
 
@@ -190,7 +194,7 @@ namespace chem
 #define	Use_ChemPkg
 #define INVOKE_REGISTER
 #define LOOKUP_SYMBOL(pkg,name) _lisp->internWithPackageName(pkg,name)
-#include <chem_initClasses_inc.h>
+#include <cando/chem/generated/initClasses_inc.h>
 #undef INVOKE_REGISTER
 #undef Use_ChemPkg
 #undef ALL_STAGES
@@ -221,7 +225,7 @@ namespace chem
 #define _DBG(x)
 #define EXPOSE_TO_PYTHON
 #define	Use_ChemPkg
-#include <chem_initClasses_inc.h>
+#include <cando/chem/generated/initClasses_inc.h>
 #undef Use_ChemPkg
 #undef EXPOSE_TO_PYTHON
 #undef _DBG
@@ -273,7 +277,7 @@ namespace chem
 #define _CLASS_MACRO(_T_)				\
     STATIC_CLASS_INFO(_T_);			\
     INTRUSIVE_POINTER_REFERENCE_COUNT_ACCESSORS(_T_);
-#include <chem_initClasses_inc.h>
+#include <cando/chem/generated/initClasses_inc.h>
 #undef _CLASS_MACRO
 #undef EXPAND_CLASS_MACROS
 #endif

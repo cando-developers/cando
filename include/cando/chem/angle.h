@@ -28,7 +28,7 @@ private: // instance variables here
 	Atom_sp	_a2;
 	Atom_sp	_a3;
 public:
-	static Angle_sp create(Atom_sp a1, Atom_sp a2, Atom_sp a3,core::Lisp_sp lisp);
+	static Angle_sp create(Atom_sp a1, Atom_sp a2, Atom_sp a3);
 public: // Functions here
 	void setup(Atom_sp a1, Atom_sp a2, Atom_sp a3);
 

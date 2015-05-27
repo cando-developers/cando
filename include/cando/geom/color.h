@@ -41,14 +41,14 @@ namespace geom
 	static Color_sp getOrDefineSystemColor(core::Symbol_sp name, double red, double green, double blue);
 	static Color_sp getOrDefineSystemColor(core::ArchiveP node);
     public: // standard colors
-	static Color_sp white(core::Lisp_sp lisp);
-	static Color_sp yellow(core::Lisp_sp lisp);
-	static Color_sp red(core::Lisp_sp lisp);
-	static Color_sp green(core::Lisp_sp lisp);
-	static Color_sp blue(core::Lisp_sp lisp);
-	static Color_sp cyan(core::Lisp_sp lisp);
-	static Color_sp magenta(core::Lisp_sp lisp);
-	static Color_sp black(core::Lisp_sp lisp);
+	static Color_sp white();
+	static Color_sp yellow();
+	static Color_sp red();
+	static Color_sp green();
+	static Color_sp blue();
+	static Color_sp cyan();
+	static Color_sp magenta();
+	static Color_sp black();
     public:
 	void setColorName(core::Symbol_sp co);
 	Color_sp setColor(uint c) { this->_Color = c; return this->sharedThis<Color_O>();};

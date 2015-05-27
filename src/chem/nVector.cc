@@ -24,7 +24,7 @@ namespace chem {
 
     REGISTER_CLASS(chem,NVector_O);
 
-NVector_sp NVector_O::create(uint sz,core::Lisp_sp e)
+NVector_sp NVector_O::create(uint sz)
 {_G();
     GC_ALLOCATE(NVector_O, nv );
     nv->setup(sz);
@@ -400,10 +400,10 @@ double  dDot;
  *
  * List the term-by-term differences and return as an XML object
  */
-geom::QDomNode_sp	NVector_O::termDifferencesAsXml(const string& thisName, NVector_sp n, const string& otherName)
+adapt::QDomNode_sp	NVector_O::termDifferencesAsXml(const string& thisName, NVector_sp n, const string& otherName)
 {
-    geom::QDomNode_sp xml = geom::QDomNode_O::create(_lisp,"Differences");
-    geom::QDomNode_sp part;
+    adapt::QDomNode_sp xml = adapt::QDomNode_O::create("Differences");
+    adapt::QDomNode_sp part;
     uint		i;
     double	avg;
     vector<double>::iterator	resi, ni;
@@ -413,7 +413,7 @@ geom::QDomNode_sp	NVector_O::termDifferencesAsXml(const string& thisName, NVecto
 	avg = (*resi+*ni)/2.0;
 	if ( avg < 0.0000001 ) continue;
 	if ( fabs(*resi-*ni)/avg > 0.1 ) {
-	    part = geom::QDomNode_O::create(_lisp,"V");
+	    part = adapt::QDomNode_O::create("V");
 	    part->addAttributeInt("i",i);
 	    part->addAttributeDoubleScientific(thisName,*resi);
 	    part->addAttributeDoubleScientific(otherName,*ni);

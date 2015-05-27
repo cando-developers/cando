@@ -96,8 +96,8 @@ namespace chem
 
 	    friend class Monomer_O;
 	public:
-	    typedef	gctools::SmallMap<core::Symbol_sp,Topology_sp> TopologyMap; //core::SymbolMap<Topology_O>	TopologyMap;
-	    typedef    	gctools::SmallMap<core::Symbol_sp,Plug_sp> PlugMap; // core::SymbolMap<Plug_O>		PlugMap;
+	    typedef	gctools::SmallMap<core::Symbol_sp,Topology_sp> TopologyMap; //adapt::SymbolMap<Topology_O>	TopologyMap;
+	    typedef    	gctools::SmallMap<core::Symbol_sp,Plug_sp> PlugMap; // adapt::SymbolMap<Plug_O>		PlugMap;
 	private:
 	    core::Symbol_sp			_Name;
 	    ConstitutionIndex0N			_ConstitutionIndex0N;
@@ -111,13 +111,13 @@ namespace chem
 	    TopologyMap				_Topologies;
 	    StereoInformation_sp		_StereoInformation;
 	private:
-//	    Residue_sp	loadResidue(geom::QDomNode_sp node);
+//	    Residue_sp	loadResidue(adapt::QDomNode_sp node);
 
 	public:
 	    typedef gctools::Vec0<Stereoisomer_sp>::iterator	stereoisomerIterator;
 	    typedef gctools::Vec0<Stereoisomer_sp>::const_iterator	const_stereoisomerIterator;
 	public:
-	    virtual core::SymbolSet_sp	expandedNameSet() { return this->getMonomerNamesAsSymbolSet(); };
+	    virtual adapt::SymbolSet_sp	expandedNameSet() { return this->getMonomerNamesAsSymbolSet(); };
 	public:
 
 
@@ -182,12 +182,12 @@ namespace chem
 	    Topology_sp topologyWithName(core::Symbol_sp name) const;
 
 
-	    core::StringList_sp getMonomerNamesAsStringList();
-	    core::SymbolSet_sp	getMonomerNamesAsSymbolSet();
+	    adapt::StringList_sp getMonomerNamesAsStringList();
+	    adapt::SymbolSet_sp	getMonomerNamesAsSymbolSet();
 
-	    core::SymbolSet_sp	getPlugNames();
+	    adapt::SymbolSet_sp	getPlugNames();
 
-	    core::StringList_sp getPdbNamesAsStringList();
+	    adapt::StringList_sp getPdbNamesAsStringList();
 
 	    //! Return the monomer name for the monomer with the nameOrPdb
 	    core::Symbol_sp	nameFromNameOrPdb(core::Symbol_sp nm);

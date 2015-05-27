@@ -10,13 +10,14 @@
 #include <cando/adapt/stringSet.h>
 #include <clasp/core/environment.h>
 #include <cando/adapt/adapters.h>
-#include <clasp/core/stringList.h>
+#include <cando/adapt/stringList.h>
 #include <cando/chem/stereochemistry.h>
 #include <cando/chem/constitution.h>
 #include <cando/chem/representedEntityNameSet.h>
 #include <cando/chem/restraint.h>
 #include <cando/chem/complexRestraints.h>
 #include <cando/chem/entity.h>
+#include <cando/chem/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
 
@@ -31,11 +32,9 @@ namespace chem {
 */
 int	StereoConfiguration_O::getMoeConfiguration()
 {
-    if ( this->_Configuration == "R" ) {
-	return 1;
-    }
-	// If S
-    return -1;
+  if ( this->_Configuration == chem::_sym_R ) return 1;
+  else if (this->_Configuration == chem::_sym_S ) return -1;
+  SIMPLE_ERROR(BF("Configuration can only be chem:S or chem:R - it was %s") % _rep_(this->_Configuration));
 }
 
 
@@ -65,13 +64,13 @@ __END_DOC
 #define ARGS_StereoConfiguration_O_make "(atom_name config)"
 #define DECL_StereoConfiguration_O_make ""
 #define DOCS_StereoConfiguration_O_make "make StereoConfiguration"
-StereoConfiguration_sp StereoConfiguration_O::make(string atomName, string config)
-  {_G();
-      GC_ALLOCATE(StereoConfiguration_O, me );
-    me->_AtomName = atomName;
-    me->_Configuration = config;
-    return me;
-  };
+StereoConfiguration_sp StereoConfiguration_O::make(core::Symbol_sp atomName, core::Symbol_sp config)
+{
+  GC_ALLOCATE(StereoConfiguration_O, me );
+  me->_AtomName = atomName;
+  me->_Configuration = config;
+  return me;
+};
 
 #else
     core::T_sp StereoConfiguration_O::__init__(core::Function_sp exec, core::Cons_sp args,
@@ -87,20 +86,20 @@ StereoConfiguration_sp StereoConfiguration_O::make(string atomName, string confi
 /*! Create a list of StereoConfiguration(s)
  * Match atom names to configurations
  */
-core::List_sp StereoConfiguration_O::create_multiple(core::Cons_sp atomNames, core::Cons_sp configurations, core::Lisp_sp lisp )
+core::List_sp StereoConfiguration_O::create_multiple(core::List_sp atomNames, core::List_sp configurations)
 {_G();
-    ASSERT_eq(atomNames->length(), configurations->length() );
+  ASSERT_eq(core::cl_length(atomNames), core::cl_length(configurations) );
     core::List_sp list = _Nil<core::T_O>();
     core::List_sp curName = atomNames;
     core::List_sp curConfig = configurations;
     while ( curName.notnilp() )
     {
 	GC_ALLOCATE(StereoConfiguration_O, one );
-	one->setAtomName(curName->car<core::Str_O>()->get());
-	one->setConfiguration(curConfig->car<core::Str_O>()->get());
-	list = core::Cons_O::create(one,list,lisp);
-	curName = curName->cdr();
-	curConfig = curConfig->cdr();
+	one->setAtomName(oCar(curName).as<core::Symbol_O>());
+	one->setConfiguration(oCar(curConfig).as<core::Symbol_O>());
+	list = core::Cons_O::create(one,list);
+	curName = oCdr(curName);
+	curConfig = oCdr(curConfig);
     }
     return list;
 }
@@ -114,10 +113,10 @@ core::List_sp StereoConfiguration_O::create_multiple(core::Cons_sp atomNames, co
 #define DOCS_af_StereoConfiguration_create_multiple "StereoConfiguration_create_multiple"
     core::T_sp af_StereoConfiguration_create_multiple(core::List_sp atomNames, core::List_sp configurations)
     {_G();
-	return StereoConfiguration_O::create_multiple(atomNames,configurations,_lisp);
+	return StereoConfiguration_O::create_multiple(atomNames,configurations);
     }
 
-core::Cons_sp StereoConfiguration_O::stereochemicalPermutations(uint numberOfCenters,core::Lisp_sp lisp)
+core::List_sp StereoConfiguration_O::stereochemicalPermutations(uint numberOfCenters)
 {_G();
     core::List_sp list = _Nil<core::T_O>();
     uint pow = 1 << numberOfCenters;
@@ -129,14 +128,14 @@ core::Cons_sp StereoConfiguration_O::stereochemicalPermutations(uint numberOfCen
 	{
 	    if ( map & 1 )
 	    {
-		one = core::Cons_O::create(core::Str_O::create("R"),one,lisp);
+              one = core::Cons_O::create(chem::_sym_R,one);
 	    } else
 	    {
-		one = core::Cons_O::create(core::Str_O::create("S"),one,lisp);
+              one = core::Cons_O::create(chem::_sym_S,one);
 	    }
 	    map = map >> 1;
 	}
-	list = core::Cons_O::create(one,list,lisp);
+	list = core::Cons_O::create(one,list);
     }
     return list;
 }
@@ -151,8 +150,8 @@ core::Cons_sp StereoConfiguration_O::stereochemicalPermutations(uint numberOfCen
 #define DOCS_af_stereochemicalPermutations "stereochemicalPermutations"
     core::T_sp af_stereochemicalPermutations(core::Fixnum_sp numcenters)
     {_G();
-	uint numberOfCenters = numcenters->get();
-	core::List_sp results = StereoConfiguration_O::stereochemicalPermutations(numberOfCenters,_lisp);
+      uint numberOfCenters = core::clasp_to_fixnum(numcenters);
+	core::List_sp results = StereoConfiguration_O::stereochemicalPermutations(numberOfCenters);
 	return results;
     }
 
@@ -183,10 +182,10 @@ void	Stereoisomer_O::initialize()
 }
 #endif
 
-core::SymbolSet_sp	Stereoisomer_O::expandedNameSet()
+adapt::SymbolSet_sp	Stereoisomer_O::expandedNameSet()
 {_G();
-core::SymbolSet_sp	ss;
-    ss = core::SymbolSet_O::create();
+adapt::SymbolSet_sp	ss;
+    ss = adapt::SymbolSet_O::create();
     ss->insert(this->getName());
     return ss;
 }
@@ -203,7 +202,7 @@ RepresentativeList_sp Stereoisomer_O::expandedRepresentativeList() const
     gr->setRepresentative(this->getName());
     gr->addEntityName(this->getName());
     ss = RepresentativeList_O::create();
-    ss->append(gr);
+    ss->vectorPushExtend(gr);
     return ss;
 }
 
@@ -215,7 +214,7 @@ string Stereoisomer_O::__repr__() const
     return ss.str();
 }
 
-string Stereoisomer_O::getConfigurationForCenter( const string& centerName )
+core::Symbol_sp Stereoisomer_O::getConfigurationForCenter( core::Symbol_sp centerName )
 {_G();
     for ( gctools::Vec0<StereoConfiguration_sp>::iterator it=this->_Configurations.begin();
           it!=this->_Configurations.end(); it++ )
@@ -225,7 +224,7 @@ string Stereoisomer_O::getConfigurationForCenter( const string& centerName )
 	    return (*it)->getConfiguration();
 	}
     }
-    return "unknownConfig";
+    return chem::_sym_UnknownConfiguration;
 }
 
 Constitution_sp Stereoisomer_O::getConstitution()
@@ -261,9 +260,8 @@ Stereoisomer_sp Stereoisomer_O::make(core::Symbol_sp name, core::Symbol_sp pdb, 
     IMPLEMENT_MEF(BF("Handle setOwnerOfAllEntries"));
 //    configs->setOwnerOfAllEntries(me);
     me->_Configurations.clear();
-    for ( ; configs.notnilp(); configs = configs->cdr() )
-      {
-	me->_Configurations.push_back(configs->car<StereoConfiguration_O>() );
+    for ( auto cur : configs ) {
+	me->_Configurations.push_back(oCar(cur).as<StereoConfiguration_O>() );
       }
     return me;
   };
@@ -317,7 +315,7 @@ void	StereoInformation_O::addStereoisomer(Stereoisomer_sp s)
     }
     this->_NameOrPdbToStereoisomer.set(s->getName(),s);
     this->_NameOrPdbToStereoisomer.set(s->getPdb(),s);
-    this->_Stereoisomers.append(s);
+    this->_Stereoisomers.push_back(s);
 }
 
 
@@ -400,7 +398,7 @@ __END_DOC
 StereoInformation_sp StereoInformation_O::make(core::List_sp stereoisomers, core::List_sp restraints)
   {_G();
       GC_ALLOCATE(StereoInformation_O, me );
-    me->_Stereoisomers.fillFromCons(stereoisomers);
+      core::fillVec0(stereoisomers,me->_Stereoisomers);
     IMPLEMENT_MEF(BF("Handle setOwnerOfAllEntries"));
 //    stereoisomers->setOwnerOfAllEntries(me);
     me->_NameOrPdbToStereoisomer.clear();
@@ -461,12 +459,12 @@ StereoInformation_sp StereoInformation_O::make(core::List_sp stereoisomers, core
 //
 //	getMonomerNames
 //
-//!	Return a core::StringList_sp of monomer names for this mold
-core::StringList_sp StereoInformation_O::getMonomerNamesAsStringList()
+//!	Return a adapt::StringList_sp of monomer names for this mold
+adapt::StringList_sp StereoInformation_O::getMonomerNamesAsStringList()
 {
-core::StringList_sp				names;
+adapt::StringList_sp				names;
 gctools::Vec0<Stereoisomer_sp>::iterator	mnpi;
-    names = core::StringList_O::create();
+    names = adapt::StringList_O::create();
     for ( mnpi=this->_Stereoisomers.begin();
 		mnpi!=this->_Stereoisomers.end(); mnpi++ ) {
 	names->append((*mnpi)->getName()->symbolNameAsString());
@@ -477,12 +475,12 @@ gctools::Vec0<Stereoisomer_sp>::iterator	mnpi;
 
 
 
-//!	Return a core::StringSet_sp of monomer names for this Constitution
-core::SymbolSet_sp StereoInformation_O::getMonomerNamesAsSymbolSet()
+//!	Return a adapt::StringSet_sp of monomer names for this Constitution
+adapt::SymbolSet_sp StereoInformation_O::getMonomerNamesAsSymbolSet()
 {
-core::SymbolSet_sp				names;
+adapt::SymbolSet_sp				names;
 gctools::Vec0<Stereoisomer_sp>::iterator	mnpi;
-    names = core::SymbolSet_O::create();
+    names = adapt::SymbolSet_O::create();
     for ( mnpi=this->_Stereoisomers.begin();
 		mnpi!=this->_Stereoisomers.end(); mnpi++ ) {
 	names->insert((*mnpi)->getName());
@@ -496,11 +494,11 @@ gctools::Vec0<Stereoisomer_sp>::iterator	mnpi;
 //	getPdbNames
 //
 //!	Return a core::VectorStrings of monomer pdb names for this mold
-core::StringList_sp StereoInformation_O::getPdbNamesAsStringList()
+adapt::StringList_sp StereoInformation_O::getPdbNamesAsStringList()
 {
-core::StringList_sp	names;
+adapt::StringList_sp	names;
 gctools::Vec0<Stereoisomer_sp>::iterator	mnpi;
-    names = core::StringList_O::create();
+    names = adapt::StringList_O::create();
     for ( mnpi=this->_Stereoisomers.begin();
 		mnpi!=this->_Stereoisomers.end(); mnpi++ ) {
 	names->append((*mnpi)->getPdb()->symbolNameAsString());

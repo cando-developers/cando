@@ -19,6 +19,7 @@ __END_DOC
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
 #include <cando/adapt/adapters.h>
+#include <cando/adapt/objectSet.h>
 #include <cando/chem/loop.h>
 #include <clasp/core/hashTableEq.h>
 #include <cando/chem/virtualAtom.h>
@@ -129,7 +130,6 @@ void PathMessage_O::dump()
     uint lastResidue = a2->getResidueContainedBy()->getId();
     _lisp->print(BF("Ring start: %d:%s end: %d:%s") % firstResidue %  firstName
 		 % lastResidue % lastName );
-    core::ObjectSet_sp verts = core::ObjectSet_O::create();
     _lisp->print(BF("Edges: "));
     vector<uint>::iterator ei;
     vector<uint> vals;
@@ -150,7 +150,6 @@ void PathMessage_O::dump()
 
 core::List_sp PathMessage_O::getAtoms()
 {_G();
-    core::ObjectSet_sp verts = core::ObjectSet_O::create();
     gctools::SmallOrderedSet<Atom_sp>	atoms;
     vector<uint>::iterator ei;
     vector<uint> edges;
@@ -229,8 +228,7 @@ void	AGVertex_O::dump()
 {_G();
     this->_atom->dump();
     for ( auto cur : this->getConnectedVertices() ) {
-    {
-	_lisp->prin1(BF("%s ") % cur->car<AGVertex_O>()->getAtom()->getName() );
+ 	_lisp->prin1(BF("%s ") % cur->car<AGVertex_O>()->getAtom()->getName() );
     }
     _lisp->print(BF(""));
 }
@@ -390,7 +388,7 @@ void AGVertex_O::receive(uint stage)
 		    vertexDict[nodeId] = core::Cons_O::create(msg,vertexDict[nodeId]);
 		} else
 		{
-		    vertexDict[nodeId]=core::T_O::create(msg,_Nil<core::T_O>());
+		    vertexDict[nodeId]=core::Cons_O::create(msg,_Nil<core::T_O>());
 		}
 	    }
 	    if ( edgeArray1[i].notnilp() )
@@ -402,7 +400,7 @@ void AGVertex_O::receive(uint stage)
 		    vertexDict[nodeId] = core::Cons_O::create(msg,vertexDict[nodeId]);
 		} else
 		{
-		    vertexDict[nodeId]=core::T_O::create(msg,_Nil<core::T_O>());
+		    vertexDict[nodeId]=core::Cons_O::create(msg,_Nil<core::T_O>());
 		}
 	    }
 	}
@@ -672,7 +670,6 @@ public:
 
 void RingFinder_O::advanceRingSearch(uint stage)
 {_G();
-    gctools::SmallMap<Atom_sp,AGVertex_sp>::iterator	vi;
     {_BLOCK_TRACE("send stage");
 	RingFinderVertexSend sender;
 	this->_vertices->lowLevelMapHash(&sender);
@@ -716,8 +713,7 @@ void RingFinder_O::addRing(PathMessage_sp ring, uint stage)
     core::SimpleBitVector_sp beep = ring->beep();
     LOG(BF("Adding ring with beep=%s") % beep->__repr__() );
     core::HashGenerator hg;
-    beep->sxhash(hg);
-    uint hash = hg.hash();
+    clasp_sxhash(beep,hg);
     core::List_sp ringList = _Nil<core::T_O>();
     FIX_ME(); // fix below
 #if 0
@@ -801,7 +797,7 @@ core::List_sp RingFinder_O::getAllRingsAsListsOfAtoms()
     {
 	core::List_sp oneRing = (*it)->getAtoms();
 	lists = core::Cons_O::create(oneRing,lists);
-	LOG(BF("Ring #%d = size(%d) %s") % ridx % oneRing->length() % oneRing->__repr__().c_str()  );
+	LOG(BF("Ring #%d = size(%d) %s") % ridx % core::cl_length(oneRing) % oneRing->__repr__().c_str()  );
 	ridx++;
     }
     return lists;
@@ -843,7 +839,7 @@ core::List_sp RingFinder_O::identifyRingsInMolecule(Molecule_sp molecule)
 	rings = atomGraph->getAllRingsAsListsOfAtoms();
 	for ( auto curRing : rings ) {
           core::List_sp atoms = oCar(curRing);
-	    uint ringSize = atoms->length();
+          uint ringSize = core::cl_length(atoms);
 	    for ( auto atomCons : atoms ) {
               Atom_sp atom = oCar(atomCons).as<Atom_O>();
 		atom->setInRingOfSize(ringSize);
@@ -886,11 +882,10 @@ core::List_sp RingFinder_O::identifyRings(Matter_sp matter)
 	    Molecule_sp mol = molecules.getMolecule();
 	    core::List_sp rings = RingFinder_O::identifyRingsInMolecule(mol);
 	    // Transfer the rings in rings into allRings
-	    while ( rings.notnilp() )
-	    {
+	    while ( rings.notnilp() ) {
 		core::List_sp one = rings;
-		rings = rings->cdr();
-		one->setCdr(allRings);
+		rings = oCdr(rings);
+		one.asCons()->setCdr(allRings);
 		allRings = one;
 	    }
 	}
@@ -901,13 +896,13 @@ core::List_sp RingFinder_O::identifyRings(Matter_sp matter)
 
 
 
-core::List_sp RingFinder_O::ringBonds(core::Cons_sp atoms)
+core::List_sp RingFinder_O::ringBonds(core::List_sp atoms)
 {_G();
     core::List_sp ringBonds = _Nil<core::T_O>();
     gctools::SmallOrderedSet<Atom_sp> atomSet;
     {_BLOCK_TRACE(BF("Put atoms into set"));
       for ( auto cur : atoms ) {
-	    Atom_sp atom = cur->car<Atom_O>();
+        Atom_sp atom = oCar(cur).as<Atom_O>();
 	    LOG(BF("Atom in ring: %s") % atom->description());
 	    atomSet.insert(cur->car<Atom_O>());
 	}

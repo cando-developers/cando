@@ -5,8 +5,8 @@
 //
 
 
-#ifndef	geom_QUICKDOM_H
-#define	geom_QUICKDOM_H
+#ifndef	adapt_QUICKDOM_H
+#define	adapt_QUICKDOM_H
 
 #define	SAVE_XML_FILE_NAME
 //#define	DONT_SAVE_XML_FILE_NAME
@@ -23,9 +23,9 @@
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
 #include <clasp/core/lisp.h>
-#include <cando/geom/geomPackage.fwd.h>
+#include <cando/adapt/adaptPackage.fwd.h>
 
-namespace geom {
+namespace adapt {
 
 SMART(QDomNode);
 
@@ -37,7 +37,7 @@ SMART(QDomNode );
     class QDomNode_O : public core::T_O
 {
     LISP_BASE1(core::T_O);
-    LISP_CLASS(geom,GeomPkg,QDomNode_O,"QDomNode");
+    LISP_CLASS(adapt,AdaptPkg,QDomNode_O,"QDomNode");
 
 DECLARE_INIT()
 private:
@@ -57,9 +57,9 @@ private:
     void	fillVectorQDomNodesIfNameIs(int depth, QDomNode_sp me, VectorQDomNodes& vnodes, const string& name);
 
 public:
-    static QDomNode_sp create(core::Lisp_sp e,const string& nodeName);
-//    static QDomNode_sp parseFileName(const string& fileName, core::Lisp_sp e );
-//    static QDomNode_sp open(const string& fileName ) { return QDomNode_O::parseFileName(fileName,e);};
+    static QDomNode_sp create(const string& nodeName);
+    static QDomNode_sp parseFileName(const string& fileName );
+    static QDomNode_sp open(const string& fileName ) { return QDomNode_O::parseFileName(fileName);};
     static QDomNode_sp parseFromString(const string& data);
 public:
     typedef VectorQDomNodes::iterator	iterator;
@@ -433,6 +433,6 @@ public:
 
 };
 
-TRANSLATE(geom::QDomNode_O);
+TRANSLATE(adapt::QDomNode_O);
 #endif
 

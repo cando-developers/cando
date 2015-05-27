@@ -87,13 +87,13 @@ uint	AbstractLargeSquareMatrix_O::indexFromCoordinates(uint x, uint y )
 
 void	AbstractLargeSquareMatrix_O::writeMathematica(const string& fileName)
 {
-ofstream	fout;
+  std::ofstream	fout;
 uint		x,y;
     fout.open(fileName.c_str());
     fout << "{" << std::endl;
-    fout << setiosflags(ios::fixed)
-	<< setw(16)
-	<< setprecision(8);
+    fout << std::setiosflags(std::ios::fixed)
+         << std::setw(16)
+         << std::setprecision(8);
     for ( y = 0; y<this->dimension(); y++ ) {
 	if ( y!= 0 ) {
 	    fout << "," << std::endl;
@@ -113,13 +113,13 @@ uint		x,y;
 
 void	AbstractLargeSquareMatrix_O::writeMathematicaSymbolic(const string& fileName)
 {
-ofstream	fout;
+  std::ofstream	fout;
 uint		x,y;
     fout.open(fileName.c_str());
     fout << "{" << std::endl;
-    fout << setiosflags(ios::fixed)
-	<< setw(16)
-	<< setprecision(8);
+    fout << std::setiosflags(std::ios::fixed)
+         << std::setw(16)
+         << std::setprecision(8);
     for ( y = 0; y<this->dimension(); y++ ) {
 	if ( y!= 0 ) {
 	    fout << "," << std::endl;
@@ -188,7 +188,7 @@ double	sum;
 // ****************************************************
 // ****************************************************
 
-FullLargeSquareMatrix_sp FullLargeSquareMatrix_O::create(core::Lisp_sp e,uint dim, TriangleType type)
+FullLargeSquareMatrix_sp FullLargeSquareMatrix_O::create(uint dim, TriangleType type)
 {_G();
     GC_ALLOCATE(FullLargeSquareMatrix_O, res );
     res->setup(dim,type);
@@ -323,7 +323,7 @@ uint		i;
 // ****************************************************
 // ****************************************************
 
-SparseLargeSquareMatrix_sp SparseLargeSquareMatrix_O::create(core::Lisp_sp e,uint dim, TriangleType type)
+SparseLargeSquareMatrix_sp SparseLargeSquareMatrix_O::create(uint dim, TriangleType type)
 {_G();
     GC_ALLOCATE(SparseLargeSquareMatrix_O, res );
     res->setup(dim,type);

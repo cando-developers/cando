@@ -36,10 +36,10 @@ void connectAtomsInMatterInCovalentContact(Matter_sp matter);
 
 SMART(ObjectSet);
 
-core::ObjectSet_sp atomsWithinSphere(Matter_sp matter, Vector3 center, double radius);
+adapt::ObjectSet_sp atomsWithinSphere(Matter_sp matter, Vector3 center, double radius);
 
 
-core::ObjectSet_sp atomsInMatter(Matter_sp matter);
+adapt::ObjectSet_sp atomsInMatter(Matter_sp matter);
 
 
 void exposeMbbCoreTools(core::Lisp_sp lisp);

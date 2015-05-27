@@ -53,7 +53,7 @@ namespace chem
 	// nothing
     }
 #endif
-    IterateMatter_sp IterateMatter_O::create(core::Lisp_sp e,Matter_sp top, int goal)
+    IterateMatter_sp IterateMatter_O::create(Matter_sp top, int goal)
     {
 	GC_ALLOCATE(IterateMatter_O, m );
 	m->_Top = top;
@@ -135,7 +135,7 @@ namespace chem
 
 
 
-    IterateAtoms_sp IterateAtoms_O::create(Matter_sp top, core::Lisp_sp e)
+    IterateAtoms_sp IterateAtoms_O::create(Matter_sp top)
     {_G();
 	GC_ALLOCATE(IterateAtoms_O, ia );
 	ia->initTopAndGoal(top,ATOMS);
@@ -190,7 +190,7 @@ namespace chem
 
 
 
-    IterateResidues_sp IterateResidues_O::create(core::Lisp_sp e,Matter_sp top)
+    IterateResidues_sp IterateResidues_O::create(Matter_sp top)
     {_G();
 	GC_ALLOCATE(IterateResidues_O, ia );
 	ia->initTopAndGoal(top,RESIDUES);
@@ -206,7 +206,7 @@ namespace chem
 #define DOCS_IterateResidues_O_createForMatter "IterateResidues_O_createForMatter"
     core::T_sp IterateResidues_O::createForMatter(Matter_sp matter)
     {_G();
-	return IterateResidues_O::create(_lisp,matter);
+	return IterateResidues_O::create(matter);
     }
 
 
@@ -219,7 +219,7 @@ namespace chem
 
 
 
-    IterateBonds_sp IterateBonds_O::create(core::Lisp_sp e,Matter_sp top)
+    IterateBonds_sp IterateBonds_O::create(Matter_sp top)
     {_G();
 	GC_ALLOCATE(IterateBonds_O, ia );
 	ia->initTopAndGoal(top,BONDS);
@@ -236,7 +236,7 @@ namespace chem
 #define DOCS_IterateBonds_O_createForMatter "IterateBonds_O_createForMatter"
     core::T_sp IterateBonds_O::createForMatter(Matter_sp matter)
     {_G();
-	return IterateBonds_O::create(_lisp,matter);
+	return IterateBonds_O::create(matter);
     }
 
 

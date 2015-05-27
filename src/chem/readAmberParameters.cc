@@ -1,9 +1,12 @@
 #define	DEBUG_LEVEL_FULL
 
+#include <clasp/core/foundation.h>
 #include <cando/chem/readAmberParameters.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
 #include <clasp/core/numerics.h>
+#include <clasp/core/lispStream.h>
+#include <clasp/core/str.h>
 #include <cando/chem/chemInfo.h>
 #include <cando/chem/units.h>
 #include <cando/chem/ffTypesDb.h>
@@ -25,15 +28,15 @@ void	ReadAmberParameters_O::initialize()
 }
 
 
-void	ReadAmberParameters_O::readTypes(const string& fileName)
+void	ReadAmberParameters_O::readTypes(core::T_sp fin)
 {_G();
-    this->_Types = this->parseTypeRules(fileName);
+    this->_Types = this->parseTypeRules(fin);
 }
 
 
-void	ReadAmberParameters_O::readParameters(const string& fileName)
+void	ReadAmberParameters_O::readParameters(core::T_sp fin)
 {
-    this->_ForceField = this->parseAmberFormattedForceField(fileName);
+    this->_ForceField = this->parseAmberFormattedForceField(fin);
 }
 
 
@@ -59,100 +62,90 @@ ForceField_sp ReadAmberParameters_O::getForceField()
 
 
 
-FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(const string& fileName)
-{_G();
-    GC_ALLOCATE(WildElementDict_O, wildCardElementDictionary );
-    GC_ALLOCATE(FFTypesDb_O, ffTypesDb );
-    uint lineno = 1;
-    vector< pair< uint, string> > entries;
-    ifstream fin;
-    fin.open(fileName.c_str(),ios::in);
-    if ( !fin.is_open() )
+FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(core::T_sp fin)
+{
+  GC_ALLOCATE(WildElementDict_O, wildCardElementDictionary );
+  GC_ALLOCATE(FFTypesDb_O, ffTypesDb );
+  uint lineno = 1;
+  vector< pair< uint, string> > entries;
+  while ( true ) {
+    core::T_mv mv_line = core::cl_read_line(fin,_Nil<T_O>());
+    if ( mv_line.nilp() ) break;
+    string line = mv_line.as<core::Str_O>()->get();
+    LOG(BF("Read line(%s)") % line  );
+    if ( line.substr(0,8) == "WILDATOM" ) {
+      vector<string> names = core::split(line," \t");
+      string wildName = names[1];
+      wildCardElementDictionary->addWildName(_lisp->intern(wildName,ChemKwPkg));
+      for ( vector<string>::iterator it=names.begin()+1; it!=names.end(); it++ )
+      {
+        core::Symbol_sp wildSymbol = _lisp->intern(wildName,ChemKwPkg);
+        core::Symbol_sp wildOtherSymbol = _lisp->intern(*it,ChemKwPkg);
+        wildCardElementDictionary->addWildNameMap(wildSymbol,wildOtherSymbol);
+      }
+    } else if ( line.substr(0,3) == "ATD" )
     {
-	SIMPLE_ERROR(BF("Could not open file: "+fileName ));
+      pair<uint,string> entry;
+      entry.first = lineno;
+      entry.second = line;
+      entries.push_back( entry );
     }
-    char	buffer[1024];
-    while ( fin.good() )
+  }
+  vector< pair<uint,string> >::iterator ei;
+  for ( ei=entries.begin(); ei!=entries.end(); ei++ )
+  {
+    ChemInfo_sp typeRule = ChemInfo_O::create();
+    typeRule->compileAntechamber(ei->second,wildCardElementDictionary);
+    if ( typeRule->compileSucceeded() )
     {
-	fin.getline(buffer,sizeof(buffer)-1);
-	LOG(BF("Read line(%s)") % buffer  );
-	string line = buffer;
-        if ( line.substr(0,8) == "WILDATOM" )
-	{
-            vector<string> names = core::split(line," \t");
-            string wildName = names[1];
-            wildCardElementDictionary->addWildName(wildName);
-            for ( vector<string>::iterator it=names.begin()+1; it!=names.end(); it++ )
-	    {
-                wildCardElementDictionary->addWildNameMap(wildName,*it);
-	    }
-	} else if ( line.substr(0,3) == "ATD" )
-	{
-	    pair<uint,string> entry;
-	    entry.first = lineno;
-	    entry.second = line;
-            entries.push_back( entry );
-	}
-    }
-    vector< pair<uint,string> >::iterator ei;
-    for ( ei=entries.begin(); ei!=entries.end(); ei++ )
+      ffTypesDb->add(typeRule);
+    } else
     {
-	ChemInfo_sp typeRule = ChemInfo_O::create();
-	typeRule->compileAntechamber(ei->second,wildCardElementDictionary);
-        if ( typeRule->compileSucceeded() )
-	{
-            ffTypesDb->add(typeRule);
-	} else
-	{
-	    SIMPLE_ERROR(BF("Antechamber compile failed on: "+ei->second+"\n"+typeRule->compilerMessage() ));
-	}
+      SIMPLE_ERROR(BF("Antechamber compile failed on: "+ei->second+"\n"+typeRule->compilerMessage() ));
     }
-    fin.close();
-    return ffTypesDb;
+  }
+  return ffTypesDb;
 }
 
 
 
 
-FFNonbondDb_sp ReadAmberParameters_O::parseFirstNonbondDb(ifstream& fin)
+FFNonbondDb_sp ReadAmberParameters_O::parseFirstNonbondDb(core::T_sp fin)
 {_G();
-    GC_ALLOCATE(FFNonbondDb_O, ffNonbondDb );
-    bool done = false;
-    char buffer[1024];
-    while ( not done )
+  GC_ALLOCATE(FFNonbondDb_O, ffNonbondDb );
+  bool done = false;
+  while ( not done )
+  {
+    core::T_mv ol = core::cl_read_line(fin);
+    string line = gc::As<core::Str_sp>(ol)->get();
+    if ( line.size() == 0 )
     {
-	fin.getline(buffer,sizeof(buffer)-1);
-	string line = buffer;
-	if ( line.size() == 0 )
-	{
-            done = true;
-	} else {
-	    LOG(BF("Parsing line|%s|") % line.c_str()  );
-            vector<string> parts = core::split(line," \t");
-	    string typeName = parts[0];
-            double mass = atof(parts[1].c_str());
-            double polarizability = atof(parts[2].c_str());
-            GC_ALLOCATE(FFNonbond_O, ffNonbond );
-            ffNonbond->setType(typeName);
-            ffNonbond->setMass(mass);
-            ffNonbond->setPolarizability(polarizability);
-            ffNonbondDb->add(ffNonbond);
-	}
+      done = true;
+    } else {
+      LOG(BF("Parsing line|%s|") % line.c_str()  );
+      vector<string> parts = core::split(line," \t");
+      string typeName = parts[0];
+      double mass = atof(parts[1].c_str());
+      double polarizability = atof(parts[2].c_str());
+      GC_ALLOCATE(FFNonbond_O, ffNonbond );
+      ffNonbond->setType(_lisp->intern(typeName,ChemKwPkg));
+      ffNonbond->setMass(mass);
+      ffNonbond->setPolarizability(polarizability);
+      ffNonbondDb->add(ffNonbond);
     }
-    fin.getline(buffer,sizeof(buffer)-1);
-    return ffNonbondDb;
+  }
+  core::cl_read_line(fin); // blank line
+  return ffNonbondDb;
 }
  
-FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(ifstream& fin)
+FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(core::T_sp fin)
 {_G();
     // read stretch terms 
     GC_ALLOCATE(FFStretchDb_O, ffStretchDb );
     bool done = false;
-    char buffer[1024];
     while ( not done )
     {
-	fin.getline(buffer,sizeof(buffer)-1);
-	string line = buffer;
+      string line = core::cl_read_line(fin).as<core::Str_O>()->get();
 	if ( line.size() == 0 )
 	{
             done = true;
@@ -163,8 +156,8 @@ FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(ifstream& fin)
             string type1Name = core::trimWhiteSpace(typeParts[0]);
             string type2Name = core::trimWhiteSpace(typeParts[1]);
             GC_ALLOCATE(FFStretch_O, ffStretch );
-            ffStretch->_Type1 = type1Name;
-            ffStretch->_Type2 = type2Name;
+            ffStretch->_Type1 = chemkw_intern(type1Name);
+            ffStretch->_Type2 = chemkw_intern(type2Name);
             string parms = line.substr(6);
             vector<string> parmsParts = core::split(parms);
 	    double kb_kJPerNanometerSquared = kCalPerAngstromSquared_to_kJPerNanometerSquared(atof(parmsParts[0].c_str()));
@@ -179,18 +172,16 @@ FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(ifstream& fin)
 }
 
 
-FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(ifstream& fin)
+FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
 {_G();
     //
     // read angle terms 
     //
     GC_ALLOCATE(FFAngleDb_O, ffAngleDb );
     bool done = false;
-    char buffer[1024];
     while ( not done )
     {
-	fin.getline(buffer,sizeof(buffer)-1);
-	string line = buffer;
+      string line = core::cl_read_line(fin).as<core::Str_O>()->get();
         if (line.size()== 0)
 	{
             done = true;
@@ -203,9 +194,9 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(ifstream& fin)
             string t2 = core::trimWhiteSpace(typeParts[1]);
             string t3 = core::trimWhiteSpace(typeParts[2]);
             GC_ALLOCATE(FFAngle_O, ffAngle );
-            ffAngle->_Type1 = t1;
-            ffAngle->_Type2 = t2;
-            ffAngle->_Type3 = t3;
+            ffAngle->_Type1 = _lisp->intern(t1,ChemKwPkg);
+            ffAngle->_Type2 = _lisp->intern(t2,ChemKwPkg);
+            ffAngle->_Type3 = _lisp->intern(t3,ChemKwPkg);
             string parms = line.substr(9);
             vector<string> parmsParts = core::split(parms);
             ffAngle->_K2__kJPerRadianSquared = kCalPerRadianSquared_to_kJPerRadianSquared(atof(parmsParts[0].c_str()));
@@ -219,18 +210,16 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(ifstream& fin)
 
 
 
-FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(ifstream& fin)
+FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin)
 {_G();
     //
     // read Ptor terms 
     //
     GC_ALLOCATE(FFPtorDb_O, ffPtorDb );
     bool done = false;
-    char buffer[1024];
     while (not done )
     {
-	fin.getline(buffer,sizeof(buffer)-1);
-	string line = buffer;
+      string line = core::cl_read_line(fin).as<core::Str_O>()->get();
         if (line.size()== 0)
 	{
             done = true;
@@ -246,7 +235,11 @@ FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(ifstream& fin)
             if ( t1 == "X" ) t1 = "";
             if ( t4 == "X" ) t4 = "";
             GC_ALLOCATE(FFPtor_O, ffPtor );
-            ffPtor->setTypes(t1,t2,t3,t4);
+            core::Symbol_sp st1 = _lisp->intern(t1,ChemKwPkg);
+            core::Symbol_sp st2 = _lisp->intern(t2,ChemKwPkg);
+            core::Symbol_sp st3 = _lisp->intern(t3,ChemKwPkg);
+            core::Symbol_sp st4 = _lisp->intern(t4,ChemKwPkg);
+            ffPtor->setTypes(st1,st2,st3,st4);
             string parms = line.substr(13);
             vector<string> parmsParts = core::split(parms);
             double idivf =  atof(parmsParts[0].c_str());
@@ -266,18 +259,16 @@ FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(ifstream& fin)
 
 
 
-FFItorDb_sp ReadAmberParameters_O::parseItorDb(ifstream& fin)
+FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
 {_G();
     //
     // read Itor terms 
     //
     GC_ALLOCATE(FFItorDb_O, ffItorDb );
     bool done = false;
-    char buffer[1024];
     while (not done )
     {
-	fin.getline(buffer,sizeof(buffer)-1);
-	string line = buffer;
+      string line = core::cl_read_line(fin).as<core::Str_O>()->get();
         if (line.size()== 0)
 	{
             done = true;
@@ -294,7 +285,11 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(ifstream& fin)
             if ( t2 == "X" ) t2 = "";
             if ( t4 == "X" ) t4 = "";
             GC_ALLOCATE(FFItor_O, ffItor );
-            ffItor->setTypes(t1,t2,t3,t4);
+            core::Symbol_sp st1 = _lisp->intern(t1,ChemKwPkg);
+            core::Symbol_sp st2 = _lisp->intern(t2,ChemKwPkg);
+            core::Symbol_sp st3 = _lisp->intern(t3,ChemKwPkg);
+            core::Symbol_sp st4 = _lisp->intern(t4,ChemKwPkg);
+            ffItor->setTypes(st1,st2,st3,st4);
             string parms = line.substr(13);
             vector<string> parmsParts = core::split(parms);
             double pk = atof(parmsParts[0].c_str());
@@ -315,13 +310,11 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(ifstream& fin)
 /*!
  * This modifies entries in the ffNonbondDb database
  */
-void ReadAmberParameters_O::parseNonbondDb(ifstream& fin, FFNonbondDb_sp ffNonbondDb)
+void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonbondDb)
 {_G();
-    char buffer[1024];
     bool done = false;
-    fin.getline(buffer,sizeof(buffer)-1);
-    string kind = buffer;
-    vector<string>parts = core::split(kind);
+    string line = core::cl_read_line(fin).as<core::Str_O>()->get();
+    vector<string>parts = core::split(line);
     string label = parts[0];
     string kindnb = parts[1];
     if ( kindnb != "RE" )
@@ -330,65 +323,56 @@ void ReadAmberParameters_O::parseNonbondDb(ifstream& fin, FFNonbondDb_sp ffNonbo
     }
     while ( not done )
     {
-        fin.getline(buffer,sizeof(buffer)-1);
-        string line = buffer;
-        if ( line.size() == 0 )
-	{
-            done = true;
-	} else
-	{
-	    LOG(BF("Parsing line|%s|") % line.c_str()  );
-	    FFNonbond_sp ffNonbond;
-            string type = core::trimWhiteSpace(line.substr(0,4));
-	    if ( ffNonbondDb->hasType(type) )
-	    {
-		ffNonbond = ffNonbondDb->findType(type);
-	    } else
-	    {
-		SIMPLE_ERROR(BF("Could not find type: "+type));
-	    }
-            string parms = line.substr(5);
-            vector<string>parmsParts = core::split(parms);
-            double radius  = atof(parmsParts[0].c_str());
-            double edep = atof(parmsParts[1].c_str());
+      string line = core::cl_read_line(fin).as<core::Str_O>()->get();
+      if ( line.size() == 0 )
+      {
+        done = true;
+      } else
+      {
+        LOG(BF("Parsing line|%s|") % line.c_str()  );
+        FFNonbond_sp ffNonbond;
+        string type = core::trimWhiteSpace(line.substr(0,4));
+        core::Symbol_sp stype = _lisp->intern(type,ChemKwPkg);
+        if ( ffNonbondDb->hasType(stype) ) {
+          ffNonbond = ffNonbondDb->findType(stype);
+        } else
+        {
+          SIMPLE_ERROR(BF("Could not find type: "+type));
+        }
+        string parms = line.substr(5);
+        vector<string>parmsParts = core::split(parms);
+        double radius  = atof(parmsParts[0].c_str());
+        double edep = atof(parmsParts[1].c_str());
 //	    print "parseNonbondDb::",
 //	    print ffNonbond.asXml().asString()
-            ffNonbond->setRadius_Angstroms(radius);
-	    ffNonbond->setEpsilon_kCal(edep);
+        ffNonbond->setRadius_Angstroms(radius);
+        ffNonbond->setEpsilon_kCal(edep);
 //	    print "parseNonbondDb::",
 //	    print ffNonbond.asXml().asString()
 //            print "parseNonbondDb::(%s) radius=%lf edep=%lf"%(ffNonbond._Type, ffNonbond._Radius,ffNonbond._Well)
-	}
+      }
     }
 }
 
 
 
 
-ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(const string& parametersFileName)
+ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fin)
 {_OF();
-    char buffer[1024];
-    ifstream fin;
-    fin.open(parametersFileName.c_str(),ios::in);
-    if ( !fin.is_open() )
-    {
-	SIMPLE_ERROR(BF("Could not open file: "+parametersFileName ));
-    }
-    fin.getline(buffer,sizeof(buffer)-1);
-    string title = buffer;
+    string line = core::cl_read_line(fin).as<core::Str_O>()->get();
     FFNonbondDb_sp ffNonbondsDb = this->parseFirstNonbondDb(fin);
     FFStretchDb_sp ffStretchesDb = this->parseStretchDb(fin);
     FFAngleDb_sp ffAnglesDb = this->parseAngleDb(fin);
     FFPtorDb_sp ffPtorsDb = this->parsePtorDb(fin);
     FFItorDb_sp ffItorsDb = this->parseItorDb(fin);
-    fin.getline(buffer,sizeof(buffer)-1); // skp 10-12 hbond
-    fin.getline(buffer,sizeof(buffer)-1); // blank
-    fin.getline(buffer,sizeof(buffer)-1); // skip equivalence
-    fin.getline(buffer,sizeof(buffer)-1); // blank
+    core::cl_read_line(fin); // skp 10-12 hbond
+    core::cl_read_line(fin); // blank
+    core::cl_read_line(fin); // skip equivalence
+    core::cl_read_line(fin); // blank
     this->parseNonbondDb(fin,ffNonbondsDb);
     LOG(BF("All parameters read fine") );
     GC_ALLOCATE(ForceField_O, ff );
-    ff->setTitle(title);
+    ff->setTitle(line);
     ff->setFFStretchDb(ffStretchesDb);
     ff->setFFTypeDb( _Nil<FFTypesDb_O>());
     ff->setFFAngleDb(ffAnglesDb);
@@ -398,78 +382,77 @@ ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(const string&
     //
     // parameters from  Antechamberpaper
     //
-    ff->_Angles->addZConstant("H", 0.784);
-    ff->_Angles->addZConstant("C", 1.183);
-    ff->_Angles->addZConstant("N", 1.212);
-    ff->_Angles->addZConstant("O", 1.219);
-    ff->_Angles->addZConstant("F", 1.166);
-    ff->_Angles->addZConstant("Cl", 1.272);
-    ff->_Angles->addZConstant("Br", 1.378);
-    ff->_Angles->addZConstant("I", 1.398);
-    ff->_Angles->addZConstant("P", 1.620);
-    ff->_Angles->addZConstant("S", 1.280);
-    ff->_Angles->addCConstant("C", 1.339);
-    ff->_Angles->addCConstant("N", 1.300);
-    ff->_Angles->addCConstant("O", 1.249);
-    ff->_Angles->addCConstant("P", 0.906);
-    ff->_Angles->addCConstant("S", 1.448);
+    ff->_Angles->addZConstant(chemkw_intern("H"), 0.784);
+    ff->_Angles->addZConstant(chemkw_intern("C"), 1.183);
+    ff->_Angles->addZConstant(chemkw_intern("N"), 1.212);
+    ff->_Angles->addZConstant(chemkw_intern("O"), 1.219);
+    ff->_Angles->addZConstant(chemkw_intern("F"), 1.166);
+    ff->_Angles->addZConstant(chemkw_intern("Cl"), 1.272);
+    ff->_Angles->addZConstant(chemkw_intern("Br"), 1.378);
+    ff->_Angles->addZConstant(chemkw_intern("I"), 1.398);
+    ff->_Angles->addZConstant(chemkw_intern("P"), 1.620);
+    ff->_Angles->addZConstant(chemkw_intern("S"), 1.280);
+    ff->_Angles->addCConstant(chemkw_intern("C"), 1.339);
+    ff->_Angles->addCConstant(chemkw_intern("N"), 1.300);
+    ff->_Angles->addCConstant(chemkw_intern("O"), 1.249);
+    ff->_Angles->addCConstant(chemkw_intern("P"), 0.906);
+    ff->_Angles->addCConstant(chemkw_intern("S"), 1.448);
 
     //
     // Parameters from Antechamber for estimating stretching force constants
     //
-    ff->_Stretches->addEstimateStretch( "H", "H", 0.738, 4.661 );
-    ff->_Stretches->addEstimateStretch( "C", "C", 1.526, 7.643 );
-    ff->_Stretches->addEstimateStretch( "N", "N", 1.441, 7.634 );
-    ff->_Stretches->addEstimateStretch( "O", "O", 1.460, 7.561 );
-    ff->_Stretches->addEstimateStretch( "F", "F", 1.406, 7.358 );
-    ff->_Stretches->addEstimateStretch( "Cl", "Cl", 2.031, 8.648 );
-    ff->_Stretches->addEstimateStretch( "Br", "Br", 2.337, 9.012 );
-    ff->_Stretches->addEstimateStretch( "I", "I", 2.836, 9.511 );
-    ff->_Stretches->addEstimateStretch( "P", "P", 2.324, 8.805 );
-    ff->_Stretches->addEstimateStretch( "S", "S", 2.038, 8.316 );
-    ff->_Stretches->addEstimateStretch( "H", "C", 1.090, 6.217 );
-    ff->_Stretches->addEstimateStretch( "H", "N", 1.010, 6.057 );
-    ff->_Stretches->addEstimateStretch( "H", "O", 0.960, 5.794 );
-    ff->_Stretches->addEstimateStretch( "H", "F", 0.920, 5.600 );
-    ff->_Stretches->addEstimateStretch( "H", "Cl", 1.280, 6.937 );
-    ff->_Stretches->addEstimateStretch( "H", "Br", 1.410, 7.301 );
-    ff->_Stretches->addEstimateStretch( "H", "I", 1.600, 7.802 );
-    ff->_Stretches->addEstimateStretch( "H", "P", 1.410, 7.257 );
-    ff->_Stretches->addEstimateStretch( "H", "S", 1.340, 7.018 );
-    ff->_Stretches->addEstimateStretch( "C", "N", 1.470, 7.504 );
-    ff->_Stretches->addEstimateStretch( "C", "O", 1.440, 7.347 );
-    ff->_Stretches->addEstimateStretch( "C", "F", 1.370, 7.227 );
-    ff->_Stretches->addEstimateStretch( "C", "Cl", 1.800, 8.241 );
-    ff->_Stretches->addEstimateStretch( "C", "Br", 1.940, 8.478 );
-    ff->_Stretches->addEstimateStretch( "C", "I", 2.160, 8.859 );
-    ff->_Stretches->addEstimateStretch( "C", "P", 1.830, 8.237 );
-    ff->_Stretches->addEstimateStretch( "C", "S", 1.820, 8.117 );
-    ff->_Stretches->addEstimateStretch( "N", "O", 1.420, 7.526 );
-    ff->_Stretches->addEstimateStretch( "N", "F", 1.420, 7.475 );
-    ff->_Stretches->addEstimateStretch( "N", "Cl", 1.750, 8.266 );
-    ff->_Stretches->addEstimateStretch( "N", "Br", 1.930, 8.593 );
-    ff->_Stretches->addEstimateStretch( "N", "I", 2.120, 8.963 );
-    ff->_Stretches->addEstimateStretch( "N", "P", 1.720, 8.212 );
-    ff->_Stretches->addEstimateStretch( "N", "S", 1.690, 8.073 );
-    ff->_Stretches->addEstimateStretch( "O", "F", 1.410, 7.375 );
-    ff->_Stretches->addEstimateStretch( "O", "Cl", 1.700, 8.097 );
-    ff->_Stretches->addEstimateStretch( "O", "Br", 1.790, 8.276 );
-    ff->_Stretches->addEstimateStretch( "O", "I", 2.110, 8.854 );
-    ff->_Stretches->addEstimateStretch( "O", "P", 1.640, 7.957 );
-    ff->_Stretches->addEstimateStretch( "O", "S", 1.650, 7.922 );
-    ff->_Stretches->addEstimateStretch( "F", "Cl", 1.648, 7.947 );
-    ff->_Stretches->addEstimateStretch( "Cl", "I", 2.550, 9.309 );
-    ff->_Stretches->addEstimateStretch( "Br", "I", 2.671, 9.380 );
-    ff->_Stretches->addEstimateStretch( "F", "P", 1.500, 7.592 );
-    ff->_Stretches->addEstimateStretch( "F", "S", 1.580, 7.733 );
-    ff->_Stretches->addEstimateStretch( "Cl", "P", 2.040, 8.656 );
-    ff->_Stretches->addEstimateStretch( "Cl", "S", 2.030, 8.619 );
-    ff->_Stretches->addEstimateStretch( "Br", "P", 2.240, 8.729 );
-    ff->_Stretches->addEstimateStretch( "Br", "S", 2.210, 8.728 );
-    ff->_Stretches->addEstimateStretch( "I", "P", 2.490, 9.058 );
-    ff->_Stretches->addEstimateStretch( "I", "S", 2.560, 9.161 );
-    ff->_Stretches->addEstimateStretch( "P", "S", 2.120, 8.465 );
-    fin.close();
+    ff->_Stretches->addEstimateStretch( chemkw_intern("H"), chemkw_intern("H"), 0.738, 4.661 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("C"), chemkw_intern("C"), 1.526, 7.643 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("N"), chemkw_intern("N"), 1.441, 7.634 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("O"), chemkw_intern("O"), 1.460, 7.561 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("F"), chemkw_intern("F"), 1.406, 7.358 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("Cl"), chemkw_intern("Cl"), 2.031, 8.648 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("Br"), chemkw_intern("Br"), 2.337, 9.012 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("I"), chemkw_intern("I"), 2.836, 9.511 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("P"), chemkw_intern("P"), 2.324, 8.805 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("S"), chemkw_intern("S"), 2.038, 8.316 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("H"), chemkw_intern("C"), 1.090, 6.217 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("H"), chemkw_intern("N"), 1.010, 6.057 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("H"), chemkw_intern("O"), 0.960, 5.794 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("H"), chemkw_intern("F"), 0.920, 5.600 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("H"), chemkw_intern("Cl"), 1.280, 6.937 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("H"), chemkw_intern("Br"), 1.410, 7.301 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("H"), chemkw_intern("I"), 1.600, 7.802 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("H"), chemkw_intern("P"), 1.410, 7.257 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("H"), chemkw_intern("S"), 1.340, 7.018 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("C"), chemkw_intern("N"), 1.470, 7.504 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("C"), chemkw_intern("O"), 1.440, 7.347 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("C"), chemkw_intern("F"), 1.370, 7.227 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("C"), chemkw_intern("Cl"), 1.800, 8.241 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("C"), chemkw_intern("Br"), 1.940, 8.478 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("C"), chemkw_intern("I"), 2.160, 8.859 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("C"), chemkw_intern("P"), 1.830, 8.237 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("C"), chemkw_intern("S"), 1.820, 8.117 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("N"), chemkw_intern("O"), 1.420, 7.526 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("N"), chemkw_intern("F"), 1.420, 7.475 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("N"), chemkw_intern("Cl"), 1.750, 8.266 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("N"), chemkw_intern("Br"), 1.930, 8.593 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("N"), chemkw_intern("I"), 2.120, 8.963 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("N"), chemkw_intern("P"), 1.720, 8.212 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("N"), chemkw_intern("S"), 1.690, 8.073 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("O"), chemkw_intern("F"), 1.410, 7.375 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("O"), chemkw_intern("Cl"), 1.700, 8.097 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("O"), chemkw_intern("Br"), 1.790, 8.276 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("O"), chemkw_intern("I"), 2.110, 8.854 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("O"), chemkw_intern("P"), 1.640, 7.957 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("O"), chemkw_intern("S"), 1.650, 7.922 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("F"), chemkw_intern("Cl"), 1.648, 7.947 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("Cl"), chemkw_intern("I"), 2.550, 9.309 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("Br"), chemkw_intern("I"), 2.671, 9.380 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("F"), chemkw_intern("P"), 1.500, 7.592 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("F"), chemkw_intern("S"), 1.580, 7.733 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("Cl"), chemkw_intern("P"), 2.040, 8.656 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("Cl"), chemkw_intern("S"), 2.030, 8.619 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("Br"), chemkw_intern("P"), 2.240, 8.729 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("Br"), chemkw_intern("S"), 2.210, 8.728 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("I"), chemkw_intern("P"), 2.490, 9.058 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("I"), chemkw_intern("S"), 2.560, 9.161 );
+    ff->_Stretches->addEstimateStretch( chemkw_intern("P"), chemkw_intern("S"), 2.120, 8.465 );
     return ff;
 }
 

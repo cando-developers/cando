@@ -26,7 +26,7 @@ THE SOFTWARE.
 /* -^- */
 #ifndef stringSet_fwd_H
 #define stringSet_fwd_H
-namespace core {
+namespace adapt {
 FORWARD(StringSet);
 }
 #endif

@@ -8,11 +8,11 @@
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
 #include <cando/adapt/adapters.h>
-#include <clasp/core/symbolList.h>
+#include <cando/adapt/symbolList.h>
 #include <clasp/core/environment.h>
 #include <cando/chem/candoDatabase.h>
 #include <clasp/core/numbers.h>
-#include <clasp/core/stringList.h>
+#include <cando/adapt/stringList.h>
 #include <cando/chem/alias.h>
 #include <clasp/core/wrappers.h>
 
@@ -165,7 +165,7 @@ __END_DOC
 void	MonomerPack_O::initialize()
 {
     this->Base::initialize();
-    this->_InterestingAtomAliases = core::SymbolList_O::create();
+    this->_InterestingAtomAliases = adapt::SymbolList_O::create();
     this->_AtomIndexers = MapOfMonomerNamesToAtomIndexers_O::create();
 }
 
@@ -184,32 +184,30 @@ void	MonomerPack_O::initialize()
 
 
 
-void	MonomerPack_O::defineContentsFromCons(core::List_sp atomAliases, core::Cons_sp parts)
+void	MonomerPack_O::defineContentsFromCons(core::List_sp atomAliases, core::List_sp parts)
 {_G();
-core::List_sp		p;
-core::SymbolList_sp	aliases;
-core::Symbol_sp	name;
+  core::List_sp		p;
+  adapt::SymbolList_sp	aliases;
+  core::Symbol_sp	name;
 	// Create a string list of all the atom aliases
-    aliases = core::SymbolList_O::create();
-    for ( p=atomAliases; p.notnilp(); p=p->cdr() )
+  aliases = adapt::SymbolList_O::create();
+  for ( auto p : atomAliases ) {
+    name = oCar(p).as<core::Symbol_O>();
+    aliases->append(name);
+  }
+  this->setInterestingAtomAliasesFromSymbolList(aliases);
+  for ( auto p : parts ) {
+    core::List_sp entry = oCar(p);
+    if ( core::cl_length(entry) <1 ) SIMPLE_ERROR(BF("monomerPack Entry contains no monomer name"));
+    core::Symbol_sp monomerName = oCar(entry).as<core::Symbol_O>();
+    this->addMonomerName(monomerName);
+    if ( aliases->size() > 0 )
     {
-	name = p->car<core::Symbol_O>();
-	aliases->append(name);
+      if ( core::cl_length(entry) < 2 ) SIMPLE_ERROR(BF("You defined atom aliases to each monomer must have interesting atom names"));
+      core::List_sp interestingAtomNames = oSecond(entry);
+      this->setInterestingAtomNamesForMonomerNameFromCons(monomerName,interestingAtomNames);
     }
-    this->setInterestingAtomAliasesFromSymbolList(aliases);
-    for ( p=parts; p.notnilp(); p = p->cdr() )
-    {
-      core::List_sp entry = oCar(p);
-	if ( entry->length() <1 ) SIMPLE_ERROR(BF("monomerPack Entry contains no monomer name"));
-	core::Symbol_sp monomerName = entry->car<core::Symbol_O>();
-	this->addMonomerName(monomerName);
-	if ( aliases->size() > 0 )
-	{
-	    if ( entry->length() < 2 ) SIMPLE_ERROR(BF("You defined atom aliases to each monomer must have interesting atom names"));
-	    core::Cons_sp interestingAtomNames = entry->listref<core::Cons_O>(1);
-	    this->setInterestingAtomNamesForMonomerNameFromCons(monomerName,interestingAtomNames);
-	}
-    }
+  }
 }
 
 
@@ -217,12 +215,12 @@ core::Symbol_sp	name;
 
 void MonomerPack_O::extendAliases( core::List_sp atomAliases, core::List_sp parts)
 {_OF();
-    core::SymbolSet_sp extendMonomers = core::SymbolSet_O::create();
-    uint numberOfAtomAliases = atomAliases->length();
+    adapt::SymbolSet_sp extendMonomers = adapt::SymbolSet_O::create();
+    uint numberOfAtomAliases = core::cl_length(atomAliases);
     this->_InterestingAtomAliases->appendConsOfStrings(atomAliases);
     for ( auto cur : parts ) {
       core::List_sp oneExtend = oCar(cur);
-	if ( oneExtend->length() != 2 )
+      if ( core::cl_length(oneExtend) != 2 )
 	{
 	    SIMPLE_ERROR(BF("Each extendAliases entry must have two elements: "+oneExtend->__repr__() ));
 	}
@@ -234,7 +232,7 @@ void MonomerPack_O::extendAliases( core::List_sp atomAliases, core::List_sp part
 	    SIMPLE_ERROR(BF("MonomerPack("+this->getName()->__repr__()+") does not recognize monomer name("+monomerName->__repr__()+")"));
 	}
 	AtomIndexer_sp indexer = this->_AtomIndexers->getAtomIndexerForMonomerName(monomerName);
-	if ( aliasAtoms->length() != numberOfAtomAliases )
+	if ( core::cl_length(aliasAtoms) != numberOfAtomAliases )
 	{
 	    stringstream ss;
 	    ss << "Mismatch between number of alias atoms ";
@@ -261,10 +259,10 @@ void MonomerPack_O::extendAliases( core::List_sp atomAliases, core::List_sp part
 
 void	MonomerPack_O::setInterestingAtomNamesForMonomerName(core::Symbol_sp monomerName, const string& atomIndexerNames)
 { _G();
-core::StringSet_O::smart_ptr		monomerNames;
+adapt::StringSet_O::smart_ptr		monomerNames;
 CandoDatabase_sp		bdb;
 AtomIndexer_sp			indexer;
-core::StringSet_O::iterator		it;
+adapt::StringSet_O::iterator		it;
     bdb = getCandoDatabase();
     ASSERTNOTNULL(this->_AtomIndexers);
     if ( !this->recognizesMonomerName(monomerName) )
@@ -279,12 +277,12 @@ core::StringSet_O::iterator		it;
 
 
 void	MonomerPack_O::setInterestingAtomNamesForMonomerNameStringList(
-			core::Symbol_sp monomerName, core::StringList_sp names )
+			core::Symbol_sp monomerName, adapt::StringList_sp names )
 { _G();
-core::StringSet_O::smart_ptr		monomerNames;
+adapt::StringSet_O::smart_ptr		monomerNames;
 CandoDatabase_sp		bdb;
 AtomIndexer_sp			indexer;
-core::StringSet_O::iterator		it;
+adapt::StringSet_O::iterator		it;
     bdb = getCandoDatabase();
     ASSERTNOTNULL(this->_AtomIndexers);
     if ( !this->recognizesMonomerName(monomerName) )
@@ -300,10 +298,10 @@ core::StringSet_O::iterator		it;
 void	MonomerPack_O::setInterestingAtomNamesForMonomerNameFromCons(
 			core::Symbol_sp monomerName, core::List_sp names )
 { _G();
-core::StringSet_O::smart_ptr		monomerNames;
+adapt::StringSet_O::smart_ptr		monomerNames;
 CandoDatabase_sp		bdb;
 AtomIndexer_sp			indexer;
-core::StringSet_O::iterator		it;
+adapt::StringSet_O::iterator		it;
     bdb = getCandoDatabase();
     ASSERTNOTNULL(this->_AtomIndexers);
     if ( !this->recognizesMonomerName(monomerName) )
@@ -312,8 +310,8 @@ core::StringSet_O::iterator		it;
     }
     indexer = AtomIndexer_O::create();
     for ( auto p : names ) {
-	core::Str_sp	interest = p->car<core::Str_O>();
-	indexer->addAtomName(interest->get());
+      core::Symbol_sp	interest = oCar(p).as<core::Symbol_O>();
+      indexer->addAtomName(interest);
     }
     this->_AtomIndexers->set(monomerName,indexer);
     this->_checkAtomIndexers();
@@ -352,7 +350,7 @@ string	s;
 }
 
 
-void	MonomerPack_O::setInterestingAtomAliasesFromSymbolList(core::SymbolList_sp names)
+void	MonomerPack_O::setInterestingAtomAliasesFromSymbolList(adapt::SymbolList_sp names)
 {_G();
     this->_InterestingAtomAliases->clear();
     this->_InterestingAtomAliases->appendSymbolList(names);
@@ -437,7 +435,7 @@ bool	MonomerPack_O::hasInterestingAtomAlias(Alias_sp alias)
 
 int	MonomerPack_O::getInterestingAtomAliasIndex(Alias_sp alias)
 {_G();
-core::StringList_O::iterator	si;
+adapt::StringList_O::iterator	si;
     return this->_InterestingAtomAliases->indexOf(alias->getAtomAlias());
 }
 

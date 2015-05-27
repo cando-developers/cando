@@ -60,7 +60,7 @@ public:
 #if 0
     Vector3			evaluateAtDistance( double x );
 #endif
-	void	describe(core::Lisp_sp lisp);
+	void	describe();
 	Dumb_Spline(int iSplineType, const VectorVector3s& points );
 double	domainMax()	{return this->gmMatrices.size();};
 double	domainMin()	{return 0.0;};

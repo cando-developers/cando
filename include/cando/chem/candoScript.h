@@ -84,7 +84,7 @@ public:
 };
 
 
-extern void setCandoDatabase(CandoDatabase_sp bdb, core::Lisp_sp lisp);
+extern void setCandoDatabase(CandoDatabase_sp bdb);
 
 
 

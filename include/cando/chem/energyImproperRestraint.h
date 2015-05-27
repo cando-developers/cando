@@ -43,10 +43,10 @@ public:
 	string	className()	{ return "EnergyImproperRestraint"; };
 public:
 		// Variables
-        Atom_sp      _Atom1;
-        Atom_sp      _Atom2;
-        Atom_sp      _Atom3;
-        Atom_sp      _Atom4;
+        gc::Nilable<Atom_sp>      _Atom1;
+        gc::Nilable<Atom_sp>      _Atom2;
+        gc::Nilable<Atom_sp>      _Atom3;
+        gc::Nilable<Atom_sp>      _Atom4;
 		// Threshold
 	bool		_AboveThreshold;
 	double		_AboveThreshold_Phi;
@@ -55,19 +55,19 @@ public:
 	bool		_calcForce;
 	bool		_calcDiagonalHessian;
 	bool		_calcOffDiagonalHessian;
-#include <cando/chem/_ImproperRestraint_debugEvalDeclares.cc>
+#include <cando/chem/energy_functions/_ImproperRestraint_debugEvalDeclares.cc>
 #endif
 
-	Atom_sp	getAtom1() { return this->_Atom1; };
-	Atom_sp	getAtom2() { return this->_Atom2; };
-	Atom_sp	getAtom3() { return this->_Atom3; };
-	Atom_sp	getAtom4() { return this->_Atom4; };
+        gc::Nilable<Atom_sp>	getAtom1() { return this->_Atom1; };
+        gc::Nilable<Atom_sp>	getAtom2() { return this->_Atom2; };
+        gc::Nilable<Atom_sp>	getAtom3() { return this->_Atom3; };
+        gc::Nilable<Atom_sp>	getAtom4() { return this->_Atom4; };
 	double	getAngle();
 public:
 //	void	archive(core::ArchiveP node);
 public:
-	geom::QDomNode_sp	asXml(core::Lisp_sp);
-	void	parseFromXmlUsingAtomTable(geom::QDomNode_sp xml, AtomTable_sp atomTable );
+	adapt::QDomNode_sp	asXml();
+	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
 
     EnergyImproperRestraint();
 	virtual ~EnergyImproperRestraint();

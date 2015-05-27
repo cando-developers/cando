@@ -462,7 +462,7 @@ namespace chem
 	void	addUniqueInterResidueBondCopiesToBondList(BondList_sp list);
 
 	//! Downgrade this
-//	void	addUniqueIntraResidueBondsToQDomNodeAsChildren(geom::QDomNode_sp node);
+//	void	addUniqueIntraResidueBondsToQDomNodeAsChildren(adapt::QDomNode_sp node);
 	//! Downgrade this
 	void	addUniqueIntraResidueBondsToVectorBonds(VectorBond& bonds);
 	//! Downgrade this

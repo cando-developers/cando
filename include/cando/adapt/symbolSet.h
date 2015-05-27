@@ -40,12 +40,14 @@ THE SOFTWARE.
 #include <clasp/core/lispVector.h>
 #include <clasp/core/hashTableEq.h>
 #include <clasp/core/cons.h>
-
-namespace core {
-
+#include <clasp/core/smallMap.h>
+#include <cando/adapt/symbolMap.h>
+#include <cando/adapt/adaptPackage.fwd.h>
+namespace adapt {
+  using namespace core;
 class SymbolSetCartesianProductWrapper {
 public:
-  virtual T_sp operator()(Symbol_sp obj1, Symbol_sp obj2) const = 0;
+  virtual core::T_sp operator()(Symbol_sp obj1, Symbol_sp obj2) const = 0;
 };
 
 SMART(Residue);
@@ -58,7 +60,7 @@ SMART(SymbolList);
 SMART(SymbolSet);
 class SymbolSet_O : public T_O {
   LISP_BASE1(T_O);
-  LISP_CLASS(core, CorePkg, SymbolSet_O, "SymbolSet");
+  LISP_CLASS(adapt, AdaptPkg, SymbolSet_O, "SymbolSet");
 
 public:
   void initialize();
@@ -72,7 +74,7 @@ GCPRIVATE:
 public:
   static SymbolSet_sp make(List_sp vals);
   template <class T>
-  static SymbolSet_sp createFromKeysOfSymbolMap(const core::SymbolMap<T> &m) {
+  static SymbolSet_sp createFromKeysOfSymbolMap(const adapt::SymbolMap<T> &m) {
     SymbolSet_sp ss = SymbolSet_O::create();
     for (typename SymbolMap<T>::const_iterator it = m.begin(); it != m.end(); ++it) {
       ss->insert(it->first);
@@ -132,10 +134,12 @@ public:
 
   void map(std::function<void(Symbol_sp)> const &fn);
   void map(std::function<void(Symbol_sp)> const &fn) const;
+  void map_while_true(std::function<bool(Symbol_sp)> const &fn);
+  void map_while_true(std::function<bool(Symbol_sp)> const &fn) const;
 
   DEFAULT_CTOR_DTOR(SymbolSet_O);
 };
 };
 
-TRANSLATE(core::SymbolSet_O);
+TRANSLATE(adapt::SymbolSet_O);
 #endif

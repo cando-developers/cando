@@ -193,9 +193,9 @@ namespace chem
 	return ca;
     }
 
-    core::SymbolSet_sp StereoisomerAtoms_O::atomNamesAsSymbolSet()
+    adapt::SymbolSet_sp StereoisomerAtoms_O::atomNamesAsSymbolSet()
     {_OF();
-	core::SymbolSet_sp ss = core::SymbolSet_O::create();
+	adapt::SymbolSet_sp ss = adapt::SymbolSet_O::create();
 	for ( gctools::Vec0<StereoisomerAtom_sp>::const_iterator ci=this->_Atoms.begin();
 	      ci!=this->_Atoms.end(); ci++ )
 	{

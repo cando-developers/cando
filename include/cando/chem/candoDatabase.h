@@ -21,7 +21,7 @@
 #include <cando/chem/monomer.h>
 #include <clasp/core/holder.h>
 #include <cando/geom/vector3.h>
-#include <clasp/core/objRef.fwd.h>
+#include <cando/adapt/symbolMap.h>
 #include <cando/chem/entity.fwd.h>
 #include <cando/chem/chemPackage.h>
 
@@ -75,9 +75,9 @@ public:
 	void	initialize();
 
 public:
-	typedef	core::SymbolMap<FrameRecognizer_O>	FrameRecognizers;
-	typedef	core::SymbolMap<MonomerCoordinates_O>		MonomerCoordinates;
-	typedef core::SymbolMap<Entity_O>		Entities;
+	typedef	adapt::SymbolMap<FrameRecognizer_O>	FrameRecognizers;
+	typedef	adapt::SymbolMap<MonomerCoordinates_O>		MonomerCoordinates;
+	typedef adapt::SymbolMap<Entity_O>		Entities;
 private: // archive
     core::Symbol_sp				_Name;
 	string				_DateCreated;
@@ -192,11 +192,11 @@ public:
 public:
 
 
-	core::SymbolSet_sp getMonomersForSetOrConstitutionOrMonomerName(core::Symbol_sp nm);
+	adapt::SymbolSet_sp getMonomersForSetOrConstitutionOrMonomerName(core::Symbol_sp nm);
 
 
-	core::SymbolSet_sp expandEntityNameToTerminals(core::Symbol_sp nm) const;
-	core::SymbolSet_sp expandEntityNamesToTerminals(core::SymbolSet_sp names) const;
+	adapt::SymbolSet_sp expandEntityNameToTerminals(core::Symbol_sp nm) const;
+	adapt::SymbolSet_sp expandEntityNamesToTerminals(adapt::SymbolSet_sp names) const;
 
 	bool	recognizesEntityName(core::Symbol_sp nm) { return this->recognizesSetOrConstitutionOrMonomerName(nm);};
 
@@ -204,7 +204,7 @@ public:
 	Entity_sp getEntity(core::Symbol_sp nm) const;
 
 
-core::SymbolSet_sp allUniqueCouplingNames();
+adapt::SymbolSet_sp allUniqueCouplingNames();
 
 		/*! When objects that depend on different CandoDatabase(s)
 		 * are to be combined they have to reference a common CandoDatabase

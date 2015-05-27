@@ -170,7 +170,7 @@ namespace chem
 	{
 	    sinfo << this->getBinder()->lookup(_sym_convergence).as<core::Str_O>()->get();
 	}
-	info = geom::RenderInformation_O::create(sinfo.str(),_lisp);
+	info = geom::RenderInformation_O::create(sinfo.str());
 	dlAll->append(info);
 	geom::Render_sp dlDict = this->getBinder()->rendered(opts);
 	dlAll->append(dlDict);
@@ -463,9 +463,9 @@ namespace chem
 #endif
 
 
-    core::StringSet_sp ConformationExplorerEntry_O::getEntryStageNames()
+    adapt::StringSet_sp ConformationExplorerEntry_O::getEntryStageNames()
     {_G();
-	core::StringSet_sp stageNames = core::StringSet_O::create();
+	adapt::StringSet_sp stageNames = adapt::StringSet_O::create();
 	stageIterator it;
 	for ( it=this->begin_Stages(); it!=this->end_Stages(); it++ )
 	{
@@ -561,12 +561,12 @@ namespace chem
 
     core::List_sp ConformationExplorer_O::entriesAsCons()
     {_G();
-	core::Cons_sp first = core::T_O::create(_Nil<core::T_O>(), _Nil<core::T_O>());
+	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(), _Nil<core::T_O>());
 	core::Cons_sp cur = first;
 	ConformationExplorer_O::entryIterator si;
 	for ( si=this->begin_Entries(); si!=this->end_Entries(); si++ )
 	{
-	    core::Cons_sp newCons = core::T_O::create(*si,_Nil<core::T_O>());
+	    core::Cons_sp newCons = core::Cons_O::create(*si,_Nil<core::T_O>());
 	    cur->setCdr(newCons);
 	    cur = newCons;
 	}
@@ -916,11 +916,11 @@ namespace chem
 	stringstream ss;
 	ss << this->Base::__str__();
 	ss << "#ConformationExplorerEntries: " << this->_Entries.size() << std::endl;
-	core::StringSet_sp stageNames = core::StringSet_O::create();
+	adapt::StringSet_sp stageNames = adapt::StringSet_O::create();
         gctools::Vec0<ConformationExplorerEntry_sp>::const_iterator ei;
 	for ( ei=this->_Entries.begin(); ei!=this->_Entries.end(); ei++ )
 	{
-	    core::StringSet_sp oneEntryStageNames = (*ei)->getEntryStageNames();
+	    adapt::StringSet_sp oneEntryStageNames = (*ei)->getEntryStageNames();
 	    stageNames->insertStringSet(oneEntryStageNames);
 	}
 	ss << "EntryStageNames: %s\n", stageNames->asString().c_str();

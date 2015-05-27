@@ -49,9 +49,9 @@ public:
 	};
 	double	dotProduct( Vector4 v );
 	double	length();
-	Vector4	normalized(const core::Lisp_sp& lisp);
+	Vector4	normalized();
 
-	void	dump(const core::Lisp_sp& lisp);
+	void	dump();
 	string	asString();
 
 	double getW() { return this->coords[0]; }

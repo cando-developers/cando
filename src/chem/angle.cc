@@ -30,7 +30,7 @@ namespace chem
 
 
 
-    Angle_sp Angle_O::create(Atom_sp a1, Atom_sp a2, Atom_sp a3, core::Lisp_sp lisp)
+    Angle_sp Angle_O::create(Atom_sp a1, Atom_sp a2, Atom_sp a3)
     {_G();
 	GC_ALLOCATE(Angle_O, obj );
 	obj->setup(a1,a2,a3);

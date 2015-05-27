@@ -23,10 +23,10 @@ namespace chem {
 
     EnergyDihedral::EnergyDihedral()
 {
-    this->_Atom1.reset();
-    this->_Atom2.reset();
-    this->_Atom3.reset();
-    this->_Atom4.reset();
+  this->_Atom1 = _Nil<core::T_O>();
+  this->_Atom2 = _Nil<core::T_O>();
+  this->_Atom3 = _Nil<core::T_O>();
+  this->_Atom4 = _Nil<core::T_O>();
 }
 
 EnergyDihedral::~EnergyDihedral()
@@ -59,7 +59,7 @@ EnergyDihedral::~EnergyDihedral()
     node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
     node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
     node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include <cando/chem/_Dihedral_debugEvalSerialize.cc>
+#include <cando/chem/energy_functions/_Dihedral_debugEvalSerialize.cc>
 #endif //]
 }
 #endif
@@ -113,7 +113,7 @@ double	angle;
     pos2 = this->_Atom2->getPosition();
     pos3 = this->_Atom3->getPosition();
     pos4 = this->_Atom4->getPosition();
-    angle = calculateDihedral( pos1, pos2, pos3, pos4, _lisp);
+    angle = calculateDihedral( pos1, pos2, pos3, pos4);
     return angle;
 }
 
@@ -125,7 +125,7 @@ double	phi, dev;
     pos2 = this->_Atom2->getPosition();
     pos3 = this->_Atom3->getPosition();
     pos4 = this->_Atom4->getPosition();
-    phi = calculateDihedral( pos1, pos2, pos3, pos4, _lisp);
+    phi = calculateDihedral( pos1, pos2, pos3, pos4);
     dev = 1.0+cos(this->term.DN*phi-this->_PhaseRad);
     return dev;
 }
@@ -168,12 +168,12 @@ void	EnergyDihedral::defineMissingProper( EnergyAtom *ea1, EnergyAtom *ea2, Ener
 
 
 #if 0
-geom::QDomNode_sp	EnergyDihedral::asXml(core::Lisp_sp env)
+adapt::QDomNode_sp	EnergyDihedral::asXml()
 {
-geom::QDomNode_sp	node;
+adapt::QDomNode_sp	node;
 Vector3	vdiff;
 
-    node = geom::QDomNode_O::create(env,"EnergyDihedral");
+    node = adapt::QDomNode_O::create(env,"EnergyDihedral");
     node->addAttributeBool("proper",this->_Proper );
     node->addAttributeString("atom1Name",this->_Atom1->getName());
     node->addAttributeString("atom2Name",this->_Atom2->getName());
@@ -192,7 +192,7 @@ Vector3	vdiff;
     node->addAttributeDoubleScientific("V",this->term.V);
     node->addAttributeDoubleScientific("PhaseRad",this->_PhaseRad);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    geom::QDomNode_sp xml = geom::QDomNode_O::create(env,"Evaluated");
+    adapt::QDomNode_sp xml = adapt::QDomNode_O::create(env,"Evaluated");
     xml->addAttributeBool("calcForce",this->_calcForce );
     xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
     xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
@@ -202,7 +202,7 @@ Vector3	vdiff;
     return node;
 }
 
-void	EnergyDihedral::parseFromXmlUsingAtomTable(geom::QDomNode_sp	xml,
+void	EnergyDihedral::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
 					AtomTable_sp at )
 {
     this->term.I1 = xml->getAttributeInt("I1");
@@ -253,13 +253,13 @@ double	SinNPhi, CosNPhi;
 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/_Dihedral_termDeclares.cc>
+#include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
 #pragma clang diagnostic pop
 	fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
 	fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
 	fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
 	fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
-#include <cando/chem/_Dihedral_termCode.cc>
+#include <cando/chem/energy_functions/_Dihedral_termCode.cc>
 
     return Energy;
 }
@@ -374,7 +374,7 @@ bool		calcOffDiagonalHessian = true;
     if ( this->isEnabled() ) {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	#include	"_Dihedral_termDeclares.cc"
+#include	<cando/chem/energy_functions/_Dihedral_termDeclares.cc>
 #pragma clang diagnostic pop
 	fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
 	fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
@@ -386,7 +386,7 @@ bool		calcOffDiagonalHessian = true;
 	double sinPhase, cosPhase, SinNPhi, CosNPhi;
 	for ( gctools::Vec0<EnergyDihedral>::iterator di=this->_Terms.begin();
 		    di!=this->_Terms.end(); di++ ) {
-	    #include	"_Dihedral_termCode.cc"
+#include	<cando/chem/energy_functions/_Dihedral_termCode.cc>
 	}
     }
 
@@ -447,7 +447,7 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
     {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	#include "_Dihedral_termDeclares.cc"
+#include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
 #pragma clang diagnostic pop
 	fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
 	fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
@@ -467,7 +467,7 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 		    }
 		}
 	    #endif
-	    #include "_Dihedral_termCode.cc"
+#include <cando/chem/energy_functions/_Dihedral_termCode.cc>
 	    if ( EraseLinearDihedral == 0.0 ) {
 	       LOG(BF("Found linear dihedral") );
 	       InteractionProblem problem;
@@ -486,7 +486,7 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 		di->_calcOffDiagonalHessian = calcOffDiagonalHessian;
 		#undef EVAL_SET
 		#define	EVAL_SET(var,val)	{ di->eval.var=val;};
-		#include	"_Dihedral_debugEvalSet.cc"
+#include	<cando/chem/energy_functions/_Dihedral_debugEvalSet.cc>
 	    #endif //]
 
 	    if ( this->_DebugEnergy ) 
@@ -595,7 +595,7 @@ bool	calcOffDiagonalHessian = true;
 		_BLOCK_TRACE("DihedralEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	    #include "_Dihedral_termDeclares.cc"
+#include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
 #pragma clang diagnostic pop
 	fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
 	fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
@@ -688,9 +688,9 @@ bool	calcOffDiagonalHessian = true;
             gctools::Vec0<EnergyDihedral>::iterator di;
 	    for ( i=0,di=this->_Terms.begin();
 			di!=this->_Terms.end(); di++,i++ ) {
-		#include "_Dihedral_termCode.cc"
+#include <cando/chem/energy_functions/_Dihedral_termCode.cc>
 		int index = i;
-		#include "_Dihedral_debugFiniteDifference.cc"
+#include <cando/chem/energy_functions/_Dihedral_debugFiniteDifference.cc>
 	    }
 	}
 
@@ -731,7 +731,7 @@ int	fails = 0;
 		_BLOCK_TRACE("DihedralEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-	    #include "_Dihedral_termDeclares.cc"
+#include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
 #pragma clang diagnostic pop
 	fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
 	fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
@@ -744,7 +744,7 @@ int	fails = 0;
             gctools::Vec0<EnergyDihedral>::iterator di;
 	    for ( i=0,di=this->_Terms.begin();
 			di!=this->_Terms.end(); di++,i++ ) {
-		#include "_Dihedral_termCode.cc"
+#include <cando/chem/energy_functions/_Dihedral_termCode.cc>
 		if ( fabs(DihedralDeviation)>this->_ErrorThreshold) {
 		    Atom_sp a1, a2, a3, a4;
 		    a1 = (*di)._Atom1;

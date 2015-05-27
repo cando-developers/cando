@@ -35,7 +35,7 @@ private:
 	core::Symbol_sp	_Representative;
 public:
 #if 0
-    static RepresentedEntityNameSet_sp	create(core::Lisp_sp e,CandoDatabase_sp db)
+    static RepresentedEntityNameSet_sp	create(CandoDatabase_sp db)
     {
         GC_ALLOCATE(RepresentedEntityNameSet_O, group ); // RP_Create<RepresentedEntityNameSet_O>(e);
 //	group->setCandoDatabase(db);

@@ -26,7 +26,7 @@ THE SOFTWARE.
 /* -^- */
 #ifndef stringList_fwd_H
 #define stringList_fwd_H
-namespace core {
+namespace adapt {
 FORWARD(StringList);
 }
 #endif

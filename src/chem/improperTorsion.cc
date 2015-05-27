@@ -32,7 +32,7 @@ namespace chem
 
 
 
-    ImproperTorsion_sp ImproperTorsion_O::create(Atom_sp a1, Atom_sp a2, Atom_sp a3central, Atom_sp a4, core::Lisp_sp lisp)
+    ImproperTorsion_sp ImproperTorsion_O::create(Atom_sp a1, Atom_sp a2, Atom_sp a3central, Atom_sp a4)
     {_G();
 	GC_ALLOCATE(ImproperTorsion_O, obj );
 	obj->setup(a1,a2,a3central,a4);

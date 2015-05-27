@@ -49,3 +49,10 @@ subClean sc:
 
 totalClean:
 	rm -rf bin install_release
+
+
+
+sub-prebuild:
+	make scrape-symbols
+	make scrape-classes
+

@@ -154,3 +154,9 @@ _gaff_Parser.cc : gaff_Parser.yy
 
 
 
+
+sub-prebuild:
+	make scrape-symbols
+	make scrape-classes
+
+

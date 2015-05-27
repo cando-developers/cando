@@ -22,7 +22,7 @@ __END_DOC
 #include <cando/chem/minimizerLog.h>
 #include <cando/chem/restraint.h>
 #include <cando/chem/iterateRestraints.h>
-#include <cando/geom/iterateCons.h>
+#include <cando/adapt/iterateCons.h>
 #include <cando/chem/ringFinder.h>
 #include <cando/chem/cipPrioritizer.h>
 #include <cando/chem/atom.h>
@@ -448,9 +448,9 @@ void	EnergyFunction_O::setOptions( core::List_sp options )
     while ( options.notnilp() )
     {
 	core::Symbol_sp option = core::oCar(options).as<core::Symbol_O>();
-	options = options->cdr();
+	options = options.asCons()->cdr();
 	core::T_sp val = core::oCar(options);
-	options = options->cdr();
+	options = options.asCons()->cdr();
 	this->setOption(option,val);
     }
 }
@@ -776,7 +776,7 @@ int	fails = 0;
  */
 int	EnergyFunction_O::compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition( )
 {
-    NVector_sp pos = NVector_O::create(this->getNVectorSize(),_lisp);
+    NVector_sp pos = NVector_O::create(this->getNVectorSize());
     this->extractCoordinatesFromAtoms(pos);
     return this->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
 }
@@ -798,7 +798,7 @@ stringstream	info;
 int	fails = 0;
 
     info.str("");
-    pos = NVector_O::create(this->getNVectorSize(),_lisp);
+    pos = NVector_O::create(this->getNVectorSize());
     this->extractCoordinatesFromAtoms(pos);
     fails = 0;
     fails += this->_Stretch->checkForBeyondThresholdInteractions(info,pos);
@@ -931,9 +931,9 @@ double		energy;
 NVector_sp	dummyHd, dummyD;
 dummyHd = _Nil<NVector_O>();
 dummyD = _Nil<NVector_O>();
-    pos = NVector_O::create(this->getNVectorSize(),_lisp);
-    force = NVector_O::create(this->getNVectorSize(),_lisp);
-    hessian = FullLargeSquareMatrix_O::create(_lisp,this->getNVectorSize(),SymmetricDiagonalLower);
+    pos = NVector_O::create(this->getNVectorSize());
+    force = NVector_O::create(this->getNVectorSize());
+    hessian = FullLargeSquareMatrix_O::create(this->getNVectorSize(),SymmetricDiagonalLower);
     this->extractCoordinatesFromAtoms(pos);
     energy = this->evaluateAll(pos, true, force,
 				true, true, hessian,
@@ -1068,12 +1068,12 @@ ForceMatchReport_sp EnergyFunction_O::checkIfAnalyticalForceMatchesNumericalForc
 
     report = ForceMatchReport_O::create();
 
-    numForce = NVector_O::create(pos->size(),_lisp);
+    numForce = NVector_O::create(pos->size());
     this->evaluateNumericalForce(pos,numForce,DELTA);
     dot = numForce->dotProduct(analyticalForce);
     numericalMag = numForce->magnitude();
     analyticalMag = analyticalForce->magnitude();
-    tempForce = NVector_O::create(pos->size(),_lisp);
+    tempForce = NVector_O::create(pos->size());
     	// Evaluate the force at pos again
     this->evaluateEnergyForce(pos,true,tempForce);
     avg = (analyticalMag+numericalMag)/2.0;
@@ -1633,15 +1633,15 @@ int             coordinateIndex;
 		    }
 		}
 		core::List_sp priority = a1->getNeighborsByRelativePriority();
-		ASSERTP(priority->length() == 4, "There must be 4 neighbors to assign stereochemistry");
+		ASSERTP(core::cl_length(priority) == 4, "There must be 4 neighbors to assign stereochemistry");
 		core::List_sp cur = priority;
-		n1 = cur->car<Atom_O>();
-		cur = cur->cdr();
-		n2 = cur->car<Atom_O>();
-		cur = cur->cdr();
-		n3 = cur->car<Atom_O>();
-		cur = cur->cdr();
-		n4 = cur->car<Atom_O>();
+		n1 = cur.asCons()->car<Atom_O>();
+		cur = cur.asCons()->cdr();
+		n2 = cur.asCons()->car<Atom_O>();
+		cur = cur.asCons()->cdr();
+		n3 = cur.asCons()->car<Atom_O>();
+		cur = cur.asCons()->cdr();
+		n4 = cur.asCons()->car<Atom_O>();
 #if 0
 		s1 = a1->getConfigurationPriorityHighest();
 		s2 = a1->getConfigurationPriorityHigh();
@@ -1781,7 +1781,7 @@ int             coordinateIndex;
 	// Set up force-field restraints
 	//
     {_BLOCK_TRACE("Defining force-field restraints");
-	IterateRestraints_sp restraintIt = IterateRestraints_O::create(_lisp,matter);
+	IterateRestraints_sp restraintIt = IterateRestraints_O::create(matter);
 	this->_applyRestraints(forceField,restraintIt);
     }
     LOG(BF("Done terms") );
@@ -1791,8 +1791,8 @@ int             coordinateIndex;
 
 void	EnergyFunction_O::addTermsForListOfRestraints(ForceField_sp forceField, core::List_sp restraintList)
 {_G();
-    geom::IterateCons_sp	iterate;
-    iterate = geom::IterateCons_O::create(restraintList);
+    adapt::IterateCons_sp	iterate;
+    iterate = adapt::IterateCons_O::create(restraintList);
     this->_applyRestraints(forceField,iterate);
 }
 
@@ -1864,7 +1864,7 @@ EnergyAtom*	EnergyFunction_O::getEnergyAtomPointer(Atom_sp a)
 double	EnergyFunction_O::calculateEnergy( )
 {_G();
 NVector_sp	pos;
-    pos = NVector_O::create(this->getNVectorSize(),_lisp);
+    pos = NVector_O::create(this->getNVectorSize());
     this->extractCoordinatesFromAtoms(pos);
     return this->evaluateEnergy(pos);
 }
@@ -1875,8 +1875,8 @@ double EnergyFunction_O::calculateEnergyAndForce( )
 NVector_sp	pos;
 NVector_sp	force;
 double		energy;
-    pos = NVector_O::create(this->getNVectorSize(),_lisp);
-    force = NVector_O::create(this->getNVectorSize(),_lisp);
+    pos = NVector_O::create(this->getNVectorSize());
+    force = NVector_O::create(this->getNVectorSize());
     this->extractCoordinatesFromAtoms(pos);
     energy = this->evaluateEnergyForce(pos,true,force);
     	// To calculate the force magnitude use force->magnitude();
@@ -1891,29 +1891,29 @@ double		energy;
 
 
 
-void	EnergyFunction_O::dealWithProblem(const InteractionProblem& problem)
+void	EnergyFunction_O::dealWithProblem(InteractionProblem& problem)
 {_OF();
-    switch ( problem._Type ) {
-	case linearDihedral:
-	    problem._Atom1->bumpPosition(0.1);
-	    problem._Atom2->bumpPosition(0.1);
-	    problem._Atom3->bumpPosition(0.1);
-	    problem._Atom4->bumpPosition(0.1);
-	    break;
-	case linearImproperRestraint:
-	    problem._Atom1->bumpPosition(0.1);
-	    problem._Atom2->bumpPosition(0.1);
-	    problem._Atom3->bumpPosition(0.1);
-	    problem._Atom4->bumpPosition(0.1);
-	    break;
-	case linearAngle:
-	    problem._Atom1->bumpPosition(0.1);
-	    problem._Atom2->bumpPosition(0.1);
-	    problem._Atom3->bumpPosition(0.1);
-	    break;
-	default:
-	    SIMPLE_ERROR(BF("EnergyFunction_O::dealWithProblem>> I am not handling this problem yet"));
-    }
+  switch ( problem._Type ) {
+  case linearDihedral:
+      problem._Atom1->bumpPosition(0.1);
+      problem._Atom2->bumpPosition(0.1);
+      problem._Atom3->bumpPosition(0.1);
+      problem._Atom4->bumpPosition(0.1);
+      break;
+  case linearImproperRestraint:
+      problem._Atom1->bumpPosition(0.1);
+      problem._Atom2->bumpPosition(0.1);
+      problem._Atom3->bumpPosition(0.1);
+      problem._Atom4->bumpPosition(0.1);
+      break;
+  case linearAngle:
+      problem._Atom1->bumpPosition(0.1);
+      problem._Atom2->bumpPosition(0.1);
+      problem._Atom3->bumpPosition(0.1);
+      break;
+  default:
+      SIMPLE_ERROR(BF("EnergyFunction_O::dealWithProblem>> I am not handling this problem yet"));
+  }
 }
 
 
@@ -2013,7 +2013,7 @@ NVector_sp	pos;
 EnergyNonbond_sp	nbComponent;
     uint i = 0;
 #if USE_ALL_ENERGY_COMPONENTS
-    pos = NVector_O::create(this->getNVectorSize(),_lisp);
+    pos = NVector_O::create(this->getNVectorSize());
     this->extractCoordinatesFromAtoms(pos);
     nbComponent = this->getNonbondComponent();
     i = nbComponent->countBadVdwOverlaps(scaleSumOfVdwRadii,pos,displayIn,displayIn->lisp());
