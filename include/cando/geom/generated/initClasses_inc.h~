@@ -1,0 +1,360 @@
+// start
+// define cpp macros: SET_SYMBOL, CREATE_CLASS, SET_CLASS, DEFINE_BASE_CLASSES, DEFINE_CLASS_NAMES, EXPOSE_TO_CANDO 
+// define cpp macro: ALL_STAGES to get the effect of defining all of the macros above
+// define cpp macro: EXPOSE_PYTHON to expose python
+ // class BoundingBox_O : public core::T_O
+// Associating namespace(candoBase) with package(CandoBasePkg)
+ // class CoordinateArray_O : public core::Vector_O
+ // class CoordinateArrayWithHash_O : public CoordinateArray_O
+ // class OMatrix_O : public core::T_O
+ // class OVector2_O : public core::T_O
+ // class OVector3_O : public core::T_O
+ // class QDomNode_O : public core::T_O
+#ifdef HEADER_INCLUDES
+#include "include/boundingBox.h"
+#include "include/coordinateArray.h"
+#include "include/omatrix.h"
+#include "include/ovector2.h"
+#include "include/ovector3.h"
+#include "include/quickDom.h"
+#endif // HEADER_INCLUDES
+#undef HEADER_INCLUDES
+#if defined(SET_SYMBOL) || defined(ALL_STAGES)
+// requires LOOKUP_SYMBOL(pkg,symbolName) be defined
+candoBase::BoundingBox_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(candoBase::BoundingBox_O::static_packageName(),candoBase::BoundingBox_O::static_className()));
+candoBase::CoordinateArray_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(candoBase::CoordinateArray_O::static_packageName(),candoBase::CoordinateArray_O::static_className()));
+candoBase::OMatrix_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(candoBase::OMatrix_O::static_packageName(),candoBase::OMatrix_O::static_className()));
+candoBase::OVector2_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(candoBase::OVector2_O::static_packageName(),candoBase::OVector2_O::static_className()));
+candoBase::OVector3_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(candoBase::OVector3_O::static_packageName(),candoBase::OVector3_O::static_className()));
+candoBase::QDomNode_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(candoBase::QDomNode_O::static_packageName(),candoBase::QDomNode_O::static_className()));
+candoBase::CoordinateArrayWithHash_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(candoBase::CoordinateArrayWithHash_O::static_packageName(),candoBase::CoordinateArrayWithHash_O::static_className()));
+#endif // SET_SYMBOL
+#undef SET_SYMBOL
+#if defined(CREATE_CLASS) || defined(ALL_STAGES)
+
+    LOG(BF("Creating class[classcandoBase__BoundingBox_Oval]"));
+    core::BuiltInClass_sp classcandoBase__BoundingBox_Oval = core::BuiltInClass_O::createUncollectable();
+    classcandoBase__BoundingBox_Oval->__setup_stage1_with_sharedPtr_lisp_sid(classcandoBase__BoundingBox_Oval,_lisp,candoBase::BoundingBox_O::static_classSymbol());
+    reg::lisp_associateClassIdWithClassSymbol(reg::registered_class<candoBase::BoundingBox_O>::id,candoBase::BoundingBox_O::static_classSymbol());
+    candoBase::BoundingBox_O::___staticClass = classcandoBase__BoundingBox_Oval;
+#ifdef USE_MPS
+    candoBase::BoundingBox_O::static_Kind = gctools::GCKind<candoBase::BoundingBox_O>::Kind;
+#endif
+    core::af_setf_findClass(classcandoBase__BoundingBox_Oval,candoBase::BoundingBox_O::static_classSymbol(),true,_Nil<core::Environment_O>());
+    {
+        core::LispObjectCreator<candoBase::BoundingBox_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<candoBase::BoundingBox_O>>::allocateClass();
+        candoBase::BoundingBox_O::___set_static_creator(cb);
+    }
+    LOG(BF("Set static_allocator for class(%s) to %X")% candoBase::BoundingBox_O::static_className() % (void*)(candoBase::BoundingBox_O::static_allocator) );
+    classcandoBase__BoundingBox_Oval->setCreator(candoBase::BoundingBox_O::static_creator);
+    {
+        LOG(BF("Created nil for class[%s]") % candoBase::BoundingBox_O::static_className() );
+    }
+    /* ----- the class and its nil are now defined and so is classcandoBase__BoundingBox_Oval::___staticClass but the class _Slots and _Signature_ClassSlots are undefined - set them both to _Nil<T_O>() in stage3   ----- */
+
+    LOG(BF("Creating class[classcandoBase__CoordinateArray_Oval]"));
+    core::BuiltInClass_sp classcandoBase__CoordinateArray_Oval = core::BuiltInClass_O::createUncollectable();
+    classcandoBase__CoordinateArray_Oval->__setup_stage1_with_sharedPtr_lisp_sid(classcandoBase__CoordinateArray_Oval,_lisp,candoBase::CoordinateArray_O::static_classSymbol());
+    reg::lisp_associateClassIdWithClassSymbol(reg::registered_class<candoBase::CoordinateArray_O>::id,candoBase::CoordinateArray_O::static_classSymbol());
+    candoBase::CoordinateArray_O::___staticClass = classcandoBase__CoordinateArray_Oval;
+#ifdef USE_MPS
+    candoBase::CoordinateArray_O::static_Kind = gctools::GCKind<candoBase::CoordinateArray_O>::Kind;
+#endif
+    core::af_setf_findClass(classcandoBase__CoordinateArray_Oval,candoBase::CoordinateArray_O::static_classSymbol(),true,_Nil<core::Environment_O>());
+    {
+        core::LispObjectCreator<candoBase::CoordinateArray_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<candoBase::CoordinateArray_O>>::allocateClass();
+        candoBase::CoordinateArray_O::___set_static_creator(cb);
+    }
+    LOG(BF("Set static_allocator for class(%s) to %X")% candoBase::CoordinateArray_O::static_className() % (void*)(candoBase::CoordinateArray_O::static_allocator) );
+    classcandoBase__CoordinateArray_Oval->setCreator(candoBase::CoordinateArray_O::static_creator);
+    {
+        LOG(BF("Created nil for class[%s]") % candoBase::CoordinateArray_O::static_className() );
+    }
+    /* ----- the class and its nil are now defined and so is classcandoBase__CoordinateArray_Oval::___staticClass but the class _Slots and _Signature_ClassSlots are undefined - set them both to _Nil<T_O>() in stage3   ----- */
+
+    LOG(BF("Creating class[classcandoBase__OMatrix_Oval]"));
+    core::BuiltInClass_sp classcandoBase__OMatrix_Oval = core::BuiltInClass_O::createUncollectable();
+    classcandoBase__OMatrix_Oval->__setup_stage1_with_sharedPtr_lisp_sid(classcandoBase__OMatrix_Oval,_lisp,candoBase::OMatrix_O::static_classSymbol());
+    reg::lisp_associateClassIdWithClassSymbol(reg::registered_class<candoBase::OMatrix_O>::id,candoBase::OMatrix_O::static_classSymbol());
+    candoBase::OMatrix_O::___staticClass = classcandoBase__OMatrix_Oval;
+#ifdef USE_MPS
+    candoBase::OMatrix_O::static_Kind = gctools::GCKind<candoBase::OMatrix_O>::Kind;
+#endif
+    core::af_setf_findClass(classcandoBase__OMatrix_Oval,candoBase::OMatrix_O::static_classSymbol(),true,_Nil<core::Environment_O>());
+    {
+        core::LispObjectCreator<candoBase::OMatrix_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<candoBase::OMatrix_O>>::allocateClass();
+        candoBase::OMatrix_O::___set_static_creator(cb);
+    }
+    LOG(BF("Set static_allocator for class(%s) to %X")% candoBase::OMatrix_O::static_className() % (void*)(candoBase::OMatrix_O::static_allocator) );
+    classcandoBase__OMatrix_Oval->setCreator(candoBase::OMatrix_O::static_creator);
+    {
+        LOG(BF("Created nil for class[%s]") % candoBase::OMatrix_O::static_className() );
+    }
+    /* ----- the class and its nil are now defined and so is classcandoBase__OMatrix_Oval::___staticClass but the class _Slots and _Signature_ClassSlots are undefined - set them both to _Nil<T_O>() in stage3   ----- */
+
+    LOG(BF("Creating class[classcandoBase__OVector2_Oval]"));
+    core::BuiltInClass_sp classcandoBase__OVector2_Oval = core::BuiltInClass_O::createUncollectable();
+    classcandoBase__OVector2_Oval->__setup_stage1_with_sharedPtr_lisp_sid(classcandoBase__OVector2_Oval,_lisp,candoBase::OVector2_O::static_classSymbol());
+    reg::lisp_associateClassIdWithClassSymbol(reg::registered_class<candoBase::OVector2_O>::id,candoBase::OVector2_O::static_classSymbol());
+    candoBase::OVector2_O::___staticClass = classcandoBase__OVector2_Oval;
+#ifdef USE_MPS
+    candoBase::OVector2_O::static_Kind = gctools::GCKind<candoBase::OVector2_O>::Kind;
+#endif
+    core::af_setf_findClass(classcandoBase__OVector2_Oval,candoBase::OVector2_O::static_classSymbol(),true,_Nil<core::Environment_O>());
+    {
+        core::LispObjectCreator<candoBase::OVector2_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<candoBase::OVector2_O>>::allocateClass();
+        candoBase::OVector2_O::___set_static_creator(cb);
+    }
+    LOG(BF("Set static_allocator for class(%s) to %X")% candoBase::OVector2_O::static_className() % (void*)(candoBase::OVector2_O::static_allocator) );
+    classcandoBase__OVector2_Oval->setCreator(candoBase::OVector2_O::static_creator);
+    {
+        LOG(BF("Created nil for class[%s]") % candoBase::OVector2_O::static_className() );
+    }
+    /* ----- the class and its nil are now defined and so is classcandoBase__OVector2_Oval::___staticClass but the class _Slots and _Signature_ClassSlots are undefined - set them both to _Nil<T_O>() in stage3   ----- */
+
+    LOG(BF("Creating class[classcandoBase__OVector3_Oval]"));
+    core::BuiltInClass_sp classcandoBase__OVector3_Oval = core::BuiltInClass_O::createUncollectable();
+    classcandoBase__OVector3_Oval->__setup_stage1_with_sharedPtr_lisp_sid(classcandoBase__OVector3_Oval,_lisp,candoBase::OVector3_O::static_classSymbol());
+    reg::lisp_associateClassIdWithClassSymbol(reg::registered_class<candoBase::OVector3_O>::id,candoBase::OVector3_O::static_classSymbol());
+    candoBase::OVector3_O::___staticClass = classcandoBase__OVector3_Oval;
+#ifdef USE_MPS
+    candoBase::OVector3_O::static_Kind = gctools::GCKind<candoBase::OVector3_O>::Kind;
+#endif
+    core::af_setf_findClass(classcandoBase__OVector3_Oval,candoBase::OVector3_O::static_classSymbol(),true,_Nil<core::Environment_O>());
+    {
+        core::LispObjectCreator<candoBase::OVector3_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<candoBase::OVector3_O>>::allocateClass();
+        candoBase::OVector3_O::___set_static_creator(cb);
+    }
+    LOG(BF("Set static_allocator for class(%s) to %X")% candoBase::OVector3_O::static_className() % (void*)(candoBase::OVector3_O::static_allocator) );
+    classcandoBase__OVector3_Oval->setCreator(candoBase::OVector3_O::static_creator);
+    {
+        LOG(BF("Created nil for class[%s]") % candoBase::OVector3_O::static_className() );
+    }
+    /* ----- the class and its nil are now defined and so is classcandoBase__OVector3_Oval::___staticClass but the class _Slots and _Signature_ClassSlots are undefined - set them both to _Nil<T_O>() in stage3   ----- */
+
+    LOG(BF("Creating class[classcandoBase__QDomNode_Oval]"));
+    core::BuiltInClass_sp classcandoBase__QDomNode_Oval = core::BuiltInClass_O::createUncollectable();
+    classcandoBase__QDomNode_Oval->__setup_stage1_with_sharedPtr_lisp_sid(classcandoBase__QDomNode_Oval,_lisp,candoBase::QDomNode_O::static_classSymbol());
+    reg::lisp_associateClassIdWithClassSymbol(reg::registered_class<candoBase::QDomNode_O>::id,candoBase::QDomNode_O::static_classSymbol());
+    candoBase::QDomNode_O::___staticClass = classcandoBase__QDomNode_Oval;
+#ifdef USE_MPS
+    candoBase::QDomNode_O::static_Kind = gctools::GCKind<candoBase::QDomNode_O>::Kind;
+#endif
+    core::af_setf_findClass(classcandoBase__QDomNode_Oval,candoBase::QDomNode_O::static_classSymbol(),true,_Nil<core::Environment_O>());
+    {
+        core::LispObjectCreator<candoBase::QDomNode_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<candoBase::QDomNode_O>>::allocateClass();
+        candoBase::QDomNode_O::___set_static_creator(cb);
+    }
+    LOG(BF("Set static_allocator for class(%s) to %X")% candoBase::QDomNode_O::static_className() % (void*)(candoBase::QDomNode_O::static_allocator) );
+    classcandoBase__QDomNode_Oval->setCreator(candoBase::QDomNode_O::static_creator);
+    {
+        LOG(BF("Created nil for class[%s]") % candoBase::QDomNode_O::static_className() );
+    }
+    /* ----- the class and its nil are now defined and so is classcandoBase__QDomNode_Oval::___staticClass but the class _Slots and _Signature_ClassSlots are undefined - set them both to _Nil<T_O>() in stage3   ----- */
+
+    LOG(BF("Creating class[classcandoBase__CoordinateArrayWithHash_Oval]"));
+    core::BuiltInClass_sp classcandoBase__CoordinateArrayWithHash_Oval = core::BuiltInClass_O::createUncollectable();
+    classcandoBase__CoordinateArrayWithHash_Oval->__setup_stage1_with_sharedPtr_lisp_sid(classcandoBase__CoordinateArrayWithHash_Oval,_lisp,candoBase::CoordinateArrayWithHash_O::static_classSymbol());
+    reg::lisp_associateClassIdWithClassSymbol(reg::registered_class<candoBase::CoordinateArrayWithHash_O>::id,candoBase::CoordinateArrayWithHash_O::static_classSymbol());
+    candoBase::CoordinateArrayWithHash_O::___staticClass = classcandoBase__CoordinateArrayWithHash_Oval;
+#ifdef USE_MPS
+    candoBase::CoordinateArrayWithHash_O::static_Kind = gctools::GCKind<candoBase::CoordinateArrayWithHash_O>::Kind;
+#endif
+    core::af_setf_findClass(classcandoBase__CoordinateArrayWithHash_Oval,candoBase::CoordinateArrayWithHash_O::static_classSymbol(),true,_Nil<core::Environment_O>());
+    {
+        core::LispObjectCreator<candoBase::CoordinateArrayWithHash_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<candoBase::CoordinateArrayWithHash_O>>::allocateClass();
+        candoBase::CoordinateArrayWithHash_O::___set_static_creator(cb);
+    }
+    LOG(BF("Set static_allocator for class(%s) to %X")% candoBase::CoordinateArrayWithHash_O::static_className() % (void*)(candoBase::CoordinateArrayWithHash_O::static_allocator) );
+    classcandoBase__CoordinateArrayWithHash_Oval->setCreator(candoBase::CoordinateArrayWithHash_O::static_creator);
+    {
+        LOG(BF("Created nil for class[%s]") % candoBase::CoordinateArrayWithHash_O::static_className() );
+    }
+    /* ----- the class and its nil are now defined and so is classcandoBase__CoordinateArrayWithHash_Oval::___staticClass but the class _Slots and _Signature_ClassSlots are undefined - set them both to _Nil<T_O>() in stage3   ----- */
+#endif // CREATE_CLASS
+#undef CREATE_CLASS
+#ifdef DUMP_INFO_CLASS // {
+// Depends on nothing
+
+    LOG(BF("---    dump_info   --- className: candoBase::BoundingBox_O @ %X") % classcandoBase__BoundingBox_Oval.get());
+    LOG(BF("%s::static_classSymbol() = %d") % candoBase::BoundingBox_O::static_className() % candoBase::BoundingBox_O::static_classSymbol() );
+
+    LOG(BF("---    dump_info   --- className: candoBase::CoordinateArray_O @ %X") % classcandoBase__CoordinateArray_Oval.get());
+    LOG(BF("%s::static_classSymbol() = %d") % candoBase::CoordinateArray_O::static_className() % candoBase::CoordinateArray_O::static_classSymbol() );
+
+    LOG(BF("---    dump_info   --- className: candoBase::OMatrix_O @ %X") % classcandoBase__OMatrix_Oval.get());
+    LOG(BF("%s::static_classSymbol() = %d") % candoBase::OMatrix_O::static_className() % candoBase::OMatrix_O::static_classSymbol() );
+
+    LOG(BF("---    dump_info   --- className: candoBase::OVector2_O @ %X") % classcandoBase__OVector2_Oval.get());
+    LOG(BF("%s::static_classSymbol() = %d") % candoBase::OVector2_O::static_className() % candoBase::OVector2_O::static_classSymbol() );
+
+    LOG(BF("---    dump_info   --- className: candoBase::OVector3_O @ %X") % classcandoBase__OVector3_Oval.get());
+    LOG(BF("%s::static_classSymbol() = %d") % candoBase::OVector3_O::static_className() % candoBase::OVector3_O::static_classSymbol() );
+
+    LOG(BF("---    dump_info   --- className: candoBase::QDomNode_O @ %X") % classcandoBase__QDomNode_Oval.get());
+    LOG(BF("%s::static_classSymbol() = %d") % candoBase::QDomNode_O::static_className() % candoBase::QDomNode_O::static_classSymbol() );
+
+    LOG(BF("---    dump_info   --- className: candoBase::CoordinateArrayWithHash_O @ %X") % classcandoBase__CoordinateArrayWithHash_Oval.get());
+    LOG(BF("%s::static_classSymbol() = %d") % candoBase::CoordinateArrayWithHash_O::static_className() % candoBase::CoordinateArrayWithHash_O::static_classSymbol() );
+#endif // } DUMP_INFO_CLASS
+#undef DUMP_INFO_CLASS
+#if defined(DEFINE_BASE_CLASSES) || defined(ALL_STAGES) // {
+// Depends on nothing
+classcandoBase__BoundingBox_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(core::T_O::static_classSymbol());
+classcandoBase__CoordinateArray_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(core::Vector_O::static_classSymbol());
+classcandoBase__OMatrix_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(core::T_O::static_classSymbol());
+classcandoBase__OVector2_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(core::T_O::static_classSymbol());
+classcandoBase__OVector3_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(core::T_O::static_classSymbol());
+classcandoBase__QDomNode_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(core::T_O::static_classSymbol());
+classcandoBase__CoordinateArrayWithHash_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(candoBase::CoordinateArray_O::static_classSymbol());
+#endif // } DEFINE_BASE_CLASSES
+#undef DEFINE_BASE_CLASSES
+#if defined(DEFINE_CLASS_NAMES) || defined(ALL_STAGES) // {
+// Depends on nothing
+
+    classcandoBase__BoundingBox_Oval->__setupStage3NameAndCalculateClassPrecedenceList(candoBase::BoundingBox_O::static_classSymbol());
+
+    classcandoBase__CoordinateArray_Oval->__setupStage3NameAndCalculateClassPrecedenceList(candoBase::CoordinateArray_O::static_classSymbol());
+
+    classcandoBase__OMatrix_Oval->__setupStage3NameAndCalculateClassPrecedenceList(candoBase::OMatrix_O::static_classSymbol());
+
+    classcandoBase__OVector2_Oval->__setupStage3NameAndCalculateClassPrecedenceList(candoBase::OVector2_O::static_classSymbol());
+
+    classcandoBase__OVector3_Oval->__setupStage3NameAndCalculateClassPrecedenceList(candoBase::OVector3_O::static_classSymbol());
+
+    classcandoBase__QDomNode_Oval->__setupStage3NameAndCalculateClassPrecedenceList(candoBase::QDomNode_O::static_classSymbol());
+
+    classcandoBase__CoordinateArrayWithHash_Oval->__setupStage3NameAndCalculateClassPrecedenceList(candoBase::CoordinateArrayWithHash_O::static_classSymbol());
+#endif // } DEFINE_CLASS_NAMES
+#undef DEFINE_CLASS_NAMES
+#if defined(EXPOSE_TO_CANDO) || defined(ALL_STAGES)
+#ifdef Use_CandoBasePkg
+#ifdef EXTERN_REGISTER
+extern void Register_candoBase__BoundingBox_O(core::Lisp_sp); // base(s): set(['core::T_O'])
+#endif // EXTERN_REGISTER
+#ifdef INVOKE_REGISTER
+{_BLOCK_TRACE("initializing Register_candoBase__BoundingBox_O");
+    candoBase::Register_candoBase__BoundingBox_O(_lisp); // base(s): set(['core::T_O'])
+}
+#endif // INVOKE_REGISTER
+#endif // ifdef Use_CandoBasePkg
+#ifdef Use_CandoBasePkg
+#ifdef EXTERN_REGISTER
+extern void Register_candoBase__CoordinateArray_O(core::Lisp_sp); // base(s): set(['core::Vector_O'])
+#endif // EXTERN_REGISTER
+#ifdef INVOKE_REGISTER
+{_BLOCK_TRACE("initializing Register_candoBase__CoordinateArray_O");
+    candoBase::Register_candoBase__CoordinateArray_O(_lisp); // base(s): set(['core::Vector_O'])
+}
+#endif // INVOKE_REGISTER
+#endif // ifdef Use_CandoBasePkg
+#ifdef Use_CandoBasePkg
+#ifdef EXTERN_REGISTER
+extern void Register_candoBase__OMatrix_O(core::Lisp_sp); // base(s): set(['core::T_O'])
+#endif // EXTERN_REGISTER
+#ifdef INVOKE_REGISTER
+{_BLOCK_TRACE("initializing Register_candoBase__OMatrix_O");
+    candoBase::Register_candoBase__OMatrix_O(_lisp); // base(s): set(['core::T_O'])
+}
+#endif // INVOKE_REGISTER
+#endif // ifdef Use_CandoBasePkg
+#ifdef Use_CandoBasePkg
+#ifdef EXTERN_REGISTER
+extern void Register_candoBase__OVector2_O(core::Lisp_sp); // base(s): set(['core::T_O'])
+#endif // EXTERN_REGISTER
+#ifdef INVOKE_REGISTER
+{_BLOCK_TRACE("initializing Register_candoBase__OVector2_O");
+    candoBase::Register_candoBase__OVector2_O(_lisp); // base(s): set(['core::T_O'])
+}
+#endif // INVOKE_REGISTER
+#endif // ifdef Use_CandoBasePkg
+#ifdef Use_CandoBasePkg
+#ifdef EXTERN_REGISTER
+extern void Register_candoBase__OVector3_O(core::Lisp_sp); // base(s): set(['core::T_O'])
+#endif // EXTERN_REGISTER
+#ifdef INVOKE_REGISTER
+{_BLOCK_TRACE("initializing Register_candoBase__OVector3_O");
+    candoBase::Register_candoBase__OVector3_O(_lisp); // base(s): set(['core::T_O'])
+}
+#endif // INVOKE_REGISTER
+#endif // ifdef Use_CandoBasePkg
+#ifdef Use_CandoBasePkg
+#ifdef EXTERN_REGISTER
+extern void Register_candoBase__QDomNode_O(core::Lisp_sp); // base(s): set(['core::T_O'])
+#endif // EXTERN_REGISTER
+#ifdef INVOKE_REGISTER
+{_BLOCK_TRACE("initializing Register_candoBase__QDomNode_O");
+    candoBase::Register_candoBase__QDomNode_O(_lisp); // base(s): set(['core::T_O'])
+}
+#endif // INVOKE_REGISTER
+#endif // ifdef Use_CandoBasePkg
+#ifdef Use_CandoBasePkg
+#ifdef EXTERN_REGISTER
+extern void Register_candoBase__CoordinateArrayWithHash_O(core::Lisp_sp); // base(s): set(['candoBase::CoordinateArray_O'])
+#endif // EXTERN_REGISTER
+#ifdef INVOKE_REGISTER
+{_BLOCK_TRACE("initializing Register_candoBase__CoordinateArrayWithHash_O");
+    candoBase::Register_candoBase__CoordinateArrayWithHash_O(_lisp); // base(s): set(['candoBase::CoordinateArray_O'])
+}
+#endif // INVOKE_REGISTER
+#endif // ifdef Use_CandoBasePkg
+#endif // EXPOSE_TO_CANDO
+#undef EXPOSE_TO_CANDO
+#ifdef EXPOSE_TO_PYTHON
+#ifdef Use_CandoBasePkg
+extern void Call_exposePython_candoBase__BoundingBox_O(::core::Lisp_sp lisp);
+{_DBG("exposing to python: candoBase__BoundingBox_O");
+	Call_exposePython_candoBase__BoundingBox_O(_lisp); // base(s): set(['core::T_O'])
+}
+#endif // ifdef Use_CandoBasePkg
+#ifdef Use_CandoBasePkg
+extern void Call_exposePython_candoBase__CoordinateArray_O(::core::Lisp_sp lisp);
+{_DBG("exposing to python: candoBase__CoordinateArray_O");
+	Call_exposePython_candoBase__CoordinateArray_O(_lisp); // base(s): set(['core::Vector_O'])
+}
+#endif // ifdef Use_CandoBasePkg
+#ifdef Use_CandoBasePkg
+extern void Call_exposePython_candoBase__OMatrix_O(::core::Lisp_sp lisp);
+{_DBG("exposing to python: candoBase__OMatrix_O");
+	Call_exposePython_candoBase__OMatrix_O(_lisp); // base(s): set(['core::T_O'])
+}
+#endif // ifdef Use_CandoBasePkg
+#ifdef Use_CandoBasePkg
+extern void Call_exposePython_candoBase__OVector2_O(::core::Lisp_sp lisp);
+{_DBG("exposing to python: candoBase__OVector2_O");
+	Call_exposePython_candoBase__OVector2_O(_lisp); // base(s): set(['core::T_O'])
+}
+#endif // ifdef Use_CandoBasePkg
+#ifdef Use_CandoBasePkg
+extern void Call_exposePython_candoBase__OVector3_O(::core::Lisp_sp lisp);
+{_DBG("exposing to python: candoBase__OVector3_O");
+	Call_exposePython_candoBase__OVector3_O(_lisp); // base(s): set(['core::T_O'])
+}
+#endif // ifdef Use_CandoBasePkg
+#ifdef Use_CandoBasePkg
+extern void Call_exposePython_candoBase__QDomNode_O(::core::Lisp_sp lisp);
+{_DBG("exposing to python: candoBase__QDomNode_O");
+	Call_exposePython_candoBase__QDomNode_O(_lisp); // base(s): set(['core::T_O'])
+}
+#endif // ifdef Use_CandoBasePkg
+#ifdef Use_CandoBasePkg
+extern void Call_exposePython_candoBase__CoordinateArrayWithHash_O(::core::Lisp_sp lisp);
+{_DBG("exposing to python: candoBase__CoordinateArrayWithHash_O");
+	Call_exposePython_candoBase__CoordinateArrayWithHash_O(_lisp); // base(s): set(['candoBase::CoordinateArray_O'])
+}
+#endif // ifdef Use_CandoBasePkg
+#endif // EXPOSE_TO_PYTHON
+#undef EXPOSE_TO_PYTHON
+#if defined(EXPAND_CLASS_MACROS)
+_CLASS_MACRO(candoBase::BoundingBox_O)
+_CLASS_MACRO(candoBase::CoordinateArray_O)
+_CLASS_MACRO(candoBase::OMatrix_O)
+_CLASS_MACRO(candoBase::OVector2_O)
+_CLASS_MACRO(candoBase::OVector3_O)
+_CLASS_MACRO(candoBase::QDomNode_O)
+_CLASS_MACRO(candoBase::CoordinateArrayWithHash_O)
+#endif // EXPAND_CLASS_MACROS
+#undef ALL_STAGES
+// ---------------- after class initializers
+#ifdef EXPOSE_TO_PYTHON
+#endif // EXPOSE_TO_PYTHON
