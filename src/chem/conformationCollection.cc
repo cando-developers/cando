@@ -12,6 +12,7 @@
  *
  */
 
+#include <clasp/core/hashTableEq.h>
 #include <cando/chem/conformationCollection.h>
 #include <cando/chem/loop.h>
 //#include "core/xmlSaveArchive.h"
@@ -97,7 +98,6 @@ void	ConformationCollectionEntry_O::extractCoordinatesFromMatter(Matter_sp matte
 {_G();
 ConformationCollection_sp	sl;
 vector<Vector3>::iterator	ci;
-gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
 #ifdef	DEBUG_ConformationCollectionEntry
     this->_Status->addMessage("extractCoordinatesFromMatter");
 #endif
@@ -168,7 +168,7 @@ Atom_sp	a;
 
 uint	ConformationCollection_O::addEntry(ConformationCollectionEntry_sp entry)
 {_G();
-    this->_Entries.append(entry);
+    this->_Entries.push_back(entry);
     return 1;
 }
 

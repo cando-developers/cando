@@ -170,7 +170,7 @@ namespace chem {
 	    Molecule_sp mol = downcast<Molecule_O>(*a);
 	    newAgg->addMolecule(mol->copy().as<Molecule_O>());
 	}
-	newAgg->copyRestraintsDontRedirectAtoms(this);
+	newAgg->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
 	newAgg->redirectRestraintAtoms();
 	return newAgg;
     }
@@ -188,7 +188,7 @@ namespace chem {
 	    Molecule_sp mol = (*a).as<Molecule_O>();
 	    newAgg->addMatter(mol->copyDontRedirectAtoms());
 	}
-	newAgg->copyRestraintsDontRedirectAtoms(this);
+	newAgg->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
 	return newAgg;
     }
 
@@ -408,8 +408,8 @@ namespace chem {
     Molecule_sp Aggregate_O::firstMoleculeWithAtomNamed(MatterName name)
     {
 	Atom_sp a = this->firstAtomWithName(name);
-	Residue_sp res = a->containedByLock().as<Residue_O>();
-	Molecule_sp mol = res->containedByLock().as<Molecule_O>();
+	Residue_sp res = a->containedBy().as<Residue_O>();
+	Molecule_sp mol = res->containedBy().as<Molecule_O>();
 	return mol;
     }
 

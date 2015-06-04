@@ -175,7 +175,7 @@ double	OVector3_O::distance( const Vector3& vb )
 }
 
 
-core::Cons_sp OVector3_O::encode() const {
+core::List_sp OVector3_O::encode() {
   core::Vector_sp v = core::core_make_vector(cl::_sym_DoubleFloat_O,3);
   (*v)[0] = core::clasp_make_double_float(this->_Value[0]);
   (*v)[1] = core::clasp_make_double_float(this->_Value[1]);
@@ -184,7 +184,7 @@ core::Cons_sp OVector3_O::encode() const {
   return core::Cons_O::create(_Nil<T_O>(),v);
 }
 
-void OVector3_O::decode(core::Cons_sp r) {
+void OVector3_O::decode(core::List_sp r) {
   core::Vector_sp v = gc::As<core::Vector_sp>(oCdr(r));
   this->_Value[0] = core::clasp_to_double((*v)[0]);
   this->_Value[1] = core::clasp_to_double((*v)[1]);
@@ -192,26 +192,29 @@ void OVector3_O::decode(core::Cons_sp r) {
 }
 
 
-    void OVector3_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<OVector3_O>()
-		.def("setAll3", &OVector3_O::setAll3 )
-		.def("x", &OVector3_O::getX )
-		.def("y", &OVector3_O::getY )
-		.def("z", &OVector3_O::getZ )
-		.def("dihedral", &OVector3_O::dihedral)
-		.def("vector3-angle", &OVector3_O::angle)
-		.def("vector3-distance", &OVector3_O::distance)
-	    .def("vector-magnitude",&OVector3_O::magnitude)
-	    .def("vector-normalized",&OVector3_O::normalized)
-	    .def("sub",&OVector3_O::sub)
-	    .def("dotProduct",&OVector3_O::dotProduct)
-	    .def("crossProduct",&OVector3_O::crossProduct)
-	    .DEF(OVector3_O,add)
-	    .def("timesScalar",&OVector3_O::timesScalar)
-	;
-	Defun_maker(GeomPkg,OVector3);
-    }
+void OVector3_O::exposeCando(core::Lisp_sp lisp)
+{
+  core::class_<OVector3_O>()
+    .def("setAll3", &OVector3_O::setAll3 )
+    .def("x", &OVector3_O::getX )
+    .def("y", &OVector3_O::getY )
+    .def("z", &OVector3_O::getZ )
+    .def("dihedral", &OVector3_O::dihedral)
+    .def("vector3-angle", &OVector3_O::angle)
+    .def("vector3-distance", &OVector3_O::distance)
+    .def("vector-magnitude",&OVector3_O::magnitude)
+    .def("vector-normalized",&OVector3_O::normalized)
+    .def("sub",&OVector3_O::sub)
+    .def("dotProduct",&OVector3_O::dotProduct)
+    .def("crossProduct",&OVector3_O::crossProduct)
+    .def("add",&OVector3_O::add,
+         ARGS_OVector3_O_add,
+         DECL_OVector3_O_add,
+         DOCS_OVector3_O_add)
+    .def("timesScalar",&OVector3_O::timesScalar)
+    ;
+  Defun_maker(GeomPkg,OVector3);
+}
     void OVector3_O::exposePython(core::Lisp_sp lisp)
     {_G();
 #ifdef USEBOOSTPYTHON

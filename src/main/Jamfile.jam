@@ -30,6 +30,7 @@ sources =
 		/internals//serveEvent  #//bundle/<link>static
 		/internals//asttooling  #//bundle/<link>static
                 /cando/geom
+                /cando/adapt
                 /cando/units
                 /cando/chem
 		/externals//llvm_lib/<link>static
@@ -44,7 +45,29 @@ exe cando_boehm_o : main.cc $(sources)
      : <gc>boehm <variant>release
      ;
 
+explicit cando_boehm_o ;
+
 exe cando_boehm_d : main.cc $(sources)
      /externals//lib_boehm
      : <gc>boehm <variant>debug
      ;
+
+explicit cando_boehm_d ;
+
+executables = cando_boehm_o cando_boehm_d
+            ;
+            
+alias cando : $(executables)
+      : <variant>release ;
+
+alias cando : $(executables)
+      : <variant>debug ;
+
+
+install install : $(executables)
+        : <location>$(APPBIN-OSX) <target-os>darwin
+        ;
+
+install install : $(cando)
+        : <location>$(APPBIN-LINUX) <target-os>linux
+        ;

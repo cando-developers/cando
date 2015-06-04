@@ -18,7 +18,7 @@ typedef struct tagSGaffParserParam
     stringstream*		gaffErrorStream;
 
 
-    istream*	acLexStream;		
+  std::istream*	acLexStream;		
 // This defines the stream that we are reading from
 
 

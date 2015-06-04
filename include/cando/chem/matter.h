@@ -94,22 +94,21 @@ class Matter_O : public core::T_O
 public:
 	void initialize();
 public:
-	void	archiveBase(core::ArchiveP node);
+	void	fields(core::Record_sp node);
 //	void	serialize(serialize::SNode snode);
 
 friend	class Loop;
-
 public:
 typedef	gctools::Vec0<Matter_sp>			MatterVector;
 typedef	gctools::Vec0<Matter_sp>::iterator		contentIterator;
 typedef	gctools::Vec0<Matter_sp>::const_iterator	const_contentIterator;
 protected:
-	int			_NextContentId;
-	int			_Id;
-	int			_TempFileId;	//!< Use to define temporary index while reading/writing to non XML formats
-    MatterName			name;
-    gc::Nilable<Matter_sp>	containerContainedBy;
-	MatterVector		_contents;	// KEEP THIS as a vector
+ int			_NextContentId;
+ int			_Id;
+ int			_TempFileId;	//!< Use to define temporary index while reading/writing to non XML formats
+ MatterName			name;
+ gc::Nilable<Matter_sp>	containerContainedBy;
+ MatterVector		_contents;	// KEEP THIS as a vector
 						// A lot depends on residues
 						// maintaining an identical
 						// order of atoms
@@ -120,7 +119,7 @@ protected:
     core::List_sp   	_Properties;
 private:
 	/*! Maintain a list of restraints that span this Matter_O object */
-	RestraintList_sp	_Restraints;
+    gc::Nilable<RestraintList_sp>	_Restraints;
 private:
 
 	/*! Adjust the size of the contents array */
@@ -166,7 +165,7 @@ protected:
 	virtual void redirectAtoms();
 
 	/*! Copy the restraints from another object but dont' redirect atoms */
-	virtual void copyRestraintsDontRedirectAtoms(Matter_O const* orig);
+	virtual void copyRestraintsDontRedirectAtoms(Matter_sp orig);
 	/*! Redirect restraint atoms */
 	virtual void redirectRestraintAtoms();
 
@@ -226,20 +225,16 @@ public:
 
 	virtual uint	numberOfAtoms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
 
-//	void	setContainedBy(Matter_wp p){this->containerContainedBy= p;};
-//	void	setContainedBy(Matter_sp p){this->containerContainedBy= (Matter_wp)p;};
 	void	setContainedBy(Matter_sp p){this->containerContainedBy= p;};
-    void	setContainedByNothing(){this->containerContainedBy = _Nil<Matter_O>(); };
+        void	setContainedByNothing(){this->containerContainedBy = _Nil<core::T_O>(); };
 		// Check containedByValid before touching containedBy
-    bool		containedByValid() const {return (this->containerContainedBy.objectp()); };
+        bool		containedByValid() const {return (this->containerContainedBy.notnilp()); };
 	Matter_sp	containedBy() const	{_G();ASSERTNOTNULL(this->containerContainedBy);return this->containerContainedBy;};
-	Matter_sp	containedByLock()	{_G();ASSERTNOTNULL(this->containerContainedBy); return this->containerContainedBy; };
-	Matter_sp	containedByLock_const() const	{_G();ASSERTNOTNULL(this->containerContainedBy); return this->containerContainedBy; };
+	Matter_sp	containedBy()	{_G();ASSERTNOTNULL(this->containerContainedBy); return this->containerContainedBy; };
 	bool		isContainedBy(Matter_sp matter);
-
 	MatterVector&	getContents()	{return(this->_contents);};
-	void	eraseContents(); // Empty the contents vector, don't free the
-				 // memory.
+	void	eraseContents(); // Empty the contents vector, don't free the memory
+        
 	contentIterator eraseContent(contentIterator x) {return this->_contents.erase(x);};
 
 	virtual void	makeAllAtomNamesInEachResidueUnique();

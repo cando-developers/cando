@@ -45,7 +45,7 @@ public:
 private:
 	ConformationCollection_wp	_WeakConformationCollection;
         geom::CoordinateArray_sp		_AllCoordinates;
-//	core::HashTableEq_sp		_Data;
+	core::HashTableEq_sp		_Data;
 
 public:
         void setAllCoordinates(geom::CoordinateArray_sp ac);

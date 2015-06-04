@@ -8,7 +8,7 @@ NEEDS = $(M4_NEEDS) $(PARSER_NEEDS)
 subParsers: $(PARSER_NEEDS)
 	echo Nothing
 
-BISON=bison
+
 
 
 FLEX=flex

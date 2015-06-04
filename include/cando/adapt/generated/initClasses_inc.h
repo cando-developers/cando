@@ -6,16 +6,14 @@
  // class IterateCons_O : public core::Iterator_O
  // class ObjectSet_O : public T_O {
  // class QDomNode_O : public core::T_O
- // class SmallMap_O : public T_O {
  // class StringList_O : public T_O {
  // class StringSet_O : public core::T_O {
- // class SymbolList_O : public T_O {
+ // class SymbolList_O : public core::T_O {
  // class SymbolSet_O : public T_O {
 #ifdef HEADER_INCLUDES
 #include "include/iterateCons.h"
 #include "include/objectSet.h"
 #include "include/quickDom.h"
-#include "include/smallMap.h"
 #include "include/stringList.h"
 #include "include/stringSet.h"
 #include "include/symbolList.h"
@@ -27,7 +25,6 @@
 adapt::IterateCons_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(adapt::IterateCons_O::static_packageName(),adapt::IterateCons_O::static_className()));
 adapt::ObjectSet_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(adapt::ObjectSet_O::static_packageName(),adapt::ObjectSet_O::static_className()));
 adapt::QDomNode_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(adapt::QDomNode_O::static_packageName(),adapt::QDomNode_O::static_className()));
-adapt::SmallMap_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(adapt::SmallMap_O::static_packageName(),adapt::SmallMap_O::static_className()));
 adapt::StringList_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(adapt::StringList_O::static_packageName(),adapt::StringList_O::static_className()));
 adapt::StringSet_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(adapt::StringSet_O::static_packageName(),adapt::StringSet_O::static_className()));
 adapt::SymbolList_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(adapt::SymbolList_O::static_packageName(),adapt::SymbolList_O::static_className()));
@@ -95,26 +92,6 @@ adapt::SymbolSet_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(adapt::SymbolSet_O::
         LOG(BF("Created nil for class[%s]") % adapt::QDomNode_O::static_className() );
     }
     /* ----- the class and its nil are now defined and so is classadapt__QDomNode_Oval::___staticClass but the class _Slots and _Signature_ClassSlots are undefined - set them both to _Nil<T_O>() in stage3   ----- */
-
-    LOG(BF("Creating class[classadapt__SmallMap_Oval]"));
-    core::BuiltInClass_sp classadapt__SmallMap_Oval = core::BuiltInClass_O::createUncollectable();
-    classadapt__SmallMap_Oval->__setup_stage1_with_sharedPtr_lisp_sid(classadapt__SmallMap_Oval,_lisp,adapt::SmallMap_O::static_classSymbol());
-    reg::lisp_associateClassIdWithClassSymbol(reg::registered_class<adapt::SmallMap_O>::id,adapt::SmallMap_O::static_classSymbol());
-    adapt::SmallMap_O::___staticClass = classadapt__SmallMap_Oval;
-#ifdef USE_MPS
-    adapt::SmallMap_O::static_Kind = gctools::GCKind<adapt::SmallMap_O>::Kind;
-#endif
-    core::af_setf_findClass(classadapt__SmallMap_Oval,adapt::SmallMap_O::static_classSymbol(),true,_Nil<core::Environment_O>());
-    {
-        core::LispObjectCreator<adapt::SmallMap_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<adapt::SmallMap_O>>::allocateClass();
-        adapt::SmallMap_O::___set_static_creator(cb);
-    }
-    LOG(BF("Set static_allocator for class(%s) to %X")% adapt::SmallMap_O::static_className() % (void*)(adapt::SmallMap_O::static_allocator) );
-    classadapt__SmallMap_Oval->setCreator(adapt::SmallMap_O::static_creator);
-    {
-        LOG(BF("Created nil for class[%s]") % adapt::SmallMap_O::static_className() );
-    }
-    /* ----- the class and its nil are now defined and so is classadapt__SmallMap_Oval::___staticClass but the class _Slots and _Signature_ClassSlots are undefined - set them both to _Nil<T_O>() in stage3   ----- */
 
     LOG(BF("Creating class[classadapt__StringList_Oval]"));
     core::BuiltInClass_sp classadapt__StringList_Oval = core::BuiltInClass_O::createUncollectable();
@@ -209,9 +186,6 @@ adapt::SymbolSet_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(adapt::SymbolSet_O::
     LOG(BF("---    dump_info   --- className: adapt::QDomNode_O @ %X") % classadapt__QDomNode_Oval.get());
     LOG(BF("%s::static_classSymbol() = %d") % adapt::QDomNode_O::static_className() % adapt::QDomNode_O::static_classSymbol() );
 
-    LOG(BF("---    dump_info   --- className: adapt::SmallMap_O @ %X") % classadapt__SmallMap_Oval.get());
-    LOG(BF("%s::static_classSymbol() = %d") % adapt::SmallMap_O::static_className() % adapt::SmallMap_O::static_classSymbol() );
-
     LOG(BF("---    dump_info   --- className: adapt::StringList_O @ %X") % classadapt__StringList_Oval.get());
     LOG(BF("%s::static_classSymbol() = %d") % adapt::StringList_O::static_className() % adapt::StringList_O::static_classSymbol() );
 
@@ -230,10 +204,9 @@ adapt::SymbolSet_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(adapt::SymbolSet_O::
 classadapt__IterateCons_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(core::Iterator_O::static_classSymbol());
 classadapt__ObjectSet_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(adapt::T_O::static_classSymbol());
 classadapt__QDomNode_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(core::T_O::static_classSymbol());
-classadapt__SmallMap_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(adapt::T_O::static_classSymbol());
 classadapt__StringList_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(adapt::T_O::static_classSymbol());
 classadapt__StringSet_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(core::T_O::static_classSymbol());
-classadapt__SymbolList_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(adapt::T_O::static_classSymbol());
+classadapt__SymbolList_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(core::T_O::static_classSymbol());
 classadapt__SymbolSet_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(adapt::T_O::static_classSymbol());
 #endif // } DEFINE_BASE_CLASSES
 #undef DEFINE_BASE_CLASSES
@@ -245,8 +218,6 @@ classadapt__SymbolSet_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceLis
     classadapt__ObjectSet_Oval->__setupStage3NameAndCalculateClassPrecedenceList(adapt::ObjectSet_O::static_classSymbol());
 
     classadapt__QDomNode_Oval->__setupStage3NameAndCalculateClassPrecedenceList(adapt::QDomNode_O::static_classSymbol());
-
-    classadapt__SmallMap_Oval->__setupStage3NameAndCalculateClassPrecedenceList(adapt::SmallMap_O::static_classSymbol());
 
     classadapt__StringList_Oval->__setupStage3NameAndCalculateClassPrecedenceList(adapt::StringList_O::static_classSymbol());
 
@@ -290,16 +261,6 @@ extern void Register_adapt__QDomNode_O(core::Lisp_sp); // base(s): set(['core::T
 #endif // ifdef Use_AdaptPkg
 #ifdef Use_AdaptPkg
 #ifdef EXTERN_REGISTER
-extern void Register_adapt__SmallMap_O(core::Lisp_sp); // base(s): set(['adapt::T_O'])
-#endif // EXTERN_REGISTER
-#ifdef INVOKE_REGISTER
-{_BLOCK_TRACE("initializing Register_adapt__SmallMap_O");
-    adapt::Register_adapt__SmallMap_O(_lisp); // base(s): set(['adapt::T_O'])
-}
-#endif // INVOKE_REGISTER
-#endif // ifdef Use_AdaptPkg
-#ifdef Use_AdaptPkg
-#ifdef EXTERN_REGISTER
 extern void Register_adapt__StringList_O(core::Lisp_sp); // base(s): set(['adapt::T_O'])
 #endif // EXTERN_REGISTER
 #ifdef INVOKE_REGISTER
@@ -320,11 +281,11 @@ extern void Register_adapt__StringSet_O(core::Lisp_sp); // base(s): set(['core::
 #endif // ifdef Use_AdaptPkg
 #ifdef Use_AdaptPkg
 #ifdef EXTERN_REGISTER
-extern void Register_adapt__SymbolList_O(core::Lisp_sp); // base(s): set(['adapt::T_O'])
+extern void Register_adapt__SymbolList_O(core::Lisp_sp); // base(s): set(['core::T_O'])
 #endif // EXTERN_REGISTER
 #ifdef INVOKE_REGISTER
 {_BLOCK_TRACE("initializing Register_adapt__SymbolList_O");
-    adapt::Register_adapt__SymbolList_O(_lisp); // base(s): set(['adapt::T_O'])
+    adapt::Register_adapt__SymbolList_O(_lisp); // base(s): set(['core::T_O'])
 }
 #endif // INVOKE_REGISTER
 #endif // ifdef Use_AdaptPkg
@@ -360,12 +321,6 @@ extern void Call_exposePython_adapt__QDomNode_O(::core::Lisp_sp lisp);
 }
 #endif // ifdef Use_AdaptPkg
 #ifdef Use_AdaptPkg
-extern void Call_exposePython_adapt__SmallMap_O(::core::Lisp_sp lisp);
-{_DBG("exposing to python: adapt__SmallMap_O");
-	Call_exposePython_adapt__SmallMap_O(_lisp); // base(s): set(['adapt::T_O'])
-}
-#endif // ifdef Use_AdaptPkg
-#ifdef Use_AdaptPkg
 extern void Call_exposePython_adapt__StringList_O(::core::Lisp_sp lisp);
 {_DBG("exposing to python: adapt__StringList_O");
 	Call_exposePython_adapt__StringList_O(_lisp); // base(s): set(['adapt::T_O'])
@@ -380,7 +335,7 @@ extern void Call_exposePython_adapt__StringSet_O(::core::Lisp_sp lisp);
 #ifdef Use_AdaptPkg
 extern void Call_exposePython_adapt__SymbolList_O(::core::Lisp_sp lisp);
 {_DBG("exposing to python: adapt__SymbolList_O");
-	Call_exposePython_adapt__SymbolList_O(_lisp); // base(s): set(['adapt::T_O'])
+	Call_exposePython_adapt__SymbolList_O(_lisp); // base(s): set(['core::T_O'])
 }
 #endif // ifdef Use_AdaptPkg
 #ifdef Use_AdaptPkg
@@ -395,7 +350,6 @@ extern void Call_exposePython_adapt__SymbolSet_O(::core::Lisp_sp lisp);
 _CLASS_MACRO(adapt::IterateCons_O)
 _CLASS_MACRO(adapt::ObjectSet_O)
 _CLASS_MACRO(adapt::QDomNode_O)
-_CLASS_MACRO(adapt::SmallMap_O)
 _CLASS_MACRO(adapt::StringList_O)
 _CLASS_MACRO(adapt::StringSet_O)
 _CLASS_MACRO(adapt::SymbolList_O)

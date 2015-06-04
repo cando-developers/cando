@@ -116,21 +116,25 @@ namespace geom
     Color_sp Color_O::systemColor(core::Symbol_sp sym)
     {
 	core::Symbol_sp colorTableSymbol = _sym_colorTable;
-	core::Binder_sp colorTable = colorTableSymbol->symbolValue().as<core::Binder_O>();
-	return colorTable->lookup(sym).as<Color_O>();
+	core::HashTable_sp colorTable = colorTableSymbol->symbolValue().as<core::HashTable_O>();
+        core::T_sp c = colorTable->gethash(sym);
+        if (c.nilp()) {
+          SIMPLE_ERROR(BF("Could not find color %s") % _rep_(sym));
+        }
+	return c.as<Color_O>();
     }
 
 
     Color_sp Color_O::getOrDefineSystemColor(core::Symbol_sp sym, uint color)
 {
     core::HashTable_sp colorTable = _sym_colorTable->symbolValue().as<core::HashTable_O>();
-    Color_sp c = colorTable->gethash(sym);
+    core::T_sp c = colorTable->gethash(sym);
     if ( c.nilp() ) {
 	Color_sp newColor = Color_O::create(sym,color);
 	colorTable->setf_gethash(sym,newColor);
 	return newColor;
     }
-    return c;
+    return c.as<Color_O>();
 }
     
 #ifdef XML_ARCHIVE

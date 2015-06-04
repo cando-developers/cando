@@ -38,15 +38,16 @@ THE SOFTWARE.
 #include <clasp/core/str.h>
 #include <cando/adapt/symbolList.h>
 #include <cando/adapt/symbolSet.h>
+#include <cando/adapt/adaptPackage.fwd.h>
 #include <clasp/core/wrappers.h>
 
 #define GCINFO_KIND_GCVECTOR_gctools__GCVector_moveable_class_mem__smart_ptr_class_core__Symbol_O__
 #include GC_INTERFACE_HEADER
 #undef GCINFO_KIND_GCVECTOR_gctools__GCVector_moveable_class_mem__smart_ptr_class_core__Symbol_O__
 
-namespace core {
+namespace adapt {
 
-EXPOSE_CLASS(core, SymbolList_O);
+EXPOSE_CLASS(adapt, SymbolList_O);
 
 void SymbolList_O::exposeCando(Lisp_sp lisp) {
   class_<SymbolList_O>();
@@ -55,7 +56,7 @@ void SymbolList_O::exposeCando(Lisp_sp lisp) {
 void SymbolList_O::exposePython(Lisp_sp lisp) {
   _G();
 #ifdef USEBOOSTPYTHON
-  PYTHON_CLASS(CorePkg, SymbolList, "", "", _lisp);
+  PYTHON_CLASS(AdaptPkg, SymbolList, "", "", _lisp);
 #endif
 }
 

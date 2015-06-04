@@ -123,8 +123,6 @@ namespace chemkw {
 };
 
 namespace chem {
-
-
 #pragma GCC visibility push(default)
 #define ChemPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
@@ -132,7 +130,16 @@ namespace chem {
 #undef DO_SYMBOL
 #undef ChemPkg_SYMBOLS
 #pragma GCC visibility pop
+};
 
+namespace kw {
+#pragma GCC visibility push(default)
+#define KeywordPkg_SYMBOLS
+#define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
+#include <cando/chem/generated/symbols_scraped_inc.h>
+#undef DO_SYMBOL
+#undef KeywordPkg_SYMBOLS
+#pragma GCC visibility pop
 };
 
 
@@ -147,6 +154,7 @@ namespace chem
 #undef Use_ChemPkg
 #undef EXPOSE_TO_CANDO
 };
+
 
 
 
@@ -173,22 +181,22 @@ namespace chem
 	{
 	case candoClasses:
 	{
+                    // Create the CHEM-KW package
+          std::list<std::string> nicknames = { "CK" };
+          std::list<std::string> usePackages = { };
+          _lisp->makePackage(ChemKwPkg,nicknames,usePackages);
+
 #define ChemKwPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {chemkw::cname = _lisp->internWithPackageName(pkg,lispname); chemkw::cname->exportYourself(exportp);}
 #include <cando/chem/generated/symbols_scraped_inc.h>
 #undef DO_SYMBOL
 #undef ChemKwPkg_SYMBOLS
 
-
 #define ChemPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,lispname); cname->exportYourself(exportp);}
 #include <cando/chem/generated/symbols_scraped_inc.h>
 #undef DO_SYMBOL
 #undef ChemPkg_SYMBOLS
-
-
-
-
 
 #define ALL_STAGES
 #define	Use_ChemPkg
@@ -202,7 +210,7 @@ namespace chem
 	break;
 	case candoFunctions:
 	{
-	    setupCandoPrimitives(_lisp);
+          setupCandoPrimitives(_lisp);
 #if 0
 	    defNoWrapPackage(ChemPkg,"atomAliases", &core::prim_list ,_lisp->lisp());
 	    defNoWrapPackage(ChemPkg,"aliasAtoms", &core::prim_list ,_lisp->lisp());
@@ -245,12 +253,13 @@ namespace chem
 	}
     }
 
-
-#if 0
-    CandoDatabase_sp getCandoDatabase(const core::Lisp_sp& lisp)
+    CandoDatabase_sp getCandoDatabase()
     {_G();
 	return _sym_candoDatabase->symbolValue().as<CandoDatabase_O>();
     }
+
+
+#if 0
 
     /*! Intern a symbol in the ChemKwPkg and return it.
       The symbol is automatically exported */
@@ -265,8 +274,15 @@ namespace chem
         return sym;
     }
 #endif
-        
 
+
+
+
+core::Symbol_sp chemkw_intern(const string& symName)
+{
+  if ( symName == "" ) return _Nil<core::Symbol_O>();
+  return _lisp->intern(symName,ChemKwPkg);
+}
 };
 
 
@@ -282,17 +298,6 @@ namespace chem
 #undef EXPAND_CLASS_MACROS
 #endif
 
-
-extern "C"
-{
-//    bool init_libchem()
-    void ___user_chem()
-    {
-	static chem::ChemExposer* chemPkgP = new chem::ChemExposer(_lisp);
-	_lisp->installPackage(chemPkgP);
-    }
-
-}
 
 
 

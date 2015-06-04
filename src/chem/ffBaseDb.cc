@@ -14,14 +14,10 @@
 #include <cando/chem/ffBaseDb.h>
 #include <cando/chem/forceField.h>
 //#include "core/archiveNode.h"
+#include <cando/chem/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
 namespace chem {
-
-
-
-
-
 
 string	FFParameter_O::levelDescription()
 {
@@ -44,17 +40,19 @@ string	FFParameter_O::levelDescription()
 	{ "", -1 }
 };
 
-    void	FFParameter_O::archiveBase(core::ArchiveP node)
-    {
-	node->attributeEnum( KW("level"), this->_Level);
-    }
+void FFParameter_O::fields(core::Record_sp node)
+{
+  //this->Base::fields(node); // T_O
+  node->pod_field( INTERN_(chemkw,level), this->_Level);
+}
 
-#ifdef CONSPACK
-    void	FFBaseDb_O::archiveBase(core::ArchiveP node)
-    {
-	node->attributeWeakPointer( KW("forceField"), this->_ForceField );
-    }
-#endif
+
+void	FFBaseDb_O::fields(core::Record_sp node)
+{
+  //this->Base::fields(node); // T_O
+  node->field( INTERN_(chemkw,forceField), this->_ForceField );
+}
+
 
 void	FFBaseDb_O::setForceField(ForceField_sp ff)
 {_G();

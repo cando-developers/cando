@@ -43,7 +43,9 @@ namespace       chem
 	static int const IMaxPeriodicity = 6;
     public:
 	void initialize();
+#ifdef XML_ARCHIVE
 	void	archiveBase(core::ArchiveP node);
+#endif
 
     public:
 	core::Symbol_sp         _T1;
@@ -85,7 +87,9 @@ namespace       chem
 	LISP_CLASS(chem,ChemPkg,FFItorDb_O,"FFItorDb");
 
     public:
+#ifdef XML_ARCHIVE
 	void	archiveBase(core::ArchiveP node);
+#endif
 
     public:
 	typedef	gctools::Vec0<FFItor_sp>::iterator	FFItor_spIterator;

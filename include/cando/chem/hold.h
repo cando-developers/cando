@@ -9,12 +9,29 @@ namespace chem {
 template <class oClass>
 class Hold {
 public:
-    gctools::smart_ptr<oClass>	_obj;
-    Hold( ) { this->_obj = _Nil<oClass>(); };
-    Hold( gctools::smart_ptr<oClass> o ) { this->_obj = o; };
-	virtual ~Hold() { this->_obj.reset(); };
+  gctools::smart_ptr<oClass>	_o;
+  Hold( ) { this->_o = oClass::create(); };
+  Hold( gctools::smart_ptr<oClass> o ) { this->_o = o; };
+  gc::smart_ptr<oClass> value() { return this->_o; };
+  virtual ~Hold() {};
 };
 
+ /*!Use a GC compatible allocator here */
+ template <class T>
+   Hold<T>* createHolder(gc::smart_ptr<T> obj) {
+   return new Hold<T>(obj);
+ }
+
+ template <class T>
+   Hold<T>* createHolder() {
+   return new Hold<T>();
+ }
+
+ /*! Use a corresponding GC compatible deallocator here */
+template <class T>
+  void deleteHolder(Hold<T>* objP) {
+  delete objP;
+};
 
 };
 #endif

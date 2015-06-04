@@ -201,7 +201,8 @@ void    FFNonbondDb_O::initialize()
 }
 
 
-    void	FFNonbond_O::archiveBase(core::ArchiveP node)
+#ifdef XML_ARCHIVE
+void	FFNonbond_O::archiveBase(core::ArchiveP node)
 {_G();
     node->attribute("type",this->_Type );
     node->attribute("radius",this->_Radius_Nanometers);
@@ -215,7 +216,7 @@ void    FFNonbondDb_O::initialize()
     node->attributeIfNotDefault("pbci",this->_Pbci,0.0);
     node->attributeEnum(KW("da"),this->_DonorAcceptor );
 }
-
+#endif
 #ifdef CONSPACK
     void	FFNonbondDb_O::archiveBase(core::ArchiveP node)
     {_G();

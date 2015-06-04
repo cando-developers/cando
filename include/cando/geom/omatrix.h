@@ -16,8 +16,8 @@ namespace geom {
   public:
     Matrix	_Value;
   public:
-    virtual core::Cons_sp encode() const;
-    virtual void decode(core::Cons_sp);
+    virtual core::List_sp encode();
+    virtual void decode(core::List_sp);
   public:
         //! Create a 4x4 matrix uninitialized (identity=false) or identity if true
     static OMatrix_sp make(bool identity);

@@ -15,7 +15,7 @@
 #include <clasp/core/str.h>
 #include <cando/chem/ffStretchDb.h>
 #include <cando/chem/units.h>
-//#include "core/archiveNode.h"
+#include <cando/chem/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
 
@@ -193,31 +193,21 @@ EstimateStretch	es;
 
 
 
-    void	FFStretch_O::archiveBase(core::ArchiveP node)
-    {
-	node->attribute( "type1", this->_Type1 );
-	node->attribute( "type2", this->_Type2 );
-	node->attribute( "r0", this->_R0_Nanometer );
-	node->attribute( "kb", this->_Kb_kJPerNanometerSquared );
-    }
+void	FFStretch_O::fields(core::Record_sp node)
+{
+  this->Base::fields(node);
+  node->field( INTERN_(chemkw,type1), this->_Type1 );
+  node->field( INTERN_(chemkw,type2), this->_Type2 );
+  node->pod_field( INTERN_(chemkw,r0), this->_R0_Nanometer );
+  node->pod_field( INTERN_(chemkw,kb), this->_Kb_kJPerNanometerSquared );
+}
 
-#ifdef XML_ARCHIVE
-    void	FFStretchDb_O::archiveBase(core::ArchiveP node)
-    {
-	this->FFBaseDb_O::archiveBase(node);
-	node->attributeVector0<FFStretch_O>(KW("stretches"),this->_Terms );
-	node->attributeStringMap<FFStretch_O>(KW("map"),this->_Lookup );
-    }
-#endif
-
-
-
-
-
-
-
-
-
+void	FFStretchDb_O::fields(core::Record_sp node)
+{
+  this->Base::fields(node);
+  node->field( INTERN_(chemkw,stretches),this->_Terms );
+  node->pod_field( INTERN_(chemkw,map),this->_Lookup );
+}
 
     void FFStretch_O::exposeCando(core::Lisp_sp lisp)
     {

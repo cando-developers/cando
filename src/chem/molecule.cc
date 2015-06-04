@@ -21,133 +21,69 @@
 
 namespace chem {
 
+void	Molecule_O::initialize()
+{
+  this->Base::initialize();
+}
 
+string Molecule_O::__repr__() const
+{
+  return this->Base::__repr__();
+}
 
-
-
-    void	Molecule_O::initialize()
-    {
-	this->Base::initialize();
-    }
-
-
-
-
-
-    string Molecule_O::__repr__() const
-    {
-	return this->Base::__repr__();
-    }
-
-
-
-#ifdef OLD_SERIALIZE
-    void	Molecule_O::serialize(serialize::SNode node)
-    {_G();
-	Bond_sp	bond;
-	Atom_sp		a;
-	Atom_sp	a1, a2;
-	BondOrder	o;
-	Loop lb;
-	contentIterator	aPPCur;
-	this->Base::serialize(node);
-	if ( node->saving() ) {
+void Molecule_O::fields(core::Record_sp node)
+{
+  Bond_sp	bond;
+  Atom_sp		a;
+  Atom_sp	a1, a2;
+  BondOrder	o;
+  Loop lb;
+  this->Base::fields(node);
+  switch (node->stage()) {
+  case core::Record_O::saving: {
             // Accumulate intraresidue bonds into a vector
-	    _BLOCK_TRACE("Xmling inter-residue bonds");
-	    GC_ALLOCATE(BondList_O, bondList );
-	    { _BLOCK_TRACE("Accumulating inter residue bond copies");
-		LOG(BF("Serializing InterResidueBonds") );
-		lb.loopTopMoleculeGoal( this->sharedThis<Molecule_O>(), BONDS );
-		while ( lb.advanceLoopAndProcess() ) {
-		    a1 = lb.getBondA1();
-		    a2 = lb.getBondA2();
+    _BLOCK_TRACE("Xmling inter-residue bonds");
+    BondList_sp bondList = BondList_O::create();
+    { _BLOCK_TRACE("Accumulating inter residue bond copies");
+      LOG(BF("Serializing InterResidueBonds") );
+      lb.loopTopMoleculeGoal( this->sharedThis<Molecule_O>(), BONDS );
+      while ( lb.advanceLoopAndProcess() ) {
+        a1 = lb.getBondA1();
+        a2 = lb.getBondA2();
 		    // LOG(BF("bond with atom1=%s") % a1->description().c_str()  );
 		    // LOG(BF("bond with atom2=%s") % a2->description().c_str()  );
-		    o  = lb.getBondOrder();
-		    bond = Bond_O::create(a1,a2,o);
-		    if ( bond->isInterResidueBond() )
-		    {
-			LOG(BF("Adding bond between atom1(%s) and atom2(%s)")
-			    % a1->description()
-			    % a2->description() );
-			bondList->addBond(bond);
-		    }
-		}
-	    }
-	    node->archiveObject<BondList_O>("bl",bondList);
-	} else {
+        o  = lb.getBondOrder();
+        bond = Bond_O::create(a1,a2,o);
+        if ( bond->isInterResidueBond() )
+        {
+          LOG(BF("Adding bond between atom1(%s) and atom2(%s)")
+              % a1->description()
+              % a2->description() );
+          bondList->addBond(bond);
+        }
+      }
+    }
+    node->field("bl",bondList);
+  }
+      break;
+  case core::Record_O::loading: {
     	    // create the intraResidue bonds
-	    bondList = _Nil<BondList_O>();
-	    node->archiveObject<BondList_O>("bl",bondList);
-	    ASSERTNOTNULL(bondList);
-	    bondList->imposeYourself();
-	}
-    }
-#endif
+    BondList_sp bondList;
+    node->field("bl",bondList);
+    ASSERTNOTNULL(bondList);
+    bondList->imposeYourself();
+  }
+      break;
+  case core::Record_O::patching: {
+  };
+      break;
+  }
+}
 
-
-
-
-#ifdef CONSPACK
-    void	Molecule_O::archiveBase(core::ArchiveP node)
-    {_G();
-	Bond_sp	bond;
-	Atom_sp		a;
-	Atom_sp	a1, a2;
-	BondOrder	o;
-	Loop lb;
-	this->Matter_O::archiveBase(node);
-	if ( node->saving() ) {
-            // Accumulate intraresidue bonds into a vector
-	    _BLOCK_TRACE("Xmling inter-residue bonds");
-	    BondList_sp bondList = BondList_O::create();
-	    { _BLOCK_TRACE("Accumulating inter residue bond copies");
-		LOG(BF("Serializing InterResidueBonds") );
-		lb.loopTopMoleculeGoal( this->sharedThis<Molecule_O>(), BONDS );
-		while ( lb.advanceLoopAndProcess() ) {
-		    a1 = lb.getBondA1();
-		    a2 = lb.getBondA2();
-		    // LOG(BF("bond with atom1=%s") % a1->description().c_str()  );
-		    // LOG(BF("bond with atom2=%s") % a2->description().c_str()  );
-		    o  = lb.getBondOrder();
-		    bond = Bond_O::create(a1,a2,o);
-		    if ( bond->isInterResidueBond() )
-		    {
-			LOG(BF("Adding bond between atom1(%s) and atom2(%s)")
-			    % a1->description()
-			    % a2->description() );
-			bondList->addBond(bond);
-		    }
-		}
-	    }
-	    node->attribute("bl",bondList);
-	} else {
-    	    // create the intraResidue bonds
-	    BondList_sp bondList = _Nil<BondList_O>();
-	    node->attribute("bl",bondList);
-	    ASSERTNOTNULL(bondList);
-	    bondList->imposeYourself();
-	}
-    }
-#endif
-
-
-
-
-
-
-
-
-//
-// Constructor
-//
-
-    Molecule_O::Molecule_O(const Molecule_O& mol)
-	:Matter_O(mol)
-    {
-    }
-
-
+Molecule_O::Molecule_O(const Molecule_O& mol)
+  :Matter_O(mol)
+{
+}
 
 //
 // Destructor
@@ -159,22 +95,22 @@ namespace chem {
 //
 //	Add the residue to the end of the molecule
 //
-    void Molecule_O::addResidue( Matter_sp r )
-    {_G();
-	this->addMatter( r );
-	LOG(BF("Added %s to %s") % r->description().c_str() % this->description().c_str()  );
-    }
+void Molecule_O::addResidue( Matter_sp r )
+{_G();
+  this->addMatter( r );
+  LOG(BF("Added %s to %s") % r->description().c_str() % this->description().c_str()  );
+}
 
 //
 //	addResidueRetainId
 //
 //	Add the residue to the end of the molecule
 //
-    void Molecule_O::addResidueRetainId( Matter_sp r )
-    {
-	LOG(BF("Adding %s to %s") % r->description().c_str() % this->description().c_str()  );
-	this->addMatterRetainId( r );
-    }
+void Molecule_O::addResidueRetainId( Matter_sp r )
+{
+  LOG(BF("Adding %s to %s") % r->description().c_str() % this->description().c_str()  );
+  this->addMatterRetainId( r );
+}
 
 
 
@@ -185,17 +121,17 @@ namespace chem {
 //
 //	Remove the residue
 //
-    void Molecule_O::removeResidue( Matter_sp a )
-    {
-        gctools::Vec0<Matter_sp>::iterator	it;
-	for ( it=this->getContents().begin(); it!= this->getContents().end(); it++ ) {
-	    if ( downcast<Residue_O>(*it) == a ) {
-		this->eraseContent(it);
-		return;
-	    }
-	}
-	SIMPLE_ERROR(BF("removeResidue: Molecule does not contain residue: %s", a->getName() )));
+void Molecule_O::removeResidue( Matter_sp a )
+{
+  gctools::Vec0<Matter_sp>::iterator	it;
+  for ( it=this->getContents().begin(); it!= this->getContents().end(); it++ ) {
+    if ( downcast<Residue_O>(*it) == a ) {
+      this->eraseContent(it);
+      return;
     }
+  }
+  SIMPLE_ERROR(BF("removeResidue: Molecule does not contain residue: %s", a->getName() )));
+}
 #endif
 
     bool	Molecule_O::equal(core::T_sp obj) const
@@ -271,13 +207,11 @@ namespace chem {
 	    newMol->addMatter(res->copyDontRedirectAtoms());
 	}
 	LOG(BF("Molecule_O::copyDontRedirectAtoms DONE") );
-	newMol->copyRestraintsDontRedirectAtoms(this);
-
+	newMol->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
 	return newMol;
     }
 
-
-    void	Molecule_O::redirectAtoms()
+void	Molecule_O::redirectAtoms()
     {_OF();
 	LOG(BF("Molecule_O::redirectAtoms START") );
 	for ( contentIterator a=this->getContents().begin(); a!=this->getContents().end(); a++ )

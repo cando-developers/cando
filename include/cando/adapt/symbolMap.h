@@ -48,6 +48,8 @@ template <class OT>
   class SymbolMap : public gctools::SmallMap<core::Symbol_sp, gctools::smart_ptr<OT>> {
   typedef gctools::SmallMap<core::Symbol_sp, gctools::smart_ptr<OT>> BaseType;
  public:
+  typedef pair<core::Symbol_sp,gc::smart_ptr<OT>> key_value;
+ public:
   void insert2(core::Symbol_sp key, gc::smart_ptr<OT> value) {
     this->insert(key_value(key,value));
   }
@@ -56,5 +58,40 @@ public:
   typedef typename BaseType::iterator iterator;
   typedef typename BaseType::const_iterator const_iterator;
 };
+};
+
+
+namespace translate {
+template <typename OT>
+  struct from_object<adapt::SymbolMap<OT>> {
+  typedef adapt::SymbolMap<OT> DeclareType;
+  DeclareType _v;
+  from_object(core::T_sp o) {
+    if ( core::Cons_sp co = o.asOrNull<core::Cons_O>() ) {
+      for ( auto cur : (core::List_sp)(co) ) {
+        core::Symbol_sp key = gc::As<core::Symbol_sp>(oCar(cur));
+        core::T_sp value = oCdr(cur);
+        this->_v.insert2(key,value);
+      }
+      return;
+    }
+    SIMPLE_ERROR(BF("Could not convert object to SymbolMap"));
+  }
+ };
+
+ template <typename OT>
+   struct to_object<adapt::SymbolMap<OT> > {
+   typedef adapt::SymbolMap<OT> GivenType;
+   static core::T_sp convert(const GivenType& v) {
+     // Convert the SymbolMap into an alist
+     core::List_sp res = _Nil<core::T_O>();
+     for ( auto it : v ) {
+       res = core::Cons_O::create(core::Cons_O::create(it.first,it.second),res);
+     }
+     return res;
+   }
+ };
+
+
 };
 #endif

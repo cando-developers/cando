@@ -219,7 +219,7 @@ class ChemDraw_O : public core::T_O
     LISP_CLASS(chem,ChemPkg,ChemDraw_O,"ChemDraw");
 #if INIT_TO_FACTORIES
  public:
-    static ChemDraw_sp make(const string& fileName);
+    static ChemDraw_sp make(core::T_sp stream);
 #else
     DECLARE_INIT();
 #endif
@@ -237,11 +237,10 @@ public:
 private:
 	// instance variables
 public:
-    static ChemDraw_sp open(const string& fileName);
 private:
 	string	_getAtomName(adapt::QDomNode_sp node);
 public:
-	void	parseFromFileName(const string& fileName);
+        void parse(core::T_sp strm);
 
 	/*! Set the properties for the named fragment.
 	  @param fragmentName The name of the fragment whose properties are being set

@@ -58,14 +58,10 @@ private:
 
 public:
     static QDomNode_sp create(const string& nodeName);
-    static QDomNode_sp parseFileName(const string& fileName );
-    static QDomNode_sp open(const string& fileName ) { return QDomNode_O::parseFileName(fileName);};
-    static QDomNode_sp parseFromString(const string& data);
-public:
     typedef VectorQDomNodes::iterator	iterator;
-
+    static gc::Nilable<QDomNode_sp> parse(core::T_sp stream);
 public:
-
+    
     QDomNode_O	*getParent()		{return this->parent;};
     void	setParent(QDomNode_O *par)	{this->parent = par;};
 
@@ -401,11 +397,6 @@ public:
     void throwErrorForChildrenWithoutName(string name);
 
     void eraseAll();
-
-    void parseFile( core::Stream_sp fIn, const string& fn);
-//    void parseFileName(const string fn);
-//    void open(const string& fn) { this->parseFileName(fn);};
-
 
 		/*! Lock the file and parse the fileName
 			if lock fails return false otherwise true

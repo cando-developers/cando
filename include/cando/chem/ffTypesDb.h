@@ -47,7 +47,7 @@ class FFTypesDb_O : public FFBaseDb_O
     LISP_CLASS(chem,ChemPkg,FFTypesDb_O,"FFTypesDb");
 
 public:
-    void	archiveBase(core::ArchiveP node);
+    void fields(core::Record_sp node);
 public:
     gctools::Vec0<ChemInfo_sp>	_TypeAssignmentRules;
 

@@ -633,19 +633,16 @@ namespace chem
 	SYMBOL_EXPORT_SC_(ChemKwPkg,virtualBond);
 	SYMBOL_EXPORT_SC_(ChemKwPkg,dashedSingleBond);
 	SYMBOL_EXPORT_SC_(ChemKwPkg,dashedDoubleBond);
-        FIX_ME();
-#if 0
 	core::enum_<BondOrder> en(_sym__PLUS_bondOrderToSymbolConverter_PLUS_,"BondOrder");
 	en.value(chemkw::_sym_noBond, _lisp->internKeyword("none"), singleBond );
 	en.value(chemkw::_sym_singleBond, _lisp->internKeyword("s"), singleBond );
 	en.value(chemkw::_sym_doubleBond, _lisp->internKeyword("d"), doubleBond );
 	en.value(chemkw::_sym_tripleBond, _lisp->internKeyword("t"), tripleBond );
 	en.value(chemkw::_sym_aromaticBond, _lisp->internKeyword("a"), aromaticBond );
-	en.value(_sym_hydrogenBond, _lisp->internKeyword("h"), hydrogenBond );
-	en.value(_sym_virtualBond,_lisp->internKeyword("v"),virtualBond);
-	en.value(_sym_dashedSingleBond,_lisp->internKeyword("ds"),dashedSingleBond);
-	en.value(_sym_dashedDoubleBond,_lisp->internKeyword("dd"),dashedDoubleBond);
-#endif
+	en.value(chemkw::_sym_hydrogenBond, _lisp->internKeyword("h"), hydrogenBond );
+	en.value(chemkw::_sym_virtualBond,_lisp->internKeyword("v"),virtualBond);
+	en.value(chemkw::_sym_dashedSingleBond,_lisp->internKeyword("ds"),dashedSingleBond);
+	en.value(chemkw::_sym_dashedDoubleBond,_lisp->internKeyword("dd"),dashedDoubleBond);
     }	
 
 

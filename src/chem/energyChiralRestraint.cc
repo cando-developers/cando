@@ -262,7 +262,6 @@ void	EnergyChiralRestraint_O::evaluateAll(
 	LOG_ENERGY(BF("%s {\n")% this->className());
     }
 
-bool	fail = false;
 ANN(force);
 ANN(hessian);
 ANN(hdvec);
@@ -465,9 +464,6 @@ int	EnergyChiralRestraint_O::checkForBeyondThresholdInteractions(
 			stringstream& info, chem::NVector_sp pos )
 {_G();
 int	fails = 0;
-bool	calcForce = false;
-bool	calcDiagonalHessian = false;
-bool	calcOffDiagonalHessian = false;
 
     this->_BeyondThresholdTerms.clear();
 

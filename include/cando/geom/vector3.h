@@ -22,9 +22,11 @@ protected:
 	double coords[3];
 public:
 
-	Vector3();
-	virtual ~Vector3();
-	Vector3(double x, double y, double z );
+
+	//! Construct zerod vector
+        Vector3() : coords{0.0,0.0,0.0} {};
+        ~Vector3() {};
+ Vector3( double x, double y, double z ) : coords{x,y,z} {};
 
 	/*! Return the vector in nanometers */
 	Vector3 inNanometers() const;
@@ -36,6 +38,9 @@ public:
 	double getX() const { return this->coords[0]; }
 	double getY() const { return this->coords[1]; }
 	double getZ() const { return this->coords[2]; }
+	bool operator==( const Vector3& v ) const { return this->coords[0] == v.coords[0]
+                                                    && this->coords[1] == v.coords[1]
+                                                    && this->coords[2] == v.coords[2]; }
 	Vector3 operator+( const Vector3& v ) const { return Vector3( this->coords[0]+v.getX(),
 							 this->coords[1]+v.getY(),
 							 this->coords[2]+v.getZ() ); };

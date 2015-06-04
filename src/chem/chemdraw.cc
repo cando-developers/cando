@@ -805,14 +805,12 @@ void	CDText_O::parseFromXml(adapt::QDomNode_sp text)
     {
       core::class_<ChemDraw_O>()
 //	    .def_raw("core:__init__",&ChemDraw_O::__init__,"(self fileName)")
-        .def("parseFromFileName",&ChemDraw_O::parseFromFileName)
         .def("getFragments",&ChemDraw_O::getFragments)
         .def("allFragmentsAsCons",&ChemDraw_O::allFragmentsAsCons)
         .def("getSubSetOfFragments",&ChemDraw_O::getSubSetOfFragments)
         .def("setFragmentProperties",&ChemDraw_O::setFragmentProperties)
         .def("asAggregate",&ChemDraw_O::asAggregate)
         ;
-      SYMBOL_EXPORT_SC_(KeywordPkg,name);
       SYMBOL_EXPORT_SC_(KeywordPkg,comment);
       SYMBOL_EXPORT_SC_(KeywordPkg,chiral_centers);
       SYMBOL_EXPORT_SC_(KeywordPkg,group);
@@ -841,7 +839,6 @@ void	CDText_O::parseFromXml(adapt::QDomNode_sp text)
     {_G();
 #ifdef USEBOOSTPYTHON
 	PYTHON_CLASS(ChemPkg,ChemDraw,"","",_lisp)
-	    .def("parseFromFileName",&ChemDraw_O::parseFromFileName)
 	    .def("getFragments",&ChemDraw_O::getFragments)
 	    .def("allFragmentsAsCons",&ChemDraw_O::allFragmentsAsCons)
 	    .def("getSubSetOfFragments",&ChemDraw_O::getSubSetOfFragments)
@@ -879,11 +876,11 @@ void	CDText_O::parseFromXml(adapt::QDomNode_sp text)
 #define ARGS_ChemDraw_O_make "(file_name)"
 #define DECL_ChemDraw_O_make ""
 #define DOCS_ChemDraw_O_make "make ChemDraw"
-  ChemDraw_sp ChemDraw_O::make(const string& fileName)
+ChemDraw_sp ChemDraw_O::make(core::T_sp stream)
   {_G();
       GC_ALLOCATE(ChemDraw_O, me );
-    me->parseFromFileName(fileName);
-    return me;
+      me->parse(stream); // me->parse(stream);
+      return me;
   };
 
 #else
@@ -959,65 +956,62 @@ void ChemDraw_O::setFragmentProperties(core::Symbol_sp name
     }
 #endif
 
-    void	ChemDraw_O::parseFromFileName( const string& fileName )
-    {_G();
-	adapt::QDomNode_sp xml = adapt::QDomNode_O::open(fileName);
-	if ( !xml->hasChildrenWithName("page") )
-	{
-	    SIMPLE_ERROR(BF("Not a cdxml file" ));
-	}
-	adapt::QDomNode_sp page = xml->childWithName("page");
-	adapt::QDomNode_O::iterator	it;
-	this->_NamedFragments.clear();
-	for ( it=page->begin_Children(); it!=page->end_Children(); it++ )
-	{
-	    adapt::QDomNode_sp child= (*it);
-	    if ( child->getLocalName() == "fragment" )
-	    {_BLOCK_TRACE("Processing fragment node");
-		GC_ALLOCATE(CDFragment_O, fragment );
-		fragment->parseFromXml(child);
-		if ( fragment->interpret() )
-		{
-		    core::HashTableEq_sp properties = fragment->getProperties();
-		    FIX_ME();
-                    if ( !properties->contains(_lisp->internKeyword("name") ))
-		    {
-			SIMPLE_ERROR(BF("Every fragment must have a property(name:)"));
-		    }
-		    FIX_ME();
-                    core::Symbol_sp constitutionName = properties->gethash(_lisp->internKeyword("name")).as<core::Symbol_O>();
-		    fragment->setConstitutionName(constitutionName);
-		    this->_NamedFragments.set(constitutionName,fragment);
-		    this->_AllFragments.push_back(fragment);
-		}
-	    }
-	}
-	for ( it=page->begin_Children(); it!=page->end_Children(); it++ )
-	{
-	    adapt::QDomNode_sp child= (*it);
-	    if ( child->getLocalName() == "t" )
-	    {_BLOCK_TRACEF(BF("Processing text block"));
-		GC_ALLOCATE(CDText_O, text );
-		text->parseFromXml(child);
-		if ( text->hasProperties() )
-		{
-		    LOG(BF("Found properties: %s") % text->__repr__() );
-		    core::HashTableEq_sp properties = text->getProperties();
-		    FIX_ME(); if (!properties->contains(_lisp->internKeyword("name")) )
-		    {
-			SIMPLE_ERROR(BF("Every properties block must have a property(name:)"));
-		    }
-		    FIX_ME(); core::Symbol_sp constitutionName = properties->gethash(_lisp->internKeyword("name")).as<core::Symbol_O>();
-		    if ( !this->_NamedFragments.contains(constitutionName) )
-		    {
-			SIMPLE_ERROR(BF("Could not find fragment with name("+constitutionName->__repr__()+")"));
-		    }
-		    CDFragment_sp fragment = this->_NamedFragments.get(constitutionName);
-		    fragment->addProperties(properties);
-		}
-	    }
-	}
+void	ChemDraw_O::parse( core::T_sp strm )
+{_G();
+  adapt::QDomNode_sp xml = adapt::QDomNode_O::parse(strm);
+  if ( !xml->hasChildrenWithName("page") )
+    SIMPLE_ERROR(BF("Not a cdxml file" ));
+  adapt::QDomNode_sp page = xml->childWithName("page");
+  adapt::QDomNode_O::iterator	it;
+  this->_NamedFragments.clear();
+  for ( it=page->begin_Children(); it!=page->end_Children(); it++ ) {
+    adapt::QDomNode_sp child= (*it);
+    if ( child->getLocalName() == "fragment" )
+    {_BLOCK_TRACE("Processing fragment node");
+      GC_ALLOCATE(CDFragment_O, fragment );
+      fragment->parseFromXml(child);
+      if ( fragment->interpret() )
+      {
+        core::HashTableEq_sp properties = fragment->getProperties();
+        FIX_ME();
+        if ( !properties->contains(_lisp->internKeyword("name") ))
+        {
+          SIMPLE_ERROR(BF("Every fragment must have a property(name:)"));
+        }
+        FIX_ME();
+        core::Symbol_sp constitutionName = properties->gethash(_lisp->internKeyword("name")).as<core::Symbol_O>();
+        fragment->setConstitutionName(constitutionName);
+        this->_NamedFragments.set(constitutionName,fragment);
+        this->_AllFragments.push_back(fragment);
+      }
     }
+  }
+  for ( it=page->begin_Children(); it!=page->end_Children(); it++ )
+  {
+    adapt::QDomNode_sp child= (*it);
+    if ( child->getLocalName() == "t" )
+    {_BLOCK_TRACEF(BF("Processing text block"));
+      GC_ALLOCATE(CDText_O, text );
+      text->parseFromXml(child);
+      if ( text->hasProperties() )
+      {
+        LOG(BF("Found properties: %s") % text->__repr__() );
+        core::HashTableEq_sp properties = text->getProperties();
+        FIX_ME(); if (!properties->contains(_lisp->internKeyword("name")) )
+                  {
+                    SIMPLE_ERROR(BF("Every properties block must have a property(name:)"));
+                  }
+        FIX_ME(); core::Symbol_sp constitutionName = properties->gethash(_lisp->internKeyword("name")).as<core::Symbol_O>();
+        if ( !this->_NamedFragments.contains(constitutionName) )
+        {
+          SIMPLE_ERROR(BF("Could not find fragment with name("+constitutionName->__repr__()+")"));
+        }
+        CDFragment_sp fragment = this->_NamedFragments.get(constitutionName);
+        fragment->addProperties(properties);
+      }
+    }
+  }
+}
 
 
     Aggregate_sp ChemDraw_O::asAggregate()
@@ -1028,7 +1022,6 @@ void ChemDraw_O::setFragmentProperties(core::Symbol_sp name
 	    Molecule_sp mol = Molecule_O::create();
 	    CDFragment_sp frag = core::oCar(cur).as<CDFragment_O>();
 	    Residue_sp res = frag->getEntireResidue();
-            SYMBOL_EXPORT_SC_(name,ChemKwPkg);
             core::Symbol_sp name = frag->getProperty(kw::_sym_name).as<core::Symbol_O>();
 	    res->setName(name);
 	    mol->setName(name);
@@ -1083,11 +1076,11 @@ void ChemDraw_O::setFragmentProperties(core::Symbol_sp name
 	{
 	    core::class_<CDFragment_O>()
 		.def("getConstitutionName",&CDFragment_O::getConstitutionName)
-		.def("getProperties",&CDFragment_O::getProperties)
-		.def("getProperty",&CDFragment_O::getProperty)
-		.def("hasProperty",&CDFragment_O::hasProperty)
-		.def("setProperty",&CDFragment_O::setProperty)
-		.def("getPropertyOrDefault",&CDFragment_O::getPropertyOrDefault)
+		.def("CDFragment-getProperties",&CDFragment_O::getProperties)
+		.def("CDFragment-getProperty",&CDFragment_O::getProperty)
+		.def("CDFragment-hasProperty",&CDFragment_O::hasProperty)
+		.def("CDFragment-setProperty",&CDFragment_O::setProperty)
+		.def("CDFragment-getPropertyOrDefault",&CDFragment_O::getPropertyOrDefault)
 		.def("getEntireResidue",&CDFragment_O::getEntireResidue)
 		.def("asConstitutionAtoms",&CDFragment_O::asConstitutionAtoms)
 		.def("describeProperties",&CDFragment_O::describeProperties)

@@ -325,7 +325,7 @@ void initializeElementsAndHybridization()
 	if ( ai->_Valid )
 	{
 	    core::Symbol_sp sym = chemkw_intern(ai->_AtomicSymbol);
-	    FIX_ME(); elementConverter->addSymbolEnumPair(sym,chemkw_intern(ai->_AtomicSymbol),ai->_ElementEnum);
+	    elementConverter->addSymbolEnumPair(sym,chemkw_intern(ai->_AtomicSymbol),ai->_ElementEnum);
 	}
     }
     _sym__PLUS_elementToSymbolConverter_PLUS_->defconstant(elementConverter);

@@ -8,7 +8,7 @@
 
 namespace chem
 {
-    void	parseChimeraAtomSpecification(const string& spec, uint& sequenceNumber, string& chain, string& atomName, core::Lisp_sp lisp )
+    void	parseChimeraAtomSpecification(const string& spec, uint& sequenceNumber, string& chain, string& atomName)
     {_G();
 	uint 	residueStart;
 	size_t atomNameStart;

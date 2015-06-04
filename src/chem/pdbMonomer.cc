@@ -279,7 +279,7 @@ uint PdbMonomerConnectivity_O::connectAtomsAndReturnUnconnected(Residue_sp res, 
 
     void PdbMonomerConnectivity_O::addLongName(core::Symbol_sp longName)
     {
-	this->_LongNames->vectorPushExtend(core::Str_O::create(longName));
+      this->_LongNames->vectorPushExtend(longName);
     }
 
 void PdbMonomerConnectivity_O::addConnect(core::Symbol_sp mainAtom, adapt::SymbolSet_sp bonded )

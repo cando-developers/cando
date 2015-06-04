@@ -33,7 +33,7 @@ THE SOFTWARE.
 #include <cando/adapt/objectSet.h>
 #include <clasp/core/wrappers.h>
 
-namespace core {
+namespace adapt {
 
 void ObjectSet_O::initialize() {
   this->Base::initialize();
@@ -183,33 +183,33 @@ void ObjectSet_O::archive(ArchiveP node) {
 
 void ObjectSet_O::exposeCando(Lisp_sp lisp) {
   class_<ObjectSet_O>()
-      .def("insert", &core::ObjectSet_O::insert)
-      .def("add", &core::ObjectSet_O::insert)
-      .def("addObjectsInCons", &core::ObjectSet_O::addObjectsInCons)
-      .def("addObjects", &core::ObjectSet_O::addObjects)
-      .def("size", &core::ObjectSet_O::size)
-      //	.def("remove",&core::ObjectSet_O::remove)
+      .def("insert", &adapt::ObjectSet_O::insert)
+      .def("add", &adapt::ObjectSet_O::insert)
+      .def("addObjectsInCons", &adapt::ObjectSet_O::addObjectsInCons)
+      .def("addObjects", &adapt::ObjectSet_O::addObjects)
+      .def("size", &adapt::ObjectSet_O::size)
+      //	.def("remove",&adapt::ObjectSet_O::remove)
       .def("asCons", &ObjectSet_O::asCons)
       .def("relativeComplement", &ObjectSet_O::relativeComplement)
-      .def("core:objectSetUnion", &ObjectSet_O::setUnion)
-      .def("core:objectSetIntersection", &ObjectSet_O::intersection)
+      .def("adapt:objectSetUnion", &ObjectSet_O::setUnion)
+      .def("adapt:objectSetIntersection", &ObjectSet_O::intersection)
       .def("contains", &ObjectSet_O::contains);
 }
 
 void ObjectSet_O::exposePython(Lisp_sp lisp) {
   _G();
 #ifdef USEBOOSTPYTHON //[
-  PYTHON_CLASS(CorePkg, ObjectSet, "", "", _lisp)
+  PYTHON_CLASS(AdaptPkg, ObjectSet, "", "", _lisp)
       .add_property("iterate",
-                    boost::python::range(&core::ObjectSet_O::begin, &core::ObjectSet_O::end))
-      .def("insert", &core::ObjectSet_O::insert)
-      .def("add", &core::ObjectSet_O::insert)
-      .def("add", &core::ObjectSet_O::insert)
-      .def("setUnion", &core::ObjectSet_O::setUnion)
-      .def("size", &core::ObjectSet_O::size)
-      //	.def("remove",&core::ObjectSet_O::remove)
+                    boost::python::range(&adapt::ObjectSet_O::begin, &adapt::ObjectSet_O::end))
+      .def("insert", &adapt::ObjectSet_O::insert)
+      .def("add", &adapt::ObjectSet_O::insert)
+      .def("add", &adapt::ObjectSet_O::insert)
+      .def("setUnion", &adapt::ObjectSet_O::setUnion)
+      .def("size", &adapt::ObjectSet_O::size)
+      //	.def("remove",&adapt::ObjectSet_O::remove)
       ;
 #endif
 }
-EXPOSE_CLASS(core, ObjectSet_O);
+EXPOSE_CLASS(adapt, ObjectSet_O);
 };

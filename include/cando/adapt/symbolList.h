@@ -37,9 +37,9 @@ THE SOFTWARE.
 #include <set>
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
-
+#include <cando/adapt/adaptPackage.fwd.h>
 namespace adapt {
-
+  using namespace core;
 SMART(Residue);
 SMART(SymbolSet);
 SMART(SymbolList);
@@ -48,8 +48,8 @@ SMART(SymbolList);
 	A class that stores a set of strings
 */
 SMART(SymbolList);
-class SymbolList_O : public T_O {
-  LISP_BASE1(T_O);
+ class SymbolList_O : public core::T_O {
+   LISP_BASE1(core::T_O);
   LISP_CLASS(adapt, AdaptPkg, SymbolList_O, "SymbolList");
 
 public:
@@ -57,10 +57,10 @@ public:
   void archiveBase(ArchiveP node);
 #endif // defined(XML_ARCHIVE)
 GCPRIVATE:
-  gctools::Vec0<Symbol_sp> _Contents;
+  gctools::Vec0<core::Symbol_sp> _Contents;
 
 public:
-  typedef gctools::Vec0<Symbol_sp>::iterator iterator;
+  typedef gctools::Vec0<core::Symbol_sp>::iterator iterator;
   typedef gctools::Vec0<Symbol_sp>::const_iterator const_iterator;
 
   iterator begin() { return this->_Contents.begin(); };

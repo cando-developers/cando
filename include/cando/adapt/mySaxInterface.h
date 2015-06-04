@@ -87,10 +87,8 @@ public:
 	bool	initialize();
 	void	setContentHandler(MySaxHandlerDefault* ahand );
 	XML_Parser	getXMLParser() { return this->parser; };
-    bool	parse(core::T_sp fIn, const string& fileName );
-	bool	parseString(const char* xmlContent);
+        bool	parse(core::T_sp fIn);
 	void	shutDown();
-
 
 };
 

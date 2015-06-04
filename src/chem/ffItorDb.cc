@@ -43,7 +43,8 @@ void	FFItor_O::initialize()
     }
 }
 
-    void	FFItor_O::archiveBase(core::ArchiveP node)
+#ifdef XML_ARCHIVE
+void	FFItor_O::archiveBase(core::ArchiveP node)
     {
 	node->attribute( "type1", this->_T1 );
 	node->attribute( "type2", this->_T2 );
@@ -55,7 +56,7 @@ void	FFItor_O::initialize()
 	    node->attributeIfDefined( KW((BF("ph%d")%i).str()), this->_hasPeriodicity[i], this->_PhaseRads[i]);
 	}
     }
-
+#endif
 
 #ifdef CONSPACK
     void	FFItorDb_O::archiveBase(core::ArchiveP node)

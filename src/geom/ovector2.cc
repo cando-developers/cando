@@ -131,7 +131,10 @@ double	OVector2_O::distance( const Vector2& vb )
 	    .def("normalized",&OVector2_O::normalized)
 	    .def("sub",&OVector2_O::sub)
 	    .def("dotProduct",&OVector2_O::dotProduct)
-	    .DEF(OVector2_O,add)
+          .def("add",&OVector2_O::add,
+               ARGS_OVector2_O_add,
+               DECL_OVector2_O_add,
+               DOCS_OVector2_O_add)
 	    .def("timesScalar",&OVector2_O::timesScalar)
 	;
     }

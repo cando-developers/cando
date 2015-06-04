@@ -77,9 +77,7 @@ bool	CandoDatabase_ODependent::hasCandoDatabase()
 
 CandoDatabase_sp	CandoDatabase_ODependent::getCandoDatabase()
 {_G();
-    core::Lisp_sp env = this->getEnvironment();
-    ASSERTP(env.notnilp(),"My environment is nil");
-    return getCandoDatabase(env);
+    return getCandoDatabase();
 }
 
 #endif

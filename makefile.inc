@@ -1,4 +1,2 @@
-
-
-prebuild:
-        make sub-prebuild
+cando-prebuild:
+	sub-prebuild

@@ -1119,39 +1119,30 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 
 
 
-#ifdef CONSPACK
-//    SYMBOL_EXPORT_SC_(ChemArchivePkg,flags);
-//    SYMBOL_EXPORT_SC_(ChemArchivePkg,element);
-    void	Atom_O::archiveBase(core::ArchiveP node)
-    {_G();
-	this->Base::archiveBase(node);
-	node->attributeIfNotDefault<ATOM_FLAGS>( "flags", this->flags, (unsigned long)0 );
-	node->attributeSymbolEnumHiddenConverter( "element", this->_Element, _sym__PLUS_elementToSymbolConverter_PLUS_);
-	node->attributeSymbolEnumHiddenConverterIfNotDefault( "hybrid", this->_Hybridization, _sym__PLUS_hybridizationToSymbolConverter_PLUS_,hybridization_sp3 );
-	node->attributeIfNotNil( "alias", this->_Alias );
-	node->attributeIfNotDefault<uint>( "priority", this->_RelativePriority, 0 );
-	node->attributeIfNotDefault<bool>( "hintLP", this->_HintLP,false );
-	node->attributeIfNotDefault<double>( "chg", this->charge, 0.0 );
-	node->attributeIfNotDefault<int>( "ion", this->_Ionization, 0 );
-	node->attributeIfNotDefault<int>( "rings", this->_RingMembershipCount, 0 );
-	node->attributeIfNotDefault<int>( "tempInt", this->tempInt, 0 );
-	node->attributeIfNotDefault<string>( "type", this->typeString, "" );
-	node->attributeIfNotDefault<int>( "ar1", this->_MembershipAr1, 0 );
-	node->attributeIfNotDefault<int>( "ar2", this->_MembershipAr2, 0 );
-	node->attributeIfNotDefault<int>( "ar3", this->_MembershipAr3, 0 );
-	node->attributeIfNotDefault<int>( "ar4", this->_MembershipAr4, 0 );
-	node->attributeIfNotDefault<int>( "ar5", this->_MembershipAr5, 0 );
-	node->attributeIfNotDefault<uint>( "mask", this->_Mask, (uint)(0) );
-	node->attributeSymbolEnumHiddenConverterIfNotDefault( "configuration", this->_Configuration, _sym__PLUS_configurationEnumConverter_PLUS_, undefinedConfiguration  );
-	node->attributeSymbolEnumHiddenConverterIfNotDefault( "stereochemistryType", this->_StereochemistryType, _sym__PLUS_stereochemistryTypeConverter_PLUS_, undefinedCenter );
-	node->attributePODIfDefined<Vector3>( "pos","Vector3",
-					      this->position.isDefined(),
-				     this->position );
-	LOG(BF("After pos archived Atom position@%p = %s") % &(this->position) % this->position.asString()  );
-	LOG(BF("Atom position = %s") % this->position.asString() );
-    }
-#endif
-
+void	Atom_O::fields(core::Record_sp node)
+{
+  this->Base::fields(node);
+  node->field_if_not_nil( INTERN_(chemkw,alias), this->_Alias );
+  node->pod_field_if_not_default( INTERN_(chemkw,flags), this->flags, (uint)0 );
+  node->pod_field( INTERN_(chemkw,element), this->_Element);
+  node->pod_field_if_not_default( INTERN_(chemkw,hybridization), this->_Hybridization,hybridization_sp3 );
+  node->pod_field_if_not_default( INTERN_(chemkw,priority), this->_RelativePriority, (uint)0 );
+  node->pod_field_if_not_default( INTERN_(chemkw,hintLP), this->_HintLP,false );
+  node->pod_field_if_not_default( INTERN_(chemkw,chg), this->charge, 0.0 );
+  node->pod_field_if_not_default( INTERN_(chemkw,ion), this->_Ionization, 0 );
+  node->pod_field_if_not_default( INTERN_(chemkw,rings), this->_RingMembershipCount, 0 );
+  node->pod_field_if_not_default( INTERN_(chemkw,tempInt), this->tempInt, 0 );
+  node->field_if_not_nil( INTERN_(chemkw,type), this->type);
+  node->pod_field_if_not_default( INTERN_(chemkw,ar1), this->_MembershipAr1, 0 );
+  node->pod_field_if_not_default( INTERN_(chemkw,ar2), this->_MembershipAr2, 0 );
+  node->pod_field_if_not_default( INTERN_(chemkw,ar3), this->_MembershipAr3, 0 );
+  node->pod_field_if_not_default( INTERN_(chemkw,ar4), this->_MembershipAr4, 0 );
+  node->pod_field_if_not_default( INTERN_(chemkw,ar5), this->_MembershipAr5, 0 );
+  node->pod_field_if_not_default( INTERN_(chemkw,mask), this->_Mask, (uint)(0) );
+  node->pod_field_if_not_default( INTERN_(chemkw,configuration), this->_Configuration, undefinedConfiguration  );
+  node->pod_field_if_not_default( INTERN_(chemkw,stereochemistryType), this->_StereochemistryType, undefinedCenter );
+  node->pod_field_if_not_default( INTERN_(chemkw,pos), this->position, Vector3());
+}
 
     void Atom_O::setPositionInNanometers(Vector3 o)
     {_OF();
@@ -1476,7 +1467,7 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 	    }
 	}
 	this->copyAtom = aNew;
-	aNew->copyRestraintsDontRedirectAtoms(this);
+	aNew->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
 	LOG(BF("    copy atom== %s") % aNew->description());
 	return(aNew);
     }
@@ -1874,12 +1865,12 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 
     Residue_sp	Atom_O::getResidueContainedBy() 
     {
-	return this->containedByLock().as<Residue_O>();
+	return this->containedBy().as<Residue_O>();
     }
 
     Residue_sp	Atom_O::getResidueContainedBy_const() const
     {
-	return this->containedByLock_const().as<Residue_O>();
+	return this->containedBy().as<Residue_O>();
     }
 
 

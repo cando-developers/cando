@@ -17,8 +17,8 @@ namespace geom {
 	LISP_BASE1(core::T_O);
 	LISP_CLASS(geom,GeomPkg,OVector3_O,"OVector3");
     public:
-        core::Cons_sp encode() const;
-        void decode(core::Cons_sp);
+        core::List_sp encode() ;
+        void decode(core::List_sp);
 public:
 	Vector3	_Value;
     public:

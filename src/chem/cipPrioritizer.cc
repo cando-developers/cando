@@ -492,7 +492,6 @@ void CipPrioritizer_O::defineStereochemicalConfigurationsForAllAtoms(Matter_sp m
     {
 	Atom_sp a = l.getAtom();
 	if ( a.isA<VirtualAtom_O>() ) continue;
-	Residue_sp res = a->getResidueContainedBy();
 	if ( a->numberOfBonds() == 4 )
 	{
 	    //  get the names of the atoms in order of priority

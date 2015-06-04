@@ -11,6 +11,7 @@
  */
 #include <cando/chem/ffTypesDb.h>
 #include <cando/chem/loop.h>
+#include <cando/chem/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
 
@@ -38,7 +39,6 @@ chem::Loop    				lAtoms;
 chem::Atom_sp  				atom;
 chem::Matter_sp				c;
 gctools::Vec0<chem::ChemInfo_sp>::iterator  it;
-gctools::Vec0<chem::Matter_sp>::iterator   	mi, ri, ai;
 chem::Molecule_sp                     	mol;
 chem::Residue_sp				res;
 string 		                        name;
@@ -73,18 +73,20 @@ string 		                        name;
 }
 
 
-#ifdef XML_ARCHIVE
-    void	FFTypesDb_O::archiveBase(core::ArchiveP node)
+void FFTypesDb_O::fields(core::Record_sp node)
     {	
-	this->FFBaseDb_O::archiveBase(node);
-	node->attributeVector0(KW("type-rules"), this->_TypeAssignmentRules);
+      this->FFBaseDb_O::fields(node);
+      node->field(INTERN_(chemkw,type_rules), this->_TypeAssignmentRules);
     }
-#endif
+
+
 
 chem::ChemInfo_sp	FFTypesDb_O::getRule(uint index)
 {_OF();
-    ASSERT_lessThan(index,this->_TypeAssignmentRules.size());
+  if ( index < this->_TypeAssignmentRules.size() ) {
     return this->_TypeAssignmentRules[index];
+  }
+  SIMPLE_ERROR(BF("Rule index is out of bounds"));
 }
 
 
@@ -95,7 +97,10 @@ chem::ChemInfo_sp	FFTypesDb_O::getRule(uint index)
 {
     core::class_<FFTypesDb_O>()
 	.def("assignTypes",&FFTypesDb_O::assignTypes)
+      .def("FFTypes-numberOfRules",&FFTypesDb_O::numberOfRules)
+      .def("FFTypes-getRule",&FFTypesDb_O::getRule)
     ;
+    core::af_def(ChemPkg,"make-fftypes-db",&FFTypesDb_O::create);
 }
 
     void FFTypesDb_O::exposePython(core::Lisp_sp lisp)

@@ -45,7 +45,9 @@ class FFAngle_O : public FFParameter_O
 public:
 	void initialize();
 public:
+#ifdef XML_ARCHIVE
 	void	archiveBase(core::ArchiveP node);
+#endif
 
 public:
     core::Symbol_sp 		_Type1;
@@ -89,7 +91,9 @@ class FFAngleDb_O : public FFBaseDb_O
     LISP_CLASS(chem,ChemPkg,FFAngleDb_O,"FFAngleDb");
 
 public:
+#ifdef XML_ARCHIVE
     void	archiveBase(core::ArchiveP node);
+#endif
 public:
     typedef	gctools::Vec0<FFAngle_sp>::iterator FFAngle_spIterator;
 	string			_AngleFunction;

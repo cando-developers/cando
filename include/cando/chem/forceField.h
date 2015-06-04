@@ -59,7 +59,9 @@ class InfoDb_O : public core::T_O
     LISP_CLASS(chem,ChemPkg,InfoDb_O,"InfoDb");
 
 public:
+#ifdef XML_ARCHIVE
     void	archiveBase(core::ArchiveP node);
+#endif
 
 public:
     adapt::SymbolMap<core::Str_O>	_database;
@@ -84,7 +86,7 @@ class ForceField_O : public core::T_O
 public:
 	void initialize();
 public:
-	void archiveBase(core::ArchiveP node);
+//	void archiveBase(core::ArchiveP node);
 
 public:
 //		/*! Read the forceField from a file*/

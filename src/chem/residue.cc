@@ -27,6 +27,7 @@
 #include <cando/chem/bond.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/atomIdMap.h>
+#include <cando/chem/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
 
@@ -167,88 +168,51 @@ void	Residue_O::addVirtualAtom(MatterName name, CalculatePosition_sp proc)
 }
 
 
-#ifdef CONSPACK
-    void	Residue_O::archiveBase( core::ArchiveP node )
-    { _G();
-	this->Matter_O::archiveBase(node);
-	LOG(BF("Status") );
-	node->attribute("pdb",this->pdbName);
-	node->attributeIfNotDefault<string>("uniqueLabel",this->_UniqueLabel,"");
-	node->attributeIfNotDefault("NetCharge",this->_NetCharge,0);
-	node->attributeIfNotDefault("fileSeqNum",this->_FileSequenceNumber,UndefinedUnsignedInt);
-//    node->attributeIfNotNil("constitution", this->_Constitution );
-	node->attributeIfNotNil("monomerAliases",this->_MonomerAliases);
-	LOG(BF("Status") );
-	if ( node->saving() ) {
-	    // Accumulate intraresidue bonds into a vector
-	    _BLOCK_TRACE("Xmling intra-residue bonds");
-	    contentIterator aPPCur;
-	    Atom_sp			a;
-	    BondList_sp bondList = BondList_O::create();
-	    //	    GC_ALLOCATE(BondList_O, bondList );
-	    { _BLOCK_TRACE("Building bond list");
-		for ( aPPCur=this->getContents().begin();
-		      aPPCur != this->getContents().end(); aPPCur++ ) {
-		    a = downcast<Atom_O>(*aPPCur);
-		    a->addUniqueIntraResidueBondCopiesToBondList(bondList);
-		}
-	    }
-	    node->attribute("bl",bondList);
-	    ASSERTNOTNULL(bondList);
-	} else { _BLOCK_TRACE("Loading BondList");
-	    LOG(BF("Creating the intraResidue bonds") );
-	    // create the intraResidue bonds
-	    LOG(BF("About to load bondList") );
-	    BondList_sp bondList = BondList_O::create();
-	    node->attribute("bl",bondList);
-	    ASSERTNOTNULL(bondList);
-	    bondList->imposeYourself();
-	}
-	LOG(BF("Done dealing with bondList") );
-    }
-#endif
-
-#ifdef OLD_SERIALIZE
-    void	Residue_O::serialize( serialize::SNode node )
+void	Residue_O::fields( core::Record_sp node )
 { _G();
-//    this->getConstitution();
-    this->Base::serialize(node);
-//    this->getConstitution();
-    LOG(BF("Status") );
-    node->attribute("pdb",this->pdbName);
-    node->attributeIfNotDefault<string>("uniqueLabel",this->_UniqueLabel,"");
-    node->attributeIfNotDefault("NetCharge",this->_NetCharge,0);
-    node->attributeIfNotDefault("fileSeqNum",this->_FileSequenceNumber,UndefinedUnsignedInt);
-//    node->attributeIfNotNil("constitution", this->_Constitution );
-    node->attributeIfNotNil("monomerAliases",this->_MonomerAliases);
-    LOG(BF("Status") );
-    if ( node->saving() ) {
-            // Accumulate intraresidue bonds into a vector
-        _BLOCK_TRACE("Xmling intra-residue bonds");
-	contentIterator aPPCur;
-	Atom_sp			a;
-	GC_ALLOCATE(BondList_O, bondList );
-	{ _BLOCK_TRACE("Building bond list");
-	    for ( aPPCur=this->getContents().begin();
-			aPPCur != this->getContents().end(); aPPCur++ ) {
-		a = downcast<Atom_O>(*aPPCur);
-		a->addUniqueIntraResidueBondCopiesToBondList(bondList);
-	    }
-	}
-	node->archiveObject<BondList_O>("bl",bondList);
-	ASSERTNOTNULL(bondList);
-    } else { _BLOCK_TRACE("Loading BondList");
-	LOG(BF("Creating the intraResidue bonds") );
-    	    // create the intraResidue bonds
-	LOG(BF("About to load bondList") );
-	node->archiveObject<BondList_O>("bl",bondList);
-	ASSERTNOTNULL(bondList);
-	bondList->imposeYourself();
+  this->Matter_O::fields(node);
+  LOG(BF("Status") );
+  node->field_if_not_nil( INTERN_(chemkw,pdbName),this->pdbName);
+  node->field( INTERN_(chemkw,uniqueLabel),this->_UniqueLabel);
+  node->pod_field_if_not_default( INTERN_(chemkw,NetCharge),this->_NetCharge,0);
+  node->pod_field_if_not_default( INTERN_(chemkw,fileSeqNum),this->_FileSequenceNumber,UndefinedUnsignedInt);
+  node->field_if_not_nil( INTERN_(chemkw,monomerAliases),this->_MonomerAliases);
+  LOG(BF("Status") );
+  switch (node->stage()) {
+  case core::Record_O::saving: {
+	    // Accumulate intraresidue bonds into a vector
+    _BLOCK_TRACE("Xmling intra-residue bonds");
+    contentIterator aPPCur;
+    Atom_sp			a;
+    BondList_sp bondList = BondList_O::create();
+	    //	    GC_ALLOCATE(BondList_O, bondList );
+    { _BLOCK_TRACE("Building bond list");
+      for ( aPPCur=this->getContents().begin();
+            aPPCur != this->getContents().end(); aPPCur++ ) {
+        a = downcast<Atom_O>(*aPPCur);
+        a->addUniqueIntraResidueBondCopiesToBondList(bondList);
+      }
     }
-    LOG(BF("Done dealing with bondList") );
+    node->field( INTERN_(chemkw,bl),bondList);
+    ASSERTNOTNULL(bondList);
+  }
+      break;
+  case core::Record_O::loading: {
+    _BLOCK_TRACE("Loading BondList");
+    LOG(BF("Creating the intraResidue bonds") );
+	    // create the intraResidue bonds
+    LOG(BF("About to load bondList") );
+    BondList_sp bondList = BondList_O::create();
+    node->field( INTERN_(chemkw,bl),bondList);
+    ASSERTNOTNULL(bondList);
+    bondList->imposeYourself();
+  }
+  case core::Record_O::patching: {
+    // Nothing should need to be done
+  }
+      break;
+  }
 }
-#endif
-
 
 
 
@@ -326,7 +290,7 @@ Matter_sp	Residue_O::copyDontRedirectAtoms()
 	acopy->setId(aorig->getId());
 	LOG(BF("Completed copy for new %s") % acopy->description().c_str()  );
     }
-    rPNew->copyRestraintsDontRedirectAtoms(this);
+    rPNew->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
     return rPNew;
 }
 

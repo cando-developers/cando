@@ -42,8 +42,7 @@ namespace       chem {
 	LISP_CLASS(chem,ChemPkg,FFStretch_O,"FFStretch");
     public:
 	void initialize();
-	void	archiveBase(core::ArchiveP node);
-
+	void	fields(core::Record_sp node);
     public:
         core::Symbol_sp	_Type1;
         core::Symbol_sp	_Type2;
@@ -97,21 +96,16 @@ namespace       chem {
 	LISP_CLASS(chem,ChemPkg,FFStretchDb_O,"FFStretchDb");
 
     public:
-	void	archiveBase(core::ArchiveP node);
-
+	void	fields(core::Record_sp node);
     public:
 	typedef	gctools::Vec0<FFStretch_sp>::iterator	FFStretch_spIterator;
         gctools::Vec0<FFStretch_sp>		_Terms;
 	adapt::SymbolMap<FFStretch_O>	        _Lookup;
-        gctools::SmallMap<core::Symbol_sp,EstimateStretch>	_EstimateStretch;
-
-
+        gctools::SmallMap<core::Symbol_sp,EstimateStretch>	_EstimateStretch; // Not archived
 
 	void	clearEstimateStretch();
 	void	addEstimateStretch(core::Symbol_sp ti, core::Symbol_sp tj, double rij, double lnKij );
 	void	_addEstimateStretch(const EstimateStretch& es);
-
-
 	void	add( FFStretch_sp str );
 	FFStretch_sp	findTerm(chem::Atom_sp a1, chem::Atom_sp a2 );
 //        bool            hasTerm(string t1, string t2);

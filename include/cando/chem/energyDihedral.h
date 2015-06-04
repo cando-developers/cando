@@ -134,7 +134,7 @@ public:
 
 public:
     void addTerm(const TermType& term);
-    virtual void dumpTerms();
+//    virtual void dumpTerms();
 
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 					    AbstractLargeSquareMatrix_sp m );

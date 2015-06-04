@@ -25,7 +25,8 @@ namespace chem
     REGISTER_CLASS(chem, FFPtorDb_O );
 
 
-    void	FFPtor_O::archiveBase(core::ArchiveP node)
+#ifdef XML_ARCHIVE
+void	FFPtor_O::archiveBase(core::ArchiveP node)
 {
     node->attribute( "type1", this->_T1 );
     node->attribute( "type2", this->_T2 );
@@ -37,6 +38,7 @@ namespace chem
 	node->attributeIfDefined( KW((BF("ph%d")%i).str()), this->_hasPeriodicity[i],  this->_PhaseRads[i] );
     }
 }
+#endif
 
 #ifdef CONSPACK
     void	FFPtorDb_O::archiveBase(core::ArchiveP node)

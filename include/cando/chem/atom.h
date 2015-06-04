@@ -148,7 +148,7 @@ namespace chem
 	void initialize();
     public:
 //	void	serialize(serialize::SNode node);
-//	void	archiveBase(core::ArchiveP node);
+	void	fields(core::Record_sp node);
 	
 	friend	class	Loop;
 	friend	class	Bond_O;
@@ -205,7 +205,9 @@ namespace chem
 	int		moeIndex;
 	MoeType 	moeType;	// type string as read from MOE
     public:
+#ifdef XML_ARCHIVE
 	void archiveBase(core::SNode_sp node);
+#endif
     public:
 	static Atom_sp make(MatterName name, Element element);
     public:

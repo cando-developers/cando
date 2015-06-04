@@ -43,7 +43,7 @@ THE SOFTWARE.
 #include <clasp/core/numbers.h>
 #include <clasp/core/wrappers.h>
 
-namespace core {
+namespace adapt {
 
 extern Symbol_sp _sym_entries;
 
@@ -108,22 +108,35 @@ string SymbolSet_O::asString() {
   return ss.str();
 }
 
-#if defined(XML_ARCHIVE)
-void SymbolSet_O::archiveBase(ArchiveP node) {
-  this->Base::archiveBase(node);
-  if (node->loading()) {
-    this->clear();
-    VectorStrings vstrs;
-    node->getDataAsVectorOfStrings(vstrs);
-    for (VectorStrings::iterator it = vstrs.begin(); it != vstrs.end(); it++) {
-      Symbol_sp sym = _lisp->intern(*it);
-      this->insert(sym);
+void SymbolSet_O::fields(core::Record_sp node) {
+  // this->Base::fields(node);
+  switch (node->stage()) {
+  case Record_O::loading: {
+    Vector_sp valueVec;
+    node->field(INTERN_(adapt,data), valueVec );
+    this->_Symbols->clrhash();
+    for ( size_t i(0), iEnd(cl_length(valueVec)); i<iEnd; ++i ) {
+      T_sp key = (*valueVec)[i];
+      this->_Symbols->hash_table_setf_gethash(key,_lisp->_true());
     }
-  } else {
-    node->setCharacters(this->asString());
+  }
+      break;
+  case Record_O::saving: {
+    Vector_sp valueVec = core_make_vector(cl::_sym_T_O, this->_Symbols->hashTableCount() );
+    size_t idx = 0;
+    this->_Symbols->mapHash([&idx,&valueVec](T_sp key, T_sp val) {
+        (*valueVec)[idx++] = key;
+      });
+    node->field(INTERN_(adapt,data), valueVec);
+  }
+      break;
+  case Record_O::patching: {
+    IMPLEMENT_MEF(BF("Do patching"));
+  }
+      break;
   }
 }
-#endif // defined(XML_ARCHIVE)
+
 
 void SymbolSet_O::insertVectorStrings(const VectorStrings &symbolsAsStrings) {
   for (VectorStrings::const_iterator it = symbolsAsStrings.begin(); it != symbolsAsStrings.end(); it++) {
@@ -272,7 +285,7 @@ ObjectSet_sp SymbolSet_O::cartesianProductWrapped(SymbolSet_sp b, const SymbolSe
 Symbol_mv SymbolSet_O::first() {
   T_sp found = _Nil<T_O>();
   Symbol_sp result = _Nil<Symbol_O>();
-  this->_Symbols->terminatingMapHash([&found, &result](T_sp key, T_sp val) -> bool {
+  this->_Symbols->map_while_true([&found, &result](T_sp key, T_sp val) -> bool {
                 result = key;
                 found = _lisp->_true();
                 return false;
@@ -325,8 +338,8 @@ void SymbolSet_O::exposeCando(Lisp_sp lisp) {
       //            .def("remove",&SymbolSet_O::remove)
       .def("clear", &SymbolSet_O::clear)
       .def("asString", &SymbolSet_O::asString)
-      .def("core:SymbolSetUnion", &SymbolSet_O::setUnion)
-      .def("core:SymbolSetIntersection", &SymbolSet_O::intersection)
+      .def("adapt:SymbolSetUnion", &SymbolSet_O::setUnion)
+      .def("adapt:SymbolSetIntersection", &SymbolSet_O::intersection)
       .def("relativeComplement", &SymbolSet_O::relativeComplement)
       .def("removeAll", &SymbolSet_O::removeAll)
       .def("cartesianProduct", &SymbolSet_O::cartesianProduct)
@@ -336,7 +349,7 @@ void SymbolSet_O::exposeCando(Lisp_sp lisp) {
 void SymbolSet_O::exposePython(Lisp_sp lisp) {
   _G();
 #ifdef USEBOOSTPYTHON
-  PYTHON_CLASS(CorePkg, SymbolSet, "", "", _lisp)
+  PYTHON_CLASS(AdaptPkg, SymbolSet, "", "", _lisp)
       .def("size", &SymbolSet_O::size)
       .def("insertSymbolSet", &SymbolSet_O::insertSymbolSet)
       .def("insertConsSymbols", &SymbolSet_O::insertConsSymbols)
@@ -346,8 +359,8 @@ void SymbolSet_O::exposePython(Lisp_sp lisp) {
       //            .def("remove",&SymbolSet_O::remove)
       .def("clear", &SymbolSet_O::clear)
       .def("asString", &SymbolSet_O::asString)
-      .def("core:SymbolSetUnion", &SymbolSet_O::setUnion)
-      .def("core:SymbolSetIntersection", &SymbolSet_O::intersection)
+      .def("adapt:SymbolSetUnion", &SymbolSet_O::setUnion)
+      .def("adapt:SymbolSetIntersection", &SymbolSet_O::intersection)
       .def("relativeComplement", &SymbolSet_O::relativeComplement)
       .def("removeAll", &SymbolSet_O::removeAll)
       .def("cartesianProduct", &SymbolSet_O::cartesianProduct)
@@ -355,5 +368,5 @@ void SymbolSet_O::exposePython(Lisp_sp lisp) {
 #endif
 }
 
-EXPOSE_CLASS(core, SymbolSet_O);
+EXPOSE_CLASS(adapt, SymbolSet_O);
 };

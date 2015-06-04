@@ -249,12 +249,11 @@ namespace adapt {
 //
 //	Parse the file, return true if everything was ok
 //
-    bool	MySaxParser::parse(core::T_sp fIn, const string& fileName)
+    bool	MySaxParser::parse(core::T_sp fIn)
     {_G();
 	unsigned char	buffer[BUFSIZ];
 	uint		sz;
 	XML_Status		xmlStatus;
-	XML_Error		err;
 	int			done;
 	long		filePos;
 
@@ -271,14 +270,8 @@ namespace adapt {
 	    done = sz < sizeof(buffer);
 	    LOG(BF("Read line from buffer - hit eof=%d read[%d bytes]") % done % sz );
 	    xmlStatus = XML_Parse( this->parser, (char*)buffer, sz, done );
-	    if ( xmlStatus == XML_STATUS_ERROR )
-	    {
-		printf( "MySaxParser::expat:: parse failed for file(%s)!!!!\n", fileName.c_str() );
-		err = XML_GetErrorCode(this->parser);
-		printf( "MySaxParser::expat:: error = %s\n", XML_ErrorString(err) );
-		printf( "MySaxParser::expat:: line = %d\n", (int)(XML_GetCurrentLineNumber(this->parser)) );
-                core::cl_close(fIn);
-		return false;
+	    if ( xmlStatus == XML_STATUS_ERROR ) {
+              SIMPLE_ERROR(BF("Parse failed for stream: %s") % _rep_(fIn));
 	    }
 	}
 //    this->_Progress.finish();
@@ -287,24 +280,5 @@ namespace adapt {
     }
 
 
-////MySaxParser//////////////////////////////////////////////////////////
-//
-//	parseString
-//
-//	Parse the string, return true if everything was ok
-//
-    bool	MySaxParser::parseString(const char* xmlContent)
-    { _G();
-	LOG(BF("MySaxParser::parseString") );
-	XML_Status		xmlStatus;
-
-	xmlStatus = XML_Parse( this->parser, xmlContent,
-			       strlen(xmlContent), 1 );
-	if ( xmlStatus != XML_STATUS_OK ) {
-	    return false;
-	}
-	return true;
-
-    }
 
 };

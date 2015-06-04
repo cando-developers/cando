@@ -19,7 +19,7 @@ Namespace changed to adapt - include/iterateCons.h:15
     CurrentPackage set to AdaptPkg
 In fileName: include/iterateCons.h parsed cppClassDefinition line: class IterateCons_O : public core::Iterator_O
 Creating one Initializer(adapt::IterateCons_O) baseInitializer(['core::Iterator_O'])
-Group: <__main__.ClassGroup instance at 0x100a0d1b8>  target: adapt::IterateCons_O   filename: include/iterateCons.h
+Group: <__main__.ClassGroup instance at 0x1034ee1b8>  target: adapt::IterateCons_O   filename: include/iterateCons.h
 createOnClass@include/iterateCons.h:22 --> adapt::IterateCons_O
 In fileName: include/iterateCons.h parsed lispBase1 line: LISP_BASE1(core::Iterator_O);
 In fileName: include/iterateCons.h parsed lispClass line: LISP_CLASS(adapt,AdaptPkg,IterateCons_O,"IterateCons");
@@ -35,7 +35,7 @@ Namespace changed to adapt - include/objectSet.h:35
     CurrentPackage set to AdaptPkg
 In fileName: include/objectSet.h parsed cppClassDefinition line: class ObjectSet_O : public T_O {
 Creating one Initializer(adapt::ObjectSet_O) baseInitializer(['adapt::T_O'])
-Group: <__main__.ClassGroup instance at 0x100a0d1b8>  target: adapt::ObjectSet_O   filename: include/objectSet.h
+Group: <__main__.ClassGroup instance at 0x1034ee1b8>  target: adapt::ObjectSet_O   filename: include/objectSet.h
 createOnClass@include/objectSet.h:44 --> adapt::ObjectSet_O
 In fileName: include/objectSet.h parsed lispBase1 line: LISP_BASE1(T_O);
 In fileName: include/objectSet.h parsed lispClass line: LISP_CLASS(adapt, AdaptPkg, ObjectSet_O, "ObjectSet");
@@ -48,23 +48,11 @@ Namespace changed to adapt - include/quickDom.h:28
     CurrentPackage set to AdaptPkg
 In fileName: include/quickDom.h parsed cppClassDefinition line: class QDomNode_O : public core::T_O
 Creating one Initializer(adapt::QDomNode_O) baseInitializer(['core::T_O'])
-Group: <__main__.ClassGroup instance at 0x100a0d1b8>  target: adapt::QDomNode_O   filename: include/quickDom.h
+Group: <__main__.ClassGroup instance at 0x1034ee1b8>  target: adapt::QDomNode_O   filename: include/quickDom.h
 createOnClass@include/quickDom.h:37 --> adapt::QDomNode_O
 In fileName: include/quickDom.h parsed lispBase1 line: LISP_BASE1(core::T_O);
 In fileName: include/quickDom.h parsed lispClass line: LISP_CLASS(adapt,AdaptPkg,QDomNode_O,"QDomNode");
 updateLatestClass info for class[adapt::QDomNode_O] packageName[AdaptPkg]
-!!!!! Reading fileName(include/smallMap.h)
-Namespace changed to adapt - include/smallMap.h:45
-    CurrentPackage set to AdaptPkg
-In fileName: include/smallMap.h parsed cppClassDefinition line: class SmallMap_O : public T_O {
-Creating one Initializer(adapt::SmallMap_O) baseInitializer(['adapt::T_O'])
-Group: <__main__.ClassGroup instance at 0x100a0d1b8>  target: adapt::SmallMap_O   filename: include/smallMap.h
-createOnClass@include/smallMap.h:48 --> adapt::SmallMap_O
-In fileName: include/smallMap.h parsed lispBase1 line: LISP_BASE1(T_O);
-In fileName: include/smallMap.h parsed lispClass line: LISP_CLASS(adapt, AdaptPkg, SmallMap_O, "SmallMap");
-updateLatestClass info for class[adapt::SmallMap_O] packageName[AdaptPkg]
-Namespace changed to adapt - include/smallMap.h:67
-    CurrentPackage set to AdaptPkg
 !!!!! Reading fileName(include/stringList.fwd.h)
 Namespace changed to adapt - include/stringList.fwd.h:29
     CurrentPackage set to AdaptPkg
@@ -73,7 +61,7 @@ Namespace changed to adapt - include/stringList.h:42
     CurrentPackage set to AdaptPkg
 In fileName: include/stringList.h parsed cppClassDefinition line: class StringList_O : public T_O {
 Creating one Initializer(adapt::StringList_O) baseInitializer(['adapt::T_O'])
-Group: <__main__.ClassGroup instance at 0x100a0d1b8>  target: adapt::StringList_O   filename: include/stringList.h
+Group: <__main__.ClassGroup instance at 0x1034ee1b8>  target: adapt::StringList_O   filename: include/stringList.h
 createOnClass@include/stringList.h:50 --> adapt::StringList_O
 In fileName: include/stringList.h parsed lispBase1 line: LISP_BASE1(T_O);
 In fileName: include/stringList.h parsed lispClass line: LISP_CLASS(adapt, AdaptPkg, StringList_O, "StringList");
@@ -86,7 +74,7 @@ Namespace changed to adapt - include/stringSet.h:44
     CurrentPackage set to AdaptPkg
 In fileName: include/stringSet.h parsed cppClassDefinition line: class StringSet_O : public core::T_O {
 Creating one Initializer(adapt::StringSet_O) baseInitializer(['core::T_O'])
-Group: <__main__.ClassGroup instance at 0x100a0d1b8>  target: adapt::StringSet_O   filename: include/stringSet.h
+Group: <__main__.ClassGroup instance at 0x1034ee1b8>  target: adapt::StringSet_O   filename: include/stringSet.h
 createOnClass@include/stringSet.h:54 --> adapt::StringSet_O
 In fileName: include/stringSet.h parsed lispBase1 line: LISP_BASE1(core::T_O);
 In fileName: include/stringSet.h parsed lispClass line: LISP_CLASS(adapt, AdaptPkg, StringSet_O, "StringSet");
@@ -97,23 +85,28 @@ Namespace changed to adapt - include/symbolList.fwd.h:29
 !!!!! Reading fileName(include/symbolList.h)
 Namespace changed to adapt - include/symbolList.h:41
     CurrentPackage set to AdaptPkg
-In fileName: include/symbolList.h parsed cppClassDefinition line: class SymbolList_O : public T_O {
-Creating one Initializer(adapt::SymbolList_O) baseInitializer(['adapt::T_O'])
-Group: <__main__.ClassGroup instance at 0x100a0d1b8>  target: adapt::SymbolList_O   filename: include/symbolList.h
+In fileName: include/symbolList.h parsed cppClassDefinition line: class SymbolList_O : public core::T_O {
+Creating one Initializer(adapt::SymbolList_O) baseInitializer(['core::T_O'])
+Group: <__main__.ClassGroup instance at 0x1034ee1b8>  target: adapt::SymbolList_O   filename: include/symbolList.h
 createOnClass@include/symbolList.h:51 --> adapt::SymbolList_O
-In fileName: include/symbolList.h parsed lispBase1 line: LISP_BASE1(T_O);
+In fileName: include/symbolList.h parsed lispBase1 line: LISP_BASE1(core::T_O);
 In fileName: include/symbolList.h parsed lispClass line: LISP_CLASS(adapt, AdaptPkg, SymbolList_O, "SymbolList");
 updateLatestClass info for class[adapt::SymbolList_O] packageName[AdaptPkg]
+!!!!! Reading fileName(include/symbolMap.h)
+Namespace changed to adapt - include/symbolMap.h:46
+    CurrentPackage set to AdaptPkg
+Namespace changed to translate - include/symbolMap.h:64
+    CurrentPackage set to None
 !!!!! Reading fileName(include/symbolSet.fwd.h)
 Namespace changed to adapt - include/symbolSet.fwd.h:29
     CurrentPackage set to AdaptPkg
 !!!!! Reading fileName(include/symbolSet.h)
-Namespace changed to adapt - include/symbolSet.h:45
+Namespace changed to adapt - include/symbolSet.h:46
     CurrentPackage set to AdaptPkg
 In fileName: include/symbolSet.h parsed cppClassDefinition line: class SymbolSet_O : public T_O {
 Creating one Initializer(adapt::SymbolSet_O) baseInitializer(['adapt::T_O'])
-Group: <__main__.ClassGroup instance at 0x100a0d1b8>  target: adapt::SymbolSet_O   filename: include/symbolSet.h
-createOnClass@include/symbolSet.h:60 --> adapt::SymbolSet_O
+Group: <__main__.ClassGroup instance at 0x1034ee1b8>  target: adapt::SymbolSet_O   filename: include/symbolSet.h
+createOnClass@include/symbolSet.h:61 --> adapt::SymbolSet_O
 In fileName: include/symbolSet.h parsed lispBase1 line: LISP_BASE1(T_O);
 In fileName: include/symbolSet.h parsed lispClass line: LISP_CLASS(adapt, AdaptPkg, SymbolSet_O, "SymbolSet");
 updateLatestClass info for class[adapt::SymbolSet_O] packageName[AdaptPkg]
@@ -135,26 +128,23 @@ Namespace changed to adapt - iterateCons.cc:12
 Namespace changed to adapt - mySaxInterface.cc:14
     CurrentPackage set to AdaptPkg
 !!!!! Reading fileName(objectSet.cc)
-Namespace changed to core - objectSet.cc:36
-    CurrentPackage set to None
+Namespace changed to adapt - objectSet.cc:36
+    CurrentPackage set to AdaptPkg
 !!!!! Reading fileName(quickDom.cc)
 Namespace changed to adapt - quickDom.cc:25
     CurrentPackage set to AdaptPkg
-!!!!! Reading fileName(smallMap.cc)
-Namespace changed to core - smallMap.cc:46
-    CurrentPackage set to None
 !!!!! Reading fileName(stringList.cc)
-Namespace changed to core - stringList.cc:42
-    CurrentPackage set to None
+Namespace changed to adapt - stringList.cc:42
+    CurrentPackage set to AdaptPkg
 !!!!! Reading fileName(stringSet.cc)
-Namespace changed to core - stringSet.cc:46
-    CurrentPackage set to None
+Namespace changed to adapt - stringSet.cc:46
+    CurrentPackage set to AdaptPkg
 !!!!! Reading fileName(symbolList.cc)
-Namespace changed to core - symbolList.cc:47
-    CurrentPackage set to None
+Namespace changed to adapt - symbolList.cc:48
+    CurrentPackage set to AdaptPkg
 !!!!! Reading fileName(symbolSet.cc)
-Namespace changed to core - symbolSet.cc:46
-    CurrentPackage set to None
+Namespace changed to adapt - symbolSet.cc:46
+    CurrentPackage set to AdaptPkg
 -------- loaded everything -------- now processing
 ============= Writing classInitializers
 Class[adapt::T_O] was not defined
@@ -178,14 +168,12 @@ For class[adapt::ObjectSet_O] requirements = set(['adapt::T_O'])
 Returning bases[['adapt::T_O']]
 For class[adapt::QDomNode_O] requirements = set(['core::T_O'])
 Returning bases[['core::T_O']]
-For class[adapt::SmallMap_O] requirements = set(['adapt::T_O'])
-Returning bases[['adapt::T_O']]
 For class[adapt::StringList_O] requirements = set(['adapt::T_O'])
 Returning bases[['adapt::T_O']]
 For class[adapt::StringSet_O] requirements = set(['core::T_O'])
 Returning bases[['core::T_O']]
-For class[adapt::SymbolList_O] requirements = set(['adapt::T_O'])
-Returning bases[['adapt::T_O']]
+For class[adapt::SymbolList_O] requirements = set(['core::T_O'])
+Returning bases[['core::T_O']]
 For class[adapt::SymbolSet_O] requirements = set(['adapt::T_O'])
 Returning bases[['adapt::T_O']]
 Class[adapt::T_O] was not defined

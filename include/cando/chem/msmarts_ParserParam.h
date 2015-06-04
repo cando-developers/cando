@@ -16,11 +16,11 @@ typedef struct tagSMsmartsParserParam
     core::Lisp_sp lisp;
 
     chem::SmartsRoot_sp	expression;
-    map<string,int> atomTagCounter;
+  std::map<string,int> atomTagCounter;
     stringstream*		msmartsErrorStream;
 
 
-    istream*	lexStream;		
+  std::istream*	lexStream;		
 // This defines the stream that we are reading from
 
 

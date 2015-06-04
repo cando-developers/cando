@@ -30,6 +30,7 @@
 #include <cando/chem/improperTorsion.h>
 #include <cando/chem/atomIdMap.h>
 #include <cando/chem/alias.h>
+#include <cando/chem/symbolTable.h>
 #include <clasp/core/translators.h>
 #include <clasp/core/wrappers.h>
 
@@ -70,7 +71,7 @@ namespace chem
 	this->_NextContentId = c._NextContentId;
 	this->_Id = c._Id;
 	this->name = c.name;
-	this->containerContainedBy = c.containerContainedBy;
+//	this->containerContainedBy = c.containerContainedBy;
 	this->_Properties = c._Properties;
 	this->_Restraints = _Nil<RestraintList_O>();
     }
@@ -162,38 +163,38 @@ namespace chem
 
     void Matter_O::clearProperty(core::Symbol_sp prop)
     {_G();
-	core::plistErase(this->_Properties,prop);
+	core::core_rem_f(this->_Properties,prop);
     }
 
     void Matter_O::setProperty(core::Symbol_sp prop, core::T_sp val)
     {_G();
-        core::plistSetf(this->_Properties,prop,val);
+      core::core_put_f(this->_Properties,val,prop);
     }
 
     void Matter_O::setPropertyTrue(core::Symbol_sp prop)
     {_G();
-        core::plistSetf(this->_Properties,prop,_lisp->_true());
+      core::core_put_f(this->_Properties,_lisp->_true(),prop);
     }
 
     core::T_sp Matter_O::getProperty(core::Symbol_sp prop)
-    {_G();
-        core::T_sp res = plistGetf(this->_Properties,prop,_Unbound<core::T_O>());
-        if (res.unboundp()) {
-	    stringstream props;
-	    props << _rep_(this->_Properties);
-	    SIMPLE_ERROR(BF("You asked for an unknown property[%s] for matter[%s@%p] - the available properties are[%s]") % prop->__repr__() % this->__repr__() % this % props.str()  );
-	}
-        return res;
+    {
+      core::T_sp res = core::cl_getf(this->_Properties,prop,_Unbound<core::T_O>());
+      if (res.unboundp()) {
+        stringstream props;
+        props << _rep_(this->_Properties);
+        SIMPLE_ERROR(BF("You asked for an unknown property[%s] for matter[%s@%p] - the available properties are[%s]") % prop->__repr__() % this->__repr__() % this % props.str()  );
+      }
+      return res;
     }
 
     core::T_sp Matter_O::getPropertyOrDefault(core::Symbol_sp prop,core::T_sp defval)
     {_G();
-        return plistGetf(this->_Properties,prop,defval);
+      return core::cl_getf(this->_Properties,prop,defval);
     }
 
     bool Matter_O::hasProperty(core::Symbol_sp prop)
     {_G();
-        return !plistGetf(this->_Properties,prop,_Unbound<core::T_O>()).unboundp();
+      return !core::cl_getf(this->_Properties,prop,_Unbound<core::T_O>()).unboundp();
     }
 
 
@@ -605,7 +606,7 @@ namespace chem
 	{
 	    if ( outer == container ) return true;
 	    if ( !outer->containedByValid() ) return false;
-	    outer = outer->containedByLock();
+	    outer = outer->containedBy();
 	}
     }
 
@@ -875,8 +876,7 @@ namespace chem
 	Loop		la;
 	Atom_sp		a;
 	la.loopTopGoal(this->sharedThis<Matter_O>(),ATOMS);
-	while ( la.advanceLoopAndProcess() )
-	{
+	while ( la.advanceLoopAndProcess() ) {
 	    a = la.getAtom();
 	    if ( a->getElement() == element )
 	    {
@@ -886,32 +886,27 @@ namespace chem
 	return list;
     }
 
-#ifdef  CONSPACK
-    void	Matter_O::archiveBase(core::ArchiveP node )
-    {_G();
-	node->attribute("name",this->name);
-	LOG(BF("Got name(%s)") % this->name.c_str()  );
-	node->attribute<int>("id",this->_Id);
-	node->attributeIfNotNil("restraints",this->_Restraints);
-	node->attributeIfNotNil(_lisp->internKeyword("properties"),
-					this->_Properties);
-//    this->containerContainedBy = node->archiveWeakPointer("parent",
-//    		this->containerContainedBy);
-
-	node->attributeVec0(_lisp->internKeyword("c"), this->_contents);
-	LOG(BF("Status") );
-	if ( node->loading() ) {
-	    _BLOCK_TRACEF(BF("serializing container contents - there are %d objects")% this->_contents.size() );
+void	Matter_O::fields(core::Record_sp node )
+{_G();
+  node->field( INTERN_(chemkw,name), this->name);
+  node->pod_field_if_not_default( INTERN_(chemkw,id), this->_Id, 0);
+  node->field_if_not_nil( INTERN_(chemkw,restraints),this->_Restraints);
+  node->field_if_not_nil( INTERN_(chemkw,properties),this->_Properties);
+  node->field( INTERN_(chemkw,contents), this->_contents);
+  LOG(BF("Status") );
+#if 0
+  if ( node->loading() ) {
+    _BLOCK_TRACEF(BF("serializing container contents - there are %d objects")% this->_contents.size() );
 	    // Make sure all contents have us as a parent
-	    Matter_sp c = this->sharedThis<Matter_O>();
-            gctools::Vec0<Matter_sp>::iterator ai;
-	    for ( ai=this->_contents.begin(); ai!=this->_contents.end(); ai++ ) {
-		(*ai)->setContainedBy(c);
-	    }
-	}
-	LOG(BF("Status") );
+    Matter_sp c = this->sharedThis<Matter_O>();
+    gctools::Vec0<Matter_sp>::iterator ai;
+    for ( ai=this->_contents.begin(); ai!=this->_contents.end(); ai++ ) {
+      (*ai)->setContainedBy(c);
     }
+  }
 #endif
+  LOG(BF("Status") );
+}
 
 
 
@@ -1044,14 +1039,12 @@ namespace chem
     }
 
 
-    void Matter_O::copyRestraintsDontRedirectAtoms(Matter_O const* orig)
+    void Matter_O::copyRestraintsDontRedirectAtoms(Matter_sp orig)
     {_OF();
-	if ( orig->_Restraints.nilp() )
-	{
-	    this->_Restraints = _Nil<RestraintList_O>();
-	} else
-	{
-	    this->_Restraints = orig->_Restraints->copyDontRedirectAtoms();
+	if ( orig->_Restraints.nilp() ) {
+          this->_Restraints = _Nil<core::T_O>();
+	} else {
+          this->_Restraints = orig->_Restraints->copyDontRedirectAtoms();
 	}
     }
 
@@ -1108,7 +1101,7 @@ namespace chem
 //	.def("get_StorageId",&Matter_O::get_StorageId)
 	    .def("firstAtomWithName",&Matter_O::firstAtomWithName)
 	    .def("addMatter",&Matter_O::addMatter)
-	    .def("containedBy",&Matter_O::containedByLock)
+          .def("containedBy",(Matter_sp (Matter_O::*)() const)&Matter_O::containedBy)
 	    .def("setAllAtomMasks",&Matter_O::setAllAtomMasks)
 	    .def("hasContentWithName",&Matter_O::hasContentWithName)
 	    .def("contentWithName",&Matter_O::contentWithName)
@@ -1134,8 +1127,8 @@ namespace chem
 	    .def("hasProperty",&Matter_O::hasProperty)
 	    .def("setProperty",&Matter_O::setProperty)
 	    .def("setPropertyTrue",&Matter_O::setPropertyTrue)
-	    .def("getProperty",&Matter_O::getProperty)
-	    .def("getPropertyOrDefault",&Matter_O::getPropertyOrDefault)
+	    .def("Matter-getProperty",&Matter_O::getProperty)
+	    .def("Matter-getPropertyOrDefault",&Matter_O::getPropertyOrDefault)
 	    .def("propertiesAsString",&Matter_O::propertiesAsString)
 	    .def("allAtomsAsCons",&Matter_O::allAtomsAsCons)
 	    .def("allBondsAsCons",&Matter_O::allBondsAsCons)

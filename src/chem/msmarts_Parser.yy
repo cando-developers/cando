@@ -74,14 +74,14 @@ __END_DOC
 #include<vector>
 #include <istream>
 
-#include "core//common.h"
-#include "aggregate.h"
-#include "molecule.h"
-#include "residue.h"
-#include "atom.h"
+#include <clasp/core/common.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/molecule.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/atom.h>
 
-#include "chemInfo.h"
-#include "hold.h"
+#include <cando/chem/chemInfo.h>
+#include <cando/chem/hold.h>
 
 
 using namespace std;
@@ -89,9 +89,9 @@ using namespace chem;
 
 // This defines the stream that we are reading from
 
-#include "msmarts_TypeParser.h"
-#include "msmarts_ParserParam.h"
-#include "msmarts_LocationType.h"
+#include <cando/chem/msmarts_TypeParser.h>
+#include <cando/chem/msmarts_ParserParam.h>
+#include <cando/chem/msmarts_LocationType.h>
 
 #define	LEXDEBUG	1
 
@@ -205,51 +205,51 @@ int	msmarts_lex(YYSTYPE* yylval, YYLTYPE* yylloc, msmarts_SParserParam* data);
 
 input:  chemInfo	
 	{ _lisp_BLOCK_TRACE("input: chemInfo");
-	    data->expression = $1->_obj; 
+	    data->expression = $1->value(); 
 	};
 
 chemInfo:	/* empty */ { $$ = new Hold<chem::SmartsRoot_O>(); }
 	    | atomTest 	
 	    	{ _lisp_BLOCK_TRACE("chemInfo: atomTest");
-		    $$ = new Hold<chem::SmartsRoot_O>(chem::SmartsRoot_O::create($1->_obj)); 
+		    $$ = new Hold<chem::SmartsRoot_O>(chem::SmartsRoot_O::create($1->value())); 
 		};
 	    | atomTest chain 
 	    	{ _lisp_BLOCK_TRACE("chemInfo:atomTest chain");
-		    $$ = new Hold<chem::SmartsRoot_O>(chem::SmartsRoot_O::create($1->_obj,$2->_obj)); 
+		    $$ = new Hold<chem::SmartsRoot_O>(chem::SmartsRoot_O::create($1->value(),$2->value())); 
 		}
 	    ;
 
 
 chain: bondAtomTest chain 
     { _lisp_BLOCK_TRACE("chain:bondAtomTest chain");
-	$$ = new Hold<chem::BondListMatchNode_O>(chem::Chain_O::create( $1->_obj, $2->_obj)); 
+	$$ = new Hold<chem::BondListMatchNode_O>(chem::Chain_O::create( $1->value(), $2->value())); 
     }
 | branch chain	   
     { _lisp_BLOCK_TRACE("chain: branch chain");
-	$$ = new Hold<chem::BondListMatchNode_O>(chem::Branch_O::create( $1->_obj, $2->_obj)); 
+	$$ = new Hold<chem::BondListMatchNode_O>(chem::Branch_O::create( $1->value(), $2->value())); 
     }
 | bondAtomTest	   
     { _lisp_BLOCK_TRACE("chain: bondAtomTest");
-	$$ = new Hold<chem::BondListMatchNode_O>(chem::Chain_O::create( $1->_obj)); 
+	$$ = new Hold<chem::BondListMatchNode_O>(chem::Chain_O::create( $1->value())); 
     }
 | branch  
     { _lisp_BLOCK_TRACE("chain: branch");
-	$$ = new Hold<chem::BondListMatchNode_O>(chem::Branch_O::create( $1->_obj)); 
+	$$ = new Hold<chem::BondListMatchNode_O>(chem::Branch_O::create( $1->value())); 
     } /* handle C(C=O) */
 ;
 
 bondAtomTest:	APBond atomTest 
 			{ _lisp_BLOCK_TRACE("bondAtomTest:APBond atomTest");
-			    $$ = new Hold<chem::BondTest_O>(chem::BondTest_O::create( $1, $2->_obj)); 
+			    $$ = new Hold<chem::BondTest_O>(chem::BondTest_O::create( $1, $2->value())); 
 			}
 	    |	atomTest 
 	    		{ _lisp_BLOCK_TRACE("bondAtomTest: atomTest");
-			    $$ = new Hold<chem::BondTest_O>(chem::BondTest_O::create( chem::SABSingleOrAromaticBond, $1->_obj)); 
+			    $$ = new Hold<chem::BondTest_O>(chem::BondTest_O::create( chem::SABSingleOrAromaticBond, $1->value())); 
 			} 
 	    ;
-    //	|	APSingleBond atomTest { $$ = new Holder(chem::BondTest_O::create( chem::SABSingleBond, $2->_obj)); }
-    //	|	APDoubleBond atomTest { $$ = new Holder(chem::BondTest_O::create( chem::SABDoubleBond, $2)->_obj); }
-    // 	|	APTripleBond atomTest { $$ = new Holder(chem::BondTest_O::create( chem::SABTripleBond, $2)->_obj); }
+    //	|	APSingleBond atomTest { $$ = new Holder(chem::BondTest_O::create( chem::SABSingleBond, $2->value())); }
+    //	|	APDoubleBond atomTest { $$ = new Holder(chem::BondTest_O::create( chem::SABDoubleBond, $2)->value()); }
+    // 	|	APTripleBond atomTest { $$ = new Holder(chem::BondTest_O::create( chem::SABTripleBond, $2)->value()); }
     //	|	APDirectionalSingleUp atomTest { 
     //			$$ = chem::BondTest_O::create( chem::SABDirectionalSingleUp, $2);  }
     //	|	APSingleUpOrUnspecified atomTest { 
@@ -265,7 +265,7 @@ bondAtomTest:	APBond atomTest
 
 acyclicAtomTest: APOpenBracket logOp APCloseBracket 
 	{ _lisp_BLOCK_TRACE("acyclicAtomTest: APOpenBracket logOp APCloseBracket");
-	    $$ = new Hold<chem::AtomOrBondMatchNode_O>($2->_obj);
+	    $$ = new Hold<chem::AtomOrBondMatchNode_O>($2->value());
 	} 
 | APOrganicElement 
  	{ _lisp_BLOCK_TRACE("acyclicAtomTest: APOrganicElement");
@@ -294,20 +294,20 @@ acyclicAtomTest: APOpenBracket logOp APCloseBracket
 
 | recursiveChemInfo 
 	    		{ _lisp_BLOCK_TRACE("acyclicAtomTest: recursiveChemInfo");
-	    		    $$ = new Hold<chem::AtomOrBondMatchNode_O>($1->_obj); 
+	    		    $$ = new Hold<chem::AtomOrBondMatchNode_O>($1->value()); 
 			}
 	    ;
 
 atomTest: acyclicAtomTest APNumber 
     { _lisp_BLOCK_TRACEF(BF("atomTest: acyclicAtomTest APNumber   // atomTag==(%s)  ") % ($2));
-	$$=new Hold<chem::AtomOrBondMatchNode_O>(chem::TagSet_O::create($1->_obj,$2));
+	$$=new Hold<chem::AtomOrBondMatchNode_O>(chem::TagSet_O::create($1->value(),chem::chemkw_intern(std::string($2))));
     }
 | acyclicAtomTest 
     { _lisp_BLOCK_TRACE("atomTest: acyclicAtomTest");
-	$$ = new Hold<chem::AtomOrBondMatchNode_O>($1->_obj); 
+	$$ = new Hold<chem::AtomOrBondMatchNode_O>($1->value()); 
     };
 
-branch:	APOpenParenthesis chain APCloseParenthesis { $$ = new Hold<chem::BondListMatchNode_O>($2->_obj); };
+branch:	APOpenParenthesis chain APCloseParenthesis { $$ = new Hold<chem::BondListMatchNode_O>($2->value()); };
 
 
  /* 
@@ -688,7 +688,7 @@ __END_DOC
 */
 | recursiveChemInfo 
 	{ 
-	    $$ = new Hold<chem::AtomOrBondMatchNode_O>($1->_obj); 
+	    $$ = new Hold<chem::AtomOrBondMatchNode_O>($1->value()); 
 	}
     ;
 /*
@@ -766,7 +766,7 @@ __END_DOC
 logOp:	atomPrimativeTest 	
 	{ 
 	    $$ = new Hold<chem::Logical_O>(
-	    		chem::Logical_O::create( chem::logIdentity, $1->_obj )); 
+	    		chem::Logical_O::create( chem::logIdentity, $1->value() )); 
 	}
 /*!
 __APPEND_DOC(msmarts.logical)
@@ -776,7 +776,7 @@ __END_DOC
 | APOperatorNot logOp 
 	{ 
 	    $$ = new Hold<chem::Logical_O>(
-	    		chem::Logical_O::create( chem::logNot, $2->_obj )); 
+	    		chem::Logical_O::create( chem::logNot, $2->value() )); 
 	}
 /*
 __APPEND_DOC(msmarts.logical)
@@ -786,7 +786,7 @@ __END_DOC
 | logOp APOperatorAndHigh logOp 
 	{ 
 	    $$ = new Hold<chem::Logical_O>(
-	    		chem::Logical_O::create( chem::logHighPrecedenceAnd, $1->_obj, $3->_obj )); 
+	    		chem::Logical_O::create( chem::logHighPrecedenceAnd, $1->value(), $3->value() )); 
 	}
 /*
 __APPEND_DOC(msmarts.logical)
@@ -796,7 +796,7 @@ __END_DOC
 | logOp APOperatorOr logOp 
 	{ 
 	    $$ = new Hold<chem::Logical_O>(
-	    		chem::Logical_O::create( chem::logOr, $1->_obj, $3->_obj )); 
+	    		chem::Logical_O::create( chem::logOr, $1->value(), $3->value() )); 
 	}
 /*
 __APPEND_DOC(msmarts.logical)
@@ -807,11 +807,11 @@ __END_DOC
 | logOp APOperatorAndLow logOp 
 	{ 
 	    $$ = new Hold<chem::Logical_O>(
-	    		chem::Logical_O::create( chem::logLowPrecedenceAnd, $1->_obj, $3->_obj )); 
+	    		chem::Logical_O::create( chem::logLowPrecedenceAnd, $1->value(), $3->value() )); 
 	}
 ;
 
-recursiveChemInfo:	APDollarSign APOpenParenthesis chemInfo APCloseParenthesis { $$ = new Hold<chem::Root_O>($3->_obj); }
+recursiveChemInfo:	APDollarSign APOpenParenthesis chemInfo APCloseParenthesis { $$ = new Hold<chem::Root_O>($3->value()); }
 	    ;
 
 intNumber: APNumber { $$ = atoi($1); };

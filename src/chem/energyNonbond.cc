@@ -343,9 +343,6 @@ namespace chem
 	NVector_sp nvPosition,
 	AbstractLargeSquareMatrix_sp m )
     {_OF();
-	bool		calcForce = true;
-	bool		calcDiagonalHessian = true;
-	bool		calcOffDiagonalHessian = true;
 
 //
 // Copy from implementAmberFunction::setupHessianPreconditioner
@@ -377,7 +374,6 @@ namespace chem
 	    LOG_ENERGY(BF("%s {\n")% this->className());
 	}
 
-	bool	fail = false;
 	ANN(force);
 	ANN(hessian);
 	ANN(hdvec);
@@ -557,9 +553,6 @@ namespace chem
 	stringstream& info, NVector_sp pos )
     {_OF();
 	int	fails = 0;
-	bool	calcForce = false;
-	bool	calcDiagonalHessian = false;
-	bool	calcOffDiagonalHessian = false;
 
 	this->_BeyondThresholdTerms.clear();
 

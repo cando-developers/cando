@@ -9,11 +9,20 @@ project chem : requirements
 	;
 
 ##### Disable parsers for now
-#cpp _msmarts_Parser : msmarts_Parser.yy : <bison.prefix>"msmarts -v" ;
-#cpp _gaff_Parser : gaff_Parser.yy : <bison.prefix>"gaff -v -t" ;
-#alias parsers : _msmarts_Parser _gaff_Parser ;
+cpp _msmarts_Parser : msmarts_Parser.yy : <bison.prefix>"msmarts -v" ;
+cpp _gaff_Parser : gaff_Parser.yy : <bison.prefix>"gaff -v -t" ;
+alias parsers : _msmarts_Parser _gaff_Parser ;
 
 local sources = 	
+		chemInfo.cc 
+		ffTypesDb.cc
+		ffStretchDb.cc
+		ffVdwDb.cc
+		ffAngleDb.cc
+		ffBaseDb.cc
+		ffItorDb.cc
+		ffPtorDb.cc
+		ffNonbondDb.cc
               chemPackage.cc
 		matter.cc 
 		aggregate.cc 
@@ -74,10 +83,6 @@ local sources =
 		moe.cc 
 		mol2.cc 
 	        numericalFunction.cc 
-		ffAngleDb.cc
-		ffBaseDb.cc
-		ffItorDb.cc
-		ffNonbondDb.cc
 		forceField.cc
 		linearAlgebra.cc
 		minimizerLog.cc
@@ -110,12 +115,9 @@ local sources =
 		chemdraw.cc
 	     	candoScript.cc
 		monomer.cc 
-		ffPtorDb.cc
-		ffStretchDb.cc
-		ffTypesDb.cc
-		ffVdwDb.cc
-		chemInfo.cc 
-#		parsers
+		conformationExplorer.cc 
+		conformationCollection.cc 
+		parsers
 		/externals//boostAndExpatLibs
 		/internals//core
 		/cando/geom
@@ -126,8 +128,6 @@ local sources =
 #		table.cc
 #		arrayedMatter.cc
 #		confSearchDatabase.cc
-#		conformationExplorer.cc 
-#		conformationCollection.cc 
 
 
 lib chem : $(sources) ;

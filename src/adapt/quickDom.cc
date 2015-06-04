@@ -120,7 +120,7 @@ void	MySaxDomHandler::ignorableWhitespace()
 
 
 
-    QDomNode_sp	QDomNode_O::create(core::Lisp_sp e,const string& name)
+    QDomNode_sp	QDomNode_O::create(const string& name)
 {
     QDomNode_sp node = QDomNode_O::create();
     node->setLocalName(name);
@@ -670,8 +670,8 @@ void	QDomNode_O::eraseAll() {
 //
 
 
-
-void	QDomNode_O::parseFile(core::Stream_sp fIn, const string& fileName ) 
+#if 0
+void	QDomNode_O::parseStream(core::Stream_sp fIn)
 {_OF();
     MySaxDomHandler	handler;
     bool		res;
@@ -706,9 +706,9 @@ void	QDomNode_O::parseFile(core::Stream_sp fIn, const string& fileName )
     parser.shutDown();
 
 }
+#endif
 
-
-QDomNode_sp  QDomNode_O::parseFromString(const string& dataString) 
+gc::Nilable<QDomNode_sp>  QDomNode_O::parse(core::T_sp stream)
 {_G();
     MySaxDomHandler	handler;
     bool		res;
@@ -723,12 +723,12 @@ QDomNode_sp  QDomNode_O::parseFromString(const string& dataString)
 	printf ("error durint XML initialization\n" );
 	LOG(BF("Error during XML initialization") );
 	parser.shutDown();
-	return QDomNode_sp();
+	return _Nil<core::T_O>();
     }
 //    handler.setExecutionContext(this);
     LOG(BF("QDomParseString About to parse XML file") );
     parser.setContentHandler(&handler);
-    res = parser.parseString(dataString.c_str());
+    res = parser.parse(stream);
     if ( !res ) {
 	printf( "Could not parse file\n" );
 	LOG(BF("QDomParseString failed to parse file") );

@@ -41,7 +41,7 @@ namespace chem {
     public:
 	void initialize();
     public:
-	void	archiveBase(core::ArchiveP node);
+	void fields(core::Record_sp node);
     private:
 	bool		_Matches;
         core::HashTableEq_sp _TagLookup; // core::StringMap<Atom_O>	_TagLookup;
@@ -83,7 +83,7 @@ namespace chem {
     public:
 	void initialize();
     public:
-	void	archiveBase(core::ArchiveP node);
+	void	fields(core::Record_sp node);
     private:
         core::HashTableEqual_sp _AtomWildCards; // core::StringMap<adapt::StringSet_O>	_AtomWildCards;
     public:
@@ -145,7 +145,7 @@ namespace chem {
 	LISP_CLASS(chem,ChemPkg,ChemInfoNode_O,"ChemInfoNode");
 
     public:
-	void	archiveBase(core::ArchiveP node);
+	void	fields(core::Record_sp node);
     public:
 	virtual uint depth() const;
 	virtual string asSmarts() const {_OF();SUBCLASS_MUST_IMPLEMENT();};
@@ -160,7 +160,7 @@ namespace chem {
 	LISP_CLASS(chem,ChemPkg,ResidueList_O,"ResidueList");
 
     public:
-	void	archiveBase(core::ArchiveP node);
+	void	fields(core::Record_sp node);
     private:
     public:
 	DEFAULT_CTOR_DTOR(ResidueList_O);
@@ -177,7 +177,7 @@ namespace chem {
 	LISP_CLASS(chem,ChemPkg,RootMatchNode_O,"RootMatchNode");
 
     public:
-	void	archiveBase(core::ArchiveP node);
+	void	fields(core::Record_sp node);
     public:
 	virtual	bool	matches(Root_sp root) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
 	
@@ -195,7 +195,7 @@ namespace chem {
 	LISP_CLASS(chem,ChemPkg,BondMatchNode_O,"BondMatchNode");
 
     public:
-	void	archiveBase(core::ArchiveP node);
+	void	fields(core::Record_sp node);
     public:
 	virtual	bool	matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond ) {_OF();SUBCLASS_MUST_IMPLEMENT(); };
 
@@ -214,7 +214,7 @@ namespace chem {
 	LISP_CLASS(chem,ChemPkg,AtomOrBondMatchNode_O,"AtomOrBondMatchNode");
 
     public:
-	void	archiveBase(core::ArchiveP node);
+	void	fields(core::Record_sp node);
     private:
     public:
 
@@ -233,7 +233,7 @@ namespace chem {
 	LISP_CLASS(chem,ChemPkg,BondListMatchNode_O,"BondListMatchNode");
 
     public:
-	void	archiveBase(core::ArchiveP node);
+	void	fields(core::Record_sp node);
     private:
     public:
 	virtual	bool	matches(Root_sp root, chem::Atom_sp from, chem::BondList_sp bondList ) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
@@ -293,16 +293,16 @@ class Logical_O : public AtomOrBondMatchNode_O
     LISP_CLASS(chem,ChemPkg,Logical_O,"Logical");
 
 public:
-    void	archiveBase(core::ArchiveP node);
+    void	fields(core::Record_sp node);
 	void	initialize();
 private:
 	LogicalOperatorType	_Operator;
 	AtomOrBondMatchNode_sp	_Left;
-	AtomOrBondMatchNode_sp	_Right;
+        gc::Nilable<AtomOrBondMatchNode_sp>	_Right;
 
 public:
 		// Second argument can be NULL
-	static Logical_sp create(LogicalOperatorType op, AtomOrBondMatchNode_sp a1, AtomOrBondMatchNode_sp a2 )
+	static Logical_sp create(LogicalOperatorType op, AtomOrBondMatchNode_sp a1, gc::Nilable<AtomOrBondMatchNode_sp> a2 )
 	{ _G();
 	    GC_ALLOCATE(Logical_O, obj ); // RP_Create<Logical_O>(lisp);
 	    obj->_Operator = op;
@@ -312,9 +312,8 @@ public:
 	};
 	static Logical_sp create( LogicalOperatorType op, AtomOrBondMatchNode_sp a1)
 	{_G();
-	    AtomOrBondMatchNode_sp a2;
-	    a2 = _Nil<AtomOrBondMatchNode_O>();
-	    return create(op,a1,a2);
+          core::T_sp a2 = _Nil<core::T_O>();
+          return create(op,a1,a2);
 	};
 public:
 
@@ -326,7 +325,8 @@ virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
 virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
 virtual uint depth() const;
 virtual string asSmarts() const;
-DEFAULT_CTOR_DTOR(Logical_O);
+ Logical_O() : _Operator(logIdentity) {};
+ virtual ~Logical_O() {};
 };
 
 SMART(TagSet);
@@ -336,7 +336,7 @@ SMART(TagSet);
     LISP_CLASS(chem,ChemPkg,TagSet_O,"TagSet");
 
 public:
-    void	archiveBase(core::ArchiveP node);
+    void	fields(core::Record_sp node);
 	void	initialize();
 private:
 //        BondEnum        	_Bond;
@@ -369,7 +369,7 @@ class RingTest_O : public AtomOrBondMatchNode_O
     LISP_CLASS(chem,ChemPkg,RingTest_O,"RingTest");
 
 public:
-    void	archiveBase(core::ArchiveP node);
+    void	fields(core::Record_sp node);
 	void	initialize();
 private:
         BondEnum        	_Bond;
@@ -403,7 +403,7 @@ class ResidueTest_O : public AtomOrBondMatchNode_O
     LISP_CLASS(chem,ChemPkg,ResidueTest_O,"ResidueTest");
 
 public:
-    void	archiveBase(core::ArchiveP node);
+    void	fields(core::Record_sp node);
 	void	initialize();
 private:
         BondEnum        	_Bond;
@@ -444,7 +444,7 @@ class BondTest_O : public BondMatchNode_O
 
 public:
 	void	initialize();
-	void	archiveBase(core::ArchiveP node);
+	void	fields(core::Record_sp node);
 private:
 	BondEnum		_Bond;
 	AtomOrBondMatchNode_sp	_AtomTest;
@@ -481,7 +481,7 @@ class AntechamberBondTest_O : public BondMatchNode_O
 
 public:
 	void initialize();
-	void	archiveBase(core::ArchiveP node);
+	void	fields(core::Record_sp node);
 private:
     core::Symbol_sp                   _Element;
         int                     _Neighbors;
@@ -605,7 +605,7 @@ class AtomTest_O : public AtomOrBondMatchNode_O
 
 public:
 void initialize();
-    void	archiveBase(core::ArchiveP node);
+ void	fields(core::Record_sp node);
 private:
 	AtomTestEnum	_Test;
 	int		_IntArg;
@@ -661,7 +661,8 @@ virtual	bool	matches( Root_sp root, chem::Atom_sp atom );
 virtual	bool	matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond);
 virtual string asSmarts() const;
 
-DEFAULT_CTOR_DTOR(AtomTest_O);
+ AtomTest_O() : _Test(SAPNone), _IntArg(0), _NumArg(0), _StringArg(""), _SymbolArg(_Nil<core::Symbol_O>()) {};
+ virtual ~AtomTest_O() {};
 };
 
 
@@ -679,22 +680,21 @@ class AntechamberFocusAtomMatch_O : public AtomOrBondMatchNode_O
 public:
 	void initialize();
 public:
-	void	archiveBase(core::ArchiveP node);
+	void	fields(core::Record_sp node);
 private:
-        ResidueList_sp     _ResidueNames;
+        gc::Nilable<ResidueList_sp>  _ResidueNames;
         int             _AtomicNumber;
         int             _NumberOfAttachedAtoms;
         int             _NumberOfAttachedHydrogens;
         int             _NumberOfElectronWithdrawingGroups;
-        AtomOrBondMatchNode_sp   _AtomicProperty;
+        gc::Nilable<AtomOrBondMatchNode_sp>   _AtomicProperty;
 public:
-	static AntechamberFocusAtomMatch_sp create(
-                        ResidueList_sp residueNames,
-                        int     atomicNumber,
-                        int     numberOfAttachedAtoms,
-                        int     numberOfAttachedHydrogens,
-                        int     numberOfElectronWithdrawingGroups,
-                        AtomOrBondMatchNode_sp atomicProperty ) 
+	static AntechamberFocusAtomMatch_sp create(gc::Nilable<ResidueList_sp> residueNames,
+                                                   int     atomicNumber,
+                                                   int     numberOfAttachedAtoms,
+                                                   int     numberOfAttachedHydrogens,
+                                                   int     numberOfElectronWithdrawingGroups,
+                                                   gc::Nilable<AtomOrBondMatchNode_sp> atomicProperty ) 
 	{_G();
 	    GC_ALLOCATE(AntechamberFocusAtomMatch_O, obj ); // RP_Create<AntechamberFocusAtomMatch_O>(lisp);
 	    obj->_ResidueNames = residueNames;
@@ -707,18 +707,18 @@ public:
 	    return obj;
 	};
 	static AntechamberFocusAtomMatch_sp create(
-                        ResidueList_sp residueNames,
-                        int     atomicNumber,
-                        int     numberOfAttachedAtoms,
-                        int     numberOfAttachedHydrogens,
-                        int     numberOfElectronWithdrawingGroups )
+                                                   gc::Nilable<ResidueList_sp> residueNames,
+                                                   int     atomicNumber,
+                                                   int     numberOfAttachedAtoms,
+                                                   int     numberOfAttachedHydrogens,
+                                                   int     numberOfElectronWithdrawingGroups )
 	{_G();
-	    AtomOrBondMatchNode_sp atomicProperty;
-	    atomicProperty = _Nil<AtomOrBondMatchNode_O>();
-	    return create( residueNames, atomicNumber, numberOfAttachedAtoms, numberOfAttachedHydrogens, numberOfElectronWithdrawingGroups, atomicProperty);
+          gc::Nilable<AtomOrBondMatchNode_sp> atomicProperty;
+          atomicProperty = _Nil<core::T_O>();
+          return create( residueNames, atomicNumber, numberOfAttachedAtoms, numberOfAttachedHydrogens, numberOfElectronWithdrawingGroups, atomicProperty);
 	};
 public:
-
+        string asSmarts() const;
 
 //virtual	adapt::QDomNode_sp	asXml(string name=XmlTag_AntechamberFocusAtomMatch());
 //virtual	void	parseFromXml(adapt::QDomNode_sp node);
@@ -741,7 +741,7 @@ class Chain_O : public BondListMatchNode_O
     LISP_CLASS(chem,ChemPkg,Chain_O,"Chain");
 
 public:
-    void	archiveBase(core::ArchiveP node);
+    void	fields(core::Record_sp node);
 	void	initialize();
 private:
 	BondMatchNode_sp		_Head;
@@ -783,11 +783,11 @@ class Branch_O : public BondListMatchNode_O
     LISP_CLASS(chem,ChemPkg,Branch_O,"Branch");
 
 public:
-    void	archiveBase(core::ArchiveP node);
+    void	fields(core::Record_sp node);
 	void	initialize();
 private:
 	BondListMatchNode_sp	_Left;
-	BondListMatchNode_sp	_Right;
+        gc::Nilable<BondListMatchNode_sp>	_Right;
 public:
 	virtual uint depth() const;
 virtual string asSmarts() const;
@@ -805,7 +805,7 @@ virtual string asSmarts() const;
 	    _G();
 	    GC_ALLOCATE(Branch_O, obj ); // RP_Create<Branch_O>(lisp);
 		obj->_Left = left;
-		obj->_Right = _Nil<BondListMatchNode_O>();
+		obj->_Right = _Nil<core::T_O>();
 		return obj;
 	}
 
@@ -845,7 +845,7 @@ class AfterMatchBondTest_O : public RootMatchNode_O
 
 public:
 void initialize();
-    void	archiveBase(core::ArchiveP node);
+ void	fields(core::Record_sp node);
 private:
     core::Symbol_sp _AtomTag1;
     core::Symbol_sp _AtomTag2;
@@ -884,10 +884,10 @@ class Root_O : public AtomOrBondMatchNode_O
 public:
 	void initialize();
 public:
-	void	archiveBase(core::ArchiveP node);
+	void	fields(core::Record_sp node);
 protected:
 	AtomOrBondMatchNode_sp	_FirstTest;
-	BondListMatchNode_sp	_Chain;
+        gc::Nilable<BondListMatchNode_sp>	_Chain;
 	/*! Store tests described as lambdas that take a single atom argument and return a boolean.
 	 These can be incorporated into the smarts code as <xxxx> where xxxx is the symbol
 	name of the test. */
@@ -941,7 +941,7 @@ class SmartsRoot_O : public Root_O
     LISP_CLASS(chem,ChemPkg,SmartsRoot_O,"SmartsRoot");
 
 public:
-    void	archiveBase(core::ArchiveP node);
+    void	fields(core::Record_sp node);
 public:
 
     static SmartsRoot_sp create(AtomOrBondMatchNode_sp node,
@@ -993,16 +993,16 @@ class AntechamberRoot_O : public Root_O
 public:
 	void initialize();
 public:
-	void	archiveBase(core::ArchiveP node);
+	void	fields(core::Record_sp node);
 protected:
         core::Symbol_sp          _AssignType;
-        RootMatchNode_sp         _AfterMatchTests;
+        gc::Nilable<RootMatchNode_sp>         _AfterMatchTests;
         WildElementDict_sp       _WildElementDictionary;
 public:
 	static AntechamberRoot_sp create( core::Symbol_sp assignType,
-                                AtomOrBondMatchNode_sp node,
-                                BondListMatchNode_sp bl,
-                                RootMatchNode_sp amt) 
+                                          AtomOrBondMatchNode_sp node,
+                                          gc::Nilable<BondListMatchNode_sp> bl,
+                                          gc::Nilable<RootMatchNode_sp> amt) 
 	{_G();
 	    GC_ALLOCATE(AntechamberRoot_O, obj ); // RP_Create<AntechamberRoot_O>(lisp);
 	            obj->_FirstTest = node;
@@ -1021,12 +1021,12 @@ public:
 		return create( assignType, node, bl, amt );
 	};
 	static AntechamberRoot_sp create(core::Symbol_sp assignType,
-                                AtomOrBondMatchNode_sp node )
+                                         gc::Nilable<AtomOrBondMatchNode_sp> node )
 	{
 	    _G();
-	    BondListMatchNode_sp bl = _Nil<BondListMatchNode_O>();
-	    RootMatchNode_sp amt = _Nil<RootMatchNode_O>();
-		return create( assignType, node, bl, amt );
+            gc::Nilable<BondListMatchNode_sp> bl = _Nil<core::T_O>();
+            gc::Nilable<RootMatchNode_sp> amt = _Nil<core::T_O>();
+            return create( assignType, node, bl, amt );
 	};
 	core::Symbol_sp getAssignType() { return this->_AssignType;};
 public:
@@ -1065,7 +1065,7 @@ class ChemInfo_O : public core::T_O
 public:
 	void	initialize();
 public:
-	void	archiveBase(core::ArchiveP node);
+	void	fields(core::Record_sp node);
 
 private:
 	string		_Code;

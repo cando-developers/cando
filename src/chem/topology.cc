@@ -209,6 +209,7 @@ namespace chem
 	MonomerContext_sp context = MonomerContext_O::create();
 	EntityNameSet_sp selfSet = EntityNameSet_O::create();
 	Constitution_sp constitution = this->getConstitution();
+        (void)constitution;
 	context->setFocus(selfSet);
 	IMPLEMENT_ME();
     }

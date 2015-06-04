@@ -109,7 +109,7 @@ namespace units
     {_G();
 	if ( obj.isA<core::DoubleFloat_O>() )
 	{
-	    return obj.as<core::DoubleFloat_O>()->isnan();
+          return clasp_float_nan_p(obj.as<core::DoubleFloat_O>());
 #if 0
 	} else if ( obj.isA<geom::OVector3_O>() )
 	{

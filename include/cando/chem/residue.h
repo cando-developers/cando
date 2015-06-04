@@ -63,19 +63,16 @@ namespace chem {
         friend class Molecule_O;
         LISP_BASE1(Matter_O);
         LISP_CLASS(chem,ChemPkg,Residue_O,"Residue");
-//    DECLARE_SERIALIZE();
     public:
-
 	void initialize();
     public:
-	void	archiveBase(core::ArchiveP node);
-	
-	friend	class	Loop;
+	void	fields(core::Record_sp node);
+        friend	class	Loop;
     private:
 	bool		_Selected;
 	int		_NetCharge;
 	int		tempInt;
-        MatterName		pdbName;
+        MatterName	pdbName;
 	uint		_FileSequenceNumber;
 //	CandoDatabaseReference_sp	_Constitution;
         /*! Stores a unique label that is set when

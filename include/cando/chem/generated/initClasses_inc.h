@@ -92,7 +92,7 @@
  // class FFAngle_O : public FFParameter_O
  // class FFAngleDb_O : public FFBaseDb_O
  // class FFParameter_O : public core::T_O
- // class FFBaseDb_O : public core::T_O
+ // class FFBaseDb_O : public core::T_O {
  // class FFItor_O : public FFParameter_O
  // class FFItorDb_O : public FFBaseDb_O
  // class FFNonbondCrossTermTable_O : public core::T_O

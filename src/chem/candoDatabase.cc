@@ -662,7 +662,7 @@ namespace chem
 	monomerCoordinatesIterator it;
 	for ( it=this->begin_MonomerCoordinates(); it!=this->end_MonomerCoordinates(); it++ )
 	{
-	    core::Cons_sp one = core::Cons_O::create(core::Str_O::create(it->first),_Nil<core::T_O>());
+          core::Cons_sp one = core::Cons_O::create(it->first,_Nil<core::T_O>());
 	    cur->setCdr(one);
 	    cur = one;
 	}

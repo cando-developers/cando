@@ -116,7 +116,9 @@ class FFNonbond_O : public FFParameter_O
 public:
 public:
     void initialize();
+#ifdef XML_ARCHIVE
     void archiveBase(core::ArchiveP node);
+#endif
 
 private:
     core::Symbol_sp 	_Type;
@@ -169,7 +171,9 @@ class FFNonbondDb_O : public FFBaseDb_O
 public:
 public:
     void	initialize();
+#ifdef XML_ARCHIVE
     void	archiveBase(core::ArchiveP node);
+#endif
 public:
     typedef	gctools::Vec0<FFNonbond_sp>::iterator	FFNonbond_spIterator;
     double			_EleDielectricValue;

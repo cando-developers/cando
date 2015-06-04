@@ -39,9 +39,9 @@ THE SOFTWARE.
 #include <clasp/core/str.h>
 #include <clasp/core/wrappers.h>
 
-namespace core {
+namespace adapt {
 
-EXPOSE_CLASS(core, StringList_O);
+EXPOSE_CLASS(adapt, StringList_O);
 
 void StringList_O::exposeCando(Lisp_sp lisp) {
   class_<StringList_O>()
@@ -52,7 +52,7 @@ void StringList_O::exposeCando(Lisp_sp lisp) {
 void StringList_O::exposePython(Lisp_sp lisp) {
   _G();
 #ifdef USEBOOSTPYTHON
-  PYTHON_CLASS(CorePkg, StringList, "", "", _lisp)
+  PYTHON_CLASS(AdaptPkg, StringList, "", "", _lisp)
       .def("string_list_append", &StringList_O::append)
       .def("asString", &StringList_O::asString);
 #endif

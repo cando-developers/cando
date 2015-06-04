@@ -32,7 +32,8 @@ namespace chem
 
 
 
-    void	FFAngle_O::archiveBase(core::ArchiveP node)
+#ifdef XML_ARCHIVE
+void	FFAngle_O::archiveBase(core::ArchiveP node)
 {
     node->attribute("type1",this->_Type1);
     node->attribute("type2",this->_Type2);
@@ -40,7 +41,7 @@ namespace chem
     node->attribute("angRad", this->_AngRad);
     node->attribute("k2",this->_K2__kJPerRadianSquared);
 }
-
+#endif
 
 #ifdef CONSPACK
     void	FFAngleDb_O::archiveBase(core::ArchiveP node)

@@ -41,8 +41,8 @@ namespace geom
   public:
     void initialize();
   public:
-    virtual core::Cons_sp encode() const;
-    virtual void decode(core::Cons_sp);
+    virtual core::List_sp encode();
+    virtual void decode(core::List_sp);
   private:
     vector<Vector3>	_Points;
   private:

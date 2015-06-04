@@ -64,10 +64,7 @@ class SymbolSet_O : public T_O {
 
 public:
   void initialize();
-#if defined(XML_ARCHIVE)
-  void archiveBase(ArchiveP node);
-#endif // defined(XML_ARCHIVE)
-
+  void fields(core::Record_sp node);
 GCPRIVATE:
   HashTableEq_sp _Symbols;
 

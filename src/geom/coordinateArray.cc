@@ -405,7 +405,7 @@ void CoordinateArray_O::resize(int iElement)
 #endif
 
 
-core::Cons_sp CoordinateArray_O::encode() const {
+core::List_sp CoordinateArray_O::encode() {
   core::Vector_sp v = core::core_make_vector(cl::_sym_DoubleFloat_O,3*this->_Points.size());
   size_t cur(0);
   for ( size_t i(0); i<this->_Points.size(); ++i ) {
@@ -417,7 +417,7 @@ core::Cons_sp CoordinateArray_O::encode() const {
                                   core::Cons_O::create(_Nil<T_O>(),v));
 }
 
-void CoordinateArray_O::decode(core::Cons_sp c) {
+void CoordinateArray_O::decode(core::List_sp c) {
   core::Fixnum_sp fn_size = gc::As<core::Fixnum_sp>(oCdr(oFirst(c)));
   core::Vector_sp v = gc::As<core::Vector_sp>(oCdr(oSecond(c)));
   this->resize(core::clasp_to_fixnum(fn_size));

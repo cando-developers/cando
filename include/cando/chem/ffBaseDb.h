@@ -39,7 +39,7 @@ namespace chem {
 };
 
 
-namespace kw {
+namespace chemkw {
     extern core::Symbol_sp _sym_parameterized;
     extern core::Symbol_sp _sym_estimated;
     extern core::Symbol_sp _sym_rough;
@@ -56,11 +56,11 @@ namespace translate {
 	    SYMBOL_EXPORT_SC_(ChemKwPkg,rough);
 	    switch (val) {
 	    case chem::parameterized:
-		return (kw::_sym_parameterized);
+		return (chemkw::_sym_parameterized);
 	    case chem::estimated:
-		return (kw::_sym_estimated);
+		return (chemkw::_sym_estimated);
 	    case chem::rough:
-		return (kw::_sym_rough);
+		return (chemkw::_sym_rough);
 	    };
 	    SIMPLE_ERROR(BF("Illegal ParameterizationLevel"));
 	}
@@ -73,11 +73,11 @@ namespace translate {
 	typedef	chem::ParameterizationLevel 	DeclareType;
 	DeclareType _v;
 	from_object(gctools::smart_ptr<core::T_O> o) {
-	    if ( o == kw::_sym_parameterized ) {
+	    if ( o == chemkw::_sym_parameterized ) {
 		_v = chem::parameterized;
-	    } else if ( o == kw::_sym_estimated ) {
+	    } else if ( o == chemkw::_sym_estimated ) {
 		_v = chem::estimated;
-	    } else if ( o == kw::_sym_rough ) {
+	    } else if ( o == chemkw::_sym_rough ) {
 		_v = chem::rough;
 	    } else {
 		SIMPLE_ERROR(BF("Illegal value for ParameterizationLevel %s") % _rep_(o) );
@@ -106,7 +106,7 @@ class FFParameter_O : public core::T_O
     LISP_CLASS(chem,ChemPkg,FFParameter_O,"FFParameter");
 
 public:
-    void	archiveBase(core::ArchiveP node);
+    void fields(core::Record_sp node);
 public:
 	ParameterizationLevel	_Level;
 
@@ -130,22 +130,18 @@ DEFAULT_CTOR_DTOR(FFParameter_O);
 
 
 SMART(FFBaseDb);
-class FFBaseDb_O : public core::T_O
-{
-    LISP_BASE1(core::T_O);
-    LISP_CLASS(chem,ChemPkg,FFBaseDb_O,"FFBaseDb");
+class FFBaseDb_O : public core::T_O {
+  LISP_BASE1(core::T_O);
+  LISP_CLASS(chem,ChemPkg,FFBaseDb_O,"FFBaseDb");
 
-public:
-    void	archiveBase(core::ArchiveP node);
-
-public:
-	ForceField_wp	_ForceField;
-
-public:
-
-	void	setForceField(ForceField_sp ff);
-
-	DEFAULT_CTOR_DTOR(FFBaseDb_O);
+ public:
+  void fields(core::Record_sp node);
+ public:
+  core::T_sp	_ForceField;
+ public:
+  void	setForceField(ForceField_sp ff);
+ FFBaseDb_O() : _ForceField(_Nil<core::T_O>()) {};
+  virtual ~FFBaseDb_O() {};
 };
 
 };

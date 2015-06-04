@@ -22,33 +22,6 @@
 
 
 
-//
-// Constructors
-//
-Vector3::Vector3()
-{
-    this->coords[0] = 0.0;
-    this->coords[1] = 0.0;
-    this->coords[2] = 0.0;
-}
-
-//
-// Destructor
-//
-Vector3::~Vector3()
-{
-    //nothing
-}
-
-
-Vector3::Vector3( double x, double y, double z )
-{
-
-    this->coords[0] = x;
-    this->coords[1] = y;
-    this->coords[2] = z;
-}
-
 Vector3 Vector3::inNanometers() const
 {
     return Vector3(this->coords[0]*0.1,

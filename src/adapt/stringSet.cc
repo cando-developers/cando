@@ -43,7 +43,7 @@ THE SOFTWARE.
 #include <clasp/core/numbers.h>
 #include <clasp/core/wrappers.h>
 
-namespace core {
+namespace adapt {
 
 /*
   __BEGIN_DOC(classes.StringSet.!class.StringSet)
@@ -302,91 +302,91 @@ Vector_sp StringSet_O::asVector() const {
 
 void StringSet_O::exposeCando(Lisp_sp lisp) {
   class_<StringSet_O>()
-      .def("size", &StringSet_O::size)
-      .def("insertConsStrings", &StringSet_O::insertConsStrings)
-      .def("insertStringSet", &StringSet_O::insertStringSet)
-      .def("insert", &StringSet_O::insert)
-      .def("contains", &StringSet_O::contains)
-      .def("containsSubset", &StringSet_O::containsSubset)
+    .def("size", &StringSet_O::size)
+    .def("insertConsStrings", &StringSet_O::insertConsStrings)
+    .def("insertStringSet", &StringSet_O::insertStringSet)
+    .def("insert", &StringSet_O::insert)
+    .def("contains", &StringSet_O::contains)
+    .def("containsSubset", &StringSet_O::containsSubset)
       //	    .def("remove",&StringSet_O::remove)
-      .def("clear", &StringSet_O::clear)
-      .def("asString", &StringSet_O::asString)
-      .def("setFromString", &StringSet_O::setFromString)
-      .def("StringSetUnion", &StringSet_O::setUnion)
-      .def("StringSetIntersection", &StringSet_O::intersection)
-      .def("relativeComplement", &StringSet_O::relativeComplement)
-      .def("removeAll", &StringSet_O::removeAll)
-      .def("cartesianProduct", &StringSet_O::cartesianProduct)
-      .def("cartesianProductInsert", &StringSet_O::cartesianProductInsert)
-      .def("asCons", &StringSet_O::asCons);
+    .def("clear", &StringSet_O::clear)
+    .def("asString", &StringSet_O::asString)
+    .def("setFromString", &StringSet_O::setFromString)
+    .def("StringSetUnion", &StringSet_O::setUnion)
+    .def("StringSetIntersection", &StringSet_O::intersection)
+    .def("relativeComplement", &StringSet_O::relativeComplement)
+    .def("removeAll", &StringSet_O::removeAll)
+    .def("cartesianProduct", &StringSet_O::cartesianProduct)
+    .def("cartesianProductInsert", &StringSet_O::cartesianProductInsert)
+    .def("asCons", &StringSet_O::asCons);
 }
 
 void StringSet_O::exposePython(Lisp_sp lisp) {
   _G();
 #ifdef USEBOOSTPYTHON
-  PYTHON_CLASS(CorePkg, StringSet, INIT_ARGS_StringSet_O, DOCS_StringSet_O, _lisp)
-      .def("insertStringSet", &StringSet_O::insertStringSet)
-      .def("size", &StringSet_O::size)
-      .def("insert", &StringSet_O::insert)
-      .def("equals", &StringSet_O::equal)
-      .def("contains", &StringSet_O::contains)
-      .def("containsSubset", &StringSet_O::containsSubset)
+  PYTHON_CLASS(AdaptPkg, StringSet, INIT_ARGS_StringSet_O, DOCS_StringSet_O, _lisp)
+    .def("insertStringSet", &StringSet_O::insertStringSet)
+    .def("size", &StringSet_O::size)
+    .def("insert", &StringSet_O::insert)
+    .def("equals", &StringSet_O::equal)
+    .def("contains", &StringSet_O::contains)
+    .def("containsSubset", &StringSet_O::containsSubset)
       //	    .def("remove",&StringSet_O::remove)
-      .def("clear", &StringSet_O::clear)
-      .def("asString", &StringSet_O::asString)
-      .def("setFromString", &StringSet_O::setFromString)
-      .def("StringSetUnion", &StringSet_O::setUnion)
-      .def("StringSetIntersection", &StringSet_O::intersection)
-      .def("relativeComplement", &StringSet_O::relativeComplement)
-      .def("cartesianProduct", &StringSet_O::cartesianProduct)
-      .def("cartesianProductInsert", &StringSet_O::cartesianProductInsert)
-      .add_property("iterate",
-                    boost::python::range(&StringSet_O::begin,
-                                         &StringSet_O::end));
+    .def("clear", &StringSet_O::clear)
+    .def("asString", &StringSet_O::asString)
+    .def("setFromString", &StringSet_O::setFromString)
+    .def("StringSetUnion", &StringSet_O::setUnion)
+    .def("StringSetIntersection", &StringSet_O::intersection)
+    .def("relativeComplement", &StringSet_O::relativeComplement)
+    .def("cartesianProduct", &StringSet_O::cartesianProduct)
+    .def("cartesianProductInsert", &StringSet_O::cartesianProductInsert)
+    .add_property("iterate",
+                  boost::python::range(&StringSet_O::begin,
+                                       &StringSet_O::end));
 #endif
 }
 
 #if 0
 #ifdef USEBOOSTPYTHON
-    void	StringSet_O::python_setFromList(boost::python::list res) {
+void	StringSet_O::python_setFromList(boost::python::list res) {
 //string		i;
 //boost::python::str		lval;
 //VectorStrings	vs;
 //VectorStrings::iterator vi;
-	int			ll;
-	string			x;
+  int			ll;
+  string			x;
 
-	ll = boost::python::extract<int>(res.attr("__len__")());
-	for ( int i=0; i<ll; i++ ) {
-	    x = boost::python::extract<string>(res[i]);
+  ll = boost::python::extract<int>(res.attr("__len__")());
+  for ( int i=0; i<ll; i++ ) {
+    x = boost::python::extract<string>(res[i]);
 //	printf( "Extracted element: %d = %s\n", i, x.c_str() );
-	    this->strs.insert(x);
-	}
-    }
+    this->strs.insert(x);
+  }
+}
 
 
 
-    boost::python::list StringSet_O::python_asList() {
-	string		i;
-	int		id;
-	boost::python::list	res;
-	boost::python::str		lval;
-	VectorStrings	vs;
-	set<string>::iterator vi;
+boost::python::list StringSet_O::python_asList() {
+  string		i;
+  int		id;
+  boost::python::list	res;
+  boost::python::str		lval;
+  VectorStrings	vs;
+  set<string>::iterator vi;
 
-	for ( vi=this->strs.begin(); vi!=this->strs.end(); vi++ ) {
-	    i = *vi;
-	    LOG(BF("Appending %s to list") % (i.c_str() ) );
-	    lval = boost::python::str(i);
-	    res.append(lval);
-	}
-	return res;
-    }
+  for ( vi=this->strs.begin(); vi!=this->strs.end(); vi++ ) {
+    i = *vi;
+    LOG(BF("Appending %s to list") % (i.c_str() ) );
+    lval = boost::python::str(i);
+    res.append(lval);
+  }
+  return res;
+}
 #endif
 #endif
 
 StringSet_O::~StringSet_O() {
   // nothing
 }
-EXPOSE_CLASS(core, StringSet_O);
+EXPOSE_CLASS(adapt, StringSet_O);
 };

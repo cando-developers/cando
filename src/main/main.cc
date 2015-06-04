@@ -53,6 +53,7 @@ THE SOFTWARE.
 #include <clasp/asttooling/asttoolingPackage.h>
 #include <cando/geom/geomPackage.h>
 #include <cando/units/unitsPackage.h>
+#include <cando/adapt/adaptPackage.h>
 #include <cando/chem/chemPackage.h>
 
 #ifdef USE_MPI
@@ -98,6 +99,9 @@ int startup(int argc, char *argv[], bool &mpiEnabled, int &mpiRank, int &mpiSize
 
     units::UnitsExposer UnitsPkg(_lisp);
     _lisp->installPackage(&UnitsPkg);
+
+    adapt::AdaptExposer AdaptPkg(_lisp);
+    _lisp->installPackage(&AdaptPkg);
 
     chem::ChemExposer ChemPkg(_lisp);
     _lisp->installPackage(&ChemPkg);

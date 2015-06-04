@@ -14,17 +14,17 @@
 #include <vector>
 #include <istream>
 
-#include "core/foundation.h"
-#include "aggregate.h"
-#include "molecule.h"
-#include "residue.h"
-#include "atom.h"
-#include "hold.h"
+#include <clasp/core/foundation.h>
+#include <cando/chem/aggregate.h>
+#include <cando/chem/molecule.h>
+#include <cando/chem/residue.h>
+#include <cando/chem/atom.h>
+#include <cando/chem/hold.h>
 
-#include "chemInfo.h"
-#include "gaff_TypeParser.h"
-#include "gaff_ParserParam.h"
-#include "gaff_LocationType.h"
+#include <cando/chem/chemInfo.h>
+#include <cando/chem/gaff_TypeParser.h>
+#include <cando/chem/gaff_ParserParam.h>
+#include <cando/chem/gaff_LocationType.h>
 
 
 using namespace std;
@@ -118,19 +118,19 @@ int	gaff_lex(YYSTYPE* yylval, YYLTYPE* yylloc, gaff_SParserParam* data);
 %type <antechamberBondTest>    chemicalEnvironmentAtom
 %type <logical>    bracketedAtomPropertyOrNull
 
-//%destructor { if ($$!=NULL) delete ($$); } 	antechamberMatch;
-%destructor { if ($$!=NULL) delete ($$); } 	antechamberLine;
-%destructor { if ($$!=NULL) delete ($$); }     chemicalEnvironment;
-%destructor { if ($$!=NULL) delete ($$); }     bondDefinitions ;
-%destructor { if ($$!=NULL) delete ($$); }     residueList;
-%destructor { if ($$!=NULL) delete ($$); }     bracketedAtomicProperty
-%destructor { if ($$!=NULL) delete ($$); }     logOp 
-%destructor { if ($$!=NULL) delete ($$); }     atomicTest
-%destructor { if ($$!=NULL) delete ($$); }     branches
-%destructor { if ($$!=NULL) delete ($$); }     branchesList
-%destructor { if ($$!=NULL) delete ($$); }     chain 
-%destructor { if ($$!=NULL) delete ($$); }     chemicalEnvironmentAtom
-%destructor { if ($$!=NULL) delete ($$); }     bracketedAtomPropertyOrNull
+//%destructor { if ($$!=NULL) chem::deleteHolder($$); } 	antechamberMatch;
+%destructor { if ($$!=NULL) chem::deleteHolder($$); } 	antechamberLine;
+%destructor { if ($$!=NULL) chem::deleteHolder($$); }     chemicalEnvironment;
+%destructor { if ($$!=NULL) chem::deleteHolder($$); }     bondDefinitions ;
+%destructor { if ($$!=NULL) chem::deleteHolder($$); }     residueList;
+%destructor { if ($$!=NULL) chem::deleteHolder($$); }     bracketedAtomicProperty
+%destructor { if ($$!=NULL) chem::deleteHolder($$); }     logOp 
+%destructor { if ($$!=NULL) chem::deleteHolder($$); }     atomicTest
+%destructor { if ($$!=NULL) chem::deleteHolder($$); }     branches
+%destructor { if ($$!=NULL) chem::deleteHolder($$); }     branchesList
+%destructor { if ($$!=NULL) chem::deleteHolder($$); }     chain 
+%destructor { if ($$!=NULL) chem::deleteHolder($$); }     chemicalEnvironmentAtom
+%destructor { if ($$!=NULL) chem::deleteHolder($$); }     bracketedAtomPropertyOrNull
 
 %%
 
@@ -139,7 +139,7 @@ int	gaff_lex(YYSTYPE* yylval, YYLTYPE* yylloc, gaff_SParserParam* data);
 
 antechamberMatch: 
         APAtomTypeDefinition 
-                antechamberLine { data->expression = $2->_obj; LOG(BF("Got AntechamberMatch tree=%0X") % $2 ); }
+                antechamberLine { data->expression = $2->value(); LOG(BF("Got AntechamberMatch tree=%0X") % $2 ); }
         ;
 
 antechamberLine: 
@@ -156,8 +156,8 @@ antechamberLine:
                 {
 		    _BLOCK_TRACE("Got antechamber line");
                     chem::AntechamberFocusAtomMatch_sp focus;
-                    focus = chem::AntechamberFocusAtomMatch_O::create( $2->_obj, $3, $4, $5, $6, $7->_obj );
-                    $$ = new chem::Hold<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create($1,focus,$8->_obj,$9->_obj)); 
+                    focus = chem::AntechamberFocusAtomMatch_O::create( $2->value(), $3, $4, $5, $6, $7->value() );
+                    $$ = chem::createHolder<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create(chem::chemkw_intern(std::string($1)),focus,$8->value(),$9->value())); 
                 }
         | typeName
                 residueList 
@@ -171,8 +171,8 @@ antechamberLine:
                 {
 		    _BLOCK_TRACE("Got antechamber line");
                     chem::AntechamberFocusAtomMatch_sp focus;
-                    focus = chem::AntechamberFocusAtomMatch_O::create( $2->_obj, $3, $4, $5, $6, $7->_obj );
-                    $$ = new chem::Hold<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create($1,focus,$8->_obj)); 
+                    focus = chem::AntechamberFocusAtomMatch_O::create( $2->value(), $3, $4, $5, $6, $7->value() );
+                    $$ = chem::createHolder<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create(chem::chemkw_intern(std::string($1)),focus,$8->value())); 
                 }
         | typeName
                 residueList 
@@ -185,8 +185,8 @@ antechamberLine:
                 {
 		    _BLOCK_TRACE("Got antechamber line");
                     chem::AntechamberFocusAtomMatch_sp focus;
-                    focus = chem::AntechamberFocusAtomMatch_O::create( $2->_obj, $3, $4, $5, $6, $7->_obj );
-                    $$ = new chem::Hold<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create($1,focus)); 
+                    focus = chem::AntechamberFocusAtomMatch_O::create( $2->value(), $3, $4, $5, $6, $7->value() );
+                    $$ = chem::createHolder<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create(chem::chemkw_intern(std::string($1)),focus)); 
                 }
         | typeName
                 residueList 
@@ -198,10 +198,9 @@ antechamberLine:
                 {
 		    _BLOCK_TRACE("Got antechamber line");
                     chem::AntechamberFocusAtomMatch_sp focus;
-		    chem::AtomOrBondMatchNode_sp temp;
-		    temp = chem::AtomOrBondMatchNode_O::_nil;
-                    focus = chem::AntechamberFocusAtomMatch_O::create( $2->_obj, $3, $4, $5, $6, temp );
-                    $$ = new chem::Hold<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create($1,focus)); 
+                    core::T_sp temp = _Nil<core::T_O>();
+                    focus = chem::AntechamberFocusAtomMatch_O::create( $2->value(), $3, $4, $5, $6, temp );
+                    $$ = chem::createHolder<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create(chem::chemkw_intern(std::string($1)),focus)); 
                 }
         | typeName
                 residueList 
@@ -212,8 +211,8 @@ antechamberLine:
                 {
 		    _BLOCK_TRACE("Got antechamber line");
                     chem::AntechamberFocusAtomMatch_sp focus;
-                    focus = chem::AntechamberFocusAtomMatch_O::create( $2->_obj, $3, $4, $5, -1);
-                    $$ = new chem::Hold<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create($1,focus)); 
+                    focus = chem::AntechamberFocusAtomMatch_O::create( $2->value(), $3, $4, $5, -1);
+                    $$ = chem::createHolder<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create(chem::chemkw_intern(std::string($1)),focus)); 
                 }
         | typeName
                 residueList 
@@ -223,8 +222,8 @@ antechamberLine:
                 {
 		    _BLOCK_TRACE("Got antechamber line");
                     chem::AntechamberFocusAtomMatch_sp focus;
-		    focus = chem::AntechamberFocusAtomMatch_O::create( $2->_obj, $3, $4, -1, -1);
-                    $$ = new chem::Hold<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create($1,focus));
+		    focus = chem::AntechamberFocusAtomMatch_O::create( $2->value(), $3, $4, -1, -1);
+                    $$ = chem::createHolder<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create(chem::chemkw_intern(std::string($1)),focus));
                 }
         | typeName
                 residueList 
@@ -233,8 +232,8 @@ antechamberLine:
                 {
 		    _BLOCK_TRACE("Got antechamber line");
                     chem::AntechamberFocusAtomMatch_sp focus;
-                    focus = chem::AntechamberFocusAtomMatch_O::create( $2->_obj, $3, -1, -1, -1 );
-                    $$ = new chem::Hold<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create($1,focus)); 
+                    focus = chem::AntechamberFocusAtomMatch_O::create( $2->value(), $3, -1, -1, -1 );
+                    $$ = chem::createHolder<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create(chem::chemkw_intern(std::string($1)),focus)); 
                 }
         | typeName
                 residueList 
@@ -242,16 +241,15 @@ antechamberLine:
                 {
 		    _BLOCK_TRACE("Got antechamber line");
                     chem::AntechamberFocusAtomMatch_sp focus;
-                    focus = chem::AntechamberFocusAtomMatch_O::create( $2->_obj, -1, -1, -1, -1);
-                    $$ = new chem::Hold<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create($1,focus)); 
+                    focus = chem::AntechamberFocusAtomMatch_O::create( $2->value(), -1, -1, -1, -1);
+                    $$ = chem::createHolder<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create(chem::chemkw_intern(std::string($1)),focus)); 
                 }
         | typeName
                 APEndOfLine
                 {
 		    _BLOCK_TRACE("Got antechamber line");
-                    chem::AntechamberFocusAtomMatch_sp focus;
-		    focus = chem::AntechamberFocusAtomMatch_O::_nil;
-                    $$ = new chem::Hold<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create($1,focus));
+                    gc::Nilable<chem::AtomOrBondMatchNode_sp> focus = _Nil<core::T_O>();
+                    $$ = chem::createHolder<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create(chem::chemkw_intern(std::string($1)),focus));
                 }
         ;
 
@@ -271,7 +269,7 @@ tagOrElement:
 
 
 
-residueList:    APWildCard      { $$ = new chem::Hold<chem::ResidueList_O>(); }
+residueList:    APWildCard      { $$ = chem::createHolder<chem::ResidueList_O>(chem::ResidueList_O::create()); }
         ;
        // Later add residue list parsing
 
@@ -296,52 +294,52 @@ focusNumberOfElectronWithdrawingAtoms:
         ;
 
 bracketedAtomicProperty: 
-          APWildCard     { _BT(); $$ = new chem::Hold<chem::Logical_O>(); }
+          APWildCard     { _BT(); $$ = chem::createHolder<chem::Logical_O>(); }
         | APOpenBracket logOp APCloseBracket { _BT(); 
 		LOG(BF("Got bracketedAtomicProperty") ); // vp0(( "Got bracketedAtomicProperty" ));
-		$$ = new chem::Hold<chem::Logical_O>($2->_obj); }
+		$$ = chem::createHolder<chem::Logical_O>($2->value()); }
         ;
 
 
 chemicalEnvironment: 
-          APWildCard      { _BT(); $$ = new chem::Hold<chem::BondListMatchNode_O>(); }
-        | branches { _BT(); $$ = new chem::Hold<chem::BondListMatchNode_O>($1->_obj); }
+          APWildCard      { _BT(); $$ = chem::createHolder<chem::BondListMatchNode_O>(); }
+        | branches { _BT(); $$ = chem::createHolder<chem::BondListMatchNode_O>($1->value()); }
         ;
 
 
 
 bondDefinitions:        
-          APTag APColon APTag APColon APBond {_BT(); $$ = new chem::Hold<chem::AfterMatchBondTest_O>(chem::AfterMatchBondTest_O::create( $1, $3, $5 )); }
+          APTag APColon APTag APColon APBond {_BT(); $$ = chem::createHolder<chem::AfterMatchBondTest_O>(chem::AfterMatchBondTest_O::create( chem::chemkw_intern(std::string($1)), chem::chemkw_intern(std::string($3)), $5 )); }
         ;
 
 
-logOp:  atomicTest {_BT(); $$ = new chem::Hold<chem::Logical_O>(chem::Logical_O::create( chem::logIdentity, $1->_obj )); }
-        | logOp APOperatorAnd logOp { _BT();$$ = new chem::Hold<chem::Logical_O>(chem::Logical_O::create(chem::logHighPrecedenceAnd, $1->_obj, $3->_obj )); }
-        | logOp APOperatorOr logOp {_BT(); $$ = new chem::Hold<chem::Logical_O>(chem::Logical_O::create(chem::logOr, $1->_obj, $3->_obj )); }
+logOp:  atomicTest {_BT(); $$ = chem::createHolder<chem::Logical_O>(chem::Logical_O::create( chem::logIdentity, $1->value() )); }
+        | logOp APOperatorAnd logOp { _BT();$$ = chem::createHolder<chem::Logical_O>(chem::Logical_O::create(chem::logHighPrecedenceAnd, $1->value(), $3->value() )); }
+        | logOp APOperatorOr logOp {_BT(); $$ = chem::createHolder<chem::Logical_O>(chem::Logical_O::create(chem::logOr, $1->value(), $3->value() )); }
         ;
 
-atomicTest:     APBond  { _BT(); $$ = new chem::Hold<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPInBond, $1, 1)); }
-        | APNumber APBond  { _BT(); $$ = new chem::Hold<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPInBond, $2, $1)); }
-        | APBond APNotBondedToPrevious { _BT(); $$ = new chem::Hold<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPNotBondedToPrevious,$1)); }
-        | APBond APBondedToPrevious { _BT(); $$ = new chem::Hold<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPBondedToPrevious,$1)); }
-        | APAntechamberARLevel { _BT(); $$ = new chem::Hold<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPArLevel, $1 )); }
-        | APAntechamberRingMembership { _BT(); $$ = new chem::Hold<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPRingSize, 1 )); }
-        | APAntechamberRingMembership APNumber { _BT(); $$ = new chem::Hold<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPRingSize, $2 )); }
-        | APNumber APAntechamberRingMembership APNumber { _BT(); $$ = new chem::Hold<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPRingSize, $3, $1 )); }
-        | APAntechamberNoRingMembership { _BT(); $$ = new chem::Hold<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPNoRing)); }
+atomicTest:     APBond  { _BT(); $$ = chem::createHolder<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPInBond, $1, 1)); }
+        | APNumber APBond  { _BT(); $$ = chem::createHolder<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPInBond, $2, $1)); }
+        | APBond APNotBondedToPrevious { _BT(); $$ = chem::createHolder<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPNotBondedToPrevious,$1)); }
+        | APBond APBondedToPrevious { _BT(); $$ = chem::createHolder<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPBondedToPrevious,$1)); }
+        | APAntechamberARLevel { _BT(); $$ = chem::createHolder<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPArLevel, $1 )); }
+        | APAntechamberRingMembership { _BT(); $$ = chem::createHolder<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPRingSize, 1 )); }
+        | APAntechamberRingMembership APNumber { _BT(); $$ = chem::createHolder<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPRingSize, $2 )); }
+        | APNumber APAntechamberRingMembership APNumber { _BT(); $$ = chem::createHolder<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPRingSize, $3, $1 )); }
+        | APAntechamberNoRingMembership { _BT(); $$ = chem::createHolder<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPNoRing)); }
         ;
 
 
 branches: APOpenParenthesis branchesList APCloseParenthesis { _BT(); $$=$2; }
         ;
 
-branchesList:    chain { _BT(); $$ = new chem::Hold<chem::BondListMatchNode_O>($1->_obj); }
-        | branchesList APOperatorAnd chain { _BT(); $$ = new chem::Hold<chem::BondListMatchNode_O>(chem::Branch_O::create($1->_obj,$3->_obj)); }
+branchesList:    chain { _BT(); $$ = chem::createHolder<chem::BondListMatchNode_O>($1->value()); }
+        | branchesList APOperatorAnd chain { _BT(); $$ = chem::createHolder<chem::BondListMatchNode_O>(chem::Branch_O::create($1->value(),$3->value())); }
         ;
 
 
-chain: chemicalEnvironmentAtom { _BT();$$ = new chem::Hold<chem::BondListMatchNode_O>(chem::Chain_O::create($1->_obj));}
-        | chemicalEnvironmentAtom branches { _BT(); $$ = new chem::Hold<chem::BondListMatchNode_O>(chem::Chain_O::create($1->_obj,$2->_obj)); }
+chain: chemicalEnvironmentAtom { _BT();$$ = chem::createHolder<chem::BondListMatchNode_O>(chem::Chain_O::create($1->value()));}
+        | chemicalEnvironmentAtom branches { _BT(); $$ = chem::createHolder<chem::BondListMatchNode_O>(chem::Chain_O::create($1->value(),$2->value())); }
         ;
 
 
@@ -350,12 +348,12 @@ chemicalEnvironmentAtom:
                 APNumber 
                 bracketedAtomPropertyOrNull 
                 tagNameOrNull { _BT(); 
-                    $$ = new chem::Hold<chem::AntechamberBondTest_O>(chem::AntechamberBondTest_O::create($1,$2,$3->_obj,$4)); 
+                    $$ = chem::createHolder<chem::AntechamberBondTest_O>(chem::AntechamberBondTest_O::create(chem::chemkw_intern(std::string($1)),$2,$3->value(),chem::chemkw_intern(std::string($4)))); 
                 }
         | element 
                 bracketedAtomPropertyOrNull 
                 tagNameOrNull { _BT(); 
-                    $$ = new chem::Hold<chem::AntechamberBondTest_O>(chem::AntechamberBondTest_O::create($1, -1, $2->_obj, $3));
+                    $$ = chem::createHolder<chem::AntechamberBondTest_O>(chem::AntechamberBondTest_O::create(chem::chemkw_intern(std::string($1)), -1, $2->value(), chem::chemkw_intern(std::string($3))));
                 }
         ;
 
@@ -364,8 +362,8 @@ element:
         | APElementWildCard { _BT(); strcpy($$,$1); }
         ;
 
-bracketedAtomPropertyOrNull: /* empty */        { _BT(); $$ = new chem::Hold<chem::Logical_O>(); }
-        | APOpenBracket logOp APCloseBracket { _BT(); $$ = new chem::Hold<chem::Logical_O>($2->_obj); }
+bracketedAtomPropertyOrNull: /* empty */        { _BT(); $$ = chem::createHolder<chem::Logical_O>(); }
+        | APOpenBracket logOp APCloseBracket { _BT(); $$ = chem::createHolder<chem::Logical_O>($2->value()); }
         ;
 
 
@@ -770,7 +768,7 @@ chem::AntechamberRoot_sp gaff_compile(const string& input,
 {_G();
     gaff_SParserParam p;
     stringstream sin(input);
-    p.expression = _Nil<chem::AntechamberRoot_O>();
+    p.expression = chem::AntechamberRoot_O::create();
     p.wildElementDictionary = dict;
     p.acLexStream = &sin;
     p.gaffErrorStream = &errorStream;
