@@ -835,7 +835,7 @@ void Oligomer_O::_fillSequenceAsFileNameForChildren(Monomer_sp rootMonomer, stri
     outCouplings = rootMonomer->getOutCouplings();
     for ( oci=outCouplings.begin(); oci!=outCouplings.end(); oci++ )
     {
-        Monomer_sp mon1 = (*oci)->getMonomer1();
+//        Monomer_sp mon1 = (*oci)->getMonomer1();
         Monomer_sp mon2 = (*oci)->getMonomer2();
 	seq <<"-" << mon2->getName()->symbolName();
     }

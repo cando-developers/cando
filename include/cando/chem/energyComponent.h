@@ -288,12 +288,12 @@ stringstream	sstr;
 #define	mysqrt(x)	sqrt(x)
 #define	power1(x)	(x)
 #define	power2(x)	((x)*(x))
-#define	two		2.0
-#define	six		6.0
+#define	c_two		2.0
+#define	c_six		6.0
 #define	oneHalf		0.5
-#define	twelve		12.0
-#define	True		true
-#define	False		false
+#define	c_twelve	12.0
+#define	c_True		true
+#define	c_False		false
 
 	// ChiralOffset is a term added in the chiral restraint energy function
 	// to try and prevent the four atoms in a chiral restraint from

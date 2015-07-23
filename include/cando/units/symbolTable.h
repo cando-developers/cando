@@ -8,7 +8,7 @@ namespace units
 
 #define	UnitsPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,export) extern core::Symbol_sp cname;
-#include <cando/units/generated/symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 #undef DO_SYMBOL
 #undef UnitsPkg_SYMBOLS
 

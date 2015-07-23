@@ -43,14 +43,14 @@ string	FFParameter_O::levelDescription()
 void FFParameter_O::fields(core::Record_sp node)
 {
   //this->Base::fields(node); // T_O
-  node->pod_field( INTERN_(chemkw,level), this->_Level);
+  node->field( INTERN_(kw,level), this->_Level);
 }
 
 
 void	FFBaseDb_O::fields(core::Record_sp node)
 {
   //this->Base::fields(node); // T_O
-  node->field( INTERN_(chemkw,forceField), this->_ForceField );
+  node->field( INTERN_(kw,forceField), this->_ForceField );
 }
 
 

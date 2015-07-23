@@ -10,7 +10,7 @@ namespace geom
 
 
 #define SYMBOLS_EXTERN
-#include <cando/geom/generated/symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 
     extern const char* Geom_nicknames[];
 

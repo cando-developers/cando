@@ -431,16 +431,7 @@ mps_res_t main_thread_roots_scan(mps_ss_t ss, void *gc__p, size_t gc__s) {
 #define SocketsPkg sockets
 
 #define DO_SYMBOL(sym, id, pkg, name, exprt) SMART_PTR_FIX(pkg::sym)
-#include <clasp/core/symbols_scraped_inc.h>
-#include <clasp/asttooling/symbols_scraped_inc.h>
-#include <clasp/cffi/symbols_scraped_inc.h>
-#include <clasp/clbind/symbols_scraped_inc.h>
-#include <clasp/core/symbols_scraped_inc.h>
-#include <clasp/gctools/symbols_scraped_inc.h>
-#include <clasp/llvmo/symbols_scraped_inc.h>
-#include <clasp/mpip/symbols_scraped_inc.h>
-#include <clasp/serveEvent/symbols_scraped_inc.h>
-#include <clasp/sockets/symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 
 #undef AstToolingPkg
 #undef CffiPkg

@@ -888,11 +888,11 @@ namespace chem
 
 void	Matter_O::fields(core::Record_sp node )
 {_G();
-  node->field( INTERN_(chemkw,name), this->name);
-  node->pod_field_if_not_default( INTERN_(chemkw,id), this->_Id, 0);
-  node->field_if_not_nil( INTERN_(chemkw,restraints),this->_Restraints);
-  node->field_if_not_nil( INTERN_(chemkw,properties),this->_Properties);
-  node->field( INTERN_(chemkw,contents), this->_contents);
+  node->field( INTERN_(kw,name), this->name);
+  node->/*pod_*/field_if_not_default( INTERN_(kw,id), this->_Id, 0);
+  node->field_if_not_nil( INTERN_(kw,restraints),this->_Restraints);
+  node->field_if_not_nil( INTERN_(kw,properties),this->_Properties);
+  node->field_if_not_empty( INTERN_(kw,contents), this->_contents);
   LOG(BF("Status") );
 #if 0
   if ( node->loading() ) {

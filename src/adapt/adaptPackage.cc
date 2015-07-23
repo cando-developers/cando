@@ -7,19 +7,10 @@
 #include <cando/adapt/adaptPackage.h>
 #include <clasp/core/builtInClass.h>
 #define HEADER_INCLUDES
-#include <cando/adapt/generated/initClasses_inc.h>
+#include INIT_CLASSES_INC_H
 
 
-namespace kw {
 
-#pragma GCC visibility push(default)
-#define KeywordPkg_SYMBOLS
-#define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include <cando/adapt/generated/symbols_scraped_inc.h>
-#undef DO_SYMBOL
-#undef KeywordPkg_SYMBOLS
-#pragma GCC visibility pop
-};
 
 namespace adapt
 {
@@ -27,7 +18,7 @@ namespace adapt
 #pragma GCC visibility push(default)
 #define AdaptPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include <cando/adapt/generated/symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 #undef DO_SYMBOL
 #undef AdaptPkg_SYMBOLS
 #pragma GCC visibility pop
@@ -41,7 +32,7 @@ namespace adapt
 #define EXPOSE_TO_CANDO
 #define Use_AdaptPkg
 #define EXTERN_REGISTER
-#include <cando/adapt/generated/initClasses_inc.h>
+#include INIT_CLASSES_INC_H
 #undef EXTERN_REGISTER
 #undef Use_AdaptPkg
 #undef EXPOSE_TO_CANDO
@@ -58,7 +49,7 @@ namespace adapt
 
 
 #define SYMBOLS_STATIC
-#include <cando/adapt/generated/symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 
 
 
@@ -68,15 +59,17 @@ namespace adapt
 	{
 	case candoClasses:
 	{
+#if 0
 #define KeywordPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {kw::cname = _lisp->internWithPackageName(pkg,lispname); kw::cname->exportYourself(exportp);}
-#include <cando/adapt/generated/symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 #undef DO_SYMBOL
 #undef KeywordPkg_SYMBOLS
-
+#endif
+          
 #define AdaptPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,lispname); cname->exportYourself(exportp);}
-#include <cando/adapt/generated/symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 #undef DO_SYMBOL
 #undef AdaptPkg_SYMBOLS
 
@@ -85,7 +78,7 @@ namespace adapt
 #define Use_AdaptPkg
 #define INVOKE_REGISTER
 #define LOOKUP_SYMBOL(pkg,name) _lisp->internWithPackageName(pkg,name)
-#include <cando/adapt/generated/initClasses_inc.h>
+#include INIT_CLASSES_INC_H
 #undef INVOKE_REGISTER
 #undef Use_AdaptPkg
 #undef ALL_STAGES
@@ -108,7 +101,7 @@ namespace adapt
 #define _DBG(x)
 #define EXPOSE_TO_PYTHON
 #define Use_AdaptPkg
-#include <cando/adapt/generated/initClasses_inc.h>
+#include INIT_CLASSES_INC_H
 #undef Use_AdaptPkg
 #undef EXPOSE_TO_PYTHON
 	}
@@ -155,7 +148,9 @@ extern "C"
 #define EXPAND_CLASS_MACROS
 #define _CLASS_MACRO(_T_)				\
     STATIC_CLASS_INFO(_T_);
-#include <cando/adapt/generated/initClasses_inc.h>
+#define Use_AdaptPkg
+#include INIT_CLASSES_INC_H
+#undef Use_AdaptPkg
 #undef _CLASS_MACRO
 #undef EXPAND_CLASS_MACROS
 #endif

@@ -714,9 +714,9 @@ void RingFinder_O::addRing(PathMessage_sp ring, uint stage)
     LOG(BF("Adding ring with beep=%s") % beep->__repr__() );
     core::HashGenerator hg;
     clasp_sxhash(beep,hg);
-    core::List_sp ringList = _Nil<core::T_O>();
     FIX_ME(); // fix below
 #if 0
+    core::List_sp ringList = _Nil<core::T_O>();
     if ( this->_rings.count(hash) != 0 )
     {
 	ringList = this->_rings[hash];
@@ -894,45 +894,37 @@ core::List_sp RingFinder_O::identifyRings(Matter_sp matter)
     SIMPLE_ERROR(BF("You can only find rings in aggregates or molecules"));
 }
 
-
-
-core::List_sp RingFinder_O::ringBonds(core::List_sp atoms)
-{_G();
-    core::List_sp ringBonds = _Nil<core::T_O>();
-    gctools::SmallOrderedSet<Atom_sp> atomSet;
-    {_BLOCK_TRACE(BF("Put atoms into set"));
-      for ( auto cur : atoms ) {
-        Atom_sp atom = oCar(cur).as<Atom_O>();
-	    LOG(BF("Atom in ring: %s") % atom->description());
-	    atomSet.insert(cur->car<Atom_O>());
-	}
+core::List_sp RingFinder_O::ringBonds(core::List_sp atoms) {
+  core::List_sp ringBonds = _Nil<core::T_O>();
+  gctools::SmallOrderedSet<Atom_sp> atomSet;
+  {
+    _BLOCK_TRACE(BF("Put atoms into set"));
+    for (auto cur : atoms) {
+      Atom_sp atom = oCar(cur).as<Atom_O>();
+      LOG(BF("Atom in ring: %s") % atom->description());
+      atomSet.insert(atom);
     }
-    int num = 0;
-    {_BLOCK_TRACE(BF("Loop over all bonds and find those that join ring atoms"));
-      for ( auto cur : atoms ) {
-        Atom_sp atom = oCar(cur).as<Atom_O>();
-        VectorBond bonds = atom->getBonds();
-        for ( gctools::Vec0<Bond_sp>::const_iterator bi=bonds.begin();bi!=bonds.end(); bi++)
-        {
-          LOG(BF("Testing %s") % (*bi)->describeOther(atom));
-          if ( atomSet.count((*bi)->getAtom1()) && atomSet.count((*bi)->getAtom2()))
-          {
-            LOG(BF("It's part of the ring!!!"));
-            core::Cons_sp one = core::Cons_O::create((*bi),ringBonds);
-            ringBonds = one;
-            num++;
-          }
+  }
+  int num = 0;
+  {
+    _BLOCK_TRACE(BF("Loop over all bonds and find those that join ring atoms"));
+    for (auto cur : atoms) {
+      Atom_sp atom = oCar(cur).as<Atom_O>();
+      VectorBond bonds = atom->getBonds();
+      for (gctools::Vec0<Bond_sp>::const_iterator bi = bonds.begin(); bi != bonds.end(); bi++) {
+        LOG(BF("Testing %s") % (*bi)->describeOther(atom));
+        if (atomSet.count((*bi)->getAtom1()) && atomSet.count((*bi)->getAtom2())) {
+          LOG(BF("It's part of the ring!!!"));
+          core::Cons_sp one = core::Cons_O::create((*bi), ringBonds);
+          ringBonds = one;
+          num++;
         }
       }
     }
-    LOG(BF("There were %d bonds in the ring") % num );
-    return ringBonds;
+  }
+  LOG(BF("There were %d bonds in the ring") % num);
+  return ringBonds;
 }
-
-
-
-
-
 
     void RingFinder_O::exposeCando(core::Lisp_sp lisp)
 {

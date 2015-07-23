@@ -122,11 +122,8 @@ int	SuperposableConformationCollection_O::numberOfSuperposeAtoms()
 
 ConformationCollectionEntry_sp	SuperposableConformationCollection_O::createEntryIfConformationIsNew(Matter_sp matter)
 {_G();
-    gctools::SmallOrderedSet<Atom_sp>::iterator			ai;
-    gctools::SmallOrderedSet<Atom_sp>::iterator			lai;
 geom::CoordinateArray_sp			newConf;
 SuperposeEngine_sp				superposer;
-gctools::Vec0<ConformationCollectionEntry_sp>::iterator	ei;
 Matrix					transform;
 ConformationCollectionEntry_sp		entry;
     ASSERT(matter==this->_Matter);

@@ -66,7 +66,8 @@ namespace chem {
     public:
 	void initialize();
     public:
-	void	fields(core::Record_sp node);
+        bool fieldsp() const { return true; };
+        void fields(core::Record_sp node);
         friend	class	Loop;
     private:
 	bool		_Selected;

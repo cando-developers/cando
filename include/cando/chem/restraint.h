@@ -347,6 +347,7 @@ public:
     gctools::Vec0<Restraint_sp>::const_iterator	begin() const { return this->_Restraints.begin(); };
     gctools::Vec0<Restraint_sp>::const_iterator	end() const { return this->_Restraints.end(); };
 
+    virtual std::vector<core::cl_index> dimensions() const { std::vector<core::cl_index> dims; dims.push_back(this->_Restraints.size()); return dims;};
 	void		clear()	{this->_Restraints.clear(); };
 	void		addRestraint( Restraint_sp r) { this->_Restraints.push_back(r); };
 	int		size()	{return this->_Restraints.size(); };

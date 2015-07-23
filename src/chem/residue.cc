@@ -169,14 +169,14 @@ void	Residue_O::addVirtualAtom(MatterName name, CalculatePosition_sp proc)
 
 
 void	Residue_O::fields( core::Record_sp node )
-{ _G();
-  this->Matter_O::fields(node);
+{
+  this->Base::fields(node);
   LOG(BF("Status") );
-  node->field_if_not_nil( INTERN_(chemkw,pdbName),this->pdbName);
-  node->field( INTERN_(chemkw,uniqueLabel),this->_UniqueLabel);
-  node->pod_field_if_not_default( INTERN_(chemkw,NetCharge),this->_NetCharge,0);
-  node->pod_field_if_not_default( INTERN_(chemkw,fileSeqNum),this->_FileSequenceNumber,UndefinedUnsignedInt);
-  node->field_if_not_nil( INTERN_(chemkw,monomerAliases),this->_MonomerAliases);
+  node->field_if_not_nil( INTERN_(kw,pdbName),this->pdbName);
+  node->field( INTERN_(kw,uniqueLabel),this->_UniqueLabel);
+  node->/*pod_*/field_if_not_default( INTERN_(kw,NetCharge),this->_NetCharge,0);
+  node->/*pod_*/field_if_not_default( INTERN_(kw,fileSeqNum),this->_FileSequenceNumber,UndefinedUnsignedInt);
+  node->field_if_not_nil( INTERN_(kw,monomerAliases),this->_MonomerAliases);
   LOG(BF("Status") );
   switch (node->stage()) {
   case core::Record_O::saving: {
@@ -193,17 +193,18 @@ void	Residue_O::fields( core::Record_sp node )
         a->addUniqueIntraResidueBondCopiesToBondList(bondList);
       }
     }
-    node->field( INTERN_(chemkw,bl),bondList);
+    node->field( INTERN_(kw,bl),bondList);
     ASSERTNOTNULL(bondList);
   }
       break;
+  case core::Record_O::initializing:
   case core::Record_O::loading: {
     _BLOCK_TRACE("Loading BondList");
     LOG(BF("Creating the intraResidue bonds") );
 	    // create the intraResidue bonds
     LOG(BF("About to load bondList") );
     BondList_sp bondList = BondList_O::create();
-    node->field( INTERN_(chemkw,bl),bondList);
+    node->field( INTERN_(kw,bl),bondList);
     ASSERTNOTNULL(bondList);
     bondList->imposeYourself();
   }

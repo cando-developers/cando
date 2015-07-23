@@ -41,11 +41,12 @@ namespace chem {
     public:
 	void initialize();
     public:
-	void fields(core::Record_sp node);
+        bool fieldsp() const { return true; };
+        void fields(core::Record_sp node);
     private:
 	bool		_Matches;
-        core::HashTableEq_sp _TagLookup; // core::StringMap<Atom_O>	_TagLookup;
-        core::HashTableEq_sp _ClosestMatch; // core::StringMap<Atom_O>	_ClosestMatch;
+        core::HashTableEqual_sp _TagLookup; // core::StringMap<Atom_O>	_TagLookup;
+        core::HashTableEqual_sp _ClosestMatch; // core::StringMap<Atom_O>	_ClosestMatch;
     public:
 	string __repr__() const;
 	bool matches();
@@ -83,7 +84,8 @@ namespace chem {
     public:
 	void initialize();
     public:
-	void	fields(core::Record_sp node);
+        bool fieldsp() const { return true; };
+        void	fields(core::Record_sp node);
     private:
         core::HashTableEqual_sp _AtomWildCards; // core::StringMap<adapt::StringSet_O>	_AtomWildCards;
     public:
@@ -145,7 +147,8 @@ namespace chem {
 	LISP_CLASS(chem,ChemPkg,ChemInfoNode_O,"ChemInfoNode");
 
     public:
-	void	fields(core::Record_sp node);
+        bool fieldsp() const { return true; };
+        void	fields(core::Record_sp node);
     public:
 	virtual uint depth() const;
 	virtual string asSmarts() const {_OF();SUBCLASS_MUST_IMPLEMENT();};
@@ -160,7 +163,8 @@ namespace chem {
 	LISP_CLASS(chem,ChemPkg,ResidueList_O,"ResidueList");
 
     public:
-	void	fields(core::Record_sp node);
+        bool fieldsp() const { return true; };
+        void	fields(core::Record_sp node);
     private:
     public:
 	DEFAULT_CTOR_DTOR(ResidueList_O);
@@ -177,7 +181,8 @@ namespace chem {
 	LISP_CLASS(chem,ChemPkg,RootMatchNode_O,"RootMatchNode");
 
     public:
-	void	fields(core::Record_sp node);
+        bool fieldsp() const { return true; };
+        void	fields(core::Record_sp node);
     public:
 	virtual	bool	matches(Root_sp root) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
 	
@@ -195,7 +200,8 @@ namespace chem {
 	LISP_CLASS(chem,ChemPkg,BondMatchNode_O,"BondMatchNode");
 
     public:
-	void	fields(core::Record_sp node);
+        bool fieldsp() const { return true; };
+        void	fields(core::Record_sp node);
     public:
 	virtual	bool	matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond ) {_OF();SUBCLASS_MUST_IMPLEMENT(); };
 
@@ -214,7 +220,8 @@ namespace chem {
 	LISP_CLASS(chem,ChemPkg,AtomOrBondMatchNode_O,"AtomOrBondMatchNode");
 
     public:
-	void	fields(core::Record_sp node);
+        bool fieldsp() const { return true; };
+        void	fields(core::Record_sp node);
     private:
     public:
 
@@ -233,7 +240,8 @@ namespace chem {
 	LISP_CLASS(chem,ChemPkg,BondListMatchNode_O,"BondListMatchNode");
 
     public:
-	void	fields(core::Record_sp node);
+        bool fieldsp() const { return true; };
+        void	fields(core::Record_sp node);
     private:
     public:
 	virtual	bool	matches(Root_sp root, chem::Atom_sp from, chem::BondList_sp bondList ) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
@@ -293,6 +301,7 @@ class Logical_O : public AtomOrBondMatchNode_O
     LISP_CLASS(chem,ChemPkg,Logical_O,"Logical");
 
 public:
+    bool fieldsp() const { return true; };
     void	fields(core::Record_sp node);
 	void	initialize();
 private:
@@ -336,6 +345,7 @@ SMART(TagSet);
     LISP_CLASS(chem,ChemPkg,TagSet_O,"TagSet");
 
 public:
+    bool fieldsp() const { return true; };
     void	fields(core::Record_sp node);
 	void	initialize();
 private:
@@ -369,6 +379,7 @@ class RingTest_O : public AtomOrBondMatchNode_O
     LISP_CLASS(chem,ChemPkg,RingTest_O,"RingTest");
 
 public:
+    bool fieldsp() const { return true; };
     void	fields(core::Record_sp node);
 	void	initialize();
 private:
@@ -403,6 +414,7 @@ class ResidueTest_O : public AtomOrBondMatchNode_O
     LISP_CLASS(chem,ChemPkg,ResidueTest_O,"ResidueTest");
 
 public:
+    bool fieldsp() const { return true; };
     void	fields(core::Record_sp node);
 	void	initialize();
 private:
@@ -444,7 +456,8 @@ class BondTest_O : public BondMatchNode_O
 
 public:
 	void	initialize();
-	void	fields(core::Record_sp node);
+        bool fieldsp() const { return true; };
+        void	fields(core::Record_sp node);
 private:
 	BondEnum		_Bond;
 	AtomOrBondMatchNode_sp	_AtomTest;
@@ -481,7 +494,8 @@ class AntechamberBondTest_O : public BondMatchNode_O
 
 public:
 	void initialize();
-	void	fields(core::Record_sp node);
+        bool fieldsp() const { return true; };
+        void	fields(core::Record_sp node);
 private:
     core::Symbol_sp                   _Element;
         int                     _Neighbors;
@@ -605,6 +619,7 @@ class AtomTest_O : public AtomOrBondMatchNode_O
 
 public:
 void initialize();
+ bool fieldsp() const { return true; };
  void	fields(core::Record_sp node);
 private:
 	AtomTestEnum	_Test;
@@ -680,7 +695,8 @@ class AntechamberFocusAtomMatch_O : public AtomOrBondMatchNode_O
 public:
 	void initialize();
 public:
-	void	fields(core::Record_sp node);
+        bool fieldsp() const { return true; };
+        void	fields(core::Record_sp node);
 private:
         gc::Nilable<ResidueList_sp>  _ResidueNames;
         int             _AtomicNumber;
@@ -741,6 +757,7 @@ class Chain_O : public BondListMatchNode_O
     LISP_CLASS(chem,ChemPkg,Chain_O,"Chain");
 
 public:
+    bool fieldsp() const { return true; };
     void	fields(core::Record_sp node);
 	void	initialize();
 private:
@@ -783,6 +800,7 @@ class Branch_O : public BondListMatchNode_O
     LISP_CLASS(chem,ChemPkg,Branch_O,"Branch");
 
 public:
+    bool fieldsp() const { return true; };
     void	fields(core::Record_sp node);
 	void	initialize();
 private:
@@ -845,6 +863,7 @@ class AfterMatchBondTest_O : public RootMatchNode_O
 
 public:
 void initialize();
+ bool fieldsp() const { return true; };
  void	fields(core::Record_sp node);
 private:
     core::Symbol_sp _AtomTag1;
@@ -884,7 +903,8 @@ class Root_O : public AtomOrBondMatchNode_O
 public:
 	void initialize();
 public:
-	void	fields(core::Record_sp node);
+        bool fieldsp() const { return true; };
+        void	fields(core::Record_sp node);
 protected:
 	AtomOrBondMatchNode_sp	_FirstTest;
         gc::Nilable<BondListMatchNode_sp>	_Chain;
@@ -941,6 +961,7 @@ class SmartsRoot_O : public Root_O
     LISP_CLASS(chem,ChemPkg,SmartsRoot_O,"SmartsRoot");
 
 public:
+    bool fieldsp() const { return true; };
     void	fields(core::Record_sp node);
 public:
 
@@ -993,7 +1014,8 @@ class AntechamberRoot_O : public Root_O
 public:
 	void initialize();
 public:
-	void	fields(core::Record_sp node);
+        bool fieldsp() const { return true; };
+        void	fields(core::Record_sp node);
 protected:
         core::Symbol_sp          _AssignType;
         gc::Nilable<RootMatchNode_sp>         _AfterMatchTests;
@@ -1065,7 +1087,8 @@ class ChemInfo_O : public core::T_O
 public:
 	void	initialize();
 public:
-	void	fields(core::Record_sp node);
+        bool fieldsp() const { return true; };
+        void	fields(core::Record_sp node);
 
 private:
 	string		_Code;

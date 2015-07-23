@@ -1122,26 +1122,26 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 void	Atom_O::fields(core::Record_sp node)
 {
   this->Base::fields(node);
-  node->field_if_not_nil( INTERN_(chemkw,alias), this->_Alias );
-  node->pod_field_if_not_default( INTERN_(chemkw,flags), this->flags, (uint)0 );
-  node->pod_field( INTERN_(chemkw,element), this->_Element);
-  node->pod_field_if_not_default( INTERN_(chemkw,hybridization), this->_Hybridization,hybridization_sp3 );
-  node->pod_field_if_not_default( INTERN_(chemkw,priority), this->_RelativePriority, (uint)0 );
-  node->pod_field_if_not_default( INTERN_(chemkw,hintLP), this->_HintLP,false );
-  node->pod_field_if_not_default( INTERN_(chemkw,chg), this->charge, 0.0 );
-  node->pod_field_if_not_default( INTERN_(chemkw,ion), this->_Ionization, 0 );
-  node->pod_field_if_not_default( INTERN_(chemkw,rings), this->_RingMembershipCount, 0 );
-  node->pod_field_if_not_default( INTERN_(chemkw,tempInt), this->tempInt, 0 );
-  node->field_if_not_nil( INTERN_(chemkw,type), this->type);
-  node->pod_field_if_not_default( INTERN_(chemkw,ar1), this->_MembershipAr1, 0 );
-  node->pod_field_if_not_default( INTERN_(chemkw,ar2), this->_MembershipAr2, 0 );
-  node->pod_field_if_not_default( INTERN_(chemkw,ar3), this->_MembershipAr3, 0 );
-  node->pod_field_if_not_default( INTERN_(chemkw,ar4), this->_MembershipAr4, 0 );
-  node->pod_field_if_not_default( INTERN_(chemkw,ar5), this->_MembershipAr5, 0 );
-  node->pod_field_if_not_default( INTERN_(chemkw,mask), this->_Mask, (uint)(0) );
-  node->pod_field_if_not_default( INTERN_(chemkw,configuration), this->_Configuration, undefinedConfiguration  );
-  node->pod_field_if_not_default( INTERN_(chemkw,stereochemistryType), this->_StereochemistryType, undefinedCenter );
-  node->pod_field_if_not_default( INTERN_(chemkw,pos), this->position, Vector3());
+  node->field_if_not_nil( INTERN_(kw,alias), this->_Alias );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,flags), this->flags, (uint)0 );
+  node->/*pod_*/field( INTERN_(kw,element), this->_Element);
+  node->/*pod_*/field_if_not_default( INTERN_(kw,hybridization), this->_Hybridization,hybridization_sp3 );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,priority), this->_RelativePriority, (uint)0 );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,hintLP), this->_HintLP,false );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,chg), this->charge, 0.0 );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,ion), this->_Ionization, 0 );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,rings), this->_RingMembershipCount, 0 );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,tempInt), this->tempInt, 0 );
+  node->field_if_not_nil( INTERN_(kw,type), this->type);
+  node->/*pod_*/field_if_not_default( INTERN_(kw,ar1), this->_MembershipAr1, 0 );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,ar2), this->_MembershipAr2, 0 );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,ar3), this->_MembershipAr3, 0 );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,ar4), this->_MembershipAr4, 0 );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,ar5), this->_MembershipAr5, 0 );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,mask), this->_Mask, (uint)(0) );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,configuration), this->_Configuration, undefinedConfiguration  );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,stereochemistryType), this->_StereochemistryType, undefinedCenter );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,pos), this->position, Vector3());
 }
 
     void Atom_O::setPositionInNanometers(Vector3 o)

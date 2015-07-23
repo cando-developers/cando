@@ -8,31 +8,15 @@
 #include <cando/kinematics/kinematicsPackage.h>
 
 #define HEADER_INCLUDES
-#include <kinematics_initClasses_inc.h>
+#include INIT_CLASSES_INC_H
 #undef HEADER_INCLUDES
 
 
-
-namespace kw {
-
-
-#pragma GCC visibility push(default)
-#define KeywordPkg_SYMBOLS
-#define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include <symbols_scraped_inc.h>
-#undef DO_SYMBOL
-#undef KeywordPkg_SYMBOLS
-#pragma GCC visibility pop
-
-};
-
 namespace kinematics {
-
-
 #pragma GCC visibility push(default)
 #define KinPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include <symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 #undef DO_SYMBOL
 #undef KinPkg_SYMBOLS
 #pragma GCC visibility pop
@@ -44,7 +28,7 @@ namespace kinematics
 #define EXPOSE_TO_CANDO
 #define Use_KinPkg
 #define EXTERN_REGISTER
-#include <kinematics_initClasses_inc.h>
+#include INIT_CLASSES_INC_H
 #undef EXTERN_REGISTER
 #undef Use_KinPkg
 #undef EXPOSE_TO_CANDO
@@ -86,14 +70,14 @@ namespace kinematics
 	{_G();
 #define KeywordPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {kw::cname = _lisp->internWithPackageName(pkg,lispname); kw::cname->exportYourself(exportp);}
-#include <symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 #undef DO_SYMBOL
 #undef KeywordPkg_SYMBOLS
 
 
 #define KinPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,lispname); cname->exportYourself(exportp);}
-#include <symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 #undef DO_SYMBOL
 #undef KinPkg_SYMBOLS
 
@@ -104,7 +88,7 @@ namespace kinematics
 #define ALL_STAGES
 #define Use_KinPkg
 #define INVOKE_REGISTER
-#include <kinematics_initClasses_inc.h>
+#include INIT_CLASSES_INC_H
 #undef INVOKE_REGISTER
 #undef Use_KinPkg
 #undef ALL_STAGES
@@ -165,7 +149,9 @@ extern "C"
 #define _CLASS_MACRO(_T_)				\
     STATIC_CLASS_INFO(_T_);			\
     INTRUSIVE_POINTER_REFERENCE_COUNT_ACCESSORS(_T_);
+#define Use_KinPkg
 #include <kinematics_initClasses_inc.h>
+#undef Use_KinPkg
 #undef _CLASS_MACRO
 #undef EXPAND_CLASS_MACROS
 #endif

@@ -32,6 +32,37 @@ bclasp-to-cclasp:
 	clasp_boehm_o  -l "buildBclaspToCclasp.lsp"
 
 
+
+#############################################################
+#
+# Set up scraping
+#
+#
+
+project-directories = $(CLASP_HOME)/src/gctools \
+			$(CLASP_HOME)/src/core \
+			$(CLASP_HOME)/src/clbind \
+			$(CLASP_HOME)/src/cffi \
+			$(CLASP_HOME)/src/asttooling \
+			$(CLASP_HOME)/src/llvmo \
+			$(CLASP_HOME)/src/serveEvent \
+			$(CLASP_HOME)/src/sockets \
+			../geom \
+			../units \
+			../adapt \
+			../chem 
+
+scrape-all:
+	(export PYTHONPATH=$(CLASP_HOME)/src/common:$(PYTHONPATH); $(PYTHON2) $(CLASP_HOME)/src/common/symbolGroveler.py include/generated/symbols_scraped_inc.h $(project-directories))
+	(export PYTHONPATH=$(CLASP_HOME)/src/common:$(PYTHONPATH); $(PYTHON2) $(CLASP_HOME)/src/common/classGroveler.py include/generated/initClasses_inc.h $(project-directories) 2>registerClasses.log)
+
+
+
+
+
+
+
+
 #	make clasp-gc-interface
 
 
@@ -103,3 +134,6 @@ mps-interface:
 	make compile-commands
 	@echo Running parallel search and generating code when done
 	clasp_boehm_o -l "sys:mps-interface.lsp" -e "(parallel-search-all-then-generate-code-and-quit)"
+
+
+

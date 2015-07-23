@@ -89,9 +89,7 @@ void	StructureComparer_O::superposeAllHeavyAtoms()
 double StructureComparer_O::calculateRmsWithMatter(Matter_sp matter)
 {_G();
     gctools::SmallOrderedSet<Atom_sp>::iterator			ai;
-    gctools::SmallOrderedSet<Atom_sp>::iterator			lai;
 SuperposeEngine_sp				superposer;
-gctools::Vec0<StructureComparerEntry_sp>::iterator	ei;
 Matrix					transform;
 int					i;
 geom::CoordinateArray_sp			moveableCoordinates;

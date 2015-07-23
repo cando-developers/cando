@@ -196,17 +196,17 @@ EstimateStretch	es;
 void	FFStretch_O::fields(core::Record_sp node)
 {
   this->Base::fields(node);
-  node->field( INTERN_(chemkw,type1), this->_Type1 );
-  node->field( INTERN_(chemkw,type2), this->_Type2 );
-  node->pod_field( INTERN_(chemkw,r0), this->_R0_Nanometer );
-  node->pod_field( INTERN_(chemkw,kb), this->_Kb_kJPerNanometerSquared );
+  node->field( INTERN_(kw,type1), this->_Type1 );
+  node->field( INTERN_(kw,type2), this->_Type2 );
+  node->/*pod_*/field( INTERN_(kw,r0), this->_R0_Nanometer );
+  node->/*pod_*/field( INTERN_(kw,kb), this->_Kb_kJPerNanometerSquared );
 }
 
 void	FFStretchDb_O::fields(core::Record_sp node)
 {
   this->Base::fields(node);
-  node->field( INTERN_(chemkw,stretches),this->_Terms );
-  node->pod_field( INTERN_(chemkw,map),this->_Lookup );
+  node->field( INTERN_(kw,stretches),this->_Terms );
+  node->/*pod_*/field( INTERN_(kw,map),this->_Lookup );
 }
 
     void FFStretch_O::exposeCando(core::Lisp_sp lisp)

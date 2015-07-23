@@ -76,7 +76,7 @@ string 		                        name;
 void FFTypesDb_O::fields(core::Record_sp node)
     {	
       this->FFBaseDb_O::fields(node);
-      node->field(INTERN_(chemkw,type_rules), this->_TypeAssignmentRules);
+      node->field(INTERN_(kw,type_rules), this->_TypeAssignmentRules);
     }
 
 

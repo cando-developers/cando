@@ -148,7 +148,8 @@ namespace chem
 	void initialize();
     public:
 //	void	serialize(serialize::SNode node);
-	void	fields(core::Record_sp node);
+        bool fieldsp() const { return true; };
+        void	fields(core::Record_sp node);
 	
 	friend	class	Loop;
 	friend	class	Bond_O;

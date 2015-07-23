@@ -14,17 +14,6 @@
 
 
 
-namespace kw {
-
-
-#pragma GCC visibility push(default)
-#define KeywordPkg_SYMBOLS
-#define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include <cando/units/generated/symbols_scraped_inc.h>
-#undef DO_SYMBOL
-#undef KeywordPkg_SYMBOLS
-#pragma GCC visibility pop
-};
 
 namespace units
 {
@@ -33,7 +22,7 @@ namespace units
 #pragma GCC visibility push(default)
 #define UnitsPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include <cando/units/generated/symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 #undef DO_SYMBOL
 #undef UnitsPkg_SYMBOLS
 #pragma GCC visibility pop
@@ -46,7 +35,7 @@ namespace units
 #define EXPOSE_TO_CANDO
 #define Use_UnitsPkg
 #define EXTERN_REGISTER
-#include <cando/units/generated/initClasses_inc.h>
+#include INIT_CLASSES_INC_H
 #undef EXTERN_REGISTER
 #undef Use_UnitsPkg
 #undef EXPOSE_TO_CANDO
@@ -117,16 +106,9 @@ SYMBOL_EXPORT_SC_(UnitsPkg,nm_per_ps);
 	{
 	case candoClasses:
 	{
-#define KeywordPkg_SYMBOLS
-#define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,lispname); cname->exportYourself(exportp);}
-#include <cando/units/generated/symbols_scraped_inc.h>
-#undef DO_SYMBOL
-#undef KeywordPkg_SYMBOLS
-
-
 #define UnitsPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,lispname); cname->exportYourself(exportp);}
-#include <cando/units/generated/symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 #undef DO_SYMBOL
 #undef UnitsPkg_SYMBOLS
 
@@ -137,7 +119,7 @@ SYMBOL_EXPORT_SC_(UnitsPkg,nm_per_ps);
 #define Use_UnitsPkg
 #define INVOKE_REGISTER
 #define LOOKUP_SYMBOL(pkg,name) _lisp->internWithPackageName(pkg,name)
-#include <cando/units/generated/initClasses_inc.h>
+#include INIT_CLASSES_INC_H
 #undef INVOKE_REGISTER
 #undef Use_UnitsPkg
 #undef ALL_STAGES
@@ -232,7 +214,7 @@ SYMBOL_EXPORT_SC_(UnitsPkg,nm_per_ps);
 #define _DBG(x)
 #define EXPOSE_TO_PYTHON
 #define Use_UnitsPkg
-#include <cando/units/generated/initClasses_inc.h>
+#include INIT_CLASSES_INC_H
 #undef Use_UnitsPkg
 #undef EXPOSE_TO_PYTHON
 	}
@@ -278,7 +260,9 @@ extern "C"
 #define _CLASS_MACRO(_T_)				\
     STATIC_CLASS_INFO(_T_);			\
     INTRUSIVE_POINTER_REFERENCE_COUNT_ACCESSORS(_T_);
-#include <cando/units/generated/initClasses_inc.h>
+#define Use_UnitsPkg
+#include INIT_CLASSES_INC_H
+#undef Use_UnitsPkg
 #undef _CLASS_MACRO
 #undef EXPAND_CLASS_MACROS
 #endif

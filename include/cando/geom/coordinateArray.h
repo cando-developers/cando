@@ -81,7 +81,7 @@ namespace geom
 
     double distanceTo(CoordinateArray_sp arr);
 
-    uint	length() const { return this->size(); };
+    gc::Fixnum	length() const { return this->size(); };
     uint	size() const { return this->_Points.size(); };
     Vector3& getElement(uint i);
     Vector3 value_getElement(uint i);

@@ -71,18 +71,11 @@ namespace chem {
 #endif
 
 
+void Aggregate_O::fields(core::Record_sp node)
+{
+  this->Base::fields(node);
+}
 
-    void	Aggregate_O::archiveBase(core::ArchiveP node)
-    {_G();
-	this->Base::archiveBase(node);
-	node->needsFinalization();
-    }
-
-    bool Aggregate_O::loadFinalize(core::ArchiveP node)
-    {_OF();
-//	this->updateAtomIdMap();
-	return true;
-    }
 
     AtomIdToAtomMap_sp Aggregate_O::buildAtomIdMap() const
     {_OF();

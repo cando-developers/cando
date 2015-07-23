@@ -10,7 +10,7 @@ namespace adapt
 
 
 #define SYMBOLS_EXTERN
-#include <cando/adapt/generated/symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 
     extern const char* Adapt_nicknames[];
 

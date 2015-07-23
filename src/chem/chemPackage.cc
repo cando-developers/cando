@@ -1,5 +1,6 @@
 #include <clasp/core/common.h>
 #include <clasp/core/package.h>
+#include <clasp/core/pathname.h>
 #include <cando/chem/chemPackage.h>
 #include <cando/chem/candoScript.h>
 #include <cando/chem/candoDatabase.h>
@@ -115,7 +116,7 @@ namespace chemkw {
 #pragma GCC visibility push(default)
 #define ChemKwPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include <cando/chem/generated/symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 #undef DO_SYMBOL
 #undef ChemKwPkg_SYMBOLS
 #pragma GCC visibility pop
@@ -126,21 +127,12 @@ namespace chem {
 #pragma GCC visibility push(default)
 #define ChemPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include <cando/chem/generated/symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 #undef DO_SYMBOL
 #undef ChemPkg_SYMBOLS
 #pragma GCC visibility pop
 };
 
-namespace kw {
-#pragma GCC visibility push(default)
-#define KeywordPkg_SYMBOLS
-#define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include <cando/chem/generated/symbols_scraped_inc.h>
-#undef DO_SYMBOL
-#undef KeywordPkg_SYMBOLS
-#pragma GCC visibility pop
-};
 
 
 
@@ -149,7 +141,7 @@ namespace chem
 #define EXPOSE_TO_CANDO
 #define Use_ChemPkg
 #define EXTERN_REGISTER
-#include <cando/chem/generated/initClasses_inc.h>
+#include INIT_CLASSES_INC_H
 #undef EXTERN_REGISTER
 #undef Use_ChemPkg
 #undef EXPOSE_TO_CANDO
@@ -186,15 +178,26 @@ namespace chem
           std::list<std::string> usePackages = { };
           _lisp->makePackage(ChemKwPkg,nicknames,usePackages);
 
+          core::T_sp pn;
+          char* env = getenv("CANDO_LISP_SOURCE_DIR");
+          if ( env != NULL ) {
+            pn = core::af_translateLogicalPathname(core::Str_O::create(std::string(env)+"/**/*.*"));
+          } else {
+            pn = core::af_translateLogicalPathname(core::Str_O::create("APP-RESOURCES:CANDO;**;*.*"));
+          }
+          core::Cons_sp pts = core::Cons_O::createList(core::Str_O::create("cando:**;*.*"),pn);
+          core::Cons_sp ptsList = core::Cons_O::createList(pts);
+          core::af_pathnameTranslations(core::Str_O::create("CANDO"),_lisp->_true(),ptsList);
+
 #define ChemKwPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {chemkw::cname = _lisp->internWithPackageName(pkg,lispname); chemkw::cname->exportYourself(exportp);}
-#include <cando/chem/generated/symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 #undef DO_SYMBOL
 #undef ChemKwPkg_SYMBOLS
 
 #define ChemPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,lispname); cname->exportYourself(exportp);}
-#include <cando/chem/generated/symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 #undef DO_SYMBOL
 #undef ChemPkg_SYMBOLS
 
@@ -202,7 +205,7 @@ namespace chem
 #define	Use_ChemPkg
 #define INVOKE_REGISTER
 #define LOOKUP_SYMBOL(pkg,name) _lisp->internWithPackageName(pkg,name)
-#include <cando/chem/generated/initClasses_inc.h>
+#include INIT_CLASSES_INC_H
 #undef INVOKE_REGISTER
 #undef Use_ChemPkg
 #undef ALL_STAGES
@@ -233,7 +236,7 @@ namespace chem
 #define _DBG(x)
 #define EXPOSE_TO_PYTHON
 #define	Use_ChemPkg
-#include <cando/chem/generated/initClasses_inc.h>
+#include INIT_CLASSES_INC_H
 #undef Use_ChemPkg
 #undef EXPOSE_TO_PYTHON
 #undef _DBG
@@ -293,7 +296,9 @@ core::Symbol_sp chemkw_intern(const string& symName)
 #define _CLASS_MACRO(_T_)				\
     STATIC_CLASS_INFO(_T_);			\
     INTRUSIVE_POINTER_REFERENCE_COUNT_ACCESSORS(_T_);
-#include <cando/chem/generated/initClasses_inc.h>
+#define Use_ChemPkg
+#include INIT_CLASSES_INC_H
+#undef Use_ChemPkg
 #undef _CLASS_MACRO
 #undef EXPAND_CLASS_MACROS
 #endif

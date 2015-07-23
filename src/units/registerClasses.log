@@ -12,7 +12,7 @@ Namespace changed to units - include/dimension.h:7
     CurrentPackage set to UnitsPkg
 In fileName: include/dimension.h parsed cppClassDefinition line: class Dimension_O : public core::T_O
 Creating one Initializer(units::Dimension_O) baseInitializer(['core::T_O'])
-Group: <__main__.ClassGroup instance at 0x109e81200>  target: units::Dimension_O   filename: include/dimension.h
+Group: <__main__.ClassGroup instance at 0x1050d3680>  target: units::Dimension_O   filename: include/dimension.h
 createOnClass@include/dimension.h:11 --> units::Dimension_O
 In fileName: include/dimension.h parsed lispBase1 line: LISP_BASE1(core::T_O);
 In fileName: include/dimension.h parsed lispClass line: LISP_CLASS(units,UnitsPkg,Dimension_O,"Dimension");
@@ -25,7 +25,7 @@ Namespace changed to units - include/namedUnit.h:12
     CurrentPackage set to UnitsPkg
 In fileName: include/namedUnit.h parsed cppClassDefinition line: class NamedUnit_O : public Unit_O
 Creating one Initializer(units::NamedUnit_O) baseInitializer(['units::Unit_O'])
-Group: <__main__.ClassGroup instance at 0x109e81200>  target: units::NamedUnit_O   filename: include/namedUnit.h
+Group: <__main__.ClassGroup instance at 0x1050d3680>  target: units::NamedUnit_O   filename: include/namedUnit.h
 createOnClass@include/namedUnit.h:16 --> units::NamedUnit_O
 In fileName: include/namedUnit.h parsed lispBase1 line: LISP_BASE1(Unit_O);
 In fileName: include/namedUnit.h parsed lispClass line: LISP_CLASS(units,UnitsPkg,NamedUnit_O,"NamedUnit");
@@ -39,7 +39,7 @@ Namespace changed to units - include/quantity.h:9
     CurrentPackage set to UnitsPkg
 In fileName: include/quantity.h parsed cppClassDefinition line: class Quantity_O : public core::T_O
 Creating one Initializer(units::Quantity_O) baseInitializer(['core::T_O'])
-Group: <__main__.ClassGroup instance at 0x109e81200>  target: units::Quantity_O   filename: include/quantity.h
+Group: <__main__.ClassGroup instance at 0x1050d3680>  target: units::Quantity_O   filename: include/quantity.h
 createOnClass@include/quantity.h:13 --> units::Quantity_O
 In fileName: include/quantity.h parsed lispBase1 line: LISP_BASE1(core::T_O);
 In fileName: include/quantity.h parsed lispClass line: LISP_CLASS(units,UnitsPkg,Quantity_O,"Quantity");
@@ -52,7 +52,7 @@ Namespace changed to units - include/unit.h:8
     CurrentPackage set to UnitsPkg
 In fileName: include/unit.h parsed cppClassDefinition line: class Unit_O : public core::T_O
 Creating one Initializer(units::Unit_O) baseInitializer(['core::T_O'])
-Group: <__main__.ClassGroup instance at 0x109e81200>  target: units::Unit_O   filename: include/unit.h
+Group: <__main__.ClassGroup instance at 0x1050d3680>  target: units::Unit_O   filename: include/unit.h
 createOnClass@include/unit.h:12 --> units::Unit_O
 In fileName: include/unit.h parsed lispBase1 line: LISP_BASE1(core::T_O);
 In fileName: include/unit.h parsed lispClass line: LISP_CLASS(units,UnitsPkg,Unit_O,"Unit");

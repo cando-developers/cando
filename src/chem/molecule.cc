@@ -6,7 +6,7 @@
 
 
 
-
+#include <clasp/core/common.h>
 #include <cando/chem/molecule.h>
 #include <cando/chem/loop.h>
 #include <clasp/core/numerics.h>
@@ -15,6 +15,7 @@
 #include <cando/chem/bond.h>
 #include <clasp/core/translators.h>
 #include <cando/chem/atomIdMap.h>
+#include <cando/chem/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
 
@@ -63,13 +64,14 @@ void Molecule_O::fields(core::Record_sp node)
         }
       }
     }
-    node->field("bl",bondList);
+    node->field( INTERN_(kw,bl),bondList);
   }
       break;
+  case core::Record_O::initializing:
   case core::Record_O::loading: {
     	    // create the intraResidue bonds
     BondList_sp bondList;
-    node->field("bl",bondList);
+    node->field( INTERN_(kw,bl),bondList);
     ASSERTNOTNULL(bondList);
     bondList->imposeYourself();
   }

@@ -111,9 +111,10 @@ string SymbolSet_O::asString() {
 void SymbolSet_O::fields(core::Record_sp node) {
   // this->Base::fields(node);
   switch (node->stage()) {
+  case Record_O::initializing: 
   case Record_O::loading: {
     Vector_sp valueVec;
-    node->field(INTERN_(adapt,data), valueVec );
+    node->field(INTERN_(kw,data), valueVec );
     this->_Symbols->clrhash();
     for ( size_t i(0), iEnd(cl_length(valueVec)); i<iEnd; ++i ) {
       T_sp key = (*valueVec)[i];
@@ -127,7 +128,7 @@ void SymbolSet_O::fields(core::Record_sp node) {
     this->_Symbols->mapHash([&idx,&valueVec](T_sp key, T_sp val) {
         (*valueVec)[idx++] = key;
       });
-    node->field(INTERN_(adapt,data), valueVec);
+    node->field(INTERN_(kw,data), valueVec);
   }
       break;
   case Record_O::patching: {

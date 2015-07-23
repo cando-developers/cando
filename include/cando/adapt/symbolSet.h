@@ -64,6 +64,7 @@ class SymbolSet_O : public T_O {
 
 public:
   void initialize();
+  bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
 GCPRIVATE:
   HashTableEq_sp _Symbols;

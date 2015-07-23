@@ -94,7 +94,8 @@ class Matter_O : public core::T_O
 public:
 	void initialize();
 public:
-	void	fields(core::Record_sp node);
+        bool fieldsp() const { return true; };
+        void	fields(core::Record_sp node);
 //	void	serialize(serialize::SNode snode);
 
 friend	class Loop;

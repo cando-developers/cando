@@ -34,7 +34,8 @@ class Molecule_O : public Matter_O
     LISP_CLASS(chem,ChemPkg,Molecule_O,"Molecule");
 public:
 	void initialize();
-	void fields(core::Record_sp node);
+        bool fieldsp() const { return true; };
+        void fields(core::Record_sp node);
 friend	class	Loop;
 
 

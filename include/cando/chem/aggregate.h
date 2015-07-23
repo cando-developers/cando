@@ -38,11 +38,7 @@ public:
     void initialize();
     friend	class	Loop;
 public:
-    void	archiveBase(core::ArchiveP node );
-    bool	loadFinalize(core::ArchiveP node);
-    /*! Use AtomIds to quickly access Atoms in Aggregate */
-//    AtomIdMap<Atom_sp>	_AtomIdMap;
-
+    void fields(core::Record_sp node);
 public:
     static Aggregate_sp make(MatterName name);
 

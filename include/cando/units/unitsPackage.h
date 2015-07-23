@@ -16,7 +16,7 @@ namespace units
 
 
 #define SYMBOLS_EXTERN
-#include <cando/units/generated/symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 
     extern const char* Units_nicknames[];
 

@@ -106,6 +106,7 @@ class FFParameter_O : public core::T_O
     LISP_CLASS(chem,ChemPkg,FFParameter_O,"FFParameter");
 
 public:
+    bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
 public:
 	ParameterizationLevel	_Level;
@@ -135,6 +136,7 @@ class FFBaseDb_O : public core::T_O {
   LISP_CLASS(chem,ChemPkg,FFBaseDb_O,"FFBaseDb");
 
  public:
+  bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
  public:
   core::T_sp	_ForceField;
