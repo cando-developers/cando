@@ -14,9 +14,9 @@ FORWARD(Angle);
     a1-a2-a3 where these atoms are sequentially bonded to each other.
 */
 
-class Angle_O : public core::T_O
+class Angle_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,Angle_O,"Angle");
 //    DECLARE_ARCHIVE();
     DEFAULT_CTOR_DTOR(Angle_O);

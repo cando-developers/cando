@@ -24,10 +24,10 @@ namespace chem
 
 
 
-    class ConstitutionBond_O : public core::T_O
+    class ConstitutionBond_O : public core::CxxObject_O
     {
 	friend class ConstitutionAtoms_O;
-	LISP_BASE1(core::T_O);
+	LISP_BASE1(core::CxxObject_O);
 	LISP_CLASS(chem,ChemPkg,ConstitutionBond_O,"ConstitutionBond");
     public:
 	void	initialize();
@@ -48,7 +48,7 @@ namespace chem
 
 
 
-    class ConstitutionAtom_O : public core::T_O
+    class ConstitutionAtom_O : public core::CxxObject_O
     {
 	friend class ConstitutionAtoms_O;
 	friend class TopologyAtom_O;
@@ -56,7 +56,7 @@ namespace chem
 	friend class StereoisomerAtom_O;
 	friend class StereoisomerVirtualAtom_O;
 
-	LISP_BASE1(core::T_O);
+	LISP_BASE1(core::CxxObject_O);
 	LISP_CLASS(chem,ChemPkg,ConstitutionAtom_O,"ConstitutionAtom");
     public:
 	void	initialize();
@@ -107,10 +107,10 @@ namespace chem
 
 
 
-    class ConstitutionAtoms_O : public core::T_O
+    class ConstitutionAtoms_O : public core::CxxObject_O
     {
 	friend class StereoisomerAtoms_O;
-	LISP_BASE1(core::T_O);
+	LISP_BASE1(core::CxxObject_O);
 	LISP_CLASS(chem,ChemPkg,ConstitutionAtoms_O,"ConstitutionAtoms");
 
     public: // virtual functions inherited from Object

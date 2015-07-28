@@ -206,6 +206,7 @@ void	Residue_O::fields( core::Record_sp node )
     BondList_sp bondList = BondList_O::create();
     node->field( INTERN_(kw,bl),bondList);
     ASSERTNOTNULL(bondList);
+    RECORD_LOG(BF("residue bondList = %s") % _rep_(bondList));
     bondList->imposeYourself();
   }
   case core::Record_O::patching: {
@@ -234,8 +235,8 @@ void	Residue_O::initialize()
 //    this->_Constitution = _Nil<CandoDatabaseReference_O>();
     this->_FileSequenceNumber = -1;
     this->_NetCharge = 0;
-    this->_MonomerAliases = _Nil<adapt::SymbolSet_O>();
-    this->_UniqueLabel = _Nil<core::Symbol_O>();
+    this->_MonomerAliases = _Nil<core::T_O>();
+    this->_UniqueLabel = _Nil<core::T_O>();
     this->pdbName = _Nil<core::Symbol_O>();
 }
 

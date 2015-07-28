@@ -41,9 +41,9 @@ namespace chem
     SMART(ComplexRestraint);
 
     SMART(StereoConfiguration);
-    class StereoConfiguration_O : public core::T_O
+    class StereoConfiguration_O : public core::CxxObject_O
 	{
-	    LISP_BASE1(core::T_O);
+	    LISP_BASE1(core::CxxObject_O);
 	    LISP_CLASS(chem,ChemPkg,StereoConfiguration_O,"StereoConfiguration");
 #if INIT_TO_FACTORIES
 	public:
@@ -136,9 +136,9 @@ namespace chem
 	};
 
     SMART(StereoInformation);
-    class StereoInformation_O : public core::T_O
+    class StereoInformation_O : public core::CxxObject_O
 	{
-	    LISP_BASE1(core::T_O);
+	    LISP_BASE1(core::CxxObject_O);
 	    LISP_CLASS(chem,ChemPkg,StereoInformation_O,"StereoInformation");
 #if INIT_TO_FACTORIES
 	public:

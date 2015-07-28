@@ -8,5 +8,6 @@
     :depends-on ()
     :serial t
     :components
-    ((:file "print-read")
+    ((:file "packages")
+     (:file "print-read")
      ))

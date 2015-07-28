@@ -9,6 +9,8 @@
  *	Maintains databases and structures to store types and type assignement
  *	rules.
  */
+#include <clasp/core/foundation.h>
+#include <clasp/core/record.h>
 #include <cando/chem/ffTypesDb.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/symbolTable.h>

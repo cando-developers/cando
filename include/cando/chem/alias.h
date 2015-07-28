@@ -24,9 +24,9 @@ namespace chem
     SMART(ScorerState);
 
     SMART(Alias);
-    class Alias_O : public core::T_O
+    class Alias_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::T_O);
+	LISP_BASE1(core::CxxObject_O);
 	LISP_CLASS(chem,ChemPkg,Alias_O,"Alias");
 #if INIT_TO_FACTORIES
     public:

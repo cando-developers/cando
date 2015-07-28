@@ -43,7 +43,7 @@ namespace       chem {
     public:
 	void initialize();
         bool fieldsp() const { return true; };
-        void	fields(core::Record_sp node);
+        void fields(core::Record_sp node);
     public:
         core::Symbol_sp	_Type1;
         core::Symbol_sp	_Type2;

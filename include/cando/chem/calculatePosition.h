@@ -18,9 +18,9 @@ namespace chem {
 
 
     SMART(CalculatePosition);
-    class CalculatePosition_O : public core::T_O
+    class CalculatePosition_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::T_O);
+	LISP_BASE1(core::CxxObject_O);
 	LISP_CLASS(chem,ChemPkg,CalculatePosition_O,"CalculatePosition");
 public: // virtual functions inherited from Object
 	void	initialize();

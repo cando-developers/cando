@@ -33,9 +33,9 @@ DEFINE_O_SMART_POINTERS(Structure_Old_List);
 
 
 SMART(StructureListEntry);
-class Structure_Old_ListEntry_O : public core::T_O
+class Structure_Old_ListEntry_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,Structure_Old_ListEntry_O,"StructureListEntry");
 
 public:
@@ -89,9 +89,9 @@ public:
 class Structure_Old_List_O;
     typedef	gctools::smart_ptr<Structure_Old_List_O>	Structure_Old_List_sp;
 SMART(StructureList);
-class Structure_Old_List_O : public core::T_O
+class Structure_Old_List_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,Structure_Old_List_O,"StructureList");
 
 public:

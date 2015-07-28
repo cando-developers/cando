@@ -101,9 +101,9 @@ public:
 
 
 SMART(Plug);
-class Plug_O : public core::T_O
+class Plug_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,Plug_O,"Plug");
 #if INIT_TO_FACTORIES
  public:

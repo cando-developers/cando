@@ -54,9 +54,9 @@ namespace chem {
 
 
     SMART(FFNonbondCrossTermTable);
-    class FFNonbondCrossTermTable_O : public core::T_O
+    class FFNonbondCrossTermTable_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::T_O);
+	LISP_BASE1(core::CxxObject_O);
 	LISP_CLASS(chem,ChemPkg,FFNonbondCrossTermTable_O,"FFNonbondCrossTermTable");
 
     public:
@@ -116,10 +116,8 @@ class FFNonbond_O : public FFParameter_O
 public:
 public:
     void initialize();
-#ifdef XML_ARCHIVE
-    void archiveBase(core::ArchiveP node);
-#endif
-
+        bool fieldsp() const { return true; };
+        void fields(core::Record_sp node);
 private:
     core::Symbol_sp 	_Type;
 	double		_Radius_Nanometers;
@@ -171,15 +169,14 @@ class FFNonbondDb_O : public FFBaseDb_O
 public:
 public:
     void	initialize();
-#ifdef XML_ARCHIVE
-    void	archiveBase(core::ArchiveP node);
-#endif
+        bool fieldsp() const { return true; };
+        void fields(core::Record_sp node);
 public:
     typedef	gctools::Vec0<FFNonbond_sp>::iterator	FFNonbond_spIterator;
     double			_EleDielectricValue;
     double			_EleBuffer;
     double			_EleScale14;
-    string			_EleChargeFcn;
+    core::Symbol_sp		_EleChargeFcn;
     double			_VdwScale14;
     double			_VdwScaleBufferA;
     double			_VdwScaleBufferB;
@@ -194,7 +191,7 @@ public:
 
     void	add( FFNonbond_sp nonbonded );
     bool    hasType( core::Symbol_sp type);
-    FFNonbond_sp   findType( core::Symbol_sp type );
+    gc::Nilable<FFNonbond_sp>   findType( core::Symbol_sp type );
     FFNonbond_sp   getFFNonbondUsingTypeIndex( uint typeIdx );
     uint findTypeIndex( core::Symbol_sp type );
     uint findTypeIndexOrThrow( core::Symbol_sp type );

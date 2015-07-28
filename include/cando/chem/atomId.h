@@ -65,10 +65,10 @@ namespace chem
 
     FORWARD(AtomId);
     /*! @class Wrap AtomId inside of a Lisp class */
-    class AtomId_O : public core::T_O
+    class AtomId_O : public core::CxxObject_O
     {
 	friend class AtomIdToAtomMap_O;
-	LISP_BASE1(core::T_O);
+	LISP_BASE1(core::CxxObject_O);
 	LISP_CLASS(chem,ChemPkg,AtomId_O,"AtomId");
 //	DECLARE_ARCHIVE();
     protected:

@@ -248,7 +248,7 @@ void ResidueList_O::fields(core::Record_sp node) {
 void ChemInfo_O::initialize() {
   this->Base::initialize();
   this->_Code = "";
-  this->_Root = _Nil<Root_O>();
+  this->_Root = _Nil<core::T_O>();
   this->_CompilerMessage = "";
 }
 
@@ -263,11 +263,11 @@ bool ChemInfo_O::compileSmarts(const string &code) {
   _OF();
   SmartsRoot_sp root;
   ASSERTNOTNULL(this->_Root);
-  this->_Root = _Nil<Root_O>();
+  this->_Root = _Nil<core::T_O>();
   this->_Code = code;
   stringstream errors;
   root = smarts_compile(code, _lisp, errors);
-  this->_Root = root;
+  this->_Root = gc::As<Root_sp>(root);
   ANN(this->_Root);
   if (root.nilp()) {
     this->_CompilerMessage = errors.str();
@@ -295,7 +295,7 @@ bool ChemInfo_O::compileAntechamber(const string &code, WildElementDict_sp dict)
   this->_Code = code;
   stringstream serr;
   root = ::gaff_compile(code, dict, serr);
-  this->_Root = root;
+  this->_Root = gc::As<Root_sp>(root);
   if (root.nilp()) {
     LOG(BF("root was null"));
     this->_CompilerMessage = serr.str();
@@ -429,8 +429,8 @@ void BondMatchNode_O::fields(core::Record_sp node) {
 void Logical_O::initialize() {
   this->Base::initialize();
   this->_Operator = logIdentity;
-  this->_Left = _Nil<AtomOrBondMatchNode_O>();
-  this->_Right = _Nil<AtomOrBondMatchNode_O>();
+  this->_Left = _Nil<core::T_O>();
+  this->_Right = _Nil<core::T_O>();
 }
 
 string Logical_O::asSmarts() const {
@@ -582,7 +582,7 @@ core::NullTerminatedEnumAssociation bondEnum[] = {
 void TagSet_O::initialize() {
   this->Base::initialize();
   //    this->_Bond = SABAnyBond;
-  this->_AtomTest = _Nil<AtomOrBondMatchNode_O>();
+  this->_AtomTest = _Nil<core::T_O>();
   this->_RingTag = _Nil<core::Symbol_O>();
 }
 
@@ -631,7 +631,7 @@ void TagSet_O::fields(core::Record_sp node) {
 void RingTest_O::initialize() {
   this->Base::initialize();
   this->_Bond = SABAnyBond;
-  this->_AtomTest = _Nil<AtomOrBondMatchNode_O>();
+  this->_AtomTest = _Nil<core::T_O>();
   this->_RingTag = _Nil<core::Symbol_O>();
 }
 
@@ -683,7 +683,7 @@ void RingTest_O::fields(core::Record_sp node) {
 void ResidueTest_O::initialize() {
   this->Base::initialize();
   this->_Bond = SABAnyBond;
-  this->_AtomTest = _Nil<AtomOrBondMatchNode_O>();
+  this->_AtomTest = _Nil<core::T_O>();
   this->_RingTag = _Nil<core::Symbol_O>();
 }
 
@@ -806,7 +806,7 @@ nomatch:
 void BondTest_O::initialize() {
   this->Base::initialize();
   this->_Bond = SABNoBond;
-  this->_AtomTest = _Nil<AtomOrBondMatchNode_O>();
+  this->_AtomTest = _Nil<core::T_O>();
 }
 
 string BondTest_O::asSmarts() const {
@@ -1271,8 +1271,8 @@ void AtomTest_O::fields(core::Record_sp node) {
 
 void Chain_O::initialize() {
   this->Base::initialize();
-  this->_Head = _Nil<BondMatchNode_O>();
-  this->_Tail = _Nil<BondListMatchNode_O>();
+  this->_Head = _Nil<core::T_O>();
+  this->_Tail = _Nil<core::T_O>();
 }
 
 string Chain_O::asSmarts() const {
@@ -1335,8 +1335,8 @@ void Chain_O::fields(core::Record_sp node) {
 
 void Branch_O::initialize() {
   this->Base::initialize();
-  this->_Left = _Nil<BondListMatchNode_O>();
-  this->_Right = _Nil<BondListMatchNode_O>();
+  this->_Left = _Nil<core::T_O>();
+  this->_Right = _Nil<core::T_O>();
 }
 string Branch_O::asSmarts() const {
   _OF();
@@ -1437,12 +1437,12 @@ bool AfterMatchBondTest_O::matches(Root_sp root) {
 
 void AntechamberFocusAtomMatch_O::initialize() {
   this->Base::initialize();
-  this->_ResidueNames = _Nil<ResidueList_O>();
+  this->_ResidueNames = _Nil<core::T_O>();
   this->_AtomicNumber = 0;
   this->_NumberOfAttachedAtoms = 0;
   this->_NumberOfAttachedHydrogens = 0;
   this->_NumberOfElectronWithdrawingGroups = 0;
-  this->_AtomicProperty = _Nil<AtomOrBondMatchNode_O>();
+  this->_AtomicProperty = _Nil<core::T_O>();
 }
 
 void AntechamberFocusAtomMatch_O::fields(core::Record_sp node) {
@@ -1605,7 +1605,7 @@ void AntechamberBondTest_O::initialize() {
   this->_Element = _Nil<core::Symbol_O>();
   this->_Neighbors = 0;
   this->_Tag = _Nil<core::Symbol_O>();
-  this->_AtomProperties = _Nil<AtomOrBondMatchNode_O>();
+  this->_AtomProperties = _Nil<core::T_O>();
 }
 
 void AntechamberBondTest_O::fields(core::Record_sp node) {
@@ -1634,9 +1634,9 @@ string Root_O::asSmarts() const {
 
 void Root_O::initialize() {
   this->Base::initialize();
-  this->_FirstTest = _Nil<AtomOrBondMatchNode_O>();
-  this->_Chain = _Nil<BondListMatchNode_O>();
-  this->_Match = _Nil<ChemInfoMatch_O>();
+  this->_FirstTest = _Nil<core::T_O>();
+  this->_Chain = _Nil<core::T_O>();
+  this->_Match = _Nil<core::T_O>();
   this->_Tests = core::HashTableEq_O::create_default();
 }
 
@@ -1659,7 +1659,7 @@ bool Root_O::evaluateTest(core::Symbol_sp testSym, Atom_sp atom) {
   ASSERTF(atom.notnilp(), BF("The atom arg should never be nil"));
   core::List_sp exp = core::Cons_O::createList(testCode, atom);
   LOG(BF("evaluating test: %s") % exp->__repr__());
-  core::T_sp res = core::eval::evaluate(exp, _Nil<core::Environment_O>());
+  core::T_sp res = core::eval::evaluate(exp, _Nil<core::T_O>());
   return res.isTrue();
 }
 
@@ -1734,8 +1734,8 @@ FAIL:
 void AntechamberRoot_O::initialize() {
   this->Base::initialize();
   this->_AssignType = _Nil<core::Symbol_O>();
-  this->_AfterMatchTests = _Nil<RootMatchNode_O>();
-  this->_WildElementDictionary = _Nil<WildElementDict_O>();
+  this->_AfterMatchTests = _Nil<core::T_O>();
+  this->_WildElementDictionary = _Nil<core::T_O>();
 }
 
 void AntechamberRoot_O::fields(core::Record_sp node) {

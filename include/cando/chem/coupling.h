@@ -50,9 +50,9 @@ SMART(EntityNameSet);
 
 
 SMART(Coupling);
-    class Coupling_O : public core::T_O //public core::Model_O
+    class Coupling_O : public core::CxxObject_O //public core::Model_O
     {
-        LISP_BASE1(core::T_O);
+        LISP_BASE1(core::CxxObject_O);
         LISP_CLASS(chem,ChemPkg,Coupling_O,"Coupling");
 	friend class O_WeakOligomer;
     public:

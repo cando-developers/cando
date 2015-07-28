@@ -24,9 +24,9 @@ struct ConnectMonomerRec;
     typedef std::pair<MatterName,MatterName> AtomPair;
 
 SMART(PdbMonomerConnectivity );
-class PdbMonomerConnectivity_O : public core::T_O
+class PdbMonomerConnectivity_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,PdbMonomerConnectivity_O,"PdbMonomerConnectivity");
 public:
     void initialize();
@@ -54,9 +54,9 @@ public:
 
 
     SMART(PdbMonomerDatabase);
-    class PdbMonomerDatabase_O : public core::T_O
+    class PdbMonomerDatabase_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::T_O);
+	LISP_BASE1(core::CxxObject_O);
 	LISP_CLASS(chem,ChemPkg,PdbMonomerDatabase_O,"PdbMonomerDatabase");
 public:
 //    void archiveBase(core::ArchiveP node);

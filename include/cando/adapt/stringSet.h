@@ -51,8 +51,8 @@ SMART(StringList);
 	A class that stores a set of strings
 */
 SMART(StringSet);
- class StringSet_O : public core::T_O {
-   LISP_BASE1(core::T_O);
+ class StringSet_O : public core::CxxObject_O {
+   LISP_BASE1(core::CxxObject_O);
   LISP_CLASS(adapt, AdaptPkg, StringSet_O, "StringSet");
   DECLARE_INIT();
 
@@ -131,7 +131,7 @@ public:
   StringSet_O(const StringSet_O &ss); //!< Copy constructor
 
   DEFAULT_CTOR(StringSet_O);
-  virtual ~StringSet_O();
+  virtual ~StringSet_O() {};
 };
 };
 

@@ -40,9 +40,9 @@ SMART(IntArray);
 
 
 SMART(ConformationExplorerEntryStage);
-class ConformationExplorerEntryStage_O : public core::T_O
+class ConformationExplorerEntryStage_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,ConformationExplorerEntryStage_O,"ConformationExplorerEntryStage");
 
 public:
@@ -133,10 +133,10 @@ public:
 
 
 SMART(ConformationExplorerEntry);
-class ConformationExplorerEntry_O : public core::T_O
+class ConformationExplorerEntry_O : public core::CxxObject_O
 {
     friend class ConformationExplorer_O;
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,ConformationExplorerEntry_O,"ConformationExplorerEntry");
 public:
 //    void	archiveBase(core::ArchiveP node);
@@ -215,9 +215,9 @@ public:
 
 
 SMART(ConformationExplorer);
-class ConformationExplorer_O : public core::T_O
+class ConformationExplorer_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,ConformationExplorer_O,"ConformationExplorer");
 public:
 	void initialize();
@@ -370,9 +370,9 @@ virtual	ConformationExplorerEntry_sp	createEntry();
  * that it most closely matches and whether it matches within the rmsd specified
  */
 SMART(ConformationExplorerMatch );
-class ConformationExplorerMatch_O : public core::T_O
+class ConformationExplorerMatch_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,ConformationExplorerMatch_O,"ConformationExplorerMatch");
 public: // virtual functions inherited from Object
 	void	initialize();

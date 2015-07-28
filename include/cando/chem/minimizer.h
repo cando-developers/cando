@@ -92,9 +92,9 @@ public:
 
 
     SMART(Minimizer);
-    class Minimizer_O : public core::T_O
+    class Minimizer_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::T_O);
+	LISP_BASE1(core::CxxObject_O);
 	LISP_CLASS(chem,ChemPkg,Minimizer_O,"Minimizer");
 #if INIT_TO_FACTORIES
     public:

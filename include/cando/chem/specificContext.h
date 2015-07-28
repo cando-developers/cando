@@ -29,9 +29,9 @@ struct	KeyEntry
 SMART(SpecificContextSet);
 
 SMART(SpecificContext );
-class SpecificContext_O : public core::T_O
+class SpecificContext_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,SpecificContext_O,"SpecificContext");
     static SpecificContext_sp make();
 public: // virtual functions inherited from Object
@@ -72,9 +72,9 @@ public:
 
 
 SMART(SpecificContextSet );
-class SpecificContextSet_O : public core::T_O
+class SpecificContextSet_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,SpecificContextSet_O,"SpecificContextSet");
 #if INIT_TO_FACTORIES
   public:

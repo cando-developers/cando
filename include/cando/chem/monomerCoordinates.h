@@ -26,9 +26,9 @@ namespace chem {
 SMART(Topology);
 
 SMART(MonomerCoordinates);
-class MonomerCoordinates_O : public core::T_O
+class MonomerCoordinates_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,MonomerCoordinates_O,"MonomerCoordinates");
 #if INIT_TO_FACTORIES
  public:

@@ -525,12 +525,10 @@ __END_DOC
 #define ARGS_af_loadMol2 "(fileName)"
 #define DECL_af_loadMol2 ""
 #define DOCS_af_loadMol2 "loadMol2"
-core::T_sp af_loadMol2(core::Str_sp fileName)
+core::T_sp af_loadMol2(core::T_sp fileName)
 {_G();
     Aggregate_sp agg = Aggregate_O::create();
-    boost_filesystem::path filePath(fileName->get());
-    LOG(BF("About to open file: %s") % filePath.string());
-    mol2ReadAggregateFromFileName(agg,filePath.string());
+    mol2ReadAggregateFromFileName(agg,fileName);
     return agg;
 }
 
@@ -551,9 +549,8 @@ __END_DOC
 #define DOCS_af_saveMol2 "saveMol2"
 core::T_sp af_saveMol2(Matter_sp matter, core::T_sp destDesig)
 {_G();
-    core::Path_sp path = core::coerce::pathDesignator(destDesig);
-    mol2WriteMatterToFileName(matter,path->asString());
-    return _Nil<core::T_O>();
+  mol2WriteMatterToFileName(matter,destDesig);
+  return _Nil<core::T_O>();
 }
 
 

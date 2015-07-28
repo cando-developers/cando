@@ -44,7 +44,7 @@ void PathMessage_O::initialize()
 }
 
 
-    PathMessage_O::PathMessage_O(const PathMessage_O& orig) : core::T_O(orig)
+    PathMessage_O::PathMessage_O(const PathMessage_O& orig) : core::CxxObject_O(orig)
 {_OF();
     this->_graph = orig._graph;
     LOG(BF("About to copy beep") );

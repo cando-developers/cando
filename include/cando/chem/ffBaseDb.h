@@ -100,9 +100,9 @@ typedef	enum { stretch, angle, ptor, itor, nonbond, vdw } ParameterType;
 class FFParameter_O;
     typedef	gctools::smart_ptr<FFParameter_O>	FFParameter_sp;
 SMART(FFParameter);
-class FFParameter_O : public core::T_O
+class FFParameter_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,FFParameter_O,"FFParameter");
 
 public:
@@ -131,8 +131,8 @@ DEFAULT_CTOR_DTOR(FFParameter_O);
 
 
 SMART(FFBaseDb);
-class FFBaseDb_O : public core::T_O {
-  LISP_BASE1(core::T_O);
+class FFBaseDb_O : public core::CxxObject_O {
+  LISP_BASE1(core::CxxObject_O);
   LISP_CLASS(chem,ChemPkg,FFBaseDb_O,"FFBaseDb");
 
  public:

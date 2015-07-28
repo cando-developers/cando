@@ -22,9 +22,9 @@ namespace       chem {
 class	ReportBase_O;
     typedef	gctools::smart_ptr<ReportBase_O>	ReportBase_sp;
 SMART(ReportBase);
-class ReportBase_O : public core::T_O
+class ReportBase_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,ReportBase_O,"ReportBase");
 
 public:
@@ -148,9 +148,9 @@ SMART(EnergyFunction);
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 SMART(MinimizerLog);
-class MinimizerLog_O : public core::T_O
+class MinimizerLog_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,MinimizerLog_O,"MinimizerLog");
 
 public:

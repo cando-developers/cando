@@ -26,7 +26,7 @@ void	Entity_O::initialize()
 //
 // Copy Constructor
 //
-    Entity_O::Entity_O(const Entity_O& emr ) : core::T_O(emr)
+    Entity_O::Entity_O(const Entity_O& emr ) : core::CxxObject_O(emr)
 {
 }
 

@@ -461,7 +461,7 @@ void	CoordinateSystem_O::initialize()
 }
 
 
-CoordinateSystem_O::CoordinateSystem_O(const CoordinateSystem_O& orig) : core::T_O(orig)
+CoordinateSystem_O::CoordinateSystem_O(const CoordinateSystem_O& orig) : core::CxxObject_O(orig)
 {
     this->origin = orig.origin;
     this->x = orig.x;

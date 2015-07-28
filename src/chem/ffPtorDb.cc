@@ -25,30 +25,34 @@ namespace chem
     REGISTER_CLASS(chem, FFPtorDb_O );
 
 
-#ifdef XML_ARCHIVE
-void	FFPtor_O::archiveBase(core::ArchiveP node)
+void	FFPtor_O::fields(core::Record_sp node)
 {
-    node->attribute( "type1", this->_T1 );
-    node->attribute( "type2", this->_T2 );
-    node->attribute( "type3", this->_T3 );
-    node->attribute( "type4", this->_T4 );
-    for ( int i=0; i<MaxPeriodicity; i++ )
-    {
-	node->attributeIfDefined( KW((BF("v%d")%i).str()), this->_hasPeriodicity[i], this->_Vs_kJ[i] );
-	node->attributeIfDefined( KW((BF("ph%d")%i).str()), this->_hasPeriodicity[i],  this->_PhaseRads[i] );
-    }
+  this->Base::fields(node);
+  node->field( INTERN_(kw,type1), this->_T1 );
+  node->field( INTERN_(kw,type2), this->_T2 );
+  node->field( INTERN_(kw,type3), this->_T3 );
+  node->field( INTERN_(kw,type4), this->_T4 );
+  ASSERT(MaxPeriodicity==6);
+  node->field_if_defined(INTERN_(kw,v0) ,this->_hasPeriodicity[0],this->_Vs_kJ[0]);
+  node->field_if_defined(INTERN_(kw,ph0),this->_hasPeriodicity[0],this->_PhaseRads[0]);
+  node->field_if_defined(INTERN_(kw,v1) ,this->_hasPeriodicity[1],this->_Vs_kJ[1]);
+  node->field_if_defined(INTERN_(kw,ph1),this->_hasPeriodicity[1],this->_PhaseRads[1]);
+  node->field_if_defined(INTERN_(kw,v2) ,this->_hasPeriodicity[2],this->_Vs_kJ[2]);
+  node->field_if_defined(INTERN_(kw,ph2),this->_hasPeriodicity[2],this->_PhaseRads[2]);
+  node->field_if_defined(INTERN_(kw,v3) ,this->_hasPeriodicity[3],this->_Vs_kJ[3]);
+  node->field_if_defined(INTERN_(kw,ph3),this->_hasPeriodicity[3],this->_PhaseRads[3]);
+  node->field_if_defined(INTERN_(kw,v4) ,this->_hasPeriodicity[4],this->_Vs_kJ[4]);
+  node->field_if_defined(INTERN_(kw,ph4),this->_hasPeriodicity[4],this->_PhaseRads[4]);
+  node->field_if_defined(INTERN_(kw,v5) ,this->_hasPeriodicity[5],this->_Vs_kJ[5]);
+  node->field_if_defined(INTERN_(kw,ph5),this->_hasPeriodicity[5],this->_PhaseRads[5]);
 }
-#endif
 
-#ifdef CONSPACK
-    void	FFPtorDb_O::archiveBase(core::ArchiveP node)
-    {
-	this->FFBaseDb_O::archiveBase(node);
-	node->attributeVector0<FFPtor_O>(KW("ptors"),this->_Terms );
-	node->attributeStringMap<FFPtor_O>(KW("map"),this->_Lookup );
-    }
-#endif
-
+void FFPtorDb_O::fields(core::Record_sp node)
+{
+  this->Base::fields(node);
+  node->field(INTERN_(kw,ptors),this->_Terms );
+  node->field(INTERN_(kw,map),this->_Lookup );
+}
 
 
 void	FFPtorDb_O::initialize()

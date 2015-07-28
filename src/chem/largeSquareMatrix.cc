@@ -37,7 +37,7 @@ void	AbstractLargeSquareMatrix_O::setup(uint dim, TriangleType type)
     this->_Rows = dim;
 };
 
-    AbstractLargeSquareMatrix_O::AbstractLargeSquareMatrix_O(const AbstractLargeSquareMatrix_O& orig) : core::T_O(orig)
+    AbstractLargeSquareMatrix_O::AbstractLargeSquareMatrix_O(const AbstractLargeSquareMatrix_O& orig) : core::CxxObject_O(orig)
 {
     this->_Triangle = orig._Triangle;
     this->_Columns = orig._Columns;

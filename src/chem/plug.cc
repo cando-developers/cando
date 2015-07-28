@@ -224,7 +224,7 @@ namespace chem
 
 #endif
 
-    Plug_O::Plug_O(const Plug_O& p) : core::T_O(p)
+    Plug_O::Plug_O(const Plug_O& p) : core::CxxObject_O(p)
     {_G();
 	Mate_sp	rn;
 	LOG(BF("Original %s") % p.description().c_str()  );

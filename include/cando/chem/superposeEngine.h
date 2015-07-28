@@ -47,9 +47,9 @@ class	SuperposeEngine_O;
  *	The points that are superposed are only the ones indexed by _FixedIndices and _MoveableIndices.
  */
 SMART(SuperposeEngine);
-class SuperposeEngine_O : public core::T_O
+class SuperposeEngine_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,SuperposeEngine_O,"SuperposeEngine");
 
 public:

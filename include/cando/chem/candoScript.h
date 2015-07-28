@@ -26,9 +26,9 @@ SMART(OligomerPart_Base);
 /*! A simple object to store and create a monomer within an oligomer
  */
 SMART(OligomerPart_Base);
-class OligomerPart_Base_O : public core::T_O
+class OligomerPart_Base_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,OligomerPart_Base_O,"OligomerPart-Base");
 
 public:

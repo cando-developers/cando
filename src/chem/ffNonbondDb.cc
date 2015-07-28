@@ -191,7 +191,7 @@ void    FFNonbondDb_O::initialize()
     this->_EleDielectricValue = 0.0;
     this->_EleBuffer = 0.0;
     this->_EleScale14 = 0.0;
-    this->_EleChargeFcn = "";
+    this->_EleChargeFcn = _Nil<core::T_O>();
     this->_VdwScale14 = 0.0;
     this->_VdwScaleBufferA = 0.0;
     this->_VdwScaleBufferB = 0.0;
@@ -201,45 +201,43 @@ void    FFNonbondDb_O::initialize()
 }
 
 
-#ifdef XML_ARCHIVE
-void	FFNonbond_O::archiveBase(core::ArchiveP node)
+void	FFNonbond_O::fields(core::Record_sp node)
 {_G();
-    node->attribute("type",this->_Type );
-    node->attribute("radius",this->_Radius_Nanometers);
-    node->attribute("well",this->_Epsilon_kJ);
-    node->attributeIfNotDefault("apol",this->_Apol,0.0);
-    node->attributeIfNotDefault("neff",this->_Neff,0.0);
-    node->attribute("mass",this->_Mass);
-    node->attributeIfNotDefault("pol",this->_Polarizability,0.0);
-    node->attributeIfNotDefault("initCharge",this->_InitialCharge,0.0);
-    node->attributeIfNotDefault("fcadj",this->_Fcadj,0.0);
-    node->attributeIfNotDefault("pbci",this->_Pbci,0.0);
-    node->attributeEnum(KW("da"),this->_DonorAcceptor );
+  this->Base::fields(node);
+  node->field(INTERN_(kw,type),this->_Type );
+  node->field(INTERN_(kw,radius),this->_Radius_Nanometers);
+  node->field(INTERN_(kw,well),this->_Epsilon_kJ);
+  node->field_if_not_default(INTERN_(kw,apol),this->_Apol,0.0);
+  node->field_if_not_default(INTERN_(kw,neff),this->_Neff,0.0);
+  node->field(INTERN_(kw,mass),this->_Mass);
+  node->field_if_not_default(INTERN_(kw,pol),this->_Polarizability,0.0);
+  node->field_if_not_default(INTERN_(kw,initCharge),this->_InitialCharge,0.0);
+  node->field_if_not_default(INTERN_(kw,fcadj),this->_Fcadj,0.0);
+  node->field_if_not_default(INTERN_(kw,pbci),this->_Pbci,0.0);
+  node->field(INTERN_(kw,da),this->_DonorAcceptor );
 }
-#endif
-#ifdef CONSPACK
-    void	FFNonbondDb_O::archiveBase(core::ArchiveP node)
-    {_G();
-	this->FFBaseDb_O::archiveBase(node);
-	node->attributeIfNotDefault("eleDielectricValue", this->_EleDielectricValue, 0.0);
-	node->attributeIfNotDefault("eleBuffer", this->_EleBuffer, 0.0);
-	node->attributeIfNotDefault("eleScale14", this->_EleScale14, 0.0);
-	node->attributeIfNotDefault<string>("eleChargeFcn", this->_EleChargeFcn, "");
-	node->attributeIfNotDefault("vdwScale14", this->_VdwScale14, 0.0);
-	node->attributeIfNotDefault("vdwScaleBufferA", this->_VdwScaleBufferA, 0.0);
-	node->attributeIfNotDefault("vdwScaleBufferB", this->_VdwScaleBufferB, 0.0);
-	node->attributeVector0(KW("nonbonds"),this->_Terms );
-	node->archiveMapKeyStringValuePOD(KW("map"),this->_Lookup );
-	node->attributeEnum( KW("eleDielectricCode"), this->_EleDielectricCode);
-	node->attributeEnum( KW("vdwMixRadius"), this->_VdwMixRadius);
-	node->attributeEnum( KW("vdwMixWell"), this->_VdwMixWell);
-    }
-#endif
+
+void	FFNonbondDb_O::fields(core::Record_sp node)
+{_G();
+  this->Base::fields(node);
+  node->field_if_not_default(INTERN_(kw,eleDielectricValue), this->_EleDielectricValue, 0.0);
+  node->field_if_not_default(INTERN_(kw,eleBuffer), this->_EleBuffer, 0.0);
+  node->field_if_not_default(INTERN_(kw,eleScale14), this->_EleScale14, 0.0);
+  node->field_if_not_nil(INTERN_(kw,eleChargeFcn), this->_EleChargeFcn);
+  node->field_if_not_default(INTERN_(kw,vdwScale14), this->_VdwScale14, 0.0);
+  node->field_if_not_default(INTERN_(kw,vdwScaleBufferA), this->_VdwScaleBufferA, 0.0);
+  node->field_if_not_default(INTERN_(kw,vdwScaleBufferB), this->_VdwScaleBufferB, 0.0);
+  node->field(INTERN_(kw,nonbonds),this->_Terms );
+  node->field(INTERN_(kw,map),this->_Lookup );
+  node->field( INTERN_(kw,eleDielectricCode), this->_EleDielectricCode);
+  node->field( INTERN_(kw,vdwMixRadius), this->_VdwMixRadius);
+  node->field( INTERN_(kw,vdwMixWell), this->_VdwMixWell);
+}
 
 
 void    FFNonbondDb_O::add(FFNonbond_sp nb)
 {_OF();
-    if ( !this->_Lookup->contains(nb->getType()) ) {
+  if ( this->_Lookup->contains(nb->getType()) ) {  // This was negated
         SIMPLE_ERROR(BF("Adding nonbonded( %s ) to database but it's already there") % nb->getType() );
     }
     uint index = this->_Terms.size();
@@ -249,25 +247,25 @@ void    FFNonbondDb_O::add(FFNonbond_sp nb)
 
 bool    FFNonbondDb_O::hasType(core::Symbol_sp type)
 {
-    if ( !this->_Lookup->contains(type) ) return true;
+    if ( this->_Lookup->contains(type) ) return true;
     return false;
 }
 
-FFNonbond_sp   FFNonbondDb_O::findType(core::Symbol_sp type)
+gc::Nilable<FFNonbond_sp>   FFNonbondDb_O::findType(core::Symbol_sp type)
 {
-    if ( !this->_Lookup->contains(type) )
-    {
-      uint index = core::clasp_to_fixnum(this->_Lookup->gethash(type).as<core::Fixnum_O>());
-        return this->_Terms[index];
-    }
-    return _Nil<FFNonbond_O>();
+  if ( this->_Lookup->contains(type) ) {
+    printf("%s:%d:%s FFNonbondDb_O::findType type: %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(type).c_str());
+    core::T_sp val = this->_Lookup->gethash(type);
+    uint index = core::clasp_to_fixnum(val);
+    return this->_Terms[index];
+  }
+  return _Nil<T_O>();
 }
 
 uint FFNonbondDb_O::findTypeIndex(core::Symbol_sp type)
 {
-    if ( !this->_Lookup->contains(type) )
-    {
-      uint index = core::clasp_to_fixnum(this->_Lookup->gethash(type).as<core::Fixnum_O>());
+    if ( this->_Lookup->contains(type) ) {
+      uint index = core::clasp_to_fixnum(this->_Lookup->gethash(type));
       return index;
     }
     return UndefinedUnsignedInt;
@@ -284,10 +282,9 @@ uint FFNonbondDb_O::findTypeIndexOrThrow(core::Symbol_sp type)
 }
 uint FFNonbondDb_O::findTypeMajorIndex(core::Symbol_sp type)
 {
-    if ( !this->_Lookup->contains(type))
-    {
-      uint index = core::clasp_to_fixnum(this->_Lookup->gethash(type).as<core::Fixnum_I>())*this->_Terms.size();;
-        return index;
+    if ( this->_Lookup->contains(type)) {
+      core::T_sp val = this->_Lookup->gethash(type);
+      return core::clasp_to_fixnum(val)*this->_Terms.size();
     }
     return UndefinedUnsignedInt;
 }

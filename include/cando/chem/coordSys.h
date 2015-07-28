@@ -35,9 +35,9 @@ class	CoordinateSystem_O;
     typedef	gctools::smart_ptr<CoordinateSystem_O>	CoordinateSystem_sp;
 
 FORWARD(CoordinateSystem);
-class CoordinateSystem_O : public core::T_O
+class CoordinateSystem_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,CoordinateSystem_O,"CoordinateSystem");
 
 public:

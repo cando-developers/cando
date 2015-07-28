@@ -44,11 +44,8 @@ class FFAngle_O : public FFParameter_O
 
 public:
 	void initialize();
-public:
-#ifdef XML_ARCHIVE
-	void	archiveBase(core::ArchiveP node);
-#endif
-
+        bool fieldsp() const { return true; };
+        void fields(core::Record_sp node);
 public:
     core::Symbol_sp 		_Type1;
     core::Symbol_sp 		_Type2;
@@ -91,16 +88,15 @@ class FFAngleDb_O : public FFBaseDb_O
     LISP_CLASS(chem,ChemPkg,FFAngleDb_O,"FFAngleDb");
 
 public:
-#ifdef XML_ARCHIVE
-    void	archiveBase(core::ArchiveP node);
-#endif
+        bool fieldsp() const { return true; };
+        void fields(core::Record_sp node);
 public:
     typedef	gctools::Vec0<FFAngle_sp>::iterator FFAngle_spIterator;
 	string			_AngleFunction;
     gctools::Vec0<FFAngle_sp>	_Terms;
-	adapt::SymbolMap<FFAngle_O>          _Lookup;
-	adapt::SymbolMap<core::DoubleFloat_O>		_ZConstants;	//<! Angle parameter constants from Wang et al. J. Comput. Chem 25, 1157-1174 (2004)
-	adapt::SymbolMap<core::DoubleFloat_O>		_CConstants;	//<! Angle parameter constants from Wang et al. J. Comput. Chem 25, 1157-1174 (2004)
+    adapt::SymbolMap<FFAngle_O>          _Lookup;
+    adapt::SymbolMap<core::DoubleFloat_O>		_ZConstants;	//<! Angle parameter constants from Wang et al. J. Comput. Chem 25, 1157-1174 (2004)
+    adapt::SymbolMap<core::DoubleFloat_O>		_CConstants;	//<! Angle parameter constants from Wang et al. J. Comput. Chem 25, 1157-1174 (2004)
 
 public:
 	void	setAngleFunction(const string& st) {this->_AngleFunction = st;};

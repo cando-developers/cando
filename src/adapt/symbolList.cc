@@ -35,6 +35,7 @@ THE SOFTWARE.
 #include <clasp/core/lisp.h>
 #include <clasp/core/object.h>
 #include <clasp/core/metaClass.h>
+#include <cando/main/symbolTable.h>
 #include <clasp/core/str.h>
 #include <cando/adapt/symbolList.h>
 #include <cando/adapt/symbolSet.h>
@@ -75,18 +76,10 @@ string SymbolList_O::asString() {
   return ss.str();
 }
 
-#if defined(XML_ARCHIVE)
-void SymbolList_O::archiveBase(ArchiveP node) {
-  if (node->loading()) {
-    VectorStrings v_Contents;
-    node->getDataAsVectorOfStrings(v_Contents);
-    this->_Contents.clear();
-    this->setFromVectorStrings(v_Contents);
-  } else {
-    node->setCharacters(this->asString());
-  }
+void SymbolList_O::fields(core::Record_sp node) {
+  node->field_if_not_empty(INTERN_(kw,contents),this->_Contents);
 }
-#endif // defined(XML_ARCHIVE)
+
 
 void SymbolList_O::clear() {
   LOG(BF("SymbolList::clear size=%d") % (this->_Contents.size()));

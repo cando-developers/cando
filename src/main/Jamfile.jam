@@ -54,20 +54,18 @@ exe cando_boehm_d : main.cc $(sources)
 
 explicit cando_boehm_d ;
 
-executables = cando_boehm_o cando_boehm_d
-            ;
-            
-alias cando : $(executables)
+alias cando : cando_boehm_o
       : <variant>release ;
 
-alias cando : $(executables)
+alias cando : cando_boehm_d
       : <variant>debug ;
 
-
-install install : $(executables)
+install install : cando
         : <location>$(APPBIN-OSX) <target-os>darwin
+        <implicit-dependency>/internals/llvmo//bundle
         ;
 
 install install : $(cando)
         : <location>$(APPBIN-LINUX) <target-os>linux
+        <implicit-dependency>/internals/llvmo//bundle
         ;

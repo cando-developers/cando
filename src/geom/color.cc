@@ -95,7 +95,7 @@ namespace geom
 
 
 
-    Color_O::Color_O(const Color_O& orig) : core::T_O(orig)
+Color_O::Color_O(const Color_O& orig) : core::CxxObject_O(orig)
 {
     this->_ColorName = orig._ColorName;
     this->_Color = orig._Color;

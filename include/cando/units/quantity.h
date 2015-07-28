@@ -10,9 +10,9 @@ namespace units
 {
 
 FORWARD(Quantity);
-class Quantity_O : public core::T_O
+class Quantity_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(units,UnitsPkg,Quantity_O,"Quantity");
 //    DECLARE_ARCHIVE();
 //    DECLARE_SERIALIZE();

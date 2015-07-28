@@ -34,7 +34,7 @@ void	NumericalFunction_O::initialize()
 //
 // copy constructor
 //
-    NumericalFunction_O::NumericalFunction_O( const NumericalFunction_O& ss ) : core::T_O(ss)
+    NumericalFunction_O::NumericalFunction_O( const NumericalFunction_O& ss ) : core::CxxObject_O(ss)
 {
     this->xAxisName = ss.xAxisName;
     this->yAxisName = ss.yAxisName;

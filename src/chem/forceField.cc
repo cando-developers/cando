@@ -30,12 +30,10 @@ namespace chem {
 
 
 
-#ifdef CONSPACK
-    void	InfoDb_O::archiveBase(core::ArchiveP node)
+void	InfoDb_O::fields(core::Record_sp node)
 {
-    node->attributeStringMapIfDefined(KW("k"),this->_database);
+  node->field(INTERN_(kw,k),this->_database);
 }
-#endif
 
     void InfoDb_O::addInfo( core::Symbol_sp key, const string& data )
     {
@@ -71,22 +69,20 @@ void	ForceField_O::initialize()
 };
 
 
-#ifdef CONSPACK
-    void	ForceField_O::archiveBase(core::ArchiveP node)
+void	ForceField_O::fields(core::Record_sp node)
 {
-    node->attribute("title",this->_Title);
-    node->attribute("ref",this->_Ref);
-    node->attributeVector0( KW("bondDistinctions"), this->_SingleBondMultiBondDistinctions );
-    node->attribute( "_Info", this->_Info );
-    node->attribute( "_Types", this->_Types );
-    node->attribute( "_Stretches", this->_Stretches );
-    node->attribute( "_Angles", this->_Angles );
-    node->attribute( "_Itors", this->_Itors );
-    node->attribute( "_Ptors", this->_Ptors );
-    node->attribute( "_Nonbonds", this->_Nonbonds );
-    node->attribute( "_Vdws", this->_Vdws );
+  node->field( INTERN_(kw,title),this->_Title);
+  node->field( INTERN_(kw,ref),this->_Ref);
+  node->field( INTERN_(kw,bondDistinctions), this->_SingleBondMultiBondDistinctions );
+  node->field( INTERN_(kw,Info), this->_Info );
+  node->field( INTERN_(kw,Types), this->_Types );
+  node->field( INTERN_(kw,Stretches), this->_Stretches );
+  node->field( INTERN_(kw,Angles), this->_Angles );
+  node->field( INTERN_(kw,Itors), this->_Itors );
+  node->field( INTERN_(kw,Ptors), this->_Ptors );
+  node->field( INTERN_(kw,Nonbonds), this->_Nonbonds );
+  node->field( INTERN_(kw,Vdws), this->_Vdws );
 }
-#endif
 
 
 #ifdef XML_ARCHIVE

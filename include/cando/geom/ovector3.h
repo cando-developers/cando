@@ -11,10 +11,10 @@
 namespace geom {
 
     SMART(OVector3 );
-    class OVector3_O : public core::T_O
+    class OVector3_O : public core::CxxObject_O
     {
 	friend class OMatrix_O;
-	LISP_BASE1(core::T_O);
+	LISP_BASE1(core::CxxObject_O);
 	LISP_CLASS(geom,GeomPkg,OVector3_O,"OVector3");
     public:
         core::List_sp encode() ;

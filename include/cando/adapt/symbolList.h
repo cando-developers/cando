@@ -48,14 +48,13 @@ SMART(SymbolList);
 	A class that stores a set of strings
 */
 SMART(SymbolList);
- class SymbolList_O : public core::T_O {
-   LISP_BASE1(core::T_O);
+ class SymbolList_O : public core::CxxObject_O {
+   LISP_BASE1(core::CxxObject_O);
   LISP_CLASS(adapt, AdaptPkg, SymbolList_O, "SymbolList");
 
 public:
-#if defined(XML_ARCHIVE)
-  void archiveBase(ArchiveP node);
-#endif // defined(XML_ARCHIVE)
+  bool fieldsp() const { return true;};
+  void fields(core::Record_sp node);
 GCPRIVATE:
   gctools::Vec0<core::Symbol_sp> _Contents;
 

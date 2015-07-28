@@ -45,9 +45,9 @@ inline	string	XmlAttribute_TriangleType(TriangleType t) {
 
 
 SMART(AbstractLargeSquareMatrix);
-class AbstractLargeSquareMatrix_O : public core::T_O
+class AbstractLargeSquareMatrix_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,AbstractLargeSquareMatrix_O,"AbstractLargeSquareMatrix");
 
 protected:
@@ -230,10 +230,19 @@ virtual	double	getAtIndex(uint ii) { return this->_Values[ii];};
 public:
 	SparseLargeSquareMatrix_O( const SparseLargeSquareMatrix_O& orig );
 	DEFAULT_CTOR(SparseLargeSquareMatrix_O);
-	virtual ~SparseLargeSquareMatrix_O();
-
+	virtual ~SparseLargeSquareMatrix_O(); // Non-trivial
+};
 };
 
+template <>
+struct gctools::GCInfo<chem::SparseLargeSquareMatrix_O> {
+  static bool constexpr NeedsInitialization = true;
+  static bool constexpr NeedsFinalization = true;
+  static bool constexpr Moveable = true;
+  static bool constexpr Atomic = false;
+};
+
+namespace chem {
 #if 0
 inline	SparseLargeSquareMatrix_sp	new_SparseLargeSquareMatrix_sp(uint dim, TriangleType m) {
     return SparseLargeSquareMatrix_sp(new SparseLargeSquareMatrix_O(dim,m));

@@ -6,7 +6,7 @@
 #include <cando/chem/chemPackage.fwd.h>
 #include <cando/chem/candoDatabase.fwd.h>
 
-NAMESPACE_PACKAGE_ASSOCIATION(chemkw,ChemKwPkg,"CHEM-KEYWORD");
+NAMESPACE_PACKAGE_ASSOCIATION(chemkw,ChemKwPkg,"CKW");
 NAMESPACE_PACKAGE_ASSOCIATION(chem,ChemPkg,"CHEM");
 
 

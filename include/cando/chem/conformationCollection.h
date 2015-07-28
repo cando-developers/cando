@@ -35,9 +35,9 @@ SMART(SuperposeEngine);
 
 
 SMART(ConformationCollectionEntry);
-class ConformationCollectionEntry_O : public core::T_O
+class ConformationCollectionEntry_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,ConformationCollectionEntry_O,"ConformationCollectionEntry");
 
 public:
@@ -87,9 +87,9 @@ inline	ConformationCollectionEntry_sp	create_ConformationCollectionEntry(core::L
 class ConformationCollection_O;
     typedef	gctools::smart_ptr<ConformationCollection_O>	ConformationCollection_sp;
 SMART(ConformationCollection);
-class ConformationCollection_O : public core::T_O
+class ConformationCollection_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,ConformationCollection_O,"ConformationCollection");
 
 public:

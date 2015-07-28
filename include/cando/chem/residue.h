@@ -94,8 +94,8 @@ namespace chem {
          * their atoms 1 to 1 and allows coordinates to
          * be copied from either molecule to the other.
          */
-        MatterName		_UniqueLabel;
-	adapt::SymbolSet_sp	_MonomerAliases;
+        gc::Nilable<MatterName>	_UniqueLabel;
+        gc::Nilable<adapt::SymbolSet_sp>	_MonomerAliases;
     public:
         static Residue_sp make(MatterName name);
     private:

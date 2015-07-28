@@ -150,15 +150,12 @@ namespace chem
 //	void	serialize(serialize::SNode node);
         bool fieldsp() const { return true; };
         void	fields(core::Record_sp node);
-	
+
 	friend	class	Loop;
 	friend	class	Bond_O;
 	friend	class	Residue_O;
-
-
     public:
 	typedef VectorBond::iterator bondIterator;
-
     protected:
 	core::Symbol_sp		_Alias;	//!< alias name
         Element		_Element;
@@ -421,8 +418,8 @@ namespace chem
 	core::List_sp createImplicitHydrogenNamesOnCarbon();
 	void fillInImplicitHydrogensOnCarbon();
 
-	void randomizeAtomPositions();
-	void perturbAtomPositions(double dist);
+	void randomizeAtomPosition(double width);
+	void perturbAtomPosition(double dist);
 
 	/*! Calculate the stereochemical configuration "R" or "S"
 	 * based on the positions of this atom and the four attached atoms

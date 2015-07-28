@@ -16,9 +16,9 @@ namespace chem
     bonded to each other.  This is the Amber way of defining impropers.
 */
 
-    class ImproperTorsion_O : public core::T_O
+    class ImproperTorsion_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,ImproperTorsion_O,"ImproperTorsion");
 //    DECLARE_ARCHIVE();
     DEFAULT_CTOR_DTOR(ImproperTorsion_O);

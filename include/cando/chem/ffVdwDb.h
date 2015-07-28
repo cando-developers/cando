@@ -47,9 +47,8 @@ class FFVdw_O : public FFParameter_O
     LISP_CLASS(chem,ChemPkg,FFVdw_O,"FFVdw");
 
 public:
-#ifdef XML_ARCHIVE
-    void	archiveBase(core::ArchiveP node);
-#endif
+        bool fieldsp() const { return true; };
+        void fields(core::Record_sp node);
 public:
 	string		_T1;
 	string		_T2;
@@ -75,10 +74,8 @@ class FFVdwDb_O : public FFBaseDb_O
     LISP_CLASS(chem,ChemPkg,FFVdwDb_O,"FFVdwDb");
 
 public:
-#ifdef XML_ARCHIVE
-    void	archiveBase(core::ArchiveP node);
-#endif
-
+        bool fieldsp() const { return true; };
+        void fields(core::Record_sp node);
 public:
     gctools::Vec0<FFVdw_sp>	_Terms;
 

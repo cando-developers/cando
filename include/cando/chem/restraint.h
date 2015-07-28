@@ -35,9 +35,9 @@ SMART(Aggregate);
 SMART(Restraint);
 
 SMART(Restraint );
-class Restraint_O : public core::T_O
+class Restraint_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,Restraint_O,"Restraint");
 public:
 //    void	archiveBase(core::ArchiveP node);

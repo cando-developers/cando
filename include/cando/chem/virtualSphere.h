@@ -21,9 +21,9 @@ namespace chem {
 
 SMART(VirtualSphere);
 
-class VirtualSphere_O : public core::T_O
+class VirtualSphere_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,VirtualSphere_O,"VirtualSphere");
 
 public:

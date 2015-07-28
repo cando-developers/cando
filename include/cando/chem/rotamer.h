@@ -21,9 +21,9 @@ private:
 };
 
 
-class Rotamer_O : public core::T_O
+class Rotamer_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,Rotamer_O,"Rotamer");
 //    DECLARE_ARCHIVE();
     DEFAULT_CTOR_DTOR(Rotamer_O);

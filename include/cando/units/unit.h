@@ -9,11 +9,11 @@ namespace units
 {
 
 FORWARD(Unit);
-class Unit_O : public core::T_O
+class Unit_O : public core::CxxObject_O
 {
     friend class NamedUnit_O;
     friend class Quantity_O;
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(units,UnitsPkg,Unit_O,"Unit");
 //    DECLARE_ARCHIVE();
 //    DECLARE_SERIALIZE();

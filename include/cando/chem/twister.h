@@ -35,9 +35,9 @@ SMART(Twister);
  * Twister class can be set up to rotate a dihedral in an absolute sense
  * or around a bond in a relative sense.
  */
-class Twister_O : public core::T_O
+class Twister_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,Twister_O,"Twister");
 public:
 	void initialize();
@@ -95,9 +95,9 @@ public:
 
 
 SMART(TwisterDriver);
-class TwisterDriver_O : public core::T_O
+class TwisterDriver_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::T_O);
+	LISP_BASE1(core::CxxObject_O);
 	LISP_CLASS(chem,ChemPkg,TwisterDriver_O,"TwisterDriver");
 public:
 //	void	archive(core::ArchiveP node);

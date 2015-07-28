@@ -69,13 +69,17 @@ template <typename OT>
   from_object(core::T_sp o) {
     if ( core::Cons_sp co = o.asOrNull<core::Cons_O>() ) {
       for ( auto cur : (core::List_sp)(co) ) {
-        core::Symbol_sp key = gc::As<core::Symbol_sp>(oCar(cur));
-        core::T_sp value = oCdr(cur);
+        core::Cons_sp apair = gc::As<core::Cons_sp>(oCar(cur));
+        core::Symbol_sp key = gc::As<core::Symbol_sp>(oCar(apair));
+        core::T_sp value = oCdr(apair);
         this->_v.insert2(key,value);
       }
       return;
+    } else if ( o.nilp() ) {
+      this->_v.clear();
+      return;
     }
-    SIMPLE_ERROR(BF("Could not convert object to SymbolMap"));
+    SIMPLE_ERROR(BF("Could not convert object to SymbolMap, object: %s") % _rep_(o));
   }
  };
 

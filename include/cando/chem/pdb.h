@@ -38,20 +38,20 @@ public:
 
 
     SMART(PdbReader );
-    class PdbReader_O : public core::T_O
+    class PdbReader_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::T_O);
+	LISP_BASE1(core::CxxObject_O);
 	LISP_CLASS(chem,ChemPkg,PdbReader_O,"PdbReader");
     public:
 //	void	archive(core::ArchiveP node);
 	void	initialize();
     private:
     public:
-	static Aggregate_sp loadPdb(const string& fileName);
-	static Aggregate_sp loadPdbConnectAtoms(const string& fileName);
+	static Aggregate_sp loadPdb(core::T_sp fileName);
+	static Aggregate_sp loadPdbConnectAtoms(core::T_sp fileName);
     public:
 
-	Aggregate_sp	parse(const string& fileName);
+	Aggregate_sp	parse(core::T_sp fileName);
 
 	PdbReader_O( const PdbReader_O& ss ); //!< Copy constructor
 
@@ -62,36 +62,35 @@ public:
 
 
     SMART(PdbWriter );
-    class PdbWriter_O : public core::T_O
+    class PdbWriter_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::T_O);
-	LISP_CLASS(chem,ChemPkg,PdbWriter_O,"PdbWriter");
+      LISP_BASE1(core::CxxObject_O);
+      LISP_CLASS(chem,ChemPkg,PdbWriter_O,"PdbWriter");
 #if INIT_TO_FACTORIES
     public:
-	static PdbWriter_sp make(string fileName);
+      static PdbWriter_sp make(core::T_sp fileName);
 #else
-	DECLARE_INIT();
+      DECLARE_INIT();
 #endif
     public:
-	void	initialize();
+      void	initialize();
     private:
-        core::T_sp      _Out;
+      core::T_sp      _Out;
     public:
-	static void savePdb(Matter_sp matter, const string& fileName);
+      static void savePdb(Matter_sp matter, core::T_sp fileName);
     public:
 
-	void open(const string& fileName);
-	void close();
+      void open(core::T_sp fileName);
+      void close();
 
-	void write(Matter_sp matter);
-	void writeModel(Matter_sp matter, int model);
+      void write(Matter_sp matter);
+      void writeModel(Matter_sp matter, int model);
 
-	PdbWriter_O( const PdbWriter_O& ss ); //!< Copy constructor
+      PdbWriter_O( const PdbWriter_O& ss ); //!< Copy constructor
 
-	PdbWriter_O() :  _Out(_Nil<core::T_O>()) {};
-	virtual ~PdbWriter_O();
+    PdbWriter_O() :  _Out(_Nil<core::T_O>()) {};
+      virtual ~PdbWriter_O() {};
     };
-
 
 };
 TRANSLATE(chem::PdbReader_O);

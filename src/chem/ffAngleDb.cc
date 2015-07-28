@@ -29,32 +29,25 @@ namespace chem
     REGISTER_CLASS(chem, FFAngle_O );
     REGISTER_CLASS(chem, FFAngleDb_O );
 
-
-
-
-#ifdef XML_ARCHIVE
-void	FFAngle_O::archiveBase(core::ArchiveP node)
+void FFAngle_O::fields(core::Record_sp node)
 {
-    node->attribute("type1",this->_Type1);
-    node->attribute("type2",this->_Type2);
-    node->attribute("type3",this->_Type3);
-    node->attribute("angRad", this->_AngRad);
-    node->attribute("k2",this->_K2__kJPerRadianSquared);
+  this->Base::fields(node);
+  node->field(INTERN_(kw,type1),this->_Type1);
+  node->field(INTERN_(kw,type2),this->_Type2);
+  node->field(INTERN_(kw,type3),this->_Type3);
+  node->field(INTERN_(kw,angRad), this->_AngRad);
+  node->field(INTERN_(kw,k2),this->_K2__kJPerRadianSquared);
 }
-#endif
 
-#ifdef CONSPACK
-    void	FFAngleDb_O::archiveBase(core::ArchiveP node)
+void	FFAngleDb_O::fields(core::Record_sp node)
 {
-    this->FFBaseDb_O::archiveBase(node);
-    node->attribute("angleFunction",this->_AngleFunction);
-    node->attributeVector0(KW("angles"),this->_Terms );
-    node->attributeStringMap<FFAngle_O>(KW("map"),this->_Lookup );
-    node->attributeStringMap(KW("zConstants"),this->_ZConstants);
-    node->attributeStringMap(KW("cConstants"),this->_CConstants);
+    this->Base::fields(node);
+    node->field(INTERN_(kw,angleFunction),this->_AngleFunction);
+    node->field(INTERN_(kw,angles),this->_Terms );
+    node->field(INTERN_(kw,map),this->_Lookup );
+    node->field(INTERN_(kw,zConstants),this->_ZConstants);
+    node->field(INTERN_(kw,cConstants),this->_CConstants);
 }
-#endif
-
 
 #if 0 //[
 void

@@ -41,14 +41,14 @@ typedef	enum { singleCDBond,
 
 
 SMART(CDNode );
-class CDNode_O : public core::T_O
+class CDNode_O : public core::CxxObject_O
 {	
     friend class CDFragment_O;
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,CDNode_O,"CDNode");
 private:
 	uint					_Id;
-        string           			_Label;
+        core::Symbol_sp       			_Label;
 	StereochemistryType			_StereochemistryType;
 	ConfigurationEnum			_Configuration;
 private:	// generated
@@ -61,15 +61,15 @@ private:	// generated
 public:
 	void	initialize();
 private:
-	string	_extractLabel(adapt::QDomNode_sp node);
+        core::Symbol_sp	_extractLabel(adapt::QDomNode_sp node);
 	void	unidirectionalBondTo(CDNode_sp neighbor, CDBondOrder order);
 public:
 	uint	getId() const { return this->_Id;};
 	void    setId(uint i) { this->_Id = i; };
-        string getLabel() const { return this->_Label;};
+        core::Symbol_sp getLabel() const { return this->_Label;};
 	/*! Parse the label into a name and ionization component "name/[+-] */
 	void getParsedLabel(string& name, int& ionization) const;
-	void setLabel(const string& l) { this->_Label = l;};
+	void setLabel(core::Symbol_sp l) { this->_Label = l;};
 	Atom_sp	getAtom() const { return this->_Atom;};
 	void setAtom(Atom_sp a) { this->_Atom = a;};
 	void	parseFromXml(adapt::QDomNode_sp xml);
@@ -83,9 +83,9 @@ public:
 
 
 SMART(CDBond );
-class CDBond_O : public core::T_O
+class CDBond_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,CDBond_O,"CDBond");
 private:
 	uint		_IdBegin;
@@ -119,14 +119,14 @@ public:
 
 
 SMART(CDFragment );
-class CDFragment_O : public core::T_O
+class CDFragment_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,CDFragment_O,"CDFragment");
 public:
     typedef gctools::Vec0<CDBond_sp>	CDBonds;
-    typedef gctools::SmallMap<Atom_sp,CDNode_sp> AtomsToBonds; // m a p<Atom_sp,CDNode_sp>	AtomsToBonds;
-    typedef gctools::SmallMap<int,CDNode_sp> IntMappedCDNodes; // typedef m a p<int,CDNode_sp>		IntMappedCDNodes;
+    typedef gctools::SmallMap<Atom_sp,CDNode_sp> AtomsToBonds; // map<Atom_sp,CDNode_sp>	AtomsToBonds;
+    typedef gctools::SmallMap<int,CDNode_sp> IntMappedCDNodes; // typedef map<int,CDNode_sp>		IntMappedCDNodes;
 private:
     core::Symbol_sp		_ConstitutionName;
     IntMappedCDNodes		_Nodes;
@@ -138,7 +138,7 @@ private:
 public:
     void	initialize();
 private:
-    bool _asKeyedObject(const string& label, core::Symbol_sp& keyword, core::T_sp& obj);
+    bool _asKeyedObject(core::Symbol_sp label, core::Symbol_sp& keyword, core::T_sp& obj);
 private:
     Residue_sp _buildResidue(bool constitutionOnly);
 
@@ -150,7 +150,7 @@ public:
     void	addProperties(core::HashTableEq_sp dict);
     Atom_sp createOneAtom(CDNode_sp n);
     void	createAtoms();
-    void	createImplicitHydrogen(CDNode_sp from, const string& name);
+    void	createImplicitHydrogen(CDNode_sp from, core::Symbol_sp name);
     void	parseFromXml(adapt::QDomNode_sp xml);
     /*! Return false if the fragment couldn't be interpreted */
     bool	interpret();
@@ -182,9 +182,9 @@ public:
 
 
 SMART(CDText );
-class CDText_O : public core::T_O
+class CDText_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,CDText_O,"CDText");
 #if INIT_TO_FACTORIES
  public:
@@ -213,9 +213,9 @@ public:
 
 
 SMART(ChemDraw );
-class ChemDraw_O : public core::T_O
+class ChemDraw_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,ChemDraw_O,"ChemDraw");
 #if INIT_TO_FACTORIES
  public:

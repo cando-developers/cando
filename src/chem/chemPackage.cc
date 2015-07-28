@@ -25,6 +25,7 @@
 //#include <cando/chem/candoDatabaseReference.h>
 //#include "candoDatabase.h"
 #include <cando/chem/chemInfo.h>
+#include <cando/chem/loop.fwd.h>
 #include <cando/chem/cipPrioritizer.h>
 #include <cando/chem/command.h>
 #include <cando/chem/complexRestraints.h>
@@ -227,6 +228,7 @@ namespace chem
 	case candoGlobals:
 	{
 	    Initialize_Mol2_TypeRules(_lisp);
+            initialize_loop();
 	    initializeElementsAndHybridization();
 //	    _lisp->defvar(_sym_candoDatabase,cdb);
 	}
@@ -284,7 +286,15 @@ namespace chem
 core::Symbol_sp chemkw_intern(const string& symName)
 {
   if ( symName == "" ) return _Nil<core::Symbol_O>();
-  return _lisp->intern(symName,ChemKwPkg);
+  const string trimmed = core::trimWhiteSpace(symName);
+  return _lisp->intern(trimmed,ChemKwPkg);
+}
+
+core::Symbol_sp chemkw_intern(core::Str_sp symName)
+{
+  string s = symName->get();
+  if ( s == "" ) return _Nil<core::Symbol_O>();
+  return chemkw_intern(s);
 }
 };
 

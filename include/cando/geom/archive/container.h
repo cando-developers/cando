@@ -16,9 +16,9 @@ namespace geom {
 /*! Virtual class for containers
  */
     SMART(Container );
-    class Container_O : public core::T_O
+    class Container_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::T_O);
+	LISP_BASE1(core::CxxObject_O);
 	LISP_CLASS(geom,GeomPkg,Container_O,"Container");
 public:
 public:

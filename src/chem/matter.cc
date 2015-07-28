@@ -66,7 +66,7 @@ namespace chem
 //
 // copy constructor
 //
-    Matter_O::Matter_O( const Matter_O& c ) : core::T_O(c)
+    Matter_O::Matter_O( const Matter_O& c ) : core::CxxObject_O(c)
     {
 	this->_NextContentId = c._NextContentId;
 	this->_Id = c._Id;

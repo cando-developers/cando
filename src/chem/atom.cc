@@ -4,6 +4,8 @@
 //
 #include <string.h>
 #include <clasp/core/common.h>
+#include <clasp/core/record.h>
+#include <clasp/core/evaluator.h>
 #include <clasp/core/str.h>
 #include <cando/chem/symbolTable.h>
 #include <cando/chem/matter.h>
@@ -109,138 +111,177 @@ namespace chem
 	return atom;
     };
 
-    
+#define ARGS_randomizeAtomPosition "((core::a chem:atom) &optional (width 10.0))"
+#define DECL_randomizeAtomPosition ""
+#define DOCS_randomizeAtomPosition "make Atom args: &key (name \"\") (element :C)"
+void	Atom_O::randomizeAtomPosition(double width)
+{
+  double				x,y,z;
+  Vector3				v;
+  double half_width = width/2.0;
+  x = core::randomNumber01()*width-half_width;
+  y = core::randomNumber01()*width-half_width;
+  z = core::randomNumber01()*width-half_width;
+  v.set(x,y,z);
+  this->setPosition(v);
+}
+
+
+
+//
+//	perturbAtomPosition
+//
+//	Set the coordinates of all atoms to random values
+//		between 0 and 100 angstroms
+//
+//
+void	Atom_O::perturbAtomPosition(double dist)
+{_G();
+  double				xd,yd,zd;
+  Vector3				v,vd;
+  xd = (core::randomNumber01()*2.0-1.0)*dist;
+  yd = (core::randomNumber01()*2.0-1.0)*dist;
+  zd = (core::randomNumber01()*2.0-1.0)*dist;
+  v = this->getPosition();
+  vd.set(xd,yd,zd);
+  v = v+vd;
+  this->setPosition(v);
+}
+
+
     
 
-    void Atom_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<Atom_O>()
+void Atom_O::exposeCando(core::Lisp_sp lisp)
+{
+  core::class_<Atom_O>()
 ////	    .def_raw("core:__init__",&Atom_O::__init__,"(self &key name)")
-	    .def("atomName",&Atom_O::atomName)
-	    .def("getRelativePriority", &Atom_O::getRelativePriority)
-	    .def("bondedAtomsAsList", &Atom_O::bondedAtomsAsList)
-	    .def("getAtomicNumber", &Atom_O::getAtomicNumber)
-	    .def("isAromatic",&Atom_O::isAromatic)
-	    .def("setIsAromatic",&Atom_O::setIsAromatic)
-	    .def("getIonization",&Atom_O::getIonization)
-	    .def("setIonization",&Atom_O::setIonization)
-	    .def("getBondedHydrogenCount", &Atom_O::getBondedHydrogenCount)
+    .def("atomName",&Atom_O::atomName)
+    .def("getRelativePriority", &Atom_O::getRelativePriority)
+    .def("bondedAtomsAsList", &Atom_O::bondedAtomsAsList)
+    .def("getAtomicNumber", &Atom_O::getAtomicNumber)
+    .def("isAromatic",&Atom_O::isAromatic)
+    .def("setIsAromatic",&Atom_O::setIsAromatic)
+    .def("getIonization",&Atom_O::getIonization)
+    .def("setIonization",&Atom_O::setIonization)
+    .def("randomizeAtomPosition",&Atom_O::randomizeAtomPosition,ARGS_randomizeAtomPosition,DECL_randomizeAtomPosition,DOCS_randomizeAtomPosition)
+    .def("perturbAtomPosition",&Atom_O::perturbAtomPosition)
+    .def("getBondedHydrogenCount", &Atom_O::getBondedHydrogenCount)
 //	.def("getMatterType",&Matter_O::getMatterType)
-	    .def("atLowerAddressThan",&Atom_O::atLowerAddressThan)
-	    .def("getAlias",&Atom_O::getAlias)
-	    .def("setAlias",&Atom_O::setAlias)
-	    .def("getAtomId",&Atom_O::getAtomId)
-	    .def("getMoeIndex",&Atom_O::getMoeIndex)
-	    .def("setMoeIndex",&Atom_O::setMoeIndex)
-	    .def("getTempInt",&Atom_O::getTempInt)
-	    .def("setTempInt",&Atom_O::setTempInt)
-	    .def("isConfigurable",&Atom_O::isConfigurable)
-	    .def("setStereochemistryType",&Atom_O::setStereochemistryType)
-	    .def("getStereochemistryType",&Atom_O::getStereochemistryType)
-	    .def("setConfiguration",&Atom_O::setConfiguration)
-	    .def("getConfiguration",&Atom_O::getConfiguration)
-	    .def("getConfigurationAsString",&Atom_O::getConfigurationAsString)
-	    .def("calculateStereochemicalConfiguration",&Atom_O::calculateStereochemicalConfiguration)
-	    .def("getFlags",&Atom_O::getFlags)
-	    .def("resetFlags",&Atom_O::resetFlags)
-	    .def("turnOnFlags",&Atom_O::turnOnFlags)
-	    .def("turnOffFlags",&Atom_O::turnOffFlags)
-	    .def("testAllFlags",&Atom_O::testAllFlags)
-	    .def("testAnyFlags",&Atom_O::testAnyFlags)
-	    .def("isInRing",&Atom_O::isInRing)
-	    .def("inRingSize",&Atom_O::inRingSize)
-	    .def("getRingMembershipCount",&Atom_O::getRingMembershipCount)
-	    .def("setRingMembershipCount",&Atom_O::setRingMembershipCount)
-	    .def("getNameIndex",&Atom_O::getNameIndex)
-	    .def("getType",&Atom_O::getType)
-	    .def("setType",&Atom_O::setType)
-	    .def("getMoeType",&Atom_O::getMoeType)
-	    .def("setMoeType",&Atom_O::setMoeType)
-	    .def("getHybridization",&Atom_O::getHybridization)
-	    .def("setHybridization",&Atom_O::setHybridization)
-	    .def("getElementAsString",&Atom_O::getElementAsString)
-	    .def("getElement",&Atom_O::getElement,"","","",false)
-	    .def("setElement",&Atom_O::setElement,"","","",false)
-	    .def("getResidueContainedBy", &Atom_O::getResidueContainedBy )
-	    .def("getSelected",&Atom_O::getSelected)
-	    .def("setSelected",&Atom_O::setSelected)
-	    .def("getPositionInNanometers",&Atom_O::getPositionInNanometers)
-	    .def("getPosition",&Atom_O::getPosition,"","","",false)
-	    .def("setPositionInNanometers",&Atom_O::setPositionInNanometers)
-	    .def("setPosition",&Atom_O::setPosition,"","","",false)
-	    .def("getTouched",&Atom_O::getTouched)
-	    .def("setTouched",&Atom_O::setTouched)
-	    .def("getCharge",&Atom_O::getCharge)
-	    .def("setCharge",&Atom_O::setCharge)
+    .def("atLowerAddressThan",&Atom_O::atLowerAddressThan)
+    .def("getAlias",&Atom_O::getAlias)
+    .def("setAlias",&Atom_O::setAlias)
+    .def("getAtomId",&Atom_O::getAtomId)
+    .def("getMoeIndex",&Atom_O::getMoeIndex)
+    .def("setMoeIndex",&Atom_O::setMoeIndex)
+    .def("getTempInt",&Atom_O::getTempInt)
+    .def("setTempInt",&Atom_O::setTempInt)
+    .def("isConfigurable",&Atom_O::isConfigurable)
+    .def("setStereochemistryType",&Atom_O::setStereochemistryType)
+    .def("getStereochemistryType",&Atom_O::getStereochemistryType)
+    .def("setConfiguration",&Atom_O::setConfiguration)
+    .def("getConfiguration",&Atom_O::getConfiguration)
+    .def("getConfigurationAsString",&Atom_O::getConfigurationAsString)
+    .def("calculateStereochemicalConfiguration",&Atom_O::calculateStereochemicalConfiguration)
+    .def("getFlags",&Atom_O::getFlags)
+    .def("resetFlags",&Atom_O::resetFlags)
+    .def("turnOnFlags",&Atom_O::turnOnFlags)
+    .def("turnOffFlags",&Atom_O::turnOffFlags)
+    .def("testAllFlags",&Atom_O::testAllFlags)
+    .def("testAnyFlags",&Atom_O::testAnyFlags)
+    .def("isInRing",&Atom_O::isInRing)
+    .def("inRingSize",&Atom_O::inRingSize)
+    .def("getRingMembershipCount",&Atom_O::getRingMembershipCount)
+    .def("setRingMembershipCount",&Atom_O::setRingMembershipCount)
+    .def("getNameIndex",&Atom_O::getNameIndex)
+    .def("getType",&Atom_O::getType)
+    .def("setType",&Atom_O::setType)
+    .def("getMoeType",&Atom_O::getMoeType)
+    .def("setMoeType",&Atom_O::setMoeType)
+    .def("getHybridization",&Atom_O::getHybridization)
+    .def("setHybridization",&Atom_O::setHybridization)
+    .def("getElementAsString",&Atom_O::getElementAsString)
+    .def("getElement",&Atom_O::getElement,"","","",false)
+    .def("setElement",&Atom_O::setElement,"","","",false)
+    .def("getResidueContainedBy", &Atom_O::getResidueContainedBy )
+    .def("getSelected",&Atom_O::getSelected)
+    .def("setSelected",&Atom_O::setSelected)
+    .def("getPositionInNanometers",&Atom_O::getPositionInNanometers)
+    .def("getPosition",&Atom_O::getPosition,"","","",false)
+    .def("setPositionInNanometers",&Atom_O::setPositionInNanometers)
+    .def("setPosition",&Atom_O::setPosition,"","","",false)
+    .def("getTouched",&Atom_O::getTouched)
+    .def("setTouched",&Atom_O::setTouched)
+    .def("getCharge",&Atom_O::getCharge)
+    .def("setCharge",&Atom_O::setCharge)
 #if ATOMIC_ANCHOR
-	    .def("getAnchorPos",&Atom_O::getAnchorPos)
-	    .def("setAnchorPos",&Atom_O::setAnchorPos)
+    .def("getAnchorPos",&Atom_O::getAnchorPos)
+    .def("setAnchorPos",&Atom_O::setAnchorPos)
 #endif
-	    .def("getOccupancy",&Atom_O::getOccupancy)
-	    .def("setOccupancy",&Atom_O::setOccupancy)
-	    .def("getTempFactor",&Atom_O::getTempFactor)
-	    .def("setTempFactor",&Atom_O::setTempFactor)
-	    .def("getVdwRadius",&Atom_O::getVdwRadius)
-	    .def("setVdwRadius",&Atom_O::setVdwRadius)
-	    .def("getCovalentRadius",&Atom_O::getCovalentRadius)
-	    .def("setCovalentRadius",&Atom_O::setCovalentRadius)
-	    .def("setMembershipAr1",&Atom_O::setMembershipAr1)
-	    .def("getMembershipAr1",&Atom_O::getMembershipAr1)
-	    .def("setMembershipAr2",&Atom_O::setMembershipAr2)
-	    .def("getMembershipAr2",&Atom_O::getMembershipAr2)
-	    .def("setMembershipAr3",&Atom_O::setMembershipAr3)
-	    .def("getMembershipAr3",&Atom_O::getMembershipAr3)
-	    .def("setMembershipAr4",&Atom_O::setMembershipAr4)
-	    .def("getMembershipAr4",&Atom_O::getMembershipAr4)
-	    .def("setMembershipAr5",&Atom_O::setMembershipAr5)
-	    .def("getMembershipAr5",&Atom_O::getMembershipAr5)
-	    .def("setSeenId",&Atom_O::setSeenId)
-	    .def("getSeenId",&Atom_O::getSeenId)
-	    .def("setBackCount",&Atom_O::setBackCount)
-	    .def("getBackCount",&Atom_O::getBackCount)
-	    .def("setBackSpan",&Atom_O::setBackSpan)
-	    .def("getBackSpan",&Atom_O::getBackSpan)
-	    .def("setNextSpan",&Atom_O::setNextSpan)
-	    .def("getNextSpan",&Atom_O::getNextSpan)
-	    .def("localSpanningTree",&Atom_O::localSpanningTree)
-	    .def("getValence",&Atom_O::getValence)
-	    .def("flagsSet",&Atom_O::flagsSet)
-	    .def("applyTransformToAtoms",&Atom_O::applyTransformToAtoms)
-	    .def("bondTo",&Atom_O::bondTo)
-	    .def("bondToSingle",&Atom_O::bondToSingle)
+    .def("getOccupancy",&Atom_O::getOccupancy)
+    .def("setOccupancy",&Atom_O::setOccupancy)
+    .def("getTempFactor",&Atom_O::getTempFactor)
+    .def("setTempFactor",&Atom_O::setTempFactor)
+    .def("getVdwRadius",&Atom_O::getVdwRadius)
+    .def("setVdwRadius",&Atom_O::setVdwRadius)
+    .def("getCovalentRadius",&Atom_O::getCovalentRadius)
+    .def("setCovalentRadius",&Atom_O::setCovalentRadius)
+    .def("setMembershipAr1",&Atom_O::setMembershipAr1)
+    .def("getMembershipAr1",&Atom_O::getMembershipAr1)
+    .def("setMembershipAr2",&Atom_O::setMembershipAr2)
+    .def("getMembershipAr2",&Atom_O::getMembershipAr2)
+    .def("setMembershipAr3",&Atom_O::setMembershipAr3)
+    .def("getMembershipAr3",&Atom_O::getMembershipAr3)
+    .def("setMembershipAr4",&Atom_O::setMembershipAr4)
+    .def("getMembershipAr4",&Atom_O::getMembershipAr4)
+    .def("setMembershipAr5",&Atom_O::setMembershipAr5)
+    .def("getMembershipAr5",&Atom_O::getMembershipAr5)
+    .def("setSeenId",&Atom_O::setSeenId)
+    .def("getSeenId",&Atom_O::getSeenId)
+    .def("setBackCount",&Atom_O::setBackCount)
+    .def("getBackCount",&Atom_O::getBackCount)
+    .def("setBackSpan",&Atom_O::setBackSpan)
+    .def("getBackSpan",&Atom_O::getBackSpan)
+    .def("setNextSpan",&Atom_O::setNextSpan)
+    .def("getNextSpan",&Atom_O::getNextSpan)
+    .def("localSpanningTree",&Atom_O::localSpanningTree)
+    .def("getValence",&Atom_O::getValence)
+    .def("flagsSet",&Atom_O::flagsSet)
+    .def("applyTransformToAtoms",&Atom_O::applyTransformToAtoms)
+    .def("bondTo",&Atom_O::bondTo)
+    .def("bondToSingle",&Atom_O::bondToSingle)
 //	.def("setAtomStorageId",&Atom_O::setAtomStorageId)
 //	.def("getAtomStorageId",&Atom_O::getAtomStorageId)
-	    .def("isBondedToAtomNamed",&Atom_O::isBondedToAtomNamed)
-	    .def("bondedNeighborWithName",&Atom_O::bondedNeighborWithName)
-	    .def("hasBondWithOrder",&Atom_O::hasBondWithOrder)
-	    .def("isBondedToElementOrder",&Atom_O::isBondedToElementOrder)
-	    .def("isBondedToElementHybridization",
-		 &Atom_O::isBondedToElementHybridization)
-	    .def("isBondedToElementHybridizationElementHybridization",
-		 &Atom_O::isBondedToElementHybridizationElementHybridization)
-	    .def("isBondedTo",&Atom_O::isBondedTo)
-	    .def("isBondedToWithBondOrder",&Atom_O::isBondedToWithBondOrder)
-	    .def("removeBondTo",&Atom_O::removeBondTo)
-	    .def("removeAllBonds",&Atom_O::removeAllBonds)
-	    .def("coordination",&Atom_O::coordination)
-	    .def("bondedNeighbor",&Atom_O::bondedNeighbor)
-	    .def("bondedOrder",&Atom_O::bondedOrder)
-	    .def("totalBondOrder",&Atom_O::totalBondOrder)
+    .def("isBondedToAtomNamed",&Atom_O::isBondedToAtomNamed)
+    .def("bondedNeighborWithName",&Atom_O::bondedNeighborWithName)
+    .def("hasBondWithOrder",&Atom_O::hasBondWithOrder)
+    .def("isBondedToElementOrder",&Atom_O::isBondedToElementOrder)
+    .def("isBondedToElementHybridization",
+         &Atom_O::isBondedToElementHybridization)
+    .def("isBondedToElementHybridizationElementHybridization",
+         &Atom_O::isBondedToElementHybridizationElementHybridization)
+    .def("isBondedTo",&Atom_O::isBondedTo)
+    .def("isBondedToWithBondOrder",&Atom_O::isBondedToWithBondOrder)
+    .def("removeBondTo",&Atom_O::removeBondTo)
+    .def("removeAllBonds",&Atom_O::removeAllBonds)
+    .def("coordination",&Atom_O::coordination)
+    .def("bondedNeighbor",&Atom_O::bondedNeighbor)
+    .def("bondedOrder",&Atom_O::bondedOrder)
+    .def("totalBondOrder",&Atom_O::totalBondOrder)
 //	    .def("copy",&Atom_O::copy,"","","",false)
-	    .def("createImplicitHydrogenNamesOnCarbon",&Atom_O::createImplicitHydrogenNamesOnCarbon)
-	    .def("testConsistancy",&Atom_O::testConsistancy)
+    .def("createImplicitHydrogenNamesOnCarbon",&Atom_O::createImplicitHydrogenNamesOnCarbon)
+    .def("testConsistancy",&Atom_O::testConsistancy)
 //	.def("asXml",&Atom_O::asXml)
-	    .def("numberOfBonds",&Atom_O::numberOfBonds)
-	    .def("getBondList",&Atom_O::getBondList)
-	    .def("bondsAsList",&Atom_O::bondsAsList)
-	    .def("getHeavyAtomBondList",&Atom_O::getHeavyAtomBondList)
-	    ;
-	Defun_maker(ChemPkg,Atom);
+    .def("numberOfBonds",&Atom_O::numberOfBonds)
+    .def("getBondList",&Atom_O::getBondList)
+    .def("bondsAsList",&Atom_O::bondsAsList)
+    .def("getHeavyAtomBondList",&Atom_O::getHeavyAtomBondList)
+    ;
+  Defun_maker(ChemPkg,Atom);
 
-	SYMBOL_EXPORT_SC_(ChemPkg,configurationToSymbolConverter);
-	SYMBOL_EXPORT_SC_(ChemPkg,stereochemistryToSymbolConverter);
+  SYMBOL_EXPORT_SC_(ChemPkg,configurationToSymbolConverter);
+  SYMBOL_EXPORT_SC_(ChemPkg,stereochemistryToSymbolConverter);
 
-    }
+}
 
     void Atom_O::exposePython(core::Lisp_sp lisp)
     {_G();
@@ -598,9 +639,10 @@ namespace chem
 
     void Atom_O::setElementFromAtomName()
     {_G();
-	Element element = elementFromAtomNameString(this->getName()->symbolName()->get());
-	LOG(BF(" Resulting element= |%d|") %element );
-	this->setElement(element);
+      string nameStr = this->getName()->symbolName()->get();
+      Element element = elementFromAtomNameString(nameStr);
+      LOG(BF(" Resulting element= |%d|") %element );
+      this->setElement(element);
     }
 
     void	Atom_O::setElementFromString(const string& str)
@@ -704,44 +746,12 @@ namespace chem
     }
 
 //
-//	randomizeAtomPositions
+//	randomizeAtomPosition
 //
 //	Set the coordinates of all atoms to random values
 //		between 0 and 100 angstroms
 //
 //
-    void	Atom_O::randomizeAtomPositions()
-    {_G();
-	double				x,y,z;
-	Vector3				v;
-	x = core::randomNumber01()*20.0;
-	y = core::randomNumber01()*20.0;
-	z = core::randomNumber01()*20.0;
-	v.set(x,y,z);
-	this->setPosition(v);
-    }
-
-
-
-//
-//	perturbAtomPositions
-//
-//	Set the coordinates of all atoms to random values
-//		between 0 and 100 angstroms
-//
-//
-    void	Atom_O::perturbAtomPositions(double dist)
-    {_G();
-	double				xd,yd,zd;
-	Vector3				v,vd;
-	xd = (core::randomNumber01()*2.0-1.0)*dist;
-	yd = (core::randomNumber01()*2.0-1.0)*dist;
-	zd = (core::randomNumber01()*2.0-1.0)*dist;
-	v = this->getPosition();
-	vd.set(xd,yd,zd);
-	v = v+vd;
-	this->setPosition(v);
-    }
 
 
 

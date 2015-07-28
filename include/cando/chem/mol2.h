@@ -35,8 +35,7 @@ namespace chem {
 
 void	_calculateElementAndHybridization(Atom_sp a);
 
-void	mol2ReadAggregateFromFileName( Aggregate_sp	a,
-                                       const string&	sFileName);
+ void	mol2ReadAggregateFromFileName( Aggregate_sp	a, core::T_sp fileName);
 
 //Aggregate_sp	mol2ReadAggregate( string fileName );
 
@@ -48,11 +47,11 @@ string	mol2AtomType(Atom_sp a);
 
     void	mol2WriteAggregateStream( Aggregate_sp 	agg, core::T_sp out);
 string	mol2WriteAggregateReturnAsString( Aggregate_sp agg );
-void	mol2WriteAggregateToFileName( Aggregate_sp a, const string& sFileName );
+ void	mol2WriteAggregateToFileName( Aggregate_sp a, core::T_sp sFileName );
 
-void	mol2WriteDumbAggregateToFileName( Aggregate_O& a, const string& sFileName );
+ void	mol2WriteDumbAggregateToFileName( Aggregate_O& a, core::T_sp sFileName );
 
-void	mol2WriteMatterToFileName( Matter_sp matter, const string& fileName );
+ void	mol2WriteMatterToFileName( Matter_sp matter, core::T_sp fileName );
 
 
 };

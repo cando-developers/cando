@@ -35,9 +35,9 @@ SMART(NumericalFunction);
  *and the (xInc) interval length.
  */
 SMART(NumericalFunction);
-class NumericalFunction_O : public core::T_O
+class NumericalFunction_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,NumericalFunction_O,"NumericalFunction");
 
 public:

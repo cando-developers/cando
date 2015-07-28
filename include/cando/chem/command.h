@@ -27,9 +27,9 @@ namespace chem {
 SMART(Command);
 SMART(Command);
 SMART(Command );
-class Command_O : public core::T_O
+class Command_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,Command_O,"Command");
 
 public:

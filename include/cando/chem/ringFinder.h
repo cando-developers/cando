@@ -22,9 +22,9 @@ SMART(Molecule);
 SMART(Matter);
 
 SMART(PathMessage );
-class PathMessage_O : public core::T_O
+class PathMessage_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,PathMessage_O,"PathMessage");
 public:
 	void initialize();
@@ -64,9 +64,9 @@ public:
 
 
 SMART(AGVertex );
-class AGVertex_O : public core::T_O
+class AGVertex_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,AGVertex_O,"AGVertex");
 private:
     RingFinder_wp		_graph;
@@ -102,9 +102,9 @@ public:
 
 
 SMART(AGEdge );
-class AGEdge_O : public core::T_O
+class AGEdge_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,AGEdge_O,"AGEdge");
 private:
     RingFinder_wp		_graph;
@@ -127,9 +127,9 @@ public:
 
 
 SMART(RingFinder );
-class RingFinder_O : public core::T_O
+class RingFinder_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,RingFinder_O,"RingFinder");
 private:
     core::HashTable_sp			_vertices;

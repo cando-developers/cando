@@ -26,9 +26,9 @@ namespace chem {
 
 SMART(AtomIndexer);
 SMART(AtomIndexer);
-class AtomIndexer_O : public core::T_O
+class AtomIndexer_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,AtomIndexer_O,"AtomIndexer");
 
 public:
@@ -79,9 +79,9 @@ public:
 
 
 SMART(MapOfMonomerNamesToAtomIndexers);
-class MapOfMonomerNamesToAtomIndexers_O : public core::T_O
+class MapOfMonomerNamesToAtomIndexers_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,MapOfMonomerNamesToAtomIndexers_O,"MapOfMonomerNamesToAtomIndexers");
 
 public:

@@ -23,9 +23,9 @@ namespace chem
     SMART(ZMatrix);
 
     SMART(ZMatrixInternal );
-    class ZMatrixInternal_O : public core::T_O
+    class ZMatrixInternal_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::T_O);
+	LISP_BASE1(core::CxxObject_O);
 	LISP_CLASS(chem,ChemPkg,ZMatrixInternal_O,"ZMatrixInternal");
     public:
 	void initialize();
@@ -210,9 +210,9 @@ namespace chem
 
 
     SMART(ZMatrixEntry);
-    class ZMatrixEntry_O : public core::T_O
+    class ZMatrixEntry_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::T_O);
+	LISP_BASE1(core::CxxObject_O);
 	LISP_CLASS(chem,ChemPkg,ZMatrixEntry_O,"ZMatrixEntry");
     public:
 	void initialize();
@@ -247,9 +247,9 @@ namespace chem
 
 
     SMART(ZMatrix);
-    class ZMatrix_O : public core::T_O
+    class ZMatrix_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::T_O);
+	LISP_BASE1(core::CxxObject_O);
 	LISP_CLASS(chem,ChemPkg,ZMatrix_O,"ZMatrix");
 #if INIT_TO_FACTORIES
     public:

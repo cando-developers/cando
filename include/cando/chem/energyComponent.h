@@ -430,9 +430,9 @@ template <class ComponentType, class EntryType>
 
 
 SMART(EnergyComponent );
-class EnergyComponent_O : public core::T_O
+class EnergyComponent_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,EnergyComponent_O,"EnergyComponent");
 public:
 public: // virtual functions inherited from Object

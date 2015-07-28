@@ -8,9 +8,9 @@ namespace units
 {
 
 FORWARD(Dimension);
-class Dimension_O : public core::T_O
+class Dimension_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(units,UnitsPkg,Dimension_O,"Dimension");
 //    DECLARE_ARCHIVE();
     DEFAULT_CTOR_DTOR(Dimension_O);

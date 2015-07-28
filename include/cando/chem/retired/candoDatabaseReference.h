@@ -19,9 +19,9 @@ namespace chem {
 SMART(ObjRef);
 
 SMART(CandoDatabaseReference);
-class CandoDatabaseReference_O : public core::T_O
+class CandoDatabaseReference_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,CandoDatabaseReference_O,"CandoDatabaseReference");
 public:
 //    void	archive(core::ArchiveP node);

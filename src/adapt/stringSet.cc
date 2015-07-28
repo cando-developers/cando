@@ -199,7 +199,7 @@ void StringSet_O::initialize() {
   this->rest = false;
 }
 
-StringSet_O::StringSet_O(const StringSet_O &ss) : T_O(ss) {
+StringSet_O::StringSet_O(const StringSet_O &ss) : CxxObject_O(ss) {
   this->rest = ss.rest;
   this->strs = ss.strs;
 }
@@ -385,8 +385,5 @@ boost::python::list StringSet_O::python_asList() {
 #endif
 #endif
 
-StringSet_O::~StringSet_O() {
-  // nothing
-}
 EXPOSE_CLASS(adapt, StringSet_O);
 };

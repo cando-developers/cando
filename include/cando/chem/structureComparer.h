@@ -39,9 +39,9 @@ DEFINE_O_SMART_POINTERS(StructureComparer);
 class StructureComparer_O;
     typedef	gctools::smart_ptr<StructureComparer_O>	StructureComparer_sp;
 SMART(StructureComparer);
-class StructureComparer_O : public core::T_O
+class StructureComparer_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,StructureComparer_O,"StructureComparer");
 
 public:

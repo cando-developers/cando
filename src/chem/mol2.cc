@@ -26,6 +26,8 @@
 #include <stdio.h>
 #include <map>
 #include <clasp/core/foundation.h>
+#include <clasp/core/lispStream.h>
+#include <clasp/core/pathname.h>
 #include <cando/chem/symbolTable.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/molecule.h>
@@ -44,53 +46,60 @@ static chem::TypeAssignmentRules_sp	sybylRules;
 class	Mol2File 
 {
 private:
-    std::ifstream	fIn;
-    std::stringstream	mLine;
+  core::T_sp	fIn;
+  bool _eof;
+  std::stringstream	mLine;
 public:
-    bool	eof() { return fIn.eof(); };
-    void	advanceLine() {
-	bool ignoreNextCr;
-	char c;
-	this->mLine.str("");
-	ignoreNextCr = false;
-	while ( !fIn.eof() && (fIn.get(c)) ) {
-	    if ( c == 10 ) {
-		if ( ignoreNextCr ) {
-		    ignoreNextCr = false;
-		} else break;
-	    }
-	    if ( c == '\\' ) {
-		ignoreNextCr = true;
-	    } else {
-		if ( c >= ' ' ) {
-		    this->mLine.put(c);
-		}
-	    }
-	}
-    };
-    stringstream&	line() { return this->mLine; };
-    std::queue<string>	splitLine() {
-        std::queue<string>	qWords;
-	core::queueSplitString(this->mLine.str(), qWords, " \t" );
-	return qWords;
-    };
-    bool	hasDataLine() {
-	if ( this->eof() ) return false;
-	if ( this->mLine.str().size() == 0 ) return false;
-	if ( this->mLine.str()[0] != '@' ) return true;
-	return false;
-    };
-    void	openFileName(string fileName)
-    {_OF();
-	this->fIn.open(fileName.c_str(), std::ios::in);
-	if ( this->fIn.fail() ) {
-	    SIMPLE_ERROR(BF("Mol2 file doesn't exist: %s" ) % fileName );
-	}
-	this->advanceLine();
+  bool eof() { return this->_eof;};
+  void	advanceLine() {
+    bool ignoreNextCr;
+    char c;
+    this->mLine.str("");
+    ignoreNextCr = false;
+    while (1) {
+      c = core::clasp_read_char(this->fIn);
+      if ( c == EOF ) {
+        this->_eof = true;
+        break;
+      }
+      if ( c == 10 ) {
+        if ( ignoreNextCr ) {
+          ignoreNextCr = false;
+        } else break;
+      }
+      if ( c == '\\' ) {
+        ignoreNextCr = true;
+      } else {
+        if ( c >= ' ' ) {
+          this->mLine.put(c);
+        }
+      }
     }
-    ~Mol2File() {
-	fIn.close();
+  };
+  stringstream&	line() { return this->mLine; };
+  std::queue<string>	splitLine() {
+    std::queue<string>	qWords;
+    core::queueSplitString(this->mLine.str(), qWords, " \t" );
+    return qWords;
+  };
+  bool	hasDataLine() {
+    if ( this->eof() ) return false;
+    if ( this->mLine.str().size() == 0 ) return false;
+    if ( this->mLine.str()[0] != '@' ) return true;
+    return false;
+  };
+  void	openFileName(core::T_sp pn)
+  {_OF();
+    this->fIn = core::clasp_openRead(pn);
+    if ( this->fIn.nilp() ) {
+      SIMPLE_ERROR(BF("Mol2 file doesn't exist: %s" ) % _rep_(pn) );
     }
+    this->advanceLine();
+  }
+  Mol2File() : _eof(false) {};
+  ~Mol2File() {
+    cl_close(fIn);
+  }
 
 
 };
@@ -235,7 +244,7 @@ void	_calculateElementAndHybridization(Atom_sp a)
 }
 
 
-void	mol2ReadAggregateFromFileName( Aggregate_sp aggregate, const string& sFileName )
+void	mol2ReadAggregateFromFileName( Aggregate_sp aggregate, core::T_sp sFileName )
 {_G();
     string				line;
     TriposMolecule			mol;
@@ -722,17 +731,18 @@ AtomInfo	one;
 }
 
 
-void	mol2WriteAggregateToFileName( Aggregate_sp agg, const string& fname )
-{_G();
-    std::ofstream	fout;
-    fout.open(fname.c_str(),std::ios::out);
-    mol2WriteAggregateStream( agg, fout );
-    fout.close();
+void	mol2WriteAggregateToFileName( Aggregate_sp agg, core::T_sp fname )
+{
+  core::Str_sp sname = gc::As<core::Str_sp>(core::cl_namestring(fname));
+  std::ofstream	fout;
+  fout.open(sname->get().c_str(),std::ios::out);
+  mol2WriteAggregateStream( agg, fout );
+  fout.close();
 }
 
 
 
-void	mol2WriteMatterToFileName(Matter_sp matter, const string& fileName )
+void	mol2WriteMatterToFileName(Matter_sp matter, core::T_sp fileName )
 {_G();
   if ( Aggregate_sp agg = matter.asOrNull<Aggregate_O>() ) {
     mol2WriteAggregateToFileName(agg,fileName);

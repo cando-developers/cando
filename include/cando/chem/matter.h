@@ -80,36 +80,36 @@ SMART(Matter);
 
 
 SMART(Matter );
-class Matter_O : public core::T_O
+class Matter_O : public core::CxxObject_O
 {
-    friend class ConstitutionAtoms_O;
-    LISP_BASE1(core::T_O);
-    LISP_CLASS(chem,ChemPkg,Matter_O,"Matter");
+  friend class ConstitutionAtoms_O;
+  LISP_BASE1(core::CxxObject_O);
+  LISP_CLASS(chem,ChemPkg,Matter_O,"Matter");
 #if INIT_TO_FACTORIES
  public:
-    static Matter_sp make(string name);
+  static Matter_sp make(string name);
 #else
-    DECLARE_INIT();
+  DECLARE_INIT();
 #endif
-public:
-	void initialize();
-public:
-        bool fieldsp() const { return true; };
-        void	fields(core::Record_sp node);
+ public:
+  void initialize();
+ public:
+  bool fieldsp() const { return true; };
+  void	fields(core::Record_sp node);
 //	void	serialize(serialize::SNode snode);
 
-friend	class Loop;
-public:
-typedef	gctools::Vec0<Matter_sp>			MatterVector;
-typedef	gctools::Vec0<Matter_sp>::iterator		contentIterator;
-typedef	gctools::Vec0<Matter_sp>::const_iterator	const_contentIterator;
-protected:
- int			_NextContentId;
- int			_Id;
- int			_TempFileId;	//!< Use to define temporary index while reading/writing to non XML formats
- MatterName			name;
- gc::Nilable<Matter_sp>	containerContainedBy;
- MatterVector		_contents;	// KEEP THIS as a vector
+  friend	class Loop;
+ public:
+  typedef	gctools::Vec0<Matter_sp>			MatterVector;
+  typedef	gctools::Vec0<Matter_sp>::iterator		contentIterator;
+  typedef	gctools::Vec0<Matter_sp>::const_iterator	const_contentIterator;
+ protected:
+  int			_NextContentId;
+  int			_Id;
+  int			_TempFileId;	//!< Use to define temporary index while reading/writing to non XML formats
+  MatterName			name;
+  gc::Nilable<Matter_sp>	containerContainedBy;
+  MatterVector		_contents;	// KEEP THIS as a vector
 						// A lot depends on residues
 						// maintaining an identical
 						// order of atoms
@@ -117,241 +117,242 @@ protected:
 						// building process
 		/*! Store Symbol keyed properties of matter
 		 */
-    core::List_sp   	_Properties;
-private:
+  core::List_sp   	_Properties;
+ private:
 	/*! Maintain a list of restraints that span this Matter_O object */
-    gc::Nilable<RestraintList_sp>	_Restraints;
-private:
+  gc::Nilable<RestraintList_sp>	_Restraints;
+ private:
 
 	/*! Adjust the size of the contents array */
-	void resizeContents(int sz);
+  void resizeContents(int sz);
 	/*! Put a child at a particular content index */
-	void putMatter( int index, Matter_sp matter );
+  void putMatter( int index, Matter_sp matter );
 
-private:
-	void accumulateRestraints(RestraintList_sp allRestraints) const;
-public:
+ private:
+  void accumulateRestraints(RestraintList_sp allRestraints) const;
+ public:
 
-	friend class Aggregate_O;
-	friend class Molecule_O;
-	friend class Residue_O;
-	friend class Atom_O;
-	friend	Matter_sp Matter();
-	friend	Matter_sp Matter(int i);
+  friend class Aggregate_O;
+  friend class Molecule_O;
+  friend class Residue_O;
+  friend class Atom_O;
+  friend	Matter_sp Matter();
+  friend	Matter_sp Matter(int i);
 
 //	bool	equals(Matter_sp c);
 
-    virtual string __repr__() const;
-    virtual char getMatterType() { return MATTER_CLASS; };
+  virtual string __repr__() const;
+  virtual char getMatterType() { return MATTER_CLASS; };
 
-	void	setId( int i );
-	int	getId()	{ return(this->_Id);}
+  void	setId( int i );
+  int	getId()	{ return(this->_Id);}
 
 
 	/*! Accumulate all of the restraints in this matter and its contents into a single RestraintList */
-	RestraintList_sp allRestraints() const;
+  RestraintList_sp allRestraints() const;
 
-	void	setTempFileId(int i) {this->_TempFileId = i;};
-	int	getTempFileId() { return this->_TempFileId; };
+  void	setTempFileId(int i) {this->_TempFileId = i;};
+  int	getTempFileId() { return this->_TempFileId; };
 
-public:
+ public:
 	/*! Return a deep copy of this Matter */
-	virtual Matter_sp copy() {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
-protected:
+  virtual Matter_sp copy() {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
+ protected:
 	/*! Internally used to create a copy of this Matter but not redirect Atoms to their copies.
 	 Use copy->redirectAtoms() to direct the new matter to its copied atoms 
 	once all the atoms have been copied.*/
-	virtual Matter_sp copyDontRedirectAtoms();
+  virtual Matter_sp copyDontRedirectAtoms();
 	/*! Redirect atoms to their copies */
-	virtual void redirectAtoms();
+  virtual void redirectAtoms();
 
 	/*! Copy the restraints from another object but dont' redirect atoms */
-	virtual void copyRestraintsDontRedirectAtoms(Matter_sp orig);
+  virtual void copyRestraintsDontRedirectAtoms(Matter_sp orig);
 	/*! Redirect restraint atoms */
-	virtual void redirectRestraintAtoms();
+  virtual void redirectRestraintAtoms();
 
-public:
-	contentIterator begin_contents() { return this->_contents.begin(); };
-	contentIterator end_contents() { return this->_contents.end(); };
-	const_contentIterator begin_contents() const { return this->_contents.begin(); };
-	const_contentIterator end_contents() const { return this->_contents.end(); };
+ public:
+  contentIterator begin_contents() { return this->_contents.begin(); };
+  contentIterator end_contents() { return this->_contents.end(); };
+  const_contentIterator begin_contents() const { return this->_contents.begin(); };
+  const_contentIterator end_contents() const { return this->_contents.end(); };
 
 		/*! Transfer the coordinates from an equivalent (equal) Matter.
 		 * If the (other) isnt equal then throw an exception.
 		 */
-	virtual void transferCoordinates(Matter_sp other) {_OF();SUBCLASS_MUST_IMPLEMENT();};
+  virtual void transferCoordinates(Matter_sp other) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
 		/*! Return the first atom that matches the alias
 		 */
-	virtual Atom_sp	aliasAtomOrNil(Alias_sp alias);
+  virtual Atom_sp	aliasAtomOrNil(Alias_sp alias);
 		/*! Return the first residue that matches the alias
 		 */
-	virtual Residue_sp aliasResidueOrNil(Alias_sp alias);
+  virtual Residue_sp aliasResidueOrNil(Alias_sp alias);
 
 		/*! Return the first atom that matches the alias
 		 */
-	Atom_sp	aliasAtom(Alias_sp alias);
+  Atom_sp	aliasAtom(Alias_sp alias);
 		/*! Return the first residue that matches the alias
 		 */
-	Residue_sp aliasResidue(Alias_sp alias);
+  Residue_sp aliasResidue(Alias_sp alias);
 
-	void	setAllAtomMasks(int m);
-	void	setAtomMasksForAllHeavyAtoms(int m);
+  void	setAllAtomMasks(int m);
+  void	setAtomMasksForAllHeavyAtoms(int m);
 
 	/*! Dump all of the properties associated with this matter */
-	string	propertiesAsString() const;
+  string	propertiesAsString() const;
 	    
 		/*! Remove the property from this Matters property list
 		 */
-	void	clearProperty(core::Symbol_sp propertySymbol);
+  void	clearProperty(core::Symbol_sp propertySymbol);
 		/*! Define/set the value of the property.
 		 * If it already exists it is overwritten.
 		 */
-	void	setProperty(core::Symbol_sp propertySymbol, core::T_sp value);
+  void	setProperty(core::Symbol_sp propertySymbol, core::T_sp value);
 		/*! Define/set the value of the property to TRUE.
 		 * If it already exists it is overwritten.
 		 */
-	void	setPropertyTrue(core::Symbol_sp propertySymbol);
+  void	setPropertyTrue(core::Symbol_sp propertySymbol);
 		/*! Return the value of the property.
 		 * Throw an exception if the property isn't defined.
 		 */
-	core::T_sp getProperty(core::Symbol_sp propertySymbol );
+  core::T_sp getProperty(core::Symbol_sp propertySymbol );
 		/*! Return the value of the property or the
 		 * default if it isn't defined.
 		 */
-	core::T_sp getPropertyOrDefault(core::Symbol_sp propertySymbol, core::T_sp defVal );
+  core::T_sp getPropertyOrDefault(core::Symbol_sp propertySymbol, core::T_sp defVal );
 		/*! Return true if the property exists.
 		 */
-	bool	hasProperty(core::Symbol_sp propertySymbol );
+  bool	hasProperty(core::Symbol_sp propertySymbol );
 
-	virtual uint	numberOfAtoms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
+  virtual uint	numberOfAtoms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
 
-	void	setContainedBy(Matter_sp p){this->containerContainedBy= p;};
-        void	setContainedByNothing(){this->containerContainedBy = _Nil<core::T_O>(); };
+  void	setContainedBy(gc::Nilable<Matter_sp> p){this->containerContainedBy= p;};
+  void	setContainedByNothing(){this->containerContainedBy = _Nil<core::T_O>(); };
 		// Check containedByValid before touching containedBy
-        bool		containedByValid() const {return (this->containerContainedBy.notnilp()); };
-	Matter_sp	containedBy() const	{_G();ASSERTNOTNULL(this->containerContainedBy);return this->containerContainedBy;};
-	Matter_sp	containedBy()	{_G();ASSERTNOTNULL(this->containerContainedBy); return this->containerContainedBy; };
-	bool		isContainedBy(Matter_sp matter);
-	MatterVector&	getContents()	{return(this->_contents);};
-	void	eraseContents(); // Empty the contents vector, don't free the memory
+  bool		containedByValid() const {return (this->containerContainedBy.notnilp()); };
+  Matter_sp	containedBy() const	{_G();ASSERTNOTNULL(this->containerContainedBy);return this->containerContainedBy;};
+  Matter_sp	containedBy()	{_G();ASSERTNOTNULL(this->containerContainedBy); return this->containerContainedBy; };
+  bool		isContainedBy(Matter_sp matter);
+  MatterVector&	getContents()	{return(this->_contents);};
+  void	eraseContents(); // Empty the contents vector, don't free the memory
         
-	contentIterator eraseContent(contentIterator x) {return this->_contents.erase(x);};
+  contentIterator eraseContent(contentIterator x) {return this->_contents.erase(x);};
 
-	virtual void	makeAllAtomNamesInEachResidueUnique();
-	virtual void	fillInImplicitHydrogensOnCarbon();
-	virtual void	randomizeAtomPositions();
-	virtual void	perturbAtomPositions(double dist);
+  virtual void	makeAllAtomNamesInEachResidueUnique();
+  virtual void	fillInImplicitHydrogensOnCarbon();
+  virtual void	randomizeAtomPositions();
+  virtual void	perturbAtomPositions(double dist);
 
 
 
-	void	setName(MatterName sName) { this->name = sName; };
-    MatterName getName() const { return this->name; };
-    MatterName getName_notConst() { return this->name; };
+  void	setName(MatterName sName) { this->name = sName; };
+  MatterName getName() const { return this->name; };
+  MatterName getName_notConst() { return this->name; };
 
-	virtual void	addMatter( Matter_sp child );
-	void	addMatterRetainId( Matter_sp child );
-	void	removeMatter( Matter_sp child );
+  virtual void	addMatter( Matter_sp child );
+  void	addMatterRetainId( Matter_sp child );
+  void	removeMatter( Matter_sp child );
 
-	Atom_sp		firstAtomWithName(MatterName name);
+  Atom_sp		firstAtomWithName(MatterName name);
 
-	bool		hasContentWithName(MatterName sName);
-	Matter_sp	contentWithName(MatterName sName);
-	Matter_sp	contentWithNameOrNil(MatterName sName);
-	int		contentIndexWithName(MatterName sName);
+  bool		hasContentWithName(MatterName sName);
+  Matter_sp	contentWithName(MatterName sName);
+  Matter_sp	contentWithNameOrNil(MatterName sName);
+  int		contentIndexWithName(MatterName sName);
 
-	Matter_sp	contentWithId( int lid );
-	bool		hasContentWithId( int lid );
-	int		contentIndexWithId( int lid );
+  Matter_sp	contentWithId( int lid );
+  bool		hasContentWithId( int lid );
+  int		contentIndexWithId( int lid );
 
-	core::List_sp		contentsAsCons();
-	core::List_sp		contents() { return this->contentsAsCons();};
+  core::List_sp		contentsAsCons();
+  core::List_sp		contents() { return this->contentsAsCons();};
 
-	virtual bool	isAggregate() { return false;}
-	virtual bool	isMolecule() { return false;}
-	virtual bool	isResidue() {return false;}
-	virtual bool 	isAtom() { return false;}
+  virtual bool	isAggregate() { return false;}
+  virtual bool	isMolecule() { return false;}
+  virtual bool	isResidue() {return false;}
+  virtual bool 	isAtom() { return false;}
 
 
 		/*!
 		 * Connect all atoms that are within 2A of each other
 		 * that aren't already bonded to each other
 		 */
-	void connectAllCloseAtoms();
+  void connectAllCloseAtoms();
 
 	/*! Add a restraint to the matter */
-	virtual void addRestraint(Restraint_sp restraint);
+  virtual void addRestraint(Restraint_sp restraint);
 
 		/*! Invert the structure and any chiral or dihedral restraints
 		 */
-	virtual void	invertStructureAndRestraints();
+  virtual void	invertStructureAndRestraints();
 
-	Matter_sp	contentWithStorageId( int lid );
-	bool		hasContentWithStorageId( int lid );
+  Matter_sp	contentWithStorageId( int lid );
+  bool		hasContentWithStorageId( int lid );
 
-    core::Vector_sp	allAtoms();
-    core::Vector_sp	allAtomsOfElement(Element element);
-	core::List_sp 		allAtomsOfElementAsList(Element element);
+  core::Vector_sp	allAtoms();
+  core::Vector_sp	allAtomsOfElement(Element element);
+  core::List_sp 		allAtomsOfElementAsList(Element element);
 
-	void calculateVirtualAtomPositions();
+  void calculateVirtualAtomPositions();
 
 
 //	void	set_StorageId(int sid) { this->_StorageId = sid; };
 //	int	get_StorageId() { return this->_StorageId; };
 
-	int		contentIndex( Matter_sp c);
-	Matter_sp	contentAt( int i ) { return this->_contents[i]; };
-	int		contentSize( ) { return this->_contents.size(); };
+  int		contentIndex( Matter_sp c);
+  Matter_sp	contentAt( int i ) { return this->_contents[i]; };
+  int		contentSize( ) { return this->_contents.size(); };
 
-	void	translateAllAtoms(Vector3 v);
+  void	translateAllAtoms(Vector3 v);
 
-	void	setAtomAliasesForResiduesNamed(core::List_sp residueAliasAtoms, core::List_sp atomAliases );
+  void	setAtomAliasesForResiduesNamed(core::List_sp residueAliasAtoms, core::List_sp atomAliases );
 
 
-virtual void	applyTransformToAtoms( const Matrix& m );
-virtual bool	testConsistancy(Matter_sp c);
-virtual	string	subMatter() {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
-virtual	int	totalNetResidueCharge();
+  virtual void	applyTransformToAtoms( const Matrix& m );
+  virtual bool	testConsistancy(Matter_sp c);
+  virtual	string	subMatter() {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
+  virtual	int	totalNetResidueCharge();
 
- virtual	string	description() const { stringstream ss; ss << "container("<<_rep_(this->name)<<")@"<<std::hex<<this<<std::dec; return ss.str();}
-Vector3		geometricCenter();
+  virtual	string	description() const { stringstream ss; ss << "container("<<_rep_(this->name)<<")@"<<std::hex<<this<<std::dec; return ss.str();}
+  Vector3		geometricCenter();
 		/*! Return a bounding box for the matter padded with (pad).
 		 */
-	geom::BoundingBox_sp	boundingBox(double pad);
+  geom::BoundingBox_sp	boundingBox(double pad);
 
-	void		reparent(Matter_sp c);
+  void		reparent(Matter_sp c);
 
 #ifdef RENDER
-	geom::Render_sp rendered(core::List_sp kopts);
+  geom::Render_sp rendered(core::List_sp kopts);
 #endif
 
 	/*! Return all atoms as a Cons of atoms. */
-	core::List_sp allAtomsAsCons(bool allowVirtualAtoms) const;
+  core::List_sp allAtomsAsCons(bool allowVirtualAtoms) const;
 
 	/*! Return all bonds as Cons of Cons (each entry is a Bond object) */
-	core::List_sp allBondsAsCons(bool allowVirtualAtoms) const;
+  core::List_sp allBondsAsCons(bool allowVirtualAtoms) const;
 
 	/*! Return all angles as Cons of Cons (each entry is an Angle) */
-	core::List_sp allAnglesAsCons(bool allowVirtualAtoms) const;
+  core::List_sp allAnglesAsCons(bool allowVirtualAtoms) const;
 
 	/*! Return all proper torsions as Cons of Cons (each entry is ProperTorsion) */
-	core::List_sp allProperTorsionsAsCons(bool allowVirtualAtoms) const;
+  core::List_sp allProperTorsionsAsCons(bool allowVirtualAtoms) const;
 
 	/*! Return all improper torsions as Cons of Cons (each entry is an ImproperTorsion ) */
-	core::List_sp allImproperTorsionsAsCons(bool allowVirtualAtoms) const;
+  core::List_sp allImproperTorsionsAsCons(bool allowVirtualAtoms) const;
 
 	/*! Build a map of AtomIds to Atoms */
-	virtual AtomIdToAtomMap_sp buildAtomIdMap() const;
+  virtual AtomIdToAtomMap_sp buildAtomIdMap() const;
 
 	/*! Return the atom with the AtomId */
-	virtual Atom_sp atomWithAtomId(AtomId_sp atomId) const;
+  virtual Atom_sp atomWithAtomId(AtomId_sp atomId) const;
 
 
 	/*! Invert the stereochemistry of my immediate restraints */
-	void invertStereochemistryOfRestraints();
+  void invertStereochemistryOfRestraints();
 
-	Matter_O(const Matter_O& c ); // copy constructor
-	DEFAULT_CTOR_DTOR(Matter_O);
+  Matter_O(const Matter_O& c );
+  virtual ~Matter_O() {};
+ Matter_O() : name(_Nil<core::Symbol_O>()), _Properties(_Nil<core::T_O>()) {};
 };
 
 };

@@ -70,9 +70,9 @@ SMART(Topology);
   that describe the number of bonds between atoms in two interconnected Topologys.
 */
 
-class Topology_O : public core::T_O
+class Topology_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,Topology_O,"Topology"); 
 #if INIT_TO_FACTORIES
 public:

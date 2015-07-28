@@ -19,9 +19,9 @@ class	BoundFrame_O;
     typedef	gctools::smart_ptr<BoundFrame_O>	BoundFrame_sp;
 
 SMART(FrameRecognizer);
-class FrameRecognizer_O : public core::T_O
+class FrameRecognizer_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,FrameRecognizer_O,"FrameRecognizer");
 #if INIT_TO_FACTORIES
  public:

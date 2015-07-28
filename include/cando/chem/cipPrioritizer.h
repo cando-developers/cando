@@ -19,9 +19,9 @@ SMART(Matter);
 SMART(Atom);
 
 SMART(CipPrioritizer );
-class CipPrioritizer_O : public core::T_O
+class CipPrioritizer_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,CipPrioritizer_O,"CipPrioritizer");
 private:
 	// instance variables

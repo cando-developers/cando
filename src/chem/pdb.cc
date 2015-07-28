@@ -2,6 +2,7 @@
 #include <clasp/core/common.h>
 #include <clasp/core/str.h>
 #include <cando/chem/pdb.h>
+#include <clasp/core/pathname.h>
 #include <cando/chem/chemPackage.fwd.h>
 #include <clasp/core/lispStream.h>
 //#include "core/archiveNode.h"
@@ -336,14 +337,14 @@ namespace chem
 
 
 
-    Aggregate_sp PdbReader_O::loadPdb(const string& fileName)
-    {_G();
-	PdbReader_sp pdb = PdbReader_O::create();
+Aggregate_sp PdbReader_O::loadPdb(core::T_sp fileName)
+{_G();
+      PdbReader_sp pdb = PdbReader_O::create();
 	Aggregate_sp agg = pdb->parse(fileName);
 	return agg;
     }
 
-    Aggregate_sp PdbReader_O::loadPdbConnectAtoms(const string& fileName)
+Aggregate_sp PdbReader_O::loadPdbConnectAtoms(core::T_sp fileName)
     {_G();
 	PdbReader_sp pdb = PdbReader_O::create();
 	Aggregate_sp agg = pdb->parse(fileName);
@@ -360,7 +361,7 @@ namespace chem
 #define DOCS_af_loadPdb "loadPdb"
     core::T_sp af_loadPdb(core::Str_sp fileName)
     {_G();
-	Aggregate_sp agg = PdbReader_O::loadPdbConnectAtoms(fileName->get());
+	Aggregate_sp agg = PdbReader_O::loadPdbConnectAtoms(fileName);
 	return agg;
     }
 
@@ -378,58 +379,59 @@ namespace chem
 
 
 
-    Aggregate_sp PdbReader_O::parse(const string& fileName)
-    {_G();
-	char buffer[1024];
-        std::ifstream myfile( fileName.c_str() );
-	if ( myfile.fail() )
-	{
-	    SIMPLE_ERROR(BF("File not found: "+fileName));
-	}
-	EntirePdbRec pdbRec;
-	int moleculeIdx = 0;
-	{_BLOCK_TRACE("Parsing file");
-	    while ( !myfile.eof() )
-	    {
-		myfile.getline(buffer,1023);
-		string oneLine = buffer;
-		LOG(BF("PDB line |%s|") % oneLine.c_str()  );
-		string recordName = pdb_substr(oneLine,1,6);
-		if ( recordName == "ATOM" )
-		{
-		    AtomPdbRec atomRec;
-		    atomRec.parse(oneLine);
-		    atomRec._moleculeIdx = moleculeIdx;
-		    pdbRec.addAtomPdbRec(atomRec);
-		} else if ( recordName == "HETATM" )
-		{
-		    AtomPdbRec atomRec;
-		    atomRec.parse(oneLine);
-		    atomRec._moleculeIdx = moleculeIdx;
-		    pdbRec.addAtomPdbRec(atomRec);
-		} else if ( recordName == "CONECT" )
-		{
-		    ConnectPdbRec connectRec;
-		    connectRec.parse(oneLine);
-		    pdbRec._connects.push_back(connectRec);
-		} else if ( recordName == "TER" )
-		{
-		    moleculeIdx++;
-		} else if ( recordName == "END" )
-		{
-		    moleculeIdx++;
-		}
-	    }
-	}
-	return pdbRec.createAggregate();
+Aggregate_sp PdbReader_O::parse(core::T_sp fileName)
+{_G();
+  char buffer[1024];
+  string fn = gc::As<core::Str_sp>(core::cl_namestring(fileName))->get();
+  std::ifstream myfile( fn.c_str() );
+  if ( myfile.fail() )
+  {
+    SIMPLE_ERROR(BF("File not found: %s") %fileName);
+  }
+  EntirePdbRec pdbRec;
+  int moleculeIdx = 0;
+  {_BLOCK_TRACE("Parsing file");
+    while ( !myfile.eof() )
+    {
+      myfile.getline(buffer,1023);
+      string oneLine = buffer;
+      LOG(BF("PDB line |%s|") % oneLine.c_str()  );
+      string recordName = pdb_substr(oneLine,1,6);
+      if ( recordName == "ATOM" )
+      {
+        AtomPdbRec atomRec;
+        atomRec.parse(oneLine);
+        atomRec._moleculeIdx = moleculeIdx;
+        pdbRec.addAtomPdbRec(atomRec);
+      } else if ( recordName == "HETATM" )
+      {
+        AtomPdbRec atomRec;
+        atomRec.parse(oneLine);
+        atomRec._moleculeIdx = moleculeIdx;
+        pdbRec.addAtomPdbRec(atomRec);
+      } else if ( recordName == "CONECT" )
+      {
+        ConnectPdbRec connectRec;
+        connectRec.parse(oneLine);
+        pdbRec._connects.push_back(connectRec);
+      } else if ( recordName == "TER" )
+      {
+        moleculeIdx++;
+      } else if ( recordName == "END" )
+      {
+        moleculeIdx++;
+      }
     }
+  }
+  return pdbRec.createAggregate();
+}
 
 #if INIT_TO_FACTORIES
 
 #define ARGS_PdbWriter_O_make "(file_name)"
 #define DECL_PdbWriter_O_make ""
 #define DOCS_PdbWriter_O_make "make PdbWriter"
-  PdbWriter_sp PdbWriter_O::make(string fileName)
+PdbWriter_sp PdbWriter_O::make(core::T_sp fileName)
   {_G();
       GC_ALLOCATE(PdbWriter_O, me );
     me->open(fileName);
@@ -544,20 +546,13 @@ namespace chem
         core::clasp_write_format(BF("TER\n"), fout );
     }
 
-
-    PdbWriter_O::~PdbWriter_O()
-    {
-	if ( this->_Out.notnilp() )
-	{
-	    this->close();
-	}
-    }
-
-    void PdbWriter_O::open(const string& fileName)
-    {_OF();
-	this->_Out = core::clasp_openWrite(fileName);
-    }
-
+void PdbWriter_O::open(core::T_sp pathDesignator)
+{_OF();
+  this->_Out = core::clasp_openWrite(pathDesignator);
+  if ( this->_Out.nilp() ) {
+    SIMPLE_ERROR(BF("Could not open file: %s") % _rep_(pathDesignator));
+  }
+}
 
     void	PdbWriter_O::write(Matter_sp matter)
     {_OF();
@@ -600,13 +595,13 @@ namespace chem
 	}
     }
 
-    void	PdbWriter_O::savePdb(Matter_sp matter, const string& fileName )
-    {
-	PdbWriter_sp writer = PdbWriter_O::create();
-	writer->open(fileName);
-	writer->write(matter);
-	writer->close();
-    }
+void	PdbWriter_O::savePdb(Matter_sp matter, core::T_sp fileName )
+{
+  PdbWriter_sp writer = PdbWriter_O::create();
+  writer->open(fileName);
+  writer->write(matter);
+  writer->close();
+}
 
 
     void PdbReader_O::exposeCando(core::Lisp_sp lisp)

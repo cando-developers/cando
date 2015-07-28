@@ -53,16 +53,14 @@ typedef	enum	{ ffStr, ffAng, ffStb, ffOop, ffItor, ffTor, ffVdw, ffEle, ffSol } 
 class	InfoDb_O;
     typedef	gctools::smart_ptr<InfoDb_O>	InfoDb_sp;
 SMART(InfoDb);
-class InfoDb_O : public core::T_O
+class InfoDb_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,InfoDb_O,"InfoDb");
 
 public:
-#ifdef XML_ARCHIVE
-    void	archiveBase(core::ArchiveP node);
-#endif
-
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
 public:
     adapt::SymbolMap<core::Str_O>	_database;
 public:
@@ -78,16 +76,15 @@ public:
 ////////////////////////////////////////////////////////////////////
 
 SMART(ForceField);
-class ForceField_O : public core::T_O
+class ForceField_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,ForceField_O,"ForceField");
 
 public:
-	void initialize();
-public:
-//	void archiveBase(core::ArchiveP node);
-
+    void initialize();
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
 public:
 //		/*! Read the forceField from a file*/
 //	static ForceField_sp	open_ForceField(const string& fn);

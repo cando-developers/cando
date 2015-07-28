@@ -28,7 +28,7 @@ void	StatusTracker_O::initialize()
 
 
 
-    StatusTracker_O::StatusTracker_O(const StatusTracker_O& ss ) : core::T_O(ss)
+    StatusTracker_O::StatusTracker_O(const StatusTracker_O& ss ) : core::CxxObject_O(ss)
 {
     this->_HasError = ss._HasError;
     this->_MessageStream.str(ss._MessageStream.str());

@@ -7,6 +7,7 @@
 
 
 #include <clasp/core/common.h>
+#include <clasp/core/record.h>
 #include <cando/chem/molecule.h>
 #include <cando/chem/loop.h>
 #include <clasp/core/numerics.h>

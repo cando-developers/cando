@@ -232,8 +232,6 @@ FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin)
             string t2 = core::trimWhiteSpace(typeParts[1]);
             string t3 = core::trimWhiteSpace(typeParts[2]);
             string t4 = core::trimWhiteSpace(typeParts[3]);
-            if ( t1 == "X" ) t1 = "";
-            if ( t4 == "X" ) t4 = "";
             GC_ALLOCATE(FFPtor_O, ffPtor );
             core::Symbol_sp st1 = _lisp->intern(t1,ChemKwPkg);
             core::Symbol_sp st2 = _lisp->intern(t2,ChemKwPkg);
@@ -269,6 +267,7 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
     while (not done )
     {
       string line = core::cl_read_line(fin).as<core::Str_O>()->get();
+      printf("%s:%d line: %s\n", __FILE__, __LINE__, line.c_str());
         if (line.size()== 0)
 	{
             done = true;
@@ -281,9 +280,6 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
             string t2 = core::trimWhiteSpace(typeParts[1]);
             string t3 = core::trimWhiteSpace(typeParts[2]);
             string t4 = core::trimWhiteSpace(typeParts[3]);
-            if ( t1 == "X" ) t1 = "";
-            if ( t2 == "X" ) t2 = "";
-            if ( t4 == "X" ) t4 = "";
             GC_ALLOCATE(FFItor_O, ffItor );
             core::Symbol_sp st1 = _lisp->intern(t1,ChemKwPkg);
             core::Symbol_sp st2 = _lisp->intern(t2,ChemKwPkg);
@@ -324,6 +320,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
     while ( not done )
     {
       string line = core::cl_read_line(fin).as<core::Str_O>()->get();
+      printf("%s:%d:%s line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str()); 
       if ( line.size() == 0 )
       {
         done = true;

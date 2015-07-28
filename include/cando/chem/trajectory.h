@@ -22,9 +22,9 @@ SMART(Atom);
 class Trajectory_O;
 
 SMART(TrajectoryFrame);
-class TrajectoryFrame_O : public core::T_O
+class TrajectoryFrame_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,TrajectoryFrame_O,"TrajectoryFrame");
 #if INIT_TO_FACTORIES
  public:
@@ -61,9 +61,9 @@ public:
 
 
 SMART(Trajectory);
-class Trajectory_O : public core::T_O
+class Trajectory_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::T_O);
+    LISP_BASE1(core::CxxObject_O);
     LISP_CLASS(chem,ChemPkg,Trajectory_O,"Trajectory");
 #if INIT_TO_FACTORIES
  public:

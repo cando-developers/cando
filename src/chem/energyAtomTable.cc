@@ -121,7 +121,7 @@ string		EnergyAtom::getResidueAndName()
 	{
 	    SIMPLE_ERROR(BF("Could not find atom[%s] in AtomTable") % a->__repr__() );
 	}
-	return &this->_Atoms[core::clasp_to_fixnum(it.as<core::Fixnum_O>())];
+	return &this->_Atoms[core::clasp_to_fixnum(it)];
     }
 
     int AtomTable_O::addAtomInfo(Atom_sp atom, units::Quantity_sp charge, units::Quantity_sp mass, int typeIndex )
