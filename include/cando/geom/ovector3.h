@@ -17,6 +17,9 @@ namespace geom {
 	LISP_BASE1(core::CxxObject_O);
 	LISP_CLASS(geom,GeomPkg,OVector3_O,"OVector3");
     public:
+        bool fieldsp() const { return true; };
+        void	fields(core::Record_sp node);
+    public:
         core::List_sp encode() ;
         void decode(core::List_sp);
 public:
@@ -88,8 +91,20 @@ namespace translate
 	DeclareType _v;
 	from_object(core::T_sp o)
 	{
-          geom::OVector3_sp v = gc::As<geom::OVector3_sp>(o);
-	    _v.set(v->getX(),v->getY(),v->getZ());
+          if ( core::Vector_sp vo = o.asOrNull<core::Vector_O>() ) {
+            if ( cl_length(vo) == 3 ) {
+              _v.set(core::clasp_to_double((*vo)[0]),
+                     core::clasp_to_double((*vo)[1]),
+                     core::clasp_to_double((*vo)[2]));
+              return;
+            } else {
+              SIMPLE_ERROR(BF("Vector must have 3 elements"));
+            }
+          } else if (geom::OVector3_sp ov = o.asOrNull<geom::OVector3_O>()) {
+	    _v.set(ov->getX(),ov->getY(),ov->getZ());
+            return;
+          }
+          SIMPLE_ERROR(BF("You must provide an OVector3 or a Vector of three elements"));
 	}
     };
     template <>

@@ -197,22 +197,17 @@ void Molecule_O::removeResidue( Matter_sp a )
     }
 
 
-    Matter_sp	Molecule_O::copyDontRedirectAtoms()
-    {_OF();
-	Residue_sp			res;
-
-	GC_COPY(Molecule_O, newMol , *this); // = RP_Copy<Molecule_O>(this);
-//    newMol->duplicate(this);	// *newMol = *this;
-	LOG(BF("Molecule_O::copyDontRedirectAtoms START") );
-	for ( const_contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ )
-	{
-	    res = (*a).as<Residue_O>();
-	    newMol->addMatter(res->copyDontRedirectAtoms());
-	}
-	LOG(BF("Molecule_O::copyDontRedirectAtoms DONE") );
-	newMol->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
-	return newMol;
-    }
+Matter_sp	Molecule_O::copyDontRedirectAtoms()
+{
+  Residue_sp			res;
+  GC_COPY(Molecule_O, newMol , *this); // = RP_Copy<Molecule_O>(this);
+  for ( const_contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ ) {
+    res = (*a).as<Residue_O>();
+    newMol->addMatter(res->copyDontRedirectAtoms());
+  }
+  newMol->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
+  return newMol;
+}
 
 void	Molecule_O::redirectAtoms()
     {_OF();
@@ -232,6 +227,12 @@ void	Molecule_O::redirectAtoms()
     {
 	Molecule_sp	newMol;
 	newMol = this->copyDontRedirectAtoms().as<Molecule_O>();
+        Loop lbonds(this->asSmartPtr(),BONDS);
+        while (lbonds.advanceLoopAndProcess()) {
+          Bond_sp b = lbonds.getBond();
+          Bond_sp bcopy = b->copyDontRedirectAtoms();
+          bcopy->addYourselfToCopiedAtoms();
+        }
 	newMol->redirectAtoms();
 	return newMol;
     }

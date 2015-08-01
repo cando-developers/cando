@@ -216,7 +216,7 @@ namespace chem
 	void	setMask(uint m) { this->_Mask = m; };
 
 //	void	duplicateFrom(Atom_O* a);
-	Atom_wp	getCopyAtom()			{return this->copyAtom;};
+	Atom_sp	getCopyAtom()			{return this->copyAtom;};
 
 
 	void	_addHydrogenWithName(core::Symbol_sp name);

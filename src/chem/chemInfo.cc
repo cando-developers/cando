@@ -428,7 +428,7 @@ void BondMatchNode_O::fields(core::Record_sp node) {
 
 void Logical_O::initialize() {
   this->Base::initialize();
-  this->_Operator = logIdentity;
+  this->_Operator = logAlwaysTrue;
   this->_Left = _Nil<core::T_O>();
   this->_Right = _Nil<core::T_O>();
 }
@@ -437,6 +437,8 @@ string Logical_O::asSmarts() const {
   _OF();
   stringstream ss;
   switch (this->_Operator) {
+  case logAlwaysTrue:
+    break;
   case logIdentity:
     ss << this->_Left->asSmarts();
     break;
@@ -464,50 +466,58 @@ uint Logical_O::depth() const {
 }
 
 bool Logical_O::matches(Root_sp root, chem::Atom_sp atom) {
-  _OF();
   LOG(BF("Logical pattern: %s") % this->asSmarts());
   LOG(BF("Logical match for atom: %s") % atom->description());
   switch (this->_Operator) {
+  case logAlwaysTrue:
+      LOG(BF("Always return true"));
+      goto SUCCESS;
+      break;
   case logIdentity:
-    LOG(BF("Identity no-op test"));
-    if (this->_Left->matches(root, atom))
-      goto SUCCESS;
-    break;
+      LOG(BF("Identity no-op test"));
+      ASSERT(!this->_Left.nilp());
+      if (this->_Left->matches(root, atom))
+        goto SUCCESS;
+      break;
   case logNot:
-    LOG(BF("logNot"));
-    if (!(this->_Left->matches(root, atom)))
-      goto SUCCESS;
-    break;
+      LOG(BF("logNot"));
+      ASSERT(!this->_Left.nilp());
+      if (!(this->_Left->matches(root, atom)))
+        goto SUCCESS;
+      break;
   case logHighPrecedenceAnd:
-    LOG(BF("logHighPrecedenceAnd"));
-    if (this->_Left->matches(root, atom) && this->_Right->matches(root, atom))
-      goto SUCCESS;
-    break;
+      LOG(BF("logHighPrecedenceAnd"));
+      ASSERT(!this->_Left.nilp());
+      if (this->_Left->matches(root, atom) && this->_Right->matches(root, atom))
+        goto SUCCESS;
+      break;
   case logLowPrecedenceAnd:
-    LOG(BF("logLowPrecedenceAnd"));
-    if (this->_Left->matches(root, atom) && this->_Right->matches(root, atom))
-      goto SUCCESS;
-    break;
+      LOG(BF("logLowPrecedenceAnd"));
+      if (this->_Left->matches(root, atom) && this->_Right->matches(root, atom))
+        goto SUCCESS;
+      break;
   case logOr: {
     LOG(BF("logOr"));
+    ASSERT(!this->_Left.nilp());
     bool leftMatch = this->_Left->matches(root, atom);
     if (leftMatch)
       goto SUCCESS;
     LOG(BF("Left match failed"));
+    ASSERT(!this->_Right.nilp());
     bool rightMatch = this->_Right->matches(root, atom);
     if (rightMatch)
       goto SUCCESS;
     LOG(BF("Right match failed"));
   } break;
   default:
-    stringstream err;
-    err << "Unknown logical operator(" << this->_Operator << ")";
-    SIMPLE_ERROR(BF("%s") % err.str());
+      stringstream err;
+      err << "Unknown logical operator(" << this->_Operator << ")";
+      SIMPLE_ERROR(BF("%s") % err.str());
   }
   //FAIL:
   LOG(BF("FAIL"));
   return false;
-SUCCESS:
+ SUCCESS:
   LOG(BF("SUCCESS!!!"));
   return true;
 }
@@ -516,20 +526,27 @@ bool Logical_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
   _G();
   LOG(BF("Logical match for bond: %s") % bond->describeOther(from));
   switch (this->_Operator) {
+  case logAlwaysTrue:
+      goto SUCCESS;
+      break;
   case logIdentity:
+      ASSERT(this->_Left.notnilp());
     if (this->_Left->matches(root, from, bond))
       goto SUCCESS;
     break;
   case logNot:
+      ASSERT(this->_Left.notnilp());
     if (!(this->_Left->matches(root, from, bond)))
       goto SUCCESS;
     break;
   case logHighPrecedenceAnd:
   case logLowPrecedenceAnd:
+      ASSERT(this->_Left.notnilp());
     if (this->_Left->matches(root, from, bond) && this->_Right->matches(root, from, bond))
       goto SUCCESS;
     break;
   case logOr:
+      ASSERT(this->_Left.notnilp());
     if (this->_Left->matches(root, from, bond) || this->_Right->matches(root, from, bond))
       goto SUCCESS;
     break;
@@ -547,6 +564,7 @@ SUCCESS:
 }
 
 core::NullTerminatedEnumAssociation logicalEnum[] = {
+    {"logAlwaysTrue",logAlwaysTrue},
     {"logIdentity", logIdentity},
     {"logNot", logNot},
     {"logHighPrecedenceAnd", logHighPrecedenceAnd},

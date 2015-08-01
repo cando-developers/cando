@@ -211,46 +211,56 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
 
 
 FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin)
-{_G();
+{
     //
     // read Ptor terms 
     //
-    GC_ALLOCATE(FFPtorDb_O, ffPtorDb );
-    bool done = false;
-    while (not done )
+  GC_ALLOCATE(FFPtorDb_O, ffPtorDb );
+  bool done = false;
+  while (not done )
+  {
+    string line = core::cl_read_line(fin).as<core::Str_O>()->get();
+    if (line.size()== 0)
     {
-      string line = core::cl_read_line(fin).as<core::Str_O>()->get();
-        if (line.size()== 0)
-	{
-            done = true;
-	} else
-	{
-	    LOG(BF("Parsing line|%s|") % line.c_str()  );
-            string types = line.substr(0,12);
-            vector<string>typeParts = core::split(types,"-");
-            string t1 = core::trimWhiteSpace(typeParts[0]);
-            string t2 = core::trimWhiteSpace(typeParts[1]);
-            string t3 = core::trimWhiteSpace(typeParts[2]);
-            string t4 = core::trimWhiteSpace(typeParts[3]);
-            GC_ALLOCATE(FFPtor_O, ffPtor );
-            core::Symbol_sp st1 = _lisp->intern(t1,ChemKwPkg);
-            core::Symbol_sp st2 = _lisp->intern(t2,ChemKwPkg);
-            core::Symbol_sp st3 = _lisp->intern(t3,ChemKwPkg);
-            core::Symbol_sp st4 = _lisp->intern(t4,ChemKwPkg);
-            ffPtor->setTypes(st1,st2,st3,st4);
-            string parms = line.substr(13);
-            vector<string> parmsParts = core::split(parms);
-            double idivf =  atof(parmsParts[0].c_str());
-            double pk = atof(parmsParts[1].c_str());
-            double phaseRad = atof(parmsParts[2].c_str())*0.0174533;
-            int pn = abs(int(atof(parmsParts[3].c_str())));
-	    ASSERTF(pn>=1 && pn<=6,BF("pn[%d] must range between [1,6]") % pn);
-            ffPtor->setV_kCal(pn,pk/idivf);
-            ffPtor->setPhaseRad(pn,phaseRad);
-            ffPtorDb->add(ffPtor);
-	}
+      done = true;
+    } else
+    {
+      LOG(BF("Parsing line|%s|") % line.c_str()  );
+      string types = line.substr(0,12);
+      vector<string>typeParts = core::split(types,"-");
+      string t1 = core::trimWhiteSpace(typeParts[0]);
+      string t2 = core::trimWhiteSpace(typeParts[1]);
+      string t3 = core::trimWhiteSpace(typeParts[2]);
+      string t4 = core::trimWhiteSpace(typeParts[3]);
+      GC_ALLOCATE(FFPtor_O, ffPtor );
+      core::Symbol_sp st1;
+      if ( t1 != "X" ) {
+        st1 = _lisp->intern(t1,ChemKwPkg);
+      } else {
+        st1 = _Nil<core::T_O>();
+      }
+      core::Symbol_sp st2 = _lisp->intern(t2,ChemKwPkg);
+      core::Symbol_sp st3 = _lisp->intern(t3,ChemKwPkg);
+      core::Symbol_sp st4;
+      if ( t4 != "X" ) {
+        st4 = _lisp->intern(t4,ChemKwPkg);
+      } else {
+        st4 = _Nil<core::T_O>();
+      }
+      ffPtor->setTypes(st1,st2,st3,st4);
+      string parms = line.substr(13);
+      vector<string> parmsParts = core::split(parms);
+      double idivf =  atof(parmsParts[0].c_str());
+      double pk = atof(parmsParts[1].c_str());
+      double phaseRad = atof(parmsParts[2].c_str())*0.0174533;
+      int pn = abs(int(atof(parmsParts[3].c_str())));
+      ASSERTF(pn>=1 && pn<=6,BF("pn[%d] must range between [1,6]") % pn);
+      ffPtor->setV_kCal(pn,pk/idivf);
+      ffPtor->setPhaseRad(pn,phaseRad);
+      ffPtorDb->add(ffPtor);
     }
-    return ffPtorDb;
+  }
+  return ffPtorDb;
 }
 
 
@@ -267,7 +277,7 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
     while (not done )
     {
       string line = core::cl_read_line(fin).as<core::Str_O>()->get();
-      printf("%s:%d line: %s\n", __FILE__, __LINE__, line.c_str());
+//      printf("%s:%d line: %s\n", __FILE__, __LINE__, line.c_str());
         if (line.size()== 0)
 	{
             done = true;
@@ -281,10 +291,25 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
             string t3 = core::trimWhiteSpace(typeParts[2]);
             string t4 = core::trimWhiteSpace(typeParts[3]);
             GC_ALLOCATE(FFItor_O, ffItor );
-            core::Symbol_sp st1 = _lisp->intern(t1,ChemKwPkg);
-            core::Symbol_sp st2 = _lisp->intern(t2,ChemKwPkg);
+            core::Symbol_sp st1;
+            if ( t1 != "X" ) {
+              st1 = _lisp->intern(t1,ChemKwPkg);
+            } else {
+              st1 = _Nil<core::T_O>();
+            }
+            core::Symbol_sp st2;
+            if ( t2 != "X" ) {
+              st2 = _lisp->intern(t2,ChemKwPkg);
+            } else {
+              st2 = _Nil<core::T_O>();
+            }
             core::Symbol_sp st3 = _lisp->intern(t3,ChemKwPkg);
-            core::Symbol_sp st4 = _lisp->intern(t4,ChemKwPkg);
+            core::Symbol_sp st4;
+            if ( t4 != "X" ) {
+              st4 = _lisp->intern(t4,ChemKwPkg);
+            } else {
+              st4 = _Nil<core::T_O>();
+            }
             ffItor->setTypes(st1,st2,st3,st4);
             string parms = line.substr(13);
             vector<string> parmsParts = core::split(parms);
@@ -320,7 +345,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
     while ( not done )
     {
       string line = core::cl_read_line(fin).as<core::Str_O>()->get();
-      printf("%s:%d:%s line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str()); 
+//      printf("%s:%d:%s line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str()); 
       if ( line.size() == 0 )
       {
         done = true;

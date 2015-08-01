@@ -1466,16 +1466,20 @@ void	Atom_O::fields(core::Record_sp node)
 	LOG(BF("Copying atom @%p") % this );
 	Atom_sp myself = this->sharedThis<Atom_O>();
 	GC_COPY(Atom_O, aNew , *this); // = RP_Copy<Atom_O>(this);
-	for ( VectorBond::const_iterator b=bonds.begin();b!=bonds.end() ; b++ )
-	{
+#if 1
+        aNew->bonds.clear();
+#else
+        printf("%s:%d copyDontRedirectAtom original: %p  copy %p\n", __FILE__, __LINE__, myself.raw_(), aNew.raw_());
+	for ( VectorBond::const_iterator b=bonds.begin();b!=bonds.end() ; b++ ) {
 	    /* Only copy Bond object if we are the Atom1
 	     This is to ensure that bonds aren't duplicated*/
-	    if ( (*b)->isAtom1(myself) )
-	    {
+	    if ( (*b)->isAtom1(myself) ) {
 		Bond_sp bNew = (*b)->copyDontRedirectAtoms();
+                printf("%s:%d copyDontRedirectAtom newBond between atoms: %p - %p\n", __FILE__, __LINE__, bNew->_Atom1.raw_(), bNew->_Atom2.raw_());
 		aNew->bonds.push_back(bNew);
 	    }
 	}
+#endif
 	this->copyAtom = aNew;
 	aNew->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
 	LOG(BF("    copy atom== %s") % aNew->description());
@@ -1489,14 +1493,20 @@ void	Atom_O::fields(core::Record_sp node)
 //
 //	Redirect the bonds of this atom to their copies.
     void Atom_O::redirectAtoms()
-    {_G();
-	VectorBond::iterator	b;
-	LOG(BF("Redirecting bonds for %s") % this->description());
-	for ( b=bonds.begin();b!=bonds.end() ; b++ )
-	{
-	    (*b)->redirectAtoms();
-	}
-	this->redirectRestraintAtoms();
+    {
+#if 0
+      VectorBond::iterator	b;
+      LOG(BF("Redirecting bonds for %s") % this->description());
+      printf("%s:%d redirecting atoms for %zu bonds\n", __FILE__, __LINE__, bonds.size());
+      Atom_sp myself = this->sharedThis<Atom_O>();
+      for ( b=bonds.begin();b!=bonds.end() ; b++ ) {
+        if ( (*b)->isAtom1(myself->getCopyAtom()) ) {
+          printf("%s:%d Redirecting atoms for bond: %zu\n", __FILE__, __LINE__, (b-bonds.begin()));
+          (*b)->redirectAtoms();
+        }
+      }
+#endif
+      this->redirectRestraintAtoms();
     }
 
 

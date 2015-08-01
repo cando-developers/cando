@@ -38,7 +38,7 @@ class Bond_O : public core::CxxObject_O
   static void lisp_initGlobals(core::Lisp_sp lisp);
 
   friend	class Loop;
- private:
+public:
   BondOrder	order;
   Atom_sp		_Atom1;
   Atom_sp		_Atom2;
@@ -54,7 +54,7 @@ class Bond_O : public core::CxxObject_O
   Bond_sp copyDontRedirectAtoms();
 
 	/*! Redirect atoms to their copy atoms */
-  void redirectAtoms();
+  void addYourselfToCopiedAtoms();
 
  public:
   static Bond_sp create(Atom_sp a1, Atom_sp a2, BondOrder o);

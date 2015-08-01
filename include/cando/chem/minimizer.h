@@ -98,7 +98,7 @@ public:
 	LISP_CLASS(chem,ChemPkg,Minimizer_O,"Minimizer");
 #if INIT_TO_FACTORIES
     public:
-	static Minimizer_sp make(Matter_sp matter, ForceField_sp forceField, EnergyFunction_sp givenEnergyFunction);
+	static Minimizer_sp make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceField_sp> forceField, gc::Nilable<EnergyFunction_sp> givenEnergyFunction);
 #else
 	DECLARE_INIT();
 #endif
@@ -143,6 +143,9 @@ public:
 	NVector_sp		nvP1DSearchTemp2;
 	NVector_sp		nvP1DSearchOrigin;
 	NVector_sp		nvP1DSearchDirection;
+        // Save coordinates and forces so that if we interrupt the minimization we can recover them
+        gc::Nilable<NVector_sp> _Position;
+        gc::Nilable<NVector_sp> _Force;
 
     private:	// Do not serialize
 //	core::LispCallback_sp		_StepCallback;
@@ -285,6 +288,8 @@ public:
 	void	minimizeConjugateGradient();
 	void	resetAndMinimize();
 	void	minimize();
+        // If the minimization is aborted the intermediate results can be recovered
+        void    writeIntermediateResultsToEnergyFunction();
 	void	evaluateEnergyAndForceManyTimes(int times);
 
 	adapt::QDomNode_sp	asXml();

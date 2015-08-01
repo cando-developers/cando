@@ -175,6 +175,13 @@ void	FFPtorDb_O::add( FFPtor_sp ptor )
 {
 core::Symbol_sp key;
 FFPtor_sp        ptorOld;
+#if 0
+ printf("%s:%d:%s  Adding ptor %s-%s-%s-%s\n", __FILE__, __LINE__, __FUNCTION__,
+        _rep_(ptor->_T1).c_str(),
+        _rep_(ptor->_T2).c_str(),
+        _rep_(ptor->_T3).c_str(),
+        _rep_(ptor->_T4).c_str() );
+#endif
     if (this->hasExactTerm(ptor->_T1,ptor->_T2,ptor->_T3,ptor->_T4) ){
         ptorOld = this->findExactTerm(ptor->_T1,ptor->_T2,ptor->_T3,ptor->_T4);
         ptorOld->mergeWith(ptor);

@@ -82,7 +82,6 @@ public:
 public:
 
     RingFinder_sp getGraph() {_OF(); ANN(this->_graph);return this->_graph; };
-    void*	getId();
     core::List_sp	getConnectedVertices();
     void	dump();
     Atom_sp	getAtom();
@@ -118,7 +117,7 @@ public:
     uint getId();
     AGVertex_sp getVertex1();
     AGVertex_sp getVertex2();
-    AGVertex_sp otherVertex(AGVertex_O* vert);
+    AGVertex_sp otherVertex(AGVertex_sp vert);
     uint getSide(AGVertex_sp vert);
     DEFAULT_CTOR_DTOR(AGEdge_O);
 };

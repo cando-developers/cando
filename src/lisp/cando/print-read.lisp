@@ -1,4 +1,4 @@
-(in-package :cando-sys)
+(in-package :cando)
 
 ;; use
 (defmethod cl:print-object ((object core:cxx-object) stream)

@@ -169,36 +169,36 @@ namespace chem
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_Minimizer_O_make "(matter force_field given_energy_function)"
+#define ARGS_Minimizer_O_make "(&key matter force_field energy_function)"
 #define DECL_Minimizer_O_make ""
-#define DOCS_Minimizer_O_make "make Minimizer"
-  Minimizer_sp Minimizer_O::make(Matter_sp matter, ForceField_sp forceField, EnergyFunction_sp givenEnergyFunction)
-  {_G();
-      GC_ALLOCATE(Minimizer_O, me );
-    bool initialized = false;
-    if ( givenEnergyFunction.nilp() )
-      {
-	if ( matter.notnilp() && forceField.notnilp() )
-	  {
-	    initialized = true;
-	    EnergyFunction_sp ef = EnergyFunction_O::create();
-	    ef->defineForMatter(matter,forceField);
-	    me->setEnergyFunction(ef);
-	  }
-      } else
-      {
-	if ( matter.nilp() && forceField.nilp() )
-	  {
-	    initialized = true;
-	    me->setEnergyFunction(givenEnergyFunction);
-	  }
-      }
-    if ( !initialized )
-      {
-	  SIMPLE_ERROR(BF("When initializing a Minimizer object you must either provide an (energyFunction) or a (Matter/ForceField) pair"));
-      }
-    return me;
+#define DOCS_Minimizer_O_make "make minimizer"
+Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceField_sp> forceField, gc::Nilable<EnergyFunction_sp> givenEnergyFunction)
+{
+  GC_ALLOCATE(Minimizer_O, me );
+  bool initialized = false;
+  if ( givenEnergyFunction.nilp() )
+  {
+    if ( matter.notnilp() && forceField.notnilp() )
+    {
+      initialized = true;
+      EnergyFunction_sp ef = EnergyFunction_O::create();
+      ef->defineForMatter(matter,forceField);
+      me->setEnergyFunction(ef);
+    }
+  } else
+  {
+    if ( matter.nilp() && forceField.nilp() )
+    {
+      initialized = true;
+      me->setEnergyFunction(givenEnergyFunction);
+    }
   }
+  if ( !initialized )
+  {
+    SIMPLE_ERROR(BF("When initializing a Minimizer object you must either provide an (energyFunction) or a (Matter/ForceField) pair"));
+  }
+  return me;
+}
 
 #else
 
@@ -252,6 +252,7 @@ namespace chem
 	    .def("minimizeConjugateGradient",&Minimizer_O::minimizeConjugateGradient)
 	    .def("resetAndMinimize",&Minimizer_O::resetAndMinimize)
 	    .def("minimize",&Minimizer_O::minimize)
+          .def("writeIntermediateResultsToEnergyFunction",&Minimizer_O::writeIntermediateResultsToEnergyFunction)
 	    .def("evaluateEnergyAndForceManyTimes",&Minimizer_O::evaluateEnergyAndForceManyTimes)
 //	.def("asXml",&Minimizer_O::asXml)
 	    .def("getEnergyFunction",&Minimizer_O::getEnergyFunction)
@@ -314,7 +315,6 @@ namespace chem
 	    ;
 #endif
     }
-
 
 
     string	Minimizer_O::statusAsString()
@@ -1047,6 +1047,7 @@ namespace chem
 	iRestartSteps = x->size();
 	// Define NVectors
 	force = NVector_O::create(iRestartSteps);
+        this->_Force = force;
 	s = NVector_O::create(iRestartSteps);
 	LOG(BF("step") );
 	dir = NVector_O::create(iRestartSteps);
@@ -1342,6 +1343,7 @@ namespace chem
     iRestartSteps = x->size();
     // Define NVectors
     force = NVector_O::create(iRestartSteps);
+    this->_Force = force;
     s = NVector_O::create(iRestartSteps);
     d = NVector_O::create(iRestartSteps);
     tv1 = NVector_O::create(iRestartSteps);
@@ -1823,6 +1825,7 @@ namespace chem
     LOG(BF("Defining NVectors") );
     iDimensions = xK->size();
     forceK = NVector_O::create(iDimensions);
+    this->_Force = forceK;
     LOG(BF("Defining NVectors xKNext") );
     xKNext = NVector_O::create(iDimensions);
     LOG(BF("status") );
@@ -2123,6 +2126,8 @@ namespace chem
 	this->_DebugOn = false;
 	this->useDefaultSettings();
 	this->restart();
+        this->_Position = _Nil<core::T_O>();
+        this->_Force = _Nil<core::T_O>();
 //	this->_StepCallback = _Nil<core::LispCallback_O>();
     }
 
@@ -2206,6 +2211,7 @@ namespace chem
 	SIMPLE_ERROR(BF("You must define an energy function to minimize"));
     }
     pos = NVector_O::create(this->_EnergyFunction->getNVectorSize());
+    this->_Position = pos;
     retries = 100;
     try {
 	do {
@@ -2252,6 +2258,7 @@ namespace chem
 	    SIMPLE_ERROR(BF("You must define an energy function to minimize"));
 	}
 	pos = NVector_O::create(this->_EnergyFunction->getNVectorSize());
+        this->_Position = pos;
 	retries = 100;
 	try {
 	    do {
@@ -2309,6 +2316,7 @@ namespace chem
 	SIMPLE_ERROR(BF("You must define an energy function to minimize"));
     }
     pos = NVector_O::create(this->_EnergyFunction->getNVectorSize());
+    this->_Position = pos;
     retries = 100;
     try {
 	do {
@@ -2354,6 +2362,15 @@ namespace chem
 	MINIMIZER_ERROR(this->_Message.str());
     }
     }
+
+
+void Minimizer_O::writeIntermediateResultsToEnergyFunction()
+{
+  if ( this->_Position.nilp() ) {
+    SIMPLE_ERROR(BF("There are no intermediate results"));
+  }
+  this->_EnergyFunction->writeCoordinatesAndForceToAtoms(this->_Position,this->_Force);
+}
 
 
     adapt::QDomNode_sp	Minimizer_O::asXml()

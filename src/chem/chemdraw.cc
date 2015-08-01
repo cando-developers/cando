@@ -351,7 +351,7 @@ bool CDFragment_O::_asKeyedObject(core::Symbol_sp labelSym, core::Symbol_sp& key
     {_G();
 	stringstream ss;
         this->_Properties->mapHash( [&ss] (core::T_sp key, core::T_sp value) {
-	    ss << _rep_(key) << "  value=" << _rep_(value);
+	    ss << _rep_(key) << "  value=" << _rep_(value) << " ";
           } );
 	LOG(BF("%s")%ss.str());
 	return ss.str();
@@ -373,6 +373,7 @@ bool CDFragment_O::_asKeyedObject(core::Symbol_sp labelSym, core::Symbol_sp& key
  */
 bool CDFragment_O::interpret()
 {
+  int nextFragmentNameIndex = 1;
   if ( this->_Bonds.size() == 0 ) {
     LOG(BF("There are no bonds in this fragment"));
     return false;
@@ -397,8 +398,10 @@ bool CDFragment_O::interpret()
       {_BLOCK_TRACE("dative bond");
         core::Symbol_sp property = (*bi)->getBeginNode()->getLabel();
         core::Symbol_sp value = (*bi)->getEndNode()->getLabel();
+        printf("%s:%d Setting property %s --> %s\n", __FILE__, __LINE__, _rep_(property).c_str(), _rep_(value).c_str() );
         set_property(this->_Properties,property,value);
-      } else if ( (*bi)->getOrder() == hashCDBond ) { _BLOCK_TRACE("hash bond");
+      } else if ( (*bi)->getOrder() == hashCDBond )
+      { _BLOCK_TRACE("hash bond");
 		    // There should only be one hashed bond, one side has the
 		    // value ":name XXX" where XXX is a constitution name
 		    // and the other side is any atom of the constitution.
@@ -442,7 +445,18 @@ bool CDFragment_O::interpret()
       }
     }
   }
-  ASSERTF(foundHashedBond,BF("There was no hashed bond for fragment containing the following atoms: %s") % allNames->asString() );
+  if (!foundHashedBond) {
+    auto ni = this->_Nodes.begin();
+    CDNode_sp arbitraryRootNode = ni->second;
+    stringstream ss;
+    ss << "FRAG" << nextFragmentNameIndex;
+    nextFragmentNameIndex++;
+    core::Symbol_sp sym = chemkw_intern(ss.str());
+    set_property(this->_Properties,INTERN_(kw,name),sym);
+    this->_RootNode = arbitraryRootNode;
+    Warn(core::Str_O::create("No hashed bond pointing to a root atom was provided - picking an arbitrary root atom and calling it ~a"),
+         core::Cons_O::createList(sym));
+  }
   ASSERTF(this->_RootNode.notnilp(),BF("Read a fragment that did not have a _RootNode defined"));
   this->createAtoms();
 	// Now build the residue and fill in the implicit

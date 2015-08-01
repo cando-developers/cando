@@ -1077,6 +1077,7 @@ void	Matter_O::fields(core::Record_sp node )
     {
 	core::class_<Matter_O>()
 //	    .def_raw("core:__init__",&Matter_O::__init__,"(self &key name)")
+          .def("matter-copy",&Matter_O::copy)
 	    .def( "setAtomAliasesForResiduesNamed", &Matter_O::setAtomAliasesForResiduesNamed)
 	    .def("translateAllAtoms",&Matter_O::translateAllAtoms)
 	    .def("connectAllCloseAtoms",&Matter_O::connectAllCloseAtoms)

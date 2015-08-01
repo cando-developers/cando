@@ -19,18 +19,20 @@ public:
  /*!Use a GC compatible allocator here */
  template <class T>
    Hold<T>* createHolder(gc::smart_ptr<T> obj) {
-   return new Hold<T>(obj);
+   return gc::RootClassAllocator<Hold<T>>::allocate(obj);// return new Hold<T>(obj);
  }
 
  template <class T>
    Hold<T>* createHolder() {
-   return new Hold<T>();
+   return gc::RootClassAllocator<Hold<T>>::allocate();
+//   return new Hold<T>();
  }
 
  /*! Use a corresponding GC compatible deallocator here */
 template <class T>
   void deleteHolder(Hold<T>* objP) {
-  delete objP;
+  gc::RootClassAllocator<Hold<T>>::deallocate(objP);
+//  delete objP;
 };
 
 };

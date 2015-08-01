@@ -254,7 +254,7 @@ bool    FFNonbondDb_O::hasType(core::Symbol_sp type)
 gc::Nilable<FFNonbond_sp>   FFNonbondDb_O::findType(core::Symbol_sp type)
 {
   if ( this->_Lookup->contains(type) ) {
-    printf("%s:%d:%s FFNonbondDb_O::findType type: %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(type).c_str());
+//    printf("%s:%d:%s FFNonbondDb_O::findType type: %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(type).c_str());
     core::T_sp val = this->_Lookup->gethash(type);
     uint index = core::clasp_to_fixnum(val);
     return this->_Terms[index];

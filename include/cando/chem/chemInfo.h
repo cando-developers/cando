@@ -251,7 +251,7 @@ namespace chem {
 
 
 
-  typedef	enum { logIdentity, logNot, logHighPrecedenceAnd, logOr, logLowPrecedenceAnd } LogicalOperatorType;
+  typedef	enum { logAlwaysTrue, logIdentity, logNot, logHighPrecedenceAnd, logOr, logLowPrecedenceAnd } LogicalOperatorType;
 
   extern core::Symbol_sp _sym_STARLogicalOperatorTypeConverterSTAR;
 };
@@ -299,7 +299,6 @@ namespace chem {
   {
     LISP_BASE1(AtomOrBondMatchNode_O);
     LISP_CLASS(chem,ChemPkg,Logical_O,"Logical");
-
   public:
     bool fieldsp() const { return true; };
     void	fields(core::Record_sp node);
@@ -317,12 +316,19 @@ namespace chem {
     { _G();
       GC_ALLOCATE(Logical_O, obj ); // RP_Create<Logical_O>(lisp);
       obj->_Operator = op;
+      if ( a1.nilp() ) {
+        SIMPLE_ERROR(BF("Logical operators left child cannot be nil\n"));
+      }
+      ASSERT(a1.notnilp());
       obj->_Left = a1;
       obj->_Right = a2;
       return obj;
     };
     static Logical_sp create( LogicalOperatorType op, AtomOrBondMatchNode_sp a1)
     {_G();
+      if ( a1.nilp() ) {
+        SIMPLE_ERROR(BF("Logical operators left child cannot be nil\n"));
+      }
       return create(op,a1,_Nil<core::T_O>());
     };
   public:
@@ -335,7 +341,7 @@ namespace chem {
     virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
     virtual uint depth() const;
     virtual string asSmarts() const;
-  Logical_O() : _Operator(logIdentity) {};
+  Logical_O() : _Operator(logAlwaysTrue) {};
     virtual ~Logical_O() {};
   };
 

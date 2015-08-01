@@ -264,9 +264,10 @@ void CoordinateArray_O::resize(int iElement)
     }
 #endif
 
-#ifdef XML_ARCHIVE
-    void CoordinateArray_O::archiveBase(core::ArchiveP node)
-    {_G();
+#if 0
+void CoordinateArray_O::fields(core::Record_sp node)
+{_G();
+  node->field(
 	if ( node->saving() ) {
 	    uint sz = this->size();
 	    node->attribute("size",sz);
@@ -293,7 +294,6 @@ void CoordinateArray_O::resize(int iElement)
 	}
     }
 #endif
-
 
 
     CoordinateArray_sp CoordinateArray_O::copy() const

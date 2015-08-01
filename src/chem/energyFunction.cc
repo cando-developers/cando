@@ -75,7 +75,13 @@ namespace chem
     SYMBOL_EXPORT_SC_(ChemPkg,nonbondTerm);
     SYMBOL_EXPORT_SC_(ChemPkg,restraintAnchor);
 
-
+//Maybe use this in place of InteractionError?
+SYMBOL_EXPORT_SC_(ChemPkg,InteractionError);
+SYMBOL_EXPORT_SC_(ChemPkg,LinearAngleError);
+SYMBOL_EXPORT_SC_(ChemPkg,LinearDihedralError);
+SYMBOL_EXPORT_SC_(ChemPkg,LinearImproperRestraintError);
+SYMBOL_EXPORT_SC_(ChemPkg,OverlappingNonbondError);
+SYMBOL_EXPORT_SC_(KeywordPkg,atoms);
 
 bool energyFunctionInitialized = false;
 ChemInfo_sp secondaryAmide;

@@ -50,17 +50,12 @@ namespace geom {
 	return ov;
     }
 
-#if defined(OLD_SERIALIZE)
-    void OVector3_O::serialize(serialize::SNode node)
-    {
-	node->orderedPOD(this->_Value[0]);
-	CR_HINT(node,false);
-	node->orderedPOD(this->_Value[1]);
-	CR_HINT(node,false);
-	node->orderedPOD(this->_Value[2]);
-	CR_HINT(node,false);
-    }
-#endif
+void OVector3_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,x),this->_Value[0]);
+  node->field(INTERN_(kw,y),this->_Value[1]);
+  node->field(INTERN_(kw,z),this->_Value[2]);
+}
 
 
 #ifdef XML_ARCHIVE

@@ -286,7 +286,7 @@ Matter_sp	Residue_O::copyDontRedirectAtoms()
     for ( a=this->getContents().begin(); a!=this->getContents().end(); a++ ) 
     {
 	aorig = (*a).as<Atom_O>();
-	acopy = aorig->copy().as<Atom_O>();
+	acopy = aorig->copyDontRedirectAtoms().as<Atom_O>();
 	LOG(BF("Copying atom(%s) with %d bonds") % aorig->getName().c_str() % aorig->numberOfBonds()  );
 	rPNew->addMatter((Matter_sp)(acopy));
 	acopy->setId(aorig->getId());

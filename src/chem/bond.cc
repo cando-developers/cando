@@ -77,9 +77,9 @@ Bond_O::Bond_O(const Bond_O& bb)  : core::CxxObject_O(bb)
 bool Bond_O::isAtom1(Atom_sp a) const
 {_OF();
   ASSERTNOTNULL(this->_Atom1);
-  if (this->_Atom1.get()==a.get()) return true;
+  if (this->_Atom1==a) return true;
   ASSERTNOTNULL(this->_Atom2);
-  if ( this->_Atom2.get()==a.get()) return false;
+  if ( this->_Atom2==a) return false;
   SIMPLE_ERROR(BF("Atom[%s] is neither atom1[%s] or atom2[%s] of bond")
                % a->__repr__() % this->_Atom1->__repr__() % this->_Atom2->__repr__() );
 }
@@ -93,13 +93,17 @@ Bond_sp Bond_O::copyDontRedirectAtoms()
   return bondNew;
 }
 
-void Bond_O::redirectAtoms()
+void Bond_O::addYourselfToCopiedAtoms()
 {_OF();
+//  printf("%s:%d Redirecting bond from atoms %p - %p\n", __FILE__, __LINE__, this->_Atom1.raw_(), this->_Atom2.raw_());
+//  printf("%s:%d                    to atoms %p - %p\n", __FILE__, __LINE__, this->_Atom1->getCopyAtom().raw_(), this->_Atom2->getCopyAtom().raw_());
   ASSERTNOTNULL(this->_Atom1);
   this->_Atom1 = this->_Atom1->getCopyAtom();
+  this->_Atom1->addBond(this->asSmartPtr());
   ASSERTNOTNULL(this->_Atom2);
   this->_Atom2 = this->_Atom2->getCopyAtom();
-  this->_Atom2->addBond(this->sharedThis<Bond_O>());
+  ASSERTNOTNULL(this->_Atom2);
+  this->_Atom2->addBond(this->asSmartPtr());
 }
 
 

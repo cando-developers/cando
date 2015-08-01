@@ -155,18 +155,18 @@ void Aggregate_O::fields(core::Record_sp node)
 
 
 
-    Matter_sp Aggregate_O::copy()
-    {
-	GC_COPY(Aggregate_O, newAgg, *this ); // = RP_Copy<Aggregate_O>(this);
-	for ( contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ )
-	{
-	    Molecule_sp mol = downcast<Molecule_O>(*a);
-	    newAgg->addMolecule(mol->copy().as<Molecule_O>());
-	}
-	newAgg->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
-	newAgg->redirectRestraintAtoms();
-	return newAgg;
-    }
+Matter_sp Aggregate_O::copy()
+{
+  GC_COPY(Aggregate_O, newAgg, *this ); // = RP_Copy<Aggregate_O>(this);
+  for ( contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ ) {
+    Molecule_sp mol = gc::As<Molecule_sp>(*a);
+    Molecule_sp mol_copy = gc::As<Molecule_sp>(mol->copy());
+    newAgg->addMolecule(mol_copy);
+  }
+  newAgg->copyRestraintsDontRedirectAtoms(this->asSmartPtr());
+  newAgg->redirectRestraintAtoms();
+  return newAgg;
+}
 
 
 
@@ -190,8 +190,7 @@ void Aggregate_O::fields(core::Record_sp node)
     void Aggregate_O::redirectAtoms()
     {_OF();
 	LOG(BF("Aggregate_O::redirectAtoms START") );
-	for ( contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ )
-	{
+	for ( contentIterator a=this->begin_contents(); a!=this->end_contents(); a++ ) {
 	    (*a)->redirectAtoms();
 	}
 	this->redirectRestraintAtoms();

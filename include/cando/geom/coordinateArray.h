@@ -37,6 +37,11 @@ namespace geom
     LISP_BASE1(core::Vector_O);
     LISP_CLASS(geom,GeomPkg,CoordinateArray_O,"CoordinateArray");
   public:
+#if 0
+    bool fieldsp() const { return true; };
+    void	fields(core::Record_sp node);
+#endif
+  public:
     static CoordinateArray_sp make(gc::Nilable<core::Fixnum_sp> fnsize,core::List_sp vals);
   public:
     void initialize();

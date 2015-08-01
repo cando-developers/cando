@@ -611,7 +611,6 @@ geom::CoordinateArray_sp SuperposeSelectedAtoms_O::extractCoordinates(Matter_sp 
     return coords;
 }
 
-
 Matter_sp SuperposeSelectedAtoms_O::getMatter()
 {_G();
     return this->_Matter;
@@ -630,18 +629,6 @@ void SuperposeSelectedAtoms_O::copyMatterCoordinatesIntoMoveableCoordinates(Matt
     ASSERT_gt(ca->size(),0);
     this->setMoveableAllPoints(ca);
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 };
 

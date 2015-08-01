@@ -10,4 +10,6 @@
     :components
     ((:file "packages")
      (:file "print-read")
+     (:file "conditions")
+     (:file "molecules")
      ))
