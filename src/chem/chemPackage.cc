@@ -79,6 +79,7 @@
 #include <cando/chem/twister.h>
 #include <cando/chem/virtualSphere.h>
 #include <cando/chem/zMatrix.h>
+#include <cando/chem/chimera.h>
 #include <cando/chem/aggregate.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/constitution.h>
@@ -177,7 +178,8 @@ namespace chem
                     // Create the CHEM-KW package
           std::list<std::string> nicknames = { "CK" };
           std::list<std::string> usePackages = { };
-          _lisp->makePackage(ChemKwPkg,nicknames,usePackages);
+          core::Package_sp chemkwpkg = _lisp->makePackage(ChemKwPkg,nicknames,usePackages);
+          chemkwpkg->setActsLikeKeywordPackage(true);
 
           core::T_sp pn;
           char* env = getenv("CANDO_LISP_SOURCE_DIR");
@@ -229,6 +231,7 @@ namespace chem
 	{
 	    Initialize_Mol2_TypeRules(_lisp);
             initialize_loop();
+            initialize_chimera();
 	    initializeElementsAndHybridization();
 //	    _lisp->defvar(_sym_candoDatabase,cdb);
 	}
@@ -287,7 +290,11 @@ core::Symbol_sp chemkw_intern(const string& symName)
 {
   if ( symName == "" ) return _Nil<core::Symbol_O>();
   const string trimmed = core::trimWhiteSpace(symName);
-  return _lisp->intern(trimmed,ChemKwPkg);
+  core::Package_sp chemkwPkg = _lisp->findPackage(ChemKwPkg);
+  core::Symbol_sp sym = chemkwPkg->intern(trimmed);
+  chemkwPkg->_export2(sym);
+  return sym;
+//  return chemkw_intern(trimmed);
 }
 
 core::Symbol_sp chemkw_intern(core::Str_sp symName)

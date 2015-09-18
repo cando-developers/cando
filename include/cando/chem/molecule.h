@@ -91,6 +91,8 @@ virtual string	subMatter() { return Residue_O::static_className(); };
 	geom::Render_sp	rendered(core::List_sp options);
 #endif
 
+        virtual bool applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value);
+
 	virtual uint	numberOfAtoms( );
 
 	/*! Build a map of AtomIds to Atoms */

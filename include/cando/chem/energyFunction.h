@@ -66,6 +66,26 @@ SMART(ForceMatchReport);
 #define	DefaultAnchorRestraintWeight	10.0
 
 
+//
+// Remove InteractionProblem
+// once we have split up the energy components
+//
+//
+typedef	enum { linearAngle, linearDihedral, linearImproperRestraint, overlappingNonbond } InteractionProblemType;
+class	InteractionProblem 
+{
+public:
+    string _Message;
+	InteractionProblemType	_Type;
+gc::Nilable<Atom_sp>		_Atom1;
+gc::Nilable<Atom_sp>		_Atom2;
+gc::Nilable<Atom_sp>		_Atom3;
+gc::Nilable<Atom_sp>		_Atom4;
+
+	string	message() { return this->_Message;};
+	InteractionProblem() {};
+	virtual ~InteractionProblem() throw() {};
+};
 
 
 

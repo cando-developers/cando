@@ -11,5 +11,6 @@ namespace chem
 {
     extern void	parseChimeraAtomSpecification(const string& spec, uint& sequenceNumber, string& chain, string& atomName ); 
 
+    void initialize_chimera();
 };
 

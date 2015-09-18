@@ -49,6 +49,7 @@ private:
 	bool				initialized;
 	bool				done;
 	bool				_OnlyFollowRealBonds;
+        std::function<bool (Bond_sp)>*  _FollowBondIfTrueCallback;
 	Atom_sp				top;
 	Atom_sp				currentObject;
 
@@ -70,7 +71,7 @@ private:
 	bool	nextObjectInAtom();
 	bool		bLoopAtomVisible(Atom_sp a);
 	bool		bSpanAtomVisible(Atom_sp a, BondOrder order, bool* b);
-	Atom_sp		nextSpanningAtom();
+	Atom_sp		nextSpanningAtom(std::function<bool (Atom_sp fromAtom, Bond_sp b)> bondTester);
 
 public:
 	static SpanningLoop_sp create(Atom_sp t) {
@@ -80,9 +81,11 @@ public:
 	};
 public:
 
+        void setFollowBondsWhereTrue(std::function<bool (Bond_sp)>* fn);
 	void		setOnlyFollowRealBonds(bool b) { this->_OnlyFollowRealBonds = b; };
 	void		setTop(Atom_sp a);
 	void		advanceLoop();
+	bool		advanceLoopAndProcessWhenTestTrue(std::function<bool (Atom_sp, Bond_sp)>);
 			// Return TRUE as long as there is something to return
 	bool		advanceLoopAndProcess();
 	bool		advance() { return this->advanceLoopAndProcess(); };

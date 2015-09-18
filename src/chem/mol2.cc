@@ -610,7 +610,7 @@ AtomInfo	one;
     while ( loop.advanceLoopAndProcess() ) residueCount++;
 
     out << "@<TRIPOS>MOLECULE" << std::endl;
-    out << agg->getName() << std::endl;
+    out << agg->getName()->symbolNameAsString() << std::endl;
     out << atomCount << " "
 	<< bondCount << " "
 	<< residueCount << " 0 0" << std::endl;
@@ -720,11 +720,11 @@ AtomInfo	one;
 	r = ri->res;
 //	out << id << " ";
 	out << r->getTempFileId() << " ";
-	out << r->getName() << "_" << r->getTempFileId() << " ";
+	out << r->getName()->symbolNameAsString() << "_" << r->getTempFileId() << " ";
 	out << ri->firstAtom << " ";
 	out << "RESIDUE 1 ";
-	out << downcast<Molecule_O>(r->containedBy())->getName() << " ";
-	out << r->getName() << " 1";
+	out << downcast<Molecule_O>(r->containedBy())->getName()->symbolNameAsString() << " ";
+	out << r->getName()->symbolNameAsString() << " 1";
 	out << std::endl;
 	id++;
     }

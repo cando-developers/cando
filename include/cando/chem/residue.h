@@ -114,6 +114,7 @@ namespace chem {
 	contentIterator end_atoms() {return this->_contents.end(); };
 
 	virtual bool isResidue() { return true;};
+        virtual bool applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value);
 
 
 	adapt::SymbolSet_sp getMonomerAliases();

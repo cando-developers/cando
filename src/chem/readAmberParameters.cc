@@ -76,11 +76,11 @@ FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(core::T_sp fin)
     if ( line.substr(0,8) == "WILDATOM" ) {
       vector<string> names = core::split(line," \t");
       string wildName = names[1];
-      wildCardElementDictionary->addWildName(_lisp->intern(wildName,ChemKwPkg));
+      wildCardElementDictionary->addWildName(chemkw_intern(wildName));
       for ( vector<string>::iterator it=names.begin()+1; it!=names.end(); it++ )
       {
-        core::Symbol_sp wildSymbol = _lisp->intern(wildName,ChemKwPkg);
-        core::Symbol_sp wildOtherSymbol = _lisp->intern(*it,ChemKwPkg);
+        core::Symbol_sp wildSymbol = chemkw_intern(wildName);
+        core::Symbol_sp wildOtherSymbol = chemkw_intern(*it);
         wildCardElementDictionary->addWildNameMap(wildSymbol,wildOtherSymbol);
       }
     } else if ( line.substr(0,3) == "ATD" )
@@ -128,7 +128,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseFirstNonbondDb(core::T_sp fin)
       double mass = atof(parts[1].c_str());
       double polarizability = atof(parts[2].c_str());
       GC_ALLOCATE(FFNonbond_O, ffNonbond );
-      ffNonbond->setType(_lisp->intern(typeName,ChemKwPkg));
+      ffNonbond->setType(chemkw_intern(typeName));
       ffNonbond->setMass(mass);
       ffNonbond->setPolarizability(polarizability);
       ffNonbondDb->add(ffNonbond);
@@ -194,9 +194,9 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
             string t2 = core::trimWhiteSpace(typeParts[1]);
             string t3 = core::trimWhiteSpace(typeParts[2]);
             GC_ALLOCATE(FFAngle_O, ffAngle );
-            ffAngle->_Type1 = _lisp->intern(t1,ChemKwPkg);
-            ffAngle->_Type2 = _lisp->intern(t2,ChemKwPkg);
-            ffAngle->_Type3 = _lisp->intern(t3,ChemKwPkg);
+            ffAngle->_Type1 = chemkw_intern(t1);
+            ffAngle->_Type2 = chemkw_intern(t2);
+            ffAngle->_Type3 = chemkw_intern(t3);
             string parms = line.substr(9);
             vector<string> parmsParts = core::split(parms);
             ffAngle->_K2__kJPerRadianSquared = kCalPerRadianSquared_to_kJPerRadianSquared(atof(parmsParts[0].c_str()));
@@ -235,15 +235,15 @@ FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin)
       GC_ALLOCATE(FFPtor_O, ffPtor );
       core::Symbol_sp st1;
       if ( t1 != "X" ) {
-        st1 = _lisp->intern(t1,ChemKwPkg);
+        st1 = chemkw_intern(t1);
       } else {
         st1 = _Nil<core::T_O>();
       }
-      core::Symbol_sp st2 = _lisp->intern(t2,ChemKwPkg);
-      core::Symbol_sp st3 = _lisp->intern(t3,ChemKwPkg);
+      core::Symbol_sp st2 = chemkw_intern(t2);
+      core::Symbol_sp st3 = chemkw_intern(t3);
       core::Symbol_sp st4;
       if ( t4 != "X" ) {
-        st4 = _lisp->intern(t4,ChemKwPkg);
+        st4 = chemkw_intern(t4);
       } else {
         st4 = _Nil<core::T_O>();
       }
@@ -293,20 +293,20 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
             GC_ALLOCATE(FFItor_O, ffItor );
             core::Symbol_sp st1;
             if ( t1 != "X" ) {
-              st1 = _lisp->intern(t1,ChemKwPkg);
+              st1 = chemkw_intern(t1);
             } else {
               st1 = _Nil<core::T_O>();
             }
             core::Symbol_sp st2;
             if ( t2 != "X" ) {
-              st2 = _lisp->intern(t2,ChemKwPkg);
+              st2 = chemkw_intern(t2);
             } else {
               st2 = _Nil<core::T_O>();
             }
-            core::Symbol_sp st3 = _lisp->intern(t3,ChemKwPkg);
+            core::Symbol_sp st3 = chemkw_intern(t3);
             core::Symbol_sp st4;
             if ( t4 != "X" ) {
-              st4 = _lisp->intern(t4,ChemKwPkg);
+              st4 = chemkw_intern(t4);
             } else {
               st4 = _Nil<core::T_O>();
             }
@@ -354,7 +354,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
         LOG(BF("Parsing line|%s|") % line.c_str()  );
         FFNonbond_sp ffNonbond;
         string type = core::trimWhiteSpace(line.substr(0,4));
-        core::Symbol_sp stype = _lisp->intern(type,ChemKwPkg);
+        core::Symbol_sp stype = chemkw_intern(type);
         if ( ffNonbondDb->hasType(stype) ) {
           ffNonbond = ffNonbondDb->findType(stype);
         } else

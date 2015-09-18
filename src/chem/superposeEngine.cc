@@ -450,7 +450,7 @@ void	SuperposeEngine_O::setFixedPoints( core::IntArray_sp fi, geom::CoordinateAr
 	ss << "In SuperposeEngine setFixedPoints - number of indices fi->size() = ";
 	ss << fi->size() << " must be at least 3"<< std::endl;
 	ss << "Number of coordinates --> fc->size() = ";
-	ss << fc->size() << " must be greator than or equal to fi->size(";
+	ss << fc->size() << " must be >= to fi->size(";
 	ss << fi->size() << ")" << std::endl;
 	LOG(BF("%s") % ss.str().c_str()  );
 	SIMPLE_ERROR(BF(ss.str()));

@@ -16,6 +16,7 @@
 #include <cando/adapt/stringList.h>
 #include <clasp/core/designators.h>
 #include <clasp/core/bundle.h>
+#include <cando/geom/coordinateArray.h>
 #include <cando/chem/candoScript.h>
 #include <cando/chem/candoDatabase.h>
 #include <cando/chem/monomer.h>
@@ -521,6 +522,24 @@ __END_DOC
  */
 
 
+#define ARGS_af_makeCoordinateArrayFromAtomList "(fileName)"
+#define DECL_af_makeCoordinateArrayFromAtomList ""
+#define DOCS_af_makeCoordinateArrayFromAtomList "loadMol2"
+geom::CoordinateArray_sp af_makeCoordinateArrayFromAtomList(core::List_sp atoms)
+{_G();
+  int num = core::cl_length(atoms);
+  geom::CoordinateArray_sp coords = geom::CoordinateArray_O::create(num);
+  int idx(0);
+  for ( auto cur : atoms ) {
+    Atom_sp a = gc::As<chem::Atom_sp>(oCar(cur));
+    Vector3 v = a->getPosition();
+    coords->setElement(idx,v);
+    ++idx;
+  }
+  return coords;
+}
+
+
 
 #define ARGS_af_loadMol2 "(fileName)"
 #define DECL_af_loadMol2 ""
@@ -632,7 +651,7 @@ core::T_sp af_findResidue(core::List_sp args)
       Aggregate_sp agg = args.asCons()->onth(0).as<Aggregate_O>();
       core::Str_sp chain = args.asCons()->onth(1).as<core::Str_O>();
       residueIdentifier = args.asCons()->onth(2).as<core::T_O>();
-      molecule = gc::As<Molecule_sp>(agg->contentWithName(_lisp->intern(chain->get(),ChemKwPkg)));
+      molecule = gc::As<Molecule_sp>(agg->contentWithName(chemkw_intern(chain->get())));
     } else if ( core::cl_length(args)==2 ) 
     {
       molecule = args.asCons()->onth(0).as<Molecule_O>();
@@ -682,7 +701,7 @@ core::T_sp af_atomPos(core::List_sp args)
       core::Str_sp chain = args.asCons()->onth(1).as<core::Str_O>();
       residueIdentifier = args.asCons()->onth(2).as<core::T_O>();
       atomName = args.asCons()->onth(3).as<core::Symbol_O>();
-      molecule = gc::As<Molecule_sp>(agg->contentWithName(_lisp->intern(chain->get(),ChemKwPkg)));
+      molecule = gc::As<Molecule_sp>(agg->contentWithName(chemkw_intern(chain->get())));
     } else if ( core::cl_length(args)==3 ) 
     {
       molecule = args.asCons()->onth(0).as<Molecule_O>();
@@ -863,27 +882,29 @@ core::T_sp af_oligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_
 
 
 
+
+
 void	setupCandoPrimitives(core::Lisp_sp env)
 {
 
 	// for Mbb package
-    
-    Defun(saveArchiveWithAutoSetCandoDatabase); // ,&prim_saveArchiveWithAutoSetCandoDatabase,env);
-    Defun(standardDatabase); // , &prim_standardDatabase,env);
-    Defun(database); // , &prim_database,ARGS_prim_database,env);
+  Defun(makeCoordinateArrayFromAtomList);
+  Defun(saveArchiveWithAutoSetCandoDatabase); // ,&prim_saveArchiveWithAutoSetCandoDatabase,env);
+  Defun(standardDatabase); // , &prim_standardDatabase,env);
+  Defun(database); // , &prim_database,ARGS_prim_database,env);
 //    Defun(describeDatabase); // , &prim_describeDatabase,env);
-    Defun(bundleDatabasePath); // , &prim_bundleDatabasePath,ARGS_prim_bundleDatabasePath,env);
+  Defun(bundleDatabasePath); // , &prim_bundleDatabasePath,ARGS_prim_bundleDatabasePath,env);
 //    defNoWrapPackage(ChemPkg,"dbval", &prim_dbval,env);
-    Defun(monomer); // , &prim_monomer,env);
-    Defun(link); // , &prim_link,env);
-    Defun(loadMol2); // , &prim_loadMol2,env);
-    Defun(saveMol2); // , &prim_saveMol2,env);
-    Defun(atomPos); // , &prim_atomPos,env);
-    Defun(findResidue); // , &prim_findResidue,env);
+  Defun(monomer); // , &prim_monomer,env);
+  Defun(link); // , &prim_link,env);
+  Defun(loadMol2); // , &prim_loadMol2,env);
+  Defun(saveMol2); // , &prim_saveMol2,env);
+  Defun(atomPos); // , &prim_atomPos,env);
+  Defun(findResidue); // , &prim_findResidue,env);
 //    Defun(setDatabase); // , &prim_setDatabase,env);
 //    defNoWrapPackage(ChemPkg,"contextGrep", &prim_contextGrep,env);
-    Defun(createVirtualAtom); // , &prim_createVirtualAtom,env);
-    Defun(calculatePoint); // , &prim_calculatePoint,env);
+  Defun(createVirtualAtom); // , &prim_createVirtualAtom,env);
+  Defun(calculatePoint); // , &prim_calculatePoint,env);
 //    Defun(RequiredPlug); // , &prim_RequiredPlug,ARGS_prim_RequiredPlug,env);
 };
 

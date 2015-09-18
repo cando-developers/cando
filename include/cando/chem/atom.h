@@ -407,6 +407,7 @@ namespace chem
 	void	removeBondTo(Atom_sp a);
 	void	removeAllBonds();
 	int	coordination();
+        Bond_sp bondAtIndex(int i);
 	Atom_sp	bondedNeighbor(int i);
 	Atom_sp	bondedNeighborWithName(MatterName name);
 	BondOrder bondOrderTo( Atom_sp aTarget );
@@ -448,6 +449,9 @@ namespace chem
 //	void	setConfigurationInfo(ConfigurationInfo& conf);
 	void	setConfiguration(ConfigurationEnum conf);
 	void	setStereochemistryType(StereochemistryType conf) { this->_StereochemistryType = conf;};
+
+        virtual bool applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value);
+
 	StereochemistryType getStereochemistryType() { return this->_StereochemistryType; };
 	ConfigurationEnum getConfiguration() { return this->_Configuration;};
 	string	getConfigurationAsString();
@@ -517,6 +521,7 @@ namespace chem
 	virtual void redirectAtoms();
 
 	/*! Used by Bond to connect a copied atom to a bond */
+    public:
 	void addBond(Bond_sp bond);
 
 

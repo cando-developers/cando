@@ -307,7 +307,7 @@ core::Symbol_sp EntityNameSetBase_O::getKey()
 	    ss << *ki;
 	}
 	ss << "]";
-	return _lisp->intern(ss.str(),ChemKwPkg);
+	return chemkw_intern(ss.str());
     }
 
 

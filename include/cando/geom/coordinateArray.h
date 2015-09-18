@@ -72,6 +72,10 @@ namespace geom
       return dims;
     }
 
+    INHERIT_SEQUENCE virtual core::T_sp elt(int index) const { return this->getElementObject(index); };
+    INHERIT_SEQUENCE virtual core::T_sp setf_elt(int index, core::T_sp value) { return this->setElementObject(index,value); };
+
+    virtual gc::Fixnum dimension() const { return this->_Points.size(); };
 
     iterator	begin();
     iterator	end();

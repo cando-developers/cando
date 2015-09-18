@@ -195,6 +195,10 @@ class Matter_O : public core::CxxObject_O
 		 */
   Residue_sp aliasResidue(Alias_sp alias);
 
+  virtual bool applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value);
+  void applyProperty(core::Symbol_sp prop, core::T_sp value);
+  void applyPropertyList(core::List_sp list);
+  
   void	setAllAtomMasks(int m);
   void	setAtomMasksForAllHeavyAtoms(int m);
 
@@ -212,6 +216,8 @@ class Matter_O : public core::CxxObject_O
 		 * If it already exists it is overwritten.
 		 */
   void	setPropertyTrue(core::Symbol_sp propertySymbol);
+
+  core::List_sp getProperties() { return this->_Properties; };
 		/*! Return the value of the property.
 		 * Throw an exception if the property isn't defined.
 		 */

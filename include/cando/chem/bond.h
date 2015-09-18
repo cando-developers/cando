@@ -57,7 +57,7 @@ public:
   void addYourselfToCopiedAtoms();
 
  public:
-  static Bond_sp create(Atom_sp a1, Atom_sp a2, BondOrder o);
+  static Bond_sp create(Atom_sp a1, Atom_sp a2, BondOrder o= singleBond);
  public:
 	/*! Return true if atom is Atom1, false if its Atom2 and throw an exception if its neither */
   bool isAtom1(Atom_sp atom) const;
@@ -86,13 +86,9 @@ public:
 		/*! Define/set the value of the property.
 		 * If it already exists it is overwritten.
 		 */
-  void	pushProperty(core::Symbol_sp propertySymbol, core::T_sp value);
+  void	setProperty(core::Symbol_sp propertySymbol, core::T_sp value);
 		/*! Define/set the value of the property to TRUE.
 		 * If it already exists it is overwritten.
-		 */
-  void	pushPropertyTrue(core::Symbol_sp propertySymbol);
-		/*! Return the value of the property or the
-		 * default if it isn't defined.
 		 */
   core::T_sp getProperty(core::Symbol_sp propertySymbol, core::T_sp defVal );
 		/*! Return true if the property exists.

@@ -44,7 +44,7 @@
 (defun number-of-stereoisomers (chiral-atoms)
   (expt 2 (length chiral-atoms)))
 
-
+;; Recover from minimization problems using Common Lisp restarts
 (defun minimize-no-fail (minimizer)
   (restart-case
       (handler-case
@@ -127,7 +127,8 @@
     ((typep obj 'chem:aggregate)
      (chem:save-mol2 obj #P"/tmp/temp.mol2")
      (ext:system (format nil "open /tmp/temp.mol2")))
-    (t (error "You cannot run chimera on ~a" obj))))
+    (t (error "You cannot run chimera on ~a" obj)))
+  (sleep 0.3))
 
 (defun bad-geometry-p (agg force-field)
   (let ((energy-function (chem:make-energy-function agg force-field)))
@@ -150,3 +151,74 @@
   (let ((npn (merge-pathnames pn *default-pathname-defaults*)))
     (format t "Saving matter to ~a~%" npn)
     (chem:save-mol2 matter npn)))
+
+(defun load-mol2 (pn)
+  (let ((npn (merge-pathnames pn *default-pathname-defaults*)))
+    (chem:load-mol2 npn)))
+
+
+(defun coordinate-array-for-atomspec (agg atomspec)
+  (let ((atoms (chem:atoms-with-chimera-specifications agg atomspec)))
+    (chem:make-coordinate-array-from-atom-list atoms)))
+
+(defun superpose-one (agg-fixed agg-moveable atomspec)
+  (let ((coords-fixed (coordinate-array-for-atomspec agg-fixed atomspec))
+        (coords-moveable (coordinate-array-for-atomspec agg-moveable atomspec))
+        (superposer (core:make-cxx-object 'chem:superpose-engine)))
+    (chem:set-fixed-all-points superposer coords-fixed)
+    (chem:set-moveable-all-points superposer coords-moveable)
+    (let ((transform (chem:superpose superposer)))
+      (chem:apply-transform-to-atoms agg-moveable transform))))
+
+(defun superpose-all (aggs atomspec)
+  (let* ((fixed-agg (car aggs))
+         (rest-aggs (cdr aggs))
+         (fixed-coords (coordinate-array-for-atomspec fixed-agg atomspec))
+         (superposer (core:make-cxx-object 'chem:superpose-engine)))
+    (chem:set-fixed-all-points superposer fixed-coords)
+    (dolist (moveable-agg rest-aggs)
+      (let ((moveable-coords (coordinate-array-for-atomspec moveable-agg atomspec)))
+        (chem:set-moveable-all-points superposer moveable-coords)
+        (let ((transform (chem:superpose superposer)))
+          (chem:apply-transform-to-atoms moveable-agg transform))))))
+
+
+(defun superpose-against-template (&key fixed-aggregate fixed-atomspec moveable-aggregates moveable-atomspec key)
+  (let* ((rms-results (make-hash-table :test #'eq))
+         (fixed-coords (coordinate-array-for-atomspec fixed-aggregate fixed-atomspec))
+         (superposer (core:make-cxx-object 'chem:superpose-engine)))
+    (chem:set-fixed-all-points superposer fixed-coords)
+    (dolist (moveable-agg moveable-aggregates)
+      (let ((moveable-coords (coordinate-array-for-atomspec moveable-agg moveable-atomspec)))
+        (chem:set-moveable-all-points superposer moveable-coords)
+        (let ((transform (chem:superpose superposer)))
+          (chem:apply-transform-to-atoms moveable-agg transform)
+          (let ((k (if key
+                       (funcall key moveable-agg)
+                       moveable-agg)))
+            (setf (gethash k rms-results) (chem:root-mean-square-difference superposer)))
+          )))
+    rms-results))
+
+
+
+(defun gnuplot-data (data)
+  (with-open-file (fout "/tmp/gnuplot_temp.xy" :direction :output)
+    (let ((xi 0) x y)
+      (dolist (one data)
+        (if (consp one)
+            (setf x (first one)
+                  y (second one))
+            (setf x (prog1 xi (incf xi))
+                  y one))
+        (format fout "~s ~s~%" x y))))
+  (ext:system "gnuplot -e 'set terminal png; set output \"/tmp/out.png\"; plot \"/tmp/gnuplot_temp.xy\" w lp; quit'")
+  (ext:system "open /tmp/out.png")
+  #+(or)(swank::send-to-emacs (list :write-image "/tmp/out.png" "x")))
+
+(defun find-aggregate (agg-list matcher)
+  (dolist (a agg-list)
+    (when (funcall matcher a)
+      (return-from find-aggregate a))))
+
+

@@ -72,7 +72,7 @@ namespace chem
 	this->_Id = c._Id;
 	this->name = c.name;
 //	this->containerContainedBy = c.containerContainedBy;
-	this->_Properties = c._Properties;
+	this->_Properties = core::cl_copyList(c._Properties);
 	this->_Restraints = _Nil<RestraintList_O>();
     }
 
@@ -158,22 +158,55 @@ namespace chem
         ss << _rep_(this->_Properties);
 	return ss.str();
     }
-	
 
 
+bool Matter_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value)
+{
+  if ( prop == kw::_sym_name ) {
+    this->name = gc::As<core::Symbol_sp>(value);
+    return true;
+  }
+  return false;
+}
+
+void Matter_O::applyProperty(core::Symbol_sp prop, core::T_sp value)
+{
+//  printf("%s:%d applyProperty %s - %s\n", __FILE__, __LINE__, _rep_(prop).c_str(), _rep_(value).c_str());
+  if ( !this->applyPropertyToSlot(prop,value) ) {
+    printf("%s:%d    using setProperty\n",__FILE__, __LINE__);
+    this->setProperty(prop,value);
+  }
+}
+
+
+void Matter_O::applyPropertyList(core::List_sp list)
+{
+  core::List_sp cur = list;
+  while (cur.notnilp()) {
+    core::Symbol_sp property = gc::As<core::Symbol_sp>(oCar(cur));
+    cur = oCdr(cur);
+    if ( cur.nilp() ) {
+      SIMPLE_ERROR(BF("Incomplete property list: %s") % _rep_(list));
+    }
+    core::T_sp value = oCar(cur);
+    this->applyProperty(property,value);
+    cur = oCdr(cur);
+  }
+}
+    
     void Matter_O::clearProperty(core::Symbol_sp prop)
     {_G();
-	core::core_rem_f(this->_Properties,prop);
+      this->_Properties = core::core_rem_f(this->_Properties,prop);
     }
 
     void Matter_O::setProperty(core::Symbol_sp prop, core::T_sp val)
     {_G();
-      core::core_put_f(this->_Properties,val,prop);
+      this->_Properties = core::core_put_f(this->_Properties,val,prop);
     }
 
     void Matter_O::setPropertyTrue(core::Symbol_sp prop)
     {_G();
-      core::core_put_f(this->_Properties,_lisp->_true(),prop);
+      this->_Properties = core::core_put_f(this->_Properties,_lisp->_true(),prop);
     }
 
     core::T_sp Matter_O::getProperty(core::Symbol_sp prop)
@@ -1128,6 +1161,7 @@ void	Matter_O::fields(core::Record_sp node )
 	    .def("hasProperty",&Matter_O::hasProperty)
 	    .def("setProperty",&Matter_O::setProperty)
 	    .def("setPropertyTrue",&Matter_O::setPropertyTrue)
+	    .def("getProperties",&Matter_O::getProperties)
 	    .def("Matter-getProperty",&Matter_O::getProperty)
 	    .def("Matter-getPropertyOrDefault",&Matter_O::getPropertyOrDefault)
 	    .def("propertiesAsString",&Matter_O::propertiesAsString)

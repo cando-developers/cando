@@ -10,6 +10,7 @@ namespace chem
 {
 
 FORWARD(Bond);
+                
 
 typedef	enum 	BondOrderEnum 
 {

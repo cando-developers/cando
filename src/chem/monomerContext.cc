@@ -196,7 +196,7 @@ core::Symbol_sp MonomerContext_O::getKey()
 	for ( ci=this->_Neighbors.begin(); ci!=this->_Neighbors.end(); ci++ ) {
 	    ss << ci->first->symbolNameAsString() << COUPLING_CHAR << _rep_(ci->second->getKey());
 	}
-        core::Symbol_sp keyAsSymbol = _lisp->intern(ss.str(),ChemKwPkg);
+        core::Symbol_sp keyAsSymbol = chemkw_intern(ss.str());
 	return keyAsSymbol;
     }
 
@@ -261,7 +261,7 @@ core::Symbol_sp MonomerContext_O::getFirstSpecificKey()
 	res = *(expandedList->begin());
 //RETURN:
 	LOG(BF("Returning") );
-        return _lisp->intern(res,ChemKwPkg);
+        return chemkw_intern(res);
     }
 
 

@@ -219,7 +219,7 @@ namespace chem
 //
 //	Private method for advancing to the next atom in a
 //	spanning tree.
-    Atom_sp	SpanningLoop_O::nextSpanningAtom()
+Atom_sp	SpanningLoop_O::nextSpanningAtom(std::function<bool (Atom_sp fromAtom, Bond_sp b)> bondTester )
     {_G();
 	Atom_sp		oObject;
 	Atom_sp		aBond;
@@ -231,10 +231,11 @@ namespace chem
 	/* some stuff on the first ATOM_CLASS */
 
 	if ( !this->initialized ) {
-	    downcast<Atom_O>(this->top)->invalidateBackSpan();
-	    downcast<Atom_O>(this->top)->setBackCount(0);
-	    downcast<Atom_O>(this->top)->setSeenId(this->iSeenId);
-	    this->initialized = true;
+          ASSERT(this->top);
+          gc::As<Atom_sp>(this->top)->invalidateBackSpan();
+          gc::As<Atom_sp>(this->top)->setBackCount(0);
+          gc::As<Atom_sp>(this->top)->setSeenId(this->iSeenId);
+          this->initialized = true;
 	}
 
 	LOG(BF("--- Entered nextSpanningAtom aCurSpan = %d; nextSpan valid?=%d") 
@@ -254,23 +255,25 @@ namespace chem
 	aPrev->invalidateNextSpan();
 	LOG(BF("--- Invalidated nextSpan for atom: %d") % (aPrev->getMoeIndex() ) );
 	LOG(BF("--- Currently on atom: %d") % (this->aCurSpan->getMoeIndex() ) );
+//        printf("%s:%d nextSpanningAtom: %s coordination: %d\n", __FILE__, __LINE__, _rep_(this->aCurSpan).c_str(), this->aCurSpan->coordination());
 	for ( i=0; i<this->aCurSpan->coordination(); i++ ) {
-	    aBond = this->aCurSpan->bondedNeighbor( i );
-	    BondOrder order = this->aCurSpan->bondedOrder(i);
-
+          Bond_sp bond = this->aCurSpan->bondAtIndex(i);
+          aBond = bond->getOtherAtom(this->aCurSpan);
+          BondOrder order = bond->getOrder();
+          bool followBond = bondTester(this->aCurSpan,bond);
 	    /* If the atom is visible then add it */
-	    if ( this->bSpanAtomVisible( aBond, order, &bSeenBefore ) ) {
-		LOG(BF("--- looking at bonded atom: %d") % (aBond->getMoeIndex() ) );
-		aBond->setSeenId( this->iSeenId );
-		aBond->setBackCount( this->aCurSpan->getBackCount()+1 );
-		aBond->setBackSpan( this->aCurSpan );
-		aPrev->setNextSpan( aBond );
-		LOG(BF("--- Setting atom: %d nextSpan to: %d") % (aPrev->getMoeIndex()) % (aBond->getMoeIndex() ) );
+          if ( followBond && this->bSpanAtomVisible( aBond, order, &bSeenBefore ) ) {
+            LOG(BF("--- looking at bonded atom: %d") % (aBond->getMoeIndex() ) );
+            aBond->setSeenId( this->iSeenId );
+            aBond->setBackCount( this->aCurSpan->getBackCount()+1 );
+            aBond->setBackSpan( this->aCurSpan );
+            aPrev->setNextSpan( aBond );
+            LOG(BF("--- Setting atom: %d nextSpan to: %d") % (aPrev->getMoeIndex()) % (aBond->getMoeIndex() ) );
 
-		aBond->invalidateNextSpan();
-		LOG(BF("--- Is atom: %d nextSpan valid? ==> %d") % (aPrev->getMoeIndex()) % (aPrev->isNextSpanValid() ) );
-		aPrev = aBond;
-	    } else {
+            aBond->invalidateNextSpan();
+            LOG(BF("--- Is atom: %d nextSpan valid? ==> %d") % (aPrev->getMoeIndex()) % (aPrev->isNextSpanValid() ) );
+            aPrev = aBond;
+          } else {
 		LOG(BF("--- NOT Visible") );
 
 		/* If the atom is invisible, but has not been seen */
@@ -314,26 +317,21 @@ namespace chem
 // At the end of this function either this->currentObject is the next object
 // or this->done == true, in which case this->currentObject is invalid.
 //
-    void	SpanningLoop_O::advanceLoop()
-    {_G();
-	Atom_sp		retVal;
+void	SpanningLoop_O::advanceLoop()
+{
+  if ( this->done ) return;
+  Atom_sp retVal = this->nextSpanningAtom( [] (Atom_sp a, Bond_sp b) -> bool { return true; });
+  this->currentObject = retVal;
+  return;
+}
 
-	LOG(BF("SpanningLoop_O::advanceLoop STARTING ---------- ") );
-	if ( this->done ) {
-	    return;
-	}
-	LOG(BF("SpanningLoop_O::advanceLoop running") );
-
-	// Are we looping over a spanning tree
-
-	retVal = this->nextSpanningAtom();
-	LOG(BF("SpanningLoop_O::advanceLoop advanced to moeIndex =%d") % (retVal->getMoeIndex() ) );
-
-//DONE:
-	this->currentObject = retVal;
-	LOG(BF("SpanningLoop_O::advanceLoop returning --------------") );
-	return;
-    }
+bool SpanningLoop_O::advanceLoopAndProcessWhenTestTrue(std::function<bool (Atom_sp, Bond_sp)> followBondIfTrue )
+{
+  if ( this->done ) return false;
+  Atom_sp retVal = this->nextSpanningAtom(followBondIfTrue);
+  this->currentObject = retVal;
+  return true;
+}
 
 
     core::List_sp	SpanningLoop_O::allAtoms()

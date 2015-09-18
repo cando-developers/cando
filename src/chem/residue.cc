@@ -43,6 +43,11 @@ void	Residue_O::resetConstitution()
 };
 #endif
 
+bool Residue_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
+  if ( this->Base::applyPropertyToSlot(prop,value) ) return true;
+  return false;
+}
+
 bool	Residue_O::hasConstitution()
 {
     IMPLEMENT_MEF(BF("handle ownerWithClass"));
@@ -233,7 +238,7 @@ void	Residue_O::initialize()
 {
     this->Base::initialize();
 //    this->_Constitution = _Nil<CandoDatabaseReference_O>();
-    this->_FileSequenceNumber = -1;
+    this->_FileSequenceNumber = UndefinedUnsignedInt;
     this->_NetCharge = 0;
     this->_MonomerAliases = _Nil<core::T_O>();
     this->_UniqueLabel = _Nil<core::T_O>();
@@ -255,7 +260,6 @@ Residue_O::Residue_O(const Residue_O& res)
     this->_MonomerAliases = res._MonomerAliases;
     this->_UniqueLabel = res._UniqueLabel;
 }
-
 
 
 

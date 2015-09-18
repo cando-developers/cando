@@ -14,6 +14,7 @@
 #include <cando/chem/chemPackage.h>
 #include <cando/adapt/quickDom.fwd.h>// chemdraw.h wants QDomNode needs quickDom.fwd.h
 #include <cando/chem/atom.fwd.h>
+#include <cando/chem/molecule.fwd.h>
 #include <cando/chem/aggregate.fwd.h>
 namespace chem
 {
@@ -36,6 +37,10 @@ typedef	enum { singleCDBond,
 		doubleDashCDBond,
 		tripleDashCDBond,
 		hashCDBond,
+               hollowWedgeCDBond,
+               wedgeHashCDBond,
+               wedgeCDBond,
+                 wavyCDBond,
 		unknownCDBond
     } CDBondOrder;
 
@@ -43,42 +48,48 @@ typedef	enum { singleCDBond,
 SMART(CDNode );
 class CDNode_O : public core::CxxObject_O
 {	
-    friend class CDFragment_O;
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,CDNode_O,"CDNode");
-private:
-	uint					_Id;
-        core::Symbol_sp       			_Label;
-	StereochemistryType			_StereochemistryType;
-	ConfigurationEnum			_Configuration;
-private:	// generated
-	Atom_sp					_Atom;
-		// Keep track of neighbors for spanning trees
-		// 
-	vector< pair<CDNode_wp,CDBondOrder> >	_Neighbors;
-	CDNode_wp				_BackSpan;
-	CDNode_wp				_NextSpan;
-public:
-	void	initialize();
-private:
-        core::Symbol_sp	_extractLabel(adapt::QDomNode_sp node);
-	void	unidirectionalBondTo(CDNode_sp neighbor, CDBondOrder order);
-public:
-	uint	getId() const { return this->_Id;};
-	void    setId(uint i) { this->_Id = i; };
-        core::Symbol_sp getLabel() const { return this->_Label;};
+  friend class CDFragment_O;
+  LISP_BASE1(core::CxxObject_O);
+  LISP_CLASS(chem,ChemPkg,CDNode_O,"CDNode");
+ public:
+  uint				_Id;
+  std::string       		_Label;
+  StereochemistryType		_StereochemistryType;
+  ConfigurationEnum		_Configuration;
+ private:	// generated
+  gc::Nilable<Atom_sp>		_Atom;
+  gc::Nilable<CDNode_sp>		_BackSpan;
+  gc::Nilable<CDNode_sp>		_NextSpan;
+  core::List_sp _AtomProperties;
+  core::List_sp _ResidueProperties;
+  core::List_sp _MoleculeProperties;
+ public:
+  void	initialize();
+ private:
+  std::string	_extractLabel(adapt::QDomNode_sp node);
+ public:
+  uint	getId() const { return this->_Id;};
+  void    setId(uint i) { this->_Id = i; };
+//        core::Symbol_sp getLabel() const { return this->_Label;};
 	/*! Parse the label into a name and ionization component "name/[+-] */
-	void getParsedLabel(string& name, int& ionization) const;
-	void setLabel(core::Symbol_sp l) { this->_Label = l;};
-	Atom_sp	getAtom() const { return this->_Atom;};
-	void setAtom(Atom_sp a) { this->_Atom = a;};
-	void	parseFromXml(adapt::QDomNode_sp xml);
+  void getParsedLabel(string& name, int& ionization) const;
+//	void setLabel(core::Symbol_sp l) { this->_Label = l;};
+  Atom_sp	getAtom() const { return this->_Atom;};
+  void setAtom(Atom_sp a) { this->_Atom = a;};
+  void	parseFromXml(adapt::QDomNode_sp xml);
 
-	void	bondTo( CDNode_sp neighbor, CDBondOrder order);
+  void	bondTo( CDNode_sp neighbor, CDBondOrder order);
 
-	CDNode_O( const CDNode_O& ss ); //!< Copy constructor
+  CDNode_O( const CDNode_O& ss ); //!< Copy constructor
 
-	DEFAULT_CTOR_DTOR(CDNode_O);
+ CDNode_O() : _Atom(_Nil<core::T_O>())
+    , _BackSpan(_Nil<core::T_O>())
+    , _NextSpan(_Nil<core::T_O>())
+    , _AtomProperties(_Nil<core::T_O>())
+    , _ResidueProperties(_Nil<core::T_O>())
+    , _MoleculeProperties(_Nil<core::T_O>())
+  {};
+  virtual ~CDNode_O() {};
 };
 
 
@@ -90,8 +101,8 @@ class CDBond_O : public core::CxxObject_O
 private:
 	uint		_IdBegin;
 	uint		_IdEnd;
-	CDNode_wp	_BeginNode;
-	CDNode_wp	_EndNode;
+	CDNode_sp	_BeginNode;
+	CDNode_sp	_EndNode;
 	CDBondOrder	_Order;
 public:
 	void	initialize();
@@ -132,51 +143,58 @@ private:
     IntMappedCDNodes		_Nodes;
     AtomsToBonds		_AtomsToNodes;
     CDBonds			_Bonds;
-    CDNode_sp			_RootNode;
     int				_LargestId;
-    core::HashTableEq_sp		_Properties;
+    gc::Nilable<Molecule_sp> _Molecule;
+//    core::HashTableEq_sp		_Properties;
 public:
     void	initialize();
 private:
     bool _asKeyedObject(core::Symbol_sp label, core::Symbol_sp& keyword, core::T_sp& obj);
 private:
-    Residue_sp _buildResidue(bool constitutionOnly);
+//    Residue_sp _buildResidue(bool constitutionOnly);
 
 public:
     void setConstitutionName(core::Symbol_sp n) { this->_ConstitutionName = n;};
     core::Symbol_sp getConstitutionName() { return this->_ConstitutionName;};
 
+#if 0
     core::HashTableEq_sp getProperties() { return this->_Properties;};
     void	addProperties(core::HashTableEq_sp dict);
-    Atom_sp createOneAtom(CDNode_sp n);
-    void	createAtoms();
-    void	createImplicitHydrogen(CDNode_sp from, core::Symbol_sp name);
-    void	parseFromXml(adapt::QDomNode_sp xml);
-    /*! Return false if the fragment couldn't be interpreted */
-    bool	interpret();
-
     //! Get the property for this ChemDraw Fragment
     core::T_sp getProperty(core::Symbol_sp key);
     core::T_sp getPropertyOrDefault(core::Symbol_sp key, core::T_sp df);
     bool hasProperty(core::Symbol_sp key);
     core::T_sp setProperty(core::Symbol_sp key, core::T_sp df);
     string describeProperties();
+#endif
+    Atom_sp createOneAtom(CDNode_sp n);
+    void	createAtomsAndBonds();
+    void	createImplicitHydrogen(CDNode_sp from, const string& name);
+    void	parseFromXml(adapt::QDomNode_sp xml);
+    /*! Return false if the fragment couldn't be interpreted */
+    bool	interpret();
 
+core::T_sp getMolecule() { return this->_Molecule; };
+
+
+    int countNeighbors(CDNode_sp node);
     void createBonds(bool selectedAtomsOnly);
+Molecule_sp createMolecule();
     void removeAllBonds();
     void clearAtomSelected();
 
 
     Residue_sp createResidueOfSelectedAtoms();
 
-    Residue_sp getEntireResidue();
+//    Residue_sp getEntireResidue();
     ConstitutionAtoms_sp asConstitutionAtoms();
 
     string __repr__() const;
 
     CDFragment_O( const CDFragment_O& ss ); //!< Copy constructor
 
-    DEFAULT_CTOR_DTOR(CDFragment_O);
+ CDFragment_O() : _Molecule(_Nil<core::T_O>()) {};
+    virtual ~CDFragment_O() {};
 };
 
 

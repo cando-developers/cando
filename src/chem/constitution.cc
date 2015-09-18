@@ -39,14 +39,14 @@ namespace chem {
       me->_Comment = comment;
       me->_MetaConstitution = metaConstitution;
       me->_ConstitutionAtoms = constitutionAtoms;
-      IMPLEMENT_MEF(BF("Handle setOwner"));
+//      IMPLEMENT_MEF(BF("Handle setOwner"));
 //      me->_ConstitutionAtoms->setOwner(me);
       me->_StereoInformation = stereoInformation;
-      IMPLEMENT_MEF(BF("Handle setOwner"));
+//      IMPLEMENT_MEF(BF("Handle setOwner"));
 //      me->_StereoInformation->setOwner(me);
       me->_StereoInformation->validate();
       {_BLOCK_TRACE("Adding plugs to Constitution");
-	  IMPLEMENT_MEF(BF("Handle setOwnerOfAllEntries"));
+//	  IMPLEMENT_MEF(BF("Handle setOwnerOfAllEntries"));
 //	  plugs->setOwnerOfAllEntries(me);
 	  me->_PlugsByName.clear();
           for ( auto cur : plugs ) {

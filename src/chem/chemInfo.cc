@@ -1895,11 +1895,11 @@ void ChemInfo_O::exposeCando(core::Lisp_sp lisp) {
   DECLARE_SYMBOL_TO_ENUM_CONVERTER(bondEnum, "SABBondEnum", ChemKwPkg, chem::_sym_STARSabBondEnumConverterSTAR);
 
   SYMBOL_SC_(ChemPkg, STARLogicalOperatorTypeConverterSTAR);
-  core::SymbolToEnumConverter_sp logOpConverter = core::SymbolToEnumConverter_O::create("LogicalOperatorEnum", ChemKwPkg, logicalEnum);
+  core::SymbolToEnumConverter_sp logOpConverter = core::SymbolToEnumConverter_O::create("LogicalOperatorEnum", ChemKwPkg, logicalEnum, true);
   chem::_sym_STARLogicalOperatorTypeConverterSTAR->defparameter(logOpConverter);
 
   SYMBOL_SC_(ChemPkg, STARAtomTestEnumConverterSTAR);
-  core::SymbolToEnumConverter_sp c = core::SymbolToEnumConverter_O::create("AtomTestEnum", ChemKwPkg, testEnum);
+  core::SymbolToEnumConverter_sp c = core::SymbolToEnumConverter_O::create("AtomTestEnum", ChemKwPkg, testEnum, true);
   chem::_sym_STARAtomTestEnumConverterSTAR->defparameter(c);
 }
 void ChemInfo_O::exposePython(core::Lisp_sp lisp) {

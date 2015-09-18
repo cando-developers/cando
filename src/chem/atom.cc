@@ -671,6 +671,11 @@ void Atom_O::exposeCando(core::Lisp_sp lisp)
 	this->bondTo(h,singleBond);
     }
 
+    Bond_sp Atom_O::bondAtIndex(int i)
+    {
+      return this->bonds[i];
+    }
+
     Atom_sp Atom_O::bondedNeighbor(int i)
     {
 	return this->bonds[i]->getOtherAtom(this->sharedThis<Atom_O>());
@@ -1154,6 +1159,10 @@ void	Atom_O::fields(core::Record_sp node)
   node->/*pod_*/field_if_not_default( INTERN_(kw,pos), this->position, Vector3());
 }
 
+bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
+  if ( this->Base::applyPropertyToSlot(prop,value) ) return true;
+  return false;
+}
     void Atom_O::setPositionInNanometers(Vector3 o)
     {_OF();
 	Vector3 angpos = o.multiplyByScalar(10.0);

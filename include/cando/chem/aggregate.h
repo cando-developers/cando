@@ -79,14 +79,7 @@ public:
 //    Aggregate_sp	shallowCopy();
 //    Aggregate_sp	deepCopy() const;
 
-    /*! Return the atom according to the Chimera formated specification
-     *  These have the format #[model]:[residueSpecification]@[atom name]
-     *  eg: #0:12.B@CA
-     */
-    Atom_sp		atomWithChimeraSpecification(const string& name);
-    bool		hasAtomWithChimeraSpecification(const string& name);
-
-
+    core::List_sp atomsWithChimeraSpecifications(const string& name);
     Atom_sp		firstAtomWithName( MatterName name );
 
     void		perturbAtomPositions(double dist);

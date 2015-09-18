@@ -67,7 +67,7 @@ Bond_O::Bond_O(const Bond_O& bb)  : core::CxxObject_O(bb)
   this->order = bb.order;
   this->_Atom1 = bb._Atom1;
   this->_Atom2 = bb._Atom2;
-  this->_Properties = bb._Properties;
+  this->_Properties = core::cl_copyList(bb._Properties);
   LOG(BF("copy _Atom1=%s _Atom2=%s")
       % this->_Atom1->description()
       % this->_Atom2->description() );
@@ -167,37 +167,32 @@ void Bond_O::fields(core::Record_sp node)
 
 string Bond_O::propertiesAsString() const
 {_OF();
-  return core::alist_asString(this->_Properties);
+  IMPLEMENT_ME();
 }
 
 void Bond_O::clearProperty(core::Symbol_sp prop)
 {_G();
-  this->_Properties = core::alist_erase(this->_Properties,prop);
+  this->_Properties = core::core_rem_f(this->_Properties,prop);
 }
 
-void Bond_O::pushProperty(core::Symbol_sp prop, core::T_sp val)
-{_G();
-  this->_Properties = core::alist_push(this->_Properties,prop,val);
-}
+void Bond_O::setProperty(core::Symbol_sp prop, core::T_sp val)
+    {_G();
+      this->_Properties = core::core_put_f(this->_Properties,val,prop);
+    }
 
-void Bond_O::pushPropertyTrue(core::Symbol_sp prop)
-{_G();
-  this->_Properties = core::alist_push(this->_Properties,prop,_lisp->_true());
-}
 
 core::T_sp Bond_O::getProperty(core::Symbol_sp prop, core::T_sp defval)
 {_G();
-  core::List_sp match = core::alist_get(this->_Properties,prop);
-  if ( match.nilp() ) {
+  core::T_sp res = core::cl_getf(this->_Properties,prop,_Unbound<core::T_O>());
+  if (res.unboundp()) {
     return defval;
   }
-  return oCdr(match);
+  return res;
 }
 
 bool Bond_O::hasProperty(core::Symbol_sp prop)
 {_G();
-  core::List_sp match = core::alist_get(this->_Properties,prop);
-  return match.notnilp();
+  return !core::cl_getf(this->_Properties,prop,_Unbound<core::T_O>()).unboundp();
 }
 
 
@@ -584,8 +579,8 @@ void Bond_O::exposeCando(core::Lisp_sp lisp)
     .def("setOrder",&Bond_O::setOrderFromInt)
     .def("getOtherAtom",&Bond_O::getOtherAtom)
     .def("hasProperty",&Bond_O::hasProperty)
-    .def("pushProperty",&Bond_O::pushProperty)
     .def("getProperty",&Bond_O::getProperty)
+    .def("setProperty",&Bond_O::setProperty)
     ;
 }
 

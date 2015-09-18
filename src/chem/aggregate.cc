@@ -13,6 +13,7 @@
 #include <iostream>
 #include <fstream>
 #include <iomanip>
+#include <clasp/core/str.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/moe.h>
 #include <cando/chem/mol2.h>
@@ -294,50 +295,64 @@ Matter_sp Aggregate_O::copy()
 	return false;
     }
 
-
-    bool Aggregate_O::hasAtomWithChimeraSpecification(const string& spec)
-    {
-	Atom_sp	atom;
-	atom = this->atomWithChimeraSpecification(spec);
-	return atom.notnilp();
-    }
-
 /*!
- * Return the atom specified by the Chimera atom specification
+ * Return a list of atoms specified by the Chimera atom specifications
+ * if atoms aren't found then substitute the atom specification as a string.
  */
-    Atom_sp	Aggregate_O::atomWithChimeraSpecification(const string& spec)
-    {_G();
-	contentIterator	mi,ri;
-	Molecule_sp		mol;
-	Residue_sp		res;
-	Atom_sp			atom;
-	uint			fileSequenceNumber;
-	string			chain, atomName;
-	parseChimeraAtomSpecification(spec,fileSequenceNumber,chain,atomName);
-        MatterName chainSym = chemkw_intern(chain);
-        MatterName atomSym = chemkw_intern(atomName);
-	for ( mi=this->getContents().begin(); mi!= this->getContents().end(); mi++ )
-	{
-	    mol = downcast<Molecule_O>(*mi);
-	    if ( mol->getName() == chainSym )
-	    {
-		for ( ri = mol->getContents().begin(); ri!=mol->getContents().end(); ri++ )
-		{
-		    res = downcast<Residue_O>(*ri);
-		    if ( res->getFileSequenceNumber() == fileSequenceNumber )
-		    {
-			if ( res->hasAtomWithName(atomSym) )
-			{
-			    atom = res->atomWithName(atomSym);
-			    return atom;
-			}
-		    }
-		}
-	    }
-	}
-	atom = _Nil<Atom_O>();
-	return atom;
+core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const string& specs)
+{
+  vector<string> specParts = core::split(specs," \n\t");
+  core::List_sp result(_Nil<core::T_O>());
+  contentIterator	mi,ri;
+  Molecule_sp		mol;
+  Residue_sp		res;
+  Atom_sp			atom;
+  uint			fileSequenceNumber;
+  string			chain, atomName;
+  for ( int idx(specParts.size()-1); idx>=0; --idx ) {
+    parseChimeraAtomSpecification(specParts[idx],fileSequenceNumber,chain,atomName);
+    MatterName chainSym = chemkw_intern(chain);
+    MatterName atomSym = chemkw_intern(atomName);
+//    printf("%s:%d Looking for chainSym[%s] atomSym[%s]\n", __FILE__, __LINE__, _rep_(chainSym).c_str(), _rep_(atomSym).c_str());
+    bool foundAtom = false;
+    for ( mi=this->getContents().begin(); mi!= this->getContents().end(); mi++ ) {
+      mol = gc::As<Molecule_sp>(*mi);
+//      printf("%s:%d mol->getName()= %s  matches chainSym[%s] = %d\n", __FILE__, __LINE__, _rep_(mol->getName()).c_str(),_rep_(chainSym).c_str(), mol->getName()==chainSym);
+      if ( mol->getName() == chainSym ) {
+        bool foundResidue = false;
+        for ( ri = mol->getContents().begin(); ri!=mol->getContents().end(); ri++ ) {
+          res = downcast<Residue_O>(*ri);
+//          printf("%s:%d res->getFileSequenceNumber()= %d  matches fileSequenceNumber[%d] = %d\n", __FILE__, __LINE__, res->getFileSequenceNumber(), fileSequenceNumber,  res->getFileSequenceNumber()==fileSequenceNumber);
+//          printf("%s:%d     res->getId() = %d\n", __FILE__, __LINE__, res->getId());
+          if ( res->getFileSequenceNumber() == fileSequenceNumber ) {
+            foundResidue = true;
+//            printf("%s:%d res->hasAtomWithName(%s) = %d\n",  __FILE__, __LINE__, _rep_(atomSym).c_str(), res->hasAtomWithName(atomSym));
+            if ( res->hasAtomWithName(atomSym) ) {
+              atom = res->atomWithName(atomSym);
+              result = core::Cons_O::create(atom,result);
+//              printf("%s:%d  Adding atom to list: %s\n", __FILE__, __LINE__, _rep_(atom).c_str());
+              foundAtom = true;
+            }
+          }
+        }
+          // Try the residue at the fileSequenceNumber index
+        MatterVector& residues = mol->getContents();
+//        printf("%s:%d Using molecule content array to lookup atom\n", __FILE__, __LINE__);
+        if ( (fileSequenceNumber-1) < residues.size() ) {
+          res = residues[fileSequenceNumber-1];
+          if ( res->hasAtomWithName(atomSym) ) {
+            atom = res->atomWithName(atomSym);
+            result = core::Cons_O::create(atom,result);
+//            printf("%s:%d  Adding atom from residue in content to list: %s\n", __FILE__, __LINE__, _rep_(atom).c_str());
+            foundAtom = true;
+          }
+        }
+      }
     }
+    if (!foundAtom) result = core::Cons_O::create(core::Str_O::create(specParts[idx]),result);
+  }
+  return result;
+}
 
 
 //
@@ -638,8 +653,7 @@ Matter_sp Aggregate_O::copy()
 //	.def("asXml",&Aggregate_O::asXml)
 //	.def("asXmlWithCoordinates",&Aggregate_O::asXmlWithCoordinates)
 	    .def("perturbAtomPositions",&Aggregate_O::perturbAtomPositions)
-	    .def("atomWithChimeraSpecification", &Aggregate_O::atomWithChimeraSpecification )
-	    .def("hasAtomWithChimeraSpecification", &Aggregate_O::hasAtomWithChimeraSpecification )
+	    .def("atomsWithChimeraSpecifications", &Aggregate_O::atomsWithChimeraSpecifications )
 	    .def("molecules",&Aggregate_O::molecules)
 //	    .def("updateAtomIdMap",&Aggregate_O::updateAtomIdMap)
 //	    .def("lookupAtom",&Aggregate_O::lookupAtom)
@@ -670,7 +684,6 @@ Matter_sp Aggregate_O::copy()
 //	.def("asXmlWithCoordinates",&Aggregate_O::asXmlWithCoordinates)
 	    .def("perturbAtomPositions",&Aggregate_O::perturbAtomPositions)
 	    .def("atomWithChimeraSpecification", &Aggregate_O::atomWithChimeraSpecification )
-	    .def("hasAtomWithChimeraSpecification", &Aggregate_O::hasAtomWithChimeraSpecification )
 	    .def("molecules",&Aggregate_O::molecules)
 //	    .def("updateAtomIdMap",&Aggregate_O::updateAtomIdMap)
 //	    .def("lookupAtom",&Aggregate_O::lookupAtom)

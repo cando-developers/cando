@@ -28,6 +28,11 @@ void	Molecule_O::initialize()
   this->Base::initialize();
 }
 
+bool Molecule_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
+  if ( this->Base::applyPropertyToSlot(prop,value) ) return true;
+  return false;
+}
+
 string Molecule_O::__repr__() const
 {
   return this->Base::__repr__();
