@@ -97,3 +97,7 @@ install dist : cando
         <program>cando,<target-os>darwin,<variant>debug,<gc>mps:<location>$(APPBIN-DARWIN)/debug/mps
         <implicit-dependency>/internals/llvmo//bundle
         ;
+
+import symlink ;
+
+symlink $(APPBIN-DARWIN)/release/boehmdc/cando $(APPBIN-DARWIN)/cando_boehmdc_o ;
