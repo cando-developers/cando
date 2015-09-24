@@ -11,7 +11,7 @@
 #include <set>
 #include <clasp/core/common.h>
 #include <cando/chem/entity.fwd.h>
-#include <cando/adapt/SymbolSet.fwd.h>
+#include <cando/adapt/symbolSet.fwd.h>
 //#include "geom/objectList.fwd.h"
 
 
