@@ -126,32 +126,32 @@ void	ForceField_O::setFFTypeDb( FFTypesDb_sp Types)
 void	ForceField_O::setFFStretchDb( FFStretchDb_sp Stretches)
 {_G();
     this->_Stretches = Stretches;
-    if (this->_Stretches.otherp()) this->_Stretches->setForceField(this->sharedThis<ForceField_O>());
+    if (this->_Stretches.generalp()) this->_Stretches->setForceField(this->sharedThis<ForceField_O>());
 }
 void	ForceField_O::setFFAngleDb( FFAngleDb_sp Angles)
 {_G();
     this->_Angles = Angles;
-    if (this->_Angles.otherp()) this->_Angles->setForceField(this->sharedThis<ForceField_O>());
+    if (this->_Angles.generalp()) this->_Angles->setForceField(this->sharedThis<ForceField_O>());
 }
 void	ForceField_O::setFFItorDb( FFItorDb_sp Itors)
 {_G();
     this->_Itors = Itors;
-    if (this->_Itors.otherp() ) this->_Itors->setForceField(this->sharedThis<ForceField_O>());
+    if (this->_Itors.generalp() ) this->_Itors->setForceField(this->sharedThis<ForceField_O>());
 }
 void	ForceField_O::setFFPtorDb( FFPtorDb_sp Ptors)
 {_G();
     this->_Ptors = Ptors;
-    if (this->_Ptors.otherp()) this->_Ptors->setForceField(this->sharedThis<ForceField_O>());
+    if (this->_Ptors.generalp()) this->_Ptors->setForceField(this->sharedThis<ForceField_O>());
 }
 void	ForceField_O::setFFNonbondDb(FFNonbondDb_sp Nonbonds )
 {_G();
     this->_Nonbonds = Nonbonds;
-    if (this->_Nonbonds.otherp())this->_Nonbonds->setForceField(this->sharedThis<ForceField_O>());
+    if (this->_Nonbonds.generalp())this->_Nonbonds->setForceField(this->sharedThis<ForceField_O>());
 }
 void	ForceField_O::setFFVdwDb(FFVdwDb_sp Vdws )
 {_G();
     this->_Vdws = Vdws;
-    if (this->_Vdws.otherp())this->_Vdws->setForceField(this->sharedThis<ForceField_O>());
+    if (this->_Vdws.generalp())this->_Vdws->setForceField(this->sharedThis<ForceField_O>());
 }
 
 

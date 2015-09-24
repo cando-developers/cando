@@ -95,12 +95,12 @@ public:
     gctools::Vec0<core::Symbol_sp>		_SingleBondMultiBondDistinctions;
 	InfoDb_sp			_Info;
         gc::Nilable<FFTypesDb_sp>	_Types;
-	FFStretchDb_sp			_Stretches;
-	FFAngleDb_sp			_Angles;
-	FFItorDb_sp			_Itors;
-	FFPtorDb_sp			_Ptors;
-	FFNonbondDb_sp			_Nonbonds;
-	FFVdwDb_sp			_Vdws;
+        gc::Nilable<FFStretchDb_sp>	_Stretches;
+        gc::Nilable<FFAngleDb_sp>	_Angles;
+        gc::Nilable<FFItorDb_sp>	_Itors;
+        gc::Nilable<FFPtorDb_sp>	_Ptors;
+        gc::Nilable<FFNonbondDb_sp>	_Nonbonds;
+        gc::Nilable<FFVdwDb_sp>		_Vdws;
 //	bool				_Disable[sizeof(DisableEnum)];
 #if 0
 	RPFFEquivalenceDb		Equivalences;
