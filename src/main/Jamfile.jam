@@ -1,7 +1,7 @@
 
 #
 #
-project main : requirements
+project cando/main : requirements
 	<define>EXPAT
 	<toolset>darwin:<define>READLINE
 	<include>./
@@ -18,6 +18,22 @@ project main : requirements
 	<toolset>gcc:<cxxflags>"-Wno-unused-variable"
 	<linkflags>"-rdynamic"
 	;
+
+
+lib rt : : <name>rt ;
+
+alias gclib : /externals//lib_boehm :
+      <gc>boehmdc ;
+
+alias gclib : /externals//lib_boehm :
+      <gc>boehm ;
+
+alias gclib : mymps.c :
+      <gc>mps ;
+
+
+alias gclib : mymps.c :
+      <gc>mps-prep ;
 
 
 sources = 
@@ -39,33 +55,45 @@ sources =
 		;
 
 
+exe cando : main.cc $(sources)
+    /externals//lib_boehm/<link>static
+    : <gc>boehmdc
+    ;
 
-exe cando_boehm_o : main.cc $(sources)
-     /externals//lib_boehm
-     : <gc>boehm <variant>release
-     ;
+exe cando : main.cc $(sources)
+    /externals//lib_boehm/<link>static
+    : <gc>boehm
+    ;
 
-explicit cando_boehm_o ;
+exe cando : main.cc $(sources)
+    gc_interface.cc
+    gclib
+    : <gc>mps
+    ;
 
-exe cando_boehm_d : main.cc $(sources)
-     /externals//lib_boehm
-     : <gc>boehm <variant>debug
-     ;
+exe cando : main.cc $(sources)
+    gc_interface.cc
+    gclib
+    : <gc>mps-prep
+    ;
 
-explicit cando_boehm_d ;
-
-alias cando : cando_boehm_o
-      : <variant>release ;
-
-alias cando : cando_boehm_d
-      : <variant>debug ;
-
-install install : cando
-        : <location>$(APPBIN-OSX) <target-os>darwin
-        <implicit-dependency>/internals/llvmo//bundle
-        ;
-
-install install : $(cando)
-        : <location>$(APPBIN-LINUX) <target-os>linux
+install dist : cando
+        :
+        <program>cando,<target-os>linux,<variant>release,<gc>boehmdc:<location>$(APPBIN-LINUX)/release/boehmdc
+        <program>cando,<target-os>linux,<variant>release,<gc>boehm:<location>$(APPBIN-LINUX)/release/boehm
+        <program>cando,<target-os>linux,<variant>release,<gc>mps-prep:<location>$(APPBIN-LINUX)/release/mps-prep
+        <program>cando,<target-os>linux,<variant>release,<gc>mps:<location>$(APPBIN-LINUX)/release/mps
+        <program>cando,<target-os>linux,<variant>debug,<gc>boehmdc:<location>$(APPBIN-LINUX)/debug/boehmdc
+        <program>cando,<target-os>linux,<variant>debug,<gc>boehm:<location>$(APPBIN-LINUX)/debug/boehm
+        <program>cando,<target-os>linux,<variant>debug,<gc>mps-prep:<location>$(APPBIN-LINUX)/debug/mps-prep
+        <program>cando,<target-os>linux,<variant>debug,<gc>mps:<location>$(APPBIN-LINUX)/debug/mps
+        <program>cando,<target-os>darwin,<variant>release,<gc>boehmdc:<location>$(APPBIN-DARWIN)/release/boehmdc
+        <program>cando,<target-os>darwin,<variant>release,<gc>boehm:<location>$(APPBIN-DARWIN)/release/boehm
+        <program>cando,<target-os>darwin,<variant>release,<gc>mps-prep:<location>$(APPBIN-DARWIN)/release/mps-prep
+        <program>cando,<target-os>darwin,<variant>release,<gc>mps:<location>$(APPBIN-DARWIN)/release/mps
+        <program>cando,<target-os>darwin,<variant>debug,<gc>boehmdc:<location>$(APPBIN-DARWIN)/debug/boehmdc
+        <program>cando,<target-os>darwin,<variant>debug,<gc>boehm:<location>$(APPBIN-DARWIN)/debug/boehm
+        <program>cando,<target-os>darwin,<variant>debug,<gc>mps-prep:<location>$(APPBIN-DARWIN)/debug/mps-prep
+        <program>cando,<target-os>darwin,<variant>debug,<gc>mps:<location>$(APPBIN-DARWIN)/debug/mps
         <implicit-dependency>/internals/llvmo//bundle
         ;

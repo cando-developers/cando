@@ -54,7 +54,8 @@ int	gaff_lex(YYSTYPE* yylval, YYLTYPE* yylloc, gaff_SParserParam* data);
 
 %}
 
-%name-prefix="gaff_"
+// %define api.prefix {gaff_}
+// %n a m e - p r e f i x ="gaff_"
 %define api.pure
 %locations
 %lex-param {gaff_SParserParam* data}
@@ -118,19 +119,19 @@ int	gaff_lex(YYSTYPE* yylval, YYLTYPE* yylloc, gaff_SParserParam* data);
 %type <antechamberBondTest>    chemicalEnvironmentAtom
 %type <logical>    bracketedAtomPropertyOrNull
 
-//%destructor { if ($$!=NULL) chem::deleteHolder($$); } 	antechamberMatch;
-%destructor { if ($$!=NULL) chem::deleteHolder($$); } 	antechamberLine;
-%destructor { if ($$!=NULL) chem::deleteHolder($$); }     chemicalEnvironment;
-%destructor { if ($$!=NULL) chem::deleteHolder($$); }     bondDefinitions ;
-%destructor { if ($$!=NULL) chem::deleteHolder($$); }     residueList;
-%destructor { if ($$!=NULL) chem::deleteHolder($$); }     bracketedAtomicProperty
-%destructor { if ($$!=NULL) chem::deleteHolder($$); }     logOp 
-%destructor { if ($$!=NULL) chem::deleteHolder($$); }     atomicTest
-%destructor { if ($$!=NULL) chem::deleteHolder($$); }     branches
-%destructor { if ($$!=NULL) chem::deleteHolder($$); }     branchesList
-%destructor { if ($$!=NULL) chem::deleteHolder($$); }     chain 
-%destructor { if ($$!=NULL) chem::deleteHolder($$); }     chemicalEnvironmentAtom
-%destructor { if ($$!=NULL) chem::deleteHolder($$); }     bracketedAtomPropertyOrNull
+//%destructor { if ($$) chem::deleteHolder($$); } 	antechamberMatch;
+%destructor { if ($$) chem::deleteHolder($$); } 	antechamberLine;
+%destructor { if ($$) chem::deleteHolder($$); }     chemicalEnvironment;
+%destructor { if ($$) chem::deleteHolder($$); }     bondDefinitions ;
+%destructor { if ($$) chem::deleteHolder($$); }     residueList;
+%destructor { if ($$) chem::deleteHolder($$); }     bracketedAtomicProperty
+%destructor { if ($$) chem::deleteHolder($$); }     logOp 
+%destructor { if ($$) chem::deleteHolder($$); }     atomicTest
+%destructor { if ($$) chem::deleteHolder($$); }     branches
+%destructor { if ($$) chem::deleteHolder($$); }     branchesList
+%destructor { if ($$) chem::deleteHolder($$); }     chain 
+%destructor { if ($$) chem::deleteHolder($$); }     chemicalEnvironmentAtom
+%destructor { if ($$) chem::deleteHolder($$); }     bracketedAtomPropertyOrNull
 
 %%
 

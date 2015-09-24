@@ -54,6 +54,7 @@
  // class IntArray_O : public T_O {
  // class Iterator_O : public T_O {
  // class LambdaListHandler_O : public T_O {
+ // class VaList_dummy_O : public T_O {
  // class Stream_O : public T_O {
  // class AnsiStream_O : public Stream_O {
  // class FileStream_O : public AnsiStream_O {
@@ -95,6 +96,7 @@
  // class Pointer_O : public T_O {
  // class PosixTime_O : public T_O {
  // class PosixTimeDuration_O : public T_O {
+ // class InvocationHistoryFrameIterator_O : public T_O {
  // class RandomState_O : public T_O {
  // class Reader_O : public T_O {
  // class ReadTable_O : public T_O {
@@ -479,6 +481,7 @@
 #include "/Users/meister/Development/clasp/src/core/include/executables.h"
 #include "/Users/meister/Development/clasp/src/core/include/hashTable.h"
 #include "/Users/meister/Development/clasp/src/core/include/intArray.h"
+#include "/Users/meister/Development/clasp/src/core/include/primitives.h"
 #include "/Users/meister/Development/clasp/src/core/include/iterator.h"
 #include "/Users/meister/Development/clasp/src/core/include/lambdaListHandler.h"
 #include "/Users/meister/Development/clasp/src/core/include/userData.h"
@@ -503,6 +506,7 @@
 #include "/Users/meister/Development/clasp/src/core/include/structureObject.h"
 #include "/Users/meister/Development/clasp/src/core/include/symbolToEnumConverter.h"
 #include "/Users/meister/Development/clasp/src/core/include/symbol.h"
+#include "/Users/meister/Development/clasp/src/core/include/lispList.h"
 #include "/Users/meister/Development/clasp/src/core/include/weakHashTable.h"
 #include "/Users/meister/Development/clasp/src/core/include/weakKeyMapping.h"
 #include "/Users/meister/Development/clasp/src/core/include/weakPointer.h"
@@ -715,6 +719,9 @@ core::HashTable_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(core::HashTable_O::st
 core::IntArray_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(core::IntArray_O::static_packageName(),core::IntArray_O::static_className()));
 #endif
 #ifdef Use_CorePkg
+core::InvocationHistoryFrameIterator_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(core::InvocationHistoryFrameIterator_O::static_packageName(),core::InvocationHistoryFrameIterator_O::static_className()));
+#endif
+#ifdef Use_CorePkg
 core::Iterator_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(core::Iterator_O::static_packageName(),core::Iterator_O::static_className()));
 #endif
 #ifdef Use_CorePkg
@@ -803,6 +810,9 @@ core::SymbolToEnumConverter_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(core::Sym
 #endif
 #ifdef Use_CorePkg
 core::Symbol_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(core::Symbol_O::static_packageName(),core::Symbol_O::static_className()));
+#endif
+#ifdef Use_CorePkg
+core::VaList_dummy_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(core::VaList_dummy_O::static_packageName(),core::VaList_dummy_O::static_className()));
 #endif
 #ifdef Use_CorePkg
 core::WeakHashTable_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(core::WeakHashTable_O::static_packageName(),core::WeakHashTable_O::static_className()));
@@ -1994,7 +2004,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classadapt__ObjectSet_Oval,adapt::ObjectSet_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<adapt::ObjectSet_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<adapt::ObjectSet_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<adapt::ObjectSet_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<adapt::ObjectSet_O>>::allocateClass();
         adapt::ObjectSet_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% adapt::ObjectSet_O::static_className() % (void*)(adapt::ObjectSet_O::static_allocator) );
@@ -2015,7 +2025,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classadapt__StringList_Oval,adapt::StringList_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<adapt::StringList_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<adapt::StringList_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<adapt::StringList_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<adapt::StringList_O>>::allocateClass();
         adapt::StringList_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% adapt::StringList_O::static_className() % (void*)(adapt::StringList_O::static_allocator) );
@@ -2036,7 +2046,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classadapt__SymbolSet_Oval,adapt::SymbolSet_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<adapt::SymbolSet_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<adapt::SymbolSet_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<adapt::SymbolSet_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<adapt::SymbolSet_O>>::allocateClass();
         adapt::SymbolSet_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% adapt::SymbolSet_O::static_className() % (void*)(adapt::SymbolSet_O::static_allocator) );
@@ -2057,7 +2067,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__T_Oval,core::T_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::T_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::T_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::T_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::T_O>>::allocateClass();
         core::T_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::T_O::static_className() % (void*)(core::T_O::static_allocator) );
@@ -2078,7 +2088,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classasttooling__AstVisitor_Oval,asttooling::AstVisitor_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<asttooling::AstVisitor_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<asttooling::AstVisitor_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<asttooling::AstVisitor_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<asttooling::AstVisitor_O>>::allocateClass();
         asttooling::AstVisitor_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% asttooling::AstVisitor_O::static_className() % (void*)(asttooling::AstVisitor_O::static_allocator) );
@@ -2099,7 +2109,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcffi__Pointer_Oval,cffi::Pointer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<cffi::Pointer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<cffi::Pointer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<cffi::Pointer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<cffi::Pointer_O>>::allocateClass();
         cffi::Pointer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% cffi::Pointer_O::static_className() % (void*)(cffi::Pointer_O::static_allocator) );
@@ -2120,7 +2130,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classclbind__ClassRegistry_Oval,clbind::ClassRegistry_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<clbind::ClassRegistry_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<clbind::ClassRegistry_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<clbind::ClassRegistry_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<clbind::ClassRegistry_O>>::allocateClass();
         clbind::ClassRegistry_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% clbind::ClassRegistry_O::static_className() % (void*)(clbind::ClassRegistry_O::static_allocator) );
@@ -2141,7 +2151,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Archive_Oval,core::Archive_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Archive_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Archive_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Archive_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Archive_O>>::allocateClass();
         core::Archive_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Archive_O::static_className() % (void*)(core::Archive_O::static_allocator) );
@@ -2162,7 +2172,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Array_Oval,core::Array_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Array_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Array_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Array_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Array_O>>::allocateClass();
         core::Array_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Array_O::static_className() % (void*)(core::Array_O::static_allocator) );
@@ -2183,7 +2193,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Binder_Oval,core::Binder_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Binder_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Binder_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Binder_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Binder_O>>::allocateClass();
         core::Binder_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Binder_O::static_className() % (void*)(core::Binder_O::static_allocator) );
@@ -2204,7 +2214,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__CandoException_Oval,core::CandoException_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::CandoException_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::CandoException_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::CandoException_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::CandoException_O>>::allocateClass();
         core::CandoException_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::CandoException_O::static_className() % (void*)(core::CandoException_O::static_allocator) );
@@ -2225,7 +2235,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Character_dummy_Oval,core::Character_dummy_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Character_dummy_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Character_dummy_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Character_dummy_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Character_dummy_O>>::allocateClass();
         core::Character_dummy_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Character_dummy_O::static_className() % (void*)(core::Character_dummy_O::static_allocator) );
@@ -2246,7 +2256,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Cons_Oval,core::Cons_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Cons_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Cons_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Cons_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Cons_O>>::allocateClass();
         core::Cons_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Cons_O::static_className() % (void*)(core::Cons_O::static_allocator) );
@@ -2267,7 +2277,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__CxxObject_Oval,core::CxxObject_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::CxxObject_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::CxxObject_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::CxxObject_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::CxxObject_O>>::allocateClass();
         core::CxxObject_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::CxxObject_O::static_className() % (void*)(core::CxxObject_O::static_allocator) );
@@ -2288,7 +2298,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__DirectoryEntry_Oval,core::DirectoryEntry_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::DirectoryEntry_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::DirectoryEntry_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::DirectoryEntry_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::DirectoryEntry_O>>::allocateClass();
         core::DirectoryEntry_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::DirectoryEntry_O::static_className() % (void*)(core::DirectoryEntry_O::static_allocator) );
@@ -2309,7 +2319,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Environment_Oval,core::Environment_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Environment_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Environment_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Environment_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Environment_O>>::allocateClass();
         core::Environment_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Environment_O::static_className() % (void*)(core::Environment_O::static_allocator) );
@@ -2330,7 +2340,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__ExternalObject_Oval,core::ExternalObject_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::ExternalObject_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::ExternalObject_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::ExternalObject_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::ExternalObject_O>>::allocateClass();
         core::ExternalObject_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::ExternalObject_O::static_className() % (void*)(core::ExternalObject_O::static_allocator) );
@@ -2351,7 +2361,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__FileStatus_Oval,core::FileStatus_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::FileStatus_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::FileStatus_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::FileStatus_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::FileStatus_O>>::allocateClass();
         core::FileStatus_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::FileStatus_O::static_className() % (void*)(core::FileStatus_O::static_allocator) );
@@ -2372,7 +2382,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Function_Oval,core::Function_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Function_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Function_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Function_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Function_O>>::allocateClass();
         core::Function_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Function_O::static_className() % (void*)(core::Function_O::static_allocator) );
@@ -2393,7 +2403,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__HashTable_Oval,core::HashTable_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::HashTable_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::HashTable_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::HashTable_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::HashTable_O>>::allocateClass();
         core::HashTable_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::HashTable_O::static_className() % (void*)(core::HashTable_O::static_allocator) );
@@ -2414,7 +2424,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__IntArray_Oval,core::IntArray_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::IntArray_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::IntArray_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::IntArray_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::IntArray_O>>::allocateClass();
         core::IntArray_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::IntArray_O::static_className() % (void*)(core::IntArray_O::static_allocator) );
@@ -2423,6 +2433,27 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
         LOG(BF("Created nil for class[%s]") % core::IntArray_O::static_className() );
     }
     /* ----- the class and its nil are now defined and so is classcore__IntArray_Oval::___staticClass but the class _Slots and _Signature_ClassSlots are undefined - set them both to _Nil<T_O>() in stage3   ----- */
+#endif
+#ifdef Use_CorePkg
+    LOG(BF("Creating class[classcore__InvocationHistoryFrameIterator_Oval]"));
+    core::BuiltInClass_sp classcore__InvocationHistoryFrameIterator_Oval = core::BuiltInClass_O::createUncollectable();
+    classcore__InvocationHistoryFrameIterator_Oval->__setup_stage1_with_sharedPtr_lisp_sid(classcore__InvocationHistoryFrameIterator_Oval,_lisp,core::InvocationHistoryFrameIterator_O::static_classSymbol());
+    reg::lisp_associateClassIdWithClassSymbol(reg::registered_class<core::InvocationHistoryFrameIterator_O>::id,core::InvocationHistoryFrameIterator_O::static_classSymbol());
+    core::InvocationHistoryFrameIterator_O::___staticClass = classcore__InvocationHistoryFrameIterator_Oval;
+#ifdef USE_MPS
+    core::InvocationHistoryFrameIterator_O::static_Kind = gctools::GCKind<core::InvocationHistoryFrameIterator_O>::Kind;
+#endif
+    core::af_setf_findClass(classcore__InvocationHistoryFrameIterator_Oval,core::InvocationHistoryFrameIterator_O::static_classSymbol(),true,_Nil<core::Environment_O>());
+    {
+        gctools::tagged_pointer<core::LispObjectCreator<core::InvocationHistoryFrameIterator_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::InvocationHistoryFrameIterator_O>>::allocateClass();
+        core::InvocationHistoryFrameIterator_O::___set_static_creator(cb);
+    }
+    LOG(BF("Set static_allocator for class(%s) to %X")% core::InvocationHistoryFrameIterator_O::static_className() % (void*)(core::InvocationHistoryFrameIterator_O::static_allocator) );
+    classcore__InvocationHistoryFrameIterator_Oval->setCreator(core::InvocationHistoryFrameIterator_O::static_creator);
+    {
+        LOG(BF("Created nil for class[%s]") % core::InvocationHistoryFrameIterator_O::static_className() );
+    }
+    /* ----- the class and its nil are now defined and so is classcore__InvocationHistoryFrameIterator_Oval::___staticClass but the class _Slots and _Signature_ClassSlots are undefined - set them both to _Nil<T_O>() in stage3   ----- */
 #endif
 #ifdef Use_CorePkg
     LOG(BF("Creating class[classcore__Iterator_Oval]"));
@@ -2435,7 +2466,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Iterator_Oval,core::Iterator_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Iterator_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Iterator_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Iterator_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Iterator_O>>::allocateClass();
         core::Iterator_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Iterator_O::static_className() % (void*)(core::Iterator_O::static_allocator) );
@@ -2456,7 +2487,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__LambdaListHandler_Oval,core::LambdaListHandler_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::LambdaListHandler_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::LambdaListHandler_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::LambdaListHandler_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::LambdaListHandler_O>>::allocateClass();
         core::LambdaListHandler_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::LambdaListHandler_O::static_className() % (void*)(core::LambdaListHandler_O::static_allocator) );
@@ -2477,7 +2508,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__LightUserData_Oval,core::LightUserData_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::LightUserData_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::LightUserData_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::LightUserData_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::LightUserData_O>>::allocateClass();
         core::LightUserData_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::LightUserData_O::static_className() % (void*)(core::LightUserData_O::static_allocator) );
@@ -2498,7 +2529,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__LoadTimeValues_Oval,core::LoadTimeValues_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::LoadTimeValues_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::LoadTimeValues_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::LoadTimeValues_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::LoadTimeValues_O>>::allocateClass();
         core::LoadTimeValues_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::LoadTimeValues_O::static_className() % (void*)(core::LoadTimeValues_O::static_allocator) );
@@ -2519,7 +2550,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__MultiStringBuffer_Oval,core::MultiStringBuffer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::MultiStringBuffer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::MultiStringBuffer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::MultiStringBuffer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::MultiStringBuffer_O>>::allocateClass();
         core::MultiStringBuffer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::MultiStringBuffer_O::static_className() % (void*)(core::MultiStringBuffer_O::static_allocator) );
@@ -2540,7 +2571,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Number_Oval,core::Number_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Number_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Number_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Number_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Number_O>>::allocateClass();
         core::Number_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Number_O::static_className() % (void*)(core::Number_O::static_allocator) );
@@ -2561,7 +2592,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Package_Oval,core::Package_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Package_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Package_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Package_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Package_O>>::allocateClass();
         core::Package_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Package_O::static_className() % (void*)(core::Package_O::static_allocator) );
@@ -2582,7 +2613,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Path_Oval,core::Path_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Path_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Path_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Path_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Path_O>>::allocateClass();
         core::Path_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Path_O::static_className() % (void*)(core::Path_O::static_allocator) );
@@ -2603,7 +2634,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Pathname_Oval,core::Pathname_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Pathname_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Pathname_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Pathname_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Pathname_O>>::allocateClass();
         core::Pathname_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Pathname_O::static_className() % (void*)(core::Pathname_O::static_allocator) );
@@ -2624,7 +2655,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Pointer_Oval,core::Pointer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Pointer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Pointer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Pointer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Pointer_O>>::allocateClass();
         core::Pointer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Pointer_O::static_className() % (void*)(core::Pointer_O::static_allocator) );
@@ -2645,7 +2676,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__PosixTimeDuration_Oval,core::PosixTimeDuration_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::PosixTimeDuration_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::PosixTimeDuration_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::PosixTimeDuration_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::PosixTimeDuration_O>>::allocateClass();
         core::PosixTimeDuration_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::PosixTimeDuration_O::static_className() % (void*)(core::PosixTimeDuration_O::static_allocator) );
@@ -2666,7 +2697,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__PosixTime_Oval,core::PosixTime_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::PosixTime_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::PosixTime_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::PosixTime_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::PosixTime_O>>::allocateClass();
         core::PosixTime_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::PosixTime_O::static_className() % (void*)(core::PosixTime_O::static_allocator) );
@@ -2687,7 +2718,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__RandomState_Oval,core::RandomState_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::RandomState_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::RandomState_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::RandomState_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::RandomState_O>>::allocateClass();
         core::RandomState_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::RandomState_O::static_className() % (void*)(core::RandomState_O::static_allocator) );
@@ -2708,7 +2739,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__ReadTable_Oval,core::ReadTable_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::ReadTable_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::ReadTable_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::ReadTable_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::ReadTable_O>>::allocateClass();
         core::ReadTable_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::ReadTable_O::static_className() % (void*)(core::ReadTable_O::static_allocator) );
@@ -2729,7 +2760,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Reader_Oval,core::Reader_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Reader_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Reader_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Reader_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Reader_O>>::allocateClass();
         core::Reader_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Reader_O::static_className() % (void*)(core::Reader_O::static_allocator) );
@@ -2750,7 +2781,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Record_Oval,core::Record_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Record_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Record_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Record_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Record_O>>::allocateClass();
         core::Record_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Record_O::static_className() % (void*)(core::Record_O::static_allocator) );
@@ -2771,7 +2802,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__RegexMatch_Oval,core::RegexMatch_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::RegexMatch_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::RegexMatch_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::RegexMatch_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::RegexMatch_O>>::allocateClass();
         core::RegexMatch_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::RegexMatch_O::static_className() % (void*)(core::RegexMatch_O::static_allocator) );
@@ -2792,7 +2823,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Regex_Oval,core::Regex_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Regex_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Regex_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Regex_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Regex_O>>::allocateClass();
         core::Regex_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Regex_O::static_className() % (void*)(core::Regex_O::static_allocator) );
@@ -2813,7 +2844,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__SNode_Oval,core::SNode_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::SNode_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::SNode_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::SNode_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::SNode_O>>::allocateClass();
         core::SNode_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::SNode_O::static_className() % (void*)(core::SNode_O::static_allocator) );
@@ -2834,7 +2865,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__SingleDispatchMethod_Oval,core::SingleDispatchMethod_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::SingleDispatchMethod_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::SingleDispatchMethod_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::SingleDispatchMethod_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::SingleDispatchMethod_O>>::allocateClass();
         core::SingleDispatchMethod_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::SingleDispatchMethod_O::static_className() % (void*)(core::SingleDispatchMethod_O::static_allocator) );
@@ -2855,7 +2886,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__SmallMap_Oval,core::SmallMap_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::SmallMap_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::SmallMap_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::SmallMap_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::SmallMap_O>>::allocateClass();
         core::SmallMap_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::SmallMap_O::static_className() % (void*)(core::SmallMap_O::static_allocator) );
@@ -2876,7 +2907,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__SmallMultimap_Oval,core::SmallMultimap_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::SmallMultimap_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::SmallMultimap_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::SmallMultimap_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::SmallMultimap_O>>::allocateClass();
         core::SmallMultimap_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::SmallMultimap_O::static_className() % (void*)(core::SmallMultimap_O::static_allocator) );
@@ -2897,7 +2928,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__SourceFileInfo_Oval,core::SourceFileInfo_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::SourceFileInfo_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::SourceFileInfo_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::SourceFileInfo_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::SourceFileInfo_O>>::allocateClass();
         core::SourceFileInfo_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::SourceFileInfo_O::static_className() % (void*)(core::SourceFileInfo_O::static_allocator) );
@@ -2918,7 +2949,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__SourceManager_Oval,core::SourceManager_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::SourceManager_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::SourceManager_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::SourceManager_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::SourceManager_O>>::allocateClass();
         core::SourceManager_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::SourceManager_O::static_className() % (void*)(core::SourceManager_O::static_allocator) );
@@ -2939,7 +2970,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__SourcePosInfo_Oval,core::SourcePosInfo_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::SourcePosInfo_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::SourcePosInfo_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::SourcePosInfo_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::SourcePosInfo_O>>::allocateClass();
         core::SourcePosInfo_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::SourcePosInfo_O::static_className() % (void*)(core::SourcePosInfo_O::static_allocator) );
@@ -2960,7 +2991,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__StandardObject_Oval,core::StandardObject_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::StandardObject_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::StandardObject_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::StandardObject_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::StandardObject_O>>::allocateClass();
         core::StandardObject_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::StandardObject_O::static_className() % (void*)(core::StandardObject_O::static_allocator) );
@@ -2981,7 +3012,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Stream_Oval,core::Stream_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Stream_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Stream_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Stream_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Stream_O>>::allocateClass();
         core::Stream_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Stream_O::static_className() % (void*)(core::Stream_O::static_allocator) );
@@ -3002,7 +3033,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__StructureObject_Oval,core::StructureObject_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::StructureObject_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::StructureObject_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::StructureObject_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::StructureObject_O>>::allocateClass();
         core::StructureObject_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::StructureObject_O::static_className() % (void*)(core::StructureObject_O::static_allocator) );
@@ -3023,7 +3054,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__SymbolToEnumConverter_Oval,core::SymbolToEnumConverter_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::SymbolToEnumConverter_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::SymbolToEnumConverter_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::SymbolToEnumConverter_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::SymbolToEnumConverter_O>>::allocateClass();
         core::SymbolToEnumConverter_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::SymbolToEnumConverter_O::static_className() % (void*)(core::SymbolToEnumConverter_O::static_allocator) );
@@ -3044,7 +3075,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Symbol_Oval,core::Symbol_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Symbol_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Symbol_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Symbol_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Symbol_O>>::allocateClass();
         core::Symbol_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Symbol_O::static_className() % (void*)(core::Symbol_O::static_allocator) );
@@ -3053,6 +3084,27 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
         LOG(BF("Created nil for class[%s]") % core::Symbol_O::static_className() );
     }
     /* ----- the class and its nil are now defined and so is classcore__Symbol_Oval::___staticClass but the class _Slots and _Signature_ClassSlots are undefined - set them both to _Nil<T_O>() in stage3   ----- */
+#endif
+#ifdef Use_CorePkg
+    LOG(BF("Creating class[classcore__VaList_dummy_Oval]"));
+    core::BuiltInClass_sp classcore__VaList_dummy_Oval = core::BuiltInClass_O::createUncollectable();
+    classcore__VaList_dummy_Oval->__setup_stage1_with_sharedPtr_lisp_sid(classcore__VaList_dummy_Oval,_lisp,core::VaList_dummy_O::static_classSymbol());
+    reg::lisp_associateClassIdWithClassSymbol(reg::registered_class<core::VaList_dummy_O>::id,core::VaList_dummy_O::static_classSymbol());
+    core::VaList_dummy_O::___staticClass = classcore__VaList_dummy_Oval;
+#ifdef USE_MPS
+    core::VaList_dummy_O::static_Kind = gctools::GCKind<core::VaList_dummy_O>::Kind;
+#endif
+    core::af_setf_findClass(classcore__VaList_dummy_Oval,core::VaList_dummy_O::static_classSymbol(),true,_Nil<core::Environment_O>());
+    {
+        gctools::tagged_pointer<core::LispObjectCreator<core::VaList_dummy_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::VaList_dummy_O>>::allocateClass();
+        core::VaList_dummy_O::___set_static_creator(cb);
+    }
+    LOG(BF("Set static_allocator for class(%s) to %X")% core::VaList_dummy_O::static_className() % (void*)(core::VaList_dummy_O::static_allocator) );
+    classcore__VaList_dummy_Oval->setCreator(core::VaList_dummy_O::static_creator);
+    {
+        LOG(BF("Created nil for class[%s]") % core::VaList_dummy_O::static_className() );
+    }
+    /* ----- the class and its nil are now defined and so is classcore__VaList_dummy_Oval::___staticClass but the class _Slots and _Signature_ClassSlots are undefined - set them both to _Nil<T_O>() in stage3   ----- */
 #endif
 #ifdef Use_CorePkg
     LOG(BF("Creating class[classcore__WeakHashTable_Oval]"));
@@ -3065,7 +3117,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__WeakHashTable_Oval,core::WeakHashTable_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::WeakHashTable_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::WeakHashTable_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::WeakHashTable_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::WeakHashTable_O>>::allocateClass();
         core::WeakHashTable_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::WeakHashTable_O::static_className() % (void*)(core::WeakHashTable_O::static_allocator) );
@@ -3086,7 +3138,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__WeakKeyMapping_Oval,core::WeakKeyMapping_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::WeakKeyMapping_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::WeakKeyMapping_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::WeakKeyMapping_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::WeakKeyMapping_O>>::allocateClass();
         core::WeakKeyMapping_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::WeakKeyMapping_O::static_className() % (void*)(core::WeakKeyMapping_O::static_allocator) );
@@ -3107,7 +3159,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__WeakPointer_Oval,core::WeakPointer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::WeakPointer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::WeakPointer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::WeakPointer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::WeakPointer_O>>::allocateClass();
         core::WeakPointer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::WeakPointer_O::static_className() % (void*)(core::WeakPointer_O::static_allocator) );
@@ -3128,7 +3180,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__WrappedPointer_Oval,core::WrappedPointer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::WrappedPointer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::WrappedPointer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::WrappedPointer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::WrappedPointer_O>>::allocateClass();
         core::WrappedPointer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::WrappedPointer_O::static_className() % (void*)(core::WrappedPointer_O::static_allocator) );
@@ -3149,7 +3201,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__AttributeSet_Oval,llvmo::AttributeSet_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::AttributeSet_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::AttributeSet_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::AttributeSet_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::AttributeSet_O>>::allocateClass();
         llvmo::AttributeSet_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::AttributeSet_O::static_className() % (void*)(llvmo::AttributeSet_O::static_allocator) );
@@ -3170,7 +3222,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__Attribute_Oval,llvmo::Attribute_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::Attribute_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Attribute_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::Attribute_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Attribute_O>>::allocateClass();
         llvmo::Attribute_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::Attribute_O::static_className() % (void*)(llvmo::Attribute_O::static_allocator) );
@@ -3191,7 +3243,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__DebugInfo_Oval,llvmo::DebugInfo_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::DebugInfo_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DebugInfo_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::DebugInfo_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DebugInfo_O>>::allocateClass();
         llvmo::DebugInfo_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::DebugInfo_O::static_className() % (void*)(llvmo::DebugInfo_O::static_allocator) );
@@ -3212,7 +3264,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__DebugLoc_Oval,llvmo::DebugLoc_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::DebugLoc_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DebugLoc_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::DebugLoc_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DebugLoc_O>>::allocateClass();
         llvmo::DebugLoc_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::DebugLoc_O::static_className() % (void*)(llvmo::DebugLoc_O::static_allocator) );
@@ -3233,7 +3285,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__InsertPoint_Oval,llvmo::InsertPoint_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::InsertPoint_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::InsertPoint_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::InsertPoint_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::InsertPoint_O>>::allocateClass();
         llvmo::InsertPoint_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::InsertPoint_O::static_className() % (void*)(llvmo::InsertPoint_O::static_allocator) );
@@ -3254,7 +3306,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classadapt__IterateCons_Oval,adapt::IterateCons_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<adapt::IterateCons_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<adapt::IterateCons_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<adapt::IterateCons_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<adapt::IterateCons_O>>::allocateClass();
         adapt::IterateCons_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% adapt::IterateCons_O::static_className() % (void*)(adapt::IterateCons_O::static_allocator) );
@@ -3275,7 +3327,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classadapt__QDomNode_Oval,adapt::QDomNode_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<adapt::QDomNode_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<adapt::QDomNode_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<adapt::QDomNode_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<adapt::QDomNode_O>>::allocateClass();
         adapt::QDomNode_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% adapt::QDomNode_O::static_className() % (void*)(adapt::QDomNode_O::static_allocator) );
@@ -3296,7 +3348,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classadapt__StringSet_Oval,adapt::StringSet_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<adapt::StringSet_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<adapt::StringSet_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<adapt::StringSet_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<adapt::StringSet_O>>::allocateClass();
         adapt::StringSet_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% adapt::StringSet_O::static_className() % (void*)(adapt::StringSet_O::static_allocator) );
@@ -3317,7 +3369,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classadapt__SymbolList_Oval,adapt::SymbolList_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<adapt::SymbolList_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<adapt::SymbolList_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<adapt::SymbolList_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<adapt::SymbolList_O>>::allocateClass();
         adapt::SymbolList_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% adapt::SymbolList_O::static_className() % (void*)(adapt::SymbolList_O::static_allocator) );
@@ -3338,7 +3390,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__AGEdge_Oval,chem::AGEdge_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::AGEdge_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AGEdge_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::AGEdge_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AGEdge_O>>::allocateClass();
         chem::AGEdge_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::AGEdge_O::static_className() % (void*)(chem::AGEdge_O::static_allocator) );
@@ -3359,7 +3411,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__AGVertex_Oval,chem::AGVertex_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::AGVertex_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AGVertex_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::AGVertex_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AGVertex_O>>::allocateClass();
         chem::AGVertex_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::AGVertex_O::static_className() % (void*)(chem::AGVertex_O::static_allocator) );
@@ -3380,7 +3432,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__AbstractLargeSquareMatrix_Oval,chem::AbstractLargeSquareMatrix_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::AbstractLargeSquareMatrix_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AbstractLargeSquareMatrix_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::AbstractLargeSquareMatrix_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AbstractLargeSquareMatrix_O>>::allocateClass();
         chem::AbstractLargeSquareMatrix_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::AbstractLargeSquareMatrix_O::static_className() % (void*)(chem::AbstractLargeSquareMatrix_O::static_allocator) );
@@ -3401,7 +3453,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Alias_Oval,chem::Alias_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Alias_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Alias_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Alias_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Alias_O>>::allocateClass();
         chem::Alias_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Alias_O::static_className() % (void*)(chem::Alias_O::static_allocator) );
@@ -3422,7 +3474,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Angle_Oval,chem::Angle_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Angle_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Angle_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Angle_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Angle_O>>::allocateClass();
         chem::Angle_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Angle_O::static_className() % (void*)(chem::Angle_O::static_allocator) );
@@ -3443,7 +3495,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__AtomIdToAtomMap_Oval,chem::AtomIdToAtomMap_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::AtomIdToAtomMap_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AtomIdToAtomMap_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::AtomIdToAtomMap_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AtomIdToAtomMap_O>>::allocateClass();
         chem::AtomIdToAtomMap_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::AtomIdToAtomMap_O::static_className() % (void*)(chem::AtomIdToAtomMap_O::static_allocator) );
@@ -3464,7 +3516,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__AtomId_Oval,chem::AtomId_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::AtomId_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AtomId_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::AtomId_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AtomId_O>>::allocateClass();
         chem::AtomId_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::AtomId_O::static_className() % (void*)(chem::AtomId_O::static_allocator) );
@@ -3485,7 +3537,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__AtomIndexer_Oval,chem::AtomIndexer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::AtomIndexer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AtomIndexer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::AtomIndexer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AtomIndexer_O>>::allocateClass();
         chem::AtomIndexer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::AtomIndexer_O::static_className() % (void*)(chem::AtomIndexer_O::static_allocator) );
@@ -3506,7 +3558,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__AtomReferenceBase_Oval,chem::AtomReferenceBase_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::AtomReferenceBase_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AtomReferenceBase_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::AtomReferenceBase_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AtomReferenceBase_O>>::allocateClass();
         chem::AtomReferenceBase_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::AtomReferenceBase_O::static_className() % (void*)(chem::AtomReferenceBase_O::static_allocator) );
@@ -3527,7 +3579,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__AtomTable_Oval,chem::AtomTable_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::AtomTable_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AtomTable_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::AtomTable_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AtomTable_O>>::allocateClass();
         chem::AtomTable_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::AtomTable_O::static_className() % (void*)(chem::AtomTable_O::static_allocator) );
@@ -3548,7 +3600,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__BondList_Oval,chem::BondList_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::BondList_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::BondList_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::BondList_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::BondList_O>>::allocateClass();
         chem::BondList_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::BondList_O::static_className() % (void*)(chem::BondList_O::static_allocator) );
@@ -3569,7 +3621,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Bond_Oval,chem::Bond_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Bond_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Bond_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Bond_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Bond_O>>::allocateClass();
         chem::Bond_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Bond_O::static_className() % (void*)(chem::Bond_O::static_allocator) );
@@ -3590,7 +3642,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__CDBond_Oval,chem::CDBond_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::CDBond_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CDBond_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::CDBond_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CDBond_O>>::allocateClass();
         chem::CDBond_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::CDBond_O::static_className() % (void*)(chem::CDBond_O::static_allocator) );
@@ -3611,7 +3663,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__CDFragment_Oval,chem::CDFragment_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::CDFragment_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CDFragment_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::CDFragment_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CDFragment_O>>::allocateClass();
         chem::CDFragment_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::CDFragment_O::static_className() % (void*)(chem::CDFragment_O::static_allocator) );
@@ -3632,7 +3684,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__CDNode_Oval,chem::CDNode_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::CDNode_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CDNode_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::CDNode_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CDNode_O>>::allocateClass();
         chem::CDNode_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::CDNode_O::static_className() % (void*)(chem::CDNode_O::static_allocator) );
@@ -3653,7 +3705,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__CDText_Oval,chem::CDText_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::CDText_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CDText_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::CDText_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CDText_O>>::allocateClass();
         chem::CDText_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::CDText_O::static_className() % (void*)(chem::CDText_O::static_allocator) );
@@ -3674,7 +3726,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__CalculatePosition_Oval,chem::CalculatePosition_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::CalculatePosition_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CalculatePosition_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::CalculatePosition_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CalculatePosition_O>>::allocateClass();
         chem::CalculatePosition_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::CalculatePosition_O::static_className() % (void*)(chem::CalculatePosition_O::static_allocator) );
@@ -3695,7 +3747,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__CandoDatabase_Oval,chem::CandoDatabase_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::CandoDatabase_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CandoDatabase_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::CandoDatabase_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CandoDatabase_O>>::allocateClass();
         chem::CandoDatabase_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::CandoDatabase_O::static_className() % (void*)(chem::CandoDatabase_O::static_allocator) );
@@ -3716,7 +3768,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ChemDraw_Oval,chem::ChemDraw_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ChemDraw_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ChemDraw_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ChemDraw_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ChemDraw_O>>::allocateClass();
         chem::ChemDraw_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ChemDraw_O::static_className() % (void*)(chem::ChemDraw_O::static_allocator) );
@@ -3737,7 +3789,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ChemInfoMatch_Oval,chem::ChemInfoMatch_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ChemInfoMatch_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ChemInfoMatch_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ChemInfoMatch_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ChemInfoMatch_O>>::allocateClass();
         chem::ChemInfoMatch_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ChemInfoMatch_O::static_className() % (void*)(chem::ChemInfoMatch_O::static_allocator) );
@@ -3758,7 +3810,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ChemInfoNode_Oval,chem::ChemInfoNode_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ChemInfoNode_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ChemInfoNode_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ChemInfoNode_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ChemInfoNode_O>>::allocateClass();
         chem::ChemInfoNode_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ChemInfoNode_O::static_className() % (void*)(chem::ChemInfoNode_O::static_allocator) );
@@ -3779,7 +3831,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ChemInfo_Oval,chem::ChemInfo_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ChemInfo_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ChemInfo_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ChemInfo_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ChemInfo_O>>::allocateClass();
         chem::ChemInfo_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ChemInfo_O::static_className() % (void*)(chem::ChemInfo_O::static_allocator) );
@@ -3800,7 +3852,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__CipPrioritizer_Oval,chem::CipPrioritizer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::CipPrioritizer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CipPrioritizer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::CipPrioritizer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CipPrioritizer_O>>::allocateClass();
         chem::CipPrioritizer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::CipPrioritizer_O::static_className() % (void*)(chem::CipPrioritizer_O::static_allocator) );
@@ -3821,7 +3873,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Command_Oval,chem::Command_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Command_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Command_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Command_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Command_O>>::allocateClass();
         chem::Command_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Command_O::static_className() % (void*)(chem::Command_O::static_allocator) );
@@ -3842,7 +3894,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ComplexRestraint_Oval,chem::ComplexRestraint_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ComplexRestraint_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ComplexRestraint_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ComplexRestraint_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ComplexRestraint_O>>::allocateClass();
         chem::ComplexRestraint_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ComplexRestraint_O::static_className() % (void*)(chem::ComplexRestraint_O::static_allocator) );
@@ -3863,7 +3915,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ConformationCollectionEntry_Oval,chem::ConformationCollectionEntry_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ConformationCollectionEntry_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConformationCollectionEntry_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ConformationCollectionEntry_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConformationCollectionEntry_O>>::allocateClass();
         chem::ConformationCollectionEntry_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ConformationCollectionEntry_O::static_className() % (void*)(chem::ConformationCollectionEntry_O::static_allocator) );
@@ -3884,7 +3936,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ConformationCollection_Oval,chem::ConformationCollection_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ConformationCollection_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConformationCollection_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ConformationCollection_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConformationCollection_O>>::allocateClass();
         chem::ConformationCollection_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ConformationCollection_O::static_className() % (void*)(chem::ConformationCollection_O::static_allocator) );
@@ -3905,7 +3957,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ConformationExplorerEntryStage_Oval,chem::ConformationExplorerEntryStage_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ConformationExplorerEntryStage_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConformationExplorerEntryStage_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ConformationExplorerEntryStage_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConformationExplorerEntryStage_O>>::allocateClass();
         chem::ConformationExplorerEntryStage_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ConformationExplorerEntryStage_O::static_className() % (void*)(chem::ConformationExplorerEntryStage_O::static_allocator) );
@@ -3926,7 +3978,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ConformationExplorerEntry_Oval,chem::ConformationExplorerEntry_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ConformationExplorerEntry_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConformationExplorerEntry_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ConformationExplorerEntry_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConformationExplorerEntry_O>>::allocateClass();
         chem::ConformationExplorerEntry_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ConformationExplorerEntry_O::static_className() % (void*)(chem::ConformationExplorerEntry_O::static_allocator) );
@@ -3947,7 +3999,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ConformationExplorerMatch_Oval,chem::ConformationExplorerMatch_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ConformationExplorerMatch_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConformationExplorerMatch_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ConformationExplorerMatch_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConformationExplorerMatch_O>>::allocateClass();
         chem::ConformationExplorerMatch_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ConformationExplorerMatch_O::static_className() % (void*)(chem::ConformationExplorerMatch_O::static_allocator) );
@@ -3968,7 +4020,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ConformationExplorer_Oval,chem::ConformationExplorer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ConformationExplorer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConformationExplorer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ConformationExplorer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConformationExplorer_O>>::allocateClass();
         chem::ConformationExplorer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ConformationExplorer_O::static_className() % (void*)(chem::ConformationExplorer_O::static_allocator) );
@@ -3989,7 +4041,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ConstitutionAtom_Oval,chem::ConstitutionAtom_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ConstitutionAtom_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConstitutionAtom_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ConstitutionAtom_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConstitutionAtom_O>>::allocateClass();
         chem::ConstitutionAtom_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ConstitutionAtom_O::static_className() % (void*)(chem::ConstitutionAtom_O::static_allocator) );
@@ -4010,7 +4062,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ConstitutionAtoms_Oval,chem::ConstitutionAtoms_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ConstitutionAtoms_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConstitutionAtoms_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ConstitutionAtoms_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConstitutionAtoms_O>>::allocateClass();
         chem::ConstitutionAtoms_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ConstitutionAtoms_O::static_className() % (void*)(chem::ConstitutionAtoms_O::static_allocator) );
@@ -4031,7 +4083,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ConstitutionBond_Oval,chem::ConstitutionBond_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ConstitutionBond_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConstitutionBond_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ConstitutionBond_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConstitutionBond_O>>::allocateClass();
         chem::ConstitutionBond_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ConstitutionBond_O::static_className() % (void*)(chem::ConstitutionBond_O::static_allocator) );
@@ -4052,7 +4104,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__CoordinateSystem_Oval,chem::CoordinateSystem_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::CoordinateSystem_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CoordinateSystem_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::CoordinateSystem_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CoordinateSystem_O>>::allocateClass();
         chem::CoordinateSystem_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::CoordinateSystem_O::static_className() % (void*)(chem::CoordinateSystem_O::static_allocator) );
@@ -4073,7 +4125,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Coupling_Oval,chem::Coupling_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Coupling_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Coupling_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Coupling_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Coupling_O>>::allocateClass();
         chem::Coupling_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Coupling_O::static_className() % (void*)(chem::Coupling_O::static_allocator) );
@@ -4094,7 +4146,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__EnergyComponent_Oval,chem::EnergyComponent_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::EnergyComponent_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyComponent_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::EnergyComponent_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyComponent_O>>::allocateClass();
         chem::EnergyComponent_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::EnergyComponent_O::static_className() % (void*)(chem::EnergyComponent_O::static_allocator) );
@@ -4115,7 +4167,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__EnergyFunction_Oval,chem::EnergyFunction_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::EnergyFunction_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyFunction_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::EnergyFunction_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyFunction_O>>::allocateClass();
         chem::EnergyFunction_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::EnergyFunction_O::static_className() % (void*)(chem::EnergyFunction_O::static_allocator) );
@@ -4136,7 +4188,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Entity_Oval,chem::Entity_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Entity_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Entity_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Entity_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Entity_O>>::allocateClass();
         chem::Entity_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Entity_O::static_className() % (void*)(chem::Entity_O::static_allocator) );
@@ -4157,7 +4209,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__FFBaseDb_Oval,chem::FFBaseDb_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::FFBaseDb_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFBaseDb_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::FFBaseDb_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFBaseDb_O>>::allocateClass();
         chem::FFBaseDb_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::FFBaseDb_O::static_className() % (void*)(chem::FFBaseDb_O::static_allocator) );
@@ -4178,7 +4230,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__FFNonbondCrossTermTable_Oval,chem::FFNonbondCrossTermTable_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::FFNonbondCrossTermTable_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFNonbondCrossTermTable_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::FFNonbondCrossTermTable_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFNonbondCrossTermTable_O>>::allocateClass();
         chem::FFNonbondCrossTermTable_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::FFNonbondCrossTermTable_O::static_className() % (void*)(chem::FFNonbondCrossTermTable_O::static_allocator) );
@@ -4199,7 +4251,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__FFParameter_Oval,chem::FFParameter_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::FFParameter_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFParameter_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::FFParameter_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFParameter_O>>::allocateClass();
         chem::FFParameter_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::FFParameter_O::static_className() % (void*)(chem::FFParameter_O::static_allocator) );
@@ -4220,7 +4272,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ForceField_Oval,chem::ForceField_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ForceField_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ForceField_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ForceField_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ForceField_O>>::allocateClass();
         chem::ForceField_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ForceField_O::static_className() % (void*)(chem::ForceField_O::static_allocator) );
@@ -4241,7 +4293,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__FrameRecognizer_Oval,chem::FrameRecognizer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::FrameRecognizer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FrameRecognizer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::FrameRecognizer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FrameRecognizer_O>>::allocateClass();
         chem::FrameRecognizer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::FrameRecognizer_O::static_className() % (void*)(chem::FrameRecognizer_O::static_allocator) );
@@ -4262,7 +4314,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ImproperTorsion_Oval,chem::ImproperTorsion_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ImproperTorsion_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ImproperTorsion_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ImproperTorsion_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ImproperTorsion_O>>::allocateClass();
         chem::ImproperTorsion_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ImproperTorsion_O::static_className() % (void*)(chem::ImproperTorsion_O::static_allocator) );
@@ -4283,7 +4335,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__InfoDb_Oval,chem::InfoDb_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::InfoDb_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::InfoDb_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::InfoDb_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::InfoDb_O>>::allocateClass();
         chem::InfoDb_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::InfoDb_O::static_className() % (void*)(chem::InfoDb_O::static_allocator) );
@@ -4304,7 +4356,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__IterateMatter_Oval,chem::IterateMatter_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::IterateMatter_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::IterateMatter_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::IterateMatter_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::IterateMatter_O>>::allocateClass();
         chem::IterateMatter_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::IterateMatter_O::static_className() % (void*)(chem::IterateMatter_O::static_allocator) );
@@ -4325,7 +4377,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__IterateRestraints_Oval,chem::IterateRestraints_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::IterateRestraints_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::IterateRestraints_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::IterateRestraints_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::IterateRestraints_O>>::allocateClass();
         chem::IterateRestraints_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::IterateRestraints_O::static_className() % (void*)(chem::IterateRestraints_O::static_allocator) );
@@ -4346,7 +4398,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__MacroModelFile_Oval,chem::MacroModelFile_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::MacroModelFile_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::MacroModelFile_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::MacroModelFile_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::MacroModelFile_O>>::allocateClass();
         chem::MacroModelFile_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::MacroModelFile_O::static_className() % (void*)(chem::MacroModelFile_O::static_allocator) );
@@ -4367,7 +4419,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__MapOfMonomerNamesToAtomIndexers_Oval,chem::MapOfMonomerNamesToAtomIndexers_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::MapOfMonomerNamesToAtomIndexers_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::MapOfMonomerNamesToAtomIndexers_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::MapOfMonomerNamesToAtomIndexers_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::MapOfMonomerNamesToAtomIndexers_O>>::allocateClass();
         chem::MapOfMonomerNamesToAtomIndexers_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::MapOfMonomerNamesToAtomIndexers_O::static_className() % (void*)(chem::MapOfMonomerNamesToAtomIndexers_O::static_allocator) );
@@ -4388,7 +4440,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Matter_Oval,chem::Matter_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Matter_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Matter_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Matter_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Matter_O>>::allocateClass();
         chem::Matter_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Matter_O::static_className() % (void*)(chem::Matter_O::static_allocator) );
@@ -4409,7 +4461,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__MinimizerLog_Oval,chem::MinimizerLog_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::MinimizerLog_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::MinimizerLog_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::MinimizerLog_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::MinimizerLog_O>>::allocateClass();
         chem::MinimizerLog_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::MinimizerLog_O::static_className() % (void*)(chem::MinimizerLog_O::static_allocator) );
@@ -4430,7 +4482,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Minimizer_Oval,chem::Minimizer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Minimizer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Minimizer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Minimizer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Minimizer_O>>::allocateClass();
         chem::Minimizer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Minimizer_O::static_className() % (void*)(chem::Minimizer_O::static_allocator) );
@@ -4451,7 +4503,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__MonomerContext_Oval,chem::MonomerContext_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::MonomerContext_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::MonomerContext_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::MonomerContext_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::MonomerContext_O>>::allocateClass();
         chem::MonomerContext_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::MonomerContext_O::static_className() % (void*)(chem::MonomerContext_O::static_allocator) );
@@ -4472,7 +4524,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__MonomerCoordinates_Oval,chem::MonomerCoordinates_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::MonomerCoordinates_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::MonomerCoordinates_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::MonomerCoordinates_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::MonomerCoordinates_O>>::allocateClass();
         chem::MonomerCoordinates_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::MonomerCoordinates_O::static_className() % (void*)(chem::MonomerCoordinates_O::static_allocator) );
@@ -4493,7 +4545,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__NVector_Oval,chem::NVector_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::NVector_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::NVector_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::NVector_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::NVector_O>>::allocateClass();
         chem::NVector_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::NVector_O::static_className() % (void*)(chem::NVector_O::static_allocator) );
@@ -4514,7 +4566,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__NumericalFunction_Oval,chem::NumericalFunction_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::NumericalFunction_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::NumericalFunction_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::NumericalFunction_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::NumericalFunction_O>>::allocateClass();
         chem::NumericalFunction_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::NumericalFunction_O::static_className() % (void*)(chem::NumericalFunction_O::static_allocator) );
@@ -4535,7 +4587,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__OligomerPart_Base_Oval,chem::OligomerPart_Base_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::OligomerPart_Base_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::OligomerPart_Base_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::OligomerPart_Base_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::OligomerPart_Base_O>>::allocateClass();
         chem::OligomerPart_Base_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::OligomerPart_Base_O::static_className() % (void*)(chem::OligomerPart_Base_O::static_allocator) );
@@ -4556,7 +4608,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Oligomer_Oval,chem::Oligomer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Oligomer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Oligomer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Oligomer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Oligomer_O>>::allocateClass();
         chem::Oligomer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Oligomer_O::static_className() % (void*)(chem::Oligomer_O::static_allocator) );
@@ -4577,7 +4629,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__OneMonomer_Oval,chem::OneMonomer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::OneMonomer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::OneMonomer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::OneMonomer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::OneMonomer_O>>::allocateClass();
         chem::OneMonomer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::OneMonomer_O::static_className() % (void*)(chem::OneMonomer_O::static_allocator) );
@@ -4598,7 +4650,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__OneTypeRule_Oval,chem::OneTypeRule_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::OneTypeRule_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::OneTypeRule_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::OneTypeRule_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::OneTypeRule_O>>::allocateClass();
         chem::OneTypeRule_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::OneTypeRule_O::static_className() % (void*)(chem::OneTypeRule_O::static_allocator) );
@@ -4619,7 +4671,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__PathMessage_Oval,chem::PathMessage_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::PathMessage_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::PathMessage_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::PathMessage_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::PathMessage_O>>::allocateClass();
         chem::PathMessage_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::PathMessage_O::static_className() % (void*)(chem::PathMessage_O::static_allocator) );
@@ -4640,7 +4692,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__PdbMonomerConnectivity_Oval,chem::PdbMonomerConnectivity_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::PdbMonomerConnectivity_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::PdbMonomerConnectivity_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::PdbMonomerConnectivity_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::PdbMonomerConnectivity_O>>::allocateClass();
         chem::PdbMonomerConnectivity_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::PdbMonomerConnectivity_O::static_className() % (void*)(chem::PdbMonomerConnectivity_O::static_allocator) );
@@ -4661,7 +4713,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__PdbMonomerDatabase_Oval,chem::PdbMonomerDatabase_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::PdbMonomerDatabase_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::PdbMonomerDatabase_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::PdbMonomerDatabase_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::PdbMonomerDatabase_O>>::allocateClass();
         chem::PdbMonomerDatabase_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::PdbMonomerDatabase_O::static_className() % (void*)(chem::PdbMonomerDatabase_O::static_allocator) );
@@ -4682,7 +4734,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__PdbReader_Oval,chem::PdbReader_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::PdbReader_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::PdbReader_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::PdbReader_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::PdbReader_O>>::allocateClass();
         chem::PdbReader_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::PdbReader_O::static_className() % (void*)(chem::PdbReader_O::static_allocator) );
@@ -4703,7 +4755,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__PdbWriter_Oval,chem::PdbWriter_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::PdbWriter_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::PdbWriter_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::PdbWriter_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::PdbWriter_O>>::allocateClass();
         chem::PdbWriter_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::PdbWriter_O::static_className() % (void*)(chem::PdbWriter_O::static_allocator) );
@@ -4724,7 +4776,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Plug_Oval,chem::Plug_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Plug_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Plug_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Plug_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Plug_O>>::allocateClass();
         chem::Plug_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Plug_O::static_className() % (void*)(chem::Plug_O::static_allocator) );
@@ -4745,7 +4797,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ProperTorsion_Oval,chem::ProperTorsion_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ProperTorsion_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ProperTorsion_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ProperTorsion_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ProperTorsion_O>>::allocateClass();
         chem::ProperTorsion_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ProperTorsion_O::static_className() % (void*)(chem::ProperTorsion_O::static_allocator) );
@@ -4766,7 +4818,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ReadAmberParameters_Oval,chem::ReadAmberParameters_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ReadAmberParameters_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ReadAmberParameters_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ReadAmberParameters_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ReadAmberParameters_O>>::allocateClass();
         chem::ReadAmberParameters_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ReadAmberParameters_O::static_className() % (void*)(chem::ReadAmberParameters_O::static_allocator) );
@@ -4787,7 +4839,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ReportBase_Oval,chem::ReportBase_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ReportBase_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ReportBase_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ReportBase_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ReportBase_O>>::allocateClass();
         chem::ReportBase_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ReportBase_O::static_className() % (void*)(chem::ReportBase_O::static_allocator) );
@@ -4808,7 +4860,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ResidueList_Oval,chem::ResidueList_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ResidueList_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ResidueList_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ResidueList_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ResidueList_O>>::allocateClass();
         chem::ResidueList_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ResidueList_O::static_className() % (void*)(chem::ResidueList_O::static_allocator) );
@@ -4829,7 +4881,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Restraint_Oval,chem::Restraint_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Restraint_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Restraint_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Restraint_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Restraint_O>>::allocateClass();
         chem::Restraint_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Restraint_O::static_className() % (void*)(chem::Restraint_O::static_allocator) );
@@ -4850,7 +4902,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__RingFinder_Oval,chem::RingFinder_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::RingFinder_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RingFinder_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::RingFinder_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RingFinder_O>>::allocateClass();
         chem::RingFinder_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::RingFinder_O::static_className() % (void*)(chem::RingFinder_O::static_allocator) );
@@ -4871,7 +4923,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Rotamer_Oval,chem::Rotamer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Rotamer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Rotamer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Rotamer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Rotamer_O>>::allocateClass();
         chem::Rotamer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Rotamer_O::static_className() % (void*)(chem::Rotamer_O::static_allocator) );
@@ -4892,7 +4944,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__SearchStatistics_Oval,chem::SearchStatistics_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::SearchStatistics_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::SearchStatistics_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::SearchStatistics_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::SearchStatistics_O>>::allocateClass();
         chem::SearchStatistics_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::SearchStatistics_O::static_className() % (void*)(chem::SearchStatistics_O::static_allocator) );
@@ -4913,7 +4965,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__SpanningLoop_Oval,chem::SpanningLoop_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::SpanningLoop_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::SpanningLoop_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::SpanningLoop_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::SpanningLoop_O>>::allocateClass();
         chem::SpanningLoop_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::SpanningLoop_O::static_className() % (void*)(chem::SpanningLoop_O::static_allocator) );
@@ -4934,7 +4986,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__SpecificContextSet_Oval,chem::SpecificContextSet_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::SpecificContextSet_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::SpecificContextSet_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::SpecificContextSet_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::SpecificContextSet_O>>::allocateClass();
         chem::SpecificContextSet_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::SpecificContextSet_O::static_className() % (void*)(chem::SpecificContextSet_O::static_allocator) );
@@ -4955,7 +5007,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__SpecificContext_Oval,chem::SpecificContext_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::SpecificContext_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::SpecificContext_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::SpecificContext_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::SpecificContext_O>>::allocateClass();
         chem::SpecificContext_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::SpecificContext_O::static_className() % (void*)(chem::SpecificContext_O::static_allocator) );
@@ -4976,7 +5028,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__StatusTracker_Oval,chem::StatusTracker_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::StatusTracker_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::StatusTracker_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::StatusTracker_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::StatusTracker_O>>::allocateClass();
         chem::StatusTracker_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::StatusTracker_O::static_className() % (void*)(chem::StatusTracker_O::static_allocator) );
@@ -4997,7 +5049,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__StereoConfiguration_Oval,chem::StereoConfiguration_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::StereoConfiguration_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::StereoConfiguration_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::StereoConfiguration_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::StereoConfiguration_O>>::allocateClass();
         chem::StereoConfiguration_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::StereoConfiguration_O::static_className() % (void*)(chem::StereoConfiguration_O::static_allocator) );
@@ -5018,7 +5070,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__StereoInformation_Oval,chem::StereoInformation_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::StereoInformation_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::StereoInformation_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::StereoInformation_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::StereoInformation_O>>::allocateClass();
         chem::StereoInformation_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::StereoInformation_O::static_className() % (void*)(chem::StereoInformation_O::static_allocator) );
@@ -5039,7 +5091,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__StereoisomerAtom_Oval,chem::StereoisomerAtom_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::StereoisomerAtom_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::StereoisomerAtom_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::StereoisomerAtom_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::StereoisomerAtom_O>>::allocateClass();
         chem::StereoisomerAtom_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::StereoisomerAtom_O::static_className() % (void*)(chem::StereoisomerAtom_O::static_allocator) );
@@ -5060,7 +5112,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__StereoisomerAtoms_Oval,chem::StereoisomerAtoms_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::StereoisomerAtoms_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::StereoisomerAtoms_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::StereoisomerAtoms_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::StereoisomerAtoms_O>>::allocateClass();
         chem::StereoisomerAtoms_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::StereoisomerAtoms_O::static_className() % (void*)(chem::StereoisomerAtoms_O::static_allocator) );
@@ -5081,7 +5133,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__StructureComparer_Oval,chem::StructureComparer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::StructureComparer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::StructureComparer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::StructureComparer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::StructureComparer_O>>::allocateClass();
         chem::StructureComparer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::StructureComparer_O::static_className() % (void*)(chem::StructureComparer_O::static_allocator) );
@@ -5102,7 +5154,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Structure_Old_ListEntry_Oval,chem::Structure_Old_ListEntry_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Structure_Old_ListEntry_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Structure_Old_ListEntry_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Structure_Old_ListEntry_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Structure_Old_ListEntry_O>>::allocateClass();
         chem::Structure_Old_ListEntry_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Structure_Old_ListEntry_O::static_className() % (void*)(chem::Structure_Old_ListEntry_O::static_allocator) );
@@ -5123,7 +5175,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Structure_Old_List_Oval,chem::Structure_Old_List_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Structure_Old_List_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Structure_Old_List_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Structure_Old_List_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Structure_Old_List_O>>::allocateClass();
         chem::Structure_Old_List_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Structure_Old_List_O::static_className() % (void*)(chem::Structure_Old_List_O::static_allocator) );
@@ -5144,7 +5196,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__SuperposeEngine_Oval,chem::SuperposeEngine_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::SuperposeEngine_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::SuperposeEngine_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::SuperposeEngine_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::SuperposeEngine_O>>::allocateClass();
         chem::SuperposeEngine_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::SuperposeEngine_O::static_className() % (void*)(chem::SuperposeEngine_O::static_allocator) );
@@ -5165,7 +5217,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Topology_Oval,chem::Topology_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Topology_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Topology_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Topology_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Topology_O>>::allocateClass();
         chem::Topology_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Topology_O::static_className() % (void*)(chem::Topology_O::static_allocator) );
@@ -5186,7 +5238,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__TrajectoryFrame_Oval,chem::TrajectoryFrame_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::TrajectoryFrame_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::TrajectoryFrame_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::TrajectoryFrame_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::TrajectoryFrame_O>>::allocateClass();
         chem::TrajectoryFrame_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::TrajectoryFrame_O::static_className() % (void*)(chem::TrajectoryFrame_O::static_allocator) );
@@ -5207,7 +5259,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Trajectory_Oval,chem::Trajectory_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Trajectory_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Trajectory_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Trajectory_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Trajectory_O>>::allocateClass();
         chem::Trajectory_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Trajectory_O::static_className() % (void*)(chem::Trajectory_O::static_allocator) );
@@ -5228,7 +5280,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__TwisterDriver_Oval,chem::TwisterDriver_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::TwisterDriver_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::TwisterDriver_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::TwisterDriver_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::TwisterDriver_O>>::allocateClass();
         chem::TwisterDriver_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::TwisterDriver_O::static_className() % (void*)(chem::TwisterDriver_O::static_allocator) );
@@ -5249,7 +5301,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Twister_Oval,chem::Twister_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Twister_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Twister_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Twister_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Twister_O>>::allocateClass();
         chem::Twister_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Twister_O::static_className() % (void*)(chem::Twister_O::static_allocator) );
@@ -5270,7 +5322,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__TypeAssignmentRules_Oval,chem::TypeAssignmentRules_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::TypeAssignmentRules_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::TypeAssignmentRules_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::TypeAssignmentRules_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::TypeAssignmentRules_O>>::allocateClass();
         chem::TypeAssignmentRules_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::TypeAssignmentRules_O::static_className() % (void*)(chem::TypeAssignmentRules_O::static_allocator) );
@@ -5291,7 +5343,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__VirtualSphere_Oval,chem::VirtualSphere_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::VirtualSphere_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::VirtualSphere_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::VirtualSphere_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::VirtualSphere_O>>::allocateClass();
         chem::VirtualSphere_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::VirtualSphere_O::static_className() % (void*)(chem::VirtualSphere_O::static_allocator) );
@@ -5312,7 +5364,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__WildElementDict_Oval,chem::WildElementDict_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::WildElementDict_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::WildElementDict_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::WildElementDict_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::WildElementDict_O>>::allocateClass();
         chem::WildElementDict_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::WildElementDict_O::static_className() % (void*)(chem::WildElementDict_O::static_allocator) );
@@ -5333,7 +5385,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ZMatrixEntry_Oval,chem::ZMatrixEntry_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ZMatrixEntry_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ZMatrixEntry_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ZMatrixEntry_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ZMatrixEntry_O>>::allocateClass();
         chem::ZMatrixEntry_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ZMatrixEntry_O::static_className() % (void*)(chem::ZMatrixEntry_O::static_allocator) );
@@ -5354,7 +5406,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ZMatrixInternal_Oval,chem::ZMatrixInternal_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ZMatrixInternal_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ZMatrixInternal_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ZMatrixInternal_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ZMatrixInternal_O>>::allocateClass();
         chem::ZMatrixInternal_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ZMatrixInternal_O::static_className() % (void*)(chem::ZMatrixInternal_O::static_allocator) );
@@ -5375,7 +5427,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ZMatrix_Oval,chem::ZMatrix_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ZMatrix_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ZMatrix_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ZMatrix_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ZMatrix_O>>::allocateClass();
         chem::ZMatrix_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ZMatrix_O::static_className() % (void*)(chem::ZMatrix_O::static_allocator) );
@@ -5396,7 +5448,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__ActivationFrame_Oval,core::ActivationFrame_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::ActivationFrame_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::ActivationFrame_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::ActivationFrame_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::ActivationFrame_O>>::allocateClass();
         core::ActivationFrame_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::ActivationFrame_O::static_className() % (void*)(core::ActivationFrame_O::static_allocator) );
@@ -5417,7 +5469,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__AnsiStream_Oval,core::AnsiStream_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::AnsiStream_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::AnsiStream_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::AnsiStream_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::AnsiStream_O>>::allocateClass();
         core::AnsiStream_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::AnsiStream_O::static_className() % (void*)(core::AnsiStream_O::static_allocator) );
@@ -5438,7 +5490,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__ArrayDisplaced_Oval,core::ArrayDisplaced_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::ArrayDisplaced_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::ArrayDisplaced_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::ArrayDisplaced_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::ArrayDisplaced_O>>::allocateClass();
         core::ArrayDisplaced_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::ArrayDisplaced_O::static_className() % (void*)(core::ArrayDisplaced_O::static_allocator) );
@@ -5459,7 +5511,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__ArrayObjects_Oval,core::ArrayObjects_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::ArrayObjects_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::ArrayObjects_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::ArrayObjects_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::ArrayObjects_O>>::allocateClass();
         core::ArrayObjects_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::ArrayObjects_O::static_className() % (void*)(core::ArrayObjects_O::static_allocator) );
@@ -5480,7 +5532,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__BranchSNode_Oval,core::BranchSNode_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::BranchSNode_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::BranchSNode_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::BranchSNode_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::BranchSNode_O>>::allocateClass();
         core::BranchSNode_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::BranchSNode_O::static_className() % (void*)(core::BranchSNode_O::static_allocator) );
@@ -5501,7 +5553,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__CompiledFunction_Oval,core::CompiledFunction_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::CompiledFunction_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::CompiledFunction_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::CompiledFunction_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::CompiledFunction_O>>::allocateClass();
         core::CompiledFunction_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::CompiledFunction_O::static_className() % (void*)(core::CompiledFunction_O::static_allocator) );
@@ -5522,7 +5574,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Complex_Oval,core::Complex_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Complex_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Complex_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Complex_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Complex_O>>::allocateClass();
         core::Complex_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Complex_O::static_className() % (void*)(core::Complex_O::static_allocator) );
@@ -5543,7 +5595,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__DirectoryIterator_Oval,core::DirectoryIterator_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::DirectoryIterator_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::DirectoryIterator_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::DirectoryIterator_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::DirectoryIterator_O>>::allocateClass();
         core::DirectoryIterator_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::DirectoryIterator_O::static_className() % (void*)(core::DirectoryIterator_O::static_allocator) );
@@ -5564,7 +5616,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__ForeignData_Oval,core::ForeignData_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::ForeignData_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::ForeignData_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::ForeignData_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::ForeignData_O>>::allocateClass();
         core::ForeignData_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::ForeignData_O::static_className() % (void*)(core::ForeignData_O::static_allocator) );
@@ -5585,7 +5637,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__GlueEnvironment_Oval,core::GlueEnvironment_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::GlueEnvironment_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::GlueEnvironment_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::GlueEnvironment_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::GlueEnvironment_O>>::allocateClass();
         core::GlueEnvironment_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::GlueEnvironment_O::static_className() % (void*)(core::GlueEnvironment_O::static_allocator) );
@@ -5606,7 +5658,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__HashTableEq_Oval,core::HashTableEq_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::HashTableEq_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::HashTableEq_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::HashTableEq_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::HashTableEq_O>>::allocateClass();
         core::HashTableEq_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::HashTableEq_O::static_className() % (void*)(core::HashTableEq_O::static_allocator) );
@@ -5627,7 +5679,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__HashTableEql_Oval,core::HashTableEql_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::HashTableEql_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::HashTableEql_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::HashTableEql_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::HashTableEql_O>>::allocateClass();
         core::HashTableEql_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::HashTableEql_O::static_className() % (void*)(core::HashTableEql_O::static_allocator) );
@@ -5648,7 +5700,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__HashTableEqual_Oval,core::HashTableEqual_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::HashTableEqual_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::HashTableEqual_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::HashTableEqual_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::HashTableEqual_O>>::allocateClass();
         core::HashTableEqual_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::HashTableEqual_O::static_className() % (void*)(core::HashTableEqual_O::static_allocator) );
@@ -5669,7 +5721,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__HashTableEqualp_Oval,core::HashTableEqualp_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::HashTableEqualp_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::HashTableEqualp_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::HashTableEqualp_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::HashTableEqualp_O>>::allocateClass();
         core::HashTableEqualp_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::HashTableEqualp_O::static_className() % (void*)(core::HashTableEqualp_O::static_allocator) );
@@ -5690,7 +5742,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Instance_Oval,core::Instance_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Instance_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Instance_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Instance_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Instance_O>>::allocateClass();
         core::Instance_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Instance_O::static_className() % (void*)(core::Instance_O::static_allocator) );
@@ -5711,7 +5763,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__LeafSNode_Oval,core::LeafSNode_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::LeafSNode_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::LeafSNode_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::LeafSNode_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::LeafSNode_O>>::allocateClass();
         core::LeafSNode_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::LeafSNode_O::static_className() % (void*)(core::LeafSNode_O::static_allocator) );
@@ -5732,7 +5784,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__LexicalEnvironment_Oval,core::LexicalEnvironment_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::LexicalEnvironment_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::LexicalEnvironment_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::LexicalEnvironment_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::LexicalEnvironment_O>>::allocateClass();
         core::LexicalEnvironment_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::LexicalEnvironment_O::static_className() % (void*)(core::LexicalEnvironment_O::static_allocator) );
@@ -5753,7 +5805,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__LoadArchive_Oval,core::LoadArchive_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::LoadArchive_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::LoadArchive_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::LoadArchive_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::LoadArchive_O>>::allocateClass();
         core::LoadArchive_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::LoadArchive_O::static_className() % (void*)(core::LoadArchive_O::static_allocator) );
@@ -5774,7 +5826,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__LogicalPathname_Oval,core::LogicalPathname_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::LogicalPathname_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::LogicalPathname_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::LogicalPathname_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::LogicalPathname_O>>::allocateClass();
         core::LogicalPathname_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::LogicalPathname_O::static_className() % (void*)(core::LogicalPathname_O::static_allocator) );
@@ -5795,7 +5847,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Metaobject_Oval,core::Metaobject_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Metaobject_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Metaobject_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Metaobject_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Metaobject_O>>::allocateClass();
         core::Metaobject_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Metaobject_O::static_className() % (void*)(core::Metaobject_O::static_allocator) );
@@ -5816,7 +5868,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Null_Oval,core::Null_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Null_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Null_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Null_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Null_O>>::allocateClass();
         core::Null_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Null_O::static_className() % (void*)(core::Null_O::static_allocator) );
@@ -5837,7 +5889,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Real_Oval,core::Real_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Real_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Real_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Real_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Real_O>>::allocateClass();
         core::Real_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Real_O::static_className() % (void*)(core::Real_O::static_allocator) );
@@ -5858,7 +5910,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__RecursiveDirectoryIterator_Oval,core::RecursiveDirectoryIterator_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::RecursiveDirectoryIterator_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::RecursiveDirectoryIterator_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::RecursiveDirectoryIterator_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::RecursiveDirectoryIterator_O>>::allocateClass();
         core::RecursiveDirectoryIterator_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::RecursiveDirectoryIterator_O::static_className() % (void*)(core::RecursiveDirectoryIterator_O::static_allocator) );
@@ -5879,7 +5931,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__SaveArchive_Oval,core::SaveArchive_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::SaveArchive_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::SaveArchive_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::SaveArchive_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::SaveArchive_O>>::allocateClass();
         core::SaveArchive_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::SaveArchive_O::static_className() % (void*)(core::SaveArchive_O::static_allocator) );
@@ -5900,7 +5952,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__SingleDispatchEffectiveMethodFunction_Oval,core::SingleDispatchEffectiveMethodFunction_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::SingleDispatchEffectiveMethodFunction_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::SingleDispatchEffectiveMethodFunction_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::SingleDispatchEffectiveMethodFunction_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::SingleDispatchEffectiveMethodFunction_O>>::allocateClass();
         core::SingleDispatchEffectiveMethodFunction_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::SingleDispatchEffectiveMethodFunction_O::static_className() % (void*)(core::SingleDispatchEffectiveMethodFunction_O::static_allocator) );
@@ -5921,7 +5973,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__SingleDispatchGenericFunction_Oval,core::SingleDispatchGenericFunction_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::SingleDispatchGenericFunction_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::SingleDispatchGenericFunction_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::SingleDispatchGenericFunction_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::SingleDispatchGenericFunction_O>>::allocateClass();
         core::SingleDispatchGenericFunction_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::SingleDispatchGenericFunction_O::static_className() % (void*)(core::SingleDispatchGenericFunction_O::static_allocator) );
@@ -5942,7 +5994,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__SpecialForm_Oval,core::SpecialForm_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::SpecialForm_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::SpecialForm_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::SpecialForm_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::SpecialForm_O>>::allocateClass();
         core::SpecialForm_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::SpecialForm_O::static_className() % (void*)(core::SpecialForm_O::static_allocator) );
@@ -5963,7 +6015,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__UserData_Oval,core::UserData_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::UserData_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::UserData_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::UserData_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::UserData_O>>::allocateClass();
         core::UserData_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::UserData_O::static_className() % (void*)(core::UserData_O::static_allocator) );
@@ -5984,7 +6036,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Vector_Oval,core::Vector_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Vector_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Vector_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Vector_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Vector_O>>::allocateClass();
         core::Vector_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Vector_O::static_className() % (void*)(core::Vector_O::static_allocator) );
@@ -6005,7 +6057,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__WeakKeyHashTable_Oval,core::WeakKeyHashTable_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::WeakKeyHashTable_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::WeakKeyHashTable_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::WeakKeyHashTable_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::WeakKeyHashTable_O>>::allocateClass();
         core::WeakKeyHashTable_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::WeakKeyHashTable_O::static_className() % (void*)(core::WeakKeyHashTable_O::static_allocator) );
@@ -6026,7 +6078,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classgeom__BoundingBox_Oval,geom::BoundingBox_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<geom::BoundingBox_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<geom::BoundingBox_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<geom::BoundingBox_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<geom::BoundingBox_O>>::allocateClass();
         geom::BoundingBox_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% geom::BoundingBox_O::static_className() % (void*)(geom::BoundingBox_O::static_allocator) );
@@ -6047,7 +6099,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classgeom__Color_Oval,geom::Color_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<geom::Color_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<geom::Color_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<geom::Color_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<geom::Color_O>>::allocateClass();
         geom::Color_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% geom::Color_O::static_className() % (void*)(geom::Color_O::static_allocator) );
@@ -6068,7 +6120,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classgeom__OMatrix_Oval,geom::OMatrix_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<geom::OMatrix_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<geom::OMatrix_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<geom::OMatrix_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<geom::OMatrix_O>>::allocateClass();
         geom::OMatrix_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% geom::OMatrix_O::static_className() % (void*)(geom::OMatrix_O::static_allocator) );
@@ -6089,7 +6141,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classgeom__OVector2_Oval,geom::OVector2_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<geom::OVector2_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<geom::OVector2_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<geom::OVector2_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<geom::OVector2_O>>::allocateClass();
         geom::OVector2_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% geom::OVector2_O::static_className() % (void*)(geom::OVector2_O::static_allocator) );
@@ -6110,7 +6162,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classgeom__OVector3_Oval,geom::OVector3_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<geom::OVector3_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<geom::OVector3_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<geom::OVector3_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<geom::OVector3_O>>::allocateClass();
         geom::OVector3_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% geom::OVector3_O::static_className() % (void*)(geom::OVector3_O::static_allocator) );
@@ -6131,7 +6183,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__APFloat_Oval,llvmo::APFloat_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::APFloat_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::APFloat_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::APFloat_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::APFloat_O>>::allocateClass();
         llvmo::APFloat_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::APFloat_O::static_className() % (void*)(llvmo::APFloat_O::static_allocator) );
@@ -6152,7 +6204,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__APInt_Oval,llvmo::APInt_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::APInt_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::APInt_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::APInt_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::APInt_O>>::allocateClass();
         llvmo::APInt_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::APInt_O::static_className() % (void*)(llvmo::APInt_O::static_allocator) );
@@ -6173,7 +6225,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__DIArray_Oval,llvmo::DIArray_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::DIArray_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DIArray_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::DIArray_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DIArray_O>>::allocateClass();
         llvmo::DIArray_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::DIArray_O::static_className() % (void*)(llvmo::DIArray_O::static_allocator) );
@@ -6194,7 +6246,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__DIBasicType_Oval,llvmo::DIBasicType_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::DIBasicType_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DIBasicType_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::DIBasicType_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DIBasicType_O>>::allocateClass();
         llvmo::DIBasicType_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::DIBasicType_O::static_className() % (void*)(llvmo::DIBasicType_O::static_allocator) );
@@ -6215,7 +6267,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__DIBuilder_Oval,llvmo::DIBuilder_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::DIBuilder_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DIBuilder_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::DIBuilder_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DIBuilder_O>>::allocateClass();
         llvmo::DIBuilder_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::DIBuilder_O::static_className() % (void*)(llvmo::DIBuilder_O::static_allocator) );
@@ -6236,7 +6288,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__DICompileUnit_Oval,llvmo::DICompileUnit_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::DICompileUnit_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DICompileUnit_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::DICompileUnit_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DICompileUnit_O>>::allocateClass();
         llvmo::DICompileUnit_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::DICompileUnit_O::static_className() % (void*)(llvmo::DICompileUnit_O::static_allocator) );
@@ -6257,7 +6309,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__DICompositeType_Oval,llvmo::DICompositeType_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::DICompositeType_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DICompositeType_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::DICompositeType_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DICompositeType_O>>::allocateClass();
         llvmo::DICompositeType_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::DICompositeType_O::static_className() % (void*)(llvmo::DICompositeType_O::static_allocator) );
@@ -6278,7 +6330,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__DIDerivedType_Oval,llvmo::DIDerivedType_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::DIDerivedType_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DIDerivedType_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::DIDerivedType_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DIDerivedType_O>>::allocateClass();
         llvmo::DIDerivedType_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::DIDerivedType_O::static_className() % (void*)(llvmo::DIDerivedType_O::static_allocator) );
@@ -6299,7 +6351,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__DIDescriptor_Oval,llvmo::DIDescriptor_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::DIDescriptor_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DIDescriptor_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::DIDescriptor_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DIDescriptor_O>>::allocateClass();
         llvmo::DIDescriptor_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::DIDescriptor_O::static_className() % (void*)(llvmo::DIDescriptor_O::static_allocator) );
@@ -6320,7 +6372,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__DIFile_Oval,llvmo::DIFile_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::DIFile_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DIFile_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::DIFile_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DIFile_O>>::allocateClass();
         llvmo::DIFile_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::DIFile_O::static_className() % (void*)(llvmo::DIFile_O::static_allocator) );
@@ -6341,7 +6393,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__DILexicalBlock_Oval,llvmo::DILexicalBlock_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::DILexicalBlock_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DILexicalBlock_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::DILexicalBlock_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DILexicalBlock_O>>::allocateClass();
         llvmo::DILexicalBlock_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::DILexicalBlock_O::static_className() % (void*)(llvmo::DILexicalBlock_O::static_allocator) );
@@ -6362,7 +6414,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__DIScope_Oval,llvmo::DIScope_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::DIScope_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DIScope_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::DIScope_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DIScope_O>>::allocateClass();
         llvmo::DIScope_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::DIScope_O::static_className() % (void*)(llvmo::DIScope_O::static_allocator) );
@@ -6383,7 +6435,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__DISubprogram_Oval,llvmo::DISubprogram_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::DISubprogram_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DISubprogram_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::DISubprogram_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DISubprogram_O>>::allocateClass();
         llvmo::DISubprogram_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::DISubprogram_O::static_className() % (void*)(llvmo::DISubprogram_O::static_allocator) );
@@ -6404,7 +6456,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__DISubroutineType_Oval,llvmo::DISubroutineType_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::DISubroutineType_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DISubroutineType_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::DISubroutineType_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DISubroutineType_O>>::allocateClass();
         llvmo::DISubroutineType_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::DISubroutineType_O::static_className() % (void*)(llvmo::DISubroutineType_O::static_allocator) );
@@ -6425,7 +6477,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__DITypeArray_Oval,llvmo::DITypeArray_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::DITypeArray_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DITypeArray_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::DITypeArray_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DITypeArray_O>>::allocateClass();
         llvmo::DITypeArray_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::DITypeArray_O::static_className() % (void*)(llvmo::DITypeArray_O::static_allocator) );
@@ -6446,7 +6498,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__DIType_Oval,llvmo::DIType_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::DIType_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DIType_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::DIType_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DIType_O>>::allocateClass();
         llvmo::DIType_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::DIType_O::static_className() % (void*)(llvmo::DIType_O::static_allocator) );
@@ -6467,7 +6519,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__DataLayout_Oval,llvmo::DataLayout_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::DataLayout_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DataLayout_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::DataLayout_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DataLayout_O>>::allocateClass();
         llvmo::DataLayout_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::DataLayout_O::static_className() % (void*)(llvmo::DataLayout_O::static_allocator) );
@@ -6488,7 +6540,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__EngineBuilder_Oval,llvmo::EngineBuilder_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::EngineBuilder_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::EngineBuilder_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::EngineBuilder_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::EngineBuilder_O>>::allocateClass();
         llvmo::EngineBuilder_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::EngineBuilder_O::static_className() % (void*)(llvmo::EngineBuilder_O::static_allocator) );
@@ -6509,7 +6561,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__ExecutionEngine_Oval,llvmo::ExecutionEngine_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::ExecutionEngine_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ExecutionEngine_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::ExecutionEngine_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ExecutionEngine_O>>::allocateClass();
         llvmo::ExecutionEngine_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::ExecutionEngine_O::static_className() % (void*)(llvmo::ExecutionEngine_O::static_allocator) );
@@ -6530,7 +6582,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__IRBuilderBase_Oval,llvmo::IRBuilderBase_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::IRBuilderBase_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::IRBuilderBase_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::IRBuilderBase_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::IRBuilderBase_O>>::allocateClass();
         llvmo::IRBuilderBase_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::IRBuilderBase_O::static_className() % (void*)(llvmo::IRBuilderBase_O::static_allocator) );
@@ -6551,7 +6603,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__LLVMContext_Oval,llvmo::LLVMContext_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::LLVMContext_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::LLVMContext_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::LLVMContext_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::LLVMContext_O>>::allocateClass();
         llvmo::LLVMContext_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::LLVMContext_O::static_className() % (void*)(llvmo::LLVMContext_O::static_allocator) );
@@ -6572,7 +6624,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__Linker_Oval,llvmo::Linker_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::Linker_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Linker_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::Linker_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Linker_O>>::allocateClass();
         llvmo::Linker_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::Linker_O::static_className() % (void*)(llvmo::Linker_O::static_allocator) );
@@ -6593,7 +6645,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__MCSubtargetInfo_Oval,llvmo::MCSubtargetInfo_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::MCSubtargetInfo_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::MCSubtargetInfo_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::MCSubtargetInfo_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::MCSubtargetInfo_O>>::allocateClass();
         llvmo::MCSubtargetInfo_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::MCSubtargetInfo_O::static_className() % (void*)(llvmo::MCSubtargetInfo_O::static_allocator) );
@@ -6614,7 +6666,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__Metadata_Oval,llvmo::Metadata_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::Metadata_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Metadata_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::Metadata_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Metadata_O>>::allocateClass();
         llvmo::Metadata_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::Metadata_O::static_className() % (void*)(llvmo::Metadata_O::static_allocator) );
@@ -6635,7 +6687,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__Module_Oval,llvmo::Module_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::Module_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Module_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::Module_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Module_O>>::allocateClass();
         llvmo::Module_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::Module_O::static_className() % (void*)(llvmo::Module_O::static_allocator) );
@@ -6656,7 +6708,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__NamedMDNode_Oval,llvmo::NamedMDNode_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::NamedMDNode_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::NamedMDNode_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::NamedMDNode_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::NamedMDNode_O>>::allocateClass();
         llvmo::NamedMDNode_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::NamedMDNode_O::static_className() % (void*)(llvmo::NamedMDNode_O::static_allocator) );
@@ -6677,7 +6729,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__PassManagerBase_Oval,llvmo::PassManagerBase_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::PassManagerBase_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::PassManagerBase_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::PassManagerBase_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::PassManagerBase_O>>::allocateClass();
         llvmo::PassManagerBase_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::PassManagerBase_O::static_className() % (void*)(llvmo::PassManagerBase_O::static_allocator) );
@@ -6698,7 +6750,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__PassManagerBuilder_Oval,llvmo::PassManagerBuilder_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::PassManagerBuilder_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::PassManagerBuilder_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::PassManagerBuilder_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::PassManagerBuilder_O>>::allocateClass();
         llvmo::PassManagerBuilder_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::PassManagerBuilder_O::static_className() % (void*)(llvmo::PassManagerBuilder_O::static_allocator) );
@@ -6719,7 +6771,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__Pass_Oval,llvmo::Pass_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::Pass_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Pass_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::Pass_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Pass_O>>::allocateClass();
         llvmo::Pass_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::Pass_O::static_className() % (void*)(llvmo::Pass_O::static_allocator) );
@@ -6740,7 +6792,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__TargetMachine_Oval,llvmo::TargetMachine_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::TargetMachine_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::TargetMachine_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::TargetMachine_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::TargetMachine_O>>::allocateClass();
         llvmo::TargetMachine_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::TargetMachine_O::static_className() % (void*)(llvmo::TargetMachine_O::static_allocator) );
@@ -6761,7 +6813,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__TargetOptions_Oval,llvmo::TargetOptions_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::TargetOptions_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::TargetOptions_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::TargetOptions_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::TargetOptions_O>>::allocateClass();
         llvmo::TargetOptions_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::TargetOptions_O::static_className() % (void*)(llvmo::TargetOptions_O::static_allocator) );
@@ -6782,7 +6834,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__Target_Oval,llvmo::Target_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::Target_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Target_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::Target_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Target_O>>::allocateClass();
         llvmo::Target_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::Target_O::static_className() % (void*)(llvmo::Target_O::static_allocator) );
@@ -6803,7 +6855,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__Triple_Oval,llvmo::Triple_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::Triple_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Triple_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::Triple_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Triple_O>>::allocateClass();
         llvmo::Triple_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::Triple_O::static_className() % (void*)(llvmo::Triple_O::static_allocator) );
@@ -6824,7 +6876,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__Type_Oval,llvmo::Type_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::Type_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Type_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::Type_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Type_O>>::allocateClass();
         llvmo::Type_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::Type_O::static_className() % (void*)(llvmo::Type_O::static_allocator) );
@@ -6845,7 +6897,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__Value_Oval,llvmo::Value_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::Value_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Value_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::Value_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Value_O>>::allocateClass();
         llvmo::Value_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::Value_O::static_className() % (void*)(llvmo::Value_O::static_allocator) );
@@ -6866,7 +6918,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classunits__Dimension_Oval,units::Dimension_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<units::Dimension_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<units::Dimension_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<units::Dimension_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<units::Dimension_O>>::allocateClass();
         units::Dimension_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% units::Dimension_O::static_className() % (void*)(units::Dimension_O::static_allocator) );
@@ -6887,7 +6939,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classunits__Quantity_Oval,units::Quantity_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<units::Quantity_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<units::Quantity_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<units::Quantity_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<units::Quantity_O>>::allocateClass();
         units::Quantity_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% units::Quantity_O::static_className() % (void*)(units::Quantity_O::static_allocator) );
@@ -6908,7 +6960,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classunits__Unit_Oval,units::Unit_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<units::Unit_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<units::Unit_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<units::Unit_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<units::Unit_O>>::allocateClass();
         units::Unit_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% units::Unit_O::static_className() % (void*)(units::Unit_O::static_allocator) );
@@ -6929,7 +6981,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Aggregate_Oval,chem::Aggregate_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Aggregate_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Aggregate_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Aggregate_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Aggregate_O>>::allocateClass();
         chem::Aggregate_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Aggregate_O::static_className() % (void*)(chem::Aggregate_O::static_allocator) );
@@ -6950,7 +7002,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__AtomReference_Oval,chem::AtomReference_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::AtomReference_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AtomReference_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::AtomReference_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AtomReference_O>>::allocateClass();
         chem::AtomReference_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::AtomReference_O::static_className() % (void*)(chem::AtomReference_O::static_allocator) );
@@ -6971,7 +7023,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Atom_Oval,chem::Atom_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Atom_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Atom_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Atom_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Atom_O>>::allocateClass();
         chem::Atom_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Atom_O::static_className() % (void*)(chem::Atom_O::static_allocator) );
@@ -6992,7 +7044,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__BondListMatchNode_Oval,chem::BondListMatchNode_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::BondListMatchNode_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::BondListMatchNode_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::BondListMatchNode_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::BondListMatchNode_O>>::allocateClass();
         chem::BondListMatchNode_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::BondListMatchNode_O::static_className() % (void*)(chem::BondListMatchNode_O::static_allocator) );
@@ -7013,7 +7065,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__BondMatchNode_Oval,chem::BondMatchNode_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::BondMatchNode_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::BondMatchNode_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::BondMatchNode_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::BondMatchNode_O>>::allocateClass();
         chem::BondMatchNode_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::BondMatchNode_O::static_className() % (void*)(chem::BondMatchNode_O::static_allocator) );
@@ -7034,7 +7086,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__CalculatePositionAlongBond_Oval,chem::CalculatePositionAlongBond_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::CalculatePositionAlongBond_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CalculatePositionAlongBond_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::CalculatePositionAlongBond_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CalculatePositionAlongBond_O>>::allocateClass();
         chem::CalculatePositionAlongBond_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::CalculatePositionAlongBond_O::static_className() % (void*)(chem::CalculatePositionAlongBond_O::static_allocator) );
@@ -7055,7 +7107,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__CalculatePositionRelativeToOrigin_Oval,chem::CalculatePositionRelativeToOrigin_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::CalculatePositionRelativeToOrigin_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CalculatePositionRelativeToOrigin_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::CalculatePositionRelativeToOrigin_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CalculatePositionRelativeToOrigin_O>>::allocateClass();
         chem::CalculatePositionRelativeToOrigin_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::CalculatePositionRelativeToOrigin_O::static_className() % (void*)(chem::CalculatePositionRelativeToOrigin_O::static_allocator) );
@@ -7076,7 +7128,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__CalculatePositionUsingInternals_Oval,chem::CalculatePositionUsingInternals_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::CalculatePositionUsingInternals_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CalculatePositionUsingInternals_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::CalculatePositionUsingInternals_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::CalculatePositionUsingInternals_O>>::allocateClass();
         chem::CalculatePositionUsingInternals_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::CalculatePositionUsingInternals_O::static_className() % (void*)(chem::CalculatePositionUsingInternals_O::static_allocator) );
@@ -7097,7 +7149,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ConstitutionVirtualAtom_Oval,chem::ConstitutionVirtualAtom_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ConstitutionVirtualAtom_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConstitutionVirtualAtom_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ConstitutionVirtualAtom_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ConstitutionVirtualAtom_O>>::allocateClass();
         chem::ConstitutionVirtualAtom_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ConstitutionVirtualAtom_O::static_className() % (void*)(chem::ConstitutionVirtualAtom_O::static_allocator) );
@@ -7118,7 +7170,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Constitution_Oval,chem::Constitution_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Constitution_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Constitution_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Constitution_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Constitution_O>>::allocateClass();
         chem::Constitution_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Constitution_O::static_className() % (void*)(chem::Constitution_O::static_allocator) );
@@ -7139,7 +7191,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__DirectionalCoupling_Oval,chem::DirectionalCoupling_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::DirectionalCoupling_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::DirectionalCoupling_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::DirectionalCoupling_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::DirectionalCoupling_O>>::allocateClass();
         chem::DirectionalCoupling_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::DirectionalCoupling_O::static_className() % (void*)(chem::DirectionalCoupling_O::static_allocator) );
@@ -7160,7 +7212,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__EnergyAnchorRestraint_Oval,chem::EnergyAnchorRestraint_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::EnergyAnchorRestraint_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyAnchorRestraint_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::EnergyAnchorRestraint_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyAnchorRestraint_O>>::allocateClass();
         chem::EnergyAnchorRestraint_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::EnergyAnchorRestraint_O::static_className() % (void*)(chem::EnergyAnchorRestraint_O::static_allocator) );
@@ -7181,7 +7233,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__EnergyAngle_Oval,chem::EnergyAngle_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::EnergyAngle_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyAngle_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::EnergyAngle_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyAngle_O>>::allocateClass();
         chem::EnergyAngle_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::EnergyAngle_O::static_className() % (void*)(chem::EnergyAngle_O::static_allocator) );
@@ -7202,7 +7254,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__EnergyChiralRestraint_Oval,chem::EnergyChiralRestraint_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::EnergyChiralRestraint_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyChiralRestraint_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::EnergyChiralRestraint_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyChiralRestraint_O>>::allocateClass();
         chem::EnergyChiralRestraint_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::EnergyChiralRestraint_O::static_className() % (void*)(chem::EnergyChiralRestraint_O::static_allocator) );
@@ -7223,7 +7275,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__EnergyDihedral_Oval,chem::EnergyDihedral_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::EnergyDihedral_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyDihedral_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::EnergyDihedral_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyDihedral_O>>::allocateClass();
         chem::EnergyDihedral_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::EnergyDihedral_O::static_className() % (void*)(chem::EnergyDihedral_O::static_allocator) );
@@ -7244,7 +7296,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__EnergyFixedNonbondRestraint_Oval,chem::EnergyFixedNonbondRestraint_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::EnergyFixedNonbondRestraint_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyFixedNonbondRestraint_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::EnergyFixedNonbondRestraint_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyFixedNonbondRestraint_O>>::allocateClass();
         chem::EnergyFixedNonbondRestraint_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::EnergyFixedNonbondRestraint_O::static_className() % (void*)(chem::EnergyFixedNonbondRestraint_O::static_allocator) );
@@ -7265,7 +7317,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__EnergyImproperRestraint_Oval,chem::EnergyImproperRestraint_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::EnergyImproperRestraint_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyImproperRestraint_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::EnergyImproperRestraint_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyImproperRestraint_O>>::allocateClass();
         chem::EnergyImproperRestraint_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::EnergyImproperRestraint_O::static_className() % (void*)(chem::EnergyImproperRestraint_O::static_allocator) );
@@ -7286,7 +7338,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__EnergyNonbond_Oval,chem::EnergyNonbond_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::EnergyNonbond_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyNonbond_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::EnergyNonbond_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyNonbond_O>>::allocateClass();
         chem::EnergyNonbond_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::EnergyNonbond_O::static_className() % (void*)(chem::EnergyNonbond_O::static_allocator) );
@@ -7307,7 +7359,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__EnergyStretch_Oval,chem::EnergyStretch_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::EnergyStretch_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyStretch_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::EnergyStretch_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EnergyStretch_O>>::allocateClass();
         chem::EnergyStretch_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::EnergyStretch_O::static_className() % (void*)(chem::EnergyStretch_O::static_allocator) );
@@ -7328,7 +7380,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__EntityNameSetBase_Oval,chem::EntityNameSetBase_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::EntityNameSetBase_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EntityNameSetBase_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::EntityNameSetBase_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EntityNameSetBase_O>>::allocateClass();
         chem::EntityNameSetBase_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::EntityNameSetBase_O::static_className() % (void*)(chem::EntityNameSetBase_O::static_allocator) );
@@ -7349,7 +7401,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__FFAngleDb_Oval,chem::FFAngleDb_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::FFAngleDb_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFAngleDb_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::FFAngleDb_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFAngleDb_O>>::allocateClass();
         chem::FFAngleDb_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::FFAngleDb_O::static_className() % (void*)(chem::FFAngleDb_O::static_allocator) );
@@ -7370,7 +7422,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__FFAngle_Oval,chem::FFAngle_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::FFAngle_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFAngle_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::FFAngle_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFAngle_O>>::allocateClass();
         chem::FFAngle_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::FFAngle_O::static_className() % (void*)(chem::FFAngle_O::static_allocator) );
@@ -7391,7 +7443,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__FFItorDb_Oval,chem::FFItorDb_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::FFItorDb_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFItorDb_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::FFItorDb_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFItorDb_O>>::allocateClass();
         chem::FFItorDb_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::FFItorDb_O::static_className() % (void*)(chem::FFItorDb_O::static_allocator) );
@@ -7412,7 +7464,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__FFItor_Oval,chem::FFItor_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::FFItor_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFItor_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::FFItor_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFItor_O>>::allocateClass();
         chem::FFItor_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::FFItor_O::static_className() % (void*)(chem::FFItor_O::static_allocator) );
@@ -7433,7 +7485,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__FFNonbondDb_Oval,chem::FFNonbondDb_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::FFNonbondDb_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFNonbondDb_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::FFNonbondDb_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFNonbondDb_O>>::allocateClass();
         chem::FFNonbondDb_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::FFNonbondDb_O::static_className() % (void*)(chem::FFNonbondDb_O::static_allocator) );
@@ -7454,7 +7506,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__FFNonbond_Oval,chem::FFNonbond_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::FFNonbond_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFNonbond_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::FFNonbond_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFNonbond_O>>::allocateClass();
         chem::FFNonbond_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::FFNonbond_O::static_className() % (void*)(chem::FFNonbond_O::static_allocator) );
@@ -7475,7 +7527,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__FFPtorDb_Oval,chem::FFPtorDb_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::FFPtorDb_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFPtorDb_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::FFPtorDb_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFPtorDb_O>>::allocateClass();
         chem::FFPtorDb_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::FFPtorDb_O::static_className() % (void*)(chem::FFPtorDb_O::static_allocator) );
@@ -7496,7 +7548,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__FFPtor_Oval,chem::FFPtor_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::FFPtor_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFPtor_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::FFPtor_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFPtor_O>>::allocateClass();
         chem::FFPtor_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::FFPtor_O::static_className() % (void*)(chem::FFPtor_O::static_allocator) );
@@ -7517,7 +7569,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__FFStretchDb_Oval,chem::FFStretchDb_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::FFStretchDb_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFStretchDb_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::FFStretchDb_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFStretchDb_O>>::allocateClass();
         chem::FFStretchDb_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::FFStretchDb_O::static_className() % (void*)(chem::FFStretchDb_O::static_allocator) );
@@ -7538,7 +7590,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__FFStretch_Oval,chem::FFStretch_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::FFStretch_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFStretch_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::FFStretch_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFStretch_O>>::allocateClass();
         chem::FFStretch_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::FFStretch_O::static_className() % (void*)(chem::FFStretch_O::static_allocator) );
@@ -7559,7 +7611,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__FFTypesDb_Oval,chem::FFTypesDb_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::FFTypesDb_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFTypesDb_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::FFTypesDb_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFTypesDb_O>>::allocateClass();
         chem::FFTypesDb_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::FFTypesDb_O::static_className() % (void*)(chem::FFTypesDb_O::static_allocator) );
@@ -7580,7 +7632,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__FFVdwDb_Oval,chem::FFVdwDb_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::FFVdwDb_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFVdwDb_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::FFVdwDb_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFVdwDb_O>>::allocateClass();
         chem::FFVdwDb_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::FFVdwDb_O::static_className() % (void*)(chem::FFVdwDb_O::static_allocator) );
@@ -7601,7 +7653,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__FFVdw_Oval,chem::FFVdw_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::FFVdw_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFVdw_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::FFVdw_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FFVdw_O>>::allocateClass();
         chem::FFVdw_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::FFVdw_O::static_className() % (void*)(chem::FFVdw_O::static_allocator) );
@@ -7622,7 +7674,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ForceMatchReport_Oval,chem::ForceMatchReport_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ForceMatchReport_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ForceMatchReport_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ForceMatchReport_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ForceMatchReport_O>>::allocateClass();
         chem::ForceMatchReport_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ForceMatchReport_O::static_className() % (void*)(chem::ForceMatchReport_O::static_allocator) );
@@ -7643,7 +7695,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__FullLargeSquareMatrix_Oval,chem::FullLargeSquareMatrix_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::FullLargeSquareMatrix_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FullLargeSquareMatrix_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::FullLargeSquareMatrix_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::FullLargeSquareMatrix_O>>::allocateClass();
         chem::FullLargeSquareMatrix_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::FullLargeSquareMatrix_O::static_className() % (void*)(chem::FullLargeSquareMatrix_O::static_allocator) );
@@ -7664,7 +7716,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__IterateAtoms_Oval,chem::IterateAtoms_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::IterateAtoms_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::IterateAtoms_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::IterateAtoms_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::IterateAtoms_O>>::allocateClass();
         chem::IterateAtoms_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::IterateAtoms_O::static_className() % (void*)(chem::IterateAtoms_O::static_allocator) );
@@ -7685,7 +7737,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__IterateBonds_Oval,chem::IterateBonds_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::IterateBonds_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::IterateBonds_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::IterateBonds_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::IterateBonds_O>>::allocateClass();
         chem::IterateBonds_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::IterateBonds_O::static_className() % (void*)(chem::IterateBonds_O::static_allocator) );
@@ -7706,7 +7758,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__IterateResidues_Oval,chem::IterateResidues_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::IterateResidues_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::IterateResidues_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::IterateResidues_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::IterateResidues_O>>::allocateClass();
         chem::IterateResidues_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::IterateResidues_O::static_className() % (void*)(chem::IterateResidues_O::static_allocator) );
@@ -7727,7 +7779,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__JumpPlug_Oval,chem::JumpPlug_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::JumpPlug_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::JumpPlug_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::JumpPlug_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::JumpPlug_O>>::allocateClass();
         chem::JumpPlug_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::JumpPlug_O::static_className() % (void*)(chem::JumpPlug_O::static_allocator) );
@@ -7748,7 +7800,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__MessageReport_Oval,chem::MessageReport_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::MessageReport_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::MessageReport_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::MessageReport_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::MessageReport_O>>::allocateClass();
         chem::MessageReport_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::MessageReport_O::static_className() % (void*)(chem::MessageReport_O::static_allocator) );
@@ -7769,7 +7821,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Molecule_Oval,chem::Molecule_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Molecule_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Molecule_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Molecule_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Molecule_O>>::allocateClass();
         chem::Molecule_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Molecule_O::static_className() % (void*)(chem::Molecule_O::static_allocator) );
@@ -7790,7 +7842,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Monomer_Oval,chem::Monomer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Monomer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Monomer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Monomer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Monomer_O>>::allocateClass();
         chem::Monomer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Monomer_O::static_className() % (void*)(chem::Monomer_O::static_allocator) );
@@ -7811,7 +7863,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__OligomerPart_Link_Oval,chem::OligomerPart_Link_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::OligomerPart_Link_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::OligomerPart_Link_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::OligomerPart_Link_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::OligomerPart_Link_O>>::allocateClass();
         chem::OligomerPart_Link_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::OligomerPart_Link_O::static_className() % (void*)(chem::OligomerPart_Link_O::static_allocator) );
@@ -7832,7 +7884,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__OligomerPart_Monomer_Oval,chem::OligomerPart_Monomer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::OligomerPart_Monomer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::OligomerPart_Monomer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::OligomerPart_Monomer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::OligomerPart_Monomer_O>>::allocateClass();
         chem::OligomerPart_Monomer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::OligomerPart_Monomer_O::static_className() % (void*)(chem::OligomerPart_Monomer_O::static_allocator) );
@@ -7853,7 +7905,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__PlugWithMates_Oval,chem::PlugWithMates_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::PlugWithMates_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::PlugWithMates_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::PlugWithMates_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::PlugWithMates_O>>::allocateClass();
         chem::PlugWithMates_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::PlugWithMates_O::static_className() % (void*)(chem::PlugWithMates_O::static_allocator) );
@@ -7874,7 +7926,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Residue_Oval,chem::Residue_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Residue_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Residue_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Residue_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Residue_O>>::allocateClass();
         chem::Residue_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Residue_O::static_className() % (void*)(chem::Residue_O::static_allocator) );
@@ -7895,7 +7947,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__RestrainedExoCyclicAtom_Oval,chem::RestrainedExoCyclicAtom_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::RestrainedExoCyclicAtom_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RestrainedExoCyclicAtom_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::RestrainedExoCyclicAtom_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RestrainedExoCyclicAtom_O>>::allocateClass();
         chem::RestrainedExoCyclicAtom_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::RestrainedExoCyclicAtom_O::static_className() % (void*)(chem::RestrainedExoCyclicAtom_O::static_allocator) );
@@ -7916,7 +7968,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__RestrainedPiBond_Oval,chem::RestrainedPiBond_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::RestrainedPiBond_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RestrainedPiBond_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::RestrainedPiBond_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RestrainedPiBond_O>>::allocateClass();
         chem::RestrainedPiBond_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::RestrainedPiBond_O::static_className() % (void*)(chem::RestrainedPiBond_O::static_allocator) );
@@ -7937,7 +7989,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__RestraintAnchor_Oval,chem::RestraintAnchor_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::RestraintAnchor_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RestraintAnchor_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::RestraintAnchor_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RestraintAnchor_O>>::allocateClass();
         chem::RestraintAnchor_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::RestraintAnchor_O::static_className() % (void*)(chem::RestraintAnchor_O::static_allocator) );
@@ -7958,7 +8010,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__RestraintAngle_Oval,chem::RestraintAngle_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::RestraintAngle_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RestraintAngle_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::RestraintAngle_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RestraintAngle_O>>::allocateClass();
         chem::RestraintAngle_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::RestraintAngle_O::static_className() % (void*)(chem::RestraintAngle_O::static_allocator) );
@@ -7979,7 +8031,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__RestraintChiral_Oval,chem::RestraintChiral_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::RestraintChiral_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RestraintChiral_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::RestraintChiral_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RestraintChiral_O>>::allocateClass();
         chem::RestraintChiral_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::RestraintChiral_O::static_className() % (void*)(chem::RestraintChiral_O::static_allocator) );
@@ -8000,7 +8052,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__RestraintDihedral_Oval,chem::RestraintDihedral_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::RestraintDihedral_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RestraintDihedral_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::RestraintDihedral_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RestraintDihedral_O>>::allocateClass();
         chem::RestraintDihedral_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::RestraintDihedral_O::static_className() % (void*)(chem::RestraintDihedral_O::static_allocator) );
@@ -8021,7 +8073,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__RestraintDistance_Oval,chem::RestraintDistance_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::RestraintDistance_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RestraintDistance_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::RestraintDistance_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RestraintDistance_O>>::allocateClass();
         chem::RestraintDistance_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::RestraintDistance_O::static_className() % (void*)(chem::RestraintDistance_O::static_allocator) );
@@ -8042,7 +8094,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__RestraintFixedNonbond_Oval,chem::RestraintFixedNonbond_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::RestraintFixedNonbond_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RestraintFixedNonbond_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::RestraintFixedNonbond_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RestraintFixedNonbond_O>>::allocateClass();
         chem::RestraintFixedNonbond_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::RestraintFixedNonbond_O::static_className() % (void*)(chem::RestraintFixedNonbond_O::static_allocator) );
@@ -8063,7 +8115,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__RestraintList_Oval,chem::RestraintList_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::RestraintList_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RestraintList_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::RestraintList_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RestraintList_O>>::allocateClass();
         chem::RestraintList_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::RestraintList_O::static_className() % (void*)(chem::RestraintList_O::static_allocator) );
@@ -8084,7 +8136,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__RingCoupling_Oval,chem::RingCoupling_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::RingCoupling_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RingCoupling_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::RingCoupling_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RingCoupling_O>>::allocateClass();
         chem::RingCoupling_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::RingCoupling_O::static_className() % (void*)(chem::RingCoupling_O::static_allocator) );
@@ -8105,7 +8157,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__RootMatchNode_Oval,chem::RootMatchNode_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::RootMatchNode_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RootMatchNode_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::RootMatchNode_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RootMatchNode_O>>::allocateClass();
         chem::RootMatchNode_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::RootMatchNode_O::static_className() % (void*)(chem::RootMatchNode_O::static_allocator) );
@@ -8126,7 +8178,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__SparseLargeSquareMatrix_Oval,chem::SparseLargeSquareMatrix_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::SparseLargeSquareMatrix_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::SparseLargeSquareMatrix_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::SparseLargeSquareMatrix_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::SparseLargeSquareMatrix_O>>::allocateClass();
         chem::SparseLargeSquareMatrix_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::SparseLargeSquareMatrix_O::static_className() % (void*)(chem::SparseLargeSquareMatrix_O::static_allocator) );
@@ -8147,7 +8199,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__StepReport_Oval,chem::StepReport_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::StepReport_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::StepReport_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::StepReport_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::StepReport_O>>::allocateClass();
         chem::StepReport_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::StepReport_O::static_className() % (void*)(chem::StepReport_O::static_allocator) );
@@ -8168,7 +8220,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__StereoisomerVirtualAtom_Oval,chem::StereoisomerVirtualAtom_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::StereoisomerVirtualAtom_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::StereoisomerVirtualAtom_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::StereoisomerVirtualAtom_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::StereoisomerVirtualAtom_O>>::allocateClass();
         chem::StereoisomerVirtualAtom_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::StereoisomerVirtualAtom_O::static_className() % (void*)(chem::StereoisomerVirtualAtom_O::static_allocator) );
@@ -8189,7 +8241,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Stereoisomer_Oval,chem::Stereoisomer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Stereoisomer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Stereoisomer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Stereoisomer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Stereoisomer_O>>::allocateClass();
         chem::Stereoisomer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Stereoisomer_O::static_className() % (void*)(chem::Stereoisomer_O::static_allocator) );
@@ -8210,7 +8262,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__SuperposableConformationCollection_Oval,chem::SuperposableConformationCollection_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::SuperposableConformationCollection_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::SuperposableConformationCollection_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::SuperposableConformationCollection_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::SuperposableConformationCollection_O>>::allocateClass();
         chem::SuperposableConformationCollection_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::SuperposableConformationCollection_O::static_className() % (void*)(chem::SuperposableConformationCollection_O::static_allocator) );
@@ -8231,7 +8283,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__SuperposeSelectedAtoms_Oval,chem::SuperposeSelectedAtoms_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::SuperposeSelectedAtoms_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::SuperposeSelectedAtoms_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::SuperposeSelectedAtoms_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::SuperposeSelectedAtoms_O>>::allocateClass();
         chem::SuperposeSelectedAtoms_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::SuperposeSelectedAtoms_O::static_className() % (void*)(chem::SuperposeSelectedAtoms_O::static_allocator) );
@@ -8252,7 +8304,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ZMatrixAngleInternal_Oval,chem::ZMatrixAngleInternal_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ZMatrixAngleInternal_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ZMatrixAngleInternal_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ZMatrixAngleInternal_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ZMatrixAngleInternal_O>>::allocateClass();
         chem::ZMatrixAngleInternal_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ZMatrixAngleInternal_O::static_className() % (void*)(chem::ZMatrixAngleInternal_O::static_allocator) );
@@ -8273,7 +8325,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ZMatrixBondInternal_Oval,chem::ZMatrixBondInternal_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ZMatrixBondInternal_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ZMatrixBondInternal_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ZMatrixBondInternal_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ZMatrixBondInternal_O>>::allocateClass();
         chem::ZMatrixBondInternal_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ZMatrixBondInternal_O::static_className() % (void*)(chem::ZMatrixBondInternal_O::static_allocator) );
@@ -8294,7 +8346,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ZMatrixDihedralInternal_Oval,chem::ZMatrixDihedralInternal_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ZMatrixDihedralInternal_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ZMatrixDihedralInternal_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ZMatrixDihedralInternal_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ZMatrixDihedralInternal_O>>::allocateClass();
         chem::ZMatrixDihedralInternal_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ZMatrixDihedralInternal_O::static_className() % (void*)(chem::ZMatrixDihedralInternal_O::static_allocator) );
@@ -8315,7 +8367,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__BitVector_Oval,core::BitVector_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::BitVector_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::BitVector_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::BitVector_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::BitVector_O>>::allocateClass();
         core::BitVector_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::BitVector_O::static_className() % (void*)(core::BitVector_O::static_allocator) );
@@ -8336,7 +8388,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__BroadcastStream_Oval,core::BroadcastStream_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::BroadcastStream_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::BroadcastStream_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::BroadcastStream_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::BroadcastStream_O>>::allocateClass();
         core::BroadcastStream_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::BroadcastStream_O::static_className() % (void*)(core::BroadcastStream_O::static_allocator) );
@@ -8357,7 +8409,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__CompileTimeEnvironment_Oval,core::CompileTimeEnvironment_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::CompileTimeEnvironment_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::CompileTimeEnvironment_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::CompileTimeEnvironment_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::CompileTimeEnvironment_O>>::allocateClass();
         core::CompileTimeEnvironment_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::CompileTimeEnvironment_O::static_className() % (void*)(core::CompileTimeEnvironment_O::static_allocator) );
@@ -8378,7 +8430,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__ConcatenatedStream_Oval,core::ConcatenatedStream_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::ConcatenatedStream_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::ConcatenatedStream_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::ConcatenatedStream_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::ConcatenatedStream_O>>::allocateClass();
         core::ConcatenatedStream_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::ConcatenatedStream_O::static_className() % (void*)(core::ConcatenatedStream_O::static_allocator) );
@@ -8399,7 +8451,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__EchoStream_Oval,core::EchoStream_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::EchoStream_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::EchoStream_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::EchoStream_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::EchoStream_O>>::allocateClass();
         core::EchoStream_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::EchoStream_O::static_className() % (void*)(core::EchoStream_O::static_allocator) );
@@ -8420,7 +8472,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__FileStream_Oval,core::FileStream_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::FileStream_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::FileStream_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::FileStream_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::FileStream_O>>::allocateClass();
         core::FileStream_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::FileStream_O::static_className() % (void*)(core::FileStream_O::static_allocator) );
@@ -8441,7 +8493,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Float_Oval,core::Float_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Float_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Float_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Float_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Float_O>>::allocateClass();
         core::Float_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Float_O::static_className() % (void*)(core::Float_O::static_allocator) );
@@ -8462,7 +8514,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__FunctionFrame_Oval,core::FunctionFrame_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::FunctionFrame_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::FunctionFrame_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::FunctionFrame_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::FunctionFrame_O>>::allocateClass();
         core::FunctionFrame_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::FunctionFrame_O::static_className() % (void*)(core::FunctionFrame_O::static_allocator) );
@@ -8483,7 +8535,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Rational_Oval,core::Rational_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Rational_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Rational_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Rational_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Rational_O>>::allocateClass();
         core::Rational_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Rational_O::static_className() % (void*)(core::Rational_O::static_allocator) );
@@ -8504,7 +8556,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__RuntimeVisibleEnvironment_Oval,core::RuntimeVisibleEnvironment_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::RuntimeVisibleEnvironment_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::RuntimeVisibleEnvironment_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::RuntimeVisibleEnvironment_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::RuntimeVisibleEnvironment_O>>::allocateClass();
         core::RuntimeVisibleEnvironment_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::RuntimeVisibleEnvironment_O::static_className() % (void*)(core::RuntimeVisibleEnvironment_O::static_allocator) );
@@ -8525,7 +8577,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__SexpLoadArchive_Oval,core::SexpLoadArchive_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::SexpLoadArchive_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::SexpLoadArchive_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::SexpLoadArchive_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::SexpLoadArchive_O>>::allocateClass();
         core::SexpLoadArchive_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::SexpLoadArchive_O::static_className() % (void*)(core::SexpLoadArchive_O::static_allocator) );
@@ -8546,7 +8598,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__SexpSaveArchive_Oval,core::SexpSaveArchive_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::SexpSaveArchive_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::SexpSaveArchive_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::SexpSaveArchive_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::SexpSaveArchive_O>>::allocateClass();
         core::SexpSaveArchive_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::SexpSaveArchive_O::static_className() % (void*)(core::SexpSaveArchive_O::static_allocator) );
@@ -8567,7 +8619,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Specializer_Oval,core::Specializer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Specializer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Specializer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Specializer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Specializer_O>>::allocateClass();
         core::Specializer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Specializer_O::static_className() % (void*)(core::Specializer_O::static_allocator) );
@@ -8588,7 +8640,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__StringStream_Oval,core::StringStream_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::StringStream_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::StringStream_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::StringStream_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::StringStream_O>>::allocateClass();
         core::StringStream_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::StringStream_O::static_className() % (void*)(core::StringStream_O::static_allocator) );
@@ -8609,7 +8661,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__String_Oval,core::String_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::String_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::String_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::String_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::String_O>>::allocateClass();
         core::String_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::String_O::static_className() % (void*)(core::String_O::static_allocator) );
@@ -8630,7 +8682,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__SynonymStream_Oval,core::SynonymStream_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::SynonymStream_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::SynonymStream_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::SynonymStream_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::SynonymStream_O>>::allocateClass();
         core::SynonymStream_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::SynonymStream_O::static_className() % (void*)(core::SynonymStream_O::static_allocator) );
@@ -8651,7 +8703,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__TagbodyFrame_Oval,core::TagbodyFrame_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::TagbodyFrame_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::TagbodyFrame_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::TagbodyFrame_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::TagbodyFrame_O>>::allocateClass();
         core::TagbodyFrame_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::TagbodyFrame_O::static_className() % (void*)(core::TagbodyFrame_O::static_allocator) );
@@ -8672,7 +8724,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__TwoWayStream_Oval,core::TwoWayStream_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::TwoWayStream_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::TwoWayStream_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::TwoWayStream_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::TwoWayStream_O>>::allocateClass();
         core::TwoWayStream_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::TwoWayStream_O::static_className() % (void*)(core::TwoWayStream_O::static_allocator) );
@@ -8693,7 +8745,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__ValueFrame_Oval,core::ValueFrame_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::ValueFrame_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::ValueFrame_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::ValueFrame_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::ValueFrame_O>>::allocateClass();
         core::ValueFrame_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::ValueFrame_O::static_className() % (void*)(core::ValueFrame_O::static_allocator) );
@@ -8714,7 +8766,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__VectorObjects_Oval,core::VectorObjects_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::VectorObjects_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::VectorObjects_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::VectorObjects_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::VectorObjects_O>>::allocateClass();
         core::VectorObjects_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::VectorObjects_O::static_className() % (void*)(core::VectorObjects_O::static_allocator) );
@@ -8735,7 +8787,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classgeom__CoordinateArray_Oval,geom::CoordinateArray_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<geom::CoordinateArray_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<geom::CoordinateArray_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<geom::CoordinateArray_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<geom::CoordinateArray_O>>::allocateClass();
         geom::CoordinateArray_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% geom::CoordinateArray_O::static_className() % (void*)(geom::CoordinateArray_O::static_allocator) );
@@ -8756,7 +8808,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__Argument_Oval,llvmo::Argument_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::Argument_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Argument_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::Argument_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Argument_O>>::allocateClass();
         llvmo::Argument_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::Argument_O::static_className() % (void*)(llvmo::Argument_O::static_allocator) );
@@ -8777,7 +8829,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__BasicBlock_Oval,llvmo::BasicBlock_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::BasicBlock_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::BasicBlock_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::BasicBlock_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::BasicBlock_O>>::allocateClass();
         llvmo::BasicBlock_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::BasicBlock_O::static_className() % (void*)(llvmo::BasicBlock_O::static_allocator) );
@@ -8798,7 +8850,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__CompositeType_Oval,llvmo::CompositeType_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::CompositeType_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::CompositeType_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::CompositeType_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::CompositeType_O>>::allocateClass();
         llvmo::CompositeType_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::CompositeType_O::static_className() % (void*)(llvmo::CompositeType_O::static_allocator) );
@@ -8819,7 +8871,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__FunctionPassManager_Oval,llvmo::FunctionPassManager_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::FunctionPassManager_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::FunctionPassManager_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::FunctionPassManager_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::FunctionPassManager_O>>::allocateClass();
         llvmo::FunctionPassManager_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::FunctionPassManager_O::static_className() % (void*)(llvmo::FunctionPassManager_O::static_allocator) );
@@ -8840,7 +8892,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__FunctionPass_Oval,llvmo::FunctionPass_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::FunctionPass_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::FunctionPass_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::FunctionPass_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::FunctionPass_O>>::allocateClass();
         llvmo::FunctionPass_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::FunctionPass_O::static_className() % (void*)(llvmo::FunctionPass_O::static_allocator) );
@@ -8861,7 +8913,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__FunctionType_Oval,llvmo::FunctionType_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::FunctionType_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::FunctionType_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::FunctionType_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::FunctionType_O>>::allocateClass();
         llvmo::FunctionType_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::FunctionType_O::static_className() % (void*)(llvmo::FunctionType_O::static_allocator) );
@@ -8882,7 +8934,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__IRBuilder_Oval,llvmo::IRBuilder_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::IRBuilder_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::IRBuilder_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::IRBuilder_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::IRBuilder_O>>::allocateClass();
         llvmo::IRBuilder_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::IRBuilder_O::static_className() % (void*)(llvmo::IRBuilder_O::static_allocator) );
@@ -8903,7 +8955,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__IntegerType_Oval,llvmo::IntegerType_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::IntegerType_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::IntegerType_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::IntegerType_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::IntegerType_O>>::allocateClass();
         llvmo::IntegerType_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::IntegerType_O::static_className() % (void*)(llvmo::IntegerType_O::static_allocator) );
@@ -8924,7 +8976,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__LLVMTargetMachine_Oval,llvmo::LLVMTargetMachine_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::LLVMTargetMachine_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::LLVMTargetMachine_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::LLVMTargetMachine_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::LLVMTargetMachine_O>>::allocateClass();
         llvmo::LLVMTargetMachine_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::LLVMTargetMachine_O::static_className() % (void*)(llvmo::LLVMTargetMachine_O::static_allocator) );
@@ -8945,7 +8997,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__MDNode_Oval,llvmo::MDNode_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::MDNode_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::MDNode_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::MDNode_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::MDNode_O>>::allocateClass();
         llvmo::MDNode_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::MDNode_O::static_className() % (void*)(llvmo::MDNode_O::static_allocator) );
@@ -8966,7 +9018,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__MDString_Oval,llvmo::MDString_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::MDString_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::MDString_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::MDString_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::MDString_O>>::allocateClass();
         llvmo::MDString_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::MDString_O::static_className() % (void*)(llvmo::MDString_O::static_allocator) );
@@ -8987,7 +9039,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__ModulePass_Oval,llvmo::ModulePass_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::ModulePass_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ModulePass_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::ModulePass_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ModulePass_O>>::allocateClass();
         llvmo::ModulePass_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::ModulePass_O::static_className() % (void*)(llvmo::ModulePass_O::static_allocator) );
@@ -9008,7 +9060,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__PassManager_Oval,llvmo::PassManager_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::PassManager_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::PassManager_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::PassManager_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::PassManager_O>>::allocateClass();
         llvmo::PassManager_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::PassManager_O::static_className() % (void*)(llvmo::PassManager_O::static_allocator) );
@@ -9029,7 +9081,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__TargetSubtargetInfo_Oval,llvmo::TargetSubtargetInfo_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::TargetSubtargetInfo_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::TargetSubtargetInfo_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::TargetSubtargetInfo_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::TargetSubtargetInfo_O>>::allocateClass();
         llvmo::TargetSubtargetInfo_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::TargetSubtargetInfo_O::static_className() % (void*)(llvmo::TargetSubtargetInfo_O::static_allocator) );
@@ -9050,7 +9102,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__User_Oval,llvmo::User_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::User_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::User_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::User_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::User_O>>::allocateClass();
         llvmo::User_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::User_O::static_className() % (void*)(llvmo::User_O::static_allocator) );
@@ -9071,7 +9123,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__ValueAsMetadata_Oval,llvmo::ValueAsMetadata_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::ValueAsMetadata_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ValueAsMetadata_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::ValueAsMetadata_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ValueAsMetadata_O>>::allocateClass();
         llvmo::ValueAsMetadata_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::ValueAsMetadata_O::static_className() % (void*)(llvmo::ValueAsMetadata_O::static_allocator) );
@@ -9092,7 +9144,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classunits__NamedUnit_Oval,units::NamedUnit_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<units::NamedUnit_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<units::NamedUnit_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<units::NamedUnit_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<units::NamedUnit_O>>::allocateClass();
         units::NamedUnit_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% units::NamedUnit_O::static_className() % (void*)(units::NamedUnit_O::static_allocator) );
@@ -9113,7 +9165,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__AfterMatchBondTest_Oval,chem::AfterMatchBondTest_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::AfterMatchBondTest_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AfterMatchBondTest_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::AfterMatchBondTest_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AfterMatchBondTest_O>>::allocateClass();
         chem::AfterMatchBondTest_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::AfterMatchBondTest_O::static_className() % (void*)(chem::AfterMatchBondTest_O::static_allocator) );
@@ -9134,7 +9186,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__AntechamberBondTest_Oval,chem::AntechamberBondTest_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::AntechamberBondTest_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AntechamberBondTest_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::AntechamberBondTest_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AntechamberBondTest_O>>::allocateClass();
         chem::AntechamberBondTest_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::AntechamberBondTest_O::static_className() % (void*)(chem::AntechamberBondTest_O::static_allocator) );
@@ -9155,7 +9207,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__AtomOrBondMatchNode_Oval,chem::AtomOrBondMatchNode_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::AtomOrBondMatchNode_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AtomOrBondMatchNode_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::AtomOrBondMatchNode_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AtomOrBondMatchNode_O>>::allocateClass();
         chem::AtomOrBondMatchNode_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::AtomOrBondMatchNode_O::static_className() % (void*)(chem::AtomOrBondMatchNode_O::static_allocator) );
@@ -9176,7 +9228,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__BondTest_Oval,chem::BondTest_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::BondTest_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::BondTest_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::BondTest_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::BondTest_O>>::allocateClass();
         chem::BondTest_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::BondTest_O::static_className() % (void*)(chem::BondTest_O::static_allocator) );
@@ -9197,7 +9249,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Branch_Oval,chem::Branch_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Branch_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Branch_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Branch_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Branch_O>>::allocateClass();
         chem::Branch_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Branch_O::static_className() % (void*)(chem::Branch_O::static_allocator) );
@@ -9218,7 +9270,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Chain_Oval,chem::Chain_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Chain_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Chain_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Chain_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Chain_O>>::allocateClass();
         chem::Chain_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Chain_O::static_className() % (void*)(chem::Chain_O::static_allocator) );
@@ -9239,7 +9291,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__EntityNameSetWithCap_Oval,chem::EntityNameSetWithCap_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::EntityNameSetWithCap_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EntityNameSetWithCap_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::EntityNameSetWithCap_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EntityNameSetWithCap_O>>::allocateClass();
         chem::EntityNameSetWithCap_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::EntityNameSetWithCap_O::static_className() % (void*)(chem::EntityNameSetWithCap_O::static_allocator) );
@@ -9260,7 +9312,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__EntityNameSet_Oval,chem::EntityNameSet_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::EntityNameSet_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EntityNameSet_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::EntityNameSet_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::EntityNameSet_O>>::allocateClass();
         chem::EntityNameSet_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::EntityNameSet_O::static_className() % (void*)(chem::EntityNameSet_O::static_allocator) );
@@ -9281,7 +9333,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__InPlug_Oval,chem::InPlug_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::InPlug_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::InPlug_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::InPlug_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::InPlug_O>>::allocateClass();
         chem::InPlug_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::InPlug_O::static_className() % (void*)(chem::InPlug_O::static_allocator) );
@@ -9302,7 +9354,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__MultiMonomer_Oval,chem::MultiMonomer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::MultiMonomer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::MultiMonomer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::MultiMonomer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::MultiMonomer_O>>::allocateClass();
         chem::MultiMonomer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::MultiMonomer_O::static_className() % (void*)(chem::MultiMonomer_O::static_allocator) );
@@ -9323,7 +9375,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__OutPlug_Oval,chem::OutPlug_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::OutPlug_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::OutPlug_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::OutPlug_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::OutPlug_O>>::allocateClass();
         chem::OutPlug_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::OutPlug_O::static_className() % (void*)(chem::OutPlug_O::static_allocator) );
@@ -9344,7 +9396,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__VirtualAtom_Oval,chem::VirtualAtom_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::VirtualAtom_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::VirtualAtom_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::VirtualAtom_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::VirtualAtom_O>>::allocateClass();
         chem::VirtualAtom_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::VirtualAtom_O::static_className() % (void*)(chem::VirtualAtom_O::static_allocator) );
@@ -9365,7 +9417,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__BlockEnvironment_Oval,core::BlockEnvironment_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::BlockEnvironment_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::BlockEnvironment_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::BlockEnvironment_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::BlockEnvironment_O>>::allocateClass();
         core::BlockEnvironment_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::BlockEnvironment_O::static_className() % (void*)(core::BlockEnvironment_O::static_allocator) );
@@ -9386,7 +9438,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__CatchEnvironment_Oval,core::CatchEnvironment_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::CatchEnvironment_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::CatchEnvironment_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::CatchEnvironment_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::CatchEnvironment_O>>::allocateClass();
         core::CatchEnvironment_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::CatchEnvironment_O::static_className() % (void*)(core::CatchEnvironment_O::static_allocator) );
@@ -9407,7 +9459,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Class_Oval,core::Class_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Class_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Class_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Class_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Class_O>>::allocateClass();
         core::Class_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Class_O::static_className() % (void*)(core::Class_O::static_allocator) );
@@ -9428,7 +9480,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__DoubleFloat_Oval,core::DoubleFloat_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::DoubleFloat_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::DoubleFloat_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::DoubleFloat_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::DoubleFloat_O>>::allocateClass();
         core::DoubleFloat_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::DoubleFloat_O::static_className() % (void*)(core::DoubleFloat_O::static_allocator) );
@@ -9449,7 +9501,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__FunctionContainerEnvironment_Oval,core::FunctionContainerEnvironment_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::FunctionContainerEnvironment_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::FunctionContainerEnvironment_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::FunctionContainerEnvironment_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::FunctionContainerEnvironment_O>>::allocateClass();
         core::FunctionContainerEnvironment_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::FunctionContainerEnvironment_O::static_className() % (void*)(core::FunctionContainerEnvironment_O::static_allocator) );
@@ -9470,7 +9522,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__FunctionValueEnvironment_Oval,core::FunctionValueEnvironment_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::FunctionValueEnvironment_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::FunctionValueEnvironment_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::FunctionValueEnvironment_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::FunctionValueEnvironment_O>>::allocateClass();
         core::FunctionValueEnvironment_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::FunctionValueEnvironment_O::static_className() % (void*)(core::FunctionValueEnvironment_O::static_allocator) );
@@ -9491,7 +9543,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__IOFileStream_Oval,core::IOFileStream_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::IOFileStream_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::IOFileStream_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::IOFileStream_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::IOFileStream_O>>::allocateClass();
         core::IOFileStream_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::IOFileStream_O::static_className() % (void*)(core::IOFileStream_O::static_allocator) );
@@ -9512,7 +9564,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__IOStreamStream_Oval,core::IOStreamStream_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::IOStreamStream_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::IOStreamStream_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::IOStreamStream_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::IOStreamStream_O>>::allocateClass();
         core::IOStreamStream_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::IOStreamStream_O::static_className() % (void*)(core::IOStreamStream_O::static_allocator) );
@@ -9533,7 +9585,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Integer_Oval,core::Integer_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Integer_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Integer_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Integer_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Integer_O>>::allocateClass();
         core::Integer_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Integer_O::static_className() % (void*)(core::Integer_O::static_allocator) );
@@ -9554,7 +9606,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__LongFloat_Oval,core::LongFloat_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::LongFloat_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::LongFloat_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::LongFloat_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::LongFloat_O>>::allocateClass();
         core::LongFloat_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::LongFloat_O::static_className() % (void*)(core::LongFloat_O::static_allocator) );
@@ -9575,7 +9627,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__MacroletEnvironment_Oval,core::MacroletEnvironment_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::MacroletEnvironment_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::MacroletEnvironment_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::MacroletEnvironment_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::MacroletEnvironment_O>>::allocateClass();
         core::MacroletEnvironment_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::MacroletEnvironment_O::static_className() % (void*)(core::MacroletEnvironment_O::static_allocator) );
@@ -9596,7 +9648,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Ratio_Oval,core::Ratio_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Ratio_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Ratio_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Ratio_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Ratio_O>>::allocateClass();
         core::Ratio_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Ratio_O::static_className() % (void*)(core::Ratio_O::static_allocator) );
@@ -9617,7 +9669,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__ShortFloat_Oval,core::ShortFloat_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::ShortFloat_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::ShortFloat_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::ShortFloat_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::ShortFloat_O>>::allocateClass();
         core::ShortFloat_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::ShortFloat_O::static_className() % (void*)(core::ShortFloat_O::static_allocator) );
@@ -9638,7 +9690,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__SimpleBitVector_Oval,core::SimpleBitVector_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::SimpleBitVector_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::SimpleBitVector_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::SimpleBitVector_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::SimpleBitVector_O>>::allocateClass();
         core::SimpleBitVector_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::SimpleBitVector_O::static_className() % (void*)(core::SimpleBitVector_O::static_allocator) );
@@ -9659,7 +9711,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__SingleFloat_dummy_Oval,core::SingleFloat_dummy_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::SingleFloat_dummy_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::SingleFloat_dummy_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::SingleFloat_dummy_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::SingleFloat_dummy_O>>::allocateClass();
         core::SingleFloat_dummy_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::SingleFloat_dummy_O::static_className() % (void*)(core::SingleFloat_dummy_O::static_allocator) );
@@ -9680,7 +9732,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__StackValueEnvironment_Oval,core::StackValueEnvironment_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::StackValueEnvironment_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::StackValueEnvironment_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::StackValueEnvironment_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::StackValueEnvironment_O>>::allocateClass();
         core::StackValueEnvironment_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::StackValueEnvironment_O::static_className() % (void*)(core::StackValueEnvironment_O::static_allocator) );
@@ -9701,7 +9753,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Str_Oval,core::Str_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Str_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Str_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Str_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Str_O>>::allocateClass();
         core::Str_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Str_O::static_className() % (void*)(core::Str_O::static_allocator) );
@@ -9722,7 +9774,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__StringInputStream_Oval,core::StringInputStream_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::StringInputStream_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::StringInputStream_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::StringInputStream_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::StringInputStream_O>>::allocateClass();
         core::StringInputStream_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::StringInputStream_O::static_className() % (void*)(core::StringInputStream_O::static_allocator) );
@@ -9743,7 +9795,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__StringOutputStream_Oval,core::StringOutputStream_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::StringOutputStream_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::StringOutputStream_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::StringOutputStream_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::StringOutputStream_O>>::allocateClass();
         core::StringOutputStream_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::StringOutputStream_O::static_className() % (void*)(core::StringOutputStream_O::static_allocator) );
@@ -9764,7 +9816,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__SymbolMacroletEnvironment_Oval,core::SymbolMacroletEnvironment_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::SymbolMacroletEnvironment_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::SymbolMacroletEnvironment_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::SymbolMacroletEnvironment_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::SymbolMacroletEnvironment_O>>::allocateClass();
         core::SymbolMacroletEnvironment_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::SymbolMacroletEnvironment_O::static_className() % (void*)(core::SymbolMacroletEnvironment_O::static_allocator) );
@@ -9785,7 +9837,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__TagbodyEnvironment_Oval,core::TagbodyEnvironment_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::TagbodyEnvironment_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::TagbodyEnvironment_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::TagbodyEnvironment_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::TagbodyEnvironment_O>>::allocateClass();
         core::TagbodyEnvironment_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::TagbodyEnvironment_O::static_className() % (void*)(core::TagbodyEnvironment_O::static_allocator) );
@@ -9806,7 +9858,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__UnwindProtectEnvironment_Oval,core::UnwindProtectEnvironment_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::UnwindProtectEnvironment_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::UnwindProtectEnvironment_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::UnwindProtectEnvironment_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::UnwindProtectEnvironment_O>>::allocateClass();
         core::UnwindProtectEnvironment_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::UnwindProtectEnvironment_O::static_className() % (void*)(core::UnwindProtectEnvironment_O::static_allocator) );
@@ -9827,7 +9879,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__ValueEnvironment_Oval,core::ValueEnvironment_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::ValueEnvironment_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::ValueEnvironment_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::ValueEnvironment_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::ValueEnvironment_O>>::allocateClass();
         core::ValueEnvironment_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::ValueEnvironment_O::static_className() % (void*)(core::ValueEnvironment_O::static_allocator) );
@@ -9848,7 +9900,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__VectorObjectsWithFillPtr_Oval,core::VectorObjectsWithFillPtr_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::VectorObjectsWithFillPtr_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::VectorObjectsWithFillPtr_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::VectorObjectsWithFillPtr_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::VectorObjectsWithFillPtr_O>>::allocateClass();
         core::VectorObjectsWithFillPtr_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::VectorObjectsWithFillPtr_O::static_className() % (void*)(core::VectorObjectsWithFillPtr_O::static_allocator) );
@@ -9869,7 +9921,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classgeom__CoordinateArrayWithHash_Oval,geom::CoordinateArrayWithHash_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<geom::CoordinateArrayWithHash_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<geom::CoordinateArrayWithHash_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<geom::CoordinateArrayWithHash_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<geom::CoordinateArrayWithHash_O>>::allocateClass();
         geom::CoordinateArrayWithHash_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% geom::CoordinateArrayWithHash_O::static_className() % (void*)(geom::CoordinateArrayWithHash_O::static_allocator) );
@@ -9890,7 +9942,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__Constant_Oval,llvmo::Constant_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::Constant_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Constant_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::Constant_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Constant_O>>::allocateClass();
         llvmo::Constant_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::Constant_O::static_className() % (void*)(llvmo::Constant_O::static_allocator) );
@@ -9911,7 +9963,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__ImmutablePass_Oval,llvmo::ImmutablePass_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::ImmutablePass_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ImmutablePass_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::ImmutablePass_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ImmutablePass_O>>::allocateClass();
         llvmo::ImmutablePass_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::ImmutablePass_O::static_className() % (void*)(llvmo::ImmutablePass_O::static_allocator) );
@@ -9932,7 +9984,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__Instruction_Oval,llvmo::Instruction_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::Instruction_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Instruction_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::Instruction_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Instruction_O>>::allocateClass();
         llvmo::Instruction_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::Instruction_O::static_className() % (void*)(llvmo::Instruction_O::static_allocator) );
@@ -9953,7 +10005,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__SequentialType_Oval,llvmo::SequentialType_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::SequentialType_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::SequentialType_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::SequentialType_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::SequentialType_O>>::allocateClass();
         llvmo::SequentialType_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::SequentialType_O::static_className() % (void*)(llvmo::SequentialType_O::static_allocator) );
@@ -9974,7 +10026,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__StructType_Oval,llvmo::StructType_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::StructType_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::StructType_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::StructType_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::StructType_O>>::allocateClass();
         llvmo::StructType_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::StructType_O::static_className() % (void*)(llvmo::StructType_O::static_allocator) );
@@ -9995,7 +10047,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__AntechamberFocusAtomMatch_Oval,chem::AntechamberFocusAtomMatch_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::AntechamberFocusAtomMatch_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AntechamberFocusAtomMatch_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::AntechamberFocusAtomMatch_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AntechamberFocusAtomMatch_O>>::allocateClass();
         chem::AntechamberFocusAtomMatch_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::AntechamberFocusAtomMatch_O::static_className() % (void*)(chem::AntechamberFocusAtomMatch_O::static_allocator) );
@@ -10016,7 +10068,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__AtomTest_Oval,chem::AtomTest_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::AtomTest_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AtomTest_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::AtomTest_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AtomTest_O>>::allocateClass();
         chem::AtomTest_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::AtomTest_O::static_className() % (void*)(chem::AtomTest_O::static_allocator) );
@@ -10037,7 +10089,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Logical_Oval,chem::Logical_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Logical_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Logical_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Logical_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Logical_O>>::allocateClass();
         chem::Logical_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Logical_O::static_className() % (void*)(chem::Logical_O::static_allocator) );
@@ -10058,7 +10110,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Mate_Oval,chem::Mate_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Mate_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Mate_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Mate_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Mate_O>>::allocateClass();
         chem::Mate_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Mate_O::static_className() % (void*)(chem::Mate_O::static_allocator) );
@@ -10079,7 +10131,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__MonomerPack_Oval,chem::MonomerPack_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::MonomerPack_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::MonomerPack_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::MonomerPack_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::MonomerPack_O>>::allocateClass();
         chem::MonomerPack_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::MonomerPack_O::static_className() % (void*)(chem::MonomerPack_O::static_allocator) );
@@ -10100,7 +10152,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__RepresentedEntityNameSet_Oval,chem::RepresentedEntityNameSet_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::RepresentedEntityNameSet_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RepresentedEntityNameSet_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::RepresentedEntityNameSet_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RepresentedEntityNameSet_O>>::allocateClass();
         chem::RepresentedEntityNameSet_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::RepresentedEntityNameSet_O::static_className() % (void*)(chem::RepresentedEntityNameSet_O::static_allocator) );
@@ -10121,7 +10173,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__ResidueTest_Oval,chem::ResidueTest_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::ResidueTest_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ResidueTest_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::ResidueTest_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::ResidueTest_O>>::allocateClass();
         chem::ResidueTest_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::ResidueTest_O::static_className() % (void*)(chem::ResidueTest_O::static_allocator) );
@@ -10142,7 +10194,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__RingClosingMate_Oval,chem::RingClosingMate_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::RingClosingMate_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RingClosingMate_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::RingClosingMate_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RingClosingMate_O>>::allocateClass();
         chem::RingClosingMate_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::RingClosingMate_O::static_className() % (void*)(chem::RingClosingMate_O::static_allocator) );
@@ -10163,7 +10215,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__RingClosingPlug_Oval,chem::RingClosingPlug_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::RingClosingPlug_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RingClosingPlug_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::RingClosingPlug_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RingClosingPlug_O>>::allocateClass();
         chem::RingClosingPlug_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::RingClosingPlug_O::static_className() % (void*)(chem::RingClosingPlug_O::static_allocator) );
@@ -10184,7 +10236,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__RingTest_Oval,chem::RingTest_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::RingTest_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RingTest_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::RingTest_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::RingTest_O>>::allocateClass();
         chem::RingTest_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::RingTest_O::static_className() % (void*)(chem::RingTest_O::static_allocator) );
@@ -10205,7 +10257,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__Root_Oval,chem::Root_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::Root_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Root_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::Root_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::Root_O>>::allocateClass();
         chem::Root_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::Root_O::static_className() % (void*)(chem::Root_O::static_allocator) );
@@ -10226,7 +10278,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__TagSet_Oval,chem::TagSet_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::TagSet_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::TagSet_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::TagSet_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::TagSet_O>>::allocateClass();
         chem::TagSet_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::TagSet_O::static_className() % (void*)(chem::TagSet_O::static_allocator) );
@@ -10247,7 +10299,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Bignum_Oval,core::Bignum_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Bignum_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Bignum_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Bignum_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Bignum_O>>::allocateClass();
         core::Bignum_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Bignum_O::static_className() % (void*)(core::Bignum_O::static_allocator) );
@@ -10268,7 +10320,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__BuiltInClass_Oval,core::BuiltInClass_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::BuiltInClass_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::BuiltInClass_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::BuiltInClass_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::BuiltInClass_O>>::allocateClass();
         core::BuiltInClass_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::BuiltInClass_O::static_className() % (void*)(core::BuiltInClass_O::static_allocator) );
@@ -10289,7 +10341,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__CxxClass_Oval,core::CxxClass_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::CxxClass_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::CxxClass_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::CxxClass_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::CxxClass_O>>::allocateClass();
         core::CxxClass_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::CxxClass_O::static_className() % (void*)(core::CxxClass_O::static_allocator) );
@@ -10310,7 +10362,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__Fixnum_dummy_Oval,core::Fixnum_dummy_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::Fixnum_dummy_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::Fixnum_dummy_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::Fixnum_dummy_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::Fixnum_dummy_O>>::allocateClass();
         core::Fixnum_dummy_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::Fixnum_dummy_O::static_className() % (void*)(core::Fixnum_dummy_O::static_allocator) );
@@ -10331,7 +10383,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__ForwardReferencedClass_Oval,core::ForwardReferencedClass_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::ForwardReferencedClass_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::ForwardReferencedClass_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::ForwardReferencedClass_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::ForwardReferencedClass_O>>::allocateClass();
         core::ForwardReferencedClass_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::ForwardReferencedClass_O::static_className() % (void*)(core::ForwardReferencedClass_O::static_allocator) );
@@ -10352,7 +10404,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__StdClass_Oval,core::StdClass_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::StdClass_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::StdClass_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::StdClass_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::StdClass_O>>::allocateClass();
         core::StdClass_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::StdClass_O::static_className() % (void*)(core::StdClass_O::static_allocator) );
@@ -10373,7 +10425,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__StrWithFillPtr_Oval,core::StrWithFillPtr_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::StrWithFillPtr_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::StrWithFillPtr_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::StrWithFillPtr_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::StrWithFillPtr_O>>::allocateClass();
         core::StrWithFillPtr_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::StrWithFillPtr_O::static_className() % (void*)(core::StrWithFillPtr_O::static_allocator) );
@@ -10394,7 +10446,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__StructureClass_Oval,core::StructureClass_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::StructureClass_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::StructureClass_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::StructureClass_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::StructureClass_O>>::allocateClass();
         core::StructureClass_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::StructureClass_O::static_className() % (void*)(core::StructureClass_O::static_allocator) );
@@ -10415,7 +10467,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__ArrayType_Oval,llvmo::ArrayType_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::ArrayType_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ArrayType_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::ArrayType_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ArrayType_O>>::allocateClass();
         llvmo::ArrayType_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::ArrayType_O::static_className() % (void*)(llvmo::ArrayType_O::static_allocator) );
@@ -10436,7 +10488,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__AtomicCmpXchgInst_Oval,llvmo::AtomicCmpXchgInst_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::AtomicCmpXchgInst_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::AtomicCmpXchgInst_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::AtomicCmpXchgInst_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::AtomicCmpXchgInst_O>>::allocateClass();
         llvmo::AtomicCmpXchgInst_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::AtomicCmpXchgInst_O::static_className() % (void*)(llvmo::AtomicCmpXchgInst_O::static_allocator) );
@@ -10457,7 +10509,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__AtomicRMWInst_Oval,llvmo::AtomicRMWInst_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::AtomicRMWInst_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::AtomicRMWInst_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::AtomicRMWInst_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::AtomicRMWInst_O>>::allocateClass();
         llvmo::AtomicRMWInst_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::AtomicRMWInst_O::static_className() % (void*)(llvmo::AtomicRMWInst_O::static_allocator) );
@@ -10478,7 +10530,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__BlockAddress_Oval,llvmo::BlockAddress_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::BlockAddress_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::BlockAddress_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::BlockAddress_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::BlockAddress_O>>::allocateClass();
         llvmo::BlockAddress_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::BlockAddress_O::static_className() % (void*)(llvmo::BlockAddress_O::static_allocator) );
@@ -10499,7 +10551,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__CallInst_Oval,llvmo::CallInst_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::CallInst_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::CallInst_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::CallInst_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::CallInst_O>>::allocateClass();
         llvmo::CallInst_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::CallInst_O::static_className() % (void*)(llvmo::CallInst_O::static_allocator) );
@@ -10520,7 +10572,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__ConstantArray_Oval,llvmo::ConstantArray_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::ConstantArray_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ConstantArray_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::ConstantArray_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ConstantArray_O>>::allocateClass();
         llvmo::ConstantArray_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::ConstantArray_O::static_className() % (void*)(llvmo::ConstantArray_O::static_allocator) );
@@ -10541,7 +10593,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__ConstantDataSequential_Oval,llvmo::ConstantDataSequential_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::ConstantDataSequential_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ConstantDataSequential_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::ConstantDataSequential_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ConstantDataSequential_O>>::allocateClass();
         llvmo::ConstantDataSequential_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::ConstantDataSequential_O::static_className() % (void*)(llvmo::ConstantDataSequential_O::static_allocator) );
@@ -10562,7 +10614,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__ConstantExpr_Oval,llvmo::ConstantExpr_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::ConstantExpr_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ConstantExpr_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::ConstantExpr_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ConstantExpr_O>>::allocateClass();
         llvmo::ConstantExpr_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::ConstantExpr_O::static_className() % (void*)(llvmo::ConstantExpr_O::static_allocator) );
@@ -10583,7 +10635,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__ConstantFP_Oval,llvmo::ConstantFP_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::ConstantFP_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ConstantFP_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::ConstantFP_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ConstantFP_O>>::allocateClass();
         llvmo::ConstantFP_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::ConstantFP_O::static_className() % (void*)(llvmo::ConstantFP_O::static_allocator) );
@@ -10604,7 +10656,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__ConstantInt_Oval,llvmo::ConstantInt_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::ConstantInt_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ConstantInt_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::ConstantInt_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ConstantInt_O>>::allocateClass();
         llvmo::ConstantInt_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::ConstantInt_O::static_className() % (void*)(llvmo::ConstantInt_O::static_allocator) );
@@ -10625,7 +10677,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__ConstantPointerNull_Oval,llvmo::ConstantPointerNull_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::ConstantPointerNull_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ConstantPointerNull_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::ConstantPointerNull_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ConstantPointerNull_O>>::allocateClass();
         llvmo::ConstantPointerNull_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::ConstantPointerNull_O::static_className() % (void*)(llvmo::ConstantPointerNull_O::static_allocator) );
@@ -10646,7 +10698,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__ConstantStruct_Oval,llvmo::ConstantStruct_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::ConstantStruct_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ConstantStruct_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::ConstantStruct_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ConstantStruct_O>>::allocateClass();
         llvmo::ConstantStruct_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::ConstantStruct_O::static_className() % (void*)(llvmo::ConstantStruct_O::static_allocator) );
@@ -10667,7 +10719,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__DataLayoutPass_Oval,llvmo::DataLayoutPass_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::DataLayoutPass_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DataLayoutPass_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::DataLayoutPass_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::DataLayoutPass_O>>::allocateClass();
         llvmo::DataLayoutPass_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::DataLayoutPass_O::static_className() % (void*)(llvmo::DataLayoutPass_O::static_allocator) );
@@ -10688,7 +10740,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__FenceInst_Oval,llvmo::FenceInst_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::FenceInst_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::FenceInst_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::FenceInst_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::FenceInst_O>>::allocateClass();
         llvmo::FenceInst_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::FenceInst_O::static_className() % (void*)(llvmo::FenceInst_O::static_allocator) );
@@ -10709,7 +10761,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__GlobalValue_Oval,llvmo::GlobalValue_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::GlobalValue_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::GlobalValue_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::GlobalValue_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::GlobalValue_O>>::allocateClass();
         llvmo::GlobalValue_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::GlobalValue_O::static_className() % (void*)(llvmo::GlobalValue_O::static_allocator) );
@@ -10730,7 +10782,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__LandingPadInst_Oval,llvmo::LandingPadInst_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::LandingPadInst_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::LandingPadInst_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::LandingPadInst_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::LandingPadInst_O>>::allocateClass();
         llvmo::LandingPadInst_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::LandingPadInst_O::static_className() % (void*)(llvmo::LandingPadInst_O::static_allocator) );
@@ -10751,7 +10803,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__PHINode_Oval,llvmo::PHINode_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::PHINode_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::PHINode_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::PHINode_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::PHINode_O>>::allocateClass();
         llvmo::PHINode_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::PHINode_O::static_className() % (void*)(llvmo::PHINode_O::static_allocator) );
@@ -10772,7 +10824,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__PointerType_Oval,llvmo::PointerType_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::PointerType_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::PointerType_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::PointerType_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::PointerType_O>>::allocateClass();
         llvmo::PointerType_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::PointerType_O::static_className() % (void*)(llvmo::PointerType_O::static_allocator) );
@@ -10793,7 +10845,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__StoreInst_Oval,llvmo::StoreInst_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::StoreInst_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::StoreInst_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::StoreInst_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::StoreInst_O>>::allocateClass();
         llvmo::StoreInst_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::StoreInst_O::static_className() % (void*)(llvmo::StoreInst_O::static_allocator) );
@@ -10814,7 +10866,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__TargetLibraryInfo_Oval,llvmo::TargetLibraryInfo_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::TargetLibraryInfo_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::TargetLibraryInfo_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::TargetLibraryInfo_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::TargetLibraryInfo_O>>::allocateClass();
         llvmo::TargetLibraryInfo_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::TargetLibraryInfo_O::static_className() % (void*)(llvmo::TargetLibraryInfo_O::static_allocator) );
@@ -10835,7 +10887,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__TerminatorInst_Oval,llvmo::TerminatorInst_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::TerminatorInst_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::TerminatorInst_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::TerminatorInst_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::TerminatorInst_O>>::allocateClass();
         llvmo::TerminatorInst_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::TerminatorInst_O::static_className() % (void*)(llvmo::TerminatorInst_O::static_allocator) );
@@ -10856,7 +10908,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__UnaryInstruction_Oval,llvmo::UnaryInstruction_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::UnaryInstruction_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::UnaryInstruction_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::UnaryInstruction_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::UnaryInstruction_O>>::allocateClass();
         llvmo::UnaryInstruction_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::UnaryInstruction_O::static_className() % (void*)(llvmo::UnaryInstruction_O::static_allocator) );
@@ -10877,7 +10929,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__UndefValue_Oval,llvmo::UndefValue_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::UndefValue_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::UndefValue_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::UndefValue_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::UndefValue_O>>::allocateClass();
         llvmo::UndefValue_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::UndefValue_O::static_className() % (void*)(llvmo::UndefValue_O::static_allocator) );
@@ -10898,7 +10950,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__VectorType_Oval,llvmo::VectorType_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::VectorType_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::VectorType_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::VectorType_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::VectorType_O>>::allocateClass();
         llvmo::VectorType_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::VectorType_O::static_className() % (void*)(llvmo::VectorType_O::static_allocator) );
@@ -10919,7 +10971,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__AntechamberRoot_Oval,chem::AntechamberRoot_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::AntechamberRoot_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AntechamberRoot_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::AntechamberRoot_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::AntechamberRoot_O>>::allocateClass();
         chem::AntechamberRoot_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::AntechamberRoot_O::static_className() % (void*)(chem::AntechamberRoot_O::static_allocator) );
@@ -10940,7 +10992,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classchem__SmartsRoot_Oval,chem::SmartsRoot_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<chem::SmartsRoot_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<chem::SmartsRoot_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<chem::SmartsRoot_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<chem::SmartsRoot_O>>::allocateClass();
         chem::SmartsRoot_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% chem::SmartsRoot_O::static_className() % (void*)(chem::SmartsRoot_O::static_allocator) );
@@ -10961,7 +11013,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classclbind__ClassRep_Oval,clbind::ClassRep_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<clbind::ClassRep_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<clbind::ClassRep_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<clbind::ClassRep_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<clbind::ClassRep_O>>::allocateClass();
         clbind::ClassRep_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% clbind::ClassRep_O::static_className() % (void*)(clbind::ClassRep_O::static_allocator) );
@@ -10982,7 +11034,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__FuncallableStandardClass_Oval,core::FuncallableStandardClass_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::FuncallableStandardClass_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::FuncallableStandardClass_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::FuncallableStandardClass_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::FuncallableStandardClass_O>>::allocateClass();
         core::FuncallableStandardClass_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::FuncallableStandardClass_O::static_className() % (void*)(core::FuncallableStandardClass_O::static_allocator) );
@@ -11003,7 +11055,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classcore__StandardClass_Oval,core::StandardClass_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<core::StandardClass_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<core::StandardClass_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<core::StandardClass_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<core::StandardClass_O>>::allocateClass();
         core::StandardClass_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% core::StandardClass_O::static_className() % (void*)(core::StandardClass_O::static_allocator) );
@@ -11024,7 +11076,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__AllocaInst_Oval,llvmo::AllocaInst_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::AllocaInst_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::AllocaInst_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::AllocaInst_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::AllocaInst_O>>::allocateClass();
         llvmo::AllocaInst_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::AllocaInst_O::static_className() % (void*)(llvmo::AllocaInst_O::static_allocator) );
@@ -11045,7 +11097,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__BranchInst_Oval,llvmo::BranchInst_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::BranchInst_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::BranchInst_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::BranchInst_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::BranchInst_O>>::allocateClass();
         llvmo::BranchInst_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::BranchInst_O::static_className() % (void*)(llvmo::BranchInst_O::static_allocator) );
@@ -11066,7 +11118,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__ConstantDataArray_Oval,llvmo::ConstantDataArray_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::ConstantDataArray_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ConstantDataArray_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::ConstantDataArray_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ConstantDataArray_O>>::allocateClass();
         llvmo::ConstantDataArray_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::ConstantDataArray_O::static_className() % (void*)(llvmo::ConstantDataArray_O::static_allocator) );
@@ -11087,7 +11139,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__Function_Oval,llvmo::Function_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::Function_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Function_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::Function_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::Function_O>>::allocateClass();
         llvmo::Function_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::Function_O::static_className() % (void*)(llvmo::Function_O::static_allocator) );
@@ -11108,7 +11160,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__GlobalVariable_Oval,llvmo::GlobalVariable_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::GlobalVariable_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::GlobalVariable_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::GlobalVariable_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::GlobalVariable_O>>::allocateClass();
         llvmo::GlobalVariable_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::GlobalVariable_O::static_className() % (void*)(llvmo::GlobalVariable_O::static_allocator) );
@@ -11129,7 +11181,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__IndirectBrInst_Oval,llvmo::IndirectBrInst_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::IndirectBrInst_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::IndirectBrInst_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::IndirectBrInst_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::IndirectBrInst_O>>::allocateClass();
         llvmo::IndirectBrInst_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::IndirectBrInst_O::static_className() % (void*)(llvmo::IndirectBrInst_O::static_allocator) );
@@ -11150,7 +11202,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__InvokeInst_Oval,llvmo::InvokeInst_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::InvokeInst_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::InvokeInst_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::InvokeInst_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::InvokeInst_O>>::allocateClass();
         llvmo::InvokeInst_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::InvokeInst_O::static_className() % (void*)(llvmo::InvokeInst_O::static_allocator) );
@@ -11171,7 +11223,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__LoadInst_Oval,llvmo::LoadInst_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::LoadInst_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::LoadInst_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::LoadInst_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::LoadInst_O>>::allocateClass();
         llvmo::LoadInst_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::LoadInst_O::static_className() % (void*)(llvmo::LoadInst_O::static_allocator) );
@@ -11192,7 +11244,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__ResumeInst_Oval,llvmo::ResumeInst_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::ResumeInst_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ResumeInst_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::ResumeInst_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ResumeInst_O>>::allocateClass();
         llvmo::ResumeInst_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::ResumeInst_O::static_className() % (void*)(llvmo::ResumeInst_O::static_allocator) );
@@ -11213,7 +11265,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__ReturnInst_Oval,llvmo::ReturnInst_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::ReturnInst_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ReturnInst_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::ReturnInst_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::ReturnInst_O>>::allocateClass();
         llvmo::ReturnInst_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::ReturnInst_O::static_className() % (void*)(llvmo::ReturnInst_O::static_allocator) );
@@ -11234,7 +11286,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__SwitchInst_Oval,llvmo::SwitchInst_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::SwitchInst_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::SwitchInst_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::SwitchInst_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::SwitchInst_O>>::allocateClass();
         llvmo::SwitchInst_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::SwitchInst_O::static_className() % (void*)(llvmo::SwitchInst_O::static_allocator) );
@@ -11255,7 +11307,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__UnreachableInst_Oval,llvmo::UnreachableInst_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::UnreachableInst_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::UnreachableInst_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::UnreachableInst_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::UnreachableInst_O>>::allocateClass();
         llvmo::UnreachableInst_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::UnreachableInst_O::static_className() % (void*)(llvmo::UnreachableInst_O::static_allocator) );
@@ -11276,7 +11328,7 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 #endif
     core::af_setf_findClass(classllvmo__VAArgInst_Oval,llvmo::VAArgInst_O::static_classSymbol(),true,_Nil<core::Environment_O>());
     {
-        core::LispObjectCreator<llvmo::VAArgInst_O>* cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::VAArgInst_O>>::allocateClass();
+        gctools::tagged_pointer<core::LispObjectCreator<llvmo::VAArgInst_O>> cb = gctools::ClassAllocator<core::LispObjectCreator<llvmo::VAArgInst_O>>::allocateClass();
         llvmo::VAArgInst_O::___set_static_creator(cb);
     }
     LOG(BF("Set static_allocator for class(%s) to %X")% llvmo::VAArgInst_O::static_className() % (void*)(llvmo::VAArgInst_O::static_allocator) );
@@ -11394,6 +11446,11 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 
     LOG(BF("---    dump_info   --- className: core::IntArray_O @ %X") % classcore__IntArray_Oval.get());
     LOG(BF("%s::static_classSymbol() = %d") % core::IntArray_O::static_className() % core::IntArray_O::static_classSymbol() );
+#endif
+#ifdef Use_CorePkg
+
+    LOG(BF("---    dump_info   --- className: core::InvocationHistoryFrameIterator_O @ %X") % classcore__InvocationHistoryFrameIterator_Oval.get());
+    LOG(BF("%s::static_classSymbol() = %d") % core::InvocationHistoryFrameIterator_O::static_className() % core::InvocationHistoryFrameIterator_O::static_classSymbol() );
 #endif
 #ifdef Use_CorePkg
 
@@ -11544,6 +11601,11 @@ llvmo::VAArgInst_O::___set_static_ClassSymbol(LOOKUP_SYMBOL(llvmo::VAArgInst_O::
 
     LOG(BF("---    dump_info   --- className: core::Symbol_O @ %X") % classcore__Symbol_Oval.get());
     LOG(BF("%s::static_classSymbol() = %d") % core::Symbol_O::static_className() % core::Symbol_O::static_classSymbol() );
+#endif
+#ifdef Use_CorePkg
+
+    LOG(BF("---    dump_info   --- className: core::VaList_dummy_O @ %X") % classcore__VaList_dummy_Oval.get());
+    LOG(BF("%s::static_classSymbol() = %d") % core::VaList_dummy_O::static_className() % core::VaList_dummy_O::static_classSymbol() );
 #endif
 #ifdef Use_CorePkg
 
@@ -13570,6 +13632,9 @@ classcore__HashTable_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList
 classcore__IntArray_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(core::T_O::static_classSymbol());
 #endif
 #ifdef Use_CorePkg
+classcore__InvocationHistoryFrameIterator_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(core::T_O::static_classSymbol());
+#endif
+#ifdef Use_CorePkg
 classcore__Iterator_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(core::T_O::static_classSymbol());
 #endif
 #ifdef Use_CorePkg
@@ -13658,6 +13723,9 @@ classcore__SymbolToEnumConverter_Oval->addInstanceBaseClassDoNotCalculateClassPr
 #endif
 #ifdef Use_CorePkg
 classcore__Symbol_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(core::T_O::static_classSymbol());
+#endif
+#ifdef Use_CorePkg
+classcore__VaList_dummy_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(core::T_O::static_classSymbol());
 #endif
 #ifdef Use_CorePkg
 classcore__WeakHashTable_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceList(core::T_O::static_classSymbol());
@@ -14925,6 +14993,10 @@ classllvmo__VAArgInst_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceLis
 #endif
 #ifdef Use_CorePkg
 
+    classcore__InvocationHistoryFrameIterator_Oval->__setupStage3NameAndCalculateClassPrecedenceList(core::InvocationHistoryFrameIterator_O::static_classSymbol());
+#endif
+#ifdef Use_CorePkg
+
     classcore__Iterator_Oval->__setupStage3NameAndCalculateClassPrecedenceList(core::Iterator_O::static_classSymbol());
 #endif
 #ifdef Use_CorePkg
@@ -15042,6 +15114,10 @@ classllvmo__VAArgInst_Oval->addInstanceBaseClassDoNotCalculateClassPrecedenceLis
 #ifdef Use_CorePkg
 
     classcore__Symbol_Oval->__setupStage3NameAndCalculateClassPrecedenceList(core::Symbol_O::static_classSymbol());
+#endif
+#ifdef Use_CorePkg
+
+    classcore__VaList_dummy_Oval->__setupStage3NameAndCalculateClassPrecedenceList(core::VaList_dummy_O::static_classSymbol());
 #endif
 #ifdef Use_CorePkg
 
@@ -16826,6 +16902,16 @@ extern void Register_core__IntArray_O(core::Lisp_sp); // base(s): set(['core::T_
 #endif // ifdef Use_CorePkg
 #ifdef Use_CorePkg
 #ifdef EXTERN_REGISTER
+extern void Register_core__InvocationHistoryFrameIterator_O(core::Lisp_sp); // base(s): set(['core::T_O'])
+#endif // EXTERN_REGISTER
+#ifdef INVOKE_REGISTER
+{_BLOCK_TRACE("initializing Register_core__InvocationHistoryFrameIterator_O");
+    core::Register_core__InvocationHistoryFrameIterator_O(_lisp); // base(s): set(['core::T_O'])
+}
+#endif // INVOKE_REGISTER
+#endif // ifdef Use_CorePkg
+#ifdef Use_CorePkg
+#ifdef EXTERN_REGISTER
 extern void Register_core__Iterator_O(core::Lisp_sp); // base(s): set(['core::T_O'])
 #endif // EXTERN_REGISTER
 #ifdef INVOKE_REGISTER
@@ -17124,6 +17210,16 @@ extern void Register_core__Symbol_O(core::Lisp_sp); // base(s): set(['core::T_O'
 }
 #endif // INVOKE_REGISTER
 #endif // ifdef Use_ClPkg
+#ifdef Use_CorePkg
+#ifdef EXTERN_REGISTER
+extern void Register_core__VaList_dummy_O(core::Lisp_sp); // base(s): set(['core::T_O'])
+#endif // EXTERN_REGISTER
+#ifdef INVOKE_REGISTER
+{_BLOCK_TRACE("initializing Register_core__VaList_dummy_O");
+    core::Register_core__VaList_dummy_O(_lisp); // base(s): set(['core::T_O'])
+}
+#endif // INVOKE_REGISTER
+#endif // ifdef Use_CorePkg
 #ifdef Use_CorePkg
 #ifdef EXTERN_REGISTER
 extern void Register_core__WeakHashTable_O(core::Lisp_sp); // base(s): set(['core::T_O'])
@@ -21174,6 +21270,12 @@ extern void Call_exposePython_core__IntArray_O(::core::Lisp_sp lisp);
 }
 #endif // ifdef Use_CorePkg
 #ifdef Use_CorePkg
+extern void Call_exposePython_core__InvocationHistoryFrameIterator_O(::core::Lisp_sp lisp);
+{_DBG("exposing to python: core__InvocationHistoryFrameIterator_O");
+	Call_exposePython_core__InvocationHistoryFrameIterator_O(_lisp); // base(s): set(['core::T_O'])
+}
+#endif // ifdef Use_CorePkg
+#ifdef Use_CorePkg
 extern void Call_exposePython_core__Iterator_O(::core::Lisp_sp lisp);
 {_DBG("exposing to python: core__Iterator_O");
 	Call_exposePython_core__Iterator_O(_lisp); // base(s): set(['core::T_O'])
@@ -21353,6 +21455,12 @@ extern void Call_exposePython_core__Symbol_O(::core::Lisp_sp lisp);
 	Call_exposePython_core__Symbol_O(_lisp); // base(s): set(['core::T_O'])
 }
 #endif // ifdef Use_ClPkg
+#ifdef Use_CorePkg
+extern void Call_exposePython_core__VaList_dummy_O(::core::Lisp_sp lisp);
+{_DBG("exposing to python: core__VaList_dummy_O");
+	Call_exposePython_core__VaList_dummy_O(_lisp); // base(s): set(['core::T_O'])
+}
+#endif // ifdef Use_CorePkg
 #ifdef Use_CorePkg
 extern void Call_exposePython_core__WeakHashTable_O(::core::Lisp_sp lisp);
 {_DBG("exposing to python: core__WeakHashTable_O");
@@ -23729,6 +23837,7 @@ _CLASS_MACRO(core::FileStatus_O)
 _CLASS_MACRO(core::Function_O)
 _CLASS_MACRO(core::HashTable_O)
 _CLASS_MACRO(core::IntArray_O)
+_CLASS_MACRO(core::InvocationHistoryFrameIterator_O)
 _CLASS_MACRO(core::Iterator_O)
 _CLASS_MACRO(core::LambdaListHandler_O)
 _CLASS_MACRO(core::LightUserData_O)
@@ -23759,6 +23868,7 @@ _CLASS_MACRO(core::Stream_O)
 _CLASS_MACRO(core::StructureObject_O)
 _CLASS_MACRO(core::SymbolToEnumConverter_O)
 _CLASS_MACRO(core::Symbol_O)
+_CLASS_MACRO(core::VaList_dummy_O)
 _CLASS_MACRO(core::WeakHashTable_O)
 _CLASS_MACRO(core::WeakKeyMapping_O)
 _CLASS_MACRO(core::WeakPointer_O)

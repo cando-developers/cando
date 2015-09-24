@@ -111,7 +111,8 @@ int	msmarts_lex(YYSTYPE* yylval, YYLTYPE* yylloc, msmarts_SParserParam* data);
 
 %}
 
-%name-prefix="msmarts_"
+// %define api.prefix {msmarts_}
+// n a m e - p r e f i x = " m s m a r t s _ "
 %define api.pure
 %locations
 %lex-param {msmarts_SParserParam* data}
