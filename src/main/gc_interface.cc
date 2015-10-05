@@ -114,13 +114,10 @@ typedef bool _Bool;
 #include <clasp/core/character.h>
 #include <clasp/core/reader.h>
 #include <clasp/core/singleDispatchEffectiveMethodFunction.h>
-#include <clasp/core/microHeap.h>
 #include <clasp/core/regex.h>
 #include <clasp/core/structureObject.h>
 #include <clasp/core/forwardReferencedClass.h>
 #include <clasp/core/standardClass.h>
-#include <clasp/core/stringSet.h>
-#include <clasp/core/symbolSet.h>
 #include <clasp/core/readtable.h>
 #include <clasp/core/arrayObjects.h>
 #include <clasp/core/intArray.h>
@@ -129,14 +126,10 @@ typedef bool _Bool;
 #include <clasp/core/singleDispatchMethod.h>
 #include <clasp/core/binder.h>
 #include <clasp/core/fileSystem.h>
-#include <clasp/core/objectSet.h>
-#include <clasp/core/symbolList.h>
-#include <clasp/core/stringList.h>
 #include <clasp/core/null.h>
 #include <clasp/core/multiStringBuffer.h>
 #include <clasp/core/posixTime.h>
 #include <clasp/core/pointer.h>
-#include <clasp/core/objRef.h>
 #include <clasp/core/smallMap.h>
 #include <clasp/core/pathname.h>
 #include <clasp/core/strWithFillPtr.h>
@@ -225,7 +218,6 @@ mps_addr_t obj_skip(mps_addr_t client) {
   } else {
     THROW_HARD_ERROR(BF("Illegal header at %p") % header);
   }
-  DEBUG_MPS_MESSAGE(BF("Leaving obj_skip with client@%p") % client);
   return client;
 }
 };
@@ -297,7 +289,6 @@ GC_RESULT obj_scan(mps_ss_t ss, mps_addr_t client, mps_addr_t limit) {
 #undef GC_OBJ_SCAN_TABLE
 #endif
 
-  DEBUG_MPS_MESSAGE(BF("obj_scan started - Incoming client %p   limit: %p") % client % limit);
   MPS_SCAN_BEGIN(GC_SCAN_STATE) {
     while (client < limit) {
       gctools::Header_s *header = reinterpret_cast<gctools::Header_s *>(ClientPtrToBasePtr(client));
@@ -339,7 +330,6 @@ void obj_finalize(mps_addr_t client) {
   gctools::Header_s *header = reinterpret_cast<gctools::Header_s *>(ClientPtrToBasePtr(client));
   ASSERTF(header->kindP(), BF("obj_finalized called without a valid object"));
   gctools::GCKindEnum kind = (GCKindEnum)(header->kind());
-  DEBUG_MPS_MESSAGE(BF("Finalizing client@%p   kind=%s") % client % header->description());
 #ifndef RUNNING_GC_BUILDER
   goto *(OBJ_FINALIZE_table[kind]);
 #define GC_OBJ_FINALIZE
@@ -358,14 +348,13 @@ void registerLoadTimeValuesRoot(core::LoadTimeValues_O **ptr) {
 }
 
 mps_res_t main_thread_roots_scan(mps_ss_t ss, void *gc__p, size_t gc__s) {
-  DEBUG_MPS_MESSAGE(BF("in main_thread_roots_scan"));
   //	mps_thr_t gc__thr = 0; // This isn't passed in but the scanners need it
   MPS_SCAN_BEGIN(GC_SCAN_STATE) {
     MPS_LOG(BF("Starting rooted_HeapRoots"));
 
     //            printf("%s:%d  Fixing globalLoadTimeValuesRoots[%d]\n", __FILE__, __LINE__, globalLoadTimeValuesRoots.size() );
     for (auto &it : globalLoadTimeValuesRoots) {
-      POINTER_FIX(*it);
+      SIMPLE_POINTER_FIX(*it);
     }
 //            printf("---------Done\n");
 

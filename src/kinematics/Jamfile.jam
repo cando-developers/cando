@@ -44,12 +44,4 @@ local sources =
 	/modules/chem//bundle/<link>static
 		;
 
-
-bundler.bundle $(dir) :
-	     $(sources) :
-	     <link>static
-	     <implicit-dependency>/internals/core//symbol_apply_inc
-	     <implicit-dependency>/internals/llvmo//mi
-	     <implicit-dependency>/modules/chem//mi
-	     <implicit-dependency>mi : :
-	     <toolset>darwin:<cxxflags>"-g3" ;
+alias kinematics : $(sources) ;

@@ -130,4 +130,4 @@ local sources =
 #		confSearchDatabase.cc
 
 
-lib chem : $(sources) ;
+alias chem : $(sources) ;
