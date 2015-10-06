@@ -20,84 +20,44 @@ project cando/main : requirements
 	;
 
 
-lib rt : : <name>rt ;
-
-alias gclib : /externals//lib_boehm :
-      <gc>boehmdc ;
-
-alias gclib : /externals//lib_boehm :
-      <gc>boehm ;
-
-alias gclib : mymps.c :
-      <gc>mps ;
-
-
-alias gclib : mymps.c :
-      <gc>mps-prep ;
-
-
 sources = 
-    	    	/internals//core        #//bundle/<link>static
-		/internals//cffi        #//bundle/<link>static
-		/internals//llvmo       #//bundle/<link>static
-                /internals//clbind      #//bundle/<link>static
-		/internals//gctools     #//bundle/<link>static
-		/internals//sockets     #//bundle/<link>static
-		/internals//serveEvent  #//bundle/<link>static
-		/internals//asttooling  #//bundle/<link>static
+    	    	/internals//core
+		/internals//cffi
+		/internals//llvmo
+                /internals//clbind
+		/internals//gctools
+		/internals//sockets
+		/internals//serveEvent
+		/internals//asttooling
                 /cando/geom
                 /cando/adapt
                 /cando/units
                 /cando/chem
-		/externals//llvm_lib/<link>static
-		/externals//clang_lib/<link>static
-		/externals//boostAndExpatLibs #/<link>static
+		/externals//llvm_lib_globbed
+		/externals//clang_lib_globbed
+		/externals//boostAndExpatLibs
 		;
 
 
 exe cando : main.cc $(sources)
-    /externals//lib_boehm/<link>static
+    /internals/gctools//gclib
     : <gc>boehmdc
     ;
 
 exe cando : main.cc $(sources)
-    /externals//lib_boehm/<link>static
+    /internals/gctools//gclib
     : <gc>boehm
     ;
 
 exe cando : main.cc $(sources)
     gc_interface.cc
-    gclib
+    /internals/gctools//gclib
     : <gc>mps
     ;
 
 exe cando : main.cc $(sources)
     gc_interface.cc
-    gclib
+    /internals/gctools//gclib
     : <gc>mps-prep
     ;
 
-install dist : cando
-        :
-        <program>cando,<target-os>linux,<variant>release,<gc>boehmdc:<location>$(APPBIN-LINUX)/release/boehmdc
-        <program>cando,<target-os>linux,<variant>release,<gc>boehm:<location>$(APPBIN-LINUX)/release/boehm
-        <program>cando,<target-os>linux,<variant>release,<gc>mps-prep:<location>$(APPBIN-LINUX)/release/mps-prep
-        <program>cando,<target-os>linux,<variant>release,<gc>mps:<location>$(APPBIN-LINUX)/release/mps
-        <program>cando,<target-os>linux,<variant>debug,<gc>boehmdc:<location>$(APPBIN-LINUX)/debug/boehmdc
-        <program>cando,<target-os>linux,<variant>debug,<gc>boehm:<location>$(APPBIN-LINUX)/debug/boehm
-        <program>cando,<target-os>linux,<variant>debug,<gc>mps-prep:<location>$(APPBIN-LINUX)/debug/mps-prep
-        <program>cando,<target-os>linux,<variant>debug,<gc>mps:<location>$(APPBIN-LINUX)/debug/mps
-        <program>cando,<target-os>darwin,<variant>release,<gc>boehmdc:<location>$(APPBIN-DARWIN)/release/boehmdc
-        <program>cando,<target-os>darwin,<variant>release,<gc>boehm:<location>$(APPBIN-DARWIN)/release/boehm
-        <program>cando,<target-os>darwin,<variant>release,<gc>mps-prep:<location>$(APPBIN-DARWIN)/release/mps-prep
-        <program>cando,<target-os>darwin,<variant>release,<gc>mps:<location>$(APPBIN-DARWIN)/release/mps
-        <program>cando,<target-os>darwin,<variant>debug,<gc>boehmdc:<location>$(APPBIN-DARWIN)/debug/boehmdc
-        <program>cando,<target-os>darwin,<variant>debug,<gc>boehm:<location>$(APPBIN-DARWIN)/debug/boehm
-        <program>cando,<target-os>darwin,<variant>debug,<gc>mps-prep:<location>$(APPBIN-DARWIN)/debug/mps-prep
-        <program>cando,<target-os>darwin,<variant>debug,<gc>mps:<location>$(APPBIN-DARWIN)/debug/mps
-        <implicit-dependency>/internals/llvmo//bundle
-        ;
-
-import symlink ;
-
-symlink $(APPBIN-DARWIN)/release/boehmdc/cando $(APPBIN-DARWIN)/cando_boehmdc_o ;

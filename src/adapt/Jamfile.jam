@@ -26,5 +26,4 @@ local sources =
 	    /internals//gctools
 ;
 
-
-lib adapt : $(sources) ;
+alias adapt : $(sources) ;
