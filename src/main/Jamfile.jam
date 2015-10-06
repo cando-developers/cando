@@ -51,7 +51,7 @@ sources =
                 /cando/chem
 		/externals//llvm_lib/<link>static
 		/externals//clang_lib/<link>static
-		/externals//boostAndExpatLibs/<link>static
+		/externals//boostAndExpatLibs #/<link>static
 		;
 
 

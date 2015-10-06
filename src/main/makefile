@@ -115,7 +115,7 @@ clasp-gc-interface:
 	$(CLASP_BOEHM) -l "buildClaspGC.lsp"
 
 compile-commands:
-	-bjam link=static gc=mps-prep program=clasp link=static -n -a >bjam.out
+	-bjam link=static gc=mps-prep program=cando link=static -n -a >bjam.out
 	-install -d $(CLASP_APP_RESOURCES_DIR)/build-databases
 	echo $(CLASP_HOME)
 	python $(CLASP_HOME)/src/common/buildJSON.py clang bjam.out `$(CLASP_BOEHM) -N -e "(progn (format t \"~a\"(namestring (translate-logical-pathname (ensure-directories-exist #P\"APP-RESOURCES:build-databases;cando_compile_commands.json\")))) (quit))"` # $(CLASP_APP_RESOURCES_DIR)/build-databases/clasp_compile_commands.json
@@ -128,9 +128,13 @@ run-clasp:
 	clasp_d clang0.lsp
 
 
-mps-interface:
+mps-interface-prepare:
 	make compile-commands
 	@echo Running parallel search and generating code when done
-	clasp_boehm_o -l "sys:mps-interface.lsp" -e "(progn (load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\") (parallel-search-all-then-generate-code-and-quit))"
+	clasp_boehmdc_o -e "(compile-file \"sys:clang-tool.lsp\")"
+	clasp_boehmdc_o -e "(compile-file \"sys:mps-interface.lsp\")"
+
+mps-interface-run:
+	clasp_boehmdc_o -l "sys:mps-interface.fasl" -e "(progn (load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\") (parallel-search-all-then-generate-code-and-quit))"
 
 
