@@ -10,6 +10,7 @@ project adapt : requirements
 	;
 
 local sources =
+      indexedObjectBag.cc
       adaptPackage.cc
       quickDom.cc
       mySaxInterface.cc

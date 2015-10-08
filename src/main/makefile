@@ -17,6 +17,14 @@ all:
 	make boehm
 	make mps
 
+executable-symlinks:
+	ln -sf $(EXECS)/boehm/release/bin/cando $(BINDIR)/cando_boehm_o
+	ln -sf $(EXECS)/boehmdc/release/bin/cando $(BINDIR)/cando_boehmdc_o
+	ln -sf $(EXECS)/mps/release/bin/cando $(BINDIR)/cando_mps_o
+	ln -sf $(EXECS)/boehm/debug/bin/cando $(BINDIR)/cando_boehm_d
+	ln -sf $(EXECS)/boehmdc/debug/bin/cando $(BINDIR)/cando_boehmdc_d
+	ln -sf $(EXECS)/mps/debug/bin/cando $(BINDIR)/cando_mps_d
+
 application:
 	cp -R $(CLASP_LISP_SOURCE_DIR)/build $(CLASP_APP_RESOURCES_DIR)/lisp/
 	cp -R $(CLASP_INTERNAL_BUILD_TARGET_DIR)/* $(CLASP_APP_DIR)

@@ -1891,6 +1891,9 @@ void ChemInfo_O::exposeCando(core::Lisp_sp lisp) {
       .def("asSmarts", &ChemInfo_O::asSmarts)
       .def("getCode", &ChemInfo_O::getCode, "", "", "", false);
 
+  /*! Hold nodes for the Gaff and Msmarts parsers - rewrite these in Common Lisp */
+  SYMBOL_EXPORT_SC_(ChemPkg, STARparserNodeHolderSTAR );
+  
   SYMBOL_SC_(ChemPkg, STARSabBondEnumConverterSTAR);
   DECLARE_SYMBOL_TO_ENUM_CONVERTER(bondEnum, "SABBondEnum", ChemKwPkg, chem::_sym_STARSabBondEnumConverterSTAR);
 

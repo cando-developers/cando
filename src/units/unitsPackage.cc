@@ -4,7 +4,7 @@
 #include <clasp/core/lisp.h>
 #include <clasp/core/corePackage.fwd.h>
 #include <clasp/core/package.h>
-#include <cando/units/symbolTable.h>
+#include <cando/main/symbolTable.h>
 #include <cando/units/unit.h>
 #include <cando/units/quantity.h>
 #include <clasp/core/builtInClass.h>
