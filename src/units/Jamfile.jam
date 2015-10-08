@@ -8,7 +8,6 @@ project units : requirements
 	<define>EXPAT
 	<toolset>darwin:<define>READLINE
 	<threading>single
-	<include>./
 	     ;
 
 local sources = dimension.cc

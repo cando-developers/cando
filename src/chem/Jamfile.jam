@@ -5,7 +5,6 @@ using bison ;
 # <variant>release:<define>SOURCE_DEBUG
 #
 project chem : requirements
-	<include>./
 	;
 
 ##### Disable parsers for now

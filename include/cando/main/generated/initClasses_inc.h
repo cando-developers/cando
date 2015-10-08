@@ -6,7 +6,6 @@
  // class ValueFrame_O : public ActivationFrame_O {
  // class FunctionFrame_O : public ActivationFrame_O {
  // class TagbodyFrame_O : public ActivationFrame_O {
- // class Array_O : public T_O {
  // class ArrayObjects_O : public Array_O {
  // class Bignum_O : public Integer_O {
  // class Binder_O : public T_O {
@@ -43,6 +42,7 @@
  // class DirectoryEntry_O : public T_O {
  // class FileStatus_O : public T_O {
  // class ForwardReferencedClass_O : public Class_O {
+ // class Vector_O : public Array_O {
  // class FuncallableStandardClass_O : public StdClass_O {
  // class HashTable_O : public T_O {
  // class HashTableEq_O : public HashTable_O {
@@ -53,6 +53,7 @@
  // class IntArray_O : public T_O {
  // class Iterator_O : public T_O {
  // class LambdaListHandler_O : public T_O {
+ // class Array_O : public T_O {
  // class VaList_dummy_O : public T_O {
  // class Stream_O : public T_O {
  // class AnsiStream_O : public Stream_O {
@@ -68,7 +69,7 @@
  // class ConcatenatedStream_O : public AnsiStream_O {
  // class EchoStream_O : public AnsiStream_O {
  // class String_O : public Vector_O {
- // class Vector_O : public Array_O {
+ // class Str_O : public String_O {
  // class LoadTimeValues_O : public T_O {
  // class Class_O : public Specializer_O {
  // class Metaobject_O : public StandardObject_O {
@@ -109,6 +110,7 @@
  // class SaveArchive_O : public Archive_O {
  // class SexpLoadArchive_O : public LoadArchive_O {
  // class SexpSaveArchive_O : public SaveArchive_O {
+ // class VectorObjects_O : public Vector_O {
  // class SingleDispatchEffectiveMethodFunction_O : public Function_O {
  // class SingleDispatchGenericFunction_O : public Function_O {
  // class SingleDispatchMethod_O : public T_O {
@@ -121,7 +123,6 @@
  // class StandardClass_O : public StdClass_O {
  // class StandardObject_O : public T_O {
  // class StdClass_O : public Class_O {
- // class Str_O : public String_O {
  // class StrWithFillPtr_O : public Str_O {
  // class StructureClass_O : public Class_O {
  // class StructureObject_O : public T_O {
@@ -129,14 +130,13 @@
  // class UserData_O : public core::LightUserData_O // StandardObject_O
  // class SymbolToEnumConverter_O : public T_O {
  // class Symbol_O : public T_O {
- // class VectorObjects_O : public Vector_O {
  // class WeakHashTable_O : public T_O {
  // class WeakKeyHashTable_O : public WeakHashTable_O {
  // class WeakKeyMapping_O : public T_O {
  // class WeakPointer_O : public T_O {
  // class WrappedPointer_O : public core::T_O {
- // class ArrayDisplaced_O : public Array_O {
  // class MultiStringBuffer_O : public T_O {
+ // class ArrayDisplaced_O : public Array_O {
  // class RandomState_O : public T_O {
  // class Package_O : public T_O {
  // class ClassRegistry_O : public core::T_O {

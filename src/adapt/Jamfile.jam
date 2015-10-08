@@ -6,7 +6,6 @@ local dir = $(__file__:D) ;
 # <variant>release:<define>SOURCE_DEBUG
 #
 project adapt : requirements
-        <include>./
 	;
 
 local sources =
