@@ -17,6 +17,10 @@
 #include <cando/chem/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
+SYMBOL_EXPORT_SC_(ChemKwPkg,parameterized);
+SYMBOL_EXPORT_SC_(ChemKwPkg,estimated);
+SYMBOL_EXPORT_SC_(ChemKwPkg,rough);
+
 namespace chem {
 
 string	FFParameter_O::levelDescription()
