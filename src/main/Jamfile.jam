@@ -54,3 +54,11 @@ exe cando : main.cc $(sources)
     : <gc>mps-prep
     ;
 
+import package ;
+
+package.install cando_install :
+                : cando
+                : /externals//boostAndExpatLibs
+                : 
+                ;
+

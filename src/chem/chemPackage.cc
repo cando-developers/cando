@@ -5,6 +5,7 @@
 #include <cando/chem/candoScript.h>
 #include <cando/chem/candoDatabase.h>
 #include <cando/chem/elements.h>
+#include <cando/adapt/indexedObjectBag.h>
 #include <cando/chem/mbbCoreTools.h>
 #include <clasp/core/builtInClass.h>
 //#define HEADER_INCLUDES

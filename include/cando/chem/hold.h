@@ -26,6 +26,7 @@ namespace chem {
     gc::smart_ptr<oClass> value() {
       adapt::IndexedObjectBag_sp bag = gc::As<adapt::IndexedObjectBag_sp>(chem::_sym_STARparserNodeHolderSTAR->symbolValue());
       core::T_sp obj = bag->entry(this->nodeHolderIndex);
+      return obj;
     }
     virtual ~Hold() {
       adapt::IndexedObjectBag_sp bag = gc::As<adapt::IndexedObjectBag_sp>(chem::_sym_STARparserNodeHolderSTAR->symbolValue());

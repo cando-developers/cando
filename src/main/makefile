@@ -17,6 +17,12 @@ all:
 	make boehm
 	make mps
 
+boehmdc-release-cxx:
+	build -j$(PJOBS) link=static program=cando gc=boehmdc --prefix=$(EXECS)/boehmdc/release release cando_install ;
+
+boehmdc-debug-cxx:
+	build -j$(PJOBS) link=static program=cando gc=boehmdc --prefix=$(EXECS)/boehmdc/debug debug cando_install ;
+
 executable-symlinks:
 	ln -sf $(EXECS)/boehm/release/bin/cando $(BINDIR)/cando_boehm_o
 	ln -sf $(EXECS)/boehmdc/release/bin/cando $(BINDIR)/cando_boehmdc_o

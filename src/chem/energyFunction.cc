@@ -18,6 +18,7 @@ __END_DOC
 #include <clasp/core/common.h>
 #include <cando/chem/energyFunction.h>
 #include <cando/chem/loop.h>
+#include <cando/adapt/indexedObjectBag.h>
 #include <clasp/core/environment.h>
 #include <cando/chem/minimizerLog.h>
 #include <cando/chem/restraint.h>
@@ -106,6 +107,7 @@ double	rel = 0.0;
 void energyFunction_initializeSmarts(core::Lisp_sp lisp)
 {_G();
     if ( energyFunctionInitialized ) return;
+    _sym_STARparserNodeHolderSTAR->defparameter(adapt::IndexedObjectBag_O::create());
     energyFunctionInitialized = true;
     secondaryAmide = ChemInfo_O::create();
     bool ok = secondaryAmide->compileSmarts("[$(N1(C2)(~[#1]3)~C4(=O5)C6)]");
