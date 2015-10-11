@@ -18,7 +18,9 @@ all:
 	make mps
 
 boehmdc-release-cxx:
-	build -j$(PJOBS) link=static program=cando gc=boehmdc --prefix=$(EXECS)/boehmdc/release release cando_install ;
+	build -j$(PJOBS) link=static program=cando gc=boehmdc --prefix=$(EXECS)/boehmdc/release release cando_install;
+boehmdc-release-cxx-a:
+	build -j$(PJOBS) link=static program=cando gc=boehmdc --prefix=$(EXECS)/boehmdc/release release cando_install -a ;
 
 boehmdc-debug-cxx:
 	build -j$(PJOBS) link=static program=cando gc=boehmdc --prefix=$(EXECS)/boehmdc/debug debug cando_install ;
