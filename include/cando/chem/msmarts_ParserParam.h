@@ -7,7 +7,7 @@
 #include <clasp/core/cons.h>
 
 
-typedef struct tagSMsmartsParserParam
+struct /*tagSMsmartsParserParam*/ msmarts_SParserParam
 {
     /* The scanner extra pointer will point back to this lisp_SParserParam structure
      */
@@ -18,14 +18,9 @@ typedef struct tagSMsmartsParserParam
     chem::SmartsRoot_sp	expression;
   std::map<string,int> atomTagCounter;
     stringstream*		msmartsErrorStream;
-
-
   std::istream*	lexStream;		
 // This defines the stream that we are reading from
-
-
-
-} msmarts_SParserParam;
+};
 
 
 

@@ -7,7 +7,7 @@
 #include <clasp/core/cons.h>
 
 
-typedef struct tagSGaffParserParam
+struct /*tagSGaffParserParam*/ gaff_SParserParam
 {
     /* The scanner extra pointer will point back to this lisp_SParserParam structure
      */
@@ -23,7 +23,7 @@ typedef struct tagSGaffParserParam
 
 
 
-} gaff_SParserParam;
+};
 
 
 

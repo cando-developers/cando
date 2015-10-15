@@ -33,7 +33,7 @@ SMART(FFItor);
 inline	string	XmlTag_Dihedral() { return "Dihedral"; };
 inline	string	XmlTag_EnergyDihedral() { return "EnergyDihedral"; };
 
-typedef struct
+struct TermDihedral
 {
 	REAL		sinPhase;	//!< Sine of phase, this must match Mathematica code!
 	REAL		cosPhase;	//!< Cosine of phase, this must match Mathematica code!
@@ -44,7 +44,7 @@ typedef struct
 	INT		I2;	//!< i*3 index into coordinate array, this must match Mathematica code!
 	INT		I3;	//!< i*3 index into coordinate array, this must match Mathematica code!
 	INT		I4;	//!< i*3 index into coordinate array, this must match Mathematica code!
-} TermDihedral;
+};
 
 /*! Dihedral energy term
  */

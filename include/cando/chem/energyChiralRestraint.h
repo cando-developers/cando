@@ -28,7 +28,7 @@ namespace chem
 {
 
 
-typedef struct
+struct TermChiralRestraint
 {
 	double		K;
 	double		CO;
@@ -36,7 +36,7 @@ typedef struct
 	int		I2;
 	int		I3;
 	int		I4;
-} TermChiralRestraint;
+};
 
 inline	string	XmlTag_ChiralRestraint() { return "ChiralRestraint"; };
 

@@ -28,6 +28,7 @@
 #include <clasp/core/foundation.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/pathname.h>
+#include <cando/adapt/indexedObjectBag.h>
 #include <cando/chem/symbolTable.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/molecule.h>
@@ -104,7 +105,7 @@ public:
 
 };
 
-typedef	struct	{
+struct TriposMolecule {
 	string	mMoleculeName;
 	uint	mAtoms;
 	uint	mBonds;
@@ -113,9 +114,9 @@ typedef	struct	{
 	uint	m_Unknown2;
 	string	m_Comment1_Unknown;
 	string	m_Comment2_Unknown;
-} TriposMolecule;
+};
 
-typedef struct	{
+struct TriposAtom {
 	uint	mIndex;
 	string	atom_name;
 	double	mX;
@@ -126,17 +127,17 @@ typedef struct	{
 	string	mSubstName;
 	double	mCharge;
 	Atom_sp	mAtom;
-} TriposAtom;
+};
 
-typedef struct	{
+struct TriposBond {
 	uint	mId;
 	uint	mAtom1Id;
 	uint	mAtom2Id;
 	string	mOrder;
-} TriposBond;
+};
 
 
-typedef struct	{
+struct TriposSubstructure {
 	uint	mId;
 	string	subst_name;
 	uint	root_atom;
@@ -148,7 +149,7 @@ typedef struct	{
 	string	mStatus;
 	string	mComment;
 	uint	file_sequence_number;
-} TriposSubstructure;
+};
 
 
 
@@ -567,16 +568,16 @@ void	mol2ReadAggregateFromFileName( Aggregate_sp aggregate, core::T_sp sFileName
 
 
 
-typedef	struct	{
+struct ResidueOut {
 	Residue_sp	res;
 	uint		firstAtom;
-} ResidueOut;
+};
 
 
-typedef	struct	{
+struct AtomInfo {
     	Atom_sp		_Atom;
     core::Symbol_sp 		_SybylType;
-} AtomInfo;
+};
 
 void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out )
 {_G();
@@ -868,6 +869,7 @@ void	Initialize_Mol2_TypeRules(core::Lisp_sp lisp)
       ""
   };
 
+  _sym_STARparserNodeHolderSTAR->defparameter(adapt::IndexedObjectBag_O::create());
   for ( uint i=0; strlen(sybylTypeRules[i])>0; i++ )
   {
     const char* typeRuleString = sybylTypeRules[i];

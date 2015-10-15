@@ -21,9 +21,15 @@ boehmdc-release-cxx:
 	build -j$(PJOBS) link=static program=cando gc=boehmdc --prefix=$(EXECS)/boehmdc/release release cando_install;
 boehmdc-release-cxx-a:
 	build -j$(PJOBS) link=static program=cando gc=boehmdc --prefix=$(EXECS)/boehmdc/release release cando_install -a ;
-
 boehmdc-debug-cxx:
 	build -j$(PJOBS) link=static program=cando gc=boehmdc --prefix=$(EXECS)/boehmdc/debug debug cando_install ;
+
+boehm-release-cxx:
+	build -j$(PJOBS) link=static program=cando gc=boehm --prefix=$(EXECS)/boehm/release release cando_install;
+boehm-release-cxx-a:
+	build -j$(PJOBS) link=static program=cando gc=boehm --prefix=$(EXECS)/boehm/release release cando_install -a ;
+boehm-debug-cxx:
+	build -j$(PJOBS) link=static program=cando gc=boehm --prefix=$(EXECS)/boehm/debug debug cando_install ;
 
 executable-symlinks:
 	ln -sf $(EXECS)/boehm/release/bin/cando $(BINDIR)/cando_boehm_o
@@ -137,6 +143,11 @@ compile-commands:
 	echo $(CLASP_HOME)
 	python $(CLASP_HOME)/src/common/buildJSON.py clang bjam.out `$(CLASP_BOEHM) -N -e "(progn (format t \"~a\"(namestring (translate-logical-pathname (ensure-directories-exist #P\"APP-RESOURCES:build-databases;cando_compile_commands.json\")))) (quit))"` # $(CLASP_APP_RESOURCES_DIR)/build-databases/clasp_compile_commands.json
 
+mps-interface-prep:
+	(make -C $(CLASP_HOME)/src/main boehmdc-release-cxx)
+	clasp_boehmdc_o -I -f ecl-min -l $(CLASP_HOME)/src/main/link-bclasp.lsp
+	clasp_boehmdc_o -f bclasp -l $(CLASP_HOME)/src/main/build_addons.lsp
+	clasp_boehmdc_o -f bclasp -l $(CLASP_HOME)/src/main/link-addons.lsp
 
 mps-interface-run:
 	make compile-commands
@@ -144,5 +155,12 @@ mps-interface-run:
         -e "(asdf:load-system \"clasp-analyzer\")" \
 	-e "(clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\")" \
         -e "(clasp-analyzer:serial-search-all-then-generate-code-and-quit \"`pwd`/\")"
+
+mps-interface-test:
+	make compile-commands
+	clasp_boehmdc_o -f bclasp -e "(require :asdf)" \
+        -e "(asdf:load-system \"clasp-analyzer\")" \
+	-e "(clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\")" \
+        -e "(clasp-analyzer:serial-search-all-then-generate-code-and-quit \"`pwd`/\" :test (clasp-analyzer::lsel clasp-analyzer:$$\* \".*mol2\.cc$$\"))"
 
 

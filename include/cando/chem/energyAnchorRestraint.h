@@ -25,13 +25,13 @@ namespace chem
 {
 
 
-    typedef struct {
+    struct TermAnchorRestraint {
 	double		ka;
 	int		I1;
 	double		xa;
 	double		ya;
 	double		za;
-    } TermAnchorRestraint;
+    };
 
 /*! Store a AnchorRestraint energy term
  */

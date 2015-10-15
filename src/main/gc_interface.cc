@@ -154,6 +154,10 @@ typedef bool _Bool;
 #include <clasp/asttooling/Marshallers.h>
 #include <clasp/asttooling/testAST.h>
 
+#include <cando/chem/topology.h>
+#include <cando/chem/monomerCoordinates.h>
+
+
 #define NAMESPACE_gctools
 #define NAMESPACE_core
 #include <clasp/main/gc_interface.h>

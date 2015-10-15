@@ -26,7 +26,7 @@ namespace       chem {
 
 
 
-typedef struct
+struct TermImproperRestraint
 {
 	double		K;	// Force constant
     	double		U;	// Upper bound in radians domain [-180,180]
@@ -35,7 +35,7 @@ typedef struct
 	int		I2;
 	int		I3;
 	int		I4;
-} TermImproperRestraint;
+};
 
 
 class	EnergyImproperRestraint : public EnergyTerm {

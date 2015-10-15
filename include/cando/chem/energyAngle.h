@@ -35,13 +35,13 @@ SMART(FFAngle);
 inline	string	XmlTag_Angle() { return "Angle"; };
 inline	string	XmlTag_EnergyAngle() { return "EnergyAngle"; };
 
-typedef struct {
+struct TermAngle {
 	REAL		kt;	//!< Angle bend force constant, this must match Mathematica code!
 	REAL		t0;	//!< Angle bend equilibrium angle (Radians), this must match Mathematica code!
 	INT		I1;	//!< i*3 index into coordinate vector for atom1, this must match Mathematica code!
 	INT		I2;	//!< i*3 index into coordinate vector for atom2, this must match Mathematica code!
 	INT		I3;	//!< i*3 index into coordinate vector for atom3, this must match Mathematica code!
-} TermAngle;
+};
 
 /*! Store an Angle energy term.
  *

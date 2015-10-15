@@ -31,12 +31,12 @@ inline	string	XmlTag_Stretch() { return "Stretch"; };
 inline	string	XmlTag_EnergyStretch() { return "EnergyStretch"; };
 
 
-typedef struct {
+struct TermStretch {
 	REAL	kb;	//!< Stretch force constant, this must match Mathematica code!
 	REAL	r0;	//!< Stretch equilibrium distance, this must match Mathematica code!
 	INT	I1;	//!< i*3 index into coordinate vector for atom1, this must match Mathematica code!
 	INT	I2;	//!< i*3 index into coordinate vector for atom2, this must match Mathematica code!
-} TermStretch;
+};
 
 
 /*! Store a Stretch energy term
