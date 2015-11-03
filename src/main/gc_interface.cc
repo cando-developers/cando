@@ -80,6 +80,7 @@ typedef bool _Bool;
 #include <clang/ASTMatchers/Dynamic/VariantValue.h>
 #include <clang/ASTMatchers/ASTMatchFinder.h>
 
+#include <clasp/gctools/telemetry.h>
 #include <clasp/gctools/symbolTable.h>
 #include <clasp/sockets/symbolTable.h>
 #include <clasp/serveEvent/symbolTable.h>
@@ -89,9 +90,12 @@ typedef bool _Bool;
 
 #include <clasp/core/foundation.h>
 #include <clasp/core/weakPointer.h>
+#include <clasp/core/cxxClass.h>
+#include <clasp/core/random.h>
 #include <clasp/core/weakKeyMapping.h>
 #include <clasp/core/weakHashTable.h>
 #include <clasp/core/bitVector.h>
+#include <clasp/core/smallMultimap.h>
 #include <clasp/core/funcallableStandardClass.h>
 #include <clasp/core/structureClass.h>
 //#include "core/symbolVector.h"
@@ -120,6 +124,7 @@ typedef bool _Bool;
 #include <clasp/core/standardClass.h>
 #include <clasp/core/readtable.h>
 #include <clasp/core/arrayObjects.h>
+#include <clasp/core/arrayDisplaced.h>
 #include <clasp/core/intArray.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/primitives.h>
@@ -153,9 +158,6 @@ typedef bool _Bool;
 #include <clasp/asttooling/Diagnostics.h>
 #include <clasp/asttooling/Marshallers.h>
 #include <clasp/asttooling/testAST.h>
-
-#include <cando/chem/topology.h>
-#include <cando/chem/monomerCoordinates.h>
 
 
 #define NAMESPACE_gctools

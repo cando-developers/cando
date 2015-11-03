@@ -289,6 +289,25 @@ void EnergyFunction_O::exposePython(core::Lisp_sp lisp)
 //	defInPackage(ChemPkg,"create_EnergyFunction", &EnergyFunction_O::create);
 }
 
+bool inAtomSet(core::T_sp activeSet, Atom_sp a)
+{
+  if ( activeSet.nilp() ) return true;
+  if ( core::Cons_sp cset = activeSet.asOrNull<core::Cons_O>() ) {
+    for ( auto it : core::List_sp(cset) ) {
+      if ( oCar(it) == a ) return true;
+    }
+    return false;
+  } else if ( core::HashTable_sp htset = activeSet.asOrNull<core::HashTable_O>() ) {
+    return htset->gethash(a).notnilp();
+  } else if ( core::Vector_sp vset = activeSet.asOrNull<core::Vector_O>() ) {
+    for ( size_t i(0), iEnd(core::cl_length(vset)); i<iEnd; ++i ) {
+      if ( vset->elt(i) == a ) return true;
+    }
+    return false;
+  }
+  SIMPLE_ERROR(BF("Add support to search %s as a set\n") % _rep_(activeSet));
+}
+
 
 
     void EnergyFunction_O::lisp_initGlobals(core::Lisp_sp lisp)
@@ -577,10 +596,10 @@ int		terms;
 double	EnergyFunction_O::evaluateAll(
 		NVector_sp 	pos,
 		bool 		calcForce,
-		NVector_sp 	force,
+		gc::Nilable<NVector_sp> 	force,
        		bool		calcDiagonalHessian,
 		bool		calcOffDiagonalHessian,
-		AbstractLargeSquareMatrix_sp	hessian,
+		gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
 		NVector_sp	hdvec, NVector_sp dvec)
 {_G()
 
@@ -1160,7 +1179,8 @@ void	EnergyFunction_O::dumpTerms()
 
 
 
-void EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator_sp restraintIterator )
+
+void EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator_sp restraintIterator, core::T_sp activeAtoms )
 {_G();
 #if USE_ALL_ENERGY_COMPONENTS
     restraintIterator->first();
@@ -1171,6 +1191,11 @@ void EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator
 	{
 	    RestraintDihedral_sp dih = downcast<RestraintDihedral_O>(restraint);
 	    EnergyImproperRestraint energyTerm;
+            if ( activeAtoms.notnilp() &&
+                 (!inAtomSet(activeAtoms,dih->getAtomA())
+                  || !inAtomSet(activeAtoms,dih->getAtomB())
+                  || !inAtomSet(activeAtoms,dih->getAtomC())
+                  || !inAtomSet(activeAtoms,dih->getAtomD()) ) ) goto CONT;
 	    energyTerm._Atom1 = dih->getAtomA();
 	    energyTerm._Atom2 = dih->getAtomB();
 	    energyTerm._Atom3 = dih->getAtomC();
@@ -1193,6 +1218,7 @@ void EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator
 	    EnergyAnchorRestraint	iterm;
 	    Vector3		anchorPos;
 	    Atom_sp a1 = anchor->getAtom();
+            if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1) ) goto CONT;
 	    EnergyAtom* ea1 = this->getEnergyAtomPointer(a1);
 	    LOG(BF("Create an anchor restraint for %s") % a1->description()  );
 	    anchorPos = anchor->getAnchorPos();
@@ -1215,6 +1241,7 @@ void EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator
 		while ( loop.advanceLoopAndProcess() ) 
 		{
 		    Atom_sp a1 = loop.getAtom();
+                    if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1))  goto CONT;
 		    if ( a1->isAssignableTo<VirtualAtom_O>() ) continue; // skip virtuals
 		    this->_FixedNonbondRestraint->addFixedAtom(nonbondDb,a1);
 		}
@@ -1223,13 +1250,16 @@ void EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator
 	{
 	    IMPLEMENT_ME(); // Implement other types of restraints
 	}
+    CONT:
 	restraintIterator->next();
     }
 #endif
 }
 
-void EnergyFunction_O::_applyDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double minDegrees, double maxDegrees, double weight)
+void EnergyFunction_O::_applyDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double minDegrees, double maxDegrees, double weight, core::T_sp activeAtoms)
 {_OF();
+  if ( activeAtoms.notnilp() &&
+       (!inAtomSet(activeAtoms,a1) || !inAtomSet(activeAtoms,a2) || !inAtomSet(activeAtoms,a3) || !inAtomSet(activeAtoms,a4)) ) return;
 #if USE_ALL_ENERGY_COMPONENTS
     EnergyImproperRestraint energyTerm;
     energyTerm._Atom1 = a1;
@@ -1251,7 +1281,7 @@ void EnergyFunction_O::_applyDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a
 #endif
 }
 
-void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& nitrogens)
+void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& nitrogens, core::T_sp activeAtoms )
 {_G();
     gctools::Vec0<Atom_sp>::iterator ni;
     double transMin = -160.0;
@@ -1287,13 +1317,13 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
 	    LOG(BF("Applying a secondary amide restraint between %s and %s") % ax->description() % ay->description()  );
 		    //
 		    // H3(ax2) and O5(ay1) should be trans
-	    this->_applyDihedralRestraint(ax1,ax,ay,ay1,cisMin,cisMax,weight);
+	    this->_applyDihedralRestraint(ax1,ax,ay,ay1,cisMin,cisMax,weight,activeAtoms);
 	    LOG(BF("Restrain cis %s - %s - %s -%s") % ax1->description() % ax->description() % ay->description() % ay1->description()  );
-	    this->_applyDihedralRestraint(ax1,ax,ay,ay2,transMin,transMax,weight);
+	    this->_applyDihedralRestraint(ax1,ax,ay,ay2,transMin,transMax,weight,activeAtoms);
 	    LOG(BF("Restrain trans %s - %s - %s -%s") % ax1->description() % ax->description() % ay->description() % ay2->description()  );
-	    this->_applyDihedralRestraint(ax2,ax,ay,ay1,transMin,transMax,weight);
+	    this->_applyDihedralRestraint(ax2,ax,ay,ay1,transMin,transMax,weight,activeAtoms);
 	    LOG(BF("Restrain trans %s - %s - %s -%s") % ax2->description() % ax->description() % ay->description() % ay1->description()  );
-	    this->_applyDihedralRestraint(ax2,ax,ay,ay2,cisMin,cisMax,weight);
+	    this->_applyDihedralRestraint(ax2,ax,ay,ay2,cisMin,cisMax,weight,activeAtoms);
 	    LOG(BF("Restrain cis %s - %s - %s -%s") % ax2->description() % ax->description() % ay->description() % ay2->description()  );
 	}
     }
@@ -1303,13 +1333,12 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
 
 
 
-void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField_sp forceField)
+void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms )
 {_G();
 Loop            loop;
 Atom_sp          a1, a2, a3, a4, aImproperCenter;
 core::Symbol_sp  t1, t2, t3, t4, t141, t144;
 EnergyAtom      *eaCenter, *ea1, *ea2, *ea3, *ea4;
-EnergyStretch   energyStretch;
 FFAngle_sp       ffAngle;
 FFPtor_sp        ffPtor;
 FFItor_sp        ffItor;
@@ -1389,6 +1418,8 @@ int             coordinateIndex;
 	while ( loop.advanceLoopAndProcess() ) {
 	    a1 = loop.getBondA1();
 	    a2 = loop.getBondA2();
+            if ( activeAtoms.notnilp() &&
+                 (!inAtomSet(activeAtoms,a1) || !inAtomSet(activeAtoms,a2)) ) continue;
 	    t1 = a1->getType();
 	    t2 = a2->getType();
 	    ea1 = this->getEnergyAtomPointer(a1);
@@ -1398,6 +1429,7 @@ int             coordinateIndex;
 	    if ( ffStretch->level() != parameterized ) {
 		this->_addMissingParameter(ffStretch->levelDescription());
 	    }
+            EnergyStretch   energyStretch;
 	    energyStretch.defineFrom(ffStretch,ea1,ea2,this->_Stretch->getScale());
 	    this->_Stretch->addTerm(energyStretch);
 	}
@@ -1414,6 +1446,8 @@ int             coordinateIndex;
 	    a1 = loop.getAtom1();
 	    a2 = loop.getAtom2();
 	    a3 = loop.getAtom3();
+            if ( activeAtoms.notnilp() &&
+                 ( !inAtomSet(activeAtoms,a1) || !inAtomSet(activeAtoms,a2) || !inAtomSet(activeAtoms,a3) )) continue;
 	    ea1 = this->getEnergyAtomPointer(a1);
 	    ea2 = this->getEnergyAtomPointer(a2);
 	    ea3 = this->getEnergyAtomPointer(a3);
@@ -1437,6 +1471,11 @@ int             coordinateIndex;
 	    a2 = loop.getAtom2();
 	    a3 = loop.getAtom3();
 	    a4 = loop.getAtom4();
+            if ( activeAtoms.notnilp() &&
+                 ( !inAtomSet(activeAtoms,a1)
+                   || !inAtomSet(activeAtoms,a2)
+                   || !inAtomSet(activeAtoms,a3)
+                   || !inAtomSet(activeAtoms,a4) )) continue;
 	    t1 = a1->getType();
 	    t2 = a2->getType();
 	    t3 = a3->getType();
@@ -1529,6 +1568,11 @@ int             coordinateIndex;
 	    a2 = loop.getAtom2();
 	    a3 = loop.getAtom3();
 	    a4 = loop.getAtom4();
+            if ( activeAtoms.notnilp() &&
+                 (!inAtomSet(activeAtoms,a1)
+                  || !inAtomSet(activeAtoms,a2)
+                  || !inAtomSet(activeAtoms,a3)
+                  || !inAtomSet(activeAtoms,a4)) ) continue;
 	    t1 = a1->getType();
 	    t2 = a2->getType();
 	    t3 = a3->getType();
@@ -1560,36 +1604,7 @@ int             coordinateIndex;
 
 
         // Nonbonds here!!!!!!!!!!!!!!
-#if 1
-    this->_Nonbond->constructFromAtomTable(this->_AtomTable, forceField);
-#else
-    {_BLOCK_TRACE("Defining NONBONDED");
-	if ( this->_AtomTable->getNumberOfAtoms() > 2 )
-	{
-	    LOG(BF("Defining NONBONDS") );
-            gctools::Vec0<EnergyAtom>::iterator	iea1;
-            gctools::Vec0<EnergyAtom>::iterator	iea2;
-	    for ( iea1 = this->_AtomTable->begin();
-		  iea1 != this->_AtomTable->end()-1; iea1++ ) { //Was iea1 != this->_AtomTable->end()-1
-		for ( iea2 = iea1+1; iea2 != this->_AtomTable->end(); iea2++ ) { // Was iea2 != this->_AtomTable->end()
-		    if (!iea1->inBondOrAngle(iea2->_Atom)) 
-		    {
-			bool in14 = iea1->relatedBy14(iea2->_Atom);
-			EnergyNonbond energyNonbond(_lisp);
-			if ( energyNonbond.defineFrom(forceField, in14,
-						      &(*iea1),&(*iea2),this->_Nonbond) )  {
-			    this->_Nonbond->addTerm(energyNonbond);
-			}
-		    }
-		}
-	    }
-	} else
-	{
-	    LOG(BF("There are no non-bonds"));
-	}
-    }
-#endif
-
+    this->_Nonbond->constructFromAtomTable(this->_AtomTable, forceField, activeAtoms);
 
     	//
 	// Setup the atom chiral restraints
@@ -1602,6 +1617,7 @@ int             coordinateIndex;
 	loop.loopTopGoal(matter,ATOMS);
 	while ( loop.advanceLoopAndProcess() ) {
 	    a1 = loop.getAtom();
+            if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1) ) continue;
 	    if ( a1->getStereochemistryType() != undefinedCenter ) 
 	    {
 		LOG(BF("Create a chiral restraint for %s") % a1->description()  );
@@ -1745,6 +1761,7 @@ int             coordinateIndex;
 		  iea1 != this->_AtomTable->end()-1; iea1++ )
 	    {
 		a1 = iea1->atom();
+                if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1) ) continue;
 		if ( a1->isAnchorRestraintOn() )
 		{
 		    LOG(BF("Create an anchor restraint for %s") % a1->description()  );
@@ -1772,12 +1789,13 @@ int             coordinateIndex;
 	for ( AtomTable_O::iterator it=this->_AtomTable->begin(); it!=this->_AtomTable->end(); it++ )
 	{
 	    Atom_sp a = it->atom();
+            if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1) ) continue;
 	    if ( a->getElement() == element_N )
 	    {
 		nitrogens.push_back(a);
 	    }
 	}
-        this->__createSecondaryAmideRestraints(nitrogens);
+        this->__createSecondaryAmideRestraints(nitrogens,activeAtoms);
     } else
     {
 	LOG(BF("Skipping Secondary amide restraints because _RestrainSecondaryAmides = %d") % this->_RestrainSecondaryAmides );
@@ -1790,18 +1808,18 @@ int             coordinateIndex;
 	//
     {_BLOCK_TRACE("Defining force-field restraints");
 	IterateRestraints_sp restraintIt = IterateRestraints_O::create(matter);
-	this->_applyRestraints(forceField,restraintIt);
+	this->_applyRestraints(forceField,restraintIt,activeAtoms);
     }
     LOG(BF("Done terms") );
 }
 
 
 
-void	EnergyFunction_O::addTermsForListOfRestraints(ForceField_sp forceField, core::List_sp restraintList)
+void	EnergyFunction_O::addTermsForListOfRestraints(ForceField_sp forceField, core::List_sp restraintList, core::T_sp activeAtoms)
 {_G();
     adapt::IterateCons_sp	iterate;
     iterate = adapt::IterateCons_O::create(restraintList);
-    this->_applyRestraints(forceField,iterate);
+    this->_applyRestraints(forceField,iterate,activeAtoms);
 }
 
 void	EnergyFunction_O::extractCoordinatesFromAtoms(NVector_sp pos)

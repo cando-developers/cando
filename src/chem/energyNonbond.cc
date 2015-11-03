@@ -361,10 +361,10 @@ namespace chem
     void	EnergyNonbond_O::evaluateAll(
 	NVector_sp 	pos,
 	bool 		calcForce,
-	NVector_sp 	force,
+	gc::Nilable<NVector_sp> 	force,
 	bool		calcDiagonalHessian,
 	bool		calcOffDiagonalHessian,
-	AbstractLargeSquareMatrix_sp	hessian,
+	gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
 	NVector_sp	hdvec, 
 	NVector_sp 	dvec )
     {_G();
@@ -667,7 +667,7 @@ namespace chem
     }
 
 
-    void EnergyNonbond_O::constructFromAtomTable(AtomTable_sp atomTable, ForceField_sp forceField)
+void EnergyNonbond_O::constructFromAtomTable(AtomTable_sp atomTable, ForceField_sp forceField, core::T_sp atomSet)
     {_OF();
 	{_BLOCK_TRACE("Defining NONBONDED");
 	    if ( atomTable->getNumberOfAtoms() > 2 )
@@ -677,18 +677,20 @@ namespace chem
                 gctools::Vec0<EnergyAtom>::iterator	iea2;
 		for ( iea1 = atomTable->begin();
 		      iea1 != atomTable->end()-1; iea1++ ) { //Was iea1 != atomTable->end()-1
-		    for ( iea2 = iea1+1; iea2 != atomTable->end(); iea2++ ) { // Was iea2 != atomTable->end()
-			if (!iea1->inBondOrAngle(iea2->atom())) 
-			{
-			    bool in14 = iea1->relatedBy14(iea2->atom());
-			    LOG(BF("Nonbonded interaction between %s - %s in14[%d]") % iea1->atom()->__repr__() % iea2->atom()->__repr__() % in14 );
-			    EnergyNonbond energyNonbond;
-			    if ( energyNonbond.defineFrom(forceField, in14,
-							  &(*iea1),&(*iea2),this->sharedThis<EnergyNonbond_O>()) )  {
-				this->addTerm(energyNonbond);
-			    }
-			}
-		    }
+                  if ( atomSet.notnilp() && !inAtomSet(atomSet,iea1->atom())) continue;
+                  for ( iea2 = iea1+1; iea2 != atomTable->end(); iea2++ ) { // Was iea2 != atomTable->end()
+                    if (!iea1->inBondOrAngle(iea2->atom())) 
+                    {
+                      if ( atomSet.notnilp() && !inAtomSet(atomSet,iea2->atom()) ) continue;
+                      bool in14 = iea1->relatedBy14(iea2->atom());
+                      LOG(BF("Nonbonded interaction between %s - %s in14[%d]") % iea1->atom()->__repr__() % iea2->atom()->__repr__() % in14 );
+                      EnergyNonbond energyNonbond;
+                      if ( energyNonbond.defineFrom(forceField, in14,
+                                                    &(*iea1),&(*iea2),this->sharedThis<EnergyNonbond_O>()) )  {
+                        this->addTerm(energyNonbond);
+                      }
+                    }
+                  }
 		}
 	    } else
 	    {

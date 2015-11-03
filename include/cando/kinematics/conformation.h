@@ -2,7 +2,7 @@
 #define _kinematicsConformation_H
 
 #include <clasp/core/common.h>
-#include <core/model.h>
+//#include <core/model.h>
 #include <cando/chem/oligomer.fwd.h>
 #include <cando/kinematics/symbolTable.h>
 #include <cando/kinematics/kinematicsPackage.h>
@@ -21,13 +21,13 @@ namespace kinematics
     FORWARD(AtomTree);
 
     FORWARD(Conformation);
-    class Conformation_O : public core::Model_O
+    class Conformation_O : public core::T_O
 {
-    LISP_BASE1(core::Model_O);
+    LISP_BASE1(core::T_O);
     LISP_CLASS(kinematics,KinPkg,Conformation_O,"Conformation");
 #if INIT_TO_FACTORIES
  public:
-    static Conformation_sp make(const core::Cons_sp& oligomers);
+    static Conformation_sp make(core::List_sp oligomers);
 #else
     DECLARE_INIT();
 #endif

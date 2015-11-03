@@ -51,10 +51,13 @@ namespace kinematics
 
     void ExecutableAtomTreeWalkFunctor::operator()(kinematics::Atom_sp atom) const
     {
+      IMPLEMENT_MEF(BF("Improve this"));
+#if 0
 	core::Cons_sp args = core::Cons_O::create(atom);
-	core::ValueFrame_sp frame(core::ValueFrame_O::create(args,core::ActivationFrame_O::_nil));
+	core::ValueFrame_sp frame(core::ValueFrame_O::create(args,_Nil<core::T_O>());
 	core::eval::apply(this->_Callback,frame);
 //	this->_Callback->evaluate(args,_lisp->nil<core::Environment_O>(),this->lisp());
+#endif
     }
 
 
@@ -276,15 +279,15 @@ namespace kinematics
 					      Atom_sp parent,
 					      bool rootNode)
     {_OF();
-	core::Cons_sp constitutionAndTopology = monomerNode->identifyConstitutionAndTopology(db);
-	chem::Constitution_sp constitution = constitutionAndTopology->ocar().as<chem::Constitution_O>();
-	chem::Topology_sp topology = constitutionAndTopology->ocadr().as<chem::Topology_O>();
+	core::List_sp constitutionAndTopology = monomerNode->identifyConstitutionAndTopology(db);
+	chem::Constitution_sp constitution = oCar(constitutionAndTopology).as<chem::Constitution_O>();
+	chem::Topology_sp topology = oCadr(constitutionAndTopology).as<chem::Topology_O>();
 	{_BLOCK_TRACEF(BF("Building constitution[%s] Topology[%s]")
 		       % constitution->getName()->__repr__() % topology->getName()->__repr__() );
 	    chem::ConstitutionAtoms_sp constitutionAtoms = constitution->getConstitutionAtoms();
 	    this->resizeAtoms(moleculeId,residueId,constitutionAtoms->numberOfAtoms());
-	    AtomTemplate_sp atomTemplate = topology->properties()->lookup(_lisp->intern(":atomTemplate")).as<AtomTemplate_O>();
-	    BondId_sp incoming = BondId_O::create(parent,Atom_O::_nil);
+	    AtomTemplate_sp atomTemplate = topology->properties()->gethash(_lisp->intern(":atomTemplate")).as<AtomTemplate_O>();
+	    BondId_sp incoming = BondId_O::create(parent,_Nil<core::T_O>());
 	    AtomTemplate_O::PlugNamesToBondIdMap outgoing;
 	    //
 	    // Write the sub tree described by atomTemplate into the AtomTree
@@ -301,18 +304,18 @@ namespace kinematics
 	    // create their children and connect them to our OutPlug atoms
 	    //
 	    chem::Topology_O::Plugs::iterator it;
-	    for ( it=topology->begin_Plugs(); it!=topology->end_Plugs(); it++ )
+	    for ( it=topology->_Plugs.begin(); it!=topology->_Plugs.end(); it++ )
 	    {
 		if ( (it->second)->isAssignableTo<chem::OutPlug_O>() )
 		{
 		    chem::OutPlug_O::smart_ptr outPlug = (it->second).as<chem::OutPlug_O>();
-		    string atomB0 = outPlug->getB0();
+                    core::Symbol_sp atomB0 = outPlug->getB0();
 		    int  constitutionBond0AtomId = constitutionAtoms->index(atomB0);
 		    chem::AtomId atomId(moleculeId,residueId,constitutionBond0AtomId);
 		    RefCountedAtomHandle bond0AtomHandle =
 			RefCountedAtomHandle(this->_AtomMap[atomId]);
 		    Atom_sp bond0Parent = Atom_O::create(bond0AtomHandle);
-		    MonomerNode_sp nextMonomerNode = monomerNode->_Children.get(outPlug->getName(),_lisp);
+		    MonomerNode_sp nextMonomerNode = monomerNode->_Children.get(outPlug->getName());
 		    int nextResidueId = nextMonomerNode->_MonomerId;
 		    ASSERT(nextResidueId<(int)this->_AtomMap[moleculeId].size());
 		    this->recursivelyBuildMolecule(moleculeId,nextResidueId,db,nextMonomerNode,bond0Parent);
@@ -356,9 +359,9 @@ namespace kinematics
     string AtomTree_O::__repr__() const
     {_OF();
 	stringstream ss;
-	ss << (BF("Dump of AtomTree")).str() << endl;
+	ss << (BF("Dump of AtomTree")).str() << std::endl;
 	ss << (BF("    Unused list start=%d")
-	       % this->_AtomHolders.firstUnusedMember() ).str() << endl;;
+	       % this->_AtomHolders.firstUnusedMember() ).str() << std::endl;;
 	for ( int i=0; i<this->_AtomHolders.size(); i++ )
 	{
 	    AtomHolder const & holder = this->_AtomHolders[i];
@@ -366,13 +369,13 @@ namespace kinematics
 		   % i
 		   % holder.refCount()
 		   % holder.typeAsString()
-		   % holder.nodeIndex() ).str() << endl;
+		   % holder.nodeIndex() ).str() << std::endl;
 	}
-	ss << this->_JumpAtoms.dump() << endl;
-	ss << this->_OriginJumpAtoms.dump() << endl;
-	ss << this->_BondedAtoms.dump() << endl;
-	ss << this->_RootBondedAtoms.dump() << endl;
-	ss << this->_DelayedBondedAtoms.dump() << endl;
+	ss << this->_JumpAtoms.dump() << std::endl;
+	ss << this->_OriginJumpAtoms.dump() << std::endl;
+	ss << this->_BondedAtoms.dump() << std::endl;
+	ss << this->_RootBondedAtoms.dump() << std::endl;
+	ss << this->_DelayedBondedAtoms.dump() << std::endl;
 	return ss.str();
     }
 

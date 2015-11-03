@@ -38,7 +38,7 @@ namespace chem {
 void PathMessage_O::initialize()
 {
     this->Base::initialize();
-    this->_beep = _Nil<core::SimpleBitVector_O>();
+    this->_beep = _Nil<core::T_O>();
     this->_firstVertex= _Nil<AGVertex_O>();
     this->_lastVertex = _Nil<AGVertex_O>();
     this->_firstEdge = _Nil<AGEdge_O>();
@@ -52,12 +52,13 @@ void PathMessage_O::initialize()
     LOG(BF(" beep.nilp() = %d") % orig._beep.nilp()  );
     if ( orig._beep.nilp() ) 
     {
-	this->_beep = _Nil<core::SimpleBitVector_O>();
+	this->_beep = _Nil<core::T_O>();
 	LOG(BF("Setting this->_beep to nil") );
     } else 
     {
 	LOG(BF("Copying this->_beep") );
-	this->_beep = orig._beep->deepCopy().as<core::SimpleBitVector_O>();
+        core::T_sp sbv = orig._beep->deepCopy();
+        this->_beep = gc::As<core::SimpleBitVector_sp>(sbv);
     }
     LOG(BF("Done copy beep") );
     this->_firstVertex = orig._firstVertex;

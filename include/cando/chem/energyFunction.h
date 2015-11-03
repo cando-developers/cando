@@ -156,7 +156,7 @@ public:
 public:
     void	_eraseMissingParameters() { this->_MissingParameters.clear();};
     void	_addMissingParameter(const string& s) { this->_MissingParameters.insert(s);};
-    void __createSecondaryAmideRestraints(VectorAtom& nitrogens);
+    void __createSecondaryAmideRestraints(VectorAtom& nitrogens, core::T_sp activeAtoms );
 
 
 
@@ -165,8 +165,8 @@ public:
     void	flagImproperRestraintsAboveThreshold(NVector_sp nvPosition);
 
 private:
-    void _applyRestraints(ForceField_sp forceField, core::Iterator_sp restraintIterator);
-    void _applyDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double min, double max, double weight);
+    void _applyRestraints(ForceField_sp forceField, core::Iterator_sp restraintIterator, core::T_sp activeAtoms );
+    void _applyDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double min, double max, double weight, core::T_sp activeAtoms );
 
 public:
 
@@ -244,24 +244,24 @@ public:
     double		calculateEnergy();
     double		calculateEnergyAndForce();
 
-    void	defineForMatter(Matter_sp agg, ForceField_sp forceField );
+    void	defineForMatter(Matter_sp agg, ForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>() );
 
 
     /*! Add the restraints to the energy function.
      * This allows restraints to be applied to the system
      * without having to add them to the molecule/aggregate.
      */
-    void	addTermsForListOfRestraints( ForceField_sp forceField,  core::List_sp restraintList );
+    void	addTermsForListOfRestraints( ForceField_sp forceField,  core::List_sp restraintList, core::T_sp activeAtoms );
 
 
     double	calculateNumericalDerivative(NVector_sp pos, double delta, uint i );
     double	calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j );
     double	evaluateAll( 	NVector_sp pos,
 				bool calcForce,
-				NVector_sp force,
+				gc::Nilable<NVector_sp> force,
        				bool calcDiagonalHessian,
 				bool calcOffDiagonalHessian,
-				AbstractLargeSquareMatrix_sp	hessian,
+				gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
 				NVector_sp hdvec, NVector_sp dvec	);
     double	evaluateEnergy( NVector_sp pos );
     double	evaluateEnergyForce( NVector_sp pos, bool calcForce, NVector_sp force );
@@ -301,6 +301,7 @@ public:
 };
 
 
+ bool inAtomSet(core::T_sp atomSet, Atom_sp atom);
 
 #define	FINITE_DIFFERENCE_TOLERANCE 0.10
 int	_areValuesClose(double numVal, double analVal, const char* funcName, const char* termName, int index );

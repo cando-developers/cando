@@ -3,9 +3,10 @@
 <CDXML
  CreationProgram="ChemDraw 12.0.2.1092"
  Name="fuzi.cdxml"
- BoundingBox="156.53 197.85 482.28 425.48"
+ BoundingBox="156.52 197.85 482.27 425.48"
  WindowPosition="0 0"
  WindowSize="0 0"
+ WindowIsZoomed="yes"
  FractionalWidths="yes"
  InterpretChemically="yes"
  ShowAtomQuery="yes"
@@ -53,7 +54,7 @@
 <font id="47136" charset="x-mac-roman" name="Arial"/>
 <font id="21" charset="x-mac-roman" name="Helvetica"/>
 </fonttable><page
- id="29098"
+ id="29100"
  BoundingBox="0 0 719.9 539.9"
  HeaderPosition="36"
  FooterPosition="36"
@@ -62,11 +63,12 @@
  WidthPages="1"
 ><fragment
  id="29091"
- BoundingBox="156.53 197.85 482.28 425.48"
+ BoundingBox="156.52 197.85 482.27 425.48"
 ><n
  id="28892"
  p="458.82 222.17"
- Z="145"
+ Z="146"
+ color="6"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -74,7 +76,8 @@
 /><n
  id="28893"
  p="449.88 202.32"
- Z="146"
+ Z="147"
+ color="6"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -82,7 +85,8 @@
 /><n
  id="28894"
  p="428.25 204.67"
- Z="147"
+ Z="148"
+ color="6"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -90,8 +94,8 @@
 /><n
  id="28895"
  p="423.79 225.99"
- Z="148"
- color="0"
+ Z="149"
+ color="6"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -102,12 +106,15 @@
 ><t
  p="421.29 229.21"
  BoundingBox="421.29 221.69 427.79 229.21"
- color="0"
+ color="6"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Left"
-><s font="47136" size="9" color="0" face="96">N</s></t></n><n
+><s font="47136" size="9" color="6" face="96">N</s></t></n><n
  id="28896"
  p="442.7 236.8"
- Z="149"
+ Z="150"
+ color="6"
  Warning="ChemDraw can’t interpret this label."
  ShowAtomStereo="no"
  LabelSize="10"
@@ -118,21 +125,26 @@
 ><t
  p="439.82 240.12"
  BoundingBox="439.82 232.37 453.82 240.12"
+ color="6"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Left"
  LabelAlignment="Left"
-><s font="21" size="9" face="96">C.e</s></t><objecttag
+><s font="21" size="9" color="6" face="96">C.e</s></t><objecttag
  TagType="Unknown"
  Visible="no"
  Name="stereo"
 ><t
  p="201.56 295.38"
  BoundingBox="201.56 287.74 213.56 295.38"
+ color="6"
  Visible="no"
  CaptionLineHeight="variable"
-><s font="47136" size="9" face="2">(S)</s></t></objecttag></n><n
+><s font="47136" size="9" color="6" face="2">(S)</s></t></objecttag></n><n
  id="28897"
  p="404.99 236.94"
- Z="155"
+ Z="156"
+ color="4"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -140,7 +152,8 @@
 /><n
  id="28898"
  p="405.06 258.72"
- Z="156"
+ Z="157"
+ color="4"
  Warning="ChemDraw can’t interpret this label."
  ShowAtomStereo="no"
  LabelSize="10"
@@ -149,24 +162,28 @@
  NeedsClean="yes"
  AS="u"
 ><t
- p="402.19 262.04"
- BoundingBox="402.19 254.29 416.19 262.04"
+ p="402.18 262.04"
+ BoundingBox="402.18 254.29 416.18 262.04"
+ color="4"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Left"
  LabelAlignment="Left"
-><s font="21" size="9" face="96">C.d</s></t><objecttag
+><s font="21" size="9" color="4" face="96">C.d</s></t><objecttag
  TagType="Unknown"
  Visible="no"
  Name="stereo"
 ><t
  p="223.59 279.53"
  BoundingBox="223.59 271.89 235.59 279.53"
+ color="4"
  Visible="no"
  CaptionLineHeight="variable"
-><s font="47136" size="9" face="2">(S)</s></t></objecttag></n><n
+><s font="47136" size="9" color="4" face="2">(S)</s></t></objecttag></n><n
  id="28899"
  p="428.95 273.02"
- Z="157"
- color="0"
+ Z="158"
+ color="4"
  Warning="ChemDraw can’t interpret this label."
  ShowAtomStereo="no"
  LabelSize="10"
@@ -175,16 +192,19 @@
  NeedsClean="yes"
  AS="N"
 ><t
- p="431.93 276.25"
- BoundingBox="417.93 268.72 431.93 276.25"
- color="0"
+ p="431.93 276.24"
+ BoundingBox="417.93 268.72 431.93 276.24"
+ color="4"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Right"
  Justification="Right"
  LabelAlignment="Right"
-><s font="47136" size="9" color="0" face="96">N.d</s></t></n><n
+><s font="47136" size="9" color="4" face="96">N.d</s></t></n><n
  id="28900"
  p="442.77 258.58"
- Z="158"
+ Z="159"
+ color="4"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -192,7 +212,8 @@
 /><n
  id="28901"
  p="385.14 249.94"
- Z="164"
+ Z="165"
+ color="5"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -200,7 +221,8 @@
 /><n
  id="28902"
  p="370.63 266.17"
- Z="165"
+ Z="166"
+ color="5"
  Warning="ChemDraw can’t interpret this label."
  ShowAtomStereo="no"
  LabelSize="10"
@@ -209,25 +231,29 @@
  NeedsClean="yes"
  AS="N"
 ><t
- p="373.11 269.5"
- BoundingBox="359.61 261.74 373.11 269.5"
+ p="373.1 269.49"
+ BoundingBox="359.6 261.74 373.1 269.49"
+ color="5"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Right"
  Justification="Right"
  LabelAlignment="Right"
-><s font="21" size="9" face="96">C.c</s></t><objecttag
+><s font="21" size="9" color="5" face="96">C.c</s></t><objecttag
  TagType="Unknown"
  Visible="no"
  Name="stereo"
 ><t
  p="251.77 262.18"
  BoundingBox="251.77 254.54 263.77 262.18"
+ color="5"
  Visible="no"
  CaptionLineHeight="variable"
-><s font="47136" size="9" face="2">(S)</s></t></objecttag></n><n
+><s font="47136" size="9" color="5" face="2">(S)</s></t></objecttag></n><n
  id="28903"
  p="381.58 284.98"
- Z="166"
- color="0"
+ Z="167"
+ color="5"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -238,12 +264,15 @@
 ><t
  p="379.08 288.2"
  BoundingBox="379.08 280.68 385.58 288.2"
- color="0"
+ color="5"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Left"
-><s font="47136" size="9" color="0" face="96">N</s></t></n><n
+><s font="47136" size="9" color="5" face="96">N</s></t></n><n
  id="28904"
  p="402.86 280.38"
- Z="167"
+ Z="168"
+ color="4"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -251,7 +280,8 @@
 /><n
  id="28905"
  p="348.85 266.25"
- Z="173"
+ Z="174"
+ color="5"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -259,8 +289,8 @@
 /><n
  id="28906"
  p="338.04 285.15"
- Z="174"
- color="0"
+ Z="175"
+ color="5"
  Warning="ChemDraw can’t interpret this label."
  ShowAtomStereo="no"
  LabelSize="10"
@@ -269,16 +299,19 @@
  NeedsClean="yes"
  AS="N"
 ><t
- p="341.02 288.38"
- BoundingBox="327.02 280.85 341.02 288.38"
- color="0"
+ p="341.02 288.37"
+ BoundingBox="327.02 280.85 341.02 288.37"
+ color="5"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Right"
  Justification="Right"
  LabelAlignment="Right"
-><s font="47136" size="9" color="0" face="96">N.b</s></t></n><n
+><s font="47136" size="9" color="5" face="96">N.b</s></t></n><n
  id="28907"
  p="348.99 303.96"
- Z="175"
+ Z="176"
+ color="5"
  Warning="ChemDraw can’t interpret this label."
  ShowAtomStereo="no"
  LabelSize="10"
@@ -287,23 +320,28 @@
  NeedsClean="yes"
  AS="u"
 ><t
- p="346.12 307.28"
- BoundingBox="346.12 299.52 360.12 307.28"
+ p="346.11 307.28"
+ BoundingBox="346.11 299.53 360.11 307.28"
+ color="5"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Left"
  LabelAlignment="Left"
-><s font="21" size="9" face="96">C.b</s></t><objecttag
+><s font="21" size="9" color="5" face="96">C.b</s></t><objecttag
  TagType="Unknown"
  Visible="no"
  Name="stereo"
 ><t
  p="247.07 235.17"
  BoundingBox="247.07 227.53 259.57 235.17"
+ color="5"
  Visible="no"
  CaptionLineHeight="variable"
-><s font="47136" size="9" face="2">(R)</s></t></objecttag></n><n
+><s font="47136" size="9" color="5" face="2">(R)</s></t></objecttag></n><n
  id="28908"
  p="370.77 303.88"
- Z="176"
+ Z="177"
+ color="5"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -311,7 +349,8 @@
 /><n
  id="28909"
  p="327.35 306.32"
- Z="182"
+ Z="183"
+ color="5"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -319,7 +358,8 @@
 /><n
  id="28910"
  p="322.9 327.63"
- Z="183"
+ Z="184"
+ color="8"
  Warning="ChemDraw can’t interpret this label."
  ShowAtomStereo="no"
  LabelSize="10"
@@ -330,24 +370,28 @@
  LabelDisplay="Center"
 ><t
  p="322.9 330.95"
- BoundingBox="315.9 323.19 329.9 330.95"
+ BoundingBox="315.9 323.2 329.9 330.95"
+ color="8"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Center"
  Justification="Center"
  LabelAlignment="Below"
-><s font="21" size="9" face="96">C.a</s></t><objecttag
+><s font="21" size="9" color="8" face="96">C.a</s></t><objecttag
  TagType="Unknown"
  Visible="no"
  Name="stereo"
 ><t
  p="250.93 201.37"
  BoundingBox="250.93 193.73 263.43 201.37"
+ color="8"
  Visible="no"
  CaptionLineHeight="variable"
-><s font="47136" size="9" face="2">(R)</s></t></objecttag></n><n
+><s font="47136" size="9" color="8" face="2">(R)</s></t></objecttag></n><n
  id="28911"
  p="341.8 338.45"
- Z="184"
- color="0"
+ Z="185"
+ color="8"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -356,15 +400,18 @@
  NeedsClean="yes"
  AS="N"
 ><t
- p="339.3 341.68"
- BoundingBox="339.3 334.15 345.8 341.68"
- color="0"
+ p="339.3 341.67"
+ BoundingBox="339.3 334.15 345.8 341.67"
+ color="8"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Left"
  LabelAlignment="Above"
-><s font="47136" size="9" color="0" face="96">N</s></t></n><n
+><s font="47136" size="9" color="8" face="96">N</s></t></n><n
  id="28912"
  p="357.92 323.82"
- Z="185"
+ Z="186"
+ color="8"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -372,8 +419,8 @@
 /><n
  id="28913"
  p="461.67 269.39"
- Z="191"
- color="0"
+ Z="192"
+ color="4"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -384,13 +431,15 @@
 ><t
  p="458.59 272.66"
  BoundingBox="458.59 265.02 465.59 272.66"
- color="0"
+ color="4"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Left"
-><s font="47136" size="9" color="0" face="96">O</s></t></n><n
+><s font="47136" size="9" color="4" face="96">O</s></t></n><n
  id="28914"
  p="386.08 226.13"
- Z="193"
- color="0"
+ Z="194"
+ color="4"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -401,12 +450,16 @@
 ><t
  p="383 229.4"
  BoundingBox="383 221.76 390 229.4"
- color="0"
+ color="4"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Left"
-><s font="47136" size="9" color="0" face="96">O</s></t></n><n
+ LabelAlignment="Right"
+><s font="47136" size="9" color="4" face="96">O</s></t></n><n
  id="28915"
  p="447.65 315.8"
- Z="195"
+ Z="196"
+ color="4"
  Warning="ChemDraw can’t interpret this label."
  ShowAtomStereo="no"
  LabelSize="10"
@@ -416,16 +469,18 @@
  AS="N"
 ><t
  p="455.08 319.5"
- BoundingBox="435.37 310.86 455.08 321.75"
+ BoundingBox="435.37 310.87 455.08 321.75"
+ color="4"
  LabelSize="10"
  LabelFace="65535"
  LabelJustification="Right"
  Justification="Right"
  LabelAlignment="Right"
-><s font="21" size="10" face="96">C.d2</s></t></n><n
+><s font="21" size="10" color="4" face="96">C.d2</s></t></n><n
  id="28916"
  p="469.32 313.62"
- Z="197"
+ Z="198"
+ color="4"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -433,7 +488,8 @@
 /><n
  id="28917"
  p="478.27 293.78"
- Z="199"
+ Z="200"
+ color="4"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -441,7 +497,8 @@
 /><n
  id="28918"
  p="482.03 331.3"
- Z="201"
+ Z="202"
+ color="4"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -449,8 +506,8 @@
 /><n
  id="28919"
  p="381.72 322.69"
- Z="203"
- color="0"
+ Z="204"
+ color="4"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -459,15 +516,17 @@
  NeedsClean="yes"
  AS="N"
 ><t
- p="378.65 325.96"
- BoundingBox="378.65 318.32 385.65 325.96"
- color="0"
+ p="378.64 325.96"
+ BoundingBox="378.64 318.32 385.64 325.96"
+ color="4"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Left"
-><s font="47136" size="9" color="0" face="96">O</s></t></n><n
+><s font="47136" size="9" color="4" face="96">O</s></t></n><n
  id="28920"
  p="337.9 247.44"
- Z="205"
- color="0"
+ Z="206"
+ color="5"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -476,14 +535,16 @@
  NeedsClean="yes"
  AS="N"
 ><t
- p="334.83 250.72"
- BoundingBox="334.83 243.07 341.83 250.72"
- color="0"
+ p="334.82 250.71"
+ BoundingBox="334.82 243.07 341.82 250.71"
+ color="5"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Left"
-><s font="47136" size="9" color="0" face="96">O</s></t></n><n
+><s font="47136" size="9" color="5" face="96">O</s></t></n><n
  id="28921"
  p="258.79 239.93"
- Z="207"
+ Z="208"
  Warning="ChemDraw can’t interpret this label."
  ShowAtomStereo="no"
  LabelSize="10"
@@ -494,13 +555,15 @@
 ><t
  p="265.47 243.25"
  BoundingBox="247.72 235.5 265.47 245.3"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Right"
  Justification="Right"
  LabelAlignment="Right"
 ><s font="21" size="9" face="96">C.b2</s></t></n><n
  id="28922"
  p="247.73 221.17"
- Z="209"
+ Z="210"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -508,7 +571,7 @@
 /><n
  id="28923"
  p="225.97 221.36"
- Z="211"
+ Z="212"
  color="0"
  ShowAtomStereo="no"
  LabelSize="10"
@@ -518,16 +581,18 @@
  NeedsClean="yes"
  AS="N"
 ><t
- p="229.89 224.63"
- BoundingBox="216.39 216.99 229.89 224.63"
+ p="229.9 224.63"
+ BoundingBox="216.4 216.99 229.9 224.63"
  color="0"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Right"
  Justification="Right"
  LabelAlignment="Right"
 ><s font="47136" size="9" color="0" face="96">OH</s></t></n><n
  id="28924"
  p="258.45 202.22"
- Z="213"
+ Z="214"
  color="0"
  ShowAtomStereo="no"
  LabelSize="10"
@@ -540,11 +605,13 @@
  p="255.37 205.49"
  BoundingBox="255.37 197.85 262.37 205.49"
  color="0"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Left"
 ><s font="47136" size="9" color="0" face="96">O</s></t></n><n
  id="28925"
  p="257.34 290.6"
- Z="215"
+ Z="216"
  Warning="ChemDraw can’t interpret this label."
  ShowAtomStereo="no"
  LabelSize="10"
@@ -554,15 +621,17 @@
  AS="N"
  LabelDisplay="Center"
 ><t
- p="257.34 293.93"
- BoundingBox="248.46 286.17 266.21 295.98"
+ p="257.34 293.92"
+ BoundingBox="248.46 286.17 266.21 295.97"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Center"
  Justification="Center"
  LabelAlignment="Above"
 ><s font="21" size="9" face="96">C.a2</s></t></n><n
  id="28926"
  p="237.04 298.48"
- Z="217"
+ Z="218"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -570,7 +639,7 @@
 /><n
  id="28927"
  p="220.07 284.85"
- Z="219"
+ Z="220"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -578,7 +647,7 @@
 /><n
  id="28928"
  p="199.78 292.73"
- Z="220"
+ Z="221"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -586,7 +655,7 @@
 /><n
  id="28929"
  p="196.45 314.24"
- Z="221"
+ Z="222"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -594,7 +663,7 @@
 /><n
  id="28930"
  p="213.42 327.89"
- Z="222"
+ Z="223"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -602,7 +671,7 @@
 /><n
  id="28931"
  p="233.71 320.01"
- Z="223"
+ Z="224"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -610,7 +679,7 @@
 /><n
  id="28932"
  p="182.81 279.09"
- Z="230"
+ Z="231"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -618,7 +687,7 @@
 /><n
  id="28933"
  p="162.51 286.97"
- Z="231"
+ Z="232"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -626,7 +695,7 @@
 /><n
  id="28934"
  p="159.17 308.48"
- Z="232"
+ Z="233"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -634,7 +703,7 @@
 /><n
  id="28935"
  p="176.15 322.12"
- Z="233"
+ Z="234"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -642,7 +711,8 @@
 /><n
  id="28936"
  p="304.09 338.59"
- Z="239"
+ Z="240"
+ color="8"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -650,8 +720,8 @@
 /><n
  id="28937"
  p="304.17 360.36"
- Z="240"
- color="0"
+ Z="241"
+ color="9"
  Warning="ChemDraw can’t interpret this label."
  ShowAtomStereo="no"
  LabelSize="10"
@@ -662,14 +732,17 @@
 ><t
  p="306.62 363.58"
  BoundingBox="293.12 356.06 306.62 363.58"
- color="0"
+ color="9"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Right"
  Justification="Right"
  LabelAlignment="Right"
-><s font="47136" size="9" color="0" face="96">N.z</s></t></n><n
+><s font="47136" size="9" color="9" face="96">N.z</s></t></n><n
  id="28938"
  p="323.06 371.17"
- Z="241"
+ Z="242"
+ color="9"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -677,7 +750,8 @@
 /><n
  id="28939"
  p="341.88 360.22"
- Z="242"
+ Z="243"
+ color="9"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -685,8 +759,8 @@
 /><n
  id="28940"
  p="283.27 332.21"
- Z="248"
- color="0"
+ Z="249"
+ color="8"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -695,15 +769,17 @@
  NeedsClean="yes"
  AS="N"
 ><t
- p="280.2 335.49"
- BoundingBox="280.2 327.85 287.2 335.49"
- color="0"
+ p="280.19 335.48"
+ BoundingBox="280.19 327.84 287.19 335.48"
+ color="8"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Left"
-><s font="47136" size="9" color="0" face="96">O</s></t></n><n
+><s font="47136" size="9" color="8" face="96">O</s></t></n><n
  id="28941"
  p="362.7 366.59"
- Z="250"
- color="0"
+ Z="251"
+ color="9"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -712,14 +788,16 @@
  NeedsClean="yes"
  AS="N"
 ><t
- p="359.62 369.87"
- BoundingBox="359.62 362.23 366.62 369.87"
- color="0"
+ p="359.62 369.86"
+ BoundingBox="359.62 362.22 366.62 369.86"
+ color="9"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Left"
-><s font="47136" size="9" color="0" face="96">O</s></t></n><n
+><s font="47136" size="9" color="9" face="96">O</s></t></n><n
  id="28942"
  p="252.56 399.18"
- Z="252"
+ Z="253"
  Warning="ChemDraw can’t interpret this label."
  ShowAtomStereo="no"
  LabelSize="10"
@@ -730,14 +808,16 @@
  LabelDisplay="Center"
 ><t
  p="252.56 402.5"
- BoundingBox="243.94 394.74 261.19 404.55"
+ BoundingBox="243.93 394.75 261.18 404.55"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Center"
  Justification="Center"
  LabelAlignment="Below"
 ><s font="21" size="9" face="96">C.z2</s></t></n><n
  id="28943"
  p="232.93 389.76"
- Z="254"
+ Z="255"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -745,7 +825,8 @@
 /><n
  id="28944"
  p="304.25 382.14"
- Z="256"
+ Z="257"
+ color="9"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -753,7 +834,7 @@
 /><n
  id="28945"
  p="304.33 403.9"
- Z="257"
+ Z="258"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -761,7 +842,7 @@
 /><n
  id="28946"
  p="323.23 414.73"
- Z="258"
+ Z="259"
  color="0"
  ShowAtomStereo="no"
  LabelSize="10"
@@ -774,13 +855,15 @@
  p="320.73 417.95"
  BoundingBox="320.73 410.43 327.23 425.48"
  color="0"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Left"
  LabelAlignment="Below"
  LineStarts="2 3"
 ><s font="47136" size="9" color="0" face="96">NH</s></t></n><n
  id="28974"
  p="342.04 403.77"
- Z="259"
+ Z="260"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -790,7 +873,8 @@
 /><n
  id="28975"
  p="341.96 382"
- Z="260"
+ Z="261"
+ color="9"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -798,7 +882,7 @@
 /><n
  id="28976"
  p="232.22 368"
- Z="267"
+ Z="268"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -806,7 +890,7 @@
 /><n
  id="28977"
  p="213.03 357.72"
- Z="268"
+ Z="269"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -814,7 +898,7 @@
 /><n
  id="28978"
  p="194.53 369.22"
- Z="269"
+ Z="270"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -822,7 +906,7 @@
 /><n
  id="28979"
  p="195.24 390.97"
- Z="270"
+ Z="271"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -830,7 +914,7 @@
 /><n
  id="28980"
  p="214.43 401.25"
- Z="271"
+ Z="272"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -838,7 +922,7 @@
 /><n
  id="28981"
  p="175.33 358.94"
- Z="278"
+ Z="279"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -846,7 +930,7 @@
 /><n
  id="28982"
  p="156.83 370.42"
- Z="279"
+ Z="280"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -854,7 +938,7 @@
 /><n
  id="28983"
  p="157.54 392.19"
- Z="280"
+ Z="281"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -862,7 +946,7 @@
 /><n
  id="28984"
  p="176.74 402.47"
- Z="281"
+ Z="282"
  ShowAtomStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -870,7 +954,7 @@
 /><n
  id="29062"
  p="369.81 413.45"
- Z="287"
+ Z="288"
  Warning="ChemDraw can’t interpret this label."
  ShowAtomStereo="no"
  LabelSize="10"
@@ -881,11 +965,14 @@
 ><t
  p="369.36 416.7"
  BoundingBox="369.36 409.12 420.36 416.7"
+ LabelSize="10"
+ LabelFace="65535"
  LabelJustification="Left"
  LabelAlignment="Left"
 ><s font="21" size="9" face="96">:NAME FUZI</s></t></n><b
  id="28985"
- Z="150"
+ Z="151"
+ color="6"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -894,7 +981,8 @@
  BS="N"
 /><b
  id="28986"
- Z="151"
+ Z="152"
+ color="6"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -903,7 +991,8 @@
  BS="N"
 /><b
  id="28987"
- Z="152"
+ Z="153"
+ color="6"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -912,7 +1001,8 @@
  BS="N"
 /><b
  id="28988"
- Z="153"
+ Z="154"
+ color="6"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -921,7 +1011,8 @@
  BS="N"
 /><b
  id="28989"
- Z="154"
+ Z="155"
+ color="6"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -930,7 +1021,8 @@
  BS="N"
 /><b
  id="28990"
- Z="159"
+ Z="160"
+ color="4"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -939,7 +1031,8 @@
  BS="N"
 /><b
  id="28991"
- Z="160"
+ Z="161"
+ color="4"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -948,7 +1041,8 @@
  BS="N"
 /><b
  id="28992"
- Z="161"
+ Z="162"
+ color="4"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -957,7 +1051,8 @@
  BS="N"
 /><b
  id="28993"
- Z="162"
+ Z="163"
+ color="4"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -966,7 +1061,8 @@
  BS="N"
 /><b
  id="28994"
- Z="163"
+ Z="164"
+ color="4"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -975,7 +1071,8 @@
  BS="N"
 /><b
  id="28995"
- Z="168"
+ Z="169"
+ color="4"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -984,7 +1081,8 @@
  BS="N"
 /><b
  id="28996"
- Z="169"
+ Z="170"
+ color="5"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -993,7 +1091,8 @@
  BS="N"
 /><b
  id="28997"
- Z="170"
+ Z="171"
+ color="5"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1002,7 +1101,8 @@
  BS="N"
 /><b
  id="28998"
- Z="171"
+ Z="172"
+ color="4"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1011,7 +1111,8 @@
  BS="N"
 /><b
  id="28999"
- Z="172"
+ Z="173"
+ color="4"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1020,7 +1121,8 @@
  BS="N"
 /><b
  id="29000"
- Z="177"
+ Z="178"
+ color="5"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1029,7 +1131,8 @@
  BS="N"
 /><b
  id="29001"
- Z="178"
+ Z="179"
+ color="5"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1038,7 +1141,8 @@
  BS="N"
 /><b
  id="29002"
- Z="179"
+ Z="180"
+ color="5"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1047,7 +1151,8 @@
  BS="N"
 /><b
  id="29003"
- Z="180"
+ Z="181"
+ color="5"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1056,7 +1161,8 @@
  BS="N"
 /><b
  id="29004"
- Z="181"
+ Z="182"
+ color="5"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1065,7 +1171,8 @@
  BS="N"
 /><b
  id="29005"
- Z="186"
+ Z="187"
+ color="5"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1074,7 +1181,7 @@
  BS="N"
 /><b
  id="29006"
- Z="187"
+ Z="188"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1083,7 +1190,8 @@
  BS="N"
 /><b
  id="29007"
- Z="188"
+ Z="189"
+ color="8"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1092,7 +1200,8 @@
  BS="N"
 /><b
  id="29008"
- Z="189"
+ Z="190"
+ color="8"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1101,7 +1210,8 @@
  BS="N"
 /><b
  id="29009"
- Z="190"
+ Z="191"
+ color="4"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1110,7 +1220,8 @@
  BS="N"
 /><b
  id="29010"
- Z="192"
+ Z="193"
+ color="4"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1120,7 +1231,8 @@
  BS="N"
 /><b
  id="29011"
- Z="194"
+ Z="195"
+ color="4"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1130,7 +1242,8 @@
  BS="N"
 /><b
  id="29012"
- Z="196"
+ Z="197"
+ color="4"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1139,7 +1252,8 @@
  BS="N"
 /><b
  id="29013"
- Z="198"
+ Z="199"
+ color="4"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1148,7 +1262,8 @@
  BS="N"
 /><b
  id="29014"
- Z="200"
+ Z="201"
+ color="4"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1157,7 +1272,8 @@
  BS="N"
 /><b
  id="29015"
- Z="202"
+ Z="203"
+ color="4"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1166,7 +1282,8 @@
  BS="N"
 /><b
  id="29016"
- Z="204"
+ Z="205"
+ color="4"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1176,7 +1293,8 @@
  BS="N"
 /><b
  id="29017"
- Z="206"
+ Z="207"
+ color="5"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1186,7 +1304,7 @@
  BS="N"
 /><b
  id="29018"
- Z="208"
+ Z="209"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1195,7 +1313,7 @@
  BS="N"
 /><b
  id="29019"
- Z="210"
+ Z="211"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1204,7 +1322,7 @@
  BS="N"
 /><b
  id="29020"
- Z="212"
+ Z="213"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1213,7 +1331,7 @@
  BS="N"
 /><b
  id="29021"
- Z="214"
+ Z="215"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1223,7 +1341,7 @@
  BS="N"
 /><b
  id="29022"
- Z="216"
+ Z="217"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1232,7 +1350,7 @@
  BS="N"
 /><b
  id="29023"
- Z="218"
+ Z="219"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1241,7 +1359,7 @@
  BS="N"
 /><b
  id="29024"
- Z="224"
+ Z="225"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1252,7 +1370,7 @@
  BondCircularOrdering="29029 29023 0 29025"
 /><b
  id="29025"
- Z="225"
+ Z="226"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1261,7 +1379,7 @@
  BS="N"
 /><b
  id="29026"
- Z="226"
+ Z="227"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1272,7 +1390,7 @@
  BondCircularOrdering="29025 29030 29034 29027"
 /><b
  id="29027"
- Z="227"
+ Z="228"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1281,7 +1399,7 @@
  BS="N"
 /><b
  id="29028"
- Z="228"
+ Z="229"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1292,7 +1410,7 @@
  BondCircularOrdering="29027 0 0 29029"
 /><b
  id="29029"
- Z="229"
+ Z="230"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1301,7 +1419,7 @@
  BS="N"
 /><b
  id="29030"
- Z="234"
+ Z="235"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1310,7 +1428,7 @@
  BS="N"
 /><b
  id="29031"
- Z="235"
+ Z="236"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1321,7 +1439,7 @@
  BondCircularOrdering="29030 0 0 29032"
 /><b
  id="29032"
- Z="236"
+ Z="237"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1330,7 +1448,7 @@
  BS="N"
 /><b
  id="29033"
- Z="237"
+ Z="238"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1341,7 +1459,7 @@
  BondCircularOrdering="29032 0 0 29034"
 /><b
  id="29034"
- Z="238"
+ Z="239"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1350,7 +1468,8 @@
  BS="N"
 /><b
  id="29035"
- Z="243"
+ Z="244"
+ color="8"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1359,7 +1478,7 @@
  BS="N"
 /><b
  id="29036"
- Z="244"
+ Z="245"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1368,7 +1487,8 @@
  BS="N"
 /><b
  id="29037"
- Z="245"
+ Z="246"
+ color="9"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1377,7 +1497,8 @@
  BS="N"
 /><b
  id="29038"
- Z="246"
+ Z="247"
+ color="9"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1386,7 +1507,7 @@
  BS="N"
 /><b
  id="29039"
- Z="247"
+ Z="248"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1396,7 +1517,8 @@
  EndAttach="0"
 /><b
  id="29040"
- Z="249"
+ Z="250"
+ color="8"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1406,7 +1528,8 @@
  BS="N"
 /><b
  id="29041"
- Z="251"
+ Z="252"
+ color="9"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1416,7 +1539,7 @@
  BS="N"
 /><b
  id="29042"
- Z="253"
+ Z="254"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1425,7 +1548,7 @@
  BS="N"
 /><b
  id="29043"
- Z="255"
+ Z="256"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1434,7 +1557,8 @@
  BS="N"
 /><b
  id="29044"
- Z="261"
+ Z="262"
+ color="9"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1443,7 +1567,7 @@
  BS="N"
 /><b
  id="29045"
- Z="262"
+ Z="263"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1452,7 +1576,7 @@
  BS="N"
 /><b
  id="29046"
- Z="263"
+ Z="264"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1461,7 +1585,7 @@
  BS="N"
 /><b
  id="29047"
- Z="264"
+ Z="265"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1470,7 +1594,7 @@
  BS="N"
 /><b
  id="29048"
- Z="265"
+ Z="266"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1479,7 +1603,8 @@
  BS="N"
 /><b
  id="29049"
- Z="266"
+ Z="267"
+ color="9"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1488,7 +1613,7 @@
  BS="N"
 /><b
  id="29050"
- Z="272"
+ Z="273"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1499,7 +1624,7 @@
  BondCircularOrdering="29055 29043 0 29051"
 /><b
  id="29051"
- Z="273"
+ Z="274"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1508,7 +1633,7 @@
  BS="N"
 /><b
  id="29052"
- Z="274"
+ Z="275"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1519,7 +1644,7 @@
  BondCircularOrdering="29051 0 29056 29053"
 /><b
  id="29053"
- Z="275"
+ Z="276"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1528,7 +1653,7 @@
  BS="N"
 /><b
  id="29054"
- Z="276"
+ Z="277"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1539,7 +1664,7 @@
  BondCircularOrdering="29053 29060 0 29055"
 /><b
  id="29055"
- Z="277"
+ Z="278"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1548,7 +1673,7 @@
  BS="N"
 /><b
  id="29056"
- Z="282"
+ Z="283"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1557,7 +1682,7 @@
  BS="N"
 /><b
  id="29057"
- Z="283"
+ Z="284"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1568,7 +1693,7 @@
  BondCircularOrdering="29056 0 0 29058"
 /><b
  id="29058"
- Z="284"
+ Z="285"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1577,7 +1702,7 @@
  BS="N"
 /><b
  id="29059"
- Z="285"
+ Z="286"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1588,7 +1713,7 @@
  BondCircularOrdering="29058 0 0 29060"
 /><b
  id="29060"
- Z="286"
+ Z="287"
  ShowBondStereo="no"
  LabelSize="10"
  LabelFace="65535"
@@ -1597,7 +1722,7 @@
  BS="N"
 /><b
  id="29096"
- Z="318"
+ Z="289"
  B="28974"
  E="29062"
  Display="Hash"

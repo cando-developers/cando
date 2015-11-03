@@ -98,11 +98,12 @@ private:
     int					_ResidueNetCharge;
     gctools::SmallOrderedSet<core::Symbol_sp> 	_Flags;
     bool					_SuppressTrainers;
-    Plugs					_Plugs;
     adapt::SymbolMap<StereoisomerAtoms_O>       	_StereoisomerAtomProperties;
     core::HashTableEq_sp			_Properties;
 private:	// Do not archive
     core::T_sp				_TemporaryObject;
+ public:
+    Plugs					_Plugs;
 	
 public:
     typedef gctools::Vec0<ExtractFragment_sp>::iterator	iterateExtractFragments;

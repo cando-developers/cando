@@ -28,7 +28,7 @@ public:
 private:
 	/*! Store weak pointers to the other ring closing monomers indexed
 	  by the name of the ring closing plug */
-	core::WeakSymbolMap<RingClosingMonomerNode_O>	_RingClosingChildren;
+	adapt::SymbolMap<RingClosingMonomerNode_O>	_RingClosingChildren;
 public:
 	// Functions here
 

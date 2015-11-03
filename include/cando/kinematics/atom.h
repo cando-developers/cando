@@ -2,7 +2,7 @@
 #define kinematics_atom_H
 
 #include <clasp/core/foundation.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 #include <cando/kinematics/atomTree.fwd.h>
 #include <cando/kinematics/dofType.h>
 #include <cando/kinematics/stub.fwd.h>

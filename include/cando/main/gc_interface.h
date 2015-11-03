@@ -48,10 +48,6 @@ namespace clbind {
 class ConstructorCreator;
 };
 
-namespace chem {
-  class ExtractFragment_O;
-};
-
 
 #ifdef USE_MPS
   #ifndef RUNNING_GC_BUILDER // when running the static analyzer - don't include the following

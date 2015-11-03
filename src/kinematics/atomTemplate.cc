@@ -71,7 +71,7 @@ namespace kinematics
 
     void Checkpoint_O::setupDelayedBondedAtom(DelayedBondedAtom* atom) const
     {_OF();
-	chem::CandoDatabase_sp cdb = chem::getCandoDatabase(_lisp);
+	chem::CandoDatabase_sp cdb = chem::getCandoDatabase();
 	chem::Constitution_sp constitution = cdb->constitutionForNameOrPdb(this->_ConstitutionName);
 	chem::ConstitutionAtoms_sp constitutionAtoms = constitution->getConstitutionAtoms();
 	chem::ConstitutionAtom_sp constitutionAtom = constitutionAtoms->atomWithName(this->atomName());
@@ -107,11 +107,10 @@ namespace kinematics
 #define ARGS_CheckpointAtom_O_make "(atom-name)"
 #define DECL_CheckpointAtom_O_make ""
 #define DOCS_CheckpointAtom_O_make "make CheckpointAtom"
-    CheckpointAtom_sp CheckpointAtom_O::make(const string& atomName)
+CheckpointAtom_sp CheckpointAtom_O::make(core::Symbol_sp atomName)
     {_G();
         GC_ALLOCATE(CheckpointAtom_O, me );
 	me->_AtomName = atomName;
-	ASSERTF(me->_AtomName!="",BF("You must provide atomName"));
 	return me;
     };
 
@@ -244,7 +243,7 @@ namespace kinematics
 #define ARGS_AtomTemplate_O_make "(id comment parent)"
 #define DECL_AtomTemplate_O_make ""
 #define DOCS_AtomTemplate_O_make "make AtomTemplate"
-  AtomTemplate_sp AtomTemplate_O::make(const int id, const string& comment, const AtomTemplate_sp& parent)
+  AtomTemplate_sp AtomTemplate_O::make(const int id, const string& comment, const AtomTemplate_sp parent)
     {_G();
         GC_ALLOCATE(AtomTemplate_O, me );
 	me->_Id = id;
@@ -278,20 +277,19 @@ namespace kinematics
 
 
 
-    string AtomTemplate_O::atomName(chem::ConstitutionAtoms_sp constitutionAtoms) const
+core::Symbol_sp AtomTemplate_O::atomName(chem::ConstitutionAtoms_sp constitutionAtoms) const
     {
-	if ( this->_Id==-1) return "undefined-name";
+      if ( this->_Id==-1) return _Nil<core::Symbol_O>();
 	chem::ConstitutionAtom_sp ca = (*constitutionAtoms)[this->_Id];
 	return ca->atomName();
     }
 	
 
 
-    AtomTemplate_sp AtomTemplate_O::parent() const
-    {_OF();
-	if ( !this->_Parent.pointerp() ) return _Nil<AtomTemplate_O>();
-	return this->_Parent;
-    }
+gc::Nilable<AtomTemplate_sp> AtomTemplate_O::parent() const
+{
+  return this->_Parent;
+}
 	
 
 
@@ -361,6 +359,13 @@ namespace kinematics
 #endif
 
 
+core::List_sp BondedAtomTemplate_O::children() {
+  core::List_sp l = _Nil<core::T_O>();
+  for ( int i(0), iEnd(this->_Children.size()); i<iEnd; ++i ) {
+    l = core::Cons_O::create(this->_Children[i],l);
+  }
+  return l;
+}
 
 
     void BondedAtomTemplate_O::addChildren(Atom_sp& me,

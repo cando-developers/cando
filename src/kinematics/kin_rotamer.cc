@@ -37,7 +37,7 @@ namespace kinematics
 #define ARGS_Rotamer_O_make "(dihedrals sigmas indicies probability count)"
 #define DECL_Rotamer_O_make ""
 #define DOCS_Rotamer_O_make "make Rotamer"
-  Rotamer_sp Rotamer_O::make(core::Cons_sp& dihedrals, core::Cons_sp& sigmas, core::Cons_sp& indices, const double probability, const int count)
+  Rotamer_sp Rotamer_O::make(core::List_sp dihedrals, core::List_sp sigmas, core::List_sp indices, const double probability, const int count)
     {_G();
 	GC_ALLOCATE(Rotamer_O, me );
       me->_Count = count;
@@ -45,15 +45,15 @@ namespace kinematics
 	      BF("Mismatch between #dihedrals[%d] and #sigmas[%d]")
 	      % dihedrals->length() % sigmas->length() );
       me->_Probability = probability;
-      for ( ; dihedrals.notnilp(); dihedrals = dihedrals->cdr(),
-	      sigmas = sigmas->cdr(),
-	      indices = indices->cdr() )
+      for ( ; dihedrals.notnilp(); dihedrals = oCdr(dihedrals),
+	      sigmas = oCdr(sigmas),
+	      indices = oCdr(indices) )
 	{
-	  me->_Dihedrals.push_back(dihedrals->car<core::DoubleFloat_O>()->get());
-	  me->_Sigmas.push_back(sigmas->car<core::DoubleFloat_O>()->get());
-	  if ( indices->ocar().notnilp() )
+	  me->_Dihedrals.push_back(oCar(dihedrals).as<core::DoubleFloat_O>()->get());
+	  me->_Sigmas.push_back(oCar(sigmas).as<core::DoubleFloat_O>()->get());
+	  if ( oCar(indices).notnilp() )
 	    {
-	      me->_Indices.push_back(indices->car<core::Fixnum_O>()->get());
+	      me->_Indices.push_back(oCar(indices).as<core::Fixnum_I>().unsafe_fixnum());
 	    } else
 	    {
 	      me->_Indices.push_back(0);
@@ -150,7 +150,7 @@ namespace kinematics
 	core::class_<RotamerSetBase_O>()
 //	.def_raw("__init__",&RotamerSetBase_O::__init__,"(self)")
 	    .def("rotamer-set-add-rotamer",&RotamerSetBase_O::addRotamer)
-	    .def("rotamer-set-as-cons",&RotamerSetBase_O::asCons)
+	    .def("rotamer-set-as-list",&RotamerSetBase_O::asList)
 	    .def("rotamer-set-size",&RotamerSetBase_O::size)
 	    .def("rotamer-set-get",&RotamerSetBase_O::get)
 	;
@@ -205,7 +205,7 @@ namespace kinematics
 
     Rotamer_sp RotamerSetBase_O::addRotamer(Rotamer_sp rotamer)
     {_OF();
-	this->_Rotamers.append(rotamer);
+	this->_Rotamers.push_back(rotamer);
 	return rotamer;
     }
 
@@ -216,7 +216,7 @@ namespace kinematics
     }
     
 
-    core::Cons_sp RotamerSetBase_O::asCons() const
+core::List_sp RotamerSetBase_O::asList() const
     {_OF();
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>());
 	core::Cons_sp cur = first;
@@ -226,7 +226,7 @@ namespace kinematics
 	    cur->setCdr(one);
 	    cur = one;
 	}
-	return first->cdr();
+	return oCdr(first);
     }
 
 
@@ -369,7 +369,7 @@ namespace kinematics
 	core::class_<BackboneDependentRotamerLibrary_O>()
 //	    .def_raw("__init__",&BackboneDependentRotamerLibrary_O::__init__,"(self &key phiStart phiStep phiCount psiStart psiStep psiCount)")
 	    .def("backbone-dependent-rotamer-library-add-rotamer-set",&BackboneDependentRotamerLibrary_O::addRotamerSet)
-	    .def("backbone-dependent-rotamer-library-rotamer-sets-as-cons",&BackboneDependentRotamerLibrary_O::rotamerSetsAsCons)
+	    .def("backbone-dependent-rotamer-library-rotamer-sets-as-cons",&BackboneDependentRotamerLibrary_O::rotamerSetsAsList)
 	    ;
 //	    .def("backbone-dependent-rotamer-library-add-rotamer",&BackboneDependentRotamerLibrary_O::rotamerSetAddRotamer)
 //	    .def("backbone-dependent-rotamer-library-as-cons",&BackboneDependentRotamerLibrary_O::rotamerSetAsCons)
@@ -384,7 +384,7 @@ namespace kinematics
 	PYTHON_CLASS(KinPkg,BackboneDependentRotamerLibrary,"","",_lisp)
 //	    .def_raw("__init__",&"(self &key phiStart phiStep phiCount psiStart psiStep psiCount)")
 	    .def("backbone-dependent-rotamer-library-add-rotamer-set",&BackboneDependentRotamerLibrary_O::addRotamerSet)
-	    .def("backbone-dependent-rotamer-library-rotamer-sets-as-cons",&BackboneDependentRotamerLibrary_O::rotamerSetsAsCons)
+	    .def("backbone-dependent-rotamer-library-rotamer-sets-as-cons",&BackboneDependentRotamerLibrary_O::rotamerSetsAsList)
 	    ;
 #endif
 //	    .def("backbone-dependent-rotamer-library-add-rotamer",&BackboneDependentRotamerLibrary_O::rotamerSetAddRotamer)
@@ -505,7 +505,7 @@ namespace kinematics
 	this->_RotamerSets[idx] = rotamerSet;
     }
 
-    core::Cons_sp BackboneDependentRotamerLibrary_O::rotamerSetsAsCons() const
+    core::List_sp BackboneDependentRotamerLibrary_O::rotamerSetsAsList() const
     {_OF();
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>());
 	core::Cons_sp cur = first;
@@ -515,7 +515,7 @@ namespace kinematics
 	    cur->setCdr(one);
 	    cur = one;
 	}
-	return first->cdr();
+	return oCdr(first);
     }
 
 }; /* kinematics */

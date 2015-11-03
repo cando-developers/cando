@@ -250,10 +250,10 @@ bool		calcOffDiagonalHessian = true;
 void	EnergyChiralRestraint_O::evaluateAll(
 		chem::NVector_sp 	pos,
 		bool 		calcForce,
-		chem::NVector_sp 	force,
+		gc::Nilable<chem::NVector_sp> 	force,
        		bool		calcDiagonalHessian,
 		bool		calcOffDiagonalHessian,
-		chem::AbstractLargeSquareMatrix_sp	hessian,
+		gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
 		chem::NVector_sp	hdvec, chem::NVector_sp dvec)
 {_G();
     if ( this->_DebugEnergy ) 

@@ -30,6 +30,21 @@
 
 #include <cando/chem/chemPackage.h>
 
+namespace chem {
+
+struct AtomInfo {
+    	Atom_sp		_Atom;
+    core::Symbol_sp 		_SybylType;
+};
+struct ResidueOut {
+	Residue_sp	res;
+	uint		firstAtom;
+};
+
+
+
+
+};
 
 namespace chem {
 

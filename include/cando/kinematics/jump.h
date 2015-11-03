@@ -2,7 +2,7 @@
 #define kinematics_jump_H
 
 #include <clasp/core/foundation.h>
-#include <cando/candoBase/matrix.h>
+#include <cando/geom/matrix.h>
 #include <cando/kinematics/stub.fwd.h>
 #include <cando/kinematics/dofType.h>
 #include <cando/kinematics/kinFoundation.h>

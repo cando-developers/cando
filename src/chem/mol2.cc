@@ -568,17 +568,6 @@ void	mol2ReadAggregateFromFileName( Aggregate_sp aggregate, core::T_sp sFileName
 
 
 
-struct ResidueOut {
-	Residue_sp	res;
-	uint		firstAtom;
-};
-
-
-struct AtomInfo {
-    	Atom_sp		_Atom;
-    core::Symbol_sp 		_SybylType;
-};
-
 void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out )
 {_G();
 Loop		loop, lRes;

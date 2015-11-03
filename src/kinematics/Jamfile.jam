@@ -1,4 +1,4 @@
-import bundler ;
+
 local dir = $(__file__:D) ;
 
 #
@@ -6,14 +6,13 @@ local dir = $(__file__:D) ;
 # <variant>release:<define>SOURCE_DEBUG
 #
 project kinematics : requirements
-	<target-os>darwin:<linkflags>"-dynamiclib"
 	;
 
 
 local sources = 
 	atomTemplate.cc
 	chiDihedrals.cc
-	rotamer.cc
+	kin_rotamer.cc
 	rootAtomInfo.cc
 	dofType.cc
 	stub.cc
@@ -28,7 +27,7 @@ local sources =
 	conformation.cc
 	kinematicsPackage.cc
 	atomTree.cc
-	atom.cc
+        kin_atom.cc
 	atomo.cc
 	monomerId.cc
 	bondId.cc
@@ -37,10 +36,9 @@ local sources =
 	jumpAtom.cc
 	originJumpAtom.cc
 	rootBondedAtom.cc
-	/externals//boostAndExpatLibs
-	/internals/core//bundle/<link>static
-	/modules/addon//bundle/<link>static
-	/modules/chem//bundle/<link>static
+#	/externals//boostAndExpatLibs
+#	/internals//core
+#	/internals//gctools
 		;
 
 alias kinematics : $(sources) ;

@@ -62,7 +62,7 @@ namespace kinematics
 
 
 
-    void KinematicsExposer::expose(core::Lisp_sp lisp,core::PackageExposer::WhatToExpose what) const
+    void KinematicsExposer::expose(core::Lisp_sp lisp,core::Exposer::WhatToExpose what) const
     {_G();
 	switch (what)
 	{
@@ -88,6 +88,7 @@ namespace kinematics
 #define ALL_STAGES
 #define Use_KinPkg
 #define INVOKE_REGISTER
+#define LOOKUP_SYMBOL(pkg,name) _lisp->internWithPackageName(pkg,name)
 #include INIT_CLASSES_INC_H
 #undef INVOKE_REGISTER
 #undef Use_KinPkg
@@ -150,7 +151,7 @@ extern "C"
     STATIC_CLASS_INFO(_T_);			\
     INTRUSIVE_POINTER_REFERENCE_COUNT_ACCESSORS(_T_);
 #define Use_KinPkg
-#include <kinematics_initClasses_inc.h>
+#include INIT_CLASSES_INC_H
 #undef Use_KinPkg
 #undef _CLASS_MACRO
 #undef EXPAND_CLASS_MACROS

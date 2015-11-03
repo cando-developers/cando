@@ -97,10 +97,10 @@ namespace chem {
          * used to uniquely refer to the monomer
          */
 	core::Symbol_sp			_Id;
-	Couplings			_Couplings;
 	string				_Comment; //!< this will help identify monomers that have errors
 	uint				_SequenceNumber;
     public: // archive
+	Couplings			_Couplings;
 	Residue_wp			_TempResidue;
 	int				_TemporaryInt;
     protected: // archive

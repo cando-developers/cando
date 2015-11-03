@@ -90,10 +90,10 @@ namespace kinematics
 	{
 	    stringstream ss;
 	    ss << "Pool[" << this->_Comment << "]";
-	    ss << "  _FirstUnusedMember = " << this->_FirstUnusedMember << endl;
+	    ss << "  _FirstUnusedMember = " << this->_FirstUnusedMember << std::endl;
 	    for ( int zz=0; zz<(int)this->_Pool.size(); zz++ )
 	    {
-		ss << "    Element["<<zz<<"] = " << this->_Pool[zz].nextUnusedMember() << endl;
+              ss << "    Element["<<zz<<"] = " << this->_Pool[zz].nextUnusedMember() << std::endl;
 	    }
 	    return ss.str();
 	}

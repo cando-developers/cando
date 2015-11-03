@@ -11,7 +11,7 @@ namespace kinematics
 {
     FORWARD(ChainNode);
 
-    typedef map<chem::Monomer_sp,MonomerNode_sp>	RingClosingMonomerMap;
+    typedef core::HashTableEq_sp	RingClosingMonomerMap;
 
 
 }; /* kinematics */

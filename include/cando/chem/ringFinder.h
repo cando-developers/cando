@@ -29,8 +29,8 @@ class PathMessage_O : public core::CxxObject_O
 public:
 	void initialize();
 private:
-    RingFinder_wp	_graph;
-    core::SimpleBitVector_sp _beep;
+    RingFinder_sp	_graph;
+    gc::Nilable<core::SimpleBitVector_sp> _beep;
     AGVertex_sp	_firstVertex;
     AGEdge_sp	_firstEdge;
     AGVertex_sp	_lastVertex;

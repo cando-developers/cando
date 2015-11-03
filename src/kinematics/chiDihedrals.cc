@@ -144,7 +144,7 @@ namespace kinematics
 
     void ChiList_O::append(ChiDihedral_sp chi)
     {_OF();
-	this->_Chis.append(chi);
+	this->_Chis.push_back(chi);
     }
 
     

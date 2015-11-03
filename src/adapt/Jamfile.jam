@@ -21,9 +21,9 @@ local sources =
       stringSet.cc
       symbolList.cc
       symbolSet.cc
-	    /externals//boostAndExpatLibs
-            /internals//core
-	    /internals//gctools
+#	    /externals//boostAndExpatLibs
+#            /internals//core
+#	    /internals//gctools
 ;
 
 alias adapt : $(sources) ;

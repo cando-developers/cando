@@ -69,15 +69,15 @@ namespace kinematics
     }
 
 
-    MonomerNode_sp ChainNode_O::monomerNodeFactory(ChainNode_O* chainNode,
-						   RingClosingMonomerMap& ringClosingMonomerMap,
-						   chem::Monomer_sp monomer, core::Lisp_sp lisp )
+    MonomerNode_sp ChainNode_O::monomerNodeFactory(ChainNode_sp chainNode,
+						   RingClosingMonomerMap ringClosingMonomerMap,
+						   chem::Monomer_sp monomer )
     {_G();
 	int seqId = monomer->getSequenceNumber();
 	if ( monomer->hasRingClosingOutPlug() )
 	{
 	    RingClosingMonomerNode_sp monomerNode = RingClosingMonomerNode_O::create(seqId);
-	    ringClosingMonomerMap[monomer] = monomerNode;
+	    ringClosingMonomerMap->setf_gethash(monomer,monomerNode);
 	    chainNode->_IndexedMonomerNodes[seqId] = monomerNode;
 	    return monomerNode;
 	}
@@ -86,9 +86,9 @@ namespace kinematics
 	return monomerNode;
     }
 
-    void ChainNode_O::makeRingClosingConnections(RingClosingMonomerMap& ringClosings)
+    void ChainNode_O::makeRingClosingConnections(RingClosingMonomerMap ringClosings)
     {_OF();
-	if ( ringClosings.size() == 0 ) return;
+	if ( ringClosings->size() == 0 ) return;
 	IMPLEMENT_ME(); // Make connections between RingClosingMonomerNodes
     }
 
@@ -98,11 +98,11 @@ namespace kinematics
     void ChainNode_O::buildUsingOligomer(chem::Oligomer_sp oligomer, int chainId)
     {_OF();
 	chem::Monomer_sp rootMonomer = oligomer->rootMonomer();
-	RingClosingMonomerMap	ringClosingMonomerMap;
-	MonomerNode_sp rootMonomerNode = this->monomerNodeFactory(this,ringClosingMonomerMap,rootMonomer,_lisp);
+	RingClosingMonomerMap	ringClosingMonomerMap = core::HashTableEq_O::create_default();
+	MonomerNode_sp rootMonomerNode = this->monomerNodeFactory(this->asSmartPtr(),ringClosingMonomerMap,rootMonomer);
 	rootMonomerNode->recursivelyBuildChildren(this->sharedThis<ChainNode_O>(),
-						  ringClosingMonomerMap,MonomerNode_O::_nil,
-						  chem::DirectionalCoupling_O::_nil,rootMonomer);
+						  ringClosingMonomerMap,_Nil<core::T_O>(),
+						  _Nil<core::T_O>(),rootMonomer);
 	this->makeRingClosingConnections(ringClosingMonomerMap);
 	this->_RootMonomerNode = rootMonomerNode;
     }

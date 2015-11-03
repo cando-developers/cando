@@ -70,21 +70,6 @@ namespace chem
 
     };
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     inline	string	XmlTag_Atom() { return "Atom";};
 
     // Atom flags
@@ -435,8 +420,6 @@ namespace chem
 	int             getBondedHydrogenCount();
 
 	virtual	bool testConsistancy(Matter_sp c);
-
-
 	void invertStructureAndRestraints();
 	//
 	// Configuration
@@ -524,10 +507,8 @@ namespace chem
     public:
 	void addBond(Bond_sp bond);
 
-
-
-
-	DEFAULT_CTOR_DTOR(Atom_O);
+        Atom_O() {};
+        virtual ~Atom_O() {};
     };
 
 #if 0

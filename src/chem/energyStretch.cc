@@ -238,10 +238,10 @@ namespace chem {
     void EnergyStretch_O::evaluateAll(
 	NVector_sp 	pos,
 	bool 		calcForce,
-	NVector_sp 	force,
+	gc::Nilable<NVector_sp> 	force,
 	bool		calcDiagonalHessian,
 	bool		calcOffDiagonalHessian,
-	AbstractLargeSquareMatrix_sp	hessian,
+	gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
 	NVector_sp	hdvec, NVector_sp dvec)
     { _G();
 	if ( this->_DebugEnergy ) 

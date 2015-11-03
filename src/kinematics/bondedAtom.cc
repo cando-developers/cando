@@ -196,7 +196,7 @@ namespace kinematics
 	ss << (BF("  _Distance[%lf]  _Theta[%lf]/deg  _Phi[%lf]/deg")
 	       % this->_Distance
 	       % (this->_Theta/0.0174533)
-	       % (this->_Phi/0.0174533) ).str() << endl;
+	       % (this->_Phi/0.0174533) ).str() << std::endl;
 	return ss.str();
     }
 

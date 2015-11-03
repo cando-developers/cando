@@ -2,7 +2,7 @@
 
 #include <clasp/core/common.h>
 #include <clasp/core/environment.h>
-#include <clasp/core/symbolSet.h>
+#include <cando/adapt/symbolSet.h>
 #include <cando/chem/monomer.h>
 #include <cando/chem/coupling.h>
 #include <cando/chem/constitution.h>
@@ -83,9 +83,9 @@ namespace kinematics
 
 
     void MonomerNode_O::recursivelyBuildChildren(ChainNode_sp chainNode,
-						 RingClosingMonomerMap& ringClosingMonomerMap,
-						 MonomerNode_sp parent,
-						 chem::DirectionalCoupling_sp coupling,
+						 RingClosingMonomerMap ringClosingMonomerMap,
+						 gctools::Nilable<MonomerNode_sp> parent,
+						 gctools::Nilable<chem::DirectionalCoupling_sp> coupling,
 						 chem::Monomer_sp monomer)
     {_G();
 	LOG(BF("recursivelyBuildChildren on monomer[%s]") % monomer->getName()->__repr__() );
@@ -98,13 +98,13 @@ namespace kinematics
 		    % this->_ParentPlugName->__repr__() );
 	} else
 	{
-	    this->_ParentPlugName = core::Symbol_O::_nil;
+          this->_ParentPlugName = _Nil<core::Symbol_O>();
 	}
 	this->_MonomerName = monomer->getName();
 	this->_Topology = monomer->getTopology();
 	this->_ConformationIndex = 0;
-	for ( chem::Monomer_O::Couplings::const_iterator it=monomer->begin_WeakCouplings();
-	      it!=monomer->end_WeakCouplings(); it++ )
+	for ( chem::Monomer_O::Couplings::const_iterator it=monomer->_Couplings.begin();
+	      it!=monomer->_Couplings.end(); it++ )
 	{
 	    chem::Coupling_sp coupling = it->second;
 	    if ( coupling->isRingClosing() ) continue;
@@ -112,7 +112,7 @@ namespace kinematics
 	    chem::DirectionalCoupling_sp dirCoupling = coupling.as<chem::DirectionalCoupling_O>();
 	    if ( dirCoupling->getInMonomer() != monomer ) continue;
 	    chem::Monomer_sp otherMonomer = dirCoupling->getOutMonomer();
-	    MonomerNode_sp otherMonomerNode = ChainNode_O::monomerNodeFactory(chainNode.get(),ringClosingMonomerMap,otherMonomer,_lisp);
+	    MonomerNode_sp otherMonomerNode = ChainNode_O::monomerNodeFactory(chainNode,ringClosingMonomerMap,otherMonomer);
 	    core::Symbol_sp outPlugName = dirCoupling->getInMonomerPlugName();
 	    ASSERTF(chem::DirectionalCoupling_O::isOutPlugName(outPlugName),
 		    BF("Problem - this[%s] should be an OutPlug name but it isnt")
@@ -126,7 +126,7 @@ namespace kinematics
     }
 
 
-    core::Cons_sp MonomerNode_O::identifyConstitutionAndTopology(chem::CandoDatabase_sp db)
+    core::List_sp MonomerNode_O::identifyConstitutionAndTopology(chem::CandoDatabase_sp db)
     {_OF();
 	chem::Constitution_sp constitution = db->constitutionForNameOrPdb(this->_MonomerName);
 	if ( constitution.nilp() )
@@ -134,12 +134,12 @@ namespace kinematics
 	    SIMPLE_ERROR(BF("Could not find Constitution for monomer[%s]")
 			       % this->_MonomerName->__repr__() );
 	}
-	core::SymbolSet_sp myPlugNameSet = core::SymbolSet_O::create();
+	adapt::SymbolSet_sp myPlugNameSet = adapt::SymbolSet_O::create();
 	if ( this->_ParentPlugName.notnilp() )
 	{
 	    myPlugNameSet->insert(this->_ParentPlugName);
 	}
-	for ( core::SymbolMap<MonomerNode_O>::iterator it=this->_Children.begin();
+	for ( adapt::SymbolMap<MonomerNode_O>::iterator it=this->_Children.begin();
 	      it!=this->_Children.end(); it++ )
 	{
 	    myPlugNameSet->insert(it->first);
@@ -177,8 +177,8 @@ namespace kinematics
 	output << this->className()
 	       << "["
 	       << this->_MonomerName->__repr__()
-	       << "]" << endl;
-	for ( core::SymbolMap<MonomerNode_O>::const_iterator it=this->_Children.begin();
+	       << "]" << std::endl;
+	for ( adapt::SymbolMap<MonomerNode_O>::const_iterator it=this->_Children.begin();
 	      it!=this->_Children.end(); it++ )
 	{
 	    it->second->describeRecursivelyIntoStringStream(prefix+"  ",output);

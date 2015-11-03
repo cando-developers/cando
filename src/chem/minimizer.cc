@@ -750,7 +750,7 @@ Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceF
 
 
 
-    void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
+void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
 					       NVector_sp nvPos, NVector_sp nvDir, NVector_sp nvForce,
 					       double xa, double xb, double xc,
 					       double fa, double fb, double fc )
@@ -847,7 +847,7 @@ Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceF
 
 
 
-    void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, double fMin,
+void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, double fMin,
 					     int energyEvals, int forceEvals, int dbrentSteps )
     {_OF();
     ASSERT(report->_Iteration == this->_Iteration);
@@ -1017,7 +1017,7 @@ Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceF
 					       NVector_sp x,
 					       double forceTolerance )
     {_G();
-	StepReport_sp	stepReport = _Nil<StepReport_O>();
+      StepReport_sp	stepReport = StepReport_O::create();
 	int		iRestartSteps;
 	NVector_sp	force, m;
 	NVector_sp	s,dir,tv1,tv2;
@@ -1253,7 +1253,6 @@ Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceF
 		    {
 			ASSERTNOTNULL(this->_Log);
 			this->_Log->addReport(stepReport);
-			stepReport = _Nil<StepReport_O>();
 		    }
 		    localSteps++;
 		    this->_Iteration++;
@@ -1273,7 +1272,6 @@ Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceF
 		{
 		    stepReport->prematureTermination("ExceededNumSteps");
 		    this->_Log->addReport(stepReport);
-		    stepReport = _Nil<StepReport_O>();
 		}
 	    }
 
@@ -1300,7 +1298,6 @@ Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceF
 		LOG(BF("About to write report to debugLog") );
 		this->_Log->addReport(stepReport);
 		LOG(BF("Done writing report to debugLog") );
-		stepReport = _Nil<StepReport_O>();
 	    }
 	}
 	LOG(BF("Leaving _steepestDescent") );
@@ -1313,7 +1310,7 @@ Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceF
 	NVector_sp x,
 	double forceTolerance )
     {_G();
-	StepReport_sp	stepReport = _Nil<StepReport_O>();
+      StepReport_sp	stepReport = StepReport_O::create();
     int		iRestartSteps;
     NVector_sp	force, diag;
     SparseLargeSquareMatrix_sp	m,ldlt;
@@ -1554,7 +1551,6 @@ Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceF
 		{
 		    ASSERTNOTNULL(this->_Log);
 		    this->_Log->addReport(stepReport);
-		    stepReport = _Nil<StepReport_O>();
 		}
 		localSteps++;
 		this->_Iteration++;
@@ -1571,7 +1567,6 @@ Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceF
 	    {
 		stepReport->prematureTermination("ExceededNumSteps");
 		this->_Log->addReport(stepReport);
-		stepReport = _Nil<StepReport_O>();
 	    }
 	}
 	//
@@ -1588,7 +1583,6 @@ Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceF
 	    {
 		stepReport->prematureTermination("Stuck");
 		this->_Log->addReport(stepReport);
-		stepReport = _Nil<StepReport_O>();
 	    }
 	}
 	//
@@ -1607,7 +1601,6 @@ Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceF
 	{
 	    stepReport->prematureTermination("Stuck");
 	    this->_Log->addReport(stepReport);
-	    stepReport = _Nil<StepReport_O>();
 	}
     }
     }
@@ -1635,13 +1628,13 @@ Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceF
     double	nkTimesRmsForceMag, rjDotzj;
     double				djDotqj, forceDotpjNext;
     double				rmsRjMag, rjDotzjNext, betaj;
-    NVector_sp			nvDummy;
-    SparseLargeSquareMatrix_sp	nmDummy;
+    gc::Nilable<NVector_sp>			nvDummy;
+    gc::Nilable<SparseLargeSquareMatrix_sp>	nmDummy;
 
     ASSERTNOTNULL(this->_EnergyFunction);
     LOG(BF("Resetting dummy vector and matrix") );
-    nvDummy = _Nil<NVector_O>();
-    nmDummy = _Nil<SparseLargeSquareMatrix_O>();
+    nvDummy = _Nil<T_O>();
+    nmDummy = _Nil<T_O>();
 
     if ( this->_DebugOn )
     {
@@ -1802,7 +1795,7 @@ Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceF
 	NVector_sp xK,
 	double forceTolerance )
     {_G();
-	StepReport_sp		stepReport = _Nil<StepReport_O>();
+      StepReport_sp	stepReport = StepReport_O::create();
     int	iDimensions;
     double			fp;
     NVector_sp	forceK, pK, pjNext, rj, dj, zj, qj, xKNext, kSum;
@@ -1986,7 +1979,6 @@ Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceF
 	    {
 		ASSERTNOTNULL(this->_Log);
 		this->_Log->addReport(stepReport);
-		stepReport = _Nil<StepReport_O>();
 	    }
 	    if ( kk > numSteps ) {
 		MinimizerCondition_ExceededNumSteps fail;
@@ -2006,7 +1998,6 @@ Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceF
 	    {
 		stepReport->prematureTermination("ExceededNumSteps");
 		this->_Log->addReport(stepReport);
-		stepReport = _Nil<StepReport_O>();
 	    }
 	}
 	//
@@ -2026,7 +2017,6 @@ Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceF
 	{
 	    stepReport->prematureTermination("Stuck");
 	    this->_Log->addReport(stepReport);
-	    stepReport = _Nil<StepReport_O>();
 	}
     }
     }

@@ -71,13 +71,7 @@ namespace kinematics
 	    _Handle(other._Handle)
 	    {};
 
-    Atom_O::~Atom_O()
-	{
-	    if ( this->_AtomTree.pointerp() )
-	    {
-		this->_Handle.reset();
-	    }
-	}
+    Atom_O::~Atom_O() {}
 
     Atom_O& Atom_O::operator=(const Atom_O& other)
 	    {_OF();
@@ -86,7 +80,7 @@ namespace kinematics
 		if ( this != &other ) // avoid self-assignment
 		{
 		    // If we already point to something then dereference it
-		    if ( this->_AtomTree.pointerp() && this->_AtomTree.notnilp() )
+		    if ( this->_AtomTree.generalp() && this->_AtomTree.notnilp() )
 		    {
 			this->_Handle = other._Handle;
 		    }
@@ -200,39 +194,39 @@ namespace kinematics
 	return this->get()->position();
     }
 
-    Atom_sp Atom_O::parent() const
+gc::Nilable<Atom_sp> Atom_O::parent() const
     {_OF();
-	if ( this->_Handle.notDefined() ) return Atom_O::_nil;
+      if ( this->_Handle.notDefined() ) return _Nil<core::T_O>();
 	const Atom* atom = this->_Handle.get();
 	return Atom_O::create(atom->parent());
     }
 
-    Atom_sp Atom_O::stubAtom1() const
+gc::Nilable<Atom_sp> Atom_O::stubAtom1() const
     {_OF();
-	if ( this->_Handle.notDefined() ) return Atom_O::_nil;
+      if ( this->_Handle.notDefined() ) return _Nil<core::T_O>();
 	const Atom* atom = this->_Handle.get();
 	RefCountedAtomHandle sa = atom->stubAtom1();
-	if ( sa.notDefined() ) return Atom_O::_nil;
+	if ( sa.notDefined() ) return _Nil<core::T_O>();
 	return Atom_O::create(sa);
     }
 
-    Atom_sp Atom_O::stubAtom2() const
-    {_OF();
-	if ( this->_Handle.notDefined() ) return Atom_O::_nil;
-	const Atom* atom = this->_Handle.get();
-	RefCountedAtomHandle sa = atom->stubAtom2();
-	if ( sa.notDefined() ) return Atom_O::_nil;
-	return Atom_O::create(sa);
-    }
+gc::Nilable<Atom_sp> Atom_O::stubAtom2() const
+{_OF();
+  if ( this->_Handle.notDefined() ) return _Nil<core::T_O>();
+  const Atom* atom = this->_Handle.get();
+  RefCountedAtomHandle sa = atom->stubAtom2();
+  if ( sa.notDefined() ) return _Nil<core::T_O>();
+  return Atom_O::create(sa);
+}
 
-    Atom_sp Atom_O::stubAtom3(AtomTree_sp at) const
-    {_OF();
-	if ( this->_Handle.notDefined() ) return Atom_O::_nil;
-	const Atom* atom = this->_Handle.get();
-	RefCountedAtomHandle sa = atom->stubAtom3(at);
-	if ( sa.notDefined() ) return Atom_O::_nil;
-	return Atom_O::create(sa);
-    }
+gc::Nilable<Atom_sp> Atom_O::stubAtom3(AtomTree_sp at) const
+{_OF();
+  if ( this->_Handle.notDefined() ) return _Nil<core::T_O>();
+  const Atom* atom = this->_Handle.get();
+  RefCountedAtomHandle sa = atom->stubAtom3(at);
+  if ( sa.notDefined() ) return _Nil<core::T_O>();
+  return Atom_O::create(sa);
+}
 
 
 }; /* kinematics */

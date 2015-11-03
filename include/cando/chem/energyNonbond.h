@@ -152,10 +152,10 @@ public:
 					    AbstractLargeSquareMatrix_sp m );
     virtual	void evaluateAll ( NVector_sp 	pos,
 				   bool 		calcForce,
-				   NVector_sp 	force,
+				   gc::Nilable<NVector_sp> 	force,
 				   bool		calcDiagonalHessian,
 				   bool		calcOffDiagonalHessian,
-				   AbstractLargeSquareMatrix_sp	hessian,
+				   gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
 				   NVector_sp	hdvec,
 				   NVector_sp dvec);
 
@@ -171,7 +171,7 @@ public:
     virtual	double	getEnergy();
 
 
-    void constructFromAtomTable(AtomTable_sp atomTable, ForceField_sp forceField);
+    void constructFromAtomTable(AtomTable_sp atomTable, ForceField_sp forceField, core::T_sp atomSet);
 
     
 

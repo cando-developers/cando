@@ -26,6 +26,7 @@ sources =
                 /cando/adapt
                 /cando/units
                 /cando/chem
+                /cando/kinematics
 		/externals//llvm_lib_globbed
 		/externals//clang_lib_globbed
 		/externals//boostAndExpatLibs
@@ -43,13 +44,11 @@ exe cando : main.cc $(sources)
     ;
 
 exe cando : main.cc $(sources)
-    gc_interface.cc
     /internals/gctools//gclib
     : <gc>mps
     ;
 
 exe cando : main.cc $(sources)
-    gc_interface.cc
     /internals/gctools//gclib
     : <gc>mps-prep
     ;

@@ -26,7 +26,7 @@ public:	// Functions here
 private:
 	// instance variables here
 	/*! Point to the Chains */
-	core::Vector0<ChainNode_O>	_Chains;
+	gctools::Vec0<ChainNode_sp>	_Chains;
 };
 
 }; /* kinematics */

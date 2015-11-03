@@ -33,7 +33,7 @@ namespace kinematics
 	/*! Store the root MonomerNode */
 	MonomerNode_sp		_RootMonomerNode;
 	/*! monomerId index into the MonomerNodes */
-	core::Vector0<MonomerNode_O>	_IndexedMonomerNodes;
+	gctools::Vec0<MonomerNode_sp>	_IndexedMonomerNodes;
     public: // Functions here
 
 	void resizeMonomers(int numMonomers);
@@ -46,10 +46,10 @@ namespace kinematics
 	  has a RingClosingOutPlug or not.  If it does have a RingClosingOutPlug then 
 	  update the RingClosingMonomerMap to map the Monomer_sp to the MonomerNode_sp 
 	  so that we can make RingClosing connections after everything is built */
-	static MonomerNode_sp monomerNodeFactory(ChainNode_O* chainNode, RingClosingMonomerMap& ringClosingMonomerMap, chem::Monomer_sp monomer, core::Lisp_sp lisp);
+	static MonomerNode_sp monomerNodeFactory(ChainNode_sp chainNode, RingClosingMonomerMap ringClosingMonomerMap, chem::Monomer_sp monomer);
 
 	/*! Connect all of the ring closing connections */
-	void makeRingClosingConnections(RingClosingMonomerMap& ringClosings);
+	void makeRingClosingConnections(RingClosingMonomerMap ringClosings);
 
 	/*! Return the monomer with the MonomerId */
 	MonomerNode_sp lookupMonomerId(int monomerId) const;

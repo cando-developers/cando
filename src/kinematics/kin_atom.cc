@@ -25,7 +25,7 @@ namespace kinematics
     string Atom::asString() const
     {_OF();
 	stringstream ss;
-	ss << "Node[" << this->typeSymbol()->__repr__() << "] RefCount["<<this->_Me.refCount()<<"] id=" << this->_Id.asString() << endl;
+	ss << "Node[" << this->typeSymbol()->__repr__() << "] RefCount["<<this->_Me.refCount()<<"] id=" << this->_Id.asString() << std::endl;
 	ss << "Children: ";
 	if ( this->_numberOfChildren() == 0 )
 	{
@@ -39,8 +39,8 @@ namespace kinematics
 		ss << atom->handle().holder()->typeAsString();
 	    }
 	}
-	ss << endl;
-	ss << "Position: " << this->_Position.asString() << endl;
+	ss << std::endl;
+	ss << "Position: " << this->_Position.asString() << std::endl;
 	return ss.str();
     }
 
@@ -125,7 +125,7 @@ namespace kinematics
 #if DEBUG_KIN_ATOM
 	out << this->_Comment;
 #endif
-	out << endl;
+	out << std::endl;
 	string newPrefix = prefix + " ";
 	for ( int i=0; i<this->_numberOfChildren(); i++ )
 	{

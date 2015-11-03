@@ -9,6 +9,7 @@ use-project cando/adapt : src/adapt ;
 use-project cando/geom : src/geom ;
 use-project cando/units : src/units ;
 use-project cando/chem : src/chem ;
+use-project cando/kinematics : src/kinematics ;
 use-project cando/main : src/main ;
 
 

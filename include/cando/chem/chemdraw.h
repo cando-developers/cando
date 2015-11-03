@@ -53,6 +53,7 @@ class CDNode_O : public core::CxxObject_O
   LISP_CLASS(chem,ChemPkg,CDNode_O,"CDNode");
  public:
   uint				_Id;
+  uint                          _Color;
   std::string       		_Label;
   StereochemistryType		_StereochemistryType;
   ConfigurationEnum		_Configuration;

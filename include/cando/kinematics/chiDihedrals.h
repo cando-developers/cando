@@ -70,7 +70,7 @@ public:
 	void initialize();
 
 private: // instance variables here
-	core::Vector0<ChiDihedral_O>	_Chis;
+	gctools::Vec0<ChiDihedral_sp>	_Chis;
 
 public: // Functions here
 

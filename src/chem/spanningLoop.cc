@@ -8,7 +8,8 @@
 #include <clasp/core/common.h>
 
 #include <stdio.h>
-
+#include <clasp/core/designators.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/spanningLoop.h>
 #include <cando/chem/matter.h>
@@ -334,6 +335,15 @@ bool SpanningLoop_O::advanceLoopAndProcessWhenTestTrue(std::function<bool (Atom_
 }
 
 
+core::T_sp SpanningLoop_O::next(core::T_sp funcDesig) {
+  core::Function_sp func = core::coerce::functionDesignator(funcDesig);
+  return this->nextSpanningAtom([&func] (Atom_sp a, Bond_sp b) -> bool {
+      core::T_sp res = core::eval::funcall(func,a,b);
+      return res.notnilp();
+    } );
+}
+
+
     core::List_sp	SpanningLoop_O::allAtoms()
     {
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
@@ -355,6 +365,7 @@ bool SpanningLoop_O::advanceLoopAndProcessWhenTestTrue(std::function<bool (Atom_
 	core::class_<SpanningLoop_O>()
 //	    .def_raw("core:__init__",&SpanningLoop_O::__init__,"(self &key root)")
 	    .def("setTop",&SpanningLoop_O::setTop)
+          .def("next",&SpanningLoop_O::next)
 	    .def("advance",&SpanningLoop_O::advance)
 	    .def("advanceLoopAndProcess",&SpanningLoop_O::advanceLoopAndProcess)
 	    .def("getAtom",&SpanningLoop_O::getAtom)

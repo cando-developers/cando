@@ -20,37 +20,6 @@
 namespace chem
 {
 
-    struct	AtomPdbRec
-    {
-	string _line;
-	// pdb stuff
-	string	_recordName;
-	int	_serial;
-	core::Symbol_sp _name;
-	string	_altLoc;
-	core::Symbol_sp _resName;
-	string _chainId;
-	int	_resSeq;
-	string	_iCode;
-	double	_x;
-	double	_y;
-	double	_z;
-	double	_occupancy;
-	double	_tempFactor;
-	string	_element;
-	string	_charge;
-	// my stuff
-	Atom_sp	_atom;
-	int	_residueIdx;
-	int	_moleculeIdx;
-
-        AtomPdbRec() : _atom(_Nil<Atom_O>()) {};
-	void write(core::T_sp stream);
-	virtual ~AtomPdbRec() {};
-	void parse(const string& line);
-	Atom_sp createAtom();
-    };
-
 
     struct ConnectPdbRec
     {

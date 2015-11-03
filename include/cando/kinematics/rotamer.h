@@ -15,7 +15,7 @@ namespace kinematics
 	LISP_CLASS(kinematics,KinPkg,Rotamer_O,"Rotamer");
 #if INIT_TO_FACTORIES
     public:
-	static Rotamer_sp make(core::Cons_sp& dihedrals, core::Cons_sp& sigmas, core::Cons_sp& indices, const double probability, const int count);
+	static Rotamer_sp make(core::List_sp dihedrals, core::List_sp sigmas, core::List_sp indices, const double probability, const int count);
 #else
 	DECLARE_INIT();
 #endif
@@ -54,10 +54,10 @@ namespace kinematics
 	void initialize();
     public:
     private: // instance variables here
-	core::Vector0<Rotamer_O>	_Rotamers;
+	gctools::Vec0<Rotamer_sp>	_Rotamers;
     public: // Functions here
 	Rotamer_sp addRotamer(Rotamer_sp rotamer);
-	core::Cons_sp asCons() const;
+	core::List_sp asList() const;
 	int size() const { return this->_Rotamers.size();};
 	Rotamer_sp get(int i) const;
     };
@@ -144,12 +144,12 @@ namespace kinematics
 	int	_PsiStep;
 	int	_PsiStart;
 	int	_PsiCount;
-	core::Vector0<BackboneDependentRotamerSet_O>	_RotamerSets;
+	gctools::Vec0<BackboneDependentRotamerSet_sp>	_RotamerSets;
 
 	bool validPhiPsi(int phi, int psi) const;
 	int _index(int phi, int psi, int& mphi, int& mpsi ) const;
 
-	core::Cons_sp rotamerSetsAsCons() const;
+	core::List_sp rotamerSetsAsList() const;
 	void addRotamerSet(BackboneDependentRotamerSet_sp rotamerSet);
     };
 

@@ -69,8 +69,8 @@ namespace translate
 	typedef	kinematics::MonomerId const&		ExpectedType;
 	typedef	kinematics::MonomerId			DeclareType;
 	DeclareType _v;
-	from_object(core::T_sp o) : _v(core::oCar(o)->as<core::Rational_O>()->as_int(),
-				       core::oCadr(o)->as<core::Rational_O>()->as_int()) {}
+    from_object(core::T_sp o) : _v(core::oCar(o).as<core::Fixnum_I>().unsafe_fixnum(),
+                                   core::oCadr(o).as<core::Fixnum_I>().unsafe_fixnum()) {}
     };
 
 

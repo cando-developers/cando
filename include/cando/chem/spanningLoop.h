@@ -68,6 +68,7 @@ private:
 
 
 	void	clearAtomIndices();
+        core::T_sp next(core::T_sp funcDesig);
 	bool	nextObjectInAtom();
 	bool		bLoopAtomVisible(Atom_sp a);
 	bool		bSpanAtomVisible(Atom_sp a, BondOrder order, bool* b);

@@ -2,6 +2,7 @@
 #define _kinematicsMonomerNode_H
 
 #include <clasp/core/common.h>
+#include <cando/adapt/symbolMap.h>
 #include <cando/kinematics/monomerBaseNode.h>
 #include <cando/kinematics/chainNode.fwd.h>
 #include <cando/chem/coupling.fwd.h>
@@ -39,7 +40,7 @@ protected:	// instance variables here
 	/*! Store the monomerId/residueId of this MonomerNode */
 	int			_MonomerId;
 	/*! Store the children of this MonomerNode indexed by PlugNames */
-	core::SymbolMap<MonomerNode_O>	_Children;
+	adapt::SymbolMap<MonomerNode_O>	_Children;
 	/*! Store the index of the monomer */
 	core::Symbol_sp		_MonomerName;
 	/*! Store the Topology of the monomer */
@@ -61,12 +62,14 @@ public:
 	static MonomerNode_sp create(int monomerId);
 public: // Functions here
 	/*! Recursively build children Nodes for the OutPlugs of this children and hook them in as my children */
-	void recursivelyBuildChildren(ChainNode_sp chainNode, RingClosingMonomerMap& monomerMap, MonomerNode_sp parent,
-				      chem::DirectionalCoupling_sp coupling, chem::Monomer_sp monomer);
+	void recursivelyBuildChildren(ChainNode_sp chainNode, RingClosingMonomerMap monomerMap,
+                                      gctools::Nilable<MonomerNode_sp> parent,
+				      gctools::Nilable<chem::DirectionalCoupling_sp> coupling,
+                                      chem::Monomer_sp monomer);
 
 	/*! Return the Constitution and Topology for this ChainNode
 	 as a two element Cons */
-	core::Cons_sp identifyConstitutionAndTopology(chem::CandoDatabase_sp db);
+	core::List_sp identifyConstitutionAndTopology(chem::CandoDatabase_sp db);
 
 	/*! Return a description of this MonomerNode and its children */
 	string asString() const;

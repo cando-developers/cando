@@ -2,7 +2,7 @@
 #define _kinematics_AtomO_H
 
 #include <clasp/core/common.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
 #include <clasp/core/multipleValues.fwd.h>
 #include <cando/kinematics/atom.fwd.h>
 #include <cando/kinematics/chainNode.fwd.h>
@@ -27,13 +27,8 @@ namespace kinematics
 	AtomTree_sp		_AtomTree;
 	RefCountedAtomHandle	_Handle;
     public:
-    Atom_O() : _Handle()
-	{
-	    // This should only happen when the nil object for this class is created
-	    this->_AtomTree.reset();
-	}
+    Atom_O() : _Handle() {}
 	Atom_O(const AtomTree_sp& tree, const RefCountedAtomHandle& handle);
-
 
 	//! Copy ctor increments ref count
 	Atom_O(const Atom_O& other);
@@ -136,17 +131,17 @@ namespace kinematics
 	Vector3 getPosition() const;
 
 	/*! Get parent */
-	Atom_sp parent() const;
+        gc::Nilable<Atom_sp> parent() const;
 
 
 	/*! Get stubAtom1 */
-	Atom_sp stubAtom1() const;
+        gc::Nilable<Atom_sp> stubAtom1() const;
 
 	/*! Get stubAtom2 */
-	Atom_sp stubAtom2() const;
+        gc::Nilable<Atom_sp> stubAtom2() const;
 
 	/*! Get stubAtom3 */
-	Atom_sp stubAtom3(AtomTree_sp tree) const;
+        gc::Nilable<Atom_sp> stubAtom3(AtomTree_sp tree) const;
 
 
 #if 0

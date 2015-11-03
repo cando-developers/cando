@@ -54,15 +54,15 @@ namespace kinematics
 #define ARGS_Conformation_O_make "(id oligomers)"
 #define DECL_Conformation_O_make ""
 #define DOCS_Conformation_O_make "make Conformation"
-  Conformation_sp Conformation_O::make(const core::Cons_sp& oligomers)
+  Conformation_sp Conformation_O::make(core::List_sp oligomers)
     {_G();
 	GC_ALLOCATE(Conformation_O, me );
-      me->resizeMolecules(oligomers->length());
+        me->resizeMolecules(core::cl_length(oligomers));
       int moleculeId = 0;
-      for ( core::Cons_sp cur=oligomers; cur.notnilp(); cur = cur->cdr(),moleculeId++ )
-      {
+      for ( auto cur : oligomers ) {
 	  chem::Oligomer_sp oligomer = cur->car<chem::Oligomer_O>();
 	  me->buildMoleculeUsingOligomer(moleculeId,oligomer);
+          ++moleculeId;
       }
       return me;
     };
@@ -119,11 +119,15 @@ namespace kinematics
 	int oldNumberOfMolecules = this->_FoldTree->numberOfChains();
 	this->_FoldTree->resizeChains(numMolecules);
 	this->_AtomTree->resizeMolecules(numMolecules);
+#if 1
+        SIMPLE_ERROR(BF("What are resizeMoleculesEvents for?"));
+#else
 	this->notify(_sym_resizeMoleculesEvent,
 		     core::Cons_O::createList(kw::_sym_newValue,
 					      core::clasp_make_fixnum(numMolecules),
 					      kw::_sym_oldValue,
 					      core::clasp_make_fixnum(oldNumberOfMolecules)));
+#endif
     }
 
 
@@ -135,8 +139,12 @@ namespace kinematics
 	    this->_FoldTree->buildChainUsingOligomer(moleculeId,oligomer);
 	LOG(BF("Built FoldTree--->\n%s")%chainNode->_RootMonomerNode->asString());
 	this->_AtomTree->buildMoleculeUsingChainNode(moleculeId,chainNode,oligomer);
+#if 1
+        SIMPLE_ERROR(BF("What do I do with buildMoleculesUsingOligomerEvent?"));
+#else
 	this->notify(_sym_buildMoleculeUsingOligomerEvent,
 		     core::Cons_O::create(core::clasp_make_fixnum(moleculeId),_lisp));
+#endif
     }
 
 

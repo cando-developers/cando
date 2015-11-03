@@ -170,13 +170,13 @@ virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 					AbstractLargeSquareMatrix_sp m ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
 virtual	void evaluateAll ( NVector_sp 	pos,
-		bool 		calcForce,
-		NVector_sp 	force,
-       		bool		calcDiagonalHessian,
-		bool		calcOffDiagonalHessian,
-		AbstractLargeSquareMatrix_sp	hessian,
-		NVector_sp	hdvec,
-		NVector_sp dvec);
+                           bool 		calcForce,
+                           gc::Nilable<NVector_sp> 	force,
+                           bool		calcDiagonalHessian,
+                           bool		calcOffDiagonalHessian,
+                           gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                           NVector_sp	hdvec,
+                           NVector_sp dvec);
 
 	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
 				NVector_sp pos );
@@ -476,13 +476,13 @@ public:	// Virtual methods
 virtual void dumpTerms() {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
 virtual	void evaluateAll ( NVector_sp 	pos,
-		bool 		calcForce,
-		NVector_sp 	force,
-       		bool		calcDiagonalHessian,
-		bool		calcOffDiagonalHessian,
-		AbstractLargeSquareMatrix_sp	hessian,
-		NVector_sp	hdvec,
-		NVector_sp dvec) 
+                           bool 		calcForce,
+                           gc::Nilable<NVector_sp> 	force,
+                           bool		calcDiagonalHessian,
+                           bool		calcOffDiagonalHessian,
+                           gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                           NVector_sp	hdvec,
+                           NVector_sp dvec) 
 {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
 

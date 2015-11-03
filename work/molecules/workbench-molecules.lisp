@@ -10,10 +10,6 @@
   (setq *print-array* t)
   (setq *default-pathname-defaults*
         #P"~/Development/Clasp/projects/cando/work/molecules/")
-  (defmethod cleavir-environment::symbol-macro-expansion (sym (env core:value-environment))
-    (cleavir-environment::symbol-macro-expansion sym nil))
-  (defmethod cleavir-environment::macro-function (sym (env core:value-environment))
-    (cleavir-environment::macro-function sym nil))
   (format t "Done with initialization~%"))
 
 
@@ -44,19 +40,57 @@
 (let ((*default-pathname-defaults* #P"~/Development/Clasp/projects/cando/work/molecules/"))
   (defparameter *cd*
     (with-open-file
-        (fin "chanmon0.cdxml" :direction :input)
+        (fin (probe-file "chanmon0.cdxml") :direction :input)
       (chem:make-chem-draw fin)))
   (defparameter *agg* (chem:as-aggregate *cd*)))
+
+;;;
+;;; Find rings
+;;;
+(defparameter *mol* (chem:content-at *agg* 0))
+
+
+(defparameter *rings* (chem:identify-rings *mol*))
+(defparameter *r* (chem:identify-rings *mol*))
+(defparameter *lr* (join-rings *r*))
+(defparameter *rht* (build-ring-hash-table *lr*))
+(defparameter *ir* (gather-isolated-rings *rht*))
+(defparameter *rc* (gather-one-ring-chain *rht*))
+(identify-all-ring-chains *mol*)
+
+(format t "Length of fused-ring: ~a~%" (length *fused-rings*))
+(mapc (lambda (f)
+        (format t "fused-ring: ~a~%" (name f))
+        (format t "Ring: ~a~%" (atoms f))
+        (format t "join: ~a~%" (mapcar (lambda (f) (name f)) (join f))))
+      *fused-rings*)
+      
+
+
+(linked-rings (first *rings*) (second *rings*))
+
+
+
+(defun find-linked-rings (rings)
+  (let ((rings (chem:identify-rings make-ring-finder)))
+    (
+
+
+
+
+
+
 
 (chem:map-residues nil
                    (lambda (a)
                      (when (chem:has-property a :constitution)
                        (format t "Residue: ~a  constitution: ~a~%" (chem:get-name a) (chem:matter-get-property a :constitution))))
-                *agg*)
-(chem:get-properties (chem:content-at *agg* 1))
+                   *agg*)
+(chem:content-at *agg* 0)
+(chem:get-properties (chem:content-at *agg* 0))
 
-(chem:map-atoms nil (lambda (a) (print a)) (chem:content-at *agg* 1))
-(print (chem:content-at (chem:content-at *agg* 1) 0))
+(chem:map-atoms nil (lambda (a) (print a)) (chem:content-at *agg* 0))
+(print (chem:content-at (chem:content-at *agg* 0) 0))
 
 (progn
   (format t "Residue: ~a~%" (chem:get-name (chem:content-at (chem:content-at *agg* 1) 0)))
@@ -73,16 +107,22 @@
   (format t "~a~%" *stereocenters*))
 
 ;;; Set the stereochemistry using a binary pattern
-(set-stereoisomer *stereocenters* #b11111111111111 :show t)
+(set-stereoisomer *stereocenters* #b11111011011111 :show t)
 
 
 ;;; Build starting geometry for one stereoisomer
 (build-good-geometry-from-random *agg* *ff*)
+
+
+(load "~/Downloads/quicklisp.lisp")
+(quicklisp-quickstart:install)
+(load #P"/Users/meister/quicklisp/setup.lisp")
+
+
+(print "Doda")
+
 (save-mol2 *agg* #P"test.mol2")
 (chimera *agg*)
-
-
-
 
 ;;;
 ;;; Build all 32 stereoisomers
@@ -92,6 +132,8 @@
   (build-good-geometry-from-random *agg* *ff*)
   (save-mol2 *agg*
              (indexed-pathname #P"fuzi/run.mol2" i)))
+
+(clib-backtrace 9999)
 
 ;;;
 ;;; Load all of the 32 stereoisomers

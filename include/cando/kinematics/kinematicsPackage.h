@@ -16,14 +16,13 @@ namespace kinematics
 
 
 #define SYMBOLS_EXTERN
-#include <symbols_scraped_inc.h>
+#include SYMBOLS_SCRAPED_INC_H
 
-
-    class KinematicsExposer : public core::PackageExposer
+    class KinematicsExposer : public core::Exposer
     {
     private:
     public:
-    KinematicsExposer(core::Lisp_sp lisp) : PackageExposer(lisp,KinPkg) {};
+    KinematicsExposer(core::Lisp_sp lisp) : Exposer(lisp,KinPkg) {};
         virtual void expose(core::Lisp_sp lisp,WhatToExpose what) const;
     };
 

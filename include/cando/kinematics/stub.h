@@ -2,7 +2,7 @@
 #define _kinematics_Stub_H
 
 #include <clasp/core/common.h>
-#include <cando/candoBase/matrix.h>
+#include <cando/geom/matrix.h>
 #include <cando/kinematics/stub.fwd.h>
 #include <cando/kinematics/kinematicsPackage.h>
 

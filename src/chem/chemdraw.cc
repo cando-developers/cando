@@ -85,6 +85,7 @@ std::string CDNode_O::_extractLabel(adapt::QDomNode_sp node)
     void	CDNode_O::parseFromXml(adapt::QDomNode_sp xml)
     {_OF();
 	this->_Id = xml->getAttributeInt("id");
+        this->_Color = xml->getAttributeIntDefault("color",3);
 	this->_Label = this->_extractLabel(xml);
 	LOG(BF("Parsing CDNode with label: %s") % this->_Label);
 	this->_StereochemistryType = undefinedCenter;
@@ -545,6 +546,7 @@ WORKING FROM HERE
 	a->setName(chemkw_intern(name));
 	a->setIonization(ionization);
 	a->setElementFromAtomName();
+        a->setProperty(INTERN_(kw,chemdraw_color),core::clasp_make_fixnum(n->_Color));
 	a->setStereochemistryType(n->_StereochemistryType);
 	a->setConfiguration(n->_Configuration);
 	LOG(BF("Just set configuration of atom[%s] to config[%s]")

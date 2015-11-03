@@ -3,7 +3,8 @@
 #define kinematics_atomTemplate_H
 
 #include <clasp/core/common.h>
-#include <cando/candoBase/vector3.h>
+#include <cando/geom/vector3.h>
+#include <cando/adapt/symbolMap.h>
 #include <clasp/core/holder.h>
 #include <cando/chem/plug.h>
 #include <cando/chem/constitutionAtoms.h>
@@ -44,7 +45,7 @@ namespace kinematics
     public:
 	/*! Set up the DelayedBondedAtom */
 	virtual void setupDelayedBondedAtom(DelayedBondedAtom* atom) const;
-	virtual string atomName() const {_OF(); SUBCLASS_MUST_IMPLEMENT();};
+	virtual core::Symbol_sp atomName() const {_OF(); SUBCLASS_MUST_IMPLEMENT();};
     };
 
 
@@ -54,7 +55,7 @@ namespace kinematics
 	LISP_CLASS(kinematics,KinPkg,CheckpointAtom_O,"CheckpointAtom");
 #if INIT_TO_FACTORIES
     public:
-	static CheckpointAtom_sp make(const string& atomName);
+	static CheckpointAtom_sp make(core::Symbol_sp atomName);
 #endif
     public:
 //	DECLARE_STANDARD_LISP_FUNCTIONS();
@@ -63,10 +64,10 @@ namespace kinematics
     private:
 	/*! The name of the atom that must be built (the checkpoint) before a
 	  DelayedBondedAtom is built */
-	string	_AtomName;
+        core::Symbol_sp	_AtomName;
     public:
 	virtual void setupDelayedBondedAtom(DelayedBondedAtom* atom) const;
-	virtual string atomName() const {return this->_AtomName;};
+	virtual core::Symbol_sp atomName() const {return this->_AtomName;};
     };
 
 
@@ -90,7 +91,7 @@ namespace kinematics
 	chem::OutPlug_sp	_Plug;
     public:
 	virtual void setupDelayedBondedAtom(DelayedBondedAtom* atom) const;
-	virtual string atomName() const {return this->_Plug->getB0();};
+	virtual core::Symbol_sp atomName() const {return this->_Plug->getB0();};
 };
 
 
@@ -104,14 +105,14 @@ namespace kinematics
 	LISP_CLASS(kinematics,KinPkg,AtomTemplate_O,"AtomTemplate");
 #if INIT_TO_FACTORIES
     public:
-	static AtomTemplate_sp make(const int id, const string& comment, const AtomTemplate_sp& parent);
+	static AtomTemplate_sp make(const int id, const string& comment, const AtomTemplate_sp parent);
 #endif
     public:
 //	DECLARE_STANDARD_LISP_FUNCTIONS();
 //	DECLARE_ARCHIVE();
     protected:
 	//! Point to the parent atom (also used to contruct linked list of unused PoolMembers)
-	AtomTemplate_wp			_Parent;
+        gc::Nilable<AtomTemplate_sp>			_Parent;
 	chem::ConstitutionAtomIndex0N	_Id;
 	string				_Comment;
     private:
@@ -119,11 +120,11 @@ namespace kinematics
     public:
 
 	/*! Return the parent */
-	AtomTemplate_sp parent() const;
+        gc::Nilable<AtomTemplate_sp> parent() const;
 
 	/*! Return the atomName for this Template by looking up its index
 	  in the ConstitutionAtoms object */
-	string atomName(chem::ConstitutionAtoms_sp ca) const;
+        core::Symbol_sp atomName(chem::ConstitutionAtoms_sp ca) const;
 
 	/*! Return the ConstitutionAtomIndex0N id for the AtomTemplate */
 	chem::ConstitutionAtomIndex0N id() const { return this->_Id;};
@@ -132,7 +133,7 @@ namespace kinematics
 	string comment() const { return this->_Comment;};
 
 
-	typedef map<core::Symbol_sp,BondId_sp> PlugNamesToBondIdMap;
+	typedef adapt::SymbolMap<BondId_O> PlugNamesToBondIdMap;
 	virtual Atom_sp writeIntoAtomTree(const AtomTree_sp& atomTree,
 					  uint moleculeId,
 					  uint residueId,
@@ -166,7 +167,7 @@ namespace kinematics
 //	DECLARE_STANDARD_LISP_FUNCTIONS();
 //	DECLARE_ARCHIVE();
     public:
-	typedef core::Vector0<AtomTemplate_O>	ChildList;
+	typedef gctools::Vec0<AtomTemplate_sp>	ChildList;
     protected:
 	ChildList		_Children;
 	double			_Distance;
@@ -176,9 +177,9 @@ namespace kinematics
     public:
 	chem::OutPlug_sp outPlug() const { return this->_OutPlug;};
 
-	void addChild(AtomTemplate_sp child) {this->_Children.append(child);};
+	void addChild(AtomTemplate_sp child) {this->_Children.push_back(child);};
 	/*! Return a Cons of children */
-	core::Cons_sp children() { return this->_Children.asCons();};
+	core::List_sp children();
 
 	void addChildren(Atom_sp& me,
 			 uint moleculeId,
