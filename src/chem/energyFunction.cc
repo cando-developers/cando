@@ -121,17 +121,17 @@ void energyFunction_initializeSmarts(core::Lisp_sp lisp)
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_EnergyFunction_O_make "(matter force_field)"
+#define ARGS_EnergyFunction_O_make "(matter force_field &optional active-atoms)"
 #define DECL_EnergyFunction_O_make ""
 #define DOCS_EnergyFunction_O_make "make EnergyFunction"
-EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, ForceField_sp forceField)
+EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms)
   {_G();
       GC_ALLOCATE(EnergyFunction_O, me );
     if ( matter.notnilp() )
       {
 	if ( forceField.notnilp() )
 	  {
-	    me->defineForMatter(matter,forceField);
+	    me->defineForMatter(matter,forceField,activeAtoms);
 	  } else
 	  {
 	      SIMPLE_ERROR(BF("You must provide a forceField if you provide a matter object"));
@@ -745,7 +745,8 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 
     } catch ( InteractionProblem ld ) {
 ////        _lisp->profiler().popTimerStates();
-	SIMPLE_ERROR(BF("Interaction problem: %s")% ld.message() );
+      this->dealWithProblem(ld);
+      //SIMPLE_ERROR(BF("Interaction problem: %s")% ld.message() );
     }
 ////    _lisp->profiler().popTimerStates();
 
@@ -1187,6 +1188,7 @@ void EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator
     while ( restraintIterator->notDone() )
     {
 	Restraint_sp restraint = restraintIterator->current<Restraint_O>();
+        if ( !restraint->isActive() ) goto CONT;
 	if ( restraint.isA<RestraintDihedral_O>() )
 	{
 	    RestraintDihedral_sp dih = downcast<RestraintDihedral_O>(restraint);
@@ -1317,6 +1319,7 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
 	    LOG(BF("Applying a secondary amide restraint between %s and %s") % ax->description() % ay->description()  );
 		    //
 		    // H3(ax2) and O5(ay1) should be trans
+            printf("%s:%d Creating secondary amide restraints around %s - %s\n", __FILE__, __LINE__, _rep_(ax).c_str(), _rep_(ay).c_str() );
 	    this->_applyDihedralRestraint(ax1,ax,ay,ay1,cisMin,cisMax,weight,activeAtoms);
 	    LOG(BF("Restrain cis %s - %s - %s -%s") % ax1->description() % ax->description() % ay->description() % ay1->description()  );
 	    this->_applyDihedralRestraint(ax1,ax,ay,ay2,transMin,transMax,weight,activeAtoms);

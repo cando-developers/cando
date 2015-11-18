@@ -278,7 +278,6 @@ string EnergyDihedral_O::beyondThresholdInteractionsAsString()
 
 
 
-#if 0
 void	EnergyDihedral_O::dumpTerms()
 {
     gctools::Vec0<EnergyDihedral>::iterator	edi;
@@ -334,7 +333,6 @@ string				str1, str2, str3, str4, type;
 			% edi->term.DN);
     }
 }
-#endif
 
 
 

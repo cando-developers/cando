@@ -142,7 +142,7 @@ public:
 public:
 
     void addTerm(const TermType& term);
-//    virtual void dumpTerms();
+    virtual void dumpTerms();
 
     virtual	void	zeroEnergy();
 //virtual void setupHessianPreconditioner(NVector_sp nvPosition,

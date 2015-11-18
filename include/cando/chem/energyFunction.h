@@ -111,7 +111,7 @@ class EnergyFunction_O : public core::CxxObject_O
     LISP_CLASS(chem,ChemPkg,EnergyFunction_O,"EnergyFunction");
 #if INIT_TO_FACTORIES
  public:
-    static EnergyFunction_sp make(Matter_sp matter, ForceField_sp forceField);
+    static EnergyFunction_sp make(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms=_Nil<core::T_O>());
 #else
     DECLARE_INIT();
 #endif
@@ -122,7 +122,7 @@ public:
 //    void	archive(core::ArchiveP node);
 
 private:
-    string					_Name;
+    string				_Name;
     Matter_sp				_Matter;	// Aggregate or Molecule
     /*! Stores cross terms for evaluating nonbond interactions
      */

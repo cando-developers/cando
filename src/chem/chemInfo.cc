@@ -19,7 +19,7 @@
 #include <cando/chem/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
-extern chem::SmartsRoot_sp smarts_compile(const string &input, core::Lisp_sp env, stringstream &errorStream);
+extern chem::SmartsRoot_sp smarts_compile(const string &input, stringstream &errorStream);
 extern chem::AntechamberRoot_sp gaff_compile(const string &input, chem::WildElementDict_sp dict, stringstream &errorStream);
 extern string antechamberError();
 
@@ -266,7 +266,7 @@ bool ChemInfo_O::compileSmarts(const string &code) {
   this->_Root = _Nil<core::T_O>();
   this->_Code = code;
   stringstream errors;
-  root = smarts_compile(code, _lisp, errors);
+  root = smarts_compile(code,errors);
   this->_Root = gc::As<Root_sp>(root);
   ANN(this->_Root);
   if (root.nilp()) {

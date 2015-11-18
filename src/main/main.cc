@@ -56,7 +56,7 @@ THE SOFTWARE.
 #include <cando/units/unitsPackage.h>
 #include <cando/adapt/adaptPackage.h>
 #include <cando/chem/chemPackage.h>
-#include <cando/kinematics/kinematicsPackage.h>
+//#include <cando/kinematics/kinematicsPackage.h>
 
 #ifdef USE_MPI
 #include <clasp/mpip/mpiPackage.h>
@@ -108,8 +108,8 @@ int startup(int argc, char *argv[], bool &mpiEnabled, int &mpiRank, int &mpiSize
     chem::ChemExposer ChemPkg(_lisp);
     _lisp->installPackage(&ChemPkg);
 
-    kinematics::KinematicsExposer KinPkg(_lisp);
-    _lisp->installPackage(&KinPkg);
+//    kinematics::KinematicsExposer KinPkg(_lisp);
+//    _lisp->installPackage(&KinPkg);
 
 #ifdef USE_MPI
     mpip::MpiExposer TheMpiPkg(_lisp);

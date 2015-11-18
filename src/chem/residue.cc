@@ -396,11 +396,11 @@ LOG(BF("Residue_O::removeAtomDeleteBonds setting atom %x parent to null") % &a  
 }
 
 
-void Residue_O::fillInImplicitHydrogensOnCarbon()
+void Residue_O::fillInImplicitHydrogens()
 {_G();
     gctools::Vec0<Atom_sp>	atoms;
 contentIterator	aCur;
-	/* fillInImplicitHydrogensOnCarbon will add more atoms to 
+	/* fillInImplicitHydrogens will add more atoms to 
 	 * the residue so we can't just iterate over the contents
 	 * as we are adding to the contents.
 	 * Pull out the atoms into a separate vector first and
@@ -412,7 +412,7 @@ contentIterator	aCur;
     }
     for (gctools::Vec0<Atom_sp>::iterator it=atoms.begin(); it!=atoms.end(); it++ )
     {
-	(*it)->fillInImplicitHydrogensOnCarbon();
+	(*it)->fillInImplicitHydrogens();
     }
 }
 
@@ -733,6 +733,7 @@ void Residue_O::exposeCando(core::Lisp_sp lisp)
 //			boost::python::range(&Residue_O::begin_atoms,
 //				&Residue_O::end_atoms))
 	.def("addMonomerAlias",&Residue_O::addMonomerAlias)
+          .def("getFileSequenceNumber",&Residue_O::getFileSequenceNumber)
 	.def("setPdbName",&Residue_O::setPdbName)
 	.def("getPdbName",&Residue_O::getPdbName)
 	.def("addAtom",&Residue_O::addAtom)

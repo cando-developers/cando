@@ -111,6 +111,13 @@ namespace chem
     } AtomFlagEnum;
 
 
+    struct PertFields {
+      Element _Element;
+      core::Symbol_sp _Name;
+      AtomType _Type;
+      double _Charge;
+      double _Polar;
+    };
 
     extern	long	__AtomBuildCounter;
 
@@ -165,6 +172,7 @@ namespace chem
 	double		tempFactor;
 	double		vdwRadius;
 	double		covalentRadius;
+        PertFields      _Pert;
 	// Selection mask
 	unsigned int	_Mask;
 	// copy atoms
@@ -401,8 +409,8 @@ namespace chem
 	/*! Total all of the bond orders.  */
 	uint totalBondOrder();
 	uint maxTotalBondOrder();
-	core::List_sp createImplicitHydrogenNamesOnCarbon();
-	void fillInImplicitHydrogensOnCarbon();
+	core::List_sp createImplicitHydrogenNames();
+	void fillInImplicitHydrogens();
 
 	void randomizeAtomPosition(double width);
 	void perturbAtomPosition(double dist);

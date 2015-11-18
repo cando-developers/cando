@@ -336,6 +336,7 @@ bool SpanningLoop_O::advanceLoopAndProcessWhenTestTrue(std::function<bool (Atom_
 
 
 core::T_sp SpanningLoop_O::next(core::T_sp funcDesig) {
+  if ( this->done ) return _Nil<core::T_O>();
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
   return this->nextSpanningAtom([&func] (Atom_sp a, Bond_sp b) -> bool {
       core::T_sp res = core::eval::funcall(func,a,b);
@@ -360,18 +361,18 @@ core::T_sp SpanningLoop_O::next(core::T_sp funcDesig) {
     }
 
 
-    void SpanningLoop_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<SpanningLoop_O>()
+void SpanningLoop_O::exposeCando(core::Lisp_sp lisp)
+{
+  core::class_<SpanningLoop_O>()
 //	    .def_raw("core:__init__",&SpanningLoop_O::__init__,"(self &key root)")
-	    .def("setTop",&SpanningLoop_O::setTop)
-          .def("next",&SpanningLoop_O::next)
-	    .def("advance",&SpanningLoop_O::advance)
-	    .def("advanceLoopAndProcess",&SpanningLoop_O::advanceLoopAndProcess)
-	    .def("getAtom",&SpanningLoop_O::getAtom)
-	    .def("allAtoms",&SpanningLoop_O::allAtoms)
-	    ;
-    }
+    .def("setTop",&SpanningLoop_O::setTop)
+    .def("next",&SpanningLoop_O::next)
+    .def("advance",&SpanningLoop_O::advance)
+    .def("advanceLoopAndProcess",&SpanningLoop_O::advanceLoopAndProcess)
+    .def("getAtom",&SpanningLoop_O::getAtom)
+    .def("allAtoms",&SpanningLoop_O::allAtoms)
+    ;
+}
 
     void SpanningLoop_O::exposePython(core::Lisp_sp lisp)
     {_G();

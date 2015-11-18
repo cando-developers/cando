@@ -1,3 +1,6 @@
+;;;
+;;; Initialize everything
+;;;
 (progn
   (require :asdf)
   (let ((central-registry (find-symbol "*CENTRAL-REGISTRY*" :asdf))
@@ -37,17 +40,99 @@
 ;;;
 ;;; Load the chemdraw file containing a molecule
 ;;;
-(let ((*default-pathname-defaults* #P"~/Development/Clasp/projects/cando/work/molecules/"))
+(progn
+  (setq *default-pathname-defaults*
+        #P"~/Development/Clasp/projects/cando/work/molecules/")
   (defparameter *cd*
     (with-open-file
-        (fin (probe-file "chanmon0.cdxml") :direction :input)
+        (fin (probe-file "chanmon-all-0.cdxml") :direction :input)
       (chem:make-chem-draw fin)))
-  (defparameter *agg* (chem:as-aggregate *cd*)))
+  (defparameter *agg* (chem:as-aggregate *cd*))
+  (defparameter *mol* (chem:content-at *agg* 0)))
 
 ;;;
-;;; Find rings
+;;; Gather the atoms that are stereocenters into a vector
+(progn
+  (defparameter *stereocenters*
+    (gather-stereocenters *agg*))
+  (sort *stereocenters* #'string< :key #'chem:get-name)
+  (set-stereoisomer *stereocenters* #b1111111111111111111111111111111111111111111111111111111111111 :show t)
+  (format t "~a~%" *stereocenters*))
+
 ;;;
-(defparameter *mol* (chem:content-at *agg* 0))
+;;; Scramble positions and try to build structure
+;;;
+(cando:chimera *agg*)
+(cando:scramble-positions *agg*)
+(cando:chimera *agg*)
+(cando:build-good-geometry-from-random *agg* *ff*)
+(cando:chimera *agg*)
+
+
+(defparameter *lr* (linked-rings:identify-all-ring-chains *mol*))
+(loop for rings in *lr*
+   do (linked-rings:scramble-linked-rings rings)
+   do (cando:optimize-structure *agg* *ff* (linked-rings:coerce-to-atom-set rings)))
+
+(cando:chimera *agg*)
+
+
+;;;
+;;; Build atom tree
+;;;
+(defparameter *at* (atom-tree:build-atom-tree *mol* :root-property :build-root))
+(atom-tree:find-coupled-dihedrals *at*)
+(atom-tree:assign-coupled-dihedral-angles *at*)
+(loop for rings in *lr*
+     do (atom-tree:extract-internal-coordinates-for-active-set
+         *at* (linked-rings:coerce-to-atom-set rings)))
+
+;;;
+;;; Build geometry using the atom tree
+;;;
+(atom-tree:build-geometry-for-atom-tree *at*)
+(atom-tree:write-geometry-to-atoms *at*)
+(cando:chimera *agg*)
+
+;;;
+;;; Finally clean up the structure
+;;;
+
+(cando:optimize-structure *agg* *ff*)
+(cando:chimera *agg*)
+(cando:jostle-atoms *agg* 0.5)
+(cando:chimera *agg*)
+
+(chem:save-mol2 *agg* "chanmon1.mol2")
+
+
+
+
+
+(defparameter *s* (core:make-cxx-object 'chem:chem-info))
+(chem:compile-smarts *s* "C")
+(defparameter *oa* (car (linked-rings::atoms (car (car *lr*)))))
+(chem:matches *s* *oa*)
+*oa*
+
+
+
+(linked-rings::atoms (car (car *lr*)))
+(linked-rings::atoms (car *lr*))
+(trace linked-rings:atom-set-from-linked-rings)
+(linked-rings::atoms (car (car *lr*)))
+
+
+(print "Testing")
+
+(defparameter *r* (car (cando:atoms-with-property *mol* :build-root)))
+(defparameter *s* (make-cxx-object 'chem:spanning-loop))
+(chem:set-top *s* *r*)
+(chem:next *s* (lambda (a b) t))
+(loop for x = (chem:next *s* (lambda (a b) t)) until (null x) do (print x))
+
+
+
 
 
 (defparameter *rings* (chem:identify-rings *mol*))
@@ -97,17 +182,6 @@
   (chem:map-atoms nil (lambda (a) (print a)) (chem:content-at (chem:content-at *agg* 1) 0)))
 
 (apropos "atoms")
-
-;;;
-;;; Gather the atoms that are stereocenters into a vector
-(progn
-  (defparameter *stereocenters*
-    (gather-stereocenters *agg*))
-  (sort *stereocenters* #'string< :key #'chem:get-name)
-  (format t "~a~%" *stereocenters*))
-
-;;; Set the stereochemistry using a binary pattern
-(set-stereoisomer *stereocenters* #b11111011011111 :show t)
 
 
 ;;; Build starting geometry for one stereoisomer

@@ -466,6 +466,8 @@ void	mol2ReadAggregateFromFileName( Aggregate_sp aggregate, core::T_sp sFileName
 	    // a substructure entry
 	    res->setName(chemkw_intern(ai->second.mSubstName));
 	    res->setPdbName(chemkw_intern(ai->second.mSubstName));
+//            printf("%s:%d setFileSequenceNumber --> %d\n", __FILE__, __LINE__, ai->second.mSubstId);
+            res->setFileSequenceNumber(ai->second.mSubstId);
 	    LOG(BF("Creating residue with id(%d) and name(%s)") % ai->second.mSubstId % ai->second.mSubstName.c_str()  );
 	    residues[ai->second.mSubstId] = res;
 	    LOG(BF("New residue %s") % res->description().c_str()  );
@@ -538,8 +540,8 @@ void	mol2ReadAggregateFromFileName( Aggregate_sp aggregate, core::T_sp sFileName
 		residues[si->mId]->setName(chemkw_intern(si->subst_name));
 		LOG(BF("Setting residue PDB name to: %s") % si->sub_type.c_str()  );
 		residues[si->mId]->setPdbName(chemkw_intern(si->sub_type));
-		LOG(BF("Setting residue file_sequence_number(%d)") % si->file_sequence_number );
-		residues[si->mId]->setFileSequenceNumber(si->file_sequence_number);
+//		printf("%s:%d Setting residue file_sequence_number(%d)", __FILE__, __LINE__, si->file_sequence_number );
+//		residues[si->mId]->setFileSequenceNumber(si->file_sequence_number);
 		LOG(BF("Adding residue number: %d name(%s) pdbName(%s) to molecule: %s") % si->mId % residues[si->mId]->getName().c_str() % residues[si->mId]->getPdbName().c_str() % si->chain.c_str()  );
 	    }
 	}

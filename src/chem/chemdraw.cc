@@ -400,7 +400,6 @@ core::Symbol_mv parse_property(const string& propertyValue, CDBond_sp bond, cons
 
 
 
-
 /*!
  * Look for edges that specify properties and move them into the CDNodes that
 * they target
@@ -408,15 +407,11 @@ core::Symbol_mv parse_property(const string& propertyValue, CDBond_sp bond, cons
 bool CDFragment_O::interpret()
 {
   int nextFragmentNameIndex = 1;
-  if ( this->_Bonds.size() == 0 ) {
-    LOG(BF("There are no bonds in this fragment"));
-    return false;
-  }
-  LOG(BF("Starting a new fragment, number of bonds = %d") % this->_Bonds.size() );
+  if ( this->_Bonds.size() == 0 ) {return false;}
   CDBonds::iterator bi;
   bool foundHashedBond = false;
 //  adapt::SymbolSet_sp allNames = adapt::SymbolSet_O::create();
-  {_BLOCK_TRACEF(BF("Processing bonds"));
+  {
     for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ ) {
       auto cdorder = (*bi)->getOrder();
       //
@@ -430,8 +425,8 @@ bool CDFragment_O::interpret()
            || cdorder == singleDashCDBond || cdorder == doubleDashCDBond || cdorder == tripleDashCDBond ) {
         // Do nothing
       } else if ( cdorder == dativeCDBond || // Atom
-           cdorder == hollowWedgeCDBond || // Residue
-           cdorder == wavyCDBond ) { // Molecule property
+                  cdorder == hollowWedgeCDBond || // Residue
+                  cdorder == wavyCDBond ) { // Molecule property
         // define properties
         // On one side it will have no other nodes connected to it and the
         // other side has a CDNode that will represent an atom in a residue in a molecule.
@@ -469,31 +464,45 @@ bool CDFragment_O::interpret()
       } else {
         Warn(core::Str_O::create((BF("Doing nothing with bond type %d")%(*bi)->getOrderAsString()).str()),
              _Nil<core::T_O>());
-        LOG(BF("Doing nothing with bond type(%s)") % (*bi)->getOrderAsString()  );
       }
     }
   }
+
   // Create an atom for every node that is on the end of a
   // single/double/triple solid or dashed bond
   this->createAtomsAndBonds();
   // Now build the residues and fill in the implicit
   // hydrogens on carbon
   Molecule_sp mol = this->createMolecule();
-
+// IF YOU COMMENT OUT THE NEXT LINE THEN A TRULY FRIGHTENING BUG WILL HAPPEN
+  this->_Molecule = mol;
   core::List_sp carbons = mol->allAtomsOfElementAsList(element_C);
-  for ( auto cur : carbons ) {
-    Atom_sp c = gc::As<Atom_sp>(oCar(cur));
-    c->fillInImplicitHydrogensOnCarbon();
+  for ( core::List_sp cur = carbons; cur.consp(); cur = oCdr(cur) ) {
+    core::T_sp ta = oCar(cur);
+    Atom_sp a = gc::As<Atom_sp>(ta);
+    a->fillInImplicitHydrogens();
+  }
+
+  core::List_sp nitrogens = mol->allAtomsOfElementAsList(element_N);
+  for ( core::List_sp cur = nitrogens; cur.consp(); cur = oCdr(cur) ) {
+    core::T_sp ta = oCar(cur);
+    Atom_sp a = gc::As<Atom_sp>(ta);
+    a->fillInImplicitHydrogens();
+  }
+
+  core::List_sp oxygens = mol->allAtomsOfElementAsList(element_O);
+  for ( core::List_sp cur = oxygens; cur.consp(); cur = oCdr(cur) ) {
+    core::T_sp ta = oCar(cur);
+    Atom_sp a = gc::As<Atom_sp>(ta);
+    a->fillInImplicitHydrogens();
   }
 
   {_BLOCK_TRACEF(BF("Assigning cipPriorities"));
     CipPrioritizer_sp cip = CipPrioritizer_O::create();
     cip->defineStereochemicalConfigurationsForAllAtoms(mol);
   }
+#if 0    
 
-    
-#if 0
-WORKING FROM HERE
   Residue_sp res = this->getEntireResidue();
   core::List_sp carbons = res->allAtomsOfElementAsList(element_C);
   {_BLOCK_TRACEF(BF("Creating implicit hydrogens"));
@@ -509,6 +518,9 @@ WORKING FROM HERE
       }
     }
   }
+#endif
+
+#if 0
   Residue_sp everything = this->getEntireResidue();
 
     	//
@@ -530,7 +542,6 @@ WORKING FROM HERE
   this->setProperty(INTERN_(kw,builtResidue),builtResidue);
   return true;
 #endif
-  this->_Molecule = mol;
   return true;
 }
 
@@ -751,49 +762,48 @@ Molecule_sp CDFragment_O::createMolecule()
     }
 
 
-#if 0
 /*! Build the residue.  If constitutionOnly is false then 
  * all atoms connected by solid or dashed bonds are included
  * If it is true then only atoms connected by solid bonds are included
  */
-    Residue_sp	CDFragment_O::_buildResidue( bool constitutionOnly )
-    {_G();
-	uint atomCount = 0;
+#if 0
+Residue_sp	CDFragment_O::_buildResidue( bool constitutionOnly )
+{_G();
+  uint atomCount = 0;
   	// First all of the bonds between atoms
 	//
-	this->clearAtomSelected();
-	this->removeAllBonds();
-	this->createBonds(false);
+  this->clearAtomSelected();
+  this->removeAllBonds();
+  this->createBonds(false);
 
 	// Select the atoms that we want to put into
 	// the residue
-	{_BLOCK_TRACE("Selecting residue atoms");
-	    SpanningLoop_sp span = SpanningLoop_O::create();
-	    span->setOnlyFollowRealBonds(constitutionOnly);
-	    ASSERTNOTNULL(this->_RootNode);
-	    ASSERTP(this->_RootNode.notnilp(),"Every fragment must have a root node");
-	    span->setTop(this->_RootNode->getAtom());
-	    while ( span->advance() )
-	    {
-		Atom_sp a = span->getAtom();
-		a->turnOnFlags(SELECTED);
-		LOG(BF("Selected %s") % a->description()  );
-		atomCount++;
-	    }
-	}
-	ASSERTP(atomCount>0, "There are no atoms in the residue!");
+  {_BLOCK_TRACE("Selecting residue atoms");
+    SpanningLoop_sp span = SpanningLoop_O::create();
+    span->setOnlyFollowRealBonds(constitutionOnly);
+    ASSERTNOTNULL(this->_RootNode);
+    ASSERTP(this->_RootNode.notnilp(),"Every fragment must have a root node");
+    span->setTop(this->_RootNode->getAtom());
+    while ( span->advance() )
+    {
+      Atom_sp a = span->getAtom();
+      a->turnOnFlags(SELECTED);
+      LOG(BF("Selected %s") % a->description()  );
+      atomCount++;
+    }
+  }
+  ASSERTP(atomCount>0, "There are no atoms in the residue!");
 
-	this->removeAllBonds();
+  this->removeAllBonds();
     	//
     	// Now create bonds just between selected atoms
 	//
-	this->createBonds(true);
-	Residue_sp res = this->createResidueOfSelectedAtoms();
-	ASSERTP(res->contentSize()>0,"The residue is empty");
-	return res;
-    }
+  this->createBonds(true);
+  Residue_sp res = this->createResidueOfSelectedAtoms();
+  ASSERTP(res->contentSize()>0,"The residue is empty");
+  return res;
+}
 #endif
-
 
 
 
@@ -1198,7 +1208,7 @@ void	ChemDraw_O::parse( core::T_sp strm )
 		.def("CDFragment-getPropertyOrDefault",&CDFragment_O::getPropertyOrDefault)
 #endif
 		.def("getMolecule",&CDFragment_O::getMolecule)
-//		.def("asConstitutionAtoms",&CDFragment_O::asConstitutionAtoms)
+		.def("asConstitutionAtoms",&CDFragment_O::asConstitutionAtoms)
 //		.def("describeProperties",&CDFragment_O::describeProperties)
 		;
 	}

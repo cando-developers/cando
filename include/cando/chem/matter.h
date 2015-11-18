@@ -245,7 +245,7 @@ class Matter_O : public core::CxxObject_O
   contentIterator eraseContent(contentIterator x) {return this->_contents.erase(x);};
 
   virtual void	makeAllAtomNamesInEachResidueUnique();
-  virtual void	fillInImplicitHydrogensOnCarbon();
+  virtual void	fillInImplicitHydrogens();
   virtual void	randomizeAtomPositions();
   virtual void	perturbAtomPositions(double dist);
 
@@ -285,6 +285,8 @@ class Matter_O : public core::CxxObject_O
 		 */
   void connectAllCloseAtoms();
 
+  virtual void clearRestraints();
+  
 	/*! Add a restraint to the matter */
   virtual void addRestraint(Restraint_sp restraint);
 

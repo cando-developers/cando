@@ -200,10 +200,9 @@ void	EnergyFixedNonbondRestraint_O::addFixedAtom(FFNonbondDb_sp nonbondDb, Atom_
 
 
 
-#if 0
 void	EnergyFixedNonbondRestraint_O::dumpTerms()
 {
-vector<FixedNonbondRestraint>::iterator	eni;
+  gc::Vec0<FixedNonbondRestraint>::iterator	eni;
 string					as1;
 string					str1, str2, str3, str4;
     for ( eni=this->_Terms.begin();
@@ -213,7 +212,6 @@ string					str1, str2, str3, str4;
 	_lisp->print(BF( "TERM 6FIXED_NONBOND %-9s") % as1.c_str() );
     }
 }
-#endif
 
 #ifdef RENDER
 int EnergyFixedNonbondRestraint_O::countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn)

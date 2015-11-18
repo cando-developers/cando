@@ -70,8 +70,15 @@ public:
 	core::T_sp add(core::List_sp points);
 	Vector3 timesScalar(double s);
 
+        void setUsingBond(double distance, OVector3_sp v);
+        void setUsingBondAngle(double bond, OVector3_sp bondPos,
+                                 double angle, OVector3_sp anglePos);
+        void setUsingBondAngleDihedral(double bond, OVector3_sp bondPos,
+                                        double angle, OVector3_sp anglePos,
+                                        double dihedral, OVector3_sp dihedralPos);
 	DEFAULT_CTOR_DTOR(OVector3_O);
     };
+
 
 
 

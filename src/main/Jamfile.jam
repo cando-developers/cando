@@ -26,7 +26,7 @@ sources =
                 /cando/adapt
                 /cando/units
                 /cando/chem
-                /cando/kinematics
+#                /cando/kinematics
 		/externals//llvm_lib_globbed
 		/externals//clang_lib_globbed
 		/externals//boostAndExpatLibs

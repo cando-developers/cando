@@ -268,7 +268,7 @@ void Atom_O::exposeCando(core::Lisp_sp lisp)
     .def("bondedOrder",&Atom_O::bondedOrder)
     .def("totalBondOrder",&Atom_O::totalBondOrder)
 //	    .def("copy",&Atom_O::copy,"","","",false)
-    .def("createImplicitHydrogenNamesOnCarbon",&Atom_O::createImplicitHydrogenNamesOnCarbon)
+    .def("createImplicitHydrogenNames",&Atom_O::createImplicitHydrogenNames)
     .def("testConsistancy",&Atom_O::testConsistancy)
 //	.def("asXml",&Atom_O::asXml)
     .def("numberOfBonds",&Atom_O::numberOfBonds)
@@ -398,7 +398,7 @@ void Atom_O::exposeCando(core::Lisp_sp lisp)
 	    .def("bondedOrder",&Atom_O::bondedOrder)
 	    .def("totalBondOrder",&Atom_O::totalBondOrder)
 //	    .def("copy",&Atom_O::copy,"","","",false)
-	    .def("createImplicitHydrogenNamesOnCarbon",&Atom_O::createImplicitHydrogenNamesOnCarbon)
+	    .def("createImplicitHydrogenNames",&Atom_O::createImplicitHydrogenNames)
 	    .def("testConsistancy",&Atom_O::testConsistancy)
 //	.def("asXml",&Atom_O::asXml)
 	    .def("dump",&Atom_O::dump)
@@ -706,44 +706,61 @@ void Atom_O::exposeCando(core::Lisp_sp lisp)
  *       CA                     1                       HA
  *       CB                     2                       HB1, HB2
  *       CC1                    3                       HC11, HC12, HC13 
+ * Also handle N and O
  */ 
-    core::List_sp Atom_O::createImplicitHydrogenNamesOnCarbon()
-    {
-	core::Cons_sp first, cons;
-	first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
-	cons = first;
-	if ( this->getElement() != element_C ) return _Nil<core::T_O>();
-	if ( this->getIonization() != 0 ) return _Nil<core::T_O>();
-	uint totalBondOrder = this->totalBondOrder();
-	if ( totalBondOrder == 4 ) return _Nil<core::T_O>();
-	uint addHydrogens = 4 - totalBondOrder;
-	string nameSuffix = this->getName()->symbolName()->get().substr(1,9999);
-	if ( addHydrogens == 1 )
-	{
-            MatterName hname = chemkw_intern("H"+nameSuffix);
-	    core::Cons_sp one = core::Cons_O::create(hname,_Nil<core::T_O>());
-	    cons->setCdr(one);
-	    cons = one;
-	    return oCdr(first);
-	}
-	for ( uint i=0; i<addHydrogens; i++ )
-	{
-	    stringstream ss;
-	    ss << "H" << nameSuffix << (i+1);
-            MatterName hname = chemkw_intern(ss.str());
-	    core::Cons_sp one = core::Cons_O::create(hname,_Nil<core::T_O>());
-	    cons->setCdr(one);
-	    cons = one;
-	}
-	return oCdr(first);
-    }
+core::List_sp Atom_O::createImplicitHydrogenNames()
+{
+  int maxHydrogens;
+  printf("%s:%d createImplicitHydrogenNames for atom:%s\n", __FILE__, __LINE__, _rep_(this->getName()).c_str());
+  switch (this->getElement()) {
+  case element_C:
+      maxHydrogens = 4;
+      break;
+  case element_N:
+      maxHydrogens = 3;
+      break;
+  case element_O:
+      maxHydrogens = 2;
+      break;
+  default:
+      printf("%s:%d createImplicitHydrogenNames skipping atom: %s element: %s\n", __FILE__, __LINE__, _rep_(this->getName()).c_str(), this->getElementAsString().c_str());
+      return _Nil<T_O>();
+  }
+  printf("%s:%d createImplicitHydrogenNames creating up to %d hydrogens\n", __FILE__, __LINE__, maxHydrogens );
+  core::Cons_sp first, cons;
+  first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+  cons = first;
+  if ( this->getIonization() != 0 ) return _Nil<core::T_O>();
+  uint totalBondOrder = this->totalBondOrder();
+  if ( totalBondOrder == maxHydrogens ) return _Nil<core::T_O>();
+  uint addHydrogens = maxHydrogens - totalBondOrder;
+  string nameSuffix = this->getName()->symbolName()->get().substr(1,9999);
+  if ( addHydrogens == 1 )
+  {
+    MatterName hname = chemkw_intern("H"+nameSuffix);
+    core::Cons_sp one = core::Cons_O::create(hname,_Nil<core::T_O>());
+    cons->setCdr(one);
+    cons = one;
+    return oCdr(first);
+  }
+  for ( uint i=0; i<addHydrogens; i++ )
+  {
+    stringstream ss;
+    ss << "H" << nameSuffix << (i+1);
+    MatterName hname = chemkw_intern(ss.str());
+    core::Cons_sp one = core::Cons_O::create(hname,_Nil<core::T_O>());
+    cons->setCdr(one);
+    cons = one;
+  }
+  return oCdr(first);
+}
 
 
 
 
-    void Atom_O::fillInImplicitHydrogensOnCarbon()
+    void Atom_O::fillInImplicitHydrogens()
     {_G();
-	core::List_sp names = this->createImplicitHydrogenNamesOnCarbon();
+	core::List_sp names = this->createImplicitHydrogenNames();
 	if ( names.nilp() ) return;
 	for ( auto cur : names ) {
 	    this->_addHydrogenWithName(oCar(cur).as<MatterName::Type>());

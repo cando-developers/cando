@@ -170,6 +170,26 @@ double	OVector3_O::distance( const Vector3& vb )
     return calculateDistance(this->_Value,vb);
 }
 
+void OVector3_O::setUsingBond(double distance, OVector3_sp v)
+{
+  this->_Value = buildUsingBond(distance,v->_Value);
+}
+
+void OVector3_O::setUsingBondAngle(double bond, OVector3_sp bondPos,
+                                     double angle, OVector3_sp anglePos)
+{
+  this->_Value = buildUsingBondAngle(bond,bondPos->_Value,angle,anglePos->_Value);
+}
+
+void OVector3_O::setUsingBondAngleDihedral(double bond, OVector3_sp bondPos,
+                                             double angle, OVector3_sp anglePos,
+                                             double dihedral, OVector3_sp dihedralPos)
+{
+  this->_Value = buildUsingBondAngleDihedral(bond,bondPos->_Value,
+                                                      angle,anglePos->_Value,
+                                                      dihedral,dihedralPos->_Value
+                                                      );
+}
 
 core::List_sp OVector3_O::encode() {
   core::Vector_sp v = core::core_make_vector(cl::_sym_DoubleFloat_O,3);
@@ -208,6 +228,9 @@ void OVector3_O::exposeCando(core::Lisp_sp lisp)
          DECL_OVector3_O_add,
          DOCS_OVector3_O_add)
     .def("timesScalar",&OVector3_O::timesScalar)
+    .def("setUsingBond",&OVector3_O::setUsingBond)
+    .def("setUsingBondAngle",&OVector3_O::setUsingBondAngle)
+    .def("setUsingBondAngleDihedral",&OVector3_O::setUsingBondAngleDihedral)
     ;
   Defun_maker(GeomPkg,OVector3);
 }

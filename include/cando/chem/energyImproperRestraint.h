@@ -109,8 +109,6 @@ public:
 //added by G 7.19.2011
 public:
     virtual int numberOfTerms() { return this->_Terms.size();};
-
-
 public:
     void addTerm(const TermType& term);
     virtual void dumpTerms();
@@ -137,8 +135,8 @@ public:
 public:
     EnergyImproperRestraint_O( const EnergyImproperRestraint_O& ss ); //!< Copy constructor
 
-    DEFAULT_CTOR_DTOR(EnergyImproperRestraint_O);
-
+    EnergyImproperRestraint_O() {};
+    virtual ~EnergyImproperRestraint_O() {};
 };
 
 };

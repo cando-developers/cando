@@ -2904,7 +2904,7 @@ return 0;
 #endif
 
 
-chem::SmartsRoot_sp smarts_compile(const string& input, core::Lisp_sp lisp, stringstream& errorStream)
+chem::SmartsRoot_sp smarts_compile(const string& input, stringstream& errorStream)
 {_G();
     msmarts_SParserParam p;
     stringstream sin(input);

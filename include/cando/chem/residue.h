@@ -196,7 +196,7 @@ namespace chem {
          */
 	bool		testIfAllAtomNamesAreUnique(core::T_sp problemStream);
 
-	void fillInImplicitHydrogensOnCarbon();
+	void fillInImplicitHydrogens();
 
 	Atom_sp		firstAtom() { return this->contentAt(0).as<Atom_O>(); };
 

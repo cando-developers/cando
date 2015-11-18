@@ -643,7 +643,7 @@ core::T_sp map_molecules(core::Symbol_sp result_type, core::T_sp funcDesig, Matt
     return res.cons();
   }
   if ( result_type == cl::_sym_Vector_O ) {
-    core::VectorObjectsWithFillPtr_sp vo = core::VectorObjectsWithFillPtr_O::make(_Nil<core::T_O>(),_Nil<core::T_O>(),16,0,true);
+    core::VectorObjectsWithFillPtr_sp vo = core::VectorObjectsWithFillPtr_O::make(_Nil<core::T_O>(),_Nil<core::T_O>(),16,0,true, cl::_sym_T_O);
     while (l.advanceLoopAndProcess()) {
       a = l.getMolecule();
       vo->vectorPushExtend(core::eval::funcall(func,a));
@@ -677,7 +677,7 @@ core::T_sp map_residues(core::Symbol_sp result_type, core::T_sp funcDesig, Matte
     return res.cons();
   }
   if ( result_type == cl::_sym_Vector_O ) {
-    core::VectorObjectsWithFillPtr_sp vo = core::VectorObjectsWithFillPtr_O::make(_Nil<core::T_O>(),_Nil<core::T_O>(),16,0,true);
+    core::VectorObjectsWithFillPtr_sp vo = core::VectorObjectsWithFillPtr_O::make(_Nil<core::T_O>(),_Nil<core::T_O>(),16,0,true, cl::_sym_T_O);
     while (l.advanceLoopAndProcess()) {
       a = l.getResidue();
       vo->vectorPushExtend(core::eval::funcall(func,a));
@@ -712,7 +712,7 @@ core::T_sp map_atoms(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_s
     return res.cons();
   }
   if ( result_type == cl::_sym_Vector_O ) {
-    core::VectorObjectsWithFillPtr_sp vo = core::VectorObjectsWithFillPtr_O::make(_Nil<core::T_O>(),_Nil<core::T_O>(),16,0,true);
+    core::VectorObjectsWithFillPtr_sp vo = core::VectorObjectsWithFillPtr_O::make(_Nil<core::T_O>(),_Nil<core::T_O>(),16,0,true, cl::_sym_T_O);
     while (l.advanceLoopAndProcess()) {
       a = l.getAtom();
       vo->vectorPushExtend(core::eval::funcall(func,a));

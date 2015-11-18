@@ -270,14 +270,14 @@ acyclicAtomTest: APOpenBracket logOp APCloseBracket
 	} 
 | APOrganicElement 
  	{ _lisp_BLOCK_TRACE("acyclicAtomTest: APOrganicElement");
-	    $$ = new Hold<chem::AtomOrBondMatchNode_O>((chem::AtomTest_O::create(chem::SAPElement, _lisp->internKeyword($1)))); 
+	    $$ = new Hold<chem::AtomOrBondMatchNode_O>((chem::AtomTest_O::create(chem::SAPElement, chem::chemkw_intern($1)))); 
 	} 
 
 | APAromaticOrganicElement 
  	{ _lisp_BLOCK_TRACE("acyclicAtomTest: APAromaticOrganicElement");
 	    string elementName = $1;
 	    elementName[0] = toupper(elementName[0]);
-	    $$ = new Hold<chem::AtomOrBondMatchNode_O>((chem::AtomTest_O::create(chem::SAPAromaticElement, _lisp->internKeyword(elementName)))); 
+	    $$ = new Hold<chem::AtomOrBondMatchNode_O>((chem::AtomTest_O::create(chem::SAPAromaticElement, chem::chemkw_intern(elementName)))); 
 	} 
 
 | APAliphatic
@@ -662,17 +662,17 @@ __END_DOC
 	}
 | APOrganicElement 
 	{ 
-	    $$ = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPElement, _lisp->internKeyword($1) )); 
+	    $$ = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPElement, chem::chemkw_intern($1) )); 
 	}
 | APAromaticOrganicElement 
 	{ _lisp_BLOCK_TRACE("atomPrimitiveTest: APAromaticOrganicElement");
 	    string elementName = $1;
 	    elementName[0] = toupper(elementName[0]);
-	    $$ = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPAromaticElement, _lisp->internKeyword(elementName) )); 
+	    $$ = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPAromaticElement, chem::chemkw_intern(elementName) )); 
 	}
 | APInorganicElement 
 	{ 
-	    $$ = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPElement, _lisp->internKeyword($1) )); 
+	    $$ = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPElement, chem::chemkw_intern($1) )); 
 	}
 | APLonePair 
 	{ 
@@ -1337,11 +1337,11 @@ return 0;
 #endif
 
 
-chem::SmartsRoot_sp smarts_compile(const string& input, core::Lisp_sp lisp, stringstream& errorStream)
+chem::SmartsRoot_sp smarts_compile(const string& input, stringstream& errorStream)
 {_G();
     msmarts_SParserParam p;
     stringstream sin(input);
-    p.lisp = lisp;
+    p.lisp = _lisp;
     p.expression = _Nil<SmartsRoot_O>();
     p.lexStream = &sin;
     p.msmartsErrorStream = &errorStream;

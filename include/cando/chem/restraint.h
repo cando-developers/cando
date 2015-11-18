@@ -18,6 +18,7 @@
 #include <string>
 #include <vector>
 #include <clasp/core/common.h>
+#include <cando/geom/ovector3.h>
 #include <cando/geom/vector3.h>
 #include <clasp/core/sequence.h>
 #include <clasp/core/holder.h>
@@ -37,24 +38,26 @@ SMART(Restraint);
 SMART(Restraint );
 class Restraint_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,Restraint_O,"Restraint");
-public:
+  LISP_BASE1(core::CxxObject_O);
+  LISP_CLASS(chem,ChemPkg,Restraint_O,"Restraint");
+ public:
 //    void	archiveBase(core::ArchiveP node);
 //    void	serialize(serialize::SNode node);
 
-private:
-public:
+ private:
+  bool _Active;
+ public:
 
-	virtual Restraint_sp	copyDontRedirectAtoms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
-	virtual void redirectAtoms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
+  virtual Restraint_sp	copyDontRedirectAtoms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
+  virtual void redirectAtoms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
 
-	virtual void invertStereochemistryOfRestraint() {_OF();SUBCLASS_MUST_IMPLEMENT();};
+  virtual void invertStereochemistryOfRestraint() {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
+  bool isActive() const { return this->_Active; };
+  void setActive(bool a) { this->_Active = a; };
 
-
-
-	DEFAULT_CTOR_DTOR(Restraint_O);
+ Restraint_O() : _Active(true) {};
+  virtual ~Restraint_O() {};
 };
 
 
@@ -66,7 +69,7 @@ class RestraintAnchor_O : public Restraint_O
     LISP_CLASS(chem,ChemPkg,RestraintAnchor_O,"RestraintAnchor");
 #if INIT_TO_FACTORIES
  public:
-    static RestraintAnchor_sp make();
+    static RestraintAnchor_sp make(Atom_sp atom, const Vector3& pos, double weight);
 #else
     DECLARE_INIT();
 #endif
@@ -76,9 +79,12 @@ public:
 //	void	serialize(serialize::SNode node);
 
 private:
-	Atom_wp		_A;
-	Vector3		_AnchorPos;
+	Atom_sp		_Atom;
+	Vector3		_Pos;
 	double		_Weight;
+ public:
+        bool fieldsp() const { return true; };
+        void	fields(core::Record_sp node);
 public:
 
 	void setWeight(double d) { this->_Weight = d; };
@@ -86,12 +92,12 @@ public:
 
 	void	setAnchorPos(const Vector3& pos )
 	{
-	    this->_AnchorPos = pos;
+	    this->_Pos = pos;
 	};
-	Atom_sp	getAtom() {_OF();ASSERTNOTNULL(this->_A);return this->_A;};
-	void	setAtom(Atom_sp a) {this->_A=a;};
+	Atom_sp	getAtom() {ASSERTNOTNULL(this->_Atom);return this->_Atom;};
+	void	setAtom(Atom_sp a) {this->_Atom=a;};
 
-	Vector3 getAnchorPos() { return this->_AnchorPos; };
+	Vector3 getAnchorPos() { return this->_Pos; };
 
 	Restraint_sp	copyDontRedirectAtoms();
 	void redirectAtoms();
@@ -99,8 +105,9 @@ public:
     	void invertStereochemistryOfRestraint();
 
 
-	RestraintAnchor_O(const RestraintAnchor_O& old);
-	DEFAULT_CTOR_DTOR(RestraintAnchor_O);
+        RestraintAnchor_O() {};
+ RestraintAnchor_O(Atom_sp atom, const Vector3& pos, double weight) : _Atom(atom), _Pos(pos), _Weight(weight) {};
+        virtual ~RestraintAnchor_O() {};
 };
 
 
@@ -347,11 +354,16 @@ public:
     gctools::Vec0<Restraint_sp>::const_iterator	begin() const { return this->_Restraints.begin(); };
     gctools::Vec0<Restraint_sp>::const_iterator	end() const { return this->_Restraints.end(); };
 
+    virtual gc::Fixnum dimension() const { return this->_Restraints.size(); };
+
+    INHERIT_SEQUENCE virtual core::T_sp elt(int index) const { return this->_Restraints[index]; };
+    INHERIT_SEQUENCE virtual core::T_sp setf_elt(int index, core::T_sp value) { this->_Restraints[index] = value; };
+
     virtual std::vector<core::cl_index> dimensions() const { std::vector<core::cl_index> dims; dims.push_back(this->_Restraints.size()); return dims;};
 	void		clear()	{this->_Restraints.clear(); };
 	void		addRestraint( Restraint_sp r) { this->_Restraints.push_back(r); };
 	int		size()	{return this->_Restraints.size(); };
-
+        int numberOfRestraints() { return this->size();};
 	Restraint_sp	getRestraintIndex(int i) {return this->_Restraints[i]; };
 
 	RestraintList_sp	copyDontRedirectAtoms();

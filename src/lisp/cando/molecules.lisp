@@ -1,21 +1,44 @@
 (in-package :cando)
-
-
-(defun scramble-positions (matter)
-  (chem:map-atoms
-   nil
-   (lambda (a) (chem:randomize-atom-position a) a)
-   matter))
+(defun scramble-positions (matter &key (center (geom:make-ovector3 0.0 0.0 0.0)) (width 10.0)
+                           &aux (half-width (/ width 2.0)))
+  (flet ((scramble-atom (atom)
+           (let ((pos (geom:make-ovector3
+                       (+ (- (random width) half-width) (geom:x center))
+                       (+ (- (random width) half-width) (geom:y center))
+                       (+ (- (random width) half-width) (geom:z center)))))
+             (chem:set-position atom pos))))
+    (cond
+      ((typep matter 'chem:matter)
+       (chem:map-atoms
+        nil
+        (lambda (a) (scramble-atom a)) matter))
+      ((hash-table-p matter)
+       (maphash (lambda (a v) (scramble-atom a)) matter))
+      ((listp matter)
+       (mapc (lambda (a) (scramble-atom a)) matter))
+      (t (error "Add support to scramble positions for ~s" matter)))))
+              
   
 (defun dump-atoms (matter)
   (chem:map-atoms nil
                   (lambda (x)
-                    (format t "~6a ~a ~a ~a~%"
+                    (format t "~6a ~a ~a ~a ~s~%"
                             (chem:get-name x)
                             (chem:get-type x)
                             (chem:get-configuration x)
-                            (chem:get-position x)))
+                            (chem:get-position x)
+                            (chem:get-properties x)))
                   matter))
+
+(defun atoms-with-property (matter prop-name)
+  (let (atoms)
+    (chem:map-atoms nil
+                    (lambda (x)
+                      (when (not (eq :eof (getf (chem:get-properties x) prop-name :eof)))
+                        (push x atoms)))
+                    matter)
+    atoms))
+
 
 (defun dump-stereocenters (centers)
   (dotimes (i (length centers))
@@ -60,21 +83,30 @@
 (defun configure-minimizer (minimizer
                             &key max-steepest-descent-steps
                               max-conjugate-gradient-steps
-                              max-truncated-newton-steps)
+                              max-truncated-newton-steps
+                              (steepest-descent-tolerance 2000.0)
+                              (conjugate-gradients-tolerance 0.5)
+                              (truncated-newton-tolerance 0.000001)
+                              )
   (when max-steepest-descent-steps
     (chem:set-maximum-number-of-steepest-descent-steps minimizer max-steepest-descent-steps))
   (when max-conjugate-gradient-steps
     (chem:set-maximum-number-of-conjugate-gradient-steps minimizer max-conjugate-gradient-steps))
   (when max-truncated-newton-steps
-    (chem:set-maximum-number-of-truncated-newton-steps minimizer max-truncated-newton-steps)))
+    (chem:set-maximum-number-of-truncated-newton-steps minimizer max-truncated-newton-steps))
+  (chem:set-steepest-descent-tolerance minimizer steepest-descent-tolerance)
+  (chem:set-conjugate-gradient-tolerance minimizer conjugate-gradients-tolerance)
+  (chem:set-truncated-newton-tolerance minimizer truncated-newton-tolerance)
+
+  )
   
                               
-(defun optimize-structure (matter force-field)
-  (let* ((energy-function (chem:make-energy-function matter force-field))
+(defun optimize-structure (matter force-field &optional active-atoms)
+  (let* ((energy-function (chem:make-energy-function matter force-field active-atoms))
          (min (chem:make-minimizer :energy-function energy-function)))
     (configure-minimizer min
-                         :max-steepest-descent-steps 100
-                         :max-conjugate-gradient-steps 500
+                         :max-steepest-descent-steps 1000
+                         :max-conjugate-gradient-steps 50000
                          :max-truncated-newton-steps 100)
     (chem:enable-print-intermediate-results min)
     (chem:set-option energy-function 'chem::nonbond-term nil)
@@ -147,13 +179,13 @@
   (error "Exceeded max number of tries to build good geometry"))
 
 
-(defun save-mol2 (matter pn)
-  (let ((npn (merge-pathnames pn *default-pathname-defaults*)))
+(defun save-mol2 (matter pathname)
+  (let ((npn (merge-pathnames pathname *default-pathname-defaults*)))
     (format t "Saving matter to ~a~%" npn)
     (chem:save-mol2 matter npn)))
 
-(defun load-mol2 (pn)
-  (let ((npn (merge-pathnames pn *default-pathname-defaults*)))
+(defun load-mol2 (pathname)
+  (let ((npn (merge-pathnames pathname *default-pathname-defaults*)))
     (chem:load-mol2 npn)))
 
 
@@ -222,3 +254,22 @@
       (return-from find-aggregate a))))
 
 
+
+(defun jostle-atoms (matter &optional (width 0.1) &aux (half-width (/ width 2.0)))
+  (flet ((jostle-atom (atom)
+           (let* ((cp (chem:get-position atom))
+                  (pos (geom:make-ovector3
+                       (+ (- (random width) half-width) (geom:x cp))
+                       (+ (- (random width) half-width) (geom:y cp))
+                       (+ (- (random width) half-width) (geom:z cp)))))
+             (chem:set-position atom pos))))
+    (cond
+      ((typep matter 'chem:matter)
+       (chem:map-atoms
+        nil
+        (lambda (a) (jostle-atom a)) matter))
+      ((hash-table-p matter)
+       (maphash (lambda (a v) (jostle-atom a)) matter))
+      ((listp matter)
+       (mapc (lambda (a) (jostle-atom a)) matter))
+      (t (error "Add support to jostle positions for ~s" matter)))))

@@ -60,45 +60,34 @@ namespace chem {
 }
 #endif
 
+void	RestraintAnchor_O::fields(core::Record_sp node)
+{
+//  this->Base::fields(node); // don't invoke parent fields
+  node->field_if_not_nil( INTERN_(kw,atom), this->_Atom );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,position), this->_Pos, Vector3());
+  node->/*pod_*/field_if_not_default( INTERN_(kw,weight), this->_Weight, 0.0);
+};
 
-
-
-#if INIT_TO_FACTORIES
-
-#define ARGS_RestraintAnchor_O_make "()"
+#define ARGS_RestraintAnchor_O_make "(&key atom pos (weight 1.0))"
 #define DECL_RestraintAnchor_O_make ""
 #define DOCS_RestraintAnchor_O_make "make RestraintAnchor"
-  RestraintAnchor_sp RestraintAnchor_O::make()
-  {_G();
-    IMPLEMENT_ME();
+RestraintAnchor_sp RestraintAnchor_O::make(Atom_sp atom, const Vector3& pos, double weight )
+  {
+    GC_ALLOCATE_VARIADIC(RestraintAnchor_O, ra, atom, pos, weight );
+    return ra;
   };
-
-#else
-
-core::T_sp  RestraintAnchor_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-{
-    IMPLEMENT_ME();
-}
-
-#endif
-
-RestraintAnchor_O::RestraintAnchor_O(const RestraintAnchor_O& old) : Restraint_O(old)
-{
-    this->_A = old._A;
-    this->_AnchorPos = old._AnchorPos;
-}
 
 
 Restraint_sp	RestraintAnchor_O::copyDontRedirectAtoms()
 {
     GC_COPY(RestraintAnchor_O, rest , *this); // = RP_Copy<RestraintAnchor_O>(this);
-    rest->_A = this->getAtom();
+    rest->_Atom = this->getAtom();
     return rest;
 }
 
 void	RestraintAnchor_O::redirectAtoms()
 {_G();
-    this->_A = this->getAtom()->getCopyAtom();
+    this->_Atom = this->getAtom()->getCopyAtom();
 }
 
 
@@ -125,7 +114,7 @@ void	RestraintAnchor_O::redirectAtoms()
 
 void	RestraintAnchor_O::invertStereochemistryOfRestraint()
 {_G();
-    this->_AnchorPos.set(this->_AnchorPos.getX(),this->_AnchorPos.getY(),this->_AnchorPos.getZ()*-1.0);
+    this->_Pos.set(this->_Pos.getX(),this->_Pos.getY(),this->_Pos.getZ()*-1.0);
 }
 
 
@@ -134,7 +123,7 @@ void	RestraintAnchor_O::invertStereochemistryOfRestraint()
 
 RestraintChiral_O::RestraintChiral_O(const RestraintChiral_O& old) : Restraint_O(old)
 {
-    this->_A = old._A;
+    this->_A= old._A;
     this->_Chirality = old._Chirality;
 }
 
@@ -480,6 +469,8 @@ void	RestraintList_O::merge(RestraintList_sp rl)
 void Restraint_O::exposeCando(core::Lisp_sp lisp)
 {
     core::class_<Restraint_O>()
+      .def("isActive",&Restraint_O::isActive)
+      .def("setActive",&Restraint_O::setActive)
 	;
 //	def("create_Restraint",&Restraint_O::create);
 }
@@ -565,6 +556,7 @@ void RestraintAnchor_O::exposeCando(core::Lisp_sp lisp)
 	    .def("setAnchorPos",&RestraintAnchor_O::setAnchorPos)
 	    .def("setAtom",&RestraintAnchor_O::setAtom)
 	.def("setWeight",&RestraintAnchor_O::setWeight)
+	.def("restraint-anchor-getWeight",&RestraintAnchor_O::getWeight)
 	;
 }
 
@@ -584,6 +576,7 @@ void RestraintList_O::exposeCando(core::Lisp_sp lisp)
 {
     core::class_<RestraintList_O>()
 	    .def("addRestraint",&RestraintList_O::addRestraint)
+      .def("numberOfRestraints",&RestraintList_O::numberOfRestraints)
 	;
 //	def("create_RestraintList",&RestraintList_O::create);
 }

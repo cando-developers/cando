@@ -12,4 +12,7 @@
      (:file "print-read")
      (:file "conditions")
      (:file "molecules")
+     (:file "atom-tree")
+     (:file "ring-builder")
+     (:file "search")
      ))
