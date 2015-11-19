@@ -144,22 +144,26 @@ compile-commands:
 
 mps-interface-prep:
 	(make -C $(CLASP_HOME)/src/main boehmdc-release-cxx)
-	clasp_boehmdc_o -I -f ecl-min -l $(CLASP_HOME)/src/main/link-bclasp.lsp
-	clasp_boehmdc_o -f bclasp -l $(CLASP_HOME)/src/main/build_addons.lsp
-	clasp_boehmdc_o -f bclasp -l $(CLASP_HOME)/src/main/link-addons.lsp
+	make -C $(CLASP_HOME)/src/main min-boehmdc
+	make -C $(CLASP_HOME)/src/main/ bclasp-boehmdc-bitcode
+	make -C $(CLASP_HOME)/src/main/ bclasp-boehmdc-fasl
+	make -C $(CLASP_HOME)/src/main/ bclasp-boehmdc-addons
 
 mps-interface-run:
 	make compile-commands
 	clasp_boehmdc_o -f bclasp -e "(require :asdf)" \
         -e "(asdf:load-system \"clasp-analyzer\")" \
 	-e "(clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\")" \
-        -e "(clasp-analyzer:serial-search-all-then-generate-code-and-quit \"`pwd`/\")"
+        -e "(clasp-analyzer:serial-search-all-then-generate-code-and-quit)"
 
 mps-interface-test:
 	make compile-commands
 	clasp_boehmdc_o -f bclasp -e "(require :asdf)" \
         -e "(asdf:load-system \"clasp-analyzer\")" \
 	-e "(clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\")" \
-        -e "(clasp-analyzer:serial-search-all-then-generate-code-and-quit \"`pwd`/\" :test (clasp-analyzer::lsel clasp-analyzer:$$\* \".*mol2\.cc$$\"))"
+        -e "(clasp-analyzer:serial-search-all-then-generate-code-and-quit :test (clasp-analyzer::lsel clasp-analyzer:$$\* \".*mol2\.cc$$\"))"
 
 
+mps-interface:
+	make mps-interface-prep
+	make mps-interface-run

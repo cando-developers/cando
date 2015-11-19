@@ -27,9 +27,9 @@ local sources =
 #	    coloredVertexList.cc
 	    coordinateArray.cc
 #	    integerKeyObjectDictionary.cc
-	    /externals//boostAndExpatLibs
-            /internals//core
-	    /internals//gctools
+#	    /externals//boostAndExpatLibs
+#            /internals//core
+#	    /internals//gctools
 ;
 
 

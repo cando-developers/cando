@@ -117,10 +117,10 @@ local sources =
 		conformationExplorer.cc 
 		conformationCollection.cc 
 		parsers
-		/externals//boostAndExpatLibs
-		/internals//core
-		/cando/geom
-		/cando/units
+#		/externals//boostAndExpatLibs
+#		/internals//core
+#		/cando/geom
+#		/cando/units
 ;
 
 #	        tableOperations.cc

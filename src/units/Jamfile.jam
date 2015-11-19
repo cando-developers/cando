@@ -15,9 +15,9 @@ local sources = dimension.cc
 	namedUnit.cc
 	quantity.cc
 	unitsPackage.cc
-	/externals//boostAndExpatLibs
-	/internals/core/
-	/cando/geom
+#	/externals//boostAndExpatLibs
+#	/internals/core/
+#	/cando/geom
 ;
 
-lib units : $(sources) ;
+alias units : $(sources) ;
