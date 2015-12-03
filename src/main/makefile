@@ -163,6 +163,13 @@ mps-interface-test:
 	-e "(clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\")" \
         -e "(clasp-analyzer:serial-search-all-then-generate-code-and-quit :test (clasp-analyzer::lsel clasp-analyzer:$$\* \".*mol2\.cc$$\"))"
 
+mps-interface-run-cclasp:
+	make compile-commands
+	clasp_boehm_o -e "(require :asdf)" \
+        -e "(asdf:load-system \"clasp-analyzer\")" \
+	-e "(clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\")" \
+        -e "(clasp-analyzer:serial-search-all-then-generate-code-and-quit)"
+
 
 mps-interface:
 	make mps-interface-prep

@@ -5044,7 +5044,7 @@ template <> class gctools::GCKind<chem::Trajectory_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_chem__Trajectory_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__MonomerCoordinates_O___ ;
 };
@@ -5112,7 +5112,7 @@ template <> class gctools::GCKind<core::Fixnum_dummy_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_core__Fixnum_dummy_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFPtor_O___ ;
 };
@@ -5212,7 +5212,7 @@ template <> class gctools::GCKind<llvmo::InsertPoint_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_llvmo__InsertPoint_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Coupling_O___ ;
 };
@@ -5260,7 +5260,7 @@ template <> class gctools::GCKind<gctools::GCVector_moveable<gctools::tagged_poi
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_asttooling__internal__MatcherDescriptor__ ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__PdbMonomerConnectivity_O___ ;
 };
@@ -5312,7 +5312,7 @@ template <> class gctools::GCKind<chem::EnergyNonbond_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_chem__EnergyNonbond_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__AtomIndexer_O___ ;
 };
@@ -5372,7 +5372,7 @@ template <> class gctools::GCKind<llvmo::TargetMachine_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_llvmo__TargetMachine_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__EntityNameSetBase_O___ ;
 };
@@ -5444,7 +5444,7 @@ template <> class gctools::GCKind<chem::ComplexRestraint_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_chem__ComplexRestraint_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Entity_O___ ;
 };
@@ -5540,7 +5540,7 @@ template <> class gctools::GCKind<core::LongFloat_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_core__LongFloat_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFStretch_O___ ;
 };
@@ -5576,7 +5576,7 @@ template <> class gctools::GCKind<chem::Bond_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_chem__Bond_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Plug_O___ ;
 };
@@ -5628,7 +5628,7 @@ template <> class gctools::GCKind<chem::EnergyStretch_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_chem__EnergyStretch_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFItor_O___ ;
 };
@@ -5668,7 +5668,7 @@ template <> class gctools::GCKind<chem::PdbMonomerDatabase_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_chem__PdbMonomerDatabase_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::Residue_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::Residue_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__Residue_O___ ;
 };
@@ -5688,7 +5688,7 @@ template <> class gctools::GCKind<chem::TrajectoryFrame_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_chem__TrajectoryFrame_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Molecule_O___ ;
 };
@@ -5740,7 +5740,7 @@ template <> class gctools::GCKind<llvmo::IndirectBrInst_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_llvmo__IndirectBrInst_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Str_O___ ;
 };
@@ -5784,7 +5784,7 @@ template <> class gctools::GCKind<gctools::GCVector_moveable<chem::KeyEntry>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_chem__KeyEntry_ ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__unsigned_int__ ;
 };
@@ -5796,7 +5796,7 @@ template <> class gctools::GCKind<core::RuntimeVisibleEnvironment_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_core__RuntimeVisibleEnvironment_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__T_O___ ;
 };
@@ -6172,7 +6172,7 @@ template <> class gctools::GCKind<gctools::GCVector_moveable<gctools::smart_ptr<
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathMessage_O__ ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___ ;
 };
@@ -6184,7 +6184,7 @@ template <> class gctools::GCKind<chem::RestraintList_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_chem__RestraintList_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___ ;
 };
@@ -6340,7 +6340,7 @@ template <> class gctools::GCKind<chem::RestraintAnchor_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_chem__RestraintAnchor_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___ ;
 };
@@ -6384,7 +6384,7 @@ template <> class gctools::GCKind<llvmo::DISubroutineType_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_llvmo__DISubroutineType_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___ ;
 };
@@ -6460,7 +6460,7 @@ template <> class gctools::GCKind<llvmo::FunctionType_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_llvmo__FunctionType_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,int>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,int>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__ ;
 };
@@ -6508,7 +6508,7 @@ template <> class gctools::GCKind<gctools::GCVector_moveable<core::KeywordArgume
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_ ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__ ;
 };
@@ -6532,7 +6532,7 @@ template <> class gctools::GCKind<gctools::GCVector_moveable<gctools::smart_ptr<
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_V__ ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___ ;
 };
@@ -6732,7 +6732,7 @@ template <> class gctools::GCKind<core::FunctionContainerEnvironment_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_core__FunctionContainerEnvironment_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___ ;
 };
@@ -6772,7 +6772,7 @@ template <> class gctools::GCKind<core::Package_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_core__Package_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___ ;
 };
@@ -6832,7 +6832,7 @@ template <> class gctools::GCKind<asttooling::AstVisitor_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_asttooling__AstVisitor_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___ ;
 };
@@ -6868,7 +6868,7 @@ template <> class gctools::GCKind<gctools::GCVector_moveable<gctools::smart_ptr<
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTypeRule_O__ ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___ ;
 };
@@ -6980,7 +6980,7 @@ template <> class gctools::GCKind<chem::EnergyImproperRestraint_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_chem__EnergyImproperRestraint_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::CDNode_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::CDNode_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___ ;
 };
@@ -6992,7 +6992,7 @@ template <> class gctools::GCKind<gctools::GCVector_moveable<gctools::smart_ptr<
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__ ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___ ;
 };
@@ -7036,7 +7036,7 @@ template <> class gctools::GCKind<chem::EnergyChiralRestraint_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_chem__EnergyChiralRestraint_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___ ;
 };
@@ -7092,7 +7092,7 @@ template <> class gctools::GCKind<clbind::ClassRep_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_clbind__ClassRep_O ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>> {
+template <> class gctools::GCKind<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___ ;
 };
@@ -12954,18 +12954,18 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Confo
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__MonomerCoordinates_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__MonomerCoordinates_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__MonomerCoordinates_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__MonomerCoordinates_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFPtor_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFPtor_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFPtor_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFPtor_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -12996,9 +12996,9 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Traje
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Coupling_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Coupling_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Coupling_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Coupling_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13032,9 +13032,9 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_asttoo
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__PdbMonomerConnectivity_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__PdbMonomerConnectivity_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__PdbMonomerConnectivity_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__PdbMonomerConnectivity_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13050,9 +13050,9 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFVdw
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__AtomIndexer_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__AtomIndexer_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__AtomIndexer_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__AtomIndexer_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13068,9 +13068,9 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Singl
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__EntityNameSetBase_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__EntityNameSetBase_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__EntityNameSetBase_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__EntityNameSetBase_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13095,9 +13095,9 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Confo
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Entity_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Entity_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Entity_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Entity_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13131,9 +13131,9 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Stere
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFStretch_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFStretch_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFStretch_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFStretch_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13146,9 +13146,9 @@ obj_dump_KIND_CLASSALLOC_core__MacroClosure:
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Plug_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Plug_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Plug_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Plug_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13164,9 +13164,9 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Stere
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFItor_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFItor_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFItor_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFItor_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13191,18 +13191,18 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyDihedral_:
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__Residue_O___:
 {
-    gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::Residue_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::Residue_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::Residue_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::Residue_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__Residue_O___;
+    gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::Residue_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::Residue_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::Residue_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::Residue_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__Residue_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__Residue_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Molecule_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Molecule_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Molecule_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Molecule_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13235,9 +13235,9 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__RingC
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Str_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Str_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Str_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Str_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13271,18 +13271,18 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_chem__KeyEntry_:
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__unsigned_int__:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__unsigned_int__;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__unsigned_int__;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__unsigned_int__>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__T_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__T_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__T_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__T_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13469,18 +13469,18 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathM
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13571,9 +13571,9 @@ obj_dump_KIND_CLASSALLOC_core__InterpretedClosure:
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13610,9 +13610,9 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Simpl
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13646,9 +13646,9 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,int>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,int>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,int>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,int>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,int>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,int>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,int>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,int>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13682,9 +13682,9 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_:
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13700,9 +13700,9 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13799,9 +13799,9 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Struc
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13829,18 +13829,18 @@ obj_dump_KIND_LISPALLOC_asttooling__DerivableMatchCallback:
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___:
 {
-    gctools::GCVector_moveable<std::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___;
+    gctools::GCVector_moveable<std::__1::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13862,9 +13862,9 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTy
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13907,9 +13907,9 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matte
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___:
 {
-    gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::CDNode_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::CDNode_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::CDNode_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::CDNode_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___;
+    gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::CDNode_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::CDNode_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::CDNode_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::CDNode_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13925,9 +13925,9 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -13958,9 +13958,9 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monom
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -14009,9 +14009,9 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemI
 goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>*>(client);
-    sout << "gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>*>(client);
+    sout << "gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
@@ -17477,8 +17477,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Confo
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__MonomerCoordinates_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__MonomerCoordinates_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__MonomerCoordinates_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__MonomerCoordinates_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -17487,8 +17487,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFPtor_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFPtor_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFPtor_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFPtor_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -17523,8 +17523,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Traje
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Coupling_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Coupling_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Coupling_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Coupling_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -17563,8 +17563,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_asttoo
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__PdbMonomerConnectivity_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__PdbMonomerConnectivity_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__PdbMonomerConnectivity_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__PdbMonomerConnectivity_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -17583,8 +17583,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFVdw
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__AtomIndexer_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__AtomIndexer_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__AtomIndexer_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__AtomIndexer_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -17603,8 +17603,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Singl
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__EntityNameSetBase_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__EntityNameSetBase_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__EntityNameSetBase_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__EntityNameSetBase_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -17633,8 +17633,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Confo
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Entity_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Entity_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Entity_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Entity_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -17673,8 +17673,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Stere
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFStretch_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFStretch_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFStretch_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFStretch_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -17689,8 +17689,8 @@ obj_skip_KIND_CLASSALLOC_core__MacroClosure:
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Plug_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Plug_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Plug_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Plug_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -17709,8 +17709,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Stere
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFItor_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFItor_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFItor_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFItor_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -17739,8 +17739,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyDihedral_:
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__Residue_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::Residue_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::Residue_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::Residue_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__Residue_O___;
+    gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::Residue_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::Residue_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::Residue_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__Residue_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__Residue_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -17749,8 +17749,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__sm
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Molecule_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Molecule_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Molecule_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Molecule_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -17789,8 +17789,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__RingC
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Str_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Str_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Str_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Str_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -17829,8 +17829,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_chem__KeyEntry_:
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__unsigned_int__:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__unsigned_int__;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__unsigned_int__;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__unsigned_int__>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -17839,8 +17839,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__T_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__T_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__T_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__T_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -18047,8 +18047,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathM
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -18057,8 +18057,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -18159,8 +18159,8 @@ obj_skip_KIND_CLASSALLOC_core__InterpretedClosure:
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -18201,8 +18201,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Simpl
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -18241,8 +18241,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,int>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,int>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,int>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,int>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,int>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,int>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -18281,8 +18281,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_:
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -18301,8 +18301,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -18411,8 +18411,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Struc
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -18443,8 +18443,8 @@ obj_skip_KIND_LISPALLOC_asttooling__DerivableMatchCallback:
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -18453,8 +18453,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___;
+    gctools::GCVector_moveable<std::__1::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -18479,8 +18479,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTy
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -18529,8 +18529,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matte
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::CDNode_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::CDNode_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::CDNode_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___;
+    gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::CDNode_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::CDNode_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::CDNode_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -18549,8 +18549,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -18585,8 +18585,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monom
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -18641,8 +18641,8 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemI
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___:
 {
   {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>*>(client);
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___;
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>*>(client);
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
   }
@@ -22124,24 +22124,24 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Confo
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__MonomerCoordinates_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__MonomerCoordinates_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__MonomerCoordinates_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__MonomerCoordinates_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFPtor_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFPtor_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFPtor_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFPtor_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -22176,12 +22176,12 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Traje
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Coupling_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Coupling_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Coupling_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Coupling_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -22221,12 +22221,12 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_asttoo
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__PdbMonomerConnectivity_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__PdbMonomerConnectivity_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__PdbMonomerConnectivity_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__PdbMonomerConnectivity_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -22244,12 +22244,12 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFVdw
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__AtomIndexer_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__AtomIndexer_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__AtomIndexer_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__AtomIndexer_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -22267,12 +22267,12 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Singl
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__EntityNameSetBase_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__EntityNameSetBase_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__EntityNameSetBase_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__EntityNameSetBase_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -22301,12 +22301,12 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Confo
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Entity_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Entity_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Entity_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Entity_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -22346,12 +22346,12 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Stere
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFStretch_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFStretch_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFStretch_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFStretch_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -22364,12 +22364,12 @@ obj_scan_KIND_CLASSALLOC_core__MacroClosure:
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Plug_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Plug_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Plug_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Plug_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -22387,12 +22387,12 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Stere
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFItor_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFItor_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFItor_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFItor_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -22424,23 +22424,23 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyDihedral_:
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__Residue_O___:
 {
-    gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::Residue_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::Residue_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::Residue_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::Residue_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::Residue_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::Residue_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::Residue_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__Residue_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::Residue_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__Residue_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__Residue_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Molecule_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Molecule_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Molecule_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Molecule_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -22474,12 +22474,12 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__RingC
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Str_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Str_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Str_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Str_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -22521,23 +22521,23 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_chem__KeyEntry_:
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__unsigned_int__:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__unsigned_int__;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__unsigned_int__;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__unsigned_int__>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__T_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__T_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__T_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__T_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -22771,24 +22771,24 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathM
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -22900,12 +22900,12 @@ obj_scan_KIND_CLASSALLOC_core__InterpretedClosure:
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -22947,12 +22947,12 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Simpl
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -22993,11 +22993,11 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,int>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,int>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,int>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,int>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,int>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,int>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,int>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,int>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -23040,13 +23040,13 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_:
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second._ti);
     SMART_PTR_FIX(it->second._tj);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -23064,12 +23064,12 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -23187,12 +23187,12 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Struc
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -23222,23 +23222,23 @@ obj_scan_KIND_LISPALLOC_asttooling__DerivableMatchCallback:
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___:
 {
-    gctools::GCVector_moveable<std::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -23262,12 +23262,12 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTy
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -23318,11 +23318,11 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matte
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___:
 {
-    gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::CDNode_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::CDNode_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::CDNode_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::CDNode_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::CDNode_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::CDNode_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::CDNode_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::CDNode_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -23340,12 +23340,12 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -23380,12 +23380,12 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monom
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -23447,12 +23447,12 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemI
 goto TOP;
 obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___:
 {
-    gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>*>(client);
-    for (gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
+    gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>*>(client);
+    for (gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
     SMART_PTR_FIX(it->first);
     SMART_PTR_FIX(it->second);
     }
-    typedef typename gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___;
+    typedef typename gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>> type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
@@ -31494,10 +31494,10 @@ obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__C
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ConformationCollectionEntry_O>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__MonomerCoordinates_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFPtor_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Mate_O__:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Mate_O>>"));}
@@ -31512,7 +31512,7 @@ obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__T
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::TrajectoryFrame_O>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Coupling_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDBond_O__:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::CDBond_O>>"));}
@@ -31524,19 +31524,19 @@ obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_as
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::tagged_pointer<asttooling::internal::MatcherDescriptor>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__PdbMonomerConnectivity_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFVdw_O__:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::FFVdw_O>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__AtomIndexer_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SingleDispatchMethod_O__:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<core::SingleDispatchMethod_O>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__EntityNameSetBase_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Package_O__:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<core::Package_O>>"));}
@@ -31545,7 +31545,7 @@ obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__C
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ConformationExplorerEntry_O>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Entity_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__MonomerCoordinates_O__:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::MonomerCoordinates_O>>"));}
@@ -31557,7 +31557,7 @@ obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__S
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::StereoisomerAtom_O>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFStretch_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>"));}
 obj_finalize_KIND_CLASSALLOC_core__MacroClosure:
 {
     core::MacroClosure* obj_gc_safe = reinterpret_cast<core::MacroClosure*>(client);
@@ -31566,13 +31566,13 @@ obj_finalize_KIND_CLASSALLOC_core__MacroClosure:
 }
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Plug_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__StereoConfiguration_O__:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::StereoConfiguration_O>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFItor_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ConstitutionBond_O__:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ConstitutionBond_O>>"));}
@@ -31581,10 +31581,10 @@ obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyDihedral_:
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<chem::EnergyDihedral>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__Residue_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::Residue_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::Residue_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Molecule_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ParserValue_:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<asttooling::ParserValue>"));}
@@ -31596,7 +31596,7 @@ obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__R
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::RingClosingMate_O>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Str_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_core__SymbolClassPair_:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<core::SymbolClassPair>"));}
@@ -31608,10 +31608,10 @@ obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_chem__KeyEntry_:
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<chem::KeyEntry>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__unsigned_int__:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__T_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ConformationExplorerEntryStage_O__:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ConformationExplorerEntryStage_O>>"));}
@@ -31686,10 +31686,10 @@ obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__P
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::PathMessage_O>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>"));}
 obj_finalize_KIND_CLASSALLOC_asttooling__internal__FixedArgCountMatcherDescriptor:
 {
     asttooling::internal::FixedArgCountMatcherDescriptor* obj_gc_safe = reinterpret_cast<asttooling::internal::FixedArgCountMatcherDescriptor*>(client);
@@ -31728,7 +31728,7 @@ obj_finalize_KIND_CLASSALLOC_core__InterpretedClosure:
 }
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>"));}
 obj_finalize_KIND_CLASSALLOC_asttooling__internal__FreeFuncMatcherDescriptor:
 {
     asttooling::internal::FreeFuncMatcherDescriptor* obj_gc_safe = reinterpret_cast<asttooling::internal::FreeFuncMatcherDescriptor*>(client);
@@ -31749,7 +31749,7 @@ obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__S
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<core::SimpleBitVector_O>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_clbind__ClassRep_O__:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<clbind::ClassRep_O>>"));}
@@ -31761,7 +31761,7 @@ obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_co
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::tagged_pointer<core::SequenceStepper>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,int>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,int>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAnchorRestraint_:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<chem::EnergyAnchorRestraint>"));}
@@ -31773,13 +31773,13 @@ obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_:
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<core::KeywordArgument>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_V__:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<core::List_V>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Coupling_O__:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Coupling_O>>"));}
@@ -31812,7 +31812,7 @@ obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__S
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Structure_Old_ListEntry_O>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Cons_O__:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<core::Cons_O>>"));}
@@ -31830,10 +31830,10 @@ obj_finalize_KIND_LISPALLOC_asttooling__DerivableMatchCallback:
 }
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>"));}
 obj_finalize_KIND_LISPALLOC_asttooling__DerivableASTFrontendAction:
 {
     asttooling::DerivableASTFrontendAction* obj_gc_safe = reinterpret_cast<asttooling::DerivableASTFrontendAction*>(client);
@@ -31845,7 +31845,7 @@ obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__O
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::OneTypeRule_O>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDFragment_O__:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::CDFragment_O>>"));}
@@ -31860,13 +31860,13 @@ obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__M
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Matter_O>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<int,gctools::smart_ptr<chem::CDNode_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::CDNode_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<core::T_O>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>"));}
 obj_finalize_KIND_LISPALLOC_asttooling__DerivableSyntaxOnlyAction:
 {
     asttooling::DerivableSyntaxOnlyAction* obj_gc_safe = reinterpret_cast<asttooling::DerivableSyntaxOnlyAction*>(client);
@@ -31881,7 +31881,7 @@ obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__M
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Monomer_O>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixEntry_O__:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ZMatrixEntry_O>>"));}
@@ -31901,7 +31901,7 @@ obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__C
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ChemInfo_O>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___:
 {
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>"));}
+    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>"));}
 obj_finalize_KIND_CLASSALLOC_core__ConsStepper:
 {
     core::ConsStepper* obj_gc_safe = reinterpret_cast<core::ConsStepper*>(client);
@@ -32511,6 +32511,3800 @@ static void* OBJ_FINALIZE_table[] = { NULL
   /* 595 */ , &&obj_finalize_KIND_CLASSALLOC_core__ConsStepper
 };
 #endif // defined(GC_OBJ_FINALIZE_TABLE)
+#if defined(GC_OBJ_DEALLOCATOR)
+obj_deallocate_unmanaged_instance_KIND_ROOTCLASSALLOC_clbind__detail__class_map:
+{
+    clbind::detail::class_map* obj_gc_safe = reinterpret_cast<clbind::detail::class_map*>(client);
+    GCObjectAllocator<clbind::detail::class_map>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_ROOTCLASSALLOC_core__Lisp_O:
+{
+    core::Lisp_O* obj_gc_safe = reinterpret_cast<core::Lisp_O*>(client);
+    GCObjectAllocator<core::Lisp_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__T_O:
+{
+    core::T_O* obj_gc_safe = reinterpret_cast<core::T_O*>(client);
+    GCObjectAllocator<core::T_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Regex_O:
+{
+    core::Regex_O* obj_gc_safe = reinterpret_cast<core::Regex_O*>(client);
+    GCObjectAllocator<core::Regex_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__WeakHashTable_O:
+{
+    core::WeakHashTable_O* obj_gc_safe = reinterpret_cast<core::WeakHashTable_O*>(client);
+    GCObjectAllocator<core::WeakHashTable_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__WeakKeyHashTable_O:
+{
+    core::WeakKeyHashTable_O* obj_gc_safe = reinterpret_cast<core::WeakKeyHashTable_O*>(client);
+    GCObjectAllocator<core::WeakKeyHashTable_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Reader_O:
+{
+    core::Reader_O* obj_gc_safe = reinterpret_cast<core::Reader_O*>(client);
+    GCObjectAllocator<core::Reader_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__CxxObject_O:
+{
+    core::CxxObject_O* obj_gc_safe = reinterpret_cast<core::CxxObject_O*>(client);
+    GCObjectAllocator<core::CxxObject_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_units__Unit_O:
+{
+    units::Unit_O* obj_gc_safe = reinterpret_cast<units::Unit_O*>(client);
+    GCObjectAllocator<units::Unit_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_units__NamedUnit_O:
+{
+    units::NamedUnit_O* obj_gc_safe = reinterpret_cast<units::NamedUnit_O*>(client);
+    GCObjectAllocator<units::NamedUnit_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AtomTable_O:
+{
+    chem::AtomTable_O* obj_gc_safe = reinterpret_cast<chem::AtomTable_O*>(client);
+    GCObjectAllocator<chem::AtomTable_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Command_O:
+{
+    chem::Command_O* obj_gc_safe = reinterpret_cast<chem::Command_O*>(client);
+    GCObjectAllocator<chem::Command_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__NVector_O:
+{
+    chem::NVector_O* obj_gc_safe = reinterpret_cast<chem::NVector_O*>(client);
+    GCObjectAllocator<chem::NVector_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__OVector2_O:
+{
+    geom::OVector2_O* obj_gc_safe = reinterpret_cast<geom::OVector2_O*>(client);
+    GCObjectAllocator<geom::OVector2_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__MonomerContext_O:
+{
+    chem::MonomerContext_O* obj_gc_safe = reinterpret_cast<chem::MonomerContext_O*>(client);
+    GCObjectAllocator<chem::MonomerContext_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFNonbondCrossTermTable_O:
+{
+    chem::FFNonbondCrossTermTable_O* obj_gc_safe = reinterpret_cast<chem::FFNonbondCrossTermTable_O*>(client);
+    GCObjectAllocator<chem::FFNonbondCrossTermTable_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__BondList_O:
+{
+    chem::BondList_O* obj_gc_safe = reinterpret_cast<chem::BondList_O*>(client);
+    GCObjectAllocator<chem::BondList_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CDFragment_O:
+{
+    chem::CDFragment_O* obj_gc_safe = reinterpret_cast<chem::CDFragment_O*>(client);
+    GCObjectAllocator<chem::CDFragment_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ResidueList_O:
+{
+    chem::ResidueList_O* obj_gc_safe = reinterpret_cast<chem::ResidueList_O*>(client);
+    GCObjectAllocator<chem::ResidueList_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Structure_Old_ListEntry_O:
+{
+    chem::Structure_Old_ListEntry_O* obj_gc_safe = reinterpret_cast<chem::Structure_Old_ListEntry_O*>(client);
+    GCObjectAllocator<chem::Structure_Old_ListEntry_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ReadAmberParameters_O:
+{
+    chem::ReadAmberParameters_O* obj_gc_safe = reinterpret_cast<chem::ReadAmberParameters_O*>(client);
+    GCObjectAllocator<chem::ReadAmberParameters_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AtomIndexer_O:
+{
+    chem::AtomIndexer_O* obj_gc_safe = reinterpret_cast<chem::AtomIndexer_O*>(client);
+    GCObjectAllocator<chem::AtomIndexer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Structure_Old_List_O:
+{
+    chem::Structure_Old_List_O* obj_gc_safe = reinterpret_cast<chem::Structure_Old_List_O*>(client);
+    GCObjectAllocator<chem::Structure_Old_List_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_adapt__StringSet_O:
+{
+    adapt::StringSet_O* obj_gc_safe = reinterpret_cast<adapt::StringSet_O*>(client);
+    GCObjectAllocator<adapt::StringSet_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ChemInfoMatch_O:
+{
+    chem::ChemInfoMatch_O* obj_gc_safe = reinterpret_cast<chem::ChemInfoMatch_O*>(client);
+    GCObjectAllocator<chem::ChemInfoMatch_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__SpanningLoop_O:
+{
+    chem::SpanningLoop_O* obj_gc_safe = reinterpret_cast<chem::SpanningLoop_O*>(client);
+    GCObjectAllocator<chem::SpanningLoop_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CDBond_O:
+{
+    chem::CDBond_O* obj_gc_safe = reinterpret_cast<chem::CDBond_O*>(client);
+    GCObjectAllocator<chem::CDBond_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ForceField_O:
+{
+    chem::ForceField_O* obj_gc_safe = reinterpret_cast<chem::ForceField_O*>(client);
+    GCObjectAllocator<chem::ForceField_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__OneMonomer_O:
+{
+    chem::OneMonomer_O* obj_gc_safe = reinterpret_cast<chem::OneMonomer_O*>(client);
+    GCObjectAllocator<chem::OneMonomer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ReportBase_O:
+{
+    chem::ReportBase_O* obj_gc_safe = reinterpret_cast<chem::ReportBase_O*>(client);
+    GCObjectAllocator<chem::ReportBase_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__MessageReport_O:
+{
+    chem::MessageReport_O* obj_gc_safe = reinterpret_cast<chem::MessageReport_O*>(client);
+    GCObjectAllocator<chem::MessageReport_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ForceMatchReport_O:
+{
+    chem::ForceMatchReport_O* obj_gc_safe = reinterpret_cast<chem::ForceMatchReport_O*>(client);
+    GCObjectAllocator<chem::ForceMatchReport_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__StepReport_O:
+{
+    chem::StepReport_O* obj_gc_safe = reinterpret_cast<chem::StepReport_O*>(client);
+    GCObjectAllocator<chem::StepReport_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__PathMessage_O:
+{
+    chem::PathMessage_O* obj_gc_safe = reinterpret_cast<chem::PathMessage_O*>(client);
+    GCObjectAllocator<chem::PathMessage_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FrameRecognizer_O:
+{
+    chem::FrameRecognizer_O* obj_gc_safe = reinterpret_cast<chem::FrameRecognizer_O*>(client);
+    GCObjectAllocator<chem::FrameRecognizer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__StereoisomerAtom_O:
+{
+    chem::StereoisomerAtom_O* obj_gc_safe = reinterpret_cast<chem::StereoisomerAtom_O*>(client);
+    GCObjectAllocator<chem::StereoisomerAtom_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__StereoisomerVirtualAtom_O:
+{
+    chem::StereoisomerVirtualAtom_O* obj_gc_safe = reinterpret_cast<chem::StereoisomerVirtualAtom_O*>(client);
+    GCObjectAllocator<chem::StereoisomerVirtualAtom_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__MonomerCoordinates_O:
+{
+    chem::MonomerCoordinates_O* obj_gc_safe = reinterpret_cast<chem::MonomerCoordinates_O*>(client);
+    GCObjectAllocator<chem::MonomerCoordinates_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__SearchStatistics_O:
+{
+    chem::SearchStatistics_O* obj_gc_safe = reinterpret_cast<chem::SearchStatistics_O*>(client);
+    GCObjectAllocator<chem::SearchStatistics_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AtomId_O:
+{
+    chem::AtomId_O* obj_gc_safe = reinterpret_cast<chem::AtomId_O*>(client);
+    GCObjectAllocator<chem::AtomId_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__TypeAssignmentRules_O:
+{
+    chem::TypeAssignmentRules_O* obj_gc_safe = reinterpret_cast<chem::TypeAssignmentRules_O*>(client);
+    GCObjectAllocator<chem::TypeAssignmentRules_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__WildElementDict_O:
+{
+    chem::WildElementDict_O* obj_gc_safe = reinterpret_cast<chem::WildElementDict_O*>(client);
+    GCObjectAllocator<chem::WildElementDict_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__SpecificContext_O:
+{
+    chem::SpecificContext_O* obj_gc_safe = reinterpret_cast<chem::SpecificContext_O*>(client);
+    GCObjectAllocator<chem::SpecificContext_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CDText_O:
+{
+    chem::CDText_O* obj_gc_safe = reinterpret_cast<chem::CDText_O*>(client);
+    GCObjectAllocator<chem::CDText_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__PdbMonomerConnectivity_O:
+{
+    chem::PdbMonomerConnectivity_O* obj_gc_safe = reinterpret_cast<chem::PdbMonomerConnectivity_O*>(client);
+    GCObjectAllocator<chem::PdbMonomerConnectivity_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_units__Quantity_O:
+{
+    units::Quantity_O* obj_gc_safe = reinterpret_cast<units::Quantity_O*>(client);
+    GCObjectAllocator<units::Quantity_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Plug_O:
+{
+    chem::Plug_O* obj_gc_safe = reinterpret_cast<chem::Plug_O*>(client);
+    GCObjectAllocator<chem::Plug_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__PlugWithMates_O:
+{
+    chem::PlugWithMates_O* obj_gc_safe = reinterpret_cast<chem::PlugWithMates_O*>(client);
+    GCObjectAllocator<chem::PlugWithMates_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__OutPlug_O:
+{
+    chem::OutPlug_O* obj_gc_safe = reinterpret_cast<chem::OutPlug_O*>(client);
+    GCObjectAllocator<chem::OutPlug_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RingClosingPlug_O:
+{
+    chem::RingClosingPlug_O* obj_gc_safe = reinterpret_cast<chem::RingClosingPlug_O*>(client);
+    GCObjectAllocator<chem::RingClosingPlug_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__InPlug_O:
+{
+    chem::InPlug_O* obj_gc_safe = reinterpret_cast<chem::InPlug_O*>(client);
+    GCObjectAllocator<chem::InPlug_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__JumpPlug_O:
+{
+    chem::JumpPlug_O* obj_gc_safe = reinterpret_cast<chem::JumpPlug_O*>(client);
+    GCObjectAllocator<chem::JumpPlug_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__BoundingBox_O:
+{
+    geom::BoundingBox_O* obj_gc_safe = reinterpret_cast<geom::BoundingBox_O*>(client);
+    GCObjectAllocator<geom::BoundingBox_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__MinimizerLog_O:
+{
+    chem::MinimizerLog_O* obj_gc_safe = reinterpret_cast<chem::MinimizerLog_O*>(client);
+    GCObjectAllocator<chem::MinimizerLog_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ChemInfo_O:
+{
+    chem::ChemInfo_O* obj_gc_safe = reinterpret_cast<chem::ChemInfo_O*>(client);
+    GCObjectAllocator<chem::ChemInfo_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ZMatrixEntry_O:
+{
+    chem::ZMatrixEntry_O* obj_gc_safe = reinterpret_cast<chem::ZMatrixEntry_O*>(client);
+    GCObjectAllocator<chem::ZMatrixEntry_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__StereoInformation_O:
+{
+    chem::StereoInformation_O* obj_gc_safe = reinterpret_cast<chem::StereoInformation_O*>(client);
+    GCObjectAllocator<chem::StereoInformation_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__MacroModelFile_O:
+{
+    chem::MacroModelFile_O* obj_gc_safe = reinterpret_cast<chem::MacroModelFile_O*>(client);
+    GCObjectAllocator<chem::MacroModelFile_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__PdbWriter_O:
+{
+    chem::PdbWriter_O* obj_gc_safe = reinterpret_cast<chem::PdbWriter_O*>(client);
+    GCObjectAllocator<chem::PdbWriter_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ChemDraw_O:
+{
+    chem::ChemDraw_O* obj_gc_safe = reinterpret_cast<chem::ChemDraw_O*>(client);
+    GCObjectAllocator<chem::ChemDraw_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AGEdge_O:
+{
+    chem::AGEdge_O* obj_gc_safe = reinterpret_cast<chem::AGEdge_O*>(client);
+    GCObjectAllocator<chem::AGEdge_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConformationExplorerMatch_O:
+{
+    chem::ConformationExplorerMatch_O* obj_gc_safe = reinterpret_cast<chem::ConformationExplorerMatch_O*>(client);
+    GCObjectAllocator<chem::ConformationExplorerMatch_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ImproperTorsion_O:
+{
+    chem::ImproperTorsion_O* obj_gc_safe = reinterpret_cast<chem::ImproperTorsion_O*>(client);
+    GCObjectAllocator<chem::ImproperTorsion_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConstitutionAtoms_O:
+{
+    chem::ConstitutionAtoms_O* obj_gc_safe = reinterpret_cast<chem::ConstitutionAtoms_O*>(client);
+    GCObjectAllocator<chem::ConstitutionAtoms_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CoordinateSystem_O:
+{
+    chem::CoordinateSystem_O* obj_gc_safe = reinterpret_cast<chem::CoordinateSystem_O*>(client);
+    GCObjectAllocator<chem::CoordinateSystem_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConformationCollectionEntry_O:
+{
+    chem::ConformationCollectionEntry_O* obj_gc_safe = reinterpret_cast<chem::ConformationCollectionEntry_O*>(client);
+    GCObjectAllocator<chem::ConformationCollectionEntry_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Restraint_O:
+{
+    chem::Restraint_O* obj_gc_safe = reinterpret_cast<chem::Restraint_O*>(client);
+    GCObjectAllocator<chem::Restraint_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestraintAngle_O:
+{
+    chem::RestraintAngle_O* obj_gc_safe = reinterpret_cast<chem::RestraintAngle_O*>(client);
+    GCObjectAllocator<chem::RestraintAngle_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestraintAnchor_O:
+{
+    chem::RestraintAnchor_O* obj_gc_safe = reinterpret_cast<chem::RestraintAnchor_O*>(client);
+    GCObjectAllocator<chem::RestraintAnchor_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestraintFixedNonbond_O:
+{
+    chem::RestraintFixedNonbond_O* obj_gc_safe = reinterpret_cast<chem::RestraintFixedNonbond_O*>(client);
+    GCObjectAllocator<chem::RestraintFixedNonbond_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestraintChiral_O:
+{
+    chem::RestraintChiral_O* obj_gc_safe = reinterpret_cast<chem::RestraintChiral_O*>(client);
+    GCObjectAllocator<chem::RestraintChiral_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestraintDihedral_O:
+{
+    chem::RestraintDihedral_O* obj_gc_safe = reinterpret_cast<chem::RestraintDihedral_O*>(client);
+    GCObjectAllocator<chem::RestraintDihedral_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestraintDistance_O:
+{
+    chem::RestraintDistance_O* obj_gc_safe = reinterpret_cast<chem::RestraintDistance_O*>(client);
+    GCObjectAllocator<chem::RestraintDistance_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ChemInfoNode_O:
+{
+    chem::ChemInfoNode_O* obj_gc_safe = reinterpret_cast<chem::ChemInfoNode_O*>(client);
+    GCObjectAllocator<chem::ChemInfoNode_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RootMatchNode_O:
+{
+    chem::RootMatchNode_O* obj_gc_safe = reinterpret_cast<chem::RootMatchNode_O*>(client);
+    GCObjectAllocator<chem::RootMatchNode_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AfterMatchBondTest_O:
+{
+    chem::AfterMatchBondTest_O* obj_gc_safe = reinterpret_cast<chem::AfterMatchBondTest_O*>(client);
+    GCObjectAllocator<chem::AfterMatchBondTest_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__BondMatchNode_O:
+{
+    chem::BondMatchNode_O* obj_gc_safe = reinterpret_cast<chem::BondMatchNode_O*>(client);
+    GCObjectAllocator<chem::BondMatchNode_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AtomOrBondMatchNode_O:
+{
+    chem::AtomOrBondMatchNode_O* obj_gc_safe = reinterpret_cast<chem::AtomOrBondMatchNode_O*>(client);
+    GCObjectAllocator<chem::AtomOrBondMatchNode_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__TagSet_O:
+{
+    chem::TagSet_O* obj_gc_safe = reinterpret_cast<chem::TagSet_O*>(client);
+    GCObjectAllocator<chem::TagSet_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Root_O:
+{
+    chem::Root_O* obj_gc_safe = reinterpret_cast<chem::Root_O*>(client);
+    GCObjectAllocator<chem::Root_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__SmartsRoot_O:
+{
+    chem::SmartsRoot_O* obj_gc_safe = reinterpret_cast<chem::SmartsRoot_O*>(client);
+    GCObjectAllocator<chem::SmartsRoot_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AntechamberRoot_O:
+{
+    chem::AntechamberRoot_O* obj_gc_safe = reinterpret_cast<chem::AntechamberRoot_O*>(client);
+    GCObjectAllocator<chem::AntechamberRoot_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ResidueTest_O:
+{
+    chem::ResidueTest_O* obj_gc_safe = reinterpret_cast<chem::ResidueTest_O*>(client);
+    GCObjectAllocator<chem::ResidueTest_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AntechamberFocusAtomMatch_O:
+{
+    chem::AntechamberFocusAtomMatch_O* obj_gc_safe = reinterpret_cast<chem::AntechamberFocusAtomMatch_O*>(client);
+    GCObjectAllocator<chem::AntechamberFocusAtomMatch_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RingTest_O:
+{
+    chem::RingTest_O* obj_gc_safe = reinterpret_cast<chem::RingTest_O*>(client);
+    GCObjectAllocator<chem::RingTest_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AtomTest_O:
+{
+    chem::AtomTest_O* obj_gc_safe = reinterpret_cast<chem::AtomTest_O*>(client);
+    GCObjectAllocator<chem::AtomTest_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Logical_O:
+{
+    chem::Logical_O* obj_gc_safe = reinterpret_cast<chem::Logical_O*>(client);
+    GCObjectAllocator<chem::Logical_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__BondTest_O:
+{
+    chem::BondTest_O* obj_gc_safe = reinterpret_cast<chem::BondTest_O*>(client);
+    GCObjectAllocator<chem::BondTest_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AntechamberBondTest_O:
+{
+    chem::AntechamberBondTest_O* obj_gc_safe = reinterpret_cast<chem::AntechamberBondTest_O*>(client);
+    GCObjectAllocator<chem::AntechamberBondTest_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__BondListMatchNode_O:
+{
+    chem::BondListMatchNode_O* obj_gc_safe = reinterpret_cast<chem::BondListMatchNode_O*>(client);
+    GCObjectAllocator<chem::BondListMatchNode_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Branch_O:
+{
+    chem::Branch_O* obj_gc_safe = reinterpret_cast<chem::Branch_O*>(client);
+    GCObjectAllocator<chem::Branch_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Chain_O:
+{
+    chem::Chain_O* obj_gc_safe = reinterpret_cast<chem::Chain_O*>(client);
+    GCObjectAllocator<chem::Chain_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Minimizer_O:
+{
+    chem::Minimizer_O* obj_gc_safe = reinterpret_cast<chem::Minimizer_O*>(client);
+    GCObjectAllocator<chem::Minimizer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Oligomer_O:
+{
+    chem::Oligomer_O* obj_gc_safe = reinterpret_cast<chem::Oligomer_O*>(client);
+    GCObjectAllocator<chem::Oligomer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConstitutionBond_O:
+{
+    chem::ConstitutionBond_O* obj_gc_safe = reinterpret_cast<chem::ConstitutionBond_O*>(client);
+    GCObjectAllocator<chem::ConstitutionBond_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Entity_O:
+{
+    chem::Entity_O* obj_gc_safe = reinterpret_cast<chem::Entity_O*>(client);
+    GCObjectAllocator<chem::Entity_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EntityNameSetBase_O:
+{
+    chem::EntityNameSetBase_O* obj_gc_safe = reinterpret_cast<chem::EntityNameSetBase_O*>(client);
+    GCObjectAllocator<chem::EntityNameSetBase_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EntityNameSetWithCap_O:
+{
+    chem::EntityNameSetWithCap_O* obj_gc_safe = reinterpret_cast<chem::EntityNameSetWithCap_O*>(client);
+    GCObjectAllocator<chem::EntityNameSetWithCap_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RingClosingMate_O:
+{
+    chem::RingClosingMate_O* obj_gc_safe = reinterpret_cast<chem::RingClosingMate_O*>(client);
+    GCObjectAllocator<chem::RingClosingMate_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Mate_O:
+{
+    chem::Mate_O* obj_gc_safe = reinterpret_cast<chem::Mate_O*>(client);
+    GCObjectAllocator<chem::Mate_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EntityNameSet_O:
+{
+    chem::EntityNameSet_O* obj_gc_safe = reinterpret_cast<chem::EntityNameSet_O*>(client);
+    GCObjectAllocator<chem::EntityNameSet_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RepresentedEntityNameSet_O:
+{
+    chem::RepresentedEntityNameSet_O* obj_gc_safe = reinterpret_cast<chem::RepresentedEntityNameSet_O*>(client);
+    GCObjectAllocator<chem::RepresentedEntityNameSet_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__MonomerPack_O:
+{
+    chem::MonomerPack_O* obj_gc_safe = reinterpret_cast<chem::MonomerPack_O*>(client);
+    GCObjectAllocator<chem::MonomerPack_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Monomer_O:
+{
+    chem::Monomer_O* obj_gc_safe = reinterpret_cast<chem::Monomer_O*>(client);
+    GCObjectAllocator<chem::Monomer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__MultiMonomer_O:
+{
+    chem::MultiMonomer_O* obj_gc_safe = reinterpret_cast<chem::MultiMonomer_O*>(client);
+    GCObjectAllocator<chem::MultiMonomer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Stereoisomer_O:
+{
+    chem::Stereoisomer_O* obj_gc_safe = reinterpret_cast<chem::Stereoisomer_O*>(client);
+    GCObjectAllocator<chem::Stereoisomer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Constitution_O:
+{
+    chem::Constitution_O* obj_gc_safe = reinterpret_cast<chem::Constitution_O*>(client);
+    GCObjectAllocator<chem::Constitution_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_units__Dimension_O:
+{
+    units::Dimension_O* obj_gc_safe = reinterpret_cast<units::Dimension_O*>(client);
+    GCObjectAllocator<units::Dimension_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__OMatrix_O:
+{
+    geom::OMatrix_O* obj_gc_safe = reinterpret_cast<geom::OMatrix_O*>(client);
+    GCObjectAllocator<geom::OMatrix_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__StereoisomerAtoms_O:
+{
+    chem::StereoisomerAtoms_O* obj_gc_safe = reinterpret_cast<chem::StereoisomerAtoms_O*>(client);
+    GCObjectAllocator<chem::StereoisomerAtoms_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConformationExplorerEntry_O:
+{
+    chem::ConformationExplorerEntry_O* obj_gc_safe = reinterpret_cast<chem::ConformationExplorerEntry_O*>(client);
+    GCObjectAllocator<chem::ConformationExplorerEntry_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AtomReferenceBase_O:
+{
+    chem::AtomReferenceBase_O* obj_gc_safe = reinterpret_cast<chem::AtomReferenceBase_O*>(client);
+    GCObjectAllocator<chem::AtomReferenceBase_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AtomReference_O:
+{
+    chem::AtomReference_O* obj_gc_safe = reinterpret_cast<chem::AtomReference_O*>(client);
+    GCObjectAllocator<chem::AtomReference_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CDNode_O:
+{
+    chem::CDNode_O* obj_gc_safe = reinterpret_cast<chem::CDNode_O*>(client);
+    GCObjectAllocator<chem::CDNode_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__TrajectoryFrame_O:
+{
+    chem::TrajectoryFrame_O* obj_gc_safe = reinterpret_cast<chem::TrajectoryFrame_O*>(client);
+    GCObjectAllocator<chem::TrajectoryFrame_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyComponent_O:
+{
+    chem::EnergyComponent_O* obj_gc_safe = reinterpret_cast<chem::EnergyComponent_O*>(client);
+    GCObjectAllocator<chem::EnergyComponent_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyChiralRestraint_O:
+{
+    chem::EnergyChiralRestraint_O* obj_gc_safe = reinterpret_cast<chem::EnergyChiralRestraint_O*>(client);
+    GCObjectAllocator<chem::EnergyChiralRestraint_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyImproperRestraint_O:
+{
+    chem::EnergyImproperRestraint_O* obj_gc_safe = reinterpret_cast<chem::EnergyImproperRestraint_O*>(client);
+    GCObjectAllocator<chem::EnergyImproperRestraint_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyAnchorRestraint_O:
+{
+    chem::EnergyAnchorRestraint_O* obj_gc_safe = reinterpret_cast<chem::EnergyAnchorRestraint_O*>(client);
+    GCObjectAllocator<chem::EnergyAnchorRestraint_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyAngle_O:
+{
+    chem::EnergyAngle_O* obj_gc_safe = reinterpret_cast<chem::EnergyAngle_O*>(client);
+    GCObjectAllocator<chem::EnergyAngle_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyDihedral_O:
+{
+    chem::EnergyDihedral_O* obj_gc_safe = reinterpret_cast<chem::EnergyDihedral_O*>(client);
+    GCObjectAllocator<chem::EnergyDihedral_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyStretch_O:
+{
+    chem::EnergyStretch_O* obj_gc_safe = reinterpret_cast<chem::EnergyStretch_O*>(client);
+    GCObjectAllocator<chem::EnergyStretch_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyNonbond_O:
+{
+    chem::EnergyNonbond_O* obj_gc_safe = reinterpret_cast<chem::EnergyNonbond_O*>(client);
+    GCObjectAllocator<chem::EnergyNonbond_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyFixedNonbondRestraint_O:
+{
+    chem::EnergyFixedNonbondRestraint_O* obj_gc_safe = reinterpret_cast<chem::EnergyFixedNonbondRestraint_O*>(client);
+    GCObjectAllocator<chem::EnergyFixedNonbondRestraint_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__PdbMonomerDatabase_O:
+{
+    chem::PdbMonomerDatabase_O* obj_gc_safe = reinterpret_cast<chem::PdbMonomerDatabase_O*>(client);
+    GCObjectAllocator<chem::PdbMonomerDatabase_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Coupling_O:
+{
+    chem::Coupling_O* obj_gc_safe = reinterpret_cast<chem::Coupling_O*>(client);
+    GCObjectAllocator<chem::Coupling_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__DirectionalCoupling_O:
+{
+    chem::DirectionalCoupling_O* obj_gc_safe = reinterpret_cast<chem::DirectionalCoupling_O*>(client);
+    GCObjectAllocator<chem::DirectionalCoupling_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RingCoupling_O:
+{
+    chem::RingCoupling_O* obj_gc_safe = reinterpret_cast<chem::RingCoupling_O*>(client);
+    GCObjectAllocator<chem::RingCoupling_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__PdbReader_O:
+{
+    chem::PdbReader_O* obj_gc_safe = reinterpret_cast<chem::PdbReader_O*>(client);
+    GCObjectAllocator<chem::PdbReader_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ZMatrixInternal_O:
+{
+    chem::ZMatrixInternal_O* obj_gc_safe = reinterpret_cast<chem::ZMatrixInternal_O*>(client);
+    GCObjectAllocator<chem::ZMatrixInternal_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ZMatrixBondInternal_O:
+{
+    chem::ZMatrixBondInternal_O* obj_gc_safe = reinterpret_cast<chem::ZMatrixBondInternal_O*>(client);
+    GCObjectAllocator<chem::ZMatrixBondInternal_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ZMatrixAngleInternal_O:
+{
+    chem::ZMatrixAngleInternal_O* obj_gc_safe = reinterpret_cast<chem::ZMatrixAngleInternal_O*>(client);
+    GCObjectAllocator<chem::ZMatrixAngleInternal_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ZMatrixDihedralInternal_O:
+{
+    chem::ZMatrixDihedralInternal_O* obj_gc_safe = reinterpret_cast<chem::ZMatrixDihedralInternal_O*>(client);
+    GCObjectAllocator<chem::ZMatrixDihedralInternal_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CipPrioritizer_O:
+{
+    chem::CipPrioritizer_O* obj_gc_safe = reinterpret_cast<chem::CipPrioritizer_O*>(client);
+    GCObjectAllocator<chem::CipPrioritizer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Matter_O:
+{
+    chem::Matter_O* obj_gc_safe = reinterpret_cast<chem::Matter_O*>(client);
+    GCObjectAllocator<chem::Matter_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Residue_O:
+{
+    chem::Residue_O* obj_gc_safe = reinterpret_cast<chem::Residue_O*>(client);
+    GCObjectAllocator<chem::Residue_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Aggregate_O:
+{
+    chem::Aggregate_O* obj_gc_safe = reinterpret_cast<chem::Aggregate_O*>(client);
+    GCObjectAllocator<chem::Aggregate_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Atom_O:
+{
+    chem::Atom_O* obj_gc_safe = reinterpret_cast<chem::Atom_O*>(client);
+    GCObjectAllocator<chem::Atom_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__VirtualAtom_O:
+{
+    chem::VirtualAtom_O* obj_gc_safe = reinterpret_cast<chem::VirtualAtom_O*>(client);
+    GCObjectAllocator<chem::VirtualAtom_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Molecule_O:
+{
+    chem::Molecule_O* obj_gc_safe = reinterpret_cast<chem::Molecule_O*>(client);
+    GCObjectAllocator<chem::Molecule_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Bond_O:
+{
+    chem::Bond_O* obj_gc_safe = reinterpret_cast<chem::Bond_O*>(client);
+    GCObjectAllocator<chem::Bond_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AGVertex_O:
+{
+    chem::AGVertex_O* obj_gc_safe = reinterpret_cast<chem::AGVertex_O*>(client);
+    GCObjectAllocator<chem::AGVertex_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Alias_O:
+{
+    chem::Alias_O* obj_gc_safe = reinterpret_cast<chem::Alias_O*>(client);
+    GCObjectAllocator<chem::Alias_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CandoDatabase_O:
+{
+    chem::CandoDatabase_O* obj_gc_safe = reinterpret_cast<chem::CandoDatabase_O*>(client);
+    GCObjectAllocator<chem::CandoDatabase_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ProperTorsion_O:
+{
+    chem::ProperTorsion_O* obj_gc_safe = reinterpret_cast<chem::ProperTorsion_O*>(client);
+    GCObjectAllocator<chem::ProperTorsion_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__OVector3_O:
+{
+    geom::OVector3_O* obj_gc_safe = reinterpret_cast<geom::OVector3_O*>(client);
+    GCObjectAllocator<geom::OVector3_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ComplexRestraint_O:
+{
+    chem::ComplexRestraint_O* obj_gc_safe = reinterpret_cast<chem::ComplexRestraint_O*>(client);
+    GCObjectAllocator<chem::ComplexRestraint_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestrainedExoCyclicAtom_O:
+{
+    chem::RestrainedExoCyclicAtom_O* obj_gc_safe = reinterpret_cast<chem::RestrainedExoCyclicAtom_O*>(client);
+    GCObjectAllocator<chem::RestrainedExoCyclicAtom_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestrainedPiBond_O:
+{
+    chem::RestrainedPiBond_O* obj_gc_safe = reinterpret_cast<chem::RestrainedPiBond_O*>(client);
+    GCObjectAllocator<chem::RestrainedPiBond_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyFunction_O:
+{
+    chem::EnergyFunction_O* obj_gc_safe = reinterpret_cast<chem::EnergyFunction_O*>(client);
+    GCObjectAllocator<chem::EnergyFunction_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ZMatrix_O:
+{
+    chem::ZMatrix_O* obj_gc_safe = reinterpret_cast<chem::ZMatrix_O*>(client);
+    GCObjectAllocator<chem::ZMatrix_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__StatusTracker_O:
+{
+    chem::StatusTracker_O* obj_gc_safe = reinterpret_cast<chem::StatusTracker_O*>(client);
+    GCObjectAllocator<chem::StatusTracker_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__OneTypeRule_O:
+{
+    chem::OneTypeRule_O* obj_gc_safe = reinterpret_cast<chem::OneTypeRule_O*>(client);
+    GCObjectAllocator<chem::OneTypeRule_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__OligomerPart_Base_O:
+{
+    chem::OligomerPart_Base_O* obj_gc_safe = reinterpret_cast<chem::OligomerPart_Base_O*>(client);
+    GCObjectAllocator<chem::OligomerPart_Base_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__OligomerPart_Monomer_O:
+{
+    chem::OligomerPart_Monomer_O* obj_gc_safe = reinterpret_cast<chem::OligomerPart_Monomer_O*>(client);
+    GCObjectAllocator<chem::OligomerPart_Monomer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__OligomerPart_Link_O:
+{
+    chem::OligomerPart_Link_O* obj_gc_safe = reinterpret_cast<chem::OligomerPart_Link_O*>(client);
+    GCObjectAllocator<chem::OligomerPart_Link_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_adapt__SymbolList_O:
+{
+    adapt::SymbolList_O* obj_gc_safe = reinterpret_cast<adapt::SymbolList_O*>(client);
+    GCObjectAllocator<adapt::SymbolList_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConformationCollection_O:
+{
+    chem::ConformationCollection_O* obj_gc_safe = reinterpret_cast<chem::ConformationCollection_O*>(client);
+    GCObjectAllocator<chem::ConformationCollection_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__SuperposableConformationCollection_O:
+{
+    chem::SuperposableConformationCollection_O* obj_gc_safe = reinterpret_cast<chem::SuperposableConformationCollection_O*>(client);
+    GCObjectAllocator<chem::SuperposableConformationCollection_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__InfoDb_O:
+{
+    chem::InfoDb_O* obj_gc_safe = reinterpret_cast<chem::InfoDb_O*>(client);
+    GCObjectAllocator<chem::InfoDb_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConformationExplorer_O:
+{
+    chem::ConformationExplorer_O* obj_gc_safe = reinterpret_cast<chem::ConformationExplorer_O*>(client);
+    GCObjectAllocator<chem::ConformationExplorer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__Color_O:
+{
+    geom::Color_O* obj_gc_safe = reinterpret_cast<geom::Color_O*>(client);
+    GCObjectAllocator<geom::Color_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConstitutionAtom_O:
+{
+    chem::ConstitutionAtom_O* obj_gc_safe = reinterpret_cast<chem::ConstitutionAtom_O*>(client);
+    GCObjectAllocator<chem::ConstitutionAtom_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConstitutionVirtualAtom_O:
+{
+    chem::ConstitutionVirtualAtom_O* obj_gc_safe = reinterpret_cast<chem::ConstitutionVirtualAtom_O*>(client);
+    GCObjectAllocator<chem::ConstitutionVirtualAtom_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__NumericalFunction_O:
+{
+    chem::NumericalFunction_O* obj_gc_safe = reinterpret_cast<chem::NumericalFunction_O*>(client);
+    GCObjectAllocator<chem::NumericalFunction_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AbstractLargeSquareMatrix_O:
+{
+    chem::AbstractLargeSquareMatrix_O* obj_gc_safe = reinterpret_cast<chem::AbstractLargeSquareMatrix_O*>(client);
+    GCObjectAllocator<chem::AbstractLargeSquareMatrix_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__SparseLargeSquareMatrix_O:
+{
+    chem::SparseLargeSquareMatrix_O* obj_gc_safe = reinterpret_cast<chem::SparseLargeSquareMatrix_O*>(client);
+    GCObjectAllocator<chem::SparseLargeSquareMatrix_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FullLargeSquareMatrix_O:
+{
+    chem::FullLargeSquareMatrix_O* obj_gc_safe = reinterpret_cast<chem::FullLargeSquareMatrix_O*>(client);
+    GCObjectAllocator<chem::FullLargeSquareMatrix_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__TwisterDriver_O:
+{
+    chem::TwisterDriver_O* obj_gc_safe = reinterpret_cast<chem::TwisterDriver_O*>(client);
+    GCObjectAllocator<chem::TwisterDriver_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__VirtualSphere_O:
+{
+    chem::VirtualSphere_O* obj_gc_safe = reinterpret_cast<chem::VirtualSphere_O*>(client);
+    GCObjectAllocator<chem::VirtualSphere_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Rotamer_O:
+{
+    chem::Rotamer_O* obj_gc_safe = reinterpret_cast<chem::Rotamer_O*>(client);
+    GCObjectAllocator<chem::Rotamer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__StereoConfiguration_O:
+{
+    chem::StereoConfiguration_O* obj_gc_safe = reinterpret_cast<chem::StereoConfiguration_O*>(client);
+    GCObjectAllocator<chem::StereoConfiguration_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Topology_O:
+{
+    chem::Topology_O* obj_gc_safe = reinterpret_cast<chem::Topology_O*>(client);
+    GCObjectAllocator<chem::Topology_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Trajectory_O:
+{
+    chem::Trajectory_O* obj_gc_safe = reinterpret_cast<chem::Trajectory_O*>(client);
+    GCObjectAllocator<chem::Trajectory_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__MapOfMonomerNamesToAtomIndexers_O:
+{
+    chem::MapOfMonomerNamesToAtomIndexers_O* obj_gc_safe = reinterpret_cast<chem::MapOfMonomerNamesToAtomIndexers_O*>(client);
+    GCObjectAllocator<chem::MapOfMonomerNamesToAtomIndexers_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RingFinder_O:
+{
+    chem::RingFinder_O* obj_gc_safe = reinterpret_cast<chem::RingFinder_O*>(client);
+    GCObjectAllocator<chem::RingFinder_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Twister_O:
+{
+    chem::Twister_O* obj_gc_safe = reinterpret_cast<chem::Twister_O*>(client);
+    GCObjectAllocator<chem::Twister_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFBaseDb_O:
+{
+    chem::FFBaseDb_O* obj_gc_safe = reinterpret_cast<chem::FFBaseDb_O*>(client);
+    GCObjectAllocator<chem::FFBaseDb_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFStretchDb_O:
+{
+    chem::FFStretchDb_O* obj_gc_safe = reinterpret_cast<chem::FFStretchDb_O*>(client);
+    GCObjectAllocator<chem::FFStretchDb_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFTypesDb_O:
+{
+    chem::FFTypesDb_O* obj_gc_safe = reinterpret_cast<chem::FFTypesDb_O*>(client);
+    GCObjectAllocator<chem::FFTypesDb_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFPtorDb_O:
+{
+    chem::FFPtorDb_O* obj_gc_safe = reinterpret_cast<chem::FFPtorDb_O*>(client);
+    GCObjectAllocator<chem::FFPtorDb_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFItorDb_O:
+{
+    chem::FFItorDb_O* obj_gc_safe = reinterpret_cast<chem::FFItorDb_O*>(client);
+    GCObjectAllocator<chem::FFItorDb_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFAngleDb_O:
+{
+    chem::FFAngleDb_O* obj_gc_safe = reinterpret_cast<chem::FFAngleDb_O*>(client);
+    GCObjectAllocator<chem::FFAngleDb_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFNonbondDb_O:
+{
+    chem::FFNonbondDb_O* obj_gc_safe = reinterpret_cast<chem::FFNonbondDb_O*>(client);
+    GCObjectAllocator<chem::FFNonbondDb_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFVdwDb_O:
+{
+    chem::FFVdwDb_O* obj_gc_safe = reinterpret_cast<chem::FFVdwDb_O*>(client);
+    GCObjectAllocator<chem::FFVdwDb_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__SuperposeEngine_O:
+{
+    chem::SuperposeEngine_O* obj_gc_safe = reinterpret_cast<chem::SuperposeEngine_O*>(client);
+    GCObjectAllocator<chem::SuperposeEngine_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__SuperposeSelectedAtoms_O:
+{
+    chem::SuperposeSelectedAtoms_O* obj_gc_safe = reinterpret_cast<chem::SuperposeSelectedAtoms_O*>(client);
+    GCObjectAllocator<chem::SuperposeSelectedAtoms_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CalculatePosition_O:
+{
+    chem::CalculatePosition_O* obj_gc_safe = reinterpret_cast<chem::CalculatePosition_O*>(client);
+    GCObjectAllocator<chem::CalculatePosition_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CalculatePositionUsingInternals_O:
+{
+    chem::CalculatePositionUsingInternals_O* obj_gc_safe = reinterpret_cast<chem::CalculatePositionUsingInternals_O*>(client);
+    GCObjectAllocator<chem::CalculatePositionUsingInternals_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CalculatePositionRelativeToOrigin_O:
+{
+    chem::CalculatePositionRelativeToOrigin_O* obj_gc_safe = reinterpret_cast<chem::CalculatePositionRelativeToOrigin_O*>(client);
+    GCObjectAllocator<chem::CalculatePositionRelativeToOrigin_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CalculatePositionAlongBond_O:
+{
+    chem::CalculatePositionAlongBond_O* obj_gc_safe = reinterpret_cast<chem::CalculatePositionAlongBond_O*>(client);
+    GCObjectAllocator<chem::CalculatePositionAlongBond_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFParameter_O:
+{
+    chem::FFParameter_O* obj_gc_safe = reinterpret_cast<chem::FFParameter_O*>(client);
+    GCObjectAllocator<chem::FFParameter_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFStretch_O:
+{
+    chem::FFStretch_O* obj_gc_safe = reinterpret_cast<chem::FFStretch_O*>(client);
+    GCObjectAllocator<chem::FFStretch_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFAngle_O:
+{
+    chem::FFAngle_O* obj_gc_safe = reinterpret_cast<chem::FFAngle_O*>(client);
+    GCObjectAllocator<chem::FFAngle_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFVdw_O:
+{
+    chem::FFVdw_O* obj_gc_safe = reinterpret_cast<chem::FFVdw_O*>(client);
+    GCObjectAllocator<chem::FFVdw_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFNonbond_O:
+{
+    chem::FFNonbond_O* obj_gc_safe = reinterpret_cast<chem::FFNonbond_O*>(client);
+    GCObjectAllocator<chem::FFNonbond_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFPtor_O:
+{
+    chem::FFPtor_O* obj_gc_safe = reinterpret_cast<chem::FFPtor_O*>(client);
+    GCObjectAllocator<chem::FFPtor_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFItor_O:
+{
+    chem::FFItor_O* obj_gc_safe = reinterpret_cast<chem::FFItor_O*>(client);
+    GCObjectAllocator<chem::FFItor_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__SpecificContextSet_O:
+{
+    chem::SpecificContextSet_O* obj_gc_safe = reinterpret_cast<chem::SpecificContextSet_O*>(client);
+    GCObjectAllocator<chem::SpecificContextSet_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConformationExplorerEntryStage_O:
+{
+    chem::ConformationExplorerEntryStage_O* obj_gc_safe = reinterpret_cast<chem::ConformationExplorerEntryStage_O*>(client);
+    GCObjectAllocator<chem::ConformationExplorerEntryStage_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Angle_O:
+{
+    chem::Angle_O* obj_gc_safe = reinterpret_cast<chem::Angle_O*>(client);
+    GCObjectAllocator<chem::Angle_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_adapt__QDomNode_O:
+{
+    adapt::QDomNode_O* obj_gc_safe = reinterpret_cast<adapt::QDomNode_O*>(client);
+    GCObjectAllocator<adapt::QDomNode_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__StructureComparer_O:
+{
+    chem::StructureComparer_O* obj_gc_safe = reinterpret_cast<chem::StructureComparer_O*>(client);
+    GCObjectAllocator<chem::StructureComparer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AtomIdToAtomMap_O:
+{
+    chem::AtomIdToAtomMap_O* obj_gc_safe = reinterpret_cast<chem::AtomIdToAtomMap_O*>(client);
+    GCObjectAllocator<chem::AtomIdToAtomMap_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Array_O:
+{
+    core::Array_O* obj_gc_safe = reinterpret_cast<core::Array_O*>(client);
+    GCObjectAllocator<core::Array_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ArrayDisplaced_O:
+{
+    core::ArrayDisplaced_O* obj_gc_safe = reinterpret_cast<core::ArrayDisplaced_O*>(client);
+    GCObjectAllocator<core::ArrayDisplaced_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ArrayObjects_O:
+{
+    core::ArrayObjects_O* obj_gc_safe = reinterpret_cast<core::ArrayObjects_O*>(client);
+    GCObjectAllocator<core::ArrayObjects_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Vector_O:
+{
+    core::Vector_O* obj_gc_safe = reinterpret_cast<core::Vector_O*>(client);
+    GCObjectAllocator<core::Vector_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__VectorDisplaced_O:
+{
+    core::VectorDisplaced_O* obj_gc_safe = reinterpret_cast<core::VectorDisplaced_O*>(client);
+    GCObjectAllocator<core::VectorDisplaced_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__VectorObjects_O:
+{
+    core::VectorObjects_O* obj_gc_safe = reinterpret_cast<core::VectorObjects_O*>(client);
+    GCObjectAllocator<core::VectorObjects_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__VectorObjectsWithFillPtr_O:
+{
+    core::VectorObjectsWithFillPtr_O* obj_gc_safe = reinterpret_cast<core::VectorObjectsWithFillPtr_O*>(client);
+    GCObjectAllocator<core::VectorObjectsWithFillPtr_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__BitVector_O:
+{
+    core::BitVector_O* obj_gc_safe = reinterpret_cast<core::BitVector_O*>(client);
+    GCObjectAllocator<core::BitVector_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__BitVectorWithFillPtr_O:
+{
+    core::BitVectorWithFillPtr_O* obj_gc_safe = reinterpret_cast<core::BitVectorWithFillPtr_O*>(client);
+    GCObjectAllocator<core::BitVectorWithFillPtr_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SimpleBitVector_O:
+{
+    core::SimpleBitVector_O* obj_gc_safe = reinterpret_cast<core::SimpleBitVector_O*>(client);
+    GCObjectAllocator<core::SimpleBitVector_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestraintList_O:
+{
+    chem::RestraintList_O* obj_gc_safe = reinterpret_cast<chem::RestraintList_O*>(client);
+    GCObjectAllocator<chem::RestraintList_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__String_O:
+{
+    core::String_O* obj_gc_safe = reinterpret_cast<core::String_O*>(client);
+    GCObjectAllocator<core::String_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__Str_O:
+{
+    core::Str_O* obj_gc_safe = reinterpret_cast<core::Str_O*>(client);
+    GCObjectAllocator<core::Str_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__StrWithFillPtr_O:
+{
+    core::StrWithFillPtr_O* obj_gc_safe = reinterpret_cast<core::StrWithFillPtr_O*>(client);
+    GCObjectAllocator<core::StrWithFillPtr_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__CoordinateArray_O:
+{
+    geom::CoordinateArray_O* obj_gc_safe = reinterpret_cast<geom::CoordinateArray_O*>(client);
+    GCObjectAllocator<geom::CoordinateArray_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__CoordinateArrayWithHash_O:
+{
+    geom::CoordinateArrayWithHash_O* obj_gc_safe = reinterpret_cast<geom::CoordinateArrayWithHash_O*>(client);
+    GCObjectAllocator<geom::CoordinateArrayWithHash_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SNode_O:
+{
+    core::SNode_O* obj_gc_safe = reinterpret_cast<core::SNode_O*>(client);
+    GCObjectAllocator<core::SNode_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__BranchSNode_O:
+{
+    core::BranchSNode_O* obj_gc_safe = reinterpret_cast<core::BranchSNode_O*>(client);
+    GCObjectAllocator<core::BranchSNode_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__LeafSNode_O:
+{
+    core::LeafSNode_O* obj_gc_safe = reinterpret_cast<core::LeafSNode_O*>(client);
+    GCObjectAllocator<core::LeafSNode_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_asttooling__AstVisitor_O:
+{
+    asttooling::AstVisitor_O* obj_gc_safe = reinterpret_cast<asttooling::AstVisitor_O*>(client);
+    GCObjectAllocator<asttooling::AstVisitor_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__AttributeSet_O:
+{
+    llvmo::AttributeSet_O* obj_gc_safe = reinterpret_cast<llvmo::AttributeSet_O*>(client);
+    GCObjectAllocator<llvmo::AttributeSet_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Package_O:
+{
+    core::Package_O* obj_gc_safe = reinterpret_cast<core::Package_O*>(client);
+    GCObjectAllocator<core::Package_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_TEMPLATED_LISPALLOC_core__WrappedPointer_O:
+{
+    core::WrappedPointer_O* obj_gc_safe = reinterpret_cast<core::WrappedPointer_O*>(client);
+    GCObjectAllocator<core::WrappedPointer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__RegexMatch_O:
+{
+    core::RegexMatch_O* obj_gc_safe = reinterpret_cast<core::RegexMatch_O*>(client);
+    GCObjectAllocator<core::RegexMatch_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__DirectoryEntry_O:
+{
+    core::DirectoryEntry_O* obj_gc_safe = reinterpret_cast<core::DirectoryEntry_O*>(client);
+    GCObjectAllocator<core::DirectoryEntry_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_clbind__ClassRegistry_O:
+{
+    clbind::ClassRegistry_O* obj_gc_safe = reinterpret_cast<clbind::ClassRegistry_O*>(client);
+    GCObjectAllocator<clbind::ClassRegistry_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DebugInfo_O:
+{
+    llvmo::DebugInfo_O* obj_gc_safe = reinterpret_cast<llvmo::DebugInfo_O*>(client);
+    GCObjectAllocator<llvmo::DebugInfo_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DISubprogram_O:
+{
+    llvmo::DISubprogram_O* obj_gc_safe = reinterpret_cast<llvmo::DISubprogram_O*>(client);
+    GCObjectAllocator<llvmo::DISubprogram_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DIDescriptor_O:
+{
+    llvmo::DIDescriptor_O* obj_gc_safe = reinterpret_cast<llvmo::DIDescriptor_O*>(client);
+    GCObjectAllocator<llvmo::DIDescriptor_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DIType_O:
+{
+    llvmo::DIType_O* obj_gc_safe = reinterpret_cast<llvmo::DIType_O*>(client);
+    GCObjectAllocator<llvmo::DIType_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DISubroutineType_O:
+{
+    llvmo::DISubroutineType_O* obj_gc_safe = reinterpret_cast<llvmo::DISubroutineType_O*>(client);
+    GCObjectAllocator<llvmo::DISubroutineType_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DICompileUnit_O:
+{
+    llvmo::DICompileUnit_O* obj_gc_safe = reinterpret_cast<llvmo::DICompileUnit_O*>(client);
+    GCObjectAllocator<llvmo::DICompileUnit_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DIDerivedType_O:
+{
+    llvmo::DIDerivedType_O* obj_gc_safe = reinterpret_cast<llvmo::DIDerivedType_O*>(client);
+    GCObjectAllocator<llvmo::DIDerivedType_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DIArray_O:
+{
+    llvmo::DIArray_O* obj_gc_safe = reinterpret_cast<llvmo::DIArray_O*>(client);
+    GCObjectAllocator<llvmo::DIArray_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DIBasicType_O:
+{
+    llvmo::DIBasicType_O* obj_gc_safe = reinterpret_cast<llvmo::DIBasicType_O*>(client);
+    GCObjectAllocator<llvmo::DIBasicType_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DICompositeType_O:
+{
+    llvmo::DICompositeType_O* obj_gc_safe = reinterpret_cast<llvmo::DICompositeType_O*>(client);
+    GCObjectAllocator<llvmo::DICompositeType_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DITypeArray_O:
+{
+    llvmo::DITypeArray_O* obj_gc_safe = reinterpret_cast<llvmo::DITypeArray_O*>(client);
+    GCObjectAllocator<llvmo::DITypeArray_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DILexicalBlock_O:
+{
+    llvmo::DILexicalBlock_O* obj_gc_safe = reinterpret_cast<llvmo::DILexicalBlock_O*>(client);
+    GCObjectAllocator<llvmo::DILexicalBlock_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DIFile_O:
+{
+    llvmo::DIFile_O* obj_gc_safe = reinterpret_cast<llvmo::DIFile_O*>(client);
+    GCObjectAllocator<llvmo::DIFile_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DIScope_O:
+{
+    llvmo::DIScope_O* obj_gc_safe = reinterpret_cast<llvmo::DIScope_O*>(client);
+    GCObjectAllocator<llvmo::DIScope_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__StandardObject_O:
+{
+    core::StandardObject_O* obj_gc_safe = reinterpret_cast<core::StandardObject_O*>(client);
+    GCObjectAllocator<core::StandardObject_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__Metaobject_O:
+{
+    core::Metaobject_O* obj_gc_safe = reinterpret_cast<core::Metaobject_O*>(client);
+    GCObjectAllocator<core::Metaobject_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__Specializer_O:
+{
+    core::Specializer_O* obj_gc_safe = reinterpret_cast<core::Specializer_O*>(client);
+    GCObjectAllocator<core::Specializer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__Class_O:
+{
+    core::Class_O* obj_gc_safe = reinterpret_cast<core::Class_O*>(client);
+    GCObjectAllocator<core::Class_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ForwardReferencedClass_O:
+{
+    core::ForwardReferencedClass_O* obj_gc_safe = reinterpret_cast<core::ForwardReferencedClass_O*>(client);
+    GCObjectAllocator<core::ForwardReferencedClass_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__CxxClass_O:
+{
+    core::CxxClass_O* obj_gc_safe = reinterpret_cast<core::CxxClass_O*>(client);
+    GCObjectAllocator<core::CxxClass_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__StdClass_O:
+{
+    core::StdClass_O* obj_gc_safe = reinterpret_cast<core::StdClass_O*>(client);
+    GCObjectAllocator<core::StdClass_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__FuncallableStandardClass_O:
+{
+    core::FuncallableStandardClass_O* obj_gc_safe = reinterpret_cast<core::FuncallableStandardClass_O*>(client);
+    GCObjectAllocator<core::FuncallableStandardClass_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__StandardClass_O:
+{
+    core::StandardClass_O* obj_gc_safe = reinterpret_cast<core::StandardClass_O*>(client);
+    GCObjectAllocator<core::StandardClass_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__StructureClass_O:
+{
+    core::StructureClass_O* obj_gc_safe = reinterpret_cast<core::StructureClass_O*>(client);
+    GCObjectAllocator<core::StructureClass_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__BuiltInClass_O:
+{
+    core::BuiltInClass_O* obj_gc_safe = reinterpret_cast<core::BuiltInClass_O*>(client);
+    GCObjectAllocator<core::BuiltInClass_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_clbind__ClassRep_O:
+{
+    clbind::ClassRep_O* obj_gc_safe = reinterpret_cast<clbind::ClassRep_O*>(client);
+    GCObjectAllocator<clbind::ClassRep_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__LoadTimeValues_O:
+{
+    core::LoadTimeValues_O* obj_gc_safe = reinterpret_cast<core::LoadTimeValues_O*>(client);
+    GCObjectAllocator<core::LoadTimeValues_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_adapt__SymbolSet_O:
+{
+    adapt::SymbolSet_O* obj_gc_safe = reinterpret_cast<adapt::SymbolSet_O*>(client);
+    GCObjectAllocator<adapt::SymbolSet_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SourcePosInfo_O:
+{
+    core::SourcePosInfo_O* obj_gc_safe = reinterpret_cast<core::SourcePosInfo_O*>(client);
+    GCObjectAllocator<core::SourcePosInfo_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__MultiStringBuffer_O:
+{
+    core::MultiStringBuffer_O* obj_gc_safe = reinterpret_cast<core::MultiStringBuffer_O*>(client);
+    GCObjectAllocator<core::MultiStringBuffer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_TEMPLATED_LISPALLOC_core__Iterator_O:
+{
+    core::Iterator_O* obj_gc_safe = reinterpret_cast<core::Iterator_O*>(client);
+    GCObjectAllocator<core::Iterator_O>::deallocate_unmanaged_instance(obj_gc_safe);
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__RecursiveDirectoryIterator_O:
+{
+    core::RecursiveDirectoryIterator_O* obj_gc_safe = reinterpret_cast<core::RecursiveDirectoryIterator_O*>(client);
+    GCObjectAllocator<core::RecursiveDirectoryIterator_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__IterateRestraints_O:
+{
+    chem::IterateRestraints_O* obj_gc_safe = reinterpret_cast<chem::IterateRestraints_O*>(client);
+    GCObjectAllocator<chem::IterateRestraints_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__IterateMatter_O:
+{
+    chem::IterateMatter_O* obj_gc_safe = reinterpret_cast<chem::IterateMatter_O*>(client);
+    GCObjectAllocator<chem::IterateMatter_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__IterateResidues_O:
+{
+    chem::IterateResidues_O* obj_gc_safe = reinterpret_cast<chem::IterateResidues_O*>(client);
+    GCObjectAllocator<chem::IterateResidues_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__IterateBonds_O:
+{
+    chem::IterateBonds_O* obj_gc_safe = reinterpret_cast<chem::IterateBonds_O*>(client);
+    GCObjectAllocator<chem::IterateBonds_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__IterateAtoms_O:
+{
+    chem::IterateAtoms_O* obj_gc_safe = reinterpret_cast<chem::IterateAtoms_O*>(client);
+    GCObjectAllocator<chem::IterateAtoms_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__DirectoryIterator_O:
+{
+    core::DirectoryIterator_O* obj_gc_safe = reinterpret_cast<core::DirectoryIterator_O*>(client);
+    GCObjectAllocator<core::DirectoryIterator_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_adapt__IterateCons_O:
+{
+    adapt::IterateCons_O* obj_gc_safe = reinterpret_cast<adapt::IterateCons_O*>(client);
+    GCObjectAllocator<adapt::IterateCons_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__FileStatus_O:
+{
+    core::FileStatus_O* obj_gc_safe = reinterpret_cast<core::FileStatus_O*>(client);
+    GCObjectAllocator<core::FileStatus_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_adapt__StringList_O:
+{
+    adapt::StringList_O* obj_gc_safe = reinterpret_cast<adapt::StringList_O*>(client);
+    GCObjectAllocator<adapt::StringList_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Stream_O:
+{
+    core::Stream_O* obj_gc_safe = reinterpret_cast<core::Stream_O*>(client);
+    GCObjectAllocator<core::Stream_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__AnsiStream_O:
+{
+    core::AnsiStream_O* obj_gc_safe = reinterpret_cast<core::AnsiStream_O*>(client);
+    GCObjectAllocator<core::AnsiStream_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__EchoStream_O:
+{
+    core::EchoStream_O* obj_gc_safe = reinterpret_cast<core::EchoStream_O*>(client);
+    GCObjectAllocator<core::EchoStream_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SynonymStream_O:
+{
+    core::SynonymStream_O* obj_gc_safe = reinterpret_cast<core::SynonymStream_O*>(client);
+    GCObjectAllocator<core::SynonymStream_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__BroadcastStream_O:
+{
+    core::BroadcastStream_O* obj_gc_safe = reinterpret_cast<core::BroadcastStream_O*>(client);
+    GCObjectAllocator<core::BroadcastStream_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__StringStream_O:
+{
+    core::StringStream_O* obj_gc_safe = reinterpret_cast<core::StringStream_O*>(client);
+    GCObjectAllocator<core::StringStream_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__StringInputStream_O:
+{
+    core::StringInputStream_O* obj_gc_safe = reinterpret_cast<core::StringInputStream_O*>(client);
+    GCObjectAllocator<core::StringInputStream_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__StringOutputStream_O:
+{
+    core::StringOutputStream_O* obj_gc_safe = reinterpret_cast<core::StringOutputStream_O*>(client);
+    GCObjectAllocator<core::StringOutputStream_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__TwoWayStream_O:
+{
+    core::TwoWayStream_O* obj_gc_safe = reinterpret_cast<core::TwoWayStream_O*>(client);
+    GCObjectAllocator<core::TwoWayStream_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__FileStream_O:
+{
+    core::FileStream_O* obj_gc_safe = reinterpret_cast<core::FileStream_O*>(client);
+    GCObjectAllocator<core::FileStream_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__IOStreamStream_O:
+{
+    core::IOStreamStream_O* obj_gc_safe = reinterpret_cast<core::IOStreamStream_O*>(client);
+    GCObjectAllocator<core::IOStreamStream_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__IOFileStream_O:
+{
+    core::IOFileStream_O* obj_gc_safe = reinterpret_cast<core::IOFileStream_O*>(client);
+    GCObjectAllocator<core::IOFileStream_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ConcatenatedStream_O:
+{
+    core::ConcatenatedStream_O* obj_gc_safe = reinterpret_cast<core::ConcatenatedStream_O*>(client);
+    GCObjectAllocator<core::ConcatenatedStream_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Cons_O:
+{
+    core::Cons_O* obj_gc_safe = reinterpret_cast<core::Cons_O*>(client);
+    GCObjectAllocator<core::Cons_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_cffi__Pointer_O:
+{
+    cffi::Pointer_O* obj_gc_safe = reinterpret_cast<cffi::Pointer_O*>(client);
+    GCObjectAllocator<cffi::Pointer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SourceFileInfo_O:
+{
+    core::SourceFileInfo_O* obj_gc_safe = reinterpret_cast<core::SourceFileInfo_O*>(client);
+    GCObjectAllocator<core::SourceFileInfo_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Path_O:
+{
+    core::Path_O* obj_gc_safe = reinterpret_cast<core::Path_O*>(client);
+    GCObjectAllocator<core::Path_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__StructureObject_O:
+{
+    core::StructureObject_O* obj_gc_safe = reinterpret_cast<core::StructureObject_O*>(client);
+    GCObjectAllocator<core::StructureObject_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__InvocationHistoryFrameIterator_O:
+{
+    core::InvocationHistoryFrameIterator_O* obj_gc_safe = reinterpret_cast<core::InvocationHistoryFrameIterator_O*>(client);
+    GCObjectAllocator<core::InvocationHistoryFrameIterator_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__RandomState_O:
+{
+    core::RandomState_O* obj_gc_safe = reinterpret_cast<core::RandomState_O*>(client);
+    GCObjectAllocator<core::RandomState_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DebugLoc_O:
+{
+    llvmo::DebugLoc_O* obj_gc_safe = reinterpret_cast<llvmo::DebugLoc_O*>(client);
+    GCObjectAllocator<llvmo::DebugLoc_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Function_O:
+{
+    core::Function_O* obj_gc_safe = reinterpret_cast<core::Function_O*>(client);
+    GCObjectAllocator<core::Function_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SingleDispatchGenericFunction_O:
+{
+    core::SingleDispatchGenericFunction_O* obj_gc_safe = reinterpret_cast<core::SingleDispatchGenericFunction_O*>(client);
+    GCObjectAllocator<core::SingleDispatchGenericFunction_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SpecialForm_O:
+{
+    core::SpecialForm_O* obj_gc_safe = reinterpret_cast<core::SpecialForm_O*>(client);
+    GCObjectAllocator<core::SpecialForm_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Instance_O:
+{
+    core::Instance_O* obj_gc_safe = reinterpret_cast<core::Instance_O*>(client);
+    GCObjectAllocator<core::Instance_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__CompiledFunction_O:
+{
+    core::CompiledFunction_O* obj_gc_safe = reinterpret_cast<core::CompiledFunction_O*>(client);
+    GCObjectAllocator<core::CompiledFunction_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SingleDispatchEffectiveMethodFunction_O:
+{
+    core::SingleDispatchEffectiveMethodFunction_O* obj_gc_safe = reinterpret_cast<core::SingleDispatchEffectiveMethodFunction_O*>(client);
+    GCObjectAllocator<core::SingleDispatchEffectiveMethodFunction_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__WeakPointer_O:
+{
+    core::WeakPointer_O* obj_gc_safe = reinterpret_cast<core::WeakPointer_O*>(client);
+    GCObjectAllocator<core::WeakPointer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Pointer_O:
+{
+    core::Pointer_O* obj_gc_safe = reinterpret_cast<core::Pointer_O*>(client);
+    GCObjectAllocator<core::Pointer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__VaList_dummy_O:
+{
+    core::VaList_dummy_O* obj_gc_safe = reinterpret_cast<core::VaList_dummy_O*>(client);
+    GCObjectAllocator<core::VaList_dummy_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ExternalObject_O:
+{
+    core::ExternalObject_O* obj_gc_safe = reinterpret_cast<core::ExternalObject_O*>(client);
+    GCObjectAllocator<core::ExternalObject_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__TargetOptions_O:
+{
+    llvmo::TargetOptions_O* obj_gc_safe = reinterpret_cast<llvmo::TargetOptions_O*>(client);
+    GCObjectAllocator<llvmo::TargetOptions_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DIBuilder_O:
+{
+    llvmo::DIBuilder_O* obj_gc_safe = reinterpret_cast<llvmo::DIBuilder_O*>(client);
+    GCObjectAllocator<llvmo::DIBuilder_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Pass_O:
+{
+    llvmo::Pass_O* obj_gc_safe = reinterpret_cast<llvmo::Pass_O*>(client);
+    GCObjectAllocator<llvmo::Pass_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ModulePass_O:
+{
+    llvmo::ModulePass_O* obj_gc_safe = reinterpret_cast<llvmo::ModulePass_O*>(client);
+    GCObjectAllocator<llvmo::ModulePass_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ImmutablePass_O:
+{
+    llvmo::ImmutablePass_O* obj_gc_safe = reinterpret_cast<llvmo::ImmutablePass_O*>(client);
+    GCObjectAllocator<llvmo::ImmutablePass_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DataLayoutPass_O:
+{
+    llvmo::DataLayoutPass_O* obj_gc_safe = reinterpret_cast<llvmo::DataLayoutPass_O*>(client);
+    GCObjectAllocator<llvmo::DataLayoutPass_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__TargetLibraryInfo_O:
+{
+    llvmo::TargetLibraryInfo_O* obj_gc_safe = reinterpret_cast<llvmo::TargetLibraryInfo_O*>(client);
+    GCObjectAllocator<llvmo::TargetLibraryInfo_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__FunctionPass_O:
+{
+    llvmo::FunctionPass_O* obj_gc_safe = reinterpret_cast<llvmo::FunctionPass_O*>(client);
+    GCObjectAllocator<llvmo::FunctionPass_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Linker_O:
+{
+    llvmo::Linker_O* obj_gc_safe = reinterpret_cast<llvmo::Linker_O*>(client);
+    GCObjectAllocator<llvmo::Linker_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Module_O:
+{
+    llvmo::Module_O* obj_gc_safe = reinterpret_cast<llvmo::Module_O*>(client);
+    GCObjectAllocator<llvmo::Module_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__APFloat_O:
+{
+    llvmo::APFloat_O* obj_gc_safe = reinterpret_cast<llvmo::APFloat_O*>(client);
+    GCObjectAllocator<llvmo::APFloat_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__LLVMContext_O:
+{
+    llvmo::LLVMContext_O* obj_gc_safe = reinterpret_cast<llvmo::LLVMContext_O*>(client);
+    GCObjectAllocator<llvmo::LLVMContext_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Target_O:
+{
+    llvmo::Target_O* obj_gc_safe = reinterpret_cast<llvmo::Target_O*>(client);
+    GCObjectAllocator<llvmo::Target_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__APInt_O:
+{
+    llvmo::APInt_O* obj_gc_safe = reinterpret_cast<llvmo::APInt_O*>(client);
+    GCObjectAllocator<llvmo::APInt_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__PassManagerBase_O:
+{
+    llvmo::PassManagerBase_O* obj_gc_safe = reinterpret_cast<llvmo::PassManagerBase_O*>(client);
+    GCObjectAllocator<llvmo::PassManagerBase_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__FunctionPassManager_O:
+{
+    llvmo::FunctionPassManager_O* obj_gc_safe = reinterpret_cast<llvmo::FunctionPassManager_O*>(client);
+    GCObjectAllocator<llvmo::FunctionPassManager_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__PassManager_O:
+{
+    llvmo::PassManager_O* obj_gc_safe = reinterpret_cast<llvmo::PassManager_O*>(client);
+    GCObjectAllocator<llvmo::PassManager_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Value_O:
+{
+    llvmo::Value_O* obj_gc_safe = reinterpret_cast<llvmo::Value_O*>(client);
+    GCObjectAllocator<llvmo::Value_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Argument_O:
+{
+    llvmo::Argument_O* obj_gc_safe = reinterpret_cast<llvmo::Argument_O*>(client);
+    GCObjectAllocator<llvmo::Argument_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__User_O:
+{
+    llvmo::User_O* obj_gc_safe = reinterpret_cast<llvmo::User_O*>(client);
+    GCObjectAllocator<llvmo::User_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Constant_O:
+{
+    llvmo::Constant_O* obj_gc_safe = reinterpret_cast<llvmo::Constant_O*>(client);
+    GCObjectAllocator<llvmo::Constant_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ConstantInt_O:
+{
+    llvmo::ConstantInt_O* obj_gc_safe = reinterpret_cast<llvmo::ConstantInt_O*>(client);
+    GCObjectAllocator<llvmo::ConstantInt_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ConstantFP_O:
+{
+    llvmo::ConstantFP_O* obj_gc_safe = reinterpret_cast<llvmo::ConstantFP_O*>(client);
+    GCObjectAllocator<llvmo::ConstantFP_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__GlobalValue_O:
+{
+    llvmo::GlobalValue_O* obj_gc_safe = reinterpret_cast<llvmo::GlobalValue_O*>(client);
+    GCObjectAllocator<llvmo::GlobalValue_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__GlobalVariable_O:
+{
+    llvmo::GlobalVariable_O* obj_gc_safe = reinterpret_cast<llvmo::GlobalVariable_O*>(client);
+    GCObjectAllocator<llvmo::GlobalVariable_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Function_O:
+{
+    llvmo::Function_O* obj_gc_safe = reinterpret_cast<llvmo::Function_O*>(client);
+    GCObjectAllocator<llvmo::Function_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ConstantArray_O:
+{
+    llvmo::ConstantArray_O* obj_gc_safe = reinterpret_cast<llvmo::ConstantArray_O*>(client);
+    GCObjectAllocator<llvmo::ConstantArray_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ConstantStruct_O:
+{
+    llvmo::ConstantStruct_O* obj_gc_safe = reinterpret_cast<llvmo::ConstantStruct_O*>(client);
+    GCObjectAllocator<llvmo::ConstantStruct_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__UndefValue_O:
+{
+    llvmo::UndefValue_O* obj_gc_safe = reinterpret_cast<llvmo::UndefValue_O*>(client);
+    GCObjectAllocator<llvmo::UndefValue_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ConstantPointerNull_O:
+{
+    llvmo::ConstantPointerNull_O* obj_gc_safe = reinterpret_cast<llvmo::ConstantPointerNull_O*>(client);
+    GCObjectAllocator<llvmo::ConstantPointerNull_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ConstantExpr_O:
+{
+    llvmo::ConstantExpr_O* obj_gc_safe = reinterpret_cast<llvmo::ConstantExpr_O*>(client);
+    GCObjectAllocator<llvmo::ConstantExpr_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__BlockAddress_O:
+{
+    llvmo::BlockAddress_O* obj_gc_safe = reinterpret_cast<llvmo::BlockAddress_O*>(client);
+    GCObjectAllocator<llvmo::BlockAddress_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ConstantDataSequential_O:
+{
+    llvmo::ConstantDataSequential_O* obj_gc_safe = reinterpret_cast<llvmo::ConstantDataSequential_O*>(client);
+    GCObjectAllocator<llvmo::ConstantDataSequential_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ConstantDataArray_O:
+{
+    llvmo::ConstantDataArray_O* obj_gc_safe = reinterpret_cast<llvmo::ConstantDataArray_O*>(client);
+    GCObjectAllocator<llvmo::ConstantDataArray_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Instruction_O:
+{
+    llvmo::Instruction_O* obj_gc_safe = reinterpret_cast<llvmo::Instruction_O*>(client);
+    GCObjectAllocator<llvmo::Instruction_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__PHINode_O:
+{
+    llvmo::PHINode_O* obj_gc_safe = reinterpret_cast<llvmo::PHINode_O*>(client);
+    GCObjectAllocator<llvmo::PHINode_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__LandingPadInst_O:
+{
+    llvmo::LandingPadInst_O* obj_gc_safe = reinterpret_cast<llvmo::LandingPadInst_O*>(client);
+    GCObjectAllocator<llvmo::LandingPadInst_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__AtomicCmpXchgInst_O:
+{
+    llvmo::AtomicCmpXchgInst_O* obj_gc_safe = reinterpret_cast<llvmo::AtomicCmpXchgInst_O*>(client);
+    GCObjectAllocator<llvmo::AtomicCmpXchgInst_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__TerminatorInst_O:
+{
+    llvmo::TerminatorInst_O* obj_gc_safe = reinterpret_cast<llvmo::TerminatorInst_O*>(client);
+    GCObjectAllocator<llvmo::TerminatorInst_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__UnreachableInst_O:
+{
+    llvmo::UnreachableInst_O* obj_gc_safe = reinterpret_cast<llvmo::UnreachableInst_O*>(client);
+    GCObjectAllocator<llvmo::UnreachableInst_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__InvokeInst_O:
+{
+    llvmo::InvokeInst_O* obj_gc_safe = reinterpret_cast<llvmo::InvokeInst_O*>(client);
+    GCObjectAllocator<llvmo::InvokeInst_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__BranchInst_O:
+{
+    llvmo::BranchInst_O* obj_gc_safe = reinterpret_cast<llvmo::BranchInst_O*>(client);
+    GCObjectAllocator<llvmo::BranchInst_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__IndirectBrInst_O:
+{
+    llvmo::IndirectBrInst_O* obj_gc_safe = reinterpret_cast<llvmo::IndirectBrInst_O*>(client);
+    GCObjectAllocator<llvmo::IndirectBrInst_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ResumeInst_O:
+{
+    llvmo::ResumeInst_O* obj_gc_safe = reinterpret_cast<llvmo::ResumeInst_O*>(client);
+    GCObjectAllocator<llvmo::ResumeInst_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__SwitchInst_O:
+{
+    llvmo::SwitchInst_O* obj_gc_safe = reinterpret_cast<llvmo::SwitchInst_O*>(client);
+    GCObjectAllocator<llvmo::SwitchInst_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ReturnInst_O:
+{
+    llvmo::ReturnInst_O* obj_gc_safe = reinterpret_cast<llvmo::ReturnInst_O*>(client);
+    GCObjectAllocator<llvmo::ReturnInst_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__FenceInst_O:
+{
+    llvmo::FenceInst_O* obj_gc_safe = reinterpret_cast<llvmo::FenceInst_O*>(client);
+    GCObjectAllocator<llvmo::FenceInst_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__AtomicRMWInst_O:
+{
+    llvmo::AtomicRMWInst_O* obj_gc_safe = reinterpret_cast<llvmo::AtomicRMWInst_O*>(client);
+    GCObjectAllocator<llvmo::AtomicRMWInst_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__StoreInst_O:
+{
+    llvmo::StoreInst_O* obj_gc_safe = reinterpret_cast<llvmo::StoreInst_O*>(client);
+    GCObjectAllocator<llvmo::StoreInst_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__UnaryInstruction_O:
+{
+    llvmo::UnaryInstruction_O* obj_gc_safe = reinterpret_cast<llvmo::UnaryInstruction_O*>(client);
+    GCObjectAllocator<llvmo::UnaryInstruction_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__VAArgInst_O:
+{
+    llvmo::VAArgInst_O* obj_gc_safe = reinterpret_cast<llvmo::VAArgInst_O*>(client);
+    GCObjectAllocator<llvmo::VAArgInst_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__AllocaInst_O:
+{
+    llvmo::AllocaInst_O* obj_gc_safe = reinterpret_cast<llvmo::AllocaInst_O*>(client);
+    GCObjectAllocator<llvmo::AllocaInst_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__LoadInst_O:
+{
+    llvmo::LoadInst_O* obj_gc_safe = reinterpret_cast<llvmo::LoadInst_O*>(client);
+    GCObjectAllocator<llvmo::LoadInst_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__CallInst_O:
+{
+    llvmo::CallInst_O* obj_gc_safe = reinterpret_cast<llvmo::CallInst_O*>(client);
+    GCObjectAllocator<llvmo::CallInst_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__BasicBlock_O:
+{
+    llvmo::BasicBlock_O* obj_gc_safe = reinterpret_cast<llvmo::BasicBlock_O*>(client);
+    GCObjectAllocator<llvmo::BasicBlock_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__IRBuilderBase_O:
+{
+    llvmo::IRBuilderBase_O* obj_gc_safe = reinterpret_cast<llvmo::IRBuilderBase_O*>(client);
+    GCObjectAllocator<llvmo::IRBuilderBase_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__IRBuilder_O:
+{
+    llvmo::IRBuilder_O* obj_gc_safe = reinterpret_cast<llvmo::IRBuilder_O*>(client);
+    GCObjectAllocator<llvmo::IRBuilder_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__MCSubtargetInfo_O:
+{
+    llvmo::MCSubtargetInfo_O* obj_gc_safe = reinterpret_cast<llvmo::MCSubtargetInfo_O*>(client);
+    GCObjectAllocator<llvmo::MCSubtargetInfo_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__TargetSubtargetInfo_O:
+{
+    llvmo::TargetSubtargetInfo_O* obj_gc_safe = reinterpret_cast<llvmo::TargetSubtargetInfo_O*>(client);
+    GCObjectAllocator<llvmo::TargetSubtargetInfo_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__EngineBuilder_O:
+{
+    llvmo::EngineBuilder_O* obj_gc_safe = reinterpret_cast<llvmo::EngineBuilder_O*>(client);
+    GCObjectAllocator<llvmo::EngineBuilder_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DataLayout_O:
+{
+    llvmo::DataLayout_O* obj_gc_safe = reinterpret_cast<llvmo::DataLayout_O*>(client);
+    GCObjectAllocator<llvmo::DataLayout_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Triple_O:
+{
+    llvmo::Triple_O* obj_gc_safe = reinterpret_cast<llvmo::Triple_O*>(client);
+    GCObjectAllocator<llvmo::Triple_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__TargetMachine_O:
+{
+    llvmo::TargetMachine_O* obj_gc_safe = reinterpret_cast<llvmo::TargetMachine_O*>(client);
+    GCObjectAllocator<llvmo::TargetMachine_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__LLVMTargetMachine_O:
+{
+    llvmo::LLVMTargetMachine_O* obj_gc_safe = reinterpret_cast<llvmo::LLVMTargetMachine_O*>(client);
+    GCObjectAllocator<llvmo::LLVMTargetMachine_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Type_O:
+{
+    llvmo::Type_O* obj_gc_safe = reinterpret_cast<llvmo::Type_O*>(client);
+    GCObjectAllocator<llvmo::Type_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__CompositeType_O:
+{
+    llvmo::CompositeType_O* obj_gc_safe = reinterpret_cast<llvmo::CompositeType_O*>(client);
+    GCObjectAllocator<llvmo::CompositeType_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__StructType_O:
+{
+    llvmo::StructType_O* obj_gc_safe = reinterpret_cast<llvmo::StructType_O*>(client);
+    GCObjectAllocator<llvmo::StructType_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__SequentialType_O:
+{
+    llvmo::SequentialType_O* obj_gc_safe = reinterpret_cast<llvmo::SequentialType_O*>(client);
+    GCObjectAllocator<llvmo::SequentialType_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__PointerType_O:
+{
+    llvmo::PointerType_O* obj_gc_safe = reinterpret_cast<llvmo::PointerType_O*>(client);
+    GCObjectAllocator<llvmo::PointerType_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ArrayType_O:
+{
+    llvmo::ArrayType_O* obj_gc_safe = reinterpret_cast<llvmo::ArrayType_O*>(client);
+    GCObjectAllocator<llvmo::ArrayType_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__VectorType_O:
+{
+    llvmo::VectorType_O* obj_gc_safe = reinterpret_cast<llvmo::VectorType_O*>(client);
+    GCObjectAllocator<llvmo::VectorType_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__FunctionType_O:
+{
+    llvmo::FunctionType_O* obj_gc_safe = reinterpret_cast<llvmo::FunctionType_O*>(client);
+    GCObjectAllocator<llvmo::FunctionType_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__IntegerType_O:
+{
+    llvmo::IntegerType_O* obj_gc_safe = reinterpret_cast<llvmo::IntegerType_O*>(client);
+    GCObjectAllocator<llvmo::IntegerType_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Metadata_O:
+{
+    llvmo::Metadata_O* obj_gc_safe = reinterpret_cast<llvmo::Metadata_O*>(client);
+    GCObjectAllocator<llvmo::Metadata_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ValueAsMetadata_O:
+{
+    llvmo::ValueAsMetadata_O* obj_gc_safe = reinterpret_cast<llvmo::ValueAsMetadata_O*>(client);
+    GCObjectAllocator<llvmo::ValueAsMetadata_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__MDString_O:
+{
+    llvmo::MDString_O* obj_gc_safe = reinterpret_cast<llvmo::MDString_O*>(client);
+    GCObjectAllocator<llvmo::MDString_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__MDNode_O:
+{
+    llvmo::MDNode_O* obj_gc_safe = reinterpret_cast<llvmo::MDNode_O*>(client);
+    GCObjectAllocator<llvmo::MDNode_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__NamedMDNode_O:
+{
+    llvmo::NamedMDNode_O* obj_gc_safe = reinterpret_cast<llvmo::NamedMDNode_O*>(client);
+    GCObjectAllocator<llvmo::NamedMDNode_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ExecutionEngine_O:
+{
+    llvmo::ExecutionEngine_O* obj_gc_safe = reinterpret_cast<llvmo::ExecutionEngine_O*>(client);
+    GCObjectAllocator<llvmo::ExecutionEngine_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ForeignData_O:
+{
+    core::ForeignData_O* obj_gc_safe = reinterpret_cast<core::ForeignData_O*>(client);
+    GCObjectAllocator<core::ForeignData_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__PassManagerBuilder_O:
+{
+    llvmo::PassManagerBuilder_O* obj_gc_safe = reinterpret_cast<llvmo::PassManagerBuilder_O*>(client);
+    GCObjectAllocator<llvmo::PassManagerBuilder_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_adapt__ObjectSet_O:
+{
+    adapt::ObjectSet_O* obj_gc_safe = reinterpret_cast<adapt::ObjectSet_O*>(client);
+    GCObjectAllocator<adapt::ObjectSet_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__IntArray_O:
+{
+    core::IntArray_O* obj_gc_safe = reinterpret_cast<core::IntArray_O*>(client);
+    GCObjectAllocator<core::IntArray_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__PosixTime_O:
+{
+    core::PosixTime_O* obj_gc_safe = reinterpret_cast<core::PosixTime_O*>(client);
+    GCObjectAllocator<core::PosixTime_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__Symbol_O:
+{
+    core::Symbol_O* obj_gc_safe = reinterpret_cast<core::Symbol_O*>(client);
+    GCObjectAllocator<core::Symbol_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Null_O:
+{
+    core::Null_O* obj_gc_safe = reinterpret_cast<core::Null_O*>(client);
+    GCObjectAllocator<core::Null_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_adapt__IndexedObjectBag_O:
+{
+    adapt::IndexedObjectBag_O* obj_gc_safe = reinterpret_cast<adapt::IndexedObjectBag_O*>(client);
+    GCObjectAllocator<adapt::IndexedObjectBag_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__PosixTimeDuration_O:
+{
+    core::PosixTimeDuration_O* obj_gc_safe = reinterpret_cast<core::PosixTimeDuration_O*>(client);
+    GCObjectAllocator<core::PosixTimeDuration_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SymbolToEnumConverter_O:
+{
+    core::SymbolToEnumConverter_O* obj_gc_safe = reinterpret_cast<core::SymbolToEnumConverter_O*>(client);
+    GCObjectAllocator<core::SymbolToEnumConverter_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ReadTable_O:
+{
+    core::ReadTable_O* obj_gc_safe = reinterpret_cast<core::ReadTable_O*>(client);
+    GCObjectAllocator<core::ReadTable_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Number_O:
+{
+    core::Number_O* obj_gc_safe = reinterpret_cast<core::Number_O*>(client);
+    GCObjectAllocator<core::Number_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Complex_O:
+{
+    core::Complex_O* obj_gc_safe = reinterpret_cast<core::Complex_O*>(client);
+    GCObjectAllocator<core::Complex_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Real_O:
+{
+    core::Real_O* obj_gc_safe = reinterpret_cast<core::Real_O*>(client);
+    GCObjectAllocator<core::Real_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Float_O:
+{
+    core::Float_O* obj_gc_safe = reinterpret_cast<core::Float_O*>(client);
+    GCObjectAllocator<core::Float_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SingleFloat_dummy_O:
+{
+    core::SingleFloat_dummy_O* obj_gc_safe = reinterpret_cast<core::SingleFloat_dummy_O*>(client);
+    GCObjectAllocator<core::SingleFloat_dummy_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__LongFloat_O:
+{
+    core::LongFloat_O* obj_gc_safe = reinterpret_cast<core::LongFloat_O*>(client);
+    GCObjectAllocator<core::LongFloat_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ShortFloat_O:
+{
+    core::ShortFloat_O* obj_gc_safe = reinterpret_cast<core::ShortFloat_O*>(client);
+    GCObjectAllocator<core::ShortFloat_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__DoubleFloat_O:
+{
+    core::DoubleFloat_O* obj_gc_safe = reinterpret_cast<core::DoubleFloat_O*>(client);
+    GCObjectAllocator<core::DoubleFloat_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Rational_O:
+{
+    core::Rational_O* obj_gc_safe = reinterpret_cast<core::Rational_O*>(client);
+    GCObjectAllocator<core::Rational_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Integer_O:
+{
+    core::Integer_O* obj_gc_safe = reinterpret_cast<core::Integer_O*>(client);
+    GCObjectAllocator<core::Integer_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Bignum_O:
+{
+    core::Bignum_O* obj_gc_safe = reinterpret_cast<core::Bignum_O*>(client);
+    GCObjectAllocator<core::Bignum_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Fixnum_dummy_O:
+{
+    core::Fixnum_dummy_O* obj_gc_safe = reinterpret_cast<core::Fixnum_dummy_O*>(client);
+    GCObjectAllocator<core::Fixnum_dummy_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Ratio_O:
+{
+    core::Ratio_O* obj_gc_safe = reinterpret_cast<core::Ratio_O*>(client);
+    GCObjectAllocator<core::Ratio_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__CandoException_O:
+{
+    core::CandoException_O* obj_gc_safe = reinterpret_cast<core::CandoException_O*>(client);
+    GCObjectAllocator<core::CandoException_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Archive_O:
+{
+    core::Archive_O* obj_gc_safe = reinterpret_cast<core::Archive_O*>(client);
+    GCObjectAllocator<core::Archive_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__LoadArchive_O:
+{
+    core::LoadArchive_O* obj_gc_safe = reinterpret_cast<core::LoadArchive_O*>(client);
+    GCObjectAllocator<core::LoadArchive_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SexpLoadArchive_O:
+{
+    core::SexpLoadArchive_O* obj_gc_safe = reinterpret_cast<core::SexpLoadArchive_O*>(client);
+    GCObjectAllocator<core::SexpLoadArchive_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SaveArchive_O:
+{
+    core::SaveArchive_O* obj_gc_safe = reinterpret_cast<core::SaveArchive_O*>(client);
+    GCObjectAllocator<core::SaveArchive_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SexpSaveArchive_O:
+{
+    core::SexpSaveArchive_O* obj_gc_safe = reinterpret_cast<core::SexpSaveArchive_O*>(client);
+    GCObjectAllocator<core::SexpSaveArchive_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__HashTable_O:
+{
+    core::HashTable_O* obj_gc_safe = reinterpret_cast<core::HashTable_O*>(client);
+    GCObjectAllocator<core::HashTable_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__HashTableEq_O:
+{
+    core::HashTableEq_O* obj_gc_safe = reinterpret_cast<core::HashTableEq_O*>(client);
+    GCObjectAllocator<core::HashTableEq_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__HashTableEqual_O:
+{
+    core::HashTableEqual_O* obj_gc_safe = reinterpret_cast<core::HashTableEqual_O*>(client);
+    GCObjectAllocator<core::HashTableEqual_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__HashTableEql_O:
+{
+    core::HashTableEql_O* obj_gc_safe = reinterpret_cast<core::HashTableEql_O*>(client);
+    GCObjectAllocator<core::HashTableEql_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__HashTableEqualp_O:
+{
+    core::HashTableEqualp_O* obj_gc_safe = reinterpret_cast<core::HashTableEqualp_O*>(client);
+    GCObjectAllocator<core::HashTableEqualp_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Environment_O:
+{
+    core::Environment_O* obj_gc_safe = reinterpret_cast<core::Environment_O*>(client);
+    GCObjectAllocator<core::Environment_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ActivationFrame_O:
+{
+    core::ActivationFrame_O* obj_gc_safe = reinterpret_cast<core::ActivationFrame_O*>(client);
+    GCObjectAllocator<core::ActivationFrame_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__FunctionFrame_O:
+{
+    core::FunctionFrame_O* obj_gc_safe = reinterpret_cast<core::FunctionFrame_O*>(client);
+    GCObjectAllocator<core::FunctionFrame_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__TagbodyFrame_O:
+{
+    core::TagbodyFrame_O* obj_gc_safe = reinterpret_cast<core::TagbodyFrame_O*>(client);
+    GCObjectAllocator<core::TagbodyFrame_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ValueFrame_O:
+{
+    core::ValueFrame_O* obj_gc_safe = reinterpret_cast<core::ValueFrame_O*>(client);
+    GCObjectAllocator<core::ValueFrame_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__LexicalEnvironment_O:
+{
+    core::LexicalEnvironment_O* obj_gc_safe = reinterpret_cast<core::LexicalEnvironment_O*>(client);
+    GCObjectAllocator<core::LexicalEnvironment_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__CompileTimeEnvironment_O:
+{
+    core::CompileTimeEnvironment_O* obj_gc_safe = reinterpret_cast<core::CompileTimeEnvironment_O*>(client);
+    GCObjectAllocator<core::CompileTimeEnvironment_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__MacroletEnvironment_O:
+{
+    core::MacroletEnvironment_O* obj_gc_safe = reinterpret_cast<core::MacroletEnvironment_O*>(client);
+    GCObjectAllocator<core::MacroletEnvironment_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__FunctionContainerEnvironment_O:
+{
+    core::FunctionContainerEnvironment_O* obj_gc_safe = reinterpret_cast<core::FunctionContainerEnvironment_O*>(client);
+    GCObjectAllocator<core::FunctionContainerEnvironment_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__UnwindProtectEnvironment_O:
+{
+    core::UnwindProtectEnvironment_O* obj_gc_safe = reinterpret_cast<core::UnwindProtectEnvironment_O*>(client);
+    GCObjectAllocator<core::UnwindProtectEnvironment_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SymbolMacroletEnvironment_O:
+{
+    core::SymbolMacroletEnvironment_O* obj_gc_safe = reinterpret_cast<core::SymbolMacroletEnvironment_O*>(client);
+    GCObjectAllocator<core::SymbolMacroletEnvironment_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__StackValueEnvironment_O:
+{
+    core::StackValueEnvironment_O* obj_gc_safe = reinterpret_cast<core::StackValueEnvironment_O*>(client);
+    GCObjectAllocator<core::StackValueEnvironment_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__BlockEnvironment_O:
+{
+    core::BlockEnvironment_O* obj_gc_safe = reinterpret_cast<core::BlockEnvironment_O*>(client);
+    GCObjectAllocator<core::BlockEnvironment_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__CatchEnvironment_O:
+{
+    core::CatchEnvironment_O* obj_gc_safe = reinterpret_cast<core::CatchEnvironment_O*>(client);
+    GCObjectAllocator<core::CatchEnvironment_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__RuntimeVisibleEnvironment_O:
+{
+    core::RuntimeVisibleEnvironment_O* obj_gc_safe = reinterpret_cast<core::RuntimeVisibleEnvironment_O*>(client);
+    GCObjectAllocator<core::RuntimeVisibleEnvironment_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ValueEnvironment_O:
+{
+    core::ValueEnvironment_O* obj_gc_safe = reinterpret_cast<core::ValueEnvironment_O*>(client);
+    GCObjectAllocator<core::ValueEnvironment_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__FunctionValueEnvironment_O:
+{
+    core::FunctionValueEnvironment_O* obj_gc_safe = reinterpret_cast<core::FunctionValueEnvironment_O*>(client);
+    GCObjectAllocator<core::FunctionValueEnvironment_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__TagbodyEnvironment_O:
+{
+    core::TagbodyEnvironment_O* obj_gc_safe = reinterpret_cast<core::TagbodyEnvironment_O*>(client);
+    GCObjectAllocator<core::TagbodyEnvironment_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__GlueEnvironment_O:
+{
+    core::GlueEnvironment_O* obj_gc_safe = reinterpret_cast<core::GlueEnvironment_O*>(client);
+    GCObjectAllocator<core::GlueEnvironment_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__WeakKeyMapping_O:
+{
+    core::WeakKeyMapping_O* obj_gc_safe = reinterpret_cast<core::WeakKeyMapping_O*>(client);
+    GCObjectAllocator<core::WeakKeyMapping_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__LambdaListHandler_O:
+{
+    core::LambdaListHandler_O* obj_gc_safe = reinterpret_cast<core::LambdaListHandler_O*>(client);
+    GCObjectAllocator<core::LambdaListHandler_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__InsertPoint_O:
+{
+    llvmo::InsertPoint_O* obj_gc_safe = reinterpret_cast<llvmo::InsertPoint_O*>(client);
+    GCObjectAllocator<llvmo::InsertPoint_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SingleDispatchMethod_O:
+{
+    core::SingleDispatchMethod_O* obj_gc_safe = reinterpret_cast<core::SingleDispatchMethod_O*>(client);
+    GCObjectAllocator<core::SingleDispatchMethod_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Attribute_O:
+{
+    llvmo::Attribute_O* obj_gc_safe = reinterpret_cast<llvmo::Attribute_O*>(client);
+    GCObjectAllocator<llvmo::Attribute_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Character_dummy_O:
+{
+    core::Character_dummy_O* obj_gc_safe = reinterpret_cast<core::Character_dummy_O*>(client);
+    GCObjectAllocator<core::Character_dummy_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SmallMultimap_O:
+{
+    core::SmallMultimap_O* obj_gc_safe = reinterpret_cast<core::SmallMultimap_O*>(client);
+    GCObjectAllocator<core::SmallMultimap_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Binder_O:
+{
+    core::Binder_O* obj_gc_safe = reinterpret_cast<core::Binder_O*>(client);
+    GCObjectAllocator<core::Binder_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Pathname_O:
+{
+    core::Pathname_O* obj_gc_safe = reinterpret_cast<core::Pathname_O*>(client);
+    GCObjectAllocator<core::Pathname_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__LogicalPathname_O:
+{
+    core::LogicalPathname_O* obj_gc_safe = reinterpret_cast<core::LogicalPathname_O*>(client);
+    GCObjectAllocator<core::LogicalPathname_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SourceManager_O:
+{
+    core::SourceManager_O* obj_gc_safe = reinterpret_cast<core::SourceManager_O*>(client);
+    GCObjectAllocator<core::SourceManager_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Record_O:
+{
+    core::Record_O* obj_gc_safe = reinterpret_cast<core::Record_O*>(client);
+    GCObjectAllocator<core::Record_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SmallMap_O:
+{
+    core::SmallMap_O* obj_gc_safe = reinterpret_cast<core::SmallMap_O*>(client);
+    GCObjectAllocator<core::SmallMap_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__LightUserData_O:
+{
+    core::LightUserData_O* obj_gc_safe = reinterpret_cast<core::LightUserData_O*>(client);
+    GCObjectAllocator<core::LightUserData_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__UserData_O:
+{
+    core::UserData_O* obj_gc_safe = reinterpret_cast<core::UserData_O*>(client);
+    GCObjectAllocator<core::UserData_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_ROOTCLASSALLOC_asttooling__RegMap__RegistryMaps:
+{
+    asttooling::RegMap::RegistryMaps* obj_gc_safe = reinterpret_cast<asttooling::RegMap::RegistryMaps*>(client);
+    GCObjectAllocator<asttooling::RegMap::RegistryMaps>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__Cache:
+{
+    core::Cache* obj_gc_safe = reinterpret_cast<core::Cache*>(client);
+    GCObjectAllocator<core::Cache>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_TEMPLATED_CLASSALLOC_core__Creator:
+{
+    core::Creator* obj_gc_safe = reinterpret_cast<core::Creator*>(client);
+    GCObjectAllocator<core::Creator>::deallocate_unmanaged_instance(obj_gc_safe);
+}
+obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__InstanceCreator:
+{
+    core::InstanceCreator* obj_gc_safe = reinterpret_cast<core::InstanceCreator*>(client);
+    GCObjectAllocator<core::InstanceCreator>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_TEMPLATED_CLASSALLOC_clbind__ConstructorCreator:
+{
+    clbind::ConstructorCreator* obj_gc_safe = reinterpret_cast<clbind::ConstructorCreator*>(client);
+    GCObjectAllocator<clbind::ConstructorCreator>::deallocate_unmanaged_instance(obj_gc_safe);
+}
+obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_clbind__DummyCreator:
+{
+    clbind::DummyCreator* obj_gc_safe = reinterpret_cast<clbind::DummyCreator*>(client);
+    GCObjectAllocator<clbind::DummyCreator>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Stereoisomer_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Stereoisomer_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyStretch_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<chem::EnergyStretch>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFStretch_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::FFStretch_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__SingleDispatchGenericFunctionClosure:
+{
+    core::SingleDispatchGenericFunctionClosure* obj_gc_safe = reinterpret_cast<core::SingleDispatchGenericFunctionClosure*>(client);
+    GCObjectAllocator<core::SingleDispatchGenericFunctionClosure>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyNonbond_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<chem::EnergyNonbond>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__RequiredArgument_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<core::RequiredArgument>"));}
+obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_llvmo__CompiledClosure:
+{
+    llvmo::CompiledClosure* obj_gc_safe = reinterpret_cast<llvmo::CompiledClosure*>(client);
+    GCObjectAllocator<llvmo::CompiledClosure>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Twister_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Twister_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__AtomInfo_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<chem::AtomInfo>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Restraint_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Restraint_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__RegMap__SymbolMatcherDescriptorPair_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<asttooling::RegMap::SymbolMatcherDescriptorPair>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ConformationCollectionEntry_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ConformationCollectionEntry_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__MonomerCoordinates_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::MonomerCoordinates_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFPtor_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFPtor_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Mate_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Mate_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_asttooling__internal__OverloadedMatcherDescriptor:
+{
+    asttooling::internal::OverloadedMatcherDescriptor* obj_gc_safe = reinterpret_cast<asttooling::internal::OverloadedMatcherDescriptor*>(client);
+    GCObjectAllocator<asttooling::internal::OverloadedMatcherDescriptor>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__TrajectoryFrame_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::TrajectoryFrame_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Coupling_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Coupling_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDBond_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::CDBond_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__FixedNonbondRestraint_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<chem::FixedNonbondRestraint>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_asttooling__internal__MatcherDescriptor__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::tagged_pointer<asttooling::internal::MatcherDescriptor>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__PdbMonomerConnectivity_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::PdbMonomerConnectivity_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFVdw_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::FFVdw_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__AtomIndexer_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::AtomIndexer_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SingleDispatchMethod_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<core::SingleDispatchMethod_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__EntityNameSetBase_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::EntityNameSetBase_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Package_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<core::Package_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ConformationExplorerEntry_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ConformationExplorerEntry_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Entity_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Entity_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__MonomerCoordinates_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::MonomerCoordinates_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__ExceptionEntry_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<core::ExceptionEntry>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__StereoisomerAtom_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::StereoisomerAtom_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFStretch_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFStretch_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__MacroClosure:
+{
+    core::MacroClosure* obj_gc_safe = reinterpret_cast<core::MacroClosure*>(client);
+    GCObjectAllocator<core::MacroClosure>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Plug_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Plug_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__StereoConfiguration_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::StereoConfiguration_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFItor_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFItor_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ConstitutionBond_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ConstitutionBond_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyDihedral_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<chem::EnergyDihedral>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__Residue_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::Residue_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Molecule_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Molecule_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ParserValue_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<asttooling::ParserValue>"));}
+obj_deallocate_unmanaged_instance_KIND_GCSTRING_gctools__GCString_moveable_char_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate gcstrings gctools::GCString_moveable<char>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__RingClosingMate_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::RingClosingMate_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Str_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Str_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__SymbolClassPair_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<core::SymbolClassPair>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFNonbond_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::FFNonbond_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__KeyEntry_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<chem::KeyEntry>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__unsigned_int__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,unsigned int>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__T_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::T_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ConformationExplorerEntryStage_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ConformationExplorerEntryStage_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAtom_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<chem::EnergyAtom>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFPtor_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::FFPtor_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_asttooling__internal__VariadicOperatorMatcherDescriptor:
+{
+    asttooling::internal::VariadicOperatorMatcherDescriptor* obj_gc_safe = reinterpret_cast<asttooling::internal::VariadicOperatorMatcherDescriptor*>(client);
+    GCObjectAllocator<asttooling::internal::VariadicOperatorMatcherDescriptor>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyImproperRestraint_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<chem::EnergyImproperRestraint>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ConstitutionAtom_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ConstitutionAtom_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__AtomPdbRec_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<chem::AtomPdbRec>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFItor_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::FFItor_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__InstanceClosure:
+{
+    core::InstanceClosure* obj_gc_safe = reinterpret_cast<core::InstanceClosure*>(client);
+    GCObjectAllocator<core::InstanceClosure>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__1_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCArray_moveable<gctools::smart_ptr<core::T_O>,1>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Bond_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Bond_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__SymbolStorage_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<core::SymbolStorage>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<asttooling::ErrorContent>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ExtractFragment_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<chem::EnergyChiralRestraint>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__AGEdge_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::AGEdge_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__4_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCArray_moveable<gctools::smart_ptr<core::T_O>,4>"));}
+obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__CoreExposer:
+{
+    core::CoreExposer* obj_gc_safe = reinterpret_cast<core::CoreExposer*>(client);
+    GCObjectAllocator<core::CoreExposer>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixInternal_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ZMatrixInternal_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ContextFrame_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<asttooling::ContextFrame>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathMessage_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::PathMessage_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::Symbol_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_asttooling__internal__FixedArgCountMatcherDescriptor:
+{
+    asttooling::internal::FixedArgCountMatcherDescriptor* obj_gc_safe = reinterpret_cast<asttooling::internal::FixedArgCountMatcherDescriptor*>(client);
+    GCObjectAllocator<asttooling::internal::FixedArgCountMatcherDescriptor>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__BeyondThresholdFixedNonbondRestraint_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<chem::BeyondThresholdFixedNonbondRestraint>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__OptionalArgument_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<core::OptionalArgument>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_adapt__QDomNode_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<adapt::QDomNode_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAngle_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<chem::EnergyAngle>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__T_O_P_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<core::T_O *>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Residue_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Residue_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Topology_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Topology_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Rotamer_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Rotamer_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__InterpretedClosure:
+{
+    core::InterpretedClosure* obj_gc_safe = reinterpret_cast<core::InterpretedClosure*>(client);
+    GCObjectAllocator<core::InterpretedClosure>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::T_O>,gctools::smart_ptr<core::T_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_asttooling__internal__FreeFuncMatcherDescriptor:
+{
+    asttooling::internal::FreeFuncMatcherDescriptor* obj_gc_safe = reinterpret_cast<asttooling::internal::FreeFuncMatcherDescriptor*>(client);
+    GCObjectAllocator<asttooling::internal::FreeFuncMatcherDescriptor>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__DynamicBinding_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<core::DynamicBinding>"));}
+obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__VectorStepper:
+{
+    core::VectorStepper* obj_gc_safe = reinterpret_cast<core::VectorStepper*>(client);
+    GCObjectAllocator<core::VectorStepper>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SimpleBitVector_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<core::SimpleBitVector_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Stereoisomer_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_clbind__ClassRep_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<clbind::ClassRep_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__AuxArgument_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<core::AuxArgument>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__SequenceStepper__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::tagged_pointer<core::SequenceStepper>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,int>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAnchorRestraint_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<chem::EnergyAnchorRestraint>"));}
+obj_deallocate_unmanaged_instance_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__0_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCArray_moveable<gctools::smart_ptr<core::T_O>,0>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<core::KeywordArgument>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,chem::EstimateStretch>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_V__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<core::List_V>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::StereoisomerAtoms_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Coupling_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Coupling_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ReportBase_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ReportBase_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__BondList_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::BondList_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Symbol_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<core::Symbol_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SourceFileInfo_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<core::SourceFileInfo_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Atom_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Atom_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__SmallOrderedSet_gctools__smart_ptr_chem__Atom_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::SmallOrderedSet<gctools::smart_ptr<chem::Atom_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__CacheRecord_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<core::CacheRecord>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__ResidueOut_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<chem::ResidueOut>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Structure_Old_ListEntry_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Structure_Old_ListEntry_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FrameRecognizer_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Cons_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<core::Cons_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_asttooling__DerivableFrontendActionFactory:
+{
+    asttooling::DerivableFrontendActionFactory* obj_gc_safe = reinterpret_cast<asttooling::DerivableFrontendActionFactory*>(client);
+    GCObjectAllocator<asttooling::DerivableFrontendActionFactory>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_asttooling__DerivableMatchCallback:
+{
+    asttooling::DerivableMatchCallback* obj_gc_safe = reinterpret_cast<asttooling::DerivableMatchCallback*>(client);
+    GCObjectAllocator<asttooling::DerivableMatchCallback>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::FFAngle_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<unsigned int,gctools::smart_ptr<chem::Residue_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_asttooling__DerivableASTFrontendAction:
+{
+    asttooling::DerivableASTFrontendAction* obj_gc_safe = reinterpret_cast<asttooling::DerivableASTFrontendAction*>(client);
+    GCObjectAllocator<asttooling::DerivableASTFrontendAction>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTypeRule_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::OneTypeRule_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::Topology_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDFragment_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::CDFragment_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__Message_:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<asttooling::Message>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ComplexRestraint_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ComplexRestraint_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matter_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Matter_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<int,gctools::smart_ptr<chem::CDNode_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<core::T_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::SpecificContext_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_asttooling__DerivableSyntaxOnlyAction:
+{
+    asttooling::DerivableSyntaxOnlyAction* obj_gc_safe = reinterpret_cast<asttooling::DerivableSyntaxOnlyAction*>(client);
+    GCObjectAllocator<asttooling::DerivableSyntaxOnlyAction>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneMonomer_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::OneMonomer_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monomer_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Monomer_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<chem::CDFragment_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixEntry_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ZMatrixEntry_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_TEMPLATED_CLASSALLOC_core__BuiltinClosure:
+{
+    core::BuiltinClosure* obj_gc_safe = reinterpret_cast<core::BuiltinClosure*>(client);
+    GCObjectAllocator<core::BuiltinClosure>::deallocate_unmanaged_instance(obj_gc_safe);
+}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFAngle_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::FFAngle_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Molecule_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::Molecule_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemInfo_O__:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ChemInfo_O>>"));}
+obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___:
+{
+    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<std::__1::pair<gctools::smart_ptr<chem::Atom_O>,gctools::smart_ptr<chem::CDNode_O>>>"));}
+obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__ConsStepper:
+{
+    core::ConsStepper* obj_gc_safe = reinterpret_cast<core::ConsStepper*>(client);
+    GCObjectAllocator<core::ConsStepper>::deallocate_unmanaged_instance(obj_gc_safe);
+    return;
+}
+#endif // defined(GC_OBJ_DEALLOCATOR)
+#if defined(GC_OBJ_DEALLOCATOR_HELPERS)
+
+#endif // defined(GC_OBJ_DEALLOCATOR_HELPERS)
+#if defined(GC_OBJ_DEALLOCATOR_TABLE)
+static void* OBJ_DEALLOCATOR_table[] = { NULL 
+       , NULL /* Skip entry for immediate */
+       , NULL /* Skip entry for immediate */
+       , NULL /* Skip entry for immediate */
+  /* 4 */ , &&obj_deallocate_unmanaged_instance_KIND_ROOTCLASSALLOC_clbind__detail__class_map
+  /* 5 */ , &&obj_deallocate_unmanaged_instance_KIND_ROOTCLASSALLOC_core__Lisp_O
+  /* 6 */ , &&obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__T_O
+  /* 7 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Regex_O
+  /* 8 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__WeakHashTable_O
+  /* 9 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__WeakKeyHashTable_O
+  /* 10 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Reader_O
+  /* 11 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__CxxObject_O
+  /* 12 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_units__Unit_O
+  /* 13 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_units__NamedUnit_O
+  /* 14 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AtomTable_O
+  /* 15 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Command_O
+  /* 16 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__NVector_O
+  /* 17 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__OVector2_O
+  /* 18 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__MonomerContext_O
+  /* 19 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFNonbondCrossTermTable_O
+  /* 20 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__BondList_O
+  /* 21 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CDFragment_O
+  /* 22 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ResidueList_O
+  /* 23 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Structure_Old_ListEntry_O
+  /* 24 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ReadAmberParameters_O
+  /* 25 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AtomIndexer_O
+  /* 26 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Structure_Old_List_O
+  /* 27 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_adapt__StringSet_O
+  /* 28 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ChemInfoMatch_O
+  /* 29 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__SpanningLoop_O
+  /* 30 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CDBond_O
+  /* 31 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ForceField_O
+  /* 32 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__OneMonomer_O
+  /* 33 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ReportBase_O
+  /* 34 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__MessageReport_O
+  /* 35 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ForceMatchReport_O
+  /* 36 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__StepReport_O
+  /* 37 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__PathMessage_O
+  /* 38 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FrameRecognizer_O
+  /* 39 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__StereoisomerAtom_O
+  /* 40 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__StereoisomerVirtualAtom_O
+  /* 41 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__MonomerCoordinates_O
+  /* 42 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__SearchStatistics_O
+  /* 43 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AtomId_O
+  /* 44 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__TypeAssignmentRules_O
+  /* 45 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__WildElementDict_O
+  /* 46 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__SpecificContext_O
+  /* 47 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CDText_O
+  /* 48 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__PdbMonomerConnectivity_O
+  /* 49 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_units__Quantity_O
+  /* 50 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Plug_O
+  /* 51 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__PlugWithMates_O
+  /* 52 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__OutPlug_O
+  /* 53 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RingClosingPlug_O
+  /* 54 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__InPlug_O
+  /* 55 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__JumpPlug_O
+  /* 56 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__BoundingBox_O
+  /* 57 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__MinimizerLog_O
+  /* 58 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ChemInfo_O
+  /* 59 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ZMatrixEntry_O
+  /* 60 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__StereoInformation_O
+  /* 61 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__MacroModelFile_O
+  /* 62 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__PdbWriter_O
+  /* 63 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ChemDraw_O
+  /* 64 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AGEdge_O
+  /* 65 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConformationExplorerMatch_O
+  /* 66 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ImproperTorsion_O
+  /* 67 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConstitutionAtoms_O
+  /* 68 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CoordinateSystem_O
+  /* 69 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConformationCollectionEntry_O
+  /* 70 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Restraint_O
+  /* 71 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestraintAngle_O
+  /* 72 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestraintAnchor_O
+  /* 73 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestraintFixedNonbond_O
+  /* 74 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestraintChiral_O
+  /* 75 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestraintDihedral_O
+  /* 76 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestraintDistance_O
+  /* 77 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ChemInfoNode_O
+  /* 78 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RootMatchNode_O
+  /* 79 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AfterMatchBondTest_O
+  /* 80 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__BondMatchNode_O
+  /* 81 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AtomOrBondMatchNode_O
+  /* 82 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__TagSet_O
+  /* 83 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Root_O
+  /* 84 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__SmartsRoot_O
+  /* 85 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AntechamberRoot_O
+  /* 86 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ResidueTest_O
+  /* 87 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AntechamberFocusAtomMatch_O
+  /* 88 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RingTest_O
+  /* 89 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AtomTest_O
+  /* 90 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Logical_O
+  /* 91 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__BondTest_O
+  /* 92 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AntechamberBondTest_O
+  /* 93 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__BondListMatchNode_O
+  /* 94 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Branch_O
+  /* 95 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Chain_O
+  /* 96 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Minimizer_O
+  /* 97 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Oligomer_O
+  /* 98 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConstitutionBond_O
+  /* 99 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Entity_O
+  /* 100 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EntityNameSetBase_O
+  /* 101 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EntityNameSetWithCap_O
+  /* 102 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RingClosingMate_O
+  /* 103 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Mate_O
+  /* 104 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EntityNameSet_O
+  /* 105 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RepresentedEntityNameSet_O
+  /* 106 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__MonomerPack_O
+  /* 107 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Monomer_O
+  /* 108 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__MultiMonomer_O
+  /* 109 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Stereoisomer_O
+  /* 110 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Constitution_O
+  /* 111 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_units__Dimension_O
+  /* 112 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__OMatrix_O
+  /* 113 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__StereoisomerAtoms_O
+  /* 114 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConformationExplorerEntry_O
+  /* 115 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AtomReferenceBase_O
+  /* 116 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AtomReference_O
+  /* 117 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CDNode_O
+  /* 118 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__TrajectoryFrame_O
+  /* 119 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyComponent_O
+  /* 120 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyChiralRestraint_O
+  /* 121 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyImproperRestraint_O
+  /* 122 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyAnchorRestraint_O
+  /* 123 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyAngle_O
+  /* 124 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyDihedral_O
+  /* 125 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyStretch_O
+  /* 126 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyNonbond_O
+  /* 127 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyFixedNonbondRestraint_O
+  /* 128 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__PdbMonomerDatabase_O
+  /* 129 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Coupling_O
+  /* 130 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__DirectionalCoupling_O
+  /* 131 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RingCoupling_O
+  /* 132 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__PdbReader_O
+  /* 133 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ZMatrixInternal_O
+  /* 134 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ZMatrixBondInternal_O
+  /* 135 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ZMatrixAngleInternal_O
+  /* 136 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ZMatrixDihedralInternal_O
+  /* 137 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CipPrioritizer_O
+  /* 138 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Matter_O
+  /* 139 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Residue_O
+  /* 140 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Aggregate_O
+  /* 141 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Atom_O
+  /* 142 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__VirtualAtom_O
+  /* 143 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Molecule_O
+  /* 144 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Bond_O
+  /* 145 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AGVertex_O
+  /* 146 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Alias_O
+  /* 147 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CandoDatabase_O
+  /* 148 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ProperTorsion_O
+  /* 149 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__OVector3_O
+  /* 150 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ComplexRestraint_O
+  /* 151 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestrainedExoCyclicAtom_O
+  /* 152 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestrainedPiBond_O
+  /* 153 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__EnergyFunction_O
+  /* 154 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ZMatrix_O
+  /* 155 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__StatusTracker_O
+  /* 156 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__OneTypeRule_O
+  /* 157 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__OligomerPart_Base_O
+  /* 158 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__OligomerPart_Monomer_O
+  /* 159 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__OligomerPart_Link_O
+  /* 160 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_adapt__SymbolList_O
+  /* 161 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConformationCollection_O
+  /* 162 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__SuperposableConformationCollection_O
+  /* 163 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__InfoDb_O
+  /* 164 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConformationExplorer_O
+  /* 165 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__Color_O
+  /* 166 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConstitutionAtom_O
+  /* 167 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConstitutionVirtualAtom_O
+  /* 168 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__NumericalFunction_O
+  /* 169 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AbstractLargeSquareMatrix_O
+  /* 170 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__SparseLargeSquareMatrix_O
+  /* 171 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FullLargeSquareMatrix_O
+  /* 172 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__TwisterDriver_O
+  /* 173 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__VirtualSphere_O
+  /* 174 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Rotamer_O
+  /* 175 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__StereoConfiguration_O
+  /* 176 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Topology_O
+  /* 177 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Trajectory_O
+  /* 178 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__MapOfMonomerNamesToAtomIndexers_O
+  /* 179 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RingFinder_O
+  /* 180 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Twister_O
+  /* 181 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFBaseDb_O
+  /* 182 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFStretchDb_O
+  /* 183 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFTypesDb_O
+  /* 184 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFPtorDb_O
+  /* 185 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFItorDb_O
+  /* 186 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFAngleDb_O
+  /* 187 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFNonbondDb_O
+  /* 188 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFVdwDb_O
+  /* 189 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__SuperposeEngine_O
+  /* 190 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__SuperposeSelectedAtoms_O
+  /* 191 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CalculatePosition_O
+  /* 192 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CalculatePositionUsingInternals_O
+  /* 193 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CalculatePositionRelativeToOrigin_O
+  /* 194 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__CalculatePositionAlongBond_O
+  /* 195 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFParameter_O
+  /* 196 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFStretch_O
+  /* 197 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFAngle_O
+  /* 198 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFVdw_O
+  /* 199 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFNonbond_O
+  /* 200 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFPtor_O
+  /* 201 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__FFItor_O
+  /* 202 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__SpecificContextSet_O
+  /* 203 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__ConformationExplorerEntryStage_O
+  /* 204 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__Angle_O
+  /* 205 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_adapt__QDomNode_O
+  /* 206 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__StructureComparer_O
+  /* 207 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__AtomIdToAtomMap_O
+  /* 208 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Array_O
+  /* 209 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ArrayDisplaced_O
+  /* 210 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ArrayObjects_O
+  /* 211 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Vector_O
+  /* 212 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__VectorDisplaced_O
+  /* 213 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__VectorObjects_O
+  /* 214 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__VectorObjectsWithFillPtr_O
+  /* 215 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__BitVector_O
+  /* 216 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__BitVectorWithFillPtr_O
+  /* 217 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SimpleBitVector_O
+  /* 218 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestraintList_O
+  /* 219 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__String_O
+  /* 220 */ , &&obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__Str_O
+  /* 221 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__StrWithFillPtr_O
+  /* 222 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__CoordinateArray_O
+  /* 223 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__CoordinateArrayWithHash_O
+  /* 224 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SNode_O
+  /* 225 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__BranchSNode_O
+  /* 226 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__LeafSNode_O
+  /* 227 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_asttooling__AstVisitor_O
+  /* 228 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__AttributeSet_O
+  /* 229 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Package_O
+  /* 230 */ , &&obj_deallocate_unmanaged_instance_KIND_TEMPLATED_LISPALLOC_core__WrappedPointer_O
+  /* 231 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__RegexMatch_O
+  /* 232 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__DirectoryEntry_O
+  /* 233 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_clbind__ClassRegistry_O
+  /* 234 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DebugInfo_O
+  /* 235 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DISubprogram_O
+  /* 236 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DIDescriptor_O
+  /* 237 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DIType_O
+  /* 238 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DISubroutineType_O
+  /* 239 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DICompileUnit_O
+  /* 240 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DIDerivedType_O
+  /* 241 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DIArray_O
+  /* 242 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DIBasicType_O
+  /* 243 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DICompositeType_O
+  /* 244 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DITypeArray_O
+  /* 245 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DILexicalBlock_O
+  /* 246 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DIFile_O
+  /* 247 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DIScope_O
+  /* 248 */ , &&obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__StandardObject_O
+  /* 249 */ , &&obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__Metaobject_O
+  /* 250 */ , &&obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__Specializer_O
+  /* 251 */ , &&obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__Class_O
+  /* 252 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ForwardReferencedClass_O
+  /* 253 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__CxxClass_O
+  /* 254 */ , &&obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__StdClass_O
+  /* 255 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__FuncallableStandardClass_O
+  /* 256 */ , &&obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__StandardClass_O
+  /* 257 */ , &&obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__StructureClass_O
+  /* 258 */ , &&obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__BuiltInClass_O
+  /* 259 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_clbind__ClassRep_O
+  /* 260 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__LoadTimeValues_O
+  /* 261 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_adapt__SymbolSet_O
+  /* 262 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SourcePosInfo_O
+  /* 263 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__MultiStringBuffer_O
+  /* 264 */ , &&obj_deallocate_unmanaged_instance_KIND_TEMPLATED_LISPALLOC_core__Iterator_O
+  /* 265 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__RecursiveDirectoryIterator_O
+  /* 266 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__IterateRestraints_O
+  /* 267 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__IterateMatter_O
+  /* 268 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__IterateResidues_O
+  /* 269 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__IterateBonds_O
+  /* 270 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__IterateAtoms_O
+  /* 271 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__DirectoryIterator_O
+  /* 272 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_adapt__IterateCons_O
+  /* 273 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__FileStatus_O
+  /* 274 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_adapt__StringList_O
+  /* 275 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Stream_O
+  /* 276 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__AnsiStream_O
+  /* 277 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__EchoStream_O
+  /* 278 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SynonymStream_O
+  /* 279 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__BroadcastStream_O
+  /* 280 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__StringStream_O
+  /* 281 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__StringInputStream_O
+  /* 282 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__StringOutputStream_O
+  /* 283 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__TwoWayStream_O
+  /* 284 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__FileStream_O
+  /* 285 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__IOStreamStream_O
+  /* 286 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__IOFileStream_O
+  /* 287 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ConcatenatedStream_O
+  /* 288 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Cons_O
+  /* 289 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_cffi__Pointer_O
+  /* 290 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SourceFileInfo_O
+  /* 291 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Path_O
+  /* 292 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__StructureObject_O
+  /* 293 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__InvocationHistoryFrameIterator_O
+  /* 294 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__RandomState_O
+  /* 295 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DebugLoc_O
+  /* 296 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Function_O
+  /* 297 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SingleDispatchGenericFunction_O
+  /* 298 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SpecialForm_O
+  /* 299 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Instance_O
+  /* 300 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__CompiledFunction_O
+  /* 301 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SingleDispatchEffectiveMethodFunction_O
+  /* 302 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__WeakPointer_O
+  /* 303 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Pointer_O
+  /* 304 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__VaList_dummy_O
+  /* 305 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ExternalObject_O
+  /* 306 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__TargetOptions_O
+  /* 307 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DIBuilder_O
+  /* 308 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Pass_O
+  /* 309 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ModulePass_O
+  /* 310 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ImmutablePass_O
+  /* 311 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DataLayoutPass_O
+  /* 312 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__TargetLibraryInfo_O
+  /* 313 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__FunctionPass_O
+  /* 314 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Linker_O
+  /* 315 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Module_O
+  /* 316 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__APFloat_O
+  /* 317 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__LLVMContext_O
+  /* 318 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Target_O
+  /* 319 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__APInt_O
+  /* 320 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__PassManagerBase_O
+  /* 321 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__FunctionPassManager_O
+  /* 322 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__PassManager_O
+  /* 323 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Value_O
+  /* 324 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Argument_O
+  /* 325 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__User_O
+  /* 326 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Constant_O
+  /* 327 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ConstantInt_O
+  /* 328 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ConstantFP_O
+  /* 329 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__GlobalValue_O
+  /* 330 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__GlobalVariable_O
+  /* 331 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Function_O
+  /* 332 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ConstantArray_O
+  /* 333 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ConstantStruct_O
+  /* 334 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__UndefValue_O
+  /* 335 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ConstantPointerNull_O
+  /* 336 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ConstantExpr_O
+  /* 337 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__BlockAddress_O
+  /* 338 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ConstantDataSequential_O
+  /* 339 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ConstantDataArray_O
+  /* 340 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Instruction_O
+  /* 341 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__PHINode_O
+  /* 342 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__LandingPadInst_O
+  /* 343 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__AtomicCmpXchgInst_O
+  /* 344 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__TerminatorInst_O
+  /* 345 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__UnreachableInst_O
+  /* 346 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__InvokeInst_O
+  /* 347 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__BranchInst_O
+  /* 348 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__IndirectBrInst_O
+  /* 349 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ResumeInst_O
+  /* 350 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__SwitchInst_O
+  /* 351 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ReturnInst_O
+  /* 352 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__FenceInst_O
+  /* 353 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__AtomicRMWInst_O
+  /* 354 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__StoreInst_O
+  /* 355 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__UnaryInstruction_O
+  /* 356 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__VAArgInst_O
+  /* 357 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__AllocaInst_O
+  /* 358 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__LoadInst_O
+  /* 359 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__CallInst_O
+  /* 360 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__BasicBlock_O
+  /* 361 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__IRBuilderBase_O
+  /* 362 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__IRBuilder_O
+  /* 363 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__MCSubtargetInfo_O
+  /* 364 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__TargetSubtargetInfo_O
+  /* 365 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__EngineBuilder_O
+  /* 366 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__DataLayout_O
+  /* 367 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Triple_O
+  /* 368 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__TargetMachine_O
+  /* 369 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__LLVMTargetMachine_O
+  /* 370 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Type_O
+  /* 371 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__CompositeType_O
+  /* 372 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__StructType_O
+  /* 373 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__SequentialType_O
+  /* 374 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__PointerType_O
+  /* 375 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ArrayType_O
+  /* 376 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__VectorType_O
+  /* 377 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__FunctionType_O
+  /* 378 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__IntegerType_O
+  /* 379 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Metadata_O
+  /* 380 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ValueAsMetadata_O
+  /* 381 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__MDString_O
+  /* 382 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__MDNode_O
+  /* 383 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__NamedMDNode_O
+  /* 384 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__ExecutionEngine_O
+  /* 385 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ForeignData_O
+  /* 386 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__PassManagerBuilder_O
+  /* 387 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_adapt__ObjectSet_O
+  /* 388 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__IntArray_O
+  /* 389 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__PosixTime_O
+  /* 390 */ , &&obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__Symbol_O
+  /* 391 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Null_O
+  /* 392 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_adapt__IndexedObjectBag_O
+  /* 393 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__PosixTimeDuration_O
+  /* 394 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SymbolToEnumConverter_O
+  /* 395 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ReadTable_O
+  /* 396 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Number_O
+  /* 397 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Complex_O
+  /* 398 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Real_O
+  /* 399 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Float_O
+  /* 400 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SingleFloat_dummy_O
+  /* 401 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__LongFloat_O
+  /* 402 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ShortFloat_O
+  /* 403 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__DoubleFloat_O
+  /* 404 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Rational_O
+  /* 405 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Integer_O
+  /* 406 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Bignum_O
+  /* 407 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Fixnum_dummy_O
+  /* 408 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Ratio_O
+  /* 409 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__CandoException_O
+  /* 410 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Archive_O
+  /* 411 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__LoadArchive_O
+  /* 412 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SexpLoadArchive_O
+  /* 413 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SaveArchive_O
+  /* 414 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SexpSaveArchive_O
+  /* 415 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__HashTable_O
+  /* 416 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__HashTableEq_O
+  /* 417 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__HashTableEqual_O
+  /* 418 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__HashTableEql_O
+  /* 419 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__HashTableEqualp_O
+  /* 420 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Environment_O
+  /* 421 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ActivationFrame_O
+  /* 422 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__FunctionFrame_O
+  /* 423 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__TagbodyFrame_O
+  /* 424 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ValueFrame_O
+  /* 425 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__LexicalEnvironment_O
+  /* 426 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__CompileTimeEnvironment_O
+  /* 427 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__MacroletEnvironment_O
+  /* 428 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__FunctionContainerEnvironment_O
+  /* 429 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__UnwindProtectEnvironment_O
+  /* 430 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SymbolMacroletEnvironment_O
+  /* 431 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__StackValueEnvironment_O
+  /* 432 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__BlockEnvironment_O
+  /* 433 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__CatchEnvironment_O
+  /* 434 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__RuntimeVisibleEnvironment_O
+  /* 435 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__ValueEnvironment_O
+  /* 436 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__FunctionValueEnvironment_O
+  /* 437 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__TagbodyEnvironment_O
+  /* 438 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__GlueEnvironment_O
+  /* 439 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__WeakKeyMapping_O
+  /* 440 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__LambdaListHandler_O
+  /* 441 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__InsertPoint_O
+  /* 442 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SingleDispatchMethod_O
+  /* 443 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_llvmo__Attribute_O
+  /* 444 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Character_dummy_O
+  /* 445 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SmallMultimap_O
+  /* 446 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Binder_O
+  /* 447 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Pathname_O
+  /* 448 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__LogicalPathname_O
+  /* 449 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SourceManager_O
+  /* 450 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__Record_O
+  /* 451 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SmallMap_O
+  /* 452 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__LightUserData_O
+  /* 453 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__UserData_O
+  /* 454 */ , &&obj_deallocate_unmanaged_instance_KIND_ROOTCLASSALLOC_asttooling__RegMap__RegistryMaps
+  /* 455 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__Cache
+  /* 456 */ , &&obj_deallocate_unmanaged_instance_KIND_TEMPLATED_CLASSALLOC_core__Creator
+  /* 457 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__InstanceCreator
+  /* 458 */ , &&obj_deallocate_unmanaged_instance_KIND_TEMPLATED_CLASSALLOC_clbind__ConstructorCreator
+  /* 459 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_clbind__DummyCreator
+  /* 460 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Stereoisomer_O__
+  /* 461 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyStretch_
+  /* 462 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFStretch_O__
+  /* 463 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__SingleDispatchGenericFunctionClosure
+  /* 464 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyNonbond_
+  /* 465 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__RequiredArgument_
+  /* 466 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_llvmo__CompiledClosure
+  /* 467 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Twister_O__
+  /* 468 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__AtomInfo_
+  /* 469 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Restraint_O__
+  /* 470 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__RegMap__SymbolMatcherDescriptorPair_
+  /* 471 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ConformationCollectionEntry_O__
+  /* 472 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__MonomerCoordinates_O___
+  /* 473 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFPtor_O___
+  /* 474 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Mate_O__
+  /* 475 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_asttooling__internal__OverloadedMatcherDescriptor
+  /* 476 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__TrajectoryFrame_O__
+  /* 477 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Coupling_O___
+  /* 478 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDBond_O__
+  /* 479 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__FixedNonbondRestraint_
+  /* 480 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_asttooling__internal__MatcherDescriptor__
+  /* 481 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__PdbMonomerConnectivity_O___
+  /* 482 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFVdw_O__
+  /* 483 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__AtomIndexer_O___
+  /* 484 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SingleDispatchMethod_O__
+  /* 485 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__EntityNameSetBase_O___
+  /* 486 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Package_O__
+  /* 487 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ConformationExplorerEntry_O__
+  /* 488 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Entity_O___
+  /* 489 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__MonomerCoordinates_O__
+  /* 490 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__ExceptionEntry_
+  /* 491 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__StereoisomerAtom_O__
+  /* 492 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFStretch_O___
+  /* 493 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__MacroClosure
+  /* 494 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Plug_O___
+  /* 495 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__StereoConfiguration_O__
+  /* 496 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFItor_O___
+  /* 497 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ConstitutionBond_O__
+  /* 498 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyDihedral_
+  /* 499 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__Residue_O___
+  /* 500 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Molecule_O___
+  /* 501 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ParserValue_
+  /* 502 */ , &&obj_deallocate_unmanaged_instance_KIND_GCSTRING_gctools__GCString_moveable_char_
+  /* 503 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__RingClosingMate_O__
+  /* 504 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Str_O___
+  /* 505 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__SymbolClassPair_
+  /* 506 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFNonbond_O__
+  /* 507 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__KeyEntry_
+  /* 508 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__unsigned_int__
+  /* 509 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__T_O___
+  /* 510 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ConformationExplorerEntryStage_O__
+  /* 511 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAtom_
+  /* 512 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFPtor_O__
+  /* 513 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_asttooling__internal__VariadicOperatorMatcherDescriptor
+  /* 514 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyImproperRestraint_
+  /* 515 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ConstitutionAtom_O__
+  /* 516 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__AtomPdbRec_
+  /* 517 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFItor_O__
+  /* 518 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__InstanceClosure
+  /* 519 */ , &&obj_deallocate_unmanaged_instance_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__1_
+  /* 520 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Bond_O__
+  /* 521 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__SymbolStorage_
+  /* 522 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_
+  /* 523 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__
+  /* 524 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_
+  /* 525 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__AGEdge_O__
+  /* 526 */ , &&obj_deallocate_unmanaged_instance_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__4_
+  /* 527 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__CoreExposer
+  /* 528 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixInternal_O__
+  /* 529 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ContextFrame_
+  /* 530 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathMessage_O__
+  /* 531 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___
+  /* 532 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___
+  /* 533 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_asttooling__internal__FixedArgCountMatcherDescriptor
+  /* 534 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__BeyondThresholdFixedNonbondRestraint_
+  /* 535 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__OptionalArgument_
+  /* 536 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_adapt__QDomNode_O__
+  /* 537 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAngle_
+  /* 538 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__T_O_P_
+  /* 539 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Residue_O__
+  /* 540 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Topology_O__
+  /* 541 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Rotamer_O__
+  /* 542 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__InterpretedClosure
+  /* 543 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___
+  /* 544 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_asttooling__internal__FreeFuncMatcherDescriptor
+  /* 545 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__DynamicBinding_
+  /* 546 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__VectorStepper
+  /* 547 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SimpleBitVector_O__
+  /* 548 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___
+  /* 549 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_clbind__ClassRep_O__
+  /* 550 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__AuxArgument_
+  /* 551 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__SequenceStepper__
+  /* 552 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__
+  /* 553 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAnchorRestraint_
+  /* 554 */ , &&obj_deallocate_unmanaged_instance_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__0_
+  /* 555 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_
+  /* 556 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__
+  /* 557 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_V__
+  /* 558 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___
+  /* 559 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Coupling_O__
+  /* 560 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ReportBase_O__
+  /* 561 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__BondList_O__
+  /* 562 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Symbol_O__
+  /* 563 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SourceFileInfo_O__
+  /* 564 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Atom_O__
+  /* 565 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__SmallOrderedSet_gctools__smart_ptr_chem__Atom_O___
+  /* 566 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__CacheRecord_
+  /* 567 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__ResidueOut_
+  /* 568 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Structure_Old_ListEntry_O__
+  /* 569 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___
+  /* 570 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Cons_O__
+  /* 571 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_asttooling__DerivableFrontendActionFactory
+  /* 572 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_asttooling__DerivableMatchCallback
+  /* 573 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___
+  /* 574 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___
+  /* 575 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_asttooling__DerivableASTFrontendAction
+  /* 576 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTypeRule_O__
+  /* 577 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___
+  /* 578 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDFragment_O__
+  /* 579 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__Message_
+  /* 580 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ComplexRestraint_O__
+  /* 581 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matter_O__
+  /* 582 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___
+  /* 583 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__
+  /* 584 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___
+  /* 585 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_asttooling__DerivableSyntaxOnlyAction
+  /* 586 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneMonomer_O__
+  /* 587 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monomer_O__
+  /* 588 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___
+  /* 589 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixEntry_O__
+  /* 590 */ , &&obj_deallocate_unmanaged_instance_KIND_TEMPLATED_CLASSALLOC_core__BuiltinClosure
+  /* 591 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFAngle_O__
+  /* 592 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Molecule_O__
+  /* 593 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemInfo_O__
+  /* 594 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___
+  /* 595 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__ConsStepper
+};
+#endif // defined(GC_OBJ_DEALLOCATOR_TABLE)
 #if defined(GC_GLOBALS)
  SMART_PTR_FIX(chem::StereoConfiguration_O::___staticClass);
  SMART_PTR_FIX(chem::AntechamberRoot_O::___staticClassSymbol);
@@ -33869,2518 +37663,2517 @@ static void* OBJ_FINALIZE_table[] = { NULL
  SMART_PTR_FIX(core::Character_dummy_O::___staticClassSymbol);
 #endif // defined(GC_GLOBALS)
 #if defined(GC_GLOBAL_SYMBOLS)
- SMART_PTR_FIX(chem::_sym_FFItorDb_O);
- SMART_PTR_FIX(core::_sym_SymbolMacroletEnvironment_O);
- SMART_PTR_FIX(sockets::_sym__PLUS_NETDB_INTERNAL_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_constant);
- SMART_PTR_FIX(comp::_sym_aSingleCompilerSymbol);
- SMART_PTR_FIX(cl::_sym_arrayp);
- SMART_PTR_FIX(llvmo::_sym_FCMP_ULT);
- SMART_PTR_FIX(chemkw::_sym_XA);
- SMART_PTR_FIX(core::_sym_allocateRawClass);
- SMART_PTR_FIX(cl::_sym_typep);
- SMART_PTR_FIX(ext::_sym__PLUS_processStandardOutput_PLUS_);
- SMART_PTR_FIX(kw::_sym_fillPointer);
- SMART_PTR_FIX(kw::_sym_invert);
- SMART_PTR_FIX(core::_sym_find_single_dispatch_generic_function);
- SMART_PTR_FIX(kw::_sym_ph5);
- SMART_PTR_FIX(kw::_sym_unbound);
- SMART_PTR_FIX(chem::_sym_RepresentedEntityNameSet_O);
- SMART_PTR_FIX(kw::_sym_order);
- SMART_PTR_FIX(core::_sym_macroexpand_default);
- SMART_PTR_FIX(chem::_sym_RestraintAngle_O);
- SMART_PTR_FIX(llvmo::_sym_PassManagerBase_O);
- SMART_PTR_FIX(kw::_sym_rtld_next);
- SMART_PTR_FIX(chem::_sym_noPreconditioner);
- SMART_PTR_FIX(kw::_sym_chg);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_KalimbaSubArch_v4);
- SMART_PTR_FIX(core::_sym_singleDispatchWrongNumberArgumentsError);
- SMART_PTR_FIX(core::_sym_STARihsCurrentSTAR);
- SMART_PTR_FIX(llvmo::_sym_LLVMContext_O);
- SMART_PTR_FIX(cl::_sym_deftype);
- SMART_PTR_FIX(kw::_sym_contents);
- SMART_PTR_FIX(serveEvent::_sym_ll_fd_zero);
- SMART_PTR_FIX(sockets::_sym__PLUS_EPERM_PLUS_);
- SMART_PTR_FIX(chem::_sym_StereoisomerAtoms_O);
- SMART_PTR_FIX(chem::_sym_S);
- SMART_PTR_FIX(core::_sym_theClibBacktraceFunctionSymbol);
- SMART_PTR_FIX(core::_sym_renameAndDelete);
- SMART_PTR_FIX(sockets::_sym_ff_socket);
- SMART_PTR_FIX(cl::_sym_conjugate);
- SMART_PTR_FIX(core::_sym_backquote_frob);
- SMART_PTR_FIX(llvmo::_sym_APFloat_O);
- SMART_PTR_FIX(core::_sym_rem_record_field);
- SMART_PTR_FIX(kw::_sym_type3);
- SMART_PTR_FIX(core::_sym_lookupLoadTimeSymbol);
- SMART_PTR_FIX(cffi::_sym_uint16);
- SMART_PTR_FIX(kw::_sym_arguments);
- SMART_PTR_FIX(llvmo::_sym_DIDerivedType_O);
- SMART_PTR_FIX(core::_sym_structureSet);
- SMART_PTR_FIX(cl::_sym_listAllPackages);
- SMART_PTR_FIX(chem::_sym_MonomerPack_O);
- SMART_PTR_FIX(llvmo::_sym_moduleFlagAppend);
- SMART_PTR_FIX(sockets::_sym__PLUS_IPPROTO_TCP_PLUS_);
- SMART_PTR_FIX(cl::_sym_STARprint_radixSTAR);
- SMART_PTR_FIX(core::_sym_STARdebugInterpretedFunctionsSTAR);
- SMART_PTR_FIX(cl::_sym_getInternalRunTime);
- SMART_PTR_FIX(cl::_sym_fdefinition);
- SMART_PTR_FIX(cl::_sym_pathnameDirectory);
- SMART_PTR_FIX(core::_sym_WeakPointer_O);
- SMART_PTR_FIX(chem::_sym_PdbMonomerDatabase_O);
- SMART_PTR_FIX(cl::_sym_undefinedFunction);
- SMART_PTR_FIX(kw::_sym_Angles);
- SMART_PTR_FIX(llvmo::_sym_STARaccumulatedLlvmFinalizationTimeSTAR);
- SMART_PTR_FIX(llvmo::_sym_ValueAsMetadata_O);
- SMART_PTR_FIX(units::_sym_moles);
- SMART_PTR_FIX(llvmo::_sym_ArchType_ppc64le);
- SMART_PTR_FIX(chemkw::_sym_6);
- SMART_PTR_FIX(cl::_sym_standard_char);
- SMART_PTR_FIX(units::_sym_daltons);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_catch_block);
- SMART_PTR_FIX(kw::_sym_R);
- SMART_PTR_FIX(llvmo::_sym_OSType_Minix);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_entry_point);
- SMART_PTR_FIX(chem::_sym_LinearImproperRestraintError);
- SMART_PTR_FIX(cl::_sym_setMacroCharacter);
- SMART_PTR_FIX(chem::_sym_AtomReferenceBase_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_union_type);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_GNU_template_parameter_pack);
- SMART_PTR_FIX(kw::_sym_vdwScaleBufferB);
- SMART_PTR_FIX(kw::_sym_type4);
- SMART_PTR_FIX(units::_sym_Unit_O);
- SMART_PTR_FIX(llvmo::_sym_FCMP_OGE);
- SMART_PTR_FIX(cl::_sym_elt);
- SMART_PTR_FIX(core::_sym_STARcurrent_working_directorySTAR);
- SMART_PTR_FIX(kw::_sym_attachedAtoms);
- SMART_PTR_FIX(llvmo::_sym_User_O);
- SMART_PTR_FIX(llvmo::_sym_DISubroutineType_O);
- SMART_PTR_FIX(chem::_sym_bonds);
- SMART_PTR_FIX(chem::_sym_RestraintList_O);
- SMART_PTR_FIX(llvmo::_sym_NotThreadLocal);
- SMART_PTR_FIX(cl::_sym_synonymStreamSymbol);
- SMART_PTR_FIX(llvmo::_sym_WeakAnyLinkage);
- SMART_PTR_FIX(cl::_sym_mismatch);
- SMART_PTR_FIX(chemkw::_sym_2);
- SMART_PTR_FIX(chem::_sym_STAREleDielectricEnumConverterSTAR);
- SMART_PTR_FIX(cl::_sym_unboundSlot);
- SMART_PTR_FIX(core::_sym_circle_subst);
- SMART_PTR_FIX(kw::_sym_comment);
- SMART_PTR_FIX(cl::_sym_floatPrecision);
- SMART_PTR_FIX(llvmo::_sym__PLUS_globalBootFunctionsNameSize_PLUS_);
- SMART_PTR_FIX(core::_sym_BranchSNode_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_reference_type);
- SMART_PTR_FIX(cl::_sym_package_error);
- SMART_PTR_FIX(core::_sym_backquote_attach_append);
- SMART_PTR_FIX(llvmo::_sym_ImmutablePass_O);
- SMART_PTR_FIX(sockets::_sym__PLUS_ENOBUFS_PLUS_);
- SMART_PTR_FIX(cffi::_sym_unsigned_int);
- SMART_PTR_FIX(cl::_sym_use_package);
- SMART_PTR_FIX(chem::_sym_residues);
- SMART_PTR_FIX(cl::_sym_boole_set);
- SMART_PTR_FIX(cl::_sym_Ratio_O);
- SMART_PTR_FIX(kw::_sym_ignoreInitImage);
- SMART_PTR_FIX(cl::_sym_extended_char);
- SMART_PTR_FIX(core::_sym_loadSource);
- SMART_PTR_FIX(chem::_sym_EnergyImproperRestraint_O);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_GNUEABIHF);
- SMART_PTR_FIX(llvmo::_sym_FPExt);
- SMART_PTR_FIX(gctools::_sym_maxBootstrapKinds);
- SMART_PTR_FIX(cl::_sym_STARprint_levelSTAR);
- SMART_PTR_FIX(chem::_sym_name);
- SMART_PTR_FIX(cl::_sym_and);
- SMART_PTR_FIX(cl::_sym_functionp);
- SMART_PTR_FIX(core::_sym_VectorDisplaced_O);
- SMART_PTR_FIX(cl::_sym_array_rank_limit);
- SMART_PTR_FIX(chem::_sym_AtomIdToAtomMap_O);
- SMART_PTR_FIX(llvmo::_sym_Argument_O);
- SMART_PTR_FIX(clos::_sym_setFuncallableInstanceFunction);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_restrict_type);
- SMART_PTR_FIX(cl::_sym_char_name);
- SMART_PTR_FIX(chem::_sym_FrameRecognizer_O);
- SMART_PTR_FIX(cl::_sym_simple_vector_p);
- SMART_PTR_FIX(core::_sym_signalSimpleError);
- SMART_PTR_FIX(kw::_sym_nonbonds);
- SMART_PTR_FIX(kw::_sym_position);
- SMART_PTR_FIX(core::_sym_UnwindProtectEnvironment_O);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v7s);
- SMART_PTR_FIX(llvmo::_sym_VendorType_UnknownVendor);
- SMART_PTR_FIX(cl::_sym_leastNegativeNormalizedDoubleFloat);
- SMART_PTR_FIX(core::_sym_inheritDefaultAllocator);
- SMART_PTR_FIX(llvmo::_sym_Triple_O);
- SMART_PTR_FIX(units::_sym_kelvin);
- SMART_PTR_FIX(units::_sym_micrometers);
- SMART_PTR_FIX(sockets::_sym__PLUS_af_inet_PLUS_);
- SMART_PTR_FIX(asttooling::_sym_VisitDecl);
- SMART_PTR_FIX(core::_sym_CatchEnvironment_O);
- SMART_PTR_FIX(core::_sym_fileColumn);
- SMART_PTR_FIX(core::_sym_singleDispatchTooManyArgumentsError);
- SMART_PTR_FIX(chem::_sym_FFNonbond_O);
- SMART_PTR_FIX(cl::_sym_schar);
- SMART_PTR_FIX(chemkw::_sym_dashedDoubleBond);
- SMART_PTR_FIX(llvmo::_sym_ICMP_ULE);
- SMART_PTR_FIX(units::_sym_seconds);
- SMART_PTR_FIX(cl::_sym_pprint_dispatch);
- SMART_PTR_FIX(cl::_sym_integer_decode_float);
- SMART_PTR_FIX(chem::_sym_Coupling_O);
- SMART_PTR_FIX(chem::_sym_ConstitutionVirtualAtom_O);
- SMART_PTR_FIX(llvmo::_sym_ICMP_SLE);
- SMART_PTR_FIX(cl::_sym_name_char);
- SMART_PTR_FIX(kw::_sym_chemdraw_color);
- SMART_PTR_FIX(chem::_sym_molecules);
- SMART_PTR_FIX(llvmo::_sym_OSType_NaCl);
+ SMART_PTR_FIX(kw::_sym_supplied);
+ SMART_PTR_FIX(sockets::_sym__PLUS_HOST_NOT_FOUND_PLUS_);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_namelist);
+ SMART_PTR_FIX(kw::_sym_atomicProperty);
+ SMART_PTR_FIX(cl::_sym_char_int);
  SMART_PTR_FIX(llvmo::_sym_DW_TAG_dwarf_procedure);
- SMART_PTR_FIX(kw::_sym_Nonbonds);
- SMART_PTR_FIX(units::_sym_grams);
- SMART_PTR_FIX(core::_sym_Archive_O);
- SMART_PTR_FIX(core::_sym_copy_subarray);
- SMART_PTR_FIX(kw::_sym_eval);
- SMART_PTR_FIX(llvmo::_sym_STARBinaryOpsSTAR);
- SMART_PTR_FIX(llvmo::_sym_STARInstructionCastOpsSTAR);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_Cygnus);
- SMART_PTR_FIX(llvmo::_sym_ArchType_tce);
- SMART_PTR_FIX(llvmo::_sym_GlobalValue_O);
- SMART_PTR_FIX(llvmo::_sym_RelocModel_DynamicNoPIC);
- SMART_PTR_FIX(cl::_sym_terpri);
- SMART_PTR_FIX(kw::_sym_device);
- SMART_PTR_FIX(core::_sym_sharp_o);
- SMART_PTR_FIX(kw::_sym_version);
- SMART_PTR_FIX(chemkw::_sym_idle);
- SMART_PTR_FIX(llvmo::_sym_CodeModel_Large);
- SMART_PTR_FIX(chem::_sym_PdbMonomerConnectivity_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_namelist_item);
- SMART_PTR_FIX(cl::_sym_prin1);
- SMART_PTR_FIX(llvmo::_sym_AShr);
- SMART_PTR_FIX(cl::_sym_documentation);
- SMART_PTR_FIX(kw::_sym_ar3);
- SMART_PTR_FIX(cl::_sym_char_GE_);
- SMART_PTR_FIX(llvmo::_sym_StoreInst_O);
- SMART_PTR_FIX(gctools::_sym_garbageCollect);
- SMART_PTR_FIX(core::_sym_STARprint_source_code_consSTAR);
- SMART_PTR_FIX(kw::_sym_deleted);
- SMART_PTR_FIX(cl::_sym_every);
- SMART_PTR_FIX(chem::_sym_Twister_O);
- SMART_PTR_FIX(core::_sym_callWithVariableBound);
- SMART_PTR_FIX(cl::_sym_BitVectorWithFillPtr_O);
- SMART_PTR_FIX(llvmo::_sym_CodeGenOpt_Aggressive);
- SMART_PTR_FIX(core::_sym_ForwardReferencedClass_O);
- SMART_PTR_FIX(sockets::_sym_ll_getSockoptBool);
- SMART_PTR_FIX(cl::_sym_open_stream_p);
- SMART_PTR_FIX(core::_sym_bq_simplify);
- SMART_PTR_FIX(cl::_sym_STARreadDefaultFloatFormatSTAR);
- SMART_PTR_FIX(cl::_sym_storageCondition);
- SMART_PTR_FIX(core::_sym_makeInvocationHistoryFrameIterator);
- SMART_PTR_FIX(sockets::_sym_socketSendNoAddress);
- SMART_PTR_FIX(kw::_sym_vdw);
- SMART_PTR_FIX(core::_sym_symbolMacroletLambda);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_inlined_subroutine);
- SMART_PTR_FIX(gray::_sym_stream_fresh_line);
- SMART_PTR_FIX(kw::_sym_relative);
- SMART_PTR_FIX(kw::_sym_bond);
- SMART_PTR_FIX(units::_sym_microseconds);
- SMART_PTR_FIX(chem::_sym_InteractionError);
- SMART_PTR_FIX(chem::_sym_ComplexRestraint_O);
- SMART_PTR_FIX(llvmo::_sym_ArchType_arm);
- SMART_PTR_FIX(chem::_sym_RootMatchNode_O);
- SMART_PTR_FIX(cl::_sym_callNextMethod);
- SMART_PTR_FIX(cl::_sym_find_restart);
- SMART_PTR_FIX(llvmo::_sym_CodeModel_Kernel);
- SMART_PTR_FIX(core::_sym_create);
- SMART_PTR_FIX(ext::_sym_aSingleExtSymbol);
- SMART_PTR_FIX(core::_sym_atanh);
+ SMART_PTR_FIX(llvmo::_sym_UnreachableInst_O);
+ SMART_PTR_FIX(kw::_sym_pbci);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_partial_unit);
+ SMART_PTR_FIX(kw::_sym_cclasp);
+ SMART_PTR_FIX(llvmo::_sym_STARnumberOfLlvmFinalizationsSTAR);
+ SMART_PTR_FIX(core::_sym_backquote_attach_conses);
+ SMART_PTR_FIX(llvmo::_sym_FPTrunc);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_condition);
+ SMART_PTR_FIX(kw::_sym_type_rules);
+ SMART_PTR_FIX(cl::_sym_filePosition);
  SMART_PTR_FIX(cl::_sym_symbol);
- SMART_PTR_FIX(kw::_sym_passThrough);
- SMART_PTR_FIX(cl::_sym_sin);
- SMART_PTR_FIX(kw::_sym_NetCharge);
- SMART_PTR_FIX(cl::_sym_probe_file);
- SMART_PTR_FIX(chem::_sym_CDNode_O);
- SMART_PTR_FIX(units::_sym_millimeters);
- SMART_PTR_FIX(core::_sym_implementationClass);
- SMART_PTR_FIX(ext::_sym_lambda_block);
- SMART_PTR_FIX(llvmo::_sym_DLLExportLinkage);
- SMART_PTR_FIX(chem::_sym_PdbWriter_O);
- SMART_PTR_FIX(cl::_sym_defsetf);
- SMART_PTR_FIX(cl::_sym_STARterminal_ioSTAR);
- SMART_PTR_FIX(cl::_sym_rest);
- SMART_PTR_FIX(cl::_sym_special);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v5te);
- SMART_PTR_FIX(cl::_sym_arithmeticError);
- SMART_PTR_FIX(cl::_sym_STARprint_circleSTAR);
- SMART_PTR_FIX(cffi::_sym_int16);
- SMART_PTR_FIX(cl::_sym_leastNegativeSingleFloat);
- SMART_PTR_FIX(cl::_sym_slot_value);
- SMART_PTR_FIX(chem::_sym_MonomerContext_O);
- SMART_PTR_FIX(cl::_sym_max);
- SMART_PTR_FIX(chemkw::_sym_aromaticBond);
- SMART_PTR_FIX(cl::_sym_fill_pointer);
- SMART_PTR_FIX(cl::_sym_progn);
- SMART_PTR_FIX(core::_sym_STARsharp_equal_alistSTAR);
- SMART_PTR_FIX(core::_sym_setfSubseq);
- SMART_PTR_FIX(llvmo::_sym_ArrayType_O);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_EABIHF);
- SMART_PTR_FIX(core::_sym_getline);
- SMART_PTR_FIX(cl::_sym_string_not_greaterp);
- SMART_PTR_FIX(cl::_sym_STARprint_escapeSTAR);
- SMART_PTR_FIX(core::_sym_selectPackage);
- SMART_PTR_FIX(core::_sym_STARconsing_dotSTAR);
- SMART_PTR_FIX(core::_sym_dispatchTable);
- SMART_PTR_FIX(cl::_sym_makeStringOutputStream);
- SMART_PTR_FIX(kw::_sym_goldenrod);
- SMART_PTR_FIX(sockets::_sym_ll_socketAccept_localSocket);
- SMART_PTR_FIX(llvmo::_sym_FPToSI);
- SMART_PTR_FIX(kw::_sym_eof);
- SMART_PTR_FIX(core::_sym_SexpLoadArchive_O);
- SMART_PTR_FIX(clbind::_sym_ClassRep_O);
- SMART_PTR_FIX(cffi::_sym_PERCENTsetf_mem_ref);
- SMART_PTR_FIX(chem::_sym_StatusTracker_O);
- SMART_PTR_FIX(core::_sym_backquote_maptree);
- SMART_PTR_FIX(cl::_sym_STARload_printSTAR);
- SMART_PTR_FIX(cl::_sym_gentemp);
- SMART_PTR_FIX(units::_sym_kiloJoule);
- SMART_PTR_FIX(cl::_sym_method);
- SMART_PTR_FIX(kw::_sym_target_os_darwin);
- SMART_PTR_FIX(core::_sym__PLUS_numberOfFixedArguments_PLUS_);
- SMART_PTR_FIX(gctools::_sym_ramp);
- SMART_PTR_FIX(cl::_sym_base_char);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_template_alias);
- SMART_PTR_FIX(chem::_sym_FullLargeSquareMatrix_O);
- SMART_PTR_FIX(clos::_sym_class_precedence_list);
- SMART_PTR_FIX(sockets::_sym_ll_getNameServiceErrorMessage);
- SMART_PTR_FIX(ext::_sym_system);
- SMART_PTR_FIX(cffi::_sym_unsigned_long);
- SMART_PTR_FIX(kw::_sym_ph4);
- SMART_PTR_FIX(core::_sym_printUnreadableObjectFunction);
- SMART_PTR_FIX(cl::_sym_mostPositiveLongFloat);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_enumerator);
- SMART_PTR_FIX(cl::_sym_pathnameDevice);
- SMART_PTR_FIX(llvmo::_sym_ArchType_sparc);
- SMART_PTR_FIX(llvmo::_sym_makeAPInt);
- SMART_PTR_FIX(chem::_sym_PdbReader_O);
- SMART_PTR_FIX(cl::_sym_generic_function);
- SMART_PTR_FIX(chemkw::_sym__dashedSingleBond);
- SMART_PTR_FIX(chem::_sym_FFVdw_O);
- SMART_PTR_FIX(cffi::_sym_Pointer_O);
- SMART_PTR_FIX(chemkw::_sym__singleBond);
- SMART_PTR_FIX(cl::_sym_BuiltInClass_O);
- SMART_PTR_FIX(cl::_sym_Real_O);
+ SMART_PTR_FIX(cl::_sym_String_O);
+ SMART_PTR_FIX(chem::_sym_VirtualAtom_O);
+ SMART_PTR_FIX(cffi::_sym_size);
+ SMART_PTR_FIX(cffi::_sym_unsigned_long_long);
+ SMART_PTR_FIX(sockets::_sym_ll_socketConnect_inetSocket);
+ SMART_PTR_FIX(cl::_sym_load);
+ SMART_PTR_FIX(cl::_sym_STARbreakOnSignalsSTAR);
+ SMART_PTR_FIX(cl::_sym_unread_char);
+ SMART_PTR_FIX(chem::_sym_PdbMonomerDatabase_O);
+ SMART_PTR_FIX(kw::_sym_absolute);
+ SMART_PTR_FIX(llvmo::_sym_VendorType_BGP);
+ SMART_PTR_FIX(sockets::_sym__PLUS_ETIMEDOUT_PLUS_);
+ SMART_PTR_FIX(core::_sym_LoadArchive_O);
+ SMART_PTR_FIX(core::_sym_SmallMap_O);
+ SMART_PTR_FIX(cl::_sym_schar);
+ SMART_PTR_FIX(chemkw::_sym__virtualBond);
+ SMART_PTR_FIX(geom::_sym_OVector2_O);
+ SMART_PTR_FIX(cl::_sym_open_stream_p);
  SMART_PTR_FIX(core::_sym_localGo);
- SMART_PTR_FIX(core::_sym_slot);
- SMART_PTR_FIX(cl::_sym_symbolp);
- SMART_PTR_FIX(chem::_sym_UnknownConfiguration);
- SMART_PTR_FIX(llvmo::_sym_ArchType_spir64);
- SMART_PTR_FIX(core::_sym_path);
- SMART_PTR_FIX(cl::_sym_format);
- SMART_PTR_FIX(cl::_sym_STARprint_pprint_dispatchSTAR);
- SMART_PTR_FIX(kw::_sym_configuration);
+ SMART_PTR_FIX(llvmo::_sym_DLLImportLinkage);
+ SMART_PTR_FIX(units::_sym_NamedUnit_O);
+ SMART_PTR_FIX(kw::_sym_builtResidue);
+ SMART_PTR_FIX(cl::_sym_read_line);
+ SMART_PTR_FIX(core::_sym_isTopLevelScript);
+ SMART_PTR_FIX(cl::_sym_Str_O);
+ SMART_PTR_FIX(kw::_sym_next);
+ SMART_PTR_FIX(sockets::_sym_ll_get_name_service_h_errno);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_kalimba);
+ SMART_PTR_FIX(kw::_sym_crlf);
+ SMART_PTR_FIX(cl::_sym_documentation);
+ SMART_PTR_FIX(kw::_sym_and);
+ SMART_PTR_FIX(cl::_sym_listAllPackages);
+ SMART_PTR_FIX(llvmo::_sym_TargetMachine_O);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_aarch64_be);
+ SMART_PTR_FIX(core::_sym_StringInputStream_O);
+ SMART_PTR_FIX(kw::_sym_x);
+ SMART_PTR_FIX(core::_sym_unrecognizedKeywordArgumentError);
+ SMART_PTR_FIX(cl::_sym_vectorPush);
+ SMART_PTR_FIX(core::_sym_asinh);
+ SMART_PTR_FIX(cffi::_sym_int16);
+ SMART_PTR_FIX(cl::_sym_STARprint_radixSTAR);
+ SMART_PTR_FIX(llvmo::_sym_EnvironmentType_EABIHF);
+ SMART_PTR_FIX(cl::_sym_fdefinition);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_const_type);
+ SMART_PTR_FIX(core::_sym_macroexpand_default);
+ SMART_PTR_FIX(chem::_sym_Oligomer_O);
+ SMART_PTR_FIX(chem::_sym_RestraintDihedral_O);
+ SMART_PTR_FIX(llvmo::_sym_DebugInfo_O);
+ SMART_PTR_FIX(units::_sym_femtoseconds);
+ SMART_PTR_FIX(cl::_sym_leastNegativeNormalizedSingleFloat);
+ SMART_PTR_FIX(cl::_sym_StringStream_O);
+ SMART_PTR_FIX(llvmo::_sym_EnvironmentType_EABI);
+ SMART_PTR_FIX(kw::_sym_rtld_default);
+ SMART_PTR_FIX(chem::_sym_PdbReader_O);
+ SMART_PTR_FIX(llvmo::_sym_CodeGenFileType_AssemblyFile);
+ SMART_PTR_FIX(core::_sym_walkToFindSourceInfo);
+ SMART_PTR_FIX(chem::_sym_InteractionError);
+ SMART_PTR_FIX(core::_sym_backquote_completely_process);
+ SMART_PTR_FIX(core::_sym__PLUS_activationFrameNil_PLUS_);
+ SMART_PTR_FIX(llvmo::_sym_EnvironmentType_CODE16);
+ SMART_PTR_FIX(llvmo::_sym_FunctionPass_O);
+ SMART_PTR_FIX(cffi::_sym_int);
+ SMART_PTR_FIX(llvmo::_sym_AppendingLinkage);
+ SMART_PTR_FIX(cl::_sym_synonymStreamSymbol);
+ SMART_PTR_FIX(units::_sym_milliseconds);
+ SMART_PTR_FIX(cl::_sym_floatPrecision);
+ SMART_PTR_FIX(cl::_sym_no_applicable_method);
+ SMART_PTR_FIX(llvmo::_sym_PHINode_O);
+ SMART_PTR_FIX(chem::_sym_TrajectoryFrame_O);
+ SMART_PTR_FIX(cffi::_sym_ssize);
+ SMART_PTR_FIX(chemkw::_sym_aromaticBond);
+ SMART_PTR_FIX(cl::_sym_speed);
+ SMART_PTR_FIX(sockets::_sym_ll_strerror_errno);
+ SMART_PTR_FIX(chem::_sym_ChemInfoNode_O);
+ SMART_PTR_FIX(core::_sym_sorted);
+ SMART_PTR_FIX(kw::_sym_load_toplevel);
+ SMART_PTR_FIX(kw::_sym_end);
+ SMART_PTR_FIX(core::_sym_HashTableEql_O);
+ SMART_PTR_FIX(kw::_sym_monomerAliases);
+ SMART_PTR_FIX(llvmo::_sym_WeakODRLinkage);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_mipsel);
+ SMART_PTR_FIX(kw::_sym_fcadj);
+ SMART_PTR_FIX(kw::_sym_ion);
+ SMART_PTR_FIX(cleavirEnv::_sym_macroFunction);
+ SMART_PTR_FIX(sockets::_sym__PLUS_EADDRINUSE_PLUS_);
+ SMART_PTR_FIX(sockets::_sym__PLUS_af_inet_PLUS_);
+ SMART_PTR_FIX(llvmo::_sym_SwitchInst_O);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_compile_unit);
+ SMART_PTR_FIX(cl::_sym_some);
+ SMART_PTR_FIX(llvmo::_sym_GeneralDynamicTLSModel);
+ SMART_PTR_FIX(llvmo::_sym_FCMP_OGT);
+ SMART_PTR_FIX(core::_sym_dynamicGo);
+ SMART_PTR_FIX(chem::_sym_AntechamberFocusAtomMatch_O);
+ SMART_PTR_FIX(cl::_sym_integer);
+ SMART_PTR_FIX(kw::_sym_bl);
+ SMART_PTR_FIX(cl::_sym_nbutlast);
+ SMART_PTR_FIX(chem::_sym_ProperTorsion_O);
+ SMART_PTR_FIX(llvmo::_sym_AttributeNoImplicitFloat);
+ SMART_PTR_FIX(sockets::_sym_ll_setSockoptInt);
+ SMART_PTR_FIX(chem::_sym__PLUS_preconditionerTypeConverter_PLUS_);
+ SMART_PTR_FIX(cl::_sym_lognot);
+ SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v8);
+ SMART_PTR_FIX(llvmo::_sym_Instruction_O);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_variable);
+ SMART_PTR_FIX(chem::_sym_ChemInfoMatch_O);
+ SMART_PTR_FIX(kw::_sym_comment);
+ SMART_PTR_FIX(cl::_sym_string_lessp);
+ SMART_PTR_FIX(llvmo::_sym_OSType_FreeBSD);
+ SMART_PTR_FIX(kw::_sym_datum);
+ SMART_PTR_FIX(gray::_sym_stream_finish_output);
+ SMART_PTR_FIX(chem::_sym__PLUS_atomFlagSymbolConverter_PLUS_);
+ SMART_PTR_FIX(llvmo::_sym_CodeGenFileType);
+ SMART_PTR_FIX(chem::_sym_RingCoupling_O);
+ SMART_PTR_FIX(llvmo::_sym_ICMP_ULT);
+ SMART_PTR_FIX(llvmo::_sym_IRBuilderBase_O);
+ SMART_PTR_FIX(cl::_sym_pprint_dispatch);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_variant);
+ SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion4);
+ SMART_PTR_FIX(cl::_sym_fill_pointer);
+ SMART_PTR_FIX(core::_sym_defaultPathnameDefaults);
+ SMART_PTR_FIX(chem::_sym_MonomerCoordinates_O);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_arm);
+ SMART_PTR_FIX(chem::_sym_IterateBonds_O);
+ SMART_PTR_FIX(core::_sym_member1);
+ SMART_PTR_FIX(llvmo::_sym_ConstantExpr_O);
+ SMART_PTR_FIX(kw::_sym_cr);
+ SMART_PTR_FIX(core::_sym_record_cons);
+ SMART_PTR_FIX(cl::_sym_char_GT_);
+ SMART_PTR_FIX(sockets::_sym_ll_strerror);
+ SMART_PTR_FIX(cffi::_sym_unsigned_char);
+ SMART_PTR_FIX(llvmo::_sym_Acquire);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_packed_type);
+ SMART_PTR_FIX(kw::_sym_black);
+ SMART_PTR_FIX(cl::_sym_specialOperatorP);
+ SMART_PTR_FIX(core::_sym_STARdebugMacroexpandSTAR);
+ SMART_PTR_FIX(chem::_sym_ForceMatchReport_O);
+ SMART_PTR_FIX(cl::_sym_flet);
+ SMART_PTR_FIX(core::_sym_FunctionFrame_O);
+ SMART_PTR_FIX(chem::_sym_Mate_O);
+ SMART_PTR_FIX(core::_sym_reader_feature_p);
+ SMART_PTR_FIX(cl::_sym_nthcdr);
  SMART_PTR_FIX(kw::_sym_z);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_interface_type);
- SMART_PTR_FIX(chem::_sym_AntechamberRoot_O);
- SMART_PTR_FIX(cl::_sym_simple_string_p);
- SMART_PTR_FIX(llvmo::_sym_AttributeAddressSafety);
- SMART_PTR_FIX(core::_sym_gdbInspect);
- SMART_PTR_FIX(chem::_sym__PLUS_elementToSymbolConverter_PLUS_);
- SMART_PTR_FIX(kw::_sym_terminating_macro_character);
+ SMART_PTR_FIX(core::_sym_STARcommandLineLoadSTAR);
+ SMART_PTR_FIX(sockets::_sym__PLUS_af_local_PLUS_);
+ SMART_PTR_FIX(cl::_sym_base_char);
+ SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion8);
+ SMART_PTR_FIX(chemkw::_sym_R);
+ SMART_PTR_FIX(core::_sym__PLUS_io_syntax_progv_list_PLUS_);
+ SMART_PTR_FIX(core::_sym_ihsPrev);
+ SMART_PTR_FIX(llvmo::_sym_DIType_O);
+ SMART_PTR_FIX(core::_sym_process_macro_lambda_list);
+ SMART_PTR_FIX(llvmo::_sym_Type_O);
+ SMART_PTR_FIX(kw::_sym_downcase);
+ SMART_PTR_FIX(cl::_sym_mapcan);
+ SMART_PTR_FIX(core::_sym_loadCando);
+ SMART_PTR_FIX(cl::_sym_leastPositiveNormalizedLongFloat);
+ SMART_PTR_FIX(core::_sym_theClibBacktraceFunctionSymbol);
+ SMART_PTR_FIX(chem::_sym_ConformationExplorerEntryStage_O);
+ SMART_PTR_FIX(cl::_sym_Ratio_O);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_xcore);
+ SMART_PTR_FIX(core::_sym_find_single_dispatch_generic_function);
+ SMART_PTR_FIX(llvmo::_sym_DataLayoutPass_O);
+ SMART_PTR_FIX(cl::_sym_every);
+ SMART_PTR_FIX(core::_sym_environmentList);
+ SMART_PTR_FIX(kw::_sym_matches);
+ SMART_PTR_FIX(serveEvent::_sym__PLUS_EINTR_PLUS_);
+ SMART_PTR_FIX(cl::_sym_dotimes);
+ SMART_PTR_FIX(asttooling::_sym_VisitStmt);
+ SMART_PTR_FIX(llvmo::_sym_CompositeType_O);
+ SMART_PTR_FIX(core::_sym_structureSet);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_UnknownArch);
+ SMART_PTR_FIX(core::_sym_PosixTime_O);
+ SMART_PTR_FIX(llvmo::_sym_CodeModel_Default);
+ SMART_PTR_FIX(core::_sym_sharp_vertical_bar);
+ SMART_PTR_FIX(chem::_sym_MinimizerStuckError);
+ SMART_PTR_FIX(cl::_sym_step);
+ SMART_PTR_FIX(kw::_sym_brcl);
+ SMART_PTR_FIX(core::_sym_dlopen);
+ SMART_PTR_FIX(llvmo::_sym_InvokeInst_O);
+ SMART_PTR_FIX(core::_sym__SHARP__BANG_);
+ SMART_PTR_FIX(cl::_sym_realp);
+ SMART_PTR_FIX(chem::_sym_Twister_O);
+ SMART_PTR_FIX(units::_sym_picometers);
+ SMART_PTR_FIX(cl::_sym_STARprint_gensymSTAR);
+ SMART_PTR_FIX(cl::_sym_constantp);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_module);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_aarch64);
+ SMART_PTR_FIX(core::_sym_instanceSig);
+ SMART_PTR_FIX(core::_sym_STARprintStructureSTAR);
+ SMART_PTR_FIX(cffi::_sym_unsigned_long);
+ SMART_PTR_FIX(cffi::_sym_long_long);
+ SMART_PTR_FIX(core::_sym_classifyLetVariablesAndDeclares);
+ SMART_PTR_FIX(core::_sym_lambda_with_handler);
+ SMART_PTR_FIX(kw::_sym_io);
+ SMART_PTR_FIX(llvmo::_sym_FPToUI);
+ SMART_PTR_FIX(chem::_sym_FFBaseDb_O);
+ SMART_PTR_FIX(chem::_sym_DirectionalCoupling_O);
+ SMART_PTR_FIX(kw::_sym_atomTest);
+ SMART_PTR_FIX(core::_sym_sharp_p);
+ SMART_PTR_FIX(core::_sym_declaredSpecial);
+ SMART_PTR_FIX(core::_sym_copy_subarray);
+ SMART_PTR_FIX(core::_sym_size_t);
+ SMART_PTR_FIX(core::_sym_processDeclarations);
+ SMART_PTR_FIX(cl::_sym_subseq);
+ SMART_PTR_FIX(kw::_sym_ref);
+ SMART_PTR_FIX(chem::_sym_RestrainedPiBond_O);
+ SMART_PTR_FIX(kw::_sym_v3);
+ SMART_PTR_FIX(cl::_sym_rest);
+ SMART_PTR_FIX(chem::_sym_ZMatrixBondInternal_O);
+ SMART_PTR_FIX(core::_sym_loadBitcode);
+ SMART_PTR_FIX(kw::_sym_chg);
+ SMART_PTR_FIX(kw::_sym_min);
+ SMART_PTR_FIX(kw::_sym_order);
+ SMART_PTR_FIX(kw::_sym_max);
+ SMART_PTR_FIX(cl::_sym_leastNegativeSingleFloat);
+ SMART_PTR_FIX(kw::_sym_lambda_list_handler);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_le32);
+ SMART_PTR_FIX(llvmo::_sym_PassManagerBase_O);
+ SMART_PTR_FIX(kw::_sym_invalid_character);
+ SMART_PTR_FIX(units::_sym_kilojoule);
+ SMART_PTR_FIX(core::_sym_instanceRef);
+ SMART_PTR_FIX(llvmo::_sym_And);
+ SMART_PTR_FIX(core::_sym_STARinterpreterTraceSTAR);
+ SMART_PTR_FIX(llvmo::_sym_mdnodeGet);
+ SMART_PTR_FIX(cl::_sym_log);
+ SMART_PTR_FIX(core::_sym_newVersion);
+ SMART_PTR_FIX(core::_sym_testProfileTimer);
+ SMART_PTR_FIX(llvmo::_sym_LLVMTargetMachine_O);
  SMART_PTR_FIX(core::_sym_instancep);
- SMART_PTR_FIX(llvmo::_sym_AttributeAlignment);
- SMART_PTR_FIX(llvmo::_sym_Min);
+ SMART_PTR_FIX(cl::_sym_STARprint_escapeSTAR);
+ SMART_PTR_FIX(kw::_sym_up);
+ SMART_PTR_FIX(chem::_sym_EnergyNonbond_O);
+ SMART_PTR_FIX(llvmo::_sym_ICMP_SLE);
+ SMART_PTR_FIX(cl::_sym_SignedByte);
+ SMART_PTR_FIX(gray::_sym_stream_line_column);
+ SMART_PTR_FIX(llvmo::_sym_CodeModel_Kernel);
+ SMART_PTR_FIX(kw::_sym_input);
+ SMART_PTR_FIX(llvmo::_sym_STARdwarfConstantsSTAR);
+ SMART_PTR_FIX(chem::_sym_ComplexRestraint_O);
+ SMART_PTR_FIX(cl::_sym_STARload_printSTAR);
+ SMART_PTR_FIX(cl::_sym_asin);
+ SMART_PTR_FIX(core::_sym_dlload);
+ SMART_PTR_FIX(cl::_sym_gentemp);
+ SMART_PTR_FIX(cl::_sym_clearOutput);
+ SMART_PTR_FIX(kw::_sym_address_model_64);
+ SMART_PTR_FIX(core::_sym_currentDir);
+ SMART_PTR_FIX(chem::_sym_ChemDraw_O);
+ SMART_PTR_FIX(cl::_sym_FileStream_O);
+ SMART_PTR_FIX(chem::_sym_ZMatrixEntry_O);
+ SMART_PTR_FIX(core::_sym_lookupSourceFileInfo);
+ SMART_PTR_FIX(cl::_sym_leastPositiveDoubleFloat);
+ SMART_PTR_FIX(core::_sym_do_write_sequence);
+ SMART_PTR_FIX(cl::_sym_Real_O);
+ SMART_PTR_FIX(chem::_sym_VirtualSphere_O);
+ SMART_PTR_FIX(chem::_sym_Coupling_O);
+ SMART_PTR_FIX(llvmo::_sym_AttributeInlineHint);
+ SMART_PTR_FIX(cl::_sym_append);
+ SMART_PTR_FIX(core::_sym_isAssignableTo);
+ SMART_PTR_FIX(units::_sym_nm_per_ps);
+ SMART_PTR_FIX(cl::_sym_otherwise);
+ SMART_PTR_FIX(cl::_sym_pathnameDevice);
+ SMART_PTR_FIX(cl::_sym_type);
+ SMART_PTR_FIX(cl::_sym_array);
+ SMART_PTR_FIX(cl::_sym_TwoWayStream_O);
+ SMART_PTR_FIX(clos::_sym_std_compute_applicable_methods);
+ SMART_PTR_FIX(kw::_sym_if_does_not_exist);
+ SMART_PTR_FIX(units::_sym_candelas);
+ SMART_PTR_FIX(kw::_sym_catchFrame);
+ SMART_PTR_FIX(llvmo::_sym_jit);
+ SMART_PTR_FIX(core::_sym_double_backquote);
+ SMART_PTR_FIX(core::_sym_toTaggedFixnum);
+ SMART_PTR_FIX(cl::_sym_find_restart);
+ SMART_PTR_FIX(llvmo::_sym_OSType_Solaris);
+ SMART_PTR_FIX(kw::_sym_invert);
+ SMART_PTR_FIX(cl::_sym_floatp);
+ SMART_PTR_FIX(llvmo::_sym_Unordered);
+ SMART_PTR_FIX(kw::_sym_white);
+ SMART_PTR_FIX(llvmo::_sym_BitCast);
+ SMART_PTR_FIX(cl::_sym_symbolp);
+ SMART_PTR_FIX(units::_sym_kiloJoule);
+ SMART_PTR_FIX(chem::_sym_ConformationExplorer_O);
+ SMART_PTR_FIX(cl::_sym_pathnameDirectory);
+ SMART_PTR_FIX(cl::_sym_format);
+ SMART_PTR_FIX(kw::_sym_formatArguments);
+ SMART_PTR_FIX(sockets::_sym__PLUS_TRY_AGAIN_PLUS_);
+ SMART_PTR_FIX(chem::_sym_FFPtorDb_O);
+ SMART_PTR_FIX(cl::_sym_STARprint_pprint_dispatchSTAR);
+ SMART_PTR_FIX(llvmo::_sym_moduleFlagWarning);
+ SMART_PTR_FIX(cl::_sym_labels);
+ SMART_PTR_FIX(cl::_sym_simple_bit_vector_p);
+ SMART_PTR_FIX(cl::_sym_simple_string_p);
+ SMART_PTR_FIX(sockets::_sym_ll_getHostByAddress);
+ SMART_PTR_FIX(chem::_sym_bonds);
+ SMART_PTR_FIX(core::_sym_ihsEnv);
+ SMART_PTR_FIX(core::_sym_STARprintVersionOnStartupSTAR);
+ SMART_PTR_FIX(llvmo::_sym_AShr);
+ SMART_PTR_FIX(cl::_sym_restart_bind);
+ SMART_PTR_FIX(core::_sym_bq_remove_tokens);
+ SMART_PTR_FIX(cl::_sym_char_GE_);
+ SMART_PTR_FIX(cl::_sym_Complex_O);
+ SMART_PTR_FIX(llvmo::_sym_valuep);
+ SMART_PTR_FIX(cl::_sym_float);
+ SMART_PTR_FIX(cl::_sym_leastPositiveShortFloat);
+ SMART_PTR_FIX(chem::_sym_MultiMonomer_O);
+ SMART_PTR_FIX(llvmo::_sym_AttributeStackProtectReq);
  SMART_PTR_FIX(cl::_sym_expt);
  SMART_PTR_FIX(cl::_sym_boole_c2);
- SMART_PTR_FIX(cl::_sym_BroadcastStream_O);
+ SMART_PTR_FIX(core::_sym_setCurrentWorkingDirectory);
+ SMART_PTR_FIX(cl::_sym_BitVector_O);
  SMART_PTR_FIX(cl::_sym_pathnameVersion);
- SMART_PTR_FIX(kw::_sym_givenNumberOfArguments);
- SMART_PTR_FIX(gray::_sym_stream_read_sequence);
- SMART_PTR_FIX(kw::_sym_atomTest);
- SMART_PTR_FIX(sockets::_sym_ll_socketConnect_inetSocket);
- SMART_PTR_FIX(core::_sym_STARsharpEqContextSTAR);
- SMART_PTR_FIX(cl::_sym_consp);
- SMART_PTR_FIX(core::_sym_HashTableEqual_O);
- SMART_PTR_FIX(chem::_sym_PathMessage_O);
- SMART_PTR_FIX(core::_sym_supersede);
- SMART_PTR_FIX(cl::_sym_clearOutput);
- SMART_PTR_FIX(kw::_sym_residueNames);
- SMART_PTR_FIX(core::_sym_STARsharp_sharp_alistSTAR);
- SMART_PTR_FIX(kw::_sym_group);
- SMART_PTR_FIX(chem::_sym_MinimizerError);
- SMART_PTR_FIX(cl::_sym_logxor);
- SMART_PTR_FIX(core::_sym_integerToString);
- SMART_PTR_FIX(core::_sym_sharp_single_quote);
- SMART_PTR_FIX(serveEvent::_sym_ll_fd_set);
- SMART_PTR_FIX(llvmo::_sym_ArchType_mipsel);
- SMART_PTR_FIX(cl::_sym_stream_external_format);
- SMART_PTR_FIX(kw::_sym_splatted);
- SMART_PTR_FIX(core::_sym_sharp_plus);
- SMART_PTR_FIX(cl::_sym_string_upcase);
- SMART_PTR_FIX(core::_sym_makeStringOutputStreamFromString);
- SMART_PTR_FIX(cl::_sym_cos);
- SMART_PTR_FIX(cl::_sym_sleep);
- SMART_PTR_FIX(core::_sym_eval_with_env_default);
- SMART_PTR_FIX(cl::_sym_macrolet);
- SMART_PTR_FIX(kw::_sym_k);
- SMART_PTR_FIX(cl::_sym_nconc);
- SMART_PTR_FIX(cl::_sym_AMPenvironment);
- SMART_PTR_FIX(chem::_sym_atomNeedsMinimizer);
- SMART_PTR_FIX(asttooling::_sym_STARclangTemplateSpecializationKindSTAR);
- SMART_PTR_FIX(cl::_sym_translatePathname);
- SMART_PTR_FIX(cffi::_sym_time);
- SMART_PTR_FIX(cl::_sym_STARread_suppressSTAR);
- SMART_PTR_FIX(kw::_sym_black);
- SMART_PTR_FIX(core::_sym_CompileTimeEnvironment_O);
- SMART_PTR_FIX(cl::_sym_catch);
+ SMART_PTR_FIX(llvmo::_sym_llvm_value_p);
+ SMART_PTR_FIX(chem::_sym_RingClosingPlug_O);
+ SMART_PTR_FIX(core::_sym_STARcurrentSourcePosInfoSTAR);
+ SMART_PTR_FIX(chem::_sym_CalculatePositionRelativeToOrigin_O);
+ SMART_PTR_FIX(core::_sym_STARinput_streamSTAR);
+ SMART_PTR_FIX(llvmo::_sym_RelocModel_Default);
+ SMART_PTR_FIX(core::_sym_read_list_allow_consing_dot);
+ SMART_PTR_FIX(llvmo::_sym_ConstantPointerNull_O);
+ SMART_PTR_FIX(core::_sym_STARprint_source_code_consSTAR);
  SMART_PTR_FIX(cl::_sym_AMPbody);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v7);
- SMART_PTR_FIX(ext::_sym_setenv);
- SMART_PTR_FIX(chem::_sym_InfoDb_O);
- SMART_PTR_FIX(cl::_sym_STARtrace_outputSTAR);
- SMART_PTR_FIX(llvmo::_sym_VendorType_Freescale);
- SMART_PTR_FIX(core::_sym_Metaobject_O);
- SMART_PTR_FIX(units::_sym_Dimension_O);
- SMART_PTR_FIX(core::_sym_loadBundle);
- SMART_PTR_FIX(llvmo::_sym_ExternalLinkage);
- SMART_PTR_FIX(cl::_sym_AMPallow_other_keys);
- SMART_PTR_FIX(llvmo::_sym_OSType_Linux);
- SMART_PTR_FIX(sockets::_sym__PLUS_EAGAIN_PLUS_);
- SMART_PTR_FIX(core::_sym_STARmonitorRegisterSourceInfoSTAR);
- SMART_PTR_FIX(llvmo::_sym_ValueAsMetadataGet);
- SMART_PTR_FIX(kw::_sym_assignType);
- SMART_PTR_FIX(ext::_sym_STARloadHooksSTAR);
- SMART_PTR_FIX(kw::_sym_title);
- SMART_PTR_FIX(sockets::_sym_ll_socketPeername_inetSocket);
- SMART_PTR_FIX(core::_sym_STARbq_clobberableSTAR);
- SMART_PTR_FIX(llvmo::_sym_DIFile_O);
- SMART_PTR_FIX(core::_sym_VaList_dummy_O);
- SMART_PTR_FIX(cl::_sym_floatSign);
- SMART_PTR_FIX(core::_sym_dumpTaggedFixnum);
+ SMART_PTR_FIX(kw::_sym_vdwScaleBufferB);
+ SMART_PTR_FIX(kw::_sym_map);
+ SMART_PTR_FIX(llvmo::_sym_EngineBuilder_O);
+ SMART_PTR_FIX(kw::_sym_pink);
+ SMART_PTR_FIX(cl::_sym_functionp);
+ SMART_PTR_FIX(cl::_sym_stream_external_format);
  SMART_PTR_FIX(cl::_sym_read_sequence);
- SMART_PTR_FIX(kw::_sym_FullDebug);
- SMART_PTR_FIX(llvmo::_sym_CallInst_O);
- SMART_PTR_FIX(chemkw::_sym_rotate);
- SMART_PTR_FIX(core::_sym_topLevel);
- SMART_PTR_FIX(core::_sym_backquote_null_or_quoted);
+ SMART_PTR_FIX(core::_sym_STARbackquote_expand_hookSTAR);
+ SMART_PTR_FIX(core::_sym_libraryPath);
+ SMART_PTR_FIX(chemkw::_sym_tripleBond);
+ SMART_PTR_FIX(cl::_sym_cos);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_imported_declaration);
+ SMART_PTR_FIX(llvmo::_sym_AllocaInst_O);
+ SMART_PTR_FIX(cl::_sym_stream);
+ SMART_PTR_FIX(kw::_sym_type2);
+ SMART_PTR_FIX(llvmo::_sym_CommonLinkage);
+ SMART_PTR_FIX(chem::_sym_AM1_BCC_ar6);
+ SMART_PTR_FIX(core::_sym_ValueFrame_O);
+ SMART_PTR_FIX(core::_sym_Metaobject_O);
+ SMART_PTR_FIX(cl::_sym_STARfeaturesSTAR);
+ SMART_PTR_FIX(core::_sym_wrongTypeNthArg);
+ SMART_PTR_FIX(llvmo::_sym_ImmutablePass_O);
+ SMART_PTR_FIX(kw::_sym_atomProps);
+ SMART_PTR_FIX(llvmo::_sym_CodeGenOpt_Aggressive);
+ SMART_PTR_FIX(core::_sym_input_stream);
+ SMART_PTR_FIX(kw::_sym_blockFrame);
+ SMART_PTR_FIX(core::_sym_STARcircle_stackSTAR);
+ SMART_PTR_FIX(kw::_sym_v1);
+ SMART_PTR_FIX(units::_sym_kilocalories_per_mole);
+ SMART_PTR_FIX(cl::_sym_parseError);
+ SMART_PTR_FIX(llvmo::_sym_CodeModel_Medium);
+ SMART_PTR_FIX(cl::_sym_UnsignedByte);
+ SMART_PTR_FIX(core::_sym_adjustVector);
+ SMART_PTR_FIX(core::_sym_StackValueEnvironment_O);
+ SMART_PTR_FIX(cl::_sym_charNotEqual);
+ SMART_PTR_FIX(cl::_sym_floatSign);
+ SMART_PTR_FIX(cl::_sym_package);
+ SMART_PTR_FIX(core::_sym_data);
+ SMART_PTR_FIX(cl::_sym_BroadcastStream_O);
+ SMART_PTR_FIX(kw::_sym_terminating_macro_character);
+ SMART_PTR_FIX(core::_sym_STARcodeWalkerSTAR);
+ SMART_PTR_FIX(chemkw::_sym_estimated);
+ SMART_PTR_FIX(llvmo::_sym_DISubprogram_O);
+ SMART_PTR_FIX(cl::_sym_rem);
+ SMART_PTR_FIX(chem::_sym_FFAngleDb_O);
+ SMART_PTR_FIX(core::_sym_SexpSaveArchive_O);
  SMART_PTR_FIX(core::_sym_clock_gettime_nanoseconds);
- SMART_PTR_FIX(core::_sym_setRunTimeValuesVector);
- SMART_PTR_FIX(cl::_sym_getInternalRealTime);
- SMART_PTR_FIX(llvmo::_sym_TerminatorInst_O);
- SMART_PTR_FIX(kw::_sym_max);
- SMART_PTR_FIX(core::_sym_printCurrentIhsFrameEnvironment);
- SMART_PTR_FIX(kw::_sym_atoms);
- SMART_PTR_FIX(llvmo::_sym_ArchType_nvptx);
- SMART_PTR_FIX(llvmo::_sym_AttributeReadOnly);
- SMART_PTR_FIX(llvmo::_sym_OSType);
+ SMART_PTR_FIX(cl::_sym_boole_and);
+ SMART_PTR_FIX(llvmo::_sym_SubArchType_KalimbaSubArch_v4);
+ SMART_PTR_FIX(core::_sym_tooManyArgumentsError);
+ SMART_PTR_FIX(core::_sym_exportToPython);
+ SMART_PTR_FIX(cl::_sym_STARmodulesSTAR);
  SMART_PTR_FIX(cl::_sym_STARprint_readablySTAR);
- SMART_PTR_FIX(llvmo::_sym_GeneralDynamicTLSModel);
- SMART_PTR_FIX(core::_sym_pathnameTranslations);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_GNU);
- SMART_PTR_FIX(core::_sym_walkToFindSourceInfo);
- SMART_PTR_FIX(geom::_sym_OVector2_O);
- SMART_PTR_FIX(chem::_sym_VirtualSphere_O);
- SMART_PTR_FIX(kw::_sym_UnsignedByte);
- SMART_PTR_FIX(sockets::_sym__PLUS_ETIMEDOUT_PLUS_);
- SMART_PTR_FIX(kw::_sym_line);
- SMART_PTR_FIX(llvmo::_sym_BranchInst_O);
- SMART_PTR_FIX(core::_sym_threadInfo);
- SMART_PTR_FIX(llvmo::_sym_UnreachableInst_O);
- SMART_PTR_FIX(core::_sym_pointer);
- SMART_PTR_FIX(cl::_sym_StandardClass_O);
- SMART_PTR_FIX(sockets::_sym_ll_setSockoptInt);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_unspecified_parameters);
- SMART_PTR_FIX(core::_sym_double_backquote);
- SMART_PTR_FIX(core::_sym_do_write_sequence);
- SMART_PTR_FIX(core::_sym_Instance_O);
- SMART_PTR_FIX(chem::_sym_Minimizer_O);
- SMART_PTR_FIX(llvmo::_sym_IndirectBrInst_O);
- SMART_PTR_FIX(sockets::_sym_ll_setSockoptTimeval);
- SMART_PTR_FIX(cl::_sym_characterp);
- SMART_PTR_FIX(cl::_sym_multiple_value_call);
- SMART_PTR_FIX(cl::_sym_union);
- SMART_PTR_FIX(llvmo::_sym_ArchType_sparcv9);
- SMART_PTR_FIX(cl::_sym_simpleError);
- SMART_PTR_FIX(cl::_sym_denominator);
- SMART_PTR_FIX(sockets::_sym__PLUS_TCP_NODELAY_PLUS_);
- SMART_PTR_FIX(cffi::_sym_unsigned_char);
- SMART_PTR_FIX(cl::_sym_dotimes);
- SMART_PTR_FIX(kw::_sym_neighbors);
- SMART_PTR_FIX(units::_sym_joules);
- SMART_PTR_FIX(core::_sym_end);
- SMART_PTR_FIX(cl::_sym_input_stream_p);
- SMART_PTR_FIX(cl::_sym_cond);
+ SMART_PTR_FIX(kw::_sym_rename);
+ SMART_PTR_FIX(cl::_sym_defvar);
+ SMART_PTR_FIX(cl::_sym_first);
+ SMART_PTR_FIX(kw::_sym_k2);
+ SMART_PTR_FIX(kw::_sym_hintLP);
+ SMART_PTR_FIX(chem::_sym_in8MemberRing);
+ SMART_PTR_FIX(adapt::_sym_IterateCons_O);
+ SMART_PTR_FIX(llvmo::_sym_EnvironmentType_MSVC);
+ SMART_PTR_FIX(cl::_sym_stringRightTrim);
+ SMART_PTR_FIX(chem::_sym_EnergyFixedNonbondRestraint_O);
+ SMART_PTR_FIX(llvmo::_sym_PointerType_O);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_pointer_type);
+ SMART_PTR_FIX(cffi::_sym_float);
+ SMART_PTR_FIX(core::_sym_STARcommandLineImageSTAR);
+ SMART_PTR_FIX(ext::_sym_STARinvokeDebuggerHookSTAR);
+ SMART_PTR_FIX(core::_sym_STARbq_listSTARSTAR);
+ SMART_PTR_FIX(core::_sym_HashTableEqualp_O);
+ SMART_PTR_FIX(core::_sym_calculateMissingCommonLispSymbols);
  SMART_PTR_FIX(kw::_sym_Vdws);
- SMART_PTR_FIX(kw::_sym_execute);
- SMART_PTR_FIX(chem::_sym_allMatter);
- SMART_PTR_FIX(chem::_sym_ZMatrixEntry_O);
+ SMART_PTR_FIX(chem::_sym__PLUS_elementColors_PLUS_);
+ SMART_PTR_FIX(cl::_sym_characterp);
+ SMART_PTR_FIX(kw::_sym_external);
+ SMART_PTR_FIX(cl::_sym_Fixnum_dummy_O);
+ SMART_PTR_FIX(units::_sym_picoseconds);
+ SMART_PTR_FIX(llvmo::_sym_CodeModel_Large);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_unspecified_parameters);
+ SMART_PTR_FIX(cl::_sym_make_sequence);
+ SMART_PTR_FIX(cl::_sym_union);
+ SMART_PTR_FIX(cl::_sym_clrhash);
+ SMART_PTR_FIX(cl::_sym_string_downcase);
+ SMART_PTR_FIX(units::_sym_nanometers);
+ SMART_PTR_FIX(cffi::_sym_Pointer_O);
+ SMART_PTR_FIX(cl::_sym_STARprint_baseSTAR);
+ SMART_PTR_FIX(core::_sym_BranchSNode_O);
+ SMART_PTR_FIX(cl::_sym_break);
  SMART_PTR_FIX(chemkw::_sym_N);
- SMART_PTR_FIX(cl::_sym_leastPositiveNormalizedLongFloat);
- SMART_PTR_FIX(core::_sym_SourceManager_O);
- SMART_PTR_FIX(kw::_sym_op);
- SMART_PTR_FIX(kw::_sym_load_toplevel);
+ SMART_PTR_FIX(chem::_sym_ConformationCollection_O);
+ SMART_PTR_FIX(cl::_sym_make_hash_table);
+ SMART_PTR_FIX(core::_sym_STARcircleCounterSTAR);
+ SMART_PTR_FIX(llvmo::_sym_CodeGenFileType_ObjectFile);
+ SMART_PTR_FIX(cl::_sym_mostPositiveShortFloat);
+ SMART_PTR_FIX(core::_sym_STARdebugFlowControlSTAR);
+ SMART_PTR_FIX(kw::_sym_direct_super_classes);
+ SMART_PTR_FIX(cl::_sym_eval);
+ SMART_PTR_FIX(chem::_sym_AtomTable_O);
+ SMART_PTR_FIX(core::_sym_reader_quote);
+ SMART_PTR_FIX(cl::_sym_printObject);
+ SMART_PTR_FIX(cl::_sym_input_stream_p);
+ SMART_PTR_FIX(cffi::_sym_uint64);
+ SMART_PTR_FIX(llvmo::_sym_EnvironmentType_Itanium);
+ SMART_PTR_FIX(cl::_sym_pathnameName);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_inlined_subroutine);
+ SMART_PTR_FIX(cl::_sym_getf);
+ SMART_PTR_FIX(llvmo::_sym_AttributeOptimizeForSize);
+ SMART_PTR_FIX(chem::_sym_TypeAssignmentRules_O);
+ SMART_PTR_FIX(cl::_sym_fmakunbound);
+ SMART_PTR_FIX(chem::_sym_inRing);
+ SMART_PTR_FIX(chem::_sym_AtomTest_O);
+ SMART_PTR_FIX(core::_sym_STARdebugInterpretedFunctionsSTAR);
+ SMART_PTR_FIX(core::_sym_WeakPointer_O);
+ SMART_PTR_FIX(llvmo::_sym_LLVMContext_O);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_with_stmt);
+ SMART_PTR_FIX(cl::_sym_define_method_combination);
+ SMART_PTR_FIX(llvmo::_sym_OSType_Linux);
  SMART_PTR_FIX(cl::_sym_space);
  SMART_PTR_FIX(cl::_sym_maphash);
- SMART_PTR_FIX(cl::_sym_compiled_function_p);
- SMART_PTR_FIX(kw::_sym_supplied);
- SMART_PTR_FIX(llvmo::_sym_OSType_Win32);
- SMART_PTR_FIX(llvmo::_sym_FCMP_UNE);
- SMART_PTR_FIX(cl::_sym_nthcdr);
- SMART_PTR_FIX(cl::_sym_lognot);
- SMART_PTR_FIX(chemkw::_sym__aromaticBond);
- SMART_PTR_FIX(cl::_sym_specialOperatorP);
- SMART_PTR_FIX(kw::_sym_v0);
- SMART_PTR_FIX(kw::_sym_multiple_escape_character);
- SMART_PTR_FIX(cl::_sym_pathname);
- SMART_PTR_FIX(cl::_sym_Function_O);
- SMART_PTR_FIX(chem::_sym_ZMatrix_O);
+ SMART_PTR_FIX(cl::_sym_exp);
+ SMART_PTR_FIX(cffi::_sym_char);
+ SMART_PTR_FIX(core::_sym_sharedReferenceCountedPointer);
+ SMART_PTR_FIX(cl::_sym_EchoStream_O);
+ SMART_PTR_FIX(cl::_sym_truename);
+ SMART_PTR_FIX(kw::_sym_angleFunction);
+ SMART_PTR_FIX(sockets::_sym_ff_close);
+ SMART_PTR_FIX(llvmo::_sym_STARBinaryOpsSTAR);
  SMART_PTR_FIX(cl::_sym_progv);
- SMART_PTR_FIX(core::_sym_overwrite);
- SMART_PTR_FIX(kw::_sym_chain);
- SMART_PTR_FIX(kw::_sym_firstTest);
- SMART_PTR_FIX(cl::_sym_list);
- SMART_PTR_FIX(llvmo::_sym_AttributeNoInline);
- SMART_PTR_FIX(kw::_sym_typeError);
- SMART_PTR_FIX(kw::_sym_key);
- SMART_PTR_FIX(cffi::_sym_foreign_alloc);
- SMART_PTR_FIX(units::_sym_amperes);
- SMART_PTR_FIX(cl::_sym_read_preserving_whitespace);
- SMART_PTR_FIX(llvmo::_sym_DITypeArray_O);
+ SMART_PTR_FIX(kw::_sym_forceField);
+ SMART_PTR_FIX(chemkw::_sym_1);
+ SMART_PTR_FIX(core::_sym_coerceToFilePathname);
  SMART_PTR_FIX(cl::_sym_mapl);
  SMART_PTR_FIX(cl::_sym_logand);
- SMART_PTR_FIX(cl::_sym_set);
- SMART_PTR_FIX(kw::_sym_next);
- SMART_PTR_FIX(kw::_sym_N);
- SMART_PTR_FIX(kw::_sym_error);
- SMART_PTR_FIX(core::_sym_scharSet);
- SMART_PTR_FIX(chem::_sym_conjugateGradientRunning);
- SMART_PTR_FIX(llvmo::_sym_AttributeReadNone);
- SMART_PTR_FIX(chemkw::_sym_frameRecognizer);
- SMART_PTR_FIX(cl::_sym_invoke_restart);
- SMART_PTR_FIX(llvmo::_sym_ConstantFP_O);
- SMART_PTR_FIX(llvmo::_sym_OSType_Bitrig);
- SMART_PTR_FIX(core::_sym_globalSetfFunction);
- SMART_PTR_FIX(cl::_sym_min);
- SMART_PTR_FIX(cl::_sym_two_way_stream);
- SMART_PTR_FIX(llvmo::_sym_ICMP_ULT);
- SMART_PTR_FIX(llvmo::_sym_moduleFlagOverride);
- SMART_PTR_FIX(geom::_sym_OMatrix_O);
- SMART_PTR_FIX(sockets::_sym_socketPeername_localSocket);
- SMART_PTR_FIX(cl::_sym_safety);
- SMART_PTR_FIX(core::_sym_FunctionFrame_O);
- SMART_PTR_FIX(units::_sym_per_picosecond);
- SMART_PTR_FIX(core::_sym_STARbq_appendSTAR);
- SMART_PTR_FIX(cl::_sym_make_list);
- SMART_PTR_FIX(llvmo::_sym_SDiv);
- SMART_PTR_FIX(adapt::_sym_StringList_O);
+ SMART_PTR_FIX(kw::_sym_plum);
+ SMART_PTR_FIX(ext::_sym_getEnv);
+ SMART_PTR_FIX(core::_sym_conditionMessage);
+ SMART_PTR_FIX(cl::_sym_go);
+ SMART_PTR_FIX(kw::_sym_chain);
+ SMART_PTR_FIX(kw::_sym_k);
+ SMART_PTR_FIX(cl::_sym_slot_value);
+ SMART_PTR_FIX(cl::_sym_vector);
+ SMART_PTR_FIX(core::_sym_rehash_threshold);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_interface_type);
+ SMART_PTR_FIX(kw::_sym_Edep);
+ SMART_PTR_FIX(core::_sym_Reader_O);
+ SMART_PTR_FIX(cffi::_sym_time);
+ SMART_PTR_FIX(cl::_sym_declare);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_type_unit);
+ SMART_PTR_FIX(cl::_sym_fileNamestring);
+ SMART_PTR_FIX(llvmo::_sym_ValueAsMetadata_O);
+ SMART_PTR_FIX(cl::_sym_stringp);
+ SMART_PTR_FIX(core::_sym_mapappend);
+ SMART_PTR_FIX(kw::_sym_type);
+ SMART_PTR_FIX(core::_sym_foreach);
+ SMART_PTR_FIX(kw::_sym_v5);
+ SMART_PTR_FIX(core::_sym__PLUS_ecl_syntax_progv_list_PLUS_);
  SMART_PTR_FIX(cl::_sym_classOf);
- SMART_PTR_FIX(chem::_sym_FFStretch_O);
- SMART_PTR_FIX(core::_sym_mpi_enabled);
- SMART_PTR_FIX(llvmo::_sym_ObjectFormatType);
- SMART_PTR_FIX(kw::_sym_str);
+ SMART_PTR_FIX(core::_sym_preserve_whitespace);
+ SMART_PTR_FIX(llvmo::_sym_AttributeStructRet);
+ SMART_PTR_FIX(core::_sym_saveCando);
  SMART_PTR_FIX(cl::_sym_writeByte);
- SMART_PTR_FIX(core::_sym_makeStringOutputStream);
- SMART_PTR_FIX(cl::_sym_condition);
- SMART_PTR_FIX(core::_sym_generic);
- SMART_PTR_FIX(ext::_sym_getenv);
- SMART_PTR_FIX(gray::_sym_close);
- SMART_PTR_FIX(chem::_sym_CalculatePositionAlongBond_O);
- SMART_PTR_FIX(cl::_sym_Bignum_O);
- SMART_PTR_FIX(chem::_sym_atomFixed);
- SMART_PTR_FIX(llvmo::_sym_ArchType_nvptx64);
- SMART_PTR_FIX(core::_sym_WeakHashTable_O);
- SMART_PTR_FIX(cl::_sym_pathnameHost);
- SMART_PTR_FIX(cl::_sym_ConcatenatedStream_O);
- SMART_PTR_FIX(cl::_sym_make_symbol);
- SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion7);
- SMART_PTR_FIX(core::_sym_eltSet);
- SMART_PTR_FIX(chem::_sym_nonbondTerm);
- SMART_PTR_FIX(core::_sym_STARdebugEvalSTAR);
- SMART_PTR_FIX(core::_sym_lambdaName);
- SMART_PTR_FIX(cl::_sym_function);
- SMART_PTR_FIX(serveEvent::_sym_ll_fdset_size);
- SMART_PTR_FIX(llvmo::_sym_FMul);
- SMART_PTR_FIX(cl::_sym_two_way_stream_output_stream);
- SMART_PTR_FIX(core::_sym_STARdebugStartupSTAR);
- SMART_PTR_FIX(cl::_sym_copyStructure);
- SMART_PTR_FIX(core::_sym_SingleDispatchEffectiveMethodFunction_O);
- SMART_PTR_FIX(cl::_sym_filePosition);
- SMART_PTR_FIX(llvmo::_sym_ModulePass_O);
- SMART_PTR_FIX(llvmo::_sym_AttributeZExt);
- SMART_PTR_FIX(chem::_sym_StereoisomerAtom_O);
- SMART_PTR_FIX(kw::_sym_builtResidue);
- SMART_PTR_FIX(chem::_sym_JumpPlug_O);
- SMART_PTR_FIX(core::_sym_lambda_with_handler);
- SMART_PTR_FIX(cl::_sym_mostPositiveSingleFloat);
- SMART_PTR_FIX(sockets::_sym_ll_getHostByAddress);
- SMART_PTR_FIX(cl::_sym_STARprint_miser_widthSTAR);
- SMART_PTR_FIX(kw::_sym_properties);
- SMART_PTR_FIX(cl::_sym_Integer_O);
- SMART_PTR_FIX(cl::_sym_leastPositiveNormalizedDoubleFloat);
- SMART_PTR_FIX(cl::_sym_boole_ior);
- SMART_PTR_FIX(core::_sym_bitArrayOp);
- SMART_PTR_FIX(sockets::_sym__PLUS_ENETUNREACH_PLUS_);
- SMART_PTR_FIX(core::_sym_serialize);
- SMART_PTR_FIX(kw::_sym_capitalize);
- SMART_PTR_FIX(chem::_sym_RingTest_O);
- SMART_PTR_FIX(llvmo::_sym_STARglobal_ThreadLocalModesSTAR);
- SMART_PTR_FIX(kw::_sym_target_os_linux);
- SMART_PTR_FIX(core::_sym_unrecognizedKeywordArgumentError);
- SMART_PTR_FIX(cl::_sym_subseq);
- SMART_PTR_FIX(kw::_sym_use_boehmdc);
- SMART_PTR_FIX(chem::_sym_AntechamberFocusAtomMatch_O);
- SMART_PTR_FIX(kw::_sym_restraints);
- SMART_PTR_FIX(chem::_sym_RingClosingPlug_O);
- SMART_PTR_FIX(core::_sym_STARwatchDynamicBindingStackSTAR);
- SMART_PTR_FIX(cl::_sym_streamError);
- SMART_PTR_FIX(core::_sym_default);
- SMART_PTR_FIX(cl::_sym_string_NE_);
- SMART_PTR_FIX(llvmo::_sym_RelocModel_Static);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_Itanium);
- SMART_PTR_FIX(core::_sym_ihsPrev);
- SMART_PTR_FIX(chem::_sym_iterateMatterSymbolConverter);
- SMART_PTR_FIX(chem::_sym_minimizerSucceeded);
- SMART_PTR_FIX(chem::_sym__PLUS_elementColors_PLUS_);
- SMART_PTR_FIX(cl::_sym_output_stream_p);
- SMART_PTR_FIX(core::_sym_bq_remove_tokens);
- SMART_PTR_FIX(cl::_sym_eval_when);
- SMART_PTR_FIX(llvmo::_sym_moduleFlagWarning);
- SMART_PTR_FIX(chem::_sym_STARSabBondEnumConverterSTAR);
- SMART_PTR_FIX(llvmo::_sym_ArchType_amdil64);
- SMART_PTR_FIX(llvmo::_sym_ConstantPointerNull_O);
- SMART_PTR_FIX(chem::_sym_Aggregate_O);
- SMART_PTR_FIX(cl::_sym_package_shadowing_symbols);
- SMART_PTR_FIX(cl::_sym_charUpcase);
- SMART_PTR_FIX(chem::_sym_ZMatrixInternal_O);
- SMART_PTR_FIX(chem::_sym_NumericalFunction_O);
- SMART_PTR_FIX(kw::_sym_littleEndian);
- SMART_PTR_FIX(core::_sym_StackValueEnvironment_O);
- SMART_PTR_FIX(clos::_sym_std_compute_applicable_methods);
- SMART_PTR_FIX(llvmo::_sym_OSType_CUDA);
- SMART_PTR_FIX(sockets::_sym_ll_socketAccept_inetSocket);
- SMART_PTR_FIX(sockets::_sym_ll_socketBind_localSocket);
- SMART_PTR_FIX(llvmo::_sym_CodeGenOpt_Default);
- SMART_PTR_FIX(core::_sym_Binder_O);
- SMART_PTR_FIX(kw::_sym_tag1);
- SMART_PTR_FIX(comp::_sym_STARimplicit_compile_hookSTAR);
- SMART_PTR_FIX(geom::_sym_OVector3_O);
- SMART_PTR_FIX(llvmo::_sym_OSType_RTEMS);
- SMART_PTR_FIX(llvmo::_sym_CodeGenFileType);
- SMART_PTR_FIX(cl::_sym_STARprint_prettySTAR);
- SMART_PTR_FIX(kw::_sym_v4);
- SMART_PTR_FIX(llvmo::_sym_AttributeSExt);
- SMART_PTR_FIX(chem::_sym_EntityNameSet_O);
- SMART_PTR_FIX(cl::_sym_STARprint_arraySTAR);
- SMART_PTR_FIX(kw::_sym_syntax);
+ SMART_PTR_FIX(kw::_sym__uid);
+ SMART_PTR_FIX(core::_sym_exit);
  SMART_PTR_FIX(kw::_sym_root);
- SMART_PTR_FIX(core::_sym_reader_skip_semicolon_comment);
- SMART_PTR_FIX(llvmo::_sym_ArchType_spir);
- SMART_PTR_FIX(chem::_sym_EnergyAnchorRestraint_O);
- SMART_PTR_FIX(ext::_sym_compiledFunctionName);
- SMART_PTR_FIX(core::_sym_mpi_size);
- SMART_PTR_FIX(core::_sym_LoadArchive_O);
- SMART_PTR_FIX(cl::_sym_unuse_package);
- SMART_PTR_FIX(chem::_sym_NVector_O);
- SMART_PTR_FIX(chem::_sym_Monomer_O);
- SMART_PTR_FIX(chem::_sym_STARparserNodeHolderSTAR);
- SMART_PTR_FIX(chem::_sym_FFAngleDb_O);
- SMART_PTR_FIX(chem::_sym_StepReport_O);
- SMART_PTR_FIX(clos::_sym_FuncallableStandardClass_O);
- SMART_PTR_FIX(kw::_sym_constituent_character);
- SMART_PTR_FIX(kw::_sym_min);
- SMART_PTR_FIX(llvmo::_sym_makeAP64);
- SMART_PTR_FIX(cl::_sym_parseNamestring);
- SMART_PTR_FIX(llvmo::_sym_DIBasicType_O);
- SMART_PTR_FIX(llvmo::_sym_ICMP_NE);
- SMART_PTR_FIX(kw::_sym_prev);
- SMART_PTR_FIX(cl::_sym_string_LT_);
- SMART_PTR_FIX(kw::_sym_matches);
- SMART_PTR_FIX(ext::_sym__PLUS_processStandardInput_PLUS_);
- SMART_PTR_FIX(cl::_sym_string_not_lessp);
- SMART_PTR_FIX(llvmo::_sym_ICMP_EQ);
- SMART_PTR_FIX(gray::_sym_stream_clear_input);
- SMART_PTR_FIX(kw::_sym_Types);
- SMART_PTR_FIX(core::_sym_color);
- SMART_PTR_FIX(cl::_sym_packagep);
- SMART_PTR_FIX(cl::_sym_hash_table);
- SMART_PTR_FIX(cl::_sym_type);
- SMART_PTR_FIX(kw::_sym_a2);
- SMART_PTR_FIX(sockets::_sym__PLUS_EOPNOTSUPP_PLUS_);
- SMART_PTR_FIX(cl::_sym_SynonymStream_O);
- SMART_PTR_FIX(kw::_sym_red);
- SMART_PTR_FIX(core::_sym_STARpollTicksPerGcSTAR);
- SMART_PTR_FIX(cl::_sym_unboundVariable);
- SMART_PTR_FIX(llvmo::_sym_SequentialType_O);
- SMART_PTR_FIX(core::_sym_parse_macro);
- SMART_PTR_FIX(llvmo::_sym_FCMP_OLE);
- SMART_PTR_FIX(llvmo::_sym_SubArchType);
- SMART_PTR_FIX(kw::_sym_macro);
- SMART_PTR_FIX(cl::_sym_gethash);
- SMART_PTR_FIX(llvmo::_sym_FSub);
- SMART_PTR_FIX(llvmo::_sym_UDiv);
- SMART_PTR_FIX(llvmo::_sym_jit);
- SMART_PTR_FIX(llvmo::_sym_CodeGenOpt_None);
- SMART_PTR_FIX(cffi::_sym_long);
- SMART_PTR_FIX(chem::_sym_InPlug_O);
- SMART_PTR_FIX(llvmo::_sym_ArchType_thumb);
- SMART_PTR_FIX(core::_sym_STARnestedErrorDepthSTAR);
- SMART_PTR_FIX(core::_sym_makeLambdaListHandler);
- SMART_PTR_FIX(chem::_sym_FFNonbondCrossTermTable_O);
- SMART_PTR_FIX(core::_sym_coerceToFilename);
- SMART_PTR_FIX(core::_sym_ActivationFrame_O);
- SMART_PTR_FIX(cl::_sym_no_applicable_method);
- SMART_PTR_FIX(sockets::_sym__PLUS_clasp_stream_mode_input_PLUS_);
- SMART_PTR_FIX(kw::_sym_new_version);
- SMART_PTR_FIX(kw::_sym_pdbName);
- SMART_PTR_FIX(llvmo::_sym_Trunc);
- SMART_PTR_FIX(core::_sym_debugLogOff);
- SMART_PTR_FIX(chem::_sym_RestraintDistance_O);
- SMART_PTR_FIX(cl::_sym_gensym);
- SMART_PTR_FIX(cl::_sym_Symbol_O);
- SMART_PTR_FIX(units::_sym_NamedUnit_O);
- SMART_PTR_FIX(kw::_sym_allow_other_keys);
- SMART_PTR_FIX(cl::_sym_boole_clr);
- SMART_PTR_FIX(core::_sym_lexicalFunction);
- SMART_PTR_FIX(core::_sym_whole);
- SMART_PTR_FIX(kw::_sym_aquamarine);
- SMART_PTR_FIX(cl::_sym_unwind_protect);
- SMART_PTR_FIX(llvmo::_sym_DIArray_O);
- SMART_PTR_FIX(kw::_sym_id);
- SMART_PTR_FIX(cl::_sym_Rational_O);
- SMART_PTR_FIX(cl::_sym_make_two_way_stream);
- SMART_PTR_FIX(core::_sym_backquote_attach_conses);
- SMART_PTR_FIX(llvmo::_sym_ReturnInst_O);
- SMART_PTR_FIX(chem::_sym_EnergyAngle_O);
- SMART_PTR_FIX(kw::_sym_monomerAliases);
- SMART_PTR_FIX(core::_sym_STARPATHSTAR);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_template_type_parameter);
- SMART_PTR_FIX(chem::_sym_AM1_BCC_ar7);
- SMART_PTR_FIX(kw::_sym_blue);
- SMART_PTR_FIX(chemkw::_sym_constitution);
- SMART_PTR_FIX(kw::_sym_num);
- SMART_PTR_FIX(kw::_sym_debug);
- SMART_PTR_FIX(kw::_sym_bigEndian);
- SMART_PTR_FIX(cl::_sym_reverse);
- SMART_PTR_FIX(sockets::_sym_ll_setfNonBlockingMode);
- SMART_PTR_FIX(core::_sym_STARprint_structureSTAR);
- SMART_PTR_FIX(llvmo::_sym_FRem);
- SMART_PTR_FIX(core::_sym_ValueEnvironment_O);
- SMART_PTR_FIX(cl::_sym_ash);
- SMART_PTR_FIX(chemkw::_sym_estimated);
- SMART_PTR_FIX(llvmo::_sym_AttributeStackProtectReq);
- SMART_PTR_FIX(core::_sym_env);
- SMART_PTR_FIX(core::_sym__PLUS_io_syntax_progv_list_PLUS_);
- SMART_PTR_FIX(cl::_sym_break);
- SMART_PTR_FIX(llvmo::_sym_UMin);
- SMART_PTR_FIX(core::_sym_ihsFun);
- SMART_PTR_FIX(core::_sym_symbolMacro);
- SMART_PTR_FIX(llvmo::_sym_llvm_value_p);
- SMART_PTR_FIX(chemkw::_sym__tripleBond);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v6t2);
- SMART_PTR_FIX(clbind::_sym_STARtheClassRegistrySTAR);
- SMART_PTR_FIX(comp::_sym_compileInEnv);
- SMART_PTR_FIX(core::_sym_debugLogOn);
- SMART_PTR_FIX(chem::_sym_OligomerPart_Link_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_base_type);
- SMART_PTR_FIX(chem::_sym_Mate_O);
- SMART_PTR_FIX(cl::_sym_leastNegativeLongFloat);
- SMART_PTR_FIX(cl::_sym_STARstandard_outputSTAR);
- SMART_PTR_FIX(cffi::_sym_uint32);
- SMART_PTR_FIX(cl::_sym_Fixnum_dummy_O);
- SMART_PTR_FIX(cffi::_sym_foreign_symbol_pointer);
- SMART_PTR_FIX(cl::_sym_dynamic_extent);
- SMART_PTR_FIX(kw::_sym_fcadj);
- SMART_PTR_FIX(sockets::_sym_ll_getProtocolByName);
- SMART_PTR_FIX(llvmo::_sym_ConstantExpr_O);
- SMART_PTR_FIX(cl::_sym_getf);
- SMART_PTR_FIX(llvmo::_sym_DICompositeType_O);
- SMART_PTR_FIX(cl::_sym_boundp);
- SMART_PTR_FIX(core::_sym_tooManyArgumentsError);
- SMART_PTR_FIX(core::_sym_STARdebugLoadTimeValuesSTAR);
- SMART_PTR_FIX(llvmo::_sym_ArchType_armeb);
- SMART_PTR_FIX(kw::_sym_level);
- SMART_PTR_FIX(cl::_sym_append);
- SMART_PTR_FIX(llvmo::_sym_ICMP_SGT);
- SMART_PTR_FIX(kw::_sym_well);
- SMART_PTR_FIX(cl::_sym_null);
- SMART_PTR_FIX(llvmo::_sym_interpreter);
- SMART_PTR_FIX(chem::_sym_ConstitutionAtoms_O);
- SMART_PTR_FIX(cl::_sym_prog1);
- SMART_PTR_FIX(cl::_sym_mostPositiveDoubleFloat);
- SMART_PTR_FIX(llvmo::_sym_DIScope_O);
- SMART_PTR_FIX(units::_sym_kilojoules);
- SMART_PTR_FIX(core::_sym_base_string_concatenate);
- SMART_PTR_FIX(cl::_sym_parseInteger);
- SMART_PTR_FIX(cl::_sym_pathnameMatchP);
- SMART_PTR_FIX(cl::_sym_Number_O);
- SMART_PTR_FIX(chemkw::_sym_Z);
- SMART_PTR_FIX(core::_sym_IntArray_O);
- SMART_PTR_FIX(sockets::_sym__PLUS_EBADF_PLUS_);
- SMART_PTR_FIX(core::_sym_render);
- SMART_PTR_FIX(chem::_sym_Bond_O);
- SMART_PTR_FIX(kw::_sym_ph0);
- SMART_PTR_FIX(llvmo::_sym_ArchType_mips);
- SMART_PTR_FIX(cffi::_sym_int32);
- SMART_PTR_FIX(llvmo::_sym_FCMP_OEQ);
- SMART_PTR_FIX(units::_sym_kiloCalories_per_mole);
- SMART_PTR_FIX(cl::_sym_char_NE_);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_ptr_to_member_type);
- SMART_PTR_FIX(units::_sym_coulomb);
- SMART_PTR_FIX(core::_sym_simpleProgramError);
- SMART_PTR_FIX(sockets::_sym__PLUS_SO_REUSEADDR_PLUS_);
- SMART_PTR_FIX(core::_sym_loadCando);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_unspecified_type);
- SMART_PTR_FIX(cl::_sym_charNotLessp);
- SMART_PTR_FIX(core::_sym_ihsTop);
- SMART_PTR_FIX(asttooling::_sym_HandleTranslationUnit);
- SMART_PTR_FIX(chemkw::_sym_R);
- SMART_PTR_FIX(chem::_sym_BondListMatchNode_O);
- SMART_PTR_FIX(cl::_sym_mostPositiveShortFloat);
- SMART_PTR_FIX(cl::_sym_dolist);
- SMART_PTR_FIX(core::_sym_lookupLoadTimeValue);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v7m);
- SMART_PTR_FIX(chem::_sym_Command_O);
- SMART_PTR_FIX(cl::_sym_listp);
- SMART_PTR_FIX(core::_sym_evaluateDepth);
- SMART_PTR_FIX(geom::_sym_colorTable);
- SMART_PTR_FIX(core::_sym_STARallCxxClassesSTAR);
- SMART_PTR_FIX(cl::_sym_vectorPush);
- SMART_PTR_FIX(cl::_sym_cellError);
- SMART_PTR_FIX(cl::_sym_SignedByte);
- SMART_PTR_FIX(cl::_sym_or);
- SMART_PTR_FIX(llvmo::_sym_CompositeType_O);
- SMART_PTR_FIX(cl::_sym_mapcar);
- SMART_PTR_FIX(kw::_sym_latin_1);
- SMART_PTR_FIX(chem::_sym_ConformationExplorerMatch_O);
- SMART_PTR_FIX(asttooling::_sym_STARclangTemplateArgumentArgKindSTAR);
- SMART_PTR_FIX(cl::_sym_fixnum);
- SMART_PTR_FIX(llvmo::_sym_STARaSTAR);
- SMART_PTR_FIX(core::_sym_processDeclarations);
- SMART_PTR_FIX(gray::_sym_streamp);
- SMART_PTR_FIX(llvmo::_sym_Xor);
- SMART_PTR_FIX(kw::_sym_overwrite);
- SMART_PTR_FIX(llvmo::_sym_FunctionPass_O);
- SMART_PTR_FIX(chem::_sym_ConformationCollectionEntry_O);
- SMART_PTR_FIX(kw::_sym_greyF0);
- SMART_PTR_FIX(core::_sym_member1);
- SMART_PTR_FIX(sockets::_sym__PLUS_SO_LINGER_PLUS_);
- SMART_PTR_FIX(chem::_sym_IterateBonds_O);
- SMART_PTR_FIX(core::_sym_setupStackMonitor);
- SMART_PTR_FIX(core::_sym_reader_comma_form);
- SMART_PTR_FIX(core::_sym_read_list_allow_consing_dot);
- SMART_PTR_FIX(kw::_sym_downcase);
- SMART_PTR_FIX(chem::_sym_AGEdge_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_variable);
- SMART_PTR_FIX(cl::_sym_warning);
- SMART_PTR_FIX(chem::_sym_FFVdwDb_O);
- SMART_PTR_FIX(sockets::_sym__PLUS_ESOCKTNOSUPPORT_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_AttributeNoRedZone);
- SMART_PTR_FIX(core::_sym_instanceSig);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_friend);
- SMART_PTR_FIX(chem::_sym_SuperposeSelectedAtoms_O);
- SMART_PTR_FIX(cl::_sym_notany);
- SMART_PTR_FIX(sockets::_sym__PLUS_clasp_stream_mode_io_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_AttributeNoAlias);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_UnknownEnvironment);
- SMART_PTR_FIX(cl::_sym_string_downcase);
- SMART_PTR_FIX(cl::_sym_letSTAR);
- SMART_PTR_FIX(llvmo::_sym_disassembleSTAR);
- SMART_PTR_FIX(cl::_sym_tanh);
- SMART_PTR_FIX(core::_sym_STARbacktraceFrameSelectorHookSTAR);
- SMART_PTR_FIX(asttooling::_sym_ArgumentsAdjusterAdjust);
- SMART_PTR_FIX(clos::_sym_classp);
- SMART_PTR_FIX(core::_sym_STARcommandLineArgumentsSTAR);
- SMART_PTR_FIX(kw::_sym_restrained_pi_bonds);
- SMART_PTR_FIX(cl::_sym_leastNegativeShortFloat);
- SMART_PTR_FIX(core::_sym_STARargsSTAR);
- SMART_PTR_FIX(core::_sym_quasiquote);
- SMART_PTR_FIX(llvmo::_sym_Nand);
  SMART_PTR_FIX(chem::_sym_MapOfMonomerNamesToAtomIndexers_O);
- SMART_PTR_FIX(chemkw::_sym_rough);
- SMART_PTR_FIX(cl::_sym_logorc1);
- SMART_PTR_FIX(cl::_sym_keywordp);
- SMART_PTR_FIX(kw::_sym_left);
- SMART_PTR_FIX(core::_sym_get_sysprop);
- SMART_PTR_FIX(cl::_sym_multipleValueSetq);
- SMART_PTR_FIX(kw::_sym_ringTag);
- SMART_PTR_FIX(kw::_sym_message);
- SMART_PTR_FIX(cl::_sym_string_equal);
- SMART_PTR_FIX(llvmo::_sym_ExecutionEngine_O);
- SMART_PTR_FIX(gctools::_sym_STARallocPatternStackSTAR);
- SMART_PTR_FIX(cl::_sym_constantp);
- SMART_PTR_FIX(cl::_sym_charLessp);
- SMART_PTR_FIX(sockets::_sym_ll_strerror_errno);
- SMART_PTR_FIX(chem::_sym_RestrainedExoCyclicAtom_O);
- SMART_PTR_FIX(clos::_sym_compute_effective_method_function);
- SMART_PTR_FIX(chem::_sym_steepestDescentRunning);
- SMART_PTR_FIX(cl::_sym_throw);
- SMART_PTR_FIX(cl::_sym_leastPositiveNormalizedShortFloat);
- SMART_PTR_FIX(core::_sym_STARuseInterpreterForEvalSTAR);
- SMART_PTR_FIX(gray::_sym_stream_write_byte);
- SMART_PTR_FIX(cl::_sym_makeArray);
- SMART_PTR_FIX(llvmo::_sym_AttributeStackProtect);
- SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion8);
- SMART_PTR_FIX(core::_sym_initial_element);
- SMART_PTR_FIX(gctools::_sym_rampCollectAll);
- SMART_PTR_FIX(llvmo::_sym_Acquire);
- SMART_PTR_FIX(chem::_sym_SparseLargeSquareMatrix_O);
+ SMART_PTR_FIX(chem::_sym_restraintAnchor);
+ SMART_PTR_FIX(kw::_sym_ph0);
  SMART_PTR_FIX(llvmo::_sym_ResumeInst_O);
- SMART_PTR_FIX(chem::_sym_FFBaseDb_O);
- SMART_PTR_FIX(cl::_sym_boole_c1);
- SMART_PTR_FIX(cl::_sym_boole_and);
- SMART_PTR_FIX(cl::_sym_compileFile);
- SMART_PTR_FIX(cl::_sym_let);
- SMART_PTR_FIX(chem::_sym_AbstractLargeSquareMatrix_O);
- SMART_PTR_FIX(chem::_sym_Root_O);
- SMART_PTR_FIX(sockets::_sym__PLUS_clasp_stream_mode_output_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion10);
- SMART_PTR_FIX(clos::_sym_compute_applicable_methods_using_classes);
- SMART_PTR_FIX(gray::_sym_open_stream_p);
- SMART_PTR_FIX(cl::_sym_restart_bind);
- SMART_PTR_FIX(core::_sym_dot);
- SMART_PTR_FIX(llvmo::_sym_STARmostRecentLlvmFinalizationTimeSTAR);
- SMART_PTR_FIX(cl::_sym_writeChar);
- SMART_PTR_FIX(llvmo::_sym_makeStringGlobal);
- SMART_PTR_FIX(kw::_sym_type1);
+ SMART_PTR_FIX(core::_sym_globalFunction);
+ SMART_PTR_FIX(chem::_sym_atomFixed);
+ SMART_PTR_FIX(chem::_sym_superpose);
+ SMART_PTR_FIX(kw::_sym_Ptors);
+ SMART_PTR_FIX(kw::_sym_kb);
+ SMART_PTR_FIX(kw::_sym_configuration);
+ SMART_PTR_FIX(kw::_sym_left);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_constant);
+ SMART_PTR_FIX(chem::_sym_Atom_O);
  SMART_PTR_FIX(cl::_sym_string_GE_);
- SMART_PTR_FIX(cl::_sym_deleteFile);
- SMART_PTR_FIX(kw::_sym_file);
- SMART_PTR_FIX(kw::_sym_cyan);
- SMART_PTR_FIX(llvmo::_sym_BitCast);
- SMART_PTR_FIX(chem::_sym_CDBond_O);
- SMART_PTR_FIX(kw::_sym_ph2);
- SMART_PTR_FIX(llvmo::_sym_OSType_OpenBSD);
- SMART_PTR_FIX(cl::_sym_readerError);
- SMART_PTR_FIX(core::_sym_WrappedPointer_O);
- SMART_PTR_FIX(cffi::_sym_pointer);
- SMART_PTR_FIX(core::_sym_STARsourceDatabaseSTAR);
- SMART_PTR_FIX(kw::_sym_brcl);
- SMART_PTR_FIX(core::_sym__SHARP__BANG_);
- SMART_PTR_FIX(kw::_sym_ion);
- SMART_PTR_FIX(core::_sym_lookupSourceFileInfo);
- SMART_PTR_FIX(cl::_sym_charNotGreaterp);
- SMART_PTR_FIX(core::_sym_functionBlockName);
+ SMART_PTR_FIX(cl::_sym_leastPositiveLongFloat);
+ SMART_PTR_FIX(kw::_sym_restrained_pi_bonds);
+ SMART_PTR_FIX(llvmo::_sym_STARrunTimeExecutionEngineSTAR);
+ SMART_PTR_FIX(chem::_sym_AM1_BCC_ar5);
+ SMART_PTR_FIX(chem::_sym_ChemInfo_O);
+ SMART_PTR_FIX(cl::_sym_T_O);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_GNU_formal_parameter_pack);
+ SMART_PTR_FIX(sockets::_sym__PLUS_SO_TYPE_PLUS_);
+ SMART_PTR_FIX(cl::_sym_AMPallow_other_keys);
+ SMART_PTR_FIX(kw::_sym_directory);
+ SMART_PTR_FIX(chem::_sym_OutPlug_O);
+ SMART_PTR_FIX(sockets::_sym__PLUS_ECONNREFUSED_PLUS_);
+ SMART_PTR_FIX(chem::_sym_EnergyStretch_O);
+ SMART_PTR_FIX(llvmo::_sym_StructType_O);
+ SMART_PTR_FIX(cl::_sym_copyStructure);
  SMART_PTR_FIX(core::_sym_dlsym);
  SMART_PTR_FIX(core::_sym_STARprintPackageSTAR);
- SMART_PTR_FIX(cl::_sym_parseError);
- SMART_PTR_FIX(core::_sym_sharp_r);
- SMART_PTR_FIX(kw::_sym_external);
- SMART_PTR_FIX(core::_sym_stackUsed);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_variant);
- SMART_PTR_FIX(cl::_sym_string_GT_);
- SMART_PTR_FIX(cl::_sym_synonym_stream_symbol);
- SMART_PTR_FIX(cl::_sym_nextMethodP);
- SMART_PTR_FIX(cl::_sym_subtypep);
- SMART_PTR_FIX(core::_sym_SmallMultimap_O);
- SMART_PTR_FIX(llvmo::_sym_AttributeNonLazyBind);
- SMART_PTR_FIX(cl::_sym_variable);
- SMART_PTR_FIX(core::_sym_tsp);
- SMART_PTR_FIX(llvmo::_sym_ICMP_SGE);
- SMART_PTR_FIX(cl::_sym_STARmacroexpand_hookSTAR);
- SMART_PTR_FIX(units::_sym_kiloJoules_per_mole);
- SMART_PTR_FIX(core::_sym_UserData_O);
- SMART_PTR_FIX(llvmo::_sym_DW_LANG_C_plus_plus);
- SMART_PTR_FIX(core::_sym__PLUS_standardReadtable_PLUS_);
- SMART_PTR_FIX(kw::_sym_flags);
- SMART_PTR_FIX(llvmo::_sym_UIToFP);
- SMART_PTR_FIX(chemkw::_sym_3);
- SMART_PTR_FIX(core::_sym_invokeInternalDebugger);
- SMART_PTR_FIX(core::_sym_put_sysprop);
- SMART_PTR_FIX(kw::_sym_test);
- SMART_PTR_FIX(kw::_sym_Edep);
- SMART_PTR_FIX(core::_sym_asinh);
- SMART_PTR_FIX(core::_sym_exit);
- SMART_PTR_FIX(cl::_sym_Package_O);
- SMART_PTR_FIX(chemkw::_sym_S);
- SMART_PTR_FIX(cl::_sym_read_delimited_list);
- SMART_PTR_FIX(cffi::_sym_uint8);
- SMART_PTR_FIX(core::_sym_dispatch_macro_character);
- SMART_PTR_FIX(chem::_sym__PLUS_minimizerStatusConverter_PLUS_);
- SMART_PTR_FIX(cl::_sym_shadowing_import);
- SMART_PTR_FIX(cl::_sym_charNotEqual);
- SMART_PTR_FIX(core::_sym_bdsTop);
- SMART_PTR_FIX(llvmo::_sym_BlockAddress_O);
- SMART_PTR_FIX(llvmo::_sym_STARnumberOfLlvmFinalizationsSTAR);
- SMART_PTR_FIX(cl::_sym_digitCharP);
- SMART_PTR_FIX(kw::_sym_end);
- SMART_PTR_FIX(cl::_sym_asinh);
- SMART_PTR_FIX(cl::_sym_pathnameType);
- SMART_PTR_FIX(llvmo::_sym_VectorType_O);
- SMART_PTR_FIX(kw::_sym_weight);
- SMART_PTR_FIX(cl::_sym_logandc1);
- SMART_PTR_FIX(kw::_sym_tag2);
- SMART_PTR_FIX(sockets::_sym__PLUS_EPROTONOSUPPORT_PLUS_);
- SMART_PTR_FIX(cl::_sym_boole_nor);
- SMART_PTR_FIX(cl::_sym_streamp);
- SMART_PTR_FIX(kw::_sym_da);
- SMART_PTR_FIX(cl::_sym_printObject);
- SMART_PTR_FIX(kw::_sym_directory);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType);
- SMART_PTR_FIX(llvmo::_sym_ZExt);
- SMART_PTR_FIX(chem::_sym_CoordinateSystem_O);
- SMART_PTR_FIX(cl::_sym_leastNegativeNormalizedShortFloat);
- SMART_PTR_FIX(cl::_sym_integerp);
- SMART_PTR_FIX(core::_sym_STARsharp_equal_temp_tableSTAR);
- SMART_PTR_FIX(cl::_sym_intersection);
- SMART_PTR_FIX(kw::_sym_operation);
- SMART_PTR_FIX(core::_sym_serialize_xml);
- SMART_PTR_FIX(core::_sym_dladdr);
- SMART_PTR_FIX(core::_sym_findFileInLispPath);
- SMART_PTR_FIX(core::_sym_TagbodyFrame_O);
- SMART_PTR_FIX(cl::_sym_force_output);
- SMART_PTR_FIX(llvmo::_sym_TargetLibraryInfo_O);
- SMART_PTR_FIX(chem::_sym_AM1_BCC_ar5);
- SMART_PTR_FIX(llvmo::_sym_makeAPWidth);
- SMART_PTR_FIX(core::_sym_SourceFileInfo_O);
- SMART_PTR_FIX(cl::_sym_STARbreakOnSignalsSTAR);
- SMART_PTR_FIX(llvmo::_sym_writeBitcodeToFile);
- SMART_PTR_FIX(adapt::_sym_ObjectSet_O);
- SMART_PTR_FIX(llvmo::_sym_FCMP_UGE);
- SMART_PTR_FIX(chem::_sym_minimizerIdle);
- SMART_PTR_FIX(core::_sym__PLUS_ecl_syntax_progv_list_PLUS_);
- SMART_PTR_FIX(asttooling::_sym_run);
- SMART_PTR_FIX(core::_sym_STAReval_with_env_hookSTAR);
- SMART_PTR_FIX(sockets::_sym__PLUS_SO_REUSEPORT_PLUS_);
- SMART_PTR_FIX(cl::_sym_standardGenericFunction);
- SMART_PTR_FIX(llvmo::_sym_AttributeByVal);
- SMART_PTR_FIX(llvmo::_sym_VAArgInst_O);
- SMART_PTR_FIX(cl::_sym_load_time_value);
- SMART_PTR_FIX(sockets::_sym_ll_get_name_service_h_errno);
- SMART_PTR_FIX(cl::_sym_simple_vector);
- SMART_PTR_FIX(cl::_sym_stringRightTrim);
- SMART_PTR_FIX(cl::_sym_read_line);
- SMART_PTR_FIX(core::_sym_STARbq_quote_nilSTAR);
- SMART_PTR_FIX(ext::_sym_AnsiStream_O);
- SMART_PTR_FIX(core::_sym_environmentTypeList);
- SMART_PTR_FIX(kw::_sym_pos);
- SMART_PTR_FIX(llvmo::_sym_DICompileUnit_O);
- SMART_PTR_FIX(cl::_sym_acos);
- SMART_PTR_FIX(core::_sym_STARenvironmentPrintingTabSTAR);
- SMART_PTR_FIX(core::_sym_dlopen);
- SMART_PTR_FIX(comp::_sym_compileFormAndEvalWithEnv);
- SMART_PTR_FIX(chem::_sym_RestraintDihedral_O);
- SMART_PTR_FIX(cl::_sym_symbol_macrolet);
- SMART_PTR_FIX(core::_sym_STARexecutable_nameSTAR);
- SMART_PTR_FIX(cl::_sym_STARload_verboseSTAR);
- SMART_PTR_FIX(llvmo::_sym_UMax);
- SMART_PTR_FIX(cl::_sym_complexp);
- SMART_PTR_FIX(llvmo::_sym_ICMP_SLT);
- SMART_PTR_FIX(cl::_sym_Cons_O);
- SMART_PTR_FIX(llvmo::_sym_OSType_NVCL);
- SMART_PTR_FIX(gray::_sym_stream_write_string);
- SMART_PTR_FIX(cl::_sym_close);
- SMART_PTR_FIX(kw::_sym_priority);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_KalimbaSubArch_v5);
- SMART_PTR_FIX(core::_sym_STARcommandLineLoadEvalSequenceSTAR);
- SMART_PTR_FIX(cl::_sym_callArgumentsLimit);
- SMART_PTR_FIX(chemkw::_sym_4);
- SMART_PTR_FIX(llvmo::_sym__PLUS_ClaspMainFunctionName_PLUS_);
- SMART_PTR_FIX(chem::_sym_TypeAssignmentRules_O);
- SMART_PTR_FIX(cl::_sym_log);
- SMART_PTR_FIX(llvmo::_sym_Linker_O);
- SMART_PTR_FIX(cl::_sym_lambdaParametersLimit);
- SMART_PTR_FIX(chem::_sym_STARsybyl_type_assignment_rulesSTAR);
- SMART_PTR_FIX(core::_sym_intrusiveReferenceCountedPointer);
- SMART_PTR_FIX(chem::_sym_ChemDraw_O);
- SMART_PTR_FIX(core::_sym_STARenablePrintPrettySTAR);
- SMART_PTR_FIX(core::_sym_Reader_O);
- SMART_PTR_FIX(llvmo::_sym_OSType_IOS);
- SMART_PTR_FIX(kw::_sym_single_escape_character);
- SMART_PTR_FIX(gray::_sym_stream_read_char);
- SMART_PTR_FIX(core::_sym_libraryPath);
- SMART_PTR_FIX(core::_sym_sharp_asterisk);
- SMART_PTR_FIX(cl::_sym_simpleTypeError);
- SMART_PTR_FIX(adapt::_sym_SymbolSet_O);
- SMART_PTR_FIX(chem::_sym_RestraintAnchor_O);
- SMART_PTR_FIX(cffi::_sym_float);
- SMART_PTR_FIX(cl::_sym_keyword);
- SMART_PTR_FIX(kw::_sym_vdwMixRadius);
- SMART_PTR_FIX(kw::_sym_back);
- SMART_PTR_FIX(cl::_sym_apply);
- SMART_PTR_FIX(cl::_sym_defparameter);
- SMART_PTR_FIX(cl::_sym_setDispatchMacroCharacter);
- SMART_PTR_FIX(core::_sym_hash_equalp);
- SMART_PTR_FIX(core::_sym_okey);
- SMART_PTR_FIX(comp::_sym_implicit_compile_hook_default);
- SMART_PTR_FIX(cl::_sym_string);
- SMART_PTR_FIX(kw::_sym_host);
- SMART_PTR_FIX(chem::_sym_ConformationExplorerEntry_O);
- SMART_PTR_FIX(cl::_sym_rename_file);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_imported_declaration);
- SMART_PTR_FIX(kw::_sym_fully_buffered);
- SMART_PTR_FIX(units::_sym_kilojoule);
- SMART_PTR_FIX(chem::_sym_CandoDatabase_O);
- SMART_PTR_FIX(chem::_sym_Stereoisomer_O);
- SMART_PTR_FIX(kw::_sym_stretches);
- SMART_PTR_FIX(core::_sym_currentDir);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_lo_user);
- SMART_PTR_FIX(core::_sym_reader_quote);
- SMART_PTR_FIX(llvmo::_sym_OSType_AIX);
- SMART_PTR_FIX(core::_sym_toTaggedFixnum);
- SMART_PTR_FIX(kw::_sym_bondDistinctions);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v6m);
- SMART_PTR_FIX(cl::_sym_single_float);
- SMART_PTR_FIX(core::_sym_validFunctionNameP);
- SMART_PTR_FIX(sockets::_sym__PLUS_ENOMEM_PLUS_);
- SMART_PTR_FIX(core::_sym_structure_print_function);
- SMART_PTR_FIX(core::_sym_LexicalEnvironment_O);
- SMART_PTR_FIX(core::_sym_sourceFileName);
- SMART_PTR_FIX(cl::_sym_boole_xor);
- SMART_PTR_FIX(core::_sym_ihsNext);
- SMART_PTR_FIX(core::_sym_STARechoReplReadSTAR);
- SMART_PTR_FIX(kw::_sym_wild);
- SMART_PTR_FIX(llvmo::_sym_APInt_O);
- SMART_PTR_FIX(kw::_sym_radius);
- SMART_PTR_FIX(llvmo::_sym_DataLayout_O);
- SMART_PTR_FIX(core::_sym_Specializer_O);
- SMART_PTR_FIX(cl::_sym_copySeq);
- SMART_PTR_FIX(kw::_sym_eleDielectricValue);
- SMART_PTR_FIX(cl::_sym_charGreaterp);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_shared_type);
- SMART_PTR_FIX(llvmo::_sym_ArchType_ppc64);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_KalimbaSubArch_v3);
- SMART_PTR_FIX(chem::_sym_in8MemberRing);
- SMART_PTR_FIX(core::_sym_SingleDispatchMethod_O);
- SMART_PTR_FIX(cl::_sym_restart);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_CODE16);
- SMART_PTR_FIX(cl::_sym_broadcast_stream_streams);
- SMART_PTR_FIX(core::_sym_PosixTime_O);
- SMART_PTR_FIX(chemkw::_sym_doubleBond);
- SMART_PTR_FIX(llvmo::_sym_Sub);
- SMART_PTR_FIX(cl::_sym_directoryNamestring);
- SMART_PTR_FIX(llvmo::_sym_SExt);
- SMART_PTR_FIX(core::_sym_exportToPython);
- SMART_PTR_FIX(chemkw::_sym_dashedSingleBond);
- SMART_PTR_FIX(asttooling::_sym_VisitType);
- SMART_PTR_FIX(kw::_sym_alias);
- SMART_PTR_FIX(llvmo::_sym_ArchType_ppc);
- SMART_PTR_FIX(cl::_sym_some);
- SMART_PTR_FIX(kw::_sym_cConstants);
- SMART_PTR_FIX(chem::_sym_selected);
- SMART_PTR_FIX(cl::_sym_eval);
- SMART_PTR_FIX(core::_sym_streamColumn);
- SMART_PTR_FIX(llvmo::_sym_FCMP_TRUE);
- SMART_PTR_FIX(llvmo::_sym_makeAPInt1);
- SMART_PTR_FIX(chem::_sym_BondList_O);
- SMART_PTR_FIX(llvmo::_sym_URem);
- SMART_PTR_FIX(cl::_sym_char_EQ_);
- SMART_PTR_FIX(cl::_sym_Array_O);
- SMART_PTR_FIX(cl::_sym_error);
- SMART_PTR_FIX(cl::_sym_charDowncase);
- SMART_PTR_FIX(chem::_sym_ConformationExplorer_O);
- SMART_PTR_FIX(core::_sym_test_not);
- SMART_PTR_FIX(core::_sym_gdb);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_array_type);
- SMART_PTR_FIX(cl::_sym_notevery);
- SMART_PTR_FIX(llvmo::_sym_moduleFlagRequire);
- SMART_PTR_FIX(cl::_sym__LE_);
- SMART_PTR_FIX(core::_sym_STARtopLevelCommandHookSTAR);
- SMART_PTR_FIX(kw::_sym_expectedType);
- SMART_PTR_FIX(core::_sym_SaveArchive_O);
- SMART_PTR_FIX(gray::_sym_stream_line_column);
- SMART_PTR_FIX(kw::_sym_none);
- SMART_PTR_FIX(llvmo::_sym_MCSubtargetInfo_O);
- SMART_PTR_FIX(kw::_sym_supersede);
- SMART_PTR_FIX(core::_sym_loadBitcode);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v8);
- SMART_PTR_FIX(cl::_sym_nth);
- SMART_PTR_FIX(llvmo::_sym_VendorType);
- SMART_PTR_FIX(core::_sym_ensureSingleDispatchMethod);
- SMART_PTR_FIX(llvmo::_sym_OSType_UnknownOS);
- SMART_PTR_FIX(sockets::_sym_ll_socketBind_inetSocket);
- SMART_PTR_FIX(llvmo::_sym_CommonLinkage);
- SMART_PTR_FIX(core::_sym_LightUserData_O);
- SMART_PTR_FIX(kw::_sym_rename_and_delete);
- SMART_PTR_FIX(cl::_sym__MINUS_);
- SMART_PTR_FIX(core::_sym_environmentId);
- SMART_PTR_FIX(clos::_sym_aSingleClosSymbol);
- SMART_PTR_FIX(llvmo::_sym_LinkerPrivateWeakLinkage);
- SMART_PTR_FIX(cl::_sym_STARprint_gensymSTAR);
- SMART_PTR_FIX(chem::_sym_AfterMatchBondTest_O);
- SMART_PTR_FIX(cl::_sym_simple_bit_vector_p);
- SMART_PTR_FIX(cl::_sym__GE_);
- SMART_PTR_FIX(llvmo::_sym_FCMP_ULE);
- SMART_PTR_FIX(cl::_sym_symbolPackage);
- SMART_PTR_FIX(gray::_sym_stream_element_type);
- SMART_PTR_FIX(core::_sym_sharp_minus);
- SMART_PTR_FIX(chem::_sym_EnergyStretch_O);
- SMART_PTR_FIX(core::_sym_SingleDispatchGenericFunction_O);
- SMART_PTR_FIX(core::_sym_ensure_documentation);
- SMART_PTR_FIX(kw::_sym_local);
+ SMART_PTR_FIX(kw::_sym_tagbodyFrame);
+ SMART_PTR_FIX(cl::_sym_STARloadTruenameSTAR);
+ SMART_PTR_FIX(kw::_sym_FullDebug);
+ SMART_PTR_FIX(chem::_sym_PdbMonomerConnectivity_O);
+ SMART_PTR_FIX(kw::_sym_whitespace_character);
+ SMART_PTR_FIX(chem::_sym_InPlug_O);
+ SMART_PTR_FIX(kw::_sym_class);
  SMART_PTR_FIX(llvmo::_sym_FCMP_UGT);
- SMART_PTR_FIX(cl::_sym_revappend);
- SMART_PTR_FIX(kw::_sym_defaults);
- SMART_PTR_FIX(llvmo::_sym_AtomicRMWInst_O);
- SMART_PTR_FIX(llvmo::_sym_StructType_O);
- SMART_PTR_FIX(kw::_sym_rename);
- SMART_PTR_FIX(core::_sym_sharp_p);
- SMART_PTR_FIX(core::_sym_sharp_colon);
- SMART_PTR_FIX(chem::_sym_Topology_O);
- SMART_PTR_FIX(kw::_sym_cclasp);
- SMART_PTR_FIX(cl::_sym_mostNegativeDoubleFloat);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_type_unit);
- SMART_PTR_FIX(core::_sym_fromTaggedFixnum);
- SMART_PTR_FIX(clos::_sym_standardOptimizedWriterMethod);
- SMART_PTR_FIX(geom::_sym_CoordinateArray_O);
- SMART_PTR_FIX(chemkw::_sym__doubleBond);
- SMART_PTR_FIX(cl::_sym_AMPkey);
- SMART_PTR_FIX(llvmo::_sym_VendorType_MipsTechnologies);
- SMART_PTR_FIX(chem::_sym_OneMonomer_O);
- SMART_PTR_FIX(core::_sym_backquote_remove_tokens);
- SMART_PTR_FIX(cl::_sym_namestring);
- SMART_PTR_FIX(core::_sym_adjustVector);
- SMART_PTR_FIX(comp::_sym_STARlowLevelTracePrintSTAR);
- SMART_PTR_FIX(llvmo::_sym_Attribute_O);
- SMART_PTR_FIX(core::_sym_STARfset);
- SMART_PTR_FIX(cl::_sym_vector);
- SMART_PTR_FIX(cl::_sym_nstring_downcase);
- SMART_PTR_FIX(chem::_sym_RingClosingMate_O);
- SMART_PTR_FIX(chemkw::_sym_virtualBond);
- SMART_PTR_FIX(core::_sym_environmentActivationFrame);
- SMART_PTR_FIX(cl::_sym_define_modify_macro);
- SMART_PTR_FIX(kw::_sym_int);
- SMART_PTR_FIX(core::_sym_sharp_vertical_bar);
- SMART_PTR_FIX(cl::_sym_defvar);
- SMART_PTR_FIX(chem::_sym_MessageReport_O);
- SMART_PTR_FIX(kw::_sym_macro_function);
- SMART_PTR_FIX(chemkw::_sym_translate);
- SMART_PTR_FIX(llvmo::_sym_LShr);
- SMART_PTR_FIX(core::_sym_STARbackquote_expand_hookSTAR);
- SMART_PTR_FIX(cl::_sym_mapcan);
- SMART_PTR_FIX(llvmo::_sym_TargetOptions_O);
- SMART_PTR_FIX(kw::_sym_not);
+ SMART_PTR_FIX(ext::_sym_lexicalVar);
+ SMART_PTR_FIX(llvmo::_sym_moduleFlagOverride);
+ SMART_PTR_FIX(sockets::_sym__PLUS_EINVAL_PLUS_);
+ SMART_PTR_FIX(llvmo::_sym_ValueAsMetadataGet);
+ SMART_PTR_FIX(core::_sym_DirectoryEntry_O);
+ SMART_PTR_FIX(kw::_sym_key);
+ SMART_PTR_FIX(kw::_sym_print);
+ SMART_PTR_FIX(chem::_sym__PLUS_stereochemistryTypeConverter_PLUS_);
+ SMART_PTR_FIX(core::_sym_testVal);
+ SMART_PTR_FIX(core::_sym_anonymous);
+ SMART_PTR_FIX(llvmo::_sym_MDString_O);
+ SMART_PTR_FIX(kw::_sym_line_buffered);
+ SMART_PTR_FIX(llvmo::_sym_UnaryInstruction_O);
+ SMART_PTR_FIX(cl::_sym_directory);
+ SMART_PTR_FIX(cl::_sym_LogicalPathname_O);
+ SMART_PTR_FIX(chem::_sym_Structure_Old_List_O);
  SMART_PTR_FIX(gray::_sym_stream_unread_char);
- SMART_PTR_FIX(cl::_sym_makePackage);
- SMART_PTR_FIX(core::_sym_STARbq_listSTARSTAR);
- SMART_PTR_FIX(chemkw::_sym_F);
- SMART_PTR_FIX(kw::_sym_fileSeqNum);
- SMART_PTR_FIX(core::_sym_sharp_a);
- SMART_PTR_FIX(core::_sym_MacroletEnvironment_O);
- SMART_PTR_FIX(chem::_sym_FFTypesDb_O);
- SMART_PTR_FIX(cl::_sym_T_O);
- SMART_PTR_FIX(chem::_sym_STARVdwMixRadiusEnumConverterSTAR);
- SMART_PTR_FIX(llvmo::_sym_STARrunTimeExecutionEngineSTAR);
- SMART_PTR_FIX(core::_sym_backquote);
- SMART_PTR_FIX(core::_sym_GlueEnvironment_O);
- SMART_PTR_FIX(cl::_sym_print);
- SMART_PTR_FIX(kw::_sym_type2);
- SMART_PTR_FIX(cl::_sym_vectorPushExtend);
- SMART_PTR_FIX(kw::_sym_bclasp);
- SMART_PTR_FIX(core::_sym_CandoException_O);
- SMART_PTR_FIX(units::_sym_joule);
- SMART_PTR_FIX(units::_sym_kilograms);
+ SMART_PTR_FIX(ext::_sym_annotate);
+ SMART_PTR_FIX(cl::_sym_two_way_stream);
+ SMART_PTR_FIX(cl::_sym_string_NE_);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_hsail64);
+ SMART_PTR_FIX(llvmo::_sym_AttributeReadNone);
+ SMART_PTR_FIX(core::_sym_io);
+ SMART_PTR_FIX(chem::_sym_RestraintAngle_O);
+ SMART_PTR_FIX(core::_sym_argument_number_error);
+ SMART_PTR_FIX(ext::_sym_specialVar);
+ SMART_PTR_FIX(geom::_sym_colorTable);
+ SMART_PTR_FIX(cl::_sym_eval_when);
+ SMART_PTR_FIX(asttooling::_sym_onStartOfTranslationUnit);
+ SMART_PTR_FIX(llvmo::_sym_InsertPoint_O);
+ SMART_PTR_FIX(cl::_sym_remove);
+ SMART_PTR_FIX(core::_sym_setfElt);
+ SMART_PTR_FIX(cl::_sym_charUpcase);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_array_type);
+ SMART_PTR_FIX(geom::_sym_CoordinateArray_O);
+ SMART_PTR_FIX(units::_sym_elementaryCharge);
+ SMART_PTR_FIX(kw::_sym_assignType);
+ SMART_PTR_FIX(core::_sym_render);
+ SMART_PTR_FIX(llvmo::_sym_ConstantFP_O);
+ SMART_PTR_FIX(chem::_sym_configurationToSymbolConverter);
+ SMART_PTR_FIX(kw::_sym_vdwMixRadius);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_lo_user);
+ SMART_PTR_FIX(llvmo::_sym_DICompileUnit_O);
+ SMART_PTR_FIX(llvmo::_sym_AttributeNone);
+ SMART_PTR_FIX(core::_sym_database_dir);
+ SMART_PTR_FIX(cl::_sym_unuse_package);
+ SMART_PTR_FIX(cl::_sym_string);
+ SMART_PTR_FIX(kw::_sym_itors);
+ SMART_PTR_FIX(asttooling::_sym_CreateASTConsumer);
+ SMART_PTR_FIX(llvmo::_sym_Release);
+ SMART_PTR_FIX(chem::_sym_ConstitutionAtoms_O);
+ SMART_PTR_FIX(units::_sym_kelvin);
+ SMART_PTR_FIX(cl::_sym_string_LT_);
+ SMART_PTR_FIX(core::_sym_hash_equal);
+ SMART_PTR_FIX(chemkw::_sym_dashedDoubleBond);
+ SMART_PTR_FIX(cl::_sym_freshLine);
+ SMART_PTR_FIX(llvmo::_sym_FCMP_UNE);
+ SMART_PTR_FIX(core::_sym_forward_referenced_class);
+ SMART_PTR_FIX(chem::_sym_StructureComparer_O);
+ SMART_PTR_FIX(sockets::_sym__PLUS_NETDB_INTERNAL_PLUS_);
+ SMART_PTR_FIX(cl::_sym_nth);
+ SMART_PTR_FIX(cl::_sym_hash_table);
+ SMART_PTR_FIX(llvmo::_sym_OSType_Bitrig);
+ SMART_PTR_FIX(llvmo::_sym_ICMP_UGE);
+ SMART_PTR_FIX(core::_sym_SingleDispatchMethod_O);
+ SMART_PTR_FIX(llvmo::_sym_throwIfMismatchedStructureSizes);
+ SMART_PTR_FIX(cl::_sym_symbolPackage);
+ SMART_PTR_FIX(llvmo::_sym_SingleThread);
+ SMART_PTR_FIX(core::_sym_STARbq_appendSTAR);
+ SMART_PTR_FIX(kw::_sym_ph5);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_amdil);
+ SMART_PTR_FIX(cl::_sym_BuiltInClass_O);
+ SMART_PTR_FIX(core::_sym_evaluateVerbosity);
+ SMART_PTR_FIX(llvmo::_sym_AttributeNoInline);
  SMART_PTR_FIX(cl::_sym_eql);
- SMART_PTR_FIX(cl::_sym_provide);
- SMART_PTR_FIX(kw::_sym_attachedHs);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_GNU_template_template_param);
+ SMART_PTR_FIX(adapt::_sym_IndexedObjectBag_O);
+ SMART_PTR_FIX(cl::_sym_callNextMethod);
+ SMART_PTR_FIX(cl::_sym_string_upcase);
+ SMART_PTR_FIX(kw::_sym_vdwMixWell);
+ SMART_PTR_FIX(kw::_sym_eof);
+ SMART_PTR_FIX(kw::_sym_newest);
+ SMART_PTR_FIX(kw::_sym_gzip);
+ SMART_PTR_FIX(chemkw::_sym__aromaticBond);
+ SMART_PTR_FIX(chem::_sym_FFNonbondDb_O);
+ SMART_PTR_FIX(cl::_sym_mismatch);
+ SMART_PTR_FIX(core::_sym_structure_print_function);
+ SMART_PTR_FIX(cl::_sym_bit);
+ SMART_PTR_FIX(core::_sym_backquote_frob);
+ SMART_PTR_FIX(kw::_sym_constituent_character);
+ SMART_PTR_FIX(llvmo::_sym_StoreInst_O);
+ SMART_PTR_FIX(cl::_sym_aref);
+ SMART_PTR_FIX(core::_sym_instanceSet);
+ SMART_PTR_FIX(gray::_sym_stream_force_output);
+ SMART_PTR_FIX(kw::_sym_rings);
+ SMART_PTR_FIX(llvmo::_sym_Pass_O);
+ SMART_PTR_FIX(kw::_sym_green);
+ SMART_PTR_FIX(cffi::_sym_uint16);
+ SMART_PTR_FIX(cl::_sym_nreconc);
+ SMART_PTR_FIX(core::_sym__PLUS_numberOfFixedArguments_PLUS_);
+ SMART_PTR_FIX(chem::_sym_OligomerPart_Monomer_O);
+ SMART_PTR_FIX(sockets::_sym_ll_autoCloseTwoWayStream);
+ SMART_PTR_FIX(llvmo::_sym_VendorType_MipsTechnologies);
  SMART_PTR_FIX(clos::_sym_std_compute_effective_method);
- SMART_PTR_FIX(kw::_sym_grey10);
- SMART_PTR_FIX(cl::_sym_string_not_equal);
- SMART_PTR_FIX(cl::_sym_Complex_O);
- SMART_PTR_FIX(kw::_sym_orange);
- SMART_PTR_FIX(cl::_sym_listSTAR);
- SMART_PTR_FIX(chem::_sym_EnergyNonbond_O);
- SMART_PTR_FIX(cffi::_sym_void);
- SMART_PTR_FIX(cl::_sym_macroexpand);
- SMART_PTR_FIX(cl::_sym_optimize);
- SMART_PTR_FIX(cl::_sym_macroFunction);
- SMART_PTR_FIX(core::_sym_Regex_O);
- SMART_PTR_FIX(cl::_sym_leastPositiveNormalizedSingleFloat);
- SMART_PTR_FIX(core::_sym_key);
- SMART_PTR_FIX(chem::_sym_AtomId_O);
- SMART_PTR_FIX(llvmo::_sym_ObjectFormatType_COFF);
- SMART_PTR_FIX(llvmo::_sym_Xchg);
- SMART_PTR_FIX(llvmo::_sym_DebugLoc_O);
- SMART_PTR_FIX(chem::_sym_RestrainedPiBond_O);
- SMART_PTR_FIX(cl::_sym_copyList);
- SMART_PTR_FIX(core::_sym_lispCodePath);
- SMART_PTR_FIX(kw::_sym_residue_charge);
- SMART_PTR_FIX(cl::_sym_STARstandard_inputSTAR);
- SMART_PTR_FIX(core::_sym_file_kind);
- SMART_PTR_FIX(llvmo::_sym_CodeGenOpt);
- SMART_PTR_FIX(core::_sym_STARdocumentation_poolSTAR);
- SMART_PTR_FIX(llvmo::_sym_AttributeNoReturn);
- SMART_PTR_FIX(core::_sym_setCurrentWorkingDirectory);
- SMART_PTR_FIX(kw::_sym_ucs_4);
- SMART_PTR_FIX(core::_sym_LeafSNode_O);
- SMART_PTR_FIX(sockets::_sym__PLUS_SO_RCVTIMEO_PLUS_);
- SMART_PTR_FIX(cl::_sym_position);
- SMART_PTR_FIX(sockets::_sym__PLUS_sock_dgram_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_STARsynchronization_scopeSTAR);
- SMART_PTR_FIX(cl::_sym_fileNamestring);
- SMART_PTR_FIX(llvmo::_sym_AttributeSet_O);
- SMART_PTR_FIX(gray::_sym_stream_file_position);
- SMART_PTR_FIX(cl::_sym_boole_eqv);
- SMART_PTR_FIX(llvmo::_sym_FCMP_ORD);
- SMART_PTR_FIX(llvmo::_sym_LinkOnceODRLinkage);
- SMART_PTR_FIX(kw::_sym_apol);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v6);
+ SMART_PTR_FIX(cl::_sym_multipleValueSetq);
+ SMART_PTR_FIX(core::_sym_lookupLoadTimeValue);
+ SMART_PTR_FIX(kw::_sym_caps);
+ SMART_PTR_FIX(cl::_sym_Symbol_O);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_hsail);
+ SMART_PTR_FIX(llvmo::_sym_DW_LANG_C);
+ SMART_PTR_FIX(kw::_sym_probe);
+ SMART_PTR_FIX(cffi::_sym_ptrdiff);
+ SMART_PTR_FIX(kw::_sym_execute);
+ SMART_PTR_FIX(core::_sym_STARdebugReaderSTAR);
+ SMART_PTR_FIX(kw::_sym_common);
  SMART_PTR_FIX(sockets::_sym__PLUS_NETDB_SUCCESS_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_ArchType_UnknownArch);
- SMART_PTR_FIX(core::_sym_hash_eql);
- SMART_PTR_FIX(clbind::_sym_ClassRegistry_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_variant_part);
- SMART_PTR_FIX(cl::_sym_char_code);
- SMART_PTR_FIX(chemkw::_sym_XX);
- SMART_PTR_FIX(asttooling::_sym_AstVisitor_O);
- SMART_PTR_FIX(llvmo::_sym_ArchType_le32);
- SMART_PTR_FIX(core::_sym_alist);
- SMART_PTR_FIX(cl::_sym_nreverse);
- SMART_PTR_FIX(chem::_sym_ForceMatchReport_O);
- SMART_PTR_FIX(llvmo::_sym_LandingPadInst_O);
- SMART_PTR_FIX(chemkw::_sym_message);
+ SMART_PTR_FIX(cl::_sym_endp);
+ SMART_PTR_FIX(core::_sym_LambdaListHandler_O);
+ SMART_PTR_FIX(core::_sym_color);
+ SMART_PTR_FIX(core::_sym_loadTimeValuesIds);
+ SMART_PTR_FIX(clos::_sym_setFuncallableInstanceFunction);
+ SMART_PTR_FIX(cffi::_sym_PERCENTload_foreign_library);
+ SMART_PTR_FIX(core::_sym_eval_with_env_default);
+ SMART_PTR_FIX(llvmo::_sym_ArchType);
+ SMART_PTR_FIX(asttooling::_sym_run);
+ SMART_PTR_FIX(chem::_sym_StereoConfiguration_O);
+ SMART_PTR_FIX(cl::_sym_Rational_O);
+ SMART_PTR_FIX(cl::_sym_boole_orc1);
+ SMART_PTR_FIX(cl::_sym_array_rank_limit);
+ SMART_PTR_FIX(cl::_sym_logorc2);
+ SMART_PTR_FIX(core::_sym_end);
+ SMART_PTR_FIX(core::_sym_serialize);
+ SMART_PTR_FIX(cl::_sym_STARtrace_outputSTAR);
+ SMART_PTR_FIX(llvmo::_sym_FCMP_TRUE);
+ SMART_PTR_FIX(core::_sym_TagbodyFrame_O);
+ SMART_PTR_FIX(kw::_sym_attachedAtoms);
+ SMART_PTR_FIX(core::_sym_bq_bracket);
+ SMART_PTR_FIX(gray::_sym_stream_write_string);
+ SMART_PTR_FIX(llvmo::_sym_ObjectFormatType_COFF);
+ SMART_PTR_FIX(llvmo::_sym_interpreter);
+ SMART_PTR_FIX(llvmo::_sym_VendorType_UnknownVendor);
+ SMART_PTR_FIX(cl::_sym_STARstandard_outputSTAR);
+ SMART_PTR_FIX(core::_sym_STARtrace_startupSTAR);
+ SMART_PTR_FIX(cl::_sym_string_equal);
+ SMART_PTR_FIX(llvmo::_sym_FAdd);
+ SMART_PTR_FIX(core::_sym_SourceFileInfo_O);
+ SMART_PTR_FIX(sockets::_sym_ll_makeStreamFromFd);
+ SMART_PTR_FIX(cl::_sym_dynamic_extent);
+ SMART_PTR_FIX(cl::_sym_file_write_date);
+ SMART_PTR_FIX(chemkw::_sym_constitution);
+ SMART_PTR_FIX(cl::_sym__NE_);
+ SMART_PTR_FIX(adapt::_sym_SymbolSet_O);
+ SMART_PTR_FIX(cl::_sym_defconstant);
+ SMART_PTR_FIX(llvmo::_sym_FMul);
+ SMART_PTR_FIX(core::_sym_isNil);
+ SMART_PTR_FIX(cl::_sym_pathnameType);
+ SMART_PTR_FIX(llvmo::_sym_ICMP_SLT);
+ SMART_PTR_FIX(geom::_sym_OMatrix_O);
+ SMART_PTR_FIX(kw::_sym_id);
+ SMART_PTR_FIX(llvmo::_sym_PassManagerBuilder_O);
+ SMART_PTR_FIX(cl::_sym_callArgumentsLimit);
+ SMART_PTR_FIX(chem::_sym_UnknownConfiguration);
+ SMART_PTR_FIX(cl::_sym_generic_function);
+ SMART_PTR_FIX(core::_sym_invocationHistoryFrame);
+ SMART_PTR_FIX(core::_sym_smartPointerDetails);
+ SMART_PTR_FIX(cl::_sym_null);
+ SMART_PTR_FIX(chem::_sym_idle);
+ SMART_PTR_FIX(core::_sym_loadTimeValueArray);
+ SMART_PTR_FIX(llvmo::_sym_AttributeStackProtect);
+ SMART_PTR_FIX(cl::_sym_boole_set);
+ SMART_PTR_FIX(llvmo::_sym_PassManager_O);
+ SMART_PTR_FIX(chem::_sym_truncatedNewtonRunning);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_file_type);
+ SMART_PTR_FIX(cl::_sym_integerp);
+ SMART_PTR_FIX(chem::_sym_STARSabBondEnumConverterSTAR);
+ SMART_PTR_FIX(core::_sym_implementationClass);
+ SMART_PTR_FIX(core::_sym_ensureSingleDispatchMethod);
+ SMART_PTR_FIX(core::_sym_type_to_symbol);
+ SMART_PTR_FIX(cl::_sym_macroexpand);
+ SMART_PTR_FIX(core::_sym_runtimeEnvironment);
+ SMART_PTR_FIX(core::_sym_path);
+ SMART_PTR_FIX(chem::_sym_Alias_O);
+ SMART_PTR_FIX(units::_sym_kiloJoules_per_mole);
+ SMART_PTR_FIX(core::_sym_bformat);
+ SMART_PTR_FIX(clbind::_sym_STARtheClassRegistrySTAR);
+ SMART_PTR_FIX(cl::_sym_revappend);
+ SMART_PTR_FIX(sockets::_sym__PLUS_NO_ADDRESS_PLUS_);
+ SMART_PTR_FIX(kw::_sym_Types);
+ SMART_PTR_FIX(kw::_sym_constitutionAtoms);
+ SMART_PTR_FIX(cl::_sym_warning);
+ SMART_PTR_FIX(llvmo::_sym_Add);
+ SMART_PTR_FIX(cl::_sym_min);
+ SMART_PTR_FIX(chem::_sym_BondTest_O);
+ SMART_PTR_FIX(llvmo::_sym_Value_O);
+ SMART_PTR_FIX(cl::_sym_find_package);
+ SMART_PTR_FIX(cl::_sym_findSymbol);
+ SMART_PTR_FIX(kw::_sym_adjustable);
+ SMART_PTR_FIX(cl::_sym_character);
+ SMART_PTR_FIX(llvmo::_sym_AttributeSet_O);
+ SMART_PTR_FIX(cl::_sym_char_NE_);
+ SMART_PTR_FIX(core::_sym_backquote_append);
+ SMART_PTR_FIX(kw::_sym_macro);
+ SMART_PTR_FIX(kw::_sym_iclass);
+ SMART_PTR_FIX(sockets::_sym_ll_getSockoptInt);
+ SMART_PTR_FIX(chemkw::_sym_I);
+ SMART_PTR_FIX(chem::_sym_PathMessage_O);
+ SMART_PTR_FIX(cl::_sym_if);
+ SMART_PTR_FIX(chem::_sym_AbstractLargeSquareMatrix_O);
+ SMART_PTR_FIX(chem::_sym_StereoInformation_O);
+ SMART_PTR_FIX(cl::_sym_setq);
+ SMART_PTR_FIX(cl::_sym_charNotLessp);
+ SMART_PTR_FIX(kw::_sym_local);
+ SMART_PTR_FIX(cffi::_sym_PERCENTforeign_type_alignment);
+ SMART_PTR_FIX(comp::_sym_implicit_compile_hook_default);
+ SMART_PTR_FIX(chem::_sym_AtomIndexer_O);
+ SMART_PTR_FIX(llvmo::_sym_InternalLinkage);
+ SMART_PTR_FIX(llvmo::_sym_User_O);
+ SMART_PTR_FIX(cl::_sym_pathnameHost);
+ SMART_PTR_FIX(chem::_sym_MacroModelFile_O);
+ SMART_PTR_FIX(core::_sym_StrWithFillPtr_O);
+ SMART_PTR_FIX(chem::_sym_CalculatePositionAlongBond_O);
  SMART_PTR_FIX(core::_sym_FunctionValueEnvironment_O);
+ SMART_PTR_FIX(core::_sym_CxxClass_O);
+ SMART_PTR_FIX(kw::_sym_macro_function);
+ SMART_PTR_FIX(kw::_sym_firstTest);
+ SMART_PTR_FIX(llvmo::_sym_ReturnInst_O);
+ SMART_PTR_FIX(asttooling::_sym_HandleTranslationUnit);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_subprogram);
+ SMART_PTR_FIX(chemkw::_sym_singleBond);
+ SMART_PTR_FIX(core::_sym_printf);
+ SMART_PTR_FIX(kw::_sym_properties);
+ SMART_PTR_FIX(core::_sym_STARconsing_dot_allowedSTAR);
+ SMART_PTR_FIX(clos::_sym_classp);
+ SMART_PTR_FIX(sockets::_sym__PLUS_SO_DONTROUTE_PLUS_);
+ SMART_PTR_FIX(chemkw::_sym_XD);
+ SMART_PTR_FIX(core::_sym_environmentTypeList);
+ SMART_PTR_FIX(chem::_sym_TwisterDriver_O);
+ SMART_PTR_FIX(core::_sym_get_sysprop);
+ SMART_PTR_FIX(llvmo::_sym_ICMP_ULE);
+ SMART_PTR_FIX(kw::_sym_latin_1);
+ SMART_PTR_FIX(chemkw::_sym_3);
+ SMART_PTR_FIX(cffi::_sym_int8);
+ SMART_PTR_FIX(llvmo::_sym_STARglobal_value_linkage_typesSTAR);
+ SMART_PTR_FIX(kw::_sym_splatted);
+ SMART_PTR_FIX(core::_sym_DOT);
+ SMART_PTR_FIX(core::_sym_setThrowPosition);
+ SMART_PTR_FIX(core::_sym_STARsystem_defsetf_update_functionsSTAR);
+ SMART_PTR_FIX(kw::_sym_host);
+ SMART_PTR_FIX(cl::_sym_AMPkey);
+ SMART_PTR_FIX(llvmo::_sym_DISubroutineType_O);
+ SMART_PTR_FIX(cl::_sym_writeLine);
+ SMART_PTR_FIX(core::_sym_lookupLoadTimeSymbol);
+ SMART_PTR_FIX(cl::_sym_notany);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_string_type);
+ SMART_PTR_FIX(llvmo::_sym_MDNode_O);
+ SMART_PTR_FIX(gray::_sym_stream_read_sequence);
+ SMART_PTR_FIX(cffi::_sym_pointer);
+ SMART_PTR_FIX(core::_sym_pathnameTranslations);
+ SMART_PTR_FIX(chem::_sym_Molecule_O);
+ SMART_PTR_FIX(chemkw::_sym_message);
+ SMART_PTR_FIX(core::_sym_LexicalEnvironment_O);
+ SMART_PTR_FIX(cl::_sym_stringTrim);
+ SMART_PTR_FIX(cl::_sym_fixnum);
+ SMART_PTR_FIX(llvmo::_sym_makeAP64);
+ SMART_PTR_FIX(chem::_sym_in6MemberRing);
+ SMART_PTR_FIX(cl::_sym_condition);
+ SMART_PTR_FIX(core::_sym_intrusiveReferenceCountedPointer);
+ SMART_PTR_FIX(chemkw::_sym_rotate);
+ SMART_PTR_FIX(kw::_sym_changed);
+ SMART_PTR_FIX(cl::_sym_leastNegativeShortFloat);
+ SMART_PTR_FIX(cl::_sym_boole_eqv);
+ SMART_PTR_FIX(sockets::_sym_ff_listen);
+ SMART_PTR_FIX(cl::_sym_rename_file);
+ SMART_PTR_FIX(llvmo::_sym_PtrToInt);
+ SMART_PTR_FIX(llvmo::_sym_STARsynchronization_scopeSTAR);
+ SMART_PTR_FIX(kw::_sym_aquamarine);
+ SMART_PTR_FIX(kw::_sym_ph3);
+ SMART_PTR_FIX(chemkw::_sym_virtualBond);
+ SMART_PTR_FIX(llvmo::_sym_STARCmpInstPredicateSTAR);
+ SMART_PTR_FIX(core::_sym_STARdocumentation_poolSTAR);
+ SMART_PTR_FIX(cl::_sym_ConcatenatedStream_O);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_spir64);
+ SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v7em);
+ SMART_PTR_FIX(kw::_sym_eleDielectricValue);
+ SMART_PTR_FIX(cl::_sym_STARprint_right_marginSTAR);
+ SMART_PTR_FIX(kw::_sym_pdb_template);
+ SMART_PTR_FIX(kw::_sym_rtld_next);
+ SMART_PTR_FIX(kw::_sym_unrecognizedKeyword);
+ SMART_PTR_FIX(cl::_sym_boole_c1);
+ SMART_PTR_FIX(cl::_sym_defsetf);
+ SMART_PTR_FIX(llvmo::_sym_CodeGenOpt_Default);
+ SMART_PTR_FIX(cl::_sym_let);
+ SMART_PTR_FIX(core::_sym__PLUS_standardReadtable_PLUS_);
+ SMART_PTR_FIX(llvmo::_sym_STARatomic_orderingSTAR);
+ SMART_PTR_FIX(cl::_sym_make_list);
+ SMART_PTR_FIX(core::_sym_functionBlockName);
+ SMART_PTR_FIX(serveEvent::_sym_ll_fd_set);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_access_declaration);
+ SMART_PTR_FIX(kw::_sym_bonds);
+ SMART_PTR_FIX(llvmo::_sym_FIRST_FCMP_PREDICATE);
+ SMART_PTR_FIX(core::_sym_acos);
+ SMART_PTR_FIX(core::_sym_Instance_O);
+ SMART_PTR_FIX(sockets::_sym__PLUS_clasp_stream_mode_input_PLUS_);
+ SMART_PTR_FIX(core::_sym_separatePairList);
+ SMART_PTR_FIX(cl::_sym__EQ_);
+ SMART_PTR_FIX(chemkw::_sym_S);
+ SMART_PTR_FIX(llvmo::_sym_FCMP_OEQ);
+ SMART_PTR_FIX(core::_sym_Environment_O);
+ SMART_PTR_FIX(cl::_sym_decodeFloat);
+ SMART_PTR_FIX(cl::_sym_shadowing_import);
+ SMART_PTR_FIX(core::_sym_key);
+ SMART_PTR_FIX(kw::_sym_rtld_main_only);
+ SMART_PTR_FIX(cl::_sym_probe_file);
+ SMART_PTR_FIX(core::_sym_setRunTimeValuesVector);
+ SMART_PTR_FIX(core::_sym_STARstandard_readtableSTAR);
+ SMART_PTR_FIX(cl::_sym_charNotGreaterp);
+ SMART_PTR_FIX(chemkw::_sym__doubleBond);
+ SMART_PTR_FIX(kw::_sym_tag2);
+ SMART_PTR_FIX(llvmo::_sym_DICompositeType_O);
+ SMART_PTR_FIX(llvmo::_sym_ConstantArray_O);
+ SMART_PTR_FIX(llvmo::_sym_APInt_O);
+ SMART_PTR_FIX(cl::_sym_catch);
+ SMART_PTR_FIX(kw::_sym_wildDict);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_common_inclusion);
+ SMART_PTR_FIX(cl::_sym_nextMethodP);
+ SMART_PTR_FIX(llvmo::_sym_OSType);
+ SMART_PTR_FIX(cl::_sym_variable);
+ SMART_PTR_FIX(llvmo::_sym_EnvironmentType);
+ SMART_PTR_FIX(chem::_sym_minimizerSucceeded);
+ SMART_PTR_FIX(kw::_sym_givenNumberOfArguments);
+ SMART_PTR_FIX(llvmo::_sym_STARglobal_ThreadLocalModesSTAR);
+ SMART_PTR_FIX(cl::_sym_STARmacroexpand_hookSTAR);
+ SMART_PTR_FIX(core::_sym_ValueEnvironment_O);
+ SMART_PTR_FIX(chemkw::_sym__tripleBond);
+ SMART_PTR_FIX(chem::_sym_TagSet_O);
+ SMART_PTR_FIX(core::_sym_STARechoReplReadSTAR);
+ SMART_PTR_FIX(cl::_sym_makePathname);
+ SMART_PTR_FIX(llvmo::_sym_VendorType_NVIDIA);
+ SMART_PTR_FIX(cl::_sym_lcm);
+ SMART_PTR_FIX(core::_sym_STARprint_structureSTAR);
+ SMART_PTR_FIX(kw::_sym_coral);
+ SMART_PTR_FIX(units::_sym_kilojoules);
+ SMART_PTR_FIX(cl::_sym_STARprint_linesSTAR);
+ SMART_PTR_FIX(core::_sym_instanceClass);
+ SMART_PTR_FIX(asttooling::_sym_onEndOfTranslationUnit);
+ SMART_PTR_FIX(cl::_sym_extended_char);
+ SMART_PTR_FIX(chem::_sym_CandoDatabase_O);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_mips64);
+ SMART_PTR_FIX(chem::_sym_BondList_O);
+ SMART_PTR_FIX(llvmo::_sym_OSType_AIX);
+ SMART_PTR_FIX(cl::_sym_logandc1);
+ SMART_PTR_FIX(core::_sym_STARsharp_equal_alistSTAR);
+ SMART_PTR_FIX(core::_sym_STARenvironmentPrintingTabIncrementSTAR);
+ SMART_PTR_FIX(llvmo::_sym_DIDescriptor_O);
+ SMART_PTR_FIX(cl::_sym_conjugate);
+ SMART_PTR_FIX(llvmo::_sym_IndirectBrInst_O);
+ SMART_PTR_FIX(kw::_sym_none);
+ SMART_PTR_FIX(llvmo::_sym_AttributeInReg);
+ SMART_PTR_FIX(chem::_sym_Trajectory_O);
+ SMART_PTR_FIX(kw::_sym_ringTag);
+ SMART_PTR_FIX(cl::_sym_arrayDimensionLimit);
+ SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion10);
+ SMART_PTR_FIX(core::_sym_rem_record_field);
+ SMART_PTR_FIX(llvmo::_sym_AttributeReadOnly);
+ SMART_PTR_FIX(gray::_sym_stream_read_char_no_hang);
+ SMART_PTR_FIX(chemkw::_sym_6);
+ SMART_PTR_FIX(cl::_sym_force_output);
+ SMART_PTR_FIX(core::_sym_ArrayDisplaced_O);
+ SMART_PTR_FIX(cl::_sym_streamp);
+ SMART_PTR_FIX(core::_sym_invokeInternalDebuggerFromGdb);
+ SMART_PTR_FIX(cleavirPrimops::_sym_callWithVariableBound);
+ SMART_PTR_FIX(kw::_sym_v4);
+ SMART_PTR_FIX(kw::_sym_tag);
+ SMART_PTR_FIX(chem::_sym_STARLogicalOperatorTypeConverterSTAR);
+ SMART_PTR_FIX(chem::_sym_SmartsRoot_O);
+ SMART_PTR_FIX(core::_sym_sharp_minus);
+ SMART_PTR_FIX(kw::_sym_compile_toplevel);
+ SMART_PTR_FIX(kw::_sym_new_version);
+ SMART_PTR_FIX(cl::_sym_StructureObject_O);
+ SMART_PTR_FIX(llvmo::_sym_DILexicalBlock_O);
+ SMART_PTR_FIX(kw::_sym_type1);
+ SMART_PTR_FIX(cl::_sym_compileFile);
+ SMART_PTR_FIX(llvmo::_sym_AttributeNoCapture);
+ SMART_PTR_FIX(kw::_sym_ar4);
+ SMART_PTR_FIX(llvmo::_sym_EnvironmentType_GNU);
+ SMART_PTR_FIX(cl::_sym_disassemble);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_spir);
+ SMART_PTR_FIX(chem::_sym_LinearAngleError);
+ SMART_PTR_FIX(llvmo::_sym_VendorType);
+ SMART_PTR_FIX(llvmo::_sym_Metadata_O);
+ SMART_PTR_FIX(kw::_sym_or);
+ SMART_PTR_FIX(core::_sym_reader_list_allow_consing_dot);
+ SMART_PTR_FIX(gray::_sym_open_stream_p);
+ SMART_PTR_FIX(chem::_sym_Restraint_O);
+ SMART_PTR_FIX(llvmo::_sym_VendorType_CSR);
+ SMART_PTR_FIX(gctools::_sym_rampCollectAll);
+ SMART_PTR_FIX(cl::_sym_acos);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_typedef);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_thumbeb);
+ SMART_PTR_FIX(llvmo::_sym_CodeGenFileType_Null);
+ SMART_PTR_FIX(comp::_sym_STARall_functions_for_one_compileSTAR);
+ SMART_PTR_FIX(cl::_sym_nil);
+ SMART_PTR_FIX(cl::_sym_STARprint_prettySTAR);
+ SMART_PTR_FIX(cl::_sym_mostNegativeLongFloat);
+ SMART_PTR_FIX(serveEvent::_sym_ll_serveEventWithTimeout);
+ SMART_PTR_FIX(kw::_sym_fileSeqNum);
+ SMART_PTR_FIX(chem::_sym__PLUS_validChemdrawKeywords_PLUS_);
+ SMART_PTR_FIX(ext::_sym_getenv);
+ SMART_PTR_FIX(chem::_sym_ZMatrixDihedralInternal_O);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_restrict_type);
+ SMART_PTR_FIX(cl::_sym_wildPathnameP);
+ SMART_PTR_FIX(llvmo::_sym__PLUS_DebugMetadataVersion_PLUS_);
+ SMART_PTR_FIX(chem::_sym_RingClosingMate_O);
+ SMART_PTR_FIX(kw::_sym_stretches);
+ SMART_PTR_FIX(llvmo::_sym_EnvironmentType_GNUEABI);
+ SMART_PTR_FIX(kw::_sym_message);
+ SMART_PTR_FIX(llvmo::_sym_ObjectFormatType_MachO);
+ SMART_PTR_FIX(cl::_sym_shadow);
+ SMART_PTR_FIX(core::_sym_adjustable);
+ SMART_PTR_FIX(cl::_sym_package_shadowing_symbols);
+ SMART_PTR_FIX(cl::_sym_Function_O);
+ SMART_PTR_FIX(kw::_sym_cConstants);
+ SMART_PTR_FIX(chemkw::_sym_Br);
+ SMART_PTR_FIX(core::_sym_sharp_o);
+ SMART_PTR_FIX(core::_sym_sharp_plus);
+ SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v5te);
+ SMART_PTR_FIX(cl::_sym_case);
+ SMART_PTR_FIX(llvmo::_sym_MCSubtargetInfo_O);
+ SMART_PTR_FIX(chemkw::_sym_P);
+ SMART_PTR_FIX(llvmo::_sym_CallInst_O);
+ SMART_PTR_FIX(gray::_sym_stream_listen);
+ SMART_PTR_FIX(chem::_sym_in5MemberRing);
+ SMART_PTR_FIX(chem::_sym_EnergyImproperRestraint_O);
+ SMART_PTR_FIX(core::_sym_SourcePosInfo_O);
+ SMART_PTR_FIX(cl::_sym_keyword);
+ SMART_PTR_FIX(cl::_sym_copySeq);
+ SMART_PTR_FIX(cl::_sym_lognor);
+ SMART_PTR_FIX(cl::_sym_concatenated_stream_streams);
+ SMART_PTR_FIX(core::_sym_backquote_bracket);
+ SMART_PTR_FIX(core::_sym_reader_skip_semicolon_comment);
+ SMART_PTR_FIX(cl::_sym_setDispatchMacroCharacter);
+ SMART_PTR_FIX(llvmo::_sym_OSType_Win32);
+ SMART_PTR_FIX(cl::_sym_boole_clr);
+ SMART_PTR_FIX(kw::_sym_version);
+ SMART_PTR_FIX(core::_sym_STARsharp_sharp_alistSTAR);
+ SMART_PTR_FIX(core::_sym_monitorReader);
+ SMART_PTR_FIX(chem::_sym_FFParameter_O);
+ SMART_PTR_FIX(chemkw::_sym_scale);
+ SMART_PTR_FIX(kw::_sym_cyan);
+ SMART_PTR_FIX(core::_sym_reader_comma_form);
+ SMART_PTR_FIX(ext::_sym_truly_the);
+ SMART_PTR_FIX(chem::_sym_ForceField_O);
+ SMART_PTR_FIX(units::_sym_kilometers);
+ SMART_PTR_FIX(kw::_sym_target_os_darwin);
+ SMART_PTR_FIX(cl::_sym_tagbody);
+ SMART_PTR_FIX(core::_sym_sharp_single_quote);
+ SMART_PTR_FIX(core::_sym_STAReval_with_env_hookSTAR);
+ SMART_PTR_FIX(gray::_sym_streamp);
+ SMART_PTR_FIX(chem::_sym_in3MemberRing);
+ SMART_PTR_FIX(sockets::_sym_ll_nonBlockingMode);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_variant_part);
+ SMART_PTR_FIX(core::_sym_mpi_size);
+ SMART_PTR_FIX(core::_sym_acosh);
+ SMART_PTR_FIX(ext::_sym_STARloadHooksSTAR);
+ SMART_PTR_FIX(core::_sym_slBoundp);
+ SMART_PTR_FIX(cl::_sym_debug);
+ SMART_PTR_FIX(cl::_sym_pathnamep);
+ SMART_PTR_FIX(comp::_sym_STARlowLevelTracePrintSTAR);
+ SMART_PTR_FIX(kw::_sym_atomicNumber);
+ SMART_PTR_FIX(cffi::_sym_uint32);
+ SMART_PTR_FIX(kw::_sym_fillPointer);
+ SMART_PTR_FIX(chem::_sym_MinimizerError);
+ SMART_PTR_FIX(cl::_sym_random);
+ SMART_PTR_FIX(cl::_sym_leastNegativeNormalizedShortFloat);
+ SMART_PTR_FIX(core::_sym_STARmonitorRegisterSourceInfoSTAR);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_template_value_parameter);
+ SMART_PTR_FIX(core::_sym_SourceManager_O);
+ SMART_PTR_FIX(sockets::_sym_ll_socketReceive);
+ SMART_PTR_FIX(core::_sym_record_field);
+ SMART_PTR_FIX(cl::_sym_echo_stream_output_stream);
+ SMART_PTR_FIX(kw::_sym_Info);
+ SMART_PTR_FIX(cl::_sym_STARloadPathnameSTAR);
+ SMART_PTR_FIX(cl::_sym_apply);
+ SMART_PTR_FIX(cl::_sym__LT_);
+ SMART_PTR_FIX(cl::_sym_charGreaterp);
+ SMART_PTR_FIX(llvmo::_sym_CodeGenOpt_None);
+ SMART_PTR_FIX(chem::_sym_iterateMatterSymbolConverter);
+ SMART_PTR_FIX(cl::_sym_logical_pathname);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_union_type);
+ SMART_PTR_FIX(core::_sym_STARallCxxClassesSTAR);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_label);
+ SMART_PTR_FIX(core::_sym_symbolMacroletLambda);
+ SMART_PTR_FIX(cl::_sym_logxor);
+ SMART_PTR_FIX(cl::_sym_acons);
+ SMART_PTR_FIX(cl::_sym_AMPoptional);
+ SMART_PTR_FIX(kw::_sym_special);
+ SMART_PTR_FIX(sockets::_sym_ll_setfNonBlockingMode);
+ SMART_PTR_FIX(cl::_sym_complex);
+ SMART_PTR_FIX(core::_sym_evaluateDepth);
+ SMART_PTR_FIX(core::_sym_STARsilentStartupSTAR);
+ SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v6m);
+ SMART_PTR_FIX(kw::_sym_orange);
+ SMART_PTR_FIX(cl::_sym_progn);
+ SMART_PTR_FIX(sockets::_sym__PLUS_EAGAIN_PLUS_);
+ SMART_PTR_FIX(llvmo::_sym_DataLayout_O);
+ SMART_PTR_FIX(chemkw::_sym_doubleBond);
+ SMART_PTR_FIX(chem::_sym_minimizerIdle);
+ SMART_PTR_FIX(cl::_sym__GT_);
+ SMART_PTR_FIX(chemkw::_sym_Z);
+ SMART_PTR_FIX(cl::_sym_mergePathnames);
+ SMART_PTR_FIX(chem::_sym__PLUS_minimizerStatusConverter_PLUS_);
+ SMART_PTR_FIX(core::_sym_HashTableEqual_O);
+ SMART_PTR_FIX(core::_sym___init__);
+ SMART_PTR_FIX(chemkw::_sym__dashedSingleBond);
+ SMART_PTR_FIX(cl::_sym_charDowncase);
+ SMART_PTR_FIX(core::_sym_STARcurrentSourceFileInfoSTAR);
+ SMART_PTR_FIX(cl::_sym_floatingPointUnderflow);
+ SMART_PTR_FIX(cl::_sym_simple_vector_p);
+ SMART_PTR_FIX(llvmo::_sym_EnvironmentType_Android);
+ SMART_PTR_FIX(cl::_sym_notevery);
+ SMART_PTR_FIX(llvmo::_sym_SExt);
+ SMART_PTR_FIX(cl::_sym__LE_);
+ SMART_PTR_FIX(core::_sym_default);
+ SMART_PTR_FIX(cl::_sym_make_string);
+ SMART_PTR_FIX(core::_sym_RecursiveDirectoryIterator_O);
+ SMART_PTR_FIX(core::_sym_dot);
+ SMART_PTR_FIX(llvmo::_sym_InitialExecTLSModel);
+ SMART_PTR_FIX(kw::_sym_int);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_enumerator);
+ SMART_PTR_FIX(cffi::_sym_foreign_symbol_pointer);
+ SMART_PTR_FIX(llvmo::_sym_ConstantDataSequential_O);
+ SMART_PTR_FIX(kw::_sym_if_exists);
+ SMART_PTR_FIX(cl::_sym_mostNegativeShortFloat);
+ SMART_PTR_FIX(asttooling::_sym_VisitDecl);
+ SMART_PTR_FIX(kw::_sym_address_model_32);
+ SMART_PTR_FIX(core::_sym_item);
+ SMART_PTR_FIX(ext::_sym_byte8);
+ SMART_PTR_FIX(sockets::_sym_ll_socketPeername_inetSocket);
+ SMART_PTR_FIX(cffi::_sym_PERCENTsetf_mem_ref);
+ SMART_PTR_FIX(sockets::_sym__PLUS_clasp_stream_mode_io_PLUS_);
+ SMART_PTR_FIX(cl::_sym__MINUS_);
+ SMART_PTR_FIX(cl::_sym_RandomState_O);
+ SMART_PTR_FIX(cl::_sym_satisfies);
+ SMART_PTR_FIX(core::_sym_STARserializerArchiveSTAR);
+ SMART_PTR_FIX(core::_sym_InvocationHistoryFrameIterator_O);
+ SMART_PTR_FIX(cl::_sym_leastPositiveNormalizedShortFloat);
+ SMART_PTR_FIX(cl::_sym_Array_O);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_subroutine_type);
+ SMART_PTR_FIX(kw::_sym_chemdraw_dashed_bond);
+ SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion6);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_try_block);
+ SMART_PTR_FIX(cl::_sym_storageCondition);
+ SMART_PTR_FIX(llvmo::_sym_moduleFlagError);
+ SMART_PTR_FIX(llvmo::_sym_AttributeNoAlias);
+ SMART_PTR_FIX(kw::_sym_vdw);
+ SMART_PTR_FIX(core::_sym_STARbacktraceFrameSelectorHookSTAR);
+ SMART_PTR_FIX(cl::_sym_interactive_stream_p);
+ SMART_PTR_FIX(gray::_sym_close);
+ SMART_PTR_FIX(kw::_sym_mass);
+ SMART_PTR_FIX(chem::_sym_EnergyAnchorRestraint_O);
+ SMART_PTR_FIX(kw::_sym_requiredNumberOfArguments);
+ SMART_PTR_FIX(core::_sym_probe);
+ SMART_PTR_FIX(kw::_sym_grey10);
+ SMART_PTR_FIX(chem::_sym__PLUS_bondOrderToSymbolConverter_PLUS_);
+ SMART_PTR_FIX(cl::_sym_unwind_protect);
+ SMART_PTR_FIX(gray::_sym_output_stream_p);
+ SMART_PTR_FIX(chem::_sym_AGEdge_O);
+ SMART_PTR_FIX(cl::_sym_peekChar);
+ SMART_PTR_FIX(gray::_sym_stream_write_char);
+ SMART_PTR_FIX(core::_sym_allocateRawClass);
+ SMART_PTR_FIX(ext::_sym_integer8);
+ SMART_PTR_FIX(cl::_sym_two_way_stream_input_stream);
+ SMART_PTR_FIX(cl::_sym_typeError);
+ SMART_PTR_FIX(cl::_sym_mostNegativeDoubleFloat);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_nvptx);
+ SMART_PTR_FIX(cl::_sym_hash_table_p);
+ SMART_PTR_FIX(core::_sym_mpi_rank);
+ SMART_PTR_FIX(core::_sym_generic);
+ SMART_PTR_FIX(cl::_sym_STARprint_arraySTAR);
+ SMART_PTR_FIX(kw::_sym_type4);
+ SMART_PTR_FIX(kw::_sym_function);
+ SMART_PTR_FIX(cl::_sym_finish_output);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_rvalue_reference_type);
+ SMART_PTR_FIX(core::_sym_gdbInspect);
+ SMART_PTR_FIX(llvmo::_sym_UMax);
+ SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v7s);
+ SMART_PTR_FIX(cl::_sym_define_modify_macro);
+ SMART_PTR_FIX(core::_sym_singleDispatchWrongNumberArgumentsError);
+ SMART_PTR_FIX(core::_sym_HashTableEq_O);
+ SMART_PTR_FIX(cl::_sym_string_not_lessp);
+ SMART_PTR_FIX(llvmo::_sym_OSType_RTEMS);
+ SMART_PTR_FIX(kw::_sym_lf);
+ SMART_PTR_FIX(core::_sym_ensureSingleDispatchGenericFunction);
+ SMART_PTR_FIX(chem::_sym_RestrainedExoCyclicAtom_O);
+ SMART_PTR_FIX(ext::_sym__PLUS_processErrorOutput_PLUS_);
+ SMART_PTR_FIX(cl::_sym_type_of);
+ SMART_PTR_FIX(core::_sym_loadBundle);
+ SMART_PTR_FIX(core::_sym_Pointer_O);
+ SMART_PTR_FIX(chem::_sym_StatusTracker_O);
+ SMART_PTR_FIX(cl::_sym_STARerror_outputSTAR);
+ SMART_PTR_FIX(cl::_sym_safety);
+ SMART_PTR_FIX(llvmo::_sym_NotThreadLocal);
+ SMART_PTR_FIX(sockets::_sym_ll_setSockoptLinger);
+ SMART_PTR_FIX(llvmo::_sym_ExecutionEngine_O);
+ SMART_PTR_FIX(chem::_sym_ZMatrixInternal_O);
+ SMART_PTR_FIX(core::_sym_STARnotify_on_compileSTAR);
+ SMART_PTR_FIX(cl::_sym_vectorPushExtend);
+ SMART_PTR_FIX(llvmo::_sym_CrossThread);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_namelist_item);
+ SMART_PTR_FIX(chem::_sym_Logical_O);
+ SMART_PTR_FIX(llvmo::_sym_FCMP_OLT);
+ SMART_PTR_FIX(chem::_sym_LinearImproperRestraintError);
+ SMART_PTR_FIX(llvmo::_sym_AttributeStackAlignment);
+ SMART_PTR_FIX(core::_sym_GlueEnvironment_O);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_APPLE_property);
+ SMART_PTR_FIX(chem::_sym_ConformationCollectionEntry_O);
+ SMART_PTR_FIX(sockets::_sym_socketPeername_localSocket);
+ SMART_PTR_FIX(kw::_sym_position);
+ SMART_PTR_FIX(llvmo::_sym_BranchInst_O);
+ SMART_PTR_FIX(core::_sym_setupStackMonitor);
+ SMART_PTR_FIX(cl::_sym_listSTAR);
+ SMART_PTR_FIX(gctools::_sym_ramp);
+ SMART_PTR_FIX(llvmo::_sym_VendorType_Freescale);
+ SMART_PTR_FIX(cl::_sym_mostPositiveDoubleFloat);
+ SMART_PTR_FIX(core::_sym_makeStringOutputStream);
+ SMART_PTR_FIX(cl::_sym_optimize);
+ SMART_PTR_FIX(cl::_sym_readCharNoHang);
+ SMART_PTR_FIX(kw::_sym_use_boehm);
+ SMART_PTR_FIX(core::_sym_mpi_enabled);
+ SMART_PTR_FIX(cl::_sym_leastPositiveNormalizedSingleFloat);
+ SMART_PTR_FIX(chemkw::_sym_hydrogenBond);
+ SMART_PTR_FIX(asttooling::_sym_create);
+ SMART_PTR_FIX(kw::_sym_NetCharge);
+ SMART_PTR_FIX(llvmo::_sym_writeIrToFile);
+ SMART_PTR_FIX(chem::_sym_AtomReference_O);
+ SMART_PTR_FIX(cl::_sym_STARstandard_inputSTAR);
+ SMART_PTR_FIX(llvmo::_sym_LinkOnceODRAutoHideLinkage);
+ SMART_PTR_FIX(core::_sym_STARdebugInterpretedClosureSTAR);
+ SMART_PTR_FIX(chem::_sym_RingTest_O);
+ SMART_PTR_FIX(core::_sym_CxxObject_O);
+ SMART_PTR_FIX(gctools::_sym_STARallocPatternStackSTAR);
+ SMART_PTR_FIX(kw::_sym_operation);
+ SMART_PTR_FIX(llvmo::_sym_UIToFP);
+ SMART_PTR_FIX(llvmo::_sym_AtomicCmpXchgInst_O);
+ SMART_PTR_FIX(core::_sym_LoadTimeValues_O);
+ SMART_PTR_FIX(chem::_sym_SpecificContext_O);
+ SMART_PTR_FIX(cl::_sym_position);
+ SMART_PTR_FIX(kw::_sym_default);
+ SMART_PTR_FIX(clos::_sym_FuncallableStandardClass_O);
+ SMART_PTR_FIX(cl::_sym_boolean);
+ SMART_PTR_FIX(core::_sym_structure_slot_descriptions);
+ SMART_PTR_FIX(cl::_sym_provide);
+ SMART_PTR_FIX(kw::_sym_ph2);
+ SMART_PTR_FIX(chem::_sym_SpecificContextSet_O);
+ SMART_PTR_FIX(kw::_sym_littleEndian);
+ SMART_PTR_FIX(cl::_sym_STARdebug_ioSTAR);
+ SMART_PTR_FIX(cl::_sym_SimpleBitVector_O);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_imported_module);
+ SMART_PTR_FIX(kw::_sym_neff);
+ SMART_PTR_FIX(kw::_sym_Nonbonds);
+ SMART_PTR_FIX(kw::_sym_operands);
+ SMART_PTR_FIX(kw::_sym_ucs_4);
+ SMART_PTR_FIX(cl::_sym_char_code);
+ SMART_PTR_FIX(core::_sym_fromTaggedFixnum);
+ SMART_PTR_FIX(llvmo::_sym_moduleFlagAppendUnique);
+ SMART_PTR_FIX(llvmo::_sym_ZExt);
+ SMART_PTR_FIX(llvmo::_sym_ExternalLinkage);
+ SMART_PTR_FIX(cl::_sym_two_way_stream_output_stream);
+ SMART_PTR_FIX(cl::_sym_values_list);
+ SMART_PTR_FIX(cl::_sym_close);
+ SMART_PTR_FIX(kw::_sym_hybridization);
+ SMART_PTR_FIX(core::_sym_tsp);
+ SMART_PTR_FIX(kw::_sym_internal);
  SMART_PTR_FIX(cl::_sym_warn);
+ SMART_PTR_FIX(llvmo::_sym_ICMP_UGT);
+ SMART_PTR_FIX(ext::_sym_stackVar);
+ SMART_PTR_FIX(chem::_sym_CoordinateSystem_O);
+ SMART_PTR_FIX(cl::_sym_clearInput);
+ SMART_PTR_FIX(chem::_sym_CalculatePosition_O);
+ SMART_PTR_FIX(kw::_sym_device);
+ SMART_PTR_FIX(kw::_sym_wild);
+ SMART_PTR_FIX(llvmo::_sym_AttributeNoRedZone);
+ SMART_PTR_FIX(cl::_sym_compiled_function_p);
+ SMART_PTR_FIX(adapt::_sym_SymbolList_O);
+ SMART_PTR_FIX(chem::_sym_RestraintDistance_O);
  SMART_PTR_FIX(cl::_sym_read);
  SMART_PTR_FIX(cl::_sym_cdr);
- SMART_PTR_FIX(llvmo::_sym_InitialExecTLSModel);
- SMART_PTR_FIX(chem::_sym_atoms);
- SMART_PTR_FIX(core::_sym_isString);
- SMART_PTR_FIX(llvmo::_sym_SIToFP);
- SMART_PTR_FIX(core::_sym_instanceClassSet);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_NoSubArch);
- SMART_PTR_FIX(cl::_sym_values_list);
- SMART_PTR_FIX(cffi::_sym_int64);
- SMART_PTR_FIX(llvmo::_sym_ArchType_thumbeb);
- SMART_PTR_FIX(kw::_sym_ar2);
+ SMART_PTR_FIX(chemkw::_sym_2);
+ SMART_PTR_FIX(chem::_sym_FFStretch_O);
+ SMART_PTR_FIX(core::_sym_backquote_splicing_frob);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_amdil64);
+ SMART_PTR_FIX(chem::_sym_hessianPreconditioner);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_enumeration_type);
+ SMART_PTR_FIX(cl::_sym_unboundVariable);
+ SMART_PTR_FIX(llvmo::_sym_VendorType_IBM);
+ SMART_PTR_FIX(core::_sym_singleDispatchMissingDispatchArgumentError);
+ SMART_PTR_FIX(kw::_sym_body);
+ SMART_PTR_FIX(cl::_sym_simpleWarning);
  SMART_PTR_FIX(cl::_sym_numerator);
- SMART_PTR_FIX(cl::_sym_boole_orc1);
- SMART_PTR_FIX(cl::_sym_simpleCondition);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_subrange_type);
- SMART_PTR_FIX(kw::_sym_lambda_list_handler);
- SMART_PTR_FIX(core::_sym_acos);
- SMART_PTR_FIX(cl::_sym_maplist);
- SMART_PTR_FIX(cl::_sym_make_string);
- SMART_PTR_FIX(llvmo::_sym_CodeModel_Small);
- SMART_PTR_FIX(core::_sym_reader_double_quote_string);
- SMART_PTR_FIX(gray::_sym_stream_finish_output);
- SMART_PTR_FIX(llvmo::_sym_OSType_Lv2);
- SMART_PTR_FIX(llvmo::_sym_ArchType_systemz);
- SMART_PTR_FIX(chem::_sym_MinimizerExceededMaxStepsError);
- SMART_PTR_FIX(gray::_sym_stream_write_char);
- SMART_PTR_FIX(llvmo::_sym_GlobalVariable_O);
- SMART_PTR_FIX(core::_sym_Iterator_O);
- SMART_PTR_FIX(core::_sym_sharp_c);
- SMART_PTR_FIX(kw::_sym_eleScale14);
- SMART_PTR_FIX(cl::_sym_STARgensym_counterSTAR);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_subroutine_type);
- SMART_PTR_FIX(llvmo::_sym_FPTrunc);
- SMART_PTR_FIX(core::_sym_STARdebugFlowControlSTAR);
- SMART_PTR_FIX(core::_sym_rehash_threshold);
- SMART_PTR_FIX(core::_sym_FileStatus_O);
- SMART_PTR_FIX(cl::_sym__EQ_);
- SMART_PTR_FIX(cl::_sym_STARdebug_ioSTAR);
- SMART_PTR_FIX(core::_sym_bdsVal);
- SMART_PTR_FIX(llvmo::_sym_DIDescriptor_O);
- SMART_PTR_FIX(cl::_sym__TIMES_);
- SMART_PTR_FIX(core::_sym_classifyLetVariablesAndDeclares);
- SMART_PTR_FIX(llvmo::_sym_mdnodeGet);
- SMART_PTR_FIX(core::_sym_lexical);
- SMART_PTR_FIX(llvmo::_sym_attributesGet);
- SMART_PTR_FIX(llvmo::_sym_VendorType_PC);
- SMART_PTR_FIX(chem::_sym_ChemInfoNode_O);
- SMART_PTR_FIX(cl::_sym_AMPwhole);
- SMART_PTR_FIX(gray::_sym_stream_peek_char);
- SMART_PTR_FIX(kw::_sym_map);
- SMART_PTR_FIX(llvmo::_sym_ArchType_aarch64);
- SMART_PTR_FIX(cl::_sym_file_write_date);
- SMART_PTR_FIX(cl::_sym_make_hash_table);
- SMART_PTR_FIX(core::_sym_tmv);
- SMART_PTR_FIX(llvmo::_sym_Max);
- SMART_PTR_FIX(kw::_sym_blockFrame);
- SMART_PTR_FIX(llvmo::_sym_ConstantDataSequential_O);
- SMART_PTR_FIX(core::_sym_coerceToFilePathname);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_typedef);
- SMART_PTR_FIX(kw::_sym_element);
- SMART_PTR_FIX(cl::_sym_Character_dummy_O);
- SMART_PTR_FIX(core::_sym_fixnum_number_of_bits);
- SMART_PTR_FIX(cl::_sym_T);
- SMART_PTR_FIX(cl::_sym_fboundp);
- SMART_PTR_FIX(cl::_sym_boole_orc2);
- SMART_PTR_FIX(core::_sym_isNil);
- SMART_PTR_FIX(cl::_sym_multiple_value_prog1);
- SMART_PTR_FIX(cl::_sym_leastNegativeDoubleFloat);
- SMART_PTR_FIX(cl::_sym_fmakunbound);
- SMART_PTR_FIX(chem::_sym_candoDatabase);
- SMART_PTR_FIX(core::_sym_DirectoryIterator_O);
- SMART_PTR_FIX(core::_sym_STARcircleCounterSTAR);
- SMART_PTR_FIX(chem::_sym_SpecificContext_O);
- SMART_PTR_FIX(kw::_sym_debugStartup);
- SMART_PTR_FIX(kw::_sym_special);
- SMART_PTR_FIX(cl::_sym_STARpackageSTAR);
- SMART_PTR_FIX(core::_sym_sharp_s);
- SMART_PTR_FIX(core::_sym_rehash_size);
- SMART_PTR_FIX(core::_sym_coerceToPhysicalPathname);
- SMART_PTR_FIX(cl::_sym_flet);
- SMART_PTR_FIX(sockets::_sym__PLUS_ECONNREFUSED_PLUS_);
- SMART_PTR_FIX(chemkw::_sym_I);
- SMART_PTR_FIX(chem::_sym_TrajectoryFrame_O);
- SMART_PTR_FIX(cl::_sym_StringStream_O);
- SMART_PTR_FIX(core::_sym_instanceSigSet);
- SMART_PTR_FIX(kw::_sym_wildDict);
- SMART_PTR_FIX(kw::_sym_rtld_self);
- SMART_PTR_FIX(core::_sym_StringInputStream_O);
- SMART_PTR_FIX(kw::_sym_sym);
- SMART_PTR_FIX(cl::_sym_leastNegativeNormalizedSingleFloat);
- SMART_PTR_FIX(clos::_sym_standardOptimizedWriterFunction);
- SMART_PTR_FIX(core::_sym_STARdocumentation_databaseSTAR);
- SMART_PTR_FIX(llvmo::_sym_SequentiallyConsistent);
- SMART_PTR_FIX(llvmo::_sym_ArchType_x86);
- SMART_PTR_FIX(kw::_sym_k2);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_namespace);
- SMART_PTR_FIX(llvmo::_sym_ArchType_mips64el);
- SMART_PTR_FIX(core::_sym_ihsBacktrace);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_MIPS_loop);
- SMART_PTR_FIX(chem::_sym_StructureComparer_O);
- SMART_PTR_FIX(chem::_sym_BondTest_O);
- SMART_PTR_FIX(kw::_sym_tag);
- SMART_PTR_FIX(core::_sym_sequence_start_end);
- SMART_PTR_FIX(core::_sym_foreach);
- SMART_PTR_FIX(chem::_sym_ConstitutionAtom_O);
- SMART_PTR_FIX(cl::_sym_debug);
- SMART_PTR_FIX(cl::_sym_char_int);
- SMART_PTR_FIX(cl::_sym_char_code_limit);
- SMART_PTR_FIX(cl::_sym_listen);
- SMART_PTR_FIX(core::_sym_object);
- SMART_PTR_FIX(cl::_sym_arrayDimensionLimit);
- SMART_PTR_FIX(core::_sym_testMemoryError);
- SMART_PTR_FIX(adapt::_sym_StringSet_O);
- SMART_PTR_FIX(kw::_sym_purple);
- SMART_PTR_FIX(core::_sym_script_dir);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_condition);
- SMART_PTR_FIX(cl::_sym_logical_pathname);
- SMART_PTR_FIX(cl::_sym_bit_vector_p);
- SMART_PTR_FIX(chem::_sym_ProperTorsion_O);
- SMART_PTR_FIX(core::_sym_aset);
- SMART_PTR_FIX(llvmo::_sym_writeIrToFile);
- SMART_PTR_FIX(asttooling::_sym_create);
- SMART_PTR_FIX(cl::_sym_write);
- SMART_PTR_FIX(llvmo::_sym_PHINode_O);
- SMART_PTR_FIX(cl::_sym_case);
- SMART_PTR_FIX(asttooling::_sym_x);
- SMART_PTR_FIX(core::_sym_input_stream);
- SMART_PTR_FIX(cl::_sym_floatingPointUnderflow);
- SMART_PTR_FIX(kw::_sym_tail);
- SMART_PTR_FIX(cl::_sym_decodeFloat);
- SMART_PTR_FIX(chem::_sym_OutPlug_O);
- SMART_PTR_FIX(core::_sym_SNode_O);
- SMART_PTR_FIX(llvmo::_sym_ICMP_UGT);
- SMART_PTR_FIX(cl::_sym_type_of);
- SMART_PTR_FIX(kw::_sym_vdwMixWell);
- SMART_PTR_FIX(kw::_sym_load);
- SMART_PTR_FIX(cl::_sym_destructuring_bind);
- SMART_PTR_FIX(chem::_sym_SmartsRoot_O);
- SMART_PTR_FIX(chem::_sym_FFPtor_O);
- SMART_PTR_FIX(llvmo::_sym_AttributeReturnsTwice);
- SMART_PTR_FIX(core::_sym_RegexMatch_O);
- SMART_PTR_FIX(cl::_sym_makePathname);
- SMART_PTR_FIX(core::_sym_sharp_dot);
- SMART_PTR_FIX(chem::_sym_AntechamberBondTest_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_GNU_formal_parameter_pack);
- SMART_PTR_FIX(cl::_sym_STARreadtableSTAR);
- SMART_PTR_FIX(units::_sym_kilometers);
- SMART_PTR_FIX(llvmo::_sym_Type_O);
- SMART_PTR_FIX(core::_sym_SexpSaveArchive_O);
- SMART_PTR_FIX(llvmo::_sym_OSType_MacOSX);
- SMART_PTR_FIX(chem::_sym_STARVdwMixWellEnumConverterSTAR);
- SMART_PTR_FIX(llvmo::_sym_PassManagerBuilder_O);
- SMART_PTR_FIX(core::_sym_single_dispatch_on);
- SMART_PTR_FIX(kw::_sym_tags);
- SMART_PTR_FIX(kw::_sym_stream);
- SMART_PTR_FIX(core::_sym_SymbolToEnumConverter_O);
- SMART_PTR_FIX(core::_sym_classNameAsString);
- SMART_PTR_FIX(cl::_sym_leastNegativeNormalizedLongFloat);
- SMART_PTR_FIX(cl::_sym_hostNamestring);
- SMART_PTR_FIX(cl::_sym_controlError);
- SMART_PTR_FIX(cl::_sym_readSequence);
- SMART_PTR_FIX(cl::_sym_logeqv);
- SMART_PTR_FIX(chem::_sym_AtomOrBondMatchNode_O);
- SMART_PTR_FIX(cl::_sym_char_LT_);
- SMART_PTR_FIX(core::_sym_STARdebugReaderSTAR);
- SMART_PTR_FIX(llvmo::_sym__PLUS_globalBootFunctionsName_PLUS_);
- SMART_PTR_FIX(chem::_sym_MultiMonomer_O);
- SMART_PTR_FIX(sockets::_sym__PLUS_EADDRINUSE_PLUS_);
- SMART_PTR_FIX(core::_sym_invalidKeywordArgumentError);
- SMART_PTR_FIX(cl::_sym_Vector_O);
- SMART_PTR_FIX(cl::_sym_directory);
- SMART_PTR_FIX(cleavirPrimops::_sym_callWithVariableBound);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_pointer_type);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_thrown_type);
- SMART_PTR_FIX(core::_sym_anonymous);
- SMART_PTR_FIX(cl::_sym_Bit);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_GNUX32);
- SMART_PTR_FIX(core::_sym_universalErrorHandler);
- SMART_PTR_FIX(core::_sym_STARdebugMonitorSTAR);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_hi_user);
- SMART_PTR_FIX(cl::_sym_charEqual);
- SMART_PTR_FIX(sockets::_sym__PLUS_EINVAL_PLUS_);
- SMART_PTR_FIX(kw::_sym_and);
- SMART_PTR_FIX(llvmo::_sym_ObjectFormatType_MachO);
- SMART_PTR_FIX(kw::_sym_if_does_not_exist);
- SMART_PTR_FIX(llvmo::_sym_OSType_NetBSD);
- SMART_PTR_FIX(cl::_sym_mapc);
- SMART_PTR_FIX(cl::_sym_define_method_combination);
- SMART_PTR_FIX(cl::_sym_standard_char_p);
- SMART_PTR_FIX(kw::_sym_address_model_32);
- SMART_PTR_FIX(cl::_sym_STARerror_outputSTAR);
- SMART_PTR_FIX(cleavirEnv::_sym_macroFunction);
- SMART_PTR_FIX(llvmo::_sym_ArchType_hsail);
- SMART_PTR_FIX(chem::_sym_Rotamer_O);
- SMART_PTR_FIX(sockets::_sym_ll_makeStreamFromFd);
- SMART_PTR_FIX(chem::_sym_LinearAngleError);
- SMART_PTR_FIX(kw::_sym_mask);
- SMART_PTR_FIX(chem::_sym_ZMatrixBondInternal_O);
- SMART_PTR_FIX(cl::_sym_boolean);
- SMART_PTR_FIX(kw::_sym_broken_link);
- SMART_PTR_FIX(chem::_sym_CipPrioritizer_O);
+ SMART_PTR_FIX(cl::_sym_mapcon);
+ SMART_PTR_FIX(cl::_sym_pathname);
+ SMART_PTR_FIX(cl::_sym_string_GT_);
+ SMART_PTR_FIX(kw::_sym_arguments);
+ SMART_PTR_FIX(chem::_sym_FFTypesDb_O);
+ SMART_PTR_FIX(core::_sym_ForwardReferencedClass_O);
+ SMART_PTR_FIX(core::_sym_environmentActivationFrame);
+ SMART_PTR_FIX(chem::_sym_STARVdwMixRadiusEnumConverterSTAR);
  SMART_PTR_FIX(cl::_sym_STARdebuggerHookSTAR);
- SMART_PTR_FIX(chem::_sym__PLUS_configurationEnumConverter_PLUS_);
- SMART_PTR_FIX(sockets::_sym_ll_nonBlockingMode);
- SMART_PTR_FIX(chem::_sym_AGVertex_O);
- SMART_PTR_FIX(cl::_sym_enoughNamestring);
- SMART_PTR_FIX(cl::_sym_eq);
- SMART_PTR_FIX(llvmo::_sym_OSType_Solaris);
- SMART_PTR_FIX(llvmo::_sym_Or);
- SMART_PTR_FIX(cl::_sym_logior);
- SMART_PTR_FIX(cl::_sym_array);
- SMART_PTR_FIX(cl::_sym_simple_array);
- SMART_PTR_FIX(chem::_sym_Residue_O);
- SMART_PTR_FIX(cl::_sym_disassemble);
- SMART_PTR_FIX(llvmo::_sym_Target_O);
- SMART_PTR_FIX(cl::_sym_assoc);
- SMART_PTR_FIX(cl::_sym_macroexpand_1);
- SMART_PTR_FIX(core::_sym_STARstartRunTimeSTAR);
- SMART_PTR_FIX(cl::_sym_char_GT_);
- SMART_PTR_FIX(cl::_sym_HashTable_O);
- SMART_PTR_FIX(cl::_sym_AMPrest);
- SMART_PTR_FIX(cffi::_sym_ssize);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_class_type);
- SMART_PTR_FIX(cl::_sym_freshLine);
- SMART_PTR_FIX(gray::_sym_stream_read_byte);
+ SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion7);
+ SMART_PTR_FIX(kw::_sym_a2);
+ SMART_PTR_FIX(ext::_sym_STARdefault_external_formatSTAR);
+ SMART_PTR_FIX(core::_sym_STARexecutable_nameSTAR);
+ SMART_PTR_FIX(cl::_sym_AMPwhole);
+ SMART_PTR_FIX(llvmo::_sym_DIFile_O);
+ SMART_PTR_FIX(cl::_sym_length);
+ SMART_PTR_FIX(cl::_sym_throw);
+ SMART_PTR_FIX(core::_sym_macro);
+ SMART_PTR_FIX(chem::_sym_MonomerPack_O);
+ SMART_PTR_FIX(chem::_sym_MinimizerExceededMaxStepsError);
+ SMART_PTR_FIX(chemkw::_sym_parameterized);
+ SMART_PTR_FIX(units::_sym_joule);
+ SMART_PTR_FIX(kw::_sym_magenta);
+ SMART_PTR_FIX(llvmo::_sym_moduleFlagAppend);
+ SMART_PTR_FIX(cl::_sym_STARread_suppressSTAR);
+ SMART_PTR_FIX(kw::_sym_Stretches);
+ SMART_PTR_FIX(core::_sym_unquote);
+ SMART_PTR_FIX(chem::_sym_CDBond_O);
+ SMART_PTR_FIX(llvmo::_sym_Sub);
+ SMART_PTR_FIX(chem::_sym_S);
+ SMART_PTR_FIX(cl::_sym_gethash);
+ SMART_PTR_FIX(cl::_sym_symbolValue);
+ SMART_PTR_FIX(kw::_sym_ar5);
+ SMART_PTR_FIX(asttooling::_sym_VisitType);
+ SMART_PTR_FIX(chem::_sym_IterateAtoms_O);
+ SMART_PTR_FIX(kw::_sym_yellow);
+ SMART_PTR_FIX(core::_sym_StringOutputStream_O);
+ SMART_PTR_FIX(chem::_sym_Stereoisomer_O);
+ SMART_PTR_FIX(kw::_sym_afterMatchTests);
+ SMART_PTR_FIX(cl::_sym_STARload_verboseSTAR);
+ SMART_PTR_FIX(units::_sym_kilojoules_per_mole);
+ SMART_PTR_FIX(cl::_sym_load_time_value);
+ SMART_PTR_FIX(kw::_sym_str);
+ SMART_PTR_FIX(core::_sym_coerceToPhysicalPathname);
+ SMART_PTR_FIX(core::_sym_put_sysprop);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_entry_point);
+ SMART_PTR_FIX(core::_sym_LeafSNode_O);
+ SMART_PTR_FIX(cl::_sym_set);
+ SMART_PTR_FIX(core::_sym_stackUsed);
+ SMART_PTR_FIX(kw::_sym_wild_inferiors);
+ SMART_PTR_FIX(sockets::_sym__PLUS_EOPNOTSUPP_PLUS_);
+ SMART_PTR_FIX(chem::_sym_nonbondTerm);
+ SMART_PTR_FIX(cl::_sym_Character_dummy_O);
+ SMART_PTR_FIX(cl::_sym_T);
+ SMART_PTR_FIX(chemkw::_sym_frameRecognizer);
+ SMART_PTR_FIX(cl::_sym_fboundp);
+ SMART_PTR_FIX(ext::_sym_maybeQuote);
+ SMART_PTR_FIX(cl::_sym_multiple_value_prog1);
+ SMART_PTR_FIX(llvmo::_sym_ConstantStruct_O);
+ SMART_PTR_FIX(kw::_sym_allow_other_keys);
+ SMART_PTR_FIX(comp::_sym_STARlowLevelTraceSTAR);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_subrange_type);
+ SMART_PTR_FIX(cl::_sym_leastNegativeDoubleFloat);
+ SMART_PTR_FIX(cl::_sym_nreverse);
+ SMART_PTR_FIX(kw::_sym_name);
+ SMART_PTR_FIX(core::_sym_sharp_r);
+ SMART_PTR_FIX(core::_sym_VectorObjects_O);
+ SMART_PTR_FIX(cl::_sym_endOfFile);
+ SMART_PTR_FIX(core::_sym_make_structure);
+ SMART_PTR_FIX(llvmo::_sym_Xchg);
+ SMART_PTR_FIX(llvmo::_sym_OSType_IOS);
+ SMART_PTR_FIX(llvmo::_sym_STARmoduleModFlagBehaviorSTAR);
+ SMART_PTR_FIX(units::_sym_Dimension_O);
+ SMART_PTR_FIX(units::_sym_amperes);
+ SMART_PTR_FIX(units::_sym_daltons);
+ SMART_PTR_FIX(sockets::_sym_ll_socketConnect_localSocket);
+ SMART_PTR_FIX(cl::_sym_prin1);
+ SMART_PTR_FIX(cl::_sym_import);
+ SMART_PTR_FIX(core::_sym_eof_error_p);
+ SMART_PTR_FIX(core::_sym_lambdaName);
+ SMART_PTR_FIX(chem::_sym_IterateRestraints_O);
+ SMART_PTR_FIX(kw::_sym_title);
+ SMART_PTR_FIX(core::_sym_cArgumentsLimit);
+ SMART_PTR_FIX(core::_sym_ensure_documentation);
+ SMART_PTR_FIX(chem::_sym_MessageReport_O);
+ SMART_PTR_FIX(core::_sym_integer_divide);
+ SMART_PTR_FIX(chem::_sym_WildElementDict_O);
+ SMART_PTR_FIX(cl::_sym_letSTAR);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_mips64el);
+ SMART_PTR_FIX(llvmo::_sym_module_get_function_list);
+ SMART_PTR_FIX(chem::_sym_STARDonorAcceptorEnumConverterSTAR);
+ SMART_PTR_FIX(cl::_sym_not);
+ SMART_PTR_FIX(llvmo::_sym_Xor);
+ SMART_PTR_FIX(chemkw::_sym_rough);
+ SMART_PTR_FIX(llvmo::_sym_FCMP_UNO);
+ SMART_PTR_FIX(chemkw::_sym_XX);
+ SMART_PTR_FIX(kw::_sym_Angles);
+ SMART_PTR_FIX(core::_sym_quasiquote);
+ SMART_PTR_FIX(llvmo::_sym_AtomicRMWInst_O);
+ SMART_PTR_FIX(kw::_sym_right);
+ SMART_PTR_FIX(llvmo::_sym_Mul);
+ SMART_PTR_FIX(kw::_sym_num);
+ SMART_PTR_FIX(cl::_sym_leastPositiveNormalizedDoubleFloat);
+ SMART_PTR_FIX(serveEvent::_sym_ll_fd_zero);
+ SMART_PTR_FIX(chem::_sym_R);
+ SMART_PTR_FIX(clos::_sym_standardOptimizedReaderMethod);
  SMART_PTR_FIX(core::_sym_deserialize_xml);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_access_declaration);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_module);
- SMART_PTR_FIX(llvmo::_sym_CodeGenFileType_AssemblyFile);
- SMART_PTR_FIX(core::_sym_sorted);
- SMART_PTR_FIX(llvmo::_sym_verifyFunction);
- SMART_PTR_FIX(cl::_sym_STARprint_linesSTAR);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_GNUEABI);
- SMART_PTR_FIX(core::_sym_currentVisibleEnvironment);
- SMART_PTR_FIX(kw::_sym_ecl_min);
- SMART_PTR_FIX(cl::_sym_DoubleFloat_O);
- SMART_PTR_FIX(llvmo::_sym_DebugInfo_O);
- SMART_PTR_FIX(gray::_sym_stream_write_sequence);
- SMART_PTR_FIX(cl::_sym_atom);
- SMART_PTR_FIX(core::_sym_setfElt);
+ SMART_PTR_FIX(kw::_sym_sym);
+ SMART_PTR_FIX(kw::_sym_restraints);
+ SMART_PTR_FIX(geom::_sym_CoordinateArrayWithHash_O);
+ SMART_PTR_FIX(cl::_sym_boole_2);
+ SMART_PTR_FIX(llvmo::_sym_IRBuilder_O);
+ SMART_PTR_FIX(cl::_sym_Integer_O);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_format_label);
+ SMART_PTR_FIX(clos::_sym_standardOptimizedWriterMethod);
+ SMART_PTR_FIX(core::_sym_globalSetfFunction);
+ SMART_PTR_FIX(chem::_sym_Angle_O);
+ SMART_PTR_FIX(chem::_sym_AtomReferenceBase_O);
+ SMART_PTR_FIX(cl::_sym_bit_vector_p);
+ SMART_PTR_FIX(cl::_sym_write);
+ SMART_PTR_FIX(llvmo::_sym_CodeModel);
+ SMART_PTR_FIX(kw::_sym_bond);
+ SMART_PTR_FIX(core::_sym_makeLambdaListHandler);
+ SMART_PTR_FIX(llvmo::_sym_FDiv);
+ SMART_PTR_FIX(core::_sym_hash_equalp);
+ SMART_PTR_FIX(chemkw::_sym_C);
+ SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v5);
+ SMART_PTR_FIX(chem::_sym_OligomerPart_Base_O);
+ SMART_PTR_FIX(chem::_sym_STAREleDielectricEnumConverterSTAR);
+ SMART_PTR_FIX(kw::_sym_tags);
+ SMART_PTR_FIX(core::_sym_ihsTop);
+ SMART_PTR_FIX(core::_sym_repr);
+ SMART_PTR_FIX(core::_sym_STARpreserve_whitespace_pSTAR);
+ SMART_PTR_FIX(cl::_sym_export);
+ SMART_PTR_FIX(kw::_sym_contents);
+ SMART_PTR_FIX(llvmo::_sym_ObjectFormatType_UnknownObjectFormat);
+ SMART_PTR_FIX(cl::_sym_princ);
+ SMART_PTR_FIX(clos::_sym_StdClass_O);
+ SMART_PTR_FIX(cl::_sym_read_from_string);
+ SMART_PTR_FIX(cl::_sym_method);
+ SMART_PTR_FIX(kw::_sym_line);
+ SMART_PTR_FIX(llvmo::_sym_DLLExportLinkage);
+ SMART_PTR_FIX(kw::_sym_multiple_escape_character);
+ SMART_PTR_FIX(core::_sym_backquote_simplify);
+ SMART_PTR_FIX(sockets::_sym_socketSendNoAddress);
+ SMART_PTR_FIX(cl::_sym_writeChar);
+ SMART_PTR_FIX(llvmo::_sym_EnvironmentType_Cygnus);
+ SMART_PTR_FIX(kw::_sym_ph4);
+ SMART_PTR_FIX(asttooling::_sym_AstVisitor_O);
+ SMART_PTR_FIX(core::_sym_SingleDispatchGenericFunction_O);
+ SMART_PTR_FIX(llvmo::_sym_Target_O);
+ SMART_PTR_FIX(kw::_sym_array);
+ SMART_PTR_FIX(core::_sym_debug_message);
+ SMART_PTR_FIX(core::_sym_sharp_dot);
+ SMART_PTR_FIX(cl::_sym_describe);
+ SMART_PTR_FIX(cl::_sym_equal);
+ SMART_PTR_FIX(kw::_sym_N);
+ SMART_PTR_FIX(kw::_sym_fully_buffered);
+ SMART_PTR_FIX(sockets::_sym__PLUS_SO_RCVBUF_PLUS_);
+ SMART_PTR_FIX(cl::_sym_controlError);
+ SMART_PTR_FIX(cl::_sym_logeqv);
+ SMART_PTR_FIX(cl::_sym_nstring_upcase);
+ SMART_PTR_FIX(sockets::_sym_ll_socketBind_localSocket);
+ SMART_PTR_FIX(cl::_sym_standard_char);
+ SMART_PTR_FIX(llvmo::_sym_TargetOptions_O);
+ SMART_PTR_FIX(chem::_sym_MinimizerLog_O);
+ SMART_PTR_FIX(gray::_sym_streamClearInput);
+ SMART_PTR_FIX(core::_sym_SexpLoadArchive_O);
+ SMART_PTR_FIX(core::_sym_singleDispatchTooManyArgumentsError);
+ SMART_PTR_FIX(ext::_sym_float_nan_string);
+ SMART_PTR_FIX(kw::_sym_flags);
+ SMART_PTR_FIX(core::_sym_sharp_b);
+ SMART_PTR_FIX(chem::_sym_AtomId_O);
+ SMART_PTR_FIX(cl::_sym_package_use_list);
+ SMART_PTR_FIX(cl::_sym_floatingPointInvalidOperation);
+ SMART_PTR_FIX(kw::_sym_group);
+ SMART_PTR_FIX(core::_sym_asin);
+ SMART_PTR_FIX(llvmo::_sym_AttributeNoReturn);
+ SMART_PTR_FIX(core::_sym_getline);
+ SMART_PTR_FIX(llvmo::_sym_ICMP_NE);
+ SMART_PTR_FIX(llvmo::_sym_WeakAnyLinkage);
+ SMART_PTR_FIX(chem::_sym_RestraintChiral_O);
+ SMART_PTR_FIX(chemkw::_sym__dashedDoubleBond);
+ SMART_PTR_FIX(core::_sym_STARcircle_counterSTAR);
+ SMART_PTR_FIX(cl::_sym_charEqual);
+ SMART_PTR_FIX(cl::_sym_string_not_greaterp);
+ SMART_PTR_FIX(cl::_sym_single_float);
+ SMART_PTR_FIX(llvmo::_sym_BasicBlock_O);
+ SMART_PTR_FIX(cl::_sym_mapc);
+ SMART_PTR_FIX(core::_sym_whole);
+ SMART_PTR_FIX(kw::_sym_eval);
+ SMART_PTR_FIX(chem::_sym_in4MemberRing);
+ SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v7);
+ SMART_PTR_FIX(kw::_sym_op);
+ SMART_PTR_FIX(gray::_sym_stream_read_byte);
+ SMART_PTR_FIX(chem::_sym_Command_O);
+ SMART_PTR_FIX(chem::_sym_MonomerContext_O);
+ SMART_PTR_FIX(llvmo::_sym_getOrCreateExternalGlobal);
+ SMART_PTR_FIX(core::_sym_setf_find_single_dispatch_generic_function);
+ SMART_PTR_FIX(core::_sym_ifDoesNotExist);
+ SMART_PTR_FIX(llvmo::_sym_AttributeByVal);
  SMART_PTR_FIX(core::_sym_put_f);
- SMART_PTR_FIX(kw::_sym_Info);
+ SMART_PTR_FIX(chem::_sym_FFVdwDb_O);
+ SMART_PTR_FIX(llvmo::_sym_SequentiallyConsistent);
+ SMART_PTR_FIX(llvmo::_sym_AttributeAlignment);
+ SMART_PTR_FIX(comp::_sym_aSingleCompilerSymbol);
+ SMART_PTR_FIX(cl::_sym_string_LE_);
+ SMART_PTR_FIX(core::_sym_DirectoryIterator_O);
+ SMART_PTR_FIX(cl::_sym_eq);
+ SMART_PTR_FIX(sockets::_sym__PLUS_EPERM_PLUS_);
+ SMART_PTR_FIX(cl::_sym_copyList);
+ SMART_PTR_FIX(cl::_sym_STARgensym_counterSTAR);
+ SMART_PTR_FIX(core::_sym_STARbq_simplifySTAR);
+ SMART_PTR_FIX(core::_sym_Specializer_O);
+ SMART_PTR_FIX(cl::_sym_symbol_macrolet);
+ SMART_PTR_FIX(core::_sym_STARuseInterpreterForEvalSTAR);
+ SMART_PTR_FIX(kw::_sym_data);
+ SMART_PTR_FIX(llvmo::_sym_FunctionType_O);
+ SMART_PTR_FIX(cl::_sym_logior);
+ SMART_PTR_FIX(llvmo::_sym_Shl);
+ SMART_PTR_FIX(chem::_sym_ConformationExplorerMatch_O);
+ SMART_PTR_FIX(core::_sym__PLUS_llvmTargetTriple_PLUS_);
+ SMART_PTR_FIX(llvmo::_sym_NamedMDNode_O);
+ SMART_PTR_FIX(kw::_sym_instance);
+ SMART_PTR_FIX(core::_sym_WeakHashTable_O);
+ SMART_PTR_FIX(llvmo::_sym_DW_LANG_C_plus_plus);
+ SMART_PTR_FIX(chem::_sym_OligomerPart_Link_O);
+ SMART_PTR_FIX(llvmo::_sym_ObjectFormatType_ELF);
+ SMART_PTR_FIX(kw::_sym_wheat);
+ SMART_PTR_FIX(kw::_sym_case);
+ SMART_PTR_FIX(core::_sym_bdsVal);
+ SMART_PTR_FIX(sockets::_sym__PLUS_SO_REUSEPORT_PLUS_);
+ SMART_PTR_FIX(cl::_sym_SingleFloat_dummy_O);
+ SMART_PTR_FIX(comp::_sym_compileFormAndEvalWithEnv);
+ SMART_PTR_FIX(kw::_sym_well);
+ SMART_PTR_FIX(llvmo::_sym_Function_O);
+ SMART_PTR_FIX(cl::_sym_macroexpand_1);
+ SMART_PTR_FIX(cffi::_sym_short);
+ SMART_PTR_FIX(chem::_sym_NumericalFunction_O);
+ SMART_PTR_FIX(cl::_sym_HashTable_O);
+ SMART_PTR_FIX(core::_sym_STARllvmFunctionNameHookSTAR);
+ SMART_PTR_FIX(gray::_sym_stream_peek_char);
+ SMART_PTR_FIX(cl::_sym_AMPrest);
+ SMART_PTR_FIX(core::_sym_float_to_digits);
+ SMART_PTR_FIX(core::_sym_invalidKeywordArgumentError);
+ SMART_PTR_FIX(llvmo::_sym_AttributeSExt);
+ SMART_PTR_FIX(core::_sym_rem_sysprop);
+ SMART_PTR_FIX(llvmo::_sym_Constant_O);
+ SMART_PTR_FIX(core::_sym_CompileTimeEnvironment_O);
+ SMART_PTR_FIX(cl::_sym_floatDigits);
+ SMART_PTR_FIX(cl::_sym_nstring_downcase);
+ SMART_PTR_FIX(core::_sym_reader_read_double_quote_string);
+ SMART_PTR_FIX(cl::_sym_ignore);
+ SMART_PTR_FIX(core::_sym_nan);
+ SMART_PTR_FIX(core::_sym_signalSimpleError);
+ SMART_PTR_FIX(cl::_sym_function);
+ SMART_PTR_FIX(chem::_sym_Plug_O);
+ SMART_PTR_FIX(core::_sym_eltSet);
+ SMART_PTR_FIX(chem::_sym__PLUS_elementToSymbolConverter_PLUS_);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_r600);
+ SMART_PTR_FIX(clos::_sym_clearGfunHash);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_sparc);
+ SMART_PTR_FIX(llvmo::_sym_AttributeNoUnwind);
+ SMART_PTR_FIX(llvmo::_sym__PLUS_DW_ATE_SIGNED_FIXED_PLUS_);
+ SMART_PTR_FIX(kw::_sym_escape);
  SMART_PTR_FIX(cl::_sym_STARprint_lengthSTAR);
  SMART_PTR_FIX(cl::_sym_stringLeftTrim);
- SMART_PTR_FIX(llvmo::_sym_IRBuilder_O);
- SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion5);
- SMART_PTR_FIX(cl::_sym_mapcon);
- SMART_PTR_FIX(sockets::_sym_ll_socketConnect_localSocket);
- SMART_PTR_FIX(cl::_sym_equalp);
- SMART_PTR_FIX(sockets::_sym__PLUS_SO_SNDTIMEO_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_STARglobal_value_linkage_typesSTAR);
- SMART_PTR_FIX(cl::_sym_logandc2);
- SMART_PTR_FIX(core::_sym_STARbq_listSTAR);
- SMART_PTR_FIX(cl::_sym_alpha_char_p);
- SMART_PTR_FIX(core::_sym_STARsystem_defsetf_update_functionsSTAR);
- SMART_PTR_FIX(core::_sym_STARcurrentSourceFileInfoSTAR);
- SMART_PTR_FIX(cl::_sym_boole);
- SMART_PTR_FIX(core::_sym_instanceClass);
- SMART_PTR_FIX(llvmo::_sym_PtrToInt);
- SMART_PTR_FIX(cl::_sym_pathnamep);
- SMART_PTR_FIX(cl::_sym_nbutlast);
- SMART_PTR_FIX(llvmo::_sym_DIType_O);
- SMART_PTR_FIX(units::_sym_picometers);
- SMART_PTR_FIX(core::_sym_TagbodyEnvironment_O);
- SMART_PTR_FIX(kw::_sym_instance);
- SMART_PTR_FIX(kw::_sym_body);
- SMART_PTR_FIX(core::_sym_sharp_equal);
- SMART_PTR_FIX(cl::_sym_truename);
- SMART_PTR_FIX(kw::_sym_stereochemistryType);
- SMART_PTR_FIX(llvmo::_sym_Add);
- SMART_PTR_FIX(kw::_sym_compile_toplevel);
- SMART_PTR_FIX(core::_sym_CxxObject_O);
- SMART_PTR_FIX(llvmo::_sym_AttributeInlineHint);
- SMART_PTR_FIX(sockets::_sym__PLUS_SO_DONTROUTE_PLUS_);
- SMART_PTR_FIX(core::_sym_database_dir);
- SMART_PTR_FIX(kw::_sym_hintLP);
- SMART_PTR_FIX(cl::_sym_apropos);
- SMART_PTR_FIX(cl::_sym_Null_O);
- SMART_PTR_FIX(cl::_sym_STARloadPathnameSTAR);
- SMART_PTR_FIX(core::_sym_process_macro_lambda_list);
- SMART_PTR_FIX(chem::_sym_ZMatrixAngleInternal_O);
- SMART_PTR_FIX(core::_sym_STARprintVersionOnStartupSTAR);
- SMART_PTR_FIX(core::_sym_sharp_sharp);
- SMART_PTR_FIX(kw::_sym_ar5);
- SMART_PTR_FIX(cl::_sym_arrayTotalSizeLimit);
- SMART_PTR_FIX(kw::_sym_create);
- SMART_PTR_FIX(cl::_sym_readCharNoHang);
- SMART_PTR_FIX(llvmo::_sym_ArchType_hsail64);
- SMART_PTR_FIX(core::_sym_STARcodeWalkerSTAR);
- SMART_PTR_FIX(kw::_sym_ar1);
- SMART_PTR_FIX(cl::_sym_values);
- SMART_PTR_FIX(core::_sym_bq_bracket);
- SMART_PTR_FIX(core::_sym_structurep);
- SMART_PTR_FIX(llvmo::_sym_Value_O);
- SMART_PTR_FIX(cffi::_sym_PERCENTmem_ref);
- SMART_PTR_FIX(gray::_sym_stream_advance_to_column);
- SMART_PTR_FIX(kw::_sym_use_mps);
- SMART_PTR_FIX(cl::_sym_asin);
- SMART_PTR_FIX(core::_sym_nread);
- SMART_PTR_FIX(llvmo::_sym_ArchType_hexagon);
- SMART_PTR_FIX(core::_sym_set_record_field);
- SMART_PTR_FIX(chem::_sym_StereoisomerVirtualAtom_O);
- SMART_PTR_FIX(core::_sym_environmentList);
- SMART_PTR_FIX(core::_sym_SpecialForm_O);
- SMART_PTR_FIX(cl::_sym_sort);
- SMART_PTR_FIX(kw::_sym_calledFunction);
- SMART_PTR_FIX(cl::_sym_most_positive_fixnum);
- SMART_PTR_FIX(llvmo::_sym_RelocModel);
- SMART_PTR_FIX(cl::_sym_intern);
- SMART_PTR_FIX(kw::_sym_newest);
- SMART_PTR_FIX(cl::_sym_floatDigits);
- SMART_PTR_FIX(cl::_sym_fileStream);
- SMART_PTR_FIX(clos::_sym_standardOptimizedReaderMethod);
- SMART_PTR_FIX(llvmo::_sym_OSType_KFreeBSD);
- SMART_PTR_FIX(core::_sym_STARllvmFunctionNameHookSTAR);
- SMART_PTR_FIX(llvmo::_sym_Shl);
- SMART_PTR_FIX(llvmo::_sym_LocalDynamicTLSModel);
- SMART_PTR_FIX(core::_sym_unquote_splice);
- SMART_PTR_FIX(core::_sym_STARbackquote_levelSTAR);
- SMART_PTR_FIX(kw::_sym_v5);
- SMART_PTR_FIX(chem::_sym_SearchStatistics_O);
- SMART_PTR_FIX(cl::_sym_member);
- SMART_PTR_FIX(sockets::_sym_ll_socketSendAddress);
- SMART_PTR_FIX(kw::_sym_ph1);
- SMART_PTR_FIX(core::_sym_makeRegex);
- SMART_PTR_FIX(kw::_sym_use_boehm);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_inheritance);
- SMART_PTR_FIX(cl::_sym_TwoWayStream_O);
- SMART_PTR_FIX(kw::_sym_iclass);
- SMART_PTR_FIX(chem::_sym_Structure_Old_ListEntry_O);
- SMART_PTR_FIX(kw::_sym_data);
- SMART_PTR_FIX(units::_sym_femtoseconds);
- SMART_PTR_FIX(core::_sym_calculateMissingCommonLispSymbols);
- SMART_PTR_FIX(kw::_sym_adjustable);
- SMART_PTR_FIX(cl::_sym_StandardObject_O);
- SMART_PTR_FIX(llvmo::_sym_UndefValue_O);
- SMART_PTR_FIX(chem::_sym_MinimizerStuckError);
- SMART_PTR_FIX(cl::_sym_Float_O);
- SMART_PTR_FIX(cl::_sym_unintern);
- SMART_PTR_FIX(kw::_sym_elementType);
- SMART_PTR_FIX(chem::_sym_stereochemistryToSymbolConverter);
- SMART_PTR_FIX(cffi::_sym_unsigned_long_long);
- SMART_PTR_FIX(cl::_sym_readByte);
- SMART_PTR_FIX(chem::_sym_SuperposableConformationCollection_O);
- SMART_PTR_FIX(llvmo::_sym_LinkerPrivateLinkage);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_GNU_template_template_param);
- SMART_PTR_FIX(cl::_sym_boole_1);
- SMART_PTR_FIX(llvmo::_sym_CodeModel_JITDefault);
- SMART_PTR_FIX(units::_sym_Joules);
- SMART_PTR_FIX(kw::_sym_Itors);
- SMART_PTR_FIX(core::_sym_quit);
- SMART_PTR_FIX(core::_sym_cl_fixnum_bits);
- SMART_PTR_FIX(cl::_sym_acons);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_common_inclusion);
- SMART_PTR_FIX(cffi::_sym_size);
- SMART_PTR_FIX(kw::_sym_bonds);
- SMART_PTR_FIX(chemkw::_sym_parameterized);
- SMART_PTR_FIX(core::_sym_newVersion);
- SMART_PTR_FIX(cl::_sym_AMPoptional);
- SMART_PTR_FIX(core::_sym_STARsilentStartupSTAR);
- SMART_PTR_FIX(chemkw::_sym_XD);
- SMART_PTR_FIX(core::_sym_float_to_digits);
- SMART_PTR_FIX(kw::_sym_rtld_default);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_rvalue_reference_type);
- SMART_PTR_FIX(adapt::_sym_IterateCons_O);
- SMART_PTR_FIX(core::_sym_STARenvironmentPrintingTabIncrementSTAR);
- SMART_PTR_FIX(cl::_sym_locally);
- SMART_PTR_FIX(geom::_sym_BoundingBox_O);
- SMART_PTR_FIX(sockets::_sym_ll_dup);
- SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion6);
- SMART_PTR_FIX(cl::_sym_STARprint_caseSTAR);
- SMART_PTR_FIX(chem::_sym_hessianPreconditioner);
- SMART_PTR_FIX(chem::_sym_ResidueList_O);
- SMART_PTR_FIX(cl::_sym_leastPositiveLongFloat);
- SMART_PTR_FIX(kw::_sym_LineTablesOnly);
- SMART_PTR_FIX(chem::_sym_EnergyFixedNonbondRestraint_O);
- SMART_PTR_FIX(cl::_sym__NE_);
- SMART_PTR_FIX(kw::_sym_steelBlue);
- SMART_PTR_FIX(core::_sym_structure_slot_descriptions);
- SMART_PTR_FIX(chem::_sym_TwisterDriver_O);
- SMART_PTR_FIX(core::_sym_streamLinenumber);
- SMART_PTR_FIX(chemkw::_sym_tripleBond);
- SMART_PTR_FIX(chem::_sym__PLUS_stereochemistryTypeConverter_PLUS_);
- SMART_PTR_FIX(chem::_sym_OneTypeRule_O);
- SMART_PTR_FIX(llvmo::_sym_AllocaInst_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_template_value_parameter);
- SMART_PTR_FIX(cl::_sym_leastPositiveSingleFloat);
- SMART_PTR_FIX(cl::_sym_Class_O);
- SMART_PTR_FIX(core::_sym_dlload);
- SMART_PTR_FIX(ext::_sym_annotate);
- SMART_PTR_FIX(core::_sym_STARcircle_counterSTAR);
- SMART_PTR_FIX(sockets::_sym__PLUS_HOST_NOT_FOUND_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_AttributeStackAlignment);
- SMART_PTR_FIX(kw::_sym_atomProps);
- SMART_PTR_FIX(sockets::_sym_ll_getSockoptLinger);
- SMART_PTR_FIX(clos::_sym_standardOptimizedReaderFunction);
- SMART_PTR_FIX(cl::_sym_tan);
- SMART_PTR_FIX(kw::_sym_tempInt);
- SMART_PTR_FIX(core::_sym_reader_list_allow_consing_dot);
- SMART_PTR_FIX(cl::_sym_SingleFloat_dummy_O);
- SMART_PTR_FIX(core::_sym_defaultPathnameDefaults);
- SMART_PTR_FIX(kw::_sym_junkAllowed);
- SMART_PTR_FIX(llvmo::_sym_AttributeNoImplicitFloat);
- SMART_PTR_FIX(kw::_sym_default);
- SMART_PTR_FIX(kw::_sym_line_buffered);
- SMART_PTR_FIX(chemkw::_sym_XB);
- SMART_PTR_FIX(asttooling::_sym_VisitStmt);
- SMART_PTR_FIX(cl::_sym_last);
- SMART_PTR_FIX(llvmo::_sym_CodeModel);
- SMART_PTR_FIX(ext::_sym_STARinvokeDebuggerHookSTAR);
- SMART_PTR_FIX(cl::_sym_load);
+ SMART_PTR_FIX(cl::_sym_reverse);
+ SMART_PTR_FIX(cl::_sym_assoc);
+ SMART_PTR_FIX(core::_sym_bdsTop);
  SMART_PTR_FIX(kw::_sym_link);
- SMART_PTR_FIX(core::_sym_Path_O);
- SMART_PTR_FIX(llvmo::_sym_AttributeInReg);
- SMART_PTR_FIX(cl::_sym_random);
- SMART_PTR_FIX(llvmo::_sym_Monotonic);
- SMART_PTR_FIX(units::_sym_nanometers);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v4t);
- SMART_PTR_FIX(kw::_sym_inherited);
- SMART_PTR_FIX(gray::_sym_stream_clear_output);
- SMART_PTR_FIX(cl::_sym_char);
- SMART_PTR_FIX(cl::_sym_seriousCondition);
- SMART_PTR_FIX(chem::_sym_in7MemberRing);
- SMART_PTR_FIX(ext::_sym_float_nan_string);
- SMART_PTR_FIX(kw::_sym_wild_inferiors);
- SMART_PTR_FIX(cl::_sym_export);
- SMART_PTR_FIX(llvmo::_sym_makeAP32);
- SMART_PTR_FIX(chem::_sym_OligomerPart_Monomer_O);
- SMART_PTR_FIX(cl::_sym_string_LE_);
- SMART_PTR_FIX(kw::_sym_rings);
- SMART_PTR_FIX(kw::_sym_rtld_main_only);
- SMART_PTR_FIX(cl::_sym_wildPathnameP);
- SMART_PTR_FIX(llvmo::_sym_dwTag);
- SMART_PTR_FIX(chem::_sym_WildElementDict_O);
- SMART_PTR_FIX(core::_sym_SmallMap_O);
- SMART_PTR_FIX(core::_sym_instanceSet);
- SMART_PTR_FIX(core::_sym_nan);
- SMART_PTR_FIX(llvmo::_sym_Module_O);
- SMART_PTR_FIX(chem::_sym_inRing);
- SMART_PTR_FIX(core::_sym_STARdebugMacroexpandSTAR);
- SMART_PTR_FIX(cffi::_sym_unsigned_short);
- SMART_PTR_FIX(core::_sym_IOStreamStream_O);
- SMART_PTR_FIX(sockets::_sym__PLUS_SOL_SOCKET_PLUS_);
- SMART_PTR_FIX(cl::_sym_standard_class);
- SMART_PTR_FIX(kw::_sym_ref);
- SMART_PTR_FIX(cl::_sym_styleWarning);
- SMART_PTR_FIX(core::_sym_LoadTimeValues_O);
- SMART_PTR_FIX(llvmo::_sym_verifyModule);
- SMART_PTR_FIX(cl::_sym_cerror);
- SMART_PTR_FIX(core::_sym_slBoundp);
- SMART_PTR_FIX(cl::_sym_scaleFloat);
- SMART_PTR_FIX(kw::_sym_absolute);
- SMART_PTR_FIX(kw::_sym_full);
- SMART_PTR_FIX(core::_sym_ihsEnv);
- SMART_PTR_FIX(llvmo::_sym_moduleFlagAppendUnique);
- SMART_PTR_FIX(core::_sym_processLambdaList);
- SMART_PTR_FIX(kw::_sym_type);
- SMART_PTR_FIX(llvmo::_sym_LinkOnceAnyLinkage);
- SMART_PTR_FIX(cl::_sym_printNotReadable);
- SMART_PTR_FIX(core::_sym_data);
- SMART_PTR_FIX(chem::_sym_Matter_O);
- SMART_PTR_FIX(cffi::_sym_ptrdiff);
- SMART_PTR_FIX(llvmo::_sym_FCMP_ONE);
- SMART_PTR_FIX(core::_sym_ForeignData_O);
- SMART_PTR_FIX(cl::_sym_mostNegativeShortFloat);
- SMART_PTR_FIX(chem::_sym_SuperposeEngine_O);
- SMART_PTR_FIX(chemkw::_sym_singleBond);
- SMART_PTR_FIX(cffi::_sym_PERCENTforeign_type_size);
- SMART_PTR_FIX(llvmo::_sym_NamedMDNode_O);
- SMART_PTR_FIX(core::_sym_STARpreserve_whitespace_pSTAR);
- SMART_PTR_FIX(cl::_sym_lambda);
- SMART_PTR_FIX(llvmo::_sym_ICMP_UGE);
- SMART_PTR_FIX(cl::_sym_STARprint_baseSTAR);
- SMART_PTR_FIX(llvmo::_sym_AttributeUWTable);
- SMART_PTR_FIX(core::_sym_mpsGarbageCollection);
- SMART_PTR_FIX(kw::_sym_atomicProperty);
- SMART_PTR_FIX(chem::_sym_RingCoupling_O);
- SMART_PTR_FIX(chem::_sym_IterateResidues_O);
- SMART_PTR_FIX(llvmo::_sym_DISubprogram_O);
- SMART_PTR_FIX(ext::_sym_integer8);
- SMART_PTR_FIX(cl::_sym_ignore);
- SMART_PTR_FIX(llvmo::_sym_STARCmpInstPredicateSTAR);
- SMART_PTR_FIX(cl::_sym_realp);
- SMART_PTR_FIX(chem::_sym_MonomerCoordinates_O);
- SMART_PTR_FIX(core::_sym_asin);
- SMART_PTR_FIX(sockets::_sym__PLUS_NO_RECOVERY_PLUS_);
- SMART_PTR_FIX(cl::_sym_RandomState_O);
- SMART_PTR_FIX(llvmo::_sym_AttributeNoUnwind);
- SMART_PTR_FIX(core::_sym_make_vector);
- SMART_PTR_FIX(kw::_sym_requiredNumberOfArguments);
- SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion11);
- SMART_PTR_FIX(kw::_sym_array);
- SMART_PTR_FIX(core::_sym_tooFewArguments);
- SMART_PTR_FIX(chem::_sym_RestraintFixedNonbond_O);
- SMART_PTR_FIX(chemkw::_sym_P);
- SMART_PTR_FIX(core::_sym_STARtrace_startupSTAR);
- SMART_PTR_FIX(cl::_sym_ReadTable_O);
- SMART_PTR_FIX(cl::_sym_clearInput);
- SMART_PTR_FIX(chem::_sym_Angle_O);
- SMART_PTR_FIX(ext::_sym_float_infinity_string);
- SMART_PTR_FIX(cl::_sym_declare);
- SMART_PTR_FIX(kw::_sym_upcase);
- SMART_PTR_FIX(kw::_sym_print);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_enumeration_type);
- SMART_PTR_FIX(cffi::_sym_int8);
- SMART_PTR_FIX(core::_sym__PLUS_activationFrameNil_PLUS_);
- SMART_PTR_FIX(chem::_sym_STARAtomTestEnumConverterSTAR);
- SMART_PTR_FIX(units::_sym_Quantity_O);
- SMART_PTR_FIX(llvmo::_sym_CrossThread);
- SMART_PTR_FIX(llvmo::_sym_AtomicCmpXchgInst_O);
- SMART_PTR_FIX(kw::_sym_chemdraw_dashed_bond);
- SMART_PTR_FIX(core::_sym_STARcommandLineLoadSTAR);
- SMART_PTR_FIX(llvmo::_sym_ArchType_msp430);
- SMART_PTR_FIX(cl::_sym_length);
- SMART_PTR_FIX(llvmo::_sym_CodeModel_Medium);
- SMART_PTR_FIX(cl::_sym_defconstant);
- SMART_PTR_FIX(cl::_sym_setq);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_file_type);
- SMART_PTR_FIX(llvmo::_sym__PLUS_DW_ATE_SIGNED_FIXED_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_FCMP_PREDICATE);
- SMART_PTR_FIX(chem::_sym_Atom_O);
- SMART_PTR_FIX(core::_sym_backquote_append);
- SMART_PTR_FIX(sockets::_sym_ll_socketReceive);
- SMART_PTR_FIX(sockets::_sym_ll_autoCloseTwoWayStream);
- SMART_PTR_FIX(llvmo::_sym_RelocModel_PIC_);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v5);
- SMART_PTR_FIX(kw::_sym_changed);
- SMART_PTR_FIX(llvmo::_sym_Metadata_O);
- SMART_PTR_FIX(core::_sym_repr);
- SMART_PTR_FIX(cl::_sym_floatingPointOverflow);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_structure_type);
- SMART_PTR_FIX(cl::_sym_zerop);
- SMART_PTR_FIX(chem::_sym_Chain_O);
- SMART_PTR_FIX(llvmo::_sym_AquireRelease);
- SMART_PTR_FIX(core::_sym_PosixTimeDuration_O);
- SMART_PTR_FIX(llvmo::_sym_SRem);
- SMART_PTR_FIX(kw::_sym_input);
- SMART_PTR_FIX(chem::_sym_MinimizerLog_O);
- SMART_PTR_FIX(cl::_sym_file_string_length);
- SMART_PTR_FIX(cl::_sym_boole_nand);
- SMART_PTR_FIX(cl::_sym_compile);
- SMART_PTR_FIX(core::_sym_bdsVar);
- SMART_PTR_FIX(chem::_sym_StereoInformation_O);
- SMART_PTR_FIX(chem::_sym_SpanningLoop_O);
- SMART_PTR_FIX(core::_sym_backquote_bracket);
- SMART_PTR_FIX(core::_sym_smartPointerDetails);
- SMART_PTR_FIX(serveEvent::_sym_ll_serveEventNoTimeout);
- SMART_PTR_FIX(chem::_sym_Molecule_O);
- SMART_PTR_FIX(llvmo::_sym_IntToPtr);
- SMART_PTR_FIX(cl::_sym_setf);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_class_template);
- SMART_PTR_FIX(core::_sym_StrWithFillPtr_O);
- SMART_PTR_FIX(units::_sym_picoseconds);
- SMART_PTR_FIX(core::_sym_element_type);
- SMART_PTR_FIX(kw::_sym_ptors);
- SMART_PTR_FIX(chemkw::_sym_hydrogenBond);
- SMART_PTR_FIX(chem::_sym_scale);
- SMART_PTR_FIX(kw::_sym_preserve);
- SMART_PTR_FIX(kw::_sym_operands);
- SMART_PTR_FIX(core::_sym_STARsharp_equal_final_tableSTAR);
- SMART_PTR_FIX(cffi::_sym_short);
- SMART_PTR_FIX(kw::_sym_package);
- SMART_PTR_FIX(cl::_sym_aref);
- SMART_PTR_FIX(core::_sym_STARinput_streamSTAR);
- SMART_PTR_FIX(kw::_sym_datum);
- SMART_PTR_FIX(kw::_sym_magenta);
- SMART_PTR_FIX(kw::_sym_kb);
- SMART_PTR_FIX(chem::_sym_OverlappingNonbondError);
- SMART_PTR_FIX(kw::_sym_angRad);
- SMART_PTR_FIX(kw::_sym_Ptors);
- SMART_PTR_FIX(core::_sym_makeStructure);
- SMART_PTR_FIX(kw::_sym_x);
- SMART_PTR_FIX(llvmo::_sym_And);
- SMART_PTR_FIX(cffi::_sym_long_long);
- SMART_PTR_FIX(core::_sym_reader_read_double_quote_string);
- SMART_PTR_FIX(llvmo::_sym_SingleThread);
- SMART_PTR_FIX(llvmo::_sym_LinkOnceODRAutoHideLinkage);
- SMART_PTR_FIX(cl::_sym_internalTimeUnitsPerSecond);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_try_block);
- SMART_PTR_FIX(chem::_sym_MacroModelFile_O);
- SMART_PTR_FIX(cl::_sym_character);
- SMART_PTR_FIX(core::_sym_record_cons);
- SMART_PTR_FIX(cl::_sym_first);
- SMART_PTR_FIX(cl::_sym_StructureClass_O);
- SMART_PTR_FIX(cl::_sym_writeLine);
- SMART_PTR_FIX(cl::_sym_string_EQ_);
- SMART_PTR_FIX(kw::_sym_angles);
- SMART_PTR_FIX(cl::_sym_Stream_O);
- SMART_PTR_FIX(cl::_sym_equal);
- SMART_PTR_FIX(ext::_sym_lexicalVar);
- SMART_PTR_FIX(chem::_sym_STARLogicalOperatorTypeConverterSTAR);
- SMART_PTR_FIX(llvmo::_sym_VendorType_SCEI);
- SMART_PTR_FIX(cl::_sym_programError);
- SMART_PTR_FIX(kw::_sym_pink);
- SMART_PTR_FIX(llvmo::_sym_ArchType_xcore);
- SMART_PTR_FIX(llvmo::_sym_FunctionType_O);
- SMART_PTR_FIX(llvmo::_sym_ConstantStruct_O);
- SMART_PTR_FIX(kw::_sym_attachedEWGs);
- SMART_PTR_FIX(chem::_sym_in6MemberRing);
- SMART_PTR_FIX(serveEvent::_sym_ll_serveEventWithTimeout);
- SMART_PTR_FIX(chem::_sym__PLUS_bondOrderToSymbolConverter_PLUS_);
- SMART_PTR_FIX(core::_sym_VectorObjectsWithFillPtr_O);
- SMART_PTR_FIX(cl::_sym_acosh);
- SMART_PTR_FIX(core::_sym_cArgumentsLimit);
- SMART_PTR_FIX(kw::_sym_name_template);
- SMART_PTR_FIX(kw::_sym_Eps);
- SMART_PTR_FIX(core::_sym_isSubClassOf);
- SMART_PTR_FIX(core::_sym_DirectoryEntry_O);
- SMART_PTR_FIX(core::_sym_closedStream);
- SMART_PTR_FIX(core::_sym_structureRef);
- SMART_PTR_FIX(sockets::_sym__PLUS_SO_TYPE_PLUS_);
- SMART_PTR_FIX(core::_sym_instance);
- SMART_PTR_FIX(chem::_sym_EntityNameSetBase_O);
- SMART_PTR_FIX(core::_sym_monitorReader);
- SMART_PTR_FIX(gray::_sym_aSingleGraySymbol);
- SMART_PTR_FIX(cl::_sym_endp);
- SMART_PTR_FIX(chem::_sym__PLUS_hybridizationToSymbolConverter_PLUS_);
- SMART_PTR_FIX(cl::_sym_MultipleValuesLimit);
- SMART_PTR_FIX(cl::_sym_string_lessp);
- SMART_PTR_FIX(units::_sym_angstroms);
- SMART_PTR_FIX(sockets::_sym__PLUS_af_local_PLUS_);
- SMART_PTR_FIX(ext::_sym_maybeQuote);
- SMART_PTR_FIX(core::_sym_STARdebugInterpretedClosureSTAR);
- SMART_PTR_FIX(core::_sym_all_keys);
- SMART_PTR_FIX(cl::_sym_truncate);
- SMART_PTR_FIX(llvmo::_sym_valuep);
- SMART_PTR_FIX(cl::_sym_logicalPathnameTranslations);
- SMART_PTR_FIX(core::_sym_isTopLevelScript);
- SMART_PTR_FIX(cl::_sym_return_from);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_label);
- SMART_PTR_FIX(core::_sym_bformat);
- SMART_PTR_FIX(cl::_sym_most_negative_fixnum);
- SMART_PTR_FIX(llvmo::_sym_FDiv);
- SMART_PTR_FIX(llvmo::_sym_CodeGenOpt_Less);
- SMART_PTR_FIX(sockets::_sym_ll_getSockoptTimeval);
- SMART_PTR_FIX(core::_sym_sharp_x);
- SMART_PTR_FIX(core::_sym_log1p);
- SMART_PTR_FIX(kw::_sym_pol);
- SMART_PTR_FIX(llvmo::_sym_Function_O);
- SMART_PTR_FIX(cl::_sym_stream);
- SMART_PTR_FIX(cl::_sym_atanh);
- SMART_PTR_FIX(cl::_sym_bit);
- SMART_PTR_FIX(core::_sym_isAssignableTo);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_namelist);
- SMART_PTR_FIX(core::_sym_FunctionContainerEnvironment_O);
- SMART_PTR_FIX(core::_sym__PLUS_llvmTargetTriple_PLUS_);
- SMART_PTR_FIX(cl::_sym_floatingPointInvalidOperation);
- SMART_PTR_FIX(core::_sym_forget_all_single_dispatch_generic_functions);
- SMART_PTR_FIX(chem::_sym_Entity_O);
- SMART_PTR_FIX(cl::_sym_compute_restarts);
- SMART_PTR_FIX(chem::_sym_AM1_BCC_ar6);
- SMART_PTR_FIX(cl::_sym_satisfies);
- SMART_PTR_FIX(kw::_sym_eleChargeFcn);
- SMART_PTR_FIX(cl::_sym_cons);
- SMART_PTR_FIX(kw::_sym_invalid_character);
- SMART_PTR_FIX(core::_sym_unquote);
- SMART_PTR_FIX(cl::_sym_userHomedirPathname);
- SMART_PTR_FIX(cl::_sym_BitVector_O);
- SMART_PTR_FIX(cl::_sym_imagpart);
- SMART_PTR_FIX(cl::_sym_exp);
- SMART_PTR_FIX(asttooling::_sym_bind);
- SMART_PTR_FIX(cl::_sym_make_synonym_stream);
- SMART_PTR_FIX(chem::_sym_ForceField_O);
- SMART_PTR_FIX(chemkw::_sym_5);
- SMART_PTR_FIX(kw::_sym_itors);
- SMART_PTR_FIX(llvmo::_sym_EngineBuilder_O);
- SMART_PTR_FIX(core::_sym_dynamicGo);
- SMART_PTR_FIX(core::_sym_AMPva_rest);
- SMART_PTR_FIX(kw::_sym_Stretches);
- SMART_PTR_FIX(core::_sym_eof_value);
- SMART_PTR_FIX(kw::_sym_non_terminating_macro_character);
- SMART_PTR_FIX(cl::_sym_rationalp);
- SMART_PTR_FIX(core::_sym_io);
- SMART_PTR_FIX(units::_sym_milliseconds);
- SMART_PTR_FIX(cl::_sym_echo_stream_output_stream);
- SMART_PTR_FIX(serveEvent::_sym__PLUS_EINTR_PLUS_);
- SMART_PTR_FIX(core::_sym_STARbq_quoteSTAR);
- SMART_PTR_FIX(chem::_sym_RingFinder_O);
- SMART_PTR_FIX(kw::_sym_brown);
- SMART_PTR_FIX(core::_sym_STARserializerArchiveSTAR);
- SMART_PTR_FIX(core::_sym_HashTableEql_O);
- SMART_PTR_FIX(llvmo::_sym_throwIfMismatchedStructureSizes);
- SMART_PTR_FIX(chem::_sym_RestraintChiral_O);
- SMART_PTR_FIX(core::_sym_reader_error_unmatched_close_parenthesis);
- SMART_PTR_FIX(llvmo::_sym_OSType_DragonFly);
- SMART_PTR_FIX(chem::_sym_Plug_O);
- SMART_PTR_FIX(cl::_sym_ftype);
- SMART_PTR_FIX(core::_sym_STARcommandLineImageSTAR);
- SMART_PTR_FIX(chem::_sym_convergence);
- SMART_PTR_FIX(core::_sym_isArray);
- SMART_PTR_FIX(chemkw::_sym_scale);
- SMART_PTR_FIX(chem::_sym_EnergyComponent_O);
- SMART_PTR_FIX(core::_sym_wrongIndex);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_MSVC);
- SMART_PTR_FIX(chem::_sym_ConformationExplorerEntryStage_O);
- SMART_PTR_FIX(cl::_sym_code_char);
- SMART_PTR_FIX(cl::_sym_StructureObject_O);
- SMART_PTR_FIX(llvmo::_sym_STARdwarfConstantsSTAR);
- SMART_PTR_FIX(gctools::_sym_bootstrapKindSymbols);
- SMART_PTR_FIX(kw::_sym_forceField);
- SMART_PTR_FIX(kw::_sym_v1);
- SMART_PTR_FIX(kw::_sym_a1);
- SMART_PTR_FIX(kw::_sym_landingPadFrame);
- SMART_PTR_FIX(cl::_sym_remove);
- SMART_PTR_FIX(cl::_sym_remhash);
- SMART_PTR_FIX(core::_sym_rem_f);
- SMART_PTR_FIX(cleavirEnv::_sym_symbolMacroExpansion);
- SMART_PTR_FIX(ext::_sym_STARinspectorHookSTAR);
- SMART_PTR_FIX(cl::_sym_package_use_list);
- SMART_PTR_FIX(cl::_sym_go);
- SMART_PTR_FIX(geom::_sym_Color_O);
- SMART_PTR_FIX(llvmo::_sym_ConstantDataArray_O);
- SMART_PTR_FIX(core::_sym__PLUS_executableName_PLUS_);
- SMART_PTR_FIX(cl::_sym_STARrandom_stateSTAR);
- SMART_PTR_FIX(kw::_sym_if_exists);
- SMART_PTR_FIX(core::_sym_STARsharp_equal_repl_tableSTAR);
- SMART_PTR_FIX(cl::_sym_count);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_APPLE_property);
- SMART_PTR_FIX(cl::_sym_nstring_upcase);
- SMART_PTR_FIX(cl::_sym_import);
- SMART_PTR_FIX(llvmo::_sym_STARmoduleModFlagBehaviorSTAR);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_compile_unit);
- SMART_PTR_FIX(chemkw::_sym_C);
- SMART_PTR_FIX(chem::_sym_FFPtorDb_O);
- SMART_PTR_FIX(chem::_sym_LinearDihedralError);
- SMART_PTR_FIX(chem::_sym_configurationToSymbolConverter);
- SMART_PTR_FIX(cl::_sym_boole_andc2);
- SMART_PTR_FIX(cl::_sym_STARquery_ioSTAR);
- SMART_PTR_FIX(cl::_sym_identity);
- SMART_PTR_FIX(core::_sym_invokeInternalDebuggerFromGdb);
- SMART_PTR_FIX(kw::_sym_vdwScale14);
- SMART_PTR_FIX(kw::_sym_or);
- SMART_PTR_FIX(cl::_sym_labels);
- SMART_PTR_FIX(cl::_sym_concatenated_stream_streams);
- SMART_PTR_FIX(core::_sym_backquote_process);
- SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion9);
- SMART_PTR_FIX(kw::_sym_yellow);
- SMART_PTR_FIX(core::_sym_Pointer_O);
- SMART_PTR_FIX(gray::_sym_stream_read_char_no_hang);
- SMART_PTR_FIX(llvmo::_sym_moduleFlagError);
- SMART_PTR_FIX(units::_sym_kilocalories_per_mole);
- SMART_PTR_FIX(kw::_sym_tests);
- SMART_PTR_FIX(cl::_sym_SimpleBitVector_O);
- SMART_PTR_FIX(core::_sym_unbound);
- SMART_PTR_FIX(core::_sym_saveCando);
- SMART_PTR_FIX(kw::_sym__uid);
- SMART_PTR_FIX(ext::_sym_byte8);
- SMART_PTR_FIX(ext::_sym_specialVar);
- SMART_PTR_FIX(core::_sym_DOT);
- SMART_PTR_FIX(chem::_sym_AtomTable_O);
- SMART_PTR_FIX(cl::_sym__LT_);
- SMART_PTR_FIX(kw::_sym_pbci);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_const_type);
- SMART_PTR_FIX(cl::_sym_getUniversalTime);
- SMART_PTR_FIX(kw::_sym_common);
- SMART_PTR_FIX(cl::_sym_lognor);
- SMART_PTR_FIX(chem::_sym_FFNonbondDb_O);
- SMART_PTR_FIX(cl::_sym_restartName);
- SMART_PTR_FIX(cl::_sym__DIVIDE_);
- SMART_PTR_FIX(chem::_sym_CDFragment_O);
- SMART_PTR_FIX(gray::_sym_stream_terpri);
- SMART_PTR_FIX(chem::_sym_Structure_Old_List_O);
- SMART_PTR_FIX(gray::_sym_input_stream_p);
- SMART_PTR_FIX(kw::_sym_object);
- SMART_PTR_FIX(cl::_sym_numberp);
- SMART_PTR_FIX(cl::_sym_rem);
- SMART_PTR_FIX(core::_sym_STARinterpreterTraceSTAR);
- SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion4);
- SMART_PTR_FIX(cl::_sym_STARprint_right_marginSTAR);
- SMART_PTR_FIX(kw::_sym_type_rules);
- SMART_PTR_FIX(llvmo::_sym_WeakODRLinkage);
- SMART_PTR_FIX(kw::_sym_io);
- SMART_PTR_FIX(llvmo::_sym_FCMP_UNO);
- SMART_PTR_FIX(gray::_sym_stream_interactive_p);
- SMART_PTR_FIX(llvmo::_sym_PassManager_O);
- SMART_PTR_FIX(core::_sym_input_stream_designator);
- SMART_PTR_FIX(core::_sym_mapappend);
- SMART_PTR_FIX(chem::_sym_AtomIndexer_O);
- SMART_PTR_FIX(chem::_sym_ChemInfo_O);
- SMART_PTR_FIX(kw::_sym_initCharge);
- SMART_PTR_FIX(kw::_sym_up);
- SMART_PTR_FIX(cl::_sym_package);
- SMART_PTR_FIX(chemkw::_sym_O);
- SMART_PTR_FIX(units::_sym_elementaryCharge);
- SMART_PTR_FIX(chemkw::_sym_XC);
- SMART_PTR_FIX(chem::_sym_FFStretchDb_O);
- SMART_PTR_FIX(core::_sym_loadTimeValueArray);
- SMART_PTR_FIX(chem::_sym_Restraint_O);
- SMART_PTR_FIX(kw::_sym_pdb_template);
- SMART_PTR_FIX(chemkw::_sym__hydrogenBond);
- SMART_PTR_FIX(llvmo::_sym_getOrCreateExternalGlobal);
- SMART_PTR_FIX(cl::_sym_not);
- SMART_PTR_FIX(sockets::_sym_ff_listen);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_EABI);
- SMART_PTR_FIX(llvmo::_sym_DIBuilder_O);
- SMART_PTR_FIX(ext::_sym_truly_the);
- SMART_PTR_FIX(core::_sym_size_t);
- SMART_PTR_FIX(llvmo::_sym_AttributeNaked);
- SMART_PTR_FIX(core::_sym_ifDoesNotExist);
- SMART_PTR_FIX(sockets::_sym__PLUS_sock_stream_PLUS_);
- SMART_PTR_FIX(core::_sym_adjustable);
- SMART_PTR_FIX(llvmo::_sym_OSType_CNK);
- SMART_PTR_FIX(core::_sym_STARprintStructureSTAR);
- SMART_PTR_FIX(core::_sym_conditionMessage);
- SMART_PTR_FIX(chem::_sym__PLUS_preconditionerTypeConverter_PLUS_);
- SMART_PTR_FIX(kw::_sym_white);
- SMART_PTR_FIX(cl::_sym_round);
- SMART_PTR_FIX(core::_sym_MultiStringBuffer_O);
- SMART_PTR_FIX(cl::_sym_make_sequence);
- SMART_PTR_FIX(chemkw::_sym__virtualBond);
- SMART_PTR_FIX(cffi::_sym_int);
- SMART_PTR_FIX(kw::_sym_class);
- SMART_PTR_FIX(llvmo::_sym_InvokeInst_O);
- SMART_PTR_FIX(cl::_sym_sqrt);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_set_type);
- SMART_PTR_FIX(chem::_sym_StereoConfiguration_O);
- SMART_PTR_FIX(units::_sym_meters);
- SMART_PTR_FIX(chemkw::_sym_Cl);
- SMART_PTR_FIX(chemkw::_sym_E);
- SMART_PTR_FIX(llvmo::_sym__PLUS_DebugMetadataVersion_PLUS_);
- SMART_PTR_FIX(kw::_sym_pathname);
- SMART_PTR_FIX(cl::_sym_the);
- SMART_PTR_FIX(cl::_sym_if);
- SMART_PTR_FIX(llvmo::_sym_STARatomic_orderingSTAR);
- SMART_PTR_FIX(core::_sym_ArrayDisplaced_O);
- SMART_PTR_FIX(core::_sym_RecursiveDirectoryIterator_O);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v7em);
- SMART_PTR_FIX(core::_sym_integer_divide);
- SMART_PTR_FIX(llvmo::_sym_ArchType_x86_64);
- SMART_PTR_FIX(chem::_sym_in4MemberRing);
- SMART_PTR_FIX(core::_sym_WeakKeyMapping_O);
- SMART_PTR_FIX(sockets::_sym_ll_socket_errno);
- SMART_PTR_FIX(sockets::_sym__PLUS_TRY_AGAIN_PLUS_);
- SMART_PTR_FIX(cl::_sym_integer);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_format_label);
- SMART_PTR_FIX(kw::_sym_hybridization);
- SMART_PTR_FIX(cl::_sym_divisionByZero);
- SMART_PTR_FIX(chem::_sym_ResidueTest_O);
- SMART_PTR_FIX(cl::_sym_unread_char);
- SMART_PTR_FIX(core::_sym_record_field);
- SMART_PTR_FIX(kw::_sym_zConstants);
- SMART_PTR_FIX(llvmo::_sym_CodeGenFileType_ObjectFile);
- SMART_PTR_FIX(llvmo::_sym_TargetSubtargetInfo_O);
- SMART_PTR_FIX(kw::_sym_function);
- SMART_PTR_FIX(kw::_sym_caps);
- SMART_PTR_FIX(cl::_sym_nreconc);
- SMART_PTR_FIX(core::_sym_sourceLineColumn);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_partial_unit);
- SMART_PTR_FIX(core::_sym_rem_sysprop);
- SMART_PTR_FIX(cl::_sym_princ);
- SMART_PTR_FIX(kw::_sym_bl);
- SMART_PTR_FIX(cl::_sym_logorc2);
- SMART_PTR_FIX(cl::_sym_tagbody);
- SMART_PTR_FIX(kw::_sym_name);
- SMART_PTR_FIX(llvmo::_sym_Unordered);
- SMART_PTR_FIX(cl::_sym_floor);
- SMART_PTR_FIX(kw::_sym_tagbodyFrame);
- SMART_PTR_FIX(cl::_sym_String_O);
- SMART_PTR_FIX(geom::_sym_CoordinateArrayWithHash_O);
- SMART_PTR_FIX(kw::_sym_whitespace_character);
- SMART_PTR_FIX(core::_sym_reader_backquoted_expression);
- SMART_PTR_FIX(chem::_sym_superpose);
- SMART_PTR_FIX(core::_sym_dimensions);
- SMART_PTR_FIX(core::_sym_setf_findClass);
- SMART_PTR_FIX(asttooling::_sym_onEndOfTranslationUnit);
- SMART_PTR_FIX(sockets::_sym_ll_setSockoptBool);
- SMART_PTR_FIX(sockets::_sym__PLUS_SO_KEEPALIVE_PLUS_);
- SMART_PTR_FIX(core::_sym_evaluateVerbosity);
- SMART_PTR_FIX(kw::_sym_ph3);
- SMART_PTR_FIX(core::_sym_ExternalObject_O);
- SMART_PTR_FIX(cffi::_sym_PERCENTforeign_type_alignment);
- SMART_PTR_FIX(chem::_sym_Alias_O);
- SMART_PTR_FIX(cl::_sym_lcm);
- SMART_PTR_FIX(sockets::_sym_ll_getHostByName);
- SMART_PTR_FIX(llvmo::_sym_ArchType_kalimba);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_common_block);
- SMART_PTR_FIX(cl::_sym_writeString);
- SMART_PTR_FIX(kw::_sym_output);
- SMART_PTR_FIX(core::_sym_unquote_nsplice);
- SMART_PTR_FIX(cl::_sym_echo_stream_input_stream);
- SMART_PTR_FIX(cl::_sym_FileStream_O);
- SMART_PTR_FIX(chemkw::_sym__dashedDoubleBond);
- SMART_PTR_FIX(llvmo::_sym_AttributeNoCapture);
- SMART_PTR_FIX(chem::_sym_AtomTest_O);
- SMART_PTR_FIX(kw::_sym_chartreuse);
- SMART_PTR_FIX(cl::_sym_do);
- SMART_PTR_FIX(chem::_sym_restraintAnchor);
- SMART_PTR_FIX(cl::_sym_STARread_evalSTAR);
- SMART_PTR_FIX(cl::_sym_Pathname_O);
- SMART_PTR_FIX(cl::_sym_speed);
- SMART_PTR_FIX(llvmo::_sym_SwitchInst_O);
- SMART_PTR_FIX(chem::_sym_ChemInfoMatch_O);
- SMART_PTR_FIX(core::_sym_RuntimeVisibleEnvironment_O);
- SMART_PTR_FIX(cl::_sym_boole_andc1);
- SMART_PTR_FIX(chem::_sym_translate);
- SMART_PTR_FIX(cl::_sym_vectorp);
- SMART_PTR_FIX(llvmo::_sym_AttributeStructRet);
- SMART_PTR_FIX(cl::_sym_mergePathnames);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_string_type);
- SMART_PTR_FIX(cl::_sym_describe);
- SMART_PTR_FIX(cl::_sym_STARloadTruenameSTAR);
- SMART_PTR_FIX(cl::_sym_symbolValue);
- SMART_PTR_FIX(kw::_sym_M);
- SMART_PTR_FIX(llvmo::_sym_VendorType_ImaginationTechnologies);
- SMART_PTR_FIX(cl::_sym_boole_2);
- SMART_PTR_FIX(cl::_sym_float);
- SMART_PTR_FIX(llvmo::_sym_AvailableExternallyLinkage);
- SMART_PTR_FIX(cl::_sym_STARread_baseSTAR);
- SMART_PTR_FIX(core::_sym_Environment_O);
- SMART_PTR_FIX(llvmo::_sym_DataLayoutPass_O);
- SMART_PTR_FIX(kw::_sym_right);
- SMART_PTR_FIX(chem::_sym_FFItor_O);
- SMART_PTR_FIX(llvmo::_sym_VendorType_Apple);
- SMART_PTR_FIX(clos::_sym_StdClass_O);
- SMART_PTR_FIX(llvmo::_sym_RelocModel_Default);
- SMART_PTR_FIX(llvmo::_sym_FenceInst_O);
- SMART_PTR_FIX(kw::_sym_start);
- SMART_PTR_FIX(chem::_sym_FFAngle_O);
- SMART_PTR_FIX(llvmo::_sym_DW_LANG_COMMON_LISP);
- SMART_PTR_FIX(kw::_sym_crlf);
- SMART_PTR_FIX(llvmo::_sym_valid);
- SMART_PTR_FIX(llvmo::_sym_AttributeOptimizeForSize);
- SMART_PTR_FIX(cl::_sym_simpleWarning);
- SMART_PTR_FIX(cl::_sym_quote);
- SMART_PTR_FIX(cl::_sym_EchoStream_O);
- SMART_PTR_FIX(comp::_sym_STARall_functions_for_one_compileSTAR);
- SMART_PTR_FIX(cl::_sym_defun);
- SMART_PTR_FIX(cl::_sym_LongFloat_O);
- SMART_PTR_FIX(units::_sym_nanoseconds);
- SMART_PTR_FIX(cl::_sym_STARdefaultPathnameDefaultsSTAR);
- SMART_PTR_FIX(core::_sym_argument_number_error);
- SMART_PTR_FIX(core::_sym_subclassp);
- SMART_PTR_FIX(kw::_sym_vdwScaleBufferA);
- SMART_PTR_FIX(cl::_sym_symbolName);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_with_stmt);
- SMART_PTR_FIX(kw::_sym_probe);
- SMART_PTR_FIX(cl::_sym_get_output_stream_string);
- SMART_PTR_FIX(core::_sym_testProfileTimer);
- SMART_PTR_FIX(cl::_sym_nil);
- SMART_PTR_FIX(kw::_sym_ar4);
- SMART_PTR_FIX(llvmo::_sym_Mul);
- SMART_PTR_FIX(gray::_sym_streamClearInput);
- SMART_PTR_FIX(cl::_sym_finish_output);
- SMART_PTR_FIX(cl::_sym_printNotReadableObject);
- SMART_PTR_FIX(chem::_sym_ConformationCollection_O);
- SMART_PTR_FIX(llvmo::_sym_FAdd);
- SMART_PTR_FIX(adapt::_sym_QDomNode_O);
- SMART_PTR_FIX(cl::_sym_car);
- SMART_PTR_FIX(cl::_sym_fileError);
- SMART_PTR_FIX(cl::_sym_block);
- SMART_PTR_FIX(chemkw::_sym_Br);
- SMART_PTR_FIX(core::_sym_globalFunction);
- SMART_PTR_FIX(kw::_sym_angleFunction);
- SMART_PTR_FIX(cl::_sym_otherwise);
- SMART_PTR_FIX(units::_sym_kilojoules_per_mole);
- SMART_PTR_FIX(sockets::_sym_ll_getSockoptInt);
- SMART_PTR_FIX(core::_sym_reader_feature_p);
- SMART_PTR_FIX(cl::_sym_STARmodulesSTAR);
- SMART_PTR_FIX(core::_sym_type_to_symbol);
- SMART_PTR_FIX(llvmo::_sym_AttributeAlwaysInline);
- SMART_PTR_FIX(cffi::_sym_PERCENTload_foreign_library);
- SMART_PTR_FIX(kw::_sym_mass);
- SMART_PTR_FIX(kw::_sym_escape);
- SMART_PTR_FIX(core::_sym_singleDispatchMissingDispatchArgumentError);
- SMART_PTR_FIX(chem::_sym_CDText_O);
- SMART_PTR_FIX(llvmo::_sym_ArchType);
- SMART_PTR_FIX(cl::_sym_funcall);
- SMART_PTR_FIX(llvmo::_sym_CodeModel_Default);
- SMART_PTR_FIX(core::_sym_LambdaListHandler_O);
- SMART_PTR_FIX(kw::_sym_r0);
- SMART_PTR_FIX(clos::_sym_clearGfunHash);
- SMART_PTR_FIX(core::_sym_instanceRef);
- SMART_PTR_FIX(cl::_sym_ShortFloat_O);
- SMART_PTR_FIX(llvmo::_sym_IRBuilderBase_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_imported_module);
- SMART_PTR_FIX(core::_sym_Record_O);
- SMART_PTR_FIX(core::_sym_acosh);
- SMART_PTR_FIX(adapt::_sym_SymbolList_O);
- SMART_PTR_FIX(gray::_sym_stream_listen);
- SMART_PTR_FIX(units::_sym_candelas);
- SMART_PTR_FIX(core::_sym_ensureSingleDispatchGenericFunction);
- SMART_PTR_FIX(cl::_sym_findClass);
- SMART_PTR_FIX(kw::_sym_unspecific);
- SMART_PTR_FIX(chem::_sym_TagSet_O);
- SMART_PTR_FIX(core::_sym_declaredSpecial);
- SMART_PTR_FIX(kw::_sym_v3);
- SMART_PTR_FIX(llvmo::_sym_LLVMTargetMachine_O);
- SMART_PTR_FIX(core::_sym_makeSureClosClassSlotsMatchClass);
- SMART_PTR_FIX(asttooling::_sym_CreateASTConsumer);
- SMART_PTR_FIX(chem::_sym_CalculatePosition_O);
- SMART_PTR_FIX(core::_sym_STARloadSearchListSTAR);
- SMART_PTR_FIX(llvmo::_sym_ArchType_amdil);
- SMART_PTR_FIX(llvmo::_sym_FunctionPassManager_O);
- SMART_PTR_FIX(cl::_sym_step);
- SMART_PTR_FIX(chem::_sym_onGrid);
- SMART_PTR_FIX(chem::_sym_OligomerPart_Base_O);
- SMART_PTR_FIX(cl::_sym_typeError);
- SMART_PTR_FIX(core::_sym_runtimeEnvironment);
- SMART_PTR_FIX(llvmo::_sym_NotAtomic);
- SMART_PTR_FIX(cl::_sym_sequence);
- SMART_PTR_FIX(cl::_sym_mostNegativeLongFloat);
- SMART_PTR_FIX(core::_sym_StringOutputStream_O);
- SMART_PTR_FIX(core::_sym_stackMonitor);
- SMART_PTR_FIX(units::_sym_kiloJoules);
- SMART_PTR_FIX(llvmo::_sym_ConstantInt_O);
- SMART_PTR_FIX(chem::_sym_STARDonorAcceptorEnumConverterSTAR);
- SMART_PTR_FIX(llvmo::_sym_Pass_O);
- SMART_PTR_FIX(core::_sym_ArrayObjects_O);
- SMART_PTR_FIX(sockets::_sym_ff_close);
- SMART_PTR_FIX(core::_sym_InvocationHistoryFrameIterator_O);
- SMART_PTR_FIX(chemkw::_sym_entity);
- SMART_PTR_FIX(chem::_sym_EnergyFunction_O);
- SMART_PTR_FIX(kw::_sym_lf);
- SMART_PTR_FIX(kw::_sym_case);
- SMART_PTR_FIX(cl::_sym_stringTrim);
- SMART_PTR_FIX(core::_sym_separatePairList);
- SMART_PTR_FIX(llvmo::_sym_ArchType_le64);
- SMART_PTR_FIX(chem::_sym_SpecificContextSet_O);
- SMART_PTR_FIX(kw::_sym_atom);
- SMART_PTR_FIX(kw::_sym_neff);
- SMART_PTR_FIX(core::_sym_printf);
- SMART_PTR_FIX(core::_sym_start);
- SMART_PTR_FIX(sockets::_sym_ll_strerror);
- SMART_PTR_FIX(kw::_sym_y);
- SMART_PTR_FIX(chem::_sym_VirtualAtom_O);
- SMART_PTR_FIX(core::_sym_SourcePosInfo_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_subprogram);
- SMART_PTR_FIX(chem::_sym_DirectionalCoupling_O);
- SMART_PTR_FIX(llvmo::_sym_LoadInst_O);
- SMART_PTR_FIX(core::_sym_STARclassNameHashTableSTAR);
- SMART_PTR_FIX(cl::_sym_makeCondition);
- SMART_PTR_FIX(chem::_sym_BondMatchNode_O);
- SMART_PTR_FIX(units::_sym_nm_per_ps);
- SMART_PTR_FIX(cl::_sym_interactive_stream_p);
- SMART_PTR_FIX(chem::_sym_ReportBase_O);
- SMART_PTR_FIX(cl::_sym_stringp);
- SMART_PTR_FIX(core::_sym_backquote_simplify);
- SMART_PTR_FIX(chem::_sym_IterateRestraints_O);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_Android);
- SMART_PTR_FIX(llvmo::_sym_AttributeNone);
- SMART_PTR_FIX(llvmo::_sym_PointerType_O);
- SMART_PTR_FIX(kw::_sym_docstring);
- SMART_PTR_FIX(kw::_sym_internal);
- SMART_PTR_FIX(core::_sym_setThrowPosition);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_member);
- SMART_PTR_FIX(chem::_sym__PLUS_atomFlagSymbolConverter_PLUS_);
- SMART_PTR_FIX(ext::_sym_getEnv);
- SMART_PTR_FIX(llvmo::_sym_AttributeNest);
- SMART_PTR_FIX(cl::_sym_copyTree);
- SMART_PTR_FIX(core::_sym_hash_equal);
- SMART_PTR_FIX(core::_sym_forward_referenced_class);
- SMART_PTR_FIX(llvmo::_sym_UnaryInstruction_O);
- SMART_PTR_FIX(llvmo::_sym_PrivateLinkage);
- SMART_PTR_FIX(chem::_sym_idle);
- SMART_PTR_FIX(cl::_sym_pathnameName);
- SMART_PTR_FIX(chem::_sym_truncatedNewtonRunning);
- SMART_PTR_FIX(llvmo::_sym_DW_LANG_C);
- SMART_PTR_FIX(cl::_sym_UnsignedByte);
- SMART_PTR_FIX(chem::_sym_Oligomer_O);
- SMART_PTR_FIX(core::_sym_HashTableEqualp_O);
- SMART_PTR_FIX(llvmo::_sym_VendorType_NVIDIA);
- SMART_PTR_FIX(adapt::_sym_IndexedObjectBag_O);
- SMART_PTR_FIX(llvmo::_sym_ConstantArray_O);
- SMART_PTR_FIX(cl::_sym_string_greaterp);
- SMART_PTR_FIX(llvmo::_sym_ArchType_r600);
- SMART_PTR_FIX(cl::_sym_getDispatchMacroCharacter);
- SMART_PTR_FIX(llvmo::_sym_OSType_FreeBSD);
- SMART_PTR_FIX(units::_sym_Joule);
- SMART_PTR_FIX(core::_sym_VectorObjects_O);
- SMART_PTR_FIX(core::_sym_sharp_left_parenthesis);
- SMART_PTR_FIX(kw::_sym_unrecognizedKeyword);
- SMART_PTR_FIX(cl::_sym_compute_applicable_methods);
- SMART_PTR_FIX(llvmo::_sym_InsertPoint_O);
- SMART_PTR_FIX(chem::_sym_Logical_O);
- SMART_PTR_FIX(cl::_sym_sinh);
- SMART_PTR_FIX(cl::_sym_pi);
- SMART_PTR_FIX(llvmo::_sym_FCMP_FALSE);
- SMART_PTR_FIX(kw::_sym_mediumBlue);
- SMART_PTR_FIX(kw::_sym_append);
- SMART_PTR_FIX(cl::_sym_leastPositiveDoubleFloat);
- SMART_PTR_FIX(llvmo::_sym_LocalExecTLSModel);
- SMART_PTR_FIX(cl::_sym_write_sequence);
- SMART_PTR_FIX(kw::_sym_plum);
- SMART_PTR_FIX(chem::_sym_Branch_O);
- SMART_PTR_FIX(cl::_sym_Str_O);
- SMART_PTR_FIX(core::_sym_STARbq_nconcSTAR);
- SMART_PTR_FIX(cl::_sym_floatp);
- SMART_PTR_FIX(kw::_sym_constitutionAtoms);
+ SMART_PTR_FIX(core::_sym_env);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_unspecified_type);
  SMART_PTR_FIX(llvmo::_sym_OSType_Darwin);
- SMART_PTR_FIX(chem::_sym_minimizerError);
- SMART_PTR_FIX(gray::_sym_output_stream_p);
- SMART_PTR_FIX(cl::_sym_LogicalPathname_O);
- SMART_PTR_FIX(llvmo::_sym_parseBitcodeFile);
- SMART_PTR_FIX(cl::_sym_readChar);
- SMART_PTR_FIX(llvmo::_sym_DILexicalBlock_O);
- SMART_PTR_FIX(cl::_sym_cadr);
- SMART_PTR_FIX(cl::_sym_read_from_string);
- SMART_PTR_FIX(sockets::_sym_ll_setSockoptLinger);
- SMART_PTR_FIX(llvmo::_sym_VendorType_BGP);
- SMART_PTR_FIX(core::_sym_eof_error_p);
- SMART_PTR_FIX(kw::_sym_formatControl);
- SMART_PTR_FIX(core::_sym_setf_find_single_dispatch_generic_function);
- SMART_PTR_FIX(llvmo::_sym_FPToUI);
- SMART_PTR_FIX(cl::_sym_STARfeaturesSTAR);
- SMART_PTR_FIX(kw::_sym_dispatch_table);
- SMART_PTR_FIX(llvmo::_sym_MDNode_O);
- SMART_PTR_FIX(kw::_sym_formatArguments);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_packed_type);
- SMART_PTR_FIX(kw::_sym_cr);
- SMART_PTR_FIX(cl::_sym_find_package);
- SMART_PTR_FIX(core::_sym_tooFewArgumentsError);
- SMART_PTR_FIX(chem::_sym_AtomReference_O);
- SMART_PTR_FIX(core::_sym_wrongTypeNthArg);
- SMART_PTR_FIX(cl::_sym_findSymbol);
- SMART_PTR_FIX(cl::_sym_floatingPointInexact);
- SMART_PTR_FIX(kw::_sym_catchFrame);
- SMART_PTR_FIX(gray::_sym_stream_force_output);
- SMART_PTR_FIX(kw::_sym_green);
- SMART_PTR_FIX(kw::_sym_address_model_64);
- SMART_PTR_FIX(core::_sym_CxxClass_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_lexical_block);
- SMART_PTR_FIX(llvmo::_sym_ExternalWeakLinkage);
- SMART_PTR_FIX(core::_sym_testVal);
- SMART_PTR_FIX(core::_sym_ValueFrame_O);
- SMART_PTR_FIX(core::_sym_STARconsing_dot_allowedSTAR);
- SMART_PTR_FIX(cl::_sym_mostNegativeSingleFloat);
- SMART_PTR_FIX(cffi::_sym_double);
- SMART_PTR_FIX(sockets::_sym__PLUS_SO_RCVBUF_PLUS_);
- SMART_PTR_FIX(core::_sym_STARcurrentSourcePosInfoSTAR);
- SMART_PTR_FIX(chem::_sym_in5MemberRing);
- SMART_PTR_FIX(core::_sym_sharp_backslash);
- SMART_PTR_FIX(chem::_sym_Constitution_O);
- SMART_PTR_FIX(cl::_sym_cosh);
- SMART_PTR_FIX(kw::_sym_head);
- SMART_PTR_FIX(cl::_sym_two_way_stream_input_stream);
- SMART_PTR_FIX(kw::_sym_eleBuffer);
- SMART_PTR_FIX(chem::_sym_EntityNameSetWithCap_O);
- SMART_PTR_FIX(core::_sym_HashTableEq_O);
- SMART_PTR_FIX(kw::_sym_wheat);
- SMART_PTR_FIX(llvmo::_sym_FIRST_FCMP_PREDICATE);
- SMART_PTR_FIX(llvmo::_sym_TargetMachine_O);
- SMART_PTR_FIX(chemkw::_sym_noBond);
- SMART_PTR_FIX(kw::_sym_uniqueLabel);
- SMART_PTR_FIX(cl::_sym_peekChar);
- SMART_PTR_FIX(cl::_sym_endOfFile);
- SMART_PTR_FIX(cl::_sym_AMPaux);
- SMART_PTR_FIX(llvmo::_sym_InternalLinkage);
- SMART_PTR_FIX(sockets::_sym__PLUS_NO_ADDRESS_PLUS_);
- SMART_PTR_FIX(chem::_sym_FFParameter_O);
- SMART_PTR_FIX(cl::_sym_complex);
- SMART_PTR_FIX(chem::_sym_EnergyDihedral_O);
- SMART_PTR_FIX(core::_sym_backquote_splicing_frob);
- SMART_PTR_FIX(llvmo::_sym_ObjectFormatType_ELF);
- SMART_PTR_FIX(chem::_sym__PLUS_validChemdrawKeywords_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_VendorType_CSR);
+ SMART_PTR_FIX(llvmo::_sym_EnvironmentType_UnknownEnvironment);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_x86);
+ SMART_PTR_FIX(core::_sym_UserData_O);
+ SMART_PTR_FIX(kw::_sym_bclasp);
+ SMART_PTR_FIX(cl::_sym_logandc2);
+ SMART_PTR_FIX(core::_sym_aset);
+ SMART_PTR_FIX(core::_sym_rehash_size);
+ SMART_PTR_FIX(chem::_sym_conjugateGradientRunning);
+ SMART_PTR_FIX(cl::_sym_userHomedirPathname);
+ SMART_PTR_FIX(core::_sym_sharp_sharp);
+ SMART_PTR_FIX(core::_sym_STARsourceDatabaseSTAR);
+ SMART_PTR_FIX(cl::_sym_alpha_char_p);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_catch_block);
+ SMART_PTR_FIX(cl::_sym_STARread_baseSTAR);
+ SMART_PTR_FIX(kw::_sym_relative);
+ SMART_PTR_FIX(core::_sym_lispCodePath);
+ SMART_PTR_FIX(core::_sym_isSubClassOf);
+ SMART_PTR_FIX(cl::_sym_atom);
+ SMART_PTR_FIX(core::_sym_debugLogOn);
+ SMART_PTR_FIX(adapt::_sym_QDomNode_O);
+ SMART_PTR_FIX(core::_sym_STARclassNameHashTableSTAR);
+ SMART_PTR_FIX(kw::_sym_calledFunction);
+ SMART_PTR_FIX(llvmo::_sym_LoadInst_O);
+ SMART_PTR_FIX(chem::_sym_EntityNameSet_O);
+ SMART_PTR_FIX(core::_sym_STARwatchDynamicBindingStackSTAR);
+ SMART_PTR_FIX(chem::_sym_FullLargeSquareMatrix_O);
+ SMART_PTR_FIX(cl::_sym_printNotReadableObject);
+ SMART_PTR_FIX(core::_sym_STARbq_quoteSTAR);
+ SMART_PTR_FIX(cl::_sym_Null_O);
+ SMART_PTR_FIX(cl::_sym_digitCharP);
+ SMART_PTR_FIX(llvmo::_sym_AquireRelease);
+ SMART_PTR_FIX(cl::_sym_MultipleValuesLimit);
  SMART_PTR_FIX(llvmo::_sym_IntegerType_O);
- SMART_PTR_FIX(kw::_sym_afterMatchTests);
- SMART_PTR_FIX(core::_sym__BANG_unbound_BANG_);
- SMART_PTR_FIX(kw::_sym_closestMatch);
- SMART_PTR_FIX(cl::_sym_gcd);
- SMART_PTR_FIX(core::_sym_STARcircle_stackSTAR);
- SMART_PTR_FIX(cl::_sym_ceiling);
- SMART_PTR_FIX(chem::_sym_ReadAmberParameters_O);
- SMART_PTR_FIX(chem::_sym_PlugWithMates_O);
- SMART_PTR_FIX(llvmo::_sym_ArchType_aarch64_be);
- SMART_PTR_FIX(llvmo::_sym_ArchType_mips64);
- SMART_PTR_FIX(llvmo::_sym_BasicBlock_O);
- SMART_PTR_FIX(core::_sym_probe);
- SMART_PTR_FIX(cl::_sym_hash_table_p);
- SMART_PTR_FIX(llvmo::_sym_Instruction_O);
- SMART_PTR_FIX(cl::_sym_getOutputStreamString);
- SMART_PTR_FIX(kw::_sym_atomicNumber);
- SMART_PTR_FIX(llvmo::_sym_ObjectFormatType_UnknownObjectFormat);
- SMART_PTR_FIX(core::_sym___init__);
- SMART_PTR_FIX(core::_sym_STARnotify_on_compileSTAR);
- SMART_PTR_FIX(kw::_sym_direct_super_classes);
- SMART_PTR_FIX(core::_sym_recursive_p);
- SMART_PTR_FIX(sockets::_sym_ll_socketName);
- SMART_PTR_FIX(core::_sym_IOFileStream_O);
- SMART_PTR_FIX(core::_sym_singleDispatchBadLambdaListError);
- SMART_PTR_FIX(llvmo::_sym_MDString_O);
- SMART_PTR_FIX(llvmo::_sym_DLLImportLinkage);
- SMART_PTR_FIX(chem::_sym_CalculatePositionRelativeToOrigin_O);
- SMART_PTR_FIX(chem::_sym_rotate);
- SMART_PTR_FIX(ext::_sym__PLUS_processErrorOutput_PLUS_);
- SMART_PTR_FIX(kw::_sym_v2);
- SMART_PTR_FIX(llvmo::_sym_Release);
- SMART_PTR_FIX(cl::_sym_realpart);
- SMART_PTR_FIX(cl::_sym__PLUS_);
- SMART_PTR_FIX(cffi::_sym_uint64);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_formal_parameter);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_imported_unit);
- SMART_PTR_FIX(kw::_sym_coral);
- SMART_PTR_FIX(cl::_sym_symbolFunction);
- SMART_PTR_FIX(kw::_sym_gzip);
- SMART_PTR_FIX(core::_sym_STARbq_simplifySTAR);
- SMART_PTR_FIX(chem::_sym_Trajectory_O);
- SMART_PTR_FIX(sockets::_sym__PLUS_EINTR_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_AttributeEnum);
- SMART_PTR_FIX(core::_sym_invocationHistoryFrame);
- SMART_PTR_FIX(comp::_sym_STARlowLevelTraceSTAR);
- SMART_PTR_FIX(ext::_sym_STARdefault_external_formatSTAR);
- SMART_PTR_FIX(cl::_sym_mod);
- SMART_PTR_FIX(core::_sym_item);
- SMART_PTR_FIX(cl::_sym_char_LE_);
- SMART_PTR_FIX(kw::_sym_podSymbolMap);
- SMART_PTR_FIX(llvmo::_sym_OSType_Haiku);
- SMART_PTR_FIX(core::_sym_structureSubtypep);
- SMART_PTR_FIX(core::_sym_WeakKeyHashTable_O);
- SMART_PTR_FIX(chem::_sym_IterateMatter_O);
- SMART_PTR_FIX(cl::_sym_translateLogicalPathname);
- SMART_PTR_FIX(chem::_sym_ConstitutionBond_O);
- SMART_PTR_FIX(chemkw::_sym_1);
- SMART_PTR_FIX(asttooling::_sym_onStartOfTranslationUnit);
- SMART_PTR_FIX(serveEvent::_sym_ll_fd_isset);
- SMART_PTR_FIX(llvmo::_sym_VendorType_IBM);
- SMART_PTR_FIX(cl::_sym_get);
- SMART_PTR_FIX(cl::_sym_butlast);
- SMART_PTR_FIX(chem::_sym_IterateAtoms_O);
- SMART_PTR_FIX(cl::_sym_leastPositiveShortFloat);
- SMART_PTR_FIX(chem::_sym_R);
- SMART_PTR_FIX(core::_sym_loadTimeValuesIds);
- SMART_PTR_FIX(gctools::_sym_bootstrapKindsP);
- SMART_PTR_FIX(core::_sym_STARstandard_readtableSTAR);
- SMART_PTR_FIX(llvmo::_sym_AppendingLinkage);
- SMART_PTR_FIX(core::_sym_debug_message);
- SMART_PTR_FIX(core::_sym_preserve_whitespace);
- SMART_PTR_FIX(llvmo::_sym_CodeGenFileType_Null);
- SMART_PTR_FIX(kw::_sym_chiral_centers);
- SMART_PTR_FIX(core::_sym_process_single_dispatch_lambda_list);
- SMART_PTR_FIX(chem::_sym_in3MemberRing);
- SMART_PTR_FIX(core::_sym_mpi_rank);
- SMART_PTR_FIX(ext::_sym_stackVar);
- SMART_PTR_FIX(cl::_sym_shadow);
- SMART_PTR_FIX(llvmo::_sym_VendorType_BGQ);
- SMART_PTR_FIX(llvmo::_sym_FCMP_UEQ);
- SMART_PTR_FIX(core::_sym_make_structure);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_function_template);
- SMART_PTR_FIX(llvmo::_sym_FCMP_OGT);
- SMART_PTR_FIX(chem::_sym_EnergyChiralRestraint_O);
- SMART_PTR_FIX(kw::_sym_eleDielectricCode);
- SMART_PTR_FIX(llvmo::_sym_module_get_function_list);
- SMART_PTR_FIX(cl::_sym_lognand);
- SMART_PTR_FIX(llvmo::_sym_Constant_O);
- SMART_PTR_FIX(llvmo::_sym_FCMP_OLT);
- SMART_PTR_FIX(cl::_sym_clrhash);
- SMART_PTR_FIX(core::_sym_backquote_completely_process);
- SMART_PTR_FIX(cl::_sym_CompiledFunction_O);
- SMART_PTR_FIX(chem::_sym_ImproperTorsion_O);
- SMART_PTR_FIX(llvmo::_sym_STARAtomicRMWInstBinOpSTAR);
- SMART_PTR_FIX(core::_sym_structure_include);
- SMART_PTR_FIX(core::_sym_macro);
- SMART_PTR_FIX(cl::_sym__GT_);
- SMART_PTR_FIX(core::_sym_sharp_b);
- SMART_PTR_FIX(chem::_sym_ZMatrixDihedralInternal_O);
- SMART_PTR_FIX(chem::_sym_CalculatePositionUsingInternals_O);
- SMART_PTR_FIX(core::_sym_BlockEnvironment_O);
- SMART_PTR_FIX(core::_sym_sharedReferenceCountedPointer);
- SMART_PTR_FIX(cffi::_sym_char);
+ SMART_PTR_FIX(llvmo::_sym_NotAtomic);
+ SMART_PTR_FIX(cl::_sym_last);
+ SMART_PTR_FIX(cl::_sym_arrayTotalSizeLimit);
+ SMART_PTR_FIX(llvmo::_sym_FCMP_ONE);
+ SMART_PTR_FIX(kw::_sym_level);
+ SMART_PTR_FIX(chemkw::_sym_4);
+ SMART_PTR_FIX(sockets::_sym__PLUS_TCP_NODELAY_PLUS_);
  SMART_PTR_FIX(llvmo::_sym_DW_TAG_volatile_type);
+ SMART_PTR_FIX(cl::_sym_symbolName);
+ SMART_PTR_FIX(core::_sym_STARenablePrintPrettySTAR);
+ SMART_PTR_FIX(cl::_sym_gcd);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_nvptx64);
+ SMART_PTR_FIX(sockets::_sym__PLUS_sock_stream_PLUS_);
+ SMART_PTR_FIX(kw::_sym_chartreuse);
+ SMART_PTR_FIX(llvmo::_sym_DebugLoc_O);
+ SMART_PTR_FIX(llvmo::_sym_DW_LANG_COMMON_LISP);
+ SMART_PTR_FIX(cl::_sym_sort);
+ SMART_PTR_FIX(cl::_sym_arithmeticError);
+ SMART_PTR_FIX(kw::_sym_junkAllowed);
+ SMART_PTR_FIX(cl::_sym_Package_O);
+ SMART_PTR_FIX(cl::_sym_most_positive_fixnum);
+ SMART_PTR_FIX(cl::_sym_char_EQ_);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_template_type_parameter);
+ SMART_PTR_FIX(units::_sym_kiloJoules);
+ SMART_PTR_FIX(cl::_sym_intern);
+ SMART_PTR_FIX(chemkw::_sym_XA);
+ SMART_PTR_FIX(cl::_sym_fileStream);
+ SMART_PTR_FIX(core::_sym_supersede);
+ SMART_PTR_FIX(gray::_sym_stream_write_sequence);
+ SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion9);
+ SMART_PTR_FIX(llvmo::_sym_FSub);
+ SMART_PTR_FIX(cl::_sym_DoubleFloat_O);
+ SMART_PTR_FIX(kw::_sym_upcase);
+ SMART_PTR_FIX(cl::_sym_deftype);
+ SMART_PTR_FIX(kw::_sym_bondDistinctions);
+ SMART_PTR_FIX(chem::_sym_Minimizer_O);
+ SMART_PTR_FIX(cl::_sym_block);
+ SMART_PTR_FIX(llvmo::_sym_BlockAddress_O);
+ SMART_PTR_FIX(kw::_sym_goldenrod);
+ SMART_PTR_FIX(chem::_sym_Constitution_O);
+ SMART_PTR_FIX(core::_sym_Path_O);
+ SMART_PTR_FIX(core::_sym_printCurrentIhsFrameEnvironment);
+ SMART_PTR_FIX(chem::_sym_Aggregate_O);
+ SMART_PTR_FIX(units::_sym_moles);
+ SMART_PTR_FIX(cl::_sym_use_package);
+ SMART_PTR_FIX(chem::_sym_SearchStatistics_O);
+ SMART_PTR_FIX(core::_sym_structureSubtypep);
+ SMART_PTR_FIX(cl::_sym_SynonymStream_O);
+ SMART_PTR_FIX(chem::_sym_atoms);
+ SMART_PTR_FIX(cffi::_sym_unsigned_short);
+ SMART_PTR_FIX(llvmo::_sym_VendorType_Apple);
+ SMART_PTR_FIX(kw::_sym_ph1);
+ SMART_PTR_FIX(cl::_sym_char);
+ SMART_PTR_FIX(llvmo::_sym_FCMP_ORD);
+ SMART_PTR_FIX(cl::_sym_cons);
+ SMART_PTR_FIX(serveEvent::_sym_ll_serveEventNoTimeout);
+ SMART_PTR_FIX(chem::_sym_AntechamberRoot_O);
+ SMART_PTR_FIX(cl::_sym_getInternalRunTime);
+ SMART_PTR_FIX(cl::_sym_name_char);
+ SMART_PTR_FIX(llvmo::_sym_SequentialType_O);
+ SMART_PTR_FIX(kw::_sym_package);
+ SMART_PTR_FIX(core::_sym_Record_O);
+ SMART_PTR_FIX(llvmo::_sym_ICMP_EQ);
+ SMART_PTR_FIX(chem::_sym_CDText_O);
+ SMART_PTR_FIX(cl::_sym_unintern);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_imported_unit);
+ SMART_PTR_FIX(core::_sym_STARenvironmentPrintingTabSTAR);
+ SMART_PTR_FIX(chem::_sym_SpanningLoop_O);
+ SMART_PTR_FIX(cl::_sym_readByte);
+ SMART_PTR_FIX(llvmo::_sym_makeStringGlobal);
+ SMART_PTR_FIX(cl::_sym_directoryNamestring);
+ SMART_PTR_FIX(chem::_sym_Bond_O);
+ SMART_PTR_FIX(cl::_sym_getUniversalTime);
+ SMART_PTR_FIX(core::_sym_hash_eql);
+ SMART_PTR_FIX(llvmo::_sym_AttributeEnum);
+ SMART_PTR_FIX(chem::_sym_LinearDihedralError);
+ SMART_PTR_FIX(cl::_sym_error);
+ SMART_PTR_FIX(chem::_sym__PLUS_hybridizationToSymbolConverter_PLUS_);
+ SMART_PTR_FIX(llvmo::_sym_RelocModel_DynamicNoPIC);
+ SMART_PTR_FIX(core::_sym_singleDispatchBadLambdaListError);
+ SMART_PTR_FIX(llvmo::_sym_FCMP_OLE);
+ SMART_PTR_FIX(cl::_sym_simple_vector);
+ SMART_PTR_FIX(core::_sym_STARdebugMonitorSTAR);
+ SMART_PTR_FIX(cl::_sym_lambdaParametersLimit);
+ SMART_PTR_FIX(core::_sym_STARstartRunTimeSTAR);
+ SMART_PTR_FIX(cl::_sym_writeString);
+ SMART_PTR_FIX(llvmo::_sym_EnvironmentType_GNUX32);
+ SMART_PTR_FIX(llvmo::_sym_SubArchType_NoSubArch);
+ SMART_PTR_FIX(kw::_sym_v0);
+ SMART_PTR_FIX(cl::_sym_STARprint_caseSTAR);
+ SMART_PTR_FIX(chemkw::_sym_F);
+ SMART_PTR_FIX(gray::_sym_stream_element_type);
+ SMART_PTR_FIX(cl::_sym_apropos);
+ SMART_PTR_FIX(core::_sym_STARPATHSTAR);
+ SMART_PTR_FIX(cl::_sym_nconc);
+ SMART_PTR_FIX(llvmo::_sym_STARAtomicRMWInstBinOpSTAR);
+ SMART_PTR_FIX(serveEvent::_sym_ll_fdset_size);
+ SMART_PTR_FIX(cl::_sym_StructureClass_O);
+ SMART_PTR_FIX(sockets::_sym_ll_getNameServiceErrorMessage);
+ SMART_PTR_FIX(llvmo::_sym_STARInstructionCastOpsSTAR);
+ SMART_PTR_FIX(kw::_sym_closestMatch);
+ SMART_PTR_FIX(core::_sym_environmentId);
+ SMART_PTR_FIX(kw::_sym_M);
+ SMART_PTR_FIX(cl::_sym_leastPositiveSingleFloat);
+ SMART_PTR_FIX(core::_sym_makeRegex);
+ SMART_PTR_FIX(cl::_sym_STARreadtableSTAR);
+ SMART_PTR_FIX(core::_sym_renameAndDelete);
+ SMART_PTR_FIX(cffi::_sym_unsigned_int);
+ SMART_PTR_FIX(chem::_sym_residues);
+ SMART_PTR_FIX(cl::_sym_ftype);
+ SMART_PTR_FIX(kw::_sym_use_boehmdc);
+ SMART_PTR_FIX(core::_sym_nread);
+ SMART_PTR_FIX(core::_sym_bdsVar);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_friend);
+ SMART_PTR_FIX(chem::_sym_FFItor_O);
+ SMART_PTR_FIX(chem::_sym_ZMatrix_O);
+ SMART_PTR_FIX(llvmo::_sym__PLUS_ClaspMainFunctionName_PLUS_);
+ SMART_PTR_FIX(kw::_sym_unbound);
+ SMART_PTR_FIX(llvmo::_sym_FRem);
+ SMART_PTR_FIX(chem::_sym_EnergyAngle_O);
+ SMART_PTR_FIX(chem::_sym_Entity_O);
+ SMART_PTR_FIX(llvmo::_sym_OSType_NaCl);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_armeb);
+ SMART_PTR_FIX(core::_sym_ArrayObjects_O);
+ SMART_PTR_FIX(core::_sym_STARbq_clobberableSTAR);
+ SMART_PTR_FIX(core::_sym_SymbolMacroletEnvironment_O);
+ SMART_PTR_FIX(cl::_sym_StandardClass_O);
+ SMART_PTR_FIX(chem::_sym_CDFragment_O);
+ SMART_PTR_FIX(kw::_sym_ar3);
+ SMART_PTR_FIX(geom::_sym_OVector3_O);
+ SMART_PTR_FIX(llvmo::_sym_Module_O);
+ SMART_PTR_FIX(core::_sym_STARbackquote_levelSTAR);
+ SMART_PTR_FIX(cl::_sym_simple_array);
+ SMART_PTR_FIX(llvmo::_sym_TargetLibraryInfo_O);
+ SMART_PTR_FIX(cl::_sym_print);
+ SMART_PTR_FIX(kw::_sym_typeError);
+ SMART_PTR_FIX(llvmo::_sym_AttributeNaked);
+ SMART_PTR_FIX(chem::_sym_ConformationExplorerEntry_O);
+ SMART_PTR_FIX(cl::_sym_max);
+ SMART_PTR_FIX(cl::_sym_enoughNamestring);
+ SMART_PTR_FIX(kw::_sym_eleChargeFcn);
+ SMART_PTR_FIX(cl::_sym_destructuring_bind);
+ SMART_PTR_FIX(core::_sym_STARdebugEvalSTAR);
+ SMART_PTR_FIX(cl::_sym_return_from);
+ SMART_PTR_FIX(kw::_sym_head);
+ SMART_PTR_FIX(llvmo::_sym_writeBitcodeToFile);
+ SMART_PTR_FIX(gray::_sym_stream_advance_to_column);
+ SMART_PTR_FIX(kw::_sym_target_os_linux);
+ SMART_PTR_FIX(cl::_sym_mapcar);
+ SMART_PTR_FIX(llvmo::_sym_VAArgInst_O);
+ SMART_PTR_FIX(core::_sym_sharp_c);
+ SMART_PTR_FIX(llvmo::_sym_Attribute_O);
+ SMART_PTR_FIX(cl::_sym_seriousCondition);
+ SMART_PTR_FIX(cl::_sym_zerop);
+ SMART_PTR_FIX(kw::_sym_defaults);
+ SMART_PTR_FIX(kw::_sym_UnsignedByte);
+ SMART_PTR_FIX(chem::_sym_InfoDb_O);
+ SMART_PTR_FIX(llvmo::_sym_OSType_Lv2);
+ SMART_PTR_FIX(core::_sym_printUnreadableObjectFunction);
+ SMART_PTR_FIX(cl::_sym_mostPositiveLongFloat);
+ SMART_PTR_FIX(llvmo::_sym_OSType_UnknownOS);
+ SMART_PTR_FIX(chem::_sym_EntityNameSetBase_O);
+ SMART_PTR_FIX(llvmo::_sym_verifyModule);
+ SMART_PTR_FIX(sockets::_sym_ll_dup);
+ SMART_PTR_FIX(clos::_sym_standardOptimizedReaderFunction);
+ SMART_PTR_FIX(cl::_sym_tanh);
+ SMART_PTR_FIX(core::_sym_reader_error_unmatched_close_parenthesis);
+ SMART_PTR_FIX(kw::_sym_alias);
+ SMART_PTR_FIX(cl::_sym_sin);
+ SMART_PTR_FIX(cl::_sym_broadcast_stream_streams);
+ SMART_PTR_FIX(core::_sym_dladdr);
+ SMART_PTR_FIX(core::_sym_ForeignData_O);
+ SMART_PTR_FIX(cl::_sym_and);
+ SMART_PTR_FIX(core::_sym_MultiStringBuffer_O);
+ SMART_PTR_FIX(core::_sym_instanceClassSet);
+ SMART_PTR_FIX(gray::_sym_stream_fresh_line);
+ SMART_PTR_FIX(chem::_sym_EntityNameSetWithCap_O);
+ SMART_PTR_FIX(cl::_sym_char_code_limit);
+ SMART_PTR_FIX(cl::_sym_styleWarning);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_ppc);
+ SMART_PTR_FIX(kw::_sym_a1);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_tce);
+ SMART_PTR_FIX(gctools::_sym_bootstrapKindsP);
+ SMART_PTR_FIX(core::_sym_sequence_start_end);
+ SMART_PTR_FIX(gray::_sym_stream_interactive_p);
+ SMART_PTR_FIX(llvmo::_sym_EnvironmentType_GNUEABIHF);
+ SMART_PTR_FIX(llvmo::_sym_ArrayType_O);
+ SMART_PTR_FIX(core::_sym_single_dispatch_on);
+ SMART_PTR_FIX(cl::_sym_simpleTypeError);
+ SMART_PTR_FIX(units::_sym_micrometers);
+ SMART_PTR_FIX(cl::_sym_Bit);
+ SMART_PTR_FIX(core::_sym_SingleDispatchEffectiveMethodFunction_O);
+ SMART_PTR_FIX(core::_sym_UnwindProtectEnvironment_O);
+ SMART_PTR_FIX(cl::_sym_scaleFloat);
+ SMART_PTR_FIX(cl::_sym_lambda);
+ SMART_PTR_FIX(cl::_sym_remhash);
+ SMART_PTR_FIX(kw::_sym_bigEndian);
+ SMART_PTR_FIX(llvmo::_sym_PrivateLinkage);
+ SMART_PTR_FIX(llvmo::_sym_ExternalWeakLinkage);
+ SMART_PTR_FIX(cl::_sym_printNotReadable);
+ SMART_PTR_FIX(kw::_sym_tests);
+ SMART_PTR_FIX(chem::_sym_ResidueTest_O);
+ SMART_PTR_FIX(core::_sym_STARsharp_equal_final_tableSTAR);
+ SMART_PTR_FIX(llvmo::_sym_DIBuilder_O);
+ SMART_PTR_FIX(core::_sym_STARsharp_equal_temp_tableSTAR);
+ SMART_PTR_FIX(kw::_sym_type3);
+ SMART_PTR_FIX(cl::_sym_read_preserving_whitespace);
+ SMART_PTR_FIX(chemkw::_sym_XB);
+ SMART_PTR_FIX(sockets::_sym__PLUS_SO_KEEPALIVE_PLUS_);
+ SMART_PTR_FIX(llvmo::_sym_STARmostRecentLlvmFinalizationTimeSTAR);
+ SMART_PTR_FIX(sockets::_sym__PLUS_clasp_stream_mode_output_PLUS_);
+ SMART_PTR_FIX(sockets::_sym_ll_setSockoptBool);
+ SMART_PTR_FIX(chem::_sym_ConstitutionAtom_O);
+ SMART_PTR_FIX(chem::_sym_Monomer_O);
+ SMART_PTR_FIX(chem::_sym_EnergyDihedral_O);
+ SMART_PTR_FIX(chemkw::_sym__hydrogenBond);
+ SMART_PTR_FIX(ext::_sym_AnsiStream_O);
+ SMART_PTR_FIX(cl::_sym_string_not_equal);
+ SMART_PTR_FIX(core::_sym_initial_element);
+ SMART_PTR_FIX(llvmo::_sym_UMin);
+ SMART_PTR_FIX(chemkw::_sym_translate);
+ SMART_PTR_FIX(llvmo::_sym_FCMP_ULE);
+ SMART_PTR_FIX(asttooling::_sym_x);
+ SMART_PTR_FIX(kw::_sym_not);
+ SMART_PTR_FIX(kw::_sym_back);
+ SMART_PTR_FIX(cl::_sym_boundp);
+ SMART_PTR_FIX(units::_sym_grams);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_function_template);
+ SMART_PTR_FIX(cl::_sym_STARreadDefaultFloatFormatSTAR);
+ SMART_PTR_FIX(chem::_sym_allMatter);
+ SMART_PTR_FIX(llvmo::_sym_LocalDynamicTLSModel);
+ SMART_PTR_FIX(kw::_sym_nonbonds);
+ SMART_PTR_FIX(cl::_sym_macroFunction);
+ SMART_PTR_FIX(core::_sym_testMemoryError);
+ SMART_PTR_FIX(core::_sym_RuntimeVisibleEnvironment_O);
+ SMART_PTR_FIX(cl::_sym_vectorp);
+ SMART_PTR_FIX(units::_sym_coulomb);
+ SMART_PTR_FIX(chem::_sym_RootMatchNode_O);
+ SMART_PTR_FIX(cl::_sym_listen);
+ SMART_PTR_FIX(chem::_sym_scale);
+ SMART_PTR_FIX(llvmo::_sym_LandingPadInst_O);
+ SMART_PTR_FIX(chem::_sym_RingFinder_O);
+ SMART_PTR_FIX(sockets::_sym_ll_setSockoptTimeval);
+ SMART_PTR_FIX(clbind::_sym_ClassRep_O);
+ SMART_PTR_FIX(chem::_sym_IterateMatter_O);
+ SMART_PTR_FIX(core::_sym_backquote_maptree);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_shared_type);
+ SMART_PTR_FIX(llvmo::_sym_DITypeArray_O);
+ SMART_PTR_FIX(llvmo::_sym_FCMP_ULT);
+ SMART_PTR_FIX(cl::_sym_or);
+ SMART_PTR_FIX(core::_sym_pointer);
+ SMART_PTR_FIX(kw::_sym_chiral_centers);
+ SMART_PTR_FIX(kw::_sym_overwrite);
+ SMART_PTR_FIX(cffi::_sym_uint8);
+ SMART_PTR_FIX(chem::_sym_FFAngle_O);
+ SMART_PTR_FIX(chem::_sym_convergence);
+ SMART_PTR_FIX(llvmo::_sym_AvailableExternallyLinkage);
+ SMART_PTR_FIX(llvmo::_sym_OSType_MacOSX);
+ SMART_PTR_FIX(llvmo::_sym_FCMP_OGE);
+ SMART_PTR_FIX(core::_sym_lexicalFunction);
+ SMART_PTR_FIX(units::_sym_Quantity_O);
+ SMART_PTR_FIX(chem::_sym_Topology_O);
+ SMART_PTR_FIX(llvmo::_sym_AttributeUWTable);
+ SMART_PTR_FIX(cl::_sym_char_name);
+ SMART_PTR_FIX(chem::_sym_AntechamberBondTest_O);
+ SMART_PTR_FIX(core::_sym__PLUS_executableName_PLUS_);
+ SMART_PTR_FIX(kw::_sym_object);
+ SMART_PTR_FIX(kw::_sym_preserve);
+ SMART_PTR_FIX(core::_sym_unquote_nsplice);
+ SMART_PTR_FIX(core::_sym_isArray);
+ SMART_PTR_FIX(llvmo::_sym_LShr);
+ SMART_PTR_FIX(core::_sym_VectorDisplaced_O);
+ SMART_PTR_FIX(core::_sym_STARsharpEqContextSTAR);
+ SMART_PTR_FIX(core::_sym_SpecialForm_O);
+ SMART_PTR_FIX(cffi::_sym_PERCENTforeign_type_size);
+ SMART_PTR_FIX(core::_sym_script_dir);
+ SMART_PTR_FIX(chemkw::_sym_noBond);
+ SMART_PTR_FIX(cl::_sym_standard_char_p);
+ SMART_PTR_FIX(cl::_sym_floatingPointOverflow);
+ SMART_PTR_FIX(llvmo::_sym_OSType_DragonFly);
+ SMART_PTR_FIX(core::_sym_selectPackage);
+ SMART_PTR_FIX(cl::_sym_copyTree);
+ SMART_PTR_FIX(cl::_sym_ash);
+ SMART_PTR_FIX(core::_sym_sharp_backslash);
+ SMART_PTR_FIX(core::_sym_STARdebugStartupSTAR);
+ SMART_PTR_FIX(ext::_sym_setenv);
+ SMART_PTR_FIX(core::_sym_callWithVariableBound);
+ SMART_PTR_FIX(core::_sym_process_single_dispatch_lambda_list);
+ SMART_PTR_FIX(chem::_sym_candoDatabase);
+ SMART_PTR_FIX(core::_sym_circle_subst);
+ SMART_PTR_FIX(cl::_sym_file_string_length);
+ SMART_PTR_FIX(chem::_sym_SuperposeEngine_O);
+ SMART_PTR_FIX(sockets::_sym_ll_socket_errno);
+ SMART_PTR_FIX(chem::_sym_BondMatchNode_O);
+ SMART_PTR_FIX(cl::_sym_ReadTable_O);
+ SMART_PTR_FIX(kw::_sym_non_terminating_macro_character);
+ SMART_PTR_FIX(cl::_sym_funcall);
+ SMART_PTR_FIX(kw::_sym_formatControl);
+ SMART_PTR_FIX(core::_sym_reader_double_quote_string);
+ SMART_PTR_FIX(core::_sym_AMPva_rest);
+ SMART_PTR_FIX(cl::_sym_defparameter);
+ SMART_PTR_FIX(kw::_sym_LineTablesOnly);
+ SMART_PTR_FIX(core::_sym_recursive_p);
+ SMART_PTR_FIX(cl::_sym_special);
+ SMART_PTR_FIX(ext::_sym_compiledFunctionName);
+ SMART_PTR_FIX(llvmo::_sym_verifyFunction);
+ SMART_PTR_FIX(cl::_sym_cellError);
+ SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v7m);
+ SMART_PTR_FIX(core::_sym_STARdocumentation_databaseSTAR);
+ SMART_PTR_FIX(kw::_sym_error);
+ SMART_PTR_FIX(kw::_sym_eleBuffer);
+ SMART_PTR_FIX(kw::_sym_radius);
+ SMART_PTR_FIX(llvmo::_sym_VendorType_BGQ);
+ SMART_PTR_FIX(cl::_sym_streamError);
+ SMART_PTR_FIX(cl::_sym_multiple_value_call);
+ SMART_PTR_FIX(kw::_sym_Eps);
+ SMART_PTR_FIX(kw::_sym_start);
+ SMART_PTR_FIX(cl::_sym_asinh);
+ SMART_PTR_FIX(cl::_sym_internalTimeUnitsPerSecond);
+ SMART_PTR_FIX(chem::_sym_AM1_BCC_ar7);
+ SMART_PTR_FIX(core::_sym_sourceFileName);
+ SMART_PTR_FIX(cl::_sym_parseNamestring);
+ SMART_PTR_FIX(sockets::_sym_ll_socketAccept_localSocket);
+ SMART_PTR_FIX(kw::_sym_capitalize);
+ SMART_PTR_FIX(core::_sym_eof_value);
+ SMART_PTR_FIX(chemkw::_sym_dashedSingleBond);
+ SMART_PTR_FIX(cl::_sym_makeArray);
+ SMART_PTR_FIX(chem::_sym_StepReport_O);
+ SMART_PTR_FIX(llvmo::_sym_UDiv);
+ SMART_PTR_FIX(cl::_sym_string_EQ_);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_MIPS_loop);
+ SMART_PTR_FIX(kw::_sym_uniqueLabel);
+ SMART_PTR_FIX(cl::_sym_Stream_O);
+ SMART_PTR_FIX(chem::_sym_STARparserNodeHolderSTAR);
+ SMART_PTR_FIX(core::_sym_STARsharp_equal_repl_tableSTAR);
+ SMART_PTR_FIX(chem::_sym_PlugWithMates_O);
+ SMART_PTR_FIX(kw::_sym_ecl_min);
+ SMART_PTR_FIX(chemkw::_sym_idle);
+ SMART_PTR_FIX(cl::_sym_intersection);
+ SMART_PTR_FIX(cl::_sym_compute_restarts);
+ SMART_PTR_FIX(cl::_sym_identity);
+ SMART_PTR_FIX(chem::_sym_Chain_O);
+ SMART_PTR_FIX(llvmo::_sym_LocalExecTLSModel);
+ SMART_PTR_FIX(core::_sym_create);
+ SMART_PTR_FIX(core::_sym_loadSource);
+ SMART_PTR_FIX(sockets::_sym__PLUS_EINTR_PLUS_);
+ SMART_PTR_FIX(cl::_sym_cerror);
+ SMART_PTR_FIX(llvmo::_sym_VectorType_O);
+ SMART_PTR_FIX(core::_sym_stackMonitor);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_structure_type);
+ SMART_PTR_FIX(sockets::_sym__PLUS_NO_RECOVERY_PLUS_);
+ SMART_PTR_FIX(core::_sym_makeInvocationHistoryFrameIterator);
+ SMART_PTR_FIX(kw::_sym_supersede);
+ SMART_PTR_FIX(core::_sym_tmv);
+ SMART_PTR_FIX(sockets::_sym__PLUS_EBADF_PLUS_);
+ SMART_PTR_FIX(chem::_sym_SuperposableConformationCollection_O);
+ SMART_PTR_FIX(cl::_sym_cadr);
+ SMART_PTR_FIX(units::_sym_kilograms);
+ SMART_PTR_FIX(core::_sym_quit);
+ SMART_PTR_FIX(sockets::_sym_ll_getSockoptLinger);
+ SMART_PTR_FIX(cl::_sym_restart);
+ SMART_PTR_FIX(chem::_sym_atomNeedsMinimizer);
+ SMART_PTR_FIX(chem::_sym_StereoisomerAtoms_O);
+ SMART_PTR_FIX(units::_sym_kiloCalories_per_mole);
+ SMART_PTR_FIX(chem::_sym_STARVdwMixWellEnumConverterSTAR);
+ SMART_PTR_FIX(llvmo::_sym_FCMP_FALSE);
+ SMART_PTR_FIX(sockets::_sym__PLUS_ESOCKTNOSUPPORT_PLUS_);
+ SMART_PTR_FIX(core::_sym__BANG_unbound_BANG_);
+ SMART_PTR_FIX(core::_sym_all_keys);
+ SMART_PTR_FIX(cl::_sym_boole);
+ SMART_PTR_FIX(llvmo::_sym_ConstantDataArray_O);
+ SMART_PTR_FIX(kw::_sym_eleDielectricCode);
+ SMART_PTR_FIX(gray::_sym_stream_read_char);
+ SMART_PTR_FIX(cleavirEnv::_sym_symbolMacroExpansion);
+ SMART_PTR_FIX(cffi::_sym_int32);
+ SMART_PTR_FIX(sockets::_sym_ll_getSockoptBool);
+ SMART_PTR_FIX(cl::_sym_car);
+ SMART_PTR_FIX(cl::_sym_STARpackageSTAR);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_thumb);
+ SMART_PTR_FIX(cl::_sym_Cons_O);
+ SMART_PTR_FIX(cl::_sym_getInternalRealTime);
+ SMART_PTR_FIX(core::_sym_makeStringOutputStreamFromString);
+ SMART_PTR_FIX(chem::_sym_PdbWriter_O);
+ SMART_PTR_FIX(core::_sym_object);
+ SMART_PTR_FIX(llvmo::_sym_FCMP_PREDICATE);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_reference_type);
+ SMART_PTR_FIX(core::_sym_dispatchTable);
+ SMART_PTR_FIX(chem::_sym_onGrid);
+ SMART_PTR_FIX(kw::_sym_angles);
+ SMART_PTR_FIX(core::_sym_base_string_concatenate);
+ SMART_PTR_FIX(chemkw::_sym_XC);
+ SMART_PTR_FIX(llvmo::_sym_CodeGenOpt);
+ SMART_PTR_FIX(cl::_sym_output_stream_p);
+ SMART_PTR_FIX(chem::_sym_CipPrioritizer_O);
+ SMART_PTR_FIX(chem::_sym__PLUS_configurationEnumConverter_PLUS_);
+ SMART_PTR_FIX(cl::_sym_mostNegativeSingleFloat);
+ SMART_PTR_FIX(cl::_sym_Pathname_O);
+ SMART_PTR_FIX(core::_sym_IOStreamStream_O);
+ SMART_PTR_FIX(cffi::_sym_PERCENTmem_ref);
+ SMART_PTR_FIX(llvmo::_sym_TerminatorInst_O);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_ptr_to_member_type);
+ SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion5);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_thrown_type);
+ SMART_PTR_FIX(cl::_sym_realpart);
+ SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v6t2);
+ SMART_PTR_FIX(core::_sym_log1p);
+ SMART_PTR_FIX(gctools::_sym_garbageCollect);
+ SMART_PTR_FIX(cl::_sym_integer_decode_float);
+ SMART_PTR_FIX(llvmo::_sym_ModulePass_O);
+ SMART_PTR_FIX(kw::_sym_docstring);
+ SMART_PTR_FIX(cl::_sym_write_sequence);
+ SMART_PTR_FIX(cl::_sym_arrayp);
+ SMART_PTR_FIX(llvmo::_sym_DIDerivedType_O);
+ SMART_PTR_FIX(llvmo::_sym_valid);
+ SMART_PTR_FIX(clbind::_sym_ClassRegistry_O);
+ SMART_PTR_FIX(kw::_sym_load);
+ SMART_PTR_FIX(cl::_sym_char_LE_);
+ SMART_PTR_FIX(core::_sym_backquote_remove_tokens);
+ SMART_PTR_FIX(llvmo::_sym_TargetSubtargetInfo_O);
+ SMART_PTR_FIX(kw::_sym_Itors);
+ SMART_PTR_FIX(core::_sym_subclassp);
+ SMART_PTR_FIX(cl::_sym_Class_O);
+ SMART_PTR_FIX(cl::_sym_count);
+ SMART_PTR_FIX(chem::_sym_AfterMatchBondTest_O);
+ SMART_PTR_FIX(core::_sym_unquote_splice);
+ SMART_PTR_FIX(core::_sym_structure_include);
+ SMART_PTR_FIX(llvmo::_sym__PLUS_globalBootFunctionsNameSize_PLUS_);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_GNU_template_parameter_pack);
+ SMART_PTR_FIX(cl::_sym_pi);
+ SMART_PTR_FIX(units::_sym_angstroms);
+ SMART_PTR_FIX(gray::_sym_aSingleGraySymbol);
+ SMART_PTR_FIX(cl::_sym_Vector_O);
+ SMART_PTR_FIX(chem::_sym_StereoisomerVirtualAtom_O);
+ SMART_PTR_FIX(cl::_sym_denominator);
+ SMART_PTR_FIX(units::_sym_Joule);
+ SMART_PTR_FIX(clos::_sym_aSingleClosSymbol);
+ SMART_PTR_FIX(kw::_sym_pol);
+ SMART_PTR_FIX(llvmo::_sym_OSType_Minix);
+ SMART_PTR_FIX(chem::_sym_ImproperTorsion_O);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_template_alias);
+ SMART_PTR_FIX(core::_sym_STARfset);
+ SMART_PTR_FIX(llvmo::_sym_CodeGenOpt_Less);
+ SMART_PTR_FIX(chem::_sym_AtomIdToAtomMap_O);
+ SMART_PTR_FIX(cl::_sym_code_char);
+ SMART_PTR_FIX(units::_sym_nanoseconds);
+ SMART_PTR_FIX(core::_sym_STARpollTicksPerGcSTAR);
+ SMART_PTR_FIX(core::_sym_file_kind);
+ SMART_PTR_FIX(kw::_sym_single_escape_character);
+ SMART_PTR_FIX(cl::_sym_pathnameMatchP);
+ SMART_PTR_FIX(kw::_sym_dispatch_table);
+ SMART_PTR_FIX(cl::_sym_readerError);
+ SMART_PTR_FIX(chemkw::_sym__singleBond);
+ SMART_PTR_FIX(kw::_sym_create);
+ SMART_PTR_FIX(cl::_sym_setf);
+ SMART_PTR_FIX(llvmo::_sym_attributesGet);
+ SMART_PTR_FIX(core::_sym_findFileInLispPath);
+ SMART_PTR_FIX(llvmo::_sym_dwTag);
+ SMART_PTR_FIX(kw::_sym_elementType);
+ SMART_PTR_FIX(cl::_sym_consp);
+ SMART_PTR_FIX(chem::_sym_EnergyComponent_O);
+ SMART_PTR_FIX(llvmo::_sym_RelocModel_Static);
+ SMART_PTR_FIX(cl::_sym_boole_ior);
+ SMART_PTR_FIX(kw::_sym_use_mps);
+ SMART_PTR_FIX(chem::_sym_FFPtor_O);
+ SMART_PTR_FIX(core::_sym_ihsFun);
+ SMART_PTR_FIX(llvmo::_sym_Trunc);
+ SMART_PTR_FIX(core::_sym_gdb);
+ SMART_PTR_FIX(gray::_sym_stream_clear_output);
+ SMART_PTR_FIX(kw::_sym_ignoreInitImage);
+ SMART_PTR_FIX(cl::_sym_restartName);
+ SMART_PTR_FIX(core::_sym_reader_backquoted_expression);
+ SMART_PTR_FIX(sockets::_sym_ll_socketSendAddress);
+ SMART_PTR_FIX(llvmo::_sym_APFloat_O);
+ SMART_PTR_FIX(chem::_sym_FFStretchDb_O);
+ SMART_PTR_FIX(asttooling::_sym_STARclangTemplateArgumentArgKindSTAR);
+ SMART_PTR_FIX(kw::_sym_output);
+ SMART_PTR_FIX(core::_sym_parse_macro);
+ SMART_PTR_FIX(chem::_sym_STARAtomTestEnumConverterSTAR);
+ SMART_PTR_FIX(cl::_sym_makeStringOutputStream);
+ SMART_PTR_FIX(core::_sym_STARbq_nconcSTAR);
+ SMART_PTR_FIX(cl::_sym_makePackage);
+ SMART_PTR_FIX(core::_sym_SmallMultimap_O);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_lexical_block);
+ SMART_PTR_FIX(cl::_sym_elt);
+ SMART_PTR_FIX(core::_sym_sharp_x);
+ SMART_PTR_FIX(llvmo::_sym_VendorType_PC);
+ SMART_PTR_FIX(cl::_sym_logicalPathnameTranslations);
+ SMART_PTR_FIX(cl::_sym_get_output_stream_string);
+ SMART_PTR_FIX(chem::_sym_Residue_O);
+ SMART_PTR_FIX(kw::_sym_priority);
+ SMART_PTR_FIX(llvmo::_sym_UndefValue_O);
+ SMART_PTR_FIX(cl::_sym_parseInteger);
+ SMART_PTR_FIX(cl::_sym_hostNamestring);
+ SMART_PTR_FIX(gray::_sym_stream_clear_input);
+ SMART_PTR_FIX(chem::_sym_name);
+ SMART_PTR_FIX(cl::_sym_numberp);
+ SMART_PTR_FIX(cl::_sym_cond);
+ SMART_PTR_FIX(core::_sym_instanceSigSet);
+ SMART_PTR_FIX(chem::_sym_molecules);
+ SMART_PTR_FIX(cl::_sym_boole_nor);
+ SMART_PTR_FIX(kw::_sym_mediumBlue);
+ SMART_PTR_FIX(llvmo::_sym_moduleFlagRequire);
+ SMART_PTR_FIX(chem::_sym_Matter_O);
+ SMART_PTR_FIX(kw::_sym_stereochemistryType);
+ SMART_PTR_FIX(cl::_sym_LongFloat_O);
+ SMART_PTR_FIX(chem::_sym_Rotamer_O);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_class_type);
+ SMART_PTR_FIX(chem::_sym_selected);
+ SMART_PTR_FIX(llvmo::_sym_OSType_CNK);
+ SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion11);
+ SMART_PTR_FIX(llvmo::_sym_LinkerPrivateLinkage);
+ SMART_PTR_FIX(chem::_sym_EnergyFunction_O);
+ SMART_PTR_FIX(cl::_sym_round);
+ SMART_PTR_FIX(cffi::_sym_void);
+ SMART_PTR_FIX(kw::_sym_prev);
+ SMART_PTR_FIX(core::_sym_STARcommandLineArgumentsSTAR);
+ SMART_PTR_FIX(core::_sym_fixnum_number_of_bits);
+ SMART_PTR_FIX(cffi::_sym_foreign_alloc);
+ SMART_PTR_FIX(llvmo::_sym_LinkOnceAnyLinkage);
+ SMART_PTR_FIX(asttooling::_sym_ArgumentsAdjusterAdjust);
+ SMART_PTR_FIX(core::_sym_forget_all_single_dispatch_generic_functions);
+ SMART_PTR_FIX(core::_sym_STARdebugLoadTimeValuesSTAR);
+ SMART_PTR_FIX(kw::_sym_passThrough);
+ SMART_PTR_FIX(kw::_sym_expectedType);
+ SMART_PTR_FIX(core::_sym_SymbolToEnumConverter_O);
+ SMART_PTR_FIX(adapt::_sym_StringSet_O);
+ SMART_PTR_FIX(cl::_sym_package_error);
+ SMART_PTR_FIX(llvmo::_sym_SubArchType);
+ SMART_PTR_FIX(cl::_sym_complexp);
+ SMART_PTR_FIX(core::_sym_bitArrayOp);
+ SMART_PTR_FIX(llvmo::_sym_DIArray_O);
+ SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v4t);
+ SMART_PTR_FIX(cl::_sym_simpleCondition);
+ SMART_PTR_FIX(llvmo::_sym_AttributeNest);
+ SMART_PTR_FIX(core::_sym_start);
+ SMART_PTR_FIX(core::_sym_integerToString);
+ SMART_PTR_FIX(core::_sym_atanh);
+ SMART_PTR_FIX(core::_sym_backquote);
+ SMART_PTR_FIX(core::_sym_STARloadSearchListSTAR);
+ SMART_PTR_FIX(llvmo::_sym_ICMP_SGT);
+ SMART_PTR_FIX(core::_sym_sharp_s);
+ SMART_PTR_FIX(core::_sym_rem_f);
+ SMART_PTR_FIX(llvmo::_sym_Max);
+ SMART_PTR_FIX(kw::_sym_rtld_self);
+ SMART_PTR_FIX(kw::_sym_y);
+ SMART_PTR_FIX(kw::_sym_unspecific);
+ SMART_PTR_FIX(core::_sym_sharp_asterisk);
+ SMART_PTR_FIX(core::_sym_setf_findClass);
+ SMART_PTR_FIX(cl::_sym_sleep);
+ SMART_PTR_FIX(core::_sym_debugLogOff);
+ SMART_PTR_FIX(comp::_sym_STARimplicit_compile_hookSTAR);
+ SMART_PTR_FIX(sockets::_sym_ll_socketBind_inetSocket);
+ SMART_PTR_FIX(llvmo::_sym_SIToFP);
+ SMART_PTR_FIX(core::_sym_TagbodyEnvironment_O);
+ SMART_PTR_FIX(cl::_sym_prog1);
+ SMART_PTR_FIX(cl::_sym_acosh);
+ SMART_PTR_FIX(cl::_sym_keywordp);
+ SMART_PTR_FIX(llvmo::_sym_disassembleSTAR);
+ SMART_PTR_FIX(cl::_sym_leastNegativeNormalizedDoubleFloat);
+ SMART_PTR_FIX(core::_sym_BlockEnvironment_O);
+ SMART_PTR_FIX(cl::_sym_symbolFunction);
+ SMART_PTR_FIX(chem::_sym_SparseLargeSquareMatrix_O);
+ SMART_PTR_FIX(chem::_sym_FFNonbondCrossTermTable_O);
+ SMART_PTR_FIX(core::_sym_currentVisibleEnvironment);
+ SMART_PTR_FIX(llvmo::_sym_makeAPInt);
+ SMART_PTR_FIX(core::_sym_STARtopLevelCommandHookSTAR);
+ SMART_PTR_FIX(adapt::_sym_StringList_O);
+ SMART_PTR_FIX(kw::_sym_neighbors);
+ SMART_PTR_FIX(core::_sym_WrappedPointer_O);
+ SMART_PTR_FIX(chem::_sym_BondListMatchNode_O);
+ SMART_PTR_FIX(core::_sym_tooFewArgumentsError);
+ SMART_PTR_FIX(core::_sym_VectorObjectsWithFillPtr_O);
+ SMART_PTR_FIX(core::_sym_sharp_a);
+ SMART_PTR_FIX(kw::_sym_da);
+ SMART_PTR_FIX(core::_sym_sharp_colon);
+ SMART_PTR_FIX(sockets::_sym__PLUS_SO_REUSEADDR_PLUS_);
+ SMART_PTR_FIX(core::_sym_PosixTimeDuration_O);
+ SMART_PTR_FIX(kw::_sym_full);
+ SMART_PTR_FIX(chemkw::_sym_O);
+ SMART_PTR_FIX(chemkw::_sym_entity);
+ SMART_PTR_FIX(gctools::_sym_maxBootstrapKinds);
+ SMART_PTR_FIX(kw::_sym_file);
+ SMART_PTR_FIX(llvmo::_sym_AttributeZExt);
+ SMART_PTR_FIX(cl::_sym_do);
+ SMART_PTR_FIX(llvmo::_sym_VendorType_SCEI);
+ SMART_PTR_FIX(kw::_sym_test);
+ SMART_PTR_FIX(core::_sym_FileStatus_O);
+ SMART_PTR_FIX(core::_sym_overwrite);
+ SMART_PTR_FIX(core::_sym_MacroletEnvironment_O);
+ SMART_PTR_FIX(core::_sym_IntArray_O);
+ SMART_PTR_FIX(cl::_sym_makeCondition);
+ SMART_PTR_FIX(cl::_sym_floor);
+ SMART_PTR_FIX(core::_sym_scharSet);
+ SMART_PTR_FIX(core::_sym_FunctionContainerEnvironment_O);
+ SMART_PTR_FIX(llvmo::_sym_Or);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_namespace);
+ SMART_PTR_FIX(core::_sym_sharp_left_parenthesis);
+ SMART_PTR_FIX(cl::_sym_getDispatchMacroCharacter);
+ SMART_PTR_FIX(llvmo::_sym_DIBasicType_O);
+ SMART_PTR_FIX(cl::_sym_string_greaterp);
+ SMART_PTR_FIX(kw::_sym_vdwScale14);
+ SMART_PTR_FIX(core::_sym_lexical);
+ SMART_PTR_FIX(cl::_sym_read_delimited_list);
+ SMART_PTR_FIX(kw::_sym_ar1);
+ SMART_PTR_FIX(cl::_sym_setMacroCharacter);
+ SMART_PTR_FIX(cl::_sym_leastNegativeNormalizedLongFloat);
+ SMART_PTR_FIX(llvmo::_sym_SubArchType_KalimbaSubArch_v3);
+ SMART_PTR_FIX(cl::_sym_typep);
+ SMART_PTR_FIX(cl::_sym_boole_1);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_member);
+ SMART_PTR_FIX(cl::_sym_STARprint_miser_widthSTAR);
+ SMART_PTR_FIX(llvmo::_sym_FunctionPassManager_O);
+ SMART_PTR_FIX(chem::_sym_ConstitutionVirtualAtom_O);
+ SMART_PTR_FIX(cl::_sym_listp);
+ SMART_PTR_FIX(gray::_sym_stream_terpri);
+ SMART_PTR_FIX(core::_sym_bq_simplify);
+ SMART_PTR_FIX(chemkw::_sym_Cl);
+ SMART_PTR_FIX(kw::_sym_tag1);
+ SMART_PTR_FIX(cl::_sym_STARprint_circleSTAR);
+ SMART_PTR_FIX(core::_sym_universalErrorHandler);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_hi_user);
+ SMART_PTR_FIX(chem::_sym_noPreconditioner);
+ SMART_PTR_FIX(chem::_sym_Root_O);
+ SMART_PTR_FIX(kw::_sym_deleted);
+ SMART_PTR_FIX(llvmo::_sym_VendorType_ImaginationTechnologies);
+ SMART_PTR_FIX(core::_sym_tooFewArguments);
+ SMART_PTR_FIX(cl::_sym_quote);
+ SMART_PTR_FIX(cl::_sym_STARprint_levelSTAR);
+ SMART_PTR_FIX(llvmo::_sym_CodeModel_Small);
+ SMART_PTR_FIX(cl::_sym_atanh);
+ SMART_PTR_FIX(core::_sym_STARcommandLineLoadEvalSequenceSTAR);
+ SMART_PTR_FIX(core::_sym_mpsGarbageCollection);
+ SMART_PTR_FIX(sockets::_sym_ll_getHostByName);
+ SMART_PTR_FIX(core::_sym_processLambdaList);
+ SMART_PTR_FIX(cffi::_sym_double);
+ SMART_PTR_FIX(cl::_sym_ShortFloat_O);
+ SMART_PTR_FIX(cl::_sym_STARdefaultPathnameDefaultsSTAR);
+ SMART_PTR_FIX(cl::_sym_values);
+ SMART_PTR_FIX(core::_sym_set_record_field);
+ SMART_PTR_FIX(core::_sym_VaList_dummy_O);
+ SMART_PTR_FIX(core::_sym_dispatch_macro_character);
+ SMART_PTR_FIX(core::_sym_Archive_O);
+ SMART_PTR_FIX(cl::_sym_AMPenvironment);
+ SMART_PTR_FIX(core::_sym_make_vector);
+ SMART_PTR_FIX(kw::_sym_tempInt);
+ SMART_PTR_FIX(core::_sym_setfSubseq);
+ SMART_PTR_FIX(cl::_sym__DIVIDE_);
+ SMART_PTR_FIX(chem::_sym_ZMatrixAngleInternal_O);
+ SMART_PTR_FIX(cl::_sym_Number_O);
+ SMART_PTR_FIX(cl::_sym_boole_andc2);
+ SMART_PTR_FIX(cl::_sym_standard_class);
+ SMART_PTR_FIX(cl::_sym_fileError);
+ SMART_PTR_FIX(kw::_sym_debug);
+ SMART_PTR_FIX(core::_sym_alist);
+ SMART_PTR_FIX(kw::_sym_weight);
+ SMART_PTR_FIX(chem::_sym_RestraintAnchor_O);
+ SMART_PTR_FIX(core::_sym_test_not);
+ SMART_PTR_FIX(cl::_sym_deleteFile);
+ SMART_PTR_FIX(kw::_sym_pos);
+ SMART_PTR_FIX(core::_sym_WeakKeyHashTable_O);
+ SMART_PTR_FIX(llvmo::_sym_OSType_Haiku);
+ SMART_PTR_FIX(chem::_sym_StereoisomerAtom_O);
+ SMART_PTR_FIX(cffi::_sym_int64);
+ SMART_PTR_FIX(cl::_sym_readSequence);
+ SMART_PTR_FIX(cl::_sym_synonym_stream_symbol);
+ SMART_PTR_FIX(chem::_sym_minimizerError);
+ SMART_PTR_FIX(llvmo::_sym_SRem);
+ SMART_PTR_FIX(kw::_sym_tail);
+ SMART_PTR_FIX(core::_sym_structurep);
+ SMART_PTR_FIX(core::_sym_streamColumn);
+ SMART_PTR_FIX(llvmo::_sym_ICMP_SGE);
+ SMART_PTR_FIX(core::_sym_coerceToFilename);
+ SMART_PTR_FIX(kw::_sym_broken_link);
+ SMART_PTR_FIX(core::_sym_inheritDefaultAllocator);
+ SMART_PTR_FIX(ext::_sym_lambda_block);
+ SMART_PTR_FIX(llvmo::_sym_parseBitcodeFile);
+ SMART_PTR_FIX(llvmo::_sym_FPToSI);
+ SMART_PTR_FIX(gctools::_sym_bootstrapKindSymbols);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_base_type);
+ SMART_PTR_FIX(sockets::_sym__PLUS_IPPROTO_TCP_PLUS_);
+ SMART_PTR_FIX(llvmo::_sym_RelocModel);
+ SMART_PTR_FIX(cl::_sym_standardGenericFunction);
+ SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v6);
+ SMART_PTR_FIX(core::_sym_fileColumn);
+ SMART_PTR_FIX(chem::_sym_ReportBase_O);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_mips);
+ SMART_PTR_FIX(ext::_sym_float_infinity_string);
+ SMART_PTR_FIX(core::_sym_ihsBacktrace);
+ SMART_PTR_FIX(cl::_sym_macrolet);
+ SMART_PTR_FIX(kw::_sym_pdbName);
+ SMART_PTR_FIX(core::_sym_simpleProgramError);
+ SMART_PTR_FIX(core::_sym_symbolMacro);
+ SMART_PTR_FIX(kw::_sym_ar2);
+ SMART_PTR_FIX(sockets::_sym__PLUS_EPROTONOSUPPORT_PLUS_);
+ SMART_PTR_FIX(core::_sym_ihsNext);
+ SMART_PTR_FIX(units::_sym_meters);
+ SMART_PTR_FIX(cl::_sym_compile);
+ SMART_PTR_FIX(cl::_sym_findClass);
+ SMART_PTR_FIX(kw::_sym_greyF0);
+ SMART_PTR_FIX(cl::_sym_make_two_way_stream);
+ SMART_PTR_FIX(kw::_sym_R);
+ SMART_PTR_FIX(llvmo::_sym_OSType_CUDA);
+ SMART_PTR_FIX(cl::_sym_make_symbol);
+ SMART_PTR_FIX(llvmo::_sym_FPExt);
+ SMART_PTR_FIX(kw::_sym_vdwScaleBufferA);
+ SMART_PTR_FIX(core::_sym_STARnestedErrorDepthSTAR);
+ SMART_PTR_FIX(cl::_sym_Bignum_O);
+ SMART_PTR_FIX(core::_sym_LightUserData_O);
+ SMART_PTR_FIX(kw::_sym_landingPadFrame);
+ SMART_PTR_FIX(cl::_sym_sqrt);
+ SMART_PTR_FIX(sockets::_sym_ll_socketName);
+ SMART_PTR_FIX(core::_sym_backquote_null_or_quoted);
+ SMART_PTR_FIX(kw::_sym_residueNames);
+ SMART_PTR_FIX(chem::_sym_FFItorDb_O);
+ SMART_PTR_FIX(llvmo::_sym_FCMP_UEQ);
+ SMART_PTR_FIX(kw::_sym_attachedEWGs);
+ SMART_PTR_FIX(cl::_sym_echo_stream_input_stream);
+ SMART_PTR_FIX(core::_sym_CandoException_O);
+ SMART_PTR_FIX(cl::_sym_sequence);
+ SMART_PTR_FIX(llvmo::_sym_FenceInst_O);
+ SMART_PTR_FIX(llvmo::_sym_FCMP_UGE);
+ SMART_PTR_FIX(cl::_sym_locally);
+ SMART_PTR_FIX(cl::_sym_make_synonym_stream);
+ SMART_PTR_FIX(chem::_sym_FrameRecognizer_O);
+ SMART_PTR_FIX(chem::_sym_OverlappingNonbondError);
+ SMART_PTR_FIX(chem::_sym_SuperposeSelectedAtoms_O);
+ SMART_PTR_FIX(cl::_sym_lognand);
+ SMART_PTR_FIX(ext::_sym__PLUS_processStandardOutput_PLUS_);
+ SMART_PTR_FIX(chem::_sym_RestraintList_O);
+ SMART_PTR_FIX(chem::_sym_stereochemistryToSymbolConverter);
+ SMART_PTR_FIX(llvmo::_sym_SDiv);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_ppc64);
+ SMART_PTR_FIX(units::_sym_millimeters);
+ SMART_PTR_FIX(gray::_sym_stream_write_byte);
+ SMART_PTR_FIX(cl::_sym_mostPositiveSingleFloat);
+ SMART_PTR_FIX(kw::_sym_attachedHs);
+ SMART_PTR_FIX(units::_sym_per_picosecond);
+ SMART_PTR_FIX(llvmo::_sym_DIScope_O);
+ SMART_PTR_FIX(llvmo::_sym_OSType_NVCL);
+ SMART_PTR_FIX(core::_sym_WeakKeyMapping_O);
+ SMART_PTR_FIX(ext::_sym__PLUS_processStandardInput_PLUS_);
+ SMART_PTR_FIX(core::_sym_Binder_O);
+ SMART_PTR_FIX(core::_sym_validFunctionNameP);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_systemz);
+ SMART_PTR_FIX(chem::_sym_FFVdw_O);
+ SMART_PTR_FIX(sockets::_sym_ll_getSockoptTimeval);
+ SMART_PTR_FIX(kw::_sym_brown);
+ SMART_PTR_FIX(core::_sym_input_stream_designator);
+ SMART_PTR_FIX(cl::_sym_boole_orc2);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_common_block);
+ SMART_PTR_FIX(llvmo::_sym_ConstantInt_O);
+ SMART_PTR_FIX(core::_sym_unbound);
+ SMART_PTR_FIX(chem::_sym_RepresentedEntityNameSet_O);
+ SMART_PTR_FIX(cl::_sym_divisionByZero);
+ SMART_PTR_FIX(chemkw::_sym_E);
+ SMART_PTR_FIX(llvmo::_sym_Nand);
+ SMART_PTR_FIX(llvmo::_sym_OSType_KFreeBSD);
+ SMART_PTR_FIX(core::_sym_threadInfo);
+ SMART_PTR_FIX(chemkw::_sym_5);
+ SMART_PTR_FIX(chem::_sym_OneMonomer_O);
+ SMART_PTR_FIX(chem::_sym_CDNode_O);
+ SMART_PTR_FIX(chem::_sym_ConstitutionBond_O);
+ SMART_PTR_FIX(cl::_sym_programError);
+ SMART_PTR_FIX(chem::_sym_AGVertex_O);
+ SMART_PTR_FIX(core::_sym_ActivationFrame_O);
+ SMART_PTR_FIX(core::_sym_isString);
+ SMART_PTR_FIX(core::_sym_dumpTaggedFixnum);
+ SMART_PTR_FIX(kw::_sym_steelBlue);
+ SMART_PTR_FIX(llvmo::_sym_makeAPWidth);
+ SMART_PTR_FIX(core::_sym_makeStructure);
+ SMART_PTR_FIX(units::_sym_joules);
+ SMART_PTR_FIX(cffi::_sym_long);
+ SMART_PTR_FIX(cl::_sym__TIMES_);
+ SMART_PTR_FIX(kw::_sym_ptors);
+ SMART_PTR_FIX(core::_sym_Regex_O);
+ SMART_PTR_FIX(chem::_sym_ReadAmberParameters_O);
+ SMART_PTR_FIX(core::_sym_classNameAsString);
+ SMART_PTR_FIX(core::_sym_serialize_xml);
+ SMART_PTR_FIX(core::_sym_backquote_process);
+ SMART_PTR_FIX(sockets::_sym__PLUS_ENOBUFS_PLUS_);
+ SMART_PTR_FIX(llvmo::_sym_STARaccumulatedLlvmFinalizationTimeSTAR);
+ SMART_PTR_FIX(sockets::_sym_ll_getProtocolByName);
+ SMART_PTR_FIX(core::_sym_STARbq_quote_nilSTAR);
+ SMART_PTR_FIX(chem::_sym_Structure_Old_ListEntry_O);
+ SMART_PTR_FIX(cl::_sym_imagpart);
+ SMART_PTR_FIX(clos::_sym_compute_applicable_methods_using_classes);
+ SMART_PTR_FIX(core::_sym_STARihsCurrentSTAR);
+ SMART_PTR_FIX(cl::_sym_maplist);
+ SMART_PTR_FIX(clos::_sym_compute_effective_method_function);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_x86_64);
+ SMART_PTR_FIX(core::_sym_backquote_attach_append);
+ SMART_PTR_FIX(kw::_sym_atoms);
+ SMART_PTR_FIX(cl::_sym_boole_andc1);
+ SMART_PTR_FIX(chem::_sym_rotate);
+ SMART_PTR_FIX(cl::_sym_sinh);
+ SMART_PTR_FIX(llvmo::_sym_AttributeAddressSafety);
+ SMART_PTR_FIX(cl::_sym__GE_);
+ SMART_PTR_FIX(sockets::_sym__PLUS_ENOMEM_PLUS_);
+ SMART_PTR_FIX(kw::_sym_pathname);
+ SMART_PTR_FIX(cl::_sym_defun);
+ SMART_PTR_FIX(chem::_sym_translate);
+ SMART_PTR_FIX(kw::_sym_inherited);
+ SMART_PTR_FIX(llvmo::_sym_LinkOnceODRLinkage);
+ SMART_PTR_FIX(adapt::_sym_ObjectSet_O);
+ SMART_PTR_FIX(cl::_sym_STARrandom_stateSTAR);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_msp430);
+ SMART_PTR_FIX(cl::_sym_BitVectorWithFillPtr_O);
+ SMART_PTR_FIX(core::_sym_topLevel);
+ SMART_PTR_FIX(cl::_sym_boole_nand);
+ SMART_PTR_FIX(kw::_sym_syntax);
+ SMART_PTR_FIX(cl::_sym_readChar);
+ SMART_PTR_FIX(llvmo::_sym_RelocModel_PIC_);
+ SMART_PTR_FIX(kw::_sym_red);
+ SMART_PTR_FIX(cl::_sym_char_LT_);
+ SMART_PTR_FIX(sockets::_sym_ll_socketAccept_inetSocket);
+ SMART_PTR_FIX(llvmo::_sym_SubArchType_KalimbaSubArch_v5);
+ SMART_PTR_FIX(llvmo::_sym_OSType_OpenBSD);
+ SMART_PTR_FIX(core::_sym_slot);
+ SMART_PTR_FIX(chem::_sym_ResidueList_O);
+ SMART_PTR_FIX(llvmo::_sym_makeAP32);
+ SMART_PTR_FIX(sockets::_sym__PLUS_SO_LINGER_PLUS_);
+ SMART_PTR_FIX(kw::_sym_rename_and_delete);
+ SMART_PTR_FIX(kw::_sym_podSymbolMap);
+ SMART_PTR_FIX(core::_sym_SaveArchive_O);
+ SMART_PTR_FIX(core::_sym_Iterator_O);
+ SMART_PTR_FIX(ext::_sym_system);
+ SMART_PTR_FIX(core::_sym_okey);
+ SMART_PTR_FIX(chem::_sym_Branch_O);
+ SMART_PTR_FIX(llvmo::_sym_OSType_NetBSD);
+ SMART_PTR_FIX(chem::_sym_FFNonbond_O);
+ SMART_PTR_FIX(core::_sym_RegexMatch_O);
+ SMART_PTR_FIX(core::_sym_sharp_equal);
+ SMART_PTR_FIX(asttooling::_sym_bind);
+ SMART_PTR_FIX(cl::_sym_floatingPointInexact);
+ SMART_PTR_FIX(core::_sym_STARbq_listSTAR);
+ SMART_PTR_FIX(cl::_sym_gensym);
+ SMART_PTR_FIX(chem::_sym_EnergyChiralRestraint_O);
+ SMART_PTR_FIX(cl::_sym_truncate);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_inheritance);
+ SMART_PTR_FIX(core::_sym_STARcurrent_working_directorySTAR);
+ SMART_PTR_FIX(llvmo::_sym_ObjectFormatType);
+ SMART_PTR_FIX(cl::_sym_packagep);
+ SMART_PTR_FIX(chem::_sym_NVector_O);
+ SMART_PTR_FIX(llvmo::_sym_Min);
+ SMART_PTR_FIX(kw::_sym_element);
+ SMART_PTR_FIX(cl::_sym_Float_O);
+ SMART_PTR_FIX(units::_sym_Unit_O);
+ SMART_PTR_FIX(chem::_sym_CalculatePositionUsingInternals_O);
+ SMART_PTR_FIX(units::_sym_seconds);
+ SMART_PTR_FIX(kw::_sym_stream);
+ SMART_PTR_FIX(core::_sym_wrongIndex);
+ SMART_PTR_FIX(cl::_sym_simpleError);
+ SMART_PTR_FIX(kw::_sym_chemdraw_color);
+ SMART_PTR_FIX(core::_sym_ExternalObject_O);
+ SMART_PTR_FIX(llvmo::_sym__PLUS_globalBootFunctionsName_PLUS_);
+ SMART_PTR_FIX(kw::_sym_v2);
+ SMART_PTR_FIX(cl::_sym_translatePathname);
+ SMART_PTR_FIX(cl::_sym_terpri);
+ SMART_PTR_FIX(kw::_sym_blue);
+ SMART_PTR_FIX(cl::_sym_cosh);
+ SMART_PTR_FIX(core::_sym_cl_fixnum_bits);
+ SMART_PTR_FIX(core::_sym_SNode_O);
+ SMART_PTR_FIX(llvmo::_sym_AttributeNonLazyBind);
+ SMART_PTR_FIX(cl::_sym_the);
+ SMART_PTR_FIX(clos::_sym_standardOptimizedWriterFunction);
+ SMART_PTR_FIX(llvmo::_sym_GlobalValue_O);
+ SMART_PTR_FIX(chem::_sym_in7MemberRing);
+ SMART_PTR_FIX(cl::_sym_leastNegativeLongFloat);
+ SMART_PTR_FIX(kw::_sym_eleScale14);
+ SMART_PTR_FIX(llvmo::_sym_Argument_O);
+ SMART_PTR_FIX(cl::_sym_equalp);
+ SMART_PTR_FIX(cl::_sym_AMPaux);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_class_template);
+ SMART_PTR_FIX(cl::_sym_get);
+ SMART_PTR_FIX(comp::_sym_compileInEnv);
+ SMART_PTR_FIX(gray::_sym_input_stream_p);
+ SMART_PTR_FIX(cl::_sym_unboundSlot);
+ SMART_PTR_FIX(llvmo::_sym_LinkerPrivateWeakLinkage);
+ SMART_PTR_FIX(core::_sym_element_type);
+ SMART_PTR_FIX(sockets::_sym__PLUS_sock_dgram_PLUS_);
+ SMART_PTR_FIX(cl::_sym_STARquery_ioSTAR);
+ SMART_PTR_FIX(cl::_sym_namestring);
+ SMART_PTR_FIX(cl::_sym_list);
+ SMART_PTR_FIX(cl::_sym_ceiling);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_formal_parameter);
+ SMART_PTR_FIX(cl::_sym_boole_xor);
+ SMART_PTR_FIX(llvmo::_sym_AttributeReturnsTwice);
+ SMART_PTR_FIX(asttooling::_sym_STARclangTemplateSpecializationKindSTAR);
+ SMART_PTR_FIX(llvmo::_sym_Triple_O);
+ SMART_PTR_FIX(cl::_sym_getOutputStreamString);
+ SMART_PTR_FIX(core::_sym_streamLinenumber);
+ SMART_PTR_FIX(llvmo::_sym_IntToPtr);
+ SMART_PTR_FIX(llvmo::_sym_makeAPInt1);
+ SMART_PTR_FIX(kw::_sym_r0);
+ SMART_PTR_FIX(kw::_sym_purple);
+ SMART_PTR_FIX(sockets::_sym__PLUS_SOL_SOCKET_PLUS_);
+ SMART_PTR_FIX(sockets::_sym__PLUS_SO_SNDTIMEO_PLUS_);
+ SMART_PTR_FIX(chem::_sym_steepestDescentRunning);
+ SMART_PTR_FIX(chem::_sym_STARsybyl_type_assignment_rulesSTAR);
+ SMART_PTR_FIX(llvmo::_sym_CodeModel_JITDefault);
+ SMART_PTR_FIX(llvmo::_sym_Linker_O);
+ SMART_PTR_FIX(ext::_sym_STARinspectorHookSTAR);
+ SMART_PTR_FIX(units::_sym_microseconds);
+ SMART_PTR_FIX(cl::_sym_member);
+ SMART_PTR_FIX(core::_sym_sourceLineColumn);
+ SMART_PTR_FIX(sockets::_sym_ff_socket);
+ SMART_PTR_FIX(cl::_sym_rationalp);
+ SMART_PTR_FIX(llvmo::_sym_Monotonic);
+ SMART_PTR_FIX(serveEvent::_sym_ll_fd_isset);
+ SMART_PTR_FIX(cl::_sym_invoke_restart);
+ SMART_PTR_FIX(core::_sym_IOFileStream_O);
+ SMART_PTR_FIX(cl::_sym__PLUS_);
+ SMART_PTR_FIX(core::_sym_invokeInternalDebugger);
+ SMART_PTR_FIX(kw::_sym_residue_charge);
+ SMART_PTR_FIX(cl::_sym_STARterminal_ioSTAR);
+ SMART_PTR_FIX(kw::_sym_name_template);
+ SMART_PTR_FIX(cl::_sym_compute_applicable_methods);
+ SMART_PTR_FIX(chem::_sym_JumpPlug_O);
+ SMART_PTR_FIX(kw::_sym_zConstants);
+ SMART_PTR_FIX(cl::_sym_tan);
+ SMART_PTR_FIX(cl::_sym_most_negative_fixnum);
+ SMART_PTR_FIX(chem::_sym_OneTypeRule_O);
+ SMART_PTR_FIX(cl::_sym_mod);
+ SMART_PTR_FIX(llvmo::_sym_GlobalVariable_O);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_le64);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_hexagon);
+ SMART_PTR_FIX(chem::_sym_AtomOrBondMatchNode_O);
+ SMART_PTR_FIX(sockets::_sym__PLUS_SO_RCVTIMEO_PLUS_);
+ SMART_PTR_FIX(llvmo::_sym_DW_TAG_set_type);
+ SMART_PTR_FIX(cl::_sym_translateLogicalPathname);
+ SMART_PTR_FIX(chem::_sym_RestraintFixedNonbond_O);
+ SMART_PTR_FIX(cl::_sym_STARread_evalSTAR);
+ SMART_PTR_FIX(kw::_sym_initCharge);
+ SMART_PTR_FIX(cl::_sym_butlast);
+ SMART_PTR_FIX(core::_sym_instance);
+ SMART_PTR_FIX(kw::_sym_atom);
+ SMART_PTR_FIX(llvmo::_sym_URem);
+ SMART_PTR_FIX(core::_sym_STARargsSTAR);
+ SMART_PTR_FIX(cl::_sym_undefinedFunction);
+ SMART_PTR_FIX(cl::_sym_charLessp);
+ SMART_PTR_FIX(geom::_sym_Color_O);
+ SMART_PTR_FIX(kw::_sym_append);
+ SMART_PTR_FIX(cl::_sym_dolist);
+ SMART_PTR_FIX(kw::_sym_apol);
+ SMART_PTR_FIX(core::_sym_structureRef);
+ SMART_PTR_FIX(llvmo::_sym_AttributeAlwaysInline);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_ppc64le);
+ SMART_PTR_FIX(cl::_sym_subtypep);
+ SMART_PTR_FIX(cl::_sym_StandardObject_O);
+ SMART_PTR_FIX(ext::_sym_aSingleExtSymbol);
+ SMART_PTR_FIX(cl::_sym_logorc1);
+ SMART_PTR_FIX(geom::_sym_BoundingBox_O);
+ SMART_PTR_FIX(chem::_sym_IterateResidues_O);
+ SMART_PTR_FIX(kw::_sym_mask);
+ SMART_PTR_FIX(core::_sym_CatchEnvironment_O);
+ SMART_PTR_FIX(clos::_sym_class_precedence_list);
+ SMART_PTR_FIX(llvmo::_sym_STARaSTAR);
+ SMART_PTR_FIX(core::_sym_dimensions);
+ SMART_PTR_FIX(kw::_sym_angRad);
+ SMART_PTR_FIX(llvmo::_sym_ArchType_sparcv9);
+ SMART_PTR_FIX(units::_sym_Joules);
+ SMART_PTR_FIX(kw::_sym_debugStartup);
+ SMART_PTR_FIX(cl::_sym_CompiledFunction_O);
+ SMART_PTR_FIX(core::_sym_closedStream);
+ SMART_PTR_FIX(sockets::_sym__PLUS_ENETUNREACH_PLUS_);
+ SMART_PTR_FIX(core::_sym_STARconsing_dotSTAR);
+ SMART_PTR_FIX(gray::_sym_stream_file_position);
 #endif // defined(GC_GLOBAL_SYMBOLS)

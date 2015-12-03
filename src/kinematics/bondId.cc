@@ -39,7 +39,7 @@ namespace kinematics
 
 #if INIT_TO_FACTORIES
 
-  #define ARGS_BondId_O_make "()"
+#define ARGS_BondId_O_make "()"
 #define DECL_BondId_O_make ""
 #define DOCS_BondId_O_make "make BondId_O"
   BondId_sp BondId_O::make()

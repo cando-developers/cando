@@ -119,7 +119,9 @@ namespace chemkw {
 #pragma GCC visibility push(default)
 #define ChemKwPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include SYMBOLS_SCRAPED_INC_H
+  #ifndef SCRAPING
+    #include SYMBOLS_SCRAPED_INC_H
+  #endif
 #undef DO_SYMBOL
 #undef ChemKwPkg_SYMBOLS
 #pragma GCC visibility pop
@@ -130,7 +132,9 @@ namespace chem {
 #pragma GCC visibility push(default)
 #define ChemPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include SYMBOLS_SCRAPED_INC_H
+  #ifndef SCRAPING
+    #include SYMBOLS_SCRAPED_INC_H
+  #endif
 #undef DO_SYMBOL
 #undef ChemPkg_SYMBOLS
 #pragma GCC visibility pop
@@ -194,14 +198,18 @@ namespace chem
           core::af_pathnameTranslations(core::Str_O::create("CANDO"),_lisp->_true(),ptsList);
 
 #define ChemKwPkg_SYMBOLS
-#define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {chemkw::cname = _lisp->internWithPackageName(pkg,lispname); chemkw::cname->exportYourself(exportp);}
-#include SYMBOLS_SCRAPED_INC_H
+#define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {chemkw::cname = _lisp->internWithPackageName(pkg,core::lispify_symbol_name(lispname)); chemkw::cname->exportYourself(exportp);}
+  #ifndef SCRAPING
+    #include SYMBOLS_SCRAPED_INC_H
+            #endif
 #undef DO_SYMBOL
 #undef ChemKwPkg_SYMBOLS
 
 #define ChemPkg_SYMBOLS
-#define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,lispname); cname->exportYourself(exportp);}
-#include SYMBOLS_SCRAPED_INC_H
+#define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,core::lispify_symbol_name(lispname)); cname->exportYourself(exportp);}
+  #ifndef SCRAPING
+    #include SYMBOLS_SCRAPED_INC_H
+            #endif
 #undef DO_SYMBOL
 #undef ChemPkg_SYMBOLS
 

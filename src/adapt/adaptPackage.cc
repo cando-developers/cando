@@ -18,7 +18,9 @@ namespace adapt
 #pragma GCC visibility push(default)
 #define AdaptPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include SYMBOLS_SCRAPED_INC_H
+  #ifndef SCRAPING
+    #include SYMBOLS_SCRAPED_INC_H
+  #endif
 #undef DO_SYMBOL
 #undef AdaptPkg_SYMBOLS
 #pragma GCC visibility pop
@@ -49,7 +51,9 @@ namespace adapt
 
 
 #define SYMBOLS_STATIC
-#include SYMBOLS_SCRAPED_INC_H
+  #ifndef SCRAPING
+    #include SYMBOLS_SCRAPED_INC_H
+  #endif
 
 
 
@@ -61,15 +65,19 @@ namespace adapt
 	{
 #if 0
 #define KeywordPkg_SYMBOLS
-#define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {kw::cname = _lisp->internWithPackageName(pkg,lispname); kw::cname->exportYourself(exportp);}
-#include SYMBOLS_SCRAPED_INC_H
+#define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {kw::cname = _lisp->internWithPackageName(pkg,core::lispify_symbol_name(lispname)); kw::cname->exportYourself(exportp);}
+  #ifndef SCRAPING
+    #include SYMBOLS_SCRAPED_INC_H
+  #endif
 #undef DO_SYMBOL
 #undef KeywordPkg_SYMBOLS
 #endif
           
 #define AdaptPkg_SYMBOLS
-#define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,lispname); cname->exportYourself(exportp);}
-#include SYMBOLS_SCRAPED_INC_H
+#define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,core::lispify_symbol_name(lispname)); cname->exportYourself(exportp);}
+  #ifndef SCRAPING
+    #include SYMBOLS_SCRAPED_INC_H
+  #endif
 #undef DO_SYMBOL
 #undef AdaptPkg_SYMBOLS
 

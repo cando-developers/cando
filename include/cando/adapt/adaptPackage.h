@@ -10,7 +10,9 @@ namespace adapt
 
 
 #define SYMBOLS_EXTERN
-#include SYMBOLS_SCRAPED_INC_H
+  #ifndef SCRAPING
+    #include SYMBOLS_SCRAPED_INC_H
+  #endif
 
     extern const char* Adapt_nicknames[];
 

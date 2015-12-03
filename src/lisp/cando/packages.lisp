@@ -6,6 +6,11 @@
    )
   )
 
+(defpackage #:chemdraw
+  (:use :cl)
+  (:export #:load-only-aggregate
+           )
+  )
 
 
 (defpackage #:cando
@@ -29,7 +34,9 @@
    #:jostle-atoms
    #:atom-lookup
    #:first-atom-with-name
+   #:atoms-with-unique-names
    #:atom-lookup
+   #:load-cdxml-aggregate
    ))
 
 
@@ -61,3 +68,8 @@
   )
 
 
+(defpackage #:energy
+  (:use #:common-lisp)
+  (:export
+   #:min
+   ))

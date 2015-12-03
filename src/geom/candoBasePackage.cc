@@ -15,7 +15,9 @@ namespace geom
 #pragma GCC visibility push(default)
 #define GeomPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-#include SYMBOLS_SCRAPED_INC_H
+  #ifndef SCRAPING
+    #include SYMBOLS_SCRAPED_INC_H
+  #endif
 #undef DO_SYMBOL
 #undef GeomPkg_SYMBOLS
 #pragma GCC visibility pop
@@ -46,7 +48,9 @@ namespace geom
 
 
 #define SYMBOLS_STATIC
-#include SYMBOLS_SCRAPED_INC_H
+  #ifndef SCRAPING
+    #include SYMBOLS_SCRAPED_INC_H
+  #endif
 
 
 
@@ -58,8 +62,10 @@ namespace geom
 	{
 
 #define GeomPkg_SYMBOLS
-#define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,lispname); cname->exportYourself(exportp);}
-#include SYMBOLS_SCRAPED_INC_H
+#define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,core::lispify_symbol_name(lispname)); cname->exportYourself(exportp);}
+  #ifndef SCRAPING
+    #include SYMBOLS_SCRAPED_INC_H
+            #endif
 #undef DO_SYMBOL
 #undef GeomPkg_SYMBOLS
 

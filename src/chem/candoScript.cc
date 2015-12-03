@@ -155,10 +155,6 @@ __BEGIN_DOC(candoScript.database.database,subsection,database)
 Load the database from \scriptArg{fileName}.
 __END_DOC
 */
-#define ARGS_prim_database "(fileName &optional (verbosity 0))"
-
-    
-    
 #define ARGS_af_database "(fileName &optional (verbosity 0))"
 #define DECL_af_database ""
 #define DOCS_af_database "database"
@@ -219,10 +215,6 @@ __BEGIN_DOC(candoScript.database.bundleDatabasePath,bundleDatabasePath)
 Return the full path of a file in the bundle database directory.
 __END_DOC
 */
-#define ARGS_prim_bundleDatabasePath "(fileName)"
-
-
-
 #define ARGS_af_bundleDatabasePath "(pathDesig)"
 #define DECL_af_bundleDatabasePath ""
 #define DOCS_af_bundleDatabasePath "bundleDatabasePath"
@@ -314,6 +306,8 @@ Return the plug. This is a function that passes through the Plug when we aren't 
 __END_DOC
 */
 #define ARGS_prim_RequiredPlug "(plug)"
+#define DECL_prim_RequiredPlug ""
+#define DOCS_prim_RequiredPlug ""
 core::T_sp	prim_RequiredPlug(core::Function_sp e, core::Cons_sp args, core::Environment_sp environ, core::Lisp_sp lisp)
 {_G();
     Plug_sp p = environ->lookup(ChemPkg,"plug").as<Plug_O>();

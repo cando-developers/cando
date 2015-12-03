@@ -15,4 +15,6 @@
      (:file "atom-tree")
      (:file "ring-builder")
      (:file "search")
+     (:file "chemdraw")
+     (:file "energy")
      ))

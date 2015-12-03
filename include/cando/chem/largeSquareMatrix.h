@@ -238,8 +238,7 @@ template <>
 struct gctools::GCInfo<chem::SparseLargeSquareMatrix_O> {
   static bool constexpr NeedsInitialization = true;
   static bool constexpr NeedsFinalization = true;
-  static bool constexpr Moveable = true;
-  static bool constexpr Atomic = false;
+  static GCInfo_policy constexpr Policy = normal;
 };
 
 namespace chem {

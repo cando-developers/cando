@@ -1,4 +1,6 @@
 (in-package :cando)
+
+
 (defun scramble-positions (matter &key (center (geom:make-ovector3 0.0 0.0 0.0)) (width 10.0)
                            &aux (half-width (/ width 2.0)))
   (flet ((scramble-atom (atom)
@@ -163,6 +165,7 @@
   (sleep 0.3))
 
 (defun bad-geometry-p (agg force-field)
+  "Return true if there are any beyond-threshold force field interactions"
   (let ((energy-function (chem:make-energy-function agg force-field)))
     (let ((fails (chem:check-for-beyond-threshold-interactions energy-function)))
       (if (> fails 0)
@@ -255,7 +258,8 @@
 
 
 
-(defun jostle-atoms (matter &optional (width 0.1) &aux (half-width (/ width 2.0)))
+(defun jostle (matter &optional (width 0.1) &aux (half-width (/ width 2.0)))
+  "Randomly jostle atoms from their current positions"
   (flet ((jostle-atom (atom)
            (let* ((cp (chem:get-position atom))
                   (pos (geom:make-ovector3
@@ -273,3 +277,54 @@
       ((listp matter)
        (mapc (lambda (a) (jostle-atom a)) matter))
       (t (error "Add support to jostle positions for ~s" matter)))))
+
+
+
+
+
+(defun stereocenters-sorted-by-name (agg)
+  (let ((stereocenters (cando:gather-stereocenters agg)))
+    (sort stereocenters #'string< :key #'chem:get-name)))
+    
+(defun assign-configuration (agg configuration)
+  (let* ((stereocenters (sort (cando:gather-stereocenters agg) #'string< :key #'chem:get-name)))
+    (cando:set-stereoisomer stereocenters configuration :show t)))
+
+(defun atoms-to-fix (agg)
+  "Return all atoms with the :fix property sorted by the value of that property"
+  (let* ((fix-atoms (sort (cando:atoms-with-property agg :fix) #'string<
+                          :key (lambda (a) (string (getf (chem:get-properties a) :fix))))))
+    fix-atoms))
+
+(defun anchor-atom (atom pos &optional (weight 1.0))
+  "Clear any restraints on an atom and create an anchor restraint for it"
+  (let ((restraint-anchor (make-cxx-object 'chem:restraint-anchor :atom atom :position pos :weight weight)))
+    (chem:clear-restraints atom)
+    (chem:add-restraint atom restraint-anchor)
+    restraint-anchor))
+
+(defun anchor-atoms (fix-atoms anchors &optional (weight 0.1))
+  "Anchor a collection of atoms"
+  (loop for atom in fix-atoms
+     for pos in anchors
+     do (anchor-atom atom pos weight)))
+
+(defun circle-points (radius points &key (z 0.0))
+  "Generate a list of (points) points around a circle centered on origin"
+  (loop for aindex from 0 below points
+     for angrad = (* 360.0 (/ (float aindex) points) 0.0174533)
+     collect (geom:make-ovector3 (* (cos angrad) radius)
+                                 (* (sin angrad) radius) z)))
+
+(defun anchor-stereocenters-to-circle (agg)
+  "Create an anchor restraint for every stereocenter to points on a circle"
+  (let* ((centers (stereocenters-sorted-by-name agg))
+         (points (circle-points 15.0 (length centers))))
+    (format t "centers -> ~a~%" centers)
+    (format t "points -> ~a~%" points)
+    (chem:clear-restraints agg)
+    (mapc (lambda (a p)
+            (format t "anchoring ~a to ~a~%" a p)
+            (anchor-atom a p))
+          (coerce centers 'list) points)))
+
