@@ -279,6 +279,7 @@ void Twister_O::exposeCando(core::Lisp_sp lisp)
 	.def("rotate",&Twister_O::rotate)
 	.def("rotateAbsolute",&Twister_O::rotateAbsolute)
 	.def("defineForBond",&Twister_O::defineForBond)
+	.def("defineForDihedral",&Twister_O::defineForDihedral)
 	.def("defineFixedAndMobile",&Twister_O::defineFixedAndMobile)
     ;
 }
