@@ -427,7 +427,7 @@ mps_res_t main_thread_roots_scan(mps_ss_t ss, void *gc__p, size_t gc__s) {
 
 #define DO_SYMBOL(sym, id, pkg, name, exprt) SMART_PTR_FIX(pkg::sym)
   #ifndef SCRAPING
-    #include SYMBOLS_SCRAPED_INC_H
+#include <generated/symbols_scraped_inc.h>
       #endif
 
 #undef AstToolingPkg

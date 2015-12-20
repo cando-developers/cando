@@ -268,6 +268,7 @@ void Atom_O::exposeCando(core::Lisp_sp lisp)
     .def("bondedOrder",&Atom_O::bondedOrder)
     .def("totalBondOrder",&Atom_O::totalBondOrder)
 //	    .def("copy",&Atom_O::copy,"","","",false)
+    .def("numberOfOpenValence",&Atom_O::numberOfOpenValence)
     .def("createImplicitHydrogenNames",&Atom_O::createImplicitHydrogenNames)
     .def("testConsistancy",&Atom_O::testConsistancy)
 //	.def("asXml",&Atom_O::asXml)
@@ -696,6 +697,43 @@ void Atom_O::exposeCando(core::Lisp_sp lisp)
 	return this->bonds.size();
     };
 
+/*! If this atom is a carbon then count the number of bonds and add
+ * additional hydrogens to get the number of bonds to 4.
+ * Only do this on neutral carbons.
+ * Give the hydrogens names based on this atoms name.
+ * eg:
+ * This atom name :  Number of Hydrogens to add :  Hydrogen names
+ *       CA                     1                       HA
+ *       CB                     2                       HB1, HB2
+ *       CC1                    3                       HC11, HC12, HC13 
+ * Also handle N and O
+ */ 
+uint Atom_O::numberOfOpenValence()
+{
+  int maxHydrogens;
+  switch (this->getElement()) {
+  case element_C:
+      if ( this->getIonization() != 0 )
+      {
+        core::Warn(core::Str_O::create("Add support for ~d ionization of carbon"),
+                   core::Cons_O::create(core::clasp_make_fixnum(this->getIonization())));
+      }
+      maxHydrogens = 4;
+      break;
+  case element_N:
+      maxHydrogens = 3+this->getIonization();
+      break;
+  case element_O:
+      maxHydrogens = 2+this->getIonization();
+      break;
+  default:
+      printf("%s:%d createImplicitHydrogenNames skipping atom: %s element: %s\n", __FILE__, __LINE__, _rep_(this->getName()).c_str(), this->getElementAsString().c_str());
+      return 0;
+  }
+  uint totalBondOrder = this->totalBondOrder();
+  uint addHydrogens = maxHydrogens - totalBondOrder;
+  return addHydrogens;
+}
 
 /*! If this atom is a carbon then count the number of bonds and add
  * additional hydrogens to get the number of bonds to 4.
@@ -710,31 +748,10 @@ void Atom_O::exposeCando(core::Lisp_sp lisp)
  */ 
 core::List_sp Atom_O::createImplicitHydrogenNames()
 {
-  int maxHydrogens;
-  printf("%s:%d createImplicitHydrogenNames for atom:%s\n", __FILE__, __LINE__, _rep_(this->getName()).c_str());
-  switch (this->getElement()) {
-  case element_C:
-      maxHydrogens = 4;
-      break;
-  case element_N:
-      maxHydrogens = 3;
-      break;
-  case element_O:
-      maxHydrogens = 2;
-      break;
-  default:
-      printf("%s:%d createImplicitHydrogenNames skipping atom: %s element: %s\n", __FILE__, __LINE__, _rep_(this->getName()).c_str(), this->getElementAsString().c_str());
-      return _Nil<T_O>();
-  }
-  printf("%s:%d createImplicitHydrogenNames creating up to %d hydrogens\n", __FILE__, __LINE__, maxHydrogens );
-  core::Cons_sp first, cons;
-  first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
-  cons = first;
-  if ( this->getIonization() != 0 ) return _Nil<core::T_O>();
-  uint totalBondOrder = this->totalBondOrder();
-  if ( totalBondOrder == maxHydrogens ) return _Nil<core::T_O>();
-  uint addHydrogens = maxHydrogens - totalBondOrder;
+  uint addHydrogens = this->numberOfOpenValence();
   string nameSuffix = this->getName()->symbolName()->get().substr(1,9999);
+  core::Cons_sp first = core::Cons_O::create();
+  core::Cons_sp cons = first;
   if ( addHydrogens == 1 )
   {
     MatterName hname = chemkw_intern("H"+nameSuffix);
@@ -1592,25 +1609,29 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
 
 
     uint Atom_O::totalBondOrder()
-    {_OF();
-	VectorBond::iterator	b;
-	core::List_sp		list;
-	uint twice = 0;
-	for (b=this->bonds.begin();b!=this->bonds.end(); b++ ) 
-	{
-	    if ( (*b)->getOrder() == singleBond ) twice += 2;
-	    else if ((*b)->getOrder() == doubleBond ) twice += 4;
-	    else if ((*b)->getOrder() == aromaticBond ) twice += 3;
-	    else if ((*b)->getOrder() == tripleBond ) twice += 6;
-	    else if ((*b)->getOrder() == dashedSingleBond ) twice += 2;
-	    else if ((*b)->getOrder() == dashedDoubleBond ) twice += 4;
-	    else twice += 2;
-	}
-	if ( (twice & 1) != 0 )
-	{
-	    SIMPLE_ERROR(BF("The total bond order for "+this->description()+" will not be a whole number"));
-	}
-	return twice/2;
+    {
+      if (this->getHybridization() == hybridization_sp3) return 4;
+      if (this->getHybridization() == hybridization_sp2) return 3;
+      if (this->getHybridization() == hybridization_sp) return 2;
+      // Uncertain hybridization - count bond order
+      VectorBond::iterator	b;
+      core::List_sp		list;
+      uint twice = 0;
+      for (b=this->bonds.begin();b!=this->bonds.end(); b++ ) 
+      {
+        if ( (*b)->getOrder() == singleBond ) twice += 2;
+        else if ((*b)->getOrder() == doubleBond ) twice += 4;
+        else if ((*b)->getOrder() == aromaticBond ) twice += 3;
+        else if ((*b)->getOrder() == tripleBond ) twice += 6;
+        else if ((*b)->getOrder() == dashedSingleBond ) twice += 2;
+        else if ((*b)->getOrder() == dashedDoubleBond ) twice += 4;
+        else twice += 2;
+      }
+      if ( (twice & 1) != 0 )
+      {
+        SIMPLE_ERROR(BF("The total bond order for "+this->description()+" will not be a whole number"));
+      }
+      return twice/2;
     }
 
 

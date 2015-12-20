@@ -1,6 +1,7 @@
 #define	DEBUG_LEVEL_FULL
 #include <clasp/core/common.h>
 #include <clasp/core/str.h>
+#include <cando/main/foundation.h>
 #include <cando/chem/pdb.h>
 #include <clasp/core/pathname.h>
 #include <cando/chem/chemPackage.fwd.h>
@@ -325,10 +326,10 @@ Aggregate_sp PdbReader_O::loadPdbConnectAtoms(core::T_sp fileName)
 
     
     
-#define ARGS_af_loadPdb "(filename)"
-#define DECL_af_loadPdb ""
-#define DOCS_af_loadPdb "loadPdb"
-    core::T_sp af_loadPdb(core::Str_sp fileName)
+#define ARGS_chem__load_pdb "(filename)"
+#define DECL_chem__load_pdb ""
+#define DOCS_chem__load_pdb "loadPdb"
+    core::T_sp chem__load_pdb(core::Str_sp fileName)
     {_G();
 	Aggregate_sp agg = PdbReader_O::loadPdbConnectAtoms(fileName);
 	return agg;
@@ -351,7 +352,7 @@ Aggregate_sp PdbReader_O::loadPdbConnectAtoms(core::T_sp fileName)
 Aggregate_sp PdbReader_O::parse(core::T_sp fileName)
 {_G();
   char buffer[1024];
-  string fn = gc::As<core::Str_sp>(core::cl_namestring(fileName))->get();
+  string fn = gc::As<core::Str_sp>(core::cl__namestring(fileName))->get();
   std::ifstream myfile( fn.c_str() );
   if ( myfile.fail() )
   {
@@ -560,7 +561,7 @@ void PdbWriter_O::open(core::T_sp pathDesignator)
     {
       if ( this->_Out.notnilp() ) {
             core::clasp_write_format(BF("END\n"), this->_Out);
-            core::cl_close(this->_Out);
+            core::cl__close(this->_Out);
 	}
     }
 
@@ -577,7 +578,7 @@ void	PdbWriter_O::savePdb(Matter_sp matter, core::T_sp fileName )
 	{
 	    core::class_<PdbReader_O>()
 		;
-	    Defun(loadPdb);
+	    Chem_temp_Defun(load_pdb);
 	}
 
 
@@ -586,7 +587,7 @@ void	PdbWriter_O::savePdb(Matter_sp matter, core::T_sp fileName )
 #ifdef	USEBOOSTPYTHON //
 	PYTHON_CLASS(ChemPkg,PdbReader,"","",_lisp)
 	    ;
-	boost::python::def("loadPdb",&af_loadPdb);
+	boost::python::def("loadPdb",&chem__load_pdb);
 #endif //
     }
 

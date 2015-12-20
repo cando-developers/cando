@@ -7,7 +7,7 @@
 #include <cando/adapt/adaptPackage.h>
 #include <clasp/core/builtInClass.h>
 #define HEADER_INCLUDES
-#include INIT_CLASSES_INC_H
+#include <generated/initClasses_inc.h>
 
 
 
@@ -19,7 +19,7 @@ namespace adapt
 #define AdaptPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
   #ifndef SCRAPING
-    #include SYMBOLS_SCRAPED_INC_H
+#include <generated/symbols_scraped_inc.h>
   #endif
 #undef DO_SYMBOL
 #undef AdaptPkg_SYMBOLS
@@ -34,7 +34,7 @@ namespace adapt
 #define EXPOSE_TO_CANDO
 #define Use_AdaptPkg
 #define EXTERN_REGISTER
-#include INIT_CLASSES_INC_H
+#include <generated/initClasses_inc.h>
 #undef EXTERN_REGISTER
 #undef Use_AdaptPkg
 #undef EXPOSE_TO_CANDO
@@ -52,7 +52,7 @@ namespace adapt
 
 #define SYMBOLS_STATIC
   #ifndef SCRAPING
-    #include SYMBOLS_SCRAPED_INC_H
+#include <generated/symbols_scraped_inc.h>
   #endif
 
 
@@ -67,7 +67,7 @@ namespace adapt
 #define KeywordPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {kw::cname = _lisp->internWithPackageName(pkg,core::lispify_symbol_name(lispname)); kw::cname->exportYourself(exportp);}
   #ifndef SCRAPING
-    #include SYMBOLS_SCRAPED_INC_H
+#include <generated/symbols_scraped_inc.h>
   #endif
 #undef DO_SYMBOL
 #undef KeywordPkg_SYMBOLS
@@ -76,7 +76,7 @@ namespace adapt
 #define AdaptPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,core::lispify_symbol_name(lispname)); cname->exportYourself(exportp);}
   #ifndef SCRAPING
-    #include SYMBOLS_SCRAPED_INC_H
+#include <generated/symbols_scraped_inc.h>
   #endif
 #undef DO_SYMBOL
 #undef AdaptPkg_SYMBOLS
@@ -86,7 +86,7 @@ namespace adapt
 #define Use_AdaptPkg
 #define INVOKE_REGISTER
 #define LOOKUP_SYMBOL(pkg,name) _lisp->internWithPackageName(pkg,name)
-#include INIT_CLASSES_INC_H
+#include <generated/initClasses_inc.h>
 #undef INVOKE_REGISTER
 #undef Use_AdaptPkg
 #undef ALL_STAGES
@@ -109,7 +109,7 @@ namespace adapt
 #define _DBG(x)
 #define EXPOSE_TO_PYTHON
 #define Use_AdaptPkg
-#include INIT_CLASSES_INC_H
+#include <generated/initClasses_inc.h>
 #undef Use_AdaptPkg
 #undef EXPOSE_TO_PYTHON
 	}
@@ -157,7 +157,7 @@ extern "C"
 #define _CLASS_MACRO(_T_)				\
     STATIC_CLASS_INFO(_T_);
 #define Use_AdaptPkg
-#include INIT_CLASSES_INC_H
+#include <generated/initClasses_inc.h>
 #undef Use_AdaptPkg
 #undef _CLASS_MACRO
 #undef EXPAND_CLASS_MACROS

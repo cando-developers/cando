@@ -99,7 +99,7 @@ namespace translate
 	from_object(core::T_sp o)
 	{
           if ( core::Vector_sp vo = o.asOrNull<core::Vector_O>() ) {
-            if ( cl_length(vo) == 3 ) {
+            if ( cl__length(vo) == 3 ) {
               _v.set(core::clasp_to_double((*vo)[0]),
                      core::clasp_to_double((*vo)[1]),
                      core::clasp_to_double((*vo)[2]));
@@ -125,14 +125,14 @@ namespace translate
 	    if ( geom::OVector3_sp ov3 = o.asOrNull<geom::OVector3_O>() ) {
               _v.set(ov3->getX(),ov3->getY(),ov3->getZ());
 	    } else if ( core::Vector_sp vec = o.asOrNull<core::Vector_O>() ) {
-              if ( core::cl_length(vec) != 3 ) {
+              if ( core::cl__length(vec) != 3 ) {
 		    SIMPLE_ERROR(BF("ovector3 can only have three elements"));
 		}
 	        _v.set(clasp_to_double(gc::As<core::Number_sp>((*vec)[0])),
 		       clasp_to_double(gc::As<core::Number_sp>((*vec)[1])),
 		       clasp_to_double(gc::As<core::Number_sp>((*vec)[2])));
 	    } else if ( core::List_sp list = o.asOrNull<core::List_V>() ) {
-              if ( core::cl_length(list) != 3 ) {
+              if ( core::cl__length(list) != 3 ) {
 		    SIMPLE_ERROR(BF("ovector3 can only have three elements"));
 		}
 		core::T_sp e1 = oCar(list);

@@ -97,7 +97,6 @@ Molecule_O::Molecule_O(const Molecule_O& mol)
 // Destructor
 //
 
-#if 0
 //
 //	addResidue
 //
@@ -138,9 +137,8 @@ void Molecule_O::removeResidue( Matter_sp a )
       return;
     }
   }
-  SIMPLE_ERROR(BF("removeResidue: Molecule does not contain residue: %s", a->getName() )));
+  SIMPLE_ERROR(BF("removeResidue: Molecule does not contain residue: %s") % _rep_(a->getName()) );
 }
-#endif
 
     bool	Molecule_O::equal(core::T_sp obj) const
     {_G();
@@ -368,6 +366,7 @@ Molecule_sp Molecule_O::make(MatterName name)
 	    .def("residueWithId",&Molecule_O::residueWithId)
 	    .def("hasResidueWithId",&Molecule_O::hasResidueWithId)
 	    .def("getResidue",&Molecule_O::getResidue)
+          .def("removeResidue",&Molecule_O::removeResidue)
 	    .def("residueCount",&Molecule_O::residueCount)
 	    .def("testMoleculeConsistancy",&Molecule_O::testMoleculeConsistancy)
 	    .def("moveAllAtomsIntoFirstResidue",&Molecule_O::moveAllAtomsIntoFirstResidue)

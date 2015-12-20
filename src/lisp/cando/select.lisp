@@ -54,12 +54,22 @@
       (mapcar (lambda (x) (car x)) sorted))))
 
 
-(defun atoms-around-point (matter pos radius)
+(defun atoms-inside-sphere (matter pos radius)
   (let (selected)
     (chem:map-atoms nil
                     (lambda (a)
                       (let ((dist (geom:vector-magnitude (geom:sub (chem:get-position a) pos))))
                         (when (< dist radius)
+                          (push a selected))))
+                    matter)
+    selected))
+
+(defun atoms-outside-sphere (matter pos radius)
+  (let (selected)
+    (chem:map-atoms nil
+                    (lambda (a)
+                      (let ((dist (geom:vector-magnitude (geom:sub (chem:get-position a) pos))))
+                        (when (> dist radius)
                           (push a selected))))
                     matter)
     selected))

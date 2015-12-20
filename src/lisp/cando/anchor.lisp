@@ -30,3 +30,6 @@
   "Anchor atoms on a circle"
   (let ((points (circle-points radius (length atoms))))
     (apply-restraints atoms points weight)))
+
+(defun on-points (atoms points &key (weight 1.0))
+  (apply-restraints atoms points weight))

@@ -7,6 +7,7 @@
 
 #include <clasp/core/common.h>
 #include <clasp/core/str.h>
+#include <cando/main/foundation.h>
 #include <cando/adapt/stringSet.h>
 #include <clasp/core/environment.h>
 #include <cando/adapt/adapters.h>
@@ -88,7 +89,7 @@ StereoConfiguration_sp StereoConfiguration_O::make(core::Symbol_sp atomName, cor
  */
 core::List_sp StereoConfiguration_O::create_multiple(core::List_sp atomNames, core::List_sp configurations)
 {_G();
-  ASSERT_eq(core::cl_length(atomNames), core::cl_length(configurations) );
+  ASSERT_eq(core::cl__length(atomNames), core::cl__length(configurations) );
     core::List_sp list = _Nil<core::T_O>();
     core::List_sp curName = atomNames;
     core::List_sp curConfig = configurations;
@@ -108,10 +109,10 @@ core::List_sp StereoConfiguration_O::create_multiple(core::List_sp atomNames, co
 
     
     
-#define ARGS_af_StereoConfiguration_create_multiple "(atomNames configurations)"
-#define DECL_af_StereoConfiguration_create_multiple ""
-#define DOCS_af_StereoConfiguration_create_multiple "StereoConfiguration_create_multiple"
-    core::T_sp af_StereoConfiguration_create_multiple(core::List_sp atomNames, core::List_sp configurations)
+#define ARGS_chem__stereo_configuration_create_multiple "(atomNames configurations)"
+#define DECL_chem__stereo_configuration_create_multiple ""
+#define DOCS_chem__stereo_configuration_create_multiple "StereoConfiguration_create_multiple"
+    core::T_sp chem__stereo_configuration_create_multiple(core::List_sp atomNames, core::List_sp configurations)
     {_G();
 	return StereoConfiguration_O::create_multiple(atomNames,configurations);
     }
@@ -145,10 +146,10 @@ core::List_sp StereoConfiguration_O::stereochemicalPermutations(uint numberOfCen
 
     
     
-#define ARGS_af_stereochemicalPermutations "(numcenters)"
-#define DECL_af_stereochemicalPermutations ""
-#define DOCS_af_stereochemicalPermutations "stereochemicalPermutations"
-    core::T_sp af_stereochemicalPermutations(core::Fixnum_sp numcenters)
+#define ARGS_chem__stereochemical_permutations "(numcenters)"
+#define DECL_chem__stereochemical_permutations ""
+#define DOCS_chem__stereochemical_permutations "stereochemicalPermutations"
+    core::T_sp chem__stereochemical_permutations(core::Fixnum_sp numcenters)
     {_G();
       uint numberOfCenters = core::clasp_to_fixnum(numcenters);
 	core::List_sp results = StereoConfiguration_O::stereochemicalPermutations(numberOfCenters);
@@ -530,8 +531,8 @@ void StereoConfiguration_O::exposeCando(core::Lisp_sp lisp)
 	.def("setConfiguration",&StereoConfiguration_O::setConfiguration)
 	.def("getMoeConfiguration",&StereoConfiguration_O::getMoeConfiguration)
 	;
-	Defun(stereochemicalPermutations);
-	Defun(StereoConfiguration_create_multiple);
+	Chem_temp_Defun(stereochemical_permutations);
+	Chem_temp_Defun(stereo_configuration_create_multiple);
 //	def("stereochemicalPermutations",&StereoConfiguration_O::stereochemicalPermutations,lisp->lisp());
 
     }

@@ -286,7 +286,7 @@ List_sp StringSet_O::asCons() const {
 }
 
 Vector_sp StringSet_O::asVector() const {
-  Vector_sp vec = core_make_vector(cl::_sym_Str_O,
+  Vector_sp vec = core__make_vector(cl::_sym_Str_O,
                                    this->strs.size() /* dim */,
                                    true /* adjustable */,
                                    clasp_make_fixnum(0) /* fill pointer */);

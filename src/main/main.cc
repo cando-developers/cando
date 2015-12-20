@@ -52,6 +52,7 @@ THE SOFTWARE.
 #include <clasp/sockets/socketsPackage.h>
 #include <clasp/serveEvent/serveEventPackage.h>
 #include <clasp/asttooling/asttoolingPackage.h>
+#include <clasp/core/pathname.h>
 #include <cando/geom/geomPackage.h>
 #include <cando/units/unitsPackage.h>
 #include <cando/adapt/adaptPackage.h>
@@ -73,42 +74,30 @@ int startup(int argc, char *argv[], bool &mpiEnabled, int &mpiRank, int &mpiSize
     core::ThreadInfo mainThreadInfo;
     core::lisp_setThreadLocalInfoPtr(&mainThreadInfo);
 
-    lispHolder.startup(argc, argv, "CLASP"); // was "CANDO_APP"
-
     clbind::ClbindExposer ClbindPkg(_lisp);
-    _lisp->installPackage(&ClbindPkg);
-
     llvmo::LlvmoExposer llvmopkg(_lisp);
-    _lisp->installPackage(&llvmopkg);
-
     cffi::CffiExposer cffipkg(_lisp);
-    _lisp->installPackage(&cffipkg);
-
     gctools::GcToolsExposer GcToolsPkg(_lisp);
-    _lisp->installPackage(&GcToolsPkg);
-
     sockets::SocketsExposer SocketsPkg(_lisp);
-    _lisp->installPackage(&SocketsPkg);
-
     serveEvent::ServeEventExposer ServeEventPkg(_lisp);
-    _lisp->installPackage(&ServeEventPkg);
-
     asttooling::AsttoolingExposer AsttoolingPkg(_lisp);
-    _lisp->installPackage(&AsttoolingPkg);
-
     geom::GeomExposer GeomPkg(_lisp);
-    _lisp->installPackage(&GeomPkg);
-
     units::UnitsExposer UnitsPkg(_lisp);
-    _lisp->installPackage(&UnitsPkg);
-
     adapt::AdaptExposer AdaptPkg(_lisp);
-    _lisp->installPackage(&AdaptPkg);
-
     chem::ChemExposer ChemPkg(_lisp);
-    _lisp->installPackage(&ChemPkg);
-
 //    kinematics::KinematicsExposer KinPkg(_lisp);
+    lispHolder.startup(argc, argv, "CLASP"); // was "CANDO_APP"
+    _lisp->installPackage(&ClbindPkg);
+    _lisp->installPackage(&llvmopkg);
+    _lisp->installPackage(&cffipkg);
+    _lisp->installPackage(&GcToolsPkg);
+    _lisp->installPackage(&SocketsPkg);
+    _lisp->installPackage(&ServeEventPkg);
+    _lisp->installPackage(&AsttoolingPkg);
+    _lisp->installPackage(&GeomPkg);
+    _lisp->installPackage(&UnitsPkg);
+    _lisp->installPackage(&AdaptPkg);
+    _lisp->installPackage(&ChemPkg);
 //    _lisp->installPackage(&KinPkg);
 
 #ifdef USE_MPI
@@ -133,6 +122,16 @@ int startup(int argc, char *argv[], bool &mpiEnabled, int &mpiRank, int &mpiSize
     exitCode = ee.getExitResult();
   }; // catch (...) { exitCode = gctools::handleFatalCondition(); }
   return exitCode;
+}
+
+void create_source_main_host()
+{
+  core::Cons_sp pts =
+    core::Cons_O::createList(core::Cons_O::createList(core::Str_O::create("source-main:**;*.*"),
+                                                      cl__pathname(core::Str_O::create("app-resources:clasp;projects;cando;src;main;**;*.*")))
+        /* ,  more here */
+                       );
+core__pathname_translations(core::Str_O::create("source-main"), _lisp->_true(), pts);
 }
 
 int main(int argc, char *argv[]) { // Do not touch debug log until after MPI init

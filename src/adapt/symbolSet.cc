@@ -116,14 +116,14 @@ void SymbolSet_O::fields(core::Record_sp node) {
     Vector_sp valueVec;
     node->field(INTERN_(kw,data), valueVec );
     this->_Symbols->clrhash();
-    for ( size_t i(0), iEnd(cl_length(valueVec)); i<iEnd; ++i ) {
+    for ( size_t i(0), iEnd(cl__length(valueVec)); i<iEnd; ++i ) {
       T_sp key = (*valueVec)[i];
       this->_Symbols->hash_table_setf_gethash(key,_lisp->_true());
     }
   }
       break;
   case Record_O::saving: {
-    Vector_sp valueVec = core_make_vector(cl::_sym_T_O, this->_Symbols->hashTableCount() );
+    Vector_sp valueVec = core__make_vector(cl::_sym_T_O, this->_Symbols->hashTableCount() );
     size_t idx = 0;
     this->_Symbols->mapHash([&idx,&valueVec](T_sp key, T_sp val) {
         (*valueVec)[idx++] = key;

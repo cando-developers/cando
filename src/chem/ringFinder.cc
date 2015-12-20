@@ -835,7 +835,7 @@ core::List_sp RingFinder_O::getAllRingsAsListsOfAtoms()
     {
 	core::List_sp oneRing = (*it)->getAtoms();
 	lists = core::Cons_O::create(oneRing,lists);
-	LOG(BF("Ring #%d = size(%d) %s") % ridx % core::cl_length(oneRing) % oneRing->__repr__().c_str()  );
+	LOG(BF("Ring #%d = size(%d) %s") % ridx % core::cl__length(oneRing) % oneRing->__repr__().c_str()  );
 	ridx++;
     }
     return lists;
@@ -877,7 +877,7 @@ core::List_sp RingFinder_O::identifyRingsInMolecule(Molecule_sp molecule)
 	rings = atomGraph->getAllRingsAsListsOfAtoms();
 	for ( auto curRing : rings ) {
           core::List_sp atoms = oCar(curRing);
-          uint ringSize = core::cl_length(atoms);
+          uint ringSize = core::cl__length(atoms);
 	    for ( auto atomCons : atoms ) {
               Atom_sp atom = oCar(atomCons).as<Atom_O>();
 		atom->setInRingOfSize(ringSize);

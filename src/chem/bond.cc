@@ -67,7 +67,7 @@ Bond_O::Bond_O(const Bond_O& bb)  : core::CxxObject_O(bb)
   this->order = bb.order;
   this->_Atom1 = bb._Atom1;
   this->_Atom2 = bb._Atom2;
-  this->_Properties = core::cl_copyList(bb._Properties);
+  this->_Properties = core::cl__copy_list(bb._Properties);
   LOG(BF("copy _Atom1=%s _Atom2=%s")
       % this->_Atom1->description()
       % this->_Atom2->description() );
@@ -172,18 +172,18 @@ string Bond_O::propertiesAsString() const
 
 void Bond_O::clearProperty(core::Symbol_sp prop)
 {_G();
-  this->_Properties = core::core_rem_f(this->_Properties,prop);
+  this->_Properties = core::core__rem_f(this->_Properties,prop);
 }
 
 void Bond_O::setProperty(core::Symbol_sp prop, core::T_sp val)
     {_G();
-      this->_Properties = core::core_put_f(this->_Properties,val,prop);
+      this->_Properties = core::core__put_f(this->_Properties,val,prop);
     }
 
 
 core::T_sp Bond_O::getProperty(core::Symbol_sp prop, core::T_sp defval)
 {_G();
-  core::T_sp res = core::cl_getf(this->_Properties,prop,_Unbound<core::T_O>());
+  core::T_sp res = core::cl__getf(this->_Properties,prop,_Unbound<core::T_O>());
   if (res.unboundp()) {
     return defval;
   }
@@ -192,7 +192,7 @@ core::T_sp Bond_O::getProperty(core::Symbol_sp prop, core::T_sp defval)
 
 bool Bond_O::hasProperty(core::Symbol_sp prop)
 {_G();
-  return !core::cl_getf(this->_Properties,prop,_Unbound<core::T_O>()).unboundp();
+  return !core::cl__getf(this->_Properties,prop,_Unbound<core::T_O>()).unboundp();
 }
 
 

@@ -277,7 +277,7 @@ namespace geom {
 		err = XML_GetErrorCode(this->parser);
 		printf( "MySaxParser::expat:: error = %s\n", XML_ErrorString(err) );
 		printf( "MySaxParser::expat:: line = %d\n", (int)(XML_GetCurrentLineNumber(this->parser)) );
-                core::cl_close(fIn);
+                core::cl__close(fIn);
 		return false;
 	    }
 	}

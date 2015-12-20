@@ -3,6 +3,7 @@
 
 #include <clasp/core/common.h>
 #include <clasp/core/str.h>
+#include <cando/main/foundation.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/chem/monomerPack.h>
 //#include "core/archiveNode.h"
@@ -48,10 +49,10 @@ __END_DOC
 
     
     
-#define ARGS_af_defineMonomerPack "(packName parts &optional atomAliases)"
-#define DECL_af_defineMonomerPack ""
-#define DOCS_af_defineMonomerPack "defineMonomerPack"
-    core::T_sp af_defineMonomerPack(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomAliases )
+#define ARGS_chem__define_monomer_pack "(packName parts &optional atomAliases)"
+#define DECL_chem__define_monomer_pack ""
+#define DOCS_chem__define_monomer_pack "defineMonomerPack"
+    core::T_sp chem__define_monomer_pack(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomAliases )
     {_G();
 	CandoDatabase_sp	bdb;
 	core::T_sp		oarg1;
@@ -95,10 +96,10 @@ __END_DOC
 
     
     
-#define ARGS_af_extendAliases "(packName parts atomAliases)"
-#define DECL_af_extendAliases ""
-#define DOCS_af_extendAliases "extendAliases"
-    core::T_sp af_extendAliases(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomAliases)
+#define ARGS_chem__extend_aliases "(packName parts atomAliases)"
+#define DECL_chem__extend_aliases ""
+#define DOCS_chem__extend_aliases "extendAliases"
+    core::T_sp chem__extend_aliases(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomAliases)
     {_G();
 	CandoDatabase_sp	bdb;
 	core::T_sp		oarg1;
@@ -137,12 +138,12 @@ __END_DOC
 
     
     
-#define ARGS_af_setMonomerPack "(packName parts &optional atomAliases)"
-#define DECL_af_setMonomerPack ""
-#define DOCS_af_setMonomerPack "setMonomerPack"
-    core::T_sp af_setMonomerPack(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomNames )
+#define ARGS_chem__set_monomer_pack "(packName parts &optional atomAliases)"
+#define DECL_chem__set_monomer_pack ""
+#define DOCS_chem__set_monomer_pack "setMonomerPack"
+    core::T_sp chem__set_monomer_pack(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomNames )
     {_G();
-	core::T_sp opack = af_defineMonomerPack(packName,parts,atomNames);
+	core::T_sp opack = chem__define_monomer_pack(packName,parts,atomNames);
 	MonomerPack_sp pack = downcast<MonomerPack_O>(opack);
 	core::Symbol_sp sym = pack->getName();
 	sym->defparameter(opack);
@@ -198,12 +199,12 @@ void	MonomerPack_O::defineContentsFromCons(core::List_sp atomAliases, core::List
   this->setInterestingAtomAliasesFromSymbolList(aliases);
   for ( auto p : parts ) {
     core::List_sp entry = oCar(p);
-    if ( core::cl_length(entry) <1 ) SIMPLE_ERROR(BF("monomerPack Entry contains no monomer name"));
+    if ( core::cl__length(entry) <1 ) SIMPLE_ERROR(BF("monomerPack Entry contains no monomer name"));
     core::Symbol_sp monomerName = oCar(entry).as<core::Symbol_O>();
     this->addMonomerName(monomerName);
     if ( aliases->size() > 0 )
     {
-      if ( core::cl_length(entry) < 2 ) SIMPLE_ERROR(BF("You defined atom aliases to each monomer must have interesting atom names"));
+      if ( core::cl__length(entry) < 2 ) SIMPLE_ERROR(BF("You defined atom aliases to each monomer must have interesting atom names"));
       core::List_sp interestingAtomNames = oSecond(entry);
       this->setInterestingAtomNamesForMonomerNameFromCons(monomerName,interestingAtomNames);
     }
@@ -216,11 +217,11 @@ void	MonomerPack_O::defineContentsFromCons(core::List_sp atomAliases, core::List
 void MonomerPack_O::extendAliases( core::List_sp atomAliases, core::List_sp parts)
 {_OF();
     adapt::SymbolSet_sp extendMonomers = adapt::SymbolSet_O::create();
-    uint numberOfAtomAliases = core::cl_length(atomAliases);
+    uint numberOfAtomAliases = core::cl__length(atomAliases);
     this->_InterestingAtomAliases->appendConsOfStrings(atomAliases);
     for ( auto cur : parts ) {
       core::List_sp oneExtend = oCar(cur);
-      if ( core::cl_length(oneExtend) != 2 )
+      if ( core::cl__length(oneExtend) != 2 )
 	{
 	    SIMPLE_ERROR(BF("Each extendAliases entry must have two elements: "+oneExtend->__repr__() ));
 	}
@@ -232,7 +233,7 @@ void MonomerPack_O::extendAliases( core::List_sp atomAliases, core::List_sp part
 	    SIMPLE_ERROR(BF("MonomerPack("+this->getName()->__repr__()+") does not recognize monomer name("+monomerName->__repr__()+")"));
 	}
 	AtomIndexer_sp indexer = this->_AtomIndexers->getAtomIndexerForMonomerName(monomerName);
-	if ( core::cl_length(aliasAtoms) != numberOfAtomAliases )
+	if ( core::cl__length(aliasAtoms) != numberOfAtomAliases )
 	{
 	    stringstream ss;
 	    ss << "Mismatch between number of alias atoms ";
@@ -448,9 +449,9 @@ void MonomerPack_O::exposeCando(core::Lisp_sp lisp)
 	.def("removeMonomerName",&MonomerPack_O::removeMonomerName)
 //	.def("setInterestingAtomAliasesFromString",&MonomerPack_O::setInterestingAtomAliasesFromString)
     ;
-    Defun(defineMonomerPack);
-    Defun(extendAliases);
-    Defun(setMonomerPack);
+    Chem_temp_Defun(define_monomer_pack);
+    Chem_temp_Defun(extend_aliases);
+    Chem_temp_Defun(set_monomer_pack);
 }
 
 void MonomerPack_O::exposePython(core::Lisp_sp lisp)

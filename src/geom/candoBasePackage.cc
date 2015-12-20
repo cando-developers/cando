@@ -7,7 +7,7 @@
 #include <cando/geom/geomPackage.h>
 #include <clasp/core/builtInClass.h>
 #define HEADER_INCLUDES
-#include INIT_CLASSES_INC_H
+#include <generated/initClasses_inc.h>
 
 
 namespace geom
@@ -16,7 +16,7 @@ namespace geom
 #define GeomPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
   #ifndef SCRAPING
-    #include SYMBOLS_SCRAPED_INC_H
+#include <generated/symbols_scraped_inc.h>
   #endif
 #undef DO_SYMBOL
 #undef GeomPkg_SYMBOLS
@@ -31,7 +31,7 @@ namespace geom
 #define EXPOSE_TO_CANDO
 #define Use_GeomPkg
 #define EXTERN_REGISTER
-#include INIT_CLASSES_INC_H
+#include <generated/initClasses_inc.h>
 #undef EXTERN_REGISTER
 #undef Use_GeomPkg
 #undef EXPOSE_TO_CANDO
@@ -49,7 +49,7 @@ namespace geom
 
 #define SYMBOLS_STATIC
   #ifndef SCRAPING
-    #include SYMBOLS_SCRAPED_INC_H
+#include <generated/symbols_scraped_inc.h>
   #endif
 
 
@@ -64,7 +64,7 @@ namespace geom
 #define GeomPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,core::lispify_symbol_name(lispname)); cname->exportYourself(exportp);}
   #ifndef SCRAPING
-    #include SYMBOLS_SCRAPED_INC_H
+#include <generated/symbols_scraped_inc.h>
             #endif
 #undef DO_SYMBOL
 #undef GeomPkg_SYMBOLS
@@ -74,7 +74,7 @@ namespace geom
 #define Use_GeomPkg
 #define INVOKE_REGISTER
 #define LOOKUP_SYMBOL(pkg,name) _lisp->internWithPackageName(pkg,name)
-#include INIT_CLASSES_INC_H
+#include <generated/initClasses_inc.h>
 #undef INVOKE_REGISTER
 #undef Use_GeomPkg
 #undef ALL_STAGES
@@ -97,7 +97,7 @@ namespace geom
 #define _DBG(x)
 #define EXPOSE_TO_PYTHON
 #define Use_GeomPkg
-#include INIT_CLASSES_INC_H
+#include <generated/initClasses_inc.h>
 #undef Use_GeomPkg
 #undef EXPOSE_TO_PYTHON
 	}
@@ -145,7 +145,7 @@ extern "C"
 #define _CLASS_MACRO(_T_)				\
     STATIC_CLASS_INFO(_T_);
 #define Use_GeomPkg
-#include INIT_CLASSES_INC_H
+#include <generated/initClasses_inc.h>
 #undef Use_GeomPkg
 #undef _CLASS_MACRO
 #undef EXPAND_CLASS_MACROS

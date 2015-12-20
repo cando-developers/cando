@@ -79,8 +79,8 @@ protected:
 
 public:
     typedef core::Symbol_O			NameType;
-    friend core::T_sp af_setOligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_sp parts);
-    friend core::T_sp af_oligomerSequence(Oligomer_sp olig);
+    friend core::T_sp chem__set_oligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_sp parts);
+    friend core::T_sp chem__oligomer_sequence(Oligomer_sp olig);
 protected:
     NameType::smart_ptr			_Name;
     gctools::Vec0<Monomer_sp>			_Monomers;

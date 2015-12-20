@@ -89,7 +89,7 @@ OMatrix_sp OMatrix_O::make(bool identity)
 
 
 core::List_sp OMatrix_O::encode() {
-  core::Vector_sp v = core::core_make_vector(cl::_sym_DoubleFloat_O,16);
+  core::Vector_sp v = core::core__make_vector(cl::_sym_DoubleFloat_O,16);
   for ( size_t i(0); i<16; ++i ) {
     (*v)[i] = core::clasp_make_double_float(this->_Value[i]);
   }

@@ -291,13 +291,13 @@ void    _defineAtomicInfoMapIfNotDefined()
 
     hybridizationInfo.resize(((int)(hybridization_MAX)));
   hybridizationInfo[hybridization_undefined]._HybridizationEnum = hybridization_undefined;
-  hybridizationInfo[hybridization_undefined]._HybridizationSymbol = "sp?";
+  hybridizationInfo[hybridization_undefined]._HybridizationSymbol = "SP?";
   hybridizationInfo[hybridization_sp]._HybridizationEnum = hybridization_sp;
-  hybridizationInfo[hybridization_sp]._HybridizationSymbol = "sp";
+  hybridizationInfo[hybridization_sp]._HybridizationSymbol = "SP";
   hybridizationInfo[hybridization_sp2]._HybridizationEnum = hybridization_sp2;
-  hybridizationInfo[hybridization_sp2]._HybridizationSymbol = "sp2";
+  hybridizationInfo[hybridization_sp2]._HybridizationSymbol = "SP2";
   hybridizationInfo[hybridization_sp3]._HybridizationEnum = hybridization_sp3;
-  hybridizationInfo[hybridization_sp3]._HybridizationSymbol = "sp3";
+  hybridizationInfo[hybridization_sp3]._HybridizationSymbol = "SP3";
   for ( vector<AtomicInfo>::iterator ai=atomicInfo.begin(); ai!=atomicInfo.end(); ai++ )
   {
     if ( ai->_Valid )

@@ -65,7 +65,7 @@ Matter_O::Matter_O( const Matter_O& c ) : core::CxxObject_O(c)
   this->_Id = c._Id;
   this->name = c.name;
 //	this->containerContainedBy = c.containerContainedBy;
-  this->_Properties = core::cl_copyList(c._Properties);
+  this->_Properties = core::cl__copy_list(c._Properties);
   this->_Restraints = _Nil<RestraintList_O>();
 }
 
@@ -188,22 +188,22 @@ void Matter_O::applyPropertyList(core::List_sp list)
     
 void Matter_O::clearProperty(core::Symbol_sp prop)
 {_G();
-  this->_Properties = core::core_rem_f(this->_Properties,prop);
+  this->_Properties = core::core__rem_f(this->_Properties,prop);
 }
 
 void Matter_O::setProperty(core::Symbol_sp prop, core::T_sp val)
 {_G();
-  this->_Properties = core::core_put_f(this->_Properties,val,prop);
+  this->_Properties = core::core__put_f(this->_Properties,val,prop);
 }
 
 void Matter_O::setPropertyTrue(core::Symbol_sp prop)
 {_G();
-  this->_Properties = core::core_put_f(this->_Properties,_lisp->_true(),prop);
+  this->_Properties = core::core__put_f(this->_Properties,_lisp->_true(),prop);
 }
 
 core::T_sp Matter_O::getProperty(core::Symbol_sp prop)
 {
-  core::T_sp res = core::cl_getf(this->_Properties,prop,_Unbound<core::T_O>());
+  core::T_sp res = core::cl__getf(this->_Properties,prop,_Unbound<core::T_O>());
   if (res.unboundp()) {
     stringstream props;
     props << _rep_(this->_Properties);
@@ -214,12 +214,12 @@ core::T_sp Matter_O::getProperty(core::Symbol_sp prop)
 
 core::T_sp Matter_O::getPropertyOrDefault(core::Symbol_sp prop,core::T_sp defval)
 {_G();
-  return core::cl_getf(this->_Properties,prop,defval);
+  return core::cl__getf(this->_Properties,prop,defval);
 }
 
 bool Matter_O::hasProperty(core::Symbol_sp prop)
 {_G();
-  return !core::cl_getf(this->_Properties,prop,_Unbound<core::T_O>()).unboundp();
+  return !core::cl__getf(this->_Properties,prop,_Unbound<core::T_O>()).unboundp();
 }
 
 

@@ -69,7 +69,7 @@ FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(core::T_sp fin)
   uint lineno = 1;
   vector< pair< uint, string> > entries;
   while ( true ) {
-    core::T_mv mv_line = core::cl_read_line(fin,_Nil<T_O>());
+    core::T_mv mv_line = core::cl__read_line(fin,_Nil<T_O>());
     if ( mv_line.nilp() ) break;
     string line = mv_line.as<core::Str_O>()->get();
     LOG(BF("Read line(%s)") % line  );
@@ -116,7 +116,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseFirstNonbondDb(core::T_sp fin)
   bool done = false;
   while ( not done )
   {
-    core::T_mv ol = core::cl_read_line(fin);
+    core::T_mv ol = core::cl__read_line(fin);
     string line = gc::As<core::Str_sp>(ol)->get();
     if ( line.size() == 0 )
     {
@@ -134,7 +134,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseFirstNonbondDb(core::T_sp fin)
       ffNonbondDb->add(ffNonbond);
     }
   }
-  core::cl_read_line(fin); // blank line
+  core::cl__read_line(fin); // blank line
   return ffNonbondDb;
 }
  
@@ -145,7 +145,7 @@ FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(core::T_sp fin)
     bool done = false;
     while ( not done )
     {
-      string line = core::cl_read_line(fin).as<core::Str_O>()->get();
+      string line = core::cl__read_line(fin).as<core::Str_O>()->get();
 	if ( line.size() == 0 )
 	{
             done = true;
@@ -181,7 +181,7 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
     bool done = false;
     while ( not done )
     {
-      string line = core::cl_read_line(fin).as<core::Str_O>()->get();
+      string line = core::cl__read_line(fin).as<core::Str_O>()->get();
         if (line.size()== 0)
 	{
             done = true;
@@ -219,7 +219,7 @@ FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin)
   bool done = false;
   while (not done )
   {
-    string line = core::cl_read_line(fin).as<core::Str_O>()->get();
+    string line = core::cl__read_line(fin).as<core::Str_O>()->get();
     if (line.size()== 0)
     {
       done = true;
@@ -276,7 +276,7 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
     bool done = false;
     while (not done )
     {
-      string line = core::cl_read_line(fin).as<core::Str_O>()->get();
+      string line = core::cl__read_line(fin).as<core::Str_O>()->get();
 //      printf("%s:%d line: %s\n", __FILE__, __LINE__, line.c_str());
         if (line.size()== 0)
 	{
@@ -334,7 +334,7 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
 void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonbondDb)
 {_G();
     bool done = false;
-    string line = core::cl_read_line(fin).as<core::Str_O>()->get();
+    string line = core::cl__read_line(fin).as<core::Str_O>()->get();
     vector<string>parts = core::split(line);
     string label = parts[0];
     string kindnb = parts[1];
@@ -344,7 +344,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
     }
     while ( not done )
     {
-      string line = core::cl_read_line(fin).as<core::Str_O>()->get();
+      string line = core::cl__read_line(fin).as<core::Str_O>()->get();
 //      printf("%s:%d:%s line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str()); 
       if ( line.size() == 0 )
       {
@@ -381,16 +381,16 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
 
 ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fin)
 {_OF();
-    string line = core::cl_read_line(fin).as<core::Str_O>()->get();
+    string line = core::cl__read_line(fin).as<core::Str_O>()->get();
     FFNonbondDb_sp ffNonbondsDb = this->parseFirstNonbondDb(fin);
     FFStretchDb_sp ffStretchesDb = this->parseStretchDb(fin);
     FFAngleDb_sp ffAnglesDb = this->parseAngleDb(fin);
     FFPtorDb_sp ffPtorsDb = this->parsePtorDb(fin);
     FFItorDb_sp ffItorsDb = this->parseItorDb(fin);
-    core::cl_read_line(fin); // skp 10-12 hbond
-    core::cl_read_line(fin); // blank
-    core::cl_read_line(fin); // skip equivalence
-    core::cl_read_line(fin); // blank
+    core::cl__read_line(fin); // skp 10-12 hbond
+    core::cl__read_line(fin); // blank
+    core::cl__read_line(fin); // skip equivalence
+    core::cl__read_line(fin); // blank
     this->parseNonbondDb(fin,ffNonbondsDb);
     LOG(BF("All parameters read fine") );
     GC_ALLOCATE(ForceField_O, ff );

@@ -99,7 +99,7 @@ public:
   }
   Mol2File() : _eof(false) {};
   ~Mol2File() {
-    cl_close(fIn);
+    cl__close(fIn);
   }
 
 
@@ -726,7 +726,7 @@ AtomInfo	one;
 
 void	mol2WriteAggregateToFileName( Aggregate_sp agg, core::T_sp fname )
 {
-  core::Str_sp sname = gc::As<core::Str_sp>(core::cl_namestring(fname));
+  core::Str_sp sname = gc::As<core::Str_sp>(core::cl__namestring(fname));
   std::ofstream	fout;
   fout.open(sname->get().c_str(),std::ios::out);
   mol2WriteAggregateStream( agg, fout );

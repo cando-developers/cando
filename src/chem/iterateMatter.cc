@@ -1,5 +1,6 @@
 #define	DEBUG_LEVEL_FULL
 #include <clasp/core/common.h>
+#include <cando/main/foundation.h>
 #include <cando/chem/iterateMatter.h>
 #include <cando/chem/symbolTable.h>
 //#include "core/archiveNode.h"
@@ -146,10 +147,10 @@ namespace chem
 
     
     
-#define ARGS_af_createForMatter "(matter)"
-#define DECL_af_createForMatter ""
-#define DOCS_af_createForMatter "createForMatter"
-    core::T_sp af_createForMatter(Matter_sp matter)
+#define ARGS_chem__create_for_matter "(matter)"
+#define DECL_chem__create_for_matter ""
+#define DOCS_chem__create_for_matter "createForMatter"
+    core::T_sp chem__create_for_matter(Matter_sp matter)
     {_G();
 	GC_ALLOCATE(IterateAtoms_O, ia );
 	ia->initTopAndGoal(matter,ATOMS);
@@ -290,7 +291,7 @@ namespace chem
 	    core::class_<IterateAtoms_O>()
 //		.def_raw("core:__init__",&IterateAtoms_O::__init__,"(self matter)")
 		;
-	    Defun(createForMatter);
+	    Chem_temp_Defun(create_for_matter);
 	}
 
     void IterateAtoms_O::exposePython(core::Lisp_sp lisp)

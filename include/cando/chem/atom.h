@@ -409,6 +409,7 @@ namespace chem
 	/*! Total all of the bond orders.  */
 	uint totalBondOrder();
 	uint maxTotalBondOrder();
+        uint numberOfOpenValence();
 	core::List_sp createImplicitHydrogenNames();
 	void fillInImplicitHydrogens();
 

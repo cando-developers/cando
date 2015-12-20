@@ -5,6 +5,7 @@
 // (C) 2004 Christian E. Schafmeister
 //
 
+#include <cando/main/foundation.h>
 #include <cando/chem/oligomer.h>
 #include <clasp/core/str.h>
 #include <cando/chem/molecule.h>
@@ -601,7 +602,7 @@ stringstream			msg;
 gctools::Vec0<Monomer_sp>::iterator	mi;
 gctools::Vec0<Coupling_sp>::iterator	ci;
     msg.str("");
-    msg << core::cl_get_output_stream_string(this->_ErrorMessage).as<core::Str_O>()->get();
+    msg << core::cl__get_output_stream_string(this->_ErrorMessage).as<core::Str_O>()->get();
     msg << "Monomer errors: " << std::endl;
     LOG(BF("Adding monomer errors") );
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) {
@@ -903,10 +904,10 @@ SpecificContextSet_sp Oligomer_O::allSpecificMonomerContexts()
 
 
 
-#define ARGS_af_oligomerSequence "(olig)"
-#define DECL_af_oligomerSequence ""
-#define DOCS_af_oligomerSequence "oligomerSequence"
-core::T_sp af_oligomerSequence(Oligomer_sp olig)
+#define ARGS_chem__oligomer_sequence "(olig)"
+#define DECL_chem__oligomer_sequence ""
+#define DOCS_chem__oligomer_sequence "oligomerSequence"
+core::T_sp chem__oligomer_sequence(Oligomer_sp olig)
 {_G();
     string seq = olig->sequenceAsString();
     return core::Str_O::create(seq);
@@ -969,10 +970,10 @@ core::T_sp Oligomer_O::__init__(core::Function_sp exec, core::List_sp args, core
 
 
 
-#define ARGS_af_setOligomer "(oligomerName parts)"
-#define DECL_af_setOligomer ""
-#define DOCS_af_setOligomer "setOligomer"
-core::T_sp af_setOligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_sp parts)
+#define ARGS_chem__set_oligomer "(oligomerName parts)"
+#define DECL_chem__set_oligomer ""
+#define DOCS_chem__set_oligomer "setOligomer"
+core::T_sp chem__set_oligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_sp parts)
 {_G();
     Oligomer_sp olig = Oligomer_O::create();
     olig->setName(oligomerName);
@@ -1038,8 +1039,8 @@ void Oligomer_O::exposeCando(core::Lisp_sp lisp)
 //	.def("clearAllFragmentAlchemistsCoordinatesAreFixed",
 //		&Oligomer_O::clearAllFragmentAlchemistsCoordinatesAreFixed)
     ;
-    Defun(setOligomer);
-    Defun(oligomerSequence);
+    Chem_temp_Defun(set_oligomer);
+    Chem_temp_Defun(oligomer_sequence);
 }
 
 

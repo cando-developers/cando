@@ -32,16 +32,6 @@
                             (chem:get-properties x)))
                   matter))
 
-(defun atoms-with-property (matter prop-name)
-  (let (atoms)
-    (chem:map-atoms nil
-                    (lambda (x)
-                      (when (not (eq :eof (getf (chem:get-properties x) prop-name :eof)))
-                        (push x atoms)))
-                    matter)
-    atoms))
-
-
 (defun dump-stereocenters (centers)
   (dotimes (i (length centers))
     (let ((a (elt centers i)))
@@ -292,7 +282,7 @@
 
 (defun atoms-to-fix (agg)
   "Return all atoms with the :fix property sorted by the value of that property"
-  (let* ((fix-atoms (sort (cando:atoms-with-property agg :fix) #'string<
+  (let* ((fix-atoms (sort (select:atoms-with-property agg :fix) #'string<
                           :key (lambda (a) (string (getf (chem:get-properties a) :fix))))))
     fix-atoms))
 

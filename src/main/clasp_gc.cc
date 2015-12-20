@@ -39545,7 +39545,7 @@ static void* OBJ_DEALLOCATOR_table[] = { NULL
  SMART_PTR_FIX(chem::_sym_STARparserNodeHolderSTAR);
  SMART_PTR_FIX(core::_sym_STARsharp_equal_repl_tableSTAR);
  SMART_PTR_FIX(chem::_sym_PlugWithMates_O);
- SMART_PTR_FIX(kw::_sym_ecl_min);
+ SMART_PTR_FIX(kw::_sym_ecl__min);
  SMART_PTR_FIX(chemkw::_sym_idle);
  SMART_PTR_FIX(cl::_sym_intersection);
  SMART_PTR_FIX(cl::_sym_compute_restarts);

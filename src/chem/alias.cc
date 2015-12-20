@@ -5,7 +5,7 @@
 //#include "core/archive.h"
 #include <clasp/core/environment.h>
 #include <clasp/core/wrappers.h>
-
+#include <cando/main/foundation.h>
 namespace chem 
 {
 
@@ -33,10 +33,10 @@ namespace chem
 
     
     
-#define ARGS_af_alias "(monAlias atomAlias)"
-#define DECL_af_alias ""
-#define DOCS_af_alias "alias"
-    core::T_sp af_alias(core::Symbol_sp monAlias, core::Symbol_sp atomAlias)
+#define ARGS_chem__alias "(monAlias atomAlias)"
+#define DECL_chem__alias ""
+#define DOCS_chem__alias "alias"
+    core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAlias)
     {_G();
 	return Alias_O::create(monAlias,atomAlias);
     }
@@ -134,7 +134,7 @@ namespace chem
 	core::class_<Alias_O>()
 //	    .def_raw("core:__init__",&Alias_O::__init__,"(self chem::monomerSym chem::atomSym)")
 	    ;
-	Defun(alias);
+	Chem_temp_Defun(alias);
     }
 
     void Alias_O::exposePython(core::Lisp_sp lisp)

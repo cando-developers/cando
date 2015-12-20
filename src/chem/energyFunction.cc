@@ -300,7 +300,7 @@ bool inAtomSet(core::T_sp activeSet, Atom_sp a)
   } else if ( core::HashTable_sp htset = activeSet.asOrNull<core::HashTable_O>() ) {
     return htset->gethash(a).notnilp();
   } else if ( core::Vector_sp vset = activeSet.asOrNull<core::Vector_O>() ) {
-    for ( size_t i(0), iEnd(core::cl_length(vset)); i<iEnd; ++i ) {
+    for ( size_t i(0), iEnd(core::cl__length(vset)); i<iEnd; ++i ) {
       if ( vset->elt(i) == a ) return true;
     }
     return false;
@@ -1660,7 +1660,7 @@ int             coordinateIndex;
 		    }
 		}
 		core::List_sp priority = a1->getNeighborsByRelativePriority();
-		ASSERTP(core::cl_length(priority) == 4, "There must be 4 neighbors to assign stereochemistry");
+		ASSERTP(core::cl__length(priority) == 4, "There must be 4 neighbors to assign stereochemistry");
 		core::List_sp cur = priority;
 		n1 = cur.asCons()->car<Atom_O>();
 		cur = cur.asCons()->cdr();

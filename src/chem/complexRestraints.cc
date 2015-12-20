@@ -129,7 +129,7 @@ RestrainedPiBond_sp RestrainedPiBond_O::make(core::Symbol_sp config, core::List_
     {
 	SIMPLE_ERROR(BF("config:  must be ""E"" or ""Z""" ));
     }
-    if ( core::cl_length(piAtoms) != 2 )
+    if ( core::cl__length(piAtoms) != 2 )
     {
 	SIMPLE_ERROR(BF("You must supply two atom names in piAtoms: argument"));
     }
@@ -148,7 +148,7 @@ RestrainedPiBond_sp RestrainedPiBond_O::make(core::Symbol_sp config, core::List_
     {
 	SIMPLE_ERROR(BF("config:  must be ""E"" or ""Z""" ));
     }
-    if ( core::cl_length(piAtoms) != 2 )
+    if ( core::cl__length(piAtoms) != 2 )
     {
 	SIMPLE_ERROR(BF("You must supply two atom names in piAtoms: argument"));
     }

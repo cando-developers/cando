@@ -73,6 +73,12 @@ virtual void	transferCoordinates(Matter_sp other);
 	Residue_sp	getFirstResidueWithName(MatterName name);
     VectorResidue	getResiduesWithName(MatterName name);
 
+    
+    void addResidue( Matter_sp r );
+    void addResidueRetainId( Matter_sp r );
+    void removeResidue( Matter_sp a );
+
+
 
 
 	virtual bool isMolecule() { return true;};

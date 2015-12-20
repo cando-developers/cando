@@ -57,7 +57,7 @@ namespace kinematics
   Conformation_sp Conformation_O::make(core::List_sp oligomers)
     {_G();
 	GC_ALLOCATE(Conformation_O, me );
-        me->resizeMolecules(core::cl_length(oligomers));
+        me->resizeMolecules(core::cl__length(oligomers));
       int moleculeId = 0;
       for ( auto cur : oligomers ) {
 	  chem::Oligomer_sp oligomer = cur->car<chem::Oligomer_O>();

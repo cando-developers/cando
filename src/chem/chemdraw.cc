@@ -376,21 +376,21 @@ bool	CDFragment_O::hasProperty(core::Symbol_sp key)
 
 core::Symbol_mv parse_property(const string& propertyValue, CDBond_sp bond, const string& otherSideValue)
 {
-  core::T_sp stream = core::cl_make_string_input_stream(core::Str_O::create(propertyValue),core::clasp_make_fixnum(0),_Nil<core::T_O>());
+  core::T_sp stream = core::cl__make_string_input_stream(core::Str_O::create(propertyValue),core::clasp_make_fixnum(0),_Nil<core::T_O>());
 //  printf("%s:%d Parsing property string: %s\n", __FILE__, __LINE__, propertyValue.c_str());
   core::T_sp eof = core::Cons_O::create();
   core::DynamicScopeManager scope(cl::_sym_STARpackageSTAR,_lisp->findPackage("CKW"));
-  core::T_sp property = core::cl_read(stream,_Nil<core::T_O>(),eof);
+  core::T_sp property = core::cl__read(stream,_Nil<core::T_O>(),eof);
   if ( property == eof ) {
     SIMPLE_ERROR(BF("Could not parse first part of \"%s\" as a (symbol value) pair - in property bond of order %s other side of bond is \"%s\"") % propertyValue % bond->getOrderAsString() % otherSideValue );
   }
 //  printf("%s:%d Parsed property: %s\n", __FILE__, __LINE__, _rep_(property).c_str());
-  core::T_sp value = core::cl_read(stream,_Nil<core::T_O>(),eof);
+  core::T_sp value = core::cl__read(stream,_Nil<core::T_O>(),eof);
   if ( value == eof ) {
     SIMPLE_ERROR(BF("Could not parse second part of \"%s\" as a (symbol value) pair - in property bond of order %s other side of bond is \"%s\"") % propertyValue % bond->getOrderAsString() % otherSideValue );
   }
 //  printf("%s:%d Parsed value: %s\n", __FILE__, __LINE__, _rep_(value).c_str());
-  core::cl_close(stream);
+  core::cl__close(stream);
   if ( core::Symbol_sp key = property.asOrNull<core::Symbol_O>() ) {
     return Values(property,value);
   }
@@ -421,8 +421,13 @@ bool CDFragment_O::interpret()
       // and when a molecule is created later the atom generated
       // from the node will get those properties.
       //
-      if ( cdorder == singleCDBond || cdorder == doubleCDBond || cdorder == tripleCDBond
-           || cdorder == singleDashCDBond || cdorder == doubleDashCDBond || cdorder == tripleDashCDBond ) {
+      if ( cdorder == wedgeHashCDBond
+           || cdorder == singleCDBond
+           || cdorder == doubleCDBond
+           || cdorder == tripleCDBond
+           || cdorder == singleDashCDBond
+           || cdorder == doubleDashCDBond
+           || cdorder == tripleDashCDBond ) {
         // Do nothing
       } else if ( cdorder == dativeCDBond || // Atom
                   cdorder == hollowWedgeCDBond || // Residue
@@ -450,11 +455,11 @@ bool CDFragment_O::interpret()
         core::T_sp value = parsedProperty.second();
         if ( parsedProperty.number_of_values() == 2 ) {
           if ( cdorder == dativeCDBond ) {
-            targetNode->_AtomProperties = core_put_f(targetNode->_AtomProperties,value,parsedProperty);
+            targetNode->_AtomProperties = core__put_f(targetNode->_AtomProperties,value,parsedProperty);
           } else if ( cdorder == hollowWedgeCDBond ) {
-            targetNode->_ResidueProperties = core_put_f(targetNode->_ResidueProperties,value,parsedProperty);
+            targetNode->_ResidueProperties = core__put_f(targetNode->_ResidueProperties,value,parsedProperty);
           } else if ( cdorder == wavyCDBond ) {
-            targetNode->_MoleculeProperties = core_put_f(targetNode->_MoleculeProperties,value,parsedProperty);
+            targetNode->_MoleculeProperties = core__put_f(targetNode->_MoleculeProperties,value,parsedProperty);
           } else {
             SIMPLE_ERROR(BF("Cannot interpret bond %s in terms of where to put the property") % (*bi)->getOrderAsString().c_str());
           }
@@ -577,7 +582,8 @@ void CDFragment_O::createAtomsAndBonds()
     CDBondOrder o = ( (*bi)->getOrder() );
     gc::Nilable<Atom_sp> beginAtom;
     gc::Nilable<Atom_sp> endAtom;
-    if ( o == singleCDBond || o == doubleCDBond || o == tripleCDBond
+    if ( o == wedgeHashCDBond
+         || o == singleCDBond || o == doubleCDBond || o == tripleCDBond
          || o == singleDashCDBond || o == doubleDashCDBond || o == tripleDashCDBond )
     {
       CDNode_sp n = (*bi)->getBeginNode();
@@ -895,7 +901,7 @@ void	CDText_O::parseFromXml(adapt::QDomNode_sp text)
     LOG(BF("Text block is not code") );
     return;
   }
-  core::StringInputStream_sp sin = core::cl_make_string_input_stream(core::Str_O::create(this->_Text)
+  core::StringInputStream_sp sin = core::cl__make_string_input_stream(core::Str_O::create(this->_Text)
                                                                      ,core::clasp_make_fixnum(0)
                                                                      ,_Nil<core::T_O>());
 #if 0
@@ -903,7 +909,7 @@ void	CDText_O::parseFromXml(adapt::QDomNode_sp text)
   core::Cons_sp block = reader->read(true,_Nil<core::T_O>()).as<core::Cons_O>();
 #endif
   core::List_sp block = read_lisp_object(sin,true,_Nil<core::T_O>(),false);
-  core::cl_close(sin);
+  core::cl__close(sin);
 
   LOG(BF("Parsed text block: %s\n") % this->_Text);
   if ( block.nilp() )

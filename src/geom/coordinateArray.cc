@@ -78,7 +78,7 @@ void CoordinateArray_O::fillFromList(core::List_sp vals)
 
 CoordinateArray_sp CoordinateArray_O::create(core::List_sp elements)
 {
-  size_t sz = core::cl_length(elements);
+  size_t sz = core::cl__length(elements);
   CoordinateArray_sp res = CoordinateArray_O::create(sz);
   uint idx = 0;
   for ( auto cur : elements ) {
@@ -406,7 +406,7 @@ void CoordinateArray_O::fields(core::Record_sp node)
 
 
 core::List_sp CoordinateArray_O::encode() {
-  core::Vector_sp v = core::core_make_vector(cl::_sym_DoubleFloat_O,3*this->_Points.size());
+  core::Vector_sp v = core::core__make_vector(cl::_sym_DoubleFloat_O,3*this->_Points.size());
   size_t cur(0);
   for ( size_t i(0); i<this->_Points.size(); ++i ) {
     (*v)[cur++] = core::clasp_make_double_float(this->_Points[i].getX());

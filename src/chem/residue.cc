@@ -500,7 +500,7 @@ void Residue_O::makeAllAtomNamesInEachResidueUnique()
 
 void Residue_O::setAliasesForAtoms(core::List_sp aliasAtoms, core::List_sp atomAliases)
 {_G();
-  ASSERT_eq(core::cl_length(aliasAtoms),core::cl_length(atomAliases));
+  ASSERT_eq(core::cl__length(aliasAtoms),core::cl__length(atomAliases));
     while ( aliasAtoms.notnilp() )
     {
 	MatterName aliasAtom = oCar(aliasAtoms).as<MatterName::Type>();

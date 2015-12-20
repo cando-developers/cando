@@ -120,7 +120,7 @@ namespace chemkw {
 #define ChemKwPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
   #ifndef SCRAPING
-    #include SYMBOLS_SCRAPED_INC_H
+#include <generated/symbols_scraped_inc.h>
   #endif
 #undef DO_SYMBOL
 #undef ChemKwPkg_SYMBOLS
@@ -133,7 +133,7 @@ namespace chem {
 #define ChemPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
   #ifndef SCRAPING
-    #include SYMBOLS_SCRAPED_INC_H
+#include <generated/symbols_scraped_inc.h>
   #endif
 #undef DO_SYMBOL
 #undef ChemPkg_SYMBOLS
@@ -148,7 +148,7 @@ namespace chem
 #define EXPOSE_TO_CANDO
 #define Use_ChemPkg
 #define EXTERN_REGISTER
-#include INIT_CLASSES_INC_H
+#include <generated/initClasses_inc.h>
 #undef EXTERN_REGISTER
 #undef Use_ChemPkg
 #undef EXPOSE_TO_CANDO
@@ -189,18 +189,18 @@ namespace chem
           core::T_sp pn;
           char* env = getenv("CANDO_LISP_SOURCE_DIR");
           if ( env != NULL ) {
-            pn = core::af_translateLogicalPathname(core::Str_O::create(std::string(env)+"/**/*.*"));
+            pn = core::cl__translate_logical_pathname(core::Str_O::create(std::string(env)+"/**/*.*"));
           } else {
-            pn = core::af_translateLogicalPathname(core::Str_O::create("APP-RESOURCES:CANDO;**;*.*"));
+            pn = core::cl__translate_logical_pathname(core::Str_O::create("APP-RESOURCES:CANDO;**;*.*"));
           }
           core::Cons_sp pts = core::Cons_O::createList(core::Str_O::create("cando:**;*.*"),pn);
           core::Cons_sp ptsList = core::Cons_O::createList(pts);
-          core::af_pathnameTranslations(core::Str_O::create("CANDO"),_lisp->_true(),ptsList);
+          core::core__pathname_translations(core::Str_O::create("CANDO"),_lisp->_true(),ptsList);
 
 #define ChemKwPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {chemkw::cname = _lisp->internWithPackageName(pkg,core::lispify_symbol_name(lispname)); chemkw::cname->exportYourself(exportp);}
   #ifndef SCRAPING
-    #include SYMBOLS_SCRAPED_INC_H
+#include <generated/symbols_scraped_inc.h>
             #endif
 #undef DO_SYMBOL
 #undef ChemKwPkg_SYMBOLS
@@ -208,7 +208,7 @@ namespace chem
 #define ChemPkg_SYMBOLS
 #define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,core::lispify_symbol_name(lispname)); cname->exportYourself(exportp);}
   #ifndef SCRAPING
-    #include SYMBOLS_SCRAPED_INC_H
+#include <generated/symbols_scraped_inc.h>
             #endif
 #undef DO_SYMBOL
 #undef ChemPkg_SYMBOLS
@@ -217,7 +217,7 @@ namespace chem
 #define	Use_ChemPkg
 #define INVOKE_REGISTER
 #define LOOKUP_SYMBOL(pkg,name) _lisp->internWithPackageName(pkg,name)
-#include INIT_CLASSES_INC_H
+#include <generated/initClasses_inc.h>
 #undef INVOKE_REGISTER
 #undef Use_ChemPkg
 #undef ALL_STAGES
@@ -250,7 +250,7 @@ namespace chem
 #define _DBG(x)
 #define EXPOSE_TO_PYTHON
 #define	Use_ChemPkg
-#include INIT_CLASSES_INC_H
+#include <generated/initClasses_inc.h>
 #undef Use_ChemPkg
 #undef EXPOSE_TO_PYTHON
 #undef _DBG
@@ -323,7 +323,7 @@ core::Symbol_sp chemkw_intern(core::Str_sp symName)
     STATIC_CLASS_INFO(_T_);			\
     INTRUSIVE_POINTER_REFERENCE_COUNT_ACCESSORS(_T_);
 #define Use_ChemPkg
-#include INIT_CLASSES_INC_H
+#include <generated/initClasses_inc.h>
 #undef Use_ChemPkg
 #undef _CLASS_MACRO
 #undef EXPAND_CLASS_MACROS

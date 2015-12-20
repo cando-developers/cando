@@ -192,7 +192,7 @@ void OVector3_O::setUsingBondAngleDihedral(double bond, OVector3_sp bondPos,
 }
 
 core::List_sp OVector3_O::encode() {
-  core::Vector_sp v = core::core_make_vector(cl::_sym_DoubleFloat_O,3);
+  core::Vector_sp v = core::core__make_vector(cl::_sym_DoubleFloat_O,3);
   (*v)[0] = core::clasp_make_double_float(this->_Value[0]);
   (*v)[1] = core::clasp_make_double_float(this->_Value[1]);
   (*v)[2] = core::clasp_make_double_float(this->_Value[2]);

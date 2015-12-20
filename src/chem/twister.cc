@@ -100,7 +100,7 @@ void	Twister_O::_defineForDihedral(Atom_sp a1ref, Atom_sp a1, Atom_sp a2, Atom_s
 	twistMovableRef = a2ref;
     } else
     {
-      if ( core::cl_length(a1Atoms) < core::cl_length(a2Atoms) )
+      if ( core::cl__length(a1Atoms) < core::cl__length(a2Atoms) )
 	{
 	    twistAtoms = a1Atoms;
 	    twistFixedRef = a2ref;

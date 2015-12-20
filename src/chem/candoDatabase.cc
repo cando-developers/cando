@@ -100,13 +100,13 @@ namespace chem
 
     core::List_sp	CandoDatabase_O::constitutionsAsCons() 
     {_OF();
-      return this->entitiesSubClassOfAsCons(core::cl_findClass(Constitution_O::static_classSymbol()));
+      return this->entitiesSubClassOfAsCons(core::cl__find_class(Constitution_O::static_classSymbol()));
     };
 
 
     bool CandoDatabase_O::recognizesMonomerName(core::Symbol_sp name)
     {_OF();
-	return this->recognizesEntitySubClassOf(name,core::cl_findClass(Stereoisomer_O::static_classSymbol()));
+	return this->recognizesEntitySubClassOf(name,core::cl__find_class(Stereoisomer_O::static_classSymbol()));
     }
 
 
@@ -123,7 +123,7 @@ namespace chem
 
     core::List_sp CandoDatabase_O::representedEntityNameSetsAsCons()
     {_OF();
-	return this->entitiesSubClassOfAsCons(core::cl_findClass(RepresentedEntityNameSet_O::static_classSymbol()));
+	return this->entitiesSubClassOfAsCons(core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol()));
     }
 
 
@@ -134,7 +134,7 @@ namespace chem
 
     bool CandoDatabase_O::recognizesRepresentedEntityNameSet(core::Symbol_sp name)
     {_OF();
-	return this->recognizesEntityOfClass(name,core::cl_findClass(RepresentedEntityNameSet_O::static_classSymbol()));
+	return this->recognizesEntityOfClass(name,core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol()));
     }
 
 
@@ -205,19 +205,19 @@ namespace chem
 
     bool	CandoDatabase_O::recognizesEntityNameSetName(core::Symbol_sp nm)
     {_G();
-	return this->recognizesEntityOfClass(nm,core::cl_findClass(EntityNameSet_O::static_classSymbol()));
+	return this->recognizesEntityOfClass(nm,core::cl__find_class(EntityNameSet_O::static_classSymbol()));
     }
 
     EntityNameSet_sp CandoDatabase_O::getEntityNameSet( core::Symbol_sp nm )
     {_G();
-	return this->getEntityOfClass(nm,core::cl_findClass(EntityNameSet_O::static_classSymbol())).as<EntityNameSet_O>();
+	return this->getEntityOfClass(nm,core::cl__find_class(EntityNameSet_O::static_classSymbol())).as<EntityNameSet_O>();
     };
 
 
 
     RepresentedEntityNameSet_sp CandoDatabase_O::getRepresentedEntityNameSet( core::Symbol_sp nm )
     {_G();
-	return this->getEntityOfClass(nm,core::cl_findClass(RepresentedEntityNameSet_O::static_classSymbol())).as<RepresentedEntityNameSet_O>();
+	return this->getEntityOfClass(nm,core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol())).as<RepresentedEntityNameSet_O>();
     };
 
 

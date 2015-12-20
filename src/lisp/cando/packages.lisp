@@ -12,6 +12,12 @@
            )
   )
 
+(defpackage #:geom
+  (:use #:common-lisp)
+  (:export
+   #:ov3
+   #:center-of-geometry
+   ))
 
 (defpackage #:cando
   (:use #:common-lisp #:core)
@@ -19,6 +25,7 @@
    #:from-string
    #:as-string
    #:scramble-positions
+   #:jostle
    #:gather-stereocenters
    #:set-stereoisomer
    #:optimize-structure
@@ -29,16 +36,23 @@
    #:bad-geometry-p
    #:indexed-pathname
    #:save-mol2
+   #:load-mol2
    #:dump-atoms
+   #:load-cdxml-aggregate
+   ))
+
+(defpackage #:select
+  (:use #:common-lisp)
+  (:export
+   #:atoms-inside-sphere
+   #:atoms-outside-sphere
    #:atoms-with-property
-   #:jostle-atoms
+   #:atoms-with-property-sorted
    #:atom-lookup
    #:first-atom-with-name
    #:atoms-with-unique-names
    #:atom-lookup
-   #:load-cdxml-aggregate
    ))
-
 
 (defpackage #:atom-tree
   (:use #:common-lisp)
@@ -71,5 +85,21 @@
 (defpackage #:energy
   (:use #:common-lisp)
   (:export
-   #:min
+   #:minimize
+   #:setup-amber
+   ))
+
+(defpackage #:anchor
+  (:use #:common-lisp)
+  (:export
+   #:anchor-atoms
+   #:on-circle
+   #:on-points
+   ))
+
+(defpackage #:struct
+  (:use #:common-lisp)
+  (:export
+   #:find-residue-that-contains-atom
+   #:remove-atom
    ))
