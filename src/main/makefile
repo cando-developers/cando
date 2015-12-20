@@ -18,18 +18,18 @@ all:
 	make mps
 
 boehmdc-release-cxx:
-	build -j$(PJOBS) link=static program=cando gc=boehmdc --prefix=$(EXECS)/boehmdc/release release cando_install;
+	$(BUILD) toolset=$(TOOLSET) -j$(PJOBS) link=static program=cando gc=boehmdc --prefix=$(EXECS)/boehmdc/release release cando_install;
 boehmdc-release-cxx-a:
-	build -j$(PJOBS) link=static program=cando gc=boehmdc --prefix=$(EXECS)/boehmdc/release release cando_install -a ;
+	$(BUILD) toolset=$(TOOLSET) -j$(PJOBS) link=static program=cando gc=boehmdc --prefix=$(EXECS)/boehmdc/release release cando_install -a ;
 boehmdc-debug-cxx:
-	build -j$(PJOBS) link=static program=cando gc=boehmdc --prefix=$(EXECS)/boehmdc/debug debug cando_install ;
+	$(BUILD) toolset=$(TOOLSET) -j$(PJOBS) link=static program=cando gc=boehmdc --prefix=$(EXECS)/boehmdc/debug debug cando_install ;
 
 boehm-release-cxx:
-	build -j$(PJOBS) link=static program=cando gc=boehm --prefix=$(EXECS)/boehm/release release cando_install;
+	$(BUILD) toolset=$(TOOLSET) -j$(PJOBS) link=static program=cando gc=boehm --prefix=$(EXECS)/boehm/release release cando_install;
 boehm-release-cxx-a:
-	build -j$(PJOBS) link=static program=cando gc=boehm --prefix=$(EXECS)/boehm/release release cando_install -a ;
+	$(BUILD) toolset=$(TOOLSET) -j$(PJOBS) link=static program=cando gc=boehm --prefix=$(EXECS)/boehm/release release cando_install -a ;
 boehm-debug-cxx:
-	build -j$(PJOBS) link=static program=cando gc=boehm --prefix=$(EXECS)/boehm/debug debug cando_install ;
+	$(BUILD) toolset=$(TOOLSET) -j$(PJOBS) link=static program=cando gc=boehm --prefix=$(EXECS)/boehm/debug debug cando_install ;
 
 executable-symlinks:
 	ln -sf $(EXECS)/boehm/release/bin/cando $(BINDIR)/cando_boehm_o

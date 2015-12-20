@@ -8,9 +8,9 @@ project chem : requirements
 	;
 
 ##### Disable parsers for now
-cpp _msmarts_Parser : msmarts_Parser.yy : <bison.prefix>"msmarts_ -v" ;
-cpp _gaff_Parser : gaff_Parser.yy : <bison.prefix>"gaff_ -v -t" ;
-alias parsers : _msmarts_Parser _gaff_Parser ;
+#cpp _msmarts_Parser : msmarts_Parser.yy : <bison.prefix>"msmarts_ -v" ;
+#cpp _gaff_Parser : gaff_Parser.yy : <bison.prefix>"gaff_ -v -t" ;
+alias parsers : msmarts_Parser.cc gaff_Parser.cc ;
 
 local sources = 	
 		chemInfo.cc 

@@ -5,9 +5,13 @@ PARSER_NEEDS = _msmarts_Parser.cc _gaff_Parser.cc
 M4_NEEDS = initClasses.inc
 NEEDS = $(M4_NEEDS) $(PARSER_NEEDS)
 
-subParsers: $(PARSER_NEEDS)
-	echo Nothing
+msmarts_Parser.cc : msmarts_Parser.yy
+	bison -p msmarts_ -v -d -o msmarts_Parser.cc msmarts_Parser.yy
 
+gaff_Parser.cc : gaff_Parser.yy
+	bison -p gaff_ -v -d -o gaff_Parser.cc gaff_Parser.yy
+
+parsers: msmarts_Parser.cc gaff_Parser.cc
 
 
 
