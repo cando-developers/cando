@@ -55,6 +55,19 @@
                     matter)
     (make-array (length chiral-atoms) :initial-contents chiral-atoms)))
 
+(defun set-stereoisomer-func (atom-vec func &key show)
+  "* Arguments
+- atom-vec :: A vector of chiral centers
+- func :: A function that takes an atom and returns 'chem:S or 'chem:R
+* Description
+Set the stereochemistry of a collection of stereocenters using a function that returns 'chem:S or 'chem:R for each atom."
+  (dotimes (i (length atom-vec))
+    (let* ((atom (elt atom-vec i))
+           (config (funcall func (elt atom-vec i))))
+      (chem:set-configuration atom config)))
+  (when show
+    (dump-stereocenters atom-vec)))
+
 
 (defun number-of-stereoisomers (chiral-atoms)
   (expt 2 (length chiral-atoms)))
@@ -277,6 +290,10 @@
     (sort stereocenters #'string< :key #'chem:get-name)))
     
 (defun assign-configuration (agg configuration)
+  (let* ((stereocenters (sort (cando:gather-stereocenters agg) #'string< :key #'chem:get-name)))
+    (cando:set-stereoisomer stereocenters configuration :show t)))
+
+(defun assign-configuration-simple (agg configuration)
   (let* ((stereocenters (sort (cando:gather-stereocenters agg) #'string< :key #'chem:get-name)))
     (cando:set-stereoisomer stereocenters configuration :show t)))
 
