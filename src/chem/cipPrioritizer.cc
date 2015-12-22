@@ -161,7 +161,8 @@ void CipPrioritizer_O::assignPriorities(Matter_sp matter)
 
 //
 // ! Assign the CIP priority to the RelativePriority of each Atom in the molecule
-void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg)
+CL_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
+CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg)
 {_G();
     gctools::Vec0<Atom_sp>	mAtoms;
     vector<int> newC;
@@ -483,7 +484,8 @@ bool orderByName( Atom_sp p1, Atom_sp p2 )
 
 
 
-void CipPrioritizer_O::defineStereochemicalConfigurationsForAllAtoms(Matter_sp molOrAgg)
+CL_NAME("defineStereochemicalConfigurationsForAllAtoms");
+CL_DEFMETHOD void CipPrioritizer_O::defineStereochemicalConfigurationsForAllAtoms(Matter_sp molOrAgg)
 {_G();
     this->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(molOrAgg);
     Loop l;

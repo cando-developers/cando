@@ -31,7 +31,8 @@ namespace chem {
 
 /*! Return +1 for "R" and -1 for "S"
 */
-int	StereoConfiguration_O::getMoeConfiguration()
+CL_NAME("getMoeConfiguration");
+CL_DEFMETHOD int	StereoConfiguration_O::getMoeConfiguration()
 {
   if ( this->_Configuration == chem::_sym_R ) return 1;
   else if (this->_Configuration == chem::_sym_S ) return -1;
@@ -215,7 +216,8 @@ string Stereoisomer_O::__repr__() const
     return ss.str();
 }
 
-core::Symbol_sp Stereoisomer_O::getConfigurationForCenter( core::Symbol_sp centerName )
+CL_NAME("getConfigurationForCenter");
+CL_DEFMETHOD core::Symbol_sp Stereoisomer_O::getConfigurationForCenter( core::Symbol_sp centerName )
 {_G();
     for ( gctools::Vec0<StereoConfiguration_sp>::iterator it=this->_Configurations.begin();
           it!=this->_Configurations.end(); it++ )
@@ -320,7 +322,8 @@ void	StereoInformation_O::addStereoisomer(Stereoisomer_sp s)
 }
 
 
-void StereoInformation_O::validate()
+CL_NAME("validate");
+CL_DEFMETHOD void StereoInformation_O::validate()
 {_OF();
     for ( gctools::Vec0<Stereoisomer_sp>::iterator it=this->_Stereoisomers.begin(); it!=this->_Stereoisomers.end(); it++ )
     {

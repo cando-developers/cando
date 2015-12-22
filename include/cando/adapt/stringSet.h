@@ -74,11 +74,13 @@ public:
   StringSet_sp copy();
 
   string first() { return *(this->strs.begin()); };
-  uint size() { return this->strs.size(); };
+CL_NAME("size");
+CL_DEFMETHOD   uint size() { return this->strs.size(); };
   void remove(const string &s);
   bool contains(const string &s);
   bool containsSubset(StringSet_sp sub);
-  void insert(const string &s) { this->strs.insert(s); };
+CL_NAME("insert");
+CL_DEFMETHOD   void insert(const string &s) { this->strs.insert(s); };
   void insertVectorStrings(core::VectorStrings s);
   void insertStringSet(StringSet_sp ss);
   void insertStringList(StringList_sp ss);
@@ -101,10 +103,12 @@ public:
   //! A-B = (x: x E A && not x E B )
   StringSet_sp relativeComplement(StringSet_sp b);
 
-  StringSet_sp removeAll(StringSet_sp b) { return this->relativeComplement(b); };
+CL_NAME("removeAll");
+CL_DEFMETHOD   StringSet_sp removeAll(StringSet_sp b) { return this->relativeComplement(b); };
 
   //! AxB = ("x,y": x E A ; y E B )
-  StringSet_sp cartesianProduct(StringSet_sp b) {
+CL_NAME("cartesianProduct");
+CL_DEFMETHOD   StringSet_sp cartesianProduct(StringSet_sp b) {
     return this->cartesianProductInsert("->", b);
   };
   StringSet_sp cartesianProductInsert(string ins, StringSet_sp b);

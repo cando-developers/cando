@@ -56,10 +56,13 @@ GCPRIVATE:
   HashTableEq_sp _Set;
 
 public:
-  bool contains(T_sp obj) { return this->_Set->contains(obj); };
-  void insert(T_sp obj) { this->_Set->setf_gethash(obj, _lisp->_true()); };
+CL_NAME("contains");
+CL_DEFMETHOD   bool contains(T_sp obj) { return this->_Set->contains(obj); };
+CL_NAME("insert");
+CL_DEFMETHOD   void insert(T_sp obj) { this->_Set->setf_gethash(obj, _lisp->_true()); };
   void remove(T_sp obj) { this->_Set->remhash(obj); };
-  int size() { return this->_Set->hashTableSize(); };
+CL_NAME("size");
+CL_DEFMETHOD   int size() { return this->_Set->hashTableSize(); };
 
   List_sp asCons();
 

@@ -63,17 +63,24 @@ private:
 	string				_Model;
 public:
         void setFinalCoordinates(geom::CoordinateArray_sp ac);
-        geom::CoordinateArray_sp getFinalCoordinates() { return this->_FinalCoordinates; }
+CL_NAME("getFinalCoordinates");
+CL_DEFMETHOD         geom::CoordinateArray_sp getFinalCoordinates() { return this->_FinalCoordinates; }
 public:
 
-	double		getEnergyKCal() { return this->_EnergyKCal; };
-	void		setEnergyKCal(double energy) { this->_EnergyKCal = energy; };
+CL_NAME("getEnergyKCal");
+CL_DEFMETHOD 	double		getEnergyKCal() { return this->_EnergyKCal; };
+CL_NAME("setEnergyKCal");
+CL_DEFMETHOD 	void		setEnergyKCal(double energy) { this->_EnergyKCal = energy; };
 
-	string		getExternalInterfaceName() { return this->_ExternalInterfaceName;};
-	void		setExternalInterfaceName(const string& package) { this->_ExternalInterfaceName = package;};
+CL_NAME("getExternalInterfaceName");
+CL_DEFMETHOD 	string		getExternalInterfaceName() { return this->_ExternalInterfaceName;};
+CL_NAME("setExternalInterfaceName");
+CL_DEFMETHOD 	void		setExternalInterfaceName(const string& package) { this->_ExternalInterfaceName = package;};
 
-	string		getModel() { return this->_Model;};
-	void		setModel(const string& package) { this->_Model = package;};
+CL_NAME("getModel");
+CL_DEFMETHOD 	string		getModel() { return this->_Model;};
+CL_NAME("setModel");
+CL_DEFMETHOD 	void		setModel(const string& package) { this->_Model = package;};
 
 
 	bool	recognizesAtom(Atom_sp atom);
@@ -82,17 +89,24 @@ public:
 	ConformationExplorerEntry_sp	getConformationExplorerEntry();
 	ConformationExplorer_sp	getConformationExplorer();
 
-	string	getBasedOnStageName() { return this->_BasedOnStageName; };
-	void	setBasedOnStageName(const string& key ) { this->_BasedOnStageName = key; };
+CL_NAME("getBasedOnStageName");
+CL_DEFMETHOD 	string	getBasedOnStageName() { return this->_BasedOnStageName; };
+CL_NAME("setBasedOnStageName");
+CL_DEFMETHOD 	void	setBasedOnStageName(const string& key ) { this->_BasedOnStageName = key; };
 
-	string	getStageName() { return this->_StageName; };
-	void	setStageName(const string& key ) { this->_StageName = key; };
+CL_NAME("getStageName");
+CL_DEFMETHOD 	string	getStageName() { return this->_StageName; };
+CL_NAME("setStageName");
+CL_DEFMETHOD 	void	setStageName(const string& key ) { this->_StageName = key; };
 
-	bool	isComplete() { return this->_Complete; };
-	void	setComplete(bool b) { this->_Complete = b;};
+CL_NAME("isComplete");
+CL_DEFMETHOD 	bool	isComplete() { return this->_Complete; };
+CL_NAME("setComplete");
+CL_DEFMETHOD 	void	setComplete(bool b) { this->_Complete = b;};
 
 	void	setConformationExplorerEntry(ConformationExplorerEntry_sp s);
-	core::HashTableEq_sp getBinder() { return this->_Binder; };
+CL_NAME("getBinder");
+CL_DEFMETHOD 	core::HashTableEq_sp getBinder() { return this->_Binder; };
 
 	void	translateFinalCoordinates(const Vector3& offset);
 
@@ -155,7 +169,8 @@ private:
 public:
     typedef	gctools::Vec0<ConformationExplorerEntryStage_sp>::iterator	stageIterator;
 public:
-	ConformationExplorer_sp	getConformationExplorer() {_OF(); ASSERTNOTNULL(this->_WeakConformationExplorer);return this->_WeakConformationExplorer;};
+CL_NAME("getConformationExplorer");
+CL_DEFMETHOD 	ConformationExplorer_sp	getConformationExplorer() {_OF(); ASSERTNOTNULL(this->_WeakConformationExplorer);return this->_WeakConformationExplorer;};
 	void	setConformationExplorer(ConformationExplorer_sp s);
 	core::HashTableEq_sp getBinder() { return this->_Binder; };
 public:
@@ -165,7 +180,8 @@ public:
 
 
 		/*! Return true if there is a selected stage */
-	bool	hasSelectedStage() {_OF(); ASSERTNOTNULL(this->_SelectedStage); return this->_SelectedStage.notnilp(); };
+CL_NAME("hasSelectedStage");
+CL_DEFMETHOD 	bool	hasSelectedStage() {_OF(); ASSERTNOTNULL(this->_SelectedStage); return this->_SelectedStage.notnilp(); };
 		/*! Return the selected stage, guaranteed to be one of this entries stages*/
 	ConformationExplorerEntryStage_sp	getSelectedStage();
 		/*! Set the selected stage, throws error if its not one of this entries stages */
@@ -173,7 +189,8 @@ public:
 
 	adapt::StringSet_sp	getEntryStageNames();
 
-	int	getUniqueEntryIndex() const { return this->_UniqueEntryIndex;};
+CL_NAME("getUniqueEntryIndex");
+CL_DEFMETHOD 	int	getUniqueEntryIndex() const { return this->_UniqueEntryIndex;};
 
 	string			lastEntryStageName();
 	bool			hasEntryStageWithName(const string& key );
@@ -261,7 +278,8 @@ public:
 	uint	numberOfSuperposeAtoms();
 
 public:
-	core::HashTableEq_sp	getBinder() { return this->_Binder;};
+CL_NAME("getBinder");
+CL_DEFMETHOD 	core::HashTableEq_sp	getBinder() { return this->_Binder;};
 
 	void	saveAs(const string& fn);
 
@@ -269,7 +287,8 @@ public:
 		 * compares conformations of
 		 */
 	virtual void	setMatter(Matter_sp agg);
-	Matter_sp	getMatter() { return this->_Matter;};
+CL_NAME("getMatter");
+CL_DEFMETHOD 	Matter_sp	getMatter() { return this->_Matter;};
 
 	atomIterator begin_AllAtoms()
 		{ return this->_AllAtoms.begin();};
@@ -328,7 +347,8 @@ public:
 
 //	void	addConformationExplorer(ConformationExplorer_sp structureList);
 
-	uint numberOfEntries() { return this->_Entries.size();};
+CL_NAME("numberOfEntries");
+CL_DEFMETHOD 	uint numberOfEntries() { return this->_Entries.size();};
 	uint numberOfAllAtoms() { return this->_AllAtoms.size();};
 
 	bool	recognizesAtomName(const string& name);
@@ -388,12 +408,15 @@ public:	// Creation class functions
 public:
 
 	void setMatches(bool b) { this->_Matches = b; };
-	bool getMatches() { return this->_Matches; };
+CL_NAME("getMatches");
+CL_DEFMETHOD 	bool getMatches() { return this->_Matches; };
 	void setMatchStageName(const string& s) { this->_MatchStageName=s;};
 	string getMatchStageName() { return this->_MatchStageName;};
-	double getClosestMatchRms() { return this->_ClosestMatchRms;};
+CL_NAME("getClosestMatchRms");
+CL_DEFMETHOD 	double getClosestMatchRms() { return this->_ClosestMatchRms;};
 	void setClosestMatchRms(double i) { this->_ClosestMatchRms= i;};
-	uint getClosestMatchIndex() { return this->_ClosestMatchIndex;};
+CL_NAME("getClosestMatchIndex");
+CL_DEFMETHOD 	uint getClosestMatchIndex() { return this->_ClosestMatchIndex;};
 	void setClosestMatchIndex(uint i) { this->_ClosestMatchIndex = i;};
 	ConformationExplorerMatch_O( const ConformationExplorerMatch_O& ss ); //!< Copy constructor
 

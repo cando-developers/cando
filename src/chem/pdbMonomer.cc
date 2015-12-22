@@ -385,7 +385,8 @@ uint PdbMonomerDatabase_O::connectVdwOverlappingUnconnectedAtoms(gctools::Vec0<A
 
 
 
-    void PdbMonomerDatabase_O::connectAtoms(Matter_sp matter)
+CL_NAME("connectAtoms");
+CL_DEFMETHOD     void PdbMonomerDatabase_O::connectAtoms(Matter_sp matter)
     {_OF();
         gctools::Vec0<Atom_sp>	unconnectedAtoms;
 	Loop lResidues;

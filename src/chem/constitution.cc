@@ -257,12 +257,14 @@ adapt::StringList_sp Constitution_O::getMonomerNamesAsStringList()
 {
 	return this->_StereoInformation->getMonomerNamesAsStringList();
 };
-adapt::SymbolSet_sp	Constitution_O::getMonomerNamesAsSymbolSet()
+CL_NAME("getMonomerNameAsStringSet");
+CL_DEFMETHOD adapt::SymbolSet_sp	Constitution_O::getMonomerNamesAsSymbolSet()
 {
     return this->_StereoInformation->getMonomerNamesAsSymbolSet();
 };
 
-adapt::StringList_sp Constitution_O::getPdbNamesAsStringList() {
+CL_NAME("getPdbNamesAsStringList");
+CL_DEFMETHOD adapt::StringList_sp Constitution_O::getPdbNamesAsStringList() {
 	return this->_StereoInformation->getPdbNamesAsStringList();
 };
 
@@ -305,8 +307,10 @@ adapt::StringList_sp Constitution_O::getPdbNamesAsStringList() {
 
 
 
-core::List_sp Constitution_O::stereoisomersAsCons() { return this->_StereoInformation->stereoisomersAsCons(); };
-core::List_sp Constitution_O::topologiesAsCons() {
+CL_NAME("stereoisomersAsCons");
+CL_DEFMETHOD core::List_sp Constitution_O::stereoisomersAsCons() { return this->_StereoInformation->stereoisomersAsCons(); };
+CL_NAME("topologiesAsCons");
+CL_DEFMETHOD core::List_sp Constitution_O::topologiesAsCons() {
     core::List_sp result = _Nil<core::T_O>();
     for ( TopologyMap::iterator it = this->_Topologies.begin(); it!=this->_Topologies.end(); ++it ) {
         result = core::Cons_O::create(it->second,result);
@@ -321,7 +325,8 @@ core::List_sp Constitution_O::plugsAsCons() {
     }
     return result;
 }
-core::List_sp Constitution_O::plugsWithMatesAsCons()
+CL_NAME("plugsWithMatesAsCons");
+CL_DEFMETHOD core::List_sp Constitution_O::plugsWithMatesAsCons()
 {_G();
     core::List_sp first = _Nil<core::T_O>();
     PlugMap::iterator mi;
@@ -357,7 +362,8 @@ Constitution_O::const_stereoisomerIterator Constitution_O::end_Stereoisomers() c
 /*!
 	Return a copy of the residue that this constitution defines
 */
-    Residue_sp	Constitution_O::createResidueForStereoisomerName(core::Symbol_sp stereoisomerName)
+CL_NAME("createResidueForStereoisomerName");
+CL_DEFMETHOD     Residue_sp	Constitution_O::createResidueForStereoisomerName(core::Symbol_sp stereoisomerName)
 {_G();
     Residue_sp res = this->_ConstitutionAtoms->makeResidue();
     IMPLEMENT_MEF(BF("Handle owners"));
@@ -398,7 +404,8 @@ adapt::SymbolSet_sp Constitution_O::getPlugNames()
 }
 
 
-    Topology_sp	Constitution_O::simplestTopologyWithPlugNamed(core::Symbol_sp name)
+CL_NAME("simplestTopologyWithPlugNamed");
+CL_DEFMETHOD     Topology_sp	Constitution_O::simplestTopologyWithPlugNamed(core::Symbol_sp name)
 {_G();
     TopologyMap::iterator	ti;
 Topology_sp			tres;
@@ -436,7 +443,8 @@ tres = _Nil<Topology_O>();
 }
 
 
-    Topology_sp	Constitution_O::topologyWithName(core::Symbol_sp name) const
+CL_NAME("topologyWithName");
+CL_DEFMETHOD     Topology_sp	Constitution_O::topologyWithName(core::Symbol_sp name) const
     {_OF();
 	Topology_sp			tres;
 	ASSERTF(this->_Topologies.contains(name),BF("There is no topology with name[%s] in constitution[%s]") % name->__repr__() % this->getName()->__repr__() );
@@ -466,7 +474,8 @@ tres = _Nil<Topology_O>();
 }
 
 
-Topology_sp	Constitution_O::getTopologyForContext(MonomerContext_sp cont )
+CL_NAME("getTopologyForContext");
+CL_DEFMETHOD Topology_sp	Constitution_O::getTopologyForContext(MonomerContext_sp cont )
 {_G();
     TopologyMap::iterator	ti;
 Topology_sp			tres;
@@ -483,7 +492,8 @@ tres = _Nil<Topology_O>();
 
 
 
-RepresentedEntityNameSet_sp	Constitution_O::asGroup()
+CL_NAME("asGroup");
+CL_DEFMETHOD RepresentedEntityNameSet_sp	Constitution_O::asGroup()
 {_G();
 RepresentedEntityNameSet_sp				group;
 gctools::Vec0<Stereoisomer_sp>::iterator	si;

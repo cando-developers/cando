@@ -237,7 +237,8 @@ Matter_sp Aggregate_O::copy()
     }
 
 
-    Atom_sp	Aggregate_O::atomWithId(int id)
+CL_NAME("atomWithId");
+CL_DEFMETHOD     Atom_sp	Aggregate_O::atomWithId(int id)
     {
 	Loop		la;
 	Atom_sp		a;
@@ -299,7 +300,8 @@ Matter_sp Aggregate_O::copy()
  * Return a list of atoms specified by the Chimera atom specifications
  * if atoms aren't found then substitute the atom specification as a string.
  */
-core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const string& specs)
+CL_NAME("atomsWithChimeraSpecifications");
+CL_DEFMETHOD core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const string& specs)
 {
   vector<string> specParts = core::split(specs," \n\t");
   core::List_sp result(_Nil<core::T_O>());
@@ -360,7 +362,8 @@ core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const string& specs)
 //
 //	Remove the molecule
 //
-    void Aggregate_O::removeMolecule( Molecule_sp a )
+CL_NAME("removeMolecule");
+CL_DEFMETHOD     void Aggregate_O::removeMolecule( Molecule_sp a )
     {_OF();
 	contentIterator	it;
 	for ( it=this->getContents().begin(); it!= this->getContents().end(); it++ ) {
@@ -376,7 +379,8 @@ core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const string& specs)
 
 
 
-    uint Aggregate_O::separateMolecules()
+CL_NAME("separateMolecules");
+CL_DEFMETHOD     uint Aggregate_O::separateMolecules()
     {_G();
         gctools::SmallOrderedSet<Atom_sp>	unassignedAtoms;
         gctools::Vec0<gctools::SmallOrderedSet<Atom_sp> >	moleculeGroups;
@@ -412,7 +416,8 @@ core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const string& specs)
     }
 
 
-    Molecule_sp Aggregate_O::firstMoleculeWithAtomNamed(MatterName name)
+CL_NAME("firstMoleculeWithAtomNamed");
+CL_DEFMETHOD     Molecule_sp Aggregate_O::firstMoleculeWithAtomNamed(MatterName name)
     {
 	Atom_sp a = this->firstAtomWithName(name);
 	Residue_sp res = a->containedBy().as<Residue_O>();
@@ -460,7 +465,8 @@ core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const string& specs)
 
 
 
-    void	Aggregate_O::writeToFile(const string& fileName)
+CL_NAME("writeToFile");
+CL_DEFMETHOD     void	Aggregate_O::writeToFile(const string& fileName)
     {_OF();
 	IMPLEMENT_ME();
 #ifdef XML_ARCHIVE
@@ -488,7 +494,8 @@ core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const string& specs)
 
 
 
-    Molecule_sp      Aggregate_O::firstMolecule()
+CL_NAME("firstMolecule");
+CL_DEFMETHOD     Molecule_sp      Aggregate_O::firstMolecule()
     {
 	Molecule_sp mol;
 //    mol = downcast<Molecule_O>(this->contentAt(0));
@@ -496,7 +503,8 @@ core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const string& specs)
 	return mol;
     }
 
-    MatterName  Aggregate_O::firstMoleculeName()
+CL_NAME("firstMoleculeName");
+CL_DEFMETHOD     MatterName  Aggregate_O::firstMoleculeName()
     {_G();
 	LOG(BF("allocating mol") );
 	Molecule_sp mol;
@@ -528,7 +536,8 @@ core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const string& specs)
 
 
 #define	MAX_ADJUST_CYCLES	10
-    void	Aggregate_O::perturbAtomPositions(double dist)
+CL_NAME("perturbAtomPositions");
+CL_DEFMETHOD     void	Aggregate_O::perturbAtomPositions(double dist)
     {_OF();
 	Atom_sp				a;
 	Loop				lb;

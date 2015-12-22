@@ -43,20 +43,23 @@ string	OVector2_O::__str__()
     return this->__repr__();
 }
 
-    Vector2 OVector2_O::sub(const Vector2& other)
+CL_NAME("sub");
+CL_DEFMETHOD     Vector2 OVector2_O::sub(const Vector2& other)
     {
 	Vector2 s = this->_Value.sub(other);
 	return s;
     }
 
-    double OVector2_O::magnitude()
+CL_NAME("vector2-magnitude");
+CL_DEFMETHOD     double OVector2_O::magnitude()
     {
 	double l = this->_Value.length();
 	return l;
     }
 
 
-    double OVector2_O::dotProduct(const Vector2& other)
+CL_NAME("dotProduct");
+CL_DEFMETHOD     double OVector2_O::dotProduct(const Vector2& other)
     {
 	double d = this->_Value.dotProduct(other);
 	return d;
@@ -79,7 +82,8 @@ string	OVector2_O::__str__()
 #define ARGS_OVector2_O_add "((self ovector2) &rest points)"
 #define DECL_OVector2_O_add ""
 #define DOCS_OVector2_O_add "Add a collection of points together"
-    core::T_sp OVector2_O::add(core::List_sp points)
+CL_NAME("add");
+CL_DEFMETHOD     core::T_sp OVector2_O::add(core::List_sp points)
     {_G();
 	Vector2 result = Vector2(this->getX(),this->getY());
 	LOG(BF("First add = %s") % result.asString() );
@@ -94,25 +98,29 @@ string	OVector2_O::__str__()
 
 
 
-Vector2 OVector2_O::timesScalar(double d)
+CL_NAME("timesScalar");
+CL_DEFMETHOD Vector2 OVector2_O::timesScalar(double d)
 {
     Vector2 p = this->_Value.multiplyByScalar(d);
     return p;
 }
 
 
-    Vector2 OVector2_O::normalized()
+CL_NAME("normalized");
+CL_DEFMETHOD     Vector2 OVector2_O::normalized()
     {
 	return this->_Value.normalized();
     }
 
 
-double	OVector2_O::angle( const Vector2& vb, const Vector2& vc)
+CL_NAME("vector2-angle");
+CL_DEFMETHOD double	OVector2_O::angle( const Vector2& vb, const Vector2& vc)
 {
     return calculateAngle(this->_Value,vb,vc);
 }
 
-double	OVector2_O::distance( const Vector2& vb )
+CL_NAME("vector2-distance");
+CL_DEFMETHOD double	OVector2_O::distance( const Vector2& vb )
 {
     return calculateDistance(this->_Value,vb);
 }

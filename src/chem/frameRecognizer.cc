@@ -15,7 +15,8 @@ void	FrameRecognizer_O::initialize()
     this->_GroupName = _Nil<core::Symbol_O>();
 }
 
-void	FrameRecognizer_O::compileSmarts(const string& osm)
+CL_NAME("compileSmarts");
+CL_DEFMETHOD void	FrameRecognizer_O::compileSmarts(const string& osm)
 {_G();
     this->_Smarts = osm;
     this->_ChemInfo = chem::ChemInfo_O::create();
@@ -67,7 +68,8 @@ void	FrameRecognizer_O::compileSmarts(const string& osm)
 
 
 
-bool	FrameRecognizer_O::recognizes( Atom_sp o )
+CL_NAME("recognizes");
+CL_DEFMETHOD bool	FrameRecognizer_O::recognizes( Atom_sp o )
 {_G();
     ASSERTNOTNULL(this->_ChemInfo);
     ASSERT(this->_ChemInfo->compileSucceeded());
@@ -75,7 +77,8 @@ bool	FrameRecognizer_O::recognizes( Atom_sp o )
 }
 
 
-ChemInfoMatch_sp FrameRecognizer_O::getMatch()
+CL_NAME("getMatch");
+CL_DEFMETHOD ChemInfoMatch_sp FrameRecognizer_O::getMatch()
 {_G();
     return this->_ChemInfo->getMatch();
 }
@@ -87,14 +90,16 @@ ChemInfoMatch_sp FrameRecognizer_O::getMatch()
     this->_Name = fn;
 }
 
-uint FrameRecognizer_O::depth()
+CL_NAME("depth");
+CL_DEFMETHOD uint FrameRecognizer_O::depth()
 {_G();
     ASSERTNOTNULL(this->_ChemInfo);
     return this->_ChemInfo->depth();
 }
 
 
-    core::Symbol_sp FrameRecognizer_O::getRecognizerName()
+CL_NAME("getRecognizerName");
+CL_DEFMETHOD     core::Symbol_sp FrameRecognizer_O::getRecognizerName()
 {
     return this->_Name;
 }
@@ -104,7 +109,8 @@ void FrameRecognizer_O::setGroupName(core::Symbol_sp fn)
     this->_GroupName = fn;
 }
 
-core::Symbol_sp FrameRecognizer_O::getGroupName()
+CL_NAME("getGroupName");
+CL_DEFMETHOD core::Symbol_sp FrameRecognizer_O::getGroupName()
 {
     if ( this->_GroupName.nilp() )
 	return this->_Name;

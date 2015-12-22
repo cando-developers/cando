@@ -56,7 +56,8 @@ public:
 	this->_TypeAssignmentRules.push_back(ci);
     }
 
-    int	numberOfRules() { return this->_TypeAssignmentRules.size();};
+CL_NAME("FFTypes-numberOfRules");
+CL_DEFMETHOD     int	numberOfRules() { return this->_TypeAssignmentRules.size();};
     chem::ChemInfo_sp	getRule(uint index);
 
     void    assignTypes( chem::Matter_sp matter );

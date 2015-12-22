@@ -78,7 +78,8 @@ namespace chem
 
 
 
-    void IterateMatter_O::initTopAndGoal(Matter_sp top, int goal)
+CL_NAME("initTopAndGoal");
+CL_DEFMETHOD     void IterateMatter_O::initTopAndGoal(Matter_sp top, int goal)
     {_G();
 	ANN(top);
 	this->_Top = top;
@@ -102,7 +103,8 @@ namespace chem
 	this->advance();
     };
 
-    bool	IterateMatter_O::advance()
+CL_NAME("advance");
+CL_DEFMETHOD     bool	IterateMatter_O::advance()
     {_G();
 	if ( !this->_IsDone )
 	{
@@ -248,17 +250,20 @@ namespace chem
     }
 
 
-    Atom_sp	IterateBonds_O::getAtom1()
+CL_NAME("getAtom1");
+CL_DEFMETHOD     Atom_sp	IterateBonds_O::getAtom1()
     {_G();
 	return this->_Loop.getAtom1();
     }
 
-    Atom_sp	IterateBonds_O::getAtom2()
+CL_NAME("getAtom2");
+CL_DEFMETHOD     Atom_sp	IterateBonds_O::getAtom2()
     {_G();
 	return this->_Loop.getAtom2();
     }
 
-    int IterateBonds_O::getBondOrder()
+CL_NAME("getBondOrder");
+CL_DEFMETHOD     int IterateBonds_O::getBondOrder()
     {_G();
 	return this->_Loop.getBondOrder();
     }

@@ -50,7 +50,8 @@ public:
     void readTypes(core::T_sp fin);
     void readParameters(core::T_sp fileName);
 
-    FFTypesDb_sp getTypeRules() { return this->_Types; };
+CL_NAME("getTypeRules");
+CL_DEFMETHOD     FFTypesDb_sp getTypeRules() { return this->_Types; };
     ForceField_sp getForceField();
 
     ReadAmberParameters_O( const ReadAmberParameters_O& ss ); //!< Copy constructor

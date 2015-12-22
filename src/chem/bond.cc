@@ -175,13 +175,15 @@ void Bond_O::clearProperty(core::Symbol_sp prop)
   this->_Properties = core::core__rem_f(this->_Properties,prop);
 }
 
-void Bond_O::setProperty(core::Symbol_sp prop, core::T_sp val)
+CL_NAME("setProperty");
+CL_DEFMETHOD void Bond_O::setProperty(core::Symbol_sp prop, core::T_sp val)
     {_G();
       this->_Properties = core::core__put_f(this->_Properties,val,prop);
     }
 
 
-core::T_sp Bond_O::getProperty(core::Symbol_sp prop, core::T_sp defval)
+CL_NAME("getProperty");
+CL_DEFMETHOD core::T_sp Bond_O::getProperty(core::Symbol_sp prop, core::T_sp defval)
 {_G();
   core::T_sp res = core::cl__getf(this->_Properties,prop,_Unbound<core::T_O>());
   if (res.unboundp()) {
@@ -190,14 +192,16 @@ core::T_sp Bond_O::getProperty(core::Symbol_sp prop, core::T_sp defval)
   return res;
 }
 
-bool Bond_O::hasProperty(core::Symbol_sp prop)
+CL_NAME("hasProperty");
+CL_DEFMETHOD bool Bond_O::hasProperty(core::Symbol_sp prop)
 {_G();
   return !core::cl__getf(this->_Properties,prop,_Unbound<core::T_O>()).unboundp();
 }
 
 
 
-Atom_sp Bond_O::getOtherAtom(Atom_sp atom) const
+CL_NAME("getOtherAtom");
+CL_DEFMETHOD Atom_sp Bond_O::getOtherAtom(Atom_sp atom) const
 {_OF();
   ASSERTNOTNULL(this->_Atom1);
   ASSERTNOTNULL(this->_Atom2);
@@ -320,7 +324,8 @@ ConstitutionBond_sp Bond_O::asConstitutionBond(Atom_sp from, MapAtomsToConstitut
 
 
 
-string	Bond_O::getOrderAsString()
+CL_NAME("getOrderAsString");
+CL_DEFMETHOD string	Bond_O::getOrderAsString()
 {_G();
   return bondOrderToString(this->order);
 }

@@ -81,7 +81,8 @@ namespace chem
 	int atomId() const { return this->_AtomId.atomId();};
 
 	virtual ~AtomId_O() {};
-	string asString() const {return this->_AtomId.asString();};
+CL_NAME("asString");
+CL_DEFMETHOD 	string asString() const {return this->_AtomId.asString();};
     }; // AtomId_O
 
 

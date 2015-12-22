@@ -49,13 +49,15 @@ void	Twister_O::initialize()
 
 
 
-void	Twister_O::setFixedAndMovable(Atom_sp fixed, Atom_sp movable )
+CL_NAME("setFixedAndMovable");
+CL_DEFMETHOD void	Twister_O::setFixedAndMovable(Atom_sp fixed, Atom_sp movable )
 {
     this->_Fixed = fixed;
     this->_Movable = movable;
 }
 
-void	Twister_O::addAtom(Atom_sp a)
+CL_NAME("addAtom");
+CL_DEFMETHOD void	Twister_O::addAtom(Atom_sp a)
 {
     this->_Atoms.push_back(a);
 }
@@ -134,7 +136,8 @@ void	Twister_O::_defineForDihedral(Atom_sp a1ref, Atom_sp a1, Atom_sp a2, Atom_s
 
 
 
-void	Twister_O::defineForDihedral(Atom_sp a1ref, Atom_sp a1, Atom_sp a2, Atom_sp a2ref )
+CL_NAME("defineForDihedral");
+CL_DEFMETHOD void	Twister_O::defineForDihedral(Atom_sp a1ref, Atom_sp a1, Atom_sp a2, Atom_sp a2ref )
 {_G();
     this->_defineForDihedral(a1ref,a1,a2,a2ref,false);
 }
@@ -142,19 +145,22 @@ void	Twister_O::defineForDihedral(Atom_sp a1ref, Atom_sp a1, Atom_sp a2, Atom_sp
 
 
 
-void	Twister_O::defineForBond(Atom_sp a1, Atom_sp a2 )
+CL_NAME("defineForBond");
+CL_DEFMETHOD void	Twister_O::defineForBond(Atom_sp a1, Atom_sp a2 )
 {
     this->_defineForDihedral( _Nil<Atom_O>(),a1,a2,_Nil<Atom_O>(),false);
 }
 
 
-void	Twister_O::defineFixedAndMobile(Atom_sp afixed, Atom_sp amobile )
+CL_NAME("defineFixedAndMobile");
+CL_DEFMETHOD void	Twister_O::defineFixedAndMobile(Atom_sp afixed, Atom_sp amobile )
 {
     this->_defineForDihedral(_Nil<Atom_O>(),afixed,amobile,_Nil<Atom_O>(), true);
 }
 
 
-void	Twister_O::rotate(double angle)
+CL_NAME("rotate");
+CL_DEFMETHOD void	Twister_O::rotate(double angle)
 {_OF();
     Matrix	transform, tm;
     Vector3	rotVec, tv;
@@ -189,7 +195,8 @@ void	Twister_O::rotate(double angle)
 
 
 
-void	Twister_O::rotateAbsolute(double angle)
+CL_NAME("rotateAbsolute");
+CL_DEFMETHOD void	Twister_O::rotateAbsolute(double angle)
 {_G();
     if (this->_FixedRef.nilp() )
     {
@@ -234,19 +241,22 @@ void	TwisterDriver_O::archive(core::ArchiveP node)
 #endif
 
 
-void	TwisterDriver_O::addTwister(	Twister_sp twister )
+CL_NAME("addTwister");
+CL_DEFMETHOD void	TwisterDriver_O::addTwister(	Twister_sp twister )
 {
     this->_Twisters.push_back(twister);
 }
 
 
-Twister_sp	TwisterDriver_O::getTwister(uint i)
+CL_NAME("getTwister");
+CL_DEFMETHOD Twister_sp	TwisterDriver_O::getTwister(uint i)
 {_OF();
     ASSERT_lessThan(i,this->_Twisters.size());
     return this->_Twisters[i];
 }
 
-void	TwisterDriver_O::perturbConformation()
+CL_NAME("perturbConformation");
+CL_DEFMETHOD void	TwisterDriver_O::perturbConformation()
 {_OF();
 int	it,ia;
 double	ang;

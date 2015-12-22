@@ -65,10 +65,14 @@ namespace chem
 	    static	core::List_sp create_multiple(core::List_sp atomNames, core::List_sp configurations);
 
 	public:
-	    MatterName	getAtomName()	{return this->_AtomName;};
-	    void	setAtomName(MatterName n) {this->_AtomName = n;};
-            core::Symbol_sp getConfiguration()	{return this->_Configuration;};
-	    void	setConfiguration(core::Symbol_sp p) {this->_Configuration = p;};
+CL_NAME("getAtomName");
+CL_DEFMETHOD 	    MatterName	getAtomName()	{return this->_AtomName;};
+CL_NAME("setAtomName");
+CL_DEFMETHOD 	    void	setAtomName(MatterName n) {this->_AtomName = n;};
+CL_NAME("getConfiguration");
+CL_DEFMETHOD             core::Symbol_sp getConfiguration()	{return this->_Configuration;};
+CL_NAME("setConfiguration");
+CL_DEFMETHOD 	    void	setConfiguration(core::Symbol_sp p) {this->_Configuration = p;};
 	    int		getMoeConfiguration();
 
 	    DEFAULT_CTOR_DTOR(StereoConfiguration_O);
@@ -119,10 +123,14 @@ namespace chem
 	public:
 	    Constitution_sp	getConstitution();
 
-	    core::Symbol_sp	getName() const {return this->_Name;};
-	    void	setName(core::Symbol_sp n) {this->_Name = n;};
-	    core::Symbol_sp	getPdb() {return this->_Pdb;};
-	    void	setPdb(core::Symbol_sp p) {this->_Pdb = p;};
+CL_NAME("getName");
+CL_DEFMETHOD 	    core::Symbol_sp	getName() const {return this->_Name;};
+CL_NAME("setName");
+CL_DEFMETHOD 	    void	setName(core::Symbol_sp n) {this->_Name = n;};
+CL_NAME("getPdb");
+CL_DEFMETHOD 	    core::Symbol_sp	getPdb() {return this->_Pdb;};
+CL_NAME("setPdb");
+CL_DEFMETHOD 	    void	setPdb(core::Symbol_sp p) {this->_Pdb = p;};
 	    core::Symbol_sp	getEnantiomer()	{return this->_Enantiomer;};
 	    void	setEnantiomer(core::Symbol_sp p) {this->_Enantiomer = p;};
 	    void	addStereoConfiguration(StereoConfiguration_sp sc) {this->_Configurations.push_back(sc);};
@@ -170,7 +178,8 @@ namespace chem
             gctools::Vec0<ComplexRestraint_sp>::iterator begin_ComplexRestraints() { return this->_ComplexRestraints.begin();};
             gctools::Vec0<ComplexRestraint_sp>::iterator end_ComplexRestraints() { return this->_ComplexRestraints.end();};
 
-	    core::List_sp stereoisomersAsCons() { return core::Cons_O::createFromVec0(this->_Stereoisomers); };
+CL_NAME("stereoisomersAsCons");
+CL_DEFMETHOD 	    core::List_sp stereoisomersAsCons() { return core::Cons_O::createFromVec0(this->_Stereoisomers); };
 
 	    void validate();
 

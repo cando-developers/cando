@@ -25,12 +25,18 @@ namespace geom
 
 
 
-    double BoundingBox_O::getMinX() const { return this->_MinCorner.getX(); };
-    double BoundingBox_O::getMaxX() const { return this->_MaxCorner.getX(); };
-    double BoundingBox_O::getMinY() const { return this->_MinCorner.getY(); };
-    double BoundingBox_O::getMaxY() const { return this->_MaxCorner.getY(); };
-    double BoundingBox_O::getMinZ() const { return this->_MinCorner.getZ(); };
-    double BoundingBox_O::getMaxZ() const { return this->_MaxCorner.getZ(); };
+CL_NAME("getMinX");
+CL_DEFMETHOD     double BoundingBox_O::getMinX() const { return this->_MinCorner.getX(); };
+CL_NAME("getMaxX");
+CL_DEFMETHOD     double BoundingBox_O::getMaxX() const { return this->_MaxCorner.getX(); };
+CL_NAME("getMinY");
+CL_DEFMETHOD     double BoundingBox_O::getMinY() const { return this->_MinCorner.getY(); };
+CL_NAME("getMaxY");
+CL_DEFMETHOD     double BoundingBox_O::getMaxY() const { return this->_MaxCorner.getY(); };
+CL_NAME("getMinZ");
+CL_DEFMETHOD     double BoundingBox_O::getMinZ() const { return this->_MinCorner.getZ(); };
+CL_NAME("getMaxZ");
+CL_DEFMETHOD     double BoundingBox_O::getMaxZ() const { return this->_MaxCorner.getZ(); };
 
 
 
@@ -89,7 +95,8 @@ namespace geom
     }
 
 
-    void BoundingBox_O::pad(double add)
+CL_NAME("pad");
+CL_DEFMETHOD     void BoundingBox_O::pad(double add)
     {_OF();
 	ASSERT(this->_Defined);
 	Vector3 vadd;

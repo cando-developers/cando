@@ -64,14 +64,18 @@ public:
 
 
 
-  Atom_sp getAtom1() const { return this->_Atom1; };
-  Atom_sp getAtom2() const { return this->_Atom2; };
+CL_NAME("getAtom1");
+CL_DEFMETHOD   Atom_sp getAtom1() const { return this->_Atom1; };
+CL_NAME("getAtom2");
+CL_DEFMETHOD   Atom_sp getAtom2() const { return this->_Atom2; };
 
-  BondOrder getOrder()	{ return this->order; };
+CL_NAME("getOrder");
+CL_DEFMETHOD   BondOrder getOrder()	{ return this->order; };
   int getOrderAsInt()	{ return this->order; };
   string	getOrderAsString();
   void	setOrder(BondOrder o)	{ this->order=o; };
-  void	setOrderFromInt(int o)	{ this->order=(BondOrder)(o); };
+CL_NAME("setOrder");
+CL_DEFMETHOD   void	setOrderFromInt(int o)	{ this->order=(BondOrder)(o); };
   Atom_sp	getOtherAtom(Atom_sp atom ) const;
   bool	isInterResidueBond();
   bool	isIntraResidueBond() {return !this->isInterResidueBond();};

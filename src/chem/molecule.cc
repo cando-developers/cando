@@ -128,7 +128,8 @@ void Molecule_O::addResidueRetainId( Matter_sp r )
 //
 //	Remove the residue
 //
-void Molecule_O::removeResidue( Matter_sp a )
+CL_NAME("removeResidue");
+CL_DEFMETHOD void Molecule_O::removeResidue( Matter_sp a )
 {
   gctools::Vec0<Matter_sp>::iterator	it;
   for ( it=this->getContents().begin(); it!= this->getContents().end(); it++ ) {
@@ -174,7 +175,8 @@ void Molecule_O::removeResidue( Matter_sp a )
 	    (*tit)->transferCoordinates(*oit);
 	}
     }
-    void	Molecule_O::moveAllAtomsIntoFirstResidue()
+CL_NAME("moveAllAtomsIntoFirstResidue");
+CL_DEFMETHOD     void	Molecule_O::moveAllAtomsIntoFirstResidue()
     {
 	contentIterator	a;
 	contentIterator	r;
@@ -226,7 +228,8 @@ void	Molecule_O::redirectAtoms()
 
 
 
-    Matter_sp Molecule_O::copy()
+CL_NAME("copy");
+CL_DEFMETHOD     Matter_sp Molecule_O::copy()
     {
 	Molecule_sp	newMol;
 	newMol = this->copyDontRedirectAtoms().as<Molecule_O>();
@@ -268,14 +271,16 @@ VectorResidue	Molecule_O::getResiduesWithName(MatterName name ) {
     }
 
 
-    int	Molecule_O::numberOfResiduesWithName( MatterName name )
+CL_NAME("numberOfResiduesWithName");
+CL_DEFMETHOD     int	Molecule_O::numberOfResiduesWithName( MatterName name )
     {
 	VectorResidue	residues;
 	residues = this->getResiduesWithName(name);
 	return residues.size();
     }
 
-    Residue_sp	Molecule_O::getFirstResidueWithName(MatterName name)
+CL_NAME("getFirstResidueWithName");
+CL_DEFMETHOD     Residue_sp	Molecule_O::getFirstResidueWithName(MatterName name)
     {_G();
 	VectorResidue residues = this->getResiduesWithName(name);
 	if ( residues.size() > 0 ) {

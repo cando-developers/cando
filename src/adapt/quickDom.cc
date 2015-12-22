@@ -204,12 +204,14 @@ int			newLines;
     return newLines;
 }
 
-    bool QDomNode_O::isLeaf()
+CL_NAME("isLeaf");
+CL_DEFMETHOD     bool QDomNode_O::isLeaf()
     {
 	return this->_children.size() == 0;
     }
 
-core::List_sp QDomNode_O::children()
+CL_NAME("children");
+CL_DEFMETHOD core::List_sp QDomNode_O::children()
 {
     core::Cons_sp first, cur;
     first = core::Cons_O::create();
@@ -225,7 +227,8 @@ core::List_sp QDomNode_O::children()
 
 
 
-void	QDomNode_O::writeToFileName( string fileName )
+CL_NAME("writeToFileName");
+CL_DEFMETHOD void	QDomNode_O::writeToFileName( string fileName )
 {_G();
     std::ofstream	out;
     out.open(fileName.c_str(), std::ios::out );
@@ -233,7 +236,8 @@ void	QDomNode_O::writeToFileName( string fileName )
     out.close();
 }
 
-void	QDomNode_O::appendToFileName( string fileName )
+CL_NAME("appendToFileName");
+CL_DEFMETHOD void	QDomNode_O::appendToFileName( string fileName )
 {
     std::ofstream	out;
     out.open(fileName.c_str(), std::ios::app );
@@ -472,7 +476,8 @@ std::ostream& QDomNode_O::dumpToStream(std::ostream& o) {
 
 
 
-void	QDomNode_O::dump() {
+CL_NAME("dump");
+CL_DEFMETHOD void	QDomNode_O::dump() {
     this->dumpChildToStream(std::cout, "");
 }
 
@@ -510,7 +515,8 @@ VectorQDomNodes::iterator	it;
     return childs;
 }
 
-QDomNode_sp	QDomNode_O::childWithName( const string& name ) 
+CL_NAME("childWithName");
+CL_DEFMETHOD QDomNode_sp	QDomNode_O::childWithName( const string& name ) 
 {_OF();
 QDomNode_sp			child;
 iterator	it;
@@ -534,7 +540,8 @@ int				children;
 }
 
 
-QDomNode_sp	QDomNode_O::onlyChild()
+CL_NAME("onlyChild");
+CL_DEFMETHOD QDomNode_sp	QDomNode_O::onlyChild()
 {_OF();
 QDomNode_sp			child;
     if ( this->_children.size() != 1 ) {
@@ -571,7 +578,8 @@ iterator		it;
 
 
 
-bool	QDomNode_O::hasChildrenWithName( const string& name )
+CL_NAME("hasChildrenWithName");
+CL_DEFMETHOD bool	QDomNode_O::hasChildrenWithName( const string& name )
 {
     return this->countChildrenWithName(name) > 0;
 }
@@ -741,7 +749,8 @@ gc::Nilable<QDomNode_sp>  QDomNode_O::parse(core::T_sp stream)
 
 
 
-string	QDomNode_O::asString()
+CL_NAME("asString");
+CL_DEFMETHOD string	QDomNode_O::asString()
 {_OF();
 stringstream	ss;
     this->dumpToStream(ss);
@@ -749,7 +758,8 @@ stringstream	ss;
 }
 
 
-void	QDomNode_O::addChild(QDomNode_sp child)
+CL_NAME("addChild");
+CL_DEFMETHOD void	QDomNode_O::addChild(QDomNode_sp child)
 {_G();
     if ( !child ) {
 	SIMPLE_ERROR(BF("You tried to add an empty child"));

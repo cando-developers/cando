@@ -72,7 +72,8 @@ namespace chem
         gctools::Vec0<ConstitutionBond_sp>	_Bonds;
     public:
 	string __repr__() const;
-	MatterName atomName() { return this->_AtomName;};
+CL_NAME("atomName");
+CL_DEFMETHOD 	MatterName atomName() { return this->_AtomName;};
 	ConstitutionAtomIndex0N atomIndex() const { return this->_AtomIndex;};
 	virtual bool isVirtualAtom() { return false;};
 	/*! Append a ConstitutionBond_sp to our list of bonds */
@@ -144,7 +145,8 @@ namespace chem
 	ConstitutionAtom_sp atomWithId(ConstitutionAtomIndex0N idx) const;
 
 	//! Set the net charge of this collection of atoms
-	void setNetCharge(int charge) { this->_NetCharge = charge;};
+CL_NAME("setNetCharge");
+CL_DEFMETHOD 	void setNetCharge(int charge) { this->_NetCharge = charge;};
 
 
 	//! Add a ConstitutionVirtualAtom to us and assign it a ConstitutionAtomIndex0N

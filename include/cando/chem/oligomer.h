@@ -142,15 +142,19 @@ public:	// /////////////////////////////////////////////////////////////////
      */
     void		updateMultiMonomers();
 
-    void		setName(NameType::smart_ptr nm) { this->_Name = nm;};
-    NameType::smart_ptr getName() { return this->_Name;};
+CL_NAME("setName");
+CL_DEFMETHOD     void		setName(NameType::smart_ptr nm) { this->_Name = nm;};
+CL_NAME("getName");
+CL_DEFMETHOD     NameType::smart_ptr getName() { return this->_Name;};
 
     void		setVerbose(bool v);
-    bool		getVerbose() { return this->_Verbose;};
+CL_NAME("getVerbose");
+CL_DEFMETHOD     bool		getVerbose() { return this->_Verbose;};
     string		getErrorMessage();
     void		addErrorMessage(const string& s) { core::lisp_write(BF("%s\n") % s, this->_ErrorMessage); this->_HasError=true;};
     bool		checkForErrors();
-    bool		getHasError() { return this->_HasError; };
+CL_NAME("getHasError");
+CL_DEFMETHOD     bool		getHasError() { return this->_HasError; };
 
     //
     //	build piece by piece

@@ -61,7 +61,8 @@ namespace chem
 
 
 
-    void	ConformationExplorerEntryStage_O::setSuperposableCoordinatesAsFixedWithinSuperposeEngine( SuperposeEngine_sp superposer )
+CL_NAME("setSuperposableCoordinatesAsFixedWithinSuperposeEngine");
+CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setSuperposableCoordinatesAsFixedWithinSuperposeEngine( SuperposeEngine_sp superposer )
     {_G();
 	ConformationExplorer_sp	explorer;
 	explorer = this->getConformationExplorer();
@@ -69,7 +70,8 @@ namespace chem
     }
 
 
-    void	ConformationExplorerEntryStage_O::setSuperposableCoordinatesAsMoveableWithinSuperposeEngine( SuperposeEngine_sp superposer )
+CL_NAME("setSuperposableCoordinatesAsMoveableWithinSuperposeEngine");
+CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setSuperposableCoordinatesAsMoveableWithinSuperposeEngine( SuperposeEngine_sp superposer )
     {_G();
 	ConformationExplorer_sp	explorer;
 	explorer = this->getConformationExplorer();
@@ -78,7 +80,8 @@ namespace chem
 
 
 
-    void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsFixedWithinSuperposeEngine( SuperposeEngine_sp superposer )
+CL_NAME("setFinalCoordinatesAsFixedWithinSuperposeEngine");
+CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsFixedWithinSuperposeEngine( SuperposeEngine_sp superposer )
     {_G();
 	ConformationExplorer_sp	explorer;
 	explorer = this->getConformationExplorer();
@@ -86,7 +89,8 @@ namespace chem
     }
 
 
-    void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMoveableWithinSuperposeEngine( SuperposeEngine_sp superposer )
+CL_NAME("setFinalCoordinatesAsMoveableWithinSuperposeEngine");
+CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMoveableWithinSuperposeEngine( SuperposeEngine_sp superposer )
     {_G();
 	ConformationExplorer_sp	explorer;
 	explorer = this->getConformationExplorer();
@@ -234,7 +238,8 @@ namespace chem
     }
 
 
-    void	ConformationExplorerEntryStage_O::writeCoordinatesToMatter(Matter_sp agg)
+CL_NAME("writeCoordinatesToMatter");
+CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::writeCoordinatesToMatter(Matter_sp agg)
     {_G();
 	ConformationExplorer_sp			sl;
 	vector<Vector3>::iterator	ci;
@@ -247,7 +252,8 @@ namespace chem
     }
 
 
-    void	ConformationExplorerEntryStage_O::extractCoordinatesFromMatter(Matter_sp matter)
+CL_NAME("extractCoordinatesFromMatter");
+CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::extractCoordinatesFromMatter(Matter_sp matter)
     {_G();
 	ConformationExplorer_sp	sl;
 	vector<Vector3>::iterator	ci;
@@ -299,7 +305,8 @@ namespace chem
     }
 #endif
 
-    ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::getSelectedStage()
+CL_NAME("getSelectedStage");
+CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::getSelectedStage()
     {_G();
 	if ( !this->hasSelectedStage() )
 	{
@@ -308,7 +315,8 @@ namespace chem
 	return this->_SelectedStage;
     }
 
-    void	ConformationExplorerEntry_O::setSelectedStage(ConformationExplorerEntryStage_sp stage)
+CL_NAME("setSelectedStage");
+CL_DEFMETHOD     void	ConformationExplorerEntry_O::setSelectedStage(ConformationExplorerEntryStage_sp stage)
     {_G();
 	ConformationExplorerEntry_sp	stageEntry;
 	stageEntry = stage->getConformationExplorerEntry();
@@ -318,7 +326,8 @@ namespace chem
 
 
 
-    ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::createEntryStage(string const& name)
+CL_NAME("createEntryStage");
+CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::createEntryStage(string const& name)
     {_G();
 	ASSERTF(!this->hasEntryStageWithName(name),
 		BF("Stage with key[%s] already exists!") % name );
@@ -339,7 +348,8 @@ namespace chem
 
 
 
-    string	ConformationExplorerEntry_O::lastEntryStageName()
+CL_NAME("lastEntryStageName");
+CL_DEFMETHOD     string	ConformationExplorerEntry_O::lastEntryStageName()
     {_G();
 	if ( this->_Stages.size() == 0 ) return "";
 	return this->_Stages[this->_Stages.size()-1]->getStageName();
@@ -347,7 +357,8 @@ namespace chem
 
 
 
-    ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::getLastEntryStage()
+CL_NAME("getLastEntryStage");
+CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::getLastEntryStage()
     {_G();
 	ASSERTP(this->_Stages.size()>0,"There must be at least one complete stage");
 	int idx = this->_Stages.size()-1;
@@ -355,7 +366,8 @@ namespace chem
     }
 
 
-    bool	ConformationExplorerEntry_O::alreadyHasLastCompleteStage(const string& stageName )
+CL_NAME("alreadyHasLastCompleteStage");
+CL_DEFMETHOD     bool	ConformationExplorerEntry_O::alreadyHasLastCompleteStage(const string& stageName )
     {_G();
 	ConformationExplorerEntryStage_sp	lastStage;
 	lastStage = this->getLastCompleteEntryStage();
@@ -363,7 +375,8 @@ namespace chem
     }
 
 
-    ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::getOrCreateLastIncompleteEntryStage(const string& stageName)
+CL_NAME("getOrCreateLastIncompleteEntryStage");
+CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::getOrCreateLastIncompleteEntryStage(const string& stageName)
     {_G();
 	ConformationExplorerEntryStage_sp	lastStage, newStage;
 	lastStage = this->getLastEntryStage();
@@ -388,7 +401,8 @@ namespace chem
     }
 
 
-    ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::getLastCompleteEntryStage()
+CL_NAME("getLastCompleteEntryStage");
+CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::getLastCompleteEntryStage()
     {_G();
 	ASSERTP(this->_Stages.size()>0,"There must be at least one complete stage");
 	int idx = this->_Stages.size()-1;
@@ -411,7 +425,8 @@ namespace chem
 
 
 
-    bool	ConformationExplorerEntry_O::hasEntryStageWithName(const string& key)
+CL_NAME("hasEntryStageWithName");
+CL_DEFMETHOD     bool	ConformationExplorerEntry_O::hasEntryStageWithName(const string& key)
     {_G();
 	stageIterator	si;
 	for ( si=this->_Stages.begin(); si!=this->_Stages.end(); si++ )
@@ -422,7 +437,8 @@ namespace chem
     }
 
 
-    ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::getEntryStage(const string& key)
+CL_NAME("getEntryStage");
+CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::getEntryStage(const string& key)
     {_G();
 	stageIterator	si;
 	for ( si=this->_Stages.begin(); si!=this->_Stages.end(); si++ )
@@ -485,7 +501,8 @@ namespace chem
     }
 
 
-    void ConformationExplorer_O::clearEntries()
+CL_NAME("clearEntries");
+CL_DEFMETHOD     void ConformationExplorer_O::clearEntries()
     {_G();
 	this->_Entries.clear();
     }
@@ -535,7 +552,8 @@ namespace chem
     }
 
 
-    void	ConformationExplorer_O::setMatter(Matter_sp matter)
+CL_NAME("setMatter");
+CL_DEFMETHOD     void	ConformationExplorer_O::setMatter(Matter_sp matter)
     {_G();
 	Loop	loop;
 	Atom_sp	a;
@@ -552,14 +570,16 @@ namespace chem
 
 
 
-    void	ConformationExplorer_O::appendEntry(ConformationExplorerEntry_sp entry)
+CL_NAME("appendEntry");
+CL_DEFMETHOD     void	ConformationExplorer_O::appendEntry(ConformationExplorerEntry_sp entry)
     {_G();
 	entry->setConformationExplorer(this->sharedThis<ConformationExplorer_O>());
 	this->_Entries.push_back(entry);
     }
 
 
-    core::List_sp ConformationExplorer_O::entriesAsCons()
+CL_NAME("entriesAsCons");
+CL_DEFMETHOD     core::List_sp ConformationExplorer_O::entriesAsCons()
     {_G();
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(), _Nil<core::T_O>());
 	core::Cons_sp cur = first;
@@ -646,7 +666,8 @@ namespace chem
 
 
 
-    void	ConformationExplorer_O::clearSuperposeAtoms()
+CL_NAME("clearSuperposeAtoms");
+CL_DEFMETHOD     void	ConformationExplorer_O::clearSuperposeAtoms()
     {_G();
 	ASSERTNOTNULL(this->_SuperposeAtomIndices);
 	this->_SuperposeAtomIndices->clear();
@@ -654,7 +675,8 @@ namespace chem
 
 
 
-    void	ConformationExplorer_O::addSuperposeAtom(Atom_sp a)
+CL_NAME("addSuperposeAtom");
+CL_DEFMETHOD     void	ConformationExplorer_O::addSuperposeAtom(Atom_sp a)
     {_G();
 	atomIterator		ai;
 	int			idx;
@@ -681,7 +703,8 @@ namespace chem
 	}
     }
 
-    void	ConformationExplorer_O::superposeAllHeavyAtoms()
+CL_NAME("superposeAllHeavyAtoms");
+CL_DEFMETHOD     void	ConformationExplorer_O::superposeAllHeavyAtoms()
     {_G();
 	atomIterator		ai;
 	int			idx;
@@ -738,7 +761,8 @@ namespace chem
 
 
 
-    void	ConformationExplorer_O::sort(const string& stageName, core::Symbol_sp keyName )
+CL_NAME("sort");
+CL_DEFMETHOD     void	ConformationExplorer_O::sort(const string& stageName, core::Symbol_sp keyName )
     {_G();
 	OrderStageAndKeyValue comparer;
 	comparer._StageName = stageName;
@@ -752,7 +776,8 @@ namespace chem
 
 
 
-    void	ConformationExplorer_O::saveAs(const string& fn)
+CL_NAME("saveAs");
+CL_DEFMETHOD     void	ConformationExplorer_O::saveAs(const string& fn)
     {_G();
 	IMPLEMENT_ME();
 #ifdef XML_ARCHIVE
@@ -763,7 +788,8 @@ namespace chem
 #endif
     }
 
-    unsigned ConformationExplorer_O::getEntryIndex(ConformationExplorerEntry_sp entry)
+CL_NAME("getEntryIndex");
+CL_DEFMETHOD     unsigned ConformationExplorer_O::getEntryIndex(ConformationExplorerEntry_sp entry)
     {_G();
 	int		i;
 	entryIterator	ei;
@@ -780,7 +806,8 @@ namespace chem
 
 
 
-    ConformationExplorerEntry_sp	ConformationExplorer_O::getEntry(unsigned i)
+CL_NAME("getEntry");
+CL_DEFMETHOD     ConformationExplorerEntry_sp	ConformationExplorer_O::getEntry(unsigned i)
     {_G();
 	ASSERT_lessThan(i,this->_Entries.size());
 	ConformationExplorerEntry_sp e;
@@ -788,7 +815,8 @@ namespace chem
 	return e;
     }
 
-    ConformationExplorerEntry_sp	ConformationExplorer_O::firstEntry()
+CL_NAME("firstEntry");
+CL_DEFMETHOD     ConformationExplorerEntry_sp	ConformationExplorer_O::firstEntry()
     {_G();
 	ASSERT(this->_Entries.size() > 0 );
 	return this->_Entries[0];
@@ -798,7 +826,8 @@ namespace chem
 
 
 
-    ConformationExplorerEntry_sp	ConformationExplorer_O::createEntry()
+CL_NAME("createEntry");
+CL_DEFMETHOD     ConformationExplorerEntry_sp	ConformationExplorer_O::createEntry()
     {_G();
 	GC_ALLOCATE(ConformationExplorerEntry_O, entry );
 	entry->setConformationExplorer(this->sharedThis<ConformationExplorer_O>());
@@ -895,13 +924,15 @@ namespace chem
 	return gotBest;
     }
 
-    ConformationExplorerEntry_sp ConformationExplorer_O::getClosestMatchingEntry(ConformationExplorerMatch_sp match)
+CL_NAME("getClosestMatchingEntry");
+CL_DEFMETHOD     ConformationExplorerEntry_sp ConformationExplorer_O::getClosestMatchingEntry(ConformationExplorerMatch_sp match)
     {_G();
 	uint idx = match->getClosestMatchIndex();
 	return this->getEntry(idx);
     }
 
-    ConformationExplorerEntryStage_sp ConformationExplorer_O::getClosestMatchingEntryStage(ConformationExplorerMatch_sp match)
+CL_NAME("getClosestMatchingEntryStage");
+CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorer_O::getClosestMatchingEntryStage(ConformationExplorerMatch_sp match)
     {_G();
 	uint idx = match->getClosestMatchIndex();
 	ConformationExplorerEntry_sp e = this->getEntry(idx);
@@ -927,7 +958,8 @@ namespace chem
 	return ss.str();
     }
 
-    void ConformationExplorer_O::findClosestMatchingConformation(
+CL_NAME("findClosestMatchingConformation");
+CL_DEFMETHOD     void ConformationExplorer_O::findClosestMatchingConformation(
 	ConformationExplorerMatch_sp match,
 	Matter_sp matter, const string& stageKey,
 	double rms )
@@ -962,7 +994,8 @@ namespace chem
 
 
 
-    void	ConformationExplorer_O::alignAllConformationsToTheFirstForStage(const string& stageName )
+CL_NAME("alignAllConformationsToTheFirstForStage");
+CL_DEFMETHOD     void	ConformationExplorer_O::alignAllConformationsToTheFirstForStage(const string& stageName )
     {_G();
 	if ( !this->hasStageNameInAllEntries(stageName) )
 	{
@@ -999,7 +1032,8 @@ namespace chem
     };
 
 
-    void	ConformationExplorer_O::sortByEnergyAscendingForStage(const string& stageName )
+CL_NAME("sortByEnergyAscendingForStage");
+CL_DEFMETHOD     void	ConformationExplorer_O::sortByEnergyAscendingForStage(const string& stageName )
     {_G();
 	OrderByEnergyAscending order;
 	order._StageName = stageName;

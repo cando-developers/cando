@@ -61,7 +61,8 @@ SymbolSet_sp SymbolSet_O::make(List_sp entries) {
   return me;
 }
 
-SymbolSet_sp SymbolSet_O::insertConsSymbols(List_sp vals) {
+CL_NAME("insertConsSymbols");
+CL_DEFMETHOD SymbolSet_sp SymbolSet_O::insertConsSymbols(List_sp vals) {
   for (auto p : vals) {
     Symbol_sp t = gc::As<Symbol_sp>(oCar(p));
     this->insert(t);
@@ -69,7 +70,8 @@ SymbolSet_sp SymbolSet_O::insertConsSymbols(List_sp vals) {
   return this->sharedThis<SymbolSet_O>();
 }
 
-void SymbolSet_O::insertSymbolSet(SymbolSet_sp s) {
+CL_NAME("insertSymbolSet");
+CL_DEFMETHOD void SymbolSet_O::insertSymbolSet(SymbolSet_sp s) {
   s->map([this](Symbol_sp k) {this->insert(k); });
 }
 
@@ -98,7 +100,8 @@ string SymbolSet_O::__repr__() const {
   ss << " )";
   return ss.str();
 }
-string SymbolSet_O::asString() {
+CL_NAME("asString");
+CL_DEFMETHOD string SymbolSet_O::asString() {
   stringstream ss;
   string nm;
   ss.str("");
@@ -153,12 +156,14 @@ void SymbolSet_O::insertVector(Vector_sp vec) {
   }
 }
 
-bool SymbolSet_O::contains(Symbol_sp s) {
+CL_NAME("contains");
+CL_DEFMETHOD bool SymbolSet_O::contains(Symbol_sp s) {
   _G();
   return this->_Symbols->contains(s);
 }
 
-bool SymbolSet_O::containsSubset(SymbolSet_sp sub) {
+CL_NAME("containsSubset");
+CL_DEFMETHOD bool SymbolSet_O::containsSubset(SymbolSet_sp sub) {
   bool missed(false);
   this->map([&missed, this](Symbol_sp s) {
                 if ( !this->contains(s) ) {
@@ -169,7 +174,8 @@ bool SymbolSet_O::containsSubset(SymbolSet_sp sub) {
   return !missed;
 }
 
-void SymbolSet_O::clear() {
+CL_NAME("clear");
+CL_DEFMETHOD void SymbolSet_O::clear() {
   _OF();
   this->_Symbols->clrhash();
 }
@@ -215,7 +221,8 @@ SymbolSet_O::SymbolSet_O(const SymbolSet_O &ss) : T_O(ss) {
   this->_Symbols = ss._Symbols;
 }
 
-SymbolSet_sp SymbolSet_O::setUnion(SymbolSet_sp b) {
+CL_NAME("adapt:SymbolSetUnion");
+CL_DEFMETHOD SymbolSet_sp SymbolSet_O::setUnion(SymbolSet_sp b) {
   _G();
   SymbolSet_sp nset;
   nset = SymbolSet_O::create();
@@ -224,7 +231,8 @@ SymbolSet_sp SymbolSet_O::setUnion(SymbolSet_sp b) {
   return nset;
 }
 
-SymbolSet_sp SymbolSet_O::intersection(SymbolSet_sp b) {
+CL_NAME("adapt:SymbolSetIntersection");
+CL_DEFMETHOD SymbolSet_sp SymbolSet_O::intersection(SymbolSet_sp b) {
   _G();
   SymbolSet_sp nset = SymbolSet_O::create();
   this->map([&b, &nset](Symbol_sp s) {
@@ -240,7 +248,8 @@ SymbolSet_sp SymbolSet_O::intersection(SymbolSet_sp b) {
   return nset;
 }
 
-SymbolSet_sp SymbolSet_O::relativeComplement(SymbolSet_sp b) {
+CL_NAME("relativeComplement");
+CL_DEFMETHOD SymbolSet_sp SymbolSet_O::relativeComplement(SymbolSet_sp b) {
   SymbolSet_sp nset;
   nset = SymbolSet_O::create();
   this->map([&nset, &b](Symbol_sp si) {
@@ -255,7 +264,8 @@ SymbolSet_sp SymbolSet_O::relativeComplement(SymbolSet_sp b) {
 /*! Return a new set that takes every element of (this) in combination
   with every element in b separated by a comma
 */
-ObjectSet_sp SymbolSet_O::cartesianProduct(SymbolSet_sp b) {
+CL_NAME("cartesianProduct");
+CL_DEFMETHOD ObjectSet_sp SymbolSet_O::cartesianProduct(SymbolSet_sp b) {
   _G();
   ObjectSet_sp nset = ObjectSet_O::create();
   this->map([&b, &nset](Symbol_sp si) {
@@ -294,7 +304,8 @@ Symbol_mv SymbolSet_O::first() {
   return Values(result, found);
 }
 
-List_sp SymbolSet_O::asCons() {
+CL_NAME("asCons");
+CL_DEFMETHOD List_sp SymbolSet_O::asCons() {
   _G();
   List_sp cur = _Nil<List_V>();
   this->map([&cur](Symbol_sp si) {

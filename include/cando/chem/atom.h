@@ -216,12 +216,15 @@ namespace chem
 	void _addExistingBond(Bond_sp const& bond);
     public:
 
-	bool isAromatic() const { return this->testAnyFlags(Aromatic);};
-	void setIsAromatic(bool b) { if (b) turnOnFlags(Aromatic); else turnOffFlags(Aromatic);};
+CL_NAME("isAromatic");
+CL_DEFMETHOD 	bool isAromatic() const { return this->testAnyFlags(Aromatic);};
+CL_NAME("setIsAromatic");
+CL_DEFMETHOD 	void setIsAromatic(bool b) { if (b) turnOnFlags(Aromatic); else turnOffFlags(Aromatic);};
 
 	virtual	char	getClass()	{return atomId;};
 
-        core::Symbol_sp atomName() const { return this->getName();};
+CL_NAME("atomName");
+CL_DEFMETHOD         core::Symbol_sp atomName() const { return this->getName();};
 	virtual bool	equal(core::T_sp obj) const;
 	virtual void	transferCoordinates(Matter_sp other);
 
@@ -233,28 +236,40 @@ namespace chem
 
 	bool	atLowerAddressThan(Atom_sp a2);
 //	uint	getOrder() { return (uint)(this) };
-	int	getAtomId() { return this->getId(); };
+CL_NAME("getAtomId");
+CL_DEFMETHOD 	int	getAtomId() { return this->getId(); };
 	int	getTempInt();
 	void	setTempInt(int o);
 
-	core::Symbol_sp	getAlias() { return this->_Alias; };
-	void setAlias(core::Symbol_sp alias) { this->_Alias = alias;};
+CL_NAME("getAlias");
+CL_DEFMETHOD 	core::Symbol_sp	getAlias() { return this->_Alias; };
+CL_NAME("setAlias");
+CL_DEFMETHOD 	void setAlias(core::Symbol_sp alias) { this->_Alias = alias;};
 
 
-	ATOM_FLAGS	getFlags() { return this->flags; };
-	void	resetFlags() { this->flags = 0; };
-	void	turnOnFlags(ATOM_FLAGS o) { this->flags |= o; };
-	void	turnOffFlags(ATOM_FLAGS o) { this->flags &= ~o; };
+CL_NAME("getFlags");
+CL_DEFMETHOD 	ATOM_FLAGS	getFlags() { return this->flags; };
+CL_NAME("resetFlags");
+CL_DEFMETHOD 	void	resetFlags() { this->flags = 0; };
+CL_NAME("turnOnFlags");
+CL_DEFMETHOD 	void	turnOnFlags(ATOM_FLAGS o) { this->flags |= o; };
+CL_NAME("turnOffFlags");
+CL_DEFMETHOD 	void	turnOffFlags(ATOM_FLAGS o) { this->flags &= ~o; };
 	void	modifyFlags(int op, ATOM_FLAGS o);
-	bool    testAllFlags( ATOM_FLAGS o ) const { return (this->flags&o)==o;};
-	bool    testAnyFlags( ATOM_FLAGS o ) const { return (this->flags&o)!=0;};
+CL_NAME("testAllFlags");
+CL_DEFMETHOD 	bool    testAllFlags( ATOM_FLAGS o ) const { return (this->flags&o)==o;};
+CL_NAME("testAnyFlags");
+CL_DEFMETHOD 	bool    testAnyFlags( ATOM_FLAGS o ) const { return (this->flags&o)!=0;};
 	void	clearAllRingMembershipFlags();
-	bool    isInRing() const { return (this->flags&inRing)!= 0; };
+CL_NAME("isInRing");
+CL_DEFMETHOD 	bool    isInRing() const { return (this->flags&inRing)!= 0; };
 	bool    inRingSize(int s) const;
 	void	setInRingOfSize(int s);
 	void	incrementRingMembershipCount() { this->_RingMembershipCount++;};
-	int     getRingMembershipCount() { return this->_RingMembershipCount;};
-	void    setRingMembershipCount(int r) {this->_RingMembershipCount = r;};
+CL_NAME("getRingMembershipCount");
+CL_DEFMETHOD 	int     getRingMembershipCount() { return this->_RingMembershipCount;};
+CL_NAME("setRingMembershipCount");
+CL_DEFMETHOD 	void    setRingMembershipCount(int r) {this->_RingMembershipCount = r;};
 	string	getNameIndex();
 	void	setElementFromAtomName();
 	void	setElementFromString(const string& elementSymbol);
@@ -266,28 +281,39 @@ namespace chem
 
 	bool	hasAtomNameAttribute(char c);
 
-        AtomType getType() { return this->type; };
-	void	setType(AtomType o) { this->type = o; };
-        Hybridization getHybridization() { return this->_Hybridization; };
+CL_NAME("getType");
+CL_DEFMETHOD         AtomType getType() { return this->type; };
+CL_NAME("setType");
+CL_DEFMETHOD 	void	setType(AtomType o) { this->type = o; };
+CL_NAME("getHybridization");
+CL_DEFMETHOD         Hybridization getHybridization() { return this->_Hybridization; };
         string getHybridizationAsString();
-	void	setHybridization(Hybridization o) { this->_Hybridization = (o); };
+CL_NAME("setHybridization");
+CL_DEFMETHOD 	void	setHybridization(Hybridization o) { this->_Hybridization = (o); };
 	void	setHybridizationFromString(const string& h);
 	bool	getHintLP() { return this->_HintLP; };
 	void	setHintLP(bool o) { this->_HintLP = o; };
-	Element getElement() const { return this->_Element; };
+CL_NAME("getElement");
+CL_DEFMETHOD 	Element getElement() const { return this->_Element; };
 	string	getElementAsString();
         core::Symbol_sp	getElementAsSymbol() const;
-	void	setElement(Element o) { this->_Element= o; };
+CL_NAME("setElement");
+CL_DEFMETHOD 	void	setElement(Element o) { this->_Element= o; };
 	int     getAtomicNumber();
 	double	getAtomicWeight();
 	int     getValence();
 	virtual bool isVirtual() const { return false;};
-	bool	getSelected() { return this->_selected; };
-	void	setSelected(bool o) { this->_selected = o; };
-	Vector3 getPosition() { return this->position; };
-	Vector3 getPositionInNanometers() { return this->position.inNanometers(); };
+CL_NAME("getSelected");
+CL_DEFMETHOD 	bool	getSelected() { return this->_selected; };
+CL_NAME("setSelected");
+CL_DEFMETHOD 	void	setSelected(bool o) { this->_selected = o; };
+CL_NAME("getPosition");
+CL_DEFMETHOD 	Vector3 getPosition() { return this->position; };
+CL_NAME("getPositionInNanometers");
+CL_DEFMETHOD 	Vector3 getPositionInNanometers() { return this->position.inNanometers(); };
 	Vector3& getPositionRef() { return this->position; };
-	void	setPosition(const Vector3& o) { this->position= o; };
+CL_NAME("setPosition");
+CL_DEFMETHOD 	void	setPosition(const Vector3& o) { this->position= o; };
 	void	setPositionInNanometers(Vector3 o);
 	Vector3 getForce() { return this->_Force; };
 	void	setForce(Vector3 o) { this->_Force= o; };
@@ -300,38 +326,66 @@ namespace chem
 #endif
 	//! Atoms should throw an exception
 	void	makeAllAtomNamesInEachResidueUnique();
-	bool	getTouched() { return this->touched; };
-	void	setTouched(bool o) { this->touched = o; };
-	int     getMembershipAr1()	{ return this->_MembershipAr1; };
-	void	setMembershipAr1(int c) { this->_MembershipAr1 = c; };
-	int     getMembershipAr2()	{ return this->_MembershipAr2; };
-	void	setMembershipAr2(int c) { this->_MembershipAr2 = c; };
-	int     getMembershipAr3()	{ return this->_MembershipAr3; };
-	void	setMembershipAr3(int c) { this->_MembershipAr3 = c; };
-	int     getMembershipAr4()	{ return this->_MembershipAr4; };
-	void	setMembershipAr4(int c) { this->_MembershipAr4 = c; };
-	int     getMembershipAr5()	{ return this->_MembershipAr5; };
-	void	setMembershipAr5(int c) { this->_MembershipAr5 = c; };
-	int     getIonization()	{ return this->_Ionization; };
-	void	setIonization(int c)	{ this->_Ionization = c; };
-	double	getCharge()	{ return this->charge; };
-	void	setCharge(double c)	{ this->charge = c; };
-	double	getOccupancy()	{ return this->occupancy; };
-	void	setOccupancy(double c)	{ this->occupancy = c; };
-	double	getTempFactor()	{ return this->tempFactor; };
-	void	setTempFactor(double c)	{ this->tempFactor = c; };
-	double	getVdwRadius()	{ return this->vdwRadius; };
-	void	setVdwRadius(double c)	{ this->vdwRadius = c; };
-	double	getCovalentRadius()	{ return this->covalentRadius; };
-	void	setCovalentRadius(double c)	{ this->covalentRadius = c; };
+CL_NAME("getTouched");
+CL_DEFMETHOD 	bool	getTouched() { return this->touched; };
+CL_NAME("setTouched");
+CL_DEFMETHOD 	void	setTouched(bool o) { this->touched = o; };
+CL_NAME("getMembershipAr1");
+CL_DEFMETHOD 	int     getMembershipAr1()	{ return this->_MembershipAr1; };
+CL_NAME("setMembershipAr1");
+CL_DEFMETHOD 	void	setMembershipAr1(int c) { this->_MembershipAr1 = c; };
+CL_NAME("getMembershipAr2");
+CL_DEFMETHOD 	int     getMembershipAr2()	{ return this->_MembershipAr2; };
+CL_NAME("setMembershipAr2");
+CL_DEFMETHOD 	void	setMembershipAr2(int c) { this->_MembershipAr2 = c; };
+CL_NAME("getMembershipAr3");
+CL_DEFMETHOD 	int     getMembershipAr3()	{ return this->_MembershipAr3; };
+CL_NAME("setMembershipAr3");
+CL_DEFMETHOD 	void	setMembershipAr3(int c) { this->_MembershipAr3 = c; };
+CL_NAME("getMembershipAr4");
+CL_DEFMETHOD 	int     getMembershipAr4()	{ return this->_MembershipAr4; };
+CL_NAME("setMembershipAr4");
+CL_DEFMETHOD 	void	setMembershipAr4(int c) { this->_MembershipAr4 = c; };
+CL_NAME("getMembershipAr5");
+CL_DEFMETHOD 	int     getMembershipAr5()	{ return this->_MembershipAr5; };
+CL_NAME("setMembershipAr5");
+CL_DEFMETHOD 	void	setMembershipAr5(int c) { this->_MembershipAr5 = c; };
+CL_NAME("getIonization");
+CL_DEFMETHOD 	int     getIonization()	{ return this->_Ionization; };
+CL_NAME("setIonization");
+CL_DEFMETHOD 	void	setIonization(int c)	{ this->_Ionization = c; };
+CL_NAME("getCharge");
+CL_DEFMETHOD 	double	getCharge()	{ return this->charge; };
+CL_NAME("setCharge");
+CL_DEFMETHOD 	void	setCharge(double c)	{ this->charge = c; };
+CL_NAME("getOccupancy");
+CL_DEFMETHOD 	double	getOccupancy()	{ return this->occupancy; };
+CL_NAME("setOccupancy");
+CL_DEFMETHOD 	void	setOccupancy(double c)	{ this->occupancy = c; };
+CL_NAME("getTempFactor");
+CL_DEFMETHOD 	double	getTempFactor()	{ return this->tempFactor; };
+CL_NAME("setTempFactor");
+CL_DEFMETHOD 	void	setTempFactor(double c)	{ this->tempFactor = c; };
+CL_NAME("getVdwRadius");
+CL_DEFMETHOD 	double	getVdwRadius()	{ return this->vdwRadius; };
+CL_NAME("setVdwRadius");
+CL_DEFMETHOD 	void	setVdwRadius(double c)	{ this->vdwRadius = c; };
+CL_NAME("getCovalentRadius");
+CL_DEFMETHOD 	double	getCovalentRadius()	{ return this->covalentRadius; };
+CL_NAME("setCovalentRadius");
+CL_DEFMETHOD 	void	setCovalentRadius(double c)	{ this->covalentRadius = c; };
 	Matter_wp	getMatterContainedBy();
 	Residue_sp	getResidueContainedBy();
 	Residue_sp	getResidueContainedBy_const() const;
 
-	int	getMoeIndex() { return this->moeIndex; };
-	void	setMoeIndex(int o) { this->moeIndex = o; };
-	void	setMoeType(MoeType t) {this->moeType=t;};
-	MoeType	getMoeType() {return this->moeType;};
+CL_NAME("getMoeIndex");
+CL_DEFMETHOD 	int	getMoeIndex() { return this->moeIndex; };
+CL_NAME("setMoeIndex");
+CL_DEFMETHOD 	void	setMoeIndex(int o) { this->moeIndex = o; };
+CL_NAME("setMoeType");
+CL_DEFMETHOD 	void	setMoeType(MoeType t) {this->moeType=t;};
+CL_NAME("getMoeType");
+CL_DEFMETHOD 	MoeType	getMoeType() {return this->moeType;};
 
 	/*! Return a ConstitutionAtom for this atom and give it the ConstitutionAtomIndex0N (index)
 	  @param index The ConstitutionAtomIndex0N that will be assigned to the new ConstitutionAtom */
@@ -346,18 +400,24 @@ namespace chem
 	// Spanning tree stuff
 
 	/*! When a spanning tree has crawled over this atom assign the atom a unique value (seenId) to indicate this */
-	void	setSeenId(int i) {this->seenId=i;};
+CL_NAME("setSeenId");
+CL_DEFMETHOD 	void	setSeenId(int i) {this->seenId=i;};
 
-	int	getSeenId() {return this->seenId;};
-	void	setBackCount(int i) {this->backCount=i;};
-	int	getBackCount() {return this->backCount;};
+CL_NAME("getSeenId");
+CL_DEFMETHOD 	int	getSeenId() {return this->seenId;};
+CL_NAME("setBackCount");
+CL_DEFMETHOD 	void	setBackCount(int i) {this->backCount=i;};
+CL_NAME("getBackCount");
+CL_DEFMETHOD 	int	getBackCount() {return this->backCount;};
 	void	invalidateBackSpan() {this->_BackSpan = _Nil<Atom_O>(); };// = false;
 	bool	isBackSpanValid() {_OF();ANN(this->_BackSpan);return this->_BackSpan.notnilp(); };
-	void	setBackSpan(Atom_sp a) {this->_BackSpan=a;}//this->validBackSpan=true;
+CL_NAME("setBackSpan");
+CL_DEFMETHOD 	void	setBackSpan(Atom_sp a) {this->_BackSpan=a;}//this->validBackSpan=true;
 	Atom_sp	getBackSpan();
 	void	invalidateNextSpan() {this->_NextSpan = _Nil<Atom_O>(); };
 	bool	isNextSpanValid() { return this->_NextSpan.notnilp(); };
-	void	setNextSpan(Atom_sp a) {this->_NextSpan=a;};//;this->validNextSpan=true;
+CL_NAME("setNextSpan");
+CL_DEFMETHOD 	void	setNextSpan(Atom_sp a) {this->_NextSpan=a;};//;this->validNextSpan=true;
 	Atom_sp	getNextSpan();
 
 	/*! Return a local spanning tree as a list of lists of atoms
@@ -375,7 +435,8 @@ namespace chem
 	Atom_sp	aliasAtomOrNil(Alias_sp alias) {IMPLEMENT_ME();};
 	Residue_sp aliasResidueOrNil(Alias_sp alias) {IMPLEMENT_ME();};
 
-	bool	flagsSet(int f)	{return (bool)((this->flags&f)!=0);};
+CL_NAME("flagsSet");
+CL_DEFMETHOD 	bool	flagsSet(int f)	{return (bool)((this->flags&f)!=0);};
 	void	applyTransformToAtoms(const Matrix& m);
 	VectorBond& getBonds()		{return this->bonds; };
         VectorAtom getBondedAtoms();
@@ -435,17 +496,21 @@ namespace chem
 	//
 	//! If the atom can have a stereochemical configuration return true
 	core::List_sp	getNeighborsByRelativePriority();
-	uint	getRelativePriority() { return this->_RelativePriority;};
+CL_NAME("getRelativePriority");
+CL_DEFMETHOD 	uint	getRelativePriority() { return this->_RelativePriority;};
 	void	setRelativePriority(uint p) { this->_RelativePriority = p;};
 	bool	isConfigurable();
 //	void	setConfigurationInfo(ConfigurationInfo& conf);
 	void	setConfiguration(ConfigurationEnum conf);
-	void	setStereochemistryType(StereochemistryType conf) { this->_StereochemistryType = conf;};
+CL_NAME("setStereochemistryType");
+CL_DEFMETHOD 	void	setStereochemistryType(StereochemistryType conf) { this->_StereochemistryType = conf;};
 
         virtual bool applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value);
 
-	StereochemistryType getStereochemistryType() { return this->_StereochemistryType; };
-	ConfigurationEnum getConfiguration() { return this->_Configuration;};
+CL_NAME("getStereochemistryType");
+CL_DEFMETHOD 	StereochemistryType getStereochemistryType() { return this->_StereochemistryType; };
+CL_NAME("getConfiguration");
+CL_DEFMETHOD 	ConfigurationEnum getConfiguration() { return this->_Configuration;};
 	string	getConfigurationAsString();
 #if 0
 	void	setConfigurationPriorityHighToLow(string highest, string high, string low, string lowest);

@@ -516,7 +516,8 @@ PdbWriter_sp PdbWriter_O::make(core::T_sp fileName)
         core::clasp_write_format(BF("TER\n"), fout );
     }
 
-void PdbWriter_O::open(core::T_sp pathDesignator)
+CL_NAME("open");
+CL_DEFMETHOD void PdbWriter_O::open(core::T_sp pathDesignator)
 {_OF();
   this->_Out = core::clasp_openWrite(pathDesignator);
   if ( this->_Out.nilp() ) {
@@ -550,14 +551,16 @@ void PdbWriter_O::open(core::T_sp pathDesignator)
     }
 
 
-    void PdbWriter_O::writeModel(Matter_sp matter, int model)
+CL_NAME("writeModel");
+CL_DEFMETHOD     void PdbWriter_O::writeModel(Matter_sp matter, int model)
     {_OF();
         core::clasp_write_format(BF("MODEL     %d\n") % model, this->_Out);
 	this->write(matter);
         core::clasp_write_format(BF("ENDMDL\n"),this->_Out);
     }
 
-    void PdbWriter_O::close()
+CL_NAME("close");
+CL_DEFMETHOD     void PdbWriter_O::close()
     {
       if ( this->_Out.notnilp() ) {
             core::clasp_write_format(BF("END\n"), this->_Out);

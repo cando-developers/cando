@@ -71,9 +71,12 @@ public:
     iterator begin_Children() { return this->_children.begin(); };
     iterator end_Children() { return this->_children.end(); };
 
-    bool	isNamed(const string& nm)	{return this->localName==nm;};
-    string	getLocalName()			{return this->localName;};
-    void	setLocalName(const string& nm)		{this->localName = nm;};
+CL_NAME("isNamed");
+CL_DEFMETHOD     bool	isNamed(const string& nm)	{return this->localName==nm;};
+CL_NAME("getLocalName");
+CL_DEFMETHOD     string	getLocalName()			{return this->localName;};
+CL_NAME("setLocalName");
+CL_DEFMETHOD     void	setLocalName(const string& nm)		{this->localName = nm;};
 #ifdef	SAVE_XML_FILE_NAME
     void	setFileName(const string& fn)	{ this->_FileName = fn; };
     string	getFileName()			{ return this->_FileName; };
@@ -82,8 +85,10 @@ public:
     string	getFileName()			{ return "-no file name, turn debugging on-";};
 #endif
     void	setLineNumber(int line)		{this->lineNumber = line;};
-    int		getLineNumber()			{return this->lineNumber;};
-    string	getCharacters()			{return this->characters.str();};
+CL_NAME("getLineNumber");
+CL_DEFMETHOD     int		getLineNumber()			{return this->lineNumber;};
+CL_NAME("getCharacters");
+CL_DEFMETHOD     string	getCharacters()			{return this->characters.str();};
     stringstream&	charactersStream()	{return this->characters;};
 		//
 		// getData same as getCharacters
@@ -97,13 +102,15 @@ public:
     vector<double>	getDataAsVectorOfDoubles();
 
 
-    void	setCharacters(const string& chrs)	{this->characters.str(""); this->characters << chrs;};
+CL_NAME("setCharacters");
+CL_DEFMETHOD     void	setCharacters(const string& chrs)	{this->characters.str(""); this->characters << chrs;};
     void	appendCharacters(const string& chrs)	{this->characters << chrs; };
 
     void	writeXml( string prefix, std::ostream& out );
     void	writeToFileName( string fileName );
     void	appendToFileName( string fileName );
-    void	saveAs( string fileName ) { this->writeToFileName(fileName);};
+CL_NAME("saveAs");
+CL_DEFMETHOD     void	saveAs( string fileName ) { this->writeToFileName(fileName);};
     std::ostream&	dumpToStream(std::ostream& o);
     void	dump();
 
@@ -126,20 +133,24 @@ public:
 #endif
 #endif
     void	addChild(QDomNode_sp child );
-    int		numberOfChildren() { return this->_children.size();};
+CL_NAME("numberOfChildren");
+CL_DEFMETHOD     int		numberOfChildren() { return this->_children.size();};
 
     core::List_sp children();
 
-    bool	hasAttribute(const string& at ) {
+CL_NAME("hasAttribute");
+CL_DEFMETHOD     bool	hasAttribute(const string& at ) {
 	return this->attributes.count(at)>0;
     };
 
-    void	removeAttribute(const string& at)
+CL_NAME("removeAttribute");
+CL_DEFMETHOD     void	removeAttribute(const string& at)
     {
         this->attributes.erase(at);
     }
 
-    string	getAttributeValueNoError(const string& at) {
+CL_NAME("getAttribute");
+CL_DEFMETHOD     string	getAttributeValueNoError(const string& at) {
 	if ( this->attributes.count(at)>0 ) {
 	    return this->attributes[at];
 	} else {
@@ -209,7 +220,8 @@ public:
 		// These routines could throw exceptions if they
 		// found invalid data
 		//
-    double	getAttributeDouble(const string& at) {
+CL_NAME("getAttributeDouble");
+CL_DEFMETHOD     double	getAttributeDouble(const string& at) {
 		return atof(this->getAttributeValue(at).c_str());
     };
     double	getAttributeFloat(const string& at) {
@@ -241,7 +253,8 @@ public:
     int		getAttributeInt(const string& at) {
 			return atoi(this->getAttributeValue(at).c_str());
     };
-    int		getAttributeIntDefault(const string& at,int df) {
+CL_NAME("getAttributeIntDefault");
+CL_DEFMETHOD     int		getAttributeIntDefault(const string& at,int df) {
 			if ( this->attributes.count(at) ) {
 			    return atoi(this->getAttributeValue(at).c_str());
 			} else {
@@ -313,10 +326,12 @@ public:
 	this->addAttributeBool(at,val);
     };
 
-    void addAttributeString(const string& at, const string& val) {
+CL_NAME("addAttributeString");
+CL_DEFMETHOD     void addAttributeString(const string& at, const string& val) {
 		this->addAttribute(at,val);
     };
-    void addAttributeDouble(const string& at, double val,int width,int prec ) {
+CL_NAME("addAttributeDouble");
+CL_DEFMETHOD     void addAttributeDouble(const string& at, double val,int width,int prec ) {
         std::ostringstream temp;
 	temp << std::setiosflags(std::ios::fixed)
              << std::setw(width)
@@ -343,7 +358,8 @@ public:
 		<< val;
 	this->addAttribute(at,temp.str());
     };
-    void addAttributeDoubleScientific(const string& at, double val ) {
+CL_NAME("addAttributeDoubleScientific");
+CL_DEFMETHOD     void addAttributeDoubleScientific(const string& at, double val ) {
 	std::ostringstream temp;
 	temp << std::setiosflags(std::ios::scientific) << val;
 	this->addAttribute(at,temp.str());
@@ -364,7 +380,8 @@ public:
 	}
     };
 
-    void addAttributeInt(const string& at, int val) {
+CL_NAME("addAttributeInt");
+CL_DEFMETHOD     void addAttributeInt(const string& at, int val) {
 	std::ostringstream temp;
 	temp << std::dec << val;
 	this->addAttribute(at,temp.str());

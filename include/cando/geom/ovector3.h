@@ -42,10 +42,14 @@ public:
 	core::T_sp shallowCopy() const { return this->deepCopy();};
     string __repr__() const;
 	string __str__() ;
-	void setAll3(double x, double y, double z) { this->_Value.set(x,y,z); };
-	double getX() { return this->_Value.getX(); };
-	double getY() { return this->_Value.getY(); };
-	double getZ() { return this->_Value.getZ(); };
+CL_NAME("setAll3");
+CL_DEFMETHOD 	void setAll3(double x, double y, double z) { this->_Value.set(x,y,z); };
+CL_NAME("x");
+CL_DEFMETHOD 	double getX() { return this->_Value.getX(); };
+CL_NAME("y");
+CL_DEFMETHOD 	double getY() { return this->_Value.getY(); };
+CL_NAME("z");
+CL_DEFMETHOD 	double getZ() { return this->_Value.getZ(); };
 	Vector3& value() { return this->_Value;};
 	Vector3	get() { return this->_Value; };
 		/*! Calculate the dihedral angle from this-vb-vc-vd

@@ -38,7 +38,8 @@ public:
     };
 public:
 
-    void init(core::List_sp c) { this->_Begin = c; };
+CL_NAME("init");
+CL_DEFMETHOD     void init(core::List_sp c) { this->_Begin = c; };
 	void first();
 	void next();
 	bool isDone();

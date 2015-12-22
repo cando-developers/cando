@@ -102,7 +102,8 @@ void    FFStretchDb_O::add(FFStretch_sp term)
 }
 
 
-FFStretch_sp	FFStretchDb_O::findTerm(chem::Atom_sp a1, chem::Atom_sp a2)
+CL_NAME("findTerm");
+CL_DEFMETHOD FFStretch_sp	FFStretchDb_O::findTerm(chem::Atom_sp a1, chem::Atom_sp a2)
 {_G();
 FFStretch_sp			match;
  core::Symbol_sp                          key;

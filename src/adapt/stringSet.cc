@@ -53,7 +53,8 @@ namespace adapt {
   __END_DOC
 */
 
-StringSet_sp StringSet_O::insertConsStrings(List_sp vals) {
+CL_NAME("insertConsStrings");
+CL_DEFMETHOD StringSet_sp StringSet_O::insertConsStrings(List_sp vals) {
   for (auto p : vals) {
     Str_sp t = gc::As<Str_sp>(oCar(p));
     this->insert(t->get());
@@ -68,7 +69,8 @@ void StringSet_O::insertVectorStrings(VectorStrings s) {
   }
 }
 
-void StringSet_O::insertStringSet(StringSet_sp s) {
+CL_NAME("insertStringSet");
+CL_DEFMETHOD void StringSet_O::insertStringSet(StringSet_sp s) {
   set<string>::iterator si;
   for (si = s->strs.begin(); si != s->strs.end(); si++) {
     this->insert(*si);
@@ -105,7 +107,8 @@ string StringSet_O::__repr__() const {
   }
   return ss.str();
 }
-string StringSet_O::asString() {
+CL_NAME("asString");
+CL_DEFMETHOD string StringSet_O::asString() {
   stringstream ss;
   set<string>::iterator si;
   string nm;
@@ -139,14 +142,16 @@ void StringSet_O::archiveBase(ArchiveP node) {
   }
 }
 
-bool StringSet_O::contains(const string &s) {
+CL_NAME("contains");
+CL_DEFMETHOD bool StringSet_O::contains(const string &s) {
   _G();
   bool ye;
   ye = this->strs.count(s);
   return ye;
 }
 
-bool StringSet_O::containsSubset(StringSet_sp sub) {
+CL_NAME("containsSubset");
+CL_DEFMETHOD bool StringSet_O::containsSubset(StringSet_sp sub) {
   StringSet_O::iterator si;
   for (si = sub->begin(); si != sub->end(); si++) {
     if (!this->contains(*si)) {
@@ -156,7 +161,8 @@ bool StringSet_O::containsSubset(StringSet_sp sub) {
   return true;
 }
 
-void StringSet_O::clear() {
+CL_NAME("clear");
+CL_DEFMETHOD void StringSet_O::clear() {
   _OF();
   LOG(BF("StringSet::clear size=%d") % (this->strs.size()));
   if (this->strs.size() == 0)
@@ -204,7 +210,8 @@ StringSet_O::StringSet_O(const StringSet_O &ss) : CxxObject_O(ss) {
   this->strs = ss.strs;
 }
 
-void StringSet_O::setFromString(const string &s) {
+CL_NAME("setFromString");
+CL_DEFMETHOD void StringSet_O::setFromString(const string &s) {
   _G();
   VectorStrings words;
   tokenize(s, words, "\t\n ");
@@ -212,7 +219,8 @@ void StringSet_O::setFromString(const string &s) {
   this->insertVectorStrings(words);
 }
 
-StringSet_sp StringSet_O::setUnion(StringSet_sp b) {
+CL_NAME("StringSetUnion");
+CL_DEFMETHOD StringSet_sp StringSet_O::setUnion(StringSet_sp b) {
   _G();
   StringSet_sp nset;
   set<string>::iterator si;
@@ -226,7 +234,8 @@ StringSet_sp StringSet_O::setUnion(StringSet_sp b) {
   return nset;
 }
 
-StringSet_sp StringSet_O::intersection(StringSet_sp b) {
+CL_NAME("StringSetIntersection");
+CL_DEFMETHOD StringSet_sp StringSet_O::intersection(StringSet_sp b) {
   _G();
   StringSet_sp nset;
   set<string>::iterator si;
@@ -243,7 +252,8 @@ StringSet_sp StringSet_O::intersection(StringSet_sp b) {
   return nset;
 }
 
-StringSet_sp StringSet_O::relativeComplement(StringSet_sp b) {
+CL_NAME("relativeComplement");
+CL_DEFMETHOD StringSet_sp StringSet_O::relativeComplement(StringSet_sp b) {
   StringSet_sp nset;
   set<string>::iterator si;
   nset = StringSet_O::create();
@@ -258,7 +268,8 @@ StringSet_sp StringSet_O::relativeComplement(StringSet_sp b) {
 /*! Return a new set that takes every element of (this) in combination
   with every element in b separated by a comma
 */
-StringSet_sp StringSet_O::cartesianProductInsert(string ins, StringSet_sp b) {
+CL_NAME("cartesianProductInsert");
+CL_DEFMETHOD StringSet_sp StringSet_O::cartesianProductInsert(string ins, StringSet_sp b) {
   _G();
   StringSet_sp nset;
   set<string>::iterator si, bi;
@@ -274,7 +285,8 @@ StringSet_sp StringSet_O::cartesianProductInsert(string ins, StringSet_sp b) {
   return nset;
 }
 
-List_sp StringSet_O::asCons() const {
+CL_NAME("asCons");
+CL_DEFMETHOD List_sp StringSet_O::asCons() const {
   _G();
   List_sp cur = _Nil<T_O>();
   set<string>::iterator si;

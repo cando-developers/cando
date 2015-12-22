@@ -62,7 +62,8 @@ public:	// ----------------------------------------------------------
     void	setRecognizerName(core::Symbol_sp fn);
     core::Symbol_sp	getRecognizerName();
 
-    string	getSmarts()	{ return this->_Smarts;};
+CL_NAME("getSmarts");
+CL_DEFMETHOD     string	getSmarts()	{ return this->_Smarts;};
     void	compileSmarts(const string& fn);
 
 	/*! Given the O atom, return true if this FrameRecognizer recognizes

@@ -46,11 +46,16 @@ public:
 //	void	archive(core::ArchiveP node);
 public:
 public:
-	void	setOrigin(const Vector3& o)	{ this->origin=o; };
-	Vector3		getOrigin()	{ return (this->origin); };
-	Vector3		getX()		{ return (this->x); };
-	Vector3		getY()		{ return (this->y); };
-	Vector3		getZ()		{ return (this->z); };
+CL_NAME("setOrigin");
+CL_DEFMETHOD 	void	setOrigin(const Vector3& o)	{ this->origin=o; };
+CL_NAME("getOrigin");
+CL_DEFMETHOD 	Vector3		getOrigin()	{ return (this->origin); };
+CL_NAME("getX");
+CL_DEFMETHOD 	Vector3		getX()		{ return (this->x); };
+CL_NAME("getY");
+CL_DEFMETHOD 	Vector3		getY()		{ return (this->y); };
+CL_NAME("getZ");
+CL_DEFMETHOD 	Vector3		getZ()		{ return (this->z); };
 
 	void	canonical();
 

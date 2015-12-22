@@ -71,7 +71,8 @@ public:
     virtual void	transferCoordinates(Matter_sp other);
 
     virtual void addMatter(Matter_sp matter);
-    Aggregate_sp	addMolecule( Molecule_sp a ) {this->addMatter(a); return this->sharedThis<Aggregate_O>();};
+CL_NAME("addMolecule");
+CL_DEFMETHOD     Aggregate_sp	addMolecule( Molecule_sp a ) {this->addMatter(a); return this->sharedThis<Aggregate_O>();};
     Aggregate_sp	addMoleculeRetainId( Molecule_sp a ) {this->addMatterRetainId(Matter_sp(a)); return this->sharedThis<Aggregate_O>();};
     Molecule_sp      firstMolecule();
     MatterName     firstMoleculeName();
@@ -88,13 +89,15 @@ public:
 //	void		dump();
 
     bool		testForVdwOverlap(Aggregate_sp other);
-    bool		testAggregateConsistancy() {return this->testConsistancy(Matter_sp());};
+CL_NAME("testAggregateConsistancy");
+CL_DEFMETHOD     bool		testAggregateConsistancy() {return this->testConsistancy(Matter_sp());};
 
     virtual uint	numberOfAtoms( );
     virtual bool isAggregate() { return true;};
 
     /*! Return a Cons with all molecules */
-    core::List_sp molecules() { return this->contentsAsCons(); };
+CL_NAME("molecules");
+CL_DEFMETHOD     core::List_sp molecules() { return this->contentsAsCons(); };
 
     /*! When a structure is loaded and all the atoms are dumped into the same
      * molecule and same residue then we may want to separate out the molecules
@@ -114,7 +117,8 @@ public:
 
 
     void		writeToFile(const string& fileName);
-    void		saveAs(const string& fileName) { _G(); this->writeToFile(fileName);};
+CL_NAME("saveAs");
+CL_DEFMETHOD     void		saveAs(const string& fileName) { _G(); this->writeToFile(fileName);};
 
 
     bool	canRender() { return true;}

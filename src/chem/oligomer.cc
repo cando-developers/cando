@@ -95,12 +95,14 @@ void	Oligomer_O::signalConnectivityChanged()
 #endif
 }
 
-bool	Oligomer_O::hasLastMultiMonomerChanged()
+CL_NAME("hasLastMultiMonomerChanged");
+CL_DEFMETHOD bool	Oligomer_O::hasLastMultiMonomerChanged()
 {_OF();
     ASSERTNOTNULL(this->_WeakLastMultiMonomerChanged);
     return this->_WeakLastMultiMonomerChanged.notnilp();
 }
-MultiMonomer_sp Oligomer_O::getLastMultiMonomerChanged()
+CL_NAME("getLastMultiMonomerChanged");
+CL_DEFMETHOD MultiMonomer_sp Oligomer_O::getLastMultiMonomerChanged()
 {_OF();
     ASSERTNOTNULL(this->_WeakLastMultiMonomerChanged);
     return this->_WeakLastMultiMonomerChanged;
@@ -115,7 +117,8 @@ void	Oligomer_O::propagateSignal(core::Symbol_sp signal)
 
 
 
-void	Oligomer_O::empty()
+CL_NAME("empty");
+CL_DEFMETHOD void	Oligomer_O::empty()
 {
     this->_Monomers.clear();
     this->_Couplings.clear();
@@ -143,7 +146,8 @@ void Oligomer_O::setCandoDatabase(CandoDatabase_sp bdb)
 #endif
 
 
-core::List_sp Oligomer_O::monomersAsCons()
+CL_NAME("monomersAsCons");
+CL_DEFMETHOD core::List_sp Oligomer_O::monomersAsCons()
 {_G();
     core::List_sp cons = _Nil<core::T_O>();
     gctools::Vec0<Monomer_sp>::iterator	mi;
@@ -212,7 +216,8 @@ Coupling_sp				coupling;
 /*! Add a monomer, don't change its id
  * Oligomer._State must be (alchemistsAreUndefined)
  */
-uint Oligomer_O::addMonomer(Monomer_sp s)
+CL_NAME("addMonomer");
+CL_DEFMETHOD uint Oligomer_O::addMonomer(Monomer_sp s)
 {_G();
 Monomer_sp	monomer;
 uint		idx;
@@ -231,7 +236,8 @@ uint		idx;
     return idx;
 }
 
-bool Oligomer_O::hasMonomerWithId(core::Symbol_sp id)
+CL_NAME("hasMonomerWithId");
+CL_DEFMETHOD bool Oligomer_O::hasMonomerWithId(core::Symbol_sp id)
 {_G();
     gctools::Vec0<Monomer_sp>::iterator	mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) 
@@ -242,7 +248,8 @@ bool Oligomer_O::hasMonomerWithId(core::Symbol_sp id)
 }
 
 
-Monomer_sp Oligomer_O::getMonomerWithId(core::Symbol_sp id)
+CL_NAME("getMonomerWithId");
+CL_DEFMETHOD Monomer_sp Oligomer_O::getMonomerWithId(core::Symbol_sp id)
 {_G();
     gctools::Vec0<Monomer_sp>::iterator	mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) 
@@ -257,7 +264,8 @@ Monomer_sp Oligomer_O::getMonomerWithId(core::Symbol_sp id)
 
 /*! Remove a monomer.
 Oligomer._State must be (alchemistsAreUndefined) */
-void	Oligomer_O::removeMonomer(Monomer_sp s)
+CL_NAME("removeMonomer");
+CL_DEFMETHOD void	Oligomer_O::removeMonomer(Monomer_sp s)
 {_G();
     gctools::Vec0<Monomer_sp>::iterator	mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) 
@@ -274,7 +282,8 @@ void	Oligomer_O::removeMonomer(Monomer_sp s)
 
 /*! Remove a coupling.
 Oligomer._State must be (alchemistsAreUndefined) */
-void	Oligomer_O::removeCoupling(Coupling_sp s)
+CL_NAME("Oligomer-removeCoupling");
+CL_DEFMETHOD void	Oligomer_O::removeCoupling(Coupling_sp s)
 {
     gctools::Vec0<Coupling_sp>::iterator	mi;
     for ( mi=this->_Couplings.begin(); mi!=this->_Couplings.end(); mi++ ) {
@@ -288,7 +297,8 @@ void	Oligomer_O::removeCoupling(Coupling_sp s)
 
 
 
-bool	Oligomer_O::checkForErrors()
+CL_NAME("checkForErrors");
+CL_DEFMETHOD bool	Oligomer_O::checkForErrors()
 {_G();
     gctools::Vec0<Monomer_sp>::iterator	mi;
     gctools::Vec0<Coupling_sp>::iterator	ci;
@@ -315,7 +325,8 @@ bool	Oligomer_O::checkForErrors()
 
 
 
-void	Oligomer_O::updateMultiMonomers()
+CL_NAME("updateMultiMonomers");
+CL_DEFMETHOD void	Oligomer_O::updateMultiMonomers()
 {_G();
 Oligomer_O::monomerIterator	mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
@@ -357,7 +368,8 @@ MultiMonomer_sp	monTo;
 /*! Remove a Monomer that is a leaf.
  * Returns the monomer that it was attached to.
  */
-Monomer_sp Oligomer_O::removeLeafMonomer(Monomer_sp monomerToRemove)
+CL_NAME("removeLeafMonomer");
+CL_DEFMETHOD Monomer_sp Oligomer_O::removeLeafMonomer(Monomer_sp monomerToRemove)
 {_G();
 uint	couplings;
 DirectionalCoupling_sp	couplingToRemove;
@@ -385,7 +397,8 @@ Monomer_sp	monomerToRemain;
 
 /*! Add a coupling.
 Oligomer._State must be (alchemistsAreUndefined) */
-void	Oligomer_O::addCoupling(Coupling_sp c)
+CL_NAME("Oligomer-addCoupling");
+CL_DEFMETHOD void	Oligomer_O::addCoupling(Coupling_sp c)
 {_G();
     this->_Couplings.push_back(c);
 //    c->connectListener(this->sharedThis<Oligomer_O>(),Coupling_nameChanged);
@@ -396,7 +409,8 @@ void	Oligomer_O::addCoupling(Coupling_sp c)
 
 /*! Return the monomer at the root of the tree.
 Oligomer._State can be anything. */
-Monomer_sp	Oligomer_O::rootMonomer()
+CL_NAME("rootMonomer");
+CL_DEFMETHOD Monomer_sp	Oligomer_O::rootMonomer()
 {_G();
 Monomer_sp	sub;
 DirectionalCoupling_sp	coupling;
@@ -425,7 +439,8 @@ coupling = _Nil<DirectionalCoupling_O>();
 }
 
 
-void	Oligomer_O::throwIfBadConnections()
+CL_NAME("throwIfBadConnections");
+CL_DEFMETHOD void	Oligomer_O::throwIfBadConnections()
 {_G();
     gctools::Vec0<Monomer_sp>::iterator	mi;
     gctools::Vec0<Coupling_sp>::iterator	ci;
@@ -447,7 +462,8 @@ void	Oligomer_O::throwIfBadConnections()
 
 
 
-void	Oligomer_O::setVerbose(bool v)
+CL_NAME("setVerbose");
+CL_DEFMETHOD void	Oligomer_O::setVerbose(bool v)
 {_G();
     gctools::Vec0<Monomer_sp>::iterator	mi;
     this->_Verbose = v;
@@ -463,7 +479,8 @@ void	Oligomer_O::setVerbose(bool v)
 
 
 
-DirectionalCoupling_sp	Oligomer_O::couple( Monomer_sp inMon, core::Symbol_sp name, Monomer_sp outMon )
+CL_NAME("couple");
+CL_DEFMETHOD DirectionalCoupling_sp	Oligomer_O::couple( Monomer_sp inMon, core::Symbol_sp name, Monomer_sp outMon )
 {_OF();
 DirectionalCoupling_sp	coupling;
 bool		foundIn, foundOut;
@@ -505,7 +522,8 @@ gctools::Vec0<Monomer_sp>::iterator	mi;
 }
 
 
-RingCoupling_sp	Oligomer_O::ringCouple( Monomer_sp mon1, Monomer_sp mon2 )
+CL_NAME("ringCouple");
+CL_DEFMETHOD RingCoupling_sp	Oligomer_O::ringCouple( Monomer_sp mon1, Monomer_sp mon2 )
 {_OF();
 RingCoupling_sp	coupling;
 bool		found1, found2;
@@ -558,7 +576,8 @@ gctools::Vec0<Monomer_sp>::iterator	mi;
 
 
 
-Molecule_sp Oligomer_O::getMolecule()
+CL_NAME("getMolecule");
+CL_DEFMETHOD Molecule_sp Oligomer_O::getMolecule()
 {_G();
 Topology_sp		topology;
 int			residueNetCharge;
@@ -596,7 +615,8 @@ int			residueNetCharge;
 }
 
 
-string	Oligomer_O::getErrorMessage()
+CL_NAME("getErrorMessage");
+CL_DEFMETHOD string	Oligomer_O::getErrorMessage()
 {_G();
 stringstream			msg;
 gctools::Vec0<Monomer_sp>::iterator	mi;
@@ -715,7 +735,8 @@ Bignum			index;
  * Increment the monomer sequence.
  * Return -1 if there are too many sequences.
  */
-Bignum Oligomer_O::numberOfSequences()
+CL_NAME("numberOfSequences");
+CL_DEFMETHOD Bignum Oligomer_O::numberOfSequences()
 {_G();
     gctools::Vec0<Monomer_sp>::iterator	mi;
 vector<int>			bases;
@@ -748,7 +769,8 @@ long unsigned int numSeq;
 
 
 
-Monomer_sp	Oligomer_O::getFirstMonomer()
+CL_NAME("getFirstMonomer");
+CL_DEFMETHOD Monomer_sp	Oligomer_O::getFirstMonomer()
 {
     if ( this->_Monomers.size() != 0 ) {
         return this->_Monomers[0];
@@ -799,7 +821,8 @@ void Oligomer_O::_fillSequenceAsStringForChildren(Monomer_sp rootMonomer, string
     }
 }
 
-string	Oligomer_O::sequenceAsString()
+CL_NAME("sequenceAsString");
+CL_DEFMETHOD string	Oligomer_O::sequenceAsString()
 {_G();
 
     Monomer_sp mon2 = this->rootMonomer();
@@ -873,7 +896,8 @@ adapt::SymbolSet_sp Oligomer_O::allMonomerAliases()
     return aliases;
 }
 
-string	Oligomer_O::sequenceAsFileName()
+CL_NAME("sequenceAsFileName");
+CL_DEFMETHOD string	Oligomer_O::sequenceAsFileName()
 {_G();
 
     Monomer_sp mon2 = this->rootMonomer();
@@ -885,7 +909,8 @@ string	Oligomer_O::sequenceAsFileName()
     return name.substr(0,255);
 }
 
-SpecificContextSet_sp Oligomer_O::allSpecificMonomerContexts()
+CL_NAME("allSpecificMonomerContexts");
+CL_DEFMETHOD SpecificContextSet_sp Oligomer_O::allSpecificMonomerContexts()
 {_G();
     SpecificContextSet_sp allContexts = SpecificContextSet_O::create();
     Oligomer_O::monomerIterator mi;

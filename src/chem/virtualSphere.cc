@@ -271,7 +271,8 @@ void	VirtualSphere_O::initialize()
 }
 
 
-void VirtualSphere_O::dump()
+CL_NAME("dump");
+CL_DEFMETHOD void VirtualSphere_O::dump()
 {_OF();
     stringstream ss;
     ss << "VirtualSphere dump  _Recalculate = " << this->_Recalculate << std::endl;
@@ -300,7 +301,8 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,scale);
     }
 
 
-    void VirtualSphere_O::setMouseStartSymbol( core::Symbol_sp sym, int x, int y, int w, int h )
+CL_NAME("setMouseStart");
+CL_DEFMETHOD     void VirtualSphere_O::setMouseStartSymbol( core::Symbol_sp sym, int x, int y, int w, int h )
     {_OF();
 	VirtualSphereMotionMode mode = this->mouseModeFromSymbol(sym);
 	this->setMouseStart(mode,x,y,w,h);
@@ -319,7 +321,8 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,scale);
 
 
 
-void	VirtualSphere_O::setMouseMove( int x, int y )
+CL_NAME("setMouseMove");
+CL_DEFMETHOD void	VirtualSphere_O::setMouseMove( int x, int y )
 {_OF();
 double	sx,sy,tx,ty,scaleDelta;
 Vector3	delta;
@@ -398,7 +401,8 @@ Matrix	mtemp;
 
 
 
-    void
+CL_NAME("setMouseXAxisWheelChange");
+CL_DEFMETHOD     void
     VirtualSphere_O::setMouseXAxisWheelChange(core::Symbol_sp smode, double w)
     {_OF();
 	VirtualSphereMotionMode mode = this->mouseModeFromSymbol(smode);
@@ -441,7 +445,8 @@ Matrix	mtemp;
     }
 
 
-    void
+CL_NAME("setMouseYAxisWheelChange");
+CL_DEFMETHOD     void
     VirtualSphere_O::setMouseYAxisWheelChange(core::Symbol_sp smode, double w)
     {_OF();
 	VirtualSphereMotionMode mode = this->mouseModeFromSymbol(smode);

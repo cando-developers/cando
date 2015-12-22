@@ -93,7 +93,8 @@ namespace chem {
 
 //HERE HERE HERE   copy this and make it general
 
-    MonomerContext_sp Monomer_O::getGeneralMonomerContext()
+CL_NAME("getGeneralMonomerContext");
+CL_DEFMETHOD     MonomerContext_sp Monomer_O::getGeneralMonomerContext()
     {_G();
 	MonomerContext_sp	context;
 	EntityNameSetWithCap_sp	selfRecognizer, neighborRecognizer;
@@ -127,13 +128,16 @@ namespace chem {
     }
 
     void	Monomer_O::clearError()	{_OF();ASSERTNOTNULL(this->_Status);this->_Status->reset();};
-    bool	Monomer_O::getHasError()	{ return this->_Status->hasError();};
-    string	Monomer_O::getStatusMessage() { return this->_Status->getStatus();};
+CL_NAME("getHasError");
+CL_DEFMETHOD     bool	Monomer_O::getHasError()	{ return this->_Status->hasError();};
+CL_NAME("getStatusMessage");
+CL_DEFMETHOD     string	Monomer_O::getStatusMessage() { return this->_Status->getStatus();};
     void	Monomer_O::addErrorMessage(const string& s) { this->_Status->addError(s);};
     void	Monomer_O::addStatusMessage(const string& s) {this->_Status->addMessage(s);};
     StatusTracker_sp	Monomer_O::getStatusTracker() { return this->_Status;};
 
-    core::List_sp	Monomer_O::plugNamesAndCouplingsAsCons()
+CL_NAME("plugNamesAndCouplingsAsCons");
+CL_DEFMETHOD     core::List_sp	Monomer_O::plugNamesAndCouplingsAsCons()
     {_G();
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
@@ -172,14 +176,16 @@ namespace chem {
     }
 
 
-    void	Monomer_O::setAliasesFromCons(core::List_sp aliases)
+CL_NAME("setAliasesFromCons");
+CL_DEFMETHOD     void	Monomer_O::setAliasesFromCons(core::List_sp aliases)
     {_G();
 	this->_Aliases->clear();
 	this->_Aliases->insertConsSymbols(aliases);
     }
 
 
-    bool Monomer_O::hasTemporaryResidue()
+CL_NAME("hasTemporaryResidue");
+CL_DEFMETHOD     bool Monomer_O::hasTemporaryResidue()
     {_OF();
 	ASSERTNOTNULL(this->_TempResidue);
 	return this->_TempResidue.notnilp();
@@ -227,7 +233,8 @@ namespace chem {
 #endif
 
 
-    string Monomer_O::getAliasesAsString()
+CL_NAME("getAliasesAsString");
+CL_DEFMETHOD     string Monomer_O::getAliasesAsString()
     {_OF();
 	ASSERTNOTNULL(this->_Aliases);
 	return this->_Aliases->asString();
@@ -241,7 +248,8 @@ namespace chem {
 	this->_Aliases->insertSymbolList(aliases);
     }
 
-    bool	Monomer_O::checkForBadConnections()
+CL_NAME("checkForBadConnections");
+CL_DEFMETHOD     bool	Monomer_O::checkForBadConnections()
     {_G();
 	Couplings::iterator	it;
 	Coupling_sp		coup;
@@ -266,7 +274,8 @@ namespace chem {
 	return badConnections;
     }
 
-    void	Monomer_O::throwIfBadConnections()
+CL_NAME("throwIfBadConnections");
+CL_DEFMETHOD     void	Monomer_O::throwIfBadConnections()
     {_G();
 	if ( this->checkForBadConnections() )
 	{
@@ -278,7 +287,8 @@ namespace chem {
 
 
 
-    void	Monomer_O::checkForErrorsAndUnknownContexts(CandoDatabase_sp cdb)
+CL_NAME("checkForErrorsAndUnknownContexts");
+CL_DEFMETHOD     void	Monomer_O::checkForErrorsAndUnknownContexts(CandoDatabase_sp cdb)
     {_G();
 	string			lastPlugName;
 	Coupling_sp		coup;
@@ -287,7 +297,8 @@ namespace chem {
     }
 
 
-    MonomerContext_sp Monomer_O::getSpecificMonomerContext()
+CL_NAME("getSpecificMonomerContext");
+CL_DEFMETHOD     MonomerContext_sp Monomer_O::getSpecificMonomerContext()
     {_G();
 	MonomerContext_sp	context;
 	EntityNameSet_sp	selfRecognizer, neighborRecognizer;
@@ -343,7 +354,8 @@ namespace chem {
     }
 
 
-    Topology_sp	Monomer_O::getTopology()
+CL_NAME("getTopology");
+CL_DEFMETHOD     Topology_sp	Monomer_O::getTopology()
     {_G();
 	CandoDatabase_sp	bdb;
 	Constitution_sp	constitution;
@@ -390,7 +402,8 @@ namespace chem {
 //
 
 
-    DirectionalCoupling_sp	Monomer_O::getInCoupling()
+CL_NAME("getInCoupling");
+CL_DEFMETHOD     DirectionalCoupling_sp	Monomer_O::getInCoupling()
     {_G();
 	Monomer_O::Couplings::iterator	it;
 	DirectionalCoupling_sp			coup;
@@ -426,7 +439,8 @@ namespace chem {
     };
 
 
-    bool	Monomer_O::hasInCoupling()
+CL_NAME("hasInCoupling");
+CL_DEFMETHOD     bool	Monomer_O::hasInCoupling()
     {_G();
 	Coupling_sp	coup;
 	coup = this->getInCoupling();
@@ -463,7 +477,8 @@ namespace chem {
     }
 
 
-    Constitution_sp Monomer_O::getConstitution()
+CL_NAME("getConstitution");
+CL_DEFMETHOD     Constitution_sp Monomer_O::getConstitution()
     {_G();
 	CandoDatabase_sp db;
 	core::Symbol_sp nm;
@@ -529,7 +544,8 @@ namespace chem {
 
 
 
-    void	Monomer_O::addCoupling( core::Symbol_sp plugName,  Coupling_sp coup)
+CL_NAME("addCoupling");
+CL_DEFMETHOD     void	Monomer_O::addCoupling( core::Symbol_sp plugName,  Coupling_sp coup)
     {_G();
 	LOG(BF("add coupling to %s") % this->description() );
 	LOG(BF("Adding plug(%s) coupling: %s") % plugName->__repr__() % coup->description() );
@@ -552,7 +568,8 @@ namespace chem {
     }
 
 
-    void	Monomer_O::setInCoupling( Coupling_sp coup)
+CL_NAME("setInCoupling");
+CL_DEFMETHOD     void	Monomer_O::setInCoupling( Coupling_sp coup)
     {_G();
 	core::Symbol_sp inCoupName;
 	LOG(BF("setting in coupling of %s") % this->description() );
@@ -565,7 +582,8 @@ namespace chem {
 
 
 
-    void	Monomer_O::addOutCoupling( Coupling_sp coup )
+CL_NAME("addOutCoupling");
+CL_DEFMETHOD     void	Monomer_O::addOutCoupling( Coupling_sp coup )
     {_G();
 	ASSERTNOTNULL(coup);
 	LOG(BF("adding out coupling to %s") % this->description()  );
@@ -575,7 +593,8 @@ namespace chem {
     }
 
 
-    void	Monomer_O::removeCouplingToMonomer(Monomer_sp mon )
+CL_NAME("removeCouplingToMonomer");
+CL_DEFMETHOD     void	Monomer_O::removeCouplingToMonomer(Monomer_sp mon )
     {_G();
 	Couplings::iterator		wci;
 	bool				foundIt;
@@ -650,7 +669,8 @@ namespace chem {
 
 
 
-    void	Monomer_O::removeCoupling(Coupling_sp coup)
+CL_NAME("removeCoupling");
+CL_DEFMETHOD     void	Monomer_O::removeCoupling(Coupling_sp coup)
     {_G();
 	bool				foundIt = false;
 	Coupling_sp			myCoup;
@@ -776,7 +796,8 @@ namespace chem {
 
 
 
-    void	MultiMonomer_O::setGroupName(core::Symbol_sp name)
+CL_NAME("setGroupName");
+CL_DEFMETHOD     void	MultiMonomer_O::setGroupName(core::Symbol_sp name)
     {_G();
 	CandoDatabase_sp	bdb;
 	this->_GroupName = name;
@@ -870,7 +891,8 @@ namespace chem {
 
 
 
-    OneMonomer_sp	MultiMonomer_O::getOneMonomer() const
+CL_NAME("getOneMonomer");
+CL_DEFMETHOD     OneMonomer_sp	MultiMonomer_O::getOneMonomer() const
     {_G();
 	if ( this->_Monomers.size() < 1 ) {
 	    SIMPLE_ERROR(BF("There are no monomers defined for MultiMonomer group("+this->_GroupName->__repr__()+")"));
@@ -955,7 +977,8 @@ namespace chem {
     }
 
 
-    bool Monomer_O::isMonomerContextValid()
+CL_NAME("isMonomerContextValid");
+CL_DEFMETHOD     bool Monomer_O::isMonomerContextValid()
     {_G();
 	LOG(BF("status") );
         adapt::SymbolSet_sp keys = adapt::SymbolSet_O::create();
@@ -974,7 +997,8 @@ namespace chem {
 
 
 
-    OneMonomer_sp	MultiMonomer_O::getOneMonomerWithName(core::Symbol_sp name) const
+CL_NAME("getOneMonomerWithName");
+CL_DEFMETHOD     OneMonomer_sp	MultiMonomer_O::getOneMonomerWithName(core::Symbol_sp name) const
     {_G();
 	Monomers::const_iterator	mi;
 	for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
@@ -986,7 +1010,8 @@ namespace chem {
 
 
 
-    AtomIndexer_sp	MultiMonomer_O::getInterestingAtomIndexer()
+CL_NAME("getInterestingAtomIndexer");
+CL_DEFMETHOD     AtomIndexer_sp	MultiMonomer_O::getInterestingAtomIndexer()
     {_G();
 	AtomIndexer_sp		atomIndexer;
 	EntityNameSet_sp		entityNameSet;

@@ -190,7 +190,8 @@ void	DirectionalCoupling_O::resetOut()
     }
 }
 
-void	DirectionalCoupling_O::throwIfBadConnections()
+CL_NAME("throwIfBadConnections");
+CL_DEFMETHOD void	DirectionalCoupling_O::throwIfBadConnections()
 {_G();
 Monomer_sp	mon;
 DirectionalCoupling_sp	coup;
@@ -259,7 +260,8 @@ bool	DirectionalCoupling_O::isInCouplingToMonomer(Monomer_sp mon)
 
 
 
-Monomer_sp	DirectionalCoupling_O::getInMonomer()
+CL_NAME("getInMonomer");
+CL_DEFMETHOD Monomer_sp	DirectionalCoupling_O::getInMonomer()
 {_OF();
     ASSERTNOTNULLP(this->_InMonomer,
     	"InMonomer is NULL for coupling: "+this->description());
@@ -274,7 +276,8 @@ Monomer_sp	DirectionalCoupling_O::getInMonomer_const() const
 };
 
 
-Monomer_sp	DirectionalCoupling_O::getOutMonomer()
+CL_NAME("getOutMonomer");
+CL_DEFMETHOD Monomer_sp	DirectionalCoupling_O::getOutMonomer()
 {_OF();
     ASSERTNOTNULLP(this->_OutMonomer,
     	"OutMonomer is NULL for coupling: "+this->description());
@@ -293,7 +296,8 @@ Monomer_sp	DirectionalCoupling_O::getOutMonomer_const() const
 /*!
  * inPlugNames for couplings are the out-plugs for monomers
  */
-    core::Symbol_sp	DirectionalCoupling_O::getInMonomerPlugName()
+CL_NAME("getInMonomerPlugName");
+CL_DEFMETHOD     core::Symbol_sp	DirectionalCoupling_O::getInMonomerPlugName()
 {_G();
     return DirectionalCoupling_O::outPlugName(this->_Name);
 }
@@ -302,7 +306,8 @@ Monomer_sp	DirectionalCoupling_O::getOutMonomer_const() const
 /*!
  * inPlugNames for couplings are the out-plugs for monomers
  */
-    core::Symbol_sp	DirectionalCoupling_O::getOutMonomerPlugName()
+CL_NAME("getOutMonomerPlugName");
+CL_DEFMETHOD     core::Symbol_sp	DirectionalCoupling_O::getOutMonomerPlugName()
 {_G();
     return DirectionalCoupling_O::inPlugName(this->_Name);
 }
@@ -340,7 +345,8 @@ ss << "DirectionalCoupling( "<< this->getName()->__repr__();
 
 
 
-    void	DirectionalCoupling_O::setName(core::Symbol_sp nm)
+CL_NAME("setName");
+CL_DEFMETHOD     void	DirectionalCoupling_O::setName(core::Symbol_sp nm)
 {_G();
     this->_Name = DirectionalCoupling_O::couplingName(nm);
     ANN(this->_InMonomer);
@@ -372,13 +378,15 @@ void	DirectionalCoupling_O::setOutMonomer_NoSignal(Monomer_sp m)
 
 
 
-void	DirectionalCoupling_O::setInMonomer(Monomer_sp m)
+CL_NAME("setInMonomer");
+CL_DEFMETHOD void	DirectionalCoupling_O::setInMonomer(Monomer_sp m)
 {_G();
     this->setInMonomer_NoSignal(m);
 //    SIGNAL(this,Coupling_connectionsChanged);
 }
 
-void	DirectionalCoupling_O::setOutMonomer(Monomer_sp m)
+CL_NAME("setOutMonomer");
+CL_DEFMETHOD void	DirectionalCoupling_O::setOutMonomer(Monomer_sp m)
 {_G();
     this->setOutMonomer_NoSignal(m);
 //    SIGNAL(this,Coupling_connectionsChanged);
@@ -400,7 +408,8 @@ DirectionalCouplingSide DirectionalCoupling_O::couplingSideOfMonomer( Monomer_sp
 
 
 
-Monomer_sp	DirectionalCoupling_O::getOtherSideMonomer(Monomer_sp mon)
+CL_NAME("getOtherSideMonomer");
+CL_DEFMETHOD Monomer_sp	DirectionalCoupling_O::getOtherSideMonomer(Monomer_sp mon)
 {_G();
     LOG(BF("About to check in monomer") );
     if ( mon == this->getInMonomer() ) { return this->getOutMonomer(); };
@@ -556,12 +565,14 @@ void RingCoupling_O::archiveBase(core::ArchiveP node)
 }
 
 
-void	RingCoupling_O::setMonomer1(Monomer_sp mon)
+CL_NAME("setMonomer1");
+CL_DEFMETHOD void	RingCoupling_O::setMonomer1(Monomer_sp mon)
 {_G();
     this->_Monomer1 = mon;
 }
 
-Monomer_sp RingCoupling_O::getMonomer1()
+CL_NAME("getMonomer1");
+CL_DEFMETHOD Monomer_sp RingCoupling_O::getMonomer1()
 {_OF();
     ASSERTNOTNULLP(this->_Monomer1,
     	"InMonomer is NULL for coupling: "+this->description());
@@ -576,12 +587,14 @@ Monomer_sp RingCoupling_O::getMonomer1_const() const
 }
 
 
-void	RingCoupling_O::setMonomer2(Monomer_sp mon)
+CL_NAME("setMonomer2");
+CL_DEFMETHOD void	RingCoupling_O::setMonomer2(Monomer_sp mon)
 {_G();
     this->_Monomer2 = mon;
 }
 
-Monomer_sp RingCoupling_O::getMonomer2()
+CL_NAME("getMonomer2");
+CL_DEFMETHOD Monomer_sp RingCoupling_O::getMonomer2()
 {_OF();
     ASSERTNOTNULLP(this->_Monomer2,
     	"Monomer2 is NULL for coupling: "+this->description());
@@ -595,7 +608,8 @@ Monomer_sp RingCoupling_O::getMonomer2_const() const
     return this->_Monomer2;
 }
 
-Monomer_sp	RingCoupling_O::getOtherSideMonomer(Monomer_sp mon)
+CL_NAME("getOtherSideMonomer");
+CL_DEFMETHOD Monomer_sp	RingCoupling_O::getOtherSideMonomer(Monomer_sp mon)
 {_G();
     LOG(BF("About to check in monomer") );
     if ( mon == this->getMonomer1() ) { return this->getMonomer2(); };
@@ -682,11 +696,13 @@ void RingCoupling_O::setPlug2(core::Symbol_sp p)
     this->_Plug2 = p;
 }
 
-core::Symbol_sp RingCoupling_O::getPlug1()
+CL_NAME("getPlug1");
+CL_DEFMETHOD core::Symbol_sp RingCoupling_O::getPlug1()
 {_OF();
     return DirectionalCoupling_O::outPlugName(this->_Plug1);
 }
-core::Symbol_sp RingCoupling_O::getPlug2()
+CL_NAME("getPlug2");
+CL_DEFMETHOD core::Symbol_sp RingCoupling_O::getPlug2()
 {_OF();
     return DirectionalCoupling_O::outPlugName(this->_Plug2);
 }

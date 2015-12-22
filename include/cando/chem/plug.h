@@ -56,8 +56,10 @@ public:
 public:
 
     core::Symbol_sp getName() const;
-    void	setCap(core::Symbol_sp cc ) {this->_Cap = cc; };
-    core::Symbol_sp	getCap() { return this->_Cap; };
+CL_NAME("setCap");
+CL_DEFMETHOD     void	setCap(core::Symbol_sp cc ) {this->_Cap = cc; };
+CL_NAME("getCap");
+CL_DEFMETHOD     core::Symbol_sp	getCap() { return this->_Cap; };
 
     string descriptionOfContents() const;
 
@@ -128,13 +130,18 @@ public:
 
     string descriptionOfContents() const;
 
-    void	setName(core::Symbol_sp s) { this->_Name = s; };
-    core::Symbol_sp getName() const { return this->_Name; };
+CL_NAME("setName");
+CL_DEFMETHOD     void	setName(core::Symbol_sp s) { this->_Name = s; };
+CL_NAME("getName");
+CL_DEFMETHOD     core::Symbol_sp getName() const { return this->_Name; };
 
-    virtual bool getIsIn() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
-    virtual bool getIsRingClosing() { return false; };
+CL_NAME("getIsIn");
+CL_DEFMETHOD     virtual bool getIsIn() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
+CL_NAME("getIsRingClosing");
+CL_DEFMETHOD     virtual bool getIsRingClosing() { return false; };
 
-    Plug_sp getPlug() { return this->sharedThis<Plug_O>();};
+CL_NAME("getPlug");
+CL_DEFMETHOD     Plug_sp getPlug() { return this->sharedThis<Plug_O>();};
 
     virtual core::Symbol_sp otherSidePlugName();
     virtual bool hasMates() { return false;};
@@ -147,7 +154,8 @@ public:
     virtual int		numberOfMates() { return 0; };
 //    virtual bool	recognizesMateNameOrPdb(const string& name) { return false;};
 
-    virtual core::List_sp	matesAsCons() { return _Nil<core::T_O>(); };
+CL_NAME("matesAsCons");
+CL_DEFMETHOD     virtual core::List_sp	matesAsCons() { return _Nil<core::T_O>(); };
 
     Plug_O( const Plug_O& ss ); //!< Copy constructor
 
@@ -189,11 +197,14 @@ public:
     PlugWithMates_sp getPlugWithMates() { return this->sharedThis<PlugWithMates_O>();};
 
     void	setB0(core::Symbol_sp s) {this->_B0 = s;};
-    core::Symbol_sp	getB0() const	{ return this->_B0; };
+CL_NAME("getB0");
+CL_DEFMETHOD     core::Symbol_sp	getB0() const	{ return this->_B0; };
 
     void	setB1(core::Symbol_sp s) {this->_B1 = s;};
-    core::Symbol_sp getB1() const	{ return this->_B1; };
-    bool	hasB1() const { return this->_B1.notnilp();};
+CL_NAME("getB1");
+CL_DEFMETHOD     core::Symbol_sp getB1() const	{ return this->_B1; };
+CL_NAME("hasB1");
+CL_DEFMETHOD     bool	hasB1() const { return this->_B1.notnilp();};
 
     virtual bool hasMates() { return true;};
 
@@ -240,8 +251,10 @@ private:
     MatterName	_StubPivotAtom;
 public:
 
-    bool hasStubPivotAtom() { return this->_StubPivotAtom.notnilp(); };
-	MatterName getStubPivotAtom() { return this->_StubPivotAtom;};
+CL_NAME("hasStubPivotAtom");
+CL_DEFMETHOD     bool hasStubPivotAtom() { return this->_StubPivotAtom.notnilp(); };
+CL_NAME("getStubPivotAtom");
+CL_DEFMETHOD 	MatterName getStubPivotAtom() { return this->_StubPivotAtom;};
 
 	string descriptionOfContents() const;
 
@@ -268,7 +281,8 @@ public:
 private:
 public:
 	/*! Regular InPlugs use the first bonded atom as the root */
-    virtual MatterName rootAtomName() const {return this->_B0;};
+CL_NAME("rootAtomName");
+CL_DEFMETHOD     virtual MatterName rootAtomName() const {return this->_B0;};
 
 
 	string descriptionOfContents() const;
@@ -307,7 +321,8 @@ private:
 public:
 
     /*! Return the name of the root atom */
-    virtual MatterName rootAtomName() const { return this->_JumpAtomName;};
+CL_NAME("rootAtomName");
+CL_DEFMETHOD     virtual MatterName rootAtomName() const { return this->_JumpAtomName;};
 
 	string descriptionOfContents() const;
 

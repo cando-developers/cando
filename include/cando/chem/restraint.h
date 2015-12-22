@@ -53,8 +53,10 @@ class Restraint_O : public core::CxxObject_O
 
   virtual void invertStereochemistryOfRestraint() {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
-  bool isActive() const { return this->_Active; };
-  void setActive(bool a) { this->_Active = a; };
+CL_NAME("isActive");
+CL_DEFMETHOD   bool isActive() const { return this->_Active; };
+CL_NAME("setActive");
+CL_DEFMETHOD   void setActive(bool a) { this->_Active = a; };
 
  Restraint_O() : _Active(true) {};
   virtual ~Restraint_O() {};
@@ -87,15 +89,19 @@ private:
         void	fields(core::Record_sp node);
 public:
 
-	void setWeight(double d) { this->_Weight = d; };
-	double getWeight() { return this->_Weight; };
+CL_NAME("setWeight");
+CL_DEFMETHOD 	void setWeight(double d) { this->_Weight = d; };
+CL_NAME("restraint-anchor-getWeight");
+CL_DEFMETHOD 	double getWeight() { return this->_Weight; };
 
-	void	setAnchorPos(const Vector3& pos )
+CL_NAME("setAnchorPos");
+CL_DEFMETHOD 	void	setAnchorPos(const Vector3& pos )
 	{
 	    this->_Pos = pos;
 	};
 	Atom_sp	getAtom() {ASSERTNOTNULL(this->_Atom);return this->_Atom;};
-	void	setAtom(Atom_sp a) {this->_Atom=a;};
+CL_NAME("setAtom");
+CL_DEFMETHOD 	void	setAtom(Atom_sp a) {this->_Atom=a;};
 
 	Vector3 getAnchorPos() { return this->_Pos; };
 
@@ -361,9 +367,11 @@ public:
 
     virtual std::vector<core::cl_index> dimensions() const { std::vector<core::cl_index> dims; dims.push_back(this->_Restraints.size()); return dims;};
 	void		clear()	{this->_Restraints.clear(); };
-	void		addRestraint( Restraint_sp r) { this->_Restraints.push_back(r); };
+CL_NAME("addRestraint");
+CL_DEFMETHOD 	void		addRestraint( Restraint_sp r) { this->_Restraints.push_back(r); };
 	int		size()	{return this->_Restraints.size(); };
-        int numberOfRestraints() { return this->size();};
+CL_NAME("numberOfRestraints");
+CL_DEFMETHOD         int numberOfRestraints() { return this->size();};
 	Restraint_sp	getRestraintIndex(int i) {return this->_Restraints[i]; };
 
 	RestraintList_sp	copyDontRedirectAtoms();

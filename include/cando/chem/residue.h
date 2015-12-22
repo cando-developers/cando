@@ -126,17 +126,22 @@ namespace chem {
 	 */
 	bool	containsAtom(Atom_sp a);
 
-	MatterName getPdbName() { return this->pdbName; };
-	void	setPdbName(MatterName p) { this->pdbName = p;};
+CL_NAME("getPdbName");
+CL_DEFMETHOD 	MatterName getPdbName() { return this->pdbName; };
+CL_NAME("setPdbName");
+CL_DEFMETHOD 	void	setPdbName(MatterName p) { this->pdbName = p;};
 
 	void	setFileSequenceNumber(uint seq) { this->_FileSequenceNumber = seq;};
-	uint	getFileSequenceNumber() { return this->_FileSequenceNumber;};
+CL_NAME("getFileSequenceNumber");
+CL_DEFMETHOD 	uint	getFileSequenceNumber() { return this->_FileSequenceNumber;};
 
 	void	setUniqueLabel(MatterName str) { this->_UniqueLabel = str;};
 	MatterName getUniqueLabel() { return this->_UniqueLabel; };
 
-	int	getNetCharge() { return this->_NetCharge; };
-	void	setNetCharge(int nc) { this->_NetCharge = nc; };
+CL_NAME("getNetCharge");
+CL_DEFMETHOD 	int	getNetCharge() { return this->_NetCharge; };
+CL_NAME("setNetCharge");
+CL_DEFMETHOD 	void	setNetCharge(int nc) { this->_NetCharge = nc; };
 
 //	void	resetConstitution();
 	bool	hasConstitution();
@@ -171,7 +176,8 @@ namespace chem {
         virtual string	subMatter() { return Atom_O::static_className(); };
         virtual string 	description() const { stringstream ss; ss << "residue("<<_rep_(this->getName())<<")@"<<std::hex<<this<<std::dec; return ss.str();};
 
-	Atom_sp		atomWithName(MatterName sName ) { return this->contentWithName(sName).as<Atom_O>(); };
+CL_NAME("atomWithName");
+CL_DEFMETHOD 	Atom_sp		atomWithName(MatterName sName ) { return this->contentWithName(sName).as<Atom_O>(); };
 	Atom_sp		atomWithAlias(AtomAliasName sName );
 	Atom_sp		atomWithAliasOrNil(AtomAliasName sName );
 
@@ -180,15 +186,18 @@ namespace chem {
 	Residue_sp aliasResidueOrNil(Alias_sp alias) {IMPLEMENT_ME();};
 
 	Vector3		positionOfAtomWithName(MatterName sName );
-	bool		hasAtomWithName(MatterName sName ) { return (this->hasContentWithName(sName)); };
+CL_NAME("hasAtomWithName");
+CL_DEFMETHOD 	bool		hasAtomWithName(MatterName sName ) { return (this->hasContentWithName(sName)); };
 
 	void setAliasesForAtoms(core::List_sp aliasAtoms, core::List_sp atomAliases);
 
 //	bool		hasAtomWithAlias(const string& anAlias);
 //	Atom_sp		atomWithAlias(const string& anAlias);
 
-        Atom_sp		atomWithId( int lid ) { return this->contentWithId(lid).as<Atom_O>(); };
-	bool		hasAtomWithId( int lid ) { return this->hasContentWithId(lid); };
+CL_NAME("atomWithId");
+CL_DEFMETHOD         Atom_sp		atomWithId( int lid ) { return this->contentWithId(lid).as<Atom_O>(); };
+CL_NAME("hasAtomWithId");
+CL_DEFMETHOD 	bool		hasAtomWithId( int lid ) { return this->hasContentWithId(lid); };
         adapt::SymbolSet_sp 	getAllUniqueAtomNames();
 
         /*! Return true if all the atom names are unique
@@ -198,12 +207,14 @@ namespace chem {
 
 	void fillInImplicitHydrogens();
 
-	Atom_sp		firstAtom() { return this->contentAt(0).as<Atom_O>(); };
+CL_NAME("firstAtom");
+CL_DEFMETHOD 	Atom_sp		firstAtom() { return this->contentAt(0).as<Atom_O>(); };
 
 	void	makeAllAtomNamesInEachResidueUnique();
 
         void		writeToStream(string prefix, std::ostream& out);
-	bool		testResidueConsistancy()	{return this->testConsistancy(Matter_sp());};
+CL_NAME("testResidueConsistancy");
+CL_DEFMETHOD 	bool		testResidueConsistancy()	{return this->testConsistancy(Matter_sp());};
 
 	//! For every atom, turn on the FIXED flag and copy the atom coordinates into the AnchorCoordinates
 	void		useAtomCoordinatesToDefineAnchors();

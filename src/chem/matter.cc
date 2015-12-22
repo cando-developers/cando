@@ -79,7 +79,8 @@ void	Matter_O::eraseContents()
 //
 // hasContentWithName
 //
-bool	Matter_O::hasContentWithName(MatterName    sName )
+CL_NAME("hasContentWithName");
+CL_DEFMETHOD bool	Matter_O::hasContentWithName(MatterName    sName )
 {_G();
   contentIterator		aCur;
 
@@ -103,21 +104,24 @@ void Matter_O::accumulateRestraints(RestraintList_sp allRestraints) const
 }
 
 
-RestraintList_sp Matter_O::allRestraints() const
+CL_NAME("allRestraints");
+CL_DEFMETHOD RestraintList_sp Matter_O::allRestraints() const
 {
   GC_ALLOCATE(RestraintList_O, allRestraints );
   this->accumulateRestraints(allRestraints);
   return allRestraints;
 }
 
-void Matter_O::clearRestraints()
+CL_NAME("clearRestraints");
+CL_DEFMETHOD void Matter_O::clearRestraints()
 {
   if ( this->_Restraints.notnilp() ) {
     this->_Restraints->clear();
   }
 }
 
-void Matter_O::addRestraint(Restraint_sp restraint)
+CL_NAME("addRestraint");
+CL_DEFMETHOD void Matter_O::addRestraint(Restraint_sp restraint)
 {_OF();
   if ( this->_Restraints.nilp() )
   {
@@ -143,7 +147,8 @@ void Matter_O::putMatter(int idx, Matter_sp matter)
   matter->setId(idx);
 }
 
-string Matter_O::propertiesAsString() const
+CL_NAME("propertiesAsString");
+CL_DEFMETHOD string Matter_O::propertiesAsString() const
 {_OF();
   stringstream ss;
   ss << "Properties for matter[" << this->__repr__() << "]"<< std::endl;
@@ -186,22 +191,26 @@ void Matter_O::applyPropertyList(core::List_sp list)
   }
 }
     
-void Matter_O::clearProperty(core::Symbol_sp prop)
+CL_NAME("clearProperty");
+CL_DEFMETHOD void Matter_O::clearProperty(core::Symbol_sp prop)
 {_G();
   this->_Properties = core::core__rem_f(this->_Properties,prop);
 }
 
-void Matter_O::setProperty(core::Symbol_sp prop, core::T_sp val)
+CL_NAME("setProperty");
+CL_DEFMETHOD void Matter_O::setProperty(core::Symbol_sp prop, core::T_sp val)
 {_G();
   this->_Properties = core::core__put_f(this->_Properties,val,prop);
 }
 
-void Matter_O::setPropertyTrue(core::Symbol_sp prop)
+CL_NAME("setPropertyTrue");
+CL_DEFMETHOD void Matter_O::setPropertyTrue(core::Symbol_sp prop)
 {_G();
   this->_Properties = core::core__put_f(this->_Properties,_lisp->_true(),prop);
 }
 
-core::T_sp Matter_O::getProperty(core::Symbol_sp prop)
+CL_NAME("Matter-getProperty");
+CL_DEFMETHOD core::T_sp Matter_O::getProperty(core::Symbol_sp prop)
 {
   core::T_sp res = core::cl__getf(this->_Properties,prop,_Unbound<core::T_O>());
   if (res.unboundp()) {
@@ -212,19 +221,22 @@ core::T_sp Matter_O::getProperty(core::Symbol_sp prop)
   return res;
 }
 
-core::T_sp Matter_O::getPropertyOrDefault(core::Symbol_sp prop,core::T_sp defval)
+CL_NAME("Matter-getPropertyOrDefault");
+CL_DEFMETHOD core::T_sp Matter_O::getPropertyOrDefault(core::Symbol_sp prop,core::T_sp defval)
 {_G();
   return core::cl__getf(this->_Properties,prop,defval);
 }
 
-bool Matter_O::hasProperty(core::Symbol_sp prop)
+CL_NAME("hasProperty");
+CL_DEFMETHOD bool Matter_O::hasProperty(core::Symbol_sp prop)
 {_G();
   return !core::cl__getf(this->_Properties,prop,_Unbound<core::T_O>()).unboundp();
 }
 
 
 
-Atom_sp	Matter_O::firstAtomWithName(MatterName name)
+CL_NAME("firstAtomWithName");
+CL_DEFMETHOD Atom_sp	Matter_O::firstAtomWithName(MatterName name)
 {_OF();
   Loop l;
   l.loopTopGoal(this->sharedThis<Matter_O>(),ATOMS);
@@ -240,7 +252,8 @@ Atom_sp	Matter_O::firstAtomWithName(MatterName name)
 }
 
 
-void Matter_O::calculateVirtualAtomPositions()
+CL_NAME("calculateVirtualAtomPositions");
+CL_DEFMETHOD void Matter_O::calculateVirtualAtomPositions()
 {
   Loop l;
   l.loopTopGoal(this->sharedThis<Matter_O>(),ATOMS);
@@ -256,7 +269,8 @@ void Matter_O::calculateVirtualAtomPositions()
 }
 
 
-void Matter_O::connectAllCloseAtoms()
+CL_NAME("connectAllCloseAtoms");
+CL_DEFMETHOD void Matter_O::connectAllCloseAtoms()
 {_G();
   gctools::Vec0<Atom_sp>	atoms;
   Loop		la;
@@ -293,7 +307,8 @@ void Matter_O::connectAllCloseAtoms()
 //
 // contentWithName
 //
-Matter_sp   Matter_O::contentWithName(MatterName    sName )
+CL_NAME("contentWithName");
+CL_DEFMETHOD Matter_sp   Matter_O::contentWithName(MatterName    sName )
 {_G();
   contentIterator	aCur;
 
@@ -328,7 +343,8 @@ Matter_sp   Matter_O::contentWithNameOrNil(MatterName sName )
 
 
 
-void	Matter_O::makeAllAtomNamesInEachResidueUnique()
+CL_NAME("makeAllAtomNamesInEachResidueUnique");
+CL_DEFMETHOD void	Matter_O::makeAllAtomNamesInEachResidueUnique()
 {_G();
   contentIterator	aCur;
   for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) 
@@ -337,7 +353,8 @@ void	Matter_O::makeAllAtomNamesInEachResidueUnique()
   }
 }
 
-void	Matter_O::fillInImplicitHydrogens()
+CL_NAME("fillInImplicitHydrogens");
+CL_DEFMETHOD void	Matter_O::fillInImplicitHydrogens()
 {_G();
   contentIterator	aCur;
   for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) 
@@ -346,7 +363,8 @@ void	Matter_O::fillInImplicitHydrogens()
   }
 }
 
-void	Matter_O::randomizeAtomPositions()
+CL_NAME("randomizeAtomPositions");
+CL_DEFMETHOD void	Matter_O::randomizeAtomPositions()
 {_G();
   contentIterator	aCur;
   for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) 
@@ -356,7 +374,8 @@ void	Matter_O::randomizeAtomPositions()
 }
 
 
-void	Matter_O::perturbAtomPositions(double dist)
+CL_NAME("perturbAtomPositions");
+CL_DEFMETHOD void	Matter_O::perturbAtomPositions(double dist)
 {_G();
   contentIterator	aCur;
   for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) 
@@ -372,7 +391,8 @@ void	Matter_O::perturbAtomPositions(double dist)
 //
 // contentIndexWithName
 //
-int	Matter_O::contentIndexWithName(MatterName sName )
+CL_NAME("contentIndexWithName");
+CL_DEFMETHOD int	Matter_O::contentIndexWithName(MatterName sName )
 {_OF();
   contentIterator	aCur;
   int				i;
@@ -391,7 +411,8 @@ int	Matter_O::contentIndexWithName(MatterName sName )
 //
 // contentWithId
 //
-Matter_sp   Matter_O::contentWithId( int lid )
+CL_NAME("contentWithId");
+CL_DEFMETHOD Matter_sp   Matter_O::contentWithId( int lid )
 {_OF();
   contentIterator	aCur;
   Matter_sp			c;
@@ -412,7 +433,8 @@ Matter_sp   Matter_O::contentWithId( int lid )
 //
 // 	hasContentWithId
 //
-bool	Matter_O::hasContentWithId( int lid )
+CL_NAME("hasContentWithId");
+CL_DEFMETHOD bool	Matter_O::hasContentWithId( int lid )
 {_G();
   contentIterator	aCur;
   Matter_sp			c;
@@ -476,7 +498,8 @@ bool	Matter_O::hasContentWithStorageId( int lid )
 //
 // contentIndexWithId
 //
-int	Matter_O::contentIndexWithId( int lid )
+CL_NAME("contentIndexWithId");
+CL_DEFMETHOD int	Matter_O::contentIndexWithId( int lid )
 {_OF();
   contentIterator	aCur;
   int				i;
@@ -496,7 +519,8 @@ int	Matter_O::contentIndexWithId( int lid )
 //
 // contentIndex
 //
-int	Matter_O::contentIndex( Matter_sp cc)
+CL_NAME("contentIndex");
+CL_DEFMETHOD int	Matter_O::contentIndex( Matter_sp cc)
 {_OF();
   contentIterator	aCur;
   int				i;
@@ -512,7 +536,8 @@ int	Matter_O::contentIndex( Matter_sp cc)
 
 /*! Add the Matter as a child of this Matter
  */
-void	Matter_O::addMatter(Matter_sp cp )
+CL_NAME("addMatter");
+CL_DEFMETHOD void	Matter_O::addMatter(Matter_sp cp )
 {_OF();
   Matter_sp	ctemp;
   ASSERTNOTNULL(cp);
@@ -578,7 +603,8 @@ void	Matter_O::setId(int i)
 //
 
 
-void	Matter_O::applyTransformToAtoms( const Matrix& m )
+CL_NAME("applyTransformToAtoms");
+CL_DEFMETHOD void	Matter_O::applyTransformToAtoms( const Matrix& m )
 {_OF();
   contentIterator	a;
   LOG(BF("Transforming all atoms with:%s") % (m.asString().c_str() ) );
@@ -590,7 +616,8 @@ void	Matter_O::applyTransformToAtoms( const Matrix& m )
 
 
 
-void	Matter_O::invertStructureAndRestraints()
+CL_NAME("invertStructureAndRestraints");
+CL_DEFMETHOD void	Matter_O::invertStructureAndRestraints()
 {
 	// First invert all of the contained objects and their restraints
   contentIterator	a;
@@ -616,7 +643,8 @@ void Matter_O::invertStereochemistryOfRestraints()
 }
 
 
-void	Matter_O::translateAllAtoms(Vector3 trans)
+CL_NAME("translateAllAtoms");
+CL_DEFMETHOD void	Matter_O::translateAllAtoms(Vector3 trans)
 {_G();
   Matrix transform;
   transform.translate(&trans);
@@ -636,7 +664,8 @@ bool	Matter_O::isContainedBy(Matter_sp container)
 }
 
 
-bool	Matter_O::testConsistancy(const Matter_sp parentShouldBe )
+CL_NAME("testConsistancy");
+CL_DEFMETHOD bool	Matter_O::testConsistancy(const Matter_sp parentShouldBe )
 {_OF();
   contentIterator	a;
   Matter_sp			c;
@@ -689,7 +718,8 @@ int	Matter_O::totalNetResidueCharge()
 
 
 
-void	Matter_O::setAllAtomMasks(int m)
+CL_NAME("setAllAtomMasks");
+CL_DEFMETHOD void	Matter_O::setAllAtomMasks(int m)
 {_G();
   Loop	l;
   l.loopTopGoal(this->sharedThis<Matter_O>(),ATOMS);
@@ -717,7 +747,8 @@ void	Matter_O::setAllAtomMasks(int m)
   \end{verbatim}
   __END_DOC
 */
-void	Matter_O::setAtomAliasesForResiduesNamed(core::List_sp parts, core::List_sp atomAliases )
+CL_NAME("setAtomAliasesForResiduesNamed");
+CL_DEFMETHOD void	Matter_O::setAtomAliasesForResiduesNamed(core::List_sp parts, core::List_sp atomAliases )
 {_G();
   FIX_ME();
 #if 0
@@ -763,7 +794,8 @@ void	Matter_O::setAtomAliasesForResiduesNamed(core::List_sp parts, core::List_sp
 
 
 
-Vector3	Matter_O::geometricCenter()
+CL_NAME("geometricCenter");
+CL_DEFMETHOD Vector3	Matter_O::geometricCenter()
 {_OF();
   Vector3	sum;
   int	count;
@@ -789,7 +821,8 @@ Vector3	Matter_O::geometricCenter()
 }
 
 
-geom::BoundingBox_sp Matter_O::boundingBox(double pad) 
+CL_NAME("boundingBox");
+CL_DEFMETHOD geom::BoundingBox_sp Matter_O::boundingBox(double pad) 
 {_G();
   Vector3	sum;
   int	count;
@@ -812,7 +845,8 @@ geom::BoundingBox_sp Matter_O::boundingBox(double pad)
 }
 
 
-core::List_sp Matter_O::contentsAsCons()
+CL_NAME("contentsAsCons");
+CL_DEFMETHOD core::List_sp Matter_O::contentsAsCons()
 {_G();
   core::List_sp cur = _Nil<core::T_O>();
   contentIterator	it;
@@ -825,7 +859,8 @@ core::List_sp Matter_O::contentsAsCons()
 
 
 
-core::Vector_sp	Matter_O::allAtoms()
+CL_NAME("allAtoms");
+CL_DEFMETHOD core::Vector_sp	Matter_O::allAtoms()
 {_G();
   core::VectorObjectsWithFillPtr_sp	atoms = core::VectorObjectsWithFillPtr_O::create();
   Loop		la;
@@ -856,7 +891,8 @@ core::Vector_sp	Matter_O::allAtomsOfElement(Element element)
 }
 
 
-Residue_sp	Matter_O::aliasResidueOrNil(Alias_sp alias)
+CL_NAME("aliasResidueOrNil");
+CL_DEFMETHOD Residue_sp	Matter_O::aliasResidueOrNil(Alias_sp alias)
 {_G();
   Loop lRes;
   lRes.loopTopGoal(this->sharedThis<Matter_O>(),RESIDUES);
@@ -870,21 +906,24 @@ Residue_sp	Matter_O::aliasResidueOrNil(Alias_sp alias)
   return _Nil<Residue_O>();
 }
 
-Residue_sp Matter_O::aliasResidue(Alias_sp alias)
+CL_NAME("aliasResidue");
+CL_DEFMETHOD Residue_sp Matter_O::aliasResidue(Alias_sp alias)
 {_OF();
   Residue_sp a = this->aliasResidueOrNil(alias);
   if ( a.notnilp() ) return a;
   SIMPLE_ERROR(BF("could not find aliasResidue"));
 }
 
-Atom_sp	Matter_O::aliasAtomOrNil(Alias_sp alias)
+CL_NAME("aliasAtomOrNil");
+CL_DEFMETHOD Atom_sp	Matter_O::aliasAtomOrNil(Alias_sp alias)
 {
   Residue_sp res = this->aliasResidueOrNil(alias);
   if ( res.nilp() ) return _Nil<Atom_O>();
   return res->atomWithAliasOrNil(alias->getAtomAlias());
 }
 
-Atom_sp Matter_O::aliasAtom(Alias_sp alias)
+CL_NAME("aliasAtom");
+CL_DEFMETHOD Atom_sp Matter_O::aliasAtom(Alias_sp alias)
 {_OF();
   Atom_sp a = this->aliasAtomOrNil(alias);
   if ( a.notnilp() ) return a;
@@ -895,7 +934,8 @@ Atom_sp Matter_O::aliasAtom(Alias_sp alias)
 
 
 
-core::List_sp Matter_O::allAtomsOfElementAsList(Element element)
+CL_NAME("allAtomsOfElementAsList");
+CL_DEFMETHOD core::List_sp Matter_O::allAtomsOfElementAsList(Element element)
 {_G();
   core::List_sp		list(_Nil<core::T_O>());
   Loop		la;
@@ -951,7 +991,8 @@ geom::Render_sp Matter_O::rendered(core::List_sp kopts)
 
 
 
-core::List_sp Matter_O::allAtomsAsCons(bool allowVirtualAtoms ) const
+CL_NAME("allAtomsAsCons");
+CL_DEFMETHOD core::List_sp Matter_O::allAtomsAsCons(bool allowVirtualAtoms ) const
 {_OF();
   core::List_sp result = _Nil<core::T_O>();
   Loop l(this->const_sharedThis<Matter_O>(),ATOMS);
@@ -966,7 +1007,8 @@ core::List_sp Matter_O::allAtomsAsCons(bool allowVirtualAtoms ) const
 
 
 
-core::List_sp Matter_O::allBondsAsCons(bool allowVirtualAtoms ) const
+CL_NAME("allBondsAsCons");
+CL_DEFMETHOD core::List_sp Matter_O::allBondsAsCons(bool allowVirtualAtoms ) const
 {_OF();
   core::List_sp result = _Nil<core::List_V>();
   Loop l(this->const_sharedThis<Matter_O>(),BONDS);
@@ -984,7 +1026,8 @@ core::List_sp Matter_O::allBondsAsCons(bool allowVirtualAtoms ) const
 
 
 
-core::List_sp Matter_O::allAnglesAsCons(bool allowVirtualAtoms ) const
+CL_NAME("allAnglesAsCons");
+CL_DEFMETHOD core::List_sp Matter_O::allAnglesAsCons(bool allowVirtualAtoms ) const
 {_OF();
   core::List_sp result = _Nil<core::T_O>();
   Loop l(this->const_sharedThis<Matter_O>(),ANGLES);
@@ -1004,7 +1047,8 @@ core::List_sp Matter_O::allAnglesAsCons(bool allowVirtualAtoms ) const
 }
 
 
-core::List_sp Matter_O::allImproperTorsionsAsCons(bool allowVirtualAtoms ) const
+CL_NAME("allImproperTorsionsAsCons");
+CL_DEFMETHOD core::List_sp Matter_O::allImproperTorsionsAsCons(bool allowVirtualAtoms ) const
 {_OF();
   core::List_sp result = _Nil<core::List_V>();
   Loop l(this->const_sharedThis<Matter_O>(),IMPROPERS);
@@ -1032,7 +1076,8 @@ core::List_sp Matter_O::allImproperTorsionsAsCons(bool allowVirtualAtoms ) const
 
 
 
-core::List_sp Matter_O::allProperTorsionsAsCons(bool allowVirtualAtoms ) const
+CL_NAME("allProperTorsionsAsCons");
+CL_DEFMETHOD core::List_sp Matter_O::allProperTorsionsAsCons(bool allowVirtualAtoms ) const
 {_OF();
   core::List_sp result = _Nil<core::T_O>();
   Loop l(this->const_sharedThis<Matter_O>(),PROPERS);
@@ -1085,12 +1130,14 @@ void Matter_O::redirectRestraintAtoms()
 }
 
 
-AtomIdToAtomMap_sp Matter_O::buildAtomIdMap() const
+CL_NAME("buildAtomIdMap");
+CL_DEFMETHOD AtomIdToAtomMap_sp Matter_O::buildAtomIdMap() const
 {_OF();
   SUBCLASS_MUST_IMPLEMENT();
 }
 
-Atom_sp Matter_O::atomWithAtomId(AtomId_sp atomId) const
+CL_NAME("atomWithAtomId");
+CL_DEFMETHOD Atom_sp Matter_O::atomWithAtomId(AtomId_sp atomId) const
 {_OF();
   SUBCLASS_MUST_IMPLEMENT();
 }

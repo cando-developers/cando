@@ -35,7 +35,8 @@ void	FFTypesDb_O::initialize()
 
 
 
-void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
+CL_NAME("assignTypes");
+CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
 { _G();
 chem::Loop    				lAtoms;
 chem::Atom_sp  				atom;
@@ -83,7 +84,8 @@ void FFTypesDb_O::fields(core::Record_sp node)
 
 
 
-chem::ChemInfo_sp	FFTypesDb_O::getRule(uint index)
+CL_NAME("FFTypes-getRule");
+CL_DEFMETHOD chem::ChemInfo_sp	FFTypesDb_O::getRule(uint index)
 {_OF();
   if ( index < this->_TypeAssignmentRules.size() ) {
     return this->_TypeAssignmentRules[index];

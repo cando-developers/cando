@@ -91,14 +91,16 @@ namespace geom
     double distanceTo(CoordinateArray_sp arr);
 
     gc::Fixnum	length() const { return this->size(); };
-    uint	size() const { return this->_Points.size(); };
+CL_NAME("size");
+CL_DEFMETHOD     uint	size() const { return this->_Points.size(); };
     Vector3& getElement(uint i);
     Vector3 value_getElement(uint i);
     core::T_sp getElementObject(uint i) const;
     void	setElement(uint i, Vector3 pos );
     core::T_sp setElementObject(uint i, core::T_sp val);
     void	appendElement(const Vector3& pos) { this->_Points.push_back(pos); };
-    void	append(const Vector3& pos) { this->_Points.push_back(pos); };
+CL_NAME("coordinate-array-append");
+CL_DEFMETHOD     void	append(const Vector3& pos) { this->_Points.push_back(pos); };
     void	push_back(const Vector3& pos) { this->_Points.push_back(pos); };
     void	resize(int i);
     void	clear() { this->_Points.clear();};
@@ -142,8 +144,10 @@ namespace geom
     CoordinateArrayWithHash_O( const CoordinateArrayWithHash_O& orig );
 
 
-    uint getHash() { return this->_Hash;};
-    void setHash(uint h) { this->_Hash = h;};
+CL_NAME("coordinate-array-with-hash-gethash");
+CL_DEFMETHOD     uint getHash() { return this->_Hash;};
+CL_NAME("coordinate-array-with-hash-setHash");
+CL_DEFMETHOD     void setHash(uint h) { this->_Hash = h;};
 
     DEFAULT_CTOR_DTOR(CoordinateArrayWithHash_O);
   };

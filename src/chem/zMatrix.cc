@@ -157,7 +157,8 @@ namespace chem
 
 
 
-    string	ZMatrixBondInternal_O::getBondAtomZMatrixName()
+CL_NAME("getBondAtomZMatrixName");
+CL_DEFMETHOD     string	ZMatrixBondInternal_O::getBondAtomZMatrixName()
     {_G();
 	return this->getZMatrix()->_getAtomZMatrixNameAtIndex(this->_AtomBond);
     }
@@ -273,12 +274,14 @@ namespace chem
     }
 #endif
 
-    string	ZMatrixAngleInternal_O::getBondAtomZMatrixName()
+CL_NAME("getBondAtomZMatrixName");
+CL_DEFMETHOD     string	ZMatrixAngleInternal_O::getBondAtomZMatrixName()
     {_G();
 	return this->getZMatrix()->_getAtomZMatrixNameAtIndex(this->_AtomBond);
     }
 
-    string	ZMatrixAngleInternal_O::getAngleAtomZMatrixName()
+CL_NAME("getAngleAtomZMatrixName");
+CL_DEFMETHOD     string	ZMatrixAngleInternal_O::getAngleAtomZMatrixName()
     {_G();
 	return this->getZMatrix()->_getAtomZMatrixNameAtIndex(this->_AtomAngle);
     }
@@ -390,17 +393,20 @@ namespace chem
     }
 #endif
 
-    string	ZMatrixDihedralInternal_O::getBondAtomZMatrixName()
+CL_NAME("getBondAtomZMatrixName");
+CL_DEFMETHOD     string	ZMatrixDihedralInternal_O::getBondAtomZMatrixName()
     {_G();
 	return this->getZMatrix()->_getAtomZMatrixNameAtIndex(this->_AtomBond);
     }
 
-    string	ZMatrixDihedralInternal_O::getAngleAtomZMatrixName()
+CL_NAME("getAngleAtomZMatrixName");
+CL_DEFMETHOD     string	ZMatrixDihedralInternal_O::getAngleAtomZMatrixName()
     {_G();
 	return this->getZMatrix()->_getAtomZMatrixNameAtIndex(this->_AtomAngle);
     }
 
-    string	ZMatrixDihedralInternal_O::getDihedralAtomZMatrixName()
+CL_NAME("getDihedralAtomZMatrixName");
+CL_DEFMETHOD     string	ZMatrixDihedralInternal_O::getDihedralAtomZMatrixName()
     {_G();
 	return this->getZMatrix()->_getAtomZMatrixNameAtIndex(this->_AtomDihedral);
     }
@@ -501,7 +507,8 @@ namespace chem
 #endif
 
 
-    string ZMatrix_O::getZMatrixAtomNameAtIndex(uint i) const
+CL_NAME("get-zmatrix-atom-name-at-index");
+CL_DEFMETHOD     string ZMatrix_O::getZMatrixAtomNameAtIndex(uint i) const
     {_OF();
 	return this->_getAtomZMatrixNameAtIndex(i);
     }
@@ -694,7 +701,8 @@ namespace chem
     }
 
 
-    void	ZMatrix_O::extractInternals()
+CL_NAME("extractInternals");
+CL_DEFMETHOD     void	ZMatrix_O::extractInternals()
     {_G();
 	ZMatrix_O::internalIterator	it;
 	for ( it=this->_Internals.begin(); it!=this->_Internals.end(); it++ )
@@ -716,12 +724,14 @@ namespace chem
 
 
 
-    core::List_sp ZMatrix_O::entriesAsCons() const
+CL_NAME("entriesAsCons");
+CL_DEFMETHOD     core::List_sp ZMatrix_O::entriesAsCons() const
     {_OF();
 	return core::Cons_O::createFromVec0(this->_ZMatrix);
     };
 
-    ZMatrixEntry_sp ZMatrix_O::zMatrixEntryWithName(string const& atomZMatrixName) const
+CL_NAME("zmatrix-entry-with-name");
+CL_DEFMETHOD     ZMatrixEntry_sp ZMatrix_O::zMatrixEntryWithName(string const& atomZMatrixName) const
     {_OF();
 	for ( const_zMatrixEntryIterator it = this->begin_ZMatrixEntries();
 	      it != this->end_ZMatrixEntries(); it++ )
@@ -732,7 +742,8 @@ namespace chem
     }
 
 
-    string ZMatrix_O::allZMatrixAtomNamesAsString() const
+CL_NAME("all-zmatrix-atom-names-as-string");
+CL_DEFMETHOD     string ZMatrix_O::allZMatrixAtomNamesAsString() const
     {_OF();
 	stringstream ss;
 	for ( const_zMatrixEntryIterator it = this->begin_ZMatrixEntries();

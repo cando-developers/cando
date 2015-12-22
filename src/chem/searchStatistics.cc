@@ -63,7 +63,8 @@ void	SearchStatistics_O::setReportFrequency(uint i)
 }
 
 
-void	SearchStatistics_O::incrementBuilds()
+CL_NAME("incrementBuilds");
+CL_DEFMETHOD void	SearchStatistics_O::incrementBuilds()
 {_OF();
     this->_Builds++;
     if ( this->_ReportFrequency == UndefinedUnsignedInt ) return;
@@ -73,29 +74,34 @@ void	SearchStatistics_O::incrementBuilds()
     }
 }
 
-Bignum SearchStatistics_O::getBuilds()
+CL_NAME("getBuilds");
+CL_DEFMETHOD Bignum SearchStatistics_O::getBuilds()
 {
     return this->_Builds;
 }
 
 
-void	SearchStatistics_O::incrementRejects()
+CL_NAME("incrementRejects");
+CL_DEFMETHOD void	SearchStatistics_O::incrementRejects()
 {
     this->_Rejects++;
 }
 
-Bignum SearchStatistics_O::getRejects()
+CL_NAME("getRejects");
+CL_DEFMETHOD Bignum SearchStatistics_O::getRejects()
 {
     return this->_Rejects;
 }
 
 
-void	SearchStatistics_O::incrementHits()
+CL_NAME("incrementHits");
+CL_DEFMETHOD void	SearchStatistics_O::incrementHits()
 {
     this->_Hits++;
 }
 
-Bignum SearchStatistics_O::getHits()
+CL_NAME("getHits");
+CL_DEFMETHOD Bignum SearchStatistics_O::getHits()
 {
     return this->_Hits;
 }

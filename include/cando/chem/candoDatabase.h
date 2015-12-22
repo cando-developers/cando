@@ -120,7 +120,8 @@ public:
 	void	setDateUpdated(const string& dc){this->_DateUpdated=dc;};
 
 
-    core::Symbol_sp getName() { return this->_Name; };
+CL_NAME("getName");
+CL_DEFMETHOD     core::Symbol_sp getName() { return this->_Name; };
     void	setName(core::Symbol_sp n) { this->_Name = n; };
 
 
@@ -149,7 +150,8 @@ public:
 	core::Symbol_sp getPdbNameForNameOrPdb(core::Symbol_sp name);
 
 
-	FrameRecognizer_sp	getFrameRecognizer(core::Symbol_sp nm)
+CL_NAME("getFrameRecognizer");
+CL_DEFMETHOD 	FrameRecognizer_sp	getFrameRecognizer(core::Symbol_sp nm)
     { _G();
 	    FrameRecognizer_sp gr;
 	    LOG(BF( "Agroup name in database=%d") % this->recognizesFrameRecognizerName(nm) );
@@ -198,7 +200,8 @@ public:
 	adapt::SymbolSet_sp expandEntityNameToTerminals(core::Symbol_sp nm) const;
 	adapt::SymbolSet_sp expandEntityNamesToTerminals(adapt::SymbolSet_sp names) const;
 
-	bool	recognizesEntityName(core::Symbol_sp nm) { return this->recognizesSetOrConstitutionOrMonomerName(nm);};
+CL_NAME("recognizesEntityName");
+CL_DEFMETHOD 	bool	recognizesEntityName(core::Symbol_sp nm) { return this->recognizesSetOrConstitutionOrMonomerName(nm);};
 
 
 	Entity_sp getEntity(core::Symbol_sp nm) const;

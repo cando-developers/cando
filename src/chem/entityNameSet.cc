@@ -53,7 +53,8 @@ namespace chem
 	this->_Optional = false;
     };
 
-    adapt::SymbolSet_sp	EntityNameSetBase_O::getUnExpandedNames()
+CL_NAME("getUnExpandedNames");
+CL_DEFMETHOD     adapt::SymbolSet_sp	EntityNameSetBase_O::getUnExpandedNames()
     {
 	return this->_EntityNames;
     }
@@ -117,7 +118,8 @@ namespace chem
     }
 
 
-    int	EntityNameSetBase_O::getInterestingAtomAliasIndex(Alias_sp alias)
+CL_NAME("getInterestingAtomAliasIndex");
+CL_DEFMETHOD     int	EntityNameSetBase_O::getInterestingAtomAliasIndex(Alias_sp alias)
     {_G();
 	SIMPLE_ERROR(BF("Subclass must implement for alias: "+alias->__repr__()));
     }
@@ -133,7 +135,8 @@ namespace chem
 
 
 
-    adapt::SymbolSet_sp	EntityNameSetBase_O::expandedNameSet()
+CL_NAME("expandedNameSet");
+CL_DEFMETHOD     adapt::SymbolSet_sp	EntityNameSetBase_O::expandedNameSet()
     {_G();
 	adapt::SymbolSet_sp		allNames;
 	CandoDatabase_sp	bdb;
@@ -149,14 +152,16 @@ namespace chem
 
 
 
-    void EntityNameSetBase_O::expandToTerminalEntityNames()
+CL_NAME("expandToTerminalEntityNames");
+CL_DEFMETHOD     void EntityNameSetBase_O::expandToTerminalEntityNames()
     {_OF();
 	adapt::SymbolSet_sp expandedEntityNames = this->expandedNameSet();
 	this->_EntityNames = expandedEntityNames;
     }
 
 
-    void EntityNameSetBase_O::contractEntityNames(adapt::SymbolSet_sp entityNames)
+CL_NAME("contractEntityNames");
+CL_DEFMETHOD     void EntityNameSetBase_O::contractEntityNames(adapt::SymbolSet_sp entityNames)
     {_OF();
 	adapt::SymbolSet_sp myExpanded = this->expandedNameSet();
 	CandoDatabase_sp cdb = getCandoDatabase();
@@ -226,7 +231,8 @@ namespace chem
 
 
 
-    void	EntityNameSetBase_O::addMonomerName(core::Symbol_sp nm)
+CL_NAME("addMonomerName");
+CL_DEFMETHOD     void	EntityNameSetBase_O::addMonomerName(core::Symbol_sp nm)
     {_G();
 	CandoDatabase_sp	bdb;
 	adapt::StringSet_sp		monomerNames;
@@ -241,13 +247,15 @@ namespace chem
     }
 
 
-    void	EntityNameSetBase_O::setGroupNames(adapt::SymbolSet_sp s)
+CL_NAME("setGroupNames");
+CL_DEFMETHOD     void	EntityNameSetBase_O::setGroupNames(adapt::SymbolSet_sp s)
     {
 	this->_EntityNames = s;
     }
 
 
-    void	EntityNameSetBase_O::addMonomerNameNoChecks(core::Symbol_sp nm)
+CL_NAME("addMonomerNameNoChecks");
+CL_DEFMETHOD     void	EntityNameSetBase_O::addMonomerNameNoChecks(core::Symbol_sp nm)
     {_G();
 	ASSERTNOTNULL(this->_EntityNames);
 	this->_EntityNames->insert(nm);
@@ -313,14 +321,16 @@ core::Symbol_sp EntityNameSetBase_O::getKey()
 
 
 
-    adapt::SymbolSet_sp	EntityNameSetBase_O::getMonomerNames()
+CL_NAME("getMonomerNames");
+CL_DEFMETHOD     adapt::SymbolSet_sp	EntityNameSetBase_O::getMonomerNames()
     {_G();
 	adapt::SymbolSet_sp names;
 	names = this->expandedNameSet();
 	return names;
     }
 
-    string	EntityNameSetBase_O::getMonomerNamesAsString()
+CL_NAME("getMonomerNamesAsString");
+CL_DEFMETHOD     string	EntityNameSetBase_O::getMonomerNamesAsString()
     {_G();
 	adapt::SymbolSet_sp names;
 	names = this->expandedNameSet();
@@ -328,7 +338,8 @@ core::Symbol_sp EntityNameSetBase_O::getKey()
 // OLD   return this->_MonomerNames->asString();
     }
 
-    core::Symbol_sp EntityNameSetBase_O::getOnlyMonomerName()
+CL_NAME("getOnlyMonomerName");
+CL_DEFMETHOD     core::Symbol_sp EntityNameSetBase_O::getOnlyMonomerName()
     {_G();
 	adapt::SymbolSet_sp names;
 	names = this->expandedNameSet();
@@ -342,7 +353,8 @@ core::Symbol_sp EntityNameSetBase_O::getKey()
 
 /*!	Set this EntityNameSetBase to recognize a single monomer
  */
-    void	EntityNameSetBase_O::setMonomerNameOrPdb(core::Symbol_sp mn)
+CL_NAME("setMonomerNameOrPdb");
+CL_DEFMETHOD     void	EntityNameSetBase_O::setMonomerNameOrPdb(core::Symbol_sp mn)
     {_G();
 	CandoDatabase_sp db;
 //    this->setName(mn);
@@ -382,7 +394,8 @@ core::Symbol_sp EntityNameSetBase_O::getKey()
 /*!	Return true if this EntityNameSetBase_sp
   recognizes the monomer nameOrPdb
 */
-    bool	EntityNameSetBase_O::recognizesNameOrPdb(core::Symbol_sp nm)
+CL_NAME("recognizesNameOrPdb");
+CL_DEFMETHOD     bool	EntityNameSetBase_O::recognizesNameOrPdb(core::Symbol_sp nm)
     {_G();
 	CandoDatabase_sp	bdb;
 	bdb = getCandoDatabase();
@@ -404,7 +417,8 @@ core::Symbol_sp EntityNameSetBase_O::getKey()
 #endif
 
 
-    adapt::StringList_sp	EntityNameSetBase_O::getUnrecognizedMonomerNamesOrdered()
+CL_NAME("getUnrecognizedMonomerNamesOrdered");
+CL_DEFMETHOD     adapt::StringList_sp	EntityNameSetBase_O::getUnrecognizedMonomerNamesOrdered()
     {
 	IMPLEMENT_ME();
 #if 0
@@ -425,14 +439,16 @@ core::Symbol_sp EntityNameSetBase_O::getKey()
 #endif
     }
 
-    bool EntityNameSetBase_O::hasInterestingAtomAlias(Alias_sp alias)
+CL_NAME("hasInterestingAtomAlias");
+CL_DEFMETHOD     bool EntityNameSetBase_O::hasInterestingAtomAlias(Alias_sp alias)
     {_G();
 	LOG(BF("EntityNameSetBase_O always returns false") );
 	return false;
     };
 
 
-    adapt::StringList_sp	EntityNameSetBase_O::getMonomerNamesOrdered()
+CL_NAME("getMonomerNamesOrdered");
+CL_DEFMETHOD     adapt::StringList_sp	EntityNameSetBase_O::getMonomerNamesOrdered()
     {
 	IMPLEMENT_ME();
 #if 0
@@ -559,7 +575,8 @@ core::Symbol_sp EntityNameSetBase_O::getKey()
 	return ss.str();
     }
 
-    void	EntityNameSetWithCap_O::addGroupName(core::Symbol_sp nm)
+CL_NAME("addGroupName");
+CL_DEFMETHOD     void	EntityNameSetWithCap_O::addGroupName(core::Symbol_sp nm)
     {_G();
 	CandoDatabase_sp	bdb;
 	adapt::StringSet_sp		monomerNames;

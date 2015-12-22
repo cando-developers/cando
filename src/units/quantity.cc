@@ -176,7 +176,8 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
     }
 
 
-    string Quantity_O::rawAsString() const
+CL_NAME("rawAsString");
+CL_DEFMETHOD     string Quantity_O::rawAsString() const
     {_OF();
 	stringstream ss;
 	if ( this->_Value.isA<core::DoubleFloat_O>() )
@@ -206,7 +207,8 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
     }
 
 
-    bool Quantity_O::is_compatible(core::T_sp other) const
+CL_NAME("quantity_is_compatible");
+CL_DEFMETHOD     bool Quantity_O::is_compatible(core::T_sp other) const
     {_OF();
 	if ( other.isA<Unit_O>() )
 	{
@@ -220,7 +222,8 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
 	SIMPLE_ERROR(BF("You can only check compatibility of a Quantity with another Quantity or Unit - you passed a %s") % other->__class()->classNameAsString() );
     }
 
-    core::T_sp Quantity_O::value_in_unit(Unit_sp other, int power) const
+CL_NAME("value_in_unit");
+CL_DEFMETHOD     core::T_sp Quantity_O::value_in_unit(Unit_sp other, int power) const
     {_OF();
 	double conversion = this->_Unit->conversion_factor_to(other,power);
 	core::T_sp valueCopy = Quantity_O::copyAndScaleValue(this->_Value,conversion);
@@ -242,14 +245,16 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
 	return Quantity_O::create(val,this->_Unit);
     }
 
-    core::T_sp Quantity_O::getElement_in_unit(uint index, Unit_sp other ) const
+CL_NAME("getElement_in_unit");
+CL_DEFMETHOD     core::T_sp Quantity_O::getElement_in_unit(uint index, Unit_sp other ) const
     {_OF();
 	double conversion = this->_Unit->conversion_factor_to(other);
 	core::T_sp valueCopy = Quantity_O::copyAndScaleValueElement(this->_Value,index,conversion);
 	return valueCopy;
     }
 
-    core::T_sp Quantity_O::setElement(uint index, Quantity_sp other)
+CL_NAME("setElement");
+CL_DEFMETHOD     core::T_sp Quantity_O::setElement(uint index, Quantity_sp other)
     {_OF();
 	// At this point (this) is a Quantity in a particular set of units
 	// and other is a Quantity in (hopefully) compatible units
@@ -274,7 +279,8 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
     }
 
 
-    int Quantity_O::size() const
+CL_NAME("size");
+CL_DEFMETHOD     int Quantity_O::size() const
     {_OF();
 	return Quantity_O::sizeOfValue(this->_Value);
     }
@@ -282,7 +288,8 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
 
 
 
-    core::T_sp Quantity_O::operator*(core::T_sp other) const
+CL_NAME("*");
+CL_DEFMETHOD     core::T_sp Quantity_O::operator*(core::T_sp other) const
     {_OF();
 	if ( other.nilp() ) return this->const_sharedThis<Quantity_O>();
 	if ( other.isA<core::DoubleFloat_O>() )
@@ -328,7 +335,8 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
 
 
 
-    core::T_sp Quantity_O::operator/(core::T_sp other) const
+CL_NAME("/");
+CL_DEFMETHOD     core::T_sp Quantity_O::operator/(core::T_sp other) const
     {_OF();
 	if ( other.nilp() ) return this->const_sharedThis<Quantity_O>();
 	if ( other.isA<core::DoubleFloat_O>() )
@@ -360,7 +368,8 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
     }
 
 
-    core::T_sp Quantity_O::operator+(core::T_sp other) const
+CL_NAME("+");
+CL_DEFMETHOD     core::T_sp Quantity_O::operator+(core::T_sp other) const
     {_OF();
 	if ( other.nilp() ) return this->const_sharedThis<Quantity_O>();
 	if ( other.isA<Quantity_O>() )
@@ -386,7 +395,8 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
     }
 
 
-    core::T_sp Quantity_O::operator-(core::T_sp other) const
+CL_NAME("-");
+CL_DEFMETHOD     core::T_sp Quantity_O::operator-(core::T_sp other) const
     {_OF();
 	if ( other.nilp() ) return this->const_sharedThis<Quantity_O>();
 	if ( other.isA<Quantity_O>() )
@@ -414,7 +424,8 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
 
 
 
-    core::T_sp Quantity_O::power(int pwr) const
+CL_NAME("power");
+CL_DEFMETHOD     core::T_sp Quantity_O::power(int pwr) const
     {_OF();
 	if ( this->_Value.isA<core::Number_O>() )
 	{
@@ -425,7 +436,8 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
 	SIMPLE_ERROR(BF("Currently I can only take powers of Numbers - you tried to take a power of a %s") % this->_Value->__class()->classNameAsString());
     }
 
-    core::T_sp Quantity_O::sqrt() const
+CL_NAME("sqrt");
+CL_DEFMETHOD     core::T_sp Quantity_O::sqrt() const
     {_OF();
 	if ( this->_Value.isA<core::Number_O>() )
 	{
@@ -437,7 +449,8 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
     }
 
 
-    bool Quantity_O::isnan() const
+CL_NAME("isnan");
+CL_DEFMETHOD     bool Quantity_O::isnan() const
     {_OF();
 	return Quantity_O::isnanValue(this->_Value);
     }
@@ -453,7 +466,8 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
 
 
 
-    bool Quantity_O::operator<(core::T_sp other) const
+CL_NAME("<");
+CL_DEFMETHOD     bool Quantity_O::operator<(core::T_sp other) const
     {_OF();
 	if ( other.isA<Quantity_O>() )
 	{
@@ -463,7 +477,8 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
 	SIMPLE_ERROR(BF("You cannot compare a Quantity with value of class[%s] to an object of class[%s]") % this->_Value->__class()->classNameAsString() % other->__class()->classNameAsString() );
     }
 
-    bool Quantity_O::operator<=(core::T_sp other) const
+CL_NAME("<=");
+CL_DEFMETHOD     bool Quantity_O::operator<=(core::T_sp other) const
     {_OF();
 	if ( other.isA<Quantity_O>() )
 	{
@@ -474,7 +489,8 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
     }
 
 
-    bool Quantity_O::operator>(core::T_sp other) const
+CL_NAME(">");
+CL_DEFMETHOD     bool Quantity_O::operator>(core::T_sp other) const
     {_OF();
 	if ( other.isA<Quantity_O>() )
 	{
@@ -484,7 +500,8 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
 	SIMPLE_ERROR(BF("You cannot compare a Quantity with value of class[%s] to an object of class[%s]") % this->_Value->__class()->classNameAsString() % other->__class()->classNameAsString() );
     }
 
-    bool Quantity_O::operator>=(core::T_sp other) const
+CL_NAME(">=");
+CL_DEFMETHOD     bool Quantity_O::operator>=(core::T_sp other) const
     {_OF();
 	if ( other.isA<Quantity_O>() )
 	{

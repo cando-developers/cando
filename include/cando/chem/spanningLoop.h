@@ -89,7 +89,8 @@ public:
 	bool		advanceLoopAndProcessWhenTestTrue(std::function<bool (Atom_sp, Bond_sp)>);
 			// Return TRUE as long as there is something to return
 	bool		advanceLoopAndProcess();
-	bool		advance() { return this->advanceLoopAndProcess(); };
+CL_NAME("advance");
+CL_DEFMETHOD 	bool		advance() { return this->advanceLoopAndProcess(); };
 	Atom_sp		getAtom();
 
 	core::List_sp		allAtoms();

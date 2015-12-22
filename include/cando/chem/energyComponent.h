@@ -296,21 +296,29 @@ public:
 	virtual int numberOfTerms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
 void setScale(double s) {this->_Scale = s; };
 	double getScale() { return this->_Scale ; };
-	void enable() {this->_Enabled = true; };
-	void disable() {this->_Enabled = false; };
-	void enableDebug() {this->_DebugEnergy = true; };
-	void disableDebug() {this->_DebugEnergy = false; };
-	void setDebug_NumberOfTermsToCalculate(int i) {this->_Debug_NumberOfTermsToCalculate=i;}
+CL_NAME("enable");
+CL_DEFMETHOD 	void enable() {this->_Enabled = true; };
+CL_NAME("disable");
+CL_DEFMETHOD 	void disable() {this->_Enabled = false; };
+CL_NAME("enableDebug");
+CL_DEFMETHOD 	void enableDebug() {this->_DebugEnergy = true; };
+CL_NAME("disableDebug");
+CL_DEFMETHOD 	void disableDebug() {this->_DebugEnergy = false; };
+CL_NAME("setDebug_NumberOfTermsToCalculate");
+CL_DEFMETHOD 	void setDebug_NumberOfTermsToCalculate(int i) {this->_Debug_NumberOfTermsToCalculate=i;}
 	bool isEnabled() { return this->_Enabled; };
-	void	setErrorThreshold(double t) { this->_ErrorThreshold = t; };
-	double	getErrorThreshold() { return this->_ErrorThreshold; };
+CL_NAME("setErrorThreshold");
+CL_DEFMETHOD 	void	setErrorThreshold(double t) { this->_ErrorThreshold = t; };
+CL_NAME("getErrorThreshold");
+CL_DEFMETHOD 	double	getErrorThreshold() { return this->_ErrorThreshold; };
 
 	string summarizeEnergyAsString();
 	string enabledAsString();
 	string debugLogAsString();
 
 public:	// Virtual methods
-    virtual double getEnergy() { return this->_TotalEnergy; };
+CL_NAME("getEnergy");
+CL_DEFMETHOD     virtual double getEnergy() { return this->_TotalEnergy; };
 
     virtual void zeroEnergy();
 virtual void dumpTerms() {_OF();SUBCLASS_MUST_IMPLEMENT();};

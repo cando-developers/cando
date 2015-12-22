@@ -134,13 +134,19 @@ private:
     MatterName  	_PiAtomY;
 
 public:
-    core::Symbol_sp	getConfiguration()	{return this->_Configuration;};
-    void	setConfiguration(core::Symbol_sp s)	{this->_Configuration = s;};
+CL_NAME("getConfiguration");
+CL_DEFMETHOD     core::Symbol_sp	getConfiguration()	{return this->_Configuration;};
+CL_NAME("setConfiguration");
+CL_DEFMETHOD     void	setConfiguration(core::Symbol_sp s)	{this->_Configuration = s;};
 
-    MatterName	getPiAtomX() { return this->_PiAtomX; };
-    void	setPiAtomX(MatterName n) { this->_PiAtomX = n; };
-    MatterName	getPiAtomY() { return this->_PiAtomY; };
-    void	setPiAtomY(MatterName n) { this->_PiAtomY = n; };
+CL_NAME("getPiAtomX");
+CL_DEFMETHOD     MatterName	getPiAtomX() { return this->_PiAtomX; };
+CL_NAME("setPiAtomX");
+CL_DEFMETHOD     void	setPiAtomX(MatterName n) { this->_PiAtomX = n; };
+CL_NAME("getPiAtomY");
+CL_DEFMETHOD     MatterName	getPiAtomY() { return this->_PiAtomY; };
+CL_NAME("setPiAtomY");
+CL_DEFMETHOD     void	setPiAtomY(MatterName n) { this->_PiAtomY = n; };
 
     void fillOneDihedralRestraint(Residue_sp residue,
 				Atom_sp p1X, Atom_sp pX, Atom_sp pY, Atom_sp p1Y,

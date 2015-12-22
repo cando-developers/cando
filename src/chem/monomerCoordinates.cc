@@ -211,7 +211,8 @@ void	MonomerCoordinates_O::_defineFromConformationExplorerOrDebug(
 }
 
 
-void	MonomerCoordinates_O::defineFromConformationExplorer(
+CL_NAME("defineFromConformationExplorer");
+CL_DEFMETHOD void	MonomerCoordinates_O::defineFromConformationExplorer(
 				Topology_sp	topology,
 				ConformationExplorer_sp conformationExplorer,
 				Monomer_sp focusMonomer,
@@ -229,7 +230,8 @@ void	MonomerCoordinates_O::defineFromConformationExplorer(
  * :sawProblems xxx  and :problems yyy pairs
  */
 
-core::List_sp	MonomerCoordinates_O::testExtraction(
+CL_NAME("testExtraction");
+CL_DEFMETHOD core::List_sp	MonomerCoordinates_O::testExtraction(
 				Topology_sp	topology,
 				Aggregate_sp	aggregate,
 				Monomer_sp focusMonomer )

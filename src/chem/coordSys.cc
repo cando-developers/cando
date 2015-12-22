@@ -481,7 +481,8 @@ CoordinateSystem_O::CoordinateSystem_O(const CoordinateSystem_O& orig) : core::C
 //	A point at 1,0,0 will be transformed to a point
 //	one unit along this ones X-axis
 //
-Matrix	CoordinateSystem_O::matrixFromCanonical()
+CL_NAME("matrixFromCanonical");
+CL_DEFMETHOD Matrix	CoordinateSystem_O::matrixFromCanonical()
 {
 Matrix	mt, m;
 
@@ -513,7 +514,8 @@ Matrix	mt, m;
 //	transformed to 0,0,0.  A point one unit along this coordinate systems
 //	X-axis will be transformed to 1,0,0
 //
-Matrix	CoordinateSystem_O::matrixToCanonical()
+CL_NAME("matrixToCanonical");
+CL_DEFMETHOD Matrix	CoordinateSystem_O::matrixToCanonical()
 {
 Matrix  mt, m, mn;
 Vector3 vt;
@@ -547,7 +549,8 @@ Vector3 vt;
 //	x is 1,0,0
 //	y is 0,1,0
 //	z is 0,0,1
-void CoordinateSystem_O::canonical()
+CL_NAME("canonical");
+CL_DEFMETHOD void CoordinateSystem_O::canonical()
 {
     this->origin = Vector3(0.0,0.0,0.0);
     this->x = Vector3(1.0,0.0,0.0);
@@ -564,7 +567,8 @@ void CoordinateSystem_O::canonical()
 //	the x axis is along (ax-aorigin)
 //	the z axis is orthogonal to (axy) and x axis
 //	the y axis is orthogonal to the new x and z axes
-void	CoordinateSystem_O::defineForAtoms( Atom_sp aorigin, Atom_sp ax, Atom_sp axy )
+CL_NAME("defineForAtoms");
+CL_DEFMETHOD void	CoordinateSystem_O::defineForAtoms( Atom_sp aorigin, Atom_sp ax, Atom_sp axy )
 {_G();
     Vector3	vo, vx, vxy, vz, vy;
     vo = aorigin->getPosition();
@@ -592,7 +596,8 @@ void	CoordinateSystem_O::defineForAtoms( Atom_sp aorigin, Atom_sp ax, Atom_sp ax
 //	the x axis is along (ax-aorigin)
 //	the z axis is orthogonal to (axy) and x axis
 //	the y axis is orthogonal to the new x and z axes
-void	CoordinateSystem_O::defineForAtomVectors( const Vector3& vo,
+CL_NAME("defineForAtomVectors");
+CL_DEFMETHOD void	CoordinateSystem_O::defineForAtomVectors( const Vector3& vo,
 						  const Vector3& vax,
 						  const Vector3& vaxy )
 {_G();
@@ -677,7 +682,8 @@ void	CoordinateSystem_O::defineForOneAtomVector( const Vector3& vo )
 //	of the X-axis and Y-axis.  The Z-axis is calculated from
 //	the cross-product of xDir and yDir.
 //
-void	CoordinateSystem_O::defineForVectorsOriginXDirYDir(
+CL_NAME("defineForVectorsOriginXDirYDir");
+CL_DEFMETHOD void	CoordinateSystem_O::defineForVectorsOriginXDirYDir(
     const Vector3& orig,
     const Vector3& xDir,
     const Vector3& yDir )
@@ -698,7 +704,8 @@ void	CoordinateSystem_O::defineForVectorsOriginXDirYDir(
 //	of the X-axis and a vector in the XY plane.
 //	The Z-axis is calculated from the cross-product of xDir and xyPlane.
 //
-void	CoordinateSystem_O::defineForVectorsOriginXDirXYPlane(
+CL_NAME("defineForVectorsOriginXDirXYPlane");
+CL_DEFMETHOD void	CoordinateSystem_O::defineForVectorsOriginXDirXYPlane(
     const Vector3& orig,
     const Vector3& xDir,
     const Vector3& xyPlane )
@@ -720,7 +727,8 @@ void	CoordinateSystem_O::defineForVectorsOriginXDirXYPlane(
 //	of the Z-axis and a vector in the XZ plane.
 //	The Y-axis is calculated from the cross-product of xDir and xyPlane.
 //
-void	CoordinateSystem_O::defineForVectorsOriginZDirXZPlane(
+CL_NAME("defineForVectorsOriginZDirXZPlane");
+CL_DEFMETHOD void	CoordinateSystem_O::defineForVectorsOriginZDirXZPlane(
     const Vector3& orig,
     const Vector3& zDir,
     const Vector3& xzPlane )
@@ -745,7 +753,8 @@ void	CoordinateSystem_O::defineForVectorsOriginZDirXZPlane(
 //	of the X-axis and Z-axis.  The Y-axis is calculated from
 //	the cross-product of xDir and zDir.
 //
-void	CoordinateSystem_O::defineForVectorsOriginXDirZDir(
+CL_NAME("defineForVectorsOriginXDirZDir");
+CL_DEFMETHOD void	CoordinateSystem_O::defineForVectorsOriginXDirZDir(
     const Vector3& orig,
     const Vector3& xDir,
     const Vector3& zDir )
@@ -759,7 +768,8 @@ void	CoordinateSystem_O::defineForVectorsOriginXDirZDir(
 }
 
 
-void	CoordinateSystem_O::defineRandom( )
+CL_NAME("defineRandom");
+CL_DEFMETHOD void	CoordinateSystem_O::defineRandom( )
 {_OF();
 double x,y,z;
 #define	RANGE	20.0
@@ -788,7 +798,8 @@ z = core::randomNumber01()*RANGE - (RANGE/2.0);
 }
 
 
-void	CoordinateSystem_O::defineFromCoordinateSystem( CoordinateSystem_sp c )
+CL_NAME("defineFromCoordinateSystem");
+CL_DEFMETHOD void	CoordinateSystem_O::defineFromCoordinateSystem( CoordinateSystem_sp c )
 {
     this->origin = c->getOrigin();
     this->x = c->getX();
@@ -797,7 +808,8 @@ void	CoordinateSystem_O::defineFromCoordinateSystem( CoordinateSystem_sp c )
 }
 
 
-void	CoordinateSystem_O::defineCanonical( )
+CL_NAME("defineCanonical");
+CL_DEFMETHOD void	CoordinateSystem_O::defineCanonical( )
 {
     this->origin.set(0.0,0.0,0.0);
     this->x.set(1.0,0.0,0.0);
@@ -833,7 +845,8 @@ Matrix	m1, m2;
 //
 //	Transform this coordinate system with the matrix
 //
-void	CoordinateSystem_O::transformWithMatrix(const Matrix& m )
+CL_NAME("transformWithMatrix");
+CL_DEFMETHOD void	CoordinateSystem_O::transformWithMatrix(const Matrix& m )
 {
     Vector3	vox, voy, voz;
 
@@ -899,7 +912,8 @@ adapt::QDomNode_sp	graalphacs, line;
 //
 //	Dump the coordinate system
 //
-void	CoordinateSystem_O::dump()
+CL_NAME("dump");
+CL_DEFMETHOD void	CoordinateSystem_O::dump()
 {
     _lisp->print(BF("origin: ( %lf, %lf, %lf )") %	this->origin.getX()% this->origin.getY() % this->origin.getZ() );
     _lisp->print(BF("x-axis: ( %lf, %lf, %lf )") %	this->x.getX()% this->x.getY() % this->x.getZ() );
@@ -918,14 +932,16 @@ void	CoordinateSystem_O::archive(core::ArchiveP node)
 #endif
 
 
-CoordinateSystem_sp	CoordinateSystem_O::copy()
+CL_NAME("copy");
+CL_DEFMETHOD CoordinateSystem_sp	CoordinateSystem_O::copy()
 {
     GC_COPY(CoordinateSystem_O, n , *this); // = RP_Copy<CoordinateSystem_O>(this);
     return n;
 }
 
 
-bool	CoordinateSystem_O::sameAs(CoordinateSystem_sp c)
+CL_NAME("sameAs");
+CL_DEFMETHOD bool	CoordinateSystem_O::sameAs(CoordinateSystem_sp c)
 {
     if ( !this->origin.sameAs(c->getOrigin()) ) return false;
     if ( !this->x.sameAs(c->getX()) ) return false;

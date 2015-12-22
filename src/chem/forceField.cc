@@ -95,7 +95,8 @@ void	ForceField_O::saveAs(const string& fileName)
 }
 #endif
 
-void	ForceField_O::assignTypes(Matter_sp matter)
+CL_NAME("assignTypes");
+CL_DEFMETHOD void	ForceField_O::assignTypes(Matter_sp matter)
 {_G();
 FFTypesDb_sp	types;
     types = this->getTypes();

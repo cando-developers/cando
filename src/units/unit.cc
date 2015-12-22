@@ -180,7 +180,8 @@ eg: (make-unit (list units:meters 1 units:seconds -1))
     }
 
 
-    void Unit_O::test_set_amount(double amount)
+CL_NAME("test_set_amount");
+CL_DEFMETHOD     void Unit_O::test_set_amount(double amount)
     {_OF();
 	this->_Amount = amount;
     }
@@ -204,7 +205,8 @@ eg: (make-unit (list units:meters 1 units:seconds -1))
     };
 
 
-    bool Unit_O::is_compatible(Unit_sp other,int power) const
+CL_NAME("unit_is_compatible");
+CL_DEFMETHOD     bool Unit_O::is_compatible(Unit_sp other,int power) const
     {_OF();
 	for ( int i=0; i<NumBaseDimensions; i++ )
 	{
@@ -213,7 +215,8 @@ eg: (make-unit (list units:meters 1 units:seconds -1))
 	return true;
     }
 
-    double Unit_O::conversion_factor_to(Unit_sp other, int power) const
+CL_NAME("conversion_factor_to");
+CL_DEFMETHOD     double Unit_O::conversion_factor_to(Unit_sp other, int power) const
     {_OF();
 	if ( this->is_compatible(other,power) )
 	{
@@ -232,7 +235,8 @@ eg: (make-unit (list units:meters 1 units:seconds -1))
 	return result;
     }
 
-    core::T_sp Unit_O::operator*(core::T_sp obj) const
+CL_NAME("*");
+CL_DEFMETHOD     core::T_sp Unit_O::operator*(core::T_sp obj) const
     {_OF();
 	core::T_sp result;
 	if ( obj.isA<Unit_O>() )
@@ -262,7 +266,8 @@ eg: (make-unit (list units:meters 1 units:seconds -1))
     }
 
 
-    core::T_sp Unit_O::operator/(core::T_sp obj) const
+CL_NAME("/");
+CL_DEFMETHOD     core::T_sp Unit_O::operator/(core::T_sp obj) const
     {_OF();
 	if ( obj.isA<Unit_O>() )
 	{

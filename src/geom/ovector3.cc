@@ -80,25 +80,29 @@ string OVector3_O::__str__() {
     return this->__repr__();
 }
 
-    Vector3 OVector3_O::sub(const Vector3& other)
+CL_NAME("sub");
+CL_DEFMETHOD     Vector3 OVector3_O::sub(const Vector3& other)
     {
 	Vector3 s = this->_Value.sub(other);
 	return s;
     }
 
-    double OVector3_O::magnitude()
+CL_NAME("vector-magnitude");
+CL_DEFMETHOD     double OVector3_O::magnitude()
     {
 	double l = this->_Value.length();
 	return l;
     }
 
-    Vector3 OVector3_O::crossProduct(const Vector3& other)
+CL_NAME("crossProduct");
+CL_DEFMETHOD     Vector3 OVector3_O::crossProduct(const Vector3& other)
     {
 	Vector3 s = this->_Value.crossProduct(other);
 	return s;
     }
 
-    double OVector3_O::dotProduct(const Vector3& other)
+CL_NAME("dotProduct");
+CL_DEFMETHOD     double OVector3_O::dotProduct(const Vector3& other)
     {
 	double d = this->_Value.dotProduct(other);
 	return d;
@@ -129,7 +133,8 @@ string OVector3_O::__str__() {
 #define ARGS_OVector3_O_add "((self ovector3) &rest points)"
 #define DECL_OVector3_O_add ""
 #define DOCS_OVector3_O_add "OVector3_O_add"
-core::T_sp OVector3_O::add(core::List_sp points)
+CL_NAME("add");
+CL_DEFMETHOD core::T_sp OVector3_O::add(core::List_sp points)
 {_G();
   Vector3 result = Vector3(this->getX(),this->getY(),this->getZ());
   for ( auto cur : points ) {
@@ -143,45 +148,53 @@ core::T_sp OVector3_O::add(core::List_sp points)
 
 
 
-Vector3 OVector3_O::timesScalar(double d)
+CL_NAME("timesScalar");
+CL_DEFMETHOD Vector3 OVector3_O::timesScalar(double d)
 {
     Vector3 p = this->_Value.multiplyByScalar(d);
     return p;
 }
 
 
-Vector3 OVector3_O::normalized()
+CL_NAME("vector-normalized");
+CL_DEFMETHOD Vector3 OVector3_O::normalized()
 {
   return this->_Value.normalized();
 }
 
-double	OVector3_O::dihedral( const Vector3& vb, const Vector3& vc, const Vector3& vd )
+CL_NAME("dihedral");
+CL_DEFMETHOD double	OVector3_O::dihedral( const Vector3& vb, const Vector3& vc, const Vector3& vd )
 {
     return calculateDihedral(this->_Value,vb,vc,vd);
 }
 
-double	OVector3_O::angle( const Vector3& vb, const Vector3& vc)
+CL_NAME("vector3-angle");
+CL_DEFMETHOD double	OVector3_O::angle( const Vector3& vb, const Vector3& vc)
 {
     return calculateAngle(this->_Value,vb,vc);
 }
 
-double	OVector3_O::distance( const Vector3& vb )
+CL_NAME("vector3-distance");
+CL_DEFMETHOD double	OVector3_O::distance( const Vector3& vb )
 {
     return calculateDistance(this->_Value,vb);
 }
 
-void OVector3_O::setUsingBond(double distance, OVector3_sp v)
+CL_NAME("setUsingBond");
+CL_DEFMETHOD void OVector3_O::setUsingBond(double distance, OVector3_sp v)
 {
   this->_Value = buildUsingBond(distance,v->_Value);
 }
 
-void OVector3_O::setUsingBondAngle(double bond, OVector3_sp bondPos,
+CL_NAME("setUsingBondAngle");
+CL_DEFMETHOD void OVector3_O::setUsingBondAngle(double bond, OVector3_sp bondPos,
                                      double angle, OVector3_sp anglePos)
 {
   this->_Value = buildUsingBondAngle(bond,bondPos->_Value,angle,anglePos->_Value);
 }
 
-void OVector3_O::setUsingBondAngleDihedral(double bond, OVector3_sp bondPos,
+CL_NAME("setUsingBondAngleDihedral");
+CL_DEFMETHOD void OVector3_O::setUsingBondAngleDihedral(double bond, OVector3_sp bondPos,
                                              double angle, OVector3_sp anglePos,
                                              double dihedral, OVector3_sp dihedralPos)
 {

@@ -86,10 +86,12 @@ public: // Functions here
 	string __repr__() const;
 
 	/*! Return the raw value */
-	core::T_sp rawValue() const { return this->_Value;};
+CL_NAME("rawValue");
+CL_DEFMETHOD 	core::T_sp rawValue() const { return this->_Value;};
 	
 	/*! Return the raw unit */
-	Unit_sp rawUnit() const { return this->_Unit;};
+CL_NAME("rawUnit");
+CL_DEFMETHOD 	Unit_sp rawUnit() const { return this->_Unit;};
 
 	/*! Return a string representation of the value:unit */
 	string rawAsString() const;

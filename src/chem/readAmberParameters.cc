@@ -28,20 +28,23 @@ void	ReadAmberParameters_O::initialize()
 }
 
 
-void	ReadAmberParameters_O::readTypes(core::T_sp fin)
+CL_NAME("readTypes");
+CL_DEFMETHOD void	ReadAmberParameters_O::readTypes(core::T_sp fin)
 {_G();
     this->_Types = this->parseTypeRules(fin);
 }
 
 
-void	ReadAmberParameters_O::readParameters(core::T_sp fin)
+CL_NAME("readParameters");
+CL_DEFMETHOD void	ReadAmberParameters_O::readParameters(core::T_sp fin)
 {
     this->_ForceField = this->parseAmberFormattedForceField(fin);
 }
 
 
 
-ForceField_sp ReadAmberParameters_O::getForceField()
+CL_NAME("getForceField");
+CL_DEFMETHOD ForceField_sp ReadAmberParameters_O::getForceField()
 {_G();
     if ( this->_Types.nilp() ) {
 	SIMPLE_ERROR(BF("In getForceField this->_Types cannot be nil"));

@@ -50,12 +50,14 @@ void SpecificContext_O::clear()
 #endif
 
 
-    void SpecificContext_O::setSelfName(core::Symbol_sp selfName)
+CL_NAME("setSelfName");
+CL_DEFMETHOD     void SpecificContext_O::setSelfName(core::Symbol_sp selfName)
 {_G();
    this->_SelfName = selfName; 
 }
 
-    void	SpecificContext_O::pushNeighbor(core::Symbol_sp coupling, core::Symbol_sp neighborName)
+CL_NAME("pushNeighbor");
+CL_DEFMETHOD     void	SpecificContext_O::pushNeighbor(core::Symbol_sp coupling, core::Symbol_sp neighborName)
 {_G();
     KeyEntry one;
     one._Coupling = coupling;
@@ -70,7 +72,8 @@ void SpecificContext_O::clear()
     one._Monomer = neighbor;
 }
 
-void	SpecificContext_O::popNeighbor()
+CL_NAME("popNeighbor");
+CL_DEFMETHOD void	SpecificContext_O::popNeighbor()
 {_G();
     this->_Neighbors.pop_back();
 }
@@ -88,7 +91,8 @@ bool SpecificContext_O::allMonomersInDatabase(CandoDatabase_sp bdb)
     return true;
 }
 
-string SpecificContext_O::asString()
+CL_NAME("asString");
+CL_DEFMETHOD string SpecificContext_O::asString()
 {_G();
 stringstream ss;
     ss << "![";
@@ -114,7 +118,8 @@ stringstream ss;
     }
 
 
-SpecificContext_sp SpecificContext_O::copy()
+CL_NAME("copy");
+CL_DEFMETHOD SpecificContext_sp SpecificContext_O::copy()
 {_G();
     GC_COPY(SpecificContext_O, cpy , *this); // = RP_Copy<SpecificContext_O>(this);
     return cpy;
@@ -164,7 +169,8 @@ void	SpecificContextSet_O::initialize()
 }
 
 
-void	SpecificContextSet_O::add(SpecificContext_sp key)
+CL_NAME("addSpecificContext");
+CL_DEFMETHOD void	SpecificContextSet_O::add(SpecificContext_sp key)
 {_G();
     LOG(BF("adding SpecificContext |%s|") % key->asString().c_str()  );
     this->addWithKey(key->asSymbol(),key);
@@ -199,7 +205,8 @@ void	SpecificContextSet_O::remove(SpecificContextSet_sp s)
     }
 }
 
-adapt::SymbolSet_sp SpecificContextSet_O::asSymbolSetOfKeys()
+CL_NAME("asSymbolSetOfKeys");
+CL_DEFMETHOD adapt::SymbolSet_sp SpecificContextSet_O::asSymbolSetOfKeys()
 {_G();
     adapt::SymbolSet_sp keys = adapt::SymbolSet_O::create();
     SpecificContextSet_O::iterator it;
@@ -212,7 +219,8 @@ adapt::SymbolSet_sp SpecificContextSet_O::asSymbolSetOfKeys()
 
 
 
-core::List_sp SpecificContextSet_O::asCons()
+CL_NAME("asCons");
+CL_DEFMETHOD core::List_sp SpecificContextSet_O::asCons()
 {_G();
     core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
     core::Cons_sp cur = first;

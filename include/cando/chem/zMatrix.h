@@ -56,7 +56,8 @@ namespace chem
 	Atom_sp	getAtomNew();
 
 	void	setValue(double v) { this->_Value = v;};
-	virtual double	getValue() { return this->_Value; };
+CL_NAME("getValue");
+CL_DEFMETHOD 	virtual double	getValue() { return this->_Value; };
 
 	ZMatrixInternal_O( const ZMatrixInternal_O& ss ); //!< Copy constructor
 
@@ -83,7 +84,8 @@ namespace chem
 	void setup(Atom_sp newAtom, Atom_sp bondToAtom,
 		   ZMatrixInternal_O::atomMap atomIndices);
 	string	getBondAtomZMatrixName();
-	int	getBondAtomIndex() const { return this->_AtomBond;};
+CL_NAME("getBondAtomIndex");
+CL_DEFMETHOD 	int	getBondAtomIndex() const { return this->_AtomBond;};
 
 	virtual string	__repr__() const;
 
@@ -129,8 +131,10 @@ namespace chem
     public:
 	string	getBondAtomZMatrixName();
 	string	getAngleAtomZMatrixName();
-	int getBondAtomIndex() const { return this->_AtomBond;}
-	int getAngleAtomIndex() const { return this->_AtomAngle;}
+CL_NAME("getBondAtomIndex");
+CL_DEFMETHOD 	int getBondAtomIndex() const { return this->_AtomBond;}
+CL_NAME("getAngleAtomIndex");
+CL_DEFMETHOD 	int getAngleAtomIndex() const { return this->_AtomAngle;}
 
 	virtual string	__repr__() const;
 
@@ -181,9 +185,12 @@ namespace chem
 	string	getBondAtomZMatrixName();
 	string	getAngleAtomZMatrixName();
 	string	getDihedralAtomZMatrixName();
-	int getBondAtomIndex() const { return this->_AtomBond;}
-	int getAngleAtomIndex() const { return this->_AtomAngle;}
-	int getDihedralAtomIndex() const { return this->_AtomDihedral;}
+CL_NAME("getBondAtomIndex");
+CL_DEFMETHOD 	int getBondAtomIndex() const { return this->_AtomBond;}
+CL_NAME("getAngleAtomIndex");
+CL_DEFMETHOD 	int getAngleAtomIndex() const { return this->_AtomAngle;}
+CL_NAME("getDihedralAtomIndex");
+CL_DEFMETHOD 	int getDihedralAtomIndex() const { return this->_AtomDihedral;}
 
 	virtual string	__repr__() const;
 
@@ -229,15 +236,23 @@ namespace chem
 	static ZMatrixEntry_sp create(Atom_sp atom, ZMatrixInternal_O::atomMap atomIndices);
 	void setup(Atom_sp atom, ZMatrixInternal_O::atomMap atomIndices);
     public:
-	Atom_sp	getAtom() { return this->_Atom;};
-	string	getTargetAtomZMatrixName() { return this->_ZMatrixAtomName; };
+CL_NAME("getAtom");
+CL_DEFMETHOD 	Atom_sp	getAtom() { return this->_Atom;};
+CL_NAME("getTargetAtomZMatrixName");
+CL_DEFMETHOD 	string	getTargetAtomZMatrixName() { return this->_ZMatrixAtomName; };
 
-	bool	hasBond() {_OF(); ASSERTNOTNULL(this->_Bond);return this->_Bond.notnilp(); };
-	ZMatrixBondInternal_sp	getBond() {_OF(); ASSERTNOTNULL(this->_Bond);return this->_Bond;};
-	bool	hasAngle() {_OF(); ASSERTNOTNULL(this->_Angle);return this->_Angle.notnilp();};
-	ZMatrixAngleInternal_sp	getAngle() {_OF(); ASSERTNOTNULL(this->_Angle);return this->_Angle;};
-	bool	hasDihedral() {_OF(); ASSERTNOTNULL(this->_Dihedral);return this->_Dihedral.notnilp(); };
-	ZMatrixDihedralInternal_sp	getDihedral() {_OF(); ASSERTNOTNULL(this->_Dihedral);return this->_Dihedral;};
+CL_NAME("hasBond");
+CL_DEFMETHOD 	bool	hasBond() {_OF(); ASSERTNOTNULL(this->_Bond);return this->_Bond.notnilp(); };
+CL_NAME("getBond");
+CL_DEFMETHOD 	ZMatrixBondInternal_sp	getBond() {_OF(); ASSERTNOTNULL(this->_Bond);return this->_Bond;};
+CL_NAME("hasAngle");
+CL_DEFMETHOD 	bool	hasAngle() {_OF(); ASSERTNOTNULL(this->_Angle);return this->_Angle.notnilp();};
+CL_NAME("getAngle");
+CL_DEFMETHOD 	ZMatrixAngleInternal_sp	getAngle() {_OF(); ASSERTNOTNULL(this->_Angle);return this->_Angle;};
+CL_NAME("hasDihedral");
+CL_DEFMETHOD 	bool	hasDihedral() {_OF(); ASSERTNOTNULL(this->_Dihedral);return this->_Dihedral.notnilp(); };
+CL_NAME("getDihedral");
+CL_DEFMETHOD 	ZMatrixDihedralInternal_sp	getDihedral() {_OF(); ASSERTNOTNULL(this->_Dihedral);return this->_Dihedral;};
 
 	ZMatrixEntry_O( const ZMatrixEntry_O& ss ); //!< Copy constructor
 

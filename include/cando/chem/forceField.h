@@ -112,14 +112,21 @@ public:
 			this->_SingleBondMultiBondDistinctions.push_back(s);
 		};
 
-	FFTypesDb_sp	getTypes() { return this->_Types; };
+CL_NAME("getTypes");
+CL_DEFMETHOD 	FFTypesDb_sp	getTypes() { return this->_Types; };
 
-	FFStretchDb_sp getStretchDb() { return this->_Stretches;};
-	FFAngleDb_sp getAngleDb() { return this->_Angles;};
-	FFItorDb_sp getItorDb() { return this->_Itors;};
-	FFPtorDb_sp getPtorDb() { return this->_Ptors;};
-	FFNonbondDb_sp	getNonbondDb() { return this->_Nonbonds; };
-	FFVdwDb_sp getVdwDb() { return this->_Vdws;};
+CL_NAME("getStretchDb");
+CL_DEFMETHOD 	FFStretchDb_sp getStretchDb() { return this->_Stretches;};
+CL_NAME("getAngleDb");
+CL_DEFMETHOD 	FFAngleDb_sp getAngleDb() { return this->_Angles;};
+CL_NAME("getItorDb");
+CL_DEFMETHOD 	FFItorDb_sp getItorDb() { return this->_Itors;};
+CL_NAME("getPtorDb");
+CL_DEFMETHOD 	FFPtorDb_sp getPtorDb() { return this->_Ptors;};
+CL_NAME("getNonbondDb");
+CL_DEFMETHOD 	FFNonbondDb_sp	getNonbondDb() { return this->_Nonbonds; };
+CL_NAME("getVdwDb");
+CL_DEFMETHOD 	FFVdwDb_sp getVdwDb() { return this->_Vdws;};
 	
 	void	assignTypes(Matter_sp matter);
 

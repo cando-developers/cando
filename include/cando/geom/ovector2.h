@@ -25,9 +25,12 @@ public:
 public:
 	string __repr__() const;
 	string __str__() ;
-	void setAll(double x, double y) { this->_Value.set(x,y); };
-	double getX() { return this->_Value.getX(); };
-	double getY() { return this->_Value.getY(); };
+CL_NAME("setAll");
+CL_DEFMETHOD 	void setAll(double x, double y) { this->_Value.set(x,y); };
+CL_NAME("x");
+CL_DEFMETHOD 	double getX() { return this->_Value.getX(); };
+CL_NAME("y");
+CL_DEFMETHOD 	double getY() { return this->_Value.getY(); };
 	Vector2	get() { return this->_Value; };
 		/*! Calculate the angle from this-vb-vc
 		 */

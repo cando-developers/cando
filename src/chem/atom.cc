@@ -114,7 +114,8 @@ namespace chem
 #define ARGS_randomizeAtomPosition "((core::a chem:atom) &optional (width 10.0))"
 #define DECL_randomizeAtomPosition ""
 #define DOCS_randomizeAtomPosition "make Atom args: &key (name \"\") (element :C)"
-void	Atom_O::randomizeAtomPosition(double width)
+CL_NAME("randomizeAtomPosition");
+CL_DEFMETHOD void	Atom_O::randomizeAtomPosition(double width)
 {
   double				x,y,z;
   Vector3				v;
@@ -135,7 +136,8 @@ void	Atom_O::randomizeAtomPosition(double width)
 //		between 0 and 100 angstroms
 //
 //
-void	Atom_O::perturbAtomPosition(double dist)
+CL_NAME("perturbAtomPosition");
+CL_DEFMETHOD void	Atom_O::perturbAtomPosition(double dist)
 {_G();
   double				xd,yd,zd;
   Vector3				v,vd;
@@ -441,7 +443,8 @@ void Atom_O::exposeCando(core::Lisp_sp lisp)
 
 
 
-    ConfigurationEnum Atom_O::calculateStereochemicalConfiguration()
+CL_NAME("calculateStereochemicalConfiguration");
+CL_DEFMETHOD     ConfigurationEnum Atom_O::calculateStereochemicalConfiguration()
     {_G();
 	if ( this->numberOfBonds() != 4 ) return undefinedConfiguration;
 	core::List_sp neighborsByPriority = this->getNeighborsByRelativePriority();
@@ -624,7 +627,8 @@ void Atom_O::exposeCando(core::Lisp_sp lisp)
 //
 
 
-    void Atom_O::setConfiguration(ConfigurationEnum conf)
+CL_NAME("setConfiguration");
+CL_DEFMETHOD     void Atom_O::setConfiguration(ConfigurationEnum conf)
     {_OF();
 	this->_Configuration = conf;
 	LOG(BF("Changed configuration of atom[%s] to [%s]")
@@ -633,7 +637,8 @@ void Atom_O::exposeCando(core::Lisp_sp lisp)
 
 
 
-    bool	Atom_O::atLowerAddressThan(Atom_sp b)
+CL_NAME("atLowerAddressThan");
+CL_DEFMETHOD     bool	Atom_O::atLowerAddressThan(Atom_sp b)
     {
 	return this < b.get();
     }
@@ -677,22 +682,26 @@ void Atom_O::exposeCando(core::Lisp_sp lisp)
       return this->bonds[i];
     }
 
-    Atom_sp Atom_O::bondedNeighbor(int i)
+CL_NAME("bondedNeighbor");
+CL_DEFMETHOD     Atom_sp Atom_O::bondedNeighbor(int i)
     {
 	return this->bonds[i]->getOtherAtom(this->sharedThis<Atom_O>());
     }
 
-    BondOrder Atom_O::bondedOrder(int i) 
+CL_NAME("bondedOrder");
+CL_DEFMETHOD     BondOrder Atom_O::bondedOrder(int i) 
     {
 	return this->bonds[i]->getOrder();
     };
 
-    int	Atom_O::numberOfBonds() const
+CL_NAME("numberOfBonds");
+CL_DEFMETHOD     int	Atom_O::numberOfBonds() const
     {
 	return this->bonds.size();
     };
 
-    int Atom_O::coordination() 
+CL_NAME("coordination");
+CL_DEFMETHOD     int Atom_O::coordination() 
     {
 	return this->bonds.size();
     };
@@ -708,7 +717,8 @@ void Atom_O::exposeCando(core::Lisp_sp lisp)
  *       CC1                    3                       HC11, HC12, HC13 
  * Also handle N and O
  */ 
-uint Atom_O::numberOfOpenValence()
+CL_NAME("numberOfOpenValence");
+CL_DEFMETHOD uint Atom_O::numberOfOpenValence()
 {
   int maxHydrogens;
   switch (this->getElement()) {
@@ -746,7 +756,8 @@ uint Atom_O::numberOfOpenValence()
  *       CC1                    3                       HC11, HC12, HC13 
  * Also handle N and O
  */ 
-core::List_sp Atom_O::createImplicitHydrogenNames()
+CL_NAME("createImplicitHydrogenNames");
+CL_DEFMETHOD core::List_sp Atom_O::createImplicitHydrogenNames()
 {
   uint addHydrogens = this->numberOfOpenValence();
   string nameSuffix = this->getName()->symbolName()->get().substr(1,9999);
@@ -851,7 +862,8 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 	this->bonds.push_back(bond);
     }
 
-    Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o )
+CL_NAME("bondTo");
+CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o )
     {_OF();
 	// Check if there is already a bond to this atom and
 	// throw an exception if there is
@@ -875,14 +887,16 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 
 
 
-    Bond_sp Atom_O::bondToSingle(  Atom_sp a )
+CL_NAME("bondToSingle");
+CL_DEFMETHOD     Bond_sp Atom_O::bondToSingle(  Atom_sp a )
     {_OF();
 	return this->bondTo(a,singleBond);
     }
 
 
 
-    string	Atom_O::getNameIndex()
+CL_NAME("getNameIndex");
+CL_DEFMETHOD     string	Atom_O::getNameIndex()
     {
         FIX_ME();
 #if 0
@@ -954,7 +968,8 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 
 
 
-    bool	Atom_O::isBondedToAtomNamed(MatterName name)
+CL_NAME("isBondedToAtomNamed");
+CL_DEFMETHOD     bool	Atom_O::isBondedToAtomNamed(MatterName name)
     {
 	VectorBond::iterator	b;
 
@@ -966,7 +981,8 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 	return false;
     }
 
-    Atom_sp	Atom_O::bondedNeighborWithName(MatterName name)
+CL_NAME("bondedNeighborWithName");
+CL_DEFMETHOD     Atom_sp	Atom_O::bondedNeighborWithName(MatterName name)
     {
 	VectorBond::iterator	b;
 	for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) {
@@ -979,7 +995,8 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
     }
 
 
-    bool	Atom_O::isBondedToElementOrder(Element el, BondOrder o)
+CL_NAME("isBondedToElementOrder");
+CL_DEFMETHOD     bool	Atom_O::isBondedToElementOrder(Element el, BondOrder o)
     {
 	VectorBond::iterator	b;
 
@@ -994,7 +1011,8 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
     }
 
 
-    bool Atom_O::hasBondWithOrder(BondOrder o) const
+CL_NAME("hasBondWithOrder");
+CL_DEFMETHOD     bool Atom_O::hasBondWithOrder(BondOrder o) const
     {
 	VectorBond::const_iterator	b;
 	for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ ) 
@@ -1006,7 +1024,8 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 
 
 
-    bool	Atom_O::isBondedToElementHybridization(Element el, Hybridization hy)
+CL_NAME("isBondedToElementHybridization");
+CL_DEFMETHOD     bool	Atom_O::isBondedToElementHybridization(Element el, Hybridization hy)
     {
 	VectorBond::iterator	b;
 
@@ -1023,7 +1042,8 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 
 
 
-    bool	Atom_O::isBondedToElementHybridizationElementHybridization(Element el1, Hybridization hy1, Element el2, Hybridization hy2)
+CL_NAME("isBondedToElementHybridizationElementHybridization");
+CL_DEFMETHOD     bool	Atom_O::isBondedToElementHybridizationElementHybridization(Element el1, Hybridization hy1, Element el2, Hybridization hy2)
     {_OF();
 	IMPLEMENT_ME(); // Handle new way of handling bonds
 #if 0
@@ -1080,7 +1100,8 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 	SIMPLE_ERROR(BF("%s")%ss.str());
     }
 
-    void	Atom_O::removeBondTo(Atom_sp a)
+CL_NAME("removeBondTo");
+CL_DEFMETHOD     void	Atom_O::removeBondTo(Atom_sp a)
     {_OF();
 	Atom_sp	atemp;
 	LOG(BF("Bond_O::removeBondTo") );
@@ -1089,7 +1110,8 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 	a->basicRemoveBondTo(atemp);
     }
 
-    void	Atom_O::removeAllBonds()
+CL_NAME("removeAllBonds");
+CL_DEFMETHOD     void	Atom_O::removeAllBonds()
     {_OF();
 	VectorBond::iterator	b;
 	Atom_sp				atemp;
@@ -1109,7 +1131,8 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 //
 //	applyTransformToAtoms
 //
-    void	Atom_O::applyTransformToAtoms( const Matrix& m )
+CL_NAME("applyTransformToAtoms");
+CL_DEFMETHOD     void	Atom_O::applyTransformToAtoms( const Matrix& m )
     {
 	this->position = (m)*this->position;
     }
@@ -1123,7 +1146,8 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 	return hybridizationSymbolFromHybridization(this->getHybridization())->symbolName()->get();
     }
 
-    string Atom_O::getElementAsString()
+CL_NAME("getElementAsString");
+CL_DEFMETHOD     string Atom_O::getElementAsString()
     {_G();
 	return atomicSymbolFromElement(this->getElement())->symbolName()->get();
     }
@@ -1197,25 +1221,29 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
   if ( this->Base::applyPropertyToSlot(prop,value) ) return true;
   return false;
 }
-    void Atom_O::setPositionInNanometers(Vector3 o)
+CL_NAME("setPositionInNanometers");
+CL_DEFMETHOD     void Atom_O::setPositionInNanometers(Vector3 o)
     {_OF();
 	Vector3 angpos = o.multiplyByScalar(10.0);
 	this->position = angpos;
     }
 
 
-    void Atom_O::setTempInt(int i)
+CL_NAME("setTempInt");
+CL_DEFMETHOD     void Atom_O::setTempInt(int i)
     {_G();
 	LOG(BF("Setting tempInt to %d") % i  );
 	this->tempInt = i;
     }
 
-    int Atom_O::getTempInt()
+CL_NAME("getTempInt");
+CL_DEFMETHOD     int Atom_O::getTempInt()
     {_G();
 	return this->tempInt;
     }
 
-    string	Atom_O::getConfigurationAsString()
+CL_NAME("getConfigurationAsString");
+CL_DEFMETHOD     string	Atom_O::getConfigurationAsString()
     {
 	string config, stereo;
 	if ( this->_Configuration == undefinedConfiguration )
@@ -1397,7 +1425,8 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
 //
 // Return true if we are bonded to the atom described by the required
 // bond order
-    bool Atom_O::isBondedToWithBondOrder( Atom_sp aTarget, BondOrder o )
+CL_NAME("isBondedToWithBondOrder");
+CL_DEFMETHOD     bool Atom_O::isBondedToWithBondOrder( Atom_sp aTarget, BondOrder o )
     {_OF();
 	VectorBond::iterator	b;
 	Atom_sp				a2;
@@ -1420,7 +1449,8 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
 //
 // Return true if we are bonded to the atom described by the required
 // bond order
-    bool	Atom_O::isBondedTo( Atom_sp aTarget)
+CL_NAME("isBondedTo");
+CL_DEFMETHOD     bool	Atom_O::isBondedTo( Atom_sp aTarget)
     {_G();
 	VectorBond::iterator	b;
 	Atom_sp				a2;
@@ -1467,7 +1497,8 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
 // testConsistancy
 //
 //	Make sure that all of the bonds are consistant
-    bool Atom_O::testConsistancy(Matter_sp parentShouldBe)
+CL_NAME("testConsistancy");
+CL_DEFMETHOD     bool Atom_O::testConsistancy(Matter_sp parentShouldBe)
     {_OF();
 	VectorBond::iterator	b;
 	Atom_sp				a2,atemp;
@@ -1567,7 +1598,8 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
 	return vAtoms;
     }
 
-    core::List_sp Atom_O::bondedAtomsAsList()
+CL_NAME("bondedAtomsAsList");
+CL_DEFMETHOD     core::List_sp Atom_O::bondedAtomsAsList()
     {
 	core::List_sp list = _Nil<core::T_O>();
 	VectorBond::iterator	b;
@@ -1591,7 +1623,8 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
     };
 
 
-    BondList_sp	Atom_O::getBondList()
+CL_NAME("getBondList");
+CL_DEFMETHOD     BondList_sp	Atom_O::getBondList()
     {
 	VectorBond::iterator	b;
 	GC_ALLOCATE(BondList_O, bl );
@@ -1608,7 +1641,8 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
     }
 
 
-    uint Atom_O::totalBondOrder()
+CL_NAME("totalBondOrder");
+CL_DEFMETHOD     uint Atom_O::totalBondOrder()
     {
       if (this->getHybridization() == hybridization_sp3) return 4;
       if (this->getHybridization() == hybridization_sp2) return 3;
@@ -1635,7 +1669,8 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
     }
 
 
-    core::List_sp Atom_O::bondsAsList()
+CL_NAME("bondsAsList");
+CL_DEFMETHOD     core::List_sp Atom_O::bondsAsList()
     {
 	VectorBond::iterator	b;
 	core::List_sp		list;
@@ -1652,7 +1687,8 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
     }
 
 
-    BondList_sp	Atom_O::getHeavyAtomBondList()
+CL_NAME("getHeavyAtomBondList");
+CL_DEFMETHOD     BondList_sp	Atom_O::getHeavyAtomBondList()
     {
 	VectorBond::iterator	b;
 	GC_ALLOCATE(BondList_O, bl );
@@ -1670,7 +1706,8 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
 
 
 
-    int     Atom_O::getAtomicNumber()
+CL_NAME("getAtomicNumber");
+CL_DEFMETHOD     int     Atom_O::getAtomicNumber()
     {
 	return atomicNumberForElement(this->getElement());
 
@@ -1682,7 +1719,8 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
     }
 
 
-    int     Atom_O::getBondedHydrogenCount()
+CL_NAME("getBondedHydrogenCount");
+CL_DEFMETHOD     int     Atom_O::getBondedHydrogenCount()
     {_OF();
 	VectorBond::iterator	b;
 	int                             hs;
@@ -1698,7 +1736,8 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
     }
 
 
-    bool    Atom_O::inRingSize(int r) const
+CL_NAME("inRingSize");
+CL_DEFMETHOD     bool    Atom_O::inRingSize(int r) const
     {_OF();
 	bool result = false;
 	switch (r)
@@ -1766,7 +1805,8 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
 
 
 
-    int     Atom_O::getValence()
+CL_NAME("getValence");
+CL_DEFMETHOD     int     Atom_O::getValence()
     {
 	VectorBond::iterator	b;
 	int             valence;
@@ -1795,14 +1835,16 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
 
 
 
-    Atom_sp Atom_O::getBackSpan()
+CL_NAME("getBackSpan");
+CL_DEFMETHOD     Atom_sp Atom_O::getBackSpan()
     {_G();
       ASSERT(this->_BackSpan);
       return this->_BackSpan;
     }
 
 
-    Atom_sp Atom_O::getNextSpan()
+CL_NAME("getNextSpan");
+CL_DEFMETHOD     Atom_sp Atom_O::getNextSpan()
     {_G();
       ASSERT(this->_NextSpan);
       return this->_NextSpan;
@@ -1825,7 +1867,8 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
 	return localTree;
     }
 
-    core::List_sp Atom_O::localSpanningTree(uint depth)
+CL_NAME("localSpanningTree");
+CL_DEFMETHOD     core::List_sp Atom_O::localSpanningTree(uint depth)
     {_G();
 	core::Cons_sp localTree = core::Cons_O::create(this->sharedThis<Atom_O>());
 	if ( depth <= 0 ) return localTree;
@@ -1841,7 +1884,8 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
     }
 
 
-    bool Atom_O::isConfigurable()
+CL_NAME("isConfigurable");
+CL_DEFMETHOD     bool Atom_O::isConfigurable()
     {
 	return this->_StereochemistryType != undefinedCenter;
     }
@@ -1930,7 +1974,8 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
     }
 
 
-    Residue_sp	Atom_O::getResidueContainedBy() 
+CL_NAME("getResidueContainedBy");
+CL_DEFMETHOD     Residue_sp	Atom_O::getResidueContainedBy() 
     {
 	return this->containedBy().as<Residue_O>();
     }

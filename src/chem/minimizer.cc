@@ -317,7 +317,8 @@ Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceF
     }
 
 
-    string	Minimizer_O::statusAsString()
+CL_NAME("statusAsString");
+CL_DEFMETHOD     string	Minimizer_O::statusAsString()
     {
 	string	status, precon;
 	switch (this->_Status) {
@@ -829,18 +830,21 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
     };
 
 
-    void Minimizer_O::throwMinimizerExceededMaxSteps()
+CL_NAME("throwMinimizerExceededMaxSteps");
+CL_DEFMETHOD     void Minimizer_O::throwMinimizerExceededMaxSteps()
     {_OF();
 	MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(BF("test throw of MinimizerExceededMaxSteps"));
     };
 
-    void Minimizer_O::throwMinimizerStuck()
+CL_NAME("throwMinimizerStuck");
+CL_DEFMETHOD     void Minimizer_O::throwMinimizerStuck()
     {_OF();
 	MINIMIZER_STUCK_ERROR(BF("test throw of MinimizerStuck"));
     };
 
 
-    void Minimizer_O::throwMinimizerError()
+CL_NAME("throwMinimizerError");
+CL_DEFMETHOD     void Minimizer_O::throwMinimizerError()
     {_OF();
 	MINIMIZER_ERROR(BF("test throw of MinimizerError"));
     };
@@ -2123,7 +2127,8 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 
 
 
-    void	Minimizer_O::useDefaultSettings()
+CL_NAME("useDefaultSettings");
+CL_DEFMETHOD     void	Minimizer_O::useDefaultSettings()
     {
 	this->_InitialLineSearchStep = 0.01;
 	this->_NumberOfSteepestDescentSteps = MAXSTEEPESTDESCENTSTEPS;
@@ -2151,7 +2156,8 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 
 
 
-    void	Minimizer_O::enablePrintIntermediateResults()
+CL_NAME("enablePrintIntermediateResults");
+CL_DEFMETHOD     void	Minimizer_O::enablePrintIntermediateResults()
     {_G();
     this->_PrintIntermediateResults = true;
     }
@@ -2159,7 +2165,8 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 
 
 
-    void	Minimizer_O::disablePrintIntermediateResults()
+CL_NAME("disablePrintIntermediateResults");
+CL_DEFMETHOD     void	Minimizer_O::disablePrintIntermediateResults()
     {_G();
     this->_PrintIntermediateResults = false;
     }
@@ -2167,13 +2174,15 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 
 
 
-    void	Minimizer_O::setEnergyFunction(EnergyFunction_sp f)
+CL_NAME("setEnergyFunction");
+CL_DEFMETHOD     void	Minimizer_O::setEnergyFunction(EnergyFunction_sp f)
     {
 	this->_EnergyFunction = f;
 	this->_Iteration = 1;
     }
 
-    void	Minimizer_O::evaluateEnergyAndForceManyTimes(int numSteps)
+CL_NAME("evaluateEnergyAndForceManyTimes");
+CL_DEFMETHOD     void	Minimizer_O::evaluateEnergyAndForceManyTimes(int numSteps)
     {_OF();
     NVector_sp	pos;
     if ( this->_EnergyFunction.nilp() )
@@ -2188,7 +2197,8 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 
 
 
-    void	Minimizer_O::minimizeSteepestDescent()
+CL_NAME("minimizeSteepestDescent");
+CL_DEFMETHOD     void	Minimizer_O::minimizeSteepestDescent()
     {_OF();
     NVector_sp	pos;
     int		retries;
@@ -2235,7 +2245,8 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 
 
 
-    void	Minimizer_O::minimizeConjugateGradient()
+CL_NAME("minimizeConjugateGradient");
+CL_DEFMETHOD     void	Minimizer_O::minimizeConjugateGradient()
     {_G();
 	NVector_sp	pos;
 	int		retries;
@@ -2286,14 +2297,16 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
     }
 
 
-    void	Minimizer_O::resetAndMinimize()
+CL_NAME("resetAndMinimize");
+CL_DEFMETHOD     void	Minimizer_O::resetAndMinimize()
     {_G();
     this->_Status = minimizerIdle;
     this->minimize();
     }
 
 
-    void	Minimizer_O::minimize()
+CL_NAME("minimize");
+CL_DEFMETHOD     void	Minimizer_O::minimize()
     {_G();
     NVector_sp	pos;
     int		retries;
@@ -2354,7 +2367,8 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
     }
 
 
-void Minimizer_O::writeIntermediateResultsToEnergyFunction()
+CL_NAME("writeIntermediateResultsToEnergyFunction");
+CL_DEFMETHOD void Minimizer_O::writeIntermediateResultsToEnergyFunction()
 {
   if ( this->_Position.nilp() ) {
     SIMPLE_ERROR(BF("There are no intermediate results"));
@@ -2379,7 +2393,8 @@ void Minimizer_O::writeIntermediateResultsToEnergyFunction()
     }
 
 
-    string	Minimizer_O::configurationAsString()
+CL_NAME("configurationAsString");
+CL_DEFMETHOD     string	Minimizer_O::configurationAsString()
     {
 	stringstream	ss;
 	ss.str("");
@@ -2395,7 +2410,8 @@ void Minimizer_O::writeIntermediateResultsToEnergyFunction()
 	return ss.str();
     }
 
-    void	Minimizer_O::restart()
+CL_NAME("restart");
+CL_DEFMETHOD     void	Minimizer_O::restart()
     {
 	this->_Status = minimizerIdle;
 	this->_Message.str("");

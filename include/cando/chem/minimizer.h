@@ -246,20 +246,25 @@ public:
 	void throwMinimizerStuck();
 	void throwMinimizerError();
 
-	EnergyFunction_sp	getEnergyFunction() {_OF(); ASSERTNOTNULL(this->_EnergyFunction); return this->_EnergyFunction; };
+CL_NAME("getEnergyFunction");
+CL_DEFMETHOD 	EnergyFunction_sp	getEnergyFunction() {_OF(); ASSERTNOTNULL(this->_EnergyFunction); return this->_EnergyFunction; };
 	void	useDefaultSettings();
 
 	void	changeOptions(core::List_sp options);
 
 	MinimizerStatus status()	{return this->_Status;};
-	int statusAsInt()	{return (int)(this->_Status);};
-	string		statusMessage() { return this->_Message.str();};
+CL_NAME("status");
+CL_DEFMETHOD 	int statusAsInt()	{return (int)(this->_Status);};
+CL_NAME("statusMessage");
+CL_DEFMETHOD 	string		statusMessage() { return this->_Message.str();};
 
-	int	getIteration()	{ return this->_Iteration; };
+CL_NAME("getIteration");
+CL_DEFMETHOD 	int	getIteration()	{ return this->_Iteration; };
 	string	statusAsString();
 	string	statusAsShortString();
 
-	double	getRMSForce() { return this->_RMSForce; };
+CL_NAME("getRMSForce");
+CL_DEFMETHOD 	double	getRMSForce() { return this->_RMSForce; };
 #ifdef XML_ARCHIVE
 	void	debugStart();
 	void	debugStop(const string& fileName);
@@ -267,12 +272,18 @@ public:
 
 //	void	setStepCallback(core::LispCallback_sp stepCallback);
 
-	void	setMaximumNumberOfSteepestDescentSteps(int m) {this->_NumberOfSteepestDescentSteps = m;};
-	void	setMaximumNumberOfConjugateGradientSteps(int m) {this->_NumberOfConjugateGradientSteps= m;};
-	void	setMaximumNumberOfTruncatedNewtonSteps(int m) {this->_NumberOfTruncatedNewtonSteps= m;};
-	void	setSteepestDescentTolerance(double m) {this->_SteepestDescentTolerance = m;};
-	void	setConjugateGradientTolerance(double m) {this->_ConjugateGradientTolerance = m;};
-	void	setTruncatedNewtonTolerance(double m) {this->_TruncatedNewtonTolerance = m;};
+CL_NAME("setMaximumNumberOfSteepestDescentSteps");
+CL_DEFMETHOD 	void	setMaximumNumberOfSteepestDescentSteps(int m) {this->_NumberOfSteepestDescentSteps = m;};
+CL_NAME("setMaximumNumberOfConjugateGradientSteps");
+CL_DEFMETHOD 	void	setMaximumNumberOfConjugateGradientSteps(int m) {this->_NumberOfConjugateGradientSteps= m;};
+CL_NAME("setMaximumNumberOfTruncatedNewtonSteps");
+CL_DEFMETHOD 	void	setMaximumNumberOfTruncatedNewtonSteps(int m) {this->_NumberOfTruncatedNewtonSteps= m;};
+CL_NAME("setSteepestDescentTolerance");
+CL_DEFMETHOD 	void	setSteepestDescentTolerance(double m) {this->_SteepestDescentTolerance = m;};
+CL_NAME("setConjugateGradientTolerance");
+CL_DEFMETHOD 	void	setConjugateGradientTolerance(double m) {this->_ConjugateGradientTolerance = m;};
+CL_NAME("setTruncatedNewtonTolerance");
+CL_DEFMETHOD 	void	setTruncatedNewtonTolerance(double m) {this->_TruncatedNewtonTolerance = m;};
 	void	setTruncatedNewtonPreconditioner(PreconditionerType m) {this->_TruncatedNewtonPreconditioner = m;};
 
 

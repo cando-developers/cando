@@ -39,7 +39,8 @@ OMatrix_sp OMatrix_O::make(bool identity)
     }
 
 
-    void	OMatrix_O::setFromString(const string& s)
+CL_NAME("setFromString");
+CL_DEFMETHOD     void	OMatrix_O::setFromString(const string& s)
     {_G();
 	this->_Value.setFromString(s);
     }
@@ -59,14 +60,21 @@ OMatrix_sp OMatrix_O::make(bool identity)
 //string OMatrix_O::asStringFast() { return this->_Value.asStringFast(); }
 
 
-    string OMatrix_O::asString() { return this->_Value.asString(); }
-    void OMatrix_O::setToIdentity() { this->_Value.setToIdentity(); }
+CL_NAME("asString");
+CL_DEFMETHOD     string OMatrix_O::asString() { return this->_Value.asString(); }
+CL_NAME("setToIdentity");
+CL_DEFMETHOD     void OMatrix_O::setToIdentity() { this->_Value.setToIdentity(); }
     /*! Set the matrix element index as the value for testing */
-    void OMatrix_O::setToIndexAsValue() { this->_Value.setToIndexAsValue();};
-    void OMatrix_O::translate(Vector3 pos) { this->_Value.translate(&pos); }
-    void OMatrix_O::rotationX(double radians) { this->_Value.rotationX(radians); }
-    void OMatrix_O::rotationY(double radians) { this->_Value.rotationY(radians); }
-    void OMatrix_O::rotationZ(double radians) { this->_Value.rotationZ(radians); }
+CL_NAME("setToIndexAsValue");
+CL_DEFMETHOD     void OMatrix_O::setToIndexAsValue() { this->_Value.setToIndexAsValue();};
+CL_NAME("translate");
+CL_DEFMETHOD     void OMatrix_O::translate(Vector3 pos) { this->_Value.translate(&pos); }
+CL_NAME("rotationX");
+CL_DEFMETHOD     void OMatrix_O::rotationX(double radians) { this->_Value.rotationX(radians); }
+CL_NAME("rotationY");
+CL_DEFMETHOD     void OMatrix_O::rotationY(double radians) { this->_Value.rotationY(radians); }
+CL_NAME("rotationZ");
+CL_DEFMETHOD     void OMatrix_O::rotationZ(double radians) { this->_Value.rotationZ(radians); }
 
 
     OMatrix_sp OMatrix_O::clone() const

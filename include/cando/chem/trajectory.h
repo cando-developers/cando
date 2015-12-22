@@ -100,7 +100,8 @@ private:
 public:	// Creation class functions
 
 public:
-	Matter_sp getMatter() const { return this->_Matter;};
+CL_NAME("getMatter");
+CL_DEFMETHOD 	Matter_sp getMatter() const { return this->_Matter;};
 
 	TrajectoryFrame_sp addFrame(Matter_sp matter);
 

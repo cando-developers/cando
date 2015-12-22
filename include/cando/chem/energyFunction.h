@@ -170,7 +170,8 @@ private:
 
 public:
 
-    AtomTable_sp atomTable() const { return this->_AtomTable;};
+CL_NAME("atomTable");
+CL_DEFMETHOD     AtomTable_sp atomTable() const { return this->_AtomTable;};
 
     string	energyTermsEnabled() ;
     void	extractCoordinatesFromAtoms(NVector_sp pos);
@@ -184,7 +185,8 @@ public:
 
     ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force );
 
-    Matter_sp	getMatter() { return this->_Matter;};
+CL_NAME("getMatter");
+CL_DEFMETHOD     Matter_sp	getMatter() { return this->_Matter;};
 
     void	useDefaultSettings();
 
@@ -196,15 +198,23 @@ public:
     /*! Set the energy function options. List the options as a flat list of keyword/value pairs */
     void	setOptions( core::List_sp options );
 
-    EnergyStretch_sp	getStretchComponent() { return this->_Stretch; };
+CL_NAME("getStretchComponent");
+CL_DEFMETHOD     EnergyStretch_sp	getStretchComponent() { return this->_Stretch; };
 #if USE_ALL_ENERGY_COMPONENTS
-    EnergyAngle_sp	getAngleComponent() { return this->_Angle; };
-    EnergyDihedral_sp	getDihedralComponent() { return this->_Dihedral; };
-    EnergyNonbond_sp	getNonbondComponent() { return this->_Nonbond; };
-    EnergyChiralRestraint_sp	getChiralRestraintComponent() { return this->_ChiralRestraint; };
-    EnergyAnchorRestraint_sp	getAnchorRestraintComponent() { return this->_AnchorRestraint; };
-    EnergyImproperRestraint_sp	getImproperRestraintComponent() { return this->_ImproperRestraint; };
-    EnergyFixedNonbondRestraint_sp	getFixedNonbondRestraintComponent() { return this->_FixedNonbondRestraint; };
+CL_NAME("getAngleComponent");
+CL_DEFMETHOD     EnergyAngle_sp	getAngleComponent() { return this->_Angle; };
+CL_NAME("getDihedralComponent");
+CL_DEFMETHOD     EnergyDihedral_sp	getDihedralComponent() { return this->_Dihedral; };
+CL_NAME("getNonbondComponent");
+CL_DEFMETHOD     EnergyNonbond_sp	getNonbondComponent() { return this->_Nonbond; };
+CL_NAME("getChiralRestraintComponent");
+CL_DEFMETHOD     EnergyChiralRestraint_sp	getChiralRestraintComponent() { return this->_ChiralRestraint; };
+CL_NAME("getAnchorRestraintComponent");
+CL_DEFMETHOD     EnergyAnchorRestraint_sp	getAnchorRestraintComponent() { return this->_AnchorRestraint; };
+CL_NAME("getImproperRestraintComponent");
+CL_DEFMETHOD     EnergyImproperRestraint_sp	getImproperRestraintComponent() { return this->_ImproperRestraint; };
+CL_NAME("getFixedNonbondRestraintComponent");
+CL_DEFMETHOD     EnergyFixedNonbondRestraint_sp	getFixedNonbondRestraintComponent() { return this->_FixedNonbondRestraint; };
 #endif
 
     double getDihedralComponentEnergy(); // { return this->_Dihedral->getEnergy(); };
@@ -213,7 +223,8 @@ public:
     bool	hasMissingParameters();
     string	getMissingParameters();
 
-    double	getTotalEnergy() { return this->_TotalEnergy; };
+CL_NAME("getTotalEnergy");
+CL_DEFMETHOD     double	getTotalEnergy() { return this->_TotalEnergy; };
     void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian);
 
     /*! Enable debugging on all energy components
@@ -224,7 +235,8 @@ public:
     void	disableDebug();
 
     void	dumpTerms();
-    string	getMessage() { return this->_Message;};
+CL_NAME("getMessage");
+CL_DEFMETHOD     string	getMessage() { return this->_Message;};
 
     /*! Print the energy components as a single, multi-line string
      */
@@ -236,8 +248,10 @@ public:
 
 
 
-    void	setName(const string& nm) { this->_Name = nm; };
-    string	getName() { return this->_Name; };
+CL_NAME("setName");
+CL_DEFMETHOD     void	setName(const string& nm) { this->_Name = nm; };
+CL_NAME("getName");
+CL_DEFMETHOD     string	getName() { return this->_Name; };
     void		writeForceToAtoms(NVector_sp f);
     EnergyAtom*     getEnergyAtomPointer(Atom_sp a);
 

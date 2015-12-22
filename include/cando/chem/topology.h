@@ -132,7 +132,8 @@ public:
     MonomerContext_sp getMonomerContext(CandoDatabase_sp bdb);
 
     //! Return if we suppress trainers
-    bool suppressTrainers() const { return this->_SuppressTrainers;};
+CL_NAME("suppressTrainers");
+CL_DEFMETHOD     bool suppressTrainers() const { return this->_SuppressTrainers;};
 
     //! Return all plugs as a Cons
     core::List_sp	plugsAsCons();
@@ -148,7 +149,8 @@ public:
     core::List_sp	incompleteFramesAsCons();
 
     /// @brief Return the name of the Topology
-    core::Symbol_sp	getName() const {return (this->_Name);};
+CL_NAME("getName");
+CL_DEFMETHOD     core::Symbol_sp	getName() const {return (this->_Name);};
 
     /// @brief Return true if this Topology has a plug named (name)
     bool	hasPlugNamed(core::Symbol_sp name);
@@ -158,7 +160,8 @@ public:
     void setTemporaryObject(core::T_sp o);
     core::T_sp getTemporaryObject();
 
-    int	numberOfPlugs() { return this->_Plugs.size(); };
+CL_NAME("numberOfPlugs");
+CL_DEFMETHOD     int	numberOfPlugs() { return this->_Plugs.size(); };
 
     bool	hasInPlug();
     plugType getInPlug();
@@ -169,7 +172,8 @@ public:
     bool	matchesMonomerEnvironment( Monomer_sp mon );
     RingClosingPlug_sp provideMissingRingClosingPlug( Monomer_sp mon );
 
-    int	getResidueNetCharge() { return this->_ResidueNetCharge; };
+CL_NAME("getResidueNetCharge");
+CL_DEFMETHOD     int	getResidueNetCharge() { return this->_ResidueNetCharge; };
     void	setResidueNetCharge(int nc) { this->_ResidueNetCharge = nc; };
 
 

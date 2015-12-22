@@ -48,7 +48,8 @@ bool Residue_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
   return false;
 }
 
-bool	Residue_O::hasConstitution()
+CL_NAME("hasConstitution");
+CL_DEFMETHOD bool	Residue_O::hasConstitution()
 {
     IMPLEMENT_MEF(BF("handle ownerWithClass"));
 //    return this->ownerWithClass<Constitution_O>().notnilp();
@@ -103,7 +104,8 @@ void Residue_O::transferCoordinates(Matter_sp obj)
 
 
 
-Constitution_sp	Residue_O::getConstitution()
+CL_NAME("getConstitution");
+CL_DEFMETHOD Constitution_sp	Residue_O::getConstitution()
 {_G();
     IMPLEMENT_MEF(BF("Handle ownerWithClass"));
 #if 0
@@ -121,7 +123,8 @@ Constitution_sp	Residue_O::getConstitution()
 }
 
 
-void	Residue_O::addAtom(Atom_sp a)
+CL_NAME("addAtom");
+CL_DEFMETHOD void	Residue_O::addAtom(Atom_sp a)
 {_OF();
     this->addMatter(a);
     LOG(BF("Added %s to %s") % a->description().c_str() % this->description().c_str() );
@@ -139,7 +142,8 @@ void	Residue_O::setMonomerAliases(adapt::SymbolSet_sp s)
     this->_MonomerAliases = s;
 }
 
-void Residue_O::addMonomerAlias(core::Symbol_sp s)
+CL_NAME("addMonomerAlias");
+CL_DEFMETHOD void Residue_O::addMonomerAlias(core::Symbol_sp s)
 {_G();
     if (this->_MonomerAliases.nilp() )
     {
@@ -315,7 +319,8 @@ void Residue_O::redirectAtoms()
 
 
 
-Matter_sp Residue_O::copy()
+CL_NAME("copy");
+CL_DEFMETHOD Matter_sp Residue_O::copy()
 { _G();
     Residue_sp newRes = this->copyDontRedirectAtoms().as<Residue_O>();
     newRes->redirectAtoms();
@@ -324,7 +329,8 @@ Matter_sp Residue_O::copy()
 
 
 
-void Residue_O::removeAtomsWithNames(core::List_sp args)
+CL_NAME("removeAtomsWithNames");
+CL_DEFMETHOD void Residue_O::removeAtomsWithNames(core::List_sp args)
 {_G();
   for ( auto c : args ) {
     MatterName atomName = oCar(c).as<MatterName::Type>();
@@ -338,7 +344,8 @@ void Residue_O::removeAtomsWithNames(core::List_sp args)
 //
 //	Remove the atom from the residue and delete its bonds
 //	This does not delete the atom!
-void	Residue_O::removeAtomDeleteBonds(Atom_sp a)
+CL_NAME("removeAtomDeleteBonds");
+CL_DEFMETHOD void	Residue_O::removeAtomDeleteBonds(Atom_sp a)
 {_OF();
 contentIterator	atom;
 Atom_sp				aTemp;
@@ -360,7 +367,8 @@ LOG(BF("Residue_O::removeAtomDeleteBonds setting atom %x parent to null") % &a  
 
 
 
-bool	Residue_O::containsAtom(Atom_sp a)
+CL_NAME("containsAtom");
+CL_DEFMETHOD bool	Residue_O::containsAtom(Atom_sp a)
 {_G();
     Residue_sp res = a->getResidueContainedBy();
     if ( res.get() == this ) return true;
@@ -374,7 +382,8 @@ bool	Residue_O::containsAtom(Atom_sp a)
 //
 //	Remove the atom from the residue and dont delete its bonds
 //	This does not delete the atom!
-void	Residue_O::removeAtomDontDeleteBonds(Atom_sp a)
+CL_NAME("removeAtomDontDeleteBonds");
+CL_DEFMETHOD void	Residue_O::removeAtomDontDeleteBonds(Atom_sp a)
 {_OF();
 contentIterator	atom;
 Atom_sp				aTemp;
@@ -417,7 +426,8 @@ contentIterator	aCur;
 }
 
 
-bool Residue_O::testIfAllAtomNamesAreUnique(core::T_sp problemStream)
+CL_NAME("testIfAllAtomNamesAreUnique");
+CL_DEFMETHOD bool Residue_O::testIfAllAtomNamesAreUnique(core::T_sp problemStream)
 {_G();
     FIX_ME();
 #if 0
@@ -517,7 +527,8 @@ void Residue_O::setAliasesForAtoms(core::List_sp aliasAtoms, core::List_sp atomA
 //	getAllUniqueAtomNames
 //
 //	Return a set of all unique atom names
-adapt::SymbolSet_sp	Residue_O::getAtomNamesAsSymbolSet()
+CL_NAME("getAtomNamesAsSymbolSet");
+CL_DEFMETHOD adapt::SymbolSet_sp	Residue_O::getAtomNamesAsSymbolSet()
 {_G();
 contentIterator	atom;
 Atom_sp				aTemp;
@@ -656,7 +667,8 @@ void	Residue_O::failIfInvalid()
 }
 
 
-void	Residue_O::useAtomCoordinatesToDefineAnchors()
+CL_NAME("useAtomCoordinatesToDefineAnchors");
+CL_DEFMETHOD void	Residue_O::useAtomCoordinatesToDefineAnchors()
 {
 #if ATOMIC_ANCHOR
 contentIterator	aPPCur;

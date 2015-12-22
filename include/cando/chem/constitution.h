@@ -162,11 +162,15 @@ namespace chem
 
 	    core::Symbol_sp	getName() const {return this->constitutionName();};
 
-	    core::Symbol_sp	constitutionName() const	{return this->_Name;};
-	    void	setConstitutionName(core::Symbol_sp t) {this->_Name = t;};
+CL_NAME("constitutionName");
+CL_DEFMETHOD 	    core::Symbol_sp	constitutionName() const	{return this->_Name;};
+CL_NAME("setConstitutionName");
+CL_DEFMETHOD 	    void	setConstitutionName(core::Symbol_sp t) {this->_Name = t;};
 
-	    core::Symbol_sp	getMetaConstitutionName()	{return this->_MetaConstitution;};
-	    void	setMetaConstitutionName(core::Symbol_sp t) {this->_MetaConstitution = t;};
+CL_NAME("getMetaConstitutionName");
+CL_DEFMETHOD 	    core::Symbol_sp	getMetaConstitutionName()	{return this->_MetaConstitution;};
+CL_NAME("setMetaConstitutionName");
+CL_DEFMETHOD 	    void	setMetaConstitutionName(core::Symbol_sp t) {this->_MetaConstitution = t;};
 
 
 	    /*! Add all of my Stereoisomers as Entities to the CandoDatabase */
@@ -175,7 +179,8 @@ namespace chem
 
 	    RepresentedEntityNameSet_sp	asGroup();
 
-	    ConstitutionAtoms_sp getConstitutionAtoms() { return this->_ConstitutionAtoms;};
+CL_NAME("getConstitutionAtoms");
+CL_DEFMETHOD 	    ConstitutionAtoms_sp getConstitutionAtoms() { return this->_ConstitutionAtoms;};
 
 	    Topology_sp	simplestTopologyWithPlugNamed(core::Symbol_sp name);
 
@@ -195,13 +200,17 @@ namespace chem
 	    core::Symbol_sp	pdbFromNameOrPdb(core::Symbol_sp nm);
 
 
-	    void	setComment( const string& sName ) { this->_Comment= sName; };
-	    string	getComment( ) { return this->_Comment; };
+CL_NAME("setComment");
+CL_DEFMETHOD 	    void	setComment( const string& sName ) { this->_Comment= sName; };
+CL_NAME("getComment");
+CL_DEFMETHOD 	    string	getComment( ) { return this->_Comment; };
 
 	    Residue_sp	createResidueForStereoisomerName(core::Symbol_sp nameOrPdb);
 
-	    bool	hasPlugNamed( core::Symbol_sp name) { return this->_PlugsByName.contains(name); };
-	    Plug_sp	getPlugNamed( core::Symbol_sp name) { return this->_PlugsByName[name]; };
+CL_NAME("hasPlugNamed");
+CL_DEFMETHOD 	    bool	hasPlugNamed( core::Symbol_sp name) { return this->_PlugsByName.contains(name); };
+CL_NAME("getPlugNamed");
+CL_DEFMETHOD 	    Plug_sp	getPlugNamed( core::Symbol_sp name) { return this->_PlugsByName[name]; };
 
 //	void	testConsistency( std::ostream& sout );
 

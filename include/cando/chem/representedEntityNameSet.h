@@ -63,7 +63,8 @@ public:
 		 */
 //	RepresentedEntityNameSet_sp asUnexpandedRepresentedEntityNameSet();
 
-	string	testRepresentedEntityNameSet() { return "testRepresentedEntityNameSet"; };
+CL_NAME("testRepresentedEntityNameSet");
+CL_DEFMETHOD 	string	testRepresentedEntityNameSet() { return "testRepresentedEntityNameSet"; };
 //	virtual	string	getGeneralKey();
 
 	RepresentedEntityNameSet_O( const RepresentedEntityNameSet_O& ss ); //!< Copy constructor

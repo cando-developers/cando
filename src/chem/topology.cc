@@ -204,7 +204,8 @@ namespace chem
 #endif
 
 
-    MonomerContext_sp Topology_O::getMonomerContext(CandoDatabase_sp bdb)
+CL_NAME("getMonomerContext");
+CL_DEFMETHOD     MonomerContext_sp Topology_O::getMonomerContext(CandoDatabase_sp bdb)
     {_G();
 	MonomerContext_sp context = MonomerContext_O::create();
 	EntityNameSet_sp selfSet = EntityNameSet_O::create();
@@ -215,7 +216,8 @@ namespace chem
     }
 
 
-    core::HashTableEq_sp Topology_O::properties() const
+CL_NAME("properties");
+CL_DEFMETHOD     core::HashTableEq_sp Topology_O::properties() const
     {_OF();
 	return this->_Properties;
     }
@@ -234,7 +236,8 @@ namespace chem
 
 
 
-    Topology_O::plugType Topology_O::getInPlug()
+CL_NAME("getInPlug");
+CL_DEFMETHOD     Topology_O::plugType Topology_O::getInPlug()
     {_G();
 	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
 	{
@@ -247,7 +250,8 @@ namespace chem
     }
 
 
-    core::List_sp Topology_O::plugsAsCons()
+CL_NAME("plugsAsCons");
+CL_DEFMETHOD     core::List_sp Topology_O::plugsAsCons()
     {_OF();
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
@@ -264,7 +268,8 @@ namespace chem
     }
 
 
-    core::List_sp Topology_O::plugsWithMatesAsCons()
+CL_NAME("plugsWithMatesAsCons");
+CL_DEFMETHOD     core::List_sp Topology_O::plugsWithMatesAsCons()
     {_G();
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
@@ -282,7 +287,8 @@ namespace chem
 	return first->cdr();
     }
 
-    core::List_sp Topology_O::outPlugsAsCons()
+CL_NAME("outPlugsAsCons");
+CL_DEFMETHOD     core::List_sp Topology_O::outPlugsAsCons()
     {_G();
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
@@ -301,7 +307,8 @@ namespace chem
 
 
 
-    Constitution_sp	Topology_O::getConstitution()
+CL_NAME("getConstitution");
+CL_DEFMETHOD     Constitution_sp	Topology_O::getConstitution()
     {_OF();
 	IMPLEMENT_MEF(BF("Handle new way of dealing with owners"));
 #if 0
@@ -404,13 +411,15 @@ namespace chem
 
 
 
-    bool Topology_O::hasFlag(core::Symbol_sp f) const
+CL_NAME("hasFlag");
+CL_DEFMETHOD     bool Topology_O::hasFlag(core::Symbol_sp f) const
     {_OF();
 	return this->_Flags.contains(f);
     }
 
 
-    bool	Topology_O::matchesContext(MonomerContext_sp cm)
+CL_NAME("matchesContext");
+CL_DEFMETHOD     bool	Topology_O::matchesContext(MonomerContext_sp cm)
     {
 	uint numPlugsWithMates = 0;
 	for ( Plugs::iterator i=this->_Plugs.begin();
@@ -424,7 +433,8 @@ namespace chem
 	return true;
     }
 
-    bool	Topology_O::hasPlugNamed(core::Symbol_sp name)
+CL_NAME("hasPlugNamed");
+CL_DEFMETHOD     bool	Topology_O::hasPlugNamed(core::Symbol_sp name)
     {_OF();
 #ifdef DEBUG_ON
 	LOG(BF("Looking for plug name[%s@%p]") % name->__repr__() % name.get() );
@@ -438,7 +448,8 @@ namespace chem
 	return res;
     };
 
-    Plug_sp Topology_O::plugNamed(core::Symbol_sp name)
+CL_NAME("plugNamed");
+CL_DEFMETHOD     Plug_sp Topology_O::plugNamed(core::Symbol_sp name)
     {_OF();
 	LOG(BF("Looking for plug name[%s] available keys[%s]")
 	    % name->__repr__()
@@ -467,20 +478,23 @@ namespace chem
 
 
 
-    void Topology_O::setTemporaryObject(core::T_sp o)
+CL_NAME("setTemporaryObject");
+CL_DEFMETHOD     void Topology_O::setTemporaryObject(core::T_sp o)
     {_G();
 	ASSERTNOTNULL(o);
 	this->_TemporaryObject = o;
     }
 
-    core::T_sp Topology_O::getTemporaryObject()
+CL_NAME("getTemporaryObject");
+CL_DEFMETHOD     core::T_sp Topology_O::getTemporaryObject()
     {_G();
 	ASSERTNOTNULL(this->_TemporaryObject);
 	return this->_TemporaryObject;
     }
 
 
-    StereoisomerAtoms_sp Topology_O::lookupOrCreateStereoisomerAtoms(core::Symbol_sp stereoisomerName)
+CL_NAME("lookupOrCreateStereoisomerAtoms");
+CL_DEFMETHOD     StereoisomerAtoms_sp Topology_O::lookupOrCreateStereoisomerAtoms(core::Symbol_sp stereoisomerName)
     {_OF();
 	adapt::SymbolMap<StereoisomerAtoms_O>::iterator it= this->_StereoisomerAtomProperties.find(stereoisomerName);
 	StereoisomerAtoms_sp result;

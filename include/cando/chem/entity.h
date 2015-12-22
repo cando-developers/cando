@@ -48,7 +48,8 @@ public:
     virtual bool	isTerminalName() { return false; };
     		/*! Get the name of this object
 		 */
-    virtual core::Symbol_sp	getName() const 	{_OF();SUBCLASS_MUST_IMPLEMENT();};
+CL_NAME("getName");
+CL_DEFMETHOD     virtual core::Symbol_sp	getName() const 	{_OF();SUBCLASS_MUST_IMPLEMENT();};
 
     		/*! Return a list of names that is expanded recursively as much as possible
 		 */
@@ -59,7 +60,8 @@ public:
     /*! Recursively expand all of the EntityNames within us and accumulate a list of
       RepresentedEntityNameSets that have a representative and a set of Entities that
       that representative represents */
-    virtual RepresentativeList_sp expandedRepresentativeList() const {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
+CL_NAME("expandedRepresentativeList");
+CL_DEFMETHOD     virtual RepresentativeList_sp expandedRepresentativeList() const {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
 
     /*! Call expandedRepresentativeList and then combine RepresentedEntityNameSets that
       have the same representative, this will give a minimal number of RepresentedEntityNameSets
@@ -67,7 +69,8 @@ public:
     RepresentativeList_sp minimalRepresentativeList() const;
 
 		/*! If this object is a Stereoisomer then it has a Constitution otherwise it doesn't */
-    virtual bool hasConstitution() { return false; };
+CL_NAME("hasConstitution");
+CL_DEFMETHOD     virtual bool hasConstitution() { return false; };
     		/*! Return the constitution */
     virtual Constitution_sp constitution();
 

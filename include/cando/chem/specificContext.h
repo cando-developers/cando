@@ -104,7 +104,8 @@ public:
 
 	core::List_sp asCons();
 
-	uint size() { return this->_KeySets.size(); };
+CL_NAME("size");
+CL_DEFMETHOD 	uint size() { return this->_KeySets.size(); };
 
 	void add(SpecificContext_sp key);
 	bool contains(SpecificContext_sp key);

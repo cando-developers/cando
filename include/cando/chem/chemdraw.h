@@ -156,7 +156,8 @@ private:
 
 public:
     void setConstitutionName(core::Symbol_sp n) { this->_ConstitutionName = n;};
-    core::Symbol_sp getConstitutionName() { return this->_ConstitutionName;};
+CL_NAME("getConstitutionName");
+CL_DEFMETHOD     core::Symbol_sp getConstitutionName() { return this->_ConstitutionName;};
 
 #if 0
     core::HashTableEq_sp getProperties() { return this->_Properties;};
@@ -175,7 +176,8 @@ public:
     /*! Return false if the fragment couldn't be interpreted */
     bool	interpret();
 
-core::T_sp getMolecule() { return this->_Molecule; };
+CL_NAME("getMolecule");
+CL_DEFMETHOD core::T_sp getMolecule() { return this->_Molecule; };
 
 
     int countNeighbors(CDNode_sp node);
@@ -278,7 +280,8 @@ public:
 
 
 	core::List_sp getFragments();
-	core::List_sp allFragmentsAsCons() { return this->getFragments();};
+CL_NAME("allFragmentsAsCons");
+CL_DEFMETHOD 	core::List_sp allFragmentsAsCons() { return this->getFragments();};
 	core::List_sp getSubSetOfFragments(adapt::SymbolSet_sp subsetNames );
 
 

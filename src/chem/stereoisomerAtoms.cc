@@ -193,7 +193,8 @@ namespace chem
 	return ca;
     }
 
-    adapt::SymbolSet_sp StereoisomerAtoms_O::atomNamesAsSymbolSet()
+CL_NAME("atomNamesAsSymbolSet");
+CL_DEFMETHOD     adapt::SymbolSet_sp StereoisomerAtoms_O::atomNamesAsSymbolSet()
     {_OF();
 	adapt::SymbolSet_sp ss = adapt::SymbolSet_O::create();
 	for ( gctools::Vec0<StereoisomerAtom_sp>::const_iterator ci=this->_Atoms.begin();
@@ -217,7 +218,8 @@ namespace chem
 #endif
 
 
-    StereoisomerAtom_sp StereoisomerAtoms_O::atomWithName(MatterName nm)
+CL_NAME("atomWithName");
+CL_DEFMETHOD     StereoisomerAtom_sp StereoisomerAtoms_O::atomWithName(MatterName nm)
     {_OF();
 	for ( gctools::Vec0<StereoisomerAtom_sp>::const_iterator ci=this->_Atoms.begin();
 	      ci!=this->_Atoms.end(); ci++ )
@@ -228,12 +230,14 @@ namespace chem
     }
 
 
-    StereoisomerAtom_sp StereoisomerAtoms_O::atomWithId(ConstitutionAtomIndex0N id) const
+CL_NAME("atomWithId");
+CL_DEFMETHOD     StereoisomerAtom_sp StereoisomerAtoms_O::atomWithId(ConstitutionAtomIndex0N id) const
     {_G();
 	return this->_Atoms[id];
     }
 
-    int StereoisomerAtoms_O::index(MatterName name) const
+CL_NAME("stereoisomer-atoms-index");
+CL_DEFMETHOD     int StereoisomerAtoms_O::index(MatterName name) const
     {_OF();
 	for ( int idx=0; idx<(int)this->_Atoms.size(); idx++ )
 	{
