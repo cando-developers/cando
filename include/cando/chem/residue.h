@@ -61,8 +61,7 @@ namespace chem {
     {
         friend class Constitution_O;
         friend class Molecule_O;
-        LISP_BASE1(Matter_O);
-        LISP_CLASS(chem,ChemPkg,Residue_O,"Residue");
+        LISP_CLASS(chem,ChemPkg,Residue_O,"Residue",Matter_O);
     public:
 	void initialize();
     public:

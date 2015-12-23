@@ -27,8 +27,7 @@ namespace chem
     SMART(AtomReferenceBase);
     class AtomReferenceBase_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,AtomReferenceBase_O,"AtomReferenceBase");
+	LISP_CLASS(chem,ChemPkg,AtomReferenceBase_O,"AtomReferenceBase",core::CxxObject_O);
     public:
 	void	initialize();
 //	void	archiveBase(core::ArchiveP node);
@@ -43,8 +42,7 @@ namespace chem
     SMART(AtomReference);
     class AtomReference_O : public AtomReferenceBase_O
     {
-	LISP_BASE1(AtomReferenceBase_O);
-	LISP_CLASS(chem,ChemPkg,AtomReference_O,"AtomReference");
+	LISP_CLASS(chem,ChemPkg,AtomReference_O,"AtomReference",AtomReferenceBase_O);
 #if INIT_TO_FACTORIES
     public:
 	static AtomReference_sp make(const string& alias);

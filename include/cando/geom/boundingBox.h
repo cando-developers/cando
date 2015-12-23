@@ -18,8 +18,7 @@ namespace geom {
     FORWARD(BoundingBox);
     class BoundingBox_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(geom,GeomPkg,BoundingBox_O,"BoundingBox");
+	LISP_CLASS(geom,GeomPkg,BoundingBox_O,"BoundingBox",core::CxxObject_O);
     public:
 	void	initialize();
 //	void	archiveBase(core::ArchiveP node);

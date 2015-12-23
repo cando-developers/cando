@@ -17,8 +17,7 @@ namespace geom {
 SMART(IterateRange );
 class IterateRange_O : public core::Iterator_O
 {
-    LISP_BASE1(core::Iterator_O);
-    LISP_CLASS(geom,GeomPkg,IterateRange_O,"IterateRange");
+    LISP_CLASS(geom,GeomPkg,IterateRange_O,"IterateRange",core::Iterator_O);
 public:
 	void	initialize();
 private:

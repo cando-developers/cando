@@ -20,8 +20,7 @@ namespace chem {
     SMART(CalculatePosition);
     class CalculatePosition_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,CalculatePosition_O,"CalculatePosition");
+	LISP_CLASS(chem,ChemPkg,CalculatePosition_O,"CalculatePosition",core::CxxObject_O);
 public: // virtual functions inherited from Object
 	void	initialize();
 //	void	archiveBase(core::ArchiveP node);
@@ -46,8 +45,7 @@ public:
     SMART(CalculatePositionUsingInternals );
     class CalculatePositionUsingInternals_O : public CalculatePosition_O
     {
-	LISP_BASE1(CalculatePosition_O);
-	LISP_CLASS(chem,ChemPkg,CalculatePositionUsingInternals_O,"CalculatePositionUsingInternals");
+	LISP_CLASS(chem,ChemPkg,CalculatePositionUsingInternals_O,"CalculatePositionUsingInternals",CalculatePosition_O);
 #if INIT_TO_FACTORIES
     public:
 	static CalculatePositionUsingInternals_sp make(MatterName distanceAtomName,
@@ -85,8 +83,7 @@ public:
     SMART(CalculatePositionAlongBond );
     class CalculatePositionAlongBond_O : public CalculatePosition_O
     {
-	LISP_BASE1(CalculatePosition_O);
-	LISP_CLASS(chem,ChemPkg,CalculatePositionAlongBond_O,"CalculatePositionAlongBond");
+	LISP_CLASS(chem,ChemPkg,CalculatePositionAlongBond_O,"CalculatePositionAlongBond",CalculatePosition_O);
 #if INIT_TO_FACTORIES
     public:
 	static CalculatePositionAlongBond_sp make(MatterName fromAtomName, MatterName toAtomName, double extendDistance);
@@ -117,8 +114,7 @@ public:
     SMART(CalculatePositionRelativeToOrigin );
     class CalculatePositionRelativeToOrigin_O : public CalculatePosition_O
     {
-	LISP_BASE1(CalculatePosition_O);
-	LISP_CLASS(chem,ChemPkg,CalculatePositionRelativeToOrigin_O,"CalculatePositionRelativeToOrigin");
+	LISP_CLASS(chem,ChemPkg,CalculatePositionRelativeToOrigin_O,"CalculatePositionRelativeToOrigin",CalculatePosition_O);
 #if INIT_TO_FACTORIES
     public:
 	static CalculatePositionRelativeToOrigin_sp make(MatterName originAtomName, MatterName toAtomName, double extendDistance);

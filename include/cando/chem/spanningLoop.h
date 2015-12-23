@@ -34,8 +34,7 @@ namespace chem {
     SMART(SpanningLoop );
     class SpanningLoop_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,SpanningLoop_O,"SpanningLoop");
+	LISP_CLASS(chem,ChemPkg,SpanningLoop_O,"SpanningLoop",core::CxxObject_O);
 #if INIT_TO_FACTORIES
     public:
 	static SpanningLoop_sp make(Atom_sp root);

@@ -34,8 +34,7 @@ namespace geom
   SMART(CoordinateArray);
   class CoordinateArray_O : public core::Vector_O
   {
-    LISP_BASE1(core::Vector_O);
-    LISP_CLASS(geom,GeomPkg,CoordinateArray_O,"CoordinateArray");
+    LISP_CLASS(geom,GeomPkg,CoordinateArray_O,"CoordinateArray",core::Vector_O);
   public:
 #if 0
     bool fieldsp() const { return true; };
@@ -129,8 +128,7 @@ CL_DEFMETHOD     void	append(const Vector3& pos) { this->_Points.push_back(pos);
   SMART(CoordinateArrayWithHash);
   class CoordinateArrayWithHash_O : public CoordinateArray_O
   {
-    LISP_BASE1(CoordinateArray_O);
-    LISP_CLASS(geom,GeomPkg,CoordinateArrayWithHash_O,"CoordinateArrayWithHash");
+    LISP_CLASS(geom,GeomPkg,CoordinateArrayWithHash_O,"CoordinateArrayWithHash",CoordinateArray_O);
 //	DECLARE_SERIALIZE();
   public:
     void initialize();

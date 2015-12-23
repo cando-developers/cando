@@ -19,8 +19,7 @@ namespace geom {
 SMART(IntegerKeyObjectDictionary);
     class IntegerKeyObjectDictionary_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(geom,GeomPkg,IntegerKeyObjectDictionary_O,"IntegerKeyObjectDictionary");
+    LISP_CLASS(geom,GeomPkg,IntegerKeyObjectDictionary_O,"IntegerKeyObjectDictionary",core::CxxObject_O);
 public:
 #if defined(XML_ARCHIVE)
 	void	archiveBase(ArchiveP node);

@@ -19,8 +19,7 @@ namespace geom
     SMART(Color);
     class Color_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(geom,GeomPkg,Color_O,"Color");
+	LISP_CLASS(geom,GeomPkg,Color_O,"Color",core::CxxObject_O);
     public:
 	static void lisp_initGlobals(core::Lisp_sp lisp);
     public: // virtual functions inherited from Object

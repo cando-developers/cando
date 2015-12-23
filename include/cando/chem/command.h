@@ -29,8 +29,7 @@ SMART(Command);
 SMART(Command );
 class Command_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,Command_O,"Command");
+    LISP_CLASS(chem,ChemPkg,Command_O,"Command",core::CxxObject_O);
 
 public:
 //    void	archiveBase(core::ArchiveP node);

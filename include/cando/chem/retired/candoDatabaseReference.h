@@ -21,8 +21,7 @@ SMART(ObjRef);
 SMART(CandoDatabaseReference);
 class CandoDatabaseReference_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,CandoDatabaseReference_O,"CandoDatabaseReference");
+    LISP_CLASS(chem,ChemPkg,CandoDatabaseReference_O,"CandoDatabaseReference",core::CxxObject_O);
 public:
 //    void	archive(core::ArchiveP node);
 	void	initialize();

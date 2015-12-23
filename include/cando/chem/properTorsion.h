@@ -16,8 +16,7 @@ FORWARD(ProperTorsion);
 
 class ProperTorsion_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,ProperTorsion_O,"ProperTorsion");
+    LISP_CLASS(chem,ChemPkg,ProperTorsion_O,"ProperTorsion",core::CxxObject_O);
 //    DECLARE_ARCHIVE();
     DEFAULT_CTOR_DTOR(ProperTorsion_O);
 public:

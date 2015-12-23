@@ -16,8 +16,7 @@ FORWARD(FoldTree);
 class FoldTree_O : public core::T_O
 {
     friend class ChainNode_O;
-    LISP_BASE1(core::T_O);
-    LISP_CLASS(kinematics,KinPkg,FoldTree_O,"FoldTree");
+    LISP_CLASS(kinematics,KinPkg,FoldTree_O,"FoldTree",core::T_O);
 #if INIT_TO_FACTORIES
  public:
     static FoldTree_sp make();

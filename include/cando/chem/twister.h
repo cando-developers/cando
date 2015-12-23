@@ -37,8 +37,7 @@ SMART(Twister);
  */
 class Twister_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,Twister_O,"Twister");
+    LISP_CLASS(chem,ChemPkg,Twister_O,"Twister",core::CxxObject_O);
 public:
 	void initialize();
 public:
@@ -97,8 +96,7 @@ public:
 SMART(TwisterDriver);
 class TwisterDriver_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,TwisterDriver_O,"TwisterDriver");
+	LISP_CLASS(chem,ChemPkg,TwisterDriver_O,"TwisterDriver",core::CxxObject_O);
 public:
 //	void	archive(core::ArchiveP node);
 

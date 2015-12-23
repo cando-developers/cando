@@ -26,8 +26,7 @@ namespace chem
     SMART(Alias);
     class Alias_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,Alias_O,"Alias");
+	LISP_CLASS(chem,ChemPkg,Alias_O,"Alias",core::CxxObject_O);
 #if INIT_TO_FACTORIES
     public:
 	static Alias_sp make(core::Symbol_sp monomerSym, core::Symbol_sp atomSym);

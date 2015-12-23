@@ -59,8 +59,7 @@ SMART(SymbolList);
 */
 SMART(SymbolSet);
 class SymbolSet_O : public T_O {
-  LISP_BASE1(T_O);
-  LISP_CLASS(adapt, AdaptPkg, SymbolSet_O, "SymbolSet");
+  LISP_CLASS(adapt, AdaptPkg, SymbolSet_O, "SymbolSet",core::T_O);
 
 public:
   void initialize();

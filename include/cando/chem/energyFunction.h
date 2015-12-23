@@ -107,8 +107,7 @@ gc::Nilable<Atom_sp>		_Atom4;
 SMART(EnergyFunction);
 class EnergyFunction_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,EnergyFunction_O,"EnergyFunction");
+    LISP_CLASS(chem,ChemPkg,EnergyFunction_O,"EnergyFunction",core::CxxObject_O);
 #if INIT_TO_FACTORIES
  public:
     static EnergyFunction_sp make(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms=_Nil<core::T_O>());

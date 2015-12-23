@@ -30,8 +30,7 @@ class	CandoDatabase_O;
 SMART(Mate);
 class Mate_O : public EntityNameSetWithCap_O
 {
-    LISP_BASE1(EntityNameSetWithCap_O);
-    LISP_CLASS(chem,ChemPkg,Mate_O,"Mate");
+    LISP_CLASS(chem,ChemPkg,Mate_O,"Mate",EntityNameSetWithCap_O);
 #if INIT_TO_FACTORIES
  public:
     static Mate_sp make(core::Symbol_sp cap);
@@ -78,8 +77,7 @@ CL_DEFMETHOD     core::Symbol_sp	getCap() { return this->_Cap; };
 SMART(RingClosingMate);
 class RingClosingMate_O : public EntityNameSetWithCap_O
 {
-    LISP_BASE1(EntityNameSetWithCap_O);
-    LISP_CLASS(chem,ChemPkg,RingClosingMate_O,"RingClosingMate");
+    LISP_CLASS(chem,ChemPkg,RingClosingMate_O,"RingClosingMate",EntityNameSetWithCap_O);
 public:
 //    void	archiveBase(core::ArchiveP node);
 
@@ -105,8 +103,7 @@ public:
 SMART(Plug);
 class Plug_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,Plug_O,"Plug");
+    LISP_CLASS(chem,ChemPkg,Plug_O,"Plug",core::CxxObject_O);
 #if INIT_TO_FACTORIES
  public:
     static Plug_sp make(core::Symbol_sp name);
@@ -169,8 +166,7 @@ CL_DEFMETHOD     virtual core::List_sp	matesAsCons() { return _Nil<core::T_O>();
 SMART(PlugWithMates);
 class PlugWithMates_O : public Plug_O
 {
-    LISP_BASE1(Plug_O);
-    LISP_CLASS(chem,ChemPkg,PlugWithMates_O,"PlugWithMates");
+    LISP_CLASS(chem,ChemPkg,PlugWithMates_O,"PlugWithMates",Plug_O);
 #if INIT_TO_FACTORIES
  public:
     static PlugWithMates_sp make(core::Symbol_sp bond0, core::Symbol_sp bond1, core::List_sp mates);
@@ -233,8 +229,7 @@ CL_DEFMETHOD     bool	hasB1() const { return this->_B1.notnilp();};
 SMART(OutPlug);
 class OutPlug_O : public PlugWithMates_O
 {
-    LISP_BASE1(PlugWithMates_O);
-    LISP_CLASS(chem,ChemPkg,OutPlug_O,"OutPlug");
+    LISP_CLASS(chem,ChemPkg,OutPlug_O,"OutPlug",PlugWithMates_O);
 #if INIT_TO_FACTORIES
  public:
     static OutPlug_sp make(MatterName stubPivotAtom);
@@ -274,8 +269,7 @@ CL_DEFMETHOD 	MatterName getStubPivotAtom() { return this->_StubPivotAtom;};
 SMART(InPlug);
 class InPlug_O : public PlugWithMates_O
 {
-    LISP_BASE1(PlugWithMates_O);
-    LISP_CLASS(chem,ChemPkg,InPlug_O,"InPlug");
+    LISP_CLASS(chem,ChemPkg,InPlug_O,"InPlug",PlugWithMates_O);
 public:
 	void initialize();
 private:
@@ -304,8 +298,7 @@ SMART(JumpPlug);
 
 class JumpPlug_O : public Plug_O
 {
-    LISP_BASE1(Plug_O);
-    LISP_CLASS(chem,ChemPkg,JumpPlug_O,"JumpPlug");
+    LISP_CLASS(chem,ChemPkg,JumpPlug_O,"JumpPlug",Plug_O);
 #if INIT_TO_FACTORIES
  public:
     static JumpPlug_sp make(MatterName jumpAtomName);
@@ -340,8 +333,7 @@ CL_DEFMETHOD     virtual MatterName rootAtomName() const { return this->_JumpAto
 SMART(RingClosingPlug);
 class RingClosingPlug_O : public OutPlug_O
 {
-    LISP_BASE1(OutPlug_O);
-    LISP_CLASS(chem,ChemPkg,RingClosingPlug_O,"RingClosingPlug");
+    LISP_CLASS(chem,ChemPkg,RingClosingPlug_O,"RingClosingPlug",OutPlug_O);
 #if INIT_TO_FACTORIES
  public:
     static RingClosingPlug_sp make(core::List_sp ringClosingMates);

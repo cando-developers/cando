@@ -21,8 +21,7 @@ namespace kinematics
     */
     class Atom_O : public core::T_O
     {
-	LISP_BASE1(core::T_O);
-	LISP_CLASS(kinematics,KinPkg,Atom_O,"Atom");
+	LISP_CLASS(kinematics,KinPkg,Atom_O,"Atom",core::T_O);
     private:
 	AtomTree_sp		_AtomTree;
 	RefCountedAtomHandle	_Handle;

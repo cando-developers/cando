@@ -43,8 +43,7 @@ class	FFTypesDb_O;
 SMART(FFTypesDb);
 class FFTypesDb_O : public FFBaseDb_O
 {
-    LISP_BASE1(FFBaseDb_O);
-    LISP_CLASS(chem,ChemPkg,FFTypesDb_O,"FFTypesDb");
+    LISP_CLASS(chem,ChemPkg,FFTypesDb_O,"FFTypesDb",FFBaseDb_O);
 
 public:
     bool fieldsp() const { return true; };

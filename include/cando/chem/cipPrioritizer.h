@@ -21,8 +21,7 @@ SMART(Atom);
 SMART(CipPrioritizer );
 class CipPrioritizer_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,CipPrioritizer_O,"CipPrioritizer");
+    LISP_CLASS(chem,ChemPkg,CipPrioritizer_O,"CipPrioritizer",core::CxxObject_O);
 private:
 	// instance variables
     std::vector<int>		_p;

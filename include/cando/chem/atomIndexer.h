@@ -28,8 +28,7 @@ SMART(AtomIndexer);
 SMART(AtomIndexer);
 class AtomIndexer_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,AtomIndexer_O,"AtomIndexer");
+    LISP_CLASS(chem,ChemPkg,AtomIndexer_O,"AtomIndexer",core::CxxObject_O);
 
 public:
 //    void	archive(core::ArchiveP node);
@@ -81,8 +80,7 @@ public:
 SMART(MapOfMonomerNamesToAtomIndexers);
 class MapOfMonomerNamesToAtomIndexers_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,MapOfMonomerNamesToAtomIndexers_O,"MapOfMonomerNamesToAtomIndexers");
+    LISP_CLASS(chem,ChemPkg,MapOfMonomerNamesToAtomIndexers_O,"MapOfMonomerNamesToAtomIndexers",core::CxxObject_O);
 
 public:
 //    void	archive(core::ArchiveP node);

@@ -21,8 +21,7 @@ SMART(CalculatePosition);
 SMART(VirtualAtom );
 class VirtualAtom_O : public Atom_O
 {
-    LISP_BASE1(Atom_O);
-    LISP_CLASS(chem,ChemPkg,VirtualAtom_O,"VirtualAtom");
+    LISP_CLASS(chem,ChemPkg,VirtualAtom_O,"VirtualAtom",Atom_O);
 public:
 //    void	archive(core::ArchiveP node);
 	void	initialize();

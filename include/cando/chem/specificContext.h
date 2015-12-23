@@ -31,8 +31,7 @@ SMART(SpecificContextSet);
 SMART(SpecificContext );
 class SpecificContext_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,SpecificContext_O,"SpecificContext");
+    LISP_CLASS(chem,ChemPkg,SpecificContext_O,"SpecificContext",core::CxxObject_O);
     static SpecificContext_sp make();
 public: // virtual functions inherited from Object
 	void	initialize();
@@ -74,8 +73,7 @@ public:
 SMART(SpecificContextSet );
 class SpecificContextSet_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,SpecificContextSet_O,"SpecificContextSet");
+    LISP_CLASS(chem,ChemPkg,SpecificContextSet_O,"SpecificContextSet",core::CxxObject_O);
 #if INIT_TO_FACTORIES
   public:
     static SpecificContextSet_sp make();

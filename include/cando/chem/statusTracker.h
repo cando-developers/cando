@@ -25,8 +25,7 @@ SMART(StatusTracker);
 SMART(StatusTracker );
 class StatusTracker_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,StatusTracker_O,"StatusTracker");
+    LISP_CLASS(chem,ChemPkg,StatusTracker_O,"StatusTracker",core::CxxObject_O);
 
 public:
 	void initialize();

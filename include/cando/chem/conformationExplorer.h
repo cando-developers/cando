@@ -42,8 +42,7 @@ SMART(IntArray);
 SMART(ConformationExplorerEntryStage);
 class ConformationExplorerEntryStage_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,ConformationExplorerEntryStage_O,"ConformationExplorerEntryStage");
+    LISP_CLASS(chem,ChemPkg,ConformationExplorerEntryStage_O,"ConformationExplorerEntryStage",core::CxxObject_O);
 
 public:
 //    void	archiveBase(core::ArchiveP node);
@@ -150,8 +149,7 @@ SMART(ConformationExplorerEntry);
 class ConformationExplorerEntry_O : public core::CxxObject_O
 {
     friend class ConformationExplorer_O;
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,ConformationExplorerEntry_O,"ConformationExplorerEntry");
+    LISP_CLASS(chem,ChemPkg,ConformationExplorerEntry_O,"ConformationExplorerEntry",core::CxxObject_O);
 public:
 //    void	archiveBase(core::ArchiveP node);
 	void	initialize();
@@ -234,8 +232,7 @@ CL_DEFMETHOD 	int	getUniqueEntryIndex() const { return this->_UniqueEntryIndex;}
 SMART(ConformationExplorer);
 class ConformationExplorer_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,ConformationExplorer_O,"ConformationExplorer");
+    LISP_CLASS(chem,ChemPkg,ConformationExplorer_O,"ConformationExplorer",core::CxxObject_O);
 public:
 	void initialize();
 public:
@@ -392,8 +389,7 @@ virtual	ConformationExplorerEntry_sp	createEntry();
 SMART(ConformationExplorerMatch );
 class ConformationExplorerMatch_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,ConformationExplorerMatch_O,"ConformationExplorerMatch");
+    LISP_CLASS(chem,ChemPkg,ConformationExplorerMatch_O,"ConformationExplorerMatch",core::CxxObject_O);
 public: // virtual functions inherited from Object
 	void	initialize();
 //	string	__repr__() const;

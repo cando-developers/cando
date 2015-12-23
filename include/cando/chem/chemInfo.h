@@ -35,8 +35,7 @@ namespace chem {
   SMART(ChemInfoMatch);
   class ChemInfoMatch_O : public core::CxxObject_O
   {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,ChemInfoMatch_O,"ChemInfoMatch");
+    LISP_CLASS(chem,ChemPkg,ChemInfoMatch_O,"ChemInfoMatch",core::CxxObject_O);
 
   public:
     void initialize();
@@ -79,8 +78,7 @@ CL_DEFMETHOD     chem::Atom_sp tag(core::Symbol_sp tag) { return this->getAtomWi
   SMART(WildElementDict);
   class WildElementDict_O : public core::CxxObject_O
   {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,WildElementDict_O,"WildElementDict");
+    LISP_CLASS(chem,ChemPkg,WildElementDict_O,"WildElementDict",core::CxxObject_O);
 
   public:
     void initialize();
@@ -144,8 +142,7 @@ namespace chem {
   SMART(ChemInfoNode);
   class ChemInfoNode_O : public core::CxxObject_O
   {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,ChemInfoNode_O,"ChemInfoNode");
+    LISP_CLASS(chem,ChemPkg,ChemInfoNode_O,"ChemInfoNode",core::CxxObject_O);
 
   public:
     bool fieldsp() const { return true; };
@@ -160,8 +157,7 @@ namespace chem {
   SMART(ResidueList);
   class ResidueList_O : public core::CxxObject_O
   {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,ResidueList_O,"ResidueList");
+    LISP_CLASS(chem,ChemPkg,ResidueList_O,"ResidueList",core::CxxObject_O);
 
   public:
     bool fieldsp() const { return true; };
@@ -178,8 +174,7 @@ namespace chem {
   SMART(RootMatchNode);
   class RootMatchNode_O : public ChemInfoNode_O
   {
-    LISP_BASE1(ChemInfoNode_O);
-    LISP_CLASS(chem,ChemPkg,RootMatchNode_O,"RootMatchNode");
+    LISP_CLASS(chem,ChemPkg,RootMatchNode_O,"RootMatchNode",ChemInfoNode_O);
 
   public:
     bool fieldsp() const { return true; };
@@ -197,8 +192,7 @@ namespace chem {
   SMART(BondMatchNode);
   class BondMatchNode_O : public ChemInfoNode_O
   {
-    LISP_BASE1(ChemInfoNode_O);
-    LISP_CLASS(chem,ChemPkg,BondMatchNode_O,"BondMatchNode");
+    LISP_CLASS(chem,ChemPkg,BondMatchNode_O,"BondMatchNode",ChemInfoNode_O);
 
   public:
     bool fieldsp() const { return true; };
@@ -217,8 +211,7 @@ namespace chem {
   SMART(AtomOrBondMatchNode);
   class AtomOrBondMatchNode_O : public BondMatchNode_O
   {
-    LISP_BASE1(BondMatchNode_O);
-    LISP_CLASS(chem,ChemPkg,AtomOrBondMatchNode_O,"AtomOrBondMatchNode");
+    LISP_CLASS(chem,ChemPkg,AtomOrBondMatchNode_O,"AtomOrBondMatchNode",BondMatchNode_O);
 
   public:
     bool fieldsp() const { return true; };
@@ -237,8 +230,7 @@ namespace chem {
   SMART(BondListMatchNode);
   class BondListMatchNode_O : public ChemInfoNode_O
   {
-    LISP_BASE1(ChemInfoNode_O);
-    LISP_CLASS(chem,ChemPkg,BondListMatchNode_O,"BondListMatchNode");
+    LISP_CLASS(chem,ChemPkg,BondListMatchNode_O,"BondListMatchNode",ChemInfoNode_O);
 
   public:
     bool fieldsp() const { return true; };
@@ -298,8 +290,7 @@ namespace chem {
   SMART(Logical);
   class Logical_O : public AtomOrBondMatchNode_O
   {
-    LISP_BASE1(AtomOrBondMatchNode_O);
-    LISP_CLASS(chem,ChemPkg,Logical_O,"Logical");
+    LISP_CLASS(chem,ChemPkg,Logical_O,"Logical",AtomOrBondMatchNode_O);
   public:
     bool fieldsp() const { return true; };
     void	fields(core::Record_sp node);
@@ -349,8 +340,7 @@ namespace chem {
   SMART(TagSet);
   class TagSet_O : public AtomOrBondMatchNode_O
   {
-    LISP_BASE1(AtomOrBondMatchNode_O);
-    LISP_CLASS(chem,ChemPkg,TagSet_O,"TagSet");
+    LISP_CLASS(chem,ChemPkg,TagSet_O,"TagSet",AtomOrBondMatchNode_O);
 
   public:
     bool fieldsp() const { return true; };
@@ -383,8 +373,7 @@ namespace chem {
   SMART(RingTest);
   class RingTest_O : public AtomOrBondMatchNode_O
   {
-    LISP_BASE1(AtomOrBondMatchNode_O);
-    LISP_CLASS(chem,ChemPkg,RingTest_O,"RingTest");
+    LISP_CLASS(chem,ChemPkg,RingTest_O,"RingTest",AtomOrBondMatchNode_O);
 
   public:
     bool fieldsp() const { return true; };
@@ -418,8 +407,7 @@ namespace chem {
   SMART(ResidueTest);
   class ResidueTest_O : public AtomOrBondMatchNode_O
   {
-    LISP_BASE1(AtomOrBondMatchNode_O);
-    LISP_CLASS(chem,ChemPkg,ResidueTest_O,"ResidueTest");
+    LISP_CLASS(chem,ChemPkg,ResidueTest_O,"ResidueTest",AtomOrBondMatchNode_O);
 
   public:
     bool fieldsp() const { return true; };
@@ -459,8 +447,7 @@ namespace chem {
   SMART(BondTest);
   class BondTest_O : public BondMatchNode_O
   {
-    LISP_BASE1(BondMatchNode_O);
-    LISP_CLASS(chem,ChemPkg,BondTest_O,"BondTest");
+    LISP_CLASS(chem,ChemPkg,BondTest_O,"BondTest",BondMatchNode_O);
 
   public:
     void	initialize();
@@ -497,8 +484,7 @@ namespace chem {
   SMART(AntechamberBondTest);
   class AntechamberBondTest_O : public BondMatchNode_O
   {
-    LISP_BASE1(BondMatchNode_O);
-    LISP_CLASS(chem,ChemPkg,AntechamberBondTest_O,"AntechamberBondTest");
+    LISP_CLASS(chem,ChemPkg,AntechamberBondTest_O,"AntechamberBondTest",BondMatchNode_O);
 
   public:
     void initialize();
@@ -622,8 +608,7 @@ namespace chem {
   SMART(AtomTest);
   class AtomTest_O : public AtomOrBondMatchNode_O
   {
-    LISP_BASE1(AtomOrBondMatchNode_O);
-    LISP_CLASS(chem,ChemPkg,AtomTest_O,"AtomTest");
+    LISP_CLASS(chem,ChemPkg,AtomTest_O,"AtomTest",AtomOrBondMatchNode_O);
 
   public:
     void initialize();
@@ -697,8 +682,7 @@ namespace chem {
   SMART(AntechamberFocusAtomMatch);
   class AntechamberFocusAtomMatch_O : public AtomOrBondMatchNode_O
   {
-    LISP_BASE1(AtomOrBondMatchNode_O);
-    LISP_CLASS(chem,ChemPkg,AntechamberFocusAtomMatch_O,"AntechamberFocusAtomMatch");
+    LISP_CLASS(chem,ChemPkg,AntechamberFocusAtomMatch_O,"AntechamberFocusAtomMatch",AtomOrBondMatchNode_O);
 
   public:
     void initialize();
@@ -761,8 +745,7 @@ namespace chem {
   SMART(Chain);
   class Chain_O : public BondListMatchNode_O
   {
-    LISP_BASE1(BondListMatchNode_O);
-    LISP_CLASS(chem,ChemPkg,Chain_O,"Chain");
+    LISP_CLASS(chem,ChemPkg,Chain_O,"Chain",BondListMatchNode_O);
 
   public:
     bool fieldsp() const { return true; };
@@ -801,8 +784,7 @@ namespace chem {
   SMART(Branch);
   class Branch_O : public BondListMatchNode_O
   {
-    LISP_BASE1(BondListMatchNode_O);
-    LISP_CLASS(chem,ChemPkg,Branch_O,"Branch");
+    LISP_CLASS(chem,ChemPkg,Branch_O,"Branch",BondListMatchNode_O);
 
   public:
     bool fieldsp() const { return true; };
@@ -863,8 +845,7 @@ namespace chem {
   SMART(AfterMatchBondTest);
   class AfterMatchBondTest_O : public RootMatchNode_O
   {
-    LISP_BASE1(RootMatchNode_O);
-    LISP_CLASS(chem,ChemPkg,AfterMatchBondTest_O,"AfterMatchBondTest");
+    LISP_CLASS(chem,ChemPkg,AfterMatchBondTest_O,"AfterMatchBondTest",RootMatchNode_O);
 
   public:
     void initialize();
@@ -902,8 +883,7 @@ namespace chem {
   SMART(Root);
   class Root_O : public AtomOrBondMatchNode_O
   {
-    LISP_BASE1(AtomOrBondMatchNode_O);
-    LISP_CLASS(chem,ChemPkg,Root_O,"Root");
+    LISP_CLASS(chem,ChemPkg,Root_O,"Root",AtomOrBondMatchNode_O);
 
   public:
     void initialize();
@@ -961,8 +941,7 @@ namespace chem {
   SMART(SmartsRoot);
   class SmartsRoot_O : public Root_O
   {
-    LISP_BASE1(Root_O);
-    LISP_CLASS(chem,ChemPkg,SmartsRoot_O,"SmartsRoot");
+    LISP_CLASS(chem,ChemPkg,SmartsRoot_O,"SmartsRoot",Root_O);
 
   public:
     bool fieldsp() const { return true; };
@@ -1010,8 +989,7 @@ namespace chem {
   SMART(AntechamberRoot);
   class AntechamberRoot_O : public Root_O
   {
-    LISP_BASE1(Root_O);
-    LISP_CLASS(chem,ChemPkg,AntechamberRoot_O,"AntechamberRoot");
+    LISP_CLASS(chem,ChemPkg,AntechamberRoot_O,"AntechamberRoot",Root_O);
 
   public:
     void initialize();
@@ -1077,8 +1055,7 @@ namespace chem {
   SMART(ChemInfo);
   class ChemInfo_O : public core::CxxObject_O
   {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,ChemInfo_O,"ChemInfo");
+    LISP_CLASS(chem,ChemPkg,ChemInfo_O,"ChemInfo",core::CxxObject_O);
 #if INIT_TO_FACTORIES
   public:
     static ChemInfo_sp make(core::List_sp tests, const string& smarts);

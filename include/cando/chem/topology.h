@@ -72,8 +72,7 @@ SMART(Topology);
 
 class Topology_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,Topology_O,"Topology"); 
+    LISP_CLASS(chem,ChemPkg,Topology_O,"Topology",core::CxxObject_O); 
 #if INIT_TO_FACTORIES
 public:
     static Topology_sp make(core::Symbol_sp name, int netCharge, core::HashTableEq_sp properties, core::List_sp curPlugs, ConstitutionAtoms_sp residue ); // , kinematics::AtomTemplate_sp atomTreeTemplate, kinematics::ChiList_sp chiList);

@@ -49,8 +49,7 @@ class	SuperposeEngine_O;
 SMART(SuperposeEngine);
 class SuperposeEngine_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,SuperposeEngine_O,"SuperposeEngine");
+    LISP_CLASS(chem,ChemPkg,SuperposeEngine_O,"SuperposeEngine",core::CxxObject_O);
 
 public:
 	static void lisp_initGlobals(core::Lisp_sp lisp);
@@ -111,8 +110,7 @@ inline	geom::CoordinateArray_sp	SuperposeEngine_O::getMoveableCoordinates()
 SMART(SuperposeSelectedAtoms );
 class SuperposeSelectedAtoms_O : public SuperposeEngine_O
 {
-    LISP_BASE1(SuperposeEngine_O);
-    LISP_CLASS(chem,ChemPkg,SuperposeSelectedAtoms_O,"SuperposeSelectedAtoms");
+    LISP_CLASS(chem,ChemPkg,SuperposeSelectedAtoms_O,"SuperposeSelectedAtoms",SuperposeEngine_O);
 
 public:
 public:

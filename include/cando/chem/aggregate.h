@@ -30,8 +30,7 @@ SMART(Lisp);
 
 class  Aggregate_O : public  Matter_O 
 {
-    LISP_BASE1( Matter_O );
-    LISP_CLASS(chem,ChemPkg,Aggregate_O,"Aggregate");
+    LISP_CLASS(chem,ChemPkg,Aggregate_O,"Aggregate", Matter_O );
 //    DECLARE_SERIALIZE();
 public:
 

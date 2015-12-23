@@ -24,8 +24,7 @@ class Trajectory_O;
 SMART(TrajectoryFrame);
 class TrajectoryFrame_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,TrajectoryFrame_O,"TrajectoryFrame");
+    LISP_CLASS(chem,ChemPkg,TrajectoryFrame_O,"TrajectoryFrame",core::CxxObject_O);
 #if INIT_TO_FACTORIES
  public:
     static TrajectoryFrame_sp make();
@@ -63,8 +62,7 @@ public:
 SMART(Trajectory);
 class Trajectory_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,Trajectory_O,"Trajectory");
+    LISP_CLASS(chem,ChemPkg,Trajectory_O,"Trajectory",core::CxxObject_O);
 #if INIT_TO_FACTORIES
  public:
     static Trajectory_sp make();

@@ -38,8 +38,7 @@ namespace adapt {
   SMART(IndexedObjectBag);
 
 class IndexedObjectBag_O : public T_O {
-  LISP_BASE1(T_O);
-  LISP_CLASS(adapt, AdaptPkg, IndexedObjectBag_O, "IndexedObjectBag");
+  LISP_CLASS(adapt, AdaptPkg, IndexedObjectBag_O, "IndexedObjectBag",core::T_O);
   DECLARE_INIT();
   void initialize();
 

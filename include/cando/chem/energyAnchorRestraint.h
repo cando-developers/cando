@@ -73,8 +73,7 @@ double	_evaluateEnergyOnly_AnchorRestraint(
 
 class EnergyAnchorRestraint_O : public EnergyComponent_O
 {
-    LISP_BASE1(EnergyComponent_O);
-    LISP_CLASS(chem,ChemPkg,EnergyAnchorRestraint_O,"EnergyAnchorRestraint");
+    LISP_CLASS(chem,ChemPkg,EnergyAnchorRestraint_O,"EnergyAnchorRestraint",EnergyComponent_O);
 public:
 public: // virtual functions inherited from Object
     void	initialize();

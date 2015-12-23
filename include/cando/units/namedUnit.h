@@ -15,8 +15,7 @@ namespace units
 FORWARD(NamedUnit);
 class NamedUnit_O : public Unit_O
 {
-    LISP_BASE1(Unit_O);
-    LISP_CLASS(units,UnitsPkg,NamedUnit_O,"NamedUnit");
+    LISP_CLASS(units,UnitsPkg,NamedUnit_O,"NamedUnit",Unit_O);
 //    DECLARE_ARCHIVE();
 //    DECLARE_SERIALIZE();
     DEFAULT_CTOR_DTOR(NamedUnit_O);

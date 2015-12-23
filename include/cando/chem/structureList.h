@@ -35,8 +35,7 @@ DEFINE_O_SMART_POINTERS(Structure_Old_List);
 SMART(StructureListEntry);
 class Structure_Old_ListEntry_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,Structure_Old_ListEntry_O,"StructureListEntry");
+    LISP_CLASS(chem,ChemPkg,Structure_Old_ListEntry_O,"StructureListEntry",core::CxxObject_O);
 
 public:
 //    void	archive(core::ArchiveP node);
@@ -91,8 +90,7 @@ class Structure_Old_List_O;
 SMART(StructureList);
 class Structure_Old_List_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,Structure_Old_List_O,"StructureList");
+    LISP_CLASS(chem,ChemPkg,Structure_Old_List_O,"StructureList",core::CxxObject_O);
 
 public:
 	void initialize();

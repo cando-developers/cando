@@ -11,8 +11,7 @@ namespace kinematics
     FORWARD(Rotamer);
     class Rotamer_O : public core::T_O
     {
-	LISP_BASE1(core::T_O);
-	LISP_CLASS(kinematics,KinPkg,Rotamer_O,"Rotamer");
+	LISP_CLASS(kinematics,KinPkg,Rotamer_O,"Rotamer",core::T_O);
 #if INIT_TO_FACTORIES
     public:
 	static Rotamer_sp make(core::List_sp dihedrals, core::List_sp sigmas, core::List_sp indices, const double probability, const int count);
@@ -40,8 +39,7 @@ namespace kinematics
     FORWARD(RotamerSetBase);
     class RotamerSetBase_O : public core::T_O
     {
-	LISP_BASE1(core::T_O);
-	LISP_CLASS(kinematics,KinPkg,RotamerSetBase_O,"RotamerSetBase");
+	LISP_CLASS(kinematics,KinPkg,RotamerSetBase_O,"RotamerSetBase",core::T_O);
 #if INIT_TO_FACTORIES
     public:
 	static RotamerSetBase_sp make();
@@ -68,8 +66,7 @@ namespace kinematics
     FORWARD(RotamerSet);
     class RotamerSet_O : public RotamerSetBase_O
     {
-	LISP_BASE1(RotamerSetBase_O);
-	LISP_CLASS(kinematics,KinPkg,RotamerSet_O,"RotamerSet");
+	LISP_CLASS(kinematics,KinPkg,RotamerSet_O,"RotamerSet",RotamerSetBase_O);
 #if INIT_TO_FACTORIES
     public:
 	static RotamerSet_sp make();
@@ -90,8 +87,7 @@ namespace kinematics
     class BackboneDependentRotamerSet_O : public RotamerSetBase_O
     {
 	friend class BackboneDependentRotamerLibrary_O;
-	LISP_BASE1(RotamerSetBase_O);
-	LISP_CLASS(kinematics,KinPkg,BackboneDependentRotamerSet_O,"BackboneDependentRotamerSet");
+	LISP_CLASS(kinematics,KinPkg,BackboneDependentRotamerSet_O,"BackboneDependentRotamerSet",RotamerSetBase_O);
 #if INIT_TO_FACTORIES
     public:
 	static BackboneDependentRotamerSet_sp make(const int phi, const int psi);
@@ -125,8 +121,7 @@ namespace kinematics
     FORWARD(BackboneDependentRotamerLibrary);
     class BackboneDependentRotamerLibrary_O : public core::T_O
     {
-	LISP_BASE1(core::T_O);
-	LISP_CLASS(kinematics,KinPkg,BackboneDependentRotamerLibrary_O,"BackboneDependentRotamerLibrary");
+	LISP_CLASS(kinematics,KinPkg,BackboneDependentRotamerLibrary_O,"BackboneDependentRotamerLibrary",core::T_O);
 #if INIT_TO_FACTORIES
     public:
 	static BackboneDependentRotamerLibrary_sp make(const int phiStep, const int phiStart, const int phiCount, const int psiStep, const int psiStart, const int psiCount);

@@ -28,8 +28,7 @@ SMART(Topology);
 SMART(MonomerCoordinates);
 class MonomerCoordinates_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,MonomerCoordinates_O,"MonomerCoordinates");
+    LISP_CLASS(chem,ChemPkg,MonomerCoordinates_O,"MonomerCoordinates",core::CxxObject_O);
 #if INIT_TO_FACTORIES
  public:
     static MonomerCoordinates_sp make(MonomerContext_sp context);

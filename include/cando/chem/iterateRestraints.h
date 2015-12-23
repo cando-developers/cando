@@ -23,8 +23,7 @@ namespace chem {
     SMART(IterateRestraints );
     class IterateRestraints_O : public core::Iterator_O
     {
-	LISP_BASE1(core::Iterator_O);
-	LISP_CLASS(chem,ChemPkg,IterateRestraints_O,"IterateRestraints");
+	LISP_CLASS(chem,ChemPkg,IterateRestraints_O,"IterateRestraints",core::Iterator_O);
 public:
 	void	initialize();
 private:

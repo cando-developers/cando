@@ -133,8 +133,7 @@ namespace chem
     SMART(Atom);
     class Atom_O : public Matter_O
     {
-	LISP_BASE1(Matter_O);
-	LISP_CLASS(chem,ChemPkg,Atom_O,"Atom");	
+	LISP_CLASS(chem,ChemPkg,Atom_O,"Atom",Matter_O);	
     public:
 	static void lisp_initGlobals(core::Lisp_sp lisp);
 	void initialize();

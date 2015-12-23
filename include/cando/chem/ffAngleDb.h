@@ -39,8 +39,7 @@ class	FFAngle_O;
 SMART(FFAngle);
 class FFAngle_O : public FFParameter_O
 {
-    LISP_BASE1(FFParameter_O);
-    LISP_CLASS(chem,ChemPkg,FFAngle_O,"FFAngle");
+    LISP_CLASS(chem,ChemPkg,FFAngle_O,"FFAngle",FFParameter_O);
 
 public:
 	void initialize();
@@ -84,8 +83,7 @@ class	FFAngleDb_O;
 SMART(FFAngleDb);
 class FFAngleDb_O : public FFBaseDb_O
 {
-    LISP_BASE1(FFBaseDb_O);
-    LISP_CLASS(chem,ChemPkg,FFAngleDb_O,"FFAngleDb");
+    LISP_CLASS(chem,ChemPkg,FFAngleDb_O,"FFAngleDb",FFBaseDb_O);
 
 public:
         bool fieldsp() const { return true; };

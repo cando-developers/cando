@@ -26,8 +26,7 @@ struct ConnectMonomerRec;
 SMART(PdbMonomerConnectivity );
 class PdbMonomerConnectivity_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,PdbMonomerConnectivity_O,"PdbMonomerConnectivity");
+    LISP_CLASS(chem,ChemPkg,PdbMonomerConnectivity_O,"PdbMonomerConnectivity",core::CxxObject_O);
 public:
     void initialize();
 //void archiveBase(core::ArchiveP node);
@@ -56,8 +55,7 @@ public:
     SMART(PdbMonomerDatabase);
     class PdbMonomerDatabase_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,PdbMonomerDatabase_O,"PdbMonomerDatabase");
+	LISP_CLASS(chem,ChemPkg,PdbMonomerDatabase_O,"PdbMonomerDatabase",core::CxxObject_O);
 public:
 //    void archiveBase(core::ArchiveP node);
 

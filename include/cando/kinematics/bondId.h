@@ -18,8 +18,7 @@ namespace kinematics
     friend class BondedAtomTemplate_O;
     friend class RootBondedAtomTemplate_O;
 
-    LISP_BASE1(core::T_O);
-    LISP_CLASS(kinematics,KinPkg,BondId_O,"BondId");
+    LISP_CLASS(kinematics,KinPkg,BondId_O,"BondId",core::T_O);
 #if INIT_TO_FACTORIES
  public:
     static BondId_sp make();

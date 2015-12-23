@@ -99,8 +99,7 @@ double	_evaluateEnergyOnly_Nonbond(
 
 class EnergyNonbond_O : public EnergyComponent_O
 {
-    LISP_BASE1(EnergyComponent_O);
-    LISP_CLASS(chem,ChemPkg,EnergyNonbond_O,"EnergyNonbond");
+    LISP_CLASS(chem,ChemPkg,EnergyNonbond_O,"EnergyNonbond",EnergyComponent_O);
 public:
 public: // virtual functions inherited from Object
     void	initialize();

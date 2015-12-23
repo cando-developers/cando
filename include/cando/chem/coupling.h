@@ -52,8 +52,7 @@ SMART(EntityNameSet);
 SMART(Coupling);
     class Coupling_O : public core::CxxObject_O //public core::Model_O
     {
-        LISP_BASE1(core::CxxObject_O);
-        LISP_CLASS(chem,ChemPkg,Coupling_O,"Coupling");
+        LISP_CLASS(chem,ChemPkg,Coupling_O,"Coupling",core::CxxObject_O);
 	friend class O_WeakOligomer;
     public:
 	void initialize();
@@ -115,8 +114,7 @@ typedef	enum	{ NoSide, InSide, OutSide } DirectionalCouplingSide;
 SMART(DirectionalCoupling);
 class DirectionalCoupling_O : public Coupling_O
 {
-    LISP_BASE1(Coupling_O);
-    LISP_CLASS(chem,ChemPkg,DirectionalCoupling_O,"DirectionalCoupling");
+    LISP_CLASS(chem,ChemPkg,DirectionalCoupling_O,"DirectionalCoupling",Coupling_O);
 
 public:
 	friend class O_WeakOligomer;
@@ -212,8 +210,7 @@ typedef	enum	{ NoRingSide, Monomer1Side, Monomer2Side } RingCouplingSide;
 SMART(RingCoupling);
 class RingCoupling_O : public Coupling_O
 {
-    LISP_BASE1(Coupling_O);
-    LISP_CLASS(chem,ChemPkg,RingCoupling_O,"RingCoupling");
+    LISP_CLASS(chem,ChemPkg,RingCoupling_O,"RingCoupling",Coupling_O);
 
 public:
 	friend class O_WeakOligomer;

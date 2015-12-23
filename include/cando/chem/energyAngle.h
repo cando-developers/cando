@@ -99,8 +99,7 @@ double	_evaluateEnergyOnly_Angle(
 
 class EnergyAngle_O : public EnergyComponent_O
 {
-    LISP_BASE1(EnergyComponent_O);
-    LISP_CLASS(chem,ChemPkg,EnergyAngle_O,"EnergyAngle");
+    LISP_CLASS(chem,ChemPkg,EnergyAngle_O,"EnergyAngle",EnergyComponent_O);
 public:
 public: // virtual functions inherited from Object
     void	initialize();

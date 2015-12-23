@@ -21,8 +21,7 @@ namespace chem {
     SMART(SearchStatistics );
     class SearchStatistics_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,SearchStatistics_O,"SearchStatistics");
+	LISP_CLASS(chem,ChemPkg,SearchStatistics_O,"SearchStatistics",core::CxxObject_O);
 #if INIT_TO_FACTORIES
     public:
 	static SearchStatistics_sp make();

@@ -24,8 +24,7 @@ SMART(Matter);
 SMART(PathMessage );
 class PathMessage_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,PathMessage_O,"PathMessage");
+    LISP_CLASS(chem,ChemPkg,PathMessage_O,"PathMessage",core::CxxObject_O);
 public:
 	void initialize();
 private:
@@ -66,8 +65,7 @@ public:
 SMART(AGVertex );
 class AGVertex_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,AGVertex_O,"AGVertex");
+    LISP_CLASS(chem,ChemPkg,AGVertex_O,"AGVertex",core::CxxObject_O);
 private:
     RingFinder_wp		_graph;
     Atom_sp			_atom;
@@ -103,8 +101,7 @@ public:
 SMART(AGEdge );
 class AGEdge_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,AGEdge_O,"AGEdge");
+    LISP_CLASS(chem,ChemPkg,AGEdge_O,"AGEdge",core::CxxObject_O);
 private:
     RingFinder_wp		_graph;
     uint			_id;
@@ -128,8 +125,7 @@ public:
 SMART(RingFinder );
 class RingFinder_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,RingFinder_O,"RingFinder");
+    LISP_CLASS(chem,ChemPkg,RingFinder_O,"RingFinder",core::CxxObject_O);
 private:
     core::HashTable_sp			_vertices;
     gctools::Vec0<AGEdge_sp>		_edges;

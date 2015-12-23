@@ -31,8 +31,7 @@ class SuperposableConformationCollection_O;
 SMART(SuperposableConformationCollection);
 class SuperposableConformationCollection_O : public ConformationCollection_O
 {
-    LISP_BASE1(ConformationCollection_O);
-    LISP_CLASS(chem,ChemPkg,SuperposableConformationCollection_O,"SuperposableConformationCollection");
+    LISP_CLASS(chem,ChemPkg,SuperposableConformationCollection_O,"SuperposableConformationCollection",ConformationCollection_O);
 
 public:
 	void initialize();

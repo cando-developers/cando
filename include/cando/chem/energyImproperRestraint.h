@@ -86,8 +86,7 @@ double	_evaluateEnergyOnly_ImproperRestraint(
 
 class EnergyImproperRestraint_O : public EnergyComponent_O
 {
-    LISP_BASE1(EnergyComponent_O);
-    LISP_CLASS(chem,ChemPkg,EnergyImproperRestraint_O,"EnergyImproperRestraint");
+    LISP_CLASS(chem,ChemPkg,EnergyImproperRestraint_O,"EnergyImproperRestraint",EnergyComponent_O);
 public:
 public: // virtual functions inherited from Object
     void	initialize();

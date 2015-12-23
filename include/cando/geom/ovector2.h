@@ -11,8 +11,7 @@ namespace geom {
     SMART(OVector2 );
     class OVector2_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(geom,GeomPkg,OVector2_O,"OVector2");
+	LISP_CLASS(geom,GeomPkg,OVector2_O,"OVector2",core::CxxObject_O);
 DECLARE_INIT()
 public:
 	Vector2	_Value;

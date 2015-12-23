@@ -41,8 +41,7 @@ class StructureComparer_O;
 SMART(StructureComparer);
 class StructureComparer_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,StructureComparer_O,"StructureComparer");
+    LISP_CLASS(chem,ChemPkg,StructureComparer_O,"StructureComparer",core::CxxObject_O);
 
 public:
 	void initialize();

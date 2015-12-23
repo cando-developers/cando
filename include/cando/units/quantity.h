@@ -12,8 +12,7 @@ namespace units
 FORWARD(Quantity);
 class Quantity_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(units,UnitsPkg,Quantity_O,"Quantity");
+    LISP_CLASS(units,UnitsPkg,Quantity_O,"Quantity",core::CxxObject_O);
 //    DECLARE_ARCHIVE();
 //    DECLARE_SERIALIZE();
     DEFAULT_CTOR_DTOR(Quantity_O);

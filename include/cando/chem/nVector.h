@@ -28,8 +28,7 @@ namespace chem {
     SMART(NVector );
     class NVector_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,NVector_O,"NVector");
+	LISP_CLASS(chem,ChemPkg,NVector_O,"NVector",core::CxxObject_O);
 
 public:
 	void initialize();

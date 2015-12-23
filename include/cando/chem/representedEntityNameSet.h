@@ -18,8 +18,7 @@ SMART(MapOfMonomerNamesToAtomIndexers);
 SMART(RepresentedEntityNameSet);
 class RepresentedEntityNameSet_O : public EntityNameSet_O
 {
-    LISP_BASE1(EntityNameSet_O);
-    LISP_CLASS(chem,ChemPkg,RepresentedEntityNameSet_O,"RepresentedEntityNameSet");
+    LISP_CLASS(chem,ChemPkg,RepresentedEntityNameSet_O,"RepresentedEntityNameSet",EntityNameSet_O);
 #if INIT_TO_FACTORIES
  public:
     static RepresentedEntityNameSet_sp make(core::Symbol_sp representativeName);

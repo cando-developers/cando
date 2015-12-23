@@ -21,8 +21,7 @@ class	BoundFrame_O;
 SMART(FrameRecognizer);
 class FrameRecognizer_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,FrameRecognizer_O,"FrameRecognizer");
+    LISP_CLASS(chem,ChemPkg,FrameRecognizer_O,"FrameRecognizer",core::CxxObject_O);
 #if INIT_TO_FACTORIES
  public:
     static FrameRecognizer_sp make(core::Symbol_sp name, const string& smarts, core::Symbol_sp groupName);

@@ -174,8 +174,7 @@ namespace chem
     FORWARD(AtomIdToAtomMap);
     class AtomIdToAtomMap_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,AtomIdToAtomMap_O,"AtomIdToAtomMap");
+	LISP_CLASS(chem,ChemPkg,AtomIdToAtomMap_O,"AtomIdToAtomMap",core::CxxObject_O);
     private:
 	AtomIdMap<Atom_sp>	_AtomIdMap;
     public:

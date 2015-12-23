@@ -68,8 +68,7 @@ namespace chem
     class AtomId_O : public core::CxxObject_O
     {
 	friend class AtomIdToAtomMap_O;
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,AtomId_O,"AtomId");
+	LISP_CLASS(chem,ChemPkg,AtomId_O,"AtomId",core::CxxObject_O);
 //	DECLARE_ARCHIVE();
     protected:
 	AtomId	_AtomId;

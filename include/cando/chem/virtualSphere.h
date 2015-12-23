@@ -23,8 +23,7 @@ SMART(VirtualSphere);
 
 class VirtualSphere_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,VirtualSphere_O,"VirtualSphere");
+    LISP_CLASS(chem,ChemPkg,VirtualSphere_O,"VirtualSphere",core::CxxObject_O);
 
 public:
     static void lisp_initGlobals(core::Lisp_sp lisp);

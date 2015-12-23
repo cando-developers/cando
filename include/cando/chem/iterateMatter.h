@@ -24,8 +24,7 @@ namespace chem
 SMART(IterateMatter);
 class IterateMatter_O : public core::Iterator_O
 {
-    LISP_BASE1(core::Iterator_O);
-    LISP_CLASS(chem,ChemPkg,IterateMatter_O,"IterateMatter");
+    LISP_CLASS(chem,ChemPkg,IterateMatter_O,"IterateMatter",core::Iterator_O);
 #if INIT_TO_FACTORIES
  public:
     static IterateMatter_sp make();
@@ -70,8 +69,7 @@ public:
 SMART(IterateAtoms);
 class IterateAtoms_O : public IterateMatter_O
 {
-    LISP_BASE1(IterateMatter_O);
-    LISP_CLASS(chem,ChemPkg,IterateAtoms_O,"IterateAtoms");
+    LISP_CLASS(chem,ChemPkg,IterateAtoms_O,"IterateAtoms",IterateMatter_O);
 #if INIT_TO_FACTORIES
  public:
     static IterateAtoms_sp make(Matter_sp matter);
@@ -97,8 +95,7 @@ public:
 SMART(IterateResidues);
 class IterateResidues_O : public IterateMatter_O
 {
-    LISP_BASE1(IterateMatter_O);
-    LISP_CLASS(chem,ChemPkg,IterateResidues_O,"IterateResidues");
+    LISP_CLASS(chem,ChemPkg,IterateResidues_O,"IterateResidues",IterateMatter_O);
 public:
 private:
 public:
@@ -118,8 +115,7 @@ public:
 SMART(IterateBonds);
 class IterateBonds_O : public IterateMatter_O
 {
-    LISP_BASE1(IterateMatter_O);
-    LISP_CLASS(chem,ChemPkg,IterateBonds_O,"IterateBonds");
+    LISP_CLASS(chem,ChemPkg,IterateBonds_O,"IterateBonds",IterateMatter_O);
 public:
 private:
 public:

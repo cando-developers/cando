@@ -26,8 +26,7 @@ SMART(FFItorDb);
 SMART(ReadAmberParameters );
 class ReadAmberParameters_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,ReadAmberParameters_O,"ReadAmberParameters");
+    LISP_CLASS(chem,ChemPkg,ReadAmberParameters_O,"ReadAmberParameters",core::CxxObject_O);
 private:
 	FFTypesDb_sp	_Types;
 	ForceField_sp	_ForceField;

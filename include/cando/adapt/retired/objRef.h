@@ -38,8 +38,7 @@ namespace core {
 
 SMART(ObjRef);
 class ObjRef_O : public T_O {
-  LISP_BASE1(T_O);
-  LISP_CLASS(core, CorePkg, ObjRef_O, "ObjRef");
+  LISP_CLASS(core, CorePkg, ObjRef_O, "ObjRef",core::T_O);
 
 public:
 #if defined(XML_ARCHIVE)

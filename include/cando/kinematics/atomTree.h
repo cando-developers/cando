@@ -94,8 +94,7 @@ namespace kinematics
 	friend class Atom;
 	friend class RefCountedAtomHandle;
 	friend class WeakAtomHandle;
-	LISP_BASE1(core::T_O);
-	LISP_CLASS(kinematics,KinPkg,AtomTree_O,"AtomTree");
+	LISP_CLASS(kinematics,KinPkg,AtomTree_O,"AtomTree",core::T_O);
     public:
 	void initialize();
     private:

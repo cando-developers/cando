@@ -20,8 +20,7 @@ namespace kinematics
 class MonomerNode_O : public MonomerBaseNode_O
 {
     friend class AtomTree_O;
-    LISP_BASE1(MonomerBaseNode_O);
-    LISP_CLASS(kinematics,KinPkg,MonomerNode_O,"MonomerNode");
+    LISP_CLASS(kinematics,KinPkg,MonomerNode_O,"MonomerNode",MonomerBaseNode_O);
 #if INIT_TO_FACTORIES
  public:
     static MonomerNode_sp make();

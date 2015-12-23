@@ -34,8 +34,7 @@ namespace chem {
     class MacroModelFile_O : public core::CxxObject_O
     {
 
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,MacroModelFile_O,"MacroModelFile");
+	LISP_CLASS(chem,ChemPkg,MacroModelFile_O,"MacroModelFile",core::CxxObject_O);
 public:
 
 	void	openRead(const string& fn );

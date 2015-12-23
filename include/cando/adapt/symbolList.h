@@ -49,8 +49,7 @@ SMART(SymbolList);
 */
 SMART(SymbolList);
  class SymbolList_O : public core::CxxObject_O {
-   LISP_BASE1(core::CxxObject_O);
-  LISP_CLASS(adapt, AdaptPkg, SymbolList_O, "SymbolList");
+   LISP_CLASS(adapt, AdaptPkg, SymbolList_O, "SymbolList",core::CxxObject_O);
 
 public:
   bool fieldsp() const { return true;};

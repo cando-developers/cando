@@ -32,8 +32,7 @@ namespace geom
     SMART(ColoredVertex);
     class ColoredVertex_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(geom,GeomPkg,ColoredVertex_O,"ColoredVertex");
+	LISP_CLASS(geom,GeomPkg,ColoredVertex_O,"ColoredVertex",core::CxxObject_O);
 	DECLARE_INIT();
     public:
 	void initialize();
@@ -59,8 +58,7 @@ namespace geom
     SMART(ColoredVertexList);
     class ColoredVertexList_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(geom,GeomPkg,ColoredVertexList_O,"ColoredVertexList");
+	LISP_CLASS(geom,GeomPkg,ColoredVertexList_O,"ColoredVertexList",core::CxxObject_O);
     public:
 	void initialize();
     public:

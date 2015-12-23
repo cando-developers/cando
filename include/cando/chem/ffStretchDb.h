@@ -38,8 +38,7 @@ namespace       chem {
     SMART(FFStretch);
     class FFStretch_O : public FFParameter_O
     {
-	LISP_BASE1(FFParameter_O);
-	LISP_CLASS(chem,ChemPkg,FFStretch_O,"FFStretch");
+	LISP_CLASS(chem,ChemPkg,FFStretch_O,"FFStretch",FFParameter_O);
     public:
 	void initialize();
         bool fieldsp() const { return true; };
@@ -93,8 +92,7 @@ namespace       chem {
     SMART(FFStretchDb);
     class FFStretchDb_O : public FFBaseDb_O
     {
-	LISP_BASE1(FFBaseDb_O);
-	LISP_CLASS(chem,ChemPkg,FFStretchDb_O,"FFStretchDb");
+	LISP_CLASS(chem,ChemPkg,FFStretchDb_O,"FFStretchDb",FFBaseDb_O);
 
     public:
         bool fieldsp() const { return true; };

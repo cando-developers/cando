@@ -39,8 +39,7 @@ SMART(SymbolList);
 SMART(EntityNameSetBase);
 class EntityNameSetBase_O : public Entity_O
 {
-    LISP_BASE1(Entity_O);
-    LISP_CLASS(chem,ChemPkg,EntityNameSetBase_O,"EntityNameSetBase");
+    LISP_CLASS(chem,ChemPkg,EntityNameSetBase_O,"EntityNameSetBase",Entity_O);
 #if INIT_TO_FACTORIES
  public:
     static EntityNameSetBase_sp make(core::List_sp entityNamesCons);
@@ -178,8 +177,7 @@ SMART(EntityNameSet);
 class EntityNameSet_O : public EntityNameSetBase_O
 {
     friend class CandoDatabase_O;
-    LISP_BASE1(EntityNameSetBase_O);
-    LISP_CLASS(chem,ChemPkg,EntityNameSet_O,"EntityNameSet");
+    LISP_CLASS(chem,ChemPkg,EntityNameSet_O,"EntityNameSet",EntityNameSetBase_O);
 #if INIT_TO_FACTORIES
  public:
     static EntityNameSet_sp make(core::Symbol_sp name);
@@ -210,8 +208,7 @@ CL_DEFMETHOD 	core::Symbol_sp getName() const { return this->_Name;};
 SMART(EntityNameSetWithCap);
 class EntityNameSetWithCap_O : public EntityNameSetBase_O
 {
-    LISP_BASE1(EntityNameSetBase_O);
-    LISP_CLASS(chem,ChemPkg,EntityNameSetWithCap_O,"EntityNameSetWithCap");
+    LISP_CLASS(chem,ChemPkg,EntityNameSetWithCap_O,"EntityNameSetWithCap",EntityNameSetBase_O);
 public:
     void	initialize();
     string description() const;

@@ -25,8 +25,7 @@ SMART(ChemInfo);
 SMART(ComplexRestraint );
 class ComplexRestraint_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,ComplexRestraint_O,"ComplexRestraint");
+    LISP_CLASS(chem,ChemPkg,ComplexRestraint_O,"ComplexRestraint",core::CxxObject_O);
 #if INIT_TO_FACTORIES
  public:
     static ComplexRestraint_sp make();
@@ -62,8 +61,7 @@ public:
 SMART(RestrainedExoCyclicAtom );
 class RestrainedExoCyclicAtom_O : public ComplexRestraint_O
 {
-    LISP_BASE1(ComplexRestraint_O);
-    LISP_CLASS(chem,ChemPkg,RestrainedExoCyclicAtom_O,"RestrainedExoCyclicAtom");
+    LISP_CLASS(chem,ChemPkg,RestrainedExoCyclicAtom_O,"RestrainedExoCyclicAtom",ComplexRestraint_O);
 public:
     static RestrainedExoCyclicAtom_sp make();
 public:
@@ -116,8 +114,7 @@ public:
 SMART(RestrainedPiBond);
 class RestrainedPiBond_O : public ComplexRestraint_O
 {
-    LISP_BASE1(ComplexRestraint_O);
-    LISP_CLASS(chem,ChemPkg,RestrainedPiBond_O,"RestrainedPiBond");
+    LISP_CLASS(chem,ChemPkg,RestrainedPiBond_O,"RestrainedPiBond",ComplexRestraint_O);
 #if INIT_TO_FACTORIES
  public:
     static RestrainedPiBond_sp make(core::Symbol_sp config, core::List_sp piAtoms);

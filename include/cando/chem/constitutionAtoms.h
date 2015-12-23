@@ -27,8 +27,7 @@ namespace chem
     class ConstitutionBond_O : public core::CxxObject_O
     {
 	friend class ConstitutionAtoms_O;
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,ConstitutionBond_O,"ConstitutionBond");
+	LISP_CLASS(chem,ChemPkg,ConstitutionBond_O,"ConstitutionBond",core::CxxObject_O);
     public:
 	void	initialize();
 //	void	archiveBase(core::ArchiveP node);
@@ -56,8 +55,7 @@ namespace chem
 	friend class StereoisomerAtom_O;
 	friend class StereoisomerVirtualAtom_O;
 
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,ConstitutionAtom_O,"ConstitutionAtom");
+	LISP_CLASS(chem,ChemPkg,ConstitutionAtom_O,"ConstitutionAtom",core::CxxObject_O);
     public:
 	void	initialize();
 //	void	archiveBase(core::ArchiveP node);
@@ -85,8 +83,7 @@ CL_DEFMETHOD 	MatterName atomName() { return this->_AtomName;};
 
     class ConstitutionVirtualAtom_O : public ConstitutionAtom_O
     {
-	LISP_BASE1(ConstitutionAtom_O);
-	LISP_CLASS(chem,ChemPkg,ConstitutionVirtualAtom_O,"ConstitutionVirtualAtom");
+	LISP_CLASS(chem,ChemPkg,ConstitutionVirtualAtom_O,"ConstitutionVirtualAtom",ConstitutionAtom_O);
     public:
 	void	initialize();
 //	void	archiveBase(core::ArchiveP node);
@@ -111,8 +108,7 @@ CL_DEFMETHOD 	MatterName atomName() { return this->_AtomName;};
     class ConstitutionAtoms_O : public core::CxxObject_O
     {
 	friend class StereoisomerAtoms_O;
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,ConstitutionAtoms_O,"ConstitutionAtoms");
+	LISP_CLASS(chem,ChemPkg,ConstitutionAtoms_O,"ConstitutionAtoms",core::CxxObject_O);
 
     public: // virtual functions inherited from Object
 	void	initialize();

@@ -17,8 +17,7 @@ namespace kinematics
     {
 	friend class AtomTree_O;
 	friend class Conformation_O;
-	LISP_BASE1(MonomerBaseNode_O);
-	LISP_CLASS(kinematics,KinPkg,ChainNode_O,"ChainNode");
+	LISP_CLASS(kinematics,KinPkg,ChainNode_O,"ChainNode",MonomerBaseNode_O);
 #if INIT_TO_FACTORIES
     public:
 	static ChainNode_sp make();

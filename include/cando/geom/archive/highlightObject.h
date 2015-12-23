@@ -19,8 +19,7 @@ namespace geom
     SMART(PickableObject);
     class PickableObject_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(geom,GeomPkg,PickableObject_O,"PickableObject");
+	LISP_CLASS(geom,GeomPkg,PickableObject_O,"PickableObject",core::CxxObject_O);
     public:
 	void	initialize();
 //	void	archiveBase(core::ArchiveP node);
@@ -36,8 +35,7 @@ namespace geom
     SMART(ControlObject);
     class ControlObject_O : public PickableObject_O
     {
-	LISP_BASE1(PickableObject_O);
-	LISP_CLASS(geom,GeomPkg,ControlObject_O,"ControlObject");
+	LISP_CLASS(geom,GeomPkg,ControlObject_O,"ControlObject",PickableObject_O);
     private:
     public:
 	void	initialize();
@@ -51,8 +49,7 @@ namespace geom
     SMART(DragObject);
     class DragObject_O : public ControlObject_O
     {
-	LISP_BASE1(ControlObject_O);
-	LISP_CLASS(geom,GeomPkg,DragObject_O,"DragObject");
+	LISP_CLASS(geom,GeomPkg,DragObject_O,"DragObject",ControlObject_O);
     protected:
 	core::Function_sp	_StartCode;
 	core::Function_sp	_DragCode;
@@ -79,8 +76,7 @@ namespace geom
     FORWARD(HighlightedObject);
 class HighlightedObject_O : public PickableObject_O
 {
-    LISP_BASE1(PickableObject_O);
-    LISP_CLASS(geom,GeomPkg,HighlightedObject_O,"HighlightedObject");
+    LISP_CLASS(geom,GeomPkg,HighlightedObject_O,"HighlightedObject",PickableObject_O);
 public: // virtual functions inherited from Object
     void	initialize();
 //    void	archiveBase(core::ArchiveP node);
@@ -105,8 +101,7 @@ public:
 
 class HighlightedHolder_O : public HighlightedObject_O
 {
-    LISP_BASE1(HighlightedObject_O);
-    LISP_CLASS(geom,GeomPkg,HighlightedHolder_O,"HighlightedHolder");
+    LISP_CLASS(geom,GeomPkg,HighlightedHolder_O,"HighlightedHolder",HighlightedObject_O);
     DECLARE_MAKE_INIT();
 public: // virtual functions inherited from Object
     void	initialize();

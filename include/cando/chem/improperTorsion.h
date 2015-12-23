@@ -18,8 +18,7 @@ namespace chem
 
     class ImproperTorsion_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,ImproperTorsion_O,"ImproperTorsion");
+    LISP_CLASS(chem,ChemPkg,ImproperTorsion_O,"ImproperTorsion",core::CxxObject_O);
 //    DECLARE_ARCHIVE();
     DEFAULT_CTOR_DTOR(ImproperTorsion_O);
 public:

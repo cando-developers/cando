@@ -28,8 +28,7 @@ SMART(OligomerPart_Base);
 SMART(OligomerPart_Base);
 class OligomerPart_Base_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,OligomerPart_Base_O,"OligomerPart-Base");
+    LISP_CLASS(chem,ChemPkg,OligomerPart_Base_O,"OligomerPart-Base",core::CxxObject_O);
 
 public:
 //    void archiveBase(core::ArchiveP node);
@@ -45,8 +44,7 @@ SMART(OligomerPart_Monomer);
 SMART(OligomerPart_Monomer);
 class OligomerPart_Monomer_O : public OligomerPart_Base_O
 {
-    LISP_BASE1(OligomerPart_Base_O);
-    LISP_CLASS(chem,ChemPkg,OligomerPart_Monomer_O,"OligomerPart-Monomer");
+    LISP_CLASS(chem,ChemPkg,OligomerPart_Monomer_O,"OligomerPart-Monomer",OligomerPart_Base_O);
 
 public:
 //    void archive(core::ArchiveP node);
@@ -68,8 +66,7 @@ SMART(OligomerPart_Link);
 SMART(OligomerPart_Link);
 class OligomerPart_Link_O : public OligomerPart_Base_O
 {
-    LISP_BASE1(OligomerPart_Base_O);
-    LISP_CLASS(chem,ChemPkg,OligomerPart_Link_O,"OligomerPart-Link");
+    LISP_CLASS(chem,ChemPkg,OligomerPart_Link_O,"OligomerPart-Link",OligomerPart_Base_O);
 
 public:
 //    void archive(core::ArchiveP node);

@@ -40,8 +40,7 @@ namespace kinematics
     class MonomerId_O : public core::T_O
     {
 	friend class FoldTree_O;
-	LISP_BASE1(core::T_O);
-	LISP_CLASS(kinematics,KinPkg,MonomerId_O,"MonomerId");
+	LISP_CLASS(kinematics,KinPkg,MonomerId_O,"MonomerId",core::T_O);
 #if INIT_TO_FACTORIES
     public:
 	static MonomerId_sp make(const int chain, const int monomer);

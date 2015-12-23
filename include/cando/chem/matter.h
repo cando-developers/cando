@@ -83,8 +83,7 @@ SMART(Matter );
 class Matter_O : public core::CxxObject_O
 {
   friend class ConstitutionAtoms_O;
-  LISP_BASE1(core::CxxObject_O);
-  LISP_CLASS(chem,ChemPkg,Matter_O,"Matter");
+  LISP_CLASS(chem,ChemPkg,Matter_O,"Matter",core::CxxObject_O);
 #if INIT_TO_FACTORIES
  public:
   static Matter_sp make(string name);

@@ -102,8 +102,7 @@ class FFParameter_O;
 SMART(FFParameter);
 class FFParameter_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,FFParameter_O,"FFParameter");
+    LISP_CLASS(chem,ChemPkg,FFParameter_O,"FFParameter",core::CxxObject_O);
 
 public:
     bool fieldsp() const { return true; };
@@ -132,8 +131,7 @@ DEFAULT_CTOR_DTOR(FFParameter_O);
 
 SMART(FFBaseDb);
 class FFBaseDb_O : public core::CxxObject_O {
-  LISP_BASE1(core::CxxObject_O);
-  LISP_CLASS(chem,ChemPkg,FFBaseDb_O,"FFBaseDb");
+  LISP_CLASS(chem,ChemPkg,FFBaseDb_O,"FFBaseDb",core::CxxObject_O);
 
  public:
   bool fieldsp() const { return true; };

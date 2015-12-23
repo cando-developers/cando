@@ -49,8 +49,7 @@ SMART(CDNode );
 class CDNode_O : public core::CxxObject_O
 {	
   friend class CDFragment_O;
-  LISP_BASE1(core::CxxObject_O);
-  LISP_CLASS(chem,ChemPkg,CDNode_O,"CDNode");
+  LISP_CLASS(chem,ChemPkg,CDNode_O,"CDNode",core::CxxObject_O);
  public:
   uint				_Id;
   uint                          _Color;
@@ -97,8 +96,7 @@ class CDNode_O : public core::CxxObject_O
 SMART(CDBond );
 class CDBond_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,CDBond_O,"CDBond");
+    LISP_CLASS(chem,ChemPkg,CDBond_O,"CDBond",core::CxxObject_O);
 private:
 	uint		_IdBegin;
 	uint		_IdEnd;
@@ -133,8 +131,7 @@ public:
 SMART(CDFragment );
 class CDFragment_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,CDFragment_O,"CDFragment");
+    LISP_CLASS(chem,ChemPkg,CDFragment_O,"CDFragment",core::CxxObject_O);
 public:
     typedef gctools::Vec0<CDBond_sp>	CDBonds;
     typedef gctools::SmallMap<Atom_sp,CDNode_sp> AtomsToBonds; // map<Atom_sp,CDNode_sp>	AtomsToBonds;
@@ -205,8 +202,7 @@ Molecule_sp createMolecule();
 SMART(CDText );
 class CDText_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,CDText_O,"CDText");
+    LISP_CLASS(chem,ChemPkg,CDText_O,"CDText",core::CxxObject_O);
 #if INIT_TO_FACTORIES
  public:
     static CDText_sp make(core::HashTableEq_sp kprops);
@@ -236,8 +232,7 @@ public:
 SMART(ChemDraw );
 class ChemDraw_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,ChemDraw_O,"ChemDraw");
+    LISP_CLASS(chem,ChemPkg,ChemDraw_O,"ChemDraw",core::CxxObject_O);
 #if INIT_TO_FACTORIES
  public:
     static ChemDraw_sp make(core::T_sp stream);

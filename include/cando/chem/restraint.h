@@ -38,8 +38,7 @@ SMART(Restraint);
 SMART(Restraint );
 class Restraint_O : public core::CxxObject_O
 {
-  LISP_BASE1(core::CxxObject_O);
-  LISP_CLASS(chem,ChemPkg,Restraint_O,"Restraint");
+  LISP_CLASS(chem,ChemPkg,Restraint_O,"Restraint",core::CxxObject_O);
  public:
 //    void	archiveBase(core::ArchiveP node);
 //    void	serialize(serialize::SNode node);
@@ -67,8 +66,7 @@ CL_DEFMETHOD   void setActive(bool a) { this->_Active = a; };
 SMART(RestraintAnchor);
 class RestraintAnchor_O : public Restraint_O
 {
-    LISP_BASE1(Restraint_O);
-    LISP_CLASS(chem,ChemPkg,RestraintAnchor_O,"RestraintAnchor");
+    LISP_CLASS(chem,ChemPkg,RestraintAnchor_O,"RestraintAnchor",Restraint_O);
 #if INIT_TO_FACTORIES
  public:
     static RestraintAnchor_sp make(Atom_sp atom, const Vector3& pos, double weight);
@@ -121,8 +119,7 @@ CL_DEFMETHOD 	void	setAtom(Atom_sp a) {this->_Atom=a;};
 SMART(RestraintChiral);
 class RestraintChiral_O : public Restraint_O
 {
-    LISP_BASE1(Restraint_O);
-    LISP_CLASS(chem,ChemPkg,RestraintChiral_O,"RestraintChiral");
+    LISP_CLASS(chem,ChemPkg,RestraintChiral_O,"RestraintChiral",Restraint_O);
 
 public:
 //    void	archiveBase(core::ArchiveP node);
@@ -160,8 +157,7 @@ public:
 SMART(RestraintDistance);
 class RestraintDistance_O : public Restraint_O
 {
-    LISP_BASE1(Restraint_O);
-    LISP_CLASS(chem,ChemPkg,RestraintDistance_O,"RestraintDistance");
+    LISP_CLASS(chem,ChemPkg,RestraintDistance_O,"RestraintDistance",Restraint_O);
 
 
 public:
@@ -206,8 +202,7 @@ public:
 SMART(RestraintAngle);
 class RestraintAngle_O : public Restraint_O
 {
-    LISP_BASE1(Restraint_O);
-    LISP_CLASS(chem,ChemPkg,RestraintAngle_O,"RestraintAngle");
+    LISP_CLASS(chem,ChemPkg,RestraintAngle_O,"RestraintAngle",Restraint_O);
 public:
 //    void	archiveBase(core::ArchiveP node);
 //    void	serialize(serialize::SNode node);
@@ -255,8 +250,7 @@ public:
 SMART(RestraintDihedral);
 class RestraintDihedral_O : public Restraint_O
 {
-    LISP_BASE1(Restraint_O);
-    LISP_CLASS(chem,ChemPkg,RestraintDihedral_O,"RestraintDihedral");
+    LISP_CLASS(chem,ChemPkg,RestraintDihedral_O,"RestraintDihedral",Restraint_O);
 
 public:
 //    void	archiveBase(core::ArchiveP node);
@@ -315,8 +309,7 @@ public:
 SMART(RestraintFixedNonbond);
 class RestraintFixedNonbond_O : public Restraint_O
 {
-    LISP_BASE1(Restraint_O);
-    LISP_CLASS(chem,ChemPkg,RestraintFixedNonbond_O,"RestraintFixedNonbond");
+    LISP_CLASS(chem,ChemPkg,RestraintFixedNonbond_O,"RestraintFixedNonbond",Restraint_O);
 
 public:
 	void	initialize();
@@ -342,8 +335,7 @@ public:
 SMART(RestraintList);
 class RestraintList_O : public core::Vector_O
 {
-    LISP_BASE1(core::Vector_O);
-    LISP_CLASS(chem,ChemPkg,RestraintList_O,"RestraintList");
+    LISP_CLASS(chem,ChemPkg,RestraintList_O,"RestraintList",core::Vector_O);
 
 public:
 //    void	archiveBase(core::ArchiveP node);

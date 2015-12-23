@@ -31,8 +31,7 @@ namespace kinematics
     FORWARD(Checkpoint);
     class Checkpoint_O : public core::T_O
     {
-	LISP_BASE1(core::T_O);
-	LISP_CLASS(kinematics,KinPkg,Checkpoint_O,"Checkpoint");
+	LISP_CLASS(kinematics,KinPkg,Checkpoint_O,"Checkpoint",core::T_O);
 //	DECLARE_STANDARD_LISP_FUNCTIONS();
 //	DECLARE_ARCHIVE();
 	DEFAULT_CTOR_DTOR(Checkpoint_O);
@@ -51,8 +50,7 @@ namespace kinematics
 
     class CheckpointAtom_O : public Checkpoint_O
     {
-	LISP_BASE1(Checkpoint_O);
-	LISP_CLASS(kinematics,KinPkg,CheckpointAtom_O,"CheckpointAtom");
+	LISP_CLASS(kinematics,KinPkg,CheckpointAtom_O,"CheckpointAtom",Checkpoint_O);
 #if INIT_TO_FACTORIES
     public:
 	static CheckpointAtom_sp make(core::Symbol_sp atomName);
@@ -73,8 +71,7 @@ namespace kinematics
 
     class CheckpointOutPlugAtom_O : public Checkpoint_O
     {
-	LISP_BASE1(Checkpoint_O);
-	LISP_CLASS(kinematics,KinPkg,CheckpointOutPlugAtom_O,"CheckpointOutPlugAtom");
+	LISP_CLASS(kinematics,KinPkg,CheckpointOutPlugAtom_O,"CheckpointOutPlugAtom",Checkpoint_O);
 #if INIT_TO_FACTORIES
     public:
 	static CheckpointOutPlugAtom_sp make(const chem::OutPlug_sp& outPlug);
@@ -101,8 +98,7 @@ namespace kinematics
  */
     class AtomTemplate_O : public core::T_O
     {
-	LISP_BASE1(core::T_O);
-	LISP_CLASS(kinematics,KinPkg,AtomTemplate_O,"AtomTemplate");
+	LISP_CLASS(kinematics,KinPkg,AtomTemplate_O,"AtomTemplate",core::T_O);
 #if INIT_TO_FACTORIES
     public:
 	static AtomTemplate_sp make(const int id, const string& comment, const AtomTemplate_sp parent);
@@ -157,8 +153,7 @@ namespace kinematics
      */
     class BondedAtomTemplate_O : public AtomTemplate_O
     {
-	LISP_BASE1(AtomTemplate_O);
-	LISP_CLASS(kinematics,KinPkg,BondedAtomTemplate_O,"BondedAtomTemplate");
+	LISP_CLASS(kinematics,KinPkg,BondedAtomTemplate_O,"BondedAtomTemplate",AtomTemplate_O);
 #if INIT_TO_FACTORIES
     public:
 	static BondedAtomTemplate_sp make(const chem::OutPlug_sp& outPlug);
@@ -218,8 +213,7 @@ namespace kinematics
     the build process */
     class DelayedBondedAtomTemplate_O : public BondedAtomTemplate_O
     {
-	LISP_BASE1(BondedAtomTemplate_O);
-	LISP_CLASS(kinematics,KinPkg,DelayedBondedAtomTemplate_O,"DelayedBondedAtomTemplate");
+	LISP_CLASS(kinematics,KinPkg,DelayedBondedAtomTemplate_O,"DelayedBondedAtomTemplate",BondedAtomTemplate_O);
 #if INIT_TO_FACTORIES
     public:
 	static DelayedBondedAtomTemplate_sp make(const Checkpoint_sp& checkpoint);
@@ -259,8 +253,7 @@ namespace kinematics
     that is created for use by the AtomTree as Atoms are built. */
     class RootBondedAtomTemplate_O : public BondedAtomTemplate_O
     {
-	LISP_BASE1(BondedAtomTemplate_O);
-	LISP_CLASS(kinematics,KinPkg,RootBondedAtomTemplate_O,"RootBondedAtomTemplate");
+	LISP_CLASS(kinematics,KinPkg,RootBondedAtomTemplate_O,"RootBondedAtomTemplate",BondedAtomTemplate_O);
 #if INIT_TO_FACTORIES
     public:
 	static RootBondedAtomTemplate_sp make(const core::Symbol_sp& constitutionName, const core::Symbol_sp topologyName, const chem::Plug_sp& inPlug);

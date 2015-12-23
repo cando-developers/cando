@@ -30,8 +30,7 @@ SMART(Molecule);
 class Molecule_O : public Matter_O
 {
     friend class Aggregate_O;
-    LISP_BASE1(Matter_O);
-    LISP_CLASS(chem,ChemPkg,Molecule_O,"Molecule");
+    LISP_CLASS(chem,ChemPkg,Molecule_O,"Molecule",Matter_O);
 public:
 	void initialize();
         bool fieldsp() const { return true; };

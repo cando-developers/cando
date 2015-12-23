@@ -29,8 +29,7 @@ SMART(Constitution);
 SMART(Entity);
 class Entity_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,Entity_O,"Entity");
+	LISP_CLASS(chem,ChemPkg,Entity_O,"Entity",core::CxxObject_O);
 public:
 	void initialize();
 public:

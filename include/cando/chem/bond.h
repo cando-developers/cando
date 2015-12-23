@@ -29,8 +29,7 @@ namespace chem {
 SMART(Bond);
 class Bond_O : public core::CxxObject_O
 {
-  LISP_BASE1(core::CxxObject_O);
-  LISP_CLASS(chem,ChemPkg,Bond_O,"Bond");
+  LISP_CLASS(chem,ChemPkg,Bond_O,"Bond",core::CxxObject_O);
  public:
   bool fieldsp() const { return true;};
   void fields(core::Record_sp node);
@@ -138,8 +137,7 @@ BondOrder	stringToBondOrder(string bos);
 SMART(BondList);
 class BondList_O : public core::CxxObject_O
 {
-  LISP_BASE1(core::CxxObject_O);
-  LISP_CLASS(chem,ChemPkg,BondList_O,"BondList");
+  LISP_CLASS(chem,ChemPkg,BondList_O,"BondList",core::CxxObject_O);
  public:
   bool fieldsp() const { return true;};
   void fields(core::Record_sp node);

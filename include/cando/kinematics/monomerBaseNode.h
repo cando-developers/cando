@@ -11,8 +11,7 @@ namespace kinematics
 
     class MonomerBaseNode_O : public core::T_O
 {
-    LISP_BASE1(core::T_O);
-    LISP_CLASS(kinematics,KinPkg,MonomerBaseNode_O,"MonomerBaseNode");
+    LISP_CLASS(kinematics,KinPkg,MonomerBaseNode_O,"MonomerBaseNode",core::T_O);
 #if INIT_TO_FACTORIES
  public:
     static MonomerBaseNode_sp make();

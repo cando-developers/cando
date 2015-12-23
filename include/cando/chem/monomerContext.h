@@ -61,8 +61,7 @@ public:
 SMART(MonomerContext);
 class MonomerContext_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,MonomerContext_O,"MonomerContext");
+    LISP_CLASS(chem,ChemPkg,MonomerContext_O,"MonomerContext",core::CxxObject_O);
 public:
 //    void archiveBase(core::ArchiveP node);
 

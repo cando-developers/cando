@@ -18,8 +18,7 @@ FORWARD(ChiDihedral);
  */
 class ChiDihedral_O : public core::T_O
 {
-    LISP_BASE1(core::T_O);
-    LISP_CLASS(kinematics,KinPkg,ChiDihedral_O,"ChiDihedral");
+    LISP_CLASS(kinematics,KinPkg,ChiDihedral_O,"ChiDihedral",core::T_O);
 #if INIT_TO_FACTORIES
  public:
     static ChiDihedral_sp make(const int atom1Index, const int atom2Index, const int atom3Index, const int atom4Index);
@@ -58,8 +57,7 @@ FORWARD(ChiList);
  */
 class ChiList_O : public core::T_O
 {
-    LISP_BASE1(core::T_O);
-    LISP_CLASS(kinematics,KinPkg,ChiList_O,"ChiList");
+    LISP_CLASS(kinematics,KinPkg,ChiList_O,"ChiList",core::T_O);
 #if INIT_TO_FACTORIES
 #else
     DECLARE_INIT();

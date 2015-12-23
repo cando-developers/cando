@@ -81,8 +81,7 @@ namespace chem
 
     class Constitution_O : public Entity_O
 	{
-	    LISP_BASE1(Entity_O);
-	    LISP_CLASS(chem,ChemPkg,Constitution_O,"Constitution");
+	    LISP_CLASS(chem,ChemPkg,Constitution_O,"Constitution",Entity_O);
 #if INIT_TO_FACTORIES
 	public:
 	    static Constitution_sp make(core::Symbol_sp name, const string& comment, core::Symbol_sp metaConstitution, ConstitutionAtoms_sp constitutionAtoms, StereoInformation_sp stereoInformation, core::List_sp plugs, core::List_sp topologies);

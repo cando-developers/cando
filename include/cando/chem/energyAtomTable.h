@@ -72,8 +72,7 @@ EnergyAtom*	_findEnergyAtom(gctools::Vec0<EnergyAtom>& atoms, uint	idx3 );
 SMART(AtomTable);
 class AtomTable_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,AtomTable_O,"AtomTable");
+    LISP_CLASS(chem,ChemPkg,AtomTable_O,"AtomTable",core::CxxObject_O);
 
 public:
 //    void	archiveBase(core::ArchiveP node);

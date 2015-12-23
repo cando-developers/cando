@@ -11,8 +11,7 @@ namespace geom {
   SMART(OMatrix );
   class OMatrix_O : public core::CxxObject_O
   {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(geom,GeomPkg,OMatrix_O,"OMatrix");
+    LISP_CLASS(geom,GeomPkg,OMatrix_O,"OMatrix",core::CxxObject_O);
   public:
     Matrix	_Value;
   public:

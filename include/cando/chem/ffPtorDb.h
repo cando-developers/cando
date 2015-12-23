@@ -40,8 +40,7 @@ namespace chem
     SMART(FFPtor);
     class FFPtor_O : public FFParameter_O
     {
-	LISP_BASE1(FFParameter_O);
-	LISP_CLASS(chem,ChemPkg,FFPtor_O,"FFPtor");
+	LISP_CLASS(chem,ChemPkg,FFPtor_O,"FFPtor",FFParameter_O);
     public:
 	static int const MaxPeriodicity = 6;
     public:
@@ -84,8 +83,7 @@ namespace chem
     SMART(FFPtorDb);
     class FFPtorDb_O : public FFBaseDb_O
     {
-	LISP_BASE1(FFBaseDb_O);
-	LISP_CLASS(chem,ChemPkg,FFPtorDb_O,"FFPtorDb");
+	LISP_CLASS(chem,ChemPkg,FFPtorDb_O,"FFPtorDb",FFBaseDb_O);
 
     public:
         bool fieldsp() const { return true; };

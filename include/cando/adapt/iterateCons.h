@@ -21,8 +21,7 @@ SMART(Cons);
 SMART(IterateCons );
     class IterateCons_O : public core::Iterator_O
 {
-    LISP_BASE1(core::Iterator_O);
-    LISP_CLASS(adapt,AdaptPkg,IterateCons_O,"IterateCons");
+    LISP_CLASS(adapt,AdaptPkg,IterateCons_O,"IterateCons",core::Iterator_O);
 public:
 	void	initialize();
 private:

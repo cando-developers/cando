@@ -37,8 +37,7 @@ SMART(SuperposeEngine);
 SMART(ConformationCollectionEntry);
 class ConformationCollectionEntry_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,ConformationCollectionEntry_O,"ConformationCollectionEntry");
+    LISP_CLASS(chem,ChemPkg,ConformationCollectionEntry_O,"ConformationCollectionEntry",core::CxxObject_O);
 
 public:
 //    void	archive(core::ArchiveP node);
@@ -89,8 +88,7 @@ class ConformationCollection_O;
 SMART(ConformationCollection);
 class ConformationCollection_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,ConformationCollection_O,"ConformationCollection");
+    LISP_CLASS(chem,ChemPkg,ConformationCollection_O,"ConformationCollection",core::CxxObject_O);
 
 public:
 	void initialize();

@@ -36,8 +36,7 @@ SMART(QDomNode);
 SMART(QDomNode );
     class QDomNode_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(adapt,AdaptPkg,QDomNode_O,"QDomNode");
+    LISP_CLASS(adapt,AdaptPkg,QDomNode_O,"QDomNode",core::CxxObject_O);
 
 DECLARE_INIT()
 private:

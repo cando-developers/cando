@@ -24,8 +24,7 @@ class	ReportBase_O;
 SMART(ReportBase);
 class ReportBase_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,ReportBase_O,"ReportBase");
+    LISP_CLASS(chem,ChemPkg,ReportBase_O,"ReportBase",core::CxxObject_O);
 
 public:
 void initialize();
@@ -40,8 +39,7 @@ public:
 SMART(MessageReport);
 class MessageReport_O : public ReportBase_O
 {
-    LISP_BASE1(ReportBase_O);
-    LISP_CLASS(chem,ChemPkg,MessageReport_O,"MessageReport");
+    LISP_CLASS(chem,ChemPkg,MessageReport_O,"MessageReport",ReportBase_O);
 
 public:
 //    void	archive(core::ArchiveP node);
@@ -58,8 +56,7 @@ class	ForceMatchReport_O;
 SMART(ForceMatchReport);
 class ForceMatchReport_O : public ReportBase_O
 {
-    LISP_BASE1(ReportBase_O);
-    LISP_CLASS(chem,ChemPkg,ForceMatchReport_O,"ForceMatchReport");
+    LISP_CLASS(chem,ChemPkg,ForceMatchReport_O,"ForceMatchReport",ReportBase_O);
 
 public:
 //    void	archive(core::ArchiveP node);
@@ -79,8 +76,7 @@ public:
 SMART(StepReport);
 class StepReport_O : public ReportBase_O
 {
-    LISP_BASE1(ReportBase_O);
-    LISP_CLASS(chem,ChemPkg,StepReport_O,"StepReport");
+    LISP_CLASS(chem,ChemPkg,StepReport_O,"StepReport",ReportBase_O);
 
 public:
 	void	initialize();
@@ -150,8 +146,7 @@ SMART(EnergyFunction);
 SMART(MinimizerLog);
 class MinimizerLog_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,MinimizerLog_O,"MinimizerLog");
+    LISP_CLASS(chem,ChemPkg,MinimizerLog_O,"MinimizerLog",core::CxxObject_O);
 
 public:
 //    void	archive(core::ArchiveP node);

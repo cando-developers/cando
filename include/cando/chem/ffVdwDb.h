@@ -43,8 +43,7 @@ class	FFVdw_O;
 SMART(FFVdw);
 class FFVdw_O : public FFParameter_O
 {
-    LISP_BASE1(FFParameter_O);
-    LISP_CLASS(chem,ChemPkg,FFVdw_O,"FFVdw");
+    LISP_CLASS(chem,ChemPkg,FFVdw_O,"FFVdw",FFParameter_O);
 
 public:
         bool fieldsp() const { return true; };
@@ -70,8 +69,7 @@ DEFAULT_CTOR_DTOR(FFVdw_O);
 SMART(FFVdwDb);
 class FFVdwDb_O : public FFBaseDb_O
 {
-    LISP_BASE1(FFBaseDb_O);
-    LISP_CLASS(chem,ChemPkg,FFVdwDb_O,"FFVdwDb");
+    LISP_CLASS(chem,ChemPkg,FFVdwDb_O,"FFVdwDb",FFBaseDb_O);
 
 public:
         bool fieldsp() const { return true; };

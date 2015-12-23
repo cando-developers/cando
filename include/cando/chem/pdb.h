@@ -75,8 +75,7 @@ public:
     SMART(PdbReader );
     class PdbReader_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,PdbReader_O,"PdbReader");
+	LISP_CLASS(chem,ChemPkg,PdbReader_O,"PdbReader",core::CxxObject_O);
     public:
 //	void	archive(core::ArchiveP node);
 	void	initialize();
@@ -99,8 +98,7 @@ public:
     SMART(PdbWriter );
     class PdbWriter_O : public core::CxxObject_O
     {
-      LISP_BASE1(core::CxxObject_O);
-      LISP_CLASS(chem,ChemPkg,PdbWriter_O,"PdbWriter");
+      LISP_CLASS(chem,ChemPkg,PdbWriter_O,"PdbWriter",core::CxxObject_O);
 #if INIT_TO_FACTORIES
     public:
       static PdbWriter_sp make(core::T_sp fileName);

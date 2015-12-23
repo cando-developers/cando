@@ -62,8 +62,7 @@ SMART(CandoDatabase);
 SMART(CandoDatabase);
 class CandoDatabase_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,CandoDatabase_O,"CandoDatabase");
+    LISP_CLASS(chem,ChemPkg,CandoDatabase_O,"CandoDatabase",core::CxxObject_O);
 #if INIT_TO_FACTORIES
  public:
     static CandoDatabase_sp make(core::Symbol_sp name, core::List_sp frameRecognizers, core::List_sp representedEntityNameSets, core::List_sp constitutions);

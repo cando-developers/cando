@@ -14,8 +14,7 @@ namespace geom {
     class OVector3_O : public core::CxxObject_O
     {
 	friend class OMatrix_O;
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(geom,GeomPkg,OVector3_O,"OVector3");
+	LISP_CLASS(geom,GeomPkg,OVector3_O,"OVector3",core::CxxObject_O);
     public:
         bool fieldsp() const { return true; };
         void	fields(core::Record_sp node);

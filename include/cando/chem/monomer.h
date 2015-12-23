@@ -78,8 +78,7 @@ namespace chem {
     SMART(Monomer);
     class Monomer_O : public Entity_O
     {
-        LISP_BASE1(Entity_O);
-        LISP_CLASS(chem,ChemPkg,Monomer_O,"Monomer");
+        LISP_CLASS(chem,ChemPkg,Monomer_O,"Monomer",Entity_O);
 
 	friend class Topology_O;
 	friend class Constitution_O;
@@ -287,8 +286,7 @@ CL_DEFMETHOD         virtual core::Symbol_sp getName() const {_OF(); SUBCLASS_MU
     SMART(OneMonomer);
     class OneMonomer_O : public core::CxxObject_O
     {
-        LISP_BASE1(core::CxxObject_O);
-        LISP_CLASS(chem,ChemPkg,OneMonomer_O,"OneMonomer");
+        LISP_CLASS(chem,ChemPkg,OneMonomer_O,"OneMonomer",core::CxxObject_O);
         friend class AlchemistFingerprint_O;
     public:
 //    void	archiveBase(core::ArchiveP node);
@@ -308,8 +306,7 @@ CL_DEFMETHOD         virtual core::Symbol_sp getName() const {_OF(); SUBCLASS_MU
     FORWARD(MultiMonomer);
     class MultiMonomer_O : public Monomer_O
     {
-        LISP_BASE1(Monomer_O);
-        LISP_CLASS(chem,ChemPkg,MultiMonomer_O,"MultiMonomer");
+        LISP_CLASS(chem,ChemPkg,MultiMonomer_O,"MultiMonomer",Monomer_O);
 #if INIT_TO_FACTORIES
     public:
         static MultiMonomer_sp make(core::Symbol_sp name, const string& comment);

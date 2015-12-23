@@ -25,8 +25,7 @@ namespace chem
     SMART(ZMatrixInternal );
     class ZMatrixInternal_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,ZMatrixInternal_O,"ZMatrixInternal");
+	LISP_CLASS(chem,ChemPkg,ZMatrixInternal_O,"ZMatrixInternal",core::CxxObject_O);
     public:
 	void initialize();
 //	void	archiveBase(core::ArchiveP node);
@@ -71,8 +70,7 @@ CL_DEFMETHOD 	virtual double	getValue() { return this->_Value; };
     SMART(ZMatrixBondInternal);
     class ZMatrixBondInternal_O : public ZMatrixInternal_O
     {
-	LISP_BASE1(ZMatrixInternal_O);
-	LISP_CLASS(chem,ChemPkg,ZMatrixBondInternal_O,"ZMatrixBondInternal");
+	LISP_CLASS(chem,ChemPkg,ZMatrixBondInternal_O,"ZMatrixBondInternal",ZMatrixInternal_O);
     public:
 //	void	archiveBase(core::ArchiveP node);
     private:
@@ -111,8 +109,7 @@ CL_DEFMETHOD 	int	getBondAtomIndex() const { return this->_AtomBond;};
     SMART(ZMatrixAngleInternal);
     class ZMatrixAngleInternal_O : public ZMatrixInternal_O
     {
-	LISP_BASE1(ZMatrixInternal_O);
-	LISP_CLASS(chem,ChemPkg,ZMatrixAngleInternal_O,"ZMatrixAngleInternal");
+	LISP_CLASS(chem,ChemPkg,ZMatrixAngleInternal_O,"ZMatrixAngleInternal",ZMatrixInternal_O);
 
     public:
 //	void	archiveBase(core::ArchiveP node);
@@ -162,8 +159,7 @@ CL_DEFMETHOD 	int getAngleAtomIndex() const { return this->_AtomAngle;}
     SMART(ZMatrixDihedralInternal);
     class ZMatrixDihedralInternal_O : public ZMatrixInternal_O
     {
-	LISP_BASE1(ZMatrixInternal_O);
-	LISP_CLASS(chem,ChemPkg,ZMatrixDihedralInternal_O,"ZMatrixDihedralInternal");
+	LISP_CLASS(chem,ChemPkg,ZMatrixDihedralInternal_O,"ZMatrixDihedralInternal",ZMatrixInternal_O);
 
     public:
 //	void	archiveBase(core::ArchiveP node);
@@ -219,8 +215,7 @@ CL_DEFMETHOD 	int getDihedralAtomIndex() const { return this->_AtomDihedral;}
     SMART(ZMatrixEntry);
     class ZMatrixEntry_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,ZMatrixEntry_O,"ZMatrixEntry");
+	LISP_CLASS(chem,ChemPkg,ZMatrixEntry_O,"ZMatrixEntry",core::CxxObject_O);
     public:
 	void initialize();
 	friend class ZMatrix_O;
@@ -264,8 +259,7 @@ CL_DEFMETHOD 	ZMatrixDihedralInternal_sp	getDihedral() {_OF(); ASSERTNOTNULL(thi
     SMART(ZMatrix);
     class ZMatrix_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,ZMatrix_O,"ZMatrix");
+	LISP_CLASS(chem,ChemPkg,ZMatrix_O,"ZMatrix",core::CxxObject_O);
 #if INIT_TO_FACTORIES
     public:
 	static ZMatrix_sp make(Matter_sp matter, Atom_sp roomAtom);

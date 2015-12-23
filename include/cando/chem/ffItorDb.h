@@ -37,8 +37,7 @@ namespace       chem
     SMART(FFItor);
     class FFItor_O : public FFParameter_O
     {
-	LISP_BASE1(FFParameter_O);
-	LISP_CLASS(chem,ChemPkg,FFItor_O,"FFItor");
+	LISP_CLASS(chem,ChemPkg,FFItor_O,"FFItor",FFParameter_O);
     public:
 	static int const IMaxPeriodicity = 6;
     public:
@@ -81,8 +80,7 @@ namespace       chem
     SMART(FFItorDb);
     class FFItorDb_O : public FFBaseDb_O
     {
-	LISP_BASE1(FFBaseDb_O);
-	LISP_CLASS(chem,ChemPkg,FFItorDb_O,"FFItorDb");
+	LISP_CLASS(chem,ChemPkg,FFItorDb_O,"FFItorDb",FFBaseDb_O);
 
     public:
         bool fieldsp() const { return true; };

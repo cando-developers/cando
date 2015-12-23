@@ -25,8 +25,7 @@ SMART(SymbolList);
 SMART(MonomerPack);
 class MonomerPack_O : public EntityNameSet_O
 {
-    LISP_BASE1(EntityNameSet_O);
-    LISP_CLASS(chem,ChemPkg,MonomerPack_O,"MonomerPack");
+    LISP_CLASS(chem,ChemPkg,MonomerPack_O,"MonomerPack",EntityNameSet_O);
 
 public:
 	void initialize();

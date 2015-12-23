@@ -96,8 +96,7 @@ double	_evaluateEnergyOnly_Stretch (
 
 class EnergyStretch_O : public EnergyComponent_O
 {
-    LISP_BASE1(EnergyComponent_O);
-    LISP_CLASS(chem,ChemPkg,EnergyStretch_O,"EnergyStretch");
+    LISP_CLASS(chem,ChemPkg,EnergyStretch_O,"EnergyStretch",EnergyComponent_O);
 public:
 public: // virtual functions inherited from Object
     void	initialize();

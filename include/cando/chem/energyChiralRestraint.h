@@ -90,8 +90,7 @@ double	_evaluateEnergyOnly_ChiralRestraint(
 
 class EnergyChiralRestraint_O : public EnergyComponent_O
 {
-    LISP_BASE1(EnergyComponent_O);
-    LISP_CLASS(chem,ChemPkg,EnergyChiralRestraint_O,"EnergyChiralRestraint");
+    LISP_CLASS(chem,ChemPkg,EnergyChiralRestraint_O,"EnergyChiralRestraint",EnergyComponent_O);
 public:
 public: // virtual functions inherited from Object
     void	initialize();

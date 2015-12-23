@@ -31,8 +31,7 @@ namespace chem
     {
 	friend class StereoisomerAtoms_O;
 
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,StereoisomerAtom_O,"StereoisomerAtom");
+	LISP_CLASS(chem,ChemPkg,StereoisomerAtom_O,"StereoisomerAtom",core::CxxObject_O);
     public:
 	void	initialize();
 //	void	archiveBase(core::ArchiveP node);
@@ -65,8 +64,7 @@ CL_DEFMETHOD 	void setAtomType(core::Symbol_sp s) { this->_AtomType = s;};
 
     class StereoisomerVirtualAtom_O : public StereoisomerAtom_O
     {
-	LISP_BASE1(StereoisomerAtom_O);
-	LISP_CLASS(chem,ChemPkg,StereoisomerVirtualAtom_O,"StereoisomerVirtualAtom");
+	LISP_CLASS(chem,ChemPkg,StereoisomerVirtualAtom_O,"StereoisomerVirtualAtom",StereoisomerAtom_O);
     public:
 	void	initialize();
 //	void	archiveBase(core::ArchiveP node);
@@ -87,8 +85,7 @@ CL_DEFMETHOD 	void setAtomType(core::Symbol_sp s) { this->_AtomType = s;};
 
     class StereoisomerAtoms_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,StereoisomerAtoms_O,"StereoisomerAtoms");
+	LISP_CLASS(chem,ChemPkg,StereoisomerAtoms_O,"StereoisomerAtoms",core::CxxObject_O);
 
     public: // virtual functions inherited from Object
 	void	initialize();

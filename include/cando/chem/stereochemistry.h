@@ -43,8 +43,7 @@ namespace chem
     SMART(StereoConfiguration);
     class StereoConfiguration_O : public core::CxxObject_O
 	{
-	    LISP_BASE1(core::CxxObject_O);
-	    LISP_CLASS(chem,ChemPkg,StereoConfiguration_O,"StereoConfiguration");
+	    LISP_CLASS(chem,ChemPkg,StereoConfiguration_O,"StereoConfiguration",core::CxxObject_O);
 #if INIT_TO_FACTORIES
 	public:
 	    static StereoConfiguration_sp make(core::Symbol_sp atomName, core::Symbol_sp config);
@@ -90,8 +89,7 @@ CL_DEFMETHOD 	    void	setConfiguration(core::Symbol_sp p) {this->_Configuration
     SMART(Stereoisomer);
     class Stereoisomer_O : public Entity_O
 	{
-	    LISP_BASE1(Entity_O);
-	    LISP_CLASS(chem,ChemPkg,Stereoisomer_O,"Stereoisomer");
+	    LISP_CLASS(chem,ChemPkg,Stereoisomer_O,"Stereoisomer",Entity_O);
 #if INIT_TO_FACTORIES
 	public:
 	    static Stereoisomer_sp make(core::Symbol_sp name, core::Symbol_sp pdb, core::List_sp configs);
@@ -146,8 +144,7 @@ CL_DEFMETHOD 	    void	setPdb(core::Symbol_sp p) {this->_Pdb = p;};
     SMART(StereoInformation);
     class StereoInformation_O : public core::CxxObject_O
 	{
-	    LISP_BASE1(core::CxxObject_O);
-	    LISP_CLASS(chem,ChemPkg,StereoInformation_O,"StereoInformation");
+	    LISP_CLASS(chem,ChemPkg,StereoInformation_O,"StereoInformation",core::CxxObject_O);
 #if INIT_TO_FACTORIES
 	public:
 	    static StereoInformation_sp make(core::List_sp stereoisomers, core::List_sp restraints);

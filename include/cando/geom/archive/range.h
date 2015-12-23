@@ -18,8 +18,7 @@ namespace geom {
     SMART(Range);
     class Range_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(geom,GeomPkg,Range_O,"Range");
+	LISP_CLASS(geom,GeomPkg,Range_O,"Range",core::CxxObject_O);
 	DECLARE_INIT();
     public:
 //	void	archive(core::ArchiveP node);

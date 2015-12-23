@@ -47,8 +47,7 @@ inline	string	XmlAttribute_TriangleType(TriangleType t) {
 SMART(AbstractLargeSquareMatrix);
 class AbstractLargeSquareMatrix_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,AbstractLargeSquareMatrix_O,"AbstractLargeSquareMatrix");
+    LISP_CLASS(chem,ChemPkg,AbstractLargeSquareMatrix_O,"AbstractLargeSquareMatrix",core::CxxObject_O);
 
 protected:
     TriangleType 	_Triangle;
@@ -122,8 +121,7 @@ public:
 SMART(FullLargeSquareMatrix)
     class FullLargeSquareMatrix_O : public  AbstractLargeSquareMatrix_O 
 {
-    LISP_BASE1( AbstractLargeSquareMatrix_O );
-    LISP_CLASS(chem,ChemPkg,FullLargeSquareMatrix_O,"FullLargeSquareMatrix");
+    LISP_CLASS(chem,ChemPkg,FullLargeSquareMatrix_O,"FullLargeSquareMatrix", AbstractLargeSquareMatrix_O );
 
 private:
 	uint		_ActiveElements;
@@ -176,8 +174,7 @@ inline	FullLargeSquareMatrix_sp new_FullLargeSquareMatrix_sp(const FullLargeSqua
 SMART(SparseLargeSquareMatrix);
 class SparseLargeSquareMatrix_O : public AbstractLargeSquareMatrix_O
 {
-    LISP_BASE1(AbstractLargeSquareMatrix_O);
-    LISP_CLASS(chem,ChemPkg,SparseLargeSquareMatrix_O,"SparseLargeSquareMatrix");
+    LISP_CLASS(chem,ChemPkg,SparseLargeSquareMatrix_O,"SparseLargeSquareMatrix",AbstractLargeSquareMatrix_O);
 
 private:
 	bool		_InsertionIsComplete;

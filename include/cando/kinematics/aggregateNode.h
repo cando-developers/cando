@@ -13,8 +13,7 @@ namespace kinematics
 class AggregateNode_O : public MonomerBaseNode_O
 {
     friend class FoldTree_O;
-    LISP_BASE1(MonomerBaseNode_O);
-    LISP_CLASS(kinematics,KinPkg,AggregateNode_O,"AggregateNode");
+    LISP_CLASS(kinematics,KinPkg,AggregateNode_O,"AggregateNode",MonomerBaseNode_O);
 //    DECLARE_ARCHIVE();
     DEFAULT_CTOR_DTOR(AggregateNode_O);
 public:

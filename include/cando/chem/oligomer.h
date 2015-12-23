@@ -59,8 +59,7 @@ SMART(Oligomer);
 SMART(Oligomer);
 class Oligomer_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,Oligomer_O,"Oligomer");
+    LISP_CLASS(chem,ChemPkg,Oligomer_O,"Oligomer",core::CxxObject_O);
 #if INIT_TO_FACTORIES
  public:
     static Oligomer_sp make(core::List_sp parts);

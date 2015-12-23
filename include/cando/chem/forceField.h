@@ -55,8 +55,7 @@ class	InfoDb_O;
 SMART(InfoDb);
 class InfoDb_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,InfoDb_O,"InfoDb");
+    LISP_CLASS(chem,ChemPkg,InfoDb_O,"InfoDb",core::CxxObject_O);
 
 public:
     bool fieldsp() const { return true; };
@@ -78,8 +77,7 @@ public:
 SMART(ForceField);
 class ForceField_O : public core::CxxObject_O
 {
-    LISP_BASE1(core::CxxObject_O);
-    LISP_CLASS(chem,ChemPkg,ForceField_O,"ForceField");
+    LISP_CLASS(chem,ChemPkg,ForceField_O,"ForceField",core::CxxObject_O);
 
 public:
     void initialize();

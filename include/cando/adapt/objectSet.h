@@ -42,8 +42,7 @@ public:
 SMART(ObjectSet);
 
 class ObjectSet_O : public T_O {
-  LISP_BASE1(T_O);
-  LISP_CLASS(adapt, AdaptPkg, ObjectSet_O, "ObjectSet");
+  LISP_CLASS(adapt, AdaptPkg, ObjectSet_O, "ObjectSet",core::T_O);
   DECLARE_INIT();
   void initialize();
 

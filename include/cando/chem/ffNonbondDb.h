@@ -56,8 +56,7 @@ namespace chem {
     SMART(FFNonbondCrossTermTable);
     class FFNonbondCrossTermTable_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(chem,ChemPkg,FFNonbondCrossTermTable_O,"FFNonbondCrossTermTable");
+	LISP_CLASS(chem,ChemPkg,FFNonbondCrossTermTable_O,"FFNonbondCrossTermTable",core::CxxObject_O);
 
     public:
     private:
@@ -110,8 +109,7 @@ namespace chem {
 SMART(FFNonbond);
 class FFNonbond_O : public FFParameter_O
 {
-    LISP_BASE1(FFParameter_O);
-    LISP_CLASS(chem,ChemPkg,FFNonbond_O,"FFNonbond");
+    LISP_CLASS(chem,ChemPkg,FFNonbond_O,"FFNonbond",FFParameter_O);
 
 public:
 public:
@@ -163,8 +161,7 @@ DEFAULT_CTOR_DTOR(FFNonbond_O);
 SMART(FFNonbondDb);
 class FFNonbondDb_O : public FFBaseDb_O
 {
-    LISP_BASE1(FFBaseDb_O);
-    LISP_CLASS(chem,ChemPkg,FFNonbondDb_O,"FFNonbondDb");
+    LISP_CLASS(chem,ChemPkg,FFNonbondDb_O,"FFNonbondDb",FFBaseDb_O);
 
 public:
 public:

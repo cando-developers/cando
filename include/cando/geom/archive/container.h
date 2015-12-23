@@ -18,8 +18,7 @@ namespace geom {
     SMART(Container );
     class Container_O : public core::CxxObject_O
     {
-	LISP_BASE1(core::CxxObject_O);
-	LISP_CLASS(geom,GeomPkg,Container_O,"Container");
+	LISP_CLASS(geom,GeomPkg,Container_O,"Container",core::CxxObject_O);
 public:
 public:
 
