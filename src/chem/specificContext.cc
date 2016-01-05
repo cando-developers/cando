@@ -50,13 +50,13 @@ void SpecificContext_O::clear()
 #endif
 
 
-CL_NAME("setSelfName");
+CL_LISPIFY_NAME("setSelfName");
 CL_DEFMETHOD     void SpecificContext_O::setSelfName(core::Symbol_sp selfName)
 {_G();
    this->_SelfName = selfName; 
 }
 
-CL_NAME("pushNeighbor");
+CL_LISPIFY_NAME("pushNeighbor");
 CL_DEFMETHOD     void	SpecificContext_O::pushNeighbor(core::Symbol_sp coupling, core::Symbol_sp neighborName)
 {_G();
     KeyEntry one;
@@ -72,7 +72,7 @@ CL_DEFMETHOD     void	SpecificContext_O::pushNeighbor(core::Symbol_sp coupling, 
     one._Monomer = neighbor;
 }
 
-CL_NAME("popNeighbor");
+CL_LISPIFY_NAME("popNeighbor");
 CL_DEFMETHOD void	SpecificContext_O::popNeighbor()
 {_G();
     this->_Neighbors.pop_back();
@@ -91,7 +91,7 @@ bool SpecificContext_O::allMonomersInDatabase(CandoDatabase_sp bdb)
     return true;
 }
 
-CL_NAME("asString");
+CL_LISPIFY_NAME("asString");
 CL_DEFMETHOD string SpecificContext_O::asString()
 {_G();
 stringstream ss;
@@ -118,7 +118,7 @@ stringstream ss;
     }
 
 
-CL_NAME("copy");
+CL_LISPIFY_NAME("copy");
 CL_DEFMETHOD SpecificContext_sp SpecificContext_O::copy()
 {_G();
     GC_COPY(SpecificContext_O, cpy , *this); // = RP_Copy<SpecificContext_O>(this);
@@ -169,7 +169,7 @@ void	SpecificContextSet_O::initialize()
 }
 
 
-CL_NAME("addSpecificContext");
+CL_LISPIFY_NAME("addSpecificContext");
 CL_DEFMETHOD void	SpecificContextSet_O::add(SpecificContext_sp key)
 {_G();
     LOG(BF("adding SpecificContext |%s|") % key->asString().c_str()  );
@@ -205,7 +205,7 @@ void	SpecificContextSet_O::remove(SpecificContextSet_sp s)
     }
 }
 
-CL_NAME("asSymbolSetOfKeys");
+CL_LISPIFY_NAME("asSymbolSetOfKeys");
 CL_DEFMETHOD adapt::SymbolSet_sp SpecificContextSet_O::asSymbolSetOfKeys()
 {_G();
     adapt::SymbolSet_sp keys = adapt::SymbolSet_O::create();
@@ -219,7 +219,7 @@ CL_DEFMETHOD adapt::SymbolSet_sp SpecificContextSet_O::asSymbolSetOfKeys()
 
 
 
-CL_NAME("asCons");
+CL_LISPIFY_NAME("asCons");
 CL_DEFMETHOD core::List_sp SpecificContextSet_O::asCons()
 {_G();
     core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());

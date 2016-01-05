@@ -257,13 +257,13 @@ adapt::StringList_sp Constitution_O::getMonomerNamesAsStringList()
 {
 	return this->_StereoInformation->getMonomerNamesAsStringList();
 };
-CL_NAME("getMonomerNameAsStringSet");
+CL_LISPIFY_NAME("getMonomerNameAsStringSet");
 CL_DEFMETHOD adapt::SymbolSet_sp	Constitution_O::getMonomerNamesAsSymbolSet()
 {
     return this->_StereoInformation->getMonomerNamesAsSymbolSet();
 };
 
-CL_NAME("getPdbNamesAsStringList");
+CL_LISPIFY_NAME("getPdbNamesAsStringList");
 CL_DEFMETHOD adapt::StringList_sp Constitution_O::getPdbNamesAsStringList() {
 	return this->_StereoInformation->getPdbNamesAsStringList();
 };
@@ -307,9 +307,9 @@ CL_DEFMETHOD adapt::StringList_sp Constitution_O::getPdbNamesAsStringList() {
 
 
 
-CL_NAME("stereoisomersAsCons");
+CL_LISPIFY_NAME("stereoisomersAsCons");
 CL_DEFMETHOD core::List_sp Constitution_O::stereoisomersAsCons() { return this->_StereoInformation->stereoisomersAsCons(); };
-CL_NAME("topologiesAsCons");
+CL_LISPIFY_NAME("topologiesAsCons");
 CL_DEFMETHOD core::List_sp Constitution_O::topologiesAsCons() {
     core::List_sp result = _Nil<core::T_O>();
     for ( TopologyMap::iterator it = this->_Topologies.begin(); it!=this->_Topologies.end(); ++it ) {
@@ -325,7 +325,7 @@ core::List_sp Constitution_O::plugsAsCons() {
     }
     return result;
 }
-CL_NAME("plugsWithMatesAsCons");
+CL_LISPIFY_NAME("plugsWithMatesAsCons");
 CL_DEFMETHOD core::List_sp Constitution_O::plugsWithMatesAsCons()
 {_G();
     core::List_sp first = _Nil<core::T_O>();
@@ -362,7 +362,7 @@ Constitution_O::const_stereoisomerIterator Constitution_O::end_Stereoisomers() c
 /*!
 	Return a copy of the residue that this constitution defines
 */
-CL_NAME("createResidueForStereoisomerName");
+CL_LISPIFY_NAME("createResidueForStereoisomerName");
 CL_DEFMETHOD     Residue_sp	Constitution_O::createResidueForStereoisomerName(core::Symbol_sp stereoisomerName)
 {_G();
     Residue_sp res = this->_ConstitutionAtoms->makeResidue();
@@ -404,7 +404,7 @@ adapt::SymbolSet_sp Constitution_O::getPlugNames()
 }
 
 
-CL_NAME("simplestTopologyWithPlugNamed");
+CL_LISPIFY_NAME("simplestTopologyWithPlugNamed");
 CL_DEFMETHOD     Topology_sp	Constitution_O::simplestTopologyWithPlugNamed(core::Symbol_sp name)
 {_G();
     TopologyMap::iterator	ti;
@@ -443,7 +443,7 @@ tres = _Nil<Topology_O>();
 }
 
 
-CL_NAME("topologyWithName");
+CL_LISPIFY_NAME("topologyWithName");
 CL_DEFMETHOD     Topology_sp	Constitution_O::topologyWithName(core::Symbol_sp name) const
     {_OF();
 	Topology_sp			tres;
@@ -474,7 +474,7 @@ tres = _Nil<Topology_O>();
 }
 
 
-CL_NAME("getTopologyForContext");
+CL_LISPIFY_NAME("getTopologyForContext");
 CL_DEFMETHOD Topology_sp	Constitution_O::getTopologyForContext(MonomerContext_sp cont )
 {_G();
     TopologyMap::iterator	ti;
@@ -492,7 +492,7 @@ tres = _Nil<Topology_O>();
 
 
 
-CL_NAME("asGroup");
+CL_LISPIFY_NAME("asGroup");
 CL_DEFMETHOD RepresentedEntityNameSet_sp	Constitution_O::asGroup()
 {_G();
 RepresentedEntityNameSet_sp				group;

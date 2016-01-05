@@ -262,7 +262,7 @@ gc::Nilable<FFNonbond_sp>   FFNonbondDb_O::findType(core::Symbol_sp type)
   return _Nil<T_O>();
 }
 
-CL_NAME("findTypeIndex");
+CL_LISPIFY_NAME("findTypeIndex");
 CL_DEFMETHOD uint FFNonbondDb_O::findTypeIndex(core::Symbol_sp type)
 {
     if ( this->_Lookup->contains(type) ) {
@@ -297,7 +297,7 @@ FFNonbond_sp FFNonbondDb_O::getFFNonbondUsingTypeIndex(uint typeIdx)
 
 
 
-CL_NAME("numberOfTypes");
+CL_LISPIFY_NAME("numberOfTypes");
 CL_DEFMETHOD uint FFNonbondDb_O::numberOfTypes()
 {_G();
     return this->_Terms.size();

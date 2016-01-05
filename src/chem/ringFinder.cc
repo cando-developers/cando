@@ -728,7 +728,7 @@ void RingFinder_O::advanceRingSearch(uint stage)
 
 
 
-CL_NAME("findRings");
+CL_LISPIFY_NAME("findRings");
 CL_DEFMETHOD void RingFinder_O::findRings(int numAtoms)
 {_G();
     ASSERTF(numAtoms>0,BF("You tried to find rings in a molecule with zero atoms"));
@@ -827,7 +827,7 @@ bool RingFinder_O::linearlyIndependentRing(PathMessage_sp ring)
 }
 
 
-CL_NAME("getAllRingsAsListsOfAtoms");
+CL_LISPIFY_NAME("getAllRingsAsListsOfAtoms");
 CL_DEFMETHOD core::List_sp RingFinder_O::getAllRingsAsListsOfAtoms()
 {_G();
     core::List_sp lists = _Nil<core::T_O>();

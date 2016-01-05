@@ -175,14 +175,14 @@ void Bond_O::clearProperty(core::Symbol_sp prop)
   this->_Properties = core::core__rem_f(this->_Properties,prop);
 }
 
-CL_NAME("setProperty");
+CL_LISPIFY_NAME("setProperty");
 CL_DEFMETHOD void Bond_O::setProperty(core::Symbol_sp prop, core::T_sp val)
     {_G();
       this->_Properties = core::core__put_f(this->_Properties,val,prop);
     }
 
 
-CL_NAME("getProperty");
+CL_LISPIFY_NAME("getProperty");
 CL_DEFMETHOD core::T_sp Bond_O::getProperty(core::Symbol_sp prop, core::T_sp defval)
 {_G();
   core::T_sp res = core::cl__getf(this->_Properties,prop,_Unbound<core::T_O>());
@@ -192,7 +192,7 @@ CL_DEFMETHOD core::T_sp Bond_O::getProperty(core::Symbol_sp prop, core::T_sp def
   return res;
 }
 
-CL_NAME("hasProperty");
+CL_LISPIFY_NAME("hasProperty");
 CL_DEFMETHOD bool Bond_O::hasProperty(core::Symbol_sp prop)
 {_G();
   return !core::cl__getf(this->_Properties,prop,_Unbound<core::T_O>()).unboundp();
@@ -200,7 +200,7 @@ CL_DEFMETHOD bool Bond_O::hasProperty(core::Symbol_sp prop)
 
 
 
-CL_NAME("getOtherAtom");
+CL_LISPIFY_NAME("getOtherAtom");
 CL_DEFMETHOD Atom_sp Bond_O::getOtherAtom(Atom_sp atom) const
 {_OF();
   ASSERTNOTNULL(this->_Atom1);
@@ -324,7 +324,7 @@ ConstitutionBond_sp Bond_O::asConstitutionBond(Atom_sp from, MapAtomsToConstitut
 
 
 
-CL_NAME("getOrderAsString");
+CL_LISPIFY_NAME("getOrderAsString");
 CL_DEFMETHOD string	Bond_O::getOrderAsString()
 {_G();
   return bondOrderToString(this->order);
@@ -561,16 +561,18 @@ void Bond_O::lisp_initGlobals(core::Lisp_sp lisp)
   SYMBOL_EXPORT_SC_(ChemKwPkg,virtualBond);
   SYMBOL_EXPORT_SC_(ChemKwPkg,dashedSingleBond);
   SYMBOL_EXPORT_SC_(ChemKwPkg,dashedDoubleBond);
-  core::enum_<BondOrder> en(_sym__PLUS_bondOrderToSymbolConverter_PLUS_,"BondOrder");
-  en.value(chemkw::_sym_noBond, _lisp->internKeyword("none"), singleBond );
-  en.value(chemkw::_sym_singleBond, _lisp->internKeyword("s"), singleBond );
-  en.value(chemkw::_sym_doubleBond, _lisp->internKeyword("d"), doubleBond );
-  en.value(chemkw::_sym_tripleBond, _lisp->internKeyword("t"), tripleBond );
-  en.value(chemkw::_sym_aromaticBond, _lisp->internKeyword("a"), aromaticBond );
-  en.value(chemkw::_sym_hydrogenBond, _lisp->internKeyword("h"), hydrogenBond );
-  en.value(chemkw::_sym_virtualBond,_lisp->internKeyword("v"),virtualBond);
-  en.value(chemkw::_sym_dashedSingleBond,_lisp->internKeyword("ds"),dashedSingleBond);
-  en.value(chemkw::_sym_dashedDoubleBond,_lisp->internKeyword("dd"),dashedDoubleBond);
+  CL_BEGIN_ENUM(BondOrder,_sym__PLUS_bondOrderToSymbolConverter_PLUS_,"BondOrder");
+  CL_VALUE_ENUM(chemkw::_sym_noBond, singleBond );
+  CL_VALUE_ENUM(chemkw::_sym_singleBond, singleBond );
+  CL_VALUE_ENUM(chemkw::_sym_doubleBond, doubleBond );
+  CL_VALUE_ENUM(chemkw::_sym_tripleBond, tripleBond );
+  CL_VALUE_ENUM(chemkw::_sym_aromaticBond, aromaticBond );
+  CL_VALUE_ENUM(chemkw::_sym_hydrogenBond, hydrogenBond );
+  CL_VALUE_ENUM(chemkw::_sym_virtualBond, virtualBond);
+  CL_VALUE_ENUM(chemkw::_sym_dashedSingleBond,dashedSingleBond);
+  CL_VALUE_ENUM(chemkw::_sym_dashedDoubleBond,dashedDoubleBond);
+  CL_END_ENUM(_sym__PLUS_bondOrderToSymbolConverter_PLUS_);
+    ;
 }	
 
 

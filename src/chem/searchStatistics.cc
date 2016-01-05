@@ -63,7 +63,7 @@ void	SearchStatistics_O::setReportFrequency(uint i)
 }
 
 
-CL_NAME("incrementBuilds");
+CL_LISPIFY_NAME("incrementBuilds");
 CL_DEFMETHOD void	SearchStatistics_O::incrementBuilds()
 {_OF();
     this->_Builds++;
@@ -74,33 +74,33 @@ CL_DEFMETHOD void	SearchStatistics_O::incrementBuilds()
     }
 }
 
-CL_NAME("getBuilds");
+CL_LISPIFY_NAME("getBuilds");
 CL_DEFMETHOD Bignum SearchStatistics_O::getBuilds()
 {
     return this->_Builds;
 }
 
 
-CL_NAME("incrementRejects");
+CL_LISPIFY_NAME("incrementRejects");
 CL_DEFMETHOD void	SearchStatistics_O::incrementRejects()
 {
     this->_Rejects++;
 }
 
-CL_NAME("getRejects");
+CL_LISPIFY_NAME("getRejects");
 CL_DEFMETHOD Bignum SearchStatistics_O::getRejects()
 {
     return this->_Rejects;
 }
 
 
-CL_NAME("incrementHits");
+CL_LISPIFY_NAME("incrementHits");
 CL_DEFMETHOD void	SearchStatistics_O::incrementHits()
 {
     this->_Hits++;
 }
 
-CL_NAME("getHits");
+CL_LISPIFY_NAME("getHits");
 CL_DEFMETHOD Bignum SearchStatistics_O::getHits()
 {
     return this->_Hits;

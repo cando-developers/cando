@@ -211,7 +211,7 @@ void	MonomerCoordinates_O::_defineFromConformationExplorerOrDebug(
 }
 
 
-CL_NAME("defineFromConformationExplorer");
+CL_LISPIFY_NAME("defineFromConformationExplorer");
 CL_DEFMETHOD void	MonomerCoordinates_O::defineFromConformationExplorer(
 				Topology_sp	topology,
 				ConformationExplorer_sp conformationExplorer,
@@ -230,7 +230,7 @@ CL_DEFMETHOD void	MonomerCoordinates_O::defineFromConformationExplorer(
  * :sawProblems xxx  and :problems yyy pairs
  */
 
-CL_NAME("testExtraction");
+CL_LISPIFY_NAME("testExtraction");
 CL_DEFMETHOD core::List_sp	MonomerCoordinates_O::testExtraction(
 				Topology_sp	topology,
 				Aggregate_sp	aggregate,

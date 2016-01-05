@@ -176,7 +176,7 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
     }
 
 
-CL_NAME("rawAsString");
+CL_LISPIFY_NAME("rawAsString");
 CL_DEFMETHOD     string Quantity_O::rawAsString() const
     {_OF();
 	stringstream ss;
@@ -207,7 +207,7 @@ CL_DEFMETHOD     string Quantity_O::rawAsString() const
     }
 
 
-CL_NAME("quantity_is_compatible");
+CL_LISPIFY_NAME("quantity_is_compatible");
 CL_DEFMETHOD     bool Quantity_O::is_compatible(core::T_sp other) const
     {_OF();
 	if ( other.isA<Unit_O>() )
@@ -222,7 +222,7 @@ CL_DEFMETHOD     bool Quantity_O::is_compatible(core::T_sp other) const
 	SIMPLE_ERROR(BF("You can only check compatibility of a Quantity with another Quantity or Unit - you passed a %s") % other->__class()->classNameAsString() );
     }
 
-CL_NAME("value_in_unit");
+CL_LISPIFY_NAME("value_in_unit");
 CL_DEFMETHOD     core::T_sp Quantity_O::value_in_unit(Unit_sp other, int power) const
     {_OF();
 	double conversion = this->_Unit->conversion_factor_to(other,power);
@@ -245,7 +245,7 @@ CL_DEFMETHOD     core::T_sp Quantity_O::value_in_unit(Unit_sp other, int power) 
 	return Quantity_O::create(val,this->_Unit);
     }
 
-CL_NAME("getElement_in_unit");
+CL_LISPIFY_NAME("getElement_in_unit");
 CL_DEFMETHOD     core::T_sp Quantity_O::getElement_in_unit(uint index, Unit_sp other ) const
     {_OF();
 	double conversion = this->_Unit->conversion_factor_to(other);
@@ -253,7 +253,7 @@ CL_DEFMETHOD     core::T_sp Quantity_O::getElement_in_unit(uint index, Unit_sp o
 	return valueCopy;
     }
 
-CL_NAME("setElement");
+CL_LISPIFY_NAME("setElement");
 CL_DEFMETHOD     core::T_sp Quantity_O::setElement(uint index, Quantity_sp other)
     {_OF();
 	// At this point (this) is a Quantity in a particular set of units
@@ -279,7 +279,7 @@ CL_DEFMETHOD     core::T_sp Quantity_O::setElement(uint index, Quantity_sp other
     }
 
 
-CL_NAME("size");
+CL_LISPIFY_NAME("size");
 CL_DEFMETHOD     int Quantity_O::size() const
     {_OF();
 	return Quantity_O::sizeOfValue(this->_Value);
@@ -288,7 +288,7 @@ CL_DEFMETHOD     int Quantity_O::size() const
 
 
 
-CL_NAME("*");
+CL_LISPIFY_NAME("*");
 CL_DEFMETHOD     core::T_sp Quantity_O::operator*(core::T_sp other) const
     {_OF();
 	if ( other.nilp() ) return this->const_sharedThis<Quantity_O>();
@@ -335,7 +335,7 @@ CL_DEFMETHOD     core::T_sp Quantity_O::operator*(core::T_sp other) const
 
 
 
-CL_NAME("/");
+CL_LISPIFY_NAME("/");
 CL_DEFMETHOD     core::T_sp Quantity_O::operator/(core::T_sp other) const
     {_OF();
 	if ( other.nilp() ) return this->const_sharedThis<Quantity_O>();
@@ -368,7 +368,7 @@ CL_DEFMETHOD     core::T_sp Quantity_O::operator/(core::T_sp other) const
     }
 
 
-CL_NAME("+");
+CL_LISPIFY_NAME("+");
 CL_DEFMETHOD     core::T_sp Quantity_O::operator+(core::T_sp other) const
     {_OF();
 	if ( other.nilp() ) return this->const_sharedThis<Quantity_O>();
@@ -395,7 +395,7 @@ CL_DEFMETHOD     core::T_sp Quantity_O::operator+(core::T_sp other) const
     }
 
 
-CL_NAME("-");
+CL_LISPIFY_NAME("-");
 CL_DEFMETHOD     core::T_sp Quantity_O::operator-(core::T_sp other) const
     {_OF();
 	if ( other.nilp() ) return this->const_sharedThis<Quantity_O>();
@@ -424,7 +424,7 @@ CL_DEFMETHOD     core::T_sp Quantity_O::operator-(core::T_sp other) const
 
 
 
-CL_NAME("power");
+CL_LISPIFY_NAME("power");
 CL_DEFMETHOD     core::T_sp Quantity_O::power(int pwr) const
     {_OF();
 	if ( this->_Value.isA<core::Number_O>() )
@@ -436,7 +436,7 @@ CL_DEFMETHOD     core::T_sp Quantity_O::power(int pwr) const
 	SIMPLE_ERROR(BF("Currently I can only take powers of Numbers - you tried to take a power of a %s") % this->_Value->__class()->classNameAsString());
     }
 
-CL_NAME("sqrt");
+CL_LISPIFY_NAME("sqrt");
 CL_DEFMETHOD     core::T_sp Quantity_O::sqrt() const
     {_OF();
 	if ( this->_Value.isA<core::Number_O>() )
@@ -449,7 +449,7 @@ CL_DEFMETHOD     core::T_sp Quantity_O::sqrt() const
     }
 
 
-CL_NAME("isnan");
+CL_LISPIFY_NAME("isnan");
 CL_DEFMETHOD     bool Quantity_O::isnan() const
     {_OF();
 	return Quantity_O::isnanValue(this->_Value);
@@ -466,7 +466,7 @@ CL_DEFMETHOD     bool Quantity_O::isnan() const
 
 
 
-CL_NAME("<");
+CL_LISPIFY_NAME("<");
 CL_DEFMETHOD     bool Quantity_O::operator<(core::T_sp other) const
     {_OF();
 	if ( other.isA<Quantity_O>() )
@@ -477,7 +477,7 @@ CL_DEFMETHOD     bool Quantity_O::operator<(core::T_sp other) const
 	SIMPLE_ERROR(BF("You cannot compare a Quantity with value of class[%s] to an object of class[%s]") % this->_Value->__class()->classNameAsString() % other->__class()->classNameAsString() );
     }
 
-CL_NAME("<=");
+CL_LISPIFY_NAME("<=");
 CL_DEFMETHOD     bool Quantity_O::operator<=(core::T_sp other) const
     {_OF();
 	if ( other.isA<Quantity_O>() )
@@ -489,7 +489,7 @@ CL_DEFMETHOD     bool Quantity_O::operator<=(core::T_sp other) const
     }
 
 
-CL_NAME(">");
+CL_LISPIFY_NAME(">");
 CL_DEFMETHOD     bool Quantity_O::operator>(core::T_sp other) const
     {_OF();
 	if ( other.isA<Quantity_O>() )
@@ -500,7 +500,7 @@ CL_DEFMETHOD     bool Quantity_O::operator>(core::T_sp other) const
 	SIMPLE_ERROR(BF("You cannot compare a Quantity with value of class[%s] to an object of class[%s]") % this->_Value->__class()->classNameAsString() % other->__class()->classNameAsString() );
     }
 
-CL_NAME(">=");
+CL_LISPIFY_NAME(">=");
 CL_DEFMETHOD     bool Quantity_O::operator>=(core::T_sp other) const
     {_OF();
 	if ( other.isA<Quantity_O>() )

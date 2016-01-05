@@ -78,7 +78,7 @@ namespace chem
 
 
 
-CL_NAME("initTopAndGoal");
+CL_LISPIFY_NAME("initTopAndGoal");
 CL_DEFMETHOD     void IterateMatter_O::initTopAndGoal(Matter_sp top, int goal)
     {_G();
 	ANN(top);
@@ -103,7 +103,7 @@ CL_DEFMETHOD     void IterateMatter_O::initTopAndGoal(Matter_sp top, int goal)
 	this->advance();
     };
 
-CL_NAME("advance");
+CL_LISPIFY_NAME("advance");
 CL_DEFMETHOD     bool	IterateMatter_O::advance()
     {_G();
 	if ( !this->_IsDone )
@@ -250,19 +250,19 @@ CL_DEFMETHOD     bool	IterateMatter_O::advance()
     }
 
 
-CL_NAME("getAtom1");
+CL_LISPIFY_NAME("getAtom1");
 CL_DEFMETHOD     Atom_sp	IterateBonds_O::getAtom1()
     {_G();
 	return this->_Loop.getAtom1();
     }
 
-CL_NAME("getAtom2");
+CL_LISPIFY_NAME("getAtom2");
 CL_DEFMETHOD     Atom_sp	IterateBonds_O::getAtom2()
     {_G();
 	return this->_Loop.getAtom2();
     }
 
-CL_NAME("getBondOrder");
+CL_LISPIFY_NAME("getBondOrder");
 CL_DEFMETHOD     int IterateBonds_O::getBondOrder()
     {_G();
 	return this->_Loop.getBondOrder();
@@ -277,12 +277,13 @@ CL_DEFMETHOD     int IterateBonds_O::getBondOrder()
 	SYMBOL_EXPORT_SC_(ChemPkg,residues);
 	SYMBOL_EXPORT_SC_(ChemPkg,molecules);
 	SYMBOL_EXPORT_SC_(ChemPkg,bonds);
-	core::enum_<int>(_sym_iterateMatterSymbolConverter,"IterateMatter")
-	    .value(_sym_allMatter,ALL_MATTERS)	// MOLECULES/RESIDUES/ATOMS
-	    .value(_sym_atoms,ATOMS)
-	    .value(_sym_residues,RESIDUES)
-	    .value(_sym_molecules,MOLECULES)
-	    .value(_sym_bonds,BONDS)
+	CL_BEGIN_ENUM(int,_sym_iterateMatterSymbolConverter,"IterateMatter");
+        CL_VALUE_ENUM(_sym_allMatter,ALL_MATTERS);	// MOLECULES/RESIDUES/ATOMS
+        CL_VALUE_ENUM(_sym_atoms,ATOMS);
+        CL_VALUE_ENUM(_sym_residues,RESIDUES);
+        CL_VALUE_ENUM(_sym_molecules,MOLECULES);
+        CL_VALUE_ENUM(_sym_bonds,BONDS);
+        CL_END_ENUM(_sym_iterateMatterSymbolConverter);
 	    ;
     }
 

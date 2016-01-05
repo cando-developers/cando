@@ -135,14 +135,14 @@ void CoordinateArray_O::resize(int iElement)
     }
 
 
-CL_NAME("getElement");
+CL_LISPIFY_NAME("getElement");
 CL_DEFMETHOD     Vector3 CoordinateArray_O::value_getElement(uint i)
     {_G();
 	ASSERT_lessThan(i,this->_Points.size() );
 	Vector3 res = this->_Points[i];
 	return res;
     }
-CL_NAME("setElement");
+CL_LISPIFY_NAME("setElement");
 CL_DEFMETHOD     void CoordinateArray_O::setElement(uint i, Vector3 pos)
     {_G();
 	ASSERT_lessThan(i,this->_Points.size() );
@@ -199,7 +199,7 @@ CL_DEFMETHOD     void CoordinateArray_O::setElement(uint i, Vector3 pos)
     }
 
 
-CL_NAME("multiplyByScalar");
+CL_LISPIFY_NAME("multiplyByScalar");
 CL_DEFMETHOD     void CoordinateArray_O::multiplyByScalar(double d)
     {
 	int  sz;
@@ -225,7 +225,7 @@ CL_DEFMETHOD     void CoordinateArray_O::multiplyByScalar(double d)
 	return dl;
     }
 #endif
-CL_NAME("transform");
+CL_LISPIFY_NAME("transform");
 CL_DEFMETHOD     void CoordinateArray_O::transform( const Matrix& tm )
     {
 	int  sz;
@@ -249,7 +249,7 @@ CL_DEFMETHOD     void CoordinateArray_O::transform( const Matrix& tm )
 	return this->asString();
     }
 
-CL_NAME("asString");
+CL_LISPIFY_NAME("asString");
 CL_DEFMETHOD     string CoordinateArray_O::asString( ) const
     {_G();
 	int  sz;
@@ -308,7 +308,7 @@ void CoordinateArray_O::fields(core::Record_sp node)
     }
 
 
-CL_NAME("write-to-stream");
+CL_LISPIFY_NAME("write-to-stream");
 CL_DEFMETHOD     void CoordinateArray_O::writeToStream(string const& info, core::T_sp sout)
     {_OF();
         core::clasp_write_string((BF("+++CoordinateArray %d\n") % this->_Points.size() ).str(),sout);

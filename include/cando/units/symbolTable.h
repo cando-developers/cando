@@ -7,7 +7,7 @@ namespace units
 {
 
 #define	UnitsPkg_SYMBOLS
-#define DO_SYMBOL(cname,idx,pkg,lispname,export) extern core::Symbol_sp cname;
+#define DO_SYMBOL( ns, cname,idx,pkg,lispname,export) extern core::Symbol_sp cname;
   #ifndef SCRAPING
     #include SYMBOLS_SCRAPED_INC_H
   #endif

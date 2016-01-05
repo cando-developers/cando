@@ -271,7 +271,7 @@ void	VirtualSphere_O::initialize()
 }
 
 
-CL_NAME("dump");
+CL_LISPIFY_NAME("dump");
 CL_DEFMETHOD void VirtualSphere_O::dump()
 {_OF();
     stringstream ss;
@@ -301,7 +301,7 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,scale);
     }
 
 
-CL_NAME("setMouseStart");
+CL_LISPIFY_NAME("setMouseStart");
 CL_DEFMETHOD     void VirtualSphere_O::setMouseStartSymbol( core::Symbol_sp sym, int x, int y, int w, int h )
     {_OF();
 	VirtualSphereMotionMode mode = this->mouseModeFromSymbol(sym);
@@ -321,7 +321,7 @@ CL_DEFMETHOD     void VirtualSphere_O::setMouseStartSymbol( core::Symbol_sp sym,
 
 
 
-CL_NAME("setMouseMove");
+CL_LISPIFY_NAME("setMouseMove");
 CL_DEFMETHOD void	VirtualSphere_O::setMouseMove( int x, int y )
 {_OF();
 double	sx,sy,tx,ty,scaleDelta;
@@ -401,7 +401,7 @@ Matrix	mtemp;
 
 
 
-CL_NAME("setMouseXAxisWheelChange");
+CL_LISPIFY_NAME("setMouseXAxisWheelChange");
 CL_DEFMETHOD     void
     VirtualSphere_O::setMouseXAxisWheelChange(core::Symbol_sp smode, double w)
     {_OF();
@@ -445,7 +445,7 @@ CL_DEFMETHOD     void
     }
 
 
-CL_NAME("setMouseYAxisWheelChange");
+CL_LISPIFY_NAME("setMouseYAxisWheelChange");
 CL_DEFMETHOD     void
     VirtualSphere_O::setMouseYAxisWheelChange(core::Symbol_sp smode, double w)
     {_OF();

@@ -823,7 +823,7 @@ Residue_sp	CDFragment_O::_buildResidue( bool constitutionOnly )
 	return this->_buildResidue(false);
     }
 #endif
-CL_NAME("asConstitutionAtoms");
+CL_LISPIFY_NAME("asConstitutionAtoms");
 CL_DEFMETHOD     ConstitutionAtoms_sp	CDFragment_O::asConstitutionAtoms()
     {_G();
       IMPLEMENT_ME();
@@ -1150,7 +1150,7 @@ void	ChemDraw_O::parse( core::T_sp strm )
 }
 
 
-CL_NAME("asAggregate");
+CL_LISPIFY_NAME("asAggregate");
 CL_DEFMETHOD     Aggregate_sp ChemDraw_O::asAggregate()
     {_OF();
 	core::List_sp fragments = this->allFragmentsAsCons();
@@ -1163,7 +1163,7 @@ CL_DEFMETHOD     Aggregate_sp ChemDraw_O::asAggregate()
 	return agg;
     }
 
-CL_NAME("getFragments");
+CL_LISPIFY_NAME("getFragments");
 CL_DEFMETHOD     core::List_sp	ChemDraw_O::getFragments()
     {_G();
 	core::List_sp	frags = _Nil<core::T_O>();
@@ -1176,7 +1176,7 @@ CL_DEFMETHOD     core::List_sp	ChemDraw_O::getFragments()
     }
 
 
-CL_NAME("getSubSetOfFragments");
+CL_LISPIFY_NAME("getSubSetOfFragments");
 CL_DEFMETHOD     core::List_sp	ChemDraw_O::getSubSetOfFragments(adapt::SymbolSet_sp namesOfSubSet)
     {_G();
 	core::List_sp	frags = _Nil<core::T_O>();

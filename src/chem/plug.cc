@@ -253,7 +253,7 @@ namespace chem
 
 
 
-CL_NAME("getConstitution");
+CL_LISPIFY_NAME("getConstitution");
 CL_DEFMETHOD     Constitution_sp	Plug_O::getConstitution()
     {_OF();
 	ASSERTNOTNULL(this->_WeakConstitution);
@@ -270,7 +270,7 @@ CL_DEFMETHOD     Constitution_sp	Plug_O::getConstitution()
 
 
 
-CL_NAME("otherSidePlugName");
+CL_LISPIFY_NAME("otherSidePlugName");
 CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
     {
 	return DirectionalCoupling_O::otherPlugName(this->_Name);
@@ -914,7 +914,7 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 
 
 
-CL_NAME("ringClosingMatesAsCons");
+CL_LISPIFY_NAME("ringClosingMatesAsCons");
 CL_DEFMETHOD     core::List_sp RingClosingPlug_O::ringClosingMatesAsCons()
     {_OF();
 	return core::Cons_O::createFromVec0(this->_RingClosingMates);

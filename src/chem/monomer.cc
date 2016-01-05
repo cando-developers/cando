@@ -93,7 +93,7 @@ namespace chem {
 
 //HERE HERE HERE   copy this and make it general
 
-CL_NAME("getGeneralMonomerContext");
+CL_LISPIFY_NAME("getGeneralMonomerContext");
 CL_DEFMETHOD     MonomerContext_sp Monomer_O::getGeneralMonomerContext()
     {_G();
 	MonomerContext_sp	context;
@@ -128,15 +128,15 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getGeneralMonomerContext()
     }
 
     void	Monomer_O::clearError()	{_OF();ASSERTNOTNULL(this->_Status);this->_Status->reset();};
-CL_NAME("getHasError");
+CL_LISPIFY_NAME("getHasError");
 CL_DEFMETHOD     bool	Monomer_O::getHasError()	{ return this->_Status->hasError();};
-CL_NAME("getStatusMessage");
+CL_LISPIFY_NAME("getStatusMessage");
 CL_DEFMETHOD     string	Monomer_O::getStatusMessage() { return this->_Status->getStatus();};
     void	Monomer_O::addErrorMessage(const string& s) { this->_Status->addError(s);};
     void	Monomer_O::addStatusMessage(const string& s) {this->_Status->addMessage(s);};
     StatusTracker_sp	Monomer_O::getStatusTracker() { return this->_Status;};
 
-CL_NAME("plugNamesAndCouplingsAsCons");
+CL_LISPIFY_NAME("plugNamesAndCouplingsAsCons");
 CL_DEFMETHOD     core::List_sp	Monomer_O::plugNamesAndCouplingsAsCons()
     {_G();
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
@@ -176,7 +176,7 @@ CL_DEFMETHOD     core::List_sp	Monomer_O::plugNamesAndCouplingsAsCons()
     }
 
 
-CL_NAME("setAliasesFromCons");
+CL_LISPIFY_NAME("setAliasesFromCons");
 CL_DEFMETHOD     void	Monomer_O::setAliasesFromCons(core::List_sp aliases)
     {_G();
 	this->_Aliases->clear();
@@ -184,7 +184,7 @@ CL_DEFMETHOD     void	Monomer_O::setAliasesFromCons(core::List_sp aliases)
     }
 
 
-CL_NAME("hasTemporaryResidue");
+CL_LISPIFY_NAME("hasTemporaryResidue");
 CL_DEFMETHOD     bool Monomer_O::hasTemporaryResidue()
     {_OF();
 	ASSERTNOTNULL(this->_TempResidue);
@@ -233,7 +233,7 @@ CL_DEFMETHOD     bool Monomer_O::hasTemporaryResidue()
 #endif
 
 
-CL_NAME("getAliasesAsString");
+CL_LISPIFY_NAME("getAliasesAsString");
 CL_DEFMETHOD     string Monomer_O::getAliasesAsString()
     {_OF();
 	ASSERTNOTNULL(this->_Aliases);
@@ -248,7 +248,7 @@ CL_DEFMETHOD     string Monomer_O::getAliasesAsString()
 	this->_Aliases->insertSymbolList(aliases);
     }
 
-CL_NAME("checkForBadConnections");
+CL_LISPIFY_NAME("checkForBadConnections");
 CL_DEFMETHOD     bool	Monomer_O::checkForBadConnections()
     {_G();
 	Couplings::iterator	it;
@@ -274,7 +274,7 @@ CL_DEFMETHOD     bool	Monomer_O::checkForBadConnections()
 	return badConnections;
     }
 
-CL_NAME("throwIfBadConnections");
+CL_LISPIFY_NAME("throwIfBadConnections");
 CL_DEFMETHOD     void	Monomer_O::throwIfBadConnections()
     {_G();
 	if ( this->checkForBadConnections() )
@@ -287,7 +287,7 @@ CL_DEFMETHOD     void	Monomer_O::throwIfBadConnections()
 
 
 
-CL_NAME("checkForErrorsAndUnknownContexts");
+CL_LISPIFY_NAME("checkForErrorsAndUnknownContexts");
 CL_DEFMETHOD     void	Monomer_O::checkForErrorsAndUnknownContexts(CandoDatabase_sp cdb)
     {_G();
 	string			lastPlugName;
@@ -297,7 +297,7 @@ CL_DEFMETHOD     void	Monomer_O::checkForErrorsAndUnknownContexts(CandoDatabase_
     }
 
 
-CL_NAME("getSpecificMonomerContext");
+CL_LISPIFY_NAME("getSpecificMonomerContext");
 CL_DEFMETHOD     MonomerContext_sp Monomer_O::getSpecificMonomerContext()
     {_G();
 	MonomerContext_sp	context;
@@ -354,7 +354,7 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getSpecificMonomerContext()
     }
 
 
-CL_NAME("getTopology");
+CL_LISPIFY_NAME("getTopology");
 CL_DEFMETHOD     Topology_sp	Monomer_O::getTopology()
     {_G();
 	CandoDatabase_sp	bdb;
@@ -402,7 +402,7 @@ CL_DEFMETHOD     Topology_sp	Monomer_O::getTopology()
 //
 
 
-CL_NAME("getInCoupling");
+CL_LISPIFY_NAME("getInCoupling");
 CL_DEFMETHOD     DirectionalCoupling_sp	Monomer_O::getInCoupling()
     {_G();
 	Monomer_O::Couplings::iterator	it;
@@ -439,7 +439,7 @@ CL_DEFMETHOD     DirectionalCoupling_sp	Monomer_O::getInCoupling()
     };
 
 
-CL_NAME("hasInCoupling");
+CL_LISPIFY_NAME("hasInCoupling");
 CL_DEFMETHOD     bool	Monomer_O::hasInCoupling()
     {_G();
 	Coupling_sp	coup;
@@ -477,7 +477,7 @@ CL_DEFMETHOD     bool	Monomer_O::hasInCoupling()
     }
 
 
-CL_NAME("getConstitution");
+CL_LISPIFY_NAME("getConstitution");
 CL_DEFMETHOD     Constitution_sp Monomer_O::getConstitution()
     {_G();
 	CandoDatabase_sp db;
@@ -544,7 +544,7 @@ CL_DEFMETHOD     Constitution_sp Monomer_O::getConstitution()
 
 
 
-CL_NAME("addCoupling");
+CL_LISPIFY_NAME("addCoupling");
 CL_DEFMETHOD     void	Monomer_O::addCoupling( core::Symbol_sp plugName,  Coupling_sp coup)
     {_G();
 	LOG(BF("add coupling to %s") % this->description() );
@@ -568,7 +568,7 @@ CL_DEFMETHOD     void	Monomer_O::addCoupling( core::Symbol_sp plugName,  Couplin
     }
 
 
-CL_NAME("setInCoupling");
+CL_LISPIFY_NAME("setInCoupling");
 CL_DEFMETHOD     void	Monomer_O::setInCoupling( Coupling_sp coup)
     {_G();
 	core::Symbol_sp inCoupName;
@@ -582,7 +582,7 @@ CL_DEFMETHOD     void	Monomer_O::setInCoupling( Coupling_sp coup)
 
 
 
-CL_NAME("addOutCoupling");
+CL_LISPIFY_NAME("addOutCoupling");
 CL_DEFMETHOD     void	Monomer_O::addOutCoupling( Coupling_sp coup )
     {_G();
 	ASSERTNOTNULL(coup);
@@ -593,7 +593,7 @@ CL_DEFMETHOD     void	Monomer_O::addOutCoupling( Coupling_sp coup )
     }
 
 
-CL_NAME("removeCouplingToMonomer");
+CL_LISPIFY_NAME("removeCouplingToMonomer");
 CL_DEFMETHOD     void	Monomer_O::removeCouplingToMonomer(Monomer_sp mon )
     {_G();
 	Couplings::iterator		wci;
@@ -669,7 +669,7 @@ CL_DEFMETHOD     void	Monomer_O::removeCouplingToMonomer(Monomer_sp mon )
 
 
 
-CL_NAME("removeCoupling");
+CL_LISPIFY_NAME("removeCoupling");
 CL_DEFMETHOD     void	Monomer_O::removeCoupling(Coupling_sp coup)
     {_G();
 	bool				foundIt = false;
@@ -796,7 +796,7 @@ CL_DEFMETHOD     void	Monomer_O::removeCoupling(Coupling_sp coup)
 
 
 
-CL_NAME("setGroupName");
+CL_LISPIFY_NAME("setGroupName");
 CL_DEFMETHOD     void	MultiMonomer_O::setGroupName(core::Symbol_sp name)
     {_G();
 	CandoDatabase_sp	bdb;
@@ -891,7 +891,7 @@ CL_DEFMETHOD     void	MultiMonomer_O::setGroupName(core::Symbol_sp name)
 
 
 
-CL_NAME("getOneMonomer");
+CL_LISPIFY_NAME("getOneMonomer");
 CL_DEFMETHOD     OneMonomer_sp	MultiMonomer_O::getOneMonomer() const
     {_G();
 	if ( this->_Monomers.size() < 1 ) {
@@ -977,7 +977,7 @@ CL_DEFMETHOD     OneMonomer_sp	MultiMonomer_O::getOneMonomer() const
     }
 
 
-CL_NAME("isMonomerContextValid");
+CL_LISPIFY_NAME("isMonomerContextValid");
 CL_DEFMETHOD     bool Monomer_O::isMonomerContextValid()
     {_G();
 	LOG(BF("status") );
@@ -997,7 +997,7 @@ CL_DEFMETHOD     bool Monomer_O::isMonomerContextValid()
 
 
 
-CL_NAME("getOneMonomerWithName");
+CL_LISPIFY_NAME("getOneMonomerWithName");
 CL_DEFMETHOD     OneMonomer_sp	MultiMonomer_O::getOneMonomerWithName(core::Symbol_sp name) const
     {_G();
 	Monomers::const_iterator	mi;
@@ -1010,7 +1010,7 @@ CL_DEFMETHOD     OneMonomer_sp	MultiMonomer_O::getOneMonomerWithName(core::Symbo
 
 
 
-CL_NAME("getInterestingAtomIndexer");
+CL_LISPIFY_NAME("getInterestingAtomIndexer");
 CL_DEFMETHOD     AtomIndexer_sp	MultiMonomer_O::getInterestingAtomIndexer()
     {_G();
 	AtomIndexer_sp		atomIndexer;

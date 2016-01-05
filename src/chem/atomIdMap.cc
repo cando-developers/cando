@@ -21,7 +21,7 @@ namespace chem
 	;
     }
 
-CL_NAME("lookup-atom");
+CL_LISPIFY_NAME("lookup-atom");
 CL_DEFMETHOD     Atom_sp AtomIdToAtomMap_O::lookupAtom(AtomId_sp atomId) const
     {_OF();
 	return this->_AtomIdMap[atomId->_AtomId];

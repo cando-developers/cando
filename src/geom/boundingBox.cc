@@ -25,17 +25,17 @@ namespace geom
 
 
 
-CL_NAME("getMinX");
+CL_LISPIFY_NAME("getMinX");
 CL_DEFMETHOD     double BoundingBox_O::getMinX() const { return this->_MinCorner.getX(); };
-CL_NAME("getMaxX");
+CL_LISPIFY_NAME("getMaxX");
 CL_DEFMETHOD     double BoundingBox_O::getMaxX() const { return this->_MaxCorner.getX(); };
-CL_NAME("getMinY");
+CL_LISPIFY_NAME("getMinY");
 CL_DEFMETHOD     double BoundingBox_O::getMinY() const { return this->_MinCorner.getY(); };
-CL_NAME("getMaxY");
+CL_LISPIFY_NAME("getMaxY");
 CL_DEFMETHOD     double BoundingBox_O::getMaxY() const { return this->_MaxCorner.getY(); };
-CL_NAME("getMinZ");
+CL_LISPIFY_NAME("getMinZ");
 CL_DEFMETHOD     double BoundingBox_O::getMinZ() const { return this->_MinCorner.getZ(); };
-CL_NAME("getMaxZ");
+CL_LISPIFY_NAME("getMaxZ");
 CL_DEFMETHOD     double BoundingBox_O::getMaxZ() const { return this->_MaxCorner.getZ(); };
 
 
@@ -95,7 +95,7 @@ CL_DEFMETHOD     double BoundingBox_O::getMaxZ() const { return this->_MaxCorner
     }
 
 
-CL_NAME("pad");
+CL_LISPIFY_NAME("pad");
 CL_DEFMETHOD     void BoundingBox_O::pad(double add)
     {_OF();
 	ASSERT(this->_Defined);

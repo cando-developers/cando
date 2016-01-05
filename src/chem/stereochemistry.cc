@@ -31,7 +31,7 @@ namespace chem {
 
 /*! Return +1 for "R" and -1 for "S"
 */
-CL_NAME("getMoeConfiguration");
+CL_LISPIFY_NAME("getMoeConfiguration");
 CL_DEFMETHOD int	StereoConfiguration_O::getMoeConfiguration()
 {
   if ( this->_Configuration == chem::_sym_R ) return 1;
@@ -216,7 +216,7 @@ string Stereoisomer_O::__repr__() const
     return ss.str();
 }
 
-CL_NAME("getConfigurationForCenter");
+CL_LISPIFY_NAME("getConfigurationForCenter");
 CL_DEFMETHOD core::Symbol_sp Stereoisomer_O::getConfigurationForCenter( core::Symbol_sp centerName )
 {_G();
     for ( gctools::Vec0<StereoConfiguration_sp>::iterator it=this->_Configurations.begin();
@@ -322,7 +322,7 @@ void	StereoInformation_O::addStereoisomer(Stereoisomer_sp s)
 }
 
 
-CL_NAME("validate");
+CL_LISPIFY_NAME("validate");
 CL_DEFMETHOD void StereoInformation_O::validate()
 {_OF();
     for ( gctools::Vec0<Stereoisomer_sp>::iterator it=this->_Stereoisomers.begin(); it!=this->_Stereoisomers.end(); it++ )
@@ -512,16 +512,25 @@ gctools::Vec0<Stereoisomer_sp>::iterator	mnpi;
 
     void StereoConfiguration_O::lisp_initGlobals(core::Lisp_sp lisp)
     {_G();
-	core::enum_<ConfigurationEnum>(_sym__PLUS_configurationEnumConverter_PLUS_,"Configuration")
-	    .value(_lisp->intern("undefinedConfiguration"), _lisp->intern("U"), undefinedConfiguration )
-	    .value(_lisp->intern("S"), S_Configuration )
-	    .value(_lisp->intern("R"), R_Configuration )
+      SYMBOL_EXPORT_SC_(ChemKwPkg,undefinedConfiguration);
+      SYMBOL_EXPORT_SC_(ChemKwPkg,S);
+      SYMBOL_EXPORT_SC_(ChemKwPkg,R);
+      CL_BEGIN_ENUM(ConfigurationEnum,_sym__PLUS_configurationEnumConverter_PLUS_,"Configuration");
+      CL_VALUE_ENUM(chemkw::undefinedConfiguration, undefinedConfiguration );
+      CL_VALUE_ENUM(chemkw::S, S_Configuration );
+      CL_VALUE_ENUM(chemkw::R, R_Configuration );
+      CL_END_ENUM(_sym__PLUS_configurationEnumConverter_PLUS_);
 	    ;
-	core::enum_<StereochemistryType>(_sym__PLUS_stereochemistryTypeConverter_PLUS_,"Stereochemistry")
-	    .value(_lisp->intern("UNDEFINED-CHIRALITY"), _lisp->intern("u"),undefinedCenter)
-	    .value(_lisp->intern("CHIRAL"), _lisp->intern("C"), chiralCenter)
-	    .value(_lisp->intern("PROCHIRAL"), _lisp->intern("P"), prochiralCenter)
-	    ;
+
+            SYMBOL_EXPORT_SC_(ChemKwPkg,undefinedCenter);
+            SYMBOL_EXPORT_SC_(ChemKwPkg,chiral);
+            SYMBOL_EXPORT_SC_(ChemKwPkg,prochiral);
+      CL_BEGIN_ENUM(StereochemistryType,_sym__PLUS_stereochemistryTypeConverter_PLUS_,"Stereochemistry");
+      CL_VALUE_ENUM(chemkw::undefinedCenter,undefinedCenter);
+      CL_VALUE_ENUM(chemkw::chiralCenter, chiralCenter);
+      CL_VALUE_ENUM(chemkw::prochiralCenter, prochiralCenter);
+      CL_END_ENUM(_sym__PLUS_stereochemistryTypeConverter_PLUS_);
+         ;
     }
 
 void StereoConfiguration_O::exposeCando(core::Lisp_sp lisp)

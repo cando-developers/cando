@@ -204,7 +204,7 @@ namespace chem
 #endif
 
 
-CL_NAME("getMonomerContext");
+CL_LISPIFY_NAME("getMonomerContext");
 CL_DEFMETHOD     MonomerContext_sp Topology_O::getMonomerContext(CandoDatabase_sp bdb)
     {_G();
 	MonomerContext_sp context = MonomerContext_O::create();
@@ -216,7 +216,7 @@ CL_DEFMETHOD     MonomerContext_sp Topology_O::getMonomerContext(CandoDatabase_s
     }
 
 
-CL_NAME("properties");
+CL_LISPIFY_NAME("properties");
 CL_DEFMETHOD     core::HashTableEq_sp Topology_O::properties() const
     {_OF();
 	return this->_Properties;
@@ -236,7 +236,7 @@ CL_DEFMETHOD     core::HashTableEq_sp Topology_O::properties() const
 
 
 
-CL_NAME("getInPlug");
+CL_LISPIFY_NAME("getInPlug");
 CL_DEFMETHOD     Topology_O::plugType Topology_O::getInPlug()
     {_G();
 	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
@@ -250,7 +250,7 @@ CL_DEFMETHOD     Topology_O::plugType Topology_O::getInPlug()
     }
 
 
-CL_NAME("plugsAsCons");
+CL_LISPIFY_NAME("plugsAsCons");
 CL_DEFMETHOD     core::List_sp Topology_O::plugsAsCons()
     {_OF();
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
@@ -268,7 +268,7 @@ CL_DEFMETHOD     core::List_sp Topology_O::plugsAsCons()
     }
 
 
-CL_NAME("plugsWithMatesAsCons");
+CL_LISPIFY_NAME("plugsWithMatesAsCons");
 CL_DEFMETHOD     core::List_sp Topology_O::plugsWithMatesAsCons()
     {_G();
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
@@ -287,7 +287,7 @@ CL_DEFMETHOD     core::List_sp Topology_O::plugsWithMatesAsCons()
 	return first->cdr();
     }
 
-CL_NAME("outPlugsAsCons");
+CL_LISPIFY_NAME("outPlugsAsCons");
 CL_DEFMETHOD     core::List_sp Topology_O::outPlugsAsCons()
     {_G();
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
@@ -307,7 +307,7 @@ CL_DEFMETHOD     core::List_sp Topology_O::outPlugsAsCons()
 
 
 
-CL_NAME("getConstitution");
+CL_LISPIFY_NAME("getConstitution");
 CL_DEFMETHOD     Constitution_sp	Topology_O::getConstitution()
     {_OF();
 	IMPLEMENT_MEF(BF("Handle new way of dealing with owners"));
@@ -411,14 +411,14 @@ CL_DEFMETHOD     Constitution_sp	Topology_O::getConstitution()
 
 
 
-CL_NAME("hasFlag");
+CL_LISPIFY_NAME("hasFlag");
 CL_DEFMETHOD     bool Topology_O::hasFlag(core::Symbol_sp f) const
     {_OF();
 	return this->_Flags.contains(f);
     }
 
 
-CL_NAME("matchesContext");
+CL_LISPIFY_NAME("matchesContext");
 CL_DEFMETHOD     bool	Topology_O::matchesContext(MonomerContext_sp cm)
     {
 	uint numPlugsWithMates = 0;
@@ -433,7 +433,7 @@ CL_DEFMETHOD     bool	Topology_O::matchesContext(MonomerContext_sp cm)
 	return true;
     }
 
-CL_NAME("hasPlugNamed");
+CL_LISPIFY_NAME("hasPlugNamed");
 CL_DEFMETHOD     bool	Topology_O::hasPlugNamed(core::Symbol_sp name)
     {_OF();
 #ifdef DEBUG_ON
@@ -448,7 +448,7 @@ CL_DEFMETHOD     bool	Topology_O::hasPlugNamed(core::Symbol_sp name)
 	return res;
     };
 
-CL_NAME("plugNamed");
+CL_LISPIFY_NAME("plugNamed");
 CL_DEFMETHOD     Plug_sp Topology_O::plugNamed(core::Symbol_sp name)
     {_OF();
 	LOG(BF("Looking for plug name[%s] available keys[%s]")
@@ -478,14 +478,14 @@ CL_DEFMETHOD     Plug_sp Topology_O::plugNamed(core::Symbol_sp name)
 
 
 
-CL_NAME("setTemporaryObject");
+CL_LISPIFY_NAME("setTemporaryObject");
 CL_DEFMETHOD     void Topology_O::setTemporaryObject(core::T_sp o)
     {_G();
 	ASSERTNOTNULL(o);
 	this->_TemporaryObject = o;
     }
 
-CL_NAME("getTemporaryObject");
+CL_LISPIFY_NAME("getTemporaryObject");
 CL_DEFMETHOD     core::T_sp Topology_O::getTemporaryObject()
     {_G();
 	ASSERTNOTNULL(this->_TemporaryObject);
@@ -493,7 +493,7 @@ CL_DEFMETHOD     core::T_sp Topology_O::getTemporaryObject()
     }
 
 
-CL_NAME("lookupOrCreateStereoisomerAtoms");
+CL_LISPIFY_NAME("lookupOrCreateStereoisomerAtoms");
 CL_DEFMETHOD     StereoisomerAtoms_sp Topology_O::lookupOrCreateStereoisomerAtoms(core::Symbol_sp stereoisomerName)
     {_OF();
 	adapt::SymbolMap<StereoisomerAtoms_O>::iterator it= this->_StereoisomerAtomProperties.find(stereoisomerName);

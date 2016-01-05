@@ -336,7 +336,7 @@ void	EnergyFunction_O::initialize()
     this->useDefaultSettings();
 }
 
-CL_NAME("useDefaultSettings");
+CL_LISPIFY_NAME("useDefaultSettings");
 CL_DEFMETHOD void	EnergyFunction_O::useDefaultSettings()
 {_G();
     ASSERTNOTNULL(this->_Stretch);
@@ -412,7 +412,7 @@ void	EnergyFunction_O::archive(core::ArchiveP node)
 
 
 
-CL_NAME("getNVectorSize");
+CL_LISPIFY_NAME("getNVectorSize");
 CL_DEFMETHOD uint	EnergyFunction_O::getNVectorSize() 
 { 
     return this->_AtomTable->getNVectorSize();
@@ -437,7 +437,7 @@ double EnergyFunction_O::getImproperRestraintComponentEnergy()
 
 
 
-CL_NAME("setOption");
+CL_LISPIFY_NAME("setOption");
 CL_DEFMETHOD void	EnergyFunction_O::setOption( core::Symbol_sp option, core::T_sp val)
 {_OF();
     if ( option == _sym_nonbondTerm)
@@ -473,7 +473,7 @@ of the form [: 'symbol value ]
 [ 'nonbond true/false ]\par
 __END_DOC
 */
-CL_NAME("setOptions");
+CL_LISPIFY_NAME("setOptions");
 CL_DEFMETHOD void	EnergyFunction_O::setOptions( core::List_sp options )
 {_G();
     while ( options.notnilp() )
@@ -548,7 +548,7 @@ public:
 // Interface to amberFunction.cc
 //
 
-CL_NAME("setupHessianPreconditioner");
+CL_LISPIFY_NAME("setupHessianPreconditioner");
 CL_DEFMETHOD void	EnergyFunction_O::setupHessianPreconditioner(NVector_sp nvPosition,
 					AbstractLargeSquareMatrix_sp m )
 {_G();
@@ -582,7 +582,7 @@ CL_DEFMETHOD void	EnergyFunction_O::setupHessianPreconditioner(NVector_sp nvPosi
 
 
 
-CL_NAME("countTermsBeyondThreshold");
+CL_LISPIFY_NAME("countTermsBeyondThreshold");
 CL_DEFMETHOD uint	EnergyFunction_O::countTermsBeyondThreshold()
 {_OF();
 int		terms;
@@ -599,7 +599,7 @@ int		terms;
 
 //
 
-CL_NAME("evaluateAll");
+CL_LISPIFY_NAME("evaluateAll");
 CL_DEFMETHOD double	EnergyFunction_O::evaluateAll(
 		NVector_sp 	pos,
 		bool 		calcForce,
@@ -762,7 +762,7 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 }
 
 
-CL_NAME("energyComponentsAsString");
+CL_LISPIFY_NAME("energyComponentsAsString");
 CL_DEFMETHOD string EnergyFunction_O::energyComponentsAsString()
 {_G();
     stringstream ss;
@@ -810,7 +810,7 @@ int	fails = 0;
  * numerical ones at the current position.  Print a message for every mismatch
  * Return the number of mismatches
  */
-CL_NAME("compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition");
+CL_LISPIFY_NAME("compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition");
 CL_DEFMETHOD int	EnergyFunction_O::compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition( )
 {
     NVector_sp pos = NVector_O::create(this->getNVectorSize());
@@ -828,7 +828,7 @@ CL_DEFMETHOD int	EnergyFunction_O::compareAnalyticalAndNumericalForceAndHessianT
  *
  * Extract the coordinates of the atoms
  */
-CL_NAME("checkForBeyondThresholdInteractions");
+CL_LISPIFY_NAME("checkForBeyondThresholdInteractions");
 CL_DEFMETHOD uint	EnergyFunction_O::checkForBeyondThresholdInteractions( )
 {_G();
 NVector_sp	pos;
@@ -866,7 +866,7 @@ int	fails = 0;
 
 
 
-CL_NAME("energyTermsEnabled");
+CL_LISPIFY_NAME("energyTermsEnabled");
 CL_DEFMETHOD string	EnergyFunction_O::energyTermsEnabled()
 {
     stringstream ss;
@@ -900,7 +900,7 @@ CL_DEFMETHOD string	EnergyFunction_O::energyTermsEnabled()
 
 
 
-CL_NAME("evaluateEnergy");
+CL_LISPIFY_NAME("evaluateEnergy");
 CL_DEFMETHOD double	EnergyFunction_O::evaluateEnergy( NVector_sp pos )
 {
 double		energy;
@@ -919,7 +919,7 @@ dummyD = _Nil<NVector_O>();
 
 
 
-CL_NAME("evaluateEnergyForce");
+CL_LISPIFY_NAME("evaluateEnergyForce");
 CL_DEFMETHOD double	EnergyFunction_O::evaluateEnergyForce( NVector_sp pos, bool calcForce, NVector_sp force )
 {_G();
 double	energy;
@@ -941,7 +941,7 @@ dummyD = _Nil<NVector_O>();
 }
 
 
-CL_NAME("evaluateEnergyForceFullHessian");
+CL_LISPIFY_NAME("evaluateEnergyForceFullHessian");
 CL_DEFMETHOD double	EnergyFunction_O::evaluateEnergyForceFullHessian(
 				NVector_sp pos,
 				bool calcForce, NVector_sp force,
@@ -965,7 +965,7 @@ dummyD = _Nil<NVector_O>();
 }
 
 
-CL_NAME("evaluateEnergyForceFullHessianForDebugging");
+CL_LISPIFY_NAME("evaluateEnergyForceFullHessianForDebugging");
 CL_DEFMETHOD double	EnergyFunction_O::evaluateEnergyForceFullHessianForDebugging()
 {
 NVector_sp	pos, force;
@@ -990,7 +990,7 @@ dummyD = _Nil<NVector_O>();
 
 #define	DELTA	0.00000001
 
-CL_NAME("calculateNumericalDerivative");
+CL_LISPIFY_NAME("calculateNumericalDerivative");
 CL_DEFMETHOD double	EnergyFunction_O::calculateNumericalDerivative(NVector_sp pos, double delta, uint i )
 {
     double x, ylow, yhigh, fval;
@@ -1006,7 +1006,7 @@ CL_DEFMETHOD double	EnergyFunction_O::calculateNumericalDerivative(NVector_sp po
 }
 
 
-CL_NAME("calculateNumericalSecondDerivative");
+CL_LISPIFY_NAME("calculateNumericalSecondDerivative");
 CL_DEFMETHOD double	EnergyFunction_O::calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j )
 {_G();
     double	x, fxmh, fx, fxph, f2;
@@ -1057,7 +1057,7 @@ CL_DEFMETHOD double	EnergyFunction_O::calculateNumericalSecondDerivative(NVector
 
 /*! Calculate the force numerically
  */
-CL_NAME("evaluateNumericalForce");
+CL_LISPIFY_NAME("evaluateNumericalForce");
 CL_DEFMETHOD void	EnergyFunction_O::evaluateNumericalForce(NVector_sp pos, NVector_sp numForce, double delta)
 {
 double		fval;
@@ -1072,7 +1072,7 @@ uint		i;
 
 /*! Calculate the hessian numerically
  */
-CL_NAME("evaluateNumericalHessian");
+CL_LISPIFY_NAME("evaluateNumericalHessian");
 CL_DEFMETHOD void	EnergyFunction_O::evaluateNumericalHessian(NVector_sp pos, AbstractLargeSquareMatrix_sp hessian, bool calcOffDiagonal, double delta )
 {_OF();
 double		fval;
@@ -1181,7 +1181,7 @@ DONE:
 
 
 
-CL_NAME("dumpTerms");
+CL_LISPIFY_NAME("dumpTerms");
 CL_DEFMETHOD void	EnergyFunction_O::dumpTerms()
 {
     this->_AtomTable->dumpTerms();
@@ -1356,7 +1356,7 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
 
 
 
-CL_NAME("defineForMatter");
+CL_LISPIFY_NAME("defineForMatter");
 CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms )
 {_G();
 Loop            loop;
@@ -1839,7 +1839,7 @@ int             coordinateIndex;
 
 
 
-CL_NAME("addTermsForListOfRestraints");
+CL_LISPIFY_NAME("addTermsForListOfRestraints");
 CL_DEFMETHOD void	EnergyFunction_O::addTermsForListOfRestraints(ForceField_sp forceField, core::List_sp restraintList, core::T_sp activeAtoms)
 {_G();
     adapt::IterateCons_sp	iterate;
@@ -1847,7 +1847,7 @@ CL_DEFMETHOD void	EnergyFunction_O::addTermsForListOfRestraints(ForceField_sp fo
     this->_applyRestraints(forceField,iterate,activeAtoms);
 }
 
-CL_NAME("extractCoordinatesFromAtoms");
+CL_LISPIFY_NAME("extractCoordinatesFromAtoms");
 CL_DEFMETHOD void	EnergyFunction_O::extractCoordinatesFromAtoms(NVector_sp pos)
 {_G();
 int                             ci;
@@ -1865,7 +1865,7 @@ gctools::Vec0<EnergyAtom>::iterator    ai;
 
 
 
-CL_NAME("writeCoordinatesToAtoms");
+CL_LISPIFY_NAME("writeCoordinatesToAtoms");
 CL_DEFMETHOD void    EnergyFunction_O::writeCoordinatesToAtoms(NVector_sp pos)
 {_G();
 int                             ci;
@@ -1883,7 +1883,7 @@ Vector3                         v;
     }
 }
 
-CL_NAME("writeForceToAtoms");
+CL_LISPIFY_NAME("writeForceToAtoms");
 CL_DEFMETHOD void    EnergyFunction_O::writeForceToAtoms(NVector_sp force)
 {
 int                             ci;
@@ -1901,7 +1901,7 @@ Vector3                         v;
 }
 
 
-CL_NAME("writeCoordinatesAndForceToAtoms");
+CL_LISPIFY_NAME("writeCoordinatesAndForceToAtoms");
 CL_DEFMETHOD void    EnergyFunction_O::writeCoordinatesAndForceToAtoms(NVector_sp pos, NVector_sp force)
 {
     this->writeCoordinatesToAtoms(pos);
@@ -1916,7 +1916,7 @@ EnergyAtom*	EnergyFunction_O::getEnergyAtomPointer(Atom_sp a)
 
 
 
-CL_NAME("calculateEnergy");
+CL_LISPIFY_NAME("calculateEnergy");
 CL_DEFMETHOD double	EnergyFunction_O::calculateEnergy( )
 {_G();
 NVector_sp	pos;
@@ -1926,7 +1926,7 @@ NVector_sp	pos;
 }
 
 
-CL_NAME("calculateEnergyAndForce");
+CL_LISPIFY_NAME("calculateEnergyAndForce");
 CL_DEFMETHOD double EnergyFunction_O::calculateEnergyAndForce( )
 {
 NVector_sp	pos;
@@ -1975,7 +1975,7 @@ void	EnergyFunction_O::dealWithProblem(InteractionProblem& problem)
 
 
 
-CL_NAME("summarizeBeyondThresholdInteractionsAsString");
+CL_LISPIFY_NAME("summarizeBeyondThresholdInteractionsAsString");
 CL_DEFMETHOD string	EnergyFunction_O::summarizeBeyondThresholdInteractionsAsString()
 {
 stringstream	ss;
@@ -1995,7 +1995,7 @@ stringstream	ss;
 }
 
 
-CL_NAME("summarizeEnergyAsString");
+CL_LISPIFY_NAME("summarizeEnergyAsString");
 CL_DEFMETHOD string	EnergyFunction_O::summarizeEnergyAsString()
 {
 stringstream	ss;
@@ -2016,7 +2016,7 @@ stringstream	ss;
 
 
 
-CL_NAME("hasMissingParameters");
+CL_LISPIFY_NAME("hasMissingParameters");
 CL_DEFMETHOD bool	EnergyFunction_O::hasMissingParameters()
 {
     if ( this->_MissingParameters.size() > 0 ) {
@@ -2026,7 +2026,7 @@ CL_DEFMETHOD bool	EnergyFunction_O::hasMissingParameters()
 }
 
 
-CL_NAME("getMissingParameters");
+CL_LISPIFY_NAME("getMissingParameters");
 CL_DEFMETHOD string	EnergyFunction_O::getMissingParameters()
 {
 set<string>::iterator	si;
@@ -2039,7 +2039,7 @@ stringstream		ss;
 }
 
 
-CL_NAME("debugLogAsString");
+CL_LISPIFY_NAME("debugLogAsString");
 CL_DEFMETHOD string	EnergyFunction_O::debugLogAsString()
 {
     stringstream ss;
@@ -2057,13 +2057,13 @@ CL_DEFMETHOD string	EnergyFunction_O::debugLogAsString()
 }
 
 
-CL_NAME("enableDebug");
+CL_LISPIFY_NAME("enableDebug");
 CL_DEFMETHOD void EnergyFunction_O::enableDebug()
 {
     ALL_ENERGY_COMPONENTS(enableDebug());
 }
 
-CL_NAME("disableDebug");
+CL_LISPIFY_NAME("disableDebug");
 CL_DEFMETHOD void EnergyFunction_O::disableDebug()
 {
     ALL_ENERGY_COMPONENTS(disableDebug());

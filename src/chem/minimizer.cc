@@ -317,7 +317,7 @@ Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceF
     }
 
 
-CL_NAME("statusAsString");
+CL_LISPIFY_NAME("statusAsString");
 CL_DEFMETHOD     string	Minimizer_O::statusAsString()
     {
 	string	status, precon;
@@ -830,20 +830,20 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
     };
 
 
-CL_NAME("throwMinimizerExceededMaxSteps");
+CL_LISPIFY_NAME("throwMinimizerExceededMaxSteps");
 CL_DEFMETHOD     void Minimizer_O::throwMinimizerExceededMaxSteps()
     {_OF();
 	MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(BF("test throw of MinimizerExceededMaxSteps"));
     };
 
-CL_NAME("throwMinimizerStuck");
+CL_LISPIFY_NAME("throwMinimizerStuck");
 CL_DEFMETHOD     void Minimizer_O::throwMinimizerStuck()
     {_OF();
 	MINIMIZER_STUCK_ERROR(BF("test throw of MinimizerStuck"));
     };
 
 
-CL_NAME("throwMinimizerError");
+CL_LISPIFY_NAME("throwMinimizerError");
 CL_DEFMETHOD     void Minimizer_O::throwMinimizerError()
     {_OF();
 	MINIMIZER_ERROR(BF("test throw of MinimizerError"));
@@ -2127,7 +2127,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 
 
 
-CL_NAME("useDefaultSettings");
+CL_LISPIFY_NAME("useDefaultSettings");
 CL_DEFMETHOD     void	Minimizer_O::useDefaultSettings()
     {
 	this->_InitialLineSearchStep = 0.01;
@@ -2156,7 +2156,7 @@ CL_DEFMETHOD     void	Minimizer_O::useDefaultSettings()
 
 
 
-CL_NAME("enablePrintIntermediateResults");
+CL_LISPIFY_NAME("enablePrintIntermediateResults");
 CL_DEFMETHOD     void	Minimizer_O::enablePrintIntermediateResults()
     {_G();
     this->_PrintIntermediateResults = true;
@@ -2165,7 +2165,7 @@ CL_DEFMETHOD     void	Minimizer_O::enablePrintIntermediateResults()
 
 
 
-CL_NAME("disablePrintIntermediateResults");
+CL_LISPIFY_NAME("disablePrintIntermediateResults");
 CL_DEFMETHOD     void	Minimizer_O::disablePrintIntermediateResults()
     {_G();
     this->_PrintIntermediateResults = false;
@@ -2174,14 +2174,14 @@ CL_DEFMETHOD     void	Minimizer_O::disablePrintIntermediateResults()
 
 
 
-CL_NAME("setEnergyFunction");
+CL_LISPIFY_NAME("setEnergyFunction");
 CL_DEFMETHOD     void	Minimizer_O::setEnergyFunction(EnergyFunction_sp f)
     {
 	this->_EnergyFunction = f;
 	this->_Iteration = 1;
     }
 
-CL_NAME("evaluateEnergyAndForceManyTimes");
+CL_LISPIFY_NAME("evaluateEnergyAndForceManyTimes");
 CL_DEFMETHOD     void	Minimizer_O::evaluateEnergyAndForceManyTimes(int numSteps)
     {_OF();
     NVector_sp	pos;
@@ -2197,7 +2197,7 @@ CL_DEFMETHOD     void	Minimizer_O::evaluateEnergyAndForceManyTimes(int numSteps)
 
 
 
-CL_NAME("minimizeSteepestDescent");
+CL_LISPIFY_NAME("minimizeSteepestDescent");
 CL_DEFMETHOD     void	Minimizer_O::minimizeSteepestDescent()
     {_OF();
     NVector_sp	pos;
@@ -2245,7 +2245,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimizeSteepestDescent()
 
 
 
-CL_NAME("minimizeConjugateGradient");
+CL_LISPIFY_NAME("minimizeConjugateGradient");
 CL_DEFMETHOD     void	Minimizer_O::minimizeConjugateGradient()
     {_G();
 	NVector_sp	pos;
@@ -2297,7 +2297,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimizeConjugateGradient()
     }
 
 
-CL_NAME("resetAndMinimize");
+CL_LISPIFY_NAME("resetAndMinimize");
 CL_DEFMETHOD     void	Minimizer_O::resetAndMinimize()
     {_G();
     this->_Status = minimizerIdle;
@@ -2305,7 +2305,7 @@ CL_DEFMETHOD     void	Minimizer_O::resetAndMinimize()
     }
 
 
-CL_NAME("minimize");
+CL_LISPIFY_NAME("minimize");
 CL_DEFMETHOD     void	Minimizer_O::minimize()
     {_G();
     NVector_sp	pos;
@@ -2367,7 +2367,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimize()
     }
 
 
-CL_NAME("writeIntermediateResultsToEnergyFunction");
+CL_LISPIFY_NAME("writeIntermediateResultsToEnergyFunction");
 CL_DEFMETHOD void Minimizer_O::writeIntermediateResultsToEnergyFunction()
 {
   if ( this->_Position.nilp() ) {
@@ -2393,7 +2393,7 @@ CL_DEFMETHOD void Minimizer_O::writeIntermediateResultsToEnergyFunction()
     }
 
 
-CL_NAME("configurationAsString");
+CL_LISPIFY_NAME("configurationAsString");
 CL_DEFMETHOD     string	Minimizer_O::configurationAsString()
     {
 	stringstream	ss;
@@ -2410,7 +2410,7 @@ CL_DEFMETHOD     string	Minimizer_O::configurationAsString()
 	return ss.str();
     }
 
-CL_NAME("restart");
+CL_LISPIFY_NAME("restart");
 CL_DEFMETHOD     void	Minimizer_O::restart()
     {
 	this->_Status = minimizerIdle;
@@ -2423,9 +2423,10 @@ CL_DEFMETHOD     void	Minimizer_O::restart()
 
 	SYMBOL_EXPORT_SC_(ChemPkg,noPreconditioner);
 	SYMBOL_EXPORT_SC_(ChemPkg,hessianPreconditioner);
-	core::enum_<PreconditionerType>(_sym__PLUS_preconditionerTypeConverter_PLUS_,"PreconditionerType")
-	    .value(_sym_noPreconditioner,noPreconditioner)
-	    .value(_sym_hessianPreconditioner,hessianPreconditioner)
+	CL_BEGIN_ENUM(PreconditionerType,_sym__PLUS_preconditionerTypeConverter_PLUS_,"PreconditionerType");
+        CL_VALUE_ENUM(_sym_noPreconditioner,noPreconditioner);
+        CL_VALUE_ENUM(_sym_hessianPreconditioner,hessianPreconditioner);
+        CL_END_ENUM(_sym__PLUS_preconditionerTypeConverter_PLUS_);
 	    ;
 	SYMBOL_EXPORT_SC_(ChemPkg,minimizerError);
 	SYMBOL_EXPORT_SC_(ChemPkg,minimizerSucceeded);
@@ -2433,14 +2434,15 @@ CL_DEFMETHOD     void	Minimizer_O::restart()
 	SYMBOL_EXPORT_SC_(ChemPkg,conjugateGradientRunning);
 	SYMBOL_EXPORT_SC_(ChemPkg,steepestDescentRunning);
 	SYMBOL_EXPORT_SC_(ChemPkg,minimizerIdle);
-	core::enum_<MinimizerStatus>(_sym__PLUS_minimizerStatusConverter_PLUS_,"MinimizerStatus")
-	    .value(_sym_minimizerIdle,minimizerIdle)
-	    .value(_sym_steepestDescentRunning,steepestDescentRunning)
-	    .value(_sym_conjugateGradientRunning,conjugateGradientRunning)
-	    .value(_sym_truncatedNewtonRunning,truncatedNewtonRunning)
-	    .value(_sym_minimizerSucceeded,minimizerSucceeded)
-	    .value(_sym_minimizerError,minimizerError)
-	    ;
+	CL_BEGIN_ENUM(MinimizerStatus,_sym__PLUS_minimizerStatusConverter_PLUS_,"MinimizerStatus");
+        CL_VALUE_ENUM(_sym_minimizerIdle,minimizerIdle);
+        CL_VALUE_ENUM(_sym_steepestDescentRunning,steepestDescentRunning);
+        CL_VALUE_ENUM(_sym_conjugateGradientRunning,conjugateGradientRunning);
+        CL_VALUE_ENUM(_sym_truncatedNewtonRunning,truncatedNewtonRunning);
+        CL_VALUE_ENUM(_sym_minimizerSucceeded,minimizerSucceeded);
+        CL_VALUE_ENUM(_sym_minimizerError,minimizerError);
+        CL_END_ENUM(_sym__PLUS_minimizerStatusConverter_PLUS_);
+        ;
     }
 
 

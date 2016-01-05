@@ -89,7 +89,7 @@ namespace chem
 
 
 
-CL_NAME("debugString");
+CL_LISPIFY_NAME("debugString");
 CL_DEFMETHOD     string SuperposeEngine_O::debugString()
     {
 	stringstream ss;
@@ -184,14 +184,14 @@ void	SuperposeEngine_O::eraseFixedPoints()
 
 
 
-CL_NAME("getNumberOfFixedPoints");
+CL_LISPIFY_NAME("getNumberOfFixedPoints");
 CL_DEFMETHOD int	SuperposeEngine_O::getNumberOfFixedPoints()
 {_G();
     return this->_FixedIndices->size();
 }
 
 
-CL_NAME("getNumberOfMoveablePoints");
+CL_LISPIFY_NAME("getNumberOfMoveablePoints");
 CL_DEFMETHOD int	SuperposeEngine_O::getNumberOfMoveablePoints()
 {_G();
     return this->_MoveableIndices->size();
@@ -426,7 +426,7 @@ double	SuperposeEngine_O::sumOfSquaresOfDifferences()
 //
 //	Return the rootMeanSquare difference between the two
 //	collections of points.
-CL_NAME("rootMeanSquareDifference");
+CL_LISPIFY_NAME("rootMeanSquareDifference");
 CL_DEFMETHOD double	SuperposeEngine_O::rootMeanSquareDifference()
 { _G();
     double sumOfSquares = this->sumOfSquaresOfDifferences();
@@ -445,7 +445,7 @@ CL_DEFMETHOD double	SuperposeEngine_O::rootMeanSquareDifference()
 
 
 
-CL_NAME("setFixedPoints");
+CL_LISPIFY_NAME("setFixedPoints");
 CL_DEFMETHOD void	SuperposeEngine_O::setFixedPoints( core::IntArray_sp fi, geom::CoordinateArray_sp fc )
 { _G();
     LOG(BF("SuperposeEngine_O::setFixedPoints --> number of points=%d") % fc->size()  );
@@ -466,7 +466,7 @@ CL_DEFMETHOD void	SuperposeEngine_O::setFixedPoints( core::IntArray_sp fi, geom:
 
 
 
-CL_NAME("setFixedAllPoints");
+CL_LISPIFY_NAME("setFixedAllPoints");
 CL_DEFMETHOD void	SuperposeEngine_O::setFixedAllPoints( geom::CoordinateArray_sp fc )
 {_G();
     core::IntArray_O::iterator	ia;
@@ -483,7 +483,7 @@ CL_DEFMETHOD void	SuperposeEngine_O::setFixedAllPoints( geom::CoordinateArray_sp
 
 
 
-CL_NAME("setMoveablePoints");
+CL_LISPIFY_NAME("setMoveablePoints");
 CL_DEFMETHOD void	SuperposeEngine_O::setMoveablePoints( core::IntArray_sp mi, geom::CoordinateArray_sp mc )
 { _G();
     VectorVector3s::iterator	cur;
@@ -494,7 +494,7 @@ CL_DEFMETHOD void	SuperposeEngine_O::setMoveablePoints( core::IntArray_sp mi, ge
     this->_MoveableCoordinates = mc->copy();
 }
 
-CL_NAME("setMoveableAllPoints");
+CL_LISPIFY_NAME("setMoveableAllPoints");
 CL_DEFMETHOD void	SuperposeEngine_O::setMoveableAllPoints( geom::CoordinateArray_sp mc )
 {_G();
     core::IntArray_O::iterator	ia;
@@ -515,7 +515,7 @@ CL_DEFMETHOD void	SuperposeEngine_O::setMoveableAllPoints( geom::CoordinateArray
 
 
 
-CL_NAME("superpose");
+CL_LISPIFY_NAME("superpose");
 CL_DEFMETHOD Matrix	SuperposeEngine_O::superpose()
 {_G();
     LOG(BF("SuperposeEngine_O::superpose()") );

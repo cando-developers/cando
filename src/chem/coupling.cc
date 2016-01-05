@@ -190,7 +190,7 @@ void	DirectionalCoupling_O::resetOut()
     }
 }
 
-CL_NAME("throwIfBadConnections");
+CL_LISPIFY_NAME("throwIfBadConnections");
 CL_DEFMETHOD void	DirectionalCoupling_O::throwIfBadConnections()
 {_G();
 Monomer_sp	mon;
@@ -260,7 +260,7 @@ bool	DirectionalCoupling_O::isInCouplingToMonomer(Monomer_sp mon)
 
 
 
-CL_NAME("getInMonomer");
+CL_LISPIFY_NAME("getInMonomer");
 CL_DEFMETHOD Monomer_sp	DirectionalCoupling_O::getInMonomer()
 {_OF();
     ASSERTNOTNULLP(this->_InMonomer,
@@ -276,7 +276,7 @@ Monomer_sp	DirectionalCoupling_O::getInMonomer_const() const
 };
 
 
-CL_NAME("getOutMonomer");
+CL_LISPIFY_NAME("getOutMonomer");
 CL_DEFMETHOD Monomer_sp	DirectionalCoupling_O::getOutMonomer()
 {_OF();
     ASSERTNOTNULLP(this->_OutMonomer,
@@ -296,7 +296,7 @@ Monomer_sp	DirectionalCoupling_O::getOutMonomer_const() const
 /*!
  * inPlugNames for couplings are the out-plugs for monomers
  */
-CL_NAME("getInMonomerPlugName");
+CL_LISPIFY_NAME("getInMonomerPlugName");
 CL_DEFMETHOD     core::Symbol_sp	DirectionalCoupling_O::getInMonomerPlugName()
 {_G();
     return DirectionalCoupling_O::outPlugName(this->_Name);
@@ -306,7 +306,7 @@ CL_DEFMETHOD     core::Symbol_sp	DirectionalCoupling_O::getInMonomerPlugName()
 /*!
  * inPlugNames for couplings are the out-plugs for monomers
  */
-CL_NAME("getOutMonomerPlugName");
+CL_LISPIFY_NAME("getOutMonomerPlugName");
 CL_DEFMETHOD     core::Symbol_sp	DirectionalCoupling_O::getOutMonomerPlugName()
 {_G();
     return DirectionalCoupling_O::inPlugName(this->_Name);
@@ -345,7 +345,7 @@ ss << "DirectionalCoupling( "<< this->getName()->__repr__();
 
 
 
-CL_NAME("setName");
+CL_LISPIFY_NAME("setName");
 CL_DEFMETHOD     void	DirectionalCoupling_O::setName(core::Symbol_sp nm)
 {_G();
     this->_Name = DirectionalCoupling_O::couplingName(nm);
@@ -378,14 +378,14 @@ void	DirectionalCoupling_O::setOutMonomer_NoSignal(Monomer_sp m)
 
 
 
-CL_NAME("setInMonomer");
+CL_LISPIFY_NAME("setInMonomer");
 CL_DEFMETHOD void	DirectionalCoupling_O::setInMonomer(Monomer_sp m)
 {_G();
     this->setInMonomer_NoSignal(m);
 //    SIGNAL(this,Coupling_connectionsChanged);
 }
 
-CL_NAME("setOutMonomer");
+CL_LISPIFY_NAME("setOutMonomer");
 CL_DEFMETHOD void	DirectionalCoupling_O::setOutMonomer(Monomer_sp m)
 {_G();
     this->setOutMonomer_NoSignal(m);
@@ -408,7 +408,7 @@ DirectionalCouplingSide DirectionalCoupling_O::couplingSideOfMonomer( Monomer_sp
 
 
 
-CL_NAME("getOtherSideMonomer");
+CL_LISPIFY_NAME("getOtherSideMonomer");
 CL_DEFMETHOD Monomer_sp	DirectionalCoupling_O::getOtherSideMonomer(Monomer_sp mon)
 {_G();
     LOG(BF("About to check in monomer") );
@@ -565,13 +565,13 @@ void RingCoupling_O::archiveBase(core::ArchiveP node)
 }
 
 
-CL_NAME("setMonomer1");
+CL_LISPIFY_NAME("setMonomer1");
 CL_DEFMETHOD void	RingCoupling_O::setMonomer1(Monomer_sp mon)
 {_G();
     this->_Monomer1 = mon;
 }
 
-CL_NAME("getMonomer1");
+CL_LISPIFY_NAME("getMonomer1");
 CL_DEFMETHOD Monomer_sp RingCoupling_O::getMonomer1()
 {_OF();
     ASSERTNOTNULLP(this->_Monomer1,
@@ -587,13 +587,13 @@ Monomer_sp RingCoupling_O::getMonomer1_const() const
 }
 
 
-CL_NAME("setMonomer2");
+CL_LISPIFY_NAME("setMonomer2");
 CL_DEFMETHOD void	RingCoupling_O::setMonomer2(Monomer_sp mon)
 {_G();
     this->_Monomer2 = mon;
 }
 
-CL_NAME("getMonomer2");
+CL_LISPIFY_NAME("getMonomer2");
 CL_DEFMETHOD Monomer_sp RingCoupling_O::getMonomer2()
 {_OF();
     ASSERTNOTNULLP(this->_Monomer2,
@@ -608,7 +608,7 @@ Monomer_sp RingCoupling_O::getMonomer2_const() const
     return this->_Monomer2;
 }
 
-CL_NAME("getOtherSideMonomer");
+CL_LISPIFY_NAME("getOtherSideMonomer");
 CL_DEFMETHOD Monomer_sp	RingCoupling_O::getOtherSideMonomer(Monomer_sp mon)
 {_G();
     LOG(BF("About to check in monomer") );
@@ -696,12 +696,12 @@ void RingCoupling_O::setPlug2(core::Symbol_sp p)
     this->_Plug2 = p;
 }
 
-CL_NAME("getPlug1");
+CL_LISPIFY_NAME("getPlug1");
 CL_DEFMETHOD core::Symbol_sp RingCoupling_O::getPlug1()
 {_OF();
     return DirectionalCoupling_O::outPlugName(this->_Plug1);
 }
-CL_NAME("getPlug2");
+CL_LISPIFY_NAME("getPlug2");
 CL_DEFMETHOD core::Symbol_sp RingCoupling_O::getPlug2()
 {_OF();
     return DirectionalCoupling_O::outPlugName(this->_Plug2);

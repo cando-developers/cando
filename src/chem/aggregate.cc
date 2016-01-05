@@ -237,7 +237,7 @@ Matter_sp Aggregate_O::copy()
     }
 
 
-CL_NAME("atomWithId");
+CL_LISPIFY_NAME("atomWithId");
 CL_DEFMETHOD     Atom_sp	Aggregate_O::atomWithId(int id)
     {
 	Loop		la;
@@ -300,7 +300,7 @@ CL_DEFMETHOD     Atom_sp	Aggregate_O::atomWithId(int id)
  * Return a list of atoms specified by the Chimera atom specifications
  * if atoms aren't found then substitute the atom specification as a string.
  */
-CL_NAME("atomsWithChimeraSpecifications");
+CL_LISPIFY_NAME("atomsWithChimeraSpecifications");
 CL_DEFMETHOD core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const string& specs)
 {
   vector<string> specParts = core::split(specs," \n\t");
@@ -362,7 +362,7 @@ CL_DEFMETHOD core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const str
 //
 //	Remove the molecule
 //
-CL_NAME("removeMolecule");
+CL_LISPIFY_NAME("removeMolecule");
 CL_DEFMETHOD     void Aggregate_O::removeMolecule( Molecule_sp a )
     {_OF();
 	contentIterator	it;
@@ -379,7 +379,7 @@ CL_DEFMETHOD     void Aggregate_O::removeMolecule( Molecule_sp a )
 
 
 
-CL_NAME("separateMolecules");
+CL_LISPIFY_NAME("separateMolecules");
 CL_DEFMETHOD     uint Aggregate_O::separateMolecules()
     {_G();
         gctools::SmallOrderedSet<Atom_sp>	unassignedAtoms;
@@ -416,7 +416,7 @@ CL_DEFMETHOD     uint Aggregate_O::separateMolecules()
     }
 
 
-CL_NAME("firstMoleculeWithAtomNamed");
+CL_LISPIFY_NAME("firstMoleculeWithAtomNamed");
 CL_DEFMETHOD     Molecule_sp Aggregate_O::firstMoleculeWithAtomNamed(MatterName name)
     {
 	Atom_sp a = this->firstAtomWithName(name);
@@ -465,7 +465,7 @@ CL_DEFMETHOD     Molecule_sp Aggregate_O::firstMoleculeWithAtomNamed(MatterName 
 
 
 
-CL_NAME("writeToFile");
+CL_LISPIFY_NAME("writeToFile");
 CL_DEFMETHOD     void	Aggregate_O::writeToFile(const string& fileName)
     {_OF();
 	IMPLEMENT_ME();
@@ -494,7 +494,7 @@ CL_DEFMETHOD     void	Aggregate_O::writeToFile(const string& fileName)
 
 
 
-CL_NAME("firstMolecule");
+CL_LISPIFY_NAME("firstMolecule");
 CL_DEFMETHOD     Molecule_sp      Aggregate_O::firstMolecule()
     {
 	Molecule_sp mol;
@@ -503,7 +503,7 @@ CL_DEFMETHOD     Molecule_sp      Aggregate_O::firstMolecule()
 	return mol;
     }
 
-CL_NAME("firstMoleculeName");
+CL_LISPIFY_NAME("firstMoleculeName");
 CL_DEFMETHOD     MatterName  Aggregate_O::firstMoleculeName()
     {_G();
 	LOG(BF("allocating mol") );
@@ -536,7 +536,7 @@ CL_DEFMETHOD     MatterName  Aggregate_O::firstMoleculeName()
 
 
 #define	MAX_ADJUST_CYCLES	10
-CL_NAME("perturbAtomPositions");
+CL_LISPIFY_NAME("perturbAtomPositions");
 CL_DEFMETHOD     void	Aggregate_O::perturbAtomPositions(double dist)
     {_OF();
 	Atom_sp				a;

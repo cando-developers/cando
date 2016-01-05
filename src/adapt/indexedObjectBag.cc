@@ -39,7 +39,7 @@ void IndexedObjectBag_O::initialize() {
   this->_Bag = HashTableEq_O::create_default();
 }
 
-CL_NAME("set_next_available_entry");
+CL_LISPIFY_NAME("set_next_available_entry");
 CL_DEFMETHOD Fixnum IndexedObjectBag_O::set_next_available_entry(core::T_sp obj) {
   Fixnum fi = this->_NextIndex;
   ++this->_NextIndex;
@@ -47,13 +47,13 @@ CL_DEFMETHOD Fixnum IndexedObjectBag_O::set_next_available_entry(core::T_sp obj)
   return fi;
 }
 
-CL_NAME("get_entry");
+CL_LISPIFY_NAME("get_entry");
 CL_DEFMETHOD core::T_sp IndexedObjectBag_O::entry(Fixnum index)
 {
   return this->_Bag->gethash(core::clasp_make_fixnum(index));
 }
 
-CL_NAME("remove_entry");
+CL_LISPIFY_NAME("remove_entry");
 CL_DEFMETHOD void IndexedObjectBag_O::remove_entry(Fixnum index)
 {
   this->_Bag->remhash(core::clasp_make_fixnum(index));

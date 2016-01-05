@@ -128,7 +128,7 @@ void Molecule_O::addResidueRetainId( Matter_sp r )
 //
 //	Remove the residue
 //
-CL_NAME("removeResidue");
+CL_LISPIFY_NAME("removeResidue");
 CL_DEFMETHOD void Molecule_O::removeResidue( Matter_sp a )
 {
   gctools::Vec0<Matter_sp>::iterator	it;
@@ -175,7 +175,7 @@ CL_DEFMETHOD void Molecule_O::removeResidue( Matter_sp a )
 	    (*tit)->transferCoordinates(*oit);
 	}
     }
-CL_NAME("moveAllAtomsIntoFirstResidue");
+CL_LISPIFY_NAME("moveAllAtomsIntoFirstResidue");
 CL_DEFMETHOD     void	Molecule_O::moveAllAtomsIntoFirstResidue()
     {
 	contentIterator	a;
@@ -228,7 +228,7 @@ void	Molecule_O::redirectAtoms()
 
 
 
-CL_NAME("copy");
+CL_LISPIFY_NAME("copy");
 CL_DEFMETHOD     Matter_sp Molecule_O::copy()
     {
 	Molecule_sp	newMol;
@@ -271,7 +271,7 @@ VectorResidue	Molecule_O::getResiduesWithName(MatterName name ) {
     }
 
 
-CL_NAME("numberOfResiduesWithName");
+CL_LISPIFY_NAME("numberOfResiduesWithName");
 CL_DEFMETHOD     int	Molecule_O::numberOfResiduesWithName( MatterName name )
     {
 	VectorResidue	residues;
@@ -279,7 +279,7 @@ CL_DEFMETHOD     int	Molecule_O::numberOfResiduesWithName( MatterName name )
 	return residues.size();
     }
 
-CL_NAME("getFirstResidueWithName");
+CL_LISPIFY_NAME("getFirstResidueWithName");
 CL_DEFMETHOD     Residue_sp	Molecule_O::getFirstResidueWithName(MatterName name)
     {_G();
 	VectorResidue residues = this->getResiduesWithName(name);

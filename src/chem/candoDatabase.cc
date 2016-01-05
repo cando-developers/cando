@@ -98,7 +98,7 @@ namespace chem
 
 
 
-CL_NAME("constitutionsAsCons");
+CL_LISPIFY_NAME("constitutionsAsCons");
 CL_DEFMETHOD     core::List_sp	CandoDatabase_O::constitutionsAsCons() 
     {_OF();
       return this->entitiesSubClassOfAsCons(core::cl__find_class(Constitution_O::static_classSymbol()));
@@ -111,7 +111,7 @@ CL_DEFMETHOD     core::List_sp	CandoDatabase_O::constitutionsAsCons()
     }
 
 
-CL_NAME("addEntity");
+CL_LISPIFY_NAME("addEntity");
 CL_DEFMETHOD     Entity_sp CandoDatabase_O::addEntity(Entity_sp entity)
     {
 	this->_Entities.set(entity->getName(),entity);
@@ -123,7 +123,7 @@ CL_DEFMETHOD     Entity_sp CandoDatabase_O::addEntity(Entity_sp entity)
     }
 
 
-CL_NAME("representedEntityNameSetsAsCons");
+CL_LISPIFY_NAME("representedEntityNameSetsAsCons");
 CL_DEFMETHOD     core::List_sp CandoDatabase_O::representedEntityNameSetsAsCons()
     {_OF();
 	return this->entitiesSubClassOfAsCons(core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol()));
@@ -135,7 +135,7 @@ CL_DEFMETHOD     core::List_sp CandoDatabase_O::representedEntityNameSetsAsCons(
 
 
 
-CL_NAME("recognizesRepresentedEntityNameSet");
+CL_LISPIFY_NAME("recognizesRepresentedEntityNameSet");
 CL_DEFMETHOD     bool CandoDatabase_O::recognizesRepresentedEntityNameSet(core::Symbol_sp name)
     {_OF();
 	return this->recognizesEntityOfClass(name,core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol()));
@@ -173,14 +173,14 @@ CL_DEFMETHOD     bool CandoDatabase_O::recognizesRepresentedEntityNameSet(core::
 
 
 
-CL_NAME("addFrameRecognizer");
+CL_LISPIFY_NAME("addFrameRecognizer");
 CL_DEFMETHOD     void CandoDatabase_O::addFrameRecognizer(FrameRecognizer_sp rec)
     { _G();
 	this->_frameRecognizers.set(rec->getRecognizerName(),rec);
     }
 
 
-CL_NAME("recognizesFrameRecognizerName");
+CL_LISPIFY_NAME("recognizesFrameRecognizerName");
 CL_DEFMETHOD     bool	CandoDatabase_O::recognizesFrameRecognizerName(core::Symbol_sp nm)
     { _G();
 	bool rec;
@@ -214,7 +214,7 @@ CL_DEFMETHOD     bool	CandoDatabase_O::recognizesFrameRecognizerName(core::Symbo
 	return this->recognizesEntityOfClass(nm,core::cl__find_class(EntityNameSet_O::static_classSymbol()));
     }
 
-CL_NAME("getEntityNameSet");
+CL_LISPIFY_NAME("getEntityNameSet");
 CL_DEFMETHOD     EntityNameSet_sp CandoDatabase_O::getEntityNameSet( core::Symbol_sp nm )
     {_G();
 	return this->getEntityOfClass(nm,core::cl__find_class(EntityNameSet_O::static_classSymbol())).as<EntityNameSet_O>();
@@ -222,7 +222,7 @@ CL_DEFMETHOD     EntityNameSet_sp CandoDatabase_O::getEntityNameSet( core::Symbo
 
 
 
-CL_NAME("getRepresentedEntityNameSet");
+CL_LISPIFY_NAME("getRepresentedEntityNameSet");
 CL_DEFMETHOD     RepresentedEntityNameSet_sp CandoDatabase_O::getRepresentedEntityNameSet( core::Symbol_sp nm )
     {_G();
 	return this->getEntityOfClass(nm,core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol())).as<RepresentedEntityNameSet_O>();
@@ -230,13 +230,13 @@ CL_DEFMETHOD     RepresentedEntityNameSet_sp CandoDatabase_O::getRepresentedEnti
 
 
 
-CL_NAME("recognizesSetOrConstitutionOrMonomerName");
+CL_LISPIFY_NAME("recognizesSetOrConstitutionOrMonomerName");
 CL_DEFMETHOD     bool	CandoDatabase_O::recognizesSetOrConstitutionOrMonomerName(core::Symbol_sp nm)
     {_OF();
 	return this->_Entities.count(nm)>0;
     }
 
-CL_NAME("getEntity");
+CL_LISPIFY_NAME("getEntity");
 CL_DEFMETHOD     Entity_sp CandoDatabase_O::getEntity(core::Symbol_sp nm) const
     {_G();
 	ASSERTF(this->_Entities.contains(nm),
@@ -259,14 +259,14 @@ CL_DEFMETHOD     Entity_sp CandoDatabase_O::getEntity(core::Symbol_sp nm) const
 	return entity;
     }
 
-CL_NAME("expandEntityNameToTerminals");
+CL_LISPIFY_NAME("expandEntityNameToTerminals");
 CL_DEFMETHOD     adapt::SymbolSet_sp CandoDatabase_O::expandEntityNameToTerminals(core::Symbol_sp nm) const
     {_OF();
 	Entity_sp entity = this->getEntity(nm);
 	return entity->expandedNameSet();
     }
 
-CL_NAME("expandEntityNamesToTerminals");
+CL_LISPIFY_NAME("expandEntityNamesToTerminals");
 CL_DEFMETHOD     adapt::SymbolSet_sp CandoDatabase_O::expandEntityNamesToTerminals(adapt::SymbolSet_sp nm) const
     {_OF();
 	adapt::SymbolSet_sp names = adapt::SymbolSet_O::create();
@@ -294,7 +294,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp CandoDatabase_O::expandEntityNamesToTermina
     }
 #endif
 
-CL_NAME("getMonomersForSetOrConstitutionOrMonomerName");
+CL_LISPIFY_NAME("getMonomersForSetOrConstitutionOrMonomerName");
 CL_DEFMETHOD     adapt::SymbolSet_sp CandoDatabase_O::getMonomersForSetOrConstitutionOrMonomerName(core::Symbol_sp nm)
     { _OF();
 	// Use expandEntityNameToTerminals
@@ -345,7 +345,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp CandoDatabase_O::getMonomersForSetOrConstit
 
 
 
-CL_NAME("recognizesNameOrPdb");
+CL_LISPIFY_NAME("recognizesNameOrPdb");
 CL_DEFMETHOD     bool	CandoDatabase_O::recognizesNameOrPdb(core::Symbol_sp nm)
     {_G();
 	if ( !this->recognizesMonomerName(nm) )
@@ -376,7 +376,7 @@ CL_DEFMETHOD     bool	CandoDatabase_O::recognizesNameOrPdb(core::Symbol_sp nm)
 
 
 
-CL_NAME("constitutionForNameOrPdb");
+CL_LISPIFY_NAME("constitutionForNameOrPdb");
 CL_DEFMETHOD     Constitution_sp	CandoDatabase_O::constitutionForNameOrPdb(core::Symbol_sp name)
     {_G();
 	Entity_sp obj;
@@ -386,7 +386,7 @@ CL_DEFMETHOD     Constitution_sp	CandoDatabase_O::constitutionForNameOrPdb(core:
 	return obj->constitution();
     }
 
-CL_NAME("constitutionNameForNameOrPdb");
+CL_LISPIFY_NAME("constitutionNameForNameOrPdb");
 CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(core::Symbol_sp name)
     {_G();
 	Constitution_sp con;
@@ -619,7 +619,7 @@ CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(c
 
 
 
-CL_NAME("addMonomerCoordinates");
+CL_LISPIFY_NAME("addMonomerCoordinates");
 CL_DEFMETHOD     uint CandoDatabase_O::addMonomerCoordinates(MonomerCoordinates_sp mc)
     {_G();
 	SpecificContextSet_sp	allContexts;
@@ -651,7 +651,7 @@ CL_DEFMETHOD     uint CandoDatabase_O::addMonomerCoordinates(MonomerCoordinates_
     }
 
 
-CL_NAME("uniqueMonomerCoordinatesAsCons");
+CL_LISPIFY_NAME("uniqueMonomerCoordinatesAsCons");
 CL_DEFMETHOD     core::List_sp CandoDatabase_O::uniqueMonomerCoordinatesAsCons()
     {_G();
 	core::Cons_sp first, cur;
@@ -672,7 +672,7 @@ CL_DEFMETHOD     core::List_sp CandoDatabase_O::uniqueMonomerCoordinatesAsCons()
 	return first->cdr();
     }
 
-CL_NAME("monomerCoordinatesKeysAsCons");
+CL_LISPIFY_NAME("monomerCoordinatesKeysAsCons");
 CL_DEFMETHOD     core::List_sp CandoDatabase_O::monomerCoordinatesKeysAsCons()
     {_G();
 	core::Cons_sp first, cur;
@@ -691,13 +691,13 @@ CL_DEFMETHOD     core::List_sp CandoDatabase_O::monomerCoordinatesKeysAsCons()
 
 
 
-CL_NAME("recognizesMonomerCoordinatesKey");
+CL_LISPIFY_NAME("recognizesMonomerCoordinatesKey");
 CL_DEFMETHOD     bool	CandoDatabase_O::recognizesMonomerCoordinatesKey(core::Symbol_sp key)
     {_G();
 	return this->_MonomerCoordinates.contains(key);
     }
 
-CL_NAME("getMonomerCoordinatesWithKey");
+CL_LISPIFY_NAME("getMonomerCoordinatesWithKey");
 CL_DEFMETHOD     MonomerCoordinates_sp	CandoDatabase_O::getMonomerCoordinatesWithKey(core::Symbol_sp key )
     {_G();
 	if ( this->_MonomerCoordinates.contains(key) )
@@ -708,7 +708,7 @@ CL_DEFMETHOD     MonomerCoordinates_sp	CandoDatabase_O::getMonomerCoordinatesWit
     }
 
 
-CL_NAME("get");
+CL_LISPIFY_NAME("get");
 CL_DEFMETHOD     MonomerCoordinates_sp	CandoDatabase_O::get(MonomerContext_sp context)
     {_G();
         core::Symbol_sp key = context->getKey();
@@ -719,7 +719,7 @@ CL_DEFMETHOD     MonomerCoordinates_sp	CandoDatabase_O::get(MonomerContext_sp co
 	return _Nil<MonomerCoordinates_O>();
     }
 
-CL_NAME("recognizesContext");
+CL_LISPIFY_NAME("recognizesContext");
 CL_DEFMETHOD     bool	CandoDatabase_O::recognizesContext(MonomerContext_sp context)
     {_G();
 	bool	foundIt;
@@ -730,7 +730,7 @@ CL_DEFMETHOD     bool	CandoDatabase_O::recognizesContext(MonomerContext_sp conte
 	return foundIt;
     }
 
-CL_NAME("saveAs");
+CL_LISPIFY_NAME("saveAs");
 CL_DEFMETHOD     void	CandoDatabase_O::saveAs(const string& fn)
     {_G();
 	IMPLEMENT_ME();
@@ -790,7 +790,7 @@ CL_DEFMETHOD     void	CandoDatabase_O::saveAs(const string& fn)
     }
 #endif
 
-CL_NAME("allSpecificMonomerContexts");
+CL_LISPIFY_NAME("allSpecificMonomerContexts");
 CL_DEFMETHOD     SpecificContextSet_sp CandoDatabase_O::allSpecificMonomerContexts()
     {_G();
 	SpecificContextSet_sp all = SpecificContextSet_O::create();

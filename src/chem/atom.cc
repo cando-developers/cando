@@ -114,7 +114,7 @@ namespace chem
 #define ARGS_randomizeAtomPosition "((core::a chem:atom) &optional (width 10.0))"
 #define DECL_randomizeAtomPosition ""
 #define DOCS_randomizeAtomPosition "make Atom args: &key (name \"\") (element :C)"
-CL_NAME("randomizeAtomPosition");
+CL_LISPIFY_NAME("randomizeAtomPosition");
 CL_DEFMETHOD void	Atom_O::randomizeAtomPosition(double width)
 {
   double				x,y,z;
@@ -136,7 +136,7 @@ CL_DEFMETHOD void	Atom_O::randomizeAtomPosition(double width)
 //		between 0 and 100 angstroms
 //
 //
-CL_NAME("perturbAtomPosition");
+CL_LISPIFY_NAME("perturbAtomPosition");
 CL_DEFMETHOD void	Atom_O::perturbAtomPosition(double dist)
 {_G();
   double				xd,yd,zd;
@@ -443,7 +443,7 @@ void Atom_O::exposeCando(core::Lisp_sp lisp)
 
 
 
-CL_NAME("calculateStereochemicalConfiguration");
+CL_LISPIFY_NAME("calculateStereochemicalConfiguration");
 CL_DEFMETHOD     ConfigurationEnum Atom_O::calculateStereochemicalConfiguration()
     {_G();
 	if ( this->numberOfBonds() != 4 ) return undefinedConfiguration;
@@ -627,7 +627,7 @@ CL_DEFMETHOD     ConfigurationEnum Atom_O::calculateStereochemicalConfiguration(
 //
 
 
-CL_NAME("setConfiguration");
+CL_LISPIFY_NAME("setConfiguration");
 CL_DEFMETHOD     void Atom_O::setConfiguration(ConfigurationEnum conf)
     {_OF();
 	this->_Configuration = conf;
@@ -637,7 +637,7 @@ CL_DEFMETHOD     void Atom_O::setConfiguration(ConfigurationEnum conf)
 
 
 
-CL_NAME("atLowerAddressThan");
+CL_LISPIFY_NAME("atLowerAddressThan");
 CL_DEFMETHOD     bool	Atom_O::atLowerAddressThan(Atom_sp b)
     {
 	return this < b.get();
@@ -682,25 +682,25 @@ CL_DEFMETHOD     bool	Atom_O::atLowerAddressThan(Atom_sp b)
       return this->bonds[i];
     }
 
-CL_NAME("bondedNeighbor");
+CL_LISPIFY_NAME("bondedNeighbor");
 CL_DEFMETHOD     Atom_sp Atom_O::bondedNeighbor(int i)
     {
 	return this->bonds[i]->getOtherAtom(this->sharedThis<Atom_O>());
     }
 
-CL_NAME("bondedOrder");
+CL_LISPIFY_NAME("bondedOrder");
 CL_DEFMETHOD     BondOrder Atom_O::bondedOrder(int i) 
     {
 	return this->bonds[i]->getOrder();
     };
 
-CL_NAME("numberOfBonds");
+CL_LISPIFY_NAME("numberOfBonds");
 CL_DEFMETHOD     int	Atom_O::numberOfBonds() const
     {
 	return this->bonds.size();
     };
 
-CL_NAME("coordination");
+CL_LISPIFY_NAME("coordination");
 CL_DEFMETHOD     int Atom_O::coordination() 
     {
 	return this->bonds.size();
@@ -717,7 +717,7 @@ CL_DEFMETHOD     int Atom_O::coordination()
  *       CC1                    3                       HC11, HC12, HC13 
  * Also handle N and O
  */ 
-CL_NAME("numberOfOpenValence");
+CL_LISPIFY_NAME("numberOfOpenValence");
 CL_DEFMETHOD uint Atom_O::numberOfOpenValence()
 {
   int maxHydrogens;
@@ -756,7 +756,7 @@ CL_DEFMETHOD uint Atom_O::numberOfOpenValence()
  *       CC1                    3                       HC11, HC12, HC13 
  * Also handle N and O
  */ 
-CL_NAME("createImplicitHydrogenNames");
+CL_LISPIFY_NAME("createImplicitHydrogenNames");
 CL_DEFMETHOD core::List_sp Atom_O::createImplicitHydrogenNames()
 {
   uint addHydrogens = this->numberOfOpenValence();
@@ -862,7 +862,7 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 	this->bonds.push_back(bond);
     }
 
-CL_NAME("bondTo");
+CL_LISPIFY_NAME("bondTo");
 CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o )
     {_OF();
 	// Check if there is already a bond to this atom and
@@ -887,7 +887,7 @@ CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o )
 
 
 
-CL_NAME("bondToSingle");
+CL_LISPIFY_NAME("bondToSingle");
 CL_DEFMETHOD     Bond_sp Atom_O::bondToSingle(  Atom_sp a )
     {_OF();
 	return this->bondTo(a,singleBond);
@@ -895,7 +895,7 @@ CL_DEFMETHOD     Bond_sp Atom_O::bondToSingle(  Atom_sp a )
 
 
 
-CL_NAME("getNameIndex");
+CL_LISPIFY_NAME("getNameIndex");
 CL_DEFMETHOD     string	Atom_O::getNameIndex()
     {
         FIX_ME();
@@ -968,7 +968,7 @@ CL_DEFMETHOD     string	Atom_O::getNameIndex()
 
 
 
-CL_NAME("isBondedToAtomNamed");
+CL_LISPIFY_NAME("isBondedToAtomNamed");
 CL_DEFMETHOD     bool	Atom_O::isBondedToAtomNamed(MatterName name)
     {
 	VectorBond::iterator	b;
@@ -981,7 +981,7 @@ CL_DEFMETHOD     bool	Atom_O::isBondedToAtomNamed(MatterName name)
 	return false;
     }
 
-CL_NAME("bondedNeighborWithName");
+CL_LISPIFY_NAME("bondedNeighborWithName");
 CL_DEFMETHOD     Atom_sp	Atom_O::bondedNeighborWithName(MatterName name)
     {
 	VectorBond::iterator	b;
@@ -995,7 +995,7 @@ CL_DEFMETHOD     Atom_sp	Atom_O::bondedNeighborWithName(MatterName name)
     }
 
 
-CL_NAME("isBondedToElementOrder");
+CL_LISPIFY_NAME("isBondedToElementOrder");
 CL_DEFMETHOD     bool	Atom_O::isBondedToElementOrder(Element el, BondOrder o)
     {
 	VectorBond::iterator	b;
@@ -1011,7 +1011,7 @@ CL_DEFMETHOD     bool	Atom_O::isBondedToElementOrder(Element el, BondOrder o)
     }
 
 
-CL_NAME("hasBondWithOrder");
+CL_LISPIFY_NAME("hasBondWithOrder");
 CL_DEFMETHOD     bool Atom_O::hasBondWithOrder(BondOrder o) const
     {
 	VectorBond::const_iterator	b;
@@ -1024,7 +1024,7 @@ CL_DEFMETHOD     bool Atom_O::hasBondWithOrder(BondOrder o) const
 
 
 
-CL_NAME("isBondedToElementHybridization");
+CL_LISPIFY_NAME("isBondedToElementHybridization");
 CL_DEFMETHOD     bool	Atom_O::isBondedToElementHybridization(Element el, Hybridization hy)
     {
 	VectorBond::iterator	b;
@@ -1042,7 +1042,7 @@ CL_DEFMETHOD     bool	Atom_O::isBondedToElementHybridization(Element el, Hybridi
 
 
 
-CL_NAME("isBondedToElementHybridizationElementHybridization");
+CL_LISPIFY_NAME("isBondedToElementHybridizationElementHybridization");
 CL_DEFMETHOD     bool	Atom_O::isBondedToElementHybridizationElementHybridization(Element el1, Hybridization hy1, Element el2, Hybridization hy2)
     {_OF();
 	IMPLEMENT_ME(); // Handle new way of handling bonds
@@ -1100,7 +1100,7 @@ CL_DEFMETHOD     bool	Atom_O::isBondedToElementHybridizationElementHybridization
 	SIMPLE_ERROR(BF("%s")%ss.str());
     }
 
-CL_NAME("removeBondTo");
+CL_LISPIFY_NAME("removeBondTo");
 CL_DEFMETHOD     void	Atom_O::removeBondTo(Atom_sp a)
     {_OF();
 	Atom_sp	atemp;
@@ -1110,7 +1110,7 @@ CL_DEFMETHOD     void	Atom_O::removeBondTo(Atom_sp a)
 	a->basicRemoveBondTo(atemp);
     }
 
-CL_NAME("removeAllBonds");
+CL_LISPIFY_NAME("removeAllBonds");
 CL_DEFMETHOD     void	Atom_O::removeAllBonds()
     {_OF();
 	VectorBond::iterator	b;
@@ -1131,7 +1131,7 @@ CL_DEFMETHOD     void	Atom_O::removeAllBonds()
 //
 //	applyTransformToAtoms
 //
-CL_NAME("applyTransformToAtoms");
+CL_LISPIFY_NAME("applyTransformToAtoms");
 CL_DEFMETHOD     void	Atom_O::applyTransformToAtoms( const Matrix& m )
     {
 	this->position = (m)*this->position;
@@ -1146,7 +1146,7 @@ CL_DEFMETHOD     void	Atom_O::applyTransformToAtoms( const Matrix& m )
 	return hybridizationSymbolFromHybridization(this->getHybridization())->symbolName()->get();
     }
 
-CL_NAME("getElementAsString");
+CL_LISPIFY_NAME("getElementAsString");
 CL_DEFMETHOD     string Atom_O::getElementAsString()
     {_G();
 	return atomicSymbolFromElement(this->getElement())->symbolName()->get();
@@ -1221,7 +1221,7 @@ bool Atom_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
   if ( this->Base::applyPropertyToSlot(prop,value) ) return true;
   return false;
 }
-CL_NAME("setPositionInNanometers");
+CL_LISPIFY_NAME("setPositionInNanometers");
 CL_DEFMETHOD     void Atom_O::setPositionInNanometers(Vector3 o)
     {_OF();
 	Vector3 angpos = o.multiplyByScalar(10.0);
@@ -1229,20 +1229,20 @@ CL_DEFMETHOD     void Atom_O::setPositionInNanometers(Vector3 o)
     }
 
 
-CL_NAME("setTempInt");
+CL_LISPIFY_NAME("setTempInt");
 CL_DEFMETHOD     void Atom_O::setTempInt(int i)
     {_G();
 	LOG(BF("Setting tempInt to %d") % i  );
 	this->tempInt = i;
     }
 
-CL_NAME("getTempInt");
+CL_LISPIFY_NAME("getTempInt");
 CL_DEFMETHOD     int Atom_O::getTempInt()
     {_G();
 	return this->tempInt;
     }
 
-CL_NAME("getConfigurationAsString");
+CL_LISPIFY_NAME("getConfigurationAsString");
 CL_DEFMETHOD     string	Atom_O::getConfigurationAsString()
     {
 	string config, stereo;
@@ -1425,7 +1425,7 @@ CL_DEFMETHOD     string	Atom_O::getConfigurationAsString()
 //
 // Return true if we are bonded to the atom described by the required
 // bond order
-CL_NAME("isBondedToWithBondOrder");
+CL_LISPIFY_NAME("isBondedToWithBondOrder");
 CL_DEFMETHOD     bool Atom_O::isBondedToWithBondOrder( Atom_sp aTarget, BondOrder o )
     {_OF();
 	VectorBond::iterator	b;
@@ -1449,7 +1449,7 @@ CL_DEFMETHOD     bool Atom_O::isBondedToWithBondOrder( Atom_sp aTarget, BondOrde
 //
 // Return true if we are bonded to the atom described by the required
 // bond order
-CL_NAME("isBondedTo");
+CL_LISPIFY_NAME("isBondedTo");
 CL_DEFMETHOD     bool	Atom_O::isBondedTo( Atom_sp aTarget)
     {_G();
 	VectorBond::iterator	b;
@@ -1497,7 +1497,7 @@ CL_DEFMETHOD     bool	Atom_O::isBondedTo( Atom_sp aTarget)
 // testConsistancy
 //
 //	Make sure that all of the bonds are consistant
-CL_NAME("testConsistancy");
+CL_LISPIFY_NAME("testConsistancy");
 CL_DEFMETHOD     bool Atom_O::testConsistancy(Matter_sp parentShouldBe)
     {_OF();
 	VectorBond::iterator	b;
@@ -1598,7 +1598,7 @@ CL_DEFMETHOD     bool Atom_O::testConsistancy(Matter_sp parentShouldBe)
 	return vAtoms;
     }
 
-CL_NAME("bondedAtomsAsList");
+CL_LISPIFY_NAME("bondedAtomsAsList");
 CL_DEFMETHOD     core::List_sp Atom_O::bondedAtomsAsList()
     {
 	core::List_sp list = _Nil<core::T_O>();
@@ -1623,7 +1623,7 @@ CL_DEFMETHOD     core::List_sp Atom_O::bondedAtomsAsList()
     };
 
 
-CL_NAME("getBondList");
+CL_LISPIFY_NAME("getBondList");
 CL_DEFMETHOD     BondList_sp	Atom_O::getBondList()
     {
 	VectorBond::iterator	b;
@@ -1641,7 +1641,7 @@ CL_DEFMETHOD     BondList_sp	Atom_O::getBondList()
     }
 
 
-CL_NAME("totalBondOrder");
+CL_LISPIFY_NAME("totalBondOrder");
 CL_DEFMETHOD     uint Atom_O::totalBondOrder()
     {
       if (this->getHybridization() == hybridization_sp3) return 4;
@@ -1669,7 +1669,7 @@ CL_DEFMETHOD     uint Atom_O::totalBondOrder()
     }
 
 
-CL_NAME("bondsAsList");
+CL_LISPIFY_NAME("bondsAsList");
 CL_DEFMETHOD     core::List_sp Atom_O::bondsAsList()
     {
 	VectorBond::iterator	b;
@@ -1687,7 +1687,7 @@ CL_DEFMETHOD     core::List_sp Atom_O::bondsAsList()
     }
 
 
-CL_NAME("getHeavyAtomBondList");
+CL_LISPIFY_NAME("getHeavyAtomBondList");
 CL_DEFMETHOD     BondList_sp	Atom_O::getHeavyAtomBondList()
     {
 	VectorBond::iterator	b;
@@ -1706,7 +1706,7 @@ CL_DEFMETHOD     BondList_sp	Atom_O::getHeavyAtomBondList()
 
 
 
-CL_NAME("getAtomicNumber");
+CL_LISPIFY_NAME("getAtomicNumber");
 CL_DEFMETHOD     int     Atom_O::getAtomicNumber()
     {
 	return atomicNumberForElement(this->getElement());
@@ -1719,7 +1719,7 @@ CL_DEFMETHOD     int     Atom_O::getAtomicNumber()
     }
 
 
-CL_NAME("getBondedHydrogenCount");
+CL_LISPIFY_NAME("getBondedHydrogenCount");
 CL_DEFMETHOD     int     Atom_O::getBondedHydrogenCount()
     {_OF();
 	VectorBond::iterator	b;
@@ -1736,7 +1736,7 @@ CL_DEFMETHOD     int     Atom_O::getBondedHydrogenCount()
     }
 
 
-CL_NAME("inRingSize");
+CL_LISPIFY_NAME("inRingSize");
 CL_DEFMETHOD     bool    Atom_O::inRingSize(int r) const
     {_OF();
 	bool result = false;
@@ -1805,7 +1805,7 @@ CL_DEFMETHOD     bool    Atom_O::inRingSize(int r) const
 
 
 
-CL_NAME("getValence");
+CL_LISPIFY_NAME("getValence");
 CL_DEFMETHOD     int     Atom_O::getValence()
     {
 	VectorBond::iterator	b;
@@ -1835,7 +1835,7 @@ CL_DEFMETHOD     int     Atom_O::getValence()
 
 
 
-CL_NAME("getBackSpan");
+CL_LISPIFY_NAME("getBackSpan");
 CL_DEFMETHOD     Atom_sp Atom_O::getBackSpan()
     {_G();
       ASSERT(this->_BackSpan);
@@ -1843,7 +1843,7 @@ CL_DEFMETHOD     Atom_sp Atom_O::getBackSpan()
     }
 
 
-CL_NAME("getNextSpan");
+CL_LISPIFY_NAME("getNextSpan");
 CL_DEFMETHOD     Atom_sp Atom_O::getNextSpan()
     {_G();
       ASSERT(this->_NextSpan);
@@ -1867,7 +1867,7 @@ CL_DEFMETHOD     Atom_sp Atom_O::getNextSpan()
 	return localTree;
     }
 
-CL_NAME("localSpanningTree");
+CL_LISPIFY_NAME("localSpanningTree");
 CL_DEFMETHOD     core::List_sp Atom_O::localSpanningTree(uint depth)
     {_G();
 	core::Cons_sp localTree = core::Cons_O::create(this->sharedThis<Atom_O>());
@@ -1884,7 +1884,7 @@ CL_DEFMETHOD     core::List_sp Atom_O::localSpanningTree(uint depth)
     }
 
 
-CL_NAME("isConfigurable");
+CL_LISPIFY_NAME("isConfigurable");
 CL_DEFMETHOD     bool Atom_O::isConfigurable()
     {
 	return this->_StereochemistryType != undefinedCenter;
@@ -1974,7 +1974,7 @@ CL_DEFMETHOD     bool Atom_O::isConfigurable()
     }
 
 
-CL_NAME("getResidueContainedBy");
+CL_LISPIFY_NAME("getResidueContainedBy");
 CL_DEFMETHOD     Residue_sp	Atom_O::getResidueContainedBy() 
     {
 	return this->containedBy().as<Residue_O>();
@@ -2072,30 +2072,31 @@ Atom_sp Atom_O::atomWithAtomId(AtomId_sp atomId) const
 
     void Atom_O::lisp_initGlobals(core::Lisp_sp lisp)
     {_G();
-	core::enum_<AtomFlagEnum> en(_sym__PLUS_atomFlagSymbolConverter_PLUS_,"AtomFlags");
-	en.value(_sym_atomNeedsMinimizer, atomNeedsMinimizer);
 	SYMBOL_EXPORT_SC_(ChemPkg,atomNeedsMinimizer);
-	en.value(_sym_selected, selected);
 	SYMBOL_EXPORT_SC_(ChemPkg,selected);
-	en.value(_sym_onGrid, onGrid);
 	SYMBOL_EXPORT_SC_(ChemPkg,onGrid);
-	en.value(_sym_atomFixed, atomFixed);
 	SYMBOL_EXPORT_SC_(ChemPkg,atomFixed);
-	en.value(_sym_in3MemberRing, in3MemberRing);
 	SYMBOL_EXPORT_SC_(ChemPkg,in3MemberRing);
-	en.value(_sym_in4MemberRing, in4MemberRing);
 	SYMBOL_EXPORT_SC_(ChemPkg,in4MemberRing);
-	en.value(_sym_in5MemberRing, in5MemberRing);
 	SYMBOL_EXPORT_SC_(ChemPkg,in5MemberRing);
-	en.value(_sym_in6MemberRing, in6MemberRing);
 	SYMBOL_EXPORT_SC_(ChemPkg,in6MemberRing);
-	en.value(_sym_in7MemberRing, in7MemberRing);
 	SYMBOL_EXPORT_SC_(ChemPkg,in7MemberRing);
-	en.value(_sym_in8MemberRing, in8MemberRing);
 	SYMBOL_EXPORT_SC_(ChemPkg,in8MemberRing);
-	en.value(_sym_inRing, inRing);
 	SYMBOL_EXPORT_SC_(ChemPkg,inRing);
-	    ;
+	CL_BEGIN_ENUM(AtomFlagEnum,_sym__PLUS_atomFlagSymbolConverter_PLUS_,"AtomFlags");
+        CL_VALUE_ENUM(_sym_atomNeedsMinimizer, atomNeedsMinimizer);
+        CL_VALUE_ENUM(_sym_selected, selected);
+        CL_VALUE_ENUM(_sym_onGrid, onGrid);
+        CL_VALUE_ENUM(_sym_atomFixed, atomFixed);
+        CL_VALUE_ENUM(_sym_in3MemberRing, in3MemberRing);
+        CL_VALUE_ENUM(_sym_in4MemberRing, in4MemberRing);
+        CL_VALUE_ENUM(_sym_in5MemberRing, in5MemberRing);
+        CL_VALUE_ENUM(_sym_in6MemberRing, in6MemberRing);
+        CL_VALUE_ENUM(_sym_in7MemberRing, in7MemberRing);
+        CL_VALUE_ENUM(_sym_in8MemberRing, in8MemberRing);
+        CL_VALUE_ENUM(_sym_inRing, inRing);
+        CL_END_ENUM(_sym__PLUS_atomFlagSymbolConverter_PLUS_);
+          ;
     }
 
     ConstitutionAtom_sp Atom_O::asConstitutionAtom(ConstitutionAtomIndex0N index)

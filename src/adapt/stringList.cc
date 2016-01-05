@@ -65,7 +65,7 @@ void StringList_O::setFromString(const string &ss) {
   this->setFromVectorStrings(parts);
 }
 
-CL_NAME("asString");
+CL_LISPIFY_NAME("asString");
 CL_DEFMETHOD string StringList_O::asString() {
   _G();
   stringstream ss;
@@ -106,7 +106,7 @@ void StringList_O::prepend(const string &str) {
   this->_Contents.insert(this->_Contents.begin(), str);
 }
 
-CL_NAME("string-list-append");
+CL_LISPIFY_NAME("string-list-append");
 CL_DEFMETHOD void StringList_O::append(const string &str) {
   _G();
   this->_Contents.push_back(str);

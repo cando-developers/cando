@@ -8,8 +8,6 @@
 #include <cando/adapt/indexedObjectBag.h>
 #include <cando/chem/mbbCoreTools.h>
 #include <clasp/core/builtInClass.h>
-//#define HEADER_INCLUDES
-//#include "chem_initClasses_inc.h"
 #include <cando/chem/ringFinder.h>
 #include <cando/chem/largeSquareMatrix.h>
 #include <cando/chem/alias.h>
@@ -116,28 +114,10 @@ SYMBOL_EXPORT_SC_(ChemPkg,UnknownConfiguration);
 namespace chemkw {
 
 
-#pragma GCC visibility push(default)
-#define ChemKwPkg_SYMBOLS
-#define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-  #ifndef SCRAPING
-#include <generated/symbols_scraped_inc.h>
-  #endif
-#undef DO_SYMBOL
-#undef ChemKwPkg_SYMBOLS
-#pragma GCC visibility pop
 
 };
 
 namespace chem {
-#pragma GCC visibility push(default)
-#define ChemPkg_SYMBOLS
-#define DO_SYMBOL(cname,idx,pkgName,lispName,export) core::Symbol_sp cname = UNDEFINED_SYMBOL;
-  #ifndef SCRAPING
-#include <generated/symbols_scraped_inc.h>
-  #endif
-#undef DO_SYMBOL
-#undef ChemPkg_SYMBOLS
-#pragma GCC visibility pop
 };
 
 
@@ -148,7 +128,7 @@ namespace chem
 #define EXPOSE_TO_CANDO
 #define Use_ChemPkg
 #define EXTERN_REGISTER
-#include <generated/initClasses_inc.h>
+#include <clasp/core/initClasses.h>
 #undef EXTERN_REGISTER
 #undef Use_ChemPkg
 #undef EXPOSE_TO_CANDO
@@ -197,27 +177,12 @@ namespace chem
           core::Cons_sp ptsList = core::Cons_O::createList(pts);
           core::core__pathname_translations(core::Str_O::create("CANDO"),_lisp->_true(),ptsList);
 
-#define ChemKwPkg_SYMBOLS
-#define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {chemkw::cname = _lisp->internWithPackageName(pkg,core::lispify_symbol_name(lispname)); chemkw::cname->exportYourself(exportp);}
-  #ifndef SCRAPING
-#include <generated/symbols_scraped_inc.h>
-            #endif
-#undef DO_SYMBOL
-#undef ChemKwPkg_SYMBOLS
-
-#define ChemPkg_SYMBOLS
-#define DO_SYMBOL(cname,idx,pkg,lispname,exportp) {cname = _lisp->internWithPackageName(pkg,core::lispify_symbol_name(lispname)); cname->exportYourself(exportp);}
-  #ifndef SCRAPING
-#include <generated/symbols_scraped_inc.h>
-            #endif
-#undef DO_SYMBOL
-#undef ChemPkg_SYMBOLS
 
 #define ALL_STAGES
 #define	Use_ChemPkg
 #define INVOKE_REGISTER
 #define LOOKUP_SYMBOL(pkg,name) _lisp->internWithPackageName(pkg,name)
-#include <generated/initClasses_inc.h>
+#include <clasp/core/initClasses.h>
 #undef INVOKE_REGISTER
 #undef Use_ChemPkg
 #undef ALL_STAGES
@@ -247,13 +212,6 @@ namespace chem
 	break;
 	case pythonClasses:
 	{
-#define _DBG(x)
-#define EXPOSE_TO_PYTHON
-#define	Use_ChemPkg
-#include <generated/initClasses_inc.h>
-#undef Use_ChemPkg
-#undef EXPOSE_TO_PYTHON
-#undef _DBG
 	}
 	break;
 	case pythonFunctions:
@@ -314,20 +272,6 @@ core::Symbol_sp chemkw_intern(core::Str_sp symName)
 }
 };
 
-
-
-
-#if USE_INTRUSIVE_SMART_PTR==1
-#define EXPAND_CLASS_MACROS
-#define _CLASS_MACRO(_T_)				\
-    STATIC_CLASS_INFO(_T_);			\
-    INTRUSIVE_POINTER_REFERENCE_COUNT_ACCESSORS(_T_);
-#define Use_ChemPkg
-#include <generated/initClasses_inc.h>
-#undef Use_ChemPkg
-#undef _CLASS_MACRO
-#undef EXPAND_CLASS_MACROS
-#endif
 
 
 

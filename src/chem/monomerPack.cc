@@ -331,7 +331,7 @@ void	MonomerPack_O::addMonomerName(core::Symbol_sp nm)
     this->setInterestingAtomNamesForMonomerName(nm,"");
 }
 
-CL_NAME("removeMonomerName");
+CL_LISPIFY_NAME("removeMonomerName");
 CL_DEFMETHOD void	MonomerPack_O::removeMonomerName(core::Symbol_sp nm)
 {_G();
     this->_removeMonomerName(nm);

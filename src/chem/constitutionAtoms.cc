@@ -246,7 +246,7 @@ namespace chem
 	return ca;
     }
 
-CL_NAME("atomNamesAsSymbolSet");
+CL_LISPIFY_NAME("atomNamesAsSymbolSet");
 CL_DEFMETHOD     adapt::SymbolSet_sp ConstitutionAtoms_O::atomNamesAsSymbolSet()
     {_OF();
 	adapt::SymbolSet_sp ss = adapt::SymbolSet_O::create();
@@ -273,7 +273,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp ConstitutionAtoms_O::atomNamesAsSymbolSet()
 #endif
 
 
-CL_NAME("atomWithName");
+CL_LISPIFY_NAME("atomWithName");
 CL_DEFMETHOD     ConstitutionAtom_sp ConstitutionAtoms_O::atomWithName(MatterName nm)
     {_OF();
 	for ( gctools::Vec0<ConstitutionAtom_sp>::const_iterator ci=this->_Atoms.begin();
@@ -285,13 +285,13 @@ CL_DEFMETHOD     ConstitutionAtom_sp ConstitutionAtoms_O::atomWithName(MatterNam
     }
 
 
-CL_NAME("atomWithId");
+CL_LISPIFY_NAME("atomWithId");
 CL_DEFMETHOD     ConstitutionAtom_sp ConstitutionAtoms_O::atomWithId(ConstitutionAtomIndex0N id) const
     {_G();
 	return this->_Atoms[id];
     }
 
-CL_NAME("constitution-atoms-index");
+CL_LISPIFY_NAME("constitution-atoms-index");
 CL_DEFMETHOD     int ConstitutionAtoms_O::index(MatterName name) const
     {_OF();
 	for ( int idx=0; idx<(int)this->_Atoms.size(); idx++ )
@@ -302,7 +302,7 @@ CL_DEFMETHOD     int ConstitutionAtoms_O::index(MatterName name) const
 	SIMPLE_ERROR(BF("Unknown atom[%s]") % name );
     }
 
-CL_NAME("makeResidue");
+CL_LISPIFY_NAME("makeResidue");
 CL_DEFMETHOD     Residue_sp ConstitutionAtoms_O::makeResidue()
     {_OF();
 	Residue_sp res = Residue_O::create();

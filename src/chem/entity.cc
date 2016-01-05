@@ -42,7 +42,7 @@ void	Entity_O::initialize()
 #endif
 
 
-CL_NAME("constitution");
+CL_LISPIFY_NAME("constitution");
 CL_DEFMETHOD Constitution_sp Entity_O::constitution()
 {_G();
     Constitution_sp x = _Nil<Constitution_O>();
@@ -59,7 +59,7 @@ CL_DEFMETHOD Constitution_sp Entity_O::constitution()
 
 
 
-CL_NAME("minimalRepresentativeList");
+CL_LISPIFY_NAME("minimalRepresentativeList");
 CL_DEFMETHOD     RepresentativeList_sp Entity_O::minimalRepresentativeList() const
     {_OF();
 	SHOUT(BF("Generating minimalRepresentativeList of: %s") % this->__repr__() );

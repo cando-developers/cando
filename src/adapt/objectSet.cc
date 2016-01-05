@@ -40,13 +40,13 @@ void ObjectSet_O::initialize() {
   this->_Set = HashTableEq_O::create_default();
 }
 
-CL_NAME("addObjects");
+CL_LISPIFY_NAME("addObjects");
 CL_DEFMETHOD void ObjectSet_O::addObjects(ObjectSet_sp other) {
   _G();
   other->map([this](T_sp obj) {this->insert(obj); });
 }
 
-CL_NAME("asCons");
+CL_LISPIFY_NAME("asCons");
 CL_DEFMETHOD List_sp ObjectSet_O::asCons() {
   List_sp res = _Nil<T_O>();
   this->map([&res](T_sp o) {
@@ -55,7 +55,7 @@ CL_DEFMETHOD List_sp ObjectSet_O::asCons() {
   return res;
 }
 
-CL_NAME("adapt:objectSetUnion");
+CL_LISPIFY_NAME("adapt:objectSetUnion");
 CL_DEFMETHOD ObjectSet_sp ObjectSet_O::setUnion(ObjectSet_sp other) {
   ObjectSet_sp os = ObjectSet_O::create();
   os->addObjects(this->sharedThis<ObjectSet_O>());
@@ -63,7 +63,7 @@ CL_DEFMETHOD ObjectSet_sp ObjectSet_O::setUnion(ObjectSet_sp other) {
   return os;
 }
 
-CL_NAME("adapt:objectSetIntersection");
+CL_LISPIFY_NAME("adapt:objectSetIntersection");
 CL_DEFMETHOD ObjectSet_sp ObjectSet_O::intersection(ObjectSet_sp b) {
   _G();
   ObjectSet_sp nset;
@@ -80,7 +80,7 @@ CL_DEFMETHOD ObjectSet_sp ObjectSet_O::intersection(ObjectSet_sp b) {
   return nset;
 }
 
-CL_NAME("relativeComplement");
+CL_LISPIFY_NAME("relativeComplement");
 CL_DEFMETHOD ObjectSet_sp ObjectSet_O::relativeComplement(ObjectSet_sp b) {
   ObjectSet_sp nset;
   nset = ObjectSet_O::create();
@@ -147,7 +147,7 @@ void ObjectSet_O::map(std::function<void(T_sp)> const &fn) const {
   });
 }
 
-CL_NAME("addObjectsInCons");
+CL_LISPIFY_NAME("addObjectsInCons");
 CL_DEFMETHOD void ObjectSet_O::addObjectsInCons(List_sp c) {
   while (c.consp()) {
     this->insert(oCar(c));

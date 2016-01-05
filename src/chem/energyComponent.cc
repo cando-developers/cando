@@ -70,7 +70,7 @@ void	EnergyComponent_O::zeroEnergy()
 #endif
 
 
-CL_NAME("debugLogAsString");
+CL_LISPIFY_NAME("debugLogAsString");
 CL_DEFMETHOD string EnergyComponent_O::debugLogAsString()
 {
 #if TURN_ENERGY_FUNCTION_DEBUG_ON == 1

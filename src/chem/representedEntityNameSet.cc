@@ -53,19 +53,19 @@ namespace chem
 	return newCopy;
     }
 
-CL_NAME("getRepresentative");
+CL_LISPIFY_NAME("getRepresentative");
 CL_DEFMETHOD     core::Symbol_sp	RepresentedEntityNameSet_O::getRepresentative()
     {_G();
 	return this->_Representative;
     }
 
-CL_NAME("setRepresentative");
+CL_LISPIFY_NAME("setRepresentative");
 CL_DEFMETHOD     void	RepresentedEntityNameSet_O::setRepresentative(core::Symbol_sp cc )
     {_G();
 	this->_Representative = cc;
     }
 
-CL_NAME("hasRepresentative");
+CL_LISPIFY_NAME("hasRepresentative");
 CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
     {_G();
 	return this->_Representative.notnilp();

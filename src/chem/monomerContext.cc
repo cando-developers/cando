@@ -83,7 +83,7 @@ namespace chem
     }
 
 
-CL_NAME("addNeighbor");
+CL_LISPIFY_NAME("addNeighbor");
 CL_DEFMETHOD     void	MonomerContext_O::addNeighbor( core::Symbol_sp cn, EntityNameSetBase_sp r)
     {_OF();
 	LOG(BF("Added neighbor with key plug: %s") % cn->__repr__()  );
@@ -188,7 +188,7 @@ CL_DEFMETHOD     void	MonomerContext_O::addNeighbor( core::Symbol_sp cn, EntityN
     }
 
 
-CL_NAME("getKey");
+CL_LISPIFY_NAME("getKey");
 CL_DEFMETHOD core::Symbol_sp MonomerContext_O::getKey()
     {_G();
 	stringstream	ss, si, so;
@@ -205,7 +205,7 @@ CL_DEFMETHOD core::Symbol_sp MonomerContext_O::getKey()
 
 
 
-CL_NAME("getAllSpecificKeys");
+CL_LISPIFY_NAME("getAllSpecificKeys");
 CL_DEFMETHOD     adapt::SymbolSet_sp	MonomerContext_O::getAllSpecificKeys()
     {_G();
 	adapt::SymbolSet_sp	expandedList;
@@ -229,7 +229,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp	MonomerContext_O::getAllSpecificKeys()
 	return expandedList;
     }
 
-CL_NAME("getAllSpecificContexts");
+CL_LISPIFY_NAME("getAllSpecificContexts");
 CL_DEFMETHOD     SpecificContextSet_sp MonomerContext_O::getAllSpecificContexts()
     {_G();
 	adapt::SymbolSet_sp	selfNames;
@@ -312,7 +312,7 @@ core::Symbol_sp MonomerContext_O::getFirstSpecificKey()
 
 
 
-CL_NAME("recognizesMonomerAndEnvironment");
+CL_LISPIFY_NAME("recognizesMonomerAndEnvironment");
 CL_DEFMETHOD     bool	MonomerContext_O::recognizesMonomerAndEnvironment(Monomer_sp mon)
     {_G();
       IMPLEMENT_MEF(BF("Handle new symbol names and monomer couplings are supposed to be a multimap!!!!!!"));
@@ -355,7 +355,7 @@ CL_DEFMETHOD     bool	MonomerContext_O::recognizesMonomerAndEnvironment(Monomer_
 
 
 
-CL_NAME("setFocusFromMonomer");
+CL_LISPIFY_NAME("setFocusFromMonomer");
 CL_DEFMETHOD     void	MonomerContext_O::setFocusFromMonomer(Monomer_sp mon)
     {_G();
 	EntityNameSet_sp	ss;
@@ -367,7 +367,7 @@ CL_DEFMETHOD     void	MonomerContext_O::setFocusFromMonomer(Monomer_sp mon)
     }
 
 
-CL_NAME("getPlugNames");
+CL_LISPIFY_NAME("getPlugNames");
 CL_DEFMETHOD     adapt::SymbolSet_sp MonomerContext_O::getPlugNames() const
     {_OF();
 	adapt::SymbolSet_sp names = adapt::SymbolSet_O::create();
@@ -380,7 +380,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp MonomerContext_O::getPlugNames() const
     }
 
 
-CL_NAME("getNeighbor");
+CL_LISPIFY_NAME("getNeighbor");
 CL_DEFMETHOD     EntityNameSetBase_sp MonomerContext_O::getNeighbor(core::Symbol_sp name) const
     {_OF();
 	if ( this->_Neighbors.count(name) == 0 )

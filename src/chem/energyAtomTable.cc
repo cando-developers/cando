@@ -124,7 +124,7 @@ string		EnergyAtom::getResidueAndName()
 	return &this->_Atoms[core::clasp_to_fixnum(it)];
     }
 
-CL_NAME("addAtomInfo");
+CL_LISPIFY_NAME("addAtomInfo");
 CL_DEFMETHOD     int AtomTable_O::addAtomInfo(Atom_sp atom, units::Quantity_sp charge, units::Quantity_sp mass, int typeIndex )
     {_OF();
 	int coordinateIndex = this->getNumberOfAtoms()*3;

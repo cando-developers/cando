@@ -53,7 +53,7 @@ namespace adapt {
   __END_DOC
 */
 
-CL_NAME("insertConsStrings");
+CL_LISPIFY_NAME("insertConsStrings");
 CL_DEFMETHOD StringSet_sp StringSet_O::insertConsStrings(List_sp vals) {
   for (auto p : vals) {
     Str_sp t = gc::As<Str_sp>(oCar(p));
@@ -69,7 +69,7 @@ void StringSet_O::insertVectorStrings(VectorStrings s) {
   }
 }
 
-CL_NAME("insertStringSet");
+CL_LISPIFY_NAME("insertStringSet");
 CL_DEFMETHOD void StringSet_O::insertStringSet(StringSet_sp s) {
   set<string>::iterator si;
   for (si = s->strs.begin(); si != s->strs.end(); si++) {
@@ -107,7 +107,7 @@ string StringSet_O::__repr__() const {
   }
   return ss.str();
 }
-CL_NAME("asString");
+CL_LISPIFY_NAME("asString");
 CL_DEFMETHOD string StringSet_O::asString() {
   stringstream ss;
   set<string>::iterator si;
@@ -142,7 +142,7 @@ void StringSet_O::archiveBase(ArchiveP node) {
   }
 }
 
-CL_NAME("contains");
+CL_LISPIFY_NAME("contains");
 CL_DEFMETHOD bool StringSet_O::contains(const string &s) {
   _G();
   bool ye;
@@ -150,7 +150,7 @@ CL_DEFMETHOD bool StringSet_O::contains(const string &s) {
   return ye;
 }
 
-CL_NAME("containsSubset");
+CL_LISPIFY_NAME("containsSubset");
 CL_DEFMETHOD bool StringSet_O::containsSubset(StringSet_sp sub) {
   StringSet_O::iterator si;
   for (si = sub->begin(); si != sub->end(); si++) {
@@ -161,7 +161,7 @@ CL_DEFMETHOD bool StringSet_O::containsSubset(StringSet_sp sub) {
   return true;
 }
 
-CL_NAME("clear");
+CL_LISPIFY_NAME("clear");
 CL_DEFMETHOD void StringSet_O::clear() {
   _OF();
   LOG(BF("StringSet::clear size=%d") % (this->strs.size()));
@@ -210,7 +210,7 @@ StringSet_O::StringSet_O(const StringSet_O &ss) : CxxObject_O(ss) {
   this->strs = ss.strs;
 }
 
-CL_NAME("setFromString");
+CL_LISPIFY_NAME("setFromString");
 CL_DEFMETHOD void StringSet_O::setFromString(const string &s) {
   _G();
   VectorStrings words;
@@ -219,7 +219,7 @@ CL_DEFMETHOD void StringSet_O::setFromString(const string &s) {
   this->insertVectorStrings(words);
 }
 
-CL_NAME("StringSetUnion");
+CL_LISPIFY_NAME("StringSetUnion");
 CL_DEFMETHOD StringSet_sp StringSet_O::setUnion(StringSet_sp b) {
   _G();
   StringSet_sp nset;
@@ -234,7 +234,7 @@ CL_DEFMETHOD StringSet_sp StringSet_O::setUnion(StringSet_sp b) {
   return nset;
 }
 
-CL_NAME("StringSetIntersection");
+CL_LISPIFY_NAME("StringSetIntersection");
 CL_DEFMETHOD StringSet_sp StringSet_O::intersection(StringSet_sp b) {
   _G();
   StringSet_sp nset;
@@ -252,7 +252,7 @@ CL_DEFMETHOD StringSet_sp StringSet_O::intersection(StringSet_sp b) {
   return nset;
 }
 
-CL_NAME("relativeComplement");
+CL_LISPIFY_NAME("relativeComplement");
 CL_DEFMETHOD StringSet_sp StringSet_O::relativeComplement(StringSet_sp b) {
   StringSet_sp nset;
   set<string>::iterator si;
@@ -268,7 +268,7 @@ CL_DEFMETHOD StringSet_sp StringSet_O::relativeComplement(StringSet_sp b) {
 /*! Return a new set that takes every element of (this) in combination
   with every element in b separated by a comma
 */
-CL_NAME("cartesianProductInsert");
+CL_LISPIFY_NAME("cartesianProductInsert");
 CL_DEFMETHOD StringSet_sp StringSet_O::cartesianProductInsert(string ins, StringSet_sp b) {
   _G();
   StringSet_sp nset;
@@ -285,7 +285,7 @@ CL_DEFMETHOD StringSet_sp StringSet_O::cartesianProductInsert(string ins, String
   return nset;
 }
 
-CL_NAME("asCons");
+CL_LISPIFY_NAME("asCons");
 CL_DEFMETHOD List_sp StringSet_O::asCons() const {
   _G();
   List_sp cur = _Nil<T_O>();

@@ -161,7 +161,7 @@ namespace chem
 
 
 
-CL_NAME("setTop");
+CL_LISPIFY_NAME("setTop");
 CL_DEFMETHOD     void SpanningLoop_O::setTop( Atom_sp c )
     {_G();
 	this->top = 	c;
@@ -193,13 +193,13 @@ CL_DEFMETHOD     void SpanningLoop_O::setTop( Atom_sp c )
 
 
 
-CL_NAME("getAtom");
+CL_LISPIFY_NAME("getAtom");
 CL_DEFMETHOD     Atom_sp	SpanningLoop_O::getAtom()
     {_G();
 	return downcast<Atom_O>(this->currentObject);
     }
 
-CL_NAME("advanceLoopAndProcess");
+CL_LISPIFY_NAME("advanceLoopAndProcess");
 CL_DEFMETHOD     bool	SpanningLoop_O::advanceLoopAndProcess()
     {_G();
 	if ( !this->done) {
@@ -338,7 +338,7 @@ bool SpanningLoop_O::advanceLoopAndProcessWhenTestTrue(std::function<bool (Atom_
 }
 
 
-CL_NAME("next");
+CL_LISPIFY_NAME("next");
 CL_DEFMETHOD core::T_sp SpanningLoop_O::next(core::T_sp funcDesig) {
   if ( this->done ) return _Nil<core::T_O>();
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
@@ -349,7 +349,7 @@ CL_DEFMETHOD core::T_sp SpanningLoop_O::next(core::T_sp funcDesig) {
 }
 
 
-CL_NAME("allAtoms");
+CL_LISPIFY_NAME("allAtoms");
 CL_DEFMETHOD     core::List_sp	SpanningLoop_O::allAtoms()
     {
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());

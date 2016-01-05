@@ -87,7 +87,7 @@ void ChemInfoMatch_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw, closestMatch), this->_ClosestMatch);
 }
 
-CL_NAME("ChemInfoMatch-matches");
+CL_LISPIFY_NAME("ChemInfoMatch-matches");
 CL_DEFMETHOD bool ChemInfoMatch_O::matches() {
   _G();
   return this->_Matches;
@@ -139,14 +139,14 @@ bool ChemInfoMatch_O::hasAtomWithTag(core::Symbol_sp tag) {
   return this->_TagLookup->gethash(tag).notnilp();
 }
 
-CL_NAME("getAtomWithTagOrNil");
+CL_LISPIFY_NAME("getAtomWithTagOrNil");
 CL_DEFMETHOD gc::Nilable<Atom_sp> ChemInfoMatch_O::getAtomWithTagOrNil(core::Symbol_sp tag) {
   if (!this->hasAtomWithTag(tag))
     return _Nil<core::T_O>();
   return this->getAtomWithTag(tag);
 }
 
-CL_NAME("getAtomWithTag");
+CL_LISPIFY_NAME("getAtomWithTag");
 CL_DEFMETHOD Atom_sp ChemInfoMatch_O::getAtomWithTag(core::Symbol_sp tag) {
   _G();
   core::T_mv tatom = this->_TagLookup->gethash(tag);
@@ -162,7 +162,7 @@ void ChemInfoMatch_O::forgetAtomTag(core::Symbol_sp tag) {
   this->_TagLookup->remhash(tag);
 }
 
-CL_NAME("describeClosestMatch");
+CL_LISPIFY_NAME("describeClosestMatch");
 CL_DEFMETHOD void ChemInfoMatch_O::describeClosestMatch() {
   this->_ClosestMatch->mapHash([](core::T_sp key, core::T_sp val) {
           _lisp->print(BF("  tag(%s) = %s") % _rep_(key) % _rep_(val) );
@@ -191,13 +191,13 @@ void WildElementDict_O::initialize() {
   this->_AtomWildCards = core::HashTableEqual_O::create_default();
 }
 
-CL_NAME("addWildName");
+CL_LISPIFY_NAME("addWildName");
 CL_DEFMETHOD void WildElementDict_O::addWildName(core::Symbol_sp name) {
   adapt::SymbolSet_sp m = adapt::SymbolSet_O::create();
   this->_AtomWildCards->setf_gethash(name, m);
 }
 
-CL_NAME("addWildNameMap");
+CL_LISPIFY_NAME("addWildNameMap");
 CL_DEFMETHOD void WildElementDict_O::addWildNameMap(core::Symbol_sp wildName, core::Symbol_sp elementName) {
   _OF();
   if (!this->_AtomWildCards->contains(wildName)) {
@@ -265,7 +265,7 @@ uint ChemInfo_O::depth() const {
   return d;
 }
 
-CL_NAME("compileSmarts");
+CL_LISPIFY_NAME("compileSmarts");
 CL_DEFMETHOD bool ChemInfo_O::compileSmarts(const string &code) {
   _OF();
   SmartsRoot_sp root;
@@ -295,7 +295,7 @@ void ChemInfo_O::defineTests(core::List_sp tests) {
     this->_Root->addTest(testSymbol, testCode);
   }
 }
-CL_NAME("compileAntechamber");
+CL_LISPIFY_NAME("compileAntechamber");
 CL_DEFMETHOD bool ChemInfo_O::compileAntechamber(const string &code, WildElementDict_sp dict) {
   _G();
   AntechamberRoot_sp root;
@@ -317,7 +317,7 @@ CL_DEFMETHOD bool ChemInfo_O::compileAntechamber(const string &code, WildElement
   return true;
 }
 
-CL_NAME("matches");
+CL_LISPIFY_NAME("matches");
 CL_DEFMETHOD bool ChemInfo_O::matches(chem::Atom_sp a) {
   _G();
   ASSERTNOTNULL(this->_Root);
@@ -347,7 +347,7 @@ void ChemInfo_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw, root), this->_Root);
 }
 
-CL_NAME("getMatch");
+CL_LISPIFY_NAME("getMatch");
 CL_DEFMETHOD ChemInfoMatch_sp ChemInfo_O::getMatch() {
   _G();
   ASSERTNOTNULL(this->_Root);
@@ -1849,7 +1849,7 @@ core::T_sp ChemInfo_O::__init__(core::Function_sp exec, core::Cons_sp args, core
 
 #endif
 
-CL_NAME("asSmarts");
+CL_LISPIFY_NAME("asSmarts");
 CL_DEFMETHOD string ChemInfo_O::asSmarts() const {
   _OF();
   return this->_Root->asSmarts();

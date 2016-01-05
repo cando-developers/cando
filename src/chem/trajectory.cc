@@ -167,7 +167,7 @@ void	Trajectory_O::_setupAtomList(Matter_sp matter)
 
 
 
-CL_NAME("addFrame");
+CL_LISPIFY_NAME("addFrame");
 CL_DEFMETHOD TrajectoryFrame_sp Trajectory_O::addFrame(Matter_sp matter)
 {_G();
     ASSERTP(matter == this->_Matter,"The matter argument must match the Matter used to define this trajectory");
@@ -178,14 +178,14 @@ CL_DEFMETHOD TrajectoryFrame_sp Trajectory_O::addFrame(Matter_sp matter)
 }
 
 
-CL_NAME("numberOfTrajectoryFrames");
+CL_LISPIFY_NAME("numberOfTrajectoryFrames");
 CL_DEFMETHOD uint Trajectory_O::numberOfTrajectoryFrames()
 {_G();
     return this->_Frames.size();
 }
 
 
-CL_NAME("getTrajectoryFrame");
+CL_LISPIFY_NAME("getTrajectoryFrame");
 CL_DEFMETHOD TrajectoryFrame_sp Trajectory_O::getTrajectoryFrame(uint i)
 {_G();
     ASSERT_lt(i,this->_Frames.size());
@@ -205,7 +205,7 @@ geom::Render_sp Trajectory_O::rendered(core::List_sp kargs)
 }
 #endif
 
-CL_NAME("applyTrajectoryFrameToMatter");
+CL_LISPIFY_NAME("applyTrajectoryFrameToMatter");
 CL_DEFMETHOD void Trajectory_O::applyTrajectoryFrameToMatter(TrajectoryFrame_sp f)
 {_G();
     f->applyToMatter(this->_AtomList);

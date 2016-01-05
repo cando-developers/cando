@@ -425,7 +425,7 @@ mps_res_t main_thread_roots_scan(mps_ss_t ss, void *gc__p, size_t gc__s) {
 #define ServeEventPkg serveEvent
 #define SocketsPkg sockets
 
-#define DO_SYMBOL(sym, id, pkg, name, exprt) SMART_PTR_FIX(pkg::sym)
+#define DO_SYMBOL( ns, sym, id, pkg, name, exprt) SMART_PTR_FIX(pkg::sym)
   #ifndef SCRAPING
 #include <generated/symbols_scraped_inc.h>
       #endif

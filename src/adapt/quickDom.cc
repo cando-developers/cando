@@ -204,13 +204,13 @@ int			newLines;
     return newLines;
 }
 
-CL_NAME("isLeaf");
+CL_LISPIFY_NAME("isLeaf");
 CL_DEFMETHOD     bool QDomNode_O::isLeaf()
     {
 	return this->_children.size() == 0;
     }
 
-CL_NAME("children");
+CL_LISPIFY_NAME("children");
 CL_DEFMETHOD core::List_sp QDomNode_O::children()
 {
     core::Cons_sp first, cur;
@@ -227,7 +227,7 @@ CL_DEFMETHOD core::List_sp QDomNode_O::children()
 
 
 
-CL_NAME("writeToFileName");
+CL_LISPIFY_NAME("writeToFileName");
 CL_DEFMETHOD void	QDomNode_O::writeToFileName( string fileName )
 {_G();
     std::ofstream	out;
@@ -236,7 +236,7 @@ CL_DEFMETHOD void	QDomNode_O::writeToFileName( string fileName )
     out.close();
 }
 
-CL_NAME("appendToFileName");
+CL_LISPIFY_NAME("appendToFileName");
 CL_DEFMETHOD void	QDomNode_O::appendToFileName( string fileName )
 {
     std::ofstream	out;
@@ -476,7 +476,7 @@ std::ostream& QDomNode_O::dumpToStream(std::ostream& o) {
 
 
 
-CL_NAME("dump");
+CL_LISPIFY_NAME("dump");
 CL_DEFMETHOD void	QDomNode_O::dump() {
     this->dumpChildToStream(std::cout, "");
 }
@@ -515,7 +515,7 @@ VectorQDomNodes::iterator	it;
     return childs;
 }
 
-CL_NAME("childWithName");
+CL_LISPIFY_NAME("childWithName");
 CL_DEFMETHOD QDomNode_sp	QDomNode_O::childWithName( const string& name ) 
 {_OF();
 QDomNode_sp			child;
@@ -540,7 +540,7 @@ int				children;
 }
 
 
-CL_NAME("onlyChild");
+CL_LISPIFY_NAME("onlyChild");
 CL_DEFMETHOD QDomNode_sp	QDomNode_O::onlyChild()
 {_OF();
 QDomNode_sp			child;
@@ -578,7 +578,7 @@ iterator		it;
 
 
 
-CL_NAME("hasChildrenWithName");
+CL_LISPIFY_NAME("hasChildrenWithName");
 CL_DEFMETHOD bool	QDomNode_O::hasChildrenWithName( const string& name )
 {
     return this->countChildrenWithName(name) > 0;
@@ -749,7 +749,7 @@ gc::Nilable<QDomNode_sp>  QDomNode_O::parse(core::T_sp stream)
 
 
 
-CL_NAME("asString");
+CL_LISPIFY_NAME("asString");
 CL_DEFMETHOD string	QDomNode_O::asString()
 {_OF();
 stringstream	ss;
@@ -758,7 +758,7 @@ stringstream	ss;
 }
 
 
-CL_NAME("addChild");
+CL_LISPIFY_NAME("addChild");
 CL_DEFMETHOD void	QDomNode_O::addChild(QDomNode_sp child)
 {_G();
     if ( !child ) {
