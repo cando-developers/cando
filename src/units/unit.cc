@@ -29,7 +29,7 @@ namespace units
 	    .def("*",&Unit_O::operator*)
 	    .def("/",&Unit_O::operator/)
 	;
-      core::af_def(UnitsPkg,"make-unit",&Unit_O::make);
+//      core::af_def(UnitsPkg,"make-unit",&Unit_O::make);
     }
 
     void Unit_O::exposePython(core::Lisp_sp lisp)
@@ -69,7 +69,8 @@ Unit_sp Unit_O::createSquareRoot(Unit_sp orig)
 /*! Create a new unit by combining other units with powers.
 eg: (make-unit (list units:meters 1 units:seconds -1))
 */
-    Unit_sp Unit_O::make(core::List_sp args)
+CL_LISPIFY_NAME(make-unit);
+CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
     {_G();
 	GC_ALLOCATE(Unit_O,u);
 	Unit_O::parseUnitList(u->_Amount,u->_Powers,args);

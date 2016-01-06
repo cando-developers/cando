@@ -20,7 +20,8 @@ namespace geom {
     }
 #endif
 
-OMatrix_sp OMatrix_O::make(bool identity)
+CL_LISPIFY_NAME(make-omatrix);
+CL_DEFUN OMatrix_sp OMatrix_O::make(bool identity)
 {
   GC_ALLOCATE_VARIADIC(OMatrix_O,om,identity);
   return om;
@@ -132,7 +133,7 @@ void OMatrix_O::decode(core::List_sp c) {
 	    .def("transposed3x3",&OMatrix_O::transposed3x3)
 	    .def("is3x3Orthogonal",&OMatrix_O::is3x3Orthogonal)
 	    ;
-        core::af_def(GeomPkg,"make-omatrix",&OMatrix_O::make);
+//        core::af_def(GeomPkg,"make-omatrix",&OMatrix_O::make);
     }
 
     void OMatrix_O::exposePython(core::Lisp_sp lisp)

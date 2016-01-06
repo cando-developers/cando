@@ -124,7 +124,9 @@ void energyFunction_initializeSmarts(core::Lisp_sp lisp)
 #define ARGS_EnergyFunction_O_make "(matter force_field &optional active-atoms)"
 #define DECL_EnergyFunction_O_make ""
 #define DOCS_EnergyFunction_O_make "make EnergyFunction"
-EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms)
+CL_LAMBDA(matter force_field &optional active-atoms);
+CL_LISPIFY_NAME(make-energy-function);
+CL_DEFUN EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms)
   {_G();
       GC_ALLOCATE(EnergyFunction_O, me );
     if ( matter.notnilp() )
@@ -164,7 +166,7 @@ core::T_sp EnergyFunction_O::__init__(core::Function_sp exec, core::Cons_sp args
 
     void EnergyFunction_O::exposeCando(core::Lisp_sp lisp)
     {
-	Defun_maker(ChemPkg,EnergyFunction);
+//	Defun_maker(ChemPkg,EnergyFunction);
 	core::class_<EnergyFunction_O>()
 //	    .def_raw("core:__init__",&EnergyFunction_O::__init__,"(self &key matter forceField)")
     	.def("setOptions",&EnergyFunction_O::setOptions)

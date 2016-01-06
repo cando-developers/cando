@@ -543,8 +543,8 @@ void StereoConfiguration_O::exposeCando(core::Lisp_sp lisp)
 	.def("setConfiguration",&StereoConfiguration_O::setConfiguration)
 	.def("getMoeConfiguration",&StereoConfiguration_O::getMoeConfiguration)
 	;
-	Chem_temp_Defun(stereochemical_permutations);
-	Chem_temp_Defun(stereo_configuration_create_multiple);
+//	Chem_temp_Defun(stereochemical_permutations);
+//	Chem_temp_Defun(stereo_configuration_create_multiple);
 //	def("stereochemicalPermutations",&StereoConfiguration_O::stereochemicalPermutations,lisp->lisp());
 
     }

@@ -27,7 +27,8 @@ namespace geom
 #define ARGS_ColoredVertex_O_make "(pos color)"
 #define DECL_ColoredVertex_O_make ""
 #define DOCS_ColoredVertex_O_make "Create a colored vertex"
-    ColoredVertex_sp ColoredVertex_O::make(OVector3_sp opos, Color_sp color)
+CL_LISPIFY_NAME(make-colored-vertex);
+CL_DEFUN ColoredVertex_sp ColoredVertex_O::make(OVector3_sp opos, Color_sp color)
     {_G();
 	ColoredVertex_sp me = ColoredVertex_O::create();
 	Vector3 pos = opos->get();
@@ -45,7 +46,7 @@ namespace geom
 	    .def("setColor",&ColoredVertex_O::setColor)
 	    .def("getColor",&ColoredVertex_O::getColor)
 	    ;
-	af_def(CorePkg,"make-colored-vertex",&ColoredVertex_O::make,ARGS_ColoredVertex_O_make,DECL_ColoredVertex_O_make,DOCS_ColoredVertex_O_make);
+//	af_def(CorePkg,"make-colored-vertex",&ColoredVertex_O::make,ARGS_ColoredVertex_O_make,DECL_ColoredVertex_O_make,DOCS_ColoredVertex_O_make);
     }
 
     void ColoredVertex_O::exposePython(core::Lisp_sp lisp)

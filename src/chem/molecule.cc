@@ -353,7 +353,9 @@ CL_DEFMETHOD     Residue_sp	Molecule_O::getFirstResidueWithName(MatterName name)
 #define ARGS_Molecule_O_make "(&key (name \"\"))"
 #define DECL_Molecule_O_make ""
 #define DOCS_Molecule_O_make "make Molecule args: &key name"
-Molecule_sp Molecule_O::make(MatterName name)
+CL_LAMBDA("(&key (name \"\"))");
+CL_LISPIFY_NAME(make-molecule);
+CL_DEFUN Molecule_sp Molecule_O::make(MatterName name)
 {_G();
     GC_ALLOCATE(Molecule_O,me);
     me->setName(name);
@@ -378,7 +380,7 @@ Molecule_sp Molecule_O::make(MatterName name)
 	    .def("numberOfResiduesWithName",&Molecule_O::numberOfResiduesWithName)
 	    .def("getFirstResidueWithName",&Molecule_O::getFirstResidueWithName)
 	    ;
-	Defun_maker(ChemPkg,Molecule);
+//	Defun_maker(ChemPkg,Molecule);
     }
 
     void Molecule_O::exposePython(core::Lisp_sp lisp)

@@ -52,7 +52,8 @@ __END_DOC
 #define ARGS_chem__define_monomer_pack "(packName parts &optional atomAliases)"
 #define DECL_chem__define_monomer_pack ""
 #define DOCS_chem__define_monomer_pack "defineMonomerPack"
-    core::T_sp chem__define_monomer_pack(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomAliases )
+CL_LAMBDA(pack-name parts &optional atom-aliases);
+CL_DEFUN core::T_sp chem__define_monomer_pack(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomAliases )
     {_G();
 	CandoDatabase_sp	bdb;
 	core::T_sp		oarg1;
@@ -99,7 +100,7 @@ __END_DOC
 #define ARGS_chem__extend_aliases "(packName parts atomAliases)"
 #define DECL_chem__extend_aliases ""
 #define DOCS_chem__extend_aliases "extendAliases"
-    core::T_sp chem__extend_aliases(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomAliases)
+CL_DEFUN core::T_sp chem__extend_aliases(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomAliases)
     {_G();
 	CandoDatabase_sp	bdb;
 	core::T_sp		oarg1;
@@ -141,7 +142,8 @@ __END_DOC
 #define ARGS_chem__set_monomer_pack "(packName parts &optional atomAliases)"
 #define DECL_chem__set_monomer_pack ""
 #define DOCS_chem__set_monomer_pack "setMonomerPack"
-    core::T_sp chem__set_monomer_pack(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomNames )
+CL_LAMBDA(pack-name parts &optional atom-aliases);
+CL_DEFUN core::T_sp chem__set_monomer_pack(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomNames )
     {_G();
 	core::T_sp opack = chem__define_monomer_pack(packName,parts,atomNames);
 	MonomerPack_sp pack = downcast<MonomerPack_O>(opack);
@@ -450,9 +452,9 @@ void MonomerPack_O::exposeCando(core::Lisp_sp lisp)
 	.def("removeMonomerName",&MonomerPack_O::removeMonomerName)
 //	.def("setInterestingAtomAliasesFromString",&MonomerPack_O::setInterestingAtomAliasesFromString)
     ;
-    Chem_temp_Defun(define_monomer_pack);
-    Chem_temp_Defun(extend_aliases);
-    Chem_temp_Defun(set_monomer_pack);
+//    Chem_temp_Defun(define_monomer_pack);
+//    Chem_temp_Defun(extend_aliases);
+//    Chem_temp_Defun(set_monomer_pack);
 }
 
 void MonomerPack_O::exposePython(core::Lisp_sp lisp)

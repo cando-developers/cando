@@ -25,7 +25,9 @@ namespace geom
 #define ARGS_CoordinateArray_O_make "(fnsize &optional vals)"
 #define DECL_CoordinateArray_O_make ""
 #define DOCS_CoordinateArray_O_make "fnsize vals"
-CoordinateArray_sp CoordinateArray_O::make(gc::Nilable<core::Fixnum_sp> fnsize, core::List_sp vals)
+CL_LAMBDA(fnsize &optional vals);
+CL_LISPIFY_NAME(make-coordinate-array);
+CL_DEFUN CoordinateArray_sp CoordinateArray_O::make(gc::Nilable<core::Fixnum_sp> fnsize, core::List_sp vals)
     {_G();
 	if ( fnsize.notnilp() && vals.notnilp() )
 	{
@@ -455,7 +457,7 @@ void CoordinateArray_O::decode(core::List_sp c) {
 //	    .def("read-from-stream",&CoordinateArray_O::parseFromStream)
 	    .def("multiplyByScalar",&CoordinateArray_O::multiplyByScalar)
 	    ;
-        Defun_maker(GeomPkg,CoordinateArray);
+//        Defun_maker(GeomPkg,CoordinateArray);
     }
     void CoordinateArray_O::exposePython(core::Lisp_sp lisp)
     {_G();

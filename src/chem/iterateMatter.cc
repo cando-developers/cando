@@ -152,7 +152,7 @@ CL_DEFMETHOD     bool	IterateMatter_O::advance()
 #define ARGS_chem__create_for_matter "(matter)"
 #define DECL_chem__create_for_matter ""
 #define DOCS_chem__create_for_matter "createForMatter"
-    core::T_sp chem__create_for_matter(Matter_sp matter)
+CL_DEFUN core::T_sp chem__create_for_matter(Matter_sp matter)
     {_G();
 	GC_ALLOCATE(IterateAtoms_O, ia );
 	ia->initTopAndGoal(matter,ATOMS);
@@ -207,7 +207,8 @@ CL_DEFMETHOD     bool	IterateMatter_O::advance()
 #define ARGS_IterateResidues_O_createForMatter "(matter)"
 #define DECL_IterateResidues_O_createForMatter ""
 #define DOCS_IterateResidues_O_createForMatter "IterateResidues_O_createForMatter"
-    core::T_sp IterateResidues_O::createForMatter(Matter_sp matter)
+CL_LISPIFY_NAME(residues);
+CL_DEFUN core::T_sp IterateResidues_O::createForMatter(Matter_sp matter)
     {_G();
 	return IterateResidues_O::create(matter);
     }
@@ -221,13 +222,13 @@ CL_DEFMETHOD     bool	IterateMatter_O::advance()
 
 
 
-
-    IterateBonds_sp IterateBonds_O::create(Matter_sp top)
-    {_G();
-	GC_ALLOCATE(IterateBonds_O, ia );
-	ia->initTopAndGoal(top,BONDS);
-	return ia;
-    }
+CL_LISPIFY_NAME(bonds);
+CL_DEFUN IterateBonds_sp IterateBonds_O::make(Matter_sp top)
+{
+  GC_ALLOCATE(IterateBonds_O, ia );
+  ia->initTopAndGoal(top,BONDS);
+  return ia;
+}
 
 
 
@@ -297,7 +298,7 @@ CL_DEFMETHOD     int IterateBonds_O::getBondOrder()
 	    core::class_<IterateAtoms_O>()
 //		.def_raw("core:__init__",&IterateAtoms_O::__init__,"(self matter)")
 		;
-	    Chem_temp_Defun(create_for_matter);
+//	    Chem_temp_Defun(create_for_matter);
 	}
 
     void IterateAtoms_O::exposePython(core::Lisp_sp lisp)
@@ -318,10 +319,12 @@ CL_DEFMETHOD     int IterateBonds_O::getBondOrder()
     {
 	core::class_<IterateResidues_O>()
 	    ;
+#if 0
 	af_def(ChemPkg,"residues",&IterateResidues_O::createForMatter,
 	       ARGS_IterateResidues_O_createForMatter,
 	       DECL_IterateResidues_O_createForMatter,
 	       DOCS_IterateResidues_O_createForMatter );
+#endif
     }
 
     void IterateResidues_O::exposePython(core::Lisp_sp lisp)
@@ -343,10 +346,12 @@ CL_DEFMETHOD     int IterateBonds_O::getBondOrder()
 	    .def("getAtom2",&IterateBonds_O::getAtom2)
 	    .def("getBondOrder",&IterateBonds_O::getBondOrder)
 	    ;
+#if 0
 	core::af_def(ChemPkg,"bonds", &IterateBonds_O::createForMatter,
 		     ARGS_IterateBonds_O_createForMatter,
 		     DECL_IterateBonds_O_createForMatter,
 		     DOCS_IterateBonds_O_createForMatter );
+#endif
     }
 
     void IterateBonds_O::exposePython(core::Lisp_sp lisp)

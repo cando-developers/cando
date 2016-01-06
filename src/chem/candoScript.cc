@@ -159,7 +159,8 @@ __END_DOC
 #define ARGS_chem__database "(fileName &optional (verbosity 0))"
 #define DECL_chem__database ""
 #define DOCS_chem__database "database"
-    core::T_sp chem__database(core::T_sp fileNameDesig, core::Fixnum_sp overbosity)
+CL_LAMBDA(fileName &optional (verbosity 0));
+CL_DEFUN core::T_sp chem__database(core::T_sp fileNameDesig, core::Fixnum_sp overbosity)
     {_G();
 	IMPLEMENT_ME();
 #ifdef XML_ARCHIVE
@@ -188,7 +189,8 @@ __END_DOC
 #define ARGS_chem__standard_database "(pathDesig &optional loadSeed (overbosity 0))"
 #define DECL_chem__standard_database ""
 #define DOCS_chem__standard_database "standardDatabase"
-    core::T_sp chem__standard_database(core::T_sp pathDesig, core::T_sp loadSeed, core::Fixnum_sp overbosity)
+CL_LAMBDA(pathDesig &optional loadSeed (overbosity 0));
+CL_DEFUN core::T_sp chem__standard_database(core::T_sp pathDesig, core::T_sp loadSeed, core::Fixnum_sp overbosity)
     {_G();
 	IMPLEMENT_ME();
 #ifdef XML_ARCHIVE
@@ -219,7 +221,7 @@ __END_DOC
 #define ARGS_chem__bundle_database_path "(pathDesig)"
 #define DECL_chem__bundle_database_path ""
 #define DOCS_chem__bundle_database_path "bundleDatabasePath"
-core::T_sp chem__bundle_database_path(core::T_sp pathDesig)
+CL_DEFUN core::T_sp chem__bundle_database_path(core::T_sp pathDesig)
 {_G();
     IMPLEMENT_ME();
 #ifdef XML_ARCHIVE
@@ -356,7 +358,7 @@ __END_DOC
 #define ARGS_chem__create_virtual_atom "()"
 #define DECL_chem__create_virtual_atom ""
 #define DOCS_chem__create_virtual_atom "createVirtualAtom"
-core::T_sp chem__create_virtual_atom()
+CL_DEFUN core::T_sp chem__create_virtual_atom()
 {_G();
     IMPLEMENT_ME(); // Handle new MonomerCoordinates
 #if !KINEMATICS
@@ -486,7 +488,7 @@ __END_DOC
 #define ARGS_chem__save_archive_with_auto_set_cando_database "()"
 #define DECL_chem__save_archive_with_auto_set_cando_database ""
 #define DOCS_chem__save_archive_with_auto_set_cando_database "saveArchiveWithAutoSetCandoDatabase"
-core::T_sp chem__save_archive_with_auto_set_cando_database()
+CL_DEFUN core::T_sp chem__save_archive_with_auto_set_cando_database()
 {_G();
     IMPLEMENT_ME();
 #if 0 //fix below
@@ -520,7 +522,7 @@ __END_DOC
 #define ARGS_chem__make_coordinate_array_from_atom_list "(fileName)"
 #define DECL_chem__make_coordinate_array_from_atom_list ""
 #define DOCS_chem__make_coordinate_array_from_atom_list "loadMol2"
-geom::CoordinateArray_sp chem__make_coordinate_array_from_atom_list(core::List_sp atoms)
+CL_DEFUN geom::CoordinateArray_sp chem__make_coordinate_array_from_atom_list(core::List_sp atoms)
 {_G();
   int num = core::cl__length(atoms);
   geom::CoordinateArray_sp coords = geom::CoordinateArray_O::create(num);
@@ -539,7 +541,7 @@ geom::CoordinateArray_sp chem__make_coordinate_array_from_atom_list(core::List_s
 #define ARGS_chem__load_mol2 "(fileName)"
 #define DECL_chem__load_mol2 ""
 #define DOCS_chem__load_mol2 "loadMol2"
-core::T_sp chem__load_mol2(core::T_sp fileName)
+CL_DEFUN core::T_sp chem__load_mol2(core::T_sp fileName)
 {_G();
     Aggregate_sp agg = Aggregate_O::create();
     mol2ReadAggregateFromFileName(agg,fileName);
@@ -561,7 +563,7 @@ __END_DOC
 #define ARGS_chem__save_mol2 "(matter destDesig)"
 #define DECL_chem__save_mol2 ""
 #define DOCS_chem__save_mol2 "saveMol2"
-core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig)
+CL_DEFUN core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig)
 {_G();
   mol2WriteMatterToFileName(matter,destDesig);
   return _Nil<core::T_O>();
@@ -635,7 +637,8 @@ __END_DOC
 #define ARGS_chem__find_residue "(&rest args)"
 #define DECL_chem__find_residue ""
 #define DOCS_chem__find_residue "findResidue"
-core::T_sp chem__find_residue(core::List_sp args)
+CL_LAMBDA(&rest args);
+CL_DEFUN core::T_sp chem__find_residue(core::List_sp args)
 {_G();
     Molecule_sp molecule;
     core::Fixnum_sp	residueSequenceNumber;
@@ -684,7 +687,8 @@ __END_DOC
 #define ARGS_chem__atom_pos "(&rest args)"
 #define DECL_chem__atom_pos ""
 #define DOCS_chem__atom_pos "atomPos"
-core::T_sp chem__atom_pos(core::List_sp args)
+CL_LAMBDA(&rest args);
+CL_DEFUN core::T_sp chem__atom_pos(core::List_sp args)
 {_G();
     Molecule_sp molecule;
     core::Fixnum_sp	residueSequenceNumber;
@@ -740,7 +744,8 @@ core::T_sp chem__atom_pos(core::List_sp args)
 #define ARGS_chem__monomer "(monomerId groupName &optional monomerAliases comment)"
 #define DECL_chem__monomer ""
 #define DOCS_chem__monomer "monomer"
-core::T_sp chem__monomer(core::Symbol_sp monomerId, core::Symbol_sp groupName, core::List_sp monomerAliases, core::Str_sp comment)
+CL_LAMBDA(monomerId groupName &optional monomerAliases comment);
+CL_DEFUN core::T_sp chem__monomer(core::Symbol_sp monomerId, core::Symbol_sp groupName, core::List_sp monomerAliases, core::Str_sp comment)
 {_G();
     OligomerPart_Monomer_sp newMon;
     newMon = OligomerPart_Monomer_O::create();
@@ -761,7 +766,7 @@ core::T_sp chem__monomer(core::Symbol_sp monomerId, core::Symbol_sp groupName, c
 #define ARGS_chem__link "(monomer1Id coupling monomer2)"
 #define DECL_chem__link ""
 #define DOCS_chem__link "link"
-core::T_sp chem__link(core::Symbol_sp monomer1Id, core::Symbol_sp coupling, OligomerPart_Monomer_sp monomer2 )
+CL_DEFUN core::T_sp chem__link(core::Symbol_sp monomer1Id, core::Symbol_sp coupling, OligomerPart_Monomer_sp monomer2 )
 {_G();
     OligomerPart_Link_sp newLink;
     newLink = OligomerPart_Link_O::create();
@@ -787,7 +792,7 @@ __END_DOC
 #define ARGS_chem__calculate_point "()"
 #define DECL_chem__calculate_point ""
 #define DOCS_chem__calculate_point "calculatePoint"
-core::T_sp chem__calculate_point()
+CL_DEFUN core::T_sp chem__calculate_point()
 {_G();
     IMPLEMENT_ME(); // handle new way
 #if 0
@@ -842,7 +847,7 @@ core::T_sp chem__calculate_point()
 #define ARGS_chem__oligomer "(oligomerName parts)"
 #define DECL_chem__oligomer ""
 #define DOCS_chem__oligomer "oligomer"
-core::T_sp chem__oligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_sp parts)
+CL_DEFUN core::T_sp chem__oligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_sp parts)
 {_G();
     Oligomer_sp olig = Oligomer_O::create();
     olig->setName(oligomerName);
@@ -883,23 +888,23 @@ void	setupCandoPrimitives(core::Lisp_sp env)
 {
 
 	// for Mbb package
-  Chem_temp_Defun(make_coordinate_array_from_atom_list);
-  Chem_temp_Defun(save_archive_with_auto_set_cando_database); // ,&prim_saveArchiveWithAutoSetCandoDatabase,env);
-  Chem_temp_Defun(standard_database); // , &prim_standardDatabase,env);
-  Chem_temp_Defun(database); // , &prim_database,ARGS_prim_database,env);
+//  Chem_temp_Defun(make_coordinate_array_from_atom_list);
+//  Chem_temp_Defun(save_archive_with_auto_set_cando_database); // ,&prim_saveArchiveWithAutoSetCandoDatabase,env);
+//  Chem_temp_Defun(standard_database); // , &prim_standardDatabase,env);
+//  Chem_temp_Defun(database); // , &prim_database,ARGS_prim_database,env);
 //    Defun(describeDatabase); // , &prim_describeDatabase,env);
-  Chem_temp_Defun(bundle_database_path); // , &prim_bundleDatabasePath,ARGS_prim_bundleDatabasePath,env);
+//  Chem_temp_Defun(bundle_database_path); // , &prim_bundleDatabasePath,ARGS_prim_bundleDatabasePath,env);
 //    defNoWrapPackage(ChemPkg,"dbval", &prim_dbval,env);
-  Chem_temp_Defun(monomer); // , &prim_monomer,env);
-  Chem_temp_Defun(link); // , &prim_link,env);
-  Chem_temp_Defun(load_mol2); // , &prim_loadMol2,env);
-  Chem_temp_Defun(save_mol2); // , &prim_saveMol2,env);
-  Chem_temp_Defun(atom_pos); // , &prim_atomPos,env);
-  Chem_temp_Defun(find_residue); // , &prim_findResidue,env);
+//  Chem_temp_Defun(monomer); // , &prim_monomer,env);
+//  Chem_temp_Defun(link); // , &prim_link,env);
+//  Chem_temp_Defun(load_mol2); // , &prim_loadMol2,env);
+//  Chem_temp_Defun(save_mol2); // , &prim_saveMol2,env);
+//  Chem_temp_Defun(atom_pos); // , &prim_atomPos,env);
+//  Chem_temp_Defun(find_residue); // , &prim_findResidue,env);
 //    Defun(setDatabase); // , &prim_setDatabase,env);
 //    defNoWrapPackage(ChemPkg,"contextGrep", &prim_contextGrep,env);
-  Chem_temp_Defun(create_virtual_atom); // , &prim_createVirtualAtom,env);
-  Chem_temp_Defun(calculate_point); // , &prim_calculatePoint,env);
+//  Chem_temp_Defun(create_virtual_atom); // , &prim_createVirtualAtom,env);
+//  Chem_temp_Defun(calculate_point); // , &prim_calculatePoint,env);
 //    Defun(RequiredPlug); // , &prim_RequiredPlug,ARGS_prim_RequiredPlug,env);
 };
 

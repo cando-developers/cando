@@ -942,7 +942,7 @@ void	CDText_O::parseFromXml(adapt::QDomNode_sp text)
 //        .def("setFragmentProperties",&ChemDraw_O::setFragmentProperties)
         .def("asAggregate",&ChemDraw_O::asAggregate)
         ;
-      af_def(ChemPkg,"make-chem-draw",&ChemDraw_O::make);
+//      af_def(ChemPkg,"make-chem-draw",&ChemDraw_O::make);
       SYMBOL_EXPORT_SC_(KeywordPkg,comment);
       SYMBOL_EXPORT_SC_(KeywordPkg,chiral_centers);
       SYMBOL_EXPORT_SC_(KeywordPkg,group);
@@ -1008,7 +1008,8 @@ void	CDText_O::parseFromXml(adapt::QDomNode_sp text)
 #define ARGS_ChemDraw_O_make "(file_name)"
 #define DECL_ChemDraw_O_make ""
 #define DOCS_ChemDraw_O_make "make ChemDraw"
-ChemDraw_sp ChemDraw_O::make(core::T_sp stream)
+CL_LISPIFY_NAME(make-chem-draw);
+CL_DEFUN ChemDraw_sp ChemDraw_O::make(core::T_sp stream)
   {_G();
       GC_ALLOCATE(ChemDraw_O, me );
       me->parse(stream); // me->parse(stream);

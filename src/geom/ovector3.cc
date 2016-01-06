@@ -42,7 +42,8 @@ namespace geom {
 #define ARGS_OVector3_O_make "(x y z)"
 #define DECL_OVector3_O_make ""
 #define DOCS_OVector3_O_make "make OVector3 args: x y z"
-    OVector3_sp OVector3_O::make(double x, double y, double z)
+CL_LISPIFY_NAME(make_ovector3);
+CL_DEFUN OVector3_sp OVector3_O::make(double x, double y, double z)
     {_G();
 	GC_ALLOCATE(OVector3_O,ov);
 	ov->_Value[0] = x;
@@ -245,7 +246,7 @@ void OVector3_O::exposeCando(core::Lisp_sp lisp)
     .def("setUsingBondAngle",&OVector3_O::setUsingBondAngle)
     .def("setUsingBondAngleDihedral",&OVector3_O::setUsingBondAngleDihedral)
     ;
-  Defun_maker(GeomPkg,OVector3);
+//  Defun_maker(GeomPkg,OVector3);
 }
     void OVector3_O::exposePython(core::Lisp_sp lisp)
     {_G();

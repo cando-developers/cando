@@ -45,7 +45,7 @@ that look like:   #1:1.A@H_289092  into a list of lists that have the form:
 ((residue-number chain-id atom-name) ...)
 The chain-id and atom-name will be CKW keyword symbols.
 */
-core::List_sp parseChimeraAtomSpecs(const string& spec)
+CL_DEFUN core::List_sp chem__parseChimeraAtomSpecs(const string& spec)
 {_G();
   vector<string> specs = core::split(spec," \n\t");
   core::List_sp result(_Nil<core::T_O>());
@@ -63,6 +63,6 @@ core::List_sp parseChimeraAtomSpecs(const string& spec)
 }
 
 void initialize_chimera() {
-  core::af_def(ChemPkg,"parse-chimera-atom-specs",&parseChimeraAtomSpecs);
+//  core::af_def(ChemPkg,"parse-chimera-atom-specs",&parseChimeraAtomSpecs);
 };
 };

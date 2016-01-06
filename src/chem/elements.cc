@@ -343,8 +343,8 @@ void initializeElementsAndHybridization()
   }
   _sym__PLUS_hybridizationToSymbolConverter_PLUS_->defconstant(hybridizationConverter);
 
-  core::af_def(ChemPkg,"elementFromAtomNameString",&elementFromAtomNameString);
-  core::af_def(ChemPkg,"elementFromAtomNameStringCaseInsensitive",&elementFromAtomNameStringCaseInsensitive);
+//  core::af_def(ChemPkg,"elementFromAtomNameString",&elementFromAtomNameString);
+//  core::af_def(ChemPkg,"elementFromAtomNameStringCaseInsensitive",&elementFromAtomNameStringCaseInsensitive);
 
 
   core::Symbol_sp elementColors = _sym__PLUS_elementColors_PLUS_;
@@ -559,12 +559,12 @@ NONE:
 
 
 
-Element elementFromAtomNameStringCaseInsensitive(const string& name)
+CL_DEFUN Element elementFromAtomNameStringCaseInsensitive(const string& name)
 {
     return elementFromAtomNameStringBasic(name,true);
 }
 
-Element elementFromAtomNameString(const string& name)
+CL_DEFUN Element elementFromAtomNameString(const string& name)
 {
     return elementFromAtomNameStringBasic(name,false);
 }

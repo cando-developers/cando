@@ -103,7 +103,9 @@ namespace chem
 #define ARGS_Atom_O_make "(&key name element)"
 #define DECL_Atom_O_make ""
 #define DOCS_Atom_O_make "make Atom args: &key (name \"\") (element :C)"
-    Atom_sp Atom_O::make(MatterName name, Element element)
+CL_LAMBDA(&key name element);
+CL_LISPIFY_NAME(make-atom);
+CL_DEFUN Atom_sp Atom_O::make(MatterName name, Element element)
     {_G();
 	GC_ALLOCATE(Atom_O,atom);
 	atom->setName(name);
@@ -115,7 +117,8 @@ namespace chem
 #define DECL_randomizeAtomPosition ""
 #define DOCS_randomizeAtomPosition "make Atom args: &key (name \"\") (element :C)"
 CL_LISPIFY_NAME("randomizeAtomPosition");
-CL_DEFMETHOD void	Atom_O::randomizeAtomPosition(double width)
+CL_LAMBDA((core::a chem:atom) &optional (width 10.0));
+CL_DEFMETHOD void Atom_O::randomizeAtomPosition(double width)
 {
   double				x,y,z;
   Vector3				v;
@@ -279,7 +282,7 @@ void Atom_O::exposeCando(core::Lisp_sp lisp)
     .def("bondsAsList",&Atom_O::bondsAsList)
     .def("getHeavyAtomBondList",&Atom_O::getHeavyAtomBondList)
     ;
-  Defun_maker(ChemPkg,Atom);
+//  Defun_maker(ChemPkg,Atom);
 
   SYMBOL_EXPORT_SC_(ChemPkg,configurationToSymbolConverter);
   SYMBOL_EXPORT_SC_(ChemPkg,stereochemistryToSymbolConverter);

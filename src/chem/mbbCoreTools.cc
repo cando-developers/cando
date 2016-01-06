@@ -196,7 +196,7 @@ Residue_sp		res;
     }
 
 
-    void connectAtomsInMatterInCovalentContact(Matter_sp matter)
+CL_DEFUN void chem__connectAtomsInMatterInCovalentContact(Matter_sp matter)
     {_G();
         gctools::Vec0<Atom_sp>	atoms;
 	Loop lAtoms;
@@ -217,7 +217,7 @@ Residue_sp		res;
 
     /*! Return all of the atoms in the matter that are within the sphere indicated by center/radius
      */
-    adapt::ObjectSet_sp atomsWithinSphereAsObjectSet( Matter_sp matter, Vector3 center, double radius )
+CL_DEFUN adapt::ObjectSet_sp chem__atomsWithinSphereAsObjectSet( Matter_sp matter, Vector3 center, double radius )
     {_G();
 	LOG(BF("Looking for atoms in sphere with center(%s) and radius(%lf)") % center.asString() % radius );
 	adapt::ObjectSet_sp result = adapt::ObjectSet_O::create();
@@ -242,7 +242,7 @@ Residue_sp		res;
 
     /*! Return all of the atoms in the matter that are within the sphere indicated by center/radius
      */
-    adapt::ObjectSet_sp atomsInMatterAsObjectSet( Matter_sp matter)
+CL_DEFUN adapt::ObjectSet_sp chem__atomsInMatterAsObjectSet( Matter_sp matter)
     {
 	adapt::ObjectSet_sp result = adapt::ObjectSet_O::create();
 	Loop lAtoms;
@@ -260,9 +260,9 @@ __INITIALIZE(ChemPkg,exposeMbbCoreTools);
 
     void exposeMbbCoreTools(core::Lisp_sp lisp)
     {
-	core::af_def(ChemPkg,"connectAtomsInMatterInCovalentContact", &connectAtomsInMatterInCovalentContact);
-	core::af_def(ChemPkg,"atomsInMatterAsObjectSet",&atomsInMatterAsObjectSet);
-	core::af_def(ChemPkg,"atomsWithinSphereAsObjectSet",&atomsWithinSphereAsObjectSet);
+//	core::af_def(ChemPkg,"connectAtomsInMatterInCovalentContact", &connectAtomsInMatterInCovalentContact);
+//	core::af_def(ChemPkg,"atomsInMatterAsObjectSet",&atomsInMatterAsObjectSet);
+//	core::af_def(ChemPkg,"atomsWithinSphereAsObjectSet",&atomsWithinSphereAsObjectSet);
     }
 
 

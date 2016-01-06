@@ -28,6 +28,7 @@
    #:jostle
    #:gather-stereocenters
    #:set-stereoisomer
+   #:set-stereoisomer-func
    #:optimize-structure
    #:configure-minimizer
    #:minimize-no-fail
@@ -92,6 +93,8 @@
 (defpackage #:anchor
   (:use #:common-lisp)
   (:export
+   #:circle-points
+   #:zig-zag-cylinder-points
    #:anchor-atoms
    #:on-circle
    #:on-points

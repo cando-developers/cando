@@ -12,6 +12,26 @@
      collect (geom:make-ovector3 (* (cos angrad) radius)
                                  (* (sin angrad) radius) z)))
 
+
+(defun zig-zag-cylinder-points (radius num height)
+  "* Arguments
+- radius :: The radius of the cylinder.
+- num :: The number of points on each end of the cylinder.
+- height :: The height of the cylinder.
+* Description
+Generate points that zig-zag from one end of a cylinder to the other in the pattern top-(bottom-bottom-top-top)n-bottom Where n = (floor (/ 1- num) 2)."
+  (let (cy
+	(top-circle (anchor:circle-points radius num :z (/ height 2)))
+	(bottom-circle (anchor:circle-points radius num :z (- (/ height 2)))))
+    (push (pop top-circle) cy)
+    (dotimes (i (floor (/ (1- num) 2)))
+      (push (pop bottom-circle) cy)
+      (push (pop bottom-circle) cy) 
+      (push (pop top-circle) cy)
+      (push (pop top-circle) cy))
+    (push (pop bottom-circle) cy)
+    (nreverse cy)))
+
 ;;;
 ;;; Anchor atoms to points
 ;;; First always clear the anchor restraints

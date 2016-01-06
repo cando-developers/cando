@@ -132,7 +132,7 @@ public:
 	static core::Symbol_sp outPlugName(core::Symbol_sp couplingName);
         //! Return the other PlugName
 	static core::Symbol_sp otherPlugName(core::Symbol_sp plugName);
-    static bool isInPlugName(core::Symbol_sp plugName)
+CL_DEFUN static bool isInPlugName(core::Symbol_sp plugName)
     {
         return plugName->symbolName()->schar(0) == IN_PLUG_PREFIX;
     };

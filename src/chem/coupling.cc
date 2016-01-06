@@ -91,7 +91,7 @@ Oligomer_sp	Coupling_O::getOligomer()
 
 /*! Strip off the in/out prefix character of a plug name to get a coupling name
  */
-    core::Symbol_sp  DirectionalCoupling_O::couplingName(core::Symbol_sp name)
+CL_DEFUN core::Symbol_sp  DirectionalCoupling_O::couplingName(core::Symbol_sp name)
     {_G();
 	string sname = name->symbolNameAsString();
 	LOG(BF("couplingName symbol[%s]  symbolNameAsString[%s]") % name->__repr__() % sname );
@@ -102,7 +102,7 @@ Oligomer_sp	Coupling_O::getOligomer()
 	return chemkw_intern(rest);
     }
 
-    core::Symbol_sp DirectionalCoupling_O::inPlugName(core::Symbol_sp name)
+CL_DEFUN core::Symbol_sp DirectionalCoupling_O::inPlugName(core::Symbol_sp name)
     {_G();
 	stringstream	ss;
 	ss.str("");
@@ -112,7 +112,7 @@ Oligomer_sp	Coupling_O::getOligomer()
     };
 
 
-core::Symbol_sp DirectionalCoupling_O::outPlugName(core::Symbol_sp name)
+CL_DEFUN core::Symbol_sp DirectionalCoupling_O::outPlugName(core::Symbol_sp name)
 {_G();
 stringstream	ss;
     ss.str("");
@@ -123,7 +123,7 @@ stringstream	ss;
 
 
 
-    core::Symbol_sp DirectionalCoupling_O::otherPlugName(core::Symbol_sp name)
+CL_DEFUN core::Symbol_sp DirectionalCoupling_O::otherPlugName(core::Symbol_sp name)
     {_G();
 	stringstream	ss;
 	ss.str("");
@@ -852,11 +852,11 @@ void DirectionalCoupling_O::exposeCando(core::Lisp_sp lisp)
 //	.def("doDirectionalCoupling", &DirectionalCoupling_O::doDirectionalCoupling )
 	.def("throwIfBadConnections",&DirectionalCoupling_O::throwIfBadConnections)
 	;
-    core::af_def(ChemPkg,"DirectionalCoupling_otherSidePlugName", &DirectionalCoupling_O::otherPlugName);
-    core::af_def(ChemPkg,"DirectionalCoupling_isInPlugName", &DirectionalCoupling_O::isInPlugName);
-    core::af_def(ChemPkg,"DirectionalCoupling_inPlugName", &DirectionalCoupling_O::inPlugName);
-    core::af_def(ChemPkg,"DirectionalCoupling_couplingName", &DirectionalCoupling_O::couplingName);
-    core::af_def(ChemPkg,"DirectionalCoupling_outPlugName", &DirectionalCoupling_O::outPlugName);
+//    core::af_def(ChemPkg,"DirectionalCoupling_otherSidePlugName", &DirectionalCoupling_O::otherPlugName);
+//    core::af_def(ChemPkg,"DirectionalCoupling_isInPlugName", &DirectionalCoupling_O::isInPlugName);
+//    core::af_def(ChemPkg,"DirectionalCoupling_inPlugName", &DirectionalCoupling_O::inPlugName);
+//    core::af_def(ChemPkg,"DirectionalCoupling_couplingName", &DirectionalCoupling_O::couplingName);
+//    core::af_def(ChemPkg,"DirectionalCoupling_outPlugName", &DirectionalCoupling_O::outPlugName);
 }
 void DirectionalCoupling_O::exposePython(core::Lisp_sp lisp)
 {_G();

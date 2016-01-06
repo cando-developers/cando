@@ -904,7 +904,8 @@ Identify the Smallest Set of Smallest Rings (SSSR) for the Molecule or Aggregate
 Set the ring membership flags of the atoms that are in rings.
 __END_DOC
 */
-core::List_sp RingFinder_O::identifyRings(Matter_sp matter)
+CL_LISPIFY_NAME(identify-rings);
+CL_DEFUN core::List_sp RingFinder_O::identifyRings(Matter_sp matter)
 {_G();
     if ( matter.isA<Molecule_O>() )
     {
@@ -934,7 +935,8 @@ core::List_sp RingFinder_O::identifyRings(Matter_sp matter)
     SIMPLE_ERROR(BF("You can only find rings in aggregates or molecules"));
 }
 
-core::List_sp RingFinder_O::ringBonds(core::List_sp atoms) {
+CL_LISPIFY_NAME(ring-bonds);
+CL_DEFUN core::List_sp RingFinder_O::ringBonds(core::List_sp atoms) {
   core::List_sp ringBonds = _Nil<core::T_O>();
   gctools::SmallOrderedSet<Atom_sp> atomSet;
   {
@@ -972,8 +974,8 @@ core::List_sp RingFinder_O::ringBonds(core::List_sp atoms) {
     	.def("findRings", &RingFinder_O::findRings)	
 	.def("getAllRingsAsListsOfAtoms", &RingFinder_O::getAllRingsAsListsOfAtoms )
     ;
-    core::af_def(ChemPkg,"identifyRings",&RingFinder_O::identifyRings);
-    core::af_def(ChemPkg,"ringBonds",&RingFinder_O::ringBonds);
+//    core::af_def(ChemPkg,"identifyRings",&RingFinder_O::identifyRings);
+//    core::af_def(ChemPkg,"ringBonds",&RingFinder_O::ringBonds);
 }
 void RingFinder_O::exposePython(core::Lisp_sp lisp)
 {_G();

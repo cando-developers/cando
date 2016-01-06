@@ -59,10 +59,10 @@ CL_DEFMETHOD void IndexedObjectBag_O::remove_entry(Fixnum index)
   this->_Bag->remhash(core::clasp_make_fixnum(index));
 }
 
-#define ARGS_chem_makeIndexedObjectBag "()"
-#define DECL_chem_makeIndexedObjectBag ""
-#define DOCS_chem_makeIndexedObjectBag "makeIndexedObjectBag"
-IndexedObjectBag_sp chem_makeIndexedObjectBag()
+#define ARGS_chem__makeIndexedObjectBag "()"
+#define DECL_chem__makeIndexedObjectBag ""
+#define DOCS_chem__makeIndexedObjectBag "makeIndexedObjectBag"
+CL_DEFUN IndexedObjectBag_sp chem__makeIndexedObjectBag()
 {
   IndexedObjectBag_sp obj = IndexedObjectBag_O::create();
   return obj;
@@ -74,7 +74,7 @@ void IndexedObjectBag_O::exposeCando(Lisp_sp lisp) {
     .def("get_entry", &adapt::IndexedObjectBag_O::entry)
     .def("remove_entry", &adapt::IndexedObjectBag_O::remove_entry)
     ;
-  core::af_def(AdaptPkg,"make-indexed-object-bag",&chem_makeIndexedObjectBag);
+//  core::af_def(AdaptPkg,"make-indexed-object-bag",&chem_makeIndexedObjectBag);
 }
 
 void IndexedObjectBag_O::exposePython(Lisp_sp lisp) {

@@ -243,15 +243,6 @@ namespace adapt
 	{
 	case candoClasses:
 	{
-
-#define ALL_STAGES
-#define Use_AdaptPkg
-#define INVOKE_REGISTER
-#define LOOKUP_SYMBOL(pkg,name) _lisp->internWithPackageName(pkg,name)
-#include <clasp/core/initClasses.h>
-#undef INVOKE_REGISTER
-#undef Use_AdaptPkg
-#undef ALL_STAGES
 	    /*! Use the core package */
 	    this->package()->usePackage(lisp->findPackage(CorePkg));
 

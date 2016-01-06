@@ -105,7 +105,7 @@ private:	// Do not archive
     Plugs					_Plugs;
 	
 public:
-    typedef gctools::Vec0<ExtractFragment_sp>::iterator	iterateExtractFragments;
+//    typedef gctools::Vec0<ExtractFragment_sp>::iterator	iterateExtractFragments;
 //	typedef adapt::SymbolMap<ExtractScaffold_O>::iterator	iterateExtractScaffolds;
 protected:
     void setFromMonomer(Monomer_sp mon);

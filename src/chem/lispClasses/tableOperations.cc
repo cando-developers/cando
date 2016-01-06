@@ -16,7 +16,7 @@
 namespace chem
 {
 
-    bool verifyThatFieldOfAllEntriesAreEqual(Table_sp table, core::Symbol_sp field )
+CL_DEFUN bool chem__verifyThatFieldOfAllEntriesAreEqual(Table_sp table, core::Symbol_sp field )
     {_G();
 	if ( table->numberOfEntries() <= 1 ) return true;
 	TableEntry_sp firstEntry = *(table->beginEntry());
@@ -37,7 +37,7 @@ namespace chem
 
 
 
-    bool superposeAllHeavyAtoms(Table_sp table, core::Symbol_sp matterField, core::Symbol_sp writeRmsd )
+CL_DEFUN bool chem__superposeAllHeavyAtoms(Table_sp table, core::Symbol_sp matterField, core::Symbol_sp writeRmsd )
     {_G();
 	if ( !table->hasField(writeRmsd) )
 	{
@@ -126,7 +126,7 @@ public:
  * The comparison function must take two TableEntries and return true is the first entry
  * comes before the second one.
  */
-    void forEachEntryEvaluate(Table_sp table, core::Function_sp eval )
+CL_DEFUN void chem__forEachEntryEvaluate(Table_sp table, core::Function_sp eval )
     {_G();
     for ( Table_O::entryIterator ei=table->beginEntry(); ei!=table->endEntry(); ei++ )
     {
@@ -140,10 +140,10 @@ public:
 
 void initialize_tableOperations(core::Lisp_sp lisp)
 {
-    core::af_def( ChemPkg, "verifyThatFieldOfAllEntriesAreEqual", &verifyThatFieldOfAllEntriesAreEqual);
+//    core::af_def( ChemPkg, "verifyThatFieldOfAllEntriesAreEqual", &verifyThatFieldOfAllEntriesAreEqual);
 //    core::af_def( ChemPkg, "sortTableEntriesUsingComparisonFunction", &sortTableEntriesUsingComparisonFunction);
-    core::af_def( ChemPkg, "superposeAllHeavyAtoms", &superposeAllHeavyAtoms);
-    core::af_def( ChemPkg, "forEachEntryEvaluate", &forEachEntryEvaluate);
+//    core::af_def( ChemPkg, "superposeAllHeavyAtoms", &superposeAllHeavyAtoms);
+//    core::af_def( ChemPkg, "forEachEntryEvaluate", &forEachEntryEvaluate);
 }
 
 };

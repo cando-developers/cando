@@ -329,7 +329,7 @@ Aggregate_sp PdbReader_O::loadPdbConnectAtoms(core::T_sp fileName)
 #define ARGS_chem__load_pdb "(filename)"
 #define DECL_chem__load_pdb ""
 #define DOCS_chem__load_pdb "loadPdb"
-    core::T_sp chem__load_pdb(core::Str_sp fileName)
+CL_DEFUN core::T_sp chem__load_pdb(core::Str_sp fileName)
     {_G();
 	Aggregate_sp agg = PdbReader_O::loadPdbConnectAtoms(fileName);
 	return agg;
@@ -568,7 +568,8 @@ CL_DEFMETHOD     void PdbWriter_O::close()
 	}
     }
 
-void	PdbWriter_O::savePdb(Matter_sp matter, core::T_sp fileName )
+CL_LISPIFY_NAME(save-pdb);
+CL_DEFUN void	PdbWriter_O::savePdb(Matter_sp matter, core::T_sp fileName )
 {
   PdbWriter_sp writer = PdbWriter_O::create();
   writer->open(fileName);
@@ -581,7 +582,7 @@ void	PdbWriter_O::savePdb(Matter_sp matter, core::T_sp fileName )
 	{
 	    core::class_<PdbReader_O>()
 		;
-	    Chem_temp_Defun(load_pdb);
+//	    Chem_temp_Defun(load_pdb);
 	}
 
 
@@ -604,7 +605,7 @@ void	PdbWriter_O::savePdb(Matter_sp matter, core::T_sp fileName )
 	    .def("writeModel",&PdbWriter_O::writeModel)
 	    .def("close",&PdbWriter_O::close,"","","",false)
 	    ;
-	core::af_def(ChemPkg,"savePdb",&PdbWriter_O::savePdb);
+//	core::af_def(ChemPkg,"savePdb",&PdbWriter_O::savePdb);
     }
 
 

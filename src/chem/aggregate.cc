@@ -632,7 +632,9 @@ CL_DEFMETHOD     void	Aggregate_O::perturbAtomPositions(double dist)
 #define ARGS_Aggregate_O_make "(&key (name \"\"))"
 #define DECL_Aggregate_O_make ""
 #define DOCS_Aggregate_O_make "make Aggregate args: &key name"
-    Aggregate_sp Aggregate_O::make(MatterName name)
+CL_LAMBDA("&key (name \"\")");
+CL_LISPIFY_NAME(make-aggregate);
+CL_DEFUN Aggregate_sp Aggregate_O::make(MatterName name)
     {_G();
         GC_ALLOCATE(Aggregate_O,me);
 	me->setName(name);
@@ -667,7 +669,7 @@ CL_DEFMETHOD     void	Aggregate_O::perturbAtomPositions(double dist)
 //	    .def("updateAtomIdMap",&Aggregate_O::updateAtomIdMap)
 //	    .def("lookupAtom",&Aggregate_O::lookupAtom)
 	    ;
-	Defun_maker(ChemPkg,Aggregate);
+//	Defun_maker(ChemPkg,Aggregate);
     }
 
     void Aggregate_O::exposePython(core::Lisp_sp lisp)

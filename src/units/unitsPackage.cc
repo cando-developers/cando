@@ -101,14 +101,6 @@ SYMBOL_EXPORT_SC_(UnitsPkg,nm_per_ps);
         {
 	    /*! Use the core package */
           this->package()->usePackage(lisp->findPackage(CorePkg));
-#define ALL_STAGES
-#define Use_UnitsPkg
-#define INVOKE_REGISTER
-#define LOOKUP_SYMBOL(pkg,name) _lisp->internWithPackageName(pkg,name)
-#include <clasp/core/initClasses.h>
-#undef INVOKE_REGISTER
-#undef Use_UnitsPkg
-#undef ALL_STAGES
 	}
 	break;
       case candoFunctions:

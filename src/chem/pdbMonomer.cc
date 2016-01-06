@@ -119,7 +119,7 @@ struct FormulaMonomerRec
 
 
 
-    PdbMonomerDatabase_sp readPdbMonomerConnectivityDatabase(const string& fileName)
+CL_DEFUN PdbMonomerDatabase_sp chem__readPdbMonomerConnectivityDatabase(const string& fileName)
     {_G();
 	char buffer[1024];
         std::ifstream myfile( fileName.c_str() );
@@ -181,7 +181,7 @@ EXPOSE_CLASS(chem,PdbMonomerConnectivity_O);
     {
 	core::class_<PdbMonomerConnectivity_O>()
 	;
-	core::af_def(ChemPkg,"readPdbMonomerConnectivityDatabase",&readPdbMonomerConnectivityDatabase);
+//	core::af_def(ChemPkg,"readPdbMonomerConnectivityDatabase",&readPdbMonomerConnectivityDatabase);
     }
 
 void PdbMonomerConnectivity_O::exposePython(core::Lisp_sp lisp)

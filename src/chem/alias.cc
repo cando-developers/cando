@@ -36,7 +36,7 @@ namespace chem
 #define ARGS_chem__alias "(monAlias atomAlias)"
 #define DECL_chem__alias ""
 #define DOCS_chem__alias "alias"
-    core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAlias)
+CL_DEFUN core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAlias)
     {_G();
 	return Alias_O::create(monAlias,atomAlias);
     }
@@ -134,7 +134,7 @@ namespace chem
 	core::class_<Alias_O>()
 //	    .def_raw("core:__init__",&Alias_O::__init__,"(self chem::monomerSym chem::atomSym)")
 	    ;
-	Chem_temp_Defun(alias);
+//	Chem_temp_Defun(alias);
     }
 
     void Alias_O::exposePython(core::Lisp_sp lisp)

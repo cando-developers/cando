@@ -622,7 +622,7 @@ void	Loop::advanceLoop()
 #define ARGS_map_molecules "(result-type func matter)"
 #define DECL_map_molecules ""
 #define DOCS_map_molecules "Loop over molecules, invoke function for each molecule"
-core::T_sp map_molecules(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m )
+CL_DEFUN core::T_sp chem__map_molecules(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m )
 {
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
   Loop l(m,MOLECULES);
@@ -656,7 +656,7 @@ core::T_sp map_molecules(core::Symbol_sp result_type, core::T_sp funcDesig, Matt
 #define ARGS_map_residues "(result-type func matter)"
 #define DECL_map_residues ""
 #define DOCS_map_residues "Loop over residues, invoke function for each residue"
-core::T_sp map_residues(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
+CL_DEFUN core::T_sp chem__map_residues(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
   Loop l(m,RESIDUES);
@@ -691,7 +691,7 @@ core::T_sp map_residues(core::Symbol_sp result_type, core::T_sp funcDesig, Matte
 #define ARGS_map_atoms "(result-type func matter)"
 #define DECL_map_atoms ""
 #define DOCS_map_atoms "Loop over atoms, invoke function for each atom"
-core::T_sp map_atoms(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
+CL_DEFUN core::T_sp chem__map_atoms(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
 {
   core::Function_sp func = core::coerce::functionDesignator(funcDesig);
   Loop l(m,ATOMS);
@@ -725,9 +725,9 @@ core::T_sp map_atoms(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_s
 
 void initialize_loop()
 {
-  af_def(ChemPkg,"map-molecules",&map_molecules);
-  af_def(ChemPkg,"map-residues",&map_residues);
-  af_def(ChemPkg,"map-atoms",&map_atoms);
+//  af_def(ChemPkg,"map-molecules",&map_molecules);
+//  af_def(ChemPkg,"map-residues",&map_residues);
+//  af_def(ChemPkg,"map-atoms",&map_atoms);
 };  
 
 };

@@ -1,744 +1,2973 @@
 #ifdef SOURCE_INFO
-  { "sockets_internal", "ll_setSockoptLinger", "../../../../src/sockets/sockets.cc", 25154, 761, "ll_setSockoptLinger"  }, 
-  { "sockets_internal", "ll_setSockoptTimeval", "../../../../src/sockets/sockets.cc", 24672, 744, "ll_setSockoptTimeval"  }, 
-  { "sockets_internal", "ll_setSockoptBool", "../../../../src/sockets/sockets.cc", 24256, 729, "ll_setSockoptBool"  }, 
-  { "sockets_internal", "ll_setSockoptInt", "../../../../src/sockets/sockets.cc", 23853, 714, "ll_setSockoptInt"  }, 
-  { "sockets_internal", "ll_getSockoptLinger", "../../../../src/sockets/sockets.cc", 23305, 698, "ll_getSockoptLinger"  }, 
-  { "sockets_internal", "ll_getSockoptTimeval", "../../../../src/sockets/sockets.cc", 22772, 685, "ll_getSockoptTimeval"  }, 
-  { "sockets_internal", "ll_getSockoptBool", "../../../../src/sockets/sockets.cc", 22327, 671, "ll_getSockoptBool"  }, 
-  { "sockets_internal", "ll_getSockoptInt", "../../../../src/sockets/sockets.cc", 21795, 655, "ll_getSockoptInt"  }, 
-  { "sockets_internal", "ll_strerror_errno", "../../../../src/sockets/sockets.cc", 21606, 647, "ll_strerror_errno"  }, 
-  { "sockets_internal", "ll_strerror", "../../../../src/sockets/sockets.cc", 21434, 639, "ll_strerror"  }, 
-  { "sockets_internal", "ll_autoCloseTwoWayStream", "../../../../src/sockets/sockets.cc", 21164, 628, "ll_autoCloseTwoWayStream"  }, 
-  { "sockets_internal", "ll_makeStreamFromFd", "../../../../src/sockets/sockets.cc", 20234, 599, "ll_makeStreamFromFd"  }, 
-  { "sockets_internal", "ll_dup", "../../../../src/sockets/sockets.cc", 20054, 591, "ll_dup"  }, 
-  { "sockets_internal", "ll_setfNonBlockingMode", "../../../../src/sockets/sockets.cc", 19677, 577, "ll_setfNonBlockingMode"  }, 
-  { "sockets_internal", "ll_nonBlockingMode", "../../../../src/sockets/sockets.cc", 19491, 569, "ll_nonBlockingMode"  }, 
-  { "sockets_internal", "socketPeername_localSocket", "../../../../src/sockets/sockets.cc", 19033, 549, "socketPeername_localSocket"  }, 
-  { "sockets_internal", "ll_socketConnect_localSocket", "../../../../src/sockets/sockets.cc", 18422, 528, "ll_socketConnect_localSocket"  }, 
-  { "sockets_internal", "ll_socketAccept_localSocket", "../../../../src/sockets/sockets.cc", 17850, 514, "ll_socketAccept_localSocket"  }, 
-  { "sockets_internal", "ll_socketBind_localSocket", "../../../../src/sockets/sockets.cc", 17205, 493, "ll_socketBind_localSocket"  }, 
-  { "sockets_internal", "socketSendNoAddress", "../../../../src/sockets/sockets.cc", 15783, 456, "socketSendNoAddress"  }, 
-  { "sockets_internal", "ll_socketSendAddress", "../../../../src/sockets/sockets.cc", 13509, 396, "ll_socketSendAddress"  }, 
-  { "sockets_internal", "ll_socketName", "../../../../src/sockets/sockets.cc", 12760, 367, "ll_socketName"  }, 
-  { "sockets_internal", "ll_socketPeername_inetSocket", "../../../../src/sockets/sockets.cc", 11998, 340, "ll_socketPeername_inetSocket"  }, 
-  { "sockets_internal", "ll_socketConnect_inetSocket", "../../../../src/sockets/sockets.cc", 11497, 326, "ll_socketConnect_inetSocket"  }, 
-  { "sockets_internal", "ll_socketAccept_inetSocket", "../../../../src/sockets/sockets.cc", 10357, 296, "ll_socketAccept_inetSocket"  }, 
-  { "sockets_internal", "ll_socketBind_inetSocket", "../../../../src/sockets/sockets.cc", 9872, 282, "ll_socketBind - returns output"  }, 
-  { "sockets_internal", "ll_getProtocolByName", "../../../../src/sockets/sockets.cc", 9640, 275, "ll_getProtocolByName"  }, 
-  { "sockets_internal", "ll_socketReceive", "../../../../src/sockets/sockets.cc", 8660, 247, "ll_socketReceive"  }, 
-  { "sockets_internal", "ll_getHostByAddress", "../../../../src/sockets/sockets.cc", 6330, 196, "ll_getHostByAddress"  }, 
-  { "sockets_internal", "ll_getHostByName", "../../../../src/sockets/sockets.cc", 4231, 154, "ll_getHostByName"  }, 
-  { "sockets_internal", "ll_getNameServiceErrorMessage", "../../../../src/sockets/sockets.cc", 3931, 146, "ll_getNameServiceErrorMessage"  }, 
-  { "sockets_internal", "ll_get_name_service_h_errno", "../../../../src/sockets/sockets.cc", 3718, 137, "ll_get_name_service_h_errno"  }, 
-  { "sockets_internal", "ll_socket_errno", "../../../../src/sockets/sockets.cc", 3526, 128, "ll_socket_errno"  }, 
-  { "sockets_internal", "funcName", "../../../../src/sockets/sockets.cc", 3369, 120, "funcName"  }, 
-  { "sockets_internal", "ff_close", "../../../../src/sockets/sockets.cc", 3228, 112, "ff_close"  }, 
-  { "sockets_internal", "ff_listen", "../../../../src/sockets/sockets.cc", 3061, 104, "ff_listen"  }, 
-  { "sockets_internal", "ff_socket", "../../../../src/sockets/sockets.cc", 2868, 96, "ff_socket"  }, 
-  { "gctools", "next_header_kind", "../../../../src/gctools/memoryManagement.cc", 5540, 171, R"doc(Return the next available header KIND value and increment the global variable global_next_header_kind)doc"  }, 
-  { "core", "telemetry_count", "../../../../src/gctools/telemetry.cc", 5920, 207, ""  }, 
-  { "core", "telemetry_dump", "../../../../src/gctools/telemetry.cc", 4790, 169, ""  }, 
-  { "core", "telemetry_labels", "../../../../src/gctools/telemetry.cc", 4495, 159, ""  }, 
-  { "core", "telemetry_follow", "../../../../src/gctools/telemetry.cc", 3194, 113, ""  }, 
-  { "core", "telemetry_search_labels", "../../../../src/gctools/telemetry.cc", 2004, 72, ""  }, 
-  { "core", "telemetry_search", "../../../../src/gctools/telemetry.cc", 797, 32, ""  }, 
-  { "core", "telemetry_open", "../../../../src/gctools/telemetry.cc", 467, 20, ""  }, 
-  { "cl", "room", "../../../../src/gctools/gcFunctions.cc", 18379, 494, "room - Return info about the reachable objects.  x can be T, nil, :default - as in ROOM.  marker can be a fixnum (0 - matches everything, any other number/only objects with that marker)"  }, 
-  { "core", "hardwired_kinds", "../../../../src/gctools/gcFunctions.cc", 5830, 170, "Return the header kind for the object"  }, 
-  { "core", "inherits_from_instance", "../../../../src/gctools/gcFunctions.cc", 5588, 159, R"doc(Return true if the object inherits from core:instance based on its header value)doc"  }, 
-  { "core", "header_kind", "../../../../src/gctools/gcFunctions.cc", 4429, 128, "Return the header kind for the object"  }, 
-  { "cl", "get_internal_run_time", "../../../../src/core/posixTime.cc", 1731, 59, "getInternalRunTime"  }, 
-  { "cl", "get_internal_real_time", "../../../../src/core/posixTime.cc", 1414, 49, "getInternalRealTime"  }, 
-  { "cl", "ensure_directories_exist", "../../../../src/core/fileSystem.cc", 4185, 129, "Look for <path> and return it. If it doesn't exist create every missing directory along the path."  }, 
-  { "core", "load_time_values_dump_symbols", "../../../../src/core/loadTimeValues.cc", 5395, 158, "Dump the load-time-values for the id _name_(string)."  }, 
-  { "core", "load_time_values_dump_values", "../../../../src/core/loadTimeValues.cc", 4702, 138, "Dump the load-time-values for the id _name_(string)."  }, 
-  { "core", "load_time_values_ids", "../../../../src/core/loadTimeValues.cc", 3628, 104, "Return a cons of the load-time-values ids"  }, 
-  { "core", "lookup_load_time_symbol", "../../../../src/core/loadTimeValues.cc", 2922, 84, "Return the load-time-value associated with array NAME and IDX"  }, 
-  { "core", "lookup_load_time_value", "../../../../src/core/loadTimeValues.cc", 2313, 68, "Return the load-time-value associated with array NAME and IDX"  }, 
-  { "core", "load_time_value_array", "../../../../src/core/loadTimeValues.cc", 1979, 59, "loadTimeValueArray"  }, 
-  { "core", "set_run_time_values_vector", "../../../../src/core/loadTimeValues.cc", 1427, 44, "setRunTimeValuesVector - return true if its set and false if it was already set"  }, 
-  { "cl", "vector_push_extend", "../../../../src/core/lispVector.cc", 7927, 238, "vectorPushExtend"  }, 
-  { "cl", "vector_push", "../../../../src/core/lispVector.cc", 7720, 230, "vectorPush"  }, 
-  { "core", "adjust_vector", "../../../../src/core/lispVector.cc", 4856, 124, "adjustVector"  }, 
-  { "core", "make_vector", "../../../../src/core/lispVector.cc", 1998, 59, "make_vector See si_make_vector in ecl>>array.d"  }, 
-  { "cl", "vector", "../../../../src/core/lispVector.cc", 1580, 49, "vector"  }, 
-  { "core", "setf_subseq", "../../../../src/core/sequence.cc", 5462, 189, "setfSubseq"  }, 
-  { "core", "elt_set", "../../../../src/core/sequence.cc", 5266, 181, "eltSet"  }, 
-  { "core", "setf_elt", "../../../../src/core/sequence.cc", 4775, 164, "setfElt"  }, 
-  { "cl", "copy_seq", "../../../../src/core/sequence.cc", 4381, 149, "copy_seq"  }, 
-  { "cl", "subseq", "../../../../src/core/sequence.cc", 3787, 131, "subseq"  }, 
-  { "cl", "nreverse", "../../../../src/core/sequence.cc", 3408, 116, "nreverse"  }, 
-  { "cl", "reverse", "../../../../src/core/sequence.cc", 3037, 101, "reverse"  }, 
-  { "cl", "make_sequence", "../../../../src/core/sequence.cc", 2353, 77, "make_sequence"  }, 
-  { "cl", "elt", "../../../../src/core/sequence.cc", 1904, 62, "elt"  }, 
-  { "cl", "length", "../../../../src/core/sequence.cc", 1477, 46, "See CLHS length - works with SEQUENCES and ACTIVATION_FRAMEs"  }, 
-  { "cl", "parse_integer", "../../../../src/core/lispString.cc", 28587, 999, "parseInteger"  }, 
-  { "core", "schar_set", "../../../../src/core/lispString.cc", 25827, 875, "CLHS schar"  }, 
-  { "core", "char_set", "../../../../src/core/lispString.cc", 25536, 864, "CLHS schar"  }, 
-  { "cl", "schar", "../../../../src/core/lispString.cc", 25276, 854, "CLHS schar"  }, 
-  { "cl", "make_string", "../../../../src/core/lispString.cc", 24841, 836, "See CLHS: make_string"  }, 
-  { "cl", "string_not_lessp", "../../../../src/core/lispString.cc", 23552, 803, "string_not_lessp"  }, 
-  { "cl", "string_not_greaterp", "../../../../src/core/lispString.cc", 23002, 792, "string_not_greaterp"  }, 
-  { "cl", "string_greaterp", "../../../../src/core/lispString.cc", 22457, 781, "string_greaterp"  }, 
-  { "cl", "string_lessp", "../../../../src/core/lispString.cc", 21922, 770, "string_lessp"  }, 
-  { "cl", "string_not_equal", "../../../../src/core/lispString.cc", 21382, 759, "string_not_equal"  }, 
-  { "cl", "string_equal", "../../../../src/core/lispString.cc", 20845, 747, "string_equal"  }, 
-  { "cl", "string_GE_", "../../../../src/core/lispString.cc", 20316, 735, "string_GE_"  }, 
-  { "cl", "string_LE_", "../../../../src/core/lispString.cc", 19789, 723, "string_LE_"  }, 
-  { "cl", "string_GT_", "../../../../src/core/lispString.cc", 19262, 711, "string_GT_"  }, 
-  { "cl", "string_LT_", "../../../../src/core/lispString.cc", 18735, 699, "string_LT_"  }, 
-  { "cl", "string_NE_", "../../../../src/core/lispString.cc", 18208, 687, "string_NE_"  }, 
-  { "cl", "string_EQ_", "../../../../src/core/lispString.cc", 17685, 675, "string_EQ_"  }, 
-  { "cl", "string", "../../../../src/core/lispString.cc", 4717, 179, "string"  }, 
-  { "cl", "nstring_downcase", "../../../../src/core/lispString.cc", 4441, 167, "string_downcase"  }, 
-  { "cl", "nstring_upcase", "../../../../src/core/lispString.cc", 4158, 155, "string_upcase"  }, 
-  { "cl", "string_downcase", "../../../../src/core/lispString.cc", 3834, 142, "string_downcase"  }, 
-  { "cl", "char", "../../../../src/core/lispString.cc", 3351, 123, "char"  }, 
-  { "cl", "string_upcase", "../../../../src/core/lispString.cc", 3034, 110, "string_upcase"  }, 
-  { "cl", "string_right_trim", "../../../../src/core/lispString.cc", 2856, 102, "string_right_trim"  }, 
-  { "cl", "string_left_trim", "../../../../src/core/lispString.cc", 2667, 94, "string_left_trim"  }, 
-  { "cl", "string_trim", "../../../../src/core/lispString.cc", 2485, 86, "string_trim"  }, 
-  { "cl", "code_char", "../../../../src/core/character.cc", 18791, 601, "code_char"  }, 
-  { "cl", "char_int", "../../../../src/core/character.cc", 18616, 592, "char_int"  }, 
-  { "cl", "char_code", "../../../../src/core/character.cc", 18326, 580, "char_code"  }, 
-  { "cl", "char_name", "../../../../src/core/character.cc", 18129, 571, "char_name"  }, 
-  { "cl", "name_char", "../../../../src/core/character.cc", 17653, 557, "name_char"  }, 
-  { "cl", "digit_char_p", "../../../../src/core/character.cc", 17237, 541, "digitCharP"  }, 
-  { "cl", "alpha_char_p", "../../../../src/core/character.cc", 16689, 520, "alpha_char_p"  }, 
-  { "cl", "standard_char_p", "../../../../src/core/character.cc", 13701, 471, "See CLHS: standard_char_p"  }, 
-  { "cl", "char_equal", "../../../../src/core/character.cc", 7013, 277, "Like char_EQ_, ignore case"  }, 
-  { "cl", "char_not_equal", "../../../../src/core/character.cc", 6089, 246, "Like char_NE_ but ignore case"  }, 
-  { "cl", "char_EQ_", "../../../../src/core/character.cc", 5629, 228, "EQ_"  }, 
-  { "cl", "char_NE_", "../../../../src/core/character.cc", 5185, 211, "NE_"  }, 
-  { "cl", "char_not_lessp", "../../../../src/core/character.cc", 5032, 203, "Return true if characters are monotonically non-decreasing, ignore case"  }, 
-  { "cl", "char_not_greaterp", "../../../../src/core/character.cc", 4801, 195, "Return true if characters are monotonically non-increasing, ignore case"  }, 
-  { "cl", "char_greaterp", "../../../../src/core/character.cc", 4575, 187, "Return true if characters are monotonically decreasing, ignore case"  }, 
-  { "cl", "char_lessp", "../../../../src/core/character.cc", 4355, 179, "Return true if characters are monotonically increasing, ignore case"  }, 
-  { "cl", "char_GE_", "../../../../src/core/character.cc", 4145, 171, "Return true if characters are monotonically non-increasing"  }, 
-  { "cl", "char_LE_", "../../../../src/core/character.cc", 3943, 163, "Return true if characters are monotonically non-decreasing"  }, 
-  { "cl", "char_GT_", "../../../../src/core/character.cc", 3748, 155, "Return true if characters are monotonically decreasing"  }, 
-  { "cl", "char_LT_", "../../../../src/core/character.cc", 3556, 147, "Return true if characters are monotonically increasing"  }, 
-  { "cl", "char_downcase", "../../../../src/core/character.cc", 3356, 139, "charDowncase"  }, 
-  { "cl", "char_upcase", "../../../../src/core/character.cc", 3206, 131, "charUpcase"  }, 
-  { "cl", "alphanumericp", "../../../../src/core/character.cc", 2985, 120, "alphanumericp"  }, 
-  { "cl", "both_case_p", "../../../../src/core/character.cc", 2804, 112, "both_case_p"  }, 
-  { "cl", "upper_case_p", "../../../../src/core/character.cc", 2639, 104, "upper_case_p"  }, 
-  { "cl", "lower_case_p", "../../../../src/core/character.cc", 2473, 96, "lower_case_p"  }, 
-  { "core", "structure_subtypep", "../../../../src/core/structureObject.cc", 4757, 167, "structureSubtypep checks if the structure type Y is a subtype of X"  }, 
-  { "core", "structurep", "../../../../src/core/structureObject.cc", 4258, 146, "structurep"  }, 
-  { "core", "structure_set", "../../../../src/core/structureObject.cc", 3563, 120, "structureSet"  }, 
-  { "core", "structure_ref", "../../../../src/core/structureObject.cc", 2868, 94, "structureRef"  }, 
-  { "cl", "copy_structure", "../../../../src/core/structureObject.cc", 2392, 75, "copyStructure"  }, 
-  { "core", "make_structure", "../../../../src/core/structureObject.cc", 1546, 49, "makeStructure"  }, 
-  { "core", "ensure_single_dispatch_method", "../../../../src/core/singleDispatchGenericFunction.cc", 3354, 79, "ensureSingleDispatchMethod creates a method and adds it to the single-dispatch-generic-function"  }, 
-  { "core", "ensure_single_dispatch_generic_function", "../../../../src/core/singleDispatchGenericFunction.cc", 1861, 54, "ensureSingleDispatchGenericFunction"  }, 
-  { "core", "nread", "../../../../src/core/lispReader.cc", 4540, 145, "nread"  }, 
-  { "core", "ensure_documentation", "../../../../src/core/documentation.cc", 3756, 113, "ensure_documentation"  }, 
-  { "ext", "annotate", "../../../../src/core/documentation.cc", 3225, 101, "annotate - see ecl>>helpfile.lsp>>annotate; key is either 'documentation or 'setf-documentation and I currently think (object) must be a symbol so I'll trigger an exception if it isn't"  }, 
-  { "core", "rem_record_field", "../../../../src/core/documentation.cc", 2604, 82, "rem_record_field"  }, 
-  { "core", "set_record_field", "../../../../src/core/documentation.cc", 2101, 66, "set_record_field"  }, 
-  { "core", "record_field", "../../../../src/core/documentation.cc", 1860, 57, "record_field see ecl>>helpfile.lsp>>record-field"  }, 
-  { "core", "record_cons", "../../../../src/core/documentation.cc", 1470, 44, "record_cons - see ECL helpfile.lsp>>record-cons"  }, 
-  { "core", "backquote_remove_tokens", "../../../../src/core/backquote.cc", 13602, 412, "backquote_remove_tokens"  }, 
-  { "core", "backquote_attach_conses", "../../../../src/core/backquote.cc", 12569, 392, "backquote_attach_conses"  }, 
-  { "core", "backquote_attach_append", "../../../../src/core/backquote.cc", 11746, 372, "backquote_attach_append"  }, 
-  { "core", "backquote_null_or_quoted", "../../../../src/core/backquote.cc", 11412, 357, "backquote_null_or_quoted"  }, 
-  { "core", "backquote_simplify_args", "../../../../src/core/backquote.cc", 9419, 313, "backquote_simplify_args"  }, 
-  { "core", "backquote_simplify", "../../../../src/core/backquote.cc", 8895, 291, "temp_backquote_simplify"  }, 
-  { "core", "backquote_maptree", "../../../../src/core/backquote.cc", 8043, 254, "backquote_maptree"  }, 
-  { "core", "backquote_frob", "../../../../src/core/backquote.cc", 7689, 239, "backquote_frob is true if a form that when read looked like ,foo or ,@foo or ,.foo"  }, 
-  { "core", "backquote_splicing_frob", "../../../../src/core/backquote.cc", 7331, 226, "backquote_splicing_frob is true if a form that when read looked like ,@foo or ,.foo"  }, 
-  { "core", "backquote_bracket", "../../../../src/core/backquote.cc", 6294, 198, "bracket"  }, 
-  { "core", "backquote_process", "../../../../src/core/backquote.cc", 4154, 127, "bq_process"  }, 
-  { "core", "backquote_completely_process", "../../../../src/core/backquote.cc", 3695, 112, "backquote_completely_process"  }, 
-  { "core", "backquote_append", "../../../../src/core/backquote.cc", 3012, 90, "append as in clhs"  }, 
-  { "cl", "format", "../../../../src/core/bformat.cc", 3846, 117, "Subset of CL format - this does the job until the real format is installed"  }, 
-  { "core", "bformat", "../../../../src/core/bformat.cc", 1548, 46, "Like CL format but uses C/boost format strings"  }, 
-  { "core", "rem_sysprop", "../../../../src/core/sysprop.cc", 2756, 80, "rem_sysprop"  }, 
-  { "core", "get_sysprop", "../../../../src/core/sysprop.cc", 2231, 64, "get_sysprop - returns (values val foundp)"  }, 
-  { "core", "put_sysprop", "../../../../src/core/sysprop.cc", 1280, 40, "put_sysprop - returns value"  }, 
-  { "core", "iterator_step", "../../../../src/core/iterator.cc", 1361, 47, "iteratorStep"  }, 
-  { "core", "iterator_unsafe_element", "../../../../src/core/iterator.cc", 1207, 39, "iteratorUnsafeElement"  }, 
-  { "core", "condition_message", "../../../../src/core/conditions.cc", 3211, 122, "conditionMessage"  }, 
-  { "cl", "make_condition", "../../../../src/core/conditions.cc", 2832, 110, "make-condition while brcl is booting - replace this once "  }, 
-  { "cl", "make_symbol", "../../../../src/core/symbol.cc", 3796, 148, "make_symbol"  }, 
-  { "core", "symbol_value_address", "../../../../src/core/symbol.cc", 3617, 140, "symbolValueAddress"  }, 
-  { "cl", "symbol_value", "../../../../src/core/symbol.cc", 3362, 130, "symbolValue"  }, 
-  { "cl", "symbol_name", "../../../../src/core/symbol.cc", 3224, 122, "symbolName"  }, 
-  { "cl", "symbol_function", "../../../../src/core/symbol.cc", 2982, 111, "symbolFunction"  }, 
-  { "cl", "symbol_package", "../../../../src/core/symbol.cc", 2838, 103, "symbolPackage"  }, 
-  { "cl", "boundp", "../../../../src/core/symbol.cc", 2673, 93, "boundp"  }, 
-  { "core", "putprop", "../../../../src/core/symbol.cc", 2386, 82, "Set the symbol plist"  }, 
-  { "core", "setf_symbol_plist", "../../../../src/core/symbol.cc", 2132, 72, "Set the symbol plist"  }, 
-  { "cl", "get", "../../../../src/core/symbol.cc", 1844, 62, "Return the symbol plist"  }, 
-  { "cl", "symbol_plist", "../../../../src/core/symbol.cc", 1625, 52, "Return the symbol plist"  }, 
-  { "core", "append2", "../../../../src/core/cons.cc", 7381, 268, "append2 - append l2 to l1 by copying l1 and pointing the end of it to l2"  }, 
-  { "cl", "make_list", "../../../../src/core/cons.cc", 4034, 143, "make_list"  }, 
-  { "cl", "rplacd", "../../../../src/core/cons.cc", 3887, 136, ""  }, 
-  { "cl", "rplaca", "../../../../src/core/cons.cc", 3772, 129, ""  }, 
-  { "cl", "cons", "../../../../src/core/cons.cc", 3588, 119, "cons"  }, 
-  { "core", "rem_f", "../../../../src/core/cons.cc", 2974, 97, "Removes the property with the indicator from the property list in place if present and returns MultipleValues with the new property list and T if the property was found"  }, 
-  { "cl", "getf", "../../../../src/core/cons.cc", 2562, 87, "getf"  }, 
-  { "core", "put_f", "../../../../src/core/cons.cc", 1894, 61, "putF"  }, 
-  { "core", "aset", "../../../../src/core/array.cc", 3198, 102, "aset"  }, 
-  { "core", "copy_subarray", "../../../../src/core/array.cc", 1988, 67, "copy_subarray"  }, 
-  { "cl", "upgraded_array_element_type", "../../../../src/core/array.cc", 1801, 59, "upgradedArrayElementType"  }, 
-  { "cl", "array_displacement", "../../../../src/core/array.cc", 1466, 46, "arrayDisplacement"  }, 
-  { "cl", "fill_pointer", "../../../../src/core/vectorObjectsWithFillPtr.cc", 1396, 43, "Return the fill-pointer"  }, 
-  { "core", "calculate_missing_common_lisp_symbols", "../../../../src/core/allClSymbols.cc", 1640, 52, "calculateMissingCommonLispSymbols"  }, 
-  { "cl", "package_name", "../../../../src/core/package.cc", 10175, 331, "packageName"  }, 
-  { "cl", "package_used_by_list", "../../../../src/core/package.cc", 9963, 322, "packageUsedByList"  }, 
-  { "cl", "package_use_list", "../../../../src/core/package.cc", 9735, 313, "package_use_list"  }, 
-  { "cl", "gentemp", "../../../../src/core/package.cc", 8911, 280, "See CLHS gentemp"  }, 
-  { "cl", "shadowing_import", "../../../../src/core/package.cc", 8482, 268, "See CLHS: shadowing-import"  }, 
-  { "cl", "shadow", "../../../../src/core/package.cc", 8071, 257, "See CLHS: shadow"  }, 
-  { "cl", "import", "../../../../src/core/package.cc", 7701, 246, "See CLHS: import"  }, 
-  { "cl", "package_shadowing_symbols", "../../../../src/core/package.cc", 7235, 230, "See CLHS package_shadowing_symbols"  }, 
-  { "cl", "delete_package", "../../../../src/core/package.cc", 5645, 179, "SeeCLHS unuse-package"  }, 
-  { "cl", "unuse_package", "../../../../src/core/package.cc", 5102, 165, "SeeCLHS unuse-package"  }, 
-  { "cl", "use_package", "../../../../src/core/package.cc", 4575, 151, "SeeCLHS use-package"  }, 
-  { "cl", "list_all_packages", "../../../../src/core/package.cc", 4049, 131, "listAllPackages"  }, 
-  { "cl", "make_package", "../../../../src/core/package.cc", 3270, 104, "make_package"  }, 
-  { "cl", "find_symbol", "../../../../src/core/package.cc", 2978, 95, "findSymbol"  }, 
-  { "cl", "unintern", "../../../../src/core/package.cc", 2735, 86, "unintern"  }, 
-  { "cl", "package_nicknames", "../../../../src/core/package.cc", 2506, 77, "packageNicknames"  }, 
-  { "cl", "rename_package", "../../../../src/core/package.cc", 1686, 54, "renamePackage"  }, 
-  { "core", "search_string", "../../../../src/core/str.cc", 1947, 60, "searchString"  }, 
-  { "core", "logical_pathname_p", "../../../../src/core/predicates.cc", 9487, 426, "logicalPathnameP"  }, 
-  { "cl", "pathnamep", "../../../../src/core/predicates.cc", 9352, 419, "pathnamep"  }, 
-  { "core", "proper_list_p", "../../../../src/core/predicates.cc", 8905, 395, "Return true if arg is a proper list"  }, 
-  { "core", "generic_function_p", "../../../../src/core/predicates.cc", 8605, 383, "genericFunctionP"  }, 
-  { "cl", "compiled_function_p", "../../../../src/core/predicates.cc", 8376, 372, "compiled_function_p"  }, 
-  { "cl", "simple_vector_p", "../../../../src/core/predicates.cc", 8158, 361, "simple_vector_p"  }, 
-  { "cl", "simple_bit_vector_p", "../../../../src/core/predicates.cc", 7934, 350, "simple_bit_vector_p"  }, 
-  { "core", "external_object_p", "../../../../src/core/predicates.cc", 7772, 342, "externalObjectP"  }, 
-  { "core", "activation_frame_p", "../../../../src/core/predicates.cc", 7620, 335, "activation_frame_p"  }, 
-  { "core", "single_dispatch_generic_function_p", "../../../../src/core/predicates.cc", 7435, 328, "singleDispatchGenericFunctionP"  }, 
-  { "core", "structure_object_p", "../../../../src/core/predicates.cc", 7065, 312, "structureObjectP"  }, 
-  { "cl", "readtablep", "../../../../src/core/predicates.cc", 6928, 305, "readtablep"  }, 
-  { "cl", "hash_table_p", "../../../../src/core/predicates.cc", 6726, 294, "hashTableP"  }, 
-  { "cl", "bit_vector_p", "../../../../src/core/predicates.cc", 6593, 287, "bitVectorP"  }, 
-  { "core", "path_p", "../../../../src/core/predicates.cc", 6469, 280, "pathP"  }, 
-  { "core", "single_float_p", "../../../../src/core/predicates.cc", 5297, 226, "singleFloatP"  }, 
-  { "core", "short_float_p", "../../../../src/core/predicates.cc", 5150, 218, "shortFloatP"  }, 
-  { "core", "long_float_p", "../../../../src/core/predicates.cc", 5014, 211, "longFloatP"  }, 
-  { "cl", "random_state_p", "../../../../src/core/predicates.cc", 4698, 196, "ratioP"  }, 
-  { "core", "ratio_p", "../../../../src/core/predicates.cc", 4568, 188, "ratioP"  }, 
-  { "cl", "numberp", "../../../../src/core/predicates.cc", 4266, 172, "numberP"  }, 
-  { "core", "lambda_list_handler_p", "../../../../src/core/predicates.cc", 4117, 165, "lambda_list_handler_p"  }, 
-  { "core", "cxx_instance_p", "../../../../src/core/predicates.cc", 3902, 154, "classp"  }, 
-  { "core", "built_in_class_p", "../../../../src/core/predicates.cc", 3696, 144, "classp"  }, 
-  { "cl", "packagep", "../../../../src/core/predicates.cc", 3420, 130, "See CLHS packagep"  }, 
-  { "core", "interpreted_function_p", "../../../../src/core/predicates.cc", 3113, 117, "interpretedFunctionP"  }, 
-  { "cl", "functionp", "../../../../src/core/predicates.cc", 2882, 107, "functionP"  }, 
-  { "core", "double_float_p", "../../../../src/core/predicates.cc", 2744, 100, "doubleFloatP"  }, 
-  { "core", "simple_string_p", "../../../../src/core/predicates.cc", 2610, 93, "Return true if argument is a simple-string"  }, 
-  { "core", "base_char_p", "../../../../src/core/predicates.cc", 1911, 61, "baseCharP"  }, 
-  { "core", "test_val", "../../../../src/core/testing.cc", 3068, 100, "testVal"  }, 
-  { "core", "is_array", "../../../../src/core/testing.cc", 2801, 88, "isArray"  }, 
-  { "core", "is_string", "../../../../src/core/testing.cc", 2537, 76, "isString"  }, 
-  { "core", "subclassp", "../../../../src/core/metaClass.cc", 19967, 554, "subclassp"  }, 
-  { "core", "allocate_raw_class", "../../../../src/core/metaClass.cc", 3291, 92, "allocateRawClass - behaves like ECL instance::allocate_raw_instance, The allocator for the new class is taken from (allocatorPrototype).  If (allocatorPrototype) is nil then use the allocator for Instance_O."  }, 
-  { "core", "inherit_default_allocator", "../../../../src/core/metaClass.cc", 2683, 83, "inheritDefaultAllocator - make this a regular function so that there are no dispatching problems at boot time"  }, 
-  { "cl", "reader_error", "../../../../src/core/exceptions.cc", 23492, 711, "readerError"  }, 
-  { "core", "wrong_index", "../../../../src/core/exceptions.cc", 21382, 664, "wrongIndex"  }, 
-  { "core", "wrong_type_nth_arg", "../../../../src/core/exceptions.cc", 20015, 633, "wrongTypeNthArg"  }, 
-  { "core", "wrong_type_argument", "../../../../src/core/exceptions.cc", 18720, 602, "wrongTypeArgument"  }, 
-  { "core", "signal_simple_error", "../../../../src/core/exceptions.cc", 4488, 132, "signalSimpleError"  }, 
-  { "cl", "translate_logical_pathname", "../../../../src/core/pathname.cc", 63423, 1960, "translateLogicalPathname"  }, 
-  { "cl", "translate_pathname", "../../../../src/core/pathname.cc", 60548, 1868, "translatePathname"  }, 
-  { "core", "pathname_translations", "../../../../src/core/pathname.cc", 55105, 1672, "core::pathnameTranslations"  }, 
-  { "cl", "pathname_match_p", "../../../../src/core/pathname.cc", 53658, 1623, "pathnameMatchP"  }, 
-  { "cl", "enough_namestring", "../../../../src/core/pathname.cc", 48298, 1458, "enoughNamestring"  }, 
-  { "cl", "host_namestring", "../../../../src/core/pathname.cc", 47739, 1439, "hostNamestring"  }, 
-  { "cl", "directory_namestring", "../../../../src/core/pathname.cc", 47204, 1426, "directoryNamestring"  }, 
-  { "cl", "file_namestring", "../../../../src/core/pathname.cc", 46626, 1413, "fileNamestring"  }, 
-  { "cl", "pathname_version", "../../../../src/core/pathname.cc", 46438, 1404, "pathnameVersion"  }, 
-  { "cl", "pathname_type", "../../../../src/core/pathname.cc", 46067, 1392, "pathnameType"  }, 
-  { "cl", "pathname_name", "../../../../src/core/pathname.cc", 45671, 1380, "pathnameName"  }, 
-  { "cl", "pathname_directory", "../../../../src/core/pathname.cc", 45260, 1368, "pathnameDirectory"  }, 
-  { "cl", "pathname_device", "../../../../src/core/pathname.cc", 44865, 1357, "pathnameDevice"  }, 
-  { "cl", "pathname_host", "../../../../src/core/pathname.cc", 44477, 1346, "pathnameHost"  }, 
-  { "cl", "make_pathname", "../../../../src/core/pathname.cc", 43148, 1310, "makePathname"  }, 
-  { "cl", "parse_namestring", "../../../../src/core/pathname.cc", 41411, 1265, "parseNamestring"  }, 
-  { "cl", "namestring", "../../../../src/core/pathname.cc", 41183, 1257, "namestring"  }, 
-  { "core", "coerce_to_filename", "../../../../src/core/pathname.cc", 34638, 1066, "coerceToFilename"  }, 
-  { "core", "coerce_to_physical_pathname", "../../../../src/core/pathname.cc", 34155, 1049, "coerceToPhysicalPathname"  }, 
-  { "core", "coerce_to_file_pathname", "../../../../src/core/pathname.cc", 33287, 1021, "coerceToFilePathname"  }, 
-  { "cl", "wild_pathname_p", "../../../../src/core/pathname.cc", 31467, 959, "wildPathnameP"  }, 
-  { "cl", "merge_pathnames", "../../../../src/core/pathname.cc", 31014, 944, "mergePathnames"  }, 
-  { "cl", "pathname", "../../../../src/core/pathname.cc", 27911, 844, "pathname"  }, 
-  { "core", "float_to_digits", "../../../../src/core/float_to_digits.cc", 7538, 234, "float_to_digits"  }, 
-  { "core", "sharp_vertical_bar", "../../../../src/core/readtable.cc", 27421, 747, "sharp_vertical_bar"  }, 
-  { "core", "sharp_minus", "../../../../src/core/readtable.cc", 26651, 728, "sharp_minus"  }, 
-  { "core", "sharp_plus", "../../../../src/core/readtable.cc", 25849, 708, "sharp_plus"  }, 
-  { "core", "reader_feature_p", "../../../../src/core/readtable.cc", 24394, 671, "feature_p takes one argument - a feature test"  }, 
-  { "core", "sharp_p", "../../../../src/core/readtable.cc", 23883, 653, "sharp_p"  }, 
-  { "core", "sharp_s", "../../../../src/core/readtable.cc", 23689, 645, "sharp_s"  }, 
-  { "core", "sharp_a", "../../../../src/core/readtable.cc", 23495, 637, "sharp_a"  }, 
-  { "core", "sharp_c", "../../../../src/core/readtable.cc", 22868, 617, "sharp_c"  }, 
-  { "core", "sharp_x", "../../../../src/core/readtable.cc", 22683, 609, "sharp_x"  }, 
-  { "core", "sharp_o", "../../../../src/core/readtable.cc", 22481, 601, "sharp_o"  }, 
-  { "core", "sharp_b", "../../../../src/core/readtable.cc", 22279, 593, "sharp_b"  }, 
-  { "core", "sharp_r", "../../../../src/core/readtable.cc", 21211, 563, "sharp_r"  }, 
-  { "core", "sharp_colon", "../../../../src/core/readtable.cc", 20698, 547, "sharp_colon"  }, 
-  { "core", "sharp_asterisk", "../../../../src/core/readtable.cc", 18586, 491, "sharp_asterisk"  }, 
-  { "core", "sharp_left_parenthesis", "../../../../src/core/readtable.cc", 17409, 461, "sharp_left_parenthesis"  }, 
-  { "core", "sharp_single_quote", "../../../../src/core/readtable.cc", 16837, 446, "sharp_single_quote"  }, 
-  { "core", "sharp_dot", "../../../../src/core/readtable.cc", 16040, 424, "sharp_dot"  }, 
-  { "core", "sharp_backslash", "../../../../src/core/readtable.cc", 15267, 401, "sharp_backslash"  }, 
-  { "core", "dispatch_macro_character", "../../../../src/core/readtable.cc", 10877, 291, "dispatch_macro_character"  }, 
-  { "core", "reader_skip_semicolon_comment", "../../../../src/core/readtable.cc", 10324, 273, "reader_skip_semicolon_comment"  }, 
-  { "core", "reader_quote", "../../../../src/core/readtable.cc", 9790, 258, "reader_quote"  }, 
-  { "core", "reader_error_unmatched_close_parenthesis", "../../../../src/core/readtable.cc", 9429, 248, "reader_error_unmatched_close_parenthesis"  }, 
-  { "core", "reader_list_allow_consing_dot", "../../../../src/core/readtable.cc", 9088, 237, "reader_list_allow_consing_dot"  }, 
-  { "core", "reader_comma_form", "../../../../src/core/readtable.cc", 7946, 211, "reader_comma_form"  }, 
-  { "core", "reader_backquoted_expression", "../../../../src/core/readtable.cc", 7062, 193, "reader_backquoted_expression"  }, 
-  { "core", "reader_double_quote_string", "../../../../src/core/readtable.cc", 6308, 169, "reader_double_quote_string"  }, 
-  { "cl", "set_macro_character", "../../../../src/core/readtable.cc", 5544, 150, "setMacroCharacter"  }, 
-  { "cl", "get_dispatch_macro_character", "../../../../src/core/readtable.cc", 5217, 142, "getDispatchMacroCharacter"  }, 
-  { "cl", "set_dispatch_macro_character", "../../../../src/core/readtable.cc", 4856, 134, "setDispatchMacroCharacter"  }, 
-  { "core", "readtable_case_set", "../../../../src/core/readtable.cc", 4595, 127, "clhs: (setf readtable-case)"  }, 
-  { "cl", "readtable_case", "../../../../src/core/readtable.cc", 4416, 120, "clhs: readtable-case"  }, 
-  { "cl", "copy_readtable", "../../../../src/core/readtable.cc", 4094, 110, "clhs: copy-readtable"  }, 
-  { "cl", "get_macro_character", "../../../../src/core/readtable.cc", 3719, 99, "getMacroCharacter"  }, 
-  { "cl", "make_dispatch_macro_character", "../../../../src/core/readtable.cc", 3427, 90, "makeDispatchMacroCharacter"  }, 
-  { "cl", "set_syntax_from_char", "../../../../src/core/readtable.cc", 2137, 62, "setSyntaxFromChar"  }, 
-  { "core", "pointer_address", "../../../../src/core/wrappedPointer.cc", 2477, 90, "pointerAddress"  }, 
-  { "core", "pointer_delete", "../../../../src/core/wrappedPointer.cc", 1489, 49, "pointerDelete"  }, 
-  { "core", "pointer_release", "../../../../src/core/wrappedPointer.cc", 1127, 35, "pointerRelease"  }, 
-  { "core", "make_regex", "../../../../src/core/regex.cc", 1410, 44, "makeRegex"  }, 
-  { "core", "write_ugly_object", "../../../../src/core/write_ugly.cc", 15010, 488, "writeUglyObject"  }, 
-  { "core", "test_profile_timer", "../../../../src/core/profile.cc", 2602, 92, "testProfileTimer"  }, 
-  { "core", "clock_gettime_nanoseconds", "../../../../src/core/profile.cc", 2366, 82, "clock_gettime_nanoseconds"  }, 
-  { "core", "deep_copy", "../../../../src/core/object.cc", 13702, 536, "deepCopy"  }, 
-  { "core", "sl_boundp", "../../../../src/core/object.cc", 9912, 409, "Return t if obj is equal to T_O::_class->unboundValue()"  }, 
-  { "core", "decode", "../../../../src/core/object.cc", 6802, 278, "decode object from a-list"  }, 
-  { "core", "encode", "../../../../src/core/object.cc", 6658, 271, "encode object as an a-list"  }, 
-  { "core", "is_nil", "../../../../src/core/object.cc", 6521, 263, "isNil"  }, 
-  { "core", "instancep", "../../../../src/core/object.cc", 6395, 255, "instancep"  }, 
-  { "core", "instance_ref", "../../../../src/core/object.cc", 6249, 247, "instanceRef - return the (idx) slot value of (obj)"  }, 
-  { "core", "instance_set", "../../../../src/core/object.cc", 6043, 239, "instanceSet - set the (idx) slot of (obj) to (val)"  }, 
-  { "core", "instance_sig_set", "../../../../src/core/object.cc", 5853, 231, "instanceSigSet"  }, 
-  { "core", "instance_sig", "../../../../src/core/object.cc", 5714, 223, "instanceSig"  }, 
-  { "core", "class_name_as_string", "../../../../src/core/object.cc", 5523, 214, "classNameAsString"  }, 
-  { "core", "instance_class", "../../../../src/core/object.cc", 5369, 206, "instanceClass"  }, 
-  { "core", "implementation_class", "../../../../src/core/object.cc", 5219, 198, "implementationClass"  }, 
-  { "cl", "copy_tree", "../../../../src/core/object.cc", 4979, 185, "copyTree"  }, 
-  { "core", "low_level_describe", "../../../../src/core/object.cc", 4779, 173, "lowLevelDescribe"  }, 
-  { "core", "print_cxx_object", "../../../../src/core/object.cc", 3812, 141, "printCxxObject"  }, 
-  { "core", "fieldsp", "../../../../src/core/object.cc", 3684, 134, "fieldsp returns true if obj has a fields function"  }, 
-  { "core", "make_cxx_object", "../../../../src/core/object.cc", 2808, 105, "makeCxxObject"  }, 
-  { "core", "all_source_files", "../../../../src/core/lisp.cc", 100526, 2865, "List all of the source files"  }, 
-  { "cl", "not", "../../../../src/core/lisp.cc", 83214, 2345, "not"  }, 
-  { "core", "repr", "../../../../src/core/lisp.cc", 82721, 2319, "Return a string representation of the object"  }, 
-  { "core", "is_sub_class_of", "../../../../src/core/lisp.cc", 82210, 2301, "isSubClassOf"  }, 
-  { "core", "is_assignable_to", "../../../../src/core/lisp.cc", 81568, 2283, "isAssignableTo"  }, 
-  { "cl", "cerror", "../../../../src/core/lisp.cc", 80773, 2256, "See CLHS cerror"  }, 
-  { "cl", "error", "../../../../src/core/lisp.cc", 79519, 2229, "See CLHS error"  }, 
-  { "core", "invoke_internal_debugger_from_gdb", "../../../../src/core/lisp.cc", 79284, 2220, "invokeInternalDebuggerFromGdb"  }, 
-  { "core", "single_dispatch_generic_function_table", "../../../../src/core/lisp.cc", 79082, 2212, "singleDispatchGenericFunctionTable"  }, 
-  { "core", "invoke_internal_debugger", "../../../../src/core/lisp.cc", 78648, 2196, "invokeInternalDebugger"  }, 
-  { "core", "universal_error_handler", "../../../../src/core/lisp.cc", 78142, 2179, "universalErrorHandler"  }, 
-  { "cl", "intern", "../../../../src/core/lisp.cc", 77860, 2170, "See CLHS: intern"  }, 
-  { "core", "export_to_python", "../../../../src/core/lisp.cc", 77457, 2157, "exportToPython"  }, 
-  { "cl", "export", "../../../../src/core/lisp.cc", 77103, 2144, "CLHS: export"  }, 
-  { "core", "debug_log_off", "../../../../src/core/lisp.cc", 76772, 2128, "debugLogOff"  }, 
-  { "core", "debug_log_on", "../../../../src/core/lisp.cc", 76258, 2109, "debugLogOn"  }, 
-  { "core", "is_top_level_script", "../../../../src/core/lisp.cc", 75674, 2089, "isTopLevelScript"  }, 
-  { "core", "set_current_working_directory", "../../../../src/core/lisp.cc", 75286, 2072, "setCurrentWorkingDirectory"  }, 
-  { "core", "database_dir", "../../../../src/core/lisp.cc", 74888, 2055, "database_dir"  }, 
-  { "core", "lisp_code_path", "../../../../src/core/lisp.cc", 74299, 2033, "Returns the absolute path to the lisp code directory - if rel-path is not nil then it prepends the directory path to rel-path and returns that"  }, 
-  { "core", "library_path", "../../../../src/core/lisp.cc", 73728, 2019, "Returns the absolute path to the library directory - if rel-path is not nil then it prepends the library directory path to rel-path and returns that"  }, 
-  { "core", "script_dir", "../../../../src/core/lisp.cc", 73391, 2010, "script_dir"  }, 
-  { "core", "source_line_column", "../../../../src/core/lisp.cc", 72754, 1985, "sourceLineColumn"  }, 
-  { "core", "source_file_name", "../../../../src/core/lisp.cc", 72134, 1970, "Return the current sourceFileName"  }, 
-  { "cl", "sort", "../../../../src/core/lisp.cc", 71358, 1944, "Like CLHS: sort but does not support key"  }, 
-  { "core", "sorted", "../../../../src/core/lisp.cc", 70593, 1915, "Sort the list in ascending order using operator< and return the sorted list"  }, 
-  { "cl", "apropos", "../../../../src/core/lisp.cc", 69582, 1875, "apropos"  }, 
-  { "cl", "macroexpand", "../../../../src/core/lisp.cc", 66451, 1793, "macroexpand"  }, 
-  { "cl", "macroexpand_1", "../../../../src/core/lisp.cc", 64014, 1733, "macroexpand_1"  }, 
-  { "core", "mpi_size", "../../../../src/core/lisp.cc", 63853, 1725, "Return mpi_size or 0 if mpi is not enabled"  }, 
-  { "core", "mpi_rank", "../../../../src/core/lisp.cc", 63538, 1709, "Return the mpi_rank or 0 if mpi is disabled"  }, 
-  { "core", "mpi_enabled", "../../../../src/core/lisp.cc", 63213, 1694, "mpi_enabled"  }, 
-  { "core", "select_package", "../../../../src/core/lisp.cc", 62856, 1677, "selectPackage"  }, 
-  { "cl", "find_package", "../../../../src/core/lisp.cc", 62559, 1666, "See CLHS: find-package"  }, 
-  { "core", "find_file_in_lisp_path", "../../../../src/core/lisp.cc", 62205, 1655, "findFileInLispPath"  }, 
-  { "core", "setf_find_class", "../../../../src/core/lisp.cc", 61022, 1624, "setf_findClass"  }, 
-  { "cl", "find_class", "../../../../src/core/lisp.cc", 60047, 1597, "findClass"  }, 
-  { "core", "getline", "../../../../src/core/lisp.cc", 59204, 1567, "getline"  }, 
-  { "core", "member1", "../../../../src/core/lisp.cc", 58782, 1549, "Like member but if a key function is provided then apply it to the item. See ecl::list.d::member1"  }, 
-  { "core", "member_test", "../../../../src/core/lisp.cc", 58416, 1539, "See CLHS memberTest"  }, 
-  { "cl", "member", "../../../../src/core/lisp.cc", 58007, 1525, "See CLHS member"  }, 
-  { "cl", "assoc", "../../../../src/core/lisp.cc", 57725, 1515, "assoc"  }, 
-  { "cl", "acons", "../../../../src/core/lisp.cc", 57493, 1506, "acons"  }, 
-  { "core", "quit", "../../../../src/core/lisp.cc", 57358, 1498, "quit"  }, 
-  { "core", "exit", "../../../../src/core/lisp.cc", 57178, 1490, "exit"  }, 
-  { "core", "setup_stack_monitor", "../../../../src/core/lisp.cc", 56754, 1475, "setupStackMonitor"  }, 
-  { "core", "stack_limit", "../../../../src/core/lisp.cc", 56576, 1468, "Return the soft and hard limits of the stack"  }, 
-  { "core", "stack_monitor", "../../../../src/core/lisp.cc", 55855, 1444, "monitor stack for problems - warn if getting too large"  }, 
-  { "core", "stack_used", "../../../../src/core/lisp.cc", 54802, 1408, "stackUsed"  }, 
-  { "core", "low_level_repl", "../../../../src/core/lisp.cc", 54371, 1393, "lowLevelRepl - this is a built in repl for when the top-level repl isn't available"  }, 
-  { "core", "list_of_all_special_operators", "../../../../src/core/lisp.cc", 32870, 840, "listOfAllSpecialOperators"  }, 
-  { "cl", "boole", "../../../../src/core/bits.cc", 17965, 697, "boole"  }, 
-  { "core", "bit_array_op", "../../../../src/core/bits.cc", 7707, 305, "bitArrayOp"  }, 
-  { "cl", "write_sequence", "../../../../src/core/lispStream.cc", 176184, 6349, "writeSequence"  }, 
-  { "core", "file_column", "../../../../src/core/lispStream.cc", 175906, 6339, "column"  }, 
-  { "cl", "unread_char", "../../../../src/core/lispStream.cc", 175693, 6330, "unread_char"  }, 
-  { "cl", "finish_output", "../../../../src/core/lispStream.cc", 175490, 6321, "finish_output"  }, 
-  { "cl", "force_output", "../../../../src/core/lispStream.cc", 175292, 6312, "force_output"  }, 
-  { "cl", "listen", "../../../../src/core/lispStream.cc", 175099, 6303, "listen"  }, 
-  { "cl", "clear_output", "../../../../src/core/lispStream.cc", 174908, 6294, "clearOutput"  }, 
-  { "cl", "clear_input", "../../../../src/core/lispStream.cc", 174715, 6285, "clearInput"  }, 
-  { "cl", "write_char", "../../../../src/core/lispStream.cc", 174459, 6275, "writeChar"  }, 
-  { "cl", "write_byte", "../../../../src/core/lispStream.cc", 174203, 6265, "writeByte"  }, 
-  { "cl", "write_line", "../../../../src/core/lispStream.cc", 173881, 6254, "writeLine"  }, 
-  { "cl", "write_string", "../../../../src/core/lispStream.cc", 173592, 6245, "writeString"  }, 
-  { "cl", "fresh_line", "../../../../src/core/lispStream.cc", 172814, 6221, "freshLine"  }, 
-  { "cl", "terpri", "../../../../src/core/lispStream.cc", 172301, 6199, "Send a newline to the output stream"  }, 
-  { "cl", "read_line", "../../../../src/core/lispStream.cc", 170952, 6153, "See clhs"  }, 
-  { "cl", "read_from_string", "../../../../src/core/lispStream.cc", 169670, 6116, "read_from_string"  }, 
-  { "cl", "read_char_no_hang", "../../../../src/core/lispStream.cc", 168831, 6087, "readCharNoHang"  }, 
-  { "cl", "read_char", "../../../../src/core/lispStream.cc", 168267, 6068, "readChar"  }, 
-  { "cl", "peek_char", "../../../../src/core/lispStream.cc", 166760, 6022, "peekChar"  }, 
-  { "cl", "read_byte", "../../../../src/core/lispStream.cc", 166233, 6003, "readByte"  }, 
-  { "core", "input_stream_source_pos_info", "../../../../src/core/lispStream.cc", 160532, 5772, "sourcePosInfo"  }, 
-  { "core", "stream_column", "../../../../src/core/lispStream.cc", 158762, 5701, "streamColumn"  }, 
-  { "core", "stream_linenumber", "../../../../src/core/lispStream.cc", 158613, 5694, "streamLinenumber"  }, 
-  { "cl", "close", "../../../../src/core/lispStream.cc", 142472, 5233, "close"  }, 
-  { "cl", "open", "../../../../src/core/lispStream.cc", 140643, 5170, "open"  }, 
-  { "cl", "streamp", "../../../../src/core/lispStream.cc", 133734, 4982, "streamp"  }, 
-  { "cl", "interactive_stream_p", "../../../../src/core/lispStream.cc", 132401, 4939, "interactive_stream_p"  }, 
-  { "cl", "output_stream_p", "../../../../src/core/lispStream.cc", 132205, 4931, "output_stream_p"  }, 
-  { "cl", "input_stream_p", "../../../../src/core/lispStream.cc", 132008, 4922, "input_stream_p"  }, 
-  { "cl", "file_position", "../../../../src/core/lispStream.cc", 131561, 4903, "filePosition"  }, 
-  { "cl", "file_length", "../../../../src/core/lispStream.cc", 131403, 4896, "file_length"  }, 
-  { "cl", "read_sequence", "../../../../src/core/lispStream.cc", 130845, 4877, "readSequence"  }, 
-  { "core", "do_write_sequence", "../../../../src/core/lispStream.cc", 126680, 4755, "do_write_sequence"  }, 
-  { "core", "file_stream_fd", "../../../../src/core/lispStream.cc", 112049, 4233, "core-file-stream-fd"  }, 
-  { "core", "set_buffering_mode", "../../../../src/core/lispStream.cc", 107086, 4069, "set-buffering-mode"  }, 
-  { "cl", "synonym_stream_symbol", "../../../../src/core/lispStream.cc", 67689, 2642, "See CLHS synonym-stream-symbol"  }, 
-  { "cl", "make_synonym_stream", "../../../../src/core/lispStream.cc", 67350, 2630, "make-synonym-stream"  }, 
-  { "cl", "make_concatenated_stream", "../../../../src/core/lispStream.cc", 63151, 2452, "makeConcatenatedStream"  }, 
-  { "cl", "make_echo_stream", "../../../../src/core/lispStream.cc", 59635, 2315, "make-echo-stream"  }, 
-  { "cl", "make_broadcast_stream", "../../../../src/core/lispStream.cc", 55840, 2152, "makeBroadcastStream"  }, 
-  { "cl", "two_way_stream_output_stream", "../../../../src/core/lispStream.cc", 52491, 2007, "two-way-stream-output-stream"  }, 
-  { "cl", "two_way_stream_input_stream", "../../../../src/core/lispStream.cc", 52136, 1997, "two-way-stream-input-stream"  }, 
-  { "cl", "make_two_way_stream", "../../../../src/core/lispStream.cc", 51574, 1979, "make-two-way-stream"  }, 
-  { "cl", "make_string_input_stream", "../../../../src/core/lispStream.cc", 47892, 1829, "make_string_input_stream"  }, 
-  { "cl", "get_output_stream_string", "../../../../src/core/lispStream.cc", 43905, 1685, "get_output_stream_string"  }, 
-  { "cl", "make_string_output_stream", "../../../../src/core/lispStream.cc", 43134, 1661, "makeStringOutputStream"  }, 
-  { "core", "make_string_output_stream_from_string", "../../../../src/core/lispStream.cc", 41677, 1621, "make_string_output_stream_from_string"  }, 
-  { "core", "process_lambda_list", "../../../../src/core/lambdaListHandler.cc", 32360, 874, "processLambdaList - this is like ECL::process-lambda-list except auxs are returned as nil or a list of 2*n elements of the form (sym1 init1 sym2 init2 ...) In ECL they say you need to prepend the number of auxs - that breaks the destructure macro. ECL process-lambda-list says context may be MACRO, FTYPE, FUNCTION, METHOD or DESTRUCTURING-BIND but in ECL>>clos/method.lsp they pass T!!!"  }, 
-  { "core", "process_single_dispatch_lambda_list", "../../../../src/core/lambdaListHandler.cc", 12715, 321, "process_single_dispatch_lambda_list"  }, 
-  { "core", "process_macro_lambda_list", "../../../../src/core/lambdaListHandler.cc", 12456, 312, "process_macro_lambda_list"  }, 
-  { "core", "lispify_name", "../../../../src/core/foundation.cc", 12915, 419, "lispifyName"  }, 
-  { "core", "environment_id", "../../../../src/core/environment.cc", 6820, 220, "environmentId"  }, 
-  { "core", "runtime_environment", "../../../../src/core/environment.cc", 6480, 207, "Return the RuntimeEnvironment or nil"  }, 
-  { "core", "environment_type_list", "../../../../src/core/environment.cc", 5849, 186, "Return a list of environment parents"  }, 
-  { "core", "environment_list", "../../../../src/core/environment.cc", 5498, 174, "Return a list of environment parents"  }, 
-  { "core", "environment_activation_frame", "../../../../src/core/environment.cc", 5256, 164, "environmentActivationFrame"  }, 
-  { "core", "lexical_macro_function", "../../../../src/core/environment.cc", 4196, 128, "lexicalMacroFunction - If found return (values T fn depth index) otherwise nil"  }, 
-  { "core", "lexical_function", "../../../../src/core/environment.cc", 3759, 114, "lexicalFunction - If found return (values T fn depth index) otherwise nil"  }, 
-  { "core", "environment_debug_values", "../../../../src/core/environment.cc", 2936, 90, "environmentDebugValues - number of entries in this environment"  }, 
-  { "core", "environment_debug_names", "../../../../src/core/environment.cc", 2397, 75, "environmentDebugNames - number of entries in this environment"  }, 
-  { "core", "environment_length", "../../../../src/core/environment.cc", 2010, 63, "environmentLength - number of entries in this environment"  }, 
-  { "core", "classify_return_from_symbol", "../../../../src/core/environment.cc", 1726, 55, "classifyReturnFromSymbol"  }, 
-  { "cl", "nreconc", "../../../../src/core/lispList.cc", 9729, 367, "nreconc"  }, 
-  { "cl", "revappend", "../../../../src/core/lispList.cc", 9531, 357, "revappend"  }, 
-  { "cl", "nconc", "../../../../src/core/lispList.cc", 8631, 315, "tnconc"  }, 
-  { "cl", "last", "../../../../src/core/lispList.cc", 8289, 299, "last - see CLHS"  }, 
-  { "cl", "listSTAR", "../../../../src/core/lispList.cc", 7672, 279, "list* see CLHS"  }, 
-  { "cl", "list", "../../../../src/core/lispList.cc", 7548, 272, "See CLHS: list"  }, 
-  { "cl", "nbutlast", "../../../../src/core/lispList.cc", 7003, 251, "butlast"  }, 
-  { "cl", "butlast", "../../../../src/core/lispList.cc", 6363, 223, "butlast"  }, 
-  { "cl", "copy_list", "../../../../src/core/lispList.cc", 6067, 210, "copyList"  }, 
-  { "cl", "nthcdr", "../../../../src/core/lispList.cc", 5812, 197, "See CLHS nth"  }, 
-  { "cl", "nth", "../../../../src/core/lispList.cc", 5547, 184, "See CLHS nth"  }, 
-  { "cl", "rassoc", "../../../../src/core/lispList.cc", 4837, 157, "See CLHS rassoc"  }, 
-  { "core", "function_source_code", "../../../../src/core/executables.cc", 9408, 254, "functionSourceCode"  }, 
-  { "cl", "function_lambda_expression", "../../../../src/core/executables.cc", 8946, 239, "functionLambdaExpression"  }, 
-  { "core", "set_kind", "../../../../src/core/executables.cc", 2810, 82, "set the kind of a function object (:function|:macro)"  }, 
-  { "core", "function_source_pos_info", "../../../../src/core/executables.cc", 2388, 72, "functionSourcePosInfo"  }, 
-  { "core", "function_lambda_list", "../../../../src/core/executables.cc", 1804, 54, "functionLambdaList"  }, 
-  { "core", "mkdir", "../../../../src/core/unixfsys.cc", 46721, 1464, "mkdir"  }, 
-  { "core", "unix_get_local_time_zone", "../../../../src/core/unixfsys.cc", 46137, 1438, "unixGetLocalTimeZone"  }, 
-  { "core", "unix_daylight_saving_time", "../../../../src/core/unixfsys.cc", 45892, 1428, "unixDaylightSavingTime return true if in daylight saving time"  }, 
-  { "cl", "directory", "../../../../src/core/unixfsys.cc", 45376, 1413, "directory"  }, 
-  { "core", "copy_file", "../../../../src/core/unixfsys.cc", 40180, 1263, "copy_file"  }, 
-  { "core", "chmod", "../../../../src/core/unixfsys.cc", 39318, 1242, "chmod - use octal values for mode for convenience (eg #o777)"  }, 
-  { "core", "rmdir", "../../../../src/core/unixfsys.cc", 38902, 1232, "Like unix rmdir"  }, 
-  { "core", "mkstemp", "../../../../src/core/unixfsys.cc", 32146, 1004, "mkstemp"  }, 
-  { "cl", "user_homedir_pathname", "../../../../src/core/unixfsys.cc", 28784, 882, "userHomedirPathname"  }, 
-  { "cl", "file_author", "../../../../src/core/unixfsys.cc", 26071, 795, "file_author"  }, 
-  { "cl", "file_write_date", "../../../../src/core/unixfsys.cc", 25404, 776, "file_write_date"  }, 
-  { "cl", "probe_file", "../../../../src/core/unixfsys.cc", 25071, 766, "probe_file"  }, 
-  { "cl", "delete_file", "../../../../src/core/unixfsys.cc", 24082, 737, "deleteFile"  }, 
-  { "cl", "rename_file", "../../../../src/core/unixfsys.cc", 19662, 614, "renameFile"  }, 
-  { "cl", "truename", "../../../../src/core/unixfsys.cc", 17584, 559, "truename"  }, 
-  { "core", "file_truename", "../../../../src/core/unixfsys.cc", 17238, 546, "truename"  }, 
-  { "core", "readlink", "../../../../src/core/unixfsys.cc", 9262, 350, "file_kind (values kind found) - if found but kind==nil then its a br"  }, 
-  { "core", "file_kind", "../../../../src/core/unixfsys.cc", 8882, 338, "file_kind (values kind found) - if found but kind==nil then its a broken symlink"  }, 
-  { "core", "current_dir", "../../../../src/core/unixfsys.cc", 5981, 233, "currentDir"  }, 
-  { "ext", "chdir", "../../../../src/core/unixfsys.cc", 5023, 187, "chdir"  }, 
-  { "core", "getppid", "../../../../src/core/unixfsys.cc", 4874, 178, "getppid"  }, 
-  { "core", "getpid", "../../../../src/core/unixfsys.cc", 4733, 169, "getpid"  }, 
-  { "core", "waitpid", "../../../../src/core/unixfsys.cc", 4484, 157, "waitpid - see unix waitpid - returns status"  }, 
-  { "core", "fork", "../../../../src/core/unixfsys.cc", 4300, 148, "fork"  }, 
-  { "core", "make_source_manager", "../../../../src/core/sourceFileInfo.cc", 14688, 442, "makeSourceManager"  }, 
-  { "core", "dump_source_manager", "../../../../src/core/sourceFileInfo.cc", 14153, 424, "dumpSourceManager"  }, 
-  { "core", "walk_to_find_source_pos_info", "../../../../src/core/sourceFileInfo.cc", 9170, 259, "Walk down the tree and find the first source info you can"  }, 
-  { "core", "walk_to_assign_source_pos_info", "../../../../src/core/sourceFileInfo.cc", 8142, 231, "Walk down the tree and carry source info down"  }, 
-  { "core", "walk_to_find_source_info", "../../../../src/core/sourceFileInfo.cc", 7055, 201, "walkToFindSourceInfo"  }, 
-  { "core", "source_pos_info_column", "../../../../src/core/sourceFileInfo.cc", 5588, 152, "sourcePosInfoColumn"  }, 
-  { "core", "source_pos_info_lineno", "../../../../src/core/sourceFileInfo.cc", 5302, 141, "sourcePosInfoLineno"  }, 
-  { "core", "source_pos_info_filepos", "../../../../src/core/sourceFileInfo.cc", 4995, 130, "sourcePosInfoFilepos"  }, 
-  { "core", "source_file_info", "../../../../src/core/sourceFileInfo.cc", 2934, 85, "sourceFileInfo given a source name (string) or pathname or integer, return the source-file-info structure and the integer index"  }, 
-  { "cl", "print", "../../../../src/core/print.cc", 8910, 253, "See CLHS: print"  }, 
-  { "cl", "prin1", "../../../../src/core/print.cc", 8516, 242, "See CLHS: prin1"  }, 
-  { "cl", "princ", "../../../../src/core/print.cc", 8119, 231, "See CLHS: princ"  }, 
-  { "cl", "pprint", "../../../../src/core/print.cc", 7672, 218, "pprint"  }, 
-  { "core", "print_unreadable_object_function", "../../../../src/core/print.cc", 6759, 185, "printUnreadableObjectFunction - see ecl::print_unreadable.d"  }, 
-  { "cl", "write", "../../../../src/core/print.cc", 4665, 140, "write"  }, 
-  { "core", "write_object", "../../../../src/core/write_object.cc", 6368, 175, "writeObject"  }, 
-  { "cl", "load", "../../../../src/core/load.cc", 4659, 115, "CLHS: load"  }, 
-  { "core", "load_source", "../../../../src/core/load.cc", 1666, 50, "loadSource"  }, 
-  { "cl", "imagpart", "../../../../src/core/num_co.cc", 31174, 1194, "imagpart"  }, 
-  { "cl", "realpart", "../../../../src/core/num_co.cc", 30681, 1169, "realpart"  }, 
-  { "cl", "complex", "../../../../src/core/num_co.cc", 30535, 1161, "complex"  }, 
-  { "cl", "integer_decode_float", "../../../../src/core/num_co.cc", 29121, 1096, "integer_decode_float"  }, 
-  { "cl", "float_precision", "../../../../src/core/num_co.cc", 27838, 1036, "floatPrecision"  }, 
-  { "cl", "float_digits", "../../../../src/core/num_co.cc", 27302, 1012, "floatDigits"  }, 
-  { "cl", "float_sign", "../../../../src/core/num_co.cc", 26448, 975, "floatSign"  }, 
-  { "cl", "scale_float", "../../../../src/core/num_co.cc", 25197, 926, "scaleFloat"  }, 
-  { "cl", "decode_float", "../../../../src/core/num_co.cc", 24193, 873, "decodeFloat"  }, 
-  { "cl", "rem", "../../../../src/core/num_co.cc", 24004, 864, "rem"  }, 
-  { "cl", "mod", "../../../../src/core/num_co.cc", 23785, 855, "mod"  }, 
-  { "cl", "round", "../../../../src/core/num_co.cc", 23583, 844, "round"  }, 
-  { "cl", "truncate", "../../../../src/core/num_co.cc", 20608, 719, "truncate"  }, 
-  { "cl", "ceiling", "../../../../src/core/num_co.cc", 19038, 656, "ceiling"  }, 
-  { "cl", "floor", "../../../../src/core/num_co.cc", 11804, 414, "floor"  }, 
-  { "cl", "denominator", "../../../../src/core/num_co.cc", 3966, 158, "denominator"  }, 
-  { "cl", "numerator", "../../../../src/core/num_co.cc", 3618, 140, "numerator"  }, 
-  { "cl", "float", "../../../../src/core/num_co.cc", 2563, 96, "float"  }, 
-  { "core", "integer_to_string", "../../../../src/core/numberToString.cc", 3387, 98, "integerToString"  }, 
-  { "core", "bignum_to_string", "../../../../src/core/numberToString.cc", 1813, 55, "bignumToString"  }, 
-  { "cl", "lcm", "../../../../src/core/num_arith.cc", 3977, 130, "lcm"  }, 
-  { "cl", "gcd", "../../../../src/core/num_arith.cc", 2887, 86, "gcd"  }, 
-  { "core", "atanh", "../../../../src/core/numerics.cc", 36369, 1289, "atanh"  }, 
-  { "core", "acosh", "../../../../src/core/numerics.cc", 36228, 1281, "acosh"  }, 
-  { "core", "asinh", "../../../../src/core/numerics.cc", 36093, 1273, "asinh"  }, 
-  { "core", "acos", "../../../../src/core/numerics.cc", 35978, 1265, "acosh"  }, 
-  { "core", "asin", "../../../../src/core/numerics.cc", 35863, 1257, "asinh"  }, 
-  { "cl", "get_universal_time", "../../../../src/core/numerics.cc", 2997, 106, "getUniversalTime"  }, 
-  { "cl", "integer_length", "../../../../src/core/numbers.cc", 98237, 3685, "integerLength"  }, 
-  { "core", "log1p", "../../../../src/core/numbers.cc", 96785, 3623, "log1p"  }, 
-  { "cl", "log", "../../../../src/core/numbers.cc", 96568, 3613, "Calculate the log of (number) to base (base)."  }, 
-  { "cl", "atan", "../../../../src/core/numbers.cc", 91530, 3450, "atan"  }, 
-  { "cl", "expt", "../../../../src/core/numbers.cc", 87649, 3300, "expt"  }, 
-  { "cl", "exp", "../../../../src/core/numbers.cc", 84218, 3173, "exp"  }, 
-  { "cl", "conjugate", "../../../../src/core/numbers.cc", 82636, 3110, "conjugate"  }, 
-  { "cl", "tanh", "../../../../src/core/numbers.cc", 81644, 3073, "tanh"  }, 
-  { "cl", "cosh", "../../../../src/core/numbers.cc", 80254, 3017, "cosh"  }, 
-  { "cl", "sinh", "../../../../src/core/numbers.cc", 78445, 2953, "sinh"  }, 
-  { "cl", "tan", "../../../../src/core/numbers.cc", 76641, 2890, "tan"  }, 
-  { "cl", "cos", "../../../../src/core/numbers.cc", 74948, 2823, "cos"  }, 
-  { "cl", "sin", "../../../../src/core/numbers.cc", 73199, 2761, "sin"  }, 
-  { "cl", "sqrt", "../../../../src/core/numbers.cc", 71500, 2697, "sqrt"  }, 
-  { "core", "nan", "../../../../src/core/numbers.cc", 44552, 1489, "Return a number that is NAN"  }, 
-  { "cl", "_EQ_", "../../../../src/core/numbers.cc", 40317, 1310, "EQ_"  }, 
-  { "cl", "_NE_", "../../../../src/core/numbers.cc", 39948, 1293, "NE"  }, 
-  { "cl", "_MINUS_", "../../../../src/core/numbers.cc", 27579, 825, "See CLHS: +"  }, 
-  { "cl", "_TIMES_", "../../../../src/core/numbers.cc", 27205, 811, "See CLHS: *"  }, 
-  { "cl", "lognor", "../../../../src/core/numbers.cc", 8766, 312, "lognor"  }, 
-  { "cl", "lognand", "../../../../src/core/numbers.cc", 8406, 298, "lognand"  }, 
-  { "cl", "lognot", "../../../../src/core/numbers.cc", 8169, 287, "lognot"  }, 
-  { "cl", "logorc2", "../../../../src/core/numbers.cc", 7814, 273, "logorc2"  }, 
-  { "cl", "logorc1", "../../../../src/core/numbers.cc", 7456, 259, "logorc1"  }, 
-  { "cl", "logandc2", "../../../../src/core/numbers.cc", 7097, 245, "logandc2"  }, 
-  { "cl", "logandc1", "../../../../src/core/numbers.cc", 6737, 231, "logandc1"  }, 
-  { "cl", "logeqv", "../../../../src/core/numbers.cc", 5843, 205, "logeqv"  }, 
-  { "cl", "logxor", "../../../../src/core/numbers.cc", 5307, 187, "logxor"  }, 
-  { "cl", "logior", "../../../../src/core/numbers.cc", 4755, 168, "logior"  }, 
-  { "cl", "logand", "../../../../src/core/numbers.cc", 4246, 151, "logand"  }, 
-  { "cl", "max", "../../../../src/core/numbers.cc", 3859, 137, "max"  }, 
-  { "cl", "min", "../../../../src/core/numbers.cc", 3475, 123, "min"  }, 
-  { "core", "fixnum_number_of_bits", "../../../../src/core/numbers.cc", 3031, 99, "fixnum_number_of_bits"  }, 
-  { "core", "convert_overflow_result_to_bignum", "../../../../src/core/numbers.cc", 2719, 88, "convert_overflow_result_to_bignum"  }, 
-  { "cl", "zerop", "../../../../src/core/numbers.cc", 2557, 80, "zerop"  }, 
-  { "core", "hash_table_force_rehash", "../../../../src/core/hashTable.cc", 18376, 597, "hashTableForceRehash"  }, 
-  { "cl", "gethash", "../../../../src/core/hashTable.cc", 16679, 546, "gethash"  }, 
-  { "cl", "remhash", "../../../../src/core/hashTable.cc", 7419, 240, "remhash"  }, 
-  { "core", "hash_equalp", "../../../../src/core/hashTable.cc", 7147, 226, "hash_equalp generates an equalp hash for a list of objects"  }, 
-  { "core", "hash_equal", "../../../../src/core/hashTable.cc", 6829, 212, "hash_equal generates an equal hash for a list of objects"  }, 
-  { "core", "hash_eql", "../../../../src/core/hashTable.cc", 6517, 198, "hash_eql generates an eql hash for a list of objects"  }, 
-  { "core", "hash_table_entry_deleted_p", "../../../../src/core/hashTable.cc", 6233, 188, "hashTableEntryDeletedP"  }, 
-  { "cl", "clrhash", "../../../../src/core/hashTable.cc", 6049, 179, "See CLHS"  }, 
-  { "cl", "maphash", "../../../../src/core/hashTable.cc", 5058, 151, "see CLHS"  }, 
-  { "core", "hash_table_weakness", "../../../../src/core/hashTable.cc", 4479, 131, "hash_table_weakness"  }, 
-  { "cl", "make_hash_table", "../../../../src/core/hashTable.cc", 2790, 94, "see CLHS"  }, 
-  { "core", "debug_hash_table", "../../../../src/core/hashTable.cc", 1861, 58, "DebugHashTable"  }, 
-  { "core", "make_small_multimap", "../../../../src/core/smallMultimap.cc", 1422, 48, "makeSmallMultimap"  }, 
-  { "core", "make_small_map", "../../../../src/core/smallMap.cc", 1412, 48, "makeSmallMap"  }, 
-  { "core", "print_current_ihs_frame_environment", "../../../../src/core/debugger.cc", 12276, 391, "printCurrentIhsFrameEnvironment"  }, 
-  { "core", "frame_pointers", "../../../../src/core/debugger.cc", 10559, 330, "framePointers"  }, 
-  { "core", "clib_backtrace", "../../../../src/core/debugger.cc", 9108, 280, "backtrace"  }, 
-  { "core", "low_level_backtrace", "../../../../src/core/debugger.cc", 7860, 245, "lowLevelBacktrace"  }, 
-  { "cl", "random", "../../../../src/core/random.cc", 1994, 58, "random"  }, 
-  { "core", "ihs_backtrace", "../../../../src/core/primitives.cc", 63761, 1980, "ihsBacktrace"  }, 
-  { "core", "dynamic_binding_stack_dump", "../../../../src/core/primitives.cc", 63444, 1970, "dynamicBindingStackDump"  }, 
-  { "core", "exception_stack_dump", "../../../../src/core/primitives.cc", 62731, 1942, "exceptionStackDump"  }, 
-  { "core", "exception_stack", "../../../../src/core/primitives.cc", 62583, 1935, "exceptionStack"  }, 
-  { "core", "bds_val", "../../../../src/core/primitives.cc", 62453, 1928, "bdsVal"  }, 
-  { "core", "bds_var", "../../../../src/core/primitives.cc", 62323, 1921, "bdsVar"  }, 
-  { "core", "bds_top", "../../../../src/core/primitives.cc", 62209, 1914, "bdsTop"  }, 
-  { "core", "set_ihs_current_frame", "../../../../src/core/primitives.cc", 61937, 1901, "setIhsCurrentFrame"  }, 
-  { "core", "ihs_current_frame", "../../../../src/core/primitives.cc", 61376, 1879, "ihsCurrentFrame"  }, 
-  { "core", "ihs_bds", "../../../../src/core/primitives.cc", 61133, 1869, "ihsBds"  }, 
-  { "core", "ihs_env", "../../../../src/core/primitives.cc", 60886, 1859, "ihsEnv"  }, 
-  { "core", "ihs_arguments", "../../../../src/core/primitives.cc", 60635, 1849, "ihsArguments: return the arguments to the function in the invocation history stack at i"  }, 
-  { "core", "ihs_fun", "../../../../src/core/primitives.cc", 60310, 1839, "ihsFun: return the function in the invocation history stack at i"  }, 
-  { "core", "ihs_next", "../../../../src/core/primitives.cc", 60014, 1829, "ihsNext"  }, 
-  { "core", "ihs_prev", "../../../../src/core/primitives.cc", 59774, 1819, "ihsPrev"  }, 
-  { "core", "ihs_top", "../../../../src/core/primitives.cc", 59549, 1809, "ihsTop"  }, 
-  { "core", "ihs_backtrace_no_args", "../../../../src/core/primitives.cc", 59391, 1801, "ihsBacktraceNoArgs"  }, 
-  { "core", "get_invocation_history_frame_next", "../../../../src/core/primitives.cc", 59102, 1791, "getInvocationHistoryFrameNext - Return the next InvocationHistoryFrame after index as an iterator."  }, 
-  { "core", "get_invocation_history_frame_prev", "../../../../src/core/primitives.cc", 58723, 1783, "getInvocationHistoryFramePrev - Return the prev InvocationHistoryFrame before index as an iterator."  }, 
-  { "core", "get_invocation_history_frame", "../../../../src/core/primitives.cc", 58350, 1775, "getInvocationHistoryFrame - Return an indexed InvocationHistoryFrame as an iterator."  }, 
-  { "core", "get_invocation_history_frame_top", "../../../../src/core/primitives.cc", 58033, 1768, "getInvocationHistoryFrameSearch - Return an top InvocationHistoryFrame as an iterator."  }, 
-  { "core", "get_invocation_history_frame_search", "../../../../src/core/primitives.cc", 56657, 1738, "getInvocationHistoryFrameSearch - Return an InvocationHistoryFrame as an iterator. If idx == NIL return the top frame. If idx>=0 return the frame that satisfies *backtrace-frame-selector-hook* that has the index idx if direction==NIL, or if direction==:PREV return the frame previous to it (away from the top) or if direction==:NEXT the next frame (towards the top). *backtrace-frame-selector-hook* is a function that takes an invocation-history-frame-iterator and returns true if it should be in the backtrace. Test the result to make sure it is valid."  }, 
-  { "cl", "sxhash", "../../../../src/core/primitives.cc", 51205, 1600, "sxhash"  }, 
-  { "cl", "type_of", "../../../../src/core/primitives.cc", 51092, 1592, "type_of"  }, 
-  { "core", "type_to_symbol", "../../../../src/core/primitives.cc", 44419, 1432, "type_to_symbol"  }, 
-  { "cl", "gensym", "../../../../src/core/primitives.cc", 43384, 1403, "See CLHS gensym"  }, 
-  { "core", "sequence_start_end", "../../../../src/core/primitives.cc", 42633, 1380, "Copied from ecl::sequence.d::sequence_start_end - throws errors if start/end are out of range for the sequence. I'm not sure what the func argument is for. If end is nil then it is set to the end of the sequence.  Return MultipleValues(start,end,length)."  }, 
-  { "cl", "append", "../../../../src/core/primitives.cc", 41740, 1353, "append as in clhs"  }, 
-  { "cl", "mapcan", "../../../../src/core/primitives.cc", 40711, 1320, "mapcan"  }, 
-  { "cl", "mapcon", "../../../../src/core/primitives.cc", 40489, 1310, "mapcon"  }, 
-  { "core", "mapappend", "../../../../src/core/primitives.cc", 39817, 1294, "mapappend is like mapcar except that the results are appended together - see AMOP 280"  }, 
-  { "cl", "mapl", "../../../../src/core/primitives.cc", 39520, 1284, "See CLHS maplist"  }, 
-  { "cl", "maplist", "../../../../src/core/primitives.cc", 37479, 1239, "See CLHS maplist"  }, 
-  { "cl", "mapc", "../../../../src/core/primitives.cc", 36337, 1208, "See CLHS mapc"  }, 
-  { "cl", "mapcar", "../../../../src/core/primitives.cc", 35707, 1186, "See CLHS for mapcar"  }, 
-  { "cl", "notevery", "../../../../src/core/primitives.cc", 35263, 1169, "See CLHS for notevery"  }, 
-  { "cl", "notany", "../../../../src/core/primitives.cc", 34912, 1158, "See CLHS for notany"  }, 
-  { "cl", "some", "../../../../src/core/primitives.cc", 34542, 1145, "See CLHS for some"  }, 
-  { "cl", "every", "../../../../src/core/primitives.cc", 34195, 1134, "See CLHS for every"  }, 
-  { "cl", "read_preserving_whitespace", "../../../../src/core/primitives.cc", 29947, 1000, "read an object from a stream while preserving whitespace - see CLHS"  }, 
-  { "cl", "read", "../../../../src/core/primitives.cc", 29202, 985, "read an object from a stream - see CLHS"  }, 
-  { "cl", "read_delimited_list", "../../../../src/core/primitives.cc", 28495, 965, "read a list up to a specific character - see CLHS"  }, 
-  { "cl", "fmakunbound", "../../../../src/core/primitives.cc", 27730, 943, "fmakunbound"  }, 
-  { "cl", "fboundp", "../../../../src/core/primitives.cc", 27134, 921, "fboundp"  }, 
-  { "cl", "fdefinition", "../../../../src/core/primitives.cc", 26574, 902, "fdefinition"  }, 
-  { "core", "STARfset", "../../../../src/core/primitives.cc", 25509, 873, "fset - bind a function to its name - handles symbol function-name and (SETF XXXX) names. (macro) defines if the function is a macro or not."  }, 
-  { "cl", "class_of", "../../../../src/core/primitives.cc", 25062, 861, "return class of object - see CLHS"  }, 
-  { "cl", "null", "../../../../src/core/primitives.cc", 24856, 851, "null test - return true if the object is the empty list otherwise return nil"  }, 
-  { "core", "macroexpand_default", "../../../../src/core/primitives.cc", 23235, 821, "macroexpand_default Default value of *macroexpand-hook*"  }, 
-  { "cl", "identity", "../../../../src/core/primitives.cc", 23040, 813, "identity"  }, 
-  { "cl", "constantp", "../../../../src/core/primitives.cc", 22512, 788, "constantp"  }, 
-  { "core", "gdb_inspect", "../../../../src/core/primitives.cc", 22244, 778, "hook to invoke gdb"  }, 
-  { "core", "trap_execution", "../../../../src/core/primitives.cc", 21930, 764, "hook to invoke gdb"  }, 
-  { "core", "cxx_lambda_list_handler_create_bindings_calls", "../../../../src/core/primitives.cc", 21659, 756, "Return the number of times lambdaListHandler_createBindings"  }, 
-  { "core", "gdb", "../../../../src/core/primitives.cc", 21343, 742, "hook to invoke gdb"  }, 
-  { "core", "break", "../../../../src/core/primitives.cc", 21043, 730, "Built in implementation of break - that calls the internal debugger - replace this with a CL implemented version"  }, 
-  { "cl", "ash", "../../../../src/core/primitives.cc", 20723, 722, "CLHS: ash"  }, 
-  { "cl", "special_operator_p", "../../../../src/core/primitives.cc", 18480, 652, "See CLHS: special-operator-p"  }, 
-  { "cl", "macro_function", "../../../../src/core/primitives.cc", 17732, 631, "See CLHS: macroFunction"  }, 
-  { "core", "separate_pair_list", "../../../../src/core/primitives.cc", 16665, 592, "Split a list of pairs into a pair of lists returned as MultipleValues. The first list is each first element and the second list is each second element or nil if there was no second element"  }, 
-  { "core", "test_memory_error", "../../../../src/core/primitives.cc", 16306, 581, "testMemoryError"  }, 
-  { "core", "valid_function_name_p", "../../../../src/core/primitives.cc", 16063, 570, "validFunctionNameP"  }, 
-  { "core", "function_block_name", "../../../../src/core/primitives.cc", 15748, 558, "See CLHS glossary 'function block name'. If the functionName is a symbol return it.  If the functionName is a cons of the form (setf xxxx) return xxxx"  }, 
-  { "cl", "values_list", "../../../../src/core/primitives.cc", 15094, 537, "values_list"  }, 
-  { "core", "values_testing", "../../../../src/core/primitives.cc", 14810, 526, "values"  }, 
-  { "cl", "values", "../../../../src/core/primitives.cc", 14622, 516, "values"  }, 
-  { "core", "smart_pointer_details", "../../../../src/core/primitives.cc", 14042, 497, "smartPointerDetails - returns (values ptr-type px-offset px-size). The ptr-type is the type of pointer used to pass objects - either MPS-GARBAGE-COLLECTION or INTRUSIVE-REFERENCE-COUNTED-POINTER. The px-offset is the number of bytes offset of the smart_ptr data pointer from the start of the smart_ptr and px-size is the size of the data pointer"  }, 
-  { "core", "unbound", "../../../../src/core/primitives.cc", 13591, 489, "Return the UNBOUND value"  }, 
-  { "core", "substitute", "../../../../src/core/primitives.cc", 13439, 481, "substitute"  }, 
-  { "core", "is_true", "../../../../src/core/primitives.cc", 13315, 473, "isTrue"  }, 
-  { "core", "pointer", "../../../../src/core/primitives.cc", 13196, 465, "Return the value of the pointer - used by conditions.lsp"  }, 
-  { "core", "setenv", "../../../../src/core/primitives.cc", 12977, 458, R"doc(Set an environment variable)doc"  }, 
-  { "core", "describe_cxx_object", "../../../../src/core/primitives.cc", 12639, 445, R"doc(Describe a
+ define_source_info( code_kind, core::magic_name("CHEM:ring-bonds"), "../../src/chem/ringFinder.cc", 26879, 939, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:identify-rings"), "../../src/chem/ringFinder.cc", 25988, 908, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:save-pdb"), "../../src/chem/pdb.cc", 16602, 572, "" );
+ define_source_info( code_kind, core::magic_name("chem__load_pdb"), "../../src/chem/pdb.cc", 10327, 332, "" );
+ define_source_info( code_kind, core::magic_name("chem__set_oligomer"), "../../src/chem/oligomer.cc", 28875, 1001, "" );
+ define_source_info( code_kind, core::magic_name("chem__oligomer_sequence"), "../../src/chem/oligomer.cc", 26789, 935, "" );
+ define_source_info( code_kind, core::magic_name("chem__atomsInMatterAsObjectSet"), "../../src/chem/mbbCoreTools.cc", 6173, 245, "" );
+ define_source_info( code_kind, core::magic_name("chem__atomsWithinSphereAsObjectSet"), "../../src/chem/mbbCoreTools.cc", 5342, 220, "" );
+ define_source_info( code_kind, core::magic_name("chem__connectAtomsInMatterInCovalentContact"), "../../src/chem/mbbCoreTools.cc", 4646, 199, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:otherPlugName"), "../../src/chem/coupling.cc", 3011, 126, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:outPlugName"), "../../src/chem/coupling.cc", 2745, 115, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:inPlugName"), "../../src/chem/coupling.cc", 2485, 105, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:couplingName"), "../../src/chem/coupling.cc", 2075, 94, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:make-energy-function"), "../../src/chem/energyFunction.cc", 3574, 129, "" );
+ define_source_info( code_kind, core::magic_name("chem__map_atoms"), "../../src/chem/loop.cc", 21165, 694, "" );
+ define_source_info( code_kind, core::magic_name("chem__map_residues"), "../../src/chem/loop.cc", 20021, 659, "" );
+ define_source_info( code_kind, core::magic_name("chem__map_molecules"), "../../src/chem/loop.cc", 18856, 625, "" );
+ define_source_info( code_kind, core::magic_name("chem__readPdbMonomerConnectivityDatabase"), "../../src/chem/pdbMonomer.cc", 2681, 122, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:make-minimizer"), "../../src/chem/minimizer.cc", 4996, 177, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:elementFromAtomNameString"), "../../src/chem/elements.cc", 21890, 567, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:elementFromAtomNameStringCaseInsensitive"), "../../src/chem/elements.cc", 21753, 562, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:make-atom"), "../../src/chem/atom.cc", 2671, 108, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:make-residue"), "../../src/chem/residue.cc", 20184, 734, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:make-molecule"), "../../src/chem/molecule.cc", 9414, 358, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:make-aggregate"), "../../src/chem/aggregate.cc", 18622, 637, "" );
+ define_source_info( code_kind, core::magic_name("chem__make_fftypes_db"), "../../src/chem/ffTypesDb.cc", 2360, 97, "" );
+ define_source_info( code_kind, core::magic_name("chem__oligomer"), "../../src/chem/candoScript.cc", 28635, 850, "" );
+ define_source_info( code_kind, core::magic_name("chem__calculate_point"), "../../src/chem/candoScript.cc", 26218, 795, "" );
+ define_source_info( code_kind, core::magic_name("chem__link"), "../../src/chem/candoScript.cc", 25298, 769, "" );
+ define_source_info( code_kind, core::magic_name("chem__monomer"), "../../src/chem/candoScript.cc", 24642, 748, "" );
+ define_source_info( code_kind, core::magic_name("chem__atom_pos"), "../../src/chem/candoScript.cc", 22726, 691, "" );
+ define_source_info( code_kind, core::magic_name("chem__find_residue"), "../../src/chem/candoScript.cc", 20985, 641, "" );
+ define_source_info( code_kind, core::magic_name("chem__save_mol2"), "../../src/chem/candoScript.cc", 18442, 566, "" );
+ define_source_info( code_kind, core::magic_name("chem__load_mol2"), "../../src/chem/candoScript.cc", 17921, 544, "" );
+ define_source_info( code_kind, core::magic_name("chem__make_coordinate_array_from_atom_list"), "../../src/chem/candoScript.cc", 17396, 525, "" );
+ define_source_info( code_kind, core::magic_name("chem__save_archive_with_auto_set_cando_database"), "../../src/chem/candoScript.cc", 16083, 491, "" );
+ define_source_info( code_kind, core::magic_name("chem__create_virtual_atom"), "../../src/chem/candoScript.cc", 10834, 361, "" );
+ define_source_info( code_kind, core::magic_name("chem__bundle_database_path"), "../../src/chem/candoScript.cc", 6435, 224, "" );
+ define_source_info( code_kind, core::magic_name("chem__standard_database"), "../../src/chem/candoScript.cc", 5393, 193, "" );
+ define_source_info( code_kind, core::magic_name("chem__database"), "../../src/chem/candoScript.cc", 4309, 163, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:make-chem-draw"), "../../src/chem/chemdraw.cc", 33139, 1012, "" );
+ define_source_info( code_kind, core::magic_name("chem__set_monomer_pack"), "../../src/chem/monomerPack.cc", 4513, 146, "" );
+ define_source_info( code_kind, core::magic_name("chem__extend_aliases"), "../../src/chem/monomerPack.cc", 2878, 103, "" );
+ define_source_info( code_kind, core::magic_name("chem__define_monomer_pack"), "../../src/chem/monomerPack.cc", 1648, 56, "" );
+ define_source_info( code_kind, core::magic_name("chem__parseChimeraAtomSpecs"), "../../src/chem/chimera.cc", 1547, 48, "" );
+ define_source_info( code_kind, core::magic_name("chem__alias"), "../../src/chem/alias.cc", 812, 39, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:bonds"), "../../src/chem/iterateMatter.cc", 4679, 226, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:residues"), "../../src/chem/iterateMatter.cc", 4367, 211, "" );
+ define_source_info( code_kind, core::magic_name("chem__create_for_matter"), "../../src/chem/iterateMatter.cc", 2968, 155, "" );
+ define_source_info( code_kind, core::magic_name("UNITS:make-quantity"), "../../src/units/quantity.cc", 4040, 149, "" );
+ define_source_info( code_kind, core::magic_name("UNITS:make-unit"), "../../src/units/unit.cc", 1771, 73, "" );
+ define_source_info( code_kind, core::magic_name("chem__makeIndexedObjectBag"), "../../src/adapt/indexedObjectBag.cc", 2071, 65, "" );
+ define_source_info( code_kind, core::magic_name("GEOM:make-coordinate-array"), "../../src/geom/coordinateArray.cc", 666, 30, "" );
+ define_source_info( code_kind, core::magic_name("GEOM:make-omatrix"), "../../src/geom/omatrix.cc", 442, 24, "" );
+ define_source_info( code_kind, core::magic_name("GEOM:make_ovector3"), "../../src/geom/ovector3.cc", 1214, 46, "" );
+ define_source_info( code_kind, core::magic_name("ast_tooling__testDerivable"), "../../../../src/asttooling/clangTooling.cc", 21718, 429, "" );
+ define_source_info( code_kind, core::magic_name("ast_tooling__deduplicate"), "../../../../src/asttooling/clangTooling.cc", 19982, 394, "" );
+ define_source_info( code_kind, core::magic_name("ast_tooling__clangVersionString"), "../../../../src/asttooling/clangTooling.cc", 14088, 294, "" );
+ define_source_info( code_kind, core::magic_name("ast_tooling__makeAstVisitor"), "../../../../src/asttooling/astVisitor.cc", 1649, 47, "" );
+ define_source_info( code_kind, core::magic_name("serve_event_internal__ll_serveEventWithTimeout"), "../../../../src/serveEvent/serveEvent.cc", 3213, 80, "" );
+ define_source_info( code_kind, core::magic_name("serve_event_internal__ll_serveEventNoTimeout"), "../../../../src/serveEvent/serveEvent.cc", 2649, 72, "" );
+ define_source_info( code_kind, core::magic_name("serve_event_internal__ll_fdset_size"), "../../../../src/serveEvent/serveEvent.cc", 2346, 65, "" );
+ define_source_info( code_kind, core::magic_name("serve_event_internal__ll_fd_isset"), "../../../../src/serveEvent/serveEvent.cc", 2039, 58, "" );
+ define_source_info( code_kind, core::magic_name("serve_event_internal__ll_fd_set"), "../../../../src/serveEvent/serveEvent.cc", 1742, 51, "" );
+ define_source_info( code_kind, core::magic_name("serve_event_internal__ll_fd_zero"), "../../../../src/serveEvent/serveEvent.cc", 1463, 44, "" );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_setSockoptLinger"), "../../../../src/sockets/sockets.cc", 25223, 728, "ll_setSockoptLinger"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_setSockoptTimeval"), "../../../../src/sockets/sockets.cc", 24732, 711, "ll_setSockoptTimeval"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_setSockoptBool"), "../../../../src/sockets/sockets.cc", 24315, 697, "ll_setSockoptBool"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_setSockoptInt"), "../../../../src/sockets/sockets.cc", 23911, 683, "ll_setSockoptInt"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_getSockoptLinger"), "../../../../src/sockets/sockets.cc", 23362, 668, "ll_getSockoptLinger"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_getSockoptTimeval"), "../../../../src/sockets/sockets.cc", 22820, 655, "ll_getSockoptTimeval"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_getSockoptBool"), "../../../../src/sockets/sockets.cc", 22374, 642, "ll_getSockoptBool"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_getSockoptInt"), "../../../../src/sockets/sockets.cc", 21841, 627, "ll_getSockoptInt"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_strerror_errno"), "../../../../src/sockets/sockets.cc", 21651, 620, "ll_strerror_errno"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_strerror"), "../../../../src/sockets/sockets.cc", 21478, 613, "ll_strerror"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_autoCloseTwoWayStream"), "../../../../src/sockets/sockets.cc", 21207, 603, "ll_autoCloseTwoWayStream"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_makeStreamFromFd"), "../../../../src/sockets/sockets.cc", 20276, 575, "ll_makeStreamFromFd"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_dup"), "../../../../src/sockets/sockets.cc", 20095, 568, "ll_dup"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_setfNonBlockingMode"), "../../../../src/sockets/sockets.cc", 19717, 555, "ll_setfNonBlockingMode"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_nonBlockingMode"), "../../../../src/sockets/sockets.cc", 19530, 548, "ll_nonBlockingMode"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__socketPeername_localSocket"), "../../../../src/sockets/sockets.cc", 19071, 529, "socketPeername_localSocket"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_socketConnect_localSocket"), "../../../../src/sockets/sockets.cc", 18459, 509, "ll_socketConnect_localSocket"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_socketAccept_localSocket"), "../../../../src/sockets/sockets.cc", 17886, 496, "ll_socketAccept_localSocket"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_socketBind_localSocket"), "../../../../src/sockets/sockets.cc", 17240, 476, "ll_socketBind_localSocket"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__socketSendNoAddress"), "../../../../src/sockets/sockets.cc", 15817, 440, "socketSendNoAddress"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_socketSendAddress"), "../../../../src/sockets/sockets.cc", 13542, 381, "ll_socketSendAddress"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_socketName"), "../../../../src/sockets/sockets.cc", 12792, 353, "ll_socketName"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_socketPeername_inetSocket"), "../../../../src/sockets/sockets.cc", 12029, 327, "ll_socketPeername_inetSocket"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_socketConnect_inetSocket"), "../../../../src/sockets/sockets.cc", 11527, 314, "ll_socketConnect_inetSocket"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_socketAccept_inetSocket"), "../../../../src/sockets/sockets.cc", 10386, 285, "ll_socketAccept_inetSocket"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_socketBind_inetSocket"), "../../../../src/sockets/sockets.cc", 9900, 272, "ll_socketBind - returns output"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_getProtocolByName"), "../../../../src/sockets/sockets.cc", 9659, 265, "ll_getProtocolByName"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_socketReceive"), "../../../../src/sockets/sockets.cc", 8678, 238, "ll_socketReceive"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_getHostByAddress"), "../../../../src/sockets/sockets.cc", 6347, 188, "ll_getHostByAddress"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_getHostByName"), "../../../../src/sockets/sockets.cc", 4247, 147, "ll_getHostByName"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_getNameServiceErrorMessage"), "../../../../src/sockets/sockets.cc", 3946, 140, "ll_getNameServiceErrorMessage"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_get_name_service_h_errno"), "../../../../src/sockets/sockets.cc", 3732, 132, "ll_get_name_service_h_errno"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ll_socket_errno"), "../../../../src/sockets/sockets.cc", 3539, 124, "ll_socket_errno"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__funcName"), "../../../../src/sockets/sockets.cc", 3381, 117, "funcName"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ff_close"), "../../../../src/sockets/sockets.cc", 3239, 110, "ff_close"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ff_listen"), "../../../../src/sockets/sockets.cc", 3071, 103, "ff_listen"  );
+ define_source_info( code_kind, core::magic_name("sockets_internal__ff_socket"), "../../../../src/sockets/sockets.cc", 2877, 96, "ff_socket"  );
+ define_source_info( code_kind, core::magic_name("gctools__next_header_kind"), "../../../../src/gctools/memoryManagement.cc", 5546, 171, R"doc(Return the next available header KIND value and increment the global variable global_next_header_kind)doc"  );
+ define_source_info( code_kind, core::magic_name("core__telemetry_count"), "../../../../src/gctools/telemetry.cc", 5983, 207, ""  );
+ define_source_info( code_kind, core::magic_name("core__telemetry_dump"), "../../../../src/gctools/telemetry.cc", 4844, 169, ""  );
+ define_source_info( code_kind, core::magic_name("core__telemetry_labels"), "../../../../src/gctools/telemetry.cc", 4540, 159, ""  );
+ define_source_info( code_kind, core::magic_name("core__telemetry_follow"), "../../../../src/gctools/telemetry.cc", 3230, 113, ""  );
+ define_source_info( code_kind, core::magic_name("core__telemetry_search_labels"), "../../../../src/gctools/telemetry.cc", 2031, 72, ""  );
+ define_source_info( code_kind, core::magic_name("core__telemetry_search"), "../../../../src/gctools/telemetry.cc", 815, 32, ""  );
+ define_source_info( code_kind, core::magic_name("core__telemetry_open"), "../../../../src/gctools/telemetry.cc", 476, 20, ""  );
+ define_source_info( code_kind, core::magic_name("gctools__debug_allocations"), "../../../../src/gctools/gcFunctions.cc", 23732, 618, "" );
+ define_source_info( code_kind, core::magic_name("gctools__cleanup"), "../../../../src/gctools/gcFunctions.cc", 23497, 609, "" );
+ define_source_info( code_kind, core::magic_name("gctools__garbage_collect"), "../../../../src/gctools/gcFunctions.cc", 23047, 593, "" );
+ define_source_info( code_kind, core::magic_name("gctools__stack_depth"), "../../../../src/gctools/gcFunctions.cc", 22718, 583, "" );
+ define_source_info( code_kind, core::magic_name("cl__room"), "../../../../src/gctools/gcFunctions.cc", 18652, 493, "room - Return info about the reachable objects.  x can be T, nil, :default - as in ROOM.  marker can be a fixnum (0 - matches everything, any other number/only objects with that marker)"  );
+ define_source_info( code_kind, core::magic_name("gctools__alloc_pattern_end"), "../../../../src/gctools/gcFunctions.cc", 17687, 473, "" );
+ define_source_info( code_kind, core::magic_name("gctools__alloc_pattern_begin"), "../../../../src/gctools/gcFunctions.cc", 16558, 453, "" );
+ define_source_info( code_kind, core::magic_name("gctools__gc_marker"), "../../../../src/gctools/gcFunctions.cc", 15755, 428, "" );
+ define_source_info( code_kind, core::magic_name("gctools__monitor_allocations"), "../../../../src/gctools/gcFunctions.cc", 14848, 410, "" );
+ define_source_info( code_kind, core::magic_name("gctools__gc_info"), "../../../../src/gctools/gcFunctions.cc", 14345, 397, "" );
+ define_source_info( code_kind, core::magic_name("core__hardwired_kinds"), "../../../../src/gctools/gcFunctions.cc", 5923, 167, "Return the header kind for the object"  );
+ define_source_info( code_kind, core::magic_name("core__inherits_from_instance"), "../../../../src/gctools/gcFunctions.cc", 5672, 156, R"doc(Return true if the object inherits from core:instance based on its header value)doc"  );
+ define_source_info( code_kind, core::magic_name("core__header_kind"), "../../../../src/gctools/gcFunctions.cc", 4507, 125, "Return the header kind for the object"  );
+ define_source_info( code_kind, core::magic_name("gctools__bytes_allocated"), "../../../../src/gctools/gcFunctions.cc", 3954, 108, "" );
+ define_source_info( code_kind, core::magic_name("gctools__deallocate_unmanaged_instance"), "../../../../src/gctools/gcFunctions.cc", 3567, 101, "" );
+ define_source_info( code_kind, core::magic_name("gctools__bootstrap_kind_p"), "../../../../src/gctools/gcFunctions.cc", 2913, 86, "" );
+ define_source_info( code_kind, core::magic_name("gctools__bootstrap_kind_symbols"), "../../../../src/gctools/gcFunctions.cc", 2376, 74, "" );
+ define_source_info( code_kind, core::magic_name("gctools__max_bootstrap_kinds"), "../../../../src/gctools/gcFunctions.cc", 1200, 40, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:isInPlugName"), "../../../../projects/cando/include/cando/chem/coupling.h", 3229, 135, "" );
+ define_source_info( code_kind, core::magic_name("llvm_sys__viewCFG"), "../../../../src/llvmo/llvmoPackage.cc", 11163, 249, "" );
+ define_source_info( code_kind, core::magic_name("llvm_sys__disassembleSTAR"), "../../../../src/llvmo/llvmoPackage.cc", 10891, 241, "" );
+ define_source_info( code_kind, core::magic_name("llvm_sys__getOrCreateExternalGlobal"), "../../../../src/llvmo/llvmoPackage.cc", 9166, 197, "" );
+ define_source_info( code_kind, core::magic_name("llvm_sys__throwIfMismatchedStructureSizes"), "../../../../src/llvmo/llvmoPackage.cc", 6814, 142, "" );
+ define_source_info( code_kind, core::magic_name("llvm_sys__cxxDataStructuresInfo"), "../../../../src/llvmo/llvmoPackage.cc", 3291, 104, "" );
+ define_source_info( code_kind, core::magic_name("llvm_sys__mangleSymbolName"), "../../../../src/llvmo/llvmoPackage.cc", 2511, 82, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createBasicAliasAnalysisPass"), "../../../../src/llvmo/llvmoExpose.cc", 147445, 3694, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createTypeBasedAliasAnalysisPass"), "../../../../src/llvmo/llvmoExpose.cc", 147335, 3692, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createLowerExpectIntrinsicPass"), "../../../../src/llvmo/llvmoExpose.cc", 147223, 3690, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createEarlyCSEPass"), "../../../../src/llvmo/llvmoExpose.cc", 147125, 3688, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createCorrelatedValuePropagationPass"), "../../../../src/llvmo/llvmoExpose.cc", 147021, 3686, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createVerifierPass"), "../../../../src/llvmo/llvmoExpose.cc", 146917, 3684, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createConstantPropagationPass"), "../../../../src/llvmo/llvmoExpose.cc", 146713, 3681, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createTailCallEliminationPass"), "../../../../src/llvmo/llvmoExpose.cc", 146605, 3679, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createScalarReplAggregatesPass"), "../../../../src/llvmo/llvmoExpose.cc", 146163, 3674, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createSCCPPass"), "../../../../src/llvmo/llvmoExpose.cc", 146069, 3672, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createReassociatePass"), "../../../../src/llvmo/llvmoExpose.cc", 145984, 3670, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createPromoteMemoryToRegisterPass"), "../../../../src/llvmo/llvmoExpose.cc", 145880, 3668, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createMemCpyOptPass"), "../../../../src/llvmo/llvmoExpose.cc", 145778, 3666, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createLoopUnswitchPass"), "../../../../src/llvmo/llvmoExpose.cc", 145687, 3664, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createLoopUnrollPass"), "../../../../src/llvmo/llvmoExpose.cc", 145595, 3662, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createLoopRotatePass"), "../../../../src/llvmo/llvmoExpose.cc", 145505, 3660, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createLoopIdiomPass"), "../../../../src/llvmo/llvmoExpose.cc", 145416, 3658, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createLoopDeletionPass"), "../../../../src/llvmo/llvmoExpose.cc", 145325, 3656, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createLICMPass"), "../../../../src/llvmo/llvmoExpose.cc", 145239, 3654, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createJumpThreadingPass"), "../../../../src/llvmo/llvmoExpose.cc", 145152, 3652, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createInstructionCombiningPass"), "../../../../src/llvmo/llvmoExpose.cc", 145049, 3650, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createIndVarSimplifyPass"), "../../../../src/llvmo/llvmoExpose.cc", 144945, 3648, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createGVNPass"), "../../../../src/llvmo/llvmoExpose.cc", 144858, 3646, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createDeadStoreEliminationPass"), "../../../../src/llvmo/llvmoExpose.cc", 144765, 3644, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createCFGSimplificationPass"), "../../../../src/llvmo/llvmoExpose.cc", 144658, 3642, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createAggressiveDCEPass"), "../../../../src/llvmo/llvmoExpose.cc", 144558, 3640, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:InitializeNativeTarget"), "../../../../src/llvmo/llvmoExpose.cc", 144462, 3637, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createMemDepPrinter"), "../../../../src/llvmo/llvmoExpose.cc", 144106, 3632, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createModuleDebugInfoPrinterPass"), "../../../../src/llvmo/llvmoExpose.cc", 144005, 3630, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createRegionInfoPass"), "../../../../src/llvmo/llvmoExpose.cc", 143903, 3628, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createInstCountPass"), "../../../../src/llvmo/llvmoExpose.cc", 143723, 3625, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createLazyValueInfoPass"), "../../../../src/llvmo/llvmoExpose.cc", 143631, 3623, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createScalarEvolutionAliasAnalysisPass"), "../../../../src/llvmo/llvmoExpose.cc", 142859, 3614, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createAAEvalPass"), "../../../../src/llvmo/llvmoExpose.cc", 142754, 3611, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createAlwaysInlinerPass"), "../../../../src/llvmo/llvmoExpose.cc", 142642, 3608, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createFunctionInliningPass"), "../../../../src/llvmo/llvmoExpose.cc", 142502, 3605, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:createAliasAnalysisCounterPass"), "../../../../src/llvmo/llvmoExpose.cc", 142396, 3603, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:TargetRegistryLookupTarget"), "../../../../src/llvmo/llvmoExpose.cc", 138462, 3534, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:finalizeClosure"), "../../../../src/llvmo/llvmoExpose.cc", 135375, 3475, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:finalizeEngineAndRegisterWithGcAndGetCompiledFunction"), "../../../../src/llvmo/llvmoExpose.cc", 133940, 3455, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:pointer-type-get"), "../../../../src/llvmo/llvmoExpose.cc", 132318, 3408, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:array-type-get"), "../../../../src/llvmo/llvmoExpose.cc", 131406, 3381, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:struct-type-get"), "../../../../src/llvmo/llvmoExpose.cc", 129581, 3325, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:struct-type-create"), "../../../../src/llvmo/llvmoExpose.cc", 128897, 3310, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:function-type-get"), "../../../../src/llvmo/llvmoExpose.cc", 127174, 3253, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:type-get-int64-ptr-ty"), "../../../../src/llvmo/llvmoExpose.cc", 126734, 3236, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:type-get-int32-ptr-ty"), "../../../../src/llvmo/llvmoExpose.cc", 126644, 3234, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:type-get-int8-ptr-ty"), "../../../../src/llvmo/llvmoExpose.cc", 126555, 3232, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:type-get-int64-ty"), "../../../../src/llvmo/llvmoExpose.cc", 126469, 3230, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:type-get-int32-ty"), "../../../../src/llvmo/llvmoExpose.cc", 126386, 3228, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:type-get-int8-ty"), "../../../../src/llvmo/llvmoExpose.cc", 126304, 3226, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:type-get-int1-ty"), "../../../../src/llvmo/llvmoExpose.cc", 126223, 3224, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:type-get-void-ty"), "../../../../src/llvmo/llvmoExpose.cc", 126142, 3222, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:type-get-double-ty"), "../../../../src/llvmo/llvmoExpose.cc", 126059, 3220, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:type-get-float-ty"), "../../../../src/llvmo/llvmoExpose.cc", 125975, 3218, "" );
+ define_source_info( code_kind, core::magic_name("type-get-float-ty","LLVM-SYS"), "../../../../src/llvmo/llvmoExpose.cc", 125403, 3207, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:basic-block-create"), "../../../../src/llvmo/llvmoExpose.cc", 123495, 3146, "" );
+ define_source_info( code_kind, core::magic_name("llvm_sys__FunctionCreate"), "../../../../src/llvmo/llvmoExpose.cc", 119953, 3060, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:value-as-metadata-get"), "../../../../src/llvmo/llvmoExpose.cc", 118791, 3020, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:mdstring-get"), "../../../../src/llvmo/llvmoExpose.cc", 118126, 2996, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:mdnode-get"), "../../../../src/llvmo/llvmoExpose.cc", 117328, 2967, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:make-irbuilder"), "../../../../src/llvmo/llvmoExpose.cc", 95389, 2581, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:makeAPInt64"), "../../../../src/llvmo/llvmoExpose.cc", 90452, 2471, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:makeAPInt32"), "../../../../src/llvmo/llvmoExpose.cc", 90218, 2464, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:makeAPIntWidth"), "../../../../src/llvmo/llvmoExpose.cc", 88739, 2425, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:makeAPInt1"), "../../../../src/llvmo/llvmoExpose.cc", 88168, 2407, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:makeAPInt"), "../../../../src/llvmo/llvmoExpose.cc", 87258, 2384, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:makeAPFloatDouble"), "../../../../src/llvmo/llvmoExpose.cc", 86252, 2352, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:make-apfloat-float"), "../../../../src/llvmo/llvmoExpose.cc", 85871, 2341, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:constant-pointer-null-get"), "../../../../src/llvmo/llvmoExpose.cc", 85329, 2317, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:UNDEF_VALUE-GET"), "../../../../src/llvmo/llvmoExpose.cc", 84643, 2293, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:CONSTANT-STRUCT-GET"), "../../../../src/llvmo/llvmoExpose.cc", 84102, 2274, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:constant-int-get"), "../../../../src/llvmo/llvmoExpose.cc", 83332, 2250, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:constantFpGetTypeStringref"), "../../../../src/llvmo/llvmoExpose.cc", 82359, 2218, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:constantFpGetTypeDouble"), "../../../../src/llvmo/llvmoExpose.cc", 82224, 2216, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:constantFpGet"), "../../../../src/llvmo/llvmoExpose.cc", 82069, 2214, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:make-global-variable"), "../../../../src/llvmo/llvmoExpose.cc", 73324, 1855, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:constant-expr-get-in-bounds-get-element-ptr"), "../../../../src/llvmo/llvmoExpose.cc", 71639, 1808, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:block-address-get"), "../../../../src/llvmo/llvmoExpose.cc", 70896, 1784, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:constant-array-get"), "../../../../src/llvmo/llvmoExpose.cc", 69753, 1752, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:constant-data-array-get-uint32"), "../../../../src/llvmo/llvmoExpose.cc", 68200, 1713, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:PassManagerBuilderSetfSizeLevel"), "../../../../src/llvmo/llvmoExpose.cc", 66244, 1651, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:PassManagerBuilderSetfOptLevel"), "../../../../src/llvmo/llvmoExpose.cc", 65966, 1644, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:PassManagerBuilderSetfInliner"), "../../../../src/llvmo/llvmoExpose.cc", 65587, 1636, "" );
+ define_source_info( code_kind, core::magic_name("make-PassManagerBuilder","LLVM-SYS"), "../../../../src/llvmo/llvmoExpose.cc", 65278, 1627, "" );
+ define_source_info( code_kind, core::magic_name("make-EngineBuilder","LLVM-SYS"), "../../../../src/llvmo/llvmoExpose.cc", 62103, 1540, "" );
+ define_source_info( code_kind, core::magic_name("makePassManager","LLVM-SYS"), "../../../../src/llvmo/llvmoExpose.cc", 61174, 1510, "" );
+ define_source_info( code_kind, core::magic_name("makeFunctionPassManager","LLVM-SYS"), "../../../../src/llvmo/llvmoExpose.cc", 59828, 1476, "" );
+ define_source_info( code_kind, core::magic_name("makeTargetLibraryInfo","LLVM-SYS"), "../../../../src/llvmo/llvmoExpose.cc", 57105, 1389, "" );
+ define_source_info( code_kind, core::magic_name("makeDataLayoutPass","LLVM-SYS"), "../../../../src/llvmo/llvmoExpose.cc", 56318, 1363, "" );
+ define_source_info( code_kind, core::magic_name("llvm_sys__module_get_function_list"), "../../../../src/llvmo/llvmoExpose.cc", 43799, 1054, "" );
+ define_source_info( code_kind, core::magic_name("make-Module","LLVM-SYS"), "../../../../src/llvmo/llvmoExpose.cc", 43339, 1044, "" );
+ define_source_info( code_kind, core::magic_name("llvm_sys__valid"), "../../../../src/llvmo/llvmoExpose.cc", 42089, 1003, "" );
+ define_source_info( code_kind, core::magic_name("llvm_sys__makeStringGlobal"), "../../../../src/llvmo/llvmoExpose.cc", 40743, 965, "" );
+ define_source_info( code_kind, core::magic_name("attributeSetGet","LLVM-SYS"), "../../../../src/llvmo/llvmoExpose.cc", 40116, 952, "" );
+ define_source_info( code_kind, core::magic_name("llvm_sys__valuep"), "../../../../src/llvmo/llvmoExpose.cc", 34988, 850, "" );
+ define_source_info( code_kind, core::magic_name("llvm_sys__parseBitcodeFile"), "../../../../src/llvmo/llvmoExpose.cc", 33636, 821, "" );
+ define_source_info( code_kind, core::magic_name("llvm_sys__writeBitcodeToFile"), "../../../../src/llvmo/llvmoExpose.cc", 33068, 808, "" );
+ define_source_info( code_kind, core::magic_name("llvm_sys__verifyFunction"), "../../../../src/llvmo/llvmoExpose.cc", 32597, 797, "" );
+ define_source_info( code_kind, core::magic_name("llvm_sys__verifyModule"), "../../../../src/llvmo/llvmoExpose.cc", 32137, 786, "" );
+ define_source_info( code_kind, core::magic_name("llvm_sys__writeIrToFile"), "../../../../src/llvmo/llvmoExpose.cc", 31476, 771, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:make-target-options"), "../../../../src/llvmo/llvmoExpose.cc", 26395, 580, "" );
+ define_source_info( code_kind, core::magic_name("triple-normalize","LLVM-SYS"), "../../../../src/llvmo/llvmoExpose.cc", 11625, 321, "" );
+ define_source_info( code_kind, core::magic_name("make-triple","LLVM-SYS"), "../../../../src/llvmo/llvmoExpose.cc", 11434, 314, ""  );
+ define_source_info( code_kind, core::magic_name("llvm_sys__link_in_module"), "../../../../src/llvmo/llvmoExpose.cc", 4968, 152, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:make-linker"), "../../../../src/llvmo/llvmoExpose.cc", 4657, 143, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:get_global_context"), "../../../../src/llvmo/llvmoExpose.cc", 4002, 117, "" );
+ define_source_info( code_kind, core::magic_name("llvm_sys__llvm_value_p"), "../../../../src/llvmo/llvmoExpose.cc", 3816, 106, "" );
+ define_source_info( code_kind, core::magic_name("compiler__setAssociatedFuncs"), "../../../../src/llvmo/llvmoExpose.cc", 3468, 98, "" );
+ define_source_info( code_kind, "LLVM-SYS:dw-tag", "../../../../src/llvmo/llvmoDwarf.cc", 1722, 48, "Convert a DW_TAG and version to an integer"  );
+ define_source_info( code_kind, "LLVM-SYS:debug-loc-get", "../../../../src/llvmo/debugLoc.cc", 1324, 41, "" );
+ define_source_info( code_kind, core::magic_name("LLVM-SYS:make-dibuilder"), "../../../../src/llvmo/debugInfoExpose.cc", 6161, 251, "" );
+ define_source_info( code_kind, core::magic_name("llvm_sys__addGlobalBootFunctionsSizePass"), "../../../../src/llvmo/claspLinkPass.cc", 2698, 76, "" );
+ define_source_info( code_kind, core::magic_name("null-pointer","CFFI-SYS"), "../../../../src/cffi/cffi.cc", 9682, 269, "" );
+ define_source_info( code_kind, core::magic_name("make-pointer","CFFI-SYS"), "../../../../src/cffi/cffi.cc", 8928, 252, "" );
+ define_source_info( code_kind, core::magic_name("cffi_sys__foreign_alloc"), "../../../../src/cffi/cffi.cc", 8419, 232, "" );
+ define_source_info( code_kind, core::magic_name("cffi_sys__PERCENTforeign_type_size"), "../../../../src/cffi/cffi.cc", 6255, 168, "" );
+ define_source_info( code_kind, core::magic_name("cffi_sys__PERCENTforeign_type_alignment"), "../../../../src/cffi/cffi.cc", 3698, 105, "" );
+ define_source_info( code_kind, core::magic_name("cffi_sys__foreign_symbol_pointer"), "../../../../src/cffi/cffi.cc", 3124, 89, "" );
+ define_source_info( code_kind, core::magic_name("cffi_sys__PERCENTload_foreign_library"), "../../../../src/cffi/cffi.cc", 2706, 79, "" );
+ define_source_info( code_kind, core::magic_name("cl__get_internal_run_time"), "../../../../src/core/posixTime.cc", 1741, 58, "getInternalRunTime"  );
+ define_source_info( code_kind, core::magic_name("cl__get_internal_real_time"), "../../../../src/core/posixTime.cc", 1423, 49, "getInternalRealTime"  );
+ define_source_info( code_kind, core::magic_name("make-bit-vector-with-fill-ptr","CORE"), "../../../../src/core/bitVector.cc", 10541, 382, "" );
+ define_source_info( code_kind, core::magic_name("make-simple-bit-vector","CORE"), "../../../../src/core/bitVector.cc", 9981, 364, "" );
+ define_source_info( code_kind, core::magic_name("cl__ensure_directories_exist"), "../../../../src/core/fileSystem.cc", 4154, 124, "Look for <path> and return it. If it doesn't exist create every missing directory along the path."  );
+ define_source_info( code_kind, core::magic_name("CORE:make-array-objects"), "../../../../src/core/arrayObjects.cc", 1573, 45, "" );
+ define_source_info( code_kind, core::magic_name("CORE:make-load-time-values"), "../../../../src/core/loadTimeValues.cc", 6285, 174, "" );
+ define_source_info( code_kind, core::magic_name("core__load_time_values_dump_symbols"), "../../../../src/core/loadTimeValues.cc", 5411, 152, "Dump the load-time-values for the id _name_(string)."  );
+ define_source_info( code_kind, core::magic_name("core__load_time_values_dump_values"), "../../../../src/core/loadTimeValues.cc", 4716, 133, "Dump the load-time-values for the id _name_(string)."  );
+ define_source_info( code_kind, core::magic_name("core__load_time_values_ids"), "../../../../src/core/loadTimeValues.cc", 3641, 100, "Return a cons of the load-time-values ids"  );
+ define_source_info( code_kind, core::magic_name("core__lookup_load_time_symbol"), "../../../../src/core/loadTimeValues.cc", 2934, 81, "Return the load-time-value associated with array NAME and IDX"  );
+ define_source_info( code_kind, core::magic_name("core__lookup_load_time_value"), "../../../../src/core/loadTimeValues.cc", 2324, 66, "Return the load-time-value associated with array NAME and IDX"  );
+ define_source_info( code_kind, core::magic_name("core__load_time_value_array"), "../../../../src/core/loadTimeValues.cc", 1989, 58, "loadTimeValueArray"  );
+ define_source_info( code_kind, core::magic_name("core__set_run_time_values_vector"), "../../../../src/core/loadTimeValues.cc", 1436, 44, "setRunTimeValuesVector - return true if its set and false if it was already set"  );
+ define_source_info( code_kind, core::magic_name("cl__vector_push_extend"), "../../../../src/core/lispVector.cc", 7937, 234, "vectorPushExtend"  );
+ define_source_info( code_kind, core::magic_name("cl__vector_push"), "../../../../src/core/lispVector.cc", 7729, 227, "vectorPush"  );
+ define_source_info( code_kind, core::magic_name("core__adjust_vector"), "../../../../src/core/lispVector.cc", 4864, 122, "adjustVector"  );
+ define_source_info( code_kind, core::magic_name("core__make_vector"), "../../../../src/core/lispVector.cc", 2008, 58, "make_vector See si_make_vector in ecl>>array.d"  );
+ define_source_info( code_kind, core::magic_name("cl__vector"), "../../../../src/core/lispVector.cc", 1589, 49, "vector"  );
+ define_source_info( code_kind, core::magic_name("core__setf_subseq"), "../../../../src/core/sequence.cc", 5488, 181, "setfSubseq"  );
+ define_source_info( code_kind, core::magic_name("core__elt_set"), "../../../../src/core/sequence.cc", 5291, 174, "eltSet"  );
+ define_source_info( code_kind, core::magic_name("core__setf_elt"), "../../../../src/core/sequence.cc", 4799, 158, "setfElt"  );
+ define_source_info( code_kind, core::magic_name("cl__copy_seq"), "../../../../src/core/sequence.cc", 4404, 144, "copy_seq"  );
+ define_source_info( code_kind, core::magic_name("cl__subseq"), "../../../../src/core/sequence.cc", 3809, 127, "subseq"  );
+ define_source_info( code_kind, core::magic_name("cl__nreverse"), "../../../../src/core/sequence.cc", 3429, 113, "nreverse"  );
+ define_source_info( code_kind, core::magic_name("cl__reverse"), "../../../../src/core/sequence.cc", 3057, 99, "reverse"  );
+ define_source_info( code_kind, core::magic_name("cl__make_sequence"), "../../../../src/core/sequence.cc", 2372, 76, "make_sequence"  );
+ define_source_info( code_kind, core::magic_name("cl__elt"), "../../../../src/core/sequence.cc", 1922, 62, "elt"  );
+ define_source_info( code_kind, core::magic_name("cl__length"), "../../../../src/core/sequence.cc", 1486, 46, "See CLHS length - works with SEQUENCES and ACTIVATION_FRAMEs"  );
+ define_source_info( code_kind, core::magic_name("coerce-to-package","CORE"), "../../../../src/core/designators.cc", 3156, 102, "" );
+ define_source_info( code_kind, core::magic_name("path-designator","CORE"), "../../../../src/core/designators.cc", 2128, 68, "" );
+ define_source_info( code_kind, core::magic_name("cl__parse_integer"), "../../../../src/core/lispString.cc", 28603, 974, "parseInteger"  );
+ define_source_info( code_kind, core::magic_name("core__schar_set"), "../../../../src/core/lispString.cc", 25834, 850, "CLHS schar"  );
+ define_source_info( code_kind, core::magic_name("core__char_set"), "../../../../src/core/lispString.cc", 25534, 839, "CLHS schar"  );
+ define_source_info( code_kind, core::magic_name("cl__schar"), "../../../../src/core/lispString.cc", 25265, 829, "CLHS schar"  );
+ define_source_info( code_kind, core::magic_name("cl__make_string"), "../../../../src/core/lispString.cc", 24829, 812, "See CLHS: make_string"  );
+ define_source_info( code_kind, core::magic_name("cl__string_not_lessp"), "../../../../src/core/lispString.cc", 23539, 780, "string_not_lessp"  );
+ define_source_info( code_kind, core::magic_name("cl__string_not_greaterp"), "../../../../src/core/lispString.cc", 22988, 770, "string_not_greaterp"  );
+ define_source_info( code_kind, core::magic_name("cl__string_greaterp"), "../../../../src/core/lispString.cc", 22442, 760, "string_greaterp"  );
+ define_source_info( code_kind, core::magic_name("cl__string_lessp"), "../../../../src/core/lispString.cc", 21906, 750, "string_lessp"  );
+ define_source_info( code_kind, core::magic_name("cl__string_not_equal"), "../../../../src/core/lispString.cc", 21365, 740, "string_not_equal"  );
+ define_source_info( code_kind, core::magic_name("cl__string_equal"), "../../../../src/core/lispString.cc", 20827, 729, "string_equal"  );
+ define_source_info( code_kind, core::magic_name("cl__string_GE_"), "../../../../src/core/lispString.cc", 20297, 718, "string_GE_"  );
+ define_source_info( code_kind, core::magic_name("cl__string_LE_"), "../../../../src/core/lispString.cc", 19769, 707, "string_LE_"  );
+ define_source_info( code_kind, core::magic_name("cl__string_GT_"), "../../../../src/core/lispString.cc", 19241, 696, "string_GT_"  );
+ define_source_info( code_kind, core::magic_name("cl__string_LT_"), "../../../../src/core/lispString.cc", 18713, 685, "string_LT_"  );
+ define_source_info( code_kind, core::magic_name("cl__string_NE_"), "../../../../src/core/lispString.cc", 18185, 674, "string_NE_"  );
+ define_source_info( code_kind, core::magic_name("cl__string_EQ_"), "../../../../src/core/lispString.cc", 17661, 663, "string_EQ_"  );
+ define_source_info( code_kind, core::magic_name("cl__string"), "../../../../src/core/lispString.cc", 4734, 171, "string"  );
+ define_source_info( code_kind, core::magic_name("cl__nstring_downcase"), "../../../../src/core/lispString.cc", 4457, 160, "string_downcase"  );
+ define_source_info( code_kind, core::magic_name("cl__nstring_upcase"), "../../../../src/core/lispString.cc", 4173, 149, "string_upcase"  );
+ define_source_info( code_kind, core::magic_name("cl__string_downcase"), "../../../../src/core/lispString.cc", 3848, 137, "string_downcase"  );
+ define_source_info( code_kind, core::magic_name("cl__char"), "../../../../src/core/lispString.cc", 3364, 119, "char"  );
+ define_source_info( code_kind, core::magic_name("cl__string_upcase"), "../../../../src/core/lispString.cc", 3046, 107, "string_upcase"  );
+ define_source_info( code_kind, core::magic_name("cl__string_right_trim"), "../../../../src/core/lispString.cc", 2867, 100, "string_right_trim"  );
+ define_source_info( code_kind, core::magic_name("cl__string_left_trim"), "../../../../src/core/lispString.cc", 2677, 93, "string_left_trim"  );
+ define_source_info( code_kind, core::magic_name("cl__string_trim"), "../../../../src/core/lispString.cc", 2494, 86, "string_trim"  );
+ define_source_info( code_kind, core::magic_name("cl__code_char"), "../../../../src/core/character.cc", 18833, 577, "code_char"  );
+ define_source_info( code_kind, core::magic_name("cl__char_int"), "../../../../src/core/character.cc", 18657, 569, "char_int"  );
+ define_source_info( code_kind, core::magic_name("cl__char_code"), "../../../../src/core/character.cc", 18366, 558, "char_code"  );
+ define_source_info( code_kind, core::magic_name("cl__char_name"), "../../../../src/core/character.cc", 18168, 550, "char_name"  );
+ define_source_info( code_kind, core::magic_name("cl__name_char"), "../../../../src/core/character.cc", 17691, 537, "name_char"  );
+ define_source_info( code_kind, core::magic_name("cl__digit_char_p"), "../../../../src/core/character.cc", 17274, 522, "digitCharP"  );
+ define_source_info( code_kind, core::magic_name("cl__alpha_char_p"), "../../../../src/core/character.cc", 16725, 502, "alpha_char_p"  );
+ define_source_info( code_kind, core::magic_name("cl__standard_char_p"), "../../../../src/core/character.cc", 13736, 454, "See CLHS: standard_char_p"  );
+ define_source_info( code_kind, core::magic_name("cl__char_equal"), "../../../../src/core/character.cc", 7055, 262, "Like char_EQ_, ignore case"  );
+ define_source_info( code_kind, core::magic_name("cl__char_not_equal"), "../../../../src/core/character.cc", 6130, 232, "Like char_NE_ but ignore case"  );
+ define_source_info( code_kind, core::magic_name("cl__char_EQ_"), "../../../../src/core/character.cc", 5669, 215, "EQ_"  );
+ define_source_info( code_kind, core::magic_name("cl__char_NE_"), "../../../../src/core/character.cc", 5224, 199, "NE_"  );
+ define_source_info( code_kind, core::magic_name("cl__char_not_lessp"), "../../../../src/core/character.cc", 5070, 192, "Return true if characters are monotonically non-decreasing, ignore case"  );
+ define_source_info( code_kind, core::magic_name("cl__char_not_greaterp"), "../../../../src/core/character.cc", 4838, 185, "Return true if characters are monotonically non-increasing, ignore case"  );
+ define_source_info( code_kind, core::magic_name("cl__char_greaterp"), "../../../../src/core/character.cc", 4611, 178, "Return true if characters are monotonically decreasing, ignore case"  );
+ define_source_info( code_kind, core::magic_name("cl__char_lessp"), "../../../../src/core/character.cc", 4390, 171, "Return true if characters are monotonically increasing, ignore case"  );
+ define_source_info( code_kind, core::magic_name("cl__char_GE_"), "../../../../src/core/character.cc", 4179, 164, "Return true if characters are monotonically non-increasing"  );
+ define_source_info( code_kind, core::magic_name("cl__char_LE_"), "../../../../src/core/character.cc", 3976, 157, "Return true if characters are monotonically non-decreasing"  );
+ define_source_info( code_kind, core::magic_name("cl__char_GT_"), "../../../../src/core/character.cc", 3780, 150, "Return true if characters are monotonically decreasing"  );
+ define_source_info( code_kind, core::magic_name("cl__char_LT_"), "../../../../src/core/character.cc", 3587, 143, "Return true if characters are monotonically increasing"  );
+ define_source_info( code_kind, core::magic_name("cl__char_downcase"), "../../../../src/core/character.cc", 3386, 136, "charDowncase"  );
+ define_source_info( code_kind, core::magic_name("cl__char_upcase"), "../../../../src/core/character.cc", 3235, 129, "charUpcase"  );
+ define_source_info( code_kind, core::magic_name("cl__alphanumericp"), "../../../../src/core/character.cc", 3005, 118, "alphanumericp"  );
+ define_source_info( code_kind, core::magic_name("cl__both_case_p"), "../../../../src/core/character.cc", 2815, 110, "both_case_p"  );
+ define_source_info( code_kind, core::magic_name("cl__upper_case_p"), "../../../../src/core/character.cc", 2641, 102, "upper_case_p"  );
+ define_source_info( code_kind, core::magic_name("cl__lower_case_p"), "../../../../src/core/character.cc", 2466, 94, "lower_case_p"  );
+ define_source_info( code_kind, core::magic_name("core__structure_subtypep"), "../../../../src/core/structureObject.cc", 4771, 162, "structureSubtypep checks if the structure type Y is a subtype of X"  );
+ define_source_info( code_kind, core::magic_name("core__structurep"), "../../../../src/core/structureObject.cc", 4271, 142, "structurep"  );
+ define_source_info( code_kind, core::magic_name("core__structure_set"), "../../../../src/core/structureObject.cc", 3575, 117, "structureSet"  );
+ define_source_info( code_kind, core::magic_name("core__structure_ref"), "../../../../src/core/structureObject.cc", 2879, 92, "structureRef"  );
+ define_source_info( code_kind, core::magic_name("cl__copy_structure"), "../../../../src/core/structureObject.cc", 2402, 74, "copyStructure"  );
+ define_source_info( code_kind, core::magic_name("core__make_structure"), "../../../../src/core/structureObject.cc", 1555, 49, "makeStructure"  );
+ define_source_info( code_kind, core::magic_name("core__ensure_single_dispatch_method"), "../../../../src/core/singleDispatchGenericFunction.cc", 3364, 78, "ensureSingleDispatchMethod creates a method and adds it to the single-dispatch-generic-function"  );
+ define_source_info( code_kind, core::magic_name("core__ensure_single_dispatch_generic_function"), "../../../../src/core/singleDispatchGenericFunction.cc", 1870, 54, "ensureSingleDispatchGenericFunction"  );
+ define_source_info( code_kind, core::magic_name("core__nread"), "../../../../src/core/lispReader.cc", 4550, 145, "nread"  );
+ define_source_info( code_kind, core::magic_name("core__ensure_documentation"), "../../../../src/core/documentation.cc", 3786, 110, "ensure_documentation"  );
+ define_source_info( code_kind, core::magic_name("ext__annotate"), "../../../../src/core/documentation.cc", 3246, 98, "annotate - see ecl>>helpfile.lsp>>annotate; key is either 'documentation or 'setf-documentation and I currently think (object) must be a symbol so I'll trigger an exception if it isn't"  );
+ define_source_info( code_kind, core::magic_name("core__rem_record_field"), "../../../../src/core/documentation.cc", 2624, 80, "rem_record_field"  );
+ define_source_info( code_kind, core::magic_name("core__set_record_field"), "../../../../src/core/documentation.cc", 2120, 65, "set_record_field"  );
+ define_source_info( code_kind, core::magic_name("core__record_field"), "../../../../src/core/documentation.cc", 1878, 57, "record_field see ecl>>helpfile.lsp>>record-field"  );
+ define_source_info( code_kind, core::magic_name("core__record_cons"), "../../../../src/core/documentation.cc", 1479, 44, "record_cons - see ECL helpfile.lsp>>record-cons"  );
+ define_source_info( code_kind, core::magic_name("core__backquote_remove_tokens"), "../../../../src/core/backquote.cc", 14004, 411, "backquote_remove_tokens"  );
+ define_source_info( code_kind, core::magic_name("core__backquote_attach_conses"), "../../../../src/core/backquote.cc", 12969, 392, "backquote_attach_conses"  );
+ define_source_info( code_kind, core::magic_name("core__backquote_attach_append"), "../../../../src/core/backquote.cc", 12144, 373, "backquote_attach_append"  );
+ define_source_info( code_kind, core::magic_name("core__backquote_null_or_quoted"), "../../../../src/core/backquote.cc", 11808, 359, "backquote_null_or_quoted"  );
+ define_source_info( code_kind, core::magic_name("core__backquote_simplify_args"), "../../../../src/core/backquote.cc", 9813, 316, "backquote_simplify_args"  );
+ define_source_info( code_kind, core::magic_name("core__backquote_simplify"), "../../../../src/core/backquote.cc", 9288, 295, "temp_backquote_simplify"  );
+ define_source_info( code_kind, core::magic_name("core__backquote_maptree"), "../../../../src/core/backquote.cc", 8440, 259, "backquote_maptree"  );
+ define_source_info( code_kind, core::magic_name("core__backquote_frob"), "../../../../src/core/backquote.cc", 8084, 245, "backquote_frob is true if a form that when read looked like ,foo or ,@foo or ,.foo"  );
+ define_source_info( code_kind, core::magic_name("core__backquote_splicing_frob"), "../../../../src/core/backquote.cc", 7724, 233, "backquote_splicing_frob is true if a form that when read looked like ,@foo or ,.foo"  );
+ define_source_info( code_kind, core::magic_name("core__backquote_bracket"), "../../../../src/core/backquote.cc", 6686, 206, "bracket"  );
+ define_source_info( code_kind, core::magic_name("core__backquote_process"), "../../../../src/core/backquote.cc", 4545, 136, "bq_process"  );
+ define_source_info( code_kind, core::magic_name("core__backquote_completely_process"), "../../../../src/core/backquote.cc", 4085, 122, "backquote_completely_process"  );
+ define_source_info( code_kind, core::magic_name("core__backquote_append"), "../../../../src/core/backquote.cc", 3401, 101, "append as in clhs"  );
+ define_source_info( code_kind, core::magic_name("cl__format"), "../../../../src/core/bformat.cc", 3859, 116, "Subset of CL format - this does the job until the real format is installed"  );
+ define_source_info( code_kind, core::magic_name("core__bformat"), "../../../../src/core/bformat.cc", 1557, 46, "Like CL format but uses C/boost format strings"  );
+ define_source_info( code_kind, core::magic_name("core__rem_sysprop"), "../../../../src/core/sysprop.cc", 2767, 78, "rem_sysprop"  );
+ define_source_info( code_kind, core::magic_name("core__get_sysprop"), "../../../../src/core/sysprop.cc", 2241, 63, "get_sysprop - returns (values val foundp)"  );
+ define_source_info( code_kind, core::magic_name("core__put_sysprop"), "../../../../src/core/sysprop.cc", 1289, 40, "put_sysprop - returns value"  );
+ define_source_info( code_kind, core::magic_name("core__iterator_step"), "../../../../src/core/iterator.cc", 1371, 46, "iteratorStep"  );
+ define_source_info( code_kind, core::magic_name("core__iterator_unsafe_element"), "../../../../src/core/iterator.cc", 1216, 39, "iteratorUnsafeElement"  );
+ define_source_info( code_kind, core::magic_name("CORE:make-array-displaced"), "../../../../src/core/arrayDisplaced.cc", 1746, 49, "" );
+ define_source_info( code_kind, core::magic_name("core__condition_message"), "../../../../src/core/conditions.cc", 3213, 120, "conditionMessage"  );
+ define_source_info( code_kind, core::magic_name("cl__make_condition"), "../../../../src/core/conditions.cc", 2833, 109, "make-condition while brcl is booting - replace this once "  );
+ define_source_info( code_kind, core::magic_name("cl__make_symbol"), "../../../../src/core/symbol.cc", 3855, 143, "make_symbol"  );
+ define_source_info( code_kind, core::magic_name("core__symbol_value_address"), "../../../../src/core/symbol.cc", 3675, 136, "symbolValueAddress"  );
+ define_source_info( code_kind, core::magic_name("cl__symbol_value"), "../../../../src/core/symbol.cc", 3411, 126, "symbolValue"  );
+ define_source_info( code_kind, core::magic_name("cl__symbol_name"), "../../../../src/core/symbol.cc", 3272, 119, "symbolName"  );
+ define_source_info( code_kind, core::magic_name("cl__symbol_function"), "../../../../src/core/symbol.cc", 3029, 109, "symbolFunction"  );
+ define_source_info( code_kind, core::magic_name("cl__symbol_package"), "../../../../src/core/symbol.cc", 2884, 102, "symbolPackage"  );
+ define_source_info( code_kind, core::magic_name("cl__boundp"), "../../../../src/core/symbol.cc", 2718, 93, "boundp"  );
+ define_source_info( code_kind, core::magic_name("core__putprop"), "../../../../src/core/symbol.cc", 2422, 82, "Set the symbol plist"  );
+ define_source_info( code_kind, core::magic_name("core__setf_symbol_plist"), "../../../../src/core/symbol.cc", 2159, 72, "Set the symbol plist"  );
+ define_source_info( code_kind, core::magic_name("cl__get"), "../../../../src/core/symbol.cc", 1862, 62, "Return the symbol plist"  );
+ define_source_info( code_kind, core::magic_name("cl__symbol_plist"), "../../../../src/core/symbol.cc", 1634, 52, "Return the symbol plist"  );
+ define_source_info( code_kind, core::magic_name("core__alist_asString"), "../../../../src/core/cons.cc", 35580, 1277, "" );
+ define_source_info( code_kind, core::magic_name("core__alist_get"), "../../../../src/core/cons.cc", 35376, 1267, "" );
+ define_source_info( code_kind, core::magic_name("core__alist_push"), "../../../../src/core/cons.cc", 35206, 1261, "" );
+ define_source_info( code_kind, core::magic_name("core__alist_erase"), "../../../../src/core/cons.cc", 34778, 1243, "" );
+ define_source_info( code_kind, core::magic_name("core__append2"), "../../../../src/core/cons.cc", 7415, 263, "append2 - append l2 to l1 by copying l1 and pointing the end of it to l2"  );
+ define_source_info( code_kind, core::magic_name("cl__make_list"), "../../../../src/core/cons.cc", 4073, 140, "make_list"  );
+ define_source_info( code_kind, core::magic_name("cl__rplacd"), "../../../../src/core/cons.cc", 3917, 133, ""  );
+ define_source_info( code_kind, core::magic_name("cl__rplaca"), "../../../../src/core/cons.cc", 3793, 126, ""  );
+ define_source_info( code_kind, core::magic_name("cl__cons"), "../../../../src/core/cons.cc", 3608, 117, "cons"  );
+ define_source_info( code_kind, core::magic_name("core__rem_f"), "../../../../src/core/cons.cc", 2985, 95, "Removes the property with the indicator from the property list in place if present and returns MultipleValues with the new property list and T if the property was found"  );
+ define_source_info( code_kind, core::magic_name("cl__getf"), "../../../../src/core/cons.cc", 2572, 86, "getf"  );
+ define_source_info( code_kind, core::magic_name("core__put_f"), "../../../../src/core/cons.cc", 1903, 61, "putF"  );
+ define_source_info( code_kind, core::magic_name("core__aset"), "../../../../src/core/array.cc", 3218, 100, "aset"  );
+ define_source_info( code_kind, core::magic_name("core__copy_subarray"), "../../../../src/core/array.cc", 2007, 66, "copy_subarray"  );
+ define_source_info( code_kind, core::magic_name("cl__upgraded_array_element_type"), "../../../../src/core/array.cc", 1819, 59, "upgradedArrayElementType"  );
+ define_source_info( code_kind, core::magic_name("cl__array_displacement"), "../../../../src/core/array.cc", 1475, 46, "arrayDisplacement"  );
+ define_source_info( code_kind, core::magic_name("cl__fill_pointer"), "../../../../src/core/vectorObjectsWithFillPtr.cc", 1405, 43, "Return the fill-pointer"  );
+ define_source_info( code_kind, core::magic_name("ext__maybeQuote"), "../../../../src/core/extensionPackage.cc", 1761, 51, "" );
+ define_source_info( code_kind, core::magic_name("core__calculate_missing_common_lisp_symbols"), "../../../../src/core/allClSymbols.cc", 1649, 52, "calculateMissingCommonLispSymbols"  );
+ define_source_info( code_kind, core::magic_name("cl__package_name"), "../../../../src/core/package.cc", 10208, 316, "packageName"  );
+ define_source_info( code_kind, core::magic_name("cl__package_used_by_list"), "../../../../src/core/package.cc", 9995, 308, "packageUsedByList"  );
+ define_source_info( code_kind, core::magic_name("cl__package_use_list"), "../../../../src/core/package.cc", 9766, 300, "package_use_list"  );
+ define_source_info( code_kind, core::magic_name("cl__gentemp"), "../../../../src/core/package.cc", 8941, 268, "See CLHS gentemp"  );
+ define_source_info( code_kind, core::magic_name("cl__shadowing_import"), "../../../../src/core/package.cc", 8511, 257, "See CLHS: shadowing-import"  );
+ define_source_info( code_kind, core::magic_name("cl__shadow"), "../../../../src/core/package.cc", 8099, 247, "See CLHS: shadow"  );
+ define_source_info( code_kind, core::magic_name("cl__import"), "../../../../src/core/package.cc", 7728, 237, "See CLHS: import"  );
+ define_source_info( code_kind, core::magic_name("cl__package_shadowing_symbols"), "../../../../src/core/package.cc", 7261, 222, "See CLHS package_shadowing_symbols"  );
+ define_source_info( code_kind, core::magic_name("cl__delete_package"), "../../../../src/core/package.cc", 5662, 171, "SeeCLHS unuse-package"  );
+ define_source_info( code_kind, core::magic_name("cl__unuse_package"), "../../../../src/core/package.cc", 5118, 158, "SeeCLHS unuse-package"  );
+ define_source_info( code_kind, core::magic_name("cl__use_package"), "../../../../src/core/package.cc", 4590, 145, "SeeCLHS use-package"  );
+ define_source_info( code_kind, core::magic_name("cl__list_all_packages"), "../../../../src/core/package.cc", 4063, 126, "listAllPackages"  );
+ define_source_info( code_kind, core::magic_name("cl__make_package"), "../../../../src/core/package.cc", 3283, 100, "make_package"  );
+ define_source_info( code_kind, core::magic_name("cl__find_symbol"), "../../../../src/core/package.cc", 2990, 92, "findSymbol"  );
+ define_source_info( code_kind, core::magic_name("cl__unintern"), "../../../../src/core/package.cc", 2746, 84, "unintern"  );
+ define_source_info( code_kind, core::magic_name("cl__package_nicknames"), "../../../../src/core/package.cc", 2516, 76, "packageNicknames"  );
+ define_source_info( code_kind, core::magic_name("cl__rename_package"), "../../../../src/core/package.cc", 1695, 54, "renamePackage"  );
+ define_source_info( code_kind, core::magic_name("CORE:base_string_concatenate"), "../../../../src/core/str.cc", 4064, 122, "" );
+ define_source_info( code_kind, core::magic_name("core__search_string"), "../../../../src/core/str.cc", 1956, 60, "searchString"  );
+ define_source_info( code_kind, core::magic_name("core__logical_pathname_p"), "../../../../src/core/predicates.cc", 9252, 396, "logicalPathnameP"  );
+ define_source_info( code_kind, core::magic_name("cl__pathnamep"), "../../../../src/core/predicates.cc", 9108, 389, "pathnamep"  );
+ define_source_info( code_kind, core::magic_name("core__proper_list_p"), "../../../../src/core/predicates.cc", 8651, 365, "Return true if arg is a proper list"  );
+ define_source_info( code_kind, core::magic_name("core__generic_function_p"), "../../../../src/core/predicates.cc", 8342, 353, "genericFunctionP"  );
+ define_source_info( code_kind, core::magic_name("cl__compiled_function_p"), "../../../../src/core/predicates.cc", 8104, 342, "compiled_function_p"  );
+ define_source_info( code_kind, core::magic_name("cl__simple_vector_p"), "../../../../src/core/predicates.cc", 7877, 331, "simple_vector_p"  );
+ define_source_info( code_kind, core::magic_name("cl__simple_bit_vector_p"), "../../../../src/core/predicates.cc", 7644, 320, "simple_bit_vector_p"  );
+ define_source_info( code_kind, core::magic_name("core__external_object_p"), "../../../../src/core/predicates.cc", 7481, 313, "externalObjectP"  );
+ define_source_info( code_kind, core::magic_name("core__activation_frame_p"), "../../../../src/core/predicates.cc", 7320, 306, "activation_frame_p"  );
+ define_source_info( code_kind, core::magic_name("core__single_dispatch_generic_function_p"), "../../../../src/core/predicates.cc", 7126, 299, "singleDispatchGenericFunctionP"  );
+ define_source_info( code_kind, core::magic_name("core__arrayp"), "../../../../src/core/predicates.cc", 6972, 292, "" );
+ define_source_info( code_kind, core::magic_name("core__structure_object_p"), "../../../../src/core/predicates.cc", 6824, 286, "structureObjectP"  );
+ define_source_info( code_kind, core::magic_name("cl__readtablep"), "../../../../src/core/predicates.cc", 6678, 279, "readtablep"  );
+ define_source_info( code_kind, core::magic_name("cl__hash_table_p"), "../../../../src/core/predicates.cc", 6467, 268, "hashTableP"  );
+ define_source_info( code_kind, core::magic_name("cl__bit_vector_p"), "../../../../src/core/predicates.cc", 6325, 261, "bitVectorP"  );
+ define_source_info( code_kind, core::magic_name("core__path_p"), "../../../../src/core/predicates.cc", 6192, 254, "pathP"  );
+ define_source_info( code_kind, core::magic_name("cl__keywordp"), "../../../../src/core/predicates.cc", 5995, 244, "" );
+ define_source_info( code_kind, core::magic_name("cl__integerp"), "../../../../src/core/predicates.cc", 5817, 237, "" );
+ define_source_info( code_kind, core::magic_name("cl__vectorp"), "../../../../src/core/predicates.cc", 5641, 230, "" );
+ define_source_info( code_kind, core::magic_name("cl__floatp"), "../../../../src/core/predicates.cc", 5471, 223, "" );
+ define_source_info( code_kind, core::magic_name("cl__realp"), "../../../../src/core/predicates.cc", 5307, 216, "" );
+ define_source_info( code_kind, core::magic_name("core__single_float_p"), "../../../../src/core/predicates.cc", 5129, 209, "singleFloatP"  );
+ define_source_info( code_kind, core::magic_name("core__short_float_p"), "../../../../src/core/predicates.cc", 4981, 202, "shortFloatP"  );
+ define_source_info( code_kind, core::magic_name("core__long_float_p"), "../../../../src/core/predicates.cc", 4836, 195, "longFloatP"  );
+ define_source_info( code_kind, core::magic_name("cl__rationalp"), "../../../../src/core/predicates.cc", 4698, 188, "" );
+ define_source_info( code_kind, core::magic_name("cl__random_state_p"), "../../../../src/core/predicates.cc", 4506, 181, "ratioP"  );
+ define_source_info( code_kind, core::magic_name("core__ratio_p"), "../../../../src/core/predicates.cc", 4375, 174, "ratioP"  );
+ define_source_info( code_kind, core::magic_name("cl__complexp"), "../../../../src/core/predicates.cc", 4243, 167, "" );
+ define_source_info( code_kind, core::magic_name("cl__numberp"), "../../../../src/core/predicates.cc", 4067, 160, "numberP"  );
+ define_source_info( code_kind, core::magic_name("core__lambda_list_handler_p"), "../../../../src/core/predicates.cc", 3909, 153, "lambda_list_handler_p"  );
+ define_source_info( code_kind, core::magic_name("core__cxx_instance_p"), "../../../../src/core/predicates.cc", 3685, 142, "classp"  );
+ define_source_info( code_kind, core::magic_name("core__built_in_class_p"), "../../../../src/core/predicates.cc", 3467, 132, "classp"  );
+ define_source_info( code_kind, core::magic_name("clos__classp"), "../../../../src/core/predicates.cc", 3337, 125, "" );
+ define_source_info( code_kind, core::magic_name("cl__packagep"), "../../../../src/core/predicates.cc", 3259, 121, "See CLHS packagep"  );
+ define_source_info( code_kind, core::magic_name("core__interpreted_function_p"), "../../../../src/core/predicates.cc", 2943, 108, "interpretedFunctionP"  );
+ define_source_info( code_kind, core::magic_name("cl__functionp"), "../../../../src/core/predicates.cc", 2703, 98, "functionP"  );
+ define_source_info( code_kind, core::magic_name("core__double_float_p"), "../../../../src/core/predicates.cc", 2556, 91, "doubleFloatP"  );
+ define_source_info( code_kind, core::magic_name("core__simple_string_p"), "../../../../src/core/predicates.cc", 2413, 84, "Return true if argument is a simple-string"  );
+ define_source_info( code_kind, core::magic_name("cl__stringp"), "../../../../src/core/predicates.cc", 2247, 77, "" );
+ define_source_info( code_kind, core::magic_name("core__bignump"), "../../../../src/core/predicates.cc", 2072, 69, "" );
+ define_source_info( code_kind, core::magic_name("core__base_char_p"), "../../../../src/core/predicates.cc", 1920, 61, "baseCharP"  );
+ define_source_info( code_kind, core::magic_name("core__test_val"), "../../../../src/core/testing.cc", 3079, 98, "testVal"  );
+ define_source_info( code_kind, core::magic_name("core__is_array"), "../../../../src/core/testing.cc", 2811, 87, "isArray"  );
+ define_source_info( code_kind, core::magic_name("core__is_string"), "../../../../src/core/testing.cc", 2546, 76, "isString"  );
+ define_source_info( code_kind, core::magic_name("core__subclassp"), "../../../../src/core/metaClass.cc", 20023, 547, "subclassp"  );
+ define_source_info( code_kind, core::magic_name("core__allocate_raw_class"), "../../../../src/core/metaClass.cc", 3291, 90, "allocateRawClass - behaves like ECL instance::allocate_raw_instance, The allocator for the new class is taken from (allocatorPrototype).  If (allocatorPrototype) is nil then use the allocator for Instance_O."  );
+ define_source_info( code_kind, core::magic_name("core__inherit_default_allocator"), "../../../../src/core/metaClass.cc", 2682, 82, "inheritDefaultAllocator - make this a regular function so that there are no dispatching problems at boot time"  );
+ define_source_info( code_kind, core::magic_name("cl__reader_error"), "../../../../src/core/exceptions.cc", 23483, 707, "readerError"  );
+ define_source_info( code_kind, core::magic_name("core__wrong_index"), "../../../../src/core/exceptions.cc", 21364, 660, "wrongIndex"  );
+ define_source_info( code_kind, core::magic_name("core__wrong_type_nth_arg"), "../../../../src/core/exceptions.cc", 19988, 629, "wrongTypeNthArg"  );
+ define_source_info( code_kind, core::magic_name("core__wrong_type_argument"), "../../../../src/core/exceptions.cc", 18692, 599, "wrongTypeArgument"  );
+ define_source_info( code_kind, core::magic_name("core__signal_simple_error"), "../../../../src/core/exceptions.cc", 4497, 132, "signalSimpleError"  );
+ define_source_info( code_kind, core::magic_name("cl__translate_logical_pathname"), "../../../../src/core/pathname.cc", 63511, 1941, "translateLogicalPathname"  );
+ define_source_info( code_kind, core::magic_name("cl__translate_pathname"), "../../../../src/core/pathname.cc", 60627, 1849, "translatePathname"  );
+ define_source_info( code_kind, core::magic_name("core__pathname_translations"), "../../../../src/core/pathname.cc", 55176, 1654, "core::pathnameTranslations"  );
+ define_source_info( code_kind, core::magic_name("cl__pathname_match_p"), "../../../../src/core/pathname.cc", 53720, 1605, "pathnameMatchP"  );
+ define_source_info( code_kind, core::magic_name("cl__enough_namestring"), "../../../../src/core/pathname.cc", 48356, 1441, "enoughNamestring"  );
+ define_source_info( code_kind, core::magic_name("cl__host_namestring"), "../../../../src/core/pathname.cc", 47796, 1423, "hostNamestring"  );
+ define_source_info( code_kind, core::magic_name("cl__directory_namestring"), "../../../../src/core/pathname.cc", 47260, 1411, "directoryNamestring"  );
+ define_source_info( code_kind, core::magic_name("cl__file_namestring"), "../../../../src/core/pathname.cc", 46673, 1398, "fileNamestring"  );
+ define_source_info( code_kind, core::magic_name("cl__pathname_version"), "../../../../src/core/pathname.cc", 46484, 1390, "pathnameVersion"  );
+ define_source_info( code_kind, core::magic_name("cl__pathname_type"), "../../../../src/core/pathname.cc", 46112, 1379, "pathnameType"  );
+ define_source_info( code_kind, core::magic_name("cl__pathname_name"), "../../../../src/core/pathname.cc", 45715, 1368, "pathnameName"  );
+ define_source_info( code_kind, core::magic_name("cl__pathname_directory"), "../../../../src/core/pathname.cc", 45303, 1357, "pathnameDirectory"  );
+ define_source_info( code_kind, core::magic_name("cl__pathname_device"), "../../../../src/core/pathname.cc", 44907, 1347, "pathnameDevice"  );
+ define_source_info( code_kind, core::magic_name("cl__pathname_host"), "../../../../src/core/pathname.cc", 44518, 1337, "pathnameHost"  );
+ define_source_info( code_kind, core::magic_name("cl__make_pathname"), "../../../../src/core/pathname.cc", 43188, 1302, "makePathname"  );
+ define_source_info( code_kind, core::magic_name("cl__parse_namestring"), "../../../../src/core/pathname.cc", 41449, 1258, "parseNamestring"  );
+ define_source_info( code_kind, core::magic_name("cl__namestring"), "../../../../src/core/pathname.cc", 41220, 1251, "namestring"  );
+ define_source_info( code_kind, core::magic_name("core__coerce_to_filename"), "../../../../src/core/pathname.cc", 34672, 1061, "coerceToFilename"  );
+ define_source_info( code_kind, core::magic_name("core__coerce_to_physical_pathname"), "../../../../src/core/pathname.cc", 34180, 1044, "coerceToPhysicalPathname"  );
+ define_source_info( code_kind, core::magic_name("core__coerce_to_file_pathname"), "../../../../src/core/pathname.cc", 33311, 1017, "coerceToFilePathname"  );
+ define_source_info( code_kind, core::magic_name("cl__wild_pathname_p"), "../../../../src/core/pathname.cc", 31490, 956, "wildPathnameP"  );
+ define_source_info( code_kind, core::magic_name("cl__merge_pathnames"), "../../../../src/core/pathname.cc", 31036, 942, "mergePathnames"  );
+ define_source_info( code_kind, core::magic_name("cl__pathname"), "../../../../src/core/pathname.cc", 27940, 844, "pathname"  );
+ define_source_info( code_kind, core::magic_name("core__float_to_digits"), "../../../../src/core/float_to_digits.cc", 7547, 234, "float_to_digits"  );
+ define_source_info( code_kind, core::magic_name("core__sharp_vertical_bar"), "../../../../src/core/readtable.cc", 27488, 714, "sharp_vertical_bar"  );
+ define_source_info( code_kind, core::magic_name("core__sharp_minus"), "../../../../src/core/readtable.cc", 26709, 695, "sharp_minus"  );
+ define_source_info( code_kind, core::magic_name("core__sharp_plus"), "../../../../src/core/readtable.cc", 25906, 676, "sharp_plus"  );
+ define_source_info( code_kind, core::magic_name("core__reader_feature_p"), "../../../../src/core/readtable.cc", 24457, 641, "feature_p takes one argument - a feature test"  );
+ define_source_info( code_kind, core::magic_name("core__sharp_p"), "../../../../src/core/readtable.cc", 23945, 624, "sharp_p"  );
+ define_source_info( code_kind, core::magic_name("core__sharp_s"), "../../../../src/core/readtable.cc", 23750, 617, "sharp_s"  );
+ define_source_info( code_kind, core::magic_name("core__sharp_a"), "../../../../src/core/readtable.cc", 23555, 610, "sharp_a"  );
+ define_source_info( code_kind, core::magic_name("core__sharp_c"), "../../../../src/core/readtable.cc", 22927, 591, "sharp_c"  );
+ define_source_info( code_kind, core::magic_name("core__sharp_x"), "../../../../src/core/readtable.cc", 22741, 584, "sharp_x"  );
+ define_source_info( code_kind, core::magic_name("core__sharp_o"), "../../../../src/core/readtable.cc", 22538, 577, "sharp_o"  );
+ define_source_info( code_kind, core::magic_name("core__sharp_b"), "../../../../src/core/readtable.cc", 22335, 570, "sharp_b"  );
+ define_source_info( code_kind, core::magic_name("core__sharp_r"), "../../../../src/core/readtable.cc", 21266, 541, "sharp_r"  );
+ define_source_info( code_kind, core::magic_name("core__sharp_colon"), "../../../../src/core/readtable.cc", 20752, 526, "sharp_colon"  );
+ define_source_info( code_kind, core::magic_name("core__sharp_asterisk"), "../../../../src/core/readtable.cc", 18641, 471, "sharp_asterisk"  );
+ define_source_info( code_kind, core::magic_name("core__sharp_left_parenthesis"), "../../../../src/core/readtable.cc", 17463, 442, "sharp_left_parenthesis"  );
+ define_source_info( code_kind, core::magic_name("core__sharp_single_quote"), "../../../../src/core/readtable.cc", 16890, 428, "sharp_single_quote"  );
+ define_source_info( code_kind, core::magic_name("core__sharp_dot"), "../../../../src/core/readtable.cc", 16091, 407, "sharp_dot"  );
+ define_source_info( code_kind, core::magic_name("core__sharp_backslash"), "../../../../src/core/readtable.cc", 15317, 385, "sharp_backslash"  );
+ define_source_info( code_kind, core::magic_name("core__dispatch_macro_character"), "../../../../src/core/readtable.cc", 10948, 279, "dispatch_macro_character"  );
+ define_source_info( code_kind, core::magic_name("core__reader_skip_semicolon_comment"), "../../../../src/core/readtable.cc", 10394, 262, "reader_skip_semicolon_comment"  );
+ define_source_info( code_kind, core::magic_name("core__reader_quote"), "../../../../src/core/readtable.cc", 9859, 248, "reader_quote"  );
+ define_source_info( code_kind, core::magic_name("core__reader_error_unmatched_close_parenthesis"), "../../../../src/core/readtable.cc", 9497, 239, "reader_error_unmatched_close_parenthesis"  );
+ define_source_info( code_kind, core::magic_name("core__reader_list_allow_consing_dot"), "../../../../src/core/readtable.cc", 9155, 229, "reader_list_allow_consing_dot"  );
+ define_source_info( code_kind, core::magic_name("core__reader_comma_form"), "../../../../src/core/readtable.cc", 8012, 204, "reader_comma_form"  );
+ define_source_info( code_kind, core::magic_name("core__reader_backquoted_expression"), "../../../../src/core/readtable.cc", 7127, 187, "reader_backquoted_expression"  );
+ define_source_info( code_kind, core::magic_name("core__reader_double_quote_string"), "../../../../src/core/readtable.cc", 6372, 164, "reader_double_quote_string"  );
+ define_source_info( code_kind, core::magic_name("cl__set_macro_character"), "../../../../src/core/readtable.cc", 5593, 146, "setMacroCharacter"  );
+ define_source_info( code_kind, core::magic_name("cl__get_dispatch_macro_character"), "../../../../src/core/readtable.cc", 5265, 139, "getDispatchMacroCharacter"  );
+ define_source_info( code_kind, core::magic_name("cl__set_dispatch_macro_character"), "../../../../src/core/readtable.cc", 4903, 132, "setDispatchMacroCharacter"  );
+ define_source_info( code_kind, core::magic_name("core__readtable_case_set"), "../../../../src/core/readtable.cc", 4633, 125, "clhs: (setf readtable-case)"  );
+ define_source_info( code_kind, core::magic_name("cl__readtable_case"), "../../../../src/core/readtable.cc", 4445, 118, "clhs: readtable-case"  );
+ define_source_info( code_kind, core::magic_name("cl__copy_readtable"), "../../../../src/core/readtable.cc", 4114, 108, "clhs: copy-readtable"  );
+ define_source_info( code_kind, core::magic_name("cl__get_macro_character"), "../../../../src/core/readtable.cc", 3738, 98, "getMacroCharacter"  );
+ define_source_info( code_kind, core::magic_name("cl__make_dispatch_macro_character"), "../../../../src/core/readtable.cc", 3445, 90, "makeDispatchMacroCharacter"  );
+ define_source_info( code_kind, core::magic_name("cl__set_syntax_from_char"), "../../../../src/core/readtable.cc", 2146, 62, "setSyntaxFromChar"  );
+ define_source_info( code_kind, core::magic_name("core__make_branch_snode"), "../../../../src/core/serialize.cc", 2928, 87, "" );
+ define_source_info( code_kind, core::magic_name("core__pointer_address"), "../../../../src/core/wrappedPointer.cc", 2472, 86, "pointerAddress"  );
+ define_source_info( code_kind, core::magic_name("core__pointer_delete"), "../../../../src/core/wrappedPointer.cc", 1499, 48, "pointerDelete"  );
+ define_source_info( code_kind, core::magic_name("core__pointer_release"), "../../../../src/core/wrappedPointer.cc", 1136, 35, "pointerRelease"  );
+ define_source_info( code_kind, core::magic_name("core__make_regex"), "../../../../src/core/regex.cc", 1419, 44, "makeRegex"  );
+ define_source_info( code_kind, core::magic_name("core__write_ugly_object"), "../../../../src/core/write_ugly.cc", 15019, 488, "writeUglyObject"  );
+ define_source_info( code_kind, core::magic_name("core__test_profile_timer"), "../../../../src/core/profile.cc", 2612, 91, "testProfileTimer"  );
+ define_source_info( code_kind, core::magic_name("core__clock_gettime_nanoseconds"), "../../../../src/core/profile.cc", 2375, 82, "clock_gettime_nanoseconds"  );
+ define_source_info( code_kind, core::magic_name("core__deep_copy"), "../../../../src/core/object.cc", 13683, 514, "deepCopy"  );
+ define_source_info( code_kind, core::magic_name("core__sl_boundp"), "../../../../src/core/object.cc", 9953, 395, "Return t if obj is equal to T_O::_class->unboundValue()"  );
+ define_source_info( code_kind, core::magic_name("core__decode"), "../../../../src/core/object.cc", 6858, 267, "decode object from a-list"  );
+ define_source_info( code_kind, core::magic_name("core__encode"), "../../../../src/core/object.cc", 6705, 260, "encode object as an a-list"  );
+ define_source_info( code_kind, core::magic_name("core__is_nil"), "../../../../src/core/object.cc", 6567, 253, "isNil"  );
+ define_source_info( code_kind, core::magic_name("core__instancep"), "../../../../src/core/object.cc", 6440, 246, "instancep"  );
+ define_source_info( code_kind, core::magic_name("core__instance_ref"), "../../../../src/core/object.cc", 6293, 239, "instanceRef - return the (idx) slot value of (obj)"  );
+ define_source_info( code_kind, core::magic_name("core__instance_set"), "../../../../src/core/object.cc", 6086, 232, "instanceSet - set the (idx) slot of (obj) to (val)"  );
+ define_source_info( code_kind, core::magic_name("core__instance_sig_set"), "../../../../src/core/object.cc", 5895, 225, "instanceSigSet"  );
+ define_source_info( code_kind, core::magic_name("core__instance_sig"), "../../../../src/core/object.cc", 5755, 218, "instanceSig"  );
+ define_source_info( code_kind, core::magic_name("core__class_name_as_string"), "../../../../src/core/object.cc", 5563, 210, "classNameAsString"  );
+ define_source_info( code_kind, core::magic_name("core__instance_class"), "../../../../src/core/object.cc", 5408, 203, "instanceClass"  );
+ define_source_info( code_kind, core::magic_name("core__implementation_class"), "../../../../src/core/object.cc", 5257, 196, "implementationClass"  );
+ define_source_info( code_kind, core::magic_name("cl__copy_tree"), "../../../../src/core/object.cc", 5016, 184, "copyTree"  );
+ define_source_info( code_kind, core::magic_name("core__low_level_describe"), "../../../../src/core/object.cc", 4815, 173, "lowLevelDescribe"  );
+ define_source_info( code_kind, core::magic_name("core__print_cxx_object"), "../../../../src/core/object.cc", 3839, 141, "printCxxObject"  );
+ define_source_info( code_kind, core::magic_name("core__fieldsp"), "../../../../src/core/object.cc", 3702, 134, "fieldsp returns true if obj has a fields function"  );
+ define_source_info( code_kind, core::magic_name("core__make_cxx_object"), "../../../../src/core/object.cc", 2817, 105, "makeCxxObject"  );
+ define_source_info( code_kind, core::magic_name("core__all_source_files"), "../../../../src/core/lisp.cc", 100187, 2738, "List all of the source files"  );
+ define_source_info( code_kind, core::magic_name("CORE:forget_all_single_dispatch_generic_functions"), "../../../../src/core/lisp.cc", 87658, 2355, "" );
+ define_source_info( code_kind, core::magic_name("CORE:setf_find_single_dispatch_generic_function"), "../../../../src/core/lisp.cc", 87108, 2346, "Define a single dispatch generic function"  );
+ define_source_info( code_kind, core::magic_name("CORE:find_single_dispatch_generic_function"), "../../../../src/core/lisp.cc", 86254, 2329, "Lookup a single dispatch generic function. If errorp is truen and the generic function isn't found throw an exception"  );
+ define_source_info( code_kind, core::magic_name("cl__not"), "../../../../src/core/lisp.cc", 82532, 2227, "not"  );
+ define_source_info( code_kind, core::magic_name("core__repr"), "../../../../src/core/lisp.cc", 82038, 2202, "Return a string representation of the object"  );
+ define_source_info( code_kind, core::magic_name("core__is_sub_class_of"), "../../../../src/core/lisp.cc", 81526, 2185, "isSubClassOf"  );
+ define_source_info( code_kind, core::magic_name("core__is_assignable_to"), "../../../../src/core/lisp.cc", 80883, 2168, "isAssignableTo"  );
+ define_source_info( code_kind, core::magic_name("cl__cerror"), "../../../../src/core/lisp.cc", 80087, 2142, "See CLHS cerror"  );
+ define_source_info( code_kind, core::magic_name("cl__error"), "../../../../src/core/lisp.cc", 78832, 2116, "See CLHS error"  );
+ define_source_info( code_kind, core::magic_name("core__invoke_internal_debugger_from_gdb"), "../../../../src/core/lisp.cc", 78596, 2108, "invokeInternalDebuggerFromGdb"  );
+ define_source_info( code_kind, core::magic_name("core__single_dispatch_generic_function_table"), "../../../../src/core/lisp.cc", 78393, 2101, "singleDispatchGenericFunctionTable"  );
+ define_source_info( code_kind, core::magic_name("core__invoke_internal_debugger"), "../../../../src/core/lisp.cc", 77958, 2086, "invokeInternalDebugger"  );
+ define_source_info( code_kind, core::magic_name("core__universal_error_handler"), "../../../../src/core/lisp.cc", 77450, 2070, "universalErrorHandler"  );
+ define_source_info( code_kind, core::magic_name("cl__intern"), "../../../../src/core/lisp.cc", 77167, 2062, "See CLHS: intern"  );
+ define_source_info( code_kind, core::magic_name("core__export_to_python"), "../../../../src/core/lisp.cc", 76763, 2050, "exportToPython"  );
+ define_source_info( code_kind, core::magic_name("cl__export"), "../../../../src/core/lisp.cc", 76408, 2038, "CLHS: export"  );
+ define_source_info( code_kind, core::magic_name("core__debug_log_off"), "../../../../src/core/lisp.cc", 76076, 2023, "debugLogOff"  );
+ define_source_info( code_kind, core::magic_name("core__debug_log_on"), "../../../../src/core/lisp.cc", 75561, 2005, "debugLogOn"  );
+ define_source_info( code_kind, core::magic_name("core__is_top_level_script"), "../../../../src/core/lisp.cc", 74976, 1986, "isTopLevelScript"  );
+ define_source_info( code_kind, core::magic_name("core__set_current_working_directory"), "../../../../src/core/lisp.cc", 74587, 1970, "setCurrentWorkingDirectory"  );
+ define_source_info( code_kind, core::magic_name("core__database_dir"), "../../../../src/core/lisp.cc", 74188, 1954, "database_dir"  );
+ define_source_info( code_kind, core::magic_name("core__lisp_code_path"), "../../../../src/core/lisp.cc", 73598, 1933, "Returns the absolute path to the lisp code directory - if rel-path is not nil then it prepends the directory path to rel-path and returns that"  );
+ define_source_info( code_kind, core::magic_name("core__library_path"), "../../../../src/core/lisp.cc", 73026, 1920, "Returns the absolute path to the library directory - if rel-path is not nil then it prepends the library directory path to rel-path and returns that"  );
+ define_source_info( code_kind, core::magic_name("core__script_dir"), "../../../../src/core/lisp.cc", 72688, 1912, "script_dir"  );
+ define_source_info( code_kind, core::magic_name("core__source_line_column"), "../../../../src/core/lisp.cc", 72042, 1887, "sourceLineColumn"  );
+ define_source_info( code_kind, core::magic_name("core__source_file_name"), "../../../../src/core/lisp.cc", 71421, 1873, "Return the current sourceFileName"  );
+ define_source_info( code_kind, core::magic_name("cl__sort"), "../../../../src/core/lisp.cc", 70644, 1848, "Like CLHS: sort but does not support key"  );
+ define_source_info( code_kind, core::magic_name("core__sorted"), "../../../../src/core/lisp.cc", 69878, 1820, "Sort the list in ascending order using operator< and return the sorted list"  );
+ define_source_info( code_kind, core::magic_name("cl__apropos"), "../../../../src/core/lisp.cc", 68866, 1781, "apropos"  );
+ define_source_info( code_kind, core::magic_name("cl__macroexpand"), "../../../../src/core/lisp.cc", 65742, 1701, "macroexpand"  );
+ define_source_info( code_kind, core::magic_name("cl__macroexpand_1"), "../../../../src/core/lisp.cc", 63303, 1642, "macroexpand_1"  );
+ define_source_info( code_kind, core::magic_name("core__mpi_size"), "../../../../src/core/lisp.cc", 63141, 1635, "Return mpi_size or 0 if mpi is not enabled"  );
+ define_source_info( code_kind, core::magic_name("core__mpi_rank"), "../../../../src/core/lisp.cc", 62825, 1620, "Return the mpi_rank or 0 if mpi is disabled"  );
+ define_source_info( code_kind, core::magic_name("core__mpi_enabled"), "../../../../src/core/lisp.cc", 62499, 1606, "mpi_enabled"  );
+ define_source_info( code_kind, core::magic_name("core__select_package"), "../../../../src/core/lisp.cc", 62141, 1590, "selectPackage"  );
+ define_source_info( code_kind, core::magic_name("cl__find_package"), "../../../../src/core/lisp.cc", 61843, 1580, "See CLHS: find-package"  );
+ define_source_info( code_kind, core::magic_name("core__find_file_in_lisp_path"), "../../../../src/core/lisp.cc", 61488, 1570, "findFileInLispPath"  );
+ define_source_info( code_kind, core::magic_name("core__setf_find_class"), "../../../../src/core/lisp.cc", 60298, 1540, "setf_findClass"  );
+ define_source_info( code_kind, core::magic_name("cl__find_class"), "../../../../src/core/lisp.cc", 59314, 1513, "findClass"  );
+ define_source_info( code_kind, core::magic_name("core__getline"), "../../../../src/core/lisp.cc", 58470, 1484, "getline"  );
+ define_source_info( code_kind, core::magic_name("core__member1"), "../../../../src/core/lisp.cc", 58047, 1467, "Like member but if a key function is provided then apply it to the item. See ecl::list.d::member1"  );
+ define_source_info( code_kind, core::magic_name("core__member_test"), "../../../../src/core/lisp.cc", 57680, 1458, "See CLHS memberTest"  );
+ define_source_info( code_kind, core::magic_name("cl__member"), "../../../../src/core/lisp.cc", 57270, 1445, "See CLHS member"  );
+ define_source_info( code_kind, core::magic_name("cl__assoc"), "../../../../src/core/lisp.cc", 56987, 1436, "assoc"  );
+ define_source_info( code_kind, core::magic_name("cl__acons"), "../../../../src/core/lisp.cc", 56754, 1428, "acons"  );
+ define_source_info( code_kind, core::magic_name("core__quit"), "../../../../src/core/lisp.cc", 56618, 1421, "quit"  );
+ define_source_info( code_kind, core::magic_name("core__exit"), "../../../../src/core/lisp.cc", 56429, 1413, "exit"  );
+ define_source_info( code_kind, core::magic_name("core__setup_stack_monitor"), "../../../../src/core/lisp.cc", 56004, 1399, "setupStackMonitor"  );
+ define_source_info( code_kind, core::magic_name("core__stack_limit"), "../../../../src/core/lisp.cc", 55817, 1392, "Return the soft and hard limits of the stack"  );
+ define_source_info( code_kind, core::magic_name("core__stack_monitor"), "../../../../src/core/lisp.cc", 55095, 1369, "monitor stack for problems - warn if getting too large"  );
+ define_source_info( code_kind, core::magic_name("core__stack_used"), "../../../../src/core/lisp.cc", 54049, 1335, "stackUsed"  );
+ define_source_info( code_kind, core::magic_name("core__low_level_repl"), "../../../../src/core/lisp.cc", 53617, 1321, "lowLevelRepl - this is a built in repl for when the top-level repl isn't available"  );
+ define_source_info( code_kind, core::magic_name("core__list_of_all_special_operators"), "../../../../src/core/lisp.cc", 32171, 777, "listOfAllSpecialOperators"  );
+ define_source_info( code_kind, core::magic_name("cl__boole"), "../../../../src/core/bits.cc", 17983, 695, "boole"  );
+ define_source_info( code_kind, core::magic_name("cl__logbitp"), "../../../../src/core/bits.cc", 11063, 418, "" );
+ define_source_info( code_kind, core::magic_name("core__bit_array_op"), "../../../../src/core/bits.cc", 7716, 305, "bitArrayOp"  );
+ define_source_info( code_kind, core::magic_name("cl__write_sequence"), "../../../../src/core/lispStream.cc", 176432, 6324, "writeSequence"  );
+ define_source_info( code_kind, core::magic_name("core__file_column"), "../../../../src/core/lispStream.cc", 176153, 6315, "column"  );
+ define_source_info( code_kind, core::magic_name("cl__unread_char"), "../../../../src/core/lispStream.cc", 175939, 6307, "unread_char"  );
+ define_source_info( code_kind, core::magic_name("cl__finish_output"), "../../../../src/core/lispStream.cc", 175735, 6299, "finish_output"  );
+ define_source_info( code_kind, core::magic_name("cl__force_output"), "../../../../src/core/lispStream.cc", 175536, 6291, "force_output"  );
+ define_source_info( code_kind, core::magic_name("cl__listen"), "../../../../src/core/lispStream.cc", 175342, 6283, "listen"  );
+ define_source_info( code_kind, core::magic_name("cl__clear_output"), "../../../../src/core/lispStream.cc", 175150, 6275, "clearOutput"  );
+ define_source_info( code_kind, core::magic_name("cl__clear_input"), "../../../../src/core/lispStream.cc", 174956, 6267, "clearInput"  );
+ define_source_info( code_kind, core::magic_name("cl__write_char"), "../../../../src/core/lispStream.cc", 174699, 6258, "writeChar"  );
+ define_source_info( code_kind, core::magic_name("cl__write_byte"), "../../../../src/core/lispStream.cc", 174442, 6249, "writeByte"  );
+ define_source_info( code_kind, core::magic_name("cl__write_line"), "../../../../src/core/lispStream.cc", 174119, 6239, "writeLine"  );
+ define_source_info( code_kind, core::magic_name("cl__write_string"), "../../../../src/core/lispStream.cc", 173829, 6231, "writeString"  );
+ define_source_info( code_kind, core::magic_name("cl__fresh_line"), "../../../../src/core/lispStream.cc", 173042, 6207, "freshLine"  );
+ define_source_info( code_kind, core::magic_name("cl__terpri"), "../../../../src/core/lispStream.cc", 172528, 6186, "Send a newline to the output stream"  );
+ define_source_info( code_kind, core::magic_name("cl__read_line"), "../../../../src/core/lispStream.cc", 171178, 6141, "See clhs"  );
+ define_source_info( code_kind, core::magic_name("cl__read_from_string"), "../../../../src/core/lispStream.cc", 169887, 6104, "read_from_string"  );
+ define_source_info( code_kind, core::magic_name("cl__read_char_no_hang"), "../../../../src/core/lispStream.cc", 169047, 6076, "readCharNoHang"  );
+ define_source_info( code_kind, core::magic_name("cl__read_char"), "../../../../src/core/lispStream.cc", 168482, 6058, "readChar"  );
+ define_source_info( code_kind, core::magic_name("cl__peek_char"), "../../../../src/core/lispStream.cc", 166973, 6013, "peekChar"  );
+ define_source_info( code_kind, core::magic_name("cl__read_byte"), "../../../../src/core/lispStream.cc", 166445, 5995, "readByte"  );
+ define_source_info( code_kind, core::magic_name("core__input_stream_source_pos_info"), "../../../../src/core/lispStream.cc", 160727, 5764, "sourcePosInfo"  );
+ define_source_info( code_kind, core::magic_name("core__stream_column"), "../../../../src/core/lispStream.cc", 158948, 5693, "streamColumn"  );
+ define_source_info( code_kind, core::magic_name("core__stream_linenumber"), "../../../../src/core/lispStream.cc", 158790, 5686, "streamLinenumber"  );
+ define_source_info( code_kind, core::magic_name("cl__close"), "../../../../src/core/lispStream.cc", 142642, 5226, "close"  );
+ define_source_info( code_kind, core::magic_name("cl__open"), "../../../../src/core/lispStream.cc", 140812, 5164, "open"  );
+ define_source_info( code_kind, core::magic_name("cl__streamp"), "../../../../src/core/lispStream.cc", 133893, 4976, "streamp"  );
+ define_source_info( code_kind, core::magic_name("cl__interactive_stream_p"), "../../../../src/core/lispStream.cc", 132572, 4933, "interactive_stream_p"  );
+ define_source_info( code_kind, core::magic_name("cl__output_stream_p"), "../../../../src/core/lispStream.cc", 132367, 4925, "output_stream_p"  );
+ define_source_info( code_kind, core::magic_name("cl__input_stream_p"), "../../../../src/core/lispStream.cc", 132169, 4917, "input_stream_p"  );
+ define_source_info( code_kind, core::magic_name("cl__file_position"), "../../../../src/core/lispStream.cc", 131721, 4899, "filePosition"  );
+ define_source_info( code_kind, core::magic_name("cl__file_length"), "../../../../src/core/lispStream.cc", 131554, 4892, "file_length"  );
+ define_source_info( code_kind, core::magic_name("cl__read_sequence"), "../../../../src/core/lispStream.cc", 130987, 4873, "readSequence"  );
+ define_source_info( code_kind, core::magic_name("core__do_write_sequence"), "../../../../src/core/lispStream.cc", 126801, 4751, "do_write_sequence"  );
+ define_source_info( code_kind, core::magic_name("core__file_stream_fd"), "../../../../src/core/lispStream.cc", 112159, 4229, "core-file-stream-fd"  );
+ define_source_info( code_kind, core::magic_name("core__set_buffering_mode"), "../../../../src/core/lispStream.cc", 107187, 4065, "set-buffering-mode"  );
+ define_source_info( code_kind, core::magic_name("cl__synonym_stream_symbol"), "../../../../src/core/lispStream.cc", 67777, 2638, "See CLHS synonym-stream-symbol"  );
+ define_source_info( code_kind, core::magic_name("cl__make_synonym_stream"), "../../../../src/core/lispStream.cc", 67429, 2626, "make-synonym-stream"  );
+ define_source_info( code_kind, core::magic_name("cl__make_concatenated_stream"), "../../../../src/core/lispStream.cc", 63229, 2449, "makeConcatenatedStream"  );
+ define_source_info( code_kind, core::magic_name("cl__make_echo_stream"), "../../../../src/core/lispStream.cc", 59704, 2312, "make-echo-stream"  );
+ define_source_info( code_kind, core::magic_name("cl__make_broadcast_stream"), "../../../../src/core/lispStream.cc", 55908, 2150, "makeBroadcastStream"  );
+ define_source_info( code_kind, core::magic_name("cl__two_way_stream_output_stream"), "../../../../src/core/lispStream.cc", 52550, 2005, "two-way-stream-output-stream"  );
+ define_source_info( code_kind, core::magic_name("cl__two_way_stream_input_stream"), "../../../../src/core/lispStream.cc", 52186, 1995, "two-way-stream-input-stream"  );
+ define_source_info( code_kind, core::magic_name("cl__make_two_way_stream"), "../../../../src/core/lispStream.cc", 51615, 1977, "make-two-way-stream"  );
+ define_source_info( code_kind, core::magic_name("cl__make_string_input_stream"), "../../../../src/core/lispStream.cc", 47932, 1828, "make_string_input_stream"  );
+ define_source_info( code_kind, core::magic_name("cl__get_output_stream_string"), "../../../../src/core/lispStream.cc", 43936, 1684, "get_output_stream_string"  );
+ define_source_info( code_kind, core::magic_name("cl__make_string_output_stream"), "../../../../src/core/lispStream.cc", 43156, 1660, "makeStringOutputStream"  );
+ define_source_info( code_kind, core::magic_name("core__make_string_output_stream_from_string"), "../../../../src/core/lispStream.cc", 41697, 1621, "make_string_output_stream_from_string"  );
+ define_source_info( code_kind, core::magic_name("CORE:makeLambdaListHandler"), "../../../../src/core/lambdaListHandler.cc", 36452, 963, "" );
+ define_source_info( code_kind, core::magic_name("core__process_lambda_list"), "../../../../src/core/lambdaListHandler.cc", 32631, 869, "processLambdaList - this is like ECL::process-lambda-list except auxs are returned as nil or a list of 2*n elements of the form (sym1 init1 sym2 init2 ...) In ECL they say you need to prepend the number of auxs - that breaks the destructure macro. ECL process-lambda-list says context may be MACRO, FTYPE, FUNCTION, METHOD or DESTRUCTURING-BIND but in ECL>>clos/method.lsp they pass T!!!"  );
+ define_source_info( code_kind, core::magic_name("core__process_single_dispatch_lambda_list"), "../../../../src/core/lambdaListHandler.cc", 12765, 317, "process_single_dispatch_lambda_list"  );
+ define_source_info( code_kind, core::magic_name("core__process_macro_lambda_list"), "../../../../src/core/lambdaListHandler.cc", 12505, 309, "process_macro_lambda_list"  );
+ define_source_info( code_kind, core::magic_name("core__magic_name"), "../../../../src/core/foundation.cc", 15984, 497, R"doc(* Arguments
+- name :: A string.
+* Description
+Convert strings that have the form pkg:name or pkg__name into a package name string and a symbol name string, run them through lispify_symbol_name and then recombine them as pkg:name.)doc"  );
+ define_source_info( code_kind, core::magic_name("core__lispify_name"), "../../../../src/core/foundation.cc", 12924, 419, "lispifyName"  );
+ define_source_info( code_kind, core::magic_name("CORE:makeStackValueEnvironment"), "../../../../src/core/environment.cc", 59074, 1746, "" );
+ define_source_info( code_kind, core::magic_name("CORE:makeSymbolMacroletEnvironment"), "../../../../src/core/environment.cc", 57121, 1691, "" );
+ define_source_info( code_kind, core::magic_name("CORE:makeMacroletEnvironment"), "../../../../src/core/environment.cc", 55405, 1639, "" );
+ define_source_info( code_kind, core::magic_name("CORE:makeTagbodyEnvironment"), "../../../../src/core/environment.cc", 51879, 1523, "" );
+ define_source_info( code_kind, core::magic_name("CORE:makeFunctionContainerEnvironment"), "../../../../src/core/environment.cc", 49904, 1462, "" );
+ define_source_info( code_kind, core::magic_name("CORE:makeCatchEnvironment"), "../../../../src/core/environment.cc", 48739, 1420, "" );
+ define_source_info( code_kind, core::magic_name("CORE:makeBlockEnvironment"), "../../../../src/core/environment.cc", 46761, 1358, "" );
+ define_source_info( code_kind, core::magic_name("CORE:makeUnwindProtectEnvironment"), "../../../../src/core/environment.cc", 45211, 1308, "" );
+ define_source_info( code_kind, core::magic_name("CORE:makeFunctionValueEnvironment"), "../../../../src/core/environment.cc", 41967, 1215, "" );
+ define_source_info( code_kind, core::magic_name("CORE:makeValueEnvironmentForLocallySpecialEntries"), "../../../../src/core/environment.cc", 36395, 1067, "" );
+ define_source_info( code_kind, core::magic_name("CORE:makeValueEnvironmentForNumberOfEntries"), "../../../../src/core/environment.cc", 35984, 1059, "" );
+ define_source_info( code_kind, core::magic_name("CORE:makeValueEnvironment"), "../../../../src/core/environment.cc", 35689, 1052, "" );
+ define_source_info( code_kind, "CORE:CURRENT-VISIBLE-ENVIRONMENT", "../../../../src/core/environment.cc", 10034, 299, "" );
+ define_source_info( code_kind, core::magic_name("core__environment_id"), "../../../../src/core/environment.cc", 6871, 214, "environmentId"  );
+ define_source_info( code_kind, core::magic_name("core__runtime_environment"), "../../../../src/core/environment.cc", 6530, 202, "Return the RuntimeEnvironment or nil"  );
+ define_source_info( code_kind, core::magic_name("core__environment_type_list"), "../../../../src/core/environment.cc", 5898, 182, "Return a list of environment parents"  );
+ define_source_info( code_kind, core::magic_name("core__environment_list"), "../../../../src/core/environment.cc", 5546, 171, "Return a list of environment parents"  );
+ define_source_info( code_kind, core::magic_name("core__environment_activation_frame"), "../../../../src/core/environment.cc", 5303, 162, "environmentActivationFrame"  );
+ define_source_info( code_kind, core::magic_name("core__lexical_macro_function"), "../../../../src/core/environment.cc", 4242, 127, "lexicalMacroFunction - If found return (values T fn depth index) otherwise nil"  );
+ define_source_info( code_kind, core::magic_name("core__lexical_function"), "../../../../src/core/environment.cc", 3804, 114, "lexicalFunction - If found return (values T fn depth index) otherwise nil"  );
+ define_source_info( code_kind, core::magic_name("core__environment_debug_values"), "../../../../src/core/environment.cc", 2972, 90, "environmentDebugValues - number of entries in this environment"  );
+ define_source_info( code_kind, core::magic_name("core__environment_debug_names"), "../../../../src/core/environment.cc", 2424, 75, "environmentDebugNames - number of entries in this environment"  );
+ define_source_info( code_kind, core::magic_name("core__environment_length"), "../../../../src/core/environment.cc", 2028, 63, "environmentLength - number of entries in this environment"  );
+ define_source_info( code_kind, core::magic_name("core__classify_return_from_symbol"), "../../../../src/core/environment.cc", 1735, 55, "classifyReturnFromSymbol"  );
+ define_source_info( code_kind, core::magic_name("cl__nreconc"), "../../../../src/core/lispList.cc", 9792, 361, "nreconc"  );
+ define_source_info( code_kind, core::magic_name("cl__revappend"), "../../../../src/core/lispList.cc", 9593, 352, "revappend"  );
+ define_source_info( code_kind, core::magic_name("cl__nconc"), "../../../../src/core/lispList.cc", 8692, 311, "tnconc"  );
+ define_source_info( code_kind, core::magic_name("cl__last"), "../../../../src/core/lispList.cc", 8341, 295, "last - see CLHS"  );
+ define_source_info( code_kind, core::magic_name("cl__listSTAR"), "../../../../src/core/lispList.cc", 7723, 276, "list* see CLHS"  );
+ define_source_info( code_kind, core::magic_name("cl__list"), "../../../../src/core/lispList.cc", 7590, 269, "See CLHS: list"  );
+ define_source_info( code_kind, core::magic_name("cl__nbutlast"), "../../../../src/core/lispList.cc", 7036, 248, "butlast"  );
+ define_source_info( code_kind, core::magic_name("cl__butlast"), "../../../../src/core/lispList.cc", 6384, 220, "butlast"  );
+ define_source_info( code_kind, core::magic_name("cl__copy_list"), "../../../../src/core/lispList.cc", 6087, 208, "copyList"  );
+ define_source_info( code_kind, core::magic_name("cl__nthcdr"), "../../../../src/core/lispList.cc", 5831, 196, "See CLHS nth"  );
+ define_source_info( code_kind, core::magic_name("cl__nth"), "../../../../src/core/lispList.cc", 5565, 184, "See CLHS nth"  );
+ define_source_info( code_kind, core::magic_name("cl__rassoc"), "../../../../src/core/lispList.cc", 4846, 157, "See CLHS rassoc"  );
+ define_source_info( code_kind, core::magic_name("core__function_source_code"), "../../../../src/core/executables.cc", 10040, 264, "functionSourceCode"  );
+ define_source_info( code_kind, core::magic_name("cl__function_lambda_expression"), "../../../../src/core/executables.cc", 9577, 250, "functionLambdaExpression"  );
+ define_source_info( code_kind, core::magic_name("core__set_kind"), "../../../../src/core/executables.cc", 2837, 82, "set the kind of a function object (:function|:macro)"  );
+ define_source_info( code_kind, core::magic_name("core__function_source_pos_info"), "../../../../src/core/executables.cc", 2406, 72, "functionSourcePosInfo"  );
+ define_source_info( code_kind, core::magic_name("core__function_lambda_list"), "../../../../src/core/executables.cc", 1813, 54, "functionLambdaList"  );
+ define_source_info( code_kind, core::magic_name("core__mkdir"), "../../../../src/core/unixfsys.cc", 46777, 1448, "mkdir"  );
+ define_source_info( code_kind, core::magic_name("core__unix_get_local_time_zone"), "../../../../src/core/unixfsys.cc", 46195, 1423, "unixGetLocalTimeZone"  );
+ define_source_info( code_kind, core::magic_name("core__unix_daylight_saving_time"), "../../../../src/core/unixfsys.cc", 45952, 1414, "unixDaylightSavingTime return true if in daylight saving time"  );
+ define_source_info( code_kind, core::magic_name("cl__directory"), "../../../../src/core/unixfsys.cc", 45438, 1400, "directory"  );
+ define_source_info( code_kind, core::magic_name("core__copy_file"), "../../../../src/core/unixfsys.cc", 40236, 1250, "copy_file"  );
+ define_source_info( code_kind, core::magic_name("core__chmod"), "../../../../src/core/unixfsys.cc", 39368, 1229, "chmod - use octal values for mode for convenience (eg #o777)"  );
+ define_source_info( code_kind, core::magic_name("core__rmdir"), "../../../../src/core/unixfsys.cc", 38946, 1219, "Like unix rmdir"  );
+ define_source_info( code_kind, core::magic_name("core__mkstemp"), "../../../../src/core/unixfsys.cc", 32184, 991, "mkstemp"  );
+ define_source_info( code_kind, core::magic_name("cl__user_homedir_pathname"), "../../../../src/core/unixfsys.cc", 28833, 870, "userHomedirPathname"  );
+ define_source_info( code_kind, core::magic_name("cl__file_author"), "../../../../src/core/unixfsys.cc", 26119, 784, "file_author"  );
+ define_source_info( code_kind, core::magic_name("cl__file_write_date"), "../../../../src/core/unixfsys.cc", 25451, 766, "file_write_date"  );
+ define_source_info( code_kind, core::magic_name("cl__probe_file"), "../../../../src/core/unixfsys.cc", 25117, 757, "probe_file"  );
+ define_source_info( code_kind, core::magic_name("cl__delete_file"), "../../../../src/core/unixfsys.cc", 24127, 729, "deleteFile"  );
+ define_source_info( code_kind, core::magic_name("cl__rename_file"), "../../../../src/core/unixfsys.cc", 19706, 607, "renameFile"  );
+ define_source_info( code_kind, core::magic_name("cl__truename"), "../../../../src/core/unixfsys.cc", 17619, 552, "truename"  );
+ define_source_info( code_kind, core::magic_name("core__file_truename"), "../../../../src/core/unixfsys.cc", 17264, 539, "truename"  );
+ define_source_info( code_kind, core::magic_name("core__readlink"), "../../../../src/core/unixfsys.cc", 9278, 343, "file_kind (values kind found) - if found but kind==nil then its a br"  );
+ define_source_info( code_kind, core::magic_name("core__file_kind"), "../../../../src/core/unixfsys.cc", 8897, 332, "file_kind (values kind found) - if found but kind==nil then its a broken symlink"  );
+ define_source_info( code_kind, core::magic_name("core__current_dir"), "../../../../src/core/unixfsys.cc", 5995, 228, "currentDir"  );
+ define_source_info( code_kind, core::magic_name("ext__chdir"), "../../../../src/core/unixfsys.cc", 5036, 183, "chdir"  );
+ define_source_info( code_kind, core::magic_name("core__getppid"), "../../../../src/core/unixfsys.cc", 4886, 175, "getppid"  );
+ define_source_info( code_kind, core::magic_name("core__getpid"), "../../../../src/core/unixfsys.cc", 4744, 167, "getpid"  );
+ define_source_info( code_kind, core::magic_name("core__waitpid"), "../../../../src/core/unixfsys.cc", 4494, 156, "waitpid - see unix waitpid - returns status"  );
+ define_source_info( code_kind, core::magic_name("core__fork"), "../../../../src/core/unixfsys.cc", 4309, 148, "fork"  );
+ define_source_info( code_kind, core::magic_name("CORE:allocateForeignObject"), "../../../../src/core/externalObject.cc", 2296, 76, "Allocate a chunk of memory for foreign-data"  );
+ define_source_info( code_kind, core::magic_name("core__make_source_manager"), "../../../../src/core/sourceFileInfo.cc", 14755, 433, "makeSourceManager"  );
+ define_source_info( code_kind, core::magic_name("core__dump_source_manager"), "../../../../src/core/sourceFileInfo.cc", 14219, 416, "dumpSourceManager"  );
+ define_source_info( code_kind, core::magic_name("core__walk_to_find_source_pos_info"), "../../../../src/core/sourceFileInfo.cc", 9215, 256, "Walk down the tree and find the first source info you can"  );
+ define_source_info( code_kind, core::magic_name("core__walk_to_assign_source_pos_info"), "../../../../src/core/sourceFileInfo.cc", 8175, 228, "Walk down the tree and carry source info down"  );
+ define_source_info( code_kind, core::magic_name("core__walk_to_find_source_info"), "../../../../src/core/sourceFileInfo.cc", 7085, 199, "walkToFindSourceInfo"  );
+ define_source_info( code_kind, core::magic_name("core__source_pos_info_column"), "../../../../src/core/sourceFileInfo.cc", 5625, 152, "sourcePosInfoColumn"  );
+ define_source_info( code_kind, core::magic_name("core__source_pos_info_lineno"), "../../../../src/core/sourceFileInfo.cc", 5330, 141, "sourcePosInfoLineno"  );
+ define_source_info( code_kind, core::magic_name("core__source_pos_info_filepos"), "../../../../src/core/sourceFileInfo.cc", 5014, 130, "sourcePosInfoFilepos"  );
+ define_source_info( code_kind, core::magic_name("core__source_file_info"), "../../../../src/core/sourceFileInfo.cc", 2944, 85, "sourceFileInfo given a source name (string) or pathname or integer, return the source-file-info structure and the integer index"  );
+ define_source_info( code_kind, core::magic_name("cl__print"), "../../../../src/core/print.cc", 9039, 250, "See CLHS: print"  );
+ define_source_info( code_kind, core::magic_name("cl__prin1"), "../../../../src/core/print.cc", 8547, 239, "See CLHS: prin1"  );
+ define_source_info( code_kind, core::magic_name("cl__princ"), "../../../../src/core/print.cc", 8149, 229, "See CLHS: princ"  );
+ define_source_info( code_kind, core::magic_name("cl__pprint"), "../../../../src/core/print.cc", 7701, 217, "pprint"  );
+ define_source_info( code_kind, core::magic_name("core__print_unreadable_object_function"), "../../../../src/core/print.cc", 6787, 185, "printUnreadableObjectFunction - see ecl::print_unreadable.d"  );
+ define_source_info( code_kind, core::magic_name("cl__write"), "../../../../src/core/print.cc", 4689, 140, "write"  );
+ define_source_info( code_kind, core::magic_name("core__write_object"), "../../../../src/core/write_object.cc", 6380, 175, "writeObject"  );
+ define_source_info( code_kind, core::magic_name("make-bignum","CORE"), "../../../../src/core/bignum.cc", 1882, 58, "" );
+ define_source_info( code_kind, core::magic_name("cl__load"), "../../../../src/core/load.cc", 4669, 114, "CLHS: load"  );
+ define_source_info( code_kind, core::magic_name("core__load_source"), "../../../../src/core/load.cc", 1675, 50, "loadSource"  );
+ define_source_info( code_kind, core::magic_name("cl__imagpart"), "../../../../src/core/num_co.cc", 31208, 1178, "imagpart"  );
+ define_source_info( code_kind, core::magic_name("cl__realpart"), "../../../../src/core/num_co.cc", 30714, 1154, "realpart"  );
+ define_source_info( code_kind, core::magic_name("cl__complex"), "../../../../src/core/num_co.cc", 30567, 1147, "complex"  );
+ define_source_info( code_kind, core::magic_name("cl__integer_decode_float"), "../../../../src/core/num_co.cc", 29152, 1083, "integer_decode_float"  );
+ define_source_info( code_kind, core::magic_name("cl__float_precision"), "../../../../src/core/num_co.cc", 27868, 1024, "floatPrecision"  );
+ define_source_info( code_kind, core::magic_name("cl__float_digits"), "../../../../src/core/num_co.cc", 27331, 1001, "floatDigits"  );
+ define_source_info( code_kind, core::magic_name("cl__float_sign"), "../../../../src/core/num_co.cc", 26476, 965, "floatSign"  );
+ define_source_info( code_kind, core::magic_name("cl__scale_float"), "../../../../src/core/num_co.cc", 25224, 917, "scaleFloat"  );
+ define_source_info( code_kind, core::magic_name("cl__decode_float"), "../../../../src/core/num_co.cc", 24219, 865, "decodeFloat"  );
+ define_source_info( code_kind, core::magic_name("cl__rem"), "../../../../src/core/num_co.cc", 24029, 857, "rem"  );
+ define_source_info( code_kind, core::magic_name("cl__mod"), "../../../../src/core/num_co.cc", 23801, 848, "mod"  );
+ define_source_info( code_kind, core::magic_name("cl__round"), "../../../../src/core/num_co.cc", 23598, 838, "round"  );
+ define_source_info( code_kind, core::magic_name("cl__truncate"), "../../../../src/core/num_co.cc", 20622, 714, "truncate"  );
+ define_source_info( code_kind, core::magic_name("cl__ceiling"), "../../../../src/core/num_co.cc", 19051, 652, "ceiling"  );
+ define_source_info( code_kind, core::magic_name("cl__floor"), "../../../../src/core/num_co.cc", 11816, 411, "floor"  );
+ define_source_info( code_kind, core::magic_name("cl__denominator"), "../../../../src/core/num_co.cc", 3977, 156, "denominator"  );
+ define_source_info( code_kind, core::magic_name("cl__numerator"), "../../../../src/core/num_co.cc", 3628, 139, "numerator"  );
+ define_source_info( code_kind, core::magic_name("cl__float"), "../../../../src/core/num_co.cc", 2572, 96, "float"  );
+ define_source_info( code_kind, core::magic_name("core__integer_to_string"), "../../../../src/core/numberToString.cc", 3437, 97, "integerToString"  );
+ define_source_info( code_kind, core::magic_name("core__bignum_to_string"), "../../../../src/core/numberToString.cc", 1822, 55, "bignumToString"  );
+ define_source_info( code_kind, core::magic_name("cl__lcm"), "../../../../src/core/num_arith.cc", 3987, 129, "lcm"  );
+ define_source_info( code_kind, core::magic_name("cl__gcd"), "../../../../src/core/num_arith.cc", 2896, 86, "gcd"  );
+ define_source_info( code_kind, core::magic_name("core__num_op_atanh"), "../../../../src/core/numerics.cc", 36580, 1283, "atanh"  );
+ define_source_info( code_kind, core::magic_name("core__num_op_acosh"), "../../../../src/core/numerics.cc", 36434, 1276, "num_op_acosh"  );
+ define_source_info( code_kind, core::magic_name("core__num_op_asinh"), "../../../../src/core/numerics.cc", 36287, 1269, "asinh"  );
+ define_source_info( code_kind, core::magic_name("core__num_op_acos"), "../../../../src/core/numerics.cc", 36167, 1262, "num-op-acos"  );
+ define_source_info( code_kind, core::magic_name("core__num_op_asin"), "../../../../src/core/numerics.cc", 36041, 1255, "asin"  );
+ define_source_info( code_kind, core::magic_name("CORE:randomNumberNormal01"), "../../../../src/core/numerics.cc", 4592, 148, "" );
+ define_source_info( code_kind, core::magic_name("CORE:randomNumber01"), "../../../../src/core/numerics.cc", 4475, 143, "" );
+ define_source_info( code_kind, core::magic_name("CORE:seedRandomNumberGeneratorsUsingTime"), "../../../../src/core/numerics.cc", 4129, 129, "" );
+ define_source_info( code_kind, core::magic_name("CORE:seedRandomNumberGenerators"), "../../../../src/core/numerics.cc", 3901, 123, "" );
+ define_source_info( code_kind, core::magic_name("cl__get_universal_time"), "../../../../src/core/numerics.cc", 2982, 103, "getUniversalTime"  );
+ define_source_info( code_kind, core::magic_name("CORE:general-two-arg-_EQ_"), "../../../../src/core/numbers.cc", 99041, 3621, "" );
+ define_source_info( code_kind, core::magic_name("CORE:general-two-arg-_GE_"), "../../../../src/core/numbers.cc", 98964, 3619, "" );
+ define_source_info( code_kind, core::magic_name("CORE:general-two-arg-_GT_"), "../../../../src/core/numbers.cc", 98887, 3617, "" );
+ define_source_info( code_kind, core::magic_name("CORE:general-two-arg-_LE_"), "../../../../src/core/numbers.cc", 98810, 3615, "" );
+ define_source_info( code_kind, core::magic_name("CORE:general-two-arg-_LT_"), "../../../../src/core/numbers.cc", 98733, 3613, "" );
+ define_source_info( code_kind, core::magic_name("CORE:general-two-arg-_DIVIDE_"), "../../../../src/core/numbers.cc", 98656, 3611, "" );
+ define_source_info( code_kind, core::magic_name("CORE:general-two-arg-_TIMES_"), "../../../../src/core/numbers.cc", 98575, 3609, "" );
+ define_source_info( code_kind, core::magic_name("CORE:general-two-arg-_MINUS_"), "../../../../src/core/numbers.cc", 98495, 3607, "" );
+ define_source_info( code_kind, core::magic_name("CORE:general-two-arg-_PLUS_"), "../../../../src/core/numbers.cc", 98415, 3605, "" );
+ define_source_info( code_kind, core::magic_name("cl__integer_length"), "../../../../src/core/numbers.cc", 97894, 3588, "integerLength"  );
+ define_source_info( code_kind, core::magic_name("core__log1p"), "../../../../src/core/numbers.cc", 96435, 3527, "log1p"  );
+ define_source_info( code_kind, core::magic_name("cl__log"), "../../../../src/core/numbers.cc", 96217, 3518, "Calculate the log of (number) to base (base)."  );
+ define_source_info( code_kind, core::magic_name("cl__atan"), "../../../../src/core/numbers.cc", 91178, 3356, "atan"  );
+ define_source_info( code_kind, core::magic_name("cl__expt"), "../../../../src/core/numbers.cc", 87296, 3207, "expt"  );
+ define_source_info( code_kind, core::magic_name("cl__exp"), "../../../../src/core/numbers.cc", 83864, 3081, "exp"  );
+ define_source_info( code_kind, core::magic_name("cl__conjugate"), "../../../../src/core/numbers.cc", 82281, 3019, "conjugate"  );
+ define_source_info( code_kind, core::magic_name("cl__tanh"), "../../../../src/core/numbers.cc", 81288, 2983, "tanh"  );
+ define_source_info( code_kind, core::magic_name("cl__cosh"), "../../../../src/core/numbers.cc", 79897, 2928, "cosh"  );
+ define_source_info( code_kind, core::magic_name("cl__sinh"), "../../../../src/core/numbers.cc", 78087, 2865, "sinh"  );
+ define_source_info( code_kind, core::magic_name("cl__tan"), "../../../../src/core/numbers.cc", 76282, 2803, "tan"  );
+ define_source_info( code_kind, core::magic_name("cl__cos"), "../../../../src/core/numbers.cc", 74588, 2737, "cos"  );
+ define_source_info( code_kind, core::magic_name("cl__sin"), "../../../../src/core/numbers.cc", 72838, 2676, "sin"  );
+ define_source_info( code_kind, core::magic_name("cl__sqrt"), "../../../../src/core/numbers.cc", 71138, 2613, "sqrt"  );
+ define_source_info( code_kind, core::magic_name("core__nan"), "../../../../src/core/numbers.cc", 44664, 1452, "Return a number that is NAN"  );
+ define_source_info( code_kind, core::magic_name("cl___EQ_"), "../../../../src/core/numbers.cc", 40788, 1298, "EQ_"  );
+ define_source_info( code_kind, core::magic_name("cl___NE_"), "../../../../src/core/numbers.cc", 40418, 1282, "NE"  );
+ define_source_info( code_kind, core::magic_name("cl___GE_"), "../../../../src/core/numbers.cc", 36993, 1168, "" );
+ define_source_info( code_kind, core::magic_name("cl___LE_"), "../../../../src/core/numbers.cc", 36768, 1160, "" );
+ define_source_info( code_kind, core::magic_name("cl___GT_"), "../../../../src/core/numbers.cc", 36544, 1152, "" );
+ define_source_info( code_kind, core::magic_name("cl___LT_"), "../../../../src/core/numbers.cc", 36329, 1144, "" );
+ define_source_info( code_kind, "CORE:TWO-ARG-=", "../../../../src/core/numbers.cc", 36105, 1136, "" );
+ define_source_info( code_kind, "CORE:TWO-ARG->=", "../../../../src/core/numbers.cc", 35989, 1131, "" );
+ define_source_info( code_kind, "CORE:TWO-ARG->", "../../../../src/core/numbers.cc", 35873, 1126, "" );
+ define_source_info( code_kind, "CORE:TWO-ARG-<=", "../../../../src/core/numbers.cc", 35758, 1121, "" );
+ define_source_info( code_kind, "CORE:TWO-ARG-<", "../../../../src/core/numbers.cc", 35641, 1116, "" );
+ define_source_info( code_kind, core::magic_name("cl___DIVIDE_"), "../../../../src/core/numbers.cc", 28200, 827, "" );
+ define_source_info( code_kind, core::magic_name("cl___MINUS_"), "../../../../src/core/numbers.cc", 27760, 812, "See CLHS: +"  );
+ define_source_info( code_kind, core::magic_name("cl___TIMES_"), "../../../../src/core/numbers.cc", 27385, 799, "See CLHS: *"  );
+ define_source_info( code_kind, core::magic_name("cl___PLUS_"), "../../../../src/core/numbers.cc", 27015, 786, "" );
+ define_source_info( code_kind, "CORE:TWO-ARG-/", "../../../../src/core/numbers.cc", 23061, 688, "" );
+ define_source_info( code_kind, "CORE:TWO-ARG-*", "../../../../src/core/numbers.cc", 18417, 559, "" );
+ define_source_info( code_kind, "CORE:TWO-ARG--", "../../../../src/core/numbers.cc", 13739, 436, "" );
+ define_source_info( code_kind, "CORE:TWO-ARG-+", "../../../../src/core/numbers.cc", 9115, 308, "" );
+ define_source_info( code_kind, core::magic_name("cl__lognor"), "../../../../src/core/numbers.cc", 8790, 297, "lognor"  );
+ define_source_info( code_kind, core::magic_name("cl__lognand"), "../../../../src/core/numbers.cc", 8429, 284, "lognand"  );
+ define_source_info( code_kind, core::magic_name("cl__lognot"), "../../../../src/core/numbers.cc", 8191, 274, "lognot"  );
+ define_source_info( code_kind, core::magic_name("cl__logorc2"), "../../../../src/core/numbers.cc", 7835, 261, "logorc2"  );
+ define_source_info( code_kind, core::magic_name("cl__logorc1"), "../../../../src/core/numbers.cc", 7476, 248, "logorc1"  );
+ define_source_info( code_kind, core::magic_name("cl__logandc2"), "../../../../src/core/numbers.cc", 7116, 235, "logandc2"  );
+ define_source_info( code_kind, core::magic_name("cl__logandc1"), "../../../../src/core/numbers.cc", 6755, 222, "logandc1"  );
+ define_source_info( code_kind, core::magic_name("cl__logeqv"), "../../../../src/core/numbers.cc", 5860, 197, "logeqv"  );
+ define_source_info( code_kind, core::magic_name("cl__logxor"), "../../../../src/core/numbers.cc", 5323, 180, "logxor"  );
+ define_source_info( code_kind, core::magic_name("cl__logior"), "../../../../src/core/numbers.cc", 4770, 162, "logior"  );
+ define_source_info( code_kind, core::magic_name("cl__logand"), "../../../../src/core/numbers.cc", 4260, 146, "logand"  );
+ define_source_info( code_kind, core::magic_name("cl__max"), "../../../../src/core/numbers.cc", 3872, 133, "max"  );
+ define_source_info( code_kind, core::magic_name("cl__min"), "../../../../src/core/numbers.cc", 3487, 120, "min"  );
+ define_source_info( code_kind, core::magic_name("core__fixnum_number_of_bits"), "../../../../src/core/numbers.cc", 3050, 98, "fixnum_number_of_bits"  );
+ define_source_info( code_kind, core::magic_name("core__convert_overflow_result_to_bignum"), "../../../../src/core/numbers.cc", 2729, 87, "convert_overflow_result_to_bignum"  );
+ define_source_info( code_kind, core::magic_name("cl__zerop"), "../../../../src/core/numbers.cc", 2566, 80, "zerop"  );
+ define_source_info( code_kind, core::magic_name("core__hash_table_force_rehash"), "../../../../src/core/hashTable.cc", 18503, 589, "hashTableForceRehash"  );
+ define_source_info( code_kind, core::magic_name("cl__gethash"), "../../../../src/core/hashTable.cc", 16805, 539, "gethash"  );
+ define_source_info( code_kind, core::magic_name("cl__remhash"), "../../../../src/core/hashTable.cc", 7453, 233, "remhash"  );
+ define_source_info( code_kind, core::magic_name("core__hash_equalp"), "../../../../src/core/hashTable.cc", 7180, 220, "hash_equalp generates an equalp hash for a list of objects"  );
+ define_source_info( code_kind, core::magic_name("core__hash_equal"), "../../../../src/core/hashTable.cc", 6861, 207, "hash_equal generates an equal hash for a list of objects"  );
+ define_source_info( code_kind, core::magic_name("core__hash_eql"), "../../../../src/core/hashTable.cc", 6548, 194, "hash_eql generates an eql hash for a list of objects"  );
+ define_source_info( code_kind, core::magic_name("core__hash_table_entry_deleted_p"), "../../../../src/core/hashTable.cc", 6263, 185, "hashTableEntryDeletedP"  );
+ define_source_info( code_kind, core::magic_name("cl__clrhash"), "../../../../src/core/hashTable.cc", 6078, 177, "See CLHS"  );
+ define_source_info( code_kind, core::magic_name("cl__maphash"), "../../../../src/core/hashTable.cc", 5086, 150, "see CLHS"  );
+ define_source_info( code_kind, core::magic_name("core__hash_table_weakness"), "../../../../src/core/hashTable.cc", 4506, 131, "hash_table_weakness"  );
+ define_source_info( code_kind, core::magic_name("cl__make_hash_table"), "../../../../src/core/hashTable.cc", 2808, 94, "see CLHS"  );
+ define_source_info( code_kind, core::magic_name("core__debug_hash_table"), "../../../../src/core/hashTable.cc", 1870, 58, "DebugHashTable"  );
+ define_source_info( code_kind, core::magic_name("core__make_small_multimap"), "../../../../src/core/smallMultimap.cc", 1431, 48, "makeSmallMultimap"  );
+ define_source_info( code_kind, core::magic_name("core__make_small_map"), "../../../../src/core/smallMap.cc", 1421, 48, "makeSmallMap"  );
+ define_source_info( code_kind, core::magic_name("core__print_current_ihs_frame_environment"), "../../../../src/core/debugger.cc", 12224, 380, "printCurrentIhsFrameEnvironment"  );
+ define_source_info( code_kind, core::magic_name("core__frame_pointers"), "../../../../src/core/debugger.cc", 10538, 324, "framePointers"  );
+ define_source_info( code_kind, core::magic_name("core__clib_backtrace"), "../../../../src/core/debugger.cc", 9086, 275, "backtrace"  );
+ define_source_info( code_kind, core::magic_name("core__low_level_backtrace"), "../../../../src/core/debugger.cc", 7829, 240, "lowLevelBacktrace"  );
+ define_source_info( code_kind, core::magic_name("cl__random"), "../../../../src/core/random.cc", 2078, 60, "random"  );
+ define_source_info( code_kind, core::magic_name("make-random-state","COMMON-LISP"), "../../../../src/core/random.cc", 1476, 45, "" );
+ define_source_info( code_kind, core::magic_name("core__ihs_backtrace"), "../../../../src/core/primitives.cc", 63880, 1901, "ihsBacktrace"  );
+ define_source_info( code_kind, core::magic_name("core__dynamic_binding_stack_dump"), "../../../../src/core/primitives.cc", 63554, 1891, "dynamicBindingStackDump"  );
+ define_source_info( code_kind, core::magic_name("core__exception_stack_dump"), "../../../../src/core/primitives.cc", 62840, 1864, "exceptionStackDump"  );
+ define_source_info( code_kind, core::magic_name("core__exception_stack"), "../../../../src/core/primitives.cc", 62683, 1857, "exceptionStack"  );
+ define_source_info( code_kind, core::magic_name("core__bds_val"), "../../../../src/core/primitives.cc", 62544, 1850, "bdsVal"  );
+ define_source_info( code_kind, core::magic_name("core__bds_var"), "../../../../src/core/primitives.cc", 62405, 1843, "bdsVar"  );
+ define_source_info( code_kind, core::magic_name("core__bds_top"), "../../../../src/core/primitives.cc", 62282, 1836, "bdsTop"  );
+ define_source_info( code_kind, core::magic_name("core__set_ihs_current_frame"), "../../../../src/core/primitives.cc", 62009, 1824, "setIhsCurrentFrame"  );
+ define_source_info( code_kind, core::magic_name("core__ihs_current_frame"), "../../../../src/core/primitives.cc", 61447, 1803, "ihsCurrentFrame"  );
+ define_source_info( code_kind, core::magic_name("core__ihs_bds"), "../../../../src/core/primitives.cc", 61195, 1793, "ihsBds"  );
+ define_source_info( code_kind, core::magic_name("core__ihs_env"), "../../../../src/core/primitives.cc", 60939, 1783, "ihsEnv"  );
+ define_source_info( code_kind, core::magic_name("core__ihs_arguments"), "../../../../src/core/primitives.cc", 60679, 1773, "ihsArguments: return the arguments to the function in the invocation history stack at i"  );
+ define_source_info( code_kind, core::magic_name("core__ihs_fun"), "../../../../src/core/primitives.cc", 60345, 1763, "ihsFun: return the function in the invocation history stack at i"  );
+ define_source_info( code_kind, core::magic_name("core__ihs_next"), "../../../../src/core/primitives.cc", 60040, 1753, "ihsNext"  );
+ define_source_info( code_kind, core::magic_name("core__ihs_prev"), "../../../../src/core/primitives.cc", 59791, 1743, "ihsPrev"  );
+ define_source_info( code_kind, core::magic_name("core__ihs_top"), "../../../../src/core/primitives.cc", 59557, 1733, "ihsTop"  );
+ define_source_info( code_kind, core::magic_name("core__ihs_backtrace_no_args"), "../../../../src/core/primitives.cc", 59398, 1726, "ihsBacktraceNoArgs"  );
+ define_source_info( code_kind, core::magic_name("core__get_invocation_history_frame_next"), "../../../../src/core/primitives.cc", 59100, 1716, "getInvocationHistoryFrameNext - Return the next InvocationHistoryFrame after index as an iterator."  );
+ define_source_info( code_kind, core::magic_name("core__get_invocation_history_frame_prev"), "../../../../src/core/primitives.cc", 58742, 1708, "getInvocationHistoryFramePrev - Return the prev InvocationHistoryFrame before index as an iterator."  );
+ define_source_info( code_kind, core::magic_name("core__get_invocation_history_frame"), "../../../../src/core/primitives.cc", 58390, 1700, "getInvocationHistoryFrame - Return an indexed InvocationHistoryFrame as an iterator."  );
+ define_source_info( code_kind, core::magic_name("core__get_invocation_history_frame_top"), "../../../../src/core/primitives.cc", 58094, 1693, "getInvocationHistoryFrameSearch - Return an top InvocationHistoryFrame as an iterator."  );
+ define_source_info( code_kind, core::magic_name("core__get_invocation_history_frame_search"), "../../../../src/core/primitives.cc", 56739, 1663, "getInvocationHistoryFrameSearch - Return an InvocationHistoryFrame as an iterator. If idx == NIL return the top frame. If idx>=0 return the frame that satisfies *backtrace-frame-selector-hook* that has the index idx if direction==NIL, or if direction==:PREV return the frame previous to it (away from the top) or if direction==:NEXT the next frame (towards the top). *backtrace-frame-selector-hook* is a function that takes an invocation-history-frame-iterator and returns true if it should be in the backtrace. Test the result to make sure it is valid."  );
+ define_source_info( code_kind, core::magic_name("CORE:make-invocation-history-frame-iterator"), "../../../../src/core/primitives.cc", 52901, 1575, "" );
+ define_source_info( code_kind, core::magic_name("cl__sxhash"), "../../../../src/core/primitives.cc", 50986, 1520, "sxhash"  );
+ define_source_info( code_kind, core::magic_name("cl__type_of"), "../../../../src/core/primitives.cc", 50872, 1513, "type_of"  );
+ define_source_info( code_kind, core::magic_name("core__type_to_symbol"), "../../../../src/core/primitives.cc", 44204, 1355, "type_to_symbol"  );
+ define_source_info( code_kind, core::magic_name("cl__gensym"), "../../../../src/core/primitives.cc", 43196, 1327, "See CLHS gensym"  );
+ define_source_info( code_kind, core::magic_name("core__sequence_start_end"), "../../../../src/core/primitives.cc", 42444, 1305, "Copied from ecl::sequence.d::sequence_start_end - throws errors if start/end are out of range for the sequence. I'm not sure what the func argument is for. If end is nil then it is set to the end of the sequence.  Return MultipleValues(start,end,length)."  );
+ define_source_info( code_kind, core::magic_name("cl__append"), "../../../../src/core/primitives.cc", 41550, 1279, "append as in clhs"  );
+ define_source_info( code_kind, core::magic_name("cl__mapcan"), "../../../../src/core/primitives.cc", 40913, 1257, "mapcan"  );
+ define_source_info( code_kind, core::magic_name("cl__mapcon"), "../../../../src/core/primitives.cc", 40690, 1248, "mapcon"  );
+ define_source_info( code_kind, core::magic_name("core__mapappend"), "../../../../src/core/primitives.cc", 40017, 1233, "mapappend is like mapcar except that the results are appended together - see AMOP 280"  );
+ define_source_info( code_kind, core::magic_name("cl__mapl"), "../../../../src/core/primitives.cc", 39719, 1224, "See CLHS maplist"  );
+ define_source_info( code_kind, core::magic_name("cl__maplist"), "../../../../src/core/primitives.cc", 37677, 1180, "See CLHS maplist"  );
+ define_source_info( code_kind, core::magic_name("cl__mapc"), "../../../../src/core/primitives.cc", 36534, 1150, "See CLHS mapc"  );
+ define_source_info( code_kind, core::magic_name("cl__mapcar"), "../../../../src/core/primitives.cc", 35903, 1129, "See CLHS for mapcar"  );
+ define_source_info( code_kind, core::magic_name("cl__notevery"), "../../../../src/core/primitives.cc", 35458, 1113, "See CLHS for notevery"  );
+ define_source_info( code_kind, core::magic_name("cl__notany"), "../../../../src/core/primitives.cc", 35106, 1103, "See CLHS for notany"  );
+ define_source_info( code_kind, core::magic_name("cl__some"), "../../../../src/core/primitives.cc", 34735, 1091, "See CLHS for some"  );
+ define_source_info( code_kind, core::magic_name("cl__every"), "../../../../src/core/primitives.cc", 34387, 1081, "See CLHS for every"  );
+ define_source_info( code_kind, core::magic_name("cl__read_preserving_whitespace"), "../../../../src/core/primitives.cc", 30162, 951, "read an object from a stream while preserving whitespace - see CLHS"  );
+ define_source_info( code_kind, core::magic_name("cl__read"), "../../../../src/core/primitives.cc", 29408, 936, "read an object from a stream - see CLHS"  );
+ define_source_info( code_kind, core::magic_name("cl__read_delimited_list"), "../../../../src/core/primitives.cc", 28700, 917, "read a list up to a specific character - see CLHS"  );
+ define_source_info( code_kind, core::magic_name("cl__fmakunbound"), "../../../../src/core/primitives.cc", 27932, 896, "fmakunbound"  );
+ define_source_info( code_kind, core::magic_name("cl__fboundp"), "../../../../src/core/primitives.cc", 27333, 875, "fboundp"  );
+ define_source_info( code_kind, core::magic_name("cl__fdefinition"), "../../../../src/core/primitives.cc", 26762, 856, "fdefinition"  );
+ define_source_info( code_kind, core::magic_name("core__STARfset"), "../../../../src/core/primitives.cc", 25686, 827, "fset - bind a function to its name - handles symbol function-name and (SETF XXXX) names. (macro) defines if the function is a macro or not."  );
+ define_source_info( code_kind, core::magic_name("cl__class_of"), "../../../../src/core/primitives.cc", 25238, 816, "return class of object - see CLHS"  );
+ define_source_info( code_kind, core::magic_name("cl__null"), "../../../../src/core/primitives.cc", 25031, 807, "null test - return true if the object is the empty list otherwise return nil"  );
+ define_source_info( code_kind, core::magic_name("core__macroexpand_default"), "../../../../src/core/primitives.cc", 23409, 778, "macroexpand_default Default value of *macroexpand-hook*"  );
+ define_source_info( code_kind, core::magic_name("cl__identity"), "../../../../src/core/primitives.cc", 23213, 771, "identity"  );
+ define_source_info( code_kind, core::magic_name("cl__constantp"), "../../../../src/core/primitives.cc", 22677, 747, "constantp"  );
+ define_source_info( code_kind, core::magic_name("core__gdb_inspect"), "../../../../src/core/primitives.cc", 22408, 738, "hook to invoke gdb"  );
+ define_source_info( code_kind, core::magic_name("core__trap_execution"), "../../../../src/core/primitives.cc", 22093, 725, "hook to invoke gdb"  );
+ define_source_info( code_kind, core::magic_name("core__cxx_lambda_list_handler_create_bindings_calls"), "../../../../src/core/primitives.cc", 21813, 717, "Return the number of times lambdaListHandler_createBindings"  );
+ define_source_info( code_kind, core::magic_name("core__gdb"), "../../../../src/core/primitives.cc", 21496, 704, "hook to invoke gdb"  );
+ define_source_info( code_kind, core::magic_name("core__break"), "../../../../src/core/primitives.cc", 21195, 693, "Built in implementation of break - that calls the internal debugger - replace this with a CL implemented version"  );
+ define_source_info( code_kind, core::magic_name("cl__ash"), "../../../../src/core/primitives.cc", 20866, 685, "CLHS: ash"  );
+ define_source_info( code_kind, core::magic_name("cl__special_operator_p"), "../../../../src/core/primitives.cc", 18621, 617, "See CLHS: special-operator-p"  );
+ define_source_info( code_kind, core::magic_name("cl__macro_function"), "../../../../src/core/primitives.cc", 17872, 597, "See CLHS: macroFunction"  );
+ define_source_info( code_kind, core::magic_name("core__separate_pair_list"), "../../../../src/core/primitives.cc", 16802, 560, "Split a list of pairs into a pair of lists returned as MultipleValues. The first list is each first element and the second list is each second element or nil if there was no second element"  );
+ define_source_info( code_kind, core::magic_name("core__test_memory_error"), "../../../../src/core/primitives.cc", 16442, 550, "testMemoryError"  );
+ define_source_info( code_kind, core::magic_name("core__valid_function_name_p"), "../../../../src/core/primitives.cc", 16198, 540, "validFunctionNameP"  );
+ define_source_info( code_kind, core::magic_name("core__function_block_name"), "../../../../src/core/primitives.cc", 15882, 529, "See CLHS glossary 'function block name'. If the functionName is a symbol return it.  If the functionName is a cons of the form (setf xxxx) return xxxx"  );
+ define_source_info( code_kind, core::magic_name("cl__values_list"), "../../../../src/core/primitives.cc", 15232, 510, "values_list"  );
+ define_source_info( code_kind, core::magic_name("core__values_testing"), "../../../../src/core/primitives.cc", 14947, 500, "values"  );
+ define_source_info( code_kind, core::magic_name("cl__values"), "../../../../src/core/primitives.cc", 14758, 491, "values"  );
+ define_source_info( code_kind, core::magic_name("core__smart_pointer_details"), "../../../../src/core/primitives.cc", 14177, 473, "smartPointerDetails - returns (values ptr-type px-offset px-size). The ptr-type is the type of pointer used to pass objects - either MPS-GARBAGE-COLLECTION or INTRUSIVE-REFERENCE-COUNTED-POINTER. The px-offset is the number of bytes offset of the smart_ptr data pointer from the start of the smart_ptr and px-size is the size of the data pointer"  );
+ define_source_info( code_kind, core::magic_name("core__unbound"), "../../../../src/core/primitives.cc", 13725, 466, "Return the UNBOUND value"  );
+ define_source_info( code_kind, core::magic_name("core__substitute"), "../../../../src/core/primitives.cc", 13572, 459, "substitute"  );
+ define_source_info( code_kind, core::magic_name("core__is_true"), "../../../../src/core/primitives.cc", 13447, 452, "isTrue"  );
+ define_source_info( code_kind, core::magic_name("core__pointer"), "../../../../src/core/primitives.cc", 13327, 445, "Return the value of the pointer - used by conditions.lsp"  );
+ define_source_info( code_kind, core::magic_name("core__setenv"), "../../../../src/core/primitives.cc", 13099, 438, R"doc(Set an environment variable)doc"  );
+ define_source_info( code_kind, core::magic_name("core__describe_cxx_object"), "../../../../src/core/primitives.cc", 12752, 425, R"doc(Describe a
 C++ object
-like CL:DESCRIBE)doc"  }, 
-  { "ext", "llvm_version", "../../../../src/core/primitives.cc", 12451, 435, R"doc(Return a string representing the llvm version (eg: 3.6.0))doc"  }, 
-  { "ext", "getenv", "../../../../src/core/primitives.cc", 12200, 424, "Get environment variable NAME"  }, 
-  { "ext", "vfork_execvp", "../../../../src/core/primitives.cc", 10409, 374, "vfork_execvp"  }, 
-  { "ext", "system", "../../../../src/core/primitives.cc", 10070, 360, "system"  }, 
-  { "ext", "setenv", "../../../../src/core/primitives.cc", 9903, 352, "Set environment variable NAME to VALUE"  }, 
-  { "core", "dump_tagged_fixnum", "../../../../src/core/primitives.cc", 9540, 340, "dumpTaggedFixnum"  }, 
-  { "core", "from_tagged_fixnum", "../../../../src/core/primitives.cc", 9316, 329, "fromTaggedFixnum"  }, 
-  { "core", "to_tagged_fixnum", "../../../../src/core/primitives.cc", 9162, 321, "toTaggedFixnum"  }, 
-  { "core", "all_registered_class_names", "../../../../src/core/primitives.cc", 8765, 309, "allRegisteredClassNames"  }, 
-  { "core", "incomplete_next_higher_power_of_2", "../../../../src/core/primitives.cc", 8536, 300, "incompleteNextHigherPowerOf_2 - see the incompleteNextHigherPowerOf_2 builtin - only works for Fixnums and not the full range; just for testing"  }, 
-  { "core", "dump_address_of", "../../../../src/core/primitives.cc", 8184, 290, "dumpAddressOf"  }, 
-  { "cl", "set", "../../../../src/core/primitives.cc", 7940, 278, "set"  }, 
-  { "core", "argv", "../../../../src/core/primitives.cc", 7799, 270, "argv"  }, 
-  { "core", "argc", "../../../../src/core/primitives.cc", 7693, 262, "argc"  }, 
-  { "cl", "machine_instance", "../../../../src/core/primitives.cc", 7580, 254, "machineInstance"  }, 
-  { "cl", "machine_version", "../../../../src/core/primitives.cc", 7457, 246, "machineVersion"  }, 
-  { "cl", "machine_type", "../../../../src/core/primitives.cc", 7338, 238, "machineType"  }, 
-  { "cl", "software_version", "../../../../src/core/primitives.cc", 7181, 229, "softwareVersion"  }, 
-  { "cl", "software_type", "../../../../src/core/primitives.cc", 7068, 222, "softwareType"  }, 
-  { "core", "create_tagged_immediate_value_or_nil", "../../../../src/core/primitives.cc", 6786, 212, "Convert an object, either a fixnum, character or single float into an tagged version and return as an integer (either Fixnum or Bignum) or return NIL"  }, 
-  { "core", "lisp_implementation_id", "../../../../src/core/primitives.cc", 6301, 196, "lispImplementationId - the git commit sha1 code"  }, 
-  { "core", "single_dispatch_method_cache_status", "../../../../src/core/primitives.cc", 5880, 187, "cache_status - (values searches misses total-depth)"  }, 
-  { "core", "slot_cache_status", "../../../../src/core/primitives.cc", 5521, 178, "cache_status - (values searches misses total-depth)"  }, 
-  { "core", "method_cache_status", "../../../../src/core/primitives.cc", 5155, 170, "cache_status - (values searches misses total-depth)"  }, 
-  { "core", "single_dispatch_method_cache_resize", "../../../../src/core/primitives.cc", 4795, 159, "cache_resize - Resize the cache to 2^pow"  }, 
-  { "core", "slot_cache_resize", "../../../../src/core/primitives.cc", 4458, 148, "cache_resize - Resize the cache to 2^pow"  }, 
-  { "core", "method_cache_resize", "../../../../src/core/primitives.cc", 4109, 137, "cache_resize - Resize the cache to 2^pow"  }, 
-  { "cl", "lisp_implementation_version", "../../../../src/core/primitives.cc", 3654, 117, "lispImplementationVersion"  }, 
-  { "cl", "lisp_implementation_type", "../../../../src/core/primitives.cc", 3501, 109, "lispImplementationType"  }, 
-  { "cl", "sleep", "../../../../src/core/primitives.cc", 2893, 87, "sleep"  }, 
-  { "core", "clear_generic_function_dispatch_cache", "../../../../src/core/cache.cc", 6791, 190, "clearGenericFunctionDispatchCache"  }, 
-  { "core", "copy_instance", "../../../../src/core/instance.cc", 2995, 85, "copy-instance returns a shallow copy of the instance"  }, 
-  { "core", "instance_class_set", "../../../../src/core/instance.cc", 2514, 72, "instanceClassSet"  }, 
-  { "core", "clear_gfun_hash", "../../../../src/core/genericFunction.cc", 13280, 342, "See ecl/src/c/gfun.d:si_clear_gfun_hash. This function clears the generic function call hashes selectively. If what=T then clear the hash completely.  If what=generic_function then clear only these entries."  }, 
-  { "core", "maybe_expand_generic_function_arguments", "../../../../src/core/genericFunction.cc", 6560, 177, "maybeExpandGenericFunctionArguments: expands first argument into a list if it is a Frame or an ActivationFrame"  }, 
-  { "core", "progv_function", "../../../../src/core/compiler.cc", 38884, 1114, "progvFunction"  }, 
-  { "core", "throw_function", "../../../../src/core/compiler.cc", 37993, 1091, "throwFunction TODO: The semantics are not followed here - only the first return value is returned!!!!!!!!"  }, 
-  { "core", "catch_function", "../../../../src/core/compiler.cc", 36184, 1047, "catchFunction"  }, 
-  { "core", "multiple_value_prog1_function", "../../../../src/core/compiler.cc", 35526, 1025, "multipleValueProg1_Function - evaluate func1, save the multiple values and then evaluate func2 and restore the multiple values"  }, 
-  { "core", "multiple_value_funcall", "../../../../src/core/compiler.cc", 34506, 999, "multipleValueFuncall"  }, 
-  { "core", "funwind_protect", "../../../../src/core/compiler.cc", 31179, 922, "funwind_protect"  }, 
-  { "core", "call_with_variable_bound", "../../../../src/core/compiler.cc", 30883, 913, "callWithVariableBound"  }, 
-  { "core", "dladdr", "../../../../src/core/compiler.cc", 14965, 398, "(call dladdr with the address and return nil if not found or the contents of the Dl_info structure as multiple values)"  }, 
-  { "core", "call_dl_main_function", "../../../../src/core/compiler.cc", 14623, 390, "(call dladdr with the address and return nil if not found or the contents of the Dl_info structure as multiple values)"  }, 
-  { "core", "dlsym", "../../../../src/core/compiler.cc", 13280, 351, "(dlsym handle name) handle is from dlopen or :rtld-next, :rtld-self, :rtld-default or :rtld-main-only (see dlsym man page) returns ptr or nil if not found."  }, 
-  { "core", "dlopen", "../../../../src/core/compiler.cc", 12560, 333, "dlopen - Open a dynamic library and return the handle. Returns (values returned-value error-message(or nil if no error))"  }, 
-  { "core", "load_bundle", "../../../../src/core/compiler.cc", 7423, 211, "loadBundle"  }, 
-  { "core", "startup_image_pathname", "../../../../src/core/compiler.cc", 6171, 169, "startupImagePathname - returns one of min-boehm, full-boehm, min-mps, full-mps, cclasp-boehm, cclasp-mps based on *features* :ECL-MIN, :USE-MPS, :BCLASP"  }, 
-  { "core", "mangle_name", "../../../../src/core/compiler.cc", 5030, 143, "mangleName"  }, 
-  { "core", "cxx_fibn", "../../../../src/core/compiler.cc", 3991, 107, "Calculate the num Fibonacci number reps times"  }, 
-  { "core", "test_tagged_cast", "../../../../src/core/compiler.cc", 3386, 88, "Evaluate a TaggedCast 2^pow2 times"  }, 
-  { "core", "help_booting", "../../../../src/core/compiler.cc", 2004, 68, "Print info about booting"  }, 
-  { "core", "eval_with_env_default", "../../../../src/core/evaluator.cc", 15086, 414, "eval_with_env_default"  }, 
-  { "core", "evaluate_verbosity", "../../../../src/core/evaluator.cc", 14855, 406, "evaluateVerbosity"  }, 
-  { "core", "evaluate_depth", "../../../../src/core/evaluator.cc", 14718, 398, "evaluateDepth"  }, 
-  { "core", "classify_let_variables_and_declares", "../../../../src/core/evaluator.cc", 12894, 352, "classifyLetVariablesAndDeclares - return (values classified-variables num-lexicals) - For each variable name in variables and declared-specials classify each as special-var, lexical-var or declared-special using the declared-specials list"  }, 
-  { "core", "lookup_symbol_macro", "../../../../src/core/evaluator.cc", 11995, 328, "environment_lookup_symbol_macro_definition"  }, 
-  { "core", "extract_lambda_name", "../../../../src/core/evaluator.cc", 10968, 298, "If form has is a list of declares ((function-name xxx) ...) or else looks like `(lambda lambda-list [[declaration* | documentation]] (block xxx form*) ) then return XXX"  }, 
-  { "core", "extract_lambda_name_from_declares", "../../../../src/core/evaluator.cc", 10391, 284, "If form has is a list of declares ((function-name xxx) ...) or else looks like `(lambda lambda-list [[declaration* | documentation]] (block xxx form*) ) then return XXX"  }, 
-  { "core", "process_declarations", "../../../../src/core/evaluator.cc", 9663, 268, "Handle special declarations and remove declarations from body. Return MultipleValues: declarations body documentation specials"  }, 
-  { "core", "coerce_to_function", "../../../../src/core/evaluator.cc", 7699, 223, "coerce_to_function"  }, 
-  { "cl", "funcall", "../../../../src/core/evaluator.cc", 6570, 187, "See CLHS: funcall"  }, 
-  { "cl", "eval", "../../../../src/core/evaluator.cc", 6194, 175, "eval"  }, 
-  { "cl", "apply", "../../../../src/core/evaluator.cc", 3278, 100, "apply"  }, 
-  { "core", "compile_form_and_eval_with_env", "../../../../src/core/evaluator.cc", 2975, 92, "compileFormAndEvalWithEnv"  }, 
-  { "core", "weak_rehash", "../../../../src/core/weakHashTable.cc", 8724, 263, "weakRehash"  }, 
-  { "core", "weak_splat", "../../../../src/core/weakHashTable.cc", 8347, 252, "weakSplat"  }, 
-  { "core", "weak_clrhash", "../../../../src/core/weakHashTable.cc", 8208, 244, "weakClrhash"  }, 
-  { "core", "weak_remhash", "../../../../src/core/weakHashTable.cc", 8058, 236, "weakRemhash"  }, 
-  { "core", "weak_setf_gethash", "../../../../src/core/weakHashTable.cc", 7879, 228, "weakSetfGethash"  }, 
-  { "core", "weak_gethash", "../../../../src/core/weakHashTable.cc", 7673, 220, "weakGethash"  }, 
-  { "core", "make_weak_key_hash_table", "../../../../src/core/weakHashTable.cc", 7366, 210, "makeWeakKeyHashTable"  }, 
-  { "core", "test_add", "../../../../include/clasp/core/primitives.h", 4560, 149, R"doc(add two numbers)doc"  }, 
-  { "core", "make_vector_displaced", "../../../../src/core/vectorDisplaced.cc", 1438, 45, ""  }, 
-  { "cl", "atom", "../../../../include/clasp/core/predicates.h", 1434, 53, "atom"  }, 
-  { "cl", "endp", "../../../../include/clasp/core/predicates.h", 1236, 42, "endp"  }, 
-  { "cl", "equalp", "../../../../include/clasp/core/object.h", 30773, 834, "equalp"  }, 
-  { "cl", "equal", "../../../../include/clasp/core/object.h", 30211, 812, "equal"  }, 
-  { "cl", "eql", "../../../../include/clasp/core/object.h", 29708, 792, "eql"  }, 
-  { "cl", "eq", "../../../../include/clasp/core/object.h", 29594, 785, "eq"  }, 
+like CL:DESCRIBE)doc"  );
+ define_source_info( code_kind, core::magic_name("ext__llvm_version"), "../../../../src/core/primitives.cc", 12555, 415, R"doc(Return a string representing the llvm version (eg: 3.6.0))doc"  );
+ define_source_info( code_kind, core::magic_name("ext__getenv"), "../../../../src/core/primitives.cc", 12309, 405, "Get environment variable NAME"  );
+ define_source_info( code_kind, core::magic_name("ext__vfork_execvp"), "../../../../src/core/primitives.cc", 10509, 355, "vfork_execvp"  );
+ define_source_info( code_kind, core::magic_name("ext__system"), "../../../../src/core/primitives.cc", 10169, 342, "system"  );
+ define_source_info( code_kind, core::magic_name("ext__setenv"), "../../../../src/core/primitives.cc", 10001, 335, "Set environment variable NAME to VALUE"  );
+ define_source_info( code_kind, core::magic_name("core__dump_tagged_fixnum"), "../../../../src/core/primitives.cc", 9637, 324, "dumpTaggedFixnum"  );
+ define_source_info( code_kind, core::magic_name("core__from_tagged_fixnum"), "../../../../src/core/primitives.cc", 9412, 314, "fromTaggedFixnum"  );
+ define_source_info( code_kind, core::magic_name("core__to_tagged_fixnum"), "../../../../src/core/primitives.cc", 9257, 307, "toTaggedFixnum"  );
+ define_source_info( code_kind, core::magic_name("core__all_registered_class_names"), "../../../../src/core/primitives.cc", 8859, 296, "allRegisteredClassNames"  );
+ define_source_info( code_kind, core::magic_name("core__incomplete_next_higher_power_of_2"), "../../../../src/core/primitives.cc", 8629, 288, "incompleteNextHigherPowerOf_2 - see the incompleteNextHigherPowerOf_2 builtin - only works for Fixnums and not the full range; just for testing"  );
+ define_source_info( code_kind, core::magic_name("core__dump_address_of"), "../../../../src/core/primitives.cc", 8276, 279, "dumpAddressOf"  );
+ define_source_info( code_kind, core::magic_name("cl__set"), "../../../../src/core/primitives.cc", 8031, 268, "set"  );
+ define_source_info( code_kind, core::magic_name("core__argv"), "../../../../src/core/primitives.cc", 7889, 261, "argv"  );
+ define_source_info( code_kind, core::magic_name("core__argc"), "../../../../src/core/primitives.cc", 7782, 254, "argc"  );
+ define_source_info( code_kind, core::magic_name("cl__machine_instance"), "../../../../src/core/primitives.cc", 7668, 247, "machineInstance"  );
+ define_source_info( code_kind, core::magic_name("cl__machine_version"), "../../../../src/core/primitives.cc", 7544, 240, "machineVersion"  );
+ define_source_info( code_kind, core::magic_name("cl__machine_type"), "../../../../src/core/primitives.cc", 7424, 233, "machineType"  );
+ define_source_info( code_kind, core::magic_name("cl__software_version"), "../../../../src/core/primitives.cc", 7266, 225, "softwareVersion"  );
+ define_source_info( code_kind, core::magic_name("cl__software_type"), "../../../../src/core/primitives.cc", 7144, 218, "softwareType"  );
+ define_source_info( code_kind, core::magic_name("core__create_tagged_immediate_value_or_nil"), "../../../../src/core/primitives.cc", 6853, 208, "Convert an object, either a fixnum, character or single float into an tagged version and return as an integer (either Fixnum or Bignum) or return NIL"  );
+ define_source_info( code_kind, core::magic_name("core__lisp_implementation_id"), "../../../../src/core/primitives.cc", 6367, 193, "lispImplementationId - the git commit sha1 code"  );
+ define_source_info( code_kind, core::magic_name("core__single_dispatch_method_cache_status"), "../../../../src/core/primitives.cc", 5937, 184, "cache_status - (values searches misses total-depth)"  );
+ define_source_info( code_kind, core::magic_name("core__slot_cache_status"), "../../../../src/core/primitives.cc", 5569, 175, "cache_status - (values searches misses total-depth)"  );
+ define_source_info( code_kind, core::magic_name("core__method_cache_status"), "../../../../src/core/primitives.cc", 5194, 167, "cache_status - (values searches misses total-depth)"  );
+ define_source_info( code_kind, core::magic_name("core__single_dispatch_method_cache_resize"), "../../../../src/core/primitives.cc", 4825, 156, "cache_resize - Resize the cache to 2^pow"  );
+ define_source_info( code_kind, core::magic_name("core__slot_cache_resize"), "../../../../src/core/primitives.cc", 4479, 145, "cache_resize - Resize the cache to 2^pow"  );
+ define_source_info( code_kind, core::magic_name("core__method_cache_resize"), "../../../../src/core/primitives.cc", 4121, 134, "cache_resize - Resize the cache to 2^pow"  );
+ define_source_info( code_kind, core::magic_name("cl__lisp_implementation_version"), "../../../../src/core/primitives.cc", 3665, 115, "lispImplementationVersion"  );
+ define_source_info( code_kind, core::magic_name("cl__lisp_implementation_type"), "../../../../src/core/primitives.cc", 3511, 108, "lispImplementationType"  );
+ define_source_info( code_kind, core::magic_name("cl__sleep"), "../../../../src/core/primitives.cc", 2902, 87, "sleep"  );
+ define_source_info( code_kind, core::magic_name("core__clear_generic_function_dispatch_cache"), "../../../../src/core/cache.cc", 6800, 190, "clearGenericFunctionDispatchCache"  );
+ define_source_info( code_kind, core::magic_name("CORE:allocateRawInstance"), "../../../../src/core/instance.cc", 4243, 123, "" );
+ define_source_info( code_kind, core::magic_name("core__copy_instance"), "../../../../src/core/instance.cc", 3007, 83, "copy-instance returns a shallow copy of the instance"  );
+ define_source_info( code_kind, core::magic_name("core__instance_class_set"), "../../../../src/core/instance.cc", 2525, 71, "instanceClassSet"  );
+ define_source_info( code_kind, core::magic_name("clos__setFuncallableInstanceFunction"), "../../../../src/core/instance.cc", 2135, 61, "" );
+ define_source_info( code_kind, core::magic_name("core__clear_gfun_hash"), "../../../../src/core/genericFunction.cc", 13300, 342, "See ecl/src/c/gfun.d:si_clear_gfun_hash. This function clears the generic function call hashes selectively. If what=T then clear the hash completely.  If what=generic_function then clear only these entries."  );
+ define_source_info( code_kind, core::magic_name("core__maybe_expand_generic_function_arguments"), "../../../../src/core/genericFunction.cc", 6569, 177, "maybeExpandGenericFunctionArguments: expands first argument into a list if it is a Frame or an ActivationFrame"  );
+ define_source_info( code_kind, core::magic_name("core__progv_function"), "../../../../src/core/compiler.cc", 39010, 1102, "progvFunction"  );
+ define_source_info( code_kind, core::magic_name("core__throw_function"), "../../../../src/core/compiler.cc", 38113, 1079, "throwFunction TODO: The semantics are not followed here - only the first return value is returned!!!!!!!!"  );
+ define_source_info( code_kind, core::magic_name("core__catch_function"), "../../../../src/core/compiler.cc", 36298, 1035, "catchFunction"  );
+ define_source_info( code_kind, core::magic_name("core__multiple_value_prog1_function"), "../../../../src/core/compiler.cc", 35634, 1013, "multipleValueProg1_Function - evaluate func1, save the multiple values and then evaluate func2 and restore the multiple values"  );
+ define_source_info( code_kind, core::magic_name("core__multiple_value_funcall"), "../../../../src/core/compiler.cc", 34608, 987, "multipleValueFuncall"  );
+ define_source_info( code_kind, core::magic_name("core__funwind_protect"), "../../../../src/core/compiler.cc", 31275, 910, "funwind_protect"  );
+ define_source_info( code_kind, core::magic_name("core__call_with_variable_bound"), "../../../../src/core/compiler.cc", 30973, 901, "callWithVariableBound"  );
+ define_source_info( code_kind, core::magic_name("compiler__implicit_compile_hook_default"), "../../../../src/core/compiler.cc", 15749, 412, "" );
+ define_source_info( code_kind, core::magic_name("core__dladdr"), "../../../../src/core/compiler.cc", 15055, 393, "(call dladdr with the address and return nil if not found or the contents of the Dl_info structure as multiple values)"  );
+ define_source_info( code_kind, core::magic_name("core__call_dl_main_function"), "../../../../src/core/compiler.cc", 14704, 385, "(call dladdr with the address and return nil if not found or the contents of the Dl_info structure as multiple values)"  );
+ define_source_info( code_kind, core::magic_name("core__dlsym"), "../../../../src/core/compiler.cc", 13332, 347, "(dlsym handle name) handle is from dlopen or :rtld-next, :rtld-self, :rtld-default or :rtld-main-only (see dlsym man page) returns ptr or nil if not found."  );
+ define_source_info( code_kind, core::magic_name("core__dlopen"), "../../../../src/core/compiler.cc", 12611, 330, "dlopen - Open a dynamic library and return the handle. Returns (values returned-value error-message(or nil if no error))"  );
+ define_source_info( code_kind, core::magic_name("core__load_bundle"), "../../../../src/core/compiler.cc", 7469, 210, "loadBundle"  );
+ define_source_info( code_kind, core::magic_name("core__startup_image_pathname"), "../../../../src/core/compiler.cc", 6216, 169, "startupImagePathname - returns one of min-boehm, full-boehm, min-mps, full-mps, cclasp-boehm, cclasp-mps based on *features* :ECL-MIN, :USE-MPS, :BCLASP"  );
+ define_source_info( code_kind, core::magic_name("core__mangle_name"), "../../../../src/core/compiler.cc", 5066, 143, "mangleName"  );
+ define_source_info( code_kind, core::magic_name("core__cxx_fibn"), "../../../../src/core/compiler.cc", 4018, 107, "Calculate the num Fibonacci number reps times"  );
+ define_source_info( code_kind, core::magic_name("core__test_tagged_cast"), "../../../../src/core/compiler.cc", 3404, 88, "Evaluate a TaggedCast 2^pow2 times"  );
+ define_source_info( code_kind, core::magic_name("core__help_booting"), "../../../../src/core/compiler.cc", 2013, 68, "Print info about booting"  );
+ define_source_info( code_kind, core::magic_name("core__eval_with_env_default"), "../../../../src/core/evaluator.cc", 15138, 409, "eval_with_env_default"  );
+ define_source_info( code_kind, core::magic_name("core__evaluate_verbosity"), "../../../../src/core/evaluator.cc", 14942, 402, "evaluateVerbosity"  );
+ define_source_info( code_kind, core::magic_name("core__evaluate_depth"), "../../../../src/core/evaluator.cc", 14804, 395, "evaluateDepth"  );
+ define_source_info( code_kind, core::magic_name("core__classify_let_variables_and_declares"), "../../../../src/core/evaluator.cc", 12979, 350, "classifyLetVariablesAndDeclares - return (values classified-variables num-lexicals) - For each variable name in variables and declared-specials classify each as special-var, lexical-var or declared-special using the declared-specials list"  );
+ define_source_info( code_kind, core::magic_name("core__lookup_symbol_macro"), "../../../../src/core/evaluator.cc", 12079, 327, "environment_lookup_symbol_macro_definition"  );
+ define_source_info( code_kind, core::magic_name("core__extract_lambda_name"), "../../../../src/core/evaluator.cc", 11041, 297, "If form has is a list of declares ((function-name xxx) ...) or else looks like `(lambda lambda-list [[declaration* | documentation]] (block xxx form*) ) then return XXX"  );
+ define_source_info( code_kind, core::magic_name("core__extract_lambda_name_from_declares"), "../../../../src/core/evaluator.cc", 10455, 283, "If form has is a list of declares ((function-name xxx) ...) or else looks like `(lambda lambda-list [[declaration* | documentation]] (block xxx form*) ) then return XXX"  );
+ define_source_info( code_kind, core::magic_name("core__process_declarations"), "../../../../src/core/evaluator.cc", 9726, 268, "Handle special declarations and remove declarations from body. Return MultipleValues: declarations body documentation specials"  );
+ define_source_info( code_kind, core::magic_name("core__coerce_to_function"), "../../../../src/core/evaluator.cc", 7753, 223, "coerce_to_function"  );
+ define_source_info( code_kind, core::magic_name("cl__funcall"), "../../../../src/core/evaluator.cc", 6606, 187, "See CLHS: funcall"  );
+ define_source_info( code_kind, core::magic_name("cl__eval"), "../../../../src/core/evaluator.cc", 6221, 175, "eval"  );
+ define_source_info( code_kind, core::magic_name("cl__apply"), "../../../../src/core/evaluator.cc", 3296, 100, "apply"  );
+ define_source_info( code_kind, core::magic_name("core__compile_form_and_eval_with_env"), "../../../../src/core/evaluator.cc", 2984, 92, "compileFormAndEvalWithEnv"  );
+ define_source_info( code_kind, core::magic_name("CORE:make-weak-pointer"), "../../../../src/core/weakPointer.cc", 1410, 42, "" );
+ define_source_info( code_kind, core::magic_name("core__weak_rehash"), "../../../../src/core/weakHashTable.cc", 8782, 257, "weakRehash"  );
+ define_source_info( code_kind, core::magic_name("core__weak_splat"), "../../../../src/core/weakHashTable.cc", 8404, 247, "weakSplat"  );
+ define_source_info( code_kind, core::magic_name("core__weak_clrhash"), "../../../../src/core/weakHashTable.cc", 8264, 240, "weakClrhash"  );
+ define_source_info( code_kind, core::magic_name("core__weak_remhash"), "../../../../src/core/weakHashTable.cc", 8113, 233, "weakRemhash"  );
+ define_source_info( code_kind, core::magic_name("core__weak_setf_gethash"), "../../../../src/core/weakHashTable.cc", 7933, 226, "weakSetfGethash"  );
+ define_source_info( code_kind, core::magic_name("core__weak_gethash"), "../../../../src/core/weakHashTable.cc", 7726, 219, "weakGethash"  );
+ define_source_info( code_kind, core::magic_name("core__make_weak_key_hash_table"), "../../../../src/core/weakHashTable.cc", 7418, 210, "makeWeakKeyHashTable"  );
+ define_source_info( code_kind, core::magic_name("CORE:make-weak-key-mapping"), "../../../../src/core/weakKeyMapping.cc", 1436, 42, "" );
+ define_source_info( code_kind, core::magic_name("core__test_add"), "/Users/meister/Development/clasp/include/clasp/core/primitives.h", 4569, 149, R"doc(add two numbers)doc"  );
+ define_source_info( code_kind, core::magic_name("core__make_vector_displaced"), "../../../../src/core/vectorDisplaced.cc", 1447, 45, ""  );
+ define_source_info( code_kind, core::magic_name("cl__listp"), "/Users/meister/Development/clasp/include/clasp/core/predicates.h", 1759, 70, "" );
+ define_source_info( code_kind, core::magic_name("cl__characterp"), "/Users/meister/Development/clasp/include/clasp/core/predicates.h", 1678, 66, "" );
+ define_source_info( code_kind, core::magic_name("cl__consp"), "/Users/meister/Development/clasp/include/clasp/core/predicates.h", 1609, 62, "" );
+ define_source_info( code_kind, core::magic_name("cl__atom"), "/Users/meister/Development/clasp/include/clasp/core/predicates.h", 1541, 58, "atom"  );
+ define_source_info( code_kind, core::magic_name("cl__endp"), "/Users/meister/Development/clasp/include/clasp/core/predicates.h", 1334, 47, "endp"  );
+ define_source_info( code_kind, core::magic_name("core__fixnump"), "/Users/meister/Development/clasp/include/clasp/core/predicates.h", 1200, 39, "" );
+ define_source_info( code_kind, core::magic_name("cl__symbolp"), "/Users/meister/Development/clasp/include/clasp/core/predicates.h", 1118, 35, "" );
+ define_source_info( code_kind, core::magic_name("CORE:negate"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 34515, 1161, "" );
+ define_source_info( code_kind, core::magic_name("CORE:oneMinus"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 33934, 1139, "" );
+ define_source_info( code_kind, core::magic_name("CORE:onePlus"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 33585, 1127, "" );
+ define_source_info( code_kind, core::magic_name("signum","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 32976, 1107, "" );
+ define_source_info( code_kind, core::magic_name("abs","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 32653, 1097, "" );
+ define_source_info( code_kind, core::magic_name("oddp","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 32481, 1089, "" );
+ define_source_info( code_kind, core::magic_name("evenp","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 32306, 1081, "" );
+ define_source_info( code_kind, core::magic_name("minusp","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 32058, 1071, "" );
+ define_source_info( code_kind, core::magic_name("plusp","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 31809, 1061, "" );
+ define_source_info( code_kind, core::magic_name("Tenth","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 16927, 545, "" );
+ define_source_info( code_kind, core::magic_name("Ninth","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 16794, 543, "" );
+ define_source_info( code_kind, core::magic_name("Eighth","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 16666, 541, "" );
+ define_source_info( code_kind, core::magic_name("Seventh","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 16542, 539, "" );
+ define_source_info( code_kind, core::magic_name("Sixth","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 16425, 537, "" );
+ define_source_info( code_kind, core::magic_name("Fifth","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 16316, 535, "" );
+ define_source_info( code_kind, core::magic_name("Fourth","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 16212, 533, "" );
+ define_source_info( code_kind, core::magic_name("Third","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 16114, 531, "" );
+ define_source_info( code_kind, core::magic_name("Second","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 16022, 529, "" );
+ define_source_info( code_kind, core::magic_name("First","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 15936, 527, "" );
+ define_source_info( code_kind, core::magic_name("cddddr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 15832, 525, "" );
+ define_source_info( code_kind, core::magic_name("cddadr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 15727, 523, "" );
+ define_source_info( code_kind, core::magic_name("cdaddr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 15622, 521, "" );
+ define_source_info( code_kind, core::magic_name("cdaadr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 15517, 519, "" );
+ define_source_info( code_kind, core::magic_name("cadddr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 15412, 517, "" );
+ define_source_info( code_kind, core::magic_name("cadadr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 15307, 515, "" );
+ define_source_info( code_kind, core::magic_name("caaddr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 15202, 513, "" );
+ define_source_info( code_kind, core::magic_name("caaadr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 15097, 511, "" );
+ define_source_info( code_kind, core::magic_name("cdddar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14992, 509, "" );
+ define_source_info( code_kind, core::magic_name("cddaar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14887, 507, "" );
+ define_source_info( code_kind, core::magic_name("cdadar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14782, 505, "" );
+ define_source_info( code_kind, core::magic_name("cdaaar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14677, 503, "" );
+ define_source_info( code_kind, core::magic_name("caddar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14572, 501, "" );
+ define_source_info( code_kind, core::magic_name("cadaar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14467, 499, "" );
+ define_source_info( code_kind, core::magic_name("caadar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14362, 497, "" );
+ define_source_info( code_kind, core::magic_name("caaaar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14263, 495, "" );
+ define_source_info( code_kind, core::magic_name("cdddr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14165, 493, "" );
+ define_source_info( code_kind, core::magic_name("cddar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14068, 491, "" );
+ define_source_info( code_kind, core::magic_name("cdadr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13971, 489, "" );
+ define_source_info( code_kind, core::magic_name("cdaar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13874, 487, "" );
+ define_source_info( code_kind, core::magic_name("caddr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13777, 485, "" );
+ define_source_info( code_kind, core::magic_name("cadar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13680, 483, "" );
+ define_source_info( code_kind, core::magic_name("caadr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13583, 481, "" );
+ define_source_info( code_kind, core::magic_name("caaar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13486, 479, "" );
+ define_source_info( code_kind, core::magic_name("cddr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13396, 477, "" );
+ define_source_info( code_kind, core::magic_name("cdar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13307, 475, "" );
+ define_source_info( code_kind, core::magic_name("cadr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13218, 473, "" );
+ define_source_info( code_kind, core::magic_name("caar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13130, 471, "" );
+ define_source_info( code_kind, core::magic_name("cl__rest"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 12890, 463, "" );
+ define_source_info( code_kind, core::magic_name("cdr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 12719, 455, "" );
+ define_source_info( code_kind, core::magic_name("car","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 12518, 447, "" );
+ define_source_info( code_kind, core::magic_name("cl__equalp"), "/Users/meister/Development/clasp/include/clasp/core/object.h", 30624, 824, "equalp"  );
+ define_source_info( code_kind, core::magic_name("cl__equal"), "/Users/meister/Development/clasp/include/clasp/core/object.h", 30053, 802, "equal"  );
+ define_source_info( code_kind, core::magic_name("cl__eql"), "/Users/meister/Development/clasp/include/clasp/core/object.h", 29544, 782, "eql"  );
+ define_source_info( code_kind, core::magic_name("cl__eq"), "/Users/meister/Development/clasp/include/clasp/core/object.h", 29424, 775, "eq"  );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:T"), "/Users/meister/Development/clasp/include/clasp/core/object.h", 18492, 480, "" );
+ define_source_info( class_kind, core::magic_name("CORE:CandoException"), "/Users/meister/Development/clasp/include/clasp/core/conditions.h", 1296, 42, "" );
+ define_source_info( class_kind, core::magic_name("CORE:VA-LIST"), "/Users/meister/Development/clasp/include/clasp/core/lispList.h", 1607, 54, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:Cons"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 3040, 125, "" );
+ define_source_info( method_kind, core::magic_name("core:lookup"), "../../../../src/core/cons.cc", 25171, 929, "" );
+ define_source_info( method_kind, core::magic_name("core:lookupDefault"), "../../../../src/core/cons.cc", 24529, 908, "" );
+ define_source_info( method_kind, core::magic_name("core:filterOutNil"), "../../../../src/core/cons.cc", 20124, 717, "" );
+ define_source_info( method_kind, core::magic_name("core:extend"), "../../../../src/core/cons.cc", 17467, 611, "" );
+ define_source_info( method_kind, core::magic_name("core:exactlyMatches"), "../../../../src/core/cons.cc", 10211, 363, "" );
+ define_source_info( method_kind, core::magic_name("core:cons-setf-cdr"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 8251, 303, "" );
+ define_source_info( method_kind, core::magic_name("core:cons-setf-car"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 7167, 260, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:number"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 4535, 149, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:real"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 7114, 227, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:rational"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 7479, 243, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:integer"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 8188, 268, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:fixnum"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 9697, 321, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:float"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 12491, 412, "" );
+ define_source_info( method_kind, core::magic_name("core:castToInteger"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 12591, 416, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:ShortFloat"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 12845, 426, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:SingleFloat"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 14686, 485, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:double-float"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 17049, 562, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:LongFloat"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 19504, 644, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:complex"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 21749, 721, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:ratio"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 24230, 804, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:Bignum"), "/Users/meister/Development/clasp/include/clasp/core/bignum.h", 1533, 50, "" );
+ define_source_info( method_kind, core::magic_name("core:fitsSintP"), "../../../../src/core/bignum.cc", 4595, 136, "" );
+ define_source_info( method_kind, core::magic_name("core:asUint64String"), "../../../../src/core/bignum.cc", 4389, 128, "" );
+ define_source_info( class_kind, core::magic_name("CORE:Pointer"), "/Users/meister/Development/clasp/include/clasp/core/pointer.h", 1179, 36, "" );
+ define_source_info( class_kind, core::magic_name("CORE:Environment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 1511, 52, "" );
+ define_source_info( method_kind, core::magic_name("CORE:find_tagbody_tag_environment"), "../../../../src/core/environment.cc", 25465, 751, "" );
+ define_source_info( method_kind, core::magic_name("CORE:find_unwindable_environment"), "../../../../src/core/environment.cc", 25244, 745, "" );
+ define_source_info( method_kind, core::magic_name("CORE:find_block_named_environment"), "../../../../src/core/environment.cc", 24859, 735, "" );
+ define_source_info( method_kind, core::magic_name("CORE:countFunctionContainerEnvironments"), "../../../../src/core/environment.cc", 24649, 730, "" );
+ define_source_info( method_kind, core::magic_name("CORE:getBlockSymbolFrame"), "../../../../src/core/environment.cc", 23614, 704, "" );
+ define_source_info( method_kind, core::magic_name("CORE:classifyFunctionLookup"), "../../../../src/core/environment.cc", 22564, 678, "" );
+ define_source_info( method_kind, core::magic_name("CORE:classifyTag"), "../../../../src/core/environment.cc", 22023, 662, "" );
+ define_source_info( method_kind, core::magic_name("CORE:classifyVariable"), "../../../../src/core/environment.cc", 21344, 637, "" );
+ define_source_info( method_kind, core::magic_name("CORE:localMetadata"), "../../../../src/core/environment.cc", 12149, 373, "" );
+ define_source_info( method_kind, core::magic_name("CORE:lookupMetadata"), "../../../../src/core/environment.cc", 11851, 365, "" );
+ define_source_info( method_kind, core::magic_name("CORE:gather_metadata"), "../../../../src/core/environment.cc", 11604, 358, "" );
+ define_source_info( method_kind, core::magic_name("CORE:environmentStackAsString"), "../../../../src/core/environment.cc", 10976, 335, "" );
+ define_source_info( method_kind, core::magic_name("CORE:getParentEnvironment"), "../../../../src/core/environment.cc", 7445, 234, "" );
+ define_source_info( method_kind, core::magic_name("CORE:setRuntimeEnvironment"), "../../../../src/core/environment.cc", 7113, 225, "" );
+ define_source_info( method_kind, core::magic_name("CORE:push_metadata"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 4925, 122, "" );
+ define_source_info( method_kind, core::magic_name("CORE:setf_metadata"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 4578, 114, "" );
+ define_source_info( method_kind, core::magic_name("CORE:unwindProtectEnvironmentP"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 4004, 99, "" );
+ define_source_info( method_kind, core::magic_name("CORE:functionContainerEnvironmentP"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 3873, 97, "" );
+ define_source_info( method_kind, core::magic_name("CORE:lexicalEnvironmentP"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 3748, 95, "" );
+ define_source_info( class_kind, core::magic_name("CORE:LexicalEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 9975, 244, "" );
+ define_source_info( class_kind, core::magic_name("CORE:RuntimeVisibleEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 11518, 294, "" );
+ define_source_info( class_kind, core::magic_name("CORE:ValueEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 12623, 323, "" );
+ define_source_info( method_kind, core::magic_name("CORE:valueEnvironment_defineSpecialBinding"), "../../../../src/core/environment.cc", 33889, 1006, "" );
+ define_source_info( method_kind, core::magic_name("CORE:valueEnvironment_defineLexicalBinding"), "../../../../src/core/environment.cc", 33363, 992, "" );
+ define_source_info( class_kind, core::magic_name("CORE:FunctionValueEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 15920, 418, "" );
+ define_source_info( method_kind, core::magic_name("CORE:bindFunction"), "../../../../src/core/environment.cc", 43820, 1269, "" );
+ define_source_info( class_kind, core::magic_name("CORE:CompileTimeEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 17745, 483, "" );
+ define_source_info( class_kind, core::magic_name("CORE:UnwindProtectEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 18294, 501, "" );
+ define_source_info( method_kind, core::magic_name("CORE:UnwindProtectEnvironment-cleanupForm"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 18754, 517, "" );
+ define_source_info( class_kind, core::magic_name("CORE:BlockEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 19516, 540, "" );
+ define_source_info( class_kind, core::magic_name("CORE:CatchEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 20897, 584, "" );
+ define_source_info( class_kind, core::magic_name("CORE:FunctionContainerEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 21654, 613, "" );
+ define_source_info( class_kind, core::magic_name("CORE:TagbodyEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 22878, 650, "" );
+ define_source_info( method_kind, core::magic_name("CORE:addTag"), "../../../../src/core/environment.cc", 53162, 1560, "" );
+ define_source_info( class_kind, core::magic_name("CORE:MacroletEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 24854, 708, "" );
+ define_source_info( method_kind, core::magic_name("CORE:addMacro"), "../../../../src/core/environment.cc", 56930, 1686, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SymbolMacroletEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 26079, 747, "" );
+ define_source_info( method_kind, core::magic_name("CORE:addSymbolMacro"), "../../../../src/core/environment.cc", 57901, 1711, "" );
+ define_source_info( class_kind, core::magic_name("CORE:StackValueEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 27469, 789, "" );
+ define_source_info( class_kind, core::magic_name("CORE:GlueEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 28846, 831, "" );
+ define_source_info( class_kind, core::magic_name("CORE:ActivationFrame"), "/Users/meister/Development/clasp/include/clasp/core/activationFrame.h", 1828, 53, "" );
+ define_source_info( class_kind, core::magic_name("CORE:ValueFrame"), "/Users/meister/Development/clasp/include/clasp/core/activationFrame.h", 4857, 143, "" );
+ define_source_info( class_kind, core::magic_name("CORE:FunctionFrame"), "/Users/meister/Development/clasp/include/clasp/core/activationFrame.h", 9379, 297, "" );
+ define_source_info( class_kind, core::magic_name("CORE:TagbodyFrame"), "/Users/meister/Development/clasp/include/clasp/core/activationFrame.h", 12140, 394, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:Symbol"), "/Users/meister/Development/clasp/include/clasp/core/symbol.h", 1801, 69, "" );
+ define_source_info( method_kind, core::magic_name("core:fullName"), "../../../../src/core/symbol.cc", 13320, 466, "" );
+ define_source_info( method_kind, core::magic_name("core:setf_symbolFunction"), "../../../../src/core/symbol.cc", 10648, 367, "" );
+ define_source_info( method_kind, core::magic_name("core:STARmakeConstant"), "../../../../src/core/symbol.cc", 9784, 328, "" );
+ define_source_info( method_kind, core::magic_name("core:STARmakeSpecial"), "../../../../src/core/symbol.cc", 9668, 323, "" );
+ define_source_info( method_kind, core::magic_name("core:asKeywordSymbol"), "../../../../src/core/symbol.cc", 8843, 294, "" );
+ define_source_info( method_kind, core::magic_name("cl:copy_symbol"), "../../../../src/core/symbol.cc", 7453, 247, "" );
+ define_source_info( method_kind, core::magic_name("CORE:makunbound"), "../../../../src/core/symbol.cc", 6888, 225, "" );
+ define_source_info( method_kind, core::magic_name("core:specialp"), "/Users/meister/Development/clasp/include/clasp/core/symbol.h", 3291, 120, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:Function"), "/Users/meister/Development/clasp/include/clasp/core/executables.h", 2733, 83, "" );
+ define_source_info( method_kind, core::magic_name("core:functionSourcePos"), "../../../../src/core/executables.cc", 7864, 217, "" );
+ define_source_info( method_kind, core::magic_name("core:functionName"), "../../../../src/core/executables.cc", 7673, 211, "" );
+ define_source_info( method_kind, core::magic_name("core:closedEnvironment"), "../../../../src/core/executables.cc", 7468, 205, "" );
+ define_source_info( method_kind, core::magic_name("core:function_declares"), "../../../../src/core/executables.cc", 7272, 200, "" );
+ define_source_info( method_kind, core::magic_name("core:function_docstring"), "../../../../src/core/executables.cc", 7076, 194, "" );
+ define_source_info( method_kind, core::magic_name("core:functionKind"), "../../../../src/core/executables.cc", 6873, 188, "" );
+ define_source_info( method_kind, core::magic_name("core:setFunctionKind"), "../../../../src/core/executables.cc", 6689, 183, "" );
+ define_source_info( method_kind, core::magic_name("core:macrop"), "../../../../src/core/executables.cc", 6502, 177, "" );
+ define_source_info( method_kind, core::magic_name("core:functionLambdaListHandler"), "../../../../src/core/executables.cc", 6294, 172, "" );
+ define_source_info( method_kind, core::magic_name("core:setf_cleavir_ast"), "../../../../src/core/executables.cc", 6079, 166, "" );
+ define_source_info( method_kind, core::magic_name("core:cleavir_ast"), "../../../../src/core/executables.cc", 5881, 160, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:CompiledFunction"), "/Users/meister/Development/clasp/include/clasp/core/executables.h", 5727, 181, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:standard-object"), "/Users/meister/Development/clasp/include/clasp/core/standardObject.h", 1409, 48, "" );
+ define_source_info( class_kind, core::magic_name("CORE:metaobject"), "/Users/meister/Development/clasp/include/clasp/core/metaobject.h", 1498, 50, "" );
+ define_source_info( class_kind, core::magic_name("CORE:specializer"), "/Users/meister/Development/clasp/include/clasp/core/specializer.h", 1425, 47, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:class"), "/Users/meister/Development/clasp/include/clasp/core/metaClass.h", 2587, 73, "" );
+ define_source_info( method_kind, core::magic_name("core:direct-superclasses"), "../../../../src/core/metaClass.cc", 16503, 439, "" );
+ define_source_info( method_kind, core::magic_name("core:nameOfClass"), "../../../../src/core/metaClass.cc", 7293, 174, "" );
+ define_source_info( method_kind, core::magic_name("core:hasCreator"), "/Users/meister/Development/clasp/include/clasp/core/metaClass.h", 6967, 184, "" );
+ define_source_info( class_kind, core::magic_name("CORE:WeakHashTable"), "/Users/meister/Development/clasp/include/clasp/core/weakHashTable.h", 1334, 41, "" );
+ define_source_info( class_kind, core::magic_name("CORE:WeakKeyHashTable"), "/Users/meister/Development/clasp/include/clasp/core/weakHashTable.h", 1948, 65, "" );
+ define_source_info( method_kind, core::magic_name("CORE:weakHashTableSize"), "../../../../src/core/weakHashTable.cc", 2972, 90, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SourceFileInfo"), "/Users/meister/Development/clasp/include/clasp/core/sourceFileInfo.h", 1416, 43, "" );
+ define_source_info( method_kind, core::magic_name("CORE:SourceFileInfo-sourceDebugNamestring"), "../../../../src/core/sourceFileInfo.cc", 11675, 329, "" );
+ define_source_info( method_kind, core::magic_name("CORE:SourceFileInfo-sourceDebugOffset"), "/Users/meister/Development/clasp/include/clasp/core/sourceFileInfo.h", 2872, 79, "" );
+ define_source_info( method_kind, core::magic_name("CORE:SourceFileInfo-useLineno"), "/Users/meister/Development/clasp/include/clasp/core/sourceFileInfo.h", 2749, 77, "" );
+ define_source_info( method_kind, core::magic_name("CORE:SourceFileInfo-pathname"), "/Users/meister/Development/clasp/include/clasp/core/sourceFileInfo.h", 2560, 72, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SourcePosInfo"), "/Users/meister/Development/clasp/include/clasp/core/sourceFileInfo.h", 3208, 88, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SourceManager"), "/Users/meister/Development/clasp/include/clasp/core/sourceFileInfo.h", 5551, 159, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:array"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 1256, 40, "" );
+ define_source_info( method_kind, core::magic_name("core:array-setf-aref"), "../../../../src/core/array.cc", 7664, 237, "Setter for aref"  );
+ define_source_info( method_kind, core::magic_name("cl:array-dimensions"), "../../../../src/core/array.cc", 7116, 222, "" );
+ define_source_info( method_kind, core::magic_name("cl:arrayRowMajorIndex"), "../../../../src/core/array.cc", 6961, 217, "" );
+ define_source_info( method_kind, core::magic_name("core:index"), "../../../../src/core/array.cc", 6782, 211, "" );
+ define_source_info( method_kind, core::magic_name("cl:aref"), "../../../../src/core/array.cc", 5462, 165, "" );
+ define_source_info( method_kind, core::magic_name("cl:arrayTotalSize"), "../../../../src/core/array.cc", 4761, 140, "" );
+ define_source_info( method_kind, core::magic_name("core:fill-array-with-elt"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 5145, 145, "" );
+ define_source_info( method_kind, core::magic_name("core:array-fill"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 4900, 137, "" );
+ define_source_info( method_kind, core::magic_name("core:setf-svref"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 4749, 133, "" );
+ define_source_info( method_kind, core::magic_name("cl:svref"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 4649, 131, "" );
+ define_source_info( method_kind, core::magic_name("cl:array-dimension"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 4065, 113, "" );
+ define_source_info( method_kind, core::magic_name("cl:array-elementType"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 3761, 102, "" );
+ define_source_info( method_kind, core::magic_name("cl:array-rank"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 3015, 85, "" );
+ define_source_info( method_kind, core::magic_name("cl:rowMajorAref"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 2424, 71, "" );
+ define_source_info( method_kind, core::magic_name("core:rowMajorAset"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 2306, 69, "" );
+ define_source_info( method_kind, core::magic_name("cl:arrayHasFillPointerP"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 1992, 63, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:vector"), "/Users/meister/Development/clasp/include/clasp/core/lispVector.h", 1320, 42, "" );
+ define_source_info( method_kind, "CORE:FILL-POINTER-SET", "/Users/meister/Development/clasp/include/clasp/core/lispVector.h", 2748, 85, "" );
+ define_source_info( method_kind, core::magic_name("CORE:adjustableArrayP"), "/Users/meister/Development/clasp/include/clasp/core/lispVector.h", 1656, 58, "" );
+ define_source_info( class_kind, core::magic_name("CORE:CxxObject"), "/Users/meister/Development/clasp/include/clasp/core/cxxObject.h", 1203, 39, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:String"), "/Users/meister/Development/clasp/include/clasp/core/lispString.h", 1233, 39, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:base-string"), "/Users/meister/Development/clasp/include/clasp/core/str.h", 1280, 43, "" );
+ define_source_info( method_kind, core::magic_name("core:split"), "../../../../src/core/str.cc", 8684, 287, "" );
+ define_source_info( method_kind, core::magic_name("core:splitAtWhiteSpace"), "../../../../src/core/str.cc", 8248, 274, "" );
+ define_source_info( method_kind, core::magic_name("core:asKeywordSymbol"), "../../../../src/core/str.cc", 8078, 267, "" );
+ define_source_info( method_kind, core::magic_name("core:asSymbol"), "../../../../src/core/str.cc", 7925, 261, "" );
+ define_source_info( method_kind, core::magic_name("core:substr"), "../../../../src/core/str.cc", 7751, 255, "" );
+ define_source_info( method_kind, core::magic_name("core:string-find"), "../../../../src/core/str.cc", 7494, 247, "" );
+ define_source_info( method_kind, core::magic_name("core:right"), "../../../../src/core/str.cc", 7323, 241, "" );
+ define_source_info( method_kind, core::magic_name("core:left"), "../../../../src/core/str.cc", 7176, 235, "" );
+ define_source_info( method_kind, core::magic_name("core:countOccurances"), "../../../../src/core/str.cc", 6816, 222, "" );
+ define_source_info( method_kind, core::magic_name("core:parse-real"), "../../../../src/core/str.cc", 5320, 175, "" );
+ define_source_info( method_kind, core::magic_name("core:size"), "/Users/meister/Development/clasp/include/clasp/core/str.h", 2217, 67, "" );
+ define_source_info( class_kind, core::magic_name("CORE:Record"), "/Users/meister/Development/clasp/include/clasp/core/record.h", 454, 20, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:pathname"), "/Users/meister/Development/clasp/include/clasp/core/pathname.h", 2752, 84, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:logical-pathname"), "/Users/meister/Development/clasp/include/clasp/core/pathname.h", 5552, 151, "" );
+ define_source_info( class_kind, core::magic_name("CORE:VectorDisplaced"), "/Users/meister/Development/clasp/include/clasp/core/vectorDisplaced.h", 1338, 39, "" );
+ define_source_info( class_kind, core::magic_name("CORE:VectorObjects"), "/Users/meister/Development/clasp/include/clasp/core/vectorObjects.h", 1439, 43, "" );
+ define_source_info( class_kind, core::magic_name("CORE:VectorObjectsWithFillPtr"), "/Users/meister/Development/clasp/include/clasp/core/vectorObjectsWithFillPtr.h", 1331, 37, "" );
+ define_source_info( method_kind, core::magic_name("CORE:setf_fillPointer"), "../../../../src/core/vectorObjectsWithFillPtr.cc", 4680, 138, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SymbolToEnumConverter"), "/Users/meister/Development/clasp/include/clasp/core/symbolToEnumConverter.h", 1304, 43, "" );
+ define_source_info( method_kind, core::magic_name("CORE:enumIndexForSymbol"), "../../../../src/core/symbolToEnumConverter.cc", 3163, 90, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SNode"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 1473, 49, "" );
+ define_source_info( method_kind, core::magic_name("core:setAttributes"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 4725, 120, "" );
+ define_source_info( method_kind, core::magic_name("core:setVectorSNodes"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 4606, 118, "" );
+ define_source_info( method_kind, core::magic_name("core:setNodeKind"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 4498, 116, "" );
+ define_source_info( method_kind, core::magic_name("core:getVectorSNodes"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 3976, 104, "" );
+ define_source_info( method_kind, core::magic_name("core:childWithUniqueId"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 3835, 102, "" );
+ define_source_info( method_kind, core::magic_name("core:getUniqueId"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 3719, 100, "" );
+ define_source_info( method_kind, core::magic_name("core:getAttributes"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 3466, 96, "" );
+ define_source_info( method_kind, core::magic_name("core:getNodeKind"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 3284, 93, "" );
+ define_source_info( method_kind, core::magic_name("core:keys"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 2381, 74, "" );
+ define_source_info( method_kind, core::magic_name("core:object"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 2293, 72, "" );
+ define_source_info( class_kind, core::magic_name("CORE:LeafSNode"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 14836, 450, "" );
+ define_source_info( class_kind, core::magic_name("CORE:BranchSNode"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 16085, 486, "" );
+ define_source_info( class_kind, core::magic_name("CORE:Archive"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 18289, 547, "" );
+ define_source_info( class_kind, core::magic_name("CORE:LoadArchive"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 19011, 576, "" );
+ define_source_info( method_kind, core::magic_name("CORE:loadArchive-keys"), "../../../../src/core/serialize.cc", 15889, 484, "" );
+ define_source_info( method_kind, core::magic_name("CORE:loadArchive-getContents"), "../../../../src/core/serialize.cc", 15648, 476, "" );
+ define_source_info( method_kind, core::magic_name("CORE:loadArchive-get"), "../../../../src/core/serialize.cc", 15113, 463, "" );
+ define_source_info( method_kind, core::magic_name("CORE:loadArchive-contains"), "../../../../src/core/serialize.cc", 14754, 451, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SaveArchive"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 20120, 618, "" );
+ define_source_info( method_kind, core::magic_name("CORE:put"), "../../../../src/core/serialize.cc", 11684, 362, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:character"), "/Users/meister/Development/clasp/include/clasp/core/character.h", 1575, 49, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:stream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 9420, 272, "" );
+ define_source_info( class_kind, core::magic_name("EXT:AnsiStream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 10589, 314, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:file-stream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 10872, 326, "" );
+ define_source_info( class_kind, core::magic_name("CORE:iofile-stream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 11322, 342, "" );
+ define_source_info( class_kind, core::magic_name("CORE:iostream-stream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 12652, 377, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:string-stream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 13818, 410, "" );
+ define_source_info( class_kind, core::magic_name("CORE:string-output-stream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 14382, 425, "" );
+ define_source_info( class_kind, core::magic_name("CORE:string-input-stream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 15465, 454, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:synonym-stream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 16475, 483, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:two-way-stream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 17359, 515, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:BroadcastStream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 18170, 543, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:ConcatenatedStream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 18844, 566, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:EchoStream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 19548, 589, "" );
+ define_source_info( class_kind, core::magic_name("CORE:Iterator"), "/Users/meister/Development/clasp/include/clasp/core/iterator.h", 1223, 41, "" );
+ define_source_info( method_kind, core::magic_name("CORE:currentObject"), "/Users/meister/Development/clasp/include/clasp/core/iterator.h", 2351, 80, "" );
+ define_source_info( method_kind, core::magic_name("CORE:notDone"), "/Users/meister/Development/clasp/include/clasp/core/iterator.h", 2250, 78, "" );
+ define_source_info( method_kind, core::magic_name("CORE:isDone"), "/Users/meister/Development/clasp/include/clasp/core/iterator.h", 2136, 73, "" );
+ define_source_info( method_kind, core::magic_name("CORE:next"), "/Users/meister/Development/clasp/include/clasp/core/iterator.h", 2025, 68, "" );
+ define_source_info( method_kind, core::magic_name("core:begin"), "/Users/meister/Development/clasp/include/clasp/core/iterator.h", 1915, 63, "" );
+ define_source_info( class_kind, core::magic_name("CORE:path"), "/Users/meister/Development/clasp/include/clasp/core/fileSystem.h", 1329, 45, "" );
+ define_source_info( method_kind, core::magic_name("CORE:exists"), "../../../../src/core/fileSystem.cc", 9189, 323, "" );
+ define_source_info( method_kind, core::magic_name("CORE:path-fileName"), "../../../../src/core/fileSystem.cc", 9070, 318, "" );
+ define_source_info( method_kind, core::magic_name("CORE:parent_path"), "../../../../src/core/fileSystem.cc", 8927, 312, "" );
+ define_source_info( method_kind, core::magic_name("CORE:replaceExtension"), "../../../../src/core/fileSystem.cc", 8714, 304, "" );
+ define_source_info( method_kind, core::magic_name("CORE:extension"), "../../../../src/core/fileSystem.cc", 8406, 292, "" );
+ define_source_info( method_kind, core::magic_name("CORE:path-stem"), "../../../../src/core/fileSystem.cc", 8298, 287, "" );
+ define_source_info( method_kind, core::magic_name("CORE:asString"), "../../../../src/core/fileSystem.cc", 7981, 273, "" );
+ define_source_info( method_kind, core::magic_name("CORE:path-parts"), "../../../../src/core/fileSystem.cc", 7731, 263, "Returns a list of path parts as strings"  );
+ define_source_info( method_kind, core::magic_name("CORE:setPathFromString"), "../../../../src/core/fileSystem.cc", 7388, 252, "" );
+ define_source_info( method_kind, core::magic_name("CORE:copyPath"), "../../../../src/core/fileSystem.cc", 7243, 245, "" );
+ define_source_info( method_kind, core::magic_name("CORE:path-absolute"), "../../../../src/core/fileSystem.cc", 7003, 236, "" );
+ define_source_info( method_kind, core::magic_name("CORE:path-append"), "../../../../src/core/fileSystem.cc", 6128, 203, "" );
+ define_source_info( method_kind, core::magic_name("CORE:last_write_time"), "../../../../src/core/fileSystem.cc", 5904, 196, "" );
+ define_source_info( method_kind, core::magic_name("CORE:isAbsolute"), "/Users/meister/Development/clasp/include/clasp/core/fileSystem.h", 1868, 69, "" );
+ define_source_info( class_kind, core::magic_name("CORE:DirectoryIterator"), "/Users/meister/Development/clasp/include/clasp/core/fileSystem.h", 3470, 129, "" );
+ define_source_info( class_kind, core::magic_name("CORE:RecursiveDirectoryIterator"), "/Users/meister/Development/clasp/include/clasp/core/fileSystem.h", 4577, 169, "" );
+ define_source_info( class_kind, core::magic_name("CORE:DirectoryEntry"), "/Users/meister/Development/clasp/include/clasp/core/fileSystem.h", 5809, 212, "" );
+ define_source_info( method_kind, core::magic_name("CORE:path"), "../../../../src/core/fileSystem.cc", 18486, 628, "" );
+ define_source_info( method_kind, core::magic_name("CORE:symlinkStatus"), "../../../../src/core/fileSystem.cc", 18268, 620, "" );
+ define_source_info( method_kind, core::magic_name("CORE:fileStatus"), "../../../../src/core/fileSystem.cc", 18052, 612, "" );
+ define_source_info( class_kind, core::magic_name("CORE:FileStatus"), "/Users/meister/Development/clasp/include/clasp/core/fileSystem.h", 6539, 241, "" );
+ define_source_info( method_kind, core::magic_name("CORE:isOther"), "../../../../src/core/fileSystem.cc", 20280, 691, "" );
+ define_source_info( method_kind, core::magic_name("CORE:isSymlink"), "../../../../src/core/fileSystem.cc", 20137, 686, "" );
+ define_source_info( method_kind, core::magic_name("CORE:isDirectory"), "../../../../src/core/fileSystem.cc", 19988, 681, "" );
+ define_source_info( method_kind, core::magic_name("CORE:isRegularFile"), "../../../../src/core/fileSystem.cc", 19832, 676, "" );
+ define_source_info( method_kind, core::magic_name("CORE:exists"), "../../../../src/core/fileSystem.cc", 19690, 671, "" );
+ define_source_info( class_kind, core::magic_name("CORE:Instance"), "/Users/meister/Development/clasp/include/clasp/core/instance.h", 4462, 91, "" );
+ define_source_info( class_kind, core::magic_name("CORE:InvocationHistoryFrameIterator"), "/Users/meister/Development/clasp/include/clasp/core/primitives.h", 5016, 165, "" );
+ define_source_info( method_kind, core::magic_name("CORE:frameIteratorArguments"), "../../../../src/core/primitives.cc", 55021, 1632, "" );
+ define_source_info( method_kind, core::magic_name("CORE:frameIteratorEnvironment"), "../../../../src/core/primitives.cc", 54008, 1602, "" );
+ define_source_info( method_kind, core::magic_name("CORE:frameIteratorFunctionName"), "../../../../src/core/primitives.cc", 53607, 1590, "" );
+ define_source_info( method_kind, core::magic_name("CORE:frameIteratorPreviousFrame"), "../../../../src/core/primitives.cc", 53346, 1584, "" );
+ define_source_info( method_kind, core::magic_name("CORE:frameIteratorIsValid"), "/Users/meister/Development/clasp/include/clasp/core/primitives.h", 6012, 193, "" );
+ define_source_info( class_kind, core::magic_name("CORE:WeakKeyMapping"), "/Users/meister/Development/clasp/include/clasp/core/weakKeyMapping.h", 1197, 36, "" );
+ define_source_info( method_kind, core::magic_name("CORE:weakKeyMappingKeyValue"), "../../../../src/core/weakKeyMapping.cc", 2922, 90, "" );
+ define_source_info( method_kind, core::magic_name("CORE:weakKeyMappingValid"), "../../../../src/core/weakKeyMapping.cc", 2729, 84, "" );
+ define_source_info( class_kind, core::magic_name("CORE:WeakPointer"), "/Users/meister/Development/clasp/include/clasp/core/weakPointer.h", 1182, 36, "" );
+ define_source_info( method_kind, core::magic_name("CORE:weakPointerValue"), "../../../../src/core/weakPointer.cc", 2680, 86, "" );
+ define_source_info( method_kind, core::magic_name("CORE:weakPointerValid"), "../../../../src/core/weakPointer.cc", 2504, 80, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:HashTable"), "/Users/meister/Development/clasp/include/clasp/core/hashTable.h", 1510, 44, "" );
+ define_source_info( method_kind, core::magic_name("core:hashTableAlistAtHash"), "../../../../src/core/hashTable.cc", 31385, 932, "" );
+ define_source_info( method_kind, core::magic_name("core:hashTableNumberOfHashes"), "../../../../src/core/hashTable.cc", 31233, 927, "" );
+ define_source_info( method_kind, core::magic_name("core:hashTableDump"), "../../../../src/core/hashTable.cc", 28440, 840, "" );
+ define_source_info( method_kind, core::magic_name("core:hashTableSetfGethash"), "../../../../src/core/hashTable.cc", 20914, 660, "" );
+ define_source_info( method_kind, core::magic_name("core:hashIndex"), "../../../../src/core/hashTable.cc", 19765, 622, "" );
+ define_source_info( method_kind, core::magic_name("CORE:hash-table-size"), "../../../../src/core/hashTable.cc", 16050, 510, "" );
+ define_source_info( method_kind, core::magic_name("CORE:hash-table-count"), "../../../../src/core/hashTable.cc", 15697, 497, "" );
+ define_source_info( method_kind, core::magic_name("CORE:hash-table-rehash-threshold"), "/Users/meister/Development/clasp/include/clasp/core/hashTable.h", 3898, 110, "" );
+ define_source_info( method_kind, core::magic_name("CORE:hash-table-rehash-size"), "/Users/meister/Development/clasp/include/clasp/core/hashTable.h", 3757, 107, "" );
+ define_source_info( method_kind, core::magic_name("CORE:hash-table-test"), "/Users/meister/Development/clasp/include/clasp/core/hashTable.h", 3518, 100, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SpecialForm"), "/Users/meister/Development/clasp/include/clasp/core/specialForm.h", 1273, 42, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:BuiltInClass"), "/Users/meister/Development/clasp/include/clasp/core/builtInClass.h", 1336, 43, "" );
+ define_source_info( class_kind, core::magic_name("CORE:LambdaListHandler"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 3011, 97, "" );
+ define_source_info( method_kind, core::magic_name("CORE:namesOfLexicalVariablesForDebugging"), "../../../../src/core/lambdaListHandler.cc", 44327, 1162, "" );
+ define_source_info( method_kind, core::magic_name("CORE:namesOfLexicalVariables"), "../../../../src/core/lambdaListHandler.cc", 43698, 1146, "" );
+ define_source_info( method_kind, core::magic_name("CORE:processLambdaListHandler"), "../../../../src/core/lambdaListHandler.cc", 41201, 1086, "" );
+ define_source_info( method_kind, core::magic_name("CORE:single-dispatch-on-argument"), "../../../../src/core/lambdaListHandler.cc", 38892, 1007, "" );
+ define_source_info( method_kind, core::magic_name("CORE:LambdaListHandler-lambdaList"), "../../../../src/core/lambdaListHandler.cc", 4282, 116, "" );
+ define_source_info( method_kind, core::magic_name("CORE:classifiedSymbols"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 10021, 238, "" );
+ define_source_info( method_kind, core::magic_name("CORE:numberOfLexicalVariables"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 9749, 234, "" );
+ define_source_info( method_kind, core::magic_name("CORE:allowOtherKeys"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 9465, 228, "" );
+ define_source_info( method_kind, core::magic_name("CORE:numberOfAuxArguments"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 9342, 226, "" );
+ define_source_info( method_kind, core::magic_name("CORE:numberOfKeyArguments"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 9209, 224, "" );
+ define_source_info( method_kind, core::magic_name("CORE:numberOfRestArguments"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 8997, 221, "" );
+ define_source_info( method_kind, core::magic_name("CORE:numberOfOptionalArguments"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 8857, 219, "" );
+ define_source_info( method_kind, core::magic_name("CORE:numberOfRequiredArguments"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 8706, 217, "" );
+ define_source_info( method_kind, core::magic_name("CORE:lambdaListHandlerRequiredLexicalArgumentsOnlyP"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 8545, 214, "" );
+ define_source_info( class_kind, core::magic_name("CLOS:STD-CLASS"), "/Users/meister/Development/clasp/include/clasp/core/stdClass.h", 1383, 46, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:StandardClass"), "/Users/meister/Development/clasp/include/clasp/core/standardClass.h", 1411, 48, "" );
+ define_source_info( class_kind, core::magic_name("CORE:HashTableEq"), "/Users/meister/Development/clasp/include/clasp/core/hashTableEq.h", 1296, 40, "" );
+ define_source_info( class_kind, core::magic_name("CORE:base-string-with-fill-ptr"), "/Users/meister/Development/clasp/include/clasp/core/strWithFillPtr.h", 1337, 40, "" );
+ define_source_info( method_kind, core::magic_name("CORE:push-string"), "../../../../src/core/strWithFillPtr.cc", 4969, 169, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:Package"), "/Users/meister/Development/clasp/include/clasp/core/package.h", 1355, 45, "" );
+ define_source_info( method_kind, core::magic_name("core:PackageHashTables"), "../../../../src/core/package.cc", 11764, 368, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:readtable"), "/Users/meister/Development/clasp/include/clasp/core/readtable.h", 1332, 45, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:structure-object"), "/Users/meister/Development/clasp/include/clasp/core/structureObject.h", 1458, 49, "" );
+ define_source_info( class_kind, core::magic_name("CORE:WrappedPointer"), "/Users/meister/Development/clasp/include/clasp/core/wrappedPointer.h", 1331, 41, "" );
+ define_source_info( method_kind, core::magic_name("CORE:validp"), "/Users/meister/Development/clasp/include/clasp/core/wrappedPointer.h", 1675, 53, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:bit-vector"), "/Users/meister/Development/clasp/include/clasp/core/bitVector.h", 1391, 45, "" );
+ define_source_info( method_kind, core::magic_name("core:lowestIndex"), "../../../../src/core/bitVector.cc", 8099, 313, "" );
+ define_source_info( method_kind, core::magic_name("core:dump"), "../../../../src/core/bitVector.cc", 7772, 298, "" );
+ define_source_info( method_kind, core::magic_name("core:BitVector-asString"), "../../../../src/core/bitVector.cc", 7037, 257, "" );
+ define_source_info( method_kind, core::magic_name("core:countSet"), "../../../../src/core/bitVector.cc", 6812, 245, "" );
+ define_source_info( method_kind, core::magic_name("core:bitXor"), "../../../../src/core/bitVector.cc", 6608, 238, "" );
+ define_source_info( method_kind, core::magic_name("core:bitAnd"), "../../../../src/core/bitVector.cc", 6406, 231, "" );
+ define_source_info( method_kind, core::magic_name("core:bitOr"), "../../../../src/core/bitVector.cc", 6206, 224, "" );
+ define_source_info( method_kind, core::magic_name("core:inPlaceXor"), "../../../../src/core/bitVector.cc", 5878, 212, "" );
+ define_source_info( method_kind, core::magic_name("core:inPlaceAnd"), "../../../../src/core/bitVector.cc", 5545, 200, "" );
+ define_source_info( method_kind, core::magic_name("core:inPlaceOr"), "../../../../src/core/bitVector.cc", 5213, 188, "" );
+ define_source_info( method_kind, core::magic_name("core:testBit"), "../../../../src/core/bitVector.cc", 4665, 170, "" );
+ define_source_info( method_kind, core::magic_name("core:setBit"), "../../../../src/core/bitVector.cc", 4192, 151, "" );
+ define_source_info( method_kind, core::magic_name("core:isZero"), "/Users/meister/Development/clasp/include/clasp/core/bitVector.h", 2808, 90, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:simple-bit-vector"), "/Users/meister/Development/clasp/include/clasp/core/bitVector.h", 3759, 125, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:bit-vector-with-fill-ptr"), "/Users/meister/Development/clasp/include/clasp/core/bitVector.h", 4315, 144, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:null"), "/Users/meister/Development/clasp/include/clasp/core/null.h", 1181, 38, "" );
+ define_source_info( class_kind, core::magic_name("CORE:ForwardReferencedClass"), "/Users/meister/Development/clasp/include/clasp/core/forwardReferencedClass.h", 1545, 43, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SingleDispatchMethod"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchMethod.h", 1285, 37, "" );
+ define_source_info( method_kind, core::magic_name("CORE:singleDispatchMethodDocstring"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchMethod.h", 3555, 87, "" );
+ define_source_info( method_kind, core::magic_name("CORE:singleDispatchMethodDeclares"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchMethod.h", 3416, 85, "" );
+ define_source_info( method_kind, core::magic_name("CORE:singleDispatchMethodLambdaListHandler"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchMethod.h", 3248, 83, "" );
+ define_source_info( method_kind, core::magic_name("CORE:singleDispatchMethodCode"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchMethod.h", 3106, 81, "" );
+ define_source_info( method_kind, core::magic_name("CORE:singleDispatchMethodReceiverClass"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchMethod.h", 2960, 79, "" );
+ define_source_info( method_kind, core::magic_name("CORE:singleDispatchMethodName"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchMethod.h", 2823, 77, "" );
+ define_source_info( class_kind, core::magic_name("CORE:single-dispatch-generic-function"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchGenericFunction.h", 3029, 73, "" );
+ define_source_info( method_kind, core::magic_name("CORE:SingleDispatchGenericFunction-methods"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchGenericFunction.h", 3826, 90, "" );
+ define_source_info( class_kind, core::magic_name("CORE:HashTableEql"), "/Users/meister/Development/clasp/include/clasp/core/hashTableEql.h", 1266, 39, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:random-state"), "/Users/meister/Development/clasp/include/clasp/core/random.h", 1229, 40, "" );
+ define_source_info( class_kind, core::magic_name("CORE:ExternalObject"), "/Users/meister/Development/clasp/include/clasp/core/externalObject.h", 1830, 63, "" );
+ define_source_info( method_kind, core::magic_name("CORE:isUndefined"), "/Users/meister/Development/clasp/include/clasp/core/externalObject.h", 2007, 70, "" );
+ define_source_info( class_kind, core::magic_name("CORE:ForeignData"), "/Users/meister/Development/clasp/include/clasp/core/externalObject.h", 3757, 121, "" );
+ define_source_info( method_kind, core::magic_name("CORE:freeForeignObject"), "../../../../src/core/externalObject.cc", 3523, 108, "" );
+ define_source_info( class_kind, core::magic_name("CORE:CxxClass"), "/Users/meister/Development/clasp/include/clasp/core/cxxClass.h", 1316, 43, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SmallMap"), "/Users/meister/Development/clasp/include/clasp/core/smallMap.h", 1425, 49, "" );
+ define_source_info( method_kind, core::magic_name("CORE:map_setf"), "../../../../src/core/smallMap.cc", 1760, 63, "" );
+ define_source_info( method_kind, core::magic_name("CORE:map_find"), "../../../../src/core/smallMap.cc", 1544, 54, "" );
+ define_source_info( method_kind, core::magic_name("CORE:map_capacity"), "/Users/meister/Development/clasp/include/clasp/core/smallMap.h", 1761, 60, "" );
+ define_source_info( method_kind, core::magic_name("CORE:map_size"), "/Users/meister/Development/clasp/include/clasp/core/smallMap.h", 1666, 58, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SmallMultimap"), "/Users/meister/Development/clasp/include/clasp/core/smallMultimap.h", 1477, 51, "" );
+ define_source_info( method_kind, core::magic_name("CORE:small_multimap_insert"), "../../../../src/core/smallMultimap.cc", 2241, 69, "" );
+ define_source_info( method_kind, core::magic_name("CORE:small_multimap_describe_range"), "../../../../src/core/smallMultimap.cc", 1873, 61, "" );
+ define_source_info( method_kind, core::magic_name("CORE:small_multimap_describe"), "../../../../src/core/smallMultimap.cc", 1584, 54, "" );
+ define_source_info( method_kind, core::magic_name("CORE:small_multimap_size"), "/Users/meister/Development/clasp/include/clasp/core/smallMultimap.h", 1731, 59, "" );
+ define_source_info( class_kind, core::magic_name("CORE:HashTableEqual"), "/Users/meister/Development/clasp/include/clasp/core/hashTableEqual.h", 1311, 40, "" );
+ define_source_info( class_kind, core::magic_name("CORE:HashTableEqualp"), "/Users/meister/Development/clasp/include/clasp/core/hashTableEqualp.h", 1316, 40, "" );
+ define_source_info( class_kind, core::magic_name("CORE:Binder"), "/Users/meister/Development/clasp/include/clasp/core/binder.h", 1541, 52, "" );
+ define_source_info( class_kind, core::magic_name("CORE:MultiStringBuffer"), "/Users/meister/Development/clasp/include/clasp/core/multiStringBuffer.h", 2168, 74, "" );
+ define_source_info( method_kind, core::magic_name("CORE:dump"), "../../../../src/core/multiStringBuffer.cc", 7872, 234, "" );
+ define_source_info( method_kind, core::magic_name("CORE:getString"), "../../../../src/core/multiStringBuffer.cc", 7365, 217, "" );
+ define_source_info( method_kind, core::magic_name("CORE:addString"), "../../../../src/core/multiStringBuffer.cc", 6806, 200, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:structure-class"), "/Users/meister/Development/clasp/include/clasp/core/structureClass.h", 1381, 47, "" );
+ define_source_info( class_kind, core::magic_name("CORE:Reader"), "/Users/meister/Development/clasp/include/clasp/core/reader.h", 3946, 147, "" );
+ define_source_info( class_kind, core::magic_name("CORE:PosixTime"), "/Users/meister/Development/clasp/include/clasp/core/posixTime.h", 1581, 53, "" );
+ define_source_info( method_kind, core::magic_name("CORE:sub"), "../../../../src/core/posixTime.cc", 3009, 107, "" );
+ define_source_info( method_kind, core::magic_name("CORE:setToLocalTime"), "../../../../src/core/posixTime.cc", 2698, 95, "" );
+ define_source_info( class_kind, core::magic_name("CORE:PosixTimeDuration"), "/Users/meister/Development/clasp/include/clasp/core/posixTime.h", 2304, 84, "" );
+ define_source_info( method_kind, core::magic_name("CORE:toIsoString"), "../../../../src/core/posixTime.cc", 5863, 199, "" );
+ define_source_info( method_kind, core::magic_name("CORE:toSimpleString"), "../../../../src/core/posixTime.cc", 5705, 194, "" );
+ define_source_info( method_kind, core::magic_name("CORE:hours"), "../../../../src/core/posixTime.cc", 5584, 189, "" );
+ define_source_info( method_kind, core::magic_name("CORE:minutes"), "../../../../src/core/posixTime.cc", 5468, 184, "" );
+ define_source_info( method_kind, core::magic_name("CORE:posix-time-duration-seconds"), "../../../../src/core/posixTime.cc", 5350, 179, "" );
+ define_source_info( method_kind, core::magic_name("CORE:totalMilliseconds"), "../../../../src/core/posixTime.cc", 4809, 157, "" );
+ define_source_info( method_kind, core::magic_name("CORE:totalSeconds"), "../../../../src/core/posixTime.cc", 4645, 151, "" );
+ define_source_info( method_kind, core::magic_name("CORE:sub"), "../../../../src/core/posixTime.cc", 4390, 144, "" );
+ define_source_info( class_kind, core::magic_name("AST-TOOLING:AstVisitor"), "/Users/meister/Development/clasp/include/clasp/asttooling/astVisitor.h", 1369, 41, "" );
+ define_source_info( class_kind, core::magic_name("CFFI-SYS:Pointer"), "/Users/meister/Development/clasp/include/clasp/cffi/cffi.h", 1197, 37, "" );
+ define_source_info( method_kind, core::magic_name("CFFI-SYS:inc-pointer"), "../../../../src/cffi/cffi.cc", 15549, 477, "" );
+ define_source_info( method_kind, core::magic_name("CFFI-SYS:foreign_free"), "../../../../src/cffi/cffi.cc", 15381, 469, "" );
+ define_source_info( method_kind, core::magic_name("CFFI-SYS:PERCENTsetf_mem_ref"), "../../../../src/cffi/cffi.cc", 12386, 362, "" );
+ define_source_info( method_kind, core::magic_name("CFFI-SYS:PERCENTmem_ref"), "../../../../src/cffi/cffi.cc", 10024, 279, "" );
+ define_source_info( class_kind, core::magic_name("CLBIND:ClassRegistry"), "/Users/meister/Development/clasp/include/clasp/clbind/class_registry.h", 2460, 65, "" );
+ define_source_info( class_kind, core::magic_name("CORE:IntArray"), "/Users/meister/Development/clasp/include/clasp/core/intArray.h", 1241, 43, "" );
+ define_source_info( class_kind, core::magic_name("CORE:LightUserData"), "/Users/meister/Development/clasp/include/clasp/core/userData.h", 1253, 40, "" );
+ define_source_info( class_kind, core::magic_name("CORE:UserData"), "/Users/meister/Development/clasp/include/clasp/core/userData.h", 1937, 70, "" );
+ define_source_info( class_kind, core::magic_name("CORE:LoadTimeValues"), "/Users/meister/Development/clasp/include/clasp/core/loadTimeValues.h", 1352, 38, "" );
+ define_source_info( method_kind, core::magic_name("CORE:symbols_vectorPushExtend"), "../../../../src/core/loadTimeValues.cc", 9636, 269, "" );
+ define_source_info( method_kind, core::magic_name("CORE:data_vectorPushExtend"), "../../../../src/core/loadTimeValues.cc", 9317, 257, "" );
+ define_source_info( class_kind, core::magic_name("CORE:RegexMatch"), "/Users/meister/Development/clasp/include/clasp/core/regex.h", 1232, 40, "" );
+ define_source_info( method_kind, core::magic_name("CORE:regex-match-part"), "../../../../src/core/regex.cc", 4823, 157, "" );
+ define_source_info( method_kind, core::magic_name("CORE:regex-match-length"), "../../../../src/core/regex.cc", 4698, 151, "" );
+ define_source_info( method_kind, core::magic_name("CORE:regex-match-matched"), "../../../../src/core/regex.cc", 3609, 118, "" );
+ define_source_info( method_kind, core::magic_name("CORE:regex-match-suffix"), "/Users/meister/Development/clasp/include/clasp/core/regex.h", 2094, 67, "" );
+ define_source_info( method_kind, core::magic_name("CORE:regex-match-prefix"), "/Users/meister/Development/clasp/include/clasp/core/regex.h", 1942, 63, "" );
+ define_source_info( class_kind, core::magic_name("CORE:Regex"), "/Users/meister/Development/clasp/include/clasp/core/regex.h", 2221, 72, "" );
+ define_source_info( method_kind, core::magic_name("CORE:regexSedReplace"), "../../../../src/core/regex.cc", 3099, 107, "" );
+ define_source_info( method_kind, core::magic_name("CORE:regexMatch"), "../../../../src/core/regex.cc", 2805, 98, "" );
+ define_source_info( method_kind, core::magic_name("CORE:regexMatches"), "../../../../src/core/regex.cc", 2647, 92, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:llvm-context"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 2921, 86, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:Linker"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 4084, 133, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getModule"), "../../../../src/llvmo/llvmoExpose.cc", 5380, 162, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:Pass"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 5184, 181, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:AttributeSet"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 6448, 238, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:Triple"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 8237, 297, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getOSAndEnvironmentName"), "../../../../src/llvmo/llvmoExpose.cc", 12237, 335, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getEnvironmentName"), "../../../../src/llvmo/llvmoExpose.cc", 12125, 333, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getOSName"), "../../../../src/llvmo/llvmoExpose.cc", 12027, 331, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getVendorName"), "../../../../src/llvmo/llvmoExpose.cc", 11934, 329, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getArchName"), "../../../../src/llvmo/llvmoExpose.cc", 11839, 327, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getTriple"), "../../../../src/llvmo/llvmoExpose.cc", 11748, 325, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:TargetOptions"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 9827, 366, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:setfJITEmitDebugInfoToDisk"), "../../../../src/llvmo/llvmoExpose.cc", 27419, 613, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:JITEmitDebugInfoToDisk"), "../../../../src/llvmo/llvmoExpose.cc", 27254, 608, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:setfJITEmitDebugInfo"), "../../../../src/llvmo/llvmoExpose.cc", 27094, 603, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:JITEmitDebugInfo"), "../../../../src/llvmo/llvmoExpose.cc", 26947, 598, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:setfNoFramePointerElim"), "../../../../src/llvmo/llvmoExpose.cc", 26738, 592, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:NoFramePointerElim"), "../../../../src/llvmo/llvmoExpose.cc", 26585, 587, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:Target"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 11766, 444, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:createTargetMachine"), "../../../../src/llvmo/llvmoExpose.cc", 5992, 192, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:MCSubtargetInfo"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 13365, 507, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:TargetSubtargetInfo"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 15126, 569, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getDataLayout"), "../../../../src/llvmo/llvmoExpose.cc", 55212, 1323, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:TargetMachine"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 19070, 683, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getSubtargetImpl"), "../../../../src/llvmo/llvmoExpose.cc", 8025, 242, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:addPassesToEmitFileAndRunPassManager"), "../../../../src/llvmo/llvmoExpose.cc", 6301, 207, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:LLVMTargetMachine"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 20871, 746, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:LLVMTargetMachine_addPassesToEmitFile"), "../../../../src/llvmo/llvmoExpose.cc", 28358, 638, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:FunctionPass"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 22435, 794, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ModulePass"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 23638, 837, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ImmutablePass"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 24884, 880, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:PassManagerBase"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 26135, 923, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:value"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 27805, 988, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getType"), "../../../../src/llvmo/llvmoExpose.cc", 30583, 729, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:setName"), "../../../../src/llvmo/llvmoExpose.cc", 30500, 727, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getName"), "../../../../src/llvmo/llvmoExpose.cc", 30417, 725, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:dump"), "../../../../src/llvmo/llvmoExpose.cc", 30337, 723, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:metadata"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 30024, 1074, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:dump"), "../../../../src/llvmo/llvmoExpose.cc", 30909, 745, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:user"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 32245, 1159, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:Attribute"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 32856, 1180, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DataLayout"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 34783, 1245, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:DataLayout-getTypeAllocSize"), "../../../../src/llvmo/llvmoExpose.cc", 55806, 1344, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:DataLayoutCopy"), "../../../../src/llvmo/llvmoExpose.cc", 55505, 1334, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:constant"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 38272, 1344, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:constant-array"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 40278, 1411, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:BlockAddress"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 41115, 1438, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ConstantDataSequential"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 41961, 1465, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:constant-data-array"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 42835, 1491, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ConstantExpr"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 43731, 1518, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:global-value"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 44582, 1546, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:GlobalVariable"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 45500, 1576, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:setInitializer"), "../../../../src/llvmo/llvmoExpose.cc", 74718, 1879, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:eraseFromParent"), "../../../../src/llvmo/llvmoExpose.cc", 74602, 1877, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:EXECUTION-ENGINE"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 47076, 1624, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getDataLayout"), "../../../../src/llvmo/llvmoExpose.cc", 54067, 1289, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:clearAllGlobalMappings"), "../../../../src/llvmo/llvmoExpose.cc", 53943, 1287, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:FindFunctionNamed"), "../../../../src/llvmo/llvmoExpose.cc", 53597, 1279, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:addModule"), "../../../../src/llvmo/llvmoExpose.cc", 53318, 1271, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:addGlobalMapping"), "../../../../src/llvmo/llvmoExpose.cc", 53112, 1266, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:hasNamedModule"), "../../../../src/llvmo/llvmoExpose.cc", 52296, 1245, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:dependentModuleNames"), "../../../../src/llvmo/llvmoExpose.cc", 51428, 1223, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:module"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 49053, 1690, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getGlobalList"), "../../../../src/llvmo/llvmoExpose.cc", 50725, 1200, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getOrCreateUniquedStringGlobalVariable"), "../../../../src/llvmo/llvmoExpose.cc", 48818, 1167, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:dump_namedMDList"), "../../../../src/llvmo/llvmoExpose.cc", 48368, 1153, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:moduleDelete"), "../../../../src/llvmo/llvmoExpose.cc", 48189, 1146, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:moduleValid"), "../../../../src/llvmo/llvmoExpose.cc", 48072, 1141, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getFunction"), "../../../../src/llvmo/llvmoExpose.cc", 47800, 1133, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:setTargetTriple"), "../../../../src/llvmo/llvmoExpose.cc", 45444, 1087, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:setDataLayout"), "../../../../src/llvmo/llvmoExpose.cc", 45328, 1086, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getTargetTriple"), "../../../../src/llvmo/llvmoExpose.cc", 45229, 1084, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getOrInsertGlobal"), "../../../../src/llvmo/llvmoExpose.cc", 45126, 1082, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getNamedGlobal"), "../../../../src/llvmo/llvmoExpose.cc", 44966, 1080, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getGlobalVariable"), "../../../../src/llvmo/llvmoExpose.cc", 44799, 1078, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getModuleIdentifier"), "../../../../src/llvmo/llvmoExpose.cc", 44692, 1076, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:addModuleFlag"), "../../../../src/llvmo/llvmoExpose.cc", 44549, 1074, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:dump"), "../../../../src/llvmo/llvmoExpose.cc", 44461, 1072, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DataLayoutPass"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 52318, 1804, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:TargetLibraryInfo"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 54185, 1868, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:FUNCTION-PASS-MANAGER"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 60224, 2051, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:function-pass-manager-run"), "../../../../src/llvmo/llvmoExpose.cc", 60561, 1492, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:doFinalization"), "../../../../src/llvmo/llvmoExpose.cc", 60425, 1490, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:doInitialization"), "../../../../src/llvmo/llvmoExpose.cc", 60298, 1488, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:function-pass-manager-add"), "../../../../src/llvmo/llvmoExpose.cc", 60182, 1486, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:PASS-MANAGER"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 61928, 2106, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:passManagerRun"), "../../../../src/llvmo/llvmoExpose.cc", 61541, 1522, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:passManagerAdd"), "../../../../src/llvmo/llvmoExpose.cc", 61443, 1520, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ENGINEBUILDER"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 63273, 2156, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:create"), "../../../../src/llvmo/llvmoExpose.cc", 64805, 1613, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:setTargetOptions"), "../../../../src/llvmo/llvmoExpose.cc", 63568, 1585, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:setEngineKind"), "../../../../src/llvmo/llvmoExpose.cc", 62469, 1550, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:error_string"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 64006, 2178, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:PASS-MANAGER-BUILDER"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 65241, 2224, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:populateLTOPassManager"), "../../../../src/llvmo/llvmoExpose.cc", 66816, 1663, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:populateFunctionPassManager"), "../../../../src/llvmo/llvmoExpose.cc", 66672, 1661, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:populateModulePassManager"), "../../../../src/llvmo/llvmoExpose.cc", 66525, 1659, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:APFLOAT"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 67197, 2291, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:APINT"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 67984, 2320, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:toString"), "../../../../src/llvmo/llvmoExpose.cc", 91783, 2499, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:IRBuilderBase"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 69244, 2364, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:SetCurrentDebugLocationToLineColumnScope"), "../../../../src/llvmo/llvmoExpose.cc", 94800, 2566, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:SetCurrentDebugLocation"), "../../../../src/llvmo/llvmoExpose.cc", 94099, 2554, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:saveIP"), "../../../../src/llvmo/llvmoExpose.cc", 93862, 2547, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:restoreIP"), "../../../../src/llvmo/llvmoExpose.cc", 93696, 2542, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:GetInsertBlock"), "../../../../src/llvmo/llvmoExpose.cc", 93074, 2528, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:SetInsertPointInstruction"), "../../../../src/llvmo/llvmoExpose.cc", 92908, 2526, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:SetInsertPointBasicBlock"), "../../../../src/llvmo/llvmoExpose.cc", 92733, 2524, "" );
+ define_source_info( method_kind, core::magic_name("SetInsertPointInstruction","LLVM-SYS"), "../../../../src/llvmo/llvmoExpose.cc", 92399, 2518, "" );
+ define_source_info( method_kind, core::magic_name("SetInsertPointBasicBlock","LLVM-SYS"), "../../../../src/llvmo/llvmoExpose.cc", 92222, 2516, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CurrentDebugLocation"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 70558, 2404, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:IRBUILDER"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 71356, 2435, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateGEPArray"), "../../../../src/llvmo/llvmoExpose.cc", 115889, 2923, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateGEP0"), "../../../../src/llvmo/llvmoExpose.cc", 115685, 2921, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateCall1"), "../../../../src/llvmo/llvmoExpose.cc", 115481, 2919, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateCall0"), "../../../../src/llvmo/llvmoExpose.cc", 115291, 2917, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateLoad_value_bool_twine"), "../../../../src/llvmo/llvmoExpose.cc", 115095, 2915, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateLoad_value_twine"), "../../../../src/llvmo/llvmoExpose.cc", 114889, 2913, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateXor_value_uint64"), "../../../../src/llvmo/llvmoExpose.cc", 114682, 2911, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateXor_value_apint"), "../../../../src/llvmo/llvmoExpose.cc", 114464, 2909, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateXor_value_value"), "../../../../src/llvmo/llvmoExpose.cc", 114253, 2907, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateOr_value_uint64"), "../../../../src/llvmo/llvmoExpose.cc", 114048, 2905, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateOr_value_apint"), "../../../../src/llvmo/llvmoExpose.cc", 113832, 2903, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateOr_value_value"), "../../../../src/llvmo/llvmoExpose.cc", 113623, 2901, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateAnd_value_uint64"), "../../../../src/llvmo/llvmoExpose.cc", 113418, 2899, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateAnd_value_apint"), "../../../../src/llvmo/llvmoExpose.cc", 113200, 2897, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateAnd_value_value"), "../../../../src/llvmo/llvmoExpose.cc", 112989, 2895, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateAShr_value_uint64"), "../../../../src/llvmo/llvmoExpose.cc", 112776, 2893, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateAShr_value_apint"), "../../../../src/llvmo/llvmoExpose.cc", 112550, 2891, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateAShr_value_value"), "../../../../src/llvmo/llvmoExpose.cc", 112331, 2889, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateLShr_value_uint64"), "../../../../src/llvmo/llvmoExpose.cc", 112117, 2887, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateLShr_value_apint"), "../../../../src/llvmo/llvmoExpose.cc", 111891, 2885, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateLShr_value_value"), "../../../../src/llvmo/llvmoExpose.cc", 111672, 2883, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateShl_value_uint64"), "../../../../src/llvmo/llvmoExpose.cc", 111453, 2881, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateShl_value_apint"), "../../../../src/llvmo/llvmoExpose.cc", 111223, 2879, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateShl_value_value"), "../../../../src/llvmo/llvmoExpose.cc", 111000, 2877, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateBinOp"), "../../../../src/llvmo/llvmoExpose.cc", 110883, 2875, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreatePtrDiff"), "../../../../src/llvmo/llvmoExpose.cc", 110772, 2873, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateIsNotNull"), "../../../../src/llvmo/llvmoExpose.cc", 110657, 2871, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateIsNull"), "../../../../src/llvmo/llvmoExpose.cc", 110543, 2869, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateLandingPad"), "../../../../src/llvmo/llvmoExpose.cc", 110428, 2867, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateShuffleVector"), "../../../../src/llvmo/llvmoExpose.cc", 110306, 2865, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateInsertElement"), "../../../../src/llvmo/llvmoExpose.cc", 110181, 2863, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateExtractElement"), "../../../../src/llvmo/llvmoExpose.cc", 110055, 2861, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateVAArg"), "../../../../src/llvmo/llvmoExpose.cc", 109937, 2859, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateSelect"), "../../../../src/llvmo/llvmoExpose.cc", 109827, 2857, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateCall5"), "../../../../src/llvmo/llvmoExpose.cc", 109717, 2855, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateCall4"), "../../../../src/llvmo/llvmoExpose.cc", 109608, 2853, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateCall3"), "../../../../src/llvmo/llvmoExpose.cc", 109499, 2851, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateCall2"), "../../../../src/llvmo/llvmoExpose.cc", 109390, 2849, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateCallArrayRef"), "../../../../src/llvmo/llvmoExpose.cc", 109152, 2847, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreatePHI"), "../../../../src/llvmo/llvmoExpose.cc", 109038, 2845, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFCmp"), "../../../../src/llvmo/llvmoExpose.cc", 108932, 2843, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateICmp"), "../../../../src/llvmo/llvmoExpose.cc", 108825, 2841, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFCmpUNE"), "../../../../src/llvmo/llvmoExpose.cc", 108715, 2839, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFCmpULE"), "../../../../src/llvmo/llvmoExpose.cc", 108602, 2837, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFCmpULT"), "../../../../src/llvmo/llvmoExpose.cc", 108489, 2835, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFCmpUGE"), "../../../../src/llvmo/llvmoExpose.cc", 108376, 2833, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFCmpUGT"), "../../../../src/llvmo/llvmoExpose.cc", 108263, 2831, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFCmpUEQ"), "../../../../src/llvmo/llvmoExpose.cc", 108150, 2829, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFCmpUNO"), "../../../../src/llvmo/llvmoExpose.cc", 108037, 2827, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFCmpORD"), "../../../../src/llvmo/llvmoExpose.cc", 107924, 2825, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFCmpONE"), "../../../../src/llvmo/llvmoExpose.cc", 107811, 2823, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFCmpOLE"), "../../../../src/llvmo/llvmoExpose.cc", 107698, 2821, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFCmpOLT"), "../../../../src/llvmo/llvmoExpose.cc", 107585, 2819, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFCmpOGE"), "../../../../src/llvmo/llvmoExpose.cc", 107472, 2817, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFCmpOGT"), "../../../../src/llvmo/llvmoExpose.cc", 107359, 2815, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFCmpOEQ"), "../../../../src/llvmo/llvmoExpose.cc", 107246, 2813, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateICmpSLE"), "../../../../src/llvmo/llvmoExpose.cc", 107133, 2811, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateICmpSLT"), "../../../../src/llvmo/llvmoExpose.cc", 107020, 2809, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateICmpSGE"), "../../../../src/llvmo/llvmoExpose.cc", 106907, 2807, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateICmpSGT"), "../../../../src/llvmo/llvmoExpose.cc", 106794, 2805, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateICmpULE"), "../../../../src/llvmo/llvmoExpose.cc", 106681, 2803, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateICmpULT"), "../../../../src/llvmo/llvmoExpose.cc", 106568, 2801, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateICmpUGE"), "../../../../src/llvmo/llvmoExpose.cc", 106455, 2799, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateICmpUGT"), "../../../../src/llvmo/llvmoExpose.cc", 106342, 2797, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateICmpNE"), "../../../../src/llvmo/llvmoExpose.cc", 106230, 2795, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateICmpEQ"), "../../../../src/llvmo/llvmoExpose.cc", 106119, 2793, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFPCast"), "../../../../src/llvmo/llvmoExpose.cc", 106008, 2791, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreatePointerCast"), "../../../../src/llvmo/llvmoExpose.cc", 105892, 2789, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateCast"), "../../../../src/llvmo/llvmoExpose.cc", 105778, 2787, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateTruncOrBitCast"), "../../../../src/llvmo/llvmoExpose.cc", 105661, 2785, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateSExtOrBitCast"), "../../../../src/llvmo/llvmoExpose.cc", 105535, 2783, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateZExtOrBitCast"), "../../../../src/llvmo/llvmoExpose.cc", 105410, 2781, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateBitCast"), "../../../../src/llvmo/llvmoExpose.cc", 105291, 2779, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateIntToPtr"), "../../../../src/llvmo/llvmoExpose.cc", 105177, 2777, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreatePtrToInt"), "../../../../src/llvmo/llvmoExpose.cc", 105062, 2775, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFPExt"), "../../../../src/llvmo/llvmoExpose.cc", 104950, 2773, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFPTrunc"), "../../../../src/llvmo/llvmoExpose.cc", 104839, 2771, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateSIToFP"), "../../../../src/llvmo/llvmoExpose.cc", 104727, 2769, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateUIToFP"), "../../../../src/llvmo/llvmoExpose.cc", 104616, 2767, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFPToSI"), "../../../../src/llvmo/llvmoExpose.cc", 104505, 2765, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFPToUI"), "../../../../src/llvmo/llvmoExpose.cc", 104394, 2763, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateSExt"), "../../../../src/llvmo/llvmoExpose.cc", 104285, 2761, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateZExt"), "../../../../src/llvmo/llvmoExpose.cc", 104178, 2759, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateTrunc"), "../../../../src/llvmo/llvmoExpose.cc", 104070, 2757, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateGlobalStringPtr"), "../../../../src/llvmo/llvmoExpose.cc", 103951, 2755, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateStructGEP"), "../../../../src/llvmo/llvmoExpose.cc", 103828, 2753, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateConstInBoundsGEP2-64"), "../../../../src/llvmo/llvmoExpose.cc", 103700, 2751, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateConstGEP2-64"), "../../../../src/llvmo/llvmoExpose.cc", 103569, 2749, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateConstInBoundsGEP1-64"), "../../../../src/llvmo/llvmoExpose.cc", 103438, 2747, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateConstGEP1-64"), "../../../../src/llvmo/llvmoExpose.cc", 103307, 2745, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateConstInBoundsGEP2-32"), "../../../../src/llvmo/llvmoExpose.cc", 103176, 2743, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateConstGEP2-32"), "../../../../src/llvmo/llvmoExpose.cc", 103045, 2741, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateConstInBoundsGEP1-32"), "../../../../src/llvmo/llvmoExpose.cc", 102914, 2739, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateConstGEP1-32"), "../../../../src/llvmo/llvmoExpose.cc", 102783, 2737, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateAtomicRMW"), "../../../../src/llvmo/llvmoExpose.cc", 102663, 2735, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateAtomicCmpXchg"), "../../../../src/llvmo/llvmoExpose.cc", 102542, 2733, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFence"), "../../../../src/llvmo/llvmoExpose.cc", 102425, 2731, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateStore"), "../../../../src/llvmo/llvmoExpose.cc", 102316, 2729, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateAlloca"), "../../../../src/llvmo/llvmoExpose.cc", 102206, 2727, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateNot"), "../../../../src/llvmo/llvmoExpose.cc", 102098, 2725, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFNeg"), "../../../../src/llvmo/llvmoExpose.cc", 101992, 2723, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateNUWNeg"), "../../../../src/llvmo/llvmoExpose.cc", 101883, 2721, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateNSWNeg"), "../../../../src/llvmo/llvmoExpose.cc", 101772, 2719, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateNeg"), "../../../../src/llvmo/llvmoExpose.cc", 101664, 2717, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFRem"), "../../../../src/llvmo/llvmoExpose.cc", 101558, 2715, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateSRem"), "../../../../src/llvmo/llvmoExpose.cc", 101451, 2713, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateURem"), "../../../../src/llvmo/llvmoExpose.cc", 101344, 2711, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFDiv"), "../../../../src/llvmo/llvmoExpose.cc", 101237, 2709, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateExactSDiv"), "../../../../src/llvmo/llvmoExpose.cc", 101125, 2707, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateSDiv"), "../../../../src/llvmo/llvmoExpose.cc", 101013, 2705, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateExactUDiv"), "../../../../src/llvmo/llvmoExpose.cc", 100901, 2703, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateUDiv"), "../../../../src/llvmo/llvmoExpose.cc", 100789, 2701, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFMul"), "../../../../src/llvmo/llvmoExpose.cc", 100682, 2699, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateNUWMul"), "../../../../src/llvmo/llvmoExpose.cc", 100573, 2697, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateNSWMul"), "../../../../src/llvmo/llvmoExpose.cc", 100462, 2695, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateMul"), "../../../../src/llvmo/llvmoExpose.cc", 100354, 2693, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFSub"), "../../../../src/llvmo/llvmoExpose.cc", 100248, 2691, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateNUWSub"), "../../../../src/llvmo/llvmoExpose.cc", 100139, 2689, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateNSWSub"), "../../../../src/llvmo/llvmoExpose.cc", 100028, 2687, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateSub"), "../../../../src/llvmo/llvmoExpose.cc", 99920, 2685, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateFAdd"), "../../../../src/llvmo/llvmoExpose.cc", 99814, 2683, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateNUWAdd"), "../../../../src/llvmo/llvmoExpose.cc", 99705, 2681, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateNSWAdd"), "../../../../src/llvmo/llvmoExpose.cc", 99594, 2679, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateUnreachable"), "../../../../src/llvmo/llvmoExpose.cc", 99478, 2677, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateResume"), "../../../../src/llvmo/llvmoExpose.cc", 99362, 2675, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateIndirectBr"), "../../../../src/llvmo/llvmoExpose.cc", 99247, 2673, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateSwitch"), "../../../../src/llvmo/llvmoExpose.cc", 99132, 2671, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateBr"), "../../../../src/llvmo/llvmoExpose.cc", 99025, 2669, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateRetVoid"), "../../../../src/llvmo/llvmoExpose.cc", 98917, 2667, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateRet"), "../../../../src/llvmo/llvmoExpose.cc", 98808, 2665, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateAdd"), "../../../../src/llvmo/llvmoExpose.cc", 98702, 2662, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateCondBr"), "../../../../src/llvmo/llvmoExpose.cc", 98521, 2658, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateInsertValue"), "../../../../src/llvmo/llvmoExpose.cc", 97248, 2623, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateExtractValue"), "../../../../src/llvmo/llvmoExpose.cc", 96770, 2613, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateInBoundsGEP"), "../../../../src/llvmo/llvmoExpose.cc", 96298, 2603, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateInvoke"), "../../../../src/llvmo/llvmoExpose.cc", 95675, 2589, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:Instruction"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 72629, 2467, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:terminatorInstP"), "../../../../src/llvmo/llvmoExpose.cc", 75705, 1911, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getParent"), "../../../../src/llvmo/llvmoExpose.cc", 75311, 1900, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:setMetadata"), "../../../../src/llvmo/llvmoExpose.cc", 75033, 1892, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:StoreInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 73955, 2515, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:FenceInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 75130, 2558, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:AtomicCmpXchgInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 76321, 2601, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:AtomicRMWInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 77632, 2644, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:PHINode"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 78867, 2687, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:addIncoming"), "../../../../src/llvmo/llvmoExpose.cc", 77061, 1980, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:CallInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 80008, 2730, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:LandingPadInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 81177, 2773, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:addClause"), "../../../../src/llvmo/llvmoExpose.cc", 77879, 2014, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:isCleanup"), "../../../../src/llvmo/llvmoExpose.cc", 77774, 2012, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:setCleanup"), "../../../../src/llvmo/llvmoExpose.cc", 77668, 2010, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:UnaryInstruction"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 82446, 2816, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:AllocaInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 83202, 2838, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:setAlignment"), "../../../../src/llvmo/llvmoExpose.cc", 78538, 2044, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:VAArgInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 84402, 2880, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:LoadInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 85585, 2923, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:TerminatorInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 86759, 2966, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:BranchInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 87495, 2988, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:SwitchInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 88694, 3031, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:addCase"), "../../../../src/llvmo/llvmoExpose.cc", 80112, 2124, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:IndirectBrInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 89960, 3076, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:addDestination"), "../../../../src/llvmo/llvmoExpose.cc", 80454, 2137, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:InvokeInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 91223, 3119, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ResumeInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 92422, 3162, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:UnreachableInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 93631, 3205, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ReturnInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 94910, 3248, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ConstantFP"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 96103, 3291, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ConstantInt"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 97190, 3330, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ConstantStruct"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 98296, 3368, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:UndefValue"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 99410, 3406, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ConstantPointerNull"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 100512, 3444, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:MDNode"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 101960, 3490, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:MDString"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 103169, 3536, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ValueAsMetadata"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 104416, 3584, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:NamedMDNode"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 105758, 3632, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:addOperand"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 106487, 3652, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:FUNCTION"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 107374, 3687, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:literals"), "../../../../src/llvmo/llvmoExpose.cc", 122757, 3127, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:setLiterals"), "../../../../src/llvmo/llvmoExpose.cc", 122622, 3122, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:addFnAttr"), "../../../../src/llvmo/llvmoExpose.cc", 121994, 3106, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:doesNotReturn"), "../../../../src/llvmo/llvmoExpose.cc", 121897, 3104, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:setDoesNotReturn"), "../../../../src/llvmo/llvmoExpose.cc", 121793, 3102, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:doesNotThrow"), "../../../../src/llvmo/llvmoExpose.cc", 121690, 3100, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:setDoesNotThrow"), "../../../../src/llvmo/llvmoExpose.cc", 121588, 3098, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:arg_size"), "../../../../src/llvmo/llvmoExpose.cc", 121490, 3096, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:empty"), "../../../../src/llvmo/llvmoExpose.cc", 121402, 3094, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:eraseFromParent"), "../../../../src/llvmo/llvmoExpose.cc", 121307, 3092, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:appendBasicBlock"), "../../../../src/llvmo/llvmoExpose.cc", 121029, 3084, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getArgumentList"), "../../../../src/llvmo/llvmoExpose.cc", 120566, 3070, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:BasicBlock"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 110042, 3769, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:BasicBlockBack"), "../../../../src/llvmo/llvmoExpose.cc", 123777, 3159, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:BasicBlockEmpty"), "../../../../src/llvmo/llvmoExpose.cc", 123659, 3154, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getParent"), "../../../../src/llvmo/llvmoExpose.cc", 123142, 3140, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:Argument"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 111343, 3815, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:hasByValAttr"), "../../../../src/llvmo/llvmoExpose.cc", 117084, 2954, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:hasNestAttr"), "../../../../src/llvmo/llvmoExpose.cc", 116986, 2952, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:hasNoAliasAttr"), "../../../../src/llvmo/llvmoExpose.cc", 116886, 2950, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:hasStructRetAttr"), "../../../../src/llvmo/llvmoExpose.cc", 116781, 2948, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:removeAttr"), "../../../../src/llvmo/llvmoExpose.cc", 116680, 2946, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:addAttr"), "../../../../src/llvmo/llvmoExpose.cc", 116588, 2944, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:TYPE"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 112853, 3871, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getSequentialElementType"), "../../../../src/llvmo/llvmoExpose.cc", 125291, 3204, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:dump"), "../../../../src/llvmo/llvmoExpose.cc", 125244, 3203, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getArrayNumElements"), "../../../../src/llvmo/llvmoExpose.cc", 125041, 3198, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:type-get-pointer-to"), "../../../../src/llvmo/llvmoExpose.cc", 124792, 3192, "Return a PointerType to the llvm Type"  );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:FUNCTION-TYPE"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 114426, 3939, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:INTEGER-TYPE"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 115757, 3983, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:CompositeType"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 117075, 4027, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:StructType"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 118429, 4071, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:setBody"), "../../../../src/llvmo/llvmoExpose.cc", 130150, 3339, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:SequentialType"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 120083, 4121, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:PointerType"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 121466, 4165, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ArrayType"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 122917, 4212, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:VectorType"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 124185, 4256, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DebugInfo"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 2422, 74, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DIDescriptor"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 2868, 88, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:discope"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 4051, 125, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:diarray"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 4960, 162, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ditypearray"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 5762, 194, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:difile"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 6609, 226, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DISubprogram"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 7525, 262, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DIType"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 8835, 310, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DIDerivedType"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 9865, 346, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DIBasicType"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 10969, 385, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DICompositeType"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 12057, 424, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DISubroutineType"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 13280, 462, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DILexicalBlock"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 14518, 501, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DICompileUnit"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 15587, 538, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DIBuilder"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 16617, 575, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getOrCreateTypeArray"), "../../../../src/llvmo/debugInfoExpose.cc", 9829, 332, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getOrCreateArray"), "../../../../src/llvmo/debugInfoExpose.cc", 8408, 305, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:finalize"), "../../../../src/llvmo/debugInfoExpose.cc", 8228, 297, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:createSubroutineType"), "../../../../src/llvmo/debugInfoExpose.cc", 8123, 295, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:createUnspecifiedParameter"), "../../../../src/llvmo/debugInfoExpose.cc", 8000, 293, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:createNullPtrType"), "../../../../src/llvmo/debugInfoExpose.cc", 7880, 291, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:createBasicType"), "../../../../src/llvmo/debugInfoExpose.cc", 7771, 289, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:createLexicalBlock"), "../../../../src/llvmo/debugInfoExpose.cc", 7661, 287, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:createFunction"), "../../../../src/llvmo/debugInfoExpose.cc", 7545, 285, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:createFile"), "../../../../src/llvmo/debugInfoExpose.cc", 6738, 267, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:createCompileUnit"), "../../../../src/llvmo/debugInfoExpose.cc", 6634, 265, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DebugLoc"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugLoc.h", 1504, 45, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getScope"), "../../../../src/llvmo/debugLoc.cc", 2140, 66, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getCol"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugLoc.h", 2002, 61, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getLine"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugLoc.h", 1900, 59, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:InsertPoint"), "/Users/meister/Development/clasp/include/clasp/llvmo/insertPoint.h", 1434, 44, "" );
+ define_source_info( class_kind, core::magic_name("CORE:ArrayDisplaced"), "/Users/meister/Development/clasp/include/clasp/core/arrayDisplaced.h", 1236, 38, "" );
+ define_source_info( class_kind, core::magic_name("CORE:ArrayObjects"), "/Users/meister/Development/clasp/include/clasp/core/arrayObjects.h", 1226, 38, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SingleDispatchEffectiveMethodFunction"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchEffectiveMethodFunction.h", 1370, 37, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SexpLoadArchive"), "/Users/meister/Development/clasp/include/clasp/core/sexpLoadArchive.h", 1304, 40, "" );
+ define_source_info( method_kind, core::magic_name("CORE:parseFromStream"), "../../../../src/core/sexpLoadArchive.cc", 4696, 128, "" );
+ define_source_info( method_kind, core::magic_name("CORE:parseFromObject"), "../../../../src/core/sexpLoadArchive.cc", 4347, 120, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SexpSaveArchive"), "/Users/meister/Development/clasp/include/clasp/core/sexpSaveArchive.h", 1304, 40, "" );
+ define_source_info( method_kind, core::magic_name("CORE:sexpSaveArchiveWrite"), "../../../../src/core/sexpSaveArchive.cc", 3944, 114, "" );
+ define_source_info( class_kind, core::magic_name("CLBIND:ClassRep"), "/Users/meister/Development/clasp/include/clasp/clbind/class_rep.h", 3260, 92, "" );
+ define_source_info( class_kind, core::magic_name("CLOS:FuncallableStandardClass"), "/Users/meister/Development/clasp/include/clasp/core/funcallableStandardClass.h", 1477, 48, "" );
+ define_source_info( class_kind, core::magic_name("ADAPT:SymbolSet"), "../../../../projects/cando/include/cando/adapt/symbolSet.h", 1747, 62, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:asCons"), "../../src/adapt/symbolSet.cc", 8444, 308, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:cartesianProduct"), "../../src/adapt/symbolSet.cc", 7177, 268, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:relativeComplement"), "../../src/adapt/symbolSet.cc", 6712, 252, "" );
+ define_source_info( method_kind, core::magic_name("adapt:SymbolSetIntersection"), "../../src/adapt/symbolSet.cc", 6235, 235, "" );
+ define_source_info( method_kind, core::magic_name("adapt:SymbolSetUnion"), "../../src/adapt/symbolSet.cc", 5933, 225, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:clear"), "../../src/adapt/symbolSet.cc", 4820, 178, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:containsSubset"), "../../src/adapt/symbolSet.cc", 4511, 166, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:contains"), "../../src/adapt/symbolSet.cc", 4372, 160, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:asString"), "../../src/adapt/symbolSet.cc", 2847, 104, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:insertSymbolSet"), "../../src/adapt/symbolSet.cc", 2129, 74, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:insertConsSymbols"), "../../src/adapt/symbolSet.cc", 1880, 65, "" );
+ define_source_info( method_kind, "ADAPT:removeAll", "../../../../projects/cando/include/cando/adapt/symbolSet.h", 3239, 115, "" );
+ define_source_info( method_kind, "ADAPT:insert", "../../../../projects/cando/include/cando/adapt/symbolSet.h", 2543, 91, "" );
+ define_source_info( method_kind, "ADAPT:size", "../../../../projects/cando/include/cando/adapt/symbolSet.h", 2347, 86, "" );
+ define_source_info( class_kind, core::magic_name("ADAPT:IndexedObjectBag"), "../../../../projects/cando/include/cando/adapt/indexedObjectBag.h", 1296, 41, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:remove_entry"), "../../src/adapt/indexedObjectBag.cc", 1795, 57, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:get_entry"), "../../src/adapt/indexedObjectBag.cc", 1631, 51, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:set_next_available_entry"), "../../src/adapt/indexedObjectBag.cc", 1387, 43, "" );
+ define_source_info( class_kind, core::magic_name("ADAPT:IterateCons"), "../../../../projects/cando/include/cando/adapt/iterateCons.h", 372, 24, "" );
+ define_source_info( method_kind, "ADAPT:init", "../../../../projects/cando/include/cando/adapt/iterateCons.h", 717, 41, "" );
+ define_source_info( class_kind, core::magic_name("ADAPT:ObjectSet"), "../../../../projects/cando/include/cando/adapt/objectSet.h", 1373, 45, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:addObjectsInCons"), "../../src/adapt/objectSet.cc", 4180, 151, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:relativeComplement"), "../../src/adapt/objectSet.cc", 2403, 84, "" );
+ define_source_info( method_kind, core::magic_name("adapt:objectSetIntersection"), "../../src/adapt/objectSet.cc", 1990, 67, "" );
+ define_source_info( method_kind, core::magic_name("adapt:objectSetUnion"), "../../src/adapt/objectSet.cc", 1737, 59, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:asCons"), "../../src/adapt/objectSet.cc", 1536, 50, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:addObjects"), "../../src/adapt/objectSet.cc", 1380, 44, "" );
+ define_source_info( method_kind, "ADAPT:size", "../../../../projects/cando/include/cando/adapt/objectSet.h", 1898, 64, "" );
+ define_source_info( method_kind, "ADAPT:insert", "../../../../projects/cando/include/cando/adapt/objectSet.h", 1737, 61, "" );
+ define_source_info( method_kind, "ADAPT:contains", "../../../../projects/cando/include/cando/adapt/objectSet.h", 1640, 59, "" );
+ define_source_info( class_kind, core::magic_name("ADAPT:QDomNode"), "../../../../projects/cando/include/cando/adapt/quickDom.h", 642, 39, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:addChild"), "../../src/adapt/quickDom.cc", 17728, 762, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:asString"), "../../src/adapt/quickDom.cc", 17578, 753, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:hasChildrenWithName"), "../../src/adapt/quickDom.cc", 13578, 582, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:onlyChild"), "../../src/adapt/quickDom.cc", 12532, 544, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:childWithName"), "../../src/adapt/quickDom.cc", 11806, 519, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:dump"), "../../src/adapt/quickDom.cc", 10936, 480, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:appendToFileName"), "../../src/adapt/quickDom.cc", 6152, 240, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:writeToFileName"), "../../src/adapt/quickDom.cc", 5921, 231, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:children"), "../../src/adapt/quickDom.cc", 5539, 214, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:isLeaf"), "../../src/adapt/quickDom.cc", 5417, 208, "" );
+ define_source_info( method_kind, "ADAPT:addAttributeInt", "../../../../projects/cando/include/cando/adapt/quickDom.h", 11838, 383, "" );
+ define_source_info( method_kind, "ADAPT:addAttributeDoubleScientific", "../../../../projects/cando/include/cando/adapt/quickDom.h", 11092, 361, "" );
+ define_source_info( method_kind, "ADAPT:addAttributeDouble", "../../../../projects/cando/include/cando/adapt/quickDom.h", 10087, 333, "" );
+ define_source_info( method_kind, "ADAPT:addAttributeString", "../../../../projects/cando/include/cando/adapt/quickDom.h", 9939, 329, "" );
+ define_source_info( method_kind, "ADAPT:getAttributeIntDefault", "../../../../projects/cando/include/cando/adapt/quickDom.h", 7804, 256, "" );
+ define_source_info( method_kind, "ADAPT:getAttributeDouble", "../../../../projects/cando/include/cando/adapt/quickDom.h", 6748, 223, "" );
+ define_source_info( method_kind, "ADAPT:getAttribute", "../../../../projects/cando/include/cando/adapt/quickDom.h", 4728, 152, "" );
+ define_source_info( method_kind, "ADAPT:removeAttribute", "../../../../projects/cando/include/cando/adapt/quickDom.h", 4598, 146, "" );
+ define_source_info( method_kind, "ADAPT:hasAttribute", "../../../../projects/cando/include/cando/adapt/quickDom.h", 4468, 141, "" );
+ define_source_info( method_kind, "ADAPT:numberOfChildren", "../../../../projects/cando/include/cando/adapt/quickDom.h", 4335, 136, "" );
+ define_source_info( method_kind, "ADAPT:saveAs", "../../../../projects/cando/include/cando/adapt/quickDom.h", 3420, 112, "" );
+ define_source_info( method_kind, "ADAPT:setCharacters", "../../../../projects/cando/include/cando/adapt/quickDom.h", 3067, 105, "" );
+ define_source_info( method_kind, "ADAPT:getCharacters", "../../../../projects/cando/include/cando/adapt/quickDom.h", 2556, 90, "" );
+ define_source_info( method_kind, "ADAPT:getLineNumber", "../../../../projects/cando/include/cando/adapt/quickDom.h", 2462, 88, "" );
+ define_source_info( method_kind, "ADAPT:setLocalName", "../../../../projects/cando/include/cando/adapt/quickDom.h", 2016, 78, "" );
+ define_source_info( method_kind, "ADAPT:getLocalName", "../../../../projects/cando/include/cando/adapt/quickDom.h", 1923, 76, "" );
+ define_source_info( method_kind, "ADAPT:isNamed", "../../../../projects/cando/include/cando/adapt/quickDom.h", 1819, 74, "" );
+ define_source_info( class_kind, core::magic_name("ADAPT:StringSet"), "../../../../projects/cando/include/cando/adapt/stringSet.h", 1543, 55, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:asCons"), "../../src/adapt/stringSet.cc", 7495, 289, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:cartesianProductInsert"), "../../src/adapt/stringSet.cc", 7021, 272, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:relativeComplement"), "../../src/adapt/stringSet.cc", 6554, 256, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:StringSetIntersection"), "../../src/adapt/stringSet.cc", 6092, 238, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:StringSetUnion"), "../../src/adapt/stringSet.cc", 5701, 223, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:setFromString"), "../../src/adapt/stringSet.cc", 5484, 214, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:clear"), "../../src/adapt/stringSet.cc", 4356, 165, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:containsSubset"), "../../src/adapt/stringSet.cc", 4104, 154, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:contains"), "../../src/adapt/stringSet.cc", 3947, 146, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:asString"), "../../src/adapt/stringSet.cc", 2958, 111, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:insertStringSet"), "../../src/adapt/stringSet.cc", 2093, 73, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:insertConsStrings"), "../../src/adapt/stringSet.cc", 1685, 57, "" );
+ define_source_info( method_kind, "ADAPT:cartesianProduct", "../../../../projects/cando/include/cando/adapt/stringSet.h", 3029, 110, "" );
+ define_source_info( method_kind, "ADAPT:removeAll", "../../../../projects/cando/include/cando/adapt/stringSet.h", 2868, 106, "" );
+ define_source_info( method_kind, "ADAPT:insert", "../../../../projects/cando/include/cando/adapt/stringSet.h", 2187, 82, "" );
+ define_source_info( method_kind, "ADAPT:size", "../../../../projects/cando/include/cando/adapt/stringSet.h", 2003, 77, "" );
+ define_source_info( class_kind, core::magic_name("ADAPT:StringList"), "../../../../projects/cando/include/cando/adapt/stringList.h", 1376, 51, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:string-list-append"), "../../src/adapt/stringList.cc", 2917, 110, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:asString"), "../../src/adapt/stringList.cc", 1940, 69, "" );
+ define_source_info( class_kind, core::magic_name("ADAPT:SymbolList"), "../../../../projects/cando/include/cando/adapt/symbolList.h", 1453, 52, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Matter"), "../../../../projects/cando/include/cando/chem/matter.h", 1514, 86, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atomWithAtomId"), "../../src/chem/matter.cc", 29690, 1140, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:buildAtomIdMap"), "../../src/chem/matter.cc", 29550, 1134, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allProperTorsionsAsCons"), "../../src/chem/matter.cc", 28273, 1080, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allImproperTorsionsAsCons"), "../../src/chem/matter.cc", 27333, 1051, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allAnglesAsCons"), "../../src/chem/matter.cc", 26655, 1030, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allBondsAsCons"), "../../src/chem/matter.cc", 26094, 1011, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allAtomsAsCons"), "../../src/chem/matter.cc", 25683, 995, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allAtomsOfElementAsList"), "../../src/chem/matter.cc", 23999, 938, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:aliasAtom"), "../../src/chem/matter.cc", 23761, 926, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:aliasAtomOrNil"), "../../src/chem/matter.cc", 23513, 918, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:aliasResidue"), "../../src/chem/matter.cc", 23273, 910, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:aliasResidueOrNil"), "../../src/chem/matter.cc", 22904, 895, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allAtoms"), "../../src/chem/matter.cc", 22136, 863, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:contentsAsCons"), "../../src/chem/matter.cc", 21843, 849, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:boundingBox"), "../../src/chem/matter.cc", 21341, 825, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:geometricCenter"), "../../src/chem/matter.cc", 20752, 798, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setAtomAliasesForResiduesNamed"), "../../src/chem/matter.cc", 18896, 751, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setAllAtomMasks"), "../../src/chem/matter.cc", 18173, 722, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:testConsistancy"), "../../src/chem/matter.cc", 16780, 668, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:translateAllAtoms"), "../../src/chem/matter.cc", 16317, 647, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:invertStructureAndRestraints"), "../../src/chem/matter.cc", 15652, 620, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:applyTransformToAtoms"), "../../src/chem/matter.cc", 15318, 607, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addMatter"), "../../src/chem/matter.cc", 13446, 540, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:contentIndex"), "../../src/chem/matter.cc", 13021, 523, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:contentIndexWithId"), "../../src/chem/matter.cc", 12581, 502, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasContentWithId"), "../../src/chem/matter.cc", 10946, 437, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:contentWithId"), "../../src/chem/matter.cc", 10410, 415, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:contentIndexWithName"), "../../src/chem/matter.cc", 9946, 395, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:perturbAtomPositions"), "../../src/chem/matter.cc", 9650, 378, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:randomizeAtomPositions"), "../../src/chem/matter.cc", 9398, 367, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:fillInImplicitHydrogens"), "../../src/chem/matter.cc", 9143, 357, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:makeAllAtomNamesInEachResidueUnique"), "../../src/chem/matter.cc", 8863, 347, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:contentWithName"), "../../src/chem/matter.cc", 7766, 311, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:connectAllCloseAtoms"), "../../src/chem/matter.cc", 6846, 273, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:calculateVirtualAtomPositions"), "../../src/chem/matter.cc", 6489, 256, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:firstAtomWithName"), "../../src/chem/matter.cc", 6107, 239, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasProperty"), "../../src/chem/matter.cc", 5912, 231, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:Matter-getPropertyOrDefault"), "../../src/chem/matter.cc", 5719, 225, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:Matter-getProperty"), "../../src/chem/matter.cc", 5235, 213, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setPropertyTrue"), "../../src/chem/matter.cc", 5040, 207, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setProperty"), "../../src/chem/matter.cc", 4847, 201, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:clearProperty"), "../../src/chem/matter.cc", 4676, 195, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:propertiesAsString"), "../../src/chem/matter.cc", 3490, 151, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addRestraint"), "../../src/chem/matter.cc", 2822, 124, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:clearRestraints"), "../../src/chem/matter.cc", 2663, 116, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allRestraints"), "../../src/chem/matter.cc", 2443, 108, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasContentWithName"), "../../src/chem/matter.cc", 1779, 83, "" );
+ define_source_info( method_kind, "CHEM:contentSize", "../../../../projects/cando/include/cando/chem/matter.h", 9774, 323, "" );
+ define_source_info( method_kind, "CHEM:contentAt", "../../../../projects/cando/include/cando/chem/matter.h", 9674, 321, "" );
+ define_source_info( method_kind, "CHEM:isAtom", "../../../../projects/cando/include/cando/chem/matter.h", 8775, 288, "" );
+ define_source_info( method_kind, "CHEM:isResidue", "../../../../projects/cando/include/cando/chem/matter.h", 8700, 286, "" );
+ define_source_info( method_kind, "CHEM:isMolecule", "../../../../projects/cando/include/cando/chem/matter.h", 8620, 284, "" );
+ define_source_info( method_kind, "CHEM:isAggregate", "../../../../projects/cando/include/cando/chem/matter.h", 8538, 282, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/matter.h", 7859, 261, "" );
+ define_source_info( method_kind, "CHEM:setName", "../../../../projects/cando/include/cando/chem/matter.h", 7715, 258, "" );
+ define_source_info( method_kind, "CHEM:numberOfAtoms", "../../../../projects/cando/include/cando/chem/matter.h", 6619, 236, "" );
+ define_source_info( method_kind, "CHEM:getProperties", "../../../../projects/cando/include/cando/chem/matter.h", 6082, 222, "" );
+ define_source_info( method_kind, "CHEM:matter-copy", "../../../../projects/cando/include/cando/chem/matter.h", 3665, 160, "" );
+ define_source_info( method_kind, "CHEM:getId", "../../../../projects/cando/include/cando/chem/matter.h", 3287, 148, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Atom"), "../../../../projects/cando/include/cando/chem/atom.h", 2990, 136, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getResidueContainedBy"), "../../src/chem/atom.cc", 59841, 1981, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:isConfigurable"), "../../src/chem/atom.cc", 57312, 1891, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:localSpanningTree"), "../../src/chem/atom.cc", 56703, 1874, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getNextSpan"), "../../src/chem/atom.cc", 55901, 1850, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getBackSpan"), "../../src/chem/atom.cc", 55742, 1842, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getValence"), "../../src/chem/atom.cc", 55114, 1812, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:inRingSize"), "../../src/chem/atom.cc", 53570, 1743, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getBondedHydrogenCount"), "../../src/chem/atom.cc", 53156, 1726, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAtomicNumber"), "../../src/chem/atom.cc", 52893, 1713, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getHeavyAtomBondList"), "../../src/chem/atom.cc", 52514, 1694, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:bondsAsList"), "../../src/chem/atom.cc", 52064, 1676, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:totalBondOrder"), "../../src/chem/atom.cc", 50982, 1648, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getBondList"), "../../src/chem/atom.cc", 50617, 1630, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:bondedAtomsAsList"), "../../src/chem/atom.cc", 50070, 1605, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:testConsistancy"), "../../src/chem/atom.cc", 47228, 1504, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:isBondedTo"), "../../src/chem/atom.cc", 46130, 1456, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:isBondedToWithBondOrder"), "../../src/chem/atom.cc", 45531, 1432, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getConfigurationAsString"), "../../src/chem/atom.cc", 41123, 1249, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getTempInt"), "../../src/chem/atom.cc", 40995, 1243, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setTempInt"), "../../src/chem/atom.cc", 40837, 1236, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setPositionInNanometers"), "../../src/chem/atom.cc", 40651, 1228, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getElementAsString"), "../../src/chem/atom.cc", 36337, 1153, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:applyTransformToAtoms"), "../../src/chem/atom.cc", 36015, 1138, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeAllBonds"), "../../src/chem/atom.cc", 35538, 1117, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeBondTo"), "../../src/chem/atom.cc", 35283, 1107, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:isBondedToElementHybridizationElementHybridization"), "../../src/chem/atom.cc", 33814, 1049, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:isBondedToElementHybridization"), "../../src/chem/atom.cc", 33341, 1031, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasBondWithOrder"), "../../src/chem/atom.cc", 33052, 1018, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:isBondedToElementOrder"), "../../src/chem/atom.cc", 32679, 1002, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:bondedNeighborWithName"), "../../src/chem/atom.cc", 32277, 988, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:isBondedToAtomNamed"), "../../src/chem/atom.cc", 31948, 975, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getNameIndex"), "../../src/chem/atom.cc", 30018, 902, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:bondToSingle"), "../../src/chem/atom.cc", 29868, 894, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:bondTo"), "../../src/chem/atom.cc", 29211, 869, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:createImplicitHydrogenNames"), "../../src/chem/atom.cc", 26573, 763, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:numberOfOpenValence"), "../../src/chem/atom.cc", 25142, 724, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:coordination"), "../../src/chem/atom.cc", 24501, 707, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:numberOfBonds"), "../../src/chem/atom.cc", 24375, 701, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:bondedOrder"), "../../src/chem/atom.cc", 24236, 695, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:bondedNeighbor"), "../../src/chem/atom.cc", 24070, 689, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atLowerAddressThan"), "../../src/chem/atom.cc", 22965, 644, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setConfiguration"), "../../src/chem/atom.cc", 22689, 634, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:calculateStereochemicalConfiguration"), "../../src/chem/atom.cc", 17491, 450, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:perturbAtomPosition"), "../../src/chem/atom.cc", 3623, 143, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:randomizeAtomPosition"), "../../src/chem/atom.cc", 3145, 121, "" );
+ define_source_info( method_kind, "CHEM:getConfiguration", "../../../../projects/cando/include/cando/chem/atom.h", 17889, 512, "" );
+ define_source_info( method_kind, "CHEM:getStereochemistryType", "../../../../projects/cando/include/cando/chem/atom.h", 17761, 510, "" );
+ define_source_info( method_kind, "CHEM:setStereochemistryType", "../../../../projects/cando/include/cando/chem/atom.h", 17535, 505, "" );
+ define_source_info( method_kind, "CHEM:getRelativePriority", "../../../../projects/cando/include/cando/chem/atom.h", 17229, 499, "" );
+ define_source_info( method_kind, "CHEM:flagsSet", "../../../../projects/cando/include/cando/chem/atom.h", 14971, 438, "" );
+ define_source_info( method_kind, "CHEM:setNextSpan", "../../../../projects/cando/include/cando/chem/atom.h", 14247, 419, "" );
+ define_source_info( method_kind, "CHEM:setBackSpan", "../../../../projects/cando/include/cando/chem/atom.h", 13981, 414, "" );
+ define_source_info( method_kind, "CHEM:getBackCount", "../../../../projects/cando/include/cando/chem/atom.h", 13732, 410, "" );
+ define_source_info( method_kind, "CHEM:setBackCount", "../../../../projects/cando/include/cando/chem/atom.h", 13646, 408, "" );
+ define_source_info( method_kind, "CHEM:getSeenId", "../../../../projects/cando/include/cando/chem/atom.h", 13567, 406, "" );
+ define_source_info( method_kind, "CHEM:setSeenId", "../../../../projects/cando/include/cando/chem/atom.h", 13489, 403, "" );
+ define_source_info( method_kind, "CHEM:getMoeType", "../../../../projects/cando/include/cando/chem/atom.h", 12575, 387, "" );
+ define_source_info( method_kind, "CHEM:setMoeType", "../../../../projects/cando/include/cando/chem/atom.h", 12491, 385, "" );
+ define_source_info( method_kind, "CHEM:setMoeIndex", "../../../../projects/cando/include/cando/chem/atom.h", 12405, 383, "" );
+ define_source_info( method_kind, "CHEM:getMoeIndex", "../../../../projects/cando/include/cando/chem/atom.h", 12321, 381, "" );
+ define_source_info( method_kind, "CHEM:setCovalentRadius", "../../../../projects/cando/include/cando/chem/atom.h", 12097, 375, "" );
+ define_source_info( method_kind, "CHEM:getCovalentRadius", "../../../../projects/cando/include/cando/chem/atom.h", 11992, 373, "" );
+ define_source_info( method_kind, "CHEM:setVdwRadius", "../../../../projects/cando/include/cando/chem/atom.h", 11894, 371, "" );
+ define_source_info( method_kind, "CHEM:getVdwRadius", "../../../../projects/cando/include/cando/chem/atom.h", 11804, 369, "" );
+ define_source_info( method_kind, "CHEM:setTempFactor", "../../../../projects/cando/include/cando/chem/atom.h", 11709, 367, "" );
+ define_source_info( method_kind, "CHEM:getTempFactor", "../../../../projects/cando/include/cando/chem/atom.h", 11616, 365, "" );
+ define_source_info( method_kind, "CHEM:setOccupancy", "../../../../projects/cando/include/cando/chem/atom.h", 11522, 363, "" );
+ define_source_info( method_kind, "CHEM:getOccupancy", "../../../../projects/cando/include/cando/chem/atom.h", 11432, 361, "" );
+ define_source_info( method_kind, "CHEM:setCharge", "../../../../projects/cando/include/cando/chem/atom.h", 11345, 359, "" );
+ define_source_info( method_kind, "CHEM:getCharge", "../../../../projects/cando/include/cando/chem/atom.h", 11264, 357, "" );
+ define_source_info( method_kind, "CHEM:setIonization", "../../../../projects/cando/include/cando/chem/atom.h", 11174, 355, "" );
+ define_source_info( method_kind, "CHEM:getIonization", "../../../../projects/cando/include/cando/chem/atom.h", 11079, 353, "" );
+ define_source_info( method_kind, "CHEM:setMembershipAr5", "../../../../projects/cando/include/cando/chem/atom.h", 10979, 351, "" );
+ define_source_info( method_kind, "CHEM:getMembershipAr5", "../../../../projects/cando/include/cando/chem/atom.h", 10875, 349, "" );
+ define_source_info( method_kind, "CHEM:setMembershipAr4", "../../../../projects/cando/include/cando/chem/atom.h", 10772, 347, "" );
+ define_source_info( method_kind, "CHEM:getMembershipAr4", "../../../../projects/cando/include/cando/chem/atom.h", 10668, 345, "" );
+ define_source_info( method_kind, "CHEM:setMembershipAr3", "../../../../projects/cando/include/cando/chem/atom.h", 10565, 343, "" );
+ define_source_info( method_kind, "CHEM:getMembershipAr3", "../../../../projects/cando/include/cando/chem/atom.h", 10461, 341, "" );
+ define_source_info( method_kind, "CHEM:setMembershipAr2", "../../../../projects/cando/include/cando/chem/atom.h", 10358, 339, "" );
+ define_source_info( method_kind, "CHEM:getMembershipAr2", "../../../../projects/cando/include/cando/chem/atom.h", 10254, 337, "" );
+ define_source_info( method_kind, "CHEM:setMembershipAr1", "../../../../projects/cando/include/cando/chem/atom.h", 10151, 335, "" );
+ define_source_info( method_kind, "CHEM:getMembershipAr1", "../../../../projects/cando/include/cando/chem/atom.h", 10047, 333, "" );
+ define_source_info( method_kind, "CHEM:setTouched", "../../../../projects/cando/include/cando/chem/atom.h", 9956, 331, "" );
+ define_source_info( method_kind, "CHEM:getTouched", "../../../../projects/cando/include/cando/chem/atom.h", 9874, 329, "" );
+ define_source_info( method_kind, "CHEM:setPosition", "../../../../projects/cando/include/cando/chem/atom.h", 9158, 315, "" );
+ define_source_info( method_kind, "CHEM:getPositionInNanometers", "../../../../projects/cando/include/cando/chem/atom.h", 8988, 312, "" );
+ define_source_info( method_kind, "CHEM:getPosition", "../../../../projects/cando/include/cando/chem/atom.h", 8888, 310, "" );
+ define_source_info( method_kind, "CHEM:setSelected", "../../../../projects/cando/include/cando/chem/atom.h", 8799, 308, "" );
+ define_source_info( method_kind, "CHEM:getSelected", "../../../../projects/cando/include/cando/chem/atom.h", 8713, 306, "" );
+ define_source_info( method_kind, "CHEM:setElement", "../../../../projects/cando/include/cando/chem/atom.h", 8496, 300, "" );
+ define_source_info( method_kind, "CHEM:getElement", "../../../../projects/cando/include/cando/chem/atom.h", 8322, 296, "" );
+ define_source_info( method_kind, "CHEM:setHybridization", "../../../../projects/cando/include/cando/chem/atom.h", 8069, 291, "" );
+ define_source_info( method_kind, "CHEM:getHybridization", "../../../../projects/cando/include/cando/chem/atom.h", 7909, 288, "" );
+ define_source_info( method_kind, "CHEM:setType", "../../../../projects/cando/include/cando/chem/atom.h", 7820, 286, "" );
+ define_source_info( method_kind, "CHEM:getType", "../../../../projects/cando/include/cando/chem/atom.h", 7736, 284, "" );
+ define_source_info( method_kind, "CHEM:setRingMembershipCount", "../../../../projects/cando/include/cando/chem/atom.h", 7265, 271, "" );
+ define_source_info( method_kind, "CHEM:getRingMembershipCount", "../../../../projects/cando/include/cando/chem/atom.h", 7144, 269, "" );
+ define_source_info( method_kind, "CHEM:isInRing", "../../../../projects/cando/include/cando/chem/atom.h", 6897, 264, "" );
+ define_source_info( method_kind, "CHEM:testAnyFlags", "../../../../projects/cando/include/cando/chem/atom.h", 6751, 261, "" );
+ define_source_info( method_kind, "CHEM:testAllFlags", "../../../../projects/cando/include/cando/chem/atom.h", 6638, 259, "" );
+ define_source_info( method_kind, "CHEM:turnOffFlags", "../../../../projects/cando/include/cando/chem/atom.h", 6502, 256, "" );
+ define_source_info( method_kind, "CHEM:turnOnFlags", "../../../../projects/cando/include/cando/chem/atom.h", 6409, 254, "" );
+ define_source_info( method_kind, "CHEM:resetFlags", "../../../../projects/cando/include/cando/chem/atom.h", 6331, 252, "" );
+ define_source_info( method_kind, "CHEM:getFlags", "../../../../projects/cando/include/cando/chem/atom.h", 6247, 250, "" );
+ define_source_info( method_kind, "CHEM:setAlias", "../../../../projects/cando/include/cando/chem/atom.h", 6147, 246, "" );
+ define_source_info( method_kind, "CHEM:getAlias", "../../../../projects/cando/include/cando/chem/atom.h", 6059, 244, "" );
+ define_source_info( method_kind, "CHEM:getAtomId", "../../../../projects/cando/include/cando/chem/atom.h", 5936, 239, "" );
+ define_source_info( method_kind, "CHEM:atomName", "../../../../projects/cando/include/cando/chem/atom.h", 5371, 226, "" );
+ define_source_info( method_kind, "CHEM:setIsAromatic", "../../../../projects/cando/include/cando/chem/atom.h", 5201, 221, "" );
+ define_source_info( method_kind, "CHEM:isAromatic", "../../../../projects/cando/include/cando/chem/atom.h", 5096, 219, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Residue"), "../../../../projects/cando/include/cando/chem/residue.h", 1444, 64, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:useAtomCoordinatesToDefineAnchors"), "../../src/chem/residue.cc", 18682, 671, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAtomNamesAsSymbolSet"), "../../src/chem/residue.cc", 15250, 531, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:testIfAllAtomNamesAreUnique"), "../../src/chem/residue.cc", 11692, 430, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeAtomDontDeleteBonds"), "../../src/chem/residue.cc", 10239, 386, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:containsAtom"), "../../src/chem/residue.cc", 9888, 371, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeAtomDeleteBonds"), "../../src/chem/residue.cc", 9207, 348, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeAtomsWithNames"), "../../src/chem/residue.cc", 8793, 333, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:copy"), "../../src/chem/residue.cc", 8579, 323, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addMonomerAlias"), "../../src/chem/residue.cc", 3713, 146, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addAtom"), "../../src/chem/residue.cc", 3237, 127, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getConstitution"), "../../src/chem/residue.cc", 2796, 108, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasConstitution"), "../../src/chem/residue.cc", 1165, 52, "" );
+ define_source_info( method_kind, "CHEM:testResidueConsistancy", "../../../../projects/cando/include/cando/chem/residue.h", 7119, 216, "" );
+ define_source_info( method_kind, "CHEM:firstAtom", "../../../../projects/cando/include/cando/chem/residue.h", 6894, 210, "" );
+ define_source_info( method_kind, "CHEM:hasAtomWithId", "../../../../projects/cando/include/cando/chem/residue.h", 6490, 199, "" );
+ define_source_info( method_kind, "CHEM:atomWithId", "../../../../projects/cando/include/cando/chem/residue.h", 6361, 197, "" );
+ define_source_info( method_kind, "CHEM:hasAtomWithName", "../../../../projects/cando/include/cando/chem/residue.h", 6054, 189, "" );
+ define_source_info( method_kind, "CHEM:atomWithName", "../../../../projects/cando/include/cando/chem/residue.h", 5637, 179, "" );
+ define_source_info( method_kind, "CHEM:setNetCharge", "../../../../projects/cando/include/cando/chem/residue.h", 4335, 143, "" );
+ define_source_info( method_kind, "CHEM:getNetCharge", "../../../../projects/cando/include/cando/chem/residue.h", 4247, 141, "" );
+ define_source_info( method_kind, "CHEM:getFileSequenceNumber", "../../../../projects/cando/include/cando/chem/residue.h", 4011, 135, "" );
+ define_source_info( method_kind, "CHEM:setPdbName", "../../../../projects/cando/include/cando/chem/residue.h", 3834, 131, "" );
+ define_source_info( method_kind, "CHEM:getPdbName", "../../../../projects/cando/include/cando/chem/residue.h", 3746, 129, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Molecule"), "../../../../projects/cando/include/cando/chem/molecule.h", 431, 33, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getFirstResidueWithName"), "../../src/chem/molecule.cc", 7290, 283, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:numberOfResiduesWithName"), "../../src/chem/molecule.cc", 7061, 275, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:copy"), "../../src/chem/molecule.cc", 5891, 232, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:moveAllAtomsIntoFirstResidue"), "../../src/chem/molecule.cc", 4574, 179, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeResidue"), "../../src/chem/molecule.cc", 2938, 132, "" );
+ define_source_info( method_kind, "CHEM:testMoleculeConsistancy", "../../../../projects/cando/include/cando/chem/molecule.h", 2511, 98, "" );
+ define_source_info( method_kind, "CHEM:residueCount", "../../../../projects/cando/include/cando/chem/molecule.h", 2144, 90, "" );
+ define_source_info( method_kind, "CHEM:hasResidueWithId", "../../../../projects/cando/include/cando/chem/molecule.h", 1696, 73, "" );
+ define_source_info( method_kind, "CHEM:residueWithId", "../../../../projects/cando/include/cando/chem/molecule.h", 1563, 71, "" );
+ define_source_info( method_kind, "CHEM:getResidue", "../../../../projects/cando/include/cando/chem/molecule.h", 1448, 69, "" );
+ define_source_info( method_kind, "CHEM:firstResidue", "../../../../projects/cando/include/cando/chem/molecule.h", 1339, 67, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Aggregate"), "../../../../projects/cando/include/cando/chem/aggregate.h", 412, 33, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:perturbAtomPositions"), "../../src/chem/aggregate.cc", 15645, 540, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:firstMoleculeName"), "../../src/chem/aggregate.cc", 14812, 507, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:firstMolecule"), "../../src/chem/aggregate.cc", 14564, 498, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:writeToFile"), "../../src/chem/aggregate.cc", 13785, 469, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:firstMoleculeWithAtomNamed"), "../../src/chem/aggregate.cc", 12658, 420, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:separateMolecules"), "../../src/chem/aggregate.cc", 11566, 383, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeMolecule"), "../../src/chem/aggregate.cc", 11156, 366, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atomsWithChimeraSpecifications"), "../../src/chem/aggregate.cc", 8189, 304, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atomWithId"), "../../src/chem/aggregate.cc", 6642, 241, "" );
+ define_source_info( method_kind, "CHEM:saveAs", "../../../../projects/cando/include/cando/chem/aggregate.h", 3327, 120, "" );
+ define_source_info( method_kind, "CHEM:molecules", "../../../../projects/cando/include/cando/chem/aggregate.h", 2583, 99, "" );
+ define_source_info( method_kind, "CHEM:testAggregateConsistancy", "../../../../projects/cando/include/cando/chem/aggregate.h", 2336, 92, "" );
+ define_source_info( method_kind, "CHEM:addMolecule", "../../../../projects/cando/include/cando/chem/aggregate.h", 1610, 74, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Alias"), "../../../../projects/cando/include/cando/chem/alias.h", 378, 29, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Angle"), "../../../../projects/cando/include/cando/chem/angle.h", 326, 19, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AtomId"), "../../../../projects/cando/include/cando/chem/atomId.h", 1672, 71, "" );
+ define_source_info( method_kind, "CHEM:asString", "../../../../projects/cando/include/cando/chem/atomId.h", 2091, 84, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AtomIdToAtomMap"), "../../../../projects/cando/include/cando/chem/atomIdMap.h", 6436, 177, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:lookup-atom"), "../../src/chem/atomIdMap.cc", 559, 25, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AtomIndexer"), "../../../../projects/cando/include/cando/chem/atomIndexer.h", 586, 31, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:MapOfMonomerNamesToAtomIndexers"), "../../../../projects/cando/include/cando/chem/atomIndexer.h", 1830, 83, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AtomReferenceBase"), "../../../../projects/cando/include/cando/chem/atomReference.h", 468, 30, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AtomReference"), "../../../../projects/cando/include/cando/chem/atomReference.h", 903, 45, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Bond"), "../../../../projects/cando/include/cando/chem/bond.h", 355, 32, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOrderAsString"), "../../src/chem/bond.cc", 9064, 328, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOtherAtom"), "../../src/chem/bond.cc", 5798, 204, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasProperty"), "../../src/chem/bond.cc", 5610, 196, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getProperty"), "../../src/chem/bond.cc", 5341, 186, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setProperty"), "../../src/chem/bond.cc", 5141, 179, "" );
+ define_source_info( method_kind, "CHEM:setOrder", "../../../../projects/cando/include/cando/chem/bond.h", 1614, 77, "" );
+ define_source_info( method_kind, "CHEM:getOrder", "../../../../projects/cando/include/cando/chem/bond.h", 1407, 72, "" );
+ define_source_info( method_kind, "CHEM:getAtom2", "../../../../projects/cando/include/cando/chem/bond.h", 1319, 69, "" );
+ define_source_info( method_kind, "CHEM:getAtom1", "../../../../projects/cando/include/cando/chem/bond.h", 1232, 67, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:BondList"), "../../../../projects/cando/include/cando/chem/bond.h", 3596, 140, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CalculatePosition"), "../../../../projects/cando/include/cando/chem/calculatePosition.h", 349, 23, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CalculatePositionUsingInternals"), "../../../../projects/cando/include/cando/chem/calculatePosition.h", 1080, 48, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CalculatePositionAlongBond"), "../../../../projects/cando/include/cando/chem/calculatePosition.h", 2277, 86, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CalculatePositionRelativeToOrigin"), "../../../../projects/cando/include/cando/chem/calculatePosition.h", 3234, 117, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Entity"), "../../../../projects/cando/include/cando/chem/entity.h", 436, 32, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:minimalRepresentativeList"), "../../src/chem/entity.cc", 1044, 63, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:constitution"), "../../src/chem/entity.cc", 699, 46, "" );
+ define_source_info( method_kind, "CHEM:hasConstitution", "../../../../projects/cando/include/cando/chem/entity.h", 2138, 72, "" );
+ define_source_info( method_kind, "CHEM:expandedRepresentativeList", "../../../../projects/cando/include/cando/chem/entity.h", 1603, 63, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/entity.h", 969, 51, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Monomer"), "../../../../projects/cando/include/cando/chem/monomer.h", 1806, 81, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:isMonomerContextValid"), "../../src/chem/monomer.cc", 28703, 981, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeCoupling"), "../../src/chem/monomer.cc", 18896, 673, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeCouplingToMonomer"), "../../src/chem/monomer.cc", 17066, 597, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addOutCoupling"), "../../src/chem/monomer.cc", 16665, 586, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setInCoupling"), "../../src/chem/monomer.cc", 16240, 572, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addCoupling"), "../../src/chem/monomer.cc", 15488, 548, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getConstitution"), "../../src/chem/monomer.cc", 13844, 481, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasInCoupling"), "../../src/chem/monomer.cc", 12976, 443, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getInCoupling"), "../../src/chem/monomer.cc", 11937, 406, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getTopology"), "../../src/chem/monomer.cc", 10809, 358, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getSpecificMonomerContext"), "../../src/chem/monomer.cc", 8998, 301, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:checkForErrorsAndUnknownContexts"), "../../src/chem/monomer.cc", 8747, 291, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:throwIfBadConnections"), "../../src/chem/monomer.cc", 8343, 278, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:checkForBadConnections"), "../../src/chem/monomer.cc", 7565, 252, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAliasesAsString"), "../../src/chem/monomer.cc", 7213, 237, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasTemporaryResidue"), "../../src/chem/monomer.cc", 5612, 188, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setAliasesFromCons"), "../../src/chem/monomer.cc", 5407, 180, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:plugNamesAndCouplingsAsCons"), "../../src/chem/monomer.cc", 4267, 140, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getStatusMessage"), "../../src/chem/monomer.cc", 3876, 134, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getHasError"), "../../src/chem/monomer.cc", 3754, 132, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getGeneralMonomerContext"), "../../src/chem/monomer.cc", 2379, 97, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/monomer.h", 8726, 274, "" );
+ define_source_info( method_kind, "CHEM:getSequenceNumber", "../../../../projects/cando/include/cando/chem/monomer.h", 5960, 191, "" );
+ define_source_info( method_kind, "CHEM:getComment", "../../../../projects/cando/include/cando/chem/monomer.h", 5241, 173, "" );
+ define_source_info( method_kind, "CHEM:setComment", "../../../../projects/cando/include/cando/chem/monomer.h", 5147, 171, "" );
+ define_source_info( method_kind, "CHEM:recognizesAlias", "../../../../projects/cando/include/cando/chem/monomer.h", 4913, 161, "" );
+ define_source_info( method_kind, "CHEM:getTemporaryResidue", "../../../../projects/cando/include/cando/chem/monomer.h", 4425, 149, "" );
+ define_source_info( method_kind, "CHEM:isSelected", "../../../../projects/cando/include/cando/chem/monomer.h", 4239, 145, "" );
+ define_source_info( method_kind, "CHEM:setSelected", "../../../../projects/cando/include/cando/chem/monomer.h", 4150, 143, "" );
+ define_source_info( method_kind, "CHEM:getId", "../../../../projects/cando/include/cando/chem/monomer.h", 3970, 139, "" );
+ define_source_info( method_kind, "CHEM:setId", "../../../../projects/cando/include/cando/chem/monomer.h", 3886, 137, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:OneMonomer"), "../../../../projects/cando/include/cando/chem/monomer.h", 9242, 289, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:MultiMonomer"), "../../../../projects/cando/include/cando/chem/monomer.h", 9750, 309, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getInterestingAtomIndexer"), "../../src/chem/monomer.cc", 29622, 1014, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOneMonomerWithName"), "../../src/chem/monomer.cc", 29275, 1001, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOneMonomer"), "../../src/chem/monomer.cc", 25431, 895, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setGroupName"), "../../src/chem/monomer.cc", 22655, 800, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CandoDatabase"), "../../../../projects/cando/include/cando/chem/candoDatabase.h", 1263, 65, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allSpecificMonomerContexts"), "../../src/chem/candoDatabase.cc", 24657, 794, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:saveAs"), "../../src/chem/candoDatabase.cc", 22304, 734, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:recognizesContext"), "../../src/chem/candoDatabase.cc", 21950, 723, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:get"), "../../src/chem/candoDatabase.cc", 21618, 712, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomerCoordinatesWithKey"), "../../src/chem/candoDatabase.cc", 21328, 701, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:recognizesMonomerCoordinatesKey"), "../../src/chem/candoDatabase.cc", 21120, 695, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:monomerCoordinatesKeysAsCons"), "../../src/chem/candoDatabase.cc", 20592, 676, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:uniqueMonomerCoordinatesAsCons"), "../../src/chem/candoDatabase.cc", 19866, 655, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addMonomerCoordinates"), "../../src/chem/candoDatabase.cc", 18519, 623, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:constitutionNameForNameOrPdb"), "../../src/chem/candoDatabase.cc", 11546, 390, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:constitutionForNameOrPdb"), "../../src/chem/candoDatabase.cc", 11108, 380, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:recognizesNameOrPdb"), "../../src/chem/candoDatabase.cc", 10047, 349, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomersForSetOrConstitutionOrMonomerName"), "../../src/chem/candoDatabase.cc", 8672, 298, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:expandEntityNamesToTerminals"), "../../src/chem/candoDatabase.cc", 7748, 270, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:expandEntityNameToTerminals"), "../../src/chem/candoDatabase.cc", 7496, 263, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getEntity"), "../../src/chem/candoDatabase.cc", 6697, 240, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:recognizesSetOrConstitutionOrMonomerName"), "../../src/chem/candoDatabase.cc", 6511, 234, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getRepresentedEntityNameSet"), "../../src/chem/candoDatabase.cc", 6177, 226, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getEntityNameSet"), "../../src/chem/candoDatabase.cc", 5900, 218, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:recognizesFrameRecognizerName"), "../../src/chem/candoDatabase.cc", 5065, 184, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addFrameRecognizer"), "../../src/chem/candoDatabase.cc", 4853, 177, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:recognizesRepresentedEntityNameSet"), "../../src/chem/candoDatabase.cc", 3714, 139, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:representedEntityNameSetsAsCons"), "../../src/chem/candoDatabase.cc", 3440, 127, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addEntity"), "../../src/chem/candoDatabase.cc", 3079, 115, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:constitutionsAsCons"), "../../src/chem/candoDatabase.cc", 2655, 102, "" );
+ define_source_info( method_kind, "CHEM:recognizesEntityName", "../../../../projects/cando/include/cando/chem/candoDatabase.h", 5821, 203, "" );
+ define_source_info( method_kind, "CHEM:getFrameRecognizer", "../../../../projects/cando/include/cando/chem/candoDatabase.h", 4146, 153, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/candoDatabase.h", 3307, 123, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:OligomerPart-Base"), "../../../../projects/cando/include/cando/chem/candoScript.h", 550, 31, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:OligomerPart-Monomer"), "../../../../projects/cando/include/cando/chem/candoScript.h", 1034, 47, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:OligomerPart-Link"), "../../../../projects/cando/include/cando/chem/candoScript.h", 1677, 69, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ChemInfoMatch"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 574, 38, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:describeClosestMatch"), "../../src/chem/chemInfo.cc", 4462, 166, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAtomWithTag"), "../../src/chem/chemInfo.cc", 3951, 150, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAtomWithTagOrNil"), "../../src/chem/chemInfo.cc", 3719, 143, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:ChemInfoMatch-matches"), "../../src/chem/chemInfo.cc", 2286, 91, "" );
+ define_source_info( method_kind, "CHEM:tag", "../../../../projects/cando/include/cando/chem/chemInfo.h", 1409, 60, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:WildElementDict"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 1957, 81, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addWildNameMap"), "../../src/chem/chemInfo.cc", 5494, 201, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addWildName"), "../../src/chem/chemInfo.cc", 5280, 195, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ChemInfoNode"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 3903, 145, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ResidueList"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 4309, 160, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RootMatchNode"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 4623, 177, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:BondMatchNode"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 5008, 195, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AtomOrBondMatchNode"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 5446, 214, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:BondListMatchNode"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 5971, 233, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Logical"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 7617, 293, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:TagSet"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 9282, 343, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RingTest"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 10218, 376, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ResidueTest"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 11138, 410, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:BondTest"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 12165, 450, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AntechamberBondTest"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 13119, 487, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AtomTest"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 16539, 611, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AntechamberFocusAtomMatch"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 18979, 685, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Chain"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 21745, 748, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Branch"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 22742, 787, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AfterMatchBondTest"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 24433, 848, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Root"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 25391, 886, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:SmartsRoot"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 27238, 944, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AntechamberRoot"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 28520, 992, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ChemInfo"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 30892, 1058, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:asSmarts"), "../../src/chem/chemInfo.cc", 56341, 1853, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMatch"), "../../src/chem/chemInfo.cc", 10374, 351, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:matches"), "../../src/chem/chemInfo.cc", 9377, 321, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:compileAntechamber"), "../../src/chem/chemInfo.cc", 8577, 299, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:compileSmarts"), "../../src/chem/chemInfo.cc", 7528, 269, "" );
+ define_source_info( method_kind, "CHEM:getCode", "../../../../projects/cando/include/cando/chem/chemInfo.h", 32315, 1107, "" );
+ define_source_info( method_kind, "CHEM:compileSucceeded", "../../../../projects/cando/include/cando/chem/chemInfo.h", 32152, 1102, "" );
+ define_source_info( method_kind, "CHEM:compilerMessage", "../../../../projects/cando/include/cando/chem/chemInfo.h", 31632, 1084, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CDNode"), "../../../../projects/cando/include/cando/chem/chemdraw.h", 1012, 52, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CDBond"), "../../../../projects/cando/include/cando/chem/chemdraw.h", 2526, 99, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CDFragment"), "../../../../projects/cando/include/cando/chem/chemdraw.h", 3561, 134, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:asConstitutionAtoms"), "../../src/chem/chemdraw.cc", 27363, 827, "" );
+ define_source_info( method_kind, "CHEM:getMolecule", "../../../../projects/cando/include/cando/chem/chemdraw.h", 5299, 177, "" );
+ define_source_info( method_kind, "CHEM:getConstitutionName", "../../../../projects/cando/include/cando/chem/chemdraw.h", 4459, 157, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CDText"), "../../../../projects/cando/include/cando/chem/chemdraw.h", 5923, 205, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ChemDraw"), "../../../../projects/cando/include/cando/chem/chemdraw.h", 6503, 235, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getSubSetOfFragments"), "../../src/chem/chemdraw.cc", 39752, 1181, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getFragments"), "../../src/chem/chemdraw.cc", 39398, 1168, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:asAggregate"), "../../src/chem/chemdraw.cc", 38984, 1155, "" );
+ define_source_info( method_kind, "CHEM:allFragmentsAsCons", "../../../../projects/cando/include/cando/chem/chemdraw.h", 8038, 279, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CipPrioritizer"), "../../../../projects/cando/include/cando/chem/cipPrioritizer.h", 322, 24, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineStereochemicalConfigurationsForAllAtoms"), "../../src/chem/cipPrioritizer.cc", 14222, 488, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:assignCahnIngoldPrelogPriorityToAtomsRelativePriority"), "../../src/chem/cipPrioritizer.cc", 3341, 165, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Command"), "../../../../projects/cando/include/cando/chem/command.h", 425, 32, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ComplexRestraint"), "../../../../projects/cando/include/cando/chem/complexRestraints.h", 374, 28, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RestrainedExoCyclicAtom"), "../../../../projects/cando/include/cando/chem/complexRestraints.h", 1106, 64, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RestrainedPiBond"), "../../../../projects/cando/include/cando/chem/complexRestraints.h", 2293, 117, "" );
+ define_source_info( method_kind, "CHEM:setPiAtomY", "../../../../projects/cando/include/cando/chem/complexRestraints.h", 3240, 146, "" );
+ define_source_info( method_kind, "CHEM:getPiAtomY", "../../../../projects/cando/include/cando/chem/complexRestraints.h", 3148, 144, "" );
+ define_source_info( method_kind, "CHEM:setPiAtomX", "../../../../projects/cando/include/cando/chem/complexRestraints.h", 3053, 142, "" );
+ define_source_info( method_kind, "CHEM:getPiAtomX", "../../../../projects/cando/include/cando/chem/complexRestraints.h", 2961, 140, "" );
+ define_source_info( method_kind, "CHEM:setConfiguration", "../../../../projects/cando/include/cando/chem/complexRestraints.h", 2850, 137, "" );
+ define_source_info( method_kind, "CHEM:getConfiguration", "../../../../projects/cando/include/cando/chem/complexRestraints.h", 2737, 135, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:NVector"), "../../../../projects/cando/include/cando/chem/nVector.h", 413, 31, "" );
+ define_source_info( class_kind, core::magic_name("GEOM:CoordinateArray"), "../../../../projects/cando/include/cando/geom/coordinateArray.h", 656, 37, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:write-to-stream"), "../../src/geom/coordinateArray.cc", 7282, 314, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:asString"), "../../src/geom/coordinateArray.cc", 5987, 255, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:transform"), "../../src/geom/coordinateArray.cc", 5452, 231, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:multiplyByScalar"), "../../src/geom/coordinateArray.cc", 4861, 205, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:setElement"), "../../src/geom/coordinateArray.cc", 3595, 148, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:getElement"), "../../src/geom/coordinateArray.cc", 3389, 141, "" );
+ define_source_info( method_kind, "GEOM:coordinate-array-append", "../../../../projects/cando/include/cando/geom/coordinateArray.h", 2648, 102, "" );
+ define_source_info( method_kind, "GEOM:size", "../../../../projects/cando/include/cando/geom/coordinateArray.h", 2247, 94, "" );
+ define_source_info( class_kind, core::magic_name("GEOM:CoordinateArrayWithHash"), "../../../../projects/cando/include/cando/geom/coordinateArray.h", 3517, 131, "" );
+ define_source_info( method_kind, "GEOM:coordinate-array-with-hash-setHash", "../../../../projects/cando/include/cando/geom/coordinateArray.h", 4052, 148, "" );
+ define_source_info( method_kind, "GEOM:coordinate-array-with-hash-gethash", "../../../../projects/cando/include/cando/geom/coordinateArray.h", 3949, 146, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConformationCollectionEntry"), "../../../../projects/cando/include/cando/chem/conformationCollection.h", 768, 40, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConformationCollection"), "../../../../projects/cando/include/cando/chem/conformationCollection.h", 2432, 91, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConformationExplorerEntryStage"), "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 872, 45, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:extractCoordinatesFromMatter"), "../../src/chem/conformationExplorer.cc", 8558, 256, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:writeCoordinatesToMatter"), "../../src/chem/conformationExplorer.cc", 8095, 242, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setFinalCoordinatesAsMoveableWithinSuperposeEngine"), "../../src/chem/conformationExplorer.cc", 2760, 93, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setFinalCoordinatesAsFixedWithinSuperposeEngine"), "../../src/chem/conformationExplorer.cc", 2396, 84, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setSuperposableCoordinatesAsMoveableWithinSuperposeEngine"), "../../src/chem/conformationExplorer.cc", 1985, 74, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setSuperposableCoordinatesAsFixedWithinSuperposeEngine"), "../../src/chem/conformationExplorer.cc", 1571, 65, "" );
+ define_source_info( method_kind, "CHEM:getBinder", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 3343, 108, "" );
+ define_source_info( method_kind, "CHEM:setComplete", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 3188, 104, "" );
+ define_source_info( method_kind, "CHEM:isComplete", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 3103, 102, "" );
+ define_source_info( method_kind, "CHEM:setStageName", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 2998, 99, "" );
+ define_source_info( method_kind, "CHEM:getStageName", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 2907, 97, "" );
+ define_source_info( method_kind, "CHEM:setBasedOnStageName", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 2786, 94, "" );
+ define_source_info( method_kind, "CHEM:getBasedOnStageName", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 2674, 92, "" );
+ define_source_info( method_kind, "CHEM:setModel", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 2352, 82, "" );
+ define_source_info( method_kind, "CHEM:getModel", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 2273, 80, "" );
+ define_source_info( method_kind, "CHEM:setExternalInterfaceName", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 2139, 77, "" );
+ define_source_info( method_kind, "CHEM:getExternalInterfaceName", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 2012, 75, "" );
+ define_source_info( method_kind, "CHEM:setEnergyKCal", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 1892, 72, "" );
+ define_source_info( method_kind, "CHEM:getEnergyKCal", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 1797, 70, "" );
+ define_source_info( method_kind, "CHEM:getFinalCoordinates", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 1658, 66, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConformationExplorerEntry"), "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 4610, 152, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getEntryStage"), "../../src/chem/conformationExplorer.cc", 13432, 441, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasEntryStageWithName"), "../../src/chem/conformationExplorer.cc", 13128, 429, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getLastCompleteEntryStage"), "../../src/chem/conformationExplorer.cc", 12554, 405, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOrCreateLastIncompleteEntryStage"), "../../src/chem/conformationExplorer.cc", 11845, 379, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:alreadyHasLastCompleteStage"), "../../src/chem/conformationExplorer.cc", 11520, 370, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getLastEntryStage"), "../../src/chem/conformationExplorer.cc", 11212, 361, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:lastEntryStageName"), "../../src/chem/conformationExplorer.cc", 10972, 352, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:createEntryStage"), "../../src/chem/conformationExplorer.cc", 10302, 330, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setSelectedStage"), "../../src/chem/conformationExplorer.cc", 9955, 319, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getSelectedStage"), "../../src/chem/conformationExplorer.cc", 9677, 309, "" );
+ define_source_info( method_kind, "CHEM:getUniqueEntryIndex", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 6419, 191, "" );
+ define_source_info( method_kind, "CHEM:hasSelectedStage", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 5934, 182, "" );
+ define_source_info( method_kind, "CHEM:getConformationExplorer", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 5438, 171, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConformationExplorer"), "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 7529, 235, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:sortByEnergyAscendingForStage"), "../../src/chem/conformationExplorer.cc", 29766, 1036, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:alignAllConformationsToTheFirstForStage"), "../../src/chem/conformationExplorer.cc", 28472, 998, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:findClosestMatchingConformation"), "../../src/chem/conformationExplorer.cc", 27490, 962, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getClosestMatchingEntryStage"), "../../src/chem/conformationExplorer.cc", 26479, 935, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getClosestMatchingEntry"), "../../src/chem/conformationExplorer.cc", 26210, 928, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:createEntry"), "../../src/chem/conformationExplorer.cc", 23644, 830, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:firstEntry"), "../../src/chem/conformationExplorer.cc", 23443, 819, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getEntry"), "../../src/chem/conformationExplorer.cc", 23192, 810, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getEntryIndex"), "../../src/chem/conformationExplorer.cc", 22813, 792, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:saveAs"), "../../src/chem/conformationExplorer.cc", 22480, 780, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:sort"), "../../src/chem/conformationExplorer.cc", 22150, 765, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:superposeAllHeavyAtoms"), "../../src/chem/conformationExplorer.cc", 20655, 707, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addSuperposeAtom"), "../../src/chem/conformationExplorer.cc", 19857, 679, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:clearSuperposeAtoms"), "../../src/chem/conformationExplorer.cc", 19648, 670, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:entriesAsCons"), "../../src/chem/conformationExplorer.cc", 17374, 582, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:appendEntry"), "../../src/chem/conformationExplorer.cc", 17116, 574, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMatter"), "../../src/chem/conformationExplorer.cc", 16778, 556, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:clearEntries"), "../../src/chem/conformationExplorer.cc", 15082, 505, "" );
+ define_source_info( method_kind, "CHEM:numberOfEntries", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 11440, 348, "" );
+ define_source_info( method_kind, "CHEM:getMatter", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 9428, 288, "" );
+ define_source_info( method_kind, "CHEM:getBinder", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 9163, 279, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConformationExplorerMatch"), "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 12546, 392, "" );
+ define_source_info( method_kind, "CHEM:getClosestMatchIndex", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 13400, 415, "" );
+ define_source_info( method_kind, "CHEM:getClosestMatchRms", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 13224, 412, "" );
+ define_source_info( method_kind, "CHEM:getMatches", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 13001, 408, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Constitution"), "../../../../projects/cando/include/cando/chem/constitution.h", 2911, 84, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:asGroup"), "../../src/chem/constitution.cc", 16417, 496, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getTopologyForContext"), "../../src/chem/constitution.cc", 16039, 478, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:topologyWithName"), "../../src/chem/constitution.cc", 15205, 447, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:simplestTopologyWithPlugNamed"), "../../src/chem/constitution.cc", 14121, 408, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:createResidueForStereoisomerName"), "../../src/chem/constitution.cc", 13028, 366, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:plugsWithMatesAsCons"), "../../src/chem/constitution.cc", 11981, 329, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:topologiesAsCons"), "../../src/chem/constitution.cc", 11365, 313, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:stereoisomersAsCons"), "../../src/chem/constitution.cc", 11202, 311, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getPdbNamesAsStringList"), "../../src/chem/constitution.cc", 9883, 267, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomerNameAsStringSet"), "../../src/chem/constitution.cc", 9688, 261, "" );
+ define_source_info( method_kind, "CHEM:getPlugNamed", "../../../../projects/cando/include/cando/chem/constitution.h", 7796, 212, "" );
+ define_source_info( method_kind, "CHEM:hasPlugNamed", "../../../../projects/cando/include/cando/chem/constitution.h", 7665, 210, "" );
+ define_source_info( method_kind, "CHEM:getComment", "../../../../projects/cando/include/cando/chem/constitution.h", 7494, 205, "" );
+ define_source_info( method_kind, "CHEM:setComment", "../../../../projects/cando/include/cando/chem/constitution.h", 7386, 203, "" );
+ define_source_info( method_kind, "CHEM:getConstitutionAtoms", "../../../../projects/cando/include/cando/chem/constitution.h", 6665, 182, "" );
+ define_source_info( method_kind, "CHEM:setMetaConstitutionName", "../../../../projects/cando/include/cando/chem/constitution.h", 6348, 172, "" );
+ define_source_info( method_kind, "CHEM:getMetaConstitutionName", "../../../../projects/cando/include/cando/chem/constitution.h", 6217, 170, "" );
+ define_source_info( method_kind, "CHEM:setConstitutionName", "../../../../projects/cando/include/cando/chem/constitution.h", 6098, 167, "" );
+ define_source_info( method_kind, "CHEM:constitutionName", "../../../../projects/cando/include/cando/chem/constitution.h", 5984, 165, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConstitutionBond"), "../../../../projects/cando/include/cando/chem/constitutionAtoms.h", 553, 30, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConstitutionAtom"), "../../../../projects/cando/include/cando/chem/constitutionAtoms.h", 1353, 58, "" );
+ define_source_info( method_kind, "CHEM:atomName", "../../../../projects/cando/include/cando/chem/constitutionAtoms.h", 1949, 74, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConstitutionVirtualAtom"), "../../../../projects/cando/include/cando/chem/constitutionAtoms.h", 2399, 86, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConstitutionAtoms"), "../../../../projects/cando/include/cando/chem/constitutionAtoms.h", 3324, 111, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:makeResidue"), "../../src/chem/constitutionAtoms.cc", 8652, 306, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:constitution-atoms-index"), "../../src/chem/constitutionAtoms.cc", 8315, 295, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atomWithId"), "../../src/chem/constitutionAtoms.cc", 8123, 289, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atomWithName"), "../../src/chem/constitutionAtoms.cc", 7738, 277, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atomNamesAsSymbolSet"), "../../src/chem/constitutionAtoms.cc", 7071, 250, "" );
+ define_source_info( method_kind, "CHEM:setNetCharge", "../../../../projects/cando/include/cando/chem/constitutionAtoms.h", 4543, 145, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CoordinateSystem"), "../../../../projects/cando/include/cando/chem/coordSys.h", 657, 40, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:sameAs"), "../../src/chem/coordSys.cc", 28571, 944, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:copy"), "../../src/chem/coordSys.cc", 28380, 936, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:dump"), "../../src/chem/coordSys.cc", 27526, 916, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:transformWithMatrix"), "../../src/chem/coordSys.cc", 25956, 849, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineCanonical"), "../../src/chem/coordSys.cc", 25366, 812, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineFromCoordinateSystem"), "../../src/chem/coordSys.cc", 25124, 802, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineRandom"), "../../src/chem/coordSys.cc", 24251, 772, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineForVectorsOriginXDirZDir"), "../../src/chem/coordSys.cc", 23883, 757, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineForVectorsOriginZDirXZPlane"), "../../src/chem/coordSys.cc", 23207, 731, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineForVectorsOriginXDirXYPlane"), "../../src/chem/coordSys.cc", 22509, 708, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineForVectorsOriginXDirYDir"), "../../src/chem/coordSys.cc", 21894, 686, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineForAtomVectors"), "../../src/chem/coordSys.cc", 19267, 600, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineForAtoms"), "../../src/chem/coordSys.cc", 18193, 571, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:canonical"), "../../src/chem/coordSys.cc", 17710, 553, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:matrixToCanonical"), "../../src/chem/coordSys.cc", 16862, 518, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:matrixFromCanonical"), "../../src/chem/coordSys.cc", 15972, 485, "" );
+ define_source_info( method_kind, "CHEM:getZ", "../../../../projects/cando/include/cando/chem/coordSys.h", 1168, 57, "" );
+ define_source_info( method_kind, "CHEM:getY", "../../../../projects/cando/include/cando/chem/coordSys.h", 1097, 55, "" );
+ define_source_info( method_kind, "CHEM:getX", "../../../../projects/cando/include/cando/chem/coordSys.h", 1026, 53, "" );
+ define_source_info( method_kind, "CHEM:getOrigin", "../../../../projects/cando/include/cando/chem/coordSys.h", 946, 51, "" );
+ define_source_info( method_kind, "CHEM:setOrigin", "../../../../projects/cando/include/cando/chem/coordSys.h", 856, 49, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Coupling"), "../../../../projects/cando/include/cando/chem/coupling.h", 640, 55, "" );
+ define_source_info( method_kind, "CHEM:doCoupling", "../../../../projects/cando/include/cando/chem/coupling.h", 2224, 101, "" );
+ define_source_info( method_kind, "CHEM:Coupling-checkForErrors", "../../../../projects/cando/include/cando/chem/coupling.h", 1991, 96, "" );
+ define_source_info( method_kind, "CHEM:throwIfBadConnections", "../../../../projects/cando/include/cando/chem/coupling.h", 1861, 94, "" );
+ define_source_info( method_kind, "CHEM:getHasError", "../../../../projects/cando/include/cando/chem/coupling.h", 1708, 90, "" );
+ define_source_info( method_kind, "CHEM:setSelected", "../../../../projects/cando/include/cando/chem/coupling.h", 1567, 86, "" );
+ define_source_info( method_kind, "CHEM:isSelected", "../../../../projects/cando/include/cando/chem/coupling.h", 1482, 84, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:DirectionalCoupling"), "../../../../projects/cando/include/cando/chem/coupling.h", 2550, 117, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOtherSideMonomer"), "../../src/chem/coupling.cc", 10253, 412, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setOutMonomer"), "../../src/chem/coupling.cc", 9762, 389, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setInMonomer"), "../../src/chem/coupling.cc", 9566, 382, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setName"), "../../src/chem/coupling.cc", 8558, 349, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOutMonomerPlugName"), "../../src/chem/coupling.cc", 7781, 310, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getInMonomerPlugName"), "../../src/chem/coupling.cc", 7521, 300, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOutMonomer"), "../../src/chem/coupling.cc", 6999, 280, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getInMonomer"), "../../src/chem/coupling.cc", 6561, 264, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:throwIfBadConnections"), "../../src/chem/coupling.cc", 4335, 194, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/coupling.h", 4719, 181, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RingCoupling"), "../../../../projects/cando/include/cando/chem/coupling.h", 5619, 213, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getPlug2"), "../../src/chem/coupling.cc", 19120, 705, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getPlug1"), "../../src/chem/coupling.cc", 18964, 700, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOtherSideMonomer"), "../../src/chem/coupling.cc", 16343, 612, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomer2"), "../../src/chem/coupling.cc", 15924, 597, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMonomer2"), "../../src/chem/coupling.cc", 15793, 591, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomer1"), "../../src/chem/coupling.cc", 15379, 575, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMonomer1"), "../../src/chem/coupling.cc", 15248, 569, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AtomTable"), "../../../../projects/cando/include/cando/chem/energyAtomTable.h", 2195, 75, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addAtomInfo"), "../../src/chem/energyAtomTable.cc", 3890, 128, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyComponent"), "../../../../projects/cando/include/cando/chem/energyComponent.h", 6514, 275, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:debugLogAsString"), "../../src/chem/energyComponent.cc", 1978, 74, "" );
+ define_source_info( method_kind, "CHEM:getEnergy", "../../../../projects/cando/include/cando/chem/energyComponent.h", 8106, 320, "" );
+ define_source_info( method_kind, "CHEM:getErrorThreshold", "../../../../projects/cando/include/cando/chem/energyComponent.h", 7889, 312, "" );
+ define_source_info( method_kind, "CHEM:setErrorThreshold", "../../../../projects/cando/include/cando/chem/energyComponent.h", 7780, 310, "" );
+ define_source_info( method_kind, "CHEM:setDebug_NumberOfTermsToCalculate", "../../../../projects/cando/include/cando/chem/energyComponent.h", 7601, 307, "" );
+ define_source_info( method_kind, "CHEM:disableDebug", "../../../../projects/cando/include/cando/chem/energyComponent.h", 7489, 305, "" );
+ define_source_info( method_kind, "CHEM:enableDebug", "../../../../projects/cando/include/cando/chem/energyComponent.h", 7400, 303, "" );
+ define_source_info( method_kind, "CHEM:disable", "../../../../projects/cando/include/cando/chem/energyComponent.h", 7319, 301, "" );
+ define_source_info( method_kind, "CHEM:enable", "../../../../projects/cando/include/cando/chem/energyComponent.h", 7244, 299, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyAnchorRestraint"), "../../../../projects/cando/include/cando/chem/energyAnchorRestraint.h", 1581, 76, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyAngle"), "../../../../projects/cando/include/cando/chem/energyAngle.h", 2653, 102, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyChiralRestraint"), "../../../../projects/cando/include/cando/chem/energyChiralRestraint.h", 1929, 93, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyDihedral"), "../../../../projects/cando/include/cando/chem/energyDihedral.h", 3448, 112, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyFixedNonbondRestraint"), "../../../../projects/cando/include/cando/chem/energyFixedNonbond.h", 2200, 91, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyFunction"), "../../../../projects/cando/include/cando/chem/energyFunction.h", 1927, 110, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:disableDebug"), "../../src/chem/energyFunction.cc", 72106, 2069, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:enableDebug"), "../../src/chem/energyFunction.cc", 71976, 2063, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:debugLogAsString"), "../../src/chem/energyFunction.cc", 71291, 2045, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMissingParameters"), "../../src/chem/energyFunction.cc", 70995, 2032, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasMissingParameters"), "../../src/chem/energyFunction.cc", 70802, 2022, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:summarizeEnergyAsString"), "../../src/chem/energyFunction.cc", 70061, 2001, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:summarizeBeyondThresholdInteractionsAsString"), "../../src/chem/energyFunction.cc", 69245, 1981, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:calculateEnergyAndForce"), "../../src/chem/energyFunction.cc", 67867, 1932, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:calculateEnergy"), "../../src/chem/energyFunction.cc", 67604, 1922, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:writeCoordinatesAndForceToAtoms"), "../../src/chem/energyFunction.cc", 67256, 1907, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:writeForceToAtoms"), "../../src/chem/energyFunction.cc", 66678, 1889, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:writeCoordinatesToAtoms"), "../../src/chem/energyFunction.cc", 66034, 1871, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:extractCoordinatesFromAtoms"), "../../src/chem/energyFunction.cc", 65391, 1853, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addTermsForListOfRestraints"), "../../src/chem/energyFunction.cc", 65036, 1845, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineForMatter"), "../../src/chem/energyFunction.cc", 49322, 1362, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:dumpTerms"), "../../src/chem/energyFunction.cc", 41964, 1187, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:evaluateNumericalHessian"), "../../src/chem/energyFunction.cc", 38202, 1078, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:evaluateNumericalForce"), "../../src/chem/energyFunction.cc", 37843, 1063, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:calculateNumericalSecondDerivative"), "../../src/chem/energyFunction.cc", 36394, 1012, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:calculateNumericalDerivative"), "../../src/chem/energyFunction.cc", 35912, 996, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:evaluateEnergyForceFullHessianForDebugging"), "../../src/chem/energyFunction.cc", 35221, 971, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:evaluateEnergyForceFullHessian"), "../../src/chem/energyFunction.cc", 34545, 947, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:evaluateEnergyForce"), "../../src/chem/energyFunction.cc", 33934, 925, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:evaluateEnergy"), "../../src/chem/energyFunction.cc", 33442, 906, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:energyTermsEnabled"), "../../src/chem/energyFunction.cc", 32759, 872, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:checkForBeyondThresholdInteractions"), "../../src/chem/energyFunction.cc", 31447, 834, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition"), "../../src/chem/energyFunction.cc", 31009, 816, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:energyComponentsAsString"), "../../src/chem/energyFunction.cc", 28743, 768, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:evaluateAll"), "../../src/chem/energyFunction.cc", 22984, 605, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:countTermsBeyondThreshold"), "../../src/chem/energyFunction.cc", 22706, 588, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setupHessianPreconditioner"), "../../src/chem/energyFunction.cc", 21506, 554, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setOptions"), "../../src/chem/energyFunction.cc", 19296, 479, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setOption"), "../../src/chem/energyFunction.cc", 18288, 443, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getNVectorSize"), "../../src/chem/energyFunction.cc", 17912, 418, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:useDefaultSettings"), "../../src/chem/energyFunction.cc", 14604, 342, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/energyFunction.h", 7340, 253, "" );
+ define_source_info( method_kind, "CHEM:setName", "../../../../projects/cando/include/cando/chem/energyFunction.h", 7249, 251, "" );
+ define_source_info( method_kind, "CHEM:getMessage", "../../../../projects/cando/include/cando/chem/energyFunction.h", 6882, 238, "" );
+ define_source_info( method_kind, "CHEM:getTotalEnergy", "../../../../projects/cando/include/cando/chem/energyFunction.h", 6504, 226, "" );
+ define_source_info( method_kind, "CHEM:getFixedNonbondRestraintComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 6083, 216, "" );
+ define_source_info( method_kind, "CHEM:getImproperRestraintComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 5923, 214, "" );
+ define_source_info( method_kind, "CHEM:getAnchorRestraintComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 5773, 212, "" );
+ define_source_info( method_kind, "CHEM:getChiralRestraintComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 5625, 210, "" );
+ define_source_info( method_kind, "CHEM:getNonbondComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 5501, 208, "" );
+ define_source_info( method_kind, "CHEM:getDihedralComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 5382, 206, "" );
+ define_source_info( method_kind, "CHEM:getAngleComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 5271, 204, "" );
+ define_source_info( method_kind, "CHEM:getStretchComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 5127, 201, "" );
+ define_source_info( method_kind, "CHEM:getMatter", "../../../../projects/cando/include/cando/chem/energyFunction.h", 4755, 188, "" );
+ define_source_info( method_kind, "CHEM:atomTable", "../../../../projects/cando/include/cando/chem/energyFunction.h", 4019, 173, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyImproperRestraint"), "../../../../projects/cando/include/cando/chem/energyImproperRestraint.h", 2013, 89, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyNonbond"), "../../../../projects/cando/include/cando/chem/energyNonbond.h", 2493, 102, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyStretch"), "../../../../projects/cando/include/cando/chem/energyStretch.h", 2297, 99, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StatusTracker"), "../../../../projects/cando/include/cando/chem/statusTracker.h", 352, 28, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EntityNameSetBase"), "../../../../projects/cando/include/cando/chem/entityNameSet.h", 896, 42, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomerNamesOrdered"), "../../src/chem/entityNameSet.cc", 11702, 451, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasInterestingAtomAlias"), "../../src/chem/entityNameSet.cc", 11486, 443, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getUnrecognizedMonomerNamesOrdered"), "../../src/chem/entityNameSet.cc", 10940, 421, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:recognizesNameOrPdb"), "../../src/chem/entityNameSet.cc", 10289, 398, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMonomerNameOrPdb"), "../../src/chem/entityNameSet.cc", 9171, 357, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOnlyMonomerName"), "../../src/chem/entityNameSet.cc", 8788, 342, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomerNamesAsString"), "../../src/chem/entityNameSet.cc", 8522, 333, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomerNames"), "../../src/chem/entityNameSet.cc", 8307, 325, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addMonomerNameNoChecks"), "../../src/chem/entityNameSet.cc", 6733, 258, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setGroupNames"), "../../src/chem/entityNameSet.cc", 6571, 251, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addMonomerName"), "../../src/chem/entityNameSet.cc", 6128, 235, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:contractEntityNames"), "../../src/chem/entityNameSet.cc", 4010, 164, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:expandToTerminalEntityNames"), "../../src/chem/entityNameSet.cc", 3766, 156, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:expandedNameSet"), "../../src/chem/entityNameSet.cc", 3241, 139, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getInterestingAtomAliasIndex"), "../../src/chem/entityNameSet.cc", 2863, 122, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getUnExpandedNames"), "../../src/chem/entityNameSet.cc", 995, 57, "" );
+ define_source_info( method_kind, "CHEM:testEntityNameSetBase", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 5088, 164, "" );
+ define_source_info( method_kind, "CHEM:getInterestingAtomAliasesAsString", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 4649, 148, "" );
+ define_source_info( method_kind, "CHEM:getInterestingAtomNamesForMonomerName", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 4203, 141, "" );
+ define_source_info( method_kind, "CHEM:setInterestingAtomNamesForMonomerName", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 3987, 139, "" );
+ define_source_info( method_kind, "CHEM:supportsInterestingAtomAliases", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 3856, 137, "" );
+ define_source_info( method_kind, "CHEM:getMonomerNameWithAtoms", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 1945, 80, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EntityNameSet"), "../../../../projects/cando/include/cando/chem/entityNameSet.h", 5493, 180, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 6026, 200, "" );
+ define_source_info( method_kind, "CHEM:setName", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 5934, 198, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EntityNameSetWithCap"), "../../../../projects/cando/include/cando/chem/entityNameSet.h", 6277, 211, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addGroupName"), "../../src/chem/entityNameSet.cc", 14260, 579, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFParameter"), "../../../../projects/cando/include/cando/chem/ffBaseDb.h", 2163, 105, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFBaseDb"), "../../../../projects/cando/include/cando/chem/ffBaseDb.h", 3005, 134, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFAngle"), "../../../../projects/cando/include/cando/chem/ffAngleDb.h", 757, 42, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFAngleDb"), "../../../../projects/cando/include/cando/chem/ffAngleDb.h", 1920, 86, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFItor"), "../../../../projects/cando/include/cando/chem/ffItorDb.h", 662, 40, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFItorDb"), "../../../../projects/cando/include/cando/chem/ffItorDb.h", 1949, 83, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFNonbondCrossTermTable"), "../../../../projects/cando/include/cando/chem/ffNonbondDb.h", 1042, 59, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFNonbond"), "../../../../projects/cando/include/cando/chem/ffNonbondDb.h", 2602, 112, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFNonbondDb"), "../../../../projects/cando/include/cando/chem/ffNonbondDb.h", 4075, 164, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:numberOfTypes"), "../../src/chem/ffNonbondDb.cc", 8653, 301, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:findTypeIndex"), "../../src/chem/ffNonbondDb.cc", 7763, 266, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFPtor"), "../../../../projects/cando/include/cando/chem/ffPtorDb.h", 640, 43, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFPtorDb"), "../../../../projects/cando/include/cando/chem/ffPtorDb.h", 2065, 86, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFStretch"), "../../../../projects/cando/include/cando/chem/ffStretchDb.h", 656, 41, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFStretchDb"), "../../../../projects/cando/include/cando/chem/ffStretchDb.h", 2030, 95, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:findTerm"), "../../src/chem/ffStretchDb.cc", 2219, 106, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFTypesDb"), "../../../../projects/cando/include/cando/chem/ffTypesDb.h", 954, 46, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:FFTypes-getRule"), "../../src/chem/ffTypesDb.cc", 2130, 88, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:assignTypes"), "../../src/chem/ffTypesDb.cc", 552, 39, "" );
+ define_source_info( method_kind, "CHEM:FFTypes-numberOfRules", "../../../../projects/cando/include/cando/chem/ffTypesDb.h", 1295, 59, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFVdw"), "../../../../projects/cando/include/cando/chem/ffVdwDb.h", 720, 46, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFVdwDb"), "../../../../projects/cando/include/cando/chem/ffVdwDb.h", 1363, 72, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:InfoDb"), "../../../../projects/cando/include/cando/chem/forceField.h", 1278, 58, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ForceField"), "../../../../projects/cando/include/cando/chem/forceField.h", 1869, 80, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:assignTypes"), "../../src/chem/forceField.cc", 2668, 99, "" );
+ define_source_info( method_kind, "CHEM:getVdwDb", "../../../../projects/cando/include/cando/chem/forceField.h", 3452, 127, "" );
+ define_source_info( method_kind, "CHEM:getNonbondDb", "../../../../projects/cando/include/cando/chem/forceField.h", 3358, 125, "" );
+ define_source_info( method_kind, "CHEM:getPtorDb", "../../../../projects/cando/include/cando/chem/forceField.h", 3270, 123, "" );
+ define_source_info( method_kind, "CHEM:getItorDb", "../../../../projects/cando/include/cando/chem/forceField.h", 3185, 121, "" );
+ define_source_info( method_kind, "CHEM:getAngleDb", "../../../../projects/cando/include/cando/chem/forceField.h", 3097, 119, "" );
+ define_source_info( method_kind, "CHEM:getStretchDb", "../../../../projects/cando/include/cando/chem/forceField.h", 3001, 117, "" );
+ define_source_info( method_kind, "CHEM:getTypes", "../../../../projects/cando/include/cando/chem/forceField.h", 2911, 114, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FrameRecognizer"), "../../../../projects/cando/include/cando/chem/frameRecognizer.h", 407, 24, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getGroupName"), "../../src/chem/frameRecognizer.cc", 2590, 113, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getRecognizerName"), "../../src/chem/frameRecognizer.cc", 2367, 102, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:depth"), "../../src/chem/frameRecognizer.cc", 2200, 94, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMatch"), "../../src/chem/frameRecognizer.cc", 1969, 81, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:recognizes"), "../../src/chem/frameRecognizer.cc", 1743, 72, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:compileSmarts"), "../../src/chem/frameRecognizer.cc", 386, 19, "" );
+ define_source_info( method_kind, "CHEM:getSmarts", "../../../../projects/cando/include/cando/chem/frameRecognizer.h", 1562, 65, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ImproperTorsion"), "../../../../projects/cando/include/cando/chem/improperTorsion.h", 523, 21, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:IterateMatter"), "../../../../projects/cando/include/cando/chem/iterateMatter.h", 339, 27, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:advance"), "../../src/chem/iterateMatter.cc", 2139, 107, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:initTopAndGoal"), "../../src/chem/iterateMatter.cc", 1689, 82, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:IterateAtoms"), "../../../../projects/cando/include/cando/chem/iterateMatter.h", 1251, 72, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:IterateResidues"), "../../../../projects/cando/include/cando/chem/iterateMatter.h", 1793, 98, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:IterateBonds"), "../../../../projects/cando/include/cando/chem/iterateMatter.h", 2168, 118, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getBondOrder"), "../../src/chem/iterateMatter.cc", 5549, 267, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAtom2"), "../../src/chem/iterateMatter.cc", 5414, 261, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAtom1"), "../../src/chem/iterateMatter.cc", 5283, 255, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:IterateRestraints"), "../../../../projects/cando/include/cando/chem/iterateRestraints.h", 390, 26, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AbstractLargeSquareMatrix"), "../../../../projects/cando/include/cando/chem/largeSquareMatrix.h", 1134, 50, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FullLargeSquareMatrix"), "../../../../projects/cando/include/cando/chem/largeSquareMatrix.h", 3166, 124, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:SparseLargeSquareMatrix"), "../../../../projects/cando/include/cando/chem/largeSquareMatrix.h", 4969, 177, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:MacroModelFile"), "../../../../projects/cando/include/cando/chem/macroModel.h", 530, 37, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Minimizer"), "../../../../projects/cando/include/cando/chem/minimizer.h", 2259, 97, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:restart"), "../../src/chem/minimizer.cc", 72809, 2416, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:configurationAsString"), "../../src/chem/minimizer.cc", 71812, 2399, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:writeIntermediateResultsToEnergyFunction"), "../../src/chem/minimizer.cc", 70557, 2373, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:minimize"), "../../src/chem/minimizer.cc", 68500, 2311, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:resetAndMinimize"), "../../src/chem/minimizer.cc", 68341, 2303, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:minimizeConjugateGradient"), "../../src/chem/minimizer.cc", 66652, 2251, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:minimizeSteepestDescent"), "../../src/chem/minimizer.cc", 65173, 2203, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:evaluateEnergyAndForceManyTimes"), "../../src/chem/minimizer.cc", 64671, 2187, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setEnergyFunction"), "../../src/chem/minimizer.cc", 64481, 2180, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:disablePrintIntermediateResults"), "../../src/chem/minimizer.cc", 64308, 2171, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:enablePrintIntermediateResults"), "../../src/chem/minimizer.cc", 64123, 2162, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:useDefaultSettings"), "../../src/chem/minimizer.cc", 63097, 2133, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:throwMinimizerError"), "../../src/chem/minimizer.cc", 26987, 849, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:throwMinimizerStuck"), "../../src/chem/minimizer.cc", 26809, 842, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:throwMinimizerExceededMaxSteps"), "../../src/chem/minimizer.cc", 26597, 836, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:statusAsString"), "../../src/chem/minimizer.cc", 11737, 323, "" );
+ define_source_info( method_kind, "CHEM:setTruncatedNewtonTolerance", "../../../../projects/cando/include/cando/chem/minimizer.h", 8309, 285, "" );
+ define_source_info( method_kind, "CHEM:setConjugateGradientTolerance", "../../../../projects/cando/include/cando/chem/minimizer.h", 8168, 283, "" );
+ define_source_info( method_kind, "CHEM:setSteepestDescentTolerance", "../../../../projects/cando/include/cando/chem/minimizer.h", 8029, 281, "" );
+ define_source_info( method_kind, "CHEM:setMaximumNumberOfTruncatedNewtonSteps", "../../../../projects/cando/include/cando/chem/minimizer.h", 7881, 279, "" );
+ define_source_info( method_kind, "CHEM:setMaximumNumberOfConjugateGradientSteps", "../../../../projects/cando/include/cando/chem/minimizer.h", 7718, 277, "" );
+ define_source_info( method_kind, "CHEM:setMaximumNumberOfSteepestDescentSteps", "../../../../projects/cando/include/cando/chem/minimizer.h", 7556, 275, "" );
+ define_source_info( method_kind, "CHEM:getRMSForce", "../../../../projects/cando/include/cando/chem/minimizer.h", 7291, 266, "" );
+ define_source_info( method_kind, "CHEM:getIteration", "../../../../projects/cando/include/cando/chem/minimizer.h", 7146, 261, "" );
+ define_source_info( method_kind, "CHEM:statusMessage", "../../../../projects/cando/include/cando/chem/minimizer.h", 7049, 258, "" );
+ define_source_info( method_kind, "CHEM:status", "../../../../projects/cando/include/cando/chem/minimizer.h", 6959, 256, "" );
+ define_source_info( method_kind, "CHEM:getEnergyFunction", "../../../../projects/cando/include/cando/chem/minimizer.h", 6684, 249, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:NumericalFunction"), "../../../../projects/cando/include/cando/chem/numericalFunction.h", 608, 40, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ReportBase"), "../../../../projects/cando/include/cando/chem/minimizerLog.h", 438, 27, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:MessageReport"), "../../../../projects/cando/include/cando/chem/minimizerLog.h", 720, 42, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ForceMatchReport"), "../../../../projects/cando/include/cando/chem/minimizerLog.h", 1094, 59, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StepReport"), "../../../../projects/cando/include/cando/chem/minimizerLog.h", 1429, 79, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:MinimizerLog"), "../../../../projects/cando/include/cando/chem/minimizerLog.h", 3178, 149, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:MonomerContext"), "../../../../projects/cando/include/cando/chem/monomerContext.h", 1234, 64, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getNeighbor"), "../../src/chem/monomerContext.cc", 11365, 384, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getPlugNames"), "../../src/chem/monomerContext.cc", 11020, 371, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setFocusFromMonomer"), "../../src/chem/monomerContext.cc", 10734, 359, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:recognizesMonomerAndEnvironment"), "../../src/chem/monomerContext.cc", 9180, 316, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAllSpecificContexts"), "../../src/chem/monomerContext.cc", 6474, 233, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAllSpecificKeys"), "../../src/chem/monomerContext.cc", 5632, 209, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getKey"), "../../src/chem/monomerContext.cc", 5157, 192, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addNeighbor"), "../../src/chem/monomerContext.cc", 1969, 87, "" );
+ define_source_info( method_kind, "CHEM:getFocus", "../../../../projects/cando/include/cando/chem/monomerContext.h", 2277, 99, "" );
+ define_source_info( method_kind, "CHEM:setFocus", "../../../../projects/cando/include/cando/chem/monomerContext.h", 1823, 87, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:MonomerCoordinates"), "../../../../projects/cando/include/cando/chem/monomerCoordinates.h", 451, 31, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:testExtraction"), "../../src/chem/monomerCoordinates.cc", 7332, 234, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineFromConformationExplorer"), "../../src/chem/monomerCoordinates.cc", 6752, 215, "" );
+ define_source_info( method_kind, "CHEM:getContext", "../../../../projects/cando/include/cando/chem/monomerCoordinates.h", 1415, 64, "" );
+ define_source_info( method_kind, "CHEM:getComment", "../../../../projects/cando/include/cando/chem/monomerCoordinates.h", 1254, 60, "" );
+ define_source_info( method_kind, "CHEM:setComment", "../../../../projects/cando/include/cando/chem/monomerCoordinates.h", 1147, 58, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:MonomerPack"), "../../../../projects/cando/include/cando/chem/monomerPack.h", 547, 28, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeMonomerName"), "../../src/chem/monomerPack.cc", 10688, 337, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Oligomer"), "../../../../projects/cando/include/cando/chem/oligomer.h", 1025, 62, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allSpecificMonomerContexts"), "../../src/chem/oligomer.cc", 26149, 913, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:sequenceAsFileName"), "../../src/chem/oligomer.cc", 25736, 900, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:sequenceAsString"), "../../src/chem/oligomer.cc", 23333, 825, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getFirstMonomer"), "../../src/chem/oligomer.cc", 21722, 773, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:numberOfSequences"), "../../src/chem/oligomer.cc", 20866, 739, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getErrorMessage"), "../../src/chem/oligomer.cc", 17669, 619, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMolecule"), "../../src/chem/oligomer.cc", 16537, 580, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:ringCouple"), "../../src/chem/oligomer.cc", 15017, 526, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:couple"), "../../src/chem/oligomer.cc", 13448, 483, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setVerbose"), "../../src/chem/oligomer.cc", 12998, 466, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:throwIfBadConnections"), "../../src/chem/oligomer.cc", 12551, 443, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:rootMonomer"), "../../src/chem/oligomer.cc", 11846, 413, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:Oligomer-addCoupling"), "../../src/chem/oligomer.cc", 11495, 401, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeLeafMonomer"), "../../src/chem/oligomer.cc", 10463, 372, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:updateMultiMonomers"), "../../src/chem/oligomer.cc", 9259, 329, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:checkForErrors"), "../../src/chem/oligomer.cc", 8546, 301, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:Oligomer-removeCoupling"), "../../src/chem/oligomer.cc", 8189, 286, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeMonomer"), "../../src/chem/oligomer.cc", 7743, 268, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomerWithId"), "../../src/chem/oligomer.cc", 7349, 252, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasMonomerWithId"), "../../src/chem/oligomer.cc", 7045, 240, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addMonomer"), "../../src/chem/oligomer.cc", 6359, 220, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:monomersAsCons"), "../../src/chem/oligomer.cc", 4214, 150, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:empty"), "../../src/chem/oligomer.cc", 3423, 121, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getLastMultiMonomerChanged"), "../../src/chem/oligomer.cc", 3127, 105, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasLastMultiMonomerChanged"), "../../src/chem/oligomer.cc", 2899, 99, "" );
+ define_source_info( method_kind, "CHEM:getHasError", "../../../../projects/cando/include/cando/chem/oligomer.h", 4098, 156, "" );
+ define_source_info( method_kind, "CHEM:getVerbose", "../../../../projects/cando/include/cando/chem/oligomer.h", 3828, 151, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/oligomer.h", 3703, 147, "" );
+ define_source_info( method_kind, "CHEM:setName", "../../../../projects/cando/include/cando/chem/oligomer.h", 3606, 145, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:PdbReader"), "../../../../projects/cando/include/cando/chem/pdb.h", 1395, 78, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:PdbWriter"), "../../../../projects/cando/include/cando/chem/pdb.h", 1913, 101, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:close"), "../../src/chem/pdb.cc", 16376, 563, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:writeModel"), "../../src/chem/pdb.cc", 16097, 555, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:open"), "../../src/chem/pdb.cc", 15052, 520, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:PdbMonomerConnectivity"), "../../../../projects/cando/include/cando/chem/pdbMonomer.h", 457, 29, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:PdbMonomerDatabase"), "../../../../projects/cando/include/cando/chem/pdbMonomer.h", 1507, 58, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:connectAtoms"), "../../src/chem/pdbMonomer.cc", 10184, 389, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Mate"), "../../../../projects/cando/include/cando/chem/plug.h", 329, 33, "" );
+ define_source_info( method_kind, "CHEM:getCap", "../../../../projects/cando/include/cando/chem/plug.h", 1094, 61, "" );
+ define_source_info( method_kind, "CHEM:setCap", "../../../../projects/cando/include/cando/chem/plug.h", 1004, 59, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RingClosingMate"), "../../../../projects/cando/include/cando/chem/plug.h", 1411, 80, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Plug"), "../../../../projects/cando/include/cando/chem/plug.h", 1899, 106, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:otherSidePlugName"), "../../src/chem/plug.cc", 5762, 274, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getConstitution"), "../../src/chem/plug.cc", 5355, 257, "" );
+ define_source_info( method_kind, "CHEM:matesAsCons", "../../../../projects/cando/include/cando/chem/plug.h", 3418, 155, "" );
+ define_source_info( method_kind, "CHEM:getPlug", "../../../../projects/cando/include/cando/chem/plug.h", 2934, 141, "" );
+ define_source_info( method_kind, "CHEM:getIsRingClosing", "../../../../projects/cando/include/cando/chem/plug.h", 2845, 138, "" );
+ define_source_info( method_kind, "CHEM:getIsIn", "../../../../projects/cando/include/cando/chem/plug.h", 2739, 136, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/plug.h", 2644, 133, "" );
+ define_source_info( method_kind, "CHEM:setName", "../../../../projects/cando/include/cando/chem/plug.h", 2553, 131, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:PlugWithMates"), "../../../../projects/cando/include/cando/chem/plug.h", 3659, 169, "" );
+ define_source_info( method_kind, "CHEM:hasB1", "../../../../projects/cando/include/cando/chem/plug.h", 4687, 203, "" );
+ define_source_info( method_kind, "CHEM:getB1", "../../../../projects/cando/include/cando/chem/plug.h", 4599, 201, "" );
+ define_source_info( method_kind, "CHEM:getB0", "../../../../projects/cando/include/cando/chem/plug.h", 4458, 197, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:OutPlug"), "../../../../projects/cando/include/cando/chem/plug.h", 5449, 232, "" );
+ define_source_info( method_kind, "CHEM:getStubPivotAtom", "../../../../projects/cando/include/cando/chem/plug.h", 6025, 252, "" );
+ define_source_info( method_kind, "CHEM:hasStubPivotAtom", "../../../../projects/cando/include/cando/chem/plug.h", 5911, 250, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:InPlug"), "../../../../projects/cando/include/cando/chem/plug.h", 6334, 272, "" );
+ define_source_info( method_kind, "CHEM:rootAtomName", "../../../../projects/cando/include/cando/chem/plug.h", 6530, 279, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:JumpPlug"), "../../../../projects/cando/include/cando/chem/plug.h", 6909, 301, "" );
+ define_source_info( method_kind, "CHEM:rootAtomName", "../../../../projects/cando/include/cando/chem/plug.h", 7281, 318, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RingClosingPlug"), "../../../../projects/cando/include/cando/chem/plug.h", 7651, 336, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:ringClosingMatesAsCons"), "../../src/chem/plug.cc", 22395, 918, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ProperTorsion"), "../../../../projects/cando/include/cando/chem/properTorsion.h", 377, 19, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ReadAmberParameters"), "../../../../projects/cando/include/cando/chem/readAmberParameters.h", 443, 29, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getForceField"), "../../src/chem/readAmberParameters.cc", 982, 47, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:readParameters"), "../../src/chem/readAmberParameters.cc", 803, 39, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:readTypes"), "../../src/chem/readAmberParameters.cc", 644, 32, "" );
+ define_source_info( method_kind, "CHEM:getTypeRules", "../../../../projects/cando/include/cando/chem/readAmberParameters.h", 1209, 53, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RepresentedEntityNameSet"), "../../../../projects/cando/include/cando/chem/representedEntityNameSet.h", 306, 21, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasRepresentative"), "../../src/chem/representedEntityNameSet.cc", 1867, 69, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setRepresentative"), "../../src/chem/representedEntityNameSet.cc", 1693, 63, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getRepresentative"), "../../src/chem/representedEntityNameSet.cc", 1525, 57, "" );
+ define_source_info( method_kind, "CHEM:testRepresentedEntityNameSet", "../../../../projects/cando/include/cando/chem/representedEntityNameSet.h", 1640, 66, "" );
+ define_source_info( class_kind, core::magic_name("GEOM:OVector3"), "../../../../projects/cando/include/cando/geom/ovector3.h", 365, 17, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:setUsingBondAngleDihedral"), "../../src/geom/ovector3.cc", 4919, 198, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:setUsingBondAngle"), "../../src/geom/ovector3.cc", 4630, 191, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:setUsingBond"), "../../src/geom/ovector3.cc", 4459, 185, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:vector3-distance"), "../../src/geom/ovector3.cc", 4312, 179, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:vector3-angle"), "../../src/geom/ovector3.cc", 4146, 173, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:dihedral"), "../../src/geom/ovector3.cc", 3954, 167, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:vector-normalized"), "../../src/geom/ovector3.cc", 3838, 161, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:timesScalar"), "../../src/geom/ovector3.cc", 3675, 153, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:add"), "../../src/geom/ovector3.cc", 3233, 138, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:dotProduct"), "../../src/geom/ovector3.cc", 2562, 106, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:crossProduct"), "../../src/geom/ovector3.cc", 2388, 99, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:vector-magnitude"), "../../src/geom/ovector3.cc", 2248, 92, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:sub"), "../../src/geom/ovector3.cc", 2086, 85, "" );
+ define_source_info( method_kind, "GEOM:z", "../../../../projects/cando/include/cando/geom/ovector3.h", 1542, 51, "" );
+ define_source_info( method_kind, "GEOM:y", "../../../../projects/cando/include/cando/geom/ovector3.h", 1467, 49, "" );
+ define_source_info( method_kind, "GEOM:x", "../../../../projects/cando/include/cando/geom/ovector3.h", 1392, 47, "" );
+ define_source_info( method_kind, "GEOM:setAll3", "../../../../projects/cando/include/cando/geom/ovector3.h", 1291, 45, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Restraint"), "../../../../projects/cando/include/cando/chem/restraint.h", 558, 41, "" );
+ define_source_info( method_kind, "CHEM:setActive", "../../../../projects/cando/include/cando/chem/restraint.h", 1111, 58, "" );
+ define_source_info( method_kind, "CHEM:isActive", "../../../../projects/cando/include/cando/chem/restraint.h", 1025, 56, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RestraintAnchor"), "../../../../projects/cando/include/cando/chem/restraint.h", 1315, 69, "" );
+ define_source_info( method_kind, "CHEM:setAtom", "../../../../projects/cando/include/cando/chem/restraint.h", 2186, 102, "" );
+ define_source_info( method_kind, "CHEM:setAnchorPos", "../../../../projects/cando/include/cando/chem/restraint.h", 2014, 96, "" );
+ define_source_info( method_kind, "CHEM:restraint-anchor-getWeight", "../../../../projects/cando/include/cando/chem/restraint.h", 1928, 93, "" );
+ define_source_info( method_kind, "CHEM:setWeight", "../../../../projects/cando/include/cando/chem/restraint.h", 1826, 91, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RestraintChiral"), "../../../../projects/cando/include/cando/chem/restraint.h", 2667, 122, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RestraintDistance"), "../../../../projects/cando/include/cando/chem/restraint.h", 3467, 160, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RestraintAngle"), "../../../../projects/cando/include/cando/chem/restraint.h", 4507, 205, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RestraintDihedral"), "../../../../projects/cando/include/cando/chem/restraint.h", 5681, 253, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RestraintFixedNonbond"), "../../../../projects/cando/include/cando/chem/restraint.h", 7355, 312, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RestraintList"), "../../../../projects/cando/include/cando/chem/restraint.h", 7965, 338, "" );
+ define_source_info( method_kind, "CHEM:numberOfRestraints", "../../../../projects/cando/include/cando/chem/restraint.h", 9405, 366, "" );
+ define_source_info( method_kind, "CHEM:addRestraint", "../../../../projects/cando/include/cando/chem/restraint.h", 9237, 363, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:PathMessage"), "../../../../projects/cando/include/cando/chem/ringFinder.h", 475, 27, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AGVertex"), "../../../../projects/cando/include/cando/chem/ringFinder.h", 1480, 68, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AGEdge"), "../../../../projects/cando/include/cando/chem/ringFinder.h", 2374, 104, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RingFinder"), "../../../../projects/cando/include/cando/chem/ringFinder.h", 2991, 128, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAllRingsAsListsOfAtoms"), "../../src/chem/ringFinder.cc", 23731, 831, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:findRings"), "../../src/chem/ringFinder.cc", 20334, 732, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Rotamer"), "../../../../projects/cando/include/cando/chem/rotamer.h", 357, 26, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:SearchStatistics"), "../../../../projects/cando/include/cando/chem/searchStatistics.h", 348, 24, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getHits"), "../../src/chem/searchStatistics.cc", 2157, 104, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:incrementHits"), "../../src/chem/searchStatistics.cc", 2051, 98, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getRejects"), "../../src/chem/searchStatistics.cc", 1931, 91, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:incrementRejects"), "../../src/chem/searchStatistics.cc", 1816, 85, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getBuilds"), "../../src/chem/searchStatistics.cc", 1695, 78, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:incrementBuilds"), "../../src/chem/searchStatistics.cc", 1340, 67, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:SpanningLoop"), "../../../../projects/cando/include/cando/chem/spanningLoop.h", 576, 37, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allAtoms"), "../../src/chem/spanningLoop.cc", 9804, 353, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:next"), "../../src/chem/spanningLoop.cc", 9420, 342, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:advanceLoopAndProcess"), "../../src/chem/spanningLoop.cc", 4838, 203, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAtom"), "../../src/chem/spanningLoop.cc", 4680, 197, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setTop"), "../../src/chem/spanningLoop.cc", 3946, 165, "" );
+ define_source_info( method_kind, "CHEM:advance", "../../../../projects/cando/include/cando/chem/spanningLoop.h", 2119, 92, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:SpecificContext"), "../../../../projects/cando/include/cando/chem/specificContext.h", 556, 34, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:copy"), "../../src/chem/specificContext.cc", 2870, 122, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:asString"), "../../src/chem/specificContext.cc", 2243, 95, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:popNeighbor"), "../../src/chem/specificContext.cc", 1761, 76, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:pushNeighbor"), "../../src/chem/specificContext.cc", 1291, 60, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setSelfName"), "../../src/chem/specificContext.cc", 1137, 54, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:SpecificContextSet"), "../../../../projects/cando/include/cando/chem/specificContext.h", 1511, 76, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:asCons"), "../../src/chem/specificContext.cc", 5197, 223, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:asSymbolSetOfKeys"), "../../src/chem/specificContext.cc", 4876, 209, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addSpecificContext"), "../../src/chem/specificContext.cc", 4027, 173, "" );
+ define_source_info( method_kind, "CHEM:size", "../../../../projects/cando/include/cando/chem/specificContext.h", 2320, 106, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StereoConfiguration"), "../../../../projects/cando/include/cando/chem/stereochemistry.h", 685, 46, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMoeConfiguration"), "../../src/chem/stereochemistry.cc", 720, 35, "" );
+ define_source_info( method_kind, "CHEM:setConfiguration", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 1667, 74, "" );
+ define_source_info( method_kind, "CHEM:getConfiguration", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 1546, 72, "" );
+ define_source_info( method_kind, "CHEM:setAtomName", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 1444, 70, "" );
+ define_source_info( method_kind, "CHEM:getAtomName", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 1350, 68, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Stereoisomer"), "../../../../projects/cando/include/cando/chem/stereochemistry.h", 1965, 92, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getConfigurationForCenter"), "../../src/chem/stereochemistry.cc", 6352, 220, "" );
+ define_source_info( method_kind, "CHEM:setPdb", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 3313, 131, "" );
+ define_source_info( method_kind, "CHEM:getPdb", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 3229, 129, "" );
+ define_source_info( method_kind, "CHEM:setName", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 3140, 127, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 3047, 125, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StereoInformation"), "../../../../projects/cando/include/cando/chem/stereochemistry.h", 4032, 147, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:validate"), "../../src/chem/stereochemistry.cc", 9770, 326, "" );
+ define_source_info( method_kind, "CHEM:stereoisomersAsCons", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 5631, 179, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StereoisomerAtom"), "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 633, 34, "" );
+ define_source_info( method_kind, "CHEM:setAtomType", "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 1656, 59, "" );
+ define_source_info( method_kind, "CHEM:getAtomType", "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 1547, 57, "" );
+ define_source_info( method_kind, "CHEM:setCharge", "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 1461, 55, "" );
+ define_source_info( method_kind, "CHEM:getCharge", "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 1374, 53, "" );
+ define_source_info( method_kind, "CHEM:atomName", "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 1168, 49, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StereoisomerVirtualAtom"), "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 1851, 67, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StereoisomerAtoms"), "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 2652, 88, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:stereoisomer-atoms-index"), "../../src/chem/stereoisomerAtoms.cc", 6803, 240, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atomWithId"), "../../src/chem/stereoisomerAtoms.cc", 6611, 234, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atomWithName"), "../../src/chem/stereoisomerAtoms.cc", 6226, 222, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atomNamesAsSymbolSet"), "../../src/chem/stereoisomerAtoms.cc", 5629, 197, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StructureComparer"), "../../../../projects/cando/include/cando/chem/structureComparer.h", 912, 44, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StructureListEntry"), "../../../../projects/cando/include/cando/chem/structureList.h", 685, 38, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StructureList"), "../../../../projects/cando/include/cando/chem/structureList.h", 2435, 93, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:SuperposableConformationCollection"), "../../../../projects/cando/include/cando/chem/superposableConformationCollection.h", 684, 34, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:SuperposeEngine"), "../../../../projects/cando/include/cando/chem/superposeEngine.h", 1288, 52, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:superpose"), "../../src/chem/superposeEngine.cc", 17659, 519, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMoveableAllPoints"), "../../src/chem/superposeEngine.cc", 17104, 498, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMoveablePoints"), "../../src/chem/superposeEngine.cc", 16573, 487, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setFixedAllPoints"), "../../src/chem/superposeEngine.cc", 16132, 470, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setFixedPoints"), "../../src/chem/superposeEngine.cc", 15395, 449, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:rootMeanSquareDifference"), "../../src/chem/superposeEngine.cc", 14811, 430, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getNumberOfMoveablePoints"), "../../src/chem/superposeEngine.cc", 5715, 195, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getNumberOfFixedPoints"), "../../src/chem/superposeEngine.cc", 5557, 188, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:debugString"), "../../src/chem/superposeEngine.cc", 2773, 93, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:SuperposeSelectedAtoms"), "../../../../projects/cando/include/cando/chem/superposeEngine.h", 2998, 113, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Topology"), "../../../../projects/cando/include/cando/chem/topology.h", 2254, 75, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:lookupOrCreateStereoisomerAtoms"), "../../src/chem/topology.cc", 15389, 497, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getTemporaryObject"), "../../src/chem/topology.cc", 15185, 489, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setTemporaryObject"), "../../src/chem/topology.cc", 15013, 482, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:plugNamed"), "../../src/chem/topology.cc", 14220, 452, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasPlugNamed"), "../../src/chem/topology.cc", 13738, 437, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:matchesContext"), "../../src/chem/topology.cc", 13248, 422, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasFlag"), "../../src/chem/topology.cc", 13092, 415, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getConstitution"), "../../src/chem/topology.cc", 9755, 311, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:outPlugsAsCons"), "../../src/chem/topology.cc", 9245, 291, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:plugsWithMatesAsCons"), "../../src/chem/topology.cc", 8549, 272, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:plugsAsCons"), "../../src/chem/topology.cc", 7951, 254, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getInPlug"), "../../src/chem/topology.cc", 7661, 240, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:properties"), "../../src/chem/topology.cc", 7302, 220, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomerContext"), "../../src/chem/topology.cc", 6922, 208, "" );
+ define_source_info( method_kind, "CHEM:getResidueNetCharge", "../../../../projects/cando/include/cando/chem/topology.h", 5491, 175, "" );
+ define_source_info( method_kind, "CHEM:numberOfPlugs", "../../../../projects/cando/include/cando/chem/topology.h", 5072, 163, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/topology.h", 4686, 152, "" );
+ define_source_info( method_kind, "CHEM:suppressTrainers", "../../../../projects/cando/include/cando/chem/topology.h", 4158, 135, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:TrajectoryFrame"), "../../../../projects/cando/include/cando/chem/trajectory.h", 473, 27, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Trajectory"), "../../../../projects/cando/include/cando/chem/trajectory.h", 1352, 65, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:applyTrajectoryFrameToMatter"), "../../src/chem/trajectory.cc", 4923, 209, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getTrajectoryFrame"), "../../src/chem/trajectory.cc", 4345, 189, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:numberOfTrajectoryFrames"), "../../src/chem/trajectory.cc", 4203, 182, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addFrame"), "../../src/chem/trajectory.cc", 3803, 171, "" );
+ define_source_info( method_kind, "CHEM:getMatter", "../../../../projects/cando/include/cando/chem/trajectory.h", 2371, 102, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Twister"), "../../../../projects/cando/include/cando/chem/twister.h", 552, 40, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:rotateAbsolute"), "../../src/chem/twister.cc", 5211, 199, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:rotate"), "../../src/chem/twister.cc", 3675, 163, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineFixedAndMobile"), "../../src/chem/twister.cc", 3476, 156, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineForBond"), "../../src/chem/twister.cc", 3287, 149, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineForDihedral"), "../../src/chem/twister.cc", 3083, 140, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addAtom"), "../../src/chem/twister.cc", 1186, 60, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setFixedAndMovable"), "../../src/chem/twister.cc", 1016, 53, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:TwisterDriver"), "../../../../projects/cando/include/cando/chem/twister.h", 1801, 99, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:perturbConformation"), "../../src/chem/twister.cc", 6984, 259, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getTwister"), "../../src/chem/twister.cc", 6795, 252, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addTwister"), "../../src/chem/twister.cc", 6650, 245, "" );
+ define_source_info( method_kind, "CHEM:numberOfTwisters", "../../../../projects/cando/include/cando/chem/twister.h", 2131, 114, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:OneTypeRule"), "../../../../projects/cando/include/cando/chem/typeAssignmentRules.h", 357, 23, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:TypeAssignmentRules"), "../../../../projects/cando/include/cando/chem/typeAssignmentRules.h", 1020, 48, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:VirtualAtom"), "../../../../projects/cando/include/cando/chem/virtualAtom.h", 361, 24, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:VirtualSphere"), "../../../../projects/cando/include/cando/chem/virtualSphere.h", 421, 26, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMouseYAxisWheelChange"), "../../src/chem/virtualSphere.cc", 11601, 449, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMouseXAxisWheelChange"), "../../src/chem/virtualSphere.cc", 10495, 405, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMouseMove"), "../../src/chem/virtualSphere.cc", 7872, 325, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMouseStart"), "../../src/chem/virtualSphere.cc", 7309, 305, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:dump"), "../../src/chem/virtualSphere.cc", 6251, 275, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ZMatrixInternal"), "../../../../projects/cando/include/cando/chem/zMatrix.h", 404, 28, "" );
+ define_source_info( method_kind, "CHEM:getValue", "../../../../projects/cando/include/cando/chem/zMatrix.h", 1512, 59, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ZMatrixBondInternal"), "../../../../projects/cando/include/cando/chem/zMatrix.h", 1801, 73, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getBondAtomZMatrixName"), "../../src/chem/zMatrix.cc", 3423, 161, "" );
+ define_source_info( method_kind, "CHEM:getBondAtomIndex", "../../../../projects/cando/include/cando/chem/zMatrix.h", 2303, 86, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ZMatrixAngleInternal"), "../../../../projects/cando/include/cando/chem/zMatrix.h", 3081, 112, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAngleAtomZMatrixName"), "../../src/chem/zMatrix.cc", 6742, 284, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getBondAtomZMatrixName"), "../../src/chem/zMatrix.cc", 6534, 278, "" );
+ define_source_info( method_kind, "CHEM:getAngleAtomIndex", "../../../../projects/cando/include/cando/chem/zMatrix.h", 3826, 134, "" );
+ define_source_info( method_kind, "CHEM:getBondAtomIndex", "../../../../projects/cando/include/cando/chem/zMatrix.h", 3726, 132, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ZMatrixDihedralInternal"), "../../../../projects/cando/include/cando/chem/zMatrix.h", 4747, 162, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getDihedralAtomZMatrixName"), "../../src/chem/zMatrix.cc", 10864, 409, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAngleAtomZMatrixName"), "../../src/chem/zMatrix.cc", 10648, 403, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getBondAtomZMatrixName"), "../../src/chem/zMatrix.cc", 10437, 397, "" );
+ define_source_info( method_kind, "CHEM:getDihedralAtomIndex", "../../../../projects/cando/include/cando/chem/zMatrix.h", 5703, 189, "" );
+ define_source_info( method_kind, "CHEM:getAngleAtomIndex", "../../../../projects/cando/include/cando/chem/zMatrix.h", 5598, 187, "" );
+ define_source_info( method_kind, "CHEM:getBondAtomIndex", "../../../../projects/cando/include/cando/chem/zMatrix.h", 5498, 185, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ZMatrixEntry"), "../../../../projects/cando/include/cando/chem/zMatrix.h", 6667, 218, "" );
+ define_source_info( method_kind, "CHEM:getDihedral", "../../../../projects/cando/include/cando/chem/zMatrix.h", 8043, 250, "" );
+ define_source_info( method_kind, "CHEM:hasDihedral", "../../../../projects/cando/include/cando/chem/zMatrix.h", 7910, 248, "" );
+ define_source_info( method_kind, "CHEM:getAngle", "../../../../projects/cando/include/cando/chem/zMatrix.h", 7778, 246, "" );
+ define_source_info( method_kind, "CHEM:hasAngle", "../../../../projects/cando/include/cando/chem/zMatrix.h", 7658, 244, "" );
+ define_source_info( method_kind, "CHEM:getBond", "../../../../projects/cando/include/cando/chem/zMatrix.h", 7533, 242, "" );
+ define_source_info( method_kind, "CHEM:hasBond", "../../../../projects/cando/include/cando/chem/zMatrix.h", 7416, 240, "" );
+ define_source_info( method_kind, "CHEM:getTargetAtomZMatrixName", "../../../../projects/cando/include/cando/chem/zMatrix.h", 7311, 237, "" );
+ define_source_info( method_kind, "CHEM:getAtom", "../../../../projects/cando/include/cando/chem/zMatrix.h", 7218, 235, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ZMatrix"), "../../../../projects/cando/include/cando/chem/zMatrix.h", 8351, 262, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:all-zmatrix-atom-names-as-string"), "../../src/chem/zMatrix.cc", 20826, 746, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:zmatrix-entry-with-name"), "../../src/chem/zMatrix.cc", 20422, 734, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:entriesAsCons"), "../../src/chem/zMatrix.cc", 20240, 728, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:extractInternals"), "../../src/chem/zMatrix.cc", 19748, 705, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:get-zmatrix-atom-name-at-index"), "../../src/chem/zMatrix.cc", 13711, 511, "" );
+ define_source_info( class_kind, core::magic_name("GEOM:BoundingBox"), "../../../../projects/cando/include/cando/geom/boundingBox.h", 393, 21, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:pad"), "../../src/geom/boundingBox.cc", 3128, 99, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:getMaxZ"), "../../src/geom/boundingBox.cc", 1278, 39, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:getMinZ"), "../../src/geom/boundingBox.cc", 1158, 37, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:getMaxY"), "../../src/geom/boundingBox.cc", 1038, 35, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:getMinY"), "../../src/geom/boundingBox.cc", 918, 33, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:getMaxX"), "../../src/geom/boundingBox.cc", 798, 31, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:getMinX"), "../../src/geom/boundingBox.cc", 678, 29, "" );
+ define_source_info( class_kind, core::magic_name("GEOM:Color"), "../../../../projects/cando/include/cando/geom/color.h", 339, 22, "" );
+ define_source_info( class_kind, core::magic_name("GEOM:OMatrix"), "../../../../projects/cando/include/cando/geom/omatrix.h", 262, 14, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:rotationZ"), "../../src/geom/omatrix.cc", 2011, 78, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:rotationY"), "../../src/geom/omatrix.cc", 1885, 76, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:rotationX"), "../../src/geom/omatrix.cc", 1759, 74, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:translate"), "../../src/geom/omatrix.cc", 1639, 72, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:setToIndexAsValue"), "../../src/geom/omatrix.cc", 1518, 70, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:setToIdentity"), "../../src/geom/omatrix.cc", 1332, 67, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:asString"), "../../src/geom/omatrix.cc", 1216, 65, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:setFromString"), "../../src/geom/omatrix.cc", 787, 44, "" );
+ define_source_info( method_kind, "GEOM:is3x3Orthogonal", "../../../../projects/cando/include/cando/geom/omatrix.h", 1840, 61, "" );
+ define_source_info( method_kind, "GEOM:atRowColPut", "../../../../projects/cando/include/cando/geom/omatrix.h", 1496, 54, "" );
+ define_source_info( method_kind, "GEOM:atRowColGet", "../../../../projects/cando/include/cando/geom/omatrix.h", 1375, 52, "" );
+ define_source_info( method_kind, "GEOM:transposed3x3", "../../../../projects/cando/include/cando/geom/omatrix.h", 1263, 49, "" );
+ define_source_info( method_kind, "GEOM:extract3x3", "../../../../projects/cando/include/cando/geom/omatrix.h", 1156, 47, "" );
+ define_source_info( class_kind, core::magic_name("GEOM:OVector2"), "../../../../projects/cando/include/cando/geom/ovector2.h", 273, 14, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:vector2-distance"), "../../src/geom/ovector2.cc", 3111, 123, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:vector2-angle"), "../../src/geom/ovector2.cc", 2945, 117, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:normalized"), "../../src/geom/ovector2.cc", 2812, 110, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:timesScalar"), "../../src/geom/ovector2.cc", 2656, 102, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:add"), "../../src/geom/ovector2.cc", 2170, 86, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:dotProduct"), "../../src/geom/ovector2.cc", 1565, 62, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:vector2-magnitude"), "../../src/geom/ovector2.cc", 1426, 54, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:sub"), "../../src/geom/ovector2.cc", 1263, 47, "" );
+ define_source_info( method_kind, "GEOM:y", "../../../../projects/cando/include/cando/geom/ovector2.h", 813, 32, "" );
+ define_source_info( method_kind, "GEOM:x", "../../../../projects/cando/include/cando/geom/ovector2.h", 738, 30, "" );
+ define_source_info( method_kind, "GEOM:setAll", "../../../../projects/cando/include/cando/geom/ovector2.h", 650, 28, "" );
+ define_source_info( class_kind, core::magic_name("UNITS:Dimension"), "../../../../projects/cando/include/cando/units/dimension.h", 250, 13, "" );
+ define_source_info( class_kind, core::magic_name("UNITS:Unit"), "../../../../projects/cando/include/cando/units/unit.h", 324, 16, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:/"), "../../src/units/unit.cc", 7541, 271, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:*"), "../../src/units/unit.cc", 6690, 240, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:conversion_factor_to"), "../../src/units/unit.cc", 6088, 220, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:unit_is_compatible"), "../../src/units/unit.cc", 5820, 210, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:test_set_amount"), "../../src/units/unit.cc", 5296, 185, "" );
+ define_source_info( class_kind, core::magic_name("UNITS:NamedUnit"), "../../../../projects/cando/include/cando/units/namedUnit.h", 243, 18, "" );
+ define_source_info( class_kind, core::magic_name("UNITS:Quantity"), "../../../../projects/cando/include/cando/units/quantity.h", 270, 15, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:>="), "../../src/units/quantity.cc", 16437, 505, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:>"), "../../src/units/quantity.cc", 15974, 494, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:<="), "../../src/units/quantity.cc", 15509, 482, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:<"), "../../src/units/quantity.cc", 15046, 471, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:isnan"), "../../src/units/quantity.cc", 14720, 454, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:sqrt"), "../../src/units/quantity.cc", 14181, 441, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:power"), "../../src/units/quantity.cc", 13640, 429, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:-"), "../../src/units/quantity.cc", 12609, 400, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:+"), "../../src/units/quantity.cc", 11615, 373, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:/"), "../../src/units/quantity.cc", 10231, 340, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:*"), "../../src/units/quantity.cc", 8300, 293, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:size"), "../../src/units/quantity.cc", 8163, 284, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:setElement"), "../../src/units/quantity.cc", 7087, 258, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:getElement_in_unit"), "../../src/units/quantity.cc", 6769, 250, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:value_in_unit"), "../../src/units/quantity.cc", 6050, 227, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:quantity_is_compatible"), "../../src/units/quantity.cc", 5500, 212, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:rawAsString"), "../../src/units/quantity.cc", 4782, 181, "" );
+ define_source_info( method_kind, "UNITS:rawUnit", "../../../../projects/cando/include/cando/units/quantity.h", 2892, 93, "" );
+ define_source_info( method_kind, "UNITS:rawValue", "../../../../projects/cando/include/cando/units/quantity.h", 2775, 89, "" );
 #endif // SOURCE_INFO

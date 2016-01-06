@@ -932,7 +932,7 @@ CL_DEFMETHOD SpecificContextSet_sp Oligomer_O::allSpecificMonomerContexts()
 #define ARGS_chem__oligomer_sequence "(olig)"
 #define DECL_chem__oligomer_sequence ""
 #define DOCS_chem__oligomer_sequence "oligomerSequence"
-core::T_sp chem__oligomer_sequence(Oligomer_sp olig)
+CL_DEFUN core::T_sp chem__oligomer_sequence(Oligomer_sp olig)
 {_G();
     string seq = olig->sequenceAsString();
     return core::Str_O::create(seq);
@@ -998,7 +998,7 @@ core::T_sp Oligomer_O::__init__(core::Function_sp exec, core::List_sp args, core
 #define ARGS_chem__set_oligomer "(oligomerName parts)"
 #define DECL_chem__set_oligomer ""
 #define DOCS_chem__set_oligomer "setOligomer"
-core::T_sp chem__set_oligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_sp parts)
+CL_DEFUN core::T_sp chem__set_oligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_sp parts)
 {_G();
     Oligomer_sp olig = Oligomer_O::create();
     olig->setName(oligomerName);
@@ -1064,8 +1064,8 @@ void Oligomer_O::exposeCando(core::Lisp_sp lisp)
 //	.def("clearAllFragmentAlchemistsCoordinatesAreFixed",
 //		&Oligomer_O::clearAllFragmentAlchemistsCoordinatesAreFixed)
     ;
-    Chem_temp_Defun(set_oligomer);
-    Chem_temp_Defun(oligomer_sequence);
+//    Chem_temp_Defun(set_oligomer);
+//    Chem_temp_Defun(oligomer_sequence);
 }
 
 

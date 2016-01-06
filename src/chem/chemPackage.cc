@@ -176,29 +176,12 @@ namespace chem
           core::Cons_sp pts = core::Cons_O::createList(core::Str_O::create("cando:**;*.*"),pn);
           core::Cons_sp ptsList = core::Cons_O::createList(pts);
           core::core__pathname_translations(core::Str_O::create("CANDO"),_lisp->_true(),ptsList);
-
-
-#define ALL_STAGES
-#define	Use_ChemPkg
-#define INVOKE_REGISTER
-#define LOOKUP_SYMBOL(pkg,name) _lisp->internWithPackageName(pkg,name)
-#include <clasp/core/initClasses.h>
-#undef INVOKE_REGISTER
-#undef Use_ChemPkg
-#undef ALL_STAGES
 	}
 	break;
 	case candoFunctions:
 	{
           setupCandoPrimitives(_lisp);
-#if 0
-	    defNoWrapPackage(ChemPkg,"atomAliases", &core::prim_list ,_lisp->lisp());
-	    defNoWrapPackage(ChemPkg,"aliasAtoms", &core::prim_list ,_lisp->lisp());
-	    defNoWrapPackage(ChemPkg,"addPart", &core::prim_list ,_lisp->lisp());
-	    defNoWrapPackage(ChemPkg,"parts", &core::prim_list ,_lisp->lisp());
-	    defNoWrapPackage(ChemPkg,"monomerAlias", &core::prim_list ,_lisp->lisp());
-#endif
-	    exposeMbbCoreTools(_lisp);
+          exposeMbbCoreTools(_lisp);
 	}
 	break;
 	case candoGlobals:

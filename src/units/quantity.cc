@@ -145,7 +145,8 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
 
 
 
-    Quantity_sp Quantity_O::make(core::T_sp val, Unit_sp unit)
+CL_LISPIFY_NAME(make-quantity);
+CL_DEFUN Quantity_sp Quantity_O::make(core::T_sp val, Unit_sp unit)
     {_G();
 	GC_ALLOCATE(Quantity_O,quant);
 	quant->_Value = val;
@@ -542,7 +543,7 @@ CL_DEFMETHOD     bool Quantity_O::operator>=(core::T_sp other) const
 	    .def(">",&Quantity_O::operator>)
 	    .def(">=",&Quantity_O::operator>=)
 	;
-      core::af_def(UnitsPkg,"make-quantity",&Quantity_O::make);
+//      core::af_def(UnitsPkg,"make-quantity",&Quantity_O::make);
     }
 
 

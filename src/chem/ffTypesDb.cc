@@ -94,6 +94,10 @@ CL_DEFMETHOD chem::ChemInfo_sp	FFTypesDb_O::getRule(uint index)
 }
 
 
+CL_DEFUN FFTypesDb_sp chem__make_fftypes_db()
+{
+  return FFTypesDb_O::create();
+}
 
 
 
@@ -104,7 +108,7 @@ CL_DEFMETHOD chem::ChemInfo_sp	FFTypesDb_O::getRule(uint index)
       .def("FFTypes-numberOfRules",&FFTypesDb_O::numberOfRules)
       .def("FFTypes-getRule",&FFTypesDb_O::getRule)
     ;
-    core::af_def(ChemPkg,"make-fftypes-db",&FFTypesDb_O::create);
+//    core::af_def(ChemPkg,"make-fftypes-db",&FFTypesDb_O::create);
 }
 
     void FFTypesDb_O::exposePython(core::Lisp_sp lisp)
