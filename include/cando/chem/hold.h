@@ -6,7 +6,7 @@
 
 
 namespace chem {
-  extern core::Symbol_sp _sym_STARparserNodeHolderSTAR;
+  extern core::Symbol_sp& _sym_STARparserNodeHolderSTAR;
 
   template <class oClass>
     class Hold {

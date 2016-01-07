@@ -207,6 +207,7 @@ namespace kinematics {
 
 namespace kinematics
 {
+#if 0
 #define EXPOSE_TO_CANDO
 #define Use_KinPkg
 #define EXTERN_REGISTER
@@ -214,6 +215,7 @@ namespace kinematics
 #undef EXTERN_REGISTER
 #undef Use_KinPkg
 #undef EXPOSE_TO_CANDO
+#endif
 };
 
 
@@ -250,6 +252,7 @@ namespace kinematics
 	{
 	case candoClasses:
 	{_G();
+#if 0
 #define ALL_STAGES
 #define Use_KinPkg
 #define INVOKE_REGISTER
@@ -258,6 +261,7 @@ namespace kinematics
 #undef INVOKE_REGISTER
 #undef Use_KinPkg
 #undef ALL_STAGES
+#endif
 	}
 	break;
 	case candoFunctions:

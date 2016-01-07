@@ -127,7 +127,7 @@ CL_DEFMETHOD     chem::Atom_sp tag(core::Symbol_sp tag) { return this->getAtomWi
       SABDirectionalSingleDown,
   } BondEnum;
 
-  extern core::Symbol_sp _sym_STARSabBondEnumConverterSTAR;
+  extern core::Symbol_sp& _sym_STARSabBondEnumConverterSTAR;
 
 };
 
@@ -246,7 +246,7 @@ namespace chem {
 
   typedef	enum { logAlwaysTrue, logIdentity, logNot, logHighPrecedenceAnd, logOr, logLowPrecedenceAnd } LogicalOperatorType;
 
-  extern core::Symbol_sp _sym_STARLogicalOperatorTypeConverterSTAR;
+  extern core::Symbol_sp& _sym_STARLogicalOperatorTypeConverterSTAR;
 };
 
 
@@ -567,7 +567,7 @@ namespace chem {
       SAPAromatic,
   } AtomTestEnum;
 
-  extern core::Symbol_sp _sym_STARAtomTestEnumConverterSTAR;
+  extern core::Symbol_sp& _sym_STARAtomTestEnumConverterSTAR;
 
 };
 

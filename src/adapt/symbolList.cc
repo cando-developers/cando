@@ -35,7 +35,7 @@ THE SOFTWARE.
 #include <clasp/core/lisp.h>
 #include <clasp/core/object.h>
 #include <clasp/core/metaClass.h>
-#include <cando/main/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <clasp/core/str.h>
 #include <cando/adapt/symbolList.h>
 #include <cando/adapt/symbolSet.h>

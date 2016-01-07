@@ -32,8 +32,8 @@ namespace chem
 
 
 
-    extern core::Symbol_sp _sym__PLUS_configurationEnumConverter_PLUS_;
-    extern core::Symbol_sp _sym__PLUS_stereochemistryTypeConverter_PLUS_;
+    extern core::Symbol_sp& _sym__PLUS_configurationEnumConverter_PLUS_;
+    extern core::Symbol_sp& _sym__PLUS_stereochemistryTypeConverter_PLUS_;
 
 };
 

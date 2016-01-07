@@ -211,6 +211,7 @@ namespace adapt
 
 namespace adapt
 {
+#if 0
 #define EXPOSE_TO_CANDO
 #define Use_AdaptPkg
 #define EXTERN_REGISTER
@@ -218,6 +219,7 @@ namespace adapt
 #undef EXTERN_REGISTER
 #undef Use_AdaptPkg
 #undef EXPOSE_TO_CANDO
+#endif
 };
 
 

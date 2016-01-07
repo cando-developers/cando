@@ -8,7 +8,7 @@
 #include <cando/adapt/stringSet.h>
 #include <clasp/core/binder.h>
 #include <cando/main/foundation.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/geom/ovector3.h>
 #include <clasp/core/executables.h>
 #include <clasp/core/fileSystem.h>

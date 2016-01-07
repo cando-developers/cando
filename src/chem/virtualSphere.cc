@@ -12,7 +12,7 @@
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/corePackage.h>
 #include <cando/chem/virtualSphere.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 //#include "core/archiveNode.h"
 #include <clasp/core/wrappers.h>
 

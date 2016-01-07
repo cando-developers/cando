@@ -18,7 +18,7 @@
 #include <cando/chem/restraint.h>
 #include <cando/chem/complexRestraints.h>
 #include <cando/chem/entity.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
 

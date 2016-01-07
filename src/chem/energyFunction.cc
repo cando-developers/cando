@@ -39,7 +39,7 @@ __END_DOC
 #include <cando/chem/energyAnchorRestraint.h>
 #include <cando/chem/energyFixedNonbond.h>
 #endif
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/chem/ffBaseDb.h>
 #include <cando/chem/ffTypesDb.h>
 #include <cando/chem/ffStretchDb.h>

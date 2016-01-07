@@ -6,7 +6,7 @@
 #include <cando/chem/energyFunction.h>
 #include <clasp/core/profiler.h>
 #include <cando/geom/color.h>
-#include <cando/geom/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/chem/matter.h>
 #include <cando/chem/bond.h>

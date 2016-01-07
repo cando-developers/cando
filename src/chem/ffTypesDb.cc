@@ -13,7 +13,7 @@
 #include <clasp/core/record.h>
 #include <cando/chem/ffTypesDb.h>
 #include <cando/chem/loop.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
 

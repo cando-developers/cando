@@ -30,7 +30,7 @@
 #include <cando/chem/improperTorsion.h>
 #include <cando/chem/atomIdMap.h>
 #include <cando/chem/alias.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <clasp/core/translators.h>
 #include <clasp/core/wrappers.h>
 

@@ -17,7 +17,7 @@
 #define	USE_NEW_CONJUGATE_GRADIENTS
 #include <clasp/core/common.h>
 #include <clasp/core/symbolTable.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/chem/largeSquareMatrix.h>
 #include <cando/chem/minimizer.h>
 #include <iostream>

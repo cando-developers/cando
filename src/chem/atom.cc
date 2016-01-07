@@ -7,7 +7,7 @@
 #include <clasp/core/record.h>
 #include <clasp/core/evaluator.h>
 #include <clasp/core/str.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/chem/matter.h>
 #include <cando/chem/residue.h>
 #include <cando/chem/atom.h>

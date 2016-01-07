@@ -26,7 +26,7 @@ typedef	enum 	BondOrderEnum
 } BondOrder;
 
 
-    extern core::Symbol_sp _sym__PLUS_bondOrderToSymbolConverter_PLUS_;
+    extern core::Symbol_sp& _sym__PLUS_bondOrderToSymbolConverter_PLUS_;
 };
 
 

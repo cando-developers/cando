@@ -14,10 +14,7 @@
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
 #include <clasp/core/hashTableEq.h>
-//#include "core/serialize.h"
-//#include "core/archive.h"
-//#include "core/archiveNode.h"
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/chem/constitutionAtoms.h>
 #include <clasp/core/wrappers.h>
 

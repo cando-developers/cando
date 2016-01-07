@@ -18,7 +18,7 @@
 #include <cando/geom/vector3.h>
 #include <cando/geom/matrix.h>
 #include <cando/geom/omatrix.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
 #include <cando/chem/loop.h>

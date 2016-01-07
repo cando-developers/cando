@@ -15,11 +15,6 @@ namespace units
 {
 
 
-#define SYMBOLS_EXTERN
-  #ifndef SCRAPING
-    #include SYMBOLS_SCRAPED_INC_H
-  #endif
-
     extern const char* Units_nicknames[];
 
     class UnitsExposer : public core::Exposer

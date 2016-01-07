@@ -16,7 +16,7 @@
 #include <cando/adapt/symbolMap.h>
 #include <cando/adapt/symbolSet.h>
 #include <cando/chem/bond.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
 extern chem::SmartsRoot_sp smarts_compile(const string &input, stringstream &errorStream);

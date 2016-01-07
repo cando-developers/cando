@@ -603,7 +603,7 @@ CL_DEFMETHOD 	ConfigurationEnum getConfiguration() { return this->_Configuration
 
 
 
-    extern core::Symbol_sp _sym__PLUS_atomFlagSymbolConverter_PLUS_;
+    extern core::Symbol_sp& _sym__PLUS_atomFlagSymbolConverter_PLUS_;
 
 };
 

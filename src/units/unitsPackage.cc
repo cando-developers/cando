@@ -4,7 +4,7 @@
 #include <clasp/core/lisp.h>
 #include <clasp/core/corePackage.fwd.h>
 #include <clasp/core/package.h>
-#include <cando/main/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/units/unit.h>
 #include <cando/units/quantity.h>
 #include <clasp/core/builtInClass.h>
@@ -25,6 +25,7 @@ namespace units
 
 namespace units
 {
+#if 0
 #define EXPOSE_TO_CANDO
 #define Use_UnitsPkg
 #define EXTERN_REGISTER
@@ -32,6 +33,7 @@ namespace units
 #undef EXTERN_REGISTER
 #undef Use_UnitsPkg
 #undef EXPOSE_TO_CANDO
+#endif
 };
 
 

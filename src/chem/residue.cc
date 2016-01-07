@@ -27,7 +27,7 @@
 #include <cando/chem/bond.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/atomIdMap.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
 

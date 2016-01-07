@@ -4,7 +4,7 @@
 #include <clasp/core/common.h>
 //#include <core/model.h>
 #include <cando/chem/oligomer.fwd.h>
-#include <cando/kinematics/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/kinematics/kinematicsPackage.h>
 
 namespace kinematics

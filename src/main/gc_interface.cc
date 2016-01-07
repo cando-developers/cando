@@ -81,10 +81,7 @@ typedef bool _Bool;
 #include <clang/ASTMatchers/ASTMatchFinder.h>
 
 #include <clasp/gctools/telemetry.h>
-#include <clasp/gctools/symbolTable.h>
-#include <clasp/sockets/symbolTable.h>
-#include <clasp/serveEvent/symbolTable.h>
-#include <clasp/clbind/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 
 #include <clasp/gctools/gctoolsPackage.h>
 

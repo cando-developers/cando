@@ -2,7 +2,7 @@
 
 #include <clasp/core/common.h>
 #include <clasp/core/environment.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/properTorsion.h>
 #include <clasp/core/wrappers.h>

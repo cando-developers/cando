@@ -211,6 +211,7 @@ namespace geom
 
 namespace geom
 {
+#if 0
 #define EXPOSE_TO_CANDO
 #define Use_GeomPkg
 #define EXTERN_REGISTER
@@ -218,6 +219,7 @@ namespace geom
 #undef EXTERN_REGISTER
 #undef Use_GeomPkg
 #undef EXPOSE_TO_CANDO
+#endif
 };
 
 

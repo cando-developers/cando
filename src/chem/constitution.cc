@@ -8,7 +8,7 @@
 #include <clasp/core/symbol.h>
 #include <cando/adapt/stringList.h>
 #include <clasp/core/environment.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/chem/constitution.h>
 #include <cando/chem/candoDatabase.h>
 #include <cando/chem/loop.h>

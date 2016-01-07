@@ -125,6 +125,7 @@ namespace chem {
 
 namespace chem
 {
+#if 0
 #define EXPOSE_TO_CANDO
 #define Use_ChemPkg
 #define EXTERN_REGISTER
@@ -132,6 +133,7 @@ namespace chem
 #undef EXTERN_REGISTER
 #undef Use_ChemPkg
 #undef EXPOSE_TO_CANDO
+#endif
 };
 
 

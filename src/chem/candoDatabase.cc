@@ -20,7 +20,7 @@
 #include <clasp/core/environment.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/chem/matter.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/chem/specificContext.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>

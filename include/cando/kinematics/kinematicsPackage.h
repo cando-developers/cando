@@ -15,11 +15,6 @@ namespace kinematics
 {
 
 
-#define SYMBOLS_EXTERN
-  #ifndef SCRAPING
-    #include SYMBOLS_SCRAPED_INC_H
-  #endif
-
     class KinematicsExposer : public core::Exposer
     {
     private:

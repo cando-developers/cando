@@ -5,7 +5,7 @@
 #include <clasp/core/multipleValues.h>
 #include <cando/geom/vector3.h>
 //#include "core/serializerNode.h"
-#include <cando/main/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
 namespace geom {

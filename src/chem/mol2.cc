@@ -29,7 +29,7 @@
 #include <clasp/core/lispStream.h>
 #include <clasp/core/pathname.h>
 #include <cando/adapt/indexedObjectBag.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/molecule.h>
 #include <clasp/core/str.h>

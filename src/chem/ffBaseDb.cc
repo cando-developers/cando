@@ -14,7 +14,7 @@
 #include <cando/chem/ffBaseDb.h>
 #include <cando/chem/forceField.h>
 //#include "core/archiveNode.h"
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
 SYMBOL_EXPORT_SC_(ChemKwPkg,parameterized);

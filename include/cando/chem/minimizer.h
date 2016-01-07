@@ -307,8 +307,8 @@ CL_DEFMETHOD 	void	setTruncatedNewtonTolerance(double m) {this->_TruncatedNewton
 	DEFAULT_CTOR_DTOR(Minimizer_O);
     };
 
-    extern core::Symbol_sp _sym__PLUS_minimizerStatusConverter_PLUS_;
-    extern core::Symbol_sp _sym__PLUS_preconditionerTypeConverter_PLUS_;
+    extern core::Symbol_sp& _sym__PLUS_minimizerStatusConverter_PLUS_;
+    extern core::Symbol_sp& _sym__PLUS_preconditionerTypeConverter_PLUS_;
 
 };
 

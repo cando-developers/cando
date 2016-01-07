@@ -18,7 +18,7 @@
 #include <clasp/core/environment.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/lispReader.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/chem/spanningLoop.h>
 #include <clasp/core/reader.h>
 #include <cando/chem/cipPrioritizer.h>

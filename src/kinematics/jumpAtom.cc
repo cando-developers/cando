@@ -4,7 +4,7 @@
 
 #include <clasp/core/foundation.h>
 #include <cando/kinematics/atomTree.h>
-#include <cando/kinematics/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/kinematics/stub.h>
 #include <cando/kinematics/jumpAtom.h>
 

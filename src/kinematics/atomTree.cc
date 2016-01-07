@@ -8,7 +8,7 @@
 #include <cando/chem/constitutionAtoms.h>
 #include <cando/chem/oligomer.h>
 #include <cando/chem/topology.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <clasp/core/evaluator.h>
 #include <clasp/core/binder.h>
 #include <cando/chem/candoDatabase.h>

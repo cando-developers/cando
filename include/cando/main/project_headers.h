@@ -215,7 +215,7 @@ namespace chem {
 #include <cando/chem/superposableConformationCollection.h>
 #include <cando/chem/superposeEngine.fwd.h>
 #include <cando/chem/superposeEngine.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/chem/topology.fwd.h>
 #include <cando/chem/topology.h>
 //#include <cando/chem/torsionDriver.h>
@@ -249,7 +249,7 @@ namespace chem {
 #include <cando/geom/ovector2.h>
 #include <cando/geom/ovector3.fwd.h>
 #include <cando/geom/ovector3.h>
-#include <cando/geom/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/geom/vector2.h>
 #include <cando/geom/vector3.h>
 #include <cando/geom/vector4.h>
@@ -261,7 +261,7 @@ namespace chem {
 #include <cando/units/otherPackageClasses.h>
 #include <cando/units/quantity.fwd.h>
 #include <cando/units/quantity.h>
-#include <cando/units/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/units/unit.h>
 #include <cando/units/unitsFoundation.h>
 #include <cando/units/unitsPackage.h>

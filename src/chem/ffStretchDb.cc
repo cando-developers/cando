@@ -15,7 +15,7 @@
 #include <clasp/core/str.h>
 #include <cando/chem/ffStretchDb.h>
 #include <cando/chem/units.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>
 
 

@@ -2,7 +2,7 @@
 #include <clasp/core/common.h>
 #include <cando/main/foundation.h>
 #include <cando/chem/iterateMatter.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
 #include <clasp/core/wrappers.h>

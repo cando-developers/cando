@@ -5,7 +5,7 @@
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
 #include <clasp/core/lisp.h>
-#include <cando/kinematics/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/kinematics/rootBondedAtom.h>
 
 namespace kinematics

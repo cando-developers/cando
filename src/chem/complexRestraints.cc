@@ -5,7 +5,7 @@
 //#include "core/archive.h"
 #include <clasp/core/str.h>
 #include <cando/chem/restraint.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/chem/residue.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/chemInfo.h>

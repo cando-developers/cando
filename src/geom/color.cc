@@ -4,7 +4,7 @@
 #include <clasp/core/object.h>
 #include <clasp/core/lisp.h>
 #include <clasp/core/hashTableEq.h>
-#include <cando/geom/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <clasp/core/environment.h>
 #include <clasp/core/binder.h>
 //#include "core/archiveNode.h"

@@ -4,7 +4,7 @@
 //#include "core/archive.h"
 #include <clasp/core/foundation.h>
 #include <clasp/core/hashTableEq.h>
-#include <cando/units/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/virtualAtom.h>
 #include <cando/chem/residue.h>

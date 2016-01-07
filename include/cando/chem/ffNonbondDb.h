@@ -86,10 +86,10 @@ namespace chem {
     typedef	enum { vmrAverage, vmrGeometric, vmrMmff94 } VdwMixRadiusEnum;
     typedef	enum { vmwAverage, vmwMmff94 } VdwMixWellEnum;
 
-    extern core::Symbol_sp _sym_STARDonorAcceptorEnumConverterSTAR;
-    extern core::Symbol_sp _sym_STAREleDielectricEnumConverterSTAR;
-    extern core::Symbol_sp _sym_STARVdwMixRadiusEnumConverterSTAR;
-    extern core::Symbol_sp _sym_STARVdwMixWellEnumConverterSTAR;
+    extern core::Symbol_sp& _sym_STARDonorAcceptorEnumConverterSTAR;
+    extern core::Symbol_sp& _sym_STAREleDielectricEnumConverterSTAR;
+    extern core::Symbol_sp& _sym_STARVdwMixRadiusEnumConverterSTAR;
+    extern core::Symbol_sp& _sym_STARVdwMixWellEnumConverterSTAR;
 };
 
 

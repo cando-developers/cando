@@ -9,11 +9,6 @@ namespace geom
 {
 
 
-#define SYMBOLS_EXTERN
-  #ifndef SCRAPING
-    #include SYMBOLS_SCRAPED_INC_H
-  #endif
-
     extern const char* Geom_nicknames[];
 
     class GeomExposer : public core::Exposer

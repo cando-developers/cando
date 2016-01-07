@@ -9,8 +9,8 @@
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>
 #include <cando/geom/color.h>
-#include <cando/geom/symbolTable.h>
-#include <cando/chem/symbolTable.h>
+#include <clasp/core/symbolTable.h>
+#include <clasp/core/symbolTable.h>
 #include <clasp/core/hashTableEql.h>
 #include <cando/chem/chemPackage.h>
 #include <cando/chem/elements.h>

@@ -40,9 +40,9 @@ namespace chem {
 
 
 namespace chemkw {
-    extern core::Symbol_sp _sym_parameterized;
-    extern core::Symbol_sp _sym_estimated;
-    extern core::Symbol_sp _sym_rough;
+    extern core::Symbol_sp& _sym_parameterized;
+    extern core::Symbol_sp& _sym_estimated;
+    extern core::Symbol_sp& _sym_rough;
 };
 
 namespace translate {
