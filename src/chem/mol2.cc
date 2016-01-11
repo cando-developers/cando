@@ -752,8 +752,7 @@ void	mol2WriteMatterToFileName(Matter_sp matter, core::T_sp fileName )
 
 
 
-__INITIALIZE(ChemPkg,Initialize_Mol2_TypeRules)
-void	Initialize_Mol2_TypeRules(core::Lisp_sp lisp)
+void	initialize_mol2_type_rules()
 {_G();
   LOG(BF("Initializing sybyl types") );
   GC_ALLOCATE(chem::WildElementDict_O,wilds);

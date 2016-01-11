@@ -21,7 +21,6 @@ namespace geom
     {
 	LISP_CLASS(geom,GeomPkg,Color_O,"Color",core::CxxObject_O);
     public:
-	static void lisp_initGlobals(core::Lisp_sp lisp);
     public: // virtual functions inherited from Object
 	void	initialize();
 //	void	archiveBase(core::ArchiveP node);
@@ -72,6 +71,8 @@ namespace geom
 	DEFAULT_CTOR_DTOR(Color_O);
     };
 
+
+    void initialize_color();
 
 };
 TRANSLATE(geom::Color_O);

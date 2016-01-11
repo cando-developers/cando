@@ -509,29 +509,26 @@ gctools::Vec0<Stereoisomer_sp>::iterator	mnpi;
     }
     return names;
 }
-
-    void StereoConfiguration_O::lisp_initGlobals(core::Lisp_sp lisp)
-    {_G();
       SYMBOL_EXPORT_SC_(ChemKwPkg,undefinedConfiguration);
       SYMBOL_EXPORT_SC_(ChemKwPkg,S);
       SYMBOL_EXPORT_SC_(ChemKwPkg,R);
       CL_BEGIN_ENUM(ConfigurationEnum,_sym__PLUS_configurationEnumConverter_PLUS_,"Configuration");
-      CL_VALUE_ENUM(chemkw::undefinedConfiguration, undefinedConfiguration );
-      CL_VALUE_ENUM(chemkw::S, S_Configuration );
-      CL_VALUE_ENUM(chemkw::R, R_Configuration );
+      CL_VALUE_ENUM(chemkw::_sym_undefinedConfiguration, undefinedConfiguration );
+      CL_VALUE_ENUM(chemkw::_sym_S, S_Configuration );
+      CL_VALUE_ENUM(chemkw::_sym_R, R_Configuration );
       CL_END_ENUM(_sym__PLUS_configurationEnumConverter_PLUS_);
 	    ;
 
-            SYMBOL_EXPORT_SC_(ChemKwPkg,undefinedCenter);
-            SYMBOL_EXPORT_SC_(ChemKwPkg,chiral);
-            SYMBOL_EXPORT_SC_(ChemKwPkg,prochiral);
+SYMBOL_EXPORT_SC_(ChemKwPkg,undefinedCenter);
+SYMBOL_EXPORT_SC_(ChemKwPkg,chiral);
+SYMBOL_EXPORT_SC_(ChemKwPkg,prochiral);
       CL_BEGIN_ENUM(StereochemistryType,_sym__PLUS_stereochemistryTypeConverter_PLUS_,"Stereochemistry");
-      CL_VALUE_ENUM(chemkw::undefinedCenter,undefinedCenter);
-      CL_VALUE_ENUM(chemkw::chiralCenter, chiralCenter);
-      CL_VALUE_ENUM(chemkw::prochiralCenter, prochiralCenter);
+      CL_VALUE_ENUM(chemkw::_sym_undefinedCenter,undefinedCenter);
+      CL_VALUE_ENUM(chemkw::_sym_chiral, chiralCenter);
+      CL_VALUE_ENUM(chemkw::_sym_prochiral, prochiralCenter);
       CL_END_ENUM(_sym__PLUS_stereochemistryTypeConverter_PLUS_);
          ;
-    }
+
 
 void StereoConfiguration_O::exposeCando(core::Lisp_sp lisp)
     {
@@ -619,7 +616,7 @@ void StereoInformation_O::exposeCando(core::Lisp_sp lisp)
 ;
 
 
-    EXPOSE_CLASS_AND_GLOBALS(chem, StereoConfiguration_O );
+    EXPOSE_CLASS(chem, StereoConfiguration_O );
     EXPOSE_CLASS(chem, Stereoisomer_O);
     EXPOSE_CLASS(chem, StereoInformation_O );
 

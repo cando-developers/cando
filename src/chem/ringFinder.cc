@@ -71,7 +71,7 @@ PathMessage_sp	PathMessage_O::create(RingFinder_sp graph, AGVertex_sp firstVerte
 {_G();
     GC_ALLOCATE(PathMessage_O, pm );
     pm->_graph = graph;
-    pm->_beep = core::SimpleBitVector_O::create(graph->getNumberOfEdges());
+    pm->_beep = core::SimpleBitVector_O::make(graph->getNumberOfEdges());
     pm->_firstVertex = firstVertex;
     pm->_firstEdge = firstEdge;
     pm->_lastVertex = lastVertex;

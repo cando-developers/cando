@@ -1,6 +1,5 @@
 #ifdef EXPOSE_FUNCTION_SIGNATURES
 namespace chem {
-    core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAlias);
     core::T_sp chem__create_for_matter(Matter_sp matter);
     core::T_sp chem__load_pdb(core::Str_sp fileName);
     core::T_sp chem__set_oligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_sp parts);
@@ -8,6 +7,7 @@ namespace chem {
     adapt::ObjectSet_sp chem__atomsInMatterAsObjectSet( Matter_sp matter);
     adapt::ObjectSet_sp chem__atomsWithinSphereAsObjectSet( Matter_sp matter, Vector3 center, double radius );
     void chem__connectAtomsInMatterInCovalentContact(Matter_sp matter);
+    bool chem__is_in_plug_name(core::Symbol_sp plugName);
     core::T_sp chem__map_atoms(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m);
     core::T_sp chem__map_residues(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m);
     core::T_sp chem__map_molecules(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m );
@@ -33,7 +33,7 @@ namespace chem {
     core::T_sp chem__extend_aliases(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomAliases);
     core::T_sp chem__define_monomer_pack(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomAliases );
     core::List_sp chem__parseChimeraAtomSpecs(const string& spec);
-    static bool isInPlugName(core::Symbol_sp plugName);
+    core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAlias);
 };
 namespace units {
 };
@@ -1020,46 +1020,46 @@ namespace ext {
 #endif // EXPOSE_FUNCTION_SIGNATURES
 #ifdef EXPOSE_FUNCTION_BINDINGS_HELPERS
 NOINLINE void expose_function_1_helper() {
-  expose_function(core::magic_name("chem__alias"),true,&chem::chem__alias,"");
-}
-NOINLINE void expose_function_2_helper() {
   expose_function(core::magic_name("CHEM:bonds"),true,&chem::IterateBonds_O::make,"");
 }
-NOINLINE void expose_function_3_helper() {
+NOINLINE void expose_function_2_helper() {
   expose_function(core::magic_name("CHEM:residues"),true,&chem::IterateResidues_O::createForMatter,"");
 }
-NOINLINE void expose_function_4_helper() {
+NOINLINE void expose_function_3_helper() {
   expose_function(core::magic_name("chem__create_for_matter"),true,&chem::chem__create_for_matter,"");
 }
-NOINLINE void expose_function_5_helper() {
+NOINLINE void expose_function_4_helper() {
   expose_function(core::magic_name("CHEM:ring-bonds"),true,&chem::RingFinder_O::ringBonds,"");
 }
-NOINLINE void expose_function_6_helper() {
+NOINLINE void expose_function_5_helper() {
   expose_function(core::magic_name("CHEM:identify-rings"),true,&chem::RingFinder_O::identifyRings,"");
 }
-NOINLINE void expose_function_7_helper() {
+NOINLINE void expose_function_6_helper() {
   expose_function(core::magic_name("CHEM:save-pdb"),true,&chem::PdbWriter_O::savePdb,"");
 }
-NOINLINE void expose_function_8_helper() {
+NOINLINE void expose_function_7_helper() {
   expose_function(core::magic_name("chem__load_pdb"),true,&chem::chem__load_pdb,"");
 }
-NOINLINE void expose_function_9_helper() {
+NOINLINE void expose_function_8_helper() {
   expose_function(core::magic_name("chem__set_oligomer"),true,&chem::chem__set_oligomer,"");
 }
-NOINLINE void expose_function_10_helper() {
+NOINLINE void expose_function_9_helper() {
   expose_function(core::magic_name("chem__oligomer_sequence"),true,&chem::chem__oligomer_sequence,"");
 }
-NOINLINE void expose_function_11_helper() {
+NOINLINE void expose_function_10_helper() {
   expose_function(core::magic_name("chem__atomsInMatterAsObjectSet"),true,&chem::chem__atomsInMatterAsObjectSet,"");
 }
-NOINLINE void expose_function_12_helper() {
+NOINLINE void expose_function_11_helper() {
   expose_function(core::magic_name("chem__atomsWithinSphereAsObjectSet"),true,&chem::chem__atomsWithinSphereAsObjectSet,"");
 }
-NOINLINE void expose_function_13_helper() {
+NOINLINE void expose_function_12_helper() {
   expose_function(core::magic_name("chem__connectAtomsInMatterInCovalentContact"),true,&chem::chem__connectAtomsInMatterInCovalentContact,"");
 }
-NOINLINE void expose_function_14_helper() {
+NOINLINE void expose_function_13_helper() {
   expose_function(core::magic_name("CHEM:otherPlugName"),true,&chem::DirectionalCoupling_O::otherPlugName,"");
+}
+NOINLINE void expose_function_14_helper() {
+  expose_function(core::magic_name("chem__is_in_plug_name"),true,&chem::chem__is_in_plug_name,"");
 }
 NOINLINE void expose_function_15_helper() {
   expose_function(core::magic_name("CHEM:outPlugName"),true,&chem::DirectionalCoupling_O::outPlugName,"");
@@ -1167,7 +1167,7 @@ NOINLINE void expose_function_49_helper() {
   expose_function(core::magic_name("chem__parseChimeraAtomSpecs"),true,&chem::chem__parseChimeraAtomSpecs,"");
 }
 NOINLINE void expose_function_50_helper() {
-  expose_function(core::magic_name("CHEM:isInPlugName"),true,&chem::isInPlugName,"");
+  expose_function(core::magic_name("chem__alias"),true,&chem::chem__alias,"");
 }
 NOINLINE void expose_function_51_helper() {
   expose_function(core::magic_name("UNITS:make-quantity"),true,&units::Quantity_O::make,"");

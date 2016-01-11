@@ -104,7 +104,7 @@ double	rel = 0.0;
     return false;
 }
 
-void energyFunction_initializeSmarts(core::Lisp_sp lisp)
+void energyFunction_initializeSmarts()
 {_G();
     if ( energyFunctionInitialized ) return;
     _sym_STARparserNodeHolderSTAR->defparameter(adapt::IndexedObjectBag_O::create());
@@ -310,12 +310,6 @@ bool inAtomSet(core::T_sp activeSet, Atom_sp a)
   SIMPLE_ERROR(BF("Add support to search %s as a set\n") % _rep_(activeSet));
 }
 
-
-
-    void EnergyFunction_O::lisp_initGlobals(core::Lisp_sp lisp)
-    {_G();
-	energyFunction_initializeSmarts(lisp);
-    };
 
 
 void	EnergyFunction_O::initialize()
@@ -2091,7 +2085,7 @@ EnergyNonbond_sp	nbComponent;
 
 
 
-EXPOSE_CLASS_AND_GLOBALS(chem,EnergyFunction_O);
+EXPOSE_CLASS(chem,EnergyFunction_O);
 };
 
 

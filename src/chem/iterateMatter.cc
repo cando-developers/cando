@@ -240,7 +240,7 @@ CL_DEFUN IterateBonds_sp IterateBonds_O::make(Matter_sp top)
 #define DOCS_IterateBonds_O_createForMatter "IterateBonds_O_createForMatter"
     core::T_sp IterateBonds_O::createForMatter(Matter_sp matter)
     {_G();
-	return IterateBonds_O::create(matter);
+	return IterateBonds_O::make(matter);
     }
 
 
@@ -270,23 +270,18 @@ CL_DEFMETHOD     int IterateBonds_O::getBondOrder()
     }
 
 
+SYMBOL_EXPORT_SC_(ChemPkg,allMatter);
+SYMBOL_EXPORT_SC_(ChemPkg,atoms);
+SYMBOL_EXPORT_SC_(ChemPkg,residues);
+SYMBOL_EXPORT_SC_(ChemPkg,molecules);
+SYMBOL_EXPORT_SC_(ChemPkg,bonds);
+CL_BEGIN_ENUM(LoopEnum,_sym_iterateMatterSymbolConverter,"IterateMatter");
+CL_VALUE_ENUM(_sym_atoms,atoms);
+CL_VALUE_ENUM(_sym_residues,residues);
+CL_VALUE_ENUM(_sym_molecules,molecules);
+CL_VALUE_ENUM(_sym_bonds,bonds);
+CL_END_ENUM(_sym_iterateMatterSymbolConverter);
 
-    void IterateMatter_O::lisp_initGlobals(core::Lisp_sp lisp)
-    {_G();
-	SYMBOL_EXPORT_SC_(ChemPkg,allMatter);
-	SYMBOL_EXPORT_SC_(ChemPkg,atoms);
-	SYMBOL_EXPORT_SC_(ChemPkg,residues);
-	SYMBOL_EXPORT_SC_(ChemPkg,molecules);
-	SYMBOL_EXPORT_SC_(ChemPkg,bonds);
-	CL_BEGIN_ENUM(int,_sym_iterateMatterSymbolConverter,"IterateMatter");
-        CL_VALUE_ENUM(_sym_allMatter,ALL_MATTERS);	// MOLECULES/RESIDUES/ATOMS
-        CL_VALUE_ENUM(_sym_atoms,ATOMS);
-        CL_VALUE_ENUM(_sym_residues,RESIDUES);
-        CL_VALUE_ENUM(_sym_molecules,MOLECULES);
-        CL_VALUE_ENUM(_sym_bonds,BONDS);
-        CL_END_ENUM(_sym_iterateMatterSymbolConverter);
-	    ;
-    }
 
 
 
@@ -367,7 +362,7 @@ CL_DEFMETHOD     int IterateBonds_O::getBondOrder()
 
 
 
-    EXPOSE_CLASS_AND_GLOBALS(chem,IterateMatter_O);
+    EXPOSE_CLASS(chem,IterateMatter_O);
     EXPOSE_CLASS(chem,IterateAtoms_O);
     EXPOSE_CLASS(chem,IterateResidues_O);
     EXPOSE_CLASS(chem,IterateBonds_O);

@@ -319,6 +319,7 @@ CL_DEFMETHOD     string	getName() { return this->_Name; };
 #define	FINITE_DIFFERENCE_TOLERANCE 0.10
 int	_areValuesClose(double numVal, double analVal, const char* funcName, const char* termName, int index );
 
+ void energyFunction_initializeSmarts();
 };
 
 TRANSLATE(chem::EnergyFunction_O);

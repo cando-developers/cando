@@ -983,12 +983,6 @@ void	CDText_O::parseFromXml(adapt::QDomNode_sp text)
 
 
 
-    void ChemDraw_O::lisp_initGlobals(core::Lisp_sp lisp)
-    {_G();
-    }
-
-
-
 
     void	ChemDraw_O::initialize()
     {
@@ -1241,7 +1235,7 @@ CL_DEFMETHOD     core::List_sp	ChemDraw_O::getSubSetOfFragments(adapt::SymbolSet
     REGISTER_CLASS(chem,CDBond_O);
     EXPOSE_CLASS(chem,CDFragment_O);
     REGISTER_CLASS(chem,CDText_O);
-    EXPOSE_CLASS_AND_GLOBALS(chem,ChemDraw_O);
+    EXPOSE_CLASS(chem,ChemDraw_O);
 };
 
 

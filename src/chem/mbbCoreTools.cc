@@ -255,16 +255,6 @@ CL_DEFUN adapt::ObjectSet_sp chem__atomsInMatterAsObjectSet( Matter_sp matter)
 	return result;
     }
 
-__INITIALIZE(ChemPkg,exposeMbbCoreTools);
-
-
-    void exposeMbbCoreTools(core::Lisp_sp lisp)
-    {
-//	core::af_def(ChemPkg,"connectAtomsInMatterInCovalentContact", &connectAtomsInMatterInCovalentContact);
-//	core::af_def(ChemPkg,"atomsInMatterAsObjectSet",&atomsInMatterAsObjectSet);
-//	core::af_def(ChemPkg,"atomsWithinSphereAsObjectSet",&atomsWithinSphereAsObjectSet);
-    }
-
 
 };
 

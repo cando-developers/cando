@@ -2420,35 +2420,29 @@ CL_DEFMETHOD     void	Minimizer_O::restart()
 	this->_Iteration = 1;
     }
 
-    void Minimizer_O::lisp_initGlobals(core::Lisp_sp lisp)
-    {_G();
+SYMBOL_EXPORT_SC_(ChemPkg,noPreconditioner);
+SYMBOL_EXPORT_SC_(ChemPkg,hessianPreconditioner);
+CL_BEGIN_ENUM(chem::PreconditionerType,_sym__PLUS_preconditionerTypeConverter_PLUS_,"PreconditionerType");
+CL_VALUE_ENUM(_sym_noPreconditioner,noPreconditioner);
+CL_VALUE_ENUM(_sym_hessianPreconditioner,hessianPreconditioner);
+CL_END_ENUM(_sym__PLUS_preconditionerTypeConverter_PLUS_);
+;
+SYMBOL_EXPORT_SC_(ChemPkg,minimizerError);
+SYMBOL_EXPORT_SC_(ChemPkg,minimizerSucceeded);
+SYMBOL_EXPORT_SC_(ChemPkg,truncatedNewtonRunning);
+SYMBOL_EXPORT_SC_(ChemPkg,conjugateGradientRunning);
+SYMBOL_EXPORT_SC_(ChemPkg,steepestDescentRunning);
+SYMBOL_EXPORT_SC_(ChemPkg,minimizerIdle);
+CL_BEGIN_ENUM(chem::MinimizerStatus,_sym__PLUS_minimizerStatusConverter_PLUS_,"MinimizerStatus");
+CL_VALUE_ENUM(_sym_minimizerIdle,chem::minimizerIdle);
+CL_VALUE_ENUM(_sym_steepestDescentRunning,chem::steepestDescentRunning);
+CL_VALUE_ENUM(_sym_conjugateGradientRunning,chem::conjugateGradientRunning);
+CL_VALUE_ENUM(_sym_truncatedNewtonRunning,chem::truncatedNewtonRunning);
+CL_VALUE_ENUM(_sym_minimizerSucceeded,chem::minimizerSucceeded);
+CL_VALUE_ENUM(_sym_minimizerError,chem::minimizerError);
+CL_END_ENUM(_sym__PLUS_minimizerStatusConverter_PLUS_);
 
-	SYMBOL_EXPORT_SC_(ChemPkg,noPreconditioner);
-	SYMBOL_EXPORT_SC_(ChemPkg,hessianPreconditioner);
-	CL_BEGIN_ENUM(PreconditionerType,_sym__PLUS_preconditionerTypeConverter_PLUS_,"PreconditionerType");
-        CL_VALUE_ENUM(_sym_noPreconditioner,noPreconditioner);
-        CL_VALUE_ENUM(_sym_hessianPreconditioner,hessianPreconditioner);
-        CL_END_ENUM(_sym__PLUS_preconditionerTypeConverter_PLUS_);
-	    ;
-	SYMBOL_EXPORT_SC_(ChemPkg,minimizerError);
-	SYMBOL_EXPORT_SC_(ChemPkg,minimizerSucceeded);
-	SYMBOL_EXPORT_SC_(ChemPkg,truncatedNewtonRunning);
-	SYMBOL_EXPORT_SC_(ChemPkg,conjugateGradientRunning);
-	SYMBOL_EXPORT_SC_(ChemPkg,steepestDescentRunning);
-	SYMBOL_EXPORT_SC_(ChemPkg,minimizerIdle);
-	CL_BEGIN_ENUM(MinimizerStatus,_sym__PLUS_minimizerStatusConverter_PLUS_,"MinimizerStatus");
-        CL_VALUE_ENUM(_sym_minimizerIdle,minimizerIdle);
-        CL_VALUE_ENUM(_sym_steepestDescentRunning,steepestDescentRunning);
-        CL_VALUE_ENUM(_sym_conjugateGradientRunning,conjugateGradientRunning);
-        CL_VALUE_ENUM(_sym_truncatedNewtonRunning,truncatedNewtonRunning);
-        CL_VALUE_ENUM(_sym_minimizerSucceeded,minimizerSucceeded);
-        CL_VALUE_ENUM(_sym_minimizerError,minimizerError);
-        CL_END_ENUM(_sym__PLUS_minimizerStatusConverter_PLUS_);
-        ;
-    }
-
-
-    EXPOSE_CLASS_AND_GLOBALS(chem,Minimizer_O);
+EXPOSE_CLASS(chem,Minimizer_O);
 
 };
 

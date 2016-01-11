@@ -114,92 +114,90 @@ typedef	enum	{ NoSide, InSide, OutSide } DirectionalCouplingSide;
 SMART(DirectionalCoupling);
 class DirectionalCoupling_O : public Coupling_O
 {
-    LISP_CLASS(chem,ChemPkg,DirectionalCoupling_O,"DirectionalCoupling",Coupling_O);
+  LISP_CLASS(chem,ChemPkg,DirectionalCoupling_O,"DirectionalCoupling",Coupling_O);
 
-public:
-	friend class O_WeakOligomer;
+ public:
+  friend class O_WeakOligomer;
 //	void	archiveBase(core::ArchiveP node);
-	void initialize();
+  void initialize();
 
 
-public:
-	static char otherDirectionalCouplingSide( char side);
+ public:
+  static char otherDirectionalCouplingSide( char side);
     	//! Return just the coupling name with the prefix removed
-	static core::Symbol_sp couplingName(core::Symbol_sp name);
+  static core::Symbol_sp couplingName(core::Symbol_sp name);
         //! Return the inPlugName
-	static core::Symbol_sp inPlugName(core::Symbol_sp couplingName);
+  static core::Symbol_sp inPlugName(core::Symbol_sp couplingName);
         //! Return the outPlugName
-	static core::Symbol_sp outPlugName(core::Symbol_sp couplingName);
+  static core::Symbol_sp outPlugName(core::Symbol_sp couplingName);
         //! Return the other PlugName
-	static core::Symbol_sp otherPlugName(core::Symbol_sp plugName);
-CL_DEFUN static bool isInPlugName(core::Symbol_sp plugName)
-    {
-        return plugName->symbolName()->schar(0) == IN_PLUG_PREFIX;
-    };
-    static bool isOutPlugName(core::Symbol_sp plugName)
-    {
-        return plugName->symbolName()->schar(0) == OUT_PLUG_PREFIX;
-    };
-    static bool isPlugName(core::Symbol_sp plugName)
-    {
-        return ((plugName->symbolName()->schar(0) == OUT_PLUG_PREFIX) || (plugName->symbolName()->schar(0) == IN_PLUG_PREFIX) );
-    };
+  static core::Symbol_sp otherPlugName(core::Symbol_sp plugName);
+        
+  static bool isInPlugName(core::Symbol_sp plugName);
+  static bool isOutPlugName(core::Symbol_sp plugName)
+  {
+    return plugName->symbolName()->schar(0) == OUT_PLUG_PREFIX;
+  };
+  static bool isPlugName(core::Symbol_sp plugName)
+  {
+    return ((plugName->symbolName()->schar(0) == OUT_PLUG_PREFIX) || (plugName->symbolName()->schar(0) == IN_PLUG_PREFIX) );
+  };
 
-private:
-	Monomer_wp		_InMonomer;
-	core::Symbol_sp		_Name;
-	Monomer_wp		_OutMonomer;
+ private:
+  Monomer_wp		_InMonomer;
+  core::Symbol_sp		_Name;
+  Monomer_wp		_OutMonomer;
 
-protected:
+ protected:
 
-public:
-	bool		containsMonomer();
-	Monomer_sp	getInMonomer();
-	Monomer_sp	getInMonomer_const() const;
-	Monomer_sp	getOutMonomer();
-	Monomer_sp	getOutMonomer_const() const;
+ public:
+  bool		containsMonomer();
+  Monomer_sp	getInMonomer();
+  Monomer_sp	getInMonomer_const() const;
+  Monomer_sp	getOutMonomer();
+  Monomer_sp	getOutMonomer_const() const;
 
-	virtual Monomer_sp	getMonomer1() { return this->getInMonomer();};
-	virtual Monomer_sp	getMonomer1_const() const { return this->getInMonomer_const();};
-	virtual Monomer_sp	getMonomer2() { return this->getOutMonomer();};
-	virtual Monomer_sp	getMonomer2_const() const { return this->getOutMonomer_const();};
+  virtual Monomer_sp	getMonomer1() { return this->getInMonomer();};
+  virtual Monomer_sp	getMonomer1_const() const { return this->getInMonomer_const();};
+  virtual Monomer_sp	getMonomer2() { return this->getOutMonomer();};
+  virtual Monomer_sp	getMonomer2_const() const { return this->getOutMonomer_const();};
 
-	void	resetIn();
-	void	resetOut();
-	bool	isInCouplingToMonomer(Monomer_sp mon);
-	void	setInMonomer_NoSignal(Monomer_sp sin);
-	void	setOutMonomer_NoSignal(Monomer_sp sout);
-	void	setInMonomer(Monomer_sp sin);
-	void	setOutMonomer(Monomer_sp sout);
-	DirectionalCouplingSide	couplingSideOfMonomer( Monomer_sp mon);
+  void	resetIn();
+  void	resetOut();
+  bool	isInCouplingToMonomer(Monomer_sp mon);
+  void	setInMonomer_NoSignal(Monomer_sp sin);
+  void	setOutMonomer_NoSignal(Monomer_sp sout);
+  void	setInMonomer(Monomer_sp sin);
+  void	setOutMonomer(Monomer_sp sout);
+  DirectionalCouplingSide	couplingSideOfMonomer( Monomer_sp mon);
 
-	bool	isRingClosing() { return false; };
+  bool	isRingClosing() { return false; };
 
-	string	description() const;
-	void	setName( core::Symbol_sp nm);
-CL_NAME("getName");
-CL_DEFMETHOD 	core::Symbol_sp	getName() const {return this->_Name;};
+  string	description() const;
+  void	setName( core::Symbol_sp nm);
+  CL_NAME("getName");
+  CL_DEFMETHOD 	core::Symbol_sp	getName() const {return this->_Name;};
 
-	void	couple( Monomer_sp sin, Monomer_sp sout );
+  void	couple( Monomer_sp sin, Monomer_sp sout );
 
 	/*! Get the plug name of this Coupling from the point of view of the InMonomer */
-	core::Symbol_sp	getInMonomerPlugName();
+  core::Symbol_sp	getInMonomerPlugName();
 	/*! Get the plug name of this Coupling from the point of view of the OutMonomer */
-	core::Symbol_sp	getOutMonomerPlugName();
+  core::Symbol_sp	getOutMonomerPlugName();
 
-	Plug_sp		getPlugForMonomer(Monomer_sp mon);
-	Plug_sp		getPlugForOtherMonomer(Monomer_sp mon);
+  Plug_sp		getPlugForMonomer(Monomer_sp mon);
+  Plug_sp		getPlugForOtherMonomer(Monomer_sp mon);
 
-	bool		containsMonomer(Monomer_sp mon);
-	Monomer_sp	getOtherSideMonomer(Monomer_sp mon);
+  bool		containsMonomer(Monomer_sp mon);
+  Monomer_sp	getOtherSideMonomer(Monomer_sp mon);
 
-	void	doCoupling(Residue_sp inResidue, Residue_sp outResidue );
+  void	doCoupling(Residue_sp inResidue, Residue_sp outResidue );
 
-    void	checkForErrors(core::T_sp errorStream);
-        void	throwIfBadConnections();
+  void	checkForErrors(core::T_sp errorStream);
+  void	throwIfBadConnections();
 
 
-	DEFAULT_CTOR_DTOR(DirectionalCoupling_O);
+  DEFAULT_CTOR_DTOR(DirectionalCoupling_O);
 };
 
 

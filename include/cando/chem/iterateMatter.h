@@ -119,7 +119,7 @@ class IterateBonds_O : public IterateMatter_O
 public:
 private:
 public:
-    static IterateBonds_sp create(Matter_sp top);
+    static IterateBonds_sp make(Matter_sp top);
     static core::T_sp createForMatter(Matter_sp matter);
 
 public:

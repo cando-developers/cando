@@ -547,8 +547,6 @@ void	BondList_O::archiveBase(core::ArchiveP node)
 #endif
 
 
-void Bond_O::lisp_initGlobals(core::Lisp_sp lisp)
-{_G();
   SYMBOL_EXPORT_SC_(ChemKwPkg,noBond);
   SYMBOL_EXPORT_SC_(ChemKwPkg,singleBond);
   SYMBOL_EXPORT_SC_(ChemKwPkg,doubleBond);
@@ -569,8 +567,6 @@ void Bond_O::lisp_initGlobals(core::Lisp_sp lisp)
   CL_VALUE_ENUM(chemkw::_sym_dashedSingleBond,dashedSingleBond);
   CL_VALUE_ENUM(chemkw::_sym_dashedDoubleBond,dashedDoubleBond);
   CL_END_ENUM(_sym__PLUS_bondOrderToSymbolConverter_PLUS_);
-    ;
-}	
 
 
 void Bond_O::exposeCando(core::Lisp_sp lisp)
@@ -622,7 +618,7 @@ void BondList_O::exposePython(core::Lisp_sp lisp)
 }
 
 
-EXPOSE_CLASS_AND_GLOBALS(chem,Bond_O);
+EXPOSE_CLASS(chem,Bond_O);
 EXPOSE_CLASS(chem,BondList_O);
 
 

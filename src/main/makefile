@@ -156,6 +156,13 @@ mps-interface-run:
 	-e "(clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\")" \
         -e "(clasp-analyzer:serial-search-all-then-generate-code-and-quit)"
 
+mps-interface-run-boehm:
+	make compile-commands
+	clasp_boehm_o -f bclasp -e "(require :asdf)" \
+        -e "(asdf:load-system \"clasp-analyzer\")" \
+	-e "(clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\")" \
+        -e "(clasp-analyzer:serial-search-all-then-generate-code-and-quit)"
+
 mps-interface-test:
 	make compile-commands
 	clasp_boehmdc_o -f bclasp -e "(require :asdf)" \

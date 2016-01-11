@@ -2072,9 +2072,6 @@ Atom_sp Atom_O::atomWithAtomId(AtomId_sp atomId) const
 
 
 
-
-    void Atom_O::lisp_initGlobals(core::Lisp_sp lisp)
-    {_G();
 	SYMBOL_EXPORT_SC_(ChemPkg,atomNeedsMinimizer);
 	SYMBOL_EXPORT_SC_(ChemPkg,selected);
 	SYMBOL_EXPORT_SC_(ChemPkg,onGrid);
@@ -2099,8 +2096,7 @@ Atom_sp Atom_O::atomWithAtomId(AtomId_sp atomId) const
         CL_VALUE_ENUM(_sym_in8MemberRing, in8MemberRing);
         CL_VALUE_ENUM(_sym_inRing, inRing);
         CL_END_ENUM(_sym__PLUS_atomFlagSymbolConverter_PLUS_);
-          ;
-    }
+
 
     ConstitutionAtom_sp Atom_O::asConstitutionAtom(ConstitutionAtomIndex0N index)
     {_OF();
@@ -2120,7 +2116,7 @@ Atom_sp Atom_O::atomWithAtomId(AtomId_sp atomId) const
     }
 
 
-EXPOSE_CLASS_AND_GLOBALS(chem, Atom_O );
+EXPOSE_CLASS(chem, Atom_O );
 }; // namespace chem
 
 

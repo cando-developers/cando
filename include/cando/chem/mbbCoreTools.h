@@ -42,8 +42,6 @@ adapt::ObjectSet_sp atomsWithinSphere(Matter_sp matter, Vector3 center, double r
 adapt::ObjectSet_sp atomsInMatter(Matter_sp matter);
 
 
-void exposeMbbCoreTools(core::Lisp_sp lisp);
-
 };
 
 #endif

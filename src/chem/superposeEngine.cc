@@ -33,7 +33,7 @@ namespace chem
     SYMBOL_EXPORT_SC_(ChemPkg,superpose);
 
 
-    EXPOSE_CLASS_AND_GLOBALS(chem,SuperposeEngine_O);
+    EXPOSE_CLASS(chem,SuperposeEngine_O);
     EXPOSE_CLASS(chem,SuperposeSelectedAtoms_O);
 
     void SuperposeEngine_O::exposeCando(core::Lisp_sp e)
@@ -69,10 +69,6 @@ namespace chem
     }
 
 
-
-    void SuperposeEngine_O::lisp_initGlobals(core::Lisp_sp lisp)
-    {_G();
-    }
 
 
 

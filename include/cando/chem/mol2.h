@@ -69,6 +69,8 @@ string	mol2WriteAggregateReturnAsString( Aggregate_sp agg );
  void	mol2WriteMatterToFileName( Matter_sp matter, core::T_sp fileName );
 
 
+ void initialize_mol2_type_rules();
+ 
 };
 
 

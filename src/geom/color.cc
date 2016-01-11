@@ -47,7 +47,6 @@ namespace geom
 {
     core::class_<Color_O>()
     ;
-    Color_O::lisp_initGlobals(_lisp);
 }
 
     void Color_O::exposePython(core::Lisp_sp lisp)
@@ -59,37 +58,37 @@ namespace geom
 }
 
 
-    void Color_O::lisp_initGlobals(core::Lisp_sp lisp)
-    {_G();
-	core::HashTableEq_sp colorTable = core::HashTableEq_O::create_default();
-	SYMBOL_EXPORT_SC_(GeomPkg,colorTable);
-	_lisp->defvar(_sym_colorTable,colorTable);
+void initialize_colors()
+{_G();
+  core::HashTableEq_sp colorTable = core::HashTableEq_O::create_default();
+  SYMBOL_EXPORT_SC_(GeomPkg,colorTable);
+  _lisp->defvar(_sym_colorTable,colorTable);
 #define DEF_COLOR(name,rgb) {\
-	    Color_O::getOrDefineSystemColor(kw::_sym_ ## name, rgb); \
-	}
-	DEF_COLOR(white,0xffFFff);
-	DEF_COLOR(black,0x000000);
-	DEF_COLOR(red,0xFF0000);
-	DEF_COLOR(green,0x00FF00);
-	DEF_COLOR(blue,0x0000FF);
-	DEF_COLOR(magenta,0xFF00FF);
-	DEF_COLOR(yellow,0xFFFF00);
-	DEF_COLOR(cyan,0x00FFFF);
-	DEF_COLOR(grey10,0x101010);
-	DEF_COLOR(greyF0,0xF0F0F0);
-	DEF_COLOR(goldenrod,0xdaa520);
-	DEF_COLOR(purple,0xa020f0);
-	DEF_COLOR(pink,0xffc0cb);
-	DEF_COLOR(plum,0xdda0dd);
-	DEF_COLOR(coral,0xff7f50);
-	DEF_COLOR(orange,0xffa500);
-	DEF_COLOR(brown,0xa52a2a);
-	DEF_COLOR(wheat,0xf5deb3);
-	DEF_COLOR(chartreuse,0x7ff000);
-	DEF_COLOR(aquamarine,0x7fffd4);
-	DEF_COLOR(mediumBlue,0x0000cd);
-	DEF_COLOR(steelBlue,0x4682b4);
-    };
+    Color_O::getOrDefineSystemColor(kw::_sym_ ## name, rgb); \
+  }
+  DEF_COLOR(white,0xffFFff);
+  DEF_COLOR(black,0x000000);
+  DEF_COLOR(red,0xFF0000);
+  DEF_COLOR(green,0x00FF00);
+  DEF_COLOR(blue,0x0000FF);
+  DEF_COLOR(magenta,0xFF00FF);
+  DEF_COLOR(yellow,0xFFFF00);
+  DEF_COLOR(cyan,0x00FFFF);
+  DEF_COLOR(grey10,0x101010);
+  DEF_COLOR(greyF0,0xF0F0F0);
+  DEF_COLOR(goldenrod,0xdaa520);
+  DEF_COLOR(purple,0xa020f0);
+  DEF_COLOR(pink,0xffc0cb);
+  DEF_COLOR(plum,0xdda0dd);
+  DEF_COLOR(coral,0xff7f50);
+  DEF_COLOR(orange,0xffa500);
+  DEF_COLOR(brown,0xa52a2a);
+  DEF_COLOR(wheat,0xf5deb3);
+  DEF_COLOR(chartreuse,0x7ff000);
+  DEF_COLOR(aquamarine,0x7fffd4);
+  DEF_COLOR(mediumBlue,0x0000cd);
+  DEF_COLOR(steelBlue,0x4682b4);
+};
 
 
 
@@ -142,12 +141,12 @@ Color_O::Color_O(const Color_O& orig) : core::CxxObject_O(orig)
 {
     core::HashTable_sp colorTable = _sym_colorTable->symbolValue().as<core::HashTable_O>();
     string colorNameString = node->getAttributeString("colorName");
-    core::Symbol_sp sym = node->lisp()->internKeyword(colorNameString);
+    core::Symbol_sp sym = _lisp->internKeyword(colorNameString);
     core::Binder_O::iterator it = colorTable->find(sym);
     if ( it == colorTable->end() )
     {
 	uint uicolor = node->getAttributeUInt("color");
-	Color_sp newColor = Color_O::create(sym,uicolor,node->lisp());
+	Color_sp newColor = Color_O::create(sym,uicolor);
 	colorTable->extend(sym,newColor);
 	return newColor;
     }
@@ -306,7 +305,7 @@ double	Color_O::getBlue()
 }
 
 
-EXPOSE_CLASS_AND_GLOBALS(geom,Color_O);
+EXPOSE_CLASS(geom,Color_O);
 
 };
 

@@ -122,6 +122,16 @@ stringstream	ss;
 };
 
 
+bool DirectionalCoupling_O::isInPlugName(core::Symbol_sp plugName)
+{
+  return plugName->symbolName()->schar(0) == IN_PLUG_PREFIX;
+};
+
+CL_DEFUN bool chem__is_in_plug_name(core::Symbol_sp plugName)
+{
+  return DirectionalCoupling_O::isInPlugName(plugName);
+}
+
 
 CL_DEFUN core::Symbol_sp DirectionalCoupling_O::otherPlugName(core::Symbol_sp name)
     {_G();

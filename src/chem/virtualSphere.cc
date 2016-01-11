@@ -28,7 +28,7 @@ namespace chem
     SYMBOL_EXPORT_SC_(ChemPkg,rotate);
     SYMBOL_EXPORT_SC_(ChemPkg,scale);
 
-    EXPOSE_CLASS_AND_GLOBALS(chem,VirtualSphere_O);
+    EXPOSE_CLASS(chem,VirtualSphere_O);
 
 /*
  * matrix_ident:
@@ -208,12 +208,6 @@ void VirtualSphere_O::exposePython(core::Lisp_sp lisp)
 
 
 
-
-
-
-    void VirtualSphere_O::lisp_initGlobals(core::Lisp_sp lisp)
-    {_G();
-    }
 
 
 

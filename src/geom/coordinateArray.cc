@@ -56,7 +56,7 @@ void CoordinateArray_O::fillFromList(core::List_sp vals)
   if ( vals.notnilp() ) {
     for ( auto cur : vals ) {
       core::T_sp obj = core::oCar(cur);
-      if ( core::cl_consp(obj) )
+      if ( core::cl__consp(obj) )
       {
         core::Cons_sp consVec = obj.as<core::Cons_O>();
         Vector3 vec;

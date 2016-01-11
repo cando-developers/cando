@@ -33,6 +33,7 @@
 #include <cando/chem/constitutionAtoms.h>
 #include <cando/chem/coordSys.h>
 #include <cando/chem/coupling.h>
+#include <cando/chem/mol2.h>
 #include <cando/chem/energyComponent.h>
 #include <cando/chem/energyFunction.h>
 #include <cando/chem/entity.h>
@@ -178,17 +179,17 @@ namespace chem
           core::Cons_sp pts = core::Cons_O::createList(core::Str_O::create("cando:**;*.*"),pn);
           core::Cons_sp ptsList = core::Cons_O::createList(pts);
           core::core__pathname_translations(core::Str_O::create("CANDO"),_lisp->_true(),ptsList);
+          energyFunction_initializeSmarts();
+          initialize_mol2_type_rules();
 	}
 	break;
 	case candoFunctions:
 	{
           setupCandoPrimitives(_lisp);
-          exposeMbbCoreTools(_lisp);
 	}
 	break;
 	case candoGlobals:
 	{
-	    Initialize_Mol2_TypeRules(_lisp);
             initialize_loop();
             initialize_chimera();
 	    initializeElementsAndHybridization();
