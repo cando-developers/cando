@@ -72,7 +72,7 @@ namespace geom
     };
 
 
-    void initialize_color();
+    void initialize_colors();
 
 };
 TRANSLATE(geom::Color_O);

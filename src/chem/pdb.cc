@@ -318,7 +318,7 @@ Aggregate_sp PdbReader_O::loadPdbConnectAtoms(core::T_sp fileName)
     {_G();
 	PdbReader_sp pdb = PdbReader_O::create();
 	Aggregate_sp agg = pdb->parse(fileName);
-	connectAtomsInMatterInCovalentContact(agg);
+	chem__connectAtomsInMatterInCovalentContact(agg);
 	return agg;
     }
 

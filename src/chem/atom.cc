@@ -2072,7 +2072,7 @@ Atom_sp Atom_O::atomWithAtomId(AtomId_sp atomId) const
 
 
 
-	SYMBOL_EXPORT_SC_(ChemPkg,atomNeedsMinimizer);
+SYMBOL_EXPORT_SC_(ChemPkg,atomNeedsMinimizer);
 	SYMBOL_EXPORT_SC_(ChemPkg,selected);
 	SYMBOL_EXPORT_SC_(ChemPkg,onGrid);
 	SYMBOL_EXPORT_SC_(ChemPkg,atomFixed);

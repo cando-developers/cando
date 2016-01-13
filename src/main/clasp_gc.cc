@@ -1045,80 +1045,79 @@ KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__1_ = 519,
 KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Bond_O__ = 520,
 KIND_GCVECTOR_gctools__GCVector_moveable_core__SymbolStorage_ = 521,
 KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_ = 522,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__ = 523,
-KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_ = 524,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__AGEdge_O__ = 525,
-KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__4_ = 526,
-KIND_CLASSALLOC_core__CoreExposer = 527,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixInternal_O__ = 528,
-KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ContextFrame_ = 529,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathMessage_O__ = 530,
-KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___ = 531,
-KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___ = 532,
-KIND_CLASSALLOC_asttooling__internal__FixedArgCountMatcherDescriptor = 533,
-KIND_GCVECTOR_gctools__GCVector_moveable_chem__BeyondThresholdFixedNonbondRestraint_ = 534,
-KIND_GCVECTOR_gctools__GCVector_moveable_core__OptionalArgument_ = 535,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_adapt__QDomNode_O__ = 536,
-KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAngle_ = 537,
-KIND_GCVECTOR_gctools__GCVector_moveable_core__T_O_P_ = 538,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Residue_O__ = 539,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Topology_O__ = 540,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Rotamer_O__ = 541,
-KIND_CLASSALLOC_core__InterpretedClosure = 542,
-KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___ = 543,
-KIND_CLASSALLOC_asttooling__internal__FreeFuncMatcherDescriptor = 544,
-KIND_GCVECTOR_gctools__GCVector_moveable_core__DynamicBinding_ = 545,
-KIND_CLASSALLOC_core__VectorStepper = 546,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SimpleBitVector_O__ = 547,
-KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___ = 548,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_clbind__ClassRep_O__ = 549,
-KIND_GCVECTOR_gctools__GCVector_moveable_core__AuxArgument_ = 550,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__SequenceStepper__ = 551,
-KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__ = 552,
-KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAnchorRestraint_ = 553,
-KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__0_ = 554,
-KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_ = 555,
-KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__ = 556,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_V__ = 557,
-KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___ = 558,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Coupling_O__ = 559,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ReportBase_O__ = 560,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__BondList_O__ = 561,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Symbol_O__ = 562,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SourceFileInfo_O__ = 563,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Atom_O__ = 564,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__SmallOrderedSet_gctools__smart_ptr_chem__Atom_O___ = 565,
-KIND_GCVECTOR_gctools__GCVector_moveable_core__CacheRecord_ = 566,
-KIND_GCVECTOR_gctools__GCVector_moveable_chem__ResidueOut_ = 567,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Structure_Old_ListEntry_O__ = 568,
-KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___ = 569,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Cons_O__ = 570,
-KIND_LISPALLOC_asttooling__DerivableFrontendActionFactory = 571,
-KIND_LISPALLOC_asttooling__DerivableMatchCallback = 572,
-KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___ = 573,
-KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___ = 574,
-KIND_LISPALLOC_asttooling__DerivableASTFrontendAction = 575,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTypeRule_O__ = 576,
-KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___ = 577,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDFragment_O__ = 578,
-KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__Message_ = 579,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ComplexRestraint_O__ = 580,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matter_O__ = 581,
-KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___ = 582,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__ = 583,
-KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___ = 584,
-KIND_LISPALLOC_asttooling__DerivableSyntaxOnlyAction = 585,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneMonomer_O__ = 586,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monomer_O__ = 587,
-KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___ = 588,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixEntry_O__ = 589,
-KIND_TEMPLATED_CLASSALLOC_core__BuiltinClosure = 590,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFAngle_O__ = 591,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Molecule_O__ = 592,
-KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemInfo_O__ = 593,
-KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___ = 594,
-KIND_CLASSALLOC_core__ConsStepper = 595,
-  KIND_max = 595
+KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_ = 523,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__AGEdge_O__ = 524,
+KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__4_ = 525,
+KIND_CLASSALLOC_core__CoreExposer = 526,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixInternal_O__ = 527,
+KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ContextFrame_ = 528,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathMessage_O__ = 529,
+KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___ = 530,
+KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___ = 531,
+KIND_CLASSALLOC_asttooling__internal__FixedArgCountMatcherDescriptor = 532,
+KIND_GCVECTOR_gctools__GCVector_moveable_chem__BeyondThresholdFixedNonbondRestraint_ = 533,
+KIND_GCVECTOR_gctools__GCVector_moveable_core__OptionalArgument_ = 534,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_adapt__QDomNode_O__ = 535,
+KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAngle_ = 536,
+KIND_GCVECTOR_gctools__GCVector_moveable_core__T_O_P_ = 537,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Residue_O__ = 538,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Topology_O__ = 539,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Rotamer_O__ = 540,
+KIND_CLASSALLOC_core__InterpretedClosure = 541,
+KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___ = 542,
+KIND_CLASSALLOC_asttooling__internal__FreeFuncMatcherDescriptor = 543,
+KIND_GCVECTOR_gctools__GCVector_moveable_core__DynamicBinding_ = 544,
+KIND_CLASSALLOC_core__VectorStepper = 545,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SimpleBitVector_O__ = 546,
+KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___ = 547,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_clbind__ClassRep_O__ = 548,
+KIND_GCVECTOR_gctools__GCVector_moveable_core__AuxArgument_ = 549,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__SequenceStepper__ = 550,
+KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__ = 551,
+KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAnchorRestraint_ = 552,
+KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__0_ = 553,
+KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_ = 554,
+KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__ = 555,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_V__ = 556,
+KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___ = 557,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Coupling_O__ = 558,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ReportBase_O__ = 559,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__BondList_O__ = 560,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Symbol_O__ = 561,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SourceFileInfo_O__ = 562,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Atom_O__ = 563,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__SmallOrderedSet_gctools__smart_ptr_chem__Atom_O___ = 564,
+KIND_GCVECTOR_gctools__GCVector_moveable_core__CacheRecord_ = 565,
+KIND_GCVECTOR_gctools__GCVector_moveable_chem__ResidueOut_ = 566,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Structure_Old_ListEntry_O__ = 567,
+KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___ = 568,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Cons_O__ = 569,
+KIND_LISPALLOC_asttooling__DerivableFrontendActionFactory = 570,
+KIND_LISPALLOC_asttooling__DerivableMatchCallback = 571,
+KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___ = 572,
+KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___ = 573,
+KIND_LISPALLOC_asttooling__DerivableASTFrontendAction = 574,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTypeRule_O__ = 575,
+KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___ = 576,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDFragment_O__ = 577,
+KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__Message_ = 578,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ComplexRestraint_O__ = 579,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matter_O__ = 580,
+KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___ = 581,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__ = 582,
+KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___ = 583,
+KIND_LISPALLOC_asttooling__DerivableSyntaxOnlyAction = 584,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneMonomer_O__ = 585,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monomer_O__ = 586,
+KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___ = 587,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixEntry_O__ = 588,
+KIND_TEMPLATED_CLASSALLOC_core__BuiltinClosure = 589,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFAngle_O__ = 590,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Molecule_O__ = 591,
+KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemInfo_O__ = 592,
+KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___ = 593,
+KIND_CLASSALLOC_core__ConsStepper = 594,
+  KIND_max = 594
 }
 #endif // defined(GC_ENUM)
 #if defined(GC_DYNAMIC_CAST)
@@ -6056,10 +6055,6 @@ template <> class gctools::GCKind<gctools::GCVector_moveable<asttooling::ErrorCo
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_ ;
 };
-template <> class gctools::GCKind<gctools::GCVector_moveable<gctools::smart_ptr<chem::ExtractFragment_O>>> {
-public:
-  static gctools::GCKindEnum const Kind = gctools::KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__ ;
-};
 template <> class gctools::GCKind<chem::Atom_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_chem__Atom_O ;
@@ -9218,10 +9213,6 @@ kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_:
 {
 return "KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_";
 }
-kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__:
-{
-return "KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__";
-}
 kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_:
 {
 return "KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_";
@@ -10038,79 +10029,78 @@ static void* KIND_NAME_MAP_table[] = { NULL
   /* 520 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Bond_O__
   /* 521 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_core__SymbolStorage_
   /* 522 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_
-  /* 523 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__
-  /* 524 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_
-  /* 525 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__AGEdge_O__
-  /* 526 */ , &&kind_name_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__4_
-  /* 527 */ , &&kind_name_KIND_CLASSALLOC_core__CoreExposer
-  /* 528 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixInternal_O__
-  /* 529 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ContextFrame_
-  /* 530 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathMessage_O__
-  /* 531 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___
-  /* 532 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___
-  /* 533 */ , &&kind_name_KIND_CLASSALLOC_asttooling__internal__FixedArgCountMatcherDescriptor
-  /* 534 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_chem__BeyondThresholdFixedNonbondRestraint_
-  /* 535 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_core__OptionalArgument_
-  /* 536 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_adapt__QDomNode_O__
-  /* 537 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAngle_
-  /* 538 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_core__T_O_P_
-  /* 539 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Residue_O__
-  /* 540 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Topology_O__
-  /* 541 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Rotamer_O__
-  /* 542 */ , &&kind_name_KIND_CLASSALLOC_core__InterpretedClosure
-  /* 543 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___
-  /* 544 */ , &&kind_name_KIND_CLASSALLOC_asttooling__internal__FreeFuncMatcherDescriptor
-  /* 545 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_core__DynamicBinding_
-  /* 546 */ , &&kind_name_KIND_CLASSALLOC_core__VectorStepper
-  /* 547 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SimpleBitVector_O__
-  /* 548 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___
-  /* 549 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_clbind__ClassRep_O__
-  /* 550 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_core__AuxArgument_
-  /* 551 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__SequenceStepper__
-  /* 552 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__
-  /* 553 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAnchorRestraint_
-  /* 554 */ , &&kind_name_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__0_
-  /* 555 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_
-  /* 556 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__
-  /* 557 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_V__
-  /* 558 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___
-  /* 559 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Coupling_O__
-  /* 560 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ReportBase_O__
-  /* 561 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__BondList_O__
-  /* 562 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Symbol_O__
-  /* 563 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SourceFileInfo_O__
-  /* 564 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Atom_O__
-  /* 565 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__SmallOrderedSet_gctools__smart_ptr_chem__Atom_O___
-  /* 566 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_core__CacheRecord_
-  /* 567 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_chem__ResidueOut_
-  /* 568 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Structure_Old_ListEntry_O__
-  /* 569 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___
-  /* 570 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Cons_O__
-  /* 571 */ , &&kind_name_KIND_LISPALLOC_asttooling__DerivableFrontendActionFactory
-  /* 572 */ , &&kind_name_KIND_LISPALLOC_asttooling__DerivableMatchCallback
-  /* 573 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___
-  /* 574 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___
-  /* 575 */ , &&kind_name_KIND_LISPALLOC_asttooling__DerivableASTFrontendAction
-  /* 576 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTypeRule_O__
-  /* 577 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___
-  /* 578 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDFragment_O__
-  /* 579 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__Message_
-  /* 580 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ComplexRestraint_O__
-  /* 581 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matter_O__
-  /* 582 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___
-  /* 583 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__
-  /* 584 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___
-  /* 585 */ , &&kind_name_KIND_LISPALLOC_asttooling__DerivableSyntaxOnlyAction
-  /* 586 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneMonomer_O__
-  /* 587 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monomer_O__
-  /* 588 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___
-  /* 589 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixEntry_O__
-  /* 590 */ , &&kind_name_KIND_TEMPLATED_CLASSALLOC_core__BuiltinClosure
-  /* 591 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFAngle_O__
-  /* 592 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Molecule_O__
-  /* 593 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemInfo_O__
-  /* 594 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___
-  /* 595 */ , &&kind_name_KIND_CLASSALLOC_core__ConsStepper
+  /* 523 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_
+  /* 524 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__AGEdge_O__
+  /* 525 */ , &&kind_name_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__4_
+  /* 526 */ , &&kind_name_KIND_CLASSALLOC_core__CoreExposer
+  /* 527 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixInternal_O__
+  /* 528 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ContextFrame_
+  /* 529 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathMessage_O__
+  /* 530 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___
+  /* 531 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___
+  /* 532 */ , &&kind_name_KIND_CLASSALLOC_asttooling__internal__FixedArgCountMatcherDescriptor
+  /* 533 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_chem__BeyondThresholdFixedNonbondRestraint_
+  /* 534 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_core__OptionalArgument_
+  /* 535 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_adapt__QDomNode_O__
+  /* 536 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAngle_
+  /* 537 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_core__T_O_P_
+  /* 538 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Residue_O__
+  /* 539 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Topology_O__
+  /* 540 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Rotamer_O__
+  /* 541 */ , &&kind_name_KIND_CLASSALLOC_core__InterpretedClosure
+  /* 542 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___
+  /* 543 */ , &&kind_name_KIND_CLASSALLOC_asttooling__internal__FreeFuncMatcherDescriptor
+  /* 544 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_core__DynamicBinding_
+  /* 545 */ , &&kind_name_KIND_CLASSALLOC_core__VectorStepper
+  /* 546 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SimpleBitVector_O__
+  /* 547 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___
+  /* 548 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_clbind__ClassRep_O__
+  /* 549 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_core__AuxArgument_
+  /* 550 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__SequenceStepper__
+  /* 551 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__
+  /* 552 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAnchorRestraint_
+  /* 553 */ , &&kind_name_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__0_
+  /* 554 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_
+  /* 555 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__
+  /* 556 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_V__
+  /* 557 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___
+  /* 558 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Coupling_O__
+  /* 559 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ReportBase_O__
+  /* 560 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__BondList_O__
+  /* 561 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Symbol_O__
+  /* 562 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SourceFileInfo_O__
+  /* 563 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Atom_O__
+  /* 564 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__SmallOrderedSet_gctools__smart_ptr_chem__Atom_O___
+  /* 565 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_core__CacheRecord_
+  /* 566 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_chem__ResidueOut_
+  /* 567 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Structure_Old_ListEntry_O__
+  /* 568 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___
+  /* 569 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Cons_O__
+  /* 570 */ , &&kind_name_KIND_LISPALLOC_asttooling__DerivableFrontendActionFactory
+  /* 571 */ , &&kind_name_KIND_LISPALLOC_asttooling__DerivableMatchCallback
+  /* 572 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___
+  /* 573 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___
+  /* 574 */ , &&kind_name_KIND_LISPALLOC_asttooling__DerivableASTFrontendAction
+  /* 575 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTypeRule_O__
+  /* 576 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___
+  /* 577 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDFragment_O__
+  /* 578 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__Message_
+  /* 579 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ComplexRestraint_O__
+  /* 580 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matter_O__
+  /* 581 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___
+  /* 582 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__
+  /* 583 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___
+  /* 584 */ , &&kind_name_KIND_LISPALLOC_asttooling__DerivableSyntaxOnlyAction
+  /* 585 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneMonomer_O__
+  /* 586 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monomer_O__
+  /* 587 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___
+  /* 588 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixEntry_O__
+  /* 589 */ , &&kind_name_KIND_TEMPLATED_CLASSALLOC_core__BuiltinClosure
+  /* 590 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFAngle_O__
+  /* 591 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Molecule_O__
+  /* 592 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemInfo_O__
+  /* 593 */ , &&kind_name_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___
+  /* 594 */ , &&kind_name_KIND_CLASSALLOC_core__ConsStepper
 };
 #endif // defined(GC_KIND_NAME_MAP_TABLE)
 #if defined(GC_OBJ_DUMP_MAP)
@@ -13398,15 +13388,6 @@ obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_:
     sout << "bytes[" << header_and_gccontainer_size << "]";
 }
 goto BOTTOM;
-obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__:
-{
-    gctools::GCVector_moveable<gctools::smart_ptr<chem::ExtractFragment_O>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<gctools::smart_ptr<chem::ExtractFragment_O>>*>(client);
-    sout << "gctools::GCVector_moveable<gctools::smart_ptr<chem::ExtractFragment_O>>" << " size/capacity[" << obj_gc_safe->size() << "/" << obj_gc_safe->capacity();
-    typedef typename gctools::GCVector_moveable<gctools::smart_ptr<chem::ExtractFragment_O>> type_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__;
-    size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
-    sout << "bytes[" << header_and_gccontainer_size << "]";
-}
-goto BOTTOM;
 obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_:
 {
     gctools::GCVector_moveable<chem::EnergyChiralRestraint>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<chem::EnergyChiralRestraint>*>(client);
@@ -14550,79 +14531,78 @@ static void* OBJ_DUMP_MAP_table[] = { NULL
   /* 520 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Bond_O__
   /* 521 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_core__SymbolStorage_
   /* 522 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_
-  /* 523 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__
-  /* 524 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_
-  /* 525 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__AGEdge_O__
-  /* 526 */ , &&obj_dump_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__4_
-  /* 527 */ , &&obj_dump_KIND_CLASSALLOC_core__CoreExposer
-  /* 528 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixInternal_O__
-  /* 529 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ContextFrame_
-  /* 530 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathMessage_O__
-  /* 531 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___
-  /* 532 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___
-  /* 533 */ , &&obj_dump_KIND_CLASSALLOC_asttooling__internal__FixedArgCountMatcherDescriptor
-  /* 534 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_chem__BeyondThresholdFixedNonbondRestraint_
-  /* 535 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_core__OptionalArgument_
-  /* 536 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_adapt__QDomNode_O__
-  /* 537 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAngle_
-  /* 538 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_core__T_O_P_
-  /* 539 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Residue_O__
-  /* 540 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Topology_O__
-  /* 541 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Rotamer_O__
-  /* 542 */ , &&obj_dump_KIND_CLASSALLOC_core__InterpretedClosure
-  /* 543 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___
-  /* 544 */ , &&obj_dump_KIND_CLASSALLOC_asttooling__internal__FreeFuncMatcherDescriptor
-  /* 545 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_core__DynamicBinding_
-  /* 546 */ , &&obj_dump_KIND_CLASSALLOC_core__VectorStepper
-  /* 547 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SimpleBitVector_O__
-  /* 548 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___
-  /* 549 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_clbind__ClassRep_O__
-  /* 550 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_core__AuxArgument_
-  /* 551 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__SequenceStepper__
-  /* 552 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__
-  /* 553 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAnchorRestraint_
-  /* 554 */ , &&obj_dump_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__0_
-  /* 555 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_
-  /* 556 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__
-  /* 557 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_V__
-  /* 558 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___
-  /* 559 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Coupling_O__
-  /* 560 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ReportBase_O__
-  /* 561 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__BondList_O__
-  /* 562 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Symbol_O__
-  /* 563 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SourceFileInfo_O__
-  /* 564 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Atom_O__
-  /* 565 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__SmallOrderedSet_gctools__smart_ptr_chem__Atom_O___
-  /* 566 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_core__CacheRecord_
-  /* 567 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_chem__ResidueOut_
-  /* 568 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Structure_Old_ListEntry_O__
-  /* 569 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___
-  /* 570 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Cons_O__
-  /* 571 */ , &&obj_dump_KIND_LISPALLOC_asttooling__DerivableFrontendActionFactory
-  /* 572 */ , &&obj_dump_KIND_LISPALLOC_asttooling__DerivableMatchCallback
-  /* 573 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___
-  /* 574 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___
-  /* 575 */ , &&obj_dump_KIND_LISPALLOC_asttooling__DerivableASTFrontendAction
-  /* 576 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTypeRule_O__
-  /* 577 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___
-  /* 578 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDFragment_O__
-  /* 579 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__Message_
-  /* 580 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ComplexRestraint_O__
-  /* 581 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matter_O__
-  /* 582 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___
-  /* 583 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__
-  /* 584 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___
-  /* 585 */ , &&obj_dump_KIND_LISPALLOC_asttooling__DerivableSyntaxOnlyAction
-  /* 586 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneMonomer_O__
-  /* 587 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monomer_O__
-  /* 588 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___
-  /* 589 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixEntry_O__
-  /* 590 */ , &&obj_dump_KIND_TEMPLATED_CLASSALLOC_core__BuiltinClosure
-  /* 591 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFAngle_O__
-  /* 592 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Molecule_O__
-  /* 593 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemInfo_O__
-  /* 594 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___
-  /* 595 */ , &&obj_dump_KIND_CLASSALLOC_core__ConsStepper
+  /* 523 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_
+  /* 524 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__AGEdge_O__
+  /* 525 */ , &&obj_dump_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__4_
+  /* 526 */ , &&obj_dump_KIND_CLASSALLOC_core__CoreExposer
+  /* 527 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixInternal_O__
+  /* 528 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ContextFrame_
+  /* 529 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathMessage_O__
+  /* 530 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___
+  /* 531 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___
+  /* 532 */ , &&obj_dump_KIND_CLASSALLOC_asttooling__internal__FixedArgCountMatcherDescriptor
+  /* 533 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_chem__BeyondThresholdFixedNonbondRestraint_
+  /* 534 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_core__OptionalArgument_
+  /* 535 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_adapt__QDomNode_O__
+  /* 536 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAngle_
+  /* 537 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_core__T_O_P_
+  /* 538 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Residue_O__
+  /* 539 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Topology_O__
+  /* 540 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Rotamer_O__
+  /* 541 */ , &&obj_dump_KIND_CLASSALLOC_core__InterpretedClosure
+  /* 542 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___
+  /* 543 */ , &&obj_dump_KIND_CLASSALLOC_asttooling__internal__FreeFuncMatcherDescriptor
+  /* 544 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_core__DynamicBinding_
+  /* 545 */ , &&obj_dump_KIND_CLASSALLOC_core__VectorStepper
+  /* 546 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SimpleBitVector_O__
+  /* 547 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___
+  /* 548 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_clbind__ClassRep_O__
+  /* 549 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_core__AuxArgument_
+  /* 550 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__SequenceStepper__
+  /* 551 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__
+  /* 552 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAnchorRestraint_
+  /* 553 */ , &&obj_dump_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__0_
+  /* 554 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_
+  /* 555 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__
+  /* 556 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_V__
+  /* 557 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___
+  /* 558 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Coupling_O__
+  /* 559 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ReportBase_O__
+  /* 560 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__BondList_O__
+  /* 561 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Symbol_O__
+  /* 562 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SourceFileInfo_O__
+  /* 563 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Atom_O__
+  /* 564 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__SmallOrderedSet_gctools__smart_ptr_chem__Atom_O___
+  /* 565 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_core__CacheRecord_
+  /* 566 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_chem__ResidueOut_
+  /* 567 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Structure_Old_ListEntry_O__
+  /* 568 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___
+  /* 569 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Cons_O__
+  /* 570 */ , &&obj_dump_KIND_LISPALLOC_asttooling__DerivableFrontendActionFactory
+  /* 571 */ , &&obj_dump_KIND_LISPALLOC_asttooling__DerivableMatchCallback
+  /* 572 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___
+  /* 573 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___
+  /* 574 */ , &&obj_dump_KIND_LISPALLOC_asttooling__DerivableASTFrontendAction
+  /* 575 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTypeRule_O__
+  /* 576 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___
+  /* 577 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDFragment_O__
+  /* 578 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__Message_
+  /* 579 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ComplexRestraint_O__
+  /* 580 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matter_O__
+  /* 581 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___
+  /* 582 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__
+  /* 583 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___
+  /* 584 */ , &&obj_dump_KIND_LISPALLOC_asttooling__DerivableSyntaxOnlyAction
+  /* 585 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneMonomer_O__
+  /* 586 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monomer_O__
+  /* 587 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___
+  /* 588 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixEntry_O__
+  /* 589 */ , &&obj_dump_KIND_TEMPLATED_CLASSALLOC_core__BuiltinClosure
+  /* 590 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFAngle_O__
+  /* 591 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Molecule_O__
+  /* 592 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemInfo_O__
+  /* 593 */ , &&obj_dump_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___
+  /* 594 */ , &&obj_dump_KIND_CLASSALLOC_core__ConsStepper
 };
 #endif // defined(GC_OBJ_DUMP_MAP_TABLE)
 #if defined(GC_OBJ_SKIP)
@@ -17968,16 +17948,6 @@ obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_:
   }
     goto DONE; //return client;
 }
-obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__:
-{
-  {
-    gctools::GCVector_moveable<gctools::smart_ptr<chem::ExtractFragment_O>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<gctools::smart_ptr<chem::ExtractFragment_O>>*>(client);
-    typedef typename gctools::GCVector_moveable<gctools::smart_ptr<chem::ExtractFragment_O>> type_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__;
-    size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
-    client = (char*)client + header_and_gccontainer_size;
-  }
-    goto DONE; //return client;
-}
 obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_:
 {
   {
@@ -19182,79 +19152,78 @@ static void* OBJ_SKIP_table[] = { NULL
   /* 520 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Bond_O__
   /* 521 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_core__SymbolStorage_
   /* 522 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_
-  /* 523 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__
-  /* 524 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_
-  /* 525 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__AGEdge_O__
-  /* 526 */ , &&obj_skip_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__4_
-  /* 527 */ , &&obj_skip_KIND_CLASSALLOC_core__CoreExposer
-  /* 528 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixInternal_O__
-  /* 529 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ContextFrame_
-  /* 530 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathMessage_O__
-  /* 531 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___
-  /* 532 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___
-  /* 533 */ , &&obj_skip_KIND_CLASSALLOC_asttooling__internal__FixedArgCountMatcherDescriptor
-  /* 534 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_chem__BeyondThresholdFixedNonbondRestraint_
-  /* 535 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_core__OptionalArgument_
-  /* 536 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_adapt__QDomNode_O__
-  /* 537 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAngle_
-  /* 538 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_core__T_O_P_
-  /* 539 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Residue_O__
-  /* 540 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Topology_O__
-  /* 541 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Rotamer_O__
-  /* 542 */ , &&obj_skip_KIND_CLASSALLOC_core__InterpretedClosure
-  /* 543 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___
-  /* 544 */ , &&obj_skip_KIND_CLASSALLOC_asttooling__internal__FreeFuncMatcherDescriptor
-  /* 545 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_core__DynamicBinding_
-  /* 546 */ , &&obj_skip_KIND_CLASSALLOC_core__VectorStepper
-  /* 547 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SimpleBitVector_O__
-  /* 548 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___
-  /* 549 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_clbind__ClassRep_O__
-  /* 550 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_core__AuxArgument_
-  /* 551 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__SequenceStepper__
-  /* 552 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__
-  /* 553 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAnchorRestraint_
-  /* 554 */ , &&obj_skip_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__0_
-  /* 555 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_
-  /* 556 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__
-  /* 557 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_V__
-  /* 558 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___
-  /* 559 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Coupling_O__
-  /* 560 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ReportBase_O__
-  /* 561 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__BondList_O__
-  /* 562 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Symbol_O__
-  /* 563 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SourceFileInfo_O__
-  /* 564 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Atom_O__
-  /* 565 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__SmallOrderedSet_gctools__smart_ptr_chem__Atom_O___
-  /* 566 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_core__CacheRecord_
-  /* 567 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_chem__ResidueOut_
-  /* 568 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Structure_Old_ListEntry_O__
-  /* 569 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___
-  /* 570 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Cons_O__
-  /* 571 */ , &&obj_skip_KIND_LISPALLOC_asttooling__DerivableFrontendActionFactory
-  /* 572 */ , &&obj_skip_KIND_LISPALLOC_asttooling__DerivableMatchCallback
-  /* 573 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___
-  /* 574 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___
-  /* 575 */ , &&obj_skip_KIND_LISPALLOC_asttooling__DerivableASTFrontendAction
-  /* 576 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTypeRule_O__
-  /* 577 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___
-  /* 578 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDFragment_O__
-  /* 579 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__Message_
-  /* 580 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ComplexRestraint_O__
-  /* 581 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matter_O__
-  /* 582 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___
-  /* 583 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__
-  /* 584 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___
-  /* 585 */ , &&obj_skip_KIND_LISPALLOC_asttooling__DerivableSyntaxOnlyAction
-  /* 586 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneMonomer_O__
-  /* 587 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monomer_O__
-  /* 588 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___
-  /* 589 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixEntry_O__
-  /* 590 */ , &&obj_skip_KIND_TEMPLATED_CLASSALLOC_core__BuiltinClosure
-  /* 591 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFAngle_O__
-  /* 592 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Molecule_O__
-  /* 593 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemInfo_O__
-  /* 594 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___
-  /* 595 */ , &&obj_skip_KIND_CLASSALLOC_core__ConsStepper
+  /* 523 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_
+  /* 524 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__AGEdge_O__
+  /* 525 */ , &&obj_skip_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__4_
+  /* 526 */ , &&obj_skip_KIND_CLASSALLOC_core__CoreExposer
+  /* 527 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixInternal_O__
+  /* 528 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ContextFrame_
+  /* 529 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathMessage_O__
+  /* 530 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___
+  /* 531 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___
+  /* 532 */ , &&obj_skip_KIND_CLASSALLOC_asttooling__internal__FixedArgCountMatcherDescriptor
+  /* 533 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_chem__BeyondThresholdFixedNonbondRestraint_
+  /* 534 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_core__OptionalArgument_
+  /* 535 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_adapt__QDomNode_O__
+  /* 536 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAngle_
+  /* 537 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_core__T_O_P_
+  /* 538 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Residue_O__
+  /* 539 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Topology_O__
+  /* 540 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Rotamer_O__
+  /* 541 */ , &&obj_skip_KIND_CLASSALLOC_core__InterpretedClosure
+  /* 542 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___
+  /* 543 */ , &&obj_skip_KIND_CLASSALLOC_asttooling__internal__FreeFuncMatcherDescriptor
+  /* 544 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_core__DynamicBinding_
+  /* 545 */ , &&obj_skip_KIND_CLASSALLOC_core__VectorStepper
+  /* 546 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SimpleBitVector_O__
+  /* 547 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___
+  /* 548 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_clbind__ClassRep_O__
+  /* 549 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_core__AuxArgument_
+  /* 550 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__SequenceStepper__
+  /* 551 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__
+  /* 552 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAnchorRestraint_
+  /* 553 */ , &&obj_skip_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__0_
+  /* 554 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_
+  /* 555 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__
+  /* 556 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_V__
+  /* 557 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___
+  /* 558 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Coupling_O__
+  /* 559 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ReportBase_O__
+  /* 560 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__BondList_O__
+  /* 561 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Symbol_O__
+  /* 562 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SourceFileInfo_O__
+  /* 563 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Atom_O__
+  /* 564 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__SmallOrderedSet_gctools__smart_ptr_chem__Atom_O___
+  /* 565 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_core__CacheRecord_
+  /* 566 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_chem__ResidueOut_
+  /* 567 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Structure_Old_ListEntry_O__
+  /* 568 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___
+  /* 569 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Cons_O__
+  /* 570 */ , &&obj_skip_KIND_LISPALLOC_asttooling__DerivableFrontendActionFactory
+  /* 571 */ , &&obj_skip_KIND_LISPALLOC_asttooling__DerivableMatchCallback
+  /* 572 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___
+  /* 573 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___
+  /* 574 */ , &&obj_skip_KIND_LISPALLOC_asttooling__DerivableASTFrontendAction
+  /* 575 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTypeRule_O__
+  /* 576 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___
+  /* 577 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDFragment_O__
+  /* 578 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__Message_
+  /* 579 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ComplexRestraint_O__
+  /* 580 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matter_O__
+  /* 581 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___
+  /* 582 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__
+  /* 583 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___
+  /* 584 */ , &&obj_skip_KIND_LISPALLOC_asttooling__DerivableSyntaxOnlyAction
+  /* 585 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneMonomer_O__
+  /* 586 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monomer_O__
+  /* 587 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___
+  /* 588 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixEntry_O__
+  /* 589 */ , &&obj_skip_KIND_TEMPLATED_CLASSALLOC_core__BuiltinClosure
+  /* 590 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFAngle_O__
+  /* 591 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Molecule_O__
+  /* 592 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemInfo_O__
+  /* 593 */ , &&obj_skip_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___
+  /* 594 */ , &&obj_skip_KIND_CLASSALLOC_core__ConsStepper
 };
 #endif // defined(GC_OBJ_SKIP_TABLE)
 #if defined(GC_OBJ_SCAN)
@@ -22680,17 +22649,6 @@ obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_:
     }
     typedef typename gctools::GCVector_moveable<asttooling::ErrorContent> type_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_;
     size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
-    client = (char*)client + header_and_gccontainer_size;
-}
-goto TOP;
-obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__:
-{
-    gctools::GCVector_moveable<gctools::smart_ptr<chem::ExtractFragment_O>>* obj_gc_safe = reinterpret_cast<gctools::GCVector_moveable<gctools::smart_ptr<chem::ExtractFragment_O>>*>(client);
-    for (gctools::GCVector_moveable<gctools::smart_ptr<chem::ExtractFragment_O>>::iterator it = obj_gc_safe->begin(); it!=obj_gc_safe->end(); ++it) {
-          SMART_PTR_FIX(*it);
-    }
-    typedef typename gctools::GCVector_moveable<gctools::smart_ptr<chem::ExtractFragment_O>> type_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__;
-    size_t header_and_gccontainer_size = AlignUp(sizeof_container<type_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__>(obj_gc_safe->capacity()))+AlignUp(sizeof(gctools::Header_s));
     client = (char*)client + header_and_gccontainer_size;
 }
 goto TOP;
@@ -28642,79 +28600,78 @@ static void* OBJ_SCAN_table[] = { NULL
   /* 520 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Bond_O__
   /* 521 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_core__SymbolStorage_
   /* 522 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_
-  /* 523 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__
-  /* 524 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_
-  /* 525 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__AGEdge_O__
-  /* 526 */ , &&obj_scan_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__4_
-  /* 527 */ , &&obj_scan_KIND_CLASSALLOC_core__CoreExposer
-  /* 528 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixInternal_O__
-  /* 529 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ContextFrame_
-  /* 530 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathMessage_O__
-  /* 531 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___
-  /* 532 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___
-  /* 533 */ , &&obj_scan_KIND_CLASSALLOC_asttooling__internal__FixedArgCountMatcherDescriptor
-  /* 534 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_chem__BeyondThresholdFixedNonbondRestraint_
-  /* 535 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_core__OptionalArgument_
-  /* 536 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_adapt__QDomNode_O__
-  /* 537 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAngle_
-  /* 538 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_core__T_O_P_
-  /* 539 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Residue_O__
-  /* 540 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Topology_O__
-  /* 541 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Rotamer_O__
-  /* 542 */ , &&obj_scan_KIND_CLASSALLOC_core__InterpretedClosure
-  /* 543 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___
-  /* 544 */ , &&obj_scan_KIND_CLASSALLOC_asttooling__internal__FreeFuncMatcherDescriptor
-  /* 545 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_core__DynamicBinding_
-  /* 546 */ , &&obj_scan_KIND_CLASSALLOC_core__VectorStepper
-  /* 547 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SimpleBitVector_O__
-  /* 548 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___
-  /* 549 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_clbind__ClassRep_O__
-  /* 550 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_core__AuxArgument_
-  /* 551 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__SequenceStepper__
-  /* 552 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__
-  /* 553 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAnchorRestraint_
-  /* 554 */ , &&obj_scan_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__0_
-  /* 555 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_
-  /* 556 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__
-  /* 557 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_V__
-  /* 558 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___
-  /* 559 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Coupling_O__
-  /* 560 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ReportBase_O__
-  /* 561 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__BondList_O__
-  /* 562 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Symbol_O__
-  /* 563 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SourceFileInfo_O__
-  /* 564 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Atom_O__
-  /* 565 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__SmallOrderedSet_gctools__smart_ptr_chem__Atom_O___
-  /* 566 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_core__CacheRecord_
-  /* 567 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_chem__ResidueOut_
-  /* 568 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Structure_Old_ListEntry_O__
-  /* 569 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___
-  /* 570 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Cons_O__
-  /* 571 */ , &&obj_scan_KIND_LISPALLOC_asttooling__DerivableFrontendActionFactory
-  /* 572 */ , &&obj_scan_KIND_LISPALLOC_asttooling__DerivableMatchCallback
-  /* 573 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___
-  /* 574 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___
-  /* 575 */ , &&obj_scan_KIND_LISPALLOC_asttooling__DerivableASTFrontendAction
-  /* 576 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTypeRule_O__
-  /* 577 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___
-  /* 578 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDFragment_O__
-  /* 579 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__Message_
-  /* 580 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ComplexRestraint_O__
-  /* 581 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matter_O__
-  /* 582 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___
-  /* 583 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__
-  /* 584 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___
-  /* 585 */ , &&obj_scan_KIND_LISPALLOC_asttooling__DerivableSyntaxOnlyAction
-  /* 586 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneMonomer_O__
-  /* 587 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monomer_O__
-  /* 588 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___
-  /* 589 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixEntry_O__
-  /* 590 */ , &&obj_scan_KIND_TEMPLATED_CLASSALLOC_core__BuiltinClosure
-  /* 591 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFAngle_O__
-  /* 592 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Molecule_O__
-  /* 593 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemInfo_O__
-  /* 594 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___
-  /* 595 */ , &&obj_scan_KIND_CLASSALLOC_core__ConsStepper
+  /* 523 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_
+  /* 524 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__AGEdge_O__
+  /* 525 */ , &&obj_scan_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__4_
+  /* 526 */ , &&obj_scan_KIND_CLASSALLOC_core__CoreExposer
+  /* 527 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixInternal_O__
+  /* 528 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ContextFrame_
+  /* 529 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathMessage_O__
+  /* 530 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___
+  /* 531 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___
+  /* 532 */ , &&obj_scan_KIND_CLASSALLOC_asttooling__internal__FixedArgCountMatcherDescriptor
+  /* 533 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_chem__BeyondThresholdFixedNonbondRestraint_
+  /* 534 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_core__OptionalArgument_
+  /* 535 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_adapt__QDomNode_O__
+  /* 536 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAngle_
+  /* 537 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_core__T_O_P_
+  /* 538 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Residue_O__
+  /* 539 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Topology_O__
+  /* 540 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Rotamer_O__
+  /* 541 */ , &&obj_scan_KIND_CLASSALLOC_core__InterpretedClosure
+  /* 542 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___
+  /* 543 */ , &&obj_scan_KIND_CLASSALLOC_asttooling__internal__FreeFuncMatcherDescriptor
+  /* 544 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_core__DynamicBinding_
+  /* 545 */ , &&obj_scan_KIND_CLASSALLOC_core__VectorStepper
+  /* 546 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SimpleBitVector_O__
+  /* 547 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___
+  /* 548 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_clbind__ClassRep_O__
+  /* 549 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_core__AuxArgument_
+  /* 550 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__SequenceStepper__
+  /* 551 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__
+  /* 552 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAnchorRestraint_
+  /* 553 */ , &&obj_scan_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__0_
+  /* 554 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_
+  /* 555 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__
+  /* 556 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_V__
+  /* 557 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___
+  /* 558 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Coupling_O__
+  /* 559 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ReportBase_O__
+  /* 560 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__BondList_O__
+  /* 561 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Symbol_O__
+  /* 562 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SourceFileInfo_O__
+  /* 563 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Atom_O__
+  /* 564 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__SmallOrderedSet_gctools__smart_ptr_chem__Atom_O___
+  /* 565 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_core__CacheRecord_
+  /* 566 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_chem__ResidueOut_
+  /* 567 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Structure_Old_ListEntry_O__
+  /* 568 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___
+  /* 569 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Cons_O__
+  /* 570 */ , &&obj_scan_KIND_LISPALLOC_asttooling__DerivableFrontendActionFactory
+  /* 571 */ , &&obj_scan_KIND_LISPALLOC_asttooling__DerivableMatchCallback
+  /* 572 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___
+  /* 573 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___
+  /* 574 */ , &&obj_scan_KIND_LISPALLOC_asttooling__DerivableASTFrontendAction
+  /* 575 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTypeRule_O__
+  /* 576 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___
+  /* 577 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDFragment_O__
+  /* 578 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__Message_
+  /* 579 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ComplexRestraint_O__
+  /* 580 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matter_O__
+  /* 581 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___
+  /* 582 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__
+  /* 583 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___
+  /* 584 */ , &&obj_scan_KIND_LISPALLOC_asttooling__DerivableSyntaxOnlyAction
+  /* 585 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneMonomer_O__
+  /* 586 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monomer_O__
+  /* 587 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___
+  /* 588 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixEntry_O__
+  /* 589 */ , &&obj_scan_KIND_TEMPLATED_CLASSALLOC_core__BuiltinClosure
+  /* 590 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFAngle_O__
+  /* 591 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Molecule_O__
+  /* 592 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemInfo_O__
+  /* 593 */ , &&obj_scan_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___
+  /* 594 */ , &&obj_scan_KIND_CLASSALLOC_core__ConsStepper
 };
 #endif // defined(GC_OBJ_SCAN_TABLE)
 #if defined(GC_OBJ_FINALIZE)
@@ -31657,9 +31614,6 @@ obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_core__SymbolStorage_:
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<asttooling::ErrorContent>"));}
-obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__:
-{
-    THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ExtractFragment_O>>"));}
 obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_:
 {
     THROW_HARD_ERROR(BF("Should never finalize containers gctools::GCVector_moveable<chem::EnergyChiralRestraint>"));}
@@ -32436,79 +32390,78 @@ static void* OBJ_FINALIZE_table[] = { NULL
   /* 520 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Bond_O__
   /* 521 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_core__SymbolStorage_
   /* 522 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_
-  /* 523 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__
-  /* 524 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_
-  /* 525 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__AGEdge_O__
-  /* 526 */ , &&obj_finalize_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__4_
-  /* 527 */ , &&obj_finalize_KIND_CLASSALLOC_core__CoreExposer
-  /* 528 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixInternal_O__
-  /* 529 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ContextFrame_
-  /* 530 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathMessage_O__
-  /* 531 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___
-  /* 532 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___
-  /* 533 */ , &&obj_finalize_KIND_CLASSALLOC_asttooling__internal__FixedArgCountMatcherDescriptor
-  /* 534 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_chem__BeyondThresholdFixedNonbondRestraint_
-  /* 535 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_core__OptionalArgument_
-  /* 536 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_adapt__QDomNode_O__
-  /* 537 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAngle_
-  /* 538 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_core__T_O_P_
-  /* 539 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Residue_O__
-  /* 540 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Topology_O__
-  /* 541 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Rotamer_O__
-  /* 542 */ , &&obj_finalize_KIND_CLASSALLOC_core__InterpretedClosure
-  /* 543 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___
-  /* 544 */ , &&obj_finalize_KIND_CLASSALLOC_asttooling__internal__FreeFuncMatcherDescriptor
-  /* 545 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_core__DynamicBinding_
-  /* 546 */ , &&obj_finalize_KIND_CLASSALLOC_core__VectorStepper
-  /* 547 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SimpleBitVector_O__
-  /* 548 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___
-  /* 549 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_clbind__ClassRep_O__
-  /* 550 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_core__AuxArgument_
-  /* 551 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__SequenceStepper__
-  /* 552 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__
-  /* 553 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAnchorRestraint_
-  /* 554 */ , &&obj_finalize_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__0_
-  /* 555 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_
-  /* 556 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__
-  /* 557 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_V__
-  /* 558 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___
-  /* 559 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Coupling_O__
-  /* 560 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ReportBase_O__
-  /* 561 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__BondList_O__
-  /* 562 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Symbol_O__
-  /* 563 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SourceFileInfo_O__
-  /* 564 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Atom_O__
-  /* 565 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__SmallOrderedSet_gctools__smart_ptr_chem__Atom_O___
-  /* 566 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_core__CacheRecord_
-  /* 567 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_chem__ResidueOut_
-  /* 568 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Structure_Old_ListEntry_O__
-  /* 569 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___
-  /* 570 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Cons_O__
-  /* 571 */ , &&obj_finalize_KIND_LISPALLOC_asttooling__DerivableFrontendActionFactory
-  /* 572 */ , &&obj_finalize_KIND_LISPALLOC_asttooling__DerivableMatchCallback
-  /* 573 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___
-  /* 574 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___
-  /* 575 */ , &&obj_finalize_KIND_LISPALLOC_asttooling__DerivableASTFrontendAction
-  /* 576 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTypeRule_O__
-  /* 577 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___
-  /* 578 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDFragment_O__
-  /* 579 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__Message_
-  /* 580 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ComplexRestraint_O__
-  /* 581 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matter_O__
-  /* 582 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___
-  /* 583 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__
-  /* 584 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___
-  /* 585 */ , &&obj_finalize_KIND_LISPALLOC_asttooling__DerivableSyntaxOnlyAction
-  /* 586 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneMonomer_O__
-  /* 587 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monomer_O__
-  /* 588 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___
-  /* 589 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixEntry_O__
-  /* 590 */ , &&obj_finalize_KIND_TEMPLATED_CLASSALLOC_core__BuiltinClosure
-  /* 591 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFAngle_O__
-  /* 592 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Molecule_O__
-  /* 593 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemInfo_O__
-  /* 594 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___
-  /* 595 */ , &&obj_finalize_KIND_CLASSALLOC_core__ConsStepper
+  /* 523 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_
+  /* 524 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__AGEdge_O__
+  /* 525 */ , &&obj_finalize_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__4_
+  /* 526 */ , &&obj_finalize_KIND_CLASSALLOC_core__CoreExposer
+  /* 527 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixInternal_O__
+  /* 528 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ContextFrame_
+  /* 529 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathMessage_O__
+  /* 530 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___
+  /* 531 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___
+  /* 532 */ , &&obj_finalize_KIND_CLASSALLOC_asttooling__internal__FixedArgCountMatcherDescriptor
+  /* 533 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_chem__BeyondThresholdFixedNonbondRestraint_
+  /* 534 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_core__OptionalArgument_
+  /* 535 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_adapt__QDomNode_O__
+  /* 536 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAngle_
+  /* 537 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_core__T_O_P_
+  /* 538 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Residue_O__
+  /* 539 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Topology_O__
+  /* 540 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Rotamer_O__
+  /* 541 */ , &&obj_finalize_KIND_CLASSALLOC_core__InterpretedClosure
+  /* 542 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___
+  /* 543 */ , &&obj_finalize_KIND_CLASSALLOC_asttooling__internal__FreeFuncMatcherDescriptor
+  /* 544 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_core__DynamicBinding_
+  /* 545 */ , &&obj_finalize_KIND_CLASSALLOC_core__VectorStepper
+  /* 546 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SimpleBitVector_O__
+  /* 547 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___
+  /* 548 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_clbind__ClassRep_O__
+  /* 549 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_core__AuxArgument_
+  /* 550 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__SequenceStepper__
+  /* 551 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__
+  /* 552 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAnchorRestraint_
+  /* 553 */ , &&obj_finalize_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__0_
+  /* 554 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_
+  /* 555 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__
+  /* 556 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_V__
+  /* 557 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___
+  /* 558 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Coupling_O__
+  /* 559 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ReportBase_O__
+  /* 560 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__BondList_O__
+  /* 561 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Symbol_O__
+  /* 562 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SourceFileInfo_O__
+  /* 563 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Atom_O__
+  /* 564 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__SmallOrderedSet_gctools__smart_ptr_chem__Atom_O___
+  /* 565 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_core__CacheRecord_
+  /* 566 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_chem__ResidueOut_
+  /* 567 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Structure_Old_ListEntry_O__
+  /* 568 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___
+  /* 569 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Cons_O__
+  /* 570 */ , &&obj_finalize_KIND_LISPALLOC_asttooling__DerivableFrontendActionFactory
+  /* 571 */ , &&obj_finalize_KIND_LISPALLOC_asttooling__DerivableMatchCallback
+  /* 572 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___
+  /* 573 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___
+  /* 574 */ , &&obj_finalize_KIND_LISPALLOC_asttooling__DerivableASTFrontendAction
+  /* 575 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTypeRule_O__
+  /* 576 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___
+  /* 577 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDFragment_O__
+  /* 578 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__Message_
+  /* 579 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ComplexRestraint_O__
+  /* 580 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matter_O__
+  /* 581 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___
+  /* 582 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__
+  /* 583 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___
+  /* 584 */ , &&obj_finalize_KIND_LISPALLOC_asttooling__DerivableSyntaxOnlyAction
+  /* 585 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneMonomer_O__
+  /* 586 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monomer_O__
+  /* 587 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___
+  /* 588 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixEntry_O__
+  /* 589 */ , &&obj_finalize_KIND_TEMPLATED_CLASSALLOC_core__BuiltinClosure
+  /* 590 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFAngle_O__
+  /* 591 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Molecule_O__
+  /* 592 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemInfo_O__
+  /* 593 */ , &&obj_finalize_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___
+  /* 594 */ , &&obj_finalize_KIND_CLASSALLOC_core__ConsStepper
 };
 #endif // defined(GC_OBJ_FINALIZE_TABLE)
 #if defined(GC_OBJ_DEALLOCATOR)
@@ -35451,9 +35404,6 @@ obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core_
 obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_:
 {
     THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<asttooling::ErrorContent>"));}
-obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__:
-{
-    THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<gctools::smart_ptr<chem::ExtractFragment_O>>"));}
 obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_:
 {
     THROW_HARD_ERROR(BF("Should never deallocate containers gctools::GCVector_moveable<chem::EnergyChiralRestraint>"));}
@@ -36230,3950 +36180,1436 @@ static void* OBJ_DEALLOCATOR_table[] = { NULL
   /* 520 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Bond_O__
   /* 521 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__SymbolStorage_
   /* 522 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ErrorContent_
-  /* 523 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ExtractFragment_O__
-  /* 524 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_
-  /* 525 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__AGEdge_O__
-  /* 526 */ , &&obj_deallocate_unmanaged_instance_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__4_
-  /* 527 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__CoreExposer
-  /* 528 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixInternal_O__
-  /* 529 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ContextFrame_
-  /* 530 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathMessage_O__
-  /* 531 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___
-  /* 532 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___
-  /* 533 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_asttooling__internal__FixedArgCountMatcherDescriptor
-  /* 534 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__BeyondThresholdFixedNonbondRestraint_
-  /* 535 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__OptionalArgument_
-  /* 536 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_adapt__QDomNode_O__
-  /* 537 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAngle_
-  /* 538 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__T_O_P_
-  /* 539 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Residue_O__
-  /* 540 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Topology_O__
-  /* 541 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Rotamer_O__
-  /* 542 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__InterpretedClosure
-  /* 543 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___
-  /* 544 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_asttooling__internal__FreeFuncMatcherDescriptor
-  /* 545 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__DynamicBinding_
-  /* 546 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__VectorStepper
-  /* 547 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SimpleBitVector_O__
-  /* 548 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___
-  /* 549 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_clbind__ClassRep_O__
-  /* 550 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__AuxArgument_
-  /* 551 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__SequenceStepper__
-  /* 552 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__
-  /* 553 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAnchorRestraint_
-  /* 554 */ , &&obj_deallocate_unmanaged_instance_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__0_
-  /* 555 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_
-  /* 556 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__
-  /* 557 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_V__
-  /* 558 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___
-  /* 559 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Coupling_O__
-  /* 560 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ReportBase_O__
-  /* 561 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__BondList_O__
-  /* 562 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Symbol_O__
-  /* 563 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SourceFileInfo_O__
-  /* 564 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Atom_O__
-  /* 565 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__SmallOrderedSet_gctools__smart_ptr_chem__Atom_O___
-  /* 566 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__CacheRecord_
-  /* 567 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__ResidueOut_
-  /* 568 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Structure_Old_ListEntry_O__
-  /* 569 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___
-  /* 570 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Cons_O__
-  /* 571 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_asttooling__DerivableFrontendActionFactory
-  /* 572 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_asttooling__DerivableMatchCallback
-  /* 573 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___
-  /* 574 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___
-  /* 575 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_asttooling__DerivableASTFrontendAction
-  /* 576 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTypeRule_O__
-  /* 577 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___
-  /* 578 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDFragment_O__
-  /* 579 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__Message_
-  /* 580 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ComplexRestraint_O__
-  /* 581 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matter_O__
-  /* 582 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___
-  /* 583 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__
-  /* 584 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___
-  /* 585 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_asttooling__DerivableSyntaxOnlyAction
-  /* 586 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneMonomer_O__
-  /* 587 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monomer_O__
-  /* 588 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___
-  /* 589 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixEntry_O__
-  /* 590 */ , &&obj_deallocate_unmanaged_instance_KIND_TEMPLATED_CLASSALLOC_core__BuiltinClosure
-  /* 591 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFAngle_O__
-  /* 592 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Molecule_O__
-  /* 593 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemInfo_O__
-  /* 594 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___
-  /* 595 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__ConsStepper
+  /* 523 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_
+  /* 524 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__AGEdge_O__
+  /* 525 */ , &&obj_deallocate_unmanaged_instance_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__4_
+  /* 526 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__CoreExposer
+  /* 527 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixInternal_O__
+  /* 528 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__ContextFrame_
+  /* 529 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__PathMessage_O__
+  /* 530 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__Symbol_O___
+  /* 531 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_core__DoubleFloat_O___
+  /* 532 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_asttooling__internal__FixedArgCountMatcherDescriptor
+  /* 533 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__BeyondThresholdFixedNonbondRestraint_
+  /* 534 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__OptionalArgument_
+  /* 535 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_adapt__QDomNode_O__
+  /* 536 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAngle_
+  /* 537 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__T_O_P_
+  /* 538 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Residue_O__
+  /* 539 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Topology_O__
+  /* 540 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Rotamer_O__
+  /* 541 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__InterpretedClosure
+  /* 542 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__T_O__gctools__smart_ptr_core__T_O___
+  /* 543 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_asttooling__internal__FreeFuncMatcherDescriptor
+  /* 544 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__DynamicBinding_
+  /* 545 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__VectorStepper
+  /* 546 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SimpleBitVector_O__
+  /* 547 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Stereoisomer_O___
+  /* 548 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_clbind__ClassRep_O__
+  /* 549 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__AuxArgument_
+  /* 550 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__tagged_pointer_core__SequenceStepper__
+  /* 551 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__int__
+  /* 552 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyAnchorRestraint_
+  /* 553 */ , &&obj_deallocate_unmanaged_instance_KIND_GCARRAY_gctools__GCArray_moveable_gctools__smart_ptr_core__T_O__0_
+  /* 554 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_
+  /* 555 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__chem__EstimateStretch__
+  /* 556 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__List_V__
+  /* 557 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__StereoisomerAtoms_O___
+  /* 558 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Coupling_O__
+  /* 559 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ReportBase_O__
+  /* 560 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__BondList_O__
+  /* 561 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Symbol_O__
+  /* 562 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__SourceFileInfo_O__
+  /* 563 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Atom_O__
+  /* 564 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__SmallOrderedSet_gctools__smart_ptr_chem__Atom_O___
+  /* 565 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_core__CacheRecord_
+  /* 566 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_chem__ResidueOut_
+  /* 567 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Structure_Old_ListEntry_O__
+  /* 568 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FrameRecognizer_O___
+  /* 569 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__Cons_O__
+  /* 570 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_asttooling__DerivableFrontendActionFactory
+  /* 571 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_asttooling__DerivableMatchCallback
+  /* 572 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__FFAngle_O___
+  /* 573 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_unsigned_int_gctools__smart_ptr_chem__Residue_O___
+  /* 574 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_asttooling__DerivableASTFrontendAction
+  /* 575 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneTypeRule_O__
+  /* 576 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__Topology_O___
+  /* 577 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__CDFragment_O__
+  /* 578 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_asttooling__Message_
+  /* 579 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ComplexRestraint_O__
+  /* 580 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Matter_O__
+  /* 581 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_int_gctools__smart_ptr_chem__CDNode_O___
+  /* 582 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_core__T_O__
+  /* 583 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__SpecificContext_O___
+  /* 584 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_asttooling__DerivableSyntaxOnlyAction
+  /* 585 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__OneMonomer_O__
+  /* 586 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Monomer_O__
+  /* 587 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_core__Symbol_O__gctools__smart_ptr_chem__CDFragment_O___
+  /* 588 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ZMatrixEntry_O__
+  /* 589 */ , &&obj_deallocate_unmanaged_instance_KIND_TEMPLATED_CLASSALLOC_core__BuiltinClosure
+  /* 590 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFAngle_O__
+  /* 591 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__Molecule_O__
+  /* 592 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__ChemInfo_O__
+  /* 593 */ , &&obj_deallocate_unmanaged_instance_KIND_GCVECTOR_gctools__GCVector_moveable_std____1__pair_gctools__smart_ptr_chem__Atom_O__gctools__smart_ptr_chem__CDNode_O___
+  /* 594 */ , &&obj_deallocate_unmanaged_instance_KIND_CLASSALLOC_core__ConsStepper
 };
 #endif // defined(GC_OBJ_DEALLOCATOR_TABLE)
 #if defined(GC_GLOBALS)
- SMART_PTR_FIX(chem::StereoConfiguration_O::___staticClass);
- SMART_PTR_FIX(chem::AntechamberRoot_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::RootMatchNode_O::___staticClass);
- SMART_PTR_FIX(chem::StereoisomerVirtualAtom_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::MCSubtargetInfo_O::static_creator);
- TAGGED_POINTER_FIX(chem::FFVdw_O::static_creator);
- SMART_PTR_FIX(chem::EnergyDihedral_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::StructureClass_O::static_creator);
- SMART_PTR_FIX(chem::CipPrioritizer_O::___staticClass);
- SMART_PTR_FIX(core::BlockEnvironment_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::SNode_O::static_creator);
- TAGGED_POINTER_FIX(chem::RingFinder_O::static_creator);
- SMART_PTR_FIX(chem::AGVertex_O::___staticClass);
- SMART_PTR_FIX(core::MultiStringBuffer_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::MonomerCoordinates_O::___staticClass);
- TAGGED_POINTER_FIX(core::Regex_O::static_creator);
- SMART_PTR_FIX(chem::FFStretchDb_O::___staticClass);
- SMART_PTR_FIX(chem::SpecificContextSet_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::Function_O::static_creator);
- SMART_PTR_FIX(core::StdClass_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::AtomTable_O::___staticClassSymbol);
- SIMPLE_POINTER_FIX(gctools::global_tagged_Symbol_OP_deleted);
- SMART_PTR_FIX(chem::ConstitutionAtom_O::___staticClass);
- SMART_PTR_FIX(chem::RestrainedExoCyclicAtom_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ZMatrixInternal_O::___staticClass);
- SMART_PTR_FIX(llvmo::AttributeSet_O::___staticClass);
- SMART_PTR_FIX(llvmo::ConstantDataSequential_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::CalculatePosition_O::static_creator);
- SMART_PTR_FIX(chem::ImproperTorsion_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::ArrayObjects_O::static_creator);
- TAGGED_POINTER_FIX(chem::CalculatePositionUsingInternals_O::static_creator);
- SMART_PTR_FIX(llvmo::Function_O::___staticClass);
- TAGGED_POINTER_FIX(chem::ConstitutionAtoms_O::static_creator);
- SMART_PTR_FIX(core::LambdaListHandler_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::ValueAsMetadata_O::___staticClassSymbol);
- SMART_PTR_FIX(core::CandoException_O::___staticClass);
- TAGGED_POINTER_FIX(chem::EnergyComponent_O::static_creator);
- SMART_PTR_FIX(llvmo::DICompileUnit_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::ZMatrixBondInternal_O::static_creator);
- TAGGED_POINTER_FIX(chem::NVector_O::static_creator);
- SMART_PTR_FIX(chem::FFPtor_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::Structure_Old_List_O::static_creator);
- SMART_PTR_FIX(core::SaveArchive_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ZMatrixDihedralInternal_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Root_O::___staticClass);
- TAGGED_POINTER_FIX(chem::ConstitutionAtom_O::static_creator);
- TAGGED_POINTER_FIX(chem::AtomTable_O::static_creator);
- SMART_PTR_FIX(chem::AtomOrBondMatchNode_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::IndirectBrInst_O::static_creator);
- SMART_PTR_FIX(llvmo::DISubprogram_O::___staticClass);
- SMART_PTR_FIX(chem::AtomReferenceBase_O::___staticClass);
- SMART_PTR_FIX(llvmo::Target_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::SparseLargeSquareMatrix_O::___staticClassSymbol);
- SMART_PTR_FIX(core::StandardObject_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::SuperposeEngine_O::___staticClass);
- SMART_PTR_FIX(chem::ForceField_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::MCSubtargetInfo_O::___staticClass);
- SMART_PTR_FIX(core::Function_O::___staticClass);
- SMART_PTR_FIX(chem::ForceField_O::___staticClass);
- TAGGED_POINTER_FIX(chem::NumericalFunction_O::static_creator);
- SMART_PTR_FIX(llvmo::EngineBuilder_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::TwisterDriver_O::static_creator);
- SMART_PTR_FIX(chem::Plug_O::___staticClassSymbol);
- SMART_PTR_FIX(core::ForwardReferencedClass_O::___staticClass);
- SMART_PTR_FIX(llvmo::DIFile_O::___staticClass);
- SMART_PTR_FIX(core::InvocationHistoryFrameIterator_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::AtomicCmpXchgInst_O::static_creator);
- SMART_PTR_FIX(chem::EnergyAngle_O::___staticClass);
- SMART_PTR_FIX(core::StackValueEnvironment_O::___staticClass);
- SMART_PTR_FIX(chem::RepresentedEntityNameSet_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::StereoisomerAtoms_O::___staticClassSymbol);
- SMART_PTR_FIX(core::CxxObject_O::___staticClass);
- SMART_PTR_FIX(core::ShortFloat_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::LeafSNode_O::static_creator);
- SMART_PTR_FIX(chem::SpanningLoop_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::Package_O::static_creator);
- SMART_PTR_FIX(llvmo::CompositeType_O::___staticClass);
- SMART_PTR_FIX(chem::RestraintAngle_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Metaobject_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::FFBaseDb_O::static_creator);
- SMART_PTR_FIX(chem::RingFinder_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::Twister_O::static_creator);
- SMART_PTR_FIX(chem::CoordinateSystem_O::___staticClass);
- SMART_PTR_FIX(chem::AGEdge_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::CompositeType_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(adapt::StringSet_O::static_creator);
- SMART_PTR_FIX(chem::FullLargeSquareMatrix_O::___staticClass);
- TAGGED_POINTER_FIX(chem::InPlug_O::static_creator);
- SMART_PTR_FIX(chem::ChemInfo_O::___staticClassSymbol);
- SMART_PTR_FIX(clbind::ClassRegistry_O::___staticClass);
- TAGGED_POINTER_FIX(core::AnsiStream_O::static_creator);
- TAGGED_POINTER_FIX(chem::Structure_Old_ListEntry_O::static_creator);
- SMART_PTR_FIX(core::Number_O::___staticClass);
- SMART_PTR_FIX(core::VectorDisplaced_O::___staticClass);
- SMART_PTR_FIX(chem::OligomerPart_Base_O::___staticClass);
- SMART_PTR_FIX(units::NamedUnit_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::SuperposableConformationCollection_O::___staticClass);
- SMART_PTR_FIX(chem::IterateBonds_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::TargetMachine_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::AttributeSet_O::static_creator);
- TAGGED_POINTER_FIX(chem::ConformationCollection_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::PassManager_O::static_creator);
- SMART_PTR_FIX(chem::Command_O::___staticClassSymbol);
- SMART_PTR_FIX(core::RuntimeVisibleEnvironment_O::___staticClass);
- SMART_PTR_FIX(chem::RingTest_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::User_O::___staticClass);
- SMART_PTR_FIX(core::StandardObject_O::___staticClass);
- TAGGED_POINTER_FIX(geom::OVector2_O::static_creator);
- SMART_PTR_FIX(chem::ProperTorsion_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::IterateAtoms_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::CandoDatabase_O::static_creator);
- TAGGED_POINTER_FIX(cffi::Pointer_O::static_creator);
- SMART_PTR_FIX(chem::NVector_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ResidueTest_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::CandoException_O::static_creator);
- SMART_PTR_FIX(llvmo::GlobalValue_O::___staticClass);
- SMART_PTR_FIX(chem::RingClosingPlug_O::___staticClass);
- SMART_PTR_FIX(chem::ComplexRestraint_O::___staticClass);
- SMART_PTR_FIX(chem::Molecule_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ConformationExplorerEntryStage_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::BranchInst_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::DIScope_O::___staticClass);
- TAGGED_POINTER_FIX(chem::Molecule_O::static_creator);
- SMART_PTR_FIX(core::IOStreamStream_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::SequentialType_O::___staticClass);
- TAGGED_POINTER_FIX(core::BroadcastStream_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::DIType_O::static_creator);
- SMART_PTR_FIX(core::SourcePosInfo_O::___staticClass);
- TAGGED_POINTER_FIX(chem::Chain_O::static_creator);
- TAGGED_POINTER_FIX(chem::CDFragment_O::static_creator);
- SMART_PTR_FIX(core::WrappedPointer_O::___staticClass);
- SMART_PTR_FIX(adapt::SymbolSet_O::___staticClass);
- SMART_PTR_FIX(chem::Branch_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::Pass_O::static_creator);
- SMART_PTR_FIX(chem::StereoisomerAtom_O::___staticClass);
- SMART_PTR_FIX(llvmo::Instruction_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ZMatrixEntry_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::IterateBonds_O::static_creator);
- SMART_PTR_FIX(chem::JumpPlug_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::ConstantArray_O::static_creator);
- TAGGED_POINTER_FIX(core::DirectoryIterator_O::static_creator);
- TAGGED_POINTER_FIX(chem::IterateAtoms_O::static_creator);
- TAGGED_POINTER_FIX(core::FunctionValueEnvironment_O::static_creator);
- SMART_PTR_FIX(core::StrWithFillPtr_O::___staticClassSymbol);
- SMART_PTR_FIX(core::SourceManager_O::___staticClassSymbol);
- SMART_PTR_FIX(adapt::SymbolList_O::___staticClass);
- SMART_PTR_FIX(llvmo::ConstantExpr_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::MonomerCoordinates_O::static_creator);
- SMART_PTR_FIX(core::Rational_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::FFBaseDb_O::___staticClassSymbol);
- SMART_PTR_FIX(core::FunctionContainerEnvironment_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::Constant_O::___staticClassSymbol);
- SMART_PTR_FIX(geom::CoordinateArrayWithHash_O::___staticClass);
- SMART_PTR_FIX(chem::Aggregate_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::GlobalVariable_O::___staticClass);
- SMART_PTR_FIX(chem::ResidueTest_O::___staticClass);
- SMART_PTR_FIX(core::CatchEnvironment_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::InsertPoint_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::BuiltInClass_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::Triple_O::static_creator);
- SMART_PTR_FIX(chem::FFItor_O::___staticClassSymbol);
- SMART_PTR_FIX(core::EchoStream_O::___staticClass);
- SMART_PTR_FIX(core::SingleDispatchGenericFunction_O::___staticClass);
- SMART_PTR_FIX(chem::Angle_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::Module_O::___staticClass);
- SMART_PTR_FIX(core::FuncallableStandardClass_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Structure_Old_List_O::___staticClass);
- SMART_PTR_FIX(core::Class_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::InfoDb_O::static_creator);
- SMART_PTR_FIX(chem::Oligomer_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::MCSubtargetInfo_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::EnergyStretch_O::static_creator);
- SMART_PTR_FIX(chem::EnergyNonbond_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::CompositeType_O::static_creator);
- TAGGED_POINTER_FIX(core::StringStream_O::static_creator);
- SMART_PTR_FIX(core::BroadcastStream_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(adapt::IterateCons_O::static_creator);
- SMART_PTR_FIX(core::SingleDispatchEffectiveMethodFunction_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::ZMatrixDihedralInternal_O::static_creator);
- SMART_PTR_FIX(core::ForeignData_O::___staticClass);
- SMART_PTR_FIX(core::HashTableEqualp_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::Argument_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::FFAngle_O::___staticClass);
- SMART_PTR_FIX(cffi::Pointer_O::___staticClassSymbol);
- SMART_PTR_FIX(core::LexicalEnvironment_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::ReturnInst_O::___staticClass);
- TAGGED_POINTER_FIX(core::Bignum_O::static_creator);
- TAGGED_POINTER_FIX(chem::CoordinateSystem_O::static_creator);
- TAGGED_POINTER_FIX(chem::Angle_O::static_creator);
- SMART_PTR_FIX(chem::FFItorDb_O::___staticClass);
- TAGGED_POINTER_FIX(core::ArrayDisplaced_O::static_creator);
- SMART_PTR_FIX(core::SynonymStream_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::LambdaListHandler_O::static_creator);
- SMART_PTR_FIX(chem::SuperposableConformationCollection_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::EntityNameSet_O::___staticClass);
- SMART_PTR_FIX(core::LogicalPathname_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::Argument_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::GlobalValue_O::static_creator);
- SMART_PTR_FIX(chem::ConformationExplorer_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(geom::OVector3_O::static_creator);
- TAGGED_POINTER_FIX(core::SpecialForm_O::static_creator);
- SMART_PTR_FIX(llvmo::TargetOptions_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::FFNonbondDb_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::ArrayType_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::EngineBuilder_O::static_creator);
- SMART_PTR_FIX(chem::Molecule_O::___staticClass);
- SMART_PTR_FIX(llvmo::ImmutablePass_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Fixnum_dummy_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::Monomer_O::static_creator);
- SMART_PTR_FIX(chem::AbstractLargeSquareMatrix_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::InsertPoint_O::static_creator);
- SMART_PTR_FIX(chem::ZMatrix_O::___staticClass);
- SMART_PTR_FIX(core::ValueFrame_O::___staticClass);
- SMART_PTR_FIX(chem::Coupling_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Topology_O::___staticClass);
- TAGGED_POINTER_FIX(core::SmallMap_O::static_creator);
- SMART_PTR_FIX(chem::RootMatchNode_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ZMatrixBondInternal_O::___staticClass);
- SMART_PTR_FIX(chem::Residue_O::___staticClass);
- SMART_PTR_FIX(adapt::StringSet_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::IRBuilder_O::static_creator);
- SMART_PTR_FIX(chem::sybylRules);
- SMART_PTR_FIX(core::ActivationFrame_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::FunctionType_O::___staticClassSymbol);
- SMART_PTR_FIX(core::ForwardReferencedClass_O::___staticClassSymbol);
- SMART_PTR_FIX(core::SexpSaveArchive_O::___staticClassSymbol);
- SMART_PTR_FIX(core::T_O::___staticClass);
- TAGGED_POINTER_FIX(adapt::SymbolSet_O::static_creator);
- TAGGED_POINTER_FIX(core::LightUserData_O::static_creator);
- TAGGED_POINTER_FIX(core::RandomState_O::static_creator);
- TAGGED_POINTER_FIX(units::NamedUnit_O::static_creator);
- TAGGED_POINTER_FIX(chem::SuperposeSelectedAtoms_O::static_creator);
- SMART_PTR_FIX(core::TwoWayStream_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::CalculatePositionRelativeToOrigin_O::___staticClass);
- SMART_PTR_FIX(chem::StereoConfiguration_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::RingFinder_O::___staticClass);
- TAGGED_POINTER_FIX(core::Reader_O::static_creator);
- SMART_PTR_FIX(llvmo::CallInst_O::___staticClass);
- TAGGED_POINTER_FIX(geom::CoordinateArrayWithHash_O::static_creator);
- SMART_PTR_FIX(llvmo::VectorType_O::___staticClass);
- TAGGED_POINTER_FIX(core::FunctionFrame_O::static_creator);
- SMART_PTR_FIX(core::Pointer_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::OligomerPart_Base_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::AtomReference_O::___staticClass);
- SMART_PTR_FIX(llvmo::StructType_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::CDBond_O::___staticClass);
- SMART_PTR_FIX(llvmo::GlobalVariable_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::IRBuilder_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::DIDescriptor_O::static_creator);
- SMART_PTR_FIX(chem::ConstitutionAtoms_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::MDString_O::static_creator);
- SMART_PTR_FIX(chem::BondTest_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::SpecificContext_O::static_creator);
- SMART_PTR_FIX(core::SourceManager_O::___staticClass);
- SMART_PTR_FIX(llvmo::DIArray_O::___staticClassSymbol);
- SMART_PTR_FIX(clbind::ClassRep_O::___staticClass);
- TAGGED_POINTER_FIX(chem::Topology_O::static_creator);
- SMART_PTR_FIX(chem::Trajectory_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::DILexicalBlock_O::___staticClass);
- TAGGED_POINTER_FIX(chem::SparseLargeSquareMatrix_O::static_creator);
- SMART_PTR_FIX(llvmo::Pass_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::Str_O::static_creator);
- SMART_PTR_FIX(chem::TypeAssignmentRules_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::EnergyChiralRestraint_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::SpecificContext_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::APFloat_O::static_creator);
- SMART_PTR_FIX(chem::EnergyFixedNonbondRestraint_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::Real_O::static_creator);
- SMART_PTR_FIX(llvmo::User_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::DICompileUnit_O::___staticClass);
- SMART_PTR_FIX(core::TagbodyEnvironment_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::IntegerType_O::___staticClassSymbol);
- SMART_PTR_FIX(geom::OVector3_O::___staticClassSymbol);
- SMART_PTR_FIX(core::HashTableEqual_O::___staticClass);
- SMART_PTR_FIX(chem::EnergyImproperRestraint_O::___staticClass);
- SMART_PTR_FIX(core::GlueEnvironment_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::ModulePass_O::static_creator);
- SMART_PTR_FIX(chem::NumericalFunction_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::Cons_O::static_creator);
- SMART_PTR_FIX(chem::AtomReference_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::FFVdw_O::___staticClass);
- SMART_PTR_FIX(core::WrappedPointer_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::EnergyAngle_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::AntechamberRoot_O::___staticClass);
- SMART_PTR_FIX(chem::DirectionalCoupling_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Oligomer_O::___staticClass);
- TAGGED_POINTER_FIX(chem::Command_O::static_creator);
- SMART_PTR_FIX(llvmo::ResumeInst_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ChemInfo_O::___staticClass);
- SMART_PTR_FIX(core::Ratio_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::PathMessage_O::static_creator);
- SMART_PTR_FIX(chem::CalculatePositionUsingInternals_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Bond_O::___staticClass);
- SMART_PTR_FIX(core::Array_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::MonomerPack_O::___staticClass);
- TAGGED_POINTER_FIX(chem::RestraintAngle_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::FunctionType_O::static_creator);
- SMART_PTR_FIX(chem::TagSet_O::___staticClass);
- SMART_PTR_FIX(llvmo::PassManagerBase_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::Array_O::static_creator);
- SMART_PTR_FIX(core::VectorObjects_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Path_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::UnreachableInst_O::___staticClass);
- SMART_PTR_FIX(core::PosixTimeDuration_O::___staticClass);
- TAGGED_POINTER_FIX(core::SexpSaveArchive_O::static_creator);
- SMART_PTR_FIX(chem::StepReport_O::___staticClass);
- SMART_PTR_FIX(chem::TrajectoryFrame_O::___staticClass);
- SMART_PTR_FIX(chem::OutPlug_O::___staticClass);
- SMART_PTR_FIX(chem::Bond_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::LLVMTargetMachine_O::___staticClass);
- TAGGED_POINTER_FIX(core::SingleDispatchEffectiveMethodFunction_O::static_creator);
- TAGGED_POINTER_FIX(chem::EnergyFixedNonbondRestraint_O::static_creator);
- SMART_PTR_FIX(chem::ProperTorsion_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::SequentialType_O::static_creator);
- SMART_PTR_FIX(llvmo::Metadata_O::___staticClass);
- SMART_PTR_FIX(llvmo::PointerType_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::DIBuilder_O::___staticClass);
- SMART_PTR_FIX(chem::PathMessage_O::___staticClass);
- TAGGED_POINTER_FIX(chem::JumpPlug_O::static_creator);
- SMART_PTR_FIX(chem::RestraintAnchor_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::TargetOptions_O::static_creator);
- SMART_PTR_FIX(geom::OVector2_O::___staticClass);
- TAGGED_POINTER_FIX(core::SourcePosInfo_O::static_creator);
- SMART_PTR_FIX(chem::NumericalFunction_O::___staticClass);
- SMART_PTR_FIX(chem::RestraintDistance_O::___staticClass);
- SMART_PTR_FIX(chem::SearchStatistics_O::___staticClass);
- TAGGED_POINTER_FIX(chem::BondList_O::static_creator);
- SMART_PTR_FIX(core::StringInputStream_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Plug_O::___staticClass);
- SMART_PTR_FIX(core::ExternalObject_O::___staticClass);
- SMART_PTR_FIX(chem::ConstitutionAtom_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::PosixTimeDuration_O::static_creator);
- SMART_PTR_FIX(core::CompileTimeEnvironment_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::NamedMDNode_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::Number_O::static_creator);
- SMART_PTR_FIX(core::CompiledFunction_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::TypeAssignmentRules_O::___staticClass);
- TAGGED_POINTER_FIX(core::ForeignData_O::static_creator);
- SMART_PTR_FIX(chem::EntityNameSetWithCap_O::___staticClass);
- TAGGED_POINTER_FIX(core::BlockEnvironment_O::static_creator);
- SMART_PTR_FIX(chem::StepReport_O::___staticClassSymbol);
- SMART_PTR_FIX(core::WeakHashTable_O::___staticClass);
- SMART_PTR_FIX(llvmo::AttributeSet_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::StackValueEnvironment_O::static_creator);
- SMART_PTR_FIX(chem::PdbMonomerConnectivity_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::SpanningLoop_O::___staticClass);
- TAGGED_POINTER_FIX(chem::Stereoisomer_O::static_creator);
- SMART_PTR_FIX(geom::BoundingBox_O::___staticClassSymbol);
- SMART_PTR_FIX(core::FuncallableStandardClass_O::___staticClass);
- TAGGED_POINTER_FIX(core::EchoStream_O::static_creator);
- TAGGED_POINTER_FIX(chem::FFNonbondCrossTermTable_O::static_creator);
- SMART_PTR_FIX(llvmo::TargetSubtargetInfo_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::AtomicRMWInst_O::static_creator);
- TAGGED_POINTER_FIX(chem::Rotamer_O::static_creator);
- SIMPLE_POINTER_FIX(gctools::global_tagged_Symbol_OP_sameAsKey);
- SMART_PTR_FIX(llvmo::TargetMachine_O::___staticClass);
- TAGGED_POINTER_FIX(chem::RestraintAnchor_O::static_creator);
- TAGGED_POINTER_FIX(chem::VirtualSphere_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::ConstantPointerNull_O::static_creator);
- SMART_PTR_FIX(llvmo::DebugLoc_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::Float_O::static_creator);
- TAGGED_POINTER_FIX(clbind::ClassRep_O::static_creator);
- SMART_PTR_FIX(core::Reader_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::ConstantFP_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::PdbMonomerDatabase_O::static_creator);
- SMART_PTR_FIX(chem::PdbReader_O::___staticClassSymbol);
- SMART_PTR_FIX(core::AnsiStream_O::___staticClass);
- TAGGED_POINTER_FIX(core::WeakKeyHashTable_O::static_creator);
- SMART_PTR_FIX(chem::ZMatrixInternal_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Matter_O::___staticClass);
- SMART_PTR_FIX(chem::OneMonomer_O::___staticClass);
- SMART_PTR_FIX(core::ValueFrame_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::Linker_O::static_creator);
- SMART_PTR_FIX(llvmo::TargetOptions_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::DISubprogram_O::static_creator);
- TAGGED_POINTER_FIX(geom::BoundingBox_O::static_creator);
- SMART_PTR_FIX(core::HashTableEqual_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::BasicBlock_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::SourceManager_O::static_creator);
- SMART_PTR_FIX(chem::MacroModelFile_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(adapt::IndexedObjectBag_O::static_creator);
- TAGGED_POINTER_FIX(chem::EnergyAngle_O::static_creator);
- SMART_PTR_FIX(chem::EntityNameSet_O::___staticClassSymbol);
- SMART_PTR_FIX(core::IntArray_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::StatusTracker_O::static_creator);
- TAGGED_POINTER_FIX(chem::FFAngle_O::static_creator);
- SMART_PTR_FIX(llvmo::ConstantDataArray_O::___staticClass);
- SMART_PTR_FIX(chem::NVector_O::___staticClass);
- SMART_PTR_FIX(core::StringStream_O::___staticClass);
- SMART_PTR_FIX(llvmo::ConstantPointerNull_O::___staticClassSymbol);
- SMART_PTR_FIX(core::FileStatus_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::LogicalPathname_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::DIDerivedType_O::static_creator);
- SMART_PTR_FIX(llvmo::ConstantStruct_O::___staticClassSymbol);
- SMART_PTR_FIX(geom::CoordinateArray_O::___staticClass);
- SMART_PTR_FIX(chem::AfterMatchBondTest_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::LongFloat_O::static_creator);
- TAGGED_POINTER_FIX(chem::TagSet_O::static_creator);
- SMART_PTR_FIX(chem::Structure_Old_List_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Structure_Old_ListEntry_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::Environment_O::static_creator);
- SMART_PTR_FIX(core::Binder_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::SequentialType_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::AtomTest_O::___staticClass);
- TAGGED_POINTER_FIX(core::Ratio_O::static_creator);
- SMART_PTR_FIX(core::BuiltInClass_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::AbstractLargeSquareMatrix_O::___staticClass);
- SMART_PTR_FIX(chem::Atom_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::UnaryInstruction_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::PdbWriter_O::static_creator);
- SMART_PTR_FIX(llvmo::UndefValue_O::___staticClass);
- TAGGED_POINTER_FIX(chem::OligomerPart_Link_O::static_creator);
- SMART_PTR_FIX(llvmo::Attribute_O::___staticClass);
- SMART_PTR_FIX(core::WeakKeyHashTable_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::VectorDisplaced_O::static_creator);
- SMART_PTR_FIX(chem::VirtualSphere_O::___staticClass);
- TAGGED_POINTER_FIX(chem::CDNode_O::static_creator);
- TAGGED_POINTER_FIX(core::SingleFloat_dummy_O::static_creator);
- SMART_PTR_FIX(chem::ZMatrixBondInternal_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::VectorObjects_O::static_creator);
- SMART_PTR_FIX(llvmo::LoadInst_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ConformationExplorerMatch_O::___staticClass);
- TAGGED_POINTER_FIX(chem::StereoisomerAtoms_O::static_creator);
- TAGGED_POINTER_FIX(chem::ChemDraw_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::VectorType_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::DICompileUnit_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::GlobalVariable_O::static_creator);
- SMART_PTR_FIX(core::ArrayObjects_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::RestraintList_O::static_creator);
- SMART_PTR_FIX(core::FunctionValueEnvironment_O::___staticClass);
- SMART_PTR_FIX(llvmo::ImmutablePass_O::___staticClass);
- TAGGED_POINTER_FIX(chem::ZMatrixAngleInternal_O::static_creator);
- SMART_PTR_FIX(llvmo::DataLayout_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::FunctionPassManager_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Record_O::___staticClass);
- SMART_PTR_FIX(chem::PdbMonomerDatabase_O::___staticClass);
- SMART_PTR_FIX(core::SmallMultimap_O::___staticClass);
- TAGGED_POINTER_FIX(core::Instance_O::static_creator);
- TAGGED_POINTER_FIX(chem::EnergyNonbond_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::TerminatorInst_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::PassManagerBuilder_O::static_creator);
- TAGGED_POINTER_FIX(chem::FFAngleDb_O::static_creator);
- SMART_PTR_FIX(core::IOFileStream_O::___staticClass);
- TAGGED_POINTER_FIX(core::Pointer_O::static_creator);
- SMART_PTR_FIX(core::DoubleFloat_O::___staticClass);
- SMART_PTR_FIX(core::Null_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::Attribute_O::___staticClassSymbol);
- SMART_PTR_FIX(core::RuntimeVisibleEnvironment_O::___staticClassSymbol);
- SMART_PTR_FIX(core::InvocationHistoryFrameIterator_O::___staticClass);
- TAGGED_POINTER_FIX(core::VectorObjectsWithFillPtr_O::static_creator);
- SMART_PTR_FIX(chem::MonomerContext_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::FenceInst_O::static_creator);
- TAGGED_POINTER_FIX(adapt::ObjectSet_O::static_creator);
- SMART_PTR_FIX(chem::RingCoupling_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::ResidueList_O::static_creator);
- SMART_PTR_FIX(asttooling::AstVisitor_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::ResumeInst_O::static_creator);
- TAGGED_POINTER_FIX(core::Binder_O::static_creator);
- SMART_PTR_FIX(chem::Atom_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::ValueAsMetadata_O::static_creator);
- SMART_PTR_FIX(core::ReadTable_O::___staticClass);
- SMART_PTR_FIX(chem::MonomerPack_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::MultiMonomer_O::___staticClass);
- SMART_PTR_FIX(core::VectorObjectsWithFillPtr_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::WildElementDict_O::___staticClass);
- SMART_PTR_FIX(core::RecursiveDirectoryIterator_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::AGEdge_O::___staticClass);
- SMART_PTR_FIX(llvmo::TargetMachine_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::SpecificContext_O::___staticClass);
- SMART_PTR_FIX(geom::CoordinateArrayWithHash_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::ReportBase_O::static_creator);
- TAGGED_POINTER_FIX(chem::EnergyAnchorRestraint_O::static_creator);
- SMART_PTR_FIX(chem::EntityNameSetBase_O::___staticClass);
- SMART_PTR_FIX(llvmo::FunctionPass_O::___staticClass);
- TAGGED_POINTER_FIX(chem::Aggregate_O::static_creator);
- SMART_PTR_FIX(llvmo::TerminatorInst_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::DIScope_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::VirtualAtom_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Instance_O::___staticClassSymbol);
- SMART_PTR_FIX(core::RandomState_O::___staticClass);
- SMART_PTR_FIX(core::StructureObject_O::___staticClass);
- SMART_PTR_FIX(core::HashTableEq_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Package_O::___staticClass);
- SMART_PTR_FIX(llvmo::StoreInst_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::Branch_O::static_creator);
- SMART_PTR_FIX(core::VectorObjects_O::___staticClass);
- SIMPLE_POINTER_FIX(gctools::global_tagged_Symbol_OP_unbound);
- SMART_PTR_FIX(chem::Mate_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ZMatrixEntry_O::___staticClass);
- TAGGED_POINTER_FIX(chem::AtomIndexer_O::static_creator);
- SMART_PTR_FIX(chem::Rotamer_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::OligomerPart_Monomer_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Constitution_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::Minimizer_O::static_creator);
- TAGGED_POINTER_FIX(core::Stream_O::static_creator);
- SMART_PTR_FIX(llvmo::MDNode_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::ConstantPointerNull_O::___staticClass);
- TAGGED_POINTER_FIX(adapt::StringList_O::static_creator);
- TAGGED_POINTER_FIX(chem::BondListMatchNode_O::static_creator);
- SMART_PTR_FIX(chem::EnergyStretch_O::___staticClass);
- SMART_PTR_FIX(llvmo::AtomicCmpXchgInst_O::___staticClassSymbol);
- SMART_PTR_FIX(units::Unit_O::___staticClass);
- TAGGED_POINTER_FIX(chem::ZMatrixInternal_O::static_creator);
- SMART_PTR_FIX(core::SourcePosInfo_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::Fixnum_dummy_O::static_creator);
- SMART_PTR_FIX(core::IOStreamStream_O::___staticClass);
- SMART_PTR_FIX(llvmo::ReturnInst_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::PlugWithMates_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Topology_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::ConstantDataArray_O::static_creator);
- TAGGED_POINTER_FIX(chem::FFParameter_O::static_creator);
- SMART_PTR_FIX(llvmo::DIDerivedType_O::___staticClassSymbol);
- SMART_PTR_FIX(core::RecursiveDirectoryIterator_O::___staticClass);
- SMART_PTR_FIX(core::BitVector_O::___staticClass);
- TAGGED_POINTER_FIX(chem::ConformationExplorerEntry_O::static_creator);
- SMART_PTR_FIX(chem::MinimizerLog_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::PHINode_O::static_creator);
- TAGGED_POINTER_FIX(chem::AfterMatchBondTest_O::static_creator);
- SMART_PTR_FIX(core::Fixnum_dummy_O::___staticClass);
- SMART_PTR_FIX(core::StringOutputStream_O::___staticClass);
- SMART_PTR_FIX(chem::ZMatrixAngleInternal_O::___staticClass);
- SMART_PTR_FIX(core::CxxClass_O::___staticClassSymbol);
- SMART_PTR_FIX(core::TwoWayStream_O::___staticClass);
- SMART_PTR_FIX(core::LongFloat_O::___staticClass);
- TAGGED_POINTER_FIX(core::Character_dummy_O::static_creator);
- SMART_PTR_FIX(llvmo::DataLayoutPass_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::EntityNameSetBase_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::FunctionPassManager_O::static_creator);
- SMART_PTR_FIX(core::SNode_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::IRBuilderBase_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::AtomIdToAtomMap_O::static_creator);
- SMART_PTR_FIX(chem::ConformationCollectionEntry_O::___staticClass);
- TAGGED_POINTER_FIX(chem::DirectionalCoupling_O::static_creator);
- SMART_PTR_FIX(chem::ConstitutionAtoms_O::___staticClassSymbol);
- SMART_PTR_FIX(core::FunctionContainerEnvironment_O::___staticClass);
- SMART_PTR_FIX(core::WeakKeyHashTable_O::___staticClass);
- SMART_PTR_FIX(llvmo::DILexicalBlock_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::LLVMContext_O::___staticClass);
- SMART_PTR_FIX(core::Archive_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::FuncallableStandardClass_O::static_creator);
- SMART_PTR_FIX(chem::EnergyFunction_O::___staticClassSymbol);
- SMART_PTR_FIX(core::BitVector_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::PdbReader_O::static_creator);
- SMART_PTR_FIX(chem::SuperposeSelectedAtoms_O::___staticClass);
- SMART_PTR_FIX(chem::WildElementDict_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::OneTypeRule_O::___staticClass);
- TAGGED_POINTER_FIX(chem::ConformationExplorer_O::static_creator);
- SMART_PTR_FIX(core::Binder_O::___staticClass);
- SMART_PTR_FIX(core::Stream_O::___staticClass);
- SMART_PTR_FIX(chem::AntechamberFocusAtomMatch_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ZMatrix_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::AllocaInst_O::static_creator);
- SMART_PTR_FIX(llvmo::ConstantExpr_O::___staticClass);
- TAGGED_POINTER_FIX(chem::RootMatchNode_O::static_creator);
- SMART_PTR_FIX(chem::SearchStatistics_O::___staticClassSymbol);
- SMART_PTR_FIX(core::ShortFloat_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::DICompositeType_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::ReturnInst_O::static_creator);
- SMART_PTR_FIX(core::Stream_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::FFNonbond_O::___staticClass);
- SMART_PTR_FIX(chem::Restraint_O::___staticClass);
- SMART_PTR_FIX(llvmo::LandingPadInst_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::EnergyDihedral_O::static_creator);
- SMART_PTR_FIX(adapt::StringList_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::AfterMatchBondTest_O::___staticClass);
- SMART_PTR_FIX(llvmo::Triple_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::AntechamberFocusAtomMatch_O::static_creator);
- TAGGED_POINTER_FIX(chem::ReadAmberParameters_O::static_creator);
- SMART_PTR_FIX(chem::FFVdwDb_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::EnergyDihedral_O::___staticClass);
- SMART_PTR_FIX(core::SingleDispatchMethod_O::___staticClass);
- SMART_PTR_FIX(chem::RestraintChiral_O::___staticClass);
- SMART_PTR_FIX(core::DirectoryEntry_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::Residue_O::static_creator);
- SMART_PTR_FIX(core::Path_O::___staticClass);
- SMART_PTR_FIX(llvmo::ConstantInt_O::___staticClass);
- SMART_PTR_FIX(chem::CandoDatabase_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::PointerType_O::___staticClass);
- SMART_PTR_FIX(core::SymbolMacroletEnvironment_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::DISubroutineType_O::___staticClass);
- TAGGED_POINTER_FIX(chem::RestraintDistance_O::static_creator);
- SMART_PTR_FIX(chem::FFAngle_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::StereoisomerAtom_O::static_creator);
- SMART_PTR_FIX(chem::RestrainedPiBond_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Rational_O::___staticClass);
- SMART_PTR_FIX(chem::OligomerPart_Link_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::APInt_O::static_creator);
- TAGGED_POINTER_FIX(chem::OneMonomer_O::static_creator);
- TAGGED_POINTER_FIX(chem::BondTest_O::static_creator);
- TAGGED_POINTER_FIX(core::ActivationFrame_O::static_creator);
- SMART_PTR_FIX(geom::OVector2_O::___staticClassSymbol);
- SMART_PTR_FIX(core::SingleDispatchMethod_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::DIBasicType_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::StatusTracker_O::___staticClass);
- SMART_PTR_FIX(llvmo::ArrayType_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::EntityNameSet_O::static_creator);
- TAGGED_POINTER_FIX(chem::FFItor_O::static_creator);
- SMART_PTR_FIX(chem::Entity_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::Coupling_O::static_creator);
- SMART_PTR_FIX(core::CompiledFunction_O::___staticClass);
- SMART_PTR_FIX(core::SourceFileInfo_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ConstitutionBond_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::CDText_O::___staticClass);
- SMART_PTR_FIX(chem::RestraintFixedNonbond_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Specializer_O::___staticClass);
- TAGGED_POINTER_FIX(core::SexpLoadArchive_O::static_creator);
- TAGGED_POINTER_FIX(chem::ZMatrix_O::static_creator);
- SMART_PTR_FIX(adapt::IndexedObjectBag_O::___staticClassSymbol);
- SMART_PTR_FIX(core::StructureClass_O::___staticClass);
- SMART_PTR_FIX(chem::MinimizerLog_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::StereoInformation_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::AtomIdToAtomMap_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::Module_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Symbol_O::___staticClass);
- SMART_PTR_FIX(core::PosixTime_O::___staticClassSymbol);
- SMART_PTR_FIX(core::WeakKeyMapping_O::___staticClassSymbol);
- SMART_PTR_FIX(core::BranchSNode_O::___staticClass);
- TAGGED_POINTER_FIX(core::FunctionContainerEnvironment_O::static_creator);
- SMART_PTR_FIX(asttooling::AstVisitor_O::___staticClass);
- SMART_PTR_FIX(core::DirectoryIterator_O::___staticClass);
- TAGGED_POINTER_FIX(core::SmallMultimap_O::static_creator);
- TAGGED_POINTER_FIX(core::Iterator_O::static_creator);
- TAGGED_POINTER_FIX(chem::Plug_O::static_creator);
- TAGGED_POINTER_FIX(core::WeakHashTable_O::static_creator);
- TAGGED_POINTER_FIX(core::WeakKeyMapping_O::static_creator);
- SMART_PTR_FIX(chem::FrameRecognizer_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::AtomOrBondMatchNode_O::static_creator);
- SMART_PTR_FIX(core::IntArray_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::UnaryInstruction_O::static_creator);
- SMART_PTR_FIX(geom::Color_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::FFNonbondDb_O::___staticClass);
- SMART_PTR_FIX(core::BitVectorWithFillPtr_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::FenceInst_O::___staticClass);
- SMART_PTR_FIX(llvmo::NamedMDNode_O::___staticClass);
- SMART_PTR_FIX(chem::AtomOrBondMatchNode_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::EnergyComponent_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::StereoisomerVirtualAtom_O::___staticClass);
- SMART_PTR_FIX(core::TagbodyFrame_O::___staticClass);
- TAGGED_POINTER_FIX(core::IOStreamStream_O::static_creator);
- SMART_PTR_FIX(core::Complex_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::MinimizerLog_O::static_creator);
- SMART_PTR_FIX(chem::EnergyImproperRestraint_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Chain_O::___staticClass);
- SMART_PTR_FIX(core::Integer_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::EntityNameSetWithCap_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::MonomerContext_O::static_creator);
- SMART_PTR_FIX(llvmo::Constant_O::___staticClass);
- TAGGED_POINTER_FIX(core::TagbodyEnvironment_O::static_creator);
- TAGGED_POINTER_FIX(chem::FFPtorDb_O::static_creator);
- SMART_PTR_FIX(llvmo::ArrayType_O::___staticClass);
- SMART_PTR_FIX(core::SingleDispatchGenericFunction_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ForceMatchReport_O::___staticClass);
- SMART_PTR_FIX(core::StringStream_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::Type_O::___staticClass);
- TAGGED_POINTER_FIX(chem::PdbMonomerConnectivity_O::static_creator);
- SMART_PTR_FIX(core::Vector_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::IterateMatter_O::static_creator);
- SMART_PTR_FIX(core::Regex_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Pathname_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::VirtualAtom_O::static_creator);
- SMART_PTR_FIX(chem::RingClosingPlug_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::DIType_O::___staticClass);
- TAGGED_POINTER_FIX(chem::IterateRestraints_O::static_creator);
- TAGGED_POINTER_FIX(chem::ImproperTorsion_O::static_creator);
- TAGGED_POINTER_FIX(core::UserData_O::static_creator);
- SMART_PTR_FIX(chem::Constitution_O::___staticClass);
- TAGGED_POINTER_FIX(units::Quantity_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::TargetSubtargetInfo_O::static_creator);
- TAGGED_POINTER_FIX(core::ForwardReferencedClass_O::static_creator);
- TAGGED_POINTER_FIX(core::TagbodyFrame_O::static_creator);
- TAGGED_POINTER_FIX(core::Integer_O::static_creator);
- SMART_PTR_FIX(core::TagbodyFrame_O::___staticClassSymbol);
- SMART_PTR_FIX(core::TagbodyEnvironment_O::___staticClass);
- SMART_PTR_FIX(core::Integer_O::___staticClass);
- TAGGED_POINTER_FIX(chem::SmartsRoot_O::static_creator);
- TAGGED_POINTER_FIX(core::HashTableEq_O::static_creator);
- SMART_PTR_FIX(core::Character_dummy_O::___staticClass);
- SMART_PTR_FIX(chem::ChemDraw_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::DIBasicType_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::DataLayoutPass_O::static_creator);
- TAGGED_POINTER_FIX(asttooling::RegMap::RegistryData);
- TAGGED_POINTER_FIX(core::WeakPointer_O::static_creator);
- SMART_PTR_FIX(core::ForeignData_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::PHINode_O::___staticClass);
- TAGGED_POINTER_FIX(chem::RepresentedEntityNameSet_O::static_creator);
- TAGGED_POINTER_FIX(core::Function_O::static_creator);
- SMART_PTR_FIX(chem::SuperposeSelectedAtoms_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::BondMatchNode_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::DataLayoutPass_O::___staticClass);
- SMART_PTR_FIX(core::RegexMatch_O::___staticClass);
- SMART_PTR_FIX(llvmo::SwitchInst_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::StoreInst_O::static_creator);
- SMART_PTR_FIX(core::Record_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::InvokeInst_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Environment_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Logical_O::___staticClass);
- TAGGED_POINTER_FIX(core::GlueEnvironment_O::static_creator);
- TAGGED_POINTER_FIX(core::Vector_O::static_creator);
- SMART_PTR_FIX(chem::RestraintFixedNonbond_O::___staticClass);
- SMART_PTR_FIX(adapt::SymbolSet_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::ValueEnvironment_O::static_creator);
- SMART_PTR_FIX(core::SmallMultimap_O::___staticClassSymbol);
- SMART_PTR_FIX(core::VaList_dummy_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::ConformationExplorerMatch_O::static_creator);
- SMART_PTR_FIX(core::SynonymStream_O::___staticClass);
- SMART_PTR_FIX(chem::OligomerPart_Link_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Class_O::___staticClass);
- TAGGED_POINTER_FIX(chem::ProperTorsion_O::static_creator);
- SMART_PTR_FIX(chem::SmartsRoot_O::___staticClass);
- TAGGED_POINTER_FIX(chem::ChemInfo_O::static_creator);
- TAGGED_POINTER_FIX(core::StandardObject_O::static_creator);
- SMART_PTR_FIX(chem::ZMatrixAngleInternal_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::SwitchInst_O::___staticClassSymbol);
- SIMPLE_POINTER_FIX(gctools::global_tagged_Symbol_OP_nil);
- TAGGED_POINTER_FIX(chem::FFStretchDb_O::static_creator);
- SMART_PTR_FIX(llvmo::PassManagerBuilder_O::___staticClass);
- SMART_PTR_FIX(chem::BondMatchNode_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::Instruction_O::static_creator);
- TAGGED_POINTER_FIX(chem::EnergyChiralRestraint_O::static_creator);
- SMART_PTR_FIX(llvmo::IRBuilder_O::___staticClassSymbol);
- SMART_PTR_FIX(adapt::QDomNode_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Twister_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::IterateMatter_O::___staticClass);
- TAGGED_POINTER_FIX(chem::StereoInformation_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::DIFile_O::static_creator);
- SMART_PTR_FIX(chem::EnergyAnchorRestraint_O::___staticClass);
- SMART_PTR_FIX(chem::BondListMatchNode_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::DIBasicType_O::___staticClass);
- SMART_PTR_FIX(core::Str_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Minimizer_O::___staticClass);
- SMART_PTR_FIX(llvmo::DITypeArray_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::DIDescriptor_O::___staticClass);
- SMART_PTR_FIX(llvmo::LoadInst_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::ConstantDataSequential_O::static_creator);
- SMART_PTR_FIX(chem::ChemInfoNode_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ImproperTorsion_O::___staticClass);
- SMART_PTR_FIX(llvmo::AllocaInst_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::DataLayout_O::static_creator);
- SMART_PTR_FIX(core::LambdaListHandler_O::___staticClass);
- SMART_PTR_FIX(chem::RingTest_O::___staticClass);
- SMART_PTR_FIX(llvmo::ConstantArray_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::DebugInfo_O::static_creator);
- TAGGED_POINTER_FIX(chem::AtomId_O::static_creator);
- SMART_PTR_FIX(chem::Alias_O::___staticClass);
- TAGGED_POINTER_FIX(core::BitVector_O::static_creator);
- SMART_PTR_FIX(core::PosixTime_O::___staticClass);
- TAGGED_POINTER_FIX(chem::Mate_O::static_creator);
- SMART_PTR_FIX(chem::CDFragment_O::___staticClass);
- SMART_PTR_FIX(core::SimpleBitVector_O::___staticClass);
- SMART_PTR_FIX(core::WeakKeyMapping_O::___staticClass);
- SMART_PTR_FIX(chem::AntechamberBondTest_O::___staticClass);
- SMART_PTR_FIX(chem::InPlug_O::___staticClassSymbol);
- SMART_PTR_FIX(core::GlueEnvironment_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::MacroModelFile_O::___staticClass);
- TAGGED_POINTER_FIX(chem::ChemInfoNode_O::static_creator);
- SMART_PTR_FIX(llvmo::APFloat_O::___staticClass);
- SMART_PTR_FIX(chem::DirectionalCoupling_O::___staticClass);
- TAGGED_POINTER_FIX(core::TwoWayStream_O::static_creator);
- TAGGED_POINTER_FIX(chem::Alias_O::static_creator);
- SMART_PTR_FIX(llvmo::APInt_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::FullLargeSquareMatrix_O::static_creator);
- SMART_PTR_FIX(chem::RestraintAnchor_O::___staticClass);
- TAGGED_POINTER_FIX(core::CxxClass_O::static_creator);
- SMART_PTR_FIX(core::StdClass_O::___staticClass);
- SMART_PTR_FIX(core::Ratio_O::___staticClass);
- TAGGED_POINTER_FIX(core::StringInputStream_O::static_creator);
- SMART_PTR_FIX(chem::RestraintAngle_O::___staticClass);
- SMART_PTR_FIX(llvmo::AtomicCmpXchgInst_O::___staticClass);
- TAGGED_POINTER_FIX(core::WrappedPointer_O::static_creator);
- SMART_PTR_FIX(llvmo::DIArray_O::___staticClass);
- TAGGED_POINTER_FIX(core::HashTable_O::static_creator);
- TAGGED_POINTER_FIX(units::Dimension_O::static_creator);
- SMART_PTR_FIX(chem::Root_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::FFParameter_O::___staticClass);
- SMART_PTR_FIX(chem::ChemInfoMatch_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::EnergyFunction_O::___staticClass);
  SMART_PTR_FIX(core::UnwindProtectEnvironment_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::RestraintList_O::___staticClass);
- TAGGED_POINTER_FIX(core::BranchSNode_O::static_creator);
- SMART_PTR_FIX(chem::FFTypesDb_O::___staticClass);
- SMART_PTR_FIX(core::BitVectorWithFillPtr_O::___staticClass);
- SMART_PTR_FIX(chem::EnergyComponent_O::___staticClass);
- SMART_PTR_FIX(chem::Residue_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::EnergyAnchorRestraint_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::Rational_O::static_creator);
- SMART_PTR_FIX(chem::CDFragment_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::AtomReferenceBase_O::static_creator);
- SMART_PTR_FIX(core::FileStream_O::___staticClass);
- TAGGED_POINTER_FIX(core::ShortFloat_O::static_creator);
- SMART_PTR_FIX(llvmo::MDString_O::___staticClass);
- SMART_PTR_FIX(chem::ConformationExplorerEntry_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::ConstantStruct_O::static_creator);
- SMART_PTR_FIX(chem::FFNonbondCrossTermTable_O::___staticClass);
- TAGGED_POINTER_FIX(core::StringOutputStream_O::static_creator);
- TAGGED_POINTER_FIX(core::CatchEnvironment_O::static_creator);
- SMART_PTR_FIX(chem::SparseLargeSquareMatrix_O::___staticClass);
- SMART_PTR_FIX(chem::ChemDraw_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::FFAngleDb_O::___staticClass);
- SMART_PTR_FIX(chem::IterateMatter_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::Constant_O::static_creator);
- SMART_PTR_FIX(llvmo::VAArgInst_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Entity_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::DIArray_O::static_creator);
- TAGGED_POINTER_FIX(core::ConcatenatedStream_O::static_creator);
- SMART_PTR_FIX(core::Package_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::Atom_O::static_creator);
- SMART_PTR_FIX(llvmo::Triple_O::___staticClass);
- SMART_PTR_FIX(chem::ZMatrixDihedralInternal_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::DILexicalBlock_O::static_creator);
- SMART_PTR_FIX(llvmo::DICompositeType_O::___staticClassSymbol);
- SMART_PTR_FIX(adapt::StringList_O::___staticClass);
- SMART_PTR_FIX(llvmo::DICompositeType_O::___staticClass);
- TAGGED_POINTER_FIX(chem::SpecificContextSet_O::static_creator);
- SMART_PTR_FIX(chem::InfoDb_O::___staticClass);
- TAGGED_POINTER_FIX(chem::Restraint_O::static_creator);
- TAGGED_POINTER_FIX(core::StdClass_O::static_creator);
- SMART_PTR_FIX(core::SymbolMacroletEnvironment_O::___staticClass);
- SMART_PTR_FIX(llvmo::AtomicRMWInst_O::___staticClass);
- SMART_PTR_FIX(chem::OligomerPart_Monomer_O::___staticClass);
- SMART_PTR_FIX(llvmo::Value_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::PassManagerBase_O::static_creator);
- TAGGED_POINTER_FIX(core::SaveArchive_O::static_creator);
- SMART_PTR_FIX(chem::FFPtorDb_O::___staticClass);
- TAGGED_POINTER_FIX(core::SingleDispatchGenericFunction_O::static_creator);
- SMART_PTR_FIX(core::EchoStream_O::___staticClassSymbol);
- SMART_PTR_FIX(core::AnsiStream_O::___staticClassSymbol);
- SMART_PTR_FIX(core::LoadTimeValues_O::___staticClass);
- SMART_PTR_FIX(chem::AtomTest_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::Class_O::static_creator);
- SMART_PTR_FIX(core::LogicalPathname_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::StatusTracker_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::ForceMatchReport_O::static_creator);
- TAGGED_POINTER_FIX(chem::StructureComparer_O::static_creator);
- SMART_PTR_FIX(core::WeakPointer_O::___staticClass);
- SMART_PTR_FIX(chem::ReadAmberParameters_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::DITypeArray_O::___staticClass);
- SMART_PTR_FIX(core::SexpSaveArchive_O::___staticClass);
- SMART_PTR_FIX(chem::CDBond_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::DebugInfo_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ReportBase_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::RingCoupling_O::static_creator);
- SMART_PTR_FIX(core::SingleFloat_dummy_O::___staticClass);
- SMART_PTR_FIX(chem::CalculatePositionAlongBond_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::EnergyNonbond_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Array_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::ConstantFP_O::static_creator);
- SMART_PTR_FIX(chem::OutPlug_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::ConstitutionBond_O::static_creator);
- TAGGED_POINTER_FIX(chem::EnergyFunction_O::static_creator);
- SMART_PTR_FIX(core::ValueEnvironment_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::OutPlug_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::BasicBlock_O::static_creator);
- SMART_PTR_FIX(core::SymbolToEnumConverter_O::___staticClass);
- SMART_PTR_FIX(llvmo::Argument_O::___staticClass);
- SMART_PTR_FIX(core::ConcatenatedStream_O::___staticClass);
- TAGGED_POINTER_FIX(core::DoubleFloat_O::static_creator);
- SMART_PTR_FIX(chem::Structure_Old_ListEntry_O::___staticClass);
- TAGGED_POINTER_FIX(chem::RestraintFixedNonbond_O::static_creator);
- SMART_PTR_FIX(core::LoadArchive_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::RingTest_O::static_creator);
- SMART_PTR_FIX(llvmo::ConstantFP_O::___staticClass);
- SMART_PTR_FIX(llvmo::AtomicRMWInst_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::LandingPadInst_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::IRBuilderBase_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::Type_O::static_creator);
- SMART_PTR_FIX(llvmo::FenceInst_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::Linker_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::StereoInformation_O::___staticClass);
- SMART_PTR_FIX(core::CxxObject_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::ValueAsMetadata_O::___staticClass);
- SMART_PTR_FIX(core::SpecialForm_O::___staticClass);
- SMART_PTR_FIX(core::LightUserData_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::IRBuilderBase_O::___staticClass);
- TAGGED_POINTER_FIX(chem::RingClosingPlug_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::ExecutionEngine_O::static_creator);
- TAGGED_POINTER_FIX(core::LexicalEnvironment_O::static_creator);
- TAGGED_POINTER_FIX(chem::FFTypesDb_O::static_creator);
- SMART_PTR_FIX(core::Float_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Real_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::PathMessage_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::secondaryAmide);
- TAGGED_POINTER_FIX(chem::FFNonbondDb_O::static_creator);
- SMART_PTR_FIX(core::FunctionValueEnvironment_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::PdbWriter_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::ConformationCollectionEntry_O::static_creator);
- SMART_PTR_FIX(chem::MapOfMonomerNamesToAtomIndexers_O::___staticClass);
- TAGGED_POINTER_FIX(core::BitVectorWithFillPtr_O::static_creator);
- SMART_PTR_FIX(llvmo::Value_O::___staticClass);
- SMART_PTR_FIX(chem::MonomerContext_O::___staticClass);
- SMART_PTR_FIX(core::Specializer_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ConformationExplorerEntry_O::___staticClass);
- TAGGED_POINTER_FIX(adapt::SymbolList_O::static_creator);
- SMART_PTR_FIX(llvmo::VectorType_O::___staticClassSymbol);
- SMART_PTR_FIX(core::RandomState_O::___staticClassSymbol);
- SMART_PTR_FIX(core::BroadcastStream_O::___staticClass);
- SMART_PTR_FIX(chem::RestrainedExoCyclicAtom_O::___staticClass);
- SMART_PTR_FIX(chem::RingClosingMate_O::___staticClass);
- SMART_PTR_FIX(llvmo::FunctionPassManager_O::___staticClass);
- SMART_PTR_FIX(core::FunctionFrame_O::___staticClass);
- SMART_PTR_FIX(chem::CalculatePositionRelativeToOrigin_O::___staticClassSymbol);
- SMART_PTR_FIX(core::String_O::___staticClass);
- SMART_PTR_FIX(core::CompileTimeEnvironment_O::___staticClass);
- TAGGED_POINTER_FIX(chem::CDBond_O::static_creator);
- SMART_PTR_FIX(chem::FFNonbond_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::ConstantStruct_O::___staticClass);
- SMART_PTR_FIX(core::StandardClass_O::___staticClassSymbol);
- SMART_PTR_FIX(core::String_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ConformationCollection_O::___staticClass);
- TAGGED_POINTER_FIX(core::Complex_O::static_creator);
- SMART_PTR_FIX(units::Unit_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Str_O::___staticClass);
- SMART_PTR_FIX(core::FileStream_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::StructureComparer_O::___staticClass);
- SMART_PTR_FIX(core::UserData_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::Metadata_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Cons_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::VAArgInst_O::static_creator);
- TAGGED_POINTER_FIX(chem::FFNonbond_O::static_creator);
- TAGGED_POINTER_FIX(units::Unit_O::static_creator);
- SMART_PTR_FIX(chem::MapOfMonomerNamesToAtomIndexers_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Cons_O::___staticClass);
- SMART_PTR_FIX(core::Metaobject_O::___staticClass);
- SMART_PTR_FIX(core::T_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::AtomId_O::___staticClass);
- SMART_PTR_FIX(chem::CipPrioritizer_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::HashTableEql_O::static_creator);
- TAGGED_POINTER_FIX(core::FileStream_O::static_creator);
- SMART_PTR_FIX(core::SymbolToEnumConverter_O::___staticClassSymbol);
- SMART_PTR_FIX(core::ArrayObjects_O::___staticClass);
- SMART_PTR_FIX(core::BlockEnvironment_O::___staticClass);
- TAGGED_POINTER_FIX(chem::Oligomer_O::static_creator);
- SMART_PTR_FIX(chem::FFVdw_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::DISubprogram_O::___staticClassSymbol);
- SMART_PTR_FIX(adapt::IterateCons_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::TagSet_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::EnergyFixedNonbondRestraint_O::___staticClass);
- TAGGED_POINTER_FIX(chem::PlugWithMates_O::static_creator);
- TAGGED_POINTER_FIX(core::T_O::static_creator);
- SMART_PTR_FIX(llvmo::IndirectBrInst_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::ResidueTest_O::static_creator);
- TAGGED_POINTER_FIX(geom::OMatrix_O::static_creator);
- TAGGED_POINTER_FIX(chem::StepReport_O::static_creator);
- SMART_PTR_FIX(llvmo::APInt_O::___staticClass);
- SMART_PTR_FIX(core::IOFileStream_O::___staticClassSymbol);
- SMART_PTR_FIX(core::BranchSNode_O::___staticClassSymbol);
- SMART_PTR_FIX(core::StrWithFillPtr_O::___staticClass);
- SMART_PTR_FIX(adapt::SymbolList_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::Pass_O::___staticClass);
- SMART_PTR_FIX(chem::AtomTable_O::___staticClass);
+ SMART_PTR_FIX(chem::PdbMonomerDatabase_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::Complex_O::___staticClassSymbol);
  SMART_PTR_FIX(chem::ChemInfoMatch_O::___staticClass);
- SMART_PTR_FIX(chem::ConformationCollection_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::ForceField_O::static_creator);
- SMART_PTR_FIX(core::MacroletEnvironment_O::___staticClass);
- TAGGED_POINTER_FIX(chem::OligomerPart_Monomer_O::static_creator);
- TAGGED_POINTER_FIX(core::SymbolMacroletEnvironment_O::static_creator);
- SMART_PTR_FIX(llvmo::ResumeInst_O::___staticClass);
- SMART_PTR_FIX(chem::RestraintDihedral_O::___staticClassSymbol);
- SIMPLE_POINTER_FIX(globalTaggedRunTimeValues);
- TAGGED_POINTER_FIX(llvmo::User_O::static_creator);
- SMART_PTR_FIX(core::UserData_O::___staticClass);
- TAGGED_POINTER_FIX(core::FileStatus_O::static_creator);
- SMART_PTR_FIX(chem::RestraintDihedral_O::___staticClass);
- TAGGED_POINTER_FIX(core::String_O::static_creator);
- SMART_PTR_FIX(core::LongFloat_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::TwisterDriver_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ChemInfoNode_O::___staticClass);
- SMART_PTR_FIX(core::StringOutputStream_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Bignum_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::FrameRecognizer_O::___staticClass);
- SMART_PTR_FIX(chem::IterateRestraints_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Alias_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::StructType_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::LLVMContext_O::static_creator);
- SMART_PTR_FIX(core::StandardClass_O::___staticClass);
- SMART_PTR_FIX(core::Archive_O::___staticClass);
- SMART_PTR_FIX(chem::ComplexRestraint_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::SynonymStream_O::static_creator);
- SMART_PTR_FIX(llvmo::InsertPoint_O::___staticClass);
- SMART_PTR_FIX(llvmo::InvokeInst_O::___staticClass);
- SMART_PTR_FIX(llvmo::LLVMContext_O::___staticClassSymbol);
- SMART_PTR_FIX(core::ValueEnvironment_O::___staticClass);
- SMART_PTR_FIX(chem::CDNode_O::___staticClass);
- TAGGED_POINTER_FIX(core::Symbol_O::static_creator);
- TAGGED_POINTER_FIX(core::SymbolToEnumConverter_O::static_creator);
- TAGGED_POINTER_FIX(core::SingleDispatchMethod_O::static_creator);
- SMART_PTR_FIX(chem::ForceMatchReport_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Pointer_O::___staticClass);
- SMART_PTR_FIX(llvmo::BranchInst_O::___staticClass);
- SMART_PTR_FIX(core::Pathname_O::___staticClass);
- SMART_PTR_FIX(chem::FFNonbondCrossTermTable_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::FFPtor_O::___staticClass);
- TAGGED_POINTER_FIX(chem::StereoConfiguration_O::static_creator);
- TAGGED_POINTER_FIX(chem::SearchStatistics_O::static_creator);
- SMART_PTR_FIX(core::ExternalObject_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::RestraintDihedral_O::static_creator);
- SMART_PTR_FIX(chem::StereoisomerAtom_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Logical_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::FFVdwDb_O::___staticClass);
- TAGGED_POINTER_FIX(core::MultiStringBuffer_O::static_creator);
- SMART_PTR_FIX(adapt::QDomNode_O::___staticClass);
- SMART_PTR_FIX(core::SingleFloat_dummy_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::MultiMonomer_O::___staticClassSymbol);
- SMART_PTR_FIX(core::SourceFileInfo_O::___staticClass);
- SMART_PTR_FIX(llvmo::DebugInfo_O::___staticClass);
- SMART_PTR_FIX(chem::CDText_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::Record_O::static_creator);
- SMART_PTR_FIX(core::HashTableEql_O::___staticClassSymbol);
- SMART_PTR_FIX(core::ConcatenatedStream_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Stereoisomer_O::___staticClassSymbol);
- SMART_PTR_FIX(core::MacroletEnvironment_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::Value_O::static_creator);
- SMART_PTR_FIX(core::StructureClass_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::PdbWriter_O::___staticClass);
- SMART_PTR_FIX(chem::Mate_O::___staticClass);
- SMART_PTR_FIX(llvmo::AllocaInst_O::___staticClass);
- TAGGED_POINTER_FIX(core::StructureObject_O::static_creator);
- SMART_PTR_FIX(chem::AtomReferenceBase_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::TargetLibraryInfo_O::___staticClass);
- SMART_PTR_FIX(chem::ReadAmberParameters_O::___staticClass);
- SMART_PTR_FIX(llvmo::StoreInst_O::___staticClass);
- TAGGED_POINTER_FIX(chem::ConformationExplorerEntryStage_O::static_creator);
- SMART_PTR_FIX(units::Quantity_O::___staticClass);
- SMART_PTR_FIX(core::LoadTimeValues_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::DIFile_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::SmartsRoot_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::Specializer_O::static_creator);
- TAGGED_POINTER_FIX(chem::FFPtor_O::static_creator);
- SMART_PTR_FIX(chem::FFBaseDb_O::___staticClass);
- TAGGED_POINTER_FIX(chem::RestraintChiral_O::static_creator);
- SMART_PTR_FIX(llvmo::IntegerType_O::___staticClass);
- SMART_PTR_FIX(units::Dimension_O::___staticClass);
- TAGGED_POINTER_FIX(core::CompileTimeEnvironment_O::static_creator);
- SMART_PTR_FIX(chem::FFStretch_O::___staticClass);
- TAGGED_POINTER_FIX(core::RuntimeVisibleEnvironment_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::IntegerType_O::static_creator);
- SMART_PTR_FIX(chem::FFPtorDb_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Bignum_O::___staticClass);
- TAGGED_POINTER_FIX(chem::WildElementDict_O::static_creator);
- SMART_PTR_FIX(core::SexpLoadArchive_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::TrajectoryFrame_O::___staticClassSymbol);
- SMART_PTR_FIX(core::StackValueEnvironment_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::UnreachableInst_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::VirtualSphere_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::FunctionPass_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::RingClosingMate_O::static_creator);
- TAGGED_POINTER_FIX(chem::CalculatePositionRelativeToOrigin_O::static_creator);
- SMART_PTR_FIX(core::Number_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Chain_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::GlobalValue_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Angle_O::___staticClass);
- SMART_PTR_FIX(llvmo::CallInst_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::FFVdwDb_O::static_creator);
- TAGGED_POINTER_FIX(chem::EntityNameSetBase_O::static_creator);
- SMART_PTR_FIX(llvmo::VAArgInst_O::___staticClass);
- SMART_PTR_FIX(adapt::ObjectSet_O::___staticClass);
- SMART_PTR_FIX(core::VectorDisplaced_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::SimpleBitVector_O::static_creator);
- TAGGED_POINTER_FIX(chem::EntityNameSetWithCap_O::static_creator);
- SMART_PTR_FIX(core::ActivationFrame_O::___staticClass);
- SMART_PTR_FIX(chem::BondList_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::MacroletEnvironment_O::static_creator);
- SMART_PTR_FIX(chem::FullLargeSquareMatrix_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Stereoisomer_O::___staticClass);
- SMART_PTR_FIX(chem::ResidueList_O::___staticClass);
- SMART_PTR_FIX(llvmo::UndefValue_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::FFParameter_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(asttooling::AstVisitor_O::static_creator);
- TAGGED_POINTER_FIX(core::Path_O::static_creator);
- TAGGED_POINTER_FIX(chem::AtomTest_O::static_creator);
- TAGGED_POINTER_FIX(core::LoadTimeValues_O::static_creator);
- SMART_PTR_FIX(chem::SpecificContextSet_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::FunctionPass_O::static_creator);
- TAGGED_POINTER_FIX(chem::RestrainedPiBond_O::static_creator);
- TAGGED_POINTER_FIX(core::DirectoryEntry_O::static_creator);
- TAGGED_POINTER_FIX(chem::AGVertex_O::static_creator);
- SMART_PTR_FIX(core::FunctionFrame_O::___staticClassSymbol);
- SMART_PTR_FIX(core::WeakPointer_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::Pathname_O::static_creator);
- SMART_PTR_FIX(chem::AGVertex_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::OneMonomer_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::TargetSubtargetInfo_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::IterateBonds_O::___staticClass);
- SMART_PTR_FIX(llvmo::BlockAddress_O::___staticClass);
+ SMART_PTR_FIX(llvmo::ResumeInst_O::___staticClassSymbol);
  SMART_PTR_FIX(chem::BondTest_O::___staticClass);
- SMART_PTR_FIX(core::Environment_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::ConstantExpr_O::static_creator);
- SMART_PTR_FIX(core::CxxClass_O::___staticClass);
- SMART_PTR_FIX(core::SimpleBitVector_O::___staticClassSymbol);
- SMART_PTR_FIX(core::LightUserData_O::___staticClass);
- TAGGED_POINTER_FIX(core::StandardClass_O::static_creator);
- SMART_PTR_FIX(llvmo::LLVMTargetMachine_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::BondList_O::___staticClass);
- TAGGED_POINTER_FIX(core::StrWithFillPtr_O::static_creator);
- TAGGED_POINTER_FIX(chem::IterateResidues_O::static_creator);
- SMART_PTR_FIX(core::HashTable_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Monomer_O::___staticClass);
- TAGGED_POINTER_FIX(chem::Entity_O::static_creator);
- SMART_PTR_FIX(chem::MonomerCoordinates_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::TrajectoryFrame_O::static_creator);
- SMART_PTR_FIX(chem::RestraintDistance_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::ZMatrix_O::static_creator);
+ SMART_PTR_FIX(llvmo::DIType_O::___staticClass);
+ SMART_PTR_FIX(chem::SuperposeEngine_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::TargetOptions_O::static_creator);
+ TAGGED_POINTER_FIX(chem::PdbWriter_O::static_creator);
+ SMART_PTR_FIX(llvmo::Attribute_O::___staticClass);
+ SMART_PTR_FIX(adapt::IterateCons_O::___staticClass);
+ SMART_PTR_FIX(core::ArrayDisplaced_O::___staticClass);
+ SMART_PTR_FIX(chem::ConformationExplorer_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::CompiledFunction_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::FFAngleDb_O::static_creator);
+ TAGGED_POINTER_FIX(chem::SpecificContextSet_O::static_creator);
+ SMART_PTR_FIX(llvmo::ResumeInst_O::___staticClass);
+ SMART_PTR_FIX(llvmo::TargetSubtargetInfo_O::___staticClass);
+ SMART_PTR_FIX(chem::DirectionalCoupling_O::___staticClass);
+ SMART_PTR_FIX(llvmo::BasicBlock_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::OligomerPart_Base_O::___staticClass);
+ SMART_PTR_FIX(core::SmallMap_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(geom::OVector2_O::static_creator);
+ SMART_PTR_FIX(adapt::StringList_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::LambdaListHandler_O::___staticClass);
+ SMART_PTR_FIX(core::SingleDispatchGenericFunction_O::___staticClassSymbol);
  SMART_PTR_FIX(core::Complex_O::___staticClass);
- SMART_PTR_FIX(core::Reader_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::CallInst_O::static_creator);
+ SMART_PTR_FIX(chem::AntechamberRoot_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::BranchSNode_O::___staticClass);
+ SMART_PTR_FIX(core::SymbolMacroletEnvironment_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::WildElementDict_O::static_creator);
+ TAGGED_POINTER_FIX(core::CxxObject_O::static_creator);
+ TAGGED_POINTER_FIX(chem::ChemInfoNode_O::static_creator);
+ SMART_PTR_FIX(core::SmallMultimap_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::ZMatrixBondInternal_O::static_creator);
+ TAGGED_POINTER_FIX(core::HashTableEql_O::static_creator);
+ SMART_PTR_FIX(clbind::ClassRegistry_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::VectorType_O::___staticClass);
+ SMART_PTR_FIX(core::EchoStream_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::UnaryInstruction_O::static_creator);
+ SMART_PTR_FIX(llvmo::StructType_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::GlobalValue_O::static_creator);
+ SMART_PTR_FIX(chem::SuperposeSelectedAtoms_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::DILexicalBlock_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::StatusTracker_O::___staticClass);
+ SMART_PTR_FIX(core::Integer_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(geom::CoordinateArray_O::static_creator);
+ SMART_PTR_FIX(chem::RingFinder_O::___staticClass);
+ SMART_PTR_FIX(core::RegexMatch_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::RestraintAnchor_O::static_creator);
+ SMART_PTR_FIX(chem::VirtualSphere_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::FFVdwDb_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::AtomIndexer_O::static_creator);
+ SMART_PTR_FIX(chem::Coupling_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::Reader_O::static_creator);
+ TAGGED_POINTER_FIX(chem::Aggregate_O::static_creator);
+ SMART_PTR_FIX(chem::SuperposeEngine_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::ConstitutionVirtualAtom_O::static_creator);
+ SMART_PTR_FIX(core::StandardObject_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::EnergyDihedral_O::___staticClass);
+ SMART_PTR_FIX(core::SynonymStream_O::___staticClass);
+ SMART_PTR_FIX(chem::CDFragment_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::AfterMatchBondTest_O::___staticClass);
+ SMART_PTR_FIX(llvmo::InvokeInst_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::LoadInst_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::FFNonbondCrossTermTable_O::___staticClass);
+ SMART_PTR_FIX(chem::EnergyStretch_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::ComplexRestraint_O::static_creator);
+ TAGGED_POINTER_FIX(chem::IterateRestraints_O::static_creator);
+ SMART_PTR_FIX(core::DirectoryIterator_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::SuperposableConformationCollection_O::static_creator);
+ TAGGED_POINTER_FIX(core::SymbolMacroletEnvironment_O::static_creator);
+ SMART_PTR_FIX(core::Fixnum_dummy_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::ReportBase_O::static_creator);
+ SMART_PTR_FIX(chem::OneTypeRule_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::StdClass_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::ReturnInst_O::static_creator);
+ SMART_PTR_FIX(chem::RingCoupling_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::ForeignData_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::ArrayObjects_O::___staticClass);
+ TAGGED_POINTER_FIX(core::SmallMap_O::static_creator);
+ SMART_PTR_FIX(core::IOStreamStream_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::StereoisomerVirtualAtom_O::static_creator);
+ SMART_PTR_FIX(llvmo::ModulePass_O::___staticClassSymbol);
+ SMART_PTR_FIX(units::Quantity_O::___staticClass);
+ SMART_PTR_FIX(llvmo::DebugLoc_O::___staticClass);
+ SMART_PTR_FIX(llvmo::DIDescriptor_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::FuncallableStandardClass_O::static_creator);
+ SMART_PTR_FIX(llvmo::UnaryInstruction_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::EngineBuilder_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::VirtualSphere_O::___staticClass);
+ SMART_PTR_FIX(chem::DirectionalCoupling_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::TwisterDriver_O::static_creator);
+ SMART_PTR_FIX(units::Dimension_O::___staticClass);
+ SMART_PTR_FIX(chem::Entity_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::Trajectory_O::static_creator);
+ SMART_PTR_FIX(chem::RestraintAnchor_O::___staticClass);
+ SMART_PTR_FIX(core::BroadcastStream_O::___staticClass);
+ SMART_PTR_FIX(llvmo::CallInst_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::Real_O::___staticClass);
+ SMART_PTR_FIX(core::StrWithFillPtr_O::___staticClass);
+ SMART_PTR_FIX(llvmo::FunctionPassManager_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::DICompositeType_O::static_creator);
+ SMART_PTR_FIX(core::ExternalObject_O::___staticClass);
+ SMART_PTR_FIX(core::SourceFileInfo_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::Molecule_O::static_creator);
+ SMART_PTR_FIX(chem::AGEdge_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::CDFragment_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::Function_O::static_creator);
+ SMART_PTR_FIX(chem::FFParameter_O::___staticClass);
+ SMART_PTR_FIX(chem::RestraintChiral_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::SingleDispatchGenericFunction_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::Matter_O::static_creator);
+ TAGGED_POINTER_FIX(chem::IterateMatter_O::static_creator);
+ TAGGED_POINTER_FIX(core::ValueEnvironment_O::static_creator);
+ TAGGED_POINTER_FIX(core::LongFloat_O::static_creator);
+ SMART_PTR_FIX(chem::EntityNameSetBase_O::___staticClass);
+ SMART_PTR_FIX(chem::ForceMatchReport_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::ConstantStruct_O::static_creator);
+ TAGGED_POINTER_FIX(core::SimpleBitVector_O::static_creator);
+ SMART_PTR_FIX(chem::CDText_O::___staticClass);
+ SMART_PTR_FIX(core::Array_O::___staticClass);
+ SMART_PTR_FIX(chem::MonomerCoordinates_O::___staticClass);
+ SMART_PTR_FIX(core::SymbolMacroletEnvironment_O::___staticClass);
+ SMART_PTR_FIX(chem::Alias_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::Binder_O::static_creator);
+ TAGGED_POINTER_FIX(chem::StatusTracker_O::static_creator);
+ TAGGED_POINTER_FIX(chem::VirtualAtom_O::static_creator);
+ SMART_PTR_FIX(core::SmallMultimap_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ProperTorsion_O::___staticClass);
+ SMART_PTR_FIX(core::Binder_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::RingClosingMate_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ReportBase_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::Constitution_O::___staticClass);
+ SMART_PTR_FIX(geom::OVector3_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::AtomId_O::static_creator);
+ SMART_PTR_FIX(core::SingleFloat_dummy_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::AtomicRMWInst_O::___staticClass);
+ SMART_PTR_FIX(llvmo::BlockAddress_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::StructureClass_O::static_creator);
+ SMART_PTR_FIX(cffi::Pointer_O::___staticClass);
+ SMART_PTR_FIX(chem::CandoDatabase_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ConformationCollectionEntry_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::RestraintDihedral_O::static_creator);
+ SMART_PTR_FIX(core::UnwindProtectEnvironment_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::DILexicalBlock_O::static_creator);
+ SMART_PTR_FIX(chem::ConformationExplorerMatch_O::___staticClass);
+ SMART_PTR_FIX(core::IOFileStream_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::OutPlug_O::___staticClass);
+ SMART_PTR_FIX(chem::CalculatePosition_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::PdbMonomerConnectivity_O::static_creator);
+ TAGGED_POINTER_FIX(chem::CalculatePosition_O::static_creator);
+ TAGGED_POINTER_FIX(chem::Monomer_O::static_creator);
+ SMART_PTR_FIX(core::T_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::CompileTimeEnvironment_O::static_creator);
+ TAGGED_POINTER_FIX(core::RecursiveDirectoryIterator_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::VAArgInst_O::static_creator);
+ SMART_PTR_FIX(chem::RestraintDihedral_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::TargetSubtargetInfo_O::static_creator);
+ TAGGED_POINTER_FIX(core::String_O::static_creator);
+ SMART_PTR_FIX(llvmo::ConstantPointerNull_O::___staticClass);
+ SMART_PTR_FIX(core::IntArray_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::PdbReader_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::FunctionPassManager_O::static_creator);
+ TAGGED_POINTER_FIX(chem::Rotamer_O::static_creator);
+ TAGGED_POINTER_FIX(core::ConcatenatedStream_O::static_creator);
+ SMART_PTR_FIX(chem::StereoisomerAtom_O::___staticClass);
+ SMART_PTR_FIX(core::SpecialForm_O::___staticClass);
+ SMART_PTR_FIX(llvmo::ArrayType_O::___staticClass);
+ SMART_PTR_FIX(chem::Structure_Old_ListEntry_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::BlockEnvironment_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::DataLayoutPass_O::static_creator);
+ SMART_PTR_FIX(chem::AntechamberFocusAtomMatch_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::RestraintAngle_O::static_creator);
+ TAGGED_POINTER_FIX(core::FileStatus_O::static_creator);
+ SMART_PTR_FIX(chem::OneMonomer_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::LoadArchive_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::ForceMatchReport_O::static_creator);
+ SMART_PTR_FIX(chem::EnergyNonbond_O::___staticClass);
+ SMART_PTR_FIX(core::Stream_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::Attribute_O::static_creator);
+ TAGGED_POINTER_FIX(chem::MonomerCoordinates_O::static_creator);
+ SMART_PTR_FIX(chem::IterateAtoms_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::LexicalEnvironment_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::Minimizer_O::static_creator);
+ SMART_PTR_FIX(chem::SparseLargeSquareMatrix_O::___staticClass);
+ SMART_PTR_FIX(chem::Chain_O::___staticClass);
+ SMART_PTR_FIX(core::Pathname_O::___staticClassSymbol);
+ SMART_PTR_FIX(geom::Color_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::sybylRules);
+ SMART_PTR_FIX(chem::IterateRestraints_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::Pass_O::static_creator);
+ SMART_PTR_FIX(core::LightUserData_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::ArrayObjects_O::static_creator);
+ TAGGED_POINTER_FIX(core::LexicalEnvironment_O::static_creator);
+ SMART_PTR_FIX(chem::InPlug_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ConstitutionBond_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::RestraintChiral_O::static_creator);
+ TAGGED_POINTER_FIX(chem::AntechamberFocusAtomMatch_O::static_creator);
+ SMART_PTR_FIX(llvmo::BranchInst_O::___staticClass);
+ SMART_PTR_FIX(llvmo::ValueAsMetadata_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::RestrainedPiBond_O::___staticClass);
+ SMART_PTR_FIX(chem::ResidueTest_O::___staticClass);
+ SMART_PTR_FIX(core::ExternalObject_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::DIDescriptor_O::static_creator);
+ SMART_PTR_FIX(core::StrWithFillPtr_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::StereoisomerAtoms_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::TargetMachine_O::static_creator);
+ SMART_PTR_FIX(core::StandardClass_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::EngineBuilder_O::___staticClass);
+ SMART_PTR_FIX(chem::Residue_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::Restraint_O::___staticClass);
+ SMART_PTR_FIX(core::SimpleBitVector_O::___staticClassSymbol);
+ SMART_PTR_FIX(adapt::ObjectSet_O::___staticClass);
+ SIMPLE_POINTER_FIX(globalTaggedRunTimeValues);
+ SMART_PTR_FIX(llvmo::LoadInst_O::___staticClass);
  TAGGED_POINTER_FIX(chem::AtomReference_O::static_creator);
- SMART_PTR_FIX(llvmo::ConstantArray_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::FullLargeSquareMatrix_O::static_creator);
+ TAGGED_POINTER_FIX(chem::RingFinder_O::static_creator);
+ TAGGED_POINTER_FIX(core::ShortFloat_O::static_creator);
+ SMART_PTR_FIX(core::AnsiStream_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::SynonymStream_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::GlueEnvironment_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::StandardClass_O::static_creator);
+ SMART_PTR_FIX(chem::FrameRecognizer_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::ShortFloat_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::ConformationCollection_O::static_creator);
+ SMART_PTR_FIX(geom::OMatrix_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::SmartsRoot_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::InPlug_O::___staticClass);
+ TAGGED_POINTER_FIX(core::SmallMultimap_O::static_creator);
+ SMART_PTR_FIX(core::BitVector_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::Root_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::FFAngleDb_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::DIScope_O::static_creator);
+ SMART_PTR_FIX(chem::PdbReader_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::DIBuilder_O::static_creator);
+ TAGGED_POINTER_FIX(chem::RestrainedPiBond_O::static_creator);
+ SMART_PTR_FIX(units::Unit_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::BitVector_O::static_creator);
+ SMART_PTR_FIX(chem::RingCoupling_O::___staticClass);
+ SMART_PTR_FIX(core::AnsiStream_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::EnergyFixedNonbondRestraint_O::static_creator);
+ SMART_PTR_FIX(chem::IterateRestraints_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::UnwindProtectEnvironment_O::static_creator);
+ SMART_PTR_FIX(chem::FFStretch_O::___staticClass);
+ SMART_PTR_FIX(chem::EnergyNonbond_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::Instruction_O::___staticClass);
+ SMART_PTR_FIX(core::StringInputStream_O::___staticClass);
+ TAGGED_POINTER_FIX(core::Character_dummy_O::static_creator);
+ SMART_PTR_FIX(llvmo::IntegerType_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::WeakHashTable_O::___staticClass);
+ SMART_PTR_FIX(chem::RingTest_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::RestraintList_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::ConstantStruct_O::___staticClass);
+ SMART_PTR_FIX(chem::FFBaseDb_O::___staticClass);
+ TAGGED_POINTER_FIX(core::ValueFrame_O::static_creator);
+ SMART_PTR_FIX(llvmo::CompositeType_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ConstitutionAtoms_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::RestraintDistance_O::static_creator);
+ SMART_PTR_FIX(chem::PlugWithMates_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::NamedMDNode_O::static_creator);
+ SMART_PTR_FIX(chem::Stereoisomer_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(geom::CoordinateArrayWithHash_O::static_creator);
+ SMART_PTR_FIX(core::SexpSaveArchive_O::___staticClass);
+ SMART_PTR_FIX(llvmo::AllocaInst_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::DIBasicType_O::static_creator);
+ TAGGED_POINTER_FIX(core::SaveArchive_O::static_creator);
+ TAGGED_POINTER_FIX(chem::Restraint_O::static_creator);
+ SMART_PTR_FIX(core::SNode_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::ImmutablePass_O::static_creator);
+ SMART_PTR_FIX(chem::Molecule_O::___staticClass);
+ SMART_PTR_FIX(chem::CDBond_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::LLVMTargetMachine_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::Iterator_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::AtomicRMWInst_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::Molecule_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::DISubroutineType_O::___staticClass);
+ SMART_PTR_FIX(chem::MinimizerLog_O::___staticClass);
+ SMART_PTR_FIX(llvmo::IRBuilderBase_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::Metaobject_O::static_creator);
+ TAGGED_POINTER_FIX(chem::MinimizerLog_O::static_creator);
+ SMART_PTR_FIX(core::HashTable_O::___staticClass);
+ SMART_PTR_FIX(chem::PdbWriter_O::___staticClass);
+ TAGGED_POINTER_FIX(core::SexpSaveArchive_O::static_creator);
+ SMART_PTR_FIX(chem::Alias_O::___staticClass);
+ SMART_PTR_FIX(llvmo::MDString_O::___staticClass);
+ SMART_PTR_FIX(core::CxxClass_O::___staticClass);
+ SMART_PTR_FIX(chem::SmartsRoot_O::___staticClass);
+ TAGGED_POINTER_FIX(units::Quantity_O::static_creator);
+ TAGGED_POINTER_FIX(chem::CalculatePositionUsingInternals_O::static_creator);
+ TAGGED_POINTER_FIX(core::Iterator_O::static_creator);
+ SMART_PTR_FIX(chem::InfoDb_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::WrappedPointer_O::static_creator);
+ SMART_PTR_FIX(adapt::SymbolSet_O::___staticClass);
+ SMART_PTR_FIX(core::TagbodyFrame_O::___staticClass);
+ SMART_PTR_FIX(chem::TrajectoryFrame_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::ConstitutionBond_O::static_creator);
+ SMART_PTR_FIX(core::SourceFileInfo_O::___staticClass);
+ SMART_PTR_FIX(chem::WildElementDict_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::SourcePosInfo_O::static_creator);
+ SMART_PTR_FIX(chem::BondMatchNode_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::FileStream_O::___staticClass);
+ SMART_PTR_FIX(core::SourcePosInfo_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::BroadcastStream_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::CalculatePositionAlongBond_O::___staticClass);
+ SMART_PTR_FIX(core::TwoWayStream_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::ConformationExplorer_O::static_creator);
+ TAGGED_POINTER_FIX(core::BuiltInClass_O::static_creator);
+ SMART_PTR_FIX(chem::MonomerContext_O::___staticClass);
+ TAGGED_POINTER_FIX(adapt::SymbolSet_O::static_creator);
+ SMART_PTR_FIX(chem::AtomId_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::BondList_O::static_creator);
+ SMART_PTR_FIX(chem::EnergyAnchorRestraint_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::ReadTable_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::DICompositeType_O::___staticClass);
+ SMART_PTR_FIX(core::Reader_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::Matter_O::___staticClass);
+ SMART_PTR_FIX(core::Class_O::___staticClassSymbol);
+ SMART_PTR_FIX(geom::CoordinateArray_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::EntityNameSetWithCap_O::static_creator);
+ SMART_PTR_FIX(chem::StatusTracker_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::FFTypesDb_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::PHINode_O::static_creator);
+ SMART_PTR_FIX(core::WeakPointer_O::___staticClass);
+ SMART_PTR_FIX(core::Stream_O::___staticClassSymbol);
  SMART_PTR_FIX(core::Regex_O::___staticClass);
- SMART_PTR_FIX(llvmo::ConstantDataArray_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::AtomIdToAtomMap_O::___staticClass);
- SMART_PTR_FIX(core::Instance_O::___staticClass);
- SMART_PTR_FIX(llvmo::TargetLibraryInfo_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::EnergyImproperRestraint_O::static_creator);
- SMART_PTR_FIX(chem::AtomId_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::Rational_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::CipPrioritizer_O::static_creator);
+ SMART_PTR_FIX(chem::TwisterDriver_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::MapOfMonomerNamesToAtomIndexers_O::___staticClass);
+ SMART_PTR_FIX(chem::RootMatchNode_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::TagbodyFrame_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::SequentialType_O::static_creator);
+ SMART_PTR_FIX(chem::OneTypeRule_O::___staticClass);
+ TAGGED_POINTER_FIX(core::Pathname_O::static_creator);
+ SMART_PTR_FIX(chem::AtomTest_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::IterateMatter_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::ValueFrame_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::OneMonomer_O::___staticClass);
+ TAGGED_POINTER_FIX(core::WeakKeyHashTable_O::static_creator);
+ TAGGED_POINTER_FIX(chem::RestraintList_O::static_creator);
+ SMART_PTR_FIX(chem::AGVertex_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::PdbMonomerDatabase_O::static_creator);
+ SMART_PTR_FIX(core::DoubleFloat_O::___staticClass);
+ SMART_PTR_FIX(core::Bignum_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::WeakHashTable_O::static_creator);
+ SMART_PTR_FIX(chem::EnergyDihedral_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::Logical_O::static_creator);
+ SMART_PTR_FIX(chem::CoordinateSystem_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::AbstractLargeSquareMatrix_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::UnreachableInst_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::SourceManager_O::___staticClass);
+ SMART_PTR_FIX(core::ShortFloat_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::Root_O::static_creator);
+ SMART_PTR_FIX(core::StructureObject_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::FFItorDb_O::static_creator);
+ SMART_PTR_FIX(core::BitVectorWithFillPtr_O::___staticClass);
+ SMART_PTR_FIX(chem::FFItor_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::CalculatePositionUsingInternals_O::___staticClass);
+ TAGGED_POINTER_FIX(geom::OVector3_O::static_creator);
+ SMART_PTR_FIX(core::WeakKeyHashTable_O::___staticClass);
+ SMART_PTR_FIX(chem::TypeAssignmentRules_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::WrappedPointer_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::VirtualSphere_O::static_creator);
+ SMART_PTR_FIX(core::SaveArchive_O::___staticClass);
+ SMART_PTR_FIX(llvmo::MCSubtargetInfo_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::Oligomer_O::static_creator);
+ SMART_PTR_FIX(core::SymbolToEnumConverter_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::SequentialType_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::PdbWriter_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::TargetOptions_O::___staticClass);
+ SMART_PTR_FIX(chem::BondMatchNode_O::___staticClass);
+ TAGGED_POINTER_FIX(adapt::IterateCons_O::static_creator);
+ TAGGED_POINTER_FIX(core::FunctionFrame_O::static_creator);
+ SMART_PTR_FIX(chem::Logical_O::___staticClass);
+ SMART_PTR_FIX(llvmo::GlobalVariable_O::___staticClass);
+ SMART_PTR_FIX(clbind::ClassRep_O::___staticClass);
+ TAGGED_POINTER_FIX(core::Str_O::static_creator);
+ TAGGED_POINTER_FIX(core::CandoException_O::static_creator);
+ TAGGED_POINTER_FIX(core::RandomState_O::static_creator);
+ SMART_PTR_FIX(chem::Mate_O::___staticClass);
+ SMART_PTR_FIX(core::BitVectorWithFillPtr_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::Package_O::static_creator);
+ SMART_PTR_FIX(llvmo::MDNode_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::VectorObjectsWithFillPtr_O::static_creator);
+ SMART_PTR_FIX(chem::FFPtorDb_O::___staticClass);
+ SMART_PTR_FIX(chem::SpecificContextSet_O::___staticClass);
+ SMART_PTR_FIX(llvmo::FenceInst_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::ZMatrixAngleInternal_O::static_creator);
+ SMART_PTR_FIX(geom::CoordinateArrayWithHash_O::___staticClass);
+ SMART_PTR_FIX(core::StandardClass_O::___staticClass);
+ SMART_PTR_FIX(adapt::IndexedObjectBag_O::___staticClass);
+ TAGGED_POINTER_FIX(core::StringInputStream_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::IntegerType_O::static_creator);
+ TAGGED_POINTER_FIX(chem::FFNonbondDb_O::static_creator);
+ SMART_PTR_FIX(chem::FFItorDb_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::NVector_O::static_creator);
+ TAGGED_POINTER_FIX(core::PosixTime_O::static_creator);
+ TAGGED_POINTER_FIX(chem::EnergyFunction_O::static_creator);
+ TAGGED_POINTER_FIX(core::Symbol_O::static_creator);
+ SMART_PTR_FIX(chem::ConformationExplorerEntry_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::TargetMachine_O::___staticClassSymbol);
  SMART_PTR_FIX(llvmo::APFloat_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::DISubroutineType_O::static_creator);
+ SMART_PTR_FIX(llvmo::DataLayoutPass_O::___staticClass);
+ TAGGED_POINTER_FIX(core::FileStream_O::static_creator);
+ SMART_PTR_FIX(core::RegexMatch_O::___staticClass);
+ SMART_PTR_FIX(chem::SpanningLoop_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::AtomicRMWInst_O::static_creator);
+ TAGGED_POINTER_FIX(chem::EnergyAnchorRestraint_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::FunctionType_O::static_creator);
+ SMART_PTR_FIX(chem::ForceField_O::___staticClass);
+ SMART_PTR_FIX(chem::NumericalFunction_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::SuperposeEngine_O::static_creator);
+ SMART_PTR_FIX(llvmo::DITypeArray_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::StructType_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::APInt_O::static_creator);
+ SMART_PTR_FIX(geom::OMatrix_O::___staticClass);
+ TAGGED_POINTER_FIX(adapt::ObjectSet_O::static_creator);
+ TAGGED_POINTER_FIX(core::StdClass_O::static_creator);
+ SMART_PTR_FIX(chem::Aggregate_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::Bignum_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::ConstantInt_O::static_creator);
+ SMART_PTR_FIX(chem::TypeAssignmentRules_O::___staticClass);
+ SMART_PTR_FIX(llvmo::TargetLibraryInfo_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::MultiMonomer_O::static_creator);
+ SMART_PTR_FIX(chem::CalculatePositionAlongBond_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::RootMatchNode_O::static_creator);
+ SMART_PTR_FIX(chem::Angle_O::___staticClass);
+ SMART_PTR_FIX(core::Archive_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::AtomId_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::SingleFloat_dummy_O::___staticClass);
+ TAGGED_POINTER_FIX(core::SingleDispatchGenericFunction_O::static_creator);
+ TAGGED_POINTER_FIX(core::SNode_O::static_creator);
+ SMART_PTR_FIX(llvmo::DISubprogram_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ReadAmberParameters_O::___staticClass);
+ TAGGED_POINTER_FIX(core::StandardObject_O::static_creator);
+ TAGGED_POINTER_FIX(chem::CDBond_O::static_creator);
+ TAGGED_POINTER_FIX(chem::IterateResidues_O::static_creator);
+ SMART_PTR_FIX(llvmo::DIScope_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::WeakPointer_O::static_creator);
+ SMART_PTR_FIX(llvmo::ConstantArray_O::___staticClass);
+ SMART_PTR_FIX(chem::SuperposableConformationCollection_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::Module_O::___staticClass);
+ SMART_PTR_FIX(llvmo::ConstantFP_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::CompileTimeEnvironment_O::___staticClassSymbol);
+ SMART_PTR_FIX(units::Dimension_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::TwisterDriver_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::SuperposeSelectedAtoms_O::static_creator);
+ TAGGED_POINTER_FIX(chem::FrameRecognizer_O::static_creator);
+ TAGGED_POINTER_FIX(core::EchoStream_O::static_creator);
+ SMART_PTR_FIX(chem::ChemInfoNode_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::EnergyImproperRestraint_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ComplexRestraint_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::ConstantFP_O::___staticClass);
+ SMART_PTR_FIX(core::Environment_O::___staticClass);
+ SMART_PTR_FIX(core::PosixTime_O::___staticClass);
+ SMART_PTR_FIX(core::BuiltInClass_O::___staticClass);
+ SMART_PTR_FIX(core::CandoException_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::Value_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::FFTypesDb_O::___staticClass);
+ SMART_PTR_FIX(llvmo::FunctionType_O::___staticClass);
+ SMART_PTR_FIX(adapt::ObjectSet_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::PointerType_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::PlugWithMates_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::FFNonbondDb_O::___staticClass);
+ SMART_PTR_FIX(chem::ZMatrixBondInternal_O::___staticClass);
+ TAGGED_POINTER_FIX(core::Rational_O::static_creator);
+ SMART_PTR_FIX(llvmo::FunctionPass_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::APFloat_O::static_creator);
+ SMART_PTR_FIX(core::Path_O::___staticClass);
+ SMART_PTR_FIX(llvmo::DIBuilder_O::___staticClass);
+ SMART_PTR_FIX(chem::PdbMonomerConnectivity_O::___staticClass);
+ SMART_PTR_FIX(chem::AtomIndexer_O::___staticClass);
+ SMART_PTR_FIX(chem::Minimizer_O::___staticClass);
+ TAGGED_POINTER_FIX(core::BlockEnvironment_O::static_creator);
+ SMART_PTR_FIX(llvmo::DIFile_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::Angle_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::AnsiStream_O::static_creator);
+ TAGGED_POINTER_FIX(chem::BondListMatchNode_O::static_creator);
+ SMART_PTR_FIX(chem::NVector_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::ConstantArray_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::OligomerPart_Link_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::Linker_O::static_creator);
+ SMART_PTR_FIX(llvmo::ConstantDataSequential_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::CDNode_O::static_creator);
+ SMART_PTR_FIX(chem::InfoDb_O::___staticClass);
+ SMART_PTR_FIX(chem::EntityNameSetWithCap_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::InvokeInst_O::___staticClass);
+ TAGGED_POINTER_FIX(core::Specializer_O::static_creator);
+ SMART_PTR_FIX(core::VaList_dummy_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::RingClosingPlug_O::static_creator);
+ SMART_PTR_FIX(chem::AtomOrBondMatchNode_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::Metadata_O::static_creator);
+ SMART_PTR_FIX(chem::TagSet_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::BondList_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::AttributeSet_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::RepresentedEntityNameSet_O::static_creator);
+ SMART_PTR_FIX(chem::ReadAmberParameters_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(clbind::ClassRegistry_O::static_creator);
+ SMART_PTR_FIX(core::BitVector_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::AGVertex_O::static_creator);
+ SMART_PTR_FIX(chem::FFTypesDb_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::User_O::static_creator);
+ SMART_PTR_FIX(chem::CDNode_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::StepReport_O::static_creator);
+ SMART_PTR_FIX(chem::Rotamer_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::LandingPadInst_O::static_creator);
+ SMART_PTR_FIX(llvmo::NamedMDNode_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ForceMatchReport_O::___staticClass);
+ SMART_PTR_FIX(core::VectorObjectsWithFillPtr_O::___staticClass);
+ SMART_PTR_FIX(chem::OligomerPart_Monomer_O::___staticClass);
+ SMART_PTR_FIX(core::RuntimeVisibleEnvironment_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(clbind::globalClassMap);
+ TAGGED_POINTER_FIX(llvmo::BlockAddress_O::static_creator);
+ TAGGED_POINTER_FIX(core::LightUserData_O::static_creator);
+ TAGGED_POINTER_FIX(core::VectorObjects_O::static_creator);
+ SMART_PTR_FIX(llvmo::ConstantExpr_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::Specializer_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::Target_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::StringStream_O::static_creator);
+ TAGGED_POINTER_FIX(core::Archive_O::static_creator);
+ SMART_PTR_FIX(core::EchoStream_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::RingTest_O::___staticClass);
+ SMART_PTR_FIX(llvmo::VAArgInst_O::___staticClass);
+ SMART_PTR_FIX(chem::Topology_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::IndirectBrInst_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::IterateMatter_O::___staticClass);
+ SMART_PTR_FIX(llvmo::PassManagerBuilder_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ConstitutionAtoms_O::___staticClass);
+ SMART_PTR_FIX(llvmo::Function_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::Mate_O::static_creator);
+ SMART_PTR_FIX(llvmo::AllocaInst_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::Vector_O::static_creator);
+ SMART_PTR_FIX(chem::IterateResidues_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(asttooling::AstVisitor_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::ConstantExpr_O::static_creator);
+ TAGGED_POINTER_FIX(adapt::QDomNode_O::static_creator);
+ TAGGED_POINTER_FIX(chem::Residue_O::static_creator);
+ SMART_PTR_FIX(llvmo::Argument_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::Branch_O::static_creator);
+ SMART_PTR_FIX(llvmo::Module_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::Constant_O::static_creator);
+ SMART_PTR_FIX(core::LoadTimeValues_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::Chain_O::static_creator);
+ SMART_PTR_FIX(llvmo::LandingPadInst_O::___staticClass);
+ SMART_PTR_FIX(llvmo::PHINode_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::FullLargeSquareMatrix_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::ConformationCollectionEntry_O::static_creator);
+ SMART_PTR_FIX(chem::RestraintList_O::___staticClass);
+ SMART_PTR_FIX(core::Str_O::___staticClass);
+ SMART_PTR_FIX(chem::RestraintDistance_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::EnergyStretch_O::static_creator);
+ SMART_PTR_FIX(llvmo::Linker_O::___staticClassSymbol);
+ SIMPLE_POINTER_FIX(gctools::global_tagged_Symbol_OP_unbound);
+ SMART_PTR_FIX(llvmo::SwitchInst_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::WrappedPointer_O::___staticClass);
+ SMART_PTR_FIX(chem::FFAngleDb_O::___staticClass);
+ SMART_PTR_FIX(chem::ConstitutionVirtualAtom_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::SwitchInst_O::static_creator);
+ SMART_PTR_FIX(llvmo::DIScope_O::___staticClass);
+ SMART_PTR_FIX(core::Metaobject_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::StereoInformation_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::ArrayObjects_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::TypeAssignmentRules_O::static_creator);
+ SMART_PTR_FIX(core::CxxObject_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::SpecificContext_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::FunctionContainerEnvironment_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::RingTest_O::static_creator);
+ SMART_PTR_FIX(core::FunctionValueEnvironment_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::RecursiveDirectoryIterator_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::DoubleFloat_O::static_creator);
+ TAGGED_POINTER_FIX(core::SynonymStream_O::static_creator);
+ SMART_PTR_FIX(chem::OligomerPart_Base_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::TargetOptions_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::PassManagerBase_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::HashTableEqual_O::___staticClass);
+ SMART_PTR_FIX(core::Vector_O::___staticClass);
+ SMART_PTR_FIX(clbind::ClassRegistry_O::___staticClass);
+ SMART_PTR_FIX(core::TagbodyFrame_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::CandoDatabase_O::static_creator);
+ TAGGED_POINTER_FIX(chem::IterateBonds_O::static_creator);
+ TAGGED_POINTER_FIX(chem::FFPtor_O::static_creator);
+ SMART_PTR_FIX(chem::StructureComparer_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::HashTable_O::static_creator);
+ SMART_PTR_FIX(core::HashTableEqualp_O::___staticClass);
+ SMART_PTR_FIX(chem::CDText_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::Float_O::static_creator);
+ SMART_PTR_FIX(chem::JumpPlug_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::ForeignData_O::___staticClass);
+ SMART_PTR_FIX(core::Instance_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::PathMessage_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::HashTableEqual_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::Structure_Old_List_O::static_creator);
+ SMART_PTR_FIX(chem::OligomerPart_Monomer_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::ConstantDataArray_O::___staticClass);
+ SMART_PTR_FIX(chem::ConstitutionAtom_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::AtomReferenceBase_O::static_creator);
+ TAGGED_POINTER_FIX(core::Stream_O::static_creator);
+ SMART_PTR_FIX(chem::ZMatrixDihedralInternal_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::Argument_O::static_creator);
+ TAGGED_POINTER_FIX(chem::Coupling_O::static_creator);
+ SMART_PTR_FIX(chem::MessageReport_O::___staticClass);
+ SMART_PTR_FIX(chem::EnergyChiralRestraint_O::___staticClass);
+ TAGGED_POINTER_FIX(core::UserData_O::static_creator);
+ SMART_PTR_FIX(llvmo::BranchInst_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::StandardObject_O::___staticClass);
+ SMART_PTR_FIX(chem::EntityNameSet_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::RestrainedExoCyclicAtom_O::static_creator);
+ SMART_PTR_FIX(chem::BondList_O::___staticClass);
+ SMART_PTR_FIX(chem::StereoisomerAtoms_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::FFVdw_O::static_creator);
+ TAGGED_POINTER_FIX(core::ArrayDisplaced_O::static_creator);
+ SMART_PTR_FIX(chem::AntechamberFocusAtomMatch_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::IRBuilder_O::static_creator);
+ TAGGED_POINTER_FIX(adapt::StringSet_O::static_creator);
+ SMART_PTR_FIX(core::DirectoryEntry_O::___staticClass);
+ SMART_PTR_FIX(core::SingleDispatchEffectiveMethodFunction_O::___staticClass);
+ SMART_PTR_FIX(core::Environment_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::StoreInst_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::Minimizer_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ChemInfo_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::IOStreamStream_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::MonomerPack_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::StepReport_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::Pass_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::Fixnum_dummy_O::___staticClass);
+ TAGGED_POINTER_FIX(core::RegexMatch_O::static_creator);
+ TAGGED_POINTER_FIX(chem::StereoisomerAtoms_O::static_creator);
+ SMART_PTR_FIX(chem::EnergyAngle_O::___staticClass);
+ SMART_PTR_FIX(chem::Oligomer_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ChemInfoNode_O::___staticClass);
+ SMART_PTR_FIX(core::StructureClass_O::___staticClass);
+ TAGGED_POINTER_FIX(core::DirectoryIterator_O::static_creator);
+ SMART_PTR_FIX(llvmo::ConstantExpr_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::DataLayout_O::static_creator);
+ SMART_PTR_FIX(chem::EnergyFixedNonbondRestraint_O::___staticClass);
+ SMART_PTR_FIX(adapt::QDomNode_O::___staticClass);
+ SMART_PTR_FIX(chem::FFNonbond_O::___staticClass);
+ SMART_PTR_FIX(core::Archive_O::___staticClass);
+ SMART_PTR_FIX(chem::IterateResidues_O::___staticClass);
+ SMART_PTR_FIX(llvmo::PassManagerBuilder_O::___staticClass);
+ SMART_PTR_FIX(core::SNode_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::DITypeArray_O::static_creator);
+ SMART_PTR_FIX(llvmo::MDNode_O::___staticClass);
+ SMART_PTR_FIX(llvmo::VAArgInst_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::StringStream_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::FenceInst_O::static_creator);
+ TAGGED_POINTER_FIX(chem::ImproperTorsion_O::static_creator);
+ SMART_PTR_FIX(core::StdClass_O::___staticClass);
+ SMART_PTR_FIX(core::InvocationHistoryFrameIterator_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::InvokeInst_O::static_creator);
+ SMART_PTR_FIX(chem::BondListMatchNode_O::___staticClass);
+ SMART_PTR_FIX(chem::ImproperTorsion_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::ZMatrixDihedralInternal_O::static_creator);
+ SMART_PTR_FIX(llvmo::IndirectBrInst_O::___staticClass);
+ SMART_PTR_FIX(geom::CoordinateArray_O::___staticClass);
+ SMART_PTR_FIX(llvmo::DITypeArray_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::EnergyNonbond_O::static_creator);
+ SMART_PTR_FIX(chem::ZMatrixAngleInternal_O::___staticClass);
+ SMART_PTR_FIX(llvmo::IntegerType_O::___staticClass);
+ SMART_PTR_FIX(llvmo::GlobalVariable_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::PointerType_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::ConstantPointerNull_O::static_creator);
+ SMART_PTR_FIX(chem::RootMatchNode_O::___staticClass);
  TAGGED_POINTER_FIX(geom::Color_O::static_creator);
+ TAGGED_POINTER_FIX(chem::OutPlug_O::static_creator);
+ TAGGED_POINTER_FIX(core::CxxClass_O::static_creator);
+ SMART_PTR_FIX(chem::PdbMonomerConnectivity_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::CxxObject_O::___staticClass);
+ SMART_PTR_FIX(llvmo::DIBuilder_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::ConcatenatedStream_O::___staticClass);
+ SMART_PTR_FIX(core::ValueEnvironment_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::EnergyAngle_O::static_creator);
+ SMART_PTR_FIX(geom::OVector2_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::ResumeInst_O::static_creator);
+ SMART_PTR_FIX(chem::SpecificContextSet_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::ReadAmberParameters_O::static_creator);
+ TAGGED_POINTER_FIX(core::FunctionContainerEnvironment_O::static_creator);
+ TAGGED_POINTER_FIX(core::SingleDispatchMethod_O::static_creator);
+ SMART_PTR_FIX(chem::EnergyFunction_O::___staticClass);
+ SMART_PTR_FIX(llvmo::ImmutablePass_O::___staticClassSymbol);
+ SMART_PTR_FIX(adapt::QDomNode_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::RecursiveDirectoryIterator_O::___staticClass);
+ SMART_PTR_FIX(core::RandomState_O::___staticClass);
+ SMART_PTR_FIX(chem::Oligomer_O::___staticClass);
+ SMART_PTR_FIX(llvmo::NamedMDNode_O::___staticClass);
+ SMART_PTR_FIX(core::Regex_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::DISubprogram_O::___staticClass);
+ SMART_PTR_FIX(core::Instance_O::___staticClass);
+ SMART_PTR_FIX(llvmo::PHINode_O::___staticClass);
+ SMART_PTR_FIX(core::VaList_dummy_O::___staticClass);
+ SMART_PTR_FIX(core::VectorDisplaced_O::___staticClass);
+ SMART_PTR_FIX(chem::EntityNameSetWithCap_O::___staticClass);
+ SMART_PTR_FIX(chem::EnergyImproperRestraint_O::___staticClass);
+ SMART_PTR_FIX(chem::Coupling_O::___staticClass);
+ SMART_PTR_FIX(chem::Plug_O::___staticClass);
+ SMART_PTR_FIX(chem::SearchStatistics_O::___staticClass);
+ SMART_PTR_FIX(llvmo::DataLayoutPass_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::Instruction_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::ResidueList_O::static_creator);
+ SMART_PTR_FIX(chem::ForceField_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::Stereoisomer_O::___staticClass);
+ SMART_PTR_FIX(core::CatchEnvironment_O::___staticClass);
+ SMART_PTR_FIX(core::Class_O::___staticClass);
+ SMART_PTR_FIX(llvmo::MCSubtargetInfo_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::InfoDb_O::static_creator);
+ TAGGED_POINTER_FIX(chem::FFParameter_O::static_creator);
+ SMART_PTR_FIX(llvmo::DIFile_O::___staticClass);
+ SMART_PTR_FIX(core::Cons_O::___staticClass);
+ SMART_PTR_FIX(adapt::SymbolSet_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::RestraintFixedNonbond_O::static_creator);
+ TAGGED_POINTER_FIX(core::BroadcastStream_O::static_creator);
+ SMART_PTR_FIX(chem::CDBond_O::___staticClass);
+ SMART_PTR_FIX(llvmo::ValueAsMetadata_O::___staticClass);
+ SIMPLE_POINTER_FIX(gctools::global_tagged_Symbol_OP_sameAsKey);
+ SMART_PTR_FIX(clbind::ClassRep_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::Str_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ConformationExplorerEntryStage_O::___staticClass);
+ SMART_PTR_FIX(core::StructureObject_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::ReadTable_O::static_creator);
+ SMART_PTR_FIX(chem::IterateBonds_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::TerminatorInst_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::ConformationExplorerEntry_O::static_creator);
+ TAGGED_POINTER_FIX(chem::MonomerPack_O::static_creator);
+ TAGGED_POINTER_FIX(adapt::IndexedObjectBag_O::static_creator);
+ SMART_PTR_FIX(core::LogicalPathname_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::AtomReference_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::AtomicCmpXchgInst_O::static_creator);
+ SMART_PTR_FIX(core::SourceManager_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::Twister_O::static_creator);
+ SMART_PTR_FIX(chem::Plug_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::StepReport_O::___staticClass);
+ SMART_PTR_FIX(chem::ImproperTorsion_O::___staticClass);
+ SMART_PTR_FIX(core::ActivationFrame_O::___staticClass);
+ SMART_PTR_FIX(core::LexicalEnvironment_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(adapt::StringList_O::static_creator);
+ SMART_PTR_FIX(chem::AtomReference_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::SpanningLoop_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::PassManagerBase_O::static_creator);
+ SMART_PTR_FIX(chem::ZMatrixInternal_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::DICompositeType_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::Instance_O::static_creator);
+ SMART_PTR_FIX(llvmo::DIBasicType_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::AtomTable_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::LLVMTargetMachine_O::static_creator);
+ TAGGED_POINTER_FIX(core::GlueEnvironment_O::static_creator);
+ TAGGED_POINTER_FIX(chem::IterateAtoms_O::static_creator);
+ SMART_PTR_FIX(core::FuncallableStandardClass_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::AtomicCmpXchgInst_O::___staticClass);
+ SMART_PTR_FIX(core::Float_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::CalculatePositionRelativeToOrigin_O::___staticClass);
+ SMART_PTR_FIX(core::LogicalPathname_O::___staticClass);
+ SMART_PTR_FIX(core::T_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::ConformationExplorerEntryStage_O::static_creator);
+ SMART_PTR_FIX(chem::EnergyComponent_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::PdbReader_O::static_creator);
+ TAGGED_POINTER_FIX(units::NamedUnit_O::static_creator);
+ TAGGED_POINTER_FIX(chem::Entity_O::static_creator);
+ SMART_PTR_FIX(core::Ratio_O::___staticClass);
+ SMART_PTR_FIX(core::Integer_O::___staticClass);
+ TAGGED_POINTER_FIX(core::CatchEnvironment_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::DICompileUnit_O::static_creator);
+ SMART_PTR_FIX(core::InvocationHistoryFrameIterator_O::___staticClass);
+ SMART_PTR_FIX(core::SymbolToEnumConverter_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::LLVMContext_O::static_creator);
+ SMART_PTR_FIX(chem::AntechamberRoot_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::ConstitutionAtom_O::static_creator);
+ SMART_PTR_FIX(core::TwoWayStream_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::Topology_O::___staticClass);
+ SMART_PTR_FIX(llvmo::TargetMachine_O::___staticClass);
+ TAGGED_POINTER_FIX(core::VaList_dummy_O::static_creator);
+ SMART_PTR_FIX(core::UserData_O::___staticClass);
+ SMART_PTR_FIX(core::LeafSNode_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::ExecutionEngine_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::AttributeSet_O::static_creator);
+ SIMPLE_POINTER_FIX(gctools::global_tagged_Symbol_OP_deleted);
+ TAGGED_POINTER_FIX(llvmo::InsertPoint_O::static_creator);
+ SMART_PTR_FIX(core::Ratio_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::TagSet_O::___staticClass);
+ SMART_PTR_FIX(chem::RingClosingPlug_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::PosixTime_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::Metadata_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::StackValueEnvironment_O::___staticClassSymbol);
+ SIMPLE_POINTER_FIX(gctools::global_tagged_Symbol_OP_nil);
+ TAGGED_POINTER_FIX(adapt::SymbolList_O::static_creator);
+ SMART_PTR_FIX(units::NamedUnit_O::___staticClass);
+ SMART_PTR_FIX(core::PosixTimeDuration_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::HashTableEqualp_O::___staticClassSymbol);
  TAGGED_POINTER_FIX(chem::OligomerPart_Base_O::static_creator);
+ SMART_PTR_FIX(core::SexpLoadArchive_O::___staticClass);
+ SMART_PTR_FIX(chem::AbstractLargeSquareMatrix_O::___staticClass);
+ SMART_PTR_FIX(units::Quantity_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::IRBuilderBase_O::static_creator);
+ SMART_PTR_FIX(core::SexpLoadArchive_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::DataLayout_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::ValueAsMetadata_O::static_creator);
+ SMART_PTR_FIX(chem::ConstitutionAtom_O::___staticClass);
+ SMART_PTR_FIX(chem::Chain_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::SearchStatistics_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::FunctionPassManager_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::EnergyChiralRestraint_O::static_creator);
+ TAGGED_POINTER_FIX(chem::RingClosingMate_O::static_creator);
+ TAGGED_POINTER_FIX(core::SourceManager_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::AllocaInst_O::static_creator);
+ SMART_PTR_FIX(llvmo::TargetLibraryInfo_O::___staticClass);
+ SMART_PTR_FIX(chem::FFNonbondCrossTermTable_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::ModulePass_O::static_creator);
+ SMART_PTR_FIX(chem::ZMatrix_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::FFNonbondDb_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::Bond_O::static_creator);
+ TAGGED_POINTER_FIX(chem::FFVdwDb_O::static_creator);
+ TAGGED_POINTER_FIX(core::DirectoryEntry_O::static_creator);
+ SMART_PTR_FIX(chem::PathMessage_O::___staticClass);
+ TAGGED_POINTER_FIX(_lisp);
+ SMART_PTR_FIX(core::ConcatenatedStream_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::AtomReferenceBase_O::___staticClass);
+ SMART_PTR_FIX(chem::SuperposableConformationCollection_O::___staticClass);
+ SMART_PTR_FIX(chem::FrameRecognizer_O::___staticClass);
+ TAGGED_POINTER_FIX(geom::BoundingBox_O::static_creator);
+ SMART_PTR_FIX(chem::Command_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::ConstantInt_O::___staticClass);
+ SMART_PTR_FIX(chem::AtomOrBondMatchNode_O::___staticClass);
+ TAGGED_POINTER_FIX(core::Ratio_O::static_creator);
+ TAGGED_POINTER_FIX(core::Null_O::static_creator);
+ SMART_PTR_FIX(llvmo::DISubroutineType_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::RestraintAngle_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::CompositeType_O::static_creator);
+ SMART_PTR_FIX(core::ForwardReferencedClass_O::___staticClass);
+ SMART_PTR_FIX(chem::CDNode_O::___staticClass);
+ SMART_PTR_FIX(chem::ZMatrixDihedralInternal_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::AtomIdToAtomMap_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::CompiledFunction_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::ConstitutionAtoms_O::static_creator);
+ TAGGED_POINTER_FIX(chem::AbstractLargeSquareMatrix_O::static_creator);
+ SMART_PTR_FIX(llvmo::LLVMContext_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::StereoInformation_O::static_creator);
+ SMART_PTR_FIX(core::LightUserData_O::___staticClass);
+ SMART_PTR_FIX(chem::CalculatePositionUsingInternals_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::CompositeType_O::___staticClass);
+ SMART_PTR_FIX(chem::PdbMonomerDatabase_O::___staticClass);
+ SMART_PTR_FIX(chem::FullLargeSquareMatrix_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::FFItor_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::StoreInst_O::static_creator);
+ SMART_PTR_FIX(llvmo::GlobalValue_O::___staticClass);
+ SMART_PTR_FIX(llvmo::ConstantInt_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::DISubprogram_O::static_creator);
+ SMART_PTR_FIX(core::ActivationFrame_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::TerminatorInst_O::static_creator);
+ TAGGED_POINTER_FIX(core::SexpLoadArchive_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::Target_O::static_creator);
+ TAGGED_POINTER_FIX(core::SingleFloat_dummy_O::static_creator);
+ TAGGED_POINTER_FIX(chem::AtomTable_O::static_creator);
+ TAGGED_POINTER_FIX(chem::InPlug_O::static_creator);
+ SMART_PTR_FIX(llvmo::User_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::RestraintDihedral_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::CipPrioritizer_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::StringOutputStream_O::___staticClass);
+ SMART_PTR_FIX(core::Reader_O::___staticClass);
+ SMART_PTR_FIX(chem::MultiMonomer_O::___staticClass);
+ SMART_PTR_FIX(core::HashTableEql_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::EntityNameSetBase_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::MapOfMonomerNamesToAtomIndexers_O::static_creator);
+ SMART_PTR_FIX(chem::RestrainedPiBond_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::SpanningLoop_O::static_creator);
+ TAGGED_POINTER_FIX(chem::FFNonbond_O::static_creator);
+ SMART_PTR_FIX(chem::ChemInfoMatch_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::GlobalVariable_O::static_creator);
+ TAGGED_POINTER_FIX(core::Cons_O::static_creator);
+ TAGGED_POINTER_FIX(chem::MessageReport_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::LoadInst_O::static_creator);
+ SMART_PTR_FIX(llvmo::ReturnInst_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::StereoInformation_O::___staticClass);
+ SMART_PTR_FIX(chem::AtomReferenceBase_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::ProperTorsion_O::static_creator);
+ TAGGED_POINTER_FIX(core::StrWithFillPtr_O::static_creator);
+ SMART_PTR_FIX(core::SmallMap_O::___staticClass);
+ SMART_PTR_FIX(core::LongFloat_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::CalculatePositionRelativeToOrigin_O::static_creator);
+ SMART_PTR_FIX(chem::RingFinder_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::StructureComparer_O::static_creator);
+ SMART_PTR_FIX(chem::FFVdw_O::___staticClass);
+ SMART_PTR_FIX(llvmo::APFloat_O::___staticClass);
+ SMART_PTR_FIX(chem::ResidueList_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ChemDraw_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::MacroletEnvironment_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::ResidueTest_O::static_creator);
+ SMART_PTR_FIX(core::Array_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::Twister_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::RepresentedEntityNameSet_O::___staticClass);
+ TAGGED_POINTER_FIX(core::BitVectorWithFillPtr_O::static_creator);
+ SMART_PTR_FIX(core::HashTableEq_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::MacroModelFile_O::___staticClass);
+ TAGGED_POINTER_FIX(clbind::ClassRep_O::static_creator);
+ SMART_PTR_FIX(chem::AntechamberBondTest_O::___staticClass);
+ SMART_PTR_FIX(chem::SpecificContext_O::___staticClass);
+ TAGGED_POINTER_FIX(core::Integer_O::static_creator);
+ SMART_PTR_FIX(llvmo::DIBasicType_O::___staticClass);
+ SMART_PTR_FIX(chem::ConstitutionVirtualAtom_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::ForceField_O::static_creator);
+ SMART_PTR_FIX(core::RuntimeVisibleEnvironment_O::___staticClass);
+ SMART_PTR_FIX(llvmo::ModulePass_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::ArrayType_O::static_creator);
+ SMART_PTR_FIX(core::FuncallableStandardClass_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::ConstantDataSequential_O::static_creator);
+ TAGGED_POINTER_FIX(chem::AtomOrBondMatchNode_O::static_creator);
+ SMART_PTR_FIX(core::SaveArchive_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::IRBuilder_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::AtomIndexer_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::PassManager_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::ImmutablePass_O::___staticClass);
+ SMART_PTR_FIX(chem::OutPlug_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::RestraintFixedNonbond_O::___staticClass);
+ SMART_PTR_FIX(chem::RestraintAnchor_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::PassManagerBase_O::___staticClass);
+ SMART_PTR_FIX(chem::StructureComparer_O::___staticClass);
+ SMART_PTR_FIX(chem::FFAngle_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::ChemInfo_O::static_creator);
+ SMART_PTR_FIX(llvmo::VectorType_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::AfterMatchBondTest_O::___staticClassSymbol);
+ SMART_PTR_FIX(geom::Color_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::EnergyImproperRestraint_O::static_creator);
+ SMART_PTR_FIX(core::CandoException_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::Alias_O::static_creator);
+ SMART_PTR_FIX(core::StringOutputStream_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::VectorObjectsWithFillPtr_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::CandoDatabase_O::___staticClass);
+ SMART_PTR_FIX(core::String_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::BondTest_O::static_creator);
+ SMART_PTR_FIX(chem::VirtualAtom_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::StereoisomerVirtualAtom_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::Rotamer_O::___staticClass);
+ SMART_PTR_FIX(chem::MacroModelFile_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::BondTest_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::AtomicCmpXchgInst_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::LLVMTargetMachine_O::___staticClass);
+ SMART_PTR_FIX(chem::RestraintFixedNonbond_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::DataLayout_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::Type_O::static_creator);
+ SMART_PTR_FIX(core::Cons_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::BondMatchNode_O::static_creator);
+ SMART_PTR_FIX(core::DoubleFloat_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::Instruction_O::static_creator);
+ SMART_PTR_FIX(chem::FFPtor_O::___staticClass);
+ SMART_PTR_FIX(chem::ConformationExplorerMatch_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::IOFileStream_O::static_creator);
+ SMART_PTR_FIX(core::Record_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::Character_dummy_O::___staticClass);
+ SMART_PTR_FIX(chem::ProperTorsion_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::ForwardReferencedClass_O::static_creator);
+ SMART_PTR_FIX(core::Specializer_O::___staticClass);
+ SMART_PTR_FIX(core::VectorObjects_O::___staticClass);
+ SMART_PTR_FIX(core::Binder_O::___staticClass);
+ SMART_PTR_FIX(chem::ChemDraw_O::___staticClass);
+ SMART_PTR_FIX(units::Unit_O::___staticClass);
+ SMART_PTR_FIX(llvmo::UndefValue_O::___staticClass);
+ SMART_PTR_FIX(llvmo::Linker_O::___staticClass);
+ SMART_PTR_FIX(llvmo::ConstantDataArray_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::Record_O::static_creator);
+ SMART_PTR_FIX(chem::OligomerPart_Link_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::BranchSNode_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::Complex_O::static_creator);
+ SMART_PTR_FIX(core::Rational_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::Number_O::___staticClass);
+ SMART_PTR_FIX(core::VectorDisplaced_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::Command_O::static_creator);
+ TAGGED_POINTER_FIX(core::SpecialForm_O::static_creator);
+ TAGGED_POINTER_FIX(chem::CoordinateSystem_O::static_creator);
+ SMART_PTR_FIX(core::Real_O::___staticClassSymbol);
+ SMART_PTR_FIX(units::NamedUnit_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::MCSubtargetInfo_O::static_creator);
+ TAGGED_POINTER_FIX(core::StackValueEnvironment_O::static_creator);
+ SMART_PTR_FIX(chem::TrajectoryFrame_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::PassManager_O::___staticClass);
+ TAGGED_POINTER_FIX(core::Array_O::static_creator);
+ SMART_PTR_FIX(llvmo::Attribute_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ResidueList_O::___staticClass);
+ SMART_PTR_FIX(chem::RingClosingMate_O::___staticClass);
+ SMART_PTR_FIX(core::WeakKeyMapping_O::___staticClass);
+ SMART_PTR_FIX(chem::Constitution_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::EntityNameSetBase_O::static_creator);
+ SMART_PTR_FIX(core::StructureClass_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::StructType_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::PlugWithMates_O::static_creator);
+ TAGGED_POINTER_FIX(chem::Angle_O::static_creator);
+ SMART_PTR_FIX(chem::Branch_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::WeakPointer_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ZMatrixEntry_O::___staticClass);
+ SMART_PTR_FIX(adapt::SymbolList_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::DIArray_O::___staticClass);
+ TAGGED_POINTER_FIX(core::HashTableEqual_O::static_creator);
+ SMART_PTR_FIX(chem::StereoConfiguration_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::FFAngle_O::static_creator);
+ SMART_PTR_FIX(llvmo::SwitchInst_O::___staticClass);
+ SMART_PTR_FIX(llvmo::InsertPoint_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::FFItor_O::___staticClass);
+ SMART_PTR_FIX(chem::Twister_O::___staticClass);
+ SMART_PTR_FIX(chem::Bond_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::JumpPlug_O::static_creator);
+ SMART_PTR_FIX(core::WeakHashTable_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::Type_O::___staticClass);
+ SMART_PTR_FIX(core::SpecialForm_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::SimpleBitVector_O::___staticClass);
+ SMART_PTR_FIX(llvmo::DIDerivedType_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::DIArray_O::static_creator);
+ SMART_PTR_FIX(chem::EnergyComponent_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::DIFile_O::static_creator);
+ SMART_PTR_FIX(core::SingleDispatchMethod_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(asttooling::RegMap::RegistryData);
+ SMART_PTR_FIX(core::PosixTimeDuration_O::___staticClass);
+ SMART_PTR_FIX(llvmo::GlobalValue_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::Path_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::AtomIdToAtomMap_O::___staticClass);
+ SMART_PTR_FIX(chem::Bond_O::___staticClass);
+ SMART_PTR_FIX(core::ReadTable_O::___staticClass);
+ SMART_PTR_FIX(chem::ZMatrixInternal_O::___staticClass);
+ TAGGED_POINTER_FIX(core::ForeignData_O::static_creator);
+ TAGGED_POINTER_FIX(chem::PathMessage_O::static_creator);
+ SMART_PTR_FIX(chem::MonomerCoordinates_O::___staticClassSymbol);
+ SMART_PTR_FIX(adapt::StringSet_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::PassManagerBuilder_O::static_creator);
+ SMART_PTR_FIX(llvmo::FunctionType_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::FunctionContainerEnvironment_O::___staticClass);
+ SMART_PTR_FIX(core::FunctionFrame_O::___staticClass);
+ SMART_PTR_FIX(core::String_O::___staticClass);
+ SMART_PTR_FIX(core::DirectoryEntry_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::Metadata_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::Structure_Old_ListEntry_O::static_creator);
+ SMART_PTR_FIX(chem::MonomerContext_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::RingCoupling_O::static_creator);
+ SMART_PTR_FIX(core::VectorObjects_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::DirectionalCoupling_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::IndirectBrInst_O::static_creator);
+ TAGGED_POINTER_FIX(chem::AGEdge_O::static_creator);
+ TAGGED_POINTER_FIX(chem::Constitution_O::static_creator);
+ SMART_PTR_FIX(chem::Restraint_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::TargetSubtargetInfo_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::CDText_O::static_creator);
+ SMART_PTR_FIX(chem::FFVdwDb_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::secondaryAmide);
+ SMART_PTR_FIX(llvmo::Type_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::MessageReport_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ZMatrix_O::___staticClass);
+ TAGGED_POINTER_FIX(core::TagbodyEnvironment_O::static_creator);
+ SMART_PTR_FIX(adapt::IndexedObjectBag_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::EngineBuilder_O::static_creator);
+ TAGGED_POINTER_FIX(core::RuntimeVisibleEnvironment_O::static_creator);
+ SMART_PTR_FIX(llvmo::ConstantPointerNull_O::___staticClassSymbol);
+ SMART_PTR_FIX(cffi::Pointer_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::LambdaListHandler_O::static_creator);
+ SMART_PTR_FIX(chem::Atom_O::___staticClass);
+ TAGGED_POINTER_FIX(core::Fixnum_dummy_O::static_creator);
+ TAGGED_POINTER_FIX(chem::OneTypeRule_O::static_creator);
+ SMART_PTR_FIX(llvmo::DILexicalBlock_O::___staticClass);
+ SMART_PTR_FIX(chem::EnergyAngle_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::FenceInst_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::Entity_O::___staticClass);
+ SMART_PTR_FIX(llvmo::CallInst_O::___staticClass);
+ SMART_PTR_FIX(chem::AGEdge_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::MultiStringBuffer_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::FFPtorDb_O::static_creator);
+ SMART_PTR_FIX(chem::Matter_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::MonomerContext_O::static_creator);
+ SMART_PTR_FIX(chem::NumericalFunction_O::___staticClass);
+ SMART_PTR_FIX(core::Function_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::HashTableEql_O::___staticClass);
+ SMART_PTR_FIX(llvmo::AttributeSet_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::AntechamberBondTest_O::static_creator);
+ SMART_PTR_FIX(chem::FFStretchDb_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ConformationCollection_O::___staticClass);
+ SMART_PTR_FIX(core::Character_dummy_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::Function_O::___staticClass);
+ SMART_PTR_FIX(chem::JumpPlug_O::___staticClass);
+ SMART_PTR_FIX(core::CatchEnvironment_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::MacroletEnvironment_O::___staticClass);
+ SMART_PTR_FIX(llvmo::DebugInfo_O::___staticClass);
+ SMART_PTR_FIX(llvmo::Triple_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::OligomerPart_Monomer_O::static_creator);
+ SMART_PTR_FIX(chem::FFItorDb_O::___staticClass);
+ SMART_PTR_FIX(chem::FFPtorDb_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::SymbolToEnumConverter_O::static_creator);
+ TAGGED_POINTER_FIX(chem::FFStretchDb_O::static_creator);
+ TAGGED_POINTER_FIX(chem::ZMatrixInternal_O::static_creator);
+ SMART_PTR_FIX(chem::ZMatrixEntry_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::APInt_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ConformationCollectionEntry_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::RestrainedExoCyclicAtom_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::FunctionValueEnvironment_O::___staticClass);
+ TAGGED_POINTER_FIX(core::LoadArchive_O::static_creator);
+ TAGGED_POINTER_FIX(core::Function_O::static_creator);
+ SMART_PTR_FIX(geom::OVector3_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::ExecutionEngine_O::static_creator);
+ TAGGED_POINTER_FIX(core::LoadTimeValues_O::static_creator);
+ SMART_PTR_FIX(llvmo::BlockAddress_O::___staticClass);
+ SMART_PTR_FIX(chem::Mate_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::PointerType_O::___staticClass);
+ SMART_PTR_FIX(adapt::StringList_O::___staticClass);
+ SMART_PTR_FIX(chem::SparseLargeSquareMatrix_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::LoadTimeValues_O::___staticClass);
+ SMART_PTR_FIX(core::LeafSNode_O::___staticClass);
+ SMART_PTR_FIX(chem::FFPtor_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ComplexRestraint_O::___staticClass);
+ TAGGED_POINTER_FIX(core::SourceFileInfo_O::static_creator);
+ SMART_PTR_FIX(core::RandomState_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::Number_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::CoordinateSystem_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::DISubroutineType_O::static_creator);
+ TAGGED_POINTER_FIX(chem::FFBaseDb_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::VectorType_O::static_creator);
+ SMART_PTR_FIX(core::DirectoryIterator_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::OligomerPart_Link_O::static_creator);
+ SMART_PTR_FIX(llvmo::ArrayType_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::Monomer_O::___staticClass);
+ SMART_PTR_FIX(chem::NVector_O::___staticClass);
+ SMART_PTR_FIX(llvmo::SequentialType_O::___staticClass);
+ SMART_PTR_FIX(core::Package_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::CompiledFunction_O::static_creator);
+ SMART_PTR_FIX(core::WeakKeyHashTable_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::BondListMatchNode_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::Module_O::static_creator);
+ SMART_PTR_FIX(llvmo::DebugInfo_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::BasicBlock_O::___staticClass);
+ SMART_PTR_FIX(chem::FFStretch_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::FFParameter_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::MapOfMonomerNamesToAtomIndexers_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::Logical_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::LandingPadInst_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ResidueTest_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ReportBase_O::___staticClass);
+ SMART_PTR_FIX(chem::ConformationExplorer_O::___staticClass);
+ SMART_PTR_FIX(core::LongFloat_O::___staticClass);
+ SMART_PTR_FIX(core::Metaobject_O::___staticClass);
+ TAGGED_POINTER_FIX(core::LeafSNode_O::static_creator);
+ SMART_PTR_FIX(adapt::StringSet_O::___staticClass);
+ SMART_PTR_FIX(chem::RepresentedEntityNameSet_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::ChemDraw_O::static_creator);
+ SMART_PTR_FIX(chem::Structure_Old_List_O::___staticClass);
+ SMART_PTR_FIX(chem::RingClosingPlug_O::___staticClass);
+ SMART_PTR_FIX(chem::Command_O::___staticClass);
  TAGGED_POINTER_FIX(llvmo::DebugLoc_O::static_creator);
  TAGGED_POINTER_FIX(core::ExternalObject_O::static_creator);
- SMART_PTR_FIX(llvmo::ConstantInt_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::LoadArchive_O::static_creator);
- TAGGED_POINTER_FIX(geom::CoordinateArray_O::static_creator);
- TAGGED_POINTER_FIX(chem::Logical_O::static_creator);
- TAGGED_POINTER_FIX(chem::Trajectory_O::static_creator);
- SMART_PTR_FIX(chem::StereoisomerAtoms_O::___staticClass);
- SMART_PTR_FIX(core::BuiltInClass_O::___staticClass);
- SMART_PTR_FIX(core::Null_O::___staticClass);
- SMART_PTR_FIX(llvmo::IndirectBrInst_O::___staticClass);
- SMART_PTR_FIX(chem::Matter_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::RestrainedExoCyclicAtom_O::static_creator);
- SMART_PTR_FIX(core::Symbol_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::DIType_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ConformationExplorerMatch_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::ConformationExplorerMatch_O::static_creator);
  TAGGED_POINTER_FIX(core::InvocationHistoryFrameIterator_O::static_creator);
- TAGGED_POINTER_FIX(core::RegexMatch_O::static_creator);
- SMART_PTR_FIX(core::FileStatus_O::___staticClass);
- SMART_PTR_FIX(chem::MessageReport_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::ZMatrixEntry_O::static_creator);
- SMART_PTR_FIX(chem::FFAngleDb_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::RestraintList_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::BasicBlock_O::___staticClass);
- SMART_PTR_FIX(core::SaveArchive_O::___staticClass);
- SMART_PTR_FIX(llvmo::DebugLoc_O::___staticClass);
- SMART_PTR_FIX(units::Dimension_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(adapt::QDomNode_O::static_creator);
- TAGGED_POINTER_FIX(core::Archive_O::static_creator);
- SMART_PTR_FIX(core::HashTable_O::___staticClass);
- SMART_PTR_FIX(chem::AtomIndexer_O::___staticClass);
- SMART_PTR_FIX(llvmo::Type_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::DataLayout_O::___staticClass);
- SMART_PTR_FIX(chem::ResidueList_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::PdbReader_O::___staticClass);
- TAGGED_POINTER_FIX(core::PosixTime_O::static_creator);
- SMART_PTR_FIX(core::LeafSNode_O::___staticClass);
- SMART_PTR_FIX(chem::CoordinateSystem_O::___staticClassSymbol);
- SMART_PTR_FIX(geom::OMatrix_O::___staticClass);
- SMART_PTR_FIX(chem::AntechamberFocusAtomMatch_O::___staticClass);
- TAGGED_POINTER_FIX(chem::MapOfMonomerNamesToAtomIndexers_O::static_creator);
- SMART_PTR_FIX(chem::IterateAtoms_O::___staticClass);
- TAGGED_POINTER_FIX(chem::AbstractLargeSquareMatrix_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::DITypeArray_O::static_creator);
- SMART_PTR_FIX(llvmo::FunctionType_O::___staticClass);
- SMART_PTR_FIX(chem::InPlug_O::___staticClass);
- SMART_PTR_FIX(chem::ConformationExplorer_O::___staticClass);
- TAGGED_POINTER_FIX(core::CompiledFunction_O::static_creator);
- SMART_PTR_FIX(chem::ConstitutionVirtualAtom_O::___staticClass);
- SMART_PTR_FIX(chem::IterateResidues_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::ModulePass_O::___staticClass);
- SMART_PTR_FIX(chem::IterateResidues_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::InvokeInst_O::static_creator);
- TAGGED_POINTER_FIX(chem::MessageReport_O::static_creator);
- SMART_PTR_FIX(chem::InfoDb_O::___staticClassSymbol);
- SMART_PTR_FIX(clbind::ClassRegistry_O::___staticClassSymbol);
- SMART_PTR_FIX(units::Quantity_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::FFItorDb_O::___staticClassSymbol);
- SMART_PTR_FIX(core::WeakHashTable_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::TwisterDriver_O::___staticClass);
- TAGGED_POINTER_FIX(chem::ConstitutionVirtualAtom_O::static_creator);
- SMART_PTR_FIX(adapt::StringSet_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::FFStretch_O::static_creator);
- SMART_PTR_FIX(llvmo::PassManager_O::___staticClassSymbol);
- SMART_PTR_FIX(core::MultiStringBuffer_O::___staticClass);
- SMART_PTR_FIX(core::DirectoryEntry_O::___staticClass);
- TAGGED_POINTER_FIX(core::IntArray_O::static_creator);
- SMART_PTR_FIX(core::CatchEnvironment_O::___staticClass);
- SMART_PTR_FIX(core::Vector_O::___staticClass);
- SMART_PTR_FIX(core::DoubleFloat_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Command_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::PointerType_O::static_creator);
- TAGGED_POINTER_FIX(chem::SuperposeEngine_O::static_creator);
- SMART_PTR_FIX(core::SingleDispatchEffectiveMethodFunction_O::___staticClass);
- SMART_PTR_FIX(chem::Monomer_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Trajectory_O::___staticClass);
- TAGGED_POINTER_FIX(chem::CalculatePositionAlongBond_O::static_creator);
- SMART_PTR_FIX(chem::FFStretch_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::PassManagerBase_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::DIBuilder_O::static_creator);
- TAGGED_POINTER_FIX(chem::CDText_O::static_creator);
- SMART_PTR_FIX(llvmo::UnaryInstruction_O::___staticClass);
- SMART_PTR_FIX(core::SpecialForm_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::ValueFrame_O::static_creator);
- SMART_PTR_FIX(llvmo::DIBuilder_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::MacroModelFile_O::static_creator);
- SMART_PTR_FIX(chem::RingClosingMate_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::FFItorDb_O::static_creator);
- TAGGED_POINTER_FIX(chem::ChemInfoMatch_O::static_creator);
- SMART_PTR_FIX(core::Real_O::___staticClass);
- SMART_PTR_FIX(llvmo::DIDescriptor_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::ModulePass_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::MDString_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Iterator_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::FFStretchDb_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::LandingPadInst_O::static_creator);
- SMART_PTR_FIX(core::Function_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ConformationCollectionEntry_O::___staticClassSymbol);
- SMART_PTR_FIX(core::ArrayDisplaced_O::___staticClass);
- SMART_PTR_FIX(chem::RestrainedExoCyclicAtom_O::_AtomExoToSixMemberedRing);
- SMART_PTR_FIX(core::StringInputStream_O::___staticClass);
- SMART_PTR_FIX(chem::EnergyStretch_O::___staticClassSymbol);
- SMART_PTR_FIX(core::StructureObject_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(clbind::ClassRegistry_O::static_creator);
- SMART_PTR_FIX(core::LexicalEnvironment_O::___staticClass);
- TAGGED_POINTER_FIX(chem::Root_O::static_creator);
- SMART_PTR_FIX(core::DirectoryIterator_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::Attribute_O::static_creator);
- SMART_PTR_FIX(chem::Aggregate_O::___staticClass);
- TAGGED_POINTER_FIX(core::Metaobject_O::static_creator);
- SMART_PTR_FIX(chem::EnergyChiralRestraint_O::___staticClass);
- TAGGED_POINTER_FIX(core::UnwindProtectEnvironment_O::static_creator);
- SMART_PTR_FIX(geom::BoundingBox_O::___staticClass);
- SMART_PTR_FIX(llvmo::MDNode_O::___staticClass);
- TAGGED_POINTER_FIX(chem::BondMatchNode_O::static_creator);
- TAGGED_POINTER_FIX(core::SourceFileInfo_O::static_creator);
- SMART_PTR_FIX(core::SNode_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::LLVMTargetMachine_O::static_creator);
- SMART_PTR_FIX(chem::OneTypeRule_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::ConstitutionBond_O::___staticClass);
- SMART_PTR_FIX(core::HashTableEq_O::___staticClass);
- SMART_PTR_FIX(chem::VirtualAtom_O::___staticClass);
- TAGGED_POINTER_FIX(chem::AGEdge_O::static_creator);
- TAGGED_POINTER_FIX(chem::OneTypeRule_O::static_creator);
- SMART_PTR_FIX(geom::Color_O::___staticClass);
- SMART_PTR_FIX(core::PosixTimeDuration_O::___staticClassSymbol);
- SMART_PTR_FIX(geom::OMatrix_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(_lisp);
- SMART_PTR_FIX(core::UnwindProtectEnvironment_O::___staticClass);
- SMART_PTR_FIX(llvmo::DIDerivedType_O::___staticClass);
- SMART_PTR_FIX(core::CandoException_O::___staticClassSymbol);
- SMART_PTR_FIX(core::RegexMatch_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::FFItor_O::___staticClass);
- SMART_PTR_FIX(chem::CandoDatabase_O::___staticClass);
- TAGGED_POINTER_FIX(core::CxxObject_O::static_creator);
- TAGGED_POINTER_FIX(chem::StereoisomerVirtualAtom_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::Target_O::static_creator);
- SMART_PTR_FIX(chem::Restraint_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::BlockAddress_O::static_creator);
- TAGGED_POINTER_FIX(chem::FrameRecognizer_O::static_creator);
- SMART_PTR_FIX(core::ReadTable_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::EngineBuilder_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::UndefValue_O::static_creator);
- SMART_PTR_FIX(chem::AntechamberBondTest_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::RestraintChiral_O::___staticClassSymbol);
- SMART_PTR_FIX(core::LeafSNode_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::Instruction_O::___staticClass);
- SMART_PTR_FIX(chem::Coupling_O::___staticClass);
- SMART_PTR_FIX(chem::ReportBase_O::___staticClass);
- TAGGED_POINTER_FIX(chem::SpanningLoop_O::static_creator);
- SMART_PTR_FIX(llvmo::Linker_O::___staticClass);
- TAGGED_POINTER_FIX(core::RecursiveDirectoryIterator_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::ImmutablePass_O::static_creator);
- SMART_PTR_FIX(core::VectorObjectsWithFillPtr_O::___staticClass);
- SMART_PTR_FIX(core::SexpLoadArchive_O::___staticClass);
- SMART_PTR_FIX(core::LoadArchive_O::___staticClass);
- TAGGED_POINTER_FIX(chem::TypeAssignmentRules_O::static_creator);
- SMART_PTR_FIX(core::SmallMap_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::UnreachableInst_O::static_creator);
- SMART_PTR_FIX(chem::Twister_O::___staticClass);
- SMART_PTR_FIX(llvmo::PassManager_O::___staticClass);
- SMART_PTR_FIX(chem::CalculatePosition_O::___staticClass);
- SMART_PTR_FIX(chem::AtomIndexer_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::CalculatePositionUsingInternals_O::___staticClass);
- SMART_PTR_FIX(core::HashTableEql_O::___staticClass);
- SMART_PTR_FIX(chem::StructureComparer_O::___staticClassSymbol);
- SMART_PTR_FIX(cffi::Pointer_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::BranchInst_O::static_creator);
- TAGGED_POINTER_FIX(chem::AntechamberRoot_O::static_creator);
- SMART_PTR_FIX(chem::CDNode_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::BondListMatchNode_O::___staticClass);
- SMART_PTR_FIX(chem::ConformationExplorerEntryStage_O::___staticClass);
- SMART_PTR_FIX(adapt::IterateCons_O::___staticClass);
- TAGGED_POINTER_FIX(clbind::globalClassMap);
- SMART_PTR_FIX(chem::RingCoupling_O::___staticClass);
- SMART_PTR_FIX(chem::MessageReport_O::___staticClass);
- TAGGED_POINTER_FIX(core::HashTableEqual_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::TargetLibraryInfo_O::static_creator);
- SMART_PTR_FIX(chem::SuperposeEngine_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::Metadata_O::static_creator);
- SMART_PTR_FIX(units::NamedUnit_O::___staticClass);
- SMART_PTR_FIX(adapt::IndexedObjectBag_O::___staticClass);
- SMART_PTR_FIX(llvmo::ExecutionEngine_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::AntechamberBondTest_O::static_creator);
- SMART_PTR_FIX(geom::OVector3_O::___staticClass);
+ SMART_PTR_FIX(core::HashTable_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::BlockEnvironment_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::DIType_O::static_creator);
+ SMART_PTR_FIX(core::TagbodyEnvironment_O::___staticClass);
+ SMART_PTR_FIX(core::SingleDispatchEffectiveMethodFunction_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::Null_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::MacroletEnvironment_O::static_creator);
+ TAGGED_POINTER_FIX(core::Environment_O::static_creator);
  TAGGED_POINTER_FIX(core::HashTableEqualp_O::static_creator);
- SMART_PTR_FIX(llvmo::TerminatorInst_O::___staticClass);
- TAGGED_POINTER_FIX(chem::Constitution_O::static_creator);
- TAGGED_POINTER_FIX(core::IOFileStream_O::static_creator);
- SMART_PTR_FIX(chem::JumpPlug_O::___staticClass);
- SMART_PTR_FIX(core::SmallMap_O::___staticClass);
- SMART_PTR_FIX(core::Float_O::___staticClass);
- TAGGED_POINTER_FIX(core::ReadTable_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::DIScope_O::static_creator);
- SMART_PTR_FIX(llvmo::StructType_O::___staticClass);
- SMART_PTR_FIX(core::HashTableEqualp_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::Module_O::static_creator);
- TAGGED_POINTER_FIX(chem::ComplexRestraint_O::static_creator);
- TAGGED_POINTER_FIX(chem::CipPrioritizer_O::static_creator);
- TAGGED_POINTER_FIX(chem::MonomerPack_O::static_creator);
- SMART_PTR_FIX(chem::IterateRestraints_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::ConstantInt_O::static_creator);
- TAGGED_POINTER_FIX(chem::SuperposableConformationCollection_O::static_creator);
- SMART_PTR_FIX(llvmo::PHINode_O::___staticClassSymbol);
- SMART_PTR_FIX(llvmo::Target_O::___staticClass);
- TAGGED_POINTER_FIX(chem::Matter_O::static_creator);
- SMART_PTR_FIX(chem::CalculatePosition_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::RestrainedPiBond_O::___staticClass);
- SMART_PTR_FIX(chem::PdbMonomerDatabase_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::PlugWithMates_O::___staticClass);
- SMART_PTR_FIX(llvmo::DISubroutineType_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::PdbMonomerConnectivity_O::___staticClass);
- SMART_PTR_FIX(llvmo::PassManagerBuilder_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(chem::Bond_O::static_creator);
- SMART_PTR_FIX(chem::Branch_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::Null_O::static_creator);
- TAGGED_POINTER_FIX(llvmo::LoadInst_O::static_creator);
- SMART_PTR_FIX(core::VaList_dummy_O::___staticClass);
- SMART_PTR_FIX(clbind::ClassRep_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::Rotamer_O::___staticClass);
- SMART_PTR_FIX(chem::FFTypesDb_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Iterator_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::AntechamberRoot_O::static_creator);
+ TAGGED_POINTER_FIX(geom::OMatrix_O::static_creator);
+ TAGGED_POINTER_FIX(core::HashTableEq_O::static_creator);
+ TAGGED_POINTER_FIX(core::IOStreamStream_O::static_creator);
+ TAGGED_POINTER_FIX(core::StringOutputStream_O::static_creator);
  TAGGED_POINTER_FIX(llvmo::MDNode_O::static_creator);
- SMART_PTR_FIX(chem::ConstitutionVirtualAtom_O::___staticClassSymbol);
- SMART_PTR_FIX(adapt::ObjectSet_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::RepresentedEntityNameSet_O::___staticClass);
- SMART_PTR_FIX(chem::CalculatePositionAlongBond_O::___staticClass);
- SMART_PTR_FIX(chem::Minimizer_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::AtomIdToAtomMap_O::static_creator);
+ SMART_PTR_FIX(chem::ZMatrixBondInternal_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(units::Dimension_O::static_creator);
+ TAGGED_POINTER_FIX(chem::Stereoisomer_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::CallInst_O::static_creator);
+ TAGGED_POINTER_FIX(chem::Topology_O::static_creator);
+ TAGGED_POINTER_FIX(chem::Atom_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::BranchInst_O::static_creator);
+ SMART_PTR_FIX(chem::ZMatrixAngleInternal_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::T_O::static_creator);
+ TAGGED_POINTER_FIX(chem::SpecificContext_O::static_creator);
+ SMART_PTR_FIX(core::MultiStringBuffer_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::TargetLibraryInfo_O::static_creator);
+ SMART_PTR_FIX(core::CxxClass_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::ChemInfoMatch_O::static_creator);
+ SMART_PTR_FIX(llvmo::IRBuilder_O::___staticClass);
+ SMART_PTR_FIX(core::CompileTimeEnvironment_O::___staticClass);
+ SMART_PTR_FIX(geom::OVector2_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::SearchStatistics_O::static_creator);
+ SMART_PTR_FIX(chem::WildElementDict_O::___staticClass);
+ SMART_PTR_FIX(chem::CalculatePosition_O::___staticClass);
+ SMART_PTR_FIX(chem::EnergyStretch_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::MinimizerLog_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::DICompileUnit_O::___staticClass);
+ TAGGED_POINTER_FIX(core::Pointer_O::static_creator);
+ SMART_PTR_FIX(core::SingleDispatchMethod_O::___staticClass);
+ SMART_PTR_FIX(core::StringStream_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::Iterator_O::___staticClass);
+ SMART_PTR_FIX(chem::CalculatePositionRelativeToOrigin_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::Value_O::static_creator);
+ TAGGED_POINTER_FIX(chem::StereoisomerAtom_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::PassManager_O::static_creator);
+ SMART_PTR_FIX(core::Symbol_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::CalculatePositionAlongBond_O::static_creator);
+ SMART_PTR_FIX(chem::Residue_O::___staticClass);
+ SMART_PTR_FIX(chem::EnergyFunction_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::FunctionPass_O::static_creator);
+ TAGGED_POINTER_FIX(core::MultiStringBuffer_O::static_creator);
+ SMART_PTR_FIX(core::Record_O::___staticClass);
+ SMART_PTR_FIX(llvmo::ReturnInst_O::___staticClass);
+ SMART_PTR_FIX(core::Symbol_O::___staticClass);
+ SMART_PTR_FIX(core::LambdaListHandler_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::LogicalPathname_O::static_creator);
+ SMART_PTR_FIX(chem::MonomerPack_O::___staticClass);
+ TAGGED_POINTER_FIX(core::BranchSNode_O::static_creator);
+ SMART_PTR_FIX(chem::AtomTable_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::DebugInfo_O::static_creator);
+ SMART_PTR_FIX(core::Pathname_O::___staticClass);
+ SMART_PTR_FIX(core::IntArray_O::___staticClass);
+ SMART_PTR_FIX(llvmo::Constant_O::___staticClass);
+ SMART_PTR_FIX(chem::IterateBonds_O::___staticClass);
+ TAGGED_POINTER_FIX(core::ActivationFrame_O::static_creator);
+ TAGGED_POINTER_FIX(chem::FFNonbondCrossTermTable_O::static_creator);
+ TAGGED_POINTER_FIX(chem::NumericalFunction_O::static_creator);
+ TAGGED_POINTER_FIX(chem::MacroModelFile_O::static_creator);
+ TAGGED_POINTER_FIX(core::SingleDispatchEffectiveMethodFunction_O::static_creator);
+ SMART_PTR_FIX(chem::EnergyAnchorRestraint_O::___staticClass);
+ SMART_PTR_FIX(chem::FFAngle_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::DIType_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::FFBaseDb_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::StackValueEnvironment_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::UndefValue_O::static_creator);
+ TAGGED_POINTER_FIX(core::Class_O::static_creator);
+ SMART_PTR_FIX(core::StringInputStream_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::ForwardReferencedClass_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::Float_O::___staticClass);
+ SMART_PTR_FIX(llvmo::DICompileUnit_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::TagbodyEnvironment_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::RestrainedExoCyclicAtom_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::ConstantFP_O::static_creator);
+ SMART_PTR_FIX(llvmo::UnreachableInst_O::___staticClass);
  SMART_PTR_FIX(llvmo::ExecutionEngine_O::___staticClass);
- TAGGED_POINTER_FIX(llvmo::SwitchInst_O::static_creator);
- SMART_PTR_FIX(llvmo::BlockAddress_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(llvmo::NamedMDNode_O::static_creator);
- SMART_PTR_FIX(llvmo::ConstantDataSequential_O::___staticClass);
- TAGGED_POINTER_FIX(chem::MultiMonomer_O::static_creator);
+ SMART_PTR_FIX(core::Package_O::___staticClass);
+ TAGGED_POINTER_FIX(core::VectorDisplaced_O::static_creator);
+ SMART_PTR_FIX(llvmo::ConstantDataSequential_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::StereoisomerVirtualAtom_O::___staticClass);
+ SMART_PTR_FIX(llvmo::DebugLoc_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::EnergyComponent_O::static_creator);
+ SMART_PTR_FIX(chem::CipPrioritizer_O::___staticClass);
+ TAGGED_POINTER_FIX(core::WeakKeyMapping_O::static_creator);
+ SMART_PTR_FIX(chem::Atom_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::SexpSaveArchive_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::Pointer_O::___staticClass);
  SMART_PTR_FIX(llvmo::Function_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::FunctionValueEnvironment_O::static_creator);
+ SMART_PTR_FIX(chem::RestraintChiral_O::___staticClass);
+ SMART_PTR_FIX(geom::BoundingBox_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::FunctionPass_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::UserData_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::Plug_O::static_creator);
+ SMART_PTR_FIX(core::Null_O::___staticClass);
+ SMART_PTR_FIX(core::FunctionFrame_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::ConstantDataArray_O::static_creator);
+ SMART_PTR_FIX(llvmo::LLVMContext_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::Triple_O::static_creator);
+ SMART_PTR_FIX(chem::Root_O::___staticClass);
+ SMART_PTR_FIX(llvmo::MDString_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::UnaryInstruction_O::___staticClass);
+ SMART_PTR_FIX(chem::RestraintAngle_O::___staticClass);
+ SMART_PTR_FIX(llvmo::Argument_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::Constant_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::DIDescriptor_O::___staticClass);
+ SMART_PTR_FIX(chem::SuperposeSelectedAtoms_O::___staticClass);
+ SMART_PTR_FIX(core::LoadArchive_O::___staticClass);
+ TAGGED_POINTER_FIX(core::Real_O::static_creator);
+ TAGGED_POINTER_FIX(chem::EntityNameSet_O::static_creator);
+ SMART_PTR_FIX(core::WeakKeyMapping_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(llvmo::BasicBlock_O::static_creator);
+ SMART_PTR_FIX(core::BuiltInClass_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::ValueFrame_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::MDString_O::static_creator);
+ TAGGED_POINTER_FIX(core::TwoWayStream_O::static_creator);
+ TAGGED_POINTER_FIX(core::Regex_O::static_creator);
+ SMART_PTR_FIX(chem::CDFragment_O::___staticClass);
+ SMART_PTR_FIX(llvmo::DIDerivedType_O::___staticClass);
+ TAGGED_POINTER_FIX(core::StructureObject_O::static_creator);
+ SMART_PTR_FIX(llvmo::UndefValue_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::FFStretchDb_O::___staticClass);
+ SMART_PTR_FIX(chem::RestraintDistance_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ConformationCollection_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::FFVdw_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::FileStatus_O::___staticClass);
+ SMART_PTR_FIX(chem::VirtualAtom_O::___staticClass);
+ SMART_PTR_FIX(chem::StereoisomerAtom_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::InsertPoint_O::___staticClass);
+ SMART_PTR_FIX(chem::Structure_Old_ListEntry_O::___staticClass);
+ SMART_PTR_FIX(chem::AGVertex_O::___staticClass);
+ SMART_PTR_FIX(chem::Monomer_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::Target_O::___staticClass);
+ SMART_PTR_FIX(adapt::IterateCons_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::Value_O::___staticClass);
+ SMART_PTR_FIX(llvmo::TerminatorInst_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::Vector_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::FFNonbond_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::FFStretch_O::static_creator);
+ SMART_PTR_FIX(llvmo::APInt_O::___staticClass);
+ SMART_PTR_FIX(core::Pointer_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::TagSet_O::static_creator);
+ SMART_PTR_FIX(chem::Branch_O::___staticClass);
+ TAGGED_POINTER_FIX(core::Number_O::static_creator);
+ SMART_PTR_FIX(chem::EnergyFixedNonbondRestraint_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::EnergyChiralRestraint_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::StoreInst_O::___staticClass);
+ SMART_PTR_FIX(chem::AntechamberBondTest_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::IntArray_O::static_creator);
+ SMART_PTR_FIX(chem::Structure_Old_List_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ConformationExplorerEntry_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::OneMonomer_O::static_creator);
+ SMART_PTR_FIX(llvmo::Triple_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::ZMatrixEntry_O::static_creator);
+ SMART_PTR_FIX(chem::IterateAtoms_O::___staticClass);
+ SMART_PTR_FIX(chem::Aggregate_O::___staticClass);
+ SMART_PTR_FIX(chem::RestrainedExoCyclicAtom_O::_AtomExoToSixMemberedRing);
+ SMART_PTR_FIX(asttooling::AstVisitor_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::FileStream_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::Path_O::static_creator);
+ SMART_PTR_FIX(chem::ChemInfo_O::___staticClass);
+ SMART_PTR_FIX(adapt::SymbolList_O::___staticClass);
+ SMART_PTR_FIX(llvmo::DIArray_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::AtomTest_O::static_creator);
+ SMART_PTR_FIX(llvmo::IRBuilderBase_O::___staticClass);
+ SMART_PTR_FIX(geom::BoundingBox_O::___staticClass);
+ SMART_PTR_FIX(geom::CoordinateArrayWithHash_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::StereoConfiguration_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::EnergyDihedral_O::static_creator);
+ SMART_PTR_FIX(llvmo::User_O::___staticClass);
+ SMART_PTR_FIX(core::SourcePosInfo_O::___staticClass);
+ SMART_PTR_FIX(core::FileStatus_O::___staticClassSymbol);
  SMART_PTR_FIX(core::ArrayDisplaced_O::___staticClassSymbol);
- TAGGED_POINTER_FIX(core::VaList_dummy_O::static_creator);
- SMART_PTR_FIX(geom::CoordinateArray_O::___staticClassSymbol);
- SMART_PTR_FIX(core::Character_dummy_O::___staticClassSymbol);
+ SMART_PTR_FIX(core::Bignum_O::___staticClass);
+ SMART_PTR_FIX(llvmo::ConstantStruct_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(core::PosixTimeDuration_O::static_creator);
+ SMART_PTR_FIX(chem::Trajectory_O::___staticClass);
+ SMART_PTR_FIX(core::IOFileStream_O::___staticClass);
+ TAGGED_POINTER_FIX(llvmo::ConstantArray_O::static_creator);
+ SMART_PTR_FIX(chem::EntityNameSet_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(units::Unit_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::DIDerivedType_O::static_creator);
+ SMART_PTR_FIX(core::GlueEnvironment_O::___staticClass);
+ SMART_PTR_FIX(core::HashTableEq_O::___staticClass);
+ SMART_PTR_FIX(chem::MultiMonomer_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::ConstitutionBond_O::___staticClass);
+ SMART_PTR_FIX(core::ValueEnvironment_O::___staticClassSymbol);
+ TAGGED_POINTER_FIX(chem::SparseLargeSquareMatrix_O::static_creator);
+ TAGGED_POINTER_FIX(llvmo::UnreachableInst_O::static_creator);
+ TAGGED_POINTER_FIX(chem::SmartsRoot_O::static_creator);
+ TAGGED_POINTER_FIX(chem::StereoConfiguration_O::static_creator);
+ TAGGED_POINTER_FIX(chem::AfterMatchBondTest_O::static_creator);
+ SMART_PTR_FIX(chem::ConformationExplorerEntryStage_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::Trajectory_O::___staticClassSymbol);
+ SMART_PTR_FIX(llvmo::Pass_O::___staticClass);
+ TAGGED_POINTER_FIX(cffi::Pointer_O::static_creator);
+ SMART_PTR_FIX(chem::AtomTest_O::___staticClass);
+ TAGGED_POINTER_FIX(chem::TrajectoryFrame_O::static_creator);
+ SMART_PTR_FIX(asttooling::AstVisitor_O::___staticClass);
 #endif // defined(GC_GLOBALS)
 #if defined(GC_GLOBAL_SYMBOLS)
- SMART_PTR_FIX(kw::_sym_supplied);
- SMART_PTR_FIX(sockets::_sym__PLUS_HOST_NOT_FOUND_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_namelist);
- SMART_PTR_FIX(kw::_sym_atomicProperty);
- SMART_PTR_FIX(cl::_sym_char_int);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_dwarf_procedure);
- SMART_PTR_FIX(llvmo::_sym_UnreachableInst_O);
- SMART_PTR_FIX(kw::_sym_pbci);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_partial_unit);
- SMART_PTR_FIX(kw::_sym_cclasp);
- SMART_PTR_FIX(llvmo::_sym_STARnumberOfLlvmFinalizationsSTAR);
- SMART_PTR_FIX(core::_sym_backquote_attach_conses);
- SMART_PTR_FIX(llvmo::_sym_FPTrunc);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_condition);
- SMART_PTR_FIX(kw::_sym_type_rules);
- SMART_PTR_FIX(cl::_sym_filePosition);
- SMART_PTR_FIX(cl::_sym_symbol);
- SMART_PTR_FIX(cl::_sym_String_O);
- SMART_PTR_FIX(chem::_sym_VirtualAtom_O);
- SMART_PTR_FIX(cffi::_sym_size);
- SMART_PTR_FIX(cffi::_sym_unsigned_long_long);
- SMART_PTR_FIX(sockets::_sym_ll_socketConnect_inetSocket);
- SMART_PTR_FIX(cl::_sym_load);
- SMART_PTR_FIX(cl::_sym_STARbreakOnSignalsSTAR);
- SMART_PTR_FIX(cl::_sym_unread_char);
- SMART_PTR_FIX(chem::_sym_PdbMonomerDatabase_O);
- SMART_PTR_FIX(kw::_sym_absolute);
- SMART_PTR_FIX(llvmo::_sym_VendorType_BGP);
- SMART_PTR_FIX(sockets::_sym__PLUS_ETIMEDOUT_PLUS_);
- SMART_PTR_FIX(core::_sym_LoadArchive_O);
- SMART_PTR_FIX(core::_sym_SmallMap_O);
- SMART_PTR_FIX(cl::_sym_schar);
- SMART_PTR_FIX(chemkw::_sym__virtualBond);
- SMART_PTR_FIX(geom::_sym_OVector2_O);
- SMART_PTR_FIX(cl::_sym_open_stream_p);
- SMART_PTR_FIX(core::_sym_localGo);
- SMART_PTR_FIX(llvmo::_sym_DLLImportLinkage);
- SMART_PTR_FIX(units::_sym_NamedUnit_O);
- SMART_PTR_FIX(kw::_sym_builtResidue);
- SMART_PTR_FIX(cl::_sym_read_line);
- SMART_PTR_FIX(core::_sym_isTopLevelScript);
- SMART_PTR_FIX(cl::_sym_Str_O);
- SMART_PTR_FIX(kw::_sym_next);
- SMART_PTR_FIX(sockets::_sym_ll_get_name_service_h_errno);
- SMART_PTR_FIX(llvmo::_sym_ArchType_kalimba);
- SMART_PTR_FIX(kw::_sym_crlf);
- SMART_PTR_FIX(cl::_sym_documentation);
- SMART_PTR_FIX(kw::_sym_and);
- SMART_PTR_FIX(cl::_sym_listAllPackages);
- SMART_PTR_FIX(llvmo::_sym_TargetMachine_O);
- SMART_PTR_FIX(llvmo::_sym_ArchType_aarch64_be);
- SMART_PTR_FIX(core::_sym_StringInputStream_O);
- SMART_PTR_FIX(kw::_sym_x);
- SMART_PTR_FIX(core::_sym_unrecognizedKeywordArgumentError);
- SMART_PTR_FIX(cl::_sym_vectorPush);
- SMART_PTR_FIX(core::_sym_asinh);
- SMART_PTR_FIX(cffi::_sym_int16);
- SMART_PTR_FIX(cl::_sym_STARprint_radixSTAR);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_EABIHF);
- SMART_PTR_FIX(cl::_sym_fdefinition);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_const_type);
- SMART_PTR_FIX(core::_sym_macroexpand_default);
- SMART_PTR_FIX(chem::_sym_Oligomer_O);
- SMART_PTR_FIX(chem::_sym_RestraintDihedral_O);
- SMART_PTR_FIX(llvmo::_sym_DebugInfo_O);
- SMART_PTR_FIX(units::_sym_femtoseconds);
- SMART_PTR_FIX(cl::_sym_leastNegativeNormalizedSingleFloat);
- SMART_PTR_FIX(cl::_sym_StringStream_O);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_EABI);
- SMART_PTR_FIX(kw::_sym_rtld_default);
- SMART_PTR_FIX(chem::_sym_PdbReader_O);
- SMART_PTR_FIX(llvmo::_sym_CodeGenFileType_AssemblyFile);
- SMART_PTR_FIX(core::_sym_walkToFindSourceInfo);
- SMART_PTR_FIX(chem::_sym_InteractionError);
- SMART_PTR_FIX(core::_sym_backquote_completely_process);
- SMART_PTR_FIX(core::_sym__PLUS_activationFrameNil_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_CODE16);
- SMART_PTR_FIX(llvmo::_sym_FunctionPass_O);
- SMART_PTR_FIX(cffi::_sym_int);
- SMART_PTR_FIX(llvmo::_sym_AppendingLinkage);
- SMART_PTR_FIX(cl::_sym_synonymStreamSymbol);
- SMART_PTR_FIX(units::_sym_milliseconds);
- SMART_PTR_FIX(cl::_sym_floatPrecision);
- SMART_PTR_FIX(cl::_sym_no_applicable_method);
- SMART_PTR_FIX(llvmo::_sym_PHINode_O);
- SMART_PTR_FIX(chem::_sym_TrajectoryFrame_O);
- SMART_PTR_FIX(cffi::_sym_ssize);
- SMART_PTR_FIX(chemkw::_sym_aromaticBond);
- SMART_PTR_FIX(cl::_sym_speed);
- SMART_PTR_FIX(sockets::_sym_ll_strerror_errno);
- SMART_PTR_FIX(chem::_sym_ChemInfoNode_O);
- SMART_PTR_FIX(core::_sym_sorted);
- SMART_PTR_FIX(kw::_sym_load_toplevel);
- SMART_PTR_FIX(kw::_sym_end);
- SMART_PTR_FIX(core::_sym_HashTableEql_O);
- SMART_PTR_FIX(kw::_sym_monomerAliases);
- SMART_PTR_FIX(llvmo::_sym_WeakODRLinkage);
- SMART_PTR_FIX(llvmo::_sym_ArchType_mipsel);
- SMART_PTR_FIX(kw::_sym_fcadj);
- SMART_PTR_FIX(kw::_sym_ion);
- SMART_PTR_FIX(cleavirEnv::_sym_macroFunction);
- SMART_PTR_FIX(sockets::_sym__PLUS_EADDRINUSE_PLUS_);
- SMART_PTR_FIX(sockets::_sym__PLUS_af_inet_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_SwitchInst_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_compile_unit);
- SMART_PTR_FIX(cl::_sym_some);
- SMART_PTR_FIX(llvmo::_sym_GeneralDynamicTLSModel);
- SMART_PTR_FIX(llvmo::_sym_FCMP_OGT);
- SMART_PTR_FIX(core::_sym_dynamicGo);
- SMART_PTR_FIX(chem::_sym_AntechamberFocusAtomMatch_O);
- SMART_PTR_FIX(cl::_sym_integer);
- SMART_PTR_FIX(kw::_sym_bl);
- SMART_PTR_FIX(cl::_sym_nbutlast);
- SMART_PTR_FIX(chem::_sym_ProperTorsion_O);
- SMART_PTR_FIX(llvmo::_sym_AttributeNoImplicitFloat);
- SMART_PTR_FIX(sockets::_sym_ll_setSockoptInt);
- SMART_PTR_FIX(chem::_sym__PLUS_preconditionerTypeConverter_PLUS_);
- SMART_PTR_FIX(cl::_sym_lognot);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v8);
- SMART_PTR_FIX(llvmo::_sym_Instruction_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_variable);
- SMART_PTR_FIX(chem::_sym_ChemInfoMatch_O);
- SMART_PTR_FIX(kw::_sym_comment);
- SMART_PTR_FIX(cl::_sym_string_lessp);
- SMART_PTR_FIX(llvmo::_sym_OSType_FreeBSD);
- SMART_PTR_FIX(kw::_sym_datum);
- SMART_PTR_FIX(gray::_sym_stream_finish_output);
- SMART_PTR_FIX(chem::_sym__PLUS_atomFlagSymbolConverter_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_CodeGenFileType);
- SMART_PTR_FIX(chem::_sym_RingCoupling_O);
- SMART_PTR_FIX(llvmo::_sym_ICMP_ULT);
- SMART_PTR_FIX(llvmo::_sym_IRBuilderBase_O);
- SMART_PTR_FIX(cl::_sym_pprint_dispatch);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_variant);
- SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion4);
- SMART_PTR_FIX(cl::_sym_fill_pointer);
- SMART_PTR_FIX(core::_sym_defaultPathnameDefaults);
- SMART_PTR_FIX(chem::_sym_MonomerCoordinates_O);
- SMART_PTR_FIX(llvmo::_sym_ArchType_arm);
- SMART_PTR_FIX(chem::_sym_IterateBonds_O);
- SMART_PTR_FIX(core::_sym_member1);
- SMART_PTR_FIX(llvmo::_sym_ConstantExpr_O);
- SMART_PTR_FIX(kw::_sym_cr);
- SMART_PTR_FIX(core::_sym_record_cons);
- SMART_PTR_FIX(cl::_sym_char_GT_);
- SMART_PTR_FIX(sockets::_sym_ll_strerror);
- SMART_PTR_FIX(cffi::_sym_unsigned_char);
- SMART_PTR_FIX(llvmo::_sym_Acquire);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_packed_type);
- SMART_PTR_FIX(kw::_sym_black);
- SMART_PTR_FIX(cl::_sym_specialOperatorP);
- SMART_PTR_FIX(core::_sym_STARdebugMacroexpandSTAR);
- SMART_PTR_FIX(chem::_sym_ForceMatchReport_O);
- SMART_PTR_FIX(cl::_sym_flet);
- SMART_PTR_FIX(core::_sym_FunctionFrame_O);
- SMART_PTR_FIX(chem::_sym_Mate_O);
- SMART_PTR_FIX(core::_sym_reader_feature_p);
- SMART_PTR_FIX(cl::_sym_nthcdr);
- SMART_PTR_FIX(kw::_sym_z);
- SMART_PTR_FIX(core::_sym_STARcommandLineLoadSTAR);
- SMART_PTR_FIX(sockets::_sym__PLUS_af_local_PLUS_);
- SMART_PTR_FIX(cl::_sym_base_char);
- SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion8);
- SMART_PTR_FIX(chemkw::_sym_R);
- SMART_PTR_FIX(core::_sym__PLUS_io_syntax_progv_list_PLUS_);
- SMART_PTR_FIX(core::_sym_ihsPrev);
- SMART_PTR_FIX(llvmo::_sym_DIType_O);
- SMART_PTR_FIX(core::_sym_process_macro_lambda_list);
- SMART_PTR_FIX(llvmo::_sym_Type_O);
- SMART_PTR_FIX(kw::_sym_downcase);
- SMART_PTR_FIX(cl::_sym_mapcan);
- SMART_PTR_FIX(core::_sym_loadCando);
- SMART_PTR_FIX(cl::_sym_leastPositiveNormalizedLongFloat);
- SMART_PTR_FIX(core::_sym_theClibBacktraceFunctionSymbol);
- SMART_PTR_FIX(chem::_sym_ConformationExplorerEntryStage_O);
- SMART_PTR_FIX(cl::_sym_Ratio_O);
- SMART_PTR_FIX(llvmo::_sym_ArchType_xcore);
- SMART_PTR_FIX(core::_sym_find_single_dispatch_generic_function);
- SMART_PTR_FIX(llvmo::_sym_DataLayoutPass_O);
- SMART_PTR_FIX(cl::_sym_every);
- SMART_PTR_FIX(core::_sym_environmentList);
- SMART_PTR_FIX(kw::_sym_matches);
- SMART_PTR_FIX(serveEvent::_sym__PLUS_EINTR_PLUS_);
- SMART_PTR_FIX(cl::_sym_dotimes);
- SMART_PTR_FIX(asttooling::_sym_VisitStmt);
- SMART_PTR_FIX(llvmo::_sym_CompositeType_O);
- SMART_PTR_FIX(core::_sym_structureSet);
- SMART_PTR_FIX(llvmo::_sym_ArchType_UnknownArch);
- SMART_PTR_FIX(core::_sym_PosixTime_O);
- SMART_PTR_FIX(llvmo::_sym_CodeModel_Default);
- SMART_PTR_FIX(core::_sym_sharp_vertical_bar);
- SMART_PTR_FIX(chem::_sym_MinimizerStuckError);
- SMART_PTR_FIX(cl::_sym_step);
- SMART_PTR_FIX(kw::_sym_brcl);
- SMART_PTR_FIX(core::_sym_dlopen);
- SMART_PTR_FIX(llvmo::_sym_InvokeInst_O);
- SMART_PTR_FIX(core::_sym__SHARP__BANG_);
- SMART_PTR_FIX(cl::_sym_realp);
- SMART_PTR_FIX(chem::_sym_Twister_O);
- SMART_PTR_FIX(units::_sym_picometers);
- SMART_PTR_FIX(cl::_sym_STARprint_gensymSTAR);
- SMART_PTR_FIX(cl::_sym_constantp);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_module);
- SMART_PTR_FIX(llvmo::_sym_ArchType_aarch64);
- SMART_PTR_FIX(core::_sym_instanceSig);
- SMART_PTR_FIX(core::_sym_STARprintStructureSTAR);
- SMART_PTR_FIX(cffi::_sym_unsigned_long);
- SMART_PTR_FIX(cffi::_sym_long_long);
- SMART_PTR_FIX(core::_sym_classifyLetVariablesAndDeclares);
- SMART_PTR_FIX(core::_sym_lambda_with_handler);
- SMART_PTR_FIX(kw::_sym_io);
- SMART_PTR_FIX(llvmo::_sym_FPToUI);
- SMART_PTR_FIX(chem::_sym_FFBaseDb_O);
- SMART_PTR_FIX(chem::_sym_DirectionalCoupling_O);
- SMART_PTR_FIX(kw::_sym_atomTest);
- SMART_PTR_FIX(core::_sym_sharp_p);
- SMART_PTR_FIX(core::_sym_declaredSpecial);
- SMART_PTR_FIX(core::_sym_copy_subarray);
- SMART_PTR_FIX(core::_sym_size_t);
- SMART_PTR_FIX(core::_sym_processDeclarations);
- SMART_PTR_FIX(cl::_sym_subseq);
- SMART_PTR_FIX(kw::_sym_ref);
- SMART_PTR_FIX(chem::_sym_RestrainedPiBond_O);
- SMART_PTR_FIX(kw::_sym_v3);
- SMART_PTR_FIX(cl::_sym_rest);
- SMART_PTR_FIX(chem::_sym_ZMatrixBondInternal_O);
- SMART_PTR_FIX(core::_sym_loadBitcode);
- SMART_PTR_FIX(kw::_sym_chg);
- SMART_PTR_FIX(kw::_sym_min);
- SMART_PTR_FIX(kw::_sym_order);
- SMART_PTR_FIX(kw::_sym_max);
- SMART_PTR_FIX(cl::_sym_leastNegativeSingleFloat);
- SMART_PTR_FIX(kw::_sym_lambda_list_handler);
- SMART_PTR_FIX(llvmo::_sym_ArchType_le32);
- SMART_PTR_FIX(llvmo::_sym_PassManagerBase_O);
- SMART_PTR_FIX(kw::_sym_invalid_character);
- SMART_PTR_FIX(units::_sym_kilojoule);
- SMART_PTR_FIX(core::_sym_instanceRef);
- SMART_PTR_FIX(llvmo::_sym_And);
- SMART_PTR_FIX(core::_sym_STARinterpreterTraceSTAR);
- SMART_PTR_FIX(llvmo::_sym_mdnodeGet);
- SMART_PTR_FIX(cl::_sym_log);
- SMART_PTR_FIX(core::_sym_newVersion);
- SMART_PTR_FIX(core::_sym_testProfileTimer);
- SMART_PTR_FIX(llvmo::_sym_LLVMTargetMachine_O);
- SMART_PTR_FIX(core::_sym_instancep);
- SMART_PTR_FIX(cl::_sym_STARprint_escapeSTAR);
- SMART_PTR_FIX(kw::_sym_up);
- SMART_PTR_FIX(chem::_sym_EnergyNonbond_O);
- SMART_PTR_FIX(llvmo::_sym_ICMP_SLE);
- SMART_PTR_FIX(cl::_sym_SignedByte);
- SMART_PTR_FIX(gray::_sym_stream_line_column);
- SMART_PTR_FIX(llvmo::_sym_CodeModel_Kernel);
- SMART_PTR_FIX(kw::_sym_input);
- SMART_PTR_FIX(llvmo::_sym_STARdwarfConstantsSTAR);
- SMART_PTR_FIX(chem::_sym_ComplexRestraint_O);
- SMART_PTR_FIX(cl::_sym_STARload_printSTAR);
- SMART_PTR_FIX(cl::_sym_asin);
- SMART_PTR_FIX(core::_sym_dlload);
- SMART_PTR_FIX(cl::_sym_gentemp);
- SMART_PTR_FIX(cl::_sym_clearOutput);
- SMART_PTR_FIX(kw::_sym_address_model_64);
- SMART_PTR_FIX(core::_sym_currentDir);
- SMART_PTR_FIX(chem::_sym_ChemDraw_O);
- SMART_PTR_FIX(cl::_sym_FileStream_O);
- SMART_PTR_FIX(chem::_sym_ZMatrixEntry_O);
- SMART_PTR_FIX(core::_sym_lookupSourceFileInfo);
- SMART_PTR_FIX(cl::_sym_leastPositiveDoubleFloat);
- SMART_PTR_FIX(core::_sym_do_write_sequence);
- SMART_PTR_FIX(cl::_sym_Real_O);
- SMART_PTR_FIX(chem::_sym_VirtualSphere_O);
- SMART_PTR_FIX(chem::_sym_Coupling_O);
- SMART_PTR_FIX(llvmo::_sym_AttributeInlineHint);
- SMART_PTR_FIX(cl::_sym_append);
- SMART_PTR_FIX(core::_sym_isAssignableTo);
- SMART_PTR_FIX(units::_sym_nm_per_ps);
- SMART_PTR_FIX(cl::_sym_otherwise);
- SMART_PTR_FIX(cl::_sym_pathnameDevice);
- SMART_PTR_FIX(cl::_sym_type);
- SMART_PTR_FIX(cl::_sym_array);
- SMART_PTR_FIX(cl::_sym_TwoWayStream_O);
- SMART_PTR_FIX(clos::_sym_std_compute_applicable_methods);
- SMART_PTR_FIX(kw::_sym_if_does_not_exist);
- SMART_PTR_FIX(units::_sym_candelas);
- SMART_PTR_FIX(kw::_sym_catchFrame);
- SMART_PTR_FIX(llvmo::_sym_jit);
- SMART_PTR_FIX(core::_sym_double_backquote);
- SMART_PTR_FIX(core::_sym_toTaggedFixnum);
- SMART_PTR_FIX(cl::_sym_find_restart);
- SMART_PTR_FIX(llvmo::_sym_OSType_Solaris);
- SMART_PTR_FIX(kw::_sym_invert);
- SMART_PTR_FIX(cl::_sym_floatp);
- SMART_PTR_FIX(llvmo::_sym_Unordered);
- SMART_PTR_FIX(kw::_sym_white);
- SMART_PTR_FIX(llvmo::_sym_BitCast);
- SMART_PTR_FIX(cl::_sym_symbolp);
- SMART_PTR_FIX(units::_sym_kiloJoule);
- SMART_PTR_FIX(chem::_sym_ConformationExplorer_O);
- SMART_PTR_FIX(cl::_sym_pathnameDirectory);
- SMART_PTR_FIX(cl::_sym_format);
- SMART_PTR_FIX(kw::_sym_formatArguments);
- SMART_PTR_FIX(sockets::_sym__PLUS_TRY_AGAIN_PLUS_);
- SMART_PTR_FIX(chem::_sym_FFPtorDb_O);
- SMART_PTR_FIX(cl::_sym_STARprint_pprint_dispatchSTAR);
- SMART_PTR_FIX(llvmo::_sym_moduleFlagWarning);
- SMART_PTR_FIX(cl::_sym_labels);
- SMART_PTR_FIX(cl::_sym_simple_bit_vector_p);
- SMART_PTR_FIX(cl::_sym_simple_string_p);
- SMART_PTR_FIX(sockets::_sym_ll_getHostByAddress);
- SMART_PTR_FIX(chem::_sym_bonds);
- SMART_PTR_FIX(core::_sym_ihsEnv);
- SMART_PTR_FIX(core::_sym_STARprintVersionOnStartupSTAR);
- SMART_PTR_FIX(llvmo::_sym_AShr);
- SMART_PTR_FIX(cl::_sym_restart_bind);
- SMART_PTR_FIX(core::_sym_bq_remove_tokens);
- SMART_PTR_FIX(cl::_sym_char_GE_);
- SMART_PTR_FIX(cl::_sym_Complex_O);
- SMART_PTR_FIX(llvmo::_sym_valuep);
- SMART_PTR_FIX(cl::_sym_float);
- SMART_PTR_FIX(cl::_sym_leastPositiveShortFloat);
- SMART_PTR_FIX(chem::_sym_MultiMonomer_O);
- SMART_PTR_FIX(llvmo::_sym_AttributeStackProtectReq);
- SMART_PTR_FIX(cl::_sym_expt);
- SMART_PTR_FIX(cl::_sym_boole_c2);
- SMART_PTR_FIX(core::_sym_setCurrentWorkingDirectory);
- SMART_PTR_FIX(cl::_sym_BitVector_O);
- SMART_PTR_FIX(cl::_sym_pathnameVersion);
- SMART_PTR_FIX(llvmo::_sym_llvm_value_p);
- SMART_PTR_FIX(chem::_sym_RingClosingPlug_O);
- SMART_PTR_FIX(core::_sym_STARcurrentSourcePosInfoSTAR);
- SMART_PTR_FIX(chem::_sym_CalculatePositionRelativeToOrigin_O);
- SMART_PTR_FIX(core::_sym_STARinput_streamSTAR);
- SMART_PTR_FIX(llvmo::_sym_RelocModel_Default);
- SMART_PTR_FIX(core::_sym_read_list_allow_consing_dot);
- SMART_PTR_FIX(llvmo::_sym_ConstantPointerNull_O);
- SMART_PTR_FIX(core::_sym_STARprint_source_code_consSTAR);
- SMART_PTR_FIX(cl::_sym_AMPbody);
- SMART_PTR_FIX(kw::_sym_vdwScaleBufferB);
- SMART_PTR_FIX(kw::_sym_map);
- SMART_PTR_FIX(llvmo::_sym_EngineBuilder_O);
- SMART_PTR_FIX(kw::_sym_pink);
- SMART_PTR_FIX(cl::_sym_functionp);
- SMART_PTR_FIX(cl::_sym_stream_external_format);
- SMART_PTR_FIX(cl::_sym_read_sequence);
- SMART_PTR_FIX(core::_sym_STARbackquote_expand_hookSTAR);
- SMART_PTR_FIX(core::_sym_libraryPath);
- SMART_PTR_FIX(chemkw::_sym_tripleBond);
- SMART_PTR_FIX(cl::_sym_cos);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_imported_declaration);
- SMART_PTR_FIX(llvmo::_sym_AllocaInst_O);
- SMART_PTR_FIX(cl::_sym_stream);
- SMART_PTR_FIX(kw::_sym_type2);
- SMART_PTR_FIX(llvmo::_sym_CommonLinkage);
- SMART_PTR_FIX(chem::_sym_AM1_BCC_ar6);
- SMART_PTR_FIX(core::_sym_ValueFrame_O);
- SMART_PTR_FIX(core::_sym_Metaobject_O);
- SMART_PTR_FIX(cl::_sym_STARfeaturesSTAR);
- SMART_PTR_FIX(core::_sym_wrongTypeNthArg);
- SMART_PTR_FIX(llvmo::_sym_ImmutablePass_O);
- SMART_PTR_FIX(kw::_sym_atomProps);
- SMART_PTR_FIX(llvmo::_sym_CodeGenOpt_Aggressive);
- SMART_PTR_FIX(core::_sym_input_stream);
- SMART_PTR_FIX(kw::_sym_blockFrame);
- SMART_PTR_FIX(core::_sym_STARcircle_stackSTAR);
- SMART_PTR_FIX(kw::_sym_v1);
- SMART_PTR_FIX(units::_sym_kilocalories_per_mole);
- SMART_PTR_FIX(cl::_sym_parseError);
- SMART_PTR_FIX(llvmo::_sym_CodeModel_Medium);
- SMART_PTR_FIX(cl::_sym_UnsignedByte);
- SMART_PTR_FIX(core::_sym_adjustVector);
- SMART_PTR_FIX(core::_sym_StackValueEnvironment_O);
- SMART_PTR_FIX(cl::_sym_charNotEqual);
- SMART_PTR_FIX(cl::_sym_floatSign);
- SMART_PTR_FIX(cl::_sym_package);
- SMART_PTR_FIX(core::_sym_data);
- SMART_PTR_FIX(cl::_sym_BroadcastStream_O);
- SMART_PTR_FIX(kw::_sym_terminating_macro_character);
- SMART_PTR_FIX(core::_sym_STARcodeWalkerSTAR);
- SMART_PTR_FIX(chemkw::_sym_estimated);
- SMART_PTR_FIX(llvmo::_sym_DISubprogram_O);
- SMART_PTR_FIX(cl::_sym_rem);
- SMART_PTR_FIX(chem::_sym_FFAngleDb_O);
- SMART_PTR_FIX(core::_sym_SexpSaveArchive_O);
- SMART_PTR_FIX(core::_sym_clock_gettime_nanoseconds);
- SMART_PTR_FIX(cl::_sym_boole_and);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_KalimbaSubArch_v4);
- SMART_PTR_FIX(core::_sym_tooManyArgumentsError);
- SMART_PTR_FIX(core::_sym_exportToPython);
- SMART_PTR_FIX(cl::_sym_STARmodulesSTAR);
- SMART_PTR_FIX(cl::_sym_STARprint_readablySTAR);
- SMART_PTR_FIX(kw::_sym_rename);
- SMART_PTR_FIX(cl::_sym_defvar);
- SMART_PTR_FIX(cl::_sym_first);
- SMART_PTR_FIX(kw::_sym_k2);
- SMART_PTR_FIX(kw::_sym_hintLP);
- SMART_PTR_FIX(chem::_sym_in8MemberRing);
- SMART_PTR_FIX(adapt::_sym_IterateCons_O);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_MSVC);
- SMART_PTR_FIX(cl::_sym_stringRightTrim);
- SMART_PTR_FIX(chem::_sym_EnergyFixedNonbondRestraint_O);
- SMART_PTR_FIX(llvmo::_sym_PointerType_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_pointer_type);
- SMART_PTR_FIX(cffi::_sym_float);
- SMART_PTR_FIX(core::_sym_STARcommandLineImageSTAR);
- SMART_PTR_FIX(ext::_sym_STARinvokeDebuggerHookSTAR);
- SMART_PTR_FIX(core::_sym_STARbq_listSTARSTAR);
- SMART_PTR_FIX(core::_sym_HashTableEqualp_O);
- SMART_PTR_FIX(core::_sym_calculateMissingCommonLispSymbols);
- SMART_PTR_FIX(kw::_sym_Vdws);
- SMART_PTR_FIX(chem::_sym__PLUS_elementColors_PLUS_);
- SMART_PTR_FIX(cl::_sym_characterp);
- SMART_PTR_FIX(kw::_sym_external);
- SMART_PTR_FIX(cl::_sym_Fixnum_dummy_O);
- SMART_PTR_FIX(units::_sym_picoseconds);
- SMART_PTR_FIX(llvmo::_sym_CodeModel_Large);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_unspecified_parameters);
- SMART_PTR_FIX(cl::_sym_make_sequence);
- SMART_PTR_FIX(cl::_sym_union);
- SMART_PTR_FIX(cl::_sym_clrhash);
- SMART_PTR_FIX(cl::_sym_string_downcase);
- SMART_PTR_FIX(units::_sym_nanometers);
- SMART_PTR_FIX(cffi::_sym_Pointer_O);
- SMART_PTR_FIX(cl::_sym_STARprint_baseSTAR);
- SMART_PTR_FIX(core::_sym_BranchSNode_O);
- SMART_PTR_FIX(cl::_sym_break);
- SMART_PTR_FIX(chemkw::_sym_N);
- SMART_PTR_FIX(chem::_sym_ConformationCollection_O);
- SMART_PTR_FIX(cl::_sym_make_hash_table);
- SMART_PTR_FIX(core::_sym_STARcircleCounterSTAR);
- SMART_PTR_FIX(llvmo::_sym_CodeGenFileType_ObjectFile);
- SMART_PTR_FIX(cl::_sym_mostPositiveShortFloat);
- SMART_PTR_FIX(core::_sym_STARdebugFlowControlSTAR);
- SMART_PTR_FIX(kw::_sym_direct_super_classes);
- SMART_PTR_FIX(cl::_sym_eval);
- SMART_PTR_FIX(chem::_sym_AtomTable_O);
- SMART_PTR_FIX(core::_sym_reader_quote);
- SMART_PTR_FIX(cl::_sym_printObject);
- SMART_PTR_FIX(cl::_sym_input_stream_p);
- SMART_PTR_FIX(cffi::_sym_uint64);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_Itanium);
- SMART_PTR_FIX(cl::_sym_pathnameName);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_inlined_subroutine);
- SMART_PTR_FIX(cl::_sym_getf);
- SMART_PTR_FIX(llvmo::_sym_AttributeOptimizeForSize);
- SMART_PTR_FIX(chem::_sym_TypeAssignmentRules_O);
- SMART_PTR_FIX(cl::_sym_fmakunbound);
- SMART_PTR_FIX(chem::_sym_inRing);
- SMART_PTR_FIX(chem::_sym_AtomTest_O);
- SMART_PTR_FIX(core::_sym_STARdebugInterpretedFunctionsSTAR);
- SMART_PTR_FIX(core::_sym_WeakPointer_O);
- SMART_PTR_FIX(llvmo::_sym_LLVMContext_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_with_stmt);
- SMART_PTR_FIX(cl::_sym_define_method_combination);
- SMART_PTR_FIX(llvmo::_sym_OSType_Linux);
- SMART_PTR_FIX(cl::_sym_space);
- SMART_PTR_FIX(cl::_sym_maphash);
- SMART_PTR_FIX(cl::_sym_exp);
- SMART_PTR_FIX(cffi::_sym_char);
- SMART_PTR_FIX(core::_sym_sharedReferenceCountedPointer);
- SMART_PTR_FIX(cl::_sym_EchoStream_O);
- SMART_PTR_FIX(cl::_sym_truename);
- SMART_PTR_FIX(kw::_sym_angleFunction);
- SMART_PTR_FIX(sockets::_sym_ff_close);
- SMART_PTR_FIX(llvmo::_sym_STARBinaryOpsSTAR);
- SMART_PTR_FIX(cl::_sym_progv);
- SMART_PTR_FIX(kw::_sym_forceField);
- SMART_PTR_FIX(chemkw::_sym_1);
- SMART_PTR_FIX(core::_sym_coerceToFilePathname);
- SMART_PTR_FIX(cl::_sym_mapl);
- SMART_PTR_FIX(cl::_sym_logand);
- SMART_PTR_FIX(kw::_sym_plum);
- SMART_PTR_FIX(ext::_sym_getEnv);
- SMART_PTR_FIX(core::_sym_conditionMessage);
- SMART_PTR_FIX(cl::_sym_go);
- SMART_PTR_FIX(kw::_sym_chain);
- SMART_PTR_FIX(kw::_sym_k);
- SMART_PTR_FIX(cl::_sym_slot_value);
- SMART_PTR_FIX(cl::_sym_vector);
- SMART_PTR_FIX(core::_sym_rehash_threshold);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_interface_type);
- SMART_PTR_FIX(kw::_sym_Edep);
- SMART_PTR_FIX(core::_sym_Reader_O);
- SMART_PTR_FIX(cffi::_sym_time);
- SMART_PTR_FIX(cl::_sym_declare);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_type_unit);
- SMART_PTR_FIX(cl::_sym_fileNamestring);
- SMART_PTR_FIX(llvmo::_sym_ValueAsMetadata_O);
- SMART_PTR_FIX(cl::_sym_stringp);
- SMART_PTR_FIX(core::_sym_mapappend);
- SMART_PTR_FIX(kw::_sym_type);
- SMART_PTR_FIX(core::_sym_foreach);
- SMART_PTR_FIX(kw::_sym_v5);
- SMART_PTR_FIX(core::_sym__PLUS_ecl_syntax_progv_list_PLUS_);
- SMART_PTR_FIX(cl::_sym_classOf);
- SMART_PTR_FIX(core::_sym_preserve_whitespace);
- SMART_PTR_FIX(llvmo::_sym_AttributeStructRet);
- SMART_PTR_FIX(core::_sym_saveCando);
- SMART_PTR_FIX(cl::_sym_writeByte);
- SMART_PTR_FIX(kw::_sym__uid);
- SMART_PTR_FIX(core::_sym_exit);
- SMART_PTR_FIX(kw::_sym_root);
- SMART_PTR_FIX(chem::_sym_MapOfMonomerNamesToAtomIndexers_O);
- SMART_PTR_FIX(chem::_sym_restraintAnchor);
- SMART_PTR_FIX(kw::_sym_ph0);
- SMART_PTR_FIX(llvmo::_sym_ResumeInst_O);
- SMART_PTR_FIX(core::_sym_globalFunction);
- SMART_PTR_FIX(chem::_sym_atomFixed);
- SMART_PTR_FIX(chem::_sym_superpose);
- SMART_PTR_FIX(kw::_sym_Ptors);
- SMART_PTR_FIX(kw::_sym_kb);
- SMART_PTR_FIX(kw::_sym_configuration);
- SMART_PTR_FIX(kw::_sym_left);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_constant);
- SMART_PTR_FIX(chem::_sym_Atom_O);
- SMART_PTR_FIX(cl::_sym_string_GE_);
- SMART_PTR_FIX(cl::_sym_leastPositiveLongFloat);
- SMART_PTR_FIX(kw::_sym_restrained_pi_bonds);
- SMART_PTR_FIX(llvmo::_sym_STARrunTimeExecutionEngineSTAR);
- SMART_PTR_FIX(chem::_sym_AM1_BCC_ar5);
- SMART_PTR_FIX(chem::_sym_ChemInfo_O);
- SMART_PTR_FIX(cl::_sym_T_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_GNU_formal_parameter_pack);
- SMART_PTR_FIX(sockets::_sym__PLUS_SO_TYPE_PLUS_);
- SMART_PTR_FIX(cl::_sym_AMPallow_other_keys);
- SMART_PTR_FIX(kw::_sym_directory);
- SMART_PTR_FIX(chem::_sym_OutPlug_O);
- SMART_PTR_FIX(sockets::_sym__PLUS_ECONNREFUSED_PLUS_);
- SMART_PTR_FIX(chem::_sym_EnergyStretch_O);
- SMART_PTR_FIX(llvmo::_sym_StructType_O);
- SMART_PTR_FIX(cl::_sym_copyStructure);
- SMART_PTR_FIX(core::_sym_dlsym);
- SMART_PTR_FIX(core::_sym_STARprintPackageSTAR);
- SMART_PTR_FIX(kw::_sym_tagbodyFrame);
- SMART_PTR_FIX(cl::_sym_STARloadTruenameSTAR);
- SMART_PTR_FIX(kw::_sym_FullDebug);
- SMART_PTR_FIX(chem::_sym_PdbMonomerConnectivity_O);
- SMART_PTR_FIX(kw::_sym_whitespace_character);
- SMART_PTR_FIX(chem::_sym_InPlug_O);
- SMART_PTR_FIX(kw::_sym_class);
- SMART_PTR_FIX(llvmo::_sym_FCMP_UGT);
- SMART_PTR_FIX(ext::_sym_lexicalVar);
- SMART_PTR_FIX(llvmo::_sym_moduleFlagOverride);
- SMART_PTR_FIX(sockets::_sym__PLUS_EINVAL_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_ValueAsMetadataGet);
- SMART_PTR_FIX(core::_sym_DirectoryEntry_O);
- SMART_PTR_FIX(kw::_sym_key);
- SMART_PTR_FIX(kw::_sym_print);
- SMART_PTR_FIX(chem::_sym__PLUS_stereochemistryTypeConverter_PLUS_);
- SMART_PTR_FIX(core::_sym_testVal);
- SMART_PTR_FIX(core::_sym_anonymous);
- SMART_PTR_FIX(llvmo::_sym_MDString_O);
- SMART_PTR_FIX(kw::_sym_line_buffered);
- SMART_PTR_FIX(llvmo::_sym_UnaryInstruction_O);
- SMART_PTR_FIX(cl::_sym_directory);
- SMART_PTR_FIX(cl::_sym_LogicalPathname_O);
- SMART_PTR_FIX(chem::_sym_Structure_Old_List_O);
- SMART_PTR_FIX(gray::_sym_stream_unread_char);
- SMART_PTR_FIX(ext::_sym_annotate);
- SMART_PTR_FIX(cl::_sym_two_way_stream);
- SMART_PTR_FIX(cl::_sym_string_NE_);
- SMART_PTR_FIX(llvmo::_sym_ArchType_hsail64);
- SMART_PTR_FIX(llvmo::_sym_AttributeReadNone);
- SMART_PTR_FIX(core::_sym_io);
- SMART_PTR_FIX(chem::_sym_RestraintAngle_O);
- SMART_PTR_FIX(core::_sym_argument_number_error);
- SMART_PTR_FIX(ext::_sym_specialVar);
- SMART_PTR_FIX(geom::_sym_colorTable);
- SMART_PTR_FIX(cl::_sym_eval_when);
- SMART_PTR_FIX(asttooling::_sym_onStartOfTranslationUnit);
- SMART_PTR_FIX(llvmo::_sym_InsertPoint_O);
- SMART_PTR_FIX(cl::_sym_remove);
- SMART_PTR_FIX(core::_sym_setfElt);
- SMART_PTR_FIX(cl::_sym_charUpcase);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_array_type);
- SMART_PTR_FIX(geom::_sym_CoordinateArray_O);
- SMART_PTR_FIX(units::_sym_elementaryCharge);
- SMART_PTR_FIX(kw::_sym_assignType);
- SMART_PTR_FIX(core::_sym_render);
- SMART_PTR_FIX(llvmo::_sym_ConstantFP_O);
- SMART_PTR_FIX(chem::_sym_configurationToSymbolConverter);
- SMART_PTR_FIX(kw::_sym_vdwMixRadius);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_lo_user);
- SMART_PTR_FIX(llvmo::_sym_DICompileUnit_O);
- SMART_PTR_FIX(llvmo::_sym_AttributeNone);
- SMART_PTR_FIX(core::_sym_database_dir);
- SMART_PTR_FIX(cl::_sym_unuse_package);
- SMART_PTR_FIX(cl::_sym_string);
- SMART_PTR_FIX(kw::_sym_itors);
- SMART_PTR_FIX(asttooling::_sym_CreateASTConsumer);
- SMART_PTR_FIX(llvmo::_sym_Release);
- SMART_PTR_FIX(chem::_sym_ConstitutionAtoms_O);
- SMART_PTR_FIX(units::_sym_kelvin);
- SMART_PTR_FIX(cl::_sym_string_LT_);
- SMART_PTR_FIX(core::_sym_hash_equal);
- SMART_PTR_FIX(chemkw::_sym_dashedDoubleBond);
- SMART_PTR_FIX(cl::_sym_freshLine);
- SMART_PTR_FIX(llvmo::_sym_FCMP_UNE);
- SMART_PTR_FIX(core::_sym_forward_referenced_class);
- SMART_PTR_FIX(chem::_sym_StructureComparer_O);
- SMART_PTR_FIX(sockets::_sym__PLUS_NETDB_INTERNAL_PLUS_);
- SMART_PTR_FIX(cl::_sym_nth);
- SMART_PTR_FIX(cl::_sym_hash_table);
- SMART_PTR_FIX(llvmo::_sym_OSType_Bitrig);
- SMART_PTR_FIX(llvmo::_sym_ICMP_UGE);
- SMART_PTR_FIX(core::_sym_SingleDispatchMethod_O);
- SMART_PTR_FIX(llvmo::_sym_throwIfMismatchedStructureSizes);
- SMART_PTR_FIX(cl::_sym_symbolPackage);
- SMART_PTR_FIX(llvmo::_sym_SingleThread);
- SMART_PTR_FIX(core::_sym_STARbq_appendSTAR);
- SMART_PTR_FIX(kw::_sym_ph5);
- SMART_PTR_FIX(llvmo::_sym_ArchType_amdil);
- SMART_PTR_FIX(cl::_sym_BuiltInClass_O);
- SMART_PTR_FIX(core::_sym_evaluateVerbosity);
- SMART_PTR_FIX(llvmo::_sym_AttributeNoInline);
- SMART_PTR_FIX(cl::_sym_eql);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_GNU_template_template_param);
- SMART_PTR_FIX(adapt::_sym_IndexedObjectBag_O);
- SMART_PTR_FIX(cl::_sym_callNextMethod);
- SMART_PTR_FIX(cl::_sym_string_upcase);
- SMART_PTR_FIX(kw::_sym_vdwMixWell);
- SMART_PTR_FIX(kw::_sym_eof);
- SMART_PTR_FIX(kw::_sym_newest);
- SMART_PTR_FIX(kw::_sym_gzip);
- SMART_PTR_FIX(chemkw::_sym__aromaticBond);
- SMART_PTR_FIX(chem::_sym_FFNonbondDb_O);
- SMART_PTR_FIX(cl::_sym_mismatch);
- SMART_PTR_FIX(core::_sym_structure_print_function);
- SMART_PTR_FIX(cl::_sym_bit);
- SMART_PTR_FIX(core::_sym_backquote_frob);
- SMART_PTR_FIX(kw::_sym_constituent_character);
- SMART_PTR_FIX(llvmo::_sym_StoreInst_O);
- SMART_PTR_FIX(cl::_sym_aref);
- SMART_PTR_FIX(core::_sym_instanceSet);
- SMART_PTR_FIX(gray::_sym_stream_force_output);
- SMART_PTR_FIX(kw::_sym_rings);
- SMART_PTR_FIX(llvmo::_sym_Pass_O);
- SMART_PTR_FIX(kw::_sym_green);
- SMART_PTR_FIX(cffi::_sym_uint16);
- SMART_PTR_FIX(cl::_sym_nreconc);
- SMART_PTR_FIX(core::_sym__PLUS_numberOfFixedArguments_PLUS_);
- SMART_PTR_FIX(chem::_sym_OligomerPart_Monomer_O);
- SMART_PTR_FIX(sockets::_sym_ll_autoCloseTwoWayStream);
- SMART_PTR_FIX(llvmo::_sym_VendorType_MipsTechnologies);
- SMART_PTR_FIX(clos::_sym_std_compute_effective_method);
- SMART_PTR_FIX(cl::_sym_multipleValueSetq);
- SMART_PTR_FIX(core::_sym_lookupLoadTimeValue);
- SMART_PTR_FIX(kw::_sym_caps);
- SMART_PTR_FIX(cl::_sym_Symbol_O);
- SMART_PTR_FIX(llvmo::_sym_ArchType_hsail);
- SMART_PTR_FIX(llvmo::_sym_DW_LANG_C);
- SMART_PTR_FIX(kw::_sym_probe);
- SMART_PTR_FIX(cffi::_sym_ptrdiff);
- SMART_PTR_FIX(kw::_sym_execute);
- SMART_PTR_FIX(core::_sym_STARdebugReaderSTAR);
- SMART_PTR_FIX(kw::_sym_common);
- SMART_PTR_FIX(sockets::_sym__PLUS_NETDB_SUCCESS_PLUS_);
- SMART_PTR_FIX(cl::_sym_endp);
- SMART_PTR_FIX(core::_sym_LambdaListHandler_O);
- SMART_PTR_FIX(core::_sym_color);
- SMART_PTR_FIX(core::_sym_loadTimeValuesIds);
- SMART_PTR_FIX(clos::_sym_setFuncallableInstanceFunction);
- SMART_PTR_FIX(cffi::_sym_PERCENTload_foreign_library);
- SMART_PTR_FIX(core::_sym_eval_with_env_default);
- SMART_PTR_FIX(llvmo::_sym_ArchType);
- SMART_PTR_FIX(asttooling::_sym_run);
- SMART_PTR_FIX(chem::_sym_StereoConfiguration_O);
- SMART_PTR_FIX(cl::_sym_Rational_O);
- SMART_PTR_FIX(cl::_sym_boole_orc1);
- SMART_PTR_FIX(cl::_sym_array_rank_limit);
- SMART_PTR_FIX(cl::_sym_logorc2);
- SMART_PTR_FIX(core::_sym_end);
- SMART_PTR_FIX(core::_sym_serialize);
- SMART_PTR_FIX(cl::_sym_STARtrace_outputSTAR);
- SMART_PTR_FIX(llvmo::_sym_FCMP_TRUE);
- SMART_PTR_FIX(core::_sym_TagbodyFrame_O);
- SMART_PTR_FIX(kw::_sym_attachedAtoms);
- SMART_PTR_FIX(core::_sym_bq_bracket);
- SMART_PTR_FIX(gray::_sym_stream_write_string);
- SMART_PTR_FIX(llvmo::_sym_ObjectFormatType_COFF);
- SMART_PTR_FIX(llvmo::_sym_interpreter);
- SMART_PTR_FIX(llvmo::_sym_VendorType_UnknownVendor);
- SMART_PTR_FIX(cl::_sym_STARstandard_outputSTAR);
- SMART_PTR_FIX(core::_sym_STARtrace_startupSTAR);
- SMART_PTR_FIX(cl::_sym_string_equal);
- SMART_PTR_FIX(llvmo::_sym_FAdd);
- SMART_PTR_FIX(core::_sym_SourceFileInfo_O);
- SMART_PTR_FIX(sockets::_sym_ll_makeStreamFromFd);
- SMART_PTR_FIX(cl::_sym_dynamic_extent);
- SMART_PTR_FIX(cl::_sym_file_write_date);
- SMART_PTR_FIX(chemkw::_sym_constitution);
- SMART_PTR_FIX(cl::_sym__NE_);
- SMART_PTR_FIX(adapt::_sym_SymbolSet_O);
- SMART_PTR_FIX(cl::_sym_defconstant);
- SMART_PTR_FIX(llvmo::_sym_FMul);
- SMART_PTR_FIX(core::_sym_isNil);
- SMART_PTR_FIX(cl::_sym_pathnameType);
- SMART_PTR_FIX(llvmo::_sym_ICMP_SLT);
- SMART_PTR_FIX(geom::_sym_OMatrix_O);
- SMART_PTR_FIX(kw::_sym_id);
- SMART_PTR_FIX(llvmo::_sym_PassManagerBuilder_O);
- SMART_PTR_FIX(cl::_sym_callArgumentsLimit);
- SMART_PTR_FIX(chem::_sym_UnknownConfiguration);
- SMART_PTR_FIX(cl::_sym_generic_function);
- SMART_PTR_FIX(core::_sym_invocationHistoryFrame);
- SMART_PTR_FIX(core::_sym_smartPointerDetails);
- SMART_PTR_FIX(cl::_sym_null);
- SMART_PTR_FIX(chem::_sym_idle);
- SMART_PTR_FIX(core::_sym_loadTimeValueArray);
- SMART_PTR_FIX(llvmo::_sym_AttributeStackProtect);
- SMART_PTR_FIX(cl::_sym_boole_set);
- SMART_PTR_FIX(llvmo::_sym_PassManager_O);
- SMART_PTR_FIX(chem::_sym_truncatedNewtonRunning);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_file_type);
- SMART_PTR_FIX(cl::_sym_integerp);
- SMART_PTR_FIX(chem::_sym_STARSabBondEnumConverterSTAR);
- SMART_PTR_FIX(core::_sym_implementationClass);
- SMART_PTR_FIX(core::_sym_ensureSingleDispatchMethod);
- SMART_PTR_FIX(core::_sym_type_to_symbol);
- SMART_PTR_FIX(cl::_sym_macroexpand);
- SMART_PTR_FIX(core::_sym_runtimeEnvironment);
- SMART_PTR_FIX(core::_sym_path);
- SMART_PTR_FIX(chem::_sym_Alias_O);
- SMART_PTR_FIX(units::_sym_kiloJoules_per_mole);
- SMART_PTR_FIX(core::_sym_bformat);
- SMART_PTR_FIX(clbind::_sym_STARtheClassRegistrySTAR);
- SMART_PTR_FIX(cl::_sym_revappend);
- SMART_PTR_FIX(sockets::_sym__PLUS_NO_ADDRESS_PLUS_);
- SMART_PTR_FIX(kw::_sym_Types);
- SMART_PTR_FIX(kw::_sym_constitutionAtoms);
- SMART_PTR_FIX(cl::_sym_warning);
- SMART_PTR_FIX(llvmo::_sym_Add);
- SMART_PTR_FIX(cl::_sym_min);
- SMART_PTR_FIX(chem::_sym_BondTest_O);
- SMART_PTR_FIX(llvmo::_sym_Value_O);
- SMART_PTR_FIX(cl::_sym_find_package);
- SMART_PTR_FIX(cl::_sym_findSymbol);
- SMART_PTR_FIX(kw::_sym_adjustable);
- SMART_PTR_FIX(cl::_sym_character);
- SMART_PTR_FIX(llvmo::_sym_AttributeSet_O);
- SMART_PTR_FIX(cl::_sym_char_NE_);
- SMART_PTR_FIX(core::_sym_backquote_append);
- SMART_PTR_FIX(kw::_sym_macro);
- SMART_PTR_FIX(kw::_sym_iclass);
- SMART_PTR_FIX(sockets::_sym_ll_getSockoptInt);
- SMART_PTR_FIX(chemkw::_sym_I);
- SMART_PTR_FIX(chem::_sym_PathMessage_O);
- SMART_PTR_FIX(cl::_sym_if);
- SMART_PTR_FIX(chem::_sym_AbstractLargeSquareMatrix_O);
- SMART_PTR_FIX(chem::_sym_StereoInformation_O);
- SMART_PTR_FIX(cl::_sym_setq);
- SMART_PTR_FIX(cl::_sym_charNotLessp);
- SMART_PTR_FIX(kw::_sym_local);
- SMART_PTR_FIX(cffi::_sym_PERCENTforeign_type_alignment);
- SMART_PTR_FIX(comp::_sym_implicit_compile_hook_default);
- SMART_PTR_FIX(chem::_sym_AtomIndexer_O);
- SMART_PTR_FIX(llvmo::_sym_InternalLinkage);
- SMART_PTR_FIX(llvmo::_sym_User_O);
- SMART_PTR_FIX(cl::_sym_pathnameHost);
- SMART_PTR_FIX(chem::_sym_MacroModelFile_O);
- SMART_PTR_FIX(core::_sym_StrWithFillPtr_O);
- SMART_PTR_FIX(chem::_sym_CalculatePositionAlongBond_O);
- SMART_PTR_FIX(core::_sym_FunctionValueEnvironment_O);
- SMART_PTR_FIX(core::_sym_CxxClass_O);
- SMART_PTR_FIX(kw::_sym_macro_function);
- SMART_PTR_FIX(kw::_sym_firstTest);
- SMART_PTR_FIX(llvmo::_sym_ReturnInst_O);
- SMART_PTR_FIX(asttooling::_sym_HandleTranslationUnit);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_subprogram);
- SMART_PTR_FIX(chemkw::_sym_singleBond);
- SMART_PTR_FIX(core::_sym_printf);
- SMART_PTR_FIX(kw::_sym_properties);
- SMART_PTR_FIX(core::_sym_STARconsing_dot_allowedSTAR);
- SMART_PTR_FIX(clos::_sym_classp);
- SMART_PTR_FIX(sockets::_sym__PLUS_SO_DONTROUTE_PLUS_);
- SMART_PTR_FIX(chemkw::_sym_XD);
- SMART_PTR_FIX(core::_sym_environmentTypeList);
- SMART_PTR_FIX(chem::_sym_TwisterDriver_O);
- SMART_PTR_FIX(core::_sym_get_sysprop);
- SMART_PTR_FIX(llvmo::_sym_ICMP_ULE);
- SMART_PTR_FIX(kw::_sym_latin_1);
- SMART_PTR_FIX(chemkw::_sym_3);
- SMART_PTR_FIX(cffi::_sym_int8);
- SMART_PTR_FIX(llvmo::_sym_STARglobal_value_linkage_typesSTAR);
- SMART_PTR_FIX(kw::_sym_splatted);
- SMART_PTR_FIX(core::_sym_DOT);
- SMART_PTR_FIX(core::_sym_setThrowPosition);
- SMART_PTR_FIX(core::_sym_STARsystem_defsetf_update_functionsSTAR);
- SMART_PTR_FIX(kw::_sym_host);
- SMART_PTR_FIX(cl::_sym_AMPkey);
- SMART_PTR_FIX(llvmo::_sym_DISubroutineType_O);
- SMART_PTR_FIX(cl::_sym_writeLine);
- SMART_PTR_FIX(core::_sym_lookupLoadTimeSymbol);
- SMART_PTR_FIX(cl::_sym_notany);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_string_type);
- SMART_PTR_FIX(llvmo::_sym_MDNode_O);
- SMART_PTR_FIX(gray::_sym_stream_read_sequence);
- SMART_PTR_FIX(cffi::_sym_pointer);
- SMART_PTR_FIX(core::_sym_pathnameTranslations);
- SMART_PTR_FIX(chem::_sym_Molecule_O);
- SMART_PTR_FIX(chemkw::_sym_message);
- SMART_PTR_FIX(core::_sym_LexicalEnvironment_O);
- SMART_PTR_FIX(cl::_sym_stringTrim);
- SMART_PTR_FIX(cl::_sym_fixnum);
- SMART_PTR_FIX(llvmo::_sym_makeAP64);
- SMART_PTR_FIX(chem::_sym_in6MemberRing);
- SMART_PTR_FIX(cl::_sym_condition);
- SMART_PTR_FIX(core::_sym_intrusiveReferenceCountedPointer);
- SMART_PTR_FIX(chemkw::_sym_rotate);
- SMART_PTR_FIX(kw::_sym_changed);
- SMART_PTR_FIX(cl::_sym_leastNegativeShortFloat);
- SMART_PTR_FIX(cl::_sym_boole_eqv);
- SMART_PTR_FIX(sockets::_sym_ff_listen);
- SMART_PTR_FIX(cl::_sym_rename_file);
- SMART_PTR_FIX(llvmo::_sym_PtrToInt);
- SMART_PTR_FIX(llvmo::_sym_STARsynchronization_scopeSTAR);
- SMART_PTR_FIX(kw::_sym_aquamarine);
- SMART_PTR_FIX(kw::_sym_ph3);
- SMART_PTR_FIX(chemkw::_sym_virtualBond);
- SMART_PTR_FIX(llvmo::_sym_STARCmpInstPredicateSTAR);
- SMART_PTR_FIX(core::_sym_STARdocumentation_poolSTAR);
- SMART_PTR_FIX(cl::_sym_ConcatenatedStream_O);
- SMART_PTR_FIX(llvmo::_sym_ArchType_spir64);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v7em);
- SMART_PTR_FIX(kw::_sym_eleDielectricValue);
- SMART_PTR_FIX(cl::_sym_STARprint_right_marginSTAR);
- SMART_PTR_FIX(kw::_sym_pdb_template);
- SMART_PTR_FIX(kw::_sym_rtld_next);
- SMART_PTR_FIX(kw::_sym_unrecognizedKeyword);
- SMART_PTR_FIX(cl::_sym_boole_c1);
- SMART_PTR_FIX(cl::_sym_defsetf);
- SMART_PTR_FIX(llvmo::_sym_CodeGenOpt_Default);
- SMART_PTR_FIX(cl::_sym_let);
- SMART_PTR_FIX(core::_sym__PLUS_standardReadtable_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_STARatomic_orderingSTAR);
- SMART_PTR_FIX(cl::_sym_make_list);
- SMART_PTR_FIX(core::_sym_functionBlockName);
- SMART_PTR_FIX(serveEvent::_sym_ll_fd_set);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_access_declaration);
- SMART_PTR_FIX(kw::_sym_bonds);
- SMART_PTR_FIX(llvmo::_sym_FIRST_FCMP_PREDICATE);
- SMART_PTR_FIX(core::_sym_acos);
- SMART_PTR_FIX(core::_sym_Instance_O);
- SMART_PTR_FIX(sockets::_sym__PLUS_clasp_stream_mode_input_PLUS_);
- SMART_PTR_FIX(core::_sym_separatePairList);
- SMART_PTR_FIX(cl::_sym__EQ_);
- SMART_PTR_FIX(chemkw::_sym_S);
- SMART_PTR_FIX(llvmo::_sym_FCMP_OEQ);
- SMART_PTR_FIX(core::_sym_Environment_O);
- SMART_PTR_FIX(cl::_sym_decodeFloat);
- SMART_PTR_FIX(cl::_sym_shadowing_import);
- SMART_PTR_FIX(core::_sym_key);
- SMART_PTR_FIX(kw::_sym_rtld_main_only);
- SMART_PTR_FIX(cl::_sym_probe_file);
- SMART_PTR_FIX(core::_sym_setRunTimeValuesVector);
- SMART_PTR_FIX(core::_sym_STARstandard_readtableSTAR);
- SMART_PTR_FIX(cl::_sym_charNotGreaterp);
- SMART_PTR_FIX(chemkw::_sym__doubleBond);
- SMART_PTR_FIX(kw::_sym_tag2);
- SMART_PTR_FIX(llvmo::_sym_DICompositeType_O);
- SMART_PTR_FIX(llvmo::_sym_ConstantArray_O);
- SMART_PTR_FIX(llvmo::_sym_APInt_O);
- SMART_PTR_FIX(cl::_sym_catch);
- SMART_PTR_FIX(kw::_sym_wildDict);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_common_inclusion);
- SMART_PTR_FIX(cl::_sym_nextMethodP);
- SMART_PTR_FIX(llvmo::_sym_OSType);
- SMART_PTR_FIX(cl::_sym_variable);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType);
- SMART_PTR_FIX(chem::_sym_minimizerSucceeded);
- SMART_PTR_FIX(kw::_sym_givenNumberOfArguments);
- SMART_PTR_FIX(llvmo::_sym_STARglobal_ThreadLocalModesSTAR);
- SMART_PTR_FIX(cl::_sym_STARmacroexpand_hookSTAR);
- SMART_PTR_FIX(core::_sym_ValueEnvironment_O);
- SMART_PTR_FIX(chemkw::_sym__tripleBond);
- SMART_PTR_FIX(chem::_sym_TagSet_O);
- SMART_PTR_FIX(core::_sym_STARechoReplReadSTAR);
- SMART_PTR_FIX(cl::_sym_makePathname);
- SMART_PTR_FIX(llvmo::_sym_VendorType_NVIDIA);
- SMART_PTR_FIX(cl::_sym_lcm);
- SMART_PTR_FIX(core::_sym_STARprint_structureSTAR);
- SMART_PTR_FIX(kw::_sym_coral);
- SMART_PTR_FIX(units::_sym_kilojoules);
- SMART_PTR_FIX(cl::_sym_STARprint_linesSTAR);
- SMART_PTR_FIX(core::_sym_instanceClass);
- SMART_PTR_FIX(asttooling::_sym_onEndOfTranslationUnit);
- SMART_PTR_FIX(cl::_sym_extended_char);
- SMART_PTR_FIX(chem::_sym_CandoDatabase_O);
- SMART_PTR_FIX(llvmo::_sym_ArchType_mips64);
- SMART_PTR_FIX(chem::_sym_BondList_O);
- SMART_PTR_FIX(llvmo::_sym_OSType_AIX);
- SMART_PTR_FIX(cl::_sym_logandc1);
- SMART_PTR_FIX(core::_sym_STARsharp_equal_alistSTAR);
- SMART_PTR_FIX(core::_sym_STARenvironmentPrintingTabIncrementSTAR);
- SMART_PTR_FIX(llvmo::_sym_DIDescriptor_O);
- SMART_PTR_FIX(cl::_sym_conjugate);
- SMART_PTR_FIX(llvmo::_sym_IndirectBrInst_O);
- SMART_PTR_FIX(kw::_sym_none);
- SMART_PTR_FIX(llvmo::_sym_AttributeInReg);
- SMART_PTR_FIX(chem::_sym_Trajectory_O);
- SMART_PTR_FIX(kw::_sym_ringTag);
- SMART_PTR_FIX(cl::_sym_arrayDimensionLimit);
- SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion10);
- SMART_PTR_FIX(core::_sym_rem_record_field);
- SMART_PTR_FIX(llvmo::_sym_AttributeReadOnly);
- SMART_PTR_FIX(gray::_sym_stream_read_char_no_hang);
- SMART_PTR_FIX(chemkw::_sym_6);
- SMART_PTR_FIX(cl::_sym_force_output);
- SMART_PTR_FIX(core::_sym_ArrayDisplaced_O);
- SMART_PTR_FIX(cl::_sym_streamp);
- SMART_PTR_FIX(core::_sym_invokeInternalDebuggerFromGdb);
- SMART_PTR_FIX(cleavirPrimops::_sym_callWithVariableBound);
- SMART_PTR_FIX(kw::_sym_v4);
- SMART_PTR_FIX(kw::_sym_tag);
- SMART_PTR_FIX(chem::_sym_STARLogicalOperatorTypeConverterSTAR);
- SMART_PTR_FIX(chem::_sym_SmartsRoot_O);
- SMART_PTR_FIX(core::_sym_sharp_minus);
- SMART_PTR_FIX(kw::_sym_compile_toplevel);
- SMART_PTR_FIX(kw::_sym_new_version);
- SMART_PTR_FIX(cl::_sym_StructureObject_O);
- SMART_PTR_FIX(llvmo::_sym_DILexicalBlock_O);
- SMART_PTR_FIX(kw::_sym_type1);
- SMART_PTR_FIX(cl::_sym_compileFile);
- SMART_PTR_FIX(llvmo::_sym_AttributeNoCapture);
- SMART_PTR_FIX(kw::_sym_ar4);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_GNU);
- SMART_PTR_FIX(cl::_sym_disassemble);
- SMART_PTR_FIX(llvmo::_sym_ArchType_spir);
- SMART_PTR_FIX(chem::_sym_LinearAngleError);
- SMART_PTR_FIX(llvmo::_sym_VendorType);
- SMART_PTR_FIX(llvmo::_sym_Metadata_O);
- SMART_PTR_FIX(kw::_sym_or);
- SMART_PTR_FIX(core::_sym_reader_list_allow_consing_dot);
- SMART_PTR_FIX(gray::_sym_open_stream_p);
- SMART_PTR_FIX(chem::_sym_Restraint_O);
- SMART_PTR_FIX(llvmo::_sym_VendorType_CSR);
- SMART_PTR_FIX(gctools::_sym_rampCollectAll);
- SMART_PTR_FIX(cl::_sym_acos);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_typedef);
- SMART_PTR_FIX(llvmo::_sym_ArchType_thumbeb);
- SMART_PTR_FIX(llvmo::_sym_CodeGenFileType_Null);
- SMART_PTR_FIX(comp::_sym_STARall_functions_for_one_compileSTAR);
- SMART_PTR_FIX(cl::_sym_nil);
- SMART_PTR_FIX(cl::_sym_STARprint_prettySTAR);
- SMART_PTR_FIX(cl::_sym_mostNegativeLongFloat);
- SMART_PTR_FIX(serveEvent::_sym_ll_serveEventWithTimeout);
- SMART_PTR_FIX(kw::_sym_fileSeqNum);
- SMART_PTR_FIX(chem::_sym__PLUS_validChemdrawKeywords_PLUS_);
- SMART_PTR_FIX(ext::_sym_getenv);
- SMART_PTR_FIX(chem::_sym_ZMatrixDihedralInternal_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_restrict_type);
- SMART_PTR_FIX(cl::_sym_wildPathnameP);
- SMART_PTR_FIX(llvmo::_sym__PLUS_DebugMetadataVersion_PLUS_);
- SMART_PTR_FIX(chem::_sym_RingClosingMate_O);
- SMART_PTR_FIX(kw::_sym_stretches);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_GNUEABI);
- SMART_PTR_FIX(kw::_sym_message);
- SMART_PTR_FIX(llvmo::_sym_ObjectFormatType_MachO);
- SMART_PTR_FIX(cl::_sym_shadow);
- SMART_PTR_FIX(core::_sym_adjustable);
- SMART_PTR_FIX(cl::_sym_package_shadowing_symbols);
- SMART_PTR_FIX(cl::_sym_Function_O);
- SMART_PTR_FIX(kw::_sym_cConstants);
- SMART_PTR_FIX(chemkw::_sym_Br);
- SMART_PTR_FIX(core::_sym_sharp_o);
- SMART_PTR_FIX(core::_sym_sharp_plus);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v5te);
- SMART_PTR_FIX(cl::_sym_case);
- SMART_PTR_FIX(llvmo::_sym_MCSubtargetInfo_O);
- SMART_PTR_FIX(chemkw::_sym_P);
- SMART_PTR_FIX(llvmo::_sym_CallInst_O);
- SMART_PTR_FIX(gray::_sym_stream_listen);
- SMART_PTR_FIX(chem::_sym_in5MemberRing);
- SMART_PTR_FIX(chem::_sym_EnergyImproperRestraint_O);
- SMART_PTR_FIX(core::_sym_SourcePosInfo_O);
- SMART_PTR_FIX(cl::_sym_keyword);
- SMART_PTR_FIX(cl::_sym_copySeq);
- SMART_PTR_FIX(cl::_sym_lognor);
- SMART_PTR_FIX(cl::_sym_concatenated_stream_streams);
- SMART_PTR_FIX(core::_sym_backquote_bracket);
- SMART_PTR_FIX(core::_sym_reader_skip_semicolon_comment);
- SMART_PTR_FIX(cl::_sym_setDispatchMacroCharacter);
- SMART_PTR_FIX(llvmo::_sym_OSType_Win32);
- SMART_PTR_FIX(cl::_sym_boole_clr);
- SMART_PTR_FIX(kw::_sym_version);
- SMART_PTR_FIX(core::_sym_STARsharp_sharp_alistSTAR);
- SMART_PTR_FIX(core::_sym_monitorReader);
- SMART_PTR_FIX(chem::_sym_FFParameter_O);
- SMART_PTR_FIX(chemkw::_sym_scale);
- SMART_PTR_FIX(kw::_sym_cyan);
- SMART_PTR_FIX(core::_sym_reader_comma_form);
- SMART_PTR_FIX(ext::_sym_truly_the);
- SMART_PTR_FIX(chem::_sym_ForceField_O);
- SMART_PTR_FIX(units::_sym_kilometers);
- SMART_PTR_FIX(kw::_sym_target_os_darwin);
- SMART_PTR_FIX(cl::_sym_tagbody);
- SMART_PTR_FIX(core::_sym_sharp_single_quote);
- SMART_PTR_FIX(core::_sym_STAReval_with_env_hookSTAR);
- SMART_PTR_FIX(gray::_sym_streamp);
- SMART_PTR_FIX(chem::_sym_in3MemberRing);
- SMART_PTR_FIX(sockets::_sym_ll_nonBlockingMode);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_variant_part);
- SMART_PTR_FIX(core::_sym_mpi_size);
- SMART_PTR_FIX(core::_sym_acosh);
- SMART_PTR_FIX(ext::_sym_STARloadHooksSTAR);
- SMART_PTR_FIX(core::_sym_slBoundp);
- SMART_PTR_FIX(cl::_sym_debug);
- SMART_PTR_FIX(cl::_sym_pathnamep);
- SMART_PTR_FIX(comp::_sym_STARlowLevelTracePrintSTAR);
- SMART_PTR_FIX(kw::_sym_atomicNumber);
- SMART_PTR_FIX(cffi::_sym_uint32);
- SMART_PTR_FIX(kw::_sym_fillPointer);
- SMART_PTR_FIX(chem::_sym_MinimizerError);
- SMART_PTR_FIX(cl::_sym_random);
- SMART_PTR_FIX(cl::_sym_leastNegativeNormalizedShortFloat);
- SMART_PTR_FIX(core::_sym_STARmonitorRegisterSourceInfoSTAR);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_template_value_parameter);
- SMART_PTR_FIX(core::_sym_SourceManager_O);
- SMART_PTR_FIX(sockets::_sym_ll_socketReceive);
- SMART_PTR_FIX(core::_sym_record_field);
- SMART_PTR_FIX(cl::_sym_echo_stream_output_stream);
- SMART_PTR_FIX(kw::_sym_Info);
- SMART_PTR_FIX(cl::_sym_STARloadPathnameSTAR);
- SMART_PTR_FIX(cl::_sym_apply);
- SMART_PTR_FIX(cl::_sym__LT_);
- SMART_PTR_FIX(cl::_sym_charGreaterp);
- SMART_PTR_FIX(llvmo::_sym_CodeGenOpt_None);
- SMART_PTR_FIX(chem::_sym_iterateMatterSymbolConverter);
- SMART_PTR_FIX(cl::_sym_logical_pathname);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_union_type);
- SMART_PTR_FIX(core::_sym_STARallCxxClassesSTAR);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_label);
- SMART_PTR_FIX(core::_sym_symbolMacroletLambda);
- SMART_PTR_FIX(cl::_sym_logxor);
- SMART_PTR_FIX(cl::_sym_acons);
- SMART_PTR_FIX(cl::_sym_AMPoptional);
- SMART_PTR_FIX(kw::_sym_special);
- SMART_PTR_FIX(sockets::_sym_ll_setfNonBlockingMode);
- SMART_PTR_FIX(cl::_sym_complex);
- SMART_PTR_FIX(core::_sym_evaluateDepth);
- SMART_PTR_FIX(core::_sym_STARsilentStartupSTAR);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v6m);
- SMART_PTR_FIX(kw::_sym_orange);
- SMART_PTR_FIX(cl::_sym_progn);
- SMART_PTR_FIX(sockets::_sym__PLUS_EAGAIN_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_DataLayout_O);
- SMART_PTR_FIX(chemkw::_sym_doubleBond);
- SMART_PTR_FIX(chem::_sym_minimizerIdle);
- SMART_PTR_FIX(cl::_sym__GT_);
- SMART_PTR_FIX(chemkw::_sym_Z);
- SMART_PTR_FIX(cl::_sym_mergePathnames);
- SMART_PTR_FIX(chem::_sym__PLUS_minimizerStatusConverter_PLUS_);
- SMART_PTR_FIX(core::_sym_HashTableEqual_O);
- SMART_PTR_FIX(core::_sym___init__);
- SMART_PTR_FIX(chemkw::_sym__dashedSingleBond);
- SMART_PTR_FIX(cl::_sym_charDowncase);
- SMART_PTR_FIX(core::_sym_STARcurrentSourceFileInfoSTAR);
- SMART_PTR_FIX(cl::_sym_floatingPointUnderflow);
- SMART_PTR_FIX(cl::_sym_simple_vector_p);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_Android);
- SMART_PTR_FIX(cl::_sym_notevery);
- SMART_PTR_FIX(llvmo::_sym_SExt);
- SMART_PTR_FIX(cl::_sym__LE_);
- SMART_PTR_FIX(core::_sym_default);
- SMART_PTR_FIX(cl::_sym_make_string);
- SMART_PTR_FIX(core::_sym_RecursiveDirectoryIterator_O);
- SMART_PTR_FIX(core::_sym_dot);
- SMART_PTR_FIX(llvmo::_sym_InitialExecTLSModel);
- SMART_PTR_FIX(kw::_sym_int);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_enumerator);
- SMART_PTR_FIX(cffi::_sym_foreign_symbol_pointer);
- SMART_PTR_FIX(llvmo::_sym_ConstantDataSequential_O);
- SMART_PTR_FIX(kw::_sym_if_exists);
- SMART_PTR_FIX(cl::_sym_mostNegativeShortFloat);
- SMART_PTR_FIX(asttooling::_sym_VisitDecl);
- SMART_PTR_FIX(kw::_sym_address_model_32);
- SMART_PTR_FIX(core::_sym_item);
- SMART_PTR_FIX(ext::_sym_byte8);
- SMART_PTR_FIX(sockets::_sym_ll_socketPeername_inetSocket);
- SMART_PTR_FIX(cffi::_sym_PERCENTsetf_mem_ref);
- SMART_PTR_FIX(sockets::_sym__PLUS_clasp_stream_mode_io_PLUS_);
- SMART_PTR_FIX(cl::_sym__MINUS_);
- SMART_PTR_FIX(cl::_sym_RandomState_O);
- SMART_PTR_FIX(cl::_sym_satisfies);
- SMART_PTR_FIX(core::_sym_STARserializerArchiveSTAR);
- SMART_PTR_FIX(core::_sym_InvocationHistoryFrameIterator_O);
- SMART_PTR_FIX(cl::_sym_leastPositiveNormalizedShortFloat);
- SMART_PTR_FIX(cl::_sym_Array_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_subroutine_type);
- SMART_PTR_FIX(kw::_sym_chemdraw_dashed_bond);
- SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion6);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_try_block);
- SMART_PTR_FIX(cl::_sym_storageCondition);
- SMART_PTR_FIX(llvmo::_sym_moduleFlagError);
- SMART_PTR_FIX(llvmo::_sym_AttributeNoAlias);
- SMART_PTR_FIX(kw::_sym_vdw);
- SMART_PTR_FIX(core::_sym_STARbacktraceFrameSelectorHookSTAR);
- SMART_PTR_FIX(cl::_sym_interactive_stream_p);
- SMART_PTR_FIX(gray::_sym_close);
- SMART_PTR_FIX(kw::_sym_mass);
- SMART_PTR_FIX(chem::_sym_EnergyAnchorRestraint_O);
- SMART_PTR_FIX(kw::_sym_requiredNumberOfArguments);
- SMART_PTR_FIX(core::_sym_probe);
- SMART_PTR_FIX(kw::_sym_grey10);
- SMART_PTR_FIX(chem::_sym__PLUS_bondOrderToSymbolConverter_PLUS_);
- SMART_PTR_FIX(cl::_sym_unwind_protect);
- SMART_PTR_FIX(gray::_sym_output_stream_p);
- SMART_PTR_FIX(chem::_sym_AGEdge_O);
- SMART_PTR_FIX(cl::_sym_peekChar);
- SMART_PTR_FIX(gray::_sym_stream_write_char);
- SMART_PTR_FIX(core::_sym_allocateRawClass);
- SMART_PTR_FIX(ext::_sym_integer8);
- SMART_PTR_FIX(cl::_sym_two_way_stream_input_stream);
- SMART_PTR_FIX(cl::_sym_typeError);
- SMART_PTR_FIX(cl::_sym_mostNegativeDoubleFloat);
- SMART_PTR_FIX(llvmo::_sym_ArchType_nvptx);
- SMART_PTR_FIX(cl::_sym_hash_table_p);
- SMART_PTR_FIX(core::_sym_mpi_rank);
- SMART_PTR_FIX(core::_sym_generic);
- SMART_PTR_FIX(cl::_sym_STARprint_arraySTAR);
- SMART_PTR_FIX(kw::_sym_type4);
- SMART_PTR_FIX(kw::_sym_function);
- SMART_PTR_FIX(cl::_sym_finish_output);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_rvalue_reference_type);
- SMART_PTR_FIX(core::_sym_gdbInspect);
- SMART_PTR_FIX(llvmo::_sym_UMax);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v7s);
- SMART_PTR_FIX(cl::_sym_define_modify_macro);
- SMART_PTR_FIX(core::_sym_singleDispatchWrongNumberArgumentsError);
- SMART_PTR_FIX(core::_sym_HashTableEq_O);
- SMART_PTR_FIX(cl::_sym_string_not_lessp);
- SMART_PTR_FIX(llvmo::_sym_OSType_RTEMS);
- SMART_PTR_FIX(kw::_sym_lf);
- SMART_PTR_FIX(core::_sym_ensureSingleDispatchGenericFunction);
- SMART_PTR_FIX(chem::_sym_RestrainedExoCyclicAtom_O);
- SMART_PTR_FIX(ext::_sym__PLUS_processErrorOutput_PLUS_);
- SMART_PTR_FIX(cl::_sym_type_of);
- SMART_PTR_FIX(core::_sym_loadBundle);
- SMART_PTR_FIX(core::_sym_Pointer_O);
- SMART_PTR_FIX(chem::_sym_StatusTracker_O);
- SMART_PTR_FIX(cl::_sym_STARerror_outputSTAR);
- SMART_PTR_FIX(cl::_sym_safety);
- SMART_PTR_FIX(llvmo::_sym_NotThreadLocal);
- SMART_PTR_FIX(sockets::_sym_ll_setSockoptLinger);
- SMART_PTR_FIX(llvmo::_sym_ExecutionEngine_O);
- SMART_PTR_FIX(chem::_sym_ZMatrixInternal_O);
- SMART_PTR_FIX(core::_sym_STARnotify_on_compileSTAR);
- SMART_PTR_FIX(cl::_sym_vectorPushExtend);
- SMART_PTR_FIX(llvmo::_sym_CrossThread);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_namelist_item);
- SMART_PTR_FIX(chem::_sym_Logical_O);
- SMART_PTR_FIX(llvmo::_sym_FCMP_OLT);
- SMART_PTR_FIX(chem::_sym_LinearImproperRestraintError);
- SMART_PTR_FIX(llvmo::_sym_AttributeStackAlignment);
- SMART_PTR_FIX(core::_sym_GlueEnvironment_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_APPLE_property);
- SMART_PTR_FIX(chem::_sym_ConformationCollectionEntry_O);
- SMART_PTR_FIX(sockets::_sym_socketPeername_localSocket);
- SMART_PTR_FIX(kw::_sym_position);
- SMART_PTR_FIX(llvmo::_sym_BranchInst_O);
- SMART_PTR_FIX(core::_sym_setupStackMonitor);
- SMART_PTR_FIX(cl::_sym_listSTAR);
- SMART_PTR_FIX(gctools::_sym_ramp);
- SMART_PTR_FIX(llvmo::_sym_VendorType_Freescale);
- SMART_PTR_FIX(cl::_sym_mostPositiveDoubleFloat);
- SMART_PTR_FIX(core::_sym_makeStringOutputStream);
- SMART_PTR_FIX(cl::_sym_optimize);
- SMART_PTR_FIX(cl::_sym_readCharNoHang);
- SMART_PTR_FIX(kw::_sym_use_boehm);
- SMART_PTR_FIX(core::_sym_mpi_enabled);
- SMART_PTR_FIX(cl::_sym_leastPositiveNormalizedSingleFloat);
- SMART_PTR_FIX(chemkw::_sym_hydrogenBond);
- SMART_PTR_FIX(asttooling::_sym_create);
- SMART_PTR_FIX(kw::_sym_NetCharge);
- SMART_PTR_FIX(llvmo::_sym_writeIrToFile);
- SMART_PTR_FIX(chem::_sym_AtomReference_O);
- SMART_PTR_FIX(cl::_sym_STARstandard_inputSTAR);
- SMART_PTR_FIX(llvmo::_sym_LinkOnceODRAutoHideLinkage);
- SMART_PTR_FIX(core::_sym_STARdebugInterpretedClosureSTAR);
- SMART_PTR_FIX(chem::_sym_RingTest_O);
- SMART_PTR_FIX(core::_sym_CxxObject_O);
- SMART_PTR_FIX(gctools::_sym_STARallocPatternStackSTAR);
- SMART_PTR_FIX(kw::_sym_operation);
- SMART_PTR_FIX(llvmo::_sym_UIToFP);
- SMART_PTR_FIX(llvmo::_sym_AtomicCmpXchgInst_O);
- SMART_PTR_FIX(core::_sym_LoadTimeValues_O);
- SMART_PTR_FIX(chem::_sym_SpecificContext_O);
- SMART_PTR_FIX(cl::_sym_position);
- SMART_PTR_FIX(kw::_sym_default);
- SMART_PTR_FIX(clos::_sym_FuncallableStandardClass_O);
- SMART_PTR_FIX(cl::_sym_boolean);
- SMART_PTR_FIX(core::_sym_structure_slot_descriptions);
- SMART_PTR_FIX(cl::_sym_provide);
- SMART_PTR_FIX(kw::_sym_ph2);
- SMART_PTR_FIX(chem::_sym_SpecificContextSet_O);
- SMART_PTR_FIX(kw::_sym_littleEndian);
- SMART_PTR_FIX(cl::_sym_STARdebug_ioSTAR);
- SMART_PTR_FIX(cl::_sym_SimpleBitVector_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_imported_module);
- SMART_PTR_FIX(kw::_sym_neff);
- SMART_PTR_FIX(kw::_sym_Nonbonds);
- SMART_PTR_FIX(kw::_sym_operands);
- SMART_PTR_FIX(kw::_sym_ucs_4);
- SMART_PTR_FIX(cl::_sym_char_code);
- SMART_PTR_FIX(core::_sym_fromTaggedFixnum);
- SMART_PTR_FIX(llvmo::_sym_moduleFlagAppendUnique);
- SMART_PTR_FIX(llvmo::_sym_ZExt);
- SMART_PTR_FIX(llvmo::_sym_ExternalLinkage);
- SMART_PTR_FIX(cl::_sym_two_way_stream_output_stream);
- SMART_PTR_FIX(cl::_sym_values_list);
- SMART_PTR_FIX(cl::_sym_close);
- SMART_PTR_FIX(kw::_sym_hybridization);
- SMART_PTR_FIX(core::_sym_tsp);
- SMART_PTR_FIX(kw::_sym_internal);
- SMART_PTR_FIX(cl::_sym_warn);
- SMART_PTR_FIX(llvmo::_sym_ICMP_UGT);
- SMART_PTR_FIX(ext::_sym_stackVar);
- SMART_PTR_FIX(chem::_sym_CoordinateSystem_O);
- SMART_PTR_FIX(cl::_sym_clearInput);
- SMART_PTR_FIX(chem::_sym_CalculatePosition_O);
- SMART_PTR_FIX(kw::_sym_device);
- SMART_PTR_FIX(kw::_sym_wild);
- SMART_PTR_FIX(llvmo::_sym_AttributeNoRedZone);
- SMART_PTR_FIX(cl::_sym_compiled_function_p);
- SMART_PTR_FIX(adapt::_sym_SymbolList_O);
- SMART_PTR_FIX(chem::_sym_RestraintDistance_O);
- SMART_PTR_FIX(cl::_sym_read);
- SMART_PTR_FIX(cl::_sym_cdr);
- SMART_PTR_FIX(chemkw::_sym_2);
- SMART_PTR_FIX(chem::_sym_FFStretch_O);
- SMART_PTR_FIX(core::_sym_backquote_splicing_frob);
- SMART_PTR_FIX(llvmo::_sym_ArchType_amdil64);
- SMART_PTR_FIX(chem::_sym_hessianPreconditioner);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_enumeration_type);
- SMART_PTR_FIX(cl::_sym_unboundVariable);
- SMART_PTR_FIX(llvmo::_sym_VendorType_IBM);
- SMART_PTR_FIX(core::_sym_singleDispatchMissingDispatchArgumentError);
- SMART_PTR_FIX(kw::_sym_body);
- SMART_PTR_FIX(cl::_sym_simpleWarning);
- SMART_PTR_FIX(cl::_sym_numerator);
- SMART_PTR_FIX(cl::_sym_mapcon);
- SMART_PTR_FIX(cl::_sym_pathname);
- SMART_PTR_FIX(cl::_sym_string_GT_);
- SMART_PTR_FIX(kw::_sym_arguments);
- SMART_PTR_FIX(chem::_sym_FFTypesDb_O);
- SMART_PTR_FIX(core::_sym_ForwardReferencedClass_O);
- SMART_PTR_FIX(core::_sym_environmentActivationFrame);
- SMART_PTR_FIX(chem::_sym_STARVdwMixRadiusEnumConverterSTAR);
- SMART_PTR_FIX(cl::_sym_STARdebuggerHookSTAR);
- SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion7);
- SMART_PTR_FIX(kw::_sym_a2);
- SMART_PTR_FIX(ext::_sym_STARdefault_external_formatSTAR);
- SMART_PTR_FIX(core::_sym_STARexecutable_nameSTAR);
- SMART_PTR_FIX(cl::_sym_AMPwhole);
- SMART_PTR_FIX(llvmo::_sym_DIFile_O);
- SMART_PTR_FIX(cl::_sym_length);
- SMART_PTR_FIX(cl::_sym_throw);
- SMART_PTR_FIX(core::_sym_macro);
- SMART_PTR_FIX(chem::_sym_MonomerPack_O);
- SMART_PTR_FIX(chem::_sym_MinimizerExceededMaxStepsError);
- SMART_PTR_FIX(chemkw::_sym_parameterized);
- SMART_PTR_FIX(units::_sym_joule);
- SMART_PTR_FIX(kw::_sym_magenta);
- SMART_PTR_FIX(llvmo::_sym_moduleFlagAppend);
- SMART_PTR_FIX(cl::_sym_STARread_suppressSTAR);
- SMART_PTR_FIX(kw::_sym_Stretches);
- SMART_PTR_FIX(core::_sym_unquote);
- SMART_PTR_FIX(chem::_sym_CDBond_O);
- SMART_PTR_FIX(llvmo::_sym_Sub);
- SMART_PTR_FIX(chem::_sym_S);
- SMART_PTR_FIX(cl::_sym_gethash);
- SMART_PTR_FIX(cl::_sym_symbolValue);
- SMART_PTR_FIX(kw::_sym_ar5);
- SMART_PTR_FIX(asttooling::_sym_VisitType);
- SMART_PTR_FIX(chem::_sym_IterateAtoms_O);
- SMART_PTR_FIX(kw::_sym_yellow);
- SMART_PTR_FIX(core::_sym_StringOutputStream_O);
- SMART_PTR_FIX(chem::_sym_Stereoisomer_O);
- SMART_PTR_FIX(kw::_sym_afterMatchTests);
- SMART_PTR_FIX(cl::_sym_STARload_verboseSTAR);
- SMART_PTR_FIX(units::_sym_kilojoules_per_mole);
- SMART_PTR_FIX(cl::_sym_load_time_value);
- SMART_PTR_FIX(kw::_sym_str);
- SMART_PTR_FIX(core::_sym_coerceToPhysicalPathname);
- SMART_PTR_FIX(core::_sym_put_sysprop);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_entry_point);
- SMART_PTR_FIX(core::_sym_LeafSNode_O);
- SMART_PTR_FIX(cl::_sym_set);
- SMART_PTR_FIX(core::_sym_stackUsed);
- SMART_PTR_FIX(kw::_sym_wild_inferiors);
- SMART_PTR_FIX(sockets::_sym__PLUS_EOPNOTSUPP_PLUS_);
- SMART_PTR_FIX(chem::_sym_nonbondTerm);
- SMART_PTR_FIX(cl::_sym_Character_dummy_O);
- SMART_PTR_FIX(cl::_sym_T);
- SMART_PTR_FIX(chemkw::_sym_frameRecognizer);
- SMART_PTR_FIX(cl::_sym_fboundp);
- SMART_PTR_FIX(ext::_sym_maybeQuote);
- SMART_PTR_FIX(cl::_sym_multiple_value_prog1);
- SMART_PTR_FIX(llvmo::_sym_ConstantStruct_O);
- SMART_PTR_FIX(kw::_sym_allow_other_keys);
- SMART_PTR_FIX(comp::_sym_STARlowLevelTraceSTAR);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_subrange_type);
- SMART_PTR_FIX(cl::_sym_leastNegativeDoubleFloat);
- SMART_PTR_FIX(cl::_sym_nreverse);
- SMART_PTR_FIX(kw::_sym_name);
- SMART_PTR_FIX(core::_sym_sharp_r);
- SMART_PTR_FIX(core::_sym_VectorObjects_O);
- SMART_PTR_FIX(cl::_sym_endOfFile);
- SMART_PTR_FIX(core::_sym_make_structure);
- SMART_PTR_FIX(llvmo::_sym_Xchg);
- SMART_PTR_FIX(llvmo::_sym_OSType_IOS);
- SMART_PTR_FIX(llvmo::_sym_STARmoduleModFlagBehaviorSTAR);
- SMART_PTR_FIX(units::_sym_Dimension_O);
- SMART_PTR_FIX(units::_sym_amperes);
- SMART_PTR_FIX(units::_sym_daltons);
- SMART_PTR_FIX(sockets::_sym_ll_socketConnect_localSocket);
- SMART_PTR_FIX(cl::_sym_prin1);
- SMART_PTR_FIX(cl::_sym_import);
- SMART_PTR_FIX(core::_sym_eof_error_p);
- SMART_PTR_FIX(core::_sym_lambdaName);
- SMART_PTR_FIX(chem::_sym_IterateRestraints_O);
- SMART_PTR_FIX(kw::_sym_title);
- SMART_PTR_FIX(core::_sym_cArgumentsLimit);
- SMART_PTR_FIX(core::_sym_ensure_documentation);
- SMART_PTR_FIX(chem::_sym_MessageReport_O);
- SMART_PTR_FIX(core::_sym_integer_divide);
- SMART_PTR_FIX(chem::_sym_WildElementDict_O);
- SMART_PTR_FIX(cl::_sym_letSTAR);
- SMART_PTR_FIX(llvmo::_sym_ArchType_mips64el);
- SMART_PTR_FIX(llvmo::_sym_module_get_function_list);
- SMART_PTR_FIX(chem::_sym_STARDonorAcceptorEnumConverterSTAR);
- SMART_PTR_FIX(cl::_sym_not);
- SMART_PTR_FIX(llvmo::_sym_Xor);
- SMART_PTR_FIX(chemkw::_sym_rough);
- SMART_PTR_FIX(llvmo::_sym_FCMP_UNO);
- SMART_PTR_FIX(chemkw::_sym_XX);
- SMART_PTR_FIX(kw::_sym_Angles);
- SMART_PTR_FIX(core::_sym_quasiquote);
- SMART_PTR_FIX(llvmo::_sym_AtomicRMWInst_O);
- SMART_PTR_FIX(kw::_sym_right);
- SMART_PTR_FIX(llvmo::_sym_Mul);
- SMART_PTR_FIX(kw::_sym_num);
- SMART_PTR_FIX(cl::_sym_leastPositiveNormalizedDoubleFloat);
- SMART_PTR_FIX(serveEvent::_sym_ll_fd_zero);
- SMART_PTR_FIX(chem::_sym_R);
- SMART_PTR_FIX(clos::_sym_standardOptimizedReaderMethod);
- SMART_PTR_FIX(core::_sym_deserialize_xml);
- SMART_PTR_FIX(kw::_sym_sym);
- SMART_PTR_FIX(kw::_sym_restraints);
- SMART_PTR_FIX(geom::_sym_CoordinateArrayWithHash_O);
- SMART_PTR_FIX(cl::_sym_boole_2);
- SMART_PTR_FIX(llvmo::_sym_IRBuilder_O);
- SMART_PTR_FIX(cl::_sym_Integer_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_format_label);
- SMART_PTR_FIX(clos::_sym_standardOptimizedWriterMethod);
- SMART_PTR_FIX(core::_sym_globalSetfFunction);
- SMART_PTR_FIX(chem::_sym_Angle_O);
- SMART_PTR_FIX(chem::_sym_AtomReferenceBase_O);
- SMART_PTR_FIX(cl::_sym_bit_vector_p);
- SMART_PTR_FIX(cl::_sym_write);
- SMART_PTR_FIX(llvmo::_sym_CodeModel);
- SMART_PTR_FIX(kw::_sym_bond);
- SMART_PTR_FIX(core::_sym_makeLambdaListHandler);
- SMART_PTR_FIX(llvmo::_sym_FDiv);
- SMART_PTR_FIX(core::_sym_hash_equalp);
- SMART_PTR_FIX(chemkw::_sym_C);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v5);
- SMART_PTR_FIX(chem::_sym_OligomerPart_Base_O);
- SMART_PTR_FIX(chem::_sym_STAREleDielectricEnumConverterSTAR);
- SMART_PTR_FIX(kw::_sym_tags);
- SMART_PTR_FIX(core::_sym_ihsTop);
- SMART_PTR_FIX(core::_sym_repr);
- SMART_PTR_FIX(core::_sym_STARpreserve_whitespace_pSTAR);
- SMART_PTR_FIX(cl::_sym_export);
- SMART_PTR_FIX(kw::_sym_contents);
- SMART_PTR_FIX(llvmo::_sym_ObjectFormatType_UnknownObjectFormat);
- SMART_PTR_FIX(cl::_sym_princ);
- SMART_PTR_FIX(clos::_sym_StdClass_O);
- SMART_PTR_FIX(cl::_sym_read_from_string);
- SMART_PTR_FIX(cl::_sym_method);
- SMART_PTR_FIX(kw::_sym_line);
- SMART_PTR_FIX(llvmo::_sym_DLLExportLinkage);
- SMART_PTR_FIX(kw::_sym_multiple_escape_character);
- SMART_PTR_FIX(core::_sym_backquote_simplify);
- SMART_PTR_FIX(sockets::_sym_socketSendNoAddress);
- SMART_PTR_FIX(cl::_sym_writeChar);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_Cygnus);
- SMART_PTR_FIX(kw::_sym_ph4);
- SMART_PTR_FIX(asttooling::_sym_AstVisitor_O);
- SMART_PTR_FIX(core::_sym_SingleDispatchGenericFunction_O);
- SMART_PTR_FIX(llvmo::_sym_Target_O);
- SMART_PTR_FIX(kw::_sym_array);
- SMART_PTR_FIX(core::_sym_debug_message);
- SMART_PTR_FIX(core::_sym_sharp_dot);
- SMART_PTR_FIX(cl::_sym_describe);
- SMART_PTR_FIX(cl::_sym_equal);
- SMART_PTR_FIX(kw::_sym_N);
- SMART_PTR_FIX(kw::_sym_fully_buffered);
- SMART_PTR_FIX(sockets::_sym__PLUS_SO_RCVBUF_PLUS_);
- SMART_PTR_FIX(cl::_sym_controlError);
- SMART_PTR_FIX(cl::_sym_logeqv);
- SMART_PTR_FIX(cl::_sym_nstring_upcase);
- SMART_PTR_FIX(sockets::_sym_ll_socketBind_localSocket);
- SMART_PTR_FIX(cl::_sym_standard_char);
- SMART_PTR_FIX(llvmo::_sym_TargetOptions_O);
- SMART_PTR_FIX(chem::_sym_MinimizerLog_O);
- SMART_PTR_FIX(gray::_sym_streamClearInput);
- SMART_PTR_FIX(core::_sym_SexpLoadArchive_O);
- SMART_PTR_FIX(core::_sym_singleDispatchTooManyArgumentsError);
- SMART_PTR_FIX(ext::_sym_float_nan_string);
- SMART_PTR_FIX(kw::_sym_flags);
- SMART_PTR_FIX(core::_sym_sharp_b);
- SMART_PTR_FIX(chem::_sym_AtomId_O);
- SMART_PTR_FIX(cl::_sym_package_use_list);
- SMART_PTR_FIX(cl::_sym_floatingPointInvalidOperation);
- SMART_PTR_FIX(kw::_sym_group);
- SMART_PTR_FIX(core::_sym_asin);
- SMART_PTR_FIX(llvmo::_sym_AttributeNoReturn);
- SMART_PTR_FIX(core::_sym_getline);
- SMART_PTR_FIX(llvmo::_sym_ICMP_NE);
- SMART_PTR_FIX(llvmo::_sym_WeakAnyLinkage);
- SMART_PTR_FIX(chem::_sym_RestraintChiral_O);
- SMART_PTR_FIX(chemkw::_sym__dashedDoubleBond);
- SMART_PTR_FIX(core::_sym_STARcircle_counterSTAR);
- SMART_PTR_FIX(cl::_sym_charEqual);
- SMART_PTR_FIX(cl::_sym_string_not_greaterp);
- SMART_PTR_FIX(cl::_sym_single_float);
- SMART_PTR_FIX(llvmo::_sym_BasicBlock_O);
- SMART_PTR_FIX(cl::_sym_mapc);
- SMART_PTR_FIX(core::_sym_whole);
- SMART_PTR_FIX(kw::_sym_eval);
- SMART_PTR_FIX(chem::_sym_in4MemberRing);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v7);
- SMART_PTR_FIX(kw::_sym_op);
- SMART_PTR_FIX(gray::_sym_stream_read_byte);
- SMART_PTR_FIX(chem::_sym_Command_O);
- SMART_PTR_FIX(chem::_sym_MonomerContext_O);
- SMART_PTR_FIX(llvmo::_sym_getOrCreateExternalGlobal);
- SMART_PTR_FIX(core::_sym_setf_find_single_dispatch_generic_function);
- SMART_PTR_FIX(core::_sym_ifDoesNotExist);
- SMART_PTR_FIX(llvmo::_sym_AttributeByVal);
- SMART_PTR_FIX(core::_sym_put_f);
- SMART_PTR_FIX(chem::_sym_FFVdwDb_O);
- SMART_PTR_FIX(llvmo::_sym_SequentiallyConsistent);
- SMART_PTR_FIX(llvmo::_sym_AttributeAlignment);
- SMART_PTR_FIX(comp::_sym_aSingleCompilerSymbol);
- SMART_PTR_FIX(cl::_sym_string_LE_);
- SMART_PTR_FIX(core::_sym_DirectoryIterator_O);
- SMART_PTR_FIX(cl::_sym_eq);
- SMART_PTR_FIX(sockets::_sym__PLUS_EPERM_PLUS_);
- SMART_PTR_FIX(cl::_sym_copyList);
- SMART_PTR_FIX(cl::_sym_STARgensym_counterSTAR);
- SMART_PTR_FIX(core::_sym_STARbq_simplifySTAR);
- SMART_PTR_FIX(core::_sym_Specializer_O);
- SMART_PTR_FIX(cl::_sym_symbol_macrolet);
- SMART_PTR_FIX(core::_sym_STARuseInterpreterForEvalSTAR);
- SMART_PTR_FIX(kw::_sym_data);
- SMART_PTR_FIX(llvmo::_sym_FunctionType_O);
- SMART_PTR_FIX(cl::_sym_logior);
- SMART_PTR_FIX(llvmo::_sym_Shl);
- SMART_PTR_FIX(chem::_sym_ConformationExplorerMatch_O);
- SMART_PTR_FIX(core::_sym__PLUS_llvmTargetTriple_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_NamedMDNode_O);
- SMART_PTR_FIX(kw::_sym_instance);
- SMART_PTR_FIX(core::_sym_WeakHashTable_O);
- SMART_PTR_FIX(llvmo::_sym_DW_LANG_C_plus_plus);
- SMART_PTR_FIX(chem::_sym_OligomerPart_Link_O);
- SMART_PTR_FIX(llvmo::_sym_ObjectFormatType_ELF);
- SMART_PTR_FIX(kw::_sym_wheat);
- SMART_PTR_FIX(kw::_sym_case);
- SMART_PTR_FIX(core::_sym_bdsVal);
- SMART_PTR_FIX(sockets::_sym__PLUS_SO_REUSEPORT_PLUS_);
- SMART_PTR_FIX(cl::_sym_SingleFloat_dummy_O);
- SMART_PTR_FIX(comp::_sym_compileFormAndEvalWithEnv);
- SMART_PTR_FIX(kw::_sym_well);
- SMART_PTR_FIX(llvmo::_sym_Function_O);
- SMART_PTR_FIX(cl::_sym_macroexpand_1);
- SMART_PTR_FIX(cffi::_sym_short);
- SMART_PTR_FIX(chem::_sym_NumericalFunction_O);
- SMART_PTR_FIX(cl::_sym_HashTable_O);
- SMART_PTR_FIX(core::_sym_STARllvmFunctionNameHookSTAR);
- SMART_PTR_FIX(gray::_sym_stream_peek_char);
- SMART_PTR_FIX(cl::_sym_AMPrest);
- SMART_PTR_FIX(core::_sym_float_to_digits);
- SMART_PTR_FIX(core::_sym_invalidKeywordArgumentError);
- SMART_PTR_FIX(llvmo::_sym_AttributeSExt);
- SMART_PTR_FIX(core::_sym_rem_sysprop);
- SMART_PTR_FIX(llvmo::_sym_Constant_O);
- SMART_PTR_FIX(core::_sym_CompileTimeEnvironment_O);
- SMART_PTR_FIX(cl::_sym_floatDigits);
- SMART_PTR_FIX(cl::_sym_nstring_downcase);
- SMART_PTR_FIX(core::_sym_reader_read_double_quote_string);
- SMART_PTR_FIX(cl::_sym_ignore);
- SMART_PTR_FIX(core::_sym_nan);
- SMART_PTR_FIX(core::_sym_signalSimpleError);
- SMART_PTR_FIX(cl::_sym_function);
- SMART_PTR_FIX(chem::_sym_Plug_O);
- SMART_PTR_FIX(core::_sym_eltSet);
- SMART_PTR_FIX(chem::_sym__PLUS_elementToSymbolConverter_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_ArchType_r600);
- SMART_PTR_FIX(clos::_sym_clearGfunHash);
- SMART_PTR_FIX(llvmo::_sym_ArchType_sparc);
- SMART_PTR_FIX(llvmo::_sym_AttributeNoUnwind);
- SMART_PTR_FIX(llvmo::_sym__PLUS_DW_ATE_SIGNED_FIXED_PLUS_);
- SMART_PTR_FIX(kw::_sym_escape);
- SMART_PTR_FIX(cl::_sym_STARprint_lengthSTAR);
- SMART_PTR_FIX(cl::_sym_stringLeftTrim);
- SMART_PTR_FIX(cl::_sym_reverse);
- SMART_PTR_FIX(cl::_sym_assoc);
- SMART_PTR_FIX(core::_sym_bdsTop);
- SMART_PTR_FIX(kw::_sym_link);
- SMART_PTR_FIX(core::_sym_env);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_unspecified_type);
- SMART_PTR_FIX(llvmo::_sym_OSType_Darwin);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_UnknownEnvironment);
- SMART_PTR_FIX(llvmo::_sym_ArchType_x86);
- SMART_PTR_FIX(core::_sym_UserData_O);
- SMART_PTR_FIX(kw::_sym_bclasp);
- SMART_PTR_FIX(cl::_sym_logandc2);
- SMART_PTR_FIX(core::_sym_aset);
- SMART_PTR_FIX(core::_sym_rehash_size);
- SMART_PTR_FIX(chem::_sym_conjugateGradientRunning);
- SMART_PTR_FIX(cl::_sym_userHomedirPathname);
- SMART_PTR_FIX(core::_sym_sharp_sharp);
- SMART_PTR_FIX(core::_sym_STARsourceDatabaseSTAR);
- SMART_PTR_FIX(cl::_sym_alpha_char_p);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_catch_block);
- SMART_PTR_FIX(cl::_sym_STARread_baseSTAR);
- SMART_PTR_FIX(kw::_sym_relative);
- SMART_PTR_FIX(core::_sym_lispCodePath);
- SMART_PTR_FIX(core::_sym_isSubClassOf);
- SMART_PTR_FIX(cl::_sym_atom);
- SMART_PTR_FIX(core::_sym_debugLogOn);
- SMART_PTR_FIX(adapt::_sym_QDomNode_O);
- SMART_PTR_FIX(core::_sym_STARclassNameHashTableSTAR);
- SMART_PTR_FIX(kw::_sym_calledFunction);
- SMART_PTR_FIX(llvmo::_sym_LoadInst_O);
- SMART_PTR_FIX(chem::_sym_EntityNameSet_O);
- SMART_PTR_FIX(core::_sym_STARwatchDynamicBindingStackSTAR);
- SMART_PTR_FIX(chem::_sym_FullLargeSquareMatrix_O);
- SMART_PTR_FIX(cl::_sym_printNotReadableObject);
- SMART_PTR_FIX(core::_sym_STARbq_quoteSTAR);
- SMART_PTR_FIX(cl::_sym_Null_O);
- SMART_PTR_FIX(cl::_sym_digitCharP);
- SMART_PTR_FIX(llvmo::_sym_AquireRelease);
- SMART_PTR_FIX(cl::_sym_MultipleValuesLimit);
- SMART_PTR_FIX(llvmo::_sym_IntegerType_O);
- SMART_PTR_FIX(llvmo::_sym_NotAtomic);
- SMART_PTR_FIX(cl::_sym_last);
- SMART_PTR_FIX(cl::_sym_arrayTotalSizeLimit);
- SMART_PTR_FIX(llvmo::_sym_FCMP_ONE);
- SMART_PTR_FIX(kw::_sym_level);
- SMART_PTR_FIX(chemkw::_sym_4);
- SMART_PTR_FIX(sockets::_sym__PLUS_TCP_NODELAY_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_volatile_type);
- SMART_PTR_FIX(cl::_sym_symbolName);
- SMART_PTR_FIX(core::_sym_STARenablePrintPrettySTAR);
- SMART_PTR_FIX(cl::_sym_gcd);
- SMART_PTR_FIX(llvmo::_sym_ArchType_nvptx64);
- SMART_PTR_FIX(sockets::_sym__PLUS_sock_stream_PLUS_);
- SMART_PTR_FIX(kw::_sym_chartreuse);
- SMART_PTR_FIX(llvmo::_sym_DebugLoc_O);
- SMART_PTR_FIX(llvmo::_sym_DW_LANG_COMMON_LISP);
- SMART_PTR_FIX(cl::_sym_sort);
- SMART_PTR_FIX(cl::_sym_arithmeticError);
- SMART_PTR_FIX(kw::_sym_junkAllowed);
- SMART_PTR_FIX(cl::_sym_Package_O);
- SMART_PTR_FIX(cl::_sym_most_positive_fixnum);
- SMART_PTR_FIX(cl::_sym_char_EQ_);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_template_type_parameter);
- SMART_PTR_FIX(units::_sym_kiloJoules);
- SMART_PTR_FIX(cl::_sym_intern);
- SMART_PTR_FIX(chemkw::_sym_XA);
- SMART_PTR_FIX(cl::_sym_fileStream);
- SMART_PTR_FIX(core::_sym_supersede);
- SMART_PTR_FIX(gray::_sym_stream_write_sequence);
- SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion9);
- SMART_PTR_FIX(llvmo::_sym_FSub);
- SMART_PTR_FIX(cl::_sym_DoubleFloat_O);
- SMART_PTR_FIX(kw::_sym_upcase);
- SMART_PTR_FIX(cl::_sym_deftype);
- SMART_PTR_FIX(kw::_sym_bondDistinctions);
- SMART_PTR_FIX(chem::_sym_Minimizer_O);
- SMART_PTR_FIX(cl::_sym_block);
- SMART_PTR_FIX(llvmo::_sym_BlockAddress_O);
- SMART_PTR_FIX(kw::_sym_goldenrod);
- SMART_PTR_FIX(chem::_sym_Constitution_O);
- SMART_PTR_FIX(core::_sym_Path_O);
- SMART_PTR_FIX(core::_sym_printCurrentIhsFrameEnvironment);
- SMART_PTR_FIX(chem::_sym_Aggregate_O);
- SMART_PTR_FIX(units::_sym_moles);
- SMART_PTR_FIX(cl::_sym_use_package);
- SMART_PTR_FIX(chem::_sym_SearchStatistics_O);
- SMART_PTR_FIX(core::_sym_structureSubtypep);
- SMART_PTR_FIX(cl::_sym_SynonymStream_O);
- SMART_PTR_FIX(chem::_sym_atoms);
- SMART_PTR_FIX(cffi::_sym_unsigned_short);
- SMART_PTR_FIX(llvmo::_sym_VendorType_Apple);
- SMART_PTR_FIX(kw::_sym_ph1);
- SMART_PTR_FIX(cl::_sym_char);
- SMART_PTR_FIX(llvmo::_sym_FCMP_ORD);
- SMART_PTR_FIX(cl::_sym_cons);
- SMART_PTR_FIX(serveEvent::_sym_ll_serveEventNoTimeout);
- SMART_PTR_FIX(chem::_sym_AntechamberRoot_O);
- SMART_PTR_FIX(cl::_sym_getInternalRunTime);
- SMART_PTR_FIX(cl::_sym_name_char);
- SMART_PTR_FIX(llvmo::_sym_SequentialType_O);
- SMART_PTR_FIX(kw::_sym_package);
- SMART_PTR_FIX(core::_sym_Record_O);
- SMART_PTR_FIX(llvmo::_sym_ICMP_EQ);
- SMART_PTR_FIX(chem::_sym_CDText_O);
- SMART_PTR_FIX(cl::_sym_unintern);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_imported_unit);
- SMART_PTR_FIX(core::_sym_STARenvironmentPrintingTabSTAR);
- SMART_PTR_FIX(chem::_sym_SpanningLoop_O);
- SMART_PTR_FIX(cl::_sym_readByte);
- SMART_PTR_FIX(llvmo::_sym_makeStringGlobal);
- SMART_PTR_FIX(cl::_sym_directoryNamestring);
- SMART_PTR_FIX(chem::_sym_Bond_O);
- SMART_PTR_FIX(cl::_sym_getUniversalTime);
- SMART_PTR_FIX(core::_sym_hash_eql);
- SMART_PTR_FIX(llvmo::_sym_AttributeEnum);
- SMART_PTR_FIX(chem::_sym_LinearDihedralError);
- SMART_PTR_FIX(cl::_sym_error);
- SMART_PTR_FIX(chem::_sym__PLUS_hybridizationToSymbolConverter_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_RelocModel_DynamicNoPIC);
- SMART_PTR_FIX(core::_sym_singleDispatchBadLambdaListError);
- SMART_PTR_FIX(llvmo::_sym_FCMP_OLE);
- SMART_PTR_FIX(cl::_sym_simple_vector);
- SMART_PTR_FIX(core::_sym_STARdebugMonitorSTAR);
- SMART_PTR_FIX(cl::_sym_lambdaParametersLimit);
- SMART_PTR_FIX(core::_sym_STARstartRunTimeSTAR);
- SMART_PTR_FIX(cl::_sym_writeString);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_GNUX32);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_NoSubArch);
- SMART_PTR_FIX(kw::_sym_v0);
- SMART_PTR_FIX(cl::_sym_STARprint_caseSTAR);
- SMART_PTR_FIX(chemkw::_sym_F);
- SMART_PTR_FIX(gray::_sym_stream_element_type);
- SMART_PTR_FIX(cl::_sym_apropos);
- SMART_PTR_FIX(core::_sym_STARPATHSTAR);
- SMART_PTR_FIX(cl::_sym_nconc);
- SMART_PTR_FIX(llvmo::_sym_STARAtomicRMWInstBinOpSTAR);
- SMART_PTR_FIX(serveEvent::_sym_ll_fdset_size);
- SMART_PTR_FIX(cl::_sym_StructureClass_O);
- SMART_PTR_FIX(sockets::_sym_ll_getNameServiceErrorMessage);
- SMART_PTR_FIX(llvmo::_sym_STARInstructionCastOpsSTAR);
- SMART_PTR_FIX(kw::_sym_closestMatch);
- SMART_PTR_FIX(core::_sym_environmentId);
- SMART_PTR_FIX(kw::_sym_M);
- SMART_PTR_FIX(cl::_sym_leastPositiveSingleFloat);
- SMART_PTR_FIX(core::_sym_makeRegex);
- SMART_PTR_FIX(cl::_sym_STARreadtableSTAR);
- SMART_PTR_FIX(core::_sym_renameAndDelete);
- SMART_PTR_FIX(cffi::_sym_unsigned_int);
- SMART_PTR_FIX(chem::_sym_residues);
- SMART_PTR_FIX(cl::_sym_ftype);
- SMART_PTR_FIX(kw::_sym_use_boehmdc);
- SMART_PTR_FIX(core::_sym_nread);
- SMART_PTR_FIX(core::_sym_bdsVar);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_friend);
- SMART_PTR_FIX(chem::_sym_FFItor_O);
- SMART_PTR_FIX(chem::_sym_ZMatrix_O);
- SMART_PTR_FIX(llvmo::_sym__PLUS_ClaspMainFunctionName_PLUS_);
- SMART_PTR_FIX(kw::_sym_unbound);
- SMART_PTR_FIX(llvmo::_sym_FRem);
- SMART_PTR_FIX(chem::_sym_EnergyAngle_O);
- SMART_PTR_FIX(chem::_sym_Entity_O);
- SMART_PTR_FIX(llvmo::_sym_OSType_NaCl);
- SMART_PTR_FIX(llvmo::_sym_ArchType_armeb);
- SMART_PTR_FIX(core::_sym_ArrayObjects_O);
- SMART_PTR_FIX(core::_sym_STARbq_clobberableSTAR);
- SMART_PTR_FIX(core::_sym_SymbolMacroletEnvironment_O);
- SMART_PTR_FIX(cl::_sym_StandardClass_O);
- SMART_PTR_FIX(chem::_sym_CDFragment_O);
- SMART_PTR_FIX(kw::_sym_ar3);
- SMART_PTR_FIX(geom::_sym_OVector3_O);
- SMART_PTR_FIX(llvmo::_sym_Module_O);
- SMART_PTR_FIX(core::_sym_STARbackquote_levelSTAR);
- SMART_PTR_FIX(cl::_sym_simple_array);
- SMART_PTR_FIX(llvmo::_sym_TargetLibraryInfo_O);
- SMART_PTR_FIX(cl::_sym_print);
- SMART_PTR_FIX(kw::_sym_typeError);
- SMART_PTR_FIX(llvmo::_sym_AttributeNaked);
- SMART_PTR_FIX(chem::_sym_ConformationExplorerEntry_O);
- SMART_PTR_FIX(cl::_sym_max);
- SMART_PTR_FIX(cl::_sym_enoughNamestring);
- SMART_PTR_FIX(kw::_sym_eleChargeFcn);
- SMART_PTR_FIX(cl::_sym_destructuring_bind);
- SMART_PTR_FIX(core::_sym_STARdebugEvalSTAR);
- SMART_PTR_FIX(cl::_sym_return_from);
- SMART_PTR_FIX(kw::_sym_head);
- SMART_PTR_FIX(llvmo::_sym_writeBitcodeToFile);
- SMART_PTR_FIX(gray::_sym_stream_advance_to_column);
- SMART_PTR_FIX(kw::_sym_target_os_linux);
- SMART_PTR_FIX(cl::_sym_mapcar);
- SMART_PTR_FIX(llvmo::_sym_VAArgInst_O);
- SMART_PTR_FIX(core::_sym_sharp_c);
- SMART_PTR_FIX(llvmo::_sym_Attribute_O);
- SMART_PTR_FIX(cl::_sym_seriousCondition);
- SMART_PTR_FIX(cl::_sym_zerop);
- SMART_PTR_FIX(kw::_sym_defaults);
- SMART_PTR_FIX(kw::_sym_UnsignedByte);
- SMART_PTR_FIX(chem::_sym_InfoDb_O);
- SMART_PTR_FIX(llvmo::_sym_OSType_Lv2);
- SMART_PTR_FIX(core::_sym_printUnreadableObjectFunction);
- SMART_PTR_FIX(cl::_sym_mostPositiveLongFloat);
- SMART_PTR_FIX(llvmo::_sym_OSType_UnknownOS);
- SMART_PTR_FIX(chem::_sym_EntityNameSetBase_O);
- SMART_PTR_FIX(llvmo::_sym_verifyModule);
- SMART_PTR_FIX(sockets::_sym_ll_dup);
- SMART_PTR_FIX(clos::_sym_standardOptimizedReaderFunction);
- SMART_PTR_FIX(cl::_sym_tanh);
- SMART_PTR_FIX(core::_sym_reader_error_unmatched_close_parenthesis);
- SMART_PTR_FIX(kw::_sym_alias);
- SMART_PTR_FIX(cl::_sym_sin);
- SMART_PTR_FIX(cl::_sym_broadcast_stream_streams);
- SMART_PTR_FIX(core::_sym_dladdr);
- SMART_PTR_FIX(core::_sym_ForeignData_O);
- SMART_PTR_FIX(cl::_sym_and);
- SMART_PTR_FIX(core::_sym_MultiStringBuffer_O);
- SMART_PTR_FIX(core::_sym_instanceClassSet);
- SMART_PTR_FIX(gray::_sym_stream_fresh_line);
- SMART_PTR_FIX(chem::_sym_EntityNameSetWithCap_O);
- SMART_PTR_FIX(cl::_sym_char_code_limit);
- SMART_PTR_FIX(cl::_sym_styleWarning);
- SMART_PTR_FIX(llvmo::_sym_ArchType_ppc);
- SMART_PTR_FIX(kw::_sym_a1);
- SMART_PTR_FIX(llvmo::_sym_ArchType_tce);
- SMART_PTR_FIX(gctools::_sym_bootstrapKindsP);
- SMART_PTR_FIX(core::_sym_sequence_start_end);
- SMART_PTR_FIX(gray::_sym_stream_interactive_p);
- SMART_PTR_FIX(llvmo::_sym_EnvironmentType_GNUEABIHF);
- SMART_PTR_FIX(llvmo::_sym_ArrayType_O);
- SMART_PTR_FIX(core::_sym_single_dispatch_on);
- SMART_PTR_FIX(cl::_sym_simpleTypeError);
- SMART_PTR_FIX(units::_sym_micrometers);
- SMART_PTR_FIX(cl::_sym_Bit);
- SMART_PTR_FIX(core::_sym_SingleDispatchEffectiveMethodFunction_O);
- SMART_PTR_FIX(core::_sym_UnwindProtectEnvironment_O);
- SMART_PTR_FIX(cl::_sym_scaleFloat);
- SMART_PTR_FIX(cl::_sym_lambda);
- SMART_PTR_FIX(cl::_sym_remhash);
- SMART_PTR_FIX(kw::_sym_bigEndian);
- SMART_PTR_FIX(llvmo::_sym_PrivateLinkage);
- SMART_PTR_FIX(llvmo::_sym_ExternalWeakLinkage);
- SMART_PTR_FIX(cl::_sym_printNotReadable);
- SMART_PTR_FIX(kw::_sym_tests);
- SMART_PTR_FIX(chem::_sym_ResidueTest_O);
- SMART_PTR_FIX(core::_sym_STARsharp_equal_final_tableSTAR);
- SMART_PTR_FIX(llvmo::_sym_DIBuilder_O);
- SMART_PTR_FIX(core::_sym_STARsharp_equal_temp_tableSTAR);
- SMART_PTR_FIX(kw::_sym_type3);
- SMART_PTR_FIX(cl::_sym_read_preserving_whitespace);
- SMART_PTR_FIX(chemkw::_sym_XB);
- SMART_PTR_FIX(sockets::_sym__PLUS_SO_KEEPALIVE_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_STARmostRecentLlvmFinalizationTimeSTAR);
- SMART_PTR_FIX(sockets::_sym__PLUS_clasp_stream_mode_output_PLUS_);
- SMART_PTR_FIX(sockets::_sym_ll_setSockoptBool);
- SMART_PTR_FIX(chem::_sym_ConstitutionAtom_O);
- SMART_PTR_FIX(chem::_sym_Monomer_O);
- SMART_PTR_FIX(chem::_sym_EnergyDihedral_O);
- SMART_PTR_FIX(chemkw::_sym__hydrogenBond);
- SMART_PTR_FIX(ext::_sym_AnsiStream_O);
- SMART_PTR_FIX(cl::_sym_string_not_equal);
- SMART_PTR_FIX(core::_sym_initial_element);
- SMART_PTR_FIX(llvmo::_sym_UMin);
- SMART_PTR_FIX(chemkw::_sym_translate);
- SMART_PTR_FIX(llvmo::_sym_FCMP_ULE);
- SMART_PTR_FIX(asttooling::_sym_x);
- SMART_PTR_FIX(kw::_sym_not);
- SMART_PTR_FIX(kw::_sym_back);
- SMART_PTR_FIX(cl::_sym_boundp);
- SMART_PTR_FIX(units::_sym_grams);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_function_template);
- SMART_PTR_FIX(cl::_sym_STARreadDefaultFloatFormatSTAR);
- SMART_PTR_FIX(chem::_sym_allMatter);
- SMART_PTR_FIX(llvmo::_sym_LocalDynamicTLSModel);
- SMART_PTR_FIX(kw::_sym_nonbonds);
- SMART_PTR_FIX(cl::_sym_macroFunction);
- SMART_PTR_FIX(core::_sym_testMemoryError);
- SMART_PTR_FIX(core::_sym_RuntimeVisibleEnvironment_O);
- SMART_PTR_FIX(cl::_sym_vectorp);
- SMART_PTR_FIX(units::_sym_coulomb);
- SMART_PTR_FIX(chem::_sym_RootMatchNode_O);
- SMART_PTR_FIX(cl::_sym_listen);
- SMART_PTR_FIX(chem::_sym_scale);
- SMART_PTR_FIX(llvmo::_sym_LandingPadInst_O);
- SMART_PTR_FIX(chem::_sym_RingFinder_O);
- SMART_PTR_FIX(sockets::_sym_ll_setSockoptTimeval);
- SMART_PTR_FIX(clbind::_sym_ClassRep_O);
- SMART_PTR_FIX(chem::_sym_IterateMatter_O);
- SMART_PTR_FIX(core::_sym_backquote_maptree);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_shared_type);
- SMART_PTR_FIX(llvmo::_sym_DITypeArray_O);
- SMART_PTR_FIX(llvmo::_sym_FCMP_ULT);
- SMART_PTR_FIX(cl::_sym_or);
- SMART_PTR_FIX(core::_sym_pointer);
- SMART_PTR_FIX(kw::_sym_chiral_centers);
- SMART_PTR_FIX(kw::_sym_overwrite);
- SMART_PTR_FIX(cffi::_sym_uint8);
- SMART_PTR_FIX(chem::_sym_FFAngle_O);
- SMART_PTR_FIX(chem::_sym_convergence);
- SMART_PTR_FIX(llvmo::_sym_AvailableExternallyLinkage);
- SMART_PTR_FIX(llvmo::_sym_OSType_MacOSX);
- SMART_PTR_FIX(llvmo::_sym_FCMP_OGE);
- SMART_PTR_FIX(core::_sym_lexicalFunction);
- SMART_PTR_FIX(units::_sym_Quantity_O);
- SMART_PTR_FIX(chem::_sym_Topology_O);
- SMART_PTR_FIX(llvmo::_sym_AttributeUWTable);
- SMART_PTR_FIX(cl::_sym_char_name);
- SMART_PTR_FIX(chem::_sym_AntechamberBondTest_O);
- SMART_PTR_FIX(core::_sym__PLUS_executableName_PLUS_);
- SMART_PTR_FIX(kw::_sym_object);
- SMART_PTR_FIX(kw::_sym_preserve);
- SMART_PTR_FIX(core::_sym_unquote_nsplice);
- SMART_PTR_FIX(core::_sym_isArray);
- SMART_PTR_FIX(llvmo::_sym_LShr);
- SMART_PTR_FIX(core::_sym_VectorDisplaced_O);
- SMART_PTR_FIX(core::_sym_STARsharpEqContextSTAR);
- SMART_PTR_FIX(core::_sym_SpecialForm_O);
- SMART_PTR_FIX(cffi::_sym_PERCENTforeign_type_size);
- SMART_PTR_FIX(core::_sym_script_dir);
- SMART_PTR_FIX(chemkw::_sym_noBond);
- SMART_PTR_FIX(cl::_sym_standard_char_p);
- SMART_PTR_FIX(cl::_sym_floatingPointOverflow);
- SMART_PTR_FIX(llvmo::_sym_OSType_DragonFly);
- SMART_PTR_FIX(core::_sym_selectPackage);
- SMART_PTR_FIX(cl::_sym_copyTree);
- SMART_PTR_FIX(cl::_sym_ash);
- SMART_PTR_FIX(core::_sym_sharp_backslash);
- SMART_PTR_FIX(core::_sym_STARdebugStartupSTAR);
- SMART_PTR_FIX(ext::_sym_setenv);
- SMART_PTR_FIX(core::_sym_callWithVariableBound);
- SMART_PTR_FIX(core::_sym_process_single_dispatch_lambda_list);
- SMART_PTR_FIX(chem::_sym_candoDatabase);
- SMART_PTR_FIX(core::_sym_circle_subst);
- SMART_PTR_FIX(cl::_sym_file_string_length);
- SMART_PTR_FIX(chem::_sym_SuperposeEngine_O);
- SMART_PTR_FIX(sockets::_sym_ll_socket_errno);
- SMART_PTR_FIX(chem::_sym_BondMatchNode_O);
- SMART_PTR_FIX(cl::_sym_ReadTable_O);
- SMART_PTR_FIX(kw::_sym_non_terminating_macro_character);
- SMART_PTR_FIX(cl::_sym_funcall);
- SMART_PTR_FIX(kw::_sym_formatControl);
- SMART_PTR_FIX(core::_sym_reader_double_quote_string);
- SMART_PTR_FIX(core::_sym_AMPva_rest);
- SMART_PTR_FIX(cl::_sym_defparameter);
- SMART_PTR_FIX(kw::_sym_LineTablesOnly);
- SMART_PTR_FIX(core::_sym_recursive_p);
- SMART_PTR_FIX(cl::_sym_special);
- SMART_PTR_FIX(ext::_sym_compiledFunctionName);
- SMART_PTR_FIX(llvmo::_sym_verifyFunction);
- SMART_PTR_FIX(cl::_sym_cellError);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v7m);
- SMART_PTR_FIX(core::_sym_STARdocumentation_databaseSTAR);
- SMART_PTR_FIX(kw::_sym_error);
- SMART_PTR_FIX(kw::_sym_eleBuffer);
- SMART_PTR_FIX(kw::_sym_radius);
- SMART_PTR_FIX(llvmo::_sym_VendorType_BGQ);
- SMART_PTR_FIX(cl::_sym_streamError);
- SMART_PTR_FIX(cl::_sym_multiple_value_call);
- SMART_PTR_FIX(kw::_sym_Eps);
- SMART_PTR_FIX(kw::_sym_start);
- SMART_PTR_FIX(cl::_sym_asinh);
- SMART_PTR_FIX(cl::_sym_internalTimeUnitsPerSecond);
- SMART_PTR_FIX(chem::_sym_AM1_BCC_ar7);
- SMART_PTR_FIX(core::_sym_sourceFileName);
- SMART_PTR_FIX(cl::_sym_parseNamestring);
- SMART_PTR_FIX(sockets::_sym_ll_socketAccept_localSocket);
- SMART_PTR_FIX(kw::_sym_capitalize);
- SMART_PTR_FIX(core::_sym_eof_value);
- SMART_PTR_FIX(chemkw::_sym_dashedSingleBond);
- SMART_PTR_FIX(cl::_sym_makeArray);
- SMART_PTR_FIX(chem::_sym_StepReport_O);
- SMART_PTR_FIX(llvmo::_sym_UDiv);
- SMART_PTR_FIX(cl::_sym_string_EQ_);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_MIPS_loop);
- SMART_PTR_FIX(kw::_sym_uniqueLabel);
- SMART_PTR_FIX(cl::_sym_Stream_O);
- SMART_PTR_FIX(chem::_sym_STARparserNodeHolderSTAR);
- SMART_PTR_FIX(core::_sym_STARsharp_equal_repl_tableSTAR);
- SMART_PTR_FIX(chem::_sym_PlugWithMates_O);
- SMART_PTR_FIX(kw::_sym_ecl__min);
- SMART_PTR_FIX(chemkw::_sym_idle);
- SMART_PTR_FIX(cl::_sym_intersection);
- SMART_PTR_FIX(cl::_sym_compute_restarts);
- SMART_PTR_FIX(cl::_sym_identity);
- SMART_PTR_FIX(chem::_sym_Chain_O);
- SMART_PTR_FIX(llvmo::_sym_LocalExecTLSModel);
- SMART_PTR_FIX(core::_sym_create);
- SMART_PTR_FIX(core::_sym_loadSource);
- SMART_PTR_FIX(sockets::_sym__PLUS_EINTR_PLUS_);
- SMART_PTR_FIX(cl::_sym_cerror);
- SMART_PTR_FIX(llvmo::_sym_VectorType_O);
- SMART_PTR_FIX(core::_sym_stackMonitor);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_structure_type);
- SMART_PTR_FIX(sockets::_sym__PLUS_NO_RECOVERY_PLUS_);
- SMART_PTR_FIX(core::_sym_makeInvocationHistoryFrameIterator);
- SMART_PTR_FIX(kw::_sym_supersede);
- SMART_PTR_FIX(core::_sym_tmv);
- SMART_PTR_FIX(sockets::_sym__PLUS_EBADF_PLUS_);
- SMART_PTR_FIX(chem::_sym_SuperposableConformationCollection_O);
- SMART_PTR_FIX(cl::_sym_cadr);
- SMART_PTR_FIX(units::_sym_kilograms);
- SMART_PTR_FIX(core::_sym_quit);
- SMART_PTR_FIX(sockets::_sym_ll_getSockoptLinger);
- SMART_PTR_FIX(cl::_sym_restart);
- SMART_PTR_FIX(chem::_sym_atomNeedsMinimizer);
- SMART_PTR_FIX(chem::_sym_StereoisomerAtoms_O);
- SMART_PTR_FIX(units::_sym_kiloCalories_per_mole);
- SMART_PTR_FIX(chem::_sym_STARVdwMixWellEnumConverterSTAR);
- SMART_PTR_FIX(llvmo::_sym_FCMP_FALSE);
- SMART_PTR_FIX(sockets::_sym__PLUS_ESOCKTNOSUPPORT_PLUS_);
- SMART_PTR_FIX(core::_sym__BANG_unbound_BANG_);
- SMART_PTR_FIX(core::_sym_all_keys);
- SMART_PTR_FIX(cl::_sym_boole);
- SMART_PTR_FIX(llvmo::_sym_ConstantDataArray_O);
- SMART_PTR_FIX(kw::_sym_eleDielectricCode);
- SMART_PTR_FIX(gray::_sym_stream_read_char);
- SMART_PTR_FIX(cleavirEnv::_sym_symbolMacroExpansion);
- SMART_PTR_FIX(cffi::_sym_int32);
- SMART_PTR_FIX(sockets::_sym_ll_getSockoptBool);
- SMART_PTR_FIX(cl::_sym_car);
- SMART_PTR_FIX(cl::_sym_STARpackageSTAR);
- SMART_PTR_FIX(llvmo::_sym_ArchType_thumb);
- SMART_PTR_FIX(cl::_sym_Cons_O);
- SMART_PTR_FIX(cl::_sym_getInternalRealTime);
- SMART_PTR_FIX(core::_sym_makeStringOutputStreamFromString);
- SMART_PTR_FIX(chem::_sym_PdbWriter_O);
- SMART_PTR_FIX(core::_sym_object);
- SMART_PTR_FIX(llvmo::_sym_FCMP_PREDICATE);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_reference_type);
- SMART_PTR_FIX(core::_sym_dispatchTable);
- SMART_PTR_FIX(chem::_sym_onGrid);
- SMART_PTR_FIX(kw::_sym_angles);
- SMART_PTR_FIX(core::_sym_base_string_concatenate);
- SMART_PTR_FIX(chemkw::_sym_XC);
- SMART_PTR_FIX(llvmo::_sym_CodeGenOpt);
- SMART_PTR_FIX(cl::_sym_output_stream_p);
- SMART_PTR_FIX(chem::_sym_CipPrioritizer_O);
- SMART_PTR_FIX(chem::_sym__PLUS_configurationEnumConverter_PLUS_);
- SMART_PTR_FIX(cl::_sym_mostNegativeSingleFloat);
- SMART_PTR_FIX(cl::_sym_Pathname_O);
- SMART_PTR_FIX(core::_sym_IOStreamStream_O);
- SMART_PTR_FIX(cffi::_sym_PERCENTmem_ref);
- SMART_PTR_FIX(llvmo::_sym_TerminatorInst_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_ptr_to_member_type);
- SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion5);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_thrown_type);
- SMART_PTR_FIX(cl::_sym_realpart);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v6t2);
- SMART_PTR_FIX(core::_sym_log1p);
- SMART_PTR_FIX(gctools::_sym_garbageCollect);
- SMART_PTR_FIX(cl::_sym_integer_decode_float);
- SMART_PTR_FIX(llvmo::_sym_ModulePass_O);
- SMART_PTR_FIX(kw::_sym_docstring);
- SMART_PTR_FIX(cl::_sym_write_sequence);
- SMART_PTR_FIX(cl::_sym_arrayp);
- SMART_PTR_FIX(llvmo::_sym_DIDerivedType_O);
- SMART_PTR_FIX(llvmo::_sym_valid);
- SMART_PTR_FIX(clbind::_sym_ClassRegistry_O);
- SMART_PTR_FIX(kw::_sym_load);
- SMART_PTR_FIX(cl::_sym_char_LE_);
- SMART_PTR_FIX(core::_sym_backquote_remove_tokens);
- SMART_PTR_FIX(llvmo::_sym_TargetSubtargetInfo_O);
- SMART_PTR_FIX(kw::_sym_Itors);
- SMART_PTR_FIX(core::_sym_subclassp);
- SMART_PTR_FIX(cl::_sym_Class_O);
- SMART_PTR_FIX(cl::_sym_count);
- SMART_PTR_FIX(chem::_sym_AfterMatchBondTest_O);
- SMART_PTR_FIX(core::_sym_unquote_splice);
- SMART_PTR_FIX(core::_sym_structure_include);
- SMART_PTR_FIX(llvmo::_sym__PLUS_globalBootFunctionsNameSize_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_GNU_template_parameter_pack);
- SMART_PTR_FIX(cl::_sym_pi);
- SMART_PTR_FIX(units::_sym_angstroms);
- SMART_PTR_FIX(gray::_sym_aSingleGraySymbol);
- SMART_PTR_FIX(cl::_sym_Vector_O);
- SMART_PTR_FIX(chem::_sym_StereoisomerVirtualAtom_O);
- SMART_PTR_FIX(cl::_sym_denominator);
- SMART_PTR_FIX(units::_sym_Joule);
- SMART_PTR_FIX(clos::_sym_aSingleClosSymbol);
- SMART_PTR_FIX(kw::_sym_pol);
- SMART_PTR_FIX(llvmo::_sym_OSType_Minix);
- SMART_PTR_FIX(chem::_sym_ImproperTorsion_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_template_alias);
- SMART_PTR_FIX(core::_sym_STARfset);
- SMART_PTR_FIX(llvmo::_sym_CodeGenOpt_Less);
- SMART_PTR_FIX(chem::_sym_AtomIdToAtomMap_O);
- SMART_PTR_FIX(cl::_sym_code_char);
- SMART_PTR_FIX(units::_sym_nanoseconds);
- SMART_PTR_FIX(core::_sym_STARpollTicksPerGcSTAR);
- SMART_PTR_FIX(core::_sym_file_kind);
- SMART_PTR_FIX(kw::_sym_single_escape_character);
- SMART_PTR_FIX(cl::_sym_pathnameMatchP);
- SMART_PTR_FIX(kw::_sym_dispatch_table);
- SMART_PTR_FIX(cl::_sym_readerError);
- SMART_PTR_FIX(chemkw::_sym__singleBond);
- SMART_PTR_FIX(kw::_sym_create);
- SMART_PTR_FIX(cl::_sym_setf);
- SMART_PTR_FIX(llvmo::_sym_attributesGet);
- SMART_PTR_FIX(core::_sym_findFileInLispPath);
- SMART_PTR_FIX(llvmo::_sym_dwTag);
- SMART_PTR_FIX(kw::_sym_elementType);
- SMART_PTR_FIX(cl::_sym_consp);
- SMART_PTR_FIX(chem::_sym_EnergyComponent_O);
- SMART_PTR_FIX(llvmo::_sym_RelocModel_Static);
- SMART_PTR_FIX(cl::_sym_boole_ior);
- SMART_PTR_FIX(kw::_sym_use_mps);
- SMART_PTR_FIX(chem::_sym_FFPtor_O);
- SMART_PTR_FIX(core::_sym_ihsFun);
- SMART_PTR_FIX(llvmo::_sym_Trunc);
- SMART_PTR_FIX(core::_sym_gdb);
- SMART_PTR_FIX(gray::_sym_stream_clear_output);
- SMART_PTR_FIX(kw::_sym_ignoreInitImage);
- SMART_PTR_FIX(cl::_sym_restartName);
- SMART_PTR_FIX(core::_sym_reader_backquoted_expression);
- SMART_PTR_FIX(sockets::_sym_ll_socketSendAddress);
- SMART_PTR_FIX(llvmo::_sym_APFloat_O);
- SMART_PTR_FIX(chem::_sym_FFStretchDb_O);
- SMART_PTR_FIX(asttooling::_sym_STARclangTemplateArgumentArgKindSTAR);
- SMART_PTR_FIX(kw::_sym_output);
- SMART_PTR_FIX(core::_sym_parse_macro);
- SMART_PTR_FIX(chem::_sym_STARAtomTestEnumConverterSTAR);
- SMART_PTR_FIX(cl::_sym_makeStringOutputStream);
- SMART_PTR_FIX(core::_sym_STARbq_nconcSTAR);
- SMART_PTR_FIX(cl::_sym_makePackage);
- SMART_PTR_FIX(core::_sym_SmallMultimap_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_lexical_block);
- SMART_PTR_FIX(cl::_sym_elt);
- SMART_PTR_FIX(core::_sym_sharp_x);
- SMART_PTR_FIX(llvmo::_sym_VendorType_PC);
- SMART_PTR_FIX(cl::_sym_logicalPathnameTranslations);
- SMART_PTR_FIX(cl::_sym_get_output_stream_string);
- SMART_PTR_FIX(chem::_sym_Residue_O);
- SMART_PTR_FIX(kw::_sym_priority);
- SMART_PTR_FIX(llvmo::_sym_UndefValue_O);
- SMART_PTR_FIX(cl::_sym_parseInteger);
- SMART_PTR_FIX(cl::_sym_hostNamestring);
- SMART_PTR_FIX(gray::_sym_stream_clear_input);
- SMART_PTR_FIX(chem::_sym_name);
- SMART_PTR_FIX(cl::_sym_numberp);
- SMART_PTR_FIX(cl::_sym_cond);
- SMART_PTR_FIX(core::_sym_instanceSigSet);
- SMART_PTR_FIX(chem::_sym_molecules);
- SMART_PTR_FIX(cl::_sym_boole_nor);
- SMART_PTR_FIX(kw::_sym_mediumBlue);
- SMART_PTR_FIX(llvmo::_sym_moduleFlagRequire);
- SMART_PTR_FIX(chem::_sym_Matter_O);
- SMART_PTR_FIX(kw::_sym_stereochemistryType);
- SMART_PTR_FIX(cl::_sym_LongFloat_O);
- SMART_PTR_FIX(chem::_sym_Rotamer_O);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_class_type);
- SMART_PTR_FIX(chem::_sym_selected);
- SMART_PTR_FIX(llvmo::_sym_OSType_CNK);
- SMART_PTR_FIX(llvmo::_sym_LLVMDebugVersion11);
- SMART_PTR_FIX(llvmo::_sym_LinkerPrivateLinkage);
- SMART_PTR_FIX(chem::_sym_EnergyFunction_O);
- SMART_PTR_FIX(cl::_sym_round);
- SMART_PTR_FIX(cffi::_sym_void);
- SMART_PTR_FIX(kw::_sym_prev);
- SMART_PTR_FIX(core::_sym_STARcommandLineArgumentsSTAR);
- SMART_PTR_FIX(core::_sym_fixnum_number_of_bits);
- SMART_PTR_FIX(cffi::_sym_foreign_alloc);
- SMART_PTR_FIX(llvmo::_sym_LinkOnceAnyLinkage);
- SMART_PTR_FIX(asttooling::_sym_ArgumentsAdjusterAdjust);
- SMART_PTR_FIX(core::_sym_forget_all_single_dispatch_generic_functions);
- SMART_PTR_FIX(core::_sym_STARdebugLoadTimeValuesSTAR);
- SMART_PTR_FIX(kw::_sym_passThrough);
- SMART_PTR_FIX(kw::_sym_expectedType);
- SMART_PTR_FIX(core::_sym_SymbolToEnumConverter_O);
- SMART_PTR_FIX(adapt::_sym_StringSet_O);
- SMART_PTR_FIX(cl::_sym_package_error);
- SMART_PTR_FIX(llvmo::_sym_SubArchType);
- SMART_PTR_FIX(cl::_sym_complexp);
- SMART_PTR_FIX(core::_sym_bitArrayOp);
- SMART_PTR_FIX(llvmo::_sym_DIArray_O);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v4t);
- SMART_PTR_FIX(cl::_sym_simpleCondition);
- SMART_PTR_FIX(llvmo::_sym_AttributeNest);
- SMART_PTR_FIX(core::_sym_start);
- SMART_PTR_FIX(core::_sym_integerToString);
- SMART_PTR_FIX(core::_sym_atanh);
- SMART_PTR_FIX(core::_sym_backquote);
- SMART_PTR_FIX(core::_sym_STARloadSearchListSTAR);
- SMART_PTR_FIX(llvmo::_sym_ICMP_SGT);
- SMART_PTR_FIX(core::_sym_sharp_s);
- SMART_PTR_FIX(core::_sym_rem_f);
- SMART_PTR_FIX(llvmo::_sym_Max);
- SMART_PTR_FIX(kw::_sym_rtld_self);
- SMART_PTR_FIX(kw::_sym_y);
- SMART_PTR_FIX(kw::_sym_unspecific);
- SMART_PTR_FIX(core::_sym_sharp_asterisk);
- SMART_PTR_FIX(core::_sym_setf_findClass);
- SMART_PTR_FIX(cl::_sym_sleep);
- SMART_PTR_FIX(core::_sym_debugLogOff);
- SMART_PTR_FIX(comp::_sym_STARimplicit_compile_hookSTAR);
- SMART_PTR_FIX(sockets::_sym_ll_socketBind_inetSocket);
- SMART_PTR_FIX(llvmo::_sym_SIToFP);
- SMART_PTR_FIX(core::_sym_TagbodyEnvironment_O);
- SMART_PTR_FIX(cl::_sym_prog1);
- SMART_PTR_FIX(cl::_sym_acosh);
- SMART_PTR_FIX(cl::_sym_keywordp);
- SMART_PTR_FIX(llvmo::_sym_disassembleSTAR);
- SMART_PTR_FIX(cl::_sym_leastNegativeNormalizedDoubleFloat);
- SMART_PTR_FIX(core::_sym_BlockEnvironment_O);
- SMART_PTR_FIX(cl::_sym_symbolFunction);
- SMART_PTR_FIX(chem::_sym_SparseLargeSquareMatrix_O);
- SMART_PTR_FIX(chem::_sym_FFNonbondCrossTermTable_O);
- SMART_PTR_FIX(core::_sym_currentVisibleEnvironment);
- SMART_PTR_FIX(llvmo::_sym_makeAPInt);
- SMART_PTR_FIX(core::_sym_STARtopLevelCommandHookSTAR);
- SMART_PTR_FIX(adapt::_sym_StringList_O);
- SMART_PTR_FIX(kw::_sym_neighbors);
- SMART_PTR_FIX(core::_sym_WrappedPointer_O);
- SMART_PTR_FIX(chem::_sym_BondListMatchNode_O);
- SMART_PTR_FIX(core::_sym_tooFewArgumentsError);
- SMART_PTR_FIX(core::_sym_VectorObjectsWithFillPtr_O);
- SMART_PTR_FIX(core::_sym_sharp_a);
- SMART_PTR_FIX(kw::_sym_da);
- SMART_PTR_FIX(core::_sym_sharp_colon);
- SMART_PTR_FIX(sockets::_sym__PLUS_SO_REUSEADDR_PLUS_);
- SMART_PTR_FIX(core::_sym_PosixTimeDuration_O);
- SMART_PTR_FIX(kw::_sym_full);
- SMART_PTR_FIX(chemkw::_sym_O);
- SMART_PTR_FIX(chemkw::_sym_entity);
- SMART_PTR_FIX(gctools::_sym_maxBootstrapKinds);
- SMART_PTR_FIX(kw::_sym_file);
- SMART_PTR_FIX(llvmo::_sym_AttributeZExt);
- SMART_PTR_FIX(cl::_sym_do);
- SMART_PTR_FIX(llvmo::_sym_VendorType_SCEI);
- SMART_PTR_FIX(kw::_sym_test);
- SMART_PTR_FIX(core::_sym_FileStatus_O);
- SMART_PTR_FIX(core::_sym_overwrite);
- SMART_PTR_FIX(core::_sym_MacroletEnvironment_O);
- SMART_PTR_FIX(core::_sym_IntArray_O);
- SMART_PTR_FIX(cl::_sym_makeCondition);
- SMART_PTR_FIX(cl::_sym_floor);
- SMART_PTR_FIX(core::_sym_scharSet);
- SMART_PTR_FIX(core::_sym_FunctionContainerEnvironment_O);
- SMART_PTR_FIX(llvmo::_sym_Or);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_namespace);
- SMART_PTR_FIX(core::_sym_sharp_left_parenthesis);
- SMART_PTR_FIX(cl::_sym_getDispatchMacroCharacter);
- SMART_PTR_FIX(llvmo::_sym_DIBasicType_O);
- SMART_PTR_FIX(cl::_sym_string_greaterp);
- SMART_PTR_FIX(kw::_sym_vdwScale14);
- SMART_PTR_FIX(core::_sym_lexical);
- SMART_PTR_FIX(cl::_sym_read_delimited_list);
- SMART_PTR_FIX(kw::_sym_ar1);
- SMART_PTR_FIX(cl::_sym_setMacroCharacter);
- SMART_PTR_FIX(cl::_sym_leastNegativeNormalizedLongFloat);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_KalimbaSubArch_v3);
- SMART_PTR_FIX(cl::_sym_typep);
- SMART_PTR_FIX(cl::_sym_boole_1);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_member);
- SMART_PTR_FIX(cl::_sym_STARprint_miser_widthSTAR);
- SMART_PTR_FIX(llvmo::_sym_FunctionPassManager_O);
- SMART_PTR_FIX(chem::_sym_ConstitutionVirtualAtom_O);
- SMART_PTR_FIX(cl::_sym_listp);
- SMART_PTR_FIX(gray::_sym_stream_terpri);
- SMART_PTR_FIX(core::_sym_bq_simplify);
- SMART_PTR_FIX(chemkw::_sym_Cl);
- SMART_PTR_FIX(kw::_sym_tag1);
- SMART_PTR_FIX(cl::_sym_STARprint_circleSTAR);
- SMART_PTR_FIX(core::_sym_universalErrorHandler);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_hi_user);
- SMART_PTR_FIX(chem::_sym_noPreconditioner);
- SMART_PTR_FIX(chem::_sym_Root_O);
- SMART_PTR_FIX(kw::_sym_deleted);
- SMART_PTR_FIX(llvmo::_sym_VendorType_ImaginationTechnologies);
- SMART_PTR_FIX(core::_sym_tooFewArguments);
- SMART_PTR_FIX(cl::_sym_quote);
- SMART_PTR_FIX(cl::_sym_STARprint_levelSTAR);
- SMART_PTR_FIX(llvmo::_sym_CodeModel_Small);
- SMART_PTR_FIX(cl::_sym_atanh);
- SMART_PTR_FIX(core::_sym_STARcommandLineLoadEvalSequenceSTAR);
- SMART_PTR_FIX(core::_sym_mpsGarbageCollection);
- SMART_PTR_FIX(sockets::_sym_ll_getHostByName);
- SMART_PTR_FIX(core::_sym_processLambdaList);
- SMART_PTR_FIX(cffi::_sym_double);
- SMART_PTR_FIX(cl::_sym_ShortFloat_O);
- SMART_PTR_FIX(cl::_sym_STARdefaultPathnameDefaultsSTAR);
- SMART_PTR_FIX(cl::_sym_values);
- SMART_PTR_FIX(core::_sym_set_record_field);
- SMART_PTR_FIX(core::_sym_VaList_dummy_O);
- SMART_PTR_FIX(core::_sym_dispatch_macro_character);
- SMART_PTR_FIX(core::_sym_Archive_O);
- SMART_PTR_FIX(cl::_sym_AMPenvironment);
- SMART_PTR_FIX(core::_sym_make_vector);
- SMART_PTR_FIX(kw::_sym_tempInt);
- SMART_PTR_FIX(core::_sym_setfSubseq);
- SMART_PTR_FIX(cl::_sym__DIVIDE_);
- SMART_PTR_FIX(chem::_sym_ZMatrixAngleInternal_O);
- SMART_PTR_FIX(cl::_sym_Number_O);
- SMART_PTR_FIX(cl::_sym_boole_andc2);
- SMART_PTR_FIX(cl::_sym_standard_class);
- SMART_PTR_FIX(cl::_sym_fileError);
- SMART_PTR_FIX(kw::_sym_debug);
- SMART_PTR_FIX(core::_sym_alist);
- SMART_PTR_FIX(kw::_sym_weight);
- SMART_PTR_FIX(chem::_sym_RestraintAnchor_O);
- SMART_PTR_FIX(core::_sym_test_not);
- SMART_PTR_FIX(cl::_sym_deleteFile);
- SMART_PTR_FIX(kw::_sym_pos);
- SMART_PTR_FIX(core::_sym_WeakKeyHashTable_O);
- SMART_PTR_FIX(llvmo::_sym_OSType_Haiku);
- SMART_PTR_FIX(chem::_sym_StereoisomerAtom_O);
- SMART_PTR_FIX(cffi::_sym_int64);
- SMART_PTR_FIX(cl::_sym_readSequence);
- SMART_PTR_FIX(cl::_sym_synonym_stream_symbol);
- SMART_PTR_FIX(chem::_sym_minimizerError);
- SMART_PTR_FIX(llvmo::_sym_SRem);
- SMART_PTR_FIX(kw::_sym_tail);
- SMART_PTR_FIX(core::_sym_structurep);
- SMART_PTR_FIX(core::_sym_streamColumn);
- SMART_PTR_FIX(llvmo::_sym_ICMP_SGE);
- SMART_PTR_FIX(core::_sym_coerceToFilename);
- SMART_PTR_FIX(kw::_sym_broken_link);
- SMART_PTR_FIX(core::_sym_inheritDefaultAllocator);
- SMART_PTR_FIX(ext::_sym_lambda_block);
- SMART_PTR_FIX(llvmo::_sym_parseBitcodeFile);
- SMART_PTR_FIX(llvmo::_sym_FPToSI);
- SMART_PTR_FIX(gctools::_sym_bootstrapKindSymbols);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_base_type);
- SMART_PTR_FIX(sockets::_sym__PLUS_IPPROTO_TCP_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_RelocModel);
- SMART_PTR_FIX(cl::_sym_standardGenericFunction);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_ARMSubArch_v6);
- SMART_PTR_FIX(core::_sym_fileColumn);
- SMART_PTR_FIX(chem::_sym_ReportBase_O);
- SMART_PTR_FIX(llvmo::_sym_ArchType_mips);
- SMART_PTR_FIX(ext::_sym_float_infinity_string);
- SMART_PTR_FIX(core::_sym_ihsBacktrace);
- SMART_PTR_FIX(cl::_sym_macrolet);
- SMART_PTR_FIX(kw::_sym_pdbName);
- SMART_PTR_FIX(core::_sym_simpleProgramError);
- SMART_PTR_FIX(core::_sym_symbolMacro);
- SMART_PTR_FIX(kw::_sym_ar2);
- SMART_PTR_FIX(sockets::_sym__PLUS_EPROTONOSUPPORT_PLUS_);
- SMART_PTR_FIX(core::_sym_ihsNext);
- SMART_PTR_FIX(units::_sym_meters);
- SMART_PTR_FIX(cl::_sym_compile);
- SMART_PTR_FIX(cl::_sym_findClass);
- SMART_PTR_FIX(kw::_sym_greyF0);
- SMART_PTR_FIX(cl::_sym_make_two_way_stream);
- SMART_PTR_FIX(kw::_sym_R);
- SMART_PTR_FIX(llvmo::_sym_OSType_CUDA);
- SMART_PTR_FIX(cl::_sym_make_symbol);
- SMART_PTR_FIX(llvmo::_sym_FPExt);
- SMART_PTR_FIX(kw::_sym_vdwScaleBufferA);
- SMART_PTR_FIX(core::_sym_STARnestedErrorDepthSTAR);
- SMART_PTR_FIX(cl::_sym_Bignum_O);
- SMART_PTR_FIX(core::_sym_LightUserData_O);
- SMART_PTR_FIX(kw::_sym_landingPadFrame);
- SMART_PTR_FIX(cl::_sym_sqrt);
- SMART_PTR_FIX(sockets::_sym_ll_socketName);
- SMART_PTR_FIX(core::_sym_backquote_null_or_quoted);
- SMART_PTR_FIX(kw::_sym_residueNames);
- SMART_PTR_FIX(chem::_sym_FFItorDb_O);
- SMART_PTR_FIX(llvmo::_sym_FCMP_UEQ);
- SMART_PTR_FIX(kw::_sym_attachedEWGs);
- SMART_PTR_FIX(cl::_sym_echo_stream_input_stream);
- SMART_PTR_FIX(core::_sym_CandoException_O);
- SMART_PTR_FIX(cl::_sym_sequence);
- SMART_PTR_FIX(llvmo::_sym_FenceInst_O);
- SMART_PTR_FIX(llvmo::_sym_FCMP_UGE);
- SMART_PTR_FIX(cl::_sym_locally);
- SMART_PTR_FIX(cl::_sym_make_synonym_stream);
- SMART_PTR_FIX(chem::_sym_FrameRecognizer_O);
- SMART_PTR_FIX(chem::_sym_OverlappingNonbondError);
- SMART_PTR_FIX(chem::_sym_SuperposeSelectedAtoms_O);
- SMART_PTR_FIX(cl::_sym_lognand);
- SMART_PTR_FIX(ext::_sym__PLUS_processStandardOutput_PLUS_);
- SMART_PTR_FIX(chem::_sym_RestraintList_O);
- SMART_PTR_FIX(chem::_sym_stereochemistryToSymbolConverter);
- SMART_PTR_FIX(llvmo::_sym_SDiv);
- SMART_PTR_FIX(llvmo::_sym_ArchType_ppc64);
- SMART_PTR_FIX(units::_sym_millimeters);
- SMART_PTR_FIX(gray::_sym_stream_write_byte);
- SMART_PTR_FIX(cl::_sym_mostPositiveSingleFloat);
- SMART_PTR_FIX(kw::_sym_attachedHs);
- SMART_PTR_FIX(units::_sym_per_picosecond);
- SMART_PTR_FIX(llvmo::_sym_DIScope_O);
- SMART_PTR_FIX(llvmo::_sym_OSType_NVCL);
- SMART_PTR_FIX(core::_sym_WeakKeyMapping_O);
- SMART_PTR_FIX(ext::_sym__PLUS_processStandardInput_PLUS_);
- SMART_PTR_FIX(core::_sym_Binder_O);
- SMART_PTR_FIX(core::_sym_validFunctionNameP);
- SMART_PTR_FIX(llvmo::_sym_ArchType_systemz);
- SMART_PTR_FIX(chem::_sym_FFVdw_O);
- SMART_PTR_FIX(sockets::_sym_ll_getSockoptTimeval);
- SMART_PTR_FIX(kw::_sym_brown);
- SMART_PTR_FIX(core::_sym_input_stream_designator);
- SMART_PTR_FIX(cl::_sym_boole_orc2);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_common_block);
- SMART_PTR_FIX(llvmo::_sym_ConstantInt_O);
- SMART_PTR_FIX(core::_sym_unbound);
- SMART_PTR_FIX(chem::_sym_RepresentedEntityNameSet_O);
- SMART_PTR_FIX(cl::_sym_divisionByZero);
- SMART_PTR_FIX(chemkw::_sym_E);
- SMART_PTR_FIX(llvmo::_sym_Nand);
- SMART_PTR_FIX(llvmo::_sym_OSType_KFreeBSD);
- SMART_PTR_FIX(core::_sym_threadInfo);
- SMART_PTR_FIX(chemkw::_sym_5);
- SMART_PTR_FIX(chem::_sym_OneMonomer_O);
- SMART_PTR_FIX(chem::_sym_CDNode_O);
- SMART_PTR_FIX(chem::_sym_ConstitutionBond_O);
- SMART_PTR_FIX(cl::_sym_programError);
- SMART_PTR_FIX(chem::_sym_AGVertex_O);
- SMART_PTR_FIX(core::_sym_ActivationFrame_O);
- SMART_PTR_FIX(core::_sym_isString);
- SMART_PTR_FIX(core::_sym_dumpTaggedFixnum);
- SMART_PTR_FIX(kw::_sym_steelBlue);
- SMART_PTR_FIX(llvmo::_sym_makeAPWidth);
- SMART_PTR_FIX(core::_sym_makeStructure);
- SMART_PTR_FIX(units::_sym_joules);
- SMART_PTR_FIX(cffi::_sym_long);
- SMART_PTR_FIX(cl::_sym__TIMES_);
- SMART_PTR_FIX(kw::_sym_ptors);
- SMART_PTR_FIX(core::_sym_Regex_O);
- SMART_PTR_FIX(chem::_sym_ReadAmberParameters_O);
- SMART_PTR_FIX(core::_sym_classNameAsString);
- SMART_PTR_FIX(core::_sym_serialize_xml);
- SMART_PTR_FIX(core::_sym_backquote_process);
- SMART_PTR_FIX(sockets::_sym__PLUS_ENOBUFS_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_STARaccumulatedLlvmFinalizationTimeSTAR);
- SMART_PTR_FIX(sockets::_sym_ll_getProtocolByName);
- SMART_PTR_FIX(core::_sym_STARbq_quote_nilSTAR);
- SMART_PTR_FIX(chem::_sym_Structure_Old_ListEntry_O);
- SMART_PTR_FIX(cl::_sym_imagpart);
- SMART_PTR_FIX(clos::_sym_compute_applicable_methods_using_classes);
- SMART_PTR_FIX(core::_sym_STARihsCurrentSTAR);
- SMART_PTR_FIX(cl::_sym_maplist);
- SMART_PTR_FIX(clos::_sym_compute_effective_method_function);
- SMART_PTR_FIX(llvmo::_sym_ArchType_x86_64);
- SMART_PTR_FIX(core::_sym_backquote_attach_append);
- SMART_PTR_FIX(kw::_sym_atoms);
- SMART_PTR_FIX(cl::_sym_boole_andc1);
- SMART_PTR_FIX(chem::_sym_rotate);
- SMART_PTR_FIX(cl::_sym_sinh);
- SMART_PTR_FIX(llvmo::_sym_AttributeAddressSafety);
- SMART_PTR_FIX(cl::_sym__GE_);
- SMART_PTR_FIX(sockets::_sym__PLUS_ENOMEM_PLUS_);
- SMART_PTR_FIX(kw::_sym_pathname);
- SMART_PTR_FIX(cl::_sym_defun);
- SMART_PTR_FIX(chem::_sym_translate);
- SMART_PTR_FIX(kw::_sym_inherited);
- SMART_PTR_FIX(llvmo::_sym_LinkOnceODRLinkage);
- SMART_PTR_FIX(adapt::_sym_ObjectSet_O);
- SMART_PTR_FIX(cl::_sym_STARrandom_stateSTAR);
- SMART_PTR_FIX(llvmo::_sym_ArchType_msp430);
- SMART_PTR_FIX(cl::_sym_BitVectorWithFillPtr_O);
- SMART_PTR_FIX(core::_sym_topLevel);
- SMART_PTR_FIX(cl::_sym_boole_nand);
- SMART_PTR_FIX(kw::_sym_syntax);
- SMART_PTR_FIX(cl::_sym_readChar);
- SMART_PTR_FIX(llvmo::_sym_RelocModel_PIC_);
- SMART_PTR_FIX(kw::_sym_red);
- SMART_PTR_FIX(cl::_sym_char_LT_);
- SMART_PTR_FIX(sockets::_sym_ll_socketAccept_inetSocket);
- SMART_PTR_FIX(llvmo::_sym_SubArchType_KalimbaSubArch_v5);
- SMART_PTR_FIX(llvmo::_sym_OSType_OpenBSD);
- SMART_PTR_FIX(core::_sym_slot);
- SMART_PTR_FIX(chem::_sym_ResidueList_O);
- SMART_PTR_FIX(llvmo::_sym_makeAP32);
- SMART_PTR_FIX(sockets::_sym__PLUS_SO_LINGER_PLUS_);
- SMART_PTR_FIX(kw::_sym_rename_and_delete);
- SMART_PTR_FIX(kw::_sym_podSymbolMap);
- SMART_PTR_FIX(core::_sym_SaveArchive_O);
- SMART_PTR_FIX(core::_sym_Iterator_O);
- SMART_PTR_FIX(ext::_sym_system);
- SMART_PTR_FIX(core::_sym_okey);
- SMART_PTR_FIX(chem::_sym_Branch_O);
- SMART_PTR_FIX(llvmo::_sym_OSType_NetBSD);
- SMART_PTR_FIX(chem::_sym_FFNonbond_O);
- SMART_PTR_FIX(core::_sym_RegexMatch_O);
- SMART_PTR_FIX(core::_sym_sharp_equal);
- SMART_PTR_FIX(asttooling::_sym_bind);
- SMART_PTR_FIX(cl::_sym_floatingPointInexact);
- SMART_PTR_FIX(core::_sym_STARbq_listSTAR);
- SMART_PTR_FIX(cl::_sym_gensym);
- SMART_PTR_FIX(chem::_sym_EnergyChiralRestraint_O);
- SMART_PTR_FIX(cl::_sym_truncate);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_inheritance);
- SMART_PTR_FIX(core::_sym_STARcurrent_working_directorySTAR);
- SMART_PTR_FIX(llvmo::_sym_ObjectFormatType);
- SMART_PTR_FIX(cl::_sym_packagep);
- SMART_PTR_FIX(chem::_sym_NVector_O);
- SMART_PTR_FIX(llvmo::_sym_Min);
- SMART_PTR_FIX(kw::_sym_element);
- SMART_PTR_FIX(cl::_sym_Float_O);
- SMART_PTR_FIX(units::_sym_Unit_O);
- SMART_PTR_FIX(chem::_sym_CalculatePositionUsingInternals_O);
- SMART_PTR_FIX(units::_sym_seconds);
- SMART_PTR_FIX(kw::_sym_stream);
- SMART_PTR_FIX(core::_sym_wrongIndex);
- SMART_PTR_FIX(cl::_sym_simpleError);
- SMART_PTR_FIX(kw::_sym_chemdraw_color);
- SMART_PTR_FIX(core::_sym_ExternalObject_O);
- SMART_PTR_FIX(llvmo::_sym__PLUS_globalBootFunctionsName_PLUS_);
- SMART_PTR_FIX(kw::_sym_v2);
- SMART_PTR_FIX(cl::_sym_translatePathname);
- SMART_PTR_FIX(cl::_sym_terpri);
- SMART_PTR_FIX(kw::_sym_blue);
- SMART_PTR_FIX(cl::_sym_cosh);
- SMART_PTR_FIX(core::_sym_cl_fixnum_bits);
- SMART_PTR_FIX(core::_sym_SNode_O);
- SMART_PTR_FIX(llvmo::_sym_AttributeNonLazyBind);
- SMART_PTR_FIX(cl::_sym_the);
- SMART_PTR_FIX(clos::_sym_standardOptimizedWriterFunction);
- SMART_PTR_FIX(llvmo::_sym_GlobalValue_O);
- SMART_PTR_FIX(chem::_sym_in7MemberRing);
- SMART_PTR_FIX(cl::_sym_leastNegativeLongFloat);
- SMART_PTR_FIX(kw::_sym_eleScale14);
- SMART_PTR_FIX(llvmo::_sym_Argument_O);
- SMART_PTR_FIX(cl::_sym_equalp);
- SMART_PTR_FIX(cl::_sym_AMPaux);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_class_template);
- SMART_PTR_FIX(cl::_sym_get);
- SMART_PTR_FIX(comp::_sym_compileInEnv);
- SMART_PTR_FIX(gray::_sym_input_stream_p);
- SMART_PTR_FIX(cl::_sym_unboundSlot);
- SMART_PTR_FIX(llvmo::_sym_LinkerPrivateWeakLinkage);
- SMART_PTR_FIX(core::_sym_element_type);
- SMART_PTR_FIX(sockets::_sym__PLUS_sock_dgram_PLUS_);
- SMART_PTR_FIX(cl::_sym_STARquery_ioSTAR);
- SMART_PTR_FIX(cl::_sym_namestring);
- SMART_PTR_FIX(cl::_sym_list);
- SMART_PTR_FIX(cl::_sym_ceiling);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_formal_parameter);
- SMART_PTR_FIX(cl::_sym_boole_xor);
- SMART_PTR_FIX(llvmo::_sym_AttributeReturnsTwice);
- SMART_PTR_FIX(asttooling::_sym_STARclangTemplateSpecializationKindSTAR);
- SMART_PTR_FIX(llvmo::_sym_Triple_O);
- SMART_PTR_FIX(cl::_sym_getOutputStreamString);
- SMART_PTR_FIX(core::_sym_streamLinenumber);
- SMART_PTR_FIX(llvmo::_sym_IntToPtr);
- SMART_PTR_FIX(llvmo::_sym_makeAPInt1);
- SMART_PTR_FIX(kw::_sym_r0);
- SMART_PTR_FIX(kw::_sym_purple);
- SMART_PTR_FIX(sockets::_sym__PLUS_SOL_SOCKET_PLUS_);
- SMART_PTR_FIX(sockets::_sym__PLUS_SO_SNDTIMEO_PLUS_);
- SMART_PTR_FIX(chem::_sym_steepestDescentRunning);
- SMART_PTR_FIX(chem::_sym_STARsybyl_type_assignment_rulesSTAR);
- SMART_PTR_FIX(llvmo::_sym_CodeModel_JITDefault);
- SMART_PTR_FIX(llvmo::_sym_Linker_O);
- SMART_PTR_FIX(ext::_sym_STARinspectorHookSTAR);
- SMART_PTR_FIX(units::_sym_microseconds);
- SMART_PTR_FIX(cl::_sym_member);
- SMART_PTR_FIX(core::_sym_sourceLineColumn);
- SMART_PTR_FIX(sockets::_sym_ff_socket);
- SMART_PTR_FIX(cl::_sym_rationalp);
- SMART_PTR_FIX(llvmo::_sym_Monotonic);
- SMART_PTR_FIX(serveEvent::_sym_ll_fd_isset);
- SMART_PTR_FIX(cl::_sym_invoke_restart);
- SMART_PTR_FIX(core::_sym_IOFileStream_O);
- SMART_PTR_FIX(cl::_sym__PLUS_);
- SMART_PTR_FIX(core::_sym_invokeInternalDebugger);
- SMART_PTR_FIX(kw::_sym_residue_charge);
- SMART_PTR_FIX(cl::_sym_STARterminal_ioSTAR);
- SMART_PTR_FIX(kw::_sym_name_template);
- SMART_PTR_FIX(cl::_sym_compute_applicable_methods);
- SMART_PTR_FIX(chem::_sym_JumpPlug_O);
- SMART_PTR_FIX(kw::_sym_zConstants);
- SMART_PTR_FIX(cl::_sym_tan);
- SMART_PTR_FIX(cl::_sym_most_negative_fixnum);
- SMART_PTR_FIX(chem::_sym_OneTypeRule_O);
- SMART_PTR_FIX(cl::_sym_mod);
- SMART_PTR_FIX(llvmo::_sym_GlobalVariable_O);
- SMART_PTR_FIX(llvmo::_sym_ArchType_le64);
- SMART_PTR_FIX(llvmo::_sym_ArchType_hexagon);
- SMART_PTR_FIX(chem::_sym_AtomOrBondMatchNode_O);
- SMART_PTR_FIX(sockets::_sym__PLUS_SO_RCVTIMEO_PLUS_);
- SMART_PTR_FIX(llvmo::_sym_DW_TAG_set_type);
- SMART_PTR_FIX(cl::_sym_translateLogicalPathname);
- SMART_PTR_FIX(chem::_sym_RestraintFixedNonbond_O);
- SMART_PTR_FIX(cl::_sym_STARread_evalSTAR);
- SMART_PTR_FIX(kw::_sym_initCharge);
- SMART_PTR_FIX(cl::_sym_butlast);
- SMART_PTR_FIX(core::_sym_instance);
- SMART_PTR_FIX(kw::_sym_atom);
- SMART_PTR_FIX(llvmo::_sym_URem);
- SMART_PTR_FIX(core::_sym_STARargsSTAR);
- SMART_PTR_FIX(cl::_sym_undefinedFunction);
- SMART_PTR_FIX(cl::_sym_charLessp);
- SMART_PTR_FIX(geom::_sym_Color_O);
- SMART_PTR_FIX(kw::_sym_append);
- SMART_PTR_FIX(cl::_sym_dolist);
- SMART_PTR_FIX(kw::_sym_apol);
- SMART_PTR_FIX(core::_sym_structureRef);
- SMART_PTR_FIX(llvmo::_sym_AttributeAlwaysInline);
- SMART_PTR_FIX(llvmo::_sym_ArchType_ppc64le);
- SMART_PTR_FIX(cl::_sym_subtypep);
- SMART_PTR_FIX(cl::_sym_StandardObject_O);
- SMART_PTR_FIX(ext::_sym_aSingleExtSymbol);
- SMART_PTR_FIX(cl::_sym_logorc1);
- SMART_PTR_FIX(geom::_sym_BoundingBox_O);
- SMART_PTR_FIX(chem::_sym_IterateResidues_O);
- SMART_PTR_FIX(kw::_sym_mask);
- SMART_PTR_FIX(core::_sym_CatchEnvironment_O);
- SMART_PTR_FIX(clos::_sym_class_precedence_list);
- SMART_PTR_FIX(llvmo::_sym_STARaSTAR);
- SMART_PTR_FIX(core::_sym_dimensions);
- SMART_PTR_FIX(kw::_sym_angRad);
- SMART_PTR_FIX(llvmo::_sym_ArchType_sparcv9);
- SMART_PTR_FIX(units::_sym_Joules);
- SMART_PTR_FIX(kw::_sym_debugStartup);
- SMART_PTR_FIX(cl::_sym_CompiledFunction_O);
- SMART_PTR_FIX(core::_sym_closedStream);
- SMART_PTR_FIX(sockets::_sym__PLUS_ENETUNREACH_PLUS_);
- SMART_PTR_FIX(core::_sym_STARconsing_dotSTAR);
- SMART_PTR_FIX(gray::_sym_stream_file_position);
 #endif // defined(GC_GLOBAL_SYMBOLS)

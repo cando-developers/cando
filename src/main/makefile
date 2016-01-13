@@ -151,31 +151,27 @@ mps-interface-prep:
 
 mps-interface-run:
 	make compile-commands
-	clasp_boehmdc_o -f bclasp -e "(require :asdf)" \
-        -e "(asdf:load-system \"clasp-analyzer\")" \
-	-e "(clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\")" \
-        -e "(clasp-analyzer:serial-search-all-then-generate-code-and-quit)"
+	clasp_boehmdc_o -f bclasp -e "(require :clasp-analyzer)" \
+	-e "(defparameter *db* (clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\"))" \
+        -e "(clasp-analyzer:search/generate-code *db*)"
 
 mps-interface-run-boehm:
 	make compile-commands
-	clasp_boehm_o -f bclasp -e "(require :asdf)" \
-        -e "(asdf:load-system \"clasp-analyzer\")" \
-	-e "(clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\")" \
-        -e "(clasp-analyzer:serial-search-all-then-generate-code-and-quit)"
+	clasp_boehm_o -f bclasp -e "(require :clasp-analyzer)" \
+	-e "(defparameter *db* (clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\"))" \
+        -e "(clasp-analyzer:search/generate-code *db*)"
 
 mps-interface-test:
 	make compile-commands
-	clasp_boehmdc_o -f bclasp -e "(require :asdf)" \
-        -e "(asdf:load-system \"clasp-analyzer\")" \
+	clasp_boehmdc_o -f bclasp -e "(require :clasp-analyzer)" \
 	-e "(clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\")" \
         -e "(clasp-analyzer:serial-search-all-then-generate-code-and-quit :test (clasp-analyzer::lsel clasp-analyzer:$$\* \".*mol2\.cc$$\"))"
 
 mps-interface-run-cclasp:
 	make compile-commands
-	clasp_boehm_o -e "(require :asdf)" \
-        -e "(asdf:load-system \"clasp-analyzer\")" \
-	-e "(clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\")" \
-        -e "(clasp-analyzer:serial-search-all-then-generate-code-and-quit)"
+	clasp_boehm_o -f bclasp -e "(require :clasp-analyzer)" \
+	-e "(defparameter *db* (clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\"))" \
+        -e "(clasp-analyzer:search/generate-code *db*)"
 
 
 mps-interface:

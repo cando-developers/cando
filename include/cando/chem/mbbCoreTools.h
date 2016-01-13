@@ -32,7 +32,7 @@ double	closestInterResidueDist2( Residue_sp res1, Residue_sp res2 );
 
 void	testStuff();
 
-void connectAtomsInMatterInCovalentContact(Matter_sp matter);
+void chem__connectAtomsInMatterInCovalentContact(Matter_sp matter);
 
 SMART(ObjectSet);
 

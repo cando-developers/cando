@@ -248,7 +248,7 @@ namespace geom
 
 	    /*! Use the core package */
 	    this->package()->usePackage(lisp->findPackage(CorePkg));
-            initialize_color();
+            initialize_colors();
 	}
 	break;
 	case candoFunctions:

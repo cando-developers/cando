@@ -275,1806 +275,1806 @@
 #if defined(DECLARE_ALL_SYMBOLS)
 int global_symbol_count = 2498;
 core::Symbol_sp global_symbols[2498];
+namespace kw {
+core::Symbol_sp& _sym_catchFrame = global_symbols[0];
+core::Symbol_sp& _sym_blockFrame = global_symbols[1];
+core::Symbol_sp& _sym_tagbodyFrame = global_symbols[2];
+core::Symbol_sp& _sym_landingPadFrame = global_symbols[3];
+core::Symbol_sp& _sym_splatted = global_symbols[4];
+core::Symbol_sp& _sym_unbound = global_symbols[5];
+core::Symbol_sp& _sym_deleted = global_symbols[6];
+core::Symbol_sp& _sym_rtld_default = global_symbols[7];
+core::Symbol_sp& _sym_rtld_next = global_symbols[8];
+core::Symbol_sp& _sym_rtld_self = global_symbols[9];
+core::Symbol_sp& _sym_rtld_main_only = global_symbols[10];
+core::Symbol_sp& _sym_iclass = global_symbols[11];
+core::Symbol_sp& _sym_next = global_symbols[12];
+core::Symbol_sp& _sym_prev = global_symbols[13];
+core::Symbol_sp& _sym_key = global_symbols[14];
+core::Symbol_sp& _sym_defaults = global_symbols[15];
+core::Symbol_sp& _sym_error = global_symbols[16];
+core::Symbol_sp& _sym_link = global_symbols[17];
+core::Symbol_sp& _sym_broken_link = global_symbols[18];
+core::Symbol_sp& _sym_special = global_symbols[19];
+core::Symbol_sp& _sym_supersede = global_symbols[20];
+core::Symbol_sp& _sym_calledFunction = global_symbols[21];
+core::Symbol_sp& _sym_givenNumberOfArguments = global_symbols[22];
+core::Symbol_sp& _sym_requiredNumberOfArguments = global_symbols[23];
+core::Symbol_sp& _sym_unrecognizedKeyword = global_symbols[24];
+core::Symbol_sp& _sym_body = global_symbols[25];
+core::Symbol_sp& _sym_lambda_list_handler = global_symbols[26];
+core::Symbol_sp& _sym_docstring = global_symbols[27];
+core::Symbol_sp& _sym_arguments = global_symbols[28];
+core::Symbol_sp& _sym_create = global_symbols[29];
+core::Symbol_sp& _sym_append = global_symbols[30];
+core::Symbol_sp& _sym_debugStartup = global_symbols[31];
+core::Symbol_sp& _sym_cclasp = global_symbols[32];
+core::Symbol_sp& _sym_bclasp = global_symbols[33];
+core::Symbol_sp& _sym_load = global_symbols[34];
+core::Symbol_sp& _sym_eval = global_symbols[35];
+core::Symbol_sp& _sym_ecl_min = global_symbols[36];
+core::Symbol_sp& _sym_use_mps = global_symbols[37];
+core::Symbol_sp& _sym_use_boehmdc = global_symbols[38];
+core::Symbol_sp& _sym_use_boehm = global_symbols[39];
+core::Symbol_sp& _sym_cr = global_symbols[40];
+core::Symbol_sp& _sym_lf = global_symbols[41];
+core::Symbol_sp& _sym_littleEndian = global_symbols[42];
+core::Symbol_sp& _sym_bigEndian = global_symbols[43];
+core::Symbol_sp& _sym_crlf = global_symbols[44];
+core::Symbol_sp& _sym_latin_1 = global_symbols[45];
+core::Symbol_sp& _sym_ucs_4 = global_symbols[46];
+core::Symbol_sp& _sym_passThrough = global_symbols[47];
+core::Symbol_sp& _sym_if_does_not_exist = global_symbols[48];
+core::Symbol_sp& _sym_new_version = global_symbols[49];
+core::Symbol_sp& _sym_rename = global_symbols[50];
+core::Symbol_sp& _sym_rename_and_delete = global_symbols[51];
+core::Symbol_sp& _sym_overwrite = global_symbols[52];
+core::Symbol_sp& _sym_if_exists = global_symbols[53];
+core::Symbol_sp& _sym_probe = global_symbols[54];
+core::Symbol_sp& _sym_FullDebug = global_symbols[55];
+core::Symbol_sp& _sym_LineTablesOnly = global_symbols[56];
+core::Symbol_sp& _sym__uid = global_symbols[57];
+core::Symbol_sp& _sym_none = global_symbols[58];
+core::Symbol_sp& _sym_line = global_symbols[59];
+core::Symbol_sp& _sym_full = global_symbols[60];
+core::Symbol_sp& _sym_message = global_symbols[61];
+core::Symbol_sp& _sym_line_buffered = global_symbols[62];
+core::Symbol_sp& _sym_fully_buffered = global_symbols[63];
+core::Symbol_sp& _sym_array = global_symbols[64];
+core::Symbol_sp& _sym_UnsignedByte = global_symbols[65];
+core::Symbol_sp& _sym_junkAllowed = global_symbols[66];
+core::Symbol_sp& _sym_absolute = global_symbols[67];
+core::Symbol_sp& _sym_relative = global_symbols[68];
+core::Symbol_sp& _sym_back = global_symbols[69];
+core::Symbol_sp& _sym_operation = global_symbols[70];
+core::Symbol_sp& _sym_operands = global_symbols[71];
+core::Symbol_sp& _sym_escape = global_symbols[72];
+core::Symbol_sp& _sym_capitalize = global_symbols[73];
+core::Symbol_sp& _sym_typeError = global_symbols[74];
+core::Symbol_sp& _sym_datum = global_symbols[75];
+core::Symbol_sp& _sym_expectedType = global_symbols[76];
+core::Symbol_sp& _sym_print = global_symbols[77];
+core::Symbol_sp& _sym_pathname = global_symbols[78];
+core::Symbol_sp& _sym_object = global_symbols[79];
+core::Symbol_sp& _sym_formatControl = global_symbols[80];
+core::Symbol_sp& _sym_formatArguments = global_symbols[81];
+core::Symbol_sp& _sym_stream = global_symbols[82];
+core::Symbol_sp& _sym_package = global_symbols[83];
+core::Symbol_sp& _sym_compile_toplevel = global_symbols[84];
+core::Symbol_sp& _sym_load_toplevel = global_symbols[85];
+core::Symbol_sp& _sym_execute = global_symbols[86];
+core::Symbol_sp& _sym_allow_other_keys = global_symbols[87];
+core::Symbol_sp& _sym_macro = global_symbols[88];
+core::Symbol_sp& _sym_function = global_symbols[89];
+core::Symbol_sp& _sym_invalid_character = global_symbols[90];
+core::Symbol_sp& _sym_brcl = global_symbols[91];
+core::Symbol_sp& _sym_not = global_symbols[92];
+core::Symbol_sp& _sym_and = global_symbols[93];
+core::Symbol_sp& _sym_or = global_symbols[94];
+core::Symbol_sp& _sym_class = global_symbols[95];
+core::Symbol_sp& _sym_instance = global_symbols[96];
+core::Symbol_sp& _sym_output = global_symbols[97];
+core::Symbol_sp& _sym_input = global_symbols[98];
+core::Symbol_sp& _sym_io = global_symbols[99];
+core::Symbol_sp& _sym_default = global_symbols[100];
+core::Symbol_sp& _sym_internal = global_symbols[101];
+core::Symbol_sp& _sym_external = global_symbols[102];
+core::Symbol_sp& _sym_inherited = global_symbols[103];
+core::Symbol_sp& _sym_debug = global_symbols[104];
+core::Symbol_sp& _sym_direct_super_classes = global_symbols[105];
+core::Symbol_sp& _sym_changed = global_symbols[106];
+core::Symbol_sp& _sym_address_model_64 = global_symbols[107];
+core::Symbol_sp& _sym_target_os_darwin = global_symbols[108];
+core::Symbol_sp& _sym_podSymbolMap = global_symbols[109];
+core::Symbol_sp& _sym_constituent_character = global_symbols[110];
+core::Symbol_sp& _sym_syntax = global_symbols[111];
+core::Symbol_sp& _sym_whitespace_character = global_symbols[112];
+core::Symbol_sp& _sym_single_escape_character = global_symbols[113];
+core::Symbol_sp& _sym_multiple_escape_character = global_symbols[114];
+core::Symbol_sp& _sym_upcase = global_symbols[115];
+core::Symbol_sp& _sym_downcase = global_symbols[116];
+core::Symbol_sp& _sym_preserve = global_symbols[117];
+core::Symbol_sp& _sym_invert = global_symbols[118];
+core::Symbol_sp& _sym_non_terminating_macro_character = global_symbols[119];
+core::Symbol_sp& _sym_terminating_macro_character = global_symbols[120];
+core::Symbol_sp& _sym_macro_function = global_symbols[121];
+core::Symbol_sp& _sym_case = global_symbols[122];
+core::Symbol_sp& _sym_file = global_symbols[123];
+core::Symbol_sp& _sym_unspecific = global_symbols[124];
+core::Symbol_sp& _sym_local = global_symbols[125];
+core::Symbol_sp& _sym_common = global_symbols[126];
+core::Symbol_sp& _sym_wild_inferiors = global_symbols[127];
+core::Symbol_sp& _sym_up = global_symbols[128];
+core::Symbol_sp& _sym_wild = global_symbols[129];
+core::Symbol_sp& _sym_host = global_symbols[130];
+core::Symbol_sp& _sym_device = global_symbols[131];
+core::Symbol_sp& _sym_newest = global_symbols[132];
+core::Symbol_sp& _sym_version = global_symbols[133];
+core::Symbol_sp& _sym_directory = global_symbols[134];
+core::Symbol_sp& _sym_supplied = global_symbols[135];
+core::Symbol_sp& _sym_min = global_symbols[136];
+core::Symbol_sp& _sym_max = global_symbols[137];
+core::Symbol_sp& _sym_eof = global_symbols[138];
+core::Symbol_sp& _sym_fillPointer = global_symbols[139];
+core::Symbol_sp& _sym_elementType = global_symbols[140];
+core::Symbol_sp& _sym_adjustable = global_symbols[141];
+core::Symbol_sp& _sym_start = global_symbols[142];
+core::Symbol_sp& _sym_end = global_symbols[143];
+core::Symbol_sp& _sym_x = global_symbols[144];
+core::Symbol_sp& _sym_y = global_symbols[145];
+core::Symbol_sp& _sym_z = global_symbols[146];
+core::Symbol_sp& _sym_white = global_symbols[147];
+core::Symbol_sp& _sym_black = global_symbols[148];
+core::Symbol_sp& _sym_red = global_symbols[149];
+core::Symbol_sp& _sym_green = global_symbols[150];
+core::Symbol_sp& _sym_blue = global_symbols[151];
+core::Symbol_sp& _sym_magenta = global_symbols[152];
+core::Symbol_sp& _sym_yellow = global_symbols[153];
+core::Symbol_sp& _sym_cyan = global_symbols[154];
+core::Symbol_sp& _sym_grey10 = global_symbols[155];
+core::Symbol_sp& _sym_greyF0 = global_symbols[156];
+core::Symbol_sp& _sym_goldenrod = global_symbols[157];
+core::Symbol_sp& _sym_purple = global_symbols[158];
+core::Symbol_sp& _sym_pink = global_symbols[159];
+core::Symbol_sp& _sym_plum = global_symbols[160];
+core::Symbol_sp& _sym_coral = global_symbols[161];
+core::Symbol_sp& _sym_orange = global_symbols[162];
+core::Symbol_sp& _sym_brown = global_symbols[163];
+core::Symbol_sp& _sym_wheat = global_symbols[164];
+core::Symbol_sp& _sym_chartreuse = global_symbols[165];
+core::Symbol_sp& _sym_aquamarine = global_symbols[166];
+core::Symbol_sp& _sym_mediumBlue = global_symbols[167];
+core::Symbol_sp& _sym_steelBlue = global_symbols[168];
+core::Symbol_sp& _sym_name = global_symbols[169];
+core::Symbol_sp& _sym_id = global_symbols[170];
+core::Symbol_sp& _sym_contents = global_symbols[171];
+core::Symbol_sp& _sym_pdbName = global_symbols[172];
+core::Symbol_sp& _sym_uniqueLabel = global_symbols[173];
+core::Symbol_sp& _sym_NetCharge = global_symbols[174];
+core::Symbol_sp& _sym_fileSeqNum = global_symbols[175];
+core::Symbol_sp& _sym_monomerAliases = global_symbols[176];
+core::Symbol_sp& _sym_bl = global_symbols[177];
+core::Symbol_sp& _sym_alias = global_symbols[178];
+core::Symbol_sp& _sym_flags = global_symbols[179];
+core::Symbol_sp& _sym_hybridization = global_symbols[180];
+core::Symbol_sp& _sym_priority = global_symbols[181];
+core::Symbol_sp& _sym_hintLP = global_symbols[182];
+core::Symbol_sp& _sym_chg = global_symbols[183];
+core::Symbol_sp& _sym_ion = global_symbols[184];
+core::Symbol_sp& _sym_rings = global_symbols[185];
+core::Symbol_sp& _sym_tempInt = global_symbols[186];
+core::Symbol_sp& _sym_ar1 = global_symbols[187];
+core::Symbol_sp& _sym_ar2 = global_symbols[188];
+core::Symbol_sp& _sym_ar3 = global_symbols[189];
+core::Symbol_sp& _sym_ar4 = global_symbols[190];
+core::Symbol_sp& _sym_ar5 = global_symbols[191];
+core::Symbol_sp& _sym_mask = global_symbols[192];
+core::Symbol_sp& _sym_configuration = global_symbols[193];
+core::Symbol_sp& _sym_stereochemistryType = global_symbols[194];
+core::Symbol_sp& _sym_pos = global_symbols[195];
+core::Symbol_sp& _sym_order = global_symbols[196];
+core::Symbol_sp& _sym_properties = global_symbols[197];
+core::Symbol_sp& _sym_a1 = global_symbols[198];
+core::Symbol_sp& _sym_a2 = global_symbols[199];
+core::Symbol_sp& _sym_bonds = global_symbols[200];
+core::Symbol_sp& _sym_atom = global_symbols[201];
+core::Symbol_sp& _sym_position = global_symbols[202];
+core::Symbol_sp& _sym_weight = global_symbols[203];
+core::Symbol_sp& _sym_atoms = global_symbols[204];
+core::Symbol_sp& _sym_k = global_symbols[205];
+core::Symbol_sp& _sym_title = global_symbols[206];
+core::Symbol_sp& _sym_ref = global_symbols[207];
+core::Symbol_sp& _sym_bondDistinctions = global_symbols[208];
+core::Symbol_sp& _sym_Info = global_symbols[209];
+core::Symbol_sp& _sym_Types = global_symbols[210];
+core::Symbol_sp& _sym_Stretches = global_symbols[211];
+core::Symbol_sp& _sym_Angles = global_symbols[212];
+core::Symbol_sp& _sym_Itors = global_symbols[213];
+core::Symbol_sp& _sym_Ptors = global_symbols[214];
+core::Symbol_sp& _sym_Nonbonds = global_symbols[215];
+core::Symbol_sp& _sym_Vdws = global_symbols[216];
+core::Symbol_sp& _sym_chemdraw_color = global_symbols[217];
+core::Symbol_sp& _sym_chemdraw_dashed_bond = global_symbols[218];
+core::Symbol_sp& _sym_comment = global_symbols[219];
+core::Symbol_sp& _sym_chiral_centers = global_symbols[220];
+core::Symbol_sp& _sym_group = global_symbols[221];
+core::Symbol_sp& _sym_name_template = global_symbols[222];
+core::Symbol_sp& _sym_pdb_template = global_symbols[223];
+core::Symbol_sp& _sym_restraints = global_symbols[224];
+core::Symbol_sp& _sym_residue_charge = global_symbols[225];
+core::Symbol_sp& _sym_restrained_pi_bonds = global_symbols[226];
+core::Symbol_sp& _sym_caps = global_symbols[227];
+core::Symbol_sp& _sym_matches = global_symbols[228];
+core::Symbol_sp& _sym_tags = global_symbols[229];
+core::Symbol_sp& _sym_closestMatch = global_symbols[230];
+core::Symbol_sp& _sym_data = global_symbols[231];
+core::Symbol_sp& _sym_root = global_symbols[232];
+core::Symbol_sp& _sym_op = global_symbols[233];
+core::Symbol_sp& _sym_ringTag = global_symbols[234];
+core::Symbol_sp& _sym_atomTest = global_symbols[235];
+core::Symbol_sp& _sym_test = global_symbols[236];
+core::Symbol_sp& _sym_int = global_symbols[237];
+core::Symbol_sp& _sym_num = global_symbols[238];
+core::Symbol_sp& _sym_str = global_symbols[239];
+core::Symbol_sp& _sym_sym = global_symbols[240];
+core::Symbol_sp& _sym_head = global_symbols[241];
+core::Symbol_sp& _sym_tail = global_symbols[242];
+core::Symbol_sp& _sym_left = global_symbols[243];
+core::Symbol_sp& _sym_right = global_symbols[244];
+core::Symbol_sp& _sym_tag1 = global_symbols[245];
+core::Symbol_sp& _sym_tag2 = global_symbols[246];
+core::Symbol_sp& _sym_bond = global_symbols[247];
+core::Symbol_sp& _sym_residueNames = global_symbols[248];
+core::Symbol_sp& _sym_atomicProperty = global_symbols[249];
+core::Symbol_sp& _sym_atomicNumber = global_symbols[250];
+core::Symbol_sp& _sym_attachedAtoms = global_symbols[251];
+core::Symbol_sp& _sym_attachedHs = global_symbols[252];
+core::Symbol_sp& _sym_attachedEWGs = global_symbols[253];
+core::Symbol_sp& _sym_element = global_symbols[254];
+core::Symbol_sp& _sym_neighbors = global_symbols[255];
+core::Symbol_sp& _sym_tag = global_symbols[256];
+core::Symbol_sp& _sym_atomProps = global_symbols[257];
+core::Symbol_sp& _sym_firstTest = global_symbols[258];
+core::Symbol_sp& _sym_chain = global_symbols[259];
+core::Symbol_sp& _sym_tests = global_symbols[260];
+core::Symbol_sp& _sym_assignType = global_symbols[261];
+core::Symbol_sp& _sym_afterMatchTests = global_symbols[262];
+core::Symbol_sp& _sym_wildDict = global_symbols[263];
+core::Symbol_sp& _sym_type_rules = global_symbols[264];
+core::Symbol_sp& _sym_r0 = global_symbols[265];
+core::Symbol_sp& _sym_kb = global_symbols[266];
+core::Symbol_sp& _sym_stretches = global_symbols[267];
+core::Symbol_sp& _sym_R = global_symbols[268];
+core::Symbol_sp& _sym_Eps = global_symbols[269];
+core::Symbol_sp& _sym_M = global_symbols[270];
+core::Symbol_sp& _sym_N = global_symbols[271];
+core::Symbol_sp& _sym_Edep = global_symbols[272];
+core::Symbol_sp& _sym_vdw = global_symbols[273];
+core::Symbol_sp& _sym_angRad = global_symbols[274];
+core::Symbol_sp& _sym_k2 = global_symbols[275];
+core::Symbol_sp& _sym_angleFunction = global_symbols[276];
+core::Symbol_sp& _sym_angles = global_symbols[277];
+core::Symbol_sp& _sym_zConstants = global_symbols[278];
+core::Symbol_sp& _sym_cConstants = global_symbols[279];
+core::Symbol_sp& _sym_level = global_symbols[280];
+core::Symbol_sp& _sym_forceField = global_symbols[281];
+core::Symbol_sp& _sym_itors = global_symbols[282];
+core::Symbol_sp& _sym_type1 = global_symbols[283];
+core::Symbol_sp& _sym_type2 = global_symbols[284];
+core::Symbol_sp& _sym_type3 = global_symbols[285];
+core::Symbol_sp& _sym_type4 = global_symbols[286];
+core::Symbol_sp& _sym_v0 = global_symbols[287];
+core::Symbol_sp& _sym_ph0 = global_symbols[288];
+core::Symbol_sp& _sym_v1 = global_symbols[289];
+core::Symbol_sp& _sym_ph1 = global_symbols[290];
+core::Symbol_sp& _sym_v2 = global_symbols[291];
+core::Symbol_sp& _sym_ph2 = global_symbols[292];
+core::Symbol_sp& _sym_v3 = global_symbols[293];
+core::Symbol_sp& _sym_ph3 = global_symbols[294];
+core::Symbol_sp& _sym_v4 = global_symbols[295];
+core::Symbol_sp& _sym_ph4 = global_symbols[296];
+core::Symbol_sp& _sym_v5 = global_symbols[297];
+core::Symbol_sp& _sym_ph5 = global_symbols[298];
+core::Symbol_sp& _sym_ptors = global_symbols[299];
+core::Symbol_sp& _sym_type = global_symbols[300];
+core::Symbol_sp& _sym_radius = global_symbols[301];
+core::Symbol_sp& _sym_well = global_symbols[302];
+core::Symbol_sp& _sym_apol = global_symbols[303];
+core::Symbol_sp& _sym_neff = global_symbols[304];
+core::Symbol_sp& _sym_mass = global_symbols[305];
+core::Symbol_sp& _sym_pol = global_symbols[306];
+core::Symbol_sp& _sym_initCharge = global_symbols[307];
+core::Symbol_sp& _sym_fcadj = global_symbols[308];
+core::Symbol_sp& _sym_pbci = global_symbols[309];
+core::Symbol_sp& _sym_da = global_symbols[310];
+core::Symbol_sp& _sym_eleDielectricValue = global_symbols[311];
+core::Symbol_sp& _sym_eleBuffer = global_symbols[312];
+core::Symbol_sp& _sym_eleScale14 = global_symbols[313];
+core::Symbol_sp& _sym_eleChargeFcn = global_symbols[314];
+core::Symbol_sp& _sym_vdwScale14 = global_symbols[315];
+core::Symbol_sp& _sym_vdwScaleBufferA = global_symbols[316];
+core::Symbol_sp& _sym_vdwScaleBufferB = global_symbols[317];
+core::Symbol_sp& _sym_nonbonds = global_symbols[318];
+core::Symbol_sp& _sym_map = global_symbols[319];
+core::Symbol_sp& _sym_eleDielectricCode = global_symbols[320];
+core::Symbol_sp& _sym_vdwMixRadius = global_symbols[321];
+core::Symbol_sp& _sym_vdwMixWell = global_symbols[322];
+} // namespace kw
 namespace chem {
-core::Symbol_sp& _sym_name = global_symbols[0];
-core::Symbol_sp& _sym__PLUS_validChemdrawKeywords_PLUS_ = global_symbols[1];
-core::Symbol_sp& _sym_STARparserNodeHolderSTAR = global_symbols[2];
-core::Symbol_sp& _sym_STARSabBondEnumConverterSTAR = global_symbols[3];
-core::Symbol_sp& _sym_STARLogicalOperatorTypeConverterSTAR = global_symbols[4];
-core::Symbol_sp& _sym_STARAtomTestEnumConverterSTAR = global_symbols[5];
-core::Symbol_sp& _sym_STARDonorAcceptorEnumConverterSTAR = global_symbols[6];
-core::Symbol_sp& _sym_STAREleDielectricEnumConverterSTAR = global_symbols[7];
-core::Symbol_sp& _sym_STARVdwMixRadiusEnumConverterSTAR = global_symbols[8];
-core::Symbol_sp& _sym_STARVdwMixWellEnumConverterSTAR = global_symbols[9];
-core::Symbol_sp& _sym_CDNode_O = global_symbols[10];
-core::Symbol_sp& _sym_CDBond_O = global_symbols[11];
-core::Symbol_sp& _sym_CDFragment_O = global_symbols[12];
-core::Symbol_sp& _sym_CDText_O = global_symbols[13];
-core::Symbol_sp& _sym_ChemDraw_O = global_symbols[14];
-core::Symbol_sp& _sym_Command_O = global_symbols[15];
-core::Symbol_sp& _sym_ReadAmberParameters_O = global_symbols[16];
-core::Symbol_sp& _sym_StructureComparer_O = global_symbols[17];
-core::Symbol_sp& _sym_Structure_Old_ListEntry_O = global_symbols[18];
-core::Symbol_sp& _sym_Structure_Old_List_O = global_symbols[19];
-core::Symbol_sp& _sym_Twister_O = global_symbols[20];
-core::Symbol_sp& _sym_TwisterDriver_O = global_symbols[21];
-core::Symbol_sp& _sym_ZMatrixInternal_O = global_symbols[22];
-core::Symbol_sp& _sym_ZMatrixBondInternal_O = global_symbols[23];
-core::Symbol_sp& _sym_ZMatrixAngleInternal_O = global_symbols[24];
-core::Symbol_sp& _sym_ZMatrixDihedralInternal_O = global_symbols[25];
-core::Symbol_sp& _sym_ZMatrixEntry_O = global_symbols[26];
-core::Symbol_sp& _sym_ZMatrix_O = global_symbols[27];
-core::Symbol_sp& _sym_R = global_symbols[28];
-core::Symbol_sp& _sym_S = global_symbols[29];
-core::Symbol_sp& _sym_UnknownConfiguration = global_symbols[30];
-core::Symbol_sp& _sym_candoDatabase = global_symbols[31];
-core::Symbol_sp& _sym_AM1_BCC_ar5 = global_symbols[32];
-core::Symbol_sp& _sym_AM1_BCC_ar6 = global_symbols[33];
-core::Symbol_sp& _sym_AM1_BCC_ar7 = global_symbols[34];
-core::Symbol_sp& _sym_Alias_O = global_symbols[35];
-core::Symbol_sp& _sym__PLUS_configurationEnumConverter_PLUS_ = global_symbols[36];
-core::Symbol_sp& _sym__PLUS_stereochemistryTypeConverter_PLUS_ = global_symbols[37];
-core::Symbol_sp& _sym__PLUS_atomFlagSymbolConverter_PLUS_ = global_symbols[38];
-core::Symbol_sp& _sym_configurationToSymbolConverter = global_symbols[39];
-core::Symbol_sp& _sym_stereochemistryToSymbolConverter = global_symbols[40];
-core::Symbol_sp& _sym_atomNeedsMinimizer = global_symbols[41];
-core::Symbol_sp& _sym_selected = global_symbols[42];
-core::Symbol_sp& _sym_onGrid = global_symbols[43];
-core::Symbol_sp& _sym_atomFixed = global_symbols[44];
-core::Symbol_sp& _sym_in3MemberRing = global_symbols[45];
-core::Symbol_sp& _sym_in4MemberRing = global_symbols[46];
-core::Symbol_sp& _sym_in5MemberRing = global_symbols[47];
-core::Symbol_sp& _sym_in6MemberRing = global_symbols[48];
-core::Symbol_sp& _sym_in7MemberRing = global_symbols[49];
-core::Symbol_sp& _sym_in8MemberRing = global_symbols[50];
-core::Symbol_sp& _sym_inRing = global_symbols[51];
-core::Symbol_sp& _sym__PLUS_bondOrderToSymbolConverter_PLUS_ = global_symbols[52];
-core::Symbol_sp& _sym_AtomIdToAtomMap_O = global_symbols[53];
-core::Symbol_sp& _sym_AtomId_O = global_symbols[54];
-core::Symbol_sp& _sym__PLUS_elementToSymbolConverter_PLUS_ = global_symbols[55];
-core::Symbol_sp& _sym__PLUS_hybridizationToSymbolConverter_PLUS_ = global_symbols[56];
-core::Symbol_sp& _sym__PLUS_elementColors_PLUS_ = global_symbols[57];
-core::Symbol_sp& _sym__PLUS_minimizerStatusConverter_PLUS_ = global_symbols[58];
-core::Symbol_sp& _sym__PLUS_preconditionerTypeConverter_PLUS_ = global_symbols[59];
-core::Symbol_sp& _sym_MinimizerExceededMaxStepsError = global_symbols[60];
-core::Symbol_sp& _sym_MinimizerStuckError = global_symbols[61];
-core::Symbol_sp& _sym_MinimizerError = global_symbols[62];
-core::Symbol_sp& _sym_noPreconditioner = global_symbols[63];
-core::Symbol_sp& _sym_hessianPreconditioner = global_symbols[64];
-core::Symbol_sp& _sym_minimizerError = global_symbols[65];
-core::Symbol_sp& _sym_minimizerSucceeded = global_symbols[66];
-core::Symbol_sp& _sym_truncatedNewtonRunning = global_symbols[67];
-core::Symbol_sp& _sym_conjugateGradientRunning = global_symbols[68];
-core::Symbol_sp& _sym_steepestDescentRunning = global_symbols[69];
-core::Symbol_sp& _sym_minimizerIdle = global_symbols[70];
-core::Symbol_sp& _sym_Angle_O = global_symbols[71];
-core::Symbol_sp& _sym_ProperTorsion_O = global_symbols[72];
-core::Symbol_sp& _sym_ImproperTorsion_O = global_symbols[73];
-core::Symbol_sp& _sym_AtomIndexer_O = global_symbols[74];
-core::Symbol_sp& _sym_MapOfMonomerNamesToAtomIndexers_O = global_symbols[75];
-core::Symbol_sp& _sym_MonomerPack_O = global_symbols[76];
-core::Symbol_sp& _sym_StereoConfiguration_O = global_symbols[77];
-core::Symbol_sp& _sym_Stereoisomer_O = global_symbols[78];
-core::Symbol_sp& _sym_StereoInformation_O = global_symbols[79];
-core::Symbol_sp& _sym_ConformationExplorerEntryStage_O = global_symbols[80];
-core::Symbol_sp& _sym_ConformationExplorerEntry_O = global_symbols[81];
-core::Symbol_sp& _sym_ConformationExplorer_O = global_symbols[82];
-core::Symbol_sp& _sym_ConformationExplorerMatch_O = global_symbols[83];
-core::Symbol_sp& _sym_MonomerCoordinates_O = global_symbols[84];
-core::Symbol_sp& _sym_ConformationCollectionEntry_O = global_symbols[85];
-core::Symbol_sp& _sym_ConformationCollection_O = global_symbols[86];
-core::Symbol_sp& _sym_SuperposableConformationCollection_O = global_symbols[87];
-core::Symbol_sp& _sym_FrameRecognizer_O = global_symbols[88];
-core::Symbol_sp& _sym_Rotamer_O = global_symbols[89];
-core::Symbol_sp& _sym_AtomReferenceBase_O = global_symbols[90];
-core::Symbol_sp& _sym_AtomReference_O = global_symbols[91];
-core::Symbol_sp& _sym_RepresentedEntityNameSet_O = global_symbols[92];
-core::Symbol_sp& _sym_CoordinateSystem_O = global_symbols[93];
-core::Symbol_sp& _sym_PdbMonomerConnectivity_O = global_symbols[94];
-core::Symbol_sp& _sym_PdbMonomerDatabase_O = global_symbols[95];
-core::Symbol_sp& _sym_StereoisomerAtom_O = global_symbols[96];
-core::Symbol_sp& _sym_StereoisomerVirtualAtom_O = global_symbols[97];
-core::Symbol_sp& _sym_StereoisomerAtoms_O = global_symbols[98];
-core::Symbol_sp& _sym_ConstitutionBond_O = global_symbols[99];
-core::Symbol_sp& _sym_ConstitutionAtom_O = global_symbols[100];
-core::Symbol_sp& _sym_ConstitutionVirtualAtom_O = global_symbols[101];
-core::Symbol_sp& _sym_ConstitutionAtoms_O = global_symbols[102];
-core::Symbol_sp& _sym_TrajectoryFrame_O = global_symbols[103];
-core::Symbol_sp& _sym_Trajectory_O = global_symbols[104];
-core::Symbol_sp& _sym_CipPrioritizer_O = global_symbols[105];
-core::Symbol_sp& _sym_AtomTable_O = global_symbols[106];
-core::Symbol_sp& _sym_EnergyComponent_O = global_symbols[107];
-core::Symbol_sp& _sym_EnergyStretch_O = global_symbols[108];
-core::Symbol_sp& _sym_EnergyAngle_O = global_symbols[109];
-core::Symbol_sp& _sym_EnergyDihedral_O = global_symbols[110];
-core::Symbol_sp& _sym_EnergyNonbond_O = global_symbols[111];
-core::Symbol_sp& _sym_EnergyImproperRestraint_O = global_symbols[112];
-core::Symbol_sp& _sym_EnergyChiralRestraint_O = global_symbols[113];
-core::Symbol_sp& _sym_EnergyAnchorRestraint_O = global_symbols[114];
-core::Symbol_sp& _sym_EnergyFixedNonbondRestraint_O = global_symbols[115];
-core::Symbol_sp& _sym_nonbondTerm = global_symbols[116];
-core::Symbol_sp& _sym_restraintAnchor = global_symbols[117];
-core::Symbol_sp& _sym_InteractionError = global_symbols[118];
-core::Symbol_sp& _sym_LinearAngleError = global_symbols[119];
-core::Symbol_sp& _sym_LinearDihedralError = global_symbols[120];
-core::Symbol_sp& _sym_LinearImproperRestraintError = global_symbols[121];
-core::Symbol_sp& _sym_OverlappingNonbondError = global_symbols[122];
-core::Symbol_sp& _sym_ComplexRestraint_O = global_symbols[123];
-core::Symbol_sp& _sym_RestrainedExoCyclicAtom_O = global_symbols[124];
-core::Symbol_sp& _sym_RestrainedPiBond_O = global_symbols[125];
-core::Symbol_sp& _sym_SearchStatistics_O = global_symbols[126];
-core::Symbol_sp& _sym_Constitution_O = global_symbols[127];
-core::Symbol_sp& _sym_CalculatePosition_O = global_symbols[128];
-core::Symbol_sp& _sym_CalculatePositionUsingInternals_O = global_symbols[129];
-core::Symbol_sp& _sym_CalculatePositionAlongBond_O = global_symbols[130];
-core::Symbol_sp& _sym_CalculatePositionRelativeToOrigin_O = global_symbols[131];
-core::Symbol_sp& _sym_Oligomer_O = global_symbols[132];
-core::Symbol_sp& _sym_OligomerPart_Base_O = global_symbols[133];
-core::Symbol_sp& _sym_OligomerPart_Monomer_O = global_symbols[134];
-core::Symbol_sp& _sym_OligomerPart_Link_O = global_symbols[135];
-core::Symbol_sp& _sym_Entity_O = global_symbols[136];
-core::Symbol_sp& _sym_Monomer_O = global_symbols[137];
-core::Symbol_sp& _sym_OneMonomer_O = global_symbols[138];
-core::Symbol_sp& _sym_MultiMonomer_O = global_symbols[139];
-core::Symbol_sp& _sym_CandoDatabase_O = global_symbols[140];
-core::Symbol_sp& _sym_Topology_O = global_symbols[141];
-core::Symbol_sp& _sym_StatusTracker_O = global_symbols[142];
-core::Symbol_sp& _sym_EntityNameSetBase_O = global_symbols[143];
-core::Symbol_sp& _sym_EntityNameSet_O = global_symbols[144];
-core::Symbol_sp& _sym_EntityNameSetWithCap_O = global_symbols[145];
-core::Symbol_sp& _sym_MonomerContext_O = global_symbols[146];
-core::Symbol_sp& _sym_Coupling_O = global_symbols[147];
-core::Symbol_sp& _sym_DirectionalCoupling_O = global_symbols[148];
-core::Symbol_sp& _sym_RingCoupling_O = global_symbols[149];
-core::Symbol_sp& _sym_Mate_O = global_symbols[150];
-core::Symbol_sp& _sym_RingClosingMate_O = global_symbols[151];
-core::Symbol_sp& _sym_Plug_O = global_symbols[152];
-core::Symbol_sp& _sym_PlugWithMates_O = global_symbols[153];
-core::Symbol_sp& _sym_OutPlug_O = global_symbols[154];
-core::Symbol_sp& _sym_InPlug_O = global_symbols[155];
-core::Symbol_sp& _sym_JumpPlug_O = global_symbols[156];
-core::Symbol_sp& _sym_RingClosingPlug_O = global_symbols[157];
-core::Symbol_sp& _sym_SpecificContext_O = global_symbols[158];
-core::Symbol_sp& _sym_SpecificContextSet_O = global_symbols[159];
-core::Symbol_sp& _sym_SpanningLoop_O = global_symbols[160];
-core::Symbol_sp& _sym_SuperposeEngine_O = global_symbols[161];
-core::Symbol_sp& _sym_SuperposeSelectedAtoms_O = global_symbols[162];
-core::Symbol_sp& _sym_superpose = global_symbols[163];
-core::Symbol_sp& _sym_VirtualSphere_O = global_symbols[164];
-core::Symbol_sp& _sym_idle = global_symbols[165];
-core::Symbol_sp& _sym_translate = global_symbols[166];
-core::Symbol_sp& _sym_rotate = global_symbols[167];
-core::Symbol_sp& _sym_scale = global_symbols[168];
-core::Symbol_sp& _sym_OneTypeRule_O = global_symbols[169];
-core::Symbol_sp& _sym_TypeAssignmentRules_O = global_symbols[170];
-core::Symbol_sp& _sym_STARsybyl_type_assignment_rulesSTAR = global_symbols[171];
-core::Symbol_sp& _sym_FFParameter_O = global_symbols[172];
-core::Symbol_sp& _sym_FFBaseDb_O = global_symbols[173];
-core::Symbol_sp& _sym_ChemInfoMatch_O = global_symbols[174];
-core::Symbol_sp& _sym_WildElementDict_O = global_symbols[175];
-core::Symbol_sp& _sym_ChemInfoNode_O = global_symbols[176];
-core::Symbol_sp& _sym_ResidueList_O = global_symbols[177];
-core::Symbol_sp& _sym_RootMatchNode_O = global_symbols[178];
-core::Symbol_sp& _sym_BondMatchNode_O = global_symbols[179];
-core::Symbol_sp& _sym_AtomOrBondMatchNode_O = global_symbols[180];
-core::Symbol_sp& _sym_BondListMatchNode_O = global_symbols[181];
-core::Symbol_sp& _sym_Logical_O = global_symbols[182];
-core::Symbol_sp& _sym_TagSet_O = global_symbols[183];
-core::Symbol_sp& _sym_RingTest_O = global_symbols[184];
-core::Symbol_sp& _sym_ResidueTest_O = global_symbols[185];
-core::Symbol_sp& _sym_BondTest_O = global_symbols[186];
-core::Symbol_sp& _sym_AntechamberBondTest_O = global_symbols[187];
-core::Symbol_sp& _sym_AtomTest_O = global_symbols[188];
-core::Symbol_sp& _sym_AntechamberFocusAtomMatch_O = global_symbols[189];
-core::Symbol_sp& _sym_Chain_O = global_symbols[190];
-core::Symbol_sp& _sym_Branch_O = global_symbols[191];
-core::Symbol_sp& _sym_AfterMatchBondTest_O = global_symbols[192];
-core::Symbol_sp& _sym_Root_O = global_symbols[193];
-core::Symbol_sp& _sym_SmartsRoot_O = global_symbols[194];
-core::Symbol_sp& _sym_AntechamberRoot_O = global_symbols[195];
-core::Symbol_sp& _sym_ChemInfo_O = global_symbols[196];
-core::Symbol_sp& _sym_FFTypesDb_O = global_symbols[197];
-core::Symbol_sp& _sym_FFStretch_O = global_symbols[198];
-core::Symbol_sp& _sym_FFStretchDb_O = global_symbols[199];
-core::Symbol_sp& _sym_FFAngle_O = global_symbols[200];
-core::Symbol_sp& _sym_FFAngleDb_O = global_symbols[201];
-core::Symbol_sp& _sym_FFItor_O = global_symbols[202];
-core::Symbol_sp& _sym_FFItorDb_O = global_symbols[203];
-core::Symbol_sp& _sym_FFPtor_O = global_symbols[204];
-core::Symbol_sp& _sym_FFPtorDb_O = global_symbols[205];
-core::Symbol_sp& _sym_FFNonbondCrossTermTable_O = global_symbols[206];
-core::Symbol_sp& _sym_FFNonbond_O = global_symbols[207];
-core::Symbol_sp& _sym_FFNonbondDb_O = global_symbols[208];
-core::Symbol_sp& _sym_FFVdw_O = global_symbols[209];
-core::Symbol_sp& _sym_FFVdwDb_O = global_symbols[210];
-core::Symbol_sp& _sym_InfoDb_O = global_symbols[211];
-core::Symbol_sp& _sym_ForceField_O = global_symbols[212];
-core::Symbol_sp& _sym_EnergyFunction_O = global_symbols[213];
-core::Symbol_sp& _sym_AbstractLargeSquareMatrix_O = global_symbols[214];
-core::Symbol_sp& _sym_FullLargeSquareMatrix_O = global_symbols[215];
-core::Symbol_sp& _sym_SparseLargeSquareMatrix_O = global_symbols[216];
-core::Symbol_sp& _sym_NumericalFunction_O = global_symbols[217];
-core::Symbol_sp& _sym_NVector_O = global_symbols[218];
-core::Symbol_sp& _sym_ReportBase_O = global_symbols[219];
-core::Symbol_sp& _sym_MessageReport_O = global_symbols[220];
-core::Symbol_sp& _sym_ForceMatchReport_O = global_symbols[221];
-core::Symbol_sp& _sym_StepReport_O = global_symbols[222];
-core::Symbol_sp& _sym_MinimizerLog_O = global_symbols[223];
-core::Symbol_sp& _sym_Minimizer_O = global_symbols[224];
-core::Symbol_sp& _sym_IterateRestraints_O = global_symbols[225];
-core::Symbol_sp& _sym_Restraint_O = global_symbols[226];
-core::Symbol_sp& _sym_RestraintAnchor_O = global_symbols[227];
-core::Symbol_sp& _sym_RestraintChiral_O = global_symbols[228];
-core::Symbol_sp& _sym_RestraintDistance_O = global_symbols[229];
-core::Symbol_sp& _sym_RestraintAngle_O = global_symbols[230];
-core::Symbol_sp& _sym_RestraintDihedral_O = global_symbols[231];
-core::Symbol_sp& _sym_RestraintFixedNonbond_O = global_symbols[232];
-core::Symbol_sp& _sym_RestraintList_O = global_symbols[233];
-core::Symbol_sp& _sym_PdbReader_O = global_symbols[234];
-core::Symbol_sp& _sym_PdbWriter_O = global_symbols[235];
-core::Symbol_sp& _sym_PathMessage_O = global_symbols[236];
-core::Symbol_sp& _sym_AGVertex_O = global_symbols[237];
-core::Symbol_sp& _sym_AGEdge_O = global_symbols[238];
-core::Symbol_sp& _sym_RingFinder_O = global_symbols[239];
-core::Symbol_sp& _sym_VirtualAtom_O = global_symbols[240];
-core::Symbol_sp& _sym_Bond_O = global_symbols[241];
-core::Symbol_sp& _sym_BondList_O = global_symbols[242];
-core::Symbol_sp& _sym_Aggregate_O = global_symbols[243];
-core::Symbol_sp& _sym_IterateMatter_O = global_symbols[244];
-core::Symbol_sp& _sym_IterateAtoms_O = global_symbols[245];
-core::Symbol_sp& _sym_IterateResidues_O = global_symbols[246];
-core::Symbol_sp& _sym_IterateBonds_O = global_symbols[247];
-core::Symbol_sp& _sym_iterateMatterSymbolConverter = global_symbols[248];
-core::Symbol_sp& _sym_allMatter = global_symbols[249];
-core::Symbol_sp& _sym_atoms = global_symbols[250];
-core::Symbol_sp& _sym_residues = global_symbols[251];
-core::Symbol_sp& _sym_molecules = global_symbols[252];
-core::Symbol_sp& _sym_bonds = global_symbols[253];
-core::Symbol_sp& _sym_Matter_O = global_symbols[254];
-core::Symbol_sp& _sym_Atom_O = global_symbols[255];
-core::Symbol_sp& _sym_Residue_O = global_symbols[256];
-core::Symbol_sp& _sym_Molecule_O = global_symbols[257];
-core::Symbol_sp& _sym_MacroModelFile_O = global_symbols[258];
+core::Symbol_sp& _sym_R = global_symbols[323];
+core::Symbol_sp& _sym_S = global_symbols[324];
+core::Symbol_sp& _sym_UnknownConfiguration = global_symbols[325];
+core::Symbol_sp& _sym_candoDatabase = global_symbols[326];
+core::Symbol_sp& _sym_AM1_BCC_ar5 = global_symbols[327];
+core::Symbol_sp& _sym_AM1_BCC_ar6 = global_symbols[328];
+core::Symbol_sp& _sym_AM1_BCC_ar7 = global_symbols[329];
+core::Symbol_sp& _sym__PLUS_configurationEnumConverter_PLUS_ = global_symbols[330];
+core::Symbol_sp& _sym__PLUS_stereochemistryTypeConverter_PLUS_ = global_symbols[331];
+core::Symbol_sp& _sym__PLUS_atomFlagSymbolConverter_PLUS_ = global_symbols[332];
+core::Symbol_sp& _sym_configurationToSymbolConverter = global_symbols[333];
+core::Symbol_sp& _sym_stereochemistryToSymbolConverter = global_symbols[334];
+core::Symbol_sp& _sym_atomNeedsMinimizer = global_symbols[335];
+core::Symbol_sp& _sym_selected = global_symbols[336];
+core::Symbol_sp& _sym_onGrid = global_symbols[337];
+core::Symbol_sp& _sym_atomFixed = global_symbols[338];
+core::Symbol_sp& _sym_in3MemberRing = global_symbols[339];
+core::Symbol_sp& _sym_in4MemberRing = global_symbols[340];
+core::Symbol_sp& _sym_in5MemberRing = global_symbols[341];
+core::Symbol_sp& _sym_in6MemberRing = global_symbols[342];
+core::Symbol_sp& _sym_in7MemberRing = global_symbols[343];
+core::Symbol_sp& _sym_in8MemberRing = global_symbols[344];
+core::Symbol_sp& _sym_inRing = global_symbols[345];
+core::Symbol_sp& _sym__PLUS_bondOrderToSymbolConverter_PLUS_ = global_symbols[346];
+core::Symbol_sp& _sym_AtomIdToAtomMap_O = global_symbols[347];
+core::Symbol_sp& _sym_AtomId_O = global_symbols[348];
+core::Symbol_sp& _sym__PLUS_elementToSymbolConverter_PLUS_ = global_symbols[349];
+core::Symbol_sp& _sym__PLUS_hybridizationToSymbolConverter_PLUS_ = global_symbols[350];
+core::Symbol_sp& _sym__PLUS_elementColors_PLUS_ = global_symbols[351];
+core::Symbol_sp& _sym__PLUS_minimizerStatusConverter_PLUS_ = global_symbols[352];
+core::Symbol_sp& _sym__PLUS_preconditionerTypeConverter_PLUS_ = global_symbols[353];
+core::Symbol_sp& _sym_MinimizerExceededMaxStepsError = global_symbols[354];
+core::Symbol_sp& _sym_MinimizerStuckError = global_symbols[355];
+core::Symbol_sp& _sym_MinimizerError = global_symbols[356];
+core::Symbol_sp& _sym_noPreconditioner = global_symbols[357];
+core::Symbol_sp& _sym_hessianPreconditioner = global_symbols[358];
+core::Symbol_sp& _sym_minimizerError = global_symbols[359];
+core::Symbol_sp& _sym_minimizerSucceeded = global_symbols[360];
+core::Symbol_sp& _sym_truncatedNewtonRunning = global_symbols[361];
+core::Symbol_sp& _sym_conjugateGradientRunning = global_symbols[362];
+core::Symbol_sp& _sym_steepestDescentRunning = global_symbols[363];
+core::Symbol_sp& _sym_minimizerIdle = global_symbols[364];
+core::Symbol_sp& _sym_Angle_O = global_symbols[365];
+core::Symbol_sp& _sym_ProperTorsion_O = global_symbols[366];
+core::Symbol_sp& _sym_ImproperTorsion_O = global_symbols[367];
+core::Symbol_sp& _sym_MonomerCoordinates_O = global_symbols[368];
+core::Symbol_sp& _sym_FrameRecognizer_O = global_symbols[369];
+core::Symbol_sp& _sym_Rotamer_O = global_symbols[370];
+core::Symbol_sp& _sym_AtomReferenceBase_O = global_symbols[371];
+core::Symbol_sp& _sym_AtomReference_O = global_symbols[372];
+core::Symbol_sp& _sym_CoordinateSystem_O = global_symbols[373];
+core::Symbol_sp& _sym_PdbMonomerConnectivity_O = global_symbols[374];
+core::Symbol_sp& _sym_PdbMonomerDatabase_O = global_symbols[375];
+core::Symbol_sp& _sym_StereoisomerAtom_O = global_symbols[376];
+core::Symbol_sp& _sym_StereoisomerVirtualAtom_O = global_symbols[377];
+core::Symbol_sp& _sym_StereoisomerAtoms_O = global_symbols[378];
+core::Symbol_sp& _sym_TrajectoryFrame_O = global_symbols[379];
+core::Symbol_sp& _sym_Trajectory_O = global_symbols[380];
+core::Symbol_sp& _sym_AtomTable_O = global_symbols[381];
+core::Symbol_sp& _sym_EnergyComponent_O = global_symbols[382];
+core::Symbol_sp& _sym_EnergyStretch_O = global_symbols[383];
+core::Symbol_sp& _sym_EnergyAngle_O = global_symbols[384];
+core::Symbol_sp& _sym_EnergyDihedral_O = global_symbols[385];
+core::Symbol_sp& _sym_EnergyNonbond_O = global_symbols[386];
+core::Symbol_sp& _sym_EnergyImproperRestraint_O = global_symbols[387];
+core::Symbol_sp& _sym_EnergyChiralRestraint_O = global_symbols[388];
+core::Symbol_sp& _sym_EnergyAnchorRestraint_O = global_symbols[389];
+core::Symbol_sp& _sym_EnergyFixedNonbondRestraint_O = global_symbols[390];
+core::Symbol_sp& _sym_nonbondTerm = global_symbols[391];
+core::Symbol_sp& _sym_restraintAnchor = global_symbols[392];
+core::Symbol_sp& _sym_InteractionError = global_symbols[393];
+core::Symbol_sp& _sym_LinearAngleError = global_symbols[394];
+core::Symbol_sp& _sym_LinearDihedralError = global_symbols[395];
+core::Symbol_sp& _sym_LinearImproperRestraintError = global_symbols[396];
+core::Symbol_sp& _sym_OverlappingNonbondError = global_symbols[397];
+core::Symbol_sp& _sym_SearchStatistics_O = global_symbols[398];
+core::Symbol_sp& _sym_superpose = global_symbols[399];
+core::Symbol_sp& _sym_VirtualSphere_O = global_symbols[400];
+core::Symbol_sp& _sym_idle = global_symbols[401];
+core::Symbol_sp& _sym_translate = global_symbols[402];
+core::Symbol_sp& _sym_rotate = global_symbols[403];
+core::Symbol_sp& _sym_scale = global_symbols[404];
+core::Symbol_sp& _sym_STARsybyl_type_assignment_rulesSTAR = global_symbols[405];
+core::Symbol_sp& _sym_EnergyFunction_O = global_symbols[406];
+core::Symbol_sp& _sym_NumericalFunction_O = global_symbols[407];
+core::Symbol_sp& _sym_ReportBase_O = global_symbols[408];
+core::Symbol_sp& _sym_MessageReport_O = global_symbols[409];
+core::Symbol_sp& _sym_ForceMatchReport_O = global_symbols[410];
+core::Symbol_sp& _sym_StepReport_O = global_symbols[411];
+core::Symbol_sp& _sym_MinimizerLog_O = global_symbols[412];
+core::Symbol_sp& _sym_Minimizer_O = global_symbols[413];
+core::Symbol_sp& _sym_IterateRestraints_O = global_symbols[414];
+core::Symbol_sp& _sym_PdbReader_O = global_symbols[415];
+core::Symbol_sp& _sym_PdbWriter_O = global_symbols[416];
+core::Symbol_sp& _sym_PathMessage_O = global_symbols[417];
+core::Symbol_sp& _sym_AGVertex_O = global_symbols[418];
+core::Symbol_sp& _sym_AGEdge_O = global_symbols[419];
+core::Symbol_sp& _sym_RingFinder_O = global_symbols[420];
+core::Symbol_sp& _sym_IterateMatter_O = global_symbols[421];
+core::Symbol_sp& _sym_IterateAtoms_O = global_symbols[422];
+core::Symbol_sp& _sym_IterateResidues_O = global_symbols[423];
+core::Symbol_sp& _sym_IterateBonds_O = global_symbols[424];
+core::Symbol_sp& _sym_iterateMatterSymbolConverter = global_symbols[425];
+core::Symbol_sp& _sym_allMatter = global_symbols[426];
+core::Symbol_sp& _sym_atoms = global_symbols[427];
+core::Symbol_sp& _sym_residues = global_symbols[428];
+core::Symbol_sp& _sym_molecules = global_symbols[429];
+core::Symbol_sp& _sym_bonds = global_symbols[430];
+core::Symbol_sp& _sym_MacroModelFile_O = global_symbols[431];
+core::Symbol_sp& _sym_OneTypeRule_O = global_symbols[432];
+core::Symbol_sp& _sym_TypeAssignmentRules_O = global_symbols[433];
+core::Symbol_sp& _sym_SuperposableConformationCollection_O = global_symbols[434];
+core::Symbol_sp& _sym_ZMatrixInternal_O = global_symbols[435];
+core::Symbol_sp& _sym_ZMatrixBondInternal_O = global_symbols[436];
+core::Symbol_sp& _sym_ZMatrixAngleInternal_O = global_symbols[437];
+core::Symbol_sp& _sym_ZMatrixDihedralInternal_O = global_symbols[438];
+core::Symbol_sp& _sym_ZMatrixEntry_O = global_symbols[439];
+core::Symbol_sp& _sym_ZMatrix_O = global_symbols[440];
+core::Symbol_sp& _sym_StructureComparer_O = global_symbols[441];
+core::Symbol_sp& _sym_Command_O = global_symbols[442];
+core::Symbol_sp& _sym_Structure_Old_ListEntry_O = global_symbols[443];
+core::Symbol_sp& _sym_Structure_Old_List_O = global_symbols[444];
+core::Symbol_sp& _sym_Twister_O = global_symbols[445];
+core::Symbol_sp& _sym_TwisterDriver_O = global_symbols[446];
+core::Symbol_sp& _sym_AbstractLargeSquareMatrix_O = global_symbols[447];
+core::Symbol_sp& _sym_FullLargeSquareMatrix_O = global_symbols[448];
+core::Symbol_sp& _sym_SparseLargeSquareMatrix_O = global_symbols[449];
+core::Symbol_sp& _sym_StereoConfiguration_O = global_symbols[450];
+core::Symbol_sp& _sym_Stereoisomer_O = global_symbols[451];
+core::Symbol_sp& _sym_StereoInformation_O = global_symbols[452];
+core::Symbol_sp& _sym_Restraint_O = global_symbols[453];
+core::Symbol_sp& _sym_RestraintAnchor_O = global_symbols[454];
+core::Symbol_sp& _sym_RestraintChiral_O = global_symbols[455];
+core::Symbol_sp& _sym_RestraintDistance_O = global_symbols[456];
+core::Symbol_sp& _sym_RestraintAngle_O = global_symbols[457];
+core::Symbol_sp& _sym_RestraintDihedral_O = global_symbols[458];
+core::Symbol_sp& _sym_RestraintFixedNonbond_O = global_symbols[459];
+core::Symbol_sp& _sym_RestraintList_O = global_symbols[460];
+core::Symbol_sp& _sym_ComplexRestraint_O = global_symbols[461];
+core::Symbol_sp& _sym_RestrainedExoCyclicAtom_O = global_symbols[462];
+core::Symbol_sp& _sym_RestrainedPiBond_O = global_symbols[463];
+core::Symbol_sp& _sym_SpecificContext_O = global_symbols[464];
+core::Symbol_sp& _sym_SpecificContextSet_O = global_symbols[465];
+core::Symbol_sp& _sym_ReadAmberParameters_O = global_symbols[466];
+core::Symbol_sp& _sym_VirtualAtom_O = global_symbols[467];
+core::Symbol_sp& _sym_CDNode_O = global_symbols[468];
+core::Symbol_sp& _sym_CDBond_O = global_symbols[469];
+core::Symbol_sp& _sym_CDFragment_O = global_symbols[470];
+core::Symbol_sp& _sym_CDText_O = global_symbols[471];
+core::Symbol_sp& _sym_ChemDraw_O = global_symbols[472];
+core::Symbol_sp& _sym_SpanningLoop_O = global_symbols[473];
+core::Symbol_sp& _sym_CipPrioritizer_O = global_symbols[474];
+core::Symbol_sp& _sym_name = global_symbols[475];
+core::Symbol_sp& _sym__PLUS_validChemdrawKeywords_PLUS_ = global_symbols[476];
+core::Symbol_sp& _sym_OligomerPart_Base_O = global_symbols[477];
+core::Symbol_sp& _sym_OligomerPart_Monomer_O = global_symbols[478];
+core::Symbol_sp& _sym_OligomerPart_Link_O = global_symbols[479];
+core::Symbol_sp& _sym_CalculatePosition_O = global_symbols[480];
+core::Symbol_sp& _sym_CalculatePositionUsingInternals_O = global_symbols[481];
+core::Symbol_sp& _sym_CalculatePositionAlongBond_O = global_symbols[482];
+core::Symbol_sp& _sym_CalculatePositionRelativeToOrigin_O = global_symbols[483];
+core::Symbol_sp& _sym_ConstitutionBond_O = global_symbols[484];
+core::Symbol_sp& _sym_ConstitutionAtom_O = global_symbols[485];
+core::Symbol_sp& _sym_ConstitutionVirtualAtom_O = global_symbols[486];
+core::Symbol_sp& _sym_ConstitutionAtoms_O = global_symbols[487];
+core::Symbol_sp& _sym_Entity_O = global_symbols[488];
+core::Symbol_sp& _sym_Monomer_O = global_symbols[489];
+core::Symbol_sp& _sym_OneMonomer_O = global_symbols[490];
+core::Symbol_sp& _sym_MultiMonomer_O = global_symbols[491];
+core::Symbol_sp& _sym_Oligomer_O = global_symbols[492];
+core::Symbol_sp& _sym_Coupling_O = global_symbols[493];
+core::Symbol_sp& _sym_DirectionalCoupling_O = global_symbols[494];
+core::Symbol_sp& _sym_RingCoupling_O = global_symbols[495];
+core::Symbol_sp& _sym_CandoDatabase_O = global_symbols[496];
+core::Symbol_sp& _sym_StatusTracker_O = global_symbols[497];
+core::Symbol_sp& _sym_EntityNameSetBase_O = global_symbols[498];
+core::Symbol_sp& _sym_EntityNameSet_O = global_symbols[499];
+core::Symbol_sp& _sym_EntityNameSetWithCap_O = global_symbols[500];
+core::Symbol_sp& _sym_AtomIndexer_O = global_symbols[501];
+core::Symbol_sp& _sym_MapOfMonomerNamesToAtomIndexers_O = global_symbols[502];
+core::Symbol_sp& _sym_MonomerPack_O = global_symbols[503];
+core::Symbol_sp& _sym_MonomerContext_O = global_symbols[504];
+core::Symbol_sp& _sym_RepresentedEntityNameSet_O = global_symbols[505];
+core::Symbol_sp& _sym_Mate_O = global_symbols[506];
+core::Symbol_sp& _sym_RingClosingMate_O = global_symbols[507];
+core::Symbol_sp& _sym_Plug_O = global_symbols[508];
+core::Symbol_sp& _sym_PlugWithMates_O = global_symbols[509];
+core::Symbol_sp& _sym_OutPlug_O = global_symbols[510];
+core::Symbol_sp& _sym_InPlug_O = global_symbols[511];
+core::Symbol_sp& _sym_JumpPlug_O = global_symbols[512];
+core::Symbol_sp& _sym_RingClosingPlug_O = global_symbols[513];
+core::Symbol_sp& _sym_Constitution_O = global_symbols[514];
+core::Symbol_sp& _sym_Alias_O = global_symbols[515];
+core::Symbol_sp& _sym_Topology_O = global_symbols[516];
+core::Symbol_sp& _sym_NVector_O = global_symbols[517];
+core::Symbol_sp& _sym_ConformationCollectionEntry_O = global_symbols[518];
+core::Symbol_sp& _sym_ConformationCollection_O = global_symbols[519];
+core::Symbol_sp& _sym_SuperposeEngine_O = global_symbols[520];
+core::Symbol_sp& _sym_SuperposeSelectedAtoms_O = global_symbols[521];
+core::Symbol_sp& _sym_ConformationExplorerEntryStage_O = global_symbols[522];
+core::Symbol_sp& _sym_ConformationExplorerEntry_O = global_symbols[523];
+core::Symbol_sp& _sym_ConformationExplorer_O = global_symbols[524];
+core::Symbol_sp& _sym_ConformationExplorerMatch_O = global_symbols[525];
+core::Symbol_sp& _sym_STARparserNodeHolderSTAR = global_symbols[526];
+core::Symbol_sp& _sym_STARSabBondEnumConverterSTAR = global_symbols[527];
+core::Symbol_sp& _sym_STARLogicalOperatorTypeConverterSTAR = global_symbols[528];
+core::Symbol_sp& _sym_STARAtomTestEnumConverterSTAR = global_symbols[529];
+core::Symbol_sp& _sym_ChemInfoMatch_O = global_symbols[530];
+core::Symbol_sp& _sym_WildElementDict_O = global_symbols[531];
+core::Symbol_sp& _sym_ChemInfoNode_O = global_symbols[532];
+core::Symbol_sp& _sym_ResidueList_O = global_symbols[533];
+core::Symbol_sp& _sym_RootMatchNode_O = global_symbols[534];
+core::Symbol_sp& _sym_BondMatchNode_O = global_symbols[535];
+core::Symbol_sp& _sym_AtomOrBondMatchNode_O = global_symbols[536];
+core::Symbol_sp& _sym_BondListMatchNode_O = global_symbols[537];
+core::Symbol_sp& _sym_Logical_O = global_symbols[538];
+core::Symbol_sp& _sym_TagSet_O = global_symbols[539];
+core::Symbol_sp& _sym_RingTest_O = global_symbols[540];
+core::Symbol_sp& _sym_ResidueTest_O = global_symbols[541];
+core::Symbol_sp& _sym_BondTest_O = global_symbols[542];
+core::Symbol_sp& _sym_AntechamberBondTest_O = global_symbols[543];
+core::Symbol_sp& _sym_AtomTest_O = global_symbols[544];
+core::Symbol_sp& _sym_AntechamberFocusAtomMatch_O = global_symbols[545];
+core::Symbol_sp& _sym_Chain_O = global_symbols[546];
+core::Symbol_sp& _sym_Branch_O = global_symbols[547];
+core::Symbol_sp& _sym_AfterMatchBondTest_O = global_symbols[548];
+core::Symbol_sp& _sym_Root_O = global_symbols[549];
+core::Symbol_sp& _sym_SmartsRoot_O = global_symbols[550];
+core::Symbol_sp& _sym_AntechamberRoot_O = global_symbols[551];
+core::Symbol_sp& _sym_ChemInfo_O = global_symbols[552];
+core::Symbol_sp& _sym_FFTypesDb_O = global_symbols[553];
+core::Symbol_sp& _sym_FFStretch_O = global_symbols[554];
+core::Symbol_sp& _sym_FFStretchDb_O = global_symbols[555];
+core::Symbol_sp& _sym_FFAngle_O = global_symbols[556];
+core::Symbol_sp& _sym_FFAngleDb_O = global_symbols[557];
+core::Symbol_sp& _sym_FFVdw_O = global_symbols[558];
+core::Symbol_sp& _sym_FFVdwDb_O = global_symbols[559];
+core::Symbol_sp& _sym_InfoDb_O = global_symbols[560];
+core::Symbol_sp& _sym_ForceField_O = global_symbols[561];
+core::Symbol_sp& _sym_FFItor_O = global_symbols[562];
+core::Symbol_sp& _sym_FFItorDb_O = global_symbols[563];
+core::Symbol_sp& _sym_FFPtor_O = global_symbols[564];
+core::Symbol_sp& _sym_FFPtorDb_O = global_symbols[565];
+core::Symbol_sp& _sym_Matter_O = global_symbols[566];
+core::Symbol_sp& _sym_Bond_O = global_symbols[567];
+core::Symbol_sp& _sym_BondList_O = global_symbols[568];
+core::Symbol_sp& _sym_Atom_O = global_symbols[569];
+core::Symbol_sp& _sym_Residue_O = global_symbols[570];
+core::Symbol_sp& _sym_FFParameter_O = global_symbols[571];
+core::Symbol_sp& _sym_FFBaseDb_O = global_symbols[572];
+core::Symbol_sp& _sym_FFNonbondCrossTermTable_O = global_symbols[573];
+core::Symbol_sp& _sym_FFNonbond_O = global_symbols[574];
+core::Symbol_sp& _sym_FFNonbondDb_O = global_symbols[575];
+core::Symbol_sp& _sym_Molecule_O = global_symbols[576];
+core::Symbol_sp& _sym_Aggregate_O = global_symbols[577];
+core::Symbol_sp& _sym_STARDonorAcceptorEnumConverterSTAR = global_symbols[578];
+core::Symbol_sp& _sym_STAREleDielectricEnumConverterSTAR = global_symbols[579];
+core::Symbol_sp& _sym_STARVdwMixRadiusEnumConverterSTAR = global_symbols[580];
+core::Symbol_sp& _sym_STARVdwMixWellEnumConverterSTAR = global_symbols[581];
 } // namespace chem
+namespace chemkw {
+core::Symbol_sp& _sym__singleBond = global_symbols[582];
+core::Symbol_sp& _sym__doubleBond = global_symbols[583];
+core::Symbol_sp& _sym__tripleBond = global_symbols[584];
+core::Symbol_sp& _sym__aromaticBond = global_symbols[585];
+core::Symbol_sp& _sym__hydrogenBond = global_symbols[586];
+core::Symbol_sp& _sym__virtualBond = global_symbols[587];
+core::Symbol_sp& _sym__dashedSingleBond = global_symbols[588];
+core::Symbol_sp& _sym__dashedDoubleBond = global_symbols[589];
+core::Symbol_sp& _sym_noBond = global_symbols[590];
+core::Symbol_sp& _sym_singleBond = global_symbols[591];
+core::Symbol_sp& _sym_doubleBond = global_symbols[592];
+core::Symbol_sp& _sym_tripleBond = global_symbols[593];
+core::Symbol_sp& _sym_aromaticBond = global_symbols[594];
+core::Symbol_sp& _sym_hydrogenBond = global_symbols[595];
+core::Symbol_sp& _sym_virtualBond = global_symbols[596];
+core::Symbol_sp& _sym_dashedSingleBond = global_symbols[597];
+core::Symbol_sp& _sym_dashedDoubleBond = global_symbols[598];
+core::Symbol_sp& _sym_C = global_symbols[599];
+core::Symbol_sp& _sym_N = global_symbols[600];
+core::Symbol_sp& _sym_O = global_symbols[601];
+core::Symbol_sp& _sym_P = global_symbols[602];
+core::Symbol_sp& _sym_F = global_symbols[603];
+core::Symbol_sp& _sym_Cl = global_symbols[604];
+core::Symbol_sp& _sym_Br = global_symbols[605];
+core::Symbol_sp& _sym_I = global_symbols[606];
+core::Symbol_sp& _sym_message = global_symbols[607];
+core::Symbol_sp& _sym_constitution = global_symbols[608];
+core::Symbol_sp& _sym_entity = global_symbols[609];
+core::Symbol_sp& _sym_frameRecognizer = global_symbols[610];
+core::Symbol_sp& _sym_E = global_symbols[611];
+core::Symbol_sp& _sym_Z = global_symbols[612];
+core::Symbol_sp& _sym_1 = global_symbols[613];
+core::Symbol_sp& _sym_2 = global_symbols[614];
+core::Symbol_sp& _sym_3 = global_symbols[615];
+core::Symbol_sp& _sym_4 = global_symbols[616];
+core::Symbol_sp& _sym_5 = global_symbols[617];
+core::Symbol_sp& _sym_6 = global_symbols[618];
+core::Symbol_sp& _sym_idle = global_symbols[619];
+core::Symbol_sp& _sym_translate = global_symbols[620];
+core::Symbol_sp& _sym_rotate = global_symbols[621];
+core::Symbol_sp& _sym_scale = global_symbols[622];
+core::Symbol_sp& _sym_XX = global_symbols[623];
+core::Symbol_sp& _sym_XA = global_symbols[624];
+core::Symbol_sp& _sym_XB = global_symbols[625];
+core::Symbol_sp& _sym_XC = global_symbols[626];
+core::Symbol_sp& _sym_XD = global_symbols[627];
+core::Symbol_sp& _sym_undefinedConfiguration = global_symbols[628];
+core::Symbol_sp& _sym_S = global_symbols[629];
+core::Symbol_sp& _sym_R = global_symbols[630];
+core::Symbol_sp& _sym_undefinedCenter = global_symbols[631];
+core::Symbol_sp& _sym_chiral = global_symbols[632];
+core::Symbol_sp& _sym_prochiral = global_symbols[633];
+core::Symbol_sp& _sym_parameterized = global_symbols[634];
+core::Symbol_sp& _sym_estimated = global_symbols[635];
+core::Symbol_sp& _sym_rough = global_symbols[636];
+} // namespace chemkw
 namespace core {
-core::Symbol_sp& _sym_STARwatchDynamicBindingStackSTAR = global_symbols[259];
-core::Symbol_sp& _sym_symbolMacro = global_symbols[260];
-core::Symbol_sp& _sym_whole = global_symbols[261];
-core::Symbol_sp& _sym_env = global_symbols[262];
-core::Symbol_sp& _sym_processDeclarations = global_symbols[263];
-core::Symbol_sp& _sym_evaluateVerbosity = global_symbols[264];
-core::Symbol_sp& _sym_evaluateDepth = global_symbols[265];
-core::Symbol_sp& _sym_classifyLetVariablesAndDeclares = global_symbols[266];
-core::Symbol_sp& _sym_STAReval_with_env_hookSTAR = global_symbols[267];
-core::Symbol_sp& _sym_eval_with_env_default = global_symbols[268];
-core::Symbol_sp& _sym_dlopen = global_symbols[269];
-core::Symbol_sp& _sym_dlsym = global_symbols[270];
-core::Symbol_sp& _sym_dladdr = global_symbols[271];
-core::Symbol_sp& _sym_callWithVariableBound = global_symbols[272];
-core::Symbol_sp& _sym_instanceClassSet = global_symbols[273];
-core::Symbol_sp& _sym_intrusiveReferenceCountedPointer = global_symbols[274];
-core::Symbol_sp& _sym_sharedReferenceCountedPointer = global_symbols[275];
-core::Symbol_sp& _sym_mpsGarbageCollection = global_symbols[276];
-core::Symbol_sp& _sym_makeInvocationHistoryFrameIterator = global_symbols[277];
-core::Symbol_sp& _sym_STARbacktraceFrameSelectorHookSTAR = global_symbols[278];
-core::Symbol_sp& _sym_smartPointerDetails = global_symbols[279];
-core::Symbol_sp& _sym_STARfset = global_symbols[280];
-core::Symbol_sp& _sym_unbound = global_symbols[281];
-core::Symbol_sp& _sym_mapappend = global_symbols[282];
-core::Symbol_sp& _sym_macroexpand_default = global_symbols[283];
-core::Symbol_sp& _sym_sequence_start_end = global_symbols[284];
-core::Symbol_sp& _sym_type_to_symbol = global_symbols[285];
-core::Symbol_sp& _sym_gdb = global_symbols[286];
-core::Symbol_sp& _sym_gdbInspect = global_symbols[287];
-core::Symbol_sp& _sym_separatePairList = global_symbols[288];
-core::Symbol_sp& _sym_testMemoryError = global_symbols[289];
-core::Symbol_sp& _sym_functionBlockName = global_symbols[290];
-core::Symbol_sp& _sym_validFunctionNameP = global_symbols[291];
-core::Symbol_sp& _sym_pointer = global_symbols[292];
-core::Symbol_sp& _sym_toTaggedFixnum = global_symbols[293];
-core::Symbol_sp& _sym_fromTaggedFixnum = global_symbols[294];
-core::Symbol_sp& _sym_dumpTaggedFixnum = global_symbols[295];
-core::Symbol_sp& _sym_ihsBacktrace = global_symbols[296];
-core::Symbol_sp& _sym_ihsTop = global_symbols[297];
-core::Symbol_sp& _sym_ihsPrev = global_symbols[298];
-core::Symbol_sp& _sym_ihsNext = global_symbols[299];
-core::Symbol_sp& _sym_ihsFun = global_symbols[300];
-core::Symbol_sp& _sym_ihsEnv = global_symbols[301];
-core::Symbol_sp& _sym_bdsTop = global_symbols[302];
-core::Symbol_sp& _sym_bdsVar = global_symbols[303];
-core::Symbol_sp& _sym_bdsVal = global_symbols[304];
-core::Symbol_sp& _sym_theClibBacktraceFunctionSymbol = global_symbols[305];
-core::Symbol_sp& _sym_printCurrentIhsFrameEnvironment = global_symbols[306];
-core::Symbol_sp& _sym_rehash_size = global_symbols[307];
-core::Symbol_sp& _sym_rehash_threshold = global_symbols[308];
-core::Symbol_sp& _sym_data = global_symbols[309];
-core::Symbol_sp& _sym_hash_eql = global_symbols[310];
-core::Symbol_sp& _sym_hash_equal = global_symbols[311];
-core::Symbol_sp& _sym_hash_equalp = global_symbols[312];
-core::Symbol_sp& _sym_fixnum_number_of_bits = global_symbols[313];
-core::Symbol_sp& _sym_nan = global_symbols[314];
-core::Symbol_sp& _sym_log1p = global_symbols[315];
-core::Symbol_sp& _sym_integer_divide = global_symbols[316];
-core::Symbol_sp& _sym_integerToString = global_symbols[317];
-core::Symbol_sp& _sym_printUnreadableObjectFunction = global_symbols[318];
-core::Symbol_sp& _sym_walkToFindSourceInfo = global_symbols[319];
-core::Symbol_sp& _sym_lookupSourceFileInfo = global_symbols[320];
-core::Symbol_sp& _sym_STARmonitorRegisterSourceInfoSTAR = global_symbols[321];
-core::Symbol_sp& _sym_currentDir = global_symbols[322];
-core::Symbol_sp& _sym_file_kind = global_symbols[323];
-core::Symbol_sp& _sym_environmentActivationFrame = global_symbols[324];
-core::Symbol_sp& _sym_currentVisibleEnvironment = global_symbols[325];
-core::Symbol_sp& _sym_runtimeEnvironment = global_symbols[326];
-core::Symbol_sp& _sym_environmentList = global_symbols[327];
-core::Symbol_sp& _sym_environmentTypeList = global_symbols[328];
-core::Symbol_sp& _sym_environmentId = global_symbols[329];
-core::Symbol_sp& _sym_singleDispatchWrongNumberArgumentsError = global_symbols[330];
-core::Symbol_sp& _sym_singleDispatchTooManyArgumentsError = global_symbols[331];
-core::Symbol_sp& _sym_singleDispatchBadLambdaListError = global_symbols[332];
-core::Symbol_sp& _sym_singleDispatchMissingDispatchArgumentError = global_symbols[333];
-core::Symbol_sp& _sym_tooFewArguments = global_symbols[334];
-core::Symbol_sp& _sym_process_macro_lambda_list = global_symbols[335];
-core::Symbol_sp& _sym_process_single_dispatch_lambda_list = global_symbols[336];
-core::Symbol_sp& _sym_makeLambdaListHandler = global_symbols[337];
-core::Symbol_sp& _sym_processLambdaList = global_symbols[338];
-core::Symbol_sp& _sym_dispatchTable = global_symbols[339];
-core::Symbol_sp& _sym_fileColumn = global_symbols[340];
-core::Symbol_sp& _sym_makeStringOutputStreamFromString = global_symbols[341];
-core::Symbol_sp& _sym_do_write_sequence = global_symbols[342];
-core::Symbol_sp& _sym_streamLinenumber = global_symbols[343];
-core::Symbol_sp& _sym_streamColumn = global_symbols[344];
-core::Symbol_sp& _sym_single_dispatch_method = global_symbols[345];
-core::Symbol_sp& _sym_setf_documentation = global_symbols[346];
-core::Symbol_sp& _sym_STARcxxDocumentationSTAR = global_symbols[347];
-core::Symbol_sp& _sym_topLevel = global_symbols[348];
-core::Symbol_sp& _sym_scharSet = global_symbols[349];
-core::Symbol_sp& _sym_STARuseInterpreterForEvalSTAR = global_symbols[350];
-core::Symbol_sp& _sym_STARnotify_on_compileSTAR = global_symbols[351];
-core::Symbol_sp& _sym_STARtrace_startupSTAR = global_symbols[352];
-core::Symbol_sp& _sym_STARdebugInterpretedClosureSTAR = global_symbols[353];
-core::Symbol_sp& _sym_STARdebugFlowControlSTAR = global_symbols[354];
-core::Symbol_sp& _sym_STARdebugStartupSTAR = global_symbols[355];
-core::Symbol_sp& _sym__BANG_unbound_BANG_ = global_symbols[356];
-core::Symbol_sp& _sym_bitArrayOp = global_symbols[357];
-core::Symbol_sp& _sym_lambdaName = global_symbols[358];
-core::Symbol_sp& _sym_printf = global_symbols[359];
-core::Symbol_sp& _sym_asin = global_symbols[360];
-core::Symbol_sp& _sym_asinh = global_symbols[361];
-core::Symbol_sp& _sym_acos = global_symbols[362];
-core::Symbol_sp& _sym_acosh = global_symbols[363];
-core::Symbol_sp& _sym_atanh = global_symbols[364];
-core::Symbol_sp& _sym_STARpollTicksPerGcSTAR = global_symbols[365];
-core::Symbol_sp& _sym__PLUS_standardReadtable_PLUS_ = global_symbols[366];
-core::Symbol_sp& _sym_closedStream = global_symbols[367];
-core::Symbol_sp& _sym__PLUS_numberOfFixedArguments_PLUS_ = global_symbols[368];
-core::Symbol_sp& _sym_STARinterpreterTraceSTAR = global_symbols[369];
-core::Symbol_sp& _sym_STARdebugLoadTimeValuesSTAR = global_symbols[370];
-core::Symbol_sp& _sym_STARdebugEvalSTAR = global_symbols[371];
-core::Symbol_sp& _sym_STARdebugInterpretedFunctionsSTAR = global_symbols[372];
-core::Symbol_sp& _sym_STARdebugMonitorSTAR = global_symbols[373];
-core::Symbol_sp& _sym_monitorReader = global_symbols[374];
-core::Symbol_sp& _sym_tsp = global_symbols[375];
-core::Symbol_sp& _sym_tmv = global_symbols[376];
-core::Symbol_sp& _sym_invocationHistoryFrame = global_symbols[377];
-core::Symbol_sp& _sym_size_t = global_symbols[378];
-core::Symbol_sp& _sym_threadInfo = global_symbols[379];
-core::Symbol_sp& _sym_circle_subst = global_symbols[380];
-core::Symbol_sp& _sym_STARsourceDatabaseSTAR = global_symbols[381];
-core::Symbol_sp& _sym_STARstartRunTimeSTAR = global_symbols[382];
-core::Symbol_sp& _sym_STARcommandLineLoadSTAR = global_symbols[383];
-core::Symbol_sp& _sym_STARihsCurrentSTAR = global_symbols[384];
-core::Symbol_sp& _sym_STARllvmFunctionNameHookSTAR = global_symbols[385];
-core::Symbol_sp& _sym_STARtopLevelCommandHookSTAR = global_symbols[386];
-core::Symbol_sp& _sym_STARloadSearchListSTAR = global_symbols[387];
-core::Symbol_sp& _sym_loadBitcode = global_symbols[388];
-core::Symbol_sp& _sym_loadSource = global_symbols[389];
-core::Symbol_sp& _sym_loadBundle = global_symbols[390];
-core::Symbol_sp& _sym_STARallCxxClassesSTAR = global_symbols[391];
-core::Symbol_sp& _sym_simpleProgramError = global_symbols[392];
-core::Symbol_sp& _sym_STARdebugReaderSTAR = global_symbols[393];
-core::Symbol_sp& _sym_STARenablePrintPrettySTAR = global_symbols[394];
-core::Symbol_sp& _sym_STARcircle_counterSTAR = global_symbols[395];
-core::Symbol_sp& _sym_STARcircle_stackSTAR = global_symbols[396];
-core::Symbol_sp& _sym_dynamicGo = global_symbols[397];
-core::Symbol_sp& _sym_localGo = global_symbols[398];
-core::Symbol_sp& _sym__PLUS_ecl_syntax_progv_list_PLUS_ = global_symbols[399];
-core::Symbol_sp& _sym__PLUS_io_syntax_progv_list_PLUS_ = global_symbols[400];
-core::Symbol_sp& _sym_STARprintPackageSTAR = global_symbols[401];
-core::Symbol_sp& _sym_STARsharpEqContextSTAR = global_symbols[402];
-core::Symbol_sp& _sym_STARcircleCounterSTAR = global_symbols[403];
-core::Symbol_sp& _sym_STARnestedErrorDepthSTAR = global_symbols[404];
-core::Symbol_sp& _sym_setThrowPosition = global_symbols[405];
-core::Symbol_sp& _sym_tooFewArgumentsError = global_symbols[406];
-core::Symbol_sp& _sym_tooManyArgumentsError = global_symbols[407];
-core::Symbol_sp& _sym_unrecognizedKeywordArgumentError = global_symbols[408];
-core::Symbol_sp& _sym_invalidKeywordArgumentError = global_symbols[409];
-core::Symbol_sp& _sym__PLUS_llvmTargetTriple_PLUS_ = global_symbols[410];
-core::Symbol_sp& _sym__PLUS_executableName_PLUS_ = global_symbols[411];
-core::Symbol_sp& _sym_STARcodeWalkerSTAR = global_symbols[412];
-core::Symbol_sp& _sym_STARcurrentSourceFileInfoSTAR = global_symbols[413];
-core::Symbol_sp& _sym_STARcurrentSourcePosInfoSTAR = global_symbols[414];
-core::Symbol_sp& _sym_STARdebugMacroexpandSTAR = global_symbols[415];
-core::Symbol_sp& _sym_STARenvironmentPrintingTabSTAR = global_symbols[416];
-core::Symbol_sp& _sym_STARenvironmentPrintingTabIncrementSTAR = global_symbols[417];
-core::Symbol_sp& _sym__PLUS_activationFrameNil_PLUS_ = global_symbols[418];
-core::Symbol_sp& _sym_parse_macro = global_symbols[419];
-core::Symbol_sp& _sym_globalFunction = global_symbols[420];
-core::Symbol_sp& _sym_globalSetfFunction = global_symbols[421];
-core::Symbol_sp& _sym_lexicalFunction = global_symbols[422];
-core::Symbol_sp& _sym_declaredSpecial = global_symbols[423];
-core::Symbol_sp& _sym_lexical = global_symbols[424];
-core::Symbol_sp& _sym_STARsystem_defsetf_update_functionsSTAR = global_symbols[425];
-core::Symbol_sp& _sym_STARbackquote_expand_hookSTAR = global_symbols[426];
-core::Symbol_sp& _sym_single_dispatch_on = global_symbols[427];
-core::Symbol_sp& _sym_STARdocumentation_poolSTAR = global_symbols[428];
-core::Symbol_sp& _sym_STARexecutable_nameSTAR = global_symbols[429];
-core::Symbol_sp& _sym_generic = global_symbols[430];
-core::Symbol_sp& _sym_DOT = global_symbols[431];
-core::Symbol_sp& _sym_AMPva_rest = global_symbols[432];
-core::Symbol_sp& _sym_anonymous = global_symbols[433];
-core::Symbol_sp& _sym_macro = global_symbols[434];
-core::Symbol_sp& _sym_STARdocumentation_databaseSTAR = global_symbols[435];
-core::Symbol_sp& _sym___init__ = global_symbols[436];
-core::Symbol_sp& _sym_input_stream_designator = global_symbols[437];
-core::Symbol_sp& _sym_STARprint_source_code_consSTAR = global_symbols[438];
-core::Symbol_sp& _sym_STARechoReplReadSTAR = global_symbols[439];
-core::Symbol_sp& _sym_eof_error_p = global_symbols[440];
-core::Symbol_sp& _sym_eof_value = global_symbols[441];
-core::Symbol_sp& _sym_start = global_symbols[442];
-core::Symbol_sp& _sym_end = global_symbols[443];
-core::Symbol_sp& _sym_preserve_whitespace = global_symbols[444];
-core::Symbol_sp& _sym_io = global_symbols[445];
-core::Symbol_sp& _sym_probe = global_symbols[446];
-core::Symbol_sp& _sym_newVersion = global_symbols[447];
-core::Symbol_sp& _sym_renameAndDelete = global_symbols[448];
-core::Symbol_sp& _sym_overwrite = global_symbols[449];
-core::Symbol_sp& _sym_supersede = global_symbols[450];
-core::Symbol_sp& _sym_create = global_symbols[451];
-core::Symbol_sp& _sym_input_stream = global_symbols[452];
-core::Symbol_sp& _sym_recursive_p = global_symbols[453];
-core::Symbol_sp& _sym_dimensions = global_symbols[454];
-core::Symbol_sp& _sym_element_type = global_symbols[455];
-core::Symbol_sp& _sym_initial_element = global_symbols[456];
-core::Symbol_sp& _sym_adjustable = global_symbols[457];
-core::Symbol_sp& _sym_object = global_symbols[458];
-core::Symbol_sp& _sym_okey = global_symbols[459];
-core::Symbol_sp& _sym_default = global_symbols[460];
-core::Symbol_sp& _sym_dot = global_symbols[461];
-core::Symbol_sp& _sym_ifDoesNotExist = global_symbols[462];
-core::Symbol_sp& _sym_symbolMacroletLambda = global_symbols[463];
-core::Symbol_sp& _sym_lambda_with_handler = global_symbols[464];
-core::Symbol_sp& _sym_color = global_symbols[465];
-core::Symbol_sp& _sym_foreach = global_symbols[466];
-core::Symbol_sp& _sym_STARPATHSTAR = global_symbols[467];
-core::Symbol_sp& _sym_STARargsSTAR = global_symbols[468];
-core::Symbol_sp& _sym_STARcurrent_working_directorySTAR = global_symbols[469];
-core::Symbol_sp& _sym_backquote = global_symbols[470];
-core::Symbol_sp& _sym_double_backquote = global_symbols[471];
-core::Symbol_sp& _sym_unquote = global_symbols[472];
-core::Symbol_sp& _sym_unquote_splice = global_symbols[473];
-core::Symbol_sp& _sym_unquote_nsplice = global_symbols[474];
-core::Symbol_sp& _sym_slot = global_symbols[475];
-core::Symbol_sp& _sym_item = global_symbols[476];
-core::Symbol_sp& _sym_alist = global_symbols[477];
-core::Symbol_sp& _sym_key = global_symbols[478];
-core::Symbol_sp& _sym_test_not = global_symbols[479];
-core::Symbol_sp& _sym_forward_referenced_class = global_symbols[480];
-core::Symbol_sp& _sym_instance = global_symbols[481];
-core::Symbol_sp& _sym_all_keys = global_symbols[482];
-core::Symbol_sp& _sym_cl_fixnum_bits = global_symbols[483];
-core::Symbol_sp& _sym_cArgumentsLimit = global_symbols[484];
-core::Symbol_sp& _sym_STARcommandLineArgumentsSTAR = global_symbols[485];
-core::Symbol_sp& _sym_STARprintVersionOnStartupSTAR = global_symbols[486];
-core::Symbol_sp& _sym_STARsilentStartupSTAR = global_symbols[487];
-core::Symbol_sp& _sym_STARcommandLineLoadEvalSequenceSTAR = global_symbols[488];
-core::Symbol_sp& _sym_STARcommandLineImageSTAR = global_symbols[489];
-core::Symbol_sp& _sym_STARclassNameHashTableSTAR = global_symbols[490];
-core::Symbol_sp& _sym_selectPackage = global_symbols[491];
-core::Symbol_sp& _sym_find_single_dispatch_generic_function = global_symbols[492];
-core::Symbol_sp& _sym_setf_find_single_dispatch_generic_function = global_symbols[493];
-core::Symbol_sp& _sym_forget_all_single_dispatch_generic_functions = global_symbols[494];
-core::Symbol_sp& _sym_stackMonitor = global_symbols[495];
-core::Symbol_sp& _sym_setupStackMonitor = global_symbols[496];
-core::Symbol_sp& _sym_invokeInternalDebugger = global_symbols[497];
-core::Symbol_sp& _sym_invokeInternalDebuggerFromGdb = global_symbols[498];
-core::Symbol_sp& _sym_universalErrorHandler = global_symbols[499];
-core::Symbol_sp& _sym_stackUsed = global_symbols[500];
-core::Symbol_sp& _sym_exit = global_symbols[501];
-core::Symbol_sp& _sym_quit = global_symbols[502];
-core::Symbol_sp& _sym_getline = global_symbols[503];
-core::Symbol_sp& _sym_isTopLevelScript = global_symbols[504];
-core::Symbol_sp& _sym_sourceFileName = global_symbols[505];
-core::Symbol_sp& _sym_sourceLineColumn = global_symbols[506];
-core::Symbol_sp& _sym_findFileInLispPath = global_symbols[507];
-core::Symbol_sp& _sym_setf_findClass = global_symbols[508];
-core::Symbol_sp& _sym_isAssignableTo = global_symbols[509];
-core::Symbol_sp& _sym_isSubClassOf = global_symbols[510];
-core::Symbol_sp& _sym_repr = global_symbols[511];
-core::Symbol_sp& _sym_debugLogOn = global_symbols[512];
-core::Symbol_sp& _sym_debugLogOff = global_symbols[513];
-core::Symbol_sp& _sym_mpi_enabled = global_symbols[514];
-core::Symbol_sp& _sym_mpi_rank = global_symbols[515];
-core::Symbol_sp& _sym_mpi_size = global_symbols[516];
-core::Symbol_sp& _sym_sorted = global_symbols[517];
-core::Symbol_sp& _sym_database_dir = global_symbols[518];
-core::Symbol_sp& _sym_script_dir = global_symbols[519];
-core::Symbol_sp& _sym_libraryPath = global_symbols[520];
-core::Symbol_sp& _sym_lispCodePath = global_symbols[521];
-core::Symbol_sp& _sym_setCurrentWorkingDirectory = global_symbols[522];
-core::Symbol_sp& _sym_member1 = global_symbols[523];
-core::Symbol_sp& _sym_exportToPython = global_symbols[524];
-core::Symbol_sp& _sym_slBoundp = global_symbols[525];
-core::Symbol_sp& _sym_isNil = global_symbols[526];
-core::Symbol_sp& _sym_instanceRef = global_symbols[527];
-core::Symbol_sp& _sym_instanceSet = global_symbols[528];
-core::Symbol_sp& _sym_instancep = global_symbols[529];
-core::Symbol_sp& _sym_instanceSigSet = global_symbols[530];
-core::Symbol_sp& _sym_instanceSig = global_symbols[531];
-core::Symbol_sp& _sym_instanceClass = global_symbols[532];
-core::Symbol_sp& _sym_implementationClass = global_symbols[533];
-core::Symbol_sp& _sym_classNameAsString = global_symbols[534];
-core::Symbol_sp& _sym_clock_gettime_nanoseconds = global_symbols[535];
-core::Symbol_sp& _sym_testProfileTimer = global_symbols[536];
-core::Symbol_sp& _sym_structure_print_function = global_symbols[537];
-core::Symbol_sp& _sym_STARprint_structureSTAR = global_symbols[538];
-core::Symbol_sp& _sym_makeRegex = global_symbols[539];
-core::Symbol_sp& _sym_serialize = global_symbols[540];
-core::Symbol_sp& _sym_STARserializerArchiveSTAR = global_symbols[541];
-core::Symbol_sp& _sym_STARsharp_equal_alistSTAR = global_symbols[542];
-core::Symbol_sp& _sym_STARsharp_sharp_alistSTAR = global_symbols[543];
-core::Symbol_sp& _sym_STARconsing_dot_allowedSTAR = global_symbols[544];
-core::Symbol_sp& _sym_STARconsing_dotSTAR = global_symbols[545];
-core::Symbol_sp& _sym_STARpreserve_whitespace_pSTAR = global_symbols[546];
-core::Symbol_sp& _sym_STARinput_streamSTAR = global_symbols[547];
-core::Symbol_sp& _sym_STARbackquote_levelSTAR = global_symbols[548];
-core::Symbol_sp& _sym_STARstandard_readtableSTAR = global_symbols[549];
-core::Symbol_sp& _sym_read_list_allow_consing_dot = global_symbols[550];
-core::Symbol_sp& _sym_reader_read_double_quote_string = global_symbols[551];
-core::Symbol_sp& _sym_reader_backquoted_expression = global_symbols[552];
-core::Symbol_sp& _sym_sharp_backslash = global_symbols[553];
-core::Symbol_sp& _sym_sharp_single_quote = global_symbols[554];
-core::Symbol_sp& _sym_sharp_left_parenthesis = global_symbols[555];
-core::Symbol_sp& _sym_sharp_asterisk = global_symbols[556];
-core::Symbol_sp& _sym_sharp_colon = global_symbols[557];
-core::Symbol_sp& _sym_sharp_dot = global_symbols[558];
-core::Symbol_sp& _sym_sharp_b = global_symbols[559];
-core::Symbol_sp& _sym_sharp_o = global_symbols[560];
-core::Symbol_sp& _sym_sharp_x = global_symbols[561];
-core::Symbol_sp& _sym_sharp_r = global_symbols[562];
-core::Symbol_sp& _sym_sharp_c = global_symbols[563];
-core::Symbol_sp& _sym_sharp_a = global_symbols[564];
-core::Symbol_sp& _sym_sharp_s = global_symbols[565];
-core::Symbol_sp& _sym_sharp_p = global_symbols[566];
-core::Symbol_sp& _sym_sharp_plus = global_symbols[567];
-core::Symbol_sp& _sym_sharp_minus = global_symbols[568];
-core::Symbol_sp& _sym_sharp_vertical_bar = global_symbols[569];
-core::Symbol_sp& _sym_dispatch_macro_character = global_symbols[570];
-core::Symbol_sp& _sym_reader_double_quote_string = global_symbols[571];
-core::Symbol_sp& _sym_reader_comma_form = global_symbols[572];
-core::Symbol_sp& _sym_reader_list_allow_consing_dot = global_symbols[573];
-core::Symbol_sp& _sym_reader_error_unmatched_close_parenthesis = global_symbols[574];
-core::Symbol_sp& _sym_reader_quote = global_symbols[575];
-core::Symbol_sp& _sym_reader_skip_semicolon_comment = global_symbols[576];
-core::Symbol_sp& _sym_reader_feature_p = global_symbols[577];
-core::Symbol_sp& _sym_float_to_digits = global_symbols[578];
-core::Symbol_sp& _sym_defaultPathnameDefaults = global_symbols[579];
-core::Symbol_sp& _sym_coerceToFilename = global_symbols[580];
-core::Symbol_sp& _sym_coerceToFilePathname = global_symbols[581];
-core::Symbol_sp& _sym_pathnameTranslations = global_symbols[582];
-core::Symbol_sp& _sym_coerceToPhysicalPathname = global_symbols[583];
-core::Symbol_sp& _sym_argument_number_error = global_symbols[584];
-core::Symbol_sp& _sym_signalSimpleError = global_symbols[585];
-core::Symbol_sp& _sym_wrongTypeNthArg = global_symbols[586];
-core::Symbol_sp& _sym_wrongIndex = global_symbols[587];
-core::Symbol_sp& _sym_subclassp = global_symbols[588];
-core::Symbol_sp& _sym_allocateRawClass = global_symbols[589];
-core::Symbol_sp& _sym_inheritDefaultAllocator = global_symbols[590];
-core::Symbol_sp& _sym_isString = global_symbols[591];
-core::Symbol_sp& _sym_isArray = global_symbols[592];
-core::Symbol_sp& _sym_testVal = global_symbols[593];
-core::Symbol_sp& _sym__SHARP__BANG_ = global_symbols[594];
-core::Symbol_sp& _sym_base_string_concatenate = global_symbols[595];
-core::Symbol_sp& _sym_calculateMissingCommonLispSymbols = global_symbols[596];
-core::Symbol_sp& _sym_copy_subarray = global_symbols[597];
-core::Symbol_sp& _sym_aset = global_symbols[598];
-core::Symbol_sp& _sym_rem_f = global_symbols[599];
-core::Symbol_sp& _sym_put_f = global_symbols[600];
-core::Symbol_sp& _sym_conditionMessage = global_symbols[601];
-core::Symbol_sp& _sym_put_sysprop = global_symbols[602];
-core::Symbol_sp& _sym_get_sysprop = global_symbols[603];
-core::Symbol_sp& _sym_rem_sysprop = global_symbols[604];
-core::Symbol_sp& _sym_bformat = global_symbols[605];
-core::Symbol_sp& _sym_STARbq_listSTAR = global_symbols[606];
-core::Symbol_sp& _sym_STARbq_appendSTAR = global_symbols[607];
-core::Symbol_sp& _sym_STARbq_listSTARSTAR = global_symbols[608];
-core::Symbol_sp& _sym_STARbq_nconcSTAR = global_symbols[609];
-core::Symbol_sp& _sym_STARbq_clobberableSTAR = global_symbols[610];
-core::Symbol_sp& _sym_STARbq_quoteSTAR = global_symbols[611];
-core::Symbol_sp& _sym_STARbq_quote_nilSTAR = global_symbols[612];
-core::Symbol_sp& _sym_bq_simplify = global_symbols[613];
-core::Symbol_sp& _sym_bq_remove_tokens = global_symbols[614];
-core::Symbol_sp& _sym_backquote_maptree = global_symbols[615];
-core::Symbol_sp& _sym_backquote_simplify = global_symbols[616];
-core::Symbol_sp& _sym_backquote_completely_process = global_symbols[617];
-core::Symbol_sp& _sym_backquote_process = global_symbols[618];
-core::Symbol_sp& _sym_backquote_bracket = global_symbols[619];
-core::Symbol_sp& _sym_backquote_null_or_quoted = global_symbols[620];
-core::Symbol_sp& _sym_backquote_attach_append = global_symbols[621];
-core::Symbol_sp& _sym_backquote_attach_conses = global_symbols[622];
-core::Symbol_sp& _sym_backquote_remove_tokens = global_symbols[623];
-core::Symbol_sp& _sym_backquote_frob = global_symbols[624];
-core::Symbol_sp& _sym_backquote_splicing_frob = global_symbols[625];
-core::Symbol_sp& _sym_backquote_append = global_symbols[626];
-core::Symbol_sp& _sym_quasiquote = global_symbols[627];
-core::Symbol_sp& _sym_STARbq_simplifySTAR = global_symbols[628];
-core::Symbol_sp& _sym_record_cons = global_symbols[629];
-core::Symbol_sp& _sym_record_field = global_symbols[630];
-core::Symbol_sp& _sym_set_record_field = global_symbols[631];
-core::Symbol_sp& _sym_rem_record_field = global_symbols[632];
-core::Symbol_sp& _sym_ensure_documentation = global_symbols[633];
-core::Symbol_sp& _sym_STARsharp_equal_final_tableSTAR = global_symbols[634];
-core::Symbol_sp& _sym_STARsharp_equal_temp_tableSTAR = global_symbols[635];
-core::Symbol_sp& _sym_STARsharp_equal_repl_tableSTAR = global_symbols[636];
-core::Symbol_sp& _sym_ensureSingleDispatchGenericFunction = global_symbols[637];
-core::Symbol_sp& _sym_ensureSingleDispatchMethod = global_symbols[638];
-core::Symbol_sp& _sym_structure_include = global_symbols[639];
-core::Symbol_sp& _sym_structure_slot_descriptions = global_symbols[640];
-core::Symbol_sp& _sym_structureRef = global_symbols[641];
-core::Symbol_sp& _sym_structureSet = global_symbols[642];
-core::Symbol_sp& _sym_makeStructure = global_symbols[643];
-core::Symbol_sp& _sym_structurep = global_symbols[644];
-core::Symbol_sp& _sym_structureSubtypep = global_symbols[645];
-core::Symbol_sp& _sym_setfElt = global_symbols[646];
-core::Symbol_sp& _sym_eltSet = global_symbols[647];
-core::Symbol_sp& _sym_setfSubseq = global_symbols[648];
-core::Symbol_sp& _sym_make_vector = global_symbols[649];
-core::Symbol_sp& _sym_adjustVector = global_symbols[650];
-core::Symbol_sp& _sym_loadTimeValuesIds = global_symbols[651];
-core::Symbol_sp& _sym_loadTimeValueArray = global_symbols[652];
-core::Symbol_sp& _sym_lookupLoadTimeValue = global_symbols[653];
-core::Symbol_sp& _sym_lookupLoadTimeSymbol = global_symbols[654];
-core::Symbol_sp& _sym_setRunTimeValuesVector = global_symbols[655];
-core::Symbol_sp& _sym_ExternalObject_O = global_symbols[656];
-core::Symbol_sp& _sym_ForeignData_O = global_symbols[657];
-core::Symbol_sp& _sym_LambdaListHandler_O = global_symbols[658];
-core::Symbol_sp& _sym_LightUserData_O = global_symbols[659];
-core::Symbol_sp& _sym_UserData_O = global_symbols[660];
-core::Symbol_sp& _sym_LoadTimeValues_O = global_symbols[661];
-core::Symbol_sp& _sym_MultiStringBuffer_O = global_symbols[662];
-core::Symbol_sp& _sym_PosixTime_O = global_symbols[663];
-core::Symbol_sp& _sym_PosixTimeDuration_O = global_symbols[664];
-core::Symbol_sp& _sym_RegexMatch_O = global_symbols[665];
-core::Symbol_sp& _sym_Regex_O = global_symbols[666];
-core::Symbol_sp& _sym_SingleDispatchMethod_O = global_symbols[667];
-core::Symbol_sp& _sym_SmallMultimap_O = global_symbols[668];
-core::Symbol_sp& _sym_WeakKeyMapping_O = global_symbols[669];
-core::Symbol_sp& _sym_WeakPointer_O = global_symbols[670];
-core::Symbol_sp& _sym_Instance_O = global_symbols[671];
-core::Symbol_sp& _sym_WrappedPointer_O = global_symbols[672];
-core::Symbol_sp& _sym_ArrayDisplaced_O = global_symbols[673];
-core::Symbol_sp& _sym_ArrayObjects_O = global_symbols[674];
-core::Symbol_sp& _sym_HashTableEqualp_O = global_symbols[675];
-core::Symbol_sp& _sym_SingleDispatchEffectiveMethodFunction_O = global_symbols[676];
-core::Symbol_sp& _sym_SingleDispatchGenericFunction_O = global_symbols[677];
-core::Symbol_sp& _sym_SpecialForm_O = global_symbols[678];
-core::Symbol_sp& _sym_SexpLoadArchive_O = global_symbols[679];
-core::Symbol_sp& _sym_SexpSaveArchive_O = global_symbols[680];
-core::Symbol_sp& _sym_VectorDisplaced_O = global_symbols[681];
-core::Symbol_sp& _sym_CxxClass_O = global_symbols[682];
-core::Symbol_sp& _sym_ForwardReferencedClass_O = global_symbols[683];
-core::Symbol_sp& _sym_StrWithFillPtr_O = global_symbols[684];
-core::Symbol_sp& _sym_InvocationHistoryFrameIterator_O = global_symbols[685];
-core::Symbol_sp& _sym_Reader_O = global_symbols[686];
-core::Symbol_sp& _sym_HashTableEqual_O = global_symbols[687];
-core::Symbol_sp& _sym_Binder_O = global_symbols[688];
-core::Symbol_sp& _sym_Path_O = global_symbols[689];
-core::Symbol_sp& _sym_DirectoryIterator_O = global_symbols[690];
-core::Symbol_sp& _sym_RecursiveDirectoryIterator_O = global_symbols[691];
-core::Symbol_sp& _sym_DirectoryEntry_O = global_symbols[692];
-core::Symbol_sp& _sym_FileStatus_O = global_symbols[693];
-core::Symbol_sp& _sym_IntArray_O = global_symbols[694];
-core::Symbol_sp& _sym_IOFileStream_O = global_symbols[695];
-core::Symbol_sp& _sym_IOStreamStream_O = global_symbols[696];
-core::Symbol_sp& _sym_StringOutputStream_O = global_symbols[697];
-core::Symbol_sp& _sym_StringInputStream_O = global_symbols[698];
-core::Symbol_sp& _sym_HashTableEql_O = global_symbols[699];
-core::Symbol_sp& _sym_HashTableEq_O = global_symbols[700];
-core::Symbol_sp& _sym_SmallMap_O = global_symbols[701];
-core::Symbol_sp& _sym_Iterator_O = global_symbols[702];
-core::Symbol_sp& _sym_CandoException_O = global_symbols[703];
-core::Symbol_sp& _sym_VaList_dummy_O = global_symbols[704];
-core::Symbol_sp& _sym_Pointer_O = global_symbols[705];
-core::Symbol_sp& _sym_Environment_O = global_symbols[706];
-core::Symbol_sp& _sym_LexicalEnvironment_O = global_symbols[707];
-core::Symbol_sp& _sym_RuntimeVisibleEnvironment_O = global_symbols[708];
-core::Symbol_sp& _sym_ValueEnvironment_O = global_symbols[709];
-core::Symbol_sp& _sym_FunctionValueEnvironment_O = global_symbols[710];
-core::Symbol_sp& _sym_CompileTimeEnvironment_O = global_symbols[711];
-core::Symbol_sp& _sym_UnwindProtectEnvironment_O = global_symbols[712];
-core::Symbol_sp& _sym_BlockEnvironment_O = global_symbols[713];
-core::Symbol_sp& _sym_CatchEnvironment_O = global_symbols[714];
-core::Symbol_sp& _sym_FunctionContainerEnvironment_O = global_symbols[715];
-core::Symbol_sp& _sym_TagbodyEnvironment_O = global_symbols[716];
-core::Symbol_sp& _sym_MacroletEnvironment_O = global_symbols[717];
-core::Symbol_sp& _sym_SymbolMacroletEnvironment_O = global_symbols[718];
-core::Symbol_sp& _sym_StackValueEnvironment_O = global_symbols[719];
-core::Symbol_sp& _sym_GlueEnvironment_O = global_symbols[720];
-core::Symbol_sp& _sym_ActivationFrame_O = global_symbols[721];
-core::Symbol_sp& _sym_ValueFrame_O = global_symbols[722];
-core::Symbol_sp& _sym_FunctionFrame_O = global_symbols[723];
-core::Symbol_sp& _sym_TagbodyFrame_O = global_symbols[724];
-core::Symbol_sp& _sym_Metaobject_O = global_symbols[725];
-core::Symbol_sp& _sym_Specializer_O = global_symbols[726];
-core::Symbol_sp& _sym_WeakHashTable_O = global_symbols[727];
-core::Symbol_sp& _sym_WeakKeyHashTable_O = global_symbols[728];
-core::Symbol_sp& _sym_SourceFileInfo_O = global_symbols[729];
-core::Symbol_sp& _sym_SourcePosInfo_O = global_symbols[730];
-core::Symbol_sp& _sym_SourceManager_O = global_symbols[731];
-core::Symbol_sp& _sym_CxxObject_O = global_symbols[732];
-core::Symbol_sp& _sym_Record_O = global_symbols[733];
-core::Symbol_sp& _sym_VectorObjects_O = global_symbols[734];
-core::Symbol_sp& _sym_VectorObjectsWithFillPtr_O = global_symbols[735];
-core::Symbol_sp& _sym_SymbolToEnumConverter_O = global_symbols[736];
-core::Symbol_sp& _sym_SNode_O = global_symbols[737];
-core::Symbol_sp& _sym_LeafSNode_O = global_symbols[738];
-core::Symbol_sp& _sym_BranchSNode_O = global_symbols[739];
-core::Symbol_sp& _sym_Archive_O = global_symbols[740];
-core::Symbol_sp& _sym_LoadArchive_O = global_symbols[741];
-core::Symbol_sp& _sym_SaveArchive_O = global_symbols[742];
+core::Symbol_sp& _sym_STARwatchDynamicBindingStackSTAR = global_symbols[637];
+core::Symbol_sp& _sym_symbolMacro = global_symbols[638];
+core::Symbol_sp& _sym_whole = global_symbols[639];
+core::Symbol_sp& _sym_env = global_symbols[640];
+core::Symbol_sp& _sym_processDeclarations = global_symbols[641];
+core::Symbol_sp& _sym_evaluateVerbosity = global_symbols[642];
+core::Symbol_sp& _sym_evaluateDepth = global_symbols[643];
+core::Symbol_sp& _sym_classifyLetVariablesAndDeclares = global_symbols[644];
+core::Symbol_sp& _sym_STAReval_with_env_hookSTAR = global_symbols[645];
+core::Symbol_sp& _sym_eval_with_env_default = global_symbols[646];
+core::Symbol_sp& _sym_dlopen = global_symbols[647];
+core::Symbol_sp& _sym_dlsym = global_symbols[648];
+core::Symbol_sp& _sym_dladdr = global_symbols[649];
+core::Symbol_sp& _sym_callWithVariableBound = global_symbols[650];
+core::Symbol_sp& _sym_instanceClassSet = global_symbols[651];
+core::Symbol_sp& _sym_intrusiveReferenceCountedPointer = global_symbols[652];
+core::Symbol_sp& _sym_sharedReferenceCountedPointer = global_symbols[653];
+core::Symbol_sp& _sym_mpsGarbageCollection = global_symbols[654];
+core::Symbol_sp& _sym_makeInvocationHistoryFrameIterator = global_symbols[655];
+core::Symbol_sp& _sym_STARbacktraceFrameSelectorHookSTAR = global_symbols[656];
+core::Symbol_sp& _sym_smartPointerDetails = global_symbols[657];
+core::Symbol_sp& _sym_STARfset = global_symbols[658];
+core::Symbol_sp& _sym_unbound = global_symbols[659];
+core::Symbol_sp& _sym_mapappend = global_symbols[660];
+core::Symbol_sp& _sym_macroexpand_default = global_symbols[661];
+core::Symbol_sp& _sym_sequence_start_end = global_symbols[662];
+core::Symbol_sp& _sym_type_to_symbol = global_symbols[663];
+core::Symbol_sp& _sym_gdb = global_symbols[664];
+core::Symbol_sp& _sym_gdbInspect = global_symbols[665];
+core::Symbol_sp& _sym_separatePairList = global_symbols[666];
+core::Symbol_sp& _sym_testMemoryError = global_symbols[667];
+core::Symbol_sp& _sym_functionBlockName = global_symbols[668];
+core::Symbol_sp& _sym_validFunctionNameP = global_symbols[669];
+core::Symbol_sp& _sym_pointer = global_symbols[670];
+core::Symbol_sp& _sym_toTaggedFixnum = global_symbols[671];
+core::Symbol_sp& _sym_fromTaggedFixnum = global_symbols[672];
+core::Symbol_sp& _sym_dumpTaggedFixnum = global_symbols[673];
+core::Symbol_sp& _sym_ihsBacktrace = global_symbols[674];
+core::Symbol_sp& _sym_ihsTop = global_symbols[675];
+core::Symbol_sp& _sym_ihsPrev = global_symbols[676];
+core::Symbol_sp& _sym_ihsNext = global_symbols[677];
+core::Symbol_sp& _sym_ihsFun = global_symbols[678];
+core::Symbol_sp& _sym_ihsEnv = global_symbols[679];
+core::Symbol_sp& _sym_bdsTop = global_symbols[680];
+core::Symbol_sp& _sym_bdsVar = global_symbols[681];
+core::Symbol_sp& _sym_bdsVal = global_symbols[682];
+core::Symbol_sp& _sym_theClibBacktraceFunctionSymbol = global_symbols[683];
+core::Symbol_sp& _sym_printCurrentIhsFrameEnvironment = global_symbols[684];
+core::Symbol_sp& _sym_rehash_size = global_symbols[685];
+core::Symbol_sp& _sym_rehash_threshold = global_symbols[686];
+core::Symbol_sp& _sym_data = global_symbols[687];
+core::Symbol_sp& _sym_hash_eql = global_symbols[688];
+core::Symbol_sp& _sym_hash_equal = global_symbols[689];
+core::Symbol_sp& _sym_hash_equalp = global_symbols[690];
+core::Symbol_sp& _sym_fixnum_number_of_bits = global_symbols[691];
+core::Symbol_sp& _sym_nan = global_symbols[692];
+core::Symbol_sp& _sym_log1p = global_symbols[693];
+core::Symbol_sp& _sym_integer_divide = global_symbols[694];
+core::Symbol_sp& _sym_integerToString = global_symbols[695];
+core::Symbol_sp& _sym_printUnreadableObjectFunction = global_symbols[696];
+core::Symbol_sp& _sym_walkToFindSourceInfo = global_symbols[697];
+core::Symbol_sp& _sym_lookupSourceFileInfo = global_symbols[698];
+core::Symbol_sp& _sym_STARmonitorRegisterSourceInfoSTAR = global_symbols[699];
+core::Symbol_sp& _sym_currentDir = global_symbols[700];
+core::Symbol_sp& _sym_file_kind = global_symbols[701];
+core::Symbol_sp& _sym_environmentActivationFrame = global_symbols[702];
+core::Symbol_sp& _sym_currentVisibleEnvironment = global_symbols[703];
+core::Symbol_sp& _sym_runtimeEnvironment = global_symbols[704];
+core::Symbol_sp& _sym_environmentList = global_symbols[705];
+core::Symbol_sp& _sym_environmentTypeList = global_symbols[706];
+core::Symbol_sp& _sym_environmentId = global_symbols[707];
+core::Symbol_sp& _sym_singleDispatchWrongNumberArgumentsError = global_symbols[708];
+core::Symbol_sp& _sym_singleDispatchTooManyArgumentsError = global_symbols[709];
+core::Symbol_sp& _sym_singleDispatchBadLambdaListError = global_symbols[710];
+core::Symbol_sp& _sym_singleDispatchMissingDispatchArgumentError = global_symbols[711];
+core::Symbol_sp& _sym_tooFewArguments = global_symbols[712];
+core::Symbol_sp& _sym_process_macro_lambda_list = global_symbols[713];
+core::Symbol_sp& _sym_process_single_dispatch_lambda_list = global_symbols[714];
+core::Symbol_sp& _sym_makeLambdaListHandler = global_symbols[715];
+core::Symbol_sp& _sym_processLambdaList = global_symbols[716];
+core::Symbol_sp& _sym_dispatchTable = global_symbols[717];
+core::Symbol_sp& _sym_fileColumn = global_symbols[718];
+core::Symbol_sp& _sym_makeStringOutputStreamFromString = global_symbols[719];
+core::Symbol_sp& _sym_do_write_sequence = global_symbols[720];
+core::Symbol_sp& _sym_streamLinenumber = global_symbols[721];
+core::Symbol_sp& _sym_streamColumn = global_symbols[722];
+core::Symbol_sp& _sym_single_dispatch_method = global_symbols[723];
+core::Symbol_sp& _sym_setf_documentation = global_symbols[724];
+core::Symbol_sp& _sym_STARcxxDocumentationSTAR = global_symbols[725];
+core::Symbol_sp& _sym_topLevel = global_symbols[726];
+core::Symbol_sp& _sym_scharSet = global_symbols[727];
+core::Symbol_sp& _sym_STARuseInterpreterForEvalSTAR = global_symbols[728];
+core::Symbol_sp& _sym_STARnotify_on_compileSTAR = global_symbols[729];
+core::Symbol_sp& _sym_STARtrace_startupSTAR = global_symbols[730];
+core::Symbol_sp& _sym_STARdebugInterpretedClosureSTAR = global_symbols[731];
+core::Symbol_sp& _sym_STARdebugFlowControlSTAR = global_symbols[732];
+core::Symbol_sp& _sym_STARdebugStartupSTAR = global_symbols[733];
+core::Symbol_sp& _sym__BANG_unbound_BANG_ = global_symbols[734];
+core::Symbol_sp& _sym_bitArrayOp = global_symbols[735];
+core::Symbol_sp& _sym_lambdaName = global_symbols[736];
+core::Symbol_sp& _sym_printf = global_symbols[737];
+core::Symbol_sp& _sym_asin = global_symbols[738];
+core::Symbol_sp& _sym_asinh = global_symbols[739];
+core::Symbol_sp& _sym_acos = global_symbols[740];
+core::Symbol_sp& _sym_acosh = global_symbols[741];
+core::Symbol_sp& _sym_atanh = global_symbols[742];
+core::Symbol_sp& _sym_STARpollTicksPerGcSTAR = global_symbols[743];
+core::Symbol_sp& _sym__PLUS_standardReadtable_PLUS_ = global_symbols[744];
+core::Symbol_sp& _sym_closedStream = global_symbols[745];
+core::Symbol_sp& _sym__PLUS_numberOfFixedArguments_PLUS_ = global_symbols[746];
+core::Symbol_sp& _sym_STARinterpreterTraceSTAR = global_symbols[747];
+core::Symbol_sp& _sym_STARdebugLoadTimeValuesSTAR = global_symbols[748];
+core::Symbol_sp& _sym_STARdebugEvalSTAR = global_symbols[749];
+core::Symbol_sp& _sym_STARdebugInterpretedFunctionsSTAR = global_symbols[750];
+core::Symbol_sp& _sym_STARdebugMonitorSTAR = global_symbols[751];
+core::Symbol_sp& _sym_monitorReader = global_symbols[752];
+core::Symbol_sp& _sym_tsp = global_symbols[753];
+core::Symbol_sp& _sym_tmv = global_symbols[754];
+core::Symbol_sp& _sym_invocationHistoryFrame = global_symbols[755];
+core::Symbol_sp& _sym_size_t = global_symbols[756];
+core::Symbol_sp& _sym_threadInfo = global_symbols[757];
+core::Symbol_sp& _sym_circle_subst = global_symbols[758];
+core::Symbol_sp& _sym_STARsourceDatabaseSTAR = global_symbols[759];
+core::Symbol_sp& _sym_STARstartRunTimeSTAR = global_symbols[760];
+core::Symbol_sp& _sym_STARcommandLineLoadSTAR = global_symbols[761];
+core::Symbol_sp& _sym_STARihsCurrentSTAR = global_symbols[762];
+core::Symbol_sp& _sym_STARllvmFunctionNameHookSTAR = global_symbols[763];
+core::Symbol_sp& _sym_STARtopLevelCommandHookSTAR = global_symbols[764];
+core::Symbol_sp& _sym_STARloadSearchListSTAR = global_symbols[765];
+core::Symbol_sp& _sym_loadBitcode = global_symbols[766];
+core::Symbol_sp& _sym_loadSource = global_symbols[767];
+core::Symbol_sp& _sym_loadBundle = global_symbols[768];
+core::Symbol_sp& _sym_STARallCxxClassesSTAR = global_symbols[769];
+core::Symbol_sp& _sym_simpleProgramError = global_symbols[770];
+core::Symbol_sp& _sym_STARdebugReaderSTAR = global_symbols[771];
+core::Symbol_sp& _sym_STARenablePrintPrettySTAR = global_symbols[772];
+core::Symbol_sp& _sym_STARcircle_counterSTAR = global_symbols[773];
+core::Symbol_sp& _sym_STARcircle_stackSTAR = global_symbols[774];
+core::Symbol_sp& _sym_dynamicGo = global_symbols[775];
+core::Symbol_sp& _sym_localGo = global_symbols[776];
+core::Symbol_sp& _sym__PLUS_ecl_syntax_progv_list_PLUS_ = global_symbols[777];
+core::Symbol_sp& _sym__PLUS_io_syntax_progv_list_PLUS_ = global_symbols[778];
+core::Symbol_sp& _sym_STARprintPackageSTAR = global_symbols[779];
+core::Symbol_sp& _sym_STARsharpEqContextSTAR = global_symbols[780];
+core::Symbol_sp& _sym_STARcircleCounterSTAR = global_symbols[781];
+core::Symbol_sp& _sym_STARnestedErrorDepthSTAR = global_symbols[782];
+core::Symbol_sp& _sym_setThrowPosition = global_symbols[783];
+core::Symbol_sp& _sym_tooFewArgumentsError = global_symbols[784];
+core::Symbol_sp& _sym_tooManyArgumentsError = global_symbols[785];
+core::Symbol_sp& _sym_unrecognizedKeywordArgumentError = global_symbols[786];
+core::Symbol_sp& _sym_invalidKeywordArgumentError = global_symbols[787];
+core::Symbol_sp& _sym__PLUS_llvmTargetTriple_PLUS_ = global_symbols[788];
+core::Symbol_sp& _sym__PLUS_executableName_PLUS_ = global_symbols[789];
+core::Symbol_sp& _sym_STARcodeWalkerSTAR = global_symbols[790];
+core::Symbol_sp& _sym_STARcurrentSourceFileInfoSTAR = global_symbols[791];
+core::Symbol_sp& _sym_STARcurrentSourcePosInfoSTAR = global_symbols[792];
+core::Symbol_sp& _sym_STARdebugMacroexpandSTAR = global_symbols[793];
+core::Symbol_sp& _sym_STARenvironmentPrintingTabSTAR = global_symbols[794];
+core::Symbol_sp& _sym_STARenvironmentPrintingTabIncrementSTAR = global_symbols[795];
+core::Symbol_sp& _sym__PLUS_activationFrameNil_PLUS_ = global_symbols[796];
+core::Symbol_sp& _sym_parse_macro = global_symbols[797];
+core::Symbol_sp& _sym_globalFunction = global_symbols[798];
+core::Symbol_sp& _sym_globalSetfFunction = global_symbols[799];
+core::Symbol_sp& _sym_lexicalFunction = global_symbols[800];
+core::Symbol_sp& _sym_declaredSpecial = global_symbols[801];
+core::Symbol_sp& _sym_lexical = global_symbols[802];
+core::Symbol_sp& _sym_STARsystem_defsetf_update_functionsSTAR = global_symbols[803];
+core::Symbol_sp& _sym_STARbackquote_expand_hookSTAR = global_symbols[804];
+core::Symbol_sp& _sym_single_dispatch_on = global_symbols[805];
+core::Symbol_sp& _sym_STARdocumentation_poolSTAR = global_symbols[806];
+core::Symbol_sp& _sym_STARexecutable_nameSTAR = global_symbols[807];
+core::Symbol_sp& _sym_generic = global_symbols[808];
+core::Symbol_sp& _sym_DOT = global_symbols[809];
+core::Symbol_sp& _sym_AMPva_rest = global_symbols[810];
+core::Symbol_sp& _sym_anonymous = global_symbols[811];
+core::Symbol_sp& _sym_macro = global_symbols[812];
+core::Symbol_sp& _sym_STARdocumentation_databaseSTAR = global_symbols[813];
+core::Symbol_sp& _sym___init__ = global_symbols[814];
+core::Symbol_sp& _sym_input_stream_designator = global_symbols[815];
+core::Symbol_sp& _sym_STARprint_source_code_consSTAR = global_symbols[816];
+core::Symbol_sp& _sym_STARechoReplReadSTAR = global_symbols[817];
+core::Symbol_sp& _sym_eof_error_p = global_symbols[818];
+core::Symbol_sp& _sym_eof_value = global_symbols[819];
+core::Symbol_sp& _sym_start = global_symbols[820];
+core::Symbol_sp& _sym_end = global_symbols[821];
+core::Symbol_sp& _sym_preserve_whitespace = global_symbols[822];
+core::Symbol_sp& _sym_io = global_symbols[823];
+core::Symbol_sp& _sym_probe = global_symbols[824];
+core::Symbol_sp& _sym_newVersion = global_symbols[825];
+core::Symbol_sp& _sym_renameAndDelete = global_symbols[826];
+core::Symbol_sp& _sym_overwrite = global_symbols[827];
+core::Symbol_sp& _sym_supersede = global_symbols[828];
+core::Symbol_sp& _sym_create = global_symbols[829];
+core::Symbol_sp& _sym_input_stream = global_symbols[830];
+core::Symbol_sp& _sym_recursive_p = global_symbols[831];
+core::Symbol_sp& _sym_dimensions = global_symbols[832];
+core::Symbol_sp& _sym_element_type = global_symbols[833];
+core::Symbol_sp& _sym_initial_element = global_symbols[834];
+core::Symbol_sp& _sym_adjustable = global_symbols[835];
+core::Symbol_sp& _sym_object = global_symbols[836];
+core::Symbol_sp& _sym_okey = global_symbols[837];
+core::Symbol_sp& _sym_default = global_symbols[838];
+core::Symbol_sp& _sym_dot = global_symbols[839];
+core::Symbol_sp& _sym_ifDoesNotExist = global_symbols[840];
+core::Symbol_sp& _sym_symbolMacroletLambda = global_symbols[841];
+core::Symbol_sp& _sym_lambda_with_handler = global_symbols[842];
+core::Symbol_sp& _sym_color = global_symbols[843];
+core::Symbol_sp& _sym_foreach = global_symbols[844];
+core::Symbol_sp& _sym_STARPATHSTAR = global_symbols[845];
+core::Symbol_sp& _sym_STARargsSTAR = global_symbols[846];
+core::Symbol_sp& _sym_STARcurrent_working_directorySTAR = global_symbols[847];
+core::Symbol_sp& _sym_backquote = global_symbols[848];
+core::Symbol_sp& _sym_double_backquote = global_symbols[849];
+core::Symbol_sp& _sym_unquote = global_symbols[850];
+core::Symbol_sp& _sym_unquote_splice = global_symbols[851];
+core::Symbol_sp& _sym_unquote_nsplice = global_symbols[852];
+core::Symbol_sp& _sym_slot = global_symbols[853];
+core::Symbol_sp& _sym_item = global_symbols[854];
+core::Symbol_sp& _sym_alist = global_symbols[855];
+core::Symbol_sp& _sym_key = global_symbols[856];
+core::Symbol_sp& _sym_test_not = global_symbols[857];
+core::Symbol_sp& _sym_forward_referenced_class = global_symbols[858];
+core::Symbol_sp& _sym_instance = global_symbols[859];
+core::Symbol_sp& _sym_all_keys = global_symbols[860];
+core::Symbol_sp& _sym_cl_fixnum_bits = global_symbols[861];
+core::Symbol_sp& _sym_cArgumentsLimit = global_symbols[862];
+core::Symbol_sp& _sym_STARcommandLineArgumentsSTAR = global_symbols[863];
+core::Symbol_sp& _sym_STARprintVersionOnStartupSTAR = global_symbols[864];
+core::Symbol_sp& _sym_STARsilentStartupSTAR = global_symbols[865];
+core::Symbol_sp& _sym_STARcommandLineLoadEvalSequenceSTAR = global_symbols[866];
+core::Symbol_sp& _sym_STARcommandLineImageSTAR = global_symbols[867];
+core::Symbol_sp& _sym_STARclassNameHashTableSTAR = global_symbols[868];
+core::Symbol_sp& _sym_selectPackage = global_symbols[869];
+core::Symbol_sp& _sym_find_single_dispatch_generic_function = global_symbols[870];
+core::Symbol_sp& _sym_setf_find_single_dispatch_generic_function = global_symbols[871];
+core::Symbol_sp& _sym_forget_all_single_dispatch_generic_functions = global_symbols[872];
+core::Symbol_sp& _sym_stackMonitor = global_symbols[873];
+core::Symbol_sp& _sym_setupStackMonitor = global_symbols[874];
+core::Symbol_sp& _sym_invokeInternalDebugger = global_symbols[875];
+core::Symbol_sp& _sym_invokeInternalDebuggerFromGdb = global_symbols[876];
+core::Symbol_sp& _sym_universalErrorHandler = global_symbols[877];
+core::Symbol_sp& _sym_stackUsed = global_symbols[878];
+core::Symbol_sp& _sym_exit = global_symbols[879];
+core::Symbol_sp& _sym_quit = global_symbols[880];
+core::Symbol_sp& _sym_getline = global_symbols[881];
+core::Symbol_sp& _sym_isTopLevelScript = global_symbols[882];
+core::Symbol_sp& _sym_sourceFileName = global_symbols[883];
+core::Symbol_sp& _sym_sourceLineColumn = global_symbols[884];
+core::Symbol_sp& _sym_findFileInLispPath = global_symbols[885];
+core::Symbol_sp& _sym_setf_findClass = global_symbols[886];
+core::Symbol_sp& _sym_isAssignableTo = global_symbols[887];
+core::Symbol_sp& _sym_isSubClassOf = global_symbols[888];
+core::Symbol_sp& _sym_repr = global_symbols[889];
+core::Symbol_sp& _sym_debugLogOn = global_symbols[890];
+core::Symbol_sp& _sym_debugLogOff = global_symbols[891];
+core::Symbol_sp& _sym_mpi_enabled = global_symbols[892];
+core::Symbol_sp& _sym_mpi_rank = global_symbols[893];
+core::Symbol_sp& _sym_mpi_size = global_symbols[894];
+core::Symbol_sp& _sym_sorted = global_symbols[895];
+core::Symbol_sp& _sym_database_dir = global_symbols[896];
+core::Symbol_sp& _sym_script_dir = global_symbols[897];
+core::Symbol_sp& _sym_libraryPath = global_symbols[898];
+core::Symbol_sp& _sym_lispCodePath = global_symbols[899];
+core::Symbol_sp& _sym_setCurrentWorkingDirectory = global_symbols[900];
+core::Symbol_sp& _sym_member1 = global_symbols[901];
+core::Symbol_sp& _sym_exportToPython = global_symbols[902];
+core::Symbol_sp& _sym_slBoundp = global_symbols[903];
+core::Symbol_sp& _sym_isNil = global_symbols[904];
+core::Symbol_sp& _sym_instanceRef = global_symbols[905];
+core::Symbol_sp& _sym_instanceSet = global_symbols[906];
+core::Symbol_sp& _sym_instancep = global_symbols[907];
+core::Symbol_sp& _sym_instanceSigSet = global_symbols[908];
+core::Symbol_sp& _sym_instanceSig = global_symbols[909];
+core::Symbol_sp& _sym_instanceClass = global_symbols[910];
+core::Symbol_sp& _sym_implementationClass = global_symbols[911];
+core::Symbol_sp& _sym_classNameAsString = global_symbols[912];
+core::Symbol_sp& _sym_clock_gettime_nanoseconds = global_symbols[913];
+core::Symbol_sp& _sym_testProfileTimer = global_symbols[914];
+core::Symbol_sp& _sym_structure_print_function = global_symbols[915];
+core::Symbol_sp& _sym_STARprint_structureSTAR = global_symbols[916];
+core::Symbol_sp& _sym_makeRegex = global_symbols[917];
+core::Symbol_sp& _sym_serialize = global_symbols[918];
+core::Symbol_sp& _sym_STARserializerArchiveSTAR = global_symbols[919];
+core::Symbol_sp& _sym_STARsharp_equal_alistSTAR = global_symbols[920];
+core::Symbol_sp& _sym_STARsharp_sharp_alistSTAR = global_symbols[921];
+core::Symbol_sp& _sym_STARconsing_dot_allowedSTAR = global_symbols[922];
+core::Symbol_sp& _sym_STARconsing_dotSTAR = global_symbols[923];
+core::Symbol_sp& _sym_STARpreserve_whitespace_pSTAR = global_symbols[924];
+core::Symbol_sp& _sym_STARinput_streamSTAR = global_symbols[925];
+core::Symbol_sp& _sym_STARbackquote_levelSTAR = global_symbols[926];
+core::Symbol_sp& _sym_STARstandard_readtableSTAR = global_symbols[927];
+core::Symbol_sp& _sym_read_list_allow_consing_dot = global_symbols[928];
+core::Symbol_sp& _sym_reader_read_double_quote_string = global_symbols[929];
+core::Symbol_sp& _sym_reader_backquoted_expression = global_symbols[930];
+core::Symbol_sp& _sym_sharp_backslash = global_symbols[931];
+core::Symbol_sp& _sym_sharp_single_quote = global_symbols[932];
+core::Symbol_sp& _sym_sharp_left_parenthesis = global_symbols[933];
+core::Symbol_sp& _sym_sharp_asterisk = global_symbols[934];
+core::Symbol_sp& _sym_sharp_colon = global_symbols[935];
+core::Symbol_sp& _sym_sharp_dot = global_symbols[936];
+core::Symbol_sp& _sym_sharp_b = global_symbols[937];
+core::Symbol_sp& _sym_sharp_o = global_symbols[938];
+core::Symbol_sp& _sym_sharp_x = global_symbols[939];
+core::Symbol_sp& _sym_sharp_r = global_symbols[940];
+core::Symbol_sp& _sym_sharp_c = global_symbols[941];
+core::Symbol_sp& _sym_sharp_a = global_symbols[942];
+core::Symbol_sp& _sym_sharp_s = global_symbols[943];
+core::Symbol_sp& _sym_sharp_p = global_symbols[944];
+core::Symbol_sp& _sym_sharp_plus = global_symbols[945];
+core::Symbol_sp& _sym_sharp_minus = global_symbols[946];
+core::Symbol_sp& _sym_sharp_vertical_bar = global_symbols[947];
+core::Symbol_sp& _sym_dispatch_macro_character = global_symbols[948];
+core::Symbol_sp& _sym_reader_double_quote_string = global_symbols[949];
+core::Symbol_sp& _sym_reader_comma_form = global_symbols[950];
+core::Symbol_sp& _sym_reader_list_allow_consing_dot = global_symbols[951];
+core::Symbol_sp& _sym_reader_error_unmatched_close_parenthesis = global_symbols[952];
+core::Symbol_sp& _sym_reader_quote = global_symbols[953];
+core::Symbol_sp& _sym_reader_skip_semicolon_comment = global_symbols[954];
+core::Symbol_sp& _sym_reader_feature_p = global_symbols[955];
+core::Symbol_sp& _sym_float_to_digits = global_symbols[956];
+core::Symbol_sp& _sym_defaultPathnameDefaults = global_symbols[957];
+core::Symbol_sp& _sym_coerceToFilename = global_symbols[958];
+core::Symbol_sp& _sym_coerceToFilePathname = global_symbols[959];
+core::Symbol_sp& _sym_pathnameTranslations = global_symbols[960];
+core::Symbol_sp& _sym_coerceToPhysicalPathname = global_symbols[961];
+core::Symbol_sp& _sym_argument_number_error = global_symbols[962];
+core::Symbol_sp& _sym_signalSimpleError = global_symbols[963];
+core::Symbol_sp& _sym_wrongTypeNthArg = global_symbols[964];
+core::Symbol_sp& _sym_wrongIndex = global_symbols[965];
+core::Symbol_sp& _sym_subclassp = global_symbols[966];
+core::Symbol_sp& _sym_allocateRawClass = global_symbols[967];
+core::Symbol_sp& _sym_inheritDefaultAllocator = global_symbols[968];
+core::Symbol_sp& _sym_isString = global_symbols[969];
+core::Symbol_sp& _sym_isArray = global_symbols[970];
+core::Symbol_sp& _sym_testVal = global_symbols[971];
+core::Symbol_sp& _sym__SHARP__BANG_ = global_symbols[972];
+core::Symbol_sp& _sym_base_string_concatenate = global_symbols[973];
+core::Symbol_sp& _sym_calculateMissingCommonLispSymbols = global_symbols[974];
+core::Symbol_sp& _sym_copy_subarray = global_symbols[975];
+core::Symbol_sp& _sym_aset = global_symbols[976];
+core::Symbol_sp& _sym_rem_f = global_symbols[977];
+core::Symbol_sp& _sym_put_f = global_symbols[978];
+core::Symbol_sp& _sym_conditionMessage = global_symbols[979];
+core::Symbol_sp& _sym_put_sysprop = global_symbols[980];
+core::Symbol_sp& _sym_get_sysprop = global_symbols[981];
+core::Symbol_sp& _sym_rem_sysprop = global_symbols[982];
+core::Symbol_sp& _sym_bformat = global_symbols[983];
+core::Symbol_sp& _sym_STARbq_listSTAR = global_symbols[984];
+core::Symbol_sp& _sym_STARbq_appendSTAR = global_symbols[985];
+core::Symbol_sp& _sym_STARbq_listSTARSTAR = global_symbols[986];
+core::Symbol_sp& _sym_STARbq_nconcSTAR = global_symbols[987];
+core::Symbol_sp& _sym_STARbq_clobberableSTAR = global_symbols[988];
+core::Symbol_sp& _sym_STARbq_quoteSTAR = global_symbols[989];
+core::Symbol_sp& _sym_STARbq_quote_nilSTAR = global_symbols[990];
+core::Symbol_sp& _sym_bq_simplify = global_symbols[991];
+core::Symbol_sp& _sym_bq_remove_tokens = global_symbols[992];
+core::Symbol_sp& _sym_backquote_maptree = global_symbols[993];
+core::Symbol_sp& _sym_backquote_simplify = global_symbols[994];
+core::Symbol_sp& _sym_backquote_completely_process = global_symbols[995];
+core::Symbol_sp& _sym_backquote_process = global_symbols[996];
+core::Symbol_sp& _sym_backquote_bracket = global_symbols[997];
+core::Symbol_sp& _sym_backquote_null_or_quoted = global_symbols[998];
+core::Symbol_sp& _sym_backquote_attach_append = global_symbols[999];
+core::Symbol_sp& _sym_backquote_attach_conses = global_symbols[1000];
+core::Symbol_sp& _sym_backquote_remove_tokens = global_symbols[1001];
+core::Symbol_sp& _sym_backquote_frob = global_symbols[1002];
+core::Symbol_sp& _sym_backquote_splicing_frob = global_symbols[1003];
+core::Symbol_sp& _sym_backquote_append = global_symbols[1004];
+core::Symbol_sp& _sym_quasiquote = global_symbols[1005];
+core::Symbol_sp& _sym_STARbq_simplifySTAR = global_symbols[1006];
+core::Symbol_sp& _sym_record_cons = global_symbols[1007];
+core::Symbol_sp& _sym_record_field = global_symbols[1008];
+core::Symbol_sp& _sym_set_record_field = global_symbols[1009];
+core::Symbol_sp& _sym_rem_record_field = global_symbols[1010];
+core::Symbol_sp& _sym_ensure_documentation = global_symbols[1011];
+core::Symbol_sp& _sym_STARsharp_equal_final_tableSTAR = global_symbols[1012];
+core::Symbol_sp& _sym_STARsharp_equal_temp_tableSTAR = global_symbols[1013];
+core::Symbol_sp& _sym_STARsharp_equal_repl_tableSTAR = global_symbols[1014];
+core::Symbol_sp& _sym_ensureSingleDispatchGenericFunction = global_symbols[1015];
+core::Symbol_sp& _sym_ensureSingleDispatchMethod = global_symbols[1016];
+core::Symbol_sp& _sym_structure_include = global_symbols[1017];
+core::Symbol_sp& _sym_structure_slot_descriptions = global_symbols[1018];
+core::Symbol_sp& _sym_structureRef = global_symbols[1019];
+core::Symbol_sp& _sym_structureSet = global_symbols[1020];
+core::Symbol_sp& _sym_makeStructure = global_symbols[1021];
+core::Symbol_sp& _sym_structurep = global_symbols[1022];
+core::Symbol_sp& _sym_structureSubtypep = global_symbols[1023];
+core::Symbol_sp& _sym_setfElt = global_symbols[1024];
+core::Symbol_sp& _sym_eltSet = global_symbols[1025];
+core::Symbol_sp& _sym_setfSubseq = global_symbols[1026];
+core::Symbol_sp& _sym_make_vector = global_symbols[1027];
+core::Symbol_sp& _sym_adjustVector = global_symbols[1028];
+core::Symbol_sp& _sym_loadTimeValuesIds = global_symbols[1029];
+core::Symbol_sp& _sym_loadTimeValueArray = global_symbols[1030];
+core::Symbol_sp& _sym_lookupLoadTimeValue = global_symbols[1031];
+core::Symbol_sp& _sym_lookupLoadTimeSymbol = global_symbols[1032];
+core::Symbol_sp& _sym_setRunTimeValuesVector = global_symbols[1033];
+core::Symbol_sp& _sym_ExternalObject_O = global_symbols[1034];
+core::Symbol_sp& _sym_ForeignData_O = global_symbols[1035];
+core::Symbol_sp& _sym_LambdaListHandler_O = global_symbols[1036];
+core::Symbol_sp& _sym_LightUserData_O = global_symbols[1037];
+core::Symbol_sp& _sym_UserData_O = global_symbols[1038];
+core::Symbol_sp& _sym_LoadTimeValues_O = global_symbols[1039];
+core::Symbol_sp& _sym_MultiStringBuffer_O = global_symbols[1040];
+core::Symbol_sp& _sym_PosixTime_O = global_symbols[1041];
+core::Symbol_sp& _sym_PosixTimeDuration_O = global_symbols[1042];
+core::Symbol_sp& _sym_RegexMatch_O = global_symbols[1043];
+core::Symbol_sp& _sym_Regex_O = global_symbols[1044];
+core::Symbol_sp& _sym_SingleDispatchMethod_O = global_symbols[1045];
+core::Symbol_sp& _sym_SmallMultimap_O = global_symbols[1046];
+core::Symbol_sp& _sym_WeakKeyMapping_O = global_symbols[1047];
+core::Symbol_sp& _sym_WeakPointer_O = global_symbols[1048];
+core::Symbol_sp& _sym_Instance_O = global_symbols[1049];
+core::Symbol_sp& _sym_WrappedPointer_O = global_symbols[1050];
+core::Symbol_sp& _sym_ArrayDisplaced_O = global_symbols[1051];
+core::Symbol_sp& _sym_ArrayObjects_O = global_symbols[1052];
+core::Symbol_sp& _sym_HashTableEqualp_O = global_symbols[1053];
+core::Symbol_sp& _sym_SingleDispatchEffectiveMethodFunction_O = global_symbols[1054];
+core::Symbol_sp& _sym_SingleDispatchGenericFunction_O = global_symbols[1055];
+core::Symbol_sp& _sym_SpecialForm_O = global_symbols[1056];
+core::Symbol_sp& _sym_SexpLoadArchive_O = global_symbols[1057];
+core::Symbol_sp& _sym_SexpSaveArchive_O = global_symbols[1058];
+core::Symbol_sp& _sym_VectorDisplaced_O = global_symbols[1059];
+core::Symbol_sp& _sym_CxxClass_O = global_symbols[1060];
+core::Symbol_sp& _sym_ForwardReferencedClass_O = global_symbols[1061];
+core::Symbol_sp& _sym_StrWithFillPtr_O = global_symbols[1062];
+core::Symbol_sp& _sym_HashTableEql_O = global_symbols[1063];
+core::Symbol_sp& _sym_InvocationHistoryFrameIterator_O = global_symbols[1064];
+core::Symbol_sp& _sym_IOFileStream_O = global_symbols[1065];
+core::Symbol_sp& _sym_IOStreamStream_O = global_symbols[1066];
+core::Symbol_sp& _sym_StringOutputStream_O = global_symbols[1067];
+core::Symbol_sp& _sym_StringInputStream_O = global_symbols[1068];
+core::Symbol_sp& _sym_Reader_O = global_symbols[1069];
+core::Symbol_sp& _sym_Iterator_O = global_symbols[1070];
+core::Symbol_sp& _sym_Path_O = global_symbols[1071];
+core::Symbol_sp& _sym_DirectoryIterator_O = global_symbols[1072];
+core::Symbol_sp& _sym_RecursiveDirectoryIterator_O = global_symbols[1073];
+core::Symbol_sp& _sym_DirectoryEntry_O = global_symbols[1074];
+core::Symbol_sp& _sym_FileStatus_O = global_symbols[1075];
+core::Symbol_sp& _sym_Binder_O = global_symbols[1076];
+core::Symbol_sp& _sym_IntArray_O = global_symbols[1077];
+core::Symbol_sp& _sym_HashTableEqual_O = global_symbols[1078];
+core::Symbol_sp& _sym_SmallMap_O = global_symbols[1079];
+core::Symbol_sp& _sym_CandoException_O = global_symbols[1080];
+core::Symbol_sp& _sym_VaList_dummy_O = global_symbols[1081];
+core::Symbol_sp& _sym_Pointer_O = global_symbols[1082];
+core::Symbol_sp& _sym_Environment_O = global_symbols[1083];
+core::Symbol_sp& _sym_LexicalEnvironment_O = global_symbols[1084];
+core::Symbol_sp& _sym_RuntimeVisibleEnvironment_O = global_symbols[1085];
+core::Symbol_sp& _sym_ValueEnvironment_O = global_symbols[1086];
+core::Symbol_sp& _sym_FunctionValueEnvironment_O = global_symbols[1087];
+core::Symbol_sp& _sym_CompileTimeEnvironment_O = global_symbols[1088];
+core::Symbol_sp& _sym_UnwindProtectEnvironment_O = global_symbols[1089];
+core::Symbol_sp& _sym_BlockEnvironment_O = global_symbols[1090];
+core::Symbol_sp& _sym_CatchEnvironment_O = global_symbols[1091];
+core::Symbol_sp& _sym_FunctionContainerEnvironment_O = global_symbols[1092];
+core::Symbol_sp& _sym_TagbodyEnvironment_O = global_symbols[1093];
+core::Symbol_sp& _sym_MacroletEnvironment_O = global_symbols[1094];
+core::Symbol_sp& _sym_SymbolMacroletEnvironment_O = global_symbols[1095];
+core::Symbol_sp& _sym_StackValueEnvironment_O = global_symbols[1096];
+core::Symbol_sp& _sym_GlueEnvironment_O = global_symbols[1097];
+core::Symbol_sp& _sym_ActivationFrame_O = global_symbols[1098];
+core::Symbol_sp& _sym_ValueFrame_O = global_symbols[1099];
+core::Symbol_sp& _sym_FunctionFrame_O = global_symbols[1100];
+core::Symbol_sp& _sym_TagbodyFrame_O = global_symbols[1101];
+core::Symbol_sp& _sym_Metaobject_O = global_symbols[1102];
+core::Symbol_sp& _sym_Specializer_O = global_symbols[1103];
+core::Symbol_sp& _sym_WeakHashTable_O = global_symbols[1104];
+core::Symbol_sp& _sym_WeakKeyHashTable_O = global_symbols[1105];
+core::Symbol_sp& _sym_SourceFileInfo_O = global_symbols[1106];
+core::Symbol_sp& _sym_SourcePosInfo_O = global_symbols[1107];
+core::Symbol_sp& _sym_SourceManager_O = global_symbols[1108];
+core::Symbol_sp& _sym_CxxObject_O = global_symbols[1109];
+core::Symbol_sp& _sym_Record_O = global_symbols[1110];
+core::Symbol_sp& _sym_HashTableEq_O = global_symbols[1111];
+core::Symbol_sp& _sym_VectorObjects_O = global_symbols[1112];
+core::Symbol_sp& _sym_VectorObjectsWithFillPtr_O = global_symbols[1113];
+core::Symbol_sp& _sym_SymbolToEnumConverter_O = global_symbols[1114];
+core::Symbol_sp& _sym_SNode_O = global_symbols[1115];
+core::Symbol_sp& _sym_LeafSNode_O = global_symbols[1116];
+core::Symbol_sp& _sym_BranchSNode_O = global_symbols[1117];
+core::Symbol_sp& _sym_Archive_O = global_symbols[1118];
+core::Symbol_sp& _sym_LoadArchive_O = global_symbols[1119];
+core::Symbol_sp& _sym_SaveArchive_O = global_symbols[1120];
 } // namespace core
 namespace cl {
-core::Symbol_sp& _sym_case = global_symbols[743];
-core::Symbol_sp& _sym_otherwise = global_symbols[744];
-core::Symbol_sp& _sym_ignore = global_symbols[745];
-core::Symbol_sp& _sym_multipleValueSetq = global_symbols[746];
-core::Symbol_sp& _sym_prog1 = global_symbols[747];
-core::Symbol_sp& _sym_block = global_symbols[748];
-core::Symbol_sp& _sym_throw = global_symbols[749];
-core::Symbol_sp& _sym_apply = global_symbols[750];
-core::Symbol_sp& _sym_funcall = global_symbols[751];
-core::Symbol_sp& _sym_compute_applicable_methods = global_symbols[752];
-core::Symbol_sp& _sym_no_applicable_method = global_symbols[753];
-core::Symbol_sp& _sym_standardGenericFunction = global_symbols[754];
-core::Symbol_sp& _sym_sleep = global_symbols[755];
-core::Symbol_sp& _sym_let = global_symbols[756];
-core::Symbol_sp& _sym_letSTAR = global_symbols[757];
-core::Symbol_sp& _sym_return_from = global_symbols[758];
-core::Symbol_sp& _sym_catch = global_symbols[759];
-core::Symbol_sp& _sym_load_time_value = global_symbols[760];
-core::Symbol_sp& _sym_setq = global_symbols[761];
-core::Symbol_sp& _sym_eval_when = global_symbols[762];
-core::Symbol_sp& _sym_locally = global_symbols[763];
-core::Symbol_sp& _sym_symbol_macrolet = global_symbols[764];
-core::Symbol_sp& _sym_flet = global_symbols[765];
-core::Symbol_sp& _sym_macrolet = global_symbols[766];
-core::Symbol_sp& _sym_tagbody = global_symbols[767];
-core::Symbol_sp& _sym_multiple_value_call = global_symbols[768];
-core::Symbol_sp& _sym_the = global_symbols[769];
-core::Symbol_sp& _sym_go = global_symbols[770];
-core::Symbol_sp& _sym_multiple_value_prog1 = global_symbols[771];
-core::Symbol_sp& _sym_if = global_symbols[772];
-core::Symbol_sp& _sym_unwind_protect = global_symbols[773];
-core::Symbol_sp& _sym_labels = global_symbols[774];
-core::Symbol_sp& _sym_progv = global_symbols[775];
-core::Symbol_sp& _sym_setf = global_symbols[776];
-core::Symbol_sp& _sym_read = global_symbols[777];
-core::Symbol_sp& _sym_read_preserving_whitespace = global_symbols[778];
-core::Symbol_sp& _sym_read_delimited_list = global_symbols[779];
-core::Symbol_sp& _sym_every = global_symbols[780];
-core::Symbol_sp& _sym_some = global_symbols[781];
-core::Symbol_sp& _sym_notevery = global_symbols[782];
-core::Symbol_sp& _sym_notany = global_symbols[783];
-core::Symbol_sp& _sym_mapcar = global_symbols[784];
-core::Symbol_sp& _sym_mapc = global_symbols[785];
-core::Symbol_sp& _sym_maplist = global_symbols[786];
-core::Symbol_sp& _sym_mapl = global_symbols[787];
-core::Symbol_sp& _sym_mapcan = global_symbols[788];
-core::Symbol_sp& _sym_mapcon = global_symbols[789];
-core::Symbol_sp& _sym_classOf = global_symbols[790];
-core::Symbol_sp& _sym_identity = global_symbols[791];
-core::Symbol_sp& _sym_constantp = global_symbols[792];
-core::Symbol_sp& _sym_ash = global_symbols[793];
-core::Symbol_sp& _sym_specialOperatorP = global_symbols[794];
-core::Symbol_sp& _sym_macroFunction = global_symbols[795];
-core::Symbol_sp& _sym_gensym = global_symbols[796];
-core::Symbol_sp& _sym_type_of = global_symbols[797];
-core::Symbol_sp& _sym_fdefinition = global_symbols[798];
-core::Symbol_sp& _sym_fboundp = global_symbols[799];
-core::Symbol_sp& _sym_fmakunbound = global_symbols[800];
-core::Symbol_sp& _sym_values_list = global_symbols[801];
-core::Symbol_sp& _sym_make_hash_table = global_symbols[802];
-core::Symbol_sp& _sym_maphash = global_symbols[803];
-core::Symbol_sp& _sym_clrhash = global_symbols[804];
-core::Symbol_sp& _sym_remhash = global_symbols[805];
-core::Symbol_sp& _sym_max = global_symbols[806];
-core::Symbol_sp& _sym_min = global_symbols[807];
-core::Symbol_sp& _sym_zerop = global_symbols[808];
-core::Symbol_sp& _sym__LT_ = global_symbols[809];
-core::Symbol_sp& _sym__GT_ = global_symbols[810];
-core::Symbol_sp& _sym__LE_ = global_symbols[811];
-core::Symbol_sp& _sym__GE_ = global_symbols[812];
-core::Symbol_sp& _sym__EQ_ = global_symbols[813];
-core::Symbol_sp& _sym__NE_ = global_symbols[814];
-core::Symbol_sp& _sym__PLUS_ = global_symbols[815];
-core::Symbol_sp& _sym__TIMES_ = global_symbols[816];
-core::Symbol_sp& _sym__MINUS_ = global_symbols[817];
-core::Symbol_sp& _sym_logand = global_symbols[818];
-core::Symbol_sp& _sym_logior = global_symbols[819];
-core::Symbol_sp& _sym_logandc1 = global_symbols[820];
-core::Symbol_sp& _sym_logandc2 = global_symbols[821];
-core::Symbol_sp& _sym_logeqv = global_symbols[822];
-core::Symbol_sp& _sym_lognand = global_symbols[823];
-core::Symbol_sp& _sym_lognor = global_symbols[824];
-core::Symbol_sp& _sym_lognot = global_symbols[825];
-core::Symbol_sp& _sym_logorc1 = global_symbols[826];
-core::Symbol_sp& _sym_logorc2 = global_symbols[827];
-core::Symbol_sp& _sym_logxor = global_symbols[828];
-core::Symbol_sp& _sym_sqrt = global_symbols[829];
-core::Symbol_sp& _sym_cos = global_symbols[830];
-core::Symbol_sp& _sym_tan = global_symbols[831];
-core::Symbol_sp& _sym_sinh = global_symbols[832];
-core::Symbol_sp& _sym_cosh = global_symbols[833];
-core::Symbol_sp& _sym_tanh = global_symbols[834];
-core::Symbol_sp& _sym_conjugate = global_symbols[835];
-core::Symbol_sp& _sym_log = global_symbols[836];
-core::Symbol_sp& _sym_expt = global_symbols[837];
-core::Symbol_sp& _sym_exp = global_symbols[838];
-core::Symbol_sp& _sym_getUniversalTime = global_symbols[839];
-core::Symbol_sp& _sym_leastPositiveSingleFloat = global_symbols[840];
-core::Symbol_sp& _sym_leastNegativeSingleFloat = global_symbols[841];
-core::Symbol_sp& _sym_mostPositiveSingleFloat = global_symbols[842];
-core::Symbol_sp& _sym_mostNegativeSingleFloat = global_symbols[843];
-core::Symbol_sp& _sym_leastPositiveShortFloat = global_symbols[844];
-core::Symbol_sp& _sym_leastNegativeShortFloat = global_symbols[845];
-core::Symbol_sp& _sym_mostPositiveShortFloat = global_symbols[846];
-core::Symbol_sp& _sym_mostNegativeShortFloat = global_symbols[847];
-core::Symbol_sp& _sym_leastPositiveDoubleFloat = global_symbols[848];
-core::Symbol_sp& _sym_leastNegativeDoubleFloat = global_symbols[849];
-core::Symbol_sp& _sym_mostPositiveDoubleFloat = global_symbols[850];
-core::Symbol_sp& _sym_mostNegativeDoubleFloat = global_symbols[851];
-core::Symbol_sp& _sym_leastPositiveLongFloat = global_symbols[852];
-core::Symbol_sp& _sym_leastNegativeLongFloat = global_symbols[853];
-core::Symbol_sp& _sym_mostPositiveLongFloat = global_symbols[854];
-core::Symbol_sp& _sym_mostNegativeLongFloat = global_symbols[855];
-core::Symbol_sp& _sym_leastNegativeNormalizedSingleFloat = global_symbols[856];
-core::Symbol_sp& _sym_leastNegativeNormalizedShortFloat = global_symbols[857];
-core::Symbol_sp& _sym_leastNegativeNormalizedDoubleFloat = global_symbols[858];
-core::Symbol_sp& _sym_leastNegativeNormalizedLongFloat = global_symbols[859];
-core::Symbol_sp& _sym_leastPositiveNormalizedSingleFloat = global_symbols[860];
-core::Symbol_sp& _sym_leastPositiveNormalizedShortFloat = global_symbols[861];
-core::Symbol_sp& _sym_leastPositiveNormalizedDoubleFloat = global_symbols[862];
-core::Symbol_sp& _sym_leastPositiveNormalizedLongFloat = global_symbols[863];
-core::Symbol_sp& _sym_pi = global_symbols[864];
-core::Symbol_sp& _sym_gcd = global_symbols[865];
-core::Symbol_sp& _sym_lcm = global_symbols[866];
-core::Symbol_sp& _sym_numerator = global_symbols[867];
-core::Symbol_sp& _sym_denominator = global_symbols[868];
-core::Symbol_sp& _sym_floor = global_symbols[869];
-core::Symbol_sp& _sym_ceiling = global_symbols[870];
-core::Symbol_sp& _sym_truncate = global_symbols[871];
-core::Symbol_sp& _sym_round = global_symbols[872];
-core::Symbol_sp& _sym_mod = global_symbols[873];
-core::Symbol_sp& _sym_rem = global_symbols[874];
-core::Symbol_sp& _sym_decodeFloat = global_symbols[875];
-core::Symbol_sp& _sym_scaleFloat = global_symbols[876];
-core::Symbol_sp& _sym_floatSign = global_symbols[877];
-core::Symbol_sp& _sym_floatDigits = global_symbols[878];
-core::Symbol_sp& _sym_floatPrecision = global_symbols[879];
-core::Symbol_sp& _sym_integer_decode_float = global_symbols[880];
-core::Symbol_sp& _sym_complex = global_symbols[881];
-core::Symbol_sp& _sym_realpart = global_symbols[882];
-core::Symbol_sp& _sym_imagpart = global_symbols[883];
-core::Symbol_sp& _sym_print = global_symbols[884];
-core::Symbol_sp& _sym_prin1 = global_symbols[885];
-core::Symbol_sp& _sym_princ = global_symbols[886];
-core::Symbol_sp& _sym_truename = global_symbols[887];
-core::Symbol_sp& _sym_probe_file = global_symbols[888];
-core::Symbol_sp& _sym_deleteFile = global_symbols[889];
-core::Symbol_sp& _sym_file_write_date = global_symbols[890];
-core::Symbol_sp& _sym_userHomedirPathname = global_symbols[891];
-core::Symbol_sp& _sym_revappend = global_symbols[892];
-core::Symbol_sp& _sym_nreconc = global_symbols[893];
-core::Symbol_sp& _sym_listSTAR = global_symbols[894];
-core::Symbol_sp& _sym_butlast = global_symbols[895];
-core::Symbol_sp& _sym_nbutlast = global_symbols[896];
-core::Symbol_sp& _sym_nthcdr = global_symbols[897];
-core::Symbol_sp& _sym_copyList = global_symbols[898];
-core::Symbol_sp& _sym_last = global_symbols[899];
-core::Symbol_sp& _sym_filePosition = global_symbols[900];
-core::Symbol_sp& _sym_readSequence = global_symbols[901];
-core::Symbol_sp& _sym_read_from_string = global_symbols[902];
-core::Symbol_sp& _sym_read_line = global_symbols[903];
-core::Symbol_sp& _sym_terpri = global_symbols[904];
-core::Symbol_sp& _sym_freshLine = global_symbols[905];
-core::Symbol_sp& _sym_writeString = global_symbols[906];
-core::Symbol_sp& _sym_writeLine = global_symbols[907];
-core::Symbol_sp& _sym_writeChar = global_symbols[908];
-core::Symbol_sp& _sym_clearInput = global_symbols[909];
-core::Symbol_sp& _sym_clearOutput = global_symbols[910];
-core::Symbol_sp& _sym_readByte = global_symbols[911];
-core::Symbol_sp& _sym_peekChar = global_symbols[912];
-core::Symbol_sp& _sym_readChar = global_symbols[913];
-core::Symbol_sp& _sym_readCharNoHang = global_symbols[914];
-core::Symbol_sp& _sym_force_output = global_symbols[915];
-core::Symbol_sp& _sym_finish_output = global_symbols[916];
-core::Symbol_sp& _sym_listen = global_symbols[917];
-core::Symbol_sp& _sym_unread_char = global_symbols[918];
-core::Symbol_sp& _sym_makeStringOutputStream = global_symbols[919];
-core::Symbol_sp& _sym_writeByte = global_symbols[920];
-core::Symbol_sp& _sym_interactive_stream_p = global_symbols[921];
-core::Symbol_sp& _sym_streamp = global_symbols[922];
-core::Symbol_sp& _sym_close = global_symbols[923];
-core::Symbol_sp& _sym_get_output_stream_string = global_symbols[924];
-core::Symbol_sp& _sym_synonymStreamSymbol = global_symbols[925];
-core::Symbol_sp& _sym_boole_1 = global_symbols[926];
-core::Symbol_sp& _sym_boole_2 = global_symbols[927];
-core::Symbol_sp& _sym_boole_and = global_symbols[928];
-core::Symbol_sp& _sym_boole_andc1 = global_symbols[929];
-core::Symbol_sp& _sym_boole_andc2 = global_symbols[930];
-core::Symbol_sp& _sym_boole_c1 = global_symbols[931];
-core::Symbol_sp& _sym_boole_c2 = global_symbols[932];
-core::Symbol_sp& _sym_boole_clr = global_symbols[933];
-core::Symbol_sp& _sym_boole_eqv = global_symbols[934];
-core::Symbol_sp& _sym_boole_ior = global_symbols[935];
-core::Symbol_sp& _sym_boole_nand = global_symbols[936];
-core::Symbol_sp& _sym_boole_nor = global_symbols[937];
-core::Symbol_sp& _sym_boole_orc1 = global_symbols[938];
-core::Symbol_sp& _sym_boole_orc2 = global_symbols[939];
-core::Symbol_sp& _sym_boole_set = global_symbols[940];
-core::Symbol_sp& _sym_boole_xor = global_symbols[941];
-core::Symbol_sp& _sym_printNotReadableObject = global_symbols[942];
-core::Symbol_sp& _sym_provide = global_symbols[943];
-core::Symbol_sp& _sym_seriousCondition = global_symbols[944];
-core::Symbol_sp& _sym_warn = global_symbols[945];
-core::Symbol_sp& _sym_programError = global_symbols[946];
-core::Symbol_sp& _sym_cellError = global_symbols[947];
-core::Symbol_sp& _sym_unboundVariable = global_symbols[948];
-core::Symbol_sp& _sym_unboundSlot = global_symbols[949];
-core::Symbol_sp& _sym_undefinedFunction = global_symbols[950];
-core::Symbol_sp& _sym_package_error = global_symbols[951];
-core::Symbol_sp& _sym_arithmeticError = global_symbols[952];
-core::Symbol_sp& _sym_floatingPointOverflow = global_symbols[953];
-core::Symbol_sp& _sym_floatingPointInexact = global_symbols[954];
-core::Symbol_sp& _sym_floatingPointInvalidOperation = global_symbols[955];
-core::Symbol_sp& _sym_floatingPointUnderflow = global_symbols[956];
-core::Symbol_sp& _sym_divisionByZero = global_symbols[957];
-core::Symbol_sp& _sym_printNotReadable = global_symbols[958];
-core::Symbol_sp& _sym_streamError = global_symbols[959];
-core::Symbol_sp& _sym_endOfFile = global_symbols[960];
-core::Symbol_sp& _sym_parseError = global_symbols[961];
-core::Symbol_sp& _sym_readerError = global_symbols[962];
-core::Symbol_sp& _sym_STARrandom_stateSTAR = global_symbols[963];
-core::Symbol_sp& _sym_simpleError = global_symbols[964];
-core::Symbol_sp& _sym_storageCondition = global_symbols[965];
-core::Symbol_sp& _sym_simpleCondition = global_symbols[966];
-core::Symbol_sp& _sym_simpleWarning = global_symbols[967];
-core::Symbol_sp& _sym_warning = global_symbols[968];
-core::Symbol_sp& _sym_styleWarning = global_symbols[969];
-core::Symbol_sp& _sym_asin = global_symbols[970];
-core::Symbol_sp& _sym_acos = global_symbols[971];
-core::Symbol_sp& _sym_asinh = global_symbols[972];
-core::Symbol_sp& _sym_acosh = global_symbols[973];
-core::Symbol_sp& _sym_atanh = global_symbols[974];
-core::Symbol_sp& _sym_dynamic_extent = global_symbols[975];
-core::Symbol_sp& _sym_ftype = global_symbols[976];
-core::Symbol_sp& _sym_boole = global_symbols[977];
-core::Symbol_sp& _sym_callArgumentsLimit = global_symbols[978];
-core::Symbol_sp& _sym_arrayDimensionLimit = global_symbols[979];
-core::Symbol_sp& _sym_arrayTotalSizeLimit = global_symbols[980];
-core::Symbol_sp& _sym_lambdaParametersLimit = global_symbols[981];
-core::Symbol_sp& _sym_schar = global_symbols[982];
-core::Symbol_sp& _sym_fixnum = global_symbols[983];
-core::Symbol_sp& _sym_nil = global_symbols[984];
-core::Symbol_sp& _sym_stream_element_type = global_symbols[985];
-core::Symbol_sp& _sym_stream_external_format = global_symbols[986];
-core::Symbol_sp& _sym_open_stream_p = global_symbols[987];
-core::Symbol_sp& _sym_write_sequence = global_symbols[988];
-core::Symbol_sp& _sym_read_sequence = global_symbols[989];
-core::Symbol_sp& _sym_file_string_length = global_symbols[990];
-core::Symbol_sp& _sym_echo_stream_input_stream = global_symbols[991];
-core::Symbol_sp& _sym_echo_stream_output_stream = global_symbols[992];
-core::Symbol_sp& _sym_concatenated_stream_streams = global_symbols[993];
-core::Symbol_sp& _sym_synonym_stream_symbol = global_symbols[994];
-core::Symbol_sp& _sym_broadcast_stream_streams = global_symbols[995];
-core::Symbol_sp& _sym_getOutputStreamString = global_symbols[996];
-core::Symbol_sp& _sym_elt = global_symbols[997];
-core::Symbol_sp& _sym_callNextMethod = global_symbols[998];
-core::Symbol_sp& _sym_nextMethodP = global_symbols[999];
-core::Symbol_sp& _sym_internalTimeUnitsPerSecond = global_symbols[1000];
-core::Symbol_sp& _sym_getInternalRealTime = global_symbols[1001];
-core::Symbol_sp& _sym_getInternalRunTime = global_symbols[1002];
-core::Symbol_sp& _sym_logicalPathnameTranslations = global_symbols[1003];
-core::Symbol_sp& _sym_set = global_symbols[1004];
-core::Symbol_sp& _sym_restartName = global_symbols[1005];
-core::Symbol_sp& _sym_position = global_symbols[1006];
-core::Symbol_sp& _sym_compileFile = global_symbols[1007];
-core::Symbol_sp& _sym_first = global_symbols[1008];
-core::Symbol_sp& _sym_float = global_symbols[1009];
-core::Symbol_sp& _sym_logical_pathname = global_symbols[1010];
-core::Symbol_sp& _sym_pathnamep = global_symbols[1011];
-core::Symbol_sp& _sym_STARloadPathnameSTAR = global_symbols[1012];
-core::Symbol_sp& _sym_STARloadTruenameSTAR = global_symbols[1013];
-core::Symbol_sp& _sym_makeArray = global_symbols[1014];
-core::Symbol_sp& _sym_makePathname = global_symbols[1015];
-core::Symbol_sp& _sym_mismatch = global_symbols[1016];
-core::Symbol_sp& _sym_SignedByte = global_symbols[1017];
-core::Symbol_sp& _sym_UnsignedByte = global_symbols[1018];
-core::Symbol_sp& _sym_Bit = global_symbols[1019];
-core::Symbol_sp& _sym_STARdefaultPathnameDefaultsSTAR = global_symbols[1020];
-core::Symbol_sp& _sym_simpleTypeError = global_symbols[1021];
-core::Symbol_sp& _sym_MultipleValuesLimit = global_symbols[1022];
-core::Symbol_sp& _sym_keywordp = global_symbols[1023];
-core::Symbol_sp& _sym_null = global_symbols[1024];
-core::Symbol_sp& _sym_endp = global_symbols[1025];
-core::Symbol_sp& _sym_symbolp = global_symbols[1026];
-core::Symbol_sp& _sym_atom = global_symbols[1027];
-core::Symbol_sp& _sym_consp = global_symbols[1028];
-core::Symbol_sp& _sym_listp = global_symbols[1029];
-core::Symbol_sp& _sym_numberp = global_symbols[1030];
-core::Symbol_sp& _sym_integerp = global_symbols[1031];
-core::Symbol_sp& _sym_rationalp = global_symbols[1032];
-core::Symbol_sp& _sym_floatp = global_symbols[1033];
-core::Symbol_sp& _sym_realp = global_symbols[1034];
-core::Symbol_sp& _sym_complexp = global_symbols[1035];
-core::Symbol_sp& _sym_character = global_symbols[1036];
-core::Symbol_sp& _sym_base_char = global_symbols[1037];
-core::Symbol_sp& _sym_single_float = global_symbols[1038];
-core::Symbol_sp& _sym_characterp = global_symbols[1039];
-core::Symbol_sp& _sym_stringp = global_symbols[1040];
-core::Symbol_sp& _sym_bit_vector_p = global_symbols[1041];
-core::Symbol_sp& _sym_vectorp = global_symbols[1042];
-core::Symbol_sp& _sym_simple_vector_p = global_symbols[1043];
-core::Symbol_sp& _sym_simple_string_p = global_symbols[1044];
-core::Symbol_sp& _sym_simple_bit_vector_p = global_symbols[1045];
-core::Symbol_sp& _sym_arrayp = global_symbols[1046];
-core::Symbol_sp& _sym_packagep = global_symbols[1047];
-core::Symbol_sp& _sym_functionp = global_symbols[1048];
-core::Symbol_sp& _sym_compiled_function_p = global_symbols[1049];
-core::Symbol_sp& _sym_hash_table_p = global_symbols[1050];
-core::Symbol_sp& _sym__DIVIDE_ = global_symbols[1051];
-core::Symbol_sp& _sym_typep = global_symbols[1052];
-core::Symbol_sp& _sym_type = global_symbols[1053];
-core::Symbol_sp& _sym_step = global_symbols[1054];
-core::Symbol_sp& _sym_speed = global_symbols[1055];
-core::Symbol_sp& _sym_space = global_symbols[1056];
-core::Symbol_sp& _sym_sin = global_symbols[1057];
-core::Symbol_sp& _sym_safety = global_symbols[1058];
-core::Symbol_sp& _sym_restart_bind = global_symbols[1059];
-core::Symbol_sp& _sym_restart = global_symbols[1060];
-core::Symbol_sp& _sym_describe = global_symbols[1061];
-core::Symbol_sp& _sym_disassemble = global_symbols[1062];
-core::Symbol_sp& _sym_rename_file = global_symbols[1063];
-core::Symbol_sp& _sym_random = global_symbols[1064];
-core::Symbol_sp& _sym_optimize = global_symbols[1065];
-core::Symbol_sp& _sym_two_way_stream_input_stream = global_symbols[1066];
-core::Symbol_sp& _sym_two_way_stream_output_stream = global_symbols[1067];
-core::Symbol_sp& _sym_two_way_stream = global_symbols[1068];
-core::Symbol_sp& _sym_make_two_way_stream = global_symbols[1069];
-core::Symbol_sp& _sym_make_synonym_stream = global_symbols[1070];
-core::Symbol_sp& _sym_invoke_restart = global_symbols[1071];
-core::Symbol_sp& _sym_get = global_symbols[1072];
-core::Symbol_sp& _sym_find_restart = global_symbols[1073];
-core::Symbol_sp& _sym_fill_pointer = global_symbols[1074];
-core::Symbol_sp& _sym_directory = global_symbols[1075];
-core::Symbol_sp& _sym_defun = global_symbols[1076];
-core::Symbol_sp& _sym_debug = global_symbols[1077];
-core::Symbol_sp& _sym_count = global_symbols[1078];
-core::Symbol_sp& _sym_compute_restarts = global_symbols[1079];
-core::Symbol_sp& _sym_write = global_symbols[1080];
-core::Symbol_sp& _sym_STARreadDefaultFloatFormatSTAR = global_symbols[1081];
-core::Symbol_sp& _sym_STARprint_baseSTAR = global_symbols[1082];
-core::Symbol_sp& _sym_STARprint_levelSTAR = global_symbols[1083];
-core::Symbol_sp& _sym_STARprint_lengthSTAR = global_symbols[1084];
-core::Symbol_sp& _sym_STARprint_radixSTAR = global_symbols[1085];
-core::Symbol_sp& _sym_STARprint_caseSTAR = global_symbols[1086];
-core::Symbol_sp& _sym_STARprint_gensymSTAR = global_symbols[1087];
-core::Symbol_sp& _sym_STARprint_arraySTAR = global_symbols[1088];
-core::Symbol_sp& _sym_STARprint_readablySTAR = global_symbols[1089];
-core::Symbol_sp& _sym_STARprint_escapeSTAR = global_symbols[1090];
-core::Symbol_sp& _sym_STARprint_circleSTAR = global_symbols[1091];
-core::Symbol_sp& _sym_STARprint_linesSTAR = global_symbols[1092];
-core::Symbol_sp& _sym_STARprint_right_marginSTAR = global_symbols[1093];
-core::Symbol_sp& _sym_STARprint_prettySTAR = global_symbols[1094];
-core::Symbol_sp& _sym_STARprint_miser_widthSTAR = global_symbols[1095];
-core::Symbol_sp& _sym_STARprint_pprint_dispatchSTAR = global_symbols[1096];
-core::Symbol_sp& _sym_STARdebuggerHookSTAR = global_symbols[1097];
-core::Symbol_sp& _sym_break = global_symbols[1098];
-core::Symbol_sp& _sym_STARbreakOnSignalsSTAR = global_symbols[1099];
-core::Symbol_sp& _sym_typeError = global_symbols[1100];
-core::Symbol_sp& _sym_printObject = global_symbols[1101];
-core::Symbol_sp& _sym_controlError = global_symbols[1102];
-core::Symbol_sp& _sym_fileError = global_symbols[1103];
-core::Symbol_sp& _sym_satisfies = global_symbols[1104];
-core::Symbol_sp& _sym_T = global_symbols[1105];
-core::Symbol_sp& _sym_method = global_symbols[1106];
-core::Symbol_sp& _sym_generic_function = global_symbols[1107];
-core::Symbol_sp& _sym_cond = global_symbols[1108];
-core::Symbol_sp& _sym_stream = global_symbols[1109];
-core::Symbol_sp& _sym_boolean = global_symbols[1110];
-core::Symbol_sp& _sym_keyword = global_symbols[1111];
-core::Symbol_sp& _sym_array = global_symbols[1112];
-core::Symbol_sp& _sym_simple_array = global_symbols[1113];
-core::Symbol_sp& _sym_vector = global_symbols[1114];
-core::Symbol_sp& _sym_simple_vector = global_symbols[1115];
-core::Symbol_sp& _sym_input_stream_p = global_symbols[1116];
-core::Symbol_sp& _sym_output_stream_p = global_symbols[1117];
-core::Symbol_sp& _sym_STARstandard_inputSTAR = global_symbols[1118];
-core::Symbol_sp& _sym_STARstandard_outputSTAR = global_symbols[1119];
-core::Symbol_sp& _sym_STARerror_outputSTAR = global_symbols[1120];
-core::Symbol_sp& _sym_STARtrace_outputSTAR = global_symbols[1121];
-core::Symbol_sp& _sym_STARdebug_ioSTAR = global_symbols[1122];
-core::Symbol_sp& _sym_STARquery_ioSTAR = global_symbols[1123];
-core::Symbol_sp& _sym_STARterminal_ioSTAR = global_symbols[1124];
-core::Symbol_sp& _sym_STARgensym_counterSTAR = global_symbols[1125];
-core::Symbol_sp& _sym_standard_char = global_symbols[1126];
-core::Symbol_sp& _sym_extended_char = global_symbols[1127];
-core::Symbol_sp& _sym_special = global_symbols[1128];
-core::Symbol_sp& _sym_nconc = global_symbols[1129];
-core::Symbol_sp& _sym_cadr = global_symbols[1130];
-core::Symbol_sp& _sym_STARmacroexpand_hookSTAR = global_symbols[1131];
-core::Symbol_sp& _sym_STARread_baseSTAR = global_symbols[1132];
-core::Symbol_sp& _sym_compile = global_symbols[1133];
-core::Symbol_sp& _sym_load = global_symbols[1134];
-core::Symbol_sp& _sym_eval = global_symbols[1135];
-core::Symbol_sp& _sym_STARread_evalSTAR = global_symbols[1136];
-core::Symbol_sp& _sym_define_modify_macro = global_symbols[1137];
-core::Symbol_sp& _sym_destructuring_bind = global_symbols[1138];
-core::Symbol_sp& _sym_deftype = global_symbols[1139];
-core::Symbol_sp& _sym_define_method_combination = global_symbols[1140];
-core::Symbol_sp& _sym_defsetf = global_symbols[1141];
-core::Symbol_sp& _sym_AMPwhole = global_symbols[1142];
-core::Symbol_sp& _sym_AMPenvironment = global_symbols[1143];
-core::Symbol_sp& _sym_AMPoptional = global_symbols[1144];
-core::Symbol_sp& _sym_AMPkey = global_symbols[1145];
-core::Symbol_sp& _sym_AMPallow_other_keys = global_symbols[1146];
-core::Symbol_sp& _sym_AMPaux = global_symbols[1147];
-core::Symbol_sp& _sym_AMPrest = global_symbols[1148];
-core::Symbol_sp& _sym_AMPbody = global_symbols[1149];
-core::Symbol_sp& _sym_integer = global_symbols[1150];
-core::Symbol_sp& _sym_sequence = global_symbols[1151];
-core::Symbol_sp& _sym_declare = global_symbols[1152];
-core::Symbol_sp& _sym_variable = global_symbols[1153];
-core::Symbol_sp& _sym_bit = global_symbols[1154];
-core::Symbol_sp& _sym_STARreadtableSTAR = global_symbols[1155];
-core::Symbol_sp& _sym_and = global_symbols[1156];
-core::Symbol_sp& _sym_or = global_symbols[1157];
-core::Symbol_sp& _sym_car = global_symbols[1158];
-core::Symbol_sp& _sym_cdr = global_symbols[1159];
-core::Symbol_sp& _sym_dotimes = global_symbols[1160];
-core::Symbol_sp& _sym_dolist = global_symbols[1161];
-core::Symbol_sp& _sym_do = global_symbols[1162];
-core::Symbol_sp& _sym_package = global_symbols[1163];
-core::Symbol_sp& _sym_aref = global_symbols[1164];
-core::Symbol_sp& _sym_nth = global_symbols[1165];
-core::Symbol_sp& _sym_append = global_symbols[1166];
-core::Symbol_sp& _sym_gethash = global_symbols[1167];
-core::Symbol_sp& _sym_hash_table = global_symbols[1168];
-core::Symbol_sp& _sym_STARfeaturesSTAR = global_symbols[1169];
-core::Symbol_sp& _sym_STARload_printSTAR = global_symbols[1170];
-core::Symbol_sp& _sym_STARload_verboseSTAR = global_symbols[1171];
-core::Symbol_sp& _sym_lambda = global_symbols[1172];
-core::Symbol_sp& _sym_symbol = global_symbols[1173];
-core::Symbol_sp& _sym_STARpackageSTAR = global_symbols[1174];
-core::Symbol_sp& _sym_STARmodulesSTAR = global_symbols[1175];
-core::Symbol_sp& _sym_progn = global_symbols[1176];
-core::Symbol_sp& _sym_quote = global_symbols[1177];
-core::Symbol_sp& _sym_function = global_symbols[1178];
-core::Symbol_sp& _sym_slot_value = global_symbols[1179];
-core::Symbol_sp& _sym_values = global_symbols[1180];
-core::Symbol_sp& _sym_list = global_symbols[1181];
-core::Symbol_sp& _sym_standard_class = global_symbols[1182];
-core::Symbol_sp& _sym_rest = global_symbols[1183];
-core::Symbol_sp& _sym_most_negative_fixnum = global_symbols[1184];
-core::Symbol_sp& _sym_most_positive_fixnum = global_symbols[1185];
-core::Symbol_sp& _sym_array_rank_limit = global_symbols[1186];
-core::Symbol_sp& _sym_char_code_limit = global_symbols[1187];
-core::Symbol_sp& _sym_apropos = global_symbols[1188];
-core::Symbol_sp& _sym_export = global_symbols[1189];
-core::Symbol_sp& _sym_intern = global_symbols[1190];
-core::Symbol_sp& _sym_findClass = global_symbols[1191];
-core::Symbol_sp& _sym_error = global_symbols[1192];
-core::Symbol_sp& _sym_cerror = global_symbols[1193];
-core::Symbol_sp& _sym_not = global_symbols[1194];
-core::Symbol_sp& _sym_sort = global_symbols[1195];
-core::Symbol_sp& _sym_macroexpand_1 = global_symbols[1196];
-core::Symbol_sp& _sym_macroexpand = global_symbols[1197];
-core::Symbol_sp& _sym_acons = global_symbols[1198];
-core::Symbol_sp& _sym_assoc = global_symbols[1199];
-core::Symbol_sp& _sym_member = global_symbols[1200];
-core::Symbol_sp& _sym_find_package = global_symbols[1201];
-core::Symbol_sp& _sym_copyTree = global_symbols[1202];
-core::Symbol_sp& _sym_eq = global_symbols[1203];
-core::Symbol_sp& _sym_eql = global_symbols[1204];
-core::Symbol_sp& _sym_equal = global_symbols[1205];
-core::Symbol_sp& _sym_equalp = global_symbols[1206];
-core::Symbol_sp& _sym_setMacroCharacter = global_symbols[1207];
-core::Symbol_sp& _sym_setDispatchMacroCharacter = global_symbols[1208];
-core::Symbol_sp& _sym_getDispatchMacroCharacter = global_symbols[1209];
-core::Symbol_sp& _sym_pathname = global_symbols[1210];
-core::Symbol_sp& _sym_mergePathnames = global_symbols[1211];
-core::Symbol_sp& _sym_wildPathnameP = global_symbols[1212];
-core::Symbol_sp& _sym_make_pathname = global_symbols[1213];
-core::Symbol_sp& _sym_pathnameHost = global_symbols[1214];
-core::Symbol_sp& _sym_pathnameDevice = global_symbols[1215];
-core::Symbol_sp& _sym_pathnameDirectory = global_symbols[1216];
-core::Symbol_sp& _sym_pathnameName = global_symbols[1217];
-core::Symbol_sp& _sym_pathnameType = global_symbols[1218];
-core::Symbol_sp& _sym_pathnameVersion = global_symbols[1219];
-core::Symbol_sp& _sym_pathnameMatchP = global_symbols[1220];
-core::Symbol_sp& _sym_translatePathname = global_symbols[1221];
-core::Symbol_sp& _sym_translateLogicalPathname = global_symbols[1222];
-core::Symbol_sp& _sym_namestring = global_symbols[1223];
-core::Symbol_sp& _sym_parseNamestring = global_symbols[1224];
-core::Symbol_sp& _sym_fileNamestring = global_symbols[1225];
-core::Symbol_sp& _sym_directoryNamestring = global_symbols[1226];
-core::Symbol_sp& _sym_hostNamestring = global_symbols[1227];
-core::Symbol_sp& _sym_enoughNamestring = global_symbols[1228];
-core::Symbol_sp& _sym_package_use_list = global_symbols[1229];
-core::Symbol_sp& _sym_gentemp = global_symbols[1230];
-core::Symbol_sp& _sym_makePackage = global_symbols[1231];
-core::Symbol_sp& _sym_listAllPackages = global_symbols[1232];
-core::Symbol_sp& _sym_use_package = global_symbols[1233];
-core::Symbol_sp& _sym_unuse_package = global_symbols[1234];
-core::Symbol_sp& _sym_package_shadowing_symbols = global_symbols[1235];
-core::Symbol_sp& _sym_import = global_symbols[1236];
-core::Symbol_sp& _sym_shadow = global_symbols[1237];
-core::Symbol_sp& _sym_shadowing_import = global_symbols[1238];
-core::Symbol_sp& _sym_findSymbol = global_symbols[1239];
-core::Symbol_sp& _sym_unintern = global_symbols[1240];
-core::Symbol_sp& _sym_condition = global_symbols[1241];
-core::Symbol_sp& _sym_defvar = global_symbols[1242];
-core::Symbol_sp& _sym_defconstant = global_symbols[1243];
-core::Symbol_sp& _sym_defparameter = global_symbols[1244];
-core::Symbol_sp& _sym_intersection = global_symbols[1245];
-core::Symbol_sp& _sym_union = global_symbols[1246];
-core::Symbol_sp& _sym_remove = global_symbols[1247];
-core::Symbol_sp& _sym_pprint_dispatch = global_symbols[1248];
-core::Symbol_sp& _sym_fileStream = global_symbols[1249];
-core::Symbol_sp& _sym_make_list = global_symbols[1250];
-core::Symbol_sp& _sym_cons = global_symbols[1251];
-core::Symbol_sp& _sym_getf = global_symbols[1252];
-core::Symbol_sp& _sym_make_symbol = global_symbols[1253];
-core::Symbol_sp& _sym_symbolName = global_symbols[1254];
-core::Symbol_sp& _sym_symbolValue = global_symbols[1255];
-core::Symbol_sp& _sym_symbolPackage = global_symbols[1256];
-core::Symbol_sp& _sym_symbolFunction = global_symbols[1257];
-core::Symbol_sp& _sym_boundp = global_symbols[1258];
-core::Symbol_sp& _sym_makeCondition = global_symbols[1259];
-core::Symbol_sp& _sym_format = global_symbols[1260];
-core::Symbol_sp& _sym_documentation = global_symbols[1261];
-core::Symbol_sp& _sym_copyStructure = global_symbols[1262];
-core::Symbol_sp& _sym_char_code = global_symbols[1263];
-core::Symbol_sp& _sym_code_char = global_symbols[1264];
-core::Symbol_sp& _sym_char_int = global_symbols[1265];
-core::Symbol_sp& _sym_name_char = global_symbols[1266];
-core::Symbol_sp& _sym_char_name = global_symbols[1267];
-core::Symbol_sp& _sym_alpha_char_p = global_symbols[1268];
-core::Symbol_sp& _sym_standard_char_p = global_symbols[1269];
-core::Symbol_sp& _sym_charUpcase = global_symbols[1270];
-core::Symbol_sp& _sym_charDowncase = global_symbols[1271];
-core::Symbol_sp& _sym_char_LT_ = global_symbols[1272];
-core::Symbol_sp& _sym_char_GT_ = global_symbols[1273];
-core::Symbol_sp& _sym_char_LE_ = global_symbols[1274];
-core::Symbol_sp& _sym_char_GE_ = global_symbols[1275];
-core::Symbol_sp& _sym_char_NE_ = global_symbols[1276];
-core::Symbol_sp& _sym_char_EQ_ = global_symbols[1277];
-core::Symbol_sp& _sym_charLessp = global_symbols[1278];
-core::Symbol_sp& _sym_charGreaterp = global_symbols[1279];
-core::Symbol_sp& _sym_charNotGreaterp = global_symbols[1280];
-core::Symbol_sp& _sym_charNotLessp = global_symbols[1281];
-core::Symbol_sp& _sym_charNotEqual = global_symbols[1282];
-core::Symbol_sp& _sym_charEqual = global_symbols[1283];
-core::Symbol_sp& _sym_digitCharP = global_symbols[1284];
-core::Symbol_sp& _sym_string = global_symbols[1285];
-core::Symbol_sp& _sym_string_upcase = global_symbols[1286];
-core::Symbol_sp& _sym_string_downcase = global_symbols[1287];
-core::Symbol_sp& _sym_nstring_upcase = global_symbols[1288];
-core::Symbol_sp& _sym_nstring_downcase = global_symbols[1289];
-core::Symbol_sp& _sym_stringTrim = global_symbols[1290];
-core::Symbol_sp& _sym_stringLeftTrim = global_symbols[1291];
-core::Symbol_sp& _sym_stringRightTrim = global_symbols[1292];
-core::Symbol_sp& _sym_char = global_symbols[1293];
-core::Symbol_sp& _sym_string_EQ_ = global_symbols[1294];
-core::Symbol_sp& _sym_string_NE_ = global_symbols[1295];
-core::Symbol_sp& _sym_string_LT_ = global_symbols[1296];
-core::Symbol_sp& _sym_string_GT_ = global_symbols[1297];
-core::Symbol_sp& _sym_string_LE_ = global_symbols[1298];
-core::Symbol_sp& _sym_string_GE_ = global_symbols[1299];
-core::Symbol_sp& _sym_string_equal = global_symbols[1300];
-core::Symbol_sp& _sym_string_not_equal = global_symbols[1301];
-core::Symbol_sp& _sym_string_lessp = global_symbols[1302];
-core::Symbol_sp& _sym_string_greaterp = global_symbols[1303];
-core::Symbol_sp& _sym_string_not_greaterp = global_symbols[1304];
-core::Symbol_sp& _sym_string_not_lessp = global_symbols[1305];
-core::Symbol_sp& _sym_make_string = global_symbols[1306];
-core::Symbol_sp& _sym_parseInteger = global_symbols[1307];
-core::Symbol_sp& _sym_make_sequence = global_symbols[1308];
-core::Symbol_sp& _sym_reverse = global_symbols[1309];
-core::Symbol_sp& _sym_nreverse = global_symbols[1310];
-core::Symbol_sp& _sym_subseq = global_symbols[1311];
-core::Symbol_sp& _sym_copySeq = global_symbols[1312];
-core::Symbol_sp& _sym_length = global_symbols[1313];
-core::Symbol_sp& _sym_subtypep = global_symbols[1314];
-core::Symbol_sp& _sym_vectorPush = global_symbols[1315];
-core::Symbol_sp& _sym_vectorPushExtend = global_symbols[1316];
-core::Symbol_sp& _sym_STARread_suppressSTAR = global_symbols[1317];
-core::Symbol_sp& _sym_RandomState_O = global_symbols[1318];
-core::Symbol_sp& _sym_ReadTable_O = global_symbols[1319];
-core::Symbol_sp& _sym_StructureObject_O = global_symbols[1320];
-core::Symbol_sp& _sym_Null_O = global_symbols[1321];
-core::Symbol_sp& _sym_StructureClass_O = global_symbols[1322];
-core::Symbol_sp& _sym_StandardClass_O = global_symbols[1323];
-core::Symbol_sp& _sym_BuiltInClass_O = global_symbols[1324];
-core::Symbol_sp& _sym_Package_O = global_symbols[1325];
-core::Symbol_sp& _sym_Pathname_O = global_symbols[1326];
-core::Symbol_sp& _sym_LogicalPathname_O = global_symbols[1327];
-core::Symbol_sp& _sym_Character_dummy_O = global_symbols[1328];
-core::Symbol_sp& _sym_Stream_O = global_symbols[1329];
-core::Symbol_sp& _sym_FileStream_O = global_symbols[1330];
-core::Symbol_sp& _sym_StringStream_O = global_symbols[1331];
-core::Symbol_sp& _sym_SynonymStream_O = global_symbols[1332];
-core::Symbol_sp& _sym_TwoWayStream_O = global_symbols[1333];
-core::Symbol_sp& _sym_BroadcastStream_O = global_symbols[1334];
-core::Symbol_sp& _sym_ConcatenatedStream_O = global_symbols[1335];
-core::Symbol_sp& _sym_EchoStream_O = global_symbols[1336];
-core::Symbol_sp& _sym_String_O = global_symbols[1337];
-core::Symbol_sp& _sym_Str_O = global_symbols[1338];
-core::Symbol_sp& _sym_HashTable_O = global_symbols[1339];
-core::Symbol_sp& _sym_BitVector_O = global_symbols[1340];
-core::Symbol_sp& _sym_SimpleBitVector_O = global_symbols[1341];
-core::Symbol_sp& _sym_BitVectorWithFillPtr_O = global_symbols[1342];
-core::Symbol_sp& _sym_T_O = global_symbols[1343];
-core::Symbol_sp& _sym_Cons_O = global_symbols[1344];
-core::Symbol_sp& _sym_Number_O = global_symbols[1345];
-core::Symbol_sp& _sym_Real_O = global_symbols[1346];
-core::Symbol_sp& _sym_Rational_O = global_symbols[1347];
-core::Symbol_sp& _sym_Integer_O = global_symbols[1348];
-core::Symbol_sp& _sym_Fixnum_dummy_O = global_symbols[1349];
-core::Symbol_sp& _sym_Float_O = global_symbols[1350];
-core::Symbol_sp& _sym_ShortFloat_O = global_symbols[1351];
-core::Symbol_sp& _sym_SingleFloat_dummy_O = global_symbols[1352];
-core::Symbol_sp& _sym_DoubleFloat_O = global_symbols[1353];
-core::Symbol_sp& _sym_LongFloat_O = global_symbols[1354];
-core::Symbol_sp& _sym_Complex_O = global_symbols[1355];
-core::Symbol_sp& _sym_Ratio_O = global_symbols[1356];
-core::Symbol_sp& _sym_Bignum_O = global_symbols[1357];
-core::Symbol_sp& _sym_Symbol_O = global_symbols[1358];
-core::Symbol_sp& _sym_Function_O = global_symbols[1359];
-core::Symbol_sp& _sym_CompiledFunction_O = global_symbols[1360];
-core::Symbol_sp& _sym_StandardObject_O = global_symbols[1361];
-core::Symbol_sp& _sym_Class_O = global_symbols[1362];
-core::Symbol_sp& _sym_Array_O = global_symbols[1363];
-core::Symbol_sp& _sym_Vector_O = global_symbols[1364];
+core::Symbol_sp& _sym_case = global_symbols[1121];
+core::Symbol_sp& _sym_otherwise = global_symbols[1122];
+core::Symbol_sp& _sym_ignore = global_symbols[1123];
+core::Symbol_sp& _sym_multipleValueSetq = global_symbols[1124];
+core::Symbol_sp& _sym_prog1 = global_symbols[1125];
+core::Symbol_sp& _sym_block = global_symbols[1126];
+core::Symbol_sp& _sym_throw = global_symbols[1127];
+core::Symbol_sp& _sym_apply = global_symbols[1128];
+core::Symbol_sp& _sym_funcall = global_symbols[1129];
+core::Symbol_sp& _sym_compute_applicable_methods = global_symbols[1130];
+core::Symbol_sp& _sym_no_applicable_method = global_symbols[1131];
+core::Symbol_sp& _sym_standardGenericFunction = global_symbols[1132];
+core::Symbol_sp& _sym_sleep = global_symbols[1133];
+core::Symbol_sp& _sym_let = global_symbols[1134];
+core::Symbol_sp& _sym_letSTAR = global_symbols[1135];
+core::Symbol_sp& _sym_return_from = global_symbols[1136];
+core::Symbol_sp& _sym_catch = global_symbols[1137];
+core::Symbol_sp& _sym_load_time_value = global_symbols[1138];
+core::Symbol_sp& _sym_setq = global_symbols[1139];
+core::Symbol_sp& _sym_eval_when = global_symbols[1140];
+core::Symbol_sp& _sym_locally = global_symbols[1141];
+core::Symbol_sp& _sym_symbol_macrolet = global_symbols[1142];
+core::Symbol_sp& _sym_flet = global_symbols[1143];
+core::Symbol_sp& _sym_macrolet = global_symbols[1144];
+core::Symbol_sp& _sym_tagbody = global_symbols[1145];
+core::Symbol_sp& _sym_multiple_value_call = global_symbols[1146];
+core::Symbol_sp& _sym_the = global_symbols[1147];
+core::Symbol_sp& _sym_go = global_symbols[1148];
+core::Symbol_sp& _sym_multiple_value_prog1 = global_symbols[1149];
+core::Symbol_sp& _sym_if = global_symbols[1150];
+core::Symbol_sp& _sym_unwind_protect = global_symbols[1151];
+core::Symbol_sp& _sym_labels = global_symbols[1152];
+core::Symbol_sp& _sym_progv = global_symbols[1153];
+core::Symbol_sp& _sym_setf = global_symbols[1154];
+core::Symbol_sp& _sym_read = global_symbols[1155];
+core::Symbol_sp& _sym_read_preserving_whitespace = global_symbols[1156];
+core::Symbol_sp& _sym_read_delimited_list = global_symbols[1157];
+core::Symbol_sp& _sym_every = global_symbols[1158];
+core::Symbol_sp& _sym_some = global_symbols[1159];
+core::Symbol_sp& _sym_notevery = global_symbols[1160];
+core::Symbol_sp& _sym_notany = global_symbols[1161];
+core::Symbol_sp& _sym_mapcar = global_symbols[1162];
+core::Symbol_sp& _sym_mapc = global_symbols[1163];
+core::Symbol_sp& _sym_maplist = global_symbols[1164];
+core::Symbol_sp& _sym_mapl = global_symbols[1165];
+core::Symbol_sp& _sym_mapcan = global_symbols[1166];
+core::Symbol_sp& _sym_mapcon = global_symbols[1167];
+core::Symbol_sp& _sym_classOf = global_symbols[1168];
+core::Symbol_sp& _sym_identity = global_symbols[1169];
+core::Symbol_sp& _sym_constantp = global_symbols[1170];
+core::Symbol_sp& _sym_ash = global_symbols[1171];
+core::Symbol_sp& _sym_specialOperatorP = global_symbols[1172];
+core::Symbol_sp& _sym_macroFunction = global_symbols[1173];
+core::Symbol_sp& _sym_gensym = global_symbols[1174];
+core::Symbol_sp& _sym_type_of = global_symbols[1175];
+core::Symbol_sp& _sym_fdefinition = global_symbols[1176];
+core::Symbol_sp& _sym_fboundp = global_symbols[1177];
+core::Symbol_sp& _sym_fmakunbound = global_symbols[1178];
+core::Symbol_sp& _sym_values_list = global_symbols[1179];
+core::Symbol_sp& _sym_make_hash_table = global_symbols[1180];
+core::Symbol_sp& _sym_maphash = global_symbols[1181];
+core::Symbol_sp& _sym_clrhash = global_symbols[1182];
+core::Symbol_sp& _sym_remhash = global_symbols[1183];
+core::Symbol_sp& _sym_max = global_symbols[1184];
+core::Symbol_sp& _sym_min = global_symbols[1185];
+core::Symbol_sp& _sym_zerop = global_symbols[1186];
+core::Symbol_sp& _sym__LT_ = global_symbols[1187];
+core::Symbol_sp& _sym__GT_ = global_symbols[1188];
+core::Symbol_sp& _sym__LE_ = global_symbols[1189];
+core::Symbol_sp& _sym__GE_ = global_symbols[1190];
+core::Symbol_sp& _sym__EQ_ = global_symbols[1191];
+core::Symbol_sp& _sym__NE_ = global_symbols[1192];
+core::Symbol_sp& _sym__PLUS_ = global_symbols[1193];
+core::Symbol_sp& _sym__TIMES_ = global_symbols[1194];
+core::Symbol_sp& _sym__MINUS_ = global_symbols[1195];
+core::Symbol_sp& _sym_logand = global_symbols[1196];
+core::Symbol_sp& _sym_logior = global_symbols[1197];
+core::Symbol_sp& _sym_logandc1 = global_symbols[1198];
+core::Symbol_sp& _sym_logandc2 = global_symbols[1199];
+core::Symbol_sp& _sym_logeqv = global_symbols[1200];
+core::Symbol_sp& _sym_lognand = global_symbols[1201];
+core::Symbol_sp& _sym_lognor = global_symbols[1202];
+core::Symbol_sp& _sym_lognot = global_symbols[1203];
+core::Symbol_sp& _sym_logorc1 = global_symbols[1204];
+core::Symbol_sp& _sym_logorc2 = global_symbols[1205];
+core::Symbol_sp& _sym_logxor = global_symbols[1206];
+core::Symbol_sp& _sym_sqrt = global_symbols[1207];
+core::Symbol_sp& _sym_cos = global_symbols[1208];
+core::Symbol_sp& _sym_tan = global_symbols[1209];
+core::Symbol_sp& _sym_sinh = global_symbols[1210];
+core::Symbol_sp& _sym_cosh = global_symbols[1211];
+core::Symbol_sp& _sym_tanh = global_symbols[1212];
+core::Symbol_sp& _sym_conjugate = global_symbols[1213];
+core::Symbol_sp& _sym_log = global_symbols[1214];
+core::Symbol_sp& _sym_expt = global_symbols[1215];
+core::Symbol_sp& _sym_exp = global_symbols[1216];
+core::Symbol_sp& _sym_getUniversalTime = global_symbols[1217];
+core::Symbol_sp& _sym_leastPositiveSingleFloat = global_symbols[1218];
+core::Symbol_sp& _sym_leastNegativeSingleFloat = global_symbols[1219];
+core::Symbol_sp& _sym_mostPositiveSingleFloat = global_symbols[1220];
+core::Symbol_sp& _sym_mostNegativeSingleFloat = global_symbols[1221];
+core::Symbol_sp& _sym_leastPositiveShortFloat = global_symbols[1222];
+core::Symbol_sp& _sym_leastNegativeShortFloat = global_symbols[1223];
+core::Symbol_sp& _sym_mostPositiveShortFloat = global_symbols[1224];
+core::Symbol_sp& _sym_mostNegativeShortFloat = global_symbols[1225];
+core::Symbol_sp& _sym_leastPositiveDoubleFloat = global_symbols[1226];
+core::Symbol_sp& _sym_leastNegativeDoubleFloat = global_symbols[1227];
+core::Symbol_sp& _sym_mostPositiveDoubleFloat = global_symbols[1228];
+core::Symbol_sp& _sym_mostNegativeDoubleFloat = global_symbols[1229];
+core::Symbol_sp& _sym_leastPositiveLongFloat = global_symbols[1230];
+core::Symbol_sp& _sym_leastNegativeLongFloat = global_symbols[1231];
+core::Symbol_sp& _sym_mostPositiveLongFloat = global_symbols[1232];
+core::Symbol_sp& _sym_mostNegativeLongFloat = global_symbols[1233];
+core::Symbol_sp& _sym_leastNegativeNormalizedSingleFloat = global_symbols[1234];
+core::Symbol_sp& _sym_leastNegativeNormalizedShortFloat = global_symbols[1235];
+core::Symbol_sp& _sym_leastNegativeNormalizedDoubleFloat = global_symbols[1236];
+core::Symbol_sp& _sym_leastNegativeNormalizedLongFloat = global_symbols[1237];
+core::Symbol_sp& _sym_leastPositiveNormalizedSingleFloat = global_symbols[1238];
+core::Symbol_sp& _sym_leastPositiveNormalizedShortFloat = global_symbols[1239];
+core::Symbol_sp& _sym_leastPositiveNormalizedDoubleFloat = global_symbols[1240];
+core::Symbol_sp& _sym_leastPositiveNormalizedLongFloat = global_symbols[1241];
+core::Symbol_sp& _sym_pi = global_symbols[1242];
+core::Symbol_sp& _sym_gcd = global_symbols[1243];
+core::Symbol_sp& _sym_lcm = global_symbols[1244];
+core::Symbol_sp& _sym_numerator = global_symbols[1245];
+core::Symbol_sp& _sym_denominator = global_symbols[1246];
+core::Symbol_sp& _sym_floor = global_symbols[1247];
+core::Symbol_sp& _sym_ceiling = global_symbols[1248];
+core::Symbol_sp& _sym_truncate = global_symbols[1249];
+core::Symbol_sp& _sym_round = global_symbols[1250];
+core::Symbol_sp& _sym_mod = global_symbols[1251];
+core::Symbol_sp& _sym_rem = global_symbols[1252];
+core::Symbol_sp& _sym_decodeFloat = global_symbols[1253];
+core::Symbol_sp& _sym_scaleFloat = global_symbols[1254];
+core::Symbol_sp& _sym_floatSign = global_symbols[1255];
+core::Symbol_sp& _sym_floatDigits = global_symbols[1256];
+core::Symbol_sp& _sym_floatPrecision = global_symbols[1257];
+core::Symbol_sp& _sym_integer_decode_float = global_symbols[1258];
+core::Symbol_sp& _sym_complex = global_symbols[1259];
+core::Symbol_sp& _sym_realpart = global_symbols[1260];
+core::Symbol_sp& _sym_imagpart = global_symbols[1261];
+core::Symbol_sp& _sym_print = global_symbols[1262];
+core::Symbol_sp& _sym_prin1 = global_symbols[1263];
+core::Symbol_sp& _sym_princ = global_symbols[1264];
+core::Symbol_sp& _sym_truename = global_symbols[1265];
+core::Symbol_sp& _sym_probe_file = global_symbols[1266];
+core::Symbol_sp& _sym_deleteFile = global_symbols[1267];
+core::Symbol_sp& _sym_file_write_date = global_symbols[1268];
+core::Symbol_sp& _sym_userHomedirPathname = global_symbols[1269];
+core::Symbol_sp& _sym_revappend = global_symbols[1270];
+core::Symbol_sp& _sym_nreconc = global_symbols[1271];
+core::Symbol_sp& _sym_listSTAR = global_symbols[1272];
+core::Symbol_sp& _sym_butlast = global_symbols[1273];
+core::Symbol_sp& _sym_nbutlast = global_symbols[1274];
+core::Symbol_sp& _sym_nthcdr = global_symbols[1275];
+core::Symbol_sp& _sym_copyList = global_symbols[1276];
+core::Symbol_sp& _sym_last = global_symbols[1277];
+core::Symbol_sp& _sym_filePosition = global_symbols[1278];
+core::Symbol_sp& _sym_readSequence = global_symbols[1279];
+core::Symbol_sp& _sym_read_from_string = global_symbols[1280];
+core::Symbol_sp& _sym_read_line = global_symbols[1281];
+core::Symbol_sp& _sym_terpri = global_symbols[1282];
+core::Symbol_sp& _sym_freshLine = global_symbols[1283];
+core::Symbol_sp& _sym_writeString = global_symbols[1284];
+core::Symbol_sp& _sym_writeLine = global_symbols[1285];
+core::Symbol_sp& _sym_writeChar = global_symbols[1286];
+core::Symbol_sp& _sym_clearInput = global_symbols[1287];
+core::Symbol_sp& _sym_clearOutput = global_symbols[1288];
+core::Symbol_sp& _sym_readByte = global_symbols[1289];
+core::Symbol_sp& _sym_peekChar = global_symbols[1290];
+core::Symbol_sp& _sym_readChar = global_symbols[1291];
+core::Symbol_sp& _sym_readCharNoHang = global_symbols[1292];
+core::Symbol_sp& _sym_force_output = global_symbols[1293];
+core::Symbol_sp& _sym_finish_output = global_symbols[1294];
+core::Symbol_sp& _sym_listen = global_symbols[1295];
+core::Symbol_sp& _sym_unread_char = global_symbols[1296];
+core::Symbol_sp& _sym_makeStringOutputStream = global_symbols[1297];
+core::Symbol_sp& _sym_writeByte = global_symbols[1298];
+core::Symbol_sp& _sym_interactive_stream_p = global_symbols[1299];
+core::Symbol_sp& _sym_streamp = global_symbols[1300];
+core::Symbol_sp& _sym_close = global_symbols[1301];
+core::Symbol_sp& _sym_get_output_stream_string = global_symbols[1302];
+core::Symbol_sp& _sym_synonymStreamSymbol = global_symbols[1303];
+core::Symbol_sp& _sym_boole_1 = global_symbols[1304];
+core::Symbol_sp& _sym_boole_2 = global_symbols[1305];
+core::Symbol_sp& _sym_boole_and = global_symbols[1306];
+core::Symbol_sp& _sym_boole_andc1 = global_symbols[1307];
+core::Symbol_sp& _sym_boole_andc2 = global_symbols[1308];
+core::Symbol_sp& _sym_boole_c1 = global_symbols[1309];
+core::Symbol_sp& _sym_boole_c2 = global_symbols[1310];
+core::Symbol_sp& _sym_boole_clr = global_symbols[1311];
+core::Symbol_sp& _sym_boole_eqv = global_symbols[1312];
+core::Symbol_sp& _sym_boole_ior = global_symbols[1313];
+core::Symbol_sp& _sym_boole_nand = global_symbols[1314];
+core::Symbol_sp& _sym_boole_nor = global_symbols[1315];
+core::Symbol_sp& _sym_boole_orc1 = global_symbols[1316];
+core::Symbol_sp& _sym_boole_orc2 = global_symbols[1317];
+core::Symbol_sp& _sym_boole_set = global_symbols[1318];
+core::Symbol_sp& _sym_boole_xor = global_symbols[1319];
+core::Symbol_sp& _sym_printNotReadableObject = global_symbols[1320];
+core::Symbol_sp& _sym_provide = global_symbols[1321];
+core::Symbol_sp& _sym_seriousCondition = global_symbols[1322];
+core::Symbol_sp& _sym_warn = global_symbols[1323];
+core::Symbol_sp& _sym_programError = global_symbols[1324];
+core::Symbol_sp& _sym_cellError = global_symbols[1325];
+core::Symbol_sp& _sym_unboundVariable = global_symbols[1326];
+core::Symbol_sp& _sym_unboundSlot = global_symbols[1327];
+core::Symbol_sp& _sym_undefinedFunction = global_symbols[1328];
+core::Symbol_sp& _sym_package_error = global_symbols[1329];
+core::Symbol_sp& _sym_arithmeticError = global_symbols[1330];
+core::Symbol_sp& _sym_floatingPointOverflow = global_symbols[1331];
+core::Symbol_sp& _sym_floatingPointInexact = global_symbols[1332];
+core::Symbol_sp& _sym_floatingPointInvalidOperation = global_symbols[1333];
+core::Symbol_sp& _sym_floatingPointUnderflow = global_symbols[1334];
+core::Symbol_sp& _sym_divisionByZero = global_symbols[1335];
+core::Symbol_sp& _sym_printNotReadable = global_symbols[1336];
+core::Symbol_sp& _sym_streamError = global_symbols[1337];
+core::Symbol_sp& _sym_endOfFile = global_symbols[1338];
+core::Symbol_sp& _sym_parseError = global_symbols[1339];
+core::Symbol_sp& _sym_readerError = global_symbols[1340];
+core::Symbol_sp& _sym_STARrandom_stateSTAR = global_symbols[1341];
+core::Symbol_sp& _sym_simpleError = global_symbols[1342];
+core::Symbol_sp& _sym_storageCondition = global_symbols[1343];
+core::Symbol_sp& _sym_simpleCondition = global_symbols[1344];
+core::Symbol_sp& _sym_simpleWarning = global_symbols[1345];
+core::Symbol_sp& _sym_warning = global_symbols[1346];
+core::Symbol_sp& _sym_styleWarning = global_symbols[1347];
+core::Symbol_sp& _sym_asin = global_symbols[1348];
+core::Symbol_sp& _sym_acos = global_symbols[1349];
+core::Symbol_sp& _sym_asinh = global_symbols[1350];
+core::Symbol_sp& _sym_acosh = global_symbols[1351];
+core::Symbol_sp& _sym_atanh = global_symbols[1352];
+core::Symbol_sp& _sym_dynamic_extent = global_symbols[1353];
+core::Symbol_sp& _sym_ftype = global_symbols[1354];
+core::Symbol_sp& _sym_boole = global_symbols[1355];
+core::Symbol_sp& _sym_callArgumentsLimit = global_symbols[1356];
+core::Symbol_sp& _sym_arrayDimensionLimit = global_symbols[1357];
+core::Symbol_sp& _sym_arrayTotalSizeLimit = global_symbols[1358];
+core::Symbol_sp& _sym_lambdaParametersLimit = global_symbols[1359];
+core::Symbol_sp& _sym_schar = global_symbols[1360];
+core::Symbol_sp& _sym_fixnum = global_symbols[1361];
+core::Symbol_sp& _sym_nil = global_symbols[1362];
+core::Symbol_sp& _sym_stream_element_type = global_symbols[1363];
+core::Symbol_sp& _sym_stream_external_format = global_symbols[1364];
+core::Symbol_sp& _sym_open_stream_p = global_symbols[1365];
+core::Symbol_sp& _sym_write_sequence = global_symbols[1366];
+core::Symbol_sp& _sym_read_sequence = global_symbols[1367];
+core::Symbol_sp& _sym_file_string_length = global_symbols[1368];
+core::Symbol_sp& _sym_echo_stream_input_stream = global_symbols[1369];
+core::Symbol_sp& _sym_echo_stream_output_stream = global_symbols[1370];
+core::Symbol_sp& _sym_concatenated_stream_streams = global_symbols[1371];
+core::Symbol_sp& _sym_synonym_stream_symbol = global_symbols[1372];
+core::Symbol_sp& _sym_broadcast_stream_streams = global_symbols[1373];
+core::Symbol_sp& _sym_getOutputStreamString = global_symbols[1374];
+core::Symbol_sp& _sym_elt = global_symbols[1375];
+core::Symbol_sp& _sym_callNextMethod = global_symbols[1376];
+core::Symbol_sp& _sym_nextMethodP = global_symbols[1377];
+core::Symbol_sp& _sym_internalTimeUnitsPerSecond = global_symbols[1378];
+core::Symbol_sp& _sym_getInternalRealTime = global_symbols[1379];
+core::Symbol_sp& _sym_getInternalRunTime = global_symbols[1380];
+core::Symbol_sp& _sym_logicalPathnameTranslations = global_symbols[1381];
+core::Symbol_sp& _sym_set = global_symbols[1382];
+core::Symbol_sp& _sym_restartName = global_symbols[1383];
+core::Symbol_sp& _sym_position = global_symbols[1384];
+core::Symbol_sp& _sym_compileFile = global_symbols[1385];
+core::Symbol_sp& _sym_first = global_symbols[1386];
+core::Symbol_sp& _sym_float = global_symbols[1387];
+core::Symbol_sp& _sym_logical_pathname = global_symbols[1388];
+core::Symbol_sp& _sym_pathnamep = global_symbols[1389];
+core::Symbol_sp& _sym_STARloadPathnameSTAR = global_symbols[1390];
+core::Symbol_sp& _sym_STARloadTruenameSTAR = global_symbols[1391];
+core::Symbol_sp& _sym_makeArray = global_symbols[1392];
+core::Symbol_sp& _sym_makePathname = global_symbols[1393];
+core::Symbol_sp& _sym_mismatch = global_symbols[1394];
+core::Symbol_sp& _sym_SignedByte = global_symbols[1395];
+core::Symbol_sp& _sym_UnsignedByte = global_symbols[1396];
+core::Symbol_sp& _sym_Bit = global_symbols[1397];
+core::Symbol_sp& _sym_STARdefaultPathnameDefaultsSTAR = global_symbols[1398];
+core::Symbol_sp& _sym_simpleTypeError = global_symbols[1399];
+core::Symbol_sp& _sym_MultipleValuesLimit = global_symbols[1400];
+core::Symbol_sp& _sym_keywordp = global_symbols[1401];
+core::Symbol_sp& _sym_null = global_symbols[1402];
+core::Symbol_sp& _sym_endp = global_symbols[1403];
+core::Symbol_sp& _sym_symbolp = global_symbols[1404];
+core::Symbol_sp& _sym_atom = global_symbols[1405];
+core::Symbol_sp& _sym_consp = global_symbols[1406];
+core::Symbol_sp& _sym_listp = global_symbols[1407];
+core::Symbol_sp& _sym_numberp = global_symbols[1408];
+core::Symbol_sp& _sym_integerp = global_symbols[1409];
+core::Symbol_sp& _sym_rationalp = global_symbols[1410];
+core::Symbol_sp& _sym_floatp = global_symbols[1411];
+core::Symbol_sp& _sym_realp = global_symbols[1412];
+core::Symbol_sp& _sym_complexp = global_symbols[1413];
+core::Symbol_sp& _sym_character = global_symbols[1414];
+core::Symbol_sp& _sym_base_char = global_symbols[1415];
+core::Symbol_sp& _sym_single_float = global_symbols[1416];
+core::Symbol_sp& _sym_characterp = global_symbols[1417];
+core::Symbol_sp& _sym_stringp = global_symbols[1418];
+core::Symbol_sp& _sym_bit_vector_p = global_symbols[1419];
+core::Symbol_sp& _sym_vectorp = global_symbols[1420];
+core::Symbol_sp& _sym_simple_vector_p = global_symbols[1421];
+core::Symbol_sp& _sym_simple_string_p = global_symbols[1422];
+core::Symbol_sp& _sym_simple_bit_vector_p = global_symbols[1423];
+core::Symbol_sp& _sym_arrayp = global_symbols[1424];
+core::Symbol_sp& _sym_packagep = global_symbols[1425];
+core::Symbol_sp& _sym_functionp = global_symbols[1426];
+core::Symbol_sp& _sym_compiled_function_p = global_symbols[1427];
+core::Symbol_sp& _sym_hash_table_p = global_symbols[1428];
+core::Symbol_sp& _sym__DIVIDE_ = global_symbols[1429];
+core::Symbol_sp& _sym_typep = global_symbols[1430];
+core::Symbol_sp& _sym_type = global_symbols[1431];
+core::Symbol_sp& _sym_step = global_symbols[1432];
+core::Symbol_sp& _sym_speed = global_symbols[1433];
+core::Symbol_sp& _sym_space = global_symbols[1434];
+core::Symbol_sp& _sym_sin = global_symbols[1435];
+core::Symbol_sp& _sym_safety = global_symbols[1436];
+core::Symbol_sp& _sym_restart_bind = global_symbols[1437];
+core::Symbol_sp& _sym_restart = global_symbols[1438];
+core::Symbol_sp& _sym_describe = global_symbols[1439];
+core::Symbol_sp& _sym_disassemble = global_symbols[1440];
+core::Symbol_sp& _sym_rename_file = global_symbols[1441];
+core::Symbol_sp& _sym_random = global_symbols[1442];
+core::Symbol_sp& _sym_optimize = global_symbols[1443];
+core::Symbol_sp& _sym_two_way_stream_input_stream = global_symbols[1444];
+core::Symbol_sp& _sym_two_way_stream_output_stream = global_symbols[1445];
+core::Symbol_sp& _sym_two_way_stream = global_symbols[1446];
+core::Symbol_sp& _sym_make_two_way_stream = global_symbols[1447];
+core::Symbol_sp& _sym_make_synonym_stream = global_symbols[1448];
+core::Symbol_sp& _sym_invoke_restart = global_symbols[1449];
+core::Symbol_sp& _sym_get = global_symbols[1450];
+core::Symbol_sp& _sym_find_restart = global_symbols[1451];
+core::Symbol_sp& _sym_fill_pointer = global_symbols[1452];
+core::Symbol_sp& _sym_directory = global_symbols[1453];
+core::Symbol_sp& _sym_defun = global_symbols[1454];
+core::Symbol_sp& _sym_debug = global_symbols[1455];
+core::Symbol_sp& _sym_count = global_symbols[1456];
+core::Symbol_sp& _sym_compute_restarts = global_symbols[1457];
+core::Symbol_sp& _sym_write = global_symbols[1458];
+core::Symbol_sp& _sym_STARreadDefaultFloatFormatSTAR = global_symbols[1459];
+core::Symbol_sp& _sym_STARprint_baseSTAR = global_symbols[1460];
+core::Symbol_sp& _sym_STARprint_levelSTAR = global_symbols[1461];
+core::Symbol_sp& _sym_STARprint_lengthSTAR = global_symbols[1462];
+core::Symbol_sp& _sym_STARprint_radixSTAR = global_symbols[1463];
+core::Symbol_sp& _sym_STARprint_caseSTAR = global_symbols[1464];
+core::Symbol_sp& _sym_STARprint_gensymSTAR = global_symbols[1465];
+core::Symbol_sp& _sym_STARprint_arraySTAR = global_symbols[1466];
+core::Symbol_sp& _sym_STARprint_readablySTAR = global_symbols[1467];
+core::Symbol_sp& _sym_STARprint_escapeSTAR = global_symbols[1468];
+core::Symbol_sp& _sym_STARprint_circleSTAR = global_symbols[1469];
+core::Symbol_sp& _sym_STARprint_linesSTAR = global_symbols[1470];
+core::Symbol_sp& _sym_STARprint_right_marginSTAR = global_symbols[1471];
+core::Symbol_sp& _sym_STARprint_prettySTAR = global_symbols[1472];
+core::Symbol_sp& _sym_STARprint_miser_widthSTAR = global_symbols[1473];
+core::Symbol_sp& _sym_STARprint_pprint_dispatchSTAR = global_symbols[1474];
+core::Symbol_sp& _sym_STARdebuggerHookSTAR = global_symbols[1475];
+core::Symbol_sp& _sym_break = global_symbols[1476];
+core::Symbol_sp& _sym_STARbreakOnSignalsSTAR = global_symbols[1477];
+core::Symbol_sp& _sym_typeError = global_symbols[1478];
+core::Symbol_sp& _sym_printObject = global_symbols[1479];
+core::Symbol_sp& _sym_controlError = global_symbols[1480];
+core::Symbol_sp& _sym_fileError = global_symbols[1481];
+core::Symbol_sp& _sym_satisfies = global_symbols[1482];
+core::Symbol_sp& _sym_T = global_symbols[1483];
+core::Symbol_sp& _sym_method = global_symbols[1484];
+core::Symbol_sp& _sym_generic_function = global_symbols[1485];
+core::Symbol_sp& _sym_cond = global_symbols[1486];
+core::Symbol_sp& _sym_stream = global_symbols[1487];
+core::Symbol_sp& _sym_boolean = global_symbols[1488];
+core::Symbol_sp& _sym_keyword = global_symbols[1489];
+core::Symbol_sp& _sym_array = global_symbols[1490];
+core::Symbol_sp& _sym_simple_array = global_symbols[1491];
+core::Symbol_sp& _sym_vector = global_symbols[1492];
+core::Symbol_sp& _sym_simple_vector = global_symbols[1493];
+core::Symbol_sp& _sym_input_stream_p = global_symbols[1494];
+core::Symbol_sp& _sym_output_stream_p = global_symbols[1495];
+core::Symbol_sp& _sym_STARstandard_inputSTAR = global_symbols[1496];
+core::Symbol_sp& _sym_STARstandard_outputSTAR = global_symbols[1497];
+core::Symbol_sp& _sym_STARerror_outputSTAR = global_symbols[1498];
+core::Symbol_sp& _sym_STARtrace_outputSTAR = global_symbols[1499];
+core::Symbol_sp& _sym_STARdebug_ioSTAR = global_symbols[1500];
+core::Symbol_sp& _sym_STARquery_ioSTAR = global_symbols[1501];
+core::Symbol_sp& _sym_STARterminal_ioSTAR = global_symbols[1502];
+core::Symbol_sp& _sym_STARgensym_counterSTAR = global_symbols[1503];
+core::Symbol_sp& _sym_standard_char = global_symbols[1504];
+core::Symbol_sp& _sym_extended_char = global_symbols[1505];
+core::Symbol_sp& _sym_special = global_symbols[1506];
+core::Symbol_sp& _sym_nconc = global_symbols[1507];
+core::Symbol_sp& _sym_cadr = global_symbols[1508];
+core::Symbol_sp& _sym_STARmacroexpand_hookSTAR = global_symbols[1509];
+core::Symbol_sp& _sym_STARread_baseSTAR = global_symbols[1510];
+core::Symbol_sp& _sym_compile = global_symbols[1511];
+core::Symbol_sp& _sym_load = global_symbols[1512];
+core::Symbol_sp& _sym_eval = global_symbols[1513];
+core::Symbol_sp& _sym_STARread_evalSTAR = global_symbols[1514];
+core::Symbol_sp& _sym_define_modify_macro = global_symbols[1515];
+core::Symbol_sp& _sym_destructuring_bind = global_symbols[1516];
+core::Symbol_sp& _sym_deftype = global_symbols[1517];
+core::Symbol_sp& _sym_define_method_combination = global_symbols[1518];
+core::Symbol_sp& _sym_defsetf = global_symbols[1519];
+core::Symbol_sp& _sym_AMPwhole = global_symbols[1520];
+core::Symbol_sp& _sym_AMPenvironment = global_symbols[1521];
+core::Symbol_sp& _sym_AMPoptional = global_symbols[1522];
+core::Symbol_sp& _sym_AMPkey = global_symbols[1523];
+core::Symbol_sp& _sym_AMPallow_other_keys = global_symbols[1524];
+core::Symbol_sp& _sym_AMPaux = global_symbols[1525];
+core::Symbol_sp& _sym_AMPrest = global_symbols[1526];
+core::Symbol_sp& _sym_AMPbody = global_symbols[1527];
+core::Symbol_sp& _sym_integer = global_symbols[1528];
+core::Symbol_sp& _sym_sequence = global_symbols[1529];
+core::Symbol_sp& _sym_declare = global_symbols[1530];
+core::Symbol_sp& _sym_variable = global_symbols[1531];
+core::Symbol_sp& _sym_bit = global_symbols[1532];
+core::Symbol_sp& _sym_STARreadtableSTAR = global_symbols[1533];
+core::Symbol_sp& _sym_and = global_symbols[1534];
+core::Symbol_sp& _sym_or = global_symbols[1535];
+core::Symbol_sp& _sym_car = global_symbols[1536];
+core::Symbol_sp& _sym_cdr = global_symbols[1537];
+core::Symbol_sp& _sym_dotimes = global_symbols[1538];
+core::Symbol_sp& _sym_dolist = global_symbols[1539];
+core::Symbol_sp& _sym_do = global_symbols[1540];
+core::Symbol_sp& _sym_package = global_symbols[1541];
+core::Symbol_sp& _sym_aref = global_symbols[1542];
+core::Symbol_sp& _sym_nth = global_symbols[1543];
+core::Symbol_sp& _sym_append = global_symbols[1544];
+core::Symbol_sp& _sym_gethash = global_symbols[1545];
+core::Symbol_sp& _sym_hash_table = global_symbols[1546];
+core::Symbol_sp& _sym_STARfeaturesSTAR = global_symbols[1547];
+core::Symbol_sp& _sym_STARload_printSTAR = global_symbols[1548];
+core::Symbol_sp& _sym_STARload_verboseSTAR = global_symbols[1549];
+core::Symbol_sp& _sym_lambda = global_symbols[1550];
+core::Symbol_sp& _sym_symbol = global_symbols[1551];
+core::Symbol_sp& _sym_STARpackageSTAR = global_symbols[1552];
+core::Symbol_sp& _sym_STARmodulesSTAR = global_symbols[1553];
+core::Symbol_sp& _sym_progn = global_symbols[1554];
+core::Symbol_sp& _sym_quote = global_symbols[1555];
+core::Symbol_sp& _sym_function = global_symbols[1556];
+core::Symbol_sp& _sym_slot_value = global_symbols[1557];
+core::Symbol_sp& _sym_values = global_symbols[1558];
+core::Symbol_sp& _sym_list = global_symbols[1559];
+core::Symbol_sp& _sym_standard_class = global_symbols[1560];
+core::Symbol_sp& _sym_rest = global_symbols[1561];
+core::Symbol_sp& _sym_most_negative_fixnum = global_symbols[1562];
+core::Symbol_sp& _sym_most_positive_fixnum = global_symbols[1563];
+core::Symbol_sp& _sym_array_rank_limit = global_symbols[1564];
+core::Symbol_sp& _sym_char_code_limit = global_symbols[1565];
+core::Symbol_sp& _sym_apropos = global_symbols[1566];
+core::Symbol_sp& _sym_export = global_symbols[1567];
+core::Symbol_sp& _sym_intern = global_symbols[1568];
+core::Symbol_sp& _sym_findClass = global_symbols[1569];
+core::Symbol_sp& _sym_error = global_symbols[1570];
+core::Symbol_sp& _sym_cerror = global_symbols[1571];
+core::Symbol_sp& _sym_not = global_symbols[1572];
+core::Symbol_sp& _sym_sort = global_symbols[1573];
+core::Symbol_sp& _sym_macroexpand_1 = global_symbols[1574];
+core::Symbol_sp& _sym_macroexpand = global_symbols[1575];
+core::Symbol_sp& _sym_acons = global_symbols[1576];
+core::Symbol_sp& _sym_assoc = global_symbols[1577];
+core::Symbol_sp& _sym_member = global_symbols[1578];
+core::Symbol_sp& _sym_find_package = global_symbols[1579];
+core::Symbol_sp& _sym_copyTree = global_symbols[1580];
+core::Symbol_sp& _sym_eq = global_symbols[1581];
+core::Symbol_sp& _sym_eql = global_symbols[1582];
+core::Symbol_sp& _sym_equal = global_symbols[1583];
+core::Symbol_sp& _sym_equalp = global_symbols[1584];
+core::Symbol_sp& _sym_setMacroCharacter = global_symbols[1585];
+core::Symbol_sp& _sym_setDispatchMacroCharacter = global_symbols[1586];
+core::Symbol_sp& _sym_getDispatchMacroCharacter = global_symbols[1587];
+core::Symbol_sp& _sym_pathname = global_symbols[1588];
+core::Symbol_sp& _sym_mergePathnames = global_symbols[1589];
+core::Symbol_sp& _sym_wildPathnameP = global_symbols[1590];
+core::Symbol_sp& _sym_make_pathname = global_symbols[1591];
+core::Symbol_sp& _sym_pathnameHost = global_symbols[1592];
+core::Symbol_sp& _sym_pathnameDevice = global_symbols[1593];
+core::Symbol_sp& _sym_pathnameDirectory = global_symbols[1594];
+core::Symbol_sp& _sym_pathnameName = global_symbols[1595];
+core::Symbol_sp& _sym_pathnameType = global_symbols[1596];
+core::Symbol_sp& _sym_pathnameVersion = global_symbols[1597];
+core::Symbol_sp& _sym_pathnameMatchP = global_symbols[1598];
+core::Symbol_sp& _sym_translatePathname = global_symbols[1599];
+core::Symbol_sp& _sym_translateLogicalPathname = global_symbols[1600];
+core::Symbol_sp& _sym_namestring = global_symbols[1601];
+core::Symbol_sp& _sym_parseNamestring = global_symbols[1602];
+core::Symbol_sp& _sym_fileNamestring = global_symbols[1603];
+core::Symbol_sp& _sym_directoryNamestring = global_symbols[1604];
+core::Symbol_sp& _sym_hostNamestring = global_symbols[1605];
+core::Symbol_sp& _sym_enoughNamestring = global_symbols[1606];
+core::Symbol_sp& _sym_package_use_list = global_symbols[1607];
+core::Symbol_sp& _sym_gentemp = global_symbols[1608];
+core::Symbol_sp& _sym_makePackage = global_symbols[1609];
+core::Symbol_sp& _sym_listAllPackages = global_symbols[1610];
+core::Symbol_sp& _sym_use_package = global_symbols[1611];
+core::Symbol_sp& _sym_unuse_package = global_symbols[1612];
+core::Symbol_sp& _sym_package_shadowing_symbols = global_symbols[1613];
+core::Symbol_sp& _sym_import = global_symbols[1614];
+core::Symbol_sp& _sym_shadow = global_symbols[1615];
+core::Symbol_sp& _sym_shadowing_import = global_symbols[1616];
+core::Symbol_sp& _sym_findSymbol = global_symbols[1617];
+core::Symbol_sp& _sym_unintern = global_symbols[1618];
+core::Symbol_sp& _sym_condition = global_symbols[1619];
+core::Symbol_sp& _sym_defvar = global_symbols[1620];
+core::Symbol_sp& _sym_defconstant = global_symbols[1621];
+core::Symbol_sp& _sym_defparameter = global_symbols[1622];
+core::Symbol_sp& _sym_intersection = global_symbols[1623];
+core::Symbol_sp& _sym_union = global_symbols[1624];
+core::Symbol_sp& _sym_remove = global_symbols[1625];
+core::Symbol_sp& _sym_pprint_dispatch = global_symbols[1626];
+core::Symbol_sp& _sym_fileStream = global_symbols[1627];
+core::Symbol_sp& _sym_make_list = global_symbols[1628];
+core::Symbol_sp& _sym_cons = global_symbols[1629];
+core::Symbol_sp& _sym_getf = global_symbols[1630];
+core::Symbol_sp& _sym_make_symbol = global_symbols[1631];
+core::Symbol_sp& _sym_symbolName = global_symbols[1632];
+core::Symbol_sp& _sym_symbolValue = global_symbols[1633];
+core::Symbol_sp& _sym_symbolPackage = global_symbols[1634];
+core::Symbol_sp& _sym_symbolFunction = global_symbols[1635];
+core::Symbol_sp& _sym_boundp = global_symbols[1636];
+core::Symbol_sp& _sym_makeCondition = global_symbols[1637];
+core::Symbol_sp& _sym_format = global_symbols[1638];
+core::Symbol_sp& _sym_documentation = global_symbols[1639];
+core::Symbol_sp& _sym_copyStructure = global_symbols[1640];
+core::Symbol_sp& _sym_char_code = global_symbols[1641];
+core::Symbol_sp& _sym_code_char = global_symbols[1642];
+core::Symbol_sp& _sym_char_int = global_symbols[1643];
+core::Symbol_sp& _sym_name_char = global_symbols[1644];
+core::Symbol_sp& _sym_char_name = global_symbols[1645];
+core::Symbol_sp& _sym_alpha_char_p = global_symbols[1646];
+core::Symbol_sp& _sym_standard_char_p = global_symbols[1647];
+core::Symbol_sp& _sym_charUpcase = global_symbols[1648];
+core::Symbol_sp& _sym_charDowncase = global_symbols[1649];
+core::Symbol_sp& _sym_char_LT_ = global_symbols[1650];
+core::Symbol_sp& _sym_char_GT_ = global_symbols[1651];
+core::Symbol_sp& _sym_char_LE_ = global_symbols[1652];
+core::Symbol_sp& _sym_char_GE_ = global_symbols[1653];
+core::Symbol_sp& _sym_char_NE_ = global_symbols[1654];
+core::Symbol_sp& _sym_char_EQ_ = global_symbols[1655];
+core::Symbol_sp& _sym_charLessp = global_symbols[1656];
+core::Symbol_sp& _sym_charGreaterp = global_symbols[1657];
+core::Symbol_sp& _sym_charNotGreaterp = global_symbols[1658];
+core::Symbol_sp& _sym_charNotLessp = global_symbols[1659];
+core::Symbol_sp& _sym_charNotEqual = global_symbols[1660];
+core::Symbol_sp& _sym_charEqual = global_symbols[1661];
+core::Symbol_sp& _sym_digitCharP = global_symbols[1662];
+core::Symbol_sp& _sym_string = global_symbols[1663];
+core::Symbol_sp& _sym_string_upcase = global_symbols[1664];
+core::Symbol_sp& _sym_string_downcase = global_symbols[1665];
+core::Symbol_sp& _sym_nstring_upcase = global_symbols[1666];
+core::Symbol_sp& _sym_nstring_downcase = global_symbols[1667];
+core::Symbol_sp& _sym_stringTrim = global_symbols[1668];
+core::Symbol_sp& _sym_stringLeftTrim = global_symbols[1669];
+core::Symbol_sp& _sym_stringRightTrim = global_symbols[1670];
+core::Symbol_sp& _sym_char = global_symbols[1671];
+core::Symbol_sp& _sym_string_EQ_ = global_symbols[1672];
+core::Symbol_sp& _sym_string_NE_ = global_symbols[1673];
+core::Symbol_sp& _sym_string_LT_ = global_symbols[1674];
+core::Symbol_sp& _sym_string_GT_ = global_symbols[1675];
+core::Symbol_sp& _sym_string_LE_ = global_symbols[1676];
+core::Symbol_sp& _sym_string_GE_ = global_symbols[1677];
+core::Symbol_sp& _sym_string_equal = global_symbols[1678];
+core::Symbol_sp& _sym_string_not_equal = global_symbols[1679];
+core::Symbol_sp& _sym_string_lessp = global_symbols[1680];
+core::Symbol_sp& _sym_string_greaterp = global_symbols[1681];
+core::Symbol_sp& _sym_string_not_greaterp = global_symbols[1682];
+core::Symbol_sp& _sym_string_not_lessp = global_symbols[1683];
+core::Symbol_sp& _sym_make_string = global_symbols[1684];
+core::Symbol_sp& _sym_parseInteger = global_symbols[1685];
+core::Symbol_sp& _sym_make_sequence = global_symbols[1686];
+core::Symbol_sp& _sym_reverse = global_symbols[1687];
+core::Symbol_sp& _sym_nreverse = global_symbols[1688];
+core::Symbol_sp& _sym_subseq = global_symbols[1689];
+core::Symbol_sp& _sym_copySeq = global_symbols[1690];
+core::Symbol_sp& _sym_length = global_symbols[1691];
+core::Symbol_sp& _sym_subtypep = global_symbols[1692];
+core::Symbol_sp& _sym_vectorPush = global_symbols[1693];
+core::Symbol_sp& _sym_vectorPushExtend = global_symbols[1694];
+core::Symbol_sp& _sym_STARread_suppressSTAR = global_symbols[1695];
+core::Symbol_sp& _sym_RandomState_O = global_symbols[1696];
+core::Symbol_sp& _sym_ReadTable_O = global_symbols[1697];
+core::Symbol_sp& _sym_StructureObject_O = global_symbols[1698];
+core::Symbol_sp& _sym_Null_O = global_symbols[1699];
+core::Symbol_sp& _sym_StructureClass_O = global_symbols[1700];
+core::Symbol_sp& _sym_StandardClass_O = global_symbols[1701];
+core::Symbol_sp& _sym_BuiltInClass_O = global_symbols[1702];
+core::Symbol_sp& _sym_Package_O = global_symbols[1703];
+core::Symbol_sp& _sym_BitVector_O = global_symbols[1704];
+core::Symbol_sp& _sym_SimpleBitVector_O = global_symbols[1705];
+core::Symbol_sp& _sym_BitVectorWithFillPtr_O = global_symbols[1706];
+core::Symbol_sp& _sym_Character_dummy_O = global_symbols[1707];
+core::Symbol_sp& _sym_Stream_O = global_symbols[1708];
+core::Symbol_sp& _sym_FileStream_O = global_symbols[1709];
+core::Symbol_sp& _sym_StringStream_O = global_symbols[1710];
+core::Symbol_sp& _sym_SynonymStream_O = global_symbols[1711];
+core::Symbol_sp& _sym_TwoWayStream_O = global_symbols[1712];
+core::Symbol_sp& _sym_BroadcastStream_O = global_symbols[1713];
+core::Symbol_sp& _sym_ConcatenatedStream_O = global_symbols[1714];
+core::Symbol_sp& _sym_EchoStream_O = global_symbols[1715];
+core::Symbol_sp& _sym_Pathname_O = global_symbols[1716];
+core::Symbol_sp& _sym_LogicalPathname_O = global_symbols[1717];
+core::Symbol_sp& _sym_String_O = global_symbols[1718];
+core::Symbol_sp& _sym_Str_O = global_symbols[1719];
+core::Symbol_sp& _sym_T_O = global_symbols[1720];
+core::Symbol_sp& _sym_Cons_O = global_symbols[1721];
+core::Symbol_sp& _sym_Number_O = global_symbols[1722];
+core::Symbol_sp& _sym_Real_O = global_symbols[1723];
+core::Symbol_sp& _sym_Rational_O = global_symbols[1724];
+core::Symbol_sp& _sym_Integer_O = global_symbols[1725];
+core::Symbol_sp& _sym_Fixnum_dummy_O = global_symbols[1726];
+core::Symbol_sp& _sym_Float_O = global_symbols[1727];
+core::Symbol_sp& _sym_ShortFloat_O = global_symbols[1728];
+core::Symbol_sp& _sym_SingleFloat_dummy_O = global_symbols[1729];
+core::Symbol_sp& _sym_DoubleFloat_O = global_symbols[1730];
+core::Symbol_sp& _sym_LongFloat_O = global_symbols[1731];
+core::Symbol_sp& _sym_Complex_O = global_symbols[1732];
+core::Symbol_sp& _sym_Ratio_O = global_symbols[1733];
+core::Symbol_sp& _sym_Bignum_O = global_symbols[1734];
+core::Symbol_sp& _sym_Symbol_O = global_symbols[1735];
+core::Symbol_sp& _sym_Function_O = global_symbols[1736];
+core::Symbol_sp& _sym_CompiledFunction_O = global_symbols[1737];
+core::Symbol_sp& _sym_StandardObject_O = global_symbols[1738];
+core::Symbol_sp& _sym_Class_O = global_symbols[1739];
+core::Symbol_sp& _sym_Array_O = global_symbols[1740];
+core::Symbol_sp& _sym_Vector_O = global_symbols[1741];
+core::Symbol_sp& _sym_HashTable_O = global_symbols[1742];
 } // namespace cl
 namespace adapt {
-core::Symbol_sp& _sym_SymbolList_O = global_symbols[1365];
-core::Symbol_sp& _sym_StringList_O = global_symbols[1366];
-core::Symbol_sp& _sym_IterateCons_O = global_symbols[1367];
-core::Symbol_sp& _sym_StringSet_O = global_symbols[1368];
-core::Symbol_sp& _sym_IndexedObjectBag_O = global_symbols[1369];
-core::Symbol_sp& _sym_QDomNode_O = global_symbols[1370];
-core::Symbol_sp& _sym_SymbolSet_O = global_symbols[1371];
-core::Symbol_sp& _sym_ObjectSet_O = global_symbols[1372];
+core::Symbol_sp& _sym_IterateCons_O = global_symbols[1743];
+core::Symbol_sp& _sym_StringList_O = global_symbols[1744];
+core::Symbol_sp& _sym_ObjectSet_O = global_symbols[1745];
+core::Symbol_sp& _sym_SymbolList_O = global_symbols[1746];
+core::Symbol_sp& _sym_IndexedObjectBag_O = global_symbols[1747];
+core::Symbol_sp& _sym_StringSet_O = global_symbols[1748];
+core::Symbol_sp& _sym_SymbolSet_O = global_symbols[1749];
+core::Symbol_sp& _sym_QDomNode_O = global_symbols[1750];
 } // namespace adapt
-namespace ext {
-core::Symbol_sp& _sym_STARinspectorHookSTAR = global_symbols[1373];
-core::Symbol_sp& _sym_integer8 = global_symbols[1374];
-core::Symbol_sp& _sym_byte8 = global_symbols[1375];
-core::Symbol_sp& _sym_float_nan_string = global_symbols[1376];
-core::Symbol_sp& _sym_float_infinity_string = global_symbols[1377];
-core::Symbol_sp& _sym_STARdefault_external_formatSTAR = global_symbols[1378];
-core::Symbol_sp& _sym_truly_the = global_symbols[1379];
-core::Symbol_sp& _sym_specialVar = global_symbols[1380];
-core::Symbol_sp& _sym_lexicalVar = global_symbols[1381];
-core::Symbol_sp& _sym_stackVar = global_symbols[1382];
-core::Symbol_sp& _sym__PLUS_processStandardInput_PLUS_ = global_symbols[1383];
-core::Symbol_sp& _sym__PLUS_processStandardOutput_PLUS_ = global_symbols[1384];
-core::Symbol_sp& _sym__PLUS_processErrorOutput_PLUS_ = global_symbols[1385];
-core::Symbol_sp& _sym_lambda_block = global_symbols[1386];
-core::Symbol_sp& _sym_system = global_symbols[1387];
-core::Symbol_sp& _sym_setenv = global_symbols[1388];
-core::Symbol_sp& _sym_getenv = global_symbols[1389];
-core::Symbol_sp& _sym_STARloadHooksSTAR = global_symbols[1390];
-core::Symbol_sp& _sym_aSingleExtSymbol = global_symbols[1391];
-core::Symbol_sp& _sym_STARinvokeDebuggerHookSTAR = global_symbols[1392];
-core::Symbol_sp& _sym_compiledFunctionName = global_symbols[1393];
-core::Symbol_sp& _sym_ansi_stream = global_symbols[1394];
-core::Symbol_sp& _sym_maybeQuote = global_symbols[1395];
-core::Symbol_sp& _sym_annotate = global_symbols[1396];
-core::Symbol_sp& _sym_AnsiStream_O = global_symbols[1397];
-} // namespace ext
 namespace geom {
-core::Symbol_sp& _sym_colorTable = global_symbols[1398];
-core::Symbol_sp& _sym_OVector2_O = global_symbols[1399];
-core::Symbol_sp& _sym_BoundingBox_O = global_symbols[1400];
-core::Symbol_sp& _sym_Color_O = global_symbols[1401];
-core::Symbol_sp& _sym_OMatrix_O = global_symbols[1402];
-core::Symbol_sp& _sym_CoordinateArray_O = global_symbols[1403];
-core::Symbol_sp& _sym_CoordinateArrayWithHash_O = global_symbols[1404];
-core::Symbol_sp& _sym_OVector3_O = global_symbols[1405];
+core::Symbol_sp& _sym_colorTable = global_symbols[1751];
+core::Symbol_sp& _sym_OVector2_O = global_symbols[1752];
+core::Symbol_sp& _sym_BoundingBox_O = global_symbols[1753];
+core::Symbol_sp& _sym_OMatrix_O = global_symbols[1754];
+core::Symbol_sp& _sym_OVector3_O = global_symbols[1755];
+core::Symbol_sp& _sym_Color_O = global_symbols[1756];
+core::Symbol_sp& _sym_CoordinateArray_O = global_symbols[1757];
+core::Symbol_sp& _sym_CoordinateArrayWithHash_O = global_symbols[1758];
 } // namespace geom
-namespace kw {
-core::Symbol_sp& _sym_catchFrame = global_symbols[1406];
-core::Symbol_sp& _sym_blockFrame = global_symbols[1407];
-core::Symbol_sp& _sym_tagbodyFrame = global_symbols[1408];
-core::Symbol_sp& _sym_landingPadFrame = global_symbols[1409];
-core::Symbol_sp& _sym_splatted = global_symbols[1410];
-core::Symbol_sp& _sym_unbound = global_symbols[1411];
-core::Symbol_sp& _sym_deleted = global_symbols[1412];
-core::Symbol_sp& _sym_rtld_default = global_symbols[1413];
-core::Symbol_sp& _sym_rtld_next = global_symbols[1414];
-core::Symbol_sp& _sym_rtld_self = global_symbols[1415];
-core::Symbol_sp& _sym_rtld_main_only = global_symbols[1416];
-core::Symbol_sp& _sym_iclass = global_symbols[1417];
-core::Symbol_sp& _sym_next = global_symbols[1418];
-core::Symbol_sp& _sym_prev = global_symbols[1419];
-core::Symbol_sp& _sym_key = global_symbols[1420];
-core::Symbol_sp& _sym_defaults = global_symbols[1421];
-core::Symbol_sp& _sym_error = global_symbols[1422];
-core::Symbol_sp& _sym_link = global_symbols[1423];
-core::Symbol_sp& _sym_broken_link = global_symbols[1424];
-core::Symbol_sp& _sym_special = global_symbols[1425];
-core::Symbol_sp& _sym_supersede = global_symbols[1426];
-core::Symbol_sp& _sym_calledFunction = global_symbols[1427];
-core::Symbol_sp& _sym_givenNumberOfArguments = global_symbols[1428];
-core::Symbol_sp& _sym_requiredNumberOfArguments = global_symbols[1429];
-core::Symbol_sp& _sym_unrecognizedKeyword = global_symbols[1430];
-core::Symbol_sp& _sym_body = global_symbols[1431];
-core::Symbol_sp& _sym_lambda_list_handler = global_symbols[1432];
-core::Symbol_sp& _sym_docstring = global_symbols[1433];
-core::Symbol_sp& _sym_arguments = global_symbols[1434];
-core::Symbol_sp& _sym_create = global_symbols[1435];
-core::Symbol_sp& _sym_append = global_symbols[1436];
-core::Symbol_sp& _sym_debugStartup = global_symbols[1437];
-core::Symbol_sp& _sym_cclasp = global_symbols[1438];
-core::Symbol_sp& _sym_bclasp = global_symbols[1439];
-core::Symbol_sp& _sym_load = global_symbols[1440];
-core::Symbol_sp& _sym_eval = global_symbols[1441];
-core::Symbol_sp& _sym_ecl_min = global_symbols[1442];
-core::Symbol_sp& _sym_use_mps = global_symbols[1443];
-core::Symbol_sp& _sym_use_boehmdc = global_symbols[1444];
-core::Symbol_sp& _sym_use_boehm = global_symbols[1445];
-core::Symbol_sp& _sym_cr = global_symbols[1446];
-core::Symbol_sp& _sym_lf = global_symbols[1447];
-core::Symbol_sp& _sym_littleEndian = global_symbols[1448];
-core::Symbol_sp& _sym_bigEndian = global_symbols[1449];
-core::Symbol_sp& _sym_crlf = global_symbols[1450];
-core::Symbol_sp& _sym_latin_1 = global_symbols[1451];
-core::Symbol_sp& _sym_ucs_4 = global_symbols[1452];
-core::Symbol_sp& _sym_passThrough = global_symbols[1453];
-core::Symbol_sp& _sym_if_does_not_exist = global_symbols[1454];
-core::Symbol_sp& _sym_new_version = global_symbols[1455];
-core::Symbol_sp& _sym_rename = global_symbols[1456];
-core::Symbol_sp& _sym_rename_and_delete = global_symbols[1457];
-core::Symbol_sp& _sym_overwrite = global_symbols[1458];
-core::Symbol_sp& _sym_if_exists = global_symbols[1459];
-core::Symbol_sp& _sym_probe = global_symbols[1460];
-core::Symbol_sp& _sym_FullDebug = global_symbols[1461];
-core::Symbol_sp& _sym_LineTablesOnly = global_symbols[1462];
-core::Symbol_sp& _sym__uid = global_symbols[1463];
-core::Symbol_sp& _sym_none = global_symbols[1464];
-core::Symbol_sp& _sym_line = global_symbols[1465];
-core::Symbol_sp& _sym_full = global_symbols[1466];
-core::Symbol_sp& _sym_message = global_symbols[1467];
-core::Symbol_sp& _sym_line_buffered = global_symbols[1468];
-core::Symbol_sp& _sym_fully_buffered = global_symbols[1469];
-core::Symbol_sp& _sym_array = global_symbols[1470];
-core::Symbol_sp& _sym_UnsignedByte = global_symbols[1471];
-core::Symbol_sp& _sym_junkAllowed = global_symbols[1472];
-core::Symbol_sp& _sym_absolute = global_symbols[1473];
-core::Symbol_sp& _sym_relative = global_symbols[1474];
-core::Symbol_sp& _sym_back = global_symbols[1475];
-core::Symbol_sp& _sym_operation = global_symbols[1476];
-core::Symbol_sp& _sym_operands = global_symbols[1477];
-core::Symbol_sp& _sym_escape = global_symbols[1478];
-core::Symbol_sp& _sym_capitalize = global_symbols[1479];
-core::Symbol_sp& _sym_typeError = global_symbols[1480];
-core::Symbol_sp& _sym_datum = global_symbols[1481];
-core::Symbol_sp& _sym_expectedType = global_symbols[1482];
-core::Symbol_sp& _sym_print = global_symbols[1483];
-core::Symbol_sp& _sym_pathname = global_symbols[1484];
-core::Symbol_sp& _sym_object = global_symbols[1485];
-core::Symbol_sp& _sym_formatControl = global_symbols[1486];
-core::Symbol_sp& _sym_formatArguments = global_symbols[1487];
-core::Symbol_sp& _sym_stream = global_symbols[1488];
-core::Symbol_sp& _sym_package = global_symbols[1489];
-core::Symbol_sp& _sym_compile_toplevel = global_symbols[1490];
-core::Symbol_sp& _sym_load_toplevel = global_symbols[1491];
-core::Symbol_sp& _sym_execute = global_symbols[1492];
-core::Symbol_sp& _sym_allow_other_keys = global_symbols[1493];
-core::Symbol_sp& _sym_macro = global_symbols[1494];
-core::Symbol_sp& _sym_function = global_symbols[1495];
-core::Symbol_sp& _sym_invalid_character = global_symbols[1496];
-core::Symbol_sp& _sym_brcl = global_symbols[1497];
-core::Symbol_sp& _sym_not = global_symbols[1498];
-core::Symbol_sp& _sym_and = global_symbols[1499];
-core::Symbol_sp& _sym_or = global_symbols[1500];
-core::Symbol_sp& _sym_class = global_symbols[1501];
-core::Symbol_sp& _sym_instance = global_symbols[1502];
-core::Symbol_sp& _sym_output = global_symbols[1503];
-core::Symbol_sp& _sym_input = global_symbols[1504];
-core::Symbol_sp& _sym_io = global_symbols[1505];
-core::Symbol_sp& _sym_default = global_symbols[1506];
-core::Symbol_sp& _sym_internal = global_symbols[1507];
-core::Symbol_sp& _sym_external = global_symbols[1508];
-core::Symbol_sp& _sym_inherited = global_symbols[1509];
-core::Symbol_sp& _sym_debug = global_symbols[1510];
-core::Symbol_sp& _sym_direct_super_classes = global_symbols[1511];
-core::Symbol_sp& _sym_changed = global_symbols[1512];
-core::Symbol_sp& _sym_address_model_64 = global_symbols[1513];
-core::Symbol_sp& _sym_target_os_darwin = global_symbols[1514];
-core::Symbol_sp& _sym_podSymbolMap = global_symbols[1515];
-core::Symbol_sp& _sym_constituent_character = global_symbols[1516];
-core::Symbol_sp& _sym_syntax = global_symbols[1517];
-core::Symbol_sp& _sym_whitespace_character = global_symbols[1518];
-core::Symbol_sp& _sym_single_escape_character = global_symbols[1519];
-core::Symbol_sp& _sym_multiple_escape_character = global_symbols[1520];
-core::Symbol_sp& _sym_upcase = global_symbols[1521];
-core::Symbol_sp& _sym_downcase = global_symbols[1522];
-core::Symbol_sp& _sym_preserve = global_symbols[1523];
-core::Symbol_sp& _sym_invert = global_symbols[1524];
-core::Symbol_sp& _sym_non_terminating_macro_character = global_symbols[1525];
-core::Symbol_sp& _sym_terminating_macro_character = global_symbols[1526];
-core::Symbol_sp& _sym_macro_function = global_symbols[1527];
-core::Symbol_sp& _sym_case = global_symbols[1528];
-core::Symbol_sp& _sym_file = global_symbols[1529];
-core::Symbol_sp& _sym_unspecific = global_symbols[1530];
-core::Symbol_sp& _sym_local = global_symbols[1531];
-core::Symbol_sp& _sym_common = global_symbols[1532];
-core::Symbol_sp& _sym_wild_inferiors = global_symbols[1533];
-core::Symbol_sp& _sym_up = global_symbols[1534];
-core::Symbol_sp& _sym_wild = global_symbols[1535];
-core::Symbol_sp& _sym_host = global_symbols[1536];
-core::Symbol_sp& _sym_device = global_symbols[1537];
-core::Symbol_sp& _sym_newest = global_symbols[1538];
-core::Symbol_sp& _sym_version = global_symbols[1539];
-core::Symbol_sp& _sym_directory = global_symbols[1540];
-core::Symbol_sp& _sym_supplied = global_symbols[1541];
-core::Symbol_sp& _sym_min = global_symbols[1542];
-core::Symbol_sp& _sym_max = global_symbols[1543];
-core::Symbol_sp& _sym_eof = global_symbols[1544];
-core::Symbol_sp& _sym_fillPointer = global_symbols[1545];
-core::Symbol_sp& _sym_elementType = global_symbols[1546];
-core::Symbol_sp& _sym_adjustable = global_symbols[1547];
-core::Symbol_sp& _sym_start = global_symbols[1548];
-core::Symbol_sp& _sym_end = global_symbols[1549];
-core::Symbol_sp& _sym_x = global_symbols[1550];
-core::Symbol_sp& _sym_y = global_symbols[1551];
-core::Symbol_sp& _sym_z = global_symbols[1552];
-core::Symbol_sp& _sym_white = global_symbols[1553];
-core::Symbol_sp& _sym_black = global_symbols[1554];
-core::Symbol_sp& _sym_red = global_symbols[1555];
-core::Symbol_sp& _sym_green = global_symbols[1556];
-core::Symbol_sp& _sym_blue = global_symbols[1557];
-core::Symbol_sp& _sym_magenta = global_symbols[1558];
-core::Symbol_sp& _sym_yellow = global_symbols[1559];
-core::Symbol_sp& _sym_cyan = global_symbols[1560];
-core::Symbol_sp& _sym_grey10 = global_symbols[1561];
-core::Symbol_sp& _sym_greyF0 = global_symbols[1562];
-core::Symbol_sp& _sym_goldenrod = global_symbols[1563];
-core::Symbol_sp& _sym_purple = global_symbols[1564];
-core::Symbol_sp& _sym_pink = global_symbols[1565];
-core::Symbol_sp& _sym_plum = global_symbols[1566];
-core::Symbol_sp& _sym_coral = global_symbols[1567];
-core::Symbol_sp& _sym_orange = global_symbols[1568];
-core::Symbol_sp& _sym_brown = global_symbols[1569];
-core::Symbol_sp& _sym_wheat = global_symbols[1570];
-core::Symbol_sp& _sym_chartreuse = global_symbols[1571];
-core::Symbol_sp& _sym_aquamarine = global_symbols[1572];
-core::Symbol_sp& _sym_mediumBlue = global_symbols[1573];
-core::Symbol_sp& _sym_steelBlue = global_symbols[1574];
-core::Symbol_sp& _sym_chemdraw_color = global_symbols[1575];
-core::Symbol_sp& _sym_chemdraw_dashed_bond = global_symbols[1576];
-core::Symbol_sp& _sym_comment = global_symbols[1577];
-core::Symbol_sp& _sym_chiral_centers = global_symbols[1578];
-core::Symbol_sp& _sym_group = global_symbols[1579];
-core::Symbol_sp& _sym_name_template = global_symbols[1580];
-core::Symbol_sp& _sym_pdb_template = global_symbols[1581];
-core::Symbol_sp& _sym_residue_charge = global_symbols[1582];
-core::Symbol_sp& _sym_restrained_pi_bonds = global_symbols[1583];
-core::Symbol_sp& _sym_caps = global_symbols[1584];
-core::Symbol_sp& _sym_matches = global_symbols[1585];
-core::Symbol_sp& _sym_tags = global_symbols[1586];
-core::Symbol_sp& _sym_closestMatch = global_symbols[1587];
-core::Symbol_sp& _sym_data = global_symbols[1588];
-core::Symbol_sp& _sym_root = global_symbols[1589];
-core::Symbol_sp& _sym_op = global_symbols[1590];
-core::Symbol_sp& _sym_ringTag = global_symbols[1591];
-core::Symbol_sp& _sym_atomTest = global_symbols[1592];
-core::Symbol_sp& _sym_test = global_symbols[1593];
-core::Symbol_sp& _sym_int = global_symbols[1594];
-core::Symbol_sp& _sym_num = global_symbols[1595];
-core::Symbol_sp& _sym_str = global_symbols[1596];
-core::Symbol_sp& _sym_sym = global_symbols[1597];
-core::Symbol_sp& _sym_head = global_symbols[1598];
-core::Symbol_sp& _sym_tail = global_symbols[1599];
-core::Symbol_sp& _sym_left = global_symbols[1600];
-core::Symbol_sp& _sym_right = global_symbols[1601];
-core::Symbol_sp& _sym_tag1 = global_symbols[1602];
-core::Symbol_sp& _sym_tag2 = global_symbols[1603];
-core::Symbol_sp& _sym_bond = global_symbols[1604];
-core::Symbol_sp& _sym_residueNames = global_symbols[1605];
-core::Symbol_sp& _sym_atomicProperty = global_symbols[1606];
-core::Symbol_sp& _sym_atomicNumber = global_symbols[1607];
-core::Symbol_sp& _sym_attachedAtoms = global_symbols[1608];
-core::Symbol_sp& _sym_attachedHs = global_symbols[1609];
-core::Symbol_sp& _sym_attachedEWGs = global_symbols[1610];
-core::Symbol_sp& _sym_neighbors = global_symbols[1611];
-core::Symbol_sp& _sym_tag = global_symbols[1612];
-core::Symbol_sp& _sym_atomProps = global_symbols[1613];
-core::Symbol_sp& _sym_firstTest = global_symbols[1614];
-core::Symbol_sp& _sym_chain = global_symbols[1615];
-core::Symbol_sp& _sym_tests = global_symbols[1616];
-core::Symbol_sp& _sym_assignType = global_symbols[1617];
-core::Symbol_sp& _sym_afterMatchTests = global_symbols[1618];
-core::Symbol_sp& _sym_wildDict = global_symbols[1619];
-core::Symbol_sp& _sym_type_rules = global_symbols[1620];
-core::Symbol_sp& _sym_r0 = global_symbols[1621];
-core::Symbol_sp& _sym_kb = global_symbols[1622];
-core::Symbol_sp& _sym_stretches = global_symbols[1623];
-core::Symbol_sp& _sym_R = global_symbols[1624];
-core::Symbol_sp& _sym_Eps = global_symbols[1625];
-core::Symbol_sp& _sym_M = global_symbols[1626];
-core::Symbol_sp& _sym_N = global_symbols[1627];
-core::Symbol_sp& _sym_Edep = global_symbols[1628];
-core::Symbol_sp& _sym_vdw = global_symbols[1629];
-core::Symbol_sp& _sym_angRad = global_symbols[1630];
-core::Symbol_sp& _sym_k2 = global_symbols[1631];
-core::Symbol_sp& _sym_angleFunction = global_symbols[1632];
-core::Symbol_sp& _sym_angles = global_symbols[1633];
-core::Symbol_sp& _sym_zConstants = global_symbols[1634];
-core::Symbol_sp& _sym_cConstants = global_symbols[1635];
-core::Symbol_sp& _sym_level = global_symbols[1636];
-core::Symbol_sp& _sym_forceField = global_symbols[1637];
-core::Symbol_sp& _sym_itors = global_symbols[1638];
-core::Symbol_sp& _sym_type1 = global_symbols[1639];
-core::Symbol_sp& _sym_type2 = global_symbols[1640];
-core::Symbol_sp& _sym_type3 = global_symbols[1641];
-core::Symbol_sp& _sym_type4 = global_symbols[1642];
-core::Symbol_sp& _sym_v0 = global_symbols[1643];
-core::Symbol_sp& _sym_ph0 = global_symbols[1644];
-core::Symbol_sp& _sym_v1 = global_symbols[1645];
-core::Symbol_sp& _sym_ph1 = global_symbols[1646];
-core::Symbol_sp& _sym_v2 = global_symbols[1647];
-core::Symbol_sp& _sym_ph2 = global_symbols[1648];
-core::Symbol_sp& _sym_v3 = global_symbols[1649];
-core::Symbol_sp& _sym_ph3 = global_symbols[1650];
-core::Symbol_sp& _sym_v4 = global_symbols[1651];
-core::Symbol_sp& _sym_ph4 = global_symbols[1652];
-core::Symbol_sp& _sym_v5 = global_symbols[1653];
-core::Symbol_sp& _sym_ph5 = global_symbols[1654];
-core::Symbol_sp& _sym_ptors = global_symbols[1655];
-core::Symbol_sp& _sym_radius = global_symbols[1656];
-core::Symbol_sp& _sym_well = global_symbols[1657];
-core::Symbol_sp& _sym_apol = global_symbols[1658];
-core::Symbol_sp& _sym_neff = global_symbols[1659];
-core::Symbol_sp& _sym_mass = global_symbols[1660];
-core::Symbol_sp& _sym_pol = global_symbols[1661];
-core::Symbol_sp& _sym_initCharge = global_symbols[1662];
-core::Symbol_sp& _sym_fcadj = global_symbols[1663];
-core::Symbol_sp& _sym_pbci = global_symbols[1664];
-core::Symbol_sp& _sym_da = global_symbols[1665];
-core::Symbol_sp& _sym_eleDielectricValue = global_symbols[1666];
-core::Symbol_sp& _sym_eleBuffer = global_symbols[1667];
-core::Symbol_sp& _sym_eleScale14 = global_symbols[1668];
-core::Symbol_sp& _sym_eleChargeFcn = global_symbols[1669];
-core::Symbol_sp& _sym_vdwScale14 = global_symbols[1670];
-core::Symbol_sp& _sym_vdwScaleBufferA = global_symbols[1671];
-core::Symbol_sp& _sym_vdwScaleBufferB = global_symbols[1672];
-core::Symbol_sp& _sym_nonbonds = global_symbols[1673];
-core::Symbol_sp& _sym_map = global_symbols[1674];
-core::Symbol_sp& _sym_eleDielectricCode = global_symbols[1675];
-core::Symbol_sp& _sym_vdwMixRadius = global_symbols[1676];
-core::Symbol_sp& _sym_vdwMixWell = global_symbols[1677];
-core::Symbol_sp& _sym_name = global_symbols[1678];
-core::Symbol_sp& _sym_id = global_symbols[1679];
-core::Symbol_sp& _sym_restraints = global_symbols[1680];
-core::Symbol_sp& _sym_contents = global_symbols[1681];
-core::Symbol_sp& _sym_pdbName = global_symbols[1682];
-core::Symbol_sp& _sym_uniqueLabel = global_symbols[1683];
-core::Symbol_sp& _sym_NetCharge = global_symbols[1684];
-core::Symbol_sp& _sym_fileSeqNum = global_symbols[1685];
-core::Symbol_sp& _sym_monomerAliases = global_symbols[1686];
-core::Symbol_sp& _sym_bl = global_symbols[1687];
-core::Symbol_sp& _sym_alias = global_symbols[1688];
-core::Symbol_sp& _sym_flags = global_symbols[1689];
-core::Symbol_sp& _sym_element = global_symbols[1690];
-core::Symbol_sp& _sym_hybridization = global_symbols[1691];
-core::Symbol_sp& _sym_priority = global_symbols[1692];
-core::Symbol_sp& _sym_hintLP = global_symbols[1693];
-core::Symbol_sp& _sym_chg = global_symbols[1694];
-core::Symbol_sp& _sym_ion = global_symbols[1695];
-core::Symbol_sp& _sym_rings = global_symbols[1696];
-core::Symbol_sp& _sym_tempInt = global_symbols[1697];
-core::Symbol_sp& _sym_type = global_symbols[1698];
-core::Symbol_sp& _sym_ar1 = global_symbols[1699];
-core::Symbol_sp& _sym_ar2 = global_symbols[1700];
-core::Symbol_sp& _sym_ar3 = global_symbols[1701];
-core::Symbol_sp& _sym_ar4 = global_symbols[1702];
-core::Symbol_sp& _sym_ar5 = global_symbols[1703];
-core::Symbol_sp& _sym_mask = global_symbols[1704];
-core::Symbol_sp& _sym_configuration = global_symbols[1705];
-core::Symbol_sp& _sym_stereochemistryType = global_symbols[1706];
-core::Symbol_sp& _sym_pos = global_symbols[1707];
-core::Symbol_sp& _sym_order = global_symbols[1708];
-core::Symbol_sp& _sym_properties = global_symbols[1709];
-core::Symbol_sp& _sym_a1 = global_symbols[1710];
-core::Symbol_sp& _sym_a2 = global_symbols[1711];
-core::Symbol_sp& _sym_bonds = global_symbols[1712];
-core::Symbol_sp& _sym_atom = global_symbols[1713];
-core::Symbol_sp& _sym_position = global_symbols[1714];
-core::Symbol_sp& _sym_weight = global_symbols[1715];
-core::Symbol_sp& _sym_atoms = global_symbols[1716];
-core::Symbol_sp& _sym_k = global_symbols[1717];
-core::Symbol_sp& _sym_title = global_symbols[1718];
-core::Symbol_sp& _sym_ref = global_symbols[1719];
-core::Symbol_sp& _sym_bondDistinctions = global_symbols[1720];
-core::Symbol_sp& _sym_Info = global_symbols[1721];
-core::Symbol_sp& _sym_Types = global_symbols[1722];
-core::Symbol_sp& _sym_Stretches = global_symbols[1723];
-core::Symbol_sp& _sym_Angles = global_symbols[1724];
-core::Symbol_sp& _sym_Itors = global_symbols[1725];
-core::Symbol_sp& _sym_Ptors = global_symbols[1726];
-core::Symbol_sp& _sym_Nonbonds = global_symbols[1727];
-core::Symbol_sp& _sym_Vdws = global_symbols[1728];
-} // namespace kw
-namespace chemkw {
-core::Symbol_sp& _sym_undefinedConfiguration = global_symbols[1729];
-core::Symbol_sp& _sym_R = global_symbols[1730];
-core::Symbol_sp& _sym_undefinedCenter = global_symbols[1731];
-core::Symbol_sp& _sym_chiral = global_symbols[1732];
-core::Symbol_sp& _sym_prochiral = global_symbols[1733];
-core::Symbol_sp& _sym__singleBond = global_symbols[1734];
-core::Symbol_sp& _sym__doubleBond = global_symbols[1735];
-core::Symbol_sp& _sym__tripleBond = global_symbols[1736];
-core::Symbol_sp& _sym__aromaticBond = global_symbols[1737];
-core::Symbol_sp& _sym__hydrogenBond = global_symbols[1738];
-core::Symbol_sp& _sym__virtualBond = global_symbols[1739];
-core::Symbol_sp& _sym__dashedSingleBond = global_symbols[1740];
-core::Symbol_sp& _sym__dashedDoubleBond = global_symbols[1741];
-core::Symbol_sp& _sym_noBond = global_symbols[1742];
-core::Symbol_sp& _sym_singleBond = global_symbols[1743];
-core::Symbol_sp& _sym_doubleBond = global_symbols[1744];
-core::Symbol_sp& _sym_tripleBond = global_symbols[1745];
-core::Symbol_sp& _sym_aromaticBond = global_symbols[1746];
-core::Symbol_sp& _sym_hydrogenBond = global_symbols[1747];
-core::Symbol_sp& _sym_virtualBond = global_symbols[1748];
-core::Symbol_sp& _sym_dashedSingleBond = global_symbols[1749];
-core::Symbol_sp& _sym_dashedDoubleBond = global_symbols[1750];
-core::Symbol_sp& _sym_C = global_symbols[1751];
-core::Symbol_sp& _sym_N = global_symbols[1752];
-core::Symbol_sp& _sym_O = global_symbols[1753];
-core::Symbol_sp& _sym_S = global_symbols[1754];
-core::Symbol_sp& _sym_P = global_symbols[1755];
-core::Symbol_sp& _sym_F = global_symbols[1756];
-core::Symbol_sp& _sym_Cl = global_symbols[1757];
-core::Symbol_sp& _sym_Br = global_symbols[1758];
-core::Symbol_sp& _sym_I = global_symbols[1759];
-core::Symbol_sp& _sym_message = global_symbols[1760];
-core::Symbol_sp& _sym_constitution = global_symbols[1761];
-core::Symbol_sp& _sym_entity = global_symbols[1762];
-core::Symbol_sp& _sym_frameRecognizer = global_symbols[1763];
-core::Symbol_sp& _sym_E = global_symbols[1764];
-core::Symbol_sp& _sym_Z = global_symbols[1765];
-core::Symbol_sp& _sym_1 = global_symbols[1766];
-core::Symbol_sp& _sym_2 = global_symbols[1767];
-core::Symbol_sp& _sym_3 = global_symbols[1768];
-core::Symbol_sp& _sym_4 = global_symbols[1769];
-core::Symbol_sp& _sym_5 = global_symbols[1770];
-core::Symbol_sp& _sym_6 = global_symbols[1771];
-core::Symbol_sp& _sym_idle = global_symbols[1772];
-core::Symbol_sp& _sym_translate = global_symbols[1773];
-core::Symbol_sp& _sym_rotate = global_symbols[1774];
-core::Symbol_sp& _sym_scale = global_symbols[1775];
-core::Symbol_sp& _sym_XX = global_symbols[1776];
-core::Symbol_sp& _sym_XA = global_symbols[1777];
-core::Symbol_sp& _sym_XB = global_symbols[1778];
-core::Symbol_sp& _sym_XC = global_symbols[1779];
-core::Symbol_sp& _sym_XD = global_symbols[1780];
-core::Symbol_sp& _sym_parameterized = global_symbols[1781];
-core::Symbol_sp& _sym_estimated = global_symbols[1782];
-core::Symbol_sp& _sym_rough = global_symbols[1783];
-} // namespace chemkw
+namespace ext {
+core::Symbol_sp& _sym_STARinspectorHookSTAR = global_symbols[1759];
+core::Symbol_sp& _sym_integer8 = global_symbols[1760];
+core::Symbol_sp& _sym_byte8 = global_symbols[1761];
+core::Symbol_sp& _sym_float_nan_string = global_symbols[1762];
+core::Symbol_sp& _sym_float_infinity_string = global_symbols[1763];
+core::Symbol_sp& _sym_STARdefault_external_formatSTAR = global_symbols[1764];
+core::Symbol_sp& _sym_truly_the = global_symbols[1765];
+core::Symbol_sp& _sym_specialVar = global_symbols[1766];
+core::Symbol_sp& _sym_lexicalVar = global_symbols[1767];
+core::Symbol_sp& _sym_stackVar = global_symbols[1768];
+core::Symbol_sp& _sym__PLUS_processStandardInput_PLUS_ = global_symbols[1769];
+core::Symbol_sp& _sym__PLUS_processStandardOutput_PLUS_ = global_symbols[1770];
+core::Symbol_sp& _sym__PLUS_processErrorOutput_PLUS_ = global_symbols[1771];
+core::Symbol_sp& _sym_lambda_block = global_symbols[1772];
+core::Symbol_sp& _sym_system = global_symbols[1773];
+core::Symbol_sp& _sym_setenv = global_symbols[1774];
+core::Symbol_sp& _sym_getenv = global_symbols[1775];
+core::Symbol_sp& _sym_STARloadHooksSTAR = global_symbols[1776];
+core::Symbol_sp& _sym_aSingleExtSymbol = global_symbols[1777];
+core::Symbol_sp& _sym_STARinvokeDebuggerHookSTAR = global_symbols[1778];
+core::Symbol_sp& _sym_compiledFunctionName = global_symbols[1779];
+core::Symbol_sp& _sym_ansi_stream = global_symbols[1780];
+core::Symbol_sp& _sym_maybeQuote = global_symbols[1781];
+core::Symbol_sp& _sym_annotate = global_symbols[1782];
+core::Symbol_sp& _sym_AnsiStream_O = global_symbols[1783];
+} // namespace ext
 namespace units {
 core::Symbol_sp& _sym_NamedUnit_O = global_symbols[1784];
 core::Symbol_sp& _sym_meters = global_symbols[1785];
@@ -2817,35 +2817,332 @@ core::Symbol_sp& _sym_close = global_symbols[2497];
 } // namespace gray
 #endif
 #if defined(EXTERN_ALL_SYMBOLS)
-namespace chem {
+namespace kw {
+extern core::Symbol_sp& _sym_catchFrame;
+extern core::Symbol_sp& _sym_blockFrame;
+extern core::Symbol_sp& _sym_tagbodyFrame;
+extern core::Symbol_sp& _sym_landingPadFrame;
+extern core::Symbol_sp& _sym_splatted;
+extern core::Symbol_sp& _sym_unbound;
+extern core::Symbol_sp& _sym_deleted;
+extern core::Symbol_sp& _sym_rtld_default;
+extern core::Symbol_sp& _sym_rtld_next;
+extern core::Symbol_sp& _sym_rtld_self;
+extern core::Symbol_sp& _sym_rtld_main_only;
+extern core::Symbol_sp& _sym_iclass;
+extern core::Symbol_sp& _sym_next;
+extern core::Symbol_sp& _sym_prev;
+extern core::Symbol_sp& _sym_key;
+extern core::Symbol_sp& _sym_defaults;
+extern core::Symbol_sp& _sym_error;
+extern core::Symbol_sp& _sym_link;
+extern core::Symbol_sp& _sym_broken_link;
+extern core::Symbol_sp& _sym_special;
+extern core::Symbol_sp& _sym_supersede;
+extern core::Symbol_sp& _sym_calledFunction;
+extern core::Symbol_sp& _sym_givenNumberOfArguments;
+extern core::Symbol_sp& _sym_requiredNumberOfArguments;
+extern core::Symbol_sp& _sym_unrecognizedKeyword;
+extern core::Symbol_sp& _sym_body;
+extern core::Symbol_sp& _sym_lambda_list_handler;
+extern core::Symbol_sp& _sym_docstring;
+extern core::Symbol_sp& _sym_arguments;
+extern core::Symbol_sp& _sym_create;
+extern core::Symbol_sp& _sym_append;
+extern core::Symbol_sp& _sym_debugStartup;
+extern core::Symbol_sp& _sym_cclasp;
+extern core::Symbol_sp& _sym_bclasp;
+extern core::Symbol_sp& _sym_load;
+extern core::Symbol_sp& _sym_eval;
+extern core::Symbol_sp& _sym_ecl_min;
+extern core::Symbol_sp& _sym_use_mps;
+extern core::Symbol_sp& _sym_use_boehmdc;
+extern core::Symbol_sp& _sym_use_boehm;
+extern core::Symbol_sp& _sym_cr;
+extern core::Symbol_sp& _sym_lf;
+extern core::Symbol_sp& _sym_littleEndian;
+extern core::Symbol_sp& _sym_bigEndian;
+extern core::Symbol_sp& _sym_crlf;
+extern core::Symbol_sp& _sym_latin_1;
+extern core::Symbol_sp& _sym_ucs_4;
+extern core::Symbol_sp& _sym_passThrough;
+extern core::Symbol_sp& _sym_if_does_not_exist;
+extern core::Symbol_sp& _sym_new_version;
+extern core::Symbol_sp& _sym_rename;
+extern core::Symbol_sp& _sym_rename_and_delete;
+extern core::Symbol_sp& _sym_overwrite;
+extern core::Symbol_sp& _sym_if_exists;
+extern core::Symbol_sp& _sym_probe;
+extern core::Symbol_sp& _sym_FullDebug;
+extern core::Symbol_sp& _sym_LineTablesOnly;
+extern core::Symbol_sp& _sym__uid;
+extern core::Symbol_sp& _sym_none;
+extern core::Symbol_sp& _sym_line;
+extern core::Symbol_sp& _sym_full;
+extern core::Symbol_sp& _sym_message;
+extern core::Symbol_sp& _sym_line_buffered;
+extern core::Symbol_sp& _sym_fully_buffered;
+extern core::Symbol_sp& _sym_array;
+extern core::Symbol_sp& _sym_UnsignedByte;
+extern core::Symbol_sp& _sym_junkAllowed;
+extern core::Symbol_sp& _sym_absolute;
+extern core::Symbol_sp& _sym_relative;
+extern core::Symbol_sp& _sym_back;
+extern core::Symbol_sp& _sym_operation;
+extern core::Symbol_sp& _sym_operands;
+extern core::Symbol_sp& _sym_escape;
+extern core::Symbol_sp& _sym_capitalize;
+extern core::Symbol_sp& _sym_typeError;
+extern core::Symbol_sp& _sym_datum;
+extern core::Symbol_sp& _sym_expectedType;
+extern core::Symbol_sp& _sym_print;
+extern core::Symbol_sp& _sym_pathname;
+extern core::Symbol_sp& _sym_object;
+extern core::Symbol_sp& _sym_formatControl;
+extern core::Symbol_sp& _sym_formatArguments;
+extern core::Symbol_sp& _sym_stream;
+extern core::Symbol_sp& _sym_package;
+extern core::Symbol_sp& _sym_compile_toplevel;
+extern core::Symbol_sp& _sym_load_toplevel;
+extern core::Symbol_sp& _sym_execute;
+extern core::Symbol_sp& _sym_allow_other_keys;
+extern core::Symbol_sp& _sym_macro;
+extern core::Symbol_sp& _sym_function;
+extern core::Symbol_sp& _sym_invalid_character;
+extern core::Symbol_sp& _sym_brcl;
+extern core::Symbol_sp& _sym_not;
+extern core::Symbol_sp& _sym_and;
+extern core::Symbol_sp& _sym_or;
+extern core::Symbol_sp& _sym_class;
+extern core::Symbol_sp& _sym_instance;
+extern core::Symbol_sp& _sym_output;
+extern core::Symbol_sp& _sym_input;
+extern core::Symbol_sp& _sym_io;
+extern core::Symbol_sp& _sym_default;
+extern core::Symbol_sp& _sym_internal;
+extern core::Symbol_sp& _sym_external;
+extern core::Symbol_sp& _sym_inherited;
+extern core::Symbol_sp& _sym_debug;
+extern core::Symbol_sp& _sym_direct_super_classes;
+extern core::Symbol_sp& _sym_changed;
+extern core::Symbol_sp& _sym_address_model_64;
+extern core::Symbol_sp& _sym_target_os_darwin;
+extern core::Symbol_sp& _sym_podSymbolMap;
+extern core::Symbol_sp& _sym_constituent_character;
+extern core::Symbol_sp& _sym_syntax;
+extern core::Symbol_sp& _sym_whitespace_character;
+extern core::Symbol_sp& _sym_single_escape_character;
+extern core::Symbol_sp& _sym_multiple_escape_character;
+extern core::Symbol_sp& _sym_upcase;
+extern core::Symbol_sp& _sym_downcase;
+extern core::Symbol_sp& _sym_preserve;
+extern core::Symbol_sp& _sym_invert;
+extern core::Symbol_sp& _sym_non_terminating_macro_character;
+extern core::Symbol_sp& _sym_terminating_macro_character;
+extern core::Symbol_sp& _sym_macro_function;
+extern core::Symbol_sp& _sym_case;
+extern core::Symbol_sp& _sym_file;
+extern core::Symbol_sp& _sym_unspecific;
+extern core::Symbol_sp& _sym_local;
+extern core::Symbol_sp& _sym_common;
+extern core::Symbol_sp& _sym_wild_inferiors;
+extern core::Symbol_sp& _sym_up;
+extern core::Symbol_sp& _sym_wild;
+extern core::Symbol_sp& _sym_host;
+extern core::Symbol_sp& _sym_device;
+extern core::Symbol_sp& _sym_newest;
+extern core::Symbol_sp& _sym_version;
+extern core::Symbol_sp& _sym_directory;
+extern core::Symbol_sp& _sym_supplied;
+extern core::Symbol_sp& _sym_min;
+extern core::Symbol_sp& _sym_max;
+extern core::Symbol_sp& _sym_eof;
+extern core::Symbol_sp& _sym_fillPointer;
+extern core::Symbol_sp& _sym_elementType;
+extern core::Symbol_sp& _sym_adjustable;
+extern core::Symbol_sp& _sym_start;
+extern core::Symbol_sp& _sym_end;
+extern core::Symbol_sp& _sym_x;
+extern core::Symbol_sp& _sym_y;
+extern core::Symbol_sp& _sym_z;
+extern core::Symbol_sp& _sym_white;
+extern core::Symbol_sp& _sym_black;
+extern core::Symbol_sp& _sym_red;
+extern core::Symbol_sp& _sym_green;
+extern core::Symbol_sp& _sym_blue;
+extern core::Symbol_sp& _sym_magenta;
+extern core::Symbol_sp& _sym_yellow;
+extern core::Symbol_sp& _sym_cyan;
+extern core::Symbol_sp& _sym_grey10;
+extern core::Symbol_sp& _sym_greyF0;
+extern core::Symbol_sp& _sym_goldenrod;
+extern core::Symbol_sp& _sym_purple;
+extern core::Symbol_sp& _sym_pink;
+extern core::Symbol_sp& _sym_plum;
+extern core::Symbol_sp& _sym_coral;
+extern core::Symbol_sp& _sym_orange;
+extern core::Symbol_sp& _sym_brown;
+extern core::Symbol_sp& _sym_wheat;
+extern core::Symbol_sp& _sym_chartreuse;
+extern core::Symbol_sp& _sym_aquamarine;
+extern core::Symbol_sp& _sym_mediumBlue;
+extern core::Symbol_sp& _sym_steelBlue;
 extern core::Symbol_sp& _sym_name;
-extern core::Symbol_sp& _sym__PLUS_validChemdrawKeywords_PLUS_;
-extern core::Symbol_sp& _sym_STARparserNodeHolderSTAR;
-extern core::Symbol_sp& _sym_STARSabBondEnumConverterSTAR;
-extern core::Symbol_sp& _sym_STARLogicalOperatorTypeConverterSTAR;
-extern core::Symbol_sp& _sym_STARAtomTestEnumConverterSTAR;
-extern core::Symbol_sp& _sym_STARDonorAcceptorEnumConverterSTAR;
-extern core::Symbol_sp& _sym_STAREleDielectricEnumConverterSTAR;
-extern core::Symbol_sp& _sym_STARVdwMixRadiusEnumConverterSTAR;
-extern core::Symbol_sp& _sym_STARVdwMixWellEnumConverterSTAR;
-extern core::Symbol_sp& _sym_CDNode_O;
-extern core::Symbol_sp& _sym_CDBond_O;
-extern core::Symbol_sp& _sym_CDFragment_O;
-extern core::Symbol_sp& _sym_CDText_O;
-extern core::Symbol_sp& _sym_ChemDraw_O;
-extern core::Symbol_sp& _sym_Command_O;
-extern core::Symbol_sp& _sym_ReadAmberParameters_O;
-extern core::Symbol_sp& _sym_StructureComparer_O;
-extern core::Symbol_sp& _sym_Structure_Old_ListEntry_O;
-extern core::Symbol_sp& _sym_Structure_Old_List_O;
-extern core::Symbol_sp& _sym_Twister_O;
-extern core::Symbol_sp& _sym_TwisterDriver_O;
-extern core::Symbol_sp& _sym_ZMatrixInternal_O;
-extern core::Symbol_sp& _sym_ZMatrixBondInternal_O;
-extern core::Symbol_sp& _sym_ZMatrixAngleInternal_O;
-extern core::Symbol_sp& _sym_ZMatrixDihedralInternal_O;
-extern core::Symbol_sp& _sym_ZMatrixEntry_O;
-extern core::Symbol_sp& _sym_ZMatrix_O;
+extern core::Symbol_sp& _sym_id;
+extern core::Symbol_sp& _sym_contents;
+extern core::Symbol_sp& _sym_pdbName;
+extern core::Symbol_sp& _sym_uniqueLabel;
+extern core::Symbol_sp& _sym_NetCharge;
+extern core::Symbol_sp& _sym_fileSeqNum;
+extern core::Symbol_sp& _sym_monomerAliases;
+extern core::Symbol_sp& _sym_bl;
+extern core::Symbol_sp& _sym_alias;
+extern core::Symbol_sp& _sym_flags;
+extern core::Symbol_sp& _sym_hybridization;
+extern core::Symbol_sp& _sym_priority;
+extern core::Symbol_sp& _sym_hintLP;
+extern core::Symbol_sp& _sym_chg;
+extern core::Symbol_sp& _sym_ion;
+extern core::Symbol_sp& _sym_rings;
+extern core::Symbol_sp& _sym_tempInt;
+extern core::Symbol_sp& _sym_ar1;
+extern core::Symbol_sp& _sym_ar2;
+extern core::Symbol_sp& _sym_ar3;
+extern core::Symbol_sp& _sym_ar4;
+extern core::Symbol_sp& _sym_ar5;
+extern core::Symbol_sp& _sym_mask;
+extern core::Symbol_sp& _sym_configuration;
+extern core::Symbol_sp& _sym_stereochemistryType;
+extern core::Symbol_sp& _sym_pos;
+extern core::Symbol_sp& _sym_order;
+extern core::Symbol_sp& _sym_properties;
+extern core::Symbol_sp& _sym_a1;
+extern core::Symbol_sp& _sym_a2;
+extern core::Symbol_sp& _sym_bonds;
+extern core::Symbol_sp& _sym_atom;
+extern core::Symbol_sp& _sym_position;
+extern core::Symbol_sp& _sym_weight;
+extern core::Symbol_sp& _sym_atoms;
+extern core::Symbol_sp& _sym_k;
+extern core::Symbol_sp& _sym_title;
+extern core::Symbol_sp& _sym_ref;
+extern core::Symbol_sp& _sym_bondDistinctions;
+extern core::Symbol_sp& _sym_Info;
+extern core::Symbol_sp& _sym_Types;
+extern core::Symbol_sp& _sym_Stretches;
+extern core::Symbol_sp& _sym_Angles;
+extern core::Symbol_sp& _sym_Itors;
+extern core::Symbol_sp& _sym_Ptors;
+extern core::Symbol_sp& _sym_Nonbonds;
+extern core::Symbol_sp& _sym_Vdws;
+extern core::Symbol_sp& _sym_chemdraw_color;
+extern core::Symbol_sp& _sym_chemdraw_dashed_bond;
+extern core::Symbol_sp& _sym_comment;
+extern core::Symbol_sp& _sym_chiral_centers;
+extern core::Symbol_sp& _sym_group;
+extern core::Symbol_sp& _sym_name_template;
+extern core::Symbol_sp& _sym_pdb_template;
+extern core::Symbol_sp& _sym_restraints;
+extern core::Symbol_sp& _sym_residue_charge;
+extern core::Symbol_sp& _sym_restrained_pi_bonds;
+extern core::Symbol_sp& _sym_caps;
+extern core::Symbol_sp& _sym_matches;
+extern core::Symbol_sp& _sym_tags;
+extern core::Symbol_sp& _sym_closestMatch;
+extern core::Symbol_sp& _sym_data;
+extern core::Symbol_sp& _sym_root;
+extern core::Symbol_sp& _sym_op;
+extern core::Symbol_sp& _sym_ringTag;
+extern core::Symbol_sp& _sym_atomTest;
+extern core::Symbol_sp& _sym_test;
+extern core::Symbol_sp& _sym_int;
+extern core::Symbol_sp& _sym_num;
+extern core::Symbol_sp& _sym_str;
+extern core::Symbol_sp& _sym_sym;
+extern core::Symbol_sp& _sym_head;
+extern core::Symbol_sp& _sym_tail;
+extern core::Symbol_sp& _sym_left;
+extern core::Symbol_sp& _sym_right;
+extern core::Symbol_sp& _sym_tag1;
+extern core::Symbol_sp& _sym_tag2;
+extern core::Symbol_sp& _sym_bond;
+extern core::Symbol_sp& _sym_residueNames;
+extern core::Symbol_sp& _sym_atomicProperty;
+extern core::Symbol_sp& _sym_atomicNumber;
+extern core::Symbol_sp& _sym_attachedAtoms;
+extern core::Symbol_sp& _sym_attachedHs;
+extern core::Symbol_sp& _sym_attachedEWGs;
+extern core::Symbol_sp& _sym_element;
+extern core::Symbol_sp& _sym_neighbors;
+extern core::Symbol_sp& _sym_tag;
+extern core::Symbol_sp& _sym_atomProps;
+extern core::Symbol_sp& _sym_firstTest;
+extern core::Symbol_sp& _sym_chain;
+extern core::Symbol_sp& _sym_tests;
+extern core::Symbol_sp& _sym_assignType;
+extern core::Symbol_sp& _sym_afterMatchTests;
+extern core::Symbol_sp& _sym_wildDict;
+extern core::Symbol_sp& _sym_type_rules;
+extern core::Symbol_sp& _sym_r0;
+extern core::Symbol_sp& _sym_kb;
+extern core::Symbol_sp& _sym_stretches;
+extern core::Symbol_sp& _sym_R;
+extern core::Symbol_sp& _sym_Eps;
+extern core::Symbol_sp& _sym_M;
+extern core::Symbol_sp& _sym_N;
+extern core::Symbol_sp& _sym_Edep;
+extern core::Symbol_sp& _sym_vdw;
+extern core::Symbol_sp& _sym_angRad;
+extern core::Symbol_sp& _sym_k2;
+extern core::Symbol_sp& _sym_angleFunction;
+extern core::Symbol_sp& _sym_angles;
+extern core::Symbol_sp& _sym_zConstants;
+extern core::Symbol_sp& _sym_cConstants;
+extern core::Symbol_sp& _sym_level;
+extern core::Symbol_sp& _sym_forceField;
+extern core::Symbol_sp& _sym_itors;
+extern core::Symbol_sp& _sym_type1;
+extern core::Symbol_sp& _sym_type2;
+extern core::Symbol_sp& _sym_type3;
+extern core::Symbol_sp& _sym_type4;
+extern core::Symbol_sp& _sym_v0;
+extern core::Symbol_sp& _sym_ph0;
+extern core::Symbol_sp& _sym_v1;
+extern core::Symbol_sp& _sym_ph1;
+extern core::Symbol_sp& _sym_v2;
+extern core::Symbol_sp& _sym_ph2;
+extern core::Symbol_sp& _sym_v3;
+extern core::Symbol_sp& _sym_ph3;
+extern core::Symbol_sp& _sym_v4;
+extern core::Symbol_sp& _sym_ph4;
+extern core::Symbol_sp& _sym_v5;
+extern core::Symbol_sp& _sym_ph5;
+extern core::Symbol_sp& _sym_ptors;
+extern core::Symbol_sp& _sym_type;
+extern core::Symbol_sp& _sym_radius;
+extern core::Symbol_sp& _sym_well;
+extern core::Symbol_sp& _sym_apol;
+extern core::Symbol_sp& _sym_neff;
+extern core::Symbol_sp& _sym_mass;
+extern core::Symbol_sp& _sym_pol;
+extern core::Symbol_sp& _sym_initCharge;
+extern core::Symbol_sp& _sym_fcadj;
+extern core::Symbol_sp& _sym_pbci;
+extern core::Symbol_sp& _sym_da;
+extern core::Symbol_sp& _sym_eleDielectricValue;
+extern core::Symbol_sp& _sym_eleBuffer;
+extern core::Symbol_sp& _sym_eleScale14;
+extern core::Symbol_sp& _sym_eleChargeFcn;
+extern core::Symbol_sp& _sym_vdwScale14;
+extern core::Symbol_sp& _sym_vdwScaleBufferA;
+extern core::Symbol_sp& _sym_vdwScaleBufferB;
+extern core::Symbol_sp& _sym_nonbonds;
+extern core::Symbol_sp& _sym_map;
+extern core::Symbol_sp& _sym_eleDielectricCode;
+extern core::Symbol_sp& _sym_vdwMixRadius;
+extern core::Symbol_sp& _sym_vdwMixWell;
+} // namespace kw
+namespace chem {
 extern core::Symbol_sp& _sym_R;
 extern core::Symbol_sp& _sym_S;
 extern core::Symbol_sp& _sym_UnknownConfiguration;
@@ -2853,7 +3150,6 @@ extern core::Symbol_sp& _sym_candoDatabase;
 extern core::Symbol_sp& _sym_AM1_BCC_ar5;
 extern core::Symbol_sp& _sym_AM1_BCC_ar6;
 extern core::Symbol_sp& _sym_AM1_BCC_ar7;
-extern core::Symbol_sp& _sym_Alias_O;
 extern core::Symbol_sp& _sym__PLUS_configurationEnumConverter_PLUS_;
 extern core::Symbol_sp& _sym__PLUS_stereochemistryTypeConverter_PLUS_;
 extern core::Symbol_sp& _sym__PLUS_atomFlagSymbolConverter_PLUS_;
@@ -2892,38 +3188,19 @@ extern core::Symbol_sp& _sym_minimizerIdle;
 extern core::Symbol_sp& _sym_Angle_O;
 extern core::Symbol_sp& _sym_ProperTorsion_O;
 extern core::Symbol_sp& _sym_ImproperTorsion_O;
-extern core::Symbol_sp& _sym_AtomIndexer_O;
-extern core::Symbol_sp& _sym_MapOfMonomerNamesToAtomIndexers_O;
-extern core::Symbol_sp& _sym_MonomerPack_O;
-extern core::Symbol_sp& _sym_StereoConfiguration_O;
-extern core::Symbol_sp& _sym_Stereoisomer_O;
-extern core::Symbol_sp& _sym_StereoInformation_O;
-extern core::Symbol_sp& _sym_ConformationExplorerEntryStage_O;
-extern core::Symbol_sp& _sym_ConformationExplorerEntry_O;
-extern core::Symbol_sp& _sym_ConformationExplorer_O;
-extern core::Symbol_sp& _sym_ConformationExplorerMatch_O;
 extern core::Symbol_sp& _sym_MonomerCoordinates_O;
-extern core::Symbol_sp& _sym_ConformationCollectionEntry_O;
-extern core::Symbol_sp& _sym_ConformationCollection_O;
-extern core::Symbol_sp& _sym_SuperposableConformationCollection_O;
 extern core::Symbol_sp& _sym_FrameRecognizer_O;
 extern core::Symbol_sp& _sym_Rotamer_O;
 extern core::Symbol_sp& _sym_AtomReferenceBase_O;
 extern core::Symbol_sp& _sym_AtomReference_O;
-extern core::Symbol_sp& _sym_RepresentedEntityNameSet_O;
 extern core::Symbol_sp& _sym_CoordinateSystem_O;
 extern core::Symbol_sp& _sym_PdbMonomerConnectivity_O;
 extern core::Symbol_sp& _sym_PdbMonomerDatabase_O;
 extern core::Symbol_sp& _sym_StereoisomerAtom_O;
 extern core::Symbol_sp& _sym_StereoisomerVirtualAtom_O;
 extern core::Symbol_sp& _sym_StereoisomerAtoms_O;
-extern core::Symbol_sp& _sym_ConstitutionBond_O;
-extern core::Symbol_sp& _sym_ConstitutionAtom_O;
-extern core::Symbol_sp& _sym_ConstitutionVirtualAtom_O;
-extern core::Symbol_sp& _sym_ConstitutionAtoms_O;
 extern core::Symbol_sp& _sym_TrajectoryFrame_O;
 extern core::Symbol_sp& _sym_Trajectory_O;
-extern core::Symbol_sp& _sym_CipPrioritizer_O;
 extern core::Symbol_sp& _sym_AtomTable_O;
 extern core::Symbol_sp& _sym_EnergyComponent_O;
 extern core::Symbol_sp& _sym_EnergyStretch_O;
@@ -2941,33 +3218,114 @@ extern core::Symbol_sp& _sym_LinearAngleError;
 extern core::Symbol_sp& _sym_LinearDihedralError;
 extern core::Symbol_sp& _sym_LinearImproperRestraintError;
 extern core::Symbol_sp& _sym_OverlappingNonbondError;
+extern core::Symbol_sp& _sym_SearchStatistics_O;
+extern core::Symbol_sp& _sym_superpose;
+extern core::Symbol_sp& _sym_VirtualSphere_O;
+extern core::Symbol_sp& _sym_idle;
+extern core::Symbol_sp& _sym_translate;
+extern core::Symbol_sp& _sym_rotate;
+extern core::Symbol_sp& _sym_scale;
+extern core::Symbol_sp& _sym_STARsybyl_type_assignment_rulesSTAR;
+extern core::Symbol_sp& _sym_EnergyFunction_O;
+extern core::Symbol_sp& _sym_NumericalFunction_O;
+extern core::Symbol_sp& _sym_ReportBase_O;
+extern core::Symbol_sp& _sym_MessageReport_O;
+extern core::Symbol_sp& _sym_ForceMatchReport_O;
+extern core::Symbol_sp& _sym_StepReport_O;
+extern core::Symbol_sp& _sym_MinimizerLog_O;
+extern core::Symbol_sp& _sym_Minimizer_O;
+extern core::Symbol_sp& _sym_IterateRestraints_O;
+extern core::Symbol_sp& _sym_PdbReader_O;
+extern core::Symbol_sp& _sym_PdbWriter_O;
+extern core::Symbol_sp& _sym_PathMessage_O;
+extern core::Symbol_sp& _sym_AGVertex_O;
+extern core::Symbol_sp& _sym_AGEdge_O;
+extern core::Symbol_sp& _sym_RingFinder_O;
+extern core::Symbol_sp& _sym_IterateMatter_O;
+extern core::Symbol_sp& _sym_IterateAtoms_O;
+extern core::Symbol_sp& _sym_IterateResidues_O;
+extern core::Symbol_sp& _sym_IterateBonds_O;
+extern core::Symbol_sp& _sym_iterateMatterSymbolConverter;
+extern core::Symbol_sp& _sym_allMatter;
+extern core::Symbol_sp& _sym_atoms;
+extern core::Symbol_sp& _sym_residues;
+extern core::Symbol_sp& _sym_molecules;
+extern core::Symbol_sp& _sym_bonds;
+extern core::Symbol_sp& _sym_MacroModelFile_O;
+extern core::Symbol_sp& _sym_OneTypeRule_O;
+extern core::Symbol_sp& _sym_TypeAssignmentRules_O;
+extern core::Symbol_sp& _sym_SuperposableConformationCollection_O;
+extern core::Symbol_sp& _sym_ZMatrixInternal_O;
+extern core::Symbol_sp& _sym_ZMatrixBondInternal_O;
+extern core::Symbol_sp& _sym_ZMatrixAngleInternal_O;
+extern core::Symbol_sp& _sym_ZMatrixDihedralInternal_O;
+extern core::Symbol_sp& _sym_ZMatrixEntry_O;
+extern core::Symbol_sp& _sym_ZMatrix_O;
+extern core::Symbol_sp& _sym_StructureComparer_O;
+extern core::Symbol_sp& _sym_Command_O;
+extern core::Symbol_sp& _sym_Structure_Old_ListEntry_O;
+extern core::Symbol_sp& _sym_Structure_Old_List_O;
+extern core::Symbol_sp& _sym_Twister_O;
+extern core::Symbol_sp& _sym_TwisterDriver_O;
+extern core::Symbol_sp& _sym_AbstractLargeSquareMatrix_O;
+extern core::Symbol_sp& _sym_FullLargeSquareMatrix_O;
+extern core::Symbol_sp& _sym_SparseLargeSquareMatrix_O;
+extern core::Symbol_sp& _sym_StereoConfiguration_O;
+extern core::Symbol_sp& _sym_Stereoisomer_O;
+extern core::Symbol_sp& _sym_StereoInformation_O;
+extern core::Symbol_sp& _sym_Restraint_O;
+extern core::Symbol_sp& _sym_RestraintAnchor_O;
+extern core::Symbol_sp& _sym_RestraintChiral_O;
+extern core::Symbol_sp& _sym_RestraintDistance_O;
+extern core::Symbol_sp& _sym_RestraintAngle_O;
+extern core::Symbol_sp& _sym_RestraintDihedral_O;
+extern core::Symbol_sp& _sym_RestraintFixedNonbond_O;
+extern core::Symbol_sp& _sym_RestraintList_O;
 extern core::Symbol_sp& _sym_ComplexRestraint_O;
 extern core::Symbol_sp& _sym_RestrainedExoCyclicAtom_O;
 extern core::Symbol_sp& _sym_RestrainedPiBond_O;
-extern core::Symbol_sp& _sym_SearchStatistics_O;
-extern core::Symbol_sp& _sym_Constitution_O;
+extern core::Symbol_sp& _sym_SpecificContext_O;
+extern core::Symbol_sp& _sym_SpecificContextSet_O;
+extern core::Symbol_sp& _sym_ReadAmberParameters_O;
+extern core::Symbol_sp& _sym_VirtualAtom_O;
+extern core::Symbol_sp& _sym_CDNode_O;
+extern core::Symbol_sp& _sym_CDBond_O;
+extern core::Symbol_sp& _sym_CDFragment_O;
+extern core::Symbol_sp& _sym_CDText_O;
+extern core::Symbol_sp& _sym_ChemDraw_O;
+extern core::Symbol_sp& _sym_SpanningLoop_O;
+extern core::Symbol_sp& _sym_CipPrioritizer_O;
+extern core::Symbol_sp& _sym_name;
+extern core::Symbol_sp& _sym__PLUS_validChemdrawKeywords_PLUS_;
+extern core::Symbol_sp& _sym_OligomerPart_Base_O;
+extern core::Symbol_sp& _sym_OligomerPart_Monomer_O;
+extern core::Symbol_sp& _sym_OligomerPart_Link_O;
 extern core::Symbol_sp& _sym_CalculatePosition_O;
 extern core::Symbol_sp& _sym_CalculatePositionUsingInternals_O;
 extern core::Symbol_sp& _sym_CalculatePositionAlongBond_O;
 extern core::Symbol_sp& _sym_CalculatePositionRelativeToOrigin_O;
-extern core::Symbol_sp& _sym_Oligomer_O;
-extern core::Symbol_sp& _sym_OligomerPart_Base_O;
-extern core::Symbol_sp& _sym_OligomerPart_Monomer_O;
-extern core::Symbol_sp& _sym_OligomerPart_Link_O;
+extern core::Symbol_sp& _sym_ConstitutionBond_O;
+extern core::Symbol_sp& _sym_ConstitutionAtom_O;
+extern core::Symbol_sp& _sym_ConstitutionVirtualAtom_O;
+extern core::Symbol_sp& _sym_ConstitutionAtoms_O;
 extern core::Symbol_sp& _sym_Entity_O;
 extern core::Symbol_sp& _sym_Monomer_O;
 extern core::Symbol_sp& _sym_OneMonomer_O;
 extern core::Symbol_sp& _sym_MultiMonomer_O;
+extern core::Symbol_sp& _sym_Oligomer_O;
+extern core::Symbol_sp& _sym_Coupling_O;
+extern core::Symbol_sp& _sym_DirectionalCoupling_O;
+extern core::Symbol_sp& _sym_RingCoupling_O;
 extern core::Symbol_sp& _sym_CandoDatabase_O;
-extern core::Symbol_sp& _sym_Topology_O;
 extern core::Symbol_sp& _sym_StatusTracker_O;
 extern core::Symbol_sp& _sym_EntityNameSetBase_O;
 extern core::Symbol_sp& _sym_EntityNameSet_O;
 extern core::Symbol_sp& _sym_EntityNameSetWithCap_O;
+extern core::Symbol_sp& _sym_AtomIndexer_O;
+extern core::Symbol_sp& _sym_MapOfMonomerNamesToAtomIndexers_O;
+extern core::Symbol_sp& _sym_MonomerPack_O;
 extern core::Symbol_sp& _sym_MonomerContext_O;
-extern core::Symbol_sp& _sym_Coupling_O;
-extern core::Symbol_sp& _sym_DirectionalCoupling_O;
-extern core::Symbol_sp& _sym_RingCoupling_O;
+extern core::Symbol_sp& _sym_RepresentedEntityNameSet_O;
 extern core::Symbol_sp& _sym_Mate_O;
 extern core::Symbol_sp& _sym_RingClosingMate_O;
 extern core::Symbol_sp& _sym_Plug_O;
@@ -2976,22 +3334,22 @@ extern core::Symbol_sp& _sym_OutPlug_O;
 extern core::Symbol_sp& _sym_InPlug_O;
 extern core::Symbol_sp& _sym_JumpPlug_O;
 extern core::Symbol_sp& _sym_RingClosingPlug_O;
-extern core::Symbol_sp& _sym_SpecificContext_O;
-extern core::Symbol_sp& _sym_SpecificContextSet_O;
-extern core::Symbol_sp& _sym_SpanningLoop_O;
+extern core::Symbol_sp& _sym_Constitution_O;
+extern core::Symbol_sp& _sym_Alias_O;
+extern core::Symbol_sp& _sym_Topology_O;
+extern core::Symbol_sp& _sym_NVector_O;
+extern core::Symbol_sp& _sym_ConformationCollectionEntry_O;
+extern core::Symbol_sp& _sym_ConformationCollection_O;
 extern core::Symbol_sp& _sym_SuperposeEngine_O;
 extern core::Symbol_sp& _sym_SuperposeSelectedAtoms_O;
-extern core::Symbol_sp& _sym_superpose;
-extern core::Symbol_sp& _sym_VirtualSphere_O;
-extern core::Symbol_sp& _sym_idle;
-extern core::Symbol_sp& _sym_translate;
-extern core::Symbol_sp& _sym_rotate;
-extern core::Symbol_sp& _sym_scale;
-extern core::Symbol_sp& _sym_OneTypeRule_O;
-extern core::Symbol_sp& _sym_TypeAssignmentRules_O;
-extern core::Symbol_sp& _sym_STARsybyl_type_assignment_rulesSTAR;
-extern core::Symbol_sp& _sym_FFParameter_O;
-extern core::Symbol_sp& _sym_FFBaseDb_O;
+extern core::Symbol_sp& _sym_ConformationExplorerEntryStage_O;
+extern core::Symbol_sp& _sym_ConformationExplorerEntry_O;
+extern core::Symbol_sp& _sym_ConformationExplorer_O;
+extern core::Symbol_sp& _sym_ConformationExplorerMatch_O;
+extern core::Symbol_sp& _sym_STARparserNodeHolderSTAR;
+extern core::Symbol_sp& _sym_STARSabBondEnumConverterSTAR;
+extern core::Symbol_sp& _sym_STARLogicalOperatorTypeConverterSTAR;
+extern core::Symbol_sp& _sym_STARAtomTestEnumConverterSTAR;
 extern core::Symbol_sp& _sym_ChemInfoMatch_O;
 extern core::Symbol_sp& _sym_WildElementDict_O;
 extern core::Symbol_sp& _sym_ChemInfoNode_O;
@@ -3020,64 +3378,88 @@ extern core::Symbol_sp& _sym_FFStretch_O;
 extern core::Symbol_sp& _sym_FFStretchDb_O;
 extern core::Symbol_sp& _sym_FFAngle_O;
 extern core::Symbol_sp& _sym_FFAngleDb_O;
-extern core::Symbol_sp& _sym_FFItor_O;
-extern core::Symbol_sp& _sym_FFItorDb_O;
-extern core::Symbol_sp& _sym_FFPtor_O;
-extern core::Symbol_sp& _sym_FFPtorDb_O;
-extern core::Symbol_sp& _sym_FFNonbondCrossTermTable_O;
-extern core::Symbol_sp& _sym_FFNonbond_O;
-extern core::Symbol_sp& _sym_FFNonbondDb_O;
 extern core::Symbol_sp& _sym_FFVdw_O;
 extern core::Symbol_sp& _sym_FFVdwDb_O;
 extern core::Symbol_sp& _sym_InfoDb_O;
 extern core::Symbol_sp& _sym_ForceField_O;
-extern core::Symbol_sp& _sym_EnergyFunction_O;
-extern core::Symbol_sp& _sym_AbstractLargeSquareMatrix_O;
-extern core::Symbol_sp& _sym_FullLargeSquareMatrix_O;
-extern core::Symbol_sp& _sym_SparseLargeSquareMatrix_O;
-extern core::Symbol_sp& _sym_NumericalFunction_O;
-extern core::Symbol_sp& _sym_NVector_O;
-extern core::Symbol_sp& _sym_ReportBase_O;
-extern core::Symbol_sp& _sym_MessageReport_O;
-extern core::Symbol_sp& _sym_ForceMatchReport_O;
-extern core::Symbol_sp& _sym_StepReport_O;
-extern core::Symbol_sp& _sym_MinimizerLog_O;
-extern core::Symbol_sp& _sym_Minimizer_O;
-extern core::Symbol_sp& _sym_IterateRestraints_O;
-extern core::Symbol_sp& _sym_Restraint_O;
-extern core::Symbol_sp& _sym_RestraintAnchor_O;
-extern core::Symbol_sp& _sym_RestraintChiral_O;
-extern core::Symbol_sp& _sym_RestraintDistance_O;
-extern core::Symbol_sp& _sym_RestraintAngle_O;
-extern core::Symbol_sp& _sym_RestraintDihedral_O;
-extern core::Symbol_sp& _sym_RestraintFixedNonbond_O;
-extern core::Symbol_sp& _sym_RestraintList_O;
-extern core::Symbol_sp& _sym_PdbReader_O;
-extern core::Symbol_sp& _sym_PdbWriter_O;
-extern core::Symbol_sp& _sym_PathMessage_O;
-extern core::Symbol_sp& _sym_AGVertex_O;
-extern core::Symbol_sp& _sym_AGEdge_O;
-extern core::Symbol_sp& _sym_RingFinder_O;
-extern core::Symbol_sp& _sym_VirtualAtom_O;
+extern core::Symbol_sp& _sym_FFItor_O;
+extern core::Symbol_sp& _sym_FFItorDb_O;
+extern core::Symbol_sp& _sym_FFPtor_O;
+extern core::Symbol_sp& _sym_FFPtorDb_O;
+extern core::Symbol_sp& _sym_Matter_O;
 extern core::Symbol_sp& _sym_Bond_O;
 extern core::Symbol_sp& _sym_BondList_O;
-extern core::Symbol_sp& _sym_Aggregate_O;
-extern core::Symbol_sp& _sym_IterateMatter_O;
-extern core::Symbol_sp& _sym_IterateAtoms_O;
-extern core::Symbol_sp& _sym_IterateResidues_O;
-extern core::Symbol_sp& _sym_IterateBonds_O;
-extern core::Symbol_sp& _sym_iterateMatterSymbolConverter;
-extern core::Symbol_sp& _sym_allMatter;
-extern core::Symbol_sp& _sym_atoms;
-extern core::Symbol_sp& _sym_residues;
-extern core::Symbol_sp& _sym_molecules;
-extern core::Symbol_sp& _sym_bonds;
-extern core::Symbol_sp& _sym_Matter_O;
 extern core::Symbol_sp& _sym_Atom_O;
 extern core::Symbol_sp& _sym_Residue_O;
+extern core::Symbol_sp& _sym_FFParameter_O;
+extern core::Symbol_sp& _sym_FFBaseDb_O;
+extern core::Symbol_sp& _sym_FFNonbondCrossTermTable_O;
+extern core::Symbol_sp& _sym_FFNonbond_O;
+extern core::Symbol_sp& _sym_FFNonbondDb_O;
 extern core::Symbol_sp& _sym_Molecule_O;
-extern core::Symbol_sp& _sym_MacroModelFile_O;
+extern core::Symbol_sp& _sym_Aggregate_O;
+extern core::Symbol_sp& _sym_STARDonorAcceptorEnumConverterSTAR;
+extern core::Symbol_sp& _sym_STAREleDielectricEnumConverterSTAR;
+extern core::Symbol_sp& _sym_STARVdwMixRadiusEnumConverterSTAR;
+extern core::Symbol_sp& _sym_STARVdwMixWellEnumConverterSTAR;
 } // namespace chem
+namespace chemkw {
+extern core::Symbol_sp& _sym__singleBond;
+extern core::Symbol_sp& _sym__doubleBond;
+extern core::Symbol_sp& _sym__tripleBond;
+extern core::Symbol_sp& _sym__aromaticBond;
+extern core::Symbol_sp& _sym__hydrogenBond;
+extern core::Symbol_sp& _sym__virtualBond;
+extern core::Symbol_sp& _sym__dashedSingleBond;
+extern core::Symbol_sp& _sym__dashedDoubleBond;
+extern core::Symbol_sp& _sym_noBond;
+extern core::Symbol_sp& _sym_singleBond;
+extern core::Symbol_sp& _sym_doubleBond;
+extern core::Symbol_sp& _sym_tripleBond;
+extern core::Symbol_sp& _sym_aromaticBond;
+extern core::Symbol_sp& _sym_hydrogenBond;
+extern core::Symbol_sp& _sym_virtualBond;
+extern core::Symbol_sp& _sym_dashedSingleBond;
+extern core::Symbol_sp& _sym_dashedDoubleBond;
+extern core::Symbol_sp& _sym_C;
+extern core::Symbol_sp& _sym_N;
+extern core::Symbol_sp& _sym_O;
+extern core::Symbol_sp& _sym_P;
+extern core::Symbol_sp& _sym_F;
+extern core::Symbol_sp& _sym_Cl;
+extern core::Symbol_sp& _sym_Br;
+extern core::Symbol_sp& _sym_I;
+extern core::Symbol_sp& _sym_message;
+extern core::Symbol_sp& _sym_constitution;
+extern core::Symbol_sp& _sym_entity;
+extern core::Symbol_sp& _sym_frameRecognizer;
+extern core::Symbol_sp& _sym_E;
+extern core::Symbol_sp& _sym_Z;
+extern core::Symbol_sp& _sym_1;
+extern core::Symbol_sp& _sym_2;
+extern core::Symbol_sp& _sym_3;
+extern core::Symbol_sp& _sym_4;
+extern core::Symbol_sp& _sym_5;
+extern core::Symbol_sp& _sym_6;
+extern core::Symbol_sp& _sym_idle;
+extern core::Symbol_sp& _sym_translate;
+extern core::Symbol_sp& _sym_rotate;
+extern core::Symbol_sp& _sym_scale;
+extern core::Symbol_sp& _sym_XX;
+extern core::Symbol_sp& _sym_XA;
+extern core::Symbol_sp& _sym_XB;
+extern core::Symbol_sp& _sym_XC;
+extern core::Symbol_sp& _sym_XD;
+extern core::Symbol_sp& _sym_undefinedConfiguration;
+extern core::Symbol_sp& _sym_S;
+extern core::Symbol_sp& _sym_R;
+extern core::Symbol_sp& _sym_undefinedCenter;
+extern core::Symbol_sp& _sym_chiral;
+extern core::Symbol_sp& _sym_prochiral;
+extern core::Symbol_sp& _sym_parameterized;
+extern core::Symbol_sp& _sym_estimated;
+extern core::Symbol_sp& _sym_rough;
+} // namespace chemkw
 namespace core {
 extern core::Symbol_sp& _sym_STARwatchDynamicBindingStackSTAR;
 extern core::Symbol_sp& _sym_symbolMacro;
@@ -3505,24 +3887,23 @@ extern core::Symbol_sp& _sym_VectorDisplaced_O;
 extern core::Symbol_sp& _sym_CxxClass_O;
 extern core::Symbol_sp& _sym_ForwardReferencedClass_O;
 extern core::Symbol_sp& _sym_StrWithFillPtr_O;
+extern core::Symbol_sp& _sym_HashTableEql_O;
 extern core::Symbol_sp& _sym_InvocationHistoryFrameIterator_O;
+extern core::Symbol_sp& _sym_IOFileStream_O;
+extern core::Symbol_sp& _sym_IOStreamStream_O;
+extern core::Symbol_sp& _sym_StringOutputStream_O;
+extern core::Symbol_sp& _sym_StringInputStream_O;
 extern core::Symbol_sp& _sym_Reader_O;
-extern core::Symbol_sp& _sym_HashTableEqual_O;
-extern core::Symbol_sp& _sym_Binder_O;
+extern core::Symbol_sp& _sym_Iterator_O;
 extern core::Symbol_sp& _sym_Path_O;
 extern core::Symbol_sp& _sym_DirectoryIterator_O;
 extern core::Symbol_sp& _sym_RecursiveDirectoryIterator_O;
 extern core::Symbol_sp& _sym_DirectoryEntry_O;
 extern core::Symbol_sp& _sym_FileStatus_O;
+extern core::Symbol_sp& _sym_Binder_O;
 extern core::Symbol_sp& _sym_IntArray_O;
-extern core::Symbol_sp& _sym_IOFileStream_O;
-extern core::Symbol_sp& _sym_IOStreamStream_O;
-extern core::Symbol_sp& _sym_StringOutputStream_O;
-extern core::Symbol_sp& _sym_StringInputStream_O;
-extern core::Symbol_sp& _sym_HashTableEql_O;
-extern core::Symbol_sp& _sym_HashTableEq_O;
+extern core::Symbol_sp& _sym_HashTableEqual_O;
 extern core::Symbol_sp& _sym_SmallMap_O;
-extern core::Symbol_sp& _sym_Iterator_O;
 extern core::Symbol_sp& _sym_CandoException_O;
 extern core::Symbol_sp& _sym_VaList_dummy_O;
 extern core::Symbol_sp& _sym_Pointer_O;
@@ -3554,6 +3935,7 @@ extern core::Symbol_sp& _sym_SourcePosInfo_O;
 extern core::Symbol_sp& _sym_SourceManager_O;
 extern core::Symbol_sp& _sym_CxxObject_O;
 extern core::Symbol_sp& _sym_Record_O;
+extern core::Symbol_sp& _sym_HashTableEq_O;
 extern core::Symbol_sp& _sym_VectorObjects_O;
 extern core::Symbol_sp& _sym_VectorObjectsWithFillPtr_O;
 extern core::Symbol_sp& _sym_SymbolToEnumConverter_O;
@@ -4148,8 +4530,9 @@ extern core::Symbol_sp& _sym_StructureClass_O;
 extern core::Symbol_sp& _sym_StandardClass_O;
 extern core::Symbol_sp& _sym_BuiltInClass_O;
 extern core::Symbol_sp& _sym_Package_O;
-extern core::Symbol_sp& _sym_Pathname_O;
-extern core::Symbol_sp& _sym_LogicalPathname_O;
+extern core::Symbol_sp& _sym_BitVector_O;
+extern core::Symbol_sp& _sym_SimpleBitVector_O;
+extern core::Symbol_sp& _sym_BitVectorWithFillPtr_O;
 extern core::Symbol_sp& _sym_Character_dummy_O;
 extern core::Symbol_sp& _sym_Stream_O;
 extern core::Symbol_sp& _sym_FileStream_O;
@@ -4159,12 +4542,10 @@ extern core::Symbol_sp& _sym_TwoWayStream_O;
 extern core::Symbol_sp& _sym_BroadcastStream_O;
 extern core::Symbol_sp& _sym_ConcatenatedStream_O;
 extern core::Symbol_sp& _sym_EchoStream_O;
+extern core::Symbol_sp& _sym_Pathname_O;
+extern core::Symbol_sp& _sym_LogicalPathname_O;
 extern core::Symbol_sp& _sym_String_O;
 extern core::Symbol_sp& _sym_Str_O;
-extern core::Symbol_sp& _sym_HashTable_O;
-extern core::Symbol_sp& _sym_BitVector_O;
-extern core::Symbol_sp& _sym_SimpleBitVector_O;
-extern core::Symbol_sp& _sym_BitVectorWithFillPtr_O;
 extern core::Symbol_sp& _sym_T_O;
 extern core::Symbol_sp& _sym_Cons_O;
 extern core::Symbol_sp& _sym_Number_O;
@@ -4187,17 +4568,28 @@ extern core::Symbol_sp& _sym_StandardObject_O;
 extern core::Symbol_sp& _sym_Class_O;
 extern core::Symbol_sp& _sym_Array_O;
 extern core::Symbol_sp& _sym_Vector_O;
+extern core::Symbol_sp& _sym_HashTable_O;
 } // namespace cl
 namespace adapt {
-extern core::Symbol_sp& _sym_SymbolList_O;
-extern core::Symbol_sp& _sym_StringList_O;
 extern core::Symbol_sp& _sym_IterateCons_O;
-extern core::Symbol_sp& _sym_StringSet_O;
-extern core::Symbol_sp& _sym_IndexedObjectBag_O;
-extern core::Symbol_sp& _sym_QDomNode_O;
-extern core::Symbol_sp& _sym_SymbolSet_O;
+extern core::Symbol_sp& _sym_StringList_O;
 extern core::Symbol_sp& _sym_ObjectSet_O;
+extern core::Symbol_sp& _sym_SymbolList_O;
+extern core::Symbol_sp& _sym_IndexedObjectBag_O;
+extern core::Symbol_sp& _sym_StringSet_O;
+extern core::Symbol_sp& _sym_SymbolSet_O;
+extern core::Symbol_sp& _sym_QDomNode_O;
 } // namespace adapt
+namespace geom {
+extern core::Symbol_sp& _sym_colorTable;
+extern core::Symbol_sp& _sym_OVector2_O;
+extern core::Symbol_sp& _sym_BoundingBox_O;
+extern core::Symbol_sp& _sym_OMatrix_O;
+extern core::Symbol_sp& _sym_OVector3_O;
+extern core::Symbol_sp& _sym_Color_O;
+extern core::Symbol_sp& _sym_CoordinateArray_O;
+extern core::Symbol_sp& _sym_CoordinateArrayWithHash_O;
+} // namespace geom
 namespace ext {
 extern core::Symbol_sp& _sym_STARinspectorHookSTAR;
 extern core::Symbol_sp& _sym_integer8;
@@ -4225,398 +4617,6 @@ extern core::Symbol_sp& _sym_maybeQuote;
 extern core::Symbol_sp& _sym_annotate;
 extern core::Symbol_sp& _sym_AnsiStream_O;
 } // namespace ext
-namespace geom {
-extern core::Symbol_sp& _sym_colorTable;
-extern core::Symbol_sp& _sym_OVector2_O;
-extern core::Symbol_sp& _sym_BoundingBox_O;
-extern core::Symbol_sp& _sym_Color_O;
-extern core::Symbol_sp& _sym_OMatrix_O;
-extern core::Symbol_sp& _sym_CoordinateArray_O;
-extern core::Symbol_sp& _sym_CoordinateArrayWithHash_O;
-extern core::Symbol_sp& _sym_OVector3_O;
-} // namespace geom
-namespace kw {
-extern core::Symbol_sp& _sym_catchFrame;
-extern core::Symbol_sp& _sym_blockFrame;
-extern core::Symbol_sp& _sym_tagbodyFrame;
-extern core::Symbol_sp& _sym_landingPadFrame;
-extern core::Symbol_sp& _sym_splatted;
-extern core::Symbol_sp& _sym_unbound;
-extern core::Symbol_sp& _sym_deleted;
-extern core::Symbol_sp& _sym_rtld_default;
-extern core::Symbol_sp& _sym_rtld_next;
-extern core::Symbol_sp& _sym_rtld_self;
-extern core::Symbol_sp& _sym_rtld_main_only;
-extern core::Symbol_sp& _sym_iclass;
-extern core::Symbol_sp& _sym_next;
-extern core::Symbol_sp& _sym_prev;
-extern core::Symbol_sp& _sym_key;
-extern core::Symbol_sp& _sym_defaults;
-extern core::Symbol_sp& _sym_error;
-extern core::Symbol_sp& _sym_link;
-extern core::Symbol_sp& _sym_broken_link;
-extern core::Symbol_sp& _sym_special;
-extern core::Symbol_sp& _sym_supersede;
-extern core::Symbol_sp& _sym_calledFunction;
-extern core::Symbol_sp& _sym_givenNumberOfArguments;
-extern core::Symbol_sp& _sym_requiredNumberOfArguments;
-extern core::Symbol_sp& _sym_unrecognizedKeyword;
-extern core::Symbol_sp& _sym_body;
-extern core::Symbol_sp& _sym_lambda_list_handler;
-extern core::Symbol_sp& _sym_docstring;
-extern core::Symbol_sp& _sym_arguments;
-extern core::Symbol_sp& _sym_create;
-extern core::Symbol_sp& _sym_append;
-extern core::Symbol_sp& _sym_debugStartup;
-extern core::Symbol_sp& _sym_cclasp;
-extern core::Symbol_sp& _sym_bclasp;
-extern core::Symbol_sp& _sym_load;
-extern core::Symbol_sp& _sym_eval;
-extern core::Symbol_sp& _sym_ecl_min;
-extern core::Symbol_sp& _sym_use_mps;
-extern core::Symbol_sp& _sym_use_boehmdc;
-extern core::Symbol_sp& _sym_use_boehm;
-extern core::Symbol_sp& _sym_cr;
-extern core::Symbol_sp& _sym_lf;
-extern core::Symbol_sp& _sym_littleEndian;
-extern core::Symbol_sp& _sym_bigEndian;
-extern core::Symbol_sp& _sym_crlf;
-extern core::Symbol_sp& _sym_latin_1;
-extern core::Symbol_sp& _sym_ucs_4;
-extern core::Symbol_sp& _sym_passThrough;
-extern core::Symbol_sp& _sym_if_does_not_exist;
-extern core::Symbol_sp& _sym_new_version;
-extern core::Symbol_sp& _sym_rename;
-extern core::Symbol_sp& _sym_rename_and_delete;
-extern core::Symbol_sp& _sym_overwrite;
-extern core::Symbol_sp& _sym_if_exists;
-extern core::Symbol_sp& _sym_probe;
-extern core::Symbol_sp& _sym_FullDebug;
-extern core::Symbol_sp& _sym_LineTablesOnly;
-extern core::Symbol_sp& _sym__uid;
-extern core::Symbol_sp& _sym_none;
-extern core::Symbol_sp& _sym_line;
-extern core::Symbol_sp& _sym_full;
-extern core::Symbol_sp& _sym_message;
-extern core::Symbol_sp& _sym_line_buffered;
-extern core::Symbol_sp& _sym_fully_buffered;
-extern core::Symbol_sp& _sym_array;
-extern core::Symbol_sp& _sym_UnsignedByte;
-extern core::Symbol_sp& _sym_junkAllowed;
-extern core::Symbol_sp& _sym_absolute;
-extern core::Symbol_sp& _sym_relative;
-extern core::Symbol_sp& _sym_back;
-extern core::Symbol_sp& _sym_operation;
-extern core::Symbol_sp& _sym_operands;
-extern core::Symbol_sp& _sym_escape;
-extern core::Symbol_sp& _sym_capitalize;
-extern core::Symbol_sp& _sym_typeError;
-extern core::Symbol_sp& _sym_datum;
-extern core::Symbol_sp& _sym_expectedType;
-extern core::Symbol_sp& _sym_print;
-extern core::Symbol_sp& _sym_pathname;
-extern core::Symbol_sp& _sym_object;
-extern core::Symbol_sp& _sym_formatControl;
-extern core::Symbol_sp& _sym_formatArguments;
-extern core::Symbol_sp& _sym_stream;
-extern core::Symbol_sp& _sym_package;
-extern core::Symbol_sp& _sym_compile_toplevel;
-extern core::Symbol_sp& _sym_load_toplevel;
-extern core::Symbol_sp& _sym_execute;
-extern core::Symbol_sp& _sym_allow_other_keys;
-extern core::Symbol_sp& _sym_macro;
-extern core::Symbol_sp& _sym_function;
-extern core::Symbol_sp& _sym_invalid_character;
-extern core::Symbol_sp& _sym_brcl;
-extern core::Symbol_sp& _sym_not;
-extern core::Symbol_sp& _sym_and;
-extern core::Symbol_sp& _sym_or;
-extern core::Symbol_sp& _sym_class;
-extern core::Symbol_sp& _sym_instance;
-extern core::Symbol_sp& _sym_output;
-extern core::Symbol_sp& _sym_input;
-extern core::Symbol_sp& _sym_io;
-extern core::Symbol_sp& _sym_default;
-extern core::Symbol_sp& _sym_internal;
-extern core::Symbol_sp& _sym_external;
-extern core::Symbol_sp& _sym_inherited;
-extern core::Symbol_sp& _sym_debug;
-extern core::Symbol_sp& _sym_direct_super_classes;
-extern core::Symbol_sp& _sym_changed;
-extern core::Symbol_sp& _sym_address_model_64;
-extern core::Symbol_sp& _sym_target_os_darwin;
-extern core::Symbol_sp& _sym_podSymbolMap;
-extern core::Symbol_sp& _sym_constituent_character;
-extern core::Symbol_sp& _sym_syntax;
-extern core::Symbol_sp& _sym_whitespace_character;
-extern core::Symbol_sp& _sym_single_escape_character;
-extern core::Symbol_sp& _sym_multiple_escape_character;
-extern core::Symbol_sp& _sym_upcase;
-extern core::Symbol_sp& _sym_downcase;
-extern core::Symbol_sp& _sym_preserve;
-extern core::Symbol_sp& _sym_invert;
-extern core::Symbol_sp& _sym_non_terminating_macro_character;
-extern core::Symbol_sp& _sym_terminating_macro_character;
-extern core::Symbol_sp& _sym_macro_function;
-extern core::Symbol_sp& _sym_case;
-extern core::Symbol_sp& _sym_file;
-extern core::Symbol_sp& _sym_unspecific;
-extern core::Symbol_sp& _sym_local;
-extern core::Symbol_sp& _sym_common;
-extern core::Symbol_sp& _sym_wild_inferiors;
-extern core::Symbol_sp& _sym_up;
-extern core::Symbol_sp& _sym_wild;
-extern core::Symbol_sp& _sym_host;
-extern core::Symbol_sp& _sym_device;
-extern core::Symbol_sp& _sym_newest;
-extern core::Symbol_sp& _sym_version;
-extern core::Symbol_sp& _sym_directory;
-extern core::Symbol_sp& _sym_supplied;
-extern core::Symbol_sp& _sym_min;
-extern core::Symbol_sp& _sym_max;
-extern core::Symbol_sp& _sym_eof;
-extern core::Symbol_sp& _sym_fillPointer;
-extern core::Symbol_sp& _sym_elementType;
-extern core::Symbol_sp& _sym_adjustable;
-extern core::Symbol_sp& _sym_start;
-extern core::Symbol_sp& _sym_end;
-extern core::Symbol_sp& _sym_x;
-extern core::Symbol_sp& _sym_y;
-extern core::Symbol_sp& _sym_z;
-extern core::Symbol_sp& _sym_white;
-extern core::Symbol_sp& _sym_black;
-extern core::Symbol_sp& _sym_red;
-extern core::Symbol_sp& _sym_green;
-extern core::Symbol_sp& _sym_blue;
-extern core::Symbol_sp& _sym_magenta;
-extern core::Symbol_sp& _sym_yellow;
-extern core::Symbol_sp& _sym_cyan;
-extern core::Symbol_sp& _sym_grey10;
-extern core::Symbol_sp& _sym_greyF0;
-extern core::Symbol_sp& _sym_goldenrod;
-extern core::Symbol_sp& _sym_purple;
-extern core::Symbol_sp& _sym_pink;
-extern core::Symbol_sp& _sym_plum;
-extern core::Symbol_sp& _sym_coral;
-extern core::Symbol_sp& _sym_orange;
-extern core::Symbol_sp& _sym_brown;
-extern core::Symbol_sp& _sym_wheat;
-extern core::Symbol_sp& _sym_chartreuse;
-extern core::Symbol_sp& _sym_aquamarine;
-extern core::Symbol_sp& _sym_mediumBlue;
-extern core::Symbol_sp& _sym_steelBlue;
-extern core::Symbol_sp& _sym_chemdraw_color;
-extern core::Symbol_sp& _sym_chemdraw_dashed_bond;
-extern core::Symbol_sp& _sym_comment;
-extern core::Symbol_sp& _sym_chiral_centers;
-extern core::Symbol_sp& _sym_group;
-extern core::Symbol_sp& _sym_name_template;
-extern core::Symbol_sp& _sym_pdb_template;
-extern core::Symbol_sp& _sym_residue_charge;
-extern core::Symbol_sp& _sym_restrained_pi_bonds;
-extern core::Symbol_sp& _sym_caps;
-extern core::Symbol_sp& _sym_matches;
-extern core::Symbol_sp& _sym_tags;
-extern core::Symbol_sp& _sym_closestMatch;
-extern core::Symbol_sp& _sym_data;
-extern core::Symbol_sp& _sym_root;
-extern core::Symbol_sp& _sym_op;
-extern core::Symbol_sp& _sym_ringTag;
-extern core::Symbol_sp& _sym_atomTest;
-extern core::Symbol_sp& _sym_test;
-extern core::Symbol_sp& _sym_int;
-extern core::Symbol_sp& _sym_num;
-extern core::Symbol_sp& _sym_str;
-extern core::Symbol_sp& _sym_sym;
-extern core::Symbol_sp& _sym_head;
-extern core::Symbol_sp& _sym_tail;
-extern core::Symbol_sp& _sym_left;
-extern core::Symbol_sp& _sym_right;
-extern core::Symbol_sp& _sym_tag1;
-extern core::Symbol_sp& _sym_tag2;
-extern core::Symbol_sp& _sym_bond;
-extern core::Symbol_sp& _sym_residueNames;
-extern core::Symbol_sp& _sym_atomicProperty;
-extern core::Symbol_sp& _sym_atomicNumber;
-extern core::Symbol_sp& _sym_attachedAtoms;
-extern core::Symbol_sp& _sym_attachedHs;
-extern core::Symbol_sp& _sym_attachedEWGs;
-extern core::Symbol_sp& _sym_neighbors;
-extern core::Symbol_sp& _sym_tag;
-extern core::Symbol_sp& _sym_atomProps;
-extern core::Symbol_sp& _sym_firstTest;
-extern core::Symbol_sp& _sym_chain;
-extern core::Symbol_sp& _sym_tests;
-extern core::Symbol_sp& _sym_assignType;
-extern core::Symbol_sp& _sym_afterMatchTests;
-extern core::Symbol_sp& _sym_wildDict;
-extern core::Symbol_sp& _sym_type_rules;
-extern core::Symbol_sp& _sym_r0;
-extern core::Symbol_sp& _sym_kb;
-extern core::Symbol_sp& _sym_stretches;
-extern core::Symbol_sp& _sym_R;
-extern core::Symbol_sp& _sym_Eps;
-extern core::Symbol_sp& _sym_M;
-extern core::Symbol_sp& _sym_N;
-extern core::Symbol_sp& _sym_Edep;
-extern core::Symbol_sp& _sym_vdw;
-extern core::Symbol_sp& _sym_angRad;
-extern core::Symbol_sp& _sym_k2;
-extern core::Symbol_sp& _sym_angleFunction;
-extern core::Symbol_sp& _sym_angles;
-extern core::Symbol_sp& _sym_zConstants;
-extern core::Symbol_sp& _sym_cConstants;
-extern core::Symbol_sp& _sym_level;
-extern core::Symbol_sp& _sym_forceField;
-extern core::Symbol_sp& _sym_itors;
-extern core::Symbol_sp& _sym_type1;
-extern core::Symbol_sp& _sym_type2;
-extern core::Symbol_sp& _sym_type3;
-extern core::Symbol_sp& _sym_type4;
-extern core::Symbol_sp& _sym_v0;
-extern core::Symbol_sp& _sym_ph0;
-extern core::Symbol_sp& _sym_v1;
-extern core::Symbol_sp& _sym_ph1;
-extern core::Symbol_sp& _sym_v2;
-extern core::Symbol_sp& _sym_ph2;
-extern core::Symbol_sp& _sym_v3;
-extern core::Symbol_sp& _sym_ph3;
-extern core::Symbol_sp& _sym_v4;
-extern core::Symbol_sp& _sym_ph4;
-extern core::Symbol_sp& _sym_v5;
-extern core::Symbol_sp& _sym_ph5;
-extern core::Symbol_sp& _sym_ptors;
-extern core::Symbol_sp& _sym_radius;
-extern core::Symbol_sp& _sym_well;
-extern core::Symbol_sp& _sym_apol;
-extern core::Symbol_sp& _sym_neff;
-extern core::Symbol_sp& _sym_mass;
-extern core::Symbol_sp& _sym_pol;
-extern core::Symbol_sp& _sym_initCharge;
-extern core::Symbol_sp& _sym_fcadj;
-extern core::Symbol_sp& _sym_pbci;
-extern core::Symbol_sp& _sym_da;
-extern core::Symbol_sp& _sym_eleDielectricValue;
-extern core::Symbol_sp& _sym_eleBuffer;
-extern core::Symbol_sp& _sym_eleScale14;
-extern core::Symbol_sp& _sym_eleChargeFcn;
-extern core::Symbol_sp& _sym_vdwScale14;
-extern core::Symbol_sp& _sym_vdwScaleBufferA;
-extern core::Symbol_sp& _sym_vdwScaleBufferB;
-extern core::Symbol_sp& _sym_nonbonds;
-extern core::Symbol_sp& _sym_map;
-extern core::Symbol_sp& _sym_eleDielectricCode;
-extern core::Symbol_sp& _sym_vdwMixRadius;
-extern core::Symbol_sp& _sym_vdwMixWell;
-extern core::Symbol_sp& _sym_name;
-extern core::Symbol_sp& _sym_id;
-extern core::Symbol_sp& _sym_restraints;
-extern core::Symbol_sp& _sym_contents;
-extern core::Symbol_sp& _sym_pdbName;
-extern core::Symbol_sp& _sym_uniqueLabel;
-extern core::Symbol_sp& _sym_NetCharge;
-extern core::Symbol_sp& _sym_fileSeqNum;
-extern core::Symbol_sp& _sym_monomerAliases;
-extern core::Symbol_sp& _sym_bl;
-extern core::Symbol_sp& _sym_alias;
-extern core::Symbol_sp& _sym_flags;
-extern core::Symbol_sp& _sym_element;
-extern core::Symbol_sp& _sym_hybridization;
-extern core::Symbol_sp& _sym_priority;
-extern core::Symbol_sp& _sym_hintLP;
-extern core::Symbol_sp& _sym_chg;
-extern core::Symbol_sp& _sym_ion;
-extern core::Symbol_sp& _sym_rings;
-extern core::Symbol_sp& _sym_tempInt;
-extern core::Symbol_sp& _sym_type;
-extern core::Symbol_sp& _sym_ar1;
-extern core::Symbol_sp& _sym_ar2;
-extern core::Symbol_sp& _sym_ar3;
-extern core::Symbol_sp& _sym_ar4;
-extern core::Symbol_sp& _sym_ar5;
-extern core::Symbol_sp& _sym_mask;
-extern core::Symbol_sp& _sym_configuration;
-extern core::Symbol_sp& _sym_stereochemistryType;
-extern core::Symbol_sp& _sym_pos;
-extern core::Symbol_sp& _sym_order;
-extern core::Symbol_sp& _sym_properties;
-extern core::Symbol_sp& _sym_a1;
-extern core::Symbol_sp& _sym_a2;
-extern core::Symbol_sp& _sym_bonds;
-extern core::Symbol_sp& _sym_atom;
-extern core::Symbol_sp& _sym_position;
-extern core::Symbol_sp& _sym_weight;
-extern core::Symbol_sp& _sym_atoms;
-extern core::Symbol_sp& _sym_k;
-extern core::Symbol_sp& _sym_title;
-extern core::Symbol_sp& _sym_ref;
-extern core::Symbol_sp& _sym_bondDistinctions;
-extern core::Symbol_sp& _sym_Info;
-extern core::Symbol_sp& _sym_Types;
-extern core::Symbol_sp& _sym_Stretches;
-extern core::Symbol_sp& _sym_Angles;
-extern core::Symbol_sp& _sym_Itors;
-extern core::Symbol_sp& _sym_Ptors;
-extern core::Symbol_sp& _sym_Nonbonds;
-extern core::Symbol_sp& _sym_Vdws;
-} // namespace kw
-namespace chemkw {
-extern core::Symbol_sp& _sym_undefinedConfiguration;
-extern core::Symbol_sp& _sym_R;
-extern core::Symbol_sp& _sym_undefinedCenter;
-extern core::Symbol_sp& _sym_chiral;
-extern core::Symbol_sp& _sym_prochiral;
-extern core::Symbol_sp& _sym__singleBond;
-extern core::Symbol_sp& _sym__doubleBond;
-extern core::Symbol_sp& _sym__tripleBond;
-extern core::Symbol_sp& _sym__aromaticBond;
-extern core::Symbol_sp& _sym__hydrogenBond;
-extern core::Symbol_sp& _sym__virtualBond;
-extern core::Symbol_sp& _sym__dashedSingleBond;
-extern core::Symbol_sp& _sym__dashedDoubleBond;
-extern core::Symbol_sp& _sym_noBond;
-extern core::Symbol_sp& _sym_singleBond;
-extern core::Symbol_sp& _sym_doubleBond;
-extern core::Symbol_sp& _sym_tripleBond;
-extern core::Symbol_sp& _sym_aromaticBond;
-extern core::Symbol_sp& _sym_hydrogenBond;
-extern core::Symbol_sp& _sym_virtualBond;
-extern core::Symbol_sp& _sym_dashedSingleBond;
-extern core::Symbol_sp& _sym_dashedDoubleBond;
-extern core::Symbol_sp& _sym_C;
-extern core::Symbol_sp& _sym_N;
-extern core::Symbol_sp& _sym_O;
-extern core::Symbol_sp& _sym_S;
-extern core::Symbol_sp& _sym_P;
-extern core::Symbol_sp& _sym_F;
-extern core::Symbol_sp& _sym_Cl;
-extern core::Symbol_sp& _sym_Br;
-extern core::Symbol_sp& _sym_I;
-extern core::Symbol_sp& _sym_message;
-extern core::Symbol_sp& _sym_constitution;
-extern core::Symbol_sp& _sym_entity;
-extern core::Symbol_sp& _sym_frameRecognizer;
-extern core::Symbol_sp& _sym_E;
-extern core::Symbol_sp& _sym_Z;
-extern core::Symbol_sp& _sym_1;
-extern core::Symbol_sp& _sym_2;
-extern core::Symbol_sp& _sym_3;
-extern core::Symbol_sp& _sym_4;
-extern core::Symbol_sp& _sym_5;
-extern core::Symbol_sp& _sym_6;
-extern core::Symbol_sp& _sym_idle;
-extern core::Symbol_sp& _sym_translate;
-extern core::Symbol_sp& _sym_rotate;
-extern core::Symbol_sp& _sym_scale;
-extern core::Symbol_sp& _sym_XX;
-extern core::Symbol_sp& _sym_XA;
-extern core::Symbol_sp& _sym_XB;
-extern core::Symbol_sp& _sym_XC;
-extern core::Symbol_sp& _sym_XD;
-extern core::Symbol_sp& _sym_parameterized;
-extern core::Symbol_sp& _sym_estimated;
-extern core::Symbol_sp& _sym_rough;
-} // namespace chemkw
 namespace units {
 extern core::Symbol_sp& _sym_NamedUnit_O;
 extern core::Symbol_sp& _sym_meters;
@@ -5369,937 +5369,937 @@ NOINLINE void maybe_allocate_one_symbol_3_helper(core::BootStrapCoreSymbolMap* s
  cleavirPrimops::_sym_callWithVariableBound = symbols->maybe_allocate_unique_symbol("CLEAVIR-PRIMOP",core::lispify_symbol_name("callWithVariableBound"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_4_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_name = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("name"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_5_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym__PLUS_validChemdrawKeywords_PLUS_ = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("_PLUS_validChemdrawKeywords_PLUS_"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_6_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_STARparserNodeHolderSTAR = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("STARparserNodeHolderSTAR"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_7_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_STARSabBondEnumConverterSTAR = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("STARSabBondEnumConverterSTAR"), false,false);
-}
-NOINLINE void maybe_allocate_one_symbol_8_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_STARLogicalOperatorTypeConverterSTAR = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("STARLogicalOperatorTypeConverterSTAR"), false,false);
-}
-NOINLINE void maybe_allocate_one_symbol_9_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_STARAtomTestEnumConverterSTAR = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("STARAtomTestEnumConverterSTAR"), false,false);
-}
-NOINLINE void maybe_allocate_one_symbol_10_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_STARDonorAcceptorEnumConverterSTAR = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("STARDonorAcceptorEnumConverterSTAR"), false,false);
-}
-NOINLINE void maybe_allocate_one_symbol_11_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_STAREleDielectricEnumConverterSTAR = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("STAREleDielectricEnumConverterSTAR"), false,false);
-}
-NOINLINE void maybe_allocate_one_symbol_12_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_STARVdwMixRadiusEnumConverterSTAR = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("STARVdwMixRadiusEnumConverterSTAR"), false,false);
-}
-NOINLINE void maybe_allocate_one_symbol_13_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_STARVdwMixWellEnumConverterSTAR = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("STARVdwMixWellEnumConverterSTAR"), false,false);
-}
-NOINLINE void maybe_allocate_one_symbol_14_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_CDNode_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CDNode"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_15_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_CDBond_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CDBond"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_16_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_CDFragment_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CDFragment"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_17_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_CDText_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CDText"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_18_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ChemDraw_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ChemDraw"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_19_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Command_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Command"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_20_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ReadAmberParameters_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ReadAmberParameters"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_21_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_StructureComparer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("StructureComparer"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_22_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Structure_Old_ListEntry_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("StructureListEntry"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_23_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Structure_Old_List_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("StructureList"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_24_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Twister_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Twister"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_25_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_TwisterDriver_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("TwisterDriver"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_26_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ZMatrixInternal_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ZMatrixInternal"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_27_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ZMatrixBondInternal_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ZMatrixBondInternal"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_28_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ZMatrixAngleInternal_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ZMatrixAngleInternal"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_29_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ZMatrixDihedralInternal_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ZMatrixDihedralInternal"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_30_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ZMatrixEntry_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ZMatrixEntry"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_31_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ZMatrix_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ZMatrix"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_32_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_R = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("R"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_33_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_5_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_S = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("S"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_34_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_6_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_UnknownConfiguration = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("UnknownConfiguration"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_35_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_7_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_candoDatabase = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("candoDatabase"), false,false);
 }
-NOINLINE void maybe_allocate_one_symbol_36_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_8_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_AM1_BCC_ar5 = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AM1_BCC_ar5"), false,false);
 }
-NOINLINE void maybe_allocate_one_symbol_37_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_9_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_AM1_BCC_ar6 = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AM1_BCC_ar6"), false,false);
 }
-NOINLINE void maybe_allocate_one_symbol_38_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_10_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_AM1_BCC_ar7 = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AM1_BCC_ar7"), false,false);
 }
-NOINLINE void maybe_allocate_one_symbol_39_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Alias_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Alias"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_40_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_11_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym__PLUS_configurationEnumConverter_PLUS_ = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("_PLUS_configurationEnumConverter_PLUS_"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_41_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_12_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym__PLUS_stereochemistryTypeConverter_PLUS_ = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("_PLUS_stereochemistryTypeConverter_PLUS_"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_42_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_13_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym__PLUS_atomFlagSymbolConverter_PLUS_ = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("_PLUS_atomFlagSymbolConverter_PLUS_"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_43_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_14_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_configurationToSymbolConverter = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("configurationToSymbolConverter"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_44_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_15_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_stereochemistryToSymbolConverter = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("stereochemistryToSymbolConverter"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_45_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_16_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_atomNeedsMinimizer = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("atomNeedsMinimizer"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_46_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_17_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_selected = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("selected"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_47_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_18_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_onGrid = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("onGrid"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_48_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_19_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_atomFixed = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("atomFixed"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_49_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_20_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_in3MemberRing = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("in3MemberRing"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_50_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_21_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_in4MemberRing = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("in4MemberRing"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_51_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_22_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_in5MemberRing = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("in5MemberRing"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_52_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_23_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_in6MemberRing = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("in6MemberRing"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_53_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_24_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_in7MemberRing = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("in7MemberRing"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_54_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_25_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_in8MemberRing = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("in8MemberRing"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_55_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_26_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_inRing = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("inRing"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_56_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_27_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym__PLUS_bondOrderToSymbolConverter_PLUS_ = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("_PLUS_bondOrderToSymbolConverter_PLUS_"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_57_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_28_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_AtomIdToAtomMap_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AtomIdToAtomMap"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_58_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_29_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_AtomId_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AtomId"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_59_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_30_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym__PLUS_elementToSymbolConverter_PLUS_ = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("_PLUS_elementToSymbolConverter_PLUS_"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_60_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_31_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym__PLUS_hybridizationToSymbolConverter_PLUS_ = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("_PLUS_hybridizationToSymbolConverter_PLUS_"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_61_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_32_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym__PLUS_elementColors_PLUS_ = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("_PLUS_elementColors_PLUS_"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_62_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_33_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym__PLUS_minimizerStatusConverter_PLUS_ = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("_PLUS_minimizerStatusConverter_PLUS_"), false,false);
 }
-NOINLINE void maybe_allocate_one_symbol_63_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_34_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym__PLUS_preconditionerTypeConverter_PLUS_ = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("_PLUS_preconditionerTypeConverter_PLUS_"), false,false);
 }
-NOINLINE void maybe_allocate_one_symbol_64_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_35_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_MinimizerExceededMaxStepsError = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("MinimizerExceededMaxStepsError"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_65_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_36_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_MinimizerStuckError = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("MinimizerStuckError"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_66_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_37_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_MinimizerError = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("MinimizerError"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_67_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_38_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_noPreconditioner = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("noPreconditioner"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_68_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_39_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_hessianPreconditioner = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("hessianPreconditioner"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_69_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_40_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_minimizerError = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("minimizerError"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_70_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_41_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_minimizerSucceeded = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("minimizerSucceeded"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_71_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_42_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_truncatedNewtonRunning = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("truncatedNewtonRunning"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_72_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_43_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_conjugateGradientRunning = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("conjugateGradientRunning"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_73_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_44_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_steepestDescentRunning = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("steepestDescentRunning"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_74_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_45_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_minimizerIdle = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("minimizerIdle"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_75_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_46_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_Angle_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Angle"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_76_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_47_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_ProperTorsion_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ProperTorsion"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_77_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_48_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_ImproperTorsion_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ImproperTorsion"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_78_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_AtomIndexer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AtomIndexer"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_79_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_MapOfMonomerNamesToAtomIndexers_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("MapOfMonomerNamesToAtomIndexers"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_80_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_MonomerPack_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("MonomerPack"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_81_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_StereoConfiguration_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("StereoConfiguration"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_82_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Stereoisomer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Stereoisomer"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_83_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_StereoInformation_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("StereoInformation"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_84_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ConformationExplorerEntryStage_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConformationExplorerEntryStage"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_85_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ConformationExplorerEntry_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConformationExplorerEntry"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_86_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ConformationExplorer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConformationExplorer"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_87_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ConformationExplorerMatch_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConformationExplorerMatch"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_88_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_49_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_MonomerCoordinates_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("MonomerCoordinates"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_89_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ConformationCollectionEntry_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConformationCollectionEntry"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_90_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ConformationCollection_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConformationCollection"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_91_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_SuperposableConformationCollection_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("SuperposableConformationCollection"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_92_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_50_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_FrameRecognizer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FrameRecognizer"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_93_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_51_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_Rotamer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Rotamer"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_94_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_52_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_AtomReferenceBase_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AtomReferenceBase"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_95_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_53_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_AtomReference_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AtomReference"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_96_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_RepresentedEntityNameSet_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RepresentedEntityNameSet"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_97_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_54_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_CoordinateSystem_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CoordinateSystem"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_98_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_55_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_PdbMonomerConnectivity_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("PdbMonomerConnectivity"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_99_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_56_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_PdbMonomerDatabase_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("PdbMonomerDatabase"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_100_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_57_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_StereoisomerAtom_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("StereoisomerAtom"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_101_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_58_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_StereoisomerVirtualAtom_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("StereoisomerVirtualAtom"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_102_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_59_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_StereoisomerAtoms_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("StereoisomerAtoms"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_103_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ConstitutionBond_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConstitutionBond"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_104_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ConstitutionAtom_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConstitutionAtom"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_105_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ConstitutionVirtualAtom_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConstitutionVirtualAtom"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_106_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ConstitutionAtoms_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConstitutionAtoms"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_107_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_60_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_TrajectoryFrame_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("TrajectoryFrame"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_108_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_61_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_Trajectory_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Trajectory"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_109_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_CipPrioritizer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CipPrioritizer"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_110_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_62_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_AtomTable_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AtomTable"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_111_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_63_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_EnergyComponent_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("EnergyComponent"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_112_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_64_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_EnergyStretch_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("EnergyStretch"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_113_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_65_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_EnergyAngle_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("EnergyAngle"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_114_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_66_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_EnergyDihedral_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("EnergyDihedral"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_115_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_67_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_EnergyNonbond_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("EnergyNonbond"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_116_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_68_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_EnergyImproperRestraint_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("EnergyImproperRestraint"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_117_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_69_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_EnergyChiralRestraint_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("EnergyChiralRestraint"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_118_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_70_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_EnergyAnchorRestraint_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("EnergyAnchorRestraint"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_119_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_71_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_EnergyFixedNonbondRestraint_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("EnergyFixedNonbondRestraint"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_120_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_72_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_nonbondTerm = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("nonbondTerm"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_121_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_73_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_restraintAnchor = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("restraintAnchor"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_122_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_74_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_InteractionError = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("InteractionError"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_123_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_75_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_LinearAngleError = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("LinearAngleError"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_124_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_76_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_LinearDihedralError = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("LinearDihedralError"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_125_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_77_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_LinearImproperRestraintError = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("LinearImproperRestraintError"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_126_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_78_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_OverlappingNonbondError = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("OverlappingNonbondError"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_127_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ComplexRestraint_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ComplexRestraint"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_128_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_RestrainedExoCyclicAtom_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RestrainedExoCyclicAtom"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_129_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_RestrainedPiBond_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RestrainedPiBond"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_130_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_79_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_SearchStatistics_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("SearchStatistics"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_131_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Constitution_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Constitution"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_132_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_CalculatePosition_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CalculatePosition"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_133_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_CalculatePositionUsingInternals_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CalculatePositionUsingInternals"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_134_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_CalculatePositionAlongBond_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CalculatePositionAlongBond"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_135_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_CalculatePositionRelativeToOrigin_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CalculatePositionRelativeToOrigin"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_136_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Oligomer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Oligomer"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_137_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_OligomerPart_Base_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("OligomerPart-Base"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_138_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_OligomerPart_Monomer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("OligomerPart-Monomer"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_139_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_OligomerPart_Link_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("OligomerPart-Link"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_140_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Entity_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Entity"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_141_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Monomer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Monomer"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_142_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_OneMonomer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("OneMonomer"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_143_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_MultiMonomer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("MultiMonomer"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_144_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_CandoDatabase_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CandoDatabase"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_145_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Topology_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Topology"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_146_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_StatusTracker_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("StatusTracker"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_147_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_EntityNameSetBase_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("EntityNameSetBase"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_148_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_EntityNameSet_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("EntityNameSet"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_149_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_EntityNameSetWithCap_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("EntityNameSetWithCap"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_150_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_MonomerContext_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("MonomerContext"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_151_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Coupling_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Coupling"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_152_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_DirectionalCoupling_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("DirectionalCoupling"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_153_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_RingCoupling_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RingCoupling"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_154_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Mate_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Mate"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_155_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_RingClosingMate_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RingClosingMate"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_156_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Plug_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Plug"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_157_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_PlugWithMates_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("PlugWithMates"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_158_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_OutPlug_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("OutPlug"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_159_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_InPlug_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("InPlug"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_160_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_JumpPlug_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("JumpPlug"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_161_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_RingClosingPlug_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RingClosingPlug"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_162_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_SpecificContext_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("SpecificContext"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_163_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_SpecificContextSet_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("SpecificContextSet"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_164_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_SpanningLoop_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("SpanningLoop"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_165_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_SuperposeEngine_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("SuperposeEngine"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_166_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_SuperposeSelectedAtoms_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("SuperposeSelectedAtoms"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_167_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_80_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_superpose = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("superpose"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_168_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_81_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_VirtualSphere_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("VirtualSphere"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_169_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_82_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_idle = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("idle"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_170_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_83_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_translate = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("translate"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_171_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_84_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_rotate = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("rotate"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_172_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_85_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_scale = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("scale"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_173_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_OneTypeRule_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("OneTypeRule"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_174_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_TypeAssignmentRules_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("TypeAssignmentRules"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_175_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_86_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_STARsybyl_type_assignment_rulesSTAR = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("STARsybyl_type_assignment_rulesSTAR"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_176_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_FFParameter_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFParameter"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_177_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_FFBaseDb_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFBaseDb"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_178_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ChemInfoMatch_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ChemInfoMatch"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_179_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_WildElementDict_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("WildElementDict"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_180_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ChemInfoNode_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ChemInfoNode"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_181_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ResidueList_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ResidueList"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_182_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_RootMatchNode_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RootMatchNode"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_183_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_BondMatchNode_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("BondMatchNode"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_184_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_AtomOrBondMatchNode_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AtomOrBondMatchNode"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_185_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_BondListMatchNode_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("BondListMatchNode"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_186_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Logical_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Logical"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_187_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_TagSet_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("TagSet"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_188_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_RingTest_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RingTest"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_189_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ResidueTest_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ResidueTest"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_190_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_BondTest_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("BondTest"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_191_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_AntechamberBondTest_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AntechamberBondTest"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_192_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_AtomTest_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AtomTest"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_193_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_AntechamberFocusAtomMatch_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AntechamberFocusAtomMatch"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_194_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Chain_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Chain"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_195_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Branch_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Branch"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_196_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_AfterMatchBondTest_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AfterMatchBondTest"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_197_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Root_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Root"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_198_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_SmartsRoot_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("SmartsRoot"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_199_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_AntechamberRoot_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AntechamberRoot"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_200_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ChemInfo_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ChemInfo"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_201_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_FFTypesDb_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFTypesDb"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_202_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_FFStretch_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFStretch"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_203_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_FFStretchDb_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFStretchDb"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_204_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_FFAngle_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFAngle"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_205_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_FFAngleDb_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFAngleDb"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_206_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_FFItor_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFItor"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_207_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_FFItorDb_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFItorDb"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_208_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_FFPtor_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFPtor"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_209_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_FFPtorDb_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFPtorDb"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_210_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_FFNonbondCrossTermTable_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFNonbondCrossTermTable"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_211_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_FFNonbond_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFNonbond"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_212_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_FFNonbondDb_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFNonbondDb"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_213_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_FFVdw_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFVdw"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_214_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_FFVdwDb_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFVdwDb"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_215_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_InfoDb_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("InfoDb"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_216_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_ForceField_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ForceField"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_217_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_87_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_EnergyFunction_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("EnergyFunction"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_218_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_AbstractLargeSquareMatrix_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AbstractLargeSquareMatrix"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_219_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_FullLargeSquareMatrix_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FullLargeSquareMatrix"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_220_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_SparseLargeSquareMatrix_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("SparseLargeSquareMatrix"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_221_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_88_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_NumericalFunction_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("NumericalFunction"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_222_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_NVector_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("NVector"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_223_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_89_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_ReportBase_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ReportBase"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_224_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_90_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_MessageReport_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("MessageReport"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_225_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_91_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_ForceMatchReport_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ForceMatchReport"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_226_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_92_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_StepReport_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("StepReport"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_227_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_93_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_MinimizerLog_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("MinimizerLog"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_228_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_94_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_Minimizer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Minimizer"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_229_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_95_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_IterateRestraints_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("IterateRestraints"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_230_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Restraint_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Restraint"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_231_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_RestraintAnchor_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RestraintAnchor"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_232_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_RestraintChiral_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RestraintChiral"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_233_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_RestraintDistance_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RestraintDistance"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_234_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_RestraintAngle_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RestraintAngle"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_235_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_RestraintDihedral_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RestraintDihedral"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_236_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_RestraintFixedNonbond_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RestraintFixedNonbond"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_237_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_RestraintList_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RestraintList"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_238_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_96_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_PdbReader_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("PdbReader"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_239_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_97_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_PdbWriter_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("PdbWriter"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_240_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_98_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_PathMessage_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("PathMessage"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_241_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_99_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_AGVertex_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AGVertex"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_242_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_100_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_AGEdge_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AGEdge"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_243_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_101_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_RingFinder_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RingFinder"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_244_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_VirtualAtom_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("VirtualAtom"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_245_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Bond_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Bond"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_246_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_BondList_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("BondList"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_247_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Aggregate_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Aggregate"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_248_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_102_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_IterateMatter_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("IterateMatter"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_249_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_103_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_IterateAtoms_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("IterateAtoms"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_250_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_104_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_IterateResidues_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("IterateResidues"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_251_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_105_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_IterateBonds_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("IterateBonds"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_252_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_106_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_iterateMatterSymbolConverter = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("iterateMatterSymbolConverter"), false,false);
 }
-NOINLINE void maybe_allocate_one_symbol_253_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_107_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_allMatter = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("allMatter"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_254_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_108_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_atoms = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("atoms"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_255_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_109_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_residues = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("residues"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_256_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_110_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_molecules = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("molecules"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_257_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_111_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_bonds = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("bonds"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_258_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Matter_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Matter"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_259_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Atom_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Atom"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_260_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Residue_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Residue"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_261_helper(core::BootStrapCoreSymbolMap* symbols) {
- chem::_sym_Molecule_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Molecule"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_262_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_112_helper(core::BootStrapCoreSymbolMap* symbols) {
  chem::_sym_MacroModelFile_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("MacroModelFile"), true,false);
 }
+NOINLINE void maybe_allocate_one_symbol_113_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_OneTypeRule_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("OneTypeRule"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_114_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_TypeAssignmentRules_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("TypeAssignmentRules"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_115_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_SuperposableConformationCollection_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("SuperposableConformationCollection"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_116_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ZMatrixInternal_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ZMatrixInternal"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_117_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ZMatrixBondInternal_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ZMatrixBondInternal"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_118_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ZMatrixAngleInternal_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ZMatrixAngleInternal"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_119_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ZMatrixDihedralInternal_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ZMatrixDihedralInternal"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_120_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ZMatrixEntry_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ZMatrixEntry"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_121_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ZMatrix_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ZMatrix"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_122_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_StructureComparer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("StructureComparer"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_123_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Command_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Command"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_124_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Structure_Old_ListEntry_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("StructureListEntry"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_125_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Structure_Old_List_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("StructureList"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_126_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Twister_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Twister"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_127_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_TwisterDriver_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("TwisterDriver"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_128_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_AbstractLargeSquareMatrix_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AbstractLargeSquareMatrix"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_129_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_FullLargeSquareMatrix_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FullLargeSquareMatrix"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_130_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_SparseLargeSquareMatrix_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("SparseLargeSquareMatrix"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_131_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_StereoConfiguration_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("StereoConfiguration"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_132_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Stereoisomer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Stereoisomer"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_133_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_StereoInformation_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("StereoInformation"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_134_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Restraint_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Restraint"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_135_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_RestraintAnchor_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RestraintAnchor"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_136_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_RestraintChiral_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RestraintChiral"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_137_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_RestraintDistance_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RestraintDistance"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_138_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_RestraintAngle_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RestraintAngle"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_139_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_RestraintDihedral_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RestraintDihedral"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_140_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_RestraintFixedNonbond_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RestraintFixedNonbond"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_141_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_RestraintList_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RestraintList"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_142_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ComplexRestraint_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ComplexRestraint"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_143_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_RestrainedExoCyclicAtom_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RestrainedExoCyclicAtom"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_144_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_RestrainedPiBond_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RestrainedPiBond"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_145_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_SpecificContext_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("SpecificContext"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_146_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_SpecificContextSet_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("SpecificContextSet"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_147_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ReadAmberParameters_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ReadAmberParameters"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_148_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_VirtualAtom_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("VirtualAtom"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_149_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_CDNode_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CDNode"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_150_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_CDBond_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CDBond"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_151_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_CDFragment_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CDFragment"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_152_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_CDText_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CDText"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_153_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ChemDraw_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ChemDraw"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_154_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_SpanningLoop_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("SpanningLoop"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_155_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_CipPrioritizer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CipPrioritizer"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_156_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_name = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("name"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_157_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym__PLUS_validChemdrawKeywords_PLUS_ = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("_PLUS_validChemdrawKeywords_PLUS_"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_158_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_OligomerPart_Base_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("OligomerPart-Base"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_159_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_OligomerPart_Monomer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("OligomerPart-Monomer"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_160_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_OligomerPart_Link_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("OligomerPart-Link"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_161_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_CalculatePosition_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CalculatePosition"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_162_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_CalculatePositionUsingInternals_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CalculatePositionUsingInternals"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_163_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_CalculatePositionAlongBond_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CalculatePositionAlongBond"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_164_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_CalculatePositionRelativeToOrigin_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CalculatePositionRelativeToOrigin"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_165_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ConstitutionBond_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConstitutionBond"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_166_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ConstitutionAtom_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConstitutionAtom"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_167_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ConstitutionVirtualAtom_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConstitutionVirtualAtom"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_168_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ConstitutionAtoms_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConstitutionAtoms"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_169_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Entity_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Entity"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_170_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Monomer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Monomer"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_171_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_OneMonomer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("OneMonomer"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_172_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_MultiMonomer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("MultiMonomer"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_173_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Oligomer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Oligomer"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_174_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Coupling_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Coupling"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_175_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_DirectionalCoupling_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("DirectionalCoupling"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_176_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_RingCoupling_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RingCoupling"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_177_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_CandoDatabase_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("CandoDatabase"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_178_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_StatusTracker_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("StatusTracker"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_179_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_EntityNameSetBase_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("EntityNameSetBase"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_180_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_EntityNameSet_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("EntityNameSet"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_181_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_EntityNameSetWithCap_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("EntityNameSetWithCap"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_182_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_AtomIndexer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AtomIndexer"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_183_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_MapOfMonomerNamesToAtomIndexers_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("MapOfMonomerNamesToAtomIndexers"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_184_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_MonomerPack_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("MonomerPack"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_185_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_MonomerContext_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("MonomerContext"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_186_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_RepresentedEntityNameSet_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RepresentedEntityNameSet"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_187_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Mate_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Mate"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_188_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_RingClosingMate_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RingClosingMate"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_189_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Plug_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Plug"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_190_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_PlugWithMates_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("PlugWithMates"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_191_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_OutPlug_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("OutPlug"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_192_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_InPlug_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("InPlug"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_193_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_JumpPlug_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("JumpPlug"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_194_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_RingClosingPlug_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RingClosingPlug"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_195_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Constitution_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Constitution"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_196_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Alias_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Alias"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_197_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Topology_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Topology"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_198_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_NVector_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("NVector"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_199_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ConformationCollectionEntry_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConformationCollectionEntry"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_200_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ConformationCollection_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConformationCollection"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_201_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_SuperposeEngine_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("SuperposeEngine"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_202_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_SuperposeSelectedAtoms_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("SuperposeSelectedAtoms"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_203_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ConformationExplorerEntryStage_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConformationExplorerEntryStage"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_204_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ConformationExplorerEntry_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConformationExplorerEntry"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_205_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ConformationExplorer_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConformationExplorer"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_206_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ConformationExplorerMatch_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ConformationExplorerMatch"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_207_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_STARparserNodeHolderSTAR = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("STARparserNodeHolderSTAR"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_208_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_STARSabBondEnumConverterSTAR = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("STARSabBondEnumConverterSTAR"), false,false);
+}
+NOINLINE void maybe_allocate_one_symbol_209_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_STARLogicalOperatorTypeConverterSTAR = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("STARLogicalOperatorTypeConverterSTAR"), false,false);
+}
+NOINLINE void maybe_allocate_one_symbol_210_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_STARAtomTestEnumConverterSTAR = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("STARAtomTestEnumConverterSTAR"), false,false);
+}
+NOINLINE void maybe_allocate_one_symbol_211_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ChemInfoMatch_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ChemInfoMatch"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_212_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_WildElementDict_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("WildElementDict"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_213_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ChemInfoNode_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ChemInfoNode"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_214_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ResidueList_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ResidueList"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_215_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_RootMatchNode_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RootMatchNode"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_216_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_BondMatchNode_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("BondMatchNode"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_217_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_AtomOrBondMatchNode_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AtomOrBondMatchNode"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_218_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_BondListMatchNode_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("BondListMatchNode"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_219_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Logical_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Logical"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_220_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_TagSet_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("TagSet"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_221_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_RingTest_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("RingTest"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_222_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ResidueTest_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ResidueTest"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_223_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_BondTest_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("BondTest"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_224_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_AntechamberBondTest_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AntechamberBondTest"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_225_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_AtomTest_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AtomTest"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_226_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_AntechamberFocusAtomMatch_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AntechamberFocusAtomMatch"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_227_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Chain_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Chain"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_228_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Branch_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Branch"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_229_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_AfterMatchBondTest_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AfterMatchBondTest"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_230_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Root_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Root"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_231_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_SmartsRoot_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("SmartsRoot"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_232_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_AntechamberRoot_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("AntechamberRoot"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_233_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ChemInfo_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ChemInfo"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_234_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_FFTypesDb_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFTypesDb"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_235_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_FFStretch_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFStretch"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_236_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_FFStretchDb_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFStretchDb"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_237_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_FFAngle_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFAngle"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_238_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_FFAngleDb_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFAngleDb"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_239_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_FFVdw_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFVdw"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_240_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_FFVdwDb_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFVdwDb"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_241_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_InfoDb_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("InfoDb"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_242_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_ForceField_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("ForceField"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_243_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_FFItor_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFItor"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_244_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_FFItorDb_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFItorDb"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_245_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_FFPtor_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFPtor"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_246_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_FFPtorDb_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFPtorDb"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_247_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Matter_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Matter"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_248_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Bond_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Bond"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_249_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_BondList_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("BondList"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_250_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Atom_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Atom"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_251_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Residue_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Residue"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_252_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_FFParameter_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFParameter"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_253_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_FFBaseDb_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFBaseDb"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_254_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_FFNonbondCrossTermTable_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFNonbondCrossTermTable"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_255_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_FFNonbond_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFNonbond"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_256_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_FFNonbondDb_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("FFNonbondDb"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_257_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Molecule_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Molecule"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_258_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_Aggregate_O = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("Aggregate"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_259_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_STARDonorAcceptorEnumConverterSTAR = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("STARDonorAcceptorEnumConverterSTAR"), false,false);
+}
+NOINLINE void maybe_allocate_one_symbol_260_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_STAREleDielectricEnumConverterSTAR = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("STAREleDielectricEnumConverterSTAR"), false,false);
+}
+NOINLINE void maybe_allocate_one_symbol_261_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_STARVdwMixRadiusEnumConverterSTAR = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("STARVdwMixRadiusEnumConverterSTAR"), false,false);
+}
+NOINLINE void maybe_allocate_one_symbol_262_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chem::_sym_STARVdwMixWellEnumConverterSTAR = symbols->maybe_allocate_unique_symbol("CHEM",core::lispify_symbol_name("STARVdwMixWellEnumConverterSTAR"), false,false);
+}
 NOINLINE void maybe_allocate_one_symbol_263_helper(core::BootStrapCoreSymbolMap* symbols) {
- chemkw::_sym_undefinedConfiguration = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("undefinedConfiguration"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_264_helper(core::BootStrapCoreSymbolMap* symbols) {
- chemkw::_sym_R = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("R"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_265_helper(core::BootStrapCoreSymbolMap* symbols) {
- chemkw::_sym_undefinedCenter = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("undefinedCenter"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_266_helper(core::BootStrapCoreSymbolMap* symbols) {
- chemkw::_sym_chiral = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("chiral"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_267_helper(core::BootStrapCoreSymbolMap* symbols) {
- chemkw::_sym_prochiral = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("prochiral"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_268_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym__singleBond = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("_singleBond"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_269_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_264_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym__doubleBond = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("_doubleBond"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_270_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_265_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym__tripleBond = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("_tripleBond"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_271_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_266_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym__aromaticBond = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("_aromaticBond"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_272_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_267_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym__hydrogenBond = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("_hydrogenBond"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_273_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_268_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym__virtualBond = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("_virtualBond"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_274_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_269_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym__dashedSingleBond = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("_dashedSingleBond"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_275_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_270_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym__dashedDoubleBond = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("_dashedDoubleBond"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_276_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_271_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_noBond = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("noBond"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_277_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_272_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_singleBond = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("singleBond"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_278_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_273_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_doubleBond = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("doubleBond"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_279_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_274_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_tripleBond = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("tripleBond"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_280_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_275_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_aromaticBond = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("aromaticBond"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_281_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_276_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_hydrogenBond = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("hydrogenBond"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_282_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_277_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_virtualBond = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("virtualBond"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_283_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_278_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_dashedSingleBond = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("dashedSingleBond"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_284_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_279_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_dashedDoubleBond = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("dashedDoubleBond"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_285_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_280_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_C = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("C"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_286_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_281_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_N = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("N"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_287_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_282_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_O = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("O"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_288_helper(core::BootStrapCoreSymbolMap* symbols) {
- chemkw::_sym_S = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("S"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_289_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_283_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_P = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("P"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_290_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_284_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_F = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("F"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_291_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_285_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_Cl = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("Cl"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_292_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_286_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_Br = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("Br"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_293_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_287_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_I = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("I"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_294_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_288_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_message = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("message"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_295_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_289_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_constitution = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("constitution"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_296_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_290_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_entity = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("entity"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_297_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_291_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_frameRecognizer = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("frameRecognizer"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_298_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_292_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_E = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("E"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_299_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_293_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_Z = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("Z"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_300_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_294_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_1 = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("1"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_301_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_295_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_2 = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("2"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_302_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_296_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_3 = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("3"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_303_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_297_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_4 = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("4"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_304_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_298_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_5 = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("5"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_305_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_299_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_6 = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("6"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_306_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_300_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_idle = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("idle"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_307_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_301_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_translate = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("translate"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_308_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_302_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_rotate = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("rotate"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_309_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_303_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_scale = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("scale"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_310_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_304_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_XX = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("XX"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_311_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_305_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_XA = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("XA"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_312_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_306_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_XB = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("XB"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_313_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_307_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_XC = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("XC"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_314_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_308_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_XD = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("XD"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_309_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chemkw::_sym_undefinedConfiguration = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("undefinedConfiguration"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_310_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chemkw::_sym_S = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("S"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_311_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chemkw::_sym_R = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("R"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_312_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chemkw::_sym_undefinedCenter = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("undefinedCenter"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_313_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chemkw::_sym_chiral = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("chiral"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_314_helper(core::BootStrapCoreSymbolMap* symbols) {
+ chemkw::_sym_prochiral = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("prochiral"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_315_helper(core::BootStrapCoreSymbolMap* symbols) {
  chemkw::_sym_parameterized = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("parameterized"), true,false);
@@ -6311,28 +6311,28 @@ NOINLINE void maybe_allocate_one_symbol_317_helper(core::BootStrapCoreSymbolMap*
  chemkw::_sym_rough = symbols->maybe_allocate_unique_symbol("CKW",core::lispify_symbol_name("rough"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_318_helper(core::BootStrapCoreSymbolMap* symbols) {
- adapt::_sym_SymbolList_O = symbols->maybe_allocate_unique_symbol("ADAPT",core::lispify_symbol_name("SymbolList"), true,false);
+ adapt::_sym_IterateCons_O = symbols->maybe_allocate_unique_symbol("ADAPT",core::lispify_symbol_name("IterateCons"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_319_helper(core::BootStrapCoreSymbolMap* symbols) {
  adapt::_sym_StringList_O = symbols->maybe_allocate_unique_symbol("ADAPT",core::lispify_symbol_name("StringList"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_320_helper(core::BootStrapCoreSymbolMap* symbols) {
- adapt::_sym_IterateCons_O = symbols->maybe_allocate_unique_symbol("ADAPT",core::lispify_symbol_name("IterateCons"), true,false);
+ adapt::_sym_ObjectSet_O = symbols->maybe_allocate_unique_symbol("ADAPT",core::lispify_symbol_name("ObjectSet"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_321_helper(core::BootStrapCoreSymbolMap* symbols) {
- adapt::_sym_StringSet_O = symbols->maybe_allocate_unique_symbol("ADAPT",core::lispify_symbol_name("StringSet"), true,false);
+ adapt::_sym_SymbolList_O = symbols->maybe_allocate_unique_symbol("ADAPT",core::lispify_symbol_name("SymbolList"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_322_helper(core::BootStrapCoreSymbolMap* symbols) {
  adapt::_sym_IndexedObjectBag_O = symbols->maybe_allocate_unique_symbol("ADAPT",core::lispify_symbol_name("IndexedObjectBag"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_323_helper(core::BootStrapCoreSymbolMap* symbols) {
- adapt::_sym_QDomNode_O = symbols->maybe_allocate_unique_symbol("ADAPT",core::lispify_symbol_name("QDomNode"), true,false);
+ adapt::_sym_StringSet_O = symbols->maybe_allocate_unique_symbol("ADAPT",core::lispify_symbol_name("StringSet"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_324_helper(core::BootStrapCoreSymbolMap* symbols) {
  adapt::_sym_SymbolSet_O = symbols->maybe_allocate_unique_symbol("ADAPT",core::lispify_symbol_name("SymbolSet"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_325_helper(core::BootStrapCoreSymbolMap* symbols) {
- adapt::_sym_ObjectSet_O = symbols->maybe_allocate_unique_symbol("ADAPT",core::lispify_symbol_name("ObjectSet"), true,false);
+ adapt::_sym_QDomNode_O = symbols->maybe_allocate_unique_symbol("ADAPT",core::lispify_symbol_name("QDomNode"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_326_helper(core::BootStrapCoreSymbolMap* symbols) {
  units::_sym_NamedUnit_O = symbols->maybe_allocate_unique_symbol("UNITS",core::lispify_symbol_name("NamedUnit"), true,false);
@@ -6464,19 +6464,19 @@ NOINLINE void maybe_allocate_one_symbol_368_helper(core::BootStrapCoreSymbolMap*
  geom::_sym_BoundingBox_O = symbols->maybe_allocate_unique_symbol("GEOM",core::lispify_symbol_name("BoundingBox"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_369_helper(core::BootStrapCoreSymbolMap* symbols) {
- geom::_sym_Color_O = symbols->maybe_allocate_unique_symbol("GEOM",core::lispify_symbol_name("Color"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_370_helper(core::BootStrapCoreSymbolMap* symbols) {
  geom::_sym_OMatrix_O = symbols->maybe_allocate_unique_symbol("GEOM",core::lispify_symbol_name("OMatrix"), true,false);
 }
+NOINLINE void maybe_allocate_one_symbol_370_helper(core::BootStrapCoreSymbolMap* symbols) {
+ geom::_sym_OVector3_O = symbols->maybe_allocate_unique_symbol("GEOM",core::lispify_symbol_name("OVector3"), true,false);
+}
 NOINLINE void maybe_allocate_one_symbol_371_helper(core::BootStrapCoreSymbolMap* symbols) {
- geom::_sym_CoordinateArray_O = symbols->maybe_allocate_unique_symbol("GEOM",core::lispify_symbol_name("CoordinateArray"), true,false);
+ geom::_sym_Color_O = symbols->maybe_allocate_unique_symbol("GEOM",core::lispify_symbol_name("Color"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_372_helper(core::BootStrapCoreSymbolMap* symbols) {
- geom::_sym_CoordinateArrayWithHash_O = symbols->maybe_allocate_unique_symbol("GEOM",core::lispify_symbol_name("CoordinateArrayWithHash"), true,false);
+ geom::_sym_CoordinateArray_O = symbols->maybe_allocate_unique_symbol("GEOM",core::lispify_symbol_name("CoordinateArray"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_373_helper(core::BootStrapCoreSymbolMap* symbols) {
- geom::_sym_OVector3_O = symbols->maybe_allocate_unique_symbol("GEOM",core::lispify_symbol_name("OVector3"), true,false);
+ geom::_sym_CoordinateArrayWithHash_O = symbols->maybe_allocate_unique_symbol("GEOM",core::lispify_symbol_name("CoordinateArrayWithHash"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_374_helper(core::BootStrapCoreSymbolMap* symbols) {
  asttooling::_sym_STARclangTemplateSpecializationKindSTAR = symbols->maybe_allocate_unique_symbol("AST-TOOLING",core::lispify_symbol_name("STARclangTemplateSpecializationKindSTAR"), true,false);
@@ -8843,466 +8843,466 @@ NOINLINE void maybe_allocate_one_symbol_1161_helper(core::BootStrapCoreSymbolMap
  kw::_sym_steelBlue = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("steelBlue"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1162_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_chemdraw_color = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("chemdraw_color"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1163_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_chemdraw_dashed_bond = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("chemdraw_dashed_bond"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1164_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_comment = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("comment"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1165_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_chiral_centers = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("chiral_centers"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1166_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_group = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("group"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1167_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_name_template = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("name_template"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1168_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_pdb_template = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("pdb_template"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1169_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_residue_charge = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("residue_charge"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1170_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_restrained_pi_bonds = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("restrained_pi_bonds"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1171_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_caps = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("caps"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1172_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_matches = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("matches"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1173_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_tags = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("tags"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1174_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_closestMatch = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("closestMatch"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1175_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_data = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("data"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1176_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_root = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("root"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1177_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_op = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("op"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1178_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_ringTag = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ringTag"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1179_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_atomTest = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("atomTest"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1180_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_test = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("test"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1181_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_int = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("int"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1182_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_num = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("num"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1183_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_str = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("str"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1184_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_sym = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("sym"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1185_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_head = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("head"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1186_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_tail = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("tail"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1187_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_left = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("left"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1188_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_right = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("right"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1189_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_tag1 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("tag1"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1190_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_tag2 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("tag2"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1191_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_bond = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("bond"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1192_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_residueNames = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("residueNames"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1193_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_atomicProperty = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("atomicProperty"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1194_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_atomicNumber = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("atomicNumber"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1195_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_attachedAtoms = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("attachedAtoms"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1196_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_attachedHs = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("attachedHs"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1197_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_attachedEWGs = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("attachedEWGs"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1198_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_neighbors = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("neighbors"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1199_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_tag = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("tag"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1200_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_atomProps = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("atomProps"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1201_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_firstTest = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("firstTest"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1202_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_chain = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("chain"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1203_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_tests = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("tests"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1204_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_assignType = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("assignType"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1205_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_afterMatchTests = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("afterMatchTests"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1206_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_wildDict = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("wildDict"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1207_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_type_rules = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("type_rules"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1208_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_r0 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("r0"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1209_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_kb = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("kb"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1210_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_stretches = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("stretches"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1211_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_R = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("R"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1212_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_Eps = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("Eps"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1213_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_M = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("M"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1214_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_N = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("N"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1215_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_Edep = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("Edep"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1216_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_vdw = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("vdw"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1217_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_angRad = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("angRad"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1218_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_k2 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("k2"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1219_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_angleFunction = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("angleFunction"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1220_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_angles = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("angles"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1221_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_zConstants = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("zConstants"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1222_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_cConstants = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("cConstants"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1223_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_level = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("level"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1224_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_forceField = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("forceField"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1225_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_itors = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("itors"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1226_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_type1 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("type1"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1227_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_type2 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("type2"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1228_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_type3 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("type3"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1229_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_type4 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("type4"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1230_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_v0 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("v0"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1231_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_ph0 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ph0"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1232_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_v1 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("v1"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1233_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_ph1 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ph1"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1234_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_v2 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("v2"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1235_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_ph2 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ph2"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1236_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_v3 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("v3"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1237_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_ph3 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ph3"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1238_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_v4 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("v4"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1239_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_ph4 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ph4"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1240_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_v5 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("v5"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1241_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_ph5 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ph5"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1242_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_ptors = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ptors"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1243_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_radius = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("radius"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1244_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_well = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("well"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1245_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_apol = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("apol"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1246_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_neff = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("neff"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1247_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_mass = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("mass"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1248_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_pol = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("pol"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1249_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_initCharge = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("initCharge"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1250_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_fcadj = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("fcadj"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1251_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_pbci = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("pbci"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1252_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_da = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("da"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1253_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_eleDielectricValue = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("eleDielectricValue"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1254_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_eleBuffer = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("eleBuffer"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1255_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_eleScale14 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("eleScale14"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1256_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_eleChargeFcn = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("eleChargeFcn"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1257_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_vdwScale14 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("vdwScale14"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1258_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_vdwScaleBufferA = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("vdwScaleBufferA"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1259_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_vdwScaleBufferB = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("vdwScaleBufferB"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1260_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_nonbonds = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("nonbonds"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1261_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_map = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("map"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1262_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_eleDielectricCode = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("eleDielectricCode"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1263_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_vdwMixRadius = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("vdwMixRadius"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1264_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_vdwMixWell = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("vdwMixWell"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1265_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_name = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("name"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1266_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1163_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_id = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("id"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1267_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_restraints = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("restraints"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1268_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1164_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_contents = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("contents"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1269_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1165_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_pdbName = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("pdbName"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1270_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1166_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_uniqueLabel = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("uniqueLabel"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1271_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1167_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_NetCharge = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("NetCharge"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1272_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1168_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_fileSeqNum = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("fileSeqNum"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1273_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1169_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_monomerAliases = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("monomerAliases"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1274_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1170_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_bl = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("bl"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1275_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1171_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_alias = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("alias"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1276_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1172_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_flags = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("flags"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1277_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_element = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("element"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1278_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1173_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_hybridization = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("hybridization"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1279_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1174_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_priority = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("priority"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1280_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1175_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_hintLP = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("hintLP"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1281_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1176_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_chg = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("chg"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1282_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1177_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_ion = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ion"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1283_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1178_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_rings = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("rings"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1284_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1179_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_tempInt = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("tempInt"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1285_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_type = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("type"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1286_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1180_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_ar1 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ar1"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1287_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1181_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_ar2 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ar2"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1288_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1182_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_ar3 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ar3"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1289_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1183_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_ar4 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ar4"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1290_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1184_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_ar5 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ar5"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1291_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1185_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_mask = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("mask"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1292_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1186_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_configuration = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("configuration"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1293_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1187_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_stereochemistryType = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("stereochemistryType"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1294_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1188_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_pos = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("pos"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1295_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1189_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_order = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("order"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1296_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1190_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_properties = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("properties"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1297_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1191_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_a1 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("a1"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1298_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1192_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_a2 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("a2"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1299_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1193_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_bonds = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("bonds"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1300_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1194_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_atom = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("atom"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1301_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1195_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_position = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("position"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1302_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1196_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_weight = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("weight"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1303_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1197_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_atoms = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("atoms"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1304_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1198_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_k = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("k"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1305_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1199_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_title = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("title"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1306_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1200_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_ref = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ref"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1307_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1201_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_bondDistinctions = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("bondDistinctions"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1308_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1202_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_Info = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("Info"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1309_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1203_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_Types = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("Types"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1310_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1204_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_Stretches = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("Stretches"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1311_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1205_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_Angles = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("Angles"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1312_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1206_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_Itors = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("Itors"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1313_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1207_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_Ptors = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("Ptors"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1314_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1208_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_Nonbonds = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("Nonbonds"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1315_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1209_helper(core::BootStrapCoreSymbolMap* symbols) {
  kw::_sym_Vdws = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("Vdws"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1210_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_chemdraw_color = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("chemdraw_color"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1211_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_chemdraw_dashed_bond = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("chemdraw_dashed_bond"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1212_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_comment = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("comment"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1213_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_chiral_centers = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("chiral_centers"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1214_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_group = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("group"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1215_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_name_template = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("name_template"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1216_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_pdb_template = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("pdb_template"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1217_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_restraints = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("restraints"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1218_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_residue_charge = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("residue_charge"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1219_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_restrained_pi_bonds = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("restrained_pi_bonds"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1220_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_caps = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("caps"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1221_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_matches = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("matches"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1222_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_tags = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("tags"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1223_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_closestMatch = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("closestMatch"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1224_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_data = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("data"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1225_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_root = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("root"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1226_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_op = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("op"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1227_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_ringTag = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ringTag"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1228_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_atomTest = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("atomTest"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1229_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_test = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("test"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1230_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_int = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("int"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1231_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_num = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("num"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1232_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_str = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("str"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1233_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_sym = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("sym"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1234_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_head = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("head"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1235_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_tail = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("tail"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1236_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_left = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("left"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1237_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_right = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("right"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1238_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_tag1 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("tag1"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1239_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_tag2 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("tag2"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1240_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_bond = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("bond"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1241_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_residueNames = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("residueNames"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1242_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_atomicProperty = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("atomicProperty"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1243_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_atomicNumber = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("atomicNumber"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1244_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_attachedAtoms = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("attachedAtoms"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1245_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_attachedHs = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("attachedHs"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1246_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_attachedEWGs = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("attachedEWGs"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1247_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_element = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("element"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1248_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_neighbors = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("neighbors"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1249_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_tag = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("tag"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1250_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_atomProps = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("atomProps"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1251_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_firstTest = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("firstTest"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1252_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_chain = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("chain"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1253_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_tests = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("tests"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1254_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_assignType = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("assignType"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1255_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_afterMatchTests = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("afterMatchTests"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1256_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_wildDict = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("wildDict"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1257_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_type_rules = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("type_rules"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1258_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_r0 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("r0"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1259_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_kb = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("kb"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1260_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_stretches = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("stretches"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1261_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_R = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("R"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1262_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_Eps = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("Eps"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1263_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_M = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("M"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1264_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_N = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("N"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1265_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_Edep = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("Edep"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1266_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_vdw = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("vdw"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1267_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_angRad = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("angRad"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1268_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_k2 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("k2"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1269_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_angleFunction = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("angleFunction"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1270_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_angles = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("angles"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1271_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_zConstants = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("zConstants"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1272_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_cConstants = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("cConstants"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1273_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_level = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("level"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1274_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_forceField = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("forceField"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1275_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_itors = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("itors"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1276_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_type1 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("type1"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1277_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_type2 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("type2"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1278_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_type3 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("type3"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1279_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_type4 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("type4"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1280_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_v0 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("v0"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1281_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_ph0 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ph0"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1282_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_v1 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("v1"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1283_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_ph1 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ph1"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1284_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_v2 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("v2"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1285_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_ph2 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ph2"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1286_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_v3 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("v3"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1287_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_ph3 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ph3"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1288_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_v4 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("v4"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1289_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_ph4 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ph4"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1290_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_v5 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("v5"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1291_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_ph5 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ph5"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1292_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_ptors = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ptors"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1293_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_type = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("type"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1294_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_radius = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("radius"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1295_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_well = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("well"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1296_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_apol = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("apol"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1297_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_neff = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("neff"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1298_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_mass = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("mass"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1299_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_pol = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("pol"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1300_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_initCharge = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("initCharge"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1301_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_fcadj = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("fcadj"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1302_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_pbci = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("pbci"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1303_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_da = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("da"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1304_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_eleDielectricValue = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("eleDielectricValue"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1305_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_eleBuffer = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("eleBuffer"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1306_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_eleScale14 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("eleScale14"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1307_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_eleChargeFcn = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("eleChargeFcn"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1308_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_vdwScale14 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("vdwScale14"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1309_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_vdwScaleBufferA = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("vdwScaleBufferA"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1310_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_vdwScaleBufferB = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("vdwScaleBufferB"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1311_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_nonbonds = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("nonbonds"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1312_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_map = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("map"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1313_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_eleDielectricCode = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("eleDielectricCode"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1314_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_vdwMixRadius = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("vdwMixRadius"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1315_helper(core::BootStrapCoreSymbolMap* symbols) {
+ kw::_sym_vdwMixWell = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("vdwMixWell"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1316_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_STARwatchDynamicBindingStackSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARwatchDynamicBindingStackSTAR"), true,false);
@@ -10583,151 +10583,151 @@ NOINLINE void maybe_allocate_one_symbol_1741_helper(core::BootStrapCoreSymbolMap
  core::_sym_StrWithFillPtr_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("base-string-with-fill-ptr"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1742_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_InvocationHistoryFrameIterator_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("InvocationHistoryFrameIterator"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1743_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_Reader_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Reader"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1744_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_HashTableEqual_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("HashTableEqual"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1745_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_Binder_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Binder"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1746_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_Path_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("path"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1747_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_DirectoryIterator_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("DirectoryIterator"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1748_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_RecursiveDirectoryIterator_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("RecursiveDirectoryIterator"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1749_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_DirectoryEntry_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("DirectoryEntry"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1750_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_FileStatus_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("FileStatus"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1751_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_IntArray_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("IntArray"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1752_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_IOFileStream_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("iofile-stream"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1753_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_IOStreamStream_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("iostream-stream"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1754_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_StringOutputStream_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("string-output-stream"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1755_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_StringInputStream_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("string-input-stream"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1756_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_HashTableEql_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("HashTableEql"), true,false);
 }
+NOINLINE void maybe_allocate_one_symbol_1743_helper(core::BootStrapCoreSymbolMap* symbols) {
+ core::_sym_InvocationHistoryFrameIterator_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("InvocationHistoryFrameIterator"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1744_helper(core::BootStrapCoreSymbolMap* symbols) {
+ core::_sym_IOFileStream_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("iofile-stream"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1745_helper(core::BootStrapCoreSymbolMap* symbols) {
+ core::_sym_IOStreamStream_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("iostream-stream"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1746_helper(core::BootStrapCoreSymbolMap* symbols) {
+ core::_sym_StringOutputStream_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("string-output-stream"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1747_helper(core::BootStrapCoreSymbolMap* symbols) {
+ core::_sym_StringInputStream_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("string-input-stream"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1748_helper(core::BootStrapCoreSymbolMap* symbols) {
+ core::_sym_Reader_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Reader"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1749_helper(core::BootStrapCoreSymbolMap* symbols) {
+ core::_sym_Iterator_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Iterator"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1750_helper(core::BootStrapCoreSymbolMap* symbols) {
+ core::_sym_Path_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("path"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1751_helper(core::BootStrapCoreSymbolMap* symbols) {
+ core::_sym_DirectoryIterator_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("DirectoryIterator"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1752_helper(core::BootStrapCoreSymbolMap* symbols) {
+ core::_sym_RecursiveDirectoryIterator_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("RecursiveDirectoryIterator"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1753_helper(core::BootStrapCoreSymbolMap* symbols) {
+ core::_sym_DirectoryEntry_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("DirectoryEntry"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1754_helper(core::BootStrapCoreSymbolMap* symbols) {
+ core::_sym_FileStatus_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("FileStatus"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1755_helper(core::BootStrapCoreSymbolMap* symbols) {
+ core::_sym_Binder_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Binder"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1756_helper(core::BootStrapCoreSymbolMap* symbols) {
+ core::_sym_IntArray_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("IntArray"), true,false);
+}
 NOINLINE void maybe_allocate_one_symbol_1757_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_HashTableEq_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("HashTableEq"), true,false);
+ core::_sym_HashTableEqual_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("HashTableEqual"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1758_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_SmallMap_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SmallMap"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1759_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_Iterator_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Iterator"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_1760_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_CandoException_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("CandoException"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1761_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1760_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_VaList_dummy_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("VA-LIST"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1762_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1761_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_Pointer_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Pointer"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1763_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1762_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_Environment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Environment"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1764_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1763_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_LexicalEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("LexicalEnvironment"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1765_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1764_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_RuntimeVisibleEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("RuntimeVisibleEnvironment"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1766_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1765_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_ValueEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ValueEnvironment"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1767_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1766_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_FunctionValueEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("FunctionValueEnvironment"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1768_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1767_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_CompileTimeEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("CompileTimeEnvironment"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1769_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1768_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_UnwindProtectEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("UnwindProtectEnvironment"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1770_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1769_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_BlockEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("BlockEnvironment"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1771_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1770_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_CatchEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("CatchEnvironment"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1772_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1771_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_FunctionContainerEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("FunctionContainerEnvironment"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1773_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1772_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_TagbodyEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("TagbodyEnvironment"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1774_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1773_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_MacroletEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("MacroletEnvironment"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1775_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1774_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_SymbolMacroletEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SymbolMacroletEnvironment"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1776_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1775_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_StackValueEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("StackValueEnvironment"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1777_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1776_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_GlueEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("GlueEnvironment"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1778_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1777_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_ActivationFrame_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ActivationFrame"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1779_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1778_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_ValueFrame_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ValueFrame"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1780_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1779_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_FunctionFrame_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("FunctionFrame"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1781_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1780_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_TagbodyFrame_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("TagbodyFrame"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1782_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1781_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_Metaobject_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("metaobject"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1783_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1782_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_Specializer_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("specializer"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1784_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1783_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_WeakHashTable_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("WeakHashTable"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1785_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1784_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_WeakKeyHashTable_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("WeakKeyHashTable"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1786_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1785_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_SourceFileInfo_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SourceFileInfo"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1787_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1786_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_SourcePosInfo_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SourcePosInfo"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1788_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1787_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_SourceManager_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SourceManager"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1789_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1788_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_CxxObject_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("CxxObject"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_1790_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_1789_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_Record_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Record"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_1790_helper(core::BootStrapCoreSymbolMap* symbols) {
+ core::_sym_HashTableEq_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("HashTableEq"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1791_helper(core::BootStrapCoreSymbolMap* symbols) {
  core::_sym_VectorObjects_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("VectorObjects"), true,false);
@@ -12506,121 +12506,121 @@ NOINLINE void maybe_allocate_one_symbol_2382_helper(core::BootStrapCoreSymbolMap
  cl::_sym_Package_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("Package"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2383_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Pathname_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathname"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_2384_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_LogicalPathname_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logical-pathname"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_2385_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Character_dummy_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("character"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_2386_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Stream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("stream"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_2387_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_FileStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("file-stream"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_2388_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_StringStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string-stream"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_2389_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_SynonymStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("synonym-stream"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_2390_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_TwoWayStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("two-way-stream"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_2391_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_BroadcastStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("BroadcastStream"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_2392_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_ConcatenatedStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("ConcatenatedStream"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_2393_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_EchoStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("EchoStream"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_2394_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_String_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("String"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_2395_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Str_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("base-string"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_2396_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_HashTable_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("HashTable"), true,false);
-}
-NOINLINE void maybe_allocate_one_symbol_2397_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_BitVector_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("bit-vector"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2398_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2384_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_SimpleBitVector_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simple-bit-vector"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2399_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2385_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_BitVectorWithFillPtr_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("bit-vector-with-fill-ptr"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2400_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2386_helper(core::BootStrapCoreSymbolMap* symbols) {
+ cl::_sym_Character_dummy_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("character"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_2387_helper(core::BootStrapCoreSymbolMap* symbols) {
+ cl::_sym_Stream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("stream"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_2388_helper(core::BootStrapCoreSymbolMap* symbols) {
+ cl::_sym_FileStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("file-stream"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_2389_helper(core::BootStrapCoreSymbolMap* symbols) {
+ cl::_sym_StringStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string-stream"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_2390_helper(core::BootStrapCoreSymbolMap* symbols) {
+ cl::_sym_SynonymStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("synonym-stream"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_2391_helper(core::BootStrapCoreSymbolMap* symbols) {
+ cl::_sym_TwoWayStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("two-way-stream"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_2392_helper(core::BootStrapCoreSymbolMap* symbols) {
+ cl::_sym_BroadcastStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("BroadcastStream"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_2393_helper(core::BootStrapCoreSymbolMap* symbols) {
+ cl::_sym_ConcatenatedStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("ConcatenatedStream"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_2394_helper(core::BootStrapCoreSymbolMap* symbols) {
+ cl::_sym_EchoStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("EchoStream"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_2395_helper(core::BootStrapCoreSymbolMap* symbols) {
+ cl::_sym_Pathname_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathname"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_2396_helper(core::BootStrapCoreSymbolMap* symbols) {
+ cl::_sym_LogicalPathname_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logical-pathname"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_2397_helper(core::BootStrapCoreSymbolMap* symbols) {
+ cl::_sym_String_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("String"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_2398_helper(core::BootStrapCoreSymbolMap* symbols) {
+ cl::_sym_Str_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("base-string"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_2399_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_T_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("T"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2401_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2400_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_Cons_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("Cons"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2402_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2401_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_Number_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("number"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2403_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2402_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_Real_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("real"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2404_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2403_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_Rational_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("rational"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2405_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2404_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_Integer_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("integer"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2406_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2405_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_Fixnum_dummy_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fixnum"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2407_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2406_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_Float_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("float"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2408_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2407_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_ShortFloat_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("ShortFloat"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2409_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2408_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_SingleFloat_dummy_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("SingleFloat"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2410_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2409_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_DoubleFloat_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("double-float"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2411_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2410_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_LongFloat_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("LongFloat"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2412_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2411_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_Complex_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("complex"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2413_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2412_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_Ratio_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("ratio"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2414_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2413_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_Bignum_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("Bignum"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2415_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2414_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_Symbol_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("Symbol"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2416_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2415_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_Function_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("Function"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2417_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2416_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_CompiledFunction_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("CompiledFunction"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2418_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2417_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_StandardObject_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("standard-object"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2419_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2418_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_Class_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("class"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2420_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2419_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_Array_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("array"), true,false);
 }
-NOINLINE void maybe_allocate_one_symbol_2421_helper(core::BootStrapCoreSymbolMap* symbols) {
+NOINLINE void maybe_allocate_one_symbol_2420_helper(core::BootStrapCoreSymbolMap* symbols) {
  cl::_sym_Vector_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("vector"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_2421_helper(core::BootStrapCoreSymbolMap* symbols) {
+ cl::_sym_HashTable_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("HashTable"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2422_helper(core::BootStrapCoreSymbolMap* symbols) {
  gray::_sym_aSingleGraySymbol = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("aSingleGraySymbol"), false,false);
@@ -15354,1806 +15354,1806 @@ NOINLINE void maybe_allocate_one_symbol_2498_helper(core::BootStrapCoreSymbolMap
  maybe_allocate_one_symbol_2497_helper(symbols);
  maybe_allocate_one_symbol_2498_helper(symbols);
 #endif // ALLOCATE_ALL_SYMBOLS
+#if defined(KeywordPkg_SYMBOLS)
+DO_SYMBOL(kw,_sym_catchFrame,0,KeywordPkg,"catchFrame",true);
+DO_SYMBOL(kw,_sym_blockFrame,1,KeywordPkg,"blockFrame",true);
+DO_SYMBOL(kw,_sym_tagbodyFrame,2,KeywordPkg,"tagbodyFrame",true);
+DO_SYMBOL(kw,_sym_landingPadFrame,3,KeywordPkg,"landingPadFrame",true);
+DO_SYMBOL(kw,_sym_splatted,4,KeywordPkg,"splatted",true);
+DO_SYMBOL(kw,_sym_unbound,5,KeywordPkg,"unbound",true);
+DO_SYMBOL(kw,_sym_deleted,6,KeywordPkg,"deleted",true);
+DO_SYMBOL(kw,_sym_rtld_default,7,KeywordPkg,"rtld_default",true);
+DO_SYMBOL(kw,_sym_rtld_next,8,KeywordPkg,"rtld_next",true);
+DO_SYMBOL(kw,_sym_rtld_self,9,KeywordPkg,"rtld_self",true);
+DO_SYMBOL(kw,_sym_rtld_main_only,10,KeywordPkg,"rtld_main_only",true);
+DO_SYMBOL(kw,_sym_iclass,11,KeywordPkg,"iclass",true);
+DO_SYMBOL(kw,_sym_next,12,KeywordPkg,"next",true);
+DO_SYMBOL(kw,_sym_prev,13,KeywordPkg,"prev",true);
+DO_SYMBOL(kw,_sym_key,14,KeywordPkg,"key",true);
+DO_SYMBOL(kw,_sym_defaults,15,KeywordPkg,"defaults",true);
+DO_SYMBOL(kw,_sym_error,16,KeywordPkg,"error",true);
+DO_SYMBOL(kw,_sym_link,17,KeywordPkg,"link",true);
+DO_SYMBOL(kw,_sym_broken_link,18,KeywordPkg,"broken_link",true);
+DO_SYMBOL(kw,_sym_special,19,KeywordPkg,"special",true);
+DO_SYMBOL(kw,_sym_supersede,20,KeywordPkg,"supersede",true);
+DO_SYMBOL(kw,_sym_calledFunction,21,KeywordPkg,"calledFunction",true);
+DO_SYMBOL(kw,_sym_givenNumberOfArguments,22,KeywordPkg,"givenNumberOfArguments",true);
+DO_SYMBOL(kw,_sym_requiredNumberOfArguments,23,KeywordPkg,"requiredNumberOfArguments",true);
+DO_SYMBOL(kw,_sym_unrecognizedKeyword,24,KeywordPkg,"unrecognizedKeyword",true);
+DO_SYMBOL(kw,_sym_body,25,KeywordPkg,"body",true);
+DO_SYMBOL(kw,_sym_lambda_list_handler,26,KeywordPkg,"lambda_list_handler",true);
+DO_SYMBOL(kw,_sym_docstring,27,KeywordPkg,"docstring",true);
+DO_SYMBOL(kw,_sym_arguments,28,KeywordPkg,"arguments",true);
+DO_SYMBOL(kw,_sym_create,29,KeywordPkg,"create",true);
+DO_SYMBOL(kw,_sym_append,30,KeywordPkg,"append",true);
+DO_SYMBOL(kw,_sym_debugStartup,31,KeywordPkg,"debugStartup",true);
+DO_SYMBOL(kw,_sym_cclasp,32,KeywordPkg,"cclasp",true);
+DO_SYMBOL(kw,_sym_bclasp,33,KeywordPkg,"bclasp",true);
+DO_SYMBOL(kw,_sym_load,34,KeywordPkg,"load",true);
+DO_SYMBOL(kw,_sym_eval,35,KeywordPkg,"eval",true);
+DO_SYMBOL(kw,_sym_ecl_min,36,KeywordPkg,"ecl_min",true);
+DO_SYMBOL(kw,_sym_use_mps,37,KeywordPkg,"use_mps",true);
+DO_SYMBOL(kw,_sym_use_boehmdc,38,KeywordPkg,"use_boehmdc",true);
+DO_SYMBOL(kw,_sym_use_boehm,39,KeywordPkg,"use_boehm",true);
+DO_SYMBOL(kw,_sym_cr,40,KeywordPkg,"cr",true);
+DO_SYMBOL(kw,_sym_lf,41,KeywordPkg,"lf",true);
+DO_SYMBOL(kw,_sym_littleEndian,42,KeywordPkg,"littleEndian",true);
+DO_SYMBOL(kw,_sym_bigEndian,43,KeywordPkg,"bigEndian",true);
+DO_SYMBOL(kw,_sym_crlf,44,KeywordPkg,"crlf",true);
+DO_SYMBOL(kw,_sym_latin_1,45,KeywordPkg,"latin_1",true);
+DO_SYMBOL(kw,_sym_ucs_4,46,KeywordPkg,"ucs_4",true);
+DO_SYMBOL(kw,_sym_passThrough,47,KeywordPkg,"passThrough",true);
+DO_SYMBOL(kw,_sym_if_does_not_exist,48,KeywordPkg,"if_does_not_exist",true);
+DO_SYMBOL(kw,_sym_new_version,49,KeywordPkg,"new_version",true);
+DO_SYMBOL(kw,_sym_rename,50,KeywordPkg,"rename",true);
+DO_SYMBOL(kw,_sym_rename_and_delete,51,KeywordPkg,"rename_and_delete",true);
+DO_SYMBOL(kw,_sym_overwrite,52,KeywordPkg,"overwrite",true);
+DO_SYMBOL(kw,_sym_if_exists,53,KeywordPkg,"if_exists",true);
+DO_SYMBOL(kw,_sym_probe,54,KeywordPkg,"probe",true);
+DO_SYMBOL(kw,_sym_FullDebug,55,KeywordPkg,"FullDebug",true);
+DO_SYMBOL(kw,_sym_LineTablesOnly,56,KeywordPkg,"LineTablesOnly",true);
+DO_SYMBOL(kw,_sym__uid,57,KeywordPkg,"_uid",true);
+DO_SYMBOL(kw,_sym_none,58,KeywordPkg,"none",true);
+DO_SYMBOL(kw,_sym_line,59,KeywordPkg,"line",true);
+DO_SYMBOL(kw,_sym_full,60,KeywordPkg,"full",true);
+DO_SYMBOL(kw,_sym_message,61,KeywordPkg,"message",true);
+DO_SYMBOL(kw,_sym_line_buffered,62,KeywordPkg,"line_buffered",true);
+DO_SYMBOL(kw,_sym_fully_buffered,63,KeywordPkg,"fully_buffered",true);
+DO_SYMBOL(kw,_sym_array,64,KeywordPkg,"array",true);
+DO_SYMBOL(kw,_sym_UnsignedByte,65,KeywordPkg,"UnsignedByte",true);
+DO_SYMBOL(kw,_sym_junkAllowed,66,KeywordPkg,"junkAllowed",true);
+DO_SYMBOL(kw,_sym_absolute,67,KeywordPkg,"absolute",true);
+DO_SYMBOL(kw,_sym_relative,68,KeywordPkg,"relative",true);
+DO_SYMBOL(kw,_sym_back,69,KeywordPkg,"back",true);
+DO_SYMBOL(kw,_sym_operation,70,KeywordPkg,"operation",true);
+DO_SYMBOL(kw,_sym_operands,71,KeywordPkg,"operands",true);
+DO_SYMBOL(kw,_sym_escape,72,KeywordPkg,"escape",true);
+DO_SYMBOL(kw,_sym_capitalize,73,KeywordPkg,"capitalize",true);
+DO_SYMBOL(kw,_sym_typeError,74,KeywordPkg,"typeError",true);
+DO_SYMBOL(kw,_sym_datum,75,KeywordPkg,"datum",true);
+DO_SYMBOL(kw,_sym_expectedType,76,KeywordPkg,"expectedType",true);
+DO_SYMBOL(kw,_sym_print,77,KeywordPkg,"print",true);
+DO_SYMBOL(kw,_sym_pathname,78,KeywordPkg,"pathname",true);
+DO_SYMBOL(kw,_sym_object,79,KeywordPkg,"object",true);
+DO_SYMBOL(kw,_sym_formatControl,80,KeywordPkg,"formatControl",true);
+DO_SYMBOL(kw,_sym_formatArguments,81,KeywordPkg,"formatArguments",true);
+DO_SYMBOL(kw,_sym_stream,82,KeywordPkg,"stream",true);
+DO_SYMBOL(kw,_sym_package,83,KeywordPkg,"package",true);
+DO_SYMBOL(kw,_sym_compile_toplevel,84,KeywordPkg,"compile_toplevel",true);
+DO_SYMBOL(kw,_sym_load_toplevel,85,KeywordPkg,"load_toplevel",true);
+DO_SYMBOL(kw,_sym_execute,86,KeywordPkg,"execute",true);
+DO_SYMBOL(kw,_sym_allow_other_keys,87,KeywordPkg,"allow_other_keys",true);
+DO_SYMBOL(kw,_sym_macro,88,KeywordPkg,"macro",true);
+DO_SYMBOL(kw,_sym_function,89,KeywordPkg,"function",true);
+DO_SYMBOL(kw,_sym_invalid_character,90,KeywordPkg,"invalid_character",true);
+DO_SYMBOL(kw,_sym_brcl,91,KeywordPkg,"brcl",true);
+DO_SYMBOL(kw,_sym_not,92,KeywordPkg,"not",true);
+DO_SYMBOL(kw,_sym_and,93,KeywordPkg,"and",true);
+DO_SYMBOL(kw,_sym_or,94,KeywordPkg,"or",true);
+DO_SYMBOL(kw,_sym_class,95,KeywordPkg,"class",true);
+DO_SYMBOL(kw,_sym_instance,96,KeywordPkg,"instance",true);
+DO_SYMBOL(kw,_sym_output,97,KeywordPkg,"output",true);
+DO_SYMBOL(kw,_sym_input,98,KeywordPkg,"input",true);
+DO_SYMBOL(kw,_sym_io,99,KeywordPkg,"io",true);
+DO_SYMBOL(kw,_sym_default,100,KeywordPkg,"default",true);
+DO_SYMBOL(kw,_sym_internal,101,KeywordPkg,"internal",true);
+DO_SYMBOL(kw,_sym_external,102,KeywordPkg,"external",true);
+DO_SYMBOL(kw,_sym_inherited,103,KeywordPkg,"inherited",true);
+DO_SYMBOL(kw,_sym_debug,104,KeywordPkg,"debug",true);
+DO_SYMBOL(kw,_sym_direct_super_classes,105,KeywordPkg,"direct_super_classes",true);
+DO_SYMBOL(kw,_sym_changed,106,KeywordPkg,"changed",true);
+DO_SYMBOL(kw,_sym_address_model_64,107,KeywordPkg,"address_model_64",true);
+DO_SYMBOL(kw,_sym_target_os_darwin,108,KeywordPkg,"target_os_darwin",true);
+DO_SYMBOL(kw,_sym_podSymbolMap,109,KeywordPkg,"podSymbolMap",true);
+DO_SYMBOL(kw,_sym_constituent_character,110,KeywordPkg,"constituent_character",true);
+DO_SYMBOL(kw,_sym_syntax,111,KeywordPkg,"syntax",true);
+DO_SYMBOL(kw,_sym_whitespace_character,112,KeywordPkg,"whitespace_character",true);
+DO_SYMBOL(kw,_sym_single_escape_character,113,KeywordPkg,"single_escape_character",true);
+DO_SYMBOL(kw,_sym_multiple_escape_character,114,KeywordPkg,"multiple_escape_character",true);
+DO_SYMBOL(kw,_sym_upcase,115,KeywordPkg,"upcase",true);
+DO_SYMBOL(kw,_sym_downcase,116,KeywordPkg,"downcase",true);
+DO_SYMBOL(kw,_sym_preserve,117,KeywordPkg,"preserve",true);
+DO_SYMBOL(kw,_sym_invert,118,KeywordPkg,"invert",true);
+DO_SYMBOL(kw,_sym_non_terminating_macro_character,119,KeywordPkg,"non_terminating_macro_character",true);
+DO_SYMBOL(kw,_sym_terminating_macro_character,120,KeywordPkg,"terminating_macro_character",true);
+DO_SYMBOL(kw,_sym_macro_function,121,KeywordPkg,"macro_function",true);
+DO_SYMBOL(kw,_sym_case,122,KeywordPkg,"case",true);
+DO_SYMBOL(kw,_sym_file,123,KeywordPkg,"file",true);
+DO_SYMBOL(kw,_sym_unspecific,124,KeywordPkg,"unspecific",true);
+DO_SYMBOL(kw,_sym_local,125,KeywordPkg,"local",true);
+DO_SYMBOL(kw,_sym_common,126,KeywordPkg,"common",true);
+DO_SYMBOL(kw,_sym_wild_inferiors,127,KeywordPkg,"wild_inferiors",true);
+DO_SYMBOL(kw,_sym_up,128,KeywordPkg,"up",true);
+DO_SYMBOL(kw,_sym_wild,129,KeywordPkg,"wild",true);
+DO_SYMBOL(kw,_sym_host,130,KeywordPkg,"host",true);
+DO_SYMBOL(kw,_sym_device,131,KeywordPkg,"device",true);
+DO_SYMBOL(kw,_sym_newest,132,KeywordPkg,"newest",true);
+DO_SYMBOL(kw,_sym_version,133,KeywordPkg,"version",true);
+DO_SYMBOL(kw,_sym_directory,134,KeywordPkg,"directory",true);
+DO_SYMBOL(kw,_sym_supplied,135,KeywordPkg,"supplied",true);
+DO_SYMBOL(kw,_sym_min,136,KeywordPkg,"min",true);
+DO_SYMBOL(kw,_sym_max,137,KeywordPkg,"max",true);
+DO_SYMBOL(kw,_sym_eof,138,KeywordPkg,"eof",true);
+DO_SYMBOL(kw,_sym_fillPointer,139,KeywordPkg,"fillPointer",true);
+DO_SYMBOL(kw,_sym_elementType,140,KeywordPkg,"elementType",true);
+DO_SYMBOL(kw,_sym_adjustable,141,KeywordPkg,"adjustable",true);
+DO_SYMBOL(kw,_sym_start,142,KeywordPkg,"start",true);
+DO_SYMBOL(kw,_sym_end,143,KeywordPkg,"end",true);
+DO_SYMBOL(kw,_sym_x,144,KeywordPkg,"x",true);
+DO_SYMBOL(kw,_sym_y,145,KeywordPkg,"y",true);
+DO_SYMBOL(kw,_sym_z,146,KeywordPkg,"z",true);
+DO_SYMBOL(kw,_sym_white,147,KeywordPkg,"white",true);
+DO_SYMBOL(kw,_sym_black,148,KeywordPkg,"black",true);
+DO_SYMBOL(kw,_sym_red,149,KeywordPkg,"red",true);
+DO_SYMBOL(kw,_sym_green,150,KeywordPkg,"green",true);
+DO_SYMBOL(kw,_sym_blue,151,KeywordPkg,"blue",true);
+DO_SYMBOL(kw,_sym_magenta,152,KeywordPkg,"magenta",true);
+DO_SYMBOL(kw,_sym_yellow,153,KeywordPkg,"yellow",true);
+DO_SYMBOL(kw,_sym_cyan,154,KeywordPkg,"cyan",true);
+DO_SYMBOL(kw,_sym_grey10,155,KeywordPkg,"grey10",true);
+DO_SYMBOL(kw,_sym_greyF0,156,KeywordPkg,"greyF0",true);
+DO_SYMBOL(kw,_sym_goldenrod,157,KeywordPkg,"goldenrod",true);
+DO_SYMBOL(kw,_sym_purple,158,KeywordPkg,"purple",true);
+DO_SYMBOL(kw,_sym_pink,159,KeywordPkg,"pink",true);
+DO_SYMBOL(kw,_sym_plum,160,KeywordPkg,"plum",true);
+DO_SYMBOL(kw,_sym_coral,161,KeywordPkg,"coral",true);
+DO_SYMBOL(kw,_sym_orange,162,KeywordPkg,"orange",true);
+DO_SYMBOL(kw,_sym_brown,163,KeywordPkg,"brown",true);
+DO_SYMBOL(kw,_sym_wheat,164,KeywordPkg,"wheat",true);
+DO_SYMBOL(kw,_sym_chartreuse,165,KeywordPkg,"chartreuse",true);
+DO_SYMBOL(kw,_sym_aquamarine,166,KeywordPkg,"aquamarine",true);
+DO_SYMBOL(kw,_sym_mediumBlue,167,KeywordPkg,"mediumBlue",true);
+DO_SYMBOL(kw,_sym_steelBlue,168,KeywordPkg,"steelBlue",true);
+DO_SYMBOL(kw,_sym_name,169,KeywordPkg,"name",true);
+DO_SYMBOL(kw,_sym_id,170,KeywordPkg,"id",true);
+DO_SYMBOL(kw,_sym_contents,171,KeywordPkg,"contents",true);
+DO_SYMBOL(kw,_sym_pdbName,172,KeywordPkg,"pdbName",true);
+DO_SYMBOL(kw,_sym_uniqueLabel,173,KeywordPkg,"uniqueLabel",true);
+DO_SYMBOL(kw,_sym_NetCharge,174,KeywordPkg,"NetCharge",true);
+DO_SYMBOL(kw,_sym_fileSeqNum,175,KeywordPkg,"fileSeqNum",true);
+DO_SYMBOL(kw,_sym_monomerAliases,176,KeywordPkg,"monomerAliases",true);
+DO_SYMBOL(kw,_sym_bl,177,KeywordPkg,"bl",true);
+DO_SYMBOL(kw,_sym_alias,178,KeywordPkg,"alias",true);
+DO_SYMBOL(kw,_sym_flags,179,KeywordPkg,"flags",true);
+DO_SYMBOL(kw,_sym_hybridization,180,KeywordPkg,"hybridization",true);
+DO_SYMBOL(kw,_sym_priority,181,KeywordPkg,"priority",true);
+DO_SYMBOL(kw,_sym_hintLP,182,KeywordPkg,"hintLP",true);
+DO_SYMBOL(kw,_sym_chg,183,KeywordPkg,"chg",true);
+DO_SYMBOL(kw,_sym_ion,184,KeywordPkg,"ion",true);
+DO_SYMBOL(kw,_sym_rings,185,KeywordPkg,"rings",true);
+DO_SYMBOL(kw,_sym_tempInt,186,KeywordPkg,"tempInt",true);
+DO_SYMBOL(kw,_sym_ar1,187,KeywordPkg,"ar1",true);
+DO_SYMBOL(kw,_sym_ar2,188,KeywordPkg,"ar2",true);
+DO_SYMBOL(kw,_sym_ar3,189,KeywordPkg,"ar3",true);
+DO_SYMBOL(kw,_sym_ar4,190,KeywordPkg,"ar4",true);
+DO_SYMBOL(kw,_sym_ar5,191,KeywordPkg,"ar5",true);
+DO_SYMBOL(kw,_sym_mask,192,KeywordPkg,"mask",true);
+DO_SYMBOL(kw,_sym_configuration,193,KeywordPkg,"configuration",true);
+DO_SYMBOL(kw,_sym_stereochemistryType,194,KeywordPkg,"stereochemistryType",true);
+DO_SYMBOL(kw,_sym_pos,195,KeywordPkg,"pos",true);
+DO_SYMBOL(kw,_sym_order,196,KeywordPkg,"order",true);
+DO_SYMBOL(kw,_sym_properties,197,KeywordPkg,"properties",true);
+DO_SYMBOL(kw,_sym_a1,198,KeywordPkg,"a1",true);
+DO_SYMBOL(kw,_sym_a2,199,KeywordPkg,"a2",true);
+DO_SYMBOL(kw,_sym_bonds,200,KeywordPkg,"bonds",true);
+DO_SYMBOL(kw,_sym_atom,201,KeywordPkg,"atom",true);
+DO_SYMBOL(kw,_sym_position,202,KeywordPkg,"position",true);
+DO_SYMBOL(kw,_sym_weight,203,KeywordPkg,"weight",true);
+DO_SYMBOL(kw,_sym_atoms,204,KeywordPkg,"atoms",true);
+DO_SYMBOL(kw,_sym_k,205,KeywordPkg,"k",true);
+DO_SYMBOL(kw,_sym_title,206,KeywordPkg,"title",true);
+DO_SYMBOL(kw,_sym_ref,207,KeywordPkg,"ref",true);
+DO_SYMBOL(kw,_sym_bondDistinctions,208,KeywordPkg,"bondDistinctions",true);
+DO_SYMBOL(kw,_sym_Info,209,KeywordPkg,"Info",true);
+DO_SYMBOL(kw,_sym_Types,210,KeywordPkg,"Types",true);
+DO_SYMBOL(kw,_sym_Stretches,211,KeywordPkg,"Stretches",true);
+DO_SYMBOL(kw,_sym_Angles,212,KeywordPkg,"Angles",true);
+DO_SYMBOL(kw,_sym_Itors,213,KeywordPkg,"Itors",true);
+DO_SYMBOL(kw,_sym_Ptors,214,KeywordPkg,"Ptors",true);
+DO_SYMBOL(kw,_sym_Nonbonds,215,KeywordPkg,"Nonbonds",true);
+DO_SYMBOL(kw,_sym_Vdws,216,KeywordPkg,"Vdws",true);
+DO_SYMBOL(kw,_sym_chemdraw_color,217,KeywordPkg,"chemdraw_color",true);
+DO_SYMBOL(kw,_sym_chemdraw_dashed_bond,218,KeywordPkg,"chemdraw_dashed_bond",true);
+DO_SYMBOL(kw,_sym_comment,219,KeywordPkg,"comment",true);
+DO_SYMBOL(kw,_sym_chiral_centers,220,KeywordPkg,"chiral_centers",true);
+DO_SYMBOL(kw,_sym_group,221,KeywordPkg,"group",true);
+DO_SYMBOL(kw,_sym_name_template,222,KeywordPkg,"name_template",true);
+DO_SYMBOL(kw,_sym_pdb_template,223,KeywordPkg,"pdb_template",true);
+DO_SYMBOL(kw,_sym_restraints,224,KeywordPkg,"restraints",true);
+DO_SYMBOL(kw,_sym_residue_charge,225,KeywordPkg,"residue_charge",true);
+DO_SYMBOL(kw,_sym_restrained_pi_bonds,226,KeywordPkg,"restrained_pi_bonds",true);
+DO_SYMBOL(kw,_sym_caps,227,KeywordPkg,"caps",true);
+DO_SYMBOL(kw,_sym_matches,228,KeywordPkg,"matches",true);
+DO_SYMBOL(kw,_sym_tags,229,KeywordPkg,"tags",true);
+DO_SYMBOL(kw,_sym_closestMatch,230,KeywordPkg,"closestMatch",true);
+DO_SYMBOL(kw,_sym_data,231,KeywordPkg,"data",true);
+DO_SYMBOL(kw,_sym_root,232,KeywordPkg,"root",true);
+DO_SYMBOL(kw,_sym_op,233,KeywordPkg,"op",true);
+DO_SYMBOL(kw,_sym_ringTag,234,KeywordPkg,"ringTag",true);
+DO_SYMBOL(kw,_sym_atomTest,235,KeywordPkg,"atomTest",true);
+DO_SYMBOL(kw,_sym_test,236,KeywordPkg,"test",true);
+DO_SYMBOL(kw,_sym_int,237,KeywordPkg,"int",true);
+DO_SYMBOL(kw,_sym_num,238,KeywordPkg,"num",true);
+DO_SYMBOL(kw,_sym_str,239,KeywordPkg,"str",true);
+DO_SYMBOL(kw,_sym_sym,240,KeywordPkg,"sym",true);
+DO_SYMBOL(kw,_sym_head,241,KeywordPkg,"head",true);
+DO_SYMBOL(kw,_sym_tail,242,KeywordPkg,"tail",true);
+DO_SYMBOL(kw,_sym_left,243,KeywordPkg,"left",true);
+DO_SYMBOL(kw,_sym_right,244,KeywordPkg,"right",true);
+DO_SYMBOL(kw,_sym_tag1,245,KeywordPkg,"tag1",true);
+DO_SYMBOL(kw,_sym_tag2,246,KeywordPkg,"tag2",true);
+DO_SYMBOL(kw,_sym_bond,247,KeywordPkg,"bond",true);
+DO_SYMBOL(kw,_sym_residueNames,248,KeywordPkg,"residueNames",true);
+DO_SYMBOL(kw,_sym_atomicProperty,249,KeywordPkg,"atomicProperty",true);
+DO_SYMBOL(kw,_sym_atomicNumber,250,KeywordPkg,"atomicNumber",true);
+DO_SYMBOL(kw,_sym_attachedAtoms,251,KeywordPkg,"attachedAtoms",true);
+DO_SYMBOL(kw,_sym_attachedHs,252,KeywordPkg,"attachedHs",true);
+DO_SYMBOL(kw,_sym_attachedEWGs,253,KeywordPkg,"attachedEWGs",true);
+DO_SYMBOL(kw,_sym_element,254,KeywordPkg,"element",true);
+DO_SYMBOL(kw,_sym_neighbors,255,KeywordPkg,"neighbors",true);
+DO_SYMBOL(kw,_sym_tag,256,KeywordPkg,"tag",true);
+DO_SYMBOL(kw,_sym_atomProps,257,KeywordPkg,"atomProps",true);
+DO_SYMBOL(kw,_sym_firstTest,258,KeywordPkg,"firstTest",true);
+DO_SYMBOL(kw,_sym_chain,259,KeywordPkg,"chain",true);
+DO_SYMBOL(kw,_sym_tests,260,KeywordPkg,"tests",true);
+DO_SYMBOL(kw,_sym_assignType,261,KeywordPkg,"assignType",true);
+DO_SYMBOL(kw,_sym_afterMatchTests,262,KeywordPkg,"afterMatchTests",true);
+DO_SYMBOL(kw,_sym_wildDict,263,KeywordPkg,"wildDict",true);
+DO_SYMBOL(kw,_sym_type_rules,264,KeywordPkg,"type_rules",true);
+DO_SYMBOL(kw,_sym_r0,265,KeywordPkg,"r0",true);
+DO_SYMBOL(kw,_sym_kb,266,KeywordPkg,"kb",true);
+DO_SYMBOL(kw,_sym_stretches,267,KeywordPkg,"stretches",true);
+DO_SYMBOL(kw,_sym_R,268,KeywordPkg,"R",true);
+DO_SYMBOL(kw,_sym_Eps,269,KeywordPkg,"Eps",true);
+DO_SYMBOL(kw,_sym_M,270,KeywordPkg,"M",true);
+DO_SYMBOL(kw,_sym_N,271,KeywordPkg,"N",true);
+DO_SYMBOL(kw,_sym_Edep,272,KeywordPkg,"Edep",true);
+DO_SYMBOL(kw,_sym_vdw,273,KeywordPkg,"vdw",true);
+DO_SYMBOL(kw,_sym_angRad,274,KeywordPkg,"angRad",true);
+DO_SYMBOL(kw,_sym_k2,275,KeywordPkg,"k2",true);
+DO_SYMBOL(kw,_sym_angleFunction,276,KeywordPkg,"angleFunction",true);
+DO_SYMBOL(kw,_sym_angles,277,KeywordPkg,"angles",true);
+DO_SYMBOL(kw,_sym_zConstants,278,KeywordPkg,"zConstants",true);
+DO_SYMBOL(kw,_sym_cConstants,279,KeywordPkg,"cConstants",true);
+DO_SYMBOL(kw,_sym_level,280,KeywordPkg,"level",true);
+DO_SYMBOL(kw,_sym_forceField,281,KeywordPkg,"forceField",true);
+DO_SYMBOL(kw,_sym_itors,282,KeywordPkg,"itors",true);
+DO_SYMBOL(kw,_sym_type1,283,KeywordPkg,"type1",true);
+DO_SYMBOL(kw,_sym_type2,284,KeywordPkg,"type2",true);
+DO_SYMBOL(kw,_sym_type3,285,KeywordPkg,"type3",true);
+DO_SYMBOL(kw,_sym_type4,286,KeywordPkg,"type4",true);
+DO_SYMBOL(kw,_sym_v0,287,KeywordPkg,"v0",true);
+DO_SYMBOL(kw,_sym_ph0,288,KeywordPkg,"ph0",true);
+DO_SYMBOL(kw,_sym_v1,289,KeywordPkg,"v1",true);
+DO_SYMBOL(kw,_sym_ph1,290,KeywordPkg,"ph1",true);
+DO_SYMBOL(kw,_sym_v2,291,KeywordPkg,"v2",true);
+DO_SYMBOL(kw,_sym_ph2,292,KeywordPkg,"ph2",true);
+DO_SYMBOL(kw,_sym_v3,293,KeywordPkg,"v3",true);
+DO_SYMBOL(kw,_sym_ph3,294,KeywordPkg,"ph3",true);
+DO_SYMBOL(kw,_sym_v4,295,KeywordPkg,"v4",true);
+DO_SYMBOL(kw,_sym_ph4,296,KeywordPkg,"ph4",true);
+DO_SYMBOL(kw,_sym_v5,297,KeywordPkg,"v5",true);
+DO_SYMBOL(kw,_sym_ph5,298,KeywordPkg,"ph5",true);
+DO_SYMBOL(kw,_sym_ptors,299,KeywordPkg,"ptors",true);
+DO_SYMBOL(kw,_sym_type,300,KeywordPkg,"type",true);
+DO_SYMBOL(kw,_sym_radius,301,KeywordPkg,"radius",true);
+DO_SYMBOL(kw,_sym_well,302,KeywordPkg,"well",true);
+DO_SYMBOL(kw,_sym_apol,303,KeywordPkg,"apol",true);
+DO_SYMBOL(kw,_sym_neff,304,KeywordPkg,"neff",true);
+DO_SYMBOL(kw,_sym_mass,305,KeywordPkg,"mass",true);
+DO_SYMBOL(kw,_sym_pol,306,KeywordPkg,"pol",true);
+DO_SYMBOL(kw,_sym_initCharge,307,KeywordPkg,"initCharge",true);
+DO_SYMBOL(kw,_sym_fcadj,308,KeywordPkg,"fcadj",true);
+DO_SYMBOL(kw,_sym_pbci,309,KeywordPkg,"pbci",true);
+DO_SYMBOL(kw,_sym_da,310,KeywordPkg,"da",true);
+DO_SYMBOL(kw,_sym_eleDielectricValue,311,KeywordPkg,"eleDielectricValue",true);
+DO_SYMBOL(kw,_sym_eleBuffer,312,KeywordPkg,"eleBuffer",true);
+DO_SYMBOL(kw,_sym_eleScale14,313,KeywordPkg,"eleScale14",true);
+DO_SYMBOL(kw,_sym_eleChargeFcn,314,KeywordPkg,"eleChargeFcn",true);
+DO_SYMBOL(kw,_sym_vdwScale14,315,KeywordPkg,"vdwScale14",true);
+DO_SYMBOL(kw,_sym_vdwScaleBufferA,316,KeywordPkg,"vdwScaleBufferA",true);
+DO_SYMBOL(kw,_sym_vdwScaleBufferB,317,KeywordPkg,"vdwScaleBufferB",true);
+DO_SYMBOL(kw,_sym_nonbonds,318,KeywordPkg,"nonbonds",true);
+DO_SYMBOL(kw,_sym_map,319,KeywordPkg,"map",true);
+DO_SYMBOL(kw,_sym_eleDielectricCode,320,KeywordPkg,"eleDielectricCode",true);
+DO_SYMBOL(kw,_sym_vdwMixRadius,321,KeywordPkg,"vdwMixRadius",true);
+DO_SYMBOL(kw,_sym_vdwMixWell,322,KeywordPkg,"vdwMixWell",true);
+#endif // KeywordPkg_SYMBOLS
 #if defined(ChemPkg_SYMBOLS)
-DO_SYMBOL(chem,_sym_name,0,ChemPkg,"name",true);
-DO_SYMBOL(chem,_sym__PLUS_validChemdrawKeywords_PLUS_,1,ChemPkg,"_PLUS_validChemdrawKeywords_PLUS_",true);
-DO_SYMBOL(chem,_sym_STARparserNodeHolderSTAR,2,ChemPkg,"STARparserNodeHolderSTAR",true);
-DO_SYMBOL(chem,_sym_STARSabBondEnumConverterSTAR,3,ChemPkg,"STARSabBondEnumConverterSTAR",true);
-DO_SYMBOL(chem,_sym_STARLogicalOperatorTypeConverterSTAR,4,ChemPkg,"STARLogicalOperatorTypeConverterSTAR",true);
-DO_SYMBOL(chem,_sym_STARAtomTestEnumConverterSTAR,5,ChemPkg,"STARAtomTestEnumConverterSTAR",true);
-DO_SYMBOL(chem,_sym_STARDonorAcceptorEnumConverterSTAR,6,ChemPkg,"STARDonorAcceptorEnumConverterSTAR",true);
-DO_SYMBOL(chem,_sym_STAREleDielectricEnumConverterSTAR,7,ChemPkg,"STAREleDielectricEnumConverterSTAR",true);
-DO_SYMBOL(chem,_sym_STARVdwMixRadiusEnumConverterSTAR,8,ChemPkg,"STARVdwMixRadiusEnumConverterSTAR",true);
-DO_SYMBOL(chem,_sym_STARVdwMixWellEnumConverterSTAR,9,ChemPkg,"STARVdwMixWellEnumConverterSTAR",true);
-DO_SYMBOL(chem,_sym_CDNode_O,10,ChemPkg,"CDNode",true);
-DO_SYMBOL(chem,_sym_CDBond_O,11,ChemPkg,"CDBond",true);
-DO_SYMBOL(chem,_sym_CDFragment_O,12,ChemPkg,"CDFragment",true);
-DO_SYMBOL(chem,_sym_CDText_O,13,ChemPkg,"CDText",true);
-DO_SYMBOL(chem,_sym_ChemDraw_O,14,ChemPkg,"ChemDraw",true);
-DO_SYMBOL(chem,_sym_Command_O,15,ChemPkg,"Command",true);
-DO_SYMBOL(chem,_sym_ReadAmberParameters_O,16,ChemPkg,"ReadAmberParameters",true);
-DO_SYMBOL(chem,_sym_StructureComparer_O,17,ChemPkg,"StructureComparer",true);
-DO_SYMBOL(chem,_sym_Structure_Old_ListEntry_O,18,ChemPkg,"StructureListEntry",true);
-DO_SYMBOL(chem,_sym_Structure_Old_List_O,19,ChemPkg,"StructureList",true);
-DO_SYMBOL(chem,_sym_Twister_O,20,ChemPkg,"Twister",true);
-DO_SYMBOL(chem,_sym_TwisterDriver_O,21,ChemPkg,"TwisterDriver",true);
-DO_SYMBOL(chem,_sym_ZMatrixInternal_O,22,ChemPkg,"ZMatrixInternal",true);
-DO_SYMBOL(chem,_sym_ZMatrixBondInternal_O,23,ChemPkg,"ZMatrixBondInternal",true);
-DO_SYMBOL(chem,_sym_ZMatrixAngleInternal_O,24,ChemPkg,"ZMatrixAngleInternal",true);
-DO_SYMBOL(chem,_sym_ZMatrixDihedralInternal_O,25,ChemPkg,"ZMatrixDihedralInternal",true);
-DO_SYMBOL(chem,_sym_ZMatrixEntry_O,26,ChemPkg,"ZMatrixEntry",true);
-DO_SYMBOL(chem,_sym_ZMatrix_O,27,ChemPkg,"ZMatrix",true);
-DO_SYMBOL(chem,_sym_R,28,ChemPkg,"R",true);
-DO_SYMBOL(chem,_sym_S,29,ChemPkg,"S",true);
-DO_SYMBOL(chem,_sym_UnknownConfiguration,30,ChemPkg,"UnknownConfiguration",true);
-DO_SYMBOL(chem,_sym_candoDatabase,31,ChemPkg,"candoDatabase",true);
-DO_SYMBOL(chem,_sym_AM1_BCC_ar5,32,ChemPkg,"AM1_BCC_ar5",true);
-DO_SYMBOL(chem,_sym_AM1_BCC_ar6,33,ChemPkg,"AM1_BCC_ar6",true);
-DO_SYMBOL(chem,_sym_AM1_BCC_ar7,34,ChemPkg,"AM1_BCC_ar7",true);
-DO_SYMBOL(chem,_sym_Alias_O,35,ChemPkg,"Alias",true);
-DO_SYMBOL(chem,_sym__PLUS_configurationEnumConverter_PLUS_,36,ChemPkg,"_PLUS_configurationEnumConverter_PLUS_",true);
-DO_SYMBOL(chem,_sym__PLUS_stereochemistryTypeConverter_PLUS_,37,ChemPkg,"_PLUS_stereochemistryTypeConverter_PLUS_",true);
-DO_SYMBOL(chem,_sym__PLUS_atomFlagSymbolConverter_PLUS_,38,ChemPkg,"_PLUS_atomFlagSymbolConverter_PLUS_",true);
-DO_SYMBOL(chem,_sym_configurationToSymbolConverter,39,ChemPkg,"configurationToSymbolConverter",true);
-DO_SYMBOL(chem,_sym_stereochemistryToSymbolConverter,40,ChemPkg,"stereochemistryToSymbolConverter",true);
-DO_SYMBOL(chem,_sym_atomNeedsMinimizer,41,ChemPkg,"atomNeedsMinimizer",true);
-DO_SYMBOL(chem,_sym_selected,42,ChemPkg,"selected",true);
-DO_SYMBOL(chem,_sym_onGrid,43,ChemPkg,"onGrid",true);
-DO_SYMBOL(chem,_sym_atomFixed,44,ChemPkg,"atomFixed",true);
-DO_SYMBOL(chem,_sym_in3MemberRing,45,ChemPkg,"in3MemberRing",true);
-DO_SYMBOL(chem,_sym_in4MemberRing,46,ChemPkg,"in4MemberRing",true);
-DO_SYMBOL(chem,_sym_in5MemberRing,47,ChemPkg,"in5MemberRing",true);
-DO_SYMBOL(chem,_sym_in6MemberRing,48,ChemPkg,"in6MemberRing",true);
-DO_SYMBOL(chem,_sym_in7MemberRing,49,ChemPkg,"in7MemberRing",true);
-DO_SYMBOL(chem,_sym_in8MemberRing,50,ChemPkg,"in8MemberRing",true);
-DO_SYMBOL(chem,_sym_inRing,51,ChemPkg,"inRing",true);
-DO_SYMBOL(chem,_sym__PLUS_bondOrderToSymbolConverter_PLUS_,52,ChemPkg,"_PLUS_bondOrderToSymbolConverter_PLUS_",true);
-DO_SYMBOL(chem,_sym_AtomIdToAtomMap_O,53,ChemPkg,"AtomIdToAtomMap",true);
-DO_SYMBOL(chem,_sym_AtomId_O,54,ChemPkg,"AtomId",true);
-DO_SYMBOL(chem,_sym__PLUS_elementToSymbolConverter_PLUS_,55,ChemPkg,"_PLUS_elementToSymbolConverter_PLUS_",true);
-DO_SYMBOL(chem,_sym__PLUS_hybridizationToSymbolConverter_PLUS_,56,ChemPkg,"_PLUS_hybridizationToSymbolConverter_PLUS_",true);
-DO_SYMBOL(chem,_sym__PLUS_elementColors_PLUS_,57,ChemPkg,"_PLUS_elementColors_PLUS_",true);
-DO_SYMBOL(chem,_sym__PLUS_minimizerStatusConverter_PLUS_,58,ChemPkg,"_PLUS_minimizerStatusConverter_PLUS_",true);
-DO_SYMBOL(chem,_sym__PLUS_preconditionerTypeConverter_PLUS_,59,ChemPkg,"_PLUS_preconditionerTypeConverter_PLUS_",true);
-DO_SYMBOL(chem,_sym_MinimizerExceededMaxStepsError,60,ChemPkg,"MinimizerExceededMaxStepsError",true);
-DO_SYMBOL(chem,_sym_MinimizerStuckError,61,ChemPkg,"MinimizerStuckError",true);
-DO_SYMBOL(chem,_sym_MinimizerError,62,ChemPkg,"MinimizerError",true);
-DO_SYMBOL(chem,_sym_noPreconditioner,63,ChemPkg,"noPreconditioner",true);
-DO_SYMBOL(chem,_sym_hessianPreconditioner,64,ChemPkg,"hessianPreconditioner",true);
-DO_SYMBOL(chem,_sym_minimizerError,65,ChemPkg,"minimizerError",true);
-DO_SYMBOL(chem,_sym_minimizerSucceeded,66,ChemPkg,"minimizerSucceeded",true);
-DO_SYMBOL(chem,_sym_truncatedNewtonRunning,67,ChemPkg,"truncatedNewtonRunning",true);
-DO_SYMBOL(chem,_sym_conjugateGradientRunning,68,ChemPkg,"conjugateGradientRunning",true);
-DO_SYMBOL(chem,_sym_steepestDescentRunning,69,ChemPkg,"steepestDescentRunning",true);
-DO_SYMBOL(chem,_sym_minimizerIdle,70,ChemPkg,"minimizerIdle",true);
-DO_SYMBOL(chem,_sym_Angle_O,71,ChemPkg,"Angle",true);
-DO_SYMBOL(chem,_sym_ProperTorsion_O,72,ChemPkg,"ProperTorsion",true);
-DO_SYMBOL(chem,_sym_ImproperTorsion_O,73,ChemPkg,"ImproperTorsion",true);
-DO_SYMBOL(chem,_sym_AtomIndexer_O,74,ChemPkg,"AtomIndexer",true);
-DO_SYMBOL(chem,_sym_MapOfMonomerNamesToAtomIndexers_O,75,ChemPkg,"MapOfMonomerNamesToAtomIndexers",true);
-DO_SYMBOL(chem,_sym_MonomerPack_O,76,ChemPkg,"MonomerPack",true);
-DO_SYMBOL(chem,_sym_StereoConfiguration_O,77,ChemPkg,"StereoConfiguration",true);
-DO_SYMBOL(chem,_sym_Stereoisomer_O,78,ChemPkg,"Stereoisomer",true);
-DO_SYMBOL(chem,_sym_StereoInformation_O,79,ChemPkg,"StereoInformation",true);
-DO_SYMBOL(chem,_sym_ConformationExplorerEntryStage_O,80,ChemPkg,"ConformationExplorerEntryStage",true);
-DO_SYMBOL(chem,_sym_ConformationExplorerEntry_O,81,ChemPkg,"ConformationExplorerEntry",true);
-DO_SYMBOL(chem,_sym_ConformationExplorer_O,82,ChemPkg,"ConformationExplorer",true);
-DO_SYMBOL(chem,_sym_ConformationExplorerMatch_O,83,ChemPkg,"ConformationExplorerMatch",true);
-DO_SYMBOL(chem,_sym_MonomerCoordinates_O,84,ChemPkg,"MonomerCoordinates",true);
-DO_SYMBOL(chem,_sym_ConformationCollectionEntry_O,85,ChemPkg,"ConformationCollectionEntry",true);
-DO_SYMBOL(chem,_sym_ConformationCollection_O,86,ChemPkg,"ConformationCollection",true);
-DO_SYMBOL(chem,_sym_SuperposableConformationCollection_O,87,ChemPkg,"SuperposableConformationCollection",true);
-DO_SYMBOL(chem,_sym_FrameRecognizer_O,88,ChemPkg,"FrameRecognizer",true);
-DO_SYMBOL(chem,_sym_Rotamer_O,89,ChemPkg,"Rotamer",true);
-DO_SYMBOL(chem,_sym_AtomReferenceBase_O,90,ChemPkg,"AtomReferenceBase",true);
-DO_SYMBOL(chem,_sym_AtomReference_O,91,ChemPkg,"AtomReference",true);
-DO_SYMBOL(chem,_sym_RepresentedEntityNameSet_O,92,ChemPkg,"RepresentedEntityNameSet",true);
-DO_SYMBOL(chem,_sym_CoordinateSystem_O,93,ChemPkg,"CoordinateSystem",true);
-DO_SYMBOL(chem,_sym_PdbMonomerConnectivity_O,94,ChemPkg,"PdbMonomerConnectivity",true);
-DO_SYMBOL(chem,_sym_PdbMonomerDatabase_O,95,ChemPkg,"PdbMonomerDatabase",true);
-DO_SYMBOL(chem,_sym_StereoisomerAtom_O,96,ChemPkg,"StereoisomerAtom",true);
-DO_SYMBOL(chem,_sym_StereoisomerVirtualAtom_O,97,ChemPkg,"StereoisomerVirtualAtom",true);
-DO_SYMBOL(chem,_sym_StereoisomerAtoms_O,98,ChemPkg,"StereoisomerAtoms",true);
-DO_SYMBOL(chem,_sym_ConstitutionBond_O,99,ChemPkg,"ConstitutionBond",true);
-DO_SYMBOL(chem,_sym_ConstitutionAtom_O,100,ChemPkg,"ConstitutionAtom",true);
-DO_SYMBOL(chem,_sym_ConstitutionVirtualAtom_O,101,ChemPkg,"ConstitutionVirtualAtom",true);
-DO_SYMBOL(chem,_sym_ConstitutionAtoms_O,102,ChemPkg,"ConstitutionAtoms",true);
-DO_SYMBOL(chem,_sym_TrajectoryFrame_O,103,ChemPkg,"TrajectoryFrame",true);
-DO_SYMBOL(chem,_sym_Trajectory_O,104,ChemPkg,"Trajectory",true);
-DO_SYMBOL(chem,_sym_CipPrioritizer_O,105,ChemPkg,"CipPrioritizer",true);
-DO_SYMBOL(chem,_sym_AtomTable_O,106,ChemPkg,"AtomTable",true);
-DO_SYMBOL(chem,_sym_EnergyComponent_O,107,ChemPkg,"EnergyComponent",true);
-DO_SYMBOL(chem,_sym_EnergyStretch_O,108,ChemPkg,"EnergyStretch",true);
-DO_SYMBOL(chem,_sym_EnergyAngle_O,109,ChemPkg,"EnergyAngle",true);
-DO_SYMBOL(chem,_sym_EnergyDihedral_O,110,ChemPkg,"EnergyDihedral",true);
-DO_SYMBOL(chem,_sym_EnergyNonbond_O,111,ChemPkg,"EnergyNonbond",true);
-DO_SYMBOL(chem,_sym_EnergyImproperRestraint_O,112,ChemPkg,"EnergyImproperRestraint",true);
-DO_SYMBOL(chem,_sym_EnergyChiralRestraint_O,113,ChemPkg,"EnergyChiralRestraint",true);
-DO_SYMBOL(chem,_sym_EnergyAnchorRestraint_O,114,ChemPkg,"EnergyAnchorRestraint",true);
-DO_SYMBOL(chem,_sym_EnergyFixedNonbondRestraint_O,115,ChemPkg,"EnergyFixedNonbondRestraint",true);
-DO_SYMBOL(chem,_sym_nonbondTerm,116,ChemPkg,"nonbondTerm",true);
-DO_SYMBOL(chem,_sym_restraintAnchor,117,ChemPkg,"restraintAnchor",true);
-DO_SYMBOL(chem,_sym_InteractionError,118,ChemPkg,"InteractionError",true);
-DO_SYMBOL(chem,_sym_LinearAngleError,119,ChemPkg,"LinearAngleError",true);
-DO_SYMBOL(chem,_sym_LinearDihedralError,120,ChemPkg,"LinearDihedralError",true);
-DO_SYMBOL(chem,_sym_LinearImproperRestraintError,121,ChemPkg,"LinearImproperRestraintError",true);
-DO_SYMBOL(chem,_sym_OverlappingNonbondError,122,ChemPkg,"OverlappingNonbondError",true);
-DO_SYMBOL(chem,_sym_ComplexRestraint_O,123,ChemPkg,"ComplexRestraint",true);
-DO_SYMBOL(chem,_sym_RestrainedExoCyclicAtom_O,124,ChemPkg,"RestrainedExoCyclicAtom",true);
-DO_SYMBOL(chem,_sym_RestrainedPiBond_O,125,ChemPkg,"RestrainedPiBond",true);
-DO_SYMBOL(chem,_sym_SearchStatistics_O,126,ChemPkg,"SearchStatistics",true);
-DO_SYMBOL(chem,_sym_Constitution_O,127,ChemPkg,"Constitution",true);
-DO_SYMBOL(chem,_sym_CalculatePosition_O,128,ChemPkg,"CalculatePosition",true);
-DO_SYMBOL(chem,_sym_CalculatePositionUsingInternals_O,129,ChemPkg,"CalculatePositionUsingInternals",true);
-DO_SYMBOL(chem,_sym_CalculatePositionAlongBond_O,130,ChemPkg,"CalculatePositionAlongBond",true);
-DO_SYMBOL(chem,_sym_CalculatePositionRelativeToOrigin_O,131,ChemPkg,"CalculatePositionRelativeToOrigin",true);
-DO_SYMBOL(chem,_sym_Oligomer_O,132,ChemPkg,"Oligomer",true);
-DO_SYMBOL(chem,_sym_OligomerPart_Base_O,133,ChemPkg,"OligomerPart-Base",true);
-DO_SYMBOL(chem,_sym_OligomerPart_Monomer_O,134,ChemPkg,"OligomerPart-Monomer",true);
-DO_SYMBOL(chem,_sym_OligomerPart_Link_O,135,ChemPkg,"OligomerPart-Link",true);
-DO_SYMBOL(chem,_sym_Entity_O,136,ChemPkg,"Entity",true);
-DO_SYMBOL(chem,_sym_Monomer_O,137,ChemPkg,"Monomer",true);
-DO_SYMBOL(chem,_sym_OneMonomer_O,138,ChemPkg,"OneMonomer",true);
-DO_SYMBOL(chem,_sym_MultiMonomer_O,139,ChemPkg,"MultiMonomer",true);
-DO_SYMBOL(chem,_sym_CandoDatabase_O,140,ChemPkg,"CandoDatabase",true);
-DO_SYMBOL(chem,_sym_Topology_O,141,ChemPkg,"Topology",true);
-DO_SYMBOL(chem,_sym_StatusTracker_O,142,ChemPkg,"StatusTracker",true);
-DO_SYMBOL(chem,_sym_EntityNameSetBase_O,143,ChemPkg,"EntityNameSetBase",true);
-DO_SYMBOL(chem,_sym_EntityNameSet_O,144,ChemPkg,"EntityNameSet",true);
-DO_SYMBOL(chem,_sym_EntityNameSetWithCap_O,145,ChemPkg,"EntityNameSetWithCap",true);
-DO_SYMBOL(chem,_sym_MonomerContext_O,146,ChemPkg,"MonomerContext",true);
-DO_SYMBOL(chem,_sym_Coupling_O,147,ChemPkg,"Coupling",true);
-DO_SYMBOL(chem,_sym_DirectionalCoupling_O,148,ChemPkg,"DirectionalCoupling",true);
-DO_SYMBOL(chem,_sym_RingCoupling_O,149,ChemPkg,"RingCoupling",true);
-DO_SYMBOL(chem,_sym_Mate_O,150,ChemPkg,"Mate",true);
-DO_SYMBOL(chem,_sym_RingClosingMate_O,151,ChemPkg,"RingClosingMate",true);
-DO_SYMBOL(chem,_sym_Plug_O,152,ChemPkg,"Plug",true);
-DO_SYMBOL(chem,_sym_PlugWithMates_O,153,ChemPkg,"PlugWithMates",true);
-DO_SYMBOL(chem,_sym_OutPlug_O,154,ChemPkg,"OutPlug",true);
-DO_SYMBOL(chem,_sym_InPlug_O,155,ChemPkg,"InPlug",true);
-DO_SYMBOL(chem,_sym_JumpPlug_O,156,ChemPkg,"JumpPlug",true);
-DO_SYMBOL(chem,_sym_RingClosingPlug_O,157,ChemPkg,"RingClosingPlug",true);
-DO_SYMBOL(chem,_sym_SpecificContext_O,158,ChemPkg,"SpecificContext",true);
-DO_SYMBOL(chem,_sym_SpecificContextSet_O,159,ChemPkg,"SpecificContextSet",true);
-DO_SYMBOL(chem,_sym_SpanningLoop_O,160,ChemPkg,"SpanningLoop",true);
-DO_SYMBOL(chem,_sym_SuperposeEngine_O,161,ChemPkg,"SuperposeEngine",true);
-DO_SYMBOL(chem,_sym_SuperposeSelectedAtoms_O,162,ChemPkg,"SuperposeSelectedAtoms",true);
-DO_SYMBOL(chem,_sym_superpose,163,ChemPkg,"superpose",true);
-DO_SYMBOL(chem,_sym_VirtualSphere_O,164,ChemPkg,"VirtualSphere",true);
-DO_SYMBOL(chem,_sym_idle,165,ChemPkg,"idle",true);
-DO_SYMBOL(chem,_sym_translate,166,ChemPkg,"translate",true);
-DO_SYMBOL(chem,_sym_rotate,167,ChemPkg,"rotate",true);
-DO_SYMBOL(chem,_sym_scale,168,ChemPkg,"scale",true);
-DO_SYMBOL(chem,_sym_OneTypeRule_O,169,ChemPkg,"OneTypeRule",true);
-DO_SYMBOL(chem,_sym_TypeAssignmentRules_O,170,ChemPkg,"TypeAssignmentRules",true);
-DO_SYMBOL(chem,_sym_STARsybyl_type_assignment_rulesSTAR,171,ChemPkg,"STARsybyl_type_assignment_rulesSTAR",true);
-DO_SYMBOL(chem,_sym_FFParameter_O,172,ChemPkg,"FFParameter",true);
-DO_SYMBOL(chem,_sym_FFBaseDb_O,173,ChemPkg,"FFBaseDb",true);
-DO_SYMBOL(chem,_sym_ChemInfoMatch_O,174,ChemPkg,"ChemInfoMatch",true);
-DO_SYMBOL(chem,_sym_WildElementDict_O,175,ChemPkg,"WildElementDict",true);
-DO_SYMBOL(chem,_sym_ChemInfoNode_O,176,ChemPkg,"ChemInfoNode",true);
-DO_SYMBOL(chem,_sym_ResidueList_O,177,ChemPkg,"ResidueList",true);
-DO_SYMBOL(chem,_sym_RootMatchNode_O,178,ChemPkg,"RootMatchNode",true);
-DO_SYMBOL(chem,_sym_BondMatchNode_O,179,ChemPkg,"BondMatchNode",true);
-DO_SYMBOL(chem,_sym_AtomOrBondMatchNode_O,180,ChemPkg,"AtomOrBondMatchNode",true);
-DO_SYMBOL(chem,_sym_BondListMatchNode_O,181,ChemPkg,"BondListMatchNode",true);
-DO_SYMBOL(chem,_sym_Logical_O,182,ChemPkg,"Logical",true);
-DO_SYMBOL(chem,_sym_TagSet_O,183,ChemPkg,"TagSet",true);
-DO_SYMBOL(chem,_sym_RingTest_O,184,ChemPkg,"RingTest",true);
-DO_SYMBOL(chem,_sym_ResidueTest_O,185,ChemPkg,"ResidueTest",true);
-DO_SYMBOL(chem,_sym_BondTest_O,186,ChemPkg,"BondTest",true);
-DO_SYMBOL(chem,_sym_AntechamberBondTest_O,187,ChemPkg,"AntechamberBondTest",true);
-DO_SYMBOL(chem,_sym_AtomTest_O,188,ChemPkg,"AtomTest",true);
-DO_SYMBOL(chem,_sym_AntechamberFocusAtomMatch_O,189,ChemPkg,"AntechamberFocusAtomMatch",true);
-DO_SYMBOL(chem,_sym_Chain_O,190,ChemPkg,"Chain",true);
-DO_SYMBOL(chem,_sym_Branch_O,191,ChemPkg,"Branch",true);
-DO_SYMBOL(chem,_sym_AfterMatchBondTest_O,192,ChemPkg,"AfterMatchBondTest",true);
-DO_SYMBOL(chem,_sym_Root_O,193,ChemPkg,"Root",true);
-DO_SYMBOL(chem,_sym_SmartsRoot_O,194,ChemPkg,"SmartsRoot",true);
-DO_SYMBOL(chem,_sym_AntechamberRoot_O,195,ChemPkg,"AntechamberRoot",true);
-DO_SYMBOL(chem,_sym_ChemInfo_O,196,ChemPkg,"ChemInfo",true);
-DO_SYMBOL(chem,_sym_FFTypesDb_O,197,ChemPkg,"FFTypesDb",true);
-DO_SYMBOL(chem,_sym_FFStretch_O,198,ChemPkg,"FFStretch",true);
-DO_SYMBOL(chem,_sym_FFStretchDb_O,199,ChemPkg,"FFStretchDb",true);
-DO_SYMBOL(chem,_sym_FFAngle_O,200,ChemPkg,"FFAngle",true);
-DO_SYMBOL(chem,_sym_FFAngleDb_O,201,ChemPkg,"FFAngleDb",true);
-DO_SYMBOL(chem,_sym_FFItor_O,202,ChemPkg,"FFItor",true);
-DO_SYMBOL(chem,_sym_FFItorDb_O,203,ChemPkg,"FFItorDb",true);
-DO_SYMBOL(chem,_sym_FFPtor_O,204,ChemPkg,"FFPtor",true);
-DO_SYMBOL(chem,_sym_FFPtorDb_O,205,ChemPkg,"FFPtorDb",true);
-DO_SYMBOL(chem,_sym_FFNonbondCrossTermTable_O,206,ChemPkg,"FFNonbondCrossTermTable",true);
-DO_SYMBOL(chem,_sym_FFNonbond_O,207,ChemPkg,"FFNonbond",true);
-DO_SYMBOL(chem,_sym_FFNonbondDb_O,208,ChemPkg,"FFNonbondDb",true);
-DO_SYMBOL(chem,_sym_FFVdw_O,209,ChemPkg,"FFVdw",true);
-DO_SYMBOL(chem,_sym_FFVdwDb_O,210,ChemPkg,"FFVdwDb",true);
-DO_SYMBOL(chem,_sym_InfoDb_O,211,ChemPkg,"InfoDb",true);
-DO_SYMBOL(chem,_sym_ForceField_O,212,ChemPkg,"ForceField",true);
-DO_SYMBOL(chem,_sym_EnergyFunction_O,213,ChemPkg,"EnergyFunction",true);
-DO_SYMBOL(chem,_sym_AbstractLargeSquareMatrix_O,214,ChemPkg,"AbstractLargeSquareMatrix",true);
-DO_SYMBOL(chem,_sym_FullLargeSquareMatrix_O,215,ChemPkg,"FullLargeSquareMatrix",true);
-DO_SYMBOL(chem,_sym_SparseLargeSquareMatrix_O,216,ChemPkg,"SparseLargeSquareMatrix",true);
-DO_SYMBOL(chem,_sym_NumericalFunction_O,217,ChemPkg,"NumericalFunction",true);
-DO_SYMBOL(chem,_sym_NVector_O,218,ChemPkg,"NVector",true);
-DO_SYMBOL(chem,_sym_ReportBase_O,219,ChemPkg,"ReportBase",true);
-DO_SYMBOL(chem,_sym_MessageReport_O,220,ChemPkg,"MessageReport",true);
-DO_SYMBOL(chem,_sym_ForceMatchReport_O,221,ChemPkg,"ForceMatchReport",true);
-DO_SYMBOL(chem,_sym_StepReport_O,222,ChemPkg,"StepReport",true);
-DO_SYMBOL(chem,_sym_MinimizerLog_O,223,ChemPkg,"MinimizerLog",true);
-DO_SYMBOL(chem,_sym_Minimizer_O,224,ChemPkg,"Minimizer",true);
-DO_SYMBOL(chem,_sym_IterateRestraints_O,225,ChemPkg,"IterateRestraints",true);
-DO_SYMBOL(chem,_sym_Restraint_O,226,ChemPkg,"Restraint",true);
-DO_SYMBOL(chem,_sym_RestraintAnchor_O,227,ChemPkg,"RestraintAnchor",true);
-DO_SYMBOL(chem,_sym_RestraintChiral_O,228,ChemPkg,"RestraintChiral",true);
-DO_SYMBOL(chem,_sym_RestraintDistance_O,229,ChemPkg,"RestraintDistance",true);
-DO_SYMBOL(chem,_sym_RestraintAngle_O,230,ChemPkg,"RestraintAngle",true);
-DO_SYMBOL(chem,_sym_RestraintDihedral_O,231,ChemPkg,"RestraintDihedral",true);
-DO_SYMBOL(chem,_sym_RestraintFixedNonbond_O,232,ChemPkg,"RestraintFixedNonbond",true);
-DO_SYMBOL(chem,_sym_RestraintList_O,233,ChemPkg,"RestraintList",true);
-DO_SYMBOL(chem,_sym_PdbReader_O,234,ChemPkg,"PdbReader",true);
-DO_SYMBOL(chem,_sym_PdbWriter_O,235,ChemPkg,"PdbWriter",true);
-DO_SYMBOL(chem,_sym_PathMessage_O,236,ChemPkg,"PathMessage",true);
-DO_SYMBOL(chem,_sym_AGVertex_O,237,ChemPkg,"AGVertex",true);
-DO_SYMBOL(chem,_sym_AGEdge_O,238,ChemPkg,"AGEdge",true);
-DO_SYMBOL(chem,_sym_RingFinder_O,239,ChemPkg,"RingFinder",true);
-DO_SYMBOL(chem,_sym_VirtualAtom_O,240,ChemPkg,"VirtualAtom",true);
-DO_SYMBOL(chem,_sym_Bond_O,241,ChemPkg,"Bond",true);
-DO_SYMBOL(chem,_sym_BondList_O,242,ChemPkg,"BondList",true);
-DO_SYMBOL(chem,_sym_Aggregate_O,243,ChemPkg,"Aggregate",true);
-DO_SYMBOL(chem,_sym_IterateMatter_O,244,ChemPkg,"IterateMatter",true);
-DO_SYMBOL(chem,_sym_IterateAtoms_O,245,ChemPkg,"IterateAtoms",true);
-DO_SYMBOL(chem,_sym_IterateResidues_O,246,ChemPkg,"IterateResidues",true);
-DO_SYMBOL(chem,_sym_IterateBonds_O,247,ChemPkg,"IterateBonds",true);
-DO_SYMBOL(chem,_sym_iterateMatterSymbolConverter,248,ChemPkg,"iterateMatterSymbolConverter",true);
-DO_SYMBOL(chem,_sym_allMatter,249,ChemPkg,"allMatter",true);
-DO_SYMBOL(chem,_sym_atoms,250,ChemPkg,"atoms",true);
-DO_SYMBOL(chem,_sym_residues,251,ChemPkg,"residues",true);
-DO_SYMBOL(chem,_sym_molecules,252,ChemPkg,"molecules",true);
-DO_SYMBOL(chem,_sym_bonds,253,ChemPkg,"bonds",true);
-DO_SYMBOL(chem,_sym_Matter_O,254,ChemPkg,"Matter",true);
-DO_SYMBOL(chem,_sym_Atom_O,255,ChemPkg,"Atom",true);
-DO_SYMBOL(chem,_sym_Residue_O,256,ChemPkg,"Residue",true);
-DO_SYMBOL(chem,_sym_Molecule_O,257,ChemPkg,"Molecule",true);
-DO_SYMBOL(chem,_sym_MacroModelFile_O,258,ChemPkg,"MacroModelFile",true);
+DO_SYMBOL(chem,_sym_R,323,ChemPkg,"R",true);
+DO_SYMBOL(chem,_sym_S,324,ChemPkg,"S",true);
+DO_SYMBOL(chem,_sym_UnknownConfiguration,325,ChemPkg,"UnknownConfiguration",true);
+DO_SYMBOL(chem,_sym_candoDatabase,326,ChemPkg,"candoDatabase",true);
+DO_SYMBOL(chem,_sym_AM1_BCC_ar5,327,ChemPkg,"AM1_BCC_ar5",true);
+DO_SYMBOL(chem,_sym_AM1_BCC_ar6,328,ChemPkg,"AM1_BCC_ar6",true);
+DO_SYMBOL(chem,_sym_AM1_BCC_ar7,329,ChemPkg,"AM1_BCC_ar7",true);
+DO_SYMBOL(chem,_sym__PLUS_configurationEnumConverter_PLUS_,330,ChemPkg,"_PLUS_configurationEnumConverter_PLUS_",true);
+DO_SYMBOL(chem,_sym__PLUS_stereochemistryTypeConverter_PLUS_,331,ChemPkg,"_PLUS_stereochemistryTypeConverter_PLUS_",true);
+DO_SYMBOL(chem,_sym__PLUS_atomFlagSymbolConverter_PLUS_,332,ChemPkg,"_PLUS_atomFlagSymbolConverter_PLUS_",true);
+DO_SYMBOL(chem,_sym_configurationToSymbolConverter,333,ChemPkg,"configurationToSymbolConverter",true);
+DO_SYMBOL(chem,_sym_stereochemistryToSymbolConverter,334,ChemPkg,"stereochemistryToSymbolConverter",true);
+DO_SYMBOL(chem,_sym_atomNeedsMinimizer,335,ChemPkg,"atomNeedsMinimizer",true);
+DO_SYMBOL(chem,_sym_selected,336,ChemPkg,"selected",true);
+DO_SYMBOL(chem,_sym_onGrid,337,ChemPkg,"onGrid",true);
+DO_SYMBOL(chem,_sym_atomFixed,338,ChemPkg,"atomFixed",true);
+DO_SYMBOL(chem,_sym_in3MemberRing,339,ChemPkg,"in3MemberRing",true);
+DO_SYMBOL(chem,_sym_in4MemberRing,340,ChemPkg,"in4MemberRing",true);
+DO_SYMBOL(chem,_sym_in5MemberRing,341,ChemPkg,"in5MemberRing",true);
+DO_SYMBOL(chem,_sym_in6MemberRing,342,ChemPkg,"in6MemberRing",true);
+DO_SYMBOL(chem,_sym_in7MemberRing,343,ChemPkg,"in7MemberRing",true);
+DO_SYMBOL(chem,_sym_in8MemberRing,344,ChemPkg,"in8MemberRing",true);
+DO_SYMBOL(chem,_sym_inRing,345,ChemPkg,"inRing",true);
+DO_SYMBOL(chem,_sym__PLUS_bondOrderToSymbolConverter_PLUS_,346,ChemPkg,"_PLUS_bondOrderToSymbolConverter_PLUS_",true);
+DO_SYMBOL(chem,_sym_AtomIdToAtomMap_O,347,ChemPkg,"AtomIdToAtomMap",true);
+DO_SYMBOL(chem,_sym_AtomId_O,348,ChemPkg,"AtomId",true);
+DO_SYMBOL(chem,_sym__PLUS_elementToSymbolConverter_PLUS_,349,ChemPkg,"_PLUS_elementToSymbolConverter_PLUS_",true);
+DO_SYMBOL(chem,_sym__PLUS_hybridizationToSymbolConverter_PLUS_,350,ChemPkg,"_PLUS_hybridizationToSymbolConverter_PLUS_",true);
+DO_SYMBOL(chem,_sym__PLUS_elementColors_PLUS_,351,ChemPkg,"_PLUS_elementColors_PLUS_",true);
+DO_SYMBOL(chem,_sym__PLUS_minimizerStatusConverter_PLUS_,352,ChemPkg,"_PLUS_minimizerStatusConverter_PLUS_",true);
+DO_SYMBOL(chem,_sym__PLUS_preconditionerTypeConverter_PLUS_,353,ChemPkg,"_PLUS_preconditionerTypeConverter_PLUS_",true);
+DO_SYMBOL(chem,_sym_MinimizerExceededMaxStepsError,354,ChemPkg,"MinimizerExceededMaxStepsError",true);
+DO_SYMBOL(chem,_sym_MinimizerStuckError,355,ChemPkg,"MinimizerStuckError",true);
+DO_SYMBOL(chem,_sym_MinimizerError,356,ChemPkg,"MinimizerError",true);
+DO_SYMBOL(chem,_sym_noPreconditioner,357,ChemPkg,"noPreconditioner",true);
+DO_SYMBOL(chem,_sym_hessianPreconditioner,358,ChemPkg,"hessianPreconditioner",true);
+DO_SYMBOL(chem,_sym_minimizerError,359,ChemPkg,"minimizerError",true);
+DO_SYMBOL(chem,_sym_minimizerSucceeded,360,ChemPkg,"minimizerSucceeded",true);
+DO_SYMBOL(chem,_sym_truncatedNewtonRunning,361,ChemPkg,"truncatedNewtonRunning",true);
+DO_SYMBOL(chem,_sym_conjugateGradientRunning,362,ChemPkg,"conjugateGradientRunning",true);
+DO_SYMBOL(chem,_sym_steepestDescentRunning,363,ChemPkg,"steepestDescentRunning",true);
+DO_SYMBOL(chem,_sym_minimizerIdle,364,ChemPkg,"minimizerIdle",true);
+DO_SYMBOL(chem,_sym_Angle_O,365,ChemPkg,"Angle",true);
+DO_SYMBOL(chem,_sym_ProperTorsion_O,366,ChemPkg,"ProperTorsion",true);
+DO_SYMBOL(chem,_sym_ImproperTorsion_O,367,ChemPkg,"ImproperTorsion",true);
+DO_SYMBOL(chem,_sym_MonomerCoordinates_O,368,ChemPkg,"MonomerCoordinates",true);
+DO_SYMBOL(chem,_sym_FrameRecognizer_O,369,ChemPkg,"FrameRecognizer",true);
+DO_SYMBOL(chem,_sym_Rotamer_O,370,ChemPkg,"Rotamer",true);
+DO_SYMBOL(chem,_sym_AtomReferenceBase_O,371,ChemPkg,"AtomReferenceBase",true);
+DO_SYMBOL(chem,_sym_AtomReference_O,372,ChemPkg,"AtomReference",true);
+DO_SYMBOL(chem,_sym_CoordinateSystem_O,373,ChemPkg,"CoordinateSystem",true);
+DO_SYMBOL(chem,_sym_PdbMonomerConnectivity_O,374,ChemPkg,"PdbMonomerConnectivity",true);
+DO_SYMBOL(chem,_sym_PdbMonomerDatabase_O,375,ChemPkg,"PdbMonomerDatabase",true);
+DO_SYMBOL(chem,_sym_StereoisomerAtom_O,376,ChemPkg,"StereoisomerAtom",true);
+DO_SYMBOL(chem,_sym_StereoisomerVirtualAtom_O,377,ChemPkg,"StereoisomerVirtualAtom",true);
+DO_SYMBOL(chem,_sym_StereoisomerAtoms_O,378,ChemPkg,"StereoisomerAtoms",true);
+DO_SYMBOL(chem,_sym_TrajectoryFrame_O,379,ChemPkg,"TrajectoryFrame",true);
+DO_SYMBOL(chem,_sym_Trajectory_O,380,ChemPkg,"Trajectory",true);
+DO_SYMBOL(chem,_sym_AtomTable_O,381,ChemPkg,"AtomTable",true);
+DO_SYMBOL(chem,_sym_EnergyComponent_O,382,ChemPkg,"EnergyComponent",true);
+DO_SYMBOL(chem,_sym_EnergyStretch_O,383,ChemPkg,"EnergyStretch",true);
+DO_SYMBOL(chem,_sym_EnergyAngle_O,384,ChemPkg,"EnergyAngle",true);
+DO_SYMBOL(chem,_sym_EnergyDihedral_O,385,ChemPkg,"EnergyDihedral",true);
+DO_SYMBOL(chem,_sym_EnergyNonbond_O,386,ChemPkg,"EnergyNonbond",true);
+DO_SYMBOL(chem,_sym_EnergyImproperRestraint_O,387,ChemPkg,"EnergyImproperRestraint",true);
+DO_SYMBOL(chem,_sym_EnergyChiralRestraint_O,388,ChemPkg,"EnergyChiralRestraint",true);
+DO_SYMBOL(chem,_sym_EnergyAnchorRestraint_O,389,ChemPkg,"EnergyAnchorRestraint",true);
+DO_SYMBOL(chem,_sym_EnergyFixedNonbondRestraint_O,390,ChemPkg,"EnergyFixedNonbondRestraint",true);
+DO_SYMBOL(chem,_sym_nonbondTerm,391,ChemPkg,"nonbondTerm",true);
+DO_SYMBOL(chem,_sym_restraintAnchor,392,ChemPkg,"restraintAnchor",true);
+DO_SYMBOL(chem,_sym_InteractionError,393,ChemPkg,"InteractionError",true);
+DO_SYMBOL(chem,_sym_LinearAngleError,394,ChemPkg,"LinearAngleError",true);
+DO_SYMBOL(chem,_sym_LinearDihedralError,395,ChemPkg,"LinearDihedralError",true);
+DO_SYMBOL(chem,_sym_LinearImproperRestraintError,396,ChemPkg,"LinearImproperRestraintError",true);
+DO_SYMBOL(chem,_sym_OverlappingNonbondError,397,ChemPkg,"OverlappingNonbondError",true);
+DO_SYMBOL(chem,_sym_SearchStatistics_O,398,ChemPkg,"SearchStatistics",true);
+DO_SYMBOL(chem,_sym_superpose,399,ChemPkg,"superpose",true);
+DO_SYMBOL(chem,_sym_VirtualSphere_O,400,ChemPkg,"VirtualSphere",true);
+DO_SYMBOL(chem,_sym_idle,401,ChemPkg,"idle",true);
+DO_SYMBOL(chem,_sym_translate,402,ChemPkg,"translate",true);
+DO_SYMBOL(chem,_sym_rotate,403,ChemPkg,"rotate",true);
+DO_SYMBOL(chem,_sym_scale,404,ChemPkg,"scale",true);
+DO_SYMBOL(chem,_sym_STARsybyl_type_assignment_rulesSTAR,405,ChemPkg,"STARsybyl_type_assignment_rulesSTAR",true);
+DO_SYMBOL(chem,_sym_EnergyFunction_O,406,ChemPkg,"EnergyFunction",true);
+DO_SYMBOL(chem,_sym_NumericalFunction_O,407,ChemPkg,"NumericalFunction",true);
+DO_SYMBOL(chem,_sym_ReportBase_O,408,ChemPkg,"ReportBase",true);
+DO_SYMBOL(chem,_sym_MessageReport_O,409,ChemPkg,"MessageReport",true);
+DO_SYMBOL(chem,_sym_ForceMatchReport_O,410,ChemPkg,"ForceMatchReport",true);
+DO_SYMBOL(chem,_sym_StepReport_O,411,ChemPkg,"StepReport",true);
+DO_SYMBOL(chem,_sym_MinimizerLog_O,412,ChemPkg,"MinimizerLog",true);
+DO_SYMBOL(chem,_sym_Minimizer_O,413,ChemPkg,"Minimizer",true);
+DO_SYMBOL(chem,_sym_IterateRestraints_O,414,ChemPkg,"IterateRestraints",true);
+DO_SYMBOL(chem,_sym_PdbReader_O,415,ChemPkg,"PdbReader",true);
+DO_SYMBOL(chem,_sym_PdbWriter_O,416,ChemPkg,"PdbWriter",true);
+DO_SYMBOL(chem,_sym_PathMessage_O,417,ChemPkg,"PathMessage",true);
+DO_SYMBOL(chem,_sym_AGVertex_O,418,ChemPkg,"AGVertex",true);
+DO_SYMBOL(chem,_sym_AGEdge_O,419,ChemPkg,"AGEdge",true);
+DO_SYMBOL(chem,_sym_RingFinder_O,420,ChemPkg,"RingFinder",true);
+DO_SYMBOL(chem,_sym_IterateMatter_O,421,ChemPkg,"IterateMatter",true);
+DO_SYMBOL(chem,_sym_IterateAtoms_O,422,ChemPkg,"IterateAtoms",true);
+DO_SYMBOL(chem,_sym_IterateResidues_O,423,ChemPkg,"IterateResidues",true);
+DO_SYMBOL(chem,_sym_IterateBonds_O,424,ChemPkg,"IterateBonds",true);
+DO_SYMBOL(chem,_sym_iterateMatterSymbolConverter,425,ChemPkg,"iterateMatterSymbolConverter",true);
+DO_SYMBOL(chem,_sym_allMatter,426,ChemPkg,"allMatter",true);
+DO_SYMBOL(chem,_sym_atoms,427,ChemPkg,"atoms",true);
+DO_SYMBOL(chem,_sym_residues,428,ChemPkg,"residues",true);
+DO_SYMBOL(chem,_sym_molecules,429,ChemPkg,"molecules",true);
+DO_SYMBOL(chem,_sym_bonds,430,ChemPkg,"bonds",true);
+DO_SYMBOL(chem,_sym_MacroModelFile_O,431,ChemPkg,"MacroModelFile",true);
+DO_SYMBOL(chem,_sym_OneTypeRule_O,432,ChemPkg,"OneTypeRule",true);
+DO_SYMBOL(chem,_sym_TypeAssignmentRules_O,433,ChemPkg,"TypeAssignmentRules",true);
+DO_SYMBOL(chem,_sym_SuperposableConformationCollection_O,434,ChemPkg,"SuperposableConformationCollection",true);
+DO_SYMBOL(chem,_sym_ZMatrixInternal_O,435,ChemPkg,"ZMatrixInternal",true);
+DO_SYMBOL(chem,_sym_ZMatrixBondInternal_O,436,ChemPkg,"ZMatrixBondInternal",true);
+DO_SYMBOL(chem,_sym_ZMatrixAngleInternal_O,437,ChemPkg,"ZMatrixAngleInternal",true);
+DO_SYMBOL(chem,_sym_ZMatrixDihedralInternal_O,438,ChemPkg,"ZMatrixDihedralInternal",true);
+DO_SYMBOL(chem,_sym_ZMatrixEntry_O,439,ChemPkg,"ZMatrixEntry",true);
+DO_SYMBOL(chem,_sym_ZMatrix_O,440,ChemPkg,"ZMatrix",true);
+DO_SYMBOL(chem,_sym_StructureComparer_O,441,ChemPkg,"StructureComparer",true);
+DO_SYMBOL(chem,_sym_Command_O,442,ChemPkg,"Command",true);
+DO_SYMBOL(chem,_sym_Structure_Old_ListEntry_O,443,ChemPkg,"StructureListEntry",true);
+DO_SYMBOL(chem,_sym_Structure_Old_List_O,444,ChemPkg,"StructureList",true);
+DO_SYMBOL(chem,_sym_Twister_O,445,ChemPkg,"Twister",true);
+DO_SYMBOL(chem,_sym_TwisterDriver_O,446,ChemPkg,"TwisterDriver",true);
+DO_SYMBOL(chem,_sym_AbstractLargeSquareMatrix_O,447,ChemPkg,"AbstractLargeSquareMatrix",true);
+DO_SYMBOL(chem,_sym_FullLargeSquareMatrix_O,448,ChemPkg,"FullLargeSquareMatrix",true);
+DO_SYMBOL(chem,_sym_SparseLargeSquareMatrix_O,449,ChemPkg,"SparseLargeSquareMatrix",true);
+DO_SYMBOL(chem,_sym_StereoConfiguration_O,450,ChemPkg,"StereoConfiguration",true);
+DO_SYMBOL(chem,_sym_Stereoisomer_O,451,ChemPkg,"Stereoisomer",true);
+DO_SYMBOL(chem,_sym_StereoInformation_O,452,ChemPkg,"StereoInformation",true);
+DO_SYMBOL(chem,_sym_Restraint_O,453,ChemPkg,"Restraint",true);
+DO_SYMBOL(chem,_sym_RestraintAnchor_O,454,ChemPkg,"RestraintAnchor",true);
+DO_SYMBOL(chem,_sym_RestraintChiral_O,455,ChemPkg,"RestraintChiral",true);
+DO_SYMBOL(chem,_sym_RestraintDistance_O,456,ChemPkg,"RestraintDistance",true);
+DO_SYMBOL(chem,_sym_RestraintAngle_O,457,ChemPkg,"RestraintAngle",true);
+DO_SYMBOL(chem,_sym_RestraintDihedral_O,458,ChemPkg,"RestraintDihedral",true);
+DO_SYMBOL(chem,_sym_RestraintFixedNonbond_O,459,ChemPkg,"RestraintFixedNonbond",true);
+DO_SYMBOL(chem,_sym_RestraintList_O,460,ChemPkg,"RestraintList",true);
+DO_SYMBOL(chem,_sym_ComplexRestraint_O,461,ChemPkg,"ComplexRestraint",true);
+DO_SYMBOL(chem,_sym_RestrainedExoCyclicAtom_O,462,ChemPkg,"RestrainedExoCyclicAtom",true);
+DO_SYMBOL(chem,_sym_RestrainedPiBond_O,463,ChemPkg,"RestrainedPiBond",true);
+DO_SYMBOL(chem,_sym_SpecificContext_O,464,ChemPkg,"SpecificContext",true);
+DO_SYMBOL(chem,_sym_SpecificContextSet_O,465,ChemPkg,"SpecificContextSet",true);
+DO_SYMBOL(chem,_sym_ReadAmberParameters_O,466,ChemPkg,"ReadAmberParameters",true);
+DO_SYMBOL(chem,_sym_VirtualAtom_O,467,ChemPkg,"VirtualAtom",true);
+DO_SYMBOL(chem,_sym_CDNode_O,468,ChemPkg,"CDNode",true);
+DO_SYMBOL(chem,_sym_CDBond_O,469,ChemPkg,"CDBond",true);
+DO_SYMBOL(chem,_sym_CDFragment_O,470,ChemPkg,"CDFragment",true);
+DO_SYMBOL(chem,_sym_CDText_O,471,ChemPkg,"CDText",true);
+DO_SYMBOL(chem,_sym_ChemDraw_O,472,ChemPkg,"ChemDraw",true);
+DO_SYMBOL(chem,_sym_SpanningLoop_O,473,ChemPkg,"SpanningLoop",true);
+DO_SYMBOL(chem,_sym_CipPrioritizer_O,474,ChemPkg,"CipPrioritizer",true);
+DO_SYMBOL(chem,_sym_name,475,ChemPkg,"name",true);
+DO_SYMBOL(chem,_sym__PLUS_validChemdrawKeywords_PLUS_,476,ChemPkg,"_PLUS_validChemdrawKeywords_PLUS_",true);
+DO_SYMBOL(chem,_sym_OligomerPart_Base_O,477,ChemPkg,"OligomerPart-Base",true);
+DO_SYMBOL(chem,_sym_OligomerPart_Monomer_O,478,ChemPkg,"OligomerPart-Monomer",true);
+DO_SYMBOL(chem,_sym_OligomerPart_Link_O,479,ChemPkg,"OligomerPart-Link",true);
+DO_SYMBOL(chem,_sym_CalculatePosition_O,480,ChemPkg,"CalculatePosition",true);
+DO_SYMBOL(chem,_sym_CalculatePositionUsingInternals_O,481,ChemPkg,"CalculatePositionUsingInternals",true);
+DO_SYMBOL(chem,_sym_CalculatePositionAlongBond_O,482,ChemPkg,"CalculatePositionAlongBond",true);
+DO_SYMBOL(chem,_sym_CalculatePositionRelativeToOrigin_O,483,ChemPkg,"CalculatePositionRelativeToOrigin",true);
+DO_SYMBOL(chem,_sym_ConstitutionBond_O,484,ChemPkg,"ConstitutionBond",true);
+DO_SYMBOL(chem,_sym_ConstitutionAtom_O,485,ChemPkg,"ConstitutionAtom",true);
+DO_SYMBOL(chem,_sym_ConstitutionVirtualAtom_O,486,ChemPkg,"ConstitutionVirtualAtom",true);
+DO_SYMBOL(chem,_sym_ConstitutionAtoms_O,487,ChemPkg,"ConstitutionAtoms",true);
+DO_SYMBOL(chem,_sym_Entity_O,488,ChemPkg,"Entity",true);
+DO_SYMBOL(chem,_sym_Monomer_O,489,ChemPkg,"Monomer",true);
+DO_SYMBOL(chem,_sym_OneMonomer_O,490,ChemPkg,"OneMonomer",true);
+DO_SYMBOL(chem,_sym_MultiMonomer_O,491,ChemPkg,"MultiMonomer",true);
+DO_SYMBOL(chem,_sym_Oligomer_O,492,ChemPkg,"Oligomer",true);
+DO_SYMBOL(chem,_sym_Coupling_O,493,ChemPkg,"Coupling",true);
+DO_SYMBOL(chem,_sym_DirectionalCoupling_O,494,ChemPkg,"DirectionalCoupling",true);
+DO_SYMBOL(chem,_sym_RingCoupling_O,495,ChemPkg,"RingCoupling",true);
+DO_SYMBOL(chem,_sym_CandoDatabase_O,496,ChemPkg,"CandoDatabase",true);
+DO_SYMBOL(chem,_sym_StatusTracker_O,497,ChemPkg,"StatusTracker",true);
+DO_SYMBOL(chem,_sym_EntityNameSetBase_O,498,ChemPkg,"EntityNameSetBase",true);
+DO_SYMBOL(chem,_sym_EntityNameSet_O,499,ChemPkg,"EntityNameSet",true);
+DO_SYMBOL(chem,_sym_EntityNameSetWithCap_O,500,ChemPkg,"EntityNameSetWithCap",true);
+DO_SYMBOL(chem,_sym_AtomIndexer_O,501,ChemPkg,"AtomIndexer",true);
+DO_SYMBOL(chem,_sym_MapOfMonomerNamesToAtomIndexers_O,502,ChemPkg,"MapOfMonomerNamesToAtomIndexers",true);
+DO_SYMBOL(chem,_sym_MonomerPack_O,503,ChemPkg,"MonomerPack",true);
+DO_SYMBOL(chem,_sym_MonomerContext_O,504,ChemPkg,"MonomerContext",true);
+DO_SYMBOL(chem,_sym_RepresentedEntityNameSet_O,505,ChemPkg,"RepresentedEntityNameSet",true);
+DO_SYMBOL(chem,_sym_Mate_O,506,ChemPkg,"Mate",true);
+DO_SYMBOL(chem,_sym_RingClosingMate_O,507,ChemPkg,"RingClosingMate",true);
+DO_SYMBOL(chem,_sym_Plug_O,508,ChemPkg,"Plug",true);
+DO_SYMBOL(chem,_sym_PlugWithMates_O,509,ChemPkg,"PlugWithMates",true);
+DO_SYMBOL(chem,_sym_OutPlug_O,510,ChemPkg,"OutPlug",true);
+DO_SYMBOL(chem,_sym_InPlug_O,511,ChemPkg,"InPlug",true);
+DO_SYMBOL(chem,_sym_JumpPlug_O,512,ChemPkg,"JumpPlug",true);
+DO_SYMBOL(chem,_sym_RingClosingPlug_O,513,ChemPkg,"RingClosingPlug",true);
+DO_SYMBOL(chem,_sym_Constitution_O,514,ChemPkg,"Constitution",true);
+DO_SYMBOL(chem,_sym_Alias_O,515,ChemPkg,"Alias",true);
+DO_SYMBOL(chem,_sym_Topology_O,516,ChemPkg,"Topology",true);
+DO_SYMBOL(chem,_sym_NVector_O,517,ChemPkg,"NVector",true);
+DO_SYMBOL(chem,_sym_ConformationCollectionEntry_O,518,ChemPkg,"ConformationCollectionEntry",true);
+DO_SYMBOL(chem,_sym_ConformationCollection_O,519,ChemPkg,"ConformationCollection",true);
+DO_SYMBOL(chem,_sym_SuperposeEngine_O,520,ChemPkg,"SuperposeEngine",true);
+DO_SYMBOL(chem,_sym_SuperposeSelectedAtoms_O,521,ChemPkg,"SuperposeSelectedAtoms",true);
+DO_SYMBOL(chem,_sym_ConformationExplorerEntryStage_O,522,ChemPkg,"ConformationExplorerEntryStage",true);
+DO_SYMBOL(chem,_sym_ConformationExplorerEntry_O,523,ChemPkg,"ConformationExplorerEntry",true);
+DO_SYMBOL(chem,_sym_ConformationExplorer_O,524,ChemPkg,"ConformationExplorer",true);
+DO_SYMBOL(chem,_sym_ConformationExplorerMatch_O,525,ChemPkg,"ConformationExplorerMatch",true);
+DO_SYMBOL(chem,_sym_STARparserNodeHolderSTAR,526,ChemPkg,"STARparserNodeHolderSTAR",true);
+DO_SYMBOL(chem,_sym_STARSabBondEnumConverterSTAR,527,ChemPkg,"STARSabBondEnumConverterSTAR",true);
+DO_SYMBOL(chem,_sym_STARLogicalOperatorTypeConverterSTAR,528,ChemPkg,"STARLogicalOperatorTypeConverterSTAR",true);
+DO_SYMBOL(chem,_sym_STARAtomTestEnumConverterSTAR,529,ChemPkg,"STARAtomTestEnumConverterSTAR",true);
+DO_SYMBOL(chem,_sym_ChemInfoMatch_O,530,ChemPkg,"ChemInfoMatch",true);
+DO_SYMBOL(chem,_sym_WildElementDict_O,531,ChemPkg,"WildElementDict",true);
+DO_SYMBOL(chem,_sym_ChemInfoNode_O,532,ChemPkg,"ChemInfoNode",true);
+DO_SYMBOL(chem,_sym_ResidueList_O,533,ChemPkg,"ResidueList",true);
+DO_SYMBOL(chem,_sym_RootMatchNode_O,534,ChemPkg,"RootMatchNode",true);
+DO_SYMBOL(chem,_sym_BondMatchNode_O,535,ChemPkg,"BondMatchNode",true);
+DO_SYMBOL(chem,_sym_AtomOrBondMatchNode_O,536,ChemPkg,"AtomOrBondMatchNode",true);
+DO_SYMBOL(chem,_sym_BondListMatchNode_O,537,ChemPkg,"BondListMatchNode",true);
+DO_SYMBOL(chem,_sym_Logical_O,538,ChemPkg,"Logical",true);
+DO_SYMBOL(chem,_sym_TagSet_O,539,ChemPkg,"TagSet",true);
+DO_SYMBOL(chem,_sym_RingTest_O,540,ChemPkg,"RingTest",true);
+DO_SYMBOL(chem,_sym_ResidueTest_O,541,ChemPkg,"ResidueTest",true);
+DO_SYMBOL(chem,_sym_BondTest_O,542,ChemPkg,"BondTest",true);
+DO_SYMBOL(chem,_sym_AntechamberBondTest_O,543,ChemPkg,"AntechamberBondTest",true);
+DO_SYMBOL(chem,_sym_AtomTest_O,544,ChemPkg,"AtomTest",true);
+DO_SYMBOL(chem,_sym_AntechamberFocusAtomMatch_O,545,ChemPkg,"AntechamberFocusAtomMatch",true);
+DO_SYMBOL(chem,_sym_Chain_O,546,ChemPkg,"Chain",true);
+DO_SYMBOL(chem,_sym_Branch_O,547,ChemPkg,"Branch",true);
+DO_SYMBOL(chem,_sym_AfterMatchBondTest_O,548,ChemPkg,"AfterMatchBondTest",true);
+DO_SYMBOL(chem,_sym_Root_O,549,ChemPkg,"Root",true);
+DO_SYMBOL(chem,_sym_SmartsRoot_O,550,ChemPkg,"SmartsRoot",true);
+DO_SYMBOL(chem,_sym_AntechamberRoot_O,551,ChemPkg,"AntechamberRoot",true);
+DO_SYMBOL(chem,_sym_ChemInfo_O,552,ChemPkg,"ChemInfo",true);
+DO_SYMBOL(chem,_sym_FFTypesDb_O,553,ChemPkg,"FFTypesDb",true);
+DO_SYMBOL(chem,_sym_FFStretch_O,554,ChemPkg,"FFStretch",true);
+DO_SYMBOL(chem,_sym_FFStretchDb_O,555,ChemPkg,"FFStretchDb",true);
+DO_SYMBOL(chem,_sym_FFAngle_O,556,ChemPkg,"FFAngle",true);
+DO_SYMBOL(chem,_sym_FFAngleDb_O,557,ChemPkg,"FFAngleDb",true);
+DO_SYMBOL(chem,_sym_FFVdw_O,558,ChemPkg,"FFVdw",true);
+DO_SYMBOL(chem,_sym_FFVdwDb_O,559,ChemPkg,"FFVdwDb",true);
+DO_SYMBOL(chem,_sym_InfoDb_O,560,ChemPkg,"InfoDb",true);
+DO_SYMBOL(chem,_sym_ForceField_O,561,ChemPkg,"ForceField",true);
+DO_SYMBOL(chem,_sym_FFItor_O,562,ChemPkg,"FFItor",true);
+DO_SYMBOL(chem,_sym_FFItorDb_O,563,ChemPkg,"FFItorDb",true);
+DO_SYMBOL(chem,_sym_FFPtor_O,564,ChemPkg,"FFPtor",true);
+DO_SYMBOL(chem,_sym_FFPtorDb_O,565,ChemPkg,"FFPtorDb",true);
+DO_SYMBOL(chem,_sym_Matter_O,566,ChemPkg,"Matter",true);
+DO_SYMBOL(chem,_sym_Bond_O,567,ChemPkg,"Bond",true);
+DO_SYMBOL(chem,_sym_BondList_O,568,ChemPkg,"BondList",true);
+DO_SYMBOL(chem,_sym_Atom_O,569,ChemPkg,"Atom",true);
+DO_SYMBOL(chem,_sym_Residue_O,570,ChemPkg,"Residue",true);
+DO_SYMBOL(chem,_sym_FFParameter_O,571,ChemPkg,"FFParameter",true);
+DO_SYMBOL(chem,_sym_FFBaseDb_O,572,ChemPkg,"FFBaseDb",true);
+DO_SYMBOL(chem,_sym_FFNonbondCrossTermTable_O,573,ChemPkg,"FFNonbondCrossTermTable",true);
+DO_SYMBOL(chem,_sym_FFNonbond_O,574,ChemPkg,"FFNonbond",true);
+DO_SYMBOL(chem,_sym_FFNonbondDb_O,575,ChemPkg,"FFNonbondDb",true);
+DO_SYMBOL(chem,_sym_Molecule_O,576,ChemPkg,"Molecule",true);
+DO_SYMBOL(chem,_sym_Aggregate_O,577,ChemPkg,"Aggregate",true);
+DO_SYMBOL(chem,_sym_STARDonorAcceptorEnumConverterSTAR,578,ChemPkg,"STARDonorAcceptorEnumConverterSTAR",true);
+DO_SYMBOL(chem,_sym_STAREleDielectricEnumConverterSTAR,579,ChemPkg,"STAREleDielectricEnumConverterSTAR",true);
+DO_SYMBOL(chem,_sym_STARVdwMixRadiusEnumConverterSTAR,580,ChemPkg,"STARVdwMixRadiusEnumConverterSTAR",true);
+DO_SYMBOL(chem,_sym_STARVdwMixWellEnumConverterSTAR,581,ChemPkg,"STARVdwMixWellEnumConverterSTAR",true);
 #endif // ChemPkg_SYMBOLS
+#if defined(ChemKwPkg_SYMBOLS)
+DO_SYMBOL(chemkw,_sym__singleBond,582,ChemKwPkg,"_singleBond",true);
+DO_SYMBOL(chemkw,_sym__doubleBond,583,ChemKwPkg,"_doubleBond",true);
+DO_SYMBOL(chemkw,_sym__tripleBond,584,ChemKwPkg,"_tripleBond",true);
+DO_SYMBOL(chemkw,_sym__aromaticBond,585,ChemKwPkg,"_aromaticBond",true);
+DO_SYMBOL(chemkw,_sym__hydrogenBond,586,ChemKwPkg,"_hydrogenBond",true);
+DO_SYMBOL(chemkw,_sym__virtualBond,587,ChemKwPkg,"_virtualBond",true);
+DO_SYMBOL(chemkw,_sym__dashedSingleBond,588,ChemKwPkg,"_dashedSingleBond",true);
+DO_SYMBOL(chemkw,_sym__dashedDoubleBond,589,ChemKwPkg,"_dashedDoubleBond",true);
+DO_SYMBOL(chemkw,_sym_noBond,590,ChemKwPkg,"noBond",true);
+DO_SYMBOL(chemkw,_sym_singleBond,591,ChemKwPkg,"singleBond",true);
+DO_SYMBOL(chemkw,_sym_doubleBond,592,ChemKwPkg,"doubleBond",true);
+DO_SYMBOL(chemkw,_sym_tripleBond,593,ChemKwPkg,"tripleBond",true);
+DO_SYMBOL(chemkw,_sym_aromaticBond,594,ChemKwPkg,"aromaticBond",true);
+DO_SYMBOL(chemkw,_sym_hydrogenBond,595,ChemKwPkg,"hydrogenBond",true);
+DO_SYMBOL(chemkw,_sym_virtualBond,596,ChemKwPkg,"virtualBond",true);
+DO_SYMBOL(chemkw,_sym_dashedSingleBond,597,ChemKwPkg,"dashedSingleBond",true);
+DO_SYMBOL(chemkw,_sym_dashedDoubleBond,598,ChemKwPkg,"dashedDoubleBond",true);
+DO_SYMBOL(chemkw,_sym_C,599,ChemKwPkg,"C",true);
+DO_SYMBOL(chemkw,_sym_N,600,ChemKwPkg,"N",true);
+DO_SYMBOL(chemkw,_sym_O,601,ChemKwPkg,"O",true);
+DO_SYMBOL(chemkw,_sym_P,602,ChemKwPkg,"P",true);
+DO_SYMBOL(chemkw,_sym_F,603,ChemKwPkg,"F",true);
+DO_SYMBOL(chemkw,_sym_Cl,604,ChemKwPkg,"Cl",true);
+DO_SYMBOL(chemkw,_sym_Br,605,ChemKwPkg,"Br",true);
+DO_SYMBOL(chemkw,_sym_I,606,ChemKwPkg,"I",true);
+DO_SYMBOL(chemkw,_sym_message,607,ChemKwPkg,"message",true);
+DO_SYMBOL(chemkw,_sym_constitution,608,ChemKwPkg,"constitution",true);
+DO_SYMBOL(chemkw,_sym_entity,609,ChemKwPkg,"entity",true);
+DO_SYMBOL(chemkw,_sym_frameRecognizer,610,ChemKwPkg,"frameRecognizer",true);
+DO_SYMBOL(chemkw,_sym_E,611,ChemKwPkg,"E",true);
+DO_SYMBOL(chemkw,_sym_Z,612,ChemKwPkg,"Z",true);
+DO_SYMBOL(chemkw,_sym_1,613,ChemKwPkg,"1",true);
+DO_SYMBOL(chemkw,_sym_2,614,ChemKwPkg,"2",true);
+DO_SYMBOL(chemkw,_sym_3,615,ChemKwPkg,"3",true);
+DO_SYMBOL(chemkw,_sym_4,616,ChemKwPkg,"4",true);
+DO_SYMBOL(chemkw,_sym_5,617,ChemKwPkg,"5",true);
+DO_SYMBOL(chemkw,_sym_6,618,ChemKwPkg,"6",true);
+DO_SYMBOL(chemkw,_sym_idle,619,ChemKwPkg,"idle",true);
+DO_SYMBOL(chemkw,_sym_translate,620,ChemKwPkg,"translate",true);
+DO_SYMBOL(chemkw,_sym_rotate,621,ChemKwPkg,"rotate",true);
+DO_SYMBOL(chemkw,_sym_scale,622,ChemKwPkg,"scale",true);
+DO_SYMBOL(chemkw,_sym_XX,623,ChemKwPkg,"XX",true);
+DO_SYMBOL(chemkw,_sym_XA,624,ChemKwPkg,"XA",true);
+DO_SYMBOL(chemkw,_sym_XB,625,ChemKwPkg,"XB",true);
+DO_SYMBOL(chemkw,_sym_XC,626,ChemKwPkg,"XC",true);
+DO_SYMBOL(chemkw,_sym_XD,627,ChemKwPkg,"XD",true);
+DO_SYMBOL(chemkw,_sym_undefinedConfiguration,628,ChemKwPkg,"undefinedConfiguration",true);
+DO_SYMBOL(chemkw,_sym_S,629,ChemKwPkg,"S",true);
+DO_SYMBOL(chemkw,_sym_R,630,ChemKwPkg,"R",true);
+DO_SYMBOL(chemkw,_sym_undefinedCenter,631,ChemKwPkg,"undefinedCenter",true);
+DO_SYMBOL(chemkw,_sym_chiral,632,ChemKwPkg,"chiral",true);
+DO_SYMBOL(chemkw,_sym_prochiral,633,ChemKwPkg,"prochiral",true);
+DO_SYMBOL(chemkw,_sym_parameterized,634,ChemKwPkg,"parameterized",true);
+DO_SYMBOL(chemkw,_sym_estimated,635,ChemKwPkg,"estimated",true);
+DO_SYMBOL(chemkw,_sym_rough,636,ChemKwPkg,"rough",true);
+#endif // ChemKwPkg_SYMBOLS
 #if defined(CorePkg_SYMBOLS)
-DO_SYMBOL(core,_sym_STARwatchDynamicBindingStackSTAR,259,CorePkg,"STARwatchDynamicBindingStackSTAR",true);
-DO_SYMBOL(core,_sym_symbolMacro,260,CorePkg,"symbolMacro",true);
-DO_SYMBOL(core,_sym_whole,261,CorePkg,"whole",true);
-DO_SYMBOL(core,_sym_env,262,CorePkg,"env",true);
-DO_SYMBOL(core,_sym_processDeclarations,263,CorePkg,"processDeclarations",true);
-DO_SYMBOL(core,_sym_evaluateVerbosity,264,CorePkg,"evaluateVerbosity",true);
-DO_SYMBOL(core,_sym_evaluateDepth,265,CorePkg,"evaluateDepth",true);
-DO_SYMBOL(core,_sym_classifyLetVariablesAndDeclares,266,CorePkg,"classifyLetVariablesAndDeclares",true);
-DO_SYMBOL(core,_sym_STAReval_with_env_hookSTAR,267,CorePkg,"STAReval_with_env_hookSTAR",true);
-DO_SYMBOL(core,_sym_eval_with_env_default,268,CorePkg,"eval_with_env_default",true);
-DO_SYMBOL(core,_sym_dlopen,269,CorePkg,"dlopen",true);
-DO_SYMBOL(core,_sym_dlsym,270,CorePkg,"dlsym",true);
-DO_SYMBOL(core,_sym_dladdr,271,CorePkg,"dladdr",true);
-DO_SYMBOL(core,_sym_callWithVariableBound,272,CorePkg,"callWithVariableBound",true);
-DO_SYMBOL(core,_sym_instanceClassSet,273,CorePkg,"instanceClassSet",true);
-DO_SYMBOL(core,_sym_intrusiveReferenceCountedPointer,274,CorePkg,"intrusiveReferenceCountedPointer",true);
-DO_SYMBOL(core,_sym_sharedReferenceCountedPointer,275,CorePkg,"sharedReferenceCountedPointer",true);
-DO_SYMBOL(core,_sym_mpsGarbageCollection,276,CorePkg,"mpsGarbageCollection",true);
-DO_SYMBOL(core,_sym_makeInvocationHistoryFrameIterator,277,CorePkg,"makeInvocationHistoryFrameIterator",true);
-DO_SYMBOL(core,_sym_STARbacktraceFrameSelectorHookSTAR,278,CorePkg,"STARbacktraceFrameSelectorHookSTAR",true);
-DO_SYMBOL(core,_sym_smartPointerDetails,279,CorePkg,"smartPointerDetails",true);
-DO_SYMBOL(core,_sym_STARfset,280,CorePkg,"STARfset",true);
-DO_SYMBOL(core,_sym_unbound,281,CorePkg,"unbound",true);
-DO_SYMBOL(core,_sym_mapappend,282,CorePkg,"mapappend",true);
-DO_SYMBOL(core,_sym_macroexpand_default,283,CorePkg,"macroexpand_default",true);
-DO_SYMBOL(core,_sym_sequence_start_end,284,CorePkg,"sequence_start_end",true);
-DO_SYMBOL(core,_sym_type_to_symbol,285,CorePkg,"type_to_symbol",true);
-DO_SYMBOL(core,_sym_gdb,286,CorePkg,"gdb",true);
-DO_SYMBOL(core,_sym_gdbInspect,287,CorePkg,"gdbInspect",true);
-DO_SYMBOL(core,_sym_separatePairList,288,CorePkg,"separatePairList",true);
-DO_SYMBOL(core,_sym_testMemoryError,289,CorePkg,"testMemoryError",true);
-DO_SYMBOL(core,_sym_functionBlockName,290,CorePkg,"functionBlockName",true);
-DO_SYMBOL(core,_sym_validFunctionNameP,291,CorePkg,"validFunctionNameP",true);
-DO_SYMBOL(core,_sym_pointer,292,CorePkg,"pointer",true);
-DO_SYMBOL(core,_sym_toTaggedFixnum,293,CorePkg,"toTaggedFixnum",true);
-DO_SYMBOL(core,_sym_fromTaggedFixnum,294,CorePkg,"fromTaggedFixnum",true);
-DO_SYMBOL(core,_sym_dumpTaggedFixnum,295,CorePkg,"dumpTaggedFixnum",true);
-DO_SYMBOL(core,_sym_ihsBacktrace,296,CorePkg,"ihsBacktrace",true);
-DO_SYMBOL(core,_sym_ihsTop,297,CorePkg,"ihsTop",true);
-DO_SYMBOL(core,_sym_ihsPrev,298,CorePkg,"ihsPrev",true);
-DO_SYMBOL(core,_sym_ihsNext,299,CorePkg,"ihsNext",true);
-DO_SYMBOL(core,_sym_ihsFun,300,CorePkg,"ihsFun",true);
-DO_SYMBOL(core,_sym_ihsEnv,301,CorePkg,"ihsEnv",true);
-DO_SYMBOL(core,_sym_bdsTop,302,CorePkg,"bdsTop",true);
-DO_SYMBOL(core,_sym_bdsVar,303,CorePkg,"bdsVar",true);
-DO_SYMBOL(core,_sym_bdsVal,304,CorePkg,"bdsVal",true);
-DO_SYMBOL(core,_sym_theClibBacktraceFunctionSymbol,305,CorePkg,"theClibBacktraceFunctionSymbol",true);
-DO_SYMBOL(core,_sym_printCurrentIhsFrameEnvironment,306,CorePkg,"printCurrentIhsFrameEnvironment",true);
-DO_SYMBOL(core,_sym_rehash_size,307,CorePkg,"rehash_size",true);
-DO_SYMBOL(core,_sym_rehash_threshold,308,CorePkg,"rehash_threshold",true);
-DO_SYMBOL(core,_sym_data,309,CorePkg,"data",true);
-DO_SYMBOL(core,_sym_hash_eql,310,CorePkg,"hash_eql",true);
-DO_SYMBOL(core,_sym_hash_equal,311,CorePkg,"hash_equal",true);
-DO_SYMBOL(core,_sym_hash_equalp,312,CorePkg,"hash_equalp",true);
-DO_SYMBOL(core,_sym_fixnum_number_of_bits,313,CorePkg,"fixnum_number_of_bits",true);
-DO_SYMBOL(core,_sym_nan,314,CorePkg,"nan",true);
-DO_SYMBOL(core,_sym_log1p,315,CorePkg,"log1p",true);
-DO_SYMBOL(core,_sym_integer_divide,316,CorePkg,"integer_divide",true);
-DO_SYMBOL(core,_sym_integerToString,317,CorePkg,"integerToString",true);
-DO_SYMBOL(core,_sym_printUnreadableObjectFunction,318,CorePkg,"printUnreadableObjectFunction",true);
-DO_SYMBOL(core,_sym_walkToFindSourceInfo,319,CorePkg,"walkToFindSourceInfo",true);
-DO_SYMBOL(core,_sym_lookupSourceFileInfo,320,CorePkg,"lookupSourceFileInfo",true);
-DO_SYMBOL(core,_sym_STARmonitorRegisterSourceInfoSTAR,321,CorePkg,"STARmonitorRegisterSourceInfoSTAR",true);
-DO_SYMBOL(core,_sym_currentDir,322,CorePkg,"currentDir",true);
-DO_SYMBOL(core,_sym_file_kind,323,CorePkg,"file_kind",true);
-DO_SYMBOL(core,_sym_environmentActivationFrame,324,CorePkg,"environmentActivationFrame",true);
-DO_SYMBOL(core,_sym_currentVisibleEnvironment,325,CorePkg,"currentVisibleEnvironment",true);
-DO_SYMBOL(core,_sym_runtimeEnvironment,326,CorePkg,"runtimeEnvironment",true);
-DO_SYMBOL(core,_sym_environmentList,327,CorePkg,"environmentList",true);
-DO_SYMBOL(core,_sym_environmentTypeList,328,CorePkg,"environmentTypeList",true);
-DO_SYMBOL(core,_sym_environmentId,329,CorePkg,"environmentId",true);
-DO_SYMBOL(core,_sym_singleDispatchWrongNumberArgumentsError,330,CorePkg,"singleDispatchWrongNumberArgumentsError",true);
-DO_SYMBOL(core,_sym_singleDispatchTooManyArgumentsError,331,CorePkg,"singleDispatchTooManyArgumentsError",true);
-DO_SYMBOL(core,_sym_singleDispatchBadLambdaListError,332,CorePkg,"singleDispatchBadLambdaListError",true);
-DO_SYMBOL(core,_sym_singleDispatchMissingDispatchArgumentError,333,CorePkg,"singleDispatchMissingDispatchArgumentError",true);
-DO_SYMBOL(core,_sym_tooFewArguments,334,CorePkg,"tooFewArguments",true);
-DO_SYMBOL(core,_sym_process_macro_lambda_list,335,CorePkg,"process_macro_lambda_list",true);
-DO_SYMBOL(core,_sym_process_single_dispatch_lambda_list,336,CorePkg,"process_single_dispatch_lambda_list",true);
-DO_SYMBOL(core,_sym_makeLambdaListHandler,337,CorePkg,"makeLambdaListHandler",true);
-DO_SYMBOL(core,_sym_processLambdaList,338,CorePkg,"processLambdaList",true);
-DO_SYMBOL(core,_sym_dispatchTable,339,CorePkg,"dispatchTable",true);
-DO_SYMBOL(core,_sym_fileColumn,340,CorePkg,"fileColumn",true);
-DO_SYMBOL(core,_sym_makeStringOutputStreamFromString,341,CorePkg,"makeStringOutputStreamFromString",true);
-DO_SYMBOL(core,_sym_do_write_sequence,342,CorePkg,"do_write_sequence",true);
-DO_SYMBOL(core,_sym_streamLinenumber,343,CorePkg,"streamLinenumber",true);
-DO_SYMBOL(core,_sym_streamColumn,344,CorePkg,"streamColumn",true);
-DO_SYMBOL(core,_sym_single_dispatch_method,345,CorePkg,"single_dispatch_method",true);
-DO_SYMBOL(core,_sym_setf_documentation,346,CorePkg,"setf_documentation",true);
-DO_SYMBOL(core,_sym_STARcxxDocumentationSTAR,347,CorePkg,"STARcxxDocumentationSTAR",true);
-DO_SYMBOL(core,_sym_topLevel,348,CorePkg,"topLevel",true);
-DO_SYMBOL(core,_sym_scharSet,349,CorePkg,"scharSet",true);
-DO_SYMBOL(core,_sym_STARuseInterpreterForEvalSTAR,350,CorePkg,"STARuseInterpreterForEvalSTAR",true);
-DO_SYMBOL(core,_sym_STARnotify_on_compileSTAR,351,CorePkg,"STARnotify_on_compileSTAR",true);
-DO_SYMBOL(core,_sym_STARtrace_startupSTAR,352,CorePkg,"STARtrace_startupSTAR",true);
-DO_SYMBOL(core,_sym_STARdebugInterpretedClosureSTAR,353,CorePkg,"STARdebugInterpretedClosureSTAR",true);
-DO_SYMBOL(core,_sym_STARdebugFlowControlSTAR,354,CorePkg,"STARdebugFlowControlSTAR",true);
-DO_SYMBOL(core,_sym_STARdebugStartupSTAR,355,CorePkg,"STARdebugStartupSTAR",true);
-DO_SYMBOL(core,_sym__BANG_unbound_BANG_,356,CorePkg,"_BANG_unbound_BANG_",true);
-DO_SYMBOL(core,_sym_bitArrayOp,357,CorePkg,"bitArrayOp",true);
-DO_SYMBOL(core,_sym_lambdaName,358,CorePkg,"lambdaName",true);
-DO_SYMBOL(core,_sym_printf,359,CorePkg,"printf",true);
-DO_SYMBOL(core,_sym_asin,360,CorePkg,"asin",true);
-DO_SYMBOL(core,_sym_asinh,361,CorePkg,"asinh",true);
-DO_SYMBOL(core,_sym_acos,362,CorePkg,"acos",true);
-DO_SYMBOL(core,_sym_acosh,363,CorePkg,"acosh",true);
-DO_SYMBOL(core,_sym_atanh,364,CorePkg,"atanh",true);
-DO_SYMBOL(core,_sym_STARpollTicksPerGcSTAR,365,CorePkg,"STARpollTicksPerGcSTAR",true);
-DO_SYMBOL(core,_sym__PLUS_standardReadtable_PLUS_,366,CorePkg,"_PLUS_standardReadtable_PLUS_",true);
-DO_SYMBOL(core,_sym_closedStream,367,CorePkg,"closedStream",true);
-DO_SYMBOL(core,_sym__PLUS_numberOfFixedArguments_PLUS_,368,CorePkg,"_PLUS_numberOfFixedArguments_PLUS_",true);
-DO_SYMBOL(core,_sym_STARinterpreterTraceSTAR,369,CorePkg,"STARinterpreterTraceSTAR",true);
-DO_SYMBOL(core,_sym_STARdebugLoadTimeValuesSTAR,370,CorePkg,"STARdebugLoadTimeValuesSTAR",true);
-DO_SYMBOL(core,_sym_STARdebugEvalSTAR,371,CorePkg,"STARdebugEvalSTAR",true);
-DO_SYMBOL(core,_sym_STARdebugInterpretedFunctionsSTAR,372,CorePkg,"STARdebugInterpretedFunctionsSTAR",true);
-DO_SYMBOL(core,_sym_STARdebugMonitorSTAR,373,CorePkg,"STARdebugMonitorSTAR",true);
-DO_SYMBOL(core,_sym_monitorReader,374,CorePkg,"monitorReader",true);
-DO_SYMBOL(core,_sym_tsp,375,CorePkg,"tsp",true);
-DO_SYMBOL(core,_sym_tmv,376,CorePkg,"tmv",true);
-DO_SYMBOL(core,_sym_invocationHistoryFrame,377,CorePkg,"invocationHistoryFrame",true);
-DO_SYMBOL(core,_sym_size_t,378,CorePkg,"size_t",true);
-DO_SYMBOL(core,_sym_threadInfo,379,CorePkg,"threadInfo",true);
-DO_SYMBOL(core,_sym_circle_subst,380,CorePkg,"circle_subst",true);
-DO_SYMBOL(core,_sym_STARsourceDatabaseSTAR,381,CorePkg,"STARsourceDatabaseSTAR",true);
-DO_SYMBOL(core,_sym_STARstartRunTimeSTAR,382,CorePkg,"STARstartRunTimeSTAR",true);
-DO_SYMBOL(core,_sym_STARcommandLineLoadSTAR,383,CorePkg,"STARcommandLineLoadSTAR",true);
-DO_SYMBOL(core,_sym_STARihsCurrentSTAR,384,CorePkg,"STARihsCurrentSTAR",true);
-DO_SYMBOL(core,_sym_STARllvmFunctionNameHookSTAR,385,CorePkg,"STARllvmFunctionNameHookSTAR",true);
-DO_SYMBOL(core,_sym_STARtopLevelCommandHookSTAR,386,CorePkg,"STARtopLevelCommandHookSTAR",true);
-DO_SYMBOL(core,_sym_STARloadSearchListSTAR,387,CorePkg,"STARloadSearchListSTAR",true);
-DO_SYMBOL(core,_sym_loadBitcode,388,CorePkg,"loadBitcode",true);
-DO_SYMBOL(core,_sym_loadSource,389,CorePkg,"loadSource",true);
-DO_SYMBOL(core,_sym_loadBundle,390,CorePkg,"loadBundle",true);
-DO_SYMBOL(core,_sym_STARallCxxClassesSTAR,391,CorePkg,"STARallCxxClassesSTAR",true);
-DO_SYMBOL(core,_sym_simpleProgramError,392,CorePkg,"simpleProgramError",true);
-DO_SYMBOL(core,_sym_STARdebugReaderSTAR,393,CorePkg,"STARdebugReaderSTAR",true);
-DO_SYMBOL(core,_sym_STARenablePrintPrettySTAR,394,CorePkg,"STARenablePrintPrettySTAR",true);
-DO_SYMBOL(core,_sym_STARcircle_counterSTAR,395,CorePkg,"STARcircle_counterSTAR",true);
-DO_SYMBOL(core,_sym_STARcircle_stackSTAR,396,CorePkg,"STARcircle_stackSTAR",true);
-DO_SYMBOL(core,_sym_dynamicGo,397,CorePkg,"dynamicGo",true);
-DO_SYMBOL(core,_sym_localGo,398,CorePkg,"localGo",true);
-DO_SYMBOL(core,_sym__PLUS_ecl_syntax_progv_list_PLUS_,399,CorePkg,"_PLUS_ecl_syntax_progv_list_PLUS_",true);
-DO_SYMBOL(core,_sym__PLUS_io_syntax_progv_list_PLUS_,400,CorePkg,"_PLUS_io_syntax_progv_list_PLUS_",true);
-DO_SYMBOL(core,_sym_STARprintPackageSTAR,401,CorePkg,"STARprintPackageSTAR",true);
-DO_SYMBOL(core,_sym_STARsharpEqContextSTAR,402,CorePkg,"STARsharpEqContextSTAR",true);
-DO_SYMBOL(core,_sym_STARcircleCounterSTAR,403,CorePkg,"STARcircleCounterSTAR",true);
-DO_SYMBOL(core,_sym_STARnestedErrorDepthSTAR,404,CorePkg,"STARnestedErrorDepthSTAR",true);
-DO_SYMBOL(core,_sym_setThrowPosition,405,CorePkg,"setThrowPosition",true);
-DO_SYMBOL(core,_sym_tooFewArgumentsError,406,CorePkg,"tooFewArgumentsError",true);
-DO_SYMBOL(core,_sym_tooManyArgumentsError,407,CorePkg,"tooManyArgumentsError",true);
-DO_SYMBOL(core,_sym_unrecognizedKeywordArgumentError,408,CorePkg,"unrecognizedKeywordArgumentError",true);
-DO_SYMBOL(core,_sym_invalidKeywordArgumentError,409,CorePkg,"invalidKeywordArgumentError",true);
-DO_SYMBOL(core,_sym__PLUS_llvmTargetTriple_PLUS_,410,CorePkg,"_PLUS_llvmTargetTriple_PLUS_",true);
-DO_SYMBOL(core,_sym__PLUS_executableName_PLUS_,411,CorePkg,"_PLUS_executableName_PLUS_",true);
-DO_SYMBOL(core,_sym_STARcodeWalkerSTAR,412,CorePkg,"STARcodeWalkerSTAR",true);
-DO_SYMBOL(core,_sym_STARcurrentSourceFileInfoSTAR,413,CorePkg,"STARcurrentSourceFileInfoSTAR",true);
-DO_SYMBOL(core,_sym_STARcurrentSourcePosInfoSTAR,414,CorePkg,"STARcurrentSourcePosInfoSTAR",true);
-DO_SYMBOL(core,_sym_STARdebugMacroexpandSTAR,415,CorePkg,"STARdebugMacroexpandSTAR",true);
-DO_SYMBOL(core,_sym_STARenvironmentPrintingTabSTAR,416,CorePkg,"STARenvironmentPrintingTabSTAR",true);
-DO_SYMBOL(core,_sym_STARenvironmentPrintingTabIncrementSTAR,417,CorePkg,"STARenvironmentPrintingTabIncrementSTAR",true);
-DO_SYMBOL(core,_sym__PLUS_activationFrameNil_PLUS_,418,CorePkg,"_PLUS_activationFrameNil_PLUS_",true);
-DO_SYMBOL(core,_sym_parse_macro,419,CorePkg,"parse_macro",true);
-DO_SYMBOL(core,_sym_globalFunction,420,CorePkg,"globalFunction",true);
-DO_SYMBOL(core,_sym_globalSetfFunction,421,CorePkg,"globalSetfFunction",true);
-DO_SYMBOL(core,_sym_lexicalFunction,422,CorePkg,"lexicalFunction",true);
-DO_SYMBOL(core,_sym_declaredSpecial,423,CorePkg,"declaredSpecial",true);
-DO_SYMBOL(core,_sym_lexical,424,CorePkg,"lexical",true);
-DO_SYMBOL(core,_sym_STARsystem_defsetf_update_functionsSTAR,425,CorePkg,"STARsystem_defsetf_update_functionsSTAR",true);
-DO_SYMBOL(core,_sym_STARbackquote_expand_hookSTAR,426,CorePkg,"STARbackquote_expand_hookSTAR",true);
-DO_SYMBOL(core,_sym_single_dispatch_on,427,CorePkg,"single_dispatch_on",true);
-DO_SYMBOL(core,_sym_STARdocumentation_poolSTAR,428,CorePkg,"STARdocumentation_poolSTAR",true);
-DO_SYMBOL(core,_sym_STARexecutable_nameSTAR,429,CorePkg,"STARexecutable_nameSTAR",true);
-DO_SYMBOL(core,_sym_generic,430,CorePkg,"generic",true);
-DO_SYMBOL(core,_sym_DOT,431,CorePkg,"DOT",true);
-DO_SYMBOL(core,_sym_AMPva_rest,432,CorePkg,"AMPva_rest",true);
-DO_SYMBOL(core,_sym_anonymous,433,CorePkg,"anonymous",true);
-DO_SYMBOL(core,_sym_macro,434,CorePkg,"macro",true);
-DO_SYMBOL(core,_sym_STARdocumentation_databaseSTAR,435,CorePkg,"STARdocumentation_databaseSTAR",true);
-DO_SYMBOL(core,_sym___init__,436,CorePkg,"__init__",true);
-DO_SYMBOL(core,_sym_input_stream_designator,437,CorePkg,"input_stream_designator",true);
-DO_SYMBOL(core,_sym_STARprint_source_code_consSTAR,438,CorePkg,"STARprint_source_code_consSTAR",true);
-DO_SYMBOL(core,_sym_STARechoReplReadSTAR,439,CorePkg,"STARechoReplReadSTAR",true);
-DO_SYMBOL(core,_sym_eof_error_p,440,CorePkg,"eof_error_p",true);
-DO_SYMBOL(core,_sym_eof_value,441,CorePkg,"eof_value",true);
-DO_SYMBOL(core,_sym_start,442,CorePkg,"start",true);
-DO_SYMBOL(core,_sym_end,443,CorePkg,"end",true);
-DO_SYMBOL(core,_sym_preserve_whitespace,444,CorePkg,"preserve_whitespace",true);
-DO_SYMBOL(core,_sym_io,445,CorePkg,"io",true);
-DO_SYMBOL(core,_sym_probe,446,CorePkg,"probe",true);
-DO_SYMBOL(core,_sym_newVersion,447,CorePkg,"newVersion",true);
-DO_SYMBOL(core,_sym_renameAndDelete,448,CorePkg,"renameAndDelete",true);
-DO_SYMBOL(core,_sym_overwrite,449,CorePkg,"overwrite",true);
-DO_SYMBOL(core,_sym_supersede,450,CorePkg,"supersede",true);
-DO_SYMBOL(core,_sym_create,451,CorePkg,"create",true);
-DO_SYMBOL(core,_sym_input_stream,452,CorePkg,"input_stream",true);
-DO_SYMBOL(core,_sym_recursive_p,453,CorePkg,"recursive_p",true);
-DO_SYMBOL(core,_sym_dimensions,454,CorePkg,"dimensions",true);
-DO_SYMBOL(core,_sym_element_type,455,CorePkg,"element_type",true);
-DO_SYMBOL(core,_sym_initial_element,456,CorePkg,"initial_element",true);
-DO_SYMBOL(core,_sym_adjustable,457,CorePkg,"adjustable",true);
-DO_SYMBOL(core,_sym_object,458,CorePkg,"object",true);
-DO_SYMBOL(core,_sym_okey,459,CorePkg,"okey",true);
-DO_SYMBOL(core,_sym_default,460,CorePkg,"default",true);
-DO_SYMBOL(core,_sym_dot,461,CorePkg,"dot",true);
-DO_SYMBOL(core,_sym_ifDoesNotExist,462,CorePkg,"ifDoesNotExist",true);
-DO_SYMBOL(core,_sym_symbolMacroletLambda,463,CorePkg,"symbolMacroletLambda",true);
-DO_SYMBOL(core,_sym_lambda_with_handler,464,CorePkg,"lambda_with_handler",true);
-DO_SYMBOL(core,_sym_color,465,CorePkg,"color",true);
-DO_SYMBOL(core,_sym_foreach,466,CorePkg,"foreach",true);
-DO_SYMBOL(core,_sym_STARPATHSTAR,467,CorePkg,"STARPATHSTAR",true);
-DO_SYMBOL(core,_sym_STARargsSTAR,468,CorePkg,"STARargsSTAR",true);
-DO_SYMBOL(core,_sym_STARcurrent_working_directorySTAR,469,CorePkg,"STARcurrent_working_directorySTAR",true);
-DO_SYMBOL(core,_sym_backquote,470,CorePkg,"backquote",true);
-DO_SYMBOL(core,_sym_double_backquote,471,CorePkg,"double_backquote",true);
-DO_SYMBOL(core,_sym_unquote,472,CorePkg,"unquote",true);
-DO_SYMBOL(core,_sym_unquote_splice,473,CorePkg,"unquote_splice",true);
-DO_SYMBOL(core,_sym_unquote_nsplice,474,CorePkg,"unquote_nsplice",true);
-DO_SYMBOL(core,_sym_slot,475,CorePkg,"slot",true);
-DO_SYMBOL(core,_sym_item,476,CorePkg,"item",true);
-DO_SYMBOL(core,_sym_alist,477,CorePkg,"alist",true);
-DO_SYMBOL(core,_sym_key,478,CorePkg,"key",true);
-DO_SYMBOL(core,_sym_test_not,479,CorePkg,"test_not",true);
-DO_SYMBOL(core,_sym_forward_referenced_class,480,CorePkg,"forward_referenced_class",true);
-DO_SYMBOL(core,_sym_instance,481,CorePkg,"instance",true);
-DO_SYMBOL(core,_sym_all_keys,482,CorePkg,"all_keys",true);
-DO_SYMBOL(core,_sym_cl_fixnum_bits,483,CorePkg,"cl_fixnum_bits",true);
-DO_SYMBOL(core,_sym_cArgumentsLimit,484,CorePkg,"cArgumentsLimit",true);
-DO_SYMBOL(core,_sym_STARcommandLineArgumentsSTAR,485,CorePkg,"STARcommandLineArgumentsSTAR",true);
-DO_SYMBOL(core,_sym_STARprintVersionOnStartupSTAR,486,CorePkg,"STARprintVersionOnStartupSTAR",true);
-DO_SYMBOL(core,_sym_STARsilentStartupSTAR,487,CorePkg,"STARsilentStartupSTAR",true);
-DO_SYMBOL(core,_sym_STARcommandLineLoadEvalSequenceSTAR,488,CorePkg,"STARcommandLineLoadEvalSequenceSTAR",true);
-DO_SYMBOL(core,_sym_STARcommandLineImageSTAR,489,CorePkg,"STARcommandLineImageSTAR",true);
-DO_SYMBOL(core,_sym_STARclassNameHashTableSTAR,490,CorePkg,"STARclassNameHashTableSTAR",true);
-DO_SYMBOL(core,_sym_selectPackage,491,CorePkg,"selectPackage",true);
-DO_SYMBOL(core,_sym_find_single_dispatch_generic_function,492,CorePkg,"find_single_dispatch_generic_function",true);
-DO_SYMBOL(core,_sym_setf_find_single_dispatch_generic_function,493,CorePkg,"setf_find_single_dispatch_generic_function",true);
-DO_SYMBOL(core,_sym_forget_all_single_dispatch_generic_functions,494,CorePkg,"forget_all_single_dispatch_generic_functions",true);
-DO_SYMBOL(core,_sym_stackMonitor,495,CorePkg,"stackMonitor",true);
-DO_SYMBOL(core,_sym_setupStackMonitor,496,CorePkg,"setupStackMonitor",true);
-DO_SYMBOL(core,_sym_invokeInternalDebugger,497,CorePkg,"invokeInternalDebugger",true);
-DO_SYMBOL(core,_sym_invokeInternalDebuggerFromGdb,498,CorePkg,"invokeInternalDebuggerFromGdb",true);
-DO_SYMBOL(core,_sym_universalErrorHandler,499,CorePkg,"universalErrorHandler",true);
-DO_SYMBOL(core,_sym_stackUsed,500,CorePkg,"stackUsed",true);
-DO_SYMBOL(core,_sym_exit,501,CorePkg,"exit",true);
-DO_SYMBOL(core,_sym_quit,502,CorePkg,"quit",true);
-DO_SYMBOL(core,_sym_getline,503,CorePkg,"getline",true);
-DO_SYMBOL(core,_sym_isTopLevelScript,504,CorePkg,"isTopLevelScript",true);
-DO_SYMBOL(core,_sym_sourceFileName,505,CorePkg,"sourceFileName",true);
-DO_SYMBOL(core,_sym_sourceLineColumn,506,CorePkg,"sourceLineColumn",true);
-DO_SYMBOL(core,_sym_findFileInLispPath,507,CorePkg,"findFileInLispPath",true);
-DO_SYMBOL(core,_sym_setf_findClass,508,CorePkg,"setf_findClass",true);
-DO_SYMBOL(core,_sym_isAssignableTo,509,CorePkg,"isAssignableTo",true);
-DO_SYMBOL(core,_sym_isSubClassOf,510,CorePkg,"isSubClassOf",true);
-DO_SYMBOL(core,_sym_repr,511,CorePkg,"repr",true);
-DO_SYMBOL(core,_sym_debugLogOn,512,CorePkg,"debugLogOn",true);
-DO_SYMBOL(core,_sym_debugLogOff,513,CorePkg,"debugLogOff",true);
-DO_SYMBOL(core,_sym_mpi_enabled,514,CorePkg,"mpi_enabled",true);
-DO_SYMBOL(core,_sym_mpi_rank,515,CorePkg,"mpi_rank",true);
-DO_SYMBOL(core,_sym_mpi_size,516,CorePkg,"mpi_size",true);
-DO_SYMBOL(core,_sym_sorted,517,CorePkg,"sorted",true);
-DO_SYMBOL(core,_sym_database_dir,518,CorePkg,"database_dir",true);
-DO_SYMBOL(core,_sym_script_dir,519,CorePkg,"script_dir",true);
-DO_SYMBOL(core,_sym_libraryPath,520,CorePkg,"libraryPath",true);
-DO_SYMBOL(core,_sym_lispCodePath,521,CorePkg,"lispCodePath",true);
-DO_SYMBOL(core,_sym_setCurrentWorkingDirectory,522,CorePkg,"setCurrentWorkingDirectory",true);
-DO_SYMBOL(core,_sym_member1,523,CorePkg,"member1",true);
-DO_SYMBOL(core,_sym_exportToPython,524,CorePkg,"exportToPython",true);
-DO_SYMBOL(core,_sym_slBoundp,525,CorePkg,"slBoundp",true);
-DO_SYMBOL(core,_sym_isNil,526,CorePkg,"isNil",true);
-DO_SYMBOL(core,_sym_instanceRef,527,CorePkg,"instanceRef",true);
-DO_SYMBOL(core,_sym_instanceSet,528,CorePkg,"instanceSet",true);
-DO_SYMBOL(core,_sym_instancep,529,CorePkg,"instancep",true);
-DO_SYMBOL(core,_sym_instanceSigSet,530,CorePkg,"instanceSigSet",true);
-DO_SYMBOL(core,_sym_instanceSig,531,CorePkg,"instanceSig",true);
-DO_SYMBOL(core,_sym_instanceClass,532,CorePkg,"instanceClass",true);
-DO_SYMBOL(core,_sym_implementationClass,533,CorePkg,"implementationClass",true);
-DO_SYMBOL(core,_sym_classNameAsString,534,CorePkg,"classNameAsString",true);
-DO_SYMBOL(core,_sym_clock_gettime_nanoseconds,535,CorePkg,"clock_gettime_nanoseconds",true);
-DO_SYMBOL(core,_sym_testProfileTimer,536,CorePkg,"testProfileTimer",true);
-DO_SYMBOL(core,_sym_structure_print_function,537,CorePkg,"structure_print_function",true);
-DO_SYMBOL(core,_sym_STARprint_structureSTAR,538,CorePkg,"STARprint_structureSTAR",true);
-DO_SYMBOL(core,_sym_makeRegex,539,CorePkg,"makeRegex",true);
-DO_SYMBOL(core,_sym_serialize,540,CorePkg,"serialize",true);
-DO_SYMBOL(core,_sym_STARserializerArchiveSTAR,541,CorePkg,"STARserializerArchiveSTAR",true);
-DO_SYMBOL(core,_sym_STARsharp_equal_alistSTAR,542,CorePkg,"STARsharp_equal_alistSTAR",true);
-DO_SYMBOL(core,_sym_STARsharp_sharp_alistSTAR,543,CorePkg,"STARsharp_sharp_alistSTAR",true);
-DO_SYMBOL(core,_sym_STARconsing_dot_allowedSTAR,544,CorePkg,"STARconsing_dot_allowedSTAR",true);
-DO_SYMBOL(core,_sym_STARconsing_dotSTAR,545,CorePkg,"STARconsing_dotSTAR",true);
-DO_SYMBOL(core,_sym_STARpreserve_whitespace_pSTAR,546,CorePkg,"STARpreserve_whitespace_pSTAR",true);
-DO_SYMBOL(core,_sym_STARinput_streamSTAR,547,CorePkg,"STARinput_streamSTAR",true);
-DO_SYMBOL(core,_sym_STARbackquote_levelSTAR,548,CorePkg,"STARbackquote_levelSTAR",true);
-DO_SYMBOL(core,_sym_STARstandard_readtableSTAR,549,CorePkg,"STARstandard_readtableSTAR",true);
-DO_SYMBOL(core,_sym_read_list_allow_consing_dot,550,CorePkg,"read_list_allow_consing_dot",true);
-DO_SYMBOL(core,_sym_reader_read_double_quote_string,551,CorePkg,"reader_read_double_quote_string",true);
-DO_SYMBOL(core,_sym_reader_backquoted_expression,552,CorePkg,"reader_backquoted_expression",true);
-DO_SYMBOL(core,_sym_sharp_backslash,553,CorePkg,"sharp_backslash",true);
-DO_SYMBOL(core,_sym_sharp_single_quote,554,CorePkg,"sharp_single_quote",true);
-DO_SYMBOL(core,_sym_sharp_left_parenthesis,555,CorePkg,"sharp_left_parenthesis",true);
-DO_SYMBOL(core,_sym_sharp_asterisk,556,CorePkg,"sharp_asterisk",true);
-DO_SYMBOL(core,_sym_sharp_colon,557,CorePkg,"sharp_colon",true);
-DO_SYMBOL(core,_sym_sharp_dot,558,CorePkg,"sharp_dot",true);
-DO_SYMBOL(core,_sym_sharp_b,559,CorePkg,"sharp_b",true);
-DO_SYMBOL(core,_sym_sharp_o,560,CorePkg,"sharp_o",true);
-DO_SYMBOL(core,_sym_sharp_x,561,CorePkg,"sharp_x",true);
-DO_SYMBOL(core,_sym_sharp_r,562,CorePkg,"sharp_r",true);
-DO_SYMBOL(core,_sym_sharp_c,563,CorePkg,"sharp_c",true);
-DO_SYMBOL(core,_sym_sharp_a,564,CorePkg,"sharp_a",true);
-DO_SYMBOL(core,_sym_sharp_s,565,CorePkg,"sharp_s",true);
-DO_SYMBOL(core,_sym_sharp_p,566,CorePkg,"sharp_p",true);
-DO_SYMBOL(core,_sym_sharp_plus,567,CorePkg,"sharp_plus",true);
-DO_SYMBOL(core,_sym_sharp_minus,568,CorePkg,"sharp_minus",true);
-DO_SYMBOL(core,_sym_sharp_vertical_bar,569,CorePkg,"sharp_vertical_bar",true);
-DO_SYMBOL(core,_sym_dispatch_macro_character,570,CorePkg,"dispatch_macro_character",true);
-DO_SYMBOL(core,_sym_reader_double_quote_string,571,CorePkg,"reader_double_quote_string",true);
-DO_SYMBOL(core,_sym_reader_comma_form,572,CorePkg,"reader_comma_form",true);
-DO_SYMBOL(core,_sym_reader_list_allow_consing_dot,573,CorePkg,"reader_list_allow_consing_dot",true);
-DO_SYMBOL(core,_sym_reader_error_unmatched_close_parenthesis,574,CorePkg,"reader_error_unmatched_close_parenthesis",true);
-DO_SYMBOL(core,_sym_reader_quote,575,CorePkg,"reader_quote",true);
-DO_SYMBOL(core,_sym_reader_skip_semicolon_comment,576,CorePkg,"reader_skip_semicolon_comment",true);
-DO_SYMBOL(core,_sym_reader_feature_p,577,CorePkg,"reader_feature_p",true);
-DO_SYMBOL(core,_sym_float_to_digits,578,CorePkg,"float_to_digits",true);
-DO_SYMBOL(core,_sym_defaultPathnameDefaults,579,CorePkg,"defaultPathnameDefaults",true);
-DO_SYMBOL(core,_sym_coerceToFilename,580,CorePkg,"coerceToFilename",true);
-DO_SYMBOL(core,_sym_coerceToFilePathname,581,CorePkg,"coerceToFilePathname",true);
-DO_SYMBOL(core,_sym_pathnameTranslations,582,CorePkg,"pathnameTranslations",true);
-DO_SYMBOL(core,_sym_coerceToPhysicalPathname,583,CorePkg,"coerceToPhysicalPathname",true);
-DO_SYMBOL(core,_sym_argument_number_error,584,CorePkg,"argument_number_error",true);
-DO_SYMBOL(core,_sym_signalSimpleError,585,CorePkg,"signalSimpleError",true);
-DO_SYMBOL(core,_sym_wrongTypeNthArg,586,CorePkg,"wrongTypeNthArg",true);
-DO_SYMBOL(core,_sym_wrongIndex,587,CorePkg,"wrongIndex",true);
-DO_SYMBOL(core,_sym_subclassp,588,CorePkg,"subclassp",true);
-DO_SYMBOL(core,_sym_allocateRawClass,589,CorePkg,"allocateRawClass",true);
-DO_SYMBOL(core,_sym_inheritDefaultAllocator,590,CorePkg,"inheritDefaultAllocator",true);
-DO_SYMBOL(core,_sym_isString,591,CorePkg,"isString",true);
-DO_SYMBOL(core,_sym_isArray,592,CorePkg,"isArray",true);
-DO_SYMBOL(core,_sym_testVal,593,CorePkg,"testVal",true);
-DO_SYMBOL(core,_sym__SHARP__BANG_,594,CorePkg,"_SHARP__BANG_",true);
-DO_SYMBOL(core,_sym_base_string_concatenate,595,CorePkg,"base_string_concatenate",true);
-DO_SYMBOL(core,_sym_calculateMissingCommonLispSymbols,596,CorePkg,"calculateMissingCommonLispSymbols",true);
-DO_SYMBOL(core,_sym_copy_subarray,597,CorePkg,"copy_subarray",true);
-DO_SYMBOL(core,_sym_aset,598,CorePkg,"aset",true);
-DO_SYMBOL(core,_sym_rem_f,599,CorePkg,"rem_f",true);
-DO_SYMBOL(core,_sym_put_f,600,CorePkg,"put_f",true);
-DO_SYMBOL(core,_sym_conditionMessage,601,CorePkg,"conditionMessage",true);
-DO_SYMBOL(core,_sym_put_sysprop,602,CorePkg,"put_sysprop",true);
-DO_SYMBOL(core,_sym_get_sysprop,603,CorePkg,"get_sysprop",true);
-DO_SYMBOL(core,_sym_rem_sysprop,604,CorePkg,"rem_sysprop",true);
-DO_SYMBOL(core,_sym_bformat,605,CorePkg,"bformat",true);
-DO_SYMBOL(core,_sym_STARbq_listSTAR,606,CorePkg,"STARbq_listSTAR",true);
-DO_SYMBOL(core,_sym_STARbq_appendSTAR,607,CorePkg,"STARbq_appendSTAR",true);
-DO_SYMBOL(core,_sym_STARbq_listSTARSTAR,608,CorePkg,"STARbq_listSTARSTAR",true);
-DO_SYMBOL(core,_sym_STARbq_nconcSTAR,609,CorePkg,"STARbq_nconcSTAR",true);
-DO_SYMBOL(core,_sym_STARbq_clobberableSTAR,610,CorePkg,"STARbq_clobberableSTAR",true);
-DO_SYMBOL(core,_sym_STARbq_quoteSTAR,611,CorePkg,"STARbq_quoteSTAR",true);
-DO_SYMBOL(core,_sym_STARbq_quote_nilSTAR,612,CorePkg,"STARbq_quote_nilSTAR",true);
-DO_SYMBOL(core,_sym_bq_simplify,613,CorePkg,"bq_simplify",true);
-DO_SYMBOL(core,_sym_bq_remove_tokens,614,CorePkg,"bq_remove_tokens",true);
-DO_SYMBOL(core,_sym_backquote_maptree,615,CorePkg,"backquote_maptree",true);
-DO_SYMBOL(core,_sym_backquote_simplify,616,CorePkg,"backquote_simplify",true);
-DO_SYMBOL(core,_sym_backquote_completely_process,617,CorePkg,"backquote_completely_process",true);
-DO_SYMBOL(core,_sym_backquote_process,618,CorePkg,"backquote_process",true);
-DO_SYMBOL(core,_sym_backquote_bracket,619,CorePkg,"backquote_bracket",true);
-DO_SYMBOL(core,_sym_backquote_null_or_quoted,620,CorePkg,"backquote_null_or_quoted",true);
-DO_SYMBOL(core,_sym_backquote_attach_append,621,CorePkg,"backquote_attach_append",true);
-DO_SYMBOL(core,_sym_backquote_attach_conses,622,CorePkg,"backquote_attach_conses",true);
-DO_SYMBOL(core,_sym_backquote_remove_tokens,623,CorePkg,"backquote_remove_tokens",true);
-DO_SYMBOL(core,_sym_backquote_frob,624,CorePkg,"backquote_frob",true);
-DO_SYMBOL(core,_sym_backquote_splicing_frob,625,CorePkg,"backquote_splicing_frob",true);
-DO_SYMBOL(core,_sym_backquote_append,626,CorePkg,"backquote_append",true);
-DO_SYMBOL(core,_sym_quasiquote,627,CorePkg,"quasiquote",true);
-DO_SYMBOL(core,_sym_STARbq_simplifySTAR,628,CorePkg,"STARbq_simplifySTAR",true);
-DO_SYMBOL(core,_sym_record_cons,629,CorePkg,"record_cons",true);
-DO_SYMBOL(core,_sym_record_field,630,CorePkg,"record_field",true);
-DO_SYMBOL(core,_sym_set_record_field,631,CorePkg,"set_record_field",true);
-DO_SYMBOL(core,_sym_rem_record_field,632,CorePkg,"rem_record_field",true);
-DO_SYMBOL(core,_sym_ensure_documentation,633,CorePkg,"ensure_documentation",true);
-DO_SYMBOL(core,_sym_STARsharp_equal_final_tableSTAR,634,CorePkg,"STARsharp_equal_final_tableSTAR",true);
-DO_SYMBOL(core,_sym_STARsharp_equal_temp_tableSTAR,635,CorePkg,"STARsharp_equal_temp_tableSTAR",true);
-DO_SYMBOL(core,_sym_STARsharp_equal_repl_tableSTAR,636,CorePkg,"STARsharp_equal_repl_tableSTAR",true);
-DO_SYMBOL(core,_sym_ensureSingleDispatchGenericFunction,637,CorePkg,"ensureSingleDispatchGenericFunction",true);
-DO_SYMBOL(core,_sym_ensureSingleDispatchMethod,638,CorePkg,"ensureSingleDispatchMethod",true);
-DO_SYMBOL(core,_sym_structure_include,639,CorePkg,"structure_include",true);
-DO_SYMBOL(core,_sym_structure_slot_descriptions,640,CorePkg,"structure_slot_descriptions",true);
-DO_SYMBOL(core,_sym_structureRef,641,CorePkg,"structureRef",true);
-DO_SYMBOL(core,_sym_structureSet,642,CorePkg,"structureSet",true);
-DO_SYMBOL(core,_sym_makeStructure,643,CorePkg,"makeStructure",true);
-DO_SYMBOL(core,_sym_structurep,644,CorePkg,"structurep",true);
-DO_SYMBOL(core,_sym_structureSubtypep,645,CorePkg,"structureSubtypep",true);
-DO_SYMBOL(core,_sym_setfElt,646,CorePkg,"setfElt",true);
-DO_SYMBOL(core,_sym_eltSet,647,CorePkg,"eltSet",true);
-DO_SYMBOL(core,_sym_setfSubseq,648,CorePkg,"setfSubseq",true);
-DO_SYMBOL(core,_sym_make_vector,649,CorePkg,"make_vector",true);
-DO_SYMBOL(core,_sym_adjustVector,650,CorePkg,"adjustVector",true);
-DO_SYMBOL(core,_sym_loadTimeValuesIds,651,CorePkg,"loadTimeValuesIds",true);
-DO_SYMBOL(core,_sym_loadTimeValueArray,652,CorePkg,"loadTimeValueArray",true);
-DO_SYMBOL(core,_sym_lookupLoadTimeValue,653,CorePkg,"lookupLoadTimeValue",true);
-DO_SYMBOL(core,_sym_lookupLoadTimeSymbol,654,CorePkg,"lookupLoadTimeSymbol",true);
-DO_SYMBOL(core,_sym_setRunTimeValuesVector,655,CorePkg,"setRunTimeValuesVector",true);
-DO_SYMBOL(core,_sym_ExternalObject_O,656,CorePkg,"ExternalObject",true);
-DO_SYMBOL(core,_sym_ForeignData_O,657,CorePkg,"ForeignData",true);
-DO_SYMBOL(core,_sym_LambdaListHandler_O,658,CorePkg,"LambdaListHandler",true);
-DO_SYMBOL(core,_sym_LightUserData_O,659,CorePkg,"LightUserData",true);
-DO_SYMBOL(core,_sym_UserData_O,660,CorePkg,"UserData",true);
-DO_SYMBOL(core,_sym_LoadTimeValues_O,661,CorePkg,"LoadTimeValues",true);
-DO_SYMBOL(core,_sym_MultiStringBuffer_O,662,CorePkg,"MultiStringBuffer",true);
-DO_SYMBOL(core,_sym_PosixTime_O,663,CorePkg,"PosixTime",true);
-DO_SYMBOL(core,_sym_PosixTimeDuration_O,664,CorePkg,"PosixTimeDuration",true);
-DO_SYMBOL(core,_sym_RegexMatch_O,665,CorePkg,"RegexMatch",true);
-DO_SYMBOL(core,_sym_Regex_O,666,CorePkg,"Regex",true);
-DO_SYMBOL(core,_sym_SingleDispatchMethod_O,667,CorePkg,"SingleDispatchMethod",true);
-DO_SYMBOL(core,_sym_SmallMultimap_O,668,CorePkg,"SmallMultimap",true);
-DO_SYMBOL(core,_sym_WeakKeyMapping_O,669,CorePkg,"WeakKeyMapping",true);
-DO_SYMBOL(core,_sym_WeakPointer_O,670,CorePkg,"WeakPointer",true);
-DO_SYMBOL(core,_sym_Instance_O,671,CorePkg,"Instance",true);
-DO_SYMBOL(core,_sym_WrappedPointer_O,672,CorePkg,"WrappedPointer",true);
-DO_SYMBOL(core,_sym_ArrayDisplaced_O,673,CorePkg,"ArrayDisplaced",true);
-DO_SYMBOL(core,_sym_ArrayObjects_O,674,CorePkg,"ArrayObjects",true);
-DO_SYMBOL(core,_sym_HashTableEqualp_O,675,CorePkg,"HashTableEqualp",true);
-DO_SYMBOL(core,_sym_SingleDispatchEffectiveMethodFunction_O,676,CorePkg,"SingleDispatchEffectiveMethodFunction",true);
-DO_SYMBOL(core,_sym_SingleDispatchGenericFunction_O,677,CorePkg,"single-dispatch-generic-function",true);
-DO_SYMBOL(core,_sym_SpecialForm_O,678,CorePkg,"SpecialForm",true);
-DO_SYMBOL(core,_sym_SexpLoadArchive_O,679,CorePkg,"SexpLoadArchive",true);
-DO_SYMBOL(core,_sym_SexpSaveArchive_O,680,CorePkg,"SexpSaveArchive",true);
-DO_SYMBOL(core,_sym_VectorDisplaced_O,681,CorePkg,"VectorDisplaced",true);
-DO_SYMBOL(core,_sym_CxxClass_O,682,CorePkg,"CxxClass",true);
-DO_SYMBOL(core,_sym_ForwardReferencedClass_O,683,CorePkg,"ForwardReferencedClass",true);
-DO_SYMBOL(core,_sym_StrWithFillPtr_O,684,CorePkg,"base-string-with-fill-ptr",true);
-DO_SYMBOL(core,_sym_InvocationHistoryFrameIterator_O,685,CorePkg,"InvocationHistoryFrameIterator",true);
-DO_SYMBOL(core,_sym_Reader_O,686,CorePkg,"Reader",true);
-DO_SYMBOL(core,_sym_HashTableEqual_O,687,CorePkg,"HashTableEqual",true);
-DO_SYMBOL(core,_sym_Binder_O,688,CorePkg,"Binder",true);
-DO_SYMBOL(core,_sym_Path_O,689,CorePkg,"path",true);
-DO_SYMBOL(core,_sym_DirectoryIterator_O,690,CorePkg,"DirectoryIterator",true);
-DO_SYMBOL(core,_sym_RecursiveDirectoryIterator_O,691,CorePkg,"RecursiveDirectoryIterator",true);
-DO_SYMBOL(core,_sym_DirectoryEntry_O,692,CorePkg,"DirectoryEntry",true);
-DO_SYMBOL(core,_sym_FileStatus_O,693,CorePkg,"FileStatus",true);
-DO_SYMBOL(core,_sym_IntArray_O,694,CorePkg,"IntArray",true);
-DO_SYMBOL(core,_sym_IOFileStream_O,695,CorePkg,"iofile-stream",true);
-DO_SYMBOL(core,_sym_IOStreamStream_O,696,CorePkg,"iostream-stream",true);
-DO_SYMBOL(core,_sym_StringOutputStream_O,697,CorePkg,"string-output-stream",true);
-DO_SYMBOL(core,_sym_StringInputStream_O,698,CorePkg,"string-input-stream",true);
-DO_SYMBOL(core,_sym_HashTableEql_O,699,CorePkg,"HashTableEql",true);
-DO_SYMBOL(core,_sym_HashTableEq_O,700,CorePkg,"HashTableEq",true);
-DO_SYMBOL(core,_sym_SmallMap_O,701,CorePkg,"SmallMap",true);
-DO_SYMBOL(core,_sym_Iterator_O,702,CorePkg,"Iterator",true);
-DO_SYMBOL(core,_sym_CandoException_O,703,CorePkg,"CandoException",true);
-DO_SYMBOL(core,_sym_VaList_dummy_O,704,CorePkg,"VA-LIST",true);
-DO_SYMBOL(core,_sym_Pointer_O,705,CorePkg,"Pointer",true);
-DO_SYMBOL(core,_sym_Environment_O,706,CorePkg,"Environment",true);
-DO_SYMBOL(core,_sym_LexicalEnvironment_O,707,CorePkg,"LexicalEnvironment",true);
-DO_SYMBOL(core,_sym_RuntimeVisibleEnvironment_O,708,CorePkg,"RuntimeVisibleEnvironment",true);
-DO_SYMBOL(core,_sym_ValueEnvironment_O,709,CorePkg,"ValueEnvironment",true);
-DO_SYMBOL(core,_sym_FunctionValueEnvironment_O,710,CorePkg,"FunctionValueEnvironment",true);
-DO_SYMBOL(core,_sym_CompileTimeEnvironment_O,711,CorePkg,"CompileTimeEnvironment",true);
-DO_SYMBOL(core,_sym_UnwindProtectEnvironment_O,712,CorePkg,"UnwindProtectEnvironment",true);
-DO_SYMBOL(core,_sym_BlockEnvironment_O,713,CorePkg,"BlockEnvironment",true);
-DO_SYMBOL(core,_sym_CatchEnvironment_O,714,CorePkg,"CatchEnvironment",true);
-DO_SYMBOL(core,_sym_FunctionContainerEnvironment_O,715,CorePkg,"FunctionContainerEnvironment",true);
-DO_SYMBOL(core,_sym_TagbodyEnvironment_O,716,CorePkg,"TagbodyEnvironment",true);
-DO_SYMBOL(core,_sym_MacroletEnvironment_O,717,CorePkg,"MacroletEnvironment",true);
-DO_SYMBOL(core,_sym_SymbolMacroletEnvironment_O,718,CorePkg,"SymbolMacroletEnvironment",true);
-DO_SYMBOL(core,_sym_StackValueEnvironment_O,719,CorePkg,"StackValueEnvironment",true);
-DO_SYMBOL(core,_sym_GlueEnvironment_O,720,CorePkg,"GlueEnvironment",true);
-DO_SYMBOL(core,_sym_ActivationFrame_O,721,CorePkg,"ActivationFrame",true);
-DO_SYMBOL(core,_sym_ValueFrame_O,722,CorePkg,"ValueFrame",true);
-DO_SYMBOL(core,_sym_FunctionFrame_O,723,CorePkg,"FunctionFrame",true);
-DO_SYMBOL(core,_sym_TagbodyFrame_O,724,CorePkg,"TagbodyFrame",true);
-DO_SYMBOL(core,_sym_Metaobject_O,725,CorePkg,"metaobject",true);
-DO_SYMBOL(core,_sym_Specializer_O,726,CorePkg,"specializer",true);
-DO_SYMBOL(core,_sym_WeakHashTable_O,727,CorePkg,"WeakHashTable",true);
-DO_SYMBOL(core,_sym_WeakKeyHashTable_O,728,CorePkg,"WeakKeyHashTable",true);
-DO_SYMBOL(core,_sym_SourceFileInfo_O,729,CorePkg,"SourceFileInfo",true);
-DO_SYMBOL(core,_sym_SourcePosInfo_O,730,CorePkg,"SourcePosInfo",true);
-DO_SYMBOL(core,_sym_SourceManager_O,731,CorePkg,"SourceManager",true);
-DO_SYMBOL(core,_sym_CxxObject_O,732,CorePkg,"CxxObject",true);
-DO_SYMBOL(core,_sym_Record_O,733,CorePkg,"Record",true);
-DO_SYMBOL(core,_sym_VectorObjects_O,734,CorePkg,"VectorObjects",true);
-DO_SYMBOL(core,_sym_VectorObjectsWithFillPtr_O,735,CorePkg,"VectorObjectsWithFillPtr",true);
-DO_SYMBOL(core,_sym_SymbolToEnumConverter_O,736,CorePkg,"SymbolToEnumConverter",true);
-DO_SYMBOL(core,_sym_SNode_O,737,CorePkg,"SNode",true);
-DO_SYMBOL(core,_sym_LeafSNode_O,738,CorePkg,"LeafSNode",true);
-DO_SYMBOL(core,_sym_BranchSNode_O,739,CorePkg,"BranchSNode",true);
-DO_SYMBOL(core,_sym_Archive_O,740,CorePkg,"Archive",true);
-DO_SYMBOL(core,_sym_LoadArchive_O,741,CorePkg,"LoadArchive",true);
-DO_SYMBOL(core,_sym_SaveArchive_O,742,CorePkg,"SaveArchive",true);
+DO_SYMBOL(core,_sym_STARwatchDynamicBindingStackSTAR,637,CorePkg,"STARwatchDynamicBindingStackSTAR",true);
+DO_SYMBOL(core,_sym_symbolMacro,638,CorePkg,"symbolMacro",true);
+DO_SYMBOL(core,_sym_whole,639,CorePkg,"whole",true);
+DO_SYMBOL(core,_sym_env,640,CorePkg,"env",true);
+DO_SYMBOL(core,_sym_processDeclarations,641,CorePkg,"processDeclarations",true);
+DO_SYMBOL(core,_sym_evaluateVerbosity,642,CorePkg,"evaluateVerbosity",true);
+DO_SYMBOL(core,_sym_evaluateDepth,643,CorePkg,"evaluateDepth",true);
+DO_SYMBOL(core,_sym_classifyLetVariablesAndDeclares,644,CorePkg,"classifyLetVariablesAndDeclares",true);
+DO_SYMBOL(core,_sym_STAReval_with_env_hookSTAR,645,CorePkg,"STAReval_with_env_hookSTAR",true);
+DO_SYMBOL(core,_sym_eval_with_env_default,646,CorePkg,"eval_with_env_default",true);
+DO_SYMBOL(core,_sym_dlopen,647,CorePkg,"dlopen",true);
+DO_SYMBOL(core,_sym_dlsym,648,CorePkg,"dlsym",true);
+DO_SYMBOL(core,_sym_dladdr,649,CorePkg,"dladdr",true);
+DO_SYMBOL(core,_sym_callWithVariableBound,650,CorePkg,"callWithVariableBound",true);
+DO_SYMBOL(core,_sym_instanceClassSet,651,CorePkg,"instanceClassSet",true);
+DO_SYMBOL(core,_sym_intrusiveReferenceCountedPointer,652,CorePkg,"intrusiveReferenceCountedPointer",true);
+DO_SYMBOL(core,_sym_sharedReferenceCountedPointer,653,CorePkg,"sharedReferenceCountedPointer",true);
+DO_SYMBOL(core,_sym_mpsGarbageCollection,654,CorePkg,"mpsGarbageCollection",true);
+DO_SYMBOL(core,_sym_makeInvocationHistoryFrameIterator,655,CorePkg,"makeInvocationHistoryFrameIterator",true);
+DO_SYMBOL(core,_sym_STARbacktraceFrameSelectorHookSTAR,656,CorePkg,"STARbacktraceFrameSelectorHookSTAR",true);
+DO_SYMBOL(core,_sym_smartPointerDetails,657,CorePkg,"smartPointerDetails",true);
+DO_SYMBOL(core,_sym_STARfset,658,CorePkg,"STARfset",true);
+DO_SYMBOL(core,_sym_unbound,659,CorePkg,"unbound",true);
+DO_SYMBOL(core,_sym_mapappend,660,CorePkg,"mapappend",true);
+DO_SYMBOL(core,_sym_macroexpand_default,661,CorePkg,"macroexpand_default",true);
+DO_SYMBOL(core,_sym_sequence_start_end,662,CorePkg,"sequence_start_end",true);
+DO_SYMBOL(core,_sym_type_to_symbol,663,CorePkg,"type_to_symbol",true);
+DO_SYMBOL(core,_sym_gdb,664,CorePkg,"gdb",true);
+DO_SYMBOL(core,_sym_gdbInspect,665,CorePkg,"gdbInspect",true);
+DO_SYMBOL(core,_sym_separatePairList,666,CorePkg,"separatePairList",true);
+DO_SYMBOL(core,_sym_testMemoryError,667,CorePkg,"testMemoryError",true);
+DO_SYMBOL(core,_sym_functionBlockName,668,CorePkg,"functionBlockName",true);
+DO_SYMBOL(core,_sym_validFunctionNameP,669,CorePkg,"validFunctionNameP",true);
+DO_SYMBOL(core,_sym_pointer,670,CorePkg,"pointer",true);
+DO_SYMBOL(core,_sym_toTaggedFixnum,671,CorePkg,"toTaggedFixnum",true);
+DO_SYMBOL(core,_sym_fromTaggedFixnum,672,CorePkg,"fromTaggedFixnum",true);
+DO_SYMBOL(core,_sym_dumpTaggedFixnum,673,CorePkg,"dumpTaggedFixnum",true);
+DO_SYMBOL(core,_sym_ihsBacktrace,674,CorePkg,"ihsBacktrace",true);
+DO_SYMBOL(core,_sym_ihsTop,675,CorePkg,"ihsTop",true);
+DO_SYMBOL(core,_sym_ihsPrev,676,CorePkg,"ihsPrev",true);
+DO_SYMBOL(core,_sym_ihsNext,677,CorePkg,"ihsNext",true);
+DO_SYMBOL(core,_sym_ihsFun,678,CorePkg,"ihsFun",true);
+DO_SYMBOL(core,_sym_ihsEnv,679,CorePkg,"ihsEnv",true);
+DO_SYMBOL(core,_sym_bdsTop,680,CorePkg,"bdsTop",true);
+DO_SYMBOL(core,_sym_bdsVar,681,CorePkg,"bdsVar",true);
+DO_SYMBOL(core,_sym_bdsVal,682,CorePkg,"bdsVal",true);
+DO_SYMBOL(core,_sym_theClibBacktraceFunctionSymbol,683,CorePkg,"theClibBacktraceFunctionSymbol",true);
+DO_SYMBOL(core,_sym_printCurrentIhsFrameEnvironment,684,CorePkg,"printCurrentIhsFrameEnvironment",true);
+DO_SYMBOL(core,_sym_rehash_size,685,CorePkg,"rehash_size",true);
+DO_SYMBOL(core,_sym_rehash_threshold,686,CorePkg,"rehash_threshold",true);
+DO_SYMBOL(core,_sym_data,687,CorePkg,"data",true);
+DO_SYMBOL(core,_sym_hash_eql,688,CorePkg,"hash_eql",true);
+DO_SYMBOL(core,_sym_hash_equal,689,CorePkg,"hash_equal",true);
+DO_SYMBOL(core,_sym_hash_equalp,690,CorePkg,"hash_equalp",true);
+DO_SYMBOL(core,_sym_fixnum_number_of_bits,691,CorePkg,"fixnum_number_of_bits",true);
+DO_SYMBOL(core,_sym_nan,692,CorePkg,"nan",true);
+DO_SYMBOL(core,_sym_log1p,693,CorePkg,"log1p",true);
+DO_SYMBOL(core,_sym_integer_divide,694,CorePkg,"integer_divide",true);
+DO_SYMBOL(core,_sym_integerToString,695,CorePkg,"integerToString",true);
+DO_SYMBOL(core,_sym_printUnreadableObjectFunction,696,CorePkg,"printUnreadableObjectFunction",true);
+DO_SYMBOL(core,_sym_walkToFindSourceInfo,697,CorePkg,"walkToFindSourceInfo",true);
+DO_SYMBOL(core,_sym_lookupSourceFileInfo,698,CorePkg,"lookupSourceFileInfo",true);
+DO_SYMBOL(core,_sym_STARmonitorRegisterSourceInfoSTAR,699,CorePkg,"STARmonitorRegisterSourceInfoSTAR",true);
+DO_SYMBOL(core,_sym_currentDir,700,CorePkg,"currentDir",true);
+DO_SYMBOL(core,_sym_file_kind,701,CorePkg,"file_kind",true);
+DO_SYMBOL(core,_sym_environmentActivationFrame,702,CorePkg,"environmentActivationFrame",true);
+DO_SYMBOL(core,_sym_currentVisibleEnvironment,703,CorePkg,"currentVisibleEnvironment",true);
+DO_SYMBOL(core,_sym_runtimeEnvironment,704,CorePkg,"runtimeEnvironment",true);
+DO_SYMBOL(core,_sym_environmentList,705,CorePkg,"environmentList",true);
+DO_SYMBOL(core,_sym_environmentTypeList,706,CorePkg,"environmentTypeList",true);
+DO_SYMBOL(core,_sym_environmentId,707,CorePkg,"environmentId",true);
+DO_SYMBOL(core,_sym_singleDispatchWrongNumberArgumentsError,708,CorePkg,"singleDispatchWrongNumberArgumentsError",true);
+DO_SYMBOL(core,_sym_singleDispatchTooManyArgumentsError,709,CorePkg,"singleDispatchTooManyArgumentsError",true);
+DO_SYMBOL(core,_sym_singleDispatchBadLambdaListError,710,CorePkg,"singleDispatchBadLambdaListError",true);
+DO_SYMBOL(core,_sym_singleDispatchMissingDispatchArgumentError,711,CorePkg,"singleDispatchMissingDispatchArgumentError",true);
+DO_SYMBOL(core,_sym_tooFewArguments,712,CorePkg,"tooFewArguments",true);
+DO_SYMBOL(core,_sym_process_macro_lambda_list,713,CorePkg,"process_macro_lambda_list",true);
+DO_SYMBOL(core,_sym_process_single_dispatch_lambda_list,714,CorePkg,"process_single_dispatch_lambda_list",true);
+DO_SYMBOL(core,_sym_makeLambdaListHandler,715,CorePkg,"makeLambdaListHandler",true);
+DO_SYMBOL(core,_sym_processLambdaList,716,CorePkg,"processLambdaList",true);
+DO_SYMBOL(core,_sym_dispatchTable,717,CorePkg,"dispatchTable",true);
+DO_SYMBOL(core,_sym_fileColumn,718,CorePkg,"fileColumn",true);
+DO_SYMBOL(core,_sym_makeStringOutputStreamFromString,719,CorePkg,"makeStringOutputStreamFromString",true);
+DO_SYMBOL(core,_sym_do_write_sequence,720,CorePkg,"do_write_sequence",true);
+DO_SYMBOL(core,_sym_streamLinenumber,721,CorePkg,"streamLinenumber",true);
+DO_SYMBOL(core,_sym_streamColumn,722,CorePkg,"streamColumn",true);
+DO_SYMBOL(core,_sym_single_dispatch_method,723,CorePkg,"single_dispatch_method",true);
+DO_SYMBOL(core,_sym_setf_documentation,724,CorePkg,"setf_documentation",true);
+DO_SYMBOL(core,_sym_STARcxxDocumentationSTAR,725,CorePkg,"STARcxxDocumentationSTAR",true);
+DO_SYMBOL(core,_sym_topLevel,726,CorePkg,"topLevel",true);
+DO_SYMBOL(core,_sym_scharSet,727,CorePkg,"scharSet",true);
+DO_SYMBOL(core,_sym_STARuseInterpreterForEvalSTAR,728,CorePkg,"STARuseInterpreterForEvalSTAR",true);
+DO_SYMBOL(core,_sym_STARnotify_on_compileSTAR,729,CorePkg,"STARnotify_on_compileSTAR",true);
+DO_SYMBOL(core,_sym_STARtrace_startupSTAR,730,CorePkg,"STARtrace_startupSTAR",true);
+DO_SYMBOL(core,_sym_STARdebugInterpretedClosureSTAR,731,CorePkg,"STARdebugInterpretedClosureSTAR",true);
+DO_SYMBOL(core,_sym_STARdebugFlowControlSTAR,732,CorePkg,"STARdebugFlowControlSTAR",true);
+DO_SYMBOL(core,_sym_STARdebugStartupSTAR,733,CorePkg,"STARdebugStartupSTAR",true);
+DO_SYMBOL(core,_sym__BANG_unbound_BANG_,734,CorePkg,"_BANG_unbound_BANG_",true);
+DO_SYMBOL(core,_sym_bitArrayOp,735,CorePkg,"bitArrayOp",true);
+DO_SYMBOL(core,_sym_lambdaName,736,CorePkg,"lambdaName",true);
+DO_SYMBOL(core,_sym_printf,737,CorePkg,"printf",true);
+DO_SYMBOL(core,_sym_asin,738,CorePkg,"asin",true);
+DO_SYMBOL(core,_sym_asinh,739,CorePkg,"asinh",true);
+DO_SYMBOL(core,_sym_acos,740,CorePkg,"acos",true);
+DO_SYMBOL(core,_sym_acosh,741,CorePkg,"acosh",true);
+DO_SYMBOL(core,_sym_atanh,742,CorePkg,"atanh",true);
+DO_SYMBOL(core,_sym_STARpollTicksPerGcSTAR,743,CorePkg,"STARpollTicksPerGcSTAR",true);
+DO_SYMBOL(core,_sym__PLUS_standardReadtable_PLUS_,744,CorePkg,"_PLUS_standardReadtable_PLUS_",true);
+DO_SYMBOL(core,_sym_closedStream,745,CorePkg,"closedStream",true);
+DO_SYMBOL(core,_sym__PLUS_numberOfFixedArguments_PLUS_,746,CorePkg,"_PLUS_numberOfFixedArguments_PLUS_",true);
+DO_SYMBOL(core,_sym_STARinterpreterTraceSTAR,747,CorePkg,"STARinterpreterTraceSTAR",true);
+DO_SYMBOL(core,_sym_STARdebugLoadTimeValuesSTAR,748,CorePkg,"STARdebugLoadTimeValuesSTAR",true);
+DO_SYMBOL(core,_sym_STARdebugEvalSTAR,749,CorePkg,"STARdebugEvalSTAR",true);
+DO_SYMBOL(core,_sym_STARdebugInterpretedFunctionsSTAR,750,CorePkg,"STARdebugInterpretedFunctionsSTAR",true);
+DO_SYMBOL(core,_sym_STARdebugMonitorSTAR,751,CorePkg,"STARdebugMonitorSTAR",true);
+DO_SYMBOL(core,_sym_monitorReader,752,CorePkg,"monitorReader",true);
+DO_SYMBOL(core,_sym_tsp,753,CorePkg,"tsp",true);
+DO_SYMBOL(core,_sym_tmv,754,CorePkg,"tmv",true);
+DO_SYMBOL(core,_sym_invocationHistoryFrame,755,CorePkg,"invocationHistoryFrame",true);
+DO_SYMBOL(core,_sym_size_t,756,CorePkg,"size_t",true);
+DO_SYMBOL(core,_sym_threadInfo,757,CorePkg,"threadInfo",true);
+DO_SYMBOL(core,_sym_circle_subst,758,CorePkg,"circle_subst",true);
+DO_SYMBOL(core,_sym_STARsourceDatabaseSTAR,759,CorePkg,"STARsourceDatabaseSTAR",true);
+DO_SYMBOL(core,_sym_STARstartRunTimeSTAR,760,CorePkg,"STARstartRunTimeSTAR",true);
+DO_SYMBOL(core,_sym_STARcommandLineLoadSTAR,761,CorePkg,"STARcommandLineLoadSTAR",true);
+DO_SYMBOL(core,_sym_STARihsCurrentSTAR,762,CorePkg,"STARihsCurrentSTAR",true);
+DO_SYMBOL(core,_sym_STARllvmFunctionNameHookSTAR,763,CorePkg,"STARllvmFunctionNameHookSTAR",true);
+DO_SYMBOL(core,_sym_STARtopLevelCommandHookSTAR,764,CorePkg,"STARtopLevelCommandHookSTAR",true);
+DO_SYMBOL(core,_sym_STARloadSearchListSTAR,765,CorePkg,"STARloadSearchListSTAR",true);
+DO_SYMBOL(core,_sym_loadBitcode,766,CorePkg,"loadBitcode",true);
+DO_SYMBOL(core,_sym_loadSource,767,CorePkg,"loadSource",true);
+DO_SYMBOL(core,_sym_loadBundle,768,CorePkg,"loadBundle",true);
+DO_SYMBOL(core,_sym_STARallCxxClassesSTAR,769,CorePkg,"STARallCxxClassesSTAR",true);
+DO_SYMBOL(core,_sym_simpleProgramError,770,CorePkg,"simpleProgramError",true);
+DO_SYMBOL(core,_sym_STARdebugReaderSTAR,771,CorePkg,"STARdebugReaderSTAR",true);
+DO_SYMBOL(core,_sym_STARenablePrintPrettySTAR,772,CorePkg,"STARenablePrintPrettySTAR",true);
+DO_SYMBOL(core,_sym_STARcircle_counterSTAR,773,CorePkg,"STARcircle_counterSTAR",true);
+DO_SYMBOL(core,_sym_STARcircle_stackSTAR,774,CorePkg,"STARcircle_stackSTAR",true);
+DO_SYMBOL(core,_sym_dynamicGo,775,CorePkg,"dynamicGo",true);
+DO_SYMBOL(core,_sym_localGo,776,CorePkg,"localGo",true);
+DO_SYMBOL(core,_sym__PLUS_ecl_syntax_progv_list_PLUS_,777,CorePkg,"_PLUS_ecl_syntax_progv_list_PLUS_",true);
+DO_SYMBOL(core,_sym__PLUS_io_syntax_progv_list_PLUS_,778,CorePkg,"_PLUS_io_syntax_progv_list_PLUS_",true);
+DO_SYMBOL(core,_sym_STARprintPackageSTAR,779,CorePkg,"STARprintPackageSTAR",true);
+DO_SYMBOL(core,_sym_STARsharpEqContextSTAR,780,CorePkg,"STARsharpEqContextSTAR",true);
+DO_SYMBOL(core,_sym_STARcircleCounterSTAR,781,CorePkg,"STARcircleCounterSTAR",true);
+DO_SYMBOL(core,_sym_STARnestedErrorDepthSTAR,782,CorePkg,"STARnestedErrorDepthSTAR",true);
+DO_SYMBOL(core,_sym_setThrowPosition,783,CorePkg,"setThrowPosition",true);
+DO_SYMBOL(core,_sym_tooFewArgumentsError,784,CorePkg,"tooFewArgumentsError",true);
+DO_SYMBOL(core,_sym_tooManyArgumentsError,785,CorePkg,"tooManyArgumentsError",true);
+DO_SYMBOL(core,_sym_unrecognizedKeywordArgumentError,786,CorePkg,"unrecognizedKeywordArgumentError",true);
+DO_SYMBOL(core,_sym_invalidKeywordArgumentError,787,CorePkg,"invalidKeywordArgumentError",true);
+DO_SYMBOL(core,_sym__PLUS_llvmTargetTriple_PLUS_,788,CorePkg,"_PLUS_llvmTargetTriple_PLUS_",true);
+DO_SYMBOL(core,_sym__PLUS_executableName_PLUS_,789,CorePkg,"_PLUS_executableName_PLUS_",true);
+DO_SYMBOL(core,_sym_STARcodeWalkerSTAR,790,CorePkg,"STARcodeWalkerSTAR",true);
+DO_SYMBOL(core,_sym_STARcurrentSourceFileInfoSTAR,791,CorePkg,"STARcurrentSourceFileInfoSTAR",true);
+DO_SYMBOL(core,_sym_STARcurrentSourcePosInfoSTAR,792,CorePkg,"STARcurrentSourcePosInfoSTAR",true);
+DO_SYMBOL(core,_sym_STARdebugMacroexpandSTAR,793,CorePkg,"STARdebugMacroexpandSTAR",true);
+DO_SYMBOL(core,_sym_STARenvironmentPrintingTabSTAR,794,CorePkg,"STARenvironmentPrintingTabSTAR",true);
+DO_SYMBOL(core,_sym_STARenvironmentPrintingTabIncrementSTAR,795,CorePkg,"STARenvironmentPrintingTabIncrementSTAR",true);
+DO_SYMBOL(core,_sym__PLUS_activationFrameNil_PLUS_,796,CorePkg,"_PLUS_activationFrameNil_PLUS_",true);
+DO_SYMBOL(core,_sym_parse_macro,797,CorePkg,"parse_macro",true);
+DO_SYMBOL(core,_sym_globalFunction,798,CorePkg,"globalFunction",true);
+DO_SYMBOL(core,_sym_globalSetfFunction,799,CorePkg,"globalSetfFunction",true);
+DO_SYMBOL(core,_sym_lexicalFunction,800,CorePkg,"lexicalFunction",true);
+DO_SYMBOL(core,_sym_declaredSpecial,801,CorePkg,"declaredSpecial",true);
+DO_SYMBOL(core,_sym_lexical,802,CorePkg,"lexical",true);
+DO_SYMBOL(core,_sym_STARsystem_defsetf_update_functionsSTAR,803,CorePkg,"STARsystem_defsetf_update_functionsSTAR",true);
+DO_SYMBOL(core,_sym_STARbackquote_expand_hookSTAR,804,CorePkg,"STARbackquote_expand_hookSTAR",true);
+DO_SYMBOL(core,_sym_single_dispatch_on,805,CorePkg,"single_dispatch_on",true);
+DO_SYMBOL(core,_sym_STARdocumentation_poolSTAR,806,CorePkg,"STARdocumentation_poolSTAR",true);
+DO_SYMBOL(core,_sym_STARexecutable_nameSTAR,807,CorePkg,"STARexecutable_nameSTAR",true);
+DO_SYMBOL(core,_sym_generic,808,CorePkg,"generic",true);
+DO_SYMBOL(core,_sym_DOT,809,CorePkg,"DOT",true);
+DO_SYMBOL(core,_sym_AMPva_rest,810,CorePkg,"AMPva_rest",true);
+DO_SYMBOL(core,_sym_anonymous,811,CorePkg,"anonymous",true);
+DO_SYMBOL(core,_sym_macro,812,CorePkg,"macro",true);
+DO_SYMBOL(core,_sym_STARdocumentation_databaseSTAR,813,CorePkg,"STARdocumentation_databaseSTAR",true);
+DO_SYMBOL(core,_sym___init__,814,CorePkg,"__init__",true);
+DO_SYMBOL(core,_sym_input_stream_designator,815,CorePkg,"input_stream_designator",true);
+DO_SYMBOL(core,_sym_STARprint_source_code_consSTAR,816,CorePkg,"STARprint_source_code_consSTAR",true);
+DO_SYMBOL(core,_sym_STARechoReplReadSTAR,817,CorePkg,"STARechoReplReadSTAR",true);
+DO_SYMBOL(core,_sym_eof_error_p,818,CorePkg,"eof_error_p",true);
+DO_SYMBOL(core,_sym_eof_value,819,CorePkg,"eof_value",true);
+DO_SYMBOL(core,_sym_start,820,CorePkg,"start",true);
+DO_SYMBOL(core,_sym_end,821,CorePkg,"end",true);
+DO_SYMBOL(core,_sym_preserve_whitespace,822,CorePkg,"preserve_whitespace",true);
+DO_SYMBOL(core,_sym_io,823,CorePkg,"io",true);
+DO_SYMBOL(core,_sym_probe,824,CorePkg,"probe",true);
+DO_SYMBOL(core,_sym_newVersion,825,CorePkg,"newVersion",true);
+DO_SYMBOL(core,_sym_renameAndDelete,826,CorePkg,"renameAndDelete",true);
+DO_SYMBOL(core,_sym_overwrite,827,CorePkg,"overwrite",true);
+DO_SYMBOL(core,_sym_supersede,828,CorePkg,"supersede",true);
+DO_SYMBOL(core,_sym_create,829,CorePkg,"create",true);
+DO_SYMBOL(core,_sym_input_stream,830,CorePkg,"input_stream",true);
+DO_SYMBOL(core,_sym_recursive_p,831,CorePkg,"recursive_p",true);
+DO_SYMBOL(core,_sym_dimensions,832,CorePkg,"dimensions",true);
+DO_SYMBOL(core,_sym_element_type,833,CorePkg,"element_type",true);
+DO_SYMBOL(core,_sym_initial_element,834,CorePkg,"initial_element",true);
+DO_SYMBOL(core,_sym_adjustable,835,CorePkg,"adjustable",true);
+DO_SYMBOL(core,_sym_object,836,CorePkg,"object",true);
+DO_SYMBOL(core,_sym_okey,837,CorePkg,"okey",true);
+DO_SYMBOL(core,_sym_default,838,CorePkg,"default",true);
+DO_SYMBOL(core,_sym_dot,839,CorePkg,"dot",true);
+DO_SYMBOL(core,_sym_ifDoesNotExist,840,CorePkg,"ifDoesNotExist",true);
+DO_SYMBOL(core,_sym_symbolMacroletLambda,841,CorePkg,"symbolMacroletLambda",true);
+DO_SYMBOL(core,_sym_lambda_with_handler,842,CorePkg,"lambda_with_handler",true);
+DO_SYMBOL(core,_sym_color,843,CorePkg,"color",true);
+DO_SYMBOL(core,_sym_foreach,844,CorePkg,"foreach",true);
+DO_SYMBOL(core,_sym_STARPATHSTAR,845,CorePkg,"STARPATHSTAR",true);
+DO_SYMBOL(core,_sym_STARargsSTAR,846,CorePkg,"STARargsSTAR",true);
+DO_SYMBOL(core,_sym_STARcurrent_working_directorySTAR,847,CorePkg,"STARcurrent_working_directorySTAR",true);
+DO_SYMBOL(core,_sym_backquote,848,CorePkg,"backquote",true);
+DO_SYMBOL(core,_sym_double_backquote,849,CorePkg,"double_backquote",true);
+DO_SYMBOL(core,_sym_unquote,850,CorePkg,"unquote",true);
+DO_SYMBOL(core,_sym_unquote_splice,851,CorePkg,"unquote_splice",true);
+DO_SYMBOL(core,_sym_unquote_nsplice,852,CorePkg,"unquote_nsplice",true);
+DO_SYMBOL(core,_sym_slot,853,CorePkg,"slot",true);
+DO_SYMBOL(core,_sym_item,854,CorePkg,"item",true);
+DO_SYMBOL(core,_sym_alist,855,CorePkg,"alist",true);
+DO_SYMBOL(core,_sym_key,856,CorePkg,"key",true);
+DO_SYMBOL(core,_sym_test_not,857,CorePkg,"test_not",true);
+DO_SYMBOL(core,_sym_forward_referenced_class,858,CorePkg,"forward_referenced_class",true);
+DO_SYMBOL(core,_sym_instance,859,CorePkg,"instance",true);
+DO_SYMBOL(core,_sym_all_keys,860,CorePkg,"all_keys",true);
+DO_SYMBOL(core,_sym_cl_fixnum_bits,861,CorePkg,"cl_fixnum_bits",true);
+DO_SYMBOL(core,_sym_cArgumentsLimit,862,CorePkg,"cArgumentsLimit",true);
+DO_SYMBOL(core,_sym_STARcommandLineArgumentsSTAR,863,CorePkg,"STARcommandLineArgumentsSTAR",true);
+DO_SYMBOL(core,_sym_STARprintVersionOnStartupSTAR,864,CorePkg,"STARprintVersionOnStartupSTAR",true);
+DO_SYMBOL(core,_sym_STARsilentStartupSTAR,865,CorePkg,"STARsilentStartupSTAR",true);
+DO_SYMBOL(core,_sym_STARcommandLineLoadEvalSequenceSTAR,866,CorePkg,"STARcommandLineLoadEvalSequenceSTAR",true);
+DO_SYMBOL(core,_sym_STARcommandLineImageSTAR,867,CorePkg,"STARcommandLineImageSTAR",true);
+DO_SYMBOL(core,_sym_STARclassNameHashTableSTAR,868,CorePkg,"STARclassNameHashTableSTAR",true);
+DO_SYMBOL(core,_sym_selectPackage,869,CorePkg,"selectPackage",true);
+DO_SYMBOL(core,_sym_find_single_dispatch_generic_function,870,CorePkg,"find_single_dispatch_generic_function",true);
+DO_SYMBOL(core,_sym_setf_find_single_dispatch_generic_function,871,CorePkg,"setf_find_single_dispatch_generic_function",true);
+DO_SYMBOL(core,_sym_forget_all_single_dispatch_generic_functions,872,CorePkg,"forget_all_single_dispatch_generic_functions",true);
+DO_SYMBOL(core,_sym_stackMonitor,873,CorePkg,"stackMonitor",true);
+DO_SYMBOL(core,_sym_setupStackMonitor,874,CorePkg,"setupStackMonitor",true);
+DO_SYMBOL(core,_sym_invokeInternalDebugger,875,CorePkg,"invokeInternalDebugger",true);
+DO_SYMBOL(core,_sym_invokeInternalDebuggerFromGdb,876,CorePkg,"invokeInternalDebuggerFromGdb",true);
+DO_SYMBOL(core,_sym_universalErrorHandler,877,CorePkg,"universalErrorHandler",true);
+DO_SYMBOL(core,_sym_stackUsed,878,CorePkg,"stackUsed",true);
+DO_SYMBOL(core,_sym_exit,879,CorePkg,"exit",true);
+DO_SYMBOL(core,_sym_quit,880,CorePkg,"quit",true);
+DO_SYMBOL(core,_sym_getline,881,CorePkg,"getline",true);
+DO_SYMBOL(core,_sym_isTopLevelScript,882,CorePkg,"isTopLevelScript",true);
+DO_SYMBOL(core,_sym_sourceFileName,883,CorePkg,"sourceFileName",true);
+DO_SYMBOL(core,_sym_sourceLineColumn,884,CorePkg,"sourceLineColumn",true);
+DO_SYMBOL(core,_sym_findFileInLispPath,885,CorePkg,"findFileInLispPath",true);
+DO_SYMBOL(core,_sym_setf_findClass,886,CorePkg,"setf_findClass",true);
+DO_SYMBOL(core,_sym_isAssignableTo,887,CorePkg,"isAssignableTo",true);
+DO_SYMBOL(core,_sym_isSubClassOf,888,CorePkg,"isSubClassOf",true);
+DO_SYMBOL(core,_sym_repr,889,CorePkg,"repr",true);
+DO_SYMBOL(core,_sym_debugLogOn,890,CorePkg,"debugLogOn",true);
+DO_SYMBOL(core,_sym_debugLogOff,891,CorePkg,"debugLogOff",true);
+DO_SYMBOL(core,_sym_mpi_enabled,892,CorePkg,"mpi_enabled",true);
+DO_SYMBOL(core,_sym_mpi_rank,893,CorePkg,"mpi_rank",true);
+DO_SYMBOL(core,_sym_mpi_size,894,CorePkg,"mpi_size",true);
+DO_SYMBOL(core,_sym_sorted,895,CorePkg,"sorted",true);
+DO_SYMBOL(core,_sym_database_dir,896,CorePkg,"database_dir",true);
+DO_SYMBOL(core,_sym_script_dir,897,CorePkg,"script_dir",true);
+DO_SYMBOL(core,_sym_libraryPath,898,CorePkg,"libraryPath",true);
+DO_SYMBOL(core,_sym_lispCodePath,899,CorePkg,"lispCodePath",true);
+DO_SYMBOL(core,_sym_setCurrentWorkingDirectory,900,CorePkg,"setCurrentWorkingDirectory",true);
+DO_SYMBOL(core,_sym_member1,901,CorePkg,"member1",true);
+DO_SYMBOL(core,_sym_exportToPython,902,CorePkg,"exportToPython",true);
+DO_SYMBOL(core,_sym_slBoundp,903,CorePkg,"slBoundp",true);
+DO_SYMBOL(core,_sym_isNil,904,CorePkg,"isNil",true);
+DO_SYMBOL(core,_sym_instanceRef,905,CorePkg,"instanceRef",true);
+DO_SYMBOL(core,_sym_instanceSet,906,CorePkg,"instanceSet",true);
+DO_SYMBOL(core,_sym_instancep,907,CorePkg,"instancep",true);
+DO_SYMBOL(core,_sym_instanceSigSet,908,CorePkg,"instanceSigSet",true);
+DO_SYMBOL(core,_sym_instanceSig,909,CorePkg,"instanceSig",true);
+DO_SYMBOL(core,_sym_instanceClass,910,CorePkg,"instanceClass",true);
+DO_SYMBOL(core,_sym_implementationClass,911,CorePkg,"implementationClass",true);
+DO_SYMBOL(core,_sym_classNameAsString,912,CorePkg,"classNameAsString",true);
+DO_SYMBOL(core,_sym_clock_gettime_nanoseconds,913,CorePkg,"clock_gettime_nanoseconds",true);
+DO_SYMBOL(core,_sym_testProfileTimer,914,CorePkg,"testProfileTimer",true);
+DO_SYMBOL(core,_sym_structure_print_function,915,CorePkg,"structure_print_function",true);
+DO_SYMBOL(core,_sym_STARprint_structureSTAR,916,CorePkg,"STARprint_structureSTAR",true);
+DO_SYMBOL(core,_sym_makeRegex,917,CorePkg,"makeRegex",true);
+DO_SYMBOL(core,_sym_serialize,918,CorePkg,"serialize",true);
+DO_SYMBOL(core,_sym_STARserializerArchiveSTAR,919,CorePkg,"STARserializerArchiveSTAR",true);
+DO_SYMBOL(core,_sym_STARsharp_equal_alistSTAR,920,CorePkg,"STARsharp_equal_alistSTAR",true);
+DO_SYMBOL(core,_sym_STARsharp_sharp_alistSTAR,921,CorePkg,"STARsharp_sharp_alistSTAR",true);
+DO_SYMBOL(core,_sym_STARconsing_dot_allowedSTAR,922,CorePkg,"STARconsing_dot_allowedSTAR",true);
+DO_SYMBOL(core,_sym_STARconsing_dotSTAR,923,CorePkg,"STARconsing_dotSTAR",true);
+DO_SYMBOL(core,_sym_STARpreserve_whitespace_pSTAR,924,CorePkg,"STARpreserve_whitespace_pSTAR",true);
+DO_SYMBOL(core,_sym_STARinput_streamSTAR,925,CorePkg,"STARinput_streamSTAR",true);
+DO_SYMBOL(core,_sym_STARbackquote_levelSTAR,926,CorePkg,"STARbackquote_levelSTAR",true);
+DO_SYMBOL(core,_sym_STARstandard_readtableSTAR,927,CorePkg,"STARstandard_readtableSTAR",true);
+DO_SYMBOL(core,_sym_read_list_allow_consing_dot,928,CorePkg,"read_list_allow_consing_dot",true);
+DO_SYMBOL(core,_sym_reader_read_double_quote_string,929,CorePkg,"reader_read_double_quote_string",true);
+DO_SYMBOL(core,_sym_reader_backquoted_expression,930,CorePkg,"reader_backquoted_expression",true);
+DO_SYMBOL(core,_sym_sharp_backslash,931,CorePkg,"sharp_backslash",true);
+DO_SYMBOL(core,_sym_sharp_single_quote,932,CorePkg,"sharp_single_quote",true);
+DO_SYMBOL(core,_sym_sharp_left_parenthesis,933,CorePkg,"sharp_left_parenthesis",true);
+DO_SYMBOL(core,_sym_sharp_asterisk,934,CorePkg,"sharp_asterisk",true);
+DO_SYMBOL(core,_sym_sharp_colon,935,CorePkg,"sharp_colon",true);
+DO_SYMBOL(core,_sym_sharp_dot,936,CorePkg,"sharp_dot",true);
+DO_SYMBOL(core,_sym_sharp_b,937,CorePkg,"sharp_b",true);
+DO_SYMBOL(core,_sym_sharp_o,938,CorePkg,"sharp_o",true);
+DO_SYMBOL(core,_sym_sharp_x,939,CorePkg,"sharp_x",true);
+DO_SYMBOL(core,_sym_sharp_r,940,CorePkg,"sharp_r",true);
+DO_SYMBOL(core,_sym_sharp_c,941,CorePkg,"sharp_c",true);
+DO_SYMBOL(core,_sym_sharp_a,942,CorePkg,"sharp_a",true);
+DO_SYMBOL(core,_sym_sharp_s,943,CorePkg,"sharp_s",true);
+DO_SYMBOL(core,_sym_sharp_p,944,CorePkg,"sharp_p",true);
+DO_SYMBOL(core,_sym_sharp_plus,945,CorePkg,"sharp_plus",true);
+DO_SYMBOL(core,_sym_sharp_minus,946,CorePkg,"sharp_minus",true);
+DO_SYMBOL(core,_sym_sharp_vertical_bar,947,CorePkg,"sharp_vertical_bar",true);
+DO_SYMBOL(core,_sym_dispatch_macro_character,948,CorePkg,"dispatch_macro_character",true);
+DO_SYMBOL(core,_sym_reader_double_quote_string,949,CorePkg,"reader_double_quote_string",true);
+DO_SYMBOL(core,_sym_reader_comma_form,950,CorePkg,"reader_comma_form",true);
+DO_SYMBOL(core,_sym_reader_list_allow_consing_dot,951,CorePkg,"reader_list_allow_consing_dot",true);
+DO_SYMBOL(core,_sym_reader_error_unmatched_close_parenthesis,952,CorePkg,"reader_error_unmatched_close_parenthesis",true);
+DO_SYMBOL(core,_sym_reader_quote,953,CorePkg,"reader_quote",true);
+DO_SYMBOL(core,_sym_reader_skip_semicolon_comment,954,CorePkg,"reader_skip_semicolon_comment",true);
+DO_SYMBOL(core,_sym_reader_feature_p,955,CorePkg,"reader_feature_p",true);
+DO_SYMBOL(core,_sym_float_to_digits,956,CorePkg,"float_to_digits",true);
+DO_SYMBOL(core,_sym_defaultPathnameDefaults,957,CorePkg,"defaultPathnameDefaults",true);
+DO_SYMBOL(core,_sym_coerceToFilename,958,CorePkg,"coerceToFilename",true);
+DO_SYMBOL(core,_sym_coerceToFilePathname,959,CorePkg,"coerceToFilePathname",true);
+DO_SYMBOL(core,_sym_pathnameTranslations,960,CorePkg,"pathnameTranslations",true);
+DO_SYMBOL(core,_sym_coerceToPhysicalPathname,961,CorePkg,"coerceToPhysicalPathname",true);
+DO_SYMBOL(core,_sym_argument_number_error,962,CorePkg,"argument_number_error",true);
+DO_SYMBOL(core,_sym_signalSimpleError,963,CorePkg,"signalSimpleError",true);
+DO_SYMBOL(core,_sym_wrongTypeNthArg,964,CorePkg,"wrongTypeNthArg",true);
+DO_SYMBOL(core,_sym_wrongIndex,965,CorePkg,"wrongIndex",true);
+DO_SYMBOL(core,_sym_subclassp,966,CorePkg,"subclassp",true);
+DO_SYMBOL(core,_sym_allocateRawClass,967,CorePkg,"allocateRawClass",true);
+DO_SYMBOL(core,_sym_inheritDefaultAllocator,968,CorePkg,"inheritDefaultAllocator",true);
+DO_SYMBOL(core,_sym_isString,969,CorePkg,"isString",true);
+DO_SYMBOL(core,_sym_isArray,970,CorePkg,"isArray",true);
+DO_SYMBOL(core,_sym_testVal,971,CorePkg,"testVal",true);
+DO_SYMBOL(core,_sym__SHARP__BANG_,972,CorePkg,"_SHARP__BANG_",true);
+DO_SYMBOL(core,_sym_base_string_concatenate,973,CorePkg,"base_string_concatenate",true);
+DO_SYMBOL(core,_sym_calculateMissingCommonLispSymbols,974,CorePkg,"calculateMissingCommonLispSymbols",true);
+DO_SYMBOL(core,_sym_copy_subarray,975,CorePkg,"copy_subarray",true);
+DO_SYMBOL(core,_sym_aset,976,CorePkg,"aset",true);
+DO_SYMBOL(core,_sym_rem_f,977,CorePkg,"rem_f",true);
+DO_SYMBOL(core,_sym_put_f,978,CorePkg,"put_f",true);
+DO_SYMBOL(core,_sym_conditionMessage,979,CorePkg,"conditionMessage",true);
+DO_SYMBOL(core,_sym_put_sysprop,980,CorePkg,"put_sysprop",true);
+DO_SYMBOL(core,_sym_get_sysprop,981,CorePkg,"get_sysprop",true);
+DO_SYMBOL(core,_sym_rem_sysprop,982,CorePkg,"rem_sysprop",true);
+DO_SYMBOL(core,_sym_bformat,983,CorePkg,"bformat",true);
+DO_SYMBOL(core,_sym_STARbq_listSTAR,984,CorePkg,"STARbq_listSTAR",true);
+DO_SYMBOL(core,_sym_STARbq_appendSTAR,985,CorePkg,"STARbq_appendSTAR",true);
+DO_SYMBOL(core,_sym_STARbq_listSTARSTAR,986,CorePkg,"STARbq_listSTARSTAR",true);
+DO_SYMBOL(core,_sym_STARbq_nconcSTAR,987,CorePkg,"STARbq_nconcSTAR",true);
+DO_SYMBOL(core,_sym_STARbq_clobberableSTAR,988,CorePkg,"STARbq_clobberableSTAR",true);
+DO_SYMBOL(core,_sym_STARbq_quoteSTAR,989,CorePkg,"STARbq_quoteSTAR",true);
+DO_SYMBOL(core,_sym_STARbq_quote_nilSTAR,990,CorePkg,"STARbq_quote_nilSTAR",true);
+DO_SYMBOL(core,_sym_bq_simplify,991,CorePkg,"bq_simplify",true);
+DO_SYMBOL(core,_sym_bq_remove_tokens,992,CorePkg,"bq_remove_tokens",true);
+DO_SYMBOL(core,_sym_backquote_maptree,993,CorePkg,"backquote_maptree",true);
+DO_SYMBOL(core,_sym_backquote_simplify,994,CorePkg,"backquote_simplify",true);
+DO_SYMBOL(core,_sym_backquote_completely_process,995,CorePkg,"backquote_completely_process",true);
+DO_SYMBOL(core,_sym_backquote_process,996,CorePkg,"backquote_process",true);
+DO_SYMBOL(core,_sym_backquote_bracket,997,CorePkg,"backquote_bracket",true);
+DO_SYMBOL(core,_sym_backquote_null_or_quoted,998,CorePkg,"backquote_null_or_quoted",true);
+DO_SYMBOL(core,_sym_backquote_attach_append,999,CorePkg,"backquote_attach_append",true);
+DO_SYMBOL(core,_sym_backquote_attach_conses,1000,CorePkg,"backquote_attach_conses",true);
+DO_SYMBOL(core,_sym_backquote_remove_tokens,1001,CorePkg,"backquote_remove_tokens",true);
+DO_SYMBOL(core,_sym_backquote_frob,1002,CorePkg,"backquote_frob",true);
+DO_SYMBOL(core,_sym_backquote_splicing_frob,1003,CorePkg,"backquote_splicing_frob",true);
+DO_SYMBOL(core,_sym_backquote_append,1004,CorePkg,"backquote_append",true);
+DO_SYMBOL(core,_sym_quasiquote,1005,CorePkg,"quasiquote",true);
+DO_SYMBOL(core,_sym_STARbq_simplifySTAR,1006,CorePkg,"STARbq_simplifySTAR",true);
+DO_SYMBOL(core,_sym_record_cons,1007,CorePkg,"record_cons",true);
+DO_SYMBOL(core,_sym_record_field,1008,CorePkg,"record_field",true);
+DO_SYMBOL(core,_sym_set_record_field,1009,CorePkg,"set_record_field",true);
+DO_SYMBOL(core,_sym_rem_record_field,1010,CorePkg,"rem_record_field",true);
+DO_SYMBOL(core,_sym_ensure_documentation,1011,CorePkg,"ensure_documentation",true);
+DO_SYMBOL(core,_sym_STARsharp_equal_final_tableSTAR,1012,CorePkg,"STARsharp_equal_final_tableSTAR",true);
+DO_SYMBOL(core,_sym_STARsharp_equal_temp_tableSTAR,1013,CorePkg,"STARsharp_equal_temp_tableSTAR",true);
+DO_SYMBOL(core,_sym_STARsharp_equal_repl_tableSTAR,1014,CorePkg,"STARsharp_equal_repl_tableSTAR",true);
+DO_SYMBOL(core,_sym_ensureSingleDispatchGenericFunction,1015,CorePkg,"ensureSingleDispatchGenericFunction",true);
+DO_SYMBOL(core,_sym_ensureSingleDispatchMethod,1016,CorePkg,"ensureSingleDispatchMethod",true);
+DO_SYMBOL(core,_sym_structure_include,1017,CorePkg,"structure_include",true);
+DO_SYMBOL(core,_sym_structure_slot_descriptions,1018,CorePkg,"structure_slot_descriptions",true);
+DO_SYMBOL(core,_sym_structureRef,1019,CorePkg,"structureRef",true);
+DO_SYMBOL(core,_sym_structureSet,1020,CorePkg,"structureSet",true);
+DO_SYMBOL(core,_sym_makeStructure,1021,CorePkg,"makeStructure",true);
+DO_SYMBOL(core,_sym_structurep,1022,CorePkg,"structurep",true);
+DO_SYMBOL(core,_sym_structureSubtypep,1023,CorePkg,"structureSubtypep",true);
+DO_SYMBOL(core,_sym_setfElt,1024,CorePkg,"setfElt",true);
+DO_SYMBOL(core,_sym_eltSet,1025,CorePkg,"eltSet",true);
+DO_SYMBOL(core,_sym_setfSubseq,1026,CorePkg,"setfSubseq",true);
+DO_SYMBOL(core,_sym_make_vector,1027,CorePkg,"make_vector",true);
+DO_SYMBOL(core,_sym_adjustVector,1028,CorePkg,"adjustVector",true);
+DO_SYMBOL(core,_sym_loadTimeValuesIds,1029,CorePkg,"loadTimeValuesIds",true);
+DO_SYMBOL(core,_sym_loadTimeValueArray,1030,CorePkg,"loadTimeValueArray",true);
+DO_SYMBOL(core,_sym_lookupLoadTimeValue,1031,CorePkg,"lookupLoadTimeValue",true);
+DO_SYMBOL(core,_sym_lookupLoadTimeSymbol,1032,CorePkg,"lookupLoadTimeSymbol",true);
+DO_SYMBOL(core,_sym_setRunTimeValuesVector,1033,CorePkg,"setRunTimeValuesVector",true);
+DO_SYMBOL(core,_sym_ExternalObject_O,1034,CorePkg,"ExternalObject",true);
+DO_SYMBOL(core,_sym_ForeignData_O,1035,CorePkg,"ForeignData",true);
+DO_SYMBOL(core,_sym_LambdaListHandler_O,1036,CorePkg,"LambdaListHandler",true);
+DO_SYMBOL(core,_sym_LightUserData_O,1037,CorePkg,"LightUserData",true);
+DO_SYMBOL(core,_sym_UserData_O,1038,CorePkg,"UserData",true);
+DO_SYMBOL(core,_sym_LoadTimeValues_O,1039,CorePkg,"LoadTimeValues",true);
+DO_SYMBOL(core,_sym_MultiStringBuffer_O,1040,CorePkg,"MultiStringBuffer",true);
+DO_SYMBOL(core,_sym_PosixTime_O,1041,CorePkg,"PosixTime",true);
+DO_SYMBOL(core,_sym_PosixTimeDuration_O,1042,CorePkg,"PosixTimeDuration",true);
+DO_SYMBOL(core,_sym_RegexMatch_O,1043,CorePkg,"RegexMatch",true);
+DO_SYMBOL(core,_sym_Regex_O,1044,CorePkg,"Regex",true);
+DO_SYMBOL(core,_sym_SingleDispatchMethod_O,1045,CorePkg,"SingleDispatchMethod",true);
+DO_SYMBOL(core,_sym_SmallMultimap_O,1046,CorePkg,"SmallMultimap",true);
+DO_SYMBOL(core,_sym_WeakKeyMapping_O,1047,CorePkg,"WeakKeyMapping",true);
+DO_SYMBOL(core,_sym_WeakPointer_O,1048,CorePkg,"WeakPointer",true);
+DO_SYMBOL(core,_sym_Instance_O,1049,CorePkg,"Instance",true);
+DO_SYMBOL(core,_sym_WrappedPointer_O,1050,CorePkg,"WrappedPointer",true);
+DO_SYMBOL(core,_sym_ArrayDisplaced_O,1051,CorePkg,"ArrayDisplaced",true);
+DO_SYMBOL(core,_sym_ArrayObjects_O,1052,CorePkg,"ArrayObjects",true);
+DO_SYMBOL(core,_sym_HashTableEqualp_O,1053,CorePkg,"HashTableEqualp",true);
+DO_SYMBOL(core,_sym_SingleDispatchEffectiveMethodFunction_O,1054,CorePkg,"SingleDispatchEffectiveMethodFunction",true);
+DO_SYMBOL(core,_sym_SingleDispatchGenericFunction_O,1055,CorePkg,"single-dispatch-generic-function",true);
+DO_SYMBOL(core,_sym_SpecialForm_O,1056,CorePkg,"SpecialForm",true);
+DO_SYMBOL(core,_sym_SexpLoadArchive_O,1057,CorePkg,"SexpLoadArchive",true);
+DO_SYMBOL(core,_sym_SexpSaveArchive_O,1058,CorePkg,"SexpSaveArchive",true);
+DO_SYMBOL(core,_sym_VectorDisplaced_O,1059,CorePkg,"VectorDisplaced",true);
+DO_SYMBOL(core,_sym_CxxClass_O,1060,CorePkg,"CxxClass",true);
+DO_SYMBOL(core,_sym_ForwardReferencedClass_O,1061,CorePkg,"ForwardReferencedClass",true);
+DO_SYMBOL(core,_sym_StrWithFillPtr_O,1062,CorePkg,"base-string-with-fill-ptr",true);
+DO_SYMBOL(core,_sym_HashTableEql_O,1063,CorePkg,"HashTableEql",true);
+DO_SYMBOL(core,_sym_InvocationHistoryFrameIterator_O,1064,CorePkg,"InvocationHistoryFrameIterator",true);
+DO_SYMBOL(core,_sym_IOFileStream_O,1065,CorePkg,"iofile-stream",true);
+DO_SYMBOL(core,_sym_IOStreamStream_O,1066,CorePkg,"iostream-stream",true);
+DO_SYMBOL(core,_sym_StringOutputStream_O,1067,CorePkg,"string-output-stream",true);
+DO_SYMBOL(core,_sym_StringInputStream_O,1068,CorePkg,"string-input-stream",true);
+DO_SYMBOL(core,_sym_Reader_O,1069,CorePkg,"Reader",true);
+DO_SYMBOL(core,_sym_Iterator_O,1070,CorePkg,"Iterator",true);
+DO_SYMBOL(core,_sym_Path_O,1071,CorePkg,"path",true);
+DO_SYMBOL(core,_sym_DirectoryIterator_O,1072,CorePkg,"DirectoryIterator",true);
+DO_SYMBOL(core,_sym_RecursiveDirectoryIterator_O,1073,CorePkg,"RecursiveDirectoryIterator",true);
+DO_SYMBOL(core,_sym_DirectoryEntry_O,1074,CorePkg,"DirectoryEntry",true);
+DO_SYMBOL(core,_sym_FileStatus_O,1075,CorePkg,"FileStatus",true);
+DO_SYMBOL(core,_sym_Binder_O,1076,CorePkg,"Binder",true);
+DO_SYMBOL(core,_sym_IntArray_O,1077,CorePkg,"IntArray",true);
+DO_SYMBOL(core,_sym_HashTableEqual_O,1078,CorePkg,"HashTableEqual",true);
+DO_SYMBOL(core,_sym_SmallMap_O,1079,CorePkg,"SmallMap",true);
+DO_SYMBOL(core,_sym_CandoException_O,1080,CorePkg,"CandoException",true);
+DO_SYMBOL(core,_sym_VaList_dummy_O,1081,CorePkg,"VA-LIST",true);
+DO_SYMBOL(core,_sym_Pointer_O,1082,CorePkg,"Pointer",true);
+DO_SYMBOL(core,_sym_Environment_O,1083,CorePkg,"Environment",true);
+DO_SYMBOL(core,_sym_LexicalEnvironment_O,1084,CorePkg,"LexicalEnvironment",true);
+DO_SYMBOL(core,_sym_RuntimeVisibleEnvironment_O,1085,CorePkg,"RuntimeVisibleEnvironment",true);
+DO_SYMBOL(core,_sym_ValueEnvironment_O,1086,CorePkg,"ValueEnvironment",true);
+DO_SYMBOL(core,_sym_FunctionValueEnvironment_O,1087,CorePkg,"FunctionValueEnvironment",true);
+DO_SYMBOL(core,_sym_CompileTimeEnvironment_O,1088,CorePkg,"CompileTimeEnvironment",true);
+DO_SYMBOL(core,_sym_UnwindProtectEnvironment_O,1089,CorePkg,"UnwindProtectEnvironment",true);
+DO_SYMBOL(core,_sym_BlockEnvironment_O,1090,CorePkg,"BlockEnvironment",true);
+DO_SYMBOL(core,_sym_CatchEnvironment_O,1091,CorePkg,"CatchEnvironment",true);
+DO_SYMBOL(core,_sym_FunctionContainerEnvironment_O,1092,CorePkg,"FunctionContainerEnvironment",true);
+DO_SYMBOL(core,_sym_TagbodyEnvironment_O,1093,CorePkg,"TagbodyEnvironment",true);
+DO_SYMBOL(core,_sym_MacroletEnvironment_O,1094,CorePkg,"MacroletEnvironment",true);
+DO_SYMBOL(core,_sym_SymbolMacroletEnvironment_O,1095,CorePkg,"SymbolMacroletEnvironment",true);
+DO_SYMBOL(core,_sym_StackValueEnvironment_O,1096,CorePkg,"StackValueEnvironment",true);
+DO_SYMBOL(core,_sym_GlueEnvironment_O,1097,CorePkg,"GlueEnvironment",true);
+DO_SYMBOL(core,_sym_ActivationFrame_O,1098,CorePkg,"ActivationFrame",true);
+DO_SYMBOL(core,_sym_ValueFrame_O,1099,CorePkg,"ValueFrame",true);
+DO_SYMBOL(core,_sym_FunctionFrame_O,1100,CorePkg,"FunctionFrame",true);
+DO_SYMBOL(core,_sym_TagbodyFrame_O,1101,CorePkg,"TagbodyFrame",true);
+DO_SYMBOL(core,_sym_Metaobject_O,1102,CorePkg,"metaobject",true);
+DO_SYMBOL(core,_sym_Specializer_O,1103,CorePkg,"specializer",true);
+DO_SYMBOL(core,_sym_WeakHashTable_O,1104,CorePkg,"WeakHashTable",true);
+DO_SYMBOL(core,_sym_WeakKeyHashTable_O,1105,CorePkg,"WeakKeyHashTable",true);
+DO_SYMBOL(core,_sym_SourceFileInfo_O,1106,CorePkg,"SourceFileInfo",true);
+DO_SYMBOL(core,_sym_SourcePosInfo_O,1107,CorePkg,"SourcePosInfo",true);
+DO_SYMBOL(core,_sym_SourceManager_O,1108,CorePkg,"SourceManager",true);
+DO_SYMBOL(core,_sym_CxxObject_O,1109,CorePkg,"CxxObject",true);
+DO_SYMBOL(core,_sym_Record_O,1110,CorePkg,"Record",true);
+DO_SYMBOL(core,_sym_HashTableEq_O,1111,CorePkg,"HashTableEq",true);
+DO_SYMBOL(core,_sym_VectorObjects_O,1112,CorePkg,"VectorObjects",true);
+DO_SYMBOL(core,_sym_VectorObjectsWithFillPtr_O,1113,CorePkg,"VectorObjectsWithFillPtr",true);
+DO_SYMBOL(core,_sym_SymbolToEnumConverter_O,1114,CorePkg,"SymbolToEnumConverter",true);
+DO_SYMBOL(core,_sym_SNode_O,1115,CorePkg,"SNode",true);
+DO_SYMBOL(core,_sym_LeafSNode_O,1116,CorePkg,"LeafSNode",true);
+DO_SYMBOL(core,_sym_BranchSNode_O,1117,CorePkg,"BranchSNode",true);
+DO_SYMBOL(core,_sym_Archive_O,1118,CorePkg,"Archive",true);
+DO_SYMBOL(core,_sym_LoadArchive_O,1119,CorePkg,"LoadArchive",true);
+DO_SYMBOL(core,_sym_SaveArchive_O,1120,CorePkg,"SaveArchive",true);
 #endif // CorePkg_SYMBOLS
 #if defined(ClPkg_SYMBOLS)
-DO_SYMBOL(cl,_sym_case,743,ClPkg,"case",true);
-DO_SYMBOL(cl,_sym_otherwise,744,ClPkg,"otherwise",true);
-DO_SYMBOL(cl,_sym_ignore,745,ClPkg,"ignore",true);
-DO_SYMBOL(cl,_sym_multipleValueSetq,746,ClPkg,"multipleValueSetq",true);
-DO_SYMBOL(cl,_sym_prog1,747,ClPkg,"prog1",true);
-DO_SYMBOL(cl,_sym_block,748,ClPkg,"block",true);
-DO_SYMBOL(cl,_sym_throw,749,ClPkg,"throw",true);
-DO_SYMBOL(cl,_sym_apply,750,ClPkg,"apply",true);
-DO_SYMBOL(cl,_sym_funcall,751,ClPkg,"funcall",true);
-DO_SYMBOL(cl,_sym_compute_applicable_methods,752,ClPkg,"compute_applicable_methods",true);
-DO_SYMBOL(cl,_sym_no_applicable_method,753,ClPkg,"no_applicable_method",true);
-DO_SYMBOL(cl,_sym_standardGenericFunction,754,ClPkg,"standardGenericFunction",true);
-DO_SYMBOL(cl,_sym_sleep,755,ClPkg,"sleep",true);
-DO_SYMBOL(cl,_sym_let,756,ClPkg,"let",true);
-DO_SYMBOL(cl,_sym_letSTAR,757,ClPkg,"letSTAR",true);
-DO_SYMBOL(cl,_sym_return_from,758,ClPkg,"return_from",true);
-DO_SYMBOL(cl,_sym_catch,759,ClPkg,"catch",true);
-DO_SYMBOL(cl,_sym_load_time_value,760,ClPkg,"load_time_value",true);
-DO_SYMBOL(cl,_sym_setq,761,ClPkg,"setq",true);
-DO_SYMBOL(cl,_sym_eval_when,762,ClPkg,"eval_when",true);
-DO_SYMBOL(cl,_sym_locally,763,ClPkg,"locally",true);
-DO_SYMBOL(cl,_sym_symbol_macrolet,764,ClPkg,"symbol_macrolet",true);
-DO_SYMBOL(cl,_sym_flet,765,ClPkg,"flet",true);
-DO_SYMBOL(cl,_sym_macrolet,766,ClPkg,"macrolet",true);
-DO_SYMBOL(cl,_sym_tagbody,767,ClPkg,"tagbody",true);
-DO_SYMBOL(cl,_sym_multiple_value_call,768,ClPkg,"multiple_value_call",true);
-DO_SYMBOL(cl,_sym_the,769,ClPkg,"the",true);
-DO_SYMBOL(cl,_sym_go,770,ClPkg,"go",true);
-DO_SYMBOL(cl,_sym_multiple_value_prog1,771,ClPkg,"multiple_value_prog1",true);
-DO_SYMBOL(cl,_sym_if,772,ClPkg,"if",true);
-DO_SYMBOL(cl,_sym_unwind_protect,773,ClPkg,"unwind_protect",true);
-DO_SYMBOL(cl,_sym_labels,774,ClPkg,"labels",true);
-DO_SYMBOL(cl,_sym_progv,775,ClPkg,"progv",true);
-DO_SYMBOL(cl,_sym_setf,776,ClPkg,"setf",true);
-DO_SYMBOL(cl,_sym_read,777,ClPkg,"read",true);
-DO_SYMBOL(cl,_sym_read_preserving_whitespace,778,ClPkg,"read_preserving_whitespace",true);
-DO_SYMBOL(cl,_sym_read_delimited_list,779,ClPkg,"read_delimited_list",true);
-DO_SYMBOL(cl,_sym_every,780,ClPkg,"every",true);
-DO_SYMBOL(cl,_sym_some,781,ClPkg,"some",true);
-DO_SYMBOL(cl,_sym_notevery,782,ClPkg,"notevery",true);
-DO_SYMBOL(cl,_sym_notany,783,ClPkg,"notany",true);
-DO_SYMBOL(cl,_sym_mapcar,784,ClPkg,"mapcar",true);
-DO_SYMBOL(cl,_sym_mapc,785,ClPkg,"mapc",true);
-DO_SYMBOL(cl,_sym_maplist,786,ClPkg,"maplist",true);
-DO_SYMBOL(cl,_sym_mapl,787,ClPkg,"mapl",true);
-DO_SYMBOL(cl,_sym_mapcan,788,ClPkg,"mapcan",true);
-DO_SYMBOL(cl,_sym_mapcon,789,ClPkg,"mapcon",true);
-DO_SYMBOL(cl,_sym_classOf,790,ClPkg,"classOf",true);
-DO_SYMBOL(cl,_sym_identity,791,ClPkg,"identity",true);
-DO_SYMBOL(cl,_sym_constantp,792,ClPkg,"constantp",true);
-DO_SYMBOL(cl,_sym_ash,793,ClPkg,"ash",true);
-DO_SYMBOL(cl,_sym_specialOperatorP,794,ClPkg,"specialOperatorP",true);
-DO_SYMBOL(cl,_sym_macroFunction,795,ClPkg,"macroFunction",true);
-DO_SYMBOL(cl,_sym_gensym,796,ClPkg,"gensym",true);
-DO_SYMBOL(cl,_sym_type_of,797,ClPkg,"type_of",true);
-DO_SYMBOL(cl,_sym_fdefinition,798,ClPkg,"fdefinition",true);
-DO_SYMBOL(cl,_sym_fboundp,799,ClPkg,"fboundp",true);
-DO_SYMBOL(cl,_sym_fmakunbound,800,ClPkg,"fmakunbound",true);
-DO_SYMBOL(cl,_sym_values_list,801,ClPkg,"values_list",true);
-DO_SYMBOL(cl,_sym_make_hash_table,802,ClPkg,"make_hash_table",true);
-DO_SYMBOL(cl,_sym_maphash,803,ClPkg,"maphash",true);
-DO_SYMBOL(cl,_sym_clrhash,804,ClPkg,"clrhash",true);
-DO_SYMBOL(cl,_sym_remhash,805,ClPkg,"remhash",true);
-DO_SYMBOL(cl,_sym_max,806,ClPkg,"max",true);
-DO_SYMBOL(cl,_sym_min,807,ClPkg,"min",true);
-DO_SYMBOL(cl,_sym_zerop,808,ClPkg,"zerop",true);
-DO_SYMBOL(cl,_sym__LT_,809,ClPkg,"_LT_",true);
-DO_SYMBOL(cl,_sym__GT_,810,ClPkg,"_GT_",true);
-DO_SYMBOL(cl,_sym__LE_,811,ClPkg,"_LE_",true);
-DO_SYMBOL(cl,_sym__GE_,812,ClPkg,"_GE_",true);
-DO_SYMBOL(cl,_sym__EQ_,813,ClPkg,"_EQ_",true);
-DO_SYMBOL(cl,_sym__NE_,814,ClPkg,"_NE_",true);
-DO_SYMBOL(cl,_sym__PLUS_,815,ClPkg,"_PLUS_",true);
-DO_SYMBOL(cl,_sym__TIMES_,816,ClPkg,"_TIMES_",true);
-DO_SYMBOL(cl,_sym__MINUS_,817,ClPkg,"_MINUS_",true);
-DO_SYMBOL(cl,_sym_logand,818,ClPkg,"logand",true);
-DO_SYMBOL(cl,_sym_logior,819,ClPkg,"logior",true);
-DO_SYMBOL(cl,_sym_logandc1,820,ClPkg,"logandc1",true);
-DO_SYMBOL(cl,_sym_logandc2,821,ClPkg,"logandc2",true);
-DO_SYMBOL(cl,_sym_logeqv,822,ClPkg,"logeqv",true);
-DO_SYMBOL(cl,_sym_lognand,823,ClPkg,"lognand",true);
-DO_SYMBOL(cl,_sym_lognor,824,ClPkg,"lognor",true);
-DO_SYMBOL(cl,_sym_lognot,825,ClPkg,"lognot",true);
-DO_SYMBOL(cl,_sym_logorc1,826,ClPkg,"logorc1",true);
-DO_SYMBOL(cl,_sym_logorc2,827,ClPkg,"logorc2",true);
-DO_SYMBOL(cl,_sym_logxor,828,ClPkg,"logxor",true);
-DO_SYMBOL(cl,_sym_sqrt,829,ClPkg,"sqrt",true);
-DO_SYMBOL(cl,_sym_cos,830,ClPkg,"cos",true);
-DO_SYMBOL(cl,_sym_tan,831,ClPkg,"tan",true);
-DO_SYMBOL(cl,_sym_sinh,832,ClPkg,"sinh",true);
-DO_SYMBOL(cl,_sym_cosh,833,ClPkg,"cosh",true);
-DO_SYMBOL(cl,_sym_tanh,834,ClPkg,"tanh",true);
-DO_SYMBOL(cl,_sym_conjugate,835,ClPkg,"conjugate",true);
-DO_SYMBOL(cl,_sym_log,836,ClPkg,"log",true);
-DO_SYMBOL(cl,_sym_expt,837,ClPkg,"expt",true);
-DO_SYMBOL(cl,_sym_exp,838,ClPkg,"exp",true);
-DO_SYMBOL(cl,_sym_getUniversalTime,839,ClPkg,"getUniversalTime",true);
-DO_SYMBOL(cl,_sym_leastPositiveSingleFloat,840,ClPkg,"leastPositiveSingleFloat",true);
-DO_SYMBOL(cl,_sym_leastNegativeSingleFloat,841,ClPkg,"leastNegativeSingleFloat",true);
-DO_SYMBOL(cl,_sym_mostPositiveSingleFloat,842,ClPkg,"mostPositiveSingleFloat",true);
-DO_SYMBOL(cl,_sym_mostNegativeSingleFloat,843,ClPkg,"mostNegativeSingleFloat",true);
-DO_SYMBOL(cl,_sym_leastPositiveShortFloat,844,ClPkg,"leastPositiveShortFloat",true);
-DO_SYMBOL(cl,_sym_leastNegativeShortFloat,845,ClPkg,"leastNegativeShortFloat",true);
-DO_SYMBOL(cl,_sym_mostPositiveShortFloat,846,ClPkg,"mostPositiveShortFloat",true);
-DO_SYMBOL(cl,_sym_mostNegativeShortFloat,847,ClPkg,"mostNegativeShortFloat",true);
-DO_SYMBOL(cl,_sym_leastPositiveDoubleFloat,848,ClPkg,"leastPositiveDoubleFloat",true);
-DO_SYMBOL(cl,_sym_leastNegativeDoubleFloat,849,ClPkg,"leastNegativeDoubleFloat",true);
-DO_SYMBOL(cl,_sym_mostPositiveDoubleFloat,850,ClPkg,"mostPositiveDoubleFloat",true);
-DO_SYMBOL(cl,_sym_mostNegativeDoubleFloat,851,ClPkg,"mostNegativeDoubleFloat",true);
-DO_SYMBOL(cl,_sym_leastPositiveLongFloat,852,ClPkg,"leastPositiveLongFloat",true);
-DO_SYMBOL(cl,_sym_leastNegativeLongFloat,853,ClPkg,"leastNegativeLongFloat",true);
-DO_SYMBOL(cl,_sym_mostPositiveLongFloat,854,ClPkg,"mostPositiveLongFloat",true);
-DO_SYMBOL(cl,_sym_mostNegativeLongFloat,855,ClPkg,"mostNegativeLongFloat",true);
-DO_SYMBOL(cl,_sym_leastNegativeNormalizedSingleFloat,856,ClPkg,"leastNegativeNormalizedSingleFloat",true);
-DO_SYMBOL(cl,_sym_leastNegativeNormalizedShortFloat,857,ClPkg,"leastNegativeNormalizedShortFloat",true);
-DO_SYMBOL(cl,_sym_leastNegativeNormalizedDoubleFloat,858,ClPkg,"leastNegativeNormalizedDoubleFloat",true);
-DO_SYMBOL(cl,_sym_leastNegativeNormalizedLongFloat,859,ClPkg,"leastNegativeNormalizedLongFloat",true);
-DO_SYMBOL(cl,_sym_leastPositiveNormalizedSingleFloat,860,ClPkg,"leastPositiveNormalizedSingleFloat",true);
-DO_SYMBOL(cl,_sym_leastPositiveNormalizedShortFloat,861,ClPkg,"leastPositiveNormalizedShortFloat",true);
-DO_SYMBOL(cl,_sym_leastPositiveNormalizedDoubleFloat,862,ClPkg,"leastPositiveNormalizedDoubleFloat",true);
-DO_SYMBOL(cl,_sym_leastPositiveNormalizedLongFloat,863,ClPkg,"leastPositiveNormalizedLongFloat",true);
-DO_SYMBOL(cl,_sym_pi,864,ClPkg,"pi",true);
-DO_SYMBOL(cl,_sym_gcd,865,ClPkg,"gcd",true);
-DO_SYMBOL(cl,_sym_lcm,866,ClPkg,"lcm",true);
-DO_SYMBOL(cl,_sym_numerator,867,ClPkg,"numerator",true);
-DO_SYMBOL(cl,_sym_denominator,868,ClPkg,"denominator",true);
-DO_SYMBOL(cl,_sym_floor,869,ClPkg,"floor",true);
-DO_SYMBOL(cl,_sym_ceiling,870,ClPkg,"ceiling",true);
-DO_SYMBOL(cl,_sym_truncate,871,ClPkg,"truncate",true);
-DO_SYMBOL(cl,_sym_round,872,ClPkg,"round",true);
-DO_SYMBOL(cl,_sym_mod,873,ClPkg,"mod",true);
-DO_SYMBOL(cl,_sym_rem,874,ClPkg,"rem",true);
-DO_SYMBOL(cl,_sym_decodeFloat,875,ClPkg,"decodeFloat",true);
-DO_SYMBOL(cl,_sym_scaleFloat,876,ClPkg,"scaleFloat",true);
-DO_SYMBOL(cl,_sym_floatSign,877,ClPkg,"floatSign",true);
-DO_SYMBOL(cl,_sym_floatDigits,878,ClPkg,"floatDigits",true);
-DO_SYMBOL(cl,_sym_floatPrecision,879,ClPkg,"floatPrecision",true);
-DO_SYMBOL(cl,_sym_integer_decode_float,880,ClPkg,"integer_decode_float",true);
-DO_SYMBOL(cl,_sym_complex,881,ClPkg,"complex",true);
-DO_SYMBOL(cl,_sym_realpart,882,ClPkg,"realpart",true);
-DO_SYMBOL(cl,_sym_imagpart,883,ClPkg,"imagpart",true);
-DO_SYMBOL(cl,_sym_print,884,ClPkg,"print",true);
-DO_SYMBOL(cl,_sym_prin1,885,ClPkg,"prin1",true);
-DO_SYMBOL(cl,_sym_princ,886,ClPkg,"princ",true);
-DO_SYMBOL(cl,_sym_truename,887,ClPkg,"truename",true);
-DO_SYMBOL(cl,_sym_probe_file,888,ClPkg,"probe_file",true);
-DO_SYMBOL(cl,_sym_deleteFile,889,ClPkg,"deleteFile",true);
-DO_SYMBOL(cl,_sym_file_write_date,890,ClPkg,"file_write_date",true);
-DO_SYMBOL(cl,_sym_userHomedirPathname,891,ClPkg,"userHomedirPathname",true);
-DO_SYMBOL(cl,_sym_revappend,892,ClPkg,"revappend",true);
-DO_SYMBOL(cl,_sym_nreconc,893,ClPkg,"nreconc",true);
-DO_SYMBOL(cl,_sym_listSTAR,894,ClPkg,"listSTAR",true);
-DO_SYMBOL(cl,_sym_butlast,895,ClPkg,"butlast",true);
-DO_SYMBOL(cl,_sym_nbutlast,896,ClPkg,"nbutlast",true);
-DO_SYMBOL(cl,_sym_nthcdr,897,ClPkg,"nthcdr",true);
-DO_SYMBOL(cl,_sym_copyList,898,ClPkg,"copyList",true);
-DO_SYMBOL(cl,_sym_last,899,ClPkg,"last",true);
-DO_SYMBOL(cl,_sym_filePosition,900,ClPkg,"filePosition",true);
-DO_SYMBOL(cl,_sym_readSequence,901,ClPkg,"readSequence",true);
-DO_SYMBOL(cl,_sym_read_from_string,902,ClPkg,"read_from_string",true);
-DO_SYMBOL(cl,_sym_read_line,903,ClPkg,"read_line",true);
-DO_SYMBOL(cl,_sym_terpri,904,ClPkg,"terpri",true);
-DO_SYMBOL(cl,_sym_freshLine,905,ClPkg,"freshLine",true);
-DO_SYMBOL(cl,_sym_writeString,906,ClPkg,"writeString",true);
-DO_SYMBOL(cl,_sym_writeLine,907,ClPkg,"writeLine",true);
-DO_SYMBOL(cl,_sym_writeChar,908,ClPkg,"writeChar",true);
-DO_SYMBOL(cl,_sym_clearInput,909,ClPkg,"clearInput",true);
-DO_SYMBOL(cl,_sym_clearOutput,910,ClPkg,"clearOutput",true);
-DO_SYMBOL(cl,_sym_readByte,911,ClPkg,"readByte",true);
-DO_SYMBOL(cl,_sym_peekChar,912,ClPkg,"peekChar",true);
-DO_SYMBOL(cl,_sym_readChar,913,ClPkg,"readChar",true);
-DO_SYMBOL(cl,_sym_readCharNoHang,914,ClPkg,"readCharNoHang",true);
-DO_SYMBOL(cl,_sym_force_output,915,ClPkg,"force_output",true);
-DO_SYMBOL(cl,_sym_finish_output,916,ClPkg,"finish_output",true);
-DO_SYMBOL(cl,_sym_listen,917,ClPkg,"listen",true);
-DO_SYMBOL(cl,_sym_unread_char,918,ClPkg,"unread_char",true);
-DO_SYMBOL(cl,_sym_makeStringOutputStream,919,ClPkg,"makeStringOutputStream",true);
-DO_SYMBOL(cl,_sym_writeByte,920,ClPkg,"writeByte",true);
-DO_SYMBOL(cl,_sym_interactive_stream_p,921,ClPkg,"interactive_stream_p",true);
-DO_SYMBOL(cl,_sym_streamp,922,ClPkg,"streamp",true);
-DO_SYMBOL(cl,_sym_close,923,ClPkg,"close",true);
-DO_SYMBOL(cl,_sym_get_output_stream_string,924,ClPkg,"get_output_stream_string",true);
-DO_SYMBOL(cl,_sym_synonymStreamSymbol,925,ClPkg,"synonymStreamSymbol",true);
-DO_SYMBOL(cl,_sym_boole_1,926,ClPkg,"boole_1",true);
-DO_SYMBOL(cl,_sym_boole_2,927,ClPkg,"boole_2",true);
-DO_SYMBOL(cl,_sym_boole_and,928,ClPkg,"boole_and",true);
-DO_SYMBOL(cl,_sym_boole_andc1,929,ClPkg,"boole_andc1",true);
-DO_SYMBOL(cl,_sym_boole_andc2,930,ClPkg,"boole_andc2",true);
-DO_SYMBOL(cl,_sym_boole_c1,931,ClPkg,"boole_c1",true);
-DO_SYMBOL(cl,_sym_boole_c2,932,ClPkg,"boole_c2",true);
-DO_SYMBOL(cl,_sym_boole_clr,933,ClPkg,"boole_clr",true);
-DO_SYMBOL(cl,_sym_boole_eqv,934,ClPkg,"boole_eqv",true);
-DO_SYMBOL(cl,_sym_boole_ior,935,ClPkg,"boole_ior",true);
-DO_SYMBOL(cl,_sym_boole_nand,936,ClPkg,"boole_nand",true);
-DO_SYMBOL(cl,_sym_boole_nor,937,ClPkg,"boole_nor",true);
-DO_SYMBOL(cl,_sym_boole_orc1,938,ClPkg,"boole_orc1",true);
-DO_SYMBOL(cl,_sym_boole_orc2,939,ClPkg,"boole_orc2",true);
-DO_SYMBOL(cl,_sym_boole_set,940,ClPkg,"boole_set",true);
-DO_SYMBOL(cl,_sym_boole_xor,941,ClPkg,"boole_xor",true);
-DO_SYMBOL(cl,_sym_printNotReadableObject,942,ClPkg,"printNotReadableObject",true);
-DO_SYMBOL(cl,_sym_provide,943,ClPkg,"provide",true);
-DO_SYMBOL(cl,_sym_seriousCondition,944,ClPkg,"seriousCondition",true);
-DO_SYMBOL(cl,_sym_warn,945,ClPkg,"warn",true);
-DO_SYMBOL(cl,_sym_programError,946,ClPkg,"programError",true);
-DO_SYMBOL(cl,_sym_cellError,947,ClPkg,"cellError",true);
-DO_SYMBOL(cl,_sym_unboundVariable,948,ClPkg,"unboundVariable",true);
-DO_SYMBOL(cl,_sym_unboundSlot,949,ClPkg,"unboundSlot",true);
-DO_SYMBOL(cl,_sym_undefinedFunction,950,ClPkg,"undefinedFunction",true);
-DO_SYMBOL(cl,_sym_package_error,951,ClPkg,"package_error",true);
-DO_SYMBOL(cl,_sym_arithmeticError,952,ClPkg,"arithmeticError",true);
-DO_SYMBOL(cl,_sym_floatingPointOverflow,953,ClPkg,"floatingPointOverflow",true);
-DO_SYMBOL(cl,_sym_floatingPointInexact,954,ClPkg,"floatingPointInexact",true);
-DO_SYMBOL(cl,_sym_floatingPointInvalidOperation,955,ClPkg,"floatingPointInvalidOperation",true);
-DO_SYMBOL(cl,_sym_floatingPointUnderflow,956,ClPkg,"floatingPointUnderflow",true);
-DO_SYMBOL(cl,_sym_divisionByZero,957,ClPkg,"divisionByZero",true);
-DO_SYMBOL(cl,_sym_printNotReadable,958,ClPkg,"printNotReadable",true);
-DO_SYMBOL(cl,_sym_streamError,959,ClPkg,"streamError",true);
-DO_SYMBOL(cl,_sym_endOfFile,960,ClPkg,"endOfFile",true);
-DO_SYMBOL(cl,_sym_parseError,961,ClPkg,"parseError",true);
-DO_SYMBOL(cl,_sym_readerError,962,ClPkg,"readerError",true);
-DO_SYMBOL(cl,_sym_STARrandom_stateSTAR,963,ClPkg,"STARrandom_stateSTAR",true);
-DO_SYMBOL(cl,_sym_simpleError,964,ClPkg,"simpleError",true);
-DO_SYMBOL(cl,_sym_storageCondition,965,ClPkg,"storageCondition",true);
-DO_SYMBOL(cl,_sym_simpleCondition,966,ClPkg,"simpleCondition",true);
-DO_SYMBOL(cl,_sym_simpleWarning,967,ClPkg,"simpleWarning",true);
-DO_SYMBOL(cl,_sym_warning,968,ClPkg,"warning",true);
-DO_SYMBOL(cl,_sym_styleWarning,969,ClPkg,"styleWarning",true);
-DO_SYMBOL(cl,_sym_asin,970,ClPkg,"asin",true);
-DO_SYMBOL(cl,_sym_acos,971,ClPkg,"acos",true);
-DO_SYMBOL(cl,_sym_asinh,972,ClPkg,"asinh",true);
-DO_SYMBOL(cl,_sym_acosh,973,ClPkg,"acosh",true);
-DO_SYMBOL(cl,_sym_atanh,974,ClPkg,"atanh",true);
-DO_SYMBOL(cl,_sym_dynamic_extent,975,ClPkg,"dynamic_extent",true);
-DO_SYMBOL(cl,_sym_ftype,976,ClPkg,"ftype",true);
-DO_SYMBOL(cl,_sym_boole,977,ClPkg,"boole",true);
-DO_SYMBOL(cl,_sym_callArgumentsLimit,978,ClPkg,"callArgumentsLimit",true);
-DO_SYMBOL(cl,_sym_arrayDimensionLimit,979,ClPkg,"arrayDimensionLimit",true);
-DO_SYMBOL(cl,_sym_arrayTotalSizeLimit,980,ClPkg,"arrayTotalSizeLimit",true);
-DO_SYMBOL(cl,_sym_lambdaParametersLimit,981,ClPkg,"lambdaParametersLimit",true);
-DO_SYMBOL(cl,_sym_schar,982,ClPkg,"schar",true);
-DO_SYMBOL(cl,_sym_fixnum,983,ClPkg,"fixnum",true);
-DO_SYMBOL(cl,_sym_nil,984,ClPkg,"nil",true);
-DO_SYMBOL(cl,_sym_stream_element_type,985,ClPkg,"stream_element_type",true);
-DO_SYMBOL(cl,_sym_stream_external_format,986,ClPkg,"stream_external_format",true);
-DO_SYMBOL(cl,_sym_open_stream_p,987,ClPkg,"open_stream_p",true);
-DO_SYMBOL(cl,_sym_write_sequence,988,ClPkg,"write_sequence",true);
-DO_SYMBOL(cl,_sym_read_sequence,989,ClPkg,"read_sequence",true);
-DO_SYMBOL(cl,_sym_file_string_length,990,ClPkg,"file_string_length",true);
-DO_SYMBOL(cl,_sym_echo_stream_input_stream,991,ClPkg,"echo_stream_input_stream",true);
-DO_SYMBOL(cl,_sym_echo_stream_output_stream,992,ClPkg,"echo_stream_output_stream",true);
-DO_SYMBOL(cl,_sym_concatenated_stream_streams,993,ClPkg,"concatenated_stream_streams",true);
-DO_SYMBOL(cl,_sym_synonym_stream_symbol,994,ClPkg,"synonym_stream_symbol",true);
-DO_SYMBOL(cl,_sym_broadcast_stream_streams,995,ClPkg,"broadcast_stream_streams",true);
-DO_SYMBOL(cl,_sym_getOutputStreamString,996,ClPkg,"getOutputStreamString",true);
-DO_SYMBOL(cl,_sym_elt,997,ClPkg,"elt",true);
-DO_SYMBOL(cl,_sym_callNextMethod,998,ClPkg,"callNextMethod",true);
-DO_SYMBOL(cl,_sym_nextMethodP,999,ClPkg,"nextMethodP",true);
-DO_SYMBOL(cl,_sym_internalTimeUnitsPerSecond,1000,ClPkg,"internalTimeUnitsPerSecond",true);
-DO_SYMBOL(cl,_sym_getInternalRealTime,1001,ClPkg,"getInternalRealTime",true);
-DO_SYMBOL(cl,_sym_getInternalRunTime,1002,ClPkg,"getInternalRunTime",true);
-DO_SYMBOL(cl,_sym_logicalPathnameTranslations,1003,ClPkg,"logicalPathnameTranslations",true);
-DO_SYMBOL(cl,_sym_set,1004,ClPkg,"set",true);
-DO_SYMBOL(cl,_sym_restartName,1005,ClPkg,"restartName",true);
-DO_SYMBOL(cl,_sym_position,1006,ClPkg,"position",true);
-DO_SYMBOL(cl,_sym_compileFile,1007,ClPkg,"compileFile",true);
-DO_SYMBOL(cl,_sym_first,1008,ClPkg,"first",true);
-DO_SYMBOL(cl,_sym_float,1009,ClPkg,"float",true);
-DO_SYMBOL(cl,_sym_logical_pathname,1010,ClPkg,"logical_pathname",true);
-DO_SYMBOL(cl,_sym_pathnamep,1011,ClPkg,"pathnamep",true);
-DO_SYMBOL(cl,_sym_STARloadPathnameSTAR,1012,ClPkg,"STARloadPathnameSTAR",true);
-DO_SYMBOL(cl,_sym_STARloadTruenameSTAR,1013,ClPkg,"STARloadTruenameSTAR",true);
-DO_SYMBOL(cl,_sym_makeArray,1014,ClPkg,"makeArray",true);
-DO_SYMBOL(cl,_sym_makePathname,1015,ClPkg,"makePathname",true);
-DO_SYMBOL(cl,_sym_mismatch,1016,ClPkg,"mismatch",true);
-DO_SYMBOL(cl,_sym_SignedByte,1017,ClPkg,"SignedByte",true);
-DO_SYMBOL(cl,_sym_UnsignedByte,1018,ClPkg,"UnsignedByte",true);
-DO_SYMBOL(cl,_sym_Bit,1019,ClPkg,"Bit",true);
-DO_SYMBOL(cl,_sym_STARdefaultPathnameDefaultsSTAR,1020,ClPkg,"STARdefaultPathnameDefaultsSTAR",true);
-DO_SYMBOL(cl,_sym_simpleTypeError,1021,ClPkg,"simpleTypeError",true);
-DO_SYMBOL(cl,_sym_MultipleValuesLimit,1022,ClPkg,"MultipleValuesLimit",true);
-DO_SYMBOL(cl,_sym_keywordp,1023,ClPkg,"keywordp",true);
-DO_SYMBOL(cl,_sym_null,1024,ClPkg,"null",true);
-DO_SYMBOL(cl,_sym_endp,1025,ClPkg,"endp",true);
-DO_SYMBOL(cl,_sym_symbolp,1026,ClPkg,"symbolp",true);
-DO_SYMBOL(cl,_sym_atom,1027,ClPkg,"atom",true);
-DO_SYMBOL(cl,_sym_consp,1028,ClPkg,"consp",true);
-DO_SYMBOL(cl,_sym_listp,1029,ClPkg,"listp",true);
-DO_SYMBOL(cl,_sym_numberp,1030,ClPkg,"numberp",true);
-DO_SYMBOL(cl,_sym_integerp,1031,ClPkg,"integerp",true);
-DO_SYMBOL(cl,_sym_rationalp,1032,ClPkg,"rationalp",true);
-DO_SYMBOL(cl,_sym_floatp,1033,ClPkg,"floatp",true);
-DO_SYMBOL(cl,_sym_realp,1034,ClPkg,"realp",true);
-DO_SYMBOL(cl,_sym_complexp,1035,ClPkg,"complexp",true);
-DO_SYMBOL(cl,_sym_character,1036,ClPkg,"character",true);
-DO_SYMBOL(cl,_sym_base_char,1037,ClPkg,"base_char",true);
-DO_SYMBOL(cl,_sym_single_float,1038,ClPkg,"single_float",true);
-DO_SYMBOL(cl,_sym_characterp,1039,ClPkg,"characterp",true);
-DO_SYMBOL(cl,_sym_stringp,1040,ClPkg,"stringp",true);
-DO_SYMBOL(cl,_sym_bit_vector_p,1041,ClPkg,"bit_vector_p",true);
-DO_SYMBOL(cl,_sym_vectorp,1042,ClPkg,"vectorp",true);
-DO_SYMBOL(cl,_sym_simple_vector_p,1043,ClPkg,"simple_vector_p",true);
-DO_SYMBOL(cl,_sym_simple_string_p,1044,ClPkg,"simple_string_p",true);
-DO_SYMBOL(cl,_sym_simple_bit_vector_p,1045,ClPkg,"simple_bit_vector_p",true);
-DO_SYMBOL(cl,_sym_arrayp,1046,ClPkg,"arrayp",true);
-DO_SYMBOL(cl,_sym_packagep,1047,ClPkg,"packagep",true);
-DO_SYMBOL(cl,_sym_functionp,1048,ClPkg,"functionp",true);
-DO_SYMBOL(cl,_sym_compiled_function_p,1049,ClPkg,"compiled_function_p",true);
-DO_SYMBOL(cl,_sym_hash_table_p,1050,ClPkg,"hash_table_p",true);
-DO_SYMBOL(cl,_sym__DIVIDE_,1051,ClPkg,"_DIVIDE_",true);
-DO_SYMBOL(cl,_sym_typep,1052,ClPkg,"typep",true);
-DO_SYMBOL(cl,_sym_type,1053,ClPkg,"type",true);
-DO_SYMBOL(cl,_sym_step,1054,ClPkg,"step",true);
-DO_SYMBOL(cl,_sym_speed,1055,ClPkg,"speed",true);
-DO_SYMBOL(cl,_sym_space,1056,ClPkg,"space",true);
-DO_SYMBOL(cl,_sym_sin,1057,ClPkg,"sin",true);
-DO_SYMBOL(cl,_sym_safety,1058,ClPkg,"safety",true);
-DO_SYMBOL(cl,_sym_restart_bind,1059,ClPkg,"restart_bind",true);
-DO_SYMBOL(cl,_sym_restart,1060,ClPkg,"restart",true);
-DO_SYMBOL(cl,_sym_describe,1061,ClPkg,"describe",true);
-DO_SYMBOL(cl,_sym_disassemble,1062,ClPkg,"disassemble",true);
-DO_SYMBOL(cl,_sym_rename_file,1063,ClPkg,"rename_file",true);
-DO_SYMBOL(cl,_sym_random,1064,ClPkg,"random",true);
-DO_SYMBOL(cl,_sym_optimize,1065,ClPkg,"optimize",true);
-DO_SYMBOL(cl,_sym_two_way_stream_input_stream,1066,ClPkg,"two_way_stream_input_stream",true);
-DO_SYMBOL(cl,_sym_two_way_stream_output_stream,1067,ClPkg,"two_way_stream_output_stream",true);
-DO_SYMBOL(cl,_sym_two_way_stream,1068,ClPkg,"two_way_stream",true);
-DO_SYMBOL(cl,_sym_make_two_way_stream,1069,ClPkg,"make_two_way_stream",true);
-DO_SYMBOL(cl,_sym_make_synonym_stream,1070,ClPkg,"make_synonym_stream",true);
-DO_SYMBOL(cl,_sym_invoke_restart,1071,ClPkg,"invoke_restart",true);
-DO_SYMBOL(cl,_sym_get,1072,ClPkg,"get",true);
-DO_SYMBOL(cl,_sym_find_restart,1073,ClPkg,"find_restart",true);
-DO_SYMBOL(cl,_sym_fill_pointer,1074,ClPkg,"fill_pointer",true);
-DO_SYMBOL(cl,_sym_directory,1075,ClPkg,"directory",true);
-DO_SYMBOL(cl,_sym_defun,1076,ClPkg,"defun",true);
-DO_SYMBOL(cl,_sym_debug,1077,ClPkg,"debug",true);
-DO_SYMBOL(cl,_sym_count,1078,ClPkg,"count",true);
-DO_SYMBOL(cl,_sym_compute_restarts,1079,ClPkg,"compute_restarts",true);
-DO_SYMBOL(cl,_sym_write,1080,ClPkg,"write",true);
-DO_SYMBOL(cl,_sym_STARreadDefaultFloatFormatSTAR,1081,ClPkg,"STARreadDefaultFloatFormatSTAR",true);
-DO_SYMBOL(cl,_sym_STARprint_baseSTAR,1082,ClPkg,"STARprint_baseSTAR",true);
-DO_SYMBOL(cl,_sym_STARprint_levelSTAR,1083,ClPkg,"STARprint_levelSTAR",true);
-DO_SYMBOL(cl,_sym_STARprint_lengthSTAR,1084,ClPkg,"STARprint_lengthSTAR",true);
-DO_SYMBOL(cl,_sym_STARprint_radixSTAR,1085,ClPkg,"STARprint_radixSTAR",true);
-DO_SYMBOL(cl,_sym_STARprint_caseSTAR,1086,ClPkg,"STARprint_caseSTAR",true);
-DO_SYMBOL(cl,_sym_STARprint_gensymSTAR,1087,ClPkg,"STARprint_gensymSTAR",true);
-DO_SYMBOL(cl,_sym_STARprint_arraySTAR,1088,ClPkg,"STARprint_arraySTAR",true);
-DO_SYMBOL(cl,_sym_STARprint_readablySTAR,1089,ClPkg,"STARprint_readablySTAR",true);
-DO_SYMBOL(cl,_sym_STARprint_escapeSTAR,1090,ClPkg,"STARprint_escapeSTAR",true);
-DO_SYMBOL(cl,_sym_STARprint_circleSTAR,1091,ClPkg,"STARprint_circleSTAR",true);
-DO_SYMBOL(cl,_sym_STARprint_linesSTAR,1092,ClPkg,"STARprint_linesSTAR",true);
-DO_SYMBOL(cl,_sym_STARprint_right_marginSTAR,1093,ClPkg,"STARprint_right_marginSTAR",true);
-DO_SYMBOL(cl,_sym_STARprint_prettySTAR,1094,ClPkg,"STARprint_prettySTAR",true);
-DO_SYMBOL(cl,_sym_STARprint_miser_widthSTAR,1095,ClPkg,"STARprint_miser_widthSTAR",true);
-DO_SYMBOL(cl,_sym_STARprint_pprint_dispatchSTAR,1096,ClPkg,"STARprint_pprint_dispatchSTAR",true);
-DO_SYMBOL(cl,_sym_STARdebuggerHookSTAR,1097,ClPkg,"STARdebuggerHookSTAR",true);
-DO_SYMBOL(cl,_sym_break,1098,ClPkg,"break",true);
-DO_SYMBOL(cl,_sym_STARbreakOnSignalsSTAR,1099,ClPkg,"STARbreakOnSignalsSTAR",true);
-DO_SYMBOL(cl,_sym_typeError,1100,ClPkg,"typeError",true);
-DO_SYMBOL(cl,_sym_printObject,1101,ClPkg,"printObject",true);
-DO_SYMBOL(cl,_sym_controlError,1102,ClPkg,"controlError",true);
-DO_SYMBOL(cl,_sym_fileError,1103,ClPkg,"fileError",true);
-DO_SYMBOL(cl,_sym_satisfies,1104,ClPkg,"satisfies",true);
-DO_SYMBOL(cl,_sym_T,1105,ClPkg,"T",true);
-DO_SYMBOL(cl,_sym_method,1106,ClPkg,"method",true);
-DO_SYMBOL(cl,_sym_generic_function,1107,ClPkg,"generic_function",true);
-DO_SYMBOL(cl,_sym_cond,1108,ClPkg,"cond",true);
-DO_SYMBOL(cl,_sym_stream,1109,ClPkg,"stream",true);
-DO_SYMBOL(cl,_sym_boolean,1110,ClPkg,"boolean",true);
-DO_SYMBOL(cl,_sym_keyword,1111,ClPkg,"keyword",true);
-DO_SYMBOL(cl,_sym_array,1112,ClPkg,"array",true);
-DO_SYMBOL(cl,_sym_simple_array,1113,ClPkg,"simple_array",true);
-DO_SYMBOL(cl,_sym_vector,1114,ClPkg,"vector",true);
-DO_SYMBOL(cl,_sym_simple_vector,1115,ClPkg,"simple_vector",true);
-DO_SYMBOL(cl,_sym_input_stream_p,1116,ClPkg,"input_stream_p",true);
-DO_SYMBOL(cl,_sym_output_stream_p,1117,ClPkg,"output_stream_p",true);
-DO_SYMBOL(cl,_sym_STARstandard_inputSTAR,1118,ClPkg,"STARstandard_inputSTAR",true);
-DO_SYMBOL(cl,_sym_STARstandard_outputSTAR,1119,ClPkg,"STARstandard_outputSTAR",true);
-DO_SYMBOL(cl,_sym_STARerror_outputSTAR,1120,ClPkg,"STARerror_outputSTAR",true);
-DO_SYMBOL(cl,_sym_STARtrace_outputSTAR,1121,ClPkg,"STARtrace_outputSTAR",true);
-DO_SYMBOL(cl,_sym_STARdebug_ioSTAR,1122,ClPkg,"STARdebug_ioSTAR",true);
-DO_SYMBOL(cl,_sym_STARquery_ioSTAR,1123,ClPkg,"STARquery_ioSTAR",true);
-DO_SYMBOL(cl,_sym_STARterminal_ioSTAR,1124,ClPkg,"STARterminal_ioSTAR",true);
-DO_SYMBOL(cl,_sym_STARgensym_counterSTAR,1125,ClPkg,"STARgensym_counterSTAR",true);
-DO_SYMBOL(cl,_sym_standard_char,1126,ClPkg,"standard_char",true);
-DO_SYMBOL(cl,_sym_extended_char,1127,ClPkg,"extended_char",true);
-DO_SYMBOL(cl,_sym_special,1128,ClPkg,"special",true);
-DO_SYMBOL(cl,_sym_nconc,1129,ClPkg,"nconc",true);
-DO_SYMBOL(cl,_sym_cadr,1130,ClPkg,"cadr",true);
-DO_SYMBOL(cl,_sym_STARmacroexpand_hookSTAR,1131,ClPkg,"STARmacroexpand_hookSTAR",true);
-DO_SYMBOL(cl,_sym_STARread_baseSTAR,1132,ClPkg,"STARread_baseSTAR",true);
-DO_SYMBOL(cl,_sym_compile,1133,ClPkg,"compile",true);
-DO_SYMBOL(cl,_sym_load,1134,ClPkg,"load",true);
-DO_SYMBOL(cl,_sym_eval,1135,ClPkg,"eval",true);
-DO_SYMBOL(cl,_sym_STARread_evalSTAR,1136,ClPkg,"STARread_evalSTAR",true);
-DO_SYMBOL(cl,_sym_define_modify_macro,1137,ClPkg,"define_modify_macro",true);
-DO_SYMBOL(cl,_sym_destructuring_bind,1138,ClPkg,"destructuring_bind",true);
-DO_SYMBOL(cl,_sym_deftype,1139,ClPkg,"deftype",true);
-DO_SYMBOL(cl,_sym_define_method_combination,1140,ClPkg,"define_method_combination",true);
-DO_SYMBOL(cl,_sym_defsetf,1141,ClPkg,"defsetf",true);
-DO_SYMBOL(cl,_sym_AMPwhole,1142,ClPkg,"AMPwhole",true);
-DO_SYMBOL(cl,_sym_AMPenvironment,1143,ClPkg,"AMPenvironment",true);
-DO_SYMBOL(cl,_sym_AMPoptional,1144,ClPkg,"AMPoptional",true);
-DO_SYMBOL(cl,_sym_AMPkey,1145,ClPkg,"AMPkey",true);
-DO_SYMBOL(cl,_sym_AMPallow_other_keys,1146,ClPkg,"AMPallow_other_keys",true);
-DO_SYMBOL(cl,_sym_AMPaux,1147,ClPkg,"AMPaux",true);
-DO_SYMBOL(cl,_sym_AMPrest,1148,ClPkg,"AMPrest",true);
-DO_SYMBOL(cl,_sym_AMPbody,1149,ClPkg,"AMPbody",true);
-DO_SYMBOL(cl,_sym_integer,1150,ClPkg,"integer",true);
-DO_SYMBOL(cl,_sym_sequence,1151,ClPkg,"sequence",true);
-DO_SYMBOL(cl,_sym_declare,1152,ClPkg,"declare",true);
-DO_SYMBOL(cl,_sym_variable,1153,ClPkg,"variable",true);
-DO_SYMBOL(cl,_sym_bit,1154,ClPkg,"bit",true);
-DO_SYMBOL(cl,_sym_STARreadtableSTAR,1155,ClPkg,"STARreadtableSTAR",true);
-DO_SYMBOL(cl,_sym_and,1156,ClPkg,"and",true);
-DO_SYMBOL(cl,_sym_or,1157,ClPkg,"or",true);
-DO_SYMBOL(cl,_sym_car,1158,ClPkg,"car",true);
-DO_SYMBOL(cl,_sym_cdr,1159,ClPkg,"cdr",true);
-DO_SYMBOL(cl,_sym_dotimes,1160,ClPkg,"dotimes",true);
-DO_SYMBOL(cl,_sym_dolist,1161,ClPkg,"dolist",true);
-DO_SYMBOL(cl,_sym_do,1162,ClPkg,"do",true);
-DO_SYMBOL(cl,_sym_package,1163,ClPkg,"package",true);
-DO_SYMBOL(cl,_sym_aref,1164,ClPkg,"aref",true);
-DO_SYMBOL(cl,_sym_nth,1165,ClPkg,"nth",true);
-DO_SYMBOL(cl,_sym_append,1166,ClPkg,"append",true);
-DO_SYMBOL(cl,_sym_gethash,1167,ClPkg,"gethash",true);
-DO_SYMBOL(cl,_sym_hash_table,1168,ClPkg,"hash_table",true);
-DO_SYMBOL(cl,_sym_STARfeaturesSTAR,1169,ClPkg,"STARfeaturesSTAR",true);
-DO_SYMBOL(cl,_sym_STARload_printSTAR,1170,ClPkg,"STARload_printSTAR",true);
-DO_SYMBOL(cl,_sym_STARload_verboseSTAR,1171,ClPkg,"STARload_verboseSTAR",true);
-DO_SYMBOL(cl,_sym_lambda,1172,ClPkg,"lambda",true);
-DO_SYMBOL(cl,_sym_symbol,1173,ClPkg,"symbol",true);
-DO_SYMBOL(cl,_sym_STARpackageSTAR,1174,ClPkg,"STARpackageSTAR",true);
-DO_SYMBOL(cl,_sym_STARmodulesSTAR,1175,ClPkg,"STARmodulesSTAR",true);
-DO_SYMBOL(cl,_sym_progn,1176,ClPkg,"progn",true);
-DO_SYMBOL(cl,_sym_quote,1177,ClPkg,"quote",true);
-DO_SYMBOL(cl,_sym_function,1178,ClPkg,"function",true);
-DO_SYMBOL(cl,_sym_slot_value,1179,ClPkg,"slot_value",true);
-DO_SYMBOL(cl,_sym_values,1180,ClPkg,"values",true);
-DO_SYMBOL(cl,_sym_list,1181,ClPkg,"list",true);
-DO_SYMBOL(cl,_sym_standard_class,1182,ClPkg,"standard_class",true);
-DO_SYMBOL(cl,_sym_rest,1183,ClPkg,"rest",true);
-DO_SYMBOL(cl,_sym_most_negative_fixnum,1184,ClPkg,"most_negative_fixnum",true);
-DO_SYMBOL(cl,_sym_most_positive_fixnum,1185,ClPkg,"most_positive_fixnum",true);
-DO_SYMBOL(cl,_sym_array_rank_limit,1186,ClPkg,"array_rank_limit",true);
-DO_SYMBOL(cl,_sym_char_code_limit,1187,ClPkg,"char_code_limit",true);
-DO_SYMBOL(cl,_sym_apropos,1188,ClPkg,"apropos",true);
-DO_SYMBOL(cl,_sym_export,1189,ClPkg,"export",true);
-DO_SYMBOL(cl,_sym_intern,1190,ClPkg,"intern",true);
-DO_SYMBOL(cl,_sym_findClass,1191,ClPkg,"findClass",true);
-DO_SYMBOL(cl,_sym_error,1192,ClPkg,"error",true);
-DO_SYMBOL(cl,_sym_cerror,1193,ClPkg,"cerror",true);
-DO_SYMBOL(cl,_sym_not,1194,ClPkg,"not",true);
-DO_SYMBOL(cl,_sym_sort,1195,ClPkg,"sort",true);
-DO_SYMBOL(cl,_sym_macroexpand_1,1196,ClPkg,"macroexpand_1",true);
-DO_SYMBOL(cl,_sym_macroexpand,1197,ClPkg,"macroexpand",true);
-DO_SYMBOL(cl,_sym_acons,1198,ClPkg,"acons",true);
-DO_SYMBOL(cl,_sym_assoc,1199,ClPkg,"assoc",true);
-DO_SYMBOL(cl,_sym_member,1200,ClPkg,"member",true);
-DO_SYMBOL(cl,_sym_find_package,1201,ClPkg,"find_package",true);
-DO_SYMBOL(cl,_sym_copyTree,1202,ClPkg,"copyTree",true);
-DO_SYMBOL(cl,_sym_eq,1203,ClPkg,"eq",true);
-DO_SYMBOL(cl,_sym_eql,1204,ClPkg,"eql",true);
-DO_SYMBOL(cl,_sym_equal,1205,ClPkg,"equal",true);
-DO_SYMBOL(cl,_sym_equalp,1206,ClPkg,"equalp",true);
-DO_SYMBOL(cl,_sym_setMacroCharacter,1207,ClPkg,"setMacroCharacter",true);
-DO_SYMBOL(cl,_sym_setDispatchMacroCharacter,1208,ClPkg,"setDispatchMacroCharacter",true);
-DO_SYMBOL(cl,_sym_getDispatchMacroCharacter,1209,ClPkg,"getDispatchMacroCharacter",true);
-DO_SYMBOL(cl,_sym_pathname,1210,ClPkg,"pathname",true);
-DO_SYMBOL(cl,_sym_mergePathnames,1211,ClPkg,"mergePathnames",true);
-DO_SYMBOL(cl,_sym_wildPathnameP,1212,ClPkg,"wildPathnameP",true);
-DO_SYMBOL(cl,_sym_make_pathname,1213,ClPkg,"make_pathname",true);
-DO_SYMBOL(cl,_sym_pathnameHost,1214,ClPkg,"pathnameHost",true);
-DO_SYMBOL(cl,_sym_pathnameDevice,1215,ClPkg,"pathnameDevice",true);
-DO_SYMBOL(cl,_sym_pathnameDirectory,1216,ClPkg,"pathnameDirectory",true);
-DO_SYMBOL(cl,_sym_pathnameName,1217,ClPkg,"pathnameName",true);
-DO_SYMBOL(cl,_sym_pathnameType,1218,ClPkg,"pathnameType",true);
-DO_SYMBOL(cl,_sym_pathnameVersion,1219,ClPkg,"pathnameVersion",true);
-DO_SYMBOL(cl,_sym_pathnameMatchP,1220,ClPkg,"pathnameMatchP",true);
-DO_SYMBOL(cl,_sym_translatePathname,1221,ClPkg,"translatePathname",true);
-DO_SYMBOL(cl,_sym_translateLogicalPathname,1222,ClPkg,"translateLogicalPathname",true);
-DO_SYMBOL(cl,_sym_namestring,1223,ClPkg,"namestring",true);
-DO_SYMBOL(cl,_sym_parseNamestring,1224,ClPkg,"parseNamestring",true);
-DO_SYMBOL(cl,_sym_fileNamestring,1225,ClPkg,"fileNamestring",true);
-DO_SYMBOL(cl,_sym_directoryNamestring,1226,ClPkg,"directoryNamestring",true);
-DO_SYMBOL(cl,_sym_hostNamestring,1227,ClPkg,"hostNamestring",true);
-DO_SYMBOL(cl,_sym_enoughNamestring,1228,ClPkg,"enoughNamestring",true);
-DO_SYMBOL(cl,_sym_package_use_list,1229,ClPkg,"package_use_list",true);
-DO_SYMBOL(cl,_sym_gentemp,1230,ClPkg,"gentemp",true);
-DO_SYMBOL(cl,_sym_makePackage,1231,ClPkg,"makePackage",true);
-DO_SYMBOL(cl,_sym_listAllPackages,1232,ClPkg,"listAllPackages",true);
-DO_SYMBOL(cl,_sym_use_package,1233,ClPkg,"use_package",true);
-DO_SYMBOL(cl,_sym_unuse_package,1234,ClPkg,"unuse_package",true);
-DO_SYMBOL(cl,_sym_package_shadowing_symbols,1235,ClPkg,"package_shadowing_symbols",true);
-DO_SYMBOL(cl,_sym_import,1236,ClPkg,"import",true);
-DO_SYMBOL(cl,_sym_shadow,1237,ClPkg,"shadow",true);
-DO_SYMBOL(cl,_sym_shadowing_import,1238,ClPkg,"shadowing_import",true);
-DO_SYMBOL(cl,_sym_findSymbol,1239,ClPkg,"findSymbol",true);
-DO_SYMBOL(cl,_sym_unintern,1240,ClPkg,"unintern",true);
-DO_SYMBOL(cl,_sym_condition,1241,ClPkg,"condition",true);
-DO_SYMBOL(cl,_sym_defvar,1242,ClPkg,"defvar",true);
-DO_SYMBOL(cl,_sym_defconstant,1243,ClPkg,"defconstant",true);
-DO_SYMBOL(cl,_sym_defparameter,1244,ClPkg,"defparameter",true);
-DO_SYMBOL(cl,_sym_intersection,1245,ClPkg,"intersection",true);
-DO_SYMBOL(cl,_sym_union,1246,ClPkg,"union",true);
-DO_SYMBOL(cl,_sym_remove,1247,ClPkg,"remove",true);
-DO_SYMBOL(cl,_sym_pprint_dispatch,1248,ClPkg,"pprint_dispatch",true);
-DO_SYMBOL(cl,_sym_fileStream,1249,ClPkg,"fileStream",true);
-DO_SYMBOL(cl,_sym_make_list,1250,ClPkg,"make_list",true);
-DO_SYMBOL(cl,_sym_cons,1251,ClPkg,"cons",true);
-DO_SYMBOL(cl,_sym_getf,1252,ClPkg,"getf",true);
-DO_SYMBOL(cl,_sym_make_symbol,1253,ClPkg,"make_symbol",true);
-DO_SYMBOL(cl,_sym_symbolName,1254,ClPkg,"symbolName",true);
-DO_SYMBOL(cl,_sym_symbolValue,1255,ClPkg,"symbolValue",true);
-DO_SYMBOL(cl,_sym_symbolPackage,1256,ClPkg,"symbolPackage",true);
-DO_SYMBOL(cl,_sym_symbolFunction,1257,ClPkg,"symbolFunction",true);
-DO_SYMBOL(cl,_sym_boundp,1258,ClPkg,"boundp",true);
-DO_SYMBOL(cl,_sym_makeCondition,1259,ClPkg,"makeCondition",true);
-DO_SYMBOL(cl,_sym_format,1260,ClPkg,"format",true);
-DO_SYMBOL(cl,_sym_documentation,1261,ClPkg,"documentation",true);
-DO_SYMBOL(cl,_sym_copyStructure,1262,ClPkg,"copyStructure",true);
-DO_SYMBOL(cl,_sym_char_code,1263,ClPkg,"char_code",true);
-DO_SYMBOL(cl,_sym_code_char,1264,ClPkg,"code_char",true);
-DO_SYMBOL(cl,_sym_char_int,1265,ClPkg,"char_int",true);
-DO_SYMBOL(cl,_sym_name_char,1266,ClPkg,"name_char",true);
-DO_SYMBOL(cl,_sym_char_name,1267,ClPkg,"char_name",true);
-DO_SYMBOL(cl,_sym_alpha_char_p,1268,ClPkg,"alpha_char_p",true);
-DO_SYMBOL(cl,_sym_standard_char_p,1269,ClPkg,"standard_char_p",true);
-DO_SYMBOL(cl,_sym_charUpcase,1270,ClPkg,"charUpcase",true);
-DO_SYMBOL(cl,_sym_charDowncase,1271,ClPkg,"charDowncase",true);
-DO_SYMBOL(cl,_sym_char_LT_,1272,ClPkg,"char_LT_",true);
-DO_SYMBOL(cl,_sym_char_GT_,1273,ClPkg,"char_GT_",true);
-DO_SYMBOL(cl,_sym_char_LE_,1274,ClPkg,"char_LE_",true);
-DO_SYMBOL(cl,_sym_char_GE_,1275,ClPkg,"char_GE_",true);
-DO_SYMBOL(cl,_sym_char_NE_,1276,ClPkg,"char_NE_",true);
-DO_SYMBOL(cl,_sym_char_EQ_,1277,ClPkg,"char_EQ_",true);
-DO_SYMBOL(cl,_sym_charLessp,1278,ClPkg,"charLessp",true);
-DO_SYMBOL(cl,_sym_charGreaterp,1279,ClPkg,"charGreaterp",true);
-DO_SYMBOL(cl,_sym_charNotGreaterp,1280,ClPkg,"charNotGreaterp",true);
-DO_SYMBOL(cl,_sym_charNotLessp,1281,ClPkg,"charNotLessp",true);
-DO_SYMBOL(cl,_sym_charNotEqual,1282,ClPkg,"charNotEqual",true);
-DO_SYMBOL(cl,_sym_charEqual,1283,ClPkg,"charEqual",true);
-DO_SYMBOL(cl,_sym_digitCharP,1284,ClPkg,"digitCharP",true);
-DO_SYMBOL(cl,_sym_string,1285,ClPkg,"string",true);
-DO_SYMBOL(cl,_sym_string_upcase,1286,ClPkg,"string_upcase",true);
-DO_SYMBOL(cl,_sym_string_downcase,1287,ClPkg,"string_downcase",true);
-DO_SYMBOL(cl,_sym_nstring_upcase,1288,ClPkg,"nstring_upcase",true);
-DO_SYMBOL(cl,_sym_nstring_downcase,1289,ClPkg,"nstring_downcase",true);
-DO_SYMBOL(cl,_sym_stringTrim,1290,ClPkg,"stringTrim",true);
-DO_SYMBOL(cl,_sym_stringLeftTrim,1291,ClPkg,"stringLeftTrim",true);
-DO_SYMBOL(cl,_sym_stringRightTrim,1292,ClPkg,"stringRightTrim",true);
-DO_SYMBOL(cl,_sym_char,1293,ClPkg,"char",true);
-DO_SYMBOL(cl,_sym_string_EQ_,1294,ClPkg,"string_EQ_",true);
-DO_SYMBOL(cl,_sym_string_NE_,1295,ClPkg,"string_NE_",true);
-DO_SYMBOL(cl,_sym_string_LT_,1296,ClPkg,"string_LT_",true);
-DO_SYMBOL(cl,_sym_string_GT_,1297,ClPkg,"string_GT_",true);
-DO_SYMBOL(cl,_sym_string_LE_,1298,ClPkg,"string_LE_",true);
-DO_SYMBOL(cl,_sym_string_GE_,1299,ClPkg,"string_GE_",true);
-DO_SYMBOL(cl,_sym_string_equal,1300,ClPkg,"string_equal",true);
-DO_SYMBOL(cl,_sym_string_not_equal,1301,ClPkg,"string_not_equal",true);
-DO_SYMBOL(cl,_sym_string_lessp,1302,ClPkg,"string_lessp",true);
-DO_SYMBOL(cl,_sym_string_greaterp,1303,ClPkg,"string_greaterp",true);
-DO_SYMBOL(cl,_sym_string_not_greaterp,1304,ClPkg,"string_not_greaterp",true);
-DO_SYMBOL(cl,_sym_string_not_lessp,1305,ClPkg,"string_not_lessp",true);
-DO_SYMBOL(cl,_sym_make_string,1306,ClPkg,"make_string",true);
-DO_SYMBOL(cl,_sym_parseInteger,1307,ClPkg,"parseInteger",true);
-DO_SYMBOL(cl,_sym_make_sequence,1308,ClPkg,"make_sequence",true);
-DO_SYMBOL(cl,_sym_reverse,1309,ClPkg,"reverse",true);
-DO_SYMBOL(cl,_sym_nreverse,1310,ClPkg,"nreverse",true);
-DO_SYMBOL(cl,_sym_subseq,1311,ClPkg,"subseq",true);
-DO_SYMBOL(cl,_sym_copySeq,1312,ClPkg,"copySeq",true);
-DO_SYMBOL(cl,_sym_length,1313,ClPkg,"length",true);
-DO_SYMBOL(cl,_sym_subtypep,1314,ClPkg,"subtypep",true);
-DO_SYMBOL(cl,_sym_vectorPush,1315,ClPkg,"vectorPush",true);
-DO_SYMBOL(cl,_sym_vectorPushExtend,1316,ClPkg,"vectorPushExtend",true);
-DO_SYMBOL(cl,_sym_STARread_suppressSTAR,1317,ClPkg,"STARread_suppressSTAR",true);
-DO_SYMBOL(cl,_sym_RandomState_O,1318,ClPkg,"random-state",true);
-DO_SYMBOL(cl,_sym_ReadTable_O,1319,ClPkg,"readtable",true);
-DO_SYMBOL(cl,_sym_StructureObject_O,1320,ClPkg,"structure-object",true);
-DO_SYMBOL(cl,_sym_Null_O,1321,ClPkg,"null",true);
-DO_SYMBOL(cl,_sym_StructureClass_O,1322,ClPkg,"structure-class",true);
-DO_SYMBOL(cl,_sym_StandardClass_O,1323,ClPkg,"StandardClass",true);
-DO_SYMBOL(cl,_sym_BuiltInClass_O,1324,ClPkg,"BuiltInClass",true);
-DO_SYMBOL(cl,_sym_Package_O,1325,ClPkg,"Package",true);
-DO_SYMBOL(cl,_sym_Pathname_O,1326,ClPkg,"pathname",true);
-DO_SYMBOL(cl,_sym_LogicalPathname_O,1327,ClPkg,"logical-pathname",true);
-DO_SYMBOL(cl,_sym_Character_dummy_O,1328,ClPkg,"character",true);
-DO_SYMBOL(cl,_sym_Stream_O,1329,ClPkg,"stream",true);
-DO_SYMBOL(cl,_sym_FileStream_O,1330,ClPkg,"file-stream",true);
-DO_SYMBOL(cl,_sym_StringStream_O,1331,ClPkg,"string-stream",true);
-DO_SYMBOL(cl,_sym_SynonymStream_O,1332,ClPkg,"synonym-stream",true);
-DO_SYMBOL(cl,_sym_TwoWayStream_O,1333,ClPkg,"two-way-stream",true);
-DO_SYMBOL(cl,_sym_BroadcastStream_O,1334,ClPkg,"BroadcastStream",true);
-DO_SYMBOL(cl,_sym_ConcatenatedStream_O,1335,ClPkg,"ConcatenatedStream",true);
-DO_SYMBOL(cl,_sym_EchoStream_O,1336,ClPkg,"EchoStream",true);
-DO_SYMBOL(cl,_sym_String_O,1337,ClPkg,"String",true);
-DO_SYMBOL(cl,_sym_Str_O,1338,ClPkg,"base-string",true);
-DO_SYMBOL(cl,_sym_HashTable_O,1339,ClPkg,"HashTable",true);
-DO_SYMBOL(cl,_sym_BitVector_O,1340,ClPkg,"bit-vector",true);
-DO_SYMBOL(cl,_sym_SimpleBitVector_O,1341,ClPkg,"simple-bit-vector",true);
-DO_SYMBOL(cl,_sym_BitVectorWithFillPtr_O,1342,ClPkg,"bit-vector-with-fill-ptr",true);
-DO_SYMBOL(cl,_sym_T_O,1343,ClPkg,"T",true);
-DO_SYMBOL(cl,_sym_Cons_O,1344,ClPkg,"Cons",true);
-DO_SYMBOL(cl,_sym_Number_O,1345,ClPkg,"number",true);
-DO_SYMBOL(cl,_sym_Real_O,1346,ClPkg,"real",true);
-DO_SYMBOL(cl,_sym_Rational_O,1347,ClPkg,"rational",true);
-DO_SYMBOL(cl,_sym_Integer_O,1348,ClPkg,"integer",true);
-DO_SYMBOL(cl,_sym_Fixnum_dummy_O,1349,ClPkg,"fixnum",true);
-DO_SYMBOL(cl,_sym_Float_O,1350,ClPkg,"float",true);
-DO_SYMBOL(cl,_sym_ShortFloat_O,1351,ClPkg,"ShortFloat",true);
-DO_SYMBOL(cl,_sym_SingleFloat_dummy_O,1352,ClPkg,"SingleFloat",true);
-DO_SYMBOL(cl,_sym_DoubleFloat_O,1353,ClPkg,"double-float",true);
-DO_SYMBOL(cl,_sym_LongFloat_O,1354,ClPkg,"LongFloat",true);
-DO_SYMBOL(cl,_sym_Complex_O,1355,ClPkg,"complex",true);
-DO_SYMBOL(cl,_sym_Ratio_O,1356,ClPkg,"ratio",true);
-DO_SYMBOL(cl,_sym_Bignum_O,1357,ClPkg,"Bignum",true);
-DO_SYMBOL(cl,_sym_Symbol_O,1358,ClPkg,"Symbol",true);
-DO_SYMBOL(cl,_sym_Function_O,1359,ClPkg,"Function",true);
-DO_SYMBOL(cl,_sym_CompiledFunction_O,1360,ClPkg,"CompiledFunction",true);
-DO_SYMBOL(cl,_sym_StandardObject_O,1361,ClPkg,"standard-object",true);
-DO_SYMBOL(cl,_sym_Class_O,1362,ClPkg,"class",true);
-DO_SYMBOL(cl,_sym_Array_O,1363,ClPkg,"array",true);
-DO_SYMBOL(cl,_sym_Vector_O,1364,ClPkg,"vector",true);
+DO_SYMBOL(cl,_sym_case,1121,ClPkg,"case",true);
+DO_SYMBOL(cl,_sym_otherwise,1122,ClPkg,"otherwise",true);
+DO_SYMBOL(cl,_sym_ignore,1123,ClPkg,"ignore",true);
+DO_SYMBOL(cl,_sym_multipleValueSetq,1124,ClPkg,"multipleValueSetq",true);
+DO_SYMBOL(cl,_sym_prog1,1125,ClPkg,"prog1",true);
+DO_SYMBOL(cl,_sym_block,1126,ClPkg,"block",true);
+DO_SYMBOL(cl,_sym_throw,1127,ClPkg,"throw",true);
+DO_SYMBOL(cl,_sym_apply,1128,ClPkg,"apply",true);
+DO_SYMBOL(cl,_sym_funcall,1129,ClPkg,"funcall",true);
+DO_SYMBOL(cl,_sym_compute_applicable_methods,1130,ClPkg,"compute_applicable_methods",true);
+DO_SYMBOL(cl,_sym_no_applicable_method,1131,ClPkg,"no_applicable_method",true);
+DO_SYMBOL(cl,_sym_standardGenericFunction,1132,ClPkg,"standardGenericFunction",true);
+DO_SYMBOL(cl,_sym_sleep,1133,ClPkg,"sleep",true);
+DO_SYMBOL(cl,_sym_let,1134,ClPkg,"let",true);
+DO_SYMBOL(cl,_sym_letSTAR,1135,ClPkg,"letSTAR",true);
+DO_SYMBOL(cl,_sym_return_from,1136,ClPkg,"return_from",true);
+DO_SYMBOL(cl,_sym_catch,1137,ClPkg,"catch",true);
+DO_SYMBOL(cl,_sym_load_time_value,1138,ClPkg,"load_time_value",true);
+DO_SYMBOL(cl,_sym_setq,1139,ClPkg,"setq",true);
+DO_SYMBOL(cl,_sym_eval_when,1140,ClPkg,"eval_when",true);
+DO_SYMBOL(cl,_sym_locally,1141,ClPkg,"locally",true);
+DO_SYMBOL(cl,_sym_symbol_macrolet,1142,ClPkg,"symbol_macrolet",true);
+DO_SYMBOL(cl,_sym_flet,1143,ClPkg,"flet",true);
+DO_SYMBOL(cl,_sym_macrolet,1144,ClPkg,"macrolet",true);
+DO_SYMBOL(cl,_sym_tagbody,1145,ClPkg,"tagbody",true);
+DO_SYMBOL(cl,_sym_multiple_value_call,1146,ClPkg,"multiple_value_call",true);
+DO_SYMBOL(cl,_sym_the,1147,ClPkg,"the",true);
+DO_SYMBOL(cl,_sym_go,1148,ClPkg,"go",true);
+DO_SYMBOL(cl,_sym_multiple_value_prog1,1149,ClPkg,"multiple_value_prog1",true);
+DO_SYMBOL(cl,_sym_if,1150,ClPkg,"if",true);
+DO_SYMBOL(cl,_sym_unwind_protect,1151,ClPkg,"unwind_protect",true);
+DO_SYMBOL(cl,_sym_labels,1152,ClPkg,"labels",true);
+DO_SYMBOL(cl,_sym_progv,1153,ClPkg,"progv",true);
+DO_SYMBOL(cl,_sym_setf,1154,ClPkg,"setf",true);
+DO_SYMBOL(cl,_sym_read,1155,ClPkg,"read",true);
+DO_SYMBOL(cl,_sym_read_preserving_whitespace,1156,ClPkg,"read_preserving_whitespace",true);
+DO_SYMBOL(cl,_sym_read_delimited_list,1157,ClPkg,"read_delimited_list",true);
+DO_SYMBOL(cl,_sym_every,1158,ClPkg,"every",true);
+DO_SYMBOL(cl,_sym_some,1159,ClPkg,"some",true);
+DO_SYMBOL(cl,_sym_notevery,1160,ClPkg,"notevery",true);
+DO_SYMBOL(cl,_sym_notany,1161,ClPkg,"notany",true);
+DO_SYMBOL(cl,_sym_mapcar,1162,ClPkg,"mapcar",true);
+DO_SYMBOL(cl,_sym_mapc,1163,ClPkg,"mapc",true);
+DO_SYMBOL(cl,_sym_maplist,1164,ClPkg,"maplist",true);
+DO_SYMBOL(cl,_sym_mapl,1165,ClPkg,"mapl",true);
+DO_SYMBOL(cl,_sym_mapcan,1166,ClPkg,"mapcan",true);
+DO_SYMBOL(cl,_sym_mapcon,1167,ClPkg,"mapcon",true);
+DO_SYMBOL(cl,_sym_classOf,1168,ClPkg,"classOf",true);
+DO_SYMBOL(cl,_sym_identity,1169,ClPkg,"identity",true);
+DO_SYMBOL(cl,_sym_constantp,1170,ClPkg,"constantp",true);
+DO_SYMBOL(cl,_sym_ash,1171,ClPkg,"ash",true);
+DO_SYMBOL(cl,_sym_specialOperatorP,1172,ClPkg,"specialOperatorP",true);
+DO_SYMBOL(cl,_sym_macroFunction,1173,ClPkg,"macroFunction",true);
+DO_SYMBOL(cl,_sym_gensym,1174,ClPkg,"gensym",true);
+DO_SYMBOL(cl,_sym_type_of,1175,ClPkg,"type_of",true);
+DO_SYMBOL(cl,_sym_fdefinition,1176,ClPkg,"fdefinition",true);
+DO_SYMBOL(cl,_sym_fboundp,1177,ClPkg,"fboundp",true);
+DO_SYMBOL(cl,_sym_fmakunbound,1178,ClPkg,"fmakunbound",true);
+DO_SYMBOL(cl,_sym_values_list,1179,ClPkg,"values_list",true);
+DO_SYMBOL(cl,_sym_make_hash_table,1180,ClPkg,"make_hash_table",true);
+DO_SYMBOL(cl,_sym_maphash,1181,ClPkg,"maphash",true);
+DO_SYMBOL(cl,_sym_clrhash,1182,ClPkg,"clrhash",true);
+DO_SYMBOL(cl,_sym_remhash,1183,ClPkg,"remhash",true);
+DO_SYMBOL(cl,_sym_max,1184,ClPkg,"max",true);
+DO_SYMBOL(cl,_sym_min,1185,ClPkg,"min",true);
+DO_SYMBOL(cl,_sym_zerop,1186,ClPkg,"zerop",true);
+DO_SYMBOL(cl,_sym__LT_,1187,ClPkg,"_LT_",true);
+DO_SYMBOL(cl,_sym__GT_,1188,ClPkg,"_GT_",true);
+DO_SYMBOL(cl,_sym__LE_,1189,ClPkg,"_LE_",true);
+DO_SYMBOL(cl,_sym__GE_,1190,ClPkg,"_GE_",true);
+DO_SYMBOL(cl,_sym__EQ_,1191,ClPkg,"_EQ_",true);
+DO_SYMBOL(cl,_sym__NE_,1192,ClPkg,"_NE_",true);
+DO_SYMBOL(cl,_sym__PLUS_,1193,ClPkg,"_PLUS_",true);
+DO_SYMBOL(cl,_sym__TIMES_,1194,ClPkg,"_TIMES_",true);
+DO_SYMBOL(cl,_sym__MINUS_,1195,ClPkg,"_MINUS_",true);
+DO_SYMBOL(cl,_sym_logand,1196,ClPkg,"logand",true);
+DO_SYMBOL(cl,_sym_logior,1197,ClPkg,"logior",true);
+DO_SYMBOL(cl,_sym_logandc1,1198,ClPkg,"logandc1",true);
+DO_SYMBOL(cl,_sym_logandc2,1199,ClPkg,"logandc2",true);
+DO_SYMBOL(cl,_sym_logeqv,1200,ClPkg,"logeqv",true);
+DO_SYMBOL(cl,_sym_lognand,1201,ClPkg,"lognand",true);
+DO_SYMBOL(cl,_sym_lognor,1202,ClPkg,"lognor",true);
+DO_SYMBOL(cl,_sym_lognot,1203,ClPkg,"lognot",true);
+DO_SYMBOL(cl,_sym_logorc1,1204,ClPkg,"logorc1",true);
+DO_SYMBOL(cl,_sym_logorc2,1205,ClPkg,"logorc2",true);
+DO_SYMBOL(cl,_sym_logxor,1206,ClPkg,"logxor",true);
+DO_SYMBOL(cl,_sym_sqrt,1207,ClPkg,"sqrt",true);
+DO_SYMBOL(cl,_sym_cos,1208,ClPkg,"cos",true);
+DO_SYMBOL(cl,_sym_tan,1209,ClPkg,"tan",true);
+DO_SYMBOL(cl,_sym_sinh,1210,ClPkg,"sinh",true);
+DO_SYMBOL(cl,_sym_cosh,1211,ClPkg,"cosh",true);
+DO_SYMBOL(cl,_sym_tanh,1212,ClPkg,"tanh",true);
+DO_SYMBOL(cl,_sym_conjugate,1213,ClPkg,"conjugate",true);
+DO_SYMBOL(cl,_sym_log,1214,ClPkg,"log",true);
+DO_SYMBOL(cl,_sym_expt,1215,ClPkg,"expt",true);
+DO_SYMBOL(cl,_sym_exp,1216,ClPkg,"exp",true);
+DO_SYMBOL(cl,_sym_getUniversalTime,1217,ClPkg,"getUniversalTime",true);
+DO_SYMBOL(cl,_sym_leastPositiveSingleFloat,1218,ClPkg,"leastPositiveSingleFloat",true);
+DO_SYMBOL(cl,_sym_leastNegativeSingleFloat,1219,ClPkg,"leastNegativeSingleFloat",true);
+DO_SYMBOL(cl,_sym_mostPositiveSingleFloat,1220,ClPkg,"mostPositiveSingleFloat",true);
+DO_SYMBOL(cl,_sym_mostNegativeSingleFloat,1221,ClPkg,"mostNegativeSingleFloat",true);
+DO_SYMBOL(cl,_sym_leastPositiveShortFloat,1222,ClPkg,"leastPositiveShortFloat",true);
+DO_SYMBOL(cl,_sym_leastNegativeShortFloat,1223,ClPkg,"leastNegativeShortFloat",true);
+DO_SYMBOL(cl,_sym_mostPositiveShortFloat,1224,ClPkg,"mostPositiveShortFloat",true);
+DO_SYMBOL(cl,_sym_mostNegativeShortFloat,1225,ClPkg,"mostNegativeShortFloat",true);
+DO_SYMBOL(cl,_sym_leastPositiveDoubleFloat,1226,ClPkg,"leastPositiveDoubleFloat",true);
+DO_SYMBOL(cl,_sym_leastNegativeDoubleFloat,1227,ClPkg,"leastNegativeDoubleFloat",true);
+DO_SYMBOL(cl,_sym_mostPositiveDoubleFloat,1228,ClPkg,"mostPositiveDoubleFloat",true);
+DO_SYMBOL(cl,_sym_mostNegativeDoubleFloat,1229,ClPkg,"mostNegativeDoubleFloat",true);
+DO_SYMBOL(cl,_sym_leastPositiveLongFloat,1230,ClPkg,"leastPositiveLongFloat",true);
+DO_SYMBOL(cl,_sym_leastNegativeLongFloat,1231,ClPkg,"leastNegativeLongFloat",true);
+DO_SYMBOL(cl,_sym_mostPositiveLongFloat,1232,ClPkg,"mostPositiveLongFloat",true);
+DO_SYMBOL(cl,_sym_mostNegativeLongFloat,1233,ClPkg,"mostNegativeLongFloat",true);
+DO_SYMBOL(cl,_sym_leastNegativeNormalizedSingleFloat,1234,ClPkg,"leastNegativeNormalizedSingleFloat",true);
+DO_SYMBOL(cl,_sym_leastNegativeNormalizedShortFloat,1235,ClPkg,"leastNegativeNormalizedShortFloat",true);
+DO_SYMBOL(cl,_sym_leastNegativeNormalizedDoubleFloat,1236,ClPkg,"leastNegativeNormalizedDoubleFloat",true);
+DO_SYMBOL(cl,_sym_leastNegativeNormalizedLongFloat,1237,ClPkg,"leastNegativeNormalizedLongFloat",true);
+DO_SYMBOL(cl,_sym_leastPositiveNormalizedSingleFloat,1238,ClPkg,"leastPositiveNormalizedSingleFloat",true);
+DO_SYMBOL(cl,_sym_leastPositiveNormalizedShortFloat,1239,ClPkg,"leastPositiveNormalizedShortFloat",true);
+DO_SYMBOL(cl,_sym_leastPositiveNormalizedDoubleFloat,1240,ClPkg,"leastPositiveNormalizedDoubleFloat",true);
+DO_SYMBOL(cl,_sym_leastPositiveNormalizedLongFloat,1241,ClPkg,"leastPositiveNormalizedLongFloat",true);
+DO_SYMBOL(cl,_sym_pi,1242,ClPkg,"pi",true);
+DO_SYMBOL(cl,_sym_gcd,1243,ClPkg,"gcd",true);
+DO_SYMBOL(cl,_sym_lcm,1244,ClPkg,"lcm",true);
+DO_SYMBOL(cl,_sym_numerator,1245,ClPkg,"numerator",true);
+DO_SYMBOL(cl,_sym_denominator,1246,ClPkg,"denominator",true);
+DO_SYMBOL(cl,_sym_floor,1247,ClPkg,"floor",true);
+DO_SYMBOL(cl,_sym_ceiling,1248,ClPkg,"ceiling",true);
+DO_SYMBOL(cl,_sym_truncate,1249,ClPkg,"truncate",true);
+DO_SYMBOL(cl,_sym_round,1250,ClPkg,"round",true);
+DO_SYMBOL(cl,_sym_mod,1251,ClPkg,"mod",true);
+DO_SYMBOL(cl,_sym_rem,1252,ClPkg,"rem",true);
+DO_SYMBOL(cl,_sym_decodeFloat,1253,ClPkg,"decodeFloat",true);
+DO_SYMBOL(cl,_sym_scaleFloat,1254,ClPkg,"scaleFloat",true);
+DO_SYMBOL(cl,_sym_floatSign,1255,ClPkg,"floatSign",true);
+DO_SYMBOL(cl,_sym_floatDigits,1256,ClPkg,"floatDigits",true);
+DO_SYMBOL(cl,_sym_floatPrecision,1257,ClPkg,"floatPrecision",true);
+DO_SYMBOL(cl,_sym_integer_decode_float,1258,ClPkg,"integer_decode_float",true);
+DO_SYMBOL(cl,_sym_complex,1259,ClPkg,"complex",true);
+DO_SYMBOL(cl,_sym_realpart,1260,ClPkg,"realpart",true);
+DO_SYMBOL(cl,_sym_imagpart,1261,ClPkg,"imagpart",true);
+DO_SYMBOL(cl,_sym_print,1262,ClPkg,"print",true);
+DO_SYMBOL(cl,_sym_prin1,1263,ClPkg,"prin1",true);
+DO_SYMBOL(cl,_sym_princ,1264,ClPkg,"princ",true);
+DO_SYMBOL(cl,_sym_truename,1265,ClPkg,"truename",true);
+DO_SYMBOL(cl,_sym_probe_file,1266,ClPkg,"probe_file",true);
+DO_SYMBOL(cl,_sym_deleteFile,1267,ClPkg,"deleteFile",true);
+DO_SYMBOL(cl,_sym_file_write_date,1268,ClPkg,"file_write_date",true);
+DO_SYMBOL(cl,_sym_userHomedirPathname,1269,ClPkg,"userHomedirPathname",true);
+DO_SYMBOL(cl,_sym_revappend,1270,ClPkg,"revappend",true);
+DO_SYMBOL(cl,_sym_nreconc,1271,ClPkg,"nreconc",true);
+DO_SYMBOL(cl,_sym_listSTAR,1272,ClPkg,"listSTAR",true);
+DO_SYMBOL(cl,_sym_butlast,1273,ClPkg,"butlast",true);
+DO_SYMBOL(cl,_sym_nbutlast,1274,ClPkg,"nbutlast",true);
+DO_SYMBOL(cl,_sym_nthcdr,1275,ClPkg,"nthcdr",true);
+DO_SYMBOL(cl,_sym_copyList,1276,ClPkg,"copyList",true);
+DO_SYMBOL(cl,_sym_last,1277,ClPkg,"last",true);
+DO_SYMBOL(cl,_sym_filePosition,1278,ClPkg,"filePosition",true);
+DO_SYMBOL(cl,_sym_readSequence,1279,ClPkg,"readSequence",true);
+DO_SYMBOL(cl,_sym_read_from_string,1280,ClPkg,"read_from_string",true);
+DO_SYMBOL(cl,_sym_read_line,1281,ClPkg,"read_line",true);
+DO_SYMBOL(cl,_sym_terpri,1282,ClPkg,"terpri",true);
+DO_SYMBOL(cl,_sym_freshLine,1283,ClPkg,"freshLine",true);
+DO_SYMBOL(cl,_sym_writeString,1284,ClPkg,"writeString",true);
+DO_SYMBOL(cl,_sym_writeLine,1285,ClPkg,"writeLine",true);
+DO_SYMBOL(cl,_sym_writeChar,1286,ClPkg,"writeChar",true);
+DO_SYMBOL(cl,_sym_clearInput,1287,ClPkg,"clearInput",true);
+DO_SYMBOL(cl,_sym_clearOutput,1288,ClPkg,"clearOutput",true);
+DO_SYMBOL(cl,_sym_readByte,1289,ClPkg,"readByte",true);
+DO_SYMBOL(cl,_sym_peekChar,1290,ClPkg,"peekChar",true);
+DO_SYMBOL(cl,_sym_readChar,1291,ClPkg,"readChar",true);
+DO_SYMBOL(cl,_sym_readCharNoHang,1292,ClPkg,"readCharNoHang",true);
+DO_SYMBOL(cl,_sym_force_output,1293,ClPkg,"force_output",true);
+DO_SYMBOL(cl,_sym_finish_output,1294,ClPkg,"finish_output",true);
+DO_SYMBOL(cl,_sym_listen,1295,ClPkg,"listen",true);
+DO_SYMBOL(cl,_sym_unread_char,1296,ClPkg,"unread_char",true);
+DO_SYMBOL(cl,_sym_makeStringOutputStream,1297,ClPkg,"makeStringOutputStream",true);
+DO_SYMBOL(cl,_sym_writeByte,1298,ClPkg,"writeByte",true);
+DO_SYMBOL(cl,_sym_interactive_stream_p,1299,ClPkg,"interactive_stream_p",true);
+DO_SYMBOL(cl,_sym_streamp,1300,ClPkg,"streamp",true);
+DO_SYMBOL(cl,_sym_close,1301,ClPkg,"close",true);
+DO_SYMBOL(cl,_sym_get_output_stream_string,1302,ClPkg,"get_output_stream_string",true);
+DO_SYMBOL(cl,_sym_synonymStreamSymbol,1303,ClPkg,"synonymStreamSymbol",true);
+DO_SYMBOL(cl,_sym_boole_1,1304,ClPkg,"boole_1",true);
+DO_SYMBOL(cl,_sym_boole_2,1305,ClPkg,"boole_2",true);
+DO_SYMBOL(cl,_sym_boole_and,1306,ClPkg,"boole_and",true);
+DO_SYMBOL(cl,_sym_boole_andc1,1307,ClPkg,"boole_andc1",true);
+DO_SYMBOL(cl,_sym_boole_andc2,1308,ClPkg,"boole_andc2",true);
+DO_SYMBOL(cl,_sym_boole_c1,1309,ClPkg,"boole_c1",true);
+DO_SYMBOL(cl,_sym_boole_c2,1310,ClPkg,"boole_c2",true);
+DO_SYMBOL(cl,_sym_boole_clr,1311,ClPkg,"boole_clr",true);
+DO_SYMBOL(cl,_sym_boole_eqv,1312,ClPkg,"boole_eqv",true);
+DO_SYMBOL(cl,_sym_boole_ior,1313,ClPkg,"boole_ior",true);
+DO_SYMBOL(cl,_sym_boole_nand,1314,ClPkg,"boole_nand",true);
+DO_SYMBOL(cl,_sym_boole_nor,1315,ClPkg,"boole_nor",true);
+DO_SYMBOL(cl,_sym_boole_orc1,1316,ClPkg,"boole_orc1",true);
+DO_SYMBOL(cl,_sym_boole_orc2,1317,ClPkg,"boole_orc2",true);
+DO_SYMBOL(cl,_sym_boole_set,1318,ClPkg,"boole_set",true);
+DO_SYMBOL(cl,_sym_boole_xor,1319,ClPkg,"boole_xor",true);
+DO_SYMBOL(cl,_sym_printNotReadableObject,1320,ClPkg,"printNotReadableObject",true);
+DO_SYMBOL(cl,_sym_provide,1321,ClPkg,"provide",true);
+DO_SYMBOL(cl,_sym_seriousCondition,1322,ClPkg,"seriousCondition",true);
+DO_SYMBOL(cl,_sym_warn,1323,ClPkg,"warn",true);
+DO_SYMBOL(cl,_sym_programError,1324,ClPkg,"programError",true);
+DO_SYMBOL(cl,_sym_cellError,1325,ClPkg,"cellError",true);
+DO_SYMBOL(cl,_sym_unboundVariable,1326,ClPkg,"unboundVariable",true);
+DO_SYMBOL(cl,_sym_unboundSlot,1327,ClPkg,"unboundSlot",true);
+DO_SYMBOL(cl,_sym_undefinedFunction,1328,ClPkg,"undefinedFunction",true);
+DO_SYMBOL(cl,_sym_package_error,1329,ClPkg,"package_error",true);
+DO_SYMBOL(cl,_sym_arithmeticError,1330,ClPkg,"arithmeticError",true);
+DO_SYMBOL(cl,_sym_floatingPointOverflow,1331,ClPkg,"floatingPointOverflow",true);
+DO_SYMBOL(cl,_sym_floatingPointInexact,1332,ClPkg,"floatingPointInexact",true);
+DO_SYMBOL(cl,_sym_floatingPointInvalidOperation,1333,ClPkg,"floatingPointInvalidOperation",true);
+DO_SYMBOL(cl,_sym_floatingPointUnderflow,1334,ClPkg,"floatingPointUnderflow",true);
+DO_SYMBOL(cl,_sym_divisionByZero,1335,ClPkg,"divisionByZero",true);
+DO_SYMBOL(cl,_sym_printNotReadable,1336,ClPkg,"printNotReadable",true);
+DO_SYMBOL(cl,_sym_streamError,1337,ClPkg,"streamError",true);
+DO_SYMBOL(cl,_sym_endOfFile,1338,ClPkg,"endOfFile",true);
+DO_SYMBOL(cl,_sym_parseError,1339,ClPkg,"parseError",true);
+DO_SYMBOL(cl,_sym_readerError,1340,ClPkg,"readerError",true);
+DO_SYMBOL(cl,_sym_STARrandom_stateSTAR,1341,ClPkg,"STARrandom_stateSTAR",true);
+DO_SYMBOL(cl,_sym_simpleError,1342,ClPkg,"simpleError",true);
+DO_SYMBOL(cl,_sym_storageCondition,1343,ClPkg,"storageCondition",true);
+DO_SYMBOL(cl,_sym_simpleCondition,1344,ClPkg,"simpleCondition",true);
+DO_SYMBOL(cl,_sym_simpleWarning,1345,ClPkg,"simpleWarning",true);
+DO_SYMBOL(cl,_sym_warning,1346,ClPkg,"warning",true);
+DO_SYMBOL(cl,_sym_styleWarning,1347,ClPkg,"styleWarning",true);
+DO_SYMBOL(cl,_sym_asin,1348,ClPkg,"asin",true);
+DO_SYMBOL(cl,_sym_acos,1349,ClPkg,"acos",true);
+DO_SYMBOL(cl,_sym_asinh,1350,ClPkg,"asinh",true);
+DO_SYMBOL(cl,_sym_acosh,1351,ClPkg,"acosh",true);
+DO_SYMBOL(cl,_sym_atanh,1352,ClPkg,"atanh",true);
+DO_SYMBOL(cl,_sym_dynamic_extent,1353,ClPkg,"dynamic_extent",true);
+DO_SYMBOL(cl,_sym_ftype,1354,ClPkg,"ftype",true);
+DO_SYMBOL(cl,_sym_boole,1355,ClPkg,"boole",true);
+DO_SYMBOL(cl,_sym_callArgumentsLimit,1356,ClPkg,"callArgumentsLimit",true);
+DO_SYMBOL(cl,_sym_arrayDimensionLimit,1357,ClPkg,"arrayDimensionLimit",true);
+DO_SYMBOL(cl,_sym_arrayTotalSizeLimit,1358,ClPkg,"arrayTotalSizeLimit",true);
+DO_SYMBOL(cl,_sym_lambdaParametersLimit,1359,ClPkg,"lambdaParametersLimit",true);
+DO_SYMBOL(cl,_sym_schar,1360,ClPkg,"schar",true);
+DO_SYMBOL(cl,_sym_fixnum,1361,ClPkg,"fixnum",true);
+DO_SYMBOL(cl,_sym_nil,1362,ClPkg,"nil",true);
+DO_SYMBOL(cl,_sym_stream_element_type,1363,ClPkg,"stream_element_type",true);
+DO_SYMBOL(cl,_sym_stream_external_format,1364,ClPkg,"stream_external_format",true);
+DO_SYMBOL(cl,_sym_open_stream_p,1365,ClPkg,"open_stream_p",true);
+DO_SYMBOL(cl,_sym_write_sequence,1366,ClPkg,"write_sequence",true);
+DO_SYMBOL(cl,_sym_read_sequence,1367,ClPkg,"read_sequence",true);
+DO_SYMBOL(cl,_sym_file_string_length,1368,ClPkg,"file_string_length",true);
+DO_SYMBOL(cl,_sym_echo_stream_input_stream,1369,ClPkg,"echo_stream_input_stream",true);
+DO_SYMBOL(cl,_sym_echo_stream_output_stream,1370,ClPkg,"echo_stream_output_stream",true);
+DO_SYMBOL(cl,_sym_concatenated_stream_streams,1371,ClPkg,"concatenated_stream_streams",true);
+DO_SYMBOL(cl,_sym_synonym_stream_symbol,1372,ClPkg,"synonym_stream_symbol",true);
+DO_SYMBOL(cl,_sym_broadcast_stream_streams,1373,ClPkg,"broadcast_stream_streams",true);
+DO_SYMBOL(cl,_sym_getOutputStreamString,1374,ClPkg,"getOutputStreamString",true);
+DO_SYMBOL(cl,_sym_elt,1375,ClPkg,"elt",true);
+DO_SYMBOL(cl,_sym_callNextMethod,1376,ClPkg,"callNextMethod",true);
+DO_SYMBOL(cl,_sym_nextMethodP,1377,ClPkg,"nextMethodP",true);
+DO_SYMBOL(cl,_sym_internalTimeUnitsPerSecond,1378,ClPkg,"internalTimeUnitsPerSecond",true);
+DO_SYMBOL(cl,_sym_getInternalRealTime,1379,ClPkg,"getInternalRealTime",true);
+DO_SYMBOL(cl,_sym_getInternalRunTime,1380,ClPkg,"getInternalRunTime",true);
+DO_SYMBOL(cl,_sym_logicalPathnameTranslations,1381,ClPkg,"logicalPathnameTranslations",true);
+DO_SYMBOL(cl,_sym_set,1382,ClPkg,"set",true);
+DO_SYMBOL(cl,_sym_restartName,1383,ClPkg,"restartName",true);
+DO_SYMBOL(cl,_sym_position,1384,ClPkg,"position",true);
+DO_SYMBOL(cl,_sym_compileFile,1385,ClPkg,"compileFile",true);
+DO_SYMBOL(cl,_sym_first,1386,ClPkg,"first",true);
+DO_SYMBOL(cl,_sym_float,1387,ClPkg,"float",true);
+DO_SYMBOL(cl,_sym_logical_pathname,1388,ClPkg,"logical_pathname",true);
+DO_SYMBOL(cl,_sym_pathnamep,1389,ClPkg,"pathnamep",true);
+DO_SYMBOL(cl,_sym_STARloadPathnameSTAR,1390,ClPkg,"STARloadPathnameSTAR",true);
+DO_SYMBOL(cl,_sym_STARloadTruenameSTAR,1391,ClPkg,"STARloadTruenameSTAR",true);
+DO_SYMBOL(cl,_sym_makeArray,1392,ClPkg,"makeArray",true);
+DO_SYMBOL(cl,_sym_makePathname,1393,ClPkg,"makePathname",true);
+DO_SYMBOL(cl,_sym_mismatch,1394,ClPkg,"mismatch",true);
+DO_SYMBOL(cl,_sym_SignedByte,1395,ClPkg,"SignedByte",true);
+DO_SYMBOL(cl,_sym_UnsignedByte,1396,ClPkg,"UnsignedByte",true);
+DO_SYMBOL(cl,_sym_Bit,1397,ClPkg,"Bit",true);
+DO_SYMBOL(cl,_sym_STARdefaultPathnameDefaultsSTAR,1398,ClPkg,"STARdefaultPathnameDefaultsSTAR",true);
+DO_SYMBOL(cl,_sym_simpleTypeError,1399,ClPkg,"simpleTypeError",true);
+DO_SYMBOL(cl,_sym_MultipleValuesLimit,1400,ClPkg,"MultipleValuesLimit",true);
+DO_SYMBOL(cl,_sym_keywordp,1401,ClPkg,"keywordp",true);
+DO_SYMBOL(cl,_sym_null,1402,ClPkg,"null",true);
+DO_SYMBOL(cl,_sym_endp,1403,ClPkg,"endp",true);
+DO_SYMBOL(cl,_sym_symbolp,1404,ClPkg,"symbolp",true);
+DO_SYMBOL(cl,_sym_atom,1405,ClPkg,"atom",true);
+DO_SYMBOL(cl,_sym_consp,1406,ClPkg,"consp",true);
+DO_SYMBOL(cl,_sym_listp,1407,ClPkg,"listp",true);
+DO_SYMBOL(cl,_sym_numberp,1408,ClPkg,"numberp",true);
+DO_SYMBOL(cl,_sym_integerp,1409,ClPkg,"integerp",true);
+DO_SYMBOL(cl,_sym_rationalp,1410,ClPkg,"rationalp",true);
+DO_SYMBOL(cl,_sym_floatp,1411,ClPkg,"floatp",true);
+DO_SYMBOL(cl,_sym_realp,1412,ClPkg,"realp",true);
+DO_SYMBOL(cl,_sym_complexp,1413,ClPkg,"complexp",true);
+DO_SYMBOL(cl,_sym_character,1414,ClPkg,"character",true);
+DO_SYMBOL(cl,_sym_base_char,1415,ClPkg,"base_char",true);
+DO_SYMBOL(cl,_sym_single_float,1416,ClPkg,"single_float",true);
+DO_SYMBOL(cl,_sym_characterp,1417,ClPkg,"characterp",true);
+DO_SYMBOL(cl,_sym_stringp,1418,ClPkg,"stringp",true);
+DO_SYMBOL(cl,_sym_bit_vector_p,1419,ClPkg,"bit_vector_p",true);
+DO_SYMBOL(cl,_sym_vectorp,1420,ClPkg,"vectorp",true);
+DO_SYMBOL(cl,_sym_simple_vector_p,1421,ClPkg,"simple_vector_p",true);
+DO_SYMBOL(cl,_sym_simple_string_p,1422,ClPkg,"simple_string_p",true);
+DO_SYMBOL(cl,_sym_simple_bit_vector_p,1423,ClPkg,"simple_bit_vector_p",true);
+DO_SYMBOL(cl,_sym_arrayp,1424,ClPkg,"arrayp",true);
+DO_SYMBOL(cl,_sym_packagep,1425,ClPkg,"packagep",true);
+DO_SYMBOL(cl,_sym_functionp,1426,ClPkg,"functionp",true);
+DO_SYMBOL(cl,_sym_compiled_function_p,1427,ClPkg,"compiled_function_p",true);
+DO_SYMBOL(cl,_sym_hash_table_p,1428,ClPkg,"hash_table_p",true);
+DO_SYMBOL(cl,_sym__DIVIDE_,1429,ClPkg,"_DIVIDE_",true);
+DO_SYMBOL(cl,_sym_typep,1430,ClPkg,"typep",true);
+DO_SYMBOL(cl,_sym_type,1431,ClPkg,"type",true);
+DO_SYMBOL(cl,_sym_step,1432,ClPkg,"step",true);
+DO_SYMBOL(cl,_sym_speed,1433,ClPkg,"speed",true);
+DO_SYMBOL(cl,_sym_space,1434,ClPkg,"space",true);
+DO_SYMBOL(cl,_sym_sin,1435,ClPkg,"sin",true);
+DO_SYMBOL(cl,_sym_safety,1436,ClPkg,"safety",true);
+DO_SYMBOL(cl,_sym_restart_bind,1437,ClPkg,"restart_bind",true);
+DO_SYMBOL(cl,_sym_restart,1438,ClPkg,"restart",true);
+DO_SYMBOL(cl,_sym_describe,1439,ClPkg,"describe",true);
+DO_SYMBOL(cl,_sym_disassemble,1440,ClPkg,"disassemble",true);
+DO_SYMBOL(cl,_sym_rename_file,1441,ClPkg,"rename_file",true);
+DO_SYMBOL(cl,_sym_random,1442,ClPkg,"random",true);
+DO_SYMBOL(cl,_sym_optimize,1443,ClPkg,"optimize",true);
+DO_SYMBOL(cl,_sym_two_way_stream_input_stream,1444,ClPkg,"two_way_stream_input_stream",true);
+DO_SYMBOL(cl,_sym_two_way_stream_output_stream,1445,ClPkg,"two_way_stream_output_stream",true);
+DO_SYMBOL(cl,_sym_two_way_stream,1446,ClPkg,"two_way_stream",true);
+DO_SYMBOL(cl,_sym_make_two_way_stream,1447,ClPkg,"make_two_way_stream",true);
+DO_SYMBOL(cl,_sym_make_synonym_stream,1448,ClPkg,"make_synonym_stream",true);
+DO_SYMBOL(cl,_sym_invoke_restart,1449,ClPkg,"invoke_restart",true);
+DO_SYMBOL(cl,_sym_get,1450,ClPkg,"get",true);
+DO_SYMBOL(cl,_sym_find_restart,1451,ClPkg,"find_restart",true);
+DO_SYMBOL(cl,_sym_fill_pointer,1452,ClPkg,"fill_pointer",true);
+DO_SYMBOL(cl,_sym_directory,1453,ClPkg,"directory",true);
+DO_SYMBOL(cl,_sym_defun,1454,ClPkg,"defun",true);
+DO_SYMBOL(cl,_sym_debug,1455,ClPkg,"debug",true);
+DO_SYMBOL(cl,_sym_count,1456,ClPkg,"count",true);
+DO_SYMBOL(cl,_sym_compute_restarts,1457,ClPkg,"compute_restarts",true);
+DO_SYMBOL(cl,_sym_write,1458,ClPkg,"write",true);
+DO_SYMBOL(cl,_sym_STARreadDefaultFloatFormatSTAR,1459,ClPkg,"STARreadDefaultFloatFormatSTAR",true);
+DO_SYMBOL(cl,_sym_STARprint_baseSTAR,1460,ClPkg,"STARprint_baseSTAR",true);
+DO_SYMBOL(cl,_sym_STARprint_levelSTAR,1461,ClPkg,"STARprint_levelSTAR",true);
+DO_SYMBOL(cl,_sym_STARprint_lengthSTAR,1462,ClPkg,"STARprint_lengthSTAR",true);
+DO_SYMBOL(cl,_sym_STARprint_radixSTAR,1463,ClPkg,"STARprint_radixSTAR",true);
+DO_SYMBOL(cl,_sym_STARprint_caseSTAR,1464,ClPkg,"STARprint_caseSTAR",true);
+DO_SYMBOL(cl,_sym_STARprint_gensymSTAR,1465,ClPkg,"STARprint_gensymSTAR",true);
+DO_SYMBOL(cl,_sym_STARprint_arraySTAR,1466,ClPkg,"STARprint_arraySTAR",true);
+DO_SYMBOL(cl,_sym_STARprint_readablySTAR,1467,ClPkg,"STARprint_readablySTAR",true);
+DO_SYMBOL(cl,_sym_STARprint_escapeSTAR,1468,ClPkg,"STARprint_escapeSTAR",true);
+DO_SYMBOL(cl,_sym_STARprint_circleSTAR,1469,ClPkg,"STARprint_circleSTAR",true);
+DO_SYMBOL(cl,_sym_STARprint_linesSTAR,1470,ClPkg,"STARprint_linesSTAR",true);
+DO_SYMBOL(cl,_sym_STARprint_right_marginSTAR,1471,ClPkg,"STARprint_right_marginSTAR",true);
+DO_SYMBOL(cl,_sym_STARprint_prettySTAR,1472,ClPkg,"STARprint_prettySTAR",true);
+DO_SYMBOL(cl,_sym_STARprint_miser_widthSTAR,1473,ClPkg,"STARprint_miser_widthSTAR",true);
+DO_SYMBOL(cl,_sym_STARprint_pprint_dispatchSTAR,1474,ClPkg,"STARprint_pprint_dispatchSTAR",true);
+DO_SYMBOL(cl,_sym_STARdebuggerHookSTAR,1475,ClPkg,"STARdebuggerHookSTAR",true);
+DO_SYMBOL(cl,_sym_break,1476,ClPkg,"break",true);
+DO_SYMBOL(cl,_sym_STARbreakOnSignalsSTAR,1477,ClPkg,"STARbreakOnSignalsSTAR",true);
+DO_SYMBOL(cl,_sym_typeError,1478,ClPkg,"typeError",true);
+DO_SYMBOL(cl,_sym_printObject,1479,ClPkg,"printObject",true);
+DO_SYMBOL(cl,_sym_controlError,1480,ClPkg,"controlError",true);
+DO_SYMBOL(cl,_sym_fileError,1481,ClPkg,"fileError",true);
+DO_SYMBOL(cl,_sym_satisfies,1482,ClPkg,"satisfies",true);
+DO_SYMBOL(cl,_sym_T,1483,ClPkg,"T",true);
+DO_SYMBOL(cl,_sym_method,1484,ClPkg,"method",true);
+DO_SYMBOL(cl,_sym_generic_function,1485,ClPkg,"generic_function",true);
+DO_SYMBOL(cl,_sym_cond,1486,ClPkg,"cond",true);
+DO_SYMBOL(cl,_sym_stream,1487,ClPkg,"stream",true);
+DO_SYMBOL(cl,_sym_boolean,1488,ClPkg,"boolean",true);
+DO_SYMBOL(cl,_sym_keyword,1489,ClPkg,"keyword",true);
+DO_SYMBOL(cl,_sym_array,1490,ClPkg,"array",true);
+DO_SYMBOL(cl,_sym_simple_array,1491,ClPkg,"simple_array",true);
+DO_SYMBOL(cl,_sym_vector,1492,ClPkg,"vector",true);
+DO_SYMBOL(cl,_sym_simple_vector,1493,ClPkg,"simple_vector",true);
+DO_SYMBOL(cl,_sym_input_stream_p,1494,ClPkg,"input_stream_p",true);
+DO_SYMBOL(cl,_sym_output_stream_p,1495,ClPkg,"output_stream_p",true);
+DO_SYMBOL(cl,_sym_STARstandard_inputSTAR,1496,ClPkg,"STARstandard_inputSTAR",true);
+DO_SYMBOL(cl,_sym_STARstandard_outputSTAR,1497,ClPkg,"STARstandard_outputSTAR",true);
+DO_SYMBOL(cl,_sym_STARerror_outputSTAR,1498,ClPkg,"STARerror_outputSTAR",true);
+DO_SYMBOL(cl,_sym_STARtrace_outputSTAR,1499,ClPkg,"STARtrace_outputSTAR",true);
+DO_SYMBOL(cl,_sym_STARdebug_ioSTAR,1500,ClPkg,"STARdebug_ioSTAR",true);
+DO_SYMBOL(cl,_sym_STARquery_ioSTAR,1501,ClPkg,"STARquery_ioSTAR",true);
+DO_SYMBOL(cl,_sym_STARterminal_ioSTAR,1502,ClPkg,"STARterminal_ioSTAR",true);
+DO_SYMBOL(cl,_sym_STARgensym_counterSTAR,1503,ClPkg,"STARgensym_counterSTAR",true);
+DO_SYMBOL(cl,_sym_standard_char,1504,ClPkg,"standard_char",true);
+DO_SYMBOL(cl,_sym_extended_char,1505,ClPkg,"extended_char",true);
+DO_SYMBOL(cl,_sym_special,1506,ClPkg,"special",true);
+DO_SYMBOL(cl,_sym_nconc,1507,ClPkg,"nconc",true);
+DO_SYMBOL(cl,_sym_cadr,1508,ClPkg,"cadr",true);
+DO_SYMBOL(cl,_sym_STARmacroexpand_hookSTAR,1509,ClPkg,"STARmacroexpand_hookSTAR",true);
+DO_SYMBOL(cl,_sym_STARread_baseSTAR,1510,ClPkg,"STARread_baseSTAR",true);
+DO_SYMBOL(cl,_sym_compile,1511,ClPkg,"compile",true);
+DO_SYMBOL(cl,_sym_load,1512,ClPkg,"load",true);
+DO_SYMBOL(cl,_sym_eval,1513,ClPkg,"eval",true);
+DO_SYMBOL(cl,_sym_STARread_evalSTAR,1514,ClPkg,"STARread_evalSTAR",true);
+DO_SYMBOL(cl,_sym_define_modify_macro,1515,ClPkg,"define_modify_macro",true);
+DO_SYMBOL(cl,_sym_destructuring_bind,1516,ClPkg,"destructuring_bind",true);
+DO_SYMBOL(cl,_sym_deftype,1517,ClPkg,"deftype",true);
+DO_SYMBOL(cl,_sym_define_method_combination,1518,ClPkg,"define_method_combination",true);
+DO_SYMBOL(cl,_sym_defsetf,1519,ClPkg,"defsetf",true);
+DO_SYMBOL(cl,_sym_AMPwhole,1520,ClPkg,"AMPwhole",true);
+DO_SYMBOL(cl,_sym_AMPenvironment,1521,ClPkg,"AMPenvironment",true);
+DO_SYMBOL(cl,_sym_AMPoptional,1522,ClPkg,"AMPoptional",true);
+DO_SYMBOL(cl,_sym_AMPkey,1523,ClPkg,"AMPkey",true);
+DO_SYMBOL(cl,_sym_AMPallow_other_keys,1524,ClPkg,"AMPallow_other_keys",true);
+DO_SYMBOL(cl,_sym_AMPaux,1525,ClPkg,"AMPaux",true);
+DO_SYMBOL(cl,_sym_AMPrest,1526,ClPkg,"AMPrest",true);
+DO_SYMBOL(cl,_sym_AMPbody,1527,ClPkg,"AMPbody",true);
+DO_SYMBOL(cl,_sym_integer,1528,ClPkg,"integer",true);
+DO_SYMBOL(cl,_sym_sequence,1529,ClPkg,"sequence",true);
+DO_SYMBOL(cl,_sym_declare,1530,ClPkg,"declare",true);
+DO_SYMBOL(cl,_sym_variable,1531,ClPkg,"variable",true);
+DO_SYMBOL(cl,_sym_bit,1532,ClPkg,"bit",true);
+DO_SYMBOL(cl,_sym_STARreadtableSTAR,1533,ClPkg,"STARreadtableSTAR",true);
+DO_SYMBOL(cl,_sym_and,1534,ClPkg,"and",true);
+DO_SYMBOL(cl,_sym_or,1535,ClPkg,"or",true);
+DO_SYMBOL(cl,_sym_car,1536,ClPkg,"car",true);
+DO_SYMBOL(cl,_sym_cdr,1537,ClPkg,"cdr",true);
+DO_SYMBOL(cl,_sym_dotimes,1538,ClPkg,"dotimes",true);
+DO_SYMBOL(cl,_sym_dolist,1539,ClPkg,"dolist",true);
+DO_SYMBOL(cl,_sym_do,1540,ClPkg,"do",true);
+DO_SYMBOL(cl,_sym_package,1541,ClPkg,"package",true);
+DO_SYMBOL(cl,_sym_aref,1542,ClPkg,"aref",true);
+DO_SYMBOL(cl,_sym_nth,1543,ClPkg,"nth",true);
+DO_SYMBOL(cl,_sym_append,1544,ClPkg,"append",true);
+DO_SYMBOL(cl,_sym_gethash,1545,ClPkg,"gethash",true);
+DO_SYMBOL(cl,_sym_hash_table,1546,ClPkg,"hash_table",true);
+DO_SYMBOL(cl,_sym_STARfeaturesSTAR,1547,ClPkg,"STARfeaturesSTAR",true);
+DO_SYMBOL(cl,_sym_STARload_printSTAR,1548,ClPkg,"STARload_printSTAR",true);
+DO_SYMBOL(cl,_sym_STARload_verboseSTAR,1549,ClPkg,"STARload_verboseSTAR",true);
+DO_SYMBOL(cl,_sym_lambda,1550,ClPkg,"lambda",true);
+DO_SYMBOL(cl,_sym_symbol,1551,ClPkg,"symbol",true);
+DO_SYMBOL(cl,_sym_STARpackageSTAR,1552,ClPkg,"STARpackageSTAR",true);
+DO_SYMBOL(cl,_sym_STARmodulesSTAR,1553,ClPkg,"STARmodulesSTAR",true);
+DO_SYMBOL(cl,_sym_progn,1554,ClPkg,"progn",true);
+DO_SYMBOL(cl,_sym_quote,1555,ClPkg,"quote",true);
+DO_SYMBOL(cl,_sym_function,1556,ClPkg,"function",true);
+DO_SYMBOL(cl,_sym_slot_value,1557,ClPkg,"slot_value",true);
+DO_SYMBOL(cl,_sym_values,1558,ClPkg,"values",true);
+DO_SYMBOL(cl,_sym_list,1559,ClPkg,"list",true);
+DO_SYMBOL(cl,_sym_standard_class,1560,ClPkg,"standard_class",true);
+DO_SYMBOL(cl,_sym_rest,1561,ClPkg,"rest",true);
+DO_SYMBOL(cl,_sym_most_negative_fixnum,1562,ClPkg,"most_negative_fixnum",true);
+DO_SYMBOL(cl,_sym_most_positive_fixnum,1563,ClPkg,"most_positive_fixnum",true);
+DO_SYMBOL(cl,_sym_array_rank_limit,1564,ClPkg,"array_rank_limit",true);
+DO_SYMBOL(cl,_sym_char_code_limit,1565,ClPkg,"char_code_limit",true);
+DO_SYMBOL(cl,_sym_apropos,1566,ClPkg,"apropos",true);
+DO_SYMBOL(cl,_sym_export,1567,ClPkg,"export",true);
+DO_SYMBOL(cl,_sym_intern,1568,ClPkg,"intern",true);
+DO_SYMBOL(cl,_sym_findClass,1569,ClPkg,"findClass",true);
+DO_SYMBOL(cl,_sym_error,1570,ClPkg,"error",true);
+DO_SYMBOL(cl,_sym_cerror,1571,ClPkg,"cerror",true);
+DO_SYMBOL(cl,_sym_not,1572,ClPkg,"not",true);
+DO_SYMBOL(cl,_sym_sort,1573,ClPkg,"sort",true);
+DO_SYMBOL(cl,_sym_macroexpand_1,1574,ClPkg,"macroexpand_1",true);
+DO_SYMBOL(cl,_sym_macroexpand,1575,ClPkg,"macroexpand",true);
+DO_SYMBOL(cl,_sym_acons,1576,ClPkg,"acons",true);
+DO_SYMBOL(cl,_sym_assoc,1577,ClPkg,"assoc",true);
+DO_SYMBOL(cl,_sym_member,1578,ClPkg,"member",true);
+DO_SYMBOL(cl,_sym_find_package,1579,ClPkg,"find_package",true);
+DO_SYMBOL(cl,_sym_copyTree,1580,ClPkg,"copyTree",true);
+DO_SYMBOL(cl,_sym_eq,1581,ClPkg,"eq",true);
+DO_SYMBOL(cl,_sym_eql,1582,ClPkg,"eql",true);
+DO_SYMBOL(cl,_sym_equal,1583,ClPkg,"equal",true);
+DO_SYMBOL(cl,_sym_equalp,1584,ClPkg,"equalp",true);
+DO_SYMBOL(cl,_sym_setMacroCharacter,1585,ClPkg,"setMacroCharacter",true);
+DO_SYMBOL(cl,_sym_setDispatchMacroCharacter,1586,ClPkg,"setDispatchMacroCharacter",true);
+DO_SYMBOL(cl,_sym_getDispatchMacroCharacter,1587,ClPkg,"getDispatchMacroCharacter",true);
+DO_SYMBOL(cl,_sym_pathname,1588,ClPkg,"pathname",true);
+DO_SYMBOL(cl,_sym_mergePathnames,1589,ClPkg,"mergePathnames",true);
+DO_SYMBOL(cl,_sym_wildPathnameP,1590,ClPkg,"wildPathnameP",true);
+DO_SYMBOL(cl,_sym_make_pathname,1591,ClPkg,"make_pathname",true);
+DO_SYMBOL(cl,_sym_pathnameHost,1592,ClPkg,"pathnameHost",true);
+DO_SYMBOL(cl,_sym_pathnameDevice,1593,ClPkg,"pathnameDevice",true);
+DO_SYMBOL(cl,_sym_pathnameDirectory,1594,ClPkg,"pathnameDirectory",true);
+DO_SYMBOL(cl,_sym_pathnameName,1595,ClPkg,"pathnameName",true);
+DO_SYMBOL(cl,_sym_pathnameType,1596,ClPkg,"pathnameType",true);
+DO_SYMBOL(cl,_sym_pathnameVersion,1597,ClPkg,"pathnameVersion",true);
+DO_SYMBOL(cl,_sym_pathnameMatchP,1598,ClPkg,"pathnameMatchP",true);
+DO_SYMBOL(cl,_sym_translatePathname,1599,ClPkg,"translatePathname",true);
+DO_SYMBOL(cl,_sym_translateLogicalPathname,1600,ClPkg,"translateLogicalPathname",true);
+DO_SYMBOL(cl,_sym_namestring,1601,ClPkg,"namestring",true);
+DO_SYMBOL(cl,_sym_parseNamestring,1602,ClPkg,"parseNamestring",true);
+DO_SYMBOL(cl,_sym_fileNamestring,1603,ClPkg,"fileNamestring",true);
+DO_SYMBOL(cl,_sym_directoryNamestring,1604,ClPkg,"directoryNamestring",true);
+DO_SYMBOL(cl,_sym_hostNamestring,1605,ClPkg,"hostNamestring",true);
+DO_SYMBOL(cl,_sym_enoughNamestring,1606,ClPkg,"enoughNamestring",true);
+DO_SYMBOL(cl,_sym_package_use_list,1607,ClPkg,"package_use_list",true);
+DO_SYMBOL(cl,_sym_gentemp,1608,ClPkg,"gentemp",true);
+DO_SYMBOL(cl,_sym_makePackage,1609,ClPkg,"makePackage",true);
+DO_SYMBOL(cl,_sym_listAllPackages,1610,ClPkg,"listAllPackages",true);
+DO_SYMBOL(cl,_sym_use_package,1611,ClPkg,"use_package",true);
+DO_SYMBOL(cl,_sym_unuse_package,1612,ClPkg,"unuse_package",true);
+DO_SYMBOL(cl,_sym_package_shadowing_symbols,1613,ClPkg,"package_shadowing_symbols",true);
+DO_SYMBOL(cl,_sym_import,1614,ClPkg,"import",true);
+DO_SYMBOL(cl,_sym_shadow,1615,ClPkg,"shadow",true);
+DO_SYMBOL(cl,_sym_shadowing_import,1616,ClPkg,"shadowing_import",true);
+DO_SYMBOL(cl,_sym_findSymbol,1617,ClPkg,"findSymbol",true);
+DO_SYMBOL(cl,_sym_unintern,1618,ClPkg,"unintern",true);
+DO_SYMBOL(cl,_sym_condition,1619,ClPkg,"condition",true);
+DO_SYMBOL(cl,_sym_defvar,1620,ClPkg,"defvar",true);
+DO_SYMBOL(cl,_sym_defconstant,1621,ClPkg,"defconstant",true);
+DO_SYMBOL(cl,_sym_defparameter,1622,ClPkg,"defparameter",true);
+DO_SYMBOL(cl,_sym_intersection,1623,ClPkg,"intersection",true);
+DO_SYMBOL(cl,_sym_union,1624,ClPkg,"union",true);
+DO_SYMBOL(cl,_sym_remove,1625,ClPkg,"remove",true);
+DO_SYMBOL(cl,_sym_pprint_dispatch,1626,ClPkg,"pprint_dispatch",true);
+DO_SYMBOL(cl,_sym_fileStream,1627,ClPkg,"fileStream",true);
+DO_SYMBOL(cl,_sym_make_list,1628,ClPkg,"make_list",true);
+DO_SYMBOL(cl,_sym_cons,1629,ClPkg,"cons",true);
+DO_SYMBOL(cl,_sym_getf,1630,ClPkg,"getf",true);
+DO_SYMBOL(cl,_sym_make_symbol,1631,ClPkg,"make_symbol",true);
+DO_SYMBOL(cl,_sym_symbolName,1632,ClPkg,"symbolName",true);
+DO_SYMBOL(cl,_sym_symbolValue,1633,ClPkg,"symbolValue",true);
+DO_SYMBOL(cl,_sym_symbolPackage,1634,ClPkg,"symbolPackage",true);
+DO_SYMBOL(cl,_sym_symbolFunction,1635,ClPkg,"symbolFunction",true);
+DO_SYMBOL(cl,_sym_boundp,1636,ClPkg,"boundp",true);
+DO_SYMBOL(cl,_sym_makeCondition,1637,ClPkg,"makeCondition",true);
+DO_SYMBOL(cl,_sym_format,1638,ClPkg,"format",true);
+DO_SYMBOL(cl,_sym_documentation,1639,ClPkg,"documentation",true);
+DO_SYMBOL(cl,_sym_copyStructure,1640,ClPkg,"copyStructure",true);
+DO_SYMBOL(cl,_sym_char_code,1641,ClPkg,"char_code",true);
+DO_SYMBOL(cl,_sym_code_char,1642,ClPkg,"code_char",true);
+DO_SYMBOL(cl,_sym_char_int,1643,ClPkg,"char_int",true);
+DO_SYMBOL(cl,_sym_name_char,1644,ClPkg,"name_char",true);
+DO_SYMBOL(cl,_sym_char_name,1645,ClPkg,"char_name",true);
+DO_SYMBOL(cl,_sym_alpha_char_p,1646,ClPkg,"alpha_char_p",true);
+DO_SYMBOL(cl,_sym_standard_char_p,1647,ClPkg,"standard_char_p",true);
+DO_SYMBOL(cl,_sym_charUpcase,1648,ClPkg,"charUpcase",true);
+DO_SYMBOL(cl,_sym_charDowncase,1649,ClPkg,"charDowncase",true);
+DO_SYMBOL(cl,_sym_char_LT_,1650,ClPkg,"char_LT_",true);
+DO_SYMBOL(cl,_sym_char_GT_,1651,ClPkg,"char_GT_",true);
+DO_SYMBOL(cl,_sym_char_LE_,1652,ClPkg,"char_LE_",true);
+DO_SYMBOL(cl,_sym_char_GE_,1653,ClPkg,"char_GE_",true);
+DO_SYMBOL(cl,_sym_char_NE_,1654,ClPkg,"char_NE_",true);
+DO_SYMBOL(cl,_sym_char_EQ_,1655,ClPkg,"char_EQ_",true);
+DO_SYMBOL(cl,_sym_charLessp,1656,ClPkg,"charLessp",true);
+DO_SYMBOL(cl,_sym_charGreaterp,1657,ClPkg,"charGreaterp",true);
+DO_SYMBOL(cl,_sym_charNotGreaterp,1658,ClPkg,"charNotGreaterp",true);
+DO_SYMBOL(cl,_sym_charNotLessp,1659,ClPkg,"charNotLessp",true);
+DO_SYMBOL(cl,_sym_charNotEqual,1660,ClPkg,"charNotEqual",true);
+DO_SYMBOL(cl,_sym_charEqual,1661,ClPkg,"charEqual",true);
+DO_SYMBOL(cl,_sym_digitCharP,1662,ClPkg,"digitCharP",true);
+DO_SYMBOL(cl,_sym_string,1663,ClPkg,"string",true);
+DO_SYMBOL(cl,_sym_string_upcase,1664,ClPkg,"string_upcase",true);
+DO_SYMBOL(cl,_sym_string_downcase,1665,ClPkg,"string_downcase",true);
+DO_SYMBOL(cl,_sym_nstring_upcase,1666,ClPkg,"nstring_upcase",true);
+DO_SYMBOL(cl,_sym_nstring_downcase,1667,ClPkg,"nstring_downcase",true);
+DO_SYMBOL(cl,_sym_stringTrim,1668,ClPkg,"stringTrim",true);
+DO_SYMBOL(cl,_sym_stringLeftTrim,1669,ClPkg,"stringLeftTrim",true);
+DO_SYMBOL(cl,_sym_stringRightTrim,1670,ClPkg,"stringRightTrim",true);
+DO_SYMBOL(cl,_sym_char,1671,ClPkg,"char",true);
+DO_SYMBOL(cl,_sym_string_EQ_,1672,ClPkg,"string_EQ_",true);
+DO_SYMBOL(cl,_sym_string_NE_,1673,ClPkg,"string_NE_",true);
+DO_SYMBOL(cl,_sym_string_LT_,1674,ClPkg,"string_LT_",true);
+DO_SYMBOL(cl,_sym_string_GT_,1675,ClPkg,"string_GT_",true);
+DO_SYMBOL(cl,_sym_string_LE_,1676,ClPkg,"string_LE_",true);
+DO_SYMBOL(cl,_sym_string_GE_,1677,ClPkg,"string_GE_",true);
+DO_SYMBOL(cl,_sym_string_equal,1678,ClPkg,"string_equal",true);
+DO_SYMBOL(cl,_sym_string_not_equal,1679,ClPkg,"string_not_equal",true);
+DO_SYMBOL(cl,_sym_string_lessp,1680,ClPkg,"string_lessp",true);
+DO_SYMBOL(cl,_sym_string_greaterp,1681,ClPkg,"string_greaterp",true);
+DO_SYMBOL(cl,_sym_string_not_greaterp,1682,ClPkg,"string_not_greaterp",true);
+DO_SYMBOL(cl,_sym_string_not_lessp,1683,ClPkg,"string_not_lessp",true);
+DO_SYMBOL(cl,_sym_make_string,1684,ClPkg,"make_string",true);
+DO_SYMBOL(cl,_sym_parseInteger,1685,ClPkg,"parseInteger",true);
+DO_SYMBOL(cl,_sym_make_sequence,1686,ClPkg,"make_sequence",true);
+DO_SYMBOL(cl,_sym_reverse,1687,ClPkg,"reverse",true);
+DO_SYMBOL(cl,_sym_nreverse,1688,ClPkg,"nreverse",true);
+DO_SYMBOL(cl,_sym_subseq,1689,ClPkg,"subseq",true);
+DO_SYMBOL(cl,_sym_copySeq,1690,ClPkg,"copySeq",true);
+DO_SYMBOL(cl,_sym_length,1691,ClPkg,"length",true);
+DO_SYMBOL(cl,_sym_subtypep,1692,ClPkg,"subtypep",true);
+DO_SYMBOL(cl,_sym_vectorPush,1693,ClPkg,"vectorPush",true);
+DO_SYMBOL(cl,_sym_vectorPushExtend,1694,ClPkg,"vectorPushExtend",true);
+DO_SYMBOL(cl,_sym_STARread_suppressSTAR,1695,ClPkg,"STARread_suppressSTAR",true);
+DO_SYMBOL(cl,_sym_RandomState_O,1696,ClPkg,"random-state",true);
+DO_SYMBOL(cl,_sym_ReadTable_O,1697,ClPkg,"readtable",true);
+DO_SYMBOL(cl,_sym_StructureObject_O,1698,ClPkg,"structure-object",true);
+DO_SYMBOL(cl,_sym_Null_O,1699,ClPkg,"null",true);
+DO_SYMBOL(cl,_sym_StructureClass_O,1700,ClPkg,"structure-class",true);
+DO_SYMBOL(cl,_sym_StandardClass_O,1701,ClPkg,"StandardClass",true);
+DO_SYMBOL(cl,_sym_BuiltInClass_O,1702,ClPkg,"BuiltInClass",true);
+DO_SYMBOL(cl,_sym_Package_O,1703,ClPkg,"Package",true);
+DO_SYMBOL(cl,_sym_BitVector_O,1704,ClPkg,"bit-vector",true);
+DO_SYMBOL(cl,_sym_SimpleBitVector_O,1705,ClPkg,"simple-bit-vector",true);
+DO_SYMBOL(cl,_sym_BitVectorWithFillPtr_O,1706,ClPkg,"bit-vector-with-fill-ptr",true);
+DO_SYMBOL(cl,_sym_Character_dummy_O,1707,ClPkg,"character",true);
+DO_SYMBOL(cl,_sym_Stream_O,1708,ClPkg,"stream",true);
+DO_SYMBOL(cl,_sym_FileStream_O,1709,ClPkg,"file-stream",true);
+DO_SYMBOL(cl,_sym_StringStream_O,1710,ClPkg,"string-stream",true);
+DO_SYMBOL(cl,_sym_SynonymStream_O,1711,ClPkg,"synonym-stream",true);
+DO_SYMBOL(cl,_sym_TwoWayStream_O,1712,ClPkg,"two-way-stream",true);
+DO_SYMBOL(cl,_sym_BroadcastStream_O,1713,ClPkg,"BroadcastStream",true);
+DO_SYMBOL(cl,_sym_ConcatenatedStream_O,1714,ClPkg,"ConcatenatedStream",true);
+DO_SYMBOL(cl,_sym_EchoStream_O,1715,ClPkg,"EchoStream",true);
+DO_SYMBOL(cl,_sym_Pathname_O,1716,ClPkg,"pathname",true);
+DO_SYMBOL(cl,_sym_LogicalPathname_O,1717,ClPkg,"logical-pathname",true);
+DO_SYMBOL(cl,_sym_String_O,1718,ClPkg,"String",true);
+DO_SYMBOL(cl,_sym_Str_O,1719,ClPkg,"base-string",true);
+DO_SYMBOL(cl,_sym_T_O,1720,ClPkg,"T",true);
+DO_SYMBOL(cl,_sym_Cons_O,1721,ClPkg,"Cons",true);
+DO_SYMBOL(cl,_sym_Number_O,1722,ClPkg,"number",true);
+DO_SYMBOL(cl,_sym_Real_O,1723,ClPkg,"real",true);
+DO_SYMBOL(cl,_sym_Rational_O,1724,ClPkg,"rational",true);
+DO_SYMBOL(cl,_sym_Integer_O,1725,ClPkg,"integer",true);
+DO_SYMBOL(cl,_sym_Fixnum_dummy_O,1726,ClPkg,"fixnum",true);
+DO_SYMBOL(cl,_sym_Float_O,1727,ClPkg,"float",true);
+DO_SYMBOL(cl,_sym_ShortFloat_O,1728,ClPkg,"ShortFloat",true);
+DO_SYMBOL(cl,_sym_SingleFloat_dummy_O,1729,ClPkg,"SingleFloat",true);
+DO_SYMBOL(cl,_sym_DoubleFloat_O,1730,ClPkg,"double-float",true);
+DO_SYMBOL(cl,_sym_LongFloat_O,1731,ClPkg,"LongFloat",true);
+DO_SYMBOL(cl,_sym_Complex_O,1732,ClPkg,"complex",true);
+DO_SYMBOL(cl,_sym_Ratio_O,1733,ClPkg,"ratio",true);
+DO_SYMBOL(cl,_sym_Bignum_O,1734,ClPkg,"Bignum",true);
+DO_SYMBOL(cl,_sym_Symbol_O,1735,ClPkg,"Symbol",true);
+DO_SYMBOL(cl,_sym_Function_O,1736,ClPkg,"Function",true);
+DO_SYMBOL(cl,_sym_CompiledFunction_O,1737,ClPkg,"CompiledFunction",true);
+DO_SYMBOL(cl,_sym_StandardObject_O,1738,ClPkg,"standard-object",true);
+DO_SYMBOL(cl,_sym_Class_O,1739,ClPkg,"class",true);
+DO_SYMBOL(cl,_sym_Array_O,1740,ClPkg,"array",true);
+DO_SYMBOL(cl,_sym_Vector_O,1741,ClPkg,"vector",true);
+DO_SYMBOL(cl,_sym_HashTable_O,1742,ClPkg,"HashTable",true);
 #endif // ClPkg_SYMBOLS
 #if defined(AdaptPkg_SYMBOLS)
-DO_SYMBOL(adapt,_sym_SymbolList_O,1365,AdaptPkg,"SymbolList",true);
-DO_SYMBOL(adapt,_sym_StringList_O,1366,AdaptPkg,"StringList",true);
-DO_SYMBOL(adapt,_sym_IterateCons_O,1367,AdaptPkg,"IterateCons",true);
-DO_SYMBOL(adapt,_sym_StringSet_O,1368,AdaptPkg,"StringSet",true);
-DO_SYMBOL(adapt,_sym_IndexedObjectBag_O,1369,AdaptPkg,"IndexedObjectBag",true);
-DO_SYMBOL(adapt,_sym_QDomNode_O,1370,AdaptPkg,"QDomNode",true);
-DO_SYMBOL(adapt,_sym_SymbolSet_O,1371,AdaptPkg,"SymbolSet",true);
-DO_SYMBOL(adapt,_sym_ObjectSet_O,1372,AdaptPkg,"ObjectSet",true);
+DO_SYMBOL(adapt,_sym_IterateCons_O,1743,AdaptPkg,"IterateCons",true);
+DO_SYMBOL(adapt,_sym_StringList_O,1744,AdaptPkg,"StringList",true);
+DO_SYMBOL(adapt,_sym_ObjectSet_O,1745,AdaptPkg,"ObjectSet",true);
+DO_SYMBOL(adapt,_sym_SymbolList_O,1746,AdaptPkg,"SymbolList",true);
+DO_SYMBOL(adapt,_sym_IndexedObjectBag_O,1747,AdaptPkg,"IndexedObjectBag",true);
+DO_SYMBOL(adapt,_sym_StringSet_O,1748,AdaptPkg,"StringSet",true);
+DO_SYMBOL(adapt,_sym_SymbolSet_O,1749,AdaptPkg,"SymbolSet",true);
+DO_SYMBOL(adapt,_sym_QDomNode_O,1750,AdaptPkg,"QDomNode",true);
 #endif // AdaptPkg_SYMBOLS
-#if defined(ExtPkg_SYMBOLS)
-DO_SYMBOL(ext,_sym_STARinspectorHookSTAR,1373,ExtPkg,"STARinspectorHookSTAR",true);
-DO_SYMBOL(ext,_sym_integer8,1374,ExtPkg,"integer8",true);
-DO_SYMBOL(ext,_sym_byte8,1375,ExtPkg,"byte8",true);
-DO_SYMBOL(ext,_sym_float_nan_string,1376,ExtPkg,"float_nan_string",true);
-DO_SYMBOL(ext,_sym_float_infinity_string,1377,ExtPkg,"float_infinity_string",true);
-DO_SYMBOL(ext,_sym_STARdefault_external_formatSTAR,1378,ExtPkg,"STARdefault_external_formatSTAR",true);
-DO_SYMBOL(ext,_sym_truly_the,1379,ExtPkg,"truly_the",true);
-DO_SYMBOL(ext,_sym_specialVar,1380,ExtPkg,"specialVar",true);
-DO_SYMBOL(ext,_sym_lexicalVar,1381,ExtPkg,"lexicalVar",true);
-DO_SYMBOL(ext,_sym_stackVar,1382,ExtPkg,"stackVar",true);
-DO_SYMBOL(ext,_sym__PLUS_processStandardInput_PLUS_,1383,ExtPkg,"_PLUS_processStandardInput_PLUS_",true);
-DO_SYMBOL(ext,_sym__PLUS_processStandardOutput_PLUS_,1384,ExtPkg,"_PLUS_processStandardOutput_PLUS_",true);
-DO_SYMBOL(ext,_sym__PLUS_processErrorOutput_PLUS_,1385,ExtPkg,"_PLUS_processErrorOutput_PLUS_",true);
-DO_SYMBOL(ext,_sym_lambda_block,1386,ExtPkg,"lambda_block",true);
-DO_SYMBOL(ext,_sym_system,1387,ExtPkg,"system",true);
-DO_SYMBOL(ext,_sym_setenv,1388,ExtPkg,"setenv",true);
-DO_SYMBOL(ext,_sym_getenv,1389,ExtPkg,"getenv",true);
-DO_SYMBOL(ext,_sym_STARloadHooksSTAR,1390,ExtPkg,"STARloadHooksSTAR",true);
-DO_SYMBOL(ext,_sym_aSingleExtSymbol,1391,ExtPkg,"aSingleExtSymbol",true);
-DO_SYMBOL(ext,_sym_STARinvokeDebuggerHookSTAR,1392,ExtPkg,"STARinvokeDebuggerHookSTAR",true);
-DO_SYMBOL(ext,_sym_compiledFunctionName,1393,ExtPkg,"compiledFunctionName",true);
-DO_SYMBOL(ext,_sym_ansi_stream,1394,ExtPkg,"ansi_stream",true);
-DO_SYMBOL(ext,_sym_maybeQuote,1395,ExtPkg,"maybeQuote",true);
-DO_SYMBOL(ext,_sym_annotate,1396,ExtPkg,"annotate",true);
-DO_SYMBOL(ext,_sym_AnsiStream_O,1397,ExtPkg,"AnsiStream",true);
-#endif // ExtPkg_SYMBOLS
 #if defined(GeomPkg_SYMBOLS)
-DO_SYMBOL(geom,_sym_colorTable,1398,GeomPkg,"colorTable",true);
-DO_SYMBOL(geom,_sym_OVector2_O,1399,GeomPkg,"OVector2",true);
-DO_SYMBOL(geom,_sym_BoundingBox_O,1400,GeomPkg,"BoundingBox",true);
-DO_SYMBOL(geom,_sym_Color_O,1401,GeomPkg,"Color",true);
-DO_SYMBOL(geom,_sym_OMatrix_O,1402,GeomPkg,"OMatrix",true);
-DO_SYMBOL(geom,_sym_CoordinateArray_O,1403,GeomPkg,"CoordinateArray",true);
-DO_SYMBOL(geom,_sym_CoordinateArrayWithHash_O,1404,GeomPkg,"CoordinateArrayWithHash",true);
-DO_SYMBOL(geom,_sym_OVector3_O,1405,GeomPkg,"OVector3",true);
+DO_SYMBOL(geom,_sym_colorTable,1751,GeomPkg,"colorTable",true);
+DO_SYMBOL(geom,_sym_OVector2_O,1752,GeomPkg,"OVector2",true);
+DO_SYMBOL(geom,_sym_BoundingBox_O,1753,GeomPkg,"BoundingBox",true);
+DO_SYMBOL(geom,_sym_OMatrix_O,1754,GeomPkg,"OMatrix",true);
+DO_SYMBOL(geom,_sym_OVector3_O,1755,GeomPkg,"OVector3",true);
+DO_SYMBOL(geom,_sym_Color_O,1756,GeomPkg,"Color",true);
+DO_SYMBOL(geom,_sym_CoordinateArray_O,1757,GeomPkg,"CoordinateArray",true);
+DO_SYMBOL(geom,_sym_CoordinateArrayWithHash_O,1758,GeomPkg,"CoordinateArrayWithHash",true);
 #endif // GeomPkg_SYMBOLS
-#if defined(KeywordPkg_SYMBOLS)
-DO_SYMBOL(kw,_sym_catchFrame,1406,KeywordPkg,"catchFrame",true);
-DO_SYMBOL(kw,_sym_blockFrame,1407,KeywordPkg,"blockFrame",true);
-DO_SYMBOL(kw,_sym_tagbodyFrame,1408,KeywordPkg,"tagbodyFrame",true);
-DO_SYMBOL(kw,_sym_landingPadFrame,1409,KeywordPkg,"landingPadFrame",true);
-DO_SYMBOL(kw,_sym_splatted,1410,KeywordPkg,"splatted",true);
-DO_SYMBOL(kw,_sym_unbound,1411,KeywordPkg,"unbound",true);
-DO_SYMBOL(kw,_sym_deleted,1412,KeywordPkg,"deleted",true);
-DO_SYMBOL(kw,_sym_rtld_default,1413,KeywordPkg,"rtld_default",true);
-DO_SYMBOL(kw,_sym_rtld_next,1414,KeywordPkg,"rtld_next",true);
-DO_SYMBOL(kw,_sym_rtld_self,1415,KeywordPkg,"rtld_self",true);
-DO_SYMBOL(kw,_sym_rtld_main_only,1416,KeywordPkg,"rtld_main_only",true);
-DO_SYMBOL(kw,_sym_iclass,1417,KeywordPkg,"iclass",true);
-DO_SYMBOL(kw,_sym_next,1418,KeywordPkg,"next",true);
-DO_SYMBOL(kw,_sym_prev,1419,KeywordPkg,"prev",true);
-DO_SYMBOL(kw,_sym_key,1420,KeywordPkg,"key",true);
-DO_SYMBOL(kw,_sym_defaults,1421,KeywordPkg,"defaults",true);
-DO_SYMBOL(kw,_sym_error,1422,KeywordPkg,"error",true);
-DO_SYMBOL(kw,_sym_link,1423,KeywordPkg,"link",true);
-DO_SYMBOL(kw,_sym_broken_link,1424,KeywordPkg,"broken_link",true);
-DO_SYMBOL(kw,_sym_special,1425,KeywordPkg,"special",true);
-DO_SYMBOL(kw,_sym_supersede,1426,KeywordPkg,"supersede",true);
-DO_SYMBOL(kw,_sym_calledFunction,1427,KeywordPkg,"calledFunction",true);
-DO_SYMBOL(kw,_sym_givenNumberOfArguments,1428,KeywordPkg,"givenNumberOfArguments",true);
-DO_SYMBOL(kw,_sym_requiredNumberOfArguments,1429,KeywordPkg,"requiredNumberOfArguments",true);
-DO_SYMBOL(kw,_sym_unrecognizedKeyword,1430,KeywordPkg,"unrecognizedKeyword",true);
-DO_SYMBOL(kw,_sym_body,1431,KeywordPkg,"body",true);
-DO_SYMBOL(kw,_sym_lambda_list_handler,1432,KeywordPkg,"lambda_list_handler",true);
-DO_SYMBOL(kw,_sym_docstring,1433,KeywordPkg,"docstring",true);
-DO_SYMBOL(kw,_sym_arguments,1434,KeywordPkg,"arguments",true);
-DO_SYMBOL(kw,_sym_create,1435,KeywordPkg,"create",true);
-DO_SYMBOL(kw,_sym_append,1436,KeywordPkg,"append",true);
-DO_SYMBOL(kw,_sym_debugStartup,1437,KeywordPkg,"debugStartup",true);
-DO_SYMBOL(kw,_sym_cclasp,1438,KeywordPkg,"cclasp",true);
-DO_SYMBOL(kw,_sym_bclasp,1439,KeywordPkg,"bclasp",true);
-DO_SYMBOL(kw,_sym_load,1440,KeywordPkg,"load",true);
-DO_SYMBOL(kw,_sym_eval,1441,KeywordPkg,"eval",true);
-DO_SYMBOL(kw,_sym_ecl_min,1442,KeywordPkg,"ecl_min",true);
-DO_SYMBOL(kw,_sym_use_mps,1443,KeywordPkg,"use_mps",true);
-DO_SYMBOL(kw,_sym_use_boehmdc,1444,KeywordPkg,"use_boehmdc",true);
-DO_SYMBOL(kw,_sym_use_boehm,1445,KeywordPkg,"use_boehm",true);
-DO_SYMBOL(kw,_sym_cr,1446,KeywordPkg,"cr",true);
-DO_SYMBOL(kw,_sym_lf,1447,KeywordPkg,"lf",true);
-DO_SYMBOL(kw,_sym_littleEndian,1448,KeywordPkg,"littleEndian",true);
-DO_SYMBOL(kw,_sym_bigEndian,1449,KeywordPkg,"bigEndian",true);
-DO_SYMBOL(kw,_sym_crlf,1450,KeywordPkg,"crlf",true);
-DO_SYMBOL(kw,_sym_latin_1,1451,KeywordPkg,"latin_1",true);
-DO_SYMBOL(kw,_sym_ucs_4,1452,KeywordPkg,"ucs_4",true);
-DO_SYMBOL(kw,_sym_passThrough,1453,KeywordPkg,"passThrough",true);
-DO_SYMBOL(kw,_sym_if_does_not_exist,1454,KeywordPkg,"if_does_not_exist",true);
-DO_SYMBOL(kw,_sym_new_version,1455,KeywordPkg,"new_version",true);
-DO_SYMBOL(kw,_sym_rename,1456,KeywordPkg,"rename",true);
-DO_SYMBOL(kw,_sym_rename_and_delete,1457,KeywordPkg,"rename_and_delete",true);
-DO_SYMBOL(kw,_sym_overwrite,1458,KeywordPkg,"overwrite",true);
-DO_SYMBOL(kw,_sym_if_exists,1459,KeywordPkg,"if_exists",true);
-DO_SYMBOL(kw,_sym_probe,1460,KeywordPkg,"probe",true);
-DO_SYMBOL(kw,_sym_FullDebug,1461,KeywordPkg,"FullDebug",true);
-DO_SYMBOL(kw,_sym_LineTablesOnly,1462,KeywordPkg,"LineTablesOnly",true);
-DO_SYMBOL(kw,_sym__uid,1463,KeywordPkg,"_uid",true);
-DO_SYMBOL(kw,_sym_none,1464,KeywordPkg,"none",true);
-DO_SYMBOL(kw,_sym_line,1465,KeywordPkg,"line",true);
-DO_SYMBOL(kw,_sym_full,1466,KeywordPkg,"full",true);
-DO_SYMBOL(kw,_sym_message,1467,KeywordPkg,"message",true);
-DO_SYMBOL(kw,_sym_line_buffered,1468,KeywordPkg,"line_buffered",true);
-DO_SYMBOL(kw,_sym_fully_buffered,1469,KeywordPkg,"fully_buffered",true);
-DO_SYMBOL(kw,_sym_array,1470,KeywordPkg,"array",true);
-DO_SYMBOL(kw,_sym_UnsignedByte,1471,KeywordPkg,"UnsignedByte",true);
-DO_SYMBOL(kw,_sym_junkAllowed,1472,KeywordPkg,"junkAllowed",true);
-DO_SYMBOL(kw,_sym_absolute,1473,KeywordPkg,"absolute",true);
-DO_SYMBOL(kw,_sym_relative,1474,KeywordPkg,"relative",true);
-DO_SYMBOL(kw,_sym_back,1475,KeywordPkg,"back",true);
-DO_SYMBOL(kw,_sym_operation,1476,KeywordPkg,"operation",true);
-DO_SYMBOL(kw,_sym_operands,1477,KeywordPkg,"operands",true);
-DO_SYMBOL(kw,_sym_escape,1478,KeywordPkg,"escape",true);
-DO_SYMBOL(kw,_sym_capitalize,1479,KeywordPkg,"capitalize",true);
-DO_SYMBOL(kw,_sym_typeError,1480,KeywordPkg,"typeError",true);
-DO_SYMBOL(kw,_sym_datum,1481,KeywordPkg,"datum",true);
-DO_SYMBOL(kw,_sym_expectedType,1482,KeywordPkg,"expectedType",true);
-DO_SYMBOL(kw,_sym_print,1483,KeywordPkg,"print",true);
-DO_SYMBOL(kw,_sym_pathname,1484,KeywordPkg,"pathname",true);
-DO_SYMBOL(kw,_sym_object,1485,KeywordPkg,"object",true);
-DO_SYMBOL(kw,_sym_formatControl,1486,KeywordPkg,"formatControl",true);
-DO_SYMBOL(kw,_sym_formatArguments,1487,KeywordPkg,"formatArguments",true);
-DO_SYMBOL(kw,_sym_stream,1488,KeywordPkg,"stream",true);
-DO_SYMBOL(kw,_sym_package,1489,KeywordPkg,"package",true);
-DO_SYMBOL(kw,_sym_compile_toplevel,1490,KeywordPkg,"compile_toplevel",true);
-DO_SYMBOL(kw,_sym_load_toplevel,1491,KeywordPkg,"load_toplevel",true);
-DO_SYMBOL(kw,_sym_execute,1492,KeywordPkg,"execute",true);
-DO_SYMBOL(kw,_sym_allow_other_keys,1493,KeywordPkg,"allow_other_keys",true);
-DO_SYMBOL(kw,_sym_macro,1494,KeywordPkg,"macro",true);
-DO_SYMBOL(kw,_sym_function,1495,KeywordPkg,"function",true);
-DO_SYMBOL(kw,_sym_invalid_character,1496,KeywordPkg,"invalid_character",true);
-DO_SYMBOL(kw,_sym_brcl,1497,KeywordPkg,"brcl",true);
-DO_SYMBOL(kw,_sym_not,1498,KeywordPkg,"not",true);
-DO_SYMBOL(kw,_sym_and,1499,KeywordPkg,"and",true);
-DO_SYMBOL(kw,_sym_or,1500,KeywordPkg,"or",true);
-DO_SYMBOL(kw,_sym_class,1501,KeywordPkg,"class",true);
-DO_SYMBOL(kw,_sym_instance,1502,KeywordPkg,"instance",true);
-DO_SYMBOL(kw,_sym_output,1503,KeywordPkg,"output",true);
-DO_SYMBOL(kw,_sym_input,1504,KeywordPkg,"input",true);
-DO_SYMBOL(kw,_sym_io,1505,KeywordPkg,"io",true);
-DO_SYMBOL(kw,_sym_default,1506,KeywordPkg,"default",true);
-DO_SYMBOL(kw,_sym_internal,1507,KeywordPkg,"internal",true);
-DO_SYMBOL(kw,_sym_external,1508,KeywordPkg,"external",true);
-DO_SYMBOL(kw,_sym_inherited,1509,KeywordPkg,"inherited",true);
-DO_SYMBOL(kw,_sym_debug,1510,KeywordPkg,"debug",true);
-DO_SYMBOL(kw,_sym_direct_super_classes,1511,KeywordPkg,"direct_super_classes",true);
-DO_SYMBOL(kw,_sym_changed,1512,KeywordPkg,"changed",true);
-DO_SYMBOL(kw,_sym_address_model_64,1513,KeywordPkg,"address_model_64",true);
-DO_SYMBOL(kw,_sym_target_os_darwin,1514,KeywordPkg,"target_os_darwin",true);
-DO_SYMBOL(kw,_sym_podSymbolMap,1515,KeywordPkg,"podSymbolMap",true);
-DO_SYMBOL(kw,_sym_constituent_character,1516,KeywordPkg,"constituent_character",true);
-DO_SYMBOL(kw,_sym_syntax,1517,KeywordPkg,"syntax",true);
-DO_SYMBOL(kw,_sym_whitespace_character,1518,KeywordPkg,"whitespace_character",true);
-DO_SYMBOL(kw,_sym_single_escape_character,1519,KeywordPkg,"single_escape_character",true);
-DO_SYMBOL(kw,_sym_multiple_escape_character,1520,KeywordPkg,"multiple_escape_character",true);
-DO_SYMBOL(kw,_sym_upcase,1521,KeywordPkg,"upcase",true);
-DO_SYMBOL(kw,_sym_downcase,1522,KeywordPkg,"downcase",true);
-DO_SYMBOL(kw,_sym_preserve,1523,KeywordPkg,"preserve",true);
-DO_SYMBOL(kw,_sym_invert,1524,KeywordPkg,"invert",true);
-DO_SYMBOL(kw,_sym_non_terminating_macro_character,1525,KeywordPkg,"non_terminating_macro_character",true);
-DO_SYMBOL(kw,_sym_terminating_macro_character,1526,KeywordPkg,"terminating_macro_character",true);
-DO_SYMBOL(kw,_sym_macro_function,1527,KeywordPkg,"macro_function",true);
-DO_SYMBOL(kw,_sym_case,1528,KeywordPkg,"case",true);
-DO_SYMBOL(kw,_sym_file,1529,KeywordPkg,"file",true);
-DO_SYMBOL(kw,_sym_unspecific,1530,KeywordPkg,"unspecific",true);
-DO_SYMBOL(kw,_sym_local,1531,KeywordPkg,"local",true);
-DO_SYMBOL(kw,_sym_common,1532,KeywordPkg,"common",true);
-DO_SYMBOL(kw,_sym_wild_inferiors,1533,KeywordPkg,"wild_inferiors",true);
-DO_SYMBOL(kw,_sym_up,1534,KeywordPkg,"up",true);
-DO_SYMBOL(kw,_sym_wild,1535,KeywordPkg,"wild",true);
-DO_SYMBOL(kw,_sym_host,1536,KeywordPkg,"host",true);
-DO_SYMBOL(kw,_sym_device,1537,KeywordPkg,"device",true);
-DO_SYMBOL(kw,_sym_newest,1538,KeywordPkg,"newest",true);
-DO_SYMBOL(kw,_sym_version,1539,KeywordPkg,"version",true);
-DO_SYMBOL(kw,_sym_directory,1540,KeywordPkg,"directory",true);
-DO_SYMBOL(kw,_sym_supplied,1541,KeywordPkg,"supplied",true);
-DO_SYMBOL(kw,_sym_min,1542,KeywordPkg,"min",true);
-DO_SYMBOL(kw,_sym_max,1543,KeywordPkg,"max",true);
-DO_SYMBOL(kw,_sym_eof,1544,KeywordPkg,"eof",true);
-DO_SYMBOL(kw,_sym_fillPointer,1545,KeywordPkg,"fillPointer",true);
-DO_SYMBOL(kw,_sym_elementType,1546,KeywordPkg,"elementType",true);
-DO_SYMBOL(kw,_sym_adjustable,1547,KeywordPkg,"adjustable",true);
-DO_SYMBOL(kw,_sym_start,1548,KeywordPkg,"start",true);
-DO_SYMBOL(kw,_sym_end,1549,KeywordPkg,"end",true);
-DO_SYMBOL(kw,_sym_x,1550,KeywordPkg,"x",true);
-DO_SYMBOL(kw,_sym_y,1551,KeywordPkg,"y",true);
-DO_SYMBOL(kw,_sym_z,1552,KeywordPkg,"z",true);
-DO_SYMBOL(kw,_sym_white,1553,KeywordPkg,"white",true);
-DO_SYMBOL(kw,_sym_black,1554,KeywordPkg,"black",true);
-DO_SYMBOL(kw,_sym_red,1555,KeywordPkg,"red",true);
-DO_SYMBOL(kw,_sym_green,1556,KeywordPkg,"green",true);
-DO_SYMBOL(kw,_sym_blue,1557,KeywordPkg,"blue",true);
-DO_SYMBOL(kw,_sym_magenta,1558,KeywordPkg,"magenta",true);
-DO_SYMBOL(kw,_sym_yellow,1559,KeywordPkg,"yellow",true);
-DO_SYMBOL(kw,_sym_cyan,1560,KeywordPkg,"cyan",true);
-DO_SYMBOL(kw,_sym_grey10,1561,KeywordPkg,"grey10",true);
-DO_SYMBOL(kw,_sym_greyF0,1562,KeywordPkg,"greyF0",true);
-DO_SYMBOL(kw,_sym_goldenrod,1563,KeywordPkg,"goldenrod",true);
-DO_SYMBOL(kw,_sym_purple,1564,KeywordPkg,"purple",true);
-DO_SYMBOL(kw,_sym_pink,1565,KeywordPkg,"pink",true);
-DO_SYMBOL(kw,_sym_plum,1566,KeywordPkg,"plum",true);
-DO_SYMBOL(kw,_sym_coral,1567,KeywordPkg,"coral",true);
-DO_SYMBOL(kw,_sym_orange,1568,KeywordPkg,"orange",true);
-DO_SYMBOL(kw,_sym_brown,1569,KeywordPkg,"brown",true);
-DO_SYMBOL(kw,_sym_wheat,1570,KeywordPkg,"wheat",true);
-DO_SYMBOL(kw,_sym_chartreuse,1571,KeywordPkg,"chartreuse",true);
-DO_SYMBOL(kw,_sym_aquamarine,1572,KeywordPkg,"aquamarine",true);
-DO_SYMBOL(kw,_sym_mediumBlue,1573,KeywordPkg,"mediumBlue",true);
-DO_SYMBOL(kw,_sym_steelBlue,1574,KeywordPkg,"steelBlue",true);
-DO_SYMBOL(kw,_sym_chemdraw_color,1575,KeywordPkg,"chemdraw_color",true);
-DO_SYMBOL(kw,_sym_chemdraw_dashed_bond,1576,KeywordPkg,"chemdraw_dashed_bond",true);
-DO_SYMBOL(kw,_sym_comment,1577,KeywordPkg,"comment",true);
-DO_SYMBOL(kw,_sym_chiral_centers,1578,KeywordPkg,"chiral_centers",true);
-DO_SYMBOL(kw,_sym_group,1579,KeywordPkg,"group",true);
-DO_SYMBOL(kw,_sym_name_template,1580,KeywordPkg,"name_template",true);
-DO_SYMBOL(kw,_sym_pdb_template,1581,KeywordPkg,"pdb_template",true);
-DO_SYMBOL(kw,_sym_residue_charge,1582,KeywordPkg,"residue_charge",true);
-DO_SYMBOL(kw,_sym_restrained_pi_bonds,1583,KeywordPkg,"restrained_pi_bonds",true);
-DO_SYMBOL(kw,_sym_caps,1584,KeywordPkg,"caps",true);
-DO_SYMBOL(kw,_sym_matches,1585,KeywordPkg,"matches",true);
-DO_SYMBOL(kw,_sym_tags,1586,KeywordPkg,"tags",true);
-DO_SYMBOL(kw,_sym_closestMatch,1587,KeywordPkg,"closestMatch",true);
-DO_SYMBOL(kw,_sym_data,1588,KeywordPkg,"data",true);
-DO_SYMBOL(kw,_sym_root,1589,KeywordPkg,"root",true);
-DO_SYMBOL(kw,_sym_op,1590,KeywordPkg,"op",true);
-DO_SYMBOL(kw,_sym_ringTag,1591,KeywordPkg,"ringTag",true);
-DO_SYMBOL(kw,_sym_atomTest,1592,KeywordPkg,"atomTest",true);
-DO_SYMBOL(kw,_sym_test,1593,KeywordPkg,"test",true);
-DO_SYMBOL(kw,_sym_int,1594,KeywordPkg,"int",true);
-DO_SYMBOL(kw,_sym_num,1595,KeywordPkg,"num",true);
-DO_SYMBOL(kw,_sym_str,1596,KeywordPkg,"str",true);
-DO_SYMBOL(kw,_sym_sym,1597,KeywordPkg,"sym",true);
-DO_SYMBOL(kw,_sym_head,1598,KeywordPkg,"head",true);
-DO_SYMBOL(kw,_sym_tail,1599,KeywordPkg,"tail",true);
-DO_SYMBOL(kw,_sym_left,1600,KeywordPkg,"left",true);
-DO_SYMBOL(kw,_sym_right,1601,KeywordPkg,"right",true);
-DO_SYMBOL(kw,_sym_tag1,1602,KeywordPkg,"tag1",true);
-DO_SYMBOL(kw,_sym_tag2,1603,KeywordPkg,"tag2",true);
-DO_SYMBOL(kw,_sym_bond,1604,KeywordPkg,"bond",true);
-DO_SYMBOL(kw,_sym_residueNames,1605,KeywordPkg,"residueNames",true);
-DO_SYMBOL(kw,_sym_atomicProperty,1606,KeywordPkg,"atomicProperty",true);
-DO_SYMBOL(kw,_sym_atomicNumber,1607,KeywordPkg,"atomicNumber",true);
-DO_SYMBOL(kw,_sym_attachedAtoms,1608,KeywordPkg,"attachedAtoms",true);
-DO_SYMBOL(kw,_sym_attachedHs,1609,KeywordPkg,"attachedHs",true);
-DO_SYMBOL(kw,_sym_attachedEWGs,1610,KeywordPkg,"attachedEWGs",true);
-DO_SYMBOL(kw,_sym_neighbors,1611,KeywordPkg,"neighbors",true);
-DO_SYMBOL(kw,_sym_tag,1612,KeywordPkg,"tag",true);
-DO_SYMBOL(kw,_sym_atomProps,1613,KeywordPkg,"atomProps",true);
-DO_SYMBOL(kw,_sym_firstTest,1614,KeywordPkg,"firstTest",true);
-DO_SYMBOL(kw,_sym_chain,1615,KeywordPkg,"chain",true);
-DO_SYMBOL(kw,_sym_tests,1616,KeywordPkg,"tests",true);
-DO_SYMBOL(kw,_sym_assignType,1617,KeywordPkg,"assignType",true);
-DO_SYMBOL(kw,_sym_afterMatchTests,1618,KeywordPkg,"afterMatchTests",true);
-DO_SYMBOL(kw,_sym_wildDict,1619,KeywordPkg,"wildDict",true);
-DO_SYMBOL(kw,_sym_type_rules,1620,KeywordPkg,"type_rules",true);
-DO_SYMBOL(kw,_sym_r0,1621,KeywordPkg,"r0",true);
-DO_SYMBOL(kw,_sym_kb,1622,KeywordPkg,"kb",true);
-DO_SYMBOL(kw,_sym_stretches,1623,KeywordPkg,"stretches",true);
-DO_SYMBOL(kw,_sym_R,1624,KeywordPkg,"R",true);
-DO_SYMBOL(kw,_sym_Eps,1625,KeywordPkg,"Eps",true);
-DO_SYMBOL(kw,_sym_M,1626,KeywordPkg,"M",true);
-DO_SYMBOL(kw,_sym_N,1627,KeywordPkg,"N",true);
-DO_SYMBOL(kw,_sym_Edep,1628,KeywordPkg,"Edep",true);
-DO_SYMBOL(kw,_sym_vdw,1629,KeywordPkg,"vdw",true);
-DO_SYMBOL(kw,_sym_angRad,1630,KeywordPkg,"angRad",true);
-DO_SYMBOL(kw,_sym_k2,1631,KeywordPkg,"k2",true);
-DO_SYMBOL(kw,_sym_angleFunction,1632,KeywordPkg,"angleFunction",true);
-DO_SYMBOL(kw,_sym_angles,1633,KeywordPkg,"angles",true);
-DO_SYMBOL(kw,_sym_zConstants,1634,KeywordPkg,"zConstants",true);
-DO_SYMBOL(kw,_sym_cConstants,1635,KeywordPkg,"cConstants",true);
-DO_SYMBOL(kw,_sym_level,1636,KeywordPkg,"level",true);
-DO_SYMBOL(kw,_sym_forceField,1637,KeywordPkg,"forceField",true);
-DO_SYMBOL(kw,_sym_itors,1638,KeywordPkg,"itors",true);
-DO_SYMBOL(kw,_sym_type1,1639,KeywordPkg,"type1",true);
-DO_SYMBOL(kw,_sym_type2,1640,KeywordPkg,"type2",true);
-DO_SYMBOL(kw,_sym_type3,1641,KeywordPkg,"type3",true);
-DO_SYMBOL(kw,_sym_type4,1642,KeywordPkg,"type4",true);
-DO_SYMBOL(kw,_sym_v0,1643,KeywordPkg,"v0",true);
-DO_SYMBOL(kw,_sym_ph0,1644,KeywordPkg,"ph0",true);
-DO_SYMBOL(kw,_sym_v1,1645,KeywordPkg,"v1",true);
-DO_SYMBOL(kw,_sym_ph1,1646,KeywordPkg,"ph1",true);
-DO_SYMBOL(kw,_sym_v2,1647,KeywordPkg,"v2",true);
-DO_SYMBOL(kw,_sym_ph2,1648,KeywordPkg,"ph2",true);
-DO_SYMBOL(kw,_sym_v3,1649,KeywordPkg,"v3",true);
-DO_SYMBOL(kw,_sym_ph3,1650,KeywordPkg,"ph3",true);
-DO_SYMBOL(kw,_sym_v4,1651,KeywordPkg,"v4",true);
-DO_SYMBOL(kw,_sym_ph4,1652,KeywordPkg,"ph4",true);
-DO_SYMBOL(kw,_sym_v5,1653,KeywordPkg,"v5",true);
-DO_SYMBOL(kw,_sym_ph5,1654,KeywordPkg,"ph5",true);
-DO_SYMBOL(kw,_sym_ptors,1655,KeywordPkg,"ptors",true);
-DO_SYMBOL(kw,_sym_radius,1656,KeywordPkg,"radius",true);
-DO_SYMBOL(kw,_sym_well,1657,KeywordPkg,"well",true);
-DO_SYMBOL(kw,_sym_apol,1658,KeywordPkg,"apol",true);
-DO_SYMBOL(kw,_sym_neff,1659,KeywordPkg,"neff",true);
-DO_SYMBOL(kw,_sym_mass,1660,KeywordPkg,"mass",true);
-DO_SYMBOL(kw,_sym_pol,1661,KeywordPkg,"pol",true);
-DO_SYMBOL(kw,_sym_initCharge,1662,KeywordPkg,"initCharge",true);
-DO_SYMBOL(kw,_sym_fcadj,1663,KeywordPkg,"fcadj",true);
-DO_SYMBOL(kw,_sym_pbci,1664,KeywordPkg,"pbci",true);
-DO_SYMBOL(kw,_sym_da,1665,KeywordPkg,"da",true);
-DO_SYMBOL(kw,_sym_eleDielectricValue,1666,KeywordPkg,"eleDielectricValue",true);
-DO_SYMBOL(kw,_sym_eleBuffer,1667,KeywordPkg,"eleBuffer",true);
-DO_SYMBOL(kw,_sym_eleScale14,1668,KeywordPkg,"eleScale14",true);
-DO_SYMBOL(kw,_sym_eleChargeFcn,1669,KeywordPkg,"eleChargeFcn",true);
-DO_SYMBOL(kw,_sym_vdwScale14,1670,KeywordPkg,"vdwScale14",true);
-DO_SYMBOL(kw,_sym_vdwScaleBufferA,1671,KeywordPkg,"vdwScaleBufferA",true);
-DO_SYMBOL(kw,_sym_vdwScaleBufferB,1672,KeywordPkg,"vdwScaleBufferB",true);
-DO_SYMBOL(kw,_sym_nonbonds,1673,KeywordPkg,"nonbonds",true);
-DO_SYMBOL(kw,_sym_map,1674,KeywordPkg,"map",true);
-DO_SYMBOL(kw,_sym_eleDielectricCode,1675,KeywordPkg,"eleDielectricCode",true);
-DO_SYMBOL(kw,_sym_vdwMixRadius,1676,KeywordPkg,"vdwMixRadius",true);
-DO_SYMBOL(kw,_sym_vdwMixWell,1677,KeywordPkg,"vdwMixWell",true);
-DO_SYMBOL(kw,_sym_name,1678,KeywordPkg,"name",true);
-DO_SYMBOL(kw,_sym_id,1679,KeywordPkg,"id",true);
-DO_SYMBOL(kw,_sym_restraints,1680,KeywordPkg,"restraints",true);
-DO_SYMBOL(kw,_sym_contents,1681,KeywordPkg,"contents",true);
-DO_SYMBOL(kw,_sym_pdbName,1682,KeywordPkg,"pdbName",true);
-DO_SYMBOL(kw,_sym_uniqueLabel,1683,KeywordPkg,"uniqueLabel",true);
-DO_SYMBOL(kw,_sym_NetCharge,1684,KeywordPkg,"NetCharge",true);
-DO_SYMBOL(kw,_sym_fileSeqNum,1685,KeywordPkg,"fileSeqNum",true);
-DO_SYMBOL(kw,_sym_monomerAliases,1686,KeywordPkg,"monomerAliases",true);
-DO_SYMBOL(kw,_sym_bl,1687,KeywordPkg,"bl",true);
-DO_SYMBOL(kw,_sym_alias,1688,KeywordPkg,"alias",true);
-DO_SYMBOL(kw,_sym_flags,1689,KeywordPkg,"flags",true);
-DO_SYMBOL(kw,_sym_element,1690,KeywordPkg,"element",true);
-DO_SYMBOL(kw,_sym_hybridization,1691,KeywordPkg,"hybridization",true);
-DO_SYMBOL(kw,_sym_priority,1692,KeywordPkg,"priority",true);
-DO_SYMBOL(kw,_sym_hintLP,1693,KeywordPkg,"hintLP",true);
-DO_SYMBOL(kw,_sym_chg,1694,KeywordPkg,"chg",true);
-DO_SYMBOL(kw,_sym_ion,1695,KeywordPkg,"ion",true);
-DO_SYMBOL(kw,_sym_rings,1696,KeywordPkg,"rings",true);
-DO_SYMBOL(kw,_sym_tempInt,1697,KeywordPkg,"tempInt",true);
-DO_SYMBOL(kw,_sym_type,1698,KeywordPkg,"type",true);
-DO_SYMBOL(kw,_sym_ar1,1699,KeywordPkg,"ar1",true);
-DO_SYMBOL(kw,_sym_ar2,1700,KeywordPkg,"ar2",true);
-DO_SYMBOL(kw,_sym_ar3,1701,KeywordPkg,"ar3",true);
-DO_SYMBOL(kw,_sym_ar4,1702,KeywordPkg,"ar4",true);
-DO_SYMBOL(kw,_sym_ar5,1703,KeywordPkg,"ar5",true);
-DO_SYMBOL(kw,_sym_mask,1704,KeywordPkg,"mask",true);
-DO_SYMBOL(kw,_sym_configuration,1705,KeywordPkg,"configuration",true);
-DO_SYMBOL(kw,_sym_stereochemistryType,1706,KeywordPkg,"stereochemistryType",true);
-DO_SYMBOL(kw,_sym_pos,1707,KeywordPkg,"pos",true);
-DO_SYMBOL(kw,_sym_order,1708,KeywordPkg,"order",true);
-DO_SYMBOL(kw,_sym_properties,1709,KeywordPkg,"properties",true);
-DO_SYMBOL(kw,_sym_a1,1710,KeywordPkg,"a1",true);
-DO_SYMBOL(kw,_sym_a2,1711,KeywordPkg,"a2",true);
-DO_SYMBOL(kw,_sym_bonds,1712,KeywordPkg,"bonds",true);
-DO_SYMBOL(kw,_sym_atom,1713,KeywordPkg,"atom",true);
-DO_SYMBOL(kw,_sym_position,1714,KeywordPkg,"position",true);
-DO_SYMBOL(kw,_sym_weight,1715,KeywordPkg,"weight",true);
-DO_SYMBOL(kw,_sym_atoms,1716,KeywordPkg,"atoms",true);
-DO_SYMBOL(kw,_sym_k,1717,KeywordPkg,"k",true);
-DO_SYMBOL(kw,_sym_title,1718,KeywordPkg,"title",true);
-DO_SYMBOL(kw,_sym_ref,1719,KeywordPkg,"ref",true);
-DO_SYMBOL(kw,_sym_bondDistinctions,1720,KeywordPkg,"bondDistinctions",true);
-DO_SYMBOL(kw,_sym_Info,1721,KeywordPkg,"Info",true);
-DO_SYMBOL(kw,_sym_Types,1722,KeywordPkg,"Types",true);
-DO_SYMBOL(kw,_sym_Stretches,1723,KeywordPkg,"Stretches",true);
-DO_SYMBOL(kw,_sym_Angles,1724,KeywordPkg,"Angles",true);
-DO_SYMBOL(kw,_sym_Itors,1725,KeywordPkg,"Itors",true);
-DO_SYMBOL(kw,_sym_Ptors,1726,KeywordPkg,"Ptors",true);
-DO_SYMBOL(kw,_sym_Nonbonds,1727,KeywordPkg,"Nonbonds",true);
-DO_SYMBOL(kw,_sym_Vdws,1728,KeywordPkg,"Vdws",true);
-#endif // KeywordPkg_SYMBOLS
-#if defined(ChemKwPkg_SYMBOLS)
-DO_SYMBOL(chemkw,_sym_undefinedConfiguration,1729,ChemKwPkg,"undefinedConfiguration",true);
-DO_SYMBOL(chemkw,_sym_R,1730,ChemKwPkg,"R",true);
-DO_SYMBOL(chemkw,_sym_undefinedCenter,1731,ChemKwPkg,"undefinedCenter",true);
-DO_SYMBOL(chemkw,_sym_chiral,1732,ChemKwPkg,"chiral",true);
-DO_SYMBOL(chemkw,_sym_prochiral,1733,ChemKwPkg,"prochiral",true);
-DO_SYMBOL(chemkw,_sym__singleBond,1734,ChemKwPkg,"_singleBond",true);
-DO_SYMBOL(chemkw,_sym__doubleBond,1735,ChemKwPkg,"_doubleBond",true);
-DO_SYMBOL(chemkw,_sym__tripleBond,1736,ChemKwPkg,"_tripleBond",true);
-DO_SYMBOL(chemkw,_sym__aromaticBond,1737,ChemKwPkg,"_aromaticBond",true);
-DO_SYMBOL(chemkw,_sym__hydrogenBond,1738,ChemKwPkg,"_hydrogenBond",true);
-DO_SYMBOL(chemkw,_sym__virtualBond,1739,ChemKwPkg,"_virtualBond",true);
-DO_SYMBOL(chemkw,_sym__dashedSingleBond,1740,ChemKwPkg,"_dashedSingleBond",true);
-DO_SYMBOL(chemkw,_sym__dashedDoubleBond,1741,ChemKwPkg,"_dashedDoubleBond",true);
-DO_SYMBOL(chemkw,_sym_noBond,1742,ChemKwPkg,"noBond",true);
-DO_SYMBOL(chemkw,_sym_singleBond,1743,ChemKwPkg,"singleBond",true);
-DO_SYMBOL(chemkw,_sym_doubleBond,1744,ChemKwPkg,"doubleBond",true);
-DO_SYMBOL(chemkw,_sym_tripleBond,1745,ChemKwPkg,"tripleBond",true);
-DO_SYMBOL(chemkw,_sym_aromaticBond,1746,ChemKwPkg,"aromaticBond",true);
-DO_SYMBOL(chemkw,_sym_hydrogenBond,1747,ChemKwPkg,"hydrogenBond",true);
-DO_SYMBOL(chemkw,_sym_virtualBond,1748,ChemKwPkg,"virtualBond",true);
-DO_SYMBOL(chemkw,_sym_dashedSingleBond,1749,ChemKwPkg,"dashedSingleBond",true);
-DO_SYMBOL(chemkw,_sym_dashedDoubleBond,1750,ChemKwPkg,"dashedDoubleBond",true);
-DO_SYMBOL(chemkw,_sym_C,1751,ChemKwPkg,"C",true);
-DO_SYMBOL(chemkw,_sym_N,1752,ChemKwPkg,"N",true);
-DO_SYMBOL(chemkw,_sym_O,1753,ChemKwPkg,"O",true);
-DO_SYMBOL(chemkw,_sym_S,1754,ChemKwPkg,"S",true);
-DO_SYMBOL(chemkw,_sym_P,1755,ChemKwPkg,"P",true);
-DO_SYMBOL(chemkw,_sym_F,1756,ChemKwPkg,"F",true);
-DO_SYMBOL(chemkw,_sym_Cl,1757,ChemKwPkg,"Cl",true);
-DO_SYMBOL(chemkw,_sym_Br,1758,ChemKwPkg,"Br",true);
-DO_SYMBOL(chemkw,_sym_I,1759,ChemKwPkg,"I",true);
-DO_SYMBOL(chemkw,_sym_message,1760,ChemKwPkg,"message",true);
-DO_SYMBOL(chemkw,_sym_constitution,1761,ChemKwPkg,"constitution",true);
-DO_SYMBOL(chemkw,_sym_entity,1762,ChemKwPkg,"entity",true);
-DO_SYMBOL(chemkw,_sym_frameRecognizer,1763,ChemKwPkg,"frameRecognizer",true);
-DO_SYMBOL(chemkw,_sym_E,1764,ChemKwPkg,"E",true);
-DO_SYMBOL(chemkw,_sym_Z,1765,ChemKwPkg,"Z",true);
-DO_SYMBOL(chemkw,_sym_1,1766,ChemKwPkg,"1",true);
-DO_SYMBOL(chemkw,_sym_2,1767,ChemKwPkg,"2",true);
-DO_SYMBOL(chemkw,_sym_3,1768,ChemKwPkg,"3",true);
-DO_SYMBOL(chemkw,_sym_4,1769,ChemKwPkg,"4",true);
-DO_SYMBOL(chemkw,_sym_5,1770,ChemKwPkg,"5",true);
-DO_SYMBOL(chemkw,_sym_6,1771,ChemKwPkg,"6",true);
-DO_SYMBOL(chemkw,_sym_idle,1772,ChemKwPkg,"idle",true);
-DO_SYMBOL(chemkw,_sym_translate,1773,ChemKwPkg,"translate",true);
-DO_SYMBOL(chemkw,_sym_rotate,1774,ChemKwPkg,"rotate",true);
-DO_SYMBOL(chemkw,_sym_scale,1775,ChemKwPkg,"scale",true);
-DO_SYMBOL(chemkw,_sym_XX,1776,ChemKwPkg,"XX",true);
-DO_SYMBOL(chemkw,_sym_XA,1777,ChemKwPkg,"XA",true);
-DO_SYMBOL(chemkw,_sym_XB,1778,ChemKwPkg,"XB",true);
-DO_SYMBOL(chemkw,_sym_XC,1779,ChemKwPkg,"XC",true);
-DO_SYMBOL(chemkw,_sym_XD,1780,ChemKwPkg,"XD",true);
-DO_SYMBOL(chemkw,_sym_parameterized,1781,ChemKwPkg,"parameterized",true);
-DO_SYMBOL(chemkw,_sym_estimated,1782,ChemKwPkg,"estimated",true);
-DO_SYMBOL(chemkw,_sym_rough,1783,ChemKwPkg,"rough",true);
-#endif // ChemKwPkg_SYMBOLS
+#if defined(ExtPkg_SYMBOLS)
+DO_SYMBOL(ext,_sym_STARinspectorHookSTAR,1759,ExtPkg,"STARinspectorHookSTAR",true);
+DO_SYMBOL(ext,_sym_integer8,1760,ExtPkg,"integer8",true);
+DO_SYMBOL(ext,_sym_byte8,1761,ExtPkg,"byte8",true);
+DO_SYMBOL(ext,_sym_float_nan_string,1762,ExtPkg,"float_nan_string",true);
+DO_SYMBOL(ext,_sym_float_infinity_string,1763,ExtPkg,"float_infinity_string",true);
+DO_SYMBOL(ext,_sym_STARdefault_external_formatSTAR,1764,ExtPkg,"STARdefault_external_formatSTAR",true);
+DO_SYMBOL(ext,_sym_truly_the,1765,ExtPkg,"truly_the",true);
+DO_SYMBOL(ext,_sym_specialVar,1766,ExtPkg,"specialVar",true);
+DO_SYMBOL(ext,_sym_lexicalVar,1767,ExtPkg,"lexicalVar",true);
+DO_SYMBOL(ext,_sym_stackVar,1768,ExtPkg,"stackVar",true);
+DO_SYMBOL(ext,_sym__PLUS_processStandardInput_PLUS_,1769,ExtPkg,"_PLUS_processStandardInput_PLUS_",true);
+DO_SYMBOL(ext,_sym__PLUS_processStandardOutput_PLUS_,1770,ExtPkg,"_PLUS_processStandardOutput_PLUS_",true);
+DO_SYMBOL(ext,_sym__PLUS_processErrorOutput_PLUS_,1771,ExtPkg,"_PLUS_processErrorOutput_PLUS_",true);
+DO_SYMBOL(ext,_sym_lambda_block,1772,ExtPkg,"lambda_block",true);
+DO_SYMBOL(ext,_sym_system,1773,ExtPkg,"system",true);
+DO_SYMBOL(ext,_sym_setenv,1774,ExtPkg,"setenv",true);
+DO_SYMBOL(ext,_sym_getenv,1775,ExtPkg,"getenv",true);
+DO_SYMBOL(ext,_sym_STARloadHooksSTAR,1776,ExtPkg,"STARloadHooksSTAR",true);
+DO_SYMBOL(ext,_sym_aSingleExtSymbol,1777,ExtPkg,"aSingleExtSymbol",true);
+DO_SYMBOL(ext,_sym_STARinvokeDebuggerHookSTAR,1778,ExtPkg,"STARinvokeDebuggerHookSTAR",true);
+DO_SYMBOL(ext,_sym_compiledFunctionName,1779,ExtPkg,"compiledFunctionName",true);
+DO_SYMBOL(ext,_sym_ansi_stream,1780,ExtPkg,"ansi_stream",true);
+DO_SYMBOL(ext,_sym_maybeQuote,1781,ExtPkg,"maybeQuote",true);
+DO_SYMBOL(ext,_sym_annotate,1782,ExtPkg,"annotate",true);
+DO_SYMBOL(ext,_sym_AnsiStream_O,1783,ExtPkg,"AnsiStream",true);
+#endif // ExtPkg_SYMBOLS
 #if defined(UnitsPkg_SYMBOLS)
 DO_SYMBOL(units,_sym_NamedUnit_O,1784,UnitsPkg,"NamedUnit",true);
 DO_SYMBOL(units,_sym_meters,1785,UnitsPkg,"meters",true);
