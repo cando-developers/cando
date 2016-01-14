@@ -726,10 +726,6 @@ uint Residue_O::numberOfAtoms()
 
 
 
-#define ARGS_Residue_O_make "(&key (name \"\"))"
-#define DECL_Residue_O_make ""
-#define DOCS_Residue_O_make "make Residue args: &key name"
-CL_LAMBDA("(&key (name \"\"))");
 CL_LISPIFY_NAME(make-residue);
 CL_DEFUN Residue_sp Residue_O::make(MatterName name)
 {_G();

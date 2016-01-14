@@ -1158,10 +1158,10 @@ NOINLINE void expose_function_47_helper() {
   expose_function(core::magic_name("CHEM:make-atom"),true,&chem::Atom_O::make,"(&key name element)");
 }
 NOINLINE void expose_function_48_helper() {
-  expose_function(core::magic_name("CHEM:make-residue"),true,&chem::Residue_O::make,"((&key (name \"\")))");
+  expose_function(core::magic_name("CHEM:make-residue"),true,&chem::Residue_O::make,"");
 }
 NOINLINE void expose_function_49_helper() {
-  expose_function(core::magic_name("CHEM:make-molecule"),true,&chem::Molecule_O::make,"((&key (name \"\")))");
+  expose_function(core::magic_name("CHEM:make-molecule"),true,&chem::Molecule_O::make,"(&key (name \"\"))");
 }
 NOINLINE void expose_function_50_helper() {
   expose_function(core::magic_name("CHEM:make-aggregate"),true,&chem::Aggregate_O::make,"(&key (name \"\"))");

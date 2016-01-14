@@ -154,7 +154,7 @@ CL_DEFMETHOD 	void setNetCharge(int charge) { this->_NetCharge = charge;};
 
 	/*! Create a Residue that has all the atoms/bonds and all the necessary atom/bond
 	  properties set properly for this ConstitutionAtoms */
-	Residue_sp makeResidue();
+	Residue_sp buildResidue();
 
 	ConstitutionAtoms_O( const ConstitutionAtoms_O& ss ); //!< Copy constructor
 	DEFAULT_CTOR_DTOR(ConstitutionAtoms_O);

@@ -365,7 +365,7 @@ Constitution_O::const_stereoisomerIterator Constitution_O::end_Stereoisomers() c
 CL_LISPIFY_NAME("createResidueForStereoisomerName");
 CL_DEFMETHOD     Residue_sp	Constitution_O::createResidueForStereoisomerName(core::Symbol_sp stereoisomerName)
 {_G();
-    Residue_sp res = this->_ConstitutionAtoms->makeResidue();
+    Residue_sp res = this->_ConstitutionAtoms->buildResidue();
     IMPLEMENT_MEF(BF("Handle owners"));
 //    res->setOwner(this->sharedThis<Constitution_O>());
     this->makeResidueConsistentWithStereoisomerNamed(res,stereoisomerName);

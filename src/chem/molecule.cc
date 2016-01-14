@@ -353,7 +353,7 @@ CL_DEFMETHOD     Residue_sp	Molecule_O::getFirstResidueWithName(MatterName name)
 #define ARGS_Molecule_O_make "(&key (name \"\"))"
 #define DECL_Molecule_O_make ""
 #define DOCS_Molecule_O_make "make Molecule args: &key name"
-CL_LAMBDA("(&key (name \"\"))");
+CL_LAMBDA("&key (name \"\")");
 CL_LISPIFY_NAME(make-molecule);
 CL_DEFUN Molecule_sp Molecule_O::make(MatterName name)
 {_G();

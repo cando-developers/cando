@@ -182,7 +182,7 @@ namespace chem
 	    .def("atomWithName",&ConstitutionAtoms_O::atomWithName)
 	    .def("atomWithId",&ConstitutionAtoms_O::atomWithId)
 	    .def("constitution-atoms-index",&ConstitutionAtoms_O::index)
-	    .def("makeResidue",&ConstitutionAtoms_O::makeResidue)
+//	    .def("makeResidue",&ConstitutionAtoms_O::makeResidue)
 	    ;
     }
 
@@ -302,8 +302,8 @@ CL_DEFMETHOD     int ConstitutionAtoms_O::index(MatterName name) const
 	SIMPLE_ERROR(BF("Unknown atom[%s]") % name );
     }
 
-CL_LISPIFY_NAME("makeResidue");
-CL_DEFMETHOD     Residue_sp ConstitutionAtoms_O::makeResidue()
+CL_LISPIFY_NAME("buildResidue");
+CL_DEFMETHOD     Residue_sp ConstitutionAtoms_O::buildResidue()
     {_OF();
 	Residue_sp res = Residue_O::create();
 	res->setNetCharge(this->_NetCharge);

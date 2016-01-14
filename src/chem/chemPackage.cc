@@ -148,10 +148,10 @@ namespace chem
     const char* Chem_nicknames[] = {""};
 
 //! The default CandoDatabase
-    SYMBOL_SC_(ChemPkg,candoDatabase);
-    SYMBOL_SC_(ChemPkg,AM1_BCC_ar5);
-    SYMBOL_SC_(ChemPkg,AM1_BCC_ar6);
-    SYMBOL_SC_(ChemPkg,AM1_BCC_ar7);
+    SYMBOL_EXPORT_SC_(ChemPkg,candoDatabase);
+    SYMBOL_EXPORT_SC_(ChemPkg,AM1_BCC_ar5);
+    SYMBOL_EXPORT_SC_(ChemPkg,AM1_BCC_ar6);
+    SYMBOL_EXPORT_SC_(ChemPkg,AM1_BCC_ar7);
 
     extern void	Initialize_Mol2_TypeRules(core::Lisp_sp lisp);
 
@@ -166,8 +166,8 @@ namespace chem
                     // Create the CHEM-KW package
           std::list<std::string> nicknames = { "CK" };
           std::list<std::string> usePackages = { };
-          core::Package_sp chemkwpkg = _lisp->makePackage(ChemKwPkg,nicknames,usePackages);
-          chemkwpkg->setActsLikeKeywordPackage(true);
+          // core::Package_sp chemkwpkg = _lisp->makePackage(ChemKwPkg,nicknames,usePackages);
+          // chemkwpkg->setActsLikeKeywordPackage(true);
 
           core::T_sp pn;
           char* env = getenv("CANDO_LISP_SOURCE_DIR");
