@@ -17,6 +17,10 @@
 namespace chem {
 
 
+CL_DEFUN ReadAmberParameters_sp chem__make_read_amber_parameters()
+{
+  return ReadAmberParameters_O::create();
+}
 
 
 

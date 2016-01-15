@@ -18,7 +18,7 @@ namespace chem
     typedef gctools::Vec0<Atom_sp> VectorAtom;
 
     typedef core::Symbol_sp AtomAliasName;
-    typedef core::Symbol_sp AtomType;
+    typedef core::T_sp AtomType;
     typedef core::Symbol_sp MoeType;
 
     typedef	enum {

@@ -1,5 +1,5 @@
 project cando/internals/lisp ;
 
-install bundle : [ glob-tree *.l *.lsp *.lisp *.sh :  ]
+install bundle : [ glob-tree *.asd *.l *.lsp *.lisp *.sh :  ]
 	       : <location>$(APPRES-CANDO-LISP)
 	       <install-source-root>. ;

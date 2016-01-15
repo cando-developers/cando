@@ -654,7 +654,7 @@ CL_DEFMETHOD     bool	Atom_O::atLowerAddressThan(Atom_sp b)
       this->setElement(element);
     }
 
-    void	Atom_O::setElementFromString(const string& str)
+    void Atom_O::setElementFromString(const string& str)
     {_G();
 	Element element = elementFromAtomNameStringCaseInsensitive(str);
 	LOG(BF(" Resulting element= |%d|") %element );
