@@ -1,0 +1,5 @@
+project cando/internals/data ;
+
+install data : [ glob-tree *.dat *.DEF : ]
+             : <location>$(APPRES-CANDO)/data
+             <install-source-root>. ;
