@@ -40,6 +40,9 @@
    #:load-mol2
    #:dump-atoms
    #:load-cdxml-aggregate
+   #:load-psf-pdb
+   #:remove-overlaps
+   #:merge-into-one-aggregate
    ))
 
 (defpackage #:select

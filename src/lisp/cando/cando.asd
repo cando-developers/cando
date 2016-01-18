@@ -20,4 +20,7 @@
      (:file "ring-builder")
      (:file "chemdraw")
      (:file "energy")
+     (:file "psf-files")
+     (:file "remove-overlaps")
+     (:file "matter")
      ))
