@@ -1664,7 +1664,11 @@ CL_DEFMETHOD     uint Atom_O::totalBondOrder()
       {
         SIMPLE_ERROR(BF("The total bond order for "+this->description()+" will not be a whole number"));
       }
-      return twice/2;
+      int bondOrder = twice/2;
+      if ( bondOrder < 0 || bondOrder > 10 ) {
+        SIMPLE_ERROR(BF("The total bond order for %s is an unreasonable value %d") % this->description() % bondOrder );
+      }
+      return bondOrder;
     }
 
 
