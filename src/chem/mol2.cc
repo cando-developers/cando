@@ -649,6 +649,7 @@ AtomInfo	one;
 	nameId = chainId;
 	m->setName(chemkw_intern(nameId));
 	chainId++;
+        if ( chainId > 'Z' ) chainId = 'A'; // recycle chain ids
     }
 
 	//

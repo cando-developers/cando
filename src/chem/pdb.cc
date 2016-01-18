@@ -433,7 +433,7 @@ PdbWriter_sp PdbWriter_O::make(core::T_sp fileName)
 	Molecule_sp mol, 
 	gctools::Vec0<AtomPdbRec>& pdbAtoms, 
 	vector<ConnectPdbRec>& pdbConnects, 
-	uint chainId)
+	char chainId)
     {
 	pdbAtoms.clear();
 	pdbConnects.clear();
@@ -460,7 +460,7 @@ PdbWriter_sp PdbWriter_O::make(core::T_sp fileName)
 		{
 		    atom._resName = chemkw_intern("***");
 		}
-		atom._chainId = chainId+'A'-1;
+		atom._chainId = chainId;
 		atom._resSeq = resSeq;
 		atom._x = a->getPosition().getX();
 		atom._y = a->getPosition().getY();
@@ -531,7 +531,7 @@ CL_DEFMETHOD void PdbWriter_O::open(core::T_sp pathDesignator)
 	{
 	    Loop lMolecules;
 	    lMolecules.loopTopGoal(matter,MOLECULES);
-	    uint chainId = 1;
+	    char chainId = 'A';
 	    while ( lMolecules.advance() )
 	    {
 		gctools::Vec0<AtomPdbRec> pdbAtoms;
@@ -540,6 +540,7 @@ CL_DEFMETHOD void PdbWriter_O::open(core::T_sp pathDesignator)
 		_setupAtomAndConnectRecordsForOneMolecule(mol,pdbAtoms,pdbConnects,chainId);
 		_writeAtomAndConnectRecords(this->_Out,pdbAtoms,pdbConnects);
 		chainId++;
+                if ( chainId > 'Z' ) chainId = 'A'; // recycle chain-ids if there are too many
 	    }
 	} else
 	{
