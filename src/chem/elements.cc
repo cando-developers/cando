@@ -80,7 +80,7 @@ void    _defineAtomicInfoMapIfNotDefined()
     ai._ElementName=name;\
     ai._AtomicNumber=an;\
     ai._RelativeAtomicWeight=aw;\
-    ai._VdwRadius=1.0 /* Uknown */;\
+    ai._VdwRadius=1.6 /* Uknown */;\
     ai._RealElement = true; \
     atomicInfo[element] = ai;\
   };
@@ -437,7 +437,7 @@ uint maxTotalBondOrderForElement(Element element)
   return 4;
 }
 
-double vdwRadiusForElement(Element element)
+CL_DEFUN double vdwRadiusForElement(Element element)
 {
   return atomicInfo[element]._VdwRadius;
 }
@@ -481,30 +481,20 @@ string isolateElementName(const string& name, bool caseInsensitive)
     SIMPLE_ERROR(BF("Cannot isolate element name from empty string"));
   } else if (name.size() == 1) {
     goto ONE_CHAR_ELEMENT;
-  } else if ( name.size() == 2 ) {
-    if (firstChar=='C' ||
-        firstChar=='N' ||
-        firstChar=='O' ||
-        firstChar=='H' ) {
-      goto ONE_CHAR_ELEMENT;
-    }
-    string element = name;
-    element[0] = firstChar;
-    return element;
   }
   // Names like C_xxx C.xxx etc the first char is the element
   if (!isalpha(name[1])) {
     goto ONE_CHAR_ELEMENT;
   }
   // If name is like Ca.xxx Nb.yyy the first two characters are element
-  if (!isalnum(name[2])) {
+  if (name.size()>2&&!isalnum(name[2])) {
     string element = "  ";
     element[0] = firstChar;
     element[1] = name[1];
     return element;
   }
   // If first char upper and second char is lower case name as in CaXXX
-  if (isupper(name[0])&&islower(name[1])) {
+  if (isalpha(name[0])&&isalpha(name[1])&&isupper(name[0])&&islower(name[1])) {
     string element = "  ";
     element[0] = firstChar;
     element[1] = name[1];

@@ -25,29 +25,16 @@ namespace chem
 {
     static		int	SiNextSeenId = 0;
 
-#if INIT_TO_FACTORIES
-
 #define ARGS_SpanningLoop_O_make "(file_name)"
 #define DECL_SpanningLoop_O_make ""
 #define DOCS_SpanningLoop_O_make "make SpanningLoop"
-  SpanningLoop_sp SpanningLoop_O::make(Atom_sp root)
+CL_NAME(CHEM:MAKE-SPANNING-LOOP);
+CL_DEFUN SpanningLoop_sp SpanningLoop_O::make(Atom_sp root)
   {_G();
       GC_ALLOCATE(SpanningLoop_O, me );
       me->setTop(root);
       return me;
   };
-
-#else
-
-    core::T_sp SpanningLoop_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_OF();
-	Atom_sp root = translate::from_object<Atom_O>::convert(env->lookup(ChemPkg,"root"));
-	this->setTop(root);
-	return _Nil<core::T_O>();
-    }
-
-#endif
-
 /*
  *      bLoopAtomVisible
  *

@@ -629,10 +629,10 @@ CL_DEFMETHOD     void	Aggregate_O::perturbAtomPositions(double dist)
 
 
 
-#define ARGS_Aggregate_O_make "(&key (name \"\"))"
+#define ARGS_Aggregate_O_make "(&key (name :agg))"
 #define DECL_Aggregate_O_make ""
 #define DOCS_Aggregate_O_make "make Aggregate args: &key name"
-CL_LAMBDA("&key (name \"\")");
+CL_LAMBDA(&optional (name nil));
 CL_LISPIFY_NAME(make-aggregate);
 CL_DEFUN Aggregate_sp Aggregate_O::make(MatterName name)
     {_G();

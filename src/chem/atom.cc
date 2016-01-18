@@ -100,10 +100,6 @@ namespace chem
 
 
 
-#define ARGS_Atom_O_make "(&key name element)"
-#define DECL_Atom_O_make ""
-#define DOCS_Atom_O_make "make Atom args: &key (name \"\") (element :C)"
-CL_LAMBDA(&key name element);
 CL_LISPIFY_NAME(make-atom);
 CL_DEFUN Atom_sp Atom_O::make(MatterName name, Element element)
     {_G();
