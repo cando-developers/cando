@@ -232,9 +232,19 @@ namespace chem {
     }
 
 
-
-
-
+CL_DEFMETHOD core::T_sp EnergyStretch_O::stretchTermBetweenAtoms(Atom_sp x, Atom_sp y)
+{
+  for ( auto si=this->_Terms.begin();
+        si!=this->_Terms.end(); si++ ) {
+    if ( (si->_Atom1 == x && si->_Atom2 == y) ||
+         (si->_Atom1 == y && si->_Atom2 == x ) ) {
+      return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,kb), core::clasp_make_double_float(si->term.kb)),
+                                      core::Cons_O::create(INTERN_(kw,r0), core::clasp_make_double_float(si->term.r0)));
+    }
+  }
+  return _Nil<core::T_O>();
+}
+  
     void EnergyStretch_O::evaluateAll(
 	NVector_sp 	pos,
 	bool 		calcForce,
@@ -242,7 +252,8 @@ namespace chem {
 	bool		calcDiagonalHessian,
 	bool		calcOffDiagonalHessian,
 	gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-	NVector_sp	hdvec, NVector_sp dvec)
+	gc::Nilable<NVector_sp>	hdvec,
+        gc::Nilable<NVector_sp> dvec)
     { _G();
 	if ( this->_DebugEnergy ) 
 	{

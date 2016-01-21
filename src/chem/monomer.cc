@@ -929,17 +929,18 @@ CL_DEFMETHOD     OneMonomer_sp	MultiMonomer_O::getOneMonomer() const
 	    EntityNameSet_sp monomerPack = getCandoDatabase()->getEntity(this->_GroupName).as<EntityNameSet_O>();
 	    if ( monomerPack->supportsInterestingAtomAliases() )
 	    {
-		adapt::SymbolList_sp atomAliases = monomerPack->getInterestingAtomAliases();
+              core::List_sp atomAliases = monomerPack->getInterestingAtomAliases();
 		AtomIndexer_sp aliasAtoms = monomerPack->getAtomIndexerForMonomerName(this->getName());
-		ASSERTP(atomAliases->size() == aliasAtoms->numberOfAtomNames(),
+		ASSERTP(core::cl__length(atomAliases) == aliasAtoms->numberOfAtomNames(),
 			"The number of atom names has to match the number of atom aliases");
 		AtomIndexer_O::atomNameIterator ii;
-		adapt::SymbolList_O::iterator ai;
-		for ( ii = aliasAtoms->begin_AtomNames(), ai=atomAliases->begin();
-		      ii != aliasAtoms->end_AtomNames(); ii++, ai++ )
+                core::List_sp ai;
+		for ( ii = aliasAtoms->begin_AtomNames(), ai=atomAliases;
+		      ii != aliasAtoms->end_AtomNames(); ii++ )
 		{
 		    Atom_sp atom = res->atomWithName(*ii);
-		    atom->setAlias(*ai);
+		    atom->setAlias(oCar(ai));
+                    ai = oCdr(ai);
 		}
 #if 0
 		{
@@ -1032,7 +1033,7 @@ CL_DEFMETHOD     AtomIndexer_sp	MultiMonomer_O::getInterestingAtomIndexer()
 
 
 
-    adapt::SymbolList_sp MultiMonomer_O::allAtomAliases()
+core::List_sp MultiMonomer_O::allAtomAliases()
     {_G();
 	EntityNameSet_sp		entityNameSet;
 	CandoDatabase_sp	bdb;
@@ -1043,7 +1044,7 @@ CL_DEFMETHOD     AtomIndexer_sp	MultiMonomer_O::getInterestingAtomIndexer()
 	{
 	    LOG(BF("Recognized the EntityNameSetName(%s)")% this->getGroupName() );
 	    entityNameSet = bdb->getEntityNameSet(this->getGroupName());
-	    adapt::SymbolList_sp aliases = entityNameSet->getInterestingAtomAliases();
+            core::List_sp aliases = entityNameSet->getInterestingAtomAliases();
 	    LOG(BF("Returning with aliases(%s)")% aliases->asString() );
 	    return aliases;
 	} else 
@@ -1051,7 +1052,7 @@ CL_DEFMETHOD     AtomIndexer_sp	MultiMonomer_O::getInterestingAtomIndexer()
 	    LOG(BF("Did not recognize the EntityNameSetName(%s)")% this->getGroupName());
 	}
 	LOG(BF("Returning with nothing"));
-	return _Nil<adapt::SymbolList_O>();
+	return _Nil<core::T_O>();
     }
 
 
@@ -1072,16 +1073,16 @@ CL_DEFMETHOD     AtomIndexer_sp	MultiMonomer_O::getInterestingAtomIndexer()
 	ASSERTNOTNULL(this->_Aliases);
 	if ( this->_Aliases->size() == 0 )
 	{
-	    if ( this->allAtomAliases()->size() != 0 )
+          if ( core::cl__length(this->allAtomAliases()) != 0 )
 	    {
-		SIMPLE_ERROR(BF("The monomer[%s] doesn't have monomer aliases but it has atom aliases(%s) - this should never happen") % this->getName() % this->allAtomAliases()->asString() );
+              SIMPLE_ERROR(BF("The monomer[%s] doesn't have monomer aliases but it has atom aliases(%s) - this should never happen") % this->getName() % _rep_(this->allAtomAliases()) );
 	    }
 	    return _Nil<adapt::ObjectSet_O>();
 	}
 	ASSERT_gt(this->_Aliases->size(),0);
 	adapt::SymbolSet_sp atomAliases = adapt::SymbolSet_O::create();
-	adapt::SymbolList_sp atomAliasesList = this->allAtomAliases();
-	atomAliases->insertSymbolList(atomAliasesList);
+        core::List_sp atomAliasesList = this->allAtomAliases();
+	atomAliases->insertConsSymbols(atomAliasesList);
 	AliasWrapper wrapper;
 	adapt::ObjectSet_sp allAliases = this->_Aliases->cartesianProductWrapped(atomAliases,wrapper);
 	return allAliases;

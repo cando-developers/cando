@@ -203,17 +203,14 @@ void EnergyAnchorRestraint_O::evaluateAll(
        		bool		calcDiagonalHessian,
 		bool		calcOffDiagonalHessian,
 		gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-		NVector_sp	hdvec, NVector_sp dvec)
+		gc::Nilable<NVector_sp>	hdvec,
+                gc::Nilable<NVector_sp> dvec)
 {
 _G();
 
-ANN(force);
-ANN(hessian);
-ANN(hdvec);
-ANN(dvec);
-bool	hasForce = force.notnilp();
-bool	hasHessian = hessian.notnilp();
-bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+ bool	hasForce = force.notnilp();
+ bool	hasHessian = hessian.notnilp();
+ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 
 
 //

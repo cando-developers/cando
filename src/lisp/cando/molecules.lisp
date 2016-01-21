@@ -39,7 +39,7 @@
 
 (defun set-stereoisomer (atom-vec index &key show)
   (dotimes (i (length atom-vec))
-    (let ((config (if (logbitp i index) 'chem:S 'chem:R))
+    (let ((config (if (logbitp i index) :S :R))
           (atom (elt atom-vec i)))
       (chem:set-configuration (elt atom-vec i) config)))
   (when show
@@ -50,7 +50,7 @@
 (defun gather-stereocenters (matter)
   (let (chiral-atoms)
     (chem:map-atoms nil (lambda (a &aux p)
-                          (when (eq (chem:get-stereochemistry-type a) 'chem::chiral)
+                          (when (eq (chem:get-stereochemistry-type a) :chiral)
                             (push a chiral-atoms)))
                     matter)
     (make-array (length chiral-atoms) :initial-contents chiral-atoms)))
@@ -60,7 +60,7 @@
 - atom-vec :: A vector of chiral centers
 - func :: A function that takes an atom and returns 'chem:S or 'chem:R
 * Description
-Set the stereochemistry of a collection of stereocenters using a function that returns 'chem:S or 'chem:R for each atom."
+Set the stereochemistry of a collection of stereocenters using a function that returns :S or :R for each atom."
   (dotimes (i (length atom-vec))
     (let* ((atom (elt atom-vec i))
            (config (funcall func (elt atom-vec i))))

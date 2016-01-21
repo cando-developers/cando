@@ -14,6 +14,10 @@ project cando/main : requirements
 
 
 sources = 
+                /cando/chem//chem
+                /cando/geom//geom
+                /cando/adapt//adapt
+                /cando/units//units
     	    	/internals/core//core
 		/internals/cffi//cffi
 		/internals/llvmo//llvmo
@@ -22,10 +26,6 @@ sources =
 		/internals/sockets//sockets
 		/internals/serveEvent//serveEvent
 		/internals/asttooling//asttooling
-                /cando/geom//geom
-                /cando/adapt//adapt
-                /cando/units//units
-                /cando/chem//chem
 #                /cando/kinematics//kinematics
 		/externals//llvm_lib_globbed
 		/externals//clang_lib_globbed

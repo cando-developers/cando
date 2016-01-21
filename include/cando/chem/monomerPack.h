@@ -34,7 +34,7 @@ public:
 
 private:
 		//! Store the unique IDs of the Interesting atoms for each monomer
-	adapt::SymbolList_sp				_InterestingAtomAliases;
+        core::List_sp				_InterestingAtomAliases;
 	MapOfMonomerNamesToAtomIndexers_sp	_AtomIndexers;
 
 private:
@@ -46,7 +46,7 @@ public:
 	void	setInterestingAtomAliasesFromSymbolList(adapt::SymbolList_sp nm);
 	string	getInterestingAtomAliasesAsString();
 
-    virtual adapt::SymbolList_sp getInterestingAtomAliases() { return this->_InterestingAtomAliases; };
+        virtual core::List_sp getInterestingAtomAliases() { return this->_InterestingAtomAliases; };
 
 	void	setMonomerNameOrPdb(core::Symbol_sp nm);
 	void	addMonomerName(core::Symbol_sp nm);

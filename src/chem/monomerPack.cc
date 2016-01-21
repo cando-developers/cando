@@ -220,7 +220,9 @@ void MonomerPack_O::extendAliases( core::List_sp atomAliases, core::List_sp part
 {_OF();
     adapt::SymbolSet_sp extendMonomers = adapt::SymbolSet_O::create();
     uint numberOfAtomAliases = core::cl__length(atomAliases);
-    this->_InterestingAtomAliases->appendConsOfStrings(atomAliases);
+    for ( auto aai : atomAliases ) {
+      this->_InterestingAtomAliases = core::Cons_O::create(aai,this->_InterestingAtomAliases);
+    }
     for ( auto cur : parts ) {
       core::List_sp oneExtend = oCar(cur);
       if ( core::cl__length(oneExtend) != 2 )
@@ -356,8 +358,10 @@ string	s;
 
 void	MonomerPack_O::setInterestingAtomAliasesFromSymbolList(adapt::SymbolList_sp names)
 {_G();
-    this->_InterestingAtomAliases->clear();
-    this->_InterestingAtomAliases->appendSymbolList(names);
+  this->_InterestingAtomAliases = _Nil<core::T_O>();
+  for ( auto ni = names->begin(); ni!=names->end(); ++ni ) {
+    this->_InterestingAtomAliases = core::Cons_O::create(*ni,this->_InterestingAtomAliases);
+  }
     LOG(BF("For MonomerPack(%s) setting aliases(%s)") % this->getName().c_str() % this->_InterestingAtomAliases->asString().c_str()  );
 }
 
@@ -365,7 +369,7 @@ void	MonomerPack_O::setInterestingAtomAliasesFromSymbolList(adapt::SymbolList_sp
 
 string MonomerPack_O::getInterestingAtomAliasesAsString()
 {_G();
-    return this->_InterestingAtomAliases->asString();
+  return _rep_(this->_InterestingAtomAliases);
 }
 
 
@@ -429,18 +433,21 @@ AtomIndexer_sp	atomIndexer;
 
 
 bool	MonomerPack_O::hasInterestingAtomAlias(Alias_sp alias)
-{_G();
-    LOG(BF("MonomerPack: %s") % this->getName().c_str() );
-    LOG(BF("Checking to see if it recognizes atom alias: %s") % alias->getAtomAlias().c_str()  );
-    LOG(BF("The interesting atom aliases I recognize are(%s)") % this->_InterestingAtomAliases->asString().c_str()  );
-    return this->_InterestingAtomAliases->contains(alias->getAtomAlias());
+{
+  for ( auto ai : this->_InterestingAtomAliases ) {
+    if ( core::cl__equal(ai,alias->getAtomAlias()) ) return true;
+  }
 }
 
 
 int	MonomerPack_O::getInterestingAtomAliasIndex(Alias_sp alias)
 {_G();
-adapt::StringList_O::iterator	si;
-    return this->_InterestingAtomAliases->indexOf(alias->getAtomAlias());
+ int i = 0;
+ for ( auto ai : this->_InterestingAtomAliases ) {
+   if ( core::cl__equal(ai,alias->getAtomAlias()) ) return i;
+   ++i;
+ }
+ return -1;
 }
 
 

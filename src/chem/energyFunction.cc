@@ -127,20 +127,20 @@ void energyFunction_initializeSmarts()
 CL_LAMBDA(matter force_field &optional active-atoms);
 CL_LISPIFY_NAME(make-energy-function);
 CL_DEFUN EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms)
-  {_G();
-      GC_ALLOCATE(EnergyFunction_O, me );
-    if ( matter.notnilp() )
-      {
-	if ( forceField.notnilp() )
-	  {
-	    me->defineForMatter(matter,forceField,activeAtoms);
-	  } else
-	  {
-	      SIMPLE_ERROR(BF("You must provide a forceField if you provide a matter object"));
-	  }
-      }
-    return me;
-  };
+{
+  GC_ALLOCATE(EnergyFunction_O, me );
+  if ( matter.notnilp() )
+  {
+    if ( forceField.notnilp() )
+    {
+      me->defineForMatter(matter,forceField,activeAtoms);
+    } else
+    {
+      SIMPLE_ERROR(BF("You must provide a forceField if you provide a matter object"));
+    }
+  }
+  return me;
+};
 
 #else
 
@@ -315,7 +315,6 @@ bool inAtomSet(core::T_sp activeSet, Atom_sp a)
 void	EnergyFunction_O::initialize()
 {
     this->Base::initialize();
-    this->_NonbondCrossTermTable = _Nil<FFNonbondCrossTermTable_O>();
     this->_AtomTable = AtomTable_O::create();
     this->_Stretch = EnergyStretch_O::create();
 #if USE_ALL_ENERGY_COMPONENTS
@@ -603,7 +602,8 @@ CL_DEFMETHOD double	EnergyFunction_O::evaluateAll(
        		bool		calcDiagonalHessian,
 		bool		calcOffDiagonalHessian,
 		gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-		NVector_sp	hdvec, NVector_sp dvec)
+		gc::Nilable<NVector_sp>	hdvec,
+                gc::Nilable<NVector_sp> dvec)
 {_G()
 
 #if 0 //[
@@ -643,9 +643,9 @@ ANN(force);
 ANN(hessian);
 ANN(hdvec);
 ANN(dvec);
-bool	hasForce = force.notnilp();
-bool	hasHessian = hessian.notnilp();
-bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+ bool	hasForce = force.notnilp();
+ bool   hasHessian = hessian.notnilp();
+ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 
 #ifdef	DEBUG_ON //[
 	// Summarize entry state for debugging
@@ -653,7 +653,6 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
     LOG(BF("calcDiagonalHessian = %d") % calcDiagonalHessian  );
     LOG(BF("calcOffDiagonalHessian = %d") % calcOffDiagonalHessian  );
     LOG(BF("hasForce = %d") % hasForce  );
-    LOG(BF("hasHessian = %d") % hasHessian  );
     LOG(BF("hasHdAndD = %d") % hasHdAndD  );
     if ( hasForce && force->size() < pos->size() ) {
 	SIMPLE_ERROR(BF("Force does not have the necessary dimensions"));
@@ -899,18 +898,15 @@ CL_DEFMETHOD string	EnergyFunction_O::energyTermsEnabled()
 CL_LISPIFY_NAME("evaluateEnergy");
 CL_DEFMETHOD double	EnergyFunction_O::evaluateEnergy( NVector_sp pos )
 {
-double		energy;
-AbstractLargeSquareMatrix_sp	dummyMatrix;
-NVector_sp	dummyForce, dummyHd, dummyD;
-dummyMatrix = _Nil<AbstractLargeSquareMatrix_O>();
-dummyForce = _Nil<NVector_O>();
-dummyHd = _Nil<NVector_O>();
-dummyD = _Nil<NVector_O>();
-    energy = this->evaluateAll(pos,
-	    			false, dummyForce,
-				false, false, dummyMatrix,
-				dummyHd, dummyD );
-    return energy;
+  double		energy;
+  energy = this->evaluateAll(pos,
+                             false,
+                             _Nil<core::T_O>(),
+                             false, false,
+                             _Nil<core::T_O>(),
+                             _Nil<core::T_O>(),
+                             _Nil<core::T_O>() );
+  return energy;
 }
 
 
@@ -919,20 +915,19 @@ CL_LISPIFY_NAME("evaluateEnergyForce");
 CL_DEFMETHOD double	EnergyFunction_O::evaluateEnergyForce( NVector_sp pos, bool calcForce, NVector_sp force )
 {_G();
 double	energy;
-NVector_sp	rawGrad;
-NVector_sp	dummyHd;
-NVector_sp	dummyD;
-AbstractLargeSquareMatrix_sp		dummyMatrix;
-dummyMatrix = _Nil<AbstractLargeSquareMatrix_O>();
-dummyHd = _Nil<NVector_O>();
-dummyD = _Nil<NVector_O>();
+ gc::Nilable<NVector_sp>	rawGrad;
     if ( calcForce ) {
 	rawGrad = force;
     } else {
-	rawGrad = _Nil<NVector_O>();
+      rawGrad = _Nil<core::T_O>();
     }
-    energy = this->evaluateAll(pos,calcForce, rawGrad, false, false, dummyMatrix,
-				dummyHd, dummyD );
+    energy = this->evaluateAll(pos,calcForce,
+                               rawGrad,
+                               false,
+                               false,
+                               _Nil<core::T_O>(),
+                               _Nil<core::T_O>(),
+                               _Nil<core::T_O>() );
     return energy;
 }
 
@@ -946,17 +941,16 @@ CL_DEFMETHOD double	EnergyFunction_O::evaluateEnergyForceFullHessian(
 				AbstractLargeSquareMatrix_sp hessian )
 {
 double	energy;
-NVector_sp	dummyHd, dummyD;
-NVector_sp	rawPos, rawGrad;
-dummyHd = _Nil<NVector_O>();
-dummyD = _Nil<NVector_O>();
+ gc::Nilable<NVector_sp> rawGrad;
     if ( calcForce ) rawGrad = force;
-    else rawGrad = _Nil<NVector_O>();
+    else rawGrad = _Nil<core::T_O>();
     energy = this->evaluateAll( pos,
 	    			calcForce, rawGrad,
 				calcDiagonalHessian,
 				calcOffDiagonalHessian,
-				hessian, dummyHd, dummyD );
+				hessian,
+                                _Nil<core::T_O>(),
+                                _Nil<core::T_O>() );
     return energy;
 }
 
@@ -967,16 +961,18 @@ CL_DEFMETHOD double	EnergyFunction_O::evaluateEnergyForceFullHessianForDebugging
 NVector_sp	pos, force;
 AbstractLargeSquareMatrix_sp	hessian;
 double		energy;
-NVector_sp	dummyHd, dummyD;
-dummyHd = _Nil<NVector_O>();
-dummyD = _Nil<NVector_O>();
     pos = NVector_O::create(this->getNVectorSize());
     force = NVector_O::create(this->getNVectorSize());
     hessian = FullLargeSquareMatrix_O::create(this->getNVectorSize(),SymmetricDiagonalLower);
     this->extractCoordinatesFromAtoms(pos);
-    energy = this->evaluateAll(pos, true, force,
-				true, true, hessian,
-				dummyHd, dummyD );
+    energy = this->evaluateAll(pos,
+                               true,
+                               force,
+                               true,
+                               true,
+                               hessian,
+                               _Nil<core::T_O>(),
+                               _Nil<core::T_O>() );
     return energy;
 }
 
@@ -1364,9 +1360,10 @@ FFPtor_sp        ffPtor;
 FFItor_sp        ffItor;
 FFNonbond_sp	ffNonbond1, ffNonbond2;
 int             coordinateIndex;
-
-
-
+    if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
+    {
+        SIMPLE_ERROR(BF("You can only define energy functions for Aggregates or Molecules"));
+    }
 	//
 	// Identify rings
 	//
@@ -1377,25 +1374,18 @@ int             coordinateIndex;
 	//
 	// Assign relative Cahn-Ingold-Preylog priorities
 	//
-
     {_BLOCK_TRACEF(BF("Assign CIP priorities"));
 	CipPrioritizer_O::assignPriorities(matter); 
     }
 	// 
 	// Assign atom types
 	//
-
     forceField->assignTypes(matter);
 //    printf( "%s:%d dumping xml after assignTypes \n%s\n", __FILE__, __LINE__,matter->asXmlString() );
-
 	//
 	// Now create the energy function from all this info
 	//
 
-    if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
-    {
-        SIMPLE_ERROR(BF("You can only define energy functions for Aggregates or Molecules"));
-    }
     	//
 	// Define a Nonbond cross term table
 	//
@@ -1433,26 +1423,27 @@ int             coordinateIndex;
     lisp->print(BF("%s:%d There were %d atoms") % __FILE__ % __LINE__ % this->_AtomTable.size() );
 #endif
     {_BLOCK_TRACE("Defining STRETCH");
-	ASSERTNOTNULL(forceField->_Stretches);
-	loop.loopTopGoal(matter,BONDS);
-	while ( loop.advanceLoopAndProcess() ) {
-	    a1 = loop.getBondA1();
-	    a2 = loop.getBondA2();
-            if ( activeAtoms.notnilp() &&
-                 (!inAtomSet(activeAtoms,a1) || !inAtomSet(activeAtoms,a2)) ) continue;
-	    t1 = a1->getType();
-	    t2 = a2->getType();
-	    ea1 = this->getEnergyAtomPointer(a1);
-	    ea2 = this->getEnergyAtomPointer(a2);
-	    FFStretch_sp ffStretch = forceField->_Stretches->findTerm(a1,a2);
-	    ASSERTNOTNULL(ffStretch);
-	    if ( ffStretch->level() != parameterized ) {
-		this->_addMissingParameter(ffStretch->levelDescription());
-	    }
-            EnergyStretch   energyStretch;
-	    energyStretch.defineFrom(ffStretch,ea1,ea2,this->_Stretch->getScale());
-	    this->_Stretch->addTerm(energyStretch);
-	}
+      ASSERTNOTNULL(forceField->_Stretches);
+      loop.loopTopGoal(matter,BONDS);
+      while ( loop.advanceLoopAndProcess() ) {
+        a1 = loop.getBondA1();
+        a2 = loop.getBondA2();
+        if ( activeAtoms.notnilp() &&
+             (!inAtomSet(activeAtoms,a1) || !inAtomSet(activeAtoms,a2)) ) continue;
+        t1 = a1->getType();
+        t2 = a2->getType();
+        ea1 = this->getEnergyAtomPointer(a1);
+        ea2 = this->getEnergyAtomPointer(a2);
+        FFStretch_sp ffStretch = forceField->_Stretches->findTerm(a1,a2);
+        if ( ffStretch->level() != parameterized ) {
+          this->_addMissingParameter(ffStretch);
+        }
+        if ( ffStretch->level() != unknown ) {
+          EnergyStretch   energyStretch;
+          energyStretch.defineFrom(ffStretch,ea1,ea2,this->_Stretch->getScale());
+          this->_Stretch->addTerm(energyStretch);
+        }
+      }
 
     }
 #ifdef	DEBUG_DEFINE_ENERGY
@@ -1474,12 +1465,14 @@ int             coordinateIndex;
 	    ffAngle = forceField->_Angles->findTerm(a1,a2,a3);
 	    if ( ffAngle->level() != parameterized ) {
 		LOG(BF("Missing angle parameter between types: %s-%s-%s") % a1->getType()% a2->getTypeString()% a3->getTypeString() );
-		this->_addMissingParameter(ffAngle->levelDescription());
+		this->_addMissingParameter(ffAngle);
 		LOG(BF("Added to missing parameters") );
 	    }
-	    EnergyAngle energyAngle;
-	    energyAngle.defineFrom(ffAngle,ea1,ea2,ea3,this->_Angle->getScale());
-	    this->_Angle->addTerm(energyAngle);
+            if ( ffAngle->level() != unknown ) {
+              EnergyAngle energyAngle;
+              energyAngle.defineFrom(ffAngle,ea1,ea2,ea3,this->_Angle->getScale());
+              this->_Angle->addTerm(energyAngle);
+            }
 	}
     }
     {_BLOCK_TRACE("Defining PROPERS");
@@ -1504,62 +1497,42 @@ int             coordinateIndex;
 	    ea2 = this->getEnergyAtomPointer(a2);
 	    ea3 = this->getEnergyAtomPointer(a3);
 	    ea4 = this->getEnergyAtomPointer(a4);
-	    if ( !forceField->_Ptors->hasBestTerm(t1,t2,t3,t4) ) 
-	    {
-		stringstream ss;
-		ss << "Could not find ptor term(";
-		ss << _rep_(t1) << "-";
-		ss << _rep_(t2) << "-";
-		ss << _rep_(t3) << "-";
-		ss << _rep_(t4) << ")";
-		ss << " for atoms(";
-		ss << _rep_(a1->getName()) << "-";
-		ss << _rep_(a2->getName()) << "-";
-		ss << _rep_(a3->getName()) << "-";
-		ss << _rep_(a4->getName()) << ")";
-		_lisp->print(BF("%s") % ss.str() );
-#if 0
-		SIMPLE_ERROR(BF("%s")%ss.str());
-//		forceField->_Ptors->cantFind(t1,t2,t3,t4);
-//		energyDihedral.defineMissingProper(ea1,ea2,ea3,ea4);
-//		this->_MissingDihedralTerms.push_back(energyDihedral);
-#endif
-	    } else 
+	    if ( forceField->_Ptors->hasBestTerm(t1,t2,t3,t4) ) 
 	    {
 		ffPtor = forceField->_Ptors->findBestTerm(t1,t2,t3,t4);
+                int numPtors = 0;
 		for ( int n=1;n<=FFPtor_O::MaxPeriodicity; n++ ) 
 		{
-		    if ( ffPtor->hasPeriodicity(n) )
-		    {
-			LOG(BF( "Adding proper term for atoms %s-%s-%s-%s types: %s-%s-%s-%s")%
-				    ea1->getResidueAndName()
-				    % ea2->getResidueAndName()
-				    % ea3->getResidueAndName()
-				    % ea4->getResidueAndName()
-				    % t1 % t2 % t3 % t4
-			     );
-			EnergyDihedral energyDihedral;
-			energyDihedral.defineFrom(n,ffPtor,ea1,ea2,ea3,ea4,this->_Dihedral->getScale());
-			this->_Dihedral->addTerm(energyDihedral);
-		    }
+                  if ( ffPtor->hasPeriodicity(n) )
+                  {
+                    ++numPtors;
+                    LOG(BF( "Adding proper term for atoms %s-%s-%s-%s types: %s-%s-%s-%s")%
+                        ea1->getResidueAndName()
+                        % ea2->getResidueAndName()
+                        % ea3->getResidueAndName()
+                        % ea4->getResidueAndName()
+                        % t1 % t2 % t3 % t4
+                        );
+                    EnergyDihedral energyDihedral;
+                    energyDihedral.defineFrom(n,ffPtor,ea1,ea2,ea3,ea4,this->_Dihedral->getScale());
+                    this->_Dihedral->addTerm(energyDihedral);
+                  }
 		}
+                if ( numPtors == 0 ) {
+                  FFPtor_sp ptor = FFPtor_O::create_missing(t1,t2,t3,t4);
+                  this->_addMissingParameter(ptor);
+                }
 		if (ea1->inBondOrAngle(ea4->atom()) )
 		{
 #ifdef	DEBUG_ON
-		    if ( t1 < t4 ) {
-			t141 = t1;
-			t144 = t4;
-		    }else{
-			t141 = t4;
-			t144 = t1;
-		    }
-		    LOG(BF("Defining 1-4 interaction %-9s- %-9s   ") % t1 % t4 );
-#endif
-#if 0
-		    if ( energyNonbond.defineFrom(forceField, true, ea1, ea4, this->_Nonbond ) ) 
-		    {
-		        this->_Nonbond->addTerm(energyNonbond);
-		    }
+                  if ( t1 < t4 ) {
+                    t141 = t1;
+                    t144 = t4;
+                  }else{
+                    t141 = t4;
+                    t144 = t1;
+                  }
+                  LOG(BF("Defining 1-4 interaction %-9s- %-9s   ") % t1 % t4 );
 #endif
 		} else {
 #ifdef	DEBUG_ON
@@ -1579,68 +1552,63 @@ int             coordinateIndex;
 	}
     }
     {_BLOCK_TRACE("Defining IMPROPERS");
-	aImproperCenter = _Nil<Atom_O>();
-	EnergyDihedral energyDihedral;
-	loop.loopTopGoal(matter,IMPROPERS);
-	while ( loop.advanceLoopAndProcess() ) 
-	{
-	    a1 = loop.getAtom1();
-	    a2 = loop.getAtom2();
-	    a3 = loop.getAtom3();
-	    a4 = loop.getAtom4();
-            if ( activeAtoms.notnilp() &&
-                 (!inAtomSet(activeAtoms,a1)
-                  || !inAtomSet(activeAtoms,a2)
-                  || !inAtomSet(activeAtoms,a3)
-                  || !inAtomSet(activeAtoms,a4)) ) continue;
-	    t1 = a1->getType();
-	    t2 = a2->getType();
-	    t3 = a3->getType();
-	    t4 = a4->getType();
-	    ea1 = this->getEnergyAtomPointer(a1);
-	    ea2 = this->getEnergyAtomPointer(a2);
-	    ea3 = this->getEnergyAtomPointer(a3);
-	    ea4 = this->getEnergyAtomPointer(a4);
-	    if ( forceField->_Itors->hasBestTerm(t1,t2,t3,t4) ) 
-	    {
+      EnergyDihedral energyDihedral;
+      loop.loopTopGoal(matter,IMPROPERS);
+      while ( loop.advanceLoopAndProcess() ) {
+        a1 = loop.getAtom1();
+        a2 = loop.getAtom2();
+        a3 = loop.getAtom3();
+        a4 = loop.getAtom4();
+        if ( activeAtoms.notnilp() &&
+             (!inAtomSet(activeAtoms,a1)
+              || !inAtomSet(activeAtoms,a2)
+              || !inAtomSet(activeAtoms,a3)
+              || !inAtomSet(activeAtoms,a4)) ) continue;
+        t1 = a1->getType();
+        t2 = a2->getType();
+        t3 = a3->getType();
+        t4 = a4->getType();
+        ea1 = this->getEnergyAtomPointer(a1);
+        ea2 = this->getEnergyAtomPointer(a2);
+        ea3 = this->getEnergyAtomPointer(a3);
+        ea4 = this->getEnergyAtomPointer(a4);
+        if ( forceField->_Itors->hasBestTerm(t1,t2,t3,t4) ) 
+        {
 		    //
 		    // Only one improper per central atom.
 		    // We may not get exactly the same improper as AMBER does
 		    //
-		if ( a3 != aImproperCenter ) {
-		    ffItor = forceField->_Itors->findBestTerm(t1,t2,t3,t4);
-		    for ( int n=1;n<=6; n++ ) {
-			if ( ffItor->hasPeriodicity(n) )
-			{
-			    energyDihedral.defineFrom(n,ffItor,ea1,ea2,ea3,ea4,this->_Dihedral->getScale());
-			    this->_Dihedral->addTerm(energyDihedral);
-			    aImproperCenter = a3;
-			}
-		    }
-		}
-	    }
-	}
+          if ( a3 != aImproperCenter ) {
+            ffItor = forceField->_Itors->findBestTerm(t1,t2,t3,t4);
+            for ( int n=1;n<=6; n++ ) {
+              if ( ffItor->hasPeriodicity(n) )
+              {
+                energyDihedral.defineFrom(n,ffItor,ea1,ea2,ea3,ea4,this->_Dihedral->getScale());
+                this->_Dihedral->addTerm(energyDihedral);
+                aImproperCenter = a3;
+              }
+            }
+          }
+        }
+      }
     }
-
-
         // Nonbonds here!!!!!!!!!!!!!!
     this->_Nonbond->constructFromAtomTable(this->_AtomTable, forceField, activeAtoms);
-
     	//
 	// Setup the atom chiral restraints
 	//
     {_BLOCK_TRACE("Defining chiral restraints");
-	EnergyChiralRestraint	ichiral;
-	Atom_sp	n1,n2,n3,n4;
-	string	s1,s2,s3,s4;
-	double	side ;
-	loop.loopTopGoal(matter,ATOMS);
-	while ( loop.advanceLoopAndProcess() ) {
-	    a1 = loop.getAtom();
-            if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1) ) continue;
-	    if ( a1->getStereochemistryType() != undefinedCenter ) 
-	    {
-		LOG(BF("Create a chiral restraint for %s") % a1->description()  );
+      EnergyChiralRestraint	ichiral;
+      Atom_sp	n1,n2,n3,n4;
+      string	s1,s2,s3,s4;
+      double	side ;
+      loop.loopTopGoal(matter,ATOMS);
+      while ( loop.advanceLoopAndProcess() ) {
+        a1 = loop.getAtom();
+        if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1) ) continue;
+        if ( a1->getStereochemistryType() != undefinedCenter ) 
+        {
+          LOG(BF("Create a chiral restraint for %s") % a1->description()  );
 			//
 			// Figure out what the desired configuration should be
 			// If it has been set then use that
@@ -1655,81 +1623,81 @@ int             coordinateIndex;
 			// the stereochemistry that we want to impose
 			// default R-stereochemistry (1-center)x(2-center).(3-center) is POSITIVE
 			//
-		if ( a1->getConfiguration() != undefinedConfiguration )
-		{
-		    if ( a1->getConfiguration() == R_Configuration )
-		    {
-			side = 1.0;
-		    } else
-		    {
-			side = -1.0;
-		    }
-		} else
-		{
-		    if ( a1->getStereochemistryType() == prochiralCenter )
-		    {
-			side = 1.0;
-		    } else
-		    {
-			SIMPLE_ERROR(BF("Chiral center (%s) with configuration settings[%s] doesn't have its configuration set")
-							       % a1->description()
-							       % a1->getConfigurationAsString() );
-		    }
-		}
-		core::List_sp priority = a1->getNeighborsByRelativePriority();
-		ASSERTP(core::cl__length(priority) == 4, "There must be 4 neighbors to assign stereochemistry");
-		core::List_sp cur = priority;
-		n1 = cur.asCons()->car<Atom_O>();
-		cur = cur.asCons()->cdr();
-		n2 = cur.asCons()->car<Atom_O>();
-		cur = cur.asCons()->cdr();
-		n3 = cur.asCons()->car<Atom_O>();
-		cur = cur.asCons()->cdr();
-		n4 = cur.asCons()->car<Atom_O>();
+          if ( a1->getConfiguration() != undefinedConfiguration )
+          {
+            if ( a1->getConfiguration() == R_Configuration )
+            {
+              side = 1.0;
+            } else
+            {
+              side = -1.0;
+            }
+          } else
+          {
+            if ( a1->getStereochemistryType() == prochiralCenter )
+            {
+              side = 1.0;
+            } else
+            {
+              SIMPLE_ERROR(BF("Chiral center (%s) with configuration settings[%s] doesn't have its configuration set")
+                           % a1->description()
+                           % a1->getConfigurationAsString() );
+            }
+          }
+          core::List_sp priority = a1->getNeighborsByRelativePriority();
+          ASSERTP(core::cl__length(priority) == 4, "There must be 4 neighbors to assign stereochemistry");
+          core::List_sp cur = priority;
+          n1 = cur.asCons()->car<Atom_O>();
+          cur = cur.asCons()->cdr();
+          n2 = cur.asCons()->car<Atom_O>();
+          cur = cur.asCons()->cdr();
+          n3 = cur.asCons()->car<Atom_O>();
+          cur = cur.asCons()->cdr();
+          n4 = cur.asCons()->car<Atom_O>();
 #if 0
-		s1 = a1->getConfigurationPriorityHighest();
-		s2 = a1->getConfigurationPriorityHigh();
-		s3 = a1->getConfigurationPriorityLow();
-		s4 = a1->getConfigurationPriorityLowest();
-		n1 = a1->bondedNeighborWithName(s1);
-		n2 = a1->bondedNeighborWithName(s2);
-		n3 = a1->bondedNeighborWithName(s3);
-		n4 = a1->bondedNeighborWithName(s4);
-		ASSERTNOTNULLP(n1, "Atom("+a1->getName()+") does not have neighbor1("+s1+")");
-		ASSERTNOTNULLP(n2, "Atom("+a2->getName()+") does not have neighbor2("+s2+")");
-		ASSERTNOTNULLP(n3, "Atom("+a3->getName()+") does not have neighbor3("+s3+")");
-		ASSERTNOTNULLP(n4, "Atom("+a4->getName()+") does not have neighbor4("+s4+")");
+          s1 = a1->getConfigurationPriorityHighest();
+          s2 = a1->getConfigurationPriorityHigh();
+          s3 = a1->getConfigurationPriorityLow();
+          s4 = a1->getConfigurationPriorityLowest();
+          n1 = a1->bondedNeighborWithName(s1);
+          n2 = a1->bondedNeighborWithName(s2);
+          n3 = a1->bondedNeighborWithName(s3);
+          n4 = a1->bondedNeighborWithName(s4);
+          ASSERTNOTNULLP(n1, "Atom("+a1->getName()+") does not have neighbor1("+s1+")");
+          ASSERTNOTNULLP(n2, "Atom("+a2->getName()+") does not have neighbor2("+s2+")");
+          ASSERTNOTNULLP(n3, "Atom("+a3->getName()+") does not have neighbor3("+s3+")");
+          ASSERTNOTNULLP(n4, "Atom("+a4->getName()+") does not have neighbor4("+s4+")");
 #endif
-		eaCenter = this->getEnergyAtomPointer(a1);
-		ea1 = this->getEnergyAtomPointer(n1);
-		ea2 = this->getEnergyAtomPointer(n2);
-		ea3 = this->getEnergyAtomPointer(n3);
-		ea4 = this->getEnergyAtomPointer(n4);
+          eaCenter = this->getEnergyAtomPointer(a1);
+          ea1 = this->getEnergyAtomPointer(n1);
+          ea2 = this->getEnergyAtomPointer(n2);
+          ea3 = this->getEnergyAtomPointer(n3);
+          ea4 = this->getEnergyAtomPointer(n4);
 
 			//
 			// Setup chiral restraints for 1->2->center->3
 			//			and 1->2->center->4
 			//
-		ichiral._Atom1 = ea1->atom();
-		ichiral._Atom2 = ea2->atom();
-		ichiral._Atom3 = eaCenter->atom();
-		ichiral._Atom4 = ea3->atom();
-		ichiral.term.I1 = ea1->coordinateIndexTimes3();
-		ichiral.term.I2 = ea2->coordinateIndexTimes3();
-		ichiral.term.I3 = eaCenter->coordinateIndexTimes3();
-		ichiral.term.I4 = ea3->coordinateIndexTimes3();
-		ichiral.term.K = this->_ChiralRestraintWeight * side;
-		ichiral.term.CO = this->_ChiralRestraintOffset;
-		this->_ChiralRestraint->addTerm(ichiral);
+          ichiral._Atom1 = ea1->atom();
+          ichiral._Atom2 = ea2->atom();
+          ichiral._Atom3 = eaCenter->atom();
+          ichiral._Atom4 = ea3->atom();
+          ichiral.term.I1 = ea1->coordinateIndexTimes3();
+          ichiral.term.I2 = ea2->coordinateIndexTimes3();
+          ichiral.term.I3 = eaCenter->coordinateIndexTimes3();
+          ichiral.term.I4 = ea3->coordinateIndexTimes3();
+          ichiral.term.K = this->_ChiralRestraintWeight * side;
+          ichiral.term.CO = this->_ChiralRestraintOffset;
+          this->_ChiralRestraint->addTerm(ichiral);
 				// Now apply it to the other atom
 				// on the chiral center, just flip the sign
 				// of K
-		ichiral._Atom4 = ea4->atom();
-		ichiral.term.I4 = ea4->coordinateIndexTimes3();
+          ichiral._Atom4 = ea4->atom();
+          ichiral.term.I4 = ea4->coordinateIndexTimes3();
 					// flip the sign of the chiral restraint
-		ichiral.term.K = this->_ChiralRestraintWeight * side * -1.0;
-		ichiral.term.CO = this->_ChiralRestraintOffset;
-		this->_ChiralRestraint->addTerm(ichiral);
+          ichiral.term.K = this->_ChiralRestraintWeight * side * -1.0;
+          ichiral.term.CO = this->_ChiralRestraintOffset;
+          this->_ChiralRestraint->addTerm(ichiral);
 
 			// To try and increase the number of molecules that
 			// minimize into the correct configuration I'll add another
@@ -1738,31 +1706,31 @@ int             coordinateIndex;
 			// Setup chiral restraints for 2->4->center->3
 			//			and 2->4->center->1
 			//
-		ichiral._Atom1 = ea2->atom();
-		ichiral._Atom2 = ea4->atom();
-		ichiral._Atom3 = eaCenter->atom();
-		ichiral._Atom4 = ea3->atom();
-		ichiral.term.I1 = ea2->coordinateIndexTimes3();
-		ichiral.term.I2 = ea4->coordinateIndexTimes3();
-		ichiral.term.I3 = eaCenter->coordinateIndexTimes3();
-		ichiral.term.I4 = ea3->coordinateIndexTimes3();
-		ichiral.term.K = this->_ChiralRestraintWeight * side;
-		ichiral.term.CO = this->_ChiralRestraintOffset;
-		this->_ChiralRestraint->addTerm(ichiral);
+          ichiral._Atom1 = ea2->atom();
+          ichiral._Atom2 = ea4->atom();
+          ichiral._Atom3 = eaCenter->atom();
+          ichiral._Atom4 = ea3->atom();
+          ichiral.term.I1 = ea2->coordinateIndexTimes3();
+          ichiral.term.I2 = ea4->coordinateIndexTimes3();
+          ichiral.term.I3 = eaCenter->coordinateIndexTimes3();
+          ichiral.term.I4 = ea3->coordinateIndexTimes3();
+          ichiral.term.K = this->_ChiralRestraintWeight * side;
+          ichiral.term.CO = this->_ChiralRestraintOffset;
+          this->_ChiralRestraint->addTerm(ichiral);
 				// Now apply it to the other atom
 				// on the chiral center, just flip the sign
 				// of K
-		ichiral._Atom4 = ea1->atom();
-		ichiral.term.I4 = ea1->coordinateIndexTimes3();
+          ichiral._Atom4 = ea1->atom();
+          ichiral.term.I4 = ea1->coordinateIndexTimes3();
 					// flip the sign of the chiral restraint
-		ichiral.term.K = this->_ChiralRestraintWeight * side * -1.0;
-		ichiral.term.CO = this->_ChiralRestraintOffset;
-		this->_ChiralRestraint->addTerm(ichiral);
-	    } else
-	    {
-		LOG(BF("There is no chiral restraint for: %s") % a1->description()  );
-	    }
-	}
+          ichiral.term.K = this->_ChiralRestraintWeight * side * -1.0;
+          ichiral.term.CO = this->_ChiralRestraintOffset;
+          this->_ChiralRestraint->addTerm(ichiral);
+        } else
+        {
+          LOG(BF("There is no chiral restraint for: %s") % a1->description()  );
+        }
+      }
     }
 
 	//
@@ -2015,25 +1983,15 @@ stringstream	ss;
 CL_LISPIFY_NAME("hasMissingParameters");
 CL_DEFMETHOD bool	EnergyFunction_O::hasMissingParameters()
 {
-    if ( this->_MissingParameters.size() > 0 ) {
-	return true;
-    }
-    return false;
+  return this->_MissingParameters.notnilp();
 }
 
 
 CL_LISPIFY_NAME("getMissingParameters");
-CL_DEFMETHOD string	EnergyFunction_O::getMissingParameters()
+CL_DEFMETHOD core::List_sp EnergyFunction_O::getMissingParameters()
 {
-set<string>::iterator	si;
-stringstream		ss;
-    for ( si=this->_MissingParameters.begin();
-		si!=this->_MissingParameters.end(); si++ ) {
-	ss << (*si) << std::endl;
-    }
-    return ss.str();
+  return this->_MissingParameters;
 }
-
 
 CL_LISPIFY_NAME("debugLogAsString");
 CL_DEFMETHOD string	EnergyFunction_O::debugLogAsString()

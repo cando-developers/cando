@@ -45,6 +45,16 @@ public:
 	void initialize();
         bool fieldsp() const { return true; };
         void fields(core::Record_sp node);
+ public:
+        static FFAngle_sp create_missing(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3) {
+          FFAngle_sp angle = FFAngle_O::create();
+          angle->_Type1 = t1;
+          angle->_Type2 = t2;
+          angle->_Type3 = t3;
+          angle->_Level = unknown;
+          return angle;
+        }
+
 public:
     core::Symbol_sp 		_Type1;
     core::Symbol_sp 		_Type2;

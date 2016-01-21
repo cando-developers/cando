@@ -403,7 +403,7 @@ ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fi
     GC_ALLOCATE(ForceField_O, ff );
     ff->setTitle(line);
     ff->setFFStretchDb(ffStretchesDb);
-    ff->setFFTypeDb( _Nil<FFTypesDb_O>());
+//    ff->setFFTypeDb( _Nil<FFTypesDb_O>());
     ff->setFFAngleDb(ffAnglesDb);
     ff->setFFPtorDb(ffPtorsDb);
     ff->setFFItorDb(ffItorsDb);

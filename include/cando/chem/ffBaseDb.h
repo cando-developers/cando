@@ -34,7 +34,7 @@ SMART(ForceField);
 };
 
 namespace chem {
-    typedef	enum { parameterized, estimated, rough } ParameterizationLevel;
+  typedef	enum { parameterized, estimated, rough, unknown } ParameterizationLevel;
 
 };
 

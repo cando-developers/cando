@@ -5,7 +5,7 @@
 
 (defun setup-amber ()
   (let ((*default-pathname-defaults*
-         #P"~/Development/clasp/projects/cando/work/forceField/"))
+         (translate-logical-pathname #P"cando:data;force-field;")))
     (defparameter *parms*
       (let ((parms (chem:make-read-amber-parameters)))
         (with-open-file (fin "ATOMTYPE_GFF.DEF" :direction :input)
@@ -13,7 +13,8 @@
         (with-open-file (fin "gaff.dat" :direction :input)
           (chem:read-parameters parms fin)
           parms)))
-    (defparameter *ff* (chem:get-force-field *parms*))))
+    (defparameter *ff* (chem:get-force-field *parms*)))
+  *ff*)
 
 
 (defun minimize (agg &key (restraints-on t) (force-field *ff*))

@@ -128,14 +128,14 @@ public:
 
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 					    AbstractLargeSquareMatrix_sp m );
-    virtual	void evaluateAll ( NVector_sp 	pos,
+    virtual	void evaluateAll( NVector_sp 	pos,
 				   bool 		calcForce,
 				   gc::Nilable<NVector_sp> 	force,
 				   bool		calcDiagonalHessian,
 				   bool		calcOffDiagonalHessian,
 				   gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-				   NVector_sp	hdvec,
-				   NVector_sp dvec);
+                                  gc::Nilable<NVector_sp>	hdvec,
+                                  gc::Nilable<NVector_sp> dvec);
 
     virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
 	NVector_sp pos );

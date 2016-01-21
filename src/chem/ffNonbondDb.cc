@@ -259,7 +259,7 @@ gc::Nilable<FFNonbond_sp>   FFNonbondDb_O::findType(core::Symbol_sp type)
     uint index = core::clasp_to_fixnum(val);
     return this->_Terms[index];
   }
-  return _Nil<T_O>();
+  return _Nil<core::T_O>();
 }
 
 CL_LISPIFY_NAME("findTypeIndex");

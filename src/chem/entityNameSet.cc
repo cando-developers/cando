@@ -112,10 +112,10 @@ CL_DEFMETHOD     adapt::SymbolSet_sp	EntityNameSetBase_O::getUnExpandedNames()
 
 
 
-    adapt::SymbolList_sp EntityNameSetBase_O::getInterestingAtomAliases()
-    {
-	return _Nil<adapt::SymbolList_O>();
-    }
+core::List_sp EntityNameSetBase_O::getInterestingAtomAliases()
+{
+  return _Nil<core::T_O>();
+}
 
 
 CL_LISPIFY_NAME("getInterestingAtomAliasIndex");

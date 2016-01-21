@@ -205,7 +205,7 @@ FFPtor_sp        ptor;
     return false;
 }
 
-FFPtor_sp FFPtorDb_O::findExactTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
+gc::Nilable<FFPtor_sp> FFPtorDb_O::findExactTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
 {
 core::Symbol_sp key;
 FFPtor_sp        ptor;
@@ -217,33 +217,33 @@ FFPtor_sp        ptor;
     if ( this->_Lookup.count(key)!=0 ) {
         return this->_Lookup.get(key);
     }
-    ptor = _Nil<FFPtor_O>();
+    ptor = _Nil<core::T_O>();
     return ptor;
 }
 
-FFPtor_sp FFPtorDb_O::findBestTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
+gc::Nilable<FFPtor_sp> FFPtorDb_O::findBestTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
 {
-core::Symbol_sp key,bl;
-FFPtor_sp        ptor;
-    key = keyString(t1,t2,t3,t4);
-    if ( this->_Lookup.count(key)!=0 ) {
-        return this->_Lookup.get(key);
-    }
-    key = keyString(t4,t3,t2,t1);
-    if ( this->_Lookup.count(key)!=0 ) {
-        return this->_Lookup.get(key);
-    }
-    bl = _Nil<core::Symbol_O>();
-    key = keyString(bl,t2,t3,bl);
-    if ( this->_Lookup.count(key)!=0 ) {
-        return this->_Lookup.get(key);
-    }
-    key = keyString(bl,t3,t2,bl);
-    if ( this->_Lookup.count(key)!=0 ) {
-        return this->_Lookup.get(key);
-    }
-    ptor = _Nil<FFPtor_O>();
-    return ptor;
+  core::Symbol_sp key,bl;
+  gc::Nilable<FFPtor_sp> ptor;
+  key = keyString(t1,t2,t3,t4);
+  if ( this->_Lookup.count(key)!=0 ) {
+    return this->_Lookup.get(key);
+  }
+  key = keyString(t4,t3,t2,t1);
+  if ( this->_Lookup.count(key)!=0 ) {
+    return this->_Lookup.get(key);
+  }
+  bl = _Nil<core::Symbol_O>();
+  key = keyString(bl,t2,t3,bl);
+  if ( this->_Lookup.count(key)!=0 ) {
+    return this->_Lookup.get(key);
+  }
+  key = keyString(bl,t3,t2,bl);
+  if ( this->_Lookup.count(key)!=0 ) {
+    return this->_Lookup.get(key);
+  }
+  ptor = _Nil<core::T_O>();
+  return ptor;
 }
 
 

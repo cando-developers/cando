@@ -23,17 +23,19 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,rough);
 
 namespace chem {
 
-string	FFParameter_O::levelDescription()
+CL_DEFMETHOD string	FFParameter_O::levelDescription()
 {
-    switch ( this->_Level ) {
-	case parameterized:
-	    return "parameterized ";
-	case estimated:
-	    return "estimated ";
-	case rough:
-	    return "guessed ";
-    }
-    return "unknownParameterLevel ";
+  switch ( this->_Level ) {
+  case parameterized:
+      return "parameterized ";
+  case estimated:
+      return "estimated ";
+  case rough:
+      return "guessed ";
+  case unknown:
+      return "unknown ";
+  }
+  return "unknownParameterLevel ";
 }
 
 

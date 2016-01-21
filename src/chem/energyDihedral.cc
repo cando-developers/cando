@@ -402,7 +402,8 @@ void	EnergyDihedral_O::evaluateAll(
        		bool		calcDiagonalHessian,
 		bool		calcOffDiagonalHessian,
 		gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-		NVector_sp	hdvec, NVector_sp dvec)
+		gc::Nilable<NVector_sp>	hdvec,
+                gc::Nilable<NVector_sp> dvec)
 { _G();
     if ( this->_DebugEnergy ) 
     {

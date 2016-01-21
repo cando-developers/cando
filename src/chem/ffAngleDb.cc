@@ -212,7 +212,6 @@ void	FFAngle_O::initialize()
 FFAngle_sp	FFAngleDb_O::estimateTerm(chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3 )
 {_G();
 FFStretch_sp	r12,r32;
-FFAngle_sp	angle;
 FFAngle_sp	ff_121;
 FFAngle_sp	ff_323;
 double		d, z1, c2, z3, angRad, k;
@@ -229,7 +228,6 @@ ForceField_sp	ff;
     // To avoid an std::endless loop of estimating terms just go straight to guess if t1==t3
     if ( t1==t3 ) goto GUESS;
     LOG(BF("status") );
-    angle = _Nil<FFAngle_O>();
     LOG(BF("status") );
     ff_121 = ff->_Angles->findTerm(a1,a2,a1);
     ff_323 = ff->_Angles->findTerm(a3,a2,a3);
@@ -262,39 +260,43 @@ ForceField_sp	ff;
     d = (r12->getR0_Angstrom()-r32->getR0_Angstrom())/(r12->getR0_Angstrom()+r32->getR0_Angstrom());
     d = d*d;
     k = 143.9*z1*c2*z3*(1.0/((r12->getR0_Angstrom()+r32->getR0_Angstrom())*(angRad*angRad)))*exp(-2.0*d);
-    angle = FFAngle_O::create();
-    angle->_Level = estimated;
-    angle->_Type1 = t1;
-    angle->_Type2 = t2;
-    angle->_Type3 = t3;
-    angle->_AngRad = angRad;
-    angle->setK2_kCalPerRadianSquared(k);
-    return angle;
+    {
+      FFAngle_sp angle = FFAngle_O::create();
+      angle->_Level = estimated;
+      angle->_Type1 = t1;
+      angle->_Type2 = t2;
+      angle->_Type3 = t3;
+      angle->_AngRad = angRad;
+      angle->setK2_kCalPerRadianSquared(k);
+      return angle;
+    }
 GUESS:
-    angle = FFAngle_O::create();
-    angle->_Level = rough;
-    angle->_Type1 = t1;
-    angle->_Type2 = t2;
-    angle->_Type3 = t3;
-    if ( a2->getHybridization() == hybridization_sp3 ) {
+    {
+      FFAngle_sp angle = FFAngle_O::create();
+      angle->_Level = rough;
+      angle->_Type1 = t1;
+      angle->_Type2 = t2;
+      angle->_Type3 = t3;
+      if ( a2->getHybridization() == hybridization_sp3 ) {
 	angle->_AngRad = 109.5*0.0174533;
-    } else if ( a2->getHybridization() == hybridization_sp2 ) {
+      } else if ( a2->getHybridization() == hybridization_sp2 ) {
 	angle->_AngRad = 120.0*0.0174533;
-    } else if ( a2->getHybridization() == hybridization_sp ) {
+      } else if ( a2->getHybridization() == hybridization_sp ) {
 	angle->_AngRad = 180.0*0.0174533;
-    } else {
+      } else {
 	LOG(BF("Unknown hybridization(%s) for: %s") % a2->getHybridization().c_str() % a2->description().c_str() );
 	angle->_AngRad = 109.5*0.0174533;
-    }
+      }
 		// See Gaff paper for where I get these force constants
-    if ( a1->getElement() == element_H && a3->getElement() == element_H ) {
+      if ( a1->getElement() == element_H && a3->getElement() == element_H ) {
 	angle->_K2__kJPerRadianSquared = kCalPerRadianSquared_to_kJPerRadianSquared(32.5);
-    } else if ( a1->getElement() == element_H || a3->getElement() == element_H ) {
+      } else if ( a1->getElement() == element_H || a3->getElement() == element_H ) {
 	angle->_K2__kJPerRadianSquared = kCalPerRadianSquared_to_kJPerRadianSquared(50.0);
-    } else {
+      } else {
 	angle->_K2__kJPerRadianSquared = kCalPerRadianSquared_to_kJPerRadianSquared(70.0);
+      }
+      return angle;
     }
-    return angle;
 }
 
 

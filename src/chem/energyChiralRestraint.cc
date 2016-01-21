@@ -254,7 +254,8 @@ void	EnergyChiralRestraint_O::evaluateAll(
        		bool		calcDiagonalHessian,
 		bool		calcOffDiagonalHessian,
 		gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
-		chem::NVector_sp	hdvec, chem::NVector_sp dvec)
+		gc::Nilable<chem::NVector_sp>	hdvec,
+                gc::Nilable<chem::NVector_sp> dvec)
 {_G();
     if ( this->_DebugEnergy ) 
     {

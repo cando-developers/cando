@@ -719,7 +719,7 @@ CL_DEFMETHOD     int Atom_O::coordination()
 CL_LISPIFY_NAME("numberOfOpenValence");
 CL_DEFMETHOD uint Atom_O::numberOfOpenValence()
 {
-  int maxHydrogens;
+  int maxHydrogens = 0;
   switch (this->getElement()) {
   case element_C:
       if ( this->getIonization() != 0 )
@@ -740,7 +740,13 @@ CL_DEFMETHOD uint Atom_O::numberOfOpenValence()
       return 0;
   }
   uint totalBondOrder = this->totalBondOrder();
-  uint addHydrogens = maxHydrogens - totalBondOrder;
+  uint addHydrogens = 0;
+  if ( maxHydrogens >= totalBondOrder ) {
+    addHydrogens = maxHydrogens - totalBondOrder;
+  }
+  if ( addHydrogens > 10 ) {
+    SIMPLE_ERROR(BF("There are too many hydrogens to be added for element %s totalBondOrder: %u addHydrogens: %u") % _rep_(symbolFromElement(this->getElement())) % totalBondOrder % addHydrogens );
+  }
   return addHydrogens;
 }
 

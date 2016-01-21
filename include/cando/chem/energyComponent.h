@@ -322,14 +322,14 @@ CL_DEFMETHOD     virtual double getEnergy() { return this->_TotalEnergy; };
     virtual void zeroEnergy();
 virtual void dumpTerms() {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
-virtual	void evaluateAll ( NVector_sp 	pos,
+virtual	void evaluateAll( NVector_sp 	pos,
                            bool 		calcForce,
                            gc::Nilable<NVector_sp> 	force,
                            bool		calcDiagonalHessian,
                            bool		calcOffDiagonalHessian,
                            gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                           NVector_sp	hdvec,
-                           NVector_sp dvec) 
+                           gc::Nilable<NVector_sp>	hdvec,
+                           gc::Nilable<NVector_sp> dvec) 
 {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
 

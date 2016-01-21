@@ -53,7 +53,14 @@ namespace       chem {
 //	double		_Bci;
 
     public:
-
+        static FFStretch_sp create_missing(core::Symbol_sp t1, core::Symbol_sp t2) {
+          FFStretch_sp stretch = FFStretch_O::create();
+          stretch->_Level = unknown;
+          stretch->_Type1 = t1;
+          stretch->_Type2 = t2;
+          return stretch;
+        }
+    public:
 	void setKb_kJPerNanometerSquared(double val);
 	void setR0_Nanometer(double val);
 

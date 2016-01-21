@@ -117,54 +117,44 @@ void	ForceField_O::setInfoDb( InfoDb_sp Info )
 
 void	ForceField_O::setFFTypeDb( FFTypesDb_sp Types)
 {_G();
-    this->_Types = Types;
-    if ( this->_Types.notnilp() ) {
-	this->_Types->setForceField(this->sharedThis<ForceField_O>());
-    }
+  this->_Types = Types;
+  if (this->_Types.notnilp()) this->_Types->setForceField(this->sharedThis<ForceField_O>());
 }
 
 
 void	ForceField_O::setFFStretchDb( FFStretchDb_sp Stretches)
 {_G();
     this->_Stretches = Stretches;
-    if (this->_Stretches.generalp()) this->_Stretches->setForceField(this->sharedThis<ForceField_O>());
+    if (this->_Stretches.notnilp()) this->_Stretches->setForceField(this->asSmartPtr());
 }
+
 void	ForceField_O::setFFAngleDb( FFAngleDb_sp Angles)
 {_G();
     this->_Angles = Angles;
-    if (this->_Angles.generalp()) this->_Angles->setForceField(this->sharedThis<ForceField_O>());
+    if (this->_Angles.notnilp()) this->_Angles->setForceField(this->asSmartPtr());
 }
 void	ForceField_O::setFFItorDb( FFItorDb_sp Itors)
 {_G();
     this->_Itors = Itors;
-    if (this->_Itors.generalp() ) this->_Itors->setForceField(this->sharedThis<ForceField_O>());
+    if (this->_Itors.notnilp()) this->_Itors->setForceField(this->sharedThis<ForceField_O>());
 }
 void	ForceField_O::setFFPtorDb( FFPtorDb_sp Ptors)
 {_G();
     this->_Ptors = Ptors;
-    if (this->_Ptors.generalp()) this->_Ptors->setForceField(this->sharedThis<ForceField_O>());
+    if (this->_Ptors.notnilp()) this->_Ptors->setForceField(this->sharedThis<ForceField_O>());
 }
 void	ForceField_O::setFFNonbondDb(FFNonbondDb_sp Nonbonds )
 {_G();
     this->_Nonbonds = Nonbonds;
-    if (this->_Nonbonds.generalp())this->_Nonbonds->setForceField(this->sharedThis<ForceField_O>());
+    if (this->_Nonbonds.notnilp()) this->_Nonbonds->setForceField(this->sharedThis<ForceField_O>());
 }
 void	ForceField_O::setFFVdwDb(FFVdwDb_sp Vdws )
 {_G();
     this->_Vdws = Vdws;
-    if (this->_Vdws.generalp())this->_Vdws->setForceField(this->sharedThis<ForceField_O>());
+    if (this->_Vdws.notnilp()) this->_Vdws->setForceField(this->sharedThis<ForceField_O>());
 }
 
-
-
-
-
-
-
-
-
-
-    void ForceField_O::exposeCando(core::Lisp_sp lisp)
+void ForceField_O::exposeCando(core::Lisp_sp lisp)
 {
     core::class_<ForceField_O>()
     	.def("getTypes",&ForceField_O::getTypes)

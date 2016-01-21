@@ -90,8 +90,8 @@ void	FFStretchDb_O::initialize()
                            + t2->symbolName()->get());
     }
 
-
-void    FFStretchDb_O::add(FFStretch_sp term)
+CL_NAME(CHEM:FFSTRETCH-DB-ADD);
+CL_DEFMETHOD void    FFStretchDb_O::add(FFStretch_sp term)
 {
     core::Symbol_sp key;
     this->_Terms.push_back(term);
@@ -104,58 +104,25 @@ void    FFStretchDb_O::add(FFStretch_sp term)
 
 CL_LISPIFY_NAME("findTerm");
 CL_DEFMETHOD FFStretch_sp	FFStretchDb_O::findTerm(chem::Atom_sp a1, chem::Atom_sp a2)
-{_G();
-FFStretch_sp			match;
- core::Symbol_sp                          key;
-core::Symbol_sp				t1, t2;
-
-    t1 = a1->getType();
-    t2 = a2->getType();
-    LOG(BF("Looking for stretch between types (%s)-(%s)") % t1.c_str() % t2.c_str() );
-    key = stretchKey(t1,t2);
-    if ( this->_Lookup.count(key) != 0 ) {
-        return this->_Lookup.get(key);
-    }
-    key = stretchKey(t2,t1);
-    if ( this->_Lookup.count(key) != 0 ) {
-        return this->_Lookup.get(key);
-    }
-#if 1
-    stringstream ss;
-    ss << "PARAMETER_PROBLEM Can't find stretch term for types(" << t1 << ")-("<<t2<<")";
-    ss << " atoms("<<a1->description()<<") - (" << a2->description()<<")";
-    SIMPLE_ERROR(BF("%s")%ss.str());
-#endif
-    match = _Nil<FFStretch_O>();
-    return match;
-}
-
-
-#if 0 //[
-bool    FFStretchDb_O::hasTerm(string t1, string t2 )
 {
-FFStretch_sp			match;
-string                          key;
-    key = stretchKey(t1,t2);
-    if ( this->_Lookup.count(key) != 0 ) {
-        return true;
-    }
-    key = stretchKey(t2,t1);
-    if ( this->_Lookup.count(key) != 0 ) {
-        return true;
-    }
-    return false;
+  FFStretch_sp	match;
+  core::Symbol_sp key;
+  core::Symbol_sp t1, t2;
+  t1 = a1->getType();
+  t2 = a2->getType();
+  LOG(BF("Looking for stretch between types (%s)-(%s)") % t1.c_str() % t2.c_str() );
+  key = stretchKey(t1,t2);
+  if ( this->_Lookup.count(key) != 0 ) {
+    return this->_Lookup.get(key);
+  }
+  key = stretchKey(t2,t1);
+  if ( this->_Lookup.count(key) != 0 ) {
+    return this->_Lookup.get(key);
+  }
+  FFStretch_sp missing = FFStretch_O::create_missing(t1,t2);
+  return missing;
 }
 
-
-void    FFStretchDb_O::cantFind(string t1, string t2 )
-{
-    stringstream ss;
-    ss << "Can't find stretch term for types(" << t1 << ")-("<<t2<<")";
-    SIMPLE_ERROR(BF("%s")%ss.str());
-}
-
-#endif //]
 
 
 void	FFStretchDb_O::clearEstimateStretch()
@@ -172,8 +139,8 @@ EstimateStretch	es;
       es._ti.swap(es._tj);
 #if 0
       tt = es._ti;
-	es._ti = es._tj;
-	es._tj = tt;
+      es._ti = es._tj;
+      es._tj = tt;
 #endif
     }
     tt = chemkw_intern(es._ti->symbolNameAsString()+"-"+es._tj->symbolNameAsString());

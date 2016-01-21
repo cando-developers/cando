@@ -39,6 +39,7 @@ namespace       chem
 
 class EnergyAtom;
 
+ SMART(FFParameter);
 SMART(AbstractLargeSquareMatrix);
 SMART(FFNonbondCrossTermTable);
 SMART(QDomNode);
@@ -150,11 +151,11 @@ private:
     double					_TotalEnergy;
     string					_Message;
     double					_DielectricConstant;
-    std::set<string>				_MissingParameters;
+    core::List_sp			_MissingParameters;
 public:
 public:
-    void	_eraseMissingParameters() { this->_MissingParameters.clear();};
-    void	_addMissingParameter(const string& s) { this->_MissingParameters.insert(s);};
+    void	_eraseMissingParameters() { this->_MissingParameters = _Nil<core::T_O>();};
+    void	_addMissingParameter(FFParameter_sp p) { this->_MissingParameters = core::Cons_O::create(p,this->_MissingParameters);};
     void __createSecondaryAmideRestraints(VectorAtom& nitrogens, core::T_sp activeAtoms );
 
 
@@ -220,7 +221,7 @@ CL_DEFMETHOD     EnergyFixedNonbondRestraint_sp	getFixedNonbondRestraintComponen
     double getImproperRestraintComponentEnergy(); // { return this->_ImproperRestraint->getEnergy(); };
 
     bool	hasMissingParameters();
-    string	getMissingParameters();
+    core::List_sp getMissingParameters();
 
 CL_NAME("getTotalEnergy");
 CL_DEFMETHOD     double	getTotalEnergy() { return this->_TotalEnergy; };
@@ -275,7 +276,8 @@ CL_DEFMETHOD     string	getName() { return this->_Name; };
        				bool calcDiagonalHessian,
 				bool calcOffDiagonalHessian,
 				gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-				NVector_sp hdvec, NVector_sp dvec	);
+				gc::Nilable<NVector_sp> hdvec,
+                                gc::Nilable<NVector_sp> dvec	);
     double	evaluateEnergy( NVector_sp pos );
     double	evaluateEnergyForce( NVector_sp pos, bool calcForce, NVector_sp force );
     double	evaluateEnergyForceFullHessian(
@@ -285,14 +287,6 @@ CL_DEFMETHOD     string	getName() { return this->_Name; };
 	bool calcOffDiagonalHessian,
 	AbstractLargeSquareMatrix_sp hessian );
     double	evaluateEnergyForceFullHessianForDebugging();
-
-    std::set<string>::iterator	begin_MissingParameters() {
-	return this->_MissingParameters.begin(); };
-    std::set<string>::iterator	end_MissingParameters() {
-	return this->_MissingParameters.end(); };
-
-
-
 
     string	summarizeBeyondThresholdInteractionsAsString();
     string	summarizeEnergyAsString();

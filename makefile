@@ -9,4 +9,4 @@ cando-lisp:
 	(cd src/lisp; bjam bundle )
 
 cando-data:
-	(cd data; bjam data )
+	(cd src/data; bjam data )

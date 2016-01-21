@@ -154,7 +154,7 @@ CL_DEFMETHOD 	Residue_sp	getTemporaryResidue()
 	uint	getTemporaryInt() { return this->_TemporaryInt; }
 	void	setTemporaryInt(uint i) { this->_TemporaryInt = i; }
 	bool hasTemporaryResidue();
-        virtual adapt::SymbolList_sp allAtomAliases() {_OF();SUBCLASS_MUST_IMPLEMENT();};
+        virtual core::List_sp allAtomAliases() {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
         //! Return true if we recognize the alias with the form "![monomerAlias]@[atomAlias]"
 CL_NAME("recognizesAlias");
@@ -357,7 +357,7 @@ CL_DEFMETHOD         virtual core::Symbol_sp getName() const {_OF(); SUBCLASS_MU
         bool incrementMonomerIndex();
 
 
-        virtual adapt::SymbolList_sp allAtomAliases();
+        virtual core::List_sp allAtomAliases();
 
         //! Return true if we recognize the alias with the form ";[monomerAlias]@[atomAlias]"
         virtual bool recognizesAlias(Alias_sp alias);

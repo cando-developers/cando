@@ -52,6 +52,22 @@ namespace chem
 	core::Symbol_sp _T2;
 	core::Symbol_sp _T3;
 	core::Symbol_sp _T4;
+    public:
+        static FFPtor_sp create_missing(core::Symbol_sp t1,
+                                 core::Symbol_sp t2,
+                                 core::Symbol_sp t3,
+                                 core::Symbol_sp t4)
+        {
+          FFPtor_sp ptor = FFPtor_O::create();
+          ptor->_Level = unknown;
+          ptor->_T1 = t1;
+          ptor->_T2 = t2;
+          ptor->_T3 = t3;
+          ptor->_T4 = t4;
+          return ptor;
+        }
+          
+    public:
 	bool		_hasPeriodicity[MaxPeriodicity];	// 6 terms can be stored
 	double		_Vs_kJ[MaxPeriodicity];		// 6 V terms
         double          _PhaseRads[MaxPeriodicity]; 	// 6 phase terms
@@ -100,11 +116,11 @@ namespace chem
 
 	void	add( FFPtor_sp ptor );
 
-	FFPtor_sp findExactTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
+        gc::Nilable<FFPtor_sp> findExactTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
 	bool    hasExactTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
 
 	//! Look for exact term then general one
-        FFPtor_sp findBestTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
+        gc::Nilable<FFPtor_sp> findBestTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
         bool    hasBestTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
 
         void    cantFind(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 );

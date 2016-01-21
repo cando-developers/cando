@@ -142,7 +142,7 @@ CL_DEFMETHOD     virtual string getInterestingAtomNamesForMonomerName(core::Symb
     virtual bool hasInterestingAtomAlias(Alias_sp alias);
     virtual int getInterestingAtomAliasIndex(Alias_sp alias);
     virtual AtomIndexer_sp getAtomIndexerForMonomerName(core::Symbol_sp nm) {_OF();SUBCLASS_MUST_IMPLEMENT();};
-    virtual adapt::SymbolList_sp getInterestingAtomAliases();
+    virtual core::List_sp getInterestingAtomAliases();
 
 CL_NAME("getInterestingAtomAliasesAsString");
 CL_DEFMETHOD     virtual string getInterestingAtomAliasesAsString() { return "";};

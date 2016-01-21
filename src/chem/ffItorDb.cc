@@ -179,70 +179,70 @@ FFItor_sp        itor;
     return false;
 }
 
-FFItor_sp FFItorDb_O::findExactTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
+gc::Nilable<FFItor_sp> FFItorDb_O::findExactTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
 {
 core::Symbol_sp         key;
-FFItor_sp        itor;
+ gc::Nilable<FFItor_sp>        itor;
     key = keyString(t1,t2,t3,t4);
     if ( this->_Lookup.count(key)!=0 ) {
         return this->_Lookup.get(key);
     }
-    itor = _Nil<FFItor_O>();
+    itor = _Nil<core::T_O>();
     return itor;
 }
 
-FFItor_sp FFItorDb_O::findBestTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
-{_G();
-core::Symbol_sp        key,key1,key2,key3,key4,bl;
-FFItor_sp        itor;
-    key4 = keyString(t1,t2,t3,t4);
-    if ( this->_Lookup.count(key4)!=0 ) {
-        itor = this->_Lookup.get(key4);
-	key = key4;
-	goto DONE;
-    }
-    bl = _Nil<core::Symbol_O>();
-    key3 = keyString(bl,t2,t3,t4);
-    if ( this->_Lookup.count(key3)!=0 ) {
-        itor = this->_Lookup.get(key3);
-	key = key3;
-	goto DONE;
-    }
-    key2 = keyString(bl,bl,t3,t4);
-    if ( this->_Lookup.count(key2)!=0 ) {
-        itor = this->_Lookup.get(key2);
-	key = key2;
-	goto DONE;
-    }
-    key1 = keyString(bl,bl,t3,bl);
-    if ( this->_Lookup.count(key1)!=0 ) {
-        itor = this->_Lookup.get(key1);
-	key = key1;
-	goto DONE;
-    }
-    itor = _Nil<FFItor_O>();
-DONE:
+gc::Nilable<FFItor_sp> FFItorDb_O::findBestTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
+{
+  core::Symbol_sp        key,key1,key2,key3,key4,bl;
+  gc::Nilable<FFItor_sp>        itor;
+  key4 = keyString(t1,t2,t3,t4);
+  if ( this->_Lookup.count(key4)!=0 ) {
+    itor = this->_Lookup.get(key4);
+    key = key4;
+    goto DONE;
+  }
+  bl = _Nil<core::Symbol_O>();
+  key3 = keyString(bl,t2,t3,t4);
+  if ( this->_Lookup.count(key3)!=0 ) {
+    itor = this->_Lookup.get(key3);
+    key = key3;
+    goto DONE;
+  }
+  key2 = keyString(bl,bl,t3,t4);
+  if ( this->_Lookup.count(key2)!=0 ) {
+    itor = this->_Lookup.get(key2);
+    key = key2;
+    goto DONE;
+  }
+  key1 = keyString(bl,bl,t3,bl);
+  if ( this->_Lookup.count(key1)!=0 ) {
+    itor = this->_Lookup.get(key1);
+    key = key1;
+    goto DONE;
+  }
+  itor = _Nil<core::T_O>();
+ DONE:
 #ifdef	DEBUG_ON
-    if ( t3=="c" && t4=="o" ) {
-	LOG(BF("FFITorDb::findBestTerm for types %s-%s-%s-%s") % t1.c_str() % t2.c_str() % t3.c_str() % t4.c_str()  );
-	if ( itor.notnilp() )
-	{
-	    LOG(BF("Found term with key: %s") % key.c_str()  );
-	} else {
-	    LOG(BF("Could not find term with key: %s") % key4.c_str()  );
-	    LOG(BF("Could not find term with key: %s") % key3.c_str()  );
-	    LOG(BF("Could not find term with key: %s") % key2.c_str()  );
-	    LOG(BF("Could not find term with key: %s") % key1.c_str()  );
-	    {_BLOCK_TRACE("itor dictionary");
-	        for ( gctools::SmallMap<string,FFItor_sp>::iterator ii=this->_Lookup.begin();
-				ii!=this->_Lookup.end();ii++ ) {
-		    LOG(BF("Entry key=%s") % ii->first.c_str()  );
-		}
-	    }
-	}
+  if ( t3=="c" && t4=="o" ) {
+    LOG(BF("FFITorDb::findBestTerm for types %s-%s-%s-%s") % t1.c_str() % t2.c_str() % t3.c_str() % t4.c_str()  );
+    if ( itor.notnilp() )
+    {
+      LOG(BF("Found term with key: %s") % key.c_str()  );
+    } else {
+      LOG(BF("Could not find term with key: %s") % key4.c_str()  );
+      LOG(BF("Could not find term with key: %s") % key3.c_str()  );
+      LOG(BF("Could not find term with key: %s") % key2.c_str()  );
+      LOG(BF("Could not find term with key: %s") % key1.c_str()  );
+      {_BLOCK_TRACE("itor dictionary");
+        for ( gctools::SmallMap<string,FFItor_sp>::iterator ii=this->_Lookup.begin();
+              ii!=this->_Lookup.end();ii++ ) {
+          LOG(BF("Entry key=%s") % ii->first.c_str()  );
+        }
+      }
     }
+  }
 #endif
-    return itor;
+  return itor;
 }
 
 
