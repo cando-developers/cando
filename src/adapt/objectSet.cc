@@ -187,20 +187,7 @@ void ObjectSet_O::archive(ArchiveP node) {
 }
 #endif // defined(XML_ARCHIVE)
 
-void ObjectSet_O::exposeCando(Lisp_sp lisp) {
-  class_<ObjectSet_O>()
-      .def("insert", &adapt::ObjectSet_O::insert)
-      .def("add", &adapt::ObjectSet_O::insert)
-      .def("addObjectsInCons", &adapt::ObjectSet_O::addObjectsInCons)
-      .def("addObjects", &adapt::ObjectSet_O::addObjects)
-      .def("size", &adapt::ObjectSet_O::size)
-      //	.def("remove",&adapt::ObjectSet_O::remove)
-      .def("asCons", &ObjectSet_O::asCons)
-      .def("relativeComplement", &ObjectSet_O::relativeComplement)
-      .def("adapt:objectSetUnion", &ObjectSet_O::setUnion)
-      .def("adapt:objectSetIntersection", &ObjectSet_O::intersection)
-      .def("contains", &ObjectSet_O::contains);
-}
+
 
 void ObjectSet_O::exposePython(Lisp_sp lisp) {
   _G();

@@ -186,8 +186,8 @@ namespace chem
 	int             _MembershipAr5;
 	// Spanning tree stuff
 	int		seenId;
-	Atom_sp		_BackSpan;
-	Atom_sp		_NextSpan;
+        gc::Nilable<Atom_sp>		_BackSpan;
+        gc::Nilable<Atom_sp>		_NextSpan;
 	int		backCount;
 	int		tempInt;
 
@@ -580,7 +580,7 @@ CL_DEFMETHOD 	ConfigurationEnum getConfiguration() { return this->_Configuration
     public:
 	void addBond(Bond_sp bond);
 
-        Atom_O() {};
+        Atom_O();
         virtual ~Atom_O() {};
     };
 

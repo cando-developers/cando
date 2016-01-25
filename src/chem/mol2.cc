@@ -570,7 +570,7 @@ void	mol2ReadAggregateFromFileName( Aggregate_sp aggregate, core::T_sp sFileName
 
 
 
-void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out )
+void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSybylTypes )
 {_G();
 Loop		loop, lRes;
 uint		atomCount, bondCount, residueCount;
@@ -586,7 +586,6 @@ AtomInfo	one;
 	// Count the atoms
 	//
     atomCount = agg->numberOfAtoms();
-
  	//
 	// Count the bonds
 	//
@@ -630,8 +629,16 @@ AtomInfo	one;
 	    a = loop.getAtom();
 	    a->setTempFileId(atomId);
 	    one._Atom = a;
-            chem::TypeAssignmentRules_sp sybylRules = gc::As<TypeAssignmentRules_sp>(chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue());
-	    one._SybylType = sybylRules->calculateType(a);
+            if ( useSybylTypes ) {
+              chem::TypeAssignmentRules_sp sybylRules = gc::As<TypeAssignmentRules_sp>(chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue());
+              one._Type = sybylRules->calculateType(a);
+            } else {
+              if ( a->getType() ) {
+                one._Type = a->getType();
+              } else {
+                one._Type = _Nil<core::T_O>();
+              }
+            }
 	    atomList.push_back(one);
 	    atomId++;
 	}
@@ -668,7 +675,7 @@ AtomInfo	one;
 	out << pos.getY() << " ";
 	out << pos.getZ() << " ";
 	LOG(BF("Writing mol2 atom(%s) pos(%s)") % a->description() % a->getPosition().asString() );
-	out << ai->_SybylType->symbolNameAsString() << " ";
+	out << ai->_Type->symbolNameAsString() << " ";
 	out << a->containedBy()->getTempFileId() << " ";
 	out << a->containedBy()->getName()->symbolNameAsString() << "_"
 		<< a->containedBy()->getTempFileId() << " ";
@@ -725,27 +732,28 @@ AtomInfo	one;
 }
 
 
-void	mol2WriteAggregateToFileName( Aggregate_sp agg, core::T_sp fname )
+
+void	mol2WriteAggregateToFileName( Aggregate_sp agg, core::T_sp fname, bool useSybylTypes )
 {
   core::Str_sp sname = gc::As<core::Str_sp>(core::cl__namestring(fname));
   std::ofstream	fout;
   fout.open(sname->get().c_str(),std::ios::out);
-  mol2WriteAggregateStream( agg, fout );
+  mol2WriteAggregateStream( agg, fout, useSybylTypes );
   fout.close();
 }
 
 
 
-void	mol2WriteMatterToFileName(Matter_sp matter, core::T_sp fileName )
+void	mol2WriteMatterToFileName(Matter_sp matter, core::T_sp fileName, bool useSybylTypes )
 {_G();
   if ( Aggregate_sp agg = matter.asOrNull<Aggregate_O>() ) {
-    mol2WriteAggregateToFileName(agg,fileName);
+    mol2WriteAggregateToFileName(agg,fileName,useSybylTypes);
     return;
   }
   if ( Molecule_sp mol = matter.asOrNull<Molecule_O>() ) {
     Aggregate_sp agg = Aggregate_O::create();
     agg->addMolecule(mol);
-    mol2WriteAggregateToFileName(agg,fileName);
+    mol2WriteAggregateToFileName(agg,fileName,useSybylTypes);
     return;
   }
   SIMPLE_ERROR(BF("You must pass a Molecule or Aggregate"));

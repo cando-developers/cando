@@ -479,7 +479,7 @@ CL_DEFMETHOD     void	Aggregate_O::writeToFile(const string& fileName)
 	if ( ext == "moe" ) {
 	    moeWriteAggregateFileName(agg,fileName.c_str());
 	} else if ( ext == "mol2" ) {
-	    mol2WriteAggregateToFileName(agg,fileName);
+          mol2WriteAggregateToFileName(agg,fileName,true);
 	} else if ( ext == "oml" ) {
 	    core::XmlSaveArchive_sp xml;
 	    xml = core::XmlSaveArchive_O::create();
@@ -643,34 +643,7 @@ CL_DEFUN Aggregate_sp Aggregate_O::make(MatterName name)
 
 
 
-    void Aggregate_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<Aggregate_O>()
-//	    .def_raw("core:__init__",&Aggregate_O::__init__,"(self &key name)")
-//	    .def("deepCopy",&Aggregate_O::deepCopy)
-//	    .def("getRestraints",&Aggregate_O::getRestraints)
-	    .def("separateMolecules",&Aggregate_O::separateMolecules)
-	    .def("firstMoleculeWithAtomNamed",&Aggregate_O::firstMoleculeWithAtomNamed)
-	    .def("atomWithId",&Aggregate_O::atomWithId)
-	    .def("addMolecule",&Aggregate_O::addMolecule)
-	    .def("removeMolecule",&Aggregate_O::removeMolecule)
-	    .def("firstMolecule",&Aggregate_O::firstMolecule)
-	    .def("firstMoleculeName",&Aggregate_O::firstMoleculeName)
-//	.def("open",&Aggregate_O::open)
-	    .def("saveAs",&Aggregate_O::saveAs,"","","",false)
-	    .def("writeToFile",&Aggregate_O::writeToFile)
-	    .def("testAggregateConsistancy",&Aggregate_O::testAggregateConsistancy)
-//	.def("parseFromXml",&Aggregate_O::parseFromXml)
-//	.def("asXml",&Aggregate_O::asXml)
-//	.def("asXmlWithCoordinates",&Aggregate_O::asXmlWithCoordinates)
-	    .def("perturbAtomPositions",&Aggregate_O::perturbAtomPositions)
-	    .def("atomsWithChimeraSpecifications", &Aggregate_O::atomsWithChimeraSpecifications )
-	    .def("molecules",&Aggregate_O::molecules)
-//	    .def("updateAtomIdMap",&Aggregate_O::updateAtomIdMap)
-//	    .def("lookupAtom",&Aggregate_O::lookupAtom)
-	    ;
-//	Defun_maker(ChemPkg,Aggregate);
-    }
+
 
     void Aggregate_O::exposePython(core::Lisp_sp lisp)
     {_G();

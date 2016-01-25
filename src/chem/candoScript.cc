@@ -558,14 +558,10 @@ __END_DOC
  */
 
 
-
-
-#define ARGS_chem__save_mol2 "(matter destDesig)"
-#define DECL_chem__save_mol2 ""
-#define DOCS_chem__save_mol2 "saveMol2"
-CL_DEFUN core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig)
+CL_LAMBDA(matter dest-desig &optional use-sybyl-types);
+CL_DEFUN core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig, bool useSybylTypes)
 {_G();
-  mol2WriteMatterToFileName(matter,destDesig);
+  mol2WriteMatterToFileName(matter,destDesig,useSybylTypes);
   return _Nil<core::T_O>();
 }
 

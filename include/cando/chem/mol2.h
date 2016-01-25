@@ -33,8 +33,8 @@
 namespace chem {
 
 struct AtomInfo {
-    	Atom_sp		_Atom;
-    core::Symbol_sp 		_SybylType;
+  Atom_sp		_Atom;
+    core::Symbol_sp 		_Type;
 };
 struct ResidueOut {
 	Residue_sp	res;
@@ -60,13 +60,13 @@ void	_calculateElementAndHybridization(Atom_sp a);
 string	mol2AtomType(Atom_sp a);
 
 
-    void	mol2WriteAggregateStream( Aggregate_sp 	agg, core::T_sp out);
+ void	mol2WriteAggregateStream( Aggregate_sp 	agg, core::T_sp out, bool useSybylTypes);
 string	mol2WriteAggregateReturnAsString( Aggregate_sp agg );
- void	mol2WriteAggregateToFileName( Aggregate_sp a, core::T_sp sFileName );
+ void	mol2WriteAggregateToFileName( Aggregate_sp a, core::T_sp sFileName, bool useSybylTypes );
 
  void	mol2WriteDumbAggregateToFileName( Aggregate_O& a, core::T_sp sFileName );
 
- void	mol2WriteMatterToFileName( Matter_sp matter, core::T_sp fileName );
+ void	mol2WriteMatterToFileName( Matter_sp matter, core::T_sp fileName, bool useSybylTypes );
 
 
  void initialize_mol2_type_rules();

@@ -987,7 +987,7 @@ namespace chem {
     core::T_sp chem__monomer(core::Symbol_sp monomerId, core::Symbol_sp groupName, core::List_sp monomerAliases, core::Str_sp comment);
     core::T_sp chem__atom_pos(core::List_sp args);
     core::T_sp chem__find_residue(core::List_sp args);
-    core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig);
+    core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig, bool useSybylTypes);
     core::T_sp chem__load_mol2(core::T_sp fileName);
     geom::CoordinateArray_sp chem__make_coordinate_array_from_atom_list(core::List_sp atoms);
     core::T_sp chem__save_archive_with_auto_set_cando_database();
@@ -1009,6 +1009,7 @@ namespace chem {
     adapt::ObjectSet_sp chem__atomsWithinSphereAsObjectSet( Matter_sp matter, Vector3 center, double radius );
     void chem__connectAtomsInMatterInCovalentContact(Matter_sp matter);
     bool chem__is_in_plug_name(core::Symbol_sp plugName);
+    core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m);
     core::T_sp chem__map_atoms(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m);
     core::T_sp chem__map_residues(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m);
     core::T_sp chem__map_molecules(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m );
@@ -4141,7 +4142,7 @@ NOINLINE void expose_function_1040_helper() {
   expose_function(core::magic_name("chem__find_residue"),true,&chem::chem__find_residue,"(&rest args)");
 }
 NOINLINE void expose_function_1041_helper() {
-  expose_function(core::magic_name("chem__save_mol2"),true,&chem::chem__save_mol2,"");
+  expose_function(core::magic_name("chem__save_mol2"),true,&chem::chem__save_mol2,"(matter dest-desig &optional use-sybyl-types)");
 }
 NOINLINE void expose_function_1042_helper() {
   expose_function(core::magic_name("chem__load_mol2"),true,&chem::chem__load_mol2,"");
@@ -4243,42 +4244,45 @@ NOINLINE void expose_function_1074_helper() {
   expose_function(core::magic_name("CHEM:make-energy-function"),true,&chem::EnergyFunction_O::make,"(matter force_field &optional active-atoms)");
 }
 NOINLINE void expose_function_1075_helper() {
-  expose_function(core::magic_name("chem__map_atoms"),true,&chem::chem__map_atoms,"");
+  expose_function(core::magic_name("chem__map_bonds"),true,&chem::chem__map_bonds,"");
 }
 NOINLINE void expose_function_1076_helper() {
-  expose_function(core::magic_name("chem__map_residues"),true,&chem::chem__map_residues,"");
+  expose_function(core::magic_name("chem__map_atoms"),true,&chem::chem__map_atoms,"");
 }
 NOINLINE void expose_function_1077_helper() {
-  expose_function(core::magic_name("chem__map_molecules"),true,&chem::chem__map_molecules,"");
+  expose_function(core::magic_name("chem__map_residues"),true,&chem::chem__map_residues,"");
 }
 NOINLINE void expose_function_1078_helper() {
-  expose_function(core::magic_name("chem__readPdbMonomerConnectivityDatabase"),true,&chem::chem__readPdbMonomerConnectivityDatabase,"");
+  expose_function(core::magic_name("chem__map_molecules"),true,&chem::chem__map_molecules,"");
 }
 NOINLINE void expose_function_1079_helper() {
-  expose_function(core::magic_name("CHEM:make-minimizer"),true,&chem::Minimizer_O::make,"(&key matter force_field energy_function)");
+  expose_function(core::magic_name("chem__readPdbMonomerConnectivityDatabase"),true,&chem::chem__readPdbMonomerConnectivityDatabase,"");
 }
 NOINLINE void expose_function_1080_helper() {
-  expose_function(core::magic_name("CHEM:elementFromAtomNameString"),true,&chem::elementFromAtomNameString,"");
+  expose_function(core::magic_name("CHEM:make-minimizer"),true,&chem::Minimizer_O::make,"(&key matter force_field energy_function)");
 }
 NOINLINE void expose_function_1081_helper() {
-  expose_function(core::magic_name("CHEM:elementFromAtomNameStringCaseInsensitive"),true,&chem::elementFromAtomNameStringCaseInsensitive,"");
+  expose_function(core::magic_name("CHEM:elementFromAtomNameString"),true,&chem::elementFromAtomNameString,"");
 }
 NOINLINE void expose_function_1082_helper() {
-  expose_function(core::magic_name("CHEM:vdwRadiusForElement"),true,&chem::vdwRadiusForElement,"");
+  expose_function(core::magic_name("CHEM:elementFromAtomNameStringCaseInsensitive"),true,&chem::elementFromAtomNameStringCaseInsensitive,"");
 }
 NOINLINE void expose_function_1083_helper() {
-  expose_function(core::magic_name("CHEM:make-atom"),true,&chem::Atom_O::make,"");
+  expose_function(core::magic_name("CHEM:vdwRadiusForElement"),true,&chem::vdwRadiusForElement,"");
 }
 NOINLINE void expose_function_1084_helper() {
-  expose_function(core::magic_name("CHEM:make-residue"),true,&chem::Residue_O::make,"");
+  expose_function(core::magic_name("CHEM:make-atom"),true,&chem::Atom_O::make,"");
 }
 NOINLINE void expose_function_1085_helper() {
-  expose_function(core::magic_name("CHEM:make-molecule"),true,&chem::Molecule_O::make,"(&optional (name nil))");
+  expose_function(core::magic_name("CHEM:make-residue"),true,&chem::Residue_O::make,"");
 }
 NOINLINE void expose_function_1086_helper() {
-  expose_function(core::magic_name("CHEM:make-aggregate"),true,&chem::Aggregate_O::make,"(&optional (name nil))");
+  expose_function(core::magic_name("CHEM:make-molecule"),true,&chem::Molecule_O::make,"(&optional (name nil))");
 }
 NOINLINE void expose_function_1087_helper() {
+  expose_function(core::magic_name("CHEM:make-aggregate"),true,&chem::Aggregate_O::make,"(&optional (name nil))");
+}
+NOINLINE void expose_function_1088_helper() {
   expose_function(core::magic_name("chem__make_fftypes_db"),true,&chem::chem__make_fftypes_db,"");
 }
 #endif // EXPOSE_FUNCTION_BINDINGS_HELPERS
@@ -5370,4 +5374,5 @@ NOINLINE void expose_function_1087_helper() {
   expose_function_1085_helper();
   expose_function_1086_helper();
   expose_function_1087_helper();
+  expose_function_1088_helper();
 #endif // EXPOSE_FUNCTION_BINDINGS

@@ -56,6 +56,7 @@
                        (atom (chem:make-atom atom-name
                                              (chem:element-from-atom-name-string-case-insensitive (string atom-name)))))
                    (chem:set-type atom atom-type)
+                   (chem:set-charge atom charge)
                    (unless residue
                      (setq residue (chem:make-residue residue-name))
                      (setf (gethash residue-id residues) residue))

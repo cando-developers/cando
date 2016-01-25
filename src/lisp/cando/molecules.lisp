@@ -162,7 +162,7 @@ Set the stereochemistry of a collection of stereocenters using a function that r
     ((pathnamep obj)
      (ext:system (format nil "open ~a" (namestring obj))))
     ((typep obj 'chem:aggregate)
-     (chem:save-mol2 obj #P"/tmp/temp.mol2")
+     (cando:save-mol2 obj #P"/tmp/temp.mol2" :use-sybyl-types t)
      (ext:system (format nil "open /tmp/temp.mol2")))
     (t (error "You cannot run chimera on ~a" obj)))
   (sleep 0.3))
@@ -185,10 +185,10 @@ Set the stereochemistry of a collection of stereocenters using a function that r
   (error "Exceeded max number of tries to build good geometry"))
 
 
-(defun save-mol2 (matter pathname)
+(defun save-mol2 (matter pathname &key use-sybyl-types)
   (let ((npn (merge-pathnames pathname *default-pathname-defaults*)))
     (format t "Saving matter to ~a~%" npn)
-    (chem:save-mol2 matter npn)))
+    (chem:save-mol2 matter npn use-sybyl-types)))
 
 (defun load-mol2 (pathname)
   (let ((npn (merge-pathnames pathname *default-pathname-defaults*)))

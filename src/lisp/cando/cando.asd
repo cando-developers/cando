@@ -23,4 +23,6 @@
      (:file "psf-files")
      (:file "remove-overlaps")
      (:file "matter")
+     (:file "antique")
+     (:file "antechamber")
      ))

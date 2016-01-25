@@ -172,14 +172,14 @@ void Bond_O::clearProperty(core::Symbol_sp prop)
   this->_Properties = core::core__rem_f(this->_Properties,prop);
 }
 
-CL_LISPIFY_NAME("setProperty");
+CL_LISPIFY_NAME("bond-setProperty");
 CL_DEFMETHOD void Bond_O::setProperty(core::Symbol_sp prop, core::T_sp val)
     {_G();
       this->_Properties = core::core__put_f(this->_Properties,val,prop);
     }
 
 
-CL_LISPIFY_NAME("getProperty");
+CL_LISPIFY_NAME("bond-getProperty");
 CL_DEFMETHOD core::T_sp Bond_O::getProperty(core::Symbol_sp prop, core::T_sp defval)
 {_G();
   core::T_sp res = core::cl__getf(this->_Properties,prop,_Unbound<core::T_O>());
@@ -189,7 +189,7 @@ CL_DEFMETHOD core::T_sp Bond_O::getProperty(core::Symbol_sp prop, core::T_sp def
   return res;
 }
 
-CL_LISPIFY_NAME("hasProperty");
+CL_LISPIFY_NAME("bond-hasProperty");
 CL_DEFMETHOD bool Bond_O::hasProperty(core::Symbol_sp prop)
 {_G();
   return !core::cl__getf(this->_Properties,prop,_Unbound<core::T_O>()).unboundp();
@@ -557,7 +557,7 @@ void	BondList_O::archiveBase(core::ArchiveP node)
   SYMBOL_EXPORT_SC_(ChemKwPkg,dashedSingleBond);
   SYMBOL_EXPORT_SC_(ChemKwPkg,dashedDoubleBond);
   CL_BEGIN_ENUM(BondOrder,_sym__PLUS_bondOrderToSymbolConverter_PLUS_,"BondOrder");
-  CL_VALUE_ENUM(chemkw::_sym_noBond, singleBond );
+  CL_VALUE_ENUM(chemkw::_sym_noBond, noBond );
   CL_VALUE_ENUM(chemkw::_sym_singleBond, singleBond );
   CL_VALUE_ENUM(chemkw::_sym_doubleBond, doubleBond );
   CL_VALUE_ENUM(chemkw::_sym_tripleBond, tripleBond );
@@ -569,20 +569,7 @@ void	BondList_O::archiveBase(core::ArchiveP node)
   CL_END_ENUM(_sym__PLUS_bondOrderToSymbolConverter_PLUS_);
 
 
-void Bond_O::exposeCando(core::Lisp_sp lisp)
-{
-  core::class_<Bond_O>()
-    .def("getAtom1",&Bond_O::getAtom1)
-    .def("getAtom2",&Bond_O::getAtom2)
-    .def("getOrder",&Bond_O::getOrder)
-    .def("getOrderAsString",&Bond_O::getOrderAsString)
-    .def("setOrder",&Bond_O::setOrderFromInt)
-    .def("getOtherAtom",&Bond_O::getOtherAtom)
-    .def("hasProperty",&Bond_O::hasProperty)
-    .def("getProperty",&Bond_O::getProperty)
-    .def("setProperty",&Bond_O::setProperty)
-    ;
-}
+
 
 void Bond_O::exposePython(core::Lisp_sp lisp)
 {_G();
@@ -604,10 +591,7 @@ void Bond_O::exposePython(core::Lisp_sp lisp)
 
 
 
-void BondList_O::exposeCando(core::Lisp_sp lisp)
-{
-  core::class_<BondList_O>();
-}
+
 
 void BondList_O::exposePython(core::Lisp_sp lisp)
 {_G();

@@ -58,6 +58,13 @@
    #:atom-lookup
    ))
 
+(defpackage #:antique
+  (:use #:common-lisp)
+  (:export
+   #:rename-atoms-with-unique-short-names
+   #:restore-original-name)
+  )
+
 (defpackage #:atom-tree
   (:use #:common-lisp)
   (:export
@@ -98,6 +105,7 @@
   (:export
    #:circle-points
    #:zig-zag-cylinder-points
+   #:top-bottom-cylinder-points
    #:anchor-atoms
    #:on-circle
    #:on-points
@@ -109,3 +117,8 @@
    #:find-residue-that-contains-atom
    #:remove-atom
    ))
+
+(defpackage #:antechamber
+  (:use #:common-lisp)
+  (:export
+   #:load-antechamber))

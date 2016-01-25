@@ -32,6 +32,22 @@ Generate points that zig-zag from one end of a cylinder to the other in the patt
     (push (pop bottom-circle) cy)
     (nreverse cy)))
 
+(defun top-bottom-cylinder-points (radius num height)
+  "* Arguments
+- radius :: The radius of the cylinder.
+- num :: The number of points on each end of the cylinder.
+- height :: The height of the cylinder.
+* Description
+Generate (* 2 num) points that first go around the circle on the top of the cylinder and then around the bottom  Where n = (floor (/ 1- num) 2)."
+  (let (cy
+	(top-circle (anchor:circle-points radius (/ num 2) :z (/ height 2)))
+	(bottom-circle (anchor:circle-points radius (/ num 2) :z (- (/ height 2)))))
+    (dotimes (i (/ num 2))
+      (push (pop top-circle) cy))
+    (dotimes (i (/ num 2))
+      (push (pop bottom-circle) cy))
+    (nreverse cy)))
+
 ;;;
 ;;; Anchor atoms to points
 ;;; First always clear the anchor restraints

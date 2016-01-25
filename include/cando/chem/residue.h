@@ -207,7 +207,7 @@ CL_DEFMETHOD 	bool		hasAtomWithId( int lid ) { return this->hasContentWithId(lid
 	void fillInImplicitHydrogens();
 
 CL_NAME("firstAtom");
-CL_DEFMETHOD 	Atom_sp		firstAtom() { return this->contentAt(0).as<Atom_O>(); };
+ CL_DEFMETHOD 	Atom_sp		firstAtom() { if ( this->contentSize() <= 0 ) { SIMPLE_ERROR(BF("This matter has no contents")); } return this->contentAt(0).as<Atom_O>(); };
 
 	void	makeAllAtomNamesInEachResidueUnique();
 
