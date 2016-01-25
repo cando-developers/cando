@@ -256,7 +256,7 @@ void	EnergyChiralRestraint_O::evaluateAll(
 		gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
 		gc::Nilable<chem::NVector_sp>	hdvec,
                 gc::Nilable<chem::NVector_sp> dvec)
-{_G();
+{
     if ( this->_DebugEnergy ) 
     {
 	LOG_ENERGY_CLEAR();
@@ -463,7 +463,7 @@ bool	calcOffDiagonalHessian = true;
 
 int	EnergyChiralRestraint_O::checkForBeyondThresholdInteractions(
 			stringstream& info, chem::NVector_sp pos )
-{_G();
+{
 int	fails = 0;
 
     this->_BeyondThresholdTerms.clear();
@@ -542,19 +542,8 @@ int	fails = 0;
 
 
 
-void EnergyChiralRestraint_O::exposeCando(core::Lisp_sp e)
-{
-    core::class_<EnergyChiralRestraint_O>()
-    ;
-}
 
-    void EnergyChiralRestraint_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,EnergyChiralRestraint,"","",_lisp)
-    ;
-#endif
-}
+
 
 void EnergyChiralRestraint_O::initialize()
 {
@@ -571,7 +560,6 @@ void EnergyChiralRestraint_O::archiveBase(core::ArchiveP node)
 }
 #endif
 
-    EXPOSE_CLASS(chem,EnergyChiralRestraint_O);
 
 };
 

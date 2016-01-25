@@ -11,7 +11,7 @@ namespace chem {
 
 
 IterateRestraints_sp IterateRestraints_O::create(Matter_sp matter)
-{_G();
+{
     GC_ALLOCATE(IterateRestraints_O, m );
     m->initTop(matter);
     return m;
@@ -25,7 +25,7 @@ void	IterateRestraints_O::initialize()
 
 
 void	IterateRestraints_O::_accumulateRestraints(Matter_sp m)
-{_G();
+{
     RestraintList_sp mine = m->allRestraints();
     RestraintList_O::iterator it;
     for ( it=mine->begin(); it!=mine->end(); it++ )
@@ -41,18 +41,18 @@ void	IterateRestraints_O::_accumulateRestraints(Matter_sp m)
 
 
 void	IterateRestraints_O::initTop(Matter_sp m)
-{_G();
+{
     this->_Restraints = _Nil<core::T_O>();
     this->_accumulateRestraints(m);
 }
 
 void	IterateRestraints_O::first()
-{_G();
+{
     this->_CurRestraint = this->_Restraints;
 }
 
 void	IterateRestraints_O::next()
-{_G();
+{
     if ( this->_CurRestraint.notnilp() )
     {
       this->_CurRestraint = oCdr(this->_CurRestraint);
@@ -61,39 +61,23 @@ void	IterateRestraints_O::next()
 
 
     core::T_sp IterateRestraints_O::currentObject()
-{_G();
+{
     if ( this->_CurRestraint.nilp() ) return _Nil<core::T_O>();
     return core::oCar(this->_CurRestraint);
 }
 
 bool	IterateRestraints_O::isDone()
-{_G();
+{
     ASSERTNOTNULL(this->_CurRestraint);
     return this->_CurRestraint.nilp();
 }
 
 
 
-    void IterateRestraints_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<IterateRestraints_O>()
-	;
-//	def("create_IterateRestraints",&IterateRestraints_O::create);
-}
-
-    void IterateRestraints_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,IterateRestraints,"","",_lisp)
-    ;
-//    boost::python::def("create_IterateRestraints",&IterateRestraints_O::create);
-
-#endif //]
-}
 
 
 
-    EXPOSE_CLASS(chem,IterateRestraints_O);
+
 };
 
 

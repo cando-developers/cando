@@ -11,9 +11,6 @@
 
 namespace chem {
 
-    REGISTER_CLASS(chem,AbstractLargeSquareMatrix_O);
-    REGISTER_CLASS(chem,FullLargeSquareMatrix_O);
-    REGISTER_CLASS(chem,SparseLargeSquareMatrix_O);
 
 #define	SWAP(x,y,t) { t=x; x=y; y=t; };
 
@@ -31,7 +28,7 @@ namespace chem {
 
 
 void	AbstractLargeSquareMatrix_O::setup(uint dim, TriangleType type)
-{_G();
+{
     this->_Triangle = type;
     this->_Columns = dim;
     this->_Rows = dim;
@@ -73,7 +70,7 @@ double	dMaxAbs;
 
 
 uint	AbstractLargeSquareMatrix_O::indexFromCoordinates(uint x, uint y )
-{_G();
+{
     uint idx = this->indexFromCoordinatesOrUndefinedUnsignedInt(x,y);
     if ( idx == UndefinedUnsignedInt )
     {
@@ -189,7 +186,7 @@ double	sum;
 // ****************************************************
 
 FullLargeSquareMatrix_sp FullLargeSquareMatrix_O::create(uint dim, TriangleType type)
-{_G();
+{
     GC_ALLOCATE(FullLargeSquareMatrix_O, res );
     res->setup(dim,type);
     return res;
@@ -223,7 +220,7 @@ FullLargeSquareMatrix_O::FullLargeSquareMatrix_O(const FullLargeSquareMatrix_O& 
 
 
 uint	FullLargeSquareMatrix_O::indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y )
-{_G();
+{
 uint		i0,i;
     if ( x >= this->_Columns || y >= this->_Rows ) {
 	return UndefinedUnsignedInt;
@@ -324,7 +321,7 @@ uint		i;
 // ****************************************************
 
 SparseLargeSquareMatrix_sp SparseLargeSquareMatrix_O::create(uint dim, TriangleType type)
-{_G();
+{
     GC_ALLOCATE(SparseLargeSquareMatrix_O, res );
     res->setup(dim,type);
     return res;
@@ -342,7 +339,7 @@ SparseLargeSquareMatrix_O::~SparseLargeSquareMatrix_O( )
 
 
 void	SparseLargeSquareMatrix_O::setup(uint dim, TriangleType type)
-{_G();
+{
     this->AbstractLargeSquareMatrix_O::setup(dim,type);
     this->_InsertionIsComplete = false;
     this->initializeStorage();
@@ -369,7 +366,7 @@ SparseLargeSquareMatrix_O::SparseLargeSquareMatrix_O(const SparseLargeSquareMatr
 
 
 void	SparseLargeSquareMatrix_O::initializeStorage()
-{_G();
+{
 uint	rows = this->_Rows;
     this->_InsertionIsComplete = false;
     this->_RowStartEntries = rows+1;
@@ -402,14 +399,14 @@ void	SparseLargeSquareMatrix_O::expandStorage()
 
 
 void	SparseLargeSquareMatrix_O::reset()
-{_G();
+{
     this->releaseStorage();
     this->initializeStorage();
 }
 
 
 void	SparseLargeSquareMatrix_O::insertElement(uint x, uint y)
-{_G();
+{
 uint	ib,ie,i,t;
 #ifdef	DEBUG_VIA_PRINTF
     printf("insert at %d,%d\n",x,y);
@@ -476,7 +473,7 @@ uint	ib,ie,i,t;
 // Return the index for the element at x,y
 // If there is no element return UndefinedUnsignedInt 
 uint	SparseLargeSquareMatrix_O::indexFromCoordinatesOrUndefinedUnsignedInt(uint x, uint y )
-{_G();
+{
 uint	im, t, ret;
     if ( x >= this->_Columns || y >= this->_Rows ) {
 	return UndefinedUnsignedInt;
@@ -591,7 +588,7 @@ void	SparseLargeSquareMatrix_O::debug()
     }
 
     void	SparseLargeSquareMatrix_O::setElement(uint x, uint y, double d)
-    {_G();
+    {
 	uint	dp;
 	dp = this->indexFromCoordinatesOrUndefinedUnsignedInt(x,y);
 	if ( dp == UndefinedUnsignedInt ) {
@@ -611,7 +608,7 @@ void	SparseLargeSquareMatrix_O::debug()
     }
 
     void	SparseLargeSquareMatrix_O::addToElement(uint x, uint y, double d)
-    {_G();
+    {
 	uint	dp, idp;
 	bool	inserted = false;
 	dp = this->indexFromCoordinatesOrUndefinedUnsignedInt(x,y);
@@ -653,7 +650,7 @@ void	SparseLargeSquareMatrix_O::debug()
 // Return the index for the element at x,y
 // If there is no element return UndefinedUnsignedInt
     uint	SparseLargeSquareMatrix_O::indexOfFirstElementAtOrAfterX(uint x, uint y )
-    {_G();
+    {
 	uint	im;
 	ASSERT_lessThan(x,this->_Columns);
 	ASSERT_lessThan(y,this->_Rows);

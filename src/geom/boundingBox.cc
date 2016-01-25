@@ -59,7 +59,7 @@ CL_DEFMETHOD     double BoundingBox_O::getMaxZ() const { return this->_MaxCorner
 #endif
 
     void	BoundingBox_O::expandToEncompassPoint(const Vector3& p)
-    {_G();
+    {
 	if ( !this->_Defined )
 	{
 	    this->_Defined = true;
@@ -106,36 +106,9 @@ CL_DEFMETHOD     void BoundingBox_O::pad(double add)
     }
 
 
-    void BoundingBox_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<BoundingBox_O>()
-	    .def("pad",&BoundingBox_O::pad)
-	    .def("getMinX",&BoundingBox_O::getMinX)
-	    .def("getMaxX",&BoundingBox_O::getMaxX)
-	    .def("getMinY",&BoundingBox_O::getMinY)
-	    .def("getMaxY",&BoundingBox_O::getMaxY)
-	    .def("getMinZ",&BoundingBox_O::getMinZ)
-	    .def("getMaxZ",&BoundingBox_O::getMaxZ)
-	    ;
-    }
-
-    void BoundingBox_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(CorePkg,BoundingBox,"","",_lisp)
-	    .def("pad",&BoundingBox_O::pad)
-	    .def("getMinX",&BoundingBox_O::getMinX)
-	    .def("getMaxX",&BoundingBox_O::getMaxX)
-	    .def("getMinY",&BoundingBox_O::getMinY)
-	    .def("getMaxY",&BoundingBox_O::getMaxY)
-	    .def("getMinZ",&BoundingBox_O::getMinZ)
-	    .def("getMaxZ",&BoundingBox_O::getMaxZ)
-	    ;
-#endif
-    }
 
 
-    EXPOSE_CLASS(geom,BoundingBox_O);
+
 
 };
 

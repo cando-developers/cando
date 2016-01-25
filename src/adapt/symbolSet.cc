@@ -55,7 +55,7 @@ extern Symbol_sp _sym_entries;
   __END_DOC
 */
 SymbolSet_sp SymbolSet_O::make(List_sp entries) {
-  _G();
+  
   SymbolSet_sp me = SymbolSet_O::create();
   me->insertConsSymbols(entries);
   return me;
@@ -80,7 +80,7 @@ void SymbolSet_O::insertSymbolList(SymbolList_sp slist) {
 }
 
 SymbolSet_sp SymbolSet_O::copy() {
-  _G();
+  
   GC_COPY(SymbolSet_O, snew, *this);
   snew->clear();
   this->map([&snew](Symbol_sp k) {
@@ -158,7 +158,7 @@ void SymbolSet_O::insertVector(Vector_sp vec) {
 
 CL_LISPIFY_NAME("contains");
 CL_DEFMETHOD bool SymbolSet_O::contains(Symbol_sp s) {
-  _G();
+  
   return this->_Symbols->contains(s);
 }
 
@@ -223,7 +223,7 @@ SymbolSet_O::SymbolSet_O(const SymbolSet_O &ss) : T_O(ss) {
 
 CL_LISPIFY_NAME("adapt:SymbolSetUnion");
 CL_DEFMETHOD SymbolSet_sp SymbolSet_O::setUnion(SymbolSet_sp b) {
-  _G();
+  
   SymbolSet_sp nset;
   nset = SymbolSet_O::create();
   this->map([&nset](Symbol_sp s) { nset->insert(s); });
@@ -233,7 +233,7 @@ CL_DEFMETHOD SymbolSet_sp SymbolSet_O::setUnion(SymbolSet_sp b) {
 
 CL_LISPIFY_NAME("adapt:SymbolSetIntersection");
 CL_DEFMETHOD SymbolSet_sp SymbolSet_O::intersection(SymbolSet_sp b) {
-  _G();
+  
   SymbolSet_sp nset = SymbolSet_O::create();
   this->map([&b, &nset](Symbol_sp s) {
             LOG(BF("Looking for(%s)") % _rep_((*si)) );
@@ -266,7 +266,7 @@ CL_DEFMETHOD SymbolSet_sp SymbolSet_O::relativeComplement(SymbolSet_sp b) {
 */
 CL_LISPIFY_NAME("cartesianProduct");
 CL_DEFMETHOD ObjectSet_sp SymbolSet_O::cartesianProduct(SymbolSet_sp b) {
-  _G();
+  
   ObjectSet_sp nset = ObjectSet_O::create();
   this->map([&b, &nset](Symbol_sp si) {
                 b->map( [&si,&nset] (Symbol_sp bi) {
@@ -281,7 +281,7 @@ CL_DEFMETHOD ObjectSet_sp SymbolSet_O::cartesianProduct(SymbolSet_sp b) {
   with every element in b separated by a comma
 */
 ObjectSet_sp SymbolSet_O::cartesianProductWrapped(SymbolSet_sp b, const SymbolSetCartesianProductWrapper &wrapper) {
-  _G();
+  
   ObjectSet_sp nset;
   nset = ObjectSet_O::create();
   this->map([&b, &nset, &wrapper](Symbol_sp si) {
@@ -306,7 +306,7 @@ Symbol_mv SymbolSet_O::first() {
 
 CL_LISPIFY_NAME("asCons");
 CL_DEFMETHOD List_sp SymbolSet_O::asCons() {
-  _G();
+  
   List_sp cur = _Nil<List_V>();
   this->map([&cur](Symbol_sp si) {
                 cur = Cons_O::create(si,cur);
@@ -339,46 +339,7 @@ void SymbolSet_O::map_while_true(std::function<bool(Symbol_sp)> const &fn) const
   });
 }
 
-void SymbolSet_O::exposeCando(Lisp_sp lisp) {
-  class_<SymbolSet_O>()
-      .def("size", &SymbolSet_O::size)
-      .def("insertSymbolSet", &SymbolSet_O::insertSymbolSet)
-      .def("insertConsSymbols", &SymbolSet_O::insertConsSymbols)
-      .def("insert", &SymbolSet_O::insert)
-      .def("contains", &SymbolSet_O::contains)
-      .def("containsSubset", &SymbolSet_O::containsSubset)
-      //            .def("remove",&SymbolSet_O::remove)
-      .def("clear", &SymbolSet_O::clear)
-      .def("asString", &SymbolSet_O::asString)
-      .def("adapt:SymbolSetUnion", &SymbolSet_O::setUnion)
-      .def("adapt:SymbolSetIntersection", &SymbolSet_O::intersection)
-      .def("relativeComplement", &SymbolSet_O::relativeComplement)
-      .def("removeAll", &SymbolSet_O::removeAll)
-      .def("cartesianProduct", &SymbolSet_O::cartesianProduct)
-      .def("asCons", &SymbolSet_O::asCons);
-}
 
-void SymbolSet_O::exposePython(Lisp_sp lisp) {
-  _G();
-#ifdef USEBOOSTPYTHON
-  PYTHON_CLASS(AdaptPkg, SymbolSet, "", "", _lisp)
-      .def("size", &SymbolSet_O::size)
-      .def("insertSymbolSet", &SymbolSet_O::insertSymbolSet)
-      .def("insertConsSymbols", &SymbolSet_O::insertConsSymbols)
-      .def("insert", &SymbolSet_O::insert)
-      .def("contains", &SymbolSet_O::contains)
-      .def("containsSubset", &SymbolSet_O::containsSubset)
-      //            .def("remove",&SymbolSet_O::remove)
-      .def("clear", &SymbolSet_O::clear)
-      .def("asString", &SymbolSet_O::asString)
-      .def("adapt:SymbolSetUnion", &SymbolSet_O::setUnion)
-      .def("adapt:SymbolSetIntersection", &SymbolSet_O::intersection)
-      .def("relativeComplement", &SymbolSet_O::relativeComplement)
-      .def("removeAll", &SymbolSet_O::removeAll)
-      .def("cartesianProduct", &SymbolSet_O::cartesianProduct)
-      .def("asCons", &SymbolSet_O::asCons);
-#endif
-}
 
-EXPOSE_CLASS(adapt, SymbolSet_O);
+
 };

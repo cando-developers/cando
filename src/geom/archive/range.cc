@@ -15,7 +15,7 @@ namespace geom {
 
 #if 0
     core::T_sp Range_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp environ, core::Lisp_sp lisp)
-    {_G();
+    {
 	LOG(BF("Argument types %s %s") % core::oCar(args)->__class()->classNameAsString() % args->ocadr()->className() );
 	SYMBOL_SC_(GeomPkg,begin);
 	SYMBOL_SC_(GeomPkg,end);
@@ -30,7 +30,7 @@ namespace geom {
 
 
     Range_sp Range_O::create(core::Lisp_sp lisp,core::LongLongInt b, core::LongLongInt e)
-{_G();
+{
     LOG(BF("Range_O::create with begin=%d, end=%d") % b % e  );
     GC_ALLOCATE(Range_O,r);
     r->_Begin = b;
@@ -39,7 +39,7 @@ namespace geom {
     return r;
 };
     Range_sp Range_O::create3(core::Lisp_sp lisp, core::LongLongInt b, core::LongLongInt e, core::LongLongInt step)
-{_G();
+{
     LOG(BF("Range_O::create with begin=%d, end=%d, step=%d") % b % e % step  );
     GC_ALLOCATE(Range_O,r);
     r->_Begin = b;
@@ -51,7 +51,7 @@ namespace geom {
 
 
     core::Cons_sp Range_O::asCons()
-{_G();
+{
     core::Cons_sp dummy = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::Cons_O>());
     core::Cons_sp cur = dummy;
     for (int i=this->_Begin; i<this->_End; i+=this->_Step )
@@ -94,25 +94,8 @@ void	Range_O::initialize()
 #endif
 
 
-    void Range_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<Range_O>()
-	.def("asCons",&Range_O::asCons)
-	;
-//	def("oldRange",&Range_O::create,_lisp);
-}
 
-    void Range_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(CorePkg,Range,"","",_lisp)
-	.def("asCons",&Range_O::asCons)
-	;
-#endif
-//	def("oldRange",&Range_O::create,_lisp);
-}
 
-    EXPOSE_CLASS(geom,Range_O);
 
 };
 

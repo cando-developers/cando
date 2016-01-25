@@ -79,7 +79,7 @@ core::T_sp IntegerKeyObjectDictionary_O::getAndRemoveOrDefault(int ikey, core::T
 
 #if 0
 Render_sp	IntegerKeyObjectDictionary_O::rendered(core::Cons_sp opts)
-{_G();
+{
 DisplayList_sp	dl;
 Render_sp		dlOne;
 map<int,core::T_sp>::iterator	vi;
@@ -105,7 +105,7 @@ map<int,core::T_sp>::iterator	vi;
 
 
 string	IntegerKeyObjectDictionary_O::allKeys()
-{_G();
+{
 map<int,core::T_sp>::iterator	vi;
 stringstream		ss;
 
@@ -116,7 +116,7 @@ stringstream		ss;
 }
 
 core::Cons_sp IntegerKeyObjectDictionary_O::keysAsCons()
-{_G();
+{
     map<int,core::T_sp>::iterator	vi;
     stringstream		ss;
     core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::Cons_O>());
@@ -130,7 +130,7 @@ core::Cons_sp IntegerKeyObjectDictionary_O::keysAsCons()
 }
 
 core::Cons_sp IntegerKeyObjectDictionary_O::valuesAsCons()
-{_G();
+{
     map<int,core::T_sp>::iterator	vi;
     stringstream		ss;
     core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(), _Nil<core::Cons_O>());
@@ -144,7 +144,7 @@ core::Cons_sp IntegerKeyObjectDictionary_O::valuesAsCons()
 }
 
 string	IntegerKeyObjectDictionary_O::summary()
-{_G();
+{
 map<int,core::T_sp>::iterator	vi;
 stringstream		ss;
 
@@ -161,7 +161,7 @@ stringstream		ss;
 
 #if defined(XML_ARCHIVE)
 void	IntegerKeyObjectDictionary_O::archiveBase(ArchiveP node)
-{_G();
+{
     if ( node->saving() )
     { _BLOCK_TRACEF(BF("Saving IntegerKeyObjectDictionary - it contains %d objects") % this->_Map.size() );
 	if ( this->_Map.size() != 0 )
@@ -202,7 +202,7 @@ void	IntegerKeyObjectDictionary_O::archiveBase(ArchiveP node)
 
 #if defined(XML_ARCHIVE)
 void	IntegerKeyObjectDictionary_O::archive(ArchiveP node)
-{_G();
+{
     this->archiveBase(node);
 }
 #endif // defined(XML_ARCHIVE)
@@ -233,39 +233,9 @@ map<int,core::T_sp>::iterator	vi;
 
 
 
-    void IntegerKeyObjectDictionary_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<IntegerKeyObjectDictionary_O>()
-	.def("put",&IntegerKeyObjectDictionary_O::put)
-	.def("keys", &IntegerKeyObjectDictionary_O::keysAsList)
-	.def("valuesAsCons", &IntegerKeyObjectDictionary_O::valuesAsCons)
-	.def("allKeysAsString", &IntegerKeyObjectDictionary_O::allKeys)
-	.def("contains",&IntegerKeyObjectDictionary_O::contains)
-	.def("get",&IntegerKeyObjectDictionary_O::get)
-	.def("getOrDefault",&IntegerKeyObjectDictionary_O::getOrDefault)
-	.def("size",&IntegerKeyObjectDictionary_O::size)
-    ;
-}
 
 
 
-    void IntegerKeyObjectDictionary_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(GeomPkg,IntegerKeyObjectDictionary,"","",_lisp)
-	.def("__len__", &IntegerKeyObjectDictionary_O::size)
-	.def("__getitem__", &IntegerKeyObjectDictionary_O::get)
-	.def("keys", &IntegerKeyObjectDictionary_O::boost_keys)
-	.def("set",&IntegerKeyObjectDictionary_O::set)
-	.def("contains",&IntegerKeyObjectDictionary_O::contains)
-	.def("get",&IntegerKeyObjectDictionary_O::get)
-	.def("getOrDefault",&IntegerKeyObjectDictionary_O::getOrDefault)
-	.def("size",&IntegerKeyObjectDictionary_O::size)
-	;
-
-#endif //]
-}
 
 
-    EXPOSE_CLASS(geom, IntegerKeyObjectDictionary_O);
 };

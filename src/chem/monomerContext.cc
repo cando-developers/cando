@@ -32,7 +32,7 @@ namespace chem
 // Copy constructor
 //
     MonomerContext_O::MonomerContext_O(const MonomerContext_O& mc) : core::CxxObject_O(mc)
-    {_G();
+    {
 	NeighborMap::const_iterator	mi;
 	GC_COPY(EntityNameSetBase_O, temp , *mc._Self); // = RP_Copy<EntityNameSetBase_O>(mc._Self);
 	this->_Self = temp;
@@ -99,7 +99,7 @@ CL_DEFMETHOD     void	MonomerContext_O::addNeighbor( core::Symbol_sp cn, EntityN
 	NeighborMap::iterator mit,
 	SpecificContextSet_sp list,
 	SpecificContext_sp name )
-    {_G();
+    {
 	IMPLEMENT_ME(); // work with new Symbol names
 #if 0
 	NeighborMap::iterator mitNext;
@@ -147,7 +147,7 @@ CL_DEFMETHOD     void	MonomerContext_O::addNeighbor( core::Symbol_sp cn, EntityN
     void	MonomerContext_O::expandOuts(NeighborMap::iterator mit,
 					     adapt::StringSet_sp list,
 					     MCStringStack& name )
-    {_G();
+    {
 	IMPLEMENT_ME(); // work with new symbol based names
 #if 0
 	adapt::SymbolSet_O::iterator	it;
@@ -190,7 +190,7 @@ CL_DEFMETHOD     void	MonomerContext_O::addNeighbor( core::Symbol_sp cn, EntityN
 
 CL_LISPIFY_NAME("getKey");
 CL_DEFMETHOD core::Symbol_sp MonomerContext_O::getKey()
-    {_G();
+    {
 	stringstream	ss, si, so;
 	NeighborMap::iterator	ci;
 	ss << "!"
@@ -207,7 +207,7 @@ CL_DEFMETHOD core::Symbol_sp MonomerContext_O::getKey()
 
 CL_LISPIFY_NAME("getAllSpecificKeys");
 CL_DEFMETHOD     adapt::SymbolSet_sp	MonomerContext_O::getAllSpecificKeys()
-    {_G();
+    {
 	adapt::SymbolSet_sp	expandedList;
 	adapt::SymbolSet_sp	selfNames;
 	MCStringStack	name;
@@ -231,7 +231,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp	MonomerContext_O::getAllSpecificKeys()
 
 CL_LISPIFY_NAME("getAllSpecificContexts");
 CL_DEFMETHOD     SpecificContextSet_sp MonomerContext_O::getAllSpecificContexts()
-    {_G();
+    {
 	adapt::SymbolSet_sp	selfNames;
 	LOG(BF("Getting context strings for context: %s") % this->asXmlString().c_str()  );
 	SpecificContextSet_sp expandedList = SpecificContextSet_O::create();
@@ -252,7 +252,7 @@ CL_DEFMETHOD     SpecificContextSet_sp MonomerContext_O::getAllSpecificContexts(
 
 
 core::Symbol_sp MonomerContext_O::getFirstSpecificKey()
-    {_G();
+    {
 	adapt::StringSet_sp	selfNames;
 	adapt::StringSet_sp	inNames;
 	adapt::StringSet_sp	outNames;
@@ -276,7 +276,7 @@ core::Symbol_sp MonomerContext_O::getFirstSpecificKey()
  * contexts that testSub recognizes.
  */
     bool	MonomerContext_O::containsMonomerContext(MonomerContext_sp testSub)
-    {_G();
+    {
 	EntityNameSetBase_sp			testSubRecognizer;
 	adapt::SymbolSet_sp				monomerNames;
 	if ( !this->_Self->recognizesNameOrPdb(
@@ -314,7 +314,7 @@ core::Symbol_sp MonomerContext_O::getFirstSpecificKey()
 
 CL_LISPIFY_NAME("recognizesMonomerAndEnvironment");
 CL_DEFMETHOD     bool	MonomerContext_O::recognizesMonomerAndEnvironment(Monomer_sp mon)
-    {_G();
+    {
       IMPLEMENT_MEF(BF("Handle new symbol names and monomer couplings are supposed to be a multimap!!!!!!"));
 #if 0
 	NeighborMap::iterator	ti;
@@ -357,7 +357,7 @@ CL_DEFMETHOD     bool	MonomerContext_O::recognizesMonomerAndEnvironment(Monomer_
 
 CL_LISPIFY_NAME("setFocusFromMonomer");
 CL_DEFMETHOD     void	MonomerContext_O::setFocusFromMonomer(Monomer_sp mon)
-    {_G();
+    {
 	EntityNameSet_sp	ss;
 	ss = EntityNameSet_O::create();
 	LOG(BF("status") );
@@ -401,46 +401,7 @@ CL_DEFMETHOD     EntityNameSetBase_sp MonomerContext_O::getNeighbor(core::Symbol
 
 
 
-    void MonomerContext_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<MonomerContext_O>()
-	    .def("setFocusFromMonomer", &MonomerContext_O::setFocusFromMonomer)
-	    .def("getFocus", &MonomerContext_O::getFocus)
-	    .def("setFocus", &MonomerContext_O::setFocus)
-	    .def("addNeighbor", &MonomerContext_O::addNeighbor)
-	    .def("getAllSpecificKeys", &MonomerContext_O::getAllSpecificKeys)
-	    .def("getKey", &MonomerContext_O::getKey)
-	    .def("getAllSpecificContexts", &MonomerContext_O::getAllSpecificContexts)
-	    .def("recognizesMonomerAndEnvironment",&MonomerContext_O::recognizesMonomerAndEnvironment)
-	    .def("getPlugNames",&MonomerContext_O::getPlugNames)
-	    .def("getNeighbor",&MonomerContext_O::getNeighbor)
-	    ;
-    }
 
-    void MonomerContext_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,MonomerContext,"","",_lisp)
-	.def("setFocusFromMonomer", &MonomerContext_O::setFocusFromMonomer)
-	.def("getFocus", &MonomerContext_O::getFocus)
-	.def("setFocus", &MonomerContext_O::setFocus)
-	.def("addNeighbor", &MonomerContext_O::addNeighbor)
-	.def("description", &MonomerContext_O::description)
-	//	.def("getIn", &MonomerContext_O::boost_getIn)
-	//	.def("setIn", &MonomerContext_O::setIn)
-	//	.def("addOut", &MonomerContext_O::addOut)
-	//	.def("getOuts", &MonomerContext_O::boost_getOuts)
-	.def("getAllSpecificKeys", &MonomerContext_O::getAllSpecificKeys)
-	.def("getAllSpecificContexts", &MonomerContext_O::getAllSpecificContexts)
-	.def("getKey", &MonomerContext_O::getKey)
-	.def("recognizesMonomerAndEnvironment",&MonomerContext_O::recognizesMonomerAndEnvironment)
-	;
 
-//    boost::python::def("create_MonomerContext",&create_MonomerContext1);
-//    boost::python::def("create_MonomerContext",&create_MonomerContext2);
-#endif //]
-}
-
-    EXPOSE_CLASS(chem, MonomerContext_O );
 };
 

@@ -17,7 +17,7 @@ namespace units
     
 
     void Quantity_O::throwOnInvalidValue(core::T_sp obj)
-    {_G();
+    {
 	if ( obj.isA<core::Number_O>() ) return;
 	if ( obj.isA<geom::OVector3_O>() ) return;
 	if ( obj.isA<core::Array_O>() ) return;
@@ -26,7 +26,7 @@ namespace units
 
 
     core::T_sp Quantity_O::copyAndScaleValue(core::T_sp obj, double conversion)
-    {_G();
+    {
 	if ( obj.isA<core::DoubleFloat_O>() )
 	{
 	    core::DoubleFloat_sp rval = core::DoubleFloat_O::create(obj.as<core::DoubleFloat_O>()->get()*conversion);
@@ -49,7 +49,7 @@ namespace units
 
     core::T_sp Quantity_O::copyAndScaleValueElement(core::T_sp obj, uint index,
 						   double conversion)
-    {_G();
+    {
 	if ( obj.isA<core::Vector_O>() )
 	{
 	    core::Vector_sp vec = obj.as<core::Vector_O>();
@@ -61,7 +61,7 @@ namespace units
 
 
     core::T_sp Quantity_O::copyValueElement(core::T_sp obj, uint index)
-    {_G();
+    {
 	if ( obj.isA<core::Vector_O>() )
 	{
 	    core::Vector_sp vec = obj.as<core::Vector_O>();
@@ -75,7 +75,7 @@ namespace units
 
     void Quantity_O::setValueElement(core::T_sp obj, uint index,
 				     core::T_sp newVal)
-    {_G();
+    {
 	if ( obj.isA<core::Vector_O>() )
 	{
 	    core::Vector_sp vec = obj.as<core::Vector_O>();
@@ -88,7 +88,7 @@ namespace units
 
 
     uint Quantity_O::sizeOfValue(core::T_sp obj)
-    {_G();
+    {
 	if ( obj.isA<core::DoubleFloat_O>() )
 	{
 	    return 1;
@@ -106,7 +106,7 @@ namespace units
 
 
     bool Quantity_O::isnanValue(core::T_sp obj)
-    {_G();
+    {
 	if ( obj.isA<core::DoubleFloat_O>() )
 	{
           return clasp_float_nan_p(obj.as<core::DoubleFloat_O>());
@@ -126,7 +126,7 @@ namespace units
 
 
     Quantity_sp Quantity_O::create( core::T_sp obj, Unit_sp unit)
-    {_G();
+    {
       Quantity_sp q = Quantity_O::create();
 	Quantity_O::throwOnInvalidValue(obj);
 	q->_Value = obj;
@@ -147,7 +147,7 @@ Quantity_sp Quantity_O::create( double dbl, Unit_sp unit)
 
 CL_LISPIFY_NAME(make-quantity);
 CL_DEFUN Quantity_sp Quantity_O::make(core::T_sp val, Unit_sp unit)
-    {_G();
+    {
 	GC_ALLOCATE(Quantity_O,quant);
 	quant->_Value = val;
 	quant->_Unit = unit;
@@ -516,65 +516,10 @@ CL_DEFMETHOD     bool Quantity_O::operator>=(core::T_sp other) const
 
 
 
-    EXPOSE_CLASS(units,Quantity_O);
-
-    void Quantity_O::exposeCando(::core::Lisp_sp lisp)
-    {
-	::core::class_<Quantity_O>()
-//	.initArgs("(self)")
-//	    .def_raw("__init__",&Quantity_O::__init__,"(self units::value units::unit)")
-	    .def("quantity_is_compatible",&Quantity_O::is_compatible)
-	    .def("value_in_unit",&Quantity_O::value_in_unit)
-	    .def("setElement",&Quantity_O::setElement)
-	    .def("getElement_in_unit",&Quantity_O::getElement_in_unit)
-	    .def("rawValue",&Quantity_O::rawValue)
-	    .def("rawUnit",&Quantity_O::rawUnit)
-	    .def("rawAsString",&Quantity_O::rawAsString)
-	    .def("size",&Quantity_O::size)
-	    .def("*",&Quantity_O::operator*)
-	    .def("/",&Quantity_O::operator/)
-	    .def("+",&Quantity_O::operator+)
-	    .def("-",&Quantity_O::operator-)
-	    .def("power",&Quantity_O::power)
-	    .def("sqrt",&Quantity_O::sqrt)
-	    .def("isnan",&Quantity_O::isnan)
-	    .def("<",&Quantity_O::operator<)
-	    .def("<=",&Quantity_O::operator<=)
-	    .def(">",&Quantity_O::operator>)
-	    .def(">=",&Quantity_O::operator>=)
-	;
-//      core::af_def(UnitsPkg,"make-quantity",&Quantity_O::make);
-    }
 
 
 
-    void Quantity_O::exposePython(::core::Lisp_sp lisp)
-    {
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(UnitsPkg,Quantity,"","",lisp)
-//	.initArgs("(self)")
-	    .def("is_compatible",&Quantity_O::is_compatible)
-	    .def("value_in_unit",&Quantity_O::value_in_unit)
-	    .def("getElement_in_unit",&Quantity_O::getElement_in_unit)
-	    .def("setElement",&Quantity_O::setElement)
-	    .def("rawValue",&Quantity_O::rawValue)
-	    .def("rawUnit",&Quantity_O::rawUnit)
-	    .def("rawAsString",&Quantity_O::rawAsString)
-	    .def("size",&Quantity_O::size)
-	    .def("*",&Quantity_O::operator*)
-	    .def("/",&Quantity_O::operator/)
-	    .def("+",&Quantity_O::operator+)
-	    .def("-",&Quantity_O::operator-)
-	    .def("power",&Quantity_O::power)
-	    .def("sqrt",&Quantity_O::sqrt)
-	    .def("isnan",&Quantity_O::isnan)
-	    .def("<",&Quantity_O::operator<)
-	    .def("<=",&Quantity_O::operator<=)
-	    .def(">",&Quantity_O::operator>)
-	    .def(">=",&Quantity_O::operator>=)
-	;
-#endif
-    }
+
 
 
 

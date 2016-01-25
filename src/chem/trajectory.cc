@@ -16,25 +16,11 @@
 namespace chem {
 
 
-    EXPOSE_CLASS(chem,TrajectoryFrame_O);
-    EXPOSE_CLASS(chem,Trajectory_O);
 
 
 
 
-void TrajectoryFrame_O::exposeCando(core::Lisp_sp e)
-{
-    core::class_<TrajectoryFrame_O>()
-    ;
-}
 
-    void TrajectoryFrame_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,TrajectoryFrame,"","",_lisp)
-    ;
-#endif //]
-}
 
 #if INIT_TO_FACTORIES
 
@@ -42,7 +28,7 @@ void TrajectoryFrame_O::exposeCando(core::Lisp_sp e)
 #define DECL_TrajectoryFrame_O_make ""
 #define DOCS_TrajectoryFrame_O_make "make TrajectoryFrame"
   TrajectoryFrame_sp TrajectoryFrame_O::make()
-  {_G();
+  {
     IMPLEMENT_ME();
   };
 
@@ -95,18 +81,7 @@ void	TrajectoryFrame_O::initialize()
 }
 
 
-void Trajectory_O::exposeCando(core::Lisp_sp e)
-{
-    Trajectory_O::expose(core::class_<Trajectory_O>());
-}
 
-    void Trajectory_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,Trajectory,"","",_lisp)
-	    ;
-#endif //]
-}
 
 #if INIT_TO_FACTORIES
 
@@ -114,7 +89,7 @@ void Trajectory_O::exposeCando(core::Lisp_sp e)
 #define DECL_Trajectory_O_make ""
 #define DOCS_Trajectory_O_make "make Trajectory"
   Trajectory_sp Trajectory_O::make()
-  {_G();
+  {
     IMPLEMENT_ME();
   };
 
@@ -169,7 +144,7 @@ void	Trajectory_O::_setupAtomList(Matter_sp matter)
 
 CL_LISPIFY_NAME("addFrame");
 CL_DEFMETHOD TrajectoryFrame_sp Trajectory_O::addFrame(Matter_sp matter)
-{_G();
+{
     ASSERTP(matter == this->_Matter,"The matter argument must match the Matter used to define this trajectory");
     TrajectoryFrame_sp frame = TrajectoryFrame_O::create();
     frame->fillFromMatter(this->_AtomList);
@@ -180,21 +155,21 @@ CL_DEFMETHOD TrajectoryFrame_sp Trajectory_O::addFrame(Matter_sp matter)
 
 CL_LISPIFY_NAME("numberOfTrajectoryFrames");
 CL_DEFMETHOD uint Trajectory_O::numberOfTrajectoryFrames()
-{_G();
+{
     return this->_Frames.size();
 }
 
 
 CL_LISPIFY_NAME("getTrajectoryFrame");
 CL_DEFMETHOD TrajectoryFrame_sp Trajectory_O::getTrajectoryFrame(uint i)
-{_G();
+{
     ASSERT_lt(i,this->_Frames.size());
     return this->_Frames[i];
 }
 
 #if 0
 geom::Render_sp Trajectory_O::rendered(core::List_sp kargs)
-{_G();
+{
     geom::FrameList_sp frames = geom::FrameList_O::create();
     for ( gctools::Vec0<TrajectoryFrame_sp>::iterator it=this->_Frames.begin(); it!=this->_Frames.end(); it++ )
     {
@@ -207,7 +182,7 @@ geom::Render_sp Trajectory_O::rendered(core::List_sp kargs)
 
 CL_LISPIFY_NAME("applyTrajectoryFrameToMatter");
 CL_DEFMETHOD void Trajectory_O::applyTrajectoryFrameToMatter(TrajectoryFrame_sp f)
-{_G();
+{
     f->applyToMatter(this->_AtomList);
 }
 

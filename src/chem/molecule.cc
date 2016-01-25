@@ -103,7 +103,7 @@ Molecule_O::Molecule_O(const Molecule_O& mol)
 //	Add the residue to the end of the molecule
 //
 void Molecule_O::addResidue( Matter_sp r )
-{_G();
+{
   this->addMatter( r );
   LOG(BF("Added %s to %s") % r->description().c_str() % this->description().c_str()  );
 }
@@ -142,7 +142,7 @@ CL_DEFMETHOD void Molecule_O::removeResidue( Matter_sp a )
 }
 
     bool	Molecule_O::equal(core::T_sp obj) const
-    {_G();
+    {
       if ( this->eq(obj) ) return true;
       if ( Molecule_sp other = obj.asOrNull<Molecule_O>() ) {
 	if ( other->getName() != this->getName() ) return false;
@@ -158,7 +158,7 @@ CL_DEFMETHOD void Molecule_O::removeResidue( Matter_sp a )
       return false;
     }
     void Molecule_O::transferCoordinates(Matter_sp obj)
-    {_G();
+    {
 	if ( !obj.isA<Molecule_O>() ) 
 	{
 	    SIMPLE_ERROR(BF("You can only transfer coordinates to a Molecule from another Molecule"));
@@ -281,7 +281,7 @@ CL_DEFMETHOD     int	Molecule_O::numberOfResiduesWithName( MatterName name )
 
 CL_LISPIFY_NAME("getFirstResidueWithName");
 CL_DEFMETHOD     Residue_sp	Molecule_O::getFirstResidueWithName(MatterName name)
-    {_G();
+    {
 	VectorResidue residues = this->getResiduesWithName(name);
 	if ( residues.size() > 0 ) {
 	    return *(residues.begin());
@@ -293,7 +293,7 @@ CL_DEFMETHOD     Residue_sp	Molecule_O::getFirstResidueWithName(MatterName name)
 
 #ifdef RENDER
     geom::Render_sp	Molecule_O::rendered(core::List_sp opts)
-    {_G();
+    {
 	GrPickableMatter_sp	rend;
 	rend = GrPickableMatter_O::create();
 	rend->setFromMatter(this->sharedThis<Molecule_O>());
@@ -356,7 +356,7 @@ CL_DEFMETHOD     Residue_sp	Molecule_O::getFirstResidueWithName(MatterName name)
 CL_LAMBDA(&optional (name nil));
 CL_LISPIFY_NAME(make-molecule);
 CL_DEFUN Molecule_sp Molecule_O::make(MatterName name)
-{_G();
+{
     GC_ALLOCATE(Molecule_O,me);
     me->setName(name);
     return me;
@@ -364,44 +364,8 @@ CL_DEFUN Molecule_sp Molecule_O::make(MatterName name)
 
 
 
-    void Molecule_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<Molecule_O>()
-//	    .def_raw("core:__init__",&Molecule_O::__init__,"(self &key name)")
-	    .def("copy",&Molecule_O::copy,"","","",false)
-	    .def("firstResidue",&Molecule_O::firstResidue)
-	    .def("residueWithId",&Molecule_O::residueWithId)
-	    .def("hasResidueWithId",&Molecule_O::hasResidueWithId)
-	    .def("getResidue",&Molecule_O::getResidue)
-          .def("removeResidue",&Molecule_O::removeResidue)
-	    .def("residueCount",&Molecule_O::residueCount)
-	    .def("testMoleculeConsistancy",&Molecule_O::testMoleculeConsistancy)
-	    .def("moveAllAtomsIntoFirstResidue",&Molecule_O::moveAllAtomsIntoFirstResidue)
-	    .def("numberOfResiduesWithName",&Molecule_O::numberOfResiduesWithName)
-	    .def("getFirstResidueWithName",&Molecule_O::getFirstResidueWithName)
-	    ;
-//	Defun_maker(ChemPkg,Molecule);
-    }
-
-    void Molecule_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,Molecule,"","",_lisp)
-	    .def("copy",&Molecule_O::copy)
-	    .def("firstResidue",&Molecule_O::firstResidue)
-	    .def("residueWithId",&Molecule_O::residueWithId)
-	    .def("hasResidueWithId",&Molecule_O::hasResidueWithId)
-	    .def("getResidue",&Molecule_O::getResidue)
-	    .def("residueCount",&Molecule_O::residueCount)
-	    .def("testMoleculeConsistancy",&Molecule_O::testMoleculeConsistancy)
-	    .def("moveAllAtomsIntoFirstResidue",&Molecule_O::moveAllAtomsIntoFirstResidue)
-	    .def("numberOfResiduesWithName",&Molecule_O::numberOfResiduesWithName)
-	    .def("getFirstResidueWithName",&Molecule_O::getFirstResidueWithName)
-	    ;
-#endif
-    }
 
 
-    EXPOSE_CLASS(chem,Molecule_O);
+
 }; // namespace chem
 

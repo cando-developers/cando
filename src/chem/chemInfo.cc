@@ -35,7 +35,7 @@ public:
 #define DECL_af_depth ""
 #define DOCS_af_depth "depth"
 int af_depth(ChemInfoNode_sp n) {
-  _G();
+  
   if (n.nilp())
     return 0;
   return n->depth();
@@ -44,31 +44,31 @@ int af_depth(ChemInfoNode_sp n) {
 string sabToString(BondEnum sabType) {
   switch (sabType) {
   case SABNoBond:
-    return "";
+      return "";
   case SABSingleBond:
-    return "-";
+      return "-";
   case SABSingleOrAromaticBond:
-    return "";
+      return "";
   case SABDoubleOrAromaticBond:
-    return "=aromatic";
+      return "=aromatic";
   case SABDelocalizedBond:
-    return "deloc";
+      return "deloc";
   case SABDoubleBond:
-    return "=";
+      return "=";
   case SABTripleBond:
-    return "#";
+      return "#";
   case SABAromaticBond:
-    return ":";
+      return ":";
   case SABAnyBond:
-    return "~";
+      return "~";
   case SABDirectionalSingleUpOrUnspecified:
-    return "/?";
+      return "/?";
   case SABDirectionalSingleDownOrUnspecified:
-    return "\\?";
+      return "\\?";
   case SABDirectionalSingleUp:
-    return "/";
+      return "/";
   case SABDirectionalSingleDown:
-    return "\\";
+      return "\\";
   }
   return "{{unknownSabType}}";
 }
@@ -89,7 +89,7 @@ void ChemInfoMatch_O::fields(core::Record_sp node) {
 
 CL_LISPIFY_NAME("ChemInfoMatch-matches");
 CL_DEFMETHOD bool ChemInfoMatch_O::matches() {
-  _G();
+  
   return this->_Matches;
 }
 
@@ -99,24 +99,24 @@ string ChemInfoMatch_O::__repr__() const {
   ss << "( " << this->className();
   ss << " :TagLookup '(";
   this->_TagLookup->maphash([&ss](core::T_sp key, core::T_sp val) {
-                ss << (BF(":tag \"%s\" :value %s ) ") % _rep_(key) % _rep_(val) );
-  });
+      ss << (BF(":tag \"%s\" :value %s ) ") % _rep_(key) % _rep_(val) );
+    });
   ss << " ))";
   return ss.str();
 }
 
 void ChemInfoMatch_O::clearAtomTags() {
-  _G();
+  
   this->_TagLookup->clrhash();
 }
 
 bool ChemInfoMatch_O::recognizesAtomTag(core::Symbol_sp tag) {
-  _G();
+  
   return this->_TagLookup->contains(tag);
 }
 
 void ChemInfoMatch_O::defineAtomTag(Atom_sp a, core::Symbol_sp tag) {
-  _G();
+  
   this->_TagLookup->setf_gethash(tag, a);
   if (this->_TagLookup->hashTableCount() > this->_ClosestMatch->hashTableCount()) {
     this->_ClosestMatch = this->_TagLookup;
@@ -127,15 +127,15 @@ void ChemInfoMatch_O::throwIfInvalid() {
   _OF();
   gctools::SmallOrderedSet<Atom_sp> satoms;
   this->_TagLookup->mapHash([this, &satoms](core::Symbol_sp key, Atom_sp atom) {
-	    if ( satoms.count(atom) ) {
-		SIMPLE_ERROR(BF("The ChemInfoMatch is invalid - the matching algorithm or the SMARTS pattern match gave tags with the same atoms: %s") % this->__repr__() );
-	    }
-	    satoms.insert(atom);
-  });
+      if ( satoms.count(atom) ) {
+        SIMPLE_ERROR(BF("The ChemInfoMatch is invalid - the matching algorithm or the SMARTS pattern match gave tags with the same atoms: %s") % this->__repr__() );
+      }
+      satoms.insert(atom);
+    });
 }
 
 bool ChemInfoMatch_O::hasAtomWithTag(core::Symbol_sp tag) {
-  _G();
+  
   return this->_TagLookup->gethash(tag).notnilp();
 }
 
@@ -148,7 +148,7 @@ CL_DEFMETHOD gc::Nilable<Atom_sp> ChemInfoMatch_O::getAtomWithTagOrNil(core::Sym
 
 CL_LISPIFY_NAME("getAtomWithTag");
 CL_DEFMETHOD Atom_sp ChemInfoMatch_O::getAtomWithTag(core::Symbol_sp tag) {
-  _G();
+  
   core::T_mv tatom = this->_TagLookup->gethash(tag);
   if (tatom.nilp()) {
     SIMPLE_ERROR(BF("The ChemInfoMatch doesn't recognize tag[%s]\n"
@@ -165,23 +165,23 @@ void ChemInfoMatch_O::forgetAtomTag(core::Symbol_sp tag) {
 CL_LISPIFY_NAME("describeClosestMatch");
 CL_DEFMETHOD void ChemInfoMatch_O::describeClosestMatch() {
   this->_ClosestMatch->mapHash([](core::T_sp key, core::T_sp val) {
-          _lisp->print(BF("  tag(%s) = %s") % _rep_(key) % _rep_(val) );
-  });
+      _lisp->print(BF("  tag(%s) = %s") % _rep_(key) % _rep_(val) );
+    });
 }
 
 #if 0
-    BoundFrame_sp ChemInfoMatch_O::boundFrame()
-    {_G();
-	if ( !this->_Matches )
-	{
-	    SIMPLE_ERROR(BF("I cannot create a bound frame because there was no ChemInfo match"));
-	}
-	AtomBoundFrame_sp bound = AtomBoundFrame_O::create();
-	bound->set_oAtom(this->getAtomWithTag("1"));
-	bound->set_pAtom(this->getAtomWithTag("2"));
-	bound->set_qAtom(this->getAtomWithTag("3"));
-	return bound;
-    }
+BoundFrame_sp ChemInfoMatch_O::boundFrame()
+{
+  if ( !this->_Matches )
+  {
+    SIMPLE_ERROR(BF("I cannot create a bound frame because there was no ChemInfo match"));
+  }
+  AtomBoundFrame_sp bound = AtomBoundFrame_O::create();
+  bound->set_oAtom(this->getAtomWithTag("1"));
+  bound->set_pAtom(this->getAtomWithTag("2"));
+  bound->set_qAtom(this->getAtomWithTag("3"));
+  return bound;
+}
 #endif
 
 // ------- WildElementDict_O
@@ -297,7 +297,7 @@ void ChemInfo_O::defineTests(core::List_sp tests) {
 }
 CL_LISPIFY_NAME("compileAntechamber");
 CL_DEFMETHOD bool ChemInfo_O::compileAntechamber(const string &code, WildElementDict_sp dict) {
-  _G();
+  
   AntechamberRoot_sp root;
   LOG(BF("Compiling code: %s") % code.c_str());
   this->_Code = code;
@@ -319,7 +319,7 @@ CL_DEFMETHOD bool ChemInfo_O::compileAntechamber(const string &code, WildElement
 
 CL_LISPIFY_NAME("matches");
 CL_DEFMETHOD bool ChemInfo_O::matches(chem::Atom_sp a) {
-  _G();
+  
   ASSERTNOTNULL(this->_Root);
   if (this->_Root.nilp()) {
     SIMPLE_ERROR(BF("The ChemInfo root is nil!"));
@@ -336,7 +336,7 @@ CL_DEFMETHOD bool ChemInfo_O::matches(chem::Atom_sp a) {
   this->_Root->getMatch()->throwIfInvalid();
   this->_Root->getMatch()->setMatches(true);
   return true;
-FAIL:
+ FAIL:
   LOG(BF("FAIL"));
   this->_Root->getMatch()->setMatches(false);
   return false;
@@ -349,7 +349,7 @@ void ChemInfo_O::fields(core::Record_sp node) {
 
 CL_LISPIFY_NAME("getMatch");
 CL_DEFMETHOD ChemInfoMatch_sp ChemInfo_O::getMatch() {
-  _G();
+  
   ASSERTNOTNULL(this->_Root);
   ASSERT(this->_Root.notnilp());
   ASSERT(this->_Root->getMatch().notnilp());
@@ -448,22 +448,22 @@ string Logical_O::asSmarts() const {
   stringstream ss;
   switch (this->_Operator) {
   case logAlwaysTrue:
-    break;
+      break;
   case logIdentity:
-    ss << this->_Left->asSmarts();
-    break;
+      ss << this->_Left->asSmarts();
+      break;
   case logNot:
-    ss << "!" << this->_Left->asSmarts();
-    break;
+      ss << "!" << this->_Left->asSmarts();
+      break;
   case logHighPrecedenceAnd:
-    ss << this->_Left->asSmarts() << "&" << this->_Right->asSmarts();
-    break;
+      ss << this->_Left->asSmarts() << "&" << this->_Right->asSmarts();
+      break;
   case logLowPrecedenceAnd:
-    ss << this->_Left->asSmarts() << ";" << this->_Right->asSmarts();
-    break;
+      ss << this->_Left->asSmarts() << ";" << this->_Right->asSmarts();
+      break;
   case logOr:
-    ss << this->_Left->asSmarts() << "," << this->_Right->asSmarts();
-    break;
+      ss << this->_Left->asSmarts() << "," << this->_Right->asSmarts();
+      break;
   };
   return ss.str();
 }
@@ -533,7 +533,7 @@ bool Logical_O::matches(Root_sp root, chem::Atom_sp atom) {
 }
 
 bool Logical_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
-  _G();
+  
   LOG(BF("Logical match for bond: %s") % bond->describeOther(from));
   switch (this->_Operator) {
   case logAlwaysTrue:
@@ -541,34 +541,34 @@ bool Logical_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
       break;
   case logIdentity:
       ASSERT(this->_Left.notnilp());
-    if (this->_Left->matches(root, from, bond))
-      goto SUCCESS;
-    break;
+      if (this->_Left->matches(root, from, bond))
+        goto SUCCESS;
+      break;
   case logNot:
       ASSERT(this->_Left.notnilp());
-    if (!(this->_Left->matches(root, from, bond)))
-      goto SUCCESS;
-    break;
+      if (!(this->_Left->matches(root, from, bond)))
+        goto SUCCESS;
+      break;
   case logHighPrecedenceAnd:
   case logLowPrecedenceAnd:
       ASSERT(this->_Left.notnilp());
-    if (this->_Left->matches(root, from, bond) && this->_Right->matches(root, from, bond))
-      goto SUCCESS;
-    break;
+      if (this->_Left->matches(root, from, bond) && this->_Right->matches(root, from, bond))
+        goto SUCCESS;
+      break;
   case logOr:
       ASSERT(this->_Left.notnilp());
-    if (this->_Left->matches(root, from, bond) || this->_Right->matches(root, from, bond))
-      goto SUCCESS;
-    break;
+      if (this->_Left->matches(root, from, bond) || this->_Right->matches(root, from, bond))
+        goto SUCCESS;
+      break;
   default:
-    stringstream err;
-    err << "Unknown logical operator(" << this->_Operator << ")";
-    SIMPLE_ERROR(BF("%s") % err.str());
+      stringstream err;
+      err << "Unknown logical operator(" << this->_Operator << ")";
+      SIMPLE_ERROR(BF("%s") % err.str());
   }
   //FAIL:
   LOG(BF("FAIL"));
   return false;
-SUCCESS:
+ SUCCESS:
   LOG(BF("SUCCESS!!!"));
   return true;
 }
@@ -623,7 +623,7 @@ string TagSet_O::asSmarts() const {
 }
 
 bool TagSet_O::matches(Root_sp root, chem::Atom_sp atom) {
-  _G();
+  
   chem::Atom_sp ringStartAtom;
   SmartsRoot_sp smartsRoot;
   LOG(BF("TagSet match for atom: %s") % atom->description());
@@ -643,7 +643,7 @@ bool TagSet_O::matches(Root_sp root, chem::Atom_sp atom) {
   //SUCCESS:
   LOG(BF("SUCCESS!"));
   return true;
-FAIL:
+ FAIL:
   LOG(BF("FAIL"));
   return false;
 }
@@ -664,7 +664,7 @@ void RingTest_O::initialize() {
 }
 
 bool RingTest_O::matches(Root_sp root, chem::Atom_sp atom) {
-  _G();
+  
   chem::Atom_sp ringStartAtom;
   SmartsRoot_sp smartsRoot;
   LOG(BF("RingTest match for atom: %s") % atom->description().c_str());
@@ -691,10 +691,10 @@ bool RingTest_O::matches(Root_sp root, chem::Atom_sp atom) {
     LOG(BF("RING MATCH THEY DO!!!!"));
     goto SUCCESS;
   }
-FAIL:
+ FAIL:
   LOG(BF("FAIL"));
   return false;
-SUCCESS:
+ SUCCESS:
   LOG(BF("SUCCESS!"));
   return true;
 }
@@ -723,7 +723,7 @@ string ResidueTest_O::asSmarts() const {
 }
 
 bool ResidueTest_O::matches(Root_sp root, chem::Atom_sp atom) {
-  _G();
+  
   Atom_sp ringAtom;
   SmartsRoot_sp smartsRoot;
   LOG(BF("ResidueTest match for atom: %s") % atom->description().c_str());
@@ -758,10 +758,10 @@ bool ResidueTest_O::matches(Root_sp root, chem::Atom_sp atom) {
     LOG(BF("RESIDUE MATCH THEY DO!!!!"));
     goto SUCCESS;
   }
-FAIL:
+ FAIL:
   LOG(BF("FAIL"));
   return false;
-SUCCESS:
+ SUCCESS:
   LOG(BF("SUCCESS!"));
   return true;
 }
@@ -776,57 +776,57 @@ void ResidueTest_O::fields(core::Record_sp node) {
 // ------ BondTest
 
 bool _matchBondTypes(BondEnum be, chem::BondOrder bo) {
-  _G();
+  
   LOG(BF("bondOrder = %s") % bondOrderToString(bo).c_str());
   switch (be) {
   case SABSingleBond:
-    LOG(BF("SMARTS BondEnum = SABSingleBond"));
-    if (bo != chem::singleBond)
-      goto nomatch;
-    break;
+      LOG(BF("SMARTS BondEnum = SABSingleBond"));
+      if (bo != chem::singleBond)
+        goto nomatch;
+      break;
   case SABSingleOrAromaticBond:
-    LOG(BF("SMARTS BondEnum = SABSingleOrAromaticBond"));
-    if (!(bo == chem::singleBond || bo == chem::aromaticBond))
-      goto nomatch;
-    break;
+      LOG(BF("SMARTS BondEnum = SABSingleOrAromaticBond"));
+      if (!(bo == chem::singleBond || bo == chem::aromaticBond))
+        goto nomatch;
+      break;
   case SABDoubleOrAromaticBond:
-    LOG(BF("SMARTS BondEnum = SABDoubleOrAromaticBond"));
-    if (!(bo == chem::doubleBond || bo == chem::aromaticBond))
-      goto nomatch;
-    break;
+      LOG(BF("SMARTS BondEnum = SABDoubleOrAromaticBond"));
+      if (!(bo == chem::doubleBond || bo == chem::aromaticBond))
+        goto nomatch;
+      break;
   case SABDoubleBond:
-    LOG(BF("SMARTS BondEnum = SABDoubleBond"));
-    if (bo != chem::doubleBond)
-      goto nomatch;
-    break;
+      LOG(BF("SMARTS BondEnum = SABDoubleBond"));
+      if (bo != chem::doubleBond)
+        goto nomatch;
+      break;
   case SABTripleBond:
-    LOG(BF("SMARTS BondEnum = SABTriple"));
-    if (bo != chem::tripleBond)
-      goto nomatch;
-    break;
+      LOG(BF("SMARTS BondEnum = SABTriple"));
+      if (bo != chem::tripleBond)
+        goto nomatch;
+      break;
   case SABAromaticBond:
-    LOG(BF("SMARTS BondEnum = SABAromaticBond"));
-    if (bo != chem::aromaticBond)
-      goto nomatch;
-    break;
+      LOG(BF("SMARTS BondEnum = SABAromaticBond"));
+      if (bo != chem::aromaticBond)
+        goto nomatch;
+      break;
   case SABAnyBond:
-    break;
+      break;
   case SABDelocalizedBond:
-    goto nomatch;
-    break;
+      goto nomatch;
+      break;
   case SABDirectionalSingleDownOrUnspecified:
-    SIMPLE_ERROR(BF("Must implement SingleDirectionalDownOrUnspecified"));
+      SIMPLE_ERROR(BF("Must implement SingleDirectionalDownOrUnspecified"));
   case SABDirectionalSingleUpOrUnspecified:
-    SIMPLE_ERROR(BF("Must implement SingleDirectionalUpOrUnspecified"));
+      SIMPLE_ERROR(BF("Must implement SingleDirectionalUpOrUnspecified"));
   case SABDirectionalSingleUp:
   case SABDirectionalSingleDown:
-    SIMPLE_ERROR(BF("Must implement directional bonds"));
+      SIMPLE_ERROR(BF("Must implement directional bonds"));
   default:
-    goto nomatch;
+      goto nomatch;
   }
   LOG(BF("THEY MATCH!!"));
   return true;
-nomatch:
+ nomatch:
   LOG(BF("THEY DONT MATCH"));
   return false;
 }
@@ -845,7 +845,7 @@ string BondTest_O::asSmarts() const {
 }
 
 bool BondTest_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
-  _G();
+  
   LOG(BF("Checking bond: %s") % bond->describeOther(from));
   chem::BondOrder bo;
   bo = bond->getOrder();
@@ -853,10 +853,10 @@ bool BondTest_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
     goto FAIL;
   if (this->_AtomTest->matches(root, bond->getOtherAtom(from)))
     goto SUCCESS;
-FAIL:
+ FAIL:
   LOG(BF("FAIL!"));
   return false;
-SUCCESS:
+ SUCCESS:
   LOG(BF("SUCCESS!"));
   return true;
 }
@@ -878,29 +878,29 @@ void AtomTest_O::initialize() {
 }
 
 bool AtomTest_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
-  _G();
+  
   LOG(BF("AtomTest_O matching pattern: %s") % this->asSmarts());
   switch (this->_Test) {
   case SAPBondedToPrevious:
-    if (chem::_matchBondTypes((chem::BondEnum) this->_IntArg, bond->getOrder()))
-      goto SUCCESS;
-    goto FAIL;
+      if (chem::_matchBondTypes((chem::BondEnum) this->_IntArg, bond->getOrder()))
+        goto SUCCESS;
+      goto FAIL;
   case SAPNotBondedToPrevious:
-    if (!chem::_matchBondTypes((chem::BondEnum) this->_IntArg, bond->getOrder()))
-      goto SUCCESS;
-    goto FAIL;
+      if (!chem::_matchBondTypes((chem::BondEnum) this->_IntArg, bond->getOrder()))
+        goto SUCCESS;
+      goto FAIL;
   default:
     // Do nothing, fall through to the atom test below
-    break;
+      break;
   }
   // If its not a bond test then
   // test the To atom of the bond for the property
   if (this->matches(root, bond->getOtherAtom(from)))
     goto SUCCESS;
-FAIL:
+ FAIL:
   LOG(BF("FAIL"));
   return false;
-SUCCESS:
+ SUCCESS:
   LOG(BF("SUCCESS!"));
   return true;
 }
@@ -962,177 +962,177 @@ bool AtomTest_O::matches(Root_sp root, chem::Atom_sp atom) {
   LOG(BF("AtomTest match for atom: %s") % atom->description().c_str()); //
   switch (this->_Test) {
   case SAPWildCard:
-    LOG(BF("SAPWildCard")); //
-    goto SUCCESS;
+      LOG(BF("SAPWildCard")); //
+      goto SUCCESS;
   case SAPAromaticElement:
-    LOG(BF("SAPAromaticElement(%s) == expecting(%s)") % atom->getElementAsSymbol()->__repr__() % this->_SymbolArg->__repr__());
-    if (this->_SymbolArg == atom->getElementAsSymbol() && atom->isAromatic())
-      goto SUCCESS;
-    break;
+      LOG(BF("SAPAromaticElement(%s) == expecting(%s)") % atom->getElementAsSymbol()->__repr__() % this->_SymbolArg->__repr__());
+      if (this->_SymbolArg == atom->getElementAsSymbol() && atom->isAromatic())
+        goto SUCCESS;
+      break;
   case SAPElement:
-    LOG(BF("SAPElement(%s) == expecting(%s)") % atom->getElementAsSymbol()->__repr__() % this->_SymbolArg->__repr__());
-    if (this->_SymbolArg == atom->getElementAsSymbol())
-      goto SUCCESS;
-    break;
+      LOG(BF("SAPElement(%s) == expecting(%s)") % atom->getElementAsSymbol()->__repr__() % this->_SymbolArg->__repr__());
+      if (this->_SymbolArg == atom->getElementAsSymbol())
+        goto SUCCESS;
+      break;
   case SAPAliphatic:
-    LOG(BF("SAPAliphatic"));
-    if (!atom->isAromatic())
-      goto SUCCESS;
-    break;
+      LOG(BF("SAPAliphatic"));
+      if (!atom->isAromatic())
+        goto SUCCESS;
+      break;
   case SAPAromatic:
-    LOG(BF("SAPAromatic"));
-    if (atom->isAromatic())
-      goto SUCCESS;
-    break;
+      LOG(BF("SAPAromatic"));
+      if (atom->isAromatic())
+        goto SUCCESS;
+      break;
   case SAPLambda:
-    LOG(BF("SAPLambda<%s> testing %s") % this->_SymbolArg->__repr__() % atom->description());
-    if (root->evaluateTest(this->_SymbolArg, atom))
-      goto SUCCESS;
-    break;
+      LOG(BF("SAPLambda<%s> testing %s") % this->_SymbolArg->__repr__() % atom->description());
+      if (root->evaluateTest(this->_SymbolArg, atom))
+        goto SUCCESS;
+      break;
   case SAPAtomicNumber:
-    LOG(BF("SAPAtomicNumber(%d) == expecting(%d)") % atom->getAtomicNumber() % this->_IntArg);
-    if (this->_IntArg == atom->getAtomicNumber())
-      goto SUCCESS;
-    break;
+      LOG(BF("SAPAtomicNumber(%d) == expecting(%d)") % atom->getAtomicNumber() % this->_IntArg);
+      if (this->_IntArg == atom->getAtomicNumber())
+        goto SUCCESS;
+      break;
   case SAPTotalHCount:
-    hc = atom->getBondedHydrogenCount();
-    LOG(BF("SAPTotalHCount(%d) == expecting(%d)") % hc % this->_IntArg);
-    LOG(BF("Checking total hydrogen count looking for(%d) got(%d)") % this->_IntArg % hc);
-    if (this->_IntArg == hc) {
-      LOG(BF("Match")); //
-      goto SUCCESS;
-    }
-    LOG(BF("No match")); //
-    break;
+      hc = atom->getBondedHydrogenCount();
+      LOG(BF("SAPTotalHCount(%d) == expecting(%d)") % hc % this->_IntArg);
+      LOG(BF("Checking total hydrogen count looking for(%d) got(%d)") % this->_IntArg % hc);
+      if (this->_IntArg == hc) {
+        LOG(BF("Match")); //
+        goto SUCCESS;
+      }
+      LOG(BF("No match")); //
+      break;
   case SAPRingTest:
-    LOG(BF("SAPRingTest looking for tag: %s") % this->_StringArg);
-    if (!root->getMatch()->recognizesAtomTag(chemkw_intern(this->_StringArg))) {
-      SIMPLE_ERROR(BF("We are trying to test the atomTag (" + this->_StringArg + ") but it doesn't exist!"));
-    }
-    LOG(BF("      SAPRingTest check close")); //
-    ringStartAtom = root->getMatch()->getAtomWithTag(chemkw_intern(this->_StringArg));
-    LOG(BF("      checking if %s matches ringStart atom: %s") % atom->description().c_str() % ringStartAtom->description().c_str()); //
-    if (atom == ringStartAtom) {
-      LOG(BF("RING MATCH THEY DO!!!!")); //
-      goto SUCCESS;
-    }
-    break;
+      LOG(BF("SAPRingTest looking for tag: %s") % this->_StringArg);
+      if (!root->getMatch()->recognizesAtomTag(chemkw_intern(this->_StringArg))) {
+        SIMPLE_ERROR(BF("We are trying to test the atomTag (" + this->_StringArg + ") but it doesn't exist!"));
+      }
+      LOG(BF("      SAPRingTest check close")); //
+      ringStartAtom = root->getMatch()->getAtomWithTag(chemkw_intern(this->_StringArg));
+      LOG(BF("      checking if %s matches ringStart atom: %s") % atom->description().c_str() % ringStartAtom->description().c_str()); //
+      if (atom == ringStartAtom) {
+        LOG(BF("RING MATCH THEY DO!!!!")); //
+        goto SUCCESS;
+      }
+      break;
   case SAPResidueTest:
-    LOG(BF("SAPResidueTest looking for tag: %s") % this->_StringArg);
-    if (!root->getMatch()->recognizesAtomTag(chemkw_intern(this->_StringArg))) {
-      SIMPLE_ERROR(BF("We are trying to test the atomTag (" + this->_StringArg + ") but it doesn't exist!"));
-    }
-    LOG(BF("      SAPResidueTest check close")); //
-    ringStartAtom = root->getMatch()->getAtomWithTag(chemkw_intern(this->_StringArg));
-    LOG(BF("      checking if residue for %s matches residue for ringStart atom: %s") % atom->description().c_str() % ringStartAtom->description().c_str()); //
-    if (atom->containedBy() == ringStartAtom->containedBy()) {
-      LOG(BF("RESIDUE MATCH THEY DO!!!!"));
-      goto SUCCESS;
-    }
-    break;
+      LOG(BF("SAPResidueTest looking for tag: %s") % this->_StringArg);
+      if (!root->getMatch()->recognizesAtomTag(chemkw_intern(this->_StringArg))) {
+        SIMPLE_ERROR(BF("We are trying to test the atomTag (" + this->_StringArg + ") but it doesn't exist!"));
+      }
+      LOG(BF("      SAPResidueTest check close")); //
+      ringStartAtom = root->getMatch()->getAtomWithTag(chemkw_intern(this->_StringArg));
+      LOG(BF("      checking if residue for %s matches residue for ringStart atom: %s") % atom->description().c_str() % ringStartAtom->description().c_str()); //
+      if (atom->containedBy() == ringStartAtom->containedBy()) {
+        LOG(BF("RESIDUE MATCH THEY DO!!!!"));
+        goto SUCCESS;
+      }
+      break;
   case SAPAM1_BCC_x:
-    if (this->matchesAm1BccX(atom))
-      goto SUCCESS;
-    break;
+      if (this->matchesAm1BccX(atom))
+        goto SUCCESS;
+      break;
   case SAPAM1_BCC_y:
-    if (this->matchesAm1BccY(atom))
-      goto SUCCESS;
-    break;
+      if (this->matchesAm1BccY(atom))
+        goto SUCCESS;
+      break;
   case SAPNegativeCharge:       // next
   case SAPPositiveCharge:       // next
   case SAPNegativeFormalCharge: // next
   case SAPPositiveFormalCharge:
-    LOG(BF("SAPxxxxCharge")); //
-    if (this->_IntArg == atom->getIonization())
-      goto SUCCESS;
-    break;
+      LOG(BF("SAPxxxxCharge")); //
+      if (this->_IntArg == atom->getIonization())
+        goto SUCCESS;
+      break;
   case SAPRingMembershipCount:
-    LOG(BF("SAPRingMembershipCount")); //
-    if (this->_IntArg == atom->getRingMembershipCount())
-      goto SUCCESS;
-    break;
+      LOG(BF("SAPRingMembershipCount")); //
+      if (this->_IntArg == atom->getRingMembershipCount())
+        goto SUCCESS;
+      break;
   case SAPRingSize:
-    LOG(BF("SAPRingMembershipSize")); //
-    if (atom->inRingSize(this->_IntArg))
-      goto SUCCESS;
-    break;
+      LOG(BF("SAPRingMembershipSize")); //
+      if (atom->inRingSize(this->_IntArg))
+        goto SUCCESS;
+      break;
   case SAPValence:
-    LOG(BF("SAPRingValence"));
+      LOG(BF("SAPRingValence"));
     // total bond valence
     // each single bond counts 1
     // each double/aromatic bond counts 2
     // each triple bond counts 3
-    if (this->_IntArg == atom->getValence())
-      goto SUCCESS;
-    break;
+      if (this->_IntArg == atom->getValence())
+        goto SUCCESS;
+      break;
   case SAPConnectivity: // No implicit H's so Connectivity == Degree
   case SAPDegree:
-    LOG(BF("SAPDegree testing if atom->numberOfBonds(){%d} == this->_IntArg{%d}") % atom->numberOfBonds() % this->_IntArg);
-    if (this->_IntArg == atom->numberOfBonds())
-      goto SUCCESS;
-    break;
+      LOG(BF("SAPDegree testing if atom->numberOfBonds(){%d} == this->_IntArg{%d}") % atom->numberOfBonds() % this->_IntArg);
+      if (this->_IntArg == atom->numberOfBonds())
+        goto SUCCESS;
+      break;
   case SAPInBond:
-    LOG(BF("SAPInBond"));
-    cnt = 0;
-    for (int i = 0; i < atom->numberOfBonds(); i++) {
-      if (chem::_matchBondTypes((chem::BondEnum) this->_IntArg, atom->bondedOrder(i)))
-        cnt++;
-    }
-    if (cnt == this->_NumArg)
-      goto SUCCESS;
-    break;
+      LOG(BF("SAPInBond"));
+      cnt = 0;
+      for (int i = 0; i < atom->numberOfBonds(); i++) {
+        if (chem::_matchBondTypes((chem::BondEnum) this->_IntArg, atom->bondedOrder(i)))
+          cnt++;
+      }
+      if (cnt == this->_NumArg)
+        goto SUCCESS;
+      break;
   case SAPArLevel:
-    LOG(BF("SAPArLevel"));
-    switch (this->_IntArg) {
-    case 1:
-      if (atom->getMembershipAr1() != 0)
-        goto SUCCESS;
-      break;
-    case 2:
-      if (atom->getMembershipAr2() != 0)
-        goto SUCCESS;
-      break;
-    case 3:
-      if (atom->getMembershipAr3() != 0)
-        goto SUCCESS;
-      break;
-    case 4:
-      if (atom->getMembershipAr4() != 0)
-        goto SUCCESS;
-      break;
-    case 5:
-      if (atom->getMembershipAr5() != 0)
-        goto SUCCESS;
-      break;
-    }
-    goto FAIL;
+      LOG(BF("SAPArLevel"));
+      switch (this->_IntArg) {
+      case 1:
+          if (atom->getMembershipAr1() != 0)
+            goto SUCCESS;
+          break;
+      case 2:
+          if (atom->getMembershipAr2() != 0)
+            goto SUCCESS;
+          break;
+      case 3:
+          if (atom->getMembershipAr3() != 0)
+            goto SUCCESS;
+          break;
+      case 4:
+          if (atom->getMembershipAr4() != 0)
+            goto SUCCESS;
+          break;
+      case 5:
+          if (atom->getMembershipAr5() != 0)
+            goto SUCCESS;
+          break;
+      }
+      goto FAIL;
   case SAPNoRing:
-    LOG(BF("SAPNoRing"));
-    if (!atom->isInRing())
-      goto SUCCESS;
-    break;
+      LOG(BF("SAPNoRing"));
+      if (!atom->isInRing())
+        goto SUCCESS;
+      break;
   case SAPElectronegativeElement: // ( O, N, F, Cl, Br )
-    LOG(BF("SAPElectronegativeElement"));
-    if (atom->getElement() == element_O)
-      goto SUCCESS;
-    if (atom->getElement() == element_N)
-      goto SUCCESS;
-    if (atom->getElement() == element_F)
-      goto SUCCESS;
-    if (atom->getElement() == element_Cl)
-      goto SUCCESS;
-    if (atom->getElement() == element_Br)
-      goto SUCCESS;
-    break;
+      LOG(BF("SAPElectronegativeElement"));
+      if (atom->getElement() == element_O)
+        goto SUCCESS;
+      if (atom->getElement() == element_N)
+        goto SUCCESS;
+      if (atom->getElement() == element_F)
+        goto SUCCESS;
+      if (atom->getElement() == element_Cl)
+        goto SUCCESS;
+      if (atom->getElement() == element_Br)
+        goto SUCCESS;
+      break;
   default:
-    stringstream ss;
-    ss << "You must implement a test for: " << this->testName(this->_Test);
-    SIMPLE_ERROR(BF("%s") % ss.str());
+      stringstream ss;
+      ss << "You must implement a test for: " << this->testName(this->_Test);
+      SIMPLE_ERROR(BF("%s") % ss.str());
   }
-FAIL:
+ FAIL:
   LOG(BF("FAIL"));
   return false;
-SUCCESS:
+ SUCCESS:
   LOG(BF("SUCCESS!"));
   return true;
   //
@@ -1157,78 +1157,78 @@ string AtomTest_O::asSmarts() const {
   stringstream ss;
   switch (this->_Test) {
   case SAPWildCard:
-    ss << "*";
-    break;
+      ss << "*";
+      break;
   case SAPElement:
-    ss << this->_SymbolArg->symbolName();
-    break;
+      ss << this->_SymbolArg->symbolName();
+      break;
   case SAPAromaticElement: {
     string element = this->_SymbolArg->symbolNameAsString();
     ss << tolower(element[0]) << element.substr(1, 9999);
   } break;
   case SAPAromatic:
-    ss << "a";
-    break;
+      ss << "a";
+      break;
   case SAPAliphatic:
-    ss << "A";
-    break;
+      ss << "A";
+      break;
   case SAPLambda:
-    ss << "<" << this->_SymbolArg->symbolNameAsString() << ">";
-    break;
+      ss << "<" << this->_SymbolArg->symbolNameAsString() << ">";
+      break;
   case SAPAtomicNumber:
-    ss << "#" << this->_IntArg;
-    break;
+      ss << "#" << this->_IntArg;
+      break;
   case SAPTotalHCount:
-    ss << "H" << this->_IntArg;
-    break;
+      ss << "H" << this->_IntArg;
+      break;
   case SAPRingTest:
-    ss << "?" << this->_StringArg;
-    break;
+      ss << "?" << this->_StringArg;
+      break;
   case SAPResidueTest:
-    ss << "U" << this->_StringArg;
-    break;
+      ss << "U" << this->_StringArg;
+      break;
   case SAPAM1_BCC_x:
-    ss << "x";
-    break;
+      ss << "x";
+      break;
   case SAPAM1_BCC_y:
-    ss << "y";
-    break;
+      ss << "y";
+      break;
   case SAPNegativeCharge:       // next
   case SAPNegativeFormalCharge: // next
-    ss << this->_IntArg;
-    break;
+      ss << this->_IntArg;
+      break;
   case SAPPositiveCharge: // next
   case SAPPositiveFormalCharge:
-    ss << "+" << this->_IntArg;
-    break;
+      ss << "+" << this->_IntArg;
+      break;
   case SAPRingMembershipCount:
-    ss << "R" << this->_IntArg;
-    break;
+      ss << "R" << this->_IntArg;
+      break;
   case SAPRingSize:
-    ss << "r" << this->_IntArg;
-    break;
+      ss << "r" << this->_IntArg;
+      break;
   case SAPValence:
-    ss << "v" << this->_IntArg;
-    break;
+      ss << "v" << this->_IntArg;
+      break;
   case SAPConnectivity: // No implicit H's so Connectivity == Degree
   case SAPDegree:
-    ss << "X" << this->_IntArg;
-    break;
+      ss << "X" << this->_IntArg;
+      break;
   case SAPInBond:
-    ss << "{SAPInBond}";
-    break;
+      ss << "{SAPInBond}";
+      break;
   case SAPArLevel:
-    ss << "{SAPArLevel}";
-    break;
+      ss << "{SAPArLevel}";
+      break;
   case SAPNoRing:
-    ss << "{SAPNoRing}";
-    break;
+      ss << "{SAPNoRing}";
+      break;
   case SAPElectronegativeElement: // ( O, N, F, Cl, Br )
-    ss << "{SAPElectronegativeElement}";
-    break;
+      ss << "{SAPElectronegativeElement}";
+      break;
   default:
-    ss << "{UnknownTest-" << this->testName(this->_Test) << "}";
-    break;
+      ss << "{UnknownTest-" << this->testName(this->_Test) << "}";
+      break;
   }
   return ss.str();
 }
@@ -1277,7 +1277,7 @@ core::NullTerminatedEnumAssociation testEnum[] = {
     {"", -1}};
 
 string AtomTest_O::testName(AtomTestEnum test) const {
-  _G();
+  
   for (uint i = 0; testEnum[i]._Enum != -1; i++) {
     if (testEnum[i]._Enum == test) {
       return testEnum[i]._Key;
@@ -1348,7 +1348,7 @@ bool Chain_O::matches(Root_sp root, chem::Atom_sp from, chem::BondList_sp neighb
   //FAIL:
   LOG(BF("FAIL"));
   return false;
-SUCCESS:
+ SUCCESS:
   LOG(BF("SUCCESS!"));
   return true;
 }
@@ -1378,7 +1378,7 @@ string Branch_O::asSmarts() const {
 }
 
 uint Branch_O::depth() const {
-  _G();
+  
   return (MAX(af_depth(this->_Left), af_depth(this->_Right)));
 }
 
@@ -1422,7 +1422,7 @@ bool Branch_O::matches(Root_sp root, chem::Atom_sp from, chem::BondList_sp neigh
   //FAIL:
   LOG(BF("FAIL"));
   return false;
-SUCCESS:
+ SUCCESS:
   LOG(BF("SUCCESS!"));
   return true;
 }
@@ -1488,7 +1488,7 @@ string AntechamberFocusAtomMatch_O::asSmarts() const {
 }
 
 bool AntechamberFocusAtomMatch_O::matches(Root_sp root, chem::Atom_sp atom) {
-  _G();
+  
   chem::Atom_sp neighbor, nn;
   if (this->_AtomicNumber >= 0) {
     LOG(BF("Checking if atomic number(%d) == expected(%d)") % atom->getAtomicNumber() % this->_AtomicNumber);
@@ -1536,7 +1536,7 @@ bool AntechamberFocusAtomMatch_O::matches(Root_sp root, chem::Atom_sp atom) {
   //SUCCESS:
   LOG(BF("SUCCESS!"));
   return true;
-FAIL:
+ FAIL:
   LOG(BF("FAIL"));
   return false;
 }
@@ -1544,7 +1544,7 @@ FAIL:
 // ------- AntechamberBondTest
 
 bool AntechamberBondTest_O::matchBasic(AntechamberRoot_sp root, chem::Atom_sp atom) {
-  _G();
+  
   WildElementDict_sp dict;
   bool gotElement;
   dict = root->getElementWildCardDictionary();
@@ -1574,13 +1574,13 @@ bool AntechamberBondTest_O::matchBasic(AntechamberRoot_sp root, chem::Atom_sp at
   //SUCCESS:
   LOG(BF("SUCCESS!"));
   return true;
-FAIL:
+ FAIL:
   LOG(BF("FAIL"));
   return false;
 }
 
 bool AntechamberBondTest_O::matches(Root_sp root, chem::Atom_sp atom) {
-  _G();
+  
   AntechamberRoot_sp acRoot;
   if (root->type() != antechamberRoot) {
     SIMPLE_ERROR(BF("AntechamberBondTest::matches requires an AntechamberRoot"));
@@ -1590,10 +1590,10 @@ bool AntechamberBondTest_O::matches(Root_sp root, chem::Atom_sp atom) {
     goto FAIL;
   if (this->_AtomProperties->matches(acRoot, atom))
     goto SUCCESS;
-FAIL:
+ FAIL:
   LOG(BF("FAIL"));
   return false;
-SUCCESS:
+ SUCCESS:
   LOG(BF("SUCCESS!"));
   return true;
 }
@@ -1603,7 +1603,7 @@ string AntechamberBondTest_O::asSmarts() const {
 }
 
 bool AntechamberBondTest_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
-  _G();
+  
   AntechamberRoot_sp antechamberRoot;
   if (root->type() != chem::antechamberRoot) {
     stringstream ss;
@@ -1623,7 +1623,7 @@ bool AntechamberBondTest_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond
   //SUCCESS:
   LOG(BF("SUCCESS!"));
   return true;
-FAIL:
+ FAIL:
   LOG(BF("FAIL"));
   return false;
 }
@@ -1729,7 +1729,7 @@ bool Root_O::matches(Root_sp root, chem::Atom_sp atom) {
   //SUCCESS:
   LOG(BF("SUCCESS!!!"));
   return true;
-FAIL:
+ FAIL:
   LOG(BF("FAIL"));
   return false;
 }
@@ -1754,7 +1754,7 @@ bool SmartsRoot_O::matches(Root_sp root, chem::Atom_sp atom) {
   //SUCCESS:
   LOG(BF("SUCCESS!"));
   return true;
-FAIL:
+ FAIL:
   LOG(BF("FAIL"));
   return false;
 }
@@ -1778,7 +1778,7 @@ bool AntechamberRoot_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp 
 };
 
 bool AntechamberRoot_O::matches(Root_sp root, chem::Atom_sp atom) {
-  _G();
+  
   chem::BondList_sp nextBonds;
   bool matches;
   matches = false;
@@ -1796,23 +1796,23 @@ bool AntechamberRoot_O::matches(Root_sp root, chem::Atom_sp atom) {
   //SUCCESS:
   LOG(BF("SUCCESS!"));
   return true;
-FAIL:
+ FAIL:
   LOG(BF("FAIL"));
   return false;
 }
 
 #if 0
 #ifdef USEBOOSTPYTHON
-    void	ChemInfoErrorTranslator( const ChemInfoError& e ) {
-	char	error[1024];
-	stringstream	sstr;
-	sstr.str("");
-	sstr << "ChemInfo compile error " << e._Message << std::endl;
-	ASSERTNOTNULL(e._code);
-	sstr << e._code->compilerMessage() << std::endl;
-	sprintf( error, "%s", sstr.str().c_str() );
-	PyErr_SetString(PyExc_UserWarning, error );
-    }
+void	ChemInfoErrorTranslator( const ChemInfoError& e ) {
+  char	error[1024];
+  stringstream	sstr;
+  sstr.str("");
+  sstr << "ChemInfo compile error " << e._Message << std::endl;
+  ASSERTNOTNULL(e._code);
+  sstr << e._code->compilerMessage() << std::endl;
+  sprintf( error, "%s", sstr.str().c_str() );
+  PyErr_SetString(PyExc_UserWarning, error );
+}
 
 #endif
 #endif
@@ -1823,7 +1823,7 @@ FAIL:
 #define DECL_ChemInfo_O_make ""
 #define DOCS_ChemInfo_O_make "make ChemInfo"
 ChemInfo_sp ChemInfo_O::make(core::List_sp tests, const string &smarts) {
-  _G();
+  
   GC_ALLOCATE(ChemInfo_O, me);
   me->compileSmarts(smarts);
   me->defineTests(tests);
@@ -1855,127 +1855,143 @@ CL_DEFMETHOD string ChemInfo_O::asSmarts() const {
   return this->_Root->asSmarts();
 }
 
-void ChemInfoMatch_O::exposeCando(core::Lisp_sp lisp) {
-  core::class_<ChemInfoMatch_O>()
-      .def("ChemInfoMatch-matches", &ChemInfoMatch_O::matches)
-      .def("getAtomWithTag", &ChemInfoMatch_O::getAtomWithTag)
-      .def("getAtomWithTagOrNil", &ChemInfoMatch_O::getAtomWithTagOrNil)
-      .def("tag", &ChemInfoMatch_O::tag)
-      .def("describeClosestMatch", &ChemInfoMatch_O::describeClosestMatch);
-}
-void ChemInfoMatch_O::exposePython(core::Lisp_sp lisp) {
-  _G();
-#ifdef USEBOOSTPYTHON
-  PYTHON_CLASS(ChemPkg, ChemInfoMatch, "", "", _lisp)
-      .def("matches", &ChemInfoMatch_O::matches)
-      .def("getAtomWithTag", &ChemInfoMatch_O::getAtomWithTag)
-      .def("tag", &ChemInfoMatch_O::tag)
-      .def("describeClosestMatch", &ChemInfoMatch_O::describeClosestMatch);
-#endif
-}
 
-void WildElementDict_O::exposeCando(core::Lisp_sp lisp) {
-  core::class_<WildElementDict_O>()
-      .def("addWildName", &WildElementDict_O::addWildName)
-      .def("addWildNameMap", &WildElementDict_O::addWildNameMap);
-}
-void WildElementDict_O::exposePython(core::Lisp_sp lisp) {
-  _G();
-#ifdef USEBOOSTPYTHON
-  PYTHON_CLASS(ChemPkg, WildElementDict, "", "", _lisp)
-      .def("addWildName", &WildElementDict_O::addWildName)
-      .def("addWildNameMap", &WildElementDict_O::addWildNameMap)
-      //        .def("asXml",&WildElementDict_O::asXml)
-      ;
-#endif
-}
 
-void ChemInfo_O::exposeCando(core::Lisp_sp lisp) {
-  core::class_<ChemInfo_O>()
-      //	.def_raw("core:__init__",&ChemInfo_O::__init__,"(self &key smarts tests)")
-      .def("compileSmarts", &ChemInfo_O::compileSmarts)
-      .def("compileAntechamber", &ChemInfo_O::compileAntechamber)
-      .def("compileSucceeded", &ChemInfo_O::compileSucceeded)
-      .def("compilerMessage", &ChemInfo_O::compilerMessage)
-      .def("getMatch", &ChemInfo_O::getMatch)
-      .def("matches", &ChemInfo_O::matches)
-      .def("asSmarts", &ChemInfo_O::asSmarts)
-      .def("getCode", &ChemInfo_O::getCode, "", "", "", false);
+
 
   /*! Hold nodes for the Gaff and Msmarts parsers - rewrite these in Common Lisp */
-  SYMBOL_EXPORT_SC_(ChemPkg, STARparserNodeHolderSTAR );
+SYMBOL_EXPORT_SC_(ChemPkg, STARparserNodeHolderSTAR );
   
-  SYMBOL_SC_(ChemPkg, STARSabBondEnumConverterSTAR);
-  DECLARE_SYMBOL_TO_ENUM_CONVERTER(bondEnum, "SABBondEnum", ChemKwPkg, chem::_sym_STARSabBondEnumConverterSTAR);
+SYMBOL_EXPORT_SC_(KeywordPkg,SABNoBond);
+SYMBOL_EXPORT_SC_(KeywordPkg,SABSingleBond);
+SYMBOL_EXPORT_SC_(KeywordPkg,SABSingleOrAromaticBond);
+SYMBOL_EXPORT_SC_(KeywordPkg,SABDoubleOrAromaticBond);
+SYMBOL_EXPORT_SC_(KeywordPkg,SABDelocalizedBond);
+SYMBOL_EXPORT_SC_(KeywordPkg,SABDoubleBond);
+SYMBOL_EXPORT_SC_(KeywordPkg,SABTripleBond);
+SYMBOL_EXPORT_SC_(KeywordPkg,SABAromaticBond);
+SYMBOL_EXPORT_SC_(KeywordPkg,SABAnyBond);
+SYMBOL_EXPORT_SC_(KeywordPkg,SABDirectionalSingleUpOrUnspecified);
+SYMBOL_EXPORT_SC_(KeywordPkg,SABDirectionalSingleDownOrUnspecified);
+SYMBOL_EXPORT_SC_(KeywordPkg,SABDirectionalSingleUp);
+SYMBOL_EXPORT_SC_(KeywordPkg,SABDirectionalSingleDown);
+SYMBOL_EXPORT_SC_(ChemPkg,STARSabBondEnumConverterSTAR);
+CL_BEGIN_ENUM(BondEnum,_sym_STARSabBondEnumConverterSTAR,"SABBondEnum");
+CL_VALUE_ENUM(kw::_sym_SABNoBond, SABNoBond );
+CL_VALUE_ENUM(kw::_sym_SABSingleBond, SABSingleBond);
+CL_VALUE_ENUM(kw::_sym_SABSingleOrAromaticBond, SABSingleOrAromaticBond);
+CL_VALUE_ENUM(kw::_sym_SABDoubleOrAromaticBond, SABDoubleOrAromaticBond);
+CL_VALUE_ENUM(kw::_sym_SABDelocalizedBond, SABDelocalizedBond);
+CL_VALUE_ENUM(kw::_sym_SABDoubleBond, SABDoubleBond);
+CL_VALUE_ENUM(kw::_sym_SABTripleBond, SABTripleBond);
+CL_VALUE_ENUM(kw::_sym_SABAromaticBond, SABAromaticBond);
+CL_VALUE_ENUM(kw::_sym_SABAnyBond, SABAnyBond);
+CL_VALUE_ENUM(kw::_sym_SABDirectionalSingleUpOrUnspecified, SABDirectionalSingleUpOrUnspecified);
+CL_VALUE_ENUM(kw::_sym_SABDirectionalSingleDownOrUnspecified, SABDirectionalSingleDownOrUnspecified);
+CL_VALUE_ENUM(kw::_sym_SABDirectionalSingleUp, SABDirectionalSingleUp);
+CL_VALUE_ENUM(kw::_sym_SABDirectionalSingleDown, SABDirectionalSingleDown);
+CL_END_ENUM(_sym_STARSabBondEnumConverterSTAR);
 
-  SYMBOL_SC_(ChemPkg, STARLogicalOperatorTypeConverterSTAR);
-  core::SymbolToEnumConverter_sp logOpConverter = core::SymbolToEnumConverter_O::create("LogicalOperatorEnum", ChemKwPkg, logicalEnum, true);
-  chem::_sym_STARLogicalOperatorTypeConverterSTAR->defparameter(logOpConverter);
+SYMBOL_EXPORT_SC_(KeywordPkg,logAlwaysTrue);
+SYMBOL_EXPORT_SC_(KeywordPkg,logIdentity);
+SYMBOL_EXPORT_SC_(KeywordPkg,logNot);
+SYMBOL_EXPORT_SC_(KeywordPkg,logHighPrecedenceAnd);
+SYMBOL_EXPORT_SC_(KeywordPkg,logOr);
+SYMBOL_EXPORT_SC_(KeywordPkg,logLowPrecedenceAnd);
+SYMBOL_EXPORT_SC_(ChemPkg, STARLogicalOperatorTypeConverterSTAR);
+CL_BEGIN_ENUM(LogicalOperatorType,_sym_STARLogicalOperatorTypeConverterSTAR,"LogicalOperatorType");
+CL_VALUE_ENUM(kw::_sym_logAlwaysTrue, logAlwaysTrue);
+CL_VALUE_ENUM(kw::_sym_logIdentity,  logIdentity);
+CL_VALUE_ENUM(kw::_sym_logNot,  logNot);
+CL_VALUE_ENUM(kw::_sym_logHighPrecedenceAnd,  logHighPrecedenceAnd);
+CL_VALUE_ENUM(kw::_sym_logOr,  logOr);
+CL_VALUE_ENUM(kw::_sym_logLowPrecedenceAnd,  logLowPrecedenceAnd);
+CL_END_ENUM(_sym_STARLogicalOperatorTypeConverterSTAR);
 
-  SYMBOL_SC_(ChemPkg, STARAtomTestEnumConverterSTAR);
-  core::SymbolToEnumConverter_sp c = core::SymbolToEnumConverter_O::create("AtomTestEnum", ChemKwPkg, testEnum, true);
-  chem::_sym_STARAtomTestEnumConverterSTAR->defparameter(c);
-}
-void ChemInfo_O::exposePython(core::Lisp_sp lisp) {
-  _G();
-#ifdef USEBOOSTPYTHON
-  //    boost::python::register_exception_translator<ChemInfoError>(&ChemInfoErrorTranslator,_lisp);
-  //    boost::python::def( "create_ChemInfo", &create_ChemInfo );
-  PYTHON_CLASS(ChemPkg, ChemInfo, "", "", _lisp)
-      .def("compileSmarts", &ChemInfo_O::compileSmarts)
-      .def("compileAntechamber", &ChemInfo_O::compileAntechamber)
-      .def("compileSucceeded", &ChemInfo_O::compileSucceeded)
-      .def("compilerMessage", &ChemInfo_O::compilerMessage)
-      //	.def("recognizesAtomTag", &ChemInfo_O::recognizesAtomTag)
-      //	.def("getAtomWithTag", &ChemInfo_O::getAtomWithTag)
-      //	.def("treeAsXml", &ChemInfo_O::treeAsXml)
-      //	.def("parseFromXml", &ChemInfo_O::parseFromXml)
-      .def("matches", &ChemInfo_O::matches)
-      .def("compileSucceeded", &ChemInfo_O::compileSucceeded)
-      .def("compilerMessage", &ChemInfo_O::compilerMessage);
 
-  boost::python::def("chemInfoTypeString", &chemInfoTypeString);
-  boost::python::def("chemInfoTypeFromString", &chemInfoTypeFromString);
-  boost::python::enum_<ChemInfoType>("ChemInfoType")
-      .value("noType", noType)
-      .value("root", root)
-      .value("smartsRoot", smartsRoot)
-      .value("antechamberRoot", antechamberRoot)
-      .value("chain", chain)
-      .value("branch", branch)
-      .value("logical", logical)
-      .value("ringTest", ringTest)
-      .value("atomTest", atomTest)
-      .value("antechamberBondTest", antechamberBondTest)
-      .value("bondTest", bondTest)
-      .value("afterMatchBondTest", afterMatchBondTest)
-      .value("antechamberFocusAtomMatch", antechamberFocusAtomMatch);
-#endif
-}
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPNone);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPWildCard);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPDegree);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPElement);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPAromaticElement);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPAromatic);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPAliphatic);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPTotalHCount);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPImplicitHCount);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPRingTest);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPRingMembershipCount);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPRingSize);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPValence);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPConnectivity);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPNegativeCharge);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPNegativeFormalCharge);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPPositiveCharge);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPPositiveFormalCharge);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPAtomicNumber);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPChiralityAntiClockwise);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPChiralityClockwise);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPAtomicMass);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPLonePair);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPTotalBondNumber);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPTotalExplicitBondNumber);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPPiBondOrbital);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPAromaticPiElectron);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPHeavyAtomTotalBond);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPGroupNumber);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPElectronegativeElement);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPTransitionMetal);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPBondedToPrevious);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPNotBondedToPrevious);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPInBond);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPArLevel);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPNoRing);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPResidueTest);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPAM1_BCC_x);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPAM1_BCC_y);
+SYMBOL_EXPORT_SC_(KeywordPkg,SAPLambda);
+SYMBOL_EXPORT_SC_(ChemPkg, STARAtomTestEnumConverterSTAR);
+CL_BEGIN_ENUM(AtomTestEnum,_sym_STARAtomTestEnumConverterSTAR,"AtomTestEnum");
+CL_VALUE_ENUM(kw::_sym_SAPNone, SAPNone);
+CL_VALUE_ENUM(kw::_sym_SAPWildCard, SAPWildCard);
+CL_VALUE_ENUM(kw::_sym_SAPDegree, SAPDegree);
+CL_VALUE_ENUM(kw::_sym_SAPElement, SAPElement);
+CL_VALUE_ENUM(kw::_sym_SAPAromaticElement, SAPAromaticElement);
+CL_VALUE_ENUM(kw::_sym_SAPAromatic, SAPAromatic);
+CL_VALUE_ENUM(kw::_sym_SAPAliphatic, SAPAliphatic);
+CL_VALUE_ENUM(kw::_sym_SAPTotalHCount, SAPTotalHCount);
+CL_VALUE_ENUM(kw::_sym_SAPImplicitHCount, SAPImplicitHCount);
+CL_VALUE_ENUM(kw::_sym_SAPRingTest, SAPRingTest);
+CL_VALUE_ENUM(kw::_sym_SAPRingMembershipCount, SAPRingMembershipCount);
+CL_VALUE_ENUM(kw::_sym_SAPRingSize, SAPRingSize);
+CL_VALUE_ENUM(kw::_sym_SAPValence, SAPValence);
+CL_VALUE_ENUM(kw::_sym_SAPConnectivity, SAPConnectivity);
+CL_VALUE_ENUM(kw::_sym_SAPNegativeCharge, SAPNegativeCharge);
+CL_VALUE_ENUM(kw::_sym_SAPNegativeFormalCharge, SAPNegativeFormalCharge);
+CL_VALUE_ENUM(kw::_sym_SAPPositiveCharge, SAPPositiveCharge);
+CL_VALUE_ENUM(kw::_sym_SAPPositiveFormalCharge, SAPPositiveFormalCharge);
+CL_VALUE_ENUM(kw::_sym_SAPAtomicNumber, SAPAtomicNumber);
+CL_VALUE_ENUM(kw::_sym_SAPChiralityAntiClockwise, SAPChiralityAntiClockwise);
+CL_VALUE_ENUM(kw::_sym_SAPChiralityClockwise, SAPChiralityClockwise);
+CL_VALUE_ENUM(kw::_sym_SAPAtomicMass, SAPAtomicMass);
+CL_VALUE_ENUM(kw::_sym_SAPLonePair, SAPLonePair);
+CL_VALUE_ENUM(kw::_sym_SAPTotalBondNumber, SAPTotalBondNumber);
+CL_VALUE_ENUM(kw::_sym_SAPTotalExplicitBondNumber, SAPTotalExplicitBondNumber);
+CL_VALUE_ENUM(kw::_sym_SAPPiBondOrbital, SAPPiBondOrbital);
+CL_VALUE_ENUM(kw::_sym_SAPAromaticPiElectron, SAPAromaticPiElectron);
+CL_VALUE_ENUM(kw::_sym_SAPHeavyAtomTotalBond, SAPHeavyAtomTotalBond);
+CL_VALUE_ENUM(kw::_sym_SAPGroupNumber, SAPGroupNumber);
+CL_VALUE_ENUM(kw::_sym_SAPElectronegativeElement, SAPElectronegativeElement);
+CL_VALUE_ENUM(kw::_sym_SAPTransitionMetal, SAPTransitionMetal);
+CL_VALUE_ENUM(kw::_sym_SAPBondedToPrevious, SAPBondedToPrevious);
+CL_VALUE_ENUM(kw::_sym_SAPNotBondedToPrevious, SAPNotBondedToPrevious);
+CL_VALUE_ENUM(kw::_sym_SAPInBond, SAPInBond);
+CL_VALUE_ENUM(kw::_sym_SAPArLevel, SAPArLevel);
+CL_VALUE_ENUM(kw::_sym_SAPNoRing, SAPNoRing);
+CL_VALUE_ENUM(kw::_sym_SAPResidueTest, SAPResidueTest);
+CL_VALUE_ENUM(kw::_sym_SAPAM1_BCC_x, SAPAM1_BCC_x);
+CL_VALUE_ENUM(kw::_sym_SAPAM1_BCC_y, SAPAM1_BCC_y);
+CL_VALUE_ENUM(kw::_sym_SAPLambda, SAPLambda);
+CL_END_ENUM(_sym_STARAtomTestEnumConverterSTAR);
 
-REGISTER_CLASS(chem, RootMatchNode_O);       // abstract type
-REGISTER_CLASS(chem, BondMatchNode_O);       // abstract type
-REGISTER_CLASS(chem, AtomOrBondMatchNode_O); // abstract type
-REGISTER_CLASS(chem, BondListMatchNode_O);
-REGISTER_CLASS(chem, Logical_O);
-REGISTER_CLASS(chem, TagSet_O);
-REGISTER_CLASS(chem, RingTest_O);
-REGISTER_CLASS(chem, ResidueTest_O);
-REGISTER_CLASS(chem, BondTest_O);
-REGISTER_CLASS(chem, AntechamberBondTest_O);
-REGISTER_CLASS(chem, AtomTest_O);
-REGISTER_CLASS(chem, AntechamberFocusAtomMatch_O);
-REGISTER_CLASS(chem, Chain_O);
-REGISTER_CLASS(chem, Branch_O);
-REGISTER_CLASS(chem, AfterMatchBondTest_O);
-REGISTER_CLASS(chem, Root_O);
-REGISTER_CLASS(chem, SmartsRoot_O);
-REGISTER_CLASS(chem, AntechamberRoot_O);
-REGISTER_CLASS(chem, ChemInfoNode_O);
-REGISTER_CLASS(chem, ResidueList_O);
-
-EXPOSE_CLASS(chem, ChemInfo_O);
-EXPOSE_CLASS(chem, WildElementDict_O);
-EXPOSE_CLASS(chem, ChemInfoMatch_O);
 
 }; // namespace chem

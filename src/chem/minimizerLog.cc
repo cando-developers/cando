@@ -11,11 +11,6 @@
 
 namespace chem {
 
-    REGISTER_CLASS(chem,ReportBase_O);
-    REGISTER_CLASS(chem,StepReport_O);
-    REGISTER_CLASS(chem,MessageReport_O);
-    REGISTER_CLASS(chem,ForceMatchReport_O);
-    REGISTER_CLASS(chem,MinimizerLog_O);
 
     void ReportBase_O::initialize()
     {_OF();
@@ -25,14 +20,14 @@ namespace chem {
 
 #ifdef XML_ARCHIVE
     void	ReportBase_O::archiveBase(core::ArchiveP node)
-{_G();
+{
     node->attribute("time",this->_Time);
 }
 #endif
 
 #ifdef XML_ARCHIVE
     void	MessageReport_O::archive(core::ArchiveP node)
-{_G();
+{
     this->archiveBase(node);
     node->archiveString("message",this->_Message);
 }
@@ -40,7 +35,7 @@ namespace chem {
 
 #ifdef XML_ARCHIVE
     void	ForceMatchReport_O::archive(core::ArchiveP node)
-{_G();
+{
     this->archiveBase(node);
     node->archiveString("message",this->_Message);
     node->attribute("analyticalForce",this->_AnalyticalForce);
@@ -70,7 +65,7 @@ void	StepReport_O::initialize()
 
 #ifdef XML_ARCHIVE
     void	StepReport_O::archive(core::ArchiveP node)
-{_G();
+{
     this->archiveBase(node);
     node->attribute("_Iteration",this->_Iteration);
     LOG(BF("Status") );
@@ -156,7 +151,7 @@ void	StepReport_O::initialize()
 
 #ifdef XML_ARCHIVE
     void	MinimizerLog_O::archive(core::ArchiveP node)
-{_G();
+{
     node->attribute( "_Minimizer",this->_Minimizer );
     node->archiveVector0( "_Reports",this->_Reports );
 }

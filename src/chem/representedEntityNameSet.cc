@@ -55,25 +55,25 @@ namespace chem
 
 CL_LISPIFY_NAME("getRepresentative");
 CL_DEFMETHOD     core::Symbol_sp	RepresentedEntityNameSet_O::getRepresentative()
-    {_G();
+    {
 	return this->_Representative;
     }
 
 CL_LISPIFY_NAME("setRepresentative");
 CL_DEFMETHOD     void	RepresentedEntityNameSet_O::setRepresentative(core::Symbol_sp cc )
-    {_G();
+    {
 	this->_Representative = cc;
     }
 
 CL_LISPIFY_NAME("hasRepresentative");
 CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
-    {_G();
+    {
 	return this->_Representative.notnilp();
     }
 
 #if 0
     RepresentedEntityNameSet_sp RepresentedEntityNameSet_O::asUnexpandedRepresentedEntityNameSet()
-    {_G();
+    {
 	GC_COPY(RepresentedEntityNameSet_O, newGroup, this->sharedThis<RepresentedEntityNameSet_O>() ); // = RP_Copy<RepresentedEntityNameSet_O>(this->sharedThis<RepresentedEntityNameSet_O>());
 	newGroup->_ContainedNames = adapt::StringSet_O::create();
 	newGroup->_ContainedNames->insert(this->_Name);
@@ -85,7 +85,7 @@ CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
 
 #ifdef XML_ARCHIVE
     void	RepresentedEntityNameSet_O::archiveBase(core::ArchiveP node)
-    {_G();
+    {
 	this->Base::archiveBase(node);
 	node->attributeIfNotNil("representative", this->_Representative);
     }
@@ -124,7 +124,7 @@ CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
 #define DECL_RepresentedEntityNameSet_O_make ""
 #define DOCS_RepresentedEntityNameSet_O_make "make RepresentedEntityNameSet"
   RepresentedEntityNameSet_sp RepresentedEntityNameSet_O::make(core::Symbol_sp representativeName)
-  {_G();
+  {
       GC_ALLOCATE(RepresentedEntityNameSet_O, me );
     me->_Representative = representativeName;
     return me;
@@ -133,7 +133,7 @@ CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
 #else
 
     core::T_sp RepresentedEntityNameSet_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 	this->Base::__init__(exec,args,env,lisp);
 	this->_Representative = translate::from_object<core::Symbol_O>::convert(env->lookup(Pkg(),"representativeName"));
 	return _Nil<core::T_O>();
@@ -143,33 +143,9 @@ CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
 
 
 
-    void RepresentedEntityNameSet_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<RepresentedEntityNameSet_O>()
-//	    .def_raw("core:__init__",&RepresentedEntityNameSet_O::__init__,"(self &key name entityNames optional representativeName )") // inherited from EntityNameSet_O.initArgs()
-	    .def("setRepresentative",&RepresentedEntityNameSet_O::setRepresentative)
-	    .def("getRepresentative",&RepresentedEntityNameSet_O::getRepresentative)
-	    .def("hasRepresentative",&RepresentedEntityNameSet_O::hasRepresentative)
-	    .def("testRepresentedEntityNameSet",&RepresentedEntityNameSet_O::testRepresentedEntityNameSet)
-//	.def("asUnexpandedRepresentedEntityNameSet", &RepresentedEntityNameSet_O::asUnexpandedRepresentedEntityNameSet)
-	    ;
-    }
-
-    void RepresentedEntityNameSet_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,RepresentedEntityNameSet,"","",_lisp)
-	    .def("setRepresentative",&RepresentedEntityNameSet_O::setRepresentative)
-	    .def("getRepresentative",&RepresentedEntityNameSet_O::getRepresentative)
-	    .def("hasRepresentative",&RepresentedEntityNameSet_O::hasRepresentative)
-	    .def("testRepresentedEntityNameSet",&RepresentedEntityNameSet_O::testRepresentedEntityNameSet)
-//	.def("asUnexpandedRepresentedEntityNameSet", &RepresentedEntityNameSet_O::asUnexpandedRepresentedEntityNameSet)
-	    ;
-#endif
-    }
 
 
-    EXPOSE_CLASS(chem, RepresentedEntityNameSet_O);
+
 
 }; // namespace chem
 

@@ -42,19 +42,19 @@ CL_DEFUN OMatrix_sp OMatrix_O::make(bool identity)
 
 CL_LISPIFY_NAME("setFromString");
 CL_DEFMETHOD     void	OMatrix_O::setFromString(const string& s)
-    {_G();
+    {
 	this->_Value.setFromString(s);
     }
 
 #if 0
     void	OMatrix_O::setFromStringFast(const string& s)
-    {_G();
+    {
 	this->_Value.setFromStringFast(s);
     }
 #endif
 
     void	OMatrix_O::setAll(const Matrix& m)
-    {_G();
+    {
 	this->_Value.setAll(m);
     }
 
@@ -79,19 +79,19 @@ CL_DEFMETHOD     void OMatrix_O::rotationZ(double radians) { this->_Value.rotati
 
 
     OMatrix_sp OMatrix_O::clone() const
-    {_G();
+    {
 	GC_COPY(OMatrix_O,clone,*this);
 	return clone;
     }
 
     Matrix OMatrix_O::mul(const Matrix& other) const
-    {_G();
+    {
 	Matrix res = this->_Value*other;
 	return res;
     };
 
     Vector3 OMatrix_O::mul(const Vector3& vec) const
-    {_G();
+    {
 	Vector3 res = this->_Value*vec;
 	return res;
     }
@@ -114,52 +114,8 @@ void OMatrix_O::decode(core::List_sp c) {
 
 
 
-    void OMatrix_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<OMatrix_O>()
-	    .def("setToIdentity",&OMatrix_O::setToIdentity)
-	    .def("setToIndexAsValue",&OMatrix_O::setToIndexAsValue)
-	    .def("asString",&OMatrix_O::asString)
-//	.def("asStringFast",&OMatrix_O::asStringFast)
-	    .def("setFromString",&OMatrix_O::setFromString)
-//	.def("setFromStringFast",&OMatrix_O::setFromStringFast)
-	    .def("translate",&OMatrix_O::translate)
-	    .def("rotationX",&OMatrix_O::rotationX)
-	    .def("rotationY",&OMatrix_O::rotationY)
-	    .def("rotationZ",&OMatrix_O::rotationZ)
-	    .def("atRowColPut",&OMatrix_O::atRowColPut)
-	    .def("atRowColGet",&OMatrix_O::atRowColGet)
-	    .def("extract3x3",&OMatrix_O::extract3x3)
-	    .def("transposed3x3",&OMatrix_O::transposed3x3)
-	    .def("is3x3Orthogonal",&OMatrix_O::is3x3Orthogonal)
-	    ;
-//        core::af_def(GeomPkg,"make-omatrix",&OMatrix_O::make);
-    }
 
-    void OMatrix_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(CorePkg,OMatrix,"","",_lisp)
-	    .def("setToIdentity",&OMatrix_O::setToIdentity)
-	    .def("setToIndexAsValue",&OMatrix_O::setToIndexAsValue)
-	    .def("asString",&OMatrix_O::asString)
-//	.def("asStringFast",&OMatrix_O::asStringFast)
-	    .def("setFromString",&OMatrix_O::setFromString)
-//	.def("setFromStringFast",&OMatrix_O::setFromStringFast)
-	    .def("translate",&OMatrix_O::translate)
-	    .def("rotationX",&OMatrix_O::rotationX)
-	    .def("rotationY",&OMatrix_O::rotationY)
-	    .def("rotationZ",&OMatrix_O::rotationZ)
-	    .def("atRowColPut",&OMatrix_O::atRowColPut)
-	    .def("atRowColGet",&OMatrix_O::atRowColGet)
-	    .def("extract3x3",&OMatrix_O::extract3x3)
-	    .def("transposed3x3",&OMatrix_O::transposed3x3)
-	    .def("is3x3Orthogonal",&OMatrix_O::is3x3Orthogonal)
-	    ;
-#endif
-    }
 
-    EXPOSE_CLASS(geom,OMatrix_O);
 
 };
 

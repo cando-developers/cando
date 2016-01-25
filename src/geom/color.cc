@@ -43,23 +43,11 @@ namespace geom
     SYMBOL_EXPORT_SC_(KeywordPkg,steelBlue);
 
 
-    void Color_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<Color_O>()
-    ;
-}
 
-    void Color_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(CorePkg,Color,"","",_lisp)
-    ;
-#endif
-}
 
 
 void initialize_colors()
-{_G();
+{
   core::HashTableEq_sp colorTable = core::HashTableEq_O::create_default();
   SYMBOL_EXPORT_SC_(GeomPkg,colorTable);
   _lisp->defvar(_sym_colorTable,colorTable);
@@ -179,7 +167,7 @@ void Color_O::initialize()
 
 #ifdef XML_ARCHIVE
 void	Color_O::archiveBase(core::ArchiveP node)
-{_G();
+{
     this->Base::archiveBase(node);
     if ( node->loading() )
     {
@@ -248,7 +236,7 @@ uint	ir, ig, ib;
 
 
     void	Color_O::setColorName(core::Symbol_sp name)
-{_G();
+{
     LOG(BF("Setting color name to %s")% name->__repr__() );
     this->_ColorName = name;
 }
@@ -284,28 +272,27 @@ core::ubyte Color_O::getAlphaByte()
     }
 
 double	Color_O::getRed()
-{_G();
+{
     uint ic = this->getRedByte();
     double dc = ic/255.0;
     return dc;
 }
 
 double	Color_O::getGreen()
-{_G();
+{
     uint ic = this->getGreenByte();
     double dc = ic/255.0;
     return dc;
 }
 
 double	Color_O::getBlue()
-{_G();
+{
     uint ic = this->getBlueByte();
     double dc = ic/255.0;
     return dc;
 }
 
 
-EXPOSE_CLASS(geom,Color_O);
 
 };
 

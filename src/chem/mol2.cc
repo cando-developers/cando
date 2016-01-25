@@ -246,7 +246,7 @@ void	_calculateElementAndHybridization(Atom_sp a)
 
 
 void	mol2ReadAggregateFromFileName( Aggregate_sp aggregate, core::T_sp sFileName )
-{_G();
+{
     string				line;
     TriposMolecule			mol;
     vector<TriposMolecule>		molecules;
@@ -571,7 +571,7 @@ void	mol2ReadAggregateFromFileName( Aggregate_sp aggregate, core::T_sp sFileName
 
 
 void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSybylTypes )
-{_G();
+{
 Loop		loop, lRes;
 uint		atomCount, bondCount, residueCount;
 Atom_sp		a1, a2, a;
@@ -745,7 +745,7 @@ void	mol2WriteAggregateToFileName( Aggregate_sp agg, core::T_sp fname, bool useS
 
 
 void	mol2WriteMatterToFileName(Matter_sp matter, core::T_sp fileName, bool useSybylTypes )
-{_G();
+{
   if ( Aggregate_sp agg = matter.asOrNull<Aggregate_O>() ) {
     mol2WriteAggregateToFileName(agg,fileName,useSybylTypes);
     return;
@@ -762,7 +762,7 @@ void	mol2WriteMatterToFileName(Matter_sp matter, core::T_sp fileName, bool useSy
 
 
 void	initialize_mol2_type_rules()
-{_G();
+{
   LOG(BF("Initializing sybyl types") );
   GC_ALLOCATE(chem::WildElementDict_O,wilds);
 	// WILDATOM XX C N O S P

@@ -22,25 +22,8 @@ namespace kinematics
 
 
 
-    EXPOSE_CLASS(kinematics,MonomerId_O);
 
-    void MonomerId_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<MonomerId_O>()
-//	    .def_raw("__init__",&MonomerId_O::__init__,"(self &key (chain -1) (monomer -1) )")
-	    .def("asString",&MonomerId_O::asString)
-	    ;
-    }
 
-    void MonomerId_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,MonomerId,"","",_lisp)
-//	    .def_raw("__init__",&"(self &key (chain -1) (monomer -1) )")
-	    .def("asString",&MonomerId_O::asString)
-	    ;
-#endif
-    }
 
 #if INIT_TO_FACTORIES
 
@@ -48,7 +31,7 @@ namespace kinematics
 #define DECL_MonomerId_O_make ""
 #define DOCS_MonomerId_O_make "make MonomerId"
   MonomerId_sp MonomerId_O::make(const int chain, const int monomer)
-    {_G();
+    {
 	GC_ALLOCATE(MonomerId_O, me );
       me->_MonomerId._Chain = chain;
       me->_MonomerId._Monomer = monomer;

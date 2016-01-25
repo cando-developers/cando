@@ -15,37 +15,14 @@
 namespace chem
 {
 
-    EXPOSE_CLASS(chem,StereoisomerAtom_O);
 
-    void StereoisomerAtom_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<StereoisomerAtom_O>()
-	    .def("atomName",&StereoisomerAtom_O::atomName)
-	    .def("setCharge",&StereoisomerAtom_O::setCharge)
-	    .def("getCharge",&StereoisomerAtom_O::getCharge)
-	    .def("setAtomType",&StereoisomerAtom_O::setAtomType)
-	    .def("getAtomType",&StereoisomerAtom_O::getAtomType)
-	    ;
-    }
 
-    void StereoisomerAtom_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,StereoisomerAtom,"","",_lisp)
-	    .def("atomName",&StereoisomerAtom_O::atomName)
-	    .def("setCharge",&StereoisomerAtom_O::setCharge)
-	    .def("getCharge",&StereoisomerAtom_O::getCharge)
-	    .def("setAtomTypeString",&StereoisomerAtom_O::setAtomTypeString)
-	    .def("getAtomTypeString",&StereoisomerAtom_O::getAtomTypeString)
-	    ;
-#endif
-    }
 
 ;
 
 
     StereoisomerAtom_sp StereoisomerAtom_O::create(ConstitutionAtom_sp constitutionAtom )
-    {_G();
+    {
 	if ( constitutionAtom->isAssignableTo<ConstitutionVirtualAtom_O>() )
 	{
 	    ConstitutionVirtualAtom_sp cva = constitutionAtom.as<ConstitutionVirtualAtom_O>();
@@ -81,7 +58,7 @@ namespace chem
 #endif
 
     string StereoisomerAtom_O::__repr__() const
-    {_G();
+    {
 	stringstream ss;
 	ss << "( " << this->className() << " ";
 	ss << " :atomName \"" << this->_AtomName << "\"";
@@ -91,28 +68,15 @@ namespace chem
 
 
 
-    EXPOSE_CLASS(chem,StereoisomerVirtualAtom_O);
 
-    void StereoisomerVirtualAtom_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<StereoisomerVirtualAtom_O>()
-	    ;
-    }
 
-    void StereoisomerVirtualAtom_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,StereoisomerVirtualAtom,"","",_lisp)
-	    ;
-#endif
-    }
 
 ;
 
 
 
     StereoisomerVirtualAtom_sp StereoisomerVirtualAtom_O::create(ConstitutionVirtualAtom_sp atom )
-    {_G();
+    {
 	StereoisomerVirtualAtom_sp ta = StereoisomerVirtualAtom_O::create();
 	ta->_AtomName = atom->_AtomName;
 	ta->_AtomIndex = atom->_AtomIndex;
@@ -137,34 +101,13 @@ namespace chem
 
 
 
-    EXPOSE_CLASS(chem,StereoisomerAtoms_O);
 
-    void StereoisomerAtoms_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<StereoisomerAtoms_O>()
-	    .def("atomNamesAsSymbolSet",&StereoisomerAtoms_O::atomNamesAsSymbolSet)
-	    .def("atomWithName",&StereoisomerAtoms_O::atomWithName)
-	    .def("atomWithId",&StereoisomerAtoms_O::atomWithId)
-	    .def("stereoisomer-atoms-index",&StereoisomerAtoms_O::index)
-	    ;
-    }
 
-    void StereoisomerAtoms_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,StereoisomerAtoms,"","",_lisp)
-	    .def("atomNamesAsStringSet",&StereoisomerAtoms_O::atomNamesAsStringSet)
-	    .def("atomWithName",&StereoisomerAtoms_O::atomWithName)
-	    .def("atomWithId",&StereoisomerAtoms_O::atomWithId)
-	    .def("stereoisomer-atoms-index",&StereoisomerAtoms_O::index)
-	    ;
-#endif
-    }
 
 ;
 
     StereoisomerAtoms_sp StereoisomerAtoms_O::create(ConstitutionAtoms_sp constitutionAtoms)
-    {_G();
+    {
 	GC_ALLOCATE(StereoisomerAtoms_O, topologyAtoms );
 	for ( ConstitutionAtoms_O::iterator it=constitutionAtoms->_Atoms.begin();
 	      it!=constitutionAtoms->_Atoms.end(); it++)
@@ -232,7 +175,7 @@ CL_DEFMETHOD     StereoisomerAtom_sp StereoisomerAtoms_O::atomWithName(MatterNam
 
 CL_LISPIFY_NAME("atomWithId");
 CL_DEFMETHOD     StereoisomerAtom_sp StereoisomerAtoms_O::atomWithId(ConstitutionAtomIndex0N id) const
-    {_G();
+    {
 	return this->_Atoms[id];
     }
 

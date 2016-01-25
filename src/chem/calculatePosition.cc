@@ -30,7 +30,7 @@ void	CalculatePosition_O::initialize()
 #define DOCS_CalculatePositionUsingInternals_O_make "make AtomId"
   CalculatePositionUsingInternals_sp CalculatePositionUsingInternals_O::make(MatterName distanceAtomName, MatterName angleAtomName, MatterName dihedralAtomName,
 									     double distance, double angleDegrees, double dihedralDegrees)
-  {_G();
+  {
       GC_ALLOCATE(CalculatePositionUsingInternals_O, me );
     me->_DistanceAtomName = distanceAtomName;
     me->_AngleAtomName = angleAtomName;
@@ -79,7 +79,7 @@ void	CalculatePositionUsingInternals_O::initialize()
 #endif
 
     Vector3 CalculatePositionUsingInternals_O::calculatePosition(core::T_sp positionLookup)
-{_G();
+{
 	// Calculate the position according to the arguments
 	//
     Vector3 pnt,posDistanceAtom,posAngleAtom,posDihedralAtom;
@@ -120,7 +120,7 @@ void	CalculatePositionUsingInternals_O::initialize()
 #define DECL_CalculatePositionAlongBond_O_make ""
 #define DOCS_CalculatePositionAlongBond_O_make "make CalculatePositionAlongBond"
   CalculatePositionAlongBond_sp CalculatePositionAlongBond_O::make(MatterName fromAtomName, MatterName toAtomName, double extendDistance)
-  {_G();
+  {
       GC_ALLOCATE(CalculatePositionAlongBond_O, me );
     me->_FromAtomName = fromAtomName;
     me->_ToAtomName = toAtomName;
@@ -163,7 +163,7 @@ void	CalculatePositionAlongBond_O::initialize()
 
 
     Vector3 CalculatePositionAlongBond_O::calculatePosition(core::T_sp positionLookup)
-{_G();
+{
     IMPLEMENT_ME();
 #if !KINEMATICS
 	// Calculate the position according to the arguments
@@ -210,7 +210,7 @@ void	CalculatePositionAlongBond_O::initialize()
 #define DECL_CalculatePositionRelativeToOrigin_O_make ""
 #define DOCS_CalculatePositionRelativeToOrigin_O_make "make CalculatePositionRelativeToOrigin"
   CalculatePositionRelativeToOrigin_sp CalculatePositionRelativeToOrigin_O::make(MatterName originAtomName, MatterName toAtomName, double extendDistance)
-  {_G();
+  {
       GC_ALLOCATE(CalculatePositionRelativeToOrigin_O, me );
     me->_OriginAtomName = originAtomName;
     me->_ToAtomName = toAtomName;
@@ -258,7 +258,7 @@ void	CalculatePositionRelativeToOrigin_O::initialize()
  */
 
     Vector3 CalculatePositionRelativeToOrigin_O::calculatePosition(core::T_sp positionLookup)
-{_G();
+{
     IMPLEMENT_ME();
 #if !KINEMATICS
 	// Calculate the position according to the arguments
@@ -302,84 +302,33 @@ void	CalculatePositionRelativeToOrigin_O::initialize()
 
 
 
-    void CalculatePosition_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<CalculatePosition_O>()
-//	.def_raw("core:__init__",&CalculatePosition_O::__init__,"(self &key (fromAtomName \"\") (toAtomName \"\") (extendDistance 0.0))")
-	;
-}
-
-    void CalculatePosition_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,CalculatePosition,"","",_lisp)
-    ;
-#endif //]
-}
-
-
-
-
-    void CalculatePositionUsingInternals_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<CalculatePositionUsingInternals_O>()
-//	.def_raw("core:__init__",&CalculatePositionUsingInternals_O::__init__,"(self &key (distanceAtomName \"\") (angleAtomName \"\") (dihedralAtomName \"\") (distance 1.0) (angleDegrees 0.0) (dihedralDegrees 0.0))")
-	;
-}
-
-    void CalculatePositionUsingInternals_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,CalculatePositionUsingInternals,"","",_lisp)
-    ;
-#endif //]
-}
 
 
 
 
 
-    void CalculatePositionAlongBond_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<CalculatePositionAlongBond_O>()
-	;
-}
-
-    void CalculatePositionAlongBond_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,CalculatePositionAlongBond,"","",_lisp)
-    ;
-#endif //]
-}
 
 
 
 
 
-    void CalculatePositionRelativeToOrigin_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<CalculatePositionRelativeToOrigin_O>()
-//	.def_raw("core:__init__",&CalculatePositionRelativeToOrigin_O::__init__,"(self &key (originAtomName \"\") (toAtomName \"\") (extendDistance 0.0))")
-	;
-}
-
-    void CalculatePositionRelativeToOrigin_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,CalculatePositionRelativeToOrigin,"","",_lisp)
-    ;
-#endif //]
-}
 
 
 
 
 
-    EXPOSE_CLASS(chem,CalculatePosition_O);
-    EXPOSE_CLASS(chem,CalculatePositionUsingInternals_O);
-    EXPOSE_CLASS(chem,CalculatePositionAlongBond_O);
-    EXPOSE_CLASS(chem,CalculatePositionRelativeToOrigin_O);
+
+
+
+
+
+
+
+
+
+
+
+
 };
 
 

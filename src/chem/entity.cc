@@ -36,7 +36,7 @@ void	Entity_O::initialize()
 
 #ifdef XML_ARCHIVE
     void	Entity_O::archiveBase(core::ArchiveP node)
-{_G();
+{
     this->Base::archiveBase(node);
 }
 #endif
@@ -44,7 +44,7 @@ void	Entity_O::initialize()
 
 CL_LISPIFY_NAME("constitution");
 CL_DEFMETHOD Constitution_sp Entity_O::constitution()
-{_G();
+{
     Constitution_sp x = _Nil<Constitution_O>();
     return x;
 }
@@ -92,34 +92,12 @@ CL_DEFMETHOD     RepresentativeList_sp Entity_O::minimalRepresentativeList() con
     }
 
 
-void Entity_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<Entity_O>()
-	.def("hasConstitution",&Entity_O::hasConstitution)
-	.def("constitution",&Entity_O::constitution)
-	.def("getName",&Entity_O::getName,"","","",false)
-	.def("expandedRepresentativeList",&Entity_O::expandedRepresentativeList)
-	.def("minimalRepresentativeList",&Entity_O::minimalRepresentativeList)
-    ;
-}
-
-    void Entity_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,Entity,"","",_lisp)
-	.def("hasConstitution",&Entity_O::hasConstitution)
-	.def("constitution",&Entity_O::constitution)
-//	.def("getName",&Entity_O::getName,"","","",false)
-	.def("expandedRepresentativeList",&Entity_O::expandedRepresentativeList)
-	.def("minimalRepresentativeList",&Entity_O::minimalRepresentativeList)
-    ;
-#endif
-}
 
 
 
 
-    EXPOSE_CLASS(chem,Entity_O);
+
+
 };
 
 

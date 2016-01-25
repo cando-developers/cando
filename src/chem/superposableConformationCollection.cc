@@ -11,7 +11,6 @@
 
 namespace chem {
 
-    REGISTER_CLASS(chem,SuperposableConformationCollection_O);
 
 
 
@@ -48,7 +47,7 @@ void	SuperposableConformationCollection_O::initialize()
 
 
 void	SuperposableConformationCollection_O::clearSuperposeAtoms()
-{_G();
+{
     ASSERTNOTNULL(this->_SuperposeAtomIndices);
     this->_SuperposeAtomIndices->clear();
 }
@@ -56,7 +55,7 @@ void	SuperposableConformationCollection_O::clearSuperposeAtoms()
 
 
 void	SuperposableConformationCollection_O::addSuperposeAtom(Atom_sp a)
-{_G();
+{
 ConformationCollection_O::atomIterator	ai;
 int					idx;
     ASSERTNOTNULL(this->_SuperposeAtomIndices);
@@ -73,7 +72,7 @@ int					idx;
 
 
     void	SuperposableConformationCollection_O::superposeAtomsFromSet(gctools::SmallOrderedSet<Atom_sp> atoms)
-{_G();
+{
     gctools::SmallOrderedSet<Atom_sp>::iterator	ai;
     this->clearSuperposeAtoms();
     for ( ai=atoms.begin(); ai!=atoms.end(); ai++ )
@@ -83,7 +82,7 @@ int					idx;
 }
 
 void	SuperposableConformationCollection_O::superposeAllHeavyAtoms()
-{_G();
+{
 ConformationCollection_O::atomIterator	ai;
 int					idx;
     ASSERTNOTNULL(this->_SuperposeAtomIndices);
@@ -99,7 +98,7 @@ int					idx;
 
 
     gctools::SmallOrderedSet<Atom_sp>	SuperposableConformationCollection_O::getSuperposeAtoms()
-{_G();
+{
     gctools::SmallOrderedSet<Atom_sp>	result;
 core::IntArray_O::iterator	si;
 Atom_sp			a;
@@ -114,14 +113,14 @@ Atom_sp			a;
 
 
 int	SuperposableConformationCollection_O::numberOfSuperposeAtoms()
-{_G();
+{
     return this->_SuperposeAtomIndices->size();
 }
 
 
 
 ConformationCollectionEntry_sp	SuperposableConformationCollection_O::createEntryIfConformationIsNew(Matter_sp matter)
-{_G();
+{
 geom::CoordinateArray_sp			newConf;
 SuperposeEngine_sp				superposer;
 Matrix					transform;
@@ -193,7 +192,7 @@ ConformationCollectionEntry_sp		entry;
 
 #ifdef RENDER
 geom::Render_sp	SuperposableConformationCollection_O::rendered(core::List_sp opts)
-{_G();
+{
     IMPLEMENT_ME();
 #if 0
 geom::FrameList_sp	frames;
@@ -240,7 +239,7 @@ frames = geom::FrameList_O::create();
 void	SuperposableConformationCollection_O::setEntryCoordinatesAsFixedWithinSuperposeEngine(
 		ConformationCollectionEntry_sp entry,
 		SuperposeEngine_sp superposer )
-{_G();
+{
     superposer->setFixedPoints(this->_SuperposeAtomIndices,
     				entry->getAllCoordinates());
 }
@@ -249,7 +248,7 @@ void	SuperposableConformationCollection_O::setEntryCoordinatesAsFixedWithinSuper
 void	SuperposableConformationCollection_O::setEntryCoordinatesAsMoveableWithinSuperposeEngine(
 		ConformationCollectionEntry_sp entry,
 		SuperposeEngine_sp superposer )
-{_G();
+{
     superposer->setMoveablePoints(this->_SuperposeAtomIndices,
     				entry->getAllCoordinates());
 }

@@ -42,7 +42,7 @@ void ObjectSet_O::initialize() {
 
 CL_LISPIFY_NAME("addObjects");
 CL_DEFMETHOD void ObjectSet_O::addObjects(ObjectSet_sp other) {
-  _G();
+  
   other->map([this](T_sp obj) {this->insert(obj); });
 }
 
@@ -65,7 +65,7 @@ CL_DEFMETHOD ObjectSet_sp ObjectSet_O::setUnion(ObjectSet_sp other) {
 
 CL_LISPIFY_NAME("adapt:objectSetIntersection");
 CL_DEFMETHOD ObjectSet_sp ObjectSet_O::intersection(ObjectSet_sp b) {
-  _G();
+  
   ObjectSet_sp nset;
   nset = ObjectSet_O::create();
 
@@ -104,7 +104,7 @@ string ObjectSet_O::asString() const {
 	with every element in b separated by a comma
 */
 ObjectSet_sp ObjectSet_O::cartesianProduct(ObjectSet_sp b) {
-  _G();
+  
   ObjectSet_sp nset;
   stringstream sstr;
   nset = ObjectSet_O::create();
@@ -121,7 +121,7 @@ ObjectSet_sp ObjectSet_O::cartesianProduct(ObjectSet_sp b) {
 	with every element in b separated by a comma
 */
 ObjectSet_sp ObjectSet_O::cartesianProductWrapped(ObjectSet_sp b, const ObjectSetCartesianProductWrapper &wrapper) {
-  _G();
+  
   ObjectSet_sp nset;
   stringstream sstr;
   nset = ObjectSet_O::create();
@@ -189,20 +189,4 @@ void ObjectSet_O::archive(ArchiveP node) {
 
 
 
-void ObjectSet_O::exposePython(Lisp_sp lisp) {
-  _G();
-#ifdef USEBOOSTPYTHON //[
-  PYTHON_CLASS(AdaptPkg, ObjectSet, "", "", _lisp)
-      .add_property("iterate",
-                    boost::python::range(&adapt::ObjectSet_O::begin, &adapt::ObjectSet_O::end))
-      .def("insert", &adapt::ObjectSet_O::insert)
-      .def("add", &adapt::ObjectSet_O::insert)
-      .def("add", &adapt::ObjectSet_O::insert)
-      .def("setUnion", &adapt::ObjectSet_O::setUnion)
-      .def("size", &adapt::ObjectSet_O::size)
-      //	.def("remove",&adapt::ObjectSet_O::remove)
-      ;
-#endif
-}
-EXPOSE_CLASS(adapt, ObjectSet_O);
 };

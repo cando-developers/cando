@@ -84,7 +84,7 @@ double	Vector2::get(int i) const
 
 #ifdef XML_ARCHIVE
     void	Vector2::archive(core::ArchiveP node)
-{_G();
+{
     node->attribute("x",this->coords[0]);
     node->attribute("y",this->coords[1]);
     LOG(BF("Serialized vector@%X = %lf, %lf") % this % this->coords[0] % this->coords[1]  );
@@ -108,7 +108,7 @@ bool Vector2::isDefined()
 
 
     Vector2 Vector2::normalized() const
-{_G();
+{
 double	l;
 Vector2	v;
 

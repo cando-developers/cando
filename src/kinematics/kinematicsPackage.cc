@@ -247,11 +247,11 @@ namespace kinematics
 
 
     void KinematicsExposer::expose(core::Lisp_sp lisp,core::Exposer::WhatToExpose what) const
-    {_G();
+    {
 	switch (what)
 	{
 	case candoClasses:
-	{_G();
+	{
 #if 0
 #define ALL_STAGES
 #define Use_KinPkg

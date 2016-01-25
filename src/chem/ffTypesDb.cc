@@ -37,7 +37,7 @@ void	FFTypesDb_O::initialize()
 
 CL_LISPIFY_NAME("assignTypes");
 CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
-{ _G();
+{ 
 chem::Loop    				lAtoms;
 chem::Atom_sp  				atom;
 chem::Matter_sp				c;
@@ -101,31 +101,13 @@ CL_DEFUN FFTypesDb_sp chem__make_fftypes_db()
 
 
 
-    void FFTypesDb_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<FFTypesDb_O>()
-	.def("assignTypes",&FFTypesDb_O::assignTypes)
-      .def("FFTypes-numberOfRules",&FFTypesDb_O::numberOfRules)
-      .def("FFTypes-getRule",&FFTypesDb_O::getRule)
-    ;
-//    core::af_def(ChemPkg,"make-fftypes-db",&FFTypesDb_O::create);
-}
-
-    void FFTypesDb_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,FFTypesDb,"","",_lisp)
-	.def("assignTypes",&FFTypesDb_O::assignTypes)
-    ;
-#endif
-}
 
 
 
 
 
 
-    EXPOSE_CLASS(chem, FFTypesDb_O);
+
 };
 
 

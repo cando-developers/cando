@@ -75,7 +75,7 @@ void EnergyAtom::defineForAtom(ForceField_sp forceField, Atom_sp a1, uint coordi
 
     void	EnergyAtom::parseFromXmlRelativeToContainer(adapt::QDomNode_sp xml,
 							chem::Matter_sp parent)
-{_G();
+{
 string	path;
 double	x,y,z,fx,fy,fz;
 Vector3	v;
@@ -139,7 +139,7 @@ CL_DEFMETHOD     int AtomTable_O::addAtomInfo(Atom_sp atom, units::Quantity_sp c
 
 #ifdef XML_ARCHIVE
     void	AtomTable_O::archiveBase(core::ArchiveP node)
-{_G();
+{
     if ( node->loading() )
     {
         this->_Atoms.clear();
@@ -165,22 +165,8 @@ CL_DEFMETHOD     int AtomTable_O::addAtomInfo(Atom_sp atom, units::Quantity_sp c
 #endif
 
 
-    EXPOSE_CLASS(chem,AtomTable_O);
-    void AtomTable_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<AtomTable_O>()
-	    .def("addAtomInfo",&AtomTable_O::addAtomInfo)
-	    ;
-    }
 
-    void AtomTable_O::exposePython(core::Lisp_sp lisp)
-    {_G()
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,AtomTable,"","",_lisp)
-	    .def("addAtomInfo",&AtomTable_O::addAtomInfo)
-	    ;
-#endif
-    }
+
 
 
 

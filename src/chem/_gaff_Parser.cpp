@@ -2529,7 +2529,7 @@ char	ichar;
 chem::AntechamberRoot_sp gaff_compile(const string& input, 
 				chem::WildElementDict_sp dict,
 				stringstream& errorStream)
-{_G();
+{
     gaff_SParserParam p;
     stringstream sin(input);
     p.expression = _Nil<_O>();

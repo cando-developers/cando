@@ -37,14 +37,14 @@ void	ArrayedAtom_O::initialize()
 
 
 void ArrayedAtom_O::setAtom(Atom_sp a)
-{_G();
+{
     this->_AtomLabel = a->getName();
     this->_Atom = a;
 }
 
 
 uint ArrayedAtom_O::calculateHash()
-{_G();
+{
     uint hash=0;
     for ( string::iterator it=this->_AtomLabel.begin();
     	it !=this->_AtomLabel.end(); it++ )
@@ -58,13 +58,13 @@ uint ArrayedAtom_O::calculateHash()
 
 
 void ArrayedAtom_O::extractFromCoordinateArray(geom::CoordinateArrayWithHash_sp h, uint idx)
-{_G();
+{
     ASSERT(this->_Atom.pointerp());
     this->_Atom->setPosition(h->getElement(idx));
 }
 
 void ArrayedAtom_O::writeToCoordinateArray(geom::CoordinateArrayWithHash_sp h, uint idx)
-{_G();
+{
     ASSERT(this->_Atom.pointerp());
     h->setElement(idx,this->_Atom->getPosition());
 }
@@ -74,19 +74,7 @@ void ArrayedAtom_O::writeToCoordinateArray(geom::CoordinateArrayWithHash_sp h, u
 
 
 
-    void ArrayedAtom_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<ArrayedAtom_O>()
-	;
-}
 
-    void ArrayedAtom_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,ArrayedAtom,"","",_lisp)
-    ;
-#endif //]
-}
 
 
 
@@ -127,7 +115,7 @@ public:
     }
 };
 void ArrayedResidue_O::setResidue(Residue_sp res)
-{_G();
+{
     if ( res->getUniqueLabel() == "" )
     {
 	SIMPLE_ERROR(BF("Every ArrayedResidue must have a label"));
@@ -149,13 +137,13 @@ void ArrayedResidue_O::setResidue(Residue_sp res)
 }
 
 uint ArrayedResidue_O::getNumberOfAtoms()
-{_G();
+{
     return this->_SortedAtoms.size();
 }
 
 
 uint ArrayedResidue_O::calculateHash()
-{_G();
+{
     uint hash=0;
     for ( gctools::Vec0<ArrayedAtom_sp>::iterator it=this->_SortedAtoms.begin();
     	it !=this->_SortedAtoms.end(); it++ )
@@ -168,7 +156,7 @@ uint ArrayedResidue_O::calculateHash()
 }
 
 uint ArrayedResidue_O::extractFromCoordinateArray(geom::CoordinateArrayWithHash_sp hash, uint start)
-{_G();
+{
     for ( gctools::Vec0<ArrayedAtom_sp>::iterator it=this->_SortedAtoms.begin();
     	it !=this->_SortedAtoms.end(); it++ )
     {
@@ -179,7 +167,7 @@ uint ArrayedResidue_O::extractFromCoordinateArray(geom::CoordinateArrayWithHash_
 }
 
 uint ArrayedResidue_O::writeToCoordinateArray(geom::CoordinateArrayWithHash_sp hash, uint start)
-{_G();
+{
     for ( gctools::Vec0<ArrayedAtom_sp>::iterator it=this->_SortedAtoms.begin();
     	it !=this->_SortedAtoms.end(); it++ )
     {
@@ -194,19 +182,7 @@ uint ArrayedResidue_O::writeToCoordinateArray(geom::CoordinateArrayWithHash_sp h
 
 
 
-    void ArrayedResidue_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<ArrayedResidue_O>()
-	;
-}
 
-    void ArrayedResidue_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,ArrayedResidue,"","",_lisp)
-    ;
-#endif //]
-}
 
 
 
@@ -245,7 +221,7 @@ public:
 };
 
 void ArrayedMolecule_O::setMolecule(Molecule_sp mol)
-{_G();
+{
     this->_Molecule = mol;
     Matter_O::contentIterator it;
     this->_SortedResidues.clear();
@@ -265,7 +241,7 @@ void ArrayedMolecule_O::setMolecule(Molecule_sp mol)
 
 
 uint	ArrayedMolecule_O::getNumberOfAtoms()
-{_G();
+{
     uint num = 0;
     for ( gctools::Vec0<ArrayedResidue_sp>::iterator it=this->_SortedResidues.begin();
     		it!=this->_SortedResidues.end(); it++ )
@@ -276,7 +252,7 @@ uint	ArrayedMolecule_O::getNumberOfAtoms()
 }
 
 uint	ArrayedMolecule_O::calculateHash()
-{_G();
+{
     uint hash = 0;
     for ( gctools::Vec0<ArrayedResidue_sp>::iterator it=this->_SortedResidues.begin();
     		it!=this->_SortedResidues.end(); it++ )
@@ -290,7 +266,7 @@ uint	ArrayedMolecule_O::calculateHash()
 
 
 geom::CoordinateArrayWithHash_sp ArrayedMolecule_O::createCoordinateArray()
-{_G();
+{
     uint numberOfAtoms = this->getNumberOfAtoms();
     geom::CoordinateArrayWithHash_sp ca;
     ca = geom::CoordinateArrayWithHash_O::create(_lisp,numberOfAtoms);
@@ -300,7 +276,7 @@ geom::CoordinateArrayWithHash_sp ArrayedMolecule_O::createCoordinateArray()
 
 
 void ArrayedMolecule_O::extractFromCoordinateArray(geom::CoordinateArrayWithHash_sp h)
-{_G();
+{
     if ( h->getHash() != this->_Hash )
     {
 	SIMPLE_ERROR(BF("The hashes don't match"));
@@ -318,7 +294,7 @@ void ArrayedMolecule_O::extractFromCoordinateArray(geom::CoordinateArrayWithHash
 }
 
 void ArrayedMolecule_O::writeToCoordinateArray(geom::CoordinateArrayWithHash_sp h)
-{_G();
+{
     if ( h->getHash() != this->_Hash )
     {
 	SIMPLE_ERROR(BF("The hashes don't match"));
@@ -338,33 +314,10 @@ void ArrayedMolecule_O::writeToCoordinateArray(geom::CoordinateArrayWithHash_sp 
 
 
 
-    void ArrayedMolecule_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<ArrayedMolecule_O>()
-	.def("setMolecule",&ArrayedMolecule_O::setMolecule)
-	.def("createCoordinateArray",&ArrayedMolecule_O::createCoordinateArray)
-	.def("extractFromCoordinateArray",&ArrayedMolecule_O::extractFromCoordinateArray)
-	.def("writeToCoordinateArray",&ArrayedMolecule_O::writeToCoordinateArray)
-	;
-}
-
-    void ArrayedMolecule_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,ArrayedMolecule,"","",_lisp)
-	.def("setMolecule",&ArrayedMolecule_O::setMolecule)
-	.def("createCoordinateArray",&ArrayedMolecule_O::createCoordinateArray)
-	.def("extractFromCoordinateArray",&ArrayedMolecule_O::extractFromCoordinateArray)
-	.def("writeToCoordinateArray",&ArrayedMolecule_O::writeToCoordinateArray)
-    ;
-#endif //]
-}
 
 
 
-    EXPOSE_CLASS(chem,ArrayedAtom_O);
-    EXPOSE_CLASS(chem,ArrayedResidue_O);
-    EXPOSE_CLASS(chem,ArrayedMolecule_O);
+
 };
 
 

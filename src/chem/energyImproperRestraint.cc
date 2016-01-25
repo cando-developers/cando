@@ -261,7 +261,7 @@ void	EnergyImproperRestraint_O::evaluateAll(
 		gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
 		gc::Nilable<chem::NVector_sp>	hdvec,
                 gc::Nilable<chem::NVector_sp> dvec)
-{_G();
+{
     if ( this->_DebugEnergy ) 
     {
 	LOG_ENERGY_CLEAR();
@@ -550,19 +550,8 @@ int	fails = 0;
 
 
 
-void EnergyImproperRestraint_O::exposeCando(core::Lisp_sp e)
-{
-    core::class_<EnergyImproperRestraint_O>()
-    ;
-}
 
-    void EnergyImproperRestraint_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,EnergyImproperRestraint,"","",_lisp)
-	;
-#endif
-}
+
 
 
 void EnergyImproperRestraint_O::initialize()
@@ -580,7 +569,6 @@ void EnergyImproperRestraint_O::archiveBase(core::ArchiveP node)
 #endif
 
 
-EXPOSE_CLASS(chem,EnergyImproperRestraint_O);
 };
 
 

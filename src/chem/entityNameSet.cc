@@ -65,7 +65,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp	EntityNameSetBase_O::getUnExpandedNames()
 #define DECL_EntityNameSetBase_O_make ""
 #define DOCS_EntityNameSetBase_O_make "make EntityNameSetBase"
   EntityNameSetBase_sp EntityNameSetBase_O::make(core::List_sp entityNamesCons)
-  {_G();
+  {
       GC_ALLOCATE(EntityNameSetBase_O, me );
     if ( entityNamesCons.notnilp() )
       {
@@ -120,13 +120,13 @@ core::List_sp EntityNameSetBase_O::getInterestingAtomAliases()
 
 CL_LISPIFY_NAME("getInterestingAtomAliasIndex");
 CL_DEFMETHOD     int	EntityNameSetBase_O::getInterestingAtomAliasIndex(Alias_sp alias)
-    {_G();
+    {
 	SIMPLE_ERROR(BF("Subclass must implement for alias: "+alias->__repr__()));
     }
 
 #if 0
     void	EntityNameSetBase_O::setCandoDatabase( CandoDatabase_sp bdb)
-    {_G();
+    {
 	this->CandoDatabase_ODependent::setCandoDatabase(bdb);
     }
 #endif
@@ -137,7 +137,7 @@ CL_DEFMETHOD     int	EntityNameSetBase_O::getInterestingAtomAliasIndex(Alias_sp 
 
 CL_LISPIFY_NAME("expandedNameSet");
 CL_DEFMETHOD     adapt::SymbolSet_sp	EntityNameSetBase_O::expandedNameSet()
-    {_G();
+    {
 	adapt::SymbolSet_sp		allNames;
 	CandoDatabase_sp	bdb;
 	allNames = adapt::SymbolSet_O::create();
@@ -211,7 +211,7 @@ CL_DEFMETHOD     void EntityNameSetBase_O::contractEntityNames(adapt::SymbolSet_
 
 #if 0
     void	EntityNameSetBase_O::_insertStringSet(adapt::StringSet_sp ss)
-    {_G();
+    {
 	adapt::StringSet_O::iterator	si;
 	CandoDatabase_sp	bdb;
 	ASSERTNOTNULL(this->_EntityNames);
@@ -233,7 +233,7 @@ CL_DEFMETHOD     void EntityNameSetBase_O::contractEntityNames(adapt::SymbolSet_
 
 CL_LISPIFY_NAME("addMonomerName");
 CL_DEFMETHOD     void	EntityNameSetBase_O::addMonomerName(core::Symbol_sp nm)
-    {_G();
+    {
 	CandoDatabase_sp	bdb;
 	adapt::StringSet_sp		monomerNames;
 	ASSERTNOTNULL(this->_EntityNames);
@@ -256,7 +256,7 @@ CL_DEFMETHOD     void	EntityNameSetBase_O::setGroupNames(adapt::SymbolSet_sp s)
 
 CL_LISPIFY_NAME("addMonomerNameNoChecks");
 CL_DEFMETHOD     void	EntityNameSetBase_O::addMonomerNameNoChecks(core::Symbol_sp nm)
-    {_G();
+    {
 	ASSERTNOTNULL(this->_EntityNames);
 	this->_EntityNames->insert(nm);
     }
@@ -268,7 +268,7 @@ CL_DEFMETHOD     void	EntityNameSetBase_O::addMonomerNameNoChecks(core::Symbol_s
 
 
     void	EntityNameSetBase_O::_removeMonomerName(core::Symbol_sp nm)
-    {_G();
+    {
 	ASSERTNOTNULL(this->_EntityNames);
 	if ( !this->recognizesMonomerName(nm) ) return;
 	this->_EntityNames->remove(nm);
@@ -276,7 +276,7 @@ CL_DEFMETHOD     void	EntityNameSetBase_O::addMonomerNameNoChecks(core::Symbol_s
 
 #if 0
     adapt::StringSet_sp	EntityNameSetBase_O::combineMonomerNames(string coupling, EntityNameSetBase_sp e )
-    {_G();
+    {
 	adapt::SymbolSet_sp	s1, s2, s3;
 	string		ins;
 	s1 = this->getMonomerNames();
@@ -289,7 +289,7 @@ CL_DEFMETHOD     void	EntityNameSetBase_O::addMonomerNameNoChecks(core::Symbol_s
 
 
 core::Symbol_sp EntityNameSetBase_O::getKey()
-    {_G();
+    {
 	stringstream			ss;
 	set<string>			keys;
 	set<string>::iterator		ki;
@@ -323,7 +323,7 @@ core::Symbol_sp EntityNameSetBase_O::getKey()
 
 CL_LISPIFY_NAME("getMonomerNames");
 CL_DEFMETHOD     adapt::SymbolSet_sp	EntityNameSetBase_O::getMonomerNames()
-    {_G();
+    {
 	adapt::SymbolSet_sp names;
 	names = this->expandedNameSet();
 	return names;
@@ -331,7 +331,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp	EntityNameSetBase_O::getMonomerNames()
 
 CL_LISPIFY_NAME("getMonomerNamesAsString");
 CL_DEFMETHOD     string	EntityNameSetBase_O::getMonomerNamesAsString()
-    {_G();
+    {
 	adapt::SymbolSet_sp names;
 	names = this->expandedNameSet();
 	return names->asString();
@@ -340,7 +340,7 @@ CL_DEFMETHOD     string	EntityNameSetBase_O::getMonomerNamesAsString()
 
 CL_LISPIFY_NAME("getOnlyMonomerName");
 CL_DEFMETHOD     core::Symbol_sp EntityNameSetBase_O::getOnlyMonomerName()
-    {_G();
+    {
 	adapt::SymbolSet_sp names;
 	names = this->expandedNameSet();
 	if ( names->size() != 1 ) {
@@ -355,7 +355,7 @@ CL_DEFMETHOD     core::Symbol_sp EntityNameSetBase_O::getOnlyMonomerName()
  */
 CL_LISPIFY_NAME("setMonomerNameOrPdb");
 CL_DEFMETHOD     void	EntityNameSetBase_O::setMonomerNameOrPdb(core::Symbol_sp mn)
-    {_G();
+    {
 	CandoDatabase_sp db;
 //    this->setName(mn);
 //    LOG(BF("Set name of EntityNameSetBase to: %s") % mn.c_str()  );
@@ -382,7 +382,7 @@ CL_DEFMETHOD     void	EntityNameSetBase_O::setMonomerNameOrPdb(core::Symbol_sp m
   recognizes the monomer name
 */
     bool	EntityNameSetBase_O::recognizesMonomerName(core::Symbol_sp nm)
-    {_G();
+    {
 	adapt::SymbolSet_sp		names;
 	names = this->expandedNameSet();
 	return names->contains(nm);
@@ -396,7 +396,7 @@ CL_DEFMETHOD     void	EntityNameSetBase_O::setMonomerNameOrPdb(core::Symbol_sp m
 */
 CL_LISPIFY_NAME("recognizesNameOrPdb");
 CL_DEFMETHOD     bool	EntityNameSetBase_O::recognizesNameOrPdb(core::Symbol_sp nm)
-    {_G();
+    {
 	CandoDatabase_sp	bdb;
 	bdb = getCandoDatabase();
 	ASSERT(bdb->recognizesNameOrPdb(nm));
@@ -409,7 +409,7 @@ CL_DEFMETHOD     bool	EntityNameSetBase_O::recognizesNameOrPdb(core::Symbol_sp n
 
 #ifdef XML_ARCHIVE
     void	EntityNameSetBase_O::archiveBase(core::ArchiveP node)
-    {_G();
+    {
 	this->Base::archiveBase(node);
 	node->attributeIfNotNil("names",this->_EntityNames);
 	node->attributeIfNotDefault("optional",this->_Optional,false);
@@ -441,7 +441,7 @@ CL_DEFMETHOD     adapt::StringList_sp	EntityNameSetBase_O::getUnrecognizedMonome
 
 CL_LISPIFY_NAME("hasInterestingAtomAlias");
 CL_DEFMETHOD     bool EntityNameSetBase_O::hasInterestingAtomAlias(Alias_sp alias)
-    {_G();
+    {
 	LOG(BF("EntityNameSetBase_O always returns false") );
 	return false;
     };
@@ -496,7 +496,7 @@ CL_DEFMETHOD     adapt::StringList_sp	EntityNameSetBase_O::getMonomerNamesOrdere
 #define DECL_EntityNameSet_O_make ""
 #define DOCS_EntityNameSet_O_make "make EntityNameSet"
   EntityNameSet_sp EntityNameSet_O::make(core::Symbol_sp name)
-  {_G();
+  {
       GC_ALLOCATE(EntityNameSet_O, me );
     me->_Name = name;
     return me;
@@ -514,7 +514,7 @@ CL_DEFMETHOD     adapt::StringList_sp	EntityNameSetBase_O::getMonomerNamesOrdere
 #endif
 
     EntityNameSet_O::EntityNameSet_O( const EntityNameSet_O & emr ) : Base(emr)
-    {_G();
+    {
 	this->_Name = emr._Name;
     }
 
@@ -531,7 +531,7 @@ CL_DEFMETHOD     adapt::StringList_sp	EntityNameSetBase_O::getMonomerNamesOrdere
 
 #ifdef XML_ARCHIVE
     void	EntityNameSet_O::archiveBase(core::ArchiveP node)
-    {_G();
+    {
 	this->Base::archiveBase(node);
 	node->attributeIfNotNil("name",this->_Name);
     }
@@ -562,7 +562,7 @@ CL_DEFMETHOD     adapt::StringList_sp	EntityNameSetBase_O::getMonomerNamesOrdere
 
 #ifdef XML_ARCHIVE
     void	EntityNameSetWithCap_O::archiveBase(core::ArchiveP node)
-    {_G();
+    {
 	this->Base::archiveBase(node);
     }
 #endif
@@ -577,7 +577,7 @@ CL_DEFMETHOD     adapt::StringList_sp	EntityNameSetBase_O::getMonomerNamesOrdere
 
 CL_LISPIFY_NAME("addGroupName");
 CL_DEFMETHOD     void	EntityNameSetWithCap_O::addGroupName(core::Symbol_sp nm)
-    {_G();
+    {
 	CandoDatabase_sp	bdb;
 	adapt::StringSet_sp		monomerNames;
 	this->addMonomerName(nm);
@@ -592,100 +592,6 @@ CL_DEFMETHOD     void	EntityNameSetWithCap_O::addGroupName(core::Symbol_sp nm)
 
 
 
-    void EntityNameSetBase_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<EntityNameSetBase_O>()
-//	    .def_raw("core:__init__",&EntityNameSetBase_O::__init__,"(self &key entityNames optional)")
-	    .def("expandToTerminalEntityNames",&EntityNameSetBase_O::expandToTerminalEntityNames)
-	    .def("contractEntityNames",&EntityNameSetBase_O::contractEntityNames)
-	    .def("setMonomerNameOrPdb", &EntityNameSetBase_O::setMonomerNameOrPdb)
-	    .def("recognizesNameOrPdb",
-		 &EntityNameSetBase_O::recognizesNameOrPdb)
-//	.def("setNames", &EntityNameSetBase_O::python_setNames)
-	    .def("getMonomerNames", &EntityNameSetBase_O::getMonomerNames)
-	    .def("setGroupNames", &EntityNameSetBase_O::setGroupNames)
-//    .def("setCandoDatabase", &EntityNameSetBase_O::setCandoDatabase)
-	    .def("getOnlyMonomerName", &EntityNameSetBase_O::getOnlyMonomerName)
-	    .def("getUnExpandedNames",&EntityNameSetBase_O::getUnExpandedNames)
-	    .def("addMonomerName",&EntityNameSetBase_O::addMonomerName)
-	    .def("addMonomerNameNoChecks",&EntityNameSetBase_O::addMonomerNameNoChecks)
-	    .def("expandedNameSet", &EntityNameSetBase_O::expandedNameSet)
-	    .def("getMonomerNamesAsString",
-		 &EntityNameSetBase_O::getMonomerNamesAsString)
-//    .def("combineMonomerNames",    &EntityNameSetBase_O::combineMonomerNames)
-	    .def("getMonomerNameWithAtoms", &EntityNameSetBase_O::getMonomerNameWithAtoms)
-	    .def("getMonomerNamesOrdered",
-		 &EntityNameSetBase_O::getMonomerNamesOrdered)
-	    .def("getUnrecognizedMonomerNamesOrdered",
-		 &EntityNameSetBase_O::getUnrecognizedMonomerNamesOrdered)
-	    .def("supportsInterestingAtomAliases",&EntityNameSetBase_O::supportsInterestingAtomAliases)
-	    .def("hasInterestingAtomAlias",&EntityNameSetBase_O::hasInterestingAtomAlias)
-	    .def("getInterestingAtomAliasIndex",&EntityNameSetBase_O::getInterestingAtomAliasIndex)
-	    .def("getInterestingAtomAliasesAsString",&EntityNameSetBase_O::getInterestingAtomAliasesAsString)
-	    .def("setInterestingAtomNamesForMonomerName",&EntityNameSetBase_O::setInterestingAtomNamesForMonomerName)
-	    .def("getInterestingAtomNamesForMonomerName",&EntityNameSetBase_O::getInterestingAtomNamesForMonomerName)
-	    .def("testEntityNameSetBase",&EntityNameSetBase_O::testEntityNameSetBase)
-	    ;
-    }
-
-    void EntityNameSetBase_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,EntityNameSetBase,"","",_lisp)
-	    .def("expandToTerminalEntityNames",&EntityNameSetBase_O::expandToTerminalEntityNames)
-	    .def("contractEntityNames",&EntityNameSetBase_O::contractEntityNames)
-	    .def("setMonomerNameOrPdb", &EntityNameSetBase_O::setMonomerNameOrPdb)
-	    .def("recognizesNameOrPdb",
-		 &EntityNameSetBase_O::recognizesNameOrPdb)
-//	.def("setNames", &EntityNameSetBase_O::python_setNames)
-	    .def("getMonomerNames", &EntityNameSetBase_O::getMonomerNames)
-	    .def("setGroupNames", &EntityNameSetBase_O::setGroupNames)
-//    .def("setCandoDatabase", &EntityNameSetBase_O::setCandoDatabase)
-	    .def("getOnlyMonomerName", &EntityNameSetBase_O::getOnlyMonomerName)
-	    .def("getUnExpandedNames",&EntityNameSetBase_O::getUnExpandedNames)
-	    .def("addMonomerName",&EntityNameSetBase_O::addMonomerName)
-	    .def("addMonomerNameNoChecks",&EntityNameSetBase_O::addMonomerNameNoChecks)
-	    .def("expandedNameSet", &EntityNameSetBase_O::expandedNameSet)
-	    .def("getMonomerNamesAsString",
-		 &EntityNameSetBase_O::getMonomerNamesAsString)
-//    .def("combineMonomerNames",    &EntityNameSetBase_O::combineMonomerNames)
-	    .def("getMonomerNameWithAtoms", &EntityNameSetBase_O::getMonomerNameWithAtoms)
-	    .def("getMonomerNamesOrdered",
-		 &EntityNameSetBase_O::getMonomerNamesOrdered)
-	    .def("getUnrecognizedMonomerNamesOrdered",
-		 &EntityNameSetBase_O::getUnrecognizedMonomerNamesOrdered)
-	    .def("supportsInterestingAtomAliases",&EntityNameSetBase_O::supportsInterestingAtomAliases)
-	    .def("hasInterestingAtomAlias",&EntityNameSetBase_O::hasInterestingAtomAlias)
-	    .def("getInterestingAtomAliasIndex",&EntityNameSetBase_O::getInterestingAtomAliasIndex)
-	    .def("getInterestingAtomAliasesAsString",&EntityNameSetBase_O::getInterestingAtomAliasesAsString)
-	    .def("setInterestingAtomNamesForMonomerName",&EntityNameSetBase_O::setInterestingAtomNamesForMonomerName)
-	    .def("getInterestingAtomNamesForMonomerName",&EntityNameSetBase_O::getInterestingAtomNamesForMonomerName)
-	    .def("testEntityNameSetBase",&EntityNameSetBase_O::testEntityNameSetBase)
-	    ;
-#endif
-    }
-
-
-
-
-    void EntityNameSet_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<EntityNameSet_O>()
-//	    .def_raw("core:__init__",&EntityNameSet_O::__init__,"(self &key name entityNames optional)") // added name argument to those of EntityNameSetBase_O
-	    .def("setName", &EntityNameSet_O::setName,"","","",false)
-	    .def("getName", &EntityNameSet_O::getName,"","","",false)
-	    ;
-    }
-
-    void EntityNameSet_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,EntityNameSet,"","",_lisp)
-	    .def("setName", &EntityNameSet_O::setName)
-	    .def("getName", &EntityNameSet_O::getName)
-	    ;
-#endif
-    }
 
 
 
@@ -694,25 +600,16 @@ CL_DEFMETHOD     void	EntityNameSetWithCap_O::addGroupName(core::Symbol_sp nm)
 
 
 
-    void EntityNameSetWithCap_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<EntityNameSetWithCap_O>()
-//	    .def_raw("core:__init__",&EntityNameSetWithCap_O::__init__,"(self &key entityNames optional)")
-	    .def("addGroupName",&EntityNameSetWithCap_O::addGroupName)
-	    ;
-    }
 
-    void EntityNameSetWithCap_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,EntityNameSetWithCap,"","",_lisp)
-	    .def("addGroupName",&EntityNameSetWithCap_O::addGroupName)
-	    ;
-#endif
-    }
 
-    EXPOSE_CLASS(chem,EntityNameSetBase_O);
-    EXPOSE_CLASS(chem,EntityNameSet_O);
-    EXPOSE_CLASS(chem,EntityNameSetWithCap_O);
+
+
+
+
+
+
+
+
+
 
 }; //namespace chem

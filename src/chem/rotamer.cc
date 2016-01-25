@@ -15,7 +15,7 @@ namespace chem
 
 #ifdef XML_ARCHIVE
 void	RotamerAtom::archive(core::ArchiveP node)
-{_G();
+{
     node->attribute("d",this->_Distance);
     node->attribute("a",this->_Angle);
     node->attribute("t",this->_Torsion);
@@ -35,21 +35,8 @@ void	RotamerAtom::archive(core::ArchiveP node)
 
 
 
-    EXPOSE_CLASS(chem,Rotamer_O);
 
-    void Rotamer_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<Rotamer_O>()
-	;
-    }
 
-    void Rotamer_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,Rotamer,"","",_lisp)
-	;
-#endif
-    }
 
 
 #ifdef XML_ARCHIVE

@@ -11,12 +11,11 @@
 
 namespace chem {
 
-    REGISTER_CLASS(chem,CandoDatabaseReference_O);
 
 
 
 CandoDatabaseReference_sp CandoDatabaseReference_O::create(core::Lisp_sp e,CandoDatabase_sp bdb, const string& link)
-{_G();
+{
     GC_ALLOCATE(CandoDatabaseReference_O,ref);
     ASSERTNOTNULLP(bdb,"The alchemist database is NULL");
     ref->_Reference = core::ObjRef_O::create(e,link);
@@ -50,7 +49,7 @@ void	CandoDatabaseReference_O::initialize()
 
 
     core::T_sp CandoDatabaseReference_O::oget()
-{_G();
+{
     core::T_sp	obj;
     obj = getCandoDatabase();
     ASSERTNOTNULL(obj);

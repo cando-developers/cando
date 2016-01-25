@@ -15,27 +15,13 @@ namespace units
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(Xyz_O);
 
-    void Xyz_O::exposeCando(::core::Lisp_sp lisp)
-    {
-	::core::class_<Xyz_O>()
-	    .def_raw("__init__",&Xyz_O::__init__,"(self &rest args)")
-	    .def("mul-by-float",&Xyz_O::mulByFloat)
-	;
-    }
 
-    void Xyz_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-	PYTHON_CLASS(UnitsPkg,Xyz,"","",_lisp)
-	    .def("mul-by-float",&Xyz_O::mulByFloat)
-	;
-    }
 
 
 
     Xyz_sp Xyz_O::create(Vector3 pos, Quantity_sp temp, core::Lisp_sp lisp)
-    {_G();	
+    {	
 	Xyz_sp x = _lisp->create<Xyz_O>();
 	for ( int i=0; i<NumBaseDimensions; i++ ) x->_Powers[i] = temp->_Powers[i];
 	x->_Pos = pos;
@@ -46,7 +32,7 @@ namespace units
 
     /*! If last argument is a System then use that system, otherwise use the default units:*SI* */
     Object_sp Xyz_O::__init__(::core::Executable_sp exec, ::core::Cons_sp allargs, ::core::Environment_sp env, ::core::Lisp_sp lisp)
-    {_G();
+    {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	core::Cons_sp args = allargs->cdr();

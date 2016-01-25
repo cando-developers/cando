@@ -34,7 +34,7 @@ void	ReadAmberParameters_O::initialize()
 
 CL_LISPIFY_NAME("readTypes");
 CL_DEFMETHOD void	ReadAmberParameters_O::readTypes(core::T_sp fin)
-{_G();
+{
     this->_Types = this->parseTypeRules(fin);
 }
 
@@ -49,7 +49,7 @@ CL_DEFMETHOD void	ReadAmberParameters_O::readParameters(core::T_sp fin)
 
 CL_LISPIFY_NAME("getForceField");
 CL_DEFMETHOD ForceField_sp ReadAmberParameters_O::getForceField()
-{_G();
+{
     if ( this->_Types.nilp() ) {
 	SIMPLE_ERROR(BF("In getForceField this->_Types cannot be nil"));
     }
@@ -118,7 +118,7 @@ FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(core::T_sp fin)
 
 
 FFNonbondDb_sp ReadAmberParameters_O::parseFirstNonbondDb(core::T_sp fin)
-{_G();
+{
   GC_ALLOCATE(FFNonbondDb_O, ffNonbondDb );
   bool done = false;
   while ( not done )
@@ -146,7 +146,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseFirstNonbondDb(core::T_sp fin)
 }
  
 FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(core::T_sp fin)
-{_G();
+{
     // read stretch terms 
     GC_ALLOCATE(FFStretchDb_O, ffStretchDb );
     bool done = false;
@@ -180,7 +180,7 @@ FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(core::T_sp fin)
 
 
 FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
-{_G();
+{
     //
     // read angle terms 
     //
@@ -275,7 +275,7 @@ FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin)
 
 
 FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
-{_G();
+{
     //
     // read Itor terms 
     //
@@ -339,7 +339,7 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
  * This modifies entries in the ffNonbondDb database
  */
 void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonbondDb)
-{_G();
+{
     bool done = false;
     string line = core::cl__read_line(fin).as<core::Str_O>()->get();
     vector<string>parts = core::split(line);
@@ -487,33 +487,10 @@ ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fi
 
 
 
-    void ReadAmberParameters_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<ReadAmberParameters_O>("makeReadAmberParameters")
-	.def("getTypeRules",&ReadAmberParameters_O::getTypeRules)
-	.def("getForceField",&ReadAmberParameters_O::getForceField)
-	.def("readTypes",&ReadAmberParameters_O::readTypes)
-	.def("readParameters",&ReadAmberParameters_O::readParameters)
-	;
-}
-
-    void ReadAmberParameters_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,ReadAmberParameters,"","",_lisp)
-	.def("getTypeRules",&ReadAmberParameters_O::getTypeRules)
-	.def("getForceField",&ReadAmberParameters_O::getForceField)
-	.def("readTypes",&ReadAmberParameters_O::readTypes)
-	.def("readParameters",&ReadAmberParameters_O::readParameters)
-    ;
-#endif
-#endif //]
-}
 
 
 
-    EXPOSE_CLASS(chem,ReadAmberParameters_O);
+
 };
 
 

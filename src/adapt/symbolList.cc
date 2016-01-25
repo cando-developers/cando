@@ -45,21 +45,12 @@ THE SOFTWARE.
 
 namespace adapt {
 
-EXPOSE_CLASS(adapt, SymbolList_O);
 
-void SymbolList_O::exposeCando(Lisp_sp lisp) {
-  class_<SymbolList_O>();
-}
 
-void SymbolList_O::exposePython(Lisp_sp lisp) {
-  _G();
-#ifdef USEBOOSTPYTHON
-  PYTHON_CLASS(AdaptPkg, SymbolList, "", "", _lisp);
-#endif
-}
+
 
 string SymbolList_O::asString() {
-  _G();
+  
   stringstream ss;
   SymbolList_O::iterator si;
   string nm;
@@ -86,24 +77,24 @@ void SymbolList_O::clear() {
 }
 
 void SymbolList_O::prepend(Symbol_sp str) {
-  _G();
+  
   this->_Contents.insert(this->_Contents.begin(), str);
 }
 
 void SymbolList_O::append(Symbol_sp str) {
-  _G();
+  
   this->_Contents.push_back(str);
 }
 
 void SymbolList_O::appendSymbolList(SymbolList_sp s) {
-  _G();
+  
   s->map([this](Symbol_sp s) {
                 this->_Contents.push_back(s);
   });
 }
 
 void SymbolList_O::appendConsOfStrings(List_sp s) {
-  _G();
+  
 
   for (auto cur : s) {
     Symbol_sp sym = _lisp->intern(gc::As<Str_sp>(oCar(cur))->get());
@@ -112,7 +103,7 @@ void SymbolList_O::appendConsOfStrings(List_sp s) {
 }
 
 void SymbolList_O::setFromVectorStrings(VectorStrings vs) {
-  _G();
+  
   VectorStrings::iterator it;
   this->clear();
   for (it = vs.begin(); it != vs.end(); it++) {
@@ -122,7 +113,7 @@ void SymbolList_O::setFromVectorStrings(VectorStrings vs) {
 }
 
 bool SymbolList_O::contains(Symbol_sp nm) {
-  _G();
+  
   for (auto it = this->_Contents.begin(); it != this->_Contents.end(); it++) {
     if ((*it) == nm)
       return true;
@@ -131,7 +122,7 @@ bool SymbolList_O::contains(Symbol_sp nm) {
 }
 
 int SymbolList_O::indexOf(Symbol_sp nm) {
-  _G();
+  
   LOG(BF("Looking for string(%s)") % nm->__repr__());
   for (auto it = this->_Contents.begin(); it != this->_Contents.end(); it++) {
     LOG(BF("   Looking at SymbolList entry(%s)") % (*it)->__repr__());

@@ -99,7 +99,7 @@ struct FormulaMonomerRec
     core::Symbol_sp	_PdbCode;
     string	        _FormulaTerm[MAX_FORMULA_TERMS];
     void parse(const string& line)
-    {_G();
+    {
 	vector<string>	parts;
 	parts = core::split(line," ");
 	this->_PdbCode = chemkw_intern(parts[1]);
@@ -120,7 +120,7 @@ struct FormulaMonomerRec
 
 
 CL_DEFUN PdbMonomerDatabase_sp chem__readPdbMonomerConnectivityDatabase(const string& fileName)
-    {_G();
+    {
 	char buffer[1024];
         std::ifstream myfile( fileName.c_str() );
 	PdbMonomerDatabase_sp monomerDatabase = PdbMonomerDatabase_O::create();
@@ -175,23 +175,8 @@ CL_DEFUN PdbMonomerDatabase_sp chem__readPdbMonomerConnectivityDatabase(const st
 
 
 
-EXPOSE_CLASS(chem,PdbMonomerConnectivity_O);
 
-    void PdbMonomerConnectivity_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<PdbMonomerConnectivity_O>()
-	;
-//	core::af_def(ChemPkg,"readPdbMonomerConnectivityDatabase",&readPdbMonomerConnectivityDatabase);
-    }
 
-void PdbMonomerConnectivity_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg,PdbMonomerConnectivity,"","",_lisp)
-	;
-#endif
-//	core::af_def(ChemPkg,"readPdbMonomerConnectivityDatabase",&readPdbMonomerConnectivityDatabase);
-    }
 
 
 
@@ -310,20 +295,7 @@ bool PdbMonomerConnectivity_O::hasConnection(MatterName a1, MatterName a2 )
 
 
 
-EXPOSE_CLASS(chem,PdbMonomerDatabase_O);
-    void PdbMonomerDatabase_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<PdbMonomerDatabase_O>()
-	    .def("connectAtoms", &PdbMonomerDatabase_O::connectAtoms);
-    }
 
-void PdbMonomerDatabase_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg,PdbMonomerDatabase,"","",_lisp)
-	    .def("connectAtoms", &PdbMonomerDatabase_O::connectAtoms);
-#endif
-    }
 
 
 

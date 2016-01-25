@@ -62,7 +62,7 @@ namespace omm
     }
 
     void initializeOpenmmConstants(core::Lisp_sp lisp)
-    {_G();
+    {
 	LOG(BF("Initializing constants and enums for OpenMM"));
 	lisp->inPackage(OmmPkg);
 
@@ -213,7 +213,7 @@ namespace omm
 
 
     Context_sp Context_O::create(System_sp system, Integrator_sp integrator, core::Lisp_sp lisp)
-    {_G();
+    {
 	Context_sp context = RP_Create<Context_O>(lisp);
 	context->setup(system,integrator,lisp->nil<Platform_O>());
 	return context;
@@ -631,12 +631,12 @@ namespace omm
 
 
     int wrap_Platform_getNumPlatforms(core::Lisp_sp lisp)
-    {_G();
+    {
 	return OpenMM::Platform::getNumPlatforms();
     }
 
     Platform_sp wrap_Platform_getPlatform(int idx, core::Lisp_sp lisp)
-    {_G();
+    {
 	if ( idx < 0 || idx >= OpenMM::Platform::getNumPlatforms() ) 
 	{
 	    THROW(lisp->error(BF("Illegal platform index[%d] must be between 0 and %d") % idx % (OpenMM::Platform::getNumPlatforms()-1) ));
@@ -647,7 +647,7 @@ namespace omm
     }
 
     Platform_sp wrap_Platform_getPlatformByName(string const& name, core::Lisp_sp lisp)
-    {_G();
+    {
 	OpenMM::Platform& p = OpenMM::Platform::getPlatformByName(name);
 	Platform_sp op = wrap_ommObject(&p,metaClassForOmmClass<OpenMM::Platform>(lisp),lisp).as<Platform_O>();
 	return op;
@@ -655,7 +655,7 @@ namespace omm
 
 
     core::Cons_sp wrap_Platform_loadPluginsFromDirectory( string const& directoryName, core::Lisp_sp lisp)
-    {_G();
+    {
 	vector<string> plugins = OpenMM::Platform::loadPluginsFromDirectory(directoryName);
 	core::Cons_sp first = core::Cons_O::create(_lisp->onil(),_lisp);
 	core::Cons_sp cur = first;

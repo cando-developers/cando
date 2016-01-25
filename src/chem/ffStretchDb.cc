@@ -24,8 +24,6 @@ namespace chem
 {
 
 
-    EXPOSE_CLASS(chem, FFStretch_O );
-    EXPOSE_CLASS(chem, FFStretchDb_O );
 
 
 
@@ -54,21 +52,7 @@ void	EstimateStretch::parseFromXml(adapt::QDomNode_sp node)
 
 
 
-    void FFStretchDb_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<FFStretchDb_O>()
-	    .def("findTerm",&FFStretchDb_O::findTerm)
-	    ;
-    }
 
-    void FFStretchDb_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,FFStretchDb,"","",_lisp)
-	    .def("findTerm",&FFStretchDb_O::findTerm)
-	    ;
-#endif
-    }
 
 
 void	FFStretchDb_O::initialize()
@@ -177,19 +161,7 @@ void	FFStretchDb_O::fields(core::Record_sp node)
   node->/*pod_*/field( INTERN_(kw,map),this->_Lookup );
 }
 
-    void FFStretch_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<FFStretch_O>()
-	    ;
-    }
 
-    void FFStretch_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,FFStretch,"","",_lisp)
-	    ;
-#endif
-    }
 
 
 

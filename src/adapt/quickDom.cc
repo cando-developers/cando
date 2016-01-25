@@ -59,7 +59,7 @@ void MySaxDomHandler::setTopNode(QDomNode_O* n)
 }
 
 void	MySaxDomHandler::startElement() 
-{_G();
+{
 QDomNode_sp	newNode;
 QDomNode_O	*nd;
 string		attrName, attrVal;
@@ -96,7 +96,7 @@ int		i;
 
 
 void	MySaxDomHandler::endElement() 
-{_G();
+{
     if ( this->_currentNode != this->topNode ) 
     {
         this->_currentNode = this->_currentNode->getParent();
@@ -107,7 +107,7 @@ void	MySaxDomHandler::endElement()
 
 
 void	MySaxDomHandler::characters() 
-{_G();
+{
 //    LOG(BF("About to appendCharacters(%s)") % this->getData() );
     ASSERTP(this->_currentNode!=NULL,"currentNode is NULL and you are trying to write characters to it");
     this->_currentNode->appendCharacters(this->getData());
@@ -229,7 +229,7 @@ CL_DEFMETHOD core::List_sp QDomNode_O::children()
 
 CL_LISPIFY_NAME("writeToFileName");
 CL_DEFMETHOD void	QDomNode_O::writeToFileName( string fileName )
-{_G();
+{
     std::ofstream	out;
     out.open(fileName.c_str(), std::ios::out );
     this->writeXml( "", out );
@@ -247,7 +247,7 @@ CL_DEFMETHOD void	QDomNode_O::appendToFileName( string fileName )
 
 
 void	QDomNode_O::writeXml( string prefix, std::ostream& out )
-{_G();
+{
     gctools::Vec0<QDomNode_sp>::iterator	it;
 map<string,string>::iterator	attr;
 map<string,string>::iterator	abegin;
@@ -717,7 +717,7 @@ void	QDomNode_O::parseStream(core::Stream_sp fIn)
 #endif
 
 gc::Nilable<QDomNode_sp>  QDomNode_O::parse(core::T_sp stream)
-{_G();
+{
     MySaxDomHandler	handler;
     bool		res;
     QDomNode_sp	node;
@@ -760,7 +760,7 @@ stringstream	ss;
 
 CL_LISPIFY_NAME("addChild");
 CL_DEFMETHOD void	QDomNode_O::addChild(QDomNode_sp child)
-{_G();
+{
     if ( !child ) {
 	SIMPLE_ERROR(BF("You tried to add an empty child"));
     }
@@ -769,7 +769,7 @@ CL_DEFMETHOD void	QDomNode_O::addChild(QDomNode_sp child)
 
 
 void	QDomNode_O::fillVectorQDomNodesIfNameIs(int depth,QDomNode_sp me, VectorQDomNodes& vnodes, const string& name)
-{//_G();
+{//
     VectorQDomNodes	children;
     QDomNode_sp		child;
     if ( me->getLocalName() == name ) {
@@ -786,7 +786,7 @@ void	QDomNode_O::fillVectorQDomNodesIfNameIs(int depth,QDomNode_sp me, VectorQDo
 
 
 VectorQDomNodes QDomNode_O::gatherSubNodesWithName(const string& name)
-{//_G();
+{//
     VectorQDomNodes	vnodes;
     VectorQDomNodes	children;
     QDomNode_sp		child;
@@ -800,91 +800,8 @@ VectorQDomNodes QDomNode_O::gatherSubNodesWithName(const string& name)
 
 
 
-void QDomNode_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<QDomNode_O>()
-	.def("getLocalName", &QDomNode_O::getLocalName)
-	.def("isNamed", &QDomNode_O::isNamed)
-	.def("setLocalName", &QDomNode_O::setLocalName)
-	.def("getCharacters", &QDomNode_O::getCharacters)
-	.def("children",&QDomNode_O::children)
-	.def("isLeaf",&QDomNode_O::isLeaf)
-	.def("addChild", &QDomNode_O::addChild)
-	.def("numberOfChildren", &QDomNode_O::numberOfChildren)
-	.def("setCharacters", &QDomNode_O::setCharacters)
-	.def("dump", &QDomNode_O::dump)
-	.def("getAttribute", &QDomNode_O::getAttributeValueNoError)
-	.def("getAttributeDouble", &QDomNode_O::getAttributeDouble)
-	.def("getAttributeIntDefault", &QDomNode_O::getAttributeIntDefault)
-	.def("childWithName", &QDomNode_O::childWithName)
-	.def("onlyChild", &QDomNode_O::onlyChild)
-	.def("hasChildrenWithName", &QDomNode_O::hasChildrenWithName)
-	.def("hasAttribute", &QDomNode_O::hasAttribute)
-	.def("removeAttribute", &QDomNode_O::removeAttribute)
-//	.def("parseFile", &QDomNode_O::parseFile)
-	.def("addAttributeString",&QDomNode_O::addAttributeString)
-	.def("addAttributeDouble",&QDomNode_O::addAttributeDouble)
-	.def("addAttributeDoubleScientific",&QDomNode_O::addAttributeDoubleScientific)
-	.def("addAttributeInt",&QDomNode_O::addAttributeInt)
-	.def("writeToFileName",&QDomNode_O::writeToFileName)
-	.def("appendToFileName",&QDomNode_O::appendToFileName)
-	.def("saveAs",&QDomNode_O::saveAs)
-	.def("asString",&QDomNode_O::asString)
-	.def("getLineNumber",&QDomNode_O::getLineNumber)
-	;
-}
-void QDomNode_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef	USEBOOSTPYTHON
-    PYTHON_CLASS(AdaptPkg,QDomNode,"","",_lisp)
-#if 0
-	.def(boost::python::init<string>())
-	.def(boost::python::init<string,string>())
-	.add_property("childrenIterator",
-			boost::python::range(&QDomNode_O::begin_Children,
-				&QDomNode_O::end_Children ))
-	.def("getLocalName", &QDomNode_O::getLocalName)
-	.def("isNamed", &QDomNode_O::isNamed)
-	.def("setLocalName", &QDomNode_O::setLocalName)
-	.def("getCharacters", &QDomNode_O::getCharacters)
-	.def("addChild", &QDomNode_O::addChild)
-	.def("numberOfChildren", &QDomNode_O::numberOfChildren)
-	.def("setCharacters", &QDomNode_O::setCharacters)
-	.def("dump", &QDomNode_O::dump)
-	.def("getAttribute", &QDomNode_O::getAttributeValueNoError)
-	.def("getAttributeDouble", &QDomNode_O::getAttributeDouble)
-	.def("getAttributeIntDefault", &QDomNode_O::getAttributeIntDefault)
-	.def("childrenWithName", &QDomNode_O::python_childrenWithName)
-	.def("childWithName", &QDomNode_O::childWithName)
-	.def("onlyChild", &QDomNode_O::onlyChild)
-	.def("hasChildrenWithName", &QDomNode_O::hasChildrenWithName)
-	.def("getChildren", &QDomNode_O::python_getChildren)
-	.def("parseFileName", &QDomNode_O::parseFileName)
-	.def("open", &QDomNode_O::open)
-	.def("hasAttribute", &QDomNode_O::hasAttribute)
-	.def("removeAttribute", &QDomNode_O::removeAttribute)
-//	.def("parseFile", &QDomNode_O::parseFile)
-	.def("addAttributeString",&QDomNode_O::addAttributeString)
-	.def("addAttributeDouble",&QDomNode_O::addAttributeDouble)
-	.def("addAttributeDoubleScientific",&QDomNode_O::addAttributeDoubleScientific)
-	.def("addAttributeInt",&QDomNode_O::addAttributeInt)
-	.def("writeToFileName",&QDomNode_O::writeToFileName)
-	.def("appendToFileName",&QDomNode_O::appendToFileName)
-	.def("saveAs",&QDomNode_O::saveAs)
-	.def("asString",&QDomNode_O::asString)
-	.def("getLineNumber",&QDomNode_O::getLineNumber)
-	.def("gatherSubNodesWithName",&QDomNode_O::python_gatherSubNodesWithName)
-#endif
-	;
-
-//    boost::python::def("QuickDomFromString",&QDomNode_O::parseFromString);
-//    boost::python::register_exception_translator<XmlParseErr>(&xmlParseErrTranslator);
-#endif
-
-}
 
 
-EXPOSE_CLASS(adapt,QDomNode_O);
 
 };
 

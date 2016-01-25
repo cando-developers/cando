@@ -14,23 +14,7 @@ namespace chem
 
     SYMBOL_SC_(ChemPkg,iterateMatterSymbolConverter);
 
-    void IterateMatter_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<IterateMatter_O>()
-	    .def("initTopAndGoal",&IterateMatter_O::initTopAndGoal)
-	    .def("advance",&IterateMatter_O::advance)
-	    ;
-    }
 
-    void IterateMatter_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,IterateMatter,"","",_lisp)
-	    .def("initTopAndGoal",&IterateMatter_O::initTopAndGoal)
-	    .def("advance",&IterateMatter_O::advance)
-	    ;
-#endif
-    }
 
 
 
@@ -41,14 +25,14 @@ namespace chem
 #define DECL_IterateMatter_O_make ""
 #define DOCS_IterateMatter_O_make "make IterateMatter"
   IterateMatter_sp IterateMatter_O::make()
-  {_G();
+  {
     IMPLEMENT_ME();
   };
 
 #else
 
     core::T_sp  IterateMatter_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 	IMPLEMENT_ME();
 //	this->Base::oldLispInitialize(kargs,env);
 	// nothing
@@ -80,7 +64,7 @@ namespace chem
 
 CL_LISPIFY_NAME("initTopAndGoal");
 CL_DEFMETHOD     void IterateMatter_O::initTopAndGoal(Matter_sp top, int goal)
-    {_G();
+    {
 	ANN(top);
 	this->_Top = top;
 	if ( goal == ALL_MATTERS )
@@ -105,7 +89,7 @@ CL_DEFMETHOD     void IterateMatter_O::initTopAndGoal(Matter_sp top, int goal)
 
 CL_LISPIFY_NAME("advance");
 CL_DEFMETHOD     bool	IterateMatter_O::advance()
-    {_G();
+    {
 	if ( !this->_IsDone )
 	{
 	    bool d = this->_Loop.advance();
@@ -139,7 +123,7 @@ CL_DEFMETHOD     bool	IterateMatter_O::advance()
 
 
     IterateAtoms_sp IterateAtoms_O::create(Matter_sp top)
-    {_G();
+    {
 	GC_ALLOCATE(IterateAtoms_O, ia );
 	ia->initTopAndGoal(top,ATOMS);
 	return ia;
@@ -153,7 +137,7 @@ CL_DEFMETHOD     bool	IterateMatter_O::advance()
 #define DECL_chem__create_for_matter ""
 #define DOCS_chem__create_for_matter "createForMatter"
 CL_DEFUN core::T_sp chem__create_for_matter(Matter_sp matter)
-    {_G();
+    {
 	GC_ALLOCATE(IterateAtoms_O, ia );
 	ia->initTopAndGoal(matter,ATOMS);
 	return ia;
@@ -165,7 +149,7 @@ CL_DEFUN core::T_sp chem__create_for_matter(Matter_sp matter)
 #define DECL_IterateAtoms_O_make ""
 #define DOCS_IterateAtoms_O_make "make IterateAtoms"
   IterateAtoms_sp IterateAtoms_O::make(Matter_sp matter)
-  {_G();
+  {
       GC_ALLOCATE(IterateAtoms_O, me );
     me->initTopAndGoal(matter,ATOMS);
     return me;
@@ -174,7 +158,7 @@ CL_DEFUN core::T_sp chem__create_for_matter(Matter_sp matter)
 #else
 
     core::T_sp 	IterateAtoms_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 	this->Base::__init__(exec,args,env,lisp);
 	Matter_sp matter = env->lookup(lisp->internWithPackageName(ChemPkg,"matter")).as<Matter_O>();
 	this->initTopAndGoal(matter,ATOMS);
@@ -184,7 +168,7 @@ CL_DEFUN core::T_sp chem__create_for_matter(Matter_sp matter)
 #endif
 
     core::T_sp	IterateAtoms_O::currentObject()
-    {_G();
+    {
 	if ( this->isDone() ) return _Nil<core::T_O>();
 	return this->_Loop.getAtom();
     }
@@ -194,7 +178,7 @@ CL_DEFUN core::T_sp chem__create_for_matter(Matter_sp matter)
 
 
     IterateResidues_sp IterateResidues_O::create(Matter_sp top)
-    {_G();
+    {
 	GC_ALLOCATE(IterateResidues_O, ia );
 	ia->initTopAndGoal(top,RESIDUES);
 	return ia;
@@ -209,13 +193,13 @@ CL_DEFUN core::T_sp chem__create_for_matter(Matter_sp matter)
 #define DOCS_IterateResidues_O_createForMatter "IterateResidues_O_createForMatter"
 CL_LISPIFY_NAME(residues);
 CL_DEFUN core::T_sp IterateResidues_O::createForMatter(Matter_sp matter)
-    {_G();
+    {
 	return IterateResidues_O::create(matter);
     }
 
 
     core::T_sp	IterateResidues_O::currentObject()
-    {_G();
+    {
 	if ( this->isDone() ) return _Nil<core::T_O>();
 	return this->_Loop.getResidue();
     }
@@ -239,33 +223,33 @@ CL_DEFUN IterateBonds_sp IterateBonds_O::make(Matter_sp top)
 #define DECL_IterateBonds_O_createForMatter ""
 #define DOCS_IterateBonds_O_createForMatter "IterateBonds_O_createForMatter"
     core::T_sp IterateBonds_O::createForMatter(Matter_sp matter)
-    {_G();
+    {
 	return IterateBonds_O::make(matter);
     }
 
 
 
     core::T_sp	IterateBonds_O::currentObject()
-    {_G();
+    {
 	return this->sharedThis<IterateBonds_O>();
     }
 
 
 CL_LISPIFY_NAME("getAtom1");
 CL_DEFMETHOD     Atom_sp	IterateBonds_O::getAtom1()
-    {_G();
+    {
 	return this->_Loop.getAtom1();
     }
 
 CL_LISPIFY_NAME("getAtom2");
 CL_DEFMETHOD     Atom_sp	IterateBonds_O::getAtom2()
-    {_G();
+    {
 	return this->_Loop.getAtom2();
     }
 
 CL_LISPIFY_NAME("getBondOrder");
 CL_DEFMETHOD     int IterateBonds_O::getBondOrder()
-    {_G();
+    {
 	return this->_Loop.getBondOrder();
     }
 
@@ -288,21 +272,6 @@ CL_END_ENUM(_sym_iterateMatterSymbolConverter);
 
 
     
-    void IterateAtoms_O::exposeCando(core::Lisp_sp lisp)
-	{
-	    core::class_<IterateAtoms_O>()
-//		.def_raw("core:__init__",&IterateAtoms_O::__init__,"(self matter)")
-		;
-//	    Chem_temp_Defun(create_for_matter);
-	}
-
-    void IterateAtoms_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,IterateAtoms,"","",_lisp)
-	    ;
-#endif //]
-    }
 
 
 
@@ -310,62 +279,20 @@ CL_END_ENUM(_sym_iterateMatterSymbolConverter);
 
 
 
-    void IterateResidues_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<IterateResidues_O>()
-	    ;
-#if 0
-	af_def(ChemPkg,"residues",&IterateResidues_O::createForMatter,
-	       ARGS_IterateResidues_O_createForMatter,
-	       DECL_IterateResidues_O_createForMatter,
-	       DOCS_IterateResidues_O_createForMatter );
-#endif
-    }
-
-    void IterateResidues_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,IterateResidues,"","",_lisp)
-	    ;
-#endif //]
-    }
-
-
-
-
-
-    void IterateBonds_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<IterateBonds_O>()
-	    .def("getAtom1",&IterateBonds_O::getAtom1)
-	    .def("getAtom2",&IterateBonds_O::getAtom2)
-	    .def("getBondOrder",&IterateBonds_O::getBondOrder)
-	    ;
-#if 0
-	core::af_def(ChemPkg,"bonds", &IterateBonds_O::createForMatter,
-		     ARGS_IterateBonds_O_createForMatter,
-		     DECL_IterateBonds_O_createForMatter,
-		     DOCS_IterateBonds_O_createForMatter );
-#endif
-    }
-
-    void IterateBonds_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,IterateBonds,"","",_lisp)
-	    ;
-#endif //]
-    }
 
 
 
 
 
 
-    EXPOSE_CLASS(chem,IterateMatter_O);
-    EXPOSE_CLASS(chem,IterateAtoms_O);
-    EXPOSE_CLASS(chem,IterateResidues_O);
-    EXPOSE_CLASS(chem,IterateBonds_O);
+
+
+
+
+
+
+
+
 
 
 };

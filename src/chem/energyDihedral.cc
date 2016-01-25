@@ -404,7 +404,7 @@ void	EnergyDihedral_O::evaluateAll(
 		gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
 		gc::Nilable<NVector_sp>	hdvec,
                 gc::Nilable<NVector_sp> dvec)
-{ _G();
+{ 
     if ( this->_DebugEnergy ) 
     {
 	LOG_ENERGY_CLEAR();
@@ -778,19 +778,8 @@ int	fails = 0;
 
 
 
-void EnergyDihedral_O::exposeCando(core::Lisp_sp e)
-{
-    core::class_<EnergyDihedral_O>()
-    ;
-}
 
-void EnergyDihedral_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg,EnergyDihedral,"","",_lisp)
-	;
-#endif
-}
+
 
 
 void EnergyDihedral_O::initialize()
@@ -808,7 +797,6 @@ void EnergyDihedral_O::archiveBase(core::ArchiveP node)
 #endif
 
 
-EXPOSE_CLASS(chem,EnergyDihedral_O);
 };
 
 

@@ -20,33 +20,11 @@ namespace kinematics
     EXPOSE_CLASS_AND_GLOBALS(kinematics,Conformation_O);
 
     void Conformation_O::lisp_initGlobals(core::Lisp_sp lisp)
-    {_G();
-    }
-
-
-    void Conformation_O::exposeCando(core::Lisp_sp lisp)
     {
-	core::class_<Conformation_O>()
-//	    .def_raw("__init__",&Conformation_O::__init__,"(self &key oligomers)")
-	    .def("resizeMolecules",&Conformation_O::resizeMolecules)
-	    .def("buildMoleculeUsingOligomer",&Conformation_O::buildMoleculeUsingOligomer)
-	    .def("getFoldTree",&Conformation_O::getFoldTree)
-	    .def("getAtomTree",&Conformation_O::getAtomTree)
-	;
     }
 
-    void Conformation_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,Conformation,"","",_lisp)
-//	    .def_raw("__init__",&"(self &key oligomers)")
-	    .def("resizeMolecules",&Conformation_O::resizeMolecules)
-	    .def("buildMoleculeUsingOligomer",&Conformation_O::buildMoleculeUsingOligomer)
-	    .def("getFoldTree",&Conformation_O::getFoldTree)
-	    .def("getAtomTree",&Conformation_O::getAtomTree)
-	;
-#endif
-    }
+
+
 
 
 #if INIT_TO_FACTORIES
@@ -55,7 +33,7 @@ namespace kinematics
 #define DECL_Conformation_O_make ""
 #define DOCS_Conformation_O_make "make Conformation"
   Conformation_sp Conformation_O::make(core::List_sp oligomers)
-    {_G();
+    {
 	GC_ALLOCATE(Conformation_O, me );
         me->resizeMolecules(core::cl__length(oligomers));
       int moleculeId = 0;
@@ -69,7 +47,7 @@ namespace kinematics
 
 #else
     core::T_sp Conformation_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
       this->Base::__init__(exec,args,env,lisp);
       core::Cons_sp oligomerCons = translate::from_object<core::Cons_O>::convert(env->lookup(Pkg(),"oligomers"));
       this->resizeMolecules(oligomerCons->length());

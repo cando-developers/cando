@@ -35,7 +35,7 @@ void Coupling_O::initialize()
 }
 
 bool	Coupling_O::containsMonomer(Monomer_sp mon)
-{_G();
+{
     LOG(BF("checking if coupling(%s) contains monomer: %s") % this->description().c_str() % mon->description().c_str() );
     LOG(BF("About to check monomer1: %s") % this->getMonomer1()->description().c_str() );
     if ( mon == this->getMonomer1() ) { return true; };
@@ -48,7 +48,7 @@ bool	Coupling_O::containsMonomer(Monomer_sp mon)
 
 #ifdef XML_ARCHIVE
     void	Coupling_O::archiveBase(core::ArchiveP node)
-{_G();
+{
     this->Base::archiveBase(node);
     node->archiveWeakPointer("oligomer",this->_WeakOligomer );
     node->attribute("hasError", this->_HasError );
@@ -64,7 +64,7 @@ void	Coupling_O::setOligomer(Oligomer_sp o)
 
 
 void	Coupling_O::resetOligomer()
-{_G();
+{
     this->_WeakOligomer = _Nil<Oligomer_O>();
 }
 
@@ -92,7 +92,7 @@ Oligomer_sp	Coupling_O::getOligomer()
 /*! Strip off the in/out prefix character of a plug name to get a coupling name
  */
 CL_DEFUN core::Symbol_sp  DirectionalCoupling_O::couplingName(core::Symbol_sp name)
-    {_G();
+    {
 	string sname = name->symbolNameAsString();
 	LOG(BF("couplingName symbol[%s]  symbolNameAsString[%s]") % name->__repr__() % sname );
 	string	rest;
@@ -103,7 +103,7 @@ CL_DEFUN core::Symbol_sp  DirectionalCoupling_O::couplingName(core::Symbol_sp na
     }
 
 CL_DEFUN core::Symbol_sp DirectionalCoupling_O::inPlugName(core::Symbol_sp name)
-    {_G();
+    {
 	stringstream	ss;
 	ss.str("");
 	ss << IN_PLUG_PREFIX;
@@ -113,7 +113,7 @@ CL_DEFUN core::Symbol_sp DirectionalCoupling_O::inPlugName(core::Symbol_sp name)
 
 
 CL_DEFUN core::Symbol_sp DirectionalCoupling_O::outPlugName(core::Symbol_sp name)
-{_G();
+{
 stringstream	ss;
     ss.str("");
     ss << OUT_PLUG_PREFIX;
@@ -134,7 +134,7 @@ CL_DEFUN bool chem__is_in_plug_name(core::Symbol_sp plugName)
 
 
 CL_DEFUN core::Symbol_sp DirectionalCoupling_O::otherPlugName(core::Symbol_sp name)
-    {_G();
+    {
 	stringstream	ss;
 	ss.str("");
 	if ( DirectionalCoupling_O::isInPlugName(name) ) {
@@ -170,13 +170,13 @@ void DirectionalCoupling_O::initialize()
 
 
 void	DirectionalCoupling_O::resetIn()
-{_G();
+{
     this->_InMonomer = _Nil<Monomer_O>();
 };
 
 
 void	DirectionalCoupling_O::resetOut()
-{_G();
+{
     this->_OutMonomer = _Nil<Monomer_O>();
 };
 
@@ -184,7 +184,7 @@ void	DirectionalCoupling_O::resetOut()
 
 
     void	DirectionalCoupling_O::checkForErrors(core::T_sp statusMessageStream)
-{_G();
+{
     this->setHasError(false);
     ANN(this->_InMonomer);
     if ( this->_InMonomer.nilp() )
@@ -202,7 +202,7 @@ void	DirectionalCoupling_O::resetOut()
 
 CL_LISPIFY_NAME("throwIfBadConnections");
 CL_DEFMETHOD void	DirectionalCoupling_O::throwIfBadConnections()
-{_G();
+{
 Monomer_sp	mon;
 DirectionalCoupling_sp	coup;
     ANN(this->_InMonomer);
@@ -251,7 +251,7 @@ BAD:
 
 #ifdef XML_ARCHIVE
     void	DirectionalCoupling_O::archiveBase(core::ArchiveP node)
-{_G();
+{
     this->Base::archiveBase(node);
     node->attribute("name", this->_Name );
     node->archiveWeakPointer("inMonomer", this->_InMonomer );
@@ -261,7 +261,7 @@ BAD:
 
 
 bool	DirectionalCoupling_O::isInCouplingToMonomer(Monomer_sp mon)
-{_G();
+{
 		// Ring closing couplings are never in couplings
     ASSERTNOTNULL(this->_OutMonomer);
     	// If the out Monomer is mon then we are an in coupling to mon
@@ -308,7 +308,7 @@ Monomer_sp	DirectionalCoupling_O::getOutMonomer_const() const
  */
 CL_LISPIFY_NAME("getInMonomerPlugName");
 CL_DEFMETHOD     core::Symbol_sp	DirectionalCoupling_O::getInMonomerPlugName()
-{_G();
+{
     return DirectionalCoupling_O::outPlugName(this->_Name);
 }
 
@@ -318,7 +318,7 @@ CL_DEFMETHOD     core::Symbol_sp	DirectionalCoupling_O::getInMonomerPlugName()
  */
 CL_LISPIFY_NAME("getOutMonomerPlugName");
 CL_DEFMETHOD     core::Symbol_sp	DirectionalCoupling_O::getOutMonomerPlugName()
-{_G();
+{
     return DirectionalCoupling_O::inPlugName(this->_Name);
 }
 
@@ -357,7 +357,7 @@ ss << "DirectionalCoupling( "<< this->getName()->__repr__();
 
 CL_LISPIFY_NAME("setName");
 CL_DEFMETHOD     void	DirectionalCoupling_O::setName(core::Symbol_sp nm)
-{_G();
+{
     this->_Name = DirectionalCoupling_O::couplingName(nm);
     ANN(this->_InMonomer);
     if ( this->_InMonomer.notnilp() )
@@ -373,14 +373,14 @@ CL_DEFMETHOD     void	DirectionalCoupling_O::setName(core::Symbol_sp nm)
 
 
 void	DirectionalCoupling_O::setInMonomer_NoSignal(Monomer_sp m)
-{_G();
+{
     ASSERTNOTNULLP(m,"above monomer is undefined");
     this->_InMonomer = m->sharedThis<Monomer_O>();
     LOG(BF("Setting in monomer to (%s)") % m->description().c_str()  );
 }
 
 void	DirectionalCoupling_O::setOutMonomer_NoSignal(Monomer_sp m)
-{_G();
+{
     ASSERTNOTNULLP(m,"below monomer is undefined");
     this->_OutMonomer = m->sharedThis<Monomer_O>();
     LOG(BF("Setting out monomer to (%s)") % m->description().c_str()  );
@@ -390,14 +390,14 @@ void	DirectionalCoupling_O::setOutMonomer_NoSignal(Monomer_sp m)
 
 CL_LISPIFY_NAME("setInMonomer");
 CL_DEFMETHOD void	DirectionalCoupling_O::setInMonomer(Monomer_sp m)
-{_G();
+{
     this->setInMonomer_NoSignal(m);
 //    SIGNAL(this,Coupling_connectionsChanged);
 }
 
 CL_LISPIFY_NAME("setOutMonomer");
 CL_DEFMETHOD void	DirectionalCoupling_O::setOutMonomer(Monomer_sp m)
-{_G();
+{
     this->setOutMonomer_NoSignal(m);
 //    SIGNAL(this,Coupling_connectionsChanged);
 }
@@ -420,7 +420,7 @@ DirectionalCouplingSide DirectionalCoupling_O::couplingSideOfMonomer( Monomer_sp
 
 CL_LISPIFY_NAME("getOtherSideMonomer");
 CL_DEFMETHOD Monomer_sp	DirectionalCoupling_O::getOtherSideMonomer(Monomer_sp mon)
-{_G();
+{
     LOG(BF("About to check in monomer") );
     if ( mon == this->getInMonomer() ) { return this->getOutMonomer(); };
     LOG(BF("About to check out monomer") );
@@ -435,7 +435,7 @@ CL_DEFMETHOD Monomer_sp	DirectionalCoupling_O::getOtherSideMonomer(Monomer_sp mo
 
 
 void	DirectionalCoupling_O::doCoupling(Residue_sp inResidue, Residue_sp outResidue )
-{_G();
+{
 Monomer_sp	min, mout;
 PlugWithMates_sp	minPlug, moutPlug;
 Residue_wp	weakInRes, weakOutRes;
@@ -497,7 +497,7 @@ Atom_sp		inB0, outB0, inB1, outB1;
 
 
 Plug_sp	DirectionalCoupling_O::getPlugForMonomer(Monomer_sp mon)
-{_G();
+{
     if ( this->_InMonomer == mon ) {
 	core::Symbol_sp plugName = this->getInMonomerPlugName();
 	ASSERT(this->_InMonomer.notnilp());
@@ -509,7 +509,7 @@ Plug_sp	DirectionalCoupling_O::getPlugForMonomer(Monomer_sp mon)
 }
 
 Plug_sp	DirectionalCoupling_O::getPlugForOtherMonomer(Monomer_sp mon)
-{_G();
+{
     if ( this->_InMonomer == mon ) {
 	core::Symbol_sp plugName = this->getOutMonomerPlugName();
 	ASSERT(this->_OutMonomer.notnilp());
@@ -557,7 +557,7 @@ void RingCoupling_O::initialize()
 
 #ifdef XML_ARCHIVE
 void RingCoupling_O::archiveBase(core::ArchiveP node)
-{_G();
+{
     this->Base::archiveBase(node);
     node->attribute("plug1", this->_Plug1);
     node->attribute("plug2", this->_Plug2);
@@ -569,7 +569,7 @@ void RingCoupling_O::archiveBase(core::ArchiveP node)
 
 
     core::Symbol_sp RingCoupling_O::getName() const
-{_G();
+{
     string name = "ringCoupling["+this->_Plug1->symbolNameAsString()+">"+this->_Plug2->symbolNameAsString()+"]";
     return chemkw_intern(name);
 }
@@ -577,7 +577,7 @@ void RingCoupling_O::archiveBase(core::ArchiveP node)
 
 CL_LISPIFY_NAME("setMonomer1");
 CL_DEFMETHOD void	RingCoupling_O::setMonomer1(Monomer_sp mon)
-{_G();
+{
     this->_Monomer1 = mon;
 }
 
@@ -599,7 +599,7 @@ Monomer_sp RingCoupling_O::getMonomer1_const() const
 
 CL_LISPIFY_NAME("setMonomer2");
 CL_DEFMETHOD void	RingCoupling_O::setMonomer2(Monomer_sp mon)
-{_G();
+{
     this->_Monomer2 = mon;
 }
 
@@ -620,7 +620,7 @@ Monomer_sp RingCoupling_O::getMonomer2_const() const
 
 CL_LISPIFY_NAME("getOtherSideMonomer");
 CL_DEFMETHOD Monomer_sp	RingCoupling_O::getOtherSideMonomer(Monomer_sp mon)
-{_G();
+{
     LOG(BF("About to check in monomer") );
     if ( mon == this->getMonomer1() ) { return this->getMonomer2(); };
     LOG(BF("About to check out monomer") );
@@ -632,7 +632,7 @@ CL_DEFMETHOD Monomer_sp	RingCoupling_O::getOtherSideMonomer(Monomer_sp mon)
 
 
 void	RingCoupling_O::checkForErrors(core::T_sp errorStream)
-{_G();
+{
     this->setHasError(false);
     ANN(this->_Monomer1);
     if ( this->_Monomer1.nilp() )
@@ -649,7 +649,7 @@ void	RingCoupling_O::checkForErrors(core::T_sp errorStream)
 }
 
 void	RingCoupling_O::throwIfBadConnections()
-{_G();
+{
 Monomer_sp	mon;
 RingCoupling_sp	coup;
     ANN(this->_Monomer1);
@@ -748,7 +748,7 @@ ss << "RingCoupling( "<< this->getName()->__repr__();
 
 
 void	RingCoupling_O::doCoupling(Residue_sp inResidue, Residue_sp outResidue )
-{_G();
+{
 Monomer_sp	mon1, mon2;
 PlugWithMates_sp	mon1Plug, mon2Plug;
 Residue_wp	weakInRes, weakOutRes;
@@ -816,113 +816,17 @@ Atom_sp		inB0, outB0, inB1, outB1;
 
 
 
-void Coupling_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<Coupling_O>()
-	.def("doCoupling", &Coupling_O::doCoupling )
-	.def("throwIfBadConnections",&Coupling_O::throwIfBadConnections)
-	.def("Coupling-checkForErrors",&Coupling_O::checkForErrors)
-	.def("getHasError",&Coupling_O::getHasError)
-	.def("isSelected",&Coupling_O::isSelected)
-	.def("setSelected",&Coupling_O::setSelected)
-	;
-}
-
-void Coupling_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef	USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg,Coupling,"","",_lisp)
-	.def("doCoupling", &Coupling_O::doCoupling )
-	.def("throwIfBadConnections",&Coupling_O::throwIfBadConnections)
-	.def("checkForErrors",&Coupling_O::checkForErrors)
-	.def("getHasError",&Coupling_O::getHasError)
-	.def("getStatusMessage",&Coupling_O::getStatusMessage)
-	.def("isSelected",&Coupling_O::isSelected)
-	.def("setSelected",&Coupling_O::setSelected)
-	;
-//    boost::python::def("create_Coupling",&Coupling_O::create );
-#endif
-}
 
 
 
-void DirectionalCoupling_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<DirectionalCoupling_O>()
-	.def("getName", &DirectionalCoupling_O::getName,"","","",false)
-	.def("setName", &DirectionalCoupling_O::setName,"","","",false)
-	.def("getOtherSideMonomer", &DirectionalCoupling_O::getOtherSideMonomer)
-	.def("getInMonomer", &DirectionalCoupling_O::getInMonomer)
-	.def("setInMonomer", &DirectionalCoupling_O::setInMonomer)
-	.def("getInMonomerPlugName", &DirectionalCoupling_O::getInMonomerPlugName)
-	.def("getOutMonomerPlugName", &DirectionalCoupling_O::getOutMonomerPlugName)
-	.def("getOutMonomer", &DirectionalCoupling_O::getOutMonomer)
-	.def("setOutMonomer", &DirectionalCoupling_O::setOutMonomer)
-//	.def("couple", &DirectionalCoupling_O::couple)
-//	.def("doDirectionalCoupling", &DirectionalCoupling_O::doDirectionalCoupling )
-	.def("throwIfBadConnections",&DirectionalCoupling_O::throwIfBadConnections)
-	;
-//    core::af_def(ChemPkg,"DirectionalCoupling_otherSidePlugName", &DirectionalCoupling_O::otherPlugName);
-//    core::af_def(ChemPkg,"DirectionalCoupling_isInPlugName", &DirectionalCoupling_O::isInPlugName);
-//    core::af_def(ChemPkg,"DirectionalCoupling_inPlugName", &DirectionalCoupling_O::inPlugName);
-//    core::af_def(ChemPkg,"DirectionalCoupling_couplingName", &DirectionalCoupling_O::couplingName);
-//    core::af_def(ChemPkg,"DirectionalCoupling_outPlugName", &DirectionalCoupling_O::outPlugName);
-}
-void DirectionalCoupling_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef	USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg,DirectionalCoupling,"","",_lisp)
-//	.def("getName", &DirectionalCoupling_O::getName,"","","",false)
-//	.def("setName", &DirectionalCoupling_O::setName,"","","",false)
-	.def("getOtherSideMonomer", &DirectionalCoupling_O::getOtherSideMonomer)
-	.def("getInMonomer", &DirectionalCoupling_O::getInMonomer)
-	.def("setInMonomer", &DirectionalCoupling_O::setInMonomer)
-	.def("getInMonomerPlugName", &DirectionalCoupling_O::getInMonomerPlugName)
-	.def("getOutMonomerPlugName", &DirectionalCoupling_O::getOutMonomerPlugName)
-	.def("getOutMonomer", &DirectionalCoupling_O::getOutMonomer)
-	.def("setOutMonomer", &DirectionalCoupling_O::setOutMonomer)
-//	.def("couple", &DirectionalCoupling_O::couple)
-//	.def("doDirectionalCoupling", &DirectionalCoupling_O::doDirectionalCoupling )
-	.def("throwIfBadConnections",&DirectionalCoupling_O::throwIfBadConnections)
-	;
-//    boost::python::def("create_DirectionalCoupling",&DirectionalCoupling_O::create );
-#endif
-}
-;
 
 
-void RingCoupling_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<RingCoupling_O>()
-	.def("getOtherSideMonomer", &RingCoupling_O::getOtherSideMonomer)
-	.def("getMonomer1", &RingCoupling_O::getMonomer1)
-	.def("setMonomer1", &RingCoupling_O::setMonomer1)
-	.def("getPlug1", &RingCoupling_O::getPlug1)
-	.def("getPlug2", &RingCoupling_O::getPlug2)
-	.def("getMonomer2", &RingCoupling_O::getMonomer2)
-	.def("setMonomer2", &RingCoupling_O::setMonomer2)
-//	.def("couple", &RingCoupling_O::couple)
-//	.def("doRingCoupling", &RingCoupling_O::doRingCoupling )
-	;
-}
-void RingCoupling_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef	USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg,RingCoupling,"","",_lisp)
-	.def("getOtherSideMonomer", &RingCoupling_O::getOtherSideMonomer)
-	.def("getMonomer1", &RingCoupling_O::getMonomer1)
-	.def("setMonomer1", &RingCoupling_O::setMonomer1)
-	.def("getPlug1", &RingCoupling_O::getPlug1)
-	.def("getPlug2", &RingCoupling_O::getPlug2)
-	.def("getMonomer2", &RingCoupling_O::getMonomer2)
-	.def("setMonomer2", &RingCoupling_O::setMonomer2)
-	;
-#endif
-}
 
 
-EXPOSE_CLASS(chem,Coupling_O);
-EXPOSE_CLASS(chem,DirectionalCoupling_O);
-EXPOSE_CLASS(chem,RingCoupling_O);
+
+
+
+
+
 };
 

@@ -169,7 +169,7 @@ void	EnergyFixedNonbondRestraint_O::zeroEnergy()
 
 
 double	EnergyFixedNonbondRestraint_O::getEnergy()
-{_G();
+{
 double	e;
     e = this->getVdwEnergy();
     e += this->getElectrostaticEnergy();
@@ -180,7 +180,7 @@ double	e;
 
 
 void	EnergyFixedNonbondRestraint_O::addFixedAtom(FFNonbondDb_sp nonbondDb, Atom_sp fa)
-{_G();
+{
     FixedNonbondRestraint entry;
     entry._FixedAtom = fa;
     entry._FixedCharge = fa->getCharge();
@@ -215,7 +215,7 @@ string					str1, str2, str3, str4;
 
 #ifdef RENDER
 int EnergyFixedNonbondRestraint_O::countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn)
-{_G();
+{
 IMPLEMENT_ME();
 #if 0
 vector<FixedNonbondRestraint>::iterator	eni;
@@ -290,7 +290,7 @@ void	EnergyFixedNonbondRestraint_O::evaluateAll(
 		gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
 		gc::Nilable<NVector_sp>	hdvec,
                 gc::Nilable<NVector_sp> dvec)
-{_G();
+{
     if ( this->_DebugEnergy ) 
     {
 	LOG_ENERGY_CLEAR();
@@ -593,19 +593,8 @@ int	fails = 0;
 
 
 
-void EnergyFixedNonbondRestraint_O::exposeCando(core::Lisp_sp e)
-{
-    core::class_<EnergyFixedNonbondRestraint_O>()
-    ;
-}
 
-    void EnergyFixedNonbondRestraint_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,EnergyFixedNonbondRestraint,"","",_lisp)
-	;
-#endif
-}
+
 
 void EnergyFixedNonbondRestraint_O::initialize()
 {
@@ -628,7 +617,6 @@ void EnergyFixedNonbondRestraint_O::archiveBase(core::ArchiveP node)
 #endif
 
 
-    EXPOSE_CLASS(chem,EnergyFixedNonbondRestraint_O);
 };
 
 

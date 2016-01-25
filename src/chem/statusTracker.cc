@@ -9,7 +9,6 @@
 
 namespace chem {
 
-    REGISTER_CLASS(chem,StatusTracker_O);
 
 
 
@@ -48,7 +47,7 @@ void	StatusTracker_O::initialize()
 
 #ifdef XML_ARCHIVE
     void	StatusTracker_O::archive(core::ArchiveP node)
-{_G();
+{
     node->attribute("hasError", this->_HasError );
     node->archiveStringStreamIfDefined("ErrorMessages",this->_ErrorStream);
     node->archiveStringStreamIfDefined("Messages",this->_MessageStream);
@@ -60,7 +59,7 @@ void	StatusTracker_O::initialize()
 
 
 void	StatusTracker_O::addMessage(const string& msg)
-{_G();
+{
     LOG(BF("Message: %s") % msg.c_str()  );
     this->_MessageStream << msg << std::endl;
 }
@@ -70,7 +69,7 @@ void	StatusTracker_O::addMessage(const string& msg)
 
 
 void	StatusTracker_O::addError(const string& msg)
-{_G();
+{
     LOG(BF("Message: %s") % msg.c_str()  );
     this->_HasError = true;
     this->_ErrorStream << msg << std::endl;
@@ -82,14 +81,14 @@ void	StatusTracker_O::addError(const string& msg)
 
 
 void	StatusTracker_O::reset()
-{_G();
+{
     this->_HasError = false;
     this->_ErrorStream.str("");
     this->_MessageStream.str("");
 }
 
 string	StatusTracker_O::getStatus()
-{_G();
+{
 stringstream	stuff;
     stuff.str("");
     stuff << this->_MessageStream.str();
@@ -103,7 +102,7 @@ stringstream	stuff;
 
 
 StatusTracker_sp	StatusTracker_O::copy()
-{_G();
+{
     GC_COPY(StatusTracker_O, stnew , *this); // = RP_Copy<StatusTracker_O>(this);
     return stnew;
 }

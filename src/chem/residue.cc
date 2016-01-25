@@ -56,7 +56,7 @@ CL_DEFMETHOD bool	Residue_O::hasConstitution()
 };
 
 void	Residue_O::setConstitution(Constitution_sp cc)
-{_G();
+{
    DEPRECIATED();
 #if 0
    ANN(cc);
@@ -67,7 +67,7 @@ void	Residue_O::setConstitution(Constitution_sp cc)
 
 
 bool	Residue_O::equal(core::T_sp obj) const
-{_G();
+{
     if ( this->eq(obj) ) return true;
     if ( !obj.isA<Residue_O>() ) return false;
     Residue_sp other = obj.as<Residue_O>();
@@ -84,7 +84,7 @@ bool	Residue_O::equal(core::T_sp obj) const
 
 
 void Residue_O::transferCoordinates(Matter_sp obj)
-{_G();
+{
     if ( !obj.isA<Residue_O>() ) 
     {
 	SIMPLE_ERROR(BF("You can only transfer coordinates to a Residue from another Residue"));
@@ -106,7 +106,7 @@ void Residue_O::transferCoordinates(Matter_sp obj)
 
 CL_LISPIFY_NAME("getConstitution");
 CL_DEFMETHOD Constitution_sp	Residue_O::getConstitution()
-{_G();
+{
     IMPLEMENT_MEF(BF("Handle ownerWithClass"));
 #if 0
     // Constitution_sp c = this->ownerWithClass<Constitution_O>();
@@ -132,19 +132,19 @@ CL_DEFMETHOD void	Residue_O::addAtom(Atom_sp a)
 
 
 bool Residue_O::recognizesMonomerAlias(core::Symbol_sp s)
-{_G();
+{
     if ( this->_MonomerAliases.nilp() ) return false;
     return this->_MonomerAliases->contains(s);
 }
 
 void	Residue_O::setMonomerAliases(adapt::SymbolSet_sp s)
-{_G();
+{
     this->_MonomerAliases = s;
 }
 
 CL_LISPIFY_NAME("addMonomerAlias");
 CL_DEFMETHOD void Residue_O::addMonomerAlias(core::Symbol_sp s)
-{_G();
+{
     if (this->_MonomerAliases.nilp() )
     {
 	this->_MonomerAliases = adapt::SymbolSet_O::create();
@@ -155,14 +155,14 @@ CL_DEFMETHOD void Residue_O::addMonomerAlias(core::Symbol_sp s)
 
 
 adapt::SymbolSet_sp Residue_O::getMonomerAliases()
-{_G();
+{
     ASSERTNOTNULL(this->_MonomerAliases);
     return this->_MonomerAliases;
 }
 
 
 void	Residue_O::addVirtualAtom(MatterName name, CalculatePosition_sp proc)
-{_G();
+{
     LOG(BF("Residue_O::addVirtualAtom adding virtual atom with name(%s) in residue(%s)") % _rep_(name) % _rep_(this->getName())  );
     if ( this->hasAtomWithName(name) )
     {
@@ -282,7 +282,7 @@ void	Residue_O::duplicateFrom( const Residue_O* r )
 
 
 Matter_sp	Residue_O::copyDontRedirectAtoms()
-{_G();
+{
     contentIterator	a;
     Atom_sp				acopy;
     Atom_sp				aorig;
@@ -321,7 +321,7 @@ void Residue_O::redirectAtoms()
 
 CL_LISPIFY_NAME("copy");
 CL_DEFMETHOD Matter_sp Residue_O::copy()
-{ _G();
+{ 
     Residue_sp newRes = this->copyDontRedirectAtoms().as<Residue_O>();
     newRes->redirectAtoms();
     return newRes;
@@ -331,7 +331,7 @@ CL_DEFMETHOD Matter_sp Residue_O::copy()
 
 CL_LISPIFY_NAME("removeAtomsWithNames");
 CL_DEFMETHOD void Residue_O::removeAtomsWithNames(core::List_sp args)
-{_G();
+{
   for ( auto c : args ) {
     MatterName atomName = oCar(c).as<MatterName::Type>();
     Atom_sp a = this->atomWithName(atomName);
@@ -369,7 +369,7 @@ LOG(BF("Residue_O::removeAtomDeleteBonds setting atom %x parent to null") % &a  
 
 CL_LISPIFY_NAME("containsAtom");
 CL_DEFMETHOD bool	Residue_O::containsAtom(Atom_sp a)
-{_G();
+{
     Residue_sp res = a->getResidueContainedBy();
     if ( res.get() == this ) return true;
     return false;
@@ -406,7 +406,7 @@ LOG(BF("Residue_O::removeAtomDeleteBonds setting atom %x parent to null") % &a  
 
 
 void Residue_O::fillInImplicitHydrogens()
-{_G();
+{
     gctools::Vec0<Atom_sp>	atoms;
 contentIterator	aCur;
 	/* fillInImplicitHydrogens will add more atoms to 
@@ -428,7 +428,7 @@ contentIterator	aCur;
 
 CL_LISPIFY_NAME("testIfAllAtomNamesAreUnique");
 CL_DEFMETHOD bool Residue_O::testIfAllAtomNamesAreUnique(core::T_sp problemStream)
-{_G();
+{
     FIX_ME();
 #if 0
     set<string> uniqueNames;
@@ -509,7 +509,7 @@ void Residue_O::makeAllAtomNamesInEachResidueUnique()
 
 
 void Residue_O::setAliasesForAtoms(core::List_sp aliasAtoms, core::List_sp atomAliases)
-{_G();
+{
   ASSERT_eq(core::cl__length(aliasAtoms),core::cl__length(atomAliases));
     while ( aliasAtoms.notnilp() )
     {
@@ -529,7 +529,7 @@ void Residue_O::setAliasesForAtoms(core::List_sp aliasAtoms, core::List_sp atomA
 //	Return a set of all unique atom names
 CL_LISPIFY_NAME("getAtomNamesAsSymbolSet");
 CL_DEFMETHOD adapt::SymbolSet_sp	Residue_O::getAtomNamesAsSymbolSet()
-{_G();
+{
 contentIterator	atom;
 Atom_sp				aTemp;
 adapt::SymbolSet_sp unique = adapt::SymbolSet_O::create();
@@ -617,7 +617,7 @@ Atom_sp				a;
 
 
 Atom_sp Residue_O::atomWithAliasOrNil(core::Symbol_sp alias)
-{_G();
+{
 contentIterator	aCur;
     for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ )
     {
@@ -632,7 +632,7 @@ contentIterator	aCur;
 }
 
 Atom_sp Residue_O::atomWithAlias(core::Symbol_sp alias)
-{_G();
+{
     Atom_sp a = this->atomWithAliasOrNil(alias);
     if ( a.notnilp() ) return a;
     LOG(BF("Matter(%s) with %d contents does not contain content with alias(%s)") % this->name.c_str() % this->_contents.size() % alias->__repr__()  );
@@ -655,7 +655,7 @@ Atom_sp				a;
 }
 
 Vector3 Residue_O::positionOfAtomWithName(MatterName name)
-{_G();
+{
     Atom_sp a = this->atomWithName(name);
     return a->getPosition();
 }
@@ -685,7 +685,7 @@ Atom_sp				a;
 }
 
 uint Residue_O::numberOfAtoms()
-{_G();
+{
     return this->_contents.size();
 }
 
@@ -728,95 +728,14 @@ uint Residue_O::numberOfAtoms()
 
 CL_LISPIFY_NAME(make-residue);
 CL_DEFUN Residue_sp Residue_O::make(MatterName name)
-{_G();
+{
     GC_ALLOCATE(Residue_O,me);
     me->setName(name);
     return me;
 };
 
 
-void Residue_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<Residue_O>()
-//	    .def_raw("core:__init__",&Residue_O::__init__,"(self &key name)")
-//	.add_property("iterate_atoms",
-//			boost::python::range(&Residue_O::begin_atoms,
-//				&Residue_O::end_atoms))
-	.def("addMonomerAlias",&Residue_O::addMonomerAlias)
-          .def("getFileSequenceNumber",&Residue_O::getFileSequenceNumber)
-	.def("setPdbName",&Residue_O::setPdbName)
-	.def("getPdbName",&Residue_O::getPdbName)
-	.def("addAtom",&Residue_O::addAtom)
-	.def("removeAtomsWithNames",&Residue_O::removeAtomsWithNames)
-	.def("hasConstitution",&Residue_O::hasConstitution)
-	.def("getConstitution",&Residue_O::getConstitution)
-	.def("removeAtomDeleteBonds",&Residue_O::removeAtomDeleteBonds)
-	.def("removeAtomDontDeleteBonds",&Residue_O::removeAtomDontDeleteBonds)
-//	.def("getRestraints",&Residue_O::getRestraints)
-	.def("atomWithName",&Residue_O::atomWithName)
-	.def("atomWithId",&Residue_O::atomWithId)
-	.def("hasAtomWithId",&Residue_O::hasAtomWithId)
-	.def("hasAtomWithName",&Residue_O::hasAtomWithName)
-	.def("containsAtom",&Residue_O::containsAtom)
-#if 0
-	.def("getHandleForAtomNamed",&Residue_O::getHandleForAtomNamed)
-	.def("getHandleForAtomId",&Residue_O::getHandleForAtomId)
-	.def("getHandleForAtom",&Residue_O::getHandleForAtom)
-	.def("atomFromHandle",&Residue_O::atomFromHandle)
-#endif
-	.def("firstAtom",&Residue_O::firstAtom)
-	    .def("copy",&Residue_O::copy,"","","",false)
-	.def("testIfAllAtomNamesAreUnique",&Residue_O::testIfAllAtomNamesAreUnique)
-	.def("setNetCharge",&Residue_O::setNetCharge)
-	.def("getNetCharge",&Residue_O::getNetCharge)
-	.def("testResidueConsistancy",&Residue_O::testResidueConsistancy)
-	.def("useAtomCoordinatesToDefineAnchors",&Residue_O::useAtomCoordinatesToDefineAnchors)
-	.def("getAtomNamesAsSymbolSet",&Residue_O::getAtomNamesAsSymbolSet)
-	;
-//	Defun_maker(ChemPkg,Residue);
-    }
-
-void Residue_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg,Residue,"","",_lisp)
-	.def("this_address",&Residue_O::this_address)
-//	.add_property("iterate_atoms",
-//			boost::python::range(&Residue_O::begin_atoms,
-//				&Residue_O::end_atoms))
-	.def("addMonomerAlias",&Residue_O::addMonomerAlias)
-	.def("setPdbName",&Residue_O::setPdbName)
-	.def("getPdbName",&Residue_O::getPdbName)
-	.def("addAtom",&Residue_O::addAtom)
-	.def("removeAtomsWithNames",&Residue_O::removeAtomsWithNames)
-	.def("hasConstitution",&Residue_O::hasConstitution)
-	.def("getConstitution",&Residue_O::getConstitution)
-	.def("removeAtomDeleteBonds",&Residue_O::removeAtomDeleteBonds)
-	.def("removeAtomDontDeleteBonds",&Residue_O::removeAtomDontDeleteBonds)
-//	.def("getRestraints",&Residue_O::getRestraints)
-	.def("atomWithName",&Residue_O::atomWithName)
-	.def("atomWithId",&Residue_O::atomWithId)
-	.def("hasAtomWithId",&Residue_O::hasAtomWithId)
-	.def("hasAtomWithName",&Residue_O::hasAtomWithName)
-	.def("containsAtom",&Residue_O::containsAtom)
-#if 0
-	.def("getHandleForAtomNamed",&Residue_O::getHandleForAtomNamed)
-	.def("getHandleForAtomId",&Residue_O::getHandleForAtomId)
-	.def("getHandleForAtom",&Residue_O::getHandleForAtom)
-	.def("atomFromHandle",&Residue_O::atomFromHandle)
-#endif
-	.def("firstAtom",&Residue_O::firstAtom)
-	.def("copy",&Residue_O::copy)
-	.def("testIfAllAtomNamesAreUnique",&Residue_O::testIfAllAtomNamesAreUnique)
-	.def("setNetCharge",&Residue_O::setNetCharge)
-	.def("getNetCharge",&Residue_O::getNetCharge)
-	.def("testResidueConsistancy",&Residue_O::testResidueConsistancy)
-	.def("useAtomCoordinatesToDefineAnchors",&Residue_O::useAtomCoordinatesToDefineAnchors)
-	.def("getAtomNamesAsStringSet",&Residue_O::getAtomNamesAsStringSet)
-	;
-#endif
-    }
 
 
-EXPOSE_CLASS(chem, Residue_O);
+
 };

@@ -10,7 +10,7 @@
 namespace chem
 {
 void parseChimeraAtomSpecification(const string& spec, uint& sequenceNumber, string& chain, string& atomName)
-{_G();
+{
   uint 	residueStart;
   size_t atomNameStart;
   atomNameStart = spec.find_first_of("@")+1;
@@ -46,7 +46,7 @@ that look like:   #1:1.A@H_289092  into a list of lists that have the form:
 The chain-id and atom-name will be CKW keyword symbols.
 */
 CL_DEFUN core::List_sp chem__parseChimeraAtomSpecs(const string& spec)
-{_G();
+{
   vector<string> specs = core::split(spec," \n\t");
   core::List_sp result(_Nil<core::T_O>());
   uint sequenceNumber;

@@ -12,7 +12,7 @@ namespace chem {
 void	unconventionalModifiedCholeskySymbolicFactorization(
 			AbstractLargeSquareMatrix_sp 	m,
 			AbstractLargeSquareMatrix_sp	ldlt )
-{_G();
+{
 int	dim, j;
 #define	TAO	10.0	// See Schlick paper page 10, top paragraph
 
@@ -38,7 +38,7 @@ void	unconventionalModifiedCholeskyFactorization(
 			SparseLargeSquareMatrix_sp 	m,
 			SparseLargeSquareMatrix_sp	ldlt,
 			NVector_sp			nvKSum)
-{_G();
+{
 uint	dim;
 uint	k;
 uint	j;
@@ -186,7 +186,7 @@ double	ldltJk;
 
 void	backSubstituteLDLt(AbstractLargeSquareMatrix_sp ldlt,
 					NVector_sp s, NVector_sp b )
-{_G();
+{
     NVector_sp	tx;
     uint	x,y;
     double	sum, dd;

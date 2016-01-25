@@ -47,7 +47,7 @@ namespace chem
 #define DECL_ExternalInterface_O_make ""
 #define DOCS_ExternalInterface_O_make "make ExternalInterface"
   ExternalInterface_sp ExternalInterface_O::make(ConformationExplorer_wp conformationExplorer, string stageName)
-  {_G();
+  {
       GC_ALLOCATE(ExternalInterface_O, me );
     me->_WeakConformationExplorer = conformationExplorer;
     me->_StageName = stageName;
@@ -67,7 +67,7 @@ namespace chem
 
 #ifdef XML_ARCHIVE
     void	ExternalInterface_O::archiveBase(core::ArchiveP node)
-    {_G();
+    {
 #ifdef	DEBUG_ON
 	if ( node->saving() )
 	{
@@ -91,7 +91,7 @@ namespace chem
 
 
     void	ExternalInterface_O::setConformationExplorer(ConformationExplorer_sp explorer)
-    {_G();
+    {
 	ConformationCollection_O::atomIterator	ai;
 	stringstream				atomName;
 	this->_WeakConformationExplorer = explorer->sharedThis<ConformationExplorer_O>();
@@ -104,7 +104,7 @@ namespace chem
  */
     boost_filesystem::path ExternalInterface_O::_assembleFileName( int entryIndex,
 								    const string& stageName, const string& ext)
-    {_G();
+    {
 	stringstream	fnStream;
 	boost_filesystem::path	fileName;
 	fnStream.str("");
@@ -125,7 +125,7 @@ namespace chem
  */
     boost_filesystem::path ExternalInterface_O::_assembleFilePath( int entryIndex,
 								    const string& stageName, const string& ext)
-    {_G();
+    {
 	stringstream	fnStream;
 	boost_filesystem::path	filePath;
 	fnStream.str("");
@@ -141,7 +141,7 @@ namespace chem
 
 
     boost_filesystem::path ExternalInterface_O::assembleFileName(ConformationExplorerEntryStage_sp stage, const string& ext)
-    {_G();
+    {
 	ConformationExplorerEntry_sp	entry;
 	ConformationExplorer_sp		explorer;
 	int				index;
@@ -155,7 +155,7 @@ namespace chem
     }
 
     boost_filesystem::path ExternalInterface_O::assembleFilePath(ConformationExplorerEntryStage_sp stage, const string& ext)
-    {_G();
+    {
 	ConformationExplorerEntry_sp	entry;
 	ConformationExplorer_sp		explorer;
 	int				index;
@@ -170,7 +170,7 @@ namespace chem
 
 
     bool	ExternalInterface_O::parseSummaryFileForFinalConformationAndEnergy(ConformationExplorerEntryStage_sp entryStage)
-    {_G();
+    {
 	ifstream	fin;
 #define	BUFSIZE	2048
 	char		buffer[BUFSIZE];
@@ -227,46 +227,11 @@ namespace chem
     }
 
 
-    void ExternalInterface_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<ExternalInterface_O>()
-	    .def("setDirectory",&ExternalInterface_O::setDirectory)
-	    .def("getDirectory",&ExternalInterface_O::getDirectory)
-	    .def("getData",&ExternalInterface_O::getData)
-	    .def("setConformationExplorer",&ExternalInterface_O::setConformationExplorer)
-	    .def("getErrorMessages",&ExternalInterface_O::getErrorMessages)
-	    .def("setFileNamePrefix",&ExternalInterface_O::setFileNamePrefix)
-	    .def("setExternalScript",&ExternalInterface_O::setExternalScript)
-	    .def("getExternalCoordinatesAsTextForEntryStage",&ExternalInterface_O::getExternalCoordinatesAsTextForEntryStage)
-	    .def("parseExternalResultFileForFinalConformationAndEnergy",&ExternalInterface_O::parseExternalResultFileForFinalConformationAndEnergy)
-	    ;
-    }
-
-    void ExternalInterface_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,ExternalInterface,"","",_lisp)
-	.def("setDirectory",&ExternalInterface_O::setDirectory)
-	.def("getDirectory",&ExternalInterface_O::getDirectory)
-	.def("getData",&ExternalInterface_O::getData)
-	.def("assembleFileName",&ExternalInterface_O::boost_assembleFileName)
-	.def("assembleFilePath",&ExternalInterface_O::boost_assembleFilePath)
-	.def("setConformationExplorer",&ExternalInterface_O::setConformationExplorer)
-	.def("getErrorMessages",&ExternalInterface_O::getErrorMessages)
-	.def("setFileNamePrefix",&ExternalInterface_O::setFileNamePrefix)
-	.def("setExternalScript",&ExternalInterface_O::setExternalScript)
-	.def("getExternalCoordinatesAsTextForEntryStage",&ExternalInterface_O::getExternalCoordinatesAsTextForEntryStage)
-	.def("parseExternalResultFileForFinalConformationAndEnergy",&ExternalInterface_O::parseExternalResultFileForFinalConformationAndEnergy)
-	;
-#endif
-#endif
-}
 
 
 
 
-    EXPOSE_CLASS(chem,ExternalInterface_O);
+
 };
 
 

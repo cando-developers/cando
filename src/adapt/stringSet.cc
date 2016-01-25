@@ -85,7 +85,7 @@ void StringSet_O::insertStringList(StringList_sp s) {
 }
 
 StringSet_sp StringSet_O::copy() {
-  _G();
+  
   StringSet_O::iterator it;
   GC_COPY(StringSet_O, snew, *this);
   snew->clear();
@@ -144,7 +144,7 @@ void StringSet_O::archiveBase(ArchiveP node) {
 
 CL_LISPIFY_NAME("contains");
 CL_DEFMETHOD bool StringSet_O::contains(const string &s) {
-  _G();
+  
   bool ye;
   ye = this->strs.count(s);
   return ye;
@@ -212,7 +212,7 @@ StringSet_O::StringSet_O(const StringSet_O &ss) : CxxObject_O(ss) {
 
 CL_LISPIFY_NAME("setFromString");
 CL_DEFMETHOD void StringSet_O::setFromString(const string &s) {
-  _G();
+  
   VectorStrings words;
   tokenize(s, words, "\t\n ");
   this->clear();
@@ -221,7 +221,7 @@ CL_DEFMETHOD void StringSet_O::setFromString(const string &s) {
 
 CL_LISPIFY_NAME("StringSetUnion");
 CL_DEFMETHOD StringSet_sp StringSet_O::setUnion(StringSet_sp b) {
-  _G();
+  
   StringSet_sp nset;
   set<string>::iterator si;
   nset = StringSet_O::create();
@@ -236,7 +236,7 @@ CL_DEFMETHOD StringSet_sp StringSet_O::setUnion(StringSet_sp b) {
 
 CL_LISPIFY_NAME("StringSetIntersection");
 CL_DEFMETHOD StringSet_sp StringSet_O::intersection(StringSet_sp b) {
-  _G();
+  
   StringSet_sp nset;
   set<string>::iterator si;
   nset = StringSet_O::create();
@@ -270,7 +270,7 @@ CL_DEFMETHOD StringSet_sp StringSet_O::relativeComplement(StringSet_sp b) {
 */
 CL_LISPIFY_NAME("cartesianProductInsert");
 CL_DEFMETHOD StringSet_sp StringSet_O::cartesianProductInsert(string ins, StringSet_sp b) {
-  _G();
+  
   StringSet_sp nset;
   set<string>::iterator si, bi;
   stringstream sstr;
@@ -287,7 +287,7 @@ CL_DEFMETHOD StringSet_sp StringSet_O::cartesianProductInsert(string ins, String
 
 CL_LISPIFY_NAME("asCons");
 CL_DEFMETHOD List_sp StringSet_O::asCons() const {
-  _G();
+  
   List_sp cur = _Nil<T_O>();
   set<string>::iterator si;
   for (si = this->strs.begin(); si != this->strs.end(); si++) {
@@ -312,51 +312,8 @@ Vector_sp StringSet_O::asVector() const {
   return vec;
 }
 
-void StringSet_O::exposeCando(Lisp_sp lisp) {
-  class_<StringSet_O>()
-    .def("size", &StringSet_O::size)
-    .def("insertConsStrings", &StringSet_O::insertConsStrings)
-    .def("insertStringSet", &StringSet_O::insertStringSet)
-    .def("insert", &StringSet_O::insert)
-    .def("contains", &StringSet_O::contains)
-    .def("containsSubset", &StringSet_O::containsSubset)
-      //	    .def("remove",&StringSet_O::remove)
-    .def("clear", &StringSet_O::clear)
-    .def("asString", &StringSet_O::asString)
-    .def("setFromString", &StringSet_O::setFromString)
-    .def("StringSetUnion", &StringSet_O::setUnion)
-    .def("StringSetIntersection", &StringSet_O::intersection)
-    .def("relativeComplement", &StringSet_O::relativeComplement)
-    .def("removeAll", &StringSet_O::removeAll)
-    .def("cartesianProduct", &StringSet_O::cartesianProduct)
-    .def("cartesianProductInsert", &StringSet_O::cartesianProductInsert)
-    .def("asCons", &StringSet_O::asCons);
-}
 
-void StringSet_O::exposePython(Lisp_sp lisp) {
-  _G();
-#ifdef USEBOOSTPYTHON
-  PYTHON_CLASS(AdaptPkg, StringSet, INIT_ARGS_StringSet_O, DOCS_StringSet_O, _lisp)
-    .def("insertStringSet", &StringSet_O::insertStringSet)
-    .def("size", &StringSet_O::size)
-    .def("insert", &StringSet_O::insert)
-    .def("equals", &StringSet_O::equal)
-    .def("contains", &StringSet_O::contains)
-    .def("containsSubset", &StringSet_O::containsSubset)
-      //	    .def("remove",&StringSet_O::remove)
-    .def("clear", &StringSet_O::clear)
-    .def("asString", &StringSet_O::asString)
-    .def("setFromString", &StringSet_O::setFromString)
-    .def("StringSetUnion", &StringSet_O::setUnion)
-    .def("StringSetIntersection", &StringSet_O::intersection)
-    .def("relativeComplement", &StringSet_O::relativeComplement)
-    .def("cartesianProduct", &StringSet_O::cartesianProduct)
-    .def("cartesianProductInsert", &StringSet_O::cartesianProductInsert)
-    .add_property("iterate",
-                  boost::python::range(&StringSet_O::begin,
-                                       &StringSet_O::end));
-#endif
-}
+
 
 #if 0
 #ifdef USEBOOSTPYTHON
@@ -397,5 +354,4 @@ boost::python::list StringSet_O::python_asList() {
 #endif
 #endif
 
-EXPOSE_CLASS(adapt, StringSet_O);
 };

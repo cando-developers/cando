@@ -13,7 +13,7 @@ namespace geom {
 
 #if 0
     T_sp OVector2_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp bargs, core::Lisp_sp lisp)
-{_G();
+{
     double x = translate::from_object<double>::convert(bargs->lookup(CorePkg,"tx")->object());
     double y = translate::from_object<double>::convert(bargs->lookup(CorePkg,"ty")->object());
     LOG(BF("Got values for vector x,y,z = %lf, %lf") % x % y );
@@ -84,7 +84,7 @@ CL_DEFMETHOD     double OVector2_O::dotProduct(const Vector2& other)
 #define DOCS_OVector2_O_add "Add a collection of points together"
 CL_LISPIFY_NAME("add");
 CL_DEFMETHOD     core::T_sp OVector2_O::add(core::List_sp points)
-    {_G();
+    {
 	Vector2 result = Vector2(this->getX(),this->getY());
 	LOG(BF("First add = %s") % result.asString() );
 	for ( auto cur : points ) {
@@ -127,35 +127,8 @@ CL_DEFMETHOD double	OVector2_O::distance( const Vector2& vb )
 
 
 
-    void OVector2_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<OVector2_O>()
-		.def("setAll", &OVector2_O::setAll )
-		.def("x", &OVector2_O::getX )
-		.def("y", &OVector2_O::getY )
-		.def("vector2-angle", &OVector2_O::angle)    // need translator
-		.def("vector2-distance", &OVector2_O::distance)
-	    .def("vector2-magnitude",&OVector2_O::magnitude)
-	    .def("normalized",&OVector2_O::normalized)
-	    .def("sub",&OVector2_O::sub)
-	    .def("dotProduct",&OVector2_O::dotProduct)
-          .def("add",&OVector2_O::add,
-               ARGS_OVector2_O_add,
-               DECL_OVector2_O_add,
-               DOCS_OVector2_O_add)
-	    .def("timesScalar",&OVector2_O::timesScalar)
-	;
-    }
-    void OVector2_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(CorePkg,OVector2,"","",_lisp)
-	    ;
-#endif
-    }
 
 
-    EXPOSE_CLASS(geom,OVector2_O);
 
 };
 

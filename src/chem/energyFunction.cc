@@ -105,7 +105,7 @@ double	rel = 0.0;
 }
 
 void energyFunction_initializeSmarts()
-{_G();
+{
     if ( energyFunctionInitialized ) return;
     _sym_STARparserNodeHolderSTAR->defparameter(adapt::IndexedObjectBag_O::create());
     energyFunctionInitialized = true;
@@ -164,132 +164,8 @@ core::T_sp EnergyFunction_O::__init__(core::Function_sp exec, core::Cons_sp args
 
 #endif
 
-    void EnergyFunction_O::exposeCando(core::Lisp_sp lisp)
-    {
-//	Defun_maker(ChemPkg,EnergyFunction);
-	core::class_<EnergyFunction_O>()
-//	    .def_raw("core:__init__",&EnergyFunction_O::__init__,"(self &key matter forceField)")
-    	.def("setOptions",&EnergyFunction_O::setOptions)
-    	.def("setOption",&EnergyFunction_O::setOption)
-	    .def("enableDebug",&EnergyFunction_O::enableDebug,"","","",false)
-	    .def("disableDebug",&EnergyFunction_O::disableDebug,"","","",false)
-    	.def("debugLogAsString",&EnergyFunction_O::debugLogAsString)
-    	.def("energyComponentsAsString",&EnergyFunction_O::energyComponentsAsString)
-	.def("defineForMatter",&EnergyFunction_O::defineForMatter)
-	.def("useDefaultSettings",&EnergyFunction_O::useDefaultSettings)
-	.def("checkForBeyondThresholdInteractions",&EnergyFunction_O::checkForBeyondThresholdInteractions)
-	.def("addTermsForListOfRestraints",&EnergyFunction_O::addTermsForListOfRestraints)
-	    .def("setName",&EnergyFunction_O::setName,"","","",false)
-	    .def("getName",&EnergyFunction_O::getName,"","","",false)
-	    .def("atomTable",&EnergyFunction_O::atomTable)
-	.def("getStretchComponent",&EnergyFunction_O::getStretchComponent)
-	.def("getAngleComponent",&EnergyFunction_O::getAngleComponent)
-	.def("getDihedralComponent",&EnergyFunction_O::getDihedralComponent)
-	.def("getNonbondComponent",&EnergyFunction_O::getNonbondComponent)
-	.def("getImproperRestraintComponent",&EnergyFunction_O::getImproperRestraintComponent)
-	.def("getChiralRestraintComponent",&EnergyFunction_O::getChiralRestraintComponent)
-	.def("getAnchorRestraintComponent",&EnergyFunction_O::getAnchorRestraintComponent)
-	.def("getFixedNonbondRestraintComponent",&EnergyFunction_O::getFixedNonbondRestraintComponent)
-//	.def("getImproperRestraintComponentEnergy",&EnergyFunction_O::getImproperRestraintComponentEnergy)
-//	.def("getDihedralComponentEnergy",&EnergyFunction_O::getDihedralComponentEnergy)
-	.def("getMessage",&EnergyFunction_O::getMessage)
-	.def("getMatter",&EnergyFunction_O::getMatter)
-	.def("getNVectorSize",&EnergyFunction_O::getNVectorSize)
-	.def("evaluateAll",&EnergyFunction_O::evaluateAll)
-	.def("evaluateEnergy",&EnergyFunction_O::evaluateEnergy)
-	.def("evaluateEnergyForce",&EnergyFunction_O::evaluateEnergyForce)
-	.def("evaluateEnergyForceFullHessian",&EnergyFunction_O::evaluateEnergyForceFullHessian)
-	.def("evaluateEnergyForceFullHessianForDebugging",&EnergyFunction_O::evaluateEnergyForceFullHessianForDebugging)
-	.def("evaluateNumericalForce",&EnergyFunction_O::evaluateNumericalForce)
-	.def("evaluateNumericalHessian",&EnergyFunction_O::evaluateNumericalHessian)
-	.def("calculateEnergy",&EnergyFunction_O::calculateEnergy)
-	.def("calculateEnergyAndForce",&EnergyFunction_O::calculateEnergyAndForce)
-	.def("extractCoordinatesFromAtoms",&EnergyFunction_O::extractCoordinatesFromAtoms)
-	.def("writeCoordinatesToAtoms",&EnergyFunction_O::writeCoordinatesToAtoms)
-	.def("writeCoordinatesAndForceToAtoms",&EnergyFunction_O::writeCoordinatesAndForceToAtoms)
-	.def("writeForceToAtoms",&EnergyFunction_O::writeForceToAtoms)
-	.def("getTotalEnergy",&EnergyFunction_O::getTotalEnergy)
-	.def("dumpTerms",&EnergyFunction_O::dumpTerms)
-	.def("calculateNumericalDerivative",&EnergyFunction_O::calculateNumericalDerivative)
-	.def("calculateNumericalSecondDerivative",
-		&EnergyFunction_O::calculateNumericalSecondDerivative)
-	.def("energyTermsEnabled",&EnergyFunction_O::energyTermsEnabled)
-	.def("summarizeBeyondThresholdInteractionsAsString",
-		&EnergyFunction_O::summarizeBeyondThresholdInteractionsAsString)
-	.def("countTermsBeyondThreshold",&EnergyFunction_O::countTermsBeyondThreshold)
-	.def("setupHessianPreconditioner",&EnergyFunction_O::setupHessianPreconditioner)
-	.def("getMissingParameters",&EnergyFunction_O::getMissingParameters)
-//	.def("countBadVdwInteractions",&EnergyFunction_O::countBadVdwInteractions)
-	.def("hasMissingParameters",&EnergyFunction_O::hasMissingParameters)
-	.def("summarizeEnergyAsString",&EnergyFunction_O::summarizeEnergyAsString)
-	.def("compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition",
-		&EnergyFunction_O::compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition)
-	;
-//	defInPackage(ChemPkg,"create_EnergyFunction", &EnergyFunction_O::create);
-}
 
-void EnergyFunction_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg,EnergyFunction,"","",_lisp)
-    	.def("setOptions",&EnergyFunction_O::setOptions)
-    	.def("setOption",&EnergyFunction_O::setOption)
-//    	.def("enableDebug",&EnergyFunction_O::enableDebug,"","","",false)
-//    	.def("disableDebug",&EnergyFunction_O::disableDebug,"","","",false)
-    	.def("debugLogAsString",&EnergyFunction_O::debugLogAsString)
-    	.def("energyComponentsAsString",&EnergyFunction_O::energyComponentsAsString)
-	.def("defineForMatter",&EnergyFunction_O::defineForMatter)
-	.def("useDefaultSettings",&EnergyFunction_O::useDefaultSettings)
-	.def("checkForBeyondThresholdInteractions",&EnergyFunction_O::checkForBeyondThresholdInteractions)
-	.def("addTermsForListOfRestraints",&EnergyFunction_O::addTermsForListOfRestraints)
-	.def("setName",&EnergyFunction_O::setName)
-	.def("getName",&EnergyFunction_O::getName)
-	.def("getStretchComponent",&EnergyFunction_O::getStretchComponent)
-	.def("getAngleComponent",&EnergyFunction_O::getAngleComponent)
-	.def("getDihedralComponent",&EnergyFunction_O::getDihedralComponent)
-	.def("getNonbondComponent",&EnergyFunction_O::getNonbondComponent)
-	.def("getImproperRestraintComponent",&EnergyFunction_O::getImproperRestraintComponent)
-	.def("getChiralRestraintComponent",&EnergyFunction_O::getChiralRestraintComponent)
-	.def("getAnchorRestraintComponent",&EnergyFunction_O::getAnchorRestraintComponent)
-	.def("getFixedNonbondRestraintComponent",&EnergyFunction_O::getFixedNonbondRestraintComponent)
-//	.def("getImproperRestraintComponentEnergy",&EnergyFunction_O::getImproperRestraintComponentEnergy)
-//	.def("getDihedralComponentEnergy",&EnergyFunction_O::getDihedralComponentEnergy)
-	.def("getMessage",&EnergyFunction_O::getMessage)
-	.def("getMatter",&EnergyFunction_O::getMatter)
-	.def("getNVectorSize",&EnergyFunction_O::getNVectorSize)
-	.def("evaluateAll",&EnergyFunction_O::evaluateAll)
-	.def("evaluateEnergy",&EnergyFunction_O::evaluateEnergy)
-	.def("evaluateEnergyForce",&EnergyFunction_O::evaluateEnergyForce)
-	.def("evaluateEnergyForceFullHessian",&EnergyFunction_O::evaluateEnergyForceFullHessian)
-	.def("evaluateEnergyForceFullHessianForDebugging",&EnergyFunction_O::evaluateEnergyForceFullHessianForDebugging)
-	.def("evaluateNumericalForce",&EnergyFunction_O::evaluateNumericalForce)
-	.def("evaluateNumericalHessian",&EnergyFunction_O::evaluateNumericalHessian)
-	.def("calculateEnergy",&EnergyFunction_O::calculateEnergy)
-	.def("calculateEnergyAndForce",&EnergyFunction_O::calculateEnergyAndForce)
-	.def("extractCoordinatesFromAtoms",&EnergyFunction_O::extractCoordinatesFromAtoms)
-	.def("writeCoordinatesToAtoms",&EnergyFunction_O::writeCoordinatesToAtoms)
-	.def("writeCoordinatesAndForceToAtoms",&EnergyFunction_O::writeCoordinatesAndForceToAtoms)
-	.def("writeForceToAtoms",&EnergyFunction_O::writeForceToAtoms)
-	.def("getTotalEnergy",&EnergyFunction_O::getTotalEnergy)
-	.def("dumpTerms",&EnergyFunction_O::dumpTerms)
-	.def("calculateNumericalDerivative",&EnergyFunction_O::calculateNumericalDerivative)
-	.def("calculateNumericalSecondDerivative",
-		&EnergyFunction_O::calculateNumericalSecondDerivative)
-	.def("energyTermsEnabled",&EnergyFunction_O::energyTermsEnabled)
-	.def("summarizeBeyondThresholdInteractionsAsString",
-		&EnergyFunction_O::summarizeBeyondThresholdInteractionsAsString)
-	.def("countTermsBeyondThreshold",&EnergyFunction_O::countTermsBeyondThreshold)
-	.def("setupHessianPreconditioner",&EnergyFunction_O::setupHessianPreconditioner)
-	.def("getMissingParameters",&EnergyFunction_O::getMissingParameters)
-	.def("countBadVdwInteractions",&EnergyFunction_O::countBadVdwInteractions)
-	.def("hasMissingParameters",&EnergyFunction_O::hasMissingParameters)
-	.def("summarizeEnergyAsString",&EnergyFunction_O::summarizeEnergyAsString)
-	.def("compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition",
-		&EnergyFunction_O::compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition)
-	;
-#endif
-//	defInPackage(ChemPkg,"create_EnergyFunction", &EnergyFunction_O::create);
-}
+
 
 bool inAtomSet(core::T_sp activeSet, Atom_sp a)
 {
@@ -333,7 +209,7 @@ void	EnergyFunction_O::initialize()
 
 CL_LISPIFY_NAME("useDefaultSettings");
 CL_DEFMETHOD void	EnergyFunction_O::useDefaultSettings()
-{_G();
+{
     ASSERTNOTNULL(this->_Stretch);
     ASSERTNOTNULL(this->_Stretch);
     ASSERT(this->_Stretch.notnilp());
@@ -470,7 +346,7 @@ __END_DOC
 */
 CL_LISPIFY_NAME("setOptions");
 CL_DEFMETHOD void	EnergyFunction_O::setOptions( core::List_sp options )
-{_G();
+{
     while ( options.notnilp() )
     {
 	core::Symbol_sp option = core::oCar(options).as<core::Symbol_O>();
@@ -546,7 +422,7 @@ public:
 CL_LISPIFY_NAME("setupHessianPreconditioner");
 CL_DEFMETHOD void	EnergyFunction_O::setupHessianPreconditioner(NVector_sp nvPosition,
 					AbstractLargeSquareMatrix_sp m )
-{_G();
+{
 #ifdef ENERGY_FUNCTION_TIMER
 //    _lisp->profiler().timer(core::timerPreconditioner).start();
 //    _lisp->profiler().timer(core::timerPreconditionerSetup).start();
@@ -759,7 +635,7 @@ ANN(dvec);
 
 CL_LISPIFY_NAME("energyComponentsAsString");
 CL_DEFMETHOD string EnergyFunction_O::energyComponentsAsString()
-{_G();
+{
     stringstream ss;
     ss << boost::format("Stretch(%lf)") % this->_Stretch->getEnergy() << std::endl;
 #if USE_ALL_ENERGY_COMPONENTS
@@ -825,7 +701,7 @@ CL_DEFMETHOD int	EnergyFunction_O::compareAnalyticalAndNumericalForceAndHessianT
  */
 CL_LISPIFY_NAME("checkForBeyondThresholdInteractions");
 CL_DEFMETHOD uint	EnergyFunction_O::checkForBeyondThresholdInteractions( )
-{_G();
+{
 NVector_sp	pos;
 stringstream	info;
 int	fails = 0;
@@ -913,7 +789,7 @@ CL_DEFMETHOD double	EnergyFunction_O::evaluateEnergy( NVector_sp pos )
 
 CL_LISPIFY_NAME("evaluateEnergyForce");
 CL_DEFMETHOD double	EnergyFunction_O::evaluateEnergyForce( NVector_sp pos, bool calcForce, NVector_sp force )
-{_G();
+{
 double	energy;
  gc::Nilable<NVector_sp>	rawGrad;
     if ( calcForce ) {
@@ -1000,7 +876,7 @@ CL_DEFMETHOD double	EnergyFunction_O::calculateNumericalDerivative(NVector_sp po
 
 CL_LISPIFY_NAME("calculateNumericalSecondDerivative");
 CL_DEFMETHOD double	EnergyFunction_O::calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j )
-{_G();
+{
     double	x, fxmh, fx, fxph, f2;
     double	y, fpipj, fpimj, fmipj, fmimj, fp, fm;
     if ( i==j ) {
@@ -1194,7 +1070,7 @@ CL_DEFMETHOD void	EnergyFunction_O::dumpTerms()
 
 
 void EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator_sp restraintIterator, core::T_sp activeAtoms )
-{_G();
+{
 #if USE_ALL_ENERGY_COMPONENTS
     restraintIterator->first();
     while ( restraintIterator->notDone() )
@@ -1296,7 +1172,7 @@ void EnergyFunction_O::_applyDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a
 }
 
 void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& nitrogens, core::T_sp activeAtoms )
-{_G();
+{
     gctools::Vec0<Atom_sp>::iterator ni;
     double transMin = -160.0;
     double transMax = 160.0;
@@ -1350,7 +1226,7 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
 
 CL_LISPIFY_NAME("defineForMatter");
 CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms )
-{_G();
+{
 Loop            loop;
 Atom_sp          a1, a2, a3, a4, aImproperCenter;
 core::Symbol_sp  t1, t2, t3, t4, t141, t144;
@@ -1805,7 +1681,7 @@ int             coordinateIndex;
 
 CL_LISPIFY_NAME("addTermsForListOfRestraints");
 CL_DEFMETHOD void	EnergyFunction_O::addTermsForListOfRestraints(ForceField_sp forceField, core::List_sp restraintList, core::T_sp activeAtoms)
-{_G();
+{
     adapt::IterateCons_sp	iterate;
     iterate = adapt::IterateCons_O::create(restraintList);
     this->_applyRestraints(forceField,iterate,activeAtoms);
@@ -1813,7 +1689,7 @@ CL_DEFMETHOD void	EnergyFunction_O::addTermsForListOfRestraints(ForceField_sp fo
 
 CL_LISPIFY_NAME("extractCoordinatesFromAtoms");
 CL_DEFMETHOD void	EnergyFunction_O::extractCoordinatesFromAtoms(NVector_sp pos)
-{_G();
+{
 int                             ci;
 gctools::Vec0<EnergyAtom>::iterator    ai;
     if ( pos->size() != this->getNVectorSize()) {
@@ -1831,7 +1707,7 @@ gctools::Vec0<EnergyAtom>::iterator    ai;
 
 CL_LISPIFY_NAME("writeCoordinatesToAtoms");
 CL_DEFMETHOD void    EnergyFunction_O::writeCoordinatesToAtoms(NVector_sp pos)
-{_G();
+{
 int                             ci;
 double                          x,y,z;
 gctools::Vec0<EnergyAtom>::iterator    ai;
@@ -1882,7 +1758,7 @@ EnergyAtom*	EnergyFunction_O::getEnergyAtomPointer(Atom_sp a)
 
 CL_LISPIFY_NAME("calculateEnergy");
 CL_DEFMETHOD double	EnergyFunction_O::calculateEnergy( )
-{_G();
+{
 NVector_sp	pos;
     pos = NVector_O::create(this->getNVectorSize());
     this->extractCoordinatesFromAtoms(pos);
@@ -2026,7 +1902,7 @@ CL_DEFMETHOD void EnergyFunction_O::disableDebug()
 
 #ifdef RENDER
 uint	EnergyFunction_O::countBadVdwInteractions(double scaleSumOfVdwRadii, geom::DisplayList_sp displayIn)
-{_G();
+{
 NVector_sp	pos;
 EnergyNonbond_sp	nbComponent;
     uint i = 0;
@@ -2043,7 +1919,6 @@ EnergyNonbond_sp	nbComponent;
 
 
 
-EXPOSE_CLASS(chem,EnergyFunction_O);
 };
 
 

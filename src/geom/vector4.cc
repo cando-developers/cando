@@ -45,7 +45,7 @@ Vector4::Vector4( double w, double x, double y, double z )
 
 
 void Vector4::dump()
-{_G();
+{
     _lisp->print(BF("<%lf,%lf,%lf,%lf>")
 		% this->coords[0]
 		% this->coords[1]
@@ -78,7 +78,7 @@ void Vector4::writeToStream( std::ostream& out )
 
 
 Vector4 Vector4::normalized()
-{_G();
+{
 double	l;
 Vector4	v;
 

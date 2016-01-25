@@ -10,8 +10,6 @@
 
 namespace chem {
 
-    REGISTER_CLASS(chem,OneTypeRule_O);
-    REGISTER_CLASS(chem,TypeAssignmentRules_O);
 
 void	OneTypeRule_O::initialize()
 {

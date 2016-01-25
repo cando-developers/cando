@@ -11,23 +11,8 @@ namespace kinematics
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(kinematics,AggregateNode_O);
 
-    void AggregateNode_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<AggregateNode_O>()
-//	.def_raw("__init__",&AggregateNode_O::__init__,"(self)")
-	;
-    }
 
-    void AggregateNode_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,AggregateNode,"","",_lisp)
-//	.def_raw("__init__",&"(self)")
-	;
-#endif
-    }
 
 #ifdef XML_ARCHIVE
     void AggregateNode_O::archiveBase(core::ArchiveP node)

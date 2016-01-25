@@ -33,7 +33,7 @@ namespace omm
     extern void initializeOpenmmConstants(Lisp_sp lisp);
 
     void OpenMMExposer::expose(core::Lisp_sp lisp,core::PackageExposer::WhatToExpose what) const
-    {_G();
+    {
 	switch (what)
 	{
 	case candoClasses:

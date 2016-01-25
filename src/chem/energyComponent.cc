@@ -12,29 +12,8 @@
 namespace chem {
 
 
-void EnergyComponent_O::exposeCando(core::Lisp_sp e)
-{
-    core::class_<EnergyComponent_O>()
-    .def("enable",&EnergyComponent_O::enable) 
-    .def("disable",&EnergyComponent_O::disable) 
-	.def("enableDebug",&EnergyComponent_O::enableDebug,"","","",false) 
-	.def("disableDebug",&EnergyComponent_O::disableDebug,"","","",false) 
-    .def("debugLogAsString",&EnergyComponent_O::debugLogAsString) 
-    .def("getEnergy",&EnergyComponent_O::getEnergy) 
-    .def("setDebug_NumberOfTermsToCalculate", 
-	    &EnergyComponent_O::setDebug_NumberOfTermsToCalculate) 
-    .def("setErrorThreshold",&EnergyComponent_O::setErrorThreshold) 
-    .def("getErrorThreshold",&EnergyComponent_O::getErrorThreshold) 
-    ;
-}
 
-    void EnergyComponent_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,EnergyComponent,"","",_lisp)
-    ;
-#endif //]
-}
+
 
 
 
@@ -110,7 +89,6 @@ string EnergyComponent_O::summarizeEnergyAsString()
 };
 
 
-    EXPOSE_CLASS(chem,EnergyComponent_O);
 };
 
 

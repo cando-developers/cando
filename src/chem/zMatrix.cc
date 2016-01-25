@@ -13,29 +13,9 @@ namespace chem
 
 
 
-    EXPOSE_CLASS(chem,ZMatrixInternal_O);
-    EXPOSE_CLASS(chem,ZMatrixBondInternal_O);
-    EXPOSE_CLASS(chem,ZMatrixAngleInternal_O);
-    EXPOSE_CLASS(chem,ZMatrixDihedralInternal_O);
-    EXPOSE_CLASS(chem,ZMatrixEntry_O);
-    EXPOSE_CLASS(chem,ZMatrix_O);
 
 
-    void ZMatrixInternal_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<ZMatrixInternal_O>()
-	    .def("getValue",&ZMatrixInternal_O::getValue)
-	    ;
-    }
 
-    void ZMatrixInternal_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,ZMatrixInternal,"","",_lisp)
-	    .def("getValue",&ZMatrixInternal_O::getValue)
-	    ;
-#endif
-    }
 
 
 
@@ -55,7 +35,7 @@ namespace chem
 
 #ifdef XML_ARCHIVE
     void	ZMatrixInternal_O::archiveBase(core::ArchiveP node)
-    {_G();
+    {
 	node->archiveWeakPointer("WeakZMatrix",this->_WeakZMatrix);
 	node->attribute("InternalName",this->_InternalName);
 	node->attributeIfNotDefault("Constrain",this->_Constrain,false);
@@ -68,19 +48,19 @@ namespace chem
 
 
     Atom_sp	ZMatrixInternal_O::getAtomNew()
-    {_G();
+    {
 	return this->getZMatrix()->_getAtomAtIndex(this->_AtomNew);
     };
 
 
     void	ZMatrixInternal_O::setAtomNew(Atom_sp atom, ZMatrixInternal_O::atomMap atomIndices)
-    {_G();
+    {
 	this->_AtomNew = atomIndices[atom];
     }
 
 
     string ZMatrixInternal_O::__repr__() const
-    {_G();
+    {
 	stringstream	ss;
 	ss << this->_InternalName << " " << this->_AtomNew << " ";
 	return ss.str();
@@ -88,23 +68,7 @@ namespace chem
 
 
 
-    void ZMatrixBondInternal_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<ZMatrixBondInternal_O>()
-	    .def("getBondAtomZMatrixName",&ZMatrixBondInternal_O::getBondAtomZMatrixName)
-	    .def("getBondAtomIndex",&ZMatrixBondInternal_O::getBondAtomIndex)
-	    ;
-    }
 
-    void ZMatrixBondInternal_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,ZMatrixBondInternal,"","",_lisp)
-	    .def("getBondAtomZMatrixName",&ZMatrixBondInternal_O::getBondAtomZMatrixName)
-	    .def("getBondAtomIndex",&ZMatrixBondInternal_O::getBondAtomIndex)
-	    ;
-#endif
-    }
 
 
 
@@ -121,7 +85,7 @@ namespace chem
 
 
     string ZMatrixBondInternal_O::__repr__() const
-    {_G();
+    {
 	stringstream	ss;
 	ss << "Bond ";
 	ss << this->ZMatrixInternal_O::__repr__();
@@ -131,7 +95,7 @@ namespace chem
 
 
     void	ZMatrixBondInternal_O::constrainIfNoAtomsWithMask(uint m)
-    {_G();
+    {
 	Atom_sp	atomNew, atomBond;
 	atomNew = this->getAtomNew();
 	atomBond = this->getZMatrix()->_getAtomAtIndex(this->_AtomBond);
@@ -144,7 +108,7 @@ namespace chem
     }
 
     void	ZMatrixBondInternal_O::extractInternal()
-    {_G();
+    {
 	Atom_sp	atomNew, atomBond;
 	double	value;
 	atomNew = this->getAtomNew();
@@ -159,14 +123,14 @@ namespace chem
 
 CL_LISPIFY_NAME("getBondAtomZMatrixName");
 CL_DEFMETHOD     string	ZMatrixBondInternal_O::getBondAtomZMatrixName()
-    {_G();
+    {
 	return this->getZMatrix()->_getAtomZMatrixNameAtIndex(this->_AtomBond);
     }
 
 
 #ifdef XML_ARCHIVE
     void	ZMatrixBondInternal_O::archiveBase(core::ArchiveP node)
-    {_G();
+    {
 	this->ZMatrixInternal_O::archiveBase(node);
 	node->attribute("AtomBond",this->_AtomBond);
     }
@@ -177,7 +141,7 @@ CL_DEFMETHOD     string	ZMatrixBondInternal_O::getBondAtomZMatrixName()
 
     void	ZMatrixBondInternal_O::setup(Atom_sp atomNew, Atom_sp atomBond,
 					     ZMatrixInternal_O::atomMap	atomIndices )
-    {_G();
+    {
 	stringstream	name;
 	this->setAtomNew(atomNew,atomIndices);
 	name << "b" << atomIndices.size();
@@ -189,27 +153,7 @@ CL_DEFMETHOD     string	ZMatrixBondInternal_O::getBondAtomZMatrixName()
 
 
 
-    void ZMatrixAngleInternal_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<ZMatrixAngleInternal_O>()
-	    .def("getBondAtomZMatrixName",&ZMatrixAngleInternal_O::getBondAtomZMatrixName)
-	    .def("getAngleAtomZMatrixName",&ZMatrixAngleInternal_O::getAngleAtomZMatrixName)
-	    .def("getBondAtomIndex",&ZMatrixAngleInternal_O::getBondAtomIndex)
-	    .def("getAngleAtomIndex",&ZMatrixAngleInternal_O::getAngleAtomIndex)
-	    ;
-    }
 
-    void ZMatrixAngleInternal_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,ZMatrixAngleInternal,"","",_lisp)
-	    .def("getBondAtomZMatrixName",&ZMatrixAngleInternal_O::getBondAtomZMatrixName)
-	    .def("getAngleAtomZMatrixName",&ZMatrixAngleInternal_O::getAngleAtomZMatrixName)
-	    .def("getBondAtomIndex",&ZMatrixAngleInternal_O::getBondAtomIndex)
-	    .def("getAngleAtomIndex",&ZMatrixAngleInternal_O::getAngleAtomIndex)
-	    ;
-#endif
-    }
 
 
 
@@ -222,7 +166,7 @@ CL_DEFMETHOD     string	ZMatrixBondInternal_O::getBondAtomZMatrixName()
 //
 
     string ZMatrixAngleInternal_O::__repr__() const
-    {_G();
+    {
 	stringstream	ss;
 	ss << "Angle ";
 	ss << this->ZMatrixInternal_O::__repr__();
@@ -234,7 +178,7 @@ CL_DEFMETHOD     string	ZMatrixBondInternal_O::getBondAtomZMatrixName()
 
 
     void	ZMatrixAngleInternal_O::constrainIfNoAtomsWithMask(uint m)
-    {_G();
+    {
 	Atom_sp	atomNew, atomBond, atomAngle;
 	atomNew = this->getAtomNew();
 	atomBond = this->getZMatrix()->_getAtomAtIndex(this->_AtomBond);
@@ -250,7 +194,7 @@ CL_DEFMETHOD     string	ZMatrixBondInternal_O::getBondAtomZMatrixName()
 
 
     void	ZMatrixAngleInternal_O::extractInternal()
-    {_G();
+    {
 	Atom_sp	atomNew, atomBond, atomAngle, atomDihedral;
 	double	value;
 	atomNew = this->getAtomNew();
@@ -267,7 +211,7 @@ CL_DEFMETHOD     string	ZMatrixBondInternal_O::getBondAtomZMatrixName()
 
 #ifdef XML_ARCHIVE
     void	ZMatrixAngleInternal_O::archiveBase(core::ArchiveP node)
-    {_G();
+    {
 	this->ZMatrixInternal_O::archiveBase(node);
 	node->attribute("AtomBond",this->_AtomBond);
 	node->attribute("AtomAngle",this->_AtomAngle);
@@ -276,19 +220,19 @@ CL_DEFMETHOD     string	ZMatrixBondInternal_O::getBondAtomZMatrixName()
 
 CL_LISPIFY_NAME("getBondAtomZMatrixName");
 CL_DEFMETHOD     string	ZMatrixAngleInternal_O::getBondAtomZMatrixName()
-    {_G();
+    {
 	return this->getZMatrix()->_getAtomZMatrixNameAtIndex(this->_AtomBond);
     }
 
 CL_LISPIFY_NAME("getAngleAtomZMatrixName");
 CL_DEFMETHOD     string	ZMatrixAngleInternal_O::getAngleAtomZMatrixName()
-    {_G();
+    {
 	return this->getZMatrix()->_getAtomZMatrixNameAtIndex(this->_AtomAngle);
     }
 
     void	ZMatrixAngleInternal_O::setup(Atom_sp atomNew, Atom_sp atomBond, Atom_sp atomAngle,
 					      ZMatrixInternal_O::atomMap	atomIndices )
-    {_G();
+    {
 	stringstream	name;
 	this->setAtomNew(atomNew,atomIndices);
 	name << "a" << atomIndices.size();
@@ -300,31 +244,7 @@ CL_DEFMETHOD     string	ZMatrixAngleInternal_O::getAngleAtomZMatrixName()
 
 
 
-    void ZMatrixDihedralInternal_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<ZMatrixDihedralInternal_O>()
-	    .def("getBondAtomZMatrixName",&ZMatrixDihedralInternal_O::getBondAtomZMatrixName)
-	    .def("getAngleAtomZMatrixName",&ZMatrixDihedralInternal_O::getAngleAtomZMatrixName)
-	    .def("getDihedralAtomZMatrixName",&ZMatrixDihedralInternal_O::getDihedralAtomZMatrixName)
-	    .def("getBondAtomIndex",&ZMatrixDihedralInternal_O::getBondAtomIndex)
-	    .def("getAngleAtomIndex",&ZMatrixDihedralInternal_O::getAngleAtomIndex)
-	    .def("getDihedralAtomIndex",&ZMatrixDihedralInternal_O::getDihedralAtomIndex)
-	    ;
-    }
 
-    void ZMatrixDihedralInternal_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,ZMatrixDihedralInternal,"","",_lisp)
-	    .def("getBondAtomZMatrixName",&ZMatrixDihedralInternal_O::getBondAtomZMatrixName)
-	    .def("getAngleAtomZMatrixName",&ZMatrixDihedralInternal_O::getAngleAtomZMatrixName)
-	    .def("getDihedralAtomZMatrixName",&ZMatrixDihedralInternal_O::getDihedralAtomZMatrixName)
-	    .def("getBondAtomIndex",&ZMatrixDihedralInternal_O::getBondAtomIndex)
-	    .def("getAngleAtomIndex",&ZMatrixDihedralInternal_O::getAngleAtomIndex)
-	    .def("getDihedralAtomIndex",&ZMatrixDihedralInternal_O::getDihedralAtomIndex)
-	    ;
-#endif
-    }
 
 
 
@@ -340,7 +260,7 @@ CL_DEFMETHOD     string	ZMatrixAngleInternal_O::getAngleAtomZMatrixName()
 //
 
     string ZMatrixDihedralInternal_O::__repr__() const
-    {_G();
+    {
 	stringstream	ss;
 	ss << "Dihedral ";
 	ss << this->ZMatrixInternal_O::__repr__();
@@ -351,7 +271,7 @@ CL_DEFMETHOD     string	ZMatrixAngleInternal_O::getAngleAtomZMatrixName()
     }
 
     void	ZMatrixDihedralInternal_O::constrainIfNoAtomsWithMask(uint m)
-    {_G();
+    {
 	Atom_sp	atomNew, atomBond, atomAngle, atomDihedral;
 	atomNew = this->getAtomNew();
 	atomBond = this->getZMatrix()->_getAtomAtIndex(this->_AtomBond);
@@ -368,7 +288,7 @@ CL_DEFMETHOD     string	ZMatrixAngleInternal_O::getAngleAtomZMatrixName()
     }
 
     void	ZMatrixDihedralInternal_O::extractInternal()
-    {_G();
+    {
 	Atom_sp	atomNew, atomBond, atomAngle, atomDihedral;
 	double	value;
 	atomNew = this->getAtomNew();
@@ -385,7 +305,7 @@ CL_DEFMETHOD     string	ZMatrixAngleInternal_O::getAngleAtomZMatrixName()
 
 #ifdef XML_ARCHIVE
     void	ZMatrixDihedralInternal_O::archiveBase(core::ArchiveP node)
-    {_G();
+    {
 	this->ZMatrixInternal_O::archiveBase(node);
 	node->attribute("AtomBond",this->_AtomBond);
 	node->attribute("AtomAngle",this->_AtomAngle);
@@ -395,19 +315,19 @@ CL_DEFMETHOD     string	ZMatrixAngleInternal_O::getAngleAtomZMatrixName()
 
 CL_LISPIFY_NAME("getBondAtomZMatrixName");
 CL_DEFMETHOD     string	ZMatrixDihedralInternal_O::getBondAtomZMatrixName()
-    {_G();
+    {
 	return this->getZMatrix()->_getAtomZMatrixNameAtIndex(this->_AtomBond);
     }
 
 CL_LISPIFY_NAME("getAngleAtomZMatrixName");
 CL_DEFMETHOD     string	ZMatrixDihedralInternal_O::getAngleAtomZMatrixName()
-    {_G();
+    {
 	return this->getZMatrix()->_getAtomZMatrixNameAtIndex(this->_AtomAngle);
     }
 
 CL_LISPIFY_NAME("getDihedralAtomZMatrixName");
 CL_DEFMETHOD     string	ZMatrixDihedralInternal_O::getDihedralAtomZMatrixName()
-    {_G();
+    {
 	return this->getZMatrix()->_getAtomZMatrixNameAtIndex(this->_AtomDihedral);
     }
 
@@ -417,7 +337,7 @@ CL_DEFMETHOD     string	ZMatrixDihedralInternal_O::getDihedralAtomZMatrixName()
     void	ZMatrixDihedralInternal_O::setup(Atom_sp atomNew, Atom_sp atomBond,
 						 Atom_sp atomAngle, Atom_sp atomDihedral,
 						 ZMatrixInternal_O::atomMap	atomIndices )
-    {_G();
+    {
 	stringstream	name;
 	this->setAtomNew(atomNew,atomIndices);
 	name << "d" << atomIndices.size();
@@ -431,35 +351,7 @@ CL_DEFMETHOD     string	ZMatrixDihedralInternal_O::getDihedralAtomZMatrixName()
 
 
 
-    void ZMatrixEntry_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<ZMatrixEntry_O>()
-	    .def("getTargetAtomZMatrixName",&ZMatrixEntry_O::getTargetAtomZMatrixName)
-	    .def("getAtom",&ZMatrixEntry_O::getAtom)
-	    .def("hasBond",&ZMatrixEntry_O::hasBond)
-	    .def("getBond",&ZMatrixEntry_O::getBond)
-	    .def("hasAngle",&ZMatrixEntry_O::hasAngle)
-	    .def("getAngle",&ZMatrixEntry_O::getAngle)
-	    .def("hasDihedral",&ZMatrixEntry_O::hasDihedral)
-	    .def("getDihedral",&ZMatrixEntry_O::getDihedral)
-	    ;
-    }
 
-    void ZMatrixEntry_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,ZMatrixEntry,"","",_lisp)
-	    .def("getTargetAtomZMatrixName",&ZMatrixEntry_O::getTargetAtomZMatrixName)
-	    .def("getAtom",&ZMatrixEntry_O::getAtom)
-	    .def("hasBond",&ZMatrixEntry_O::hasBond)
-	    .def("getBond",&ZMatrixEntry_O::getBond)
-	    .def("hasAngle",&ZMatrixEntry_O::hasAngle)
-	    .def("getAngle",&ZMatrixEntry_O::getAngle)
-	    .def("hasDihedral",&ZMatrixEntry_O::hasDihedral)
-	    .def("getDihedral",&ZMatrixEntry_O::getDihedral)
-	    ;
-#endif
-    }
 
 
 
@@ -470,7 +362,7 @@ CL_DEFMETHOD     string	ZMatrixDihedralInternal_O::getDihedralAtomZMatrixName()
 
 
     ZMatrixEntry_sp ZMatrixEntry_O::create(Atom_sp atom, ZMatrixInternal_O::atomMap atomIndices)
-    {_G();
+    {
 	GC_ALLOCATE(ZMatrixEntry_O,	entry );
 	stringstream name;
 	name << atom->getElementAsString() << atomIndices.size();
@@ -496,7 +388,7 @@ CL_DEFMETHOD     string	ZMatrixDihedralInternal_O::getDihedralAtomZMatrixName()
 
 #ifdef XML_ARCHIVE
     void	ZMatrixEntry_O::archiveBase(core::ArchiveP node)
-    {_G();
+    {
 	node->attribute("ZMatrixAtomName",this->_ZMatrixAtomName);
 	ASSERTNOTNULL(this->_Atom);
 	node->attribute("Atom",this->_Atom);
@@ -514,30 +406,7 @@ CL_DEFMETHOD     string ZMatrix_O::getZMatrixAtomNameAtIndex(uint i) const
     }
 
 
-    void ZMatrix_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<ZMatrix_O>()
-//	    .def_raw("core:__init__",&ZMatrix_O::__init__,"(self matter &key rootAtom)")
-	    .def("entriesAsCons",&ZMatrix_O::entriesAsCons)
-	    .def("extractInternals",&ZMatrix_O::extractInternals)
-	    .def("zmatrix-entry-with-name",&ZMatrix_O::zMatrixEntryWithName)
-	    .def("all-zmatrix-atom-names-as-string",&ZMatrix_O::allZMatrixAtomNamesAsString)
-	    .def("get-zmatrix-atom-name-at-index",&ZMatrix_O::getZMatrixAtomNameAtIndex)
-	    ;
-    }
 
-    void ZMatrix_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,ZMatrix,"","",_lisp)
-	    .def("entriesAsCons",&ZMatrix_O::entriesAsCons)
-	    .def("extractInternals",&ZMatrix_O::extractInternals)
-	    .def("zmatrix-entry-with-name",&ZMatrix_O::zMatrixEntryWithName)
-	    .def("all-zmatrix-atom-names-as-string",&ZMatrix_O::allZMatrixAtomNamesAsString)
-	    .def("get-zmatrix-atom-name-at-index",&ZMatrix_O::getZMatrixAtomNameAtIndex)
-	    ;
-#endif
-    }
 
 
 
@@ -552,7 +421,7 @@ CL_DEFMETHOD     string ZMatrix_O::getZMatrixAtomNameAtIndex(uint i) const
 #define DECL_ZMatrix_O_make ""
 #define DOCS_ZMatrix_O_make "make ZMatrix"
   ZMatrix_sp ZMatrix_O::make(Matter_sp matter, Atom_sp rootAtom)
-  {_G();
+  {
       GC_ALLOCATE(ZMatrix_O, me );
       if ( rootAtom.nilp() )
       {
@@ -567,7 +436,7 @@ CL_DEFMETHOD     string ZMatrix_O::getZMatrixAtomNameAtIndex(uint i) const
 #else
 
     core::T_sp ZMatrix_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 	Matter_sp matter = translate::from_object<Matter_sp>::convert(env->lookup(Pkg(),"matter"));
 	Atom_sp rootAtom = translate::from_object<Atom_sp>::convert(env->lookup(Pkg(),"rootAtom"));
 	if ( rootAtom.nilp() )
@@ -588,7 +457,7 @@ CL_DEFMETHOD     string ZMatrix_O::getZMatrixAtomNameAtIndex(uint i) const
 
 #ifdef XML_ARCHIVE
     void	ZMatrix_O::archiveBase(core::ArchiveP node)
-    {_G();
+    {
 	node->attribute("Matter",this->_Matter);
 	node->archiveVector0("ZMatrix",this->_ZMatrix);
 	node->archiveVector0("Internals",this->_Internals);
@@ -596,20 +465,20 @@ CL_DEFMETHOD     string ZMatrix_O::getZMatrixAtomNameAtIndex(uint i) const
 #endif
 
     Atom_sp	ZMatrix_O::_getAtomAtIndex(uint i)
-    {_G();
+    {
 	ASSERT_lessThan(i,this->_ZMatrix.size());
 	return this->_ZMatrix[i]->getAtom();
     }
 
     string	ZMatrix_O::_getAtomZMatrixNameAtIndex(uint i) const
-    {_G();
+    {
 	LOG(BF("Looking for atom at index: %d    _ZMatrix.size=%d") % i % this->_ZMatrix.size()  );
 	ASSERT_lessThan(i,this->_ZMatrix.size());
 	return this->_ZMatrix[i]->getTargetAtomZMatrixName();
     }
 
     void	ZMatrix_O::defineForMatterWithStartingAtom(Matter_sp matter, Atom_sp atom)
-    {_G();
+    {
 	Atom_sp				newAtom, bondToAtom, angleToAtom, dihedralToAtom;
 	ZMatrixEntry_sp			entry;
 	ZMatrixBondInternal_sp		bondInternal;
@@ -681,7 +550,7 @@ CL_DEFMETHOD     string ZMatrix_O::getZMatrixAtomNameAtIndex(uint i) const
 
 
     void	ZMatrix_O::defineForMatter(Matter_sp matter)
-    {_G();
+    {
 	Atom_sp				atom;
 	Loop				lAtoms;
 	bool				gotPeripheralAtom;
@@ -703,7 +572,7 @@ CL_DEFMETHOD     string ZMatrix_O::getZMatrixAtomNameAtIndex(uint i) const
 
 CL_LISPIFY_NAME("extractInternals");
 CL_DEFMETHOD     void	ZMatrix_O::extractInternals()
-    {_G();
+    {
 	ZMatrix_O::internalIterator	it;
 	for ( it=this->_Internals.begin(); it!=this->_Internals.end(); it++ )
 	{
@@ -713,7 +582,7 @@ CL_DEFMETHOD     void	ZMatrix_O::extractInternals()
 
 
     void	ZMatrix_O::constrainInternalsWithNoAtomsWithMask(uint mask)
-    {_G();
+    {
 	ZMatrix_O::internalIterator	it;
 	for ( it=this->_Internals.begin(); it!=this->_Internals.end(); it++ )
 	{

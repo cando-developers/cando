@@ -68,7 +68,7 @@ namespace chem
 					  EnergyAtom	*iea1,
 					  EnergyAtom	*iea2,
 					  EnergyNonbond_sp nb)
-    {_G();
+    {
 	FFNonbond_sp				ffNonbond1;
 	FFNonbond_sp				ffNonbond2;
 	double				epsilonij;
@@ -240,7 +240,7 @@ namespace chem
     }
 
     double	EnergyNonbond_O::getEnergy()
-    {_G();
+    {
 	double	e;
 	e = this->getVdwEnergy();
 	e += this->getElectrostaticEnergy();
@@ -277,7 +277,7 @@ namespace chem
 
 #ifdef RENDER
     int EnergyNonbond_O::countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn, core::Lisp_sp lisp)
-    {_G();
+    {
         gctools::Vec0<EnergyNonbond>::iterator	eni;
 	string				as1,as2,as3,as4;
 	string				str1, str2, str3, str4;
@@ -367,7 +367,7 @@ namespace chem
 	gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
 	gc::Nilable<NVector_sp>	hdvec, 
 	gc::Nilable<NVector_sp> 	dvec )
-    {_G();
+    {
 	if ( this->_DebugEnergy ) 
 	{
 	    LOG_ENERGY_CLEAR();
@@ -621,19 +621,8 @@ namespace chem
 
 
 
-    void EnergyNonbond_O::exposeCando(core::Lisp_sp e)
-    {
-	core::class_<EnergyNonbond_O>()
-	    ;
-    }
 
-    void EnergyNonbond_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,EnergyNonbond,"","",_lisp)
-	    ;
-#endif
-    }
+
 
 
     void EnergyNonbond_O::initialize()
@@ -702,7 +691,6 @@ void EnergyNonbond_O::constructFromAtomTable(AtomTable_sp atomTable, ForceField_
 
 
 
-    EXPOSE_CLASS(chem,EnergyNonbond_O);
 };
 
 

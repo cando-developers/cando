@@ -24,7 +24,7 @@ namespace chem {
 #define DECL_SpecificContext_O_make ""
 #define DOCS_SpecificContext_O_make "make SpecificContext"
   SpecificContext_sp SpecificContext_O::make()
-  {_G();
+  {
     IMPLEMENT_ME();
   };
 
@@ -52,13 +52,13 @@ void SpecificContext_O::clear()
 
 CL_LISPIFY_NAME("setSelfName");
 CL_DEFMETHOD     void SpecificContext_O::setSelfName(core::Symbol_sp selfName)
-{_G();
+{
    this->_SelfName = selfName; 
 }
 
 CL_LISPIFY_NAME("pushNeighbor");
 CL_DEFMETHOD     void	SpecificContext_O::pushNeighbor(core::Symbol_sp coupling, core::Symbol_sp neighborName)
-{_G();
+{
     KeyEntry one;
     one._Coupling = coupling;
     one._Monomer = neighborName;
@@ -66,7 +66,7 @@ CL_DEFMETHOD     void	SpecificContext_O::pushNeighbor(core::Symbol_sp coupling, 
 }
 
     void	SpecificContext_O::setLastNeighborName(core::Symbol_sp neighbor)
-{_G();
+{
     ASSERT_gt(this->_Neighbors.size(),0);
     KeyEntry& one = this->_Neighbors.back();
     one._Monomer = neighbor;
@@ -74,14 +74,14 @@ CL_DEFMETHOD     void	SpecificContext_O::pushNeighbor(core::Symbol_sp coupling, 
 
 CL_LISPIFY_NAME("popNeighbor");
 CL_DEFMETHOD void	SpecificContext_O::popNeighbor()
-{_G();
+{
     this->_Neighbors.pop_back();
 }
 
 
 
 bool SpecificContext_O::allMonomersInDatabase(CandoDatabase_sp bdb)
-{_G();
+{
     if ( !bdb->recognizesMonomerName(this->_SelfName) ) return false;
     for ( gctools::Vec0<KeyEntry>::iterator it = this->_Neighbors.begin();
     		it!=this->_Neighbors.end(); it++ )
@@ -93,7 +93,7 @@ bool SpecificContext_O::allMonomersInDatabase(CandoDatabase_sp bdb)
 
 CL_LISPIFY_NAME("asString");
 CL_DEFMETHOD string SpecificContext_O::asString()
-{_G();
+{
 stringstream ss;
     ss << "![";
     ss << this->_SelfName->symbolNameAsString();
@@ -120,7 +120,7 @@ stringstream ss;
 
 CL_LISPIFY_NAME("copy");
 CL_DEFMETHOD SpecificContext_sp SpecificContext_O::copy()
-{_G();
+{
     GC_COPY(SpecificContext_O, cpy , *this); // = RP_Copy<SpecificContext_O>(this);
     return cpy;
 }
@@ -135,7 +135,7 @@ CL_DEFMETHOD SpecificContext_sp SpecificContext_O::copy()
 #define DECL_SpecificContextSet_O_make ""
 #define DOCS_SpecificContextSet_O_make "make SpecificContextSet"
   SpecificContextSet_sp SpecificContextSet_O::make()
-  {_G();
+  {
     IMPLEMENT_ME();
     LOG(BF("Creating SpecificContextSet") );
   };
@@ -163,7 +163,7 @@ void	SpecificContextSet_O::initialize()
 
 
     void	SpecificContextSet_O::addWithKey(core::Symbol_sp keyKey, SpecificContext_sp key)
-{_G();
+{
     LOG(BF("adding SpecificContext |%s|") % keyKey.c_str()  );
     this->_KeySets.set(keyKey, key );
 }
@@ -171,19 +171,19 @@ void	SpecificContextSet_O::initialize()
 
 CL_LISPIFY_NAME("addSpecificContext");
 CL_DEFMETHOD void	SpecificContextSet_O::add(SpecificContext_sp key)
-{_G();
+{
     LOG(BF("adding SpecificContext |%s|") % key->asString().c_str()  );
     this->addWithKey(key->asSymbol(),key);
 }
 
 
 bool	SpecificContextSet_O::contains(SpecificContext_sp key)
-{_G();
+{
     return this->_KeySets.count(key->asSymbol())>0;
 }
 
 void	SpecificContextSet_O::merge(SpecificContextSet_sp s)
-{_G();
+{
     SpecificContextSet_O::iterator it;
     for ( it=s->begin(); it!=s->end(); it++ )
     {
@@ -193,7 +193,7 @@ void	SpecificContextSet_O::merge(SpecificContextSet_sp s)
 
 
 void	SpecificContextSet_O::remove(SpecificContextSet_sp s)
-{_G();
+{
     SpecificContextSet_O::iterator it;
     for ( it=s->begin(); it!=s->end(); it++ )
     {
@@ -207,7 +207,7 @@ void	SpecificContextSet_O::remove(SpecificContextSet_sp s)
 
 CL_LISPIFY_NAME("asSymbolSetOfKeys");
 CL_DEFMETHOD adapt::SymbolSet_sp SpecificContextSet_O::asSymbolSetOfKeys()
-{_G();
+{
     adapt::SymbolSet_sp keys = adapt::SymbolSet_O::create();
     SpecificContextSet_O::iterator it;
     for ( it=this->begin(); it!=this->end(); it++ )
@@ -221,7 +221,7 @@ CL_DEFMETHOD adapt::SymbolSet_sp SpecificContextSet_O::asSymbolSetOfKeys()
 
 CL_LISPIFY_NAME("asCons");
 CL_DEFMETHOD core::List_sp SpecificContextSet_O::asCons()
-{_G();
+{
     core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
     core::Cons_sp cur = first;
     SpecificContextSet_O::iterator it;
@@ -240,60 +240,16 @@ CL_DEFMETHOD core::List_sp SpecificContextSet_O::asCons()
 
 
 
-    void SpecificContext_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<SpecificContext_O>()
-	.def("setSelfName",&SpecificContext_O::setSelfName)
-	.def("pushNeighbor",&SpecificContext_O::pushNeighbor)
-	.def("popNeighbor",&SpecificContext_O::popNeighbor)
-	.def("asString",&SpecificContext_O::asString,"","","",false)
-	.def("copy",&SpecificContext_O::copy,"","","",false)
-    ;
-}
-
-    void SpecificContext_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,SpecificContext,"","",_lisp)
-	.def("setSelfName",&SpecificContext_O::setSelfName)
-	.def("pushNeighbor",&SpecificContext_O::pushNeighbor)
-	.def("popNeighbor",&SpecificContext_O::popNeighbor)
-//	.def("asString",&SpecificContext_O::asString,"","","",false)
-//	.def("copy",&SpecificContext_O::copy,"","","",false)
-    ;
-#endif //]
-}
 
 
 
 
 
-    void SpecificContextSet_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<SpecificContextSet_O>()
-	.def("asSymbolSetOfKeys",&SpecificContextSet_O::asSymbolSetOfKeys)
-	.def("size",&SpecificContextSet_O::size,"","","",false)
-	.def("addSpecificContext",&SpecificContextSet_O::add)
-	.def("asCons",&SpecificContextSet_O::asCons,"","","",false)
-	;
-}
-
-    void SpecificContextSet_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,SpecificContextSet,"","",_lisp)
-	.def("asSymbolSetOfKeys",&SpecificContextSet_O::asSymbolSetOfKeys)
-//	.def("size",&SpecificContextSet_O::size,"","","",false)
-	.def("addSpecificContext",&SpecificContextSet_O::add)
-//	.def("asCons",&SpecificContextSet_O::asCons,"","","",false)
-    ;
-#endif //]
-}
 
 
 
-    EXPOSE_CLASS(chem,SpecificContext_O);
-    EXPOSE_CLASS(chem,SpecificContextSet_O);
+
+
 };
 
 

@@ -23,26 +23,15 @@ namespace chem {
 
 
 
-void ComplexRestraint_O::exposeCando(core::Lisp_sp env)
-{
-    core::class_<ComplexRestraint_O>()
-	;
-}
 
-    void ComplexRestraint_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,ComplexRestraint,"","",_lisp)
-    ;
-#endif //]
-}
+
 
 
 #define ARGS_ComplexRestraint_O_make "()"
 #define DECL_ComplexRestraint_O_make ""
 #define DOCS_ComplexRestraint_O_make "make ComplexRestraint"
   ComplexRestraint_sp ComplexRestraint_O::make()
-  {_G();
+  {
     IMPLEMENT_ME();
   };
 
@@ -60,58 +49,7 @@ void	ComplexRestraint_O::initialize()
 #endif
 
 
-void RestrainedPiBond_O::exposeCando(core::Lisp_sp env)
-{
-    core::class_<RestrainedPiBond_O>()
-    .def("getConfiguration",&RestrainedPiBond_O::getConfiguration)
-    .def("setConfiguration",&RestrainedPiBond_O::setConfiguration)
-//	.def("getPriority1AtomOnAtomX",&RestrainedPiBond_O::getPriority1AtomOnAtomX)
-//	.def("setPriority1AtomOnAtomX",&RestrainedPiBond_O::setPriority1AtomOnAtomX)
-//	.def("getPriority2AtomOnAtomX",&RestrainedPiBond_O::getPriority2AtomOnAtomX)
-//	.def("setPriority2AtomOnAtomX",&RestrainedPiBond_O::setPriority2AtomOnAtomX)
-    .def("getPiAtomX",&RestrainedPiBond_O::getPiAtomX)
-    .def("setPiAtomX",&RestrainedPiBond_O::setPiAtomX)
-//	.def("getPriority1AtomOnAtomY",&RestrainedPiBond_O::getPriority1AtomOnAtomY)
-//	.def("setPriority1AtomOnAtomY",&RestrainedPiBond_O::setPriority1AtomOnAtomY)
-//	.def("getPriority2AtomOnAtomY",&RestrainedPiBond_O::getPriority2AtomOnAtomY)
-//	.def("setPriority2AtomOnAtomY",&RestrainedPiBond_O::setPriority2AtomOnAtomY)
-    .def("getPiAtomY",&RestrainedPiBond_O::getPiAtomY)
-    .def("setPiAtomY",&RestrainedPiBond_O::setPiAtomY)
-    ;
-};
-    void RestrainedPiBond_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,RestrainedPiBond,"","",_lisp)
-	    .def("getConfiguration",&RestrainedPiBond_O::getConfiguration)
-	    .def("setConfiguration",&RestrainedPiBond_O::setConfiguration)
-//	.def("getPriority1AtomOnAtomX",&RestrainedPiBond_O::getPriority1AtomOnAtomX)
-//	.def("setPriority1AtomOnAtomX",&RestrainedPiBond_O::setPriority1AtomOnAtomX)
-//	.def("getPriority2AtomOnAtomX",&RestrainedPiBond_O::getPriority2AtomOnAtomX)
-//	.def("setPriority2AtomOnAtomX",&RestrainedPiBond_O::setPriority2AtomOnAtomX)
-	    .def("getPiAtomX",&RestrainedPiBond_O::getPiAtomX)
-	    .def("setPiAtomX",&RestrainedPiBond_O::setPiAtomX)
-//	.def("getPriority1AtomOnAtomY",&RestrainedPiBond_O::getPriority1AtomOnAtomY)
-//	.def("setPriority1AtomOnAtomY",&RestrainedPiBond_O::setPriority1AtomOnAtomY)
-//	.def("getPriority2AtomOnAtomY",&RestrainedPiBond_O::getPriority2AtomOnAtomY)
-//	.def("setPriority2AtomOnAtomY",&RestrainedPiBond_O::setPriority2AtomOnAtomY)
-	    .def("getPiAtomY",&RestrainedPiBond_O::getPiAtomY)
-	    .def("setPiAtomY",&RestrainedPiBond_O::setPiAtomY)
-	    ;
-#endif
-    };
-#ifdef XML_ARCHIVE
-    void	RestrainedPiBond_O::archive(core::ArchiveP node)
-{
-    node->attribute( "Configuration",this->_Configuration);
-//    node->attribute( "Priority1AtomOnAtomX",this->_Priority1AtomOnAtomX);
-//    node->attribute( "Priority2AtomOnAtomX",this->_Priority2AtomOnAtomX);
-    node->attribute( "PiAtomX",this->_PiAtomX);
-//    node->attribute( "Priority1AtomOnAtomY",this->_Priority1AtomOnAtomY);
-//    node->attribute( "Priority2AtomOnAtomY",this->_Priority2AtomOnAtomY);
-    node->attribute( "PiAtomY",this->_PiAtomY);
-}
-#endif
+;
 
 #if INIT_TO_FACTORIES
 
@@ -122,7 +60,7 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,Z);
 #define DECL_RestrainedPiBond_O_make ""
 #define DOCS_RestrainedPiBond_O_make "make RestrainedPiBond"
 RestrainedPiBond_sp RestrainedPiBond_O::make(core::Symbol_sp config, core::List_sp piAtoms)
-  {_G();
+  {
       GC_ALLOCATE(RestrainedPiBond_O, me );
     me->_Configuration = config;
     if ( me->_Configuration != chemkw::_sym_E && me->_Configuration != chemkw::_sym_Z )
@@ -255,19 +193,8 @@ void	RestrainedPiBond_O::fillRestraints(Residue_sp residue)
 }
 
 
-void RestrainedExoCyclicAtom_O::exposeCando(core::Lisp_sp env)
-{
-    core::class_<RestrainedExoCyclicAtom_O>()
-	;
-}
 
-    void RestrainedExoCyclicAtom_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,RestrainedExoCyclicAtom,"","",_lisp)
-    ;
-#endif //]
-}
+
 
 bool RestrainedExoCyclicAtom_O::_LazyInitializedSmarts = false;
 ChemInfo_sp RestrainedExoCyclicAtom_O::_AtomExoToSixMemberedRing;
@@ -298,7 +225,7 @@ void	RestrainedExoCyclicAtom_O::initialize()
 #define DECL_RestrainedExoCyclicAtom_O_make ""
 #define DOCS_RestrainedExoCyclicAtom_O_make "make RestrainedExoCyclicAtom"
   RestrainedExoCyclicAtom_sp RestrainedExoCyclicAtom_O::make()
-  {_G();
+  {
     IMPLEMENT_ME();
   };
 
@@ -352,9 +279,6 @@ void RestrainedExoCyclicAtom_O::fillRestraints(Residue_sp residue )
     FIX_ME(); // is the above correct?
 }
 
-    EXPOSE_CLASS(chem, ComplexRestraint_O );
-    EXPOSE_CLASS(chem, RestrainedPiBond_O );
-    EXPOSE_CLASS(chem, RestrainedExoCyclicAtom_O );
 
 };
 

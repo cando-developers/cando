@@ -14,7 +14,7 @@ namespace kinematics
 	       Vector3 const& a,
 	       Vector3 const& b,
 	       Vector3 const& c)
-    {_G();
+    {
 	this->fromFourPoints(center,a,b,c);
     }
 
@@ -30,7 +30,7 @@ namespace kinematics
 			      Vector3 const& a,
 			      Vector3 const& b,
 			      Vector3 const& c)
-    {_G();
+    {
 	this->_Transform.setToIdentity();
 	LOG(BF("center = %s") % center.asString());
 	LOG(BF("a = %s") % a.asString());

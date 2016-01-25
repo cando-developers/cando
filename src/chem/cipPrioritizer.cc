@@ -53,7 +53,7 @@ class	OrderByS : public OrderByBase
 {
 public:
     int cmpByS(Atom_sp x, Atom_sp y )
-{_G();
+{
         ASSERTNOTNULL(x);
         ASSERTNOTNULL(y);
 	vector<int>&	xv = prior->getS(x);
@@ -97,7 +97,7 @@ public:
 
 
     bool operator()(Atom_sp x, Atom_sp y )
-    {_G();
+    {
         int order = this->cmpByS(x,y);
 	if ( order < 0 ) return true;
 	if ( order == 0 ) return true;
@@ -152,7 +152,7 @@ vector<int>& CipPrioritizer_O::getS(Atom_sp a)
     
 
 void CipPrioritizer_O::assignPriorities(Matter_sp matter)
-{_G();
+{
     CipPrioritizer_sp prior;
     prior = CipPrioritizer_O::create();
     prior->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(matter);
@@ -163,7 +163,7 @@ void CipPrioritizer_O::assignPriorities(Matter_sp matter)
 // ! Assign the CIP priority to the RelativePriority of each Atom in the molecule
 CL_LISPIFY_NAME("assignCahnIngoldPrelogPriorityToAtomsRelativePriority");
 CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority(Matter_sp molOrAgg)
-{_G();
+{
     gctools::Vec0<Atom_sp>	mAtoms;
     vector<int> newC;
     vector<int> C;
@@ -486,7 +486,7 @@ bool orderByName( Atom_sp p1, Atom_sp p2 )
 
 CL_LISPIFY_NAME("defineStereochemicalConfigurationsForAllAtoms");
 CL_DEFMETHOD void CipPrioritizer_O::defineStereochemicalConfigurationsForAllAtoms(Matter_sp molOrAgg)
-{_G();
+{
     this->assignCahnIngoldPrelogPriorityToAtomsRelativePriority(molOrAgg);
     Loop l;
     l.loopTopGoal(molOrAgg,ATOMS);
@@ -544,27 +544,9 @@ CL_DEFMETHOD void CipPrioritizer_O::defineStereochemicalConfigurationsForAllAtom
 
 
 
-    void CipPrioritizer_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<CipPrioritizer_O>("makeCipPrioritizer")
-	.def("assignCahnIngoldPrelogPriorityToAtomsRelativePriority",
-	     &CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativePriority)
-    .def("defineStereochemicalConfigurationsForAllAtoms",
-    		&CipPrioritizer_O::defineStereochemicalConfigurationsForAllAtoms )
-    ;
-
-}
-    void CipPrioritizer_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,CipPrioritizer,"","",_lisp)
-    ;
-#endif //]
-
-}
 
 
-    EXPOSE_CLASS(chem,CipPrioritizer_O);
+
 };
 
 

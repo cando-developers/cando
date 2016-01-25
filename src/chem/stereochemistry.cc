@@ -45,7 +45,7 @@ CL_DEFMETHOD int	StereoConfiguration_O::getMoeConfiguration()
 
 #ifdef XML_ARCHIVE
     void	StereoConfiguration_O::archive(core::ArchiveP node)
-{_G();
+{
     node->attribute("atom",this->_AtomName);
     node->attribute("config",this->_Configuration);
 }
@@ -77,7 +77,7 @@ StereoConfiguration_sp StereoConfiguration_O::make(core::Symbol_sp atomName, cor
 #else
     core::T_sp StereoConfiguration_O::__init__(core::Function_sp exec, core::Cons_sp args,
 					      core::Environment_sp env, core::Lisp_sp lisp)
-{_G();
+{
     this->_AtomName = env->lookup(Pkg(),"atomName").as<core::Str_O>()->get();
     this->_Configuration = translate::from_object<string>::convert(env->lookup(Pkg(),"config"));
     return _Nil<core::T_O>();
@@ -89,7 +89,7 @@ StereoConfiguration_sp StereoConfiguration_O::make(core::Symbol_sp atomName, cor
  * Match atom names to configurations
  */
 core::List_sp StereoConfiguration_O::create_multiple(core::List_sp atomNames, core::List_sp configurations)
-{_G();
+{
   ASSERT_eq(core::cl__length(atomNames), core::cl__length(configurations) );
     core::List_sp list = _Nil<core::T_O>();
     core::List_sp curName = atomNames;
@@ -114,12 +114,12 @@ core::List_sp StereoConfiguration_O::create_multiple(core::List_sp atomNames, co
 #define DECL_chem__stereo_configuration_create_multiple ""
 #define DOCS_chem__stereo_configuration_create_multiple "StereoConfiguration_create_multiple"
     core::T_sp chem__stereo_configuration_create_multiple(core::List_sp atomNames, core::List_sp configurations)
-    {_G();
+    {
 	return StereoConfiguration_O::create_multiple(atomNames,configurations);
     }
 
 core::List_sp StereoConfiguration_O::stereochemicalPermutations(uint numberOfCenters)
-{_G();
+{
     core::List_sp list = _Nil<core::T_O>();
     uint pow = 1 << numberOfCenters;
     for ( uint i=0; i<pow; i++ )
@@ -151,7 +151,7 @@ core::List_sp StereoConfiguration_O::stereochemicalPermutations(uint numberOfCen
 #define DECL_chem__stereochemical_permutations ""
 #define DOCS_chem__stereochemical_permutations "stereochemicalPermutations"
     core::T_sp chem__stereochemical_permutations(core::Fixnum_sp numcenters)
-    {_G();
+    {
       uint numberOfCenters = core::clasp_to_fixnum(numcenters);
 	core::List_sp results = StereoConfiguration_O::stereochemicalPermutations(numberOfCenters);
 	return results;
@@ -185,7 +185,7 @@ void	Stereoisomer_O::initialize()
 #endif
 
 adapt::SymbolSet_sp	Stereoisomer_O::expandedNameSet()
-{_G();
+{
 adapt::SymbolSet_sp	ss;
     ss = adapt::SymbolSet_O::create();
     ss->insert(this->getName());
@@ -197,7 +197,7 @@ adapt::SymbolSet_sp	ss;
 	 * a ContainedNames list with only this Stereoisomers name
 	 */
 RepresentativeList_sp Stereoisomer_O::expandedRepresentativeList() const
-{_G();
+{
     RepresentativeList_sp ss = RepresentativeList_O::create();
     RepresentedEntityNameSet_sp gr = RepresentedEntityNameSet_O::create();
     gr->setName(this->getName());
@@ -218,7 +218,7 @@ string Stereoisomer_O::__repr__() const
 
 CL_LISPIFY_NAME("getConfigurationForCenter");
 CL_DEFMETHOD core::Symbol_sp Stereoisomer_O::getConfigurationForCenter( core::Symbol_sp centerName )
-{_G();
+{
     for ( gctools::Vec0<StereoConfiguration_sp>::iterator it=this->_Configurations.begin();
           it!=this->_Configurations.end(); it++ )
     {
@@ -231,7 +231,7 @@ CL_DEFMETHOD core::Symbol_sp Stereoisomer_O::getConfigurationForCenter( core::Sy
 }
 
 Constitution_sp Stereoisomer_O::getConstitution()
-{_G();
+{
     ASSERTNOTNULL(this->_WeakConstitution);
     		// If the constitution is undefined then
 		// crawl up the owners to find one
@@ -256,7 +256,7 @@ __END_DOC
 #define DECL_Stereoisomer_O_make ""
 #define DOCS_Stereoisomer_O_make "make ChemDraw"
 Stereoisomer_sp Stereoisomer_O::make(core::Symbol_sp name, core::Symbol_sp pdb, core::List_sp configs)
-  {_G();
+  {
       GC_ALLOCATE(Stereoisomer_O, me );
     me->_Name = name;
     me->_Pdb = pdb;
@@ -272,7 +272,7 @@ Stereoisomer_sp Stereoisomer_O::make(core::Symbol_sp name, core::Symbol_sp pdb, 
 #else
 
     core::T_sp Stereoisomer_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-{_G();
+{
     this->_Name = translate::from_object<core::Symbol_O>::convert(env->lookup(Pkg(),"name"));
     this->_Pdb = translate::from_object<core::Symbol_O>::convert(env->lookup(Pkg(),"pdb"));
     core::List_sp configs = translate::from_object<core::Cons_O>::convert(env->lookup(Pkg(),"configs"));
@@ -300,7 +300,7 @@ __END_DOC
 #define DECL_af_multiStereoisomers ""
 #define DOCS_af_multiStereoisomers "multiStereoisomers"
 core::T_sp af_multiStereoisomers(const string& nameTemplate, core::List_sp centers, core::List_sp configs)
-{_G();
+{
     IMPLEMENT_MEF(BF("Implement multiStereoisomers"));
 };
 
@@ -362,7 +362,7 @@ void	StereoInformation_O::addProChiralCenter(RPProChiralCenter s)
 
 #ifdef XML_ARCHIVE
 void	StereoInformation_O::archive(core::ArchiveP node)
-{_G();
+{
     node->archiveVector0OfObjectsSubClassOf<Stereoisomer_O>(this->_Stereoisomers);
 //    node->archiveVector0OfObjectsSubClassOf<O_ProChiralCenter>( this->_ProChiralCenters);
     node->archiveVector0( "complexRestraints", this->_ComplexRestraints);
@@ -372,7 +372,7 @@ void	StereoInformation_O::archive(core::ArchiveP node)
 
 #ifdef XML_ARCHIVE
 bool	StereoInformation_O::loadFinalize(core::ArchiveP node)
-{_G();
+{
     gctools::Vec0<Stereoisomer_sp>::iterator	si;
     for ( si=this->_Stereoisomers.begin(); si!=this->_Stereoisomers.end(); si++ )
     {
@@ -400,7 +400,7 @@ __END_DOC
 #define DECL_StereoInformation_O_make ""
 #define DOCS_StereoInformation_O_make "make StereoInformation"
 StereoInformation_sp StereoInformation_O::make(core::List_sp stereoisomers, core::List_sp restraints)
-  {_G();
+  {
       GC_ALLOCATE(StereoInformation_O, me );
       core::fillVec0(stereoisomers,me->_Stereoisomers);
     IMPLEMENT_MEF(BF("Handle setOwnerOfAllEntries"));
@@ -530,95 +530,21 @@ SYMBOL_EXPORT_SC_(ChemKwPkg,prochiral);
          ;
 
 
-void StereoConfiguration_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<StereoConfiguration_O>()
-//	    .def_raw("core:__init__",&StereoConfiguration_O::__init__,"(self &key (atomName \"\") (config \"\"))")
-	.def("getAtomName",&StereoConfiguration_O::getAtomName)
-	.def("setAtomName",&StereoConfiguration_O::setAtomName)
-	.def("getConfiguration",&StereoConfiguration_O::getConfiguration)
-	.def("setConfiguration",&StereoConfiguration_O::setConfiguration)
-	.def("getMoeConfiguration",&StereoConfiguration_O::getMoeConfiguration)
-	;
-//	Chem_temp_Defun(stereochemical_permutations);
-//	Chem_temp_Defun(stereo_configuration_create_multiple);
-//	def("stereochemicalPermutations",&StereoConfiguration_O::stereochemicalPermutations,lisp->lisp());
 
-    }
-
-    void StereoConfiguration_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,StereoConfiguration,"","",_lisp)
-	.def("getAtomName",&StereoConfiguration_O::getAtomName)
-	.def("setAtomName",&StereoConfiguration_O::setAtomName)
-	.def("getConfiguration",&StereoConfiguration_O::getConfiguration)
-	.def("setConfiguration",&StereoConfiguration_O::setConfiguration)
-	.def("getMoeConfiguration",&StereoConfiguration_O::getMoeConfiguration)
-	;
-#endif
-//	defNoWrapPackage(ChemPkg,"stereochemicalPermutations",&prim_stereochemicalPermutations,lisp->lisp());
-//	defNoWrapPackage(ChemPkg,"StereoConfiguration_createMultiple",&prim_StereoConfiguration_create_multiple,lisp->lisp());
-//	def("stereochemicalPermutations",&StereoConfiguration_O::stereochemicalPermutations,lisp->lisp());
-
-    }
 
 ;
 
 
 
-void Stereoisomer_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<Stereoisomer_O>()
-//	    .def_raw("core:__init__",&Stereoisomer_O::__init__,"(self &key name pdb configs)")
-	    .def("getName",&Stereoisomer_O::getName,"","","",false)
-	    .def("setName",&Stereoisomer_O::setName,"","","",false)
-	.def("getPdb",&Stereoisomer_O::getPdb)
-	.def("setPdb",&Stereoisomer_O::setPdb)
-	.def("getConfigurationForCenter",&Stereoisomer_O::getConfigurationForCenter)
-	;
-    }
 
-    void Stereoisomer_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,Stereoisomer,"","",_lisp)
-	.def("getName",&Stereoisomer_O::getName)
-	.def("setName",&Stereoisomer_O::setName)
-	.def("getPdb",&Stereoisomer_O::getPdb)
-	.def("setPdb",&Stereoisomer_O::setPdb)
-	.def("getConfigurationForCenter",&Stereoisomer_O::getConfigurationForCenter)
-	;
-#endif
-    }
-
-;
-
-void StereoInformation_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<StereoInformation_O>()
-//	    .def_raw("core:__init__",&StereoInformation_O::__init__,"(self &key stereoisomers)")
-	.def("stereoisomersAsCons",&StereoInformation_O::stereoisomersAsCons)
-	.def("validate",&StereoInformation_O::validate)
-	;
-    }
-
-    void StereoInformation_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,StereoInformation,"","",_lisp)
-	.def("stereoisomersAsCons",&StereoInformation_O::stereoisomersAsCons)
-	.def("validate",&StereoInformation_O::validate)
-	;
-#endif
-    }
 
 ;
 
 
-    EXPOSE_CLASS(chem, StereoConfiguration_O );
-    EXPOSE_CLASS(chem, Stereoisomer_O);
-    EXPOSE_CLASS(chem, StereoInformation_O );
+
+;
+
+
 
 
 

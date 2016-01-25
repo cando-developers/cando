@@ -12,8 +12,6 @@
 
 namespace chem {
 
-    REGISTER_CLASS(chem,AtomIndexer_O);
-    REGISTER_CLASS(chem,MapOfMonomerNamesToAtomIndexers_O);
 
 
 
@@ -24,7 +22,7 @@ namespace chem {
 
 #ifdef XML_ARCHIVE
     void	AtomIndexer_O::archive(core::ArchiveP node)
-{_G();
+{
 //    node->attribute("indexAll",this->_IndexAll);
     node->archiveVectorStrings("AtomNames",this->_Names);
 }
@@ -32,7 +30,7 @@ namespace chem {
 
 
 int	AtomIndexer_O::addAtomName(core::Symbol_sp name)
-{_G();
+{
 //    this->_IndexAll = false;
     if ( !this->containsAtomName(name) )
     {
@@ -45,7 +43,7 @@ int	AtomIndexer_O::addAtomName(core::Symbol_sp name)
 }
 
 void	AtomIndexer_O::setFromAtomNames(const string& names)
-{_G();
+{
 vector<string>	ss;
 vector<string>::iterator	it;
     LOG(BF("Setting from atom names: %s") % names.c_str()  );
@@ -62,7 +60,7 @@ vector<string>::iterator	it;
 
 
 void	AtomIndexer_O::setFromStringList(adapt::StringList_sp sl)
-{_G();
+{
 adapt::StringList_O::iterator		it;
     LOG(BF("Setting from atom names: %s") % sl->asString().c_str()  );
     for ( it = sl->begin(); it!=sl->end(); it++ )
@@ -75,7 +73,7 @@ adapt::StringList_O::iterator		it;
 }
 
 void	AtomIndexer_O::appendConsOfTexts(core::List_sp sl)
-{_G();
+{
     LOG(BF("Appending atom names: %s") % sl->__repr__().c_str()  );
     for ( auto cur : sl ) {
       this->_Names.push_back(oCar(cur).as<core::Symbol_O>());
@@ -87,7 +85,7 @@ void	AtomIndexer_O::appendConsOfTexts(core::List_sp sl)
 
 
 bool	AtomIndexer_O::containsAtomName(core::Symbol_sp name)
-{_G();
+{
 //    if ( this->_IndexAll ) return true;
     for ( auto mi=this->_Names.begin(); mi!=this->_Names.end(); mi++ ) {
         if ( (*mi)==name ) {
@@ -100,7 +98,7 @@ bool	AtomIndexer_O::containsAtomName(core::Symbol_sp name)
 }
 
 int AtomIndexer_O::indexForAtomName(core::Symbol_sp name)
-{_G();
+{
 int				idx;
     idx = 0;
     for ( auto mi=this->_Names.begin(); mi!=this->_Names.end(); mi++ ) {
@@ -112,7 +110,7 @@ int				idx;
 
 
 string AtomIndexer_O::asString() const
-{_G();
+{
   stringstream ss;
     ss.str("");
     if ( this->_Names.size() > 0 )
@@ -136,7 +134,7 @@ string	AtomIndexer_O::description() const
 
 #if 0 //[
 void	AtomIndexer_O::setIndexAll(bool b)
-{_G();
+{
     this->_IndexAll = b;
     if ( this->_IndexAll )
     {
@@ -157,13 +155,13 @@ void	AtomIndexer_O::setIndexAll(bool b)
 
 #ifdef XML_ARCHIVE
     void	MapOfMonomerNamesToAtomIndexers_O::archive(core::ArchiveP node)
-{_G();
+{
     node->archiveSymbolMap("atomIndexers",this->_AtomIndexers);
 }
 #endif
 
 void	MapOfMonomerNamesToAtomIndexers_O::set(core::Symbol_sp nm, AtomIndexer_O::smart_ptr ai)
-{_G();
+{
     this->_AtomIndexers.set(nm,ai);
 }
 
@@ -193,7 +191,7 @@ void	MapOfMonomerNamesToAtomIndexers_O::set(core::Symbol_sp nm, AtomIndexer_O::s
 
 
 void	MapOfMonomerNamesToAtomIndexers_O::eraseEntryForMonomer(core::Symbol_sp nm)
-{_G();
+{
     this->_AtomIndexers.remove(nm);
 }
 

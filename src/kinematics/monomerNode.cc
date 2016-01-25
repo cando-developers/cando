@@ -17,31 +17,12 @@ namespace kinematics
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(kinematics,MonomerNode_O);
 
-    void MonomerNode_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<MonomerNode_O>()
-//	.def_raw("__init__",&MonomerNode_O::__init__,"(self)")
-	    .def("monomerName",&MonomerNode_O::monomerName)
-	    .def("monomer-node-topology",&MonomerNode_O::topology)
-	;
-    }
 
-    void MonomerNode_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,MonomerNode,"","",_lisp)
-//	.def_raw("__init__",&"(self)")
-	    .def("monomerName",&MonomerNode_O::monomerName)
-	    .def("monomer-node-topology",&MonomerNode_O::topology)
-	;
-#endif
-    }
 
 
     MonomerNode_sp MonomerNode_O::create(int monomerId)
-    {_G();
+    {
 	GC_ALLOCATE(MonomerNode_O, monomerNode );
 	monomerNode->_MonomerId = monomerId;
 	return monomerNode;
@@ -53,13 +34,13 @@ namespace kinematics
 #define DECL_MonomerNode_O_make ""
 #define DOCS_MonomerNode_O_make "make MonomerNode"
   MonomerNode_sp MonomerNode_O::make()
-    {_G();
+    {
       IMPLEMENT_ME();
     };
 
 #else
     core::T_sp MonomerNode_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = translate::from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	return _Nil<core::T_O>();
@@ -87,7 +68,7 @@ namespace kinematics
 						 gctools::Nilable<MonomerNode_sp> parent,
 						 gctools::Nilable<chem::DirectionalCoupling_sp> coupling,
 						 chem::Monomer_sp monomer)
-    {_G();
+    {
 	LOG(BF("recursivelyBuildChildren on monomer[%s]") % monomer->getName()->__repr__() );
 	this->_Parent = parent;
 	if ( coupling.notnilp() )

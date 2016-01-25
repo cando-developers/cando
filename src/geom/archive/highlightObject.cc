@@ -19,21 +19,8 @@
 namespace geom {
 
 
-    EXPOSE_CLASS(geom,PickableObject_O);
 
-    void PickableObject_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<PickableObject_O>()
-	    ;
-    }
 
-    void PickableObject_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(CorePkg,PickableObject,"","",_lisp)
-	    ;
-#endif
-    }
 
     void PickableObject_O::initialize()
     {
@@ -47,21 +34,8 @@ namespace geom {
 #endif
 
 
-    EXPOSE_CLASS(geom,ControlObject_O);
 
-    void ControlObject_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<ControlObject_O>()
-	    ;
-    }
 
-    void ControlObject_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(CorePkg,ControlObject,"","",_lisp)
-	    ;
-#endif
-    }
 
     void ControlObject_O::initialize()
     {
@@ -81,27 +55,8 @@ namespace geom {
 
 
 
-    EXPOSE_CLASS(geom,DragObject_O);
 
-    void DragObject_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<DragObject_O>()
-	    .def("getStartCode",&DragObject_O::getStartCode)
-	    .def("getDragCode",&DragObject_O::getDragCode)
-	    .def("getReleaseCode",&DragObject_O::getReleaseCode)
-	    ;
-    }
 
-    void DragObject_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(CorePkg,DragObject,"","",_lisp)
-	    .def("getStartCode",&DragObject_O::getStartCode)
-	    .def("getDragCode",&DragObject_O::getDragCode)
-	    .def("getReleaseCode",&DragObject_O::getReleaseCode)
-	    ;
-#endif
-    }
 
     void DragObject_O::initialize()
     {
@@ -116,7 +71,7 @@ namespace geom {
 #endif
 
     DragObject_sp DragObject_O::make(core::Function_sp start, core::Function_sp drag, core::Function_sp release)
-    {_G();
+    {
 	DragObject_sp me(DragObject_O::create());
 	me->_StartCode = start;
 	me->_DragCode = drag;
@@ -129,24 +84,11 @@ namespace geom {
 
 
 
-    EXPOSE_CLASS(geom,HighlightedObject_O);
 
 
 
 
-    void HighlightedObject_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<HighlightedObject_O>()
-    ;
-}
 
-    void HighlightedObject_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(CorePkg,HighlightedObject,"","",_lisp)
-    ;
-#endif
-}
 
 
     HighlightedObject_O::HighlightedObject_O() : _HighlightedId(0) {};
@@ -190,21 +132,8 @@ void	HighlightedObject_O::initialize()
 
 
 
-    EXPOSE_CLASS(geom,HighlightedHolder_O);
 
-    void HighlightedHolder_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<HighlightedHolder_O>()
-	;
-}
 
-    void HighlightedHolder_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(CorePkg,HighlightedHolder,"","",_lisp)
-	;
-#endif
-}
 
 
 #if 0
@@ -212,7 +141,7 @@ void	HighlightedObject_O::initialize()
 #define DECL_af_makeHighlightedHolder ""
 #define DOCS_af_makeHighlightedHolder "make HighlightedHolder args: path"
     HighlightedHolder_sp af_makeHighlightedHolder(core::T_sp obj)
-    {_G();
+    {
 	HighlightedHolder_sp me(HighlightedHolder_O::create());
 	GlueEnvironment_sp env(GlueEnvironment_O::create()<< _sym_obj <<  obj   ).cons()));
 	me->make_init__(core::Function_O::_nil,env->args(),env,_lisp);

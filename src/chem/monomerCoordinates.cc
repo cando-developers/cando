@@ -35,7 +35,7 @@ void	MonomerCoordinates_O::initialize()
 
 #ifdef XML_ARCHIVE
     void	MonomerCoordinates_O::archiveBase(core::ArchiveP node)
-{_G();
+{
     node->attribute("comment",this->_Comment);
     node->attributeIfNotDefault<string>("trainerName",this->_TrainerName, "" );
     node->attribute("context",this->_Context);
@@ -50,7 +50,7 @@ void	MonomerCoordinates_O::initialize()
 #define DECL_MonomerCoordinates_O_make ""
 #define DOCS_MonomerCoordinates_O_make "make MonomerCoordinates"
   MonomerCoordinates_sp MonomerCoordinates_O::make(MonomerContext_sp context)
-  {_G();
+  {
       GC_ALLOCATE(MonomerCoordinates_O, me );
     me->setContext(context);
     return me;
@@ -59,7 +59,7 @@ void	MonomerCoordinates_O::initialize()
 #else
 
 core::T_sp MonomerCoordinates_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-{_G();
+{
     MonomerContext_sp context = translate::from_object<MonomerContext_O>::convert(env->lookup(Pkg(),"context"));
     this->setContext(context);
     return _Nil<core::T_O>();
@@ -79,7 +79,7 @@ void	MonomerCoordinates_O::_defineFromConformationExplorerOrDebug(
 				Monomer_sp focusMonomer,
 				bool debug,
 				uint maximumNumberOfConformations )
-{_G();
+{
     IMPLEMENT_ME(); // update
 #if 0
     ExtractFragmentBase_sp	extractFragment;
@@ -217,7 +217,7 @@ CL_DEFMETHOD void	MonomerCoordinates_O::defineFromConformationExplorer(
 				ConformationExplorer_sp conformationExplorer,
 				Monomer_sp focusMonomer,
 				uint maximumNumberOfConformations )
-{_G();
+{
     this->_defineFromConformationExplorerOrDebug(topology, conformationExplorer, focusMonomer, false,
     						maximumNumberOfConformations);
 }
@@ -235,7 +235,7 @@ CL_DEFMETHOD core::List_sp	MonomerCoordinates_O::testExtraction(
 				Topology_sp	topology,
 				Aggregate_sp	aggregate,
 				Monomer_sp focusMonomer )
-{_G();
+{
     ConformationExplorer_sp conformationExplorer = ConformationExplorer_O::create();
     conformationExplorer->setMatter(aggregate);
     conformationExplorer->superposeAllHeavyAtoms();
@@ -284,36 +284,9 @@ CL_DEFMETHOD core::List_sp	MonomerCoordinates_O::testExtraction(
 
 
 
-    void MonomerCoordinates_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<MonomerCoordinates_O>()
-	.def("setComment",&MonomerCoordinates_O::setComment)
-	.def("getComment",&MonomerCoordinates_O::getComment)
-	.def("getContext",&MonomerCoordinates_O::getContext)
-	.def("defineFromConformationExplorer",&MonomerCoordinates_O::defineFromConformationExplorer)
-	.def("testExtraction",&MonomerCoordinates_O::testExtraction)
-    ;
-}
-    void MonomerCoordinates_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-//    boost::python::def("create_MonomerCoordinates",&chem::create_MonomerCoordinates,_lisp);
-	PYTHON_CLASS(ChemPkg,MonomerCoordinates,"","",_lisp)
-	.def("setComment",&MonomerCoordinates_O::setComment)
-	.def("getComment",&MonomerCoordinates_O::getComment)
-	.def("getContext",&MonomerCoordinates_O::getContext)
-    //	.def("fragmentCoordinatesAsCons",&MonomerCoordinates_O::fragmentCoordinatesAsCons)
-    //	.def("getScaffoldList",&MonomerCoordinates_O::getScaffoldList)
-	.def("defineFromConformationExplorer",&MonomerCoordinates_O::defineFromConformationExplorer)
-	.def("testExtraction",&MonomerCoordinates_O::testExtraction)
-	;
-#endif //]
-
-};
 
 
 
-    EXPOSE_CLASS(chem,MonomerCoordinates_O);
 };
 
 

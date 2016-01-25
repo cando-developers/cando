@@ -45,7 +45,7 @@ namespace kinematics
 
 
     void AtomTreeWalkFunctor::operator()(kinematics::Atom_sp atom) const
-    {_G();
+    {
 	THROW_HARD_ERROR(BF("Subclass of AtomTreeWalkFunctor must define operator()"));
     }
 
@@ -62,49 +62,9 @@ namespace kinematics
 
 
 
-    EXPOSE_CLASS(kinematics,AtomTree_O);
 
     
-    void AtomTree_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<AtomTree_O>()
-	    .def("resizeMolecules",&AtomTree_O::resizeMolecules)
-	    .def("resizeResidues",&AtomTree_O::resizeResidues)
-	    .def("resizeAtoms",&AtomTree_O::resizeAtoms)
-	    .def("newJumpAtom",&AtomTree_O::newJumpAtom)
-	    .def("newBondedAtom",&AtomTree_O::newBondedAtom)
-	    .def("newDelayedBondedAtom",&AtomTree_O::newDelayedBondedAtom)
-	    .def("asString",&AtomTree_O::asString)
-	    .def("walk",&AtomTree_O::walk)
-	    .def("updateInternalCoords",&AtomTree_O::updateInternalCoords)
-	    .def("numberOfMolecules",&AtomTree_O::numberOfMolecules)
-	    .def("numberOfResiduesInMolecule",&AtomTree_O::numberOfResiduesInMolecule)
-	    .def("numberOfAtomsInResidueInMolecule",&AtomTree_O::numberOfAtomsInResidueInMolecule)
-	    .def("atom-tree-lookup-atomid",&AtomTree_O::atomTreeLookupAtomid)
-	    ;
-    }
 
-    void AtomTree_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,AtomTree,"","",_lisp)
-	    .def("resizeMolecules",&AtomTree_O::resizeMolecules)
-	    .def("resizeResidues",&AtomTree_O::resizeResidues)
-	    .def("resizeAtoms",&AtomTree_O::resizeAtoms)
-	    .def("newJumpAtom",&AtomTree_O::newJumpAtom)
-	    .def("newBondedAtom",&AtomTree_O::newBondedAtom)
-	    .def("newDelayedBondedAtom",&AtomTree_O::newDelayedBondedAtom)
-	    .def("asString",&AtomTree_O::asString)
-	    .def("dump",&AtomTree_O::dump)
-	    .def("walk",&AtomTree_O::walk)
-	    .def("updateInternalCoords",&AtomTree_O::updateInternalCoords)
-	    .def("numberOfMolecules",&AtomTree_O::numberOfMolecules)
-	    .def("numberOfResiduesInMolecule",&AtomTree_O::numberOfResiduesInMolecule)
-	    .def("numberOfAtomsInResidueInMolecule",&AtomTree_O::numberOfAtomsInResidueInMolecule)
-	    .def("atom-tree-lookup-atomid",&AtomTree_O::atomTreeLookupAtomid)
-	    ;
-#endif
-    }
 
 
     void AtomTree_O::initialize()

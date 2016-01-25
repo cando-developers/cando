@@ -65,7 +65,7 @@ EnergyAngle::~EnergyAngle()
 
 
 void EnergyAngle::defineFrom( FFAngle_sp term , EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, double scale)
-{_G();
+{
 
 //    this->_Term = term;
 //    this->_Type1 = term->_Type1;
@@ -311,7 +311,7 @@ void	EnergyAngle_O::evaluateAll(
 		gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
 		gc::Nilable<chem::NVector_sp> hdvec,
                 gc::Nilable<chem::NVector_sp> dvec)
-{_G();
+{
     if ( this->_DebugEnergy ) 
     {
 	LOG_ENERGY_CLEAR();
@@ -599,19 +599,8 @@ bool	calcOffDiagonalHessian = false;
 
 
 
-void EnergyAngle_O::exposeCando(core::Lisp_sp e)
-{
-    core::class_<EnergyAngle_O>()
-    ;
-}
 
-    void EnergyAngle_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,EnergyAngle,"","",_lisp)
-	;
-#endif
-}
+
 
 
 void EnergyAngle_O::initialize()
@@ -629,7 +618,6 @@ void EnergyAngle_O::archiveBase(core::ArchiveP node)
 #endif
 
 
-    EXPOSE_CLASS(chem,EnergyAngle_O);
 };
 
 

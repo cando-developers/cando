@@ -20,23 +20,8 @@ namespace kinematics
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(kinematics,Checkpoint_O);
 
-    void Checkpoint_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<Checkpoint_O>()
-//	.def_raw("__init__",&Checkpoint_O::__init__,"(self)")
-	;
-    }
 
-    void Checkpoint_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,Checkpoint,"","",_lisp)
-//	.def_raw("__init__",&"(self)")
-	;
-#endif
-    }
 
 #if INIT_TO_FACTORIES
 
@@ -46,7 +31,7 @@ namespace kinematics
 #define DOCS_Checkpoint_O_make "make Checkpoint args: constitution-name topology-name"
     Checkpoint_sp Checkpoint_O::make(const core::Symbol_sp& constitutionName,
 				     const core::Symbol_sp& topologyName )
-    {_G();
+    {
         GC_ALLOCATE(Checkpoint_O, me);
 	me->_ConstitutionName = constitutionName;
 	me->_TopologyName = topologyName;
@@ -84,23 +69,8 @@ namespace kinematics
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(kinematics,CheckpointAtom_O);
 
-    void CheckpointAtom_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<CheckpointAtom_O>()
-//	    .def_raw("__init__",&CheckpointAtom_O::__init__,"(self &key constitutionName topologyName (atomName \"\"))")
-	;
-    }
 
-    void CheckpointAtom_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,CheckpointAtom,"","",_lisp)
-//	.def_raw("__init__",&"(self &key constitutionName topologyName (atomName \"\"))")
-	;
-#endif
-    }
 
 #if INIT_TO_FACTORIES
 
@@ -108,7 +78,7 @@ namespace kinematics
 #define DECL_CheckpointAtom_O_make ""
 #define DOCS_CheckpointAtom_O_make "make CheckpointAtom"
 CheckpointAtom_sp CheckpointAtom_O::make(core::Symbol_sp atomName)
-    {_G();
+    {
         GC_ALLOCATE(CheckpointAtom_O, me );
 	me->_AtomName = atomName;
 	return me;
@@ -118,7 +88,7 @@ CheckpointAtom_sp CheckpointAtom_O::make(core::Symbol_sp atomName)
 
     core::T_sp CheckpointAtom_O::__init__(core::Function_sp exec, core::Cons_sp args,
 					 core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 	this->Base::__init__(exec,args,env,lisp);
 	this->_AtomName = translate::from_object<string>::convert(env->lookup(this->Package(),"atomName"));
 	ASSERTF(this->_AtomName!="",BF("You must provide atomName"));
@@ -149,23 +119,8 @@ CheckpointAtom_sp CheckpointAtom_O::make(core::Symbol_sp atomName)
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(kinematics,CheckpointOutPlugAtom_O);
 
-    void CheckpointOutPlugAtom_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<CheckpointOutPlugAtom_O>()
-//	    .def_raw("__init__",&CheckpointOutPlugAtom_O::__init__,"(self &key constitutionName topologyName outPlug)")
-	;
-    }
 
-    void CheckpointOutPlugAtom_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,CheckpointOutPlugAtom,"","",_lisp)
-//	    	.def_raw("__init__",&"(self &key constitutionName topologyName outPlug)")
-	;
-#endif
-    }
 
 #if INIT_TO_FACTORIES
 
@@ -173,7 +128,7 @@ CheckpointAtom_sp CheckpointAtom_O::make(core::Symbol_sp atomName)
 #define DECL_CheckpointOutPlugAtom_O_make ""
 #define DOCS_CheckpointOutPlugAtom_O_make "make CheckpointOutPlugAtom"
   CheckpointOutPlugAtom_sp CheckpointOutPlugAtom_O::make(const chem::OutPlug_sp& outPlug)
-    {_G();
+    {
         GC_ALLOCATE(CheckpointOutPlugAtom_O, me );
 	me->_Plug = outPlug;
 	ASSERTF(me->_Plug.notnilp(),BF("You must provide outPlug argument"));
@@ -183,7 +138,7 @@ CheckpointAtom_sp CheckpointAtom_O::make(core::Symbol_sp atomName)
 #else
 
     core::T_sp CheckpointOutPlugAtom_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 	this->Base::__init__(exec,args,env,lisp);
 	this->_Plug = translate::from_object<chem::OutPlug_O>::convert(env->lookup(this->Package(),"outPlug"));
 	ASSERTF(this->_Plug.notnilp(),BF("You must provide outPlug argument"));
@@ -212,31 +167,8 @@ CheckpointAtom_sp CheckpointAtom_O::make(core::Symbol_sp atomName)
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(kinematics,AtomTemplate_O);
 
-    void AtomTemplate_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<AtomTemplate_O>()
-//	    .def_raw("__init__",&AtomTemplate_O::__init__,"(self &key id parent (comment \"\"))")
-	    .def("atom-template-name",&AtomTemplate_O::atomName)
-	    .def("atom-template-comment",&AtomTemplate_O::comment)
-	    .def("atom-template-id",&AtomTemplate_O::id)
-	    .def("atom-template-parent",&AtomTemplate_O::parent)
-	;
-    }
 
-    void AtomTemplate_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,AtomTemplate,"","",_lisp)
-//	.def_raw("__init__",&"(self &key id parent (comment \"\"))")
-	    .def("atom-template-name",&AtomTemplate_O::atomName)
-	    .def("atom-template-comment",&AtomTemplate_O::comment)
-	    .def("atom-template-id",&AtomTemplate_O::id)
-	    .def("atom-template-parent",&AtomTemplate_O::parent)
-	;
-#endif
-    }
 
 #if INIT_TO_FACTORIES
 
@@ -244,7 +176,7 @@ CheckpointAtom_sp CheckpointAtom_O::make(core::Symbol_sp atomName)
 #define DECL_AtomTemplate_O_make ""
 #define DOCS_AtomTemplate_O_make "make AtomTemplate"
   AtomTemplate_sp AtomTemplate_O::make(const int id, const string& comment, const AtomTemplate_sp parent)
-    {_G();
+    {
         GC_ALLOCATE(AtomTemplate_O, me );
 	me->_Id = id;
 	me->_Comment = comment;
@@ -255,7 +187,7 @@ CheckpointAtom_sp CheckpointAtom_O::make(core::Symbol_sp atomName)
 #else
 
     core::T_sp AtomTemplate_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 	this->_Id = translate::from_object<int>::convert(env->lookup(this->Package(),"id"));
 	this->_Comment = translate::from_object<string>::convert(env->lookup(this->Package(),"comment"));
 	this->_Parent = env->lookup(this->Package(),"parent").as<AtomTemplate_O>();
@@ -298,29 +230,8 @@ gc::Nilable<AtomTemplate_sp> AtomTemplate_O::parent() const
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(kinematics,BondedAtomTemplate_O);
 
-    void BondedAtomTemplate_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<BondedAtomTemplate_O>()
-//	    .def_raw("__init__",&BondedAtomTemplate_O::__init__,"(self &key id parent (comment \"\") outPlug)")
-	    .def("addChild",&BondedAtomTemplate_O::addChild)
-	    .def("bonded-atom-template-children",&BondedAtomTemplate_O::children)
-	    .def("bonded-atom-template-outplug",&BondedAtomTemplate_O::outPlug)
-	;
-    }
 
-    void BondedAtomTemplate_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,BondedAtomTemplate,"","",_lisp)
-//	    .def_raw("__init__",&"(self &key id parent (comment \"\") outPlug)")
-	    .def("addChild",&BondedAtomTemplate_O::addChild)
-	    .def("bonded-atom-template-children",&BondedAtomTemplate_O::children)
-	    .def("bonded-atom-template-outplug",&BondedAtomTemplate_O::outPlug)
-	;
-#endif
-    }
 
 #if INIT_TO_FACTORIES
 
@@ -328,7 +239,7 @@ gc::Nilable<AtomTemplate_sp> AtomTemplate_O::parent() const
 #define DECL_BondedAtomTemplate_O_make ""
 #define DOCS_BondedAtomTemplate_O_make "make BondedAtomTemplate"
   BondedAtomTemplate_sp BondedAtomTemplate_O::make(const chem::OutPlug_sp& outPlug)
-  {_G();
+  {
       GC_ALLOCATE(BondedAtomTemplate_O, me );
     me->_OutPlug = outPlug;
     return me;
@@ -337,7 +248,7 @@ gc::Nilable<AtomTemplate_sp> AtomTemplate_O::parent() const
 #else
 
     core::T_sp BondedAtomTemplate_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 	this->Base::__init__(exec,args,env,lisp);
 	this->_OutPlug = translate::from_object<chem::OutPlug_sp>::convert(env->lookup(Pkg(),"outPlug"));
 	return _Nil<core::T_O>();
@@ -410,7 +321,7 @@ core::List_sp BondedAtomTemplate_O::children() {
 						    const BondId_sp& incoming,
 						    const PlugNamesToBondIdMap& outgoing,
 						    bool rootNode)
-    {_G();
+    {
 	chem::AtomId atomId(moleculeId,residueId,this->_Id);
 	Atom_sp ownedBonded = atomTree->newBondedAtom(atomId,this->_Comment);
 	this->addChildren(ownedBonded,moleculeId,residueId,atomTree,incoming,outgoing);
@@ -472,23 +383,8 @@ core::List_sp BondedAtomTemplate_O::children() {
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(kinematics,DelayedBondedAtomTemplate_O);
 
-    void DelayedBondedAtomTemplate_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<DelayedBondedAtomTemplate_O>()
-//	    .def_raw("__init__",&DelayedBondedAtomTemplate_O::__init__,"(self &key id parent (comment \"\") checkpoint outPlug)")
-	;
-    }
 
-    void DelayedBondedAtomTemplate_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,DelayedBondedAtomTemplate,"","",_lisp)
-//	    .def_raw("__init__",&"(self &key id parent (comment \"\") checkpoint outPlug)")
-	;
-#endif
-    }
 
 #if INIT_TO_FACTORIES
 
@@ -496,7 +392,7 @@ core::List_sp BondedAtomTemplate_O::children() {
 #define DECL_DelayedBondedAtomTemplate_O_make ""
 #define DOCS_DelayedBondedAtomTemplate_O_make "make DelayedBondedAtomTemplate"
     DelayedBondedAtomTemplate_sp DelayedBondedAtomTemplate_O::make(const Checkpoint_sp& checkpoint)
-    {_G();
+    {
         GC_ALLOCATE(DelayedBondedAtomTemplate_O, me );
 	me->_Checkpoint = checkpoint;
 	return me;
@@ -505,7 +401,7 @@ core::List_sp BondedAtomTemplate_O::children() {
 #else
 
     core::T_sp DelayedBondedAtomTemplate_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 	this->Base::__init__(exec,args,env,lisp);
 	this->_Checkpoint = translate::from_object<Checkpoint_O>::convert(env->lookup(this->Package(),"checkpoint"));
 	return _Nil<core::T_O>();
@@ -530,7 +426,7 @@ core::List_sp BondedAtomTemplate_O::children() {
 							   const BondId_sp& incoming,
 							   const PlugNamesToBondIdMap& outgoing,
 							   bool rootNode)
-    {_G();
+    {
 	chem::AtomId atomId(moleculeId,residueId,this->_Id);
 	Atom_sp ownedBonded = atomTree->newDelayedBondedAtom(atomId,this->_Comment);
 	this->_Checkpoint->setupDelayedBondedAtom(dynamic_cast<DelayedBondedAtom*>(ownedBonded->get()));
@@ -554,23 +450,8 @@ core::List_sp BondedAtomTemplate_O::children() {
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(kinematics,RootBondedAtomTemplate_O);
 
-    void RootBondedAtomTemplate_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<RootBondedAtomTemplate_O>()
-//	    .def_raw("__init__",&RootBondedAtomTemplate_O::__init__,"(self &key id parent (comment \"\") constitutionName topologyName inPlug outPlug)")
-	;
-    }
 
-    void RootBondedAtomTemplate_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,RootBondedAtomTemplate,"","",_lisp)
-//	.def_raw("__init__",&"(self &key id parent (comment \"\") constitutionName topologyName inPlug outPlug)")
-	;
-#endif
-    }
 
 #if INIT_TO_FACTORIES
 
@@ -578,7 +459,7 @@ core::List_sp BondedAtomTemplate_O::children() {
 #define DECL_RootBondedAtomTemplate_O_make ""
 #define DOCS_RootBondedAtomTemplate_O_make "make RootBondedAtomTemplate"
   RootBondedAtomTemplate_sp RootBondedAtomTemplate_O::make(const core::Symbol_sp& constitutionName, const core::Symbol_sp topologyName, const chem::Plug_sp& inPlug)
-  {_G();
+  {
       GC_ALLOCATE(RootBondedAtomTemplate_O, me );
     me->_ConstitutionName = constitutionName;
     ASSERTF(me->_ConstitutionName.notnilp(),BF("You must provide constitutionName"));
@@ -592,7 +473,7 @@ core::List_sp BondedAtomTemplate_O::children() {
 #else
 
     core::T_sp RootBondedAtomTemplate_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
       this->Base::__init__(exec,args,env,lisp);
       this->_ConstitutionName = translate::from_object<core::Symbol_O>::convert(env->lookup(Pkg(),"constitutionName"));
       ASSERTF(this->_ConstitutionName.notnilp(),BF("You must provide constitutionName"));
@@ -623,7 +504,7 @@ Atom_sp RootBondedAtomTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTree,
 						    const BondId_sp& incoming,
 						    const PlugNamesToBondIdMap& outgoing,
 						    bool rootNode)
-{_G();
+{
     LOG(BF("Writing %s[%s] into AtomTree") % this->className() % this->_Comment );
     chem::AtomId atomId(moleculeId,residueId,this->_Id);
     // The type of the Atom to write depends on what the incoming atom is

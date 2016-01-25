@@ -17,36 +17,17 @@ namespace chem
 {
 
 
-    void TableEntry_O::exposeCando(core::Lisp_sp e)
-    {
-	core::class_<TableEntry_O>()
-	    .def("read",&TableEntry_O::read,"","","",false)
-	    .def("write",&TableEntry_O::write,"","","",false)
-	    .def("getField",&TableEntry_O::getField)
-	    .def("putField",&TableEntry_O::putField)
-	    .def("appendField",&TableEntry_O::appendField)
-	    .def("insertField",&TableEntry_O::insertField)
-	    .def("getTable",&TableEntry_O::getTableNotConst)
-	    ;
-    }
 
 
 
 
 
-    void TableEntry_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,TableEntry,"","",_lisp)
-	    ;
-#endif //]
-    }
 
 
 
 
     TableEntry_sp TableEntry_O::createWithFields(uint numFields, Table_sp owner, core::Lisp_sp lisp)
-    {_G();
+    {
 	TableEntry_sp entry = TableEntry_O::create();
 	IMPLEMENT_MEF(BF("handle setOwner"));
 //	entry->setOwner(owner);
@@ -60,7 +41,7 @@ namespace chem
 #define DECL_TableEntry_O_make ""
 #define DOCS_TableEntry_O_make "make TableEntry"
   TableEntry_sp TableEntry_O::make()
-  {_G();
+  {
     IMPLEMENT_ME();
   };
 
@@ -80,7 +61,7 @@ namespace chem
     }
 
     Table_sp TableEntry_O::getTable() const
-    {_G();
+    {
 	IMPLEMENT_MEF(BF("Handle owner"));
 //	return this->owner().as<Table_O>();
     }
@@ -97,27 +78,27 @@ namespace chem
 
 
     core::T_sp TableEntry_O::read(core::Symbol_sp fieldSymbol)
-    {_G();
+    {
 	Table_sp table = this->getTable();
 	uint fieldIdx = table->indexOfField(fieldSymbol);
 	return this->_Fields[fieldIdx];
     }
 
     core::T_sp TableEntry_O::getField(uint fieldIndex )
-    {_G();
+    {
 	ASSERT_lt(fieldIndex,this->_Fields.size());
 	return this->_Fields[fieldIndex];
     }
 
     void TableEntry_O::write(core::Symbol_sp fieldSymbol, core::T_sp obj)
-    {_G();
+    {
 	Table_sp table = this->getTable();
 	uint fieldIdx = table->indexOfField(fieldSymbol);
 	this->_Fields[fieldIdx] = obj;
     }
 
     void TableEntry_O::putField(uint fieldIndex, core::T_sp obj)
-    {_G();
+    {
 	ASSERT_lt(fieldIndex,this->_Fields.size());
 	this->_Fields[fieldIndex] = obj;
     }
@@ -126,7 +107,7 @@ namespace chem
 
 
     uint TableEntry_O::appendField(core::T_sp val)
-    {_G();
+    {
 	this->_Fields.push_back(val);
 	return this->_Fields.size()-1;
     }
@@ -134,7 +115,7 @@ namespace chem
 
 
     uint TableEntry_O::insertField(uint position, core::T_sp val)
-    {_G();
+    {
 	ASSERT_lt(position,this->_Fields.size());
         gctools::Vec0<core::T_sp>::iterator it;
 	it = this->_Fields.begin()+position;
@@ -145,7 +126,7 @@ namespace chem
 #if 0
 #ifdef RENDER
     geom::Render_sp TableEntry_O::rendered(core::Cons_sp opts)
-    {_G();
+    {
 	geom::DisplayList_sp dl;
 	dl = geom::DisplayList_O::create();
         gctools::Vec0<core::T_sp>::iterator si;
@@ -173,7 +154,7 @@ namespace chem
 #endif
 
     string TableEntry_O::__repr__() const
-    {_G();
+    {
 	stringstream ss;
 	uint idx=0;
 	for ( gctools::Vec0<core::T_sp>::const_iterator fi=this->_Fields.begin(); fi!=this->_Fields.end(); fi++, idx++ )
@@ -186,35 +167,7 @@ namespace chem
 
 
 
-    void Table_O::exposeCando(core::Lisp_sp e)
-    {
-	core::class_<Table_O>()
-	    .def("appendField",&Table_O::appendField)
-	    .def("insertField",&Table_O::insertField)
-	    .def("writeField",&Table_O::writeField)
-	    .def("write",&Table_O::write,"","","",false)
-	    .def("readField",&Table_O::readField)
-	    .def("read",&Table_O::read,"","","",false)
-	    .def("hasField",&Table_O::hasField)
-	    .def("fieldClass",&Table_O::fieldClass)
-	    .def("appendEntry",&Table_O::appendEntry)
-	    .def("appendWrite",&Table_O::appendWrite)
-	    .def("insertEntryBefore",&Table_O::insertEntryBefore)
-	    .def("numberOfEntries",&Table_O::numberOfEntries)
-	    .def("asCons",&Table_O::asCons,"","","",false)
-	    .def("merge",&Table_O::merge)
-	    .def("fieldSymbol",&Table_O::fieldSymbol)
-	    .def("contentsAsString",&Table_O::contentsAsString)
-	    ;
-    }
 
-    void Table_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,Table,"","",_lisp)
-	    ;
-#endif //]
-    }
 
 
 #if INIT_TO_FACTORIES
@@ -223,7 +176,7 @@ namespace chem
 #define DECL_Table_O_make ""
 #define DOCS_Table_O_make "make Table"
   Table_sp Table_O::make()
-  {_G();
+  {
     IMPLEMENT_ME();
   };
 
@@ -298,7 +251,7 @@ namespace chem
 #endif
 
     core::Symbol_sp Table_O::fieldSymbol(uint idx)
-    {_G();
+    {
 	ASSERT_lt(idx,this->_FieldSymbols.size());
 	return this->_FieldSymbols[idx];
     }
@@ -316,12 +269,12 @@ namespace chem
 
 
     bool Table_O::hasField(core::Symbol_sp fieldSymbol)
-    {_G();
+    {
 	return (this->_FieldIndices->gethash(fieldSymbol).second().notnilp());
     }
 
     core::Class_sp Table_O::fieldClass(core::Symbol_sp fieldSymbol)
-    {_G();
+    {
 	if ( this->hasField(fieldSymbol) )
 	{
 	    return this->_FieldClasses[this->_FieldIndices[fieldSymbol]];
@@ -331,7 +284,7 @@ namespace chem
 
 
     void Table_O::appendField(core::Symbol_sp fieldSymbol, core::Class_sp fieldClass )
-    {_G();
+    {
 	if ( this->_FieldIndices.count(fieldSymbol) != 0 )
 	{
 	    SIMPLE_ERROR(BF("This table already contains a field named(%s)") % fieldSymbol->fullName() );
@@ -348,7 +301,7 @@ namespace chem
 
 
     void Table_O::insertField(core::Symbol_sp positionSymbol, core::Symbol_sp fieldSymbol, core::Class_sp fieldClass )
-    {_G();
+    {
 	uint pos = this->indexOfField(positionSymbol);
 	this->_FieldSymbols.insert(this->_FieldSymbols.begin()+pos,fieldSymbol);
 	this->_FieldClasses.insert(this->_FieldClasses.begin()+pos,fieldClass);
@@ -403,14 +356,14 @@ namespace chem
 
 
     TableEntry_sp Table_O::appendEntry()
-    {_G();
+    {
 	TableEntry_sp entry = TableEntry_O::createWithFields(this->_FieldSymbols.size(),this->sharedThis<Table_O>(),_lisp);
 	this->_Entries.push_back(entry);
 	return entry;
     }
 
     void Table_O::appendWrite(core::Cons_sp values)
-    {_G();
+    {
 	TableEntry_sp entry = this->appendEntry();
 	while ( values.notnilp() )
 	{
@@ -424,13 +377,13 @@ namespace chem
 
 
     core::Cons_sp Table_O::asCons()
-    {_G();
+    {
 	return core::Cons_O::createFromVec0(this->_Entries);
     }
 
 
     TableEntry_sp Table_O::insertEntryBefore(uint position)
-    {_G();
+    {
 	ASSERT_lt(position,this->_Entries.size());
         gctools::Vec0<TableEntry_sp>::iterator it = this->_Entries.begin()+position;
 	TableEntry_sp entry = TableEntry_O::createWithFields(this->_FieldSymbols.size(),this->sharedThis<Table_O>(),_lisp);
@@ -439,19 +392,19 @@ namespace chem
     }
 
     uint Table_O::numberOfEntries()
-    {_G();
+    {
 	return this->_Entries.size();
     }
 
 
     TableEntry_sp Table_O::read(uint idx)
-    {_G();
+    {
 	ASSERT_lt(idx,this->_Entries.size());
 	return this->_Entries.get(idx);
     }
 
     core::T_sp Table_O::readField(uint entryIdx, core::Symbol_sp field)
-    {_G();
+    {
 	ASSERT_lt(entryIdx,this->_Entries.size());
 	uint fieldIdx =  this->indexOfField(field);
 	TableEntry_sp entry = this->_Entries[entryIdx];
@@ -460,7 +413,7 @@ namespace chem
 
 
     bool Table_O::fieldsMatch(Table_sp other)
-    {_G();
+    {
 	if ( this->_FieldSymbols.size() != other->_FieldSymbols.size() ) return false;
         gctools::Vec0<core::Symbol_sp>::iterator	ms,os;
         gctools::Vec0<core::Class_sp>::iterator mc,oc;
@@ -475,7 +428,7 @@ namespace chem
     }
 
     void Table_O::merge(Table_sp other)
-    {_G();
+    {
 	if ( !this->fieldsMatch(other) )
 	{
 	    stringstream ss;
@@ -499,7 +452,7 @@ namespace chem
 
 
     string Table_O::__repr__() const
-    {_G();
+    {
 	stringstream sout;
 	sout << (BF("Table number of fields: %d") % this->_FieldSymbols.size() ) << std::endl;
 	sout << "Symbols: ";
@@ -530,7 +483,7 @@ namespace chem
 
 #if 0
     geom::Render_sp	Table_O::rendered(core::Cons_sp opts)
-    {_G();
+    {
 	geom::FrameList_sp	frames;
 	frames = geom::FrameList_O::create();
 	frames->setName(_lisp->internKeyword("entry"));
@@ -548,7 +501,7 @@ namespace chem
 #endif
 
     string	Table_O::contentsAsString()
-    {_G();
+    {
 	stringstream ss;
 	uint idx = 0;
 	for (gctools::Vec0<TableEntry_sp>::iterator ei=this->_Entries.begin(); ei!=this->_Entries.end(); ei++,idx++ )
@@ -559,8 +512,6 @@ namespace chem
     }
 
 
-    EXPOSE_CLASS(chem,TableEntry_O);
-    EXPOSE_CLASS(chem,Table_O);
 
 };
 

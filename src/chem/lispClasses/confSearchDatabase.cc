@@ -23,7 +23,6 @@
 
 namespace chem {
 
-    REGISTER_CLASS(chem, ConformationalSearchDatabase_O );
 
 
 
@@ -37,7 +36,7 @@ void	ConformationalSearchDatabase_O::initialize()
 
 
 void	ConformationalSearchDatabase_O::clearEntries()
-{_G();
+{
     this->SuperposableConformationCollection_O::clearEntries();
 }
 
@@ -48,7 +47,7 @@ void	ConformationalSearchDatabase_O::clearEntries()
  * Return True if the structure is added to the database, False otherwise
  */
 uint ConformationalSearchDatabase_O::addEntry(ConformationCollectionEntry_sp entry)
-{_G();
+{
 chem::ConformationCollectionEntry_sp	firstEntry;
 double				lowestEnergy, newEnergy;
 
@@ -98,7 +97,7 @@ double				lowestEnergy, newEnergy;
  * Orient every structure from 1 on to the first one
  */
 void	ConformationalSearchDatabase_O::finishSearch()
-{_G();
+{
     geom::CoordinateArray_sp			newConf;
 double					energy;
 chem::SuperposeEngine_sp			superposer;

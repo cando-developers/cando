@@ -240,7 +240,7 @@ namespace geom
 
 
     void GeomExposer::expose(core::Lisp_sp lisp,WhatToExpose what) const
-    {_G();
+    {
 	switch (what)
 	{
 	case candoClasses:

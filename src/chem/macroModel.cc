@@ -52,22 +52,9 @@ typedef	struct	{
 typedef	vector<MMAtomType>	MMAtoms;
 
 
-    EXPOSE_CLASS(chem,MacroModelFile_O);
 
 
-    void MacroModelFile_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<MacroModelFile_O>()
-	    ;
-    }
 
-    void MacroModelFile_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,MacroModelFile,"","",_lisp)
-	    ;
-#endif
-    }
 
 
 

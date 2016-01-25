@@ -158,7 +158,7 @@ namespace chem
 
 
     void ChemExposer::expose(core::Lisp_sp lisp, WhatToExpose what) const
-    {_G();
+    {
 	switch (what)
 	{
 	case candoClasses:
@@ -215,7 +215,7 @@ namespace chem
     }
 
     CandoDatabase_sp getCandoDatabase()
-    {_G();
+    {
 	return _sym_candoDatabase->symbolValue().as<CandoDatabase_O>();
     }
 

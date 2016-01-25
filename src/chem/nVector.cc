@@ -22,10 +22,9 @@
 
 namespace chem {
 
-    REGISTER_CLASS(chem,NVector_O);
 
 NVector_sp NVector_O::create(uint sz)
-{_G();
+{
     GC_ALLOCATE(NVector_O, nv );
     nv->setup(sz);
     return nv;
@@ -41,7 +40,7 @@ NVector_sp NVector_O::create(uint sz)
  *
  */
     NVector_O::NVector_O( const NVector_O& orig ) : NVector_O::Base(orig)
-{_G();
+{
     this->_Size = orig._Size;
     this->_Values.assign(orig._Values.begin(),orig._Values.end());
 }
@@ -54,7 +53,7 @@ void	NVector_O::initialize()
 }
 
 void	NVector_O::setup( uint iElements )
-{_G();
+{
     this->_Size = iElements;
     this->_Values.resize(iElements,0.0);
     LOG(BF("Created NVector_O@%0X with %d entries") % &(this->_Values) % this->_Size );
@@ -76,7 +75,7 @@ void	NVector_O::copyIntoMe(NVector_sp orig)
 
 
     core::T_sp	NVector_O::deepCopy() const
-{ _G();
+{ 
     GC_COPY(NVector_O, vv, *this->const_sharedThis<NVector_O>() ); // = RP_Copy<NVector_O>(this->const_sharedThis<NVector_O>());
     return vv;
 }
@@ -185,7 +184,7 @@ void	NVector_O::describe()
 
 
 string	NVector_O::description() const
-{ _G();
+{ 
 stringstream	ss;
     ss << "NVector[";
     for (uint i=0; i<this->_Size; i++ ) {
@@ -225,7 +224,7 @@ vector<double>::iterator	resi, xi,yi;
  *	this = x + y*s
  */
 void	NVector_O::XPlusYTimesScalar( NVector_sp x, NVector_sp y, double s )
-{_G();
+{
 vector<double>::iterator	resi, xi,yi;
     LOG(BF("this->_Values.size() = %d") % this->_Values.size() );
     LOG(BF("x->size() = %d") % x->size() );
@@ -246,7 +245,7 @@ vector<double>::iterator	resi, xi,yi;
  *      Add a scalar to each value (this)
  */
 void	NVector_O::addScalar( NVector_sp x, double s )
-{_G();
+{
 vector<double>::iterator	resi, xi;
     LOG(BF("this->_Values.size() = %d") % this->_Values.size() );
     LOG(BF("x->size() = %d") % x->size() );
@@ -355,7 +354,7 @@ vector<double>::iterator	resi;
 
 #ifdef XML_ARCHIVE
 void	NVector_O::archive(core::ArchiveP node)
-{_G();
+{
     node->archiveVectorDouble( "vec", this->_Values );
     LOG(BF("size of this->_Values=%d") % this->_Values.size()  );
     if ( node->loading() )

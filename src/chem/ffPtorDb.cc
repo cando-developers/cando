@@ -21,8 +21,6 @@ namespace chem
 {
     const int FFPtor_O::MaxPeriodicity;
 
-    REGISTER_CLASS(chem, FFPtor_O );
-    REGISTER_CLASS(chem, FFPtorDb_O );
 
 
 void	FFPtor_O::fields(core::Record_sp node)

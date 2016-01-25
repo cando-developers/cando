@@ -51,7 +51,7 @@ namespace chem
 
 
     ConformationExplorerEntry_sp	ConformationExplorerEntryStage_O::getConformationExplorerEntry()
-    {_G();
+    {
 	ConformationExplorerEntry_sp	entry;
 	ASSERTNOTNULL(this->_WeakConformationExplorerEntry);
 	entry = this->_WeakConformationExplorerEntry;
@@ -63,7 +63,7 @@ namespace chem
 
 CL_LISPIFY_NAME("setSuperposableCoordinatesAsFixedWithinSuperposeEngine");
 CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setSuperposableCoordinatesAsFixedWithinSuperposeEngine( SuperposeEngine_sp superposer )
-    {_G();
+    {
 	ConformationExplorer_sp	explorer;
 	explorer = this->getConformationExplorer();
 	superposer->setFixedPoints(explorer->_getSuperposeAtomIndices(), this->_FinalCoordinates );
@@ -72,7 +72,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setSuperposableCoordinat
 
 CL_LISPIFY_NAME("setSuperposableCoordinatesAsMoveableWithinSuperposeEngine");
 CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setSuperposableCoordinatesAsMoveableWithinSuperposeEngine( SuperposeEngine_sp superposer )
-    {_G();
+    {
 	ConformationExplorer_sp	explorer;
 	explorer = this->getConformationExplorer();
 	superposer->setMoveablePoints(explorer->_getSuperposeAtomIndices(), this->_FinalCoordinates );
@@ -82,7 +82,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setSuperposableCoordinat
 
 CL_LISPIFY_NAME("setFinalCoordinatesAsFixedWithinSuperposeEngine");
 CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsFixedWithinSuperposeEngine( SuperposeEngine_sp superposer )
-    {_G();
+    {
 	ConformationExplorer_sp	explorer;
 	explorer = this->getConformationExplorer();
 	superposer->setFixedAllPoints(this->_FinalCoordinates);
@@ -91,7 +91,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsFix
 
 CL_LISPIFY_NAME("setFinalCoordinatesAsMoveableWithinSuperposeEngine");
 CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMoveableWithinSuperposeEngine( SuperposeEngine_sp superposer )
-    {_G();
+    {
 	ConformationExplorer_sp	explorer;
 	explorer = this->getConformationExplorer();
 	superposer->setMoveableAllPoints(this->_FinalCoordinates);
@@ -100,7 +100,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMov
 
 
     ConformationExplorer_sp	ConformationExplorerEntryStage_O::getConformationExplorer()
-    {_G();
+    {
 	ConformationExplorerEntry_sp	entry;
 	ASSERTNOTNULL(this->_WeakConformationExplorerEntry);
 	entry = this->getConformationExplorerEntry();
@@ -109,7 +109,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMov
 
 
     void ConformationExplorerEntryStage_O::alignCoordinatesTo(ConformationExplorerEntryStage_sp entryStage )
-    {_G();
+    {
 	SuperposeEngine_sp superposer = SuperposeEngine_O::create();
 	entryStage->setSuperposableCoordinatesAsFixedWithinSuperposeEngine(superposer);
 	this->setSuperposableCoordinatesAsMoveableWithinSuperposeEngine(superposer);
@@ -123,7 +123,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMov
 
 #if 0
     geom::Render_sp	ConformationExplorerEntryStage_O::rendered(core::List_sp opts)
-    {_G();
+    {
 	ConformationExplorer_sp		explorer;
 	geom::DisplayList_sp			dlAll;
 	GrPickableMatter_sp		dlMatter;
@@ -188,7 +188,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMov
 
 #ifdef XML_ARCHIVE
     void	ConformationExplorerEntryStage_O::archiveBase(core::ArchiveP node)
-    {_G();
+    {
 	node->attribute("StageName",this->_StageName);
 	node->attributeIfNotDefault<string>("BasedOnStageName",this->_BasedOnStageName,"");
 	node->attributeIfNotDefault<string>("ExternalInterfaceName",this->_ExternalInterfaceName,"");
@@ -206,7 +206,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMov
 
 
     void	ConformationExplorerEntryStage_O::setConformationExplorerEntry(ConformationExplorerEntry_sp s)
-    {_G();
+    {
 	geom::CoordinateArray_sp	ca;
 	ConformationExplorer_sp	explorer;
 	this->_WeakConformationExplorerEntry = s;
@@ -217,7 +217,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMov
 
 
     void	ConformationExplorerEntryStage_O::setFinalCoordinates(geom::CoordinateArray_sp ac)
-    {_G();
+    {
 	ASSERTNOTNULL(ac);
 	LOG(BF("setFinalCoordinates:%s") % (ac->asXmlString().c_str() ) );
 	LOG(BF("The address of the geom::CoordinateArray_sp is in o") );
@@ -227,7 +227,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMov
 
 
     void	ConformationExplorerEntryStage_O::setCoordinateForAtom(Atom_sp atom, Vector3 pos )
-    {_G();
+    {
 	int	idx;
 	ConformationExplorer_sp	explorer;
 	explorer = this->getConformationExplorer();
@@ -240,7 +240,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMov
 
 CL_LISPIFY_NAME("writeCoordinatesToMatter");
 CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::writeCoordinatesToMatter(Matter_sp agg)
-    {_G();
+    {
 	ConformationExplorer_sp			sl;
 	vector<Vector3>::iterator	ci;
         gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
@@ -254,7 +254,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::writeCoordinatesToMatter
 
 CL_LISPIFY_NAME("extractCoordinatesFromMatter");
 CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::extractCoordinatesFromMatter(Matter_sp matter)
-    {_G();
+    {
 	ConformationExplorer_sp	sl;
 	vector<Vector3>::iterator	ci;
 	LOG(BF("About to get ConformationExplorer") );
@@ -295,7 +295,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::extractCoordinatesFromMa
 
 #ifdef XML_ARCHIVE
     void	ConformationExplorerEntry_O::archiveBase(core::ArchiveP node)
-    {_G();
+    {
 	node->archiveWeakPointer( "ConformationExplorer",
 				  this->_WeakConformationExplorer );
 	node->archiveVector0("Stages", this->_Stages);
@@ -307,7 +307,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::extractCoordinatesFromMa
 
 CL_LISPIFY_NAME("getSelectedStage");
 CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::getSelectedStage()
-    {_G();
+    {
 	if ( !this->hasSelectedStage() )
 	{
 	    return _Nil<ConformationExplorerEntryStage_O>();
@@ -317,7 +317,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::
 
 CL_LISPIFY_NAME("setSelectedStage");
 CL_DEFMETHOD     void	ConformationExplorerEntry_O::setSelectedStage(ConformationExplorerEntryStage_sp stage)
-    {_G();
+    {
 	ConformationExplorerEntry_sp	stageEntry;
 	stageEntry = stage->getConformationExplorerEntry();
 	ASSERTP(stageEntry.get()==this,"StageEntry != this");
@@ -328,7 +328,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntry_O::setSelectedStage(Conformation
 
 CL_LISPIFY_NAME("createEntryStage");
 CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::createEntryStage(string const& name)
-    {_G();
+    {
 	ASSERTF(!this->hasEntryStageWithName(name),
 		BF("Stage with key[%s] already exists!") % name );
 	GC_ALLOCATE(ConformationExplorerEntryStage_O, stage );
@@ -340,7 +340,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::
 
 
     void	ConformationExplorerEntry_O::setConformationExplorer(ConformationExplorer_sp s)
-    {_G();
+    {
 	geom::CoordinateArray_sp	ca;
 	this->_WeakConformationExplorer = s;
     }
@@ -350,7 +350,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::
 
 CL_LISPIFY_NAME("lastEntryStageName");
 CL_DEFMETHOD     string	ConformationExplorerEntry_O::lastEntryStageName()
-    {_G();
+    {
 	if ( this->_Stages.size() == 0 ) return "";
 	return this->_Stages[this->_Stages.size()-1]->getStageName();
     }
@@ -359,7 +359,7 @@ CL_DEFMETHOD     string	ConformationExplorerEntry_O::lastEntryStageName()
 
 CL_LISPIFY_NAME("getLastEntryStage");
 CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::getLastEntryStage()
-    {_G();
+    {
 	ASSERTP(this->_Stages.size()>0,"There must be at least one complete stage");
 	int idx = this->_Stages.size()-1;
 	return this->_Stages[idx];
@@ -368,7 +368,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::
 
 CL_LISPIFY_NAME("alreadyHasLastCompleteStage");
 CL_DEFMETHOD     bool	ConformationExplorerEntry_O::alreadyHasLastCompleteStage(const string& stageName )
-    {_G();
+    {
 	ConformationExplorerEntryStage_sp	lastStage;
 	lastStage = this->getLastCompleteEntryStage();
 	return( lastStage->getStageName() == stageName );
@@ -377,7 +377,7 @@ CL_DEFMETHOD     bool	ConformationExplorerEntry_O::alreadyHasLastCompleteStage(c
 
 CL_LISPIFY_NAME("getOrCreateLastIncompleteEntryStage");
 CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::getOrCreateLastIncompleteEntryStage(const string& stageName)
-    {_G();
+    {
 	ConformationExplorerEntryStage_sp	lastStage, newStage;
 	lastStage = this->getLastEntryStage();
 	if ( lastStage->isComplete() )
@@ -403,7 +403,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::
 
 CL_LISPIFY_NAME("getLastCompleteEntryStage");
 CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::getLastCompleteEntryStage()
-    {_G();
+    {
 	ASSERTP(this->_Stages.size()>0,"There must be at least one complete stage");
 	int idx = this->_Stages.size()-1;
 	if ( this->_Stages[idx]->isComplete() )
@@ -427,7 +427,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorerEntry_O::
 
 CL_LISPIFY_NAME("hasEntryStageWithName");
 CL_DEFMETHOD     bool	ConformationExplorerEntry_O::hasEntryStageWithName(const string& key)
-    {_G();
+    {
 	stageIterator	si;
 	for ( si=this->_Stages.begin(); si!=this->_Stages.end(); si++ )
 	{
@@ -439,7 +439,7 @@ CL_DEFMETHOD     bool	ConformationExplorerEntry_O::hasEntryStageWithName(const s
 
 CL_LISPIFY_NAME("getEntryStage");
 CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::getEntryStage(const string& key)
-    {_G();
+    {
 	stageIterator	si;
 	for ( si=this->_Stages.begin(); si!=this->_Stages.end(); si++ )
 	{
@@ -455,7 +455,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::
 
 #if 0
     geom::Render_sp	ConformationExplorerEntry_O::rendered(core::List_sp opts)
-    {_G();
+    {
 	geom::DisplayList_sp	dlAll;
 	geom::Render_sp		dlStage;
 	stageIterator		si;
@@ -480,7 +480,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::
 
 
     adapt::StringSet_sp ConformationExplorerEntry_O::getEntryStageNames()
-    {_G();
+    {
 	adapt::StringSet_sp stageNames = adapt::StringSet_O::create();
 	stageIterator it;
 	for ( it=this->begin_Stages(); it!=this->end_Stages(); it++ )
@@ -503,7 +503,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::
 
 CL_LISPIFY_NAME("clearEntries");
 CL_DEFMETHOD     void ConformationExplorer_O::clearEntries()
-    {_G();
+    {
 	this->_Entries.clear();
     }
 
@@ -511,7 +511,7 @@ CL_DEFMETHOD     void ConformationExplorer_O::clearEntries()
 
 
     Atom_sp	ConformationExplorer_O::_getAtomAtIndex(unsigned i)
-    {_G();
+    {
 	ASSERT_lessThan(i,this->_AllAtoms.size());
 	return this->_AllAtoms[i];
     }
@@ -519,7 +519,7 @@ CL_DEFMETHOD     void ConformationExplorer_O::clearEntries()
 
 
     geom::CoordinateArray_sp ConformationExplorer_O::_extractCoordinateArray(Matter_sp agg)
-    {_G();
+    {
 	vector<Vector3>::iterator	ci;
         gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
 #ifdef	DEBUG_ConformationExplorerEntry
@@ -554,7 +554,7 @@ CL_DEFMETHOD     void ConformationExplorer_O::clearEntries()
 
 CL_LISPIFY_NAME("setMatter");
 CL_DEFMETHOD     void	ConformationExplorer_O::setMatter(Matter_sp matter)
-    {_G();
+    {
 	Loop	loop;
 	Atom_sp	a;
 	this->_Matter = matter;
@@ -572,7 +572,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::setMatter(Matter_sp matter)
 
 CL_LISPIFY_NAME("appendEntry");
 CL_DEFMETHOD     void	ConformationExplorer_O::appendEntry(ConformationExplorerEntry_sp entry)
-    {_G();
+    {
 	entry->setConformationExplorer(this->sharedThis<ConformationExplorer_O>());
 	this->_Entries.push_back(entry);
     }
@@ -580,7 +580,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::appendEntry(ConformationExplorerEn
 
 CL_LISPIFY_NAME("entriesAsCons");
 CL_DEFMETHOD     core::List_sp ConformationExplorer_O::entriesAsCons()
-    {_G();
+    {
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(), _Nil<core::T_O>());
 	core::Cons_sp cur = first;
 	ConformationExplorer_O::entryIterator si;
@@ -603,7 +603,7 @@ CL_DEFMETHOD     core::List_sp ConformationExplorer_O::entriesAsCons()
 
 #ifdef XML_ARCHIVE
     void	ConformationExplorer_O::archiveBase(core::ArchiveP node)
-    {_G();
+    {
 	if ( !node->loading() )
 	{
 	    ASSERTNOTNULL(this->_Matter);
@@ -620,7 +620,7 @@ CL_DEFMETHOD     core::List_sp ConformationExplorer_O::entriesAsCons()
 
 #if 0
     geom::Render_sp	ConformationExplorer_O::rendered(core::List_sp opts)
-    {_G();
+    {
 	geom::FrameList_sp	frames;
 	geom::Render_sp		dlEntry;
 	_LINE();
@@ -668,7 +668,7 @@ CL_DEFMETHOD     core::List_sp ConformationExplorer_O::entriesAsCons()
 
 CL_LISPIFY_NAME("clearSuperposeAtoms");
 CL_DEFMETHOD     void	ConformationExplorer_O::clearSuperposeAtoms()
-    {_G();
+    {
 	ASSERTNOTNULL(this->_SuperposeAtomIndices);
 	this->_SuperposeAtomIndices->clear();
     }
@@ -677,7 +677,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::clearSuperposeAtoms()
 
 CL_LISPIFY_NAME("addSuperposeAtom");
 CL_DEFMETHOD     void	ConformationExplorer_O::addSuperposeAtom(Atom_sp a)
-    {_G();
+    {
 	atomIterator		ai;
 	int			idx;
 	ASSERTNOTNULL(this->_SuperposeAtomIndices);
@@ -694,7 +694,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::addSuperposeAtom(Atom_sp a)
 
 
     void	ConformationExplorer_O::superposeAtomsFromSet(gctools::SmallOrderedSet<Atom_sp> atoms)
-    {_G();
+    {
         gctools::SmallOrderedSet<Atom_sp>::iterator	ai;
 	this->clearSuperposeAtoms();
 	for ( ai=atoms.begin(); ai!=atoms.end(); ai++ )
@@ -705,7 +705,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::addSuperposeAtom(Atom_sp a)
 
 CL_LISPIFY_NAME("superposeAllHeavyAtoms");
 CL_DEFMETHOD     void	ConformationExplorer_O::superposeAllHeavyAtoms()
-    {_G();
+    {
 	atomIterator		ai;
 	int			idx;
 	ASSERTNOTNULL(this->_SuperposeAtomIndices);
@@ -721,7 +721,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::superposeAllHeavyAtoms()
 
 
     gctools::SmallOrderedSet<Atom_sp>	ConformationExplorer_O::getSuperposeAtoms()
-    {_G();
+    {
         gctools::SmallOrderedSet<Atom_sp>	result;
 	core::IntArray_O::iterator	si;
 	Atom_sp			a;
@@ -736,7 +736,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::superposeAllHeavyAtoms()
 
 
     uint	ConformationExplorer_O::numberOfSuperposeAtoms()
-    {_G();
+    {
 	return this->_SuperposeAtomIndices->size();
     }
 
@@ -763,7 +763,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::superposeAllHeavyAtoms()
 
 CL_LISPIFY_NAME("sort");
 CL_DEFMETHOD     void	ConformationExplorer_O::sort(const string& stageName, core::Symbol_sp keyName )
-    {_G();
+    {
 	OrderStageAndKeyValue comparer;
 	comparer._StageName = stageName;
 	comparer._KeyName = keyName;
@@ -778,7 +778,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::sort(const string& stageName, core
 
 CL_LISPIFY_NAME("saveAs");
 CL_DEFMETHOD     void	ConformationExplorer_O::saveAs(const string& fn)
-    {_G();
+    {
 	IMPLEMENT_ME();
 #ifdef XML_ARCHIVE
 	core::XmlSaveArchive_sp	xml;
@@ -790,7 +790,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::saveAs(const string& fn)
 
 CL_LISPIFY_NAME("getEntryIndex");
 CL_DEFMETHOD     unsigned ConformationExplorer_O::getEntryIndex(ConformationExplorerEntry_sp entry)
-    {_G();
+    {
 	int		i;
 	entryIterator	ei;
 	for ( i=0,ei=this->_Entries.begin(); ei!=this->_Entries.end(); ei++,i++ )
@@ -808,7 +808,7 @@ CL_DEFMETHOD     unsigned ConformationExplorer_O::getEntryIndex(ConformationExpl
 
 CL_LISPIFY_NAME("getEntry");
 CL_DEFMETHOD     ConformationExplorerEntry_sp	ConformationExplorer_O::getEntry(unsigned i)
-    {_G();
+    {
 	ASSERT_lessThan(i,this->_Entries.size());
 	ConformationExplorerEntry_sp e;
 	e = this->_Entries[i];
@@ -817,7 +817,7 @@ CL_DEFMETHOD     ConformationExplorerEntry_sp	ConformationExplorer_O::getEntry(u
 
 CL_LISPIFY_NAME("firstEntry");
 CL_DEFMETHOD     ConformationExplorerEntry_sp	ConformationExplorer_O::firstEntry()
-    {_G();
+    {
 	ASSERT(this->_Entries.size() > 0 );
 	return this->_Entries[0];
     }
@@ -828,7 +828,7 @@ CL_DEFMETHOD     ConformationExplorerEntry_sp	ConformationExplorer_O::firstEntry
 
 CL_LISPIFY_NAME("createEntry");
 CL_DEFMETHOD     ConformationExplorerEntry_sp	ConformationExplorer_O::createEntry()
-    {_G();
+    {
 	GC_ALLOCATE(ConformationExplorerEntry_O, entry );
 	entry->setConformationExplorer(this->sharedThis<ConformationExplorer_O>());
 	entry->_UniqueEntryIndex = this->numberOfEntries();
@@ -840,7 +840,7 @@ CL_DEFMETHOD     ConformationExplorerEntry_sp	ConformationExplorer_O::createEntr
 
 
     bool	ConformationExplorer_O::hasStageNameInAllEntries(const string& stageKey)
-    {_G();
+    {
 	entryIterator		ei;
 	bool			inAll;
 	inAll = false;
@@ -863,7 +863,7 @@ CL_DEFMETHOD     ConformationExplorerEntry_sp	ConformationExplorer_O::createEntr
 	double&		bestRms,
 	ConformationExplorerEntryStage_sp& bestStage,
 	uint&		bestEntryIndex )
-    {_G();
+    {
 	ConformationExplorerEntryStage_sp	stage;
 	double					rms;
 	bool					gotBest;
@@ -926,14 +926,14 @@ CL_DEFMETHOD     ConformationExplorerEntry_sp	ConformationExplorer_O::createEntr
 
 CL_LISPIFY_NAME("getClosestMatchingEntry");
 CL_DEFMETHOD     ConformationExplorerEntry_sp ConformationExplorer_O::getClosestMatchingEntry(ConformationExplorerMatch_sp match)
-    {_G();
+    {
 	uint idx = match->getClosestMatchIndex();
 	return this->getEntry(idx);
     }
 
 CL_LISPIFY_NAME("getClosestMatchingEntryStage");
 CL_DEFMETHOD     ConformationExplorerEntryStage_sp ConformationExplorer_O::getClosestMatchingEntryStage(ConformationExplorerMatch_sp match)
-    {_G();
+    {
 	uint idx = match->getClosestMatchIndex();
 	ConformationExplorerEntry_sp e = this->getEntry(idx);
 	ConformationExplorerEntryStage_sp s = e->getEntryStage(match->getMatchStageName());
@@ -963,7 +963,7 @@ CL_DEFMETHOD     void ConformationExplorer_O::findClosestMatchingConformation(
 	ConformationExplorerMatch_sp match,
 	Matter_sp matter, const string& stageKey,
 	double rms )
-    {_G();
+    {
 	double					bestRms;
 	ConformationExplorerEntryStage_sp	bestStage;
 	uint					bestIndex;
@@ -988,7 +988,7 @@ CL_DEFMETHOD     void ConformationExplorer_O::findClosestMatchingConformation(
 
 
     uint	ConformationExplorer_O::indexOfAtom(Atom_sp atom)
-    {_G();
+    {
 	return this->_AllAtoms.indexOf(atom);
     }
 
@@ -996,7 +996,7 @@ CL_DEFMETHOD     void ConformationExplorer_O::findClosestMatchingConformation(
 
 CL_LISPIFY_NAME("alignAllConformationsToTheFirstForStage");
 CL_DEFMETHOD     void	ConformationExplorer_O::alignAllConformationsToTheFirstForStage(const string& stageName )
-    {_G();
+    {
 	if ( !this->hasStageNameInAllEntries(stageName) )
 	{
 	    SIMPLE_ERROR(BF("You have to have the stageName(%s) in all entries")%stageName);
@@ -1034,7 +1034,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::alignAllConformationsToTheFirstFor
 
 CL_LISPIFY_NAME("sortByEnergyAscendingForStage");
 CL_DEFMETHOD     void	ConformationExplorer_O::sortByEnergyAscendingForStage(const string& stageName )
-    {_G();
+    {
 	OrderByEnergyAscending order;
 	order._StageName = stageName;
 	core::sort::quickSort(this->_Entries.begin(),this->_Entries.end(),order);
@@ -1048,198 +1048,19 @@ CL_DEFMETHOD     void	ConformationExplorer_O::sortByEnergyAscendingForStage(cons
 
 
 
-    void ConformationExplorerEntryStage_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<ConformationExplorerEntryStage_O>()
-	    .def("setBasedOnStageName",&ConformationExplorerEntryStage_O::setBasedOnStageName)
-	    .def("getBasedOnStageName",&ConformationExplorerEntryStage_O::getBasedOnStageName)
-	    .def("setStageName",&ConformationExplorerEntryStage_O::setStageName)
-	    .def("getStageName",&ConformationExplorerEntryStage_O::getStageName)
-	    .def("getFinalCoordinates",&ConformationExplorerEntryStage_O::getFinalCoordinates)
-	    .def("setFinalCoordinatesAsFixedWithinSuperposeEngine",&ConformationExplorerEntryStage_O::setFinalCoordinatesAsFixedWithinSuperposeEngine)
-	    .def("setFinalCoordinatesAsMoveableWithinSuperposeEngine",&ConformationExplorerEntryStage_O::setFinalCoordinatesAsMoveableWithinSuperposeEngine)
-	    .def("setSuperposableCoordinatesAsFixedWithinSuperposeEngine",&ConformationExplorerEntryStage_O::setSuperposableCoordinatesAsFixedWithinSuperposeEngine)
-	    .def("setSuperposableCoordinatesAsMoveableWithinSuperposeEngine",&ConformationExplorerEntryStage_O::setSuperposableCoordinatesAsMoveableWithinSuperposeEngine)
-	    .def("setModel",&ConformationExplorerEntryStage_O::setModel)
-	    .def("getModel",&ConformationExplorerEntryStage_O::getModel)
-	    .def("setEnergyKCal",&ConformationExplorerEntryStage_O::setEnergyKCal)
-	    .def("getEnergyKCal",&ConformationExplorerEntryStage_O::getEnergyKCal)
-	    .def("setExternalInterfaceName",&ConformationExplorerEntryStage_O::setExternalInterfaceName)
-	    .def("getExternalInterfaceName",&ConformationExplorerEntryStage_O::getExternalInterfaceName)
-	    .def("writeCoordinatesToMatter",&ConformationExplorerEntryStage_O::writeCoordinatesToMatter)
-	    .def("extractCoordinatesFromMatter",&ConformationExplorerEntryStage_O::extractCoordinatesFromMatter)
-	    .def("getBinder",&ConformationExplorerEntryStage_O::getBinder)
-	    .def("isComplete",&ConformationExplorerEntryStage_O::isComplete)
-	    .def("setComplete",&ConformationExplorerEntryStage_O::setComplete)
-	    ;
-    }
-    void ConformationExplorerEntryStage_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg, ConformationExplorerEntryStage,"","",_lisp)
-	.def("setBasedOnStageName",&ConformationExplorerEntryStage_O::setBasedOnStageName)
-	.def("getBasedOnStageName",&ConformationExplorerEntryStage_O::getBasedOnStageName)
-	.def("setStageName",&ConformationExplorerEntryStage_O::setStageName)
-	.def("getStageName",&ConformationExplorerEntryStage_O::getStageName)
-	.def("getFinalCoordinates",&ConformationExplorerEntryStage_O::getFinalCoordinates)
-	.def("setFinalCoordinatesAsFixedWithinSuperposeEngine",&ConformationExplorerEntryStage_O::setFinalCoordinatesAsFixedWithinSuperposeEngine)
-	.def("setFinalCoordinatesAsMoveableWithinSuperposeEngine",&ConformationExplorerEntryStage_O::setFinalCoordinatesAsMoveableWithinSuperposeEngine)
-	.def("setSuperposableCoordinatesAsFixedWithinSuperposeEngine",&ConformationExplorerEntryStage_O::setSuperposableCoordinatesAsFixedWithinSuperposeEngine)
-	.def("setSuperposableCoordinatesAsMoveableWithinSuperposeEngine",&ConformationExplorerEntryStage_O::setSuperposableCoordinatesAsMoveableWithinSuperposeEngine)
-	.def("setModel",&ConformationExplorerEntryStage_O::setModel)
-	.def("getModel",&ConformationExplorerEntryStage_O::getModel)
-	.def("setEnergyKCal",&ConformationExplorerEntryStage_O::setEnergyKCal)
-	.def("getEnergyKCal",&ConformationExplorerEntryStage_O::getEnergyKCal)
-	.def("setExternalInterfaceName",&ConformationExplorerEntryStage_O::setExternalInterfaceName)
-	.def("getExternalInterfaceName",&ConformationExplorerEntryStage_O::getExternalInterfaceName)
-    	.def("writeCoordinatesToMatter",&ConformationExplorerEntryStage_O::writeCoordinatesToMatter)
-    	.def("extractCoordinatesFromMatter",&ConformationExplorerEntryStage_O::extractCoordinatesFromMatter)
-	.def("getBinder",&ConformationExplorerEntryStage_O::getBinder)
-	.def("isComplete",&ConformationExplorerEntryStage_O::isComplete)
-	.def("setComplete",&ConformationExplorerEntryStage_O::setComplete)
-	//	.def("coordinatesAsString",&ConformationExplorerEntryStage_O::coordinatesAsString)
-	//	.def("parseStructureFromFileName",&ConformationExplorerEntryStage_O::parseStructureFromFileName)
-	;
-#endif
-}
-
-
-    void ConformationExplorerEntry_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<ConformationExplorerEntry_O>()
-	.def("getUniqueEntryIndex",&ConformationExplorerEntry_O::getUniqueEntryIndex)
-    	.def("getConformationExplorer",&ConformationExplorerEntry_O::getConformationExplorer)
-    	.def("lastEntryStageName",&ConformationExplorerEntry_O::lastEntryStageName)
-    	.def("hasSelectedStage",&ConformationExplorerEntry_O::hasSelectedStage)
-    	.def("getSelectedStage",&ConformationExplorerEntry_O::getSelectedStage)
-    	.def("setSelectedStage",&ConformationExplorerEntry_O::setSelectedStage)
-    	.def("alreadyHasLastCompleteStage",&ConformationExplorerEntry_O::alreadyHasLastCompleteStage)
-    	.def("getOrCreateLastIncompleteEntryStage",&ConformationExplorerEntry_O::getOrCreateLastIncompleteEntryStage)
-    	.def("hasEntryStageWithName",&ConformationExplorerEntry_O::hasEntryStageWithName)
-    	.def("getEntryStage",&ConformationExplorerEntry_O::getEntryStage)
-	.def("createEntryStage",&ConformationExplorerEntry_O::createEntryStage)
-	.def("getLastCompleteEntryStage",&ConformationExplorerEntry_O::getLastCompleteEntryStage)
-	.def("getLastEntryStage",&ConformationExplorerEntry_O::getLastEntryStage)
-	;
-}
-    void ConformationExplorerEntry_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg, ConformationExplorerEntry,"","",_lisp)
-	.add_property("iterate_Stages",
-		      boost::python::range(&ConformationExplorerEntry_O::begin_Stages,
-					   &ConformationExplorerEntry_O::end_Stages))
-    	.def("getConformationExplorer",&ConformationExplorerEntry_O::getConformationExplorer)
-    	.def("lastEntryStageName",&ConformationExplorerEntry_O::lastEntryStageName)
-    	.def("hasSelectedStage",&ConformationExplorerEntry_O::hasSelectedStage)
-    	.def("getSelectedStage",&ConformationExplorerEntry_O::getSelectedStage)
-    	.def("setSelectedStage",&ConformationExplorerEntry_O::setSelectedStage)
-    	.def("alreadyHasLastCompleteStage",&ConformationExplorerEntry_O::alreadyHasLastCompleteStage)
-    	.def("getOrCreateLastIncompleteEntryStage",&ConformationExplorerEntry_O::getOrCreateLastIncompleteEntryStage)
-    	.def("hasEntryStageWithName",&ConformationExplorerEntry_O::hasEntryStageWithName)
-    	.def("getEntryStage",&ConformationExplorerEntry_O::getEntryStage)
-	.def("createEntryStage",&ConformationExplorerEntry_O::createEntryStage)
-	.def("getLastCompleteEntryStage",&ConformationExplorerEntry_O::getLastCompleteEntryStage)
-	.def("getLastEntryStage",&ConformationExplorerEntry_O::getLastEntryStage)
-	;
-#endif
-}
 
 
 
 
-void ConformationExplorer_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<ConformationExplorer_O>()
-//	    .add_property("iterate_AllAtoms",
-//		boost::python::range(&ConformationExplorer_O::begin_AllAtoms,
-//			&ConformationExplorer_O::end_AllAtoms))
-//	    .add_property("iterate_Entries",
-//		boost::python::range(&ConformationExplorer_O::begin_Entries,
-//			&ConformationExplorer_O::end_Entries))
-	.def("entriesAsCons",&ConformationExplorer_O::entriesAsCons)
-	.def("getBinder",&ConformationExplorer_O::getBinder)
-	.def("setMatter",&ConformationExplorer_O::setMatter)
-	.def("getMatter",&ConformationExplorer_O::getMatter)
-	.def("firstEntry",&ConformationExplorer_O::firstEntry)
-	.def("clearSuperposeAtoms",&ConformationExplorer_O::clearSuperposeAtoms)
-	.def("superposeAllHeavyAtoms",&ConformationExplorer_O::superposeAllHeavyAtoms)
-	.def("addSuperposeAtom",&ConformationExplorer_O::addSuperposeAtom)
-	.def("clearEntries",&ConformationExplorer_O::clearEntries)
-	.def("appendEntry",&ConformationExplorer_O::appendEntry)
-	.def("getEntry",&ConformationExplorer_O::getEntry)
-	.def("createEntry",&ConformationExplorer_O::createEntry)
-	.def("getEntryIndex",&ConformationExplorer_O::getEntryIndex)
-	.def("saveAs",&ConformationExplorer_O::saveAs,"","","",false)
-	.def("numberOfEntries",&ConformationExplorer_O::numberOfEntries)
-	.def("findClosestMatchingConformation", &ConformationExplorer_O::findClosestMatchingConformation)
-	.def("sort", &ConformationExplorer_O::sort,"","","",false)
-	.def("getClosestMatchingEntry", &ConformationExplorer_O::getClosestMatchingEntry)
-	.def("getClosestMatchingEntryStage", &ConformationExplorer_O::getClosestMatchingEntryStage)
-	.def("alignAllConformationsToTheFirstForStage",&ConformationExplorer_O::alignAllConformationsToTheFirstForStage)
-	.def("sortByEnergyAscendingForStage", &ConformationExplorer_O::sortByEnergyAscendingForStage)
-	;
-}
-void ConformationExplorer_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef	USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg, ConformationExplorer,"","",_lisp)
-	.add_property("iterate_AllAtoms",
-		      boost::python::range(&ConformationExplorer_O::begin_AllAtoms,
-					   &ConformationExplorer_O::end_AllAtoms))
-	.add_property("iterate_Entries",
-		      boost::python::range(&ConformationExplorer_O::begin_Entries,
-					   &ConformationExplorer_O::end_Entries))
-	.def("entriesAsCons",&ConformationExplorer_O::entriesAsCons)
-	.def("getBinder",&ConformationExplorer_O::getBinder)
-	.def("setMatter",&ConformationExplorer_O::setMatter)
-	.def("getMatter",&ConformationExplorer_O::getMatter)
-	.def("firstEntry",&ConformationExplorer_O::firstEntry)
-	.def("clearSuperposeAtoms",&ConformationExplorer_O::clearSuperposeAtoms)
-	.def("superposeAllHeavyAtoms",&ConformationExplorer_O::superposeAllHeavyAtoms)
-	.def("addSuperposeAtom",&ConformationExplorer_O::addSuperposeAtom)
-	.def("clearEntries",&ConformationExplorer_O::clearEntries)
-	.def("appendEntry",&ConformationExplorer_O::appendEntry)
-	.def("getEntry",&ConformationExplorer_O::getEntry)
-	.def("createEntry",&ConformationExplorer_O::createEntry)
-	.def("getEntryIndex",&ConformationExplorer_O::getEntryIndex)
-//	.def("saveAs",&ConformationExplorer_O::saveAs,"","","",false)
-    //	    .def("addConformationExplorer",&ConformationExplorer_O::addConformationExplorer)
-    //	    .def("addStructureList",&ConformationExplorer_O::addStructureList)
-	.def("numberOfEntries",&ConformationExplorer_O::numberOfEntries)
-	.def("findClosestMatchingConformation", &ConformationExplorer_O::findClosestMatchingConformation)
-//	.def("sort", &ConformationExplorer_O::sort,"","","",false)
-	.def("getClosestMatchingEntry", &ConformationExplorer_O::getClosestMatchingEntry)
-	.def("getClosestMatchingEntryStage", &ConformationExplorer_O::getClosestMatchingEntryStage)
-	.def("sortByEnergyAscendingForStage", &ConformationExplorer_O::sortByEnergyAscendingForStage)
-	;
-#endif
-}
 
 
-void ConformationExplorerMatch_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<ConformationExplorerMatch_O>()
-	.def("getMatches",&ConformationExplorerMatch_O::getMatches)
-	.def("getClosestMatchIndex",&ConformationExplorerMatch_O::getClosestMatchIndex)
-	.def("getClosestMatchRms",&ConformationExplorerMatch_O::getClosestMatchRms)
-	;
-}
-void ConformationExplorerMatch_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef	USEBOOSTPYTHON
 
-    PYTHON_CLASS(ChemPkg, ConformationExplorerMatch,"","",_lisp)
-	.def("getMatches",&ConformationExplorerMatch_O::getMatches)
-	.def("getClosestMatchIndex",&ConformationExplorerMatch_O::getClosestMatchIndex)
-	;
-#endif
-}
 
-EXPOSE_CLASS(chem, ConformationExplorerEntryStage_O );
-EXPOSE_CLASS(chem, ConformationExplorerEntry_O );
-EXPOSE_CLASS(chem, ConformationExplorer_O );
-EXPOSE_CLASS(chem, ConformationExplorerMatch_O );
+
+
+
+
+
 
 };
 

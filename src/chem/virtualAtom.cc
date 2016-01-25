@@ -16,7 +16,7 @@ namespace chem {
 
 
     VirtualAtom_sp VirtualAtom_O::create(MatterName name, CalculatePosition_sp proc)
-{_G();
+{
     LOG(BF("status") );
     GC_ALLOCATE(VirtualAtom_O, va );
     LOG(BF("status") );
@@ -43,7 +43,7 @@ VirtualAtom_O::VirtualAtom_O(const VirtualAtom_O& ss) :Atom_O(ss)
 //	Keep track of the new atom so that we can redirect pointers to the copy.
 //
 Matter_sp VirtualAtom_O::copy()
-{_G();
+{
     LOG(BF("Copying atom @%X") % this );
     GC_COPY(VirtualAtom_O,aNew, *this); // VirtualAtom_sp aNew = RP_Copy<VirtualAtom_O>(this);
     this->copyAtom = aNew;
@@ -87,7 +87,7 @@ void	VirtualAtom_O::initialize()
 
 
 void	VirtualAtom_O::calculatePosition()
-{_G();
+{
     ASSERTNOTNULL(this->_CalculatePosition);
 //    ASSERTNOTNULL(this->_Environment);
     Matter_wp wmres = this->containedBy();
@@ -104,23 +104,10 @@ void	VirtualAtom_O::calculatePosition()
 
 
 
-    void VirtualAtom_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<VirtualAtom_O>()
-	;
-}
-
-    void VirtualAtom_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,VirtualAtom,"","",_lisp)
-    ;
-#endif //]
-}
 
 
 
-    EXPOSE_CLASS(chem,VirtualAtom_O);
+
 };
 
 

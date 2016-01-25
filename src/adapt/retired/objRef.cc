@@ -34,7 +34,6 @@ THE SOFTWARE.
 
 namespace core {
 
-REGISTER_CLASS(core, ObjRef_O);
 
 void ObjRef_O::initialize() {
   this->Base::initialize();
@@ -52,7 +51,7 @@ void ObjRef_O::archive(ArchiveP node) {
 #endif // defined(XML_ARCHIVE)
 
 T_sp ObjRef_O::relativeTo(T_sp o) {
-  _G();
+  
   T_sp obj = o->oGetReference(this->sharedThis<ObjRef_O>());
   if (this->_SubRef.notnilp()) {
     obj = gc::As<ObjRef_sp>(this->_SubRef)->relativeTo(obj);

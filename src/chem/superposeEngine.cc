@@ -33,40 +33,8 @@ namespace chem
     SYMBOL_EXPORT_SC_(ChemPkg,superpose);
 
 
-    EXPOSE_CLASS(chem,SuperposeEngine_O);
-    EXPOSE_CLASS(chem,SuperposeSelectedAtoms_O);
 
-    void SuperposeEngine_O::exposeCando(core::Lisp_sp e)
-    {
-	core::class_<SuperposeEngine_O>()
-	    .def("setFixedPoints",&SuperposeEngine_O::setFixedPoints)
-	    .def("setFixedAllPoints",&SuperposeEngine_O::setFixedAllPoints)
-	    .def("setMoveablePoints",&SuperposeEngine_O::setMoveablePoints)
-	    .def("setMoveableAllPoints",&SuperposeEngine_O::setMoveableAllPoints)
-	    .def("getNumberOfFixedPoints",&SuperposeEngine_O::getNumberOfFixedPoints)
-	    .def("getNumberOfMoveablePoints",&SuperposeEngine_O::getNumberOfMoveablePoints)
-	    .def("superpose",&SuperposeEngine_O::superpose)
-	    .def("rootMeanSquareDifference",&SuperposeEngine_O::rootMeanSquareDifference)
-	    .def("debugString",&SuperposeEngine_O::debugString)
-	    ;
-    }
 
-    void SuperposeEngine_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,SuperposeEngine,"","",_lisp)
-	    .def("setFixedPoints",&SuperposeEngine_O::setFixedPoints)
-	    .def("setFixedAllPoints",&SuperposeEngine_O::setFixedAllPoints)
-	    .def("setMoveablePoints",&SuperposeEngine_O::setMoveablePoints)
-	    .def("setMoveableAllPoints",&SuperposeEngine_O::setMoveableAllPoints)
-	    .def("getNumberOfFixedPoints",&SuperposeEngine_O::getNumberOfFixedPoints)
-	    .def("getNumberOfMoveablePoints",&SuperposeEngine_O::getNumberOfMoveablePoints)
-	    .def("superpose",&SuperposeEngine_O::superpose)
-	    .def("rootMeanSquareDifference",&SuperposeEngine_O::rootMeanSquareDifference)
-	    .def("debugString",&SuperposeEngine_O::debugString)
-	    ;
-#endif
-    }
 
 
 
@@ -114,7 +82,7 @@ CL_DEFMETHOD     string SuperposeEngine_O::debugString()
 //	geometricCenterOfPoints
 //
     Vector3	geometricCenterOfPointsIndirect( core::IntArray_sp indices, geom::CoordinateArray_sp pnts)
-{ _G();
+{ 
     Vector3				pos;
     core::IntArray_O::iterator		it;
 
@@ -132,7 +100,7 @@ CL_DEFMETHOD     string SuperposeEngine_O::debugString()
 }
 
 void SuperposeEngine_O::initialize()
-{_G();
+{
     this->Base::initialize();
     this->_FixedIndices = core::IntArray_O::create();
     this->_MoveableIndices = core::IntArray_O::create();
@@ -182,20 +150,20 @@ void	SuperposeEngine_O::eraseFixedPoints()
 
 CL_LISPIFY_NAME("getNumberOfFixedPoints");
 CL_DEFMETHOD int	SuperposeEngine_O::getNumberOfFixedPoints()
-{_G();
+{
     return this->_FixedIndices->size();
 }
 
 
 CL_LISPIFY_NAME("getNumberOfMoveablePoints");
 CL_DEFMETHOD int	SuperposeEngine_O::getNumberOfMoveablePoints()
-{_G();
+{
     return this->_MoveableIndices->size();
 }
 
 
 void	SuperposeEngine_O::doSuperpose()
-{_G();
+{
     VectorVector3s			Sj;
     VectorVector3s			Si;
     VectorVector3s::iterator	itS,itSi,itSj;
@@ -345,7 +313,7 @@ void	SuperposeEngine_O::doSuperpose()
   collections of points.
 */
 double	SuperposeEngine_O::sumOfSquaresOfDifferences(ScorerState_sp scorerState )
-{ _G();
+{ 
     core::IntArray_O::iterator		itFixed;
     core::IntArray_O::iterator		ititMoved;
     Vector3				moved, diff;
@@ -381,7 +349,7 @@ double	SuperposeEngine_O::sumOfSquaresOfDifferences(ScorerState_sp scorerState )
   collections of points.
 */
 double	SuperposeEngine_O::sumOfSquaresOfDifferences()
-{ _G();
+{ 
     core::IntArray_O::iterator		itFixed;
     core::IntArray_O::iterator		ititMoved;
     Vector3				moved, diff;
@@ -424,7 +392,7 @@ double	SuperposeEngine_O::sumOfSquaresOfDifferences()
 //	collections of points.
 CL_LISPIFY_NAME("rootMeanSquareDifference");
 CL_DEFMETHOD double	SuperposeEngine_O::rootMeanSquareDifference()
-{ _G();
+{ 
     double sumOfSquares = this->sumOfSquaresOfDifferences();
     LOG(BF("Number of moveable indices = %d") % this->_MoveableIndices->size() );
     ASSERT_gt(this->_MoveableIndices->size(),0);
@@ -443,7 +411,7 @@ CL_DEFMETHOD double	SuperposeEngine_O::rootMeanSquareDifference()
 
 CL_LISPIFY_NAME("setFixedPoints");
 CL_DEFMETHOD void	SuperposeEngine_O::setFixedPoints( core::IntArray_sp fi, geom::CoordinateArray_sp fc )
-{ _G();
+{ 
     LOG(BF("SuperposeEngine_O::setFixedPoints --> number of points=%d") % fc->size()  );
     if ( !((fi->size()>=3) && ((fi->size()<=fc->size()))) )
     {
@@ -464,7 +432,7 @@ CL_DEFMETHOD void	SuperposeEngine_O::setFixedPoints( core::IntArray_sp fi, geom:
 
 CL_LISPIFY_NAME("setFixedAllPoints");
 CL_DEFMETHOD void	SuperposeEngine_O::setFixedAllPoints( geom::CoordinateArray_sp fc )
-{_G();
+{
     core::IntArray_O::iterator	ia;
     uint		ii;
     this->_FixedCoordinates = fc;
@@ -481,7 +449,7 @@ CL_DEFMETHOD void	SuperposeEngine_O::setFixedAllPoints( geom::CoordinateArray_sp
 
 CL_LISPIFY_NAME("setMoveablePoints");
 CL_DEFMETHOD void	SuperposeEngine_O::setMoveablePoints( core::IntArray_sp mi, geom::CoordinateArray_sp mc )
-{ _G();
+{ 
     VectorVector3s::iterator	cur;
     LOG(BF("SuperposeEngine_O::setMoveablePoints --> number of points=%d") % mc->size()  );
     ASSERTP( (mi->size()>=3), "There must be at least three indices" );
@@ -492,7 +460,7 @@ CL_DEFMETHOD void	SuperposeEngine_O::setMoveablePoints( core::IntArray_sp mi, ge
 
 CL_LISPIFY_NAME("setMoveableAllPoints");
 CL_DEFMETHOD void	SuperposeEngine_O::setMoveableAllPoints( geom::CoordinateArray_sp mc )
-{_G();
+{
     core::IntArray_O::iterator	ia;
     uint		ii;
     ASSERTF(mc->size()>=3,BF("You must have at least three moveable points and there are only %d") % mc->size() );
@@ -513,29 +481,14 @@ CL_DEFMETHOD void	SuperposeEngine_O::setMoveableAllPoints( geom::CoordinateArray
 
 CL_LISPIFY_NAME("superpose");
 CL_DEFMETHOD Matrix	SuperposeEngine_O::superpose()
-{_G();
+{
     LOG(BF("SuperposeEngine_O::superpose()") );
     this->doSuperpose();
     LOG(BF("Carried out superpose and the transform is:%s") % (this->_Transform.asString().c_str() ) );
     return this->_Transform;
 }
 
-void SuperposeSelectedAtoms_O::exposeCando(core::Lisp_sp e)
-{
-    core::class_<SuperposeSelectedAtoms_O>()
-	;
 
-}
-
-    void SuperposeSelectedAtoms_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,SuperposeSelectedAtoms,"","",_lisp)
-	;
-#endif
-#endif //]
-}
 
 
 
@@ -543,7 +496,7 @@ void SuperposeSelectedAtoms_O::exposeCando(core::Lisp_sp e)
 
 
 void SuperposeSelectedAtoms_O::initialize()
-{_G();
+{
     this->Base::initialize();
     this->_Matter = _Nil<Matter_O>();
     this->_SuperposeAtoms.clear();
@@ -552,7 +505,7 @@ void SuperposeSelectedAtoms_O::initialize()
 
 #ifdef XML_ARCHIVE
 void SuperposeSelectedAtoms_O::archiveBase(core::ArchiveP node)
-{_G();
+{
     this->Base::archiveBase(node);
     node->attribute("matter",this->_Matter);
     node->archiveVector0("superposeAtoms",this->_SuperposeAtoms);
@@ -561,7 +514,7 @@ void SuperposeSelectedAtoms_O::archiveBase(core::ArchiveP node)
 
 
 void SuperposeSelectedAtoms_O::updateSuperposeAtoms()
-{_G();
+{
     Loop lAtoms;
     this->_SuperposeAtoms.clear();
     lAtoms.loopTopGoal(this->_Matter,ATOMS);
@@ -586,13 +539,13 @@ void SuperposeSelectedAtoms_O::updateSuperposeAtoms()
 
 
 void SuperposeSelectedAtoms_O::setMatter(Matter_sp matter)
-{_G();
+{
     this->_Matter = matter->copy();
     this->_SuperposeAtoms.clear();
 }
 
 void SuperposeSelectedAtoms_O::setMatterWithSelectedAtoms(Matter_sp matter)
-{_G();
+{
     this->setMatter(matter);
     this->updateSuperposeAtoms();
 }
@@ -600,7 +553,7 @@ void SuperposeSelectedAtoms_O::setMatterWithSelectedAtoms(Matter_sp matter)
 
 
 geom::CoordinateArray_sp SuperposeSelectedAtoms_O::extractCoordinates(Matter_sp matter)
-{_G();
+{
     if ( !this->_Matter->equal(matter) )
     {
 	SIMPLE_ERROR(BF("The Matters are not equal"));
@@ -617,19 +570,19 @@ geom::CoordinateArray_sp SuperposeSelectedAtoms_O::extractCoordinates(Matter_sp 
 }
 
 Matter_sp SuperposeSelectedAtoms_O::getMatter()
-{_G();
+{
     return this->_Matter;
 }
 
 void SuperposeSelectedAtoms_O::copyMatterCoordinatesIntoFixedCoordinates(Matter_sp matter)
-{_G();
+{
     geom::CoordinateArray_sp ca = this->extractCoordinates(matter);
     ASSERT_gt(ca->size(),0);
     this->setFixedAllPoints(ca);
 }
 
 void SuperposeSelectedAtoms_O::copyMatterCoordinatesIntoMoveableCoordinates(Matter_sp matter)
-{_G();
+{
     geom::CoordinateArray_sp ca = this->extractCoordinates(matter);
     ASSERT_gt(ca->size(),0);
     this->setMoveableAllPoints(ca);

@@ -54,7 +54,7 @@ namespace chem {
 
 
     void EnergyStretch::defineFrom( FFStretch_sp stretch, EnergyAtom *ea1, EnergyAtom *ea2, double scale)
-    {_G();
+    {
 	LOG(BF("Defining EnergyStretch with kb=%lf r0=%lf")
 	    % this->term.kb
 	    % this->term.r0  );
@@ -104,7 +104,7 @@ namespace chem {
 #endif
 
     void	EnergyStretch::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml, AtomTable_sp atomTable )
-    {_G();
+    {
 	int	i1, i2;
 	i1 = xml->getAttributeInt("idx1");
 	i2 = xml->getAttributeInt("idx2");
@@ -254,7 +254,7 @@ CL_DEFMETHOD core::T_sp EnergyStretch_O::stretchTermBetweenAtoms(Atom_sp x, Atom
 	gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
 	gc::Nilable<NVector_sp>	hdvec,
         gc::Nilable<NVector_sp> dvec)
-    { _G();
+    { 
 	if ( this->_DebugEnergy ) 
 	{
 	    LOG_ENERGY_CLEAR();
@@ -523,20 +523,8 @@ CL_DEFMETHOD core::T_sp EnergyStretch_O::stretchTermBetweenAtoms(Atom_sp x, Atom
 
 
 
-    void EnergyStretch_O::exposeCando(core::Lisp_sp e)
-    {
-//	core::maker_enum mkr = core::make_class_name_init;
-	core::class_<EnergyStretch_O>("make-energy-stretch")
-	    ;
-    }
 
-    void EnergyStretch_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,EnergyStretch,"","",_lisp)
-	    ;
-#endif
-    }
+
 
 
     void EnergyStretch_O::initialize()
@@ -565,7 +553,6 @@ CL_DEFMETHOD core::T_sp EnergyStretch_O::stretchTermBetweenAtoms(Atom_sp x, Atom
     }
 
 
-    EXPOSE_CLASS(chem,EnergyStretch_O);
 
 };
 

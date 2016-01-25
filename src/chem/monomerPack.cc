@@ -54,7 +54,7 @@ __END_DOC
 #define DOCS_chem__define_monomer_pack "defineMonomerPack"
 CL_LAMBDA(pack-name parts &optional atom-aliases);
 CL_DEFUN core::T_sp chem__define_monomer_pack(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomAliases )
-    {_G();
+    {
 	CandoDatabase_sp	bdb;
 	core::T_sp		oarg1;
 	bdb = getCandoDatabase();
@@ -101,7 +101,7 @@ __END_DOC
 #define DECL_chem__extend_aliases ""
 #define DOCS_chem__extend_aliases "extendAliases"
 CL_DEFUN core::T_sp chem__extend_aliases(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomAliases)
-    {_G();
+    {
 	CandoDatabase_sp	bdb;
 	core::T_sp		oarg1;
 	bdb = getCandoDatabase();
@@ -144,7 +144,7 @@ __END_DOC
 #define DOCS_chem__set_monomer_pack "setMonomerPack"
 CL_LAMBDA(pack-name parts &optional atom-aliases);
 CL_DEFUN core::T_sp chem__set_monomer_pack(core::Symbol_sp packName, core::List_sp parts, core::Cons_sp atomNames )
-    {_G();
+    {
 	core::T_sp opack = chem__define_monomer_pack(packName,parts,atomNames);
 	MonomerPack_sp pack = downcast<MonomerPack_O>(opack);
 	core::Symbol_sp sym = pack->getName();
@@ -188,7 +188,7 @@ void	MonomerPack_O::initialize()
 
 
 void	MonomerPack_O::defineContentsFromCons(core::List_sp atomAliases, core::List_sp parts)
-{_G();
+{
   core::List_sp		p;
   adapt::SymbolList_sp	aliases;
   core::Symbol_sp	name;
@@ -263,7 +263,7 @@ void MonomerPack_O::extendAliases( core::List_sp atomAliases, core::List_sp part
 
 
 void	MonomerPack_O::setInterestingAtomNamesForMonomerName(core::Symbol_sp monomerName, const string& atomIndexerNames)
-{ _G();
+{ 
 adapt::StringSet_O::smart_ptr		monomerNames;
 CandoDatabase_sp		bdb;
 AtomIndexer_sp			indexer;
@@ -283,7 +283,7 @@ adapt::StringSet_O::iterator		it;
 
 void	MonomerPack_O::setInterestingAtomNamesForMonomerNameStringList(
 			core::Symbol_sp monomerName, adapt::StringList_sp names )
-{ _G();
+{ 
 adapt::StringSet_O::smart_ptr		monomerNames;
 CandoDatabase_sp		bdb;
 AtomIndexer_sp			indexer;
@@ -302,7 +302,7 @@ adapt::StringSet_O::iterator		it;
 
 void	MonomerPack_O::setInterestingAtomNamesForMonomerNameFromCons(
 			core::Symbol_sp monomerName, core::List_sp names )
-{ _G();
+{ 
 adapt::StringSet_O::smart_ptr		monomerNames;
 CandoDatabase_sp		bdb;
 AtomIndexer_sp			indexer;
@@ -323,27 +323,27 @@ adapt::StringSet_O::iterator		it;
 }
 
 void	MonomerPack_O::setMonomerNameOrPdb(core::Symbol_sp nm)
-{_G();
+{
     this->EntityNameSet_O::setMonomerNameOrPdb(nm);
     this->setInterestingAtomNamesForMonomerName(nm,"");
 }
 
 
 void	MonomerPack_O::addMonomerName(core::Symbol_sp nm)
-{_G();
+{
     this->EntityNameSet_O::addMonomerName(nm);
     this->setInterestingAtomNamesForMonomerName(nm,"");
 }
 
 CL_LISPIFY_NAME("removeMonomerName");
 CL_DEFMETHOD void	MonomerPack_O::removeMonomerName(core::Symbol_sp nm)
-{_G();
+{
     this->_removeMonomerName(nm);
     this->_AtomIndexers->eraseEntryForMonomer(nm);
 }
 
 string	MonomerPack_O::getInterestingAtomNamesForMonomerName(core::Symbol_sp nm)
-{_G();
+{
 string	s;
     LOG(BF("Looking atoms for MonomerName(%s)") % nm.c_str() );
     if ( this->_AtomIndexers->recognizesMonomerName(nm) )
@@ -357,7 +357,7 @@ string	s;
 
 
 void	MonomerPack_O::setInterestingAtomAliasesFromSymbolList(adapt::SymbolList_sp names)
-{_G();
+{
   this->_InterestingAtomAliases = _Nil<core::T_O>();
   for ( auto ni = names->begin(); ni!=names->end(); ++ni ) {
     this->_InterestingAtomAliases = core::Cons_O::create(*ni,this->_InterestingAtomAliases);
@@ -368,13 +368,13 @@ void	MonomerPack_O::setInterestingAtomAliasesFromSymbolList(adapt::SymbolList_sp
 
 
 string MonomerPack_O::getInterestingAtomAliasesAsString()
-{_G();
+{
   return _rep_(this->_InterestingAtomAliases);
 }
 
 
 AtomIndexer_sp MonomerPack_O::getAtomIndexerForMonomerName(core::Symbol_sp monomerName)
-{_G();
+{
     ASSERT(this->_AtomIndexers->recognizesMonomerName(monomerName));
     return this->_AtomIndexers->getAtomIndexerForMonomerName(monomerName);
 }
@@ -387,7 +387,7 @@ AtomIndexer_sp MonomerPack_O::getAtomIndexerForMonomerName(core::Symbol_sp monom
 
 
 void	MonomerPack_O::_checkAtomIndexers()
-{_G();
+{
     return; // do nothing for now
 MapOfMonomerNamesToAtomIndexers_O::smart_ptr	ais;
 AtomIndexer_O::smart_ptr			ai;
@@ -412,7 +412,7 @@ int						mostNumberOfAtoms;
 
 
 string	MonomerPack_O::getMonomerNameWithAtoms(core::Symbol_sp nm)
-{_G();
+{
 stringstream	ss;
 AtomIndexer_sp	atomIndexer;
     ASSERTNOTNULL(this->_AtomIndexers);
@@ -441,7 +441,7 @@ bool	MonomerPack_O::hasInterestingAtomAlias(Alias_sp alias)
 
 
 int	MonomerPack_O::getInterestingAtomAliasIndex(Alias_sp alias)
-{_G();
+{
  int i = 0;
  for ( auto ai : this->_InterestingAtomAliases ) {
    if ( core::cl__equal(ai,alias->getAtomAlias()) ) return i;
@@ -453,31 +453,9 @@ int	MonomerPack_O::getInterestingAtomAliasIndex(Alias_sp alias)
 
 
 
-void MonomerPack_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<MonomerPack_O>()
-	.def("removeMonomerName",&MonomerPack_O::removeMonomerName)
-//	.def("setInterestingAtomAliasesFromString",&MonomerPack_O::setInterestingAtomAliasesFromString)
-    ;
-//    Chem_temp_Defun(define_monomer_pack);
-//    Chem_temp_Defun(extend_aliases);
-//    Chem_temp_Defun(set_monomer_pack);
-}
-
-void MonomerPack_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef	USEBOOSTPYTHON //[
-//    boost::python::def("create_MonomerPack",&create_MonomerPack,_lisp);
-    PYTHON_CLASS(ChemPkg,MonomerPack,"","",_lisp)
-	.def("removeMonomerName",&MonomerPack_O::removeMonomerName)
-//	.def("setInterestingAtomAliasesFromString",&MonomerPack_O::setInterestingAtomAliasesFromString)
-    ;
-
-#endif
-}
 
 
-EXPOSE_CLASS(chem,MonomerPack_O);
+
 
 };
 

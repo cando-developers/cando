@@ -60,7 +60,7 @@ __END_DOC
 #define DECL_AtomGrid_O_make ""
 #define DOCS_AtomGrid_O_make "make AtomId args: matter grid_resolution add_radius bounding_box"
     AtomGrid_sp AtomGrid_O::make(Matter_sp matter, double gridResolution, double addRadius, geom::BoundingBox_sp boundingBox)
-  {_G();
+  {
       GC_ALLOCATE(AtomGrid_O, me );
     if (boundingBox.notnilp())
       {
@@ -95,7 +95,7 @@ __END_DOC
 
 #ifdef XML_ARCHIVE
     void	AtomGrid_O::archiveBase(core::ArchiveP node)
-{_G();
+{
     this->Base::archiveBase(node);
     node->attribute("xSize",this->xSize);
     node->attribute("ySize",this->ySize);
@@ -401,7 +401,7 @@ void	AtomGrid_O::buildGridWithinBoundingBox( Matter_sp container,
 
 
 void AtomGrid_O::paint(Matter_sp matter, double pad)
-{_G();
+{
     if ( matter.notnilp() )
     {
 	if ( matter.isA<Atom_O>() )
@@ -462,7 +462,7 @@ void AtomGrid_O::renderSquare( geom::DisplayList_sp dl,
 					double x2, double y2, double z2,
 					double x3, double y3, double z3,
 					double x4, double y4, double z4 )
-{_G();	
+{	
     Vector3	v1, v2, v3, v4, vn;
     IMPLEMENT_ME();
 #if 0
@@ -495,7 +495,7 @@ void AtomGrid_O::renderSquare( geom::DisplayList_sp dl,
 
 #ifdef RENDER
 geom::Render_sp AtomGrid_O::rendered( core::Cons_sp options )
-{_G();
+{
 IMPLEMENT_ME();
 #if 0
 int		xi, yi, zi;
@@ -648,7 +648,7 @@ double		xmax;
 
 
 void AtomGrid_O::invert()
-{_G();
+{
     for ( uint i=0; i<this->grid.size(); i++ ) {
 	this->grid[i] = !this->grid[i];
     }
@@ -686,28 +686,8 @@ COLLISION:
 
 
 
-void AtomGrid_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<AtomGrid_O>()
-//	.def_raw("core:__init__",&AtomGrid_O::__init__,"(self &key (chem::matter ()) (chem::gridResolution 1.0) (chem::addRadius 0.0) (chem::boundingBox () ) )")
-    .def("buildGrid",&AtomGrid_O::buildGrid)
-    .def("invert",&AtomGrid_O::invert)
-    .def("paint",&AtomGrid_O::paint)
-    ;
-}
-void AtomGrid_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef	USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg,AtomGrid,"","",_lisp)
-    .def("buildGrid",&AtomGrid_O::buildGrid)
-    .def("invert",&AtomGrid_O::invert)
-    .def("paint",&AtomGrid_O::paint)
-    ;
-#endif
-};
 
 
 
-EXPOSE_CLASS(chem,AtomGrid_O);
 };
 

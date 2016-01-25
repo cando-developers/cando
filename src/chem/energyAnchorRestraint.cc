@@ -206,7 +206,7 @@ void EnergyAnchorRestraint_O::evaluateAll(
 		gc::Nilable<NVector_sp>	hdvec,
                 gc::Nilable<NVector_sp> dvec)
 {
-_G();
+
 
  bool	hasForce = force.notnilp();
  bool	hasHessian = hessian.notnilp();
@@ -430,19 +430,8 @@ int	fails = 0;
 
 
 
-void EnergyAnchorRestraint_O::exposeCando(core::Lisp_sp e)
-{
-    core::class_<EnergyAnchorRestraint_O>()
-    ;
-}
 
-    void EnergyAnchorRestraint_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,EnergyAnchorRestraint,"","",_lisp)
-	;
-#endif
-}
+
 
 void EnergyAnchorRestraint_O::initialize()
 {
@@ -460,7 +449,6 @@ void EnergyAnchorRestraint_O::archiveBase(core::ArchiveP node)
 #endif
 
 
-    EXPOSE_CLASS(chem,EnergyAnchorRestraint_O);
 };
 
 

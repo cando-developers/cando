@@ -66,20 +66,20 @@ void Oligomer_O::initialize()
 
 #if 0
 void	Oligomer_O::signal_monomerContentsChanged()
-{_G();
+{
     this->notify(Oligomer_monomerContentsChanged);
 }
 
 
 void	Oligomer_O::signalConnectivityChanged()
-{_G();
+{
 //    this->notify(Oligomer_connectivityChanged);
 }
 #endif
 
 
     void Oligomer_O::catchSignal(core::Symbol_sp signal, core::Model_sp source, core::List_sp data)
-{_G();
+{
     MultiMonomer_sp		monomer;
 //    this->core::Model_O::catchSignal(signal,source,data);
     IMPLEMENT_ME();
@@ -110,7 +110,7 @@ CL_DEFMETHOD MultiMonomer_sp Oligomer_O::getLastMultiMonomerChanged()
 
 
 void	Oligomer_O::propagateSignal(core::Symbol_sp signal)
-{_G();
+{
 	// Do nothing
 }
 
@@ -133,7 +133,7 @@ void Oligomer_O::setCandoDatabase(CandoDatabase_sp bdb)
 
 #ifdef XML_ARCHIVE
     void	Oligomer_O::archiveBase(core::ArchiveP node)
-{_G();
+{
 //    node->archiveWeakPointer("candoDatabase",this->_WeakCandoDatabase);
     this->Base::archiveBase(node);
     node->attribute("name",this->_Name);
@@ -148,7 +148,7 @@ void Oligomer_O::setCandoDatabase(CandoDatabase_sp bdb)
 
 CL_LISPIFY_NAME("monomersAsCons");
 CL_DEFMETHOD core::List_sp Oligomer_O::monomersAsCons()
-{_G();
+{
     core::List_sp cons = _Nil<core::T_O>();
     gctools::Vec0<Monomer_sp>::iterator	mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
@@ -159,7 +159,7 @@ CL_DEFMETHOD core::List_sp Oligomer_O::monomersAsCons()
 }
 
     void	Oligomer_O::expandMonomerListToNeighbors(gctools::SmallOrderedSet<Monomer_sp>& monomers)
-{_G();
+{
     gctools::SmallOrderedSet<Monomer_sp>				expanded;
     gctools::SmallOrderedSet<Monomer_sp>::iterator		mi;
 Monomer_sp				neighbor;
@@ -191,7 +191,7 @@ Coupling_sp				coupling;
 
 
     void	Oligomer_O::checkMonomersAndNeighborsForErrors(CandoDatabase_sp cdb, gctools::SmallOrderedSet<Monomer_sp>& monomers)
-{_G();
+{
     gctools::SmallOrderedSet<Monomer_sp>			expanded;
     ASSERTNOTNULL(cdb);
     expanded = monomers;
@@ -201,7 +201,7 @@ Coupling_sp				coupling;
 
 
     void	Oligomer_O::checkMonomersAndNotNeighborsForErrors(CandoDatabase_sp cdb, gctools::SmallOrderedSet<Monomer_sp>& monomers)
-{_G();
+{
     gctools::SmallOrderedSet<Monomer_sp>::iterator	it;
     ASSERTNOTNULL(cdb);
     for ( it=monomers.begin(); it!=monomers.end(); it++ )
@@ -218,7 +218,7 @@ Coupling_sp				coupling;
  */
 CL_LISPIFY_NAME("addMonomer");
 CL_DEFMETHOD uint Oligomer_O::addMonomer(Monomer_sp s)
-{_G();
+{
 Monomer_sp	monomer;
 uint		idx;
     monomer = s->sharedThis<Monomer_O>();
@@ -238,7 +238,7 @@ uint		idx;
 
 CL_LISPIFY_NAME("hasMonomerWithId");
 CL_DEFMETHOD bool Oligomer_O::hasMonomerWithId(core::Symbol_sp id)
-{_G();
+{
     gctools::Vec0<Monomer_sp>::iterator	mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) 
     {
@@ -250,7 +250,7 @@ CL_DEFMETHOD bool Oligomer_O::hasMonomerWithId(core::Symbol_sp id)
 
 CL_LISPIFY_NAME("getMonomerWithId");
 CL_DEFMETHOD Monomer_sp Oligomer_O::getMonomerWithId(core::Symbol_sp id)
-{_G();
+{
     gctools::Vec0<Monomer_sp>::iterator	mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) 
     {
@@ -266,7 +266,7 @@ CL_DEFMETHOD Monomer_sp Oligomer_O::getMonomerWithId(core::Symbol_sp id)
 Oligomer._State must be (alchemistsAreUndefined) */
 CL_LISPIFY_NAME("removeMonomer");
 CL_DEFMETHOD void	Oligomer_O::removeMonomer(Monomer_sp s)
-{_G();
+{
     gctools::Vec0<Monomer_sp>::iterator	mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) 
     {
@@ -299,7 +299,7 @@ CL_DEFMETHOD void	Oligomer_O::removeCoupling(Coupling_sp s)
 
 CL_LISPIFY_NAME("checkForErrors");
 CL_DEFMETHOD bool	Oligomer_O::checkForErrors()
-{_G();
+{
     gctools::Vec0<Monomer_sp>::iterator	mi;
     gctools::Vec0<Coupling_sp>::iterator	ci;
     this->_HasError = false;
@@ -327,7 +327,7 @@ CL_DEFMETHOD bool	Oligomer_O::checkForErrors()
 
 CL_LISPIFY_NAME("updateMultiMonomers");
 CL_DEFMETHOD void	Oligomer_O::updateMultiMonomers()
-{_G();
+{
 Oligomer_O::monomerIterator	mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
     {
@@ -342,7 +342,7 @@ Oligomer_O::monomerIterator	mi;
 Monomer_sp	Oligomer_O::addMultiMonomerAsLeaf( CandoDatabase_sp db,
 						   Monomer_sp monFrom, core::Symbol_sp couplingName,
 						   core::Symbol_sp representedEntityNameSetName, geom::Vector2 pos )
-{_G();
+{
 DirectionalCoupling_sp 	coup;
 MultiMonomer_sp	monTo;
 
@@ -370,7 +370,7 @@ MultiMonomer_sp	monTo;
  */
 CL_LISPIFY_NAME("removeLeafMonomer");
 CL_DEFMETHOD Monomer_sp Oligomer_O::removeLeafMonomer(Monomer_sp monomerToRemove)
-{_G();
+{
 uint	couplings;
 DirectionalCoupling_sp	couplingToRemove;
 Monomer_sp	monomerToRemain;
@@ -399,7 +399,7 @@ Monomer_sp	monomerToRemain;
 Oligomer._State must be (alchemistsAreUndefined) */
 CL_LISPIFY_NAME("Oligomer-addCoupling");
 CL_DEFMETHOD void	Oligomer_O::addCoupling(Coupling_sp c)
-{_G();
+{
     this->_Couplings.push_back(c);
 //    c->connectListener(this->sharedThis<Oligomer_O>(),Coupling_nameChanged);
     c->setOligomer(this->sharedThis<Oligomer_O>());
@@ -411,7 +411,7 @@ CL_DEFMETHOD void	Oligomer_O::addCoupling(Coupling_sp c)
 Oligomer._State can be anything. */
 CL_LISPIFY_NAME("rootMonomer");
 CL_DEFMETHOD Monomer_sp	Oligomer_O::rootMonomer()
-{_G();
+{
 Monomer_sp	sub;
 DirectionalCoupling_sp	coupling;
 	// _State can be anything
@@ -441,7 +441,7 @@ coupling = _Nil<DirectionalCoupling_O>();
 
 CL_LISPIFY_NAME("throwIfBadConnections");
 CL_DEFMETHOD void	Oligomer_O::throwIfBadConnections()
-{_G();
+{
     gctools::Vec0<Monomer_sp>::iterator	mi;
     gctools::Vec0<Coupling_sp>::iterator	ci;
     for ( mi=this->_Monomers.begin(); mi != this->_Monomers.end(); mi++ )
@@ -464,7 +464,7 @@ CL_DEFMETHOD void	Oligomer_O::throwIfBadConnections()
 
 CL_LISPIFY_NAME("setVerbose");
 CL_DEFMETHOD void	Oligomer_O::setVerbose(bool v)
-{_G();
+{
     gctools::Vec0<Monomer_sp>::iterator	mi;
     this->_Verbose = v;
     LOG(BF("Setting verbosity of monomers") );
@@ -578,7 +578,7 @@ gctools::Vec0<Monomer_sp>::iterator	mi;
 
 CL_LISPIFY_NAME("getMolecule");
 CL_DEFMETHOD Molecule_sp Oligomer_O::getMolecule()
-{_G();
+{
 Topology_sp		topology;
 int			residueNetCharge;
     if ( this->getHasError() ) {
@@ -617,7 +617,7 @@ int			residueNetCharge;
 
 CL_LISPIFY_NAME("getErrorMessage");
 CL_DEFMETHOD string	Oligomer_O::getErrorMessage()
-{_G();
+{
 stringstream			msg;
 gctools::Vec0<Monomer_sp>::iterator	mi;
 gctools::Vec0<Coupling_sp>::iterator	ci;
@@ -642,7 +642,7 @@ gctools::Vec0<Coupling_sp>::iterator	ci;
 
 
 void Oligomer_O::_gatherMultiMonomers(gctools::Vec0<Monomer_sp>& multiMonomers)
-{_G();
+{
     gctools::Vec0<Monomer_sp>::iterator	mi;
     multiMonomers.clear();
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
@@ -665,7 +665,7 @@ void Oligomer_O::_gatherMultiMonomers(gctools::Vec0<Monomer_sp>& multiMonomers)
  * If there are none then do nothing.
  */
 void	Oligomer_O::perturbMonomerSequence()
-{_G();
+{
     gctools::Vec0<Monomer_sp>	multiMonomers;
 uint				iperturb;
     this->_gatherMultiMonomers(multiMonomers);
@@ -687,7 +687,7 @@ uint				iperturb;
 
 
 void	Oligomer_O::gotoSequence(const Bignum& idx)
-{_G();
+{
 vector<int>	digits, bases;
 gctools::Vec0<Monomer_sp>::iterator	mi;
 vector<int>::iterator	di;
@@ -708,7 +708,7 @@ vector<int>::iterator	di;
  * Set all MultiMonomers to their first monomer.
  */
 void	Oligomer_O::firstSequence()
-{_G();
+{
     gctools::Vec0<Monomer_sp>	multiMonomers;
     this->gotoSequence(0);
 }
@@ -717,7 +717,7 @@ void	Oligomer_O::firstSequence()
 /*! Convert the current sequence into an index
  */
 Bignum Oligomer_O::currentSequenceIndex()
-{_G();
+{
 vector<int>	digits, bases;
 gctools::Vec0<Monomer_sp>::iterator	mi;
 Bignum			index;
@@ -737,7 +737,7 @@ Bignum			index;
  */
 CL_LISPIFY_NAME("numberOfSequences");
 CL_DEFMETHOD Bignum Oligomer_O::numberOfSequences()
-{_G();
+{
     gctools::Vec0<Monomer_sp>::iterator	mi;
 vector<int>			bases;
 Bignum				numSeq;
@@ -754,7 +754,7 @@ Bignum				numSeq;
  * Return true if it incremented, return false if it overflowed
  */
 bool Oligomer_O::incrementSequence()
-{_G();
+{
     gctools::Vec0<Monomer_sp>::iterator	mi;
 long unsigned int numSeq;
     numSeq = 1;
@@ -781,7 +781,7 @@ CL_DEFMETHOD Monomer_sp	Oligomer_O::getFirstMonomer()
 
 
 void Oligomer_O::_fillMonomerAsString(Monomer_sp mon, stringstream& seq)
-{_G();
+{
     seq <<"( ";
     seq << "monomer '" << mon->getId()->__repr__();
     if ( mon->getGroupName() == mon->getName() )
@@ -800,7 +800,7 @@ void Oligomer_O::_fillMonomerAsString(Monomer_sp mon, stringstream& seq)
 
 
 void Oligomer_O::_fillSequenceAsStringForChildren(Monomer_sp rootMonomer, stringstream& seq)
-{_G();
+{
     gctools::Vec0<Coupling_sp>	outCouplings;
     gctools::Vec0<Coupling_sp>::iterator	oci;
     outCouplings = rootMonomer->getOutCouplings();
@@ -823,7 +823,7 @@ void Oligomer_O::_fillSequenceAsStringForChildren(Monomer_sp rootMonomer, string
 
 CL_LISPIFY_NAME("sequenceAsString");
 CL_DEFMETHOD string	Oligomer_O::sequenceAsString()
-{_G();
+{
 
     Monomer_sp mon2 = this->rootMonomer();
     stringstream seq;
@@ -853,7 +853,7 @@ CL_DEFMETHOD string	Oligomer_O::sequenceAsString()
 
 
 void Oligomer_O::_fillSequenceAsFileNameForChildren(Monomer_sp rootMonomer, stringstream& seq)
-{_G();
+{
     gctools::Vec0<Coupling_sp>	outCouplings;
     gctools::Vec0<Coupling_sp>::iterator	oci;
     outCouplings = rootMonomer->getOutCouplings();
@@ -873,7 +873,7 @@ void Oligomer_O::_fillSequenceAsFileNameForChildren(Monomer_sp rootMonomer, stri
 
 
 adapt::ObjectSet_sp Oligomer_O::getAllAliases()
-{_G();
+{
     adapt::ObjectSet_sp aliases = adapt::ObjectSet_O::create();
     Oligomer_O::monomerIterator mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
@@ -885,7 +885,7 @@ adapt::ObjectSet_sp Oligomer_O::getAllAliases()
 }
 
 adapt::SymbolSet_sp Oligomer_O::allMonomerAliases()
-{_G();
+{
     adapt::SymbolSet_sp aliases = adapt::SymbolSet_O::create();
     Oligomer_O::monomerIterator mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
@@ -898,7 +898,7 @@ adapt::SymbolSet_sp Oligomer_O::allMonomerAliases()
 
 CL_LISPIFY_NAME("sequenceAsFileName");
 CL_DEFMETHOD string	Oligomer_O::sequenceAsFileName()
-{_G();
+{
 
     Monomer_sp mon2 = this->rootMonomer();
     stringstream seq;
@@ -911,7 +911,7 @@ CL_DEFMETHOD string	Oligomer_O::sequenceAsFileName()
 
 CL_LISPIFY_NAME("allSpecificMonomerContexts");
 CL_DEFMETHOD SpecificContextSet_sp Oligomer_O::allSpecificMonomerContexts()
-{_G();
+{
     SpecificContextSet_sp allContexts = SpecificContextSet_O::create();
     Oligomer_O::monomerIterator mi;
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
@@ -933,14 +933,14 @@ CL_DEFMETHOD SpecificContextSet_sp Oligomer_O::allSpecificMonomerContexts()
 #define DECL_chem__oligomer_sequence ""
 #define DOCS_chem__oligomer_sequence "oligomerSequence"
 CL_DEFUN core::T_sp chem__oligomer_sequence(Oligomer_sp olig)
-{_G();
+{
     string seq = olig->sequenceAsString();
     return core::Str_O::create(seq);
 }
 
 
 void	Oligomer_O::_assembleFromParts(core::List_sp parts, CandoDatabase_sp bdb)
-{_G();
+{
     core::HashTableEq_sp monomerMap = core::HashTableEq_O::create_default();
     for ( auto p : parts ) {
 	OligomerPart_Base_sp oligPart = p->car<OligomerPart_Base_O>();
@@ -967,7 +967,7 @@ void	Oligomer_O::_assembleFromParts(core::List_sp parts, CandoDatabase_sp bdb)
 #define DECL_Oligomer_O_make ""
 #define DOCS_Oligomer_O_make "make Oligomer"
 Oligomer_sp Oligomer_O::make(core::List_sp parts)
-  {_G();
+  {
       GC_ALLOCATE(Oligomer_O, me );
     if ( parts.notnilp() )
       {
@@ -999,7 +999,7 @@ core::T_sp Oligomer_O::__init__(core::Function_sp exec, core::List_sp args, core
 #define DECL_chem__set_oligomer ""
 #define DOCS_chem__set_oligomer "setOligomer"
 CL_DEFUN core::T_sp chem__set_oligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_sp parts)
-{_G();
+{
     Oligomer_sp olig = Oligomer_O::create();
     olig->setName(oligomerName);
     CandoDatabase_sp bdb = getCandoDatabase();
@@ -1012,130 +1012,12 @@ CL_DEFUN core::T_sp chem__set_oligomer(Oligomer_O::NameType::smart_ptr oligomerN
 
 
 
-void Oligomer_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<Oligomer_O>()
-//	.def_raw("core:__init__",&Oligomer_O::__init__,"(self &key parts)")
-	.def("empty",&Oligomer_O::empty)
-	.def("allSpecificMonomerContexts",&Oligomer_O::allSpecificMonomerContexts)
-	.def("monomersAsCons",&Oligomer_O::monomersAsCons)
-//	.def("addMultiMonomerAsLeaf",&Oligomer_O::addMultiMonomerAsLeaf)
-	.def("removeLeafMonomer",&Oligomer_O::removeLeafMonomer)
-	.def("hasLastMultiMonomerChanged",&Oligomer_O::hasLastMultiMonomerChanged)
-	.def("getLastMultiMonomerChanged",&Oligomer_O::getLastMultiMonomerChanged)
-	.def("sequenceAsFileName",&Oligomer_O::sequenceAsFileName)
-	.def("setName",&Oligomer_O::setName,"","","",false)
-	.def("getName",&Oligomer_O::getName,"","","",false)
-//	.def("getCandoDatabase",&Oligomer_O::getCandoDatabase)
-	.def("addMonomer", &Oligomer_O::addMonomer)
-	.def("removeMonomer", &Oligomer_O::removeMonomer)
-	.def("Oligomer-addCoupling", &Oligomer_O::addCoupling)
-	.def("Oligomer-removeCoupling", &Oligomer_O::removeCoupling)
-	.def("couple",&Oligomer_O::couple)
-	.def("getMonomerWithId",&Oligomer_O::getMonomerWithId)
-	.def("hasMonomerWithId",&Oligomer_O::hasMonomerWithId)
-	.def("checkForErrors",&Oligomer_O::checkForErrors)
-	.def("ringCouple",&Oligomer_O::ringCouple)
-	.def("rootMonomer", &Oligomer_O::rootMonomer)
-	.def("getMolecule", &Oligomer_O::getMolecule)
-	.def("getHasError",&Oligomer_O::getHasError)
-	.def("getErrorMessage",&Oligomer_O::getErrorMessage)
-//	.def("getMonomers", &Oligomer_O::python_getMonomers)
-//	.def("getMonomersInSequence",
-//		&Oligomer_O::python_getMonomersInSequence)
-//	.def("getCouplings", &Oligomer_O::python_getCouplings)
-//	.def("getMonomerWithId",&Oligomer_O::getMonomerWithId)
-	.def("getFirstMonomer", &Oligomer_O::getFirstMonomer)
-	.def("getVerbose", &Oligomer_O::getVerbose)
-	.def("throwIfBadConnections", &Oligomer_O::throwIfBadConnections)
-	.def("sequenceAsString", &Oligomer_O::sequenceAsString)
-	.def("setVerbose", &Oligomer_O::setVerbose)
-	.def("updateMultiMonomers", &Oligomer_O::updateMultiMonomers)
-	.def("numberOfSequences", &Oligomer_O::numberOfSequences)
-//	.def("getCouplingWithSequenceNumber", &Oligomer_O::getCouplingWithSequenceNumber)
-//	.def("getConformation",&Oligomer_O::getConformation)
-//	.def("asXml",&Oligomer_O::asXml)
-//	.def("assignResidueStorageIdsToMonomers",&Oligomer_O::assignResidueStorageIdsToMonomers)
-//	.def("parseFromXml",&Oligomer_O::parseFromXml)
-//	.def("mutateStereoisomer",&Oligomer_O::mutateStereoisomer)
-//	.def("buildMolecule",&Oligomer_O::buildMolecule)
-//	.def("unbuildMolecule",&Oligomer_O::unbuildMolecule)
-//	.def("getAreAlchemistsReady",&Oligomer_O::getAreAlchemistsReady)
-//	.def("clearAllFragmentAlchemistsCoordinatesAreFixed",
-//		&Oligomer_O::clearAllFragmentAlchemistsCoordinatesAreFixed)
-    ;
-//    Chem_temp_Defun(set_oligomer);
-//    Chem_temp_Defun(oligomer_sequence);
-}
 
 
 
 
-void Oligomer_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef	USEBOOSTPYTHON //[
-    PYTHON_CLASS(ChemPkg,Oligomer,"","",_lisp)
-//	.def("defineFromMolecule", &Oligomer_O::defineFromMolecule )
-	.add_property("iterate_Monomers",
-			boost::python::range(&Oligomer_O::begin_Monomers,
-				&Oligomer_O::end_Monomers))
-	.add_property("iterate_Couplings",
-			boost::python::range(&Oligomer_O::begin_Couplings,
-				&Oligomer_O::end_Couplings))
-	.def("empty",&Oligomer_O::empty)
-	.def("sequenceAsFileName",&Oligomer_O::sequenceAsFileName)
-	.def("monomersAsCons",&Oligomer_O::monomersAsCons)
-//	.def("addMultiMonomerAsLeaf",&Oligomer_O::addMultiMonomerAsLeaf)
-	.def("removeLeafMonomer",&Oligomer_O::removeLeafMonomer)
-	.def("hasLastMultiMonomerChanged",&Oligomer_O::hasLastMultiMonomerChanged)
-	.def("getLastMultiMonomerChanged",&Oligomer_O::getLastMultiMonomerChanged)
-    //	.def("setName",&Oligomer_O::setName,"","","",false)
-    //	.def("getName",&Oligomer_O::getName,"","","",false)
-//	.def("getCandoDatabase",&Oligomer_O::getCandoDatabase)
-	.def("addMonomer", &Oligomer_O::addMonomer)
-	.def("removeMonomer", &Oligomer_O::removeMonomer)
-	.def("addCoupling", &Oligomer_O::addCoupling)
-	.def("getMonomerWithId",&Oligomer_O::getMonomerWithId)
-	.def("hasMonomerWithId",&Oligomer_O::hasMonomerWithId)
-	.def("removeCoupling", &Oligomer_O::removeCoupling)
-	.def("couple",&Oligomer_O::couple)
-	.def("checkForErrors",&Oligomer_O::checkForErrors)
-	.def("ringCouple",&Oligomer_O::ringCouple)
-	.def("rootMonomer", &Oligomer_O::rootMonomer)
-	.def("getMolecule", &Oligomer_O::getMolecule)
-	.def("getHasError",&Oligomer_O::getHasError)
-	.def("getErrorMessage",&Oligomer_O::getErrorMessage)
-//	.def("getMonomers", &Oligomer_O::python_getMonomers)
-//	.def("getMonomersInSequence",
-//		&Oligomer_O::python_getMonomersInSequence)
-//	.def("getCouplings", &Oligomer_O::python_getCouplings)
-//	.def("getMonomerWithId",&Oligomer_O::getMonomerWithId)
-	.def("getFirstMonomer", &Oligomer_O::getFirstMonomer)
-	.def("getVerbose", &Oligomer_O::getVerbose)
-	.def("throwIfBadConnections", &Oligomer_O::throwIfBadConnections)
-	.def("sequenceAsString", &Oligomer_O::sequenceAsString)
-	.def("setVerbose", &Oligomer_O::setVerbose)
-	.def("updateMultiMonomers", &Oligomer_O::updateMultiMonomers)
-	.def("numberOfSequences", &Oligomer_O::numberOfSequences)
-//	.def("getCouplingWithSequenceNumber", &Oligomer_O::getCouplingWithSequenceNumber)
-//	.def("getConformation",&Oligomer_O::getConformation)
-//	.def("asXml",&Oligomer_O::asXml)
-//	.def("assignResidueStorageIdsToMonomers",&Oligomer_O::assignResidueStorageIdsToMonomers)
-//	.def("parseFromXml",&Oligomer_O::parseFromXml)
-//	.def("mutateStereoisomer",&Oligomer_O::mutateStereoisomer)
-//	.def("buildMolecule",&Oligomer_O::buildMolecule)
-//	.def("unbuildMolecule",&Oligomer_O::unbuildMolecule)
-//	.def("getAreAlchemistsReady",&Oligomer_O::getAreAlchemistsReady)
-//	.def("clearAllFragmentAlchemistsCoordinatesAreFixed",
-//		&Oligomer_O::clearAllFragmentAlchemistsCoordinatesAreFixed)
-	;
-
-//    boost::python::def("create_Oligomer",&create_Oligomer );
-#endif
-}
 
 
-EXPOSE_CLASS(chem,Oligomer_O);
 
 }; // namespace chem
 

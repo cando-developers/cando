@@ -67,7 +67,7 @@ CL_DEFMETHOD void	Twister_O::addAtom(Atom_sp a)
  * If force2Mobile is true then the a2 atoms are always the mobile ones
  */
 void	Twister_O::_defineForDihedral(Atom_sp a1ref, Atom_sp a1, Atom_sp a2, Atom_sp a2ref, bool force2Mobile )
-{_G();
+{
     BondOrder bo = a1->bondOrderTo(a2);
     bool hasBond = a1->isBondedTo(a2);
     if ( hasBond )
@@ -138,7 +138,7 @@ void	Twister_O::_defineForDihedral(Atom_sp a1ref, Atom_sp a1, Atom_sp a2, Atom_s
 
 CL_LISPIFY_NAME("defineForDihedral");
 CL_DEFMETHOD void	Twister_O::defineForDihedral(Atom_sp a1ref, Atom_sp a1, Atom_sp a2, Atom_sp a2ref )
-{_G();
+{
     this->_defineForDihedral(a1ref,a1,a2,a2ref,false);
 }
 
@@ -197,7 +197,7 @@ CL_DEFMETHOD void	Twister_O::rotate(double angle)
 
 CL_LISPIFY_NAME("rotateAbsolute");
 CL_DEFMETHOD void	Twister_O::rotateAbsolute(double angle)
-{_G();
+{
     if (this->_FixedRef.nilp() )
     {
 	SIMPLE_ERROR(BF("For absolute rotations the reference atoms of the twister must be defined"));
@@ -281,62 +281,15 @@ stringstream	ss;
 
 
 
-void Twister_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<Twister_O>()
-	.def("setFixedAndMovable",&Twister_O::setFixedAndMovable)
-	.def("addAtom",&Twister_O::addAtom)
-	.def("rotate",&Twister_O::rotate)
-	.def("rotateAbsolute",&Twister_O::rotateAbsolute)
-	.def("defineForBond",&Twister_O::defineForBond)
-	.def("defineForDihedral",&Twister_O::defineForDihedral)
-	.def("defineFixedAndMobile",&Twister_O::defineFixedAndMobile)
-    ;
-}
-
-    void Twister_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,Twister,"","",_lisp)
-	.def("setFixedAndMovable",&Twister_O::setFixedAndMovable)
-	.def("addAtom",&Twister_O::addAtom)
-	.def("rotate",&Twister_O::rotate)
-	.def("rotateAbsolute",&Twister_O::rotateAbsolute)
-	.def("defineForBond",&Twister_O::defineForBond)
-	.def("defineFixedAndMobile",&Twister_O::defineFixedAndMobile)
-    ;
-#endif
-}
 
 
 
 
 
-void TwisterDriver_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<TwisterDriver_O>()
-	.def("addTwister",&TwisterDriver_O::addTwister)
-	.def("getTwister",&TwisterDriver_O::getTwister)
-	.def("numberOfTwisters",&TwisterDriver_O::numberOfTwisters)
-	.def("perturbConformation",&TwisterDriver_O::perturbConformation)
-    ;
-}
-
-    void TwisterDriver_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,TwisterDriver,"","",_lisp)
-	.def("addTwister",&TwisterDriver_O::addTwister)
-	.def("getTwister",&TwisterDriver_O::getTwister)
-	.def("numberOfTwisters",&TwisterDriver_O::numberOfTwisters)
-	.def("perturbConformation",&TwisterDriver_O::perturbConformation)
-    ;
-#endif
-}
 
 
-    EXPOSE_CLASS(chem,Twister_O);
-    EXPOSE_CLASS(chem,TwisterDriver_O);
+
+
 
 
 };

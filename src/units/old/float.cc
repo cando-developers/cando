@@ -12,25 +12,12 @@ namespace units
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(Float_O);
 
-    void Float_O::exposeCando(::core::Lisp_sp lisp)
-    {
-	::core::class_<Float_O>()
-	    .def_raw("__init__",&Float_O::__init__,"(self &rest args)")
-	;
-    }
 
-    void Float_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-	PYTHON_CLASS(UnitsPkg,Float,"","",_lisp)
-//	    .def_raw("__init__",&initArgs("(self &rest args)")
-	;
-    }
 
 
     Float_sp Float_O::create(double amount, core::Symbol_sp dimension, int power, core::Symbol_sp system,core::Lisp_sp lisp)
-    {_G();
+    {
 	Float_sp f = _lisp->create<Float_O>();
 	f->_System = system;
 	f->parseDimensionSymbols(f->_Powers,amount,dimension,power);
@@ -42,7 +29,7 @@ namespace units
 
     /*! If last argument is a System then use that system, otherwise use the default units:*SI* */
     Object_sp Float_O::__init__(::core::Executable_sp exec, ::core::Cons_sp allargs, ::core::Environment_sp env, ::core::Lisp_sp lisp)
-    {_G();
+    {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	core::Cons_sp args = allargs->cdr();

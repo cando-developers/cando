@@ -26,8 +26,6 @@
 
 namespace chem {
 
-    REGISTER_CLASS(chem, Structure_Old_ListEntry_O );
-    REGISTER_CLASS(chem, Structure_Old_List_O );
 
 Structure_Old_ListEntry_sp	Structure_Old_ListEntry_O::create(Structure_Old_List_sp s)
 {
@@ -50,7 +48,7 @@ void	Structure_Old_ListEntry_O::initialize()
 
 #ifdef XML_ARCHIVE
     void	Structure_Old_ListEntry_O::archive(core::ArchiveP node)
-{_G();
+{
     node->archiveWeakPointer( "structureList", this->_WeakStructureList );
     node->attribute("allCoords", this->_AllCoordinates );
     node->attribute("superposeCoords", this->_SuperposeCoordinates );
@@ -70,7 +68,7 @@ void	Structure_Old_ListEntry_O::initialize()
 #endif
 
 void	Structure_Old_ListEntry_O::setAllCoordinates(geom::CoordinateArray_sp ac)
-{_G();
+{
     ASSERTNOTNULL(ac);
     LOG(BF("setAllCoordinates:%s") % (ac->asXmlString().c_str() ) );
     LOG(BF("The address of the geom::CoordinateArray_sp is in o") );
@@ -78,7 +76,7 @@ void	Structure_Old_ListEntry_O::setAllCoordinates(geom::CoordinateArray_sp ac)
 }
 
 void	Structure_Old_ListEntry_O::setSuperposeCoordinates(geom::CoordinateArray_sp ac)
-{_G();
+{
     LOG(BF("setSuperposeCoordinates:%s") % (ac->asXmlString().c_str() ) );
     this->_SuperposeCoordinates = ac;
 }
@@ -86,7 +84,7 @@ void	Structure_Old_ListEntry_O::setSuperposeCoordinates(geom::CoordinateArray_sp
 
 
 double	Structure_Old_ListEntry_O::rmsCompareToEntry(Structure_Old_ListEntry_sp other)
-{_G();
+{
    IMPLEMENT_ME();
 }
 
@@ -155,7 +153,7 @@ gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
 }
 
 void	Structure_Old_List_O::clearEntries()
-{_G();
+{
     this->_Entries.clear();
 }
 
@@ -163,7 +161,7 @@ void	Structure_Old_List_O::clearEntries()
 
 
 void	Structure_Old_List_O::setMatter(Matter_sp matter)
-{_G();
+{
 Loop	loop;
 Atom_sp	a;
     this->_Matter = matter;
@@ -181,7 +179,7 @@ Atom_sp	a;
  * has not been seen in the database.
  */
 Structure_Old_ListEntry_sp Structure_Old_List_O::createStructureListEntryIfConformationIsNew(Matter_sp matter)
-{_G();
+{
     gctools::SmallOrderedSet<Atom_sp>::iterator			ai;
     gctools::SmallOrderedSet<Atom_sp>::iterator			lai;
 geom::CoordinateArray_sp			newConf;
@@ -288,7 +286,7 @@ Structure_Old_ListEntry_sp			entry;
 }
 
 uint Structure_Old_List_O::addEntry(Structure_Old_ListEntry_sp entry)
-{_G();
+{
     this->_Entries.push_back(entry);
     return 1;
 }
@@ -321,20 +319,20 @@ Structure_Old_ListEntry_sp		entry;
 
 
     void	Structure_Old_List_O::superposeAtomsFromSet(gctools::SmallOrderedSet<Atom_sp> atoms)
-{_G();
+{
     this->_SuperposeAtoms = atoms;
 };
 
 
 void    Structure_Old_List_O::addSuperposeAtom(Atom_sp a)
-{_G();
+{
     this->_SuperposeAtoms.insert(a);
 }
 
 
 
 void	Structure_Old_List_O::superposeAllHeavyAtoms()
-{_G();
+{
     gctools::SmallOrderedSet<Atom_sp>::iterator	oa;
     this->_SuperposeAtoms.clear();
     for ( oa=this->_AllAtoms.begin(); oa!=this->_AllAtoms.end(); oa++ )
@@ -385,7 +383,7 @@ xml = core::XmlLoadArchive_O::create();
 
 #ifdef XML_ARCHIVE
 void	Structure_Old_List_O::saveAs(const string& fn)
-{_G();
+{
     core::XmlSaveArchive_sp	xml;
 
     xml = core::XmlSaveArchive_O::create();
@@ -396,7 +394,7 @@ void	Structure_Old_List_O::saveAs(const string& fn)
 
 #ifdef RENDER
 geom::Render_sp	Structure_Old_List_O::rendered(core::List_sp opts)
-{_G();
+{
     IMPLEMENT_ME();
 #if 0
 geom::FrameList_sp	frames;

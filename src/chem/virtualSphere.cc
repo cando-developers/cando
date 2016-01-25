@@ -28,7 +28,6 @@ namespace chem
     SYMBOL_EXPORT_SC_(ChemPkg,rotate);
     SYMBOL_EXPORT_SC_(ChemPkg,scale);
 
-    EXPOSE_CLASS(chem,VirtualSphere_O);
 
 /*
  * matrix_ident:
@@ -181,29 +180,7 @@ int vsphere(double fx, double fy, double tx, double ty, Matrix& rotmat )
 // ##############################################################
 
 
-void VirtualSphere_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<VirtualSphere_O>()
-	.def("dump",&VirtualSphere_O::dump,"","","",false)
-	.def("setMouseStart",&VirtualSphere_O::setMouseStartSymbol)
-	.def("setMouseMove",&VirtualSphere_O::setMouseMove)
-	.def("setMouseXAxisWheelChange",&VirtualSphere_O::setMouseXAxisWheelChange)
-	.def("setMouseYAxisWheelChange",&VirtualSphere_O::setMouseYAxisWheelChange)
-	;
-}
 
-void VirtualSphere_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg,VirtualSphere,"","",_lisp)
-//	.def("dump",&VirtualSphere_O::dump,"","","",false)
-	.def("setMouseStart",&VirtualSphere_O::setMouseStartSymbol)
-	.def("setMouseMove",&VirtualSphere_O::setMouseMove)
-	.def("setMouseXAxisWheelChange",&VirtualSphere_O::setMouseXAxisWheelChange)
-	.def("setMouseYAxisWheelChange",&VirtualSphere_O::setMouseYAxisWheelChange)
-	;
-#endif
-}
 
 
 
@@ -484,7 +461,7 @@ CL_DEFMETHOD     void
 
 
 void	VirtualSphere_O::setCenter(const Vector3& pos)
-{_G();
+{
     LOG(BF("setCenter to %s") % pos.asString() );
     this->_Center = pos;
     this->_Recalculate = true;
@@ -492,7 +469,7 @@ void	VirtualSphere_O::setCenter(const Vector3& pos)
 
 
 void	VirtualSphere_O::setTranslate(const Vector3& pos )
-{_G();
+{
     LOG(BF("setTranslate to %s") % pos.asString() );
     this->_Translate = pos;
     this->_Recalculate = true; 
@@ -517,7 +494,7 @@ double	VirtualSphere_O::getScale(double minScale, double maxScale)
 
 
 Matrix	VirtualSphere_O::getOverallMatrix()
-{_G();
+{
 Matrix	result;
 Vector3	vCent;
 

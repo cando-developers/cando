@@ -12,14 +12,8 @@ namespace chem
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(chem,AtomIdToAtomMap_O);
 
-    void AtomIdToAtomMap_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<AtomIdToAtomMap_O>()
-	    .def("lookup-atom",&AtomIdToAtomMap_O::lookupAtom)
-	;
-    }
+
 
 CL_LISPIFY_NAME("lookup-atom");
 CL_DEFMETHOD     Atom_sp AtomIdToAtomMap_O::lookupAtom(AtomId_sp atomId) const
@@ -27,13 +21,6 @@ CL_DEFMETHOD     Atom_sp AtomIdToAtomMap_O::lookupAtom(AtomId_sp atomId) const
 	return this->_AtomIdMap[atomId->_AtomId];
     }
 
-    void AtomIdToAtomMap_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,AtomIdToAtomMap,"","",_lisp)
-	    ;
-#endif
-    }
 
 #ifdef XML_ARCHIVE
     void AtomIdToAtomMap_O::archiveBase(core::ArchiveP node)

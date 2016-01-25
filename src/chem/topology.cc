@@ -29,7 +29,7 @@ namespace chem
 
 #ifdef XML_ARCHIVE
     void	Topology_O::archiveBase(core::ArchiveP node)
-    {_G();
+    {
 	if ( node->saving() ) this->getConstitution();
 	node->archiveWeakPointer("constitution",this->_WeakConstitution);
 #if PRODUCTION_CODE   // FIXME use "name" only and remove the test for "_key"
@@ -66,7 +66,7 @@ namespace chem
 #define DECL_Topology_O_make ""
 #define DOCS_Topology_O_make "make Topology"
     Topology_sp Topology_O::make(core::Symbol_sp name, int netCharge, core::HashTableEq_sp properties, core::List_sp curPlugs, ConstitutionAtoms_sp residue ) //, kinematics::AtomTemplate_sp atomTreeTemplate, kinematics::ChiList_sp chiList)
-  {_G();
+  {
       GC_ALLOCATE(Topology_O, me );
     me->_Name = name;
     me->_ResidueNetCharge = netCharge;
@@ -97,7 +97,7 @@ namespace chem
 #else
 
    core::T_sp Topology_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 	this->_Name = translate::from_object<core::Symbol_O>::convert(env->lookup(ChemPkg,"name"));
 	this->_ResidueNetCharge = translate::from_object<int>::convert(env->lookup(ChemPkg,"netCharge"));
 	core::HashTableEq_sp properties = env->lookup(ChemPkg,"properties").as<core::HashTableEq_O>();
@@ -134,7 +134,7 @@ namespace chem
 
 #if 0
     void __checkExtractFragment(ExtractFragmentBase_sp extractFrag,adapt::StringSet_sp missingAtomNames, map<string,OverlappingFragments>& overlaps)
-    {_G();
+    {
 
 	Fragment_sp frag = extractFrag->getFragment();
 	adapt::StringSet_sp atomNames = frag->getAtomNames();
@@ -161,7 +161,7 @@ namespace chem
 
 
     void Topology_O::throwIfExtractFragmentsAreNotExclusive(ConstitutionAtoms_sp residue)
-    {_G();
+    {
 	uint numAtoms;
 	map<string,OverlappingFragments>	overlaps;
 	adapt::StringSet_sp missingAtomNames = residue->atomNamesAsStringSet();
@@ -206,7 +206,7 @@ namespace chem
 
 CL_LISPIFY_NAME("getMonomerContext");
 CL_DEFMETHOD     MonomerContext_sp Topology_O::getMonomerContext(CandoDatabase_sp bdb)
-    {_G();
+    {
 	MonomerContext_sp context = MonomerContext_O::create();
 	EntityNameSet_sp selfSet = EntityNameSet_O::create();
 	Constitution_sp constitution = this->getConstitution();
@@ -224,7 +224,7 @@ CL_DEFMETHOD     core::HashTableEq_sp Topology_O::properties() const
 
 
     bool Topology_O::hasInPlug()
-    {_G();
+    {
 	DEPRECIATED();
 	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
 	{
@@ -238,7 +238,7 @@ CL_DEFMETHOD     core::HashTableEq_sp Topology_O::properties() const
 
 CL_LISPIFY_NAME("getInPlug");
 CL_DEFMETHOD     Topology_O::plugType Topology_O::getInPlug()
-    {_G();
+    {
 	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
 	{
 	    if ( i->second->getIsIn() ) 
@@ -270,7 +270,7 @@ CL_DEFMETHOD     core::List_sp Topology_O::plugsAsCons()
 
 CL_LISPIFY_NAME("plugsWithMatesAsCons");
 CL_DEFMETHOD     core::List_sp Topology_O::plugsWithMatesAsCons()
-    {_G();
+    {
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
 	LOG(BF("The number of plugs = %d") % this->_Plugs.size()  );
@@ -289,7 +289,7 @@ CL_DEFMETHOD     core::List_sp Topology_O::plugsWithMatesAsCons()
 
 CL_LISPIFY_NAME("outPlugsAsCons");
 CL_DEFMETHOD     core::List_sp Topology_O::outPlugsAsCons()
-    {_G();
+    {
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
 	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
@@ -341,7 +341,7 @@ CL_DEFMETHOD     Constitution_sp	Topology_O::getConstitution()
 
 
     bool Topology_O::hasMatchingPlugsWithMates(adapt::SymbolSet_sp plugSet)
-    {_G();
+    {
 	adapt::SymbolSet_sp myPlugSet = adapt::SymbolSet_O::create();
 	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
 	{
@@ -360,7 +360,7 @@ CL_DEFMETHOD     Constitution_sp	Topology_O::getConstitution()
 
 
     bool	Topology_O::matchesMonomerEnvironment( Monomer_sp mon )
-    {_G();
+    {
 	LOG(BF("Checking if monomer[%s] matches the topology environment") % mon->description() );
 	uint numPlugsWithMates = 0;
 	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
@@ -390,7 +390,7 @@ CL_DEFMETHOD     Constitution_sp	Topology_O::getConstitution()
 
 
     RingClosingPlug_sp Topology_O::provideMissingRingClosingPlug( Monomer_sp mon )
-    {_G();
+    {
 	RingClosingPlug_sp missingRingClosingPlug = _Nil<RingClosingPlug_O>();
 	uint numPlugsWithMates = 0;
 	for ( Plugs::iterator i=this->_Plugs.begin();
@@ -480,14 +480,14 @@ CL_DEFMETHOD     Plug_sp Topology_O::plugNamed(core::Symbol_sp name)
 
 CL_LISPIFY_NAME("setTemporaryObject");
 CL_DEFMETHOD     void Topology_O::setTemporaryObject(core::T_sp o)
-    {_G();
+    {
 	ASSERTNOTNULL(o);
 	this->_TemporaryObject = o;
     }
 
 CL_LISPIFY_NAME("getTemporaryObject");
 CL_DEFMETHOD     core::T_sp Topology_O::getTemporaryObject()
-    {_G();
+    {
 	ASSERTNOTNULL(this->_TemporaryObject);
 	return this->_TemporaryObject;
     }
@@ -519,61 +519,10 @@ CL_DEFMETHOD     StereoisomerAtoms_sp Topology_O::lookupOrCreateStereoisomerAtom
 
 
 
-    void Topology_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<Topology_O>()
-////	    .def_raw("core:__init__",&Topology_O::__init__,"(self &key name netCharge plugs constitutionAtoms properties suppressTrainers)")
-	    .def("suppressTrainers",&Topology_O::suppressTrainers)
-	    .def("topology-suppress-trainers",&Topology_O::suppressTrainers)
-	    .def("getResidueNetCharge",&Topology_O::getResidueNetCharge)
-	    .def("getMonomerContext",&Topology_O::getMonomerContext)
-	    .def("getConstitution",&Topology_O::getConstitution)
-	    .def("numberOfPlugs",&Topology_O::numberOfPlugs)
-	    .def("properties",&Topology_O::properties)
-	    .def("plugsAsCons",&Topology_O::plugsAsCons)
-	    .def("plugsWithMatesAsCons",&Topology_O::plugsWithMatesAsCons)
-	    .def("outPlugsAsCons",&Topology_O::outPlugsAsCons)
-	    .def("getInPlug",&Topology_O::getInPlug)
-	    .def("getName",&Topology_O::getName,"","","",false)
-	    .def("setTemporaryObject",&Topology_O::setTemporaryObject)
-	    .def("getTemporaryObject",&Topology_O::getTemporaryObject)
-	    .def("hasPlugNamed",&Topology_O::hasPlugNamed)
-	    .def("plugNamed",&Topology_O::plugNamed)
-	    .def("hasFlag", &Topology_O::hasFlag)
-	    .def("matchesContext", &Topology_O::matchesContext)
-	    .def("lookupOrCreateStereoisomerAtoms",&Topology_O::lookupOrCreateStereoisomerAtoms)
-	    ;
-    }
-
-    void Topology_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,Topology,"","",_lisp)
-	    .def("suppressTrainers",&Topology_O::suppressTrainers)
-	    .def("topology-suppress-trainers",&Topology_O::suppressTrainers)
-	    .def("getResidueNetCharge",&Topology_O::getResidueNetCharge)
-	    .def("getMonomerContext",&Topology_O::getMonomerContext)
-	    .def("getConstitution",&Topology_O::getConstitution)
-	    .def("numberOfPlugs",&Topology_O::numberOfPlugs)
-	    .def("plugsAsCons",&Topology_O::plugsAsCons)
-	    .def("plugsWithMatesAsCons",&Topology_O::plugsWithMatesAsCons)
-	    .def("outPlugsAsCons",&Topology_O::outPlugsAsCons)
-	    .def("getInPlug",&Topology_O::getInPlug)
-//	    .def("getName",&Topology_O::getName,"","","",false)
-	    .def("setTemporaryObject",&Topology_O::setTemporaryObject)
-	    .def("getTemporaryObject",&Topology_O::getTemporaryObject)
-	    .def("hasPlugNamed",&Topology_O::hasPlugNamed)
-	    .def("plugNamed",&Topology_O::plugNamed)
-	    .def("hasFlag", &Topology_O::hasFlag)
-	    .def("matchesContext", &Topology_O::matchesContext)
-	    .def("lookupOrCreateStereoisomerAtoms",&Topology_O::lookupOrCreateStereoisomerAtoms)
-	    ;
-#endif
-    }
 
 
 
-    EXPOSE_CLASS(chem,Topology_O);
+
 };
 
 

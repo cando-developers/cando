@@ -13,7 +13,7 @@ namespace kinematics
     void RootAtomInfo::setup(core::Symbol_sp constitutionName,
 			     core::Symbol_sp topologyName,
 			     chem::Plug_sp plug)
-    {_G();
+    {
 	LOG(BF("Setting up RootAtomInfo for Constitution[%s] Topology[%s]")
 	    % constitutionName->__repr__()
 	    % topologyName->__repr__() );

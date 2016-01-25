@@ -33,7 +33,7 @@ namespace chem {
 #define DECL_Constitution_O_make ""
 #define DOCS_Constitution_O_make "make Constitution"
     Constitution_sp Constitution_O::make(core::Symbol_sp name, const string& comment, core::Symbol_sp metaConstitution, ConstitutionAtoms_sp constitutionAtoms, StereoInformation_sp stereoInformation, core::List_sp plugs, core::List_sp topologies)
-  {_G();
+  {
       GC_ALLOCATE(Constitution_O, me );
       me->_Name = name;
       me->_Comment = comment;
@@ -81,7 +81,7 @@ namespace chem {
 #else
 
     core::T_sp Constitution_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-{_G();
+{
     this->_Name = translate::from_object<core::Symbol_O>::convert(env->lookup(ChemPkg,"name"));
     this->_Comment = translate::from_object<string>::convert(env->lookup(ChemPkg,"comment"));
     this->_MetaConstitution = translate::from_object<core::Symbol_O>::convert(env->lookup(ChemPkg,"metaConstitution"));
@@ -144,7 +144,7 @@ namespace chem {
 */
 void	Constitution_O::makeResidueConsistentWithStereoisomerNamed(Residue_sp res,
 								   core::Symbol_sp stereoisomerName)
-{_G();
+{
     core::Symbol_sp	fullName, pdbName;
     Stereoisomer_sp				si;
     string					atomName;
@@ -201,7 +201,7 @@ void	Constitution_O::makeResidueConsistentWithStereoisomerNamed(Residue_sp res,
 
 
 RepresentativeList_sp	Constitution_O::expandedRepresentativeList() const
-{_G();
+{
     gctools::Vec0<Stereoisomer_sp>::const_iterator	si;
     RepresentativeList_sp allRepresentatives  = RepresentativeList_O::create();
     for (si=this->begin_Stereoisomers(); si!=this->end_Stereoisomers(); si++)
@@ -215,7 +215,7 @@ RepresentativeList_sp	Constitution_O::expandedRepresentativeList() const
 
 
     RingClosingPlug_sp Constitution_O::getMissingRingClosingPlug(Monomer_sp mon, Monomer_sp mate)
-{_G();
+{
     RingClosingPlug_sp plug, missing;
     missing = _Nil<RingClosingPlug_O>();
     TopologyMap::iterator	ti;
@@ -272,7 +272,7 @@ CL_DEFMETHOD adapt::StringList_sp Constitution_O::getPdbNamesAsStringList() {
 
 
     bool Constitution_O::hasStereoisomerWithName(core::Symbol_sp stereoisomerName)
-{_G();
+{
     gctools::Vec0<Stereoisomer_sp>::iterator	si;
     LOG(BF("Looking for Stereoisomer with name(%s)") % stereoisomerName->__repr__() );
     for (si=this->begin_Stereoisomers(); si!=this->end_Stereoisomers(); si++)
@@ -289,7 +289,7 @@ CL_DEFMETHOD adapt::StringList_sp Constitution_O::getPdbNamesAsStringList() {
 }
 
     Stereoisomer_sp Constitution_O::getStereoisomerWithName(core::Symbol_sp stereoisomerName) const
-{_G();
+{
     const_stereoisomerIterator	si;
     LOG(BF("Looking for Stereoisomer with name(%s)") % stereoisomerName->__repr__() );
     for (si=this->begin_Stereoisomers(); si!=this->end_Stereoisomers(); si++)
@@ -327,7 +327,7 @@ core::List_sp Constitution_O::plugsAsCons() {
 }
 CL_LISPIFY_NAME("plugsWithMatesAsCons");
 CL_DEFMETHOD core::List_sp Constitution_O::plugsWithMatesAsCons()
-{_G();
+{
     core::List_sp first = _Nil<core::T_O>();
     PlugMap::iterator mi;
     for ( mi=this->_PlugsByName.begin(); mi!=this->_PlugsByName.end(); mi++ )
@@ -364,7 +364,7 @@ Constitution_O::const_stereoisomerIterator Constitution_O::end_Stereoisomers() c
 */
 CL_LISPIFY_NAME("createResidueForStereoisomerName");
 CL_DEFMETHOD     Residue_sp	Constitution_O::createResidueForStereoisomerName(core::Symbol_sp stereoisomerName)
-{_G();
+{
     Residue_sp res = this->_ConstitutionAtoms->buildResidue();
     IMPLEMENT_MEF(BF("Handle owners"));
 //    res->setOwner(this->sharedThis<Constitution_O>());
@@ -374,7 +374,7 @@ CL_DEFMETHOD     Residue_sp	Constitution_O::createResidueForStereoisomerName(cor
 
 
     core::Symbol_sp	Constitution_O::nameFromNameOrPdb(core::Symbol_sp nm)
-{ _G();
+{ 
     ASSERTNOTNULL(this->_StereoInformation);
     return this->_StereoInformation->nameFromNameOrPdb(nm);
 };
@@ -393,7 +393,7 @@ stringstream	ss;
 }
 
 adapt::SymbolSet_sp Constitution_O::getPlugNames()
-{_G();
+{
     adapt::SymbolSet_sp ss = adapt::SymbolSet_O::create();
     PlugMap::iterator pi;
     for ( pi=this->_PlugsByName.begin(); pi!=this->_PlugsByName.end(); pi++ )
@@ -406,7 +406,7 @@ adapt::SymbolSet_sp Constitution_O::getPlugNames()
 
 CL_LISPIFY_NAME("simplestTopologyWithPlugNamed");
 CL_DEFMETHOD     Topology_sp	Constitution_O::simplestTopologyWithPlugNamed(core::Symbol_sp name)
-{_G();
+{
     TopologyMap::iterator	ti;
 Topology_sp			tres;
 int				connects,temp;
@@ -457,7 +457,7 @@ CL_DEFMETHOD     Topology_sp	Constitution_O::topologyWithName(core::Symbol_sp na
 
 
 Topology_sp	Constitution_O::getTopologyForMonomerEnvironment(Monomer_sp mon )
-{_G();
+{
     TopologyMap::iterator	ti;
 Topology_sp			tres;
 tres = _Nil<Topology_O>();
@@ -476,7 +476,7 @@ tres = _Nil<Topology_O>();
 
 CL_LISPIFY_NAME("getTopologyForContext");
 CL_DEFMETHOD Topology_sp	Constitution_O::getTopologyForContext(MonomerContext_sp cont )
-{_G();
+{
     TopologyMap::iterator	ti;
 Topology_sp			tres;
 tres = _Nil<Topology_O>();
@@ -494,7 +494,7 @@ tres = _Nil<Topology_O>();
 
 CL_LISPIFY_NAME("asGroup");
 CL_DEFMETHOD RepresentedEntityNameSet_sp	Constitution_O::asGroup()
-{_G();
+{
 RepresentedEntityNameSet_sp				group;
 gctools::Vec0<Stereoisomer_sp>::iterator	si;
     group = RepresentedEntityNameSet_O::create(); //,getCandoDatabase());
@@ -661,7 +661,7 @@ Topology_sp	link;
 //	Return true if this Constitution recognizes this coupling map
 //
 bool	Constitution_O::isTopologyValid( Topology_sp cm )
-{_G();
+{
     gctools::Vec0<Topology_sp>::iterator	i;
 
 #ifdef	DEBUG_ON
@@ -709,7 +709,7 @@ void	Constitution_O::initialize()
 
 #ifdef XML_ARCHIVE
 void	Constitution_O::archiveBase(core::ArchiveP node)
-{_G();
+{
     this->Base::archiveBase(node);
 #if PRODUCTION_CODE   // FIXME use "name" only and remove the test for "_key"
     node->attribute("name",this->_Name);
@@ -746,69 +746,12 @@ void	Constitution_O::archiveBase(core::ArchiveP node)
 
 
 
-void Constitution_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<Constitution_O>()
-//	.def_raw("core:__init__",&Constitution_O::__init__,"(self &key name comment metaConstitution constitutionAtoms stereoInformation plugs topologies)")
-//	.def("setCandoDatabase",&Constitution_O::setCandoDatabase)
-//	.def("getCandoDatabase",&Constitution_O::getCandoDatabase)
-	.def("stereoisomersAsCons", &Constitution_O::stereoisomersAsCons)
-	.def("topologiesAsCons", &Constitution_O::topologiesAsCons)
-	.def("plugsWithMatesAsCons", &Constitution_O::plugsWithMatesAsCons)
-	.def("setConstitutionName", &Constitution_O::setConstitutionName)
-	.def("constitutionName", &Constitution_O::constitutionName)
-	.def("setMetaConstitutionName", &Constitution_O::setMetaConstitutionName)
-	.def("getMetaConstitutionName", &Constitution_O::getMetaConstitutionName)
-	.def("asGroup",&Constitution_O::asGroup)
-	.def("getPlugNamed",&Constitution_O::getPlugNamed)
-//	.def("getMonomerNameAsStringList", &Constitution_O::getMonomerNamesAsStringList) // this fails in to_object conversion
-	.def("getMonomerNameAsStringSet", &Constitution_O::getMonomerNamesAsSymbolSet)
-	.def("getPdbNamesAsStringList", &Constitution_O::getPdbNamesAsStringList)
-	.def("setComment", &Constitution_O::setComment)
-	.def("getComment", &Constitution_O::getComment)
-	.def("hasPlugNamed",&Constitution_O::hasPlugNamed)
-	.def("simplestTopologyWithPlugNamed",&Constitution_O::simplestTopologyWithPlugNamed)
-	.def("getTopologyForContext",&Constitution_O::getTopologyForContext)
-	.def("getConstitutionAtoms", &Constitution_O::getConstitutionAtoms)
-	.def("createResidueForStereoisomerName", &Constitution_O::createResidueForStereoisomerName)
-	.def("topologyWithName",&Constitution_O::topologyWithName)
-	;
-}
-
-    void Constitution_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,Constitution,"","",_lisp)
-//	.def("setCandoDatabase",&Constitution_O::setCandoDatabase)
-//	.def("getCandoDatabase",&Constitution_O::getCandoDatabase)
-	.def("stereoisomersAsCons", &Constitution_O::stereoisomersAsCons)
-	.def("topologiesAsCons", &Constitution_O::topologiesAsCons)
-	.def("plugsWithMatesAsCons", &Constitution_O::plugsWithMatesAsCons)
-	.def("setConstitutionName", &Constitution_O::setConstitutionName)
-	.def("constitutionName", &Constitution_O::constitutionName)
-	.def("setMetaConstitutionName", &Constitution_O::setMetaConstitutionName)
-	.def("getMetaConstitutionName", &Constitution_O::getMetaConstitutionName)
-	.def("asGroup",&Constitution_O::asGroup)
-	.def("getPlugNamed",&Constitution_O::getPlugNamed)
-//	.def("getMonomerNameAsStringList", &Constitution_O::getMonomerNamesAsStringList)  // This fails in to_object conversion
-	.def("getMonomerNameAsStringSet", &Constitution_O::getMonomerNamesAsSymbolSet)
-	.def("getPdbNamesAsStringList", &Constitution_O::getPdbNamesAsStringList)
-	.def("setComment", &Constitution_O::setComment)
-	.def("getComment", &Constitution_O::getComment)
-	.def("hasPlugNamed",&Constitution_O::hasPlugNamed)
-	.def("simplestTopologyWithPlugNamed",&Constitution_O::simplestTopologyWithPlugNamed)
-	.def("getTopologyForContext",&Constitution_O::getTopologyForContext)
-	.def("getConstitutionAtoms", &Constitution_O::getConstitutionAtoms)
-	.def("createResidueForStereoisomerName", &Constitution_O::createResidueForStereoisomerName)
-	.def("topologyWithName",&Constitution_O::topologyWithName)
-	;
-#endif
-}
 
 
 
 
-EXPOSE_CLASS(chem,Constitution_O);
+
+
 
 }; // namespace chem
 

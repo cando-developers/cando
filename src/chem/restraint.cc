@@ -86,7 +86,7 @@ Restraint_sp	RestraintAnchor_O::copyDontRedirectAtoms()
 }
 
 void	RestraintAnchor_O::redirectAtoms()
-{_G();
+{
     this->_Atom = this->getAtom()->getCopyAtom();
 }
 
@@ -113,7 +113,7 @@ void	RestraintAnchor_O::redirectAtoms()
 
 
 void	RestraintAnchor_O::invertStereochemistryOfRestraint()
-{_G();
+{
     this->_Pos.set(this->_Pos.getX(),this->_Pos.getY(),this->_Pos.getZ()*-1.0);
 }
 
@@ -136,7 +136,7 @@ Restraint_sp	RestraintChiral_O::copyDontRedirectAtoms()
 }
 
 void	RestraintChiral_O::redirectAtoms()
-{_G();
+{
     this->_A = this->getAtomA()->getCopyAtom();
 }
 
@@ -159,7 +159,7 @@ void	RestraintChiral_O::redirectAtoms()
 #endif
 
 void	RestraintChiral_O::invertStereochemistryOfRestraint()
-{_G();
+{
     this->_Chirality *= -1.0;
 }
 
@@ -190,26 +190,13 @@ Restraint_sp	RestraintDistance_O::copyDontRedirectAtoms()
 }
 
 void	RestraintDistance_O::redirectAtoms()
-{_G();
+{
     this->_A = this->getAtomA()->getCopyAtom();
     this->_B = this->getAtomB()->getCopyAtom();
 }
 
 
-    void RestraintAngle_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<RestraintAngle_O>()
-	    ;
-    }
 
-    void RestraintAngle_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg,RestraintAngle,"","",_lisp)
-	    
-	    ;
-#endif
-    }
 
 
 
@@ -257,7 +244,7 @@ Restraint_sp	RestraintAngle_O::copyDontRedirectAtoms()
 
 
 void	RestraintAngle_O::redirectAtoms()
-{_G();
+{
     this->_A = this->getAtomA()->getCopyAtom();
     this->_B = this->getAtomB()->getCopyAtom();
     this->_C = this->getAtomC()->getCopyAtom();
@@ -311,7 +298,7 @@ Restraint_sp	RestraintDihedral_O::copyDontRedirectAtoms()
 }
 
 void	RestraintDihedral_O::redirectAtoms()
-{_G();
+{
     this->_A = this->getAtomA()->getCopyAtom();
     this->_B = this->getAtomB()->getCopyAtom();
     this->_C = this->getAtomC()->getCopyAtom();
@@ -346,7 +333,7 @@ void	RestraintDihedral_O::redirectAtoms()
 #endif
 
 void	RestraintDihedral_O::invertStereochemistryOfRestraint()
-{_G();
+{
     this->_MinDegrees = 360.0 - this->_MinDegrees;
     this->_MaxDegrees = 360.0 - this->_MaxDegrees;
 }
@@ -355,20 +342,8 @@ void	RestraintDihedral_O::invertStereochemistryOfRestraint()
 
 
 
-void	RestraintFixedNonbond_O::exposeCando(core::Lisp_sp e)
-{
-    core::class_<RestraintFixedNonbond_O>()
-    ;
-}
 
 
-    void	RestraintFixedNonbond_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg,RestraintFixedNonbond,"","",_lisp)
-	;
-#endif
-}
 
 
 RestraintFixedNonbond_sp RestraintFixedNonbond_O::create(Matter_sp matter)
@@ -428,7 +403,7 @@ void RestraintFixedNonbond_O::initialize()
 
 
 RestraintList_sp RestraintList_O::copyDontRedirectAtoms()
-{_G();
+{
     RestraintList_sp newList = RestraintList_O::create();
     RestraintList_O::iterator it;
     for ( it=this->_Restraints.begin(); it!=this->_Restraints.end(); it++ )
@@ -441,7 +416,7 @@ RestraintList_sp RestraintList_O::copyDontRedirectAtoms()
 
 
 void	RestraintList_O::redirectAtoms()
-{_G();
+{
     RestraintList_O::iterator it;
     for ( it=this->_Restraints.begin(); it!=this->_Restraints.end(); it++ )
     {
@@ -466,24 +441,6 @@ void	RestraintList_O::merge(RestraintList_sp rl)
 
 
 
-void Restraint_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<Restraint_O>()
-      .def("isActive",&Restraint_O::isActive)
-      .def("setActive",&Restraint_O::setActive)
-	;
-//	def("create_Restraint",&Restraint_O::create);
-}
-
-    void Restraint_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef	USEBOOSTPYTHON //[
-#ifdef USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg,Restraint,"","",_lisp)
-    ;
-#endif
-#endif //]
-}
 
 
 
@@ -492,113 +449,32 @@ void Restraint_O::exposeCando(core::Lisp_sp lisp)
 
 
 
-void RestraintChiral_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<RestraintChiral_O>()
-	;
-//	def("create_RestraintChiral",&RestraintChiral_O::create);
-}
-
-    void RestraintChiral_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef	USEBOOSTPYTHON //[
-#ifdef USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg,RestraintChiral,"","",_lisp)
-    ;
-#endif
-#endif //]
-}
-
-
-
-void RestraintDihedral_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<RestraintDihedral_O>()
-	;
-//	def("create_RestraintDihedral",&RestraintDihedral_O::create);
-}
-
-void RestraintDihedral_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef	USEBOOSTPYTHON //[
-#ifdef USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg,RestraintDihedral,"","",_lisp)
-    ;
-#endif
-#endif //]
-}
-
-
-
-
-void RestraintDistance_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<RestraintDistance_O>()
-	;
-//	def("create_RestraintDistance",&RestraintDistance_O::create);
-}
-
-void RestraintDistance_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef	USEBOOSTPYTHON //[
-    PYTHON_CLASS(ChemPkg,RestraintDistance,"","",_lisp)
-    ;
-#endif //]
-}
 
 
 
 
 
-void RestraintAnchor_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<RestraintAnchor_O>()
-	    .def("setAnchorPos",&RestraintAnchor_O::setAnchorPos)
-	    .def("setAtom",&RestraintAnchor_O::setAtom)
-	.def("setWeight",&RestraintAnchor_O::setWeight)
-	.def("restraint-anchor-getWeight",&RestraintAnchor_O::getWeight)
-	;
-}
-
-void RestraintAnchor_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef	USEBOOSTPYTHON //[
-    PYTHON_CLASS(ChemPkg,RestraintAnchor,"","",_lisp)
-    ;
-#endif //]
-}
 
 
 
 
 
-void RestraintList_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<RestraintList_O>()
-	    .def("addRestraint",&RestraintList_O::addRestraint)
-      .def("numberOfRestraints",&RestraintList_O::numberOfRestraints)
-	;
-//	def("create_RestraintList",&RestraintList_O::create);
-}
-
-void RestraintList_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef	USEBOOSTPYTHON //[
-    PYTHON_CLASS(ChemPkg,RestraintList,"","",_lisp)
-    ;
-#endif //]
-}
 
 
 
-    EXPOSE_CLASS(chem,Restraint_O);
-    EXPOSE_CLASS(chem,RestraintChiral_O);
-    EXPOSE_CLASS(chem,RestraintAnchor_O);
-    EXPOSE_CLASS(chem,RestraintDistance_O);
-    EXPOSE_CLASS(chem,RestraintAngle_O);
-    EXPOSE_CLASS(chem,RestraintDihedral_O);
-    EXPOSE_CLASS(chem,RestraintFixedNonbond_O);
-    EXPOSE_CLASS(chem,RestraintList_O);
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

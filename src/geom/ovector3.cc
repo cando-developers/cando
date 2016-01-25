@@ -28,7 +28,7 @@ namespace geom {
 }
 
     OVector3_sp OVector3_O::create(core::Cons_sp pnt)
-    {_G();
+    {
     ASSERTF(pnt->length()==3,BF("Poorly formed Vector"));
     GC_ALLOCATE(OVector3_O,ov);
     ov->setAll3(core::clasp_to_double(core::oCar(pnt).as<core::Number_O>()),
@@ -44,7 +44,7 @@ namespace geom {
 #define DOCS_OVector3_O_make "make OVector3 args: x y z"
 CL_LISPIFY_NAME(make_ovector3);
 CL_DEFUN OVector3_sp OVector3_O::make(double x, double y, double z)
-    {_G();
+    {
 	GC_ALLOCATE(OVector3_O,ov);
 	ov->_Value[0] = x;
 	ov->_Value[1] = y;
@@ -123,7 +123,7 @@ CL_DEFMETHOD     double OVector3_O::dotProduct(const Vector3& other)
 
 
     core::T_sp OVector3_O::deepCopy() const
-    {_G();
+    {
 	return OVector3_O::create(this->_Value);
     }
 
@@ -136,7 +136,7 @@ CL_DEFMETHOD     double OVector3_O::dotProduct(const Vector3& other)
 #define DOCS_OVector3_O_add "OVector3_O_add"
 CL_LISPIFY_NAME("add");
 CL_DEFMETHOD core::T_sp OVector3_O::add(core::List_sp points)
-{_G();
+{
   Vector3 result = Vector3(this->getX(),this->getY(),this->getZ());
   for ( auto cur : points ) {
     OVector3_sp o = oCar(cur).as<OVector3_O>();
@@ -222,56 +222,8 @@ void OVector3_O::decode(core::List_sp r) {
 }
 
 
-void OVector3_O::exposeCando(core::Lisp_sp lisp)
-{
-  core::class_<OVector3_O>()
-    .def("setAll3", &OVector3_O::setAll3 )
-    .def("x", &OVector3_O::getX )
-    .def("y", &OVector3_O::getY )
-    .def("z", &OVector3_O::getZ )
-    .def("dihedral", &OVector3_O::dihedral)
-    .def("vector3-angle", &OVector3_O::angle)
-    .def("vector3-distance", &OVector3_O::distance)
-    .def("vector-magnitude",&OVector3_O::magnitude)
-    .def("vector-normalized",&OVector3_O::normalized)
-    .def("sub",&OVector3_O::sub)
-    .def("dotProduct",&OVector3_O::dotProduct)
-    .def("crossProduct",&OVector3_O::crossProduct)
-    .def("add",&OVector3_O::add,
-         ARGS_OVector3_O_add,
-         DECL_OVector3_O_add,
-         DOCS_OVector3_O_add)
-    .def("timesScalar",&OVector3_O::timesScalar)
-    .def("setUsingBond",&OVector3_O::setUsingBond)
-    .def("setUsingBondAngle",&OVector3_O::setUsingBondAngle)
-    .def("setUsingBondAngleDihedral",&OVector3_O::setUsingBondAngleDihedral)
-    ;
-//  Defun_maker(GeomPkg,OVector3);
-}
-    void OVector3_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(CorePkg,OVector3,"","",_lisp)
-		.def("setAll3", &OVector3_O::setAll3 )
-		.def("x", &OVector3_O::getX )
-		.def("y", &OVector3_O::getY )
-		.def("z", &OVector3_O::getZ )
-		.def("dihedral", &OVector3_O::dihedral)
-		.def("angle", &OVector3_O::angle)
-		.def("distance", &OVector3_O::distance)
-	    .def("length",&OVector3_O::length)
-	    .def("normalized",&OVector3_O::normalized)
-	    .def("sub",&OVector3_O::sub)
-	    .def("dotProduct",&OVector3_O::dotProduct)
-	    .def("crossProduct",&OVector3_O::crossProduct)
-	    .def("add",&OVector3_O::add)
-	    .def("timesScalar",&OVector3_O::timesScalar)
-	    ;
-#endif
-    }
 
 
-    EXPOSE_CLASS(geom,OVector3_O);
 
 };
 

@@ -25,34 +25,8 @@ namespace omm
 {
 
 
-    void State_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<State_O>()
-	    .def("getTime",&State_O::getTime)
-	    .def("getPositions",&State_O::getPositions)
-	    .def("getVelocities",&State_O::getVelocities)
-//	    .def("getForces",&State_O::getForces)
-	    .def("getKineticEnergy",&State_O::getKineticEnergy)
-	    .def("getPotentialEnergy",&State_O::getPotentialEnergy)
-//	    .def("getPeriodicBoxVectors",&State_O::getPeriodicBoxVectors)
-	    .def("updateCandoMatterWithPositions",&State_O::updateCandoMatterWithPositions)
-	    ;
-    }
 
 
-    void State_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-	PYTHON_CLASS(OmmPkg,State,"","",_lisp)
-	    .def("getTime",&State_O::getTime)
-	    .def("getPositions",&State_O::getPositions)
-	    .def("getVelocities",&State_O::getVelocities)
-//	    .def("getForces",&State_O::getForces)
-	    .def("getKineticEnergy",&State_O::getKineticEnergy)
-	    .def("getPotentialEnergy",&State_O::getPotentialEnergy)
-//	    .def("getPeriodicBoxVectors",&State_O::getPeriodicBoxVectors)
-	    .def("updateCandoMatterWithPositions",&State_O::updateCandoMatterWithPositions)
-	    ;
-    }
 
 
     units::Quantity_sp State_O::getTime() const
@@ -189,7 +163,6 @@ namespace omm
 #endif
 
 
-    EXPOSE_CLASS(omm,State_O);
 
 
 };

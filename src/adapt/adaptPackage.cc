@@ -240,7 +240,7 @@ namespace adapt
 
 
     void AdaptExposer::expose(core::Lisp_sp lisp,WhatToExpose what) const
-    {_G();
+    {
 	switch (what)
 	{
 	case candoClasses:

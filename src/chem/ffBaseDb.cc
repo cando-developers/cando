@@ -61,52 +61,23 @@ void	FFBaseDb_O::fields(core::Record_sp node)
 
 
 void	FFBaseDb_O::setForceField(ForceField_sp ff)
-{_G();
+{
     ASSERTNOTNULL(ff);
     this->_ForceField = ff;
 };
 
 
 
-    void FFParameter_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<FFParameter_O>()
-    ;
-}
-    void FFParameter_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,FFParameter,"","",_lisp)
-//        .def_readwrite("_Level",&FFParameter_O::_Level)
-	.def("levelDescription",&FFParameter_O::levelDescription)
-	;
-#endif
-#endif
-}
 
 
 
 
 
-    void FFBaseDb_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<FFBaseDb_O>()
-    ;
-}
-    void FFBaseDb_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,FFBaseDb,"","",_lisp)
-	.def("setForceField",&FFBaseDb_O::setForceField)
-	;
-#endif
-}
 
 
 
-    EXPOSE_CLASS(chem, FFParameter_O);
-    EXPOSE_CLASS(chem, FFBaseDb_O);
+
+
 
 
 };

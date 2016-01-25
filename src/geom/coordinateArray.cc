@@ -28,7 +28,7 @@ namespace geom
 CL_LAMBDA(fnsize &optional vals);
 CL_LISPIFY_NAME(make-coordinate-array);
 CL_DEFUN CoordinateArray_sp CoordinateArray_O::make(gc::Nilable<core::Fixnum_sp> fnsize, core::List_sp vals)
-    {_G();
+    {
 	if ( fnsize.notnilp() && vals.notnilp() )
 	{
 	    SIMPLE_ERROR(BF("You can only pass size or vals"));
@@ -91,7 +91,7 @@ CoordinateArray_sp CoordinateArray_O::create(core::List_sp elements)
 }
 
 void CoordinateArray_O::resize(int iElement)
-{_G();
+{
   Vector3	zero;
   zero.set(0.0,0.0,0.0);
   this->_Points.resize(iElement,zero);
@@ -108,14 +108,14 @@ void CoordinateArray_O::resize(int iElement)
     }
 
     Vector3& CoordinateArray_O::getElement(uint i)
-    {_G();
+    {
 	ASSERT_lessThan(i,this->_Points.size() );
 	Vector3 &res = this->_Points[i];
 	return res;
     }
 
     core::T_sp CoordinateArray_O::getElementObject(uint i) const
-    {_G();
+    {
 	ASSERT_lessThan(i,this->_Points.size() );
 	Vector3 res = this->_Points[i];
 	OVector3_sp ov = OVector3_O::create(res);
@@ -123,7 +123,7 @@ void CoordinateArray_O::resize(int iElement)
     }
 
     core::T_sp CoordinateArray_O::setElementObject(uint i,core::T_sp obj)
-    {_G();
+    {
 	ASSERT_lessThan(i,this->_Points.size() );
 	if ( obj->isAssignableTo<OVector3_O>() )
 	{
@@ -139,14 +139,14 @@ void CoordinateArray_O::resize(int iElement)
 
 CL_LISPIFY_NAME("getElement");
 CL_DEFMETHOD     Vector3 CoordinateArray_O::value_getElement(uint i)
-    {_G();
+    {
 	ASSERT_lessThan(i,this->_Points.size() );
 	Vector3 res = this->_Points[i];
 	return res;
     }
 CL_LISPIFY_NAME("setElement");
 CL_DEFMETHOD     void CoordinateArray_O::setElement(uint i, Vector3 pos)
-    {_G();
+    {
 	ASSERT_lessThan(i,this->_Points.size() );
 	this->_Points[i] = pos;
     }
@@ -214,7 +214,7 @@ CL_DEFMETHOD     void CoordinateArray_O::multiplyByScalar(double d)
 
 #ifdef RENDER
     Render_sp CoordinateArray_O::asDisplayListOfPoints()
-    {_G();
+    {
 	int  sz;
 	DisplayList_sp dl = DisplayList_O::create();
 	GrPoints_sp pl = GrPoints_O::create();
@@ -253,7 +253,7 @@ CL_DEFMETHOD     void CoordinateArray_O::transform( const Matrix& tm )
 
 CL_LISPIFY_NAME("asString");
 CL_DEFMETHOD     string CoordinateArray_O::asString( ) const
-    {_G();
+    {
 	int  sz;
 	stringstream	ss;
 	sz = this->_Points.size();
@@ -273,7 +273,7 @@ CL_DEFMETHOD     string CoordinateArray_O::asString( ) const
 
 #if 0
 void CoordinateArray_O::fields(core::Record_sp node)
-{_G();
+{
   node->field(
 	if ( node->saving() ) {
 	    uint sz = this->size();
@@ -304,7 +304,7 @@ void CoordinateArray_O::fields(core::Record_sp node)
 
 
     CoordinateArray_sp CoordinateArray_O::copy() const
-    {_G();
+    {
 	GC_COPY(CoordinateArray_O,na,*this);
 	return na;
     }
@@ -441,64 +441,7 @@ void CoordinateArray_O::decode(core::List_sp c) {
 }
 
 
-    void CoordinateArray_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<CoordinateArray_O>()
-	    .def("asString",&CoordinateArray_O::asString)
-	    .def("transform",&CoordinateArray_O::transform)
-	    .def("getElement",&CoordinateArray_O::value_getElement)
-	    .def("setElement",&CoordinateArray_O::setElement)
-	    .def("size",&CoordinateArray_O::size)
-#ifdef RENDER
-	    .def("asDisplayListOfPoints",&CoordinateArray_O::asDisplayListOfPoints)
-#endif
-	    .def("coordinate-array-append",&CoordinateArray_O::append)
-	    .def("write-to-stream",&CoordinateArray_O::writeToStream)
-//	    .def("read-from-stream",&CoordinateArray_O::parseFromStream)
-	    .def("multiplyByScalar",&CoordinateArray_O::multiplyByScalar)
-	    ;
-//        Defun_maker(GeomPkg,CoordinateArray);
-    }
-    void CoordinateArray_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(CorePkg,CoordinateArray,"","",_lisp)
-	    .def("asString",&CoordinateArray_O::asString)
-	    .def("transform",&CoordinateArray_O::transform)
-	    .def("getElement",&CoordinateArray_O::value_getElement)
-	    .def("setElement",&CoordinateArray_O::setElement)
-	    .def("size",&CoordinateArray_O::size)
-	    .def("asDisplayListOfPoints",&CoordinateArray_O::asDisplayListOfPoints)
-	    .add_property("iterate_vectors",
-			  boost::python::range(&CoordinateArray_O::begin, &CoordinateArray_O::end))
-	    ;
-#endif
-    }
 
-
-
-
-
-
-    void CoordinateArrayWithHash_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<CoordinateArrayWithHash_O>()
-	    .def("coordinate-array-with-hash-gethash",&CoordinateArrayWithHash_O::getHash)
-	    .def("coordinate-array-with-hash-setHash",&CoordinateArrayWithHash_O::setHash)
-	    ;
-    }
-    void CoordinateArrayWithHash_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(CorePkg,CoordinateArrayWithHash,"","",_lisp)
-	    .def("getHash",&CoordinateArrayWithHash_O::getHash)
-	    .def("setHash",&CoordinateArrayWithHash_O::setHash)
-	    ;
-#endif
-    }
-
-    EXPOSE_CLASS(geom,CoordinateArray_O);
-    EXPOSE_CLASS(geom,CoordinateArrayWithHash_O);
 };
 
 

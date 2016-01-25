@@ -41,25 +41,12 @@ THE SOFTWARE.
 
 namespace adapt {
 
-EXPOSE_CLASS(adapt, StringList_O);
 
-void StringList_O::exposeCando(Lisp_sp lisp) {
-  class_<StringList_O>()
-      .def("string-list-append", &StringList_O::append)
-      .def("asString", &StringList_O::asString);
-}
 
-void StringList_O::exposePython(Lisp_sp lisp) {
-  _G();
-#ifdef USEBOOSTPYTHON
-  PYTHON_CLASS(AdaptPkg, StringList, "", "", _lisp)
-      .def("string_list_append", &StringList_O::append)
-      .def("asString", &StringList_O::asString);
-#endif
-}
+
 
 void StringList_O::setFromString(const string &ss) {
-  _G();
+  
   VectorStrings parts;
   tokenize(ss, parts, " \n\t");
   this->setFromVectorStrings(parts);
@@ -67,7 +54,7 @@ void StringList_O::setFromString(const string &ss) {
 
 CL_LISPIFY_NAME("asString");
 CL_DEFMETHOD string StringList_O::asString() {
-  _G();
+  
   stringstream ss;
   StringList_O::iterator si;
   string nm;
@@ -102,18 +89,18 @@ void StringList_O::clear() {
 }
 
 void StringList_O::prepend(const string &str) {
-  _G();
+  
   this->_Contents.insert(this->_Contents.begin(), str);
 }
 
 CL_LISPIFY_NAME("string-list-append");
 CL_DEFMETHOD void StringList_O::append(const string &str) {
-  _G();
+  
   this->_Contents.push_back(str);
 }
 
 void StringList_O::appendStringList(StringList_sp s) {
-  _G();
+  
   StringList_O::iterator ic;
   for (ic = s->begin(); ic != s->end(); ic++) {
     this->_Contents.push_back(*ic);
@@ -121,14 +108,14 @@ void StringList_O::appendStringList(StringList_sp s) {
 }
 
 void StringList_O::appendConsOfStrings(List_sp s) {
-  _G();
+  
   for (auto cur : s) {
     this->_Contents.push_back(gc::As<Str_sp>(oCar(cur))->get());
   }
 }
 
 void StringList_O::setFromVectorStrings(VectorStrings vs) {
-  _G();
+  
   VectorStrings::iterator it;
   this->clear();
   for (it = vs.begin(); it != vs.end(); it++) {
@@ -137,7 +124,7 @@ void StringList_O::setFromVectorStrings(VectorStrings vs) {
 }
 
 bool StringList_O::contains(const string &nm) {
-  _G();
+  
   StringList_O::iterator it;
   for (it = this->begin(); it != this->end(); it++) {
     if ((*it) == nm)
@@ -147,7 +134,7 @@ bool StringList_O::contains(const string &nm) {
 }
 
 int StringList_O::indexOf(const string &nm) {
-  _G();
+  
   StringList_O::iterator it;
   int idx;
   LOG(BF("Looking for string(%s)") % nm.c_str());

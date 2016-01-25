@@ -30,7 +30,7 @@ namespace chem
 #define DOCS_SpanningLoop_O_make "make SpanningLoop"
 CL_NAME(CHEM:MAKE-SPANNING-LOOP);
 CL_DEFUN SpanningLoop_sp SpanningLoop_O::make(Atom_sp root)
-  {_G();
+  {
       GC_ALLOCATE(SpanningLoop_O, me );
       me->setTop(root);
       return me;
@@ -47,7 +47,7 @@ CL_DEFUN SpanningLoop_sp SpanningLoop_O::make(Atom_sp root)
  *      ALL the same flags reset as SET in fVisibleFlagsOff.
  */
     bool	SpanningLoop_O:: bLoopAtomVisible(Atom_sp aAtom )
-    {_G();
+    {
 	AtomFlags		fFlags;
 	LOG(BF("status") );
 	fFlags = aAtom->getFlags();
@@ -111,7 +111,7 @@ CL_DEFUN SpanningLoop_sp SpanningLoop_O::make(Atom_sp root)
  *      ALL the same flags reset as SET in fVisibleFlagsOff.
  */
     bool	SpanningLoop_O::bSpanAtomVisible( Atom_sp aAtom, BondOrder order, bool *bPSeenBefore )
-    {_G();
+    {
 	*bPSeenBefore = false;
 	if ( this->_OnlyFollowRealBonds )
 	{
@@ -150,7 +150,7 @@ CL_DEFUN SpanningLoop_sp SpanningLoop_O::make(Atom_sp root)
 
 CL_LISPIFY_NAME("setTop");
 CL_DEFMETHOD     void SpanningLoop_O::setTop( Atom_sp c )
-    {_G();
+    {
 	this->top = 	c;
 	this->initialized = false;
 	this->done	= 	false;
@@ -182,13 +182,13 @@ CL_DEFMETHOD     void SpanningLoop_O::setTop( Atom_sp c )
 
 CL_LISPIFY_NAME("getAtom");
 CL_DEFMETHOD     Atom_sp	SpanningLoop_O::getAtom()
-    {_G();
+    {
 	return downcast<Atom_O>(this->currentObject);
     }
 
 CL_LISPIFY_NAME("advanceLoopAndProcess");
 CL_DEFMETHOD     bool	SpanningLoop_O::advanceLoopAndProcess()
-    {_G();
+    {
 	if ( !this->done) {
 	    this->advanceLoop();
 	    return true;
@@ -211,7 +211,7 @@ CL_DEFMETHOD     bool	SpanningLoop_O::advanceLoopAndProcess()
 //	Private method for advancing to the next atom in a
 //	spanning tree.
 Atom_sp	SpanningLoop_O::nextSpanningAtom(std::function<bool (Atom_sp fromAtom, Bond_sp b)> bondTester )
-    {_G();
+    {
 	Atom_sp		oObject;
 	Atom_sp		aBond;
 	Atom_sp		aPrev;
@@ -353,35 +353,10 @@ CL_DEFMETHOD     core::List_sp	SpanningLoop_O::allAtoms()
     }
 
 
-void SpanningLoop_O::exposeCando(core::Lisp_sp lisp)
-{
-  core::class_<SpanningLoop_O>()
-//	    .def_raw("core:__init__",&SpanningLoop_O::__init__,"(self &key root)")
-    .def("setTop",&SpanningLoop_O::setTop)
-    .def("next",&SpanningLoop_O::next)
-    .def("advance",&SpanningLoop_O::advance)
-    .def("advanceLoopAndProcess",&SpanningLoop_O::advanceLoopAndProcess)
-    .def("getAtom",&SpanningLoop_O::getAtom)
-    .def("allAtoms",&SpanningLoop_O::allAtoms)
-    ;
-}
-
-    void SpanningLoop_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,SpanningLoop,"","",_lisp)
-	    .def("setTop",&SpanningLoop_O::setTop)
-	    .def("advance",&SpanningLoop_O::advance)
-	    .def("advanceLoopAndProcess",&SpanningLoop_O::advanceLoopAndProcess)
-	    .def("getAtom",&SpanningLoop_O::getAtom)
-	    .def("allAtoms",&SpanningLoop_O::allAtoms)
-	    ;
-#endif
-    }
 
 
 
-    EXPOSE_CLASS(chem,SpanningLoop_O);
+
 
 
 };

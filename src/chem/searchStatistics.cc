@@ -16,7 +16,7 @@ namespace chem {
 #define DECL_SearchStatistics_O_make ""
 #define DOCS_SearchStatistics_O_make "make SearchStatistics"
   SearchStatistics_sp SearchStatistics_O::make()
-  {_G();
+  {
     IMPLEMENT_ME();
   };
 
@@ -114,38 +114,13 @@ string	SearchStatistics_O::description() const
 }
 
 
-    void SearchStatistics_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<SearchStatistics_O>()
-	.def("getBuilds",&SearchStatistics_O::getBuilds)
-	.def("getRejects",&SearchStatistics_O::getRejects)
-	.def("getHits",&SearchStatistics_O::getHits)
-	.def("incrementBuilds",&SearchStatistics_O::incrementBuilds)
-	.def("incrementRejects",&SearchStatistics_O::incrementRejects)
-	.def("incrementHits",&SearchStatistics_O::incrementHits)
-    ;
-}
-
-    void SearchStatistics_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,SearchStatistics,"","",_lisp)
-	.def("getBuilds",&SearchStatistics_O::getBuilds)
-	.def("getRejects",&SearchStatistics_O::getRejects)
-	.def("getHits",&SearchStatistics_O::getHits)
-	.def("incrementBuilds",&SearchStatistics_O::incrementBuilds)
-	.def("incrementRejects",&SearchStatistics_O::incrementRejects)
-	.def("incrementHits",&SearchStatistics_O::incrementHits)
-    ;
-#endif
-}
 
 
 
 
 
 
-    EXPOSE_CLASS(chem,SearchStatistics_O);
+
 };
 
 

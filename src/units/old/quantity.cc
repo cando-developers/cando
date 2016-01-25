@@ -16,7 +16,7 @@ namespace units
 
     Object_sp prim_quantity(core::Executable_sp exec, core::Cons_sp args,
 			    core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	LOG(BF("Initializing Quantity_O with args[%s]") % args->__repr__() );
@@ -33,58 +33,9 @@ namespace units
 
 
 
-    EXPOSE_CLASS(Quantity_O);
-
-    void Quantity_O::exposeCando(::core::Lisp_sp lisp)
-    {
-	::core::class_<Quantity_O>()
-	    .def("dimensions-match",&Quantity_O::dimensionsMatch)
-	    .def_raw("amount",&Quantity_O::amount_matchUnits)
-	    .def("+",&Quantity_O::add)
-	    .def("-",&Quantity_O::sub)
-	    .def("*",&Quantity_O::mul)
-	    .def("/",&Quantity_O::div)
-	    .def("add",&Quantity_O::add)
-	    .def("sub",&Quantity_O::sub)
-	    .def("mul",&Quantity_O::mul)
-	    .def("div",&Quantity_O::div)
-	    .def("reciprocal",&Quantity_O::reciprocal)
-	    .def("negate",&Quantity_O::negate)
-	    .def("sqrt",&Quantity_O::sqrt)
-	    .def("mul-by-scalar",&Quantity_O::mulByScalar)
-	    .def("div-by-scalar",&Quantity_O::divByScalar)
-	    .def("pow",&Quantity_O::pow)
-	    .def("unsafe-amount",&Quantity_O::unsafeAmount)
-	    .def("isnan",&Quantity_O::isnan)
-	    .def("dump",&Quantity_O::dump)
-	;
-    }
 
 
-    void Quantity_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-	PYTHON_CLASS(UnitsPkg,Quantity,"","",_lisp)
-	    .def("dimensions-match",&Quantity_O::dimensionsMatch)
-	    .def("amount",boost::python::raw_method<Quantity_O>("amount",&Quantity_O::amount_matchUnits,_lisp))
-	    .def("+",&Quantity_O::add)
-	    .def("-",&Quantity_O::sub)
-	    .def("*",&Quantity_O::mul)
-	    .def("/",&Quantity_O::div)
-	    .def("add",&Quantity_O::add)
-	    .def("sub",&Quantity_O::sub)
-	    .def("mul",&Quantity_O::mul)
-	    .def("div",&Quantity_O::div)
-	    .def("reciprocal",&Quantity_O::reciprocal)
-	    .def("negate",&Quantity_O::negate)
-	    .def("sqrt",&Quantity_O::sqrt)
-	    .def("mul-by-scalar",&Quantity_O::mulByScalar)
-	    .def("div-by-scalar",&Quantity_O::divByScalar)
-	    .def("pow",&Quantity_O::pow)
-	    .def("unsafeAmount",&Quantity_O::unsafeAmount)
-	    .def("isnan",&Quantity_O::isnan)
-	    .def("dump",&Quantity_O::dump)
-	;
-    }
+
 
 
 
@@ -163,7 +114,7 @@ namespace units
 #if 0
     /*! If last argument is a System then use that system, otherwise use the default units:*SI* */
     Object_sp Quantity_O::__init__(::core::Executable_sp exec, ::core::Cons_sp allargs, ::core::Environment_sp env, ::core::Lisp_sp lisp)
-    {_G();
+    {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	core::Cons_sp args = allargs->cdr();

@@ -68,21 +68,5 @@ CL_DEFUN IndexedObjectBag_sp chem__makeIndexedObjectBag()
   return obj;
 }
 
-void IndexedObjectBag_O::exposeCando(Lisp_sp lisp) {
-  class_<IndexedObjectBag_O>()
-    .def("set_next_available_entry", &adapt::IndexedObjectBag_O::set_next_available_entry)
-    .def("get_entry", &adapt::IndexedObjectBag_O::entry)
-    .def("remove_entry", &adapt::IndexedObjectBag_O::remove_entry)
-    ;
-//  core::af_def(AdaptPkg,"make-indexed-object-bag",&chem_makeIndexedObjectBag);
-}
 
-void IndexedObjectBag_O::exposePython(Lisp_sp lisp) {
-  _G();
-#ifdef USEBOOSTPYTHON //[
-  PYTHON_CLASS(AdaptPkg, IndexedObjectBag, "", "", _lisp)
-    ;
-#endif
-}
-EXPOSE_CLASS(adapt, IndexedObjectBag_O);
 };

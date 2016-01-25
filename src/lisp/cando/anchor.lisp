@@ -6,7 +6,12 @@
 
 ;;; Different patterns of points in space
 (defun circle-points (radius points &key (z 0.0))
-  "Generate points on a circle"
+  "* Arguments
+- radius :: Number in angstroms
+- points :: Number of points
+- z :: Height along z-axis.
+* Description
+Return POINTS points on a circle of RADIUS where the normal to the circle points along the Z-axis and the points are all offset from the origin by Z."
   (loop for aindex from 0 below points
      for angrad = (* 360.0 (/ (float aindex) points) 0.0174533)
      collect (geom:make-ovector3 (* (cos angrad) radius)

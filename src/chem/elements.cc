@@ -64,7 +64,7 @@ vector<HybridizationInfo>	hybridizationInfo;
 
 
 void    _defineAtomicInfoMapIfNotDefined()
-{_G();
+{
   if ( atomicInfoDefined ) return;
   AtomicInfo	invalid;
   invalid._Valid = false;
@@ -319,7 +319,7 @@ void    _defineAtomicInfoMapIfNotDefined()
 
 
 void initializeElementsAndHybridization()
-{_G();
+{
   _defineAtomicInfoMapIfNotDefined();
   core::SymbolToEnumConverter_sp elementConverter = core::SymbolToEnumConverter_O::create("Element");
   for ( vector<AtomicInfo>::iterator ai=atomicInfo.begin(); ai!=atomicInfo.end(); ai++ )
@@ -365,13 +365,13 @@ void initializeElementsAndHybridization()
  * Return the symbol associated with the element
  */
 core::Symbol_sp symbolFromElement(Element element)
-{_G();
+{
   core::SymbolToEnumConverter_sp elementConverter = _sym__PLUS_elementToSymbolConverter_PLUS_->symbolValue().as<core::SymbolToEnumConverter_O>();
   return elementConverter->symbolForEnum<Element>(element);
 }
 
 Element elementForSymbol(core::Symbol_sp sym)
-{_G();
+{
   core::SymbolToEnumConverter_sp elementConverter(_sym__PLUS_elementToSymbolConverter_PLUS_->symbolValue().as<core::SymbolToEnumConverter_O>());
   return elementConverter->enumForSymbol<chem::Element>(sym);
 }
@@ -388,7 +388,7 @@ bool elementIsRealElement(Element element)
 
 
 Hybridization hybridizationForSymbol(core::Symbol_sp sym)
-{_G();
+{
   core::SymbolToEnumConverter_sp hybridizationConverter = _sym__PLUS_hybridizationToSymbolConverter_PLUS_->symbolValue().as<core::SymbolToEnumConverter_O>();
   return hybridizationConverter->enumForSymbol<Hybridization>(sym);
 }
@@ -397,7 +397,7 @@ Hybridization hybridizationForSymbol(core::Symbol_sp sym)
  * Return the symbol associated with the hybridization
  */
 core::Symbol_sp symbolFromHybridization(Hybridization hybridization)
-{_G();
+{
   core::SymbolToEnumConverter_sp hybridizationConverter = _sym__PLUS_hybridizationToSymbolConverter_PLUS_->symbolValue().as<core::SymbolToEnumConverter_O>();
   return hybridizationConverter->symbolForEnum<Hybridization>(hybridization);
 }
@@ -405,20 +405,20 @@ core::Symbol_sp symbolFromHybridization(Hybridization hybridization)
 
 
 Hybridization hybridizationForString(const string& sym)
-{_G();
+{
   core::SymbolToEnumConverter_sp hybridizationConverter = _sym__PLUS_hybridizationToSymbolConverter_PLUS_->symbolValue().as<core::SymbolToEnumConverter_O>();
   return hybridizationConverter->enumForSymbol<Hybridization>(_lisp->intern(sym));
 }
 
 
 core::Symbol_sp hybridizationSymbolFromHybridization(Hybridization h)
-{_G();
+{
   core::SymbolToEnumConverter_sp hybridizationConverter = _sym__PLUS_hybridizationToSymbolConverter_PLUS_->symbolValue().as<core::SymbolToEnumConverter_O>();
   return hybridizationConverter->symbolForEnum<Hybridization>(h);
 }
 
 core::Symbol_sp	atomicSymbolFromElement(Element h)
-{_G();
+{
   core::SymbolToEnumConverter_sp elementConverter = _sym__PLUS_elementToSymbolConverter_PLUS_->symbolValue().as<core::SymbolToEnumConverter_O>();
   return elementConverter->symbolForEnum<Element>(h);
 }
@@ -451,7 +451,7 @@ bool elementIsHydrogen(Element e)
 }
 
 Element elementFromSymbol(core::Symbol_sp sym)
-{_G();
+{
   core::SymbolToEnumConverter_sp elementConverter = _sym__PLUS_elementToSymbolConverter_PLUS_->symbolValue().as<core::SymbolToEnumConverter_O>();
   Element element = elementConverter->enumForSymbol<Element>(sym);
   return element;

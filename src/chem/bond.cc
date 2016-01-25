@@ -37,7 +37,7 @@ string	XmlName_Bond = "bond";
 
 
 Bond_sp	Bond_O::create(Atom_sp from, Atom_sp to, BondOrder o)
-{_G();
+{
   GC_ALLOCATE(Bond_O, bond );
   bond->_Atom1 = from;
   bond->_Atom2 = to;
@@ -59,7 +59,7 @@ void Bond_O::initialize()
 }
 
 Bond_O::Bond_O(const Bond_O& bb)  : core::CxxObject_O(bb)
-{_G();
+{
   LOG(BF("Copying Bond_O") ); //
   this->order = bb.order;
   this->_Atom1 = bb._Atom1;
@@ -112,7 +112,7 @@ void Bond_O::addYourselfToCopiedAtoms()
 //	Return true if this is an inter-residue bond
 //
 bool	Bond_O::isInterResidueBond()
-{_G();
+{
   Matter_wp	wfromCont, wtoCont;
   Matter_sp	fromCont, toCont;
   Atom_sp a1 = this->_Atom1;
@@ -168,20 +168,20 @@ string Bond_O::propertiesAsString() const
 }
 
 void Bond_O::clearProperty(core::Symbol_sp prop)
-{_G();
+{
   this->_Properties = core::core__rem_f(this->_Properties,prop);
 }
 
 CL_LISPIFY_NAME("bond-setProperty");
 CL_DEFMETHOD void Bond_O::setProperty(core::Symbol_sp prop, core::T_sp val)
-    {_G();
+    {
       this->_Properties = core::core__put_f(this->_Properties,val,prop);
     }
 
 
 CL_LISPIFY_NAME("bond-getProperty");
 CL_DEFMETHOD core::T_sp Bond_O::getProperty(core::Symbol_sp prop, core::T_sp defval)
-{_G();
+{
   core::T_sp res = core::cl__getf(this->_Properties,prop,_Unbound<core::T_O>());
   if (res.unboundp()) {
     return defval;
@@ -191,7 +191,7 @@ CL_DEFMETHOD core::T_sp Bond_O::getProperty(core::Symbol_sp prop, core::T_sp def
 
 CL_LISPIFY_NAME("bond-hasProperty");
 CL_DEFMETHOD bool Bond_O::hasProperty(core::Symbol_sp prop)
-{_G();
+{
   return !core::cl__getf(this->_Properties,prop,_Unbound<core::T_O>()).unboundp();
 }
 
@@ -262,7 +262,7 @@ bool	Bond_O::invalid(Atom_sp a)
 }
 
 void	Bond_O::failIfInvalid(Atom_sp a)
-{_G();
+{
   if ( this->invalid(a) ) {
     SIMPLE_ERROR(BF("INVALID %s")%this->description());
   }
@@ -271,7 +271,7 @@ void	Bond_O::failIfInvalid(Atom_sp a)
 
 
 void Bond_O::redirectToAtomCopies()
-{_G();
+{
   LOG(BF("Redirecting bond@%p") % this ); //
   Atom_sp fa =  this->_Atom1;
   Atom_sp ta = this->_Atom2;
@@ -296,7 +296,7 @@ void Bond_O::redirectToAtomCopies()
 }
 
 void	Bond_O::imposeYourself()
-{_G();
+{
   Atom_sp a1 = this->_Atom1;
   Atom_sp a2 = this->_Atom2;
   a1->_addExistingBond(this->sharedThis<Bond_O>());
@@ -323,7 +323,7 @@ ConstitutionBond_sp Bond_O::asConstitutionBond(Atom_sp from, MapAtomsToConstitut
 
 CL_LISPIFY_NAME("getOrderAsString");
 CL_DEFMETHOD string	Bond_O::getOrderAsString()
-{_G();
+{
   return bondOrderToString(this->order);
 }
 
@@ -436,7 +436,7 @@ void	BondList_O::initialize()
 
 
 void	BondList_O::imposeYourself()
-{ _G();
+{ 
   gctools::Vec0<Bond_sp>::iterator	bi;
   for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ ) {
     (*bi)->imposeYourself();
@@ -446,7 +446,7 @@ void	BondList_O::imposeYourself()
 
 
 void	BondList_O::removeBond(Bond_sp b)
-{ _G();
+{ 
   BondList_O::iterator	bi;
   for ( bi=this->_Bonds.begin(); bi!=this->_Bonds.end(); bi++ ) {
     if ( (*bi) == b ) {
@@ -474,7 +474,7 @@ void	BondList_O::removeBondBetween(Atom_sp a,Atom_sp b)
 
 
 void	BondList_O::addBond(Bond_sp b)
-{_G();
+{
   this->_Bonds.push_back(b);
 };
 
@@ -523,7 +523,7 @@ void BondList_O::fields(core::Record_sp node)
 
 #ifdef XML_ARCHIVE
 void	BondList_O::archiveBase(core::ArchiveP node)
-{_G();
+{
   BondList_O::iterator	ib;
   if ( node->saving() ) {
     LOG(BF("About to save BondList with %d members") % this->size()  ); //
@@ -571,39 +571,13 @@ void	BondList_O::archiveBase(core::ArchiveP node)
 
 
 
-void Bond_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef USEBOOSTPYTHON
-  PYTHON_CLASS(ChemPkg,Bond,"","",_lisp)
-    .def("getAtom1",&Bond_O::getAtom1)
-    .def("getAtom2",&Bond_O::getAtom2)
-    .def("getOrder",&Bond_O::getOrder)
-    .def("getOrderAsString",&Bond_O::getOrderAsString)
-    .def("setOrder",&Bond_O::setOrderFromInt)
-    .def("getOtherAtom",&Bond_O::getOtherAtom)
-    .def("hasProperty",&Bond_O::hasProperty)
-    .def("setProperty",&Bond_O::setProperty)
-    .def("getProperty",&Bond_O::getProperty)
-    .def("getPropertyOrDefault",&Bond_O::getPropertyOrDefault)
-    ;
-#endif
-}
 
 
 
 
 
-void BondList_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef USEBOOSTPYTHON
-  PYTHON_CLASS(ChemPkg,BondList,"","",_lisp)
-    ;
-#endif
-}
 
 
-EXPOSE_CLASS(chem,Bond_O);
-EXPOSE_CLASS(chem,BondList_O);
 
 
 }; // namespace chem

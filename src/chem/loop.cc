@@ -29,7 +29,7 @@ namespace chem {
 //
 // Push a subloop onto the subloop stack
 void	Loop::pushSubLoop( Matter_sp c )
-{_G();
+{
   LOG(BF("pushSubLoop: Starting a subloop over: %s") % c->description().c_str()  );
   this->curSubLoop++;
   this->subLoopTop[this->curSubLoop] = c;
@@ -40,7 +40,7 @@ void	Loop::pushSubLoop( Matter_sp c )
 
 
 bool	Loop::advanceLoopAndProcess()
-{_G();
+{
   if ( !this->done) {
     LOG(BF("Loop may still have values to generate") );
     this->advanceLoop();
@@ -170,7 +170,7 @@ void	Loop::clearAtomIndices()
 
 
 void Loop::buildListOfImpropersCenteredOn(Atom_sp a)
-{_G();
+{
   BondList_sp		blrest0;
   gctools::Vec0<Bond_sp>::iterator	bl1, bl2, bl3;
   this->_Impropers.clear();
@@ -211,7 +211,7 @@ void Loop::buildListOfImpropersCenteredOn(Atom_sp a)
 
 
 void	Loop::loopTopGoal( Matter_sp c, int goal )
-{_G();
+{
 
   if ( c.nilp() ) {
     SIMPLE_ERROR(BF("Attempt to loop over null object"));
@@ -245,7 +245,7 @@ void	Loop::loopTopGoal( Matter_sp c, int goal )
  * If there are no more objects then return false
  */
 bool	Loop::nextObjectInAtom()
-{_G();
+{
   Atom_sp		top;
   Atom_sp		aAtom1;
   Atom_sp		aAtom2;
@@ -486,7 +486,7 @@ bool	Loop::nextObjectInAtom()
 //	that is being iterated through the hierarchy of containres
 //
 Matter_sp	Loop::nextHierarchyMatter()
-{_G();
+{
   Matter_sp	retVal;
   bool		hitEnd;
   int		goalOnly;
@@ -591,7 +591,7 @@ Matter_sp	Loop::nextHierarchyMatter()
 // or this->done == true, in which case this->currentObject is invalid.
 //
 void	Loop::advanceLoop()
-{_G();
+{
   Matter_sp	retVal;
   int		goalOnly;
 
@@ -716,6 +716,45 @@ CL_DEFUN core::T_sp chem__map_atoms(core::Symbol_sp result_type, core::T_sp func
     while (l.advanceLoopAndProcess()) {
       a = l.getAtom();
       vo->vectorPushExtend(core::eval::funcall(func,a));
+    }
+    return vo;
+  }
+  SIMPLE_ERROR(BF("Illegal return type: %s") % _rep_(result_type));
+};
+
+#define DOCS_map_atoms "Loop over bonds, invoke function for each bond passing the two atoms and the bond order"
+CL_DEFUN core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
+{
+  core::Function_sp func = core::coerce::functionDesignator(funcDesig);
+  Loop l(m,BONDS);
+  Atom_sp a1, a2;
+  BondOrder o;
+  if ( result_type.nilp() ) {
+    while (l.advanceLoopAndProcess()) {
+      a1 = l.getBondA1();
+      a2 = l.getBondA2();
+      o = l.getBondOrder();
+      core::eval::funcall(func,a1,a2,translate::to_object<BondOrder>::convert(o));
+    }
+    return _Nil<core::T_O>(); 
+  }
+  if ( result_type == cl::_sym_list ) {
+    ql::list res;
+    while (l.advanceLoopAndProcess()) {
+      a1 = l.getBondA1();
+      a2 = l.getBondA2();
+      o = l.getBondOrder();
+      res << core::eval::funcall(func,a1,a2,translate::to_object<BondOrder>::convert(o));
+    }
+    return res.cons();
+  }
+  if ( result_type == cl::_sym_Vector_O ) {
+    core::VectorObjectsWithFillPtr_sp vo = core::VectorObjectsWithFillPtr_O::make(_Nil<core::T_O>(),_Nil<core::T_O>(),16,0,true, cl::_sym_T_O);
+    while (l.advanceLoopAndProcess()) {
+      a1 = l.getBondA1();
+      a2 = l.getBondA2();
+      o = l.getBondOrder();
+      vo->vectorPushExtend(core::eval::funcall(func,a1,a2,translate::to_object<BondOrder>::convert(o)));
     }
     return vo;
   }

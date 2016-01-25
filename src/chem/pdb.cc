@@ -191,7 +191,7 @@ namespace chem
 
 
     Aggregate_sp	EntirePdbRec::createAggregate()
-    {_G();
+    {
 	Aggregate_sp agg = Aggregate_O::create();
 	{_BLOCK_TRACE("Creating molecules and residues");
 	    int moleculeIdx = -1;
@@ -308,14 +308,14 @@ namespace chem
 
 
 Aggregate_sp PdbReader_O::loadPdb(core::T_sp fileName)
-{_G();
+{
       PdbReader_sp pdb = PdbReader_O::create();
 	Aggregate_sp agg = pdb->parse(fileName);
 	return agg;
     }
 
 Aggregate_sp PdbReader_O::loadPdbConnectAtoms(core::T_sp fileName)
-    {_G();
+    {
 	PdbReader_sp pdb = PdbReader_O::create();
 	Aggregate_sp agg = pdb->parse(fileName);
 	chem__connectAtomsInMatterInCovalentContact(agg);
@@ -330,7 +330,7 @@ Aggregate_sp PdbReader_O::loadPdbConnectAtoms(core::T_sp fileName)
 #define DECL_chem__load_pdb ""
 #define DOCS_chem__load_pdb "loadPdb"
 CL_DEFUN core::T_sp chem__load_pdb(core::Str_sp fileName)
-    {_G();
+    {
 	Aggregate_sp agg = PdbReader_O::loadPdbConnectAtoms(fileName);
 	return agg;
     }
@@ -350,7 +350,7 @@ CL_DEFUN core::T_sp chem__load_pdb(core::Str_sp fileName)
 
 
 Aggregate_sp PdbReader_O::parse(core::T_sp fileName)
-{_G();
+{
   char buffer[1024];
   string fn = gc::As<core::Str_sp>(core::cl__namestring(fileName))->get();
   std::ifstream myfile( fn.c_str() );
@@ -402,7 +402,7 @@ Aggregate_sp PdbReader_O::parse(core::T_sp fileName)
 #define DECL_PdbWriter_O_make ""
 #define DOCS_PdbWriter_O_make "make PdbWriter"
 PdbWriter_sp PdbWriter_O::make(core::T_sp fileName)
-  {_G();
+  {
       GC_ALLOCATE(PdbWriter_O, me );
     me->open(fileName);
     return me;
@@ -579,49 +579,15 @@ CL_DEFUN void	PdbWriter_O::savePdb(Matter_sp matter, core::T_sp fileName )
 }
 
 
-    void PdbReader_O::exposeCando(core::Lisp_sp lisp)
-	{
-	    core::class_<PdbReader_O>()
-		;
-//	    Chem_temp_Defun(load_pdb);
-	}
-
-
-    void PdbReader_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //
-	PYTHON_CLASS(ChemPkg,PdbReader,"","",_lisp)
-	    ;
-	boost::python::def("loadPdb",&chem__load_pdb);
-#endif //
-    }
 
 
 
-    void PdbWriter_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<PdbWriter_O>()
-//	    .def_raw("core:__init__",&PdbWriter_O::__init__,"(self fileName)")
-	    .def("open",&PdbWriter_O::open,"","","",false)
-	    .def("writeModel",&PdbWriter_O::writeModel)
-	    .def("close",&PdbWriter_O::close,"","","",false)
-	    ;
-//	core::af_def(ChemPkg,"savePdb",&PdbWriter_O::savePdb);
-    }
 
 
-    void PdbWriter_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,PdbWriter,"","",_lisp)
-	;
-//    boost::python::def("loadPdb",&PdbWriter_O::loadPdb);
-#endif //
-    }
 
 
-    EXPOSE_CLASS(chem,PdbReader_O);
-    EXPOSE_CLASS(chem,PdbWriter_O);
+
+
 };
 
 

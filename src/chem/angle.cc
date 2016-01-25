@@ -11,27 +11,15 @@ namespace chem
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(chem,Angle_O);
 
-    void Angle_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<Angle_O>()
-	;
-    }
 
-    void Angle_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,Angle,"","",_lisp)
-	;
-#endif
-    }
+
 
 
 
 
     Angle_sp Angle_O::create(Atom_sp a1, Atom_sp a2, Atom_sp a3)
-    {_G();
+    {
 	GC_ALLOCATE(Angle_O, obj );
 	obj->setup(a1,a2,a3);
 	return obj;

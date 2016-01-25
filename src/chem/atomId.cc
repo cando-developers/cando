@@ -21,24 +21,9 @@ namespace chem
 
 
 
-    EXPOSE_CLASS(chem,AtomId_O);
 
-    void AtomId_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<AtomId_O>()
-////	    .def_raw("core:__init__",&AtomId_O::__init__,"(self &key (molecule 0) (residue 0) (atom 0))")
-	    .def("asString",&AtomId_O::asString,"","","",false)
-	    ;
-    }
 
-    void AtomId_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,AtomId,"","",_lisp)
-//	    .def("asString",&AtomId_O::asString,"","","",false)
-	    ;
-#endif
-    }
+
 
 
 
@@ -48,7 +33,7 @@ namespace chem
 #define DECL_AtomId_O_make ""
 #define DOCS_AtomId_O_make "make AtomId args: molecule residue atom"
     AtomId_sp AtomId_O::make(int mol, int res, int atom)
-    {_G();
+    {
 	GC_ALLOCATE(AtomId_O, ai );
 	ai->_AtomId._Molecule = mol;
 	ai->_AtomId._Residue = res;

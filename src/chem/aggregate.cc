@@ -38,7 +38,7 @@ namespace chem {
 
 #ifdef XML_ARCHIVE
     Aggregate_sp	Aggregate_O::open(T_sp pathDesignator)
-    {_G();
+    {
 	Aggregate_sp	agg;
 	int		dot;
 	string		ext;
@@ -66,7 +66,7 @@ namespace chem {
 
 #ifdef OLD_SERIALIZE
     void	Aggregate_O::serialize(serialize::SNode node)
-    {_G();
+    {
 	this->Base::serialize(node);
     }
 #endif
@@ -201,7 +201,7 @@ Matter_sp Aggregate_O::copy()
 
 
     bool	Aggregate_O::equal(core::T_sp obj) const
-    {_G();
+    {
 	if ( this->eq(obj) ) return true;
 	if ( !obj.isA<Aggregate_O>() ) return false;
 	Aggregate_sp other = obj.as<Aggregate_O>();
@@ -218,7 +218,7 @@ Matter_sp Aggregate_O::copy()
 
 
     void Aggregate_O::transferCoordinates(Matter_sp obj)
-    {_G();
+    {
 	if ( !obj.isA<Aggregate_O>() ) 
 	{
 	    SIMPLE_ERROR(BF("You can only transfer coordinates to a Aggregate from another Aggregate"));
@@ -381,7 +381,7 @@ CL_DEFMETHOD     void Aggregate_O::removeMolecule( Molecule_sp a )
 
 CL_LISPIFY_NAME("separateMolecules");
 CL_DEFMETHOD     uint Aggregate_O::separateMolecules()
-    {_G();
+    {
         gctools::SmallOrderedSet<Atom_sp>	unassignedAtoms;
         gctools::Vec0<gctools::SmallOrderedSet<Atom_sp> >	moleculeGroups;
 	uint numMolecules = 0;
@@ -505,7 +505,7 @@ CL_DEFMETHOD     Molecule_sp      Aggregate_O::firstMolecule()
 
 CL_LISPIFY_NAME("firstMoleculeName");
 CL_DEFMETHOD     MatterName  Aggregate_O::firstMoleculeName()
-    {_G();
+    {
 	LOG(BF("allocating mol") );
 	Molecule_sp mol;
 	Matter_sp c;
@@ -618,7 +618,7 @@ CL_DEFMETHOD     void	Aggregate_O::perturbAtomPositions(double dist)
 
 #ifdef RENDER
     geom::Render_sp	Aggregate_O::rendered(core::List_sp options)
-    {_G();
+    {
 	GrPickableMatter_sp	rend;
 	rend = GrPickableMatter_O::create();
 	rend->setFromMatter(this->sharedThis<Aggregate_O>());
@@ -635,7 +635,7 @@ CL_DEFMETHOD     void	Aggregate_O::perturbAtomPositions(double dist)
 CL_LAMBDA(&optional (name nil));
 CL_LISPIFY_NAME(make-aggregate);
 CL_DEFUN Aggregate_sp Aggregate_O::make(MatterName name)
-    {_G();
+    {
         GC_ALLOCATE(Aggregate_O,me);
 	me->setName(name);
 	return me;
@@ -645,38 +645,8 @@ CL_DEFUN Aggregate_sp Aggregate_O::make(MatterName name)
 
 
 
-    void Aggregate_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,Aggregate,"","",_lisp)
-////	    .def_raw("core:__init__",&Aggregate("(self &key name)")
-//	    .def("deepCopy",&Aggregate_O::deepCopy)
-//	    .def("getRestraints",&Aggregate_O::getRestraints)
-	    .def("separateMolecules",&Aggregate_O::separateMolecules)
-	    .def("firstMoleculeWithAtomNamed",&Aggregate_O::firstMoleculeWithAtomNamed)
-	    .def("atomWithId",&Aggregate_O::atomWithId)
-	    .def("addMolecule",&Aggregate_O::addMolecule)
-	    .def("removeMolecule",&Aggregate_O::removeMolecule)
-	    .def("firstMolecule",&Aggregate_O::firstMolecule)
-	    .def("firstMoleculeName",&Aggregate_O::firstMoleculeName)
-//	.def("open",&Aggregate_O::open)
-	    .def("saveAs",&Aggregate_O::saveAs)
-	    .def("writeToFile",&Aggregate_O::writeToFile)
-	    .def("testAggregateConsistancy",&Aggregate_O::testAggregateConsistancy)
-//	.def("parseFromXml",&Aggregate_O::parseFromXml)
-//	.def("asXml",&Aggregate_O::asXml)
-//	.def("asXmlWithCoordinates",&Aggregate_O::asXmlWithCoordinates)
-	    .def("perturbAtomPositions",&Aggregate_O::perturbAtomPositions)
-	    .def("atomWithChimeraSpecification", &Aggregate_O::atomWithChimeraSpecification )
-	    .def("molecules",&Aggregate_O::molecules)
-//	    .def("updateAtomIdMap",&Aggregate_O::updateAtomIdMap)
-//	    .def("lookupAtom",&Aggregate_O::lookupAtom)
-	    ;
-#endif
-    }
 
 
-    EXPOSE_CLASS(chem,Aggregate_O);
 }; //namespace chem
 
 

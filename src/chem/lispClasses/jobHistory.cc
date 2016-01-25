@@ -73,59 +73,12 @@ int		seconds;
 
 
 
-    void TrainerHistoryEntry_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<TrainerHistoryEntry_O>()
-	.def("getElapsedSeconds",&TrainerHistoryEntry_O::getElapsedSeconds)
-	.def("start",&TrainerHistoryEntry_O::start)
-	.def("finish",&TrainerHistoryEntry_O::finish)
-	.def("setComment",&TrainerHistoryEntry_O::setComment)
-    ;
-
-}
-    void TrainerHistoryEntry_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,TrainerHistoryEntry,"","",_lisp)
-// 	.def_readwrite("_Command",&TrainerHistoryEntry_O::_Command)
-// 	.def_readwrite("_StartSeconds",&TrainerHistoryEntry_O::_StartSeconds)
-// 	.def_readwrite("_StopSeconds",&TrainerHistoryEntry_O::_StopSeconds)
-// 	.def_readwrite("_Outcome",&TrainerHistoryEntry_O::_Outcome)
-// 	.def_readwrite("_Comment",&TrainerHistoryEntry_O::_Comment)
-// 	.def_readwrite("_State",&TrainerHistoryEntry_O::_State)
-	.def("getElapsedSeconds",&TrainerHistoryEntry_O::getElapsedSeconds)
-	.def("start",&TrainerHistoryEntry_O::start)
-	.def("finish",&TrainerHistoryEntry_O::finish)
-	.def("setComment",&TrainerHistoryEntry_O::setComment)
-	;
-#endif //]
-}
 
 
 
 
-    void TrainerHistory_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<TrainerHistory_O>()
-	.def("addToHistory", &TrainerHistory_O::add)
-    ;
-
-}
-    void TrainerHistory_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(ChemPkg,TrainerHistory,"","",_lisp)
-//	.add_property("iterate_Entries",
-//			boost::python::range(&TrainerHistory_O::begin_Entries,
-//				&TrainerHistory_O::end_Entries))
-	.def("addToHistory", &TrainerHistory_O::add)
-	;
-#endif //]
-}
 
 
-    EXPOSE_CLASS(chem,TrainerHistoryEntry_O);
-    EXPOSE_CLASS(chem,TrainerHistory_O);
 };
 
 

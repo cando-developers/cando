@@ -10,18 +10,11 @@ namespace kinematics
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(SequenceNode_O);
 
-    void SequenceNode_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<SequenceNode_O>()
-//	.initArgs("(self)")
-	;
-    }
 
 
     Object_sp SequenceNode_O::__init__(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	return _lisp->onil();

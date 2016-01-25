@@ -13,7 +13,6 @@
 namespace chem {
 
 
-    REGISTER_CLASS(chem,TrainerArchive_O);
 
 
 
@@ -26,7 +25,7 @@ void	TrainerArchive_O::initialize()
 
 #ifdef XML_ARCHIVE
     void	TrainerArchive_O::archive(core::ArchiveP node)
-{_G();
+{
     node->attribute("CandoDatabase",this->_CandoDatabase);
     node->attributeStringMap("Trainers",this->_Trainers);
 }
@@ -35,14 +34,14 @@ void	TrainerArchive_O::initialize()
 
 #if 0
 void	TrainerArchive_O::setCandoDatabase(CandoDatabase_sp hold)
-{_G();
+{
     ASSERTNOTNULL(hold);
     this->_CandoDatabase = hold;
 }
 #endif
 
 void	TrainerArchive_O::addTrainer(Trainer_sp job)
-{_G();
+{
 string		key;
     key = job->getHeader()->getContextKey();
     this->_Trainers.set(key,job);
@@ -50,12 +49,12 @@ string		key;
 
 
 bool	TrainerArchive_O::hasTrainerWithKey(const string& key)
-{_G();
+{
     return this->_Trainers.contains(key);
 }
 
 Trainer_sp	TrainerArchive_O::getTrainerWithKey(const string& key)
-{_G();
+{
     return this->_Trainers.get(key);
 }
 

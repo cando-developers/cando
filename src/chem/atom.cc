@@ -102,7 +102,7 @@ namespace chem
 
 CL_LISPIFY_NAME(make-atom);
 CL_DEFUN Atom_sp Atom_O::make(MatterName name, Element element)
-    {_G();
+    {
 	GC_ALLOCATE(Atom_O,atom);
 	atom->setName(name);
 	atom->setElement(element);
@@ -137,7 +137,7 @@ CL_DEFMETHOD void Atom_O::randomizeAtomPosition(double width)
 //
 CL_LISPIFY_NAME("perturbAtomPosition");
 CL_DEFMETHOD void	Atom_O::perturbAtomPosition(double dist)
-{_G();
+{
   double				xd,yd,zd;
   Vector3				v,vd;
   xd = (core::randomNumber01()*2.0-1.0)*dist;
@@ -152,265 +152,8 @@ CL_DEFMETHOD void	Atom_O::perturbAtomPosition(double dist)
 
     
 
-void Atom_O::exposeCando(core::Lisp_sp lisp)
-{
-  core::class_<Atom_O>()
-////	    .def_raw("core:__init__",&Atom_O::__init__,"(self &key name)")
-    .def("atomName",&Atom_O::atomName)
-    .def("getRelativePriority", &Atom_O::getRelativePriority)
-    .def("bondedAtomsAsList", &Atom_O::bondedAtomsAsList)
-    .def("getAtomicNumber", &Atom_O::getAtomicNumber)
-    .def("isAromatic",&Atom_O::isAromatic)
-    .def("setIsAromatic",&Atom_O::setIsAromatic)
-    .def("getIonization",&Atom_O::getIonization)
-    .def("setIonization",&Atom_O::setIonization)
-    .def("randomizeAtomPosition",&Atom_O::randomizeAtomPosition,ARGS_randomizeAtomPosition,DECL_randomizeAtomPosition,DOCS_randomizeAtomPosition)
-    .def("perturbAtomPosition",&Atom_O::perturbAtomPosition)
-    .def("getBondedHydrogenCount", &Atom_O::getBondedHydrogenCount)
-//	.def("getMatterType",&Matter_O::getMatterType)
-    .def("atLowerAddressThan",&Atom_O::atLowerAddressThan)
-    .def("getAlias",&Atom_O::getAlias)
-    .def("setAlias",&Atom_O::setAlias)
-    .def("getAtomId",&Atom_O::getAtomId)
-    .def("getMoeIndex",&Atom_O::getMoeIndex)
-    .def("setMoeIndex",&Atom_O::setMoeIndex)
-    .def("getTempInt",&Atom_O::getTempInt)
-    .def("setTempInt",&Atom_O::setTempInt)
-    .def("isConfigurable",&Atom_O::isConfigurable)
-    .def("setStereochemistryType",&Atom_O::setStereochemistryType)
-    .def("getStereochemistryType",&Atom_O::getStereochemistryType)
-    .def("setConfiguration",&Atom_O::setConfiguration)
-    .def("getConfiguration",&Atom_O::getConfiguration)
-    .def("getConfigurationAsString",&Atom_O::getConfigurationAsString)
-    .def("calculateStereochemicalConfiguration",&Atom_O::calculateStereochemicalConfiguration)
-    .def("getFlags",&Atom_O::getFlags)
-    .def("resetFlags",&Atom_O::resetFlags)
-    .def("turnOnFlags",&Atom_O::turnOnFlags)
-    .def("turnOffFlags",&Atom_O::turnOffFlags)
-    .def("testAllFlags",&Atom_O::testAllFlags)
-    .def("testAnyFlags",&Atom_O::testAnyFlags)
-    .def("isInRing",&Atom_O::isInRing)
-    .def("inRingSize",&Atom_O::inRingSize)
-    .def("getRingMembershipCount",&Atom_O::getRingMembershipCount)
-    .def("setRingMembershipCount",&Atom_O::setRingMembershipCount)
-    .def("getNameIndex",&Atom_O::getNameIndex)
-    .def("getType",&Atom_O::getType)
-    .def("setType",&Atom_O::setType)
-    .def("getMoeType",&Atom_O::getMoeType)
-    .def("setMoeType",&Atom_O::setMoeType)
-    .def("getHybridization",&Atom_O::getHybridization)
-    .def("setHybridization",&Atom_O::setHybridization)
-    .def("getElementAsString",&Atom_O::getElementAsString)
-    .def("getElement",&Atom_O::getElement,"","","",false)
-    .def("setElement",&Atom_O::setElement,"","","",false)
-    .def("getResidueContainedBy", &Atom_O::getResidueContainedBy )
-    .def("getSelected",&Atom_O::getSelected)
-    .def("setSelected",&Atom_O::setSelected)
-    .def("getPositionInNanometers",&Atom_O::getPositionInNanometers)
-    .def("getPosition",&Atom_O::getPosition,"","","",false)
-    .def("setPositionInNanometers",&Atom_O::setPositionInNanometers)
-    .def("setPosition",&Atom_O::setPosition,"","","",false)
-    .def("getTouched",&Atom_O::getTouched)
-    .def("setTouched",&Atom_O::setTouched)
-    .def("getCharge",&Atom_O::getCharge)
-    .def("setCharge",&Atom_O::setCharge)
-#if ATOMIC_ANCHOR
-    .def("getAnchorPos",&Atom_O::getAnchorPos)
-    .def("setAnchorPos",&Atom_O::setAnchorPos)
-#endif
-    .def("getOccupancy",&Atom_O::getOccupancy)
-    .def("setOccupancy",&Atom_O::setOccupancy)
-    .def("getTempFactor",&Atom_O::getTempFactor)
-    .def("setTempFactor",&Atom_O::setTempFactor)
-    .def("getVdwRadius",&Atom_O::getVdwRadius)
-    .def("setVdwRadius",&Atom_O::setVdwRadius)
-    .def("getCovalentRadius",&Atom_O::getCovalentRadius)
-    .def("setCovalentRadius",&Atom_O::setCovalentRadius)
-    .def("setMembershipAr1",&Atom_O::setMembershipAr1)
-    .def("getMembershipAr1",&Atom_O::getMembershipAr1)
-    .def("setMembershipAr2",&Atom_O::setMembershipAr2)
-    .def("getMembershipAr2",&Atom_O::getMembershipAr2)
-    .def("setMembershipAr3",&Atom_O::setMembershipAr3)
-    .def("getMembershipAr3",&Atom_O::getMembershipAr3)
-    .def("setMembershipAr4",&Atom_O::setMembershipAr4)
-    .def("getMembershipAr4",&Atom_O::getMembershipAr4)
-    .def("setMembershipAr5",&Atom_O::setMembershipAr5)
-    .def("getMembershipAr5",&Atom_O::getMembershipAr5)
-    .def("setSeenId",&Atom_O::setSeenId)
-    .def("getSeenId",&Atom_O::getSeenId)
-    .def("setBackCount",&Atom_O::setBackCount)
-    .def("getBackCount",&Atom_O::getBackCount)
-    .def("setBackSpan",&Atom_O::setBackSpan)
-    .def("getBackSpan",&Atom_O::getBackSpan)
-    .def("setNextSpan",&Atom_O::setNextSpan)
-    .def("getNextSpan",&Atom_O::getNextSpan)
-    .def("localSpanningTree",&Atom_O::localSpanningTree)
-    .def("getValence",&Atom_O::getValence)
-    .def("flagsSet",&Atom_O::flagsSet)
-    .def("applyTransformToAtoms",&Atom_O::applyTransformToAtoms)
-    .def("bondTo",&Atom_O::bondTo)
-    .def("bondToSingle",&Atom_O::bondToSingle)
-//	.def("setAtomStorageId",&Atom_O::setAtomStorageId)
-//	.def("getAtomStorageId",&Atom_O::getAtomStorageId)
-    .def("isBondedToAtomNamed",&Atom_O::isBondedToAtomNamed)
-    .def("bondedNeighborWithName",&Atom_O::bondedNeighborWithName)
-    .def("hasBondWithOrder",&Atom_O::hasBondWithOrder)
-    .def("isBondedToElementOrder",&Atom_O::isBondedToElementOrder)
-    .def("isBondedToElementHybridization",
-         &Atom_O::isBondedToElementHybridization)
-    .def("isBondedToElementHybridizationElementHybridization",
-         &Atom_O::isBondedToElementHybridizationElementHybridization)
-    .def("isBondedTo",&Atom_O::isBondedTo)
-    .def("isBondedToWithBondOrder",&Atom_O::isBondedToWithBondOrder)
-    .def("removeBondTo",&Atom_O::removeBondTo)
-    .def("removeAllBonds",&Atom_O::removeAllBonds)
-    .def("coordination",&Atom_O::coordination)
-    .def("bondedNeighbor",&Atom_O::bondedNeighbor)
-    .def("bondedOrder",&Atom_O::bondedOrder)
-    .def("totalBondOrder",&Atom_O::totalBondOrder)
-//	    .def("copy",&Atom_O::copy,"","","",false)
-    .def("numberOfOpenValence",&Atom_O::numberOfOpenValence)
-    .def("createImplicitHydrogenNames",&Atom_O::createImplicitHydrogenNames)
-    .def("testConsistancy",&Atom_O::testConsistancy)
-//	.def("asXml",&Atom_O::asXml)
-    .def("numberOfBonds",&Atom_O::numberOfBonds)
-    .def("getBondList",&Atom_O::getBondList)
-    .def("bondsAsList",&Atom_O::bondsAsList)
-    .def("getHeavyAtomBondList",&Atom_O::getHeavyAtomBondList)
-    ;
-//  Defun_maker(ChemPkg,Atom);
 
-  SYMBOL_EXPORT_SC_(ChemPkg,configurationToSymbolConverter);
-  SYMBOL_EXPORT_SC_(ChemPkg,stereochemistryToSymbolConverter);
 
-}
-
-    void Atom_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,Atom,"","",_lisp)
-	    .def("atomName",&Atom_O::atomName)
-	    .def("getRelativePriority", &Atom_O::getRelativePriority)
-	    .def("bondedAtomsAsList", &Atom_O::bondedAtomsAsList)
-	    .def("getAtomicNumber", &Atom_O::getAtomicNumber)
-	    .def("isAromatic",&Atom_O::isAromatic)
-	    .def("setIsAromatic",&Atom_O::setIsAromatic)
-	    .def("getIonization",&Atom_O::getIonization)
-	    .def("setIonization",&Atom_O::setIonization)
-	    .def("getBondedHydrogenCount", &Atom_O::getBondedHydrogenCount)
-//	.def("getMatterType",&Matter_O::getMatterType)
-	    .def("atLowerAddressThan",&Atom_O::atLowerAddressThan)
-	    .def("getAlias",&Atom_O::getAlias)
-	    .def("setAlias",&Atom_O::setAlias)
-	    .def("getAtomId",&Atom_O::getAtomId)
-	    .def("getMoeIndex",&Atom_O::getMoeIndex)
-	    .def("setMoeIndex",&Atom_O::setMoeIndex)
-	    .def("getTempInt",&Atom_O::getTempInt)
-	    .def("setTempInt",&Atom_O::setTempInt)
-	    .def("isConfigurable",&Atom_O::isConfigurable)
-	    .def("setStereochemistryType",&Atom_O::setStereochemistryType)
-	    .def("getStereochemistryType",&Atom_O::getStereochemistryType)
-	    .def("setConfiguration",&Atom_O::setConfiguration)
-	    .def("getConfiguration",&Atom_O::getConfiguration)
-	    .def("getConfigurationAsString",&Atom_O::getConfigurationAsString)
-	    .def("calculateStereochemicalConfiguration",&Atom_O::calculateStereochemicalConfiguration)
-	    .def("getFlags",&Atom_O::getFlags)
-	    .def("resetFlags",&Atom_O::resetFlags)
-	    .def("turnOnFlags",&Atom_O::turnOnFlags)
-	    .def("turnOffFlags",&Atom_O::turnOffFlags)
-	    .def("testAllFlags",&Atom_O::testAllFlags)
-	    .def("testAnyFlags",&Atom_O::testAnyFlags)
-	    .def("isInRing",&Atom_O::isInRing)
-	    .def("inRingSize",&Atom_O::inRingSize)
-	    .def("getRingMembershipCount",&Atom_O::getRingMembershipCount)
-	    .def("setRingMembershipCount",&Atom_O::setRingMembershipCount)
-	    .def("getNameIndex",&Atom_O::getNameIndex)
-	    .def("getType",&Atom_O::getType)
-	    .def("setType",&Atom_O::setType)
-	    .def("getMoeType",&Atom_O::getMoeType)
-	    .def("setMoeType",&Atom_O::setMoeType)
-	    .def("getHybridization",&Atom_O::getHybridization)
-	    .def("setHybridization",&Atom_O::setHybridization)
-	    .def("getElementAsString",&Atom_O::getElementAsString)
-	    .def("getElement",&Atom_O::getElement)
-	    .def("setElement",&Atom_O::setElement)
-	    .def("getResidueContainedBy", &Atom_O::getResidueContainedBy )
-	    .def("getSelected",&Atom_O::getSelected)
-	    .def("setSelected",&Atom_O::setSelected)
-	    .def("getPositionInNanometers",&Atom_O::getPositionInNanometers)
-	    .def("getPosition",&Atom_O::getPosition)
-	    .def("setPositionInNanometers",&Atom_O::setPositionInNanometers)
-	    .def("setPosition",&Atom_O::setPosition)
-	    .def("getTouched",&Atom_O::getTouched)
-	    .def("setTouched",&Atom_O::setTouched)
-	    .def("getCharge",&Atom_O::getCharge)
-	    .def("setCharge",&Atom_O::setCharge)
-#if ATOMIC_ANCHOR
-	    .def("getAnchorPos",&Atom_O::getAnchorPos)
-	    .def("setAnchorPos",&Atom_O::setAnchorPos)
-#endif
-	    .def("getOccupancy",&Atom_O::getOccupancy)
-	    .def("setOccupancy",&Atom_O::setOccupancy)
-	    .def("getTempFactor",&Atom_O::getTempFactor)
-	    .def("setTempFactor",&Atom_O::setTempFactor)
-	    .def("getVdwRadius",&Atom_O::getVdwRadius)
-	    .def("setVdwRadius",&Atom_O::setVdwRadius)
-	    .def("getCovalentRadius",&Atom_O::getCovalentRadius)
-	    .def("setCovalentRadius",&Atom_O::setCovalentRadius)
-	    .def("setMembershipAr1",&Atom_O::setMembershipAr1)
-	    .def("getMembershipAr1",&Atom_O::getMembershipAr1)
-	    .def("setMembershipAr2",&Atom_O::setMembershipAr2)
-	    .def("getMembershipAr2",&Atom_O::getMembershipAr2)
-	    .def("setMembershipAr3",&Atom_O::setMembershipAr3)
-	    .def("getMembershipAr3",&Atom_O::getMembershipAr3)
-	    .def("setMembershipAr4",&Atom_O::setMembershipAr4)
-	    .def("getMembershipAr4",&Atom_O::getMembershipAr4)
-	    .def("setMembershipAr5",&Atom_O::setMembershipAr5)
-	    .def("getMembershipAr5",&Atom_O::getMembershipAr5)
-	    .def("setSeenId",&Atom_O::setSeenId)
-	    .def("getSeenId",&Atom_O::getSeenId)
-	    .def("setBackCount",&Atom_O::setBackCount)
-	    .def("getBackCount",&Atom_O::getBackCount)
-	    .def("setBackSpan",&Atom_O::setBackSpan)
-	    .def("getBackSpan",&Atom_O::getBackSpan)
-	    .def("setNextSpan",&Atom_O::setNextSpan)
-	    .def("getNextSpan",&Atom_O::getNextSpan)
-	    .def("localSpanningTree",&Atom_O::localSpanningTree)
-	    .def("getValence",&Atom_O::getValence)
-	    .def("flagsSet",&Atom_O::flagsSet)
-	    .def("applyTransformToAtoms",&Atom_O::applyTransformToAtoms)
-	    .def("bondTo",&Atom_O::bondTo)
-	    .def("bondToSingle",&Atom_O::bondToSingle)
-//	.def("setAtomStorageId",&Atom_O::setAtomStorageId)
-//	.def("getAtomStorageId",&Atom_O::getAtomStorageId)
-	    .def("isBondedToAtomNamed",&Atom_O::isBondedToAtomNamed)
-	    .def("bondedNeighborWithName",&Atom_O::bondedNeighborWithName)
-	    .def("hasBondWithOrder",&Atom_O::hasBondWithOrder)
-	    .def("isBondedToElementOrder",&Atom_O::isBondedToElementOrder)
-	    .def("isBondedToElementHybridization",
-		 &Atom_O::isBondedToElementHybridization)
-	    .def("isBondedToElementHybridizationElementHybridization",
-		 &Atom_O::isBondedToElementHybridizationElementHybridization)
-	    .def("isBondedTo",&Atom_O::isBondedTo)
-	    .def("isBondedToWithBondOrder",&Atom_O::isBondedToWithBondOrder)
-	    .def("removeBondTo",&Atom_O::removeBondTo)
-	    .def("removeAllBonds",&Atom_O::removeAllBonds)
-	    .def("coordination",&Atom_O::coordination)
-	    .def("bondedNeighbor",&Atom_O::bondedNeighbor)
-	    .def("bondedOrder",&Atom_O::bondedOrder)
-	    .def("totalBondOrder",&Atom_O::totalBondOrder)
-//	    .def("copy",&Atom_O::copy,"","","",false)
-	    .def("createImplicitHydrogenNames",&Atom_O::createImplicitHydrogenNames)
-	    .def("testConsistancy",&Atom_O::testConsistancy)
-//	.def("asXml",&Atom_O::asXml)
-	    .def("dump",&Atom_O::dump)
-	    .def("numberOfBonds",&Atom_O::numberOfBonds)
-	    .def("getBondList",&Atom_O::getBondList)
-	    .def("bondsAsList",&Atom_O::bondsAsList)
-	    .def("getHeavyAtomBondList",&Atom_O::getHeavyAtomBondList)
-	    ;
-#endif
-    }
 
 
 
@@ -444,7 +187,7 @@ void Atom_O::exposeCando(core::Lisp_sp lisp)
 
 CL_LISPIFY_NAME("calculateStereochemicalConfiguration");
 CL_DEFMETHOD     ConfigurationEnum Atom_O::calculateStereochemicalConfiguration()
-    {_G();
+    {
 	if ( this->numberOfBonds() != 4 ) return undefinedConfiguration;
 	core::List_sp neighborsByPriority = this->getNeighborsByRelativePriority();
 	Atom_sp a4 = core::oCar(neighborsByPriority).as<Atom_O>();
@@ -479,7 +222,7 @@ CL_DEFMETHOD     ConfigurationEnum Atom_O::calculateStereochemicalConfiguration(
 
 
     string Atom_O::calculateStereochemicalConfigurationAsString()
-    {_G();
+    {
 	string s;
 	ConfigurationEnum config = this->calculateStereochemicalConfiguration();
 	switch ( config )
@@ -505,7 +248,7 @@ CL_DEFMETHOD     ConfigurationEnum Atom_O::calculateStereochemicalConfiguration(
 
 
     void	Atom_O::initialize()
-    {_G();
+    {
 	this->Base::initialize();
 	this->copyAtom = _Nil<Atom_O>();
 	this->flags = ATOM_NEEDS_MINIMIZER;
@@ -540,7 +283,7 @@ CL_DEFMETHOD     ConfigurationEnum Atom_O::calculateStereochemicalConfiguration(
 
 
     bool Atom_O::equal(core::T_sp obj) const
-    {_G();
+    {
 	if ( this->eq(obj) ) goto T;
 	if ( obj.isA<Atom_O>() )
 	{
@@ -575,6 +318,13 @@ CL_DEFMETHOD     ConfigurationEnum Atom_O::calculateStereochemicalConfiguration(
 	Atom_sp other = obj.as<Atom_O>();
 	this->setPosition(other->getPosition());
     }
+
+Atom_O::Atom_O() :Matter_O()
+{
+  this->type = _Nil<core::T_O>();
+  this->_BackSpan = _Nil<core::T_O>();		// Is this a bad idea to access env in copy?
+  this->_NextSpan = _Nil<core::T_O>();		// Is this a bad idea to access env in copy?
+}
 
 
 //
@@ -643,7 +393,7 @@ CL_DEFMETHOD     bool	Atom_O::atLowerAddressThan(Atom_sp b)
     }
 
     void Atom_O::setElementFromAtomName()
-    {_G();
+    {
       string nameStr = this->getName()->symbolName()->get();
       Element element = elementFromAtomNameString(nameStr);
       LOG(BF(" Resulting element= |%d|") %element );
@@ -651,7 +401,7 @@ CL_DEFMETHOD     bool	Atom_O::atLowerAddressThan(Atom_sp b)
     }
 
     void Atom_O::setElementFromString(const string& str)
-    {_G();
+    {
 	Element element = elementFromAtomNameStringCaseInsensitive(str);
 	LOG(BF(" Resulting element= |%d|") %element );
 	this->setElement(element);
@@ -659,7 +409,7 @@ CL_DEFMETHOD     bool	Atom_O::atLowerAddressThan(Atom_sp b)
 
 
     void Atom_O::setHybridizationFromString(const string& h)
-    {_G();
+    {
         FIX_ME();
 #if 0
 	this->_Hybridization = hybridizationForString(h);
@@ -667,7 +417,7 @@ CL_DEFMETHOD     bool	Atom_O::atLowerAddressThan(Atom_sp b)
     }
 
     void Atom_O::_addHydrogenWithName(MatterName name)
-    {_G();
+    {
 	Atom_sp h = Atom_O::create();
 	h->setName(name);
 	h->setElement(element_H);
@@ -792,7 +542,7 @@ CL_DEFMETHOD core::List_sp Atom_O::createImplicitHydrogenNames()
 
 
     void Atom_O::fillInImplicitHydrogens()
-    {_G();
+    {
 	core::List_sp names = this->createImplicitHydrogenNames();
 	if ( names.nilp() ) return;
 	for ( auto cur : names ) {
@@ -811,7 +561,7 @@ CL_DEFMETHOD core::List_sp Atom_O::createImplicitHydrogenNames()
 
 
 gc::Nilable<Atom_sp> Atom_O::highestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp> avoid)
-    {_G();
+    {
 	Atom_sp bestAtom = _Nil<Atom_O>();
 	Atom_sp atom;
 	VectorBond::iterator	b;
@@ -930,7 +680,7 @@ CL_DEFMETHOD     string	Atom_O::getNameIndex()
     };
 
     core::List_sp	Atom_O::getNeighborsByRelativePriority()
-    {_G();
+    {
 	LOG(BF("Ordering neighbors around(%s) by priority and name") % this->getName()  );
 	VectorAtom	reversedNeighbors;
 	VectorBond::iterator	b;
@@ -1080,7 +830,7 @@ CL_DEFMETHOD     bool	Atom_O::isBondedToElementHybridizationElementHybridization
     }
 
     void Atom_O::makeAllAtomNamesInEachResidueUnique()
-    {_G();
+    {
 	SIMPLE_ERROR(BF("This should never be called for an Atom_sp"));
     }
 
@@ -1147,18 +897,18 @@ CL_DEFMETHOD     void	Atom_O::applyTransformToAtoms( const Matrix& m )
 
 
     string Atom_O::getHybridizationAsString()
-    {_G();
+    {
 	return hybridizationSymbolFromHybridization(this->getHybridization())->symbolName()->get();
     }
 
 CL_LISPIFY_NAME("getElementAsString");
 CL_DEFMETHOD     string Atom_O::getElementAsString()
-    {_G();
+    {
 	return atomicSymbolFromElement(this->getElement())->symbolName()->get();
     }
 
     core::Symbol_sp Atom_O::getElementAsSymbol() const
-    {_G();
+    {
 	return symbolFromElement(this->getElement());
     }
 
@@ -1236,14 +986,14 @@ CL_DEFMETHOD     void Atom_O::setPositionInNanometers(Vector3 o)
 
 CL_LISPIFY_NAME("setTempInt");
 CL_DEFMETHOD     void Atom_O::setTempInt(int i)
-    {_G();
+    {
 	LOG(BF("Setting tempInt to %d") % i  );
 	this->tempInt = i;
     }
 
 CL_LISPIFY_NAME("getTempInt");
 CL_DEFMETHOD     int Atom_O::getTempInt()
-    {_G();
+    {
 	return this->tempInt;
     }
 
@@ -1413,7 +1163,7 @@ CL_DEFMETHOD     string	Atom_O::getConfigurationAsString()
     }
 
     void Atom_O::addInterResidueBondsToBondList(BondList_sp bondlist)
-    {_G();
+    {
 	VectorBond::iterator	b;
 	bonds = this->getBonds();
 	for ( b=bonds.begin();b!=bonds.end() ; b++ )
@@ -1456,7 +1206,7 @@ CL_DEFMETHOD     bool Atom_O::isBondedToWithBondOrder( Atom_sp aTarget, BondOrde
 // bond order
 CL_LISPIFY_NAME("isBondedTo");
 CL_DEFMETHOD     bool	Atom_O::isBondedTo( Atom_sp aTarget)
-    {_G();
+    {
 	VectorBond::iterator	b;
 	Atom_sp				a2;
 	LOG(BF("Looking at atom(%s) for bonded atom(%s)")
@@ -1691,7 +1441,7 @@ CL_DEFMETHOD     core::List_sp Atom_O::bondsAsList()
     }
 
     bool	Atom_O::isHeavyAtom()
-    {_G();
+    {
 	return ((this->_Element!=element_H) && (this->_Element!=element_D) && (this->_Element!=element_T));
     }
 
@@ -1779,7 +1529,7 @@ CL_DEFMETHOD     bool    Atom_O::inRingSize(int r) const
 
 
     void Atom_O::clearAllRingMembershipFlags()
-    {_G();
+    {
 	this->turnOffFlags(InRing);
     }
 
@@ -1846,7 +1596,7 @@ CL_DEFMETHOD     int     Atom_O::getValence()
 
 CL_LISPIFY_NAME("getBackSpan");
 CL_DEFMETHOD     Atom_sp Atom_O::getBackSpan()
-    {_G();
+    {
       ASSERT(this->_BackSpan);
       return this->_BackSpan;
     }
@@ -1854,7 +1604,7 @@ CL_DEFMETHOD     Atom_sp Atom_O::getBackSpan()
 
 CL_LISPIFY_NAME("getNextSpan");
 CL_DEFMETHOD     Atom_sp Atom_O::getNextSpan()
-    {_G();
+    {
       ASSERT(this->_NextSpan);
       return this->_NextSpan;
     }
@@ -1878,7 +1628,7 @@ CL_DEFMETHOD     Atom_sp Atom_O::getNextSpan()
 
 CL_LISPIFY_NAME("localSpanningTree");
 CL_DEFMETHOD     core::List_sp Atom_O::localSpanningTree(uint depth)
-    {_G();
+    {
 	core::Cons_sp localTree = core::Cons_O::create(this->sharedThis<Atom_O>());
 	if ( depth <= 0 ) return localTree;
 	core::List_sp tail = localTree;
@@ -1901,7 +1651,7 @@ CL_DEFMETHOD     bool Atom_O::isConfigurable()
 
 
     void Atom_O::invertStructureAndRestraints()
-    {_G();
+    {
 	/*! Invert the Z coordinate */
 	Vector3& pos=this->position;
 	this->position.set(pos.getX(),pos.getY(),pos.getZ()*-1.0);
@@ -2122,7 +1872,6 @@ SYMBOL_EXPORT_SC_(ChemPkg,atomNeedsMinimizer);
     }
 
 
-EXPOSE_CLASS(chem, Atom_O );
 }; // namespace chem
 
 

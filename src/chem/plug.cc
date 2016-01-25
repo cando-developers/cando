@@ -58,7 +58,7 @@ namespace chem
 
 #ifdef XML_ARCHIVE
     void	RingClosingMate_O::archiveBase(core::ArchiveP node)
-    {_G();
+    {
 	this->Base::archiveBase(node);
     }
 #endif
@@ -85,7 +85,7 @@ namespace chem
     }
 
     core::Symbol_sp Mate_O::getName() const
-    {_G();
+    {
 	return _Nil<core::Symbol_O>();
     }
 
@@ -125,7 +125,7 @@ namespace chem
 
 #ifdef XML_ARCHIVE
     void	Mate_O::archiveBase(core::ArchiveP node)
-    {_G();
+    {
 	this->Base::archiveBase(node);
 	node->attribute( "cap", this->_Cap );
     }
@@ -154,7 +154,7 @@ namespace chem
 #define DECL_Mate_O_make ""
 #define DOCS_Mate_O_make "make Mate"
   Mate_sp Mate_O::make(core::Symbol_sp cap)
-  {_G();
+  {
       GC_ALLOCATE(Mate_O, me );
     me->_Cap = cap;
     return me;
@@ -208,7 +208,7 @@ namespace chem
 #define DECL_Plug_O_make ""
 #define DOCS_Plug_O_make "make Plug"
   Plug_sp Plug_O::make(core::Symbol_sp name)
-  {_G();
+  {
       GC_ALLOCATE(Plug_O, me );
     me->_Name = name;
     return me;
@@ -225,7 +225,7 @@ namespace chem
 #endif
 
     Plug_O::Plug_O(const Plug_O& p) : core::CxxObject_O(p)
-    {_G();
+    {
 	Mate_sp	rn;
 	LOG(BF("Original %s") % p.description().c_str()  );
 	this->_WeakConstitution = p._WeakConstitution;
@@ -357,7 +357,7 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 #define DECL_PlugWithMates_O_make ""
 #define DOCS_PlugWithMates_O_make "make PlugWithMates"
   PlugWithMates_sp PlugWithMates_O::make(core::Symbol_sp bond0, core::Symbol_sp bond1, core::List_sp mates)
-  {_G();
+  {
       GC_ALLOCATE(PlugWithMates_O, me );
       me->_B0 = bond0;
       me->_B1 = bond1;
@@ -380,7 +380,7 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 
 
     PlugWithMates_O::PlugWithMates_O(const PlugWithMates_O& p) : Plug_O(p)
-    {_G();
+    {
 	LOG(BF("Original %s") % p.description().c_str()  );
 	this->_B0 = p._B0;
 	this->_B1 = p._B1;
@@ -436,7 +436,7 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 
 
     bool	PlugWithMates_O::recognizesMateNameOrPdb(core::Symbol_sp name)
-    {_G();
+    {
         gctools::Vec0<Mate_sp>::iterator	mi;
 	for ( mi=this->_Mates.begin(); mi!=this->_Mates.end(); mi++ ) {
 	    if ( (*mi)->recognizesNameOrPdb(name) ) return true;
@@ -469,7 +469,7 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 #define DECL_OutPlug_O_make ""
 #define DOCS_OutPlug_O_make "make OutPlug"
   OutPlug_sp OutPlug_O::make(MatterName stubPivotAtom)
-  {_G();
+  {
       GC_ALLOCATE(OutPlug_O, me );
     me->_StubPivotAtom = stubPivotAtom;
     return me;
@@ -487,7 +487,7 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 #endif
 
     OutPlug_O::OutPlug_O(const OutPlug_O& p) : PlugWithMates_O(p)
-    {_G();
+    {
 	Mate_sp	rn;
 	LOG(BF("Original %s") % p.description().c_str()  );
 	IMPLEMENT_ME(); // Should the next copy be shallow or deep?
@@ -532,7 +532,7 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
   __END_DOC
 */
     InPlug_O::InPlug_O(const InPlug_O& p) : PlugWithMates_O(p)
-    {_G();
+    {
 	Mate_sp	rn;
 	LOG(BF("Original %s") % p.description().c_str()  );
     }
@@ -550,22 +550,7 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 
 
 
-    void JumpPlug_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<JumpPlug_O>()
-//	    .def_raw("core:__init__",&JumpPlug_O::__init__,"(self &key name jumpAtomName)") // inherit from Plug_O.initArgs("(self &key name)")
-	    .def("rootAtomName",&JumpPlug_O::rootAtomName)
-	    ;
-    }
 
-    void JumpPlug_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,JumpPlug,"","",_lisp)
-	    .def("rootAtomName",&JumpPlug_O::rootAtomName)
-	    ;
-#endif
-    }
 
 
 
@@ -592,7 +577,7 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 #define DECL_JumpPlug_O_make ""
 #define DOCS_JumpPlug_O_make "make JumpPlug"
   JumpPlug_sp JumpPlug_O::make(MatterName jumpAtomName)
-  {_G();
+  {
       GC_ALLOCATE(JumpPlug_O, me );
     me->_JumpAtomName = jumpAtomName;
     return me;
@@ -611,7 +596,7 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 
 
     JumpPlug_O::JumpPlug_O(const JumpPlug_O& p) : Plug_O(p)
-    {_G();
+    {
 	Mate_sp	rn;
 	this->_JumpAtomName = p._JumpAtomName;
 	LOG(BF("Jumpal %s") % p.description().c_str()  );
@@ -676,7 +661,7 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 #define DECL_RingClosingPlug_O_make ""
 #define DOCS_RingClosingPlug_O_make "make RingClosingPlug"
   RingClosingPlug_sp RingClosingPlug_O::make(core::List_sp ringClosingMates)
-  {_G();
+  {
       GC_ALLOCATE(RingClosingPlug_O, me );
       core::fillVec0(gc::As<core::Cons_sp>(ringClosingMates),me->_RingClosingMates);
     return me;
@@ -695,7 +680,7 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 #endif
 
     RingClosingPlug_O::RingClosingPlug_O(const RingClosingPlug_O& p) : RingClosingPlug_O::Base(p)
-    {_G();
+    {
 	LOG(BF("Original %s") % p.description().c_str()  );
         gctools::Vec0<RingClosingMate_sp>::const_iterator vi;
 	LOG(BF("Copying %d ring closing mates") % p._Mates.size()  );
@@ -739,43 +724,13 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 
 
 
-    void RingClosingMate_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<RingClosingMate_O>()
-//	    .def_raw("core:__init__",&RingClosingMate_O::__init__,"(self &key cap)")
-	    ;
-    }
-
-    void RingClosingMate_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,RingClosingMate,"","",_lisp)
-	    ;
-#endif
-    }
 
 
 
 
 
-    void Mate_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<Mate_O>()
-//	    .def_raw("core:__init__",&Mate_O::__init__,"(self &key entityNames optional cap)")
-	    .def("setCap",&Mate_O::setCap)
-	    .def("getCap",&Mate_O::getCap)
-	    ;
-    }
 
-    void Mate_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,Mate,"","",_lisp)
-	    .def("setCap",&Mate_O::setCap)
-	    .def("getCap",&Mate_O::getCap)
-	    ;
-#endif
-    }
+
 
 
 
@@ -796,120 +751,25 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
     }
 
 
-    void Plug_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<Plug_O>()
-//	    .def_raw("core:__init__",&Plug_O::__init__,"(self &key name)")
-	    .def("getConstitution", &Plug_O::getConstitution)
-	    .def("getName", &Plug_O::getName,"","","",false)
-	    .def("setName", &Plug_O::setName,"","","",false)
-	    .def("otherSidePlugName", &Plug_O::otherSidePlugName)
-	    .def("getPlug", &Plug_O::getPlug)
-	    .def("getIsIn", &Plug_O::getIsIn)
-	    .def("getIsRingClosing", &Plug_O::getIsRingClosing)
-	    .def("matesAsCons",&Plug_O::matesAsCons)
-	    ;
-    }
-
-    void Plug_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,Plug,"","",_lisp)
-	    .def("getConstitution", &Plug_O::getConstitution)
-	    .def("getName", &Plug_O::getName)
-	    .def("setName", &Plug_O::setName)
-	    .def("otherSidePlugName", &Plug_O::otherSidePlugName)
-	    .def("getPlug", &Plug_O::getPlug)
-	    .def("getIsIn", &Plug_O::getIsIn)
-	    .def("getIsRingClosing", &Plug_O::getIsRingClosing)
-	    .def("matesAsCons",&Plug_O::matesAsCons)
-	    ;
-#endif
-    }
-
-
-    void PlugWithMates_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<PlugWithMates_O>()
-//	    .def_raw("core:__init__",&PlugWithMates_O::__init__,"(self &key name bond0 (bond1 \"\") mates)")
-	    .def("getB0",&PlugWithMates_O::getB0)
-	    .def("getB1",&PlugWithMates_O::getB1)
-	    .def("hasB1",&PlugWithMates_O::hasB1)
-	    ;
-    }
-
-    void PlugWithMates_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,PlugWithMates,"","",_lisp)
-	    .def("getB0",&PlugWithMates_O::getB0)
-	    .def("getB1",&PlugWithMates_O::getB1)
-	    .def("hasB1",&PlugWithMates_O::hasB1)
-	    ;
-#endif
-    }
 
 
 
 
 
-    void OutPlug_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<OutPlug_O>()
-//	    .def_raw("core:__init__",&OutPlug_O::__init__,"(self &key name bond0 (bond1 \"\") mates (stubPivotAtom \"\"))") // inherits from PlugWithMates_O.initArgs("(self &key name bond0 (bond1 \"\") mates)")
-	    .def("hasStubPivotAtom",&OutPlug_O::hasStubPivotAtom)
-	    .def("getStubPivotAtom",&OutPlug_O::getStubPivotAtom)
-	    ;
-    }
-
-    void OutPlug_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,OutPlug,"","",_lisp)
-	    .def("hasStubPivotAtom",&OutPlug_O::hasStubPivotAtom)
-	    .def("getStubPivotAtom",&OutPlug_O::getStubPivotAtom)
-	    ;
-#endif
-    }
 
 
 
 
-    void InPlug_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<InPlug_O>()
-//	    .def_raw("core:__init__",&InPlug_O::__init__,"(self &key name bond0 (bond1 \"\") mates)") // inherits from PlugWithMates_O.initArgs("(self &key name bond0 (bond1 \"\") mates)")
-	    .def("rootAtomName",&InPlug_O::rootAtomName)
-	    ;
-    }
-
-    void InPlug_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,InPlug,"","",_lisp)
-	    .def("rootAtomName",&InPlug_O::rootAtomName)
-	    ;
-#endif
-    }
 
 
 
-    void RingClosingPlug_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<RingClosingPlug_O>()
-//	    .def_raw("core:__init__",&RingClosingPlug_O::__init__,"(self &key name bond0 (bond1 \"\") mates (stubPivotAtom \"\"))")
-	    .def("ringClosingMatesAsCons", &RingClosingPlug_O::ringClosingMatesAsCons)
-	    ;
-    }
 
-    void RingClosingPlug_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,RingClosingPlug,"","",_lisp)
-	    .def("ringClosingMatesAsCons", &RingClosingPlug_O::ringClosingMatesAsCons)
-	    ;
-#endif
-    }
+
+
+
+
+
+
 
 
 
@@ -931,14 +791,6 @@ CL_DEFMETHOD     core::List_sp RingClosingPlug_O::ringClosingMatesAsCons()
 	return false;
     }
 
-    EXPOSE_CLASS(chem, Mate_O);
-    EXPOSE_CLASS(chem, RingClosingMate_O);
-    EXPOSE_CLASS(chem, Plug_O);
-    EXPOSE_CLASS(chem, PlugWithMates_O);
-    EXPOSE_CLASS(chem, OutPlug_O);
-    EXPOSE_CLASS(chem, InPlug_O);
-    EXPOSE_CLASS(chem, JumpPlug_O);
-    EXPOSE_CLASS(chem, RingClosingPlug_O);
 
 
 }; //namespace chem

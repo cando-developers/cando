@@ -37,7 +37,7 @@ namespace chem
 #define DECL_chem__alias ""
 #define DOCS_chem__alias "alias"
 CL_DEFUN core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAlias)
-    {_G();
+    {
 	return Alias_O::create(monAlias,atomAlias);
     }
 
@@ -57,7 +57,7 @@ CL_DEFUN core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAl
 #define DECL_Alias_O_make ""
 #define DOCS_Alias_O_make "make AtomId args: monomer_sym atom_sym"
     Alias_sp Alias_O::make(core::Symbol_sp monomerSym, core::Symbol_sp atomSym)
-    {_G();
+    {
         GC_ALLOCATE(Alias_O, me );
 	me->_MonomerAlias = monomerSym;
 	me->_AtomAlias = atomSym;
@@ -67,7 +67,7 @@ CL_DEFUN core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAl
 #else
 
     core::T_sp Alias_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp bargs, core::Lisp_sp lisp)
-    {_G();
+    {
 	this->_MonomerAlias = translate::from_object<core::Symbol_sp>::convert(bargs->lookup(ChemPkg,"monomerSym"));
 	this->_AtomAlias = translate::from_object<core::Symbol_sp>::convert(bargs->lookup(ChemPkg,"atomSym"));
 	return _Nil<core::T_O>();
@@ -95,12 +95,12 @@ CL_DEFUN core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAl
 
 #if 0
     void Alias_O::oligomerChanged(PointProvider_sp alchemist)
-    {_G();
+    {
 	this->_MonomerId = alchemist->getMonomerIdForUniqueAlias(this->sharedThis<Alias_O>());
     }
 
     void Alias_O::sequenceChanged(PointProvider_sp alchemist)
-    {_G();
+    {
 	this->_AtomId = alchemist->indexOfInterestingAtomWithAlias(this->_MonomerId,this->sharedThis<Alias_O>());
 	LOG(BF("[Alias %s@%s] _MonomerId(%d) _AtomId(%d)") % this->_MonomerAlias->__repr__() % this->_AtomAlias->__repr__() % this->_MonomerId % this->_AtomId  );
     }
@@ -117,7 +117,7 @@ CL_DEFUN core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAl
 
 
     bool Alias_O::equal(core::T_sp o) const
-    {_G();
+    {
 	if (!o.isA<Alias_O>()) return false;
 	Alias_sp a = o.as<Alias_O>();
 	if ( this->_MonomerAlias != a->_MonomerAlias ) return false;
@@ -129,24 +129,10 @@ CL_DEFUN core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAl
 
 
 
-    void Alias_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<Alias_O>()
-//	    .def_raw("core:__init__",&Alias_O::__init__,"(self chem::monomerSym chem::atomSym)")
-	    ;
-//	Chem_temp_Defun(alias);
-    }
-
-    void Alias_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,Alias,"","",_lisp)
-	    ;
-#endif
-    }
 
 
-    EXPOSE_CLASS(chem,Alias_O);
+
+
 
 };
 

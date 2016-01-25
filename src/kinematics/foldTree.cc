@@ -14,25 +14,8 @@ namespace kinematics
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(kinematics,FoldTree_O);
 
-    void FoldTree_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<FoldTree_O>()
-//	.def_raw("__init__",&FoldTree_O::__init__,"(self)")
-	    .def("fold-tree-lookup-monomer-id",&FoldTree_O::lookupMonomerId)
-	;
-    }
 
-    void FoldTree_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,FoldTree,"","",_lisp)
-//	.def_raw("__init__",&"(self)")
-	    .def("fold-tree-lookup-monomer-id",&FoldTree_O::lookupMonomerId)
-	;
-#endif
-    }
 
 
 #if INIT_TO_FACTORIES
@@ -41,13 +24,13 @@ namespace kinematics
 #define DECL_FoldTree_O_make ""
 #define DOCS_FoldTree_O_make "make FoldTree"
   FoldTree_sp FoldTree_O::make()
-    {_G();
+    {
       IMPLEMENT_ME();
     };
 
 #else
     core::T_sp FoldTree_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = translate::from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	return _Nil<core::T_O>();

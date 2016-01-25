@@ -11,21 +11,8 @@ namespace chem
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(chem,ImproperTorsion_O);
 
-    void ImproperTorsion_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<ImproperTorsion_O>()
-	;
-    }
 
-    void ImproperTorsion_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,ImproperTorsion,"","",_lisp)
-	;
-#endif
-    }
 
 
 
@@ -33,7 +20,7 @@ namespace chem
 
 
     ImproperTorsion_sp ImproperTorsion_O::create(Atom_sp a1, Atom_sp a2, Atom_sp a3central, Atom_sp a4)
-    {_G();
+    {
 	GC_ALLOCATE(ImproperTorsion_O, obj );
 	obj->setup(a1,a2,a3central,a4);
 	return obj;

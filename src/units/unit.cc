@@ -17,41 +17,18 @@ namespace units
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(units,Unit_O);
-
-    void Unit_O::exposeCando(::core::Lisp_sp lisp)
-    {
-	::core::class_<Unit_O>()
-//	    .def_raw("__init__",&Unit_O::__init__,"(self &rest args)")
-	    .def("test_set_amount",&Unit_O::test_set_amount)
-	    .def("unit_is_compatible",&Unit_O::is_compatible)
-	    .def("conversion_factor_to",&Unit_O::conversion_factor_to)
-	    .def("*",&Unit_O::operator*)
-	    .def("/",&Unit_O::operator/)
-	;
-//      core::af_def(UnitsPkg,"make-unit",&Unit_O::make);
-    }
-
-    void Unit_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(UnitsPkg,Unit,"","",_lisp)
-//	.def_raw("__init__",&initArgs("(self)")
-	;
-#endif
-    }
 
 
 
 Unit_sp Unit_O::create(Unit_sp orig, int power)
-    {_G();
+    {
       Unit_sp unit = Unit_O::create();
 	unit->incorporateUnit(orig,1.0,power);
 	return unit;
     }
 
 Unit_sp Unit_O::createSquareRoot(Unit_sp orig)
-    {_G();
+    {
       Unit_sp unit = Unit_O::create();
 	unit->_Amount = ::sqrt(orig->_Amount);
 	for ( int i=0; i<NumBaseDimensions; i++ )
@@ -71,7 +48,7 @@ eg: (make-unit (list units:meters 1 units:seconds -1))
 */
 CL_LISPIFY_NAME(make-unit);
 CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
-    {_G();
+    {
 	GC_ALLOCATE(Unit_O,u);
 	Unit_O::parseUnitList(u->_Amount,u->_Powers,args);
 	return u;
@@ -79,7 +56,7 @@ CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
 
 
     void Unit_O::parseUnitList(double& amountScale, int powers[NumBaseDimensions], core::List_sp list)
-    {_G();
+    {
 	LOG(BF("Creating unit with arguments[%s]") % lisp->__repr__() );
 //	core::Binder_sp unitDatabase = _lisp->symbol(_sym_UnitsPkg_StarUnitDatabaseStar)->symbolValue().as<core::Binder_O>();
 	core::List_sp dimCur = list;
@@ -110,7 +87,7 @@ CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
 
 #ifdef OLD_SERIALIZE
     void Unit_O::serialize(serialize::SNode node)
-    {_G();
+    {
 	// Archive other instance variables here
 	ASSERTF(NumBaseDimensions==8,BF("You changed NumBaseDimensions but didnt change Unit_O::archiveBase"));
 	node->attribute("amt",this->_Amount);
@@ -127,7 +104,7 @@ CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
 
 #ifdef XML_ARCHIVE
     void Unit_O::archiveBase(::core::ArchiveP node)
-    {_G();
+    {
 	// Archive other instance variables here
 	ASSERTF(NumBaseDimensions==8,BF("You changed NumBaseDimensions but didnt change Unit_O::archiveBase"));
 	node->attribute("amt",this->_Amount);

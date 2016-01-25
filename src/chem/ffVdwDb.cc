@@ -10,8 +10,6 @@
 
 namespace chem {
 
-    REGISTER_CLASS(chem, FFVdw_O );
-    REGISTER_CLASS(chem, FFVdwDb_O );
 
 void	FFVdw_O::fields(core::Record_sp node) {
   this->Base::fields(node);

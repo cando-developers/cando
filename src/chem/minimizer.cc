@@ -158,7 +158,7 @@ namespace chem
 
     const char* minimizerOptions[] = {":showElapsedTime",""};
     void	Minimizer_O::changeOptions(core::List_sp optionCons)
-    {_G();
+    {
     IMPLEMENT_ME();
 #if 0
     core::HashTableEq_sp options = core::HashTableEq_O::createFromKeywordCons(optionCons,minimizerOptions);
@@ -205,7 +205,7 @@ CL_DEFUN Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilab
 #else
 
     core::T_sp  Minimizer_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 	this->Base::__init__(exec,args,env,lisp);
 	bool initialized = false;
 	Matter_sp matter = env->lookup(lisp->internWithPackageName(ChemPkg,"matter")).as<Matter_O>();
@@ -237,86 +237,7 @@ CL_DEFUN Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilab
 
 #endif
 
-    void Minimizer_O::exposeCando(core::Lisp_sp lisp)
-    {
-//	Defun_maker(ChemPkg,Minimizer);
-	core::class_<Minimizer_O>()
-//	    .def_raw("core:__init__",&Minimizer_O::__init__,"(self &key matter forceField energyFunction)")
-	    .def("throwMinimizerExceededMaxSteps",&Minimizer_O::throwMinimizerExceededMaxSteps)
-	    .def("throwMinimizerStuck",&Minimizer_O::throwMinimizerStuck)
-	    .def("throwMinimizerError",&Minimizer_O::throwMinimizerError)
 
-//	    .def("setStepCallback",&Minimizer_O::setStepCallback)
-	    .def("setEnergyFunction",&Minimizer_O::setEnergyFunction)
-	    .def("enablePrintIntermediateResults",&Minimizer_O::enablePrintIntermediateResults)
-	    .def("disablePrintIntermediateResults",&Minimizer_O::disablePrintIntermediateResults)
-	    .def("minimizeSteepestDescent",&Minimizer_O::minimizeSteepestDescent)
-	    .def("minimizeConjugateGradient",&Minimizer_O::minimizeConjugateGradient)
-	    .def("resetAndMinimize",&Minimizer_O::resetAndMinimize)
-	    .def("minimize",&Minimizer_O::minimize)
-          .def("writeIntermediateResultsToEnergyFunction",&Minimizer_O::writeIntermediateResultsToEnergyFunction)
-	    .def("evaluateEnergyAndForceManyTimes",&Minimizer_O::evaluateEnergyAndForceManyTimes)
-//	.def("asXml",&Minimizer_O::asXml)
-	    .def("getEnergyFunction",&Minimizer_O::getEnergyFunction)
-	    .def("getIteration",&Minimizer_O::getIteration)
-	    .def("status",&Minimizer_O::statusAsInt)
-#ifdef XML_ARCHIVE
-	    .def("debugStart",&Minimizer_O::debugStart)
-	    .def("debugStop",&Minimizer_O::debugStop)
-#endif
-	    .def("statusAsString",&Minimizer_O::statusAsString)
-	    .def("statusMessage",&Minimizer_O::statusMessage)
-	    .def("configurationAsString",&Minimizer_O::configurationAsString)
-	    .def("useDefaultSettings",&Minimizer_O::useDefaultSettings)
-	    .def("getRMSForce",&Minimizer_O::getRMSForce)
-	    .def("restart",&Minimizer_O::restart)
-	    .def("setMaximumNumberOfSteepestDescentSteps", &Minimizer_O::setMaximumNumberOfSteepestDescentSteps)
-	    .def("setMaximumNumberOfConjugateGradientSteps", &Minimizer_O::setMaximumNumberOfConjugateGradientSteps)
-	    .def("setMaximumNumberOfTruncatedNewtonSteps", &Minimizer_O::setMaximumNumberOfTruncatedNewtonSteps)
-	    .def("setSteepestDescentTolerance", &Minimizer_O::setSteepestDescentTolerance)
-	    .def("setConjugateGradientTolerance", &Minimizer_O::setConjugateGradientTolerance)
-	    .def("setTruncatedNewtonTolerance", &Minimizer_O::setTruncatedNewtonTolerance)
-	    ;
-    }
-
-    void Minimizer_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,Minimizer,"","",_lisp)
-	    .def("throwMinimizerExceededMaxSteps",&Minimizer_O::throwMinimizerExceededMaxSteps)
-	    .def("throwMinimizerStuck",&Minimizer_O::throwMinimizerStuck)
-	    .def("throwMinimizerError",&Minimizer_O::throwMinimizerError)
-
-//	    .def("setStepCallback",&Minimizer_O::setStepCallback)
-	    .def("setEnergyFunction",&Minimizer_O::setEnergyFunction)
-	    .def("enablePrintIntermediateResults",&Minimizer_O::enablePrintIntermediateResults)
-	    .def("disablePrintIntermediateResults",&Minimizer_O::disablePrintIntermediateResults)
-	    .def("minimizeSteepestDescent",&Minimizer_O::minimizeSteepestDescent)
-	    .def("minimizeConjugateGradient",&Minimizer_O::minimizeConjugateGradient)
-	    .def("resetAndMinimize",&Minimizer_O::resetAndMinimize)
-	    .def("minimize",&Minimizer_O::minimize)
-	    .def("evaluateEnergyAndForceManyTimes",&Minimizer_O::evaluateEnergyAndForceManyTimes)
-//	.def("asXml",&Minimizer_O::asXml)
-	    .def("getEnergyFunction",&Minimizer_O::getEnergyFunction)
-	    .def("getIteration",&Minimizer_O::getIteration)
-	    .def("status",&Minimizer_O::statusAsInt)
-	    .def("debugStart",&Minimizer_O::debugStart)
-	    .def("debugStop",&Minimizer_O::debugStop)
-	    .def("statusAsString",&Minimizer_O::statusAsString)
-	    .def("statusMessage",&Minimizer_O::statusMessage)
-	    .def("configurationAsString",&Minimizer_O::configurationAsString)
-	    .def("useDefaultSettings",&Minimizer_O::useDefaultSettings)
-	    .def("getRMSForce",&Minimizer_O::getRMSForce)
-	    .def("restart",&Minimizer_O::restart)
-	    .def("setMaximumNumberOfSteepestDescentSteps", &Minimizer_O::setMaximumNumberOfSteepestDescentSteps)
-	    .def("setMaximumNumberOfConjugateGradientSteps", &Minimizer_O::setMaximumNumberOfConjugateGradientSteps)
-	    .def("setMaximumNumberOfTruncatedNewtonSteps", &Minimizer_O::setMaximumNumberOfTruncatedNewtonSteps)
-	    .def("setSteepestDescentTolerance", &Minimizer_O::setSteepestDescentTolerance)
-	    .def("setConjugateGradientTolerance", &Minimizer_O::setConjugateGradientTolerance)
-	    .def("setTruncatedNewtonTolerance", &Minimizer_O::setTruncatedNewtonTolerance)
-	    ;
-#endif
-    }
 
 
 CL_LISPIFY_NAME("statusAsString");
@@ -395,7 +316,7 @@ CL_DEFMETHOD     string	Minimizer_O::statusAsString()
 
 #if 0
     void	Minimizer_O::setStepCallback(core::LispCallback_sp cb)
-    {_G();
+    {
     this->_StepCallback = cb;
     }
 #endif
@@ -403,7 +324,7 @@ CL_DEFMETHOD     string	Minimizer_O::statusAsString()
 
 #ifdef XML_ARCHIVE
     void	Minimizer_O::debugStart()
-    {_G();
+    {
     this->_DebugOn = true;
     LOG(BF("Status") );
     this->_Log = MinimizerLog_O::create();
@@ -414,7 +335,7 @@ CL_DEFMETHOD     string	Minimizer_O::statusAsString()
 
 
     void	Minimizer_O::debugStop(const string& fileName)
-    {_G();
+    {
     LOG(BF("writing minimizer log to (%s)") % fileName.c_str()  );
     if ( !this->_DebugOn ) return;
     ASSERTNOTNULL(this->_Log);
@@ -472,7 +393,7 @@ CL_DEFMETHOD     string	Minimizer_O::statusAsString()
  *      but does not need to be filled with zeros).
  */
     double	Minimizer_O::dTotalEnergyForce( NVector_sp nvPos, NVector_sp nvForce)
-    {_G();
+    {
 	return this->_EnergyFunction->evaluateEnergyForce(nvPos,true,nvForce);
     }
 
@@ -537,7 +458,7 @@ CL_DEFMETHOD     string	Minimizer_O::statusAsString()
 	double		*dPfa,
 	double		*dPfb,
 	double		*dPfc )
-    {_G();
+    {
     double		xa,xb,xc,fa,fb,fc, temp;
     double		r,q,u,ulim,fu;
 
@@ -631,7 +552,7 @@ CL_DEFMETHOD     string	Minimizer_O::statusAsString()
 					int&	forceEvals,
 					int&	dbrentSteps
 	)
-    {_G();
+    {
     int	iter, ok1, ok2;
     double	_a,_b,_d,d1,d2,du,dv,dw,dx,_e=0.0;
     double	fu,fv,fw,fx,olde,tol1,tol2, u, u1, u2, v,w,x,xm, ft;
@@ -888,7 +809,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 						NVector_sp nvTemp2,
 						int	iteration,
 						StepReport_sp	report )
-    {_G();
+    {
     double	xa, xb, xc;
     double	fa, fb, fc;
     double	step = 0.0;
@@ -1022,7 +943,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
     void	Minimizer_O::_steepestDescent( int numSteps,
 					       NVector_sp x,
 					       double forceTolerance )
-    {_G();
+    {
       StepReport_sp	stepReport = StepReport_O::create();
 	int		iRestartSteps;
 	NVector_sp	force, m;
@@ -1315,7 +1236,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 	int numSteps,
 	NVector_sp x,
 	double forceTolerance )
-    {_G();
+    {
       StepReport_sp	stepReport = StepReport_O::create();
     int		iRestartSteps;
     NVector_sp	force, diag;
@@ -1628,7 +1549,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 	NVector_sp			dj,
 	NVector_sp			zj,
 	NVector_sp			qj )
-    {_G();
+    {
     int	j, ITpcg;
     double	cr, delta, forceDotpj, crOverk, nk, alphaj;
     double	nkTimesRmsForceMag, rjDotzj;
@@ -1800,7 +1721,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 	int numSteps,
 	NVector_sp xK,
 	double forceTolerance )
-    {_G();
+    {
       StepReport_sp	stepReport = StepReport_O::create();
     int	iDimensions;
     double			fp;
@@ -2049,7 +1970,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 */
 
     void	Minimizer_O::_evaluateEnergyAndForceManyTimes( int numSteps,  NVector_sp nvPos )
-    {_G();
+    {
 #define MINSLOPE        0.000001
 #define MINCHANGE       0.01
 
@@ -2160,7 +2081,7 @@ CL_DEFMETHOD     void	Minimizer_O::useDefaultSettings()
 
 CL_LISPIFY_NAME("enablePrintIntermediateResults");
 CL_DEFMETHOD     void	Minimizer_O::enablePrintIntermediateResults()
-    {_G();
+    {
     this->_PrintIntermediateResults = true;
     }
 
@@ -2169,7 +2090,7 @@ CL_DEFMETHOD     void	Minimizer_O::enablePrintIntermediateResults()
 
 CL_LISPIFY_NAME("disablePrintIntermediateResults");
 CL_DEFMETHOD     void	Minimizer_O::disablePrintIntermediateResults()
-    {_G();
+    {
     this->_PrintIntermediateResults = false;
     }
 
@@ -2249,7 +2170,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimizeSteepestDescent()
 
 CL_LISPIFY_NAME("minimizeConjugateGradient");
 CL_DEFMETHOD     void	Minimizer_O::minimizeConjugateGradient()
-    {_G();
+    {
 	NVector_sp	pos;
 	int		retries;
 	bool		sawProblem;
@@ -2301,7 +2222,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimizeConjugateGradient()
 
 CL_LISPIFY_NAME("resetAndMinimize");
 CL_DEFMETHOD     void	Minimizer_O::resetAndMinimize()
-    {_G();
+    {
     this->_Status = minimizerIdle;
     this->minimize();
     }
@@ -2309,7 +2230,7 @@ CL_DEFMETHOD     void	Minimizer_O::resetAndMinimize()
 
 CL_LISPIFY_NAME("minimize");
 CL_DEFMETHOD     void	Minimizer_O::minimize()
-    {_G();
+    {
     NVector_sp	pos;
     int		retries;
     bool		sawProblem;
@@ -2442,7 +2363,6 @@ CL_VALUE_ENUM(_sym_minimizerSucceeded,chem::minimizerSucceeded);
 CL_VALUE_ENUM(_sym_minimizerError,chem::minimizerError);
 CL_END_ENUM(_sym__PLUS_minimizerStatusConverter_PLUS_);
 
-EXPOSE_CLASS(chem,Minimizer_O);
 
 };
 

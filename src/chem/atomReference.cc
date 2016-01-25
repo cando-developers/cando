@@ -15,20 +15,8 @@
 
 namespace chem 
 {
-    EXPOSE_CLASS(chem,AtomReferenceBase_O);
-    void AtomReferenceBase_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<AtomReferenceBase_O>()
-	    ;
-    }
 
-    void AtomReferenceBase_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,AtomReferenceBase,"","",_lisp)
-	    ;
-#endif
-    }
+
 
 
 
@@ -45,21 +33,8 @@ namespace chem
 #endif
 
 
-    EXPOSE_CLASS(chem,AtomReference_O);
-    void AtomReference_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<AtomReference_O>()
-//	    .def_raw("core:__init__",&AtomReference_O::__init__,"(self alias)")
-	    ;
-    }
 
-    void AtomReference_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,AtomReference,"","",_lisp)
-	    ;
-#endif
-    }
+
 
 
     void AtomReference_O::initialize()
@@ -81,7 +56,7 @@ namespace chem
 #define DECL_AtomReference_O_make ""
 #define DOCS_AtomReference_O_make "make AtomReference args: alias"
     AtomReference_sp AtomReference_O::make(const string& alias)
-    {_G();
+    {
         GC_ALLOCATE(AtomReference_O, me );
 	me->_AtomAlias = alias;
 	return me;

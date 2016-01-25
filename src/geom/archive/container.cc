@@ -16,29 +16,10 @@ namespace geom {
 
 
 
-    void Container_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<Container_O>()
-	.def("size",&Container_O::size)
-	.def("isEmpty",&Container_O::isEmpty)
-	.def("notEmpty",&Container_O::notEmpty)
-	;
-}
-
-    void Container_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(CorePkg,Container,"","",_lisp)
-	.def("size",&Container_O::size)
-	.def("isEmpty",&Container_O::isEmpty)
-	.def("notEmpty",&Container_O::notEmpty)
-    ;
-#endif //]
-}
 
 
 
-    EXPOSE_CLASS(geom,Container_O);
+
 };
 
 

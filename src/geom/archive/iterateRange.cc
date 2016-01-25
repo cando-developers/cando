@@ -70,7 +70,7 @@ bool IterateRange_O::isDone()
 
 #if 0
     core::T_sp IterateRange_O::prim_range(core::Function_sp e, core::Cons_sp args, core::Environment_sp environment, core::Lisp_sp lisp)
-{_G();
+{
     SIMPLE_ERROR(BF("Don't use range, use Range"));
     int numArgs = args->length();
     if ( numArgs> 3 || numArgs < 2 )
@@ -99,24 +99,9 @@ bool IterateRange_O::isDone()
 
 
 
-    void IterateRange_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<IterateRange_O>()
-		.def("initRange",&IterateRange_O::initRange)
-	;
-//    core::defNoWrapPackage(CorePkg,"range",&IterateRange_O::prim_range,lisp->lisp());
-}
-
-    void IterateRange_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(CorePkg,IterateRange,"","",_lisp)
-    ;
-#endif //]
-}
 
 
-    EXPOSE_CLASS(geom,IterateRange_O);
+
 };
 
 

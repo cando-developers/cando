@@ -29,21 +29,8 @@
 namespace chem 
 {
 
-    EXPOSE_CLASS(chem,RenderMatterAtom_O);
 
-    void RenderMatterAtom_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<RenderMatterAtom_O>()
-	    ;
-    }
 
-    void RenderMatterAtom_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,RenderMatterAtom,"","",_lisp)
-	    ;
-#endif
-    }
 
 
 
@@ -115,21 +102,8 @@ void RenderMatterAtom_O::defineForAtom(Atom_sp atom,GrPickableMatter_sp renderMa
 
 
 
-    EXPOSE_CLASS(chem,RenderMatterBond_O);
 
-    void RenderMatterBond_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<RenderMatterBond_O>()
-	    ;
-    }
 
-    void RenderMatterBond_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,RenderMatterBond,"","",_lisp)
-	    ;
-#endif
-    }
 
 
 
@@ -161,21 +135,8 @@ void RenderMatterBond_O::setup(uint idx1, uint idx2, Atom_sp a1, Atom_sp a2)
 
 
 
-    EXPOSE_CLASS(chem,RenderMatterResidue_O);
 
-    void RenderMatterResidue_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<RenderMatterResidue_O>()
-	    ;
-    }
 
-    void RenderMatterResidue_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,RenderMatterResidue,"","",_lisp)
-	    ;
-#endif
-    }
 
 
 
@@ -187,10 +148,9 @@ void RenderMatterBond_O::setup(uint idx1, uint idx2, Atom_sp a1, Atom_sp a2)
     }
 #endif
 
-    EXPOSE_CLASS(chem, GrPickableMatter_O );
 
 geom::Color_sp GrPickableMatter_O::elementToColor(Element element, core::Lisp_sp lisp)
-{_G();
+{
     core::Symbol_sp sym = _sym__PLUS_elementColors_PLUS_;
     geom::IntegerKeyObjectDictionary_sp elementColorMap = sym->symbolValue().as<geom::IntegerKeyObjectDictionary_O>();
     if ( elementColorMap->contains(element) )
@@ -201,21 +161,7 @@ geom::Color_sp GrPickableMatter_O::elementToColor(Element element, core::Lisp_sp
 }
 
 
-void GrPickableMatter_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<GrPickableMatter_O>()
-	    .def("setFromMatter",&GrPickableMatter_O::setFromMatter)
-	;
-}
 
-    void GrPickableMatter_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,GrPickableMatter,"","",_lisp)
-	    .def("setFromMatter",&GrPickableMatter_O::setFromMatter)
-	;
-#endif
-}
 
 
 
@@ -252,7 +198,7 @@ void	GrPickableMatter_O::initialize()
 
 
 void GrPickableMatter_O::ownChildren()
-{_G();
+{
 }
 
 
@@ -260,7 +206,7 @@ void GrPickableMatter_O::ownChildren()
 
 #if 0
 void GrPickableMatter_O::check()
-{_G();
+{
     iterator	it;
     for ( it=this->_PartsDisplayList.begin(); it!=this->_PartsDisplayList.end(); it++ )
     {
@@ -308,11 +254,11 @@ geom::Render_sp GrPickableMatter_O::findChild(core::Cons_sp symbolPath, geom::Re
 
 
 void	GrPickableMatter_O::_walkAndDefineSliderRanges(geom::RenderController_sp controller)
-{_G();
+{
 }
 
 void	GrPickableMatter_O::_walkAndDefineController(geom::RenderController_sp controller,bool suppressSwitch)
-{_G();
+{
     if ( this->getName().notnilp() )
     {
 	core::SymbolVector_sp fullPath = this->getFullName();
@@ -340,7 +286,7 @@ geom::Render_O::iterator GrPickableMatter_O::endRender(geom::RenderController_sp
 
 
 geom::OVector3_sp GrPickableMatter_O::centerOfRenderedGeometry()
-{_G();
+{
     gctools::Vec0<RenderMatterAtom_sp>::iterator ai;
     Vector3 sum;
     uint num = 0;
@@ -358,7 +304,7 @@ geom::OVector3_sp GrPickableMatter_O::centerOfRenderedGeometry()
 
 
 void	GrPickableMatter_O::generateRenderObjects()
-{_G();
+{
     this->_AtomPoints = geom::GrPickablePoints_O::create();
     gctools::Vec0<RenderMatterAtom_sp>::iterator ai;
     for ( ai=this->_Atoms.begin(); ai!=this->_Atoms.end(); ai++ )
@@ -422,7 +368,7 @@ void	GrPickableMatter_O::generateRenderObjects()
 
 
 void	GrPickableMatter_O::setFromMatter(Matter_sp matter )
-{_G();
+{
     map<Atom_sp,uint>	atomIndices;
     Loop		atomLoop,bondLoop;
     Atom_sp		atom, a1, a2;

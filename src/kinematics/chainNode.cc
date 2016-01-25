@@ -15,23 +15,8 @@ namespace kinematics
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(kinematics,ChainNode_O);
 
-    void ChainNode_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<ChainNode_O>()
-//	.def_raw("__init__",&ChainNode_O::__init__,"(self)")
-	;
-    }
 
-    void ChainNode_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,ChainNode,"","",_lisp)
-//	.def_raw("__init__",&"(self)")
-	;
-#endif
-    }
 
 
 #if INIT_TO_FACTORIES
@@ -40,13 +25,13 @@ namespace kinematics
 #define DECL_ChainNode_O_make ""
 #define DOCS_ChainNode_O_make "make ChainNode"
   ChainNode_sp ChainNode_O::make()
-    {_G();
+    {
       IMPLEMENT_ME();
     };
 
 #else
     core::T_sp ChainNode_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = translate::from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	return _Nil<core::T_O>();
@@ -72,7 +57,7 @@ namespace kinematics
     MonomerNode_sp ChainNode_O::monomerNodeFactory(ChainNode_sp chainNode,
 						   RingClosingMonomerMap ringClosingMonomerMap,
 						   chem::Monomer_sp monomer )
-    {_G();
+    {
 	int seqId = monomer->getSequenceNumber();
 	if ( monomer->hasRingClosingOutPlug() )
 	{

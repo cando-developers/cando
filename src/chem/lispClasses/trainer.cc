@@ -34,12 +34,12 @@ core::Binder_sp TrainerHeader_O::getDataBinder()
 
 
 void TrainerHeader_O::resetMostConformationalSearchFailsSeen()
-{_G();
+{
     this->_MostConformationalSearchFailsSeen = 0;
 }
 
 void TrainerHeader_O::updateMostConformationalSearchFailsSeen(uint i)
-{_G();
+{
     if ( i > this->_MostConformationalSearchFailsSeen )
     {
 	this->_MostConformationalSearchFailsSeen = i;
@@ -47,34 +47,34 @@ void TrainerHeader_O::updateMostConformationalSearchFailsSeen(uint i)
 }
 
 uint TrainerHeader_O::getMostConformationalSearchFailsSeen()
-{_G();
+{
     return this->_MostConformationalSearchFailsSeen;
 }
 
 bool TrainerHeader_O::conformationalSearchesRequired()
-{_G();
+{
     return this->_MostConformationalSearchFailsSeen<this->_MaxConformationalSearchFailsRequired;
 }
 
 
 void TrainerHeader_O::setMaxConformationalSearchFailsRequired(uint i)
-{_G();
+{
     this->_MaxConformationalSearchFailsRequired = i;
 }
 
 uint TrainerHeader_O::getMaxConformationalSearchFailsRequired()
-{_G();
+{
     return this->_MaxConformationalSearchFailsRequired;
 }
 
 
 void TrainerHeader_O::setSecondsSpentConformationalSearching(const Bignum& i)
-{_G();
+{
     this->_SecondsSpentConformationalSearching = i;
 }
 
 Bignum TrainerHeader_O::getSecondsSpentConformationalSearching()
-{_G();
+{
     return this->_SecondsSpentConformationalSearching;
 }
 
@@ -116,12 +116,12 @@ void TrainerHeader_O::setContext( MonomerContext_sp co)
 }
 
 void	TrainerHeader_O::setState(const string& str)
-{_G();
+{
     this->_State = str;
 }
 
 void TrainerHeader_O::setState(const string& str, const string& msg)
-{_G();
+{
     this->setState(str);
     this->setStateMessage(msg);
 }
@@ -129,7 +129,7 @@ void TrainerHeader_O::setState(const string& str, const string& msg)
 
 
 void	TrainerHeader_O::setUniqueIndex(uint i)
-{_G();
+{
     this->_UniqueIndex = i;
 }
 
@@ -153,7 +153,7 @@ void	TrainerHeader_O::initialize()
 
 #ifdef XML_ARCHIVE
     void	TrainerHeader_O::archive(core::ArchiveP node)
-{_G();
+{
     node->attribute("TopDirectory", this->_TopDirectory );
     node->attribute("Path", this->_Path );
     node->attribute("State", this->_State );
@@ -171,7 +171,7 @@ void	TrainerHeader_O::initialize()
 
 #if 0
 string TrainerHeader_O::generateFileName() const
-{_G();
+{
     LOG(BF("Generating file name directory(%s)") % this->_TopDirectory.c_str() );
     LOG(BF("Generating file name fileNamePrefix(%s)") % this->getTrainerFileNamePrefix().c_str()  );
     stringstream fileName;
@@ -182,7 +182,7 @@ string TrainerHeader_O::generateFileName() const
 #endif
 
 string TrainerHeader_O::getContextKey()
-{_G();
+{
     return this->_Context->getKey();
 }
 
@@ -198,7 +198,7 @@ void	Trainer_O::initialize()
 
 #ifdef XML_ARCHIVE
     void	Trainer_O::archive(core::ArchiveP node)
-{_G();
+{
     node->attribute("header",this->_Header);
     node->attribute("data",this->_Data);
 }
@@ -226,7 +226,7 @@ void Trainer_O::setConformationExplorer(ConformationExplorer_sp str )
 
 #if 0
 geom::Render_sp	Trainer_O::rendered(core::Cons_sp opts)
-{_G();
+{
     return this->_Data->rendered(opts);
 }
 #endif
@@ -260,7 +260,7 @@ TrainerHeader_sp Trainer_O::getHeader()
 
 
 core::HashTableEq_sp readTrainerHeader(core::Path_sp path, core::Lisp_sp lisp )
-{_G();
+{
     char buffer[1024];
     string fileName = path->asString();
     ifstream fin(fileName.c_str());
@@ -311,7 +311,7 @@ core::HashTableEq_sp readTrainerHeader(core::Path_sp path, core::Lisp_sp lisp )
 #define DECL_af_readTrainerHeader ""
 #define DOCS_af_readTrainerHeader "readTrainerHeader"
 core::T_sp af_readTrainerHeader(core::Path_sp path)
-    {_G();
+    {
 	return readTrainerHeader(path,_lisp);
     }
 
@@ -320,7 +320,7 @@ core::T_sp af_readTrainerHeader(core::Path_sp path)
 
 #ifdef XML_ARCHIVE
 Trainer_sp readTrainer(core::Path_sp const& path, core::Lisp_sp lisp)
-{_G();
+{
     Trainer_sp job;
     core::XmlLoadArchive_sp a;
     a = core::XmlLoadArchive_O::create();
@@ -336,7 +336,7 @@ Trainer_sp readTrainer(core::Path_sp const& path, core::Lisp_sp lisp)
 
 #if 0
 Trainer_sp readTrainerReplaceDatabase(const string& fileName, CandoDatabase_sp bdh)
-{_G();
+{
     Trainer_sp job;
     TrainerHeader_sp jobHeader;
     job = readTrainer(fileName);
@@ -365,7 +365,7 @@ Trainer_sp readTrainerReplaceDatabase(const string& fileName, CandoDatabase_sp b
 
 #if 0
     void writeTrainer(Trainer_sp job, const string& pathName, core::Lisp_sp lisp)
-{_G();
+{
     core::XmlSaveArchive_sp a;
     job->getHeader()->setPathName(pathName);
     a = job->lisp()->create<core::XmlSaveArchive_O>();
@@ -390,7 +390,7 @@ void TrainerOrganizer_O::initialize()
 
 #ifdef XML_ARCHIVE
 void	TrainerOrganizer_O::archive(core::ArchiveP node)
-{_G();
+{
     node->attributeStringMap("entries",this->_Entries);
     node->attribute("data",this->_Data);
 }
@@ -463,7 +463,7 @@ string	key;
 
 
 TrainerHeader_sp	TrainerOrganizer_O::findEntryUsingContextKey(const string& key)
-{_G();
+{
     ASSERT(this->_Entries.contains(key));
     return this->_Entries.get(key);
 }
@@ -486,7 +486,7 @@ TrainerHeader_sp	TrainerOrganizer_O::getTrainerHeaderThatRecognizesSubsetOfConte
 
 
 uint	TrainerOrganizer_O::getNextUniqueIndex()
-{_G();
+{
 entryIterator	ei;
 uint		highestUniqueIndex = 0;
     for ( ei=this->_Entries.begin(); ei!=this->_Entries.end(); ei++ )
@@ -500,7 +500,7 @@ uint		highestUniqueIndex = 0;
 
 
 core::Cons_sp	TrainerOrganizer_O::entriesAsCons()
-{_G();
+{
     core::StringMap<TrainerHeader_O>::iterator	it;
     core::Cons_sp entries, cur, tail;
     entries = _Nil<core::Cons_O>();
@@ -523,7 +523,7 @@ core::Cons_sp	TrainerOrganizer_O::entriesAsCons()
 
 #ifdef XML_ARCHIVE
     void	writeTrainerOrganizer(TrainerOrganizer_sp org,core::Lisp_sp lisp)
-{_G();
+{
     core::XmlSaveArchive_sp	archive;
     archive = org->lisp()->create<core::XmlSaveArchive_O>();
     archive->put("organizer",org);
@@ -532,7 +532,7 @@ core::Cons_sp	TrainerOrganizer_O::entriesAsCons()
 
 
 TrainerOrganizer_sp readTrainerOrganizer(core::Lisp_sp lisp)
-{_G();
+{
     core::XmlLoadArchive_sp	archive;
     TrainerOrganizer_sp org;
     archive = core::XmlLoadArchive_O::create();
@@ -551,7 +551,7 @@ TrainerOrganizer_sp readTrainerOrganizer(core::Lisp_sp lisp)
 #define DECL_af_readTrainer ""
 #define DOCS_af_readTrainer "readTrainer"
 core::T_sp af_readTrainer(core::Path_sp path)
-{_G();
+{
     Trainer_sp train = readTrainer(path,_lisp);
     return train;
 }
@@ -559,78 +559,6 @@ core::T_sp af_readTrainer(core::Path_sp path)
 
 
 
-    void TrainerHeader_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<TrainerHeader_O>()
-	.def("getTrainerUniquePathName",&TrainerHeader_O::getTrainerUniquePathName)
-	.def("setPath",&TrainerHeader_O::setPath)
-	.def("getPath",&TrainerHeader_O::getPath)
-        .def("constructPath",&TrainerHeader_O::constructPath)
-        .def("getState",&TrainerHeader_O::getState)
-        .def("setState",&TrainerHeader_O::setState1)
-        .def("setStateAndMessage",&TrainerHeader_O::setStateAndMessage)
-        .def("getNotPartOfSeedDatabase",&TrainerHeader_O::getNotPartOfSeedDatabase)
-        .def("setNotPartOfSeedDatabase",&TrainerHeader_O::setNotPartOfSeedDatabase)
-        .def("getStateMessage",&TrainerHeader_O::getStateMessage)
-        .def("setStateMessage",&TrainerHeader_O::setStateMessage)
-        .def("getData",&TrainerHeader_O::getData)
-        .def("setData",&TrainerHeader_O::setData)
-        .def("hasData",&TrainerHeader_O::hasData)
-        .def("getContext",&TrainerHeader_O::getContext)
-        .def("getContextKey",&TrainerHeader_O::getContextKey)
-        .def("setContext",&TrainerHeader_O::setContext)
-        .def("getUniqueIndex",&TrainerHeader_O::getUniqueIndex)
-        .def("setUniqueIndex",&TrainerHeader_O::setUniqueIndex)
-        .def("getHistory",&TrainerHeader_O::getHistory)
-        .def("setTopDirectory",&TrainerHeader_O::setTopDirectory)
-        .def("getTopDirectory",&TrainerHeader_O::getTopDirectory)
-        .def("getDataBinder",&TrainerHeader_O::getDataBinder)
-	.def("setSecondsSpentConformationalSearching", &TrainerHeader_O::setSecondsSpentConformationalSearching)
-	.def("getSecondsSpentConformationalSearching", &TrainerHeader_O::getSecondsSpentConformationalSearching)
-	.def("resetMostConformationalSearchFailsSeen", &TrainerHeader_O::resetMostConformationalSearchFailsSeen)
-	.def("updateMostConformationalSearchFailsSeen", &TrainerHeader_O::updateMostConformationalSearchFailsSeen)
-	.def("getMostConformationalSearchFailsSeen", &TrainerHeader_O::getMostConformationalSearchFailsSeen)
-	.def("conformationalSearchesRequired", &TrainerHeader_O::conformationalSearchesRequired)
-	.def("setMaxConformationalSearchFailsRequired", &TrainerHeader_O::setMaxConformationalSearchFailsRequired)
-	.def("getMaxConformationalSearchFailsRequired", &TrainerHeader_O::getMaxConformationalSearchFailsRequired)
-	;
-}
-    void TrainerHeader_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,TrainerHeader,"","",_lisp)
-//        .def("setCandoDatabaseHolder",&TrainerHeader_O::setCandoDatabaseHolder)
-//        .def("getCandoDatabaseHolder",&TrainerHeader_O::getCandoDatabaseHolder)
-//        .def("getCandoDatabase",&TrainerHeader_O::getCandoDatabase)
-//        .def("getFileName",&TrainerHeader_O::getFileName)
-//        .def("setFileName",&TrainerHeader_O::setFileName)
-//        .def("generateFileName",&TrainerHeader_O::generateFileName)
-//        .def("getTrainerFileNamePrefix",&TrainerHeader_O::getTrainerFileNamePrefix)
-        .def("getState",&TrainerHeader_O::getState)
-        .def("setState",&TrainerHeader_O::setState1)
-        .def("setState",&TrainerHeader_O::setState2)
-        .def("getNotPartOfSeedDatabase",&TrainerHeader_O::getNotPartOfSeedDatabase)
-        .def("setNotPartOfSeedDatabase",&TrainerHeader_O::setNotPartOfSeedDatabase)
-        .def("getStateMessage",&TrainerHeader_O::getStateMessage)
-        .def("setStateMessage",&TrainerHeader_O::setStateMessage)
-        .def("getData",&TrainerHeader_O::getData)
-        .def("setData",&TrainerHeader_O::setData)
-        .def("hasData",&TrainerHeader_O::hasData)
-        .def("getContext",&TrainerHeader_O::getContext)
-        .def("getContextKey",&TrainerHeader_O::getContextKey)
-        .def("setContext",&TrainerHeader_O::setContext)
-        .def("getUniqueIndex",&TrainerHeader_O::getUniqueIndex)
-        .def("setUniqueIndex",&TrainerHeader_O::setUniqueIndex)
-        .def("getHistory",&TrainerHeader_O::getHistory)
-        .def("setTopDirectory",&TrainerHeader_O::setTopDirectory)
-        .def("getTopDirectory",&TrainerHeader_O::getTopDirectory)
-//        .def("getDataDictionary",&TrainerHeader_O::getDataDictionary)
-	;
-#endif
-//    boost::python::def("create_TrainerHeader",&create_TrainerHeader);
-#endif
-}
 
 
 
@@ -638,123 +566,15 @@ core::T_sp af_readTrainer(core::Path_sp path)
 
 
 
-    void Trainer_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<Trainer_O>()
-//        .def("setCandoDatabase",&Trainer_O::setCandoDatabase)
-//        .def("getCandoDatabase",&Trainer_O::getCandoDatabase)
-        .def("setHeader",&Trainer_O::setHeader)
-        .def("getHeader",&Trainer_O::getHeader)
-        .def("setData",&Trainer_O::setData)
-        .def("getData",&Trainer_O::getData)
-        .def("hasData",&Trainer_O::hasData)
-        .def("getDataBinder",&Trainer_O::getDataBinder)
-        .def("getConformationExplorer",&Trainer_O::getConformationExplorer)
-        .def("setConformationExplorer",&Trainer_O::setConformationExplorer)
-	.def("write",&Trainer_O::write,"","","",false)
-	;
-//    Defun(readTrainerHeader);
-//    Defun(readTrainer);
-}
-    void Trainer_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,Trainer,"","",_lisp)
-//        .def("setCandoDatabase",&Trainer_O::setCandoDatabase)
-//        .def("getCandoDatabase",&Trainer_O::getCandoDatabase)
-        .def("setHeader",&Trainer_O::setHeader)
-        .def("getHeader",&Trainer_O::getHeader)
-        .def("setData",&Trainer_O::setData)
-        .def("getData",&Trainer_O::getData)
-        .def("hasData",&Trainer_O::hasData)
-        .def("getDataBinder",&Trainer_O::getDataBinder)
-//	.add_property("iterate_Data",
-//			boost::python::range(&Trainer_O::begin_Data,
-//				&Trainer_O::end_Data))
-//        .def("getStructures",&Trainer_O::getStructures)
-//        .def("setStructures",&Trainer_O::setStructures)
-	;
-#endif
-//    boost::python::def("create_Trainer",&create_Trainer);
-//    boost::python::def("writeTrainer",&writeTrainer);
-//    boost::python::def("readTrainer",&readTrainer);
-//    boost::python::def("readTrainerHeader",&readTrainerHeader);
-//    boost::python::def("readTrainerReplaceDatabase",&readTrainerReplaceDatabase);
-#endif
-}
-
-
-
-
-void TrainerOrganizer_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<TrainerOrganizer_O>()
-//    	.def("setCandoDatabase",&TrainerOrganizer_O::setCandoDatabase)
-//    	.def("getCandoDatabase",&TrainerOrganizer_O::getCandoDatabase)
-        .def("addTrainerHeader",&TrainerOrganizer_O::addTrainerHeader)
-        .def("getTrainerHeader",&TrainerOrganizer_O::getTrainerHeader)
-        .def("hasTrainerHeaderWithTrainerContext",&TrainerOrganizer_O::hasTrainerHeaderWithTrainerContext)
-        .def("numberOfTrainerHeaders",&TrainerOrganizer_O::numberOfTrainerHeaders)
-        .def("setData",&TrainerOrganizer_O::setData)
-        .def("getData",&TrainerOrganizer_O::getData)
-        .def("hasData",&TrainerOrganizer_O::hasData)
-        .def("getTrainerHeaderThatRecognizesSubsetOfContext",&TrainerOrganizer_O::getTrainerHeaderThatRecognizesSubsetOfContext)
-//	.add_property("iterate_Entries",
-//			range(&TrainerOrganizer_O::begin_Entries,
-//				&TrainerOrganizer_O::end_Entries))
-	.def("entriesAsCons",&TrainerOrganizer_O::entriesAsCons)
-	.def("getTopDirectory",&TrainerOrganizer_O::getTopDirectory)
-	.def("setTopDirectory",&TrainerOrganizer_O::setTopDirectory)
-	.def("getCandoDatabaseFileName",&TrainerOrganizer_O::getCandoDatabaseFileName)
-	.def("setCandoDatabaseFileName",&TrainerOrganizer_O::setCandoDatabaseFileName)
-        .def("getNextUniqueIndex",&TrainerOrganizer_O::getNextUniqueIndex)
-        .def("findEntryUsingContextKey",&TrainerOrganizer_O::findEntryUsingContextKey)
-	;
-//    def("create_TrainerOrganizer",&create_TrainerOrganizer,_lisp);
-//    core::af_def(ChemPkg,"writeTrainerOrganizer",&writeTrainerOrganizer);
-//    core::af_def(ChemPkg,"readTrainerOrganizer",&readTrainerOrganizer);
-}
-void TrainerOrganizer_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef	USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg,TrainerOrganizer,"","",_lisp)
-//    	.def("setCandoDatabase",&TrainerOrganizer_O::setCandoDatabase)
-//    	.def("getCandoDatabase",&TrainerOrganizer_O::getCandoDatabase)
-        .def("addTrainerHeader",&TrainerOrganizer_O::addTrainerHeader)
-        .def("getTrainerHeader",&TrainerOrganizer_O::getTrainerHeader)
-        .def("hasTrainerHeaderWithTrainerContext",&TrainerOrganizer_O::hasTrainerHeaderWithTrainerContext)
-        .def("numberOfTrainerHeaders",&TrainerOrganizer_O::numberOfTrainerHeaders)
-        .def("setData",&TrainerOrganizer_O::setData)
-        .def("getData",&TrainerOrganizer_O::getData)
-        .def("hasData",&TrainerOrganizer_O::hasData)
-        .def("getTrainerHeaderThatRecognizesSubsetOfContext",&TrainerOrganizer_O::getTrainerHeaderThatRecognizesSubsetOfContext)
-//	.add_property("iterate_Data",
-//			boost::python::range(&TrainerOrganizer_O::begin_Data,
-//				&TrainerOrganizer_O::end_Data))
-	.add_property("iterate_Entries",
-			boost::python::range(&TrainerOrganizer_O::begin_Entries,
-				&TrainerOrganizer_O::end_Entries))
-	.def("getTopDirectory",&TrainerOrganizer_O::getTopDirectory)
-	.def("setTopDirectory",&TrainerOrganizer_O::setTopDirectory)
-	.def("getCandoDatabaseFileName",&TrainerOrganizer_O::getCandoDatabaseFileName)
-	.def("setCandoDatabaseFileName",&TrainerOrganizer_O::setCandoDatabaseFileName)
-        .def("getNextUniqueIndex",&TrainerOrganizer_O::getNextUniqueIndex)
-        .def("findEntryUsingContextKey",&TrainerOrganizer_O::findEntryUsingContextKey)
-	;
-//    boost::python::def("create_TrainerOrganizer",&create_TrainerOrganizer);
-//    boost::python::def("writeTrainerOrganizer",&writeTrainerOrganizer);
-//    boost::python::def("readTrainerOrganizer",&readTrainerOrganizer);
-#endif
-}
 
 
 
 
 
-EXPOSE_CLASS(chem,TrainerHeader_O);
-EXPOSE_CLASS(chem,Trainer_O);
-EXPOSE_CLASS(chem,TrainerOrganizer_O);
+
+
+
+
 
 };
 

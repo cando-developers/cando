@@ -14,31 +14,14 @@ namespace units
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(CoordinateArray_O);
-
-    void CoordinateArray_O::exposeCando(::core::Lisp_sp lisp)
-    {
-	::core::class_<CoordinateArray_O>()
-	    .def_raw("__init__",&CoordinateArray_O::__init__,"(self &rest args)")
-	    .def_raw("getElement",&CoordinateArray_O::getElement_matchUnits)
-	    .def("coordinate-array-append",&CoordinateArray_O::append)
-	    .def("copy-CoordinateArray",&CoordinateArray_O::copy)
-	;
-    }
 
 
-    void CoordinateArray_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-	PYTHON_CLASS(UnitsPkg,CoordinateArray,"","",_lisp)
-	    .def("coordinate-array-append",&CoordinateArray_O::append)
-	    .def("copy-CoordinateArray",&CoordinateArray_O::copy)
-	;
-    }
+
 
 
 
     CoordinateArray_sp CoordinateArray_O::create(core::CoordinateArray_sp coords, core::Symbol_sp dimension, int power, core::Symbol_sp system,core::Lisp_sp lisp)
-    {_G();
+    {
 	CoordinateArray_sp uc = _lisp->create<CoordinateArray_O>();
 	/*Set the default system as units:*SI* */
 	core::CoordinateArray_sp camount = coords->copy();
@@ -53,7 +36,7 @@ namespace units
 
     /*! If last argument is a System then use that system, otherwise use the default units:*SI* */
     Object_sp CoordinateArray_O::__init__(::core::Executable_sp exec, ::core::Cons_sp allargs, ::core::Environment_sp env, ::core::Lisp_sp lisp)
-    {_G();
+    {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	core::Cons_sp args = allargs->cdr();

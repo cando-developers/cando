@@ -108,7 +108,7 @@ namespace geom {
 					const	XML_Char	**atts)
     {   
 	MySaxParser*	parser = (MySaxParser*)userData;
-	_G();
+	
 	LOG(BF("myExpatStartElement local name = %s") % (name ) );
 	parser->handler->setLocalName(name);
 	parser->handler->setLineNumber(XML_GetCurrentLineNumber(parser->getXMLParser()));
@@ -122,7 +122,7 @@ namespace geom {
 					const	XML_Char	*name )
     {
 	MySaxParser*	parser = (MySaxParser*)userData;
-	_G();
+	
 	LOG(BF("myExpatEndElement local name = %s") % (name ) );
 	parser->handler->setLocalName(name);
 	parser->handler->setLineNumber(XML_GetCurrentLineNumber(parser->getXMLParser()));
@@ -135,7 +135,7 @@ namespace geom {
 					int			len)
     {
 	MySaxParser*	parser = (MySaxParser*)userData;
-	_G();
+	
 	char		*myBuffer;
 
 	myBuffer = (char*)malloc(len+1);
@@ -159,7 +159,7 @@ namespace geom {
 //
 //
     MySaxParser::MySaxParser()
-    {_G();
+    {
     }
 
 
@@ -183,7 +183,7 @@ namespace geom {
 //
 //
     void	MySaxParser::shutDown()
-    { _G();
+    { 
 	XML_ParserFree(this->parser);
     }
 
@@ -193,7 +193,7 @@ namespace geom {
 //
 //
     void	MySaxParser::setContentHandler(MySaxHandlerDefault *aHandler )
-    {_G();
+    {
 	LOG(BF("MySaxParser::setContentHandler") );
 	this->handler = aHandler;
 
@@ -250,7 +250,7 @@ namespace geom {
 //	Parse the file, return true if everything was ok
 //
     bool	MySaxParser::parse(core::T_sp fIn, const string& fileName)
-    {_G();
+    {
 	unsigned char	buffer[BUFSIZ];
 	uint		sz;
 	XML_Status		xmlStatus;
@@ -294,7 +294,7 @@ namespace geom {
 //	Parse the string, return true if everything was ok
 //
     bool	MySaxParser::parseString(const char* xmlContent)
-    { _G();
+    { 
 	LOG(BF("MySaxParser::parseString") );
 	XML_Status		xmlStatus;
 

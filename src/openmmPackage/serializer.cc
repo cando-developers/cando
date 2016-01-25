@@ -26,7 +26,7 @@ namespace omm
 #define DECL_af_systemSerialize ""
 #define DOCS_af_systemSerialize "systemSerialize"
     core::T_sp af_systemSerialize(System_sp system, core::Path_sp path)
-    {_G();
+    {
 	boost::filesystem::ofstream fout;
 	fout.open(path->getPath(),ios::out);
 	if (fout.good() )
@@ -44,7 +44,7 @@ namespace omm
 #define DECL_af_systemDeserialize ""
 #define DOCS_af_systemDeserialize "systemDeserialize"
     System_sp af_systemDeserialize(core::Path_sp path)
-    {_G();
+    {
 	OpenMM::System* rawSystem = NULL;
 	boost::filesystem::ifstream fin;
 	fin.open(path->getPath(),ios::in);
@@ -64,7 +64,7 @@ namespace omm
 
 
     void initializeSerializers(core::Lisp_sp lisp)
-    {_G();
+    {
 	Defun(systemSerialize);
 	Defun(systemDeserialize);
     }

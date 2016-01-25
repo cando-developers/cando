@@ -14,7 +14,7 @@ namespace kinematics
 {
 
     RefCountedAtomHandle DelayedBondedAtom::stubAtom3(AtomTree_sp tree) const
-    {_G();
+    {
 	if ( this->_DelayType == delayForFollowingResidueBond1 )
 	{
 //	    chem::ConstitutionAtomIndex0N id = this->_DelayAtomId;

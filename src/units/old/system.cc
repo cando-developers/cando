@@ -12,26 +12,13 @@ namespace units
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(System_O);
-
-    void System_O::exposeCando(::core::Lisp_sp lisp)
-    {
-	::core::class_<System_O>()
-//	.def_raw("__init__",&System_O::__init__,"(self)")
-	;
-    }
 
 
-    void System_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-	PYTHON_CLASS(UnitsPkg,System,"","",_lisp)
-//	.def_raw("__init__",&initArgs("(self)")
-	;
-    }
+
 
 
     Object_sp System_O::__init__(::core::Executable_sp exec, ::core::Cons_sp args, ::core::Environment_sp env, ::core::Lisp_sp lisp)
-    {_G();
+    {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	return _lisp->onil();
@@ -60,7 +47,7 @@ namespace units
 				uint luminositySymbolIndex,
 				uint amountSymbolIndex,
 				core::Lisp_sp lisp)
-    {_G();
+    {
 	System_sp system = RP_Create<System_O>(lisp);
 	core::Binder_sp dimensionDatabase = _lisp->symbol(_sym_UnitsPkg_StarUnitDatabaseStar)->symbolValue().as<core::Binder_O>();
 	system->_Name = systemName;

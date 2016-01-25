@@ -26,8 +26,6 @@ namespace chem
 {
 
 
-    REGISTER_CLASS(chem, FFAngle_O );
-    REGISTER_CLASS(chem, FFAngleDb_O );
 
 void FFAngle_O::fields(core::Record_sp node)
 {
@@ -139,7 +137,7 @@ void    FFAngleDb_O::add(FFAngle_sp ang)
 
 
 FFAngle_sp FFAngleDb_O::findTerm(chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3 )
-{ _G();
+{ 
 FFAngle_sp       match;
 core::Symbol_sp          key;
 core::Symbol_sp		t1, t2, t3;
@@ -210,7 +208,7 @@ void	FFAngle_O::initialize()
 
 /*! Estimate the angle term according to Wang et al. J. Comput. Chem 25, 1157-1174 (2004) */
 FFAngle_sp	FFAngleDb_O::estimateTerm(chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3 )
-{_G();
+{
 FFStretch_sp	r12,r32;
 FFAngle_sp	ff_121;
 FFAngle_sp	ff_323;

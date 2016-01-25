@@ -13,26 +13,14 @@
 
 namespace chem
 {
-    EXPOSE_CLASS(chem,ConstitutionBond_O);
 
-    void ConstitutionBond_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<ConstitutionBond_O>()
-	    ;
-    }
 
-    void ConstitutionBond_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,ConstitutionBond,"","",_lisp)
-	    ;
-#endif
-    }
+
 
 ;
 
     ConstitutionBond_sp ConstitutionBond_O::create(BondOrder order, ConstitutionAtomIndex0N index)
-    {_G();
+    {
 	GC_ALLOCATE(ConstitutionBond_O, me );
 	me->_BondOrder = order;
 	me->_AtomIndex = index;
@@ -56,30 +44,16 @@ namespace chem
 #endif
 
 
-    EXPOSE_CLASS(chem,ConstitutionAtom_O);
 
-    void ConstitutionAtom_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<ConstitutionAtom_O>()
-	    .def("atomName",&ConstitutionAtom_O::atomName)
-	    ;
-    }
 
-    void ConstitutionAtom_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,ConstitutionAtom,"","",_lisp)
-	    .def("atomName",&ConstitutionAtom_O::atomName)
-	    ;
-#endif
-    }
+
 
 ;
 
 
     ConstitutionAtom_sp ConstitutionAtom_O::create(MatterName name, Element element,
 						   ConstitutionAtomIndex0N index )
-    {_G();
+    {
 	ConstitutionAtom_sp ta = ConstitutionAtom_O::create();
 	ta->_AtomName = name;
 	ta->_Element = element;
@@ -106,7 +80,7 @@ namespace chem
 #endif
 
     string ConstitutionAtom_O::__repr__() const
-    {_G();
+    {
 	stringstream ss;
 	ss << "( " << this->className() << " ";
 	ss << " :atomName \"" << this->_AtomName << "\"";
@@ -117,27 +91,15 @@ namespace chem
 
 
 
-    EXPOSE_CLASS(chem,ConstitutionVirtualAtom_O);
 
-    void ConstitutionVirtualAtom_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<ConstitutionVirtualAtom_O>()
-	    ;
-    };
+;
 
-    void ConstitutionVirtualAtom_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,ConstitutionVirtualAtom,"","",_lisp)
-	    ;
-#endif
-    };
 
 
     ConstitutionVirtualAtom_sp ConstitutionVirtualAtom_O::create(MatterName name
                                                                  , ConstitutionAtomIndex0N index
 								 , CalculatePosition_sp code )
-    {_G();
+    {
 	ConstitutionVirtualAtom_sp ta = ConstitutionVirtualAtom_O::create();
 	ta->_AtomName = name;
 	ta->_AtomIndex = index;
@@ -146,7 +108,7 @@ namespace chem
     }
 
     ConstitutionVirtualAtom_sp ConstitutionVirtualAtom_O::create(MatterName name, CalculatePosition_sp code)
-    {_G();
+    {
 	ConstitutionVirtualAtom_sp ta = ConstitutionVirtualAtom_O::create();
 	ta->_AtomName = name;
 	ta->_AtomIndex = UndefinedUnsignedInt;
@@ -172,38 +134,14 @@ namespace chem
 
 
 
-    EXPOSE_CLASS(chem,ConstitutionAtoms_O);
 
-    void ConstitutionAtoms_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<ConstitutionAtoms_O>()
-	    .def("setNetCharge",&ConstitutionAtoms_O::setNetCharge)
-	    .def("atomNamesAsSymbolSet",&ConstitutionAtoms_O::atomNamesAsSymbolSet)
-	    .def("atomWithName",&ConstitutionAtoms_O::atomWithName)
-	    .def("atomWithId",&ConstitutionAtoms_O::atomWithId)
-	    .def("constitution-atoms-index",&ConstitutionAtoms_O::index)
-//	    .def("makeResidue",&ConstitutionAtoms_O::makeResidue)
-	    ;
-    }
 
-    void ConstitutionAtoms_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,ConstitutionAtoms,"","",_lisp)
-	    .def("setNetCharge",&ConstitutionAtoms_O::setNetCharge)
-	    .def("atomNamesAsStringSet",&ConstitutionAtoms_O::atomNamesAsStringSet)
-	    .def("atomWithName",&ConstitutionAtoms_O::atomWithName)
-	    .def("atomWithId",&ConstitutionAtoms_O::atomWithId)
-	    .def("constitution-atoms-index",&ConstitutionAtoms_O::index)
-	    .def("makeResidue",&ConstitutionAtoms_O::makeResidue)
-	    ;
-#endif
-    }
+
 
 ;
 
     ConstitutionAtoms_sp ConstitutionAtoms_O::create(Residue_sp residue)
-    {_G();
+    {
 	GC_ALLOCATE(ConstitutionAtoms_O, catoms );
 	Matter_O::contentIterator it;
 	ConstitutionAtomIndex0N index = 0;
@@ -287,7 +225,7 @@ CL_DEFMETHOD     ConstitutionAtom_sp ConstitutionAtoms_O::atomWithName(MatterNam
 
 CL_LISPIFY_NAME("atomWithId");
 CL_DEFMETHOD     ConstitutionAtom_sp ConstitutionAtoms_O::atomWithId(ConstitutionAtomIndex0N id) const
-    {_G();
+    {
 	return this->_Atoms[id];
     }
 

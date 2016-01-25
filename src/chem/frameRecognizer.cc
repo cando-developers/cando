@@ -17,7 +17,7 @@ void	FrameRecognizer_O::initialize()
 
 CL_LISPIFY_NAME("compileSmarts");
 CL_DEFMETHOD void	FrameRecognizer_O::compileSmarts(const string& osm)
-{_G();
+{
     this->_Smarts = osm;
     this->_ChemInfo = chem::ChemInfo_O::create();
     this->_ChemInfo ->compileSmarts(this->_Smarts);
@@ -70,7 +70,7 @@ CL_DEFMETHOD void	FrameRecognizer_O::compileSmarts(const string& osm)
 
 CL_LISPIFY_NAME("recognizes");
 CL_DEFMETHOD bool	FrameRecognizer_O::recognizes( Atom_sp o )
-{_G();
+{
     ASSERTNOTNULL(this->_ChemInfo);
     ASSERT(this->_ChemInfo->compileSucceeded());
     return this->_ChemInfo->matches(o);
@@ -79,7 +79,7 @@ CL_DEFMETHOD bool	FrameRecognizer_O::recognizes( Atom_sp o )
 
 CL_LISPIFY_NAME("getMatch");
 CL_DEFMETHOD ChemInfoMatch_sp FrameRecognizer_O::getMatch()
-{_G();
+{
     return this->_ChemInfo->getMatch();
 }
 
@@ -92,7 +92,7 @@ CL_DEFMETHOD ChemInfoMatch_sp FrameRecognizer_O::getMatch()
 
 CL_LISPIFY_NAME("depth");
 CL_DEFMETHOD uint FrameRecognizer_O::depth()
-{_G();
+{
     ASSERTNOTNULL(this->_ChemInfo);
     return this->_ChemInfo->depth();
 }
@@ -136,7 +136,7 @@ string FrameRecognizer_O::description() const
 #define DECL_FrameRecognizer_O_make ""
 #define DOCS_FrameRecognizer_O_make "make FrameRecognizer"
   FrameRecognizer_sp FrameRecognizer_O::make(core::Symbol_sp name, const string& smarts, core::Symbol_sp groupName)
-  {_G();
+  {
       GC_ALLOCATE(FrameRecognizer_O, me );
     me->_Name = name;
     me->_Smarts = smarts;
@@ -168,48 +168,9 @@ string FrameRecognizer_O::description() const
 
 #endif
 
-void FrameRecognizer_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<FrameRecognizer_O>()
-//	.def_raw("core:__init__",&FrameRecognizer_O::__init__,"(self &key name (smarts \"\") groupName)")
-	.def("recognizes",&FrameRecognizer_O::recognizes)
-//	.def("boundFrame",&FrameRecognizer_O::boundFrame)
-	.def("getMatch",&FrameRecognizer_O::getMatch)
-	.def("getSmarts",&FrameRecognizer_O::getSmarts)
-//	.def("getMatchedAtomWithTag",&FrameRecognizer_O::getMatchedAtomWithTag)
-//	.def("getTemporaryOAtomMatch",&FrameRecognizer_O::getTemporaryOAtomMatch)
-//	.def("getTemporaryPAtomMatch",&FrameRecognizer_O::getTemporaryPAtomMatch)
-//	.def("getTemporaryQAtomMatch",&FrameRecognizer_O::getTemporaryQAtomMatch)
-	.def("getRecognizerName",&FrameRecognizer_O::getRecognizerName)
-	.def("getGroupName",&FrameRecognizer_O::getGroupName)
-	.def("compileSmarts",&FrameRecognizer_O::compileSmarts)
-	.def("depth",&FrameRecognizer_O::depth)
-	;
-}
-
-    void FrameRecognizer_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,FrameRecognizer,"","",_lisp)
-	.def("recognizes",&FrameRecognizer_O::recognizes)
-//	.def("boundFrame",&FrameRecognizer_O::boundFrame)
-	.def("getMatch",&FrameRecognizer_O::getMatch)
-	.def("getSmarts",&FrameRecognizer_O::getSmarts)
-//	.def("getMatchedAtomWithTag",&FrameRecognizer_O::getMatchedAtomWithTag)
-//	.def("getTemporaryOAtomMatch",&FrameRecognizer_O::getTemporaryOAtomMatch)
-//	.def("getTemporaryPAtomMatch",&FrameRecognizer_O::getTemporaryPAtomMatch)
-//	.def("getTemporaryQAtomMatch",&FrameRecognizer_O::getTemporaryQAtomMatch)
-	.def("getRecognizerName",&FrameRecognizer_O::getRecognizerName)
-	.def("compileSmarts",&FrameRecognizer_O::compileSmarts)
-	;
-#endif
-//    boost::python::def("create_FrameRecognizer", &FrameRecognizer_O::create );
-#endif
-}
 
 
-    EXPOSE_CLASS(chem,FrameRecognizer_O);
+
 };
 
 

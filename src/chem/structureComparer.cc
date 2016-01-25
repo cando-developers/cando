@@ -21,7 +21,6 @@
 
 namespace chem {
 
-    REGISTER_CLASS(chem, StructureComparer_O );
 
 
 
@@ -36,7 +35,7 @@ void	StructureComparer_O::initialize()
 
 
 void	StructureComparer_O::setFixedMatter(Matter_sp matter)
-{_G();
+{
 Loop	loop;
 Atom_sp	a;
     this->_Matter = matter;
@@ -51,7 +50,7 @@ Atom_sp	a;
 
 
 void	StructureComparer_O::initializeFixedCoordinates()
-{_G();
+{
 int		ia;
 this->_FixedCoordinates = geom::CoordinateArray_O::create(this->_SuperposeAtoms.size());
 gctools::SmallOrderedSet<Atom_sp>::iterator	oa;
@@ -63,13 +62,13 @@ gctools::SmallOrderedSet<Atom_sp>::iterator	oa;
 
 
     void	StructureComparer_O::superposeAtomsFromSet(gctools::SmallOrderedSet<Atom_sp> atoms)
-{_G();
+{
     this->_SuperposeAtoms = atoms;
     this->initializeFixedCoordinates();
 };
 
 void	StructureComparer_O::superposeAllHeavyAtoms()
-{_G();
+{
     gctools::SmallOrderedSet<Atom_sp>::iterator	oa;
     this->_SuperposeAtoms.clear();
     for ( oa=this->_AllAtoms.begin(); oa!=this->_AllAtoms.end(); oa++ )
@@ -87,7 +86,7 @@ void	StructureComparer_O::superposeAllHeavyAtoms()
 
 
 double StructureComparer_O::calculateRmsWithMatter(Matter_sp matter)
-{_G();
+{
     gctools::SmallOrderedSet<Atom_sp>::iterator			ai;
 SuperposeEngine_sp				superposer;
 Matrix					transform;
@@ -134,7 +133,7 @@ geom::CoordinateArray_sp			moveableCoordinates;
 
 #ifdef XML_ARCHIVE
     void	StructureComparer_O::archive(core::ArchiveP node)
-{_G();
+{
     node->attribute( "Matter", this->_Matter );
     node->archiveOrderedSet( "AllAtoms", this->_AllAtoms );
     node->archiveOrderedSet( "SuperposeAtoms", this->_SuperposeAtoms );

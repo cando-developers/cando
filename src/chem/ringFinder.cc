@@ -68,7 +68,7 @@ void PathMessage_O::initialize()
 
 PathMessage_sp	PathMessage_O::create(RingFinder_sp graph, AGVertex_sp firstVertex,
     				AGEdge_sp firstEdge, AGVertex_sp lastVertex )
-{_G();
+{
     GC_ALLOCATE(PathMessage_O, pm );
     pm->_graph = graph;
     pm->_beep = core::SimpleBitVector_O::make(graph->getNumberOfEdges());
@@ -81,7 +81,7 @@ PathMessage_sp	PathMessage_O::create(RingFinder_sp graph, AGVertex_sp firstVerte
 
 
 PathMessage_sp PathMessage_O::copy()
-{_G();
+{
     GC_COPY(PathMessage_O, pm , *this); // = RP_Copy<PathMessage_O>(this);
     return pm;
 }
@@ -89,33 +89,33 @@ PathMessage_sp PathMessage_O::copy()
 
 
 void PathMessage_O::join(PathMessage_sp other)
-{_G();
+{
     this->_beep->inPlaceOr(other->_beep);
 }
 
 AGVertex_sp PathMessage_O::getFirstVertex()
-{_G();
+{
     return this->_firstVertex;
 }
 
 AGEdge_sp PathMessage_O::getFirstEdge()
-{_G();
+{
     return this->_firstEdge;
 }
 
 
 AGVertex_sp PathMessage_O::getLastVertex()
-{_G();
+{
     return this->_lastVertex;
 }
 
 void PathMessage_O::updateLastVertex(AGVertex_sp vert)
-{_G();
+{
     this->_lastVertex = vert;
 }
 
 void PathMessage_O::update(AGEdge_sp edge, AGVertex_sp vertex )
-{_G();
+{
     this->_lastVertex = vertex;
     uint ei = edge->getId();
     this->_beep->setBit(ei,1);
@@ -123,7 +123,7 @@ void PathMessage_O::update(AGEdge_sp edge, AGVertex_sp vertex )
 
 
 void PathMessage_O::dump()
-{_G();
+{
     Atom_sp a1 = this->_firstVertex->getAtom();
     core::Symbol_sp firstName = a1->getName();
     uint firstResidue = a1->getResidueContainedBy()->getId();
@@ -151,7 +151,7 @@ void PathMessage_O::dump()
 
 
 core::List_sp PathMessage_O::getAtoms()
-{_G();
+{
     gctools::SmallOrderedSet<Atom_sp>	atoms;
     vector<uint>::iterator ei;
     vector<uint> edges;
@@ -176,7 +176,7 @@ core::List_sp PathMessage_O::getAtoms()
 
 
 core::SimpleBitVector_sp	PathMessage_O::beep()
-{_G();
+{
     return this->_beep;
 }
 
@@ -191,7 +191,7 @@ core::SimpleBitVector_sp	PathMessage_O::beep()
 
 
 AGVertex_sp AGVertex_O::create(RingFinder_sp graph, Atom_sp atom)
-{_G();
+{
     GC_ALLOCATE(AGVertex_O, v );
     v->_graph = graph;
     v->_atom = atom;
@@ -205,7 +205,7 @@ AGVertex_sp AGVertex_O::create(RingFinder_sp graph, Atom_sp atom)
 
 
 core::List_sp	AGVertex_O::getConnectedVertices()
-{_G();
+{
     core::List_sp	verts = _Nil<core::T_O>();
     for ( uint i=0, iEnd(this->_edges.size()); i<iEnd; ++i ) {
 	verts = core::Cons_O::create(this->_edges[i],verts);
@@ -223,7 +223,7 @@ string AGVertex_O::description() const
 }
 
 void	AGVertex_O::dump()
-{_G();
+{
     this->_atom->dump();
     for ( auto cur : this->getConnectedVertices() ) {
  	_lisp->prin1(BF("%s ") % cur->car<AGVertex_O>()->getAtom()->getName() );
@@ -233,30 +233,30 @@ void	AGVertex_O::dump()
 
 
 Atom_sp	AGVertex_O::getAtom()
-{_G();
+{
     return this->_atom;
 }
 
 
 void AGVertex_O::addEdge(AGEdge_sp edge)
-{_G();
+{
     this->_edges.push_back(edge);
 }
 
 void AGVertex_O::emptySendBuffer()
-{_G();
+{
     this->_sendBuffer = _Nil<core::T_O>();
 }
 
 
 void AGVertex_O::emptyReceiveBuffer()
-{_G();
+{
     this->_receiveBuffer = _Nil<core::T_O>();
 }
 
 
 void AGVertex_O::initializeRingSearch()
-{_G();
+{
     this->emptySendBuffer();
     for ( uint i=0, iEnd(this->_edges.size()); i<iEnd; ++i ) {
 	AGEdge_sp x = this->_edges[i];
@@ -268,7 +268,7 @@ void AGVertex_O::initializeRingSearch()
 
 
 void AGVertex_O::send()
-{_G();
+{
     if ( this->_edges.size() == 0 ) return;
     for ( uint i=0,iEnd(this->_edges.size()); i<iEnd; ++i ) {
 	AGEdge_sp edge = this->_edges[i];
@@ -294,7 +294,7 @@ void AGVertex_O::send()
 }
 
 void AGVertex_O::acceptMessage(PathMessage_sp msg)
-{_G();
+{
     this->_receiveBuffer = core::Cons_O::create(msg,this->_receiveBuffer);
 };
 
@@ -302,7 +302,7 @@ void AGVertex_O::acceptMessage(PathMessage_sp msg)
 
 
 void AGVertex_O::receive(uint stage)
-{_G();
+{
   if ( this->_edges.size() == 0 ) return;
 	    //
 	    // First cluster all the direct edge messages
@@ -499,7 +499,7 @@ void AGVertex_O::receive(uint stage)
 
 
 AGEdge_sp AGEdge_O::create(RingFinder_sp graph, Atom_sp atom1, Atom_sp atom2 )
-{_G();
+{
     GC_ALLOCATE(AGEdge_O, edge );
     edge->_graph = graph;
     edge->_id = graph->getNextEdgeId();
@@ -519,17 +519,17 @@ AGEdge_sp AGEdge_O::create(RingFinder_sp graph, Atom_sp atom1, Atom_sp atom2 )
 
 
 AGVertex_sp AGEdge_O::getVertex1()
-{_G();
+{
     return this->_vertex1;
 }
 
 AGVertex_sp AGEdge_O::getVertex2()
-{_G();
+{
     return this->_vertex2;
 }
 
 uint	AGEdge_O::getId()
-{_G();
+{
     return this->_id;
 }
 
@@ -546,7 +546,7 @@ AGVertex_sp AGEdge_O::otherVertex(AGVertex_sp firstVertex )
 
 
 uint AGEdge_O::getSide(AGVertex_sp vert)
-{_G();
+{
     if ( vert == this->_vertex1 )
     {
 	return 0;
@@ -556,7 +556,7 @@ uint AGEdge_O::getSide(AGVertex_sp vert)
 
 
 RingFinder_sp RingFinder_O::create(Molecule_sp mol)
-{_G();
+{
     GC_ALLOCATE(RingFinder_O, graph );
     graph->_vertices = core::HashTable_O::create(cl::_sym_eq);
     graph->defineForMolecule(mol);
@@ -565,7 +565,7 @@ RingFinder_sp RingFinder_O::create(Molecule_sp mol)
 
 
 void RingFinder_O::defineForMolecule(Molecule_sp mol)
-{_G();
+{
   LOG(BF("Creating RingFinder") );
   Loop loop;
   loop.loopTopGoal(mol,ATOMS);
@@ -601,13 +601,13 @@ void RingFinder_O::defineForMolecule(Molecule_sp mol)
 }
 
 uint RingFinder_O::getNextEdgeId()
-{_G();
+{
     return this->_edges.size();
 }
 
 #if 0
 Atom_sp RingFinder_O::firstAtom()
-{_G();
+{
     gctools::SmallMap<Atom_sp,AGVertex_sp>::iterator it;
     it = this->_vertices.begin();
     return it->second->getAtom();
@@ -615,7 +615,7 @@ Atom_sp RingFinder_O::firstAtom()
 #endif
 
 AGVertex_sp RingFinder_O::vertexForAtom(Atom_sp anAtom)
-{_G();
+{
     core::T_sp result = this->_vertices->gethash(anAtom,_Nil<T_O>());
     if (result.nilp()) {
 	SIMPLE_ERROR(BF("Could not find atom: %s in atom-vertex map in RingFinder\n") % _rep_(anAtom).c_str() );
@@ -638,7 +638,7 @@ public:
 
 
 void RingFinder_O::dump()
-{_G();
+{
     RingFinderVertexMapper mapper;
     this->_vertices->lowLevelMapHash(&mapper);
     _lisp->print(BF("There are %d atoms") % mapper._Count );
@@ -646,22 +646,22 @@ void RingFinder_O::dump()
 
 
 core::HashTable_sp& RingFinder_O::getVertices()
-{_G();
+{
     return this->_vertices;
 }
 
 gctools::Vec0<AGEdge_sp>& RingFinder_O::getEdges()
-{_G();
+{
     return this->_edges;
 }
 
 uint RingFinder_O::getNumberOfEdges()
-{_G();
+{
     return this->_edges.size();
 }
 
 int RingFinder_O::getNumberOfRingsExpected()
-{_G();
+{
     LOG(BF("this->_edges.size() = %d") % this->_edges.size()  );
     LOG(BF("this->_vertices->hashTableCount() = %d") % this->_vertices->hashTableCount()  );
     int num = this->_edges.size()-this->_vertices->hashTableCount()+1;
@@ -684,7 +684,7 @@ public:
 
 
 void RingFinder_O::initializeRingSearch()
-{_G();
+{
     this->_finalRings.clear();
     RingFinderVertexInitializeMapper mapper;
     this->_vertices->lowLevelMapHash(&mapper);
@@ -715,7 +715,7 @@ public:
 
 
 void RingFinder_O::advanceRingSearch(uint stage)
-{_G();
+{
     {_BLOCK_TRACE("send stage");
 	RingFinderVertexSend sender;
 	this->_vertices->lowLevelMapHash(&sender);
@@ -730,7 +730,7 @@ void RingFinder_O::advanceRingSearch(uint stage)
 
 CL_LISPIFY_NAME("findRings");
 CL_DEFMETHOD void RingFinder_O::findRings(int numAtoms)
-{_G();
+{
     ASSERTF(numAtoms>0,BF("You tried to find rings in a molecule with zero atoms"));
     this->initializeRingSearch();
     int numberOfRingsExpected = this->getNumberOfRingsExpected();
@@ -756,7 +756,7 @@ CL_DEFMETHOD void RingFinder_O::findRings(int numAtoms)
 
 
 void RingFinder_O::addRing(PathMessage_sp ring, uint stage)
-{_G();
+{
     core::SimpleBitVector_sp beep = ring->beep();
     LOG(BF("Adding ring with beep=%s") % beep->__repr__() );
     core::HashGenerator hg;
@@ -781,7 +781,7 @@ void RingFinder_O::addRing(PathMessage_sp ring, uint stage)
 
 
 bool RingFinder_O::linearlyIndependentRing(PathMessage_sp ring)
-{_G();
+{
     core::SimpleBitVector_sp beep = ring->beep()->deepCopy().as<core::SimpleBitVector_O>();
 	    //
 	    // Swap rows to make the matrix upper triangular
@@ -829,7 +829,7 @@ bool RingFinder_O::linearlyIndependentRing(PathMessage_sp ring)
 
 CL_LISPIFY_NAME("getAllRingsAsListsOfAtoms");
 CL_DEFMETHOD core::List_sp RingFinder_O::getAllRingsAsListsOfAtoms()
-{_G();
+{
     core::List_sp lists = _Nil<core::T_O>();
     gctools::Vec0<PathMessage_sp>::iterator	it;
     uint ridx=0;
@@ -846,7 +846,7 @@ CL_DEFMETHOD core::List_sp RingFinder_O::getAllRingsAsListsOfAtoms()
 
 
 core::List_sp RingFinder_O::identifyRingsInMolecule(Molecule_sp molecule)
-{_G();
+{
      	//
 	// First clear all ring flags
 	//
@@ -906,7 +906,7 @@ __END_DOC
 */
 CL_LISPIFY_NAME(identify-rings);
 CL_DEFUN core::List_sp RingFinder_O::identifyRings(Matter_sp matter)
-{_G();
+{
     if ( matter.isA<Molecule_O>() )
     {
         Molecule_sp mol = downcast<Molecule_O>(matter);
@@ -968,30 +968,7 @@ CL_DEFUN core::List_sp RingFinder_O::ringBonds(core::List_sp atoms) {
   return ringBonds;
 }
 
-    void RingFinder_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<RingFinder_O>()
-    	.def("findRings", &RingFinder_O::findRings)	
-	.def("getAllRingsAsListsOfAtoms", &RingFinder_O::getAllRingsAsListsOfAtoms )
-    ;
-//    core::af_def(ChemPkg,"identifyRings",&RingFinder_O::identifyRings);
-//    core::af_def(ChemPkg,"ringBonds",&RingFinder_O::ringBonds);
-}
-void RingFinder_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef	USEBOOSTPYTHON
-//    boost::python::def("create_RingFinder",&RingFinder_O::create,_lisp);
-    PYTHON_CLASS(ChemPkg,RingFinder,"","",_lisp)
-    .def("findRings",&RingFinder_O::findRings)
-    .def("getAllRingsAsListsOfAtoms",&RingFinder_O::getAllRingsAsListsOfAtoms)
-    ;
-#endif
-}
 
-REGISTER_CLASS(chem,PathMessage_O);
-REGISTER_CLASS(chem,AGVertex_O);
-REGISTER_CLASS(chem,AGEdge_O);
-EXPOSE_CLASS(chem,RingFinder_O);
 
 };
 

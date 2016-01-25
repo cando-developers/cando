@@ -41,23 +41,8 @@ bool IterateCons_O::isDone()
 };
 
 
-    void IterateCons_O::exposeCando(core::Lisp_sp lisp)
-{
-    core::class_<IterateCons_O>()
-		.def("init",&IterateCons_O::init)
-	;
-//	def("create_IterateCons",&IterateCons_O::create);
-}
 
-    void IterateCons_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef	USEBOOSTPYTHON //[
-	PYTHON_CLASS(CorePkg,IterateCons,"","",_lisp)
-    ;
-#endif //]
-}
 
-    EXPOSE_CLASS(adapt,IterateCons_O);
 };
 
 

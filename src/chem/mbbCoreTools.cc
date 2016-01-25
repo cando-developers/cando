@@ -166,7 +166,7 @@ Residue_sp		res;
 
 
     uint connectVdwOverlappingUnconnectedAtoms(gctools::Vec0<Atom_sp>& atoms)
-    {_G();
+    {
 	uint connected = 0;
 	LOG(BF("There are %d unconnected atoms to connect together") % atoms.size()  );
 	for ( gctools::Vec0<Atom_sp>::iterator i1 = atoms.begin(); i1!=atoms.end()-1; i1++ )
@@ -197,7 +197,7 @@ Residue_sp		res;
 
 
 CL_DEFUN void chem__connectAtomsInMatterInCovalentContact(Matter_sp matter)
-    {_G();
+    {
         gctools::Vec0<Atom_sp>	atoms;
 	Loop lAtoms;
 	lAtoms.loopTopGoal(matter,ATOMS);
@@ -218,7 +218,7 @@ CL_DEFUN void chem__connectAtomsInMatterInCovalentContact(Matter_sp matter)
     /*! Return all of the atoms in the matter that are within the sphere indicated by center/radius
      */
 CL_DEFUN adapt::ObjectSet_sp chem__atomsWithinSphereAsObjectSet( Matter_sp matter, Vector3 center, double radius )
-    {_G();
+    {
 	LOG(BF("Looking for atoms in sphere with center(%s) and radius(%lf)") % center.asString() % radius );
 	adapt::ObjectSet_sp result = adapt::ObjectSet_O::create();
 	Loop lAtoms;

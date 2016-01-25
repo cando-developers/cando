@@ -41,7 +41,6 @@
 #include <cando/chem/candoDatabaseDependent.h>
 #include <clasp/core/wrappers.h>
 
-//REGISTER_CLASS(chem, O_NamesCrossReference );
 
 namespace chem 
 {
@@ -175,14 +174,14 @@ CL_DEFMETHOD     bool CandoDatabase_O::recognizesRepresentedEntityNameSet(core::
 
 CL_LISPIFY_NAME("addFrameRecognizer");
 CL_DEFMETHOD     void CandoDatabase_O::addFrameRecognizer(FrameRecognizer_sp rec)
-    { _G();
+    { 
 	this->_frameRecognizers.set(rec->getRecognizerName(),rec);
     }
 
 
 CL_LISPIFY_NAME("recognizesFrameRecognizerName");
 CL_DEFMETHOD     bool	CandoDatabase_O::recognizesFrameRecognizerName(core::Symbol_sp nm)
-    { _G();
+    { 
 	bool rec;
 	rec = this->_frameRecognizers.contains(nm);
 	LOG(BF("found = %d") % rec  );
@@ -194,7 +193,7 @@ CL_DEFMETHOD     bool	CandoDatabase_O::recognizesFrameRecognizerName(core::Symbo
 
 #if 0
     core::T_sp CandoDatabase_O::oGetReference(core::ObjRef_sp ref)
-    {_G();
+    {
 	if ( ref->getSelector() == "Constitution" )
 	{
 	    return this->_Constitutions.getDefaultNil(ref->getName());
@@ -210,13 +209,13 @@ CL_DEFMETHOD     bool	CandoDatabase_O::recognizesFrameRecognizerName(core::Symbo
 
 
     bool	CandoDatabase_O::recognizesEntityNameSetName(core::Symbol_sp nm)
-    {_G();
+    {
 	return this->recognizesEntityOfClass(nm,core::cl__find_class(EntityNameSet_O::static_classSymbol()));
     }
 
 CL_LISPIFY_NAME("getEntityNameSet");
 CL_DEFMETHOD     EntityNameSet_sp CandoDatabase_O::getEntityNameSet( core::Symbol_sp nm )
-    {_G();
+    {
 	return this->getEntityOfClass(nm,core::cl__find_class(EntityNameSet_O::static_classSymbol())).as<EntityNameSet_O>();
     };
 
@@ -224,7 +223,7 @@ CL_DEFMETHOD     EntityNameSet_sp CandoDatabase_O::getEntityNameSet( core::Symbo
 
 CL_LISPIFY_NAME("getRepresentedEntityNameSet");
 CL_DEFMETHOD     RepresentedEntityNameSet_sp CandoDatabase_O::getRepresentedEntityNameSet( core::Symbol_sp nm )
-    {_G();
+    {
 	return this->getEntityOfClass(nm,core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol())).as<RepresentedEntityNameSet_O>();
     };
 
@@ -238,7 +237,7 @@ CL_DEFMETHOD     bool	CandoDatabase_O::recognizesSetOrConstitutionOrMonomerName(
 
 CL_LISPIFY_NAME("getEntity");
 CL_DEFMETHOD     Entity_sp CandoDatabase_O::getEntity(core::Symbol_sp nm) const
-    {_G();
+    {
 	ASSERTF(this->_Entities.contains(nm),
 		BF("CandoDatabase does not contain entity[%s]") % nm->__repr__() );
 	return this->_Entities.get(nm);
@@ -246,7 +245,7 @@ CL_DEFMETHOD     Entity_sp CandoDatabase_O::getEntity(core::Symbol_sp nm) const
 
 
     Entity_sp CandoDatabase_O::getEntityOfClass(core::Symbol_sp nm, core::Class_sp mc)
-    {_G();
+    {
 	ASSERTF(this->_Entities.contains(nm),
 		BF("CandoDatabase does not contain entity[%s]")
 		% nm->__repr__() );
@@ -280,7 +279,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp CandoDatabase_O::expandEntityNamesToTermina
 
 #if 0
     bool	CandoDatabase_O::monomersAreDefinedForSetOrConstitutionOrMonomerName(core::Symbol_sp nm)
-    {_G();
+    {
 	LOG(BF("looking for(%s)") % nm->__repr__()  );
 	EntityNameSet_sp group;
 	if ( this->recognizesEntityNameSetName(nm) )
@@ -332,7 +331,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp CandoDatabase_O::getMonomersForSetOrConstit
 
 #if 0
     RepresentativeList_sp CandoDatabase_O::expandEntityNameToListOfRepresentatives(core::Symbol_sp nm)
-    { _G();
+    { 
 	Entity_sp obj;
 	geom::ObjectList_sp 	ll;
 	LOG(BF("Looking for name(%s)") % nm->__repr__()  );
@@ -347,7 +346,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp CandoDatabase_O::getMonomersForSetOrConstit
 
 CL_LISPIFY_NAME("recognizesNameOrPdb");
 CL_DEFMETHOD     bool	CandoDatabase_O::recognizesNameOrPdb(core::Symbol_sp nm)
-    {_G();
+    {
 	if ( !this->recognizesMonomerName(nm) )
 //    ASSERTNOTNULL(this->_Names);
 //    ASSERTvalue(this->_Entities.contains(nm), nm); // REMOVE
@@ -362,7 +361,7 @@ CL_DEFMETHOD     bool	CandoDatabase_O::recognizesNameOrPdb(core::Symbol_sp nm)
 
 #ifdef XML_ARCHIVE
     void	CandoDatabase_O::archiveBase(core::ArchiveP node)
-    {_G();
+    {
 	this->Base::archiveBase(node);
 	node->attribute("name",this->_Name);
 	node->attributeIfNotDefault<string>("dateCreated",this->_DateCreated,"");
@@ -378,7 +377,7 @@ CL_DEFMETHOD     bool	CandoDatabase_O::recognizesNameOrPdb(core::Symbol_sp nm)
 
 CL_LISPIFY_NAME("constitutionForNameOrPdb");
 CL_DEFMETHOD     Constitution_sp	CandoDatabase_O::constitutionForNameOrPdb(core::Symbol_sp name)
-    {_G();
+    {
 	Entity_sp obj;
 	ASSERTP(this->_Entities.contains(name),"Could not find: "+name->__repr__()+" in Environment");
 	obj = this->_Entities.get(name);
@@ -388,14 +387,14 @@ CL_DEFMETHOD     Constitution_sp	CandoDatabase_O::constitutionForNameOrPdb(core:
 
 CL_LISPIFY_NAME("constitutionNameForNameOrPdb");
 CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(core::Symbol_sp name)
-    {_G();
+    {
 	Constitution_sp con;
 	con = this->constitutionForNameOrPdb(name);
 	return con->getName();
     }
 
     core::Symbol_sp CandoDatabase_O::getMonomerNameForNameOrPdb(core::Symbol_sp name)
-    {_G();
+    {
 	Entity_sp dep;
 	ASSERTP(this->_Entities.contains(name), "Could not find name("+name->__repr__()+") in Environment");
 	dep = this->_Entities.get(name);
@@ -404,7 +403,7 @@ CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(c
     }
 
     core::Symbol_sp CandoDatabase_O::getPdbNameForNameOrPdb(core::Symbol_sp name)
-    {_G();
+    {
 	Entity_sp 			dep;
 	Stereoisomer_sp			si;
 	ASSERTP(this->_Entities.contains(name), "Could not find name("+name->__repr__()+") in Environment");
@@ -469,7 +468,7 @@ CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(c
   Add the Constitution to the CandoDatabase
 */
     void	CandoDatabase_O::addConstitution( Constitution_sp sum )
-    {_G();
+    {
 //    sum->setCandoDatabase(this->sharedThis<CandoDatabase_O>());
 //    this->_Names->fillFromConstitution(sum);
 //    sum->setCandoDatabase(this->sharedThis<CandoDatabase_O>());
@@ -502,7 +501,7 @@ CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(c
   Add the CouplingRule to the CandoDatabase
 */
     void	CandoDatabase_O::addCouplingRule( Coupling_spRule rule )
-    {_G();
+    {
 	LOG(BF("Adding couplingRule with name=%s to CandoDatabase") % (rule->getName().c_str() ) );
 	this->couplingMap.insert(make_pair(rule->getName(),rule));
 	this->couplings.push_back(rule);
@@ -514,7 +513,7 @@ CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(c
 */
 #if 0 //[
     void	CandoDatabase_O::addCoreFragmentCoordinatesTable( FragmentCoordinates_spTable& frag )
-    {_G();
+    {
 	LOG(BF("Adding fragment with name=%s to CandoDatabase") % (frag->getName().c_str() ) );
 	frag->setGlobal(true);
 	if ( this->_CoreFragmentMap.count(frag->getName()) != 0 ) {
@@ -535,7 +534,7 @@ CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(c
   Add the MonomerFragment to the CandoDatabase
 */
     void	CandoDatabase_O::addFinishFragmentCoordinatesTable( FragmentCoordinates_spTable& frag )
-    {_G();
+    {
 	LOG(BF("Adding fragment with name=%s to CandoDatabase") % (frag->getName().c_str() ) );
 	frag->setGlobal(true);
 	if ( this->_FinishFragmentMap.count(frag->getName()) != 0 ) {
@@ -556,7 +555,7 @@ CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(c
 
 #if 0
     void	CandoDatabase_O::addSystemRepresentedEntityNameSet(RepresentedEntityNameSet_sp group)
-    {_G();
+    {
 	if ( this->recognizesEntityNameSetName(group->getName()) ) {
 	    SIMPLE_ERROR(BF("You tried to create a group with a name that is already used: %s") % group->getName() );
 	}
@@ -564,7 +563,7 @@ CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(c
     }
 
     void	CandoDatabase_O::defineUserMonomerPack(MonomerPack_sp group)
-    {_G();
+    {
 	this->_Entities.set(group->getName(),group);
 	this->_UserMonomerPacks->set(group->getName(),group);
 	this->_WeakLastUserMonomerPackToChange = group;
@@ -573,7 +572,7 @@ CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(c
 
 
     adapt::StringSet_sp	CandoDatabase_O::allUniqueCouplingNames()
-    {_G();
+    {
 	adapt::StringSet_sp			names;
 	Constitutions::value_iterator	mi;
 	Constitution_O::PlugMap::value_iterator	pi;
@@ -621,7 +620,7 @@ CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(c
 
 CL_LISPIFY_NAME("addMonomerCoordinates");
 CL_DEFMETHOD     uint CandoDatabase_O::addMonomerCoordinates(MonomerCoordinates_sp mc)
-    {_G();
+    {
 	SpecificContextSet_sp	allContexts;
 	MonomerContext_sp	context;
 	SpecificContextSet_O::iterator	si;
@@ -653,7 +652,7 @@ CL_DEFMETHOD     uint CandoDatabase_O::addMonomerCoordinates(MonomerCoordinates_
 
 CL_LISPIFY_NAME("uniqueMonomerCoordinatesAsCons");
 CL_DEFMETHOD     core::List_sp CandoDatabase_O::uniqueMonomerCoordinatesAsCons()
-    {_G();
+    {
 	core::Cons_sp first, cur;
 	first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	cur = first;
@@ -674,7 +673,7 @@ CL_DEFMETHOD     core::List_sp CandoDatabase_O::uniqueMonomerCoordinatesAsCons()
 
 CL_LISPIFY_NAME("monomerCoordinatesKeysAsCons");
 CL_DEFMETHOD     core::List_sp CandoDatabase_O::monomerCoordinatesKeysAsCons()
-    {_G();
+    {
 	core::Cons_sp first, cur;
 	first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	cur = first;
@@ -693,13 +692,13 @@ CL_DEFMETHOD     core::List_sp CandoDatabase_O::monomerCoordinatesKeysAsCons()
 
 CL_LISPIFY_NAME("recognizesMonomerCoordinatesKey");
 CL_DEFMETHOD     bool	CandoDatabase_O::recognizesMonomerCoordinatesKey(core::Symbol_sp key)
-    {_G();
+    {
 	return this->_MonomerCoordinates.contains(key);
     }
 
 CL_LISPIFY_NAME("getMonomerCoordinatesWithKey");
 CL_DEFMETHOD     MonomerCoordinates_sp	CandoDatabase_O::getMonomerCoordinatesWithKey(core::Symbol_sp key )
-    {_G();
+    {
 	if ( this->_MonomerCoordinates.contains(key) )
 	{
 	    return this->_MonomerCoordinates.get(key);
@@ -710,7 +709,7 @@ CL_DEFMETHOD     MonomerCoordinates_sp	CandoDatabase_O::getMonomerCoordinatesWit
 
 CL_LISPIFY_NAME("get");
 CL_DEFMETHOD     MonomerCoordinates_sp	CandoDatabase_O::get(MonomerContext_sp context)
-    {_G();
+    {
         core::Symbol_sp key = context->getKey();
 	if ( this->_MonomerCoordinates.contains(key) )
 	{
@@ -721,7 +720,7 @@ CL_DEFMETHOD     MonomerCoordinates_sp	CandoDatabase_O::get(MonomerContext_sp co
 
 CL_LISPIFY_NAME("recognizesContext");
 CL_DEFMETHOD     bool	CandoDatabase_O::recognizesContext(MonomerContext_sp context)
-    {_G();
+    {
 	bool	foundIt;
         core::Symbol_sp key = context->getKey();
 	LOG(BF("Looking for context: %s") % key.c_str()  );
@@ -732,7 +731,7 @@ CL_DEFMETHOD     bool	CandoDatabase_O::recognizesContext(MonomerContext_sp conte
 
 CL_LISPIFY_NAME("saveAs");
 CL_DEFMETHOD     void	CandoDatabase_O::saveAs(const string& fn)
-    {_G();
+    {
 	IMPLEMENT_ME();
 #ifdef XML_ARCHIVE
 	core::XmlSaveArchive_sp	xml;
@@ -743,7 +742,7 @@ CL_DEFMETHOD     void	CandoDatabase_O::saveAs(const string& fn)
     }
 #if 0
     void CandoDatabase_O::removeMonomerCoordinatesNotRequiredByAlchemists(core::List_sp alchemists)
-    {_G();
+    {
 	SpecificContextSet_sp necessary = SpecificContextSet_O::create();
 	while ( alchemists.notnilp() )
 	{
@@ -792,7 +791,7 @@ CL_DEFMETHOD     void	CandoDatabase_O::saveAs(const string& fn)
 
 CL_LISPIFY_NAME("allSpecificMonomerContexts");
 CL_DEFMETHOD     SpecificContextSet_sp CandoDatabase_O::allSpecificMonomerContexts()
-    {_G();
+    {
 	SpecificContextSet_sp all = SpecificContextSet_O::create();
 	monomerCoordinatesIterator mi;
         gctools::SmallOrderedSet<MonomerCoordinates_sp>	uniqueMonomerCoordinates;
@@ -815,7 +814,7 @@ CL_DEFMETHOD     SpecificContextSet_sp CandoDatabase_O::allSpecificMonomerContex
 #define DECL_CandoDatabase_O_make ""
 #define DOCS_CandoDatabase_O_make "make AtomReference args: name frame_recognizers represented_entity_name_sets constitutions"
     CandoDatabase_sp CandoDatabase_O::make(core::Symbol_sp name, core::List_sp frameRecognizers, core::List_sp representedEntityNameSets, core::List_sp constitutions)
-    {_G();
+    {
         GC_ALLOCATE(CandoDatabase_O, me );
 	me->_Name = name;
 	me->_frameRecognizers.clear();
@@ -846,7 +845,7 @@ CL_DEFMETHOD     SpecificContextSet_sp CandoDatabase_O::allSpecificMonomerContex
 #else
 
     core::T_sp	CandoDatabase_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 	this->_Name = translate::from_object<string>::convert(env->lookup(Package(),"name"));
 	core::Cons_sp frameRecognizers = translate::from_object<core::Cons_O>::convert(env->lookup(Package(),"frameRecognizers"));
 	this->_frameRecognizers.clear();
@@ -877,112 +876,6 @@ CL_DEFMETHOD     SpecificContextSet_sp CandoDatabase_O::allSpecificMonomerContex
 #endif
 
 
-    void CandoDatabase_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<CandoDatabase_O>()
-//	    .def_raw("core:__init__",&CandoDatabase_O::__init__,"(self &key name frameRecognizers representedEntityNameSets constitutions)")
-	    .def("recognizesEntityName",&CandoDatabase_O::recognizesEntityName)
-	    .def("getEntity",&CandoDatabase_O::getEntity)
-	    .def("addEntity",&CandoDatabase_O::addEntity)
-//	    .def("listMonomers",&CandoDatabase_O::listMonomers)
-	    .def("allSpecificMonomerContexts",&CandoDatabase_O::allSpecificMonomerContexts )
-	    .def("uniqueMonomerCoordinatesAsCons",&CandoDatabase_O::uniqueMonomerCoordinatesAsCons )
-	    .def("monomerCoordinatesKeysAsCons",&CandoDatabase_O::monomerCoordinatesKeysAsCons )
-	    .def("constitutionsAsCons",&CandoDatabase_O::constitutionsAsCons)
-	    .def("representedEntityNameSetsAsCons",&CandoDatabase_O::representedEntityNameSetsAsCons)
-	    .def("recognizesRepresentedEntityNameSet",&CandoDatabase_O::recognizesRepresentedEntityNameSet)
-//	    .def("getSystemRepresentedEntityNameSet",&CandoDatabase_O::getSystemRepresentedEntityNameSet)
-//	    .def("getUserMonomerPack",&CandoDatabase_O::getUserMonomerPack)
-//	    .def("test",&CandoDatabase_O::test )
-	    .def("addFrameRecognizer",&CandoDatabase_O::addFrameRecognizer )
-	    .def("recognizesFrameRecognizerName",&CandoDatabase_O::recognizesFrameRecognizerName )
-	    .def("getName",&CandoDatabase_O::getName ,"","","",false)
-//	    .def("removeMonomerCoordinatesNotRequiredByAlchemists",&CandoDatabase_O::removeMonomerCoordinatesNotRequiredByAlchemists )
-	    .def("getEntityNameSet",&CandoDatabase_O::getEntityNameSet)
-	    .def("getRepresentedEntityNameSet",&CandoDatabase_O::getRepresentedEntityNameSet)
-//	    .def("addSystemRepresentedEntityNameSet",&CandoDatabase_O::addSystemRepresentedEntityNameSet )
-//	    .def("defineUserMonomerPack",&CandoDatabase_O::defineUserMonomerPack )
-//	    .def("addConstitution", &CandoDatabase_O::addConstitution )
-//	    .def("monomerConstitutionForName", &CandoDatabase_O::monomerConstitutionForName)
-	    .def("recognizesNameOrPdb", &CandoDatabase_O::recognizesNameOrPdb)
-//	    .def("recognizesConstitutionName", &CandoDatabase_O::recognizesConstitutionName)
-	    .def("recognizesSetOrConstitutionOrMonomerName", &CandoDatabase_O::recognizesSetOrConstitutionOrMonomerName)
-	    .def("getMonomersForSetOrConstitutionOrMonomerName", &CandoDatabase_O::getMonomersForSetOrConstitutionOrMonomerName)
-	    .def("constitutionForNameOrPdb", &CandoDatabase_O::constitutionForNameOrPdb)
-	    .def("constitutionNameForNameOrPdb", &CandoDatabase_O::constitutionNameForNameOrPdb)
-//	    .def("learnFromAggregate", &CandoDatabase_O::learnFromAggregate)
-//	    .def("recognizesSystemRepresentedEntityNameSet",&CandoDatabase_O::recognizesSystemRepresentedEntityNameSet)
-//	    .def("recognizesUserMonomerPack",&CandoDatabase_O::recognizesUserMonomerPack)
-//	.def("giveYourDependantObjectsTo",&CandoDatabase_O::giveYourDependantObjectsTo)
-	    .def("getMonomerCoordinatesWithKey", &CandoDatabase_O::getMonomerCoordinatesWithKey)
-	    .def("recognizesMonomerCoordinatesKey", &CandoDatabase_O::recognizesMonomerCoordinatesKey)
-	    .def("addMonomerCoordinates",&CandoDatabase_O::addMonomerCoordinates)
-	    .def("get",&CandoDatabase_O::get,"","","",false)
-	    .def("recognizesContext",&CandoDatabase_O::recognizesContext)
-	    .def("saveAs",&CandoDatabase_O::saveAs,"","","",false)
-	    .def("getFrameRecognizer",&CandoDatabase_O::getFrameRecognizer)
-	    .def("expandEntityNameToTerminals",&CandoDatabase_O::expandEntityNameToTerminals)
-	    .def("expandEntityNamesToTerminals",&CandoDatabase_O::expandEntityNamesToTerminals)
-	    ;
-    }
-
-
-
-
-
-
-
-
-
-    void CandoDatabase_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(ChemPkg,CandoDatabase,"","",_lisp)
-	    .def("recognizesEntityName",&CandoDatabase_O::recognizesEntityName)
-	    .def("getEntity",&CandoDatabase_O::getEntity)
-	    .def("addEntity",&CandoDatabase_O::addEntity)
-//	    .def("listMonomers",&CandoDatabase_O::listMonomers)
-	    .def("allSpecificMonomerContexts",&CandoDatabase_O::allSpecificMonomerContexts )
-	    .def("uniqueMonomerCoordinatesAsCons",&CandoDatabase_O::uniqueMonomerCoordinatesAsCons )
-	    .def("monomerCoordinatesKeysAsCons",&CandoDatabase_O::monomerCoordinatesKeysAsCons )
-	    .def("constitutionsAsCons",&CandoDatabase_O::constitutionsAsCons)
-	    .def("representedEntityNameSetsAsCons",&CandoDatabase_O::representedEntityNameSetsAsCons)
-	    .def("recognizesRepresentedEntityNameSet",&CandoDatabase_O::recognizesRepresentedEntityNameSet)
-//	    .def("getSystemRepresentedEntityNameSet",&CandoDatabase_O::getSystemRepresentedEntityNameSet)
-//	    .def("getUserMonomerPack",&CandoDatabase_O::getUserMonomerPack)
-//	    .def("test",&CandoDatabase_O::test )
-	    .def("addFrameRecognizer",&CandoDatabase_O::addFrameRecognizer )
-	    .def("recognizesFrameRecognizerName",&CandoDatabase_O::recognizesFrameRecognizerName )
-	    .def("getName",&CandoDatabase_O::getName )
-//	    .def("removeMonomerCoordinatesNotRequiredByAlchemists",&CandoDatabase_O::removeMonomerCoordinatesNotRequiredByAlchemists )
-	    .def("getEntityNameSet",&CandoDatabase_O::getEntityNameSet)
-	    .def("getRepresentedEntityNameSet",&CandoDatabase_O::getRepresentedEntityNameSet)
-//	    .def("addSystemRepresentedEntityNameSet",&CandoDatabase_O::addSystemRepresentedEntityNameSet )
-//	    .def("defineUserMonomerPack",&CandoDatabase_O::defineUserMonomerPack )
-//	    .def("addConstitution", &CandoDatabase_O::addConstitution )
-//	    .def("monomerConstitutionForName", &CandoDatabase_O::monomerConstitutionForName)
-	    .def("recognizesNameOrPdb", &CandoDatabase_O::recognizesNameOrPdb)
-//	    .def("recognizesConstitutionName", &CandoDatabase_O::recognizesConstitutionName)
-	    .def("recognizesSetOrConstitutionOrMonomerName", &CandoDatabase_O::recognizesSetOrConstitutionOrMonomerName)
-	    .def("getMonomersForSetOrConstitutionOrMonomerName", &CandoDatabase_O::getMonomersForSetOrConstitutionOrMonomerName)
-	    .def("constitutionForNameOrPdb", &CandoDatabase_O::constitutionForNameOrPdb)
-	    .def("constitutionNameForNameOrPdb", &CandoDatabase_O::constitutionNameForNameOrPdb)
-//	    .def("learnFromAggregate", &CandoDatabase_O::learnFromAggregate)
-//	    .def("recognizesSystemRepresentedEntityNameSet",&CandoDatabase_O::recognizesSystemRepresentedEntityNameSet)
-//	    .def("recognizesUserMonomerPack",&CandoDatabase_O::recognizesUserMonomerPack)
-//	.def("giveYourDependantObjectsTo",&CandoDatabase_O::giveYourDependantObjectsTo)
-	    .def("getMonomerCoordinatesWithKey", &CandoDatabase_O::getMonomerCoordinatesWithKey)
-	    .def("recognizesMonomerCoordinatesKey", &CandoDatabase_O::recognizesMonomerCoordinatesKey)
-	    .def("addMonomerCoordinates",&CandoDatabase_O::addMonomerCoordinates)
-	    .def("get",&CandoDatabase_O::get)
-	    .def("recognizesContext",&CandoDatabase_O::recognizesContext)
-	    .def("saveAs",&CandoDatabase_O::saveAs)
-	    .def("getFrameRecognizer",&CandoDatabase_O::getFrameRecognizer)
-	    .def("expandEntityNameToTerminals",&CandoDatabase_O::expandEntityNameToTerminals)
-	    .def("expandEntityNamesToTerminals",&CandoDatabase_O::expandEntityNamesToTerminals)
-	    ;
-#endif
-    }
 
 
 
@@ -996,7 +889,16 @@ CL_DEFMETHOD     SpecificContextSet_sp CandoDatabase_O::allSpecificMonomerContex
 
 
 
-    EXPOSE_CLASS(chem, CandoDatabase_O );
+
+
+
+
+
+
+
+
+
+
 }; // 
 
 

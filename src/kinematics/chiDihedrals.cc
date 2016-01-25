@@ -11,33 +11,8 @@ namespace kinematics
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(kinematics,ChiDihedral_O);
 
-    void ChiDihedral_O::exposeCando(::core::Lisp_sp lisp)
-    {
-	::core::class_<ChiDihedral_O>()
-//	    .def_raw("__init__",&ChiDihedral_O::__init__,"(self atom1Index atom2Index atom3Index atom4Index)")
-	    .def("chi-dihedral-atom-indices",&ChiDihedral_O::atomIndices)
-	    .def("chi-dihedral-atom1-index",&ChiDihedral_O::atom1Index)
-	    .def("chi-dihedral-atom2-index",&ChiDihedral_O::atom2Index)
-	    .def("chi-dihedral-atom3-index",&ChiDihedral_O::atom3Index)
-	    .def("chi-dihedral-atom4-index",&ChiDihedral_O::atom4Index)
-	;
-    }
 
-    void ChiDihedral_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,ChiDihedral,"","",_lisp)
-//	.def_raw("__init__",&"(self atom1Index atom2Index atom3Index atom4Index)")
-	    .def("chi-dihedral-atom-indices",&ChiDihedral_O::atomIndices)
-	    .def("chi-dihedral-atom1-index",&ChiDihedral_O::atom1Index)
-	    .def("chi-dihedral-atom2-index",&ChiDihedral_O::atom2Index)
-	    .def("chi-dihedral-atom3-index",&ChiDihedral_O::atom3Index)
-	    .def("chi-dihedral-atom4-index",&ChiDihedral_O::atom4Index)
-	;
-#endif
-    }
 
 
 #if INIT_TO_FACTORIES
@@ -46,7 +21,7 @@ namespace kinematics
 #define DECL_ChiDihedral_O_make ""
 #define DOCS_ChiDihedral_O_make "make ChiDihedral"
   ChiDihedral_sp ChiDihedral_O::make(const int atom1Index, const int atom2Index, const int atom3Index, const int atom4Index)
-    {_G();
+    {
 	GC_ALLOCATE(ChiDihedral_O, me );
       me->_Atom1 = atom1Index;
       me->_Atom2 = atom2Index;
@@ -57,7 +32,7 @@ namespace kinematics
 
 #else
     core::T_sp ChiDihedral_O::__init__(::core::Function_sp exec, ::core::Cons_sp args, ::core::Environment_sp env, ::core::Lisp_sp lisp)
-    {_G();
+    {
 	this->_Atom1 = env->lookup(Pkg(),"atom1Index").as<core::Rational_O>()->as_int();
 	this->_Atom2 = env->lookup(Pkg(),"atom2Index").as<core::Rational_O>()->as_int();
 	this->_Atom3 = env->lookup(Pkg(),"atom3Index").as<core::Rational_O>()->as_int();
@@ -96,31 +71,14 @@ namespace kinematics
 
 
 
-    EXPOSE_CLASS(kinematics,ChiList_O);
 
-    void ChiList_O::exposeCando(::core::Lisp_sp lisp)
-    {
-	::core::class_<ChiList_O>()
-//	.def_raw("__init__",&ChiList_O::__init__,"(self)")
-	    .def("chi-list-append",&ChiList_O::append)
-	;
-    }
 
-    void ChiList_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,ChiList,"","",_lisp)
-//	.def_raw("__init__",&"(self)")
-	    .def("chi-list-append",&ChiList_O::append)
-	;
-#endif
-    }
 
 
 #if INIT_TO_FACTORIES
 #else
     core::T_sp ChiList_O::__init__(::core::Function_sp exec, ::core::Cons_sp args, ::core::Environment_sp env, ::core::Lisp_sp lisp)
-    {_G();
+    {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = translate::from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	return _Nil<core::T_O>();

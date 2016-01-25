@@ -680,7 +680,7 @@ namespace client
     ///////////////////////////////////////////////////////////////////////////
     template <typename Iterator>
     bool parse_numbers(Iterator first, Iterator last, Matrix& m)
-    {_G();
+    {
         using qi::double_;
         using qi::phrase_parse;
         using ascii::space;
@@ -825,13 +825,13 @@ stringstream ss;
 //
 #if 0
 void	Matrix::setFromStringFast(const string& input,const core::Lisp_sp& lisp) 
-{_G();
+{
     bool r = client::parse_numbers(input.begin(),input.end(),*this,lisp);
     ASSERTP(r,"Could not parse matrix from: "+input);
 }
 #endif
 void	Matrix::setFromString(const string& str) 
-{_G();
+{
 double		vals[16];
 vector<string>	tokens;
 vector<string>::iterator	token;
@@ -1150,7 +1150,7 @@ void	Matrix::rightHandedRotationY(double a)
 
 #ifdef XML_ARCHIVE
 void	Matrix::archive(core::ArchiveP node)
-{_G();
+{
     if ( node->loading() )
     {
         const string& values = node->characters();
@@ -1223,7 +1223,7 @@ ArrayOfMatrices::~ArrayOfMatrices()
 
 #ifdef XML_ARCHIVE
 void	ArrayOfMatrices::archive(core::ArchiveP node)
-{_G();
+{
     core::VectorStrings	splitData;
     Matrix		m;
     uint		i;

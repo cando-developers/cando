@@ -187,7 +187,7 @@ public:
 //
     void	_moeWriteRestraint( std::ostream& fout, Restraint_sp rest,
 					Aggregate_sp agg )
-{_G();
+{
 	// At this point all restraints must be absolute
     if ( rest.isA<RestraintDistance_O>() )
     {
@@ -327,7 +327,7 @@ MoeReadFile::~MoeReadFile()
 //	Split a line of whitespace separated words into separate
 //	strings and put them in a queue.
 void	MoeReadFile::splitLine( QueueString& q, char* line)
-{_G();
+{
     char*	start;
     char	caWord[MAXWORD];
     char*	copy;
@@ -395,7 +395,7 @@ void	MoeReadFile::splitLine( QueueString& q, char* line)
 //	Read the header and parse the strings into the header queue.
 //
 void	MoeReadFile::parseHeader()
-{_G();
+{
 char		line[MAXWORD];
 char		buf[MAXWORD];
 std::queue<string>	words;
@@ -447,7 +447,7 @@ DONE:
 //
 //	Read the next line of the file, don't do anything with it.
 void	MoeReadFile::readNextLine()
-{_G();
+{
     char	*cPPut;
     char	c;
     int	iSize;
@@ -481,7 +481,7 @@ void	MoeReadFile::readNextLine()
 //	Open the file and read the first line
 //
 	void	MoeReadFile::openFileName( const char*	sFileName  )
-{_G();
+{
     std::ifstream	*fIn;
 	struct stat	buf;
 
@@ -510,7 +510,7 @@ void	MoeReadFile::readNextLine()
 //	Create the MoeReadFile from the istream
 //
     void	MoeReadFile::openStream( std::istream*	fIn )
-    {_G();
+    {
 	this->fileName = "";
 	this->fMoe = fIn;
 	this->mustDestroy_fMoe= false;
@@ -526,7 +526,7 @@ void	MoeReadFile::readNextLine()
 //
 //	Fill an empty ParaTable with the data read from the file
     void	MoeReadFile::readParaTable( ParaTable* table )
-    {_G();
+    {
 	QueueString		words;
 	char			caStr[MAXWORD];
 	ParaInteger*		paraInt;
@@ -708,7 +708,7 @@ void	MoeReadFile::readNextLine()
 //
 //	Skip the current paraTable
     void	MoeReadFile::skipParaTable()
-    {_G();
+    {
 	do {
 	    this->readNextLine();
 	} while ( !this->done && this->nextLine[0] != '#' );
@@ -740,7 +740,7 @@ void	MoeReadFile::readNextLine()
     void	moeReadAggregateMoeFile( Aggregate_sp	agg,
 					 MoeReadFile	&f,
 					 bool		&gotMMTypes )
-    {_G();
+    {
 	int		i,ir,im,ia,tir,it;
 	ParaTable	ptAtoms;
 	ParaTable	ptMMTypes;
@@ -1235,7 +1235,7 @@ void	MoeReadFile::readNextLine()
 
 
     Aggregate_sp	moeReadAggregateWithAtomTypes(const string& nm)
-    {_G();
+    {
 	GC_ALLOCATE(Aggregate_O, agg );
 	moeReadAggregateWithAtomTypesFromFileName(agg,nm.c_str());
 	return agg;
@@ -1244,7 +1244,7 @@ void	MoeReadFile::readNextLine()
 
     void	moeReadAggregateWithAtomTypesFromFileName(Aggregate_sp	agg,
 							  const char*	sFileName )
-    {_G();
+    {
 	MoeReadFile	f;
 	Atom_sp		a;
 	Loop		l;
@@ -1278,7 +1278,7 @@ void	MoeReadFile::readNextLine()
 //	Read the Aggregate from the MOE file.
     void	moeReadAggregateFromFileName( Aggregate_sp	agg,
 					      const char	*sFileName )
-    {_G();
+    {
 	MoeReadFile	f;
 	bool		gotMMTypes;
 
@@ -1294,7 +1294,7 @@ void	MoeReadFile::readNextLine()
 //
 //	Read the Aggregate from the MOE file.
     Aggregate_sp	moeReadAggregate(const string& name )
-{_G();
+{
     MoeReadFile	f;
 	bool		gotMMTypes;
 	LOG(BF("About to open moe file: %s") % name.c_str() );
@@ -1312,7 +1312,7 @@ void	MoeReadFile::readNextLine()
 //	Read the Aggregate from the MOE file.
     void	moeReadAggregateFromStream( Aggregate_sp	agg,
 					    std::istream		*is)
-    {_G();
+    {
 	MoeReadFile	f;
 	bool		gotMMTypes;
 	f.openStream(is);
@@ -1329,7 +1329,7 @@ void	MoeReadFile::readNextLine()
 //
 //	Write the atoms in the Aggregate to the MOE file
 void	moeWriteAggregateStream( Aggregate_sp agg, std::ostream& fout)
-    {_G();
+    {
 	Loop		la,lr,l;
 	Atom_sp		a;
 	Atom_sp		b;
@@ -1540,7 +1540,7 @@ void	moeWriteAggregateStream( Aggregate_sp agg, std::ostream& fout)
 //
 //	Write the atoms in the Aggregate to the MOE file
     void	moeWriteAggregateFileName( Aggregate_sp agg, const char* sFileName )
-    {_G();
+    {
         std::ofstream	fout;
 	fout.open(sFileName);
 	moeWriteAggregateStream(agg,fout);
@@ -1553,7 +1553,7 @@ void	moeWriteAggregateStream( Aggregate_sp agg, std::ostream& fout)
 //	Return the aggregate in MOE format as a string
 //
     string	moeWriteAggregateReturnAsString( Aggregate_sp agg )
-    {_G();
+    {
 	stringstream	fout;
 	fout.str("");
 	moeWriteAggregateStream(agg,fout);
@@ -1563,7 +1563,7 @@ void	moeWriteAggregateStream( Aggregate_sp agg, std::ostream& fout)
 
 
 void	moeRead( Aggregate_sp agg, const string& sFileName )
-    {_G();
+    {
 	LOG(BF("Reading from file: %s") % sFileName.c_str()  );
 	moeReadAggregateFromFileName(agg, sFileName.c_str() );
 	LOG(BF("moeRead done") );
@@ -1571,7 +1571,7 @@ void	moeRead( Aggregate_sp agg, const string& sFileName )
 
 
     void	moeWrite( Aggregate_sp a, const string& sFileName ) 
-    {_G();
+    {
 	moeWriteAggregateFileName( a, sFileName.c_str());
     };
 

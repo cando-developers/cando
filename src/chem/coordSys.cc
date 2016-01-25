@@ -38,7 +38,7 @@ O_GimbalTransform::~O_GimbalTransform()
 
 
 void	O_GimbalTransform::defineForCoordinateSystem(CoordinateSystem_sp coord)
-{_G();
+{
     Vector3	labX; labX.set(1.0,0.0,0.0);
     Vector3	labY; labY.set(0.0,1.0,0.0);
     Vector3	labZ; labZ.set(0.0,0.0,1.0);
@@ -273,7 +273,7 @@ c = CoordinateSystem_O::create();
 
 
 Matrix	O_GimbalTransform::matrixFromCanonical()
-{_G();
+{
     Matrix mX; mX.rightHandedRotationX(this->_RotX);
     Matrix mY; mY.rightHandedRotationY(this->_RotY);
     Matrix mZ; mZ.rightHandedRotationZ(this->_RotZ);
@@ -299,7 +299,7 @@ CoordinateSystem_sp	c;
 
 
 void	O_XConventionEulerTransform::defineForCoordinateSystem(CoordinateSystem_sp coord)
-{_G();
+{
     Vector3		translate;
     Vector3		labZ, labX, node, nodeNorm;
 double		cosBeta, gamma, beta, alpha, distance, theta, phi;
@@ -425,7 +425,7 @@ c = CoordinateSystem_O::create();
 
 
 Matrix	O_XConventionEulerTransform::matrixFromCanonical()
-{_G();
+{
     Matrix mD; mD.rightHandedRotationZ(this->_Alpha);
     Matrix mC; mC.rightHandedRotationX(this->_Beta);
     Matrix mB; mB.rightHandedRotationZ(this->_Gamma);
@@ -569,7 +569,7 @@ CL_DEFMETHOD void CoordinateSystem_O::canonical()
 //	the y axis is orthogonal to the new x and z axes
 CL_LISPIFY_NAME("defineForAtoms");
 CL_DEFMETHOD void	CoordinateSystem_O::defineForAtoms( Atom_sp aorigin, Atom_sp ax, Atom_sp axy )
-{_G();
+{
     Vector3	vo, vx, vxy, vz, vy;
     vo = aorigin->getPosition();
     LOG(BF("vo=%lf,%lf,%lf") % vo.getX() % vo.getY() % vo.getZ() );
@@ -600,7 +600,7 @@ CL_LISPIFY_NAME("defineForAtomVectors");
 CL_DEFMETHOD void	CoordinateSystem_O::defineForAtomVectors( const Vector3& vo,
 						  const Vector3& vax,
 						  const Vector3& vaxy )
-{_G();
+{
     Vector3	vx, vxy, vz, vy;
 vx = (vax.sub(vo)).normalized();
 vxy = (vaxy.sub(vo)).normalized();
@@ -628,7 +628,7 @@ vxy = (vaxy.sub(vo)).normalized();
 //	the z axis is orthogonal to y and x axis
 void	CoordinateSystem_O::defineForTwoAtomVectors( const Vector3& vo,
 						     const Vector3& vax )
-{_G();
+{
     Vector3	vx, vz, vy;
 vx = (vax.sub(vo)).normalized();
     LOG(BF("vo=%lf,%lf,%lf") % vo.getX() % vo.getY() % vo.getZ() );
@@ -665,7 +665,7 @@ vx = (vax.sub(vo)).normalized();
 //	the y axis is whereever it ends up
 //	the z axis is orthogonal to y and x axis
 void	CoordinateSystem_O::defineForOneAtomVector( const Vector3& vo )
-{_G();
+{
     Vector3	vx, vz, vy;
     this->origin = vo;
     this->x.set(1.0,0.0,0.0);
@@ -952,7 +952,7 @@ CL_DEFMETHOD bool	CoordinateSystem_O::sameAs(CoordinateSystem_sp c)
 
 #ifdef RENDER
 geom::Render_sp CoordinateSystem_O::rendered(core::List_sp koptions)
-{_G();
+{
     geom::GrLines_sp lines = geom::GrLines_O::create();
     uint idxOrigin = lines->appendVertex(this->origin,geom::Color_O::white(_lisp));
     uint idxX = lines->appendVertex(this->origin+this->x,geom::Color_O::red(_lisp));
@@ -988,68 +988,10 @@ Matrix	transformToCanonical;
 
 
 
-void CoordinateSystem_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<CoordinateSystem_O>()
-	.def("getOrigin", &chem::CoordinateSystem_O::getOrigin)
-	.def("setOrigin", &chem::CoordinateSystem_O::setOrigin)
-	.def("getX", &chem::CoordinateSystem_O::getX)
-	.def("getY", &chem::CoordinateSystem_O::getY)
-	.def("getZ", &chem::CoordinateSystem_O::getZ)
-	.def("canonical", &chem::CoordinateSystem_O::canonical)
-	.def("defineForAtomVectors", &chem::CoordinateSystem_O::defineForAtomVectors)
-	.def("defineForAtoms", &chem::CoordinateSystem_O::defineForAtoms)
-	.def("defineForVectorsOriginXDirYDir", &chem::CoordinateSystem_O::defineForVectorsOriginXDirYDir)
-	.def("defineForVectorsOriginXDirXYPlane", &chem::CoordinateSystem_O::defineForVectorsOriginXDirXYPlane)
-	.def("defineForVectorsOriginZDirXZPlane", &chem::CoordinateSystem_O::defineForVectorsOriginZDirXZPlane)
-	.def("defineForVectorsOriginXDirZDir", &chem::CoordinateSystem_O::defineForVectorsOriginXDirZDir)
-	.def("defineFromCoordinateSystem", &chem::CoordinateSystem_O::defineFromCoordinateSystem)
-	.def("defineCanonical", &chem::CoordinateSystem_O::defineCanonical)
-	.def("defineRandom", &chem::CoordinateSystem_O::defineRandom)
-	    .def("sameAs", &chem::CoordinateSystem_O::sameAs,"","","",false)
-	.def("matrixFromCanonical", &chem::CoordinateSystem_O::matrixFromCanonical)
-	.def("matrixToCanonical", &chem::CoordinateSystem_O::matrixToCanonical)
-//	.def("renderXml", &chem::CoordinateSystem_O::renderXml)
-	    .def("dump", &chem::CoordinateSystem_O::dump,"","","",false)
-	    .def("copy", &chem::CoordinateSystem_O::copy,"","","",false)
-//	.def("asXml", &chem::CoordinateSystem_O::asXml)
-	.def("transformWithMatrix", &chem::CoordinateSystem_O::transformWithMatrix)
-	;
-    }
-
-void CoordinateSystem_O::exposePython(core::Lisp_sp lisp)
-{_G();
-#ifdef USEBOOSTPYTHON
-    PYTHON_CLASS(ChemPkg,CoordinateSystem,"","",_lisp)
-	.def("getOrigin", &chem::CoordinateSystem_O::getOrigin)
-	.def("setOrigin", &chem::CoordinateSystem_O::setOrigin)
-	.def("getX", &chem::CoordinateSystem_O::getX)
-	.def("getY", &chem::CoordinateSystem_O::getY)
-	.def("getZ", &chem::CoordinateSystem_O::getZ)
-	.def("canonical", &chem::CoordinateSystem_O::canonical)
-	.def("defineForAtomVectors", &chem::CoordinateSystem_O::defineForAtomVectors)
-	.def("defineForAtoms", &chem::CoordinateSystem_O::defineForAtoms)
-	.def("defineForVectorsOriginXDirYDir", &chem::CoordinateSystem_O::defineForVectorsOriginXDirYDir)
-	.def("defineForVectorsOriginXDirXYPlane", &chem::CoordinateSystem_O::defineForVectorsOriginXDirXYPlane)
-	.def("defineForVectorsOriginZDirXZPlane", &chem::CoordinateSystem_O::defineForVectorsOriginZDirXZPlane)
-	.def("defineForVectorsOriginXDirZDir", &chem::CoordinateSystem_O::defineForVectorsOriginXDirZDir)
-	.def("defineFromCoordinateSystem", &chem::CoordinateSystem_O::defineFromCoordinateSystem)
-	.def("defineCanonical", &chem::CoordinateSystem_O::defineCanonical)
-	.def("defineRandom", &chem::CoordinateSystem_O::defineRandom)
-//	.def("sameAs", &chem::CoordinateSystem_O::sameAs,"","","",false)
-	.def("matrixFromCanonical", &chem::CoordinateSystem_O::matrixFromCanonical)
-	.def("matrixToCanonical", &chem::CoordinateSystem_O::matrixToCanonical)
-//	.def("renderXml", &chem::CoordinateSystem_O::renderXml)
-//	.def("dump", &chem::CoordinateSystem_O::dump,"","","",false)
-//	.def("copy", &chem::CoordinateSystem_O::copy,"","","",false)
-//	.def("asXml", &chem::CoordinateSystem_O::asXml)
-	.def("transformWithMatrix", &chem::CoordinateSystem_O::transformWithMatrix)
-	;
-#endif
-    }
 
 
-EXPOSE_CLASS(chem, CoordinateSystem_O);
+
+
 }; // namespace chem
 
 

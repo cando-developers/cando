@@ -44,14 +44,14 @@ namespace chem {
 
 #ifdef XML_ARCHIVE
     void	OligomerPart_Base_O::archiveBase(core::ArchiveP node)
-{_G();
+{
    // donothing
 }
 #endif
 
 #ifdef XML_ARCHIVE
     void	OligomerPart_Monomer_O::archive(core::ArchiveP node)
-{_G();
+{
     this->Base::archiveBase(node);
     node->attribute("_MonomerId",this->_MonomerId);
     node->attribute("_GroupName",this->_GroupName);
@@ -69,7 +69,7 @@ namespace chem {
  * dependent objects to the new CandoDatabase
  */
 void setCandoDatabase(CandoDatabase_sp bdb, core::Lisp_sp lisp)
-{_G();
+{
     LOG(BF("Setting *DATABASE* to database@%p") % bdb.get() );
     _sym_candoDatabase->defparameter(bdb);
 }
@@ -79,7 +79,7 @@ void setCandoDatabase(CandoDatabase_sp bdb, core::Lisp_sp lisp)
  * Load a CandoDatabase into this lisp environment.
  */
     void	loadCandoDatabase(const string& fileName, uint verbosity, core::Lisp_sp lisp)
-    {_G();
+    {
 	CandoDatabase_sp	bdb;
 	core::XmlLoadArchive_sp	xml;
 	xml = core::XmlLoadArchive_O::create();
@@ -113,7 +113,7 @@ void setCandoDatabase(CandoDatabase_sp bdb, core::Lisp_sp lisp)
 
 
 MultiMonomer_sp	OligomerPart_Monomer_O::createMonomer(CandoDatabase_sp bdb)
-{_G();
+{
     MultiMonomer_sp mon = MultiMonomer_O::create();
     mon->setId(this->_MonomerId);
     mon->setGroupName(this->_GroupName);
@@ -125,7 +125,7 @@ MultiMonomer_sp	OligomerPart_Monomer_O::createMonomer(CandoDatabase_sp bdb)
 
 #ifdef XML_ARCHIVE
 void	OligomerPart_Link_O::archive(core::ArchiveP node)
-{_G();
+{
     this->Base::archiveBase(node);
     node->attribute("_Monomer1Id",this->_Monomer1Id);
     node->attribute("_Coupling",this->_Coupling);
@@ -136,7 +136,7 @@ void	OligomerPart_Link_O::archive(core::ArchiveP node)
 
 
 MultiMonomer_sp	OligomerPart_Link_O::createMonomer(CandoDatabase_sp bdb)
-{_G();
+{
     return this->_Monomer2->createMonomer(bdb);
 }
 
@@ -161,7 +161,7 @@ __END_DOC
 #define DOCS_chem__database "database"
 CL_LAMBDA(fileName &optional (verbosity 0));
 CL_DEFUN core::T_sp chem__database(core::T_sp fileNameDesig, core::Fixnum_sp overbosity)
-    {_G();
+    {
 	IMPLEMENT_ME();
 #ifdef XML_ARCHIVE
 	core::Path_sp path = core::coerce::pathDesignator(fileNameDesig);
@@ -191,7 +191,7 @@ __END_DOC
 #define DOCS_chem__standard_database "standardDatabase"
 CL_LAMBDA(pathDesig &optional loadSeed (overbosity 0));
 CL_DEFUN core::T_sp chem__standard_database(core::T_sp pathDesig, core::T_sp loadSeed, core::Fixnum_sp overbosity)
-    {_G();
+    {
 	IMPLEMENT_ME();
 #ifdef XML_ARCHIVE
 	core::Path_sp path = core::coerce::pathDesignator(pathDesig);
@@ -222,7 +222,7 @@ __END_DOC
 #define DECL_chem__bundle_database_path ""
 #define DOCS_chem__bundle_database_path "bundleDatabasePath"
 CL_DEFUN core::T_sp chem__bundle_database_path(core::T_sp pathDesig)
-{_G();
+{
     IMPLEMENT_ME();
 #ifdef XML_ARCHIVE
     core::Path_sp pathName = core::coerce::pathDesignator(pathDesig);
@@ -242,7 +242,7 @@ Set the database.
 __END_DOC
 */
 core::T_sp	prim_setDatabase(core::Function_sp e, core::Cons_sp args, core::Environment_sp environ, core::Lisp_sp lisp)
-{_G();
+{
 CandoDatabase_sp	cdb;
     cdb = args->car<CandoDatabase_O>();
     setCandoDatabase(cdb,lisp);
@@ -261,7 +261,7 @@ Search for contexts with keys that contain the substring.
 __END_DOC
 */
 core::T_sp	prim_contextGrep(core::Function_sp e, core::Cons_sp args, core::Environment_sp environ, core::Lisp_sp lisp)
-{_G();
+{
 string	part;
     CandoDatabase_sp bdb = getCandoDatabase();
     if ( bdb.nilp() )
@@ -312,7 +312,7 @@ __END_DOC
 #define DECL_prim_RequiredPlug ""
 #define DOCS_prim_RequiredPlug ""
 core::T_sp	prim_RequiredPlug(core::Function_sp e, core::Cons_sp args, core::Environment_sp environ, core::Lisp_sp lisp)
-{_G();
+{
     Plug_sp p = environ->lookup(ChemPkg,"plug").as<Plug_O>();
     return p;
 }
@@ -325,7 +325,7 @@ Describe the contents of the database.
 __END_DOC
 */
 core::T_sp	prim_describeDatabase(core::Function_sp e, core::List_sp args, core::Environment_sp environ, core::Lisp_sp lisp)
-{_G();
+{
 core::Str_sp		fileName;
 CandoDatabase_sp	bdb;
     bdb = getCandoDatabase();
@@ -359,7 +359,7 @@ __END_DOC
 #define DECL_chem__create_virtual_atom ""
 #define DOCS_chem__create_virtual_atom "createVirtualAtom"
 CL_DEFUN core::T_sp chem__create_virtual_atom()
-{_G();
+{
     IMPLEMENT_ME(); // Handle new MonomerCoordinates
 #if !KINEMATICS
     core::KeyedArguments_sp kargs = core::KeyedArguments_O::createFromKeyedObjectCons(args,lisp);
@@ -489,7 +489,7 @@ __END_DOC
 #define DECL_chem__save_archive_with_auto_set_cando_database ""
 #define DOCS_chem__save_archive_with_auto_set_cando_database "saveArchiveWithAutoSetCandoDatabase"
 CL_DEFUN core::T_sp chem__save_archive_with_auto_set_cando_database()
-{_G();
+{
     IMPLEMENT_ME();
 #if 0 //fix below
     core::KeyedArguments_sp kargs = core::KeyedArguments_O::createFromKeyedObjectCons(args,lisp);
@@ -523,7 +523,7 @@ __END_DOC
 #define DECL_chem__make_coordinate_array_from_atom_list ""
 #define DOCS_chem__make_coordinate_array_from_atom_list "loadMol2"
 CL_DEFUN geom::CoordinateArray_sp chem__make_coordinate_array_from_atom_list(core::List_sp atoms)
-{_G();
+{
   int num = core::cl__length(atoms);
   geom::CoordinateArray_sp coords = geom::CoordinateArray_O::create(num);
   int idx(0);
@@ -542,7 +542,7 @@ CL_DEFUN geom::CoordinateArray_sp chem__make_coordinate_array_from_atom_list(cor
 #define DECL_chem__load_mol2 ""
 #define DOCS_chem__load_mol2 "loadMol2"
 CL_DEFUN core::T_sp chem__load_mol2(core::T_sp fileName)
-{_G();
+{
     Aggregate_sp agg = Aggregate_O::create();
     mol2ReadAggregateFromFileName(agg,fileName);
     return agg;
@@ -560,7 +560,7 @@ __END_DOC
 
 CL_LAMBDA(matter dest-desig &optional use-sybyl-types);
 CL_DEFUN core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig, bool useSybylTypes)
-{_G();
+{
   mol2WriteMatterToFileName(matter,destDesig,useSybylTypes);
   return _Nil<core::T_O>();
 }
@@ -573,7 +573,7 @@ CL_DEFUN core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig, bool
  */
 
 Residue_sp findResidue(Matter_sp matter, core::T_sp residueIdentifier )
-{_G();
+{
 Molecule_sp molecule;
 core::Fixnum_sp	residueSequenceNumber;
 core::Str_sp	atomName;
@@ -635,7 +635,7 @@ __END_DOC
 #define DOCS_chem__find_residue "findResidue"
 CL_LAMBDA(&rest args);
 CL_DEFUN core::T_sp chem__find_residue(core::List_sp args)
-{_G();
+{
     Molecule_sp molecule;
     core::Fixnum_sp	residueSequenceNumber;
     core::Str_sp	atomName;
@@ -685,7 +685,7 @@ __END_DOC
 #define DOCS_chem__atom_pos "atomPos"
 CL_LAMBDA(&rest args);
 CL_DEFUN core::T_sp chem__atom_pos(core::List_sp args)
-{_G();
+{
     Molecule_sp molecule;
     core::Fixnum_sp	residueSequenceNumber;
     core::Symbol_sp	atomName;
@@ -742,7 +742,7 @@ CL_DEFUN core::T_sp chem__atom_pos(core::List_sp args)
 #define DOCS_chem__monomer "monomer"
 CL_LAMBDA(monomerId groupName &optional monomerAliases comment);
 CL_DEFUN core::T_sp chem__monomer(core::Symbol_sp monomerId, core::Symbol_sp groupName, core::List_sp monomerAliases, core::Str_sp comment)
-{_G();
+{
     OligomerPart_Monomer_sp newMon;
     newMon = OligomerPart_Monomer_O::create();
     newMon->_MonomerId = monomerId;
@@ -763,7 +763,7 @@ CL_DEFUN core::T_sp chem__monomer(core::Symbol_sp monomerId, core::Symbol_sp gro
 #define DECL_chem__link ""
 #define DOCS_chem__link "link"
 CL_DEFUN core::T_sp chem__link(core::Symbol_sp monomer1Id, core::Symbol_sp coupling, OligomerPart_Monomer_sp monomer2 )
-{_G();
+{
     OligomerPart_Link_sp newLink;
     newLink = OligomerPart_Link_O::create();
     newLink->_Monomer1Id = monomer1Id;
@@ -789,7 +789,7 @@ __END_DOC
 #define DECL_chem__calculate_point ""
 #define DOCS_chem__calculate_point "calculatePoint"
 CL_DEFUN core::T_sp chem__calculate_point()
-{_G();
+{
     IMPLEMENT_ME(); // handle new way
 #if 0
 #if !KINEMATICS
@@ -844,7 +844,7 @@ CL_DEFUN core::T_sp chem__calculate_point()
 #define DECL_chem__oligomer ""
 #define DOCS_chem__oligomer "oligomer"
 CL_DEFUN core::T_sp chem__oligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_sp parts)
-{_G();
+{
     Oligomer_sp olig = Oligomer_O::create();
     olig->setName(oligomerName);
     core::HashTableEq_sp monomerMap = core::HashTableEq_O::create_default();
@@ -938,9 +938,6 @@ void	setupPythonPrimitives(core::Lisp_sp env)
 
 
 
-REGISTER_CLASS(chem,OligomerPart_Base_O);
-REGISTER_CLASS(chem,OligomerPart_Monomer_O);
-REGISTER_CLASS(chem,OligomerPart_Link_O);
 
 
 };

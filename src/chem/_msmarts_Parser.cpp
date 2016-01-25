@@ -2905,7 +2905,7 @@ return 0;
 
 
 chem::SmartsRoot_sp smarts_compile(const string& input, core::Lisp_sp lisp, stringstream& errorStream)
-{_G();
+{
     msmarts_SParserParam p;
     stringstream sin(input);
     p.lisp = lisp;

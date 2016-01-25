@@ -27,8 +27,6 @@
 namespace chem {
 
 
-    REGISTER_CLASS(chem, ConformationCollectionEntry_O );
-    REGISTER_CLASS(chem, ConformationCollection_O );
 
 
 void	ConformationCollectionEntry_O::initialize()
@@ -42,7 +40,7 @@ void	ConformationCollectionEntry_O::initialize()
 
 #ifdef XML_ARCHIVE
     void	ConformationCollectionEntry_O::archive(core::ArchiveP node)
-{_G();
+{
     node->archiveWeakPointer( "ConformationCollection",
    		 this->_WeakConformationCollection );
     node->attribute("AllCoordinates", this->_AllCoordinates );
@@ -63,7 +61,7 @@ void	ConformationCollectionEntry_O::initialize()
 
 
 void	ConformationCollectionEntry_O::setConformationCollection(ConformationCollection_sp s)
-{_G();
+{
 geom::CoordinateArray_sp	ca;
     this->_WeakConformationCollection = s;
     ca = geom::CoordinateArray_O::create(s->numberOfAllAtoms());
@@ -72,7 +70,7 @@ geom::CoordinateArray_sp	ca;
 
 
 void	ConformationCollectionEntry_O::setAllCoordinates(geom::CoordinateArray_sp ac)
-{_G();
+{
     ASSERTNOTNULL(ac);
     LOG(BF("setAllCoordinates:%s") % (ac->asXmlString().c_str() ) );
     LOG(BF("The address of the geom::CoordinateArray_sp is in o") );
@@ -82,7 +80,7 @@ void	ConformationCollectionEntry_O::setAllCoordinates(geom::CoordinateArray_sp a
 
 
 void	ConformationCollectionEntry_O::writeCoordinatesToMatter(Matter_sp agg)
-{_G();
+{
 ConformationCollection_sp			sl;
 vector<Vector3>::iterator	ci;
 gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
@@ -95,7 +93,7 @@ gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
 
 
 void	ConformationCollectionEntry_O::extractCoordinatesFromMatter(Matter_sp matter)
-{_G();
+{
 ConformationCollection_sp	sl;
 vector<Vector3>::iterator	ci;
 #ifdef	DEBUG_ConformationCollectionEntry
@@ -122,14 +120,14 @@ void	ConformationCollection_O::initialize()
 
 
 void	ConformationCollection_O::clearEntries()
-{_G();
+{
     this->_Entries.clear();
 }
 
 
 
 geom::CoordinateArray_sp ConformationCollection_O::_extractCoordinateArray(Matter_sp agg)
-{_G();
+{
     vector<Vector3>::iterator	ci;
     gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
 #ifdef	DEBUG_ConformationCollectionEntry
@@ -150,7 +148,7 @@ geom::CoordinateArray_sp ConformationCollection_O::_extractCoordinateArray(Matte
 
 
 void	ConformationCollection_O::setMatter(Matter_sp matter)
-{_G();
+{
 Loop	loop;
 Atom_sp	a;
     this->_Matter = matter;
@@ -167,7 +165,7 @@ Atom_sp	a;
 
 
 uint	ConformationCollection_O::addEntry(ConformationCollectionEntry_sp entry)
-{_G();
+{
     this->_Entries.push_back(entry);
     return 1;
 }
@@ -176,7 +174,7 @@ uint	ConformationCollection_O::addEntry(ConformationCollectionEntry_sp entry)
 
 
 void	ConformationCollection_O::addConformationCollection(ConformationCollection_sp orig)
-{_G();
+{
 Matter_sp			matter;
 ConformationCollection_O::entryIterator	si;
 ConformationCollectionEntry_sp		entry;
@@ -194,7 +192,7 @@ ConformationCollectionEntry_sp		entry;
 
 
 void	ConformationCollection_O::addConformationExplorerLatestConformations(ConformationExplorer_sp orig)
-{_G();
+{
 Matter_sp			matter;
 ConformationExplorer_O::entryIterator	si;
 ConformationExplorerEntryStage_sp		entryStage;
@@ -213,7 +211,7 @@ ConformationCollectionEntry_sp			entry;
 
 
 void	ConformationCollection_O::addConformationExplorerSelectedStageConformations(ConformationExplorer_sp orig)
-{_G();
+{
 Matter_sp			matter;
 ConformationExplorer_O::entryIterator	si;
 ConformationExplorerEntryStage_sp		entryStage;
@@ -241,7 +239,7 @@ ConformationCollectionEntry_sp			entry;
 
 #ifdef XML_ARCHIVE
     void	ConformationCollection_O::archiveBase(core::ArchiveP node)
-{_G();
+{
     node->attribute( "Matter", this->_Matter );
     node->archiveOrderedSet( "AllAtoms", this->_AllAtoms );
     node->archiveVector0( "Entries", this->_Entries );
@@ -251,7 +249,7 @@ ConformationCollectionEntry_sp			entry;
 
 #ifdef XML_ARCHIVE
     void	ConformationCollection_O::archive(core::ArchiveP node)
-{_G();
+{
     this->archiveBase(node);
 }
 #endif
@@ -261,7 +259,7 @@ ConformationCollectionEntry_sp			entry;
 
 #ifdef RENDER
 geom::Render_sp	ConformationCollection_O::rendered(core::List_sp opts)
-{_G();
+{
 geom::FrameList_sp	frames;
 geom::DisplayList_sp	parts, dlSuperpose;
 GrPickableMatter_sp		dlMatter;
@@ -294,7 +292,7 @@ frames = geom::FrameList_O::create();
 
 #ifdef XML_ARCHIVE
 void	ConformationCollection_O::saveAs(const string& fn)
-{_G();
+{
     core::XmlSaveArchive_sp	xml;
 
     xml = core::XmlSaveArchive_O::create();
@@ -304,7 +302,7 @@ void	ConformationCollection_O::saveAs(const string& fn)
 #endif
 
 uint	ConformationCollection_O::getEntryIndex(ConformationCollectionEntry_sp entry)
-{_G();
+{
 uint		i;
 entryIterator	ei;
     for ( i=0,ei=this->_Entries.begin(); ei!=this->_Entries.end(); ei++,i++ )
@@ -321,7 +319,7 @@ entryIterator	ei;
 
 
 ConformationCollectionEntry_sp	ConformationCollection_O::getEntry(uint i)
-{_G();
+{
     ASSERT_lessThan(i,this->_Entries.size());
     ConformationCollectionEntry_sp e;
     e = this->_Entries[i];
@@ -329,14 +327,14 @@ ConformationCollectionEntry_sp	ConformationCollection_O::getEntry(uint i)
 }
 
 ConformationCollectionEntry_sp	ConformationCollection_O::firstEntry()
-{_G();
+{
     ASSERT(this->_Entries.size() > 0 );
     return this->_Entries[0];
 }
 
 
 ConformationCollectionEntry_sp	ConformationCollection_O::createEntry()
-{_G();
+{
     GC_ALLOCATE(ConformationCollectionEntry_O, entry );
     entry->setConformationCollection(this->sharedThis<ConformationCollection_O>());
     return entry;

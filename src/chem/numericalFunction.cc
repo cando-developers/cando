@@ -9,7 +9,6 @@
 
 namespace chem {
 
-    REGISTER_CLASS(chem,NumericalFunction_O);
 
 
 
@@ -51,7 +50,7 @@ void	NumericalFunction_O::initialize()
 
 #ifdef XML_ARCHIVE
     void	NumericalFunction_O::archive(core::ArchiveP node)
-{_G();
+{
     node->attribute("title",this->title);
     node->attribute("xAxisName",this->xAxisName);
     node->attribute("yAxisName",this->yAxisName);

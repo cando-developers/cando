@@ -10,54 +10,11 @@
 #include <clasp/core/wrappers.h>
 namespace kinematics
 {
-    EXPOSE_CLASS(kinematics,Atom_O);
 
 
 
 
-    void Atom_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<Atom_O>()
-	    .def("parent",&Atom_O::parent)
-	    .def("typeSymbol",&Atom_O::typeSymbol)
-	    .def("asString",&Atom_O::asString)
-	    .def("appendChild",&Atom_O::appendChild)
-	    .def("insertChild",&Atom_O::insertChild)
-//	    .def("setComment",&Atom_O::setComment)
-	    .def("atomId",&Atom_O::atomId)
-	    .def("getPosition",&Atom_O::getPosition)
-	    .def("setPosition",&Atom_O::setPosition)
-	    .def("comment",&Atom_O::comment)
-	    .def("stubAtom1",&Atom_O::stubAtom1)
-	    .def("stubAtom2",&Atom_O::stubAtom2)
-	    .def("stubAtom3",&Atom_O::stubAtom3)
-	    .def("indexOfChild",&Atom_O::indexOfChild)
-	    .def("atom-id-values",&Atom_O::atomIdValues)
-	    ;
-    }
 
-    void Atom_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,Atom,"","",_lisp)
-	    .def("parent",&Atom_O::parent)
-	    .def("typeSymbol",&Atom_O::typeSymbol)
-	    .def("asString",&Atom_O::asString)
-	    .def("appendChild",&Atom_O::appendChild)
-	    .def("insertChild",&Atom_O::insertChild)
-//	    .def("setComment",&Atom_O::setComment)
-	    .def("atomId",&Atom_O::atomId)
-	    .def("getPosition",&Atom_O::getPosition)
-	    .def("setPosition",&Atom_O::setPosition)
-	    .def("comment",&Atom_O::comment)
-	    .def("stubAtom1",&Atom_O::stubAtom1)
-	    .def("stubAtom2",&Atom_O::stubAtom2)
-	    .def("stubAtom3",&Atom_O::stubAtom3)
-	    .def("indexOfChild",&Atom_O::indexOfChild)
-	    .def("atom-id-values",&Atom_O::atomIdValues)
-	    ;
-#endif
-    }
 
     Atom_O::Atom_O(const AtomTree_sp& tree, const RefCountedAtomHandle& handle) :
 	_AtomTree(tree),

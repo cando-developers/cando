@@ -24,8 +24,6 @@ namespace chem
     const int FFItor_O::IMaxPeriodicity;
 
 
-    REGISTER_CLASS(chem, FFItor_O );
-    REGISTER_CLASS(chem, FFItorDb_O );
 
 void	FFItor_O::initialize()
 {

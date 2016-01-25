@@ -70,7 +70,7 @@ double	x,y,z;
 
 
 Vector3 Vector3::normalized() const
-{_G();
+{
 double	l;
 Vector3	v;
 
@@ -208,7 +208,7 @@ Vector3	diff;
 
 
 double	Vector3::angleToVectorAboutNormal(const Vector3& toVector, const Vector3& aboutNormal)
-{_G();
+{
 	Vector3 men = this->normalizedOrZero();
 	LOG(BF("me.normalized{%lf,%lf,%lf} ") % men.getX() % men.getY() % men.getZ() );
 	Vector3 ton = toVector.normalizedOrZero();
@@ -230,7 +230,7 @@ double	Vector3::angleToVectorAboutNormal(const Vector3& toVector, const Vector3&
 
 
 void	Vector3::archive(core::ArchiveP node)
-{_G();
+{
     node->attribute("x",this->coords[0]);
     node->attribute("y",this->coords[1]);
     node->attribute("z",this->coords[2]);

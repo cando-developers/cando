@@ -11,25 +11,8 @@ namespace kinematics
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(kinematics,Rotamer_O);
 
-    void Rotamer_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<Rotamer_O>()
-//	    .def_raw("__init__",&Rotamer_O::__init__,"(self &key dihedrals sigmas indices (count 0) (probability 0.0))")
-	    .def("rotamer-probability",&Rotamer_O::probability)
-	;
-    }
 
-    void Rotamer_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,Rotamer,"","",_lisp)
-//	.def_raw("__init__",&"(self &key dihedrals sigmas indices (count 0) (probability 0.0))")
-	    .def("rotamer-probability",&Rotamer_O::probability)
-	;
-#endif
-    }
 
 
 #if INIT_TO_FACTORIES
@@ -38,7 +21,7 @@ namespace kinematics
 #define DECL_Rotamer_O_make ""
 #define DOCS_Rotamer_O_make "make Rotamer"
   Rotamer_sp Rotamer_O::make(core::List_sp dihedrals, core::List_sp sigmas, core::List_sp indices, const double probability, const int count)
-    {_G();
+    {
 	GC_ALLOCATE(Rotamer_O, me );
       me->_Count = count;
       ASSERTF(dihedrals->length()==sigmas->length(),
@@ -67,7 +50,7 @@ namespace kinematics
 				  core::Cons_sp args,
 				  core::Environment_sp env,
 				  core::Lisp_sp lisp)
-    {_G();
+    {
 //      this->Base::__init__(exec,args,env,lisp);
 	core::Cons_sp dihedrals = translate::from_object<core::Cons_sp>::convert(env->lookup(lisp->symbol(_sym_dihedrals)));
 	core::Cons_sp sigmas = translate::from_object<core::Cons_sp>::convert(env->lookup(lisp->symbol(_sym_sigmas)));
@@ -142,32 +125,9 @@ namespace kinematics
 
 
 
-    EXPOSE_CLASS(kinematics,RotamerSetBase_O);
 
 
-    void RotamerSetBase_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<RotamerSetBase_O>()
-//	.def_raw("__init__",&RotamerSetBase_O::__init__,"(self)")
-	    .def("rotamer-set-add-rotamer",&RotamerSetBase_O::addRotamer)
-	    .def("rotamer-set-as-list",&RotamerSetBase_O::asList)
-	    .def("rotamer-set-size",&RotamerSetBase_O::size)
-	    .def("rotamer-set-get",&RotamerSetBase_O::get)
-	;
-    }
 
-    void RotamerSetBase_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,RotamerSetBase,"","",_lisp)
-//	.def_raw("__init__",&"(self)")
-	    .def("rotamer-set-add-rotamer",&RotamerSetBase_O::addRotamer)
-	    .def("rotamer-set-as-cons",&RotamerSetBase_O::asCons)
-	    .def("rotamer-set-size",&RotamerSetBase_O::size)
-	    .def("rotamer-set-get",&RotamerSetBase_O::get)
-	;
-#endif
-    }
 
 
 #if INIT_TO_FACTORIES
@@ -176,13 +136,13 @@ namespace kinematics
 #define DECL_RotamerSetBase_O_make ""
 #define DOCS_RotamerSetBase_O_make "make RotamerSetBase"
   RotamerSetBase_sp RotamerSetBase_O::make()
-    {_G();
+    {
       IMPLEMENT_ME();
     };
 
 #else
     core::T_sp RotamerSetBase_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = translate::from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	return _Nil<core::T_O>();
@@ -243,22 +203,9 @@ core::List_sp RotamerSetBase_O::asList() const
 
 
 
-    EXPOSE_CLASS(kinematics,RotamerSet_O);
 
 
-    void RotamerSet_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<RotamerSet_O>()
-	    ;
-    }
 
-    void RotamerSet_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,RotamerSet,"","",_lisp)
-	    ;
-#endif
-    }
 
 
 #if INIT_TO_FACTORIES
@@ -267,13 +214,13 @@ core::List_sp RotamerSetBase_O::asList() const
 #define DECL_RotamerSet_O_make ""
 #define DOCS_RotamerSet_O_make "make RotamerSet"
   RotamerSet_sp RotamerSet_O::make()
-    {_G();
+    {
       IMPLEMENT_ME();
     };
 
 #else
     core::T_sp RotamerSet_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = translate::from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	return _Nil<core::T_O>();
@@ -301,26 +248,7 @@ core::List_sp RotamerSetBase_O::asList() const
 
 
 
-    EXPOSE_CLASS(kinematics,BackboneDependentRotamerSet_O);
-    void BackboneDependentRotamerSet_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<BackboneDependentRotamerSet_O>()
-//	    .def_raw("__init__",&BackboneDependentRotamerSet_O::__init__,"(self &key phi psi)")
-	    .def("backbone-dependent-rotamer-set-phi",&BackboneDependentRotamerSet_O::phi)
-	    .def("backbone-dependent-rotamer-set-psi",&BackboneDependentRotamerSet_O::psi)
-	    ;
-    }
 
-    void BackboneDependentRotamerSet_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,BackboneDependentRotamerSet,"","",_lisp)
-//	    .def_raw("__init__",&"(self &key phi psi)")
-	    .def("backbone-dependent-rotamer-set-phi",&BackboneDependentRotamerSet_O::phi)
-	    .def("backbone-dependent-rotamer-set-psi",&BackboneDependentRotamerSet_O::psi)
-	    ;
-#endif
-    }
 
     void BackboneDependentRotamerSet_O::initialize()
     {
@@ -333,7 +261,7 @@ core::List_sp RotamerSetBase_O::asList() const
 #define DECL_BackboneDependentRotamerSet_O_make ""
 #define DOCS_BackboneDependentRotamerSet_O_make "make BackboneDependentRotamerSet"
   BackboneDependentRotamerSet_sp BackboneDependentRotamerSet_O::make(const int phi, const int psi)
-    {_G();
+    {
         GC_ALLOCATE(BackboneDependentRotamerSet_O, me );
 	me->_Phi = phi;
 	me->_Psi = psi;
@@ -342,7 +270,7 @@ core::List_sp RotamerSetBase_O::asList() const
 
 #else
     core::T_sp BackboneDependentRotamerSet_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 	this->_Phi = translate::from_object<int>::convert(env->lookup(_sym_phi));
 	this->_Psi = translate::from_object<int>::convert(env->lookup(_sym_psi));
 	return _Nil<core::T_O>();
@@ -363,36 +291,7 @@ core::List_sp RotamerSetBase_O::asList() const
 
 
 
-    EXPOSE_CLASS(kinematics,BackboneDependentRotamerLibrary_O);
-    void BackboneDependentRotamerLibrary_O::exposeCando(core::Lisp_sp lisp)
-    {
-	core::class_<BackboneDependentRotamerLibrary_O>()
-//	    .def_raw("__init__",&BackboneDependentRotamerLibrary_O::__init__,"(self &key phiStart phiStep phiCount psiStart psiStep psiCount)")
-	    .def("backbone-dependent-rotamer-library-add-rotamer-set",&BackboneDependentRotamerLibrary_O::addRotamerSet)
-	    .def("backbone-dependent-rotamer-library-rotamer-sets-as-cons",&BackboneDependentRotamerLibrary_O::rotamerSetsAsList)
-	    ;
-//	    .def("backbone-dependent-rotamer-library-add-rotamer",&BackboneDependentRotamerLibrary_O::rotamerSetAddRotamer)
-//	    .def("backbone-dependent-rotamer-library-as-cons",&BackboneDependentRotamerLibrary_O::rotamerSetAsCons)
-//	    .def("backbone-dependent-rotamer-library-size",&BackboneDependentRotamerLibrary_O::size)
-//	    .def("backbone-dependent-rotamer-library-get",&BackboneDependentRotamerLibrary_O::rotamerSetGet)
-	;
-    }
 
-    void BackboneDependentRotamerLibrary_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(KinPkg,BackboneDependentRotamerLibrary,"","",_lisp)
-//	    .def_raw("__init__",&"(self &key phiStart phiStep phiCount psiStart psiStep psiCount)")
-	    .def("backbone-dependent-rotamer-library-add-rotamer-set",&BackboneDependentRotamerLibrary_O::addRotamerSet)
-	    .def("backbone-dependent-rotamer-library-rotamer-sets-as-cons",&BackboneDependentRotamerLibrary_O::rotamerSetsAsList)
-	    ;
-#endif
-//	    .def("backbone-dependent-rotamer-library-add-rotamer",&BackboneDependentRotamerLibrary_O::rotamerSetAddRotamer)
-//	    .def("backbone-dependent-rotamer-library-as-cons",&BackboneDependentRotamerLibrary_O::rotamerSetAsCons)
-//	    .def("backbone-dependent-rotamer-library-size",&BackboneDependentRotamerLibrary_O::size)
-//	    .def("backbone-dependent-rotamer-library-get",&BackboneDependentRotamerLibrary_O::rotamerSetGet)
-	;
-    }
 
 
 #if INIT_TO_FACTORIES
@@ -401,7 +300,7 @@ core::List_sp RotamerSetBase_O::asList() const
 #define DECL_BackboneDependentRotamerLibrary_O_make ""
 #define DOCS_BackboneDependentRotamerLibrary_O_make "make BackboneDependentRotamerLibrary"
   BackboneDependentRotamerLibrary_sp BackboneDependentRotamerLibrary_O::make(const int phiStep, const int phiStart, const int phiCount, const int psiStep, const int psiStart, const int psiCount)
-    {_G();
+    {
 	GC_ALLOCATE(BackboneDependentRotamerLibrary_O, me );
       me->_PhiStep = phiStep;
       me->_PhiStart = phiStart;
@@ -421,7 +320,7 @@ core::List_sp RotamerSetBase_O::asList() const
 
 #else
     core::T_sp BackboneDependentRotamerLibrary_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_G();
+    {
 	this->_PhiStep = translate::from_object<int>::convert(env->lookup(Pkg(),"phiStep"));
 	this->_PhiStart = translate::from_object<int>::convert(env->lookup(Pkg(),"phiStart"));
 	this->_PhiCount = translate::from_object<int>::convert(env->lookup(Pkg(),"phiCount"));

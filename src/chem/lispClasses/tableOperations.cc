@@ -17,7 +17,7 @@ namespace chem
 {
 
 CL_DEFUN bool chem__verifyThatFieldOfAllEntriesAreEqual(Table_sp table, core::Symbol_sp field )
-    {_G();
+    {
 	if ( table->numberOfEntries() <= 1 ) return true;
 	TableEntry_sp firstEntry = *(table->beginEntry());
 	core::T_sp firstObject = firstEntry->read(field);
@@ -38,7 +38,7 @@ CL_DEFUN bool chem__verifyThatFieldOfAllEntriesAreEqual(Table_sp table, core::Sy
 
 
 CL_DEFUN bool chem__superposeAllHeavyAtoms(Table_sp table, core::Symbol_sp matterField, core::Symbol_sp writeRmsd )
-    {_G();
+    {
 	if ( !table->hasField(writeRmsd) )
 	{
 	    table->appendField(writeRmsd,core::DoubleFloat_O::___staticClass);
@@ -116,7 +116,7 @@ public:
  * comes before the second one.
  */
     void sortTableEntriesUsingComparisonFunction(Table_sp table, core::Function_sp compare )
-    {_G();
+    {
 	OrderUsingCallback orderer(compare);
 	core::sort::quickSort(table->beginEntry(), table->endEntry(),orderer );
     }
@@ -127,7 +127,7 @@ public:
  * comes before the second one.
  */
 CL_DEFUN void chem__forEachEntryEvaluate(Table_sp table, core::Function_sp eval )
-    {_G();
+    {
     for ( Table_O::entryIterator ei=table->beginEntry(); ei!=table->endEntry(); ei++ )
     {
 	core::Cons_sp form = core::Cons_O::createList(eval,*ei);

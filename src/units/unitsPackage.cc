@@ -96,7 +96,7 @@ SYMBOL_EXPORT_SC_(UnitsPkg,nm_per_ps);
 
 
     void UnitsExposer::expose(core::Lisp_sp lisp,WhatToExpose what) const
-    {_G();
+    {
       switch (what)
       {
       case candoClasses:

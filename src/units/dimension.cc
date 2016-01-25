@@ -10,28 +10,13 @@ namespace units
 // ----------------------------------------------------------------------
 //
 
-    EXPOSE_CLASS(units,Dimension_O);
 
-    void Dimension_O::exposeCando(::core::Lisp_sp lisp)
-    {
-	::core::class_<Dimension_O>()
-//	.def_raw("__init__",&Dimension_O::__init__,"(self)")
-	;
-    }
 
-    void Dimension_O::exposePython(core::Lisp_sp lisp)
-    {_G();
-#ifdef USEBOOSTPYTHON
-	PYTHON_CLASS(UnitsPkg,Dimension,"","",_lisp)
-//	.def_raw("__init__",&initArgs("(self)")
-	;
-#endif
-    }
 
 
 #if 0
     core::T_sp Dimension_O::__init__(::core::Function_sp exec, ::core::Cons_sp args, ::core::Environment_sp env)
-    {_G();
+    {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	return _lisp->onil();
@@ -71,7 +56,7 @@ namespace units
 
 
 string Dimension_O::baseDimensionUnitName(int i)
-    {_G();
+    {
 	ASSERTF(NumBaseDimensions==8,BF("When you change NumBaseDimensions you must update Dimension_O::baseDimensionUnitName"));
 	ASSERTF(i>=0 && i < NumBaseDimensions,BF("Illegal base dimension index[%d]") % i);
 	switch (i)

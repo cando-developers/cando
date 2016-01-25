@@ -13,7 +13,6 @@
 namespace chem {
 
 
-    REGISTER_CLASS(chem,Command_O);
 
 
 

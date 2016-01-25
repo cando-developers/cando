@@ -123,7 +123,7 @@ int	i;
 }
 
 void	Dumb_Spline::describe()
-{_G();
+{
     Matrix	m, gm;
     uint	i;
     _lisp->print(BF( "spline type = %d") % this->iType );
