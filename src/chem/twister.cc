@@ -173,12 +173,12 @@ CL_DEFMETHOD void	Twister_O::rotate(double angle)
     rotVec = rotVec.normalized();
     tv = this->_Movable->getPosition();
     tv = tv.multiplyByScalar(-1.0);
-    transform.translate(&tv);
+    transform.translate(tv);
     LOG(BF("To origin transform matrix: %s") % (transform.asString().c_str()) );
     tm.rotationAxis(angle,&rotVec);
     transform = tm*transform;
     tv = this->_Movable->getPosition();
-    tm.translate(&tv);
+    tm.translate(tv);
     LOG(BF("From origin transform matrix: %s") % (tm.asString().c_str()) );
     transform = tm*transform;
     LOG(BF("Complete transform matrix: %s") % (transform.asString().c_str()) );

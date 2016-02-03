@@ -498,7 +498,7 @@ Matrix	mt, m;
     mt.atColRowPut( 2, 1, this->z.getY() );
     mt.atColRowPut( 2, 2, this->z.getZ() );
 
-    m.translate(&(this->origin));
+    m.translate(this->origin);
     m = m*mt;
     return m;
 }
@@ -532,8 +532,7 @@ Vector3 vt;
     m.atRowColPut( 2, 2, this->z.getZ() );
 
     vt = this->origin.multiplyByScalar(-1.0);
-
-    mt.translate(&vt);
+    mt.translate(vt);
     LOG(BF("mt = %s") % (mt.asString().c_str() ) );
     mn = m*mt;
     LOG(BF("mn = %s") % (mn.asString().c_str() ) );

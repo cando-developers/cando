@@ -517,9 +517,9 @@ Matrix	mA, mB;
 		//
     vCent = this->_Center.multiplyByScalar(-1.0);
     LOG(BF("vCent = %s") % vCent.asString().c_str()  );
-    mTranslateCenterToOrigin.translate(&vCent);
-    mTranslateOriginToCenter.translate(&this->_Center);
-    mTranslate.translate(&this->_Translate);
+    mTranslateCenterToOrigin.translate(vCent);
+    mTranslateOriginToCenter.translate(this->_Center);
+    mTranslate.translate(this->_Translate);
 
     mA = this->_Rotate.multiplyByMatrix(mTranslateCenterToOrigin);
 #if SCALE_IN_VIRTUAL_SPHERE //[ // Don't scale here, do it in glPerspective

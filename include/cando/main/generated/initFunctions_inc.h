@@ -804,7 +804,7 @@ namespace core {
     T_mv cl__fmakunbound(T_sp functionName);
     bool cl__fboundp(T_sp functionName);
     T_sp cl__fdefinition(T_sp functionName);
-    T_sp core__STARfset(T_sp functionName, Function_sp functionObject, T_sp macro);
+    T_sp core__fset(T_sp functionName, Function_sp functionObject, T_sp is_macro, T_sp pretty_print, T_sp lambda_list, T_sp lambda_list_p);
     Class_sp cl__class_of(T_sp obj);
     T_mv cl__null(T_sp obj);
     T_mv core__macroexpand_default(Function_sp macro_function, T_sp form, T_sp macro_env);
@@ -979,6 +979,11 @@ namespace adapt {
     IndexedObjectBag_sp chem__makeIndexedObjectBag();
 };
 namespace geom {
+    OMatrix_sp make_m4_rotate_z(double radians);
+    OMatrix_sp make_m4_rotate_y(double radians);
+    OMatrix_sp make_m4_rotate_x(double radians);
+    OMatrix_sp make_m4_translate(const Vector3& pos);
+    OMatrix_sp make_matrix_identity();
 };
 namespace chem {
     core::T_sp chem__oligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_sp parts);
@@ -1022,34 +1027,34 @@ namespace chem {
 #endif // EXPOSE_FUNCTION_SIGNATURES
 #ifdef EXPOSE_FUNCTION_BINDINGS_HELPERS
 NOINLINE void expose_function_1_helper() {
-  expose_function(core::magic_name("ast_tooling__testDerivable"),true,&asttooling::ast_tooling__testDerivable,"");
+  expose_function(core::magic_name("ast_tooling__testDerivable"),true,&asttooling::ast_tooling__testDerivable,"(ptr)");
 }
 NOINLINE void expose_function_2_helper() {
-  expose_function(core::magic_name("ast_tooling__deduplicate"),true,&asttooling::ast_tooling__deduplicate,"");
+  expose_function(core::magic_name("ast_tooling__deduplicate"),true,&asttooling::ast_tooling__deduplicate,"(replacements)");
 }
 NOINLINE void expose_function_3_helper() {
   expose_function(core::magic_name("ast_tooling__clangVersionString"),true,&asttooling::ast_tooling__clangVersionString,"");
 }
 NOINLINE void expose_function_4_helper() {
-  expose_function(core::magic_name("ast_tooling__makeAstVisitor"),true,&asttooling::ast_tooling__makeAstVisitor,"");
+  expose_function(core::magic_name("ast_tooling__makeAstVisitor"),true,&asttooling::ast_tooling__makeAstVisitor,"(target)");
 }
 NOINLINE void expose_function_5_helper() {
-  expose_function(core::magic_name("serve_event_internal__ll_serveEventWithTimeout"),true,&serveEvent::serve_event_internal__ll_serveEventWithTimeout,"");
+  expose_function(core::magic_name("serve_event_internal__ll_serveEventWithTimeout"),true,&serveEvent::serve_event_internal__ll_serveEventWithTimeout,"(rfd wfd maxfdp1 seconds)");
 }
 NOINLINE void expose_function_6_helper() {
-  expose_function(core::magic_name("serve_event_internal__ll_serveEventNoTimeout"),true,&serveEvent::serve_event_internal__ll_serveEventNoTimeout,"");
+  expose_function(core::magic_name("serve_event_internal__ll_serveEventNoTimeout"),true,&serveEvent::serve_event_internal__ll_serveEventNoTimeout,"(rfd wfd maxfdp1)");
 }
 NOINLINE void expose_function_7_helper() {
   expose_function(core::magic_name("serve_event_internal__ll_fdset_size"),true,&serveEvent::serve_event_internal__ll_fdset_size,"");
 }
 NOINLINE void expose_function_8_helper() {
-  expose_function(core::magic_name("serve_event_internal__ll_fd_isset"),true,&serveEvent::serve_event_internal__ll_fd_isset,"");
+  expose_function(core::magic_name("serve_event_internal__ll_fd_isset"),true,&serveEvent::serve_event_internal__ll_fd_isset,"(fd fdset)");
 }
 NOINLINE void expose_function_9_helper() {
-  expose_function(core::magic_name("serve_event_internal__ll_fd_set"),true,&serveEvent::serve_event_internal__ll_fd_set,"");
+  expose_function(core::magic_name("serve_event_internal__ll_fd_set"),true,&serveEvent::serve_event_internal__ll_fd_set,"(fd fdset)");
 }
 NOINLINE void expose_function_10_helper() {
-  expose_function(core::magic_name("serve_event_internal__ll_fd_zero"),true,&serveEvent::serve_event_internal__ll_fd_zero,"");
+  expose_function(core::magic_name("serve_event_internal__ll_fd_zero"),true,&serveEvent::serve_event_internal__ll_fd_zero,"(fdset)");
 }
 NOINLINE void expose_function_11_helper() {
   expose_function(core::magic_name("sockets_internal__ll_setSockoptLinger"),true,&sockets::sockets_internal__ll_setSockoptLinger,"(fd level constant value)");
@@ -1166,7 +1171,7 @@ NOINLINE void expose_function_48_helper() {
   expose_function(core::magic_name("gctools__next_header_kind"),true,&gctools::gctools__next_header_kind,"");
 }
 NOINLINE void expose_function_49_helper() {
-  expose_function(core::magic_name("gctools__debug_allocations"),true,&gctools::gctools__debug_allocations,"");
+  expose_function(core::magic_name("gctools__debug_allocations"),true,&gctools::gctools__debug_allocations,"(debugOn)");
 }
 NOINLINE void expose_function_50_helper() {
   expose_function(core::magic_name("gctools__cleanup"),true,&gctools::gctools__cleanup,"");
@@ -1184,7 +1189,7 @@ NOINLINE void expose_function_54_helper() {
   expose_function(core::magic_name("gctools__alloc_pattern_end"),true,&gctools::gctools__alloc_pattern_end,"");
 }
 NOINLINE void expose_function_55_helper() {
-  expose_function(core::magic_name("gctools__alloc_pattern_begin"),true,&gctools::gctools__alloc_pattern_begin,"");
+  expose_function(core::magic_name("gctools__alloc_pattern_begin"),true,&gctools::gctools__alloc_pattern_begin,"(pattern)");
 }
 NOINLINE void expose_function_56_helper() {
   expose_function(core::magic_name("gctools__gc_marker"),true,&gctools::gctools__gc_marker,"(&optional marker)");
@@ -1208,10 +1213,10 @@ NOINLINE void expose_function_62_helper() {
   expose_function(core::magic_name("gctools__bytes_allocated"),true,&gctools::gctools__bytes_allocated,"");
 }
 NOINLINE void expose_function_63_helper() {
-  expose_function(core::magic_name("gctools__deallocate_unmanaged_instance"),true,&gctools::gctools__deallocate_unmanaged_instance,"");
+  expose_function(core::magic_name("gctools__deallocate_unmanaged_instance"),true,&gctools::gctools__deallocate_unmanaged_instance,"(obj)");
 }
 NOINLINE void expose_function_64_helper() {
-  expose_function(core::magic_name("gctools__bootstrap_kind_p"),true,&gctools::gctools__bootstrap_kind_p,"");
+  expose_function(core::magic_name("gctools__bootstrap_kind_p"),true,&gctools::gctools__bootstrap_kind_p,"(name)");
 }
 NOINLINE void expose_function_65_helper() {
   expose_function(core::magic_name("gctools__bootstrap_kind_symbols"),true,&gctools::gctools__bootstrap_kind_symbols,"");
@@ -1244,10 +1249,10 @@ NOINLINE void expose_function_74_helper() {
   expose_function(core::magic_name("llvm_sys__viewCFG"),true,&llvmo::llvm_sys__viewCFG,"(fn &optional only)");
 }
 NOINLINE void expose_function_75_helper() {
-  expose_function(core::magic_name("llvm_sys__disassembleSTAR"),true,&llvmo::llvm_sys__disassembleSTAR,"");
+  expose_function(core::magic_name("llvm_sys__disassembleSTAR"),true,&llvmo::llvm_sys__disassembleSTAR,"(cf)");
 }
 NOINLINE void expose_function_76_helper() {
-  expose_function(core::magic_name("llvm_sys__getOrCreateExternalGlobal"),true,&llvmo::llvm_sys__getOrCreateExternalGlobal,"");
+  expose_function(core::magic_name("llvm_sys__getOrCreateExternalGlobal"),true,&llvmo::llvm_sys__getOrCreateExternalGlobal,"(module name type)");
 }
 NOINLINE void expose_function_77_helper() {
   expose_function(core::magic_name("llvm_sys__throwIfMismatchedStructureSizes"),true,&llvmo::llvm_sys__throwIfMismatchedStructureSizes,"(&key tsp tmv ihf)");
@@ -1256,7 +1261,7 @@ NOINLINE void expose_function_78_helper() {
   expose_function(core::magic_name("llvm_sys__cxxDataStructuresInfo"),true,&llvmo::llvm_sys__cxxDataStructuresInfo,"");
 }
 NOINLINE void expose_function_79_helper() {
-  expose_function(core::magic_name("llvm_sys__mangleSymbolName"),true,&llvmo::llvm_sys__mangleSymbolName,"");
+  expose_function(core::magic_name("llvm_sys__mangleSymbolName"),true,&llvmo::llvm_sys__mangleSymbolName,"(name)");
 }
 NOINLINE void expose_function_80_helper() {
   expose_function(core::magic_name("LLVM-SYS:createBasicAliasAnalysisPass"),true,&llvm::createBasicAliasAnalysisPass,"");
@@ -1370,13 +1375,13 @@ NOINLINE void expose_function_116_helper() {
   expose_function(core::magic_name("LLVM-SYS:createAliasAnalysisCounterPass"),true,&llvm::createAliasAnalysisCounterPass,"");
 }
 NOINLINE void expose_function_117_helper() {
-  expose_function(core::magic_name("LLVM-SYS:TargetRegistryLookupTarget"),true,&llvmo::TargetRegistryLookupTarget,"");
+  expose_function(core::magic_name("LLVM-SYS:TargetRegistryLookupTarget"),true,&llvmo::TargetRegistryLookupTarget,"(ArchName triple)");
 }
 NOINLINE void expose_function_118_helper() {
-  expose_function(core::magic_name("LLVM-SYS:finalizeClosure"),true,&llvmo::finalizeClosure,"");
+  expose_function(core::magic_name("LLVM-SYS:finalizeClosure"),true,&llvmo::finalizeClosure,"(oengine func)");
 }
 NOINLINE void expose_function_119_helper() {
-  expose_function(core::magic_name("LLVM-SYS:finalizeEngineAndRegisterWithGcAndGetCompiledFunction"),true,&llvmo::finalizeEngineAndRegisterWithGcAndGetCompiledFunction,"");
+  expose_function(core::magic_name("LLVM-SYS:finalizeEngineAndRegisterWithGcAndGetCompiledFunction"),true,&llvmo::finalizeEngineAndRegisterWithGcAndGetCompiledFunction,"(oengine functionName fn activationFrameEnvironment globalRunTimeValueName fileName filePos linenumber lambdaList)");
 }
 NOINLINE void expose_function_120_helper() {
   expose_function(core::magic_name("LLVM-SYS:pointer-type-get"),true,&llvmo::PointerType_O::get,"(element-type &optional (address-space 0))");
@@ -1385,7 +1390,7 @@ NOINLINE void expose_function_121_helper() {
   expose_function(core::magic_name("LLVM-SYS:array-type-get"),true,&llvmo::ArrayType_O::get,"(element-type num-elements)");
 }
 NOINLINE void expose_function_122_helper() {
-  expose_function(core::magic_name("LLVM-SYS:struct-type-get"),true,&llvmo::StructType_O::get,"");
+  expose_function(core::magic_name("LLVM-SYS:struct-type-get"),true,&llvmo::StructType_O::get,"(context elements isPacked)");
 }
 NOINLINE void expose_function_123_helper() {
   expose_function(core::magic_name("LLVM-SYS:struct-type-create"),true,&llvmo::StructType_O::make,"(context &key elements name is-packed)");
@@ -1430,34 +1435,34 @@ NOINLINE void expose_function_136_helper() {
   expose_function(core::magic_name("LLVM-SYS:basic-block-create"),true,&llvm::BasicBlock::Create,"(context &optional (name \"\") parent basic_block)");
 }
 NOINLINE void expose_function_137_helper() {
-  expose_function(core::magic_name("llvm_sys__FunctionCreate"),true,&llvmo::llvm_sys__FunctionCreate,"");
+  expose_function(core::magic_name("llvm_sys__FunctionCreate"),true,&llvmo::llvm_sys__FunctionCreate,"(tysp linkage nsp modulesp)");
 }
 NOINLINE void expose_function_138_helper() {
-  expose_function(core::magic_name("LLVM-SYS:value-as-metadata-get"),true,&llvmo::ValueAsMetadata_O::get,"");
+  expose_function(core::magic_name("LLVM-SYS:value-as-metadata-get"),true,&llvmo::ValueAsMetadata_O::get,"(val)");
 }
 NOINLINE void expose_function_139_helper() {
-  expose_function(core::magic_name("LLVM-SYS:mdstring-get"),true,&llvmo::MDString_O::get,"");
+  expose_function(core::magic_name("LLVM-SYS:mdstring-get"),true,&llvmo::MDString_O::get,"(context str)");
 }
 NOINLINE void expose_function_140_helper() {
-  expose_function(core::magic_name("LLVM-SYS:mdnode-get"),true,&llvmo::MDNode_O::get,"");
+  expose_function(core::magic_name("LLVM-SYS:mdnode-get"),true,&llvmo::MDNode_O::get,"(context values)");
 }
 NOINLINE void expose_function_141_helper() {
-  expose_function(core::magic_name("LLVM-SYS:make-irbuilder"),true,&llvmo::IRBuilder_O::make,"");
+  expose_function(core::magic_name("LLVM-SYS:make-irbuilder"),true,&llvmo::IRBuilder_O::make,"(context)");
 }
 NOINLINE void expose_function_142_helper() {
-  expose_function(core::magic_name("LLVM-SYS:makeAPInt64"),true,&llvmo::APInt_O::makeAPInt64,"");
+  expose_function(core::magic_name("LLVM-SYS:makeAPInt64"),true,&llvmo::APInt_O::makeAPInt64,"(value)");
 }
 NOINLINE void expose_function_143_helper() {
-  expose_function(core::magic_name("LLVM-SYS:makeAPInt32"),true,&llvmo::APInt_O::makeAPInt32,"");
+  expose_function(core::magic_name("LLVM-SYS:makeAPInt32"),true,&llvmo::APInt_O::makeAPInt32,"(value)");
 }
 NOINLINE void expose_function_144_helper() {
-  expose_function(core::magic_name("LLVM-SYS:makeAPIntWidth"),true,&llvmo::APInt_O::makeAPIntWidth,"");
+  expose_function(core::magic_name("LLVM-SYS:makeAPIntWidth"),true,&llvmo::APInt_O::makeAPIntWidth,"(value width sign)");
 }
 NOINLINE void expose_function_145_helper() {
-  expose_function(core::magic_name("LLVM-SYS:makeAPInt1"),true,&llvmo::APInt_O::makeAPInt1,"");
+  expose_function(core::magic_name("LLVM-SYS:makeAPInt1"),true,&llvmo::APInt_O::makeAPInt1,"(value)");
 }
 NOINLINE void expose_function_146_helper() {
-  expose_function(core::magic_name("LLVM-SYS:makeAPInt"),true,&llvmo::APInt_O::makeAPInt,"");
+  expose_function(core::magic_name("LLVM-SYS:makeAPInt"),true,&llvmo::APInt_O::makeAPInt,"(value)");
 }
 NOINLINE void expose_function_147_helper() {
   expose_function(core::magic_name("LLVM-SYS:makeAPFloatDouble"),true,&llvmo::APFloat_O::makeAPFloatDouble,"(value)");
@@ -1490,7 +1495,7 @@ NOINLINE void expose_function_156_helper() {
   expose_function(core::magic_name("LLVM-SYS:make-global-variable"),true,&llvmo::GlobalVariable_O::make,"(module type is-constant linkage initializer name &optional (insert-before nil) (thread-local-mode 'llvm-sys:not-thread-local))");
 }
 NOINLINE void expose_function_157_helper() {
-  expose_function(core::magic_name("LLVM-SYS:constant-expr-get-in-bounds-get-element-ptr"),true,&llvmo::ConstantExpr_O::getInBoundsGetElementPtr,"");
+  expose_function(core::magic_name("LLVM-SYS:constant-expr-get-in-bounds-get-element-ptr"),true,&llvmo::ConstantExpr_O::getInBoundsGetElementPtr,"(constant idxList)");
 }
 NOINLINE void expose_function_158_helper() {
   expose_function(core::magic_name("LLVM-SYS:block-address-get"),true,&llvmo::BlockAddress_O::get,"(function basic-block)");
@@ -1502,13 +1507,13 @@ NOINLINE void expose_function_160_helper() {
   expose_function(core::magic_name("LLVM-SYS:constant-data-array-get-uint32"),true,&llvmo::ConstantDataArray_O::getUInt32,"(type values)");
 }
 NOINLINE void expose_function_161_helper() {
-  expose_function(core::magic_name("LLVM-SYS:PassManagerBuilderSetfSizeLevel"),true,&llvmo::PassManagerBuilderSetfSizeLevel,"");
+  expose_function(core::magic_name("LLVM-SYS:PassManagerBuilderSetfSizeLevel"),true,&llvmo::PassManagerBuilderSetfSizeLevel,"(pmb level)");
 }
 NOINLINE void expose_function_162_helper() {
-  expose_function(core::magic_name("LLVM-SYS:PassManagerBuilderSetfOptLevel"),true,&llvmo::PassManagerBuilderSetfOptLevel,"");
+  expose_function(core::magic_name("LLVM-SYS:PassManagerBuilderSetfOptLevel"),true,&llvmo::PassManagerBuilderSetfOptLevel,"(pmb optLevel)");
 }
 NOINLINE void expose_function_163_helper() {
-  expose_function(core::magic_name("LLVM-SYS:PassManagerBuilderSetfInliner"),true,&llvmo::PassManagerBuilderSetfInliner,"");
+  expose_function(core::magic_name("LLVM-SYS:PassManagerBuilderSetfInliner"),true,&llvmo::PassManagerBuilderSetfInliner,"(pmb inliner)");
 }
 NOINLINE void expose_function_164_helper() {
   expose_function(core::magic_name("make-PassManagerBuilder","LLVM-SYS"),true,&llvmo::PassManagerBuilder_O::make,"");
@@ -1529,37 +1534,37 @@ NOINLINE void expose_function_169_helper() {
   expose_function(core::magic_name("makeDataLayoutPass","LLVM-SYS"),true,&llvmo::DataLayoutPass_O::make,"(module)");
 }
 NOINLINE void expose_function_170_helper() {
-  expose_function(core::magic_name("llvm_sys__module_get_function_list"),true,&llvmo::llvm_sys__module_get_function_list,"");
+  expose_function(core::magic_name("llvm_sys__module_get_function_list"),true,&llvmo::llvm_sys__module_get_function_list,"(module)");
 }
 NOINLINE void expose_function_171_helper() {
   expose_function(core::magic_name("make-Module","LLVM-SYS"),true,&llvmo::Module_O::make,"(module-name context)");
 }
 NOINLINE void expose_function_172_helper() {
-  expose_function(core::magic_name("llvm_sys__valid"),true,&llvmo::llvm_sys__valid,"");
+  expose_function(core::magic_name("llvm_sys__valid"),true,&llvmo::llvm_sys__valid,"(value)");
 }
 NOINLINE void expose_function_173_helper() {
-  expose_function(core::magic_name("llvm_sys__makeStringGlobal"),true,&llvmo::llvm_sys__makeStringGlobal,"");
+  expose_function(core::magic_name("llvm_sys__makeStringGlobal"),true,&llvmo::llvm_sys__makeStringGlobal,"(module svalue)");
 }
 NOINLINE void expose_function_174_helper() {
   expose_function(core::magic_name("attributeSetGet","LLVM-SYS"),true,(llvm::AttributeSet (*)(llvm::LLVMContext &, unsigned, llvm::ArrayRef<llvm::Attribute::AttrKind>)) & llvm::AttributeSet::get,"");
 }
 NOINLINE void expose_function_175_helper() {
-  expose_function(core::magic_name("llvm_sys__valuep"),true,&llvmo::llvm_sys__valuep,"");
+  expose_function(core::magic_name("llvm_sys__valuep"),true,&llvmo::llvm_sys__valuep,"(arg)");
 }
 NOINLINE void expose_function_176_helper() {
-  expose_function(core::magic_name("llvm_sys__parseBitcodeFile"),true,&llvmo::llvm_sys__parseBitcodeFile,"");
+  expose_function(core::magic_name("llvm_sys__parseBitcodeFile"),true,&llvmo::llvm_sys__parseBitcodeFile,"(filename context)");
 }
 NOINLINE void expose_function_177_helper() {
-  expose_function(core::magic_name("llvm_sys__writeBitcodeToFile"),true,&llvmo::llvm_sys__writeBitcodeToFile,"");
+  expose_function(core::magic_name("llvm_sys__writeBitcodeToFile"),true,&llvmo::llvm_sys__writeBitcodeToFile,"(module pathname)");
 }
 NOINLINE void expose_function_178_helper() {
-  expose_function(core::magic_name("llvm_sys__verifyFunction"),true,&llvmo::llvm_sys__verifyFunction,"");
+  expose_function(core::magic_name("llvm_sys__verifyFunction"),true,&llvmo::llvm_sys__verifyFunction,"(function)");
 }
 NOINLINE void expose_function_179_helper() {
-  expose_function(core::magic_name("llvm_sys__verifyModule"),true,&llvmo::llvm_sys__verifyModule,"");
+  expose_function(core::magic_name("llvm_sys__verifyModule"),true,&llvmo::llvm_sys__verifyModule,"(module action)");
 }
 NOINLINE void expose_function_180_helper() {
-  expose_function(core::magic_name("llvm_sys__writeIrToFile"),true,&llvmo::llvm_sys__writeIrToFile,"");
+  expose_function(core::magic_name("llvm_sys__writeIrToFile"),true,&llvmo::llvm_sys__writeIrToFile,"(module path)");
 }
 NOINLINE void expose_function_181_helper() {
   expose_function(core::magic_name("LLVM-SYS:make-target-options"),true,&llvmo::TargetOptions_O::make,"");
@@ -1571,52 +1576,52 @@ NOINLINE void expose_function_183_helper() {
   expose_function(core::magic_name("make-triple","LLVM-SYS"),true,&llvmo::Triple_O::make,"(triple-str)");
 }
 NOINLINE void expose_function_184_helper() {
-  expose_function(core::magic_name("llvm_sys__link_in_module"),true,&llvmo::llvm_sys__link_in_module,"");
+  expose_function(core::magic_name("llvm_sys__link_in_module"),true,&llvmo::llvm_sys__link_in_module,"(linker module)");
 }
 NOINLINE void expose_function_185_helper() {
-  expose_function(core::magic_name("LLVM-SYS:make-linker"),true,&llvmo::Linker_O::make,"");
+  expose_function(core::magic_name("LLVM-SYS:make-linker"),true,&llvmo::Linker_O::make,"(module)");
 }
 NOINLINE void expose_function_186_helper() {
   expose_function(core::magic_name("LLVM-SYS:get_global_context"),true,&llvmo::LLVMContext_O::get_global_context,"");
 }
 NOINLINE void expose_function_187_helper() {
-  expose_function(core::magic_name("llvm_sys__llvm_value_p"),true,&llvmo::llvm_sys__llvm_value_p,"");
+  expose_function(core::magic_name("llvm_sys__llvm_value_p"),true,&llvmo::llvm_sys__llvm_value_p,"(o)");
 }
 NOINLINE void expose_function_188_helper() {
-  expose_function(core::magic_name("compiler__setAssociatedFuncs"),true,&llvmo::compiler__setAssociatedFuncs,"");
+  expose_function(core::magic_name("compiler__setAssociatedFuncs"),true,&llvmo::compiler__setAssociatedFuncs,"(cf associatedFuncs)");
 }
 NOINLINE void expose_function_189_helper() {
   expose_function("LLVM-SYS:dw-tag",true,&llvmo::llvm_sys__dwTag,"(tagsym &optional (debug-version llvm-sys:llvmdebug-version8))");
 }
 NOINLINE void expose_function_190_helper() {
-  expose_function("LLVM-SYS:debug-loc-get",true,&llvmo::DebugLoc_O::get,"");
+  expose_function("LLVM-SYS:debug-loc-get",true,&llvmo::DebugLoc_O::get,"(lineno column debugInfo)");
 }
 NOINLINE void expose_function_191_helper() {
-  expose_function(core::magic_name("LLVM-SYS:make-dibuilder"),true,&llvmo::DIBuilder_O::make,"");
+  expose_function(core::magic_name("LLVM-SYS:make-dibuilder"),true,&llvmo::DIBuilder_O::make,"(module)");
 }
 NOINLINE void expose_function_192_helper() {
-  expose_function(core::magic_name("llvm_sys__addGlobalBootFunctionsSizePass"),true,&llvmo::llvm_sys__addGlobalBootFunctionsSizePass,"");
+  expose_function(core::magic_name("llvm_sys__addGlobalBootFunctionsSizePass"),true,&llvmo::llvm_sys__addGlobalBootFunctionsSizePass,"(passManager)");
 }
 NOINLINE void expose_function_193_helper() {
   expose_function(core::magic_name("null-pointer","CFFI-SYS"),true,&cffi::Pointer_O::null_pointer,"");
 }
 NOINLINE void expose_function_194_helper() {
-  expose_function(core::magic_name("make-pointer","CFFI-SYS"),true,&cffi::Pointer_O::make,"");
+  expose_function(core::magic_name("make-pointer","CFFI-SYS"),true,&cffi::Pointer_O::make,"(arg)");
 }
 NOINLINE void expose_function_195_helper() {
-  expose_function(core::magic_name("cffi_sys__foreign_alloc"),true,&cffi::cffi_sys__foreign_alloc,"");
+  expose_function(core::magic_name("cffi_sys__foreign_alloc"),true,&cffi::cffi_sys__foreign_alloc,"(size)");
 }
 NOINLINE void expose_function_196_helper() {
-  expose_function(core::magic_name("cffi_sys__PERCENTforeign_type_size"),true,&cffi::cffi_sys__PERCENTforeign_type_size,"");
+  expose_function(core::magic_name("cffi_sys__PERCENTforeign_type_size"),true,&cffi::cffi_sys__PERCENTforeign_type_size,"(atype)");
 }
 NOINLINE void expose_function_197_helper() {
-  expose_function(core::magic_name("cffi_sys__PERCENTforeign_type_alignment"),true,&cffi::cffi_sys__PERCENTforeign_type_alignment,"");
+  expose_function(core::magic_name("cffi_sys__PERCENTforeign_type_alignment"),true,&cffi::cffi_sys__PERCENTforeign_type_alignment,"(atype)");
 }
 NOINLINE void expose_function_198_helper() {
-  expose_function(core::magic_name("cffi_sys__foreign_symbol_pointer"),true,&cffi::cffi_sys__foreign_symbol_pointer,"");
+  expose_function(core::magic_name("cffi_sys__foreign_symbol_pointer"),true,&cffi::cffi_sys__foreign_symbol_pointer,"(name)");
 }
 NOINLINE void expose_function_199_helper() {
-  expose_function(core::magic_name("cffi_sys__PERCENTload_foreign_library"),true,&cffi::cffi_sys__PERCENTload_foreign_library,"");
+  expose_function(core::magic_name("cffi_sys__PERCENTload_foreign_library"),true,&cffi::cffi_sys__PERCENTload_foreign_library,"(name)");
 }
 NOINLINE void expose_function_200_helper() {
   expose_function(core::magic_name("cl__get_internal_run_time"),true,&core::cl__get_internal_run_time,"");
@@ -1625,19 +1630,19 @@ NOINLINE void expose_function_201_helper() {
   expose_function(core::magic_name("cl__get_internal_real_time"),true,&core::cl__get_internal_real_time,"");
 }
 NOINLINE void expose_function_202_helper() {
-  expose_function(core::magic_name("make-bit-vector-with-fill-ptr","CORE"),true,&core::BitVectorWithFillPtr_O::make,"");
+  expose_function(core::magic_name("make-bit-vector-with-fill-ptr","CORE"),true,&core::BitVectorWithFillPtr_O::make,"(size ptr adjust)");
 }
 NOINLINE void expose_function_203_helper() {
-  expose_function(core::magic_name("make-simple-bit-vector","CORE"),true,&core::SimpleBitVector_O::make,"");
+  expose_function(core::magic_name("make-simple-bit-vector","CORE"),true,&core::SimpleBitVector_O::make,"(size)");
 }
 NOINLINE void expose_function_204_helper() {
   expose_function(core::magic_name("cl__ensure_directories_exist"),true,&core::cl__ensure_directories_exist,"(pathspec)");
 }
 NOINLINE void expose_function_205_helper() {
-  expose_function(core::magic_name("CORE:make-array-objects"),true,&core::ArrayObjects_O::make,"");
+  expose_function(core::magic_name("CORE:make-array-objects"),true,&core::ArrayObjects_O::make,"(desig elementType initialElement adjustable)");
 }
 NOINLINE void expose_function_206_helper() {
-  expose_function(core::magic_name("CORE:make-load-time-values"),true,&core::LoadTimeValues_O::make,"");
+  expose_function(core::magic_name("CORE:make-load-time-values"),true,&core::LoadTimeValues_O::make,"(dataDimension symbolsDimension)");
 }
 NOINLINE void expose_function_207_helper() {
   expose_function(core::magic_name("core__load_time_values_dump_symbols"),true,&core::core__load_time_values_dump_symbols,"(name-or-ltv &optional indices)");
@@ -1706,10 +1711,10 @@ NOINLINE void expose_function_228_helper() {
   expose_function(core::magic_name("cl__length"),true,&core::cl__length,"(arg)");
 }
 NOINLINE void expose_function_229_helper() {
-  expose_function(core::magic_name("coerce-to-package","CORE"),true,&core::coerce_to_package,"");
+  expose_function(core::magic_name("coerce-to-package","CORE"),true,&core::coerce_to_package,"(obj)");
 }
 NOINLINE void expose_function_230_helper() {
-  expose_function(core::magic_name("path-designator","CORE"),true,&core::core__path_designator,"");
+  expose_function(core::magic_name("path-designator","CORE"),true,&core::core__path_designator,"(obj)");
 }
 NOINLINE void expose_function_231_helper() {
   expose_function(core::magic_name("cl__parse_integer"),true,&core::cl__parse_integer,"(string &key (start 0) end (radix 10) junk-allowed)");
@@ -1973,7 +1978,7 @@ NOINLINE void expose_function_317_helper() {
   expose_function(core::magic_name("core__iterator_unsafe_element"),true,&core::core__iterator_unsafe_element,"(it)");
 }
 NOINLINE void expose_function_318_helper() {
-  expose_function(core::magic_name("CORE:make-array-displaced"),true,&core::ArrayDisplaced_O::make,"");
+  expose_function(core::magic_name("CORE:make-array-displaced"),true,&core::ArrayDisplaced_O::make,"(desig elementType displacedTo displacedIndexOffset)");
 }
 NOINLINE void expose_function_319_helper() {
   expose_function(core::magic_name("core__condition_message"),true,&core::core__condition_message,"(c)");
@@ -2015,16 +2020,16 @@ NOINLINE void expose_function_331_helper() {
   expose_function(core::magic_name("cl__symbol_plist"),true,&core::cl__symbol_plist,"(sym)");
 }
 NOINLINE void expose_function_332_helper() {
-  expose_function(core::magic_name("core__alist_asString"),true,&core::core__alist_asString,"");
+  expose_function(core::magic_name("core__alist_asString"),true,&core::core__alist_asString,"(alist)");
 }
 NOINLINE void expose_function_333_helper() {
-  expose_function(core::magic_name("core__alist_get"),true,&core::core__alist_get,"");
+  expose_function(core::magic_name("core__alist_get"),true,&core::core__alist_get,"(alist key)");
 }
 NOINLINE void expose_function_334_helper() {
-  expose_function(core::magic_name("core__alist_push"),true,&core::core__alist_push,"");
+  expose_function(core::magic_name("core__alist_push"),true,&core::core__alist_push,"(alist key val)");
 }
 NOINLINE void expose_function_335_helper() {
-  expose_function(core::magic_name("core__alist_erase"),true,&core::core__alist_erase,"");
+  expose_function(core::magic_name("core__alist_erase"),true,&core::core__alist_erase,"(alist key)");
 }
 NOINLINE void expose_function_336_helper() {
   expose_function(core::magic_name("core__append2"),true,&core::core__append2,"(l1 l2)");
@@ -2156,7 +2161,7 @@ NOINLINE void expose_function_378_helper() {
   expose_function(core::magic_name("core__single_dispatch_generic_function_p"),true,&core::core__single_dispatch_generic_function_p,"(arg)");
 }
 NOINLINE void expose_function_379_helper() {
-  expose_function(core::magic_name("core__arrayp"),true,&core::core__arrayp,"");
+  expose_function(core::magic_name("core__arrayp"),true,&core::core__arrayp,"(obj)");
 }
 NOINLINE void expose_function_380_helper() {
   expose_function(core::magic_name("core__structure_object_p"),true,&core::core__structure_object_p,"(arg)");
@@ -2174,19 +2179,19 @@ NOINLINE void expose_function_384_helper() {
   expose_function(core::magic_name("core__path_p"),true,&core::core__path_p,"(arg)");
 }
 NOINLINE void expose_function_385_helper() {
-  expose_function(core::magic_name("cl__keywordp"),true,&core::cl__keywordp,"");
+  expose_function(core::magic_name("cl__keywordp"),true,&core::cl__keywordp,"(obj)");
 }
 NOINLINE void expose_function_386_helper() {
-  expose_function(core::magic_name("cl__integerp"),true,&core::cl__integerp,"");
+  expose_function(core::magic_name("cl__integerp"),true,&core::cl__integerp,"(obj)");
 }
 NOINLINE void expose_function_387_helper() {
-  expose_function(core::magic_name("cl__vectorp"),true,&core::cl__vectorp,"");
+  expose_function(core::magic_name("cl__vectorp"),true,&core::cl__vectorp,"(obj)");
 }
 NOINLINE void expose_function_388_helper() {
-  expose_function(core::magic_name("cl__floatp"),true,&core::cl__floatp,"");
+  expose_function(core::magic_name("cl__floatp"),true,&core::cl__floatp,"(obj)");
 }
 NOINLINE void expose_function_389_helper() {
-  expose_function(core::magic_name("cl__realp"),true,&core::cl__realp,"");
+  expose_function(core::magic_name("cl__realp"),true,&core::cl__realp,"(obj)");
 }
 NOINLINE void expose_function_390_helper() {
   expose_function(core::magic_name("core__single_float_p"),true,&core::core__single_float_p,"(arg)");
@@ -2198,7 +2203,7 @@ NOINLINE void expose_function_392_helper() {
   expose_function(core::magic_name("core__long_float_p"),true,&core::core__long_float_p,"(arg)");
 }
 NOINLINE void expose_function_393_helper() {
-  expose_function(core::magic_name("cl__rationalp"),true,&core::cl__rationalp,"");
+  expose_function(core::magic_name("cl__rationalp"),true,&core::cl__rationalp,"(obj)");
 }
 NOINLINE void expose_function_394_helper() {
   expose_function(core::magic_name("cl__random_state_p"),true,&core::cl__random_state_p,"(arg)");
@@ -2207,7 +2212,7 @@ NOINLINE void expose_function_395_helper() {
   expose_function(core::magic_name("core__ratio_p"),true,&core::core__ratio_p,"(arg)");
 }
 NOINLINE void expose_function_396_helper() {
-  expose_function(core::magic_name("cl__complexp"),true,&core::cl__complexp,"");
+  expose_function(core::magic_name("cl__complexp"),true,&core::cl__complexp,"(obj)");
 }
 NOINLINE void expose_function_397_helper() {
   expose_function(core::magic_name("cl__numberp"),true,&core::cl__numberp,"(arg)");
@@ -2222,7 +2227,7 @@ NOINLINE void expose_function_400_helper() {
   expose_function(core::magic_name("core__built_in_class_p"),true,&core::core__built_in_class_p,"(arg)");
 }
 NOINLINE void expose_function_401_helper() {
-  expose_function(core::magic_name("clos__classp"),true,&core::clos__classp,"");
+  expose_function(core::magic_name("clos__classp"),true,&core::clos__classp,"(obj)");
 }
 NOINLINE void expose_function_402_helper() {
   expose_function(core::magic_name("cl__packagep"),true,&core::cl__packagep,"(arg)");
@@ -2240,10 +2245,10 @@ NOINLINE void expose_function_406_helper() {
   expose_function(core::magic_name("core__simple_string_p"),true,&core::core__simple_string_p,"(arg)");
 }
 NOINLINE void expose_function_407_helper() {
-  expose_function(core::magic_name("cl__stringp"),true,&core::cl__stringp,"");
+  expose_function(core::magic_name("cl__stringp"),true,&core::cl__stringp,"(obj)");
 }
 NOINLINE void expose_function_408_helper() {
-  expose_function(core::magic_name("core__bignump"),true,&core::core__bignump,"");
+  expose_function(core::magic_name("core__bignump"),true,&core::core__bignump,"(obj)");
 }
 NOINLINE void expose_function_409_helper() {
   expose_function(core::magic_name("core__base_char_p"),true,&core::core__base_char_p,"(arg)");
@@ -2348,7 +2353,7 @@ NOINLINE void expose_function_442_helper() {
   expose_function(core::magic_name("cl__merge_pathnames"),true,&core::cl__merge_pathnames,"(arg &optional (default-pathname (core:safe-default-pathname-defaults)) (default-version :newest))");
 }
 NOINLINE void expose_function_443_helper() {
-  expose_function(core::magic_name("cl__pathname"),true,&core::cl__pathname,"");
+  expose_function(core::magic_name("cl__pathname"),true,&core::cl__pathname,"(x)");
 }
 NOINLINE void expose_function_444_helper() {
   expose_function(core::magic_name("core__safe_default_pathname_defaults_host_only"),true,&core::core__safe_default_pathname_defaults_host_only,"");
@@ -2708,7 +2713,7 @@ NOINLINE void expose_function_562_helper() {
   expose_function(core::magic_name("cl__boole"),true,&core::cl__boole,"(op arg1 arg2)");
 }
 NOINLINE void expose_function_563_helper() {
-  expose_function(core::magic_name("cl__logbitp"),true,&core::cl__logbitp,"");
+  expose_function(core::magic_name("cl__logbitp"),true,&core::cl__logbitp,"(p x)");
 }
 NOINLINE void expose_function_564_helper() {
   expose_function(core::magic_name("core__bit_array_op"),true,&core::core__bit_array_op,"(op x y &optional r)");
@@ -2873,43 +2878,43 @@ NOINLINE void expose_function_617_helper() {
   expose_function(core::magic_name("core__lispify_name"),true,&core::core__lispify_name,"(name)");
 }
 NOINLINE void expose_function_618_helper() {
-  expose_function(core::magic_name("CORE:makeStackValueEnvironment"),true,&core::StackValueEnvironment_O::make,"");
+  expose_function(core::magic_name("CORE:makeStackValueEnvironment"),true,&core::StackValueEnvironment_O::make,"(parent)");
 }
 NOINLINE void expose_function_619_helper() {
-  expose_function(core::magic_name("CORE:makeSymbolMacroletEnvironment"),true,&core::SymbolMacroletEnvironment_O::make,"");
+  expose_function(core::magic_name("CORE:makeSymbolMacroletEnvironment"),true,&core::SymbolMacroletEnvironment_O::make,"(parent)");
 }
 NOINLINE void expose_function_620_helper() {
-  expose_function(core::magic_name("CORE:makeMacroletEnvironment"),true,&core::MacroletEnvironment_O::make,"");
+  expose_function(core::magic_name("CORE:makeMacroletEnvironment"),true,&core::MacroletEnvironment_O::make,"(parent)");
 }
 NOINLINE void expose_function_621_helper() {
-  expose_function(core::magic_name("CORE:makeTagbodyEnvironment"),true,&core::TagbodyEnvironment_O::make,"");
+  expose_function(core::magic_name("CORE:makeTagbodyEnvironment"),true,&core::TagbodyEnvironment_O::make,"(parent)");
 }
 NOINLINE void expose_function_622_helper() {
-  expose_function(core::magic_name("CORE:makeFunctionContainerEnvironment"),true,&core::FunctionContainerEnvironment_O::make,"");
+  expose_function(core::magic_name("CORE:makeFunctionContainerEnvironment"),true,&core::FunctionContainerEnvironment_O::make,"(parent)");
 }
 NOINLINE void expose_function_623_helper() {
-  expose_function(core::magic_name("CORE:makeCatchEnvironment"),true,&core::CatchEnvironment_O::make,"");
+  expose_function(core::magic_name("CORE:makeCatchEnvironment"),true,&core::CatchEnvironment_O::make,"(parent)");
 }
 NOINLINE void expose_function_624_helper() {
-  expose_function(core::magic_name("CORE:makeBlockEnvironment"),true,&core::BlockEnvironment_O::make,"");
+  expose_function(core::magic_name("CORE:makeBlockEnvironment"),true,&core::BlockEnvironment_O::make,"(blockSymbol parent)");
 }
 NOINLINE void expose_function_625_helper() {
-  expose_function(core::magic_name("CORE:makeUnwindProtectEnvironment"),true,&core::UnwindProtectEnvironment_O::make,"");
+  expose_function(core::magic_name("CORE:makeUnwindProtectEnvironment"),true,&core::UnwindProtectEnvironment_O::make,"(cleanupForm parent)");
 }
 NOINLINE void expose_function_626_helper() {
-  expose_function(core::magic_name("CORE:makeFunctionValueEnvironment"),true,&core::FunctionValueEnvironment_O::createForEntries,"");
+  expose_function(core::magic_name("CORE:makeFunctionValueEnvironment"),true,&core::FunctionValueEnvironment_O::createForEntries,"(numEntries parent)");
 }
 NOINLINE void expose_function_627_helper() {
-  expose_function(core::magic_name("CORE:makeValueEnvironmentForLocallySpecialEntries"),true,&core::ValueEnvironment_O::createForLocallySpecialEntries,"");
+  expose_function(core::magic_name("CORE:makeValueEnvironmentForLocallySpecialEntries"),true,&core::ValueEnvironment_O::createForLocallySpecialEntries,"(specials parent)");
 }
 NOINLINE void expose_function_628_helper() {
-  expose_function(core::magic_name("CORE:makeValueEnvironmentForNumberOfEntries"),true,&core::ValueEnvironment_O::createForNumberOfEntries,"");
+  expose_function(core::magic_name("CORE:makeValueEnvironmentForNumberOfEntries"),true,&core::ValueEnvironment_O::createForNumberOfEntries,"(numberOfArguments parent)");
 }
 NOINLINE void expose_function_629_helper() {
-  expose_function(core::magic_name("CORE:makeValueEnvironment"),true,&core::ValueEnvironment_O::createForLambdaListHandler,"");
+  expose_function(core::magic_name("CORE:makeValueEnvironment"),true,&core::ValueEnvironment_O::createForLambdaListHandler,"(llh parent)");
 }
 NOINLINE void expose_function_630_helper() {
-  expose_function("CORE:CURRENT-VISIBLE-ENVIRONMENT",true,&core::Environment_O::clasp_currentVisibleEnvironment,"");
+  expose_function("CORE:CURRENT-VISIBLE-ENVIRONMENT",true,&core::Environment_O::clasp_currentVisibleEnvironment,"(env)");
 }
 NOINLINE void expose_function_631_helper() {
   expose_function(core::magic_name("core__environment_id"),true,&core::core__environment_id,"(env)");
@@ -3068,7 +3073,7 @@ NOINLINE void expose_function_682_helper() {
   expose_function(core::magic_name("core__fork"),true,&core::core__fork,"");
 }
 NOINLINE void expose_function_683_helper() {
-  expose_function(core::magic_name("CORE:allocateForeignObject"),true,&core::ForeignData_O::allocateForeignObject,"");
+  expose_function(core::magic_name("CORE:allocateForeignObject"),true,&core::ForeignData_O::allocateForeignObject,"(kind)");
 }
 NOINLINE void expose_function_684_helper() {
   expose_function(core::magic_name("core__make_source_manager"),true,&core::core__make_source_manager,"");
@@ -3119,7 +3124,7 @@ NOINLINE void expose_function_699_helper() {
   expose_function(core::magic_name("core__write_object"),true,&core::core__write_object,"(obj &optional strm)");
 }
 NOINLINE void expose_function_700_helper() {
-  expose_function(core::magic_name("make-bignum","CORE"),true,&core::Bignum_O::make,"");
+  expose_function(core::magic_name("make-bignum","CORE"),true,&core::Bignum_O::make,"(string)");
 }
 NOINLINE void expose_function_701_helper() {
   expose_function(core::magic_name("cl__load"),true,&core::cl__load,"(source &key (verbose *load-verbose*) (print *load-print*) (if-does-not-exist :error) (external-format :default) (search-list core::*load-search-list*))");
@@ -3218,7 +3223,7 @@ NOINLINE void expose_function_732_helper() {
   expose_function(core::magic_name("CORE:seedRandomNumberGeneratorsUsingTime"),true,&core::seedRandomNumberGeneratorsUsingTime,"");
 }
 NOINLINE void expose_function_733_helper() {
-  expose_function(core::magic_name("CORE:seedRandomNumberGenerators"),true,&core::seedRandomNumberGenerators,"");
+  expose_function(core::magic_name("CORE:seedRandomNumberGenerators"),true,&core::seedRandomNumberGenerators,"(i)");
 }
 NOINLINE void expose_function_734_helper() {
   expose_function(core::magic_name("cl__get_universal_time"),true,&core::cl__get_universal_time,"");
@@ -3314,19 +3319,19 @@ NOINLINE void expose_function_764_helper() {
   expose_function(core::magic_name("cl___LT_"),true,&core::cl___LT_,"(&rest args)");
 }
 NOINLINE void expose_function_765_helper() {
-  expose_function("CORE:TWO-ARG-=",true,&core::two_arg__EQ_,"");
+  expose_function("CORE:TWO-ARG-=",true,&core::two_arg__EQ_,"(x y)");
 }
 NOINLINE void expose_function_766_helper() {
-  expose_function("CORE:TWO-ARG->=",true,&core::two_arg__GE_,"");
+  expose_function("CORE:TWO-ARG->=",true,&core::two_arg__GE_,"(x y)");
 }
 NOINLINE void expose_function_767_helper() {
-  expose_function("CORE:TWO-ARG->",true,&core::two_arg__GT_,"");
+  expose_function("CORE:TWO-ARG->",true,&core::two_arg__GT_,"(x y)");
 }
 NOINLINE void expose_function_768_helper() {
-  expose_function("CORE:TWO-ARG-<=",true,&core::two_arg__LE_,"");
+  expose_function("CORE:TWO-ARG-<=",true,&core::two_arg__LE_,"(x y)");
 }
 NOINLINE void expose_function_769_helper() {
-  expose_function("CORE:TWO-ARG-<",true,&core::two_arg__LT_,"");
+  expose_function("CORE:TWO-ARG-<",true,&core::two_arg__LT_,"(x y)");
 }
 NOINLINE void expose_function_770_helper() {
   expose_function(core::magic_name("cl___DIVIDE_"),true,&core::cl___DIVIDE_,"(num &rest numbers)");
@@ -3341,16 +3346,16 @@ NOINLINE void expose_function_773_helper() {
   expose_function(core::magic_name("cl___PLUS_"),true,&core::cl___PLUS_,"(&rest numbers)");
 }
 NOINLINE void expose_function_774_helper() {
-  expose_function("CORE:TWO-ARG-/",true,&core::contagen_div,"");
+  expose_function("CORE:TWO-ARG-/",true,&core::contagen_div,"(na nb)");
 }
 NOINLINE void expose_function_775_helper() {
-  expose_function("CORE:TWO-ARG-*",true,&core::contagen_mul,"");
+  expose_function("CORE:TWO-ARG-*",true,&core::contagen_mul,"(na nb)");
 }
 NOINLINE void expose_function_776_helper() {
-  expose_function("CORE:TWO-ARG--",true,&core::contagen_sub,"");
+  expose_function("CORE:TWO-ARG--",true,&core::contagen_sub,"(na nb)");
 }
 NOINLINE void expose_function_777_helper() {
-  expose_function("CORE:TWO-ARG-+",true,&core::contagen_add,"");
+  expose_function("CORE:TWO-ARG-+",true,&core::contagen_add,"(na nb)");
 }
 NOINLINE void expose_function_778_helper() {
   expose_function(core::magic_name("cl__lognor"),true,&core::cl__lognor,"(a b)");
@@ -3527,7 +3532,7 @@ NOINLINE void expose_function_835_helper() {
   expose_function(core::magic_name("core__get_invocation_history_frame_search"),true,&core::core__get_invocation_history_frame_search,"(idx direction)");
 }
 NOINLINE void expose_function_836_helper() {
-  expose_function(core::magic_name("CORE:make-invocation-history-frame-iterator"),true,&core::InvocationHistoryFrameIterator_O::make,"");
+  expose_function(core::magic_name("CORE:make-invocation-history-frame-iterator"),true,&core::InvocationHistoryFrameIterator_O::make,"(first test)");
 }
 NOINLINE void expose_function_837_helper() {
   expose_function(core::magic_name("cl__sxhash"),true,&core::cl__sxhash,"(obj)");
@@ -3599,7 +3604,7 @@ NOINLINE void expose_function_859_helper() {
   expose_function(core::magic_name("cl__fdefinition"),true,&core::cl__fdefinition,"(function-name)");
 }
 NOINLINE void expose_function_860_helper() {
-  expose_function(core::magic_name("core__STARfset"),true,&core::core__STARfset,"(function-name fn &optional macro)");
+  expose_function(core::magic_name("core__fset"),true,&core::core__fset,"(function-name fn &optional is-macro pretty-print (lambda-list nil lambda-list-p))");
 }
 NOINLINE void expose_function_861_helper() {
   expose_function(core::magic_name("cl__class_of"),true,&core::cl__class_of,"(obj)");
@@ -3776,7 +3781,7 @@ NOINLINE void expose_function_918_helper() {
   expose_function(core::magic_name("core__clear_generic_function_dispatch_cache"),true,&core::core__clear_generic_function_dispatch_cache,"");
 }
 NOINLINE void expose_function_919_helper() {
-  expose_function(core::magic_name("CORE:allocateRawInstance"),true,&core::Instance_O::allocateRawInstance,"");
+  expose_function(core::magic_name("CORE:allocateRawInstance"),true,&core::Instance_O::allocateRawInstance,"(orig theClass numberOfSlots)");
 }
 NOINLINE void expose_function_920_helper() {
   expose_function(core::magic_name("core__copy_instance"),true,&core::core__copy_instance,"(obj)");
@@ -3785,7 +3790,7 @@ NOINLINE void expose_function_921_helper() {
   expose_function(core::magic_name("core__instance_class_set"),true,&core::core__instance_class_set,"(instance func)");
 }
 NOINLINE void expose_function_922_helper() {
-  expose_function(core::magic_name("clos__setFuncallableInstanceFunction"),true,&core::clos__setFuncallableInstanceFunction,"");
+  expose_function(core::magic_name("clos__setFuncallableInstanceFunction"),true,&core::clos__setFuncallableInstanceFunction,"(obj func)");
 }
 NOINLINE void expose_function_923_helper() {
   expose_function(core::magic_name("core__clear_gfun_hash"),true,&core::core__clear_gfun_hash,"(what)");
@@ -3887,7 +3892,7 @@ NOINLINE void expose_function_955_helper() {
   expose_function(core::magic_name("core__compile_form_and_eval_with_env"),true,&core::core__compile_form_and_eval_with_env,"(form &optional env stepping compiler-env-p (execute t))");
 }
 NOINLINE void expose_function_956_helper() {
-  expose_function(core::magic_name("CORE:make-weak-pointer"),true,&core::WeakPointer_O::make,"");
+  expose_function(core::magic_name("CORE:make-weak-pointer"),true,&core::WeakPointer_O::make,"(obj)");
 }
 NOINLINE void expose_function_957_helper() {
   expose_function(core::magic_name("core__weak_rehash"),true,&core::core__weak_rehash,"(ht &optional sz)");
@@ -3911,7 +3916,7 @@ NOINLINE void expose_function_963_helper() {
   expose_function(core::magic_name("core__make_weak_key_hash_table"),true,&core::core__make_weak_key_hash_table,"(&optional (size 16))");
 }
 NOINLINE void expose_function_964_helper() {
-  expose_function(core::magic_name("CORE:make-weak-key-mapping"),true,&core::WeakKeyMapping_O::make,"");
+  expose_function(core::magic_name("CORE:make-weak-key-mapping"),true,&core::WeakKeyMapping_O::make,"(key tval)");
 }
 NOINLINE void expose_function_965_helper() {
   expose_function(core::magic_name("core__make_vector_displaced"),true,&core::core__make_vector_displaced,"(dim element-type displaced-to displaced-offset)");
@@ -3920,13 +3925,13 @@ NOINLINE void expose_function_966_helper() {
   expose_function(core::magic_name("core__test_add"),true,&core::core__test_add,"(x y)");
 }
 NOINLINE void expose_function_967_helper() {
-  expose_function(core::magic_name("cl__listp"),true,&core::cl__listp,"");
+  expose_function(core::magic_name("cl__listp"),true,&core::cl__listp,"(obj)");
 }
 NOINLINE void expose_function_968_helper() {
-  expose_function(core::magic_name("cl__characterp"),true,&core::cl__characterp,"");
+  expose_function(core::magic_name("cl__characterp"),true,&core::cl__characterp,"(obj)");
 }
 NOINLINE void expose_function_969_helper() {
-  expose_function(core::magic_name("cl__consp"),true,&core::cl__consp,"");
+  expose_function(core::magic_name("cl__consp"),true,&core::cl__consp,"(obj)");
 }
 NOINLINE void expose_function_970_helper() {
   expose_function(core::magic_name("cl__atom"),true,&core::cl__atom,"(arg)");
@@ -3935,160 +3940,160 @@ NOINLINE void expose_function_971_helper() {
   expose_function(core::magic_name("cl__endp"),true,&core::cl__endp,"(arg)");
 }
 NOINLINE void expose_function_972_helper() {
-  expose_function(core::magic_name("core__fixnump"),true,&core::core__fixnump,"");
+  expose_function(core::magic_name("core__fixnump"),true,&core::core__fixnump,"(arg)");
 }
 NOINLINE void expose_function_973_helper() {
-  expose_function(core::magic_name("cl__symbolp"),true,&core::cl__symbolp,"");
+  expose_function(core::magic_name("cl__symbolp"),true,&core::cl__symbolp,"(obj)");
 }
 NOINLINE void expose_function_974_helper() {
-  expose_function(core::magic_name("CORE:negate"),true,&core::clasp_negate,"");
+  expose_function(core::magic_name("CORE:negate"),true,&core::clasp_negate,"(num)");
 }
 NOINLINE void expose_function_975_helper() {
-  expose_function(core::magic_name("CORE:oneMinus"),true,&core::clasp_one_minus,"");
+  expose_function(core::magic_name("CORE:oneMinus"),true,&core::clasp_one_minus,"(num)");
 }
 NOINLINE void expose_function_976_helper() {
-  expose_function(core::magic_name("CORE:onePlus"),true,&core::clasp_one_plus,"");
+  expose_function(core::magic_name("CORE:onePlus"),true,&core::clasp_one_plus,"(num)");
 }
 NOINLINE void expose_function_977_helper() {
-  expose_function(core::magic_name("signum","COMMON-LISP"),true,&core::clasp_signum,"");
+  expose_function(core::magic_name("signum","COMMON-LISP"),true,&core::clasp_signum,"(num)");
 }
 NOINLINE void expose_function_978_helper() {
-  expose_function(core::magic_name("abs","COMMON-LISP"),true,&core::clasp_abs,"");
+  expose_function(core::magic_name("abs","COMMON-LISP"),true,&core::clasp_abs,"(num)");
 }
 NOINLINE void expose_function_979_helper() {
-  expose_function(core::magic_name("oddp","COMMON-LISP"),true,&core::clasp_oddp,"");
+  expose_function(core::magic_name("oddp","COMMON-LISP"),true,&core::clasp_oddp,"(num)");
 }
 NOINLINE void expose_function_980_helper() {
-  expose_function(core::magic_name("evenp","COMMON-LISP"),true,&core::clasp_evenp,"");
+  expose_function(core::magic_name("evenp","COMMON-LISP"),true,&core::clasp_evenp,"(num)");
 }
 NOINLINE void expose_function_981_helper() {
-  expose_function(core::magic_name("minusp","COMMON-LISP"),true,&core::clasp_minusp,"");
+  expose_function(core::magic_name("minusp","COMMON-LISP"),true,&core::clasp_minusp,"(num)");
 }
 NOINLINE void expose_function_982_helper() {
-  expose_function(core::magic_name("plusp","COMMON-LISP"),true,&core::clasp_plusp,"");
+  expose_function(core::magic_name("plusp","COMMON-LISP"),true,&core::clasp_plusp,"(num)");
 }
 NOINLINE void expose_function_983_helper() {
-  expose_function(core::magic_name("Tenth","COMMON-LISP"),true,&core::oTenth,"");
+  expose_function(core::magic_name("Tenth","COMMON-LISP"),true,&core::oTenth,"(o)");
 }
 NOINLINE void expose_function_984_helper() {
-  expose_function(core::magic_name("Ninth","COMMON-LISP"),true,&core::oNinth,"");
+  expose_function(core::magic_name("Ninth","COMMON-LISP"),true,&core::oNinth,"(o)");
 }
 NOINLINE void expose_function_985_helper() {
-  expose_function(core::magic_name("Eighth","COMMON-LISP"),true,&core::oEighth,"");
+  expose_function(core::magic_name("Eighth","COMMON-LISP"),true,&core::oEighth,"(o)");
 }
 NOINLINE void expose_function_986_helper() {
-  expose_function(core::magic_name("Seventh","COMMON-LISP"),true,&core::oSeventh,"");
+  expose_function(core::magic_name("Seventh","COMMON-LISP"),true,&core::oSeventh,"(o)");
 }
 NOINLINE void expose_function_987_helper() {
-  expose_function(core::magic_name("Sixth","COMMON-LISP"),true,&core::oSixth,"");
+  expose_function(core::magic_name("Sixth","COMMON-LISP"),true,&core::oSixth,"(o)");
 }
 NOINLINE void expose_function_988_helper() {
-  expose_function(core::magic_name("Fifth","COMMON-LISP"),true,&core::oFifth,"");
+  expose_function(core::magic_name("Fifth","COMMON-LISP"),true,&core::oFifth,"(o)");
 }
 NOINLINE void expose_function_989_helper() {
-  expose_function(core::magic_name("Fourth","COMMON-LISP"),true,&core::oFourth,"");
+  expose_function(core::magic_name("Fourth","COMMON-LISP"),true,&core::oFourth,"(o)");
 }
 NOINLINE void expose_function_990_helper() {
-  expose_function(core::magic_name("Third","COMMON-LISP"),true,&core::oThird,"");
+  expose_function(core::magic_name("Third","COMMON-LISP"),true,&core::oThird,"(o)");
 }
 NOINLINE void expose_function_991_helper() {
-  expose_function(core::magic_name("Second","COMMON-LISP"),true,&core::oSecond,"");
+  expose_function(core::magic_name("Second","COMMON-LISP"),true,&core::oSecond,"(o)");
 }
 NOINLINE void expose_function_992_helper() {
-  expose_function(core::magic_name("First","COMMON-LISP"),true,&core::oFirst,"");
+  expose_function(core::magic_name("First","COMMON-LISP"),true,&core::oFirst,"(o)");
 }
 NOINLINE void expose_function_993_helper() {
-  expose_function(core::magic_name("cddddr","COMMON-LISP"),true,&core::oCddddr,"");
+  expose_function(core::magic_name("cddddr","COMMON-LISP"),true,&core::oCddddr,"(o)");
 }
 NOINLINE void expose_function_994_helper() {
-  expose_function(core::magic_name("cddadr","COMMON-LISP"),true,&core::oCddadr,"");
+  expose_function(core::magic_name("cddadr","COMMON-LISP"),true,&core::oCddadr,"(o)");
 }
 NOINLINE void expose_function_995_helper() {
-  expose_function(core::magic_name("cdaddr","COMMON-LISP"),true,&core::oCdaddr,"");
+  expose_function(core::magic_name("cdaddr","COMMON-LISP"),true,&core::oCdaddr,"(o)");
 }
 NOINLINE void expose_function_996_helper() {
-  expose_function(core::magic_name("cdaadr","COMMON-LISP"),true,&core::oCdaadr,"");
+  expose_function(core::magic_name("cdaadr","COMMON-LISP"),true,&core::oCdaadr,"(o)");
 }
 NOINLINE void expose_function_997_helper() {
-  expose_function(core::magic_name("cadddr","COMMON-LISP"),true,&core::oCadddr,"");
+  expose_function(core::magic_name("cadddr","COMMON-LISP"),true,&core::oCadddr,"(o)");
 }
 NOINLINE void expose_function_998_helper() {
-  expose_function(core::magic_name("cadadr","COMMON-LISP"),true,&core::oCadadr,"");
+  expose_function(core::magic_name("cadadr","COMMON-LISP"),true,&core::oCadadr,"(o)");
 }
 NOINLINE void expose_function_999_helper() {
-  expose_function(core::magic_name("caaddr","COMMON-LISP"),true,&core::oCaaddr,"");
+  expose_function(core::magic_name("caaddr","COMMON-LISP"),true,&core::oCaaddr,"(o)");
 }
 NOINLINE void expose_function_1000_helper() {
-  expose_function(core::magic_name("caaadr","COMMON-LISP"),true,&core::oCaaadr,"");
+  expose_function(core::magic_name("caaadr","COMMON-LISP"),true,&core::oCaaadr,"(o)");
 }
 NOINLINE void expose_function_1001_helper() {
-  expose_function(core::magic_name("cdddar","COMMON-LISP"),true,&core::oCdddar,"");
+  expose_function(core::magic_name("cdddar","COMMON-LISP"),true,&core::oCdddar,"(o)");
 }
 NOINLINE void expose_function_1002_helper() {
-  expose_function(core::magic_name("cddaar","COMMON-LISP"),true,&core::oCddaar,"");
+  expose_function(core::magic_name("cddaar","COMMON-LISP"),true,&core::oCddaar,"(o)");
 }
 NOINLINE void expose_function_1003_helper() {
-  expose_function(core::magic_name("cdadar","COMMON-LISP"),true,&core::oCdadar,"");
+  expose_function(core::magic_name("cdadar","COMMON-LISP"),true,&core::oCdadar,"(o)");
 }
 NOINLINE void expose_function_1004_helper() {
-  expose_function(core::magic_name("cdaaar","COMMON-LISP"),true,&core::oCdaaar,"");
+  expose_function(core::magic_name("cdaaar","COMMON-LISP"),true,&core::oCdaaar,"(o)");
 }
 NOINLINE void expose_function_1005_helper() {
-  expose_function(core::magic_name("caddar","COMMON-LISP"),true,&core::oCaddar,"");
+  expose_function(core::magic_name("caddar","COMMON-LISP"),true,&core::oCaddar,"(o)");
 }
 NOINLINE void expose_function_1006_helper() {
-  expose_function(core::magic_name("cadaar","COMMON-LISP"),true,&core::oCadaar,"");
+  expose_function(core::magic_name("cadaar","COMMON-LISP"),true,&core::oCadaar,"(o)");
 }
 NOINLINE void expose_function_1007_helper() {
-  expose_function(core::magic_name("caadar","COMMON-LISP"),true,&core::oCaadar,"");
+  expose_function(core::magic_name("caadar","COMMON-LISP"),true,&core::oCaadar,"(o)");
 }
 NOINLINE void expose_function_1008_helper() {
-  expose_function(core::magic_name("caaaar","COMMON-LISP"),true,&core::oCaaaar,"");
+  expose_function(core::magic_name("caaaar","COMMON-LISP"),true,&core::oCaaaar,"(o)");
 }
 NOINLINE void expose_function_1009_helper() {
-  expose_function(core::magic_name("cdddr","COMMON-LISP"),true,&core::oCdddr,"");
+  expose_function(core::magic_name("cdddr","COMMON-LISP"),true,&core::oCdddr,"(o)");
 }
 NOINLINE void expose_function_1010_helper() {
-  expose_function(core::magic_name("cddar","COMMON-LISP"),true,&core::oCddar,"");
+  expose_function(core::magic_name("cddar","COMMON-LISP"),true,&core::oCddar,"(o)");
 }
 NOINLINE void expose_function_1011_helper() {
-  expose_function(core::magic_name("cdadr","COMMON-LISP"),true,&core::oCdadr,"");
+  expose_function(core::magic_name("cdadr","COMMON-LISP"),true,&core::oCdadr,"(o)");
 }
 NOINLINE void expose_function_1012_helper() {
-  expose_function(core::magic_name("cdaar","COMMON-LISP"),true,&core::oCdaar,"");
+  expose_function(core::magic_name("cdaar","COMMON-LISP"),true,&core::oCdaar,"(o)");
 }
 NOINLINE void expose_function_1013_helper() {
-  expose_function(core::magic_name("caddr","COMMON-LISP"),true,&core::oCaddr,"");
+  expose_function(core::magic_name("caddr","COMMON-LISP"),true,&core::oCaddr,"(o)");
 }
 NOINLINE void expose_function_1014_helper() {
-  expose_function(core::magic_name("cadar","COMMON-LISP"),true,&core::oCadar,"");
+  expose_function(core::magic_name("cadar","COMMON-LISP"),true,&core::oCadar,"(o)");
 }
 NOINLINE void expose_function_1015_helper() {
-  expose_function(core::magic_name("caadr","COMMON-LISP"),true,&core::oCaadr,"");
+  expose_function(core::magic_name("caadr","COMMON-LISP"),true,&core::oCaadr,"(o)");
 }
 NOINLINE void expose_function_1016_helper() {
-  expose_function(core::magic_name("caaar","COMMON-LISP"),true,&core::oCaaar,"");
+  expose_function(core::magic_name("caaar","COMMON-LISP"),true,&core::oCaaar,"(o)");
 }
 NOINLINE void expose_function_1017_helper() {
-  expose_function(core::magic_name("cddr","COMMON-LISP"),true,&core::oCddr,"");
+  expose_function(core::magic_name("cddr","COMMON-LISP"),true,&core::oCddr,"(o)");
 }
 NOINLINE void expose_function_1018_helper() {
-  expose_function(core::magic_name("cdar","COMMON-LISP"),true,&core::oCdar,"");
+  expose_function(core::magic_name("cdar","COMMON-LISP"),true,&core::oCdar,"(o)");
 }
 NOINLINE void expose_function_1019_helper() {
-  expose_function(core::magic_name("cadr","COMMON-LISP"),true,&core::oCadr,"");
+  expose_function(core::magic_name("cadr","COMMON-LISP"),true,&core::oCadr,"(o)");
 }
 NOINLINE void expose_function_1020_helper() {
-  expose_function(core::magic_name("caar","COMMON-LISP"),true,&core::oCaar,"");
+  expose_function(core::magic_name("caar","COMMON-LISP"),true,&core::oCaar,"(o)");
 }
 NOINLINE void expose_function_1021_helper() {
-  expose_function(core::magic_name("cl__rest"),true,&core::cl__rest,"");
+  expose_function(core::magic_name("cl__rest"),true,&core::cl__rest,"(obj)");
 }
 NOINLINE void expose_function_1022_helper() {
-  expose_function(core::magic_name("cdr","COMMON-LISP"),true,&core::oCdr,"");
+  expose_function(core::magic_name("cdr","COMMON-LISP"),true,&core::oCdr,"(obj)");
 }
 NOINLINE void expose_function_1023_helper() {
-  expose_function(core::magic_name("car","COMMON-LISP"),true,&core::oCar,"");
+  expose_function(core::magic_name("car","COMMON-LISP"),true,&core::oCar,"(obj)");
 }
 NOINLINE void expose_function_1024_helper() {
   expose_function(core::magic_name("cl__equalp"),true,&core::cl__equalp,"(x y)");
@@ -4103,13 +4108,13 @@ NOINLINE void expose_function_1027_helper() {
   expose_function(core::magic_name("cl__eq"),true,&core::cl__eq,"(x y)");
 }
 NOINLINE void expose_function_1028_helper() {
-  expose_function(core::magic_name("ext__maybeQuote"),true,&ext::ext__maybeQuote,"");
+  expose_function(core::magic_name("ext__maybeQuote"),true,&ext::ext__maybeQuote,"(form)");
 }
 NOINLINE void expose_function_1029_helper() {
-  expose_function(core::magic_name("UNITS:make-quantity"),true,&units::Quantity_O::make,"");
+  expose_function(core::magic_name("UNITS:make-quantity"),true,&units::Quantity_O::make,"(val unit)");
 }
 NOINLINE void expose_function_1030_helper() {
-  expose_function(core::magic_name("UNITS:make-unit"),true,&units::Unit_O::make,"");
+  expose_function(core::magic_name("UNITS:make-unit"),true,&units::Unit_O::make,"(args)");
 }
 NOINLINE void expose_function_1031_helper() {
   expose_function(core::magic_name("chem__makeIndexedObjectBag"),true,&adapt::chem__makeIndexedObjectBag,"");
@@ -4118,171 +4123,186 @@ NOINLINE void expose_function_1032_helper() {
   expose_function(core::magic_name("GEOM:make-coordinate-array"),true,&geom::CoordinateArray_O::make,"(fnsize &optional vals)");
 }
 NOINLINE void expose_function_1033_helper() {
-  expose_function(core::magic_name("GEOM:make-omatrix"),true,&geom::OMatrix_O::make,"");
+  expose_function(core::magic_name("GEOM:make-m4-rotate-z"),true,&geom::make_m4_rotate_z,"(radians)");
 }
 NOINLINE void expose_function_1034_helper() {
-  expose_function(core::magic_name("GEOM:make_ovector3"),true,&geom::OVector3_O::make,"");
+  expose_function(core::magic_name("GEOM:make-m4-rotate-y"),true,&geom::make_m4_rotate_y,"(radians)");
 }
 NOINLINE void expose_function_1035_helper() {
-  expose_function(core::magic_name("chem__oligomer"),true,&chem::chem__oligomer,"");
+  expose_function(core::magic_name("GEOM:make-m4-rotate-x"),true,&geom::make_m4_rotate_x,"(radians)");
 }
 NOINLINE void expose_function_1036_helper() {
-  expose_function(core::magic_name("chem__calculate_point"),true,&chem::chem__calculate_point,"");
+  expose_function(core::magic_name("GEOM:make-m4-translate"),true,&geom::make_m4_translate,"(pos)");
 }
 NOINLINE void expose_function_1037_helper() {
-  expose_function(core::magic_name("chem__link"),true,&chem::chem__link,"");
+  expose_function(core::magic_name("GEOM:make-matrix-identity"),true,&geom::make_matrix_identity,"");
 }
 NOINLINE void expose_function_1038_helper() {
-  expose_function(core::magic_name("chem__monomer"),true,&chem::chem__monomer,"(monomerId groupName &optional monomerAliases comment)");
+  expose_function(core::magic_name("GEOM:make-m4"),true,&geom::OMatrix_O::make,"(identity)");
 }
 NOINLINE void expose_function_1039_helper() {
-  expose_function(core::magic_name("chem__atom_pos"),true,&chem::chem__atom_pos,"(&rest args)");
+  expose_function(core::magic_name("GEOM:make_v3"),true,&geom::OVector3_O::make,"(x y z)");
 }
 NOINLINE void expose_function_1040_helper() {
-  expose_function(core::magic_name("chem__find_residue"),true,&chem::chem__find_residue,"(&rest args)");
+  expose_function(core::magic_name("chem__oligomer"),true,&chem::chem__oligomer,"(oligomerName parts)");
 }
 NOINLINE void expose_function_1041_helper() {
-  expose_function(core::magic_name("chem__save_mol2"),true,&chem::chem__save_mol2,"(matter dest-desig &optional use-sybyl-types)");
+  expose_function(core::magic_name("chem__calculate_point"),true,&chem::chem__calculate_point,"");
 }
 NOINLINE void expose_function_1042_helper() {
-  expose_function(core::magic_name("chem__load_mol2"),true,&chem::chem__load_mol2,"");
+  expose_function(core::magic_name("chem__link"),true,&chem::chem__link,"(monomer1Id coupling monomer2)");
 }
 NOINLINE void expose_function_1043_helper() {
-  expose_function(core::magic_name("chem__make_coordinate_array_from_atom_list"),true,&chem::chem__make_coordinate_array_from_atom_list,"");
+  expose_function(core::magic_name("chem__monomer"),true,&chem::chem__monomer,"(monomerId groupName &optional monomerAliases comment)");
 }
 NOINLINE void expose_function_1044_helper() {
-  expose_function(core::magic_name("chem__save_archive_with_auto_set_cando_database"),true,&chem::chem__save_archive_with_auto_set_cando_database,"");
+  expose_function(core::magic_name("chem__atom_pos"),true,&chem::chem__atom_pos,"(&rest args)");
 }
 NOINLINE void expose_function_1045_helper() {
-  expose_function(core::magic_name("chem__create_virtual_atom"),true,&chem::chem__create_virtual_atom,"");
+  expose_function(core::magic_name("chem__find_residue"),true,&chem::chem__find_residue,"(&rest args)");
 }
 NOINLINE void expose_function_1046_helper() {
-  expose_function(core::magic_name("chem__bundle_database_path"),true,&chem::chem__bundle_database_path,"");
+  expose_function(core::magic_name("chem__save_mol2"),true,&chem::chem__save_mol2,"(matter dest-desig &optional use-sybyl-types)");
 }
 NOINLINE void expose_function_1047_helper() {
-  expose_function(core::magic_name("chem__standard_database"),true,&chem::chem__standard_database,"(pathDesig &optional loadSeed (overbosity 0))");
+  expose_function(core::magic_name("chem__load_mol2"),true,&chem::chem__load_mol2,"(fileName)");
 }
 NOINLINE void expose_function_1048_helper() {
-  expose_function(core::magic_name("chem__database"),true,&chem::chem__database,"(fileName &optional (verbosity 0))");
+  expose_function(core::magic_name("chem__make_coordinate_array_from_atom_list"),true,&chem::chem__make_coordinate_array_from_atom_list,"(atoms)");
 }
 NOINLINE void expose_function_1049_helper() {
-  expose_function(core::magic_name("CHEM:make-chem-draw"),true,&chem::ChemDraw_O::make,"");
+  expose_function(core::magic_name("chem__save_archive_with_auto_set_cando_database"),true,&chem::chem__save_archive_with_auto_set_cando_database,"");
 }
 NOINLINE void expose_function_1050_helper() {
-  expose_function(core::magic_name("chem__make_read_amber_parameters"),true,&chem::chem__make_read_amber_parameters,"");
+  expose_function(core::magic_name("chem__create_virtual_atom"),true,&chem::chem__create_virtual_atom,"");
 }
 NOINLINE void expose_function_1051_helper() {
-  expose_function(core::magic_name("chem__set_monomer_pack"),true,&chem::chem__set_monomer_pack,"(pack-name parts &optional atom-aliases)");
+  expose_function(core::magic_name("chem__bundle_database_path"),true,&chem::chem__bundle_database_path,"(pathDesig)");
 }
 NOINLINE void expose_function_1052_helper() {
-  expose_function(core::magic_name("chem__extend_aliases"),true,&chem::chem__extend_aliases,"");
+  expose_function(core::magic_name("chem__standard_database"),true,&chem::chem__standard_database,"(pathDesig &optional loadSeed (overbosity 0))");
 }
 NOINLINE void expose_function_1053_helper() {
-  expose_function(core::magic_name("chem__define_monomer_pack"),true,&chem::chem__define_monomer_pack,"(pack-name parts &optional atom-aliases)");
+  expose_function(core::magic_name("chem__database"),true,&chem::chem__database,"(fileName &optional (verbosity 0))");
 }
 NOINLINE void expose_function_1054_helper() {
-  expose_function(core::magic_name("chem__parseChimeraAtomSpecs"),true,&chem::chem__parseChimeraAtomSpecs,"");
+  expose_function(core::magic_name("CHEM:make-chem-draw"),true,&chem::ChemDraw_O::make,"(stream)");
 }
 NOINLINE void expose_function_1055_helper() {
-  expose_function(core::magic_name("chem__alias"),true,&chem::chem__alias,"");
+  expose_function(core::magic_name("chem__make_read_amber_parameters"),true,&chem::chem__make_read_amber_parameters,"");
 }
 NOINLINE void expose_function_1056_helper() {
-  expose_function(core::magic_name("CHEM:bonds"),true,&chem::IterateBonds_O::make,"");
+  expose_function(core::magic_name("chem__set_monomer_pack"),true,&chem::chem__set_monomer_pack,"(pack-name parts &optional atom-aliases)");
 }
 NOINLINE void expose_function_1057_helper() {
-  expose_function(core::magic_name("CHEM:residues"),true,&chem::IterateResidues_O::createForMatter,"");
+  expose_function(core::magic_name("chem__extend_aliases"),true,&chem::chem__extend_aliases,"(packName parts atomAliases)");
 }
 NOINLINE void expose_function_1058_helper() {
-  expose_function(core::magic_name("chem__create_for_matter"),true,&chem::chem__create_for_matter,"");
+  expose_function(core::magic_name("chem__define_monomer_pack"),true,&chem::chem__define_monomer_pack,"(pack-name parts &optional atom-aliases)");
 }
 NOINLINE void expose_function_1059_helper() {
-  expose_function(core::magic_name("CHEM:ring-bonds"),true,&chem::RingFinder_O::ringBonds,"");
+  expose_function(core::magic_name("chem__parseChimeraAtomSpecs"),true,&chem::chem__parseChimeraAtomSpecs,"(spec)");
 }
 NOINLINE void expose_function_1060_helper() {
-  expose_function(core::magic_name("CHEM:identify-rings"),true,&chem::RingFinder_O::identifyRings,"");
+  expose_function(core::magic_name("chem__alias"),true,&chem::chem__alias,"(monAlias atomAlias)");
 }
 NOINLINE void expose_function_1061_helper() {
-  expose_function(core::magic_name("CHEM:save-pdb"),true,&chem::PdbWriter_O::savePdb,"");
+  expose_function(core::magic_name("CHEM:bonds"),true,&chem::IterateBonds_O::make,"(top)");
 }
 NOINLINE void expose_function_1062_helper() {
-  expose_function(core::magic_name("chem__load_pdb"),true,&chem::chem__load_pdb,"");
+  expose_function(core::magic_name("CHEM:residues"),true,&chem::IterateResidues_O::createForMatter,"(matter)");
 }
 NOINLINE void expose_function_1063_helper() {
-  expose_function("CHEM:MAKE-SPANNING-LOOP",true,&chem::SpanningLoop_O::make,"");
+  expose_function(core::magic_name("chem__create_for_matter"),true,&chem::chem__create_for_matter,"(matter)");
 }
 NOINLINE void expose_function_1064_helper() {
-  expose_function(core::magic_name("chem__set_oligomer"),true,&chem::chem__set_oligomer,"");
+  expose_function(core::magic_name("CHEM:ring-bonds"),true,&chem::RingFinder_O::ringBonds,"(atoms)");
 }
 NOINLINE void expose_function_1065_helper() {
-  expose_function(core::magic_name("chem__oligomer_sequence"),true,&chem::chem__oligomer_sequence,"");
+  expose_function(core::magic_name("CHEM:identify-rings"),true,&chem::RingFinder_O::identifyRings,"(matter)");
 }
 NOINLINE void expose_function_1066_helper() {
-  expose_function(core::magic_name("chem__atomsInMatterAsObjectSet"),true,&chem::chem__atomsInMatterAsObjectSet,"");
+  expose_function(core::magic_name("CHEM:save-pdb"),true,&chem::PdbWriter_O::savePdb,"(matter fileName)");
 }
 NOINLINE void expose_function_1067_helper() {
-  expose_function(core::magic_name("chem__atomsWithinSphereAsObjectSet"),true,&chem::chem__atomsWithinSphereAsObjectSet,"");
+  expose_function(core::magic_name("chem__load_pdb"),true,&chem::chem__load_pdb,"(fileName)");
 }
 NOINLINE void expose_function_1068_helper() {
-  expose_function(core::magic_name("chem__connectAtomsInMatterInCovalentContact"),true,&chem::chem__connectAtomsInMatterInCovalentContact,"");
+  expose_function("CHEM:MAKE-SPANNING-LOOP",true,&chem::SpanningLoop_O::make,"(root)");
 }
 NOINLINE void expose_function_1069_helper() {
-  expose_function(core::magic_name("CHEM:otherPlugName"),true,&chem::DirectionalCoupling_O::otherPlugName,"");
+  expose_function(core::magic_name("chem__set_oligomer"),true,&chem::chem__set_oligomer,"(oligomerName parts)");
 }
 NOINLINE void expose_function_1070_helper() {
-  expose_function(core::magic_name("chem__is_in_plug_name"),true,&chem::chem__is_in_plug_name,"");
+  expose_function(core::magic_name("chem__oligomer_sequence"),true,&chem::chem__oligomer_sequence,"(olig)");
 }
 NOINLINE void expose_function_1071_helper() {
-  expose_function(core::magic_name("CHEM:outPlugName"),true,&chem::DirectionalCoupling_O::outPlugName,"");
+  expose_function(core::magic_name("chem__atomsInMatterAsObjectSet"),true,&chem::chem__atomsInMatterAsObjectSet,"(matter)");
 }
 NOINLINE void expose_function_1072_helper() {
-  expose_function(core::magic_name("CHEM:inPlugName"),true,&chem::DirectionalCoupling_O::inPlugName,"");
+  expose_function(core::magic_name("chem__atomsWithinSphereAsObjectSet"),true,&chem::chem__atomsWithinSphereAsObjectSet,"(matter center radius)");
 }
 NOINLINE void expose_function_1073_helper() {
-  expose_function(core::magic_name("CHEM:couplingName"),true,&chem::DirectionalCoupling_O::couplingName,"");
+  expose_function(core::magic_name("chem__connectAtomsInMatterInCovalentContact"),true,&chem::chem__connectAtomsInMatterInCovalentContact,"(matter)");
 }
 NOINLINE void expose_function_1074_helper() {
-  expose_function(core::magic_name("CHEM:make-energy-function"),true,&chem::EnergyFunction_O::make,"(matter force_field &optional active-atoms)");
+  expose_function(core::magic_name("CHEM:otherPlugName"),true,&chem::DirectionalCoupling_O::otherPlugName,"(name)");
 }
 NOINLINE void expose_function_1075_helper() {
-  expose_function(core::magic_name("chem__map_bonds"),true,&chem::chem__map_bonds,"");
+  expose_function(core::magic_name("chem__is_in_plug_name"),true,&chem::chem__is_in_plug_name,"(plugName)");
 }
 NOINLINE void expose_function_1076_helper() {
-  expose_function(core::magic_name("chem__map_atoms"),true,&chem::chem__map_atoms,"");
+  expose_function(core::magic_name("CHEM:outPlugName"),true,&chem::DirectionalCoupling_O::outPlugName,"(name)");
 }
 NOINLINE void expose_function_1077_helper() {
-  expose_function(core::magic_name("chem__map_residues"),true,&chem::chem__map_residues,"");
+  expose_function(core::magic_name("CHEM:inPlugName"),true,&chem::DirectionalCoupling_O::inPlugName,"(name)");
 }
 NOINLINE void expose_function_1078_helper() {
-  expose_function(core::magic_name("chem__map_molecules"),true,&chem::chem__map_molecules,"");
+  expose_function(core::magic_name("CHEM:couplingName"),true,&chem::DirectionalCoupling_O::couplingName,"(name)");
 }
 NOINLINE void expose_function_1079_helper() {
-  expose_function(core::magic_name("chem__readPdbMonomerConnectivityDatabase"),true,&chem::chem__readPdbMonomerConnectivityDatabase,"");
+  expose_function(core::magic_name("CHEM:make-energy-function"),true,&chem::EnergyFunction_O::make,"(matter force_field &optional active-atoms)");
 }
 NOINLINE void expose_function_1080_helper() {
-  expose_function(core::magic_name("CHEM:make-minimizer"),true,&chem::Minimizer_O::make,"(&key matter force_field energy_function)");
+  expose_function(core::magic_name("chem__map_bonds"),true,&chem::chem__map_bonds,"(type funcDesig m)");
 }
 NOINLINE void expose_function_1081_helper() {
-  expose_function(core::magic_name("CHEM:elementFromAtomNameString"),true,&chem::elementFromAtomNameString,"");
+  expose_function(core::magic_name("chem__map_atoms"),true,&chem::chem__map_atoms,"(type funcDesig m)");
 }
 NOINLINE void expose_function_1082_helper() {
-  expose_function(core::magic_name("CHEM:elementFromAtomNameStringCaseInsensitive"),true,&chem::elementFromAtomNameStringCaseInsensitive,"");
+  expose_function(core::magic_name("chem__map_residues"),true,&chem::chem__map_residues,"(type funcDesig m)");
 }
 NOINLINE void expose_function_1083_helper() {
-  expose_function(core::magic_name("CHEM:vdwRadiusForElement"),true,&chem::vdwRadiusForElement,"");
+  expose_function(core::magic_name("chem__map_molecules"),true,&chem::chem__map_molecules,"(type funcDesig m)");
 }
 NOINLINE void expose_function_1084_helper() {
-  expose_function(core::magic_name("CHEM:make-atom"),true,&chem::Atom_O::make,"");
+  expose_function(core::magic_name("chem__readPdbMonomerConnectivityDatabase"),true,&chem::chem__readPdbMonomerConnectivityDatabase,"(fileName)");
 }
 NOINLINE void expose_function_1085_helper() {
-  expose_function(core::magic_name("CHEM:make-residue"),true,&chem::Residue_O::make,"");
+  expose_function(core::magic_name("CHEM:make-minimizer"),true,&chem::Minimizer_O::make,"(&key matter force_field energy_function)");
 }
 NOINLINE void expose_function_1086_helper() {
-  expose_function(core::magic_name("CHEM:make-molecule"),true,&chem::Molecule_O::make,"(&optional (name nil))");
+  expose_function(core::magic_name("CHEM:elementFromAtomNameString"),true,&chem::elementFromAtomNameString,"(name)");
 }
 NOINLINE void expose_function_1087_helper() {
-  expose_function(core::magic_name("CHEM:make-aggregate"),true,&chem::Aggregate_O::make,"(&optional (name nil))");
+  expose_function(core::magic_name("CHEM:elementFromAtomNameStringCaseInsensitive"),true,&chem::elementFromAtomNameStringCaseInsensitive,"(name)");
 }
 NOINLINE void expose_function_1088_helper() {
+  expose_function(core::magic_name("CHEM:vdwRadiusForElement"),true,&chem::vdwRadiusForElement,"(element)");
+}
+NOINLINE void expose_function_1089_helper() {
+  expose_function(core::magic_name("CHEM:make-atom"),true,&chem::Atom_O::make,"(name element)");
+}
+NOINLINE void expose_function_1090_helper() {
+  expose_function(core::magic_name("CHEM:make-residue"),true,&chem::Residue_O::make,"(name)");
+}
+NOINLINE void expose_function_1091_helper() {
+  expose_function(core::magic_name("CHEM:make-molecule"),true,&chem::Molecule_O::make,"(&optional (name nil))");
+}
+NOINLINE void expose_function_1092_helper() {
+  expose_function(core::magic_name("CHEM:make-aggregate"),true,&chem::Aggregate_O::make,"(&optional (name nil))");
+}
+NOINLINE void expose_function_1093_helper() {
   expose_function(core::magic_name("chem__make_fftypes_db"),true,&chem::chem__make_fftypes_db,"");
 }
 #endif // EXPOSE_FUNCTION_BINDINGS_HELPERS
@@ -5375,4 +5395,9 @@ NOINLINE void expose_function_1088_helper() {
   expose_function_1086_helper();
   expose_function_1087_helper();
   expose_function_1088_helper();
+  expose_function_1089_helper();
+  expose_function_1090_helper();
+  expose_function_1091_helper();
+  expose_function_1092_helper();
+  expose_function_1093_helper();
 #endif // EXPOSE_FUNCTION_BINDINGS

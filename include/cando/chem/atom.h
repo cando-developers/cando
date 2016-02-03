@@ -382,7 +382,7 @@ CL_DEFMETHOD 	int	getMoeIndex() { return this->moeIndex; };
 CL_NAME("setMoeIndex");
 CL_DEFMETHOD 	void	setMoeIndex(int o) { this->moeIndex = o; };
 CL_NAME("setMoeType");
-CL_DEFMETHOD 	void	setMoeType(MoeType t) {this->moeType=t;};
+CL_DEFMETHOD 	void	setMoeType(MoeType type) {this->moeType=type;};
 CL_NAME("getMoeType");
 CL_DEFMETHOD 	MoeType	getMoeType() {return this->moeType;};
 

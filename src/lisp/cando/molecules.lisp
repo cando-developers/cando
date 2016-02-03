@@ -1,10 +1,10 @@
 (in-package :cando)
 
 
-(defun scramble-positions (matter &key (center (geom:make-ovector3 0.0 0.0 0.0)) (width 10.0)
+(defun scramble-positions (matter &key (center (geom:make-v3 0.0 0.0 0.0)) (width 10.0)
                            &aux (half-width (/ width 2.0)))
   (flet ((scramble-atom (atom)
-           (let ((pos (geom:make-ovector3
+           (let ((pos (geom:make-v3
                        (+ (- (random width) half-width) (geom:x center))
                        (+ (- (random width) half-width) (geom:y center))
                        (+ (- (random width) half-width) (geom:z center)))))
@@ -265,7 +265,7 @@ Set the stereochemistry of a collection of stereocenters using a function that r
   "Randomly jostle atoms from their current positions"
   (flet ((jostle-atom (atom)
            (let* ((cp (chem:get-position atom))
-                  (pos (geom:make-ovector3
+                  (pos (geom:make-v3
                        (+ (- (random width) half-width) (geom:x cp))
                        (+ (- (random width) half-width) (geom:y cp))
                        (+ (- (random width) half-width) (geom:z cp)))))
@@ -320,7 +320,7 @@ Set the stereochemistry of a collection of stereocenters using a function that r
   "Generate a list of (points) points around a circle centered on origin"
   (loop for aindex from 0 below points
      for angrad = (* 360.0 (/ (float aindex) points) 0.0174533)
-     collect (geom:make-ovector3 (* (cos angrad) radius)
+     collect (geom:make-v3 (* (cos angrad) radius)
                                  (* (sin angrad) radius) z)))
 
 (defun anchor-stereocenters-to-circle (agg)

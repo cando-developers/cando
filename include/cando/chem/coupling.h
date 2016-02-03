@@ -61,7 +61,7 @@ SMART(Coupling);
     public:
 
     private:
-	Oligomer_sp		_WeakOligomer;
+        gc::Nilable<Oligomer_sp>	_Oligomer;
 	bool			_HasError;
     private:
 	bool			_Selected;
@@ -144,9 +144,9 @@ class DirectionalCoupling_O : public Coupling_O
   };
 
  private:
-  Monomer_wp		_InMonomer;
-  core::Symbol_sp		_Name;
-  Monomer_wp		_OutMonomer;
+  gc::Nilable<Monomer_sp>		_InMonomer;
+  core::Symbol_sp	_Name;
+  gc::Nilable<Monomer_sp>		_OutMonomer;
 
  protected:
 
@@ -218,9 +218,9 @@ public:
 public:
 private:
 
-	Monomer_wp		_Monomer1;
+        gc::Nilable<Monomer_sp>	_Monomer1;
 	core::Symbol_sp		_Plug1;
-	Monomer_wp		_Monomer2;
+        gc::Nilable<Monomer_sp>	_Monomer2;
 	core::Symbol_sp		_Plug2;
 protected:
 

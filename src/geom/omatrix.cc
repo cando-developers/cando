@@ -13,14 +13,14 @@ namespace geom {
 
 
 #ifdef XML_ARCHIVE
-    void OMatrix_O::archiveBase(core::ArchiveP node)
-    {
-	node->archivePlainObject<Matrix>( "matrix",
-					  "Matrix", this->_Value);
-    }
+void OMatrix_O::archiveBase(core::ArchiveP node)
+{
+  node->archivePlainObject<Matrix>( "matrix",
+                                    "Matrix", this->_Value);
+}
 #endif
 
-CL_LISPIFY_NAME(make-omatrix);
+CL_LISPIFY_NAME(make-m4);
 CL_DEFUN OMatrix_sp OMatrix_O::make(bool identity)
 {
   GC_ALLOCATE_VARIADIC(OMatrix_O,om,identity);
@@ -28,73 +28,112 @@ CL_DEFUN OMatrix_sp OMatrix_O::make(bool identity)
 };
   
 
-    string	OMatrix_O::__repr__() const
-    {
-	stringstream ss;
-	ss << this->_Value.asString();
-	return ss.str();
-    }
-    string	OMatrix_O::__str__()
-    {
-	return this->__repr__();
-    }
+string	OMatrix_O::__repr__() const
+{
+  stringstream ss;
+  ss << this->_Value.asString();
+  return ss.str();
+}
+string	OMatrix_O::__str__()
+{
+  return this->__repr__();
+}
 
 
 CL_LISPIFY_NAME("setFromString");
 CL_DEFMETHOD     void	OMatrix_O::setFromString(const string& s)
-    {
-	this->_Value.setFromString(s);
-    }
+{
+  this->_Value.setFromString(s);
+}
 
 #if 0
-    void	OMatrix_O::setFromStringFast(const string& s)
-    {
-	this->_Value.setFromStringFast(s);
-    }
+void	OMatrix_O::setFromStringFast(const string& s)
+{
+  this->_Value.setFromStringFast(s);
+}
 #endif
 
-    void	OMatrix_O::setAll(const Matrix& m)
-    {
-	this->_Value.setAll(m);
-    }
+void	OMatrix_O::setAll(const Matrix& m)
+{
+  this->_Value.setAll(m);
+}
 
 //string OMatrix_O::asStringFast() { return this->_Value.asStringFast(); }
 
 
 CL_LISPIFY_NAME("asString");
 CL_DEFMETHOD     string OMatrix_O::asString() { return this->_Value.asString(); }
-CL_LISPIFY_NAME("setToIdentity");
-CL_DEFMETHOD     void OMatrix_O::setToIdentity() { this->_Value.setToIdentity(); }
+
+
+
+
+void OMatrix_O::setToIdentity() { this->_Value.setToIdentity(); }
     /*! Set the matrix element index as the value for testing */
-CL_LISPIFY_NAME("setToIndexAsValue");
-CL_DEFMETHOD     void OMatrix_O::setToIndexAsValue() { this->_Value.setToIndexAsValue();};
-CL_LISPIFY_NAME("translate");
-CL_DEFMETHOD     void OMatrix_O::translate(Vector3 pos) { this->_Value.translate(&pos); }
-CL_LISPIFY_NAME("rotationX");
-CL_DEFMETHOD     void OMatrix_O::rotationX(double radians) { this->_Value.rotationX(radians); }
-CL_LISPIFY_NAME("rotationY");
-CL_DEFMETHOD     void OMatrix_O::rotationY(double radians) { this->_Value.rotationY(radians); }
-CL_LISPIFY_NAME("rotationZ");
-CL_DEFMETHOD     void OMatrix_O::rotationZ(double radians) { this->_Value.rotationZ(radians); }
+void OMatrix_O::setToIndexAsValue() { this->_Value.setToIndexAsValue();};
+void OMatrix_O::translate(Vector3 pos) { this->_Value.translate(pos); }
+void OMatrix_O::rotationX(double radians) { this->_Value.rotationX(radians); }
+void OMatrix_O::rotationY(double radians) { this->_Value.rotationY(radians); }
+void OMatrix_O::rotationZ(double radians) { this->_Value.rotationZ(radians); }
 
 
-    OMatrix_sp OMatrix_O::clone() const
-    {
-	GC_COPY(OMatrix_O,clone,*this);
-	return clone;
-    }
 
-    Matrix OMatrix_O::mul(const Matrix& other) const
-    {
-	Matrix res = this->_Value*other;
-	return res;
-    };
+CL_LISPIFY_NAME("make-matrix-identity");
+CL_DEFUN OMatrix_sp make_matrix_identity()
+{
+  OMatrix_sp res = OMatrix_O::create();
+  res->_Value.setToIdentity();
+  return res;
+}
 
-    Vector3 OMatrix_O::mul(const Vector3& vec) const
-    {
-	Vector3 res = this->_Value*vec;
-	return res;
-    }
+CL_LISPIFY_NAME("make-m4-translate");
+CL_DEFUN OMatrix_sp make_m4_translate(const Vector3& pos)
+{
+  OMatrix_sp res = OMatrix_O::create();
+  res->_Value.translate(pos);
+  return res;
+}
+
+CL_LISPIFY_NAME("make-m4-rotate-x");
+CL_DEFUN OMatrix_sp make_m4_rotate_x(double radians)
+{
+  OMatrix_sp res = OMatrix_O::create();
+  res->_Value.rotationX(radians);
+  return res;
+}
+
+CL_LISPIFY_NAME("make-m4-rotate-y");
+CL_DEFUN OMatrix_sp make_m4_rotate_y(double radians)
+{
+  OMatrix_sp res = OMatrix_O::create();
+  res->_Value.rotationY(radians);
+  return res;
+}
+
+CL_LISPIFY_NAME("make-m4-rotate-z");
+CL_DEFUN OMatrix_sp make_m4_rotate_z(double radians)
+{
+  OMatrix_sp res = OMatrix_O::create();
+  res->_Value.rotationZ(radians);
+  return res;
+}
+
+OMatrix_sp OMatrix_O::clone() const
+{
+  GC_COPY(OMatrix_O,clone,*this);
+  return clone;
+}
+
+Matrix OMatrix_O::mul(const Matrix& other) const
+{
+  Matrix res = this->_Value*other;
+  return res;
+};
+
+Vector3 OMatrix_O::mul(const Vector3& vec) const
+{
+  Vector3 res = this->_Value*vec;
+  return res;
+}
 
 
 core::List_sp OMatrix_O::encode() {
@@ -111,11 +150,6 @@ void OMatrix_O::decode(core::List_sp c) {
     this->_Value[i] = core::clasp_to_double((*v)[i]);
   }
 }
-
-
-
-
-
 
 };
 

@@ -3,7 +3,7 @@
 /* Currently using USE_POSIX_TIME=1 will fail to compile when USEBOOSTPYTHON is defined
    this is a bug in the boost libraries in including posix time header files.
    I have to fix this - for now, disable USE_POSIX_TIME */
-#define USE_POSIX_TIME 0
+#define USE_POSIX_TIME 1
 
 
 #define	DEBUG_LEVEL_NONE
@@ -18,6 +18,7 @@
 #include <clasp/core/common.h>
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/symbolTable.h>
+#include <clasp/core/lispStream.h>
 #include <cando/chem/largeSquareMatrix.h>
 #include <cando/chem/minimizer.h>
 #include <iostream>
@@ -885,10 +886,10 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 	stringstream	sout;
 	if ( this->_Iteration%10 == 1 || this->_DebugOn ) 
 	{
-	    sout << "---Stage--";
+	    sout << "---Stage-";
 	    if ( this->_ShowElapsedTime )
 	    {
-		sout << "Seconds-";
+		sout << "Seconds--";
 	    }
 	    sout << "Step-----Alpha---Dir-------------Energy-----------RMSforce";
 	    if ( this->_EnergyFunction->getName() != "" ) 
@@ -902,7 +903,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 	{
 #if USE_POSIX_TIME
 	    core::PosixTimeDuration_sp elapsed = core::PosixTimeDuration_O::createDurationSince(this->_StartTime);
-	    sout << BF(" %8ld") % elapsed->totalSeconds();
+	    sout << BF(" %7ld") % elapsed->totalSeconds();
 #endif
 	}
 	sout << BF(" %5d") % this->_Iteration;
@@ -921,13 +922,13 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 	    }
 	    sout << (BF(" %5.1lf") % angle);
 	}
-	sout << (BF(" %18.8lf") % fnew );
-	sout << (BF(" %18.8lf") % forceRMSMag);
+	sout << (BF(" %18.3lf") % fnew );
+	sout << (BF(" %18.3lf") % forceRMSMag);
 	if ( this->_EnergyFunction->getName() != "" ) 
 	{
 	    sout << BF(" %s") % this->_EnergyFunction->getName();
 	}
-	_lisp->print(BF("%s") % sout.str() );
+        core::clasp_writeln_string(sout.str());
 	if ( this->_DebugOn ) 
 	{
 	    this->_Log->addMessage(buffer);
@@ -1027,7 +1028,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 	LOG(BF("delta0 = %lf") % (delta0 ) );
 	localSteps = 0;
 	if ( this->_PrintIntermediateResults ) {
-	    _lisp->print(BF( "======= Starting Steepest Descent Minimizer" ));
+          core::clasp_writeln_string("======= Starting Steepest Descent Minimizer");
 	}
 	try
 	{
@@ -1042,7 +1043,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 		this->_RMSForce = forceRmsMag;
 		if ( forceRmsMag < forceTolerance ) {
 		    if ( this->_PrintIntermediateResults ) {
-			_lisp->print(BF("DONE absolute force test:\nforceRmsMag(%lf).LT.forceTolerance(%lf)") % forceRmsMag % forceTolerance );
+                      core::clasp_writeln_string((BF("DONE absolute force test:\nforceRmsMag(%lf).LT.forceTolerance(%lf)") % forceRmsMag % forceTolerance).str() );
 		    }
 		    break;
 		}
@@ -1124,17 +1125,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 
 		    // r = -f'(x)   r == force!!!!
 		    fp = dTotalEnergyForce( x, force );
-
-#if 0 //[
-		    if ( this->_EnergyFunction->getMessages() != "" )
-		    {
-			_lisp->print(BF("Minimizer_O::steepestDescentWithPreconditioner>> energy function messages: %s")%
-					    this->_EnergyFunction->getMessages());
-			this->_IterationMessages << this->_EnergyFunction->getMessages();
-		    }
-#endif //]
-
-		    if ( this->_DebugOn ) {
+                    if ( this->_DebugOn ) {
 			this->stepReport(stepReport,fp,force);
 		    }
 
@@ -1314,7 +1305,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
     localSteps = 0;
     step = 0.0;
     if ( this->_PrintIntermediateResults ) {
-	_lisp->print(BF( "======= Starting Conjugate Gradient Minimizer" ));
+      core::clasp_writeln_string((BF( "======= Starting Conjugate Gradient Minimizer" )).str());
     }
     try {
 	while (1) {
@@ -1328,7 +1319,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 	    this->_RMSForce = forceRmsMag;
 	    if ( forceRmsMag < forceTolerance ) {
 		if ( this->_PrintIntermediateResults ) {
-		    _lisp->print(BF("DONE absolute force test:\nforceRmsMag(%lf).LT.forceTolerance(%lf)")% forceRmsMag % forceTolerance );
+                  core::clasp_writeln_string((BF("DONE absolute force test:\nforceRmsMag(%lf).LT.forceTolerance(%lf)")% forceRmsMag % forceTolerance ).str());
 		}
 		break;
 	    }
@@ -1339,7 +1330,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 		if ( localSteps>=numSteps ) {
 		    if ( this->_PrintIntermediateResults )
 		    {
-			_lisp->print(BF( "Exceeded max number of steps(%d)") % numSteps );
+                      core::clasp_writeln_string((BF( "Exceeded max number of steps(%d)") % numSteps ).str());
 		    }
 		    MinimizerCondition_ExceededNumSteps fail;
 		    fail._Message = "conjugate gradient";
@@ -1780,9 +1771,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
     unconventionalModifiedCholeskyFactorization(mprecon,ldlt,kSum);
 
     if ( this->_PrintIntermediateResults ) {
-//	_lisp->print(BF("======= Starting Steepest Descent Minimizer\nn" );
-//	_lisp->print(BF( "======= Starting Conjugate Gradient Minimizer" ));
-	_lisp->print(BF( "======= Starting Truncated Newton Minimizer" ));
+      core::clasp_writeln_string((BF( "======= Starting Truncated Newton Minimizer" )).str());
     }
 
     try {
@@ -1851,7 +1840,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 	    LOG(BF("[ EPSILONF*(1.0+fabs(energyXk))=%le") % EPSILONF*(1.0+fabs(energyXk)) );
 	    if ( b1aTest ) {
 		if ( this->_PrintIntermediateResults ) {
-		    _lisp->print(BF( "search complete according to b1aTest" ));
+                  core::clasp_writeln_string((BF( "search complete according to b1aTest" )).str());
 		}
 		break;
 	    }
@@ -1860,7 +1849,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 	    b1bTest=(delta<SQRT_EPSILONF*(1.0+rmsMagXKNext)/100.0);
 	    if ( b1bTest ) {
 		if ( this->_PrintIntermediateResults ) {
-		    _lisp->print(BF( "search complete according to b1bTest" ));
+                  core::clasp_writeln_string((BF( "search complete according to b1bTest" )).str());
 		}
 		break;
 	    }
@@ -1868,7 +1857,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 	    rmsForceMag = forceK->rmsMagnitude();
 	    if ( rmsForceMag < forceTolerance ) {
 		if ( this->_PrintIntermediateResults ) {
-		    _lisp->print(BF( "search complete according to absolute force test" ));
+                  core::clasp_writeln_string((BF( "search complete according to absolute force test" )).str());
 		}
 		break;
 	    }
@@ -1879,14 +1868,14 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 	    LOG(BF("rmsForceMag [[%le]]<CUBERT_EPSILONF*(1.0+fabs(energyXkNext))[[%le]]") % rmsForceMag % CUBERT_EPSILONF*(1.0+fabs(energyXkNext))  );
 	    if ( b1cTest ) {
 		if ( this->_PrintIntermediateResults ) {
-		    _lisp->print(BF( "search complete according to b1cTest" ));
+                  core::clasp_writeln_string((BF( "search complete according to b1cTest" )).str());
 		}
 		break;
 	    }
 	    b1dTest=rmsForceMag<EPSILONG*(1.0+fabs(energyXkNext));
 	    if ( b1dTest ) {
 		if ( this->_PrintIntermediateResults ) {
-		    _lisp->print(BF( "search complete according to b1dTest" ));
+                  core::clasp_writeln_string((BF( "search complete according to b1dTest" )).str());
 		}
 		break;
 	    }
@@ -1994,7 +1983,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
     do {
         dEnergy = this->dTotalEnergyForce( nvPos, nvNewForce);
 	if ( iCount % 10000 == 0 ) {
-	    _lisp->print(BF("Evaluating energy step#%d") % iCount );
+          core::clasp_writeln_string((BF("Evaluating energy step#%d") % iCount ).str());
 	}
 	iCount++;
     } while ( iCount < numSteps );
@@ -2148,7 +2137,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimizeSteepestDescent()
 		retries--;
 		sawProblem = true;
 		if ( this->_PrintIntermediateResults ) {
-		    _lisp->print(BF("Dealt with problem(%s)") % ld._Message.c_str());
+                  core::clasp_writeln_string((BF("Dealt with problem(%s)") % ld._Message.c_str()).str());
 		}
 	    }
 	} while ( sawProblem && retries > 0 );
@@ -2196,7 +2185,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimizeConjugateGradient()
 		    retries--;
 		    sawProblem = true;
 		    if ( this->_PrintIntermediateResults ) {
-			_lisp->print(BF("Dealt with problem(%s)") % ld._Message.c_str());
+                      core::clasp_writeln_string((BF("Dealt with problem(%s)") % ld._Message.c_str()).str());
 		    }
 		}
 	    } while ( sawProblem && retries > 0 );
@@ -2266,7 +2255,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimize()
 		retries--;
 		sawProblem = true;
 		if ( this->_PrintIntermediateResults ) {
-		    _lisp->print(BF("Dealt with problem(%s)") % ld._Message.c_str());
+                  core::clasp_writeln_string((BF("Dealt with problem(%s)") % ld._Message.c_str()).str());
 		}
 	    }
 	} while ( sawProblem && retries > 0 );

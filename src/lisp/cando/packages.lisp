@@ -38,6 +38,8 @@
    #:indexed-pathname
    #:save-mol2
    #:load-mol2
+   #:save-cando
+   #:load-cando
    #:dump-atoms
    #:load-cdxml-aggregate
    #:load-psf-pdb

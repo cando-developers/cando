@@ -376,7 +376,7 @@ Matrix Matrix::invertTransform() const
     Vector3 trans = this->getTranslation();
     Matrix invertTranslation;
     Vector3 invTrans = trans.multiplyByScalar(-1.0);
-    invertTranslation.translate(&invTrans);
+    invertTranslation.translate(invTrans);
     Matrix invertTransform = invertRotation * invertTranslation;
     return invertTransform;
 }
@@ -564,12 +564,12 @@ int	r,c,x;
 //
 // Create a translation matrix
 //
-void Matrix::translate(Vector3* v)
+void Matrix::translate(const Vector3& v)
 {
     this->setToIdentity();
-    this->atRowColPut(0,3,v->getX());
-    this->atRowColPut(1,3,v->getY());
-    this->atRowColPut(2,3,v->getZ());
+    this->atRowColPut(0,3,v.getX());
+    this->atRowColPut(1,3,v.getY());
+    this->atRowColPut(2,3,v.getZ());
     this->atRowColPut(3,3,1.0);
 }
 

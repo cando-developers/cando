@@ -79,7 +79,7 @@ public:
 	Matrix subtractIdentity() const;
 
 	/*! Set the translation part of this matrix */
-	void translate(Vector3* v);
+	void translate(const Vector3& v);
 	void scale(double s);
 	void rotationAxis( double radians, Vector3* vunit);
 	void rotationX(double radians);
@@ -90,8 +90,8 @@ public:
 	void rightHandedRotationZ(double radians);
 	double trace();
 
-        double& operator[](size_t i) { return this->elements[i]; };
-        double const & operator[](size_t i) const { return this->elements[i]; };
+        inline double& operator[](size_t i) { return this->elements[i]; };
+        inline double const & operator[](size_t i) const { return this->elements[i]; };
         
 	/*! Return true if the upper 3x3 rotation matrix is orthogonal within tol */
 	bool is3x3Orthogonal(double tol) const;
@@ -104,10 +104,10 @@ public:
 		 * Return the index of the element at row,col
 		 */
 	inline uint index(int r, int c) const { return (r<<2)+c;};
-	double atRowCol( int r, int c ) const {return this->elements[this->index(r,c)];};
-	void atRowColPut( int r, int c, double d ) {this->elements[this->index(r,c)]=d;};
-	void atColRowPut( int c, int r, double d ) {this->elements[this->index(r,c)]=d;};
-	void atRowColAdd( int r, int c, double d ) {this->elements[this->index(r,c)]+=d;};
+	inline double atRowCol( int r, int c ) const {return this->elements[this->index(r,c)];};
+	inline void atRowColPut( int r, int c, double d ) {this->elements[this->index(r,c)]=d;};
+	inline void atColRowPut( int c, int r, double d ) {this->elements[this->index(r,c)]=d;};
+	inline void atRowColAdd( int r, int c, double d ) {this->elements[this->index(r,c)]+=d;};
 	Vector4	getCol(int c) { return Vector4( this->elements[c],
 					this->elements[this->index(1,c)],
 					this->elements[this->index(2,c)],

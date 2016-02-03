@@ -27,3 +27,19 @@
 
 (set-dispatch-macro-character #\# #\I #'read-cxx-object)
 
+
+(defun save-cando (obj pathname)
+  "* Arguments
+- obj :: An object.
+- pathname :: A pathname.
+* Description
+Save the object to the file PATHNAME as an s-expression."
+  (with-open-file (fout pathname :direction :output)
+    (let ((*print-readably* t)
+          (*print-pretty* nil)
+          (*print-circle* t))
+      (print obj fout))))
+
+(defun load-cando (pathname)
+  (with-open-file (fin pathname :direction :input)
+    (read fin)))

@@ -5,7 +5,7 @@
 (defconstant +default-dihedral-radians+ (* 180.0 0.0174533))
 (defclass atom-node ()
   ((target-atom :initarg target-atom :accessor target-atom)
-   (target-pos :initform (geom:make-ovector3 0.0 0.0 0.0)
+   (target-pos :initform (geom:make-v3 0.0 0.0 0.0)
                :initarg :target-pos :accessor target-pos)
    (bond-angstroms :initform +default-bond-angstroms+
                    :initarg :bond-angstroms :accessor bond-angstroms)
@@ -140,9 +140,9 @@
                  (gethash angle-atom active-set)
                  (gethash dihedral-atom active-set))
             (let* ((ta (target-atom node))
-                   (bond-angstroms (geom:vector3-distance (chem:get-position ta)
+                   (bond-angstroms (geom:v3-distance (chem:get-position ta)
                                                           (chem:get-position bond-atom)))
-                   (angle-radians (geom:vector3-angle (chem:get-position ta)
+                   (angle-radians (geom:v3-angle (chem:get-position ta)
                                                       (chem:get-position bond-atom)
                                                       (chem:get-position angle-atom)))
                    (dihedral-radians (geom:dihedral (chem:get-position ta) ;

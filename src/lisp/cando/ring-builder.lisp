@@ -140,5 +140,5 @@
   (loop for lr in linked-rings
      for x from 0 to (length linked-rings)
      do (cando:scramble-positions (expanded-atom-set-for-ring lr)
-                                  :center (geom:make-ovector3 0.0 (* x 5.0) 0.0 )
+                                  :center (geom:make-v3 0.0 (* x 5.0) 0.0 )
                                   :width 5.0)))

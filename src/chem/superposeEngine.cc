@@ -296,12 +296,12 @@ void	SuperposeEngine_O::doSuperpose()
     rot.atRowColPut( 3,3,  1.0 );
     LOG(BF( "rot=%s")% rot.asString());
     vTemp = moveableCenter*-1.0;
-    trans.translate(&vTemp);
+    trans.translate(vTemp);
     LOG(BF( "moveableTrans=%s")% trans.asString() );
 //    mat.setFromQuaternion(quaternion);
     mat = rot*trans;
     LOG(BF( "mat*moveableTrans= %s")% mat.asString() );
-    trans.translate(&fixedCenter);
+    trans.translate(fixedCenter);
     LOG(BF( "fixedTrans = %s")% trans.asString() );
     this->_Transform = trans*mat;
 }

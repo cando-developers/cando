@@ -644,10 +644,10 @@ void Matter_O::invertStereochemistryOfRestraints()
 
 
 CL_LISPIFY_NAME("translateAllAtoms");
-CL_DEFMETHOD void	Matter_O::translateAllAtoms(Vector3 trans)
+CL_DEFMETHOD void Matter_O::translateAllAtoms(const Vector3& trans)
 {
   Matrix transform;
-  transform.translate(&trans);
+  transform.translate(trans);
   this->applyTransformToAtoms(transform);
 }
 
@@ -960,9 +960,10 @@ void	Matter_O::fields(core::Record_sp node )
   node->field_if_not_nil( INTERN_(kw,restraints),this->_Restraints);
   node->field_if_not_nil( INTERN_(kw,properties),this->_Properties);
   node->field_if_not_empty( INTERN_(kw,contents), this->_contents);
+//  node->field_if_not_nil( INTERN_(kw,contained_by), this->containerContainedBy);
   LOG(BF("Status") );
-#if 0
-  if ( node->loading() ) {
+#if 1
+  if ( node->stage() == core::Record_O::loading ) {
     _BLOCK_TRACEF(BF("serializing container contents - there are %d objects")% this->_contents.size() );
 	    // Make sure all contents have us as a parent
     Matter_sp c = this->sharedThis<Matter_O>();

@@ -64,6 +64,7 @@ THE SOFTWARE.
 #include <clasp/mpip/claspMpi.h>
 #endif
 
+
 int startup(int argc, char *argv[], bool &mpiEnabled, int &mpiRank, int &mpiSize) {
   core::LispHolder lispHolder(mpiEnabled, mpiRank, mpiSize);
   int exitCode = 0;
@@ -111,6 +112,7 @@ int startup(int argc, char *argv[], bool &mpiEnabled, int &mpiRank, int &mpiSize
       SIMPLE_ERROR(BF("USE_MPI is true but mpiEnabled is false!!!!"));
     }
 #endif
+    core::Cons_sp features = core::Cons_O::create(INTERN_(kw,cando),cl::_sym_STARfeaturesSTAR->symbolValue());
     _lisp->run();
   } catch (core::DynamicGo &failedGo) {
     printf("%s:%d A DynamicGo was thrown but not caught frame[%lu] tag[%lu]\n", __FILE__, __LINE__, failedGo.getFrame(), failedGo.index());

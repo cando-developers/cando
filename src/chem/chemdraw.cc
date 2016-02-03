@@ -379,7 +379,7 @@ core::Symbol_mv parse_property(const string& propertyValue, CDBond_sp bond, cons
   core::T_sp stream = core::cl__make_string_input_stream(core::Str_O::create(propertyValue),core::clasp_make_fixnum(0),_Nil<core::T_O>());
 //  printf("%s:%d Parsing property string: %s\n", __FILE__, __LINE__, propertyValue.c_str());
   core::T_sp eof = core::Cons_O::create();
-  core::DynamicScopeManager scope(cl::_sym_STARpackageSTAR,_lisp->findPackage("CKW"));
+  core::DynamicScopeManager scope(cl::_sym_STARpackageSTAR,_lisp->findPackage(ChemKwPkg));
   core::T_sp property = core::cl__read(stream,_Nil<core::T_O>(),eof);
   if ( property == eof ) {
     SIMPLE_ERROR(BF("Could not parse first part of \"%s\" as a (symbol value) pair - in property bond of order %s other side of bond is \"%s\"") % propertyValue % bond->getOrderAsString() % otherSideValue );

@@ -164,12 +164,12 @@ namespace chem
 CL_NAME("constitutionName");
 CL_DEFMETHOD 	    core::Symbol_sp	constitutionName() const	{return this->_Name;};
 CL_NAME("setConstitutionName");
-CL_DEFMETHOD 	    void	setConstitutionName(core::Symbol_sp t) {this->_Name = t;};
+CL_DEFMETHOD 	    void	setConstitutionName(core::Symbol_sp tt) {this->_Name = tt;};
 
 CL_NAME("getMetaConstitutionName");
 CL_DEFMETHOD 	    core::Symbol_sp	getMetaConstitutionName()	{return this->_MetaConstitution;};
 CL_NAME("setMetaConstitutionName");
-CL_DEFMETHOD 	    void	setMetaConstitutionName(core::Symbol_sp t) {this->_MetaConstitution = t;};
+CL_DEFMETHOD 	    void	setMetaConstitutionName(core::Symbol_sp tt) {this->_MetaConstitution = tt;};
 
 
 	    /*! Add all of my Stereoisomers as Entities to the CandoDatabase */

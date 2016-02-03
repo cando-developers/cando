@@ -29,7 +29,7 @@ namespace chem {
 void Coupling_O::initialize()
 {
     this->Base::initialize();
-    this->_WeakOligomer = _Nil<Oligomer_O>();
+    this->_Oligomer = _Nil<core::T_O>();
     this->_HasError = false;
     this->_Selected = false;
 }
@@ -50,7 +50,7 @@ bool	Coupling_O::containsMonomer(Monomer_sp mon)
     void	Coupling_O::archiveBase(core::ArchiveP node)
 {
     this->Base::archiveBase(node);
-    node->archiveWeakPointer("oligomer",this->_WeakOligomer );
+    node->archiveWeakPointer("oligomer",this->_Oligomer );
     node->attribute("hasError", this->_HasError );
 //    node->attribute("statusMessage", this->_StatusMessage);
 }
@@ -59,19 +59,19 @@ bool	Coupling_O::containsMonomer(Monomer_sp mon)
 
 void	Coupling_O::setOligomer(Oligomer_sp o)
 {
-    this->_WeakOligomer = o->sharedThis<Oligomer_O>();
+    this->_Oligomer = o->sharedThis<Oligomer_O>();
 };
 
 
 void	Coupling_O::resetOligomer()
 {
-    this->_WeakOligomer = _Nil<Oligomer_O>();
+  this->_Oligomer = _Nil<core::T_O>();
 }
 
 Oligomer_sp	Coupling_O::getOligomer()
 {_OF();
-    ASSERTNOTNULL(this->_WeakOligomer);
-    return this->_WeakOligomer;
+    ASSERTNOTNULL(this->_Oligomer);
+    return this->_Oligomer;
 };
 
 
@@ -159,8 +159,8 @@ CL_DEFUN core::Symbol_sp DirectionalCoupling_O::otherPlugName(core::Symbol_sp na
 void DirectionalCoupling_O::initialize()
 {
     this->Base::initialize();
-    this->_InMonomer = _Nil<Monomer_O>();
-    this->_OutMonomer = _Nil<Monomer_O>();
+    this->_InMonomer = _Nil<core::T_O>();
+    this->_OutMonomer = _Nil<core::T_O>();
     this->_Name = _Nil<core::Symbol_O>();
 }
 
@@ -171,13 +171,13 @@ void DirectionalCoupling_O::initialize()
 
 void	DirectionalCoupling_O::resetIn()
 {
-    this->_InMonomer = _Nil<Monomer_O>();
+  this->_InMonomer = _Nil<core::T_O>();
 };
 
 
 void	DirectionalCoupling_O::resetOut()
 {
-    this->_OutMonomer = _Nil<Monomer_O>();
+  this->_OutMonomer = _Nil<core::T_O>();
 };
 
 
@@ -549,8 +549,8 @@ SIMPLE_ERROR(BF("I wasn't sure if this was ever called.  Take out this THROW if 
 void RingCoupling_O::initialize()
 {_OF();
     this->Base::initialize();
-    this->_Monomer1 = _Nil<Monomer_O>();
-    this->_Monomer2 = _Nil<Monomer_O>();
+    this->_Monomer1 = _Nil<core::T_O>();
+    this->_Monomer2 = _Nil<core::T_O>();
     this->_Plug1 = _Nil<core::Symbol_O>();
     this->_Plug2 = _Nil<core::Symbol_O>();
 }

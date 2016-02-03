@@ -307,7 +307,7 @@ CL_NAME("setDebug_NumberOfTermsToCalculate");
 CL_DEFMETHOD 	void setDebug_NumberOfTermsToCalculate(int i) {this->_Debug_NumberOfTermsToCalculate=i;}
 	bool isEnabled() { return this->_Enabled; };
 CL_NAME("setErrorThreshold");
-CL_DEFMETHOD 	void	setErrorThreshold(double t) { this->_ErrorThreshold = t; };
+CL_DEFMETHOD 	void	setErrorThreshold(double tr) { this->_ErrorThreshold = tr; };
 CL_NAME("getErrorThreshold");
 CL_DEFMETHOD 	double	getErrorThreshold() { return this->_ErrorThreshold; };
 

@@ -39,10 +39,7 @@ namespace geom {
 
 
 
-#define ARGS_OVector3_O_make "(x y z)"
-#define DECL_OVector3_O_make ""
-#define DOCS_OVector3_O_make "make OVector3 args: x y z"
-CL_LISPIFY_NAME(make_ovector3);
+CL_LISPIFY_NAME(make_v3);
 CL_DEFUN OVector3_sp OVector3_O::make(double x, double y, double z)
     {
 	GC_ALLOCATE(OVector3_O,ov);
@@ -63,7 +60,7 @@ void OVector3_O::fields(core::Record_sp node)
 #ifdef XML_ARCHIVE
     void	OVector3_O::archiveBase(core::ArchiveP node)
 {
-    node->archivePlainObjectIfDefined<Vector3>( "pos","Vector3", 
+    node->archivePlainObjectIfDefined<Vector3>( "pos","V3", 
     					this->_Value.isDefined(), this->_Value);
 }
 #endif
@@ -88,7 +85,7 @@ CL_DEFMETHOD     Vector3 OVector3_O::sub(const Vector3& other)
 	return s;
     }
 
-CL_LISPIFY_NAME("vector-magnitude");
+CL_LISPIFY_NAME("v3-magnitude");
 CL_DEFMETHOD     double OVector3_O::magnitude()
     {
 	double l = this->_Value.length();
@@ -131,9 +128,6 @@ CL_DEFMETHOD     double OVector3_O::dotProduct(const Vector3& other)
 
     
     
-#define ARGS_OVector3_O_add "((self ovector3) &rest points)"
-#define DECL_OVector3_O_add ""
-#define DOCS_OVector3_O_add "OVector3_O_add"
 CL_LISPIFY_NAME("add");
 CL_DEFMETHOD core::T_sp OVector3_O::add(core::List_sp points)
 {
@@ -157,7 +151,7 @@ CL_DEFMETHOD Vector3 OVector3_O::timesScalar(double d)
 }
 
 
-CL_LISPIFY_NAME("vector-normalized");
+CL_LISPIFY_NAME("v3-normalized");
 CL_DEFMETHOD Vector3 OVector3_O::normalized()
 {
   return this->_Value.normalized();
@@ -169,13 +163,13 @@ CL_DEFMETHOD double	OVector3_O::dihedral( const Vector3& vb, const Vector3& vc, 
     return calculateDihedral(this->_Value,vb,vc,vd);
 }
 
-CL_LISPIFY_NAME("vector3-angle");
+CL_LISPIFY_NAME("v3-angle");
 CL_DEFMETHOD double	OVector3_O::angle( const Vector3& vb, const Vector3& vc)
 {
     return calculateAngle(this->_Value,vb,vc);
 }
 
-CL_LISPIFY_NAME("vector3-distance");
+CL_LISPIFY_NAME("v3-distance");
 CL_DEFMETHOD double	OVector3_O::distance( const Vector3& vb )
 {
     return calculateDistance(this->_Value,vb);
