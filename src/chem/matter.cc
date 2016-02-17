@@ -36,6 +36,9 @@
 
 namespace chem
 {
+
+CL_EXTERN_DEFMETHOD(Matter_O,(Matter_sp(Matter_O::*)() const)&Matter_O::containedBy);
+
 //
 // Constructor
 //
@@ -610,6 +613,9 @@ CL_DEFMETHOD void	Matter_O::applyTransformToAtoms( const Matrix& m )
   LOG(BF("Transforming all atoms with:%s") % (m.asString().c_str() ) );
   for ( a=this->_contents.begin(); a!=this->_contents.end(); a++ ) {
     (*a)->applyTransformToAtoms(m);
+  }
+  if ( this->_Restraints.notnilp() ) {
+    this->_Restraints->applyTransformToRestraints(m);
   }
 }
 

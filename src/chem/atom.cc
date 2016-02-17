@@ -890,6 +890,9 @@ CL_LISPIFY_NAME("applyTransformToAtoms");
 CL_DEFMETHOD     void	Atom_O::applyTransformToAtoms( const Matrix& m )
     {
 	this->position = (m)*this->position;
+        if ( this->_Restraints.notnilp() ) {
+          this->_Restraints->applyTransformToRestraints(m);
+        }
     }
 
 
@@ -1076,30 +1079,12 @@ CL_DEFMETHOD     string	Atom_O::getConfigurationAsString()
 
 
 
-    string	Atom_O::__repr__() const
-    {
-	stringstream ss;
-	if ( this->containedByValid() )
-	{
-	    Residue_sp res = _Nil<Residue_O>();
-	    Molecule_sp mol = _Nil<Molecule_O>();
-	    if ( this->containedByValid() )
-	    {
-		res = this->containedBy().as<Residue_O>();
-		if ( res->containedByValid() )
-		{
-		    mol = res->containedBy().as<Molecule_O>();
-		}
-	    }
-	    string molName = (mol.nilp())?"":mol->getName()->symbolName()->get();
-	    string resName = (res.nilp())?"":res->getName()->symbolName()->get();
-	    ss << "#<" << this->className() << ":" << molName << ":" << resName << "@" << this->name << "@" << (void*)this << ">";
-	} else
-	{
-          ss << "#<" << this->className() << " :invalidContainer! :name \"" << this->name << "@" << (void*)this << ">";
-	}
-	return ss.str();
-    }
+string	Atom_O::__repr__() const
+{
+  stringstream ss;
+  ss << "#<" << this->className() << " \"" << this->name << "/" << _rep_(symbolFromElement(this->_Element)) << "@" << (void*)this << ">";
+  return ss.str();
+}
 
     string	Atom_O::description() const
     {

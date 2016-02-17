@@ -22,12 +22,17 @@
 
 namespace chem {
 
-
 NVector_sp NVector_O::create(uint sz)
 {
     GC_ALLOCATE(NVector_O, nv );
     nv->setup(sz);
     return nv;
+}
+
+CL_LISPIFY_NAME(make-nvector);
+CL_DEFUN NVector_sp make_nvector(uint sz)
+{
+  return NVector_O::create(sz);
 }
 
 
@@ -101,7 +106,7 @@ void	NVector_O::zero()
  *
  *      Fill the vector with a number.
  */
-void	NVector_O::fill( double dValue )
+CL_DEFMETHOD void NVector_O::fill( double dValue )
 {
     this->_Values.assign(this->_Size,dValue);
 }
@@ -206,9 +211,10 @@ void	NVector_O::debugDump(const string& name)
  *
  *	Author:	Christian Schafmeister (1991)
  *
- *      Add two vectors and return the result in (this)
+ *      Add two vectors and put the result in (this)
  */
-void	NVector_O::add( NVector_sp x, NVector_sp y )
+CL_LISPIFY_NAME(nvector-dest-x-_PLUS_-y);
+CL_DEFMETHOD void NVector_O::dest_x__PLUS__y( NVector_sp x, NVector_sp y )
 {_OF();
 vector<double>::iterator	resi, xi,yi;
     ASSERTP( this->_Values.size() == x->size(),"NVector_O::add>>mismatched size");

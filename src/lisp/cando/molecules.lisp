@@ -157,16 +157,22 @@ Set the stereochemistry of a collection of stereocenters using a function that r
     (format t "Writing result to: ~a~%" target-pn)
     (save-mol2 accumulate-aggregate target-pn)))
 
-(defun chimera (obj)
-  (cond
-    ((pathnamep obj)
-     (ext:system (format nil "open ~a" (namestring obj))))
-    ((typep obj 'chem:aggregate)
-     (cando:save-mol2 obj #P"/tmp/temp.mol2" :use-sybyl-types t)
-     (ext:system (format nil "open /tmp/temp.mol2")))
-    (t (error "You cannot run chimera on ~a" obj)))
-  (sleep 0.3))
+(defun chimera (&rest objs)
+  (let (files)
+    (dolist (obj objs)
+      (cond
+        ((pathnamep obj)
+         (push (namestring obj) files))
+        ((typep obj 'chem:aggregate)
+         (let ((pn (pathname (format nil "/tmp/temp~a.mol2" (length files)))))
+           (cando:save-mol2 obj pn :use-sybyl-types t)
+           (push pn files)))
+        (t (error "You cannot run chimera on ~a" obj))))
+    (let ((cmd (format nil "open -a Chimera.app ~{~a ~}" (mapcar (lambda (x) (namestring x)) (nreverse files)))))
+      (format t "Executing: ~a~%" cmd)
+      (ext:system cmd))))
 
+    
 (defun bad-geometry-p (agg force-field)
   "Return true if there are any beyond-threshold force field interactions"
   (let ((energy-function (chem:make-energy-function agg force-field)))

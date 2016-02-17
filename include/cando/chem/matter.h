@@ -240,7 +240,7 @@ CL_DEFMETHOD   virtual uint	numberOfAtoms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
 		// Check containedByValid before touching containedBy
   bool		containedByValid() const {return (this->containerContainedBy.notnilp()); };
   Matter_sp	containedBy() const	{_G();ASSERTNOTNULL(this->containerContainedBy);return this->containerContainedBy;};
-  CL_DEFMETHOD Matter_sp	containedBy()	{_G();ASSERTNOTNULL(this->containerContainedBy); return this->containerContainedBy; };
+  Matter_sp	containedBy()	{_G();ASSERTNOTNULL(this->containerContainedBy); return this->containerContainedBy; };
   bool		isContainedBy(Matter_sp matter);
   MatterVector&	getContents()	{return(this->_contents);};
   void	eraseContents(); // Empty the contents vector, don't free the memory

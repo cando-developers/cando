@@ -421,8 +421,8 @@ core::List_sp CoordinateArray_O::encode() {
     (*v)[cur++] = core::clasp_make_double_float(this->_Points[i].getY());
     (*v)[cur++] = core::clasp_make_double_float(this->_Points[i].getZ());
   }
-  return core::Cons_O::createList(core::Cons_O::create(_Nil<T_O>(),core::clasp_make_fixnum(this->_Points.size())),
-                                  core::Cons_O::create(_Nil<T_O>(),v));
+  return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,pnts),core::clasp_make_fixnum(this->_Points.size())),
+                                  core::Cons_O::create(INTERN_(kw,pnts),v));
 }
 
 void CoordinateArray_O::decode(core::List_sp c) {

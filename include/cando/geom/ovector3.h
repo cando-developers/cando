@@ -19,8 +19,10 @@ namespace geom {
         bool fieldsp() const { return true; };
         void	fields(core::Record_sp node);
     public:
+#if 0
         core::List_sp encode() ;
         void decode(core::List_sp);
+#endif
 public:
 	Vector3	_Value;
     public:
@@ -64,7 +66,10 @@ CL_DEFMETHOD 	double getZ() { return this->_Value.getZ(); };
 	Vector3 crossProduct(const Vector3& other);
 
 	Vector3 sub(const Vector3& other);
-
+        
+        Vector3 _PLUS_(const Vector3& other);
+        Vector3 _MINUS_(const Vector3& other);
+        
 	double magnitude();
 	Vector3 normalized();
 

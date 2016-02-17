@@ -174,7 +174,7 @@
                                 (read sin) ; residue name
                                 (read sin) ; residueid
                                 nil))
-                       (pos (geom:ov3 (read sin) (read sin) (read sin))))
+                       (pos (geom:make-v3 (read sin) (read sin) (read sin))))
                    (chem:set-position (gethash atomid atoms) pos)))
                 (otherwise #|nothing|#)))))))
                   

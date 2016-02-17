@@ -15,7 +15,7 @@
 (defpackage #:geom
   (:use #:common-lisp)
   (:export
-   #:ov3
+   #:make-v3
    #:center-of-geometry
    ))
 

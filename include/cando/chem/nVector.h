@@ -37,11 +37,7 @@ public:
 public:
 	uint     	_Size;
 	vector<double>	_Values;
-
-
-			NVector_O( const NVector_O& orig );
-
-
+        NVector_O( const NVector_O& orig );
 	void	setup(uint sz);
 	void	describe();
 	string	description() const;
@@ -52,7 +48,7 @@ public:
 
 	void	zero();		// NVectorZero();
 	void	fill(double d);
-	void	add( NVector_sp nvX, NVector_sp nvY);		// NVectorAdd(a,x,y)
+	void	dest_x__PLUS__y( NVector_sp nvX, NVector_sp nvY);		// NVectorAdd(a,x,y)
 		//! this = x + d*sigma
 	void	XPlusYTimesScalar( NVector_sp nvX, NVector_sp nvD, double sigma);
 

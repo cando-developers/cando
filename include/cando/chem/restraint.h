@@ -19,6 +19,7 @@
 #include <vector>
 #include <clasp/core/common.h>
 #include <cando/geom/ovector3.h>
+#include <cando/geom/matrix.h>
 #include <cando/geom/vector3.h>
 #include <clasp/core/sequence.h>
 #include <clasp/core/holder.h>
@@ -56,6 +57,8 @@ CL_NAME("isActive");
 CL_DEFMETHOD   bool isActive() const { return this->_Active; };
 CL_NAME("setActive");
 CL_DEFMETHOD   void setActive(bool a) { this->_Active = a; };
+
+ virtual void applyTransform(const Matrix& m) {};
 
  Restraint_O() : _Active(true) {};
   virtual ~Restraint_O() {};
@@ -108,6 +111,7 @@ CL_DEFMETHOD 	void	setAtom(Atom_sp a) {this->_Atom=a;};
 
     	void invertStereochemistryOfRestraint();
 
+        virtual void applyTransform(const Matrix& m);
 
         RestraintAnchor_O() {};
  RestraintAnchor_O(Atom_sp atom, const Vector3& pos, double weight) : _Atom(atom), _Pos(pos), _Weight(weight) {};
@@ -354,9 +358,14 @@ public:
 
     virtual gc::Fixnum dimension() const { return this->_Restraints.size(); };
 
+    virtual core::T_sp aset_unsafe(int j, core::T_sp val) { this->_Restraints[j] = val; return val;};
+    virtual core::T_sp aref_unsafe(core::cl_index index) const { return this->_Restraints[index]; };
+
     INHERIT_SEQUENCE virtual core::T_sp elt(int index) const { return this->_Restraints[index]; };
     INHERIT_SEQUENCE virtual core::T_sp setf_elt(int index, core::T_sp value) { this->_Restraints[index] = value; };
 
+    core::T_sp elementType() const { return cl::_sym_T_O;}
+    
     virtual std::vector<core::cl_index> dimensions() const { std::vector<core::cl_index> dims; dims.push_back(this->_Restraints.size()); return dims;};
 	void		clear()	{this->_Restraints.clear(); };
 CL_NAME("addRestraint");
@@ -369,6 +378,8 @@ CL_DEFMETHOD         int numberOfRestraints() { return this->size();};
 	RestraintList_sp	copyDontRedirectAtoms();
 	void	redirectAtoms();
 
+        void applyTransformToRestraints(const Matrix& m);
+        
 	void	merge(RestraintList_sp rl);
 
 //	RestraintList_O(const RestraintList_O& rl );

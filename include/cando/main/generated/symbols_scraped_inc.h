@@ -262,8 +262,8 @@
   gc::As<core::Package_sp>(_lisp->findPackage("EXT"))->usePackage(gc::As<core::Package_sp>(_lisp->findPackage("COMMON-LISP")));
 #endif
 #if defined(DECLARE_ALL_SYMBOLS)
-int global_symbol_count = 2565;
-core::Symbol_sp global_symbols[2565];
+int global_symbol_count = 2567;
+core::Symbol_sp global_symbols[2567];
 namespace core {
 core::Symbol_sp& _sym_STARwatchDynamicBindingStackSTAR = global_symbols[0];
 core::Symbol_sp& _sym_symbolMacro = global_symbols[1];
@@ -2673,203 +2673,205 @@ core::Symbol_sp& _sym_chartreuse = global_symbols[2372];
 core::Symbol_sp& _sym_aquamarine = global_symbols[2373];
 core::Symbol_sp& _sym_mediumBlue = global_symbols[2374];
 core::Symbol_sp& _sym_steelBlue = global_symbols[2375];
-core::Symbol_sp& _sym_data = global_symbols[2376];
-core::Symbol_sp& _sym_contents = global_symbols[2377];
-core::Symbol_sp& _sym_catchFrame = global_symbols[2378];
-core::Symbol_sp& _sym_blockFrame = global_symbols[2379];
-core::Symbol_sp& _sym_tagbodyFrame = global_symbols[2380];
-core::Symbol_sp& _sym_landingPadFrame = global_symbols[2381];
-core::Symbol_sp& _sym_splatted = global_symbols[2382];
-core::Symbol_sp& _sym_unbound = global_symbols[2383];
-core::Symbol_sp& _sym_deleted = global_symbols[2384];
-core::Symbol_sp& _sym_rtld_default = global_symbols[2385];
-core::Symbol_sp& _sym_rtld_next = global_symbols[2386];
-core::Symbol_sp& _sym_rtld_self = global_symbols[2387];
-core::Symbol_sp& _sym_rtld_main_only = global_symbols[2388];
-core::Symbol_sp& _sym_iclass = global_symbols[2389];
-core::Symbol_sp& _sym_next = global_symbols[2390];
-core::Symbol_sp& _sym_prev = global_symbols[2391];
-core::Symbol_sp& _sym_key = global_symbols[2392];
-core::Symbol_sp& _sym_defaults = global_symbols[2393];
-core::Symbol_sp& _sym_error = global_symbols[2394];
-core::Symbol_sp& _sym_link = global_symbols[2395];
-core::Symbol_sp& _sym_broken_link = global_symbols[2396];
-core::Symbol_sp& _sym_special = global_symbols[2397];
-core::Symbol_sp& _sym_supersede = global_symbols[2398];
-core::Symbol_sp& _sym_calledFunction = global_symbols[2399];
-core::Symbol_sp& _sym_givenNumberOfArguments = global_symbols[2400];
-core::Symbol_sp& _sym_requiredNumberOfArguments = global_symbols[2401];
-core::Symbol_sp& _sym_unrecognizedKeyword = global_symbols[2402];
-core::Symbol_sp& _sym_body = global_symbols[2403];
-core::Symbol_sp& _sym_lambda_list_handler = global_symbols[2404];
-core::Symbol_sp& _sym_docstring = global_symbols[2405];
-core::Symbol_sp& _sym_arguments = global_symbols[2406];
-core::Symbol_sp& _sym_create = global_symbols[2407];
-core::Symbol_sp& _sym_append = global_symbols[2408];
-core::Symbol_sp& _sym_debugStartup = global_symbols[2409];
-core::Symbol_sp& _sym_cclasp = global_symbols[2410];
-core::Symbol_sp& _sym_bclasp = global_symbols[2411];
-core::Symbol_sp& _sym_load = global_symbols[2412];
-core::Symbol_sp& _sym_eval = global_symbols[2413];
-core::Symbol_sp& _sym_ecl_min = global_symbols[2414];
-core::Symbol_sp& _sym_use_mps = global_symbols[2415];
-core::Symbol_sp& _sym_use_boehmdc = global_symbols[2416];
-core::Symbol_sp& _sym_use_boehm = global_symbols[2417];
-core::Symbol_sp& _sym_cr = global_symbols[2418];
-core::Symbol_sp& _sym_lf = global_symbols[2419];
-core::Symbol_sp& _sym_littleEndian = global_symbols[2420];
-core::Symbol_sp& _sym_bigEndian = global_symbols[2421];
-core::Symbol_sp& _sym_crlf = global_symbols[2422];
-core::Symbol_sp& _sym_latin_1 = global_symbols[2423];
-core::Symbol_sp& _sym_ucs_4 = global_symbols[2424];
-core::Symbol_sp& _sym_passThrough = global_symbols[2425];
-core::Symbol_sp& _sym_if_does_not_exist = global_symbols[2426];
-core::Symbol_sp& _sym_new_version = global_symbols[2427];
-core::Symbol_sp& _sym_rename = global_symbols[2428];
-core::Symbol_sp& _sym_rename_and_delete = global_symbols[2429];
-core::Symbol_sp& _sym_overwrite = global_symbols[2430];
-core::Symbol_sp& _sym_if_exists = global_symbols[2431];
-core::Symbol_sp& _sym_probe = global_symbols[2432];
-core::Symbol_sp& _sym_FullDebug = global_symbols[2433];
-core::Symbol_sp& _sym_LineTablesOnly = global_symbols[2434];
-core::Symbol_sp& _sym__uid = global_symbols[2435];
-core::Symbol_sp& _sym_none = global_symbols[2436];
-core::Symbol_sp& _sym_line = global_symbols[2437];
-core::Symbol_sp& _sym_full = global_symbols[2438];
-core::Symbol_sp& _sym_message = global_symbols[2439];
-core::Symbol_sp& _sym_line_buffered = global_symbols[2440];
-core::Symbol_sp& _sym_fully_buffered = global_symbols[2441];
-core::Symbol_sp& _sym_array = global_symbols[2442];
-core::Symbol_sp& _sym_UnsignedByte = global_symbols[2443];
-core::Symbol_sp& _sym_test = global_symbols[2444];
-core::Symbol_sp& _sym_junkAllowed = global_symbols[2445];
-core::Symbol_sp& _sym_absolute = global_symbols[2446];
-core::Symbol_sp& _sym_relative = global_symbols[2447];
-core::Symbol_sp& _sym_back = global_symbols[2448];
-core::Symbol_sp& _sym_operation = global_symbols[2449];
-core::Symbol_sp& _sym_operands = global_symbols[2450];
-core::Symbol_sp& _sym_escape = global_symbols[2451];
-core::Symbol_sp& _sym_capitalize = global_symbols[2452];
-core::Symbol_sp& _sym_typeError = global_symbols[2453];
-core::Symbol_sp& _sym_datum = global_symbols[2454];
-core::Symbol_sp& _sym_expectedType = global_symbols[2455];
-core::Symbol_sp& _sym_print = global_symbols[2456];
-core::Symbol_sp& _sym_pathname = global_symbols[2457];
-core::Symbol_sp& _sym_object = global_symbols[2458];
-core::Symbol_sp& _sym_formatControl = global_symbols[2459];
-core::Symbol_sp& _sym_formatArguments = global_symbols[2460];
-core::Symbol_sp& _sym_stream = global_symbols[2461];
-core::Symbol_sp& _sym_package = global_symbols[2462];
-core::Symbol_sp& _sym_compile_toplevel = global_symbols[2463];
-core::Symbol_sp& _sym_load_toplevel = global_symbols[2464];
-core::Symbol_sp& _sym_execute = global_symbols[2465];
-core::Symbol_sp& _sym_allow_other_keys = global_symbols[2466];
-core::Symbol_sp& _sym_macro = global_symbols[2467];
-core::Symbol_sp& _sym_function = global_symbols[2468];
-core::Symbol_sp& _sym_invalid_character = global_symbols[2469];
-core::Symbol_sp& _sym_brcl = global_symbols[2470];
-core::Symbol_sp& _sym_not = global_symbols[2471];
-core::Symbol_sp& _sym_and = global_symbols[2472];
-core::Symbol_sp& _sym_or = global_symbols[2473];
-core::Symbol_sp& _sym_class = global_symbols[2474];
-core::Symbol_sp& _sym_instance = global_symbols[2475];
-core::Symbol_sp& _sym_output = global_symbols[2476];
-core::Symbol_sp& _sym_input = global_symbols[2477];
-core::Symbol_sp& _sym_io = global_symbols[2478];
-core::Symbol_sp& _sym_default = global_symbols[2479];
-core::Symbol_sp& _sym_internal = global_symbols[2480];
-core::Symbol_sp& _sym_external = global_symbols[2481];
-core::Symbol_sp& _sym_inherited = global_symbols[2482];
-core::Symbol_sp& _sym_debug = global_symbols[2483];
-core::Symbol_sp& _sym_direct_super_classes = global_symbols[2484];
-core::Symbol_sp& _sym_name = global_symbols[2485];
-core::Symbol_sp& _sym_changed = global_symbols[2486];
-core::Symbol_sp& _sym_address_model_64 = global_symbols[2487];
-core::Symbol_sp& _sym_target_os_darwin = global_symbols[2488];
-core::Symbol_sp& _sym_podSymbolMap = global_symbols[2489];
-core::Symbol_sp& _sym_constituent_character = global_symbols[2490];
-core::Symbol_sp& _sym_syntax = global_symbols[2491];
-core::Symbol_sp& _sym_whitespace_character = global_symbols[2492];
-core::Symbol_sp& _sym_single_escape_character = global_symbols[2493];
-core::Symbol_sp& _sym_multiple_escape_character = global_symbols[2494];
-core::Symbol_sp& _sym_upcase = global_symbols[2495];
-core::Symbol_sp& _sym_downcase = global_symbols[2496];
-core::Symbol_sp& _sym_preserve = global_symbols[2497];
-core::Symbol_sp& _sym_invert = global_symbols[2498];
-core::Symbol_sp& _sym_non_terminating_macro_character = global_symbols[2499];
-core::Symbol_sp& _sym_terminating_macro_character = global_symbols[2500];
-core::Symbol_sp& _sym_macro_function = global_symbols[2501];
-core::Symbol_sp& _sym_case = global_symbols[2502];
-core::Symbol_sp& _sym_file = global_symbols[2503];
-core::Symbol_sp& _sym_unspecific = global_symbols[2504];
-core::Symbol_sp& _sym_local = global_symbols[2505];
-core::Symbol_sp& _sym_common = global_symbols[2506];
-core::Symbol_sp& _sym_wild_inferiors = global_symbols[2507];
-core::Symbol_sp& _sym_up = global_symbols[2508];
-core::Symbol_sp& _sym_wild = global_symbols[2509];
-core::Symbol_sp& _sym_host = global_symbols[2510];
-core::Symbol_sp& _sym_device = global_symbols[2511];
-core::Symbol_sp& _sym_type = global_symbols[2512];
-core::Symbol_sp& _sym_newest = global_symbols[2513];
-core::Symbol_sp& _sym_version = global_symbols[2514];
-core::Symbol_sp& _sym_directory = global_symbols[2515];
-core::Symbol_sp& _sym_supplied = global_symbols[2516];
-core::Symbol_sp& _sym_min = global_symbols[2517];
-core::Symbol_sp& _sym_max = global_symbols[2518];
-core::Symbol_sp& _sym_eof = global_symbols[2519];
-core::Symbol_sp& _sym_fillPointer = global_symbols[2520];
-core::Symbol_sp& _sym_elementType = global_symbols[2521];
-core::Symbol_sp& _sym_adjustable = global_symbols[2522];
-core::Symbol_sp& _sym_start = global_symbols[2523];
-core::Symbol_sp& _sym_end = global_symbols[2524];
+core::Symbol_sp& _sym_m = global_symbols[2376];
+core::Symbol_sp& _sym_pnts = global_symbols[2377];
+core::Symbol_sp& _sym_data = global_symbols[2378];
+core::Symbol_sp& _sym_contents = global_symbols[2379];
+core::Symbol_sp& _sym_catchFrame = global_symbols[2380];
+core::Symbol_sp& _sym_blockFrame = global_symbols[2381];
+core::Symbol_sp& _sym_tagbodyFrame = global_symbols[2382];
+core::Symbol_sp& _sym_landingPadFrame = global_symbols[2383];
+core::Symbol_sp& _sym_splatted = global_symbols[2384];
+core::Symbol_sp& _sym_unbound = global_symbols[2385];
+core::Symbol_sp& _sym_deleted = global_symbols[2386];
+core::Symbol_sp& _sym_rtld_default = global_symbols[2387];
+core::Symbol_sp& _sym_rtld_next = global_symbols[2388];
+core::Symbol_sp& _sym_rtld_self = global_symbols[2389];
+core::Symbol_sp& _sym_rtld_main_only = global_symbols[2390];
+core::Symbol_sp& _sym_iclass = global_symbols[2391];
+core::Symbol_sp& _sym_next = global_symbols[2392];
+core::Symbol_sp& _sym_prev = global_symbols[2393];
+core::Symbol_sp& _sym_key = global_symbols[2394];
+core::Symbol_sp& _sym_defaults = global_symbols[2395];
+core::Symbol_sp& _sym_error = global_symbols[2396];
+core::Symbol_sp& _sym_link = global_symbols[2397];
+core::Symbol_sp& _sym_broken_link = global_symbols[2398];
+core::Symbol_sp& _sym_special = global_symbols[2399];
+core::Symbol_sp& _sym_supersede = global_symbols[2400];
+core::Symbol_sp& _sym_calledFunction = global_symbols[2401];
+core::Symbol_sp& _sym_givenNumberOfArguments = global_symbols[2402];
+core::Symbol_sp& _sym_requiredNumberOfArguments = global_symbols[2403];
+core::Symbol_sp& _sym_unrecognizedKeyword = global_symbols[2404];
+core::Symbol_sp& _sym_body = global_symbols[2405];
+core::Symbol_sp& _sym_lambda_list_handler = global_symbols[2406];
+core::Symbol_sp& _sym_docstring = global_symbols[2407];
+core::Symbol_sp& _sym_arguments = global_symbols[2408];
+core::Symbol_sp& _sym_create = global_symbols[2409];
+core::Symbol_sp& _sym_append = global_symbols[2410];
+core::Symbol_sp& _sym_debugStartup = global_symbols[2411];
+core::Symbol_sp& _sym_cclasp = global_symbols[2412];
+core::Symbol_sp& _sym_bclasp = global_symbols[2413];
+core::Symbol_sp& _sym_load = global_symbols[2414];
+core::Symbol_sp& _sym_eval = global_symbols[2415];
+core::Symbol_sp& _sym_ecl_min = global_symbols[2416];
+core::Symbol_sp& _sym_use_mps = global_symbols[2417];
+core::Symbol_sp& _sym_use_boehmdc = global_symbols[2418];
+core::Symbol_sp& _sym_use_boehm = global_symbols[2419];
+core::Symbol_sp& _sym_cr = global_symbols[2420];
+core::Symbol_sp& _sym_lf = global_symbols[2421];
+core::Symbol_sp& _sym_littleEndian = global_symbols[2422];
+core::Symbol_sp& _sym_bigEndian = global_symbols[2423];
+core::Symbol_sp& _sym_crlf = global_symbols[2424];
+core::Symbol_sp& _sym_latin_1 = global_symbols[2425];
+core::Symbol_sp& _sym_ucs_4 = global_symbols[2426];
+core::Symbol_sp& _sym_passThrough = global_symbols[2427];
+core::Symbol_sp& _sym_if_does_not_exist = global_symbols[2428];
+core::Symbol_sp& _sym_new_version = global_symbols[2429];
+core::Symbol_sp& _sym_rename = global_symbols[2430];
+core::Symbol_sp& _sym_rename_and_delete = global_symbols[2431];
+core::Symbol_sp& _sym_overwrite = global_symbols[2432];
+core::Symbol_sp& _sym_if_exists = global_symbols[2433];
+core::Symbol_sp& _sym_probe = global_symbols[2434];
+core::Symbol_sp& _sym_FullDebug = global_symbols[2435];
+core::Symbol_sp& _sym_LineTablesOnly = global_symbols[2436];
+core::Symbol_sp& _sym__uid = global_symbols[2437];
+core::Symbol_sp& _sym_none = global_symbols[2438];
+core::Symbol_sp& _sym_line = global_symbols[2439];
+core::Symbol_sp& _sym_full = global_symbols[2440];
+core::Symbol_sp& _sym_message = global_symbols[2441];
+core::Symbol_sp& _sym_line_buffered = global_symbols[2442];
+core::Symbol_sp& _sym_fully_buffered = global_symbols[2443];
+core::Symbol_sp& _sym_array = global_symbols[2444];
+core::Symbol_sp& _sym_UnsignedByte = global_symbols[2445];
+core::Symbol_sp& _sym_test = global_symbols[2446];
+core::Symbol_sp& _sym_junkAllowed = global_symbols[2447];
+core::Symbol_sp& _sym_absolute = global_symbols[2448];
+core::Symbol_sp& _sym_relative = global_symbols[2449];
+core::Symbol_sp& _sym_back = global_symbols[2450];
+core::Symbol_sp& _sym_operation = global_symbols[2451];
+core::Symbol_sp& _sym_operands = global_symbols[2452];
+core::Symbol_sp& _sym_escape = global_symbols[2453];
+core::Symbol_sp& _sym_capitalize = global_symbols[2454];
+core::Symbol_sp& _sym_typeError = global_symbols[2455];
+core::Symbol_sp& _sym_datum = global_symbols[2456];
+core::Symbol_sp& _sym_expectedType = global_symbols[2457];
+core::Symbol_sp& _sym_print = global_symbols[2458];
+core::Symbol_sp& _sym_pathname = global_symbols[2459];
+core::Symbol_sp& _sym_object = global_symbols[2460];
+core::Symbol_sp& _sym_formatControl = global_symbols[2461];
+core::Symbol_sp& _sym_formatArguments = global_symbols[2462];
+core::Symbol_sp& _sym_stream = global_symbols[2463];
+core::Symbol_sp& _sym_package = global_symbols[2464];
+core::Symbol_sp& _sym_compile_toplevel = global_symbols[2465];
+core::Symbol_sp& _sym_load_toplevel = global_symbols[2466];
+core::Symbol_sp& _sym_execute = global_symbols[2467];
+core::Symbol_sp& _sym_allow_other_keys = global_symbols[2468];
+core::Symbol_sp& _sym_macro = global_symbols[2469];
+core::Symbol_sp& _sym_function = global_symbols[2470];
+core::Symbol_sp& _sym_invalid_character = global_symbols[2471];
+core::Symbol_sp& _sym_brcl = global_symbols[2472];
+core::Symbol_sp& _sym_not = global_symbols[2473];
+core::Symbol_sp& _sym_and = global_symbols[2474];
+core::Symbol_sp& _sym_or = global_symbols[2475];
+core::Symbol_sp& _sym_class = global_symbols[2476];
+core::Symbol_sp& _sym_instance = global_symbols[2477];
+core::Symbol_sp& _sym_output = global_symbols[2478];
+core::Symbol_sp& _sym_input = global_symbols[2479];
+core::Symbol_sp& _sym_io = global_symbols[2480];
+core::Symbol_sp& _sym_default = global_symbols[2481];
+core::Symbol_sp& _sym_internal = global_symbols[2482];
+core::Symbol_sp& _sym_external = global_symbols[2483];
+core::Symbol_sp& _sym_inherited = global_symbols[2484];
+core::Symbol_sp& _sym_debug = global_symbols[2485];
+core::Symbol_sp& _sym_direct_super_classes = global_symbols[2486];
+core::Symbol_sp& _sym_name = global_symbols[2487];
+core::Symbol_sp& _sym_changed = global_symbols[2488];
+core::Symbol_sp& _sym_address_model_64 = global_symbols[2489];
+core::Symbol_sp& _sym_target_os_darwin = global_symbols[2490];
+core::Symbol_sp& _sym_podSymbolMap = global_symbols[2491];
+core::Symbol_sp& _sym_constituent_character = global_symbols[2492];
+core::Symbol_sp& _sym_syntax = global_symbols[2493];
+core::Symbol_sp& _sym_whitespace_character = global_symbols[2494];
+core::Symbol_sp& _sym_single_escape_character = global_symbols[2495];
+core::Symbol_sp& _sym_multiple_escape_character = global_symbols[2496];
+core::Symbol_sp& _sym_upcase = global_symbols[2497];
+core::Symbol_sp& _sym_downcase = global_symbols[2498];
+core::Symbol_sp& _sym_preserve = global_symbols[2499];
+core::Symbol_sp& _sym_invert = global_symbols[2500];
+core::Symbol_sp& _sym_non_terminating_macro_character = global_symbols[2501];
+core::Symbol_sp& _sym_terminating_macro_character = global_symbols[2502];
+core::Symbol_sp& _sym_macro_function = global_symbols[2503];
+core::Symbol_sp& _sym_case = global_symbols[2504];
+core::Symbol_sp& _sym_file = global_symbols[2505];
+core::Symbol_sp& _sym_unspecific = global_symbols[2506];
+core::Symbol_sp& _sym_local = global_symbols[2507];
+core::Symbol_sp& _sym_common = global_symbols[2508];
+core::Symbol_sp& _sym_wild_inferiors = global_symbols[2509];
+core::Symbol_sp& _sym_up = global_symbols[2510];
+core::Symbol_sp& _sym_wild = global_symbols[2511];
+core::Symbol_sp& _sym_host = global_symbols[2512];
+core::Symbol_sp& _sym_device = global_symbols[2513];
+core::Symbol_sp& _sym_type = global_symbols[2514];
+core::Symbol_sp& _sym_newest = global_symbols[2515];
+core::Symbol_sp& _sym_version = global_symbols[2516];
+core::Symbol_sp& _sym_directory = global_symbols[2517];
+core::Symbol_sp& _sym_supplied = global_symbols[2518];
+core::Symbol_sp& _sym_min = global_symbols[2519];
+core::Symbol_sp& _sym_max = global_symbols[2520];
+core::Symbol_sp& _sym_eof = global_symbols[2521];
+core::Symbol_sp& _sym_fillPointer = global_symbols[2522];
+core::Symbol_sp& _sym_elementType = global_symbols[2523];
+core::Symbol_sp& _sym_adjustable = global_symbols[2524];
+core::Symbol_sp& _sym_start = global_symbols[2525];
+core::Symbol_sp& _sym_end = global_symbols[2526];
 } // namespace kw
 namespace comp {
-core::Symbol_sp& _sym_compileInEnv = global_symbols[2525];
-core::Symbol_sp& _sym_compileFormAndEvalWithEnv = global_symbols[2526];
-core::Symbol_sp& _sym_STARimplicit_compile_hookSTAR = global_symbols[2527];
-core::Symbol_sp& _sym_implicit_compile_hook_default = global_symbols[2528];
-core::Symbol_sp& _sym_STARall_functions_for_one_compileSTAR = global_symbols[2529];
-core::Symbol_sp& _sym_aSingleCompilerSymbol = global_symbols[2530];
-core::Symbol_sp& _sym_STARlowLevelTraceSTAR = global_symbols[2531];
-core::Symbol_sp& _sym_STARlowLevelTracePrintSTAR = global_symbols[2532];
+core::Symbol_sp& _sym_compileInEnv = global_symbols[2527];
+core::Symbol_sp& _sym_compileFormAndEvalWithEnv = global_symbols[2528];
+core::Symbol_sp& _sym_STARimplicit_compile_hookSTAR = global_symbols[2529];
+core::Symbol_sp& _sym_implicit_compile_hook_default = global_symbols[2530];
+core::Symbol_sp& _sym_STARall_functions_for_one_compileSTAR = global_symbols[2531];
+core::Symbol_sp& _sym_aSingleCompilerSymbol = global_symbols[2532];
+core::Symbol_sp& _sym_STARlowLevelTraceSTAR = global_symbols[2533];
+core::Symbol_sp& _sym_STARlowLevelTracePrintSTAR = global_symbols[2534];
 } // namespace comp
 namespace cleavirEnv {
-core::Symbol_sp& _sym_macroFunction = global_symbols[2533];
-core::Symbol_sp& _sym_symbolMacroExpansion = global_symbols[2534];
+core::Symbol_sp& _sym_macroFunction = global_symbols[2535];
+core::Symbol_sp& _sym_symbolMacroExpansion = global_symbols[2536];
 } // namespace cleavirEnv
 namespace cleavirPrimops {
-core::Symbol_sp& _sym_callWithVariableBound = global_symbols[2535];
+core::Symbol_sp& _sym_callWithVariableBound = global_symbols[2537];
 } // namespace cleavirPrimops
 namespace gray {
-core::Symbol_sp& _sym_aSingleGraySymbol = global_symbols[2536];
-core::Symbol_sp& _sym_open_stream_p = global_symbols[2537];
-core::Symbol_sp& _sym_stream_read_byte = global_symbols[2538];
-core::Symbol_sp& _sym_stream_write_byte = global_symbols[2539];
-core::Symbol_sp& _sym_stream_read_char = global_symbols[2540];
-core::Symbol_sp& _sym_stream_read_char_no_hang = global_symbols[2541];
-core::Symbol_sp& _sym_stream_write_char = global_symbols[2542];
-core::Symbol_sp& _sym_stream_write_string = global_symbols[2543];
-core::Symbol_sp& _sym_stream_terpri = global_symbols[2544];
-core::Symbol_sp& _sym_stream_fresh_line = global_symbols[2545];
-core::Symbol_sp& _sym_stream_read_sequence = global_symbols[2546];
-core::Symbol_sp& _sym_stream_write_sequence = global_symbols[2547];
-core::Symbol_sp& _sym_stream_unread_char = global_symbols[2548];
-core::Symbol_sp& _sym_stream_peek_char = global_symbols[2549];
-core::Symbol_sp& _sym_stream_listen = global_symbols[2550];
-core::Symbol_sp& _sym_streamClearInput = global_symbols[2551];
-core::Symbol_sp& _sym_stream_clear_input = global_symbols[2552];
-core::Symbol_sp& _sym_stream_clear_output = global_symbols[2553];
-core::Symbol_sp& _sym_stream_force_output = global_symbols[2554];
-core::Symbol_sp& _sym_stream_finish_output = global_symbols[2555];
-core::Symbol_sp& _sym_streamp = global_symbols[2556];
-core::Symbol_sp& _sym_input_stream_p = global_symbols[2557];
-core::Symbol_sp& _sym_output_stream_p = global_symbols[2558];
-core::Symbol_sp& _sym_stream_interactive_p = global_symbols[2559];
-core::Symbol_sp& _sym_stream_element_type = global_symbols[2560];
-core::Symbol_sp& _sym_stream_file_position = global_symbols[2561];
-core::Symbol_sp& _sym_stream_line_column = global_symbols[2562];
-core::Symbol_sp& _sym_stream_advance_to_column = global_symbols[2563];
-core::Symbol_sp& _sym_close = global_symbols[2564];
+core::Symbol_sp& _sym_aSingleGraySymbol = global_symbols[2538];
+core::Symbol_sp& _sym_open_stream_p = global_symbols[2539];
+core::Symbol_sp& _sym_stream_read_byte = global_symbols[2540];
+core::Symbol_sp& _sym_stream_write_byte = global_symbols[2541];
+core::Symbol_sp& _sym_stream_read_char = global_symbols[2542];
+core::Symbol_sp& _sym_stream_read_char_no_hang = global_symbols[2543];
+core::Symbol_sp& _sym_stream_write_char = global_symbols[2544];
+core::Symbol_sp& _sym_stream_write_string = global_symbols[2545];
+core::Symbol_sp& _sym_stream_terpri = global_symbols[2546];
+core::Symbol_sp& _sym_stream_fresh_line = global_symbols[2547];
+core::Symbol_sp& _sym_stream_read_sequence = global_symbols[2548];
+core::Symbol_sp& _sym_stream_write_sequence = global_symbols[2549];
+core::Symbol_sp& _sym_stream_unread_char = global_symbols[2550];
+core::Symbol_sp& _sym_stream_peek_char = global_symbols[2551];
+core::Symbol_sp& _sym_stream_listen = global_symbols[2552];
+core::Symbol_sp& _sym_streamClearInput = global_symbols[2553];
+core::Symbol_sp& _sym_stream_clear_input = global_symbols[2554];
+core::Symbol_sp& _sym_stream_clear_output = global_symbols[2555];
+core::Symbol_sp& _sym_stream_force_output = global_symbols[2556];
+core::Symbol_sp& _sym_stream_finish_output = global_symbols[2557];
+core::Symbol_sp& _sym_streamp = global_symbols[2558];
+core::Symbol_sp& _sym_input_stream_p = global_symbols[2559];
+core::Symbol_sp& _sym_output_stream_p = global_symbols[2560];
+core::Symbol_sp& _sym_stream_interactive_p = global_symbols[2561];
+core::Symbol_sp& _sym_stream_element_type = global_symbols[2562];
+core::Symbol_sp& _sym_stream_file_position = global_symbols[2563];
+core::Symbol_sp& _sym_stream_line_column = global_symbols[2564];
+core::Symbol_sp& _sym_stream_advance_to_column = global_symbols[2565];
+core::Symbol_sp& _sym_close = global_symbols[2566];
 } // namespace gray
 #endif
 #if defined(EXTERN_ALL_SYMBOLS)
@@ -5282,6 +5284,8 @@ extern core::Symbol_sp& _sym_chartreuse;
 extern core::Symbol_sp& _sym_aquamarine;
 extern core::Symbol_sp& _sym_mediumBlue;
 extern core::Symbol_sp& _sym_steelBlue;
+extern core::Symbol_sp& _sym_m;
+extern core::Symbol_sp& _sym_pnts;
 extern core::Symbol_sp& _sym_data;
 extern core::Symbol_sp& _sym_contents;
 extern core::Symbol_sp& _sym_catchFrame;
@@ -9185,3996 +9189,4002 @@ NOINLINE void maybe_allocate_one_symbol_1234_helper(core::BootStrapCoreSymbolMap
  kw::_sym_steelBlue = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("steelBlue"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1235_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_data = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("data"), true,false);
+ kw::_sym_m = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("m"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1236_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_contents = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("contents"), true,false);
+ kw::_sym_pnts = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("pnts"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1237_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_catchFrame = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("catchFrame"), true,false);
+ kw::_sym_data = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("data"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1238_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_blockFrame = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("blockFrame"), true,false);
+ kw::_sym_contents = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("contents"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1239_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_tagbodyFrame = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("tagbodyFrame"), true,false);
+ kw::_sym_catchFrame = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("catchFrame"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1240_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_landingPadFrame = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("landingPadFrame"), true,false);
+ kw::_sym_blockFrame = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("blockFrame"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1241_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_splatted = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("splatted"), true,false);
+ kw::_sym_tagbodyFrame = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("tagbodyFrame"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1242_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_unbound = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("unbound"), true,false);
+ kw::_sym_landingPadFrame = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("landingPadFrame"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1243_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_deleted = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("deleted"), true,false);
+ kw::_sym_splatted = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("splatted"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1244_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_rtld_default = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("rtld_default"), true,false);
+ kw::_sym_unbound = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("unbound"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1245_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_rtld_next = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("rtld_next"), true,false);
+ kw::_sym_deleted = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("deleted"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1246_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_rtld_self = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("rtld_self"), true,false);
+ kw::_sym_rtld_default = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("rtld_default"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1247_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_rtld_main_only = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("rtld_main_only"), true,false);
+ kw::_sym_rtld_next = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("rtld_next"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1248_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_iclass = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("iclass"), true,false);
+ kw::_sym_rtld_self = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("rtld_self"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1249_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_next = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("next"), true,false);
+ kw::_sym_rtld_main_only = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("rtld_main_only"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1250_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_prev = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("prev"), true,false);
+ kw::_sym_iclass = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("iclass"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1251_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_key = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("key"), true,false);
+ kw::_sym_next = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("next"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1252_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_defaults = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("defaults"), true,false);
+ kw::_sym_prev = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("prev"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1253_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_error = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("error"), true,false);
+ kw::_sym_key = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("key"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1254_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_link = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("link"), true,false);
+ kw::_sym_defaults = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("defaults"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1255_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_broken_link = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("broken_link"), true,false);
+ kw::_sym_error = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("error"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1256_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_special = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("special"), true,false);
+ kw::_sym_link = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("link"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1257_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_supersede = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("supersede"), true,false);
+ kw::_sym_broken_link = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("broken_link"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1258_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_calledFunction = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("calledFunction"), true,false);
+ kw::_sym_special = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("special"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1259_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_givenNumberOfArguments = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("givenNumberOfArguments"), true,false);
+ kw::_sym_supersede = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("supersede"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1260_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_requiredNumberOfArguments = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("requiredNumberOfArguments"), true,false);
+ kw::_sym_calledFunction = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("calledFunction"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1261_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_unrecognizedKeyword = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("unrecognizedKeyword"), true,false);
+ kw::_sym_givenNumberOfArguments = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("givenNumberOfArguments"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1262_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_body = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("body"), true,false);
+ kw::_sym_requiredNumberOfArguments = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("requiredNumberOfArguments"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1263_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_lambda_list_handler = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("lambda_list_handler"), true,false);
+ kw::_sym_unrecognizedKeyword = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("unrecognizedKeyword"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1264_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_docstring = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("docstring"), true,false);
+ kw::_sym_body = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("body"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1265_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_arguments = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("arguments"), true,false);
+ kw::_sym_lambda_list_handler = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("lambda_list_handler"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1266_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_create = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("create"), true,false);
+ kw::_sym_docstring = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("docstring"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1267_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_append = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("append"), true,false);
+ kw::_sym_arguments = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("arguments"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1268_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_debugStartup = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("debugStartup"), true,false);
+ kw::_sym_create = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("create"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1269_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_cclasp = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("cclasp"), true,false);
+ kw::_sym_append = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("append"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1270_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_bclasp = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("bclasp"), true,false);
+ kw::_sym_debugStartup = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("debugStartup"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1271_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_load = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("load"), true,false);
+ kw::_sym_cclasp = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("cclasp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1272_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_eval = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("eval"), true,false);
+ kw::_sym_bclasp = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("bclasp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1273_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_ecl_min = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ecl_min"), true,false);
+ kw::_sym_load = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("load"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1274_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_use_mps = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("use_mps"), true,false);
+ kw::_sym_eval = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("eval"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1275_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_use_boehmdc = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("use_boehmdc"), true,false);
+ kw::_sym_ecl_min = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ecl_min"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1276_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_use_boehm = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("use_boehm"), true,false);
+ kw::_sym_use_mps = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("use_mps"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1277_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_cr = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("cr"), true,false);
+ kw::_sym_use_boehmdc = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("use_boehmdc"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1278_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_lf = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("lf"), true,false);
+ kw::_sym_use_boehm = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("use_boehm"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1279_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_littleEndian = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("littleEndian"), true,false);
+ kw::_sym_cr = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("cr"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1280_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_bigEndian = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("bigEndian"), true,false);
+ kw::_sym_lf = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("lf"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1281_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_crlf = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("crlf"), true,false);
+ kw::_sym_littleEndian = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("littleEndian"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1282_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_latin_1 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("latin_1"), true,false);
+ kw::_sym_bigEndian = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("bigEndian"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1283_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_ucs_4 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ucs_4"), true,false);
+ kw::_sym_crlf = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("crlf"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1284_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_passThrough = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("passThrough"), true,false);
+ kw::_sym_latin_1 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("latin_1"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1285_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_if_does_not_exist = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("if_does_not_exist"), true,false);
+ kw::_sym_ucs_4 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("ucs_4"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1286_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_new_version = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("new_version"), true,false);
+ kw::_sym_passThrough = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("passThrough"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1287_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_rename = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("rename"), true,false);
+ kw::_sym_if_does_not_exist = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("if_does_not_exist"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1288_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_rename_and_delete = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("rename_and_delete"), true,false);
+ kw::_sym_new_version = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("new_version"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1289_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_overwrite = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("overwrite"), true,false);
+ kw::_sym_rename = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("rename"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1290_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_if_exists = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("if_exists"), true,false);
+ kw::_sym_rename_and_delete = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("rename_and_delete"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1291_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_probe = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("probe"), true,false);
+ kw::_sym_overwrite = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("overwrite"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1292_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_FullDebug = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("FullDebug"), true,false);
+ kw::_sym_if_exists = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("if_exists"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1293_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_LineTablesOnly = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("LineTablesOnly"), true,false);
+ kw::_sym_probe = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("probe"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1294_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym__uid = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("_uid"), true,false);
+ kw::_sym_FullDebug = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("FullDebug"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1295_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_none = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("none"), true,false);
+ kw::_sym_LineTablesOnly = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("LineTablesOnly"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1296_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_line = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("line"), true,false);
+ kw::_sym__uid = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("_uid"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1297_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_full = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("full"), true,false);
+ kw::_sym_none = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("none"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1298_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_message = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("message"), true,false);
+ kw::_sym_line = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("line"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1299_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_line_buffered = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("line_buffered"), true,false);
+ kw::_sym_full = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("full"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1300_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_fully_buffered = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("fully_buffered"), true,false);
+ kw::_sym_message = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("message"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1301_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_array = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("array"), true,false);
+ kw::_sym_line_buffered = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("line_buffered"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1302_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_UnsignedByte = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("UnsignedByte"), true,false);
+ kw::_sym_fully_buffered = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("fully_buffered"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1303_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_test = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("test"), true,false);
+ kw::_sym_array = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("array"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1304_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_junkAllowed = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("junkAllowed"), true,false);
+ kw::_sym_UnsignedByte = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("UnsignedByte"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1305_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_absolute = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("absolute"), true,false);
+ kw::_sym_test = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("test"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1306_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_relative = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("relative"), true,false);
+ kw::_sym_junkAllowed = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("junkAllowed"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1307_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_back = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("back"), true,false);
+ kw::_sym_absolute = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("absolute"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1308_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_operation = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("operation"), true,false);
+ kw::_sym_relative = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("relative"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1309_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_operands = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("operands"), true,false);
+ kw::_sym_back = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("back"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1310_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_escape = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("escape"), true,false);
+ kw::_sym_operation = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("operation"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1311_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_capitalize = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("capitalize"), true,false);
+ kw::_sym_operands = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("operands"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1312_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_typeError = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("typeError"), true,false);
+ kw::_sym_escape = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("escape"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1313_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_datum = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("datum"), true,false);
+ kw::_sym_capitalize = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("capitalize"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1314_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_expectedType = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("expectedType"), true,false);
+ kw::_sym_typeError = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("typeError"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1315_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_print = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("print"), true,false);
+ kw::_sym_datum = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("datum"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1316_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_pathname = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("pathname"), true,false);
+ kw::_sym_expectedType = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("expectedType"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1317_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_object = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("object"), true,false);
+ kw::_sym_print = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("print"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1318_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_formatControl = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("formatControl"), true,false);
+ kw::_sym_pathname = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("pathname"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1319_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_formatArguments = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("formatArguments"), true,false);
+ kw::_sym_object = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("object"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1320_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_stream = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("stream"), true,false);
+ kw::_sym_formatControl = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("formatControl"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1321_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_package = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("package"), true,false);
+ kw::_sym_formatArguments = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("formatArguments"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1322_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_compile_toplevel = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("compile_toplevel"), true,false);
+ kw::_sym_stream = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1323_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_load_toplevel = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("load_toplevel"), true,false);
+ kw::_sym_package = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("package"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1324_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_execute = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("execute"), true,false);
+ kw::_sym_compile_toplevel = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("compile_toplevel"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1325_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_allow_other_keys = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("allow_other_keys"), true,false);
+ kw::_sym_load_toplevel = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("load_toplevel"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1326_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_macro = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("macro"), true,false);
+ kw::_sym_execute = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("execute"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1327_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_function = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("function"), true,false);
+ kw::_sym_allow_other_keys = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("allow_other_keys"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1328_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_invalid_character = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("invalid_character"), true,false);
+ kw::_sym_macro = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("macro"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1329_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_brcl = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("brcl"), true,false);
+ kw::_sym_function = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("function"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1330_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_not = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("not"), true,false);
+ kw::_sym_invalid_character = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("invalid_character"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1331_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_and = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("and"), true,false);
+ kw::_sym_brcl = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("brcl"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1332_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_or = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("or"), true,false);
+ kw::_sym_not = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("not"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1333_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_class = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("class"), true,false);
+ kw::_sym_and = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("and"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1334_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_instance = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("instance"), true,false);
+ kw::_sym_or = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("or"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1335_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_output = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("output"), true,false);
+ kw::_sym_class = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("class"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1336_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_input = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("input"), true,false);
+ kw::_sym_instance = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("instance"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1337_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_io = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("io"), true,false);
+ kw::_sym_output = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("output"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1338_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_default = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("default"), true,false);
+ kw::_sym_input = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("input"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1339_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_internal = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("internal"), true,false);
+ kw::_sym_io = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("io"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1340_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_external = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("external"), true,false);
+ kw::_sym_default = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("default"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1341_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_inherited = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("inherited"), true,false);
+ kw::_sym_internal = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("internal"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1342_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_debug = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("debug"), true,false);
+ kw::_sym_external = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("external"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1343_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_direct_super_classes = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("direct_super_classes"), true,false);
+ kw::_sym_inherited = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("inherited"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1344_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_name = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("name"), true,false);
+ kw::_sym_debug = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("debug"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1345_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_changed = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("changed"), true,false);
+ kw::_sym_direct_super_classes = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("direct_super_classes"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1346_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_address_model_64 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("address_model_64"), true,false);
+ kw::_sym_name = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("name"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1347_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_target_os_darwin = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("target_os_darwin"), true,false);
+ kw::_sym_changed = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("changed"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1348_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_podSymbolMap = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("podSymbolMap"), true,false);
+ kw::_sym_address_model_64 = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("address_model_64"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1349_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_constituent_character = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("constituent_character"), true,false);
+ kw::_sym_target_os_darwin = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("target_os_darwin"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1350_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_syntax = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("syntax"), true,false);
+ kw::_sym_podSymbolMap = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("podSymbolMap"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1351_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_whitespace_character = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("whitespace_character"), true,false);
+ kw::_sym_constituent_character = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("constituent_character"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1352_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_single_escape_character = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("single_escape_character"), true,false);
+ kw::_sym_syntax = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("syntax"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1353_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_multiple_escape_character = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("multiple_escape_character"), true,false);
+ kw::_sym_whitespace_character = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("whitespace_character"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1354_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_upcase = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("upcase"), true,false);
+ kw::_sym_single_escape_character = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("single_escape_character"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1355_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_downcase = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("downcase"), true,false);
+ kw::_sym_multiple_escape_character = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("multiple_escape_character"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1356_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_preserve = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("preserve"), true,false);
+ kw::_sym_upcase = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("upcase"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1357_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_invert = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("invert"), true,false);
+ kw::_sym_downcase = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("downcase"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1358_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_non_terminating_macro_character = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("non_terminating_macro_character"), true,false);
+ kw::_sym_preserve = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("preserve"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1359_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_terminating_macro_character = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("terminating_macro_character"), true,false);
+ kw::_sym_invert = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("invert"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1360_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_macro_function = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("macro_function"), true,false);
+ kw::_sym_non_terminating_macro_character = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("non_terminating_macro_character"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1361_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_case = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("case"), true,false);
+ kw::_sym_terminating_macro_character = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("terminating_macro_character"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1362_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_file = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("file"), true,false);
+ kw::_sym_macro_function = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("macro_function"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1363_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_unspecific = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("unspecific"), true,false);
+ kw::_sym_case = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("case"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1364_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_local = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("local"), true,false);
+ kw::_sym_file = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("file"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1365_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_common = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("common"), true,false);
+ kw::_sym_unspecific = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("unspecific"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1366_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_wild_inferiors = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("wild_inferiors"), true,false);
+ kw::_sym_local = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("local"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1367_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_up = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("up"), true,false);
+ kw::_sym_common = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("common"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1368_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_wild = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("wild"), true,false);
+ kw::_sym_wild_inferiors = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("wild_inferiors"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1369_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_host = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("host"), true,false);
+ kw::_sym_up = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("up"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1370_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_device = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("device"), true,false);
+ kw::_sym_wild = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("wild"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1371_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_type = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("type"), true,false);
+ kw::_sym_host = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("host"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1372_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_newest = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("newest"), true,false);
+ kw::_sym_device = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("device"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1373_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_version = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("version"), true,false);
+ kw::_sym_type = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("type"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1374_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_directory = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("directory"), true,false);
+ kw::_sym_newest = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("newest"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1375_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_supplied = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("supplied"), true,false);
+ kw::_sym_version = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("version"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1376_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_min = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("min"), true,false);
+ kw::_sym_directory = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("directory"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1377_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_max = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("max"), true,false);
+ kw::_sym_supplied = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("supplied"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1378_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_eof = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("eof"), true,false);
+ kw::_sym_min = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("min"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1379_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_fillPointer = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("fillPointer"), true,false);
+ kw::_sym_max = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("max"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1380_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_elementType = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("elementType"), true,false);
+ kw::_sym_eof = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("eof"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1381_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_adjustable = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("adjustable"), true,false);
+ kw::_sym_fillPointer = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("fillPointer"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1382_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_start = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("start"), true,false);
+ kw::_sym_elementType = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("elementType"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1383_helper(core::BootStrapCoreSymbolMap* symbols) {
- kw::_sym_end = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("end"), true,false);
+ kw::_sym_adjustable = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("adjustable"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1384_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARwatchDynamicBindingStackSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARwatchDynamicBindingStackSTAR"), true,false);
+ kw::_sym_start = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("start"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1385_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_symbolMacro = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("symbolMacro"), false,false);
+ kw::_sym_end = symbols->maybe_allocate_unique_symbol("KEYWORD",core::lispify_symbol_name("end"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1386_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_whole = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("whole"), false,false);
+ core::_sym_STARwatchDynamicBindingStackSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARwatchDynamicBindingStackSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1387_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_env = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("env"), false,false);
+ core::_sym_symbolMacro = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("symbolMacro"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1388_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_processDeclarations = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("processDeclarations"), false,false);
+ core::_sym_whole = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("whole"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1389_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_evaluateVerbosity = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("evaluateVerbosity"), false,false);
+ core::_sym_env = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("env"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1390_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_evaluateDepth = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("evaluateDepth"), false,false);
+ core::_sym_processDeclarations = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("processDeclarations"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1391_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_classifyLetVariablesAndDeclares = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("classifyLetVariablesAndDeclares"), false,false);
+ core::_sym_evaluateVerbosity = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("evaluateVerbosity"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1392_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STAReval_with_env_hookSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STAReval_with_env_hookSTAR"), true,false);
+ core::_sym_evaluateDepth = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("evaluateDepth"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1393_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_eval_with_env_default = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("eval_with_env_default"), true,false);
+ core::_sym_classifyLetVariablesAndDeclares = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("classifyLetVariablesAndDeclares"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1394_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_dlopen = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("dlopen"), false,false);
+ core::_sym_STAReval_with_env_hookSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STAReval_with_env_hookSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1395_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_dlsym = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("dlsym"), false,false);
+ core::_sym_eval_with_env_default = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("eval_with_env_default"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1396_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_dladdr = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("dladdr"), false,false);
+ core::_sym_dlopen = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("dlopen"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1397_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_callWithVariableBound = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("callWithVariableBound"), true,false);
+ core::_sym_dlsym = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("dlsym"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1398_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_instanceClassSet = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("instanceClassSet"), true,false);
+ core::_sym_dladdr = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("dladdr"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1399_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_intrusiveReferenceCountedPointer = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("intrusiveReferenceCountedPointer"), false,false);
+ core::_sym_callWithVariableBound = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("callWithVariableBound"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1400_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sharedReferenceCountedPointer = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharedReferenceCountedPointer"), false,false);
+ core::_sym_instanceClassSet = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("instanceClassSet"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1401_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_mpsGarbageCollection = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("mpsGarbageCollection"), false,false);
+ core::_sym_intrusiveReferenceCountedPointer = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("intrusiveReferenceCountedPointer"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1402_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_makeInvocationHistoryFrameIterator = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("makeInvocationHistoryFrameIterator"), false,false);
+ core::_sym_sharedReferenceCountedPointer = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharedReferenceCountedPointer"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1403_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARbacktraceFrameSelectorHookSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbacktraceFrameSelectorHookSTAR"), true,false);
+ core::_sym_mpsGarbageCollection = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("mpsGarbageCollection"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1404_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_smartPointerDetails = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("smartPointerDetails"), false,false);
+ core::_sym_makeInvocationHistoryFrameIterator = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("makeInvocationHistoryFrameIterator"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1405_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_unbound = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("unbound"), false,false);
+ core::_sym_STARbacktraceFrameSelectorHookSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbacktraceFrameSelectorHookSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1406_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_mapappend = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("mapappend"), false,false);
+ core::_sym_smartPointerDetails = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("smartPointerDetails"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1407_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_macroexpand_default = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("macroexpand_default"), false,false);
+ core::_sym_unbound = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("unbound"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1408_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sequence_start_end = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sequence_start_end"), false,false);
+ core::_sym_mapappend = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("mapappend"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1409_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_type_to_symbol = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("type_to_symbol"), false,false);
+ core::_sym_macroexpand_default = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("macroexpand_default"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1410_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_gdb = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("gdb"), false,false);
+ core::_sym_sequence_start_end = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sequence_start_end"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1411_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_gdbInspect = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("gdbInspect"), false,false);
+ core::_sym_type_to_symbol = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("type_to_symbol"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1412_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_separatePairList = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("separatePairList"), false,false);
+ core::_sym_gdb = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("gdb"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1413_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_testMemoryError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("testMemoryError"), false,false);
+ core::_sym_gdbInspect = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("gdbInspect"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1414_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_functionBlockName = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("functionBlockName"), false,false);
+ core::_sym_separatePairList = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("separatePairList"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1415_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_validFunctionNameP = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("validFunctionNameP"), false,false);
+ core::_sym_testMemoryError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("testMemoryError"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1416_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_pointer = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("pointer"), true,false);
+ core::_sym_functionBlockName = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("functionBlockName"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1417_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_toTaggedFixnum = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("toTaggedFixnum"), true,false);
+ core::_sym_validFunctionNameP = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("validFunctionNameP"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1418_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_fromTaggedFixnum = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("fromTaggedFixnum"), true,false);
+ core::_sym_pointer = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("pointer"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1419_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_dumpTaggedFixnum = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("dumpTaggedFixnum"), true,false);
+ core::_sym_toTaggedFixnum = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("toTaggedFixnum"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1420_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_ihsBacktrace = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ihsBacktrace"), false,false);
+ core::_sym_fromTaggedFixnum = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("fromTaggedFixnum"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1421_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_ihsTop = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ihsTop"), false,false);
+ core::_sym_dumpTaggedFixnum = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("dumpTaggedFixnum"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1422_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_ihsPrev = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ihsPrev"), false,false);
+ core::_sym_ihsBacktrace = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ihsBacktrace"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1423_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_ihsNext = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ihsNext"), false,false);
+ core::_sym_ihsTop = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ihsTop"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1424_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_ihsFun = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ihsFun"), false,false);
+ core::_sym_ihsPrev = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ihsPrev"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1425_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_ihsEnv = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ihsEnv"), false,false);
+ core::_sym_ihsNext = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ihsNext"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1426_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_bdsTop = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("bdsTop"), false,false);
+ core::_sym_ihsFun = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ihsFun"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1427_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_bdsVar = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("bdsVar"), false,false);
+ core::_sym_ihsEnv = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ihsEnv"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1428_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_bdsVal = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("bdsVal"), false,false);
+ core::_sym_bdsTop = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("bdsTop"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1429_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_theClibBacktraceFunctionSymbol = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("theClibBacktraceFunctionSymbol"), true,false);
+ core::_sym_bdsVar = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("bdsVar"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1430_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_printCurrentIhsFrameEnvironment = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("printCurrentIhsFrameEnvironment"), true,false);
+ core::_sym_bdsVal = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("bdsVal"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1431_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_rehash_size = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("rehash_size"), true,false);
+ core::_sym_theClibBacktraceFunctionSymbol = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("theClibBacktraceFunctionSymbol"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1432_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_rehash_threshold = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("rehash_threshold"), true,false);
+ core::_sym_printCurrentIhsFrameEnvironment = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("printCurrentIhsFrameEnvironment"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1433_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_data = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("data"), true,false);
+ core::_sym_rehash_size = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("rehash_size"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1434_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_hash_eql = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("hash_eql"), false,false);
+ core::_sym_rehash_threshold = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("rehash_threshold"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1435_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_hash_equal = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("hash_equal"), false,false);
+ core::_sym_data = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("data"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1436_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_hash_equalp = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("hash_equalp"), false,false);
+ core::_sym_hash_eql = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("hash_eql"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1437_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_fixnum_number_of_bits = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("fixnum_number_of_bits"), false,false);
+ core::_sym_hash_equal = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("hash_equal"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1438_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_log1p = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("log1p"), true,false);
+ core::_sym_hash_equalp = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("hash_equalp"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1439_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_integer_divide = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("integer_divide"), true,false);
+ core::_sym_fixnum_number_of_bits = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("fixnum_number_of_bits"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1440_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_integerToString = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("integerToString"), true,false);
+ core::_sym_log1p = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("log1p"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1441_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_printUnreadableObjectFunction = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("printUnreadableObjectFunction"), true,false);
+ core::_sym_integer_divide = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("integer_divide"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1442_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_walkToFindSourceInfo = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("walkToFindSourceInfo"), true,false);
+ core::_sym_integerToString = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("integerToString"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1443_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_lookupSourceFileInfo = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("lookupSourceFileInfo"), true,false);
+ core::_sym_printUnreadableObjectFunction = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("printUnreadableObjectFunction"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1444_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARmonitorRegisterSourceInfoSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARmonitorRegisterSourceInfoSTAR"), true,false);
+ core::_sym_walkToFindSourceInfo = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("walkToFindSourceInfo"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1445_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_currentDir = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("currentDir"), true,false);
+ core::_sym_lookupSourceFileInfo = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("lookupSourceFileInfo"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1446_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_file_kind = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("file_kind"), true,false);
+ core::_sym_STARmonitorRegisterSourceInfoSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARmonitorRegisterSourceInfoSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1447_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_environmentActivationFrame = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("environmentActivationFrame"), false,false);
+ core::_sym_currentDir = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("currentDir"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1448_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_currentVisibleEnvironment = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("currentVisibleEnvironment"), false,false);
+ core::_sym_file_kind = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("file_kind"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1449_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_runtimeEnvironment = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("runtimeEnvironment"), false,false);
+ core::_sym_environmentActivationFrame = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("environmentActivationFrame"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1450_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_environmentList = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("environmentList"), false,false);
+ core::_sym_currentVisibleEnvironment = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("currentVisibleEnvironment"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1451_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_environmentTypeList = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("environmentTypeList"), false,false);
+ core::_sym_runtimeEnvironment = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("runtimeEnvironment"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1452_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_environmentId = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("environmentId"), false,false);
+ core::_sym_environmentList = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("environmentList"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1453_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_singleDispatchWrongNumberArgumentsError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("singleDispatchWrongNumberArgumentsError"), false,false);
+ core::_sym_environmentTypeList = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("environmentTypeList"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1454_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_singleDispatchTooManyArgumentsError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("singleDispatchTooManyArgumentsError"), false,false);
+ core::_sym_environmentId = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("environmentId"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1455_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_singleDispatchBadLambdaListError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("singleDispatchBadLambdaListError"), false,false);
+ core::_sym_singleDispatchWrongNumberArgumentsError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("singleDispatchWrongNumberArgumentsError"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1456_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_singleDispatchMissingDispatchArgumentError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("singleDispatchMissingDispatchArgumentError"), false,false);
+ core::_sym_singleDispatchTooManyArgumentsError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("singleDispatchTooManyArgumentsError"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1457_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_tooFewArguments = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("tooFewArguments"), false,false);
+ core::_sym_singleDispatchBadLambdaListError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("singleDispatchBadLambdaListError"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1458_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_process_macro_lambda_list = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("process_macro_lambda_list"), false,false);
+ core::_sym_singleDispatchMissingDispatchArgumentError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("singleDispatchMissingDispatchArgumentError"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1459_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_process_single_dispatch_lambda_list = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("process_single_dispatch_lambda_list"), false,false);
+ core::_sym_tooFewArguments = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("tooFewArguments"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1460_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_makeLambdaListHandler = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("makeLambdaListHandler"), false,false);
+ core::_sym_process_macro_lambda_list = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("process_macro_lambda_list"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1461_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_processLambdaList = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("processLambdaList"), false,false);
+ core::_sym_process_single_dispatch_lambda_list = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("process_single_dispatch_lambda_list"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1462_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_dispatchTable = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("dispatchTable"), true,false);
+ core::_sym_makeLambdaListHandler = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("makeLambdaListHandler"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1463_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_fileColumn = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("fileColumn"), true,false);
+ core::_sym_processLambdaList = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("processLambdaList"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1464_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_makeStringOutputStreamFromString = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("makeStringOutputStreamFromString"), true,false);
+ core::_sym_dispatchTable = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("dispatchTable"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1465_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_do_write_sequence = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("do_write_sequence"), true,false);
+ core::_sym_fileColumn = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("fileColumn"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1466_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_streamLinenumber = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("streamLinenumber"), true,false);
+ core::_sym_makeStringOutputStreamFromString = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("makeStringOutputStreamFromString"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1467_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_streamColumn = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("streamColumn"), true,false);
+ core::_sym_do_write_sequence = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("do_write_sequence"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1468_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_single_dispatch_method = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("single_dispatch_method"), true,false);
+ core::_sym_streamLinenumber = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("streamLinenumber"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1469_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_setf_documentation = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("setf_documentation"), true,false);
+ core::_sym_streamColumn = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("streamColumn"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1470_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARcxxDocumentationSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcxxDocumentationSTAR"), true,false);
+ core::_sym_single_dispatch_method = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("single_dispatch_method"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1471_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_topLevel = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("topLevel"), true,false);
+ core::_sym_setf_documentation = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("setf_documentation"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1472_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_scharSet = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("scharSet"), true,false);
+ core::_sym_STARcxxDocumentationSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcxxDocumentationSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1473_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARuseInterpreterForEvalSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARuseInterpreterForEvalSTAR"), true,false);
+ core::_sym_topLevel = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("topLevel"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1474_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARnotify_on_compileSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARnotify_on_compileSTAR"), true,false);
+ core::_sym_scharSet = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("scharSet"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1475_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARtrace_startupSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARtrace_startupSTAR"), true,false);
+ core::_sym_STARuseInterpreterForEvalSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARuseInterpreterForEvalSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1476_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARdebugInterpretedClosureSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdebugInterpretedClosureSTAR"), true,false);
+ core::_sym_STARnotify_on_compileSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARnotify_on_compileSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1477_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARdebugFlowControlSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdebugFlowControlSTAR"), true,false);
+ core::_sym_STARtrace_startupSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARtrace_startupSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1478_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARdebugStartupSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdebugStartupSTAR"), true,false);
+ core::_sym_STARdebugInterpretedClosureSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdebugInterpretedClosureSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1479_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym__BANG_unbound_BANG_ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("_BANG_unbound_BANG_"), true,false);
+ core::_sym_STARdebugFlowControlSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdebugFlowControlSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1480_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_bitArrayOp = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("bitArrayOp"), true,false);
+ core::_sym_STARdebugStartupSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdebugStartupSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1481_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_lambdaName = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("lambdaName"), true,false);
+ core::_sym__BANG_unbound_BANG_ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("_BANG_unbound_BANG_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1482_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_printf = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("printf"), false,false);
+ core::_sym_bitArrayOp = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("bitArrayOp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1483_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_asin = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("asin"), true,false);
+ core::_sym_lambdaName = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("lambdaName"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1484_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_asinh = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("asinh"), true,false);
+ core::_sym_printf = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("printf"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1485_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_acos = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("acos"), true,false);
+ core::_sym_asin = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("asin"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1486_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_acosh = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("acosh"), true,false);
+ core::_sym_asinh = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("asinh"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1487_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_atanh = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("atanh"), true,false);
+ core::_sym_acos = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("acos"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1488_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARpollTicksPerGcSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARpollTicksPerGcSTAR"), true,false);
+ core::_sym_acosh = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("acosh"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1489_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym__PLUS_standardReadtable_PLUS_ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("_PLUS_standardReadtable_PLUS_"), true,false);
+ core::_sym_atanh = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("atanh"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1490_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_closedStream = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("closedStream"), true,false);
+ core::_sym_STARpollTicksPerGcSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARpollTicksPerGcSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1491_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym__PLUS_numberOfFixedArguments_PLUS_ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("_PLUS_numberOfFixedArguments_PLUS_"), true,false);
+ core::_sym__PLUS_standardReadtable_PLUS_ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("_PLUS_standardReadtable_PLUS_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1492_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARinterpreterTraceSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARinterpreterTraceSTAR"), true,false);
+ core::_sym_closedStream = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("closedStream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1493_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARdebugLoadTimeValuesSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdebugLoadTimeValuesSTAR"), true,false);
+ core::_sym__PLUS_numberOfFixedArguments_PLUS_ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("_PLUS_numberOfFixedArguments_PLUS_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1494_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARdebugEvalSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdebugEvalSTAR"), true,false);
+ core::_sym_STARinterpreterTraceSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARinterpreterTraceSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1495_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARdebugInterpretedFunctionsSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdebugInterpretedFunctionsSTAR"), true,false);
+ core::_sym_STARdebugLoadTimeValuesSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdebugLoadTimeValuesSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1496_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARdebugMonitorSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdebugMonitorSTAR"), false,false);
+ core::_sym_STARdebugEvalSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdebugEvalSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1497_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_monitorReader = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("monitorReader"), false,false);
+ core::_sym_STARdebugInterpretedFunctionsSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdebugInterpretedFunctionsSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1498_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_tsp = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("tsp"), true,false);
+ core::_sym_STARdebugMonitorSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdebugMonitorSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1499_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_tmv = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("tmv"), true,false);
+ core::_sym_monitorReader = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("monitorReader"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1500_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_invocationHistoryFrame = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("invocationHistoryFrame"), true,false);
+ core::_sym_tsp = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("tsp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1501_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_size_t = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("size_t"), true,false);
+ core::_sym_tmv = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("tmv"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1502_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_threadInfo = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("threadInfo"), true,false);
+ core::_sym_invocationHistoryFrame = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("invocationHistoryFrame"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1503_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_circle_subst = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("circle_subst"), true,false);
+ core::_sym_size_t = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("size_t"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1504_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARsourceDatabaseSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARsourceDatabaseSTAR"), true,false);
+ core::_sym_threadInfo = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("threadInfo"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1505_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARstartRunTimeSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARstartRunTimeSTAR"), true,false);
+ core::_sym_circle_subst = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("circle_subst"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1506_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARcommandLineLoadSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcommandLineLoadSTAR"), true,false);
+ core::_sym_STARsourceDatabaseSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARsourceDatabaseSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1507_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARihsCurrentSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARihsCurrentSTAR"), true,false);
+ core::_sym_STARstartRunTimeSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARstartRunTimeSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1508_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARllvmFunctionNameHookSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARllvmFunctionNameHookSTAR"), true,false);
+ core::_sym_STARcommandLineLoadSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcommandLineLoadSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1509_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARtopLevelCommandHookSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARtopLevelCommandHookSTAR"), true,false);
+ core::_sym_STARihsCurrentSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARihsCurrentSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1510_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARloadSearchListSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARloadSearchListSTAR"), true,false);
+ core::_sym_STARllvmFunctionNameHookSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARllvmFunctionNameHookSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1511_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_loadBitcode = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("loadBitcode"), true,false);
+ core::_sym_STARtopLevelCommandHookSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARtopLevelCommandHookSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1512_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_loadSource = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("loadSource"), true,false);
+ core::_sym_STARloadSearchListSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARloadSearchListSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1513_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_loadBundle = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("loadBundle"), true,false);
+ core::_sym_loadBitcode = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("loadBitcode"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1514_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARallCxxClassesSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARallCxxClassesSTAR"), true,false);
+ core::_sym_loadSource = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("loadSource"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1515_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_simpleProgramError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("simpleProgramError"), true,false);
+ core::_sym_loadBundle = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("loadBundle"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1516_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARdebugReaderSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdebugReaderSTAR"), true,false);
+ core::_sym_STARallCxxClassesSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARallCxxClassesSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1517_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARenablePrintPrettySTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARenablePrintPrettySTAR"), true,false);
+ core::_sym_simpleProgramError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("simpleProgramError"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1518_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARcircle_counterSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcircle_counterSTAR"), true,false);
+ core::_sym_STARdebugReaderSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdebugReaderSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1519_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARcircle_stackSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcircle_stackSTAR"), true,false);
+ core::_sym_STARenablePrintPrettySTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARenablePrintPrettySTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1520_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_dynamicGo = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("dynamicGo"), true,false);
+ core::_sym_STARcircle_counterSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcircle_counterSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1521_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_localGo = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("localGo"), true,false);
+ core::_sym_STARcircle_stackSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcircle_stackSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1522_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym__PLUS_ecl_syntax_progv_list_PLUS_ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("_PLUS_ecl_syntax_progv_list_PLUS_"), true,false);
+ core::_sym_dynamicGo = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("dynamicGo"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1523_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym__PLUS_io_syntax_progv_list_PLUS_ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("_PLUS_io_syntax_progv_list_PLUS_"), true,false);
+ core::_sym_localGo = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("localGo"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1524_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARprintPackageSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARprintPackageSTAR"), false,false);
+ core::_sym__PLUS_ecl_syntax_progv_list_PLUS_ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("_PLUS_ecl_syntax_progv_list_PLUS_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1525_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARsharpEqContextSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARsharpEqContextSTAR"), false,false);
+ core::_sym__PLUS_io_syntax_progv_list_PLUS_ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("_PLUS_io_syntax_progv_list_PLUS_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1526_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARcircleCounterSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcircleCounterSTAR"), true,false);
+ core::_sym_STARprintPackageSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARprintPackageSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1527_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARnestedErrorDepthSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARnestedErrorDepthSTAR"), false,false);
+ core::_sym_STARsharpEqContextSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARsharpEqContextSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1528_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_setThrowPosition = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("setThrowPosition"), false,false);
+ core::_sym_STARcircleCounterSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcircleCounterSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1529_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_tooFewArgumentsError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("tooFewArgumentsError"), true,false);
+ core::_sym_STARnestedErrorDepthSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARnestedErrorDepthSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1530_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_tooManyArgumentsError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("tooManyArgumentsError"), true,false);
+ core::_sym_setThrowPosition = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("setThrowPosition"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1531_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_unrecognizedKeywordArgumentError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("unrecognizedKeywordArgumentError"), false,false);
+ core::_sym_tooFewArgumentsError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("tooFewArgumentsError"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1532_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_invalidKeywordArgumentError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("invalidKeywordArgumentError"), false,false);
+ core::_sym_tooManyArgumentsError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("tooManyArgumentsError"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1533_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym__PLUS_llvmTargetTriple_PLUS_ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("_PLUS_llvmTargetTriple_PLUS_"), false,false);
+ core::_sym_unrecognizedKeywordArgumentError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("unrecognizedKeywordArgumentError"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1534_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym__PLUS_executableName_PLUS_ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("_PLUS_executableName_PLUS_"), false,false);
+ core::_sym_invalidKeywordArgumentError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("invalidKeywordArgumentError"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1535_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARcodeWalkerSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcodeWalkerSTAR"), true,false);
+ core::_sym__PLUS_llvmTargetTriple_PLUS_ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("_PLUS_llvmTargetTriple_PLUS_"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1536_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARcurrentSourceFileInfoSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcurrentSourceFileInfoSTAR"), true,false);
+ core::_sym__PLUS_executableName_PLUS_ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("_PLUS_executableName_PLUS_"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1537_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARcurrentSourcePosInfoSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcurrentSourcePosInfoSTAR"), true,false);
+ core::_sym_STARcodeWalkerSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcodeWalkerSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1538_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARdebugMacroexpandSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdebugMacroexpandSTAR"), false,false);
+ core::_sym_STARcurrentSourceFileInfoSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcurrentSourceFileInfoSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1539_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARenvironmentPrintingTabSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARenvironmentPrintingTabSTAR"), false,false);
+ core::_sym_STARcurrentSourcePosInfoSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcurrentSourcePosInfoSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1540_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARenvironmentPrintingTabIncrementSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARenvironmentPrintingTabIncrementSTAR"), false,false);
+ core::_sym_STARdebugMacroexpandSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdebugMacroexpandSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1541_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym__PLUS_activationFrameNil_PLUS_ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("_PLUS_activationFrameNil_PLUS_"), false,false);
+ core::_sym_STARenvironmentPrintingTabSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARenvironmentPrintingTabSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1542_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_parse_macro = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("parse_macro"), false,false);
+ core::_sym_STARenvironmentPrintingTabIncrementSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARenvironmentPrintingTabIncrementSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1543_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_globalFunction = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("globalFunction"), false,false);
+ core::_sym__PLUS_activationFrameNil_PLUS_ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("_PLUS_activationFrameNil_PLUS_"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1544_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_globalSetfFunction = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("globalSetfFunction"), false,false);
+ core::_sym_parse_macro = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("parse_macro"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1545_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_lexicalFunction = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("lexicalFunction"), false,false);
+ core::_sym_globalFunction = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("globalFunction"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1546_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_declaredSpecial = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("declaredSpecial"), false,false);
+ core::_sym_globalSetfFunction = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("globalSetfFunction"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1547_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_lexical = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("lexical"), false,false);
+ core::_sym_lexicalFunction = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("lexicalFunction"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1548_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARsystem_defsetf_update_functionsSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARsystem_defsetf_update_functionsSTAR"), false,false);
+ core::_sym_declaredSpecial = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("declaredSpecial"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1549_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARbackquote_expand_hookSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbackquote_expand_hookSTAR"), false,false);
+ core::_sym_lexical = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("lexical"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1550_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_single_dispatch_on = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("single_dispatch_on"), false,false);
+ core::_sym_STARsystem_defsetf_update_functionsSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARsystem_defsetf_update_functionsSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1551_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARdocumentation_poolSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdocumentation_poolSTAR"), false,false);
+ core::_sym_STARbackquote_expand_hookSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbackquote_expand_hookSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1552_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARexecutable_nameSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARexecutable_nameSTAR"), false,false);
+ core::_sym_single_dispatch_on = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("single_dispatch_on"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1553_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_generic = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("generic"), false,false);
+ core::_sym_STARdocumentation_poolSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdocumentation_poolSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1554_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_DOT = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("DOT"), false,false);
+ core::_sym_STARexecutable_nameSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARexecutable_nameSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1555_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_AMPva_rest = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("AMPva_rest"), true,false);
+ core::_sym_generic = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("generic"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1556_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_anonymous = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("anonymous"), false,false);
+ core::_sym_DOT = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("DOT"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1557_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_macro = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("macro"), false,false);
+ core::_sym_AMPva_rest = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("AMPva_rest"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1558_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARdocumentation_databaseSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdocumentation_databaseSTAR"), false,false);
+ core::_sym_anonymous = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("anonymous"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1559_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym___init__ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("__init__"), false,false);
+ core::_sym_macro = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("macro"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1560_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_input_stream_designator = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("input_stream_designator"), false,false);
+ core::_sym_STARdocumentation_databaseSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARdocumentation_databaseSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1561_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARprint_source_code_consSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARprint_source_code_consSTAR"), false,false);
+ core::_sym___init__ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("__init__"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1562_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARechoReplReadSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARechoReplReadSTAR"), false,false);
+ core::_sym_input_stream_designator = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("input_stream_designator"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1563_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_eof_error_p = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("eof_error_p"), false,false);
+ core::_sym_STARprint_source_code_consSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARprint_source_code_consSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1564_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_eof_value = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("eof_value"), false,false);
+ core::_sym_STARechoReplReadSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARechoReplReadSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1565_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_start = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("start"), false,false);
+ core::_sym_eof_error_p = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("eof_error_p"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1566_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_end = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("end"), false,false);
+ core::_sym_eof_value = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("eof_value"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1567_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_preserve_whitespace = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("preserve_whitespace"), false,false);
+ core::_sym_start = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("start"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1568_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_io = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("io"), false,false);
+ core::_sym_end = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("end"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1569_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_probe = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("probe"), false,false);
+ core::_sym_preserve_whitespace = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("preserve_whitespace"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1570_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_newVersion = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("newVersion"), false,false);
+ core::_sym_io = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("io"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1571_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_renameAndDelete = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("renameAndDelete"), false,false);
+ core::_sym_probe = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("probe"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1572_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_overwrite = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("overwrite"), false,false);
+ core::_sym_newVersion = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("newVersion"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1573_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_supersede = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("supersede"), false,false);
+ core::_sym_renameAndDelete = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("renameAndDelete"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1574_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_create = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("create"), false,false);
+ core::_sym_overwrite = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("overwrite"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1575_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_input_stream = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("input_stream"), false,false);
+ core::_sym_supersede = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("supersede"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1576_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_recursive_p = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("recursive_p"), false,false);
+ core::_sym_create = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("create"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1577_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_dimensions = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("dimensions"), false,false);
+ core::_sym_input_stream = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("input_stream"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1578_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_element_type = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("element_type"), false,false);
+ core::_sym_recursive_p = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("recursive_p"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1579_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_initial_element = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("initial_element"), false,false);
+ core::_sym_dimensions = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("dimensions"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1580_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_adjustable = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("adjustable"), false,false);
+ core::_sym_element_type = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("element_type"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1581_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_object = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("object"), false,false);
+ core::_sym_initial_element = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("initial_element"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1582_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_okey = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("okey"), false,false);
+ core::_sym_adjustable = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("adjustable"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1583_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_default = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("default"), false,false);
+ core::_sym_object = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("object"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1584_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_dot = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("dot"), false,false);
+ core::_sym_okey = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("okey"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1585_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_ifDoesNotExist = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ifDoesNotExist"), false,false);
+ core::_sym_default = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("default"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1586_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_symbolMacroletLambda = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("symbolMacroletLambda"), true,false);
+ core::_sym_dot = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("dot"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1587_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_lambda_with_handler = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("lambda_with_handler"), false,false);
+ core::_sym_ifDoesNotExist = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ifDoesNotExist"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1588_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_color = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("color"), false,false);
+ core::_sym_symbolMacroletLambda = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("symbolMacroletLambda"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1589_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_foreach = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("foreach"), false,false);
+ core::_sym_lambda_with_handler = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("lambda_with_handler"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1590_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARPATHSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARPATHSTAR"), false,false);
+ core::_sym_color = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("color"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1591_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARargsSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARargsSTAR"), false,false);
+ core::_sym_foreach = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("foreach"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1592_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARcurrent_working_directorySTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcurrent_working_directorySTAR"), false,false);
+ core::_sym_STARPATHSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARPATHSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1593_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_backquote = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote"), false,false);
+ core::_sym_STARargsSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARargsSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1594_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_double_backquote = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("double_backquote"), false,false);
+ core::_sym_STARcurrent_working_directorySTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcurrent_working_directorySTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1595_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_unquote = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("unquote"), false,false);
+ core::_sym_backquote = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1596_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_unquote_splice = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("unquote_splice"), false,false);
+ core::_sym_double_backquote = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("double_backquote"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1597_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_unquote_nsplice = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("unquote_nsplice"), false,false);
+ core::_sym_unquote = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("unquote"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1598_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_slot = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("slot"), false,false);
+ core::_sym_unquote_splice = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("unquote_splice"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1599_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_item = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("item"), false,false);
+ core::_sym_unquote_nsplice = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("unquote_nsplice"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1600_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_alist = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("alist"), false,false);
+ core::_sym_slot = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("slot"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1601_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_key = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("key"), false,false);
+ core::_sym_item = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("item"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1602_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_test_not = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("test_not"), false,false);
+ core::_sym_alist = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("alist"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1603_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_forward_referenced_class = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("forward_referenced_class"), true,false);
+ core::_sym_key = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("key"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1604_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_instance = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("instance"), true,false);
+ core::_sym_test_not = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("test_not"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1605_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_all_keys = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("all_keys"), false,false);
+ core::_sym_forward_referenced_class = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("forward_referenced_class"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1606_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_cl_fixnum_bits = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("cl_fixnum_bits"), true,false);
+ core::_sym_instance = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("instance"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1607_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_cArgumentsLimit = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("cArgumentsLimit"), false,false);
+ core::_sym_all_keys = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("all_keys"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1608_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARcommandLineArgumentsSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcommandLineArgumentsSTAR"), true,false);
+ core::_sym_cl_fixnum_bits = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("cl_fixnum_bits"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1609_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARprintVersionOnStartupSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARprintVersionOnStartupSTAR"), true,false);
+ core::_sym_cArgumentsLimit = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("cArgumentsLimit"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1610_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARsilentStartupSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARsilentStartupSTAR"), true,false);
+ core::_sym_STARcommandLineArgumentsSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcommandLineArgumentsSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1611_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARcommandLineLoadEvalSequenceSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcommandLineLoadEvalSequenceSTAR"), true,false);
+ core::_sym_STARprintVersionOnStartupSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARprintVersionOnStartupSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1612_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARcommandLineImageSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcommandLineImageSTAR"), true,false);
+ core::_sym_STARsilentStartupSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARsilentStartupSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1613_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARclassNameHashTableSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARclassNameHashTableSTAR"), true,false);
+ core::_sym_STARcommandLineLoadEvalSequenceSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcommandLineLoadEvalSequenceSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1614_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_selectPackage = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("selectPackage"), true,false);
+ core::_sym_STARcommandLineImageSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARcommandLineImageSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1615_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_find_single_dispatch_generic_function = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("find_single_dispatch_generic_function"), false,false);
+ core::_sym_STARclassNameHashTableSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARclassNameHashTableSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1616_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_setf_find_single_dispatch_generic_function = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("setf_find_single_dispatch_generic_function"), false,false);
+ core::_sym_selectPackage = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("selectPackage"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1617_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_forget_all_single_dispatch_generic_functions = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("forget_all_single_dispatch_generic_functions"), false,false);
+ core::_sym_find_single_dispatch_generic_function = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("find_single_dispatch_generic_function"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1618_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_stackMonitor = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("stackMonitor"), false,false);
+ core::_sym_setf_find_single_dispatch_generic_function = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("setf_find_single_dispatch_generic_function"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1619_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_setupStackMonitor = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("setupStackMonitor"), false,false);
+ core::_sym_forget_all_single_dispatch_generic_functions = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("forget_all_single_dispatch_generic_functions"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1620_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_invokeInternalDebugger = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("invokeInternalDebugger"), false,false);
+ core::_sym_stackMonitor = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("stackMonitor"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1621_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_invokeInternalDebuggerFromGdb = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("invokeInternalDebuggerFromGdb"), false,false);
+ core::_sym_setupStackMonitor = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("setupStackMonitor"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1622_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_universalErrorHandler = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("universalErrorHandler"), false,false);
+ core::_sym_invokeInternalDebugger = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("invokeInternalDebugger"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1623_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_stackUsed = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("stackUsed"), false,false);
+ core::_sym_invokeInternalDebuggerFromGdb = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("invokeInternalDebuggerFromGdb"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1624_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_exit = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("exit"), false,false);
+ core::_sym_universalErrorHandler = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("universalErrorHandler"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1625_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_quit = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("quit"), false,false);
+ core::_sym_stackUsed = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("stackUsed"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1626_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_getline = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("getline"), false,false);
+ core::_sym_exit = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("exit"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1627_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_isTopLevelScript = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("isTopLevelScript"), false,false);
+ core::_sym_quit = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("quit"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1628_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sourceFileName = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sourceFileName"), false,false);
+ core::_sym_getline = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("getline"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1629_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sourceLineColumn = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sourceLineColumn"), false,false);
+ core::_sym_isTopLevelScript = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("isTopLevelScript"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1630_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_findFileInLispPath = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("findFileInLispPath"), false,false);
+ core::_sym_sourceFileName = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sourceFileName"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1631_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_setf_findClass = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("setf_findClass"), false,false);
+ core::_sym_sourceLineColumn = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sourceLineColumn"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1632_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_isAssignableTo = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("isAssignableTo"), false,false);
+ core::_sym_findFileInLispPath = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("findFileInLispPath"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1633_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_isSubClassOf = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("isSubClassOf"), false,false);
+ core::_sym_setf_findClass = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("setf_findClass"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1634_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_repr = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("repr"), false,false);
+ core::_sym_isAssignableTo = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("isAssignableTo"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1635_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_debugLogOn = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("debugLogOn"), false,false);
+ core::_sym_isSubClassOf = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("isSubClassOf"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1636_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_debugLogOff = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("debugLogOff"), false,false);
+ core::_sym_repr = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("repr"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1637_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_mpi_enabled = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("mpi_enabled"), false,false);
+ core::_sym_debugLogOn = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("debugLogOn"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1638_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_mpi_rank = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("mpi_rank"), false,false);
+ core::_sym_debugLogOff = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("debugLogOff"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1639_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_mpi_size = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("mpi_size"), false,false);
+ core::_sym_mpi_enabled = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("mpi_enabled"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1640_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sorted = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sorted"), false,false);
+ core::_sym_mpi_rank = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("mpi_rank"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1641_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_database_dir = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("database_dir"), false,false);
+ core::_sym_mpi_size = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("mpi_size"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1642_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_script_dir = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("script_dir"), false,false);
+ core::_sym_sorted = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sorted"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1643_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_libraryPath = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("libraryPath"), false,false);
+ core::_sym_database_dir = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("database_dir"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1644_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_lispCodePath = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("lispCodePath"), false,false);
+ core::_sym_script_dir = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("script_dir"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1645_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_setCurrentWorkingDirectory = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("setCurrentWorkingDirectory"), false,false);
+ core::_sym_libraryPath = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("libraryPath"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1646_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_member1 = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("member1"), false,false);
+ core::_sym_lispCodePath = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("lispCodePath"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1647_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_exportToPython = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("exportToPython"), false,false);
+ core::_sym_setCurrentWorkingDirectory = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("setCurrentWorkingDirectory"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1648_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_slBoundp = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("slBoundp"), false,false);
+ core::_sym_member1 = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("member1"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1649_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_isNil = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("isNil"), false,false);
+ core::_sym_exportToPython = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("exportToPython"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1650_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_instanceRef = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("instanceRef"), false,false);
+ core::_sym_slBoundp = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("slBoundp"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1651_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_instanceSet = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("instanceSet"), false,false);
+ core::_sym_isNil = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("isNil"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1652_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_instancep = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("instancep"), false,false);
+ core::_sym_instanceRef = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("instanceRef"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1653_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_instanceSigSet = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("instanceSigSet"), false,false);
+ core::_sym_instanceSet = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("instanceSet"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1654_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_instanceSig = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("instanceSig"), false,false);
+ core::_sym_instancep = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("instancep"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1655_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_instanceClass = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("instanceClass"), true,false);
+ core::_sym_instanceSigSet = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("instanceSigSet"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1656_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_implementationClass = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("implementationClass"), true,false);
+ core::_sym_instanceSig = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("instanceSig"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1657_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_classNameAsString = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("classNameAsString"), true,false);
+ core::_sym_instanceClass = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("instanceClass"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1658_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_clock_gettime_nanoseconds = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("clock_gettime_nanoseconds"), false,false);
+ core::_sym_implementationClass = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("implementationClass"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1659_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_testProfileTimer = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("testProfileTimer"), false,false);
+ core::_sym_classNameAsString = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("classNameAsString"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1660_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_structure_print_function = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("structure_print_function"), true,false);
+ core::_sym_clock_gettime_nanoseconds = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("clock_gettime_nanoseconds"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1661_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARprint_structureSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARprint_structureSTAR"), true,false);
+ core::_sym_testProfileTimer = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("testProfileTimer"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1662_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_makeRegex = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("makeRegex"), true,false);
+ core::_sym_structure_print_function = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("structure_print_function"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1663_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_serialize = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("serialize"), true,false);
+ core::_sym_STARprint_structureSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARprint_structureSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1664_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARserializerArchiveSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARserializerArchiveSTAR"), true,false);
+ core::_sym_makeRegex = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("makeRegex"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1665_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARsharp_equal_alistSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARsharp_equal_alistSTAR"), false,false);
+ core::_sym_serialize = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("serialize"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1666_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARsharp_sharp_alistSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARsharp_sharp_alistSTAR"), false,false);
+ core::_sym_STARserializerArchiveSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARserializerArchiveSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1667_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARconsing_dot_allowedSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARconsing_dot_allowedSTAR"), false,false);
+ core::_sym_STARsharp_equal_alistSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARsharp_equal_alistSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1668_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARconsing_dotSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARconsing_dotSTAR"), false,false);
+ core::_sym_STARsharp_sharp_alistSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARsharp_sharp_alistSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1669_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARpreserve_whitespace_pSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARpreserve_whitespace_pSTAR"), false,false);
+ core::_sym_STARconsing_dot_allowedSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARconsing_dot_allowedSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1670_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARinput_streamSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARinput_streamSTAR"), false,false);
+ core::_sym_STARconsing_dotSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARconsing_dotSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1671_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARbackquote_levelSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbackquote_levelSTAR"), false,false);
+ core::_sym_STARpreserve_whitespace_pSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARpreserve_whitespace_pSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1672_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARstandard_readtableSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARstandard_readtableSTAR"), false,false);
+ core::_sym_STARinput_streamSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARinput_streamSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1673_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_read_list_allow_consing_dot = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("read_list_allow_consing_dot"), false,false);
+ core::_sym_STARbackquote_levelSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbackquote_levelSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1674_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_reader_read_double_quote_string = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("reader_read_double_quote_string"), false,false);
+ core::_sym_STARstandard_readtableSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARstandard_readtableSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1675_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_reader_backquoted_expression = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("reader_backquoted_expression"), false,false);
+ core::_sym_read_list_allow_consing_dot = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("read_list_allow_consing_dot"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1676_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sharp_backslash = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_backslash"), false,false);
+ core::_sym_reader_read_double_quote_string = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("reader_read_double_quote_string"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1677_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sharp_single_quote = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_single_quote"), false,false);
+ core::_sym_reader_backquoted_expression = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("reader_backquoted_expression"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1678_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sharp_left_parenthesis = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_left_parenthesis"), false,false);
+ core::_sym_sharp_backslash = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_backslash"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1679_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sharp_asterisk = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_asterisk"), false,false);
+ core::_sym_sharp_single_quote = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_single_quote"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1680_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sharp_colon = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_colon"), false,false);
+ core::_sym_sharp_left_parenthesis = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_left_parenthesis"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1681_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sharp_dot = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_dot"), false,false);
+ core::_sym_sharp_asterisk = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_asterisk"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1682_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sharp_b = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_b"), false,false);
+ core::_sym_sharp_colon = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_colon"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1683_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sharp_o = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_o"), false,false);
+ core::_sym_sharp_dot = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_dot"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1684_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sharp_x = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_x"), false,false);
+ core::_sym_sharp_b = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_b"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1685_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sharp_r = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_r"), false,false);
+ core::_sym_sharp_o = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_o"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1686_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sharp_c = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_c"), false,false);
+ core::_sym_sharp_x = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_x"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1687_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sharp_a = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_a"), false,false);
+ core::_sym_sharp_r = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_r"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1688_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sharp_s = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_s"), false,false);
+ core::_sym_sharp_c = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_c"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1689_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sharp_p = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_p"), false,false);
+ core::_sym_sharp_a = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_a"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1690_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sharp_plus = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_plus"), false,false);
+ core::_sym_sharp_s = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_s"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1691_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sharp_minus = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_minus"), false,false);
+ core::_sym_sharp_p = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_p"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1692_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_sharp_vertical_bar = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_vertical_bar"), false,false);
+ core::_sym_sharp_plus = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_plus"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1693_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_dispatch_macro_character = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("dispatch_macro_character"), false,false);
+ core::_sym_sharp_minus = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_minus"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1694_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_reader_double_quote_string = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("reader_double_quote_string"), false,false);
+ core::_sym_sharp_vertical_bar = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("sharp_vertical_bar"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1695_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_reader_comma_form = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("reader_comma_form"), false,false);
+ core::_sym_dispatch_macro_character = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("dispatch_macro_character"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1696_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_reader_list_allow_consing_dot = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("reader_list_allow_consing_dot"), false,false);
+ core::_sym_reader_double_quote_string = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("reader_double_quote_string"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1697_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_reader_error_unmatched_close_parenthesis = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("reader_error_unmatched_close_parenthesis"), false,false);
+ core::_sym_reader_comma_form = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("reader_comma_form"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1698_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_reader_quote = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("reader_quote"), false,false);
+ core::_sym_reader_list_allow_consing_dot = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("reader_list_allow_consing_dot"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1699_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_reader_skip_semicolon_comment = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("reader_skip_semicolon_comment"), false,false);
+ core::_sym_reader_error_unmatched_close_parenthesis = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("reader_error_unmatched_close_parenthesis"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1700_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_reader_feature_p = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("reader_feature_p"), false,false);
+ core::_sym_reader_quote = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("reader_quote"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1701_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_float_to_digits = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("float_to_digits"), true,false);
+ core::_sym_reader_skip_semicolon_comment = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("reader_skip_semicolon_comment"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1702_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_defaultPathnameDefaults = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("defaultPathnameDefaults"), false,false);
+ core::_sym_reader_feature_p = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("reader_feature_p"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1703_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_coerceToFilename = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("coerceToFilename"), true,false);
+ core::_sym_float_to_digits = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("float_to_digits"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1704_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_coerceToFilePathname = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("coerceToFilePathname"), true,false);
+ core::_sym_defaultPathnameDefaults = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("defaultPathnameDefaults"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1705_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_pathnameTranslations = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("pathnameTranslations"), true,false);
+ core::_sym_coerceToFilename = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("coerceToFilename"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1706_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_coerceToPhysicalPathname = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("coerceToPhysicalPathname"), true,false);
+ core::_sym_coerceToFilePathname = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("coerceToFilePathname"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1707_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_argument_number_error = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("argument_number_error"), true,false);
+ core::_sym_pathnameTranslations = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("pathnameTranslations"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1708_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_signalSimpleError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("signalSimpleError"), true,false);
+ core::_sym_coerceToPhysicalPathname = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("coerceToPhysicalPathname"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1709_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_wrongTypeNthArg = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("wrongTypeNthArg"), true,false);
+ core::_sym_argument_number_error = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("argument_number_error"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1710_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_wrongIndex = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("wrongIndex"), true,false);
+ core::_sym_signalSimpleError = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("signalSimpleError"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1711_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_subclassp = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("subclassp"), false,false);
+ core::_sym_wrongTypeNthArg = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("wrongTypeNthArg"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1712_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_allocateRawClass = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("allocateRawClass"), false,false);
+ core::_sym_wrongIndex = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("wrongIndex"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1713_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_inheritDefaultAllocator = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("inheritDefaultAllocator"), true,false);
+ core::_sym_subclassp = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("subclassp"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1714_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_isString = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("isString"), true,false);
+ core::_sym_allocateRawClass = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("allocateRawClass"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1715_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_isArray = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("isArray"), true,false);
+ core::_sym_inheritDefaultAllocator = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("inheritDefaultAllocator"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1716_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_testVal = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("testVal"), true,false);
+ core::_sym_isString = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("isString"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1717_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym__SHARP__BANG_ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("_SHARP__BANG_"), true,false);
+ core::_sym_isArray = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("isArray"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1718_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_base_string_concatenate = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("base_string_concatenate"), false,false);
+ core::_sym_testVal = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("testVal"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1719_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_calculateMissingCommonLispSymbols = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("calculateMissingCommonLispSymbols"), true,false);
+ core::_sym__SHARP__BANG_ = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("_SHARP__BANG_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1720_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_copy_subarray = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("copy_subarray"), false,false);
+ core::_sym_base_string_concatenate = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("base_string_concatenate"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1721_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_aset = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("aset"), false,false);
+ core::_sym_calculateMissingCommonLispSymbols = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("calculateMissingCommonLispSymbols"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1722_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_rem_f = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("rem_f"), true,false);
+ core::_sym_copy_subarray = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("copy_subarray"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1723_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_put_f = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("put_f"), false,false);
+ core::_sym_aset = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("aset"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1724_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_conditionMessage = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("conditionMessage"), false,false);
+ core::_sym_rem_f = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("rem_f"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1725_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_put_sysprop = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("put_sysprop"), false,false);
+ core::_sym_put_f = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("put_f"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1726_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_get_sysprop = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("get_sysprop"), false,false);
+ core::_sym_conditionMessage = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("conditionMessage"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1727_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_rem_sysprop = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("rem_sysprop"), false,false);
+ core::_sym_put_sysprop = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("put_sysprop"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1728_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_bformat = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("bformat"), false,false);
+ core::_sym_get_sysprop = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("get_sysprop"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1729_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARbq_listSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbq_listSTAR"), false,false);
+ core::_sym_rem_sysprop = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("rem_sysprop"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1730_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARbq_appendSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbq_appendSTAR"), false,false);
+ core::_sym_bformat = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("bformat"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1731_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARbq_listSTARSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbq_listSTARSTAR"), false,false);
+ core::_sym_STARbq_listSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbq_listSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1732_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARbq_nconcSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbq_nconcSTAR"), false,false);
+ core::_sym_STARbq_appendSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbq_appendSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1733_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARbq_clobberableSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbq_clobberableSTAR"), false,false);
+ core::_sym_STARbq_listSTARSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbq_listSTARSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1734_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARbq_quoteSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbq_quoteSTAR"), false,false);
+ core::_sym_STARbq_nconcSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbq_nconcSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1735_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARbq_quote_nilSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbq_quote_nilSTAR"), false,false);
+ core::_sym_STARbq_clobberableSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbq_clobberableSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1736_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_bq_simplify = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("bq_simplify"), false,false);
+ core::_sym_STARbq_quoteSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbq_quoteSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1737_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_bq_remove_tokens = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("bq_remove_tokens"), false,false);
+ core::_sym_STARbq_quote_nilSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbq_quote_nilSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1738_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_backquote_maptree = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_maptree"), false,false);
+ core::_sym_bq_simplify = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("bq_simplify"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1739_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_backquote_simplify = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_simplify"), false,false);
+ core::_sym_bq_remove_tokens = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("bq_remove_tokens"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1740_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_backquote_completely_process = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_completely_process"), false,false);
+ core::_sym_backquote_maptree = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_maptree"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1741_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_backquote_process = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_process"), false,false);
+ core::_sym_backquote_simplify = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_simplify"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1742_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_backquote_bracket = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_bracket"), false,false);
+ core::_sym_backquote_completely_process = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_completely_process"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1743_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_backquote_null_or_quoted = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_null_or_quoted"), false,false);
+ core::_sym_backquote_process = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_process"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1744_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_backquote_attach_append = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_attach_append"), false,false);
+ core::_sym_backquote_bracket = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_bracket"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1745_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_backquote_attach_conses = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_attach_conses"), false,false);
+ core::_sym_backquote_null_or_quoted = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_null_or_quoted"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1746_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_backquote_remove_tokens = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_remove_tokens"), false,false);
+ core::_sym_backquote_attach_append = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_attach_append"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1747_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_backquote_frob = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_frob"), false,false);
+ core::_sym_backquote_attach_conses = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_attach_conses"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1748_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_backquote_splicing_frob = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_splicing_frob"), false,false);
+ core::_sym_backquote_remove_tokens = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_remove_tokens"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1749_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_backquote_append = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_append"), false,false);
+ core::_sym_backquote_frob = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_frob"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1750_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_quasiquote = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("quasiquote"), false,false);
+ core::_sym_backquote_splicing_frob = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_splicing_frob"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1751_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARbq_simplifySTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbq_simplifySTAR"), false,false);
+ core::_sym_backquote_append = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("backquote_append"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1752_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_record_cons = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("record_cons"), false,false);
+ core::_sym_quasiquote = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("quasiquote"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1753_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_record_field = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("record_field"), false,false);
+ core::_sym_STARbq_simplifySTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARbq_simplifySTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1754_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_set_record_field = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("set_record_field"), false,false);
+ core::_sym_record_cons = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("record_cons"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1755_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_rem_record_field = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("rem_record_field"), false,false);
+ core::_sym_record_field = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("record_field"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1756_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_ensure_documentation = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ensure_documentation"), false,false);
+ core::_sym_set_record_field = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("set_record_field"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1757_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARsharp_equal_final_tableSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARsharp_equal_final_tableSTAR"), false,false);
+ core::_sym_rem_record_field = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("rem_record_field"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1758_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARsharp_equal_temp_tableSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARsharp_equal_temp_tableSTAR"), false,false);
+ core::_sym_ensure_documentation = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ensure_documentation"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1759_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_STARsharp_equal_repl_tableSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARsharp_equal_repl_tableSTAR"), false,false);
+ core::_sym_STARsharp_equal_final_tableSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARsharp_equal_final_tableSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1760_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_ensureSingleDispatchGenericFunction = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ensureSingleDispatchGenericFunction"), true,false);
+ core::_sym_STARsharp_equal_temp_tableSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARsharp_equal_temp_tableSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1761_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_ensureSingleDispatchMethod = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ensureSingleDispatchMethod"), true,false);
+ core::_sym_STARsharp_equal_repl_tableSTAR = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("STARsharp_equal_repl_tableSTAR"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1762_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_structure_include = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("structure_include"), true,false);
+ core::_sym_ensureSingleDispatchGenericFunction = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ensureSingleDispatchGenericFunction"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1763_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_structure_slot_descriptions = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("structure_slot_descriptions"), true,false);
+ core::_sym_ensureSingleDispatchMethod = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ensureSingleDispatchMethod"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1764_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_structureRef = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("structureRef"), true,false);
+ core::_sym_structure_include = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("structure_include"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1765_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_structureSet = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("structureSet"), true,false);
+ core::_sym_structure_slot_descriptions = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("structure_slot_descriptions"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1766_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_makeStructure = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("makeStructure"), true,false);
+ core::_sym_structureRef = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("structureRef"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1767_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_structurep = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("structurep"), true,false);
+ core::_sym_structureSet = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("structureSet"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1768_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_structureSubtypep = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("structureSubtypep"), true,false);
+ core::_sym_makeStructure = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("makeStructure"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1769_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_setfElt = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("setfElt"), true,false);
+ core::_sym_structurep = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("structurep"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1770_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_eltSet = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("eltSet"), true,false);
+ core::_sym_structureSubtypep = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("structureSubtypep"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1771_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_setfSubseq = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("setfSubseq"), true,false);
+ core::_sym_setfElt = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("setfElt"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1772_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_make_vector = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("make_vector"), false,false);
+ core::_sym_eltSet = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("eltSet"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1773_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_adjustVector = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("adjustVector"), true,false);
+ core::_sym_setfSubseq = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("setfSubseq"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1774_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_loadTimeValuesIds = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("loadTimeValuesIds"), false,false);
+ core::_sym_make_vector = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("make_vector"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1775_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_loadTimeValueArray = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("loadTimeValueArray"), false,false);
+ core::_sym_adjustVector = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("adjustVector"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1776_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_lookupLoadTimeValue = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("lookupLoadTimeValue"), false,false);
+ core::_sym_loadTimeValuesIds = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("loadTimeValuesIds"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1777_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_lookupLoadTimeSymbol = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("lookupLoadTimeSymbol"), false,false);
+ core::_sym_loadTimeValueArray = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("loadTimeValueArray"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1778_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_setRunTimeValuesVector = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("setRunTimeValuesVector"), true,false);
+ core::_sym_lookupLoadTimeValue = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("lookupLoadTimeValue"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1779_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_WeakPointer_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("WeakPointer"), true,false);
+ core::_sym_lookupLoadTimeSymbol = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("lookupLoadTimeSymbol"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1780_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_CxxClass_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("CxxClass"), true,false);
+ core::_sym_setRunTimeValuesVector = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("setRunTimeValuesVector"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1781_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_WeakKeyMapping_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("WeakKeyMapping"), true,false);
+ core::_sym_WeakPointer_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("WeakPointer"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1782_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_HashTableEq_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("HashTableEq"), true,false);
+ core::_sym_CxxClass_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("CxxClass"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1783_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_SmallMultimap_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SmallMultimap"), true,false);
+ core::_sym_WeakKeyMapping_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("WeakKeyMapping"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1784_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_HashTableEql_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("HashTableEql"), true,false);
+ core::_sym_HashTableEq_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("HashTableEq"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1785_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_HashTableEqualp_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("HashTableEqualp"), true,false);
+ core::_sym_SmallMultimap_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SmallMultimap"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1786_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_LightUserData_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("LightUserData"), true,false);
+ core::_sym_HashTableEql_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("HashTableEql"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1787_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_UserData_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("UserData"), true,false);
+ core::_sym_HashTableEqualp_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("HashTableEqualp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1788_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_SNode_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SNode"), true,false);
+ core::_sym_LightUserData_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("LightUserData"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1789_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_LeafSNode_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("LeafSNode"), true,false);
+ core::_sym_UserData_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("UserData"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1790_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_BranchSNode_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("BranchSNode"), true,false);
+ core::_sym_SNode_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SNode"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1791_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_Archive_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Archive"), true,false);
+ core::_sym_LeafSNode_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("LeafSNode"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1792_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_LoadArchive_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("LoadArchive"), true,false);
+ core::_sym_BranchSNode_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("BranchSNode"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1793_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_SaveArchive_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SaveArchive"), true,false);
+ core::_sym_Archive_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Archive"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1794_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_SexpLoadArchive_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SexpLoadArchive"), true,false);
+ core::_sym_LoadArchive_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("LoadArchive"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1795_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_SexpSaveArchive_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SexpSaveArchive"), true,false);
+ core::_sym_SaveArchive_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SaveArchive"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1796_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_LoadTimeValues_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("LoadTimeValues"), true,false);
+ core::_sym_SexpLoadArchive_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SexpLoadArchive"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1797_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_SpecialForm_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SpecialForm"), true,false);
+ core::_sym_SexpSaveArchive_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SexpSaveArchive"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1798_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_SingleDispatchGenericFunction_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("single-dispatch-generic-function"), true,false);
+ core::_sym_LoadTimeValues_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("LoadTimeValues"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1799_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_LambdaListHandler_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("LambdaListHandler"), true,false);
+ core::_sym_SpecialForm_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SpecialForm"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1800_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_Reader_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Reader"), true,false);
+ core::_sym_SingleDispatchGenericFunction_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("single-dispatch-generic-function"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1801_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_SingleDispatchEffectiveMethodFunction_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SingleDispatchEffectiveMethodFunction"), true,false);
+ core::_sym_LambdaListHandler_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("LambdaListHandler"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1802_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_RegexMatch_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("RegexMatch"), true,false);
+ core::_sym_Reader_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Reader"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1803_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_Regex_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Regex"), true,false);
+ core::_sym_SingleDispatchEffectiveMethodFunction_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SingleDispatchEffectiveMethodFunction"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1804_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_ForwardReferencedClass_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ForwardReferencedClass"), true,false);
+ core::_sym_RegexMatch_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("RegexMatch"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1805_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_ArrayObjects_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ArrayObjects"), true,false);
+ core::_sym_Regex_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Regex"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1806_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_ArrayDisplaced_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ArrayDisplaced"), true,false);
+ core::_sym_ForwardReferencedClass_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ForwardReferencedClass"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1807_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_IntArray_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("IntArray"), true,false);
+ core::_sym_ArrayObjects_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ArrayObjects"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1808_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_InvocationHistoryFrameIterator_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("InvocationHistoryFrameIterator"), true,false);
+ core::_sym_ArrayDisplaced_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ArrayDisplaced"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1809_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_SingleDispatchMethod_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SingleDispatchMethod"), true,false);
+ core::_sym_IntArray_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("IntArray"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1810_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_Binder_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Binder"), true,false);
+ core::_sym_InvocationHistoryFrameIterator_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("InvocationHistoryFrameIterator"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1811_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_VectorDisplaced_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("VectorDisplaced"), true,false);
+ core::_sym_SingleDispatchMethod_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SingleDispatchMethod"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1812_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_MultiStringBuffer_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("MultiStringBuffer"), true,false);
+ core::_sym_Binder_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Binder"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1813_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_PosixTime_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("PosixTime"), true,false);
+ core::_sym_VectorDisplaced_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("VectorDisplaced"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1814_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_PosixTimeDuration_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("PosixTimeDuration"), true,false);
+ core::_sym_MultiStringBuffer_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("MultiStringBuffer"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1815_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_SmallMap_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SmallMap"), true,false);
+ core::_sym_PosixTime_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("PosixTime"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1816_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_StrWithFillPtr_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("base-string-with-fill-ptr"), true,false);
+ core::_sym_PosixTimeDuration_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("PosixTimeDuration"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1817_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_Path_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("path"), true,false);
+ core::_sym_SmallMap_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SmallMap"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1818_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_DirectoryIterator_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("DirectoryIterator"), true,false);
+ core::_sym_StrWithFillPtr_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("base-string-with-fill-ptr"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1819_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_RecursiveDirectoryIterator_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("RecursiveDirectoryIterator"), true,false);
+ core::_sym_Path_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("path"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1820_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_DirectoryEntry_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("DirectoryEntry"), true,false);
+ core::_sym_DirectoryIterator_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("DirectoryIterator"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1821_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_FileStatus_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("FileStatus"), true,false);
+ core::_sym_RecursiveDirectoryIterator_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("RecursiveDirectoryIterator"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1822_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_IOFileStream_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("iofile-stream"), true,false);
+ core::_sym_DirectoryEntry_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("DirectoryEntry"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1823_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_IOStreamStream_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("iostream-stream"), true,false);
+ core::_sym_FileStatus_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("FileStatus"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1824_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_StringOutputStream_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("string-output-stream"), true,false);
+ core::_sym_IOFileStream_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("iofile-stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1825_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_StringInputStream_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("string-input-stream"), true,false);
+ core::_sym_IOStreamStream_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("iostream-stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1826_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_CandoException_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("CandoException"), true,false);
+ core::_sym_StringOutputStream_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("string-output-stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1827_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_VaList_dummy_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("VA-LIST"), true,false);
+ core::_sym_StringInputStream_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("string-input-stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1828_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_Pointer_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Pointer"), true,false);
+ core::_sym_CandoException_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("CandoException"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1829_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_Environment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Environment"), true,false);
+ core::_sym_VaList_dummy_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("VA-LIST"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1830_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_LexicalEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("LexicalEnvironment"), true,false);
+ core::_sym_Pointer_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Pointer"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1831_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_RuntimeVisibleEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("RuntimeVisibleEnvironment"), true,false);
+ core::_sym_Environment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Environment"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1832_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_ValueEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ValueEnvironment"), true,false);
+ core::_sym_LexicalEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("LexicalEnvironment"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1833_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_FunctionValueEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("FunctionValueEnvironment"), true,false);
+ core::_sym_RuntimeVisibleEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("RuntimeVisibleEnvironment"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1834_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_CompileTimeEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("CompileTimeEnvironment"), true,false);
+ core::_sym_ValueEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ValueEnvironment"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1835_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_UnwindProtectEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("UnwindProtectEnvironment"), true,false);
+ core::_sym_FunctionValueEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("FunctionValueEnvironment"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1836_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_BlockEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("BlockEnvironment"), true,false);
+ core::_sym_CompileTimeEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("CompileTimeEnvironment"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1837_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_CatchEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("CatchEnvironment"), true,false);
+ core::_sym_UnwindProtectEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("UnwindProtectEnvironment"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1838_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_FunctionContainerEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("FunctionContainerEnvironment"), true,false);
+ core::_sym_BlockEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("BlockEnvironment"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1839_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_TagbodyEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("TagbodyEnvironment"), true,false);
+ core::_sym_CatchEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("CatchEnvironment"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1840_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_MacroletEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("MacroletEnvironment"), true,false);
+ core::_sym_FunctionContainerEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("FunctionContainerEnvironment"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1841_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_SymbolMacroletEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SymbolMacroletEnvironment"), true,false);
+ core::_sym_TagbodyEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("TagbodyEnvironment"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1842_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_StackValueEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("StackValueEnvironment"), true,false);
+ core::_sym_MacroletEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("MacroletEnvironment"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1843_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_GlueEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("GlueEnvironment"), true,false);
+ core::_sym_SymbolMacroletEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SymbolMacroletEnvironment"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1844_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_ActivationFrame_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ActivationFrame"), true,false);
+ core::_sym_StackValueEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("StackValueEnvironment"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1845_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_ValueFrame_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ValueFrame"), true,false);
+ core::_sym_GlueEnvironment_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("GlueEnvironment"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1846_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_FunctionFrame_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("FunctionFrame"), true,false);
+ core::_sym_ActivationFrame_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ActivationFrame"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1847_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_TagbodyFrame_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("TagbodyFrame"), true,false);
+ core::_sym_ValueFrame_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ValueFrame"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1848_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_Metaobject_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("metaobject"), true,false);
+ core::_sym_FunctionFrame_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("FunctionFrame"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1849_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_Specializer_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("specializer"), true,false);
+ core::_sym_TagbodyFrame_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("TagbodyFrame"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1850_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_WeakHashTable_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("WeakHashTable"), true,false);
+ core::_sym_Metaobject_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("metaobject"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1851_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_WeakKeyHashTable_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("WeakKeyHashTable"), true,false);
+ core::_sym_Specializer_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("specializer"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1852_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_SourceFileInfo_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SourceFileInfo"), true,false);
+ core::_sym_WeakHashTable_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("WeakHashTable"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1853_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_SourcePosInfo_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SourcePosInfo"), true,false);
+ core::_sym_WeakKeyHashTable_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("WeakKeyHashTable"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1854_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_SourceManager_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SourceManager"), true,false);
+ core::_sym_SourceFileInfo_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SourceFileInfo"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1855_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_CxxObject_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("CxxObject"), true,false);
+ core::_sym_SourcePosInfo_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SourcePosInfo"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1856_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_Record_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Record"), true,false);
+ core::_sym_SourceManager_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SourceManager"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1857_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_SymbolToEnumConverter_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SymbolToEnumConverter"), true,false);
+ core::_sym_CxxObject_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("CxxObject"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1858_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_Instance_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Instance"), true,false);
+ core::_sym_Record_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Record"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1859_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_WrappedPointer_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("WrappedPointer"), true,false);
+ core::_sym_SymbolToEnumConverter_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("SymbolToEnumConverter"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1860_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_Iterator_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Iterator"), true,false);
+ core::_sym_Instance_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Instance"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1861_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_HashTableEqual_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("HashTableEqual"), true,false);
+ core::_sym_WrappedPointer_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("WrappedPointer"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1862_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_ExternalObject_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ExternalObject"), true,false);
+ core::_sym_Iterator_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("Iterator"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1863_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_ForeignData_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ForeignData"), true,false);
+ core::_sym_HashTableEqual_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("HashTableEqual"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1864_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_VectorObjects_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("VectorObjects"), true,false);
+ core::_sym_ExternalObject_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ExternalObject"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1865_helper(core::BootStrapCoreSymbolMap* symbols) {
- core::_sym_VectorObjectsWithFillPtr_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("VectorObjectsWithFillPtr"), true,false);
+ core::_sym_ForeignData_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("ForeignData"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1866_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_case = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("case"), true,false);
+ core::_sym_VectorObjects_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("VectorObjects"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1867_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_otherwise = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("otherwise"), true,false);
+ core::_sym_VectorObjectsWithFillPtr_O = symbols->maybe_allocate_unique_symbol("CORE",core::lispify_symbol_name("VectorObjectsWithFillPtr"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1868_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_ignore = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("ignore"), true,false);
+ cl::_sym_case = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("case"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1869_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_multipleValueSetq = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("multipleValueSetq"), true,false);
+ cl::_sym_otherwise = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("otherwise"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1870_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_prog1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("prog1"), true,false);
+ cl::_sym_ignore = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("ignore"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1871_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_block = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("block"), true,false);
+ cl::_sym_multipleValueSetq = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("multipleValueSetq"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1872_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_throw = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("throw"), true,false);
+ cl::_sym_prog1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("prog1"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1873_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_apply = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("apply"), true,false);
+ cl::_sym_block = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("block"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1874_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_funcall = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("funcall"), true,false);
+ cl::_sym_throw = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("throw"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1875_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_compute_applicable_methods = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("compute_applicable_methods"), true,false);
+ cl::_sym_apply = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("apply"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1876_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_no_applicable_method = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("no_applicable_method"), true,false);
+ cl::_sym_funcall = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("funcall"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1877_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_standardGenericFunction = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("standardGenericFunction"), true,false);
+ cl::_sym_compute_applicable_methods = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("compute_applicable_methods"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1878_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_sleep = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("sleep"), true,false);
+ cl::_sym_no_applicable_method = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("no_applicable_method"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1879_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_let = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("let"), true,false);
+ cl::_sym_standardGenericFunction = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("standardGenericFunction"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1880_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_letSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("letSTAR"), true,false);
+ cl::_sym_sleep = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("sleep"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1881_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_return_from = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("return_from"), true,false);
+ cl::_sym_let = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("let"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1882_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_catch = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("catch"), true,false);
+ cl::_sym_letSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("letSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1883_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_load_time_value = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("load_time_value"), true,false);
+ cl::_sym_return_from = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("return_from"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1884_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_setq = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("setq"), true,false);
+ cl::_sym_catch = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("catch"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1885_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_eval_when = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("eval_when"), true,false);
+ cl::_sym_load_time_value = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("load_time_value"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1886_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_locally = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("locally"), true,false);
+ cl::_sym_setq = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("setq"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1887_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_symbol_macrolet = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("symbol_macrolet"), true,false);
+ cl::_sym_eval_when = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("eval_when"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1888_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_flet = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("flet"), true,false);
+ cl::_sym_locally = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("locally"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1889_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_macrolet = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("macrolet"), true,false);
+ cl::_sym_symbol_macrolet = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("symbol_macrolet"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1890_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_tagbody = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("tagbody"), true,false);
+ cl::_sym_flet = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("flet"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1891_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_multiple_value_call = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("multiple_value_call"), true,false);
+ cl::_sym_macrolet = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("macrolet"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1892_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_the = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("the"), true,false);
+ cl::_sym_tagbody = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("tagbody"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1893_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_go = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("go"), true,false);
+ cl::_sym_multiple_value_call = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("multiple_value_call"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1894_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_multiple_value_prog1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("multiple_value_prog1"), true,false);
+ cl::_sym_the = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("the"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1895_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_if = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("if"), true,false);
+ cl::_sym_go = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("go"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1896_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_unwind_protect = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("unwind_protect"), true,false);
+ cl::_sym_multiple_value_prog1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("multiple_value_prog1"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1897_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_labels = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("labels"), true,false);
+ cl::_sym_if = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("if"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1898_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_progv = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("progv"), true,false);
+ cl::_sym_unwind_protect = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("unwind_protect"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1899_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_setf = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("setf"), true,false);
+ cl::_sym_labels = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("labels"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1900_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_read = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("read"), true,false);
+ cl::_sym_progv = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("progv"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1901_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_read_preserving_whitespace = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("read_preserving_whitespace"), true,false);
+ cl::_sym_setf = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("setf"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1902_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_read_delimited_list = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("read_delimited_list"), true,false);
+ cl::_sym_read = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("read"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1903_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_every = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("every"), true,false);
+ cl::_sym_read_preserving_whitespace = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("read_preserving_whitespace"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1904_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_some = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("some"), true,false);
+ cl::_sym_read_delimited_list = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("read_delimited_list"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1905_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_notevery = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("notevery"), true,false);
+ cl::_sym_every = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("every"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1906_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_notany = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("notany"), true,false);
+ cl::_sym_some = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("some"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1907_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_mapcar = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mapcar"), true,false);
+ cl::_sym_notevery = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("notevery"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1908_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_mapc = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mapc"), true,false);
+ cl::_sym_notany = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("notany"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1909_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_maplist = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("maplist"), true,false);
+ cl::_sym_mapcar = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mapcar"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1910_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_mapl = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mapl"), true,false);
+ cl::_sym_mapc = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mapc"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1911_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_mapcan = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mapcan"), true,false);
+ cl::_sym_maplist = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("maplist"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1912_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_mapcon = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mapcon"), true,false);
+ cl::_sym_mapl = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mapl"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1913_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_classOf = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("classOf"), true,false);
+ cl::_sym_mapcan = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mapcan"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1914_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_identity = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("identity"), true,false);
+ cl::_sym_mapcon = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mapcon"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1915_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_constantp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("constantp"), true,false);
+ cl::_sym_classOf = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("classOf"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1916_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_ash = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("ash"), true,false);
+ cl::_sym_identity = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("identity"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1917_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_specialOperatorP = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("specialOperatorP"), true,false);
+ cl::_sym_constantp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("constantp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1918_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_macroFunction = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("macroFunction"), true,false);
+ cl::_sym_ash = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("ash"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1919_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_gensym = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("gensym"), true,false);
+ cl::_sym_specialOperatorP = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("specialOperatorP"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1920_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_type_of = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("type_of"), true,false);
+ cl::_sym_macroFunction = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("macroFunction"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1921_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_fdefinition = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fdefinition"), true,false);
+ cl::_sym_gensym = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("gensym"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1922_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_fboundp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fboundp"), true,false);
+ cl::_sym_type_of = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("type_of"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1923_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_fmakunbound = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fmakunbound"), true,false);
+ cl::_sym_fdefinition = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fdefinition"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1924_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_values_list = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("values_list"), true,false);
+ cl::_sym_fboundp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fboundp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1925_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_make_hash_table = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("make_hash_table"), true,false);
+ cl::_sym_fmakunbound = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fmakunbound"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1926_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_maphash = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("maphash"), true,false);
+ cl::_sym_values_list = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("values_list"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1927_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_clrhash = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("clrhash"), true,false);
+ cl::_sym_make_hash_table = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("make_hash_table"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1928_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_remhash = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("remhash"), true,false);
+ cl::_sym_maphash = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("maphash"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1929_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_max = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("max"), true,false);
+ cl::_sym_clrhash = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("clrhash"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1930_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_min = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("min"), true,false);
+ cl::_sym_remhash = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("remhash"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1931_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_zerop = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("zerop"), true,false);
+ cl::_sym_max = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("max"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1932_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym__LT_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_LT_"), true,false);
+ cl::_sym_min = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("min"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1933_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym__GT_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_GT_"), true,false);
+ cl::_sym_zerop = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("zerop"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1934_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym__LE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_LE_"), true,false);
+ cl::_sym__LT_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_LT_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1935_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym__GE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_GE_"), true,false);
+ cl::_sym__GT_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_GT_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1936_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym__EQ_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_EQ_"), true,false);
+ cl::_sym__LE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_LE_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1937_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym__NE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_NE_"), true,false);
+ cl::_sym__GE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_GE_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1938_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym__PLUS_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_PLUS_"), true,false);
+ cl::_sym__EQ_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_EQ_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1939_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym__TIMES_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_TIMES_"), true,false);
+ cl::_sym__NE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_NE_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1940_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym__MINUS_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_MINUS_"), true,false);
+ cl::_sym__PLUS_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_PLUS_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1941_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_logand = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logand"), true,false);
+ cl::_sym__TIMES_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_TIMES_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1942_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_logior = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logior"), true,false);
+ cl::_sym__MINUS_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_MINUS_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1943_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_logandc1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logandc1"), true,false);
+ cl::_sym_logand = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logand"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1944_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_logandc2 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logandc2"), true,false);
+ cl::_sym_logior = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logior"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1945_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_logeqv = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logeqv"), true,false);
+ cl::_sym_logandc1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logandc1"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1946_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_lognand = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("lognand"), true,false);
+ cl::_sym_logandc2 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logandc2"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1947_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_lognor = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("lognor"), true,false);
+ cl::_sym_logeqv = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logeqv"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1948_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_lognot = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("lognot"), true,false);
+ cl::_sym_lognand = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("lognand"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1949_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_logorc1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logorc1"), true,false);
+ cl::_sym_lognor = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("lognor"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1950_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_logorc2 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logorc2"), true,false);
+ cl::_sym_lognot = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("lognot"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1951_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_logxor = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logxor"), true,false);
+ cl::_sym_logorc1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logorc1"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1952_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_sqrt = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("sqrt"), true,false);
+ cl::_sym_logorc2 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logorc2"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1953_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_cos = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("cos"), true,false);
+ cl::_sym_logxor = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logxor"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1954_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_tan = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("tan"), true,false);
+ cl::_sym_sqrt = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("sqrt"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1955_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_sinh = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("sinh"), true,false);
+ cl::_sym_cos = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("cos"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1956_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_cosh = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("cosh"), true,false);
+ cl::_sym_tan = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("tan"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1957_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_tanh = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("tanh"), true,false);
+ cl::_sym_sinh = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("sinh"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1958_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_conjugate = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("conjugate"), true,false);
+ cl::_sym_cosh = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("cosh"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1959_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_log = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("log"), true,false);
+ cl::_sym_tanh = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("tanh"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1960_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_expt = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("expt"), true,false);
+ cl::_sym_conjugate = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("conjugate"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1961_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_exp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("exp"), true,false);
+ cl::_sym_log = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("log"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1962_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_getUniversalTime = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("getUniversalTime"), true,false);
+ cl::_sym_expt = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("expt"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1963_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_leastPositiveSingleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastPositiveSingleFloat"), true,false);
+ cl::_sym_exp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("exp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1964_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_leastNegativeSingleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastNegativeSingleFloat"), true,false);
+ cl::_sym_getUniversalTime = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("getUniversalTime"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1965_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_mostPositiveSingleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mostPositiveSingleFloat"), true,false);
+ cl::_sym_leastPositiveSingleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastPositiveSingleFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1966_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_mostNegativeSingleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mostNegativeSingleFloat"), true,false);
+ cl::_sym_leastNegativeSingleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastNegativeSingleFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1967_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_leastPositiveShortFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastPositiveShortFloat"), true,false);
+ cl::_sym_mostPositiveSingleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mostPositiveSingleFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1968_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_leastNegativeShortFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastNegativeShortFloat"), true,false);
+ cl::_sym_mostNegativeSingleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mostNegativeSingleFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1969_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_mostPositiveShortFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mostPositiveShortFloat"), true,false);
+ cl::_sym_leastPositiveShortFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastPositiveShortFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1970_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_mostNegativeShortFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mostNegativeShortFloat"), true,false);
+ cl::_sym_leastNegativeShortFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastNegativeShortFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1971_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_leastPositiveDoubleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastPositiveDoubleFloat"), true,false);
+ cl::_sym_mostPositiveShortFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mostPositiveShortFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1972_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_leastNegativeDoubleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastNegativeDoubleFloat"), true,false);
+ cl::_sym_mostNegativeShortFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mostNegativeShortFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1973_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_mostPositiveDoubleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mostPositiveDoubleFloat"), true,false);
+ cl::_sym_leastPositiveDoubleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastPositiveDoubleFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1974_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_mostNegativeDoubleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mostNegativeDoubleFloat"), true,false);
+ cl::_sym_leastNegativeDoubleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastNegativeDoubleFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1975_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_leastPositiveLongFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastPositiveLongFloat"), true,false);
+ cl::_sym_mostPositiveDoubleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mostPositiveDoubleFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1976_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_leastNegativeLongFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastNegativeLongFloat"), true,false);
+ cl::_sym_mostNegativeDoubleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mostNegativeDoubleFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1977_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_mostPositiveLongFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mostPositiveLongFloat"), true,false);
+ cl::_sym_leastPositiveLongFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastPositiveLongFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1978_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_mostNegativeLongFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mostNegativeLongFloat"), true,false);
+ cl::_sym_leastNegativeLongFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastNegativeLongFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1979_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_leastNegativeNormalizedSingleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastNegativeNormalizedSingleFloat"), true,false);
+ cl::_sym_mostPositiveLongFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mostPositiveLongFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1980_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_leastNegativeNormalizedShortFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastNegativeNormalizedShortFloat"), true,false);
+ cl::_sym_mostNegativeLongFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mostNegativeLongFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1981_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_leastNegativeNormalizedDoubleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastNegativeNormalizedDoubleFloat"), true,false);
+ cl::_sym_leastNegativeNormalizedSingleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastNegativeNormalizedSingleFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1982_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_leastNegativeNormalizedLongFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastNegativeNormalizedLongFloat"), true,false);
+ cl::_sym_leastNegativeNormalizedShortFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastNegativeNormalizedShortFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1983_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_leastPositiveNormalizedSingleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastPositiveNormalizedSingleFloat"), true,false);
+ cl::_sym_leastNegativeNormalizedDoubleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastNegativeNormalizedDoubleFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1984_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_leastPositiveNormalizedShortFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastPositiveNormalizedShortFloat"), true,false);
+ cl::_sym_leastNegativeNormalizedLongFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastNegativeNormalizedLongFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1985_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_leastPositiveNormalizedDoubleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastPositiveNormalizedDoubleFloat"), true,false);
+ cl::_sym_leastPositiveNormalizedSingleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastPositiveNormalizedSingleFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1986_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_leastPositiveNormalizedLongFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastPositiveNormalizedLongFloat"), true,false);
+ cl::_sym_leastPositiveNormalizedShortFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastPositiveNormalizedShortFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1987_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_pi = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pi"), true,false);
+ cl::_sym_leastPositiveNormalizedDoubleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastPositiveNormalizedDoubleFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1988_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_gcd = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("gcd"), true,false);
+ cl::_sym_leastPositiveNormalizedLongFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("leastPositiveNormalizedLongFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1989_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_lcm = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("lcm"), true,false);
+ cl::_sym_pi = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pi"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1990_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_numerator = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("numerator"), true,false);
+ cl::_sym_gcd = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("gcd"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1991_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_denominator = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("denominator"), true,false);
+ cl::_sym_lcm = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("lcm"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1992_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_floor = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("floor"), true,false);
+ cl::_sym_numerator = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("numerator"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1993_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_ceiling = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("ceiling"), true,false);
+ cl::_sym_denominator = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("denominator"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1994_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_truncate = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("truncate"), true,false);
+ cl::_sym_floor = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("floor"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1995_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_round = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("round"), true,false);
+ cl::_sym_ceiling = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("ceiling"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1996_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_mod = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mod"), true,false);
+ cl::_sym_truncate = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("truncate"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1997_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_rem = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("rem"), true,false);
+ cl::_sym_round = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("round"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1998_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_decodeFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("decodeFloat"), true,false);
+ cl::_sym_mod = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mod"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_1999_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_scaleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("scaleFloat"), true,false);
+ cl::_sym_rem = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("rem"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2000_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_floatSign = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("floatSign"), true,false);
+ cl::_sym_decodeFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("decodeFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2001_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_floatDigits = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("floatDigits"), true,false);
+ cl::_sym_scaleFloat = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("scaleFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2002_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_floatPrecision = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("floatPrecision"), true,false);
+ cl::_sym_floatSign = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("floatSign"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2003_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_integer_decode_float = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("integer_decode_float"), true,false);
+ cl::_sym_floatDigits = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("floatDigits"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2004_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_complex = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("complex"), true,false);
+ cl::_sym_floatPrecision = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("floatPrecision"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2005_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_realpart = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("realpart"), true,false);
+ cl::_sym_integer_decode_float = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("integer_decode_float"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2006_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_imagpart = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("imagpart"), true,false);
+ cl::_sym_complex = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("complex"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2007_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_print = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("print"), true,false);
+ cl::_sym_realpart = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("realpart"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2008_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_prin1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("prin1"), true,false);
+ cl::_sym_imagpart = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("imagpart"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2009_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_princ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("princ"), true,false);
+ cl::_sym_print = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("print"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2010_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_truename = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("truename"), true,false);
+ cl::_sym_prin1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("prin1"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2011_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_probe_file = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("probe_file"), true,false);
+ cl::_sym_princ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("princ"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2012_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_deleteFile = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("deleteFile"), true,false);
+ cl::_sym_truename = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("truename"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2013_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_file_write_date = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("file_write_date"), true,false);
+ cl::_sym_probe_file = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("probe_file"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2014_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_userHomedirPathname = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("userHomedirPathname"), true,false);
+ cl::_sym_deleteFile = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("deleteFile"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2015_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_revappend = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("revappend"), true,false);
+ cl::_sym_file_write_date = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("file_write_date"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2016_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_nreconc = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nreconc"), true,false);
+ cl::_sym_userHomedirPathname = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("userHomedirPathname"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2017_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_listSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("listSTAR"), true,false);
+ cl::_sym_revappend = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("revappend"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2018_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_butlast = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("butlast"), true,false);
+ cl::_sym_nreconc = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nreconc"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2019_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_nbutlast = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nbutlast"), true,false);
+ cl::_sym_listSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("listSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2020_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_nthcdr = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nthcdr"), true,false);
+ cl::_sym_butlast = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("butlast"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2021_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_copyList = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("copyList"), true,false);
+ cl::_sym_nbutlast = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nbutlast"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2022_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_last = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("last"), true,false);
+ cl::_sym_nthcdr = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nthcdr"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2023_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_filePosition = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("filePosition"), true,false);
+ cl::_sym_copyList = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("copyList"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2024_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_readSequence = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("readSequence"), true,false);
+ cl::_sym_last = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("last"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2025_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_read_from_string = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("read_from_string"), true,false);
+ cl::_sym_filePosition = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("filePosition"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2026_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_read_line = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("read_line"), true,false);
+ cl::_sym_readSequence = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("readSequence"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2027_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_terpri = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("terpri"), true,false);
+ cl::_sym_read_from_string = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("read_from_string"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2028_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_freshLine = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("freshLine"), true,false);
+ cl::_sym_read_line = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("read_line"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2029_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_writeString = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("writeString"), true,false);
+ cl::_sym_terpri = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("terpri"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2030_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_writeLine = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("writeLine"), true,false);
+ cl::_sym_freshLine = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("freshLine"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2031_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_writeChar = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("writeChar"), true,false);
+ cl::_sym_writeString = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("writeString"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2032_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_clearInput = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("clearInput"), true,false);
+ cl::_sym_writeLine = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("writeLine"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2033_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_clearOutput = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("clearOutput"), true,false);
+ cl::_sym_writeChar = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("writeChar"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2034_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_readByte = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("readByte"), true,false);
+ cl::_sym_clearInput = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("clearInput"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2035_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_peekChar = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("peekChar"), true,false);
+ cl::_sym_clearOutput = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("clearOutput"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2036_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_readChar = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("readChar"), true,false);
+ cl::_sym_readByte = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("readByte"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2037_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_readCharNoHang = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("readCharNoHang"), true,false);
+ cl::_sym_peekChar = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("peekChar"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2038_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_force_output = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("force_output"), true,false);
+ cl::_sym_readChar = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("readChar"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2039_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_finish_output = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("finish_output"), true,false);
+ cl::_sym_readCharNoHang = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("readCharNoHang"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2040_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_listen = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("listen"), true,false);
+ cl::_sym_force_output = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("force_output"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2041_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_unread_char = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("unread_char"), true,false);
+ cl::_sym_finish_output = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("finish_output"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2042_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_makeStringOutputStream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("makeStringOutputStream"), true,false);
+ cl::_sym_listen = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("listen"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2043_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_writeByte = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("writeByte"), true,false);
+ cl::_sym_unread_char = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("unread_char"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2044_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_interactive_stream_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("interactive_stream_p"), true,false);
+ cl::_sym_makeStringOutputStream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("makeStringOutputStream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2045_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_streamp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("streamp"), true,false);
+ cl::_sym_writeByte = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("writeByte"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2046_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_close = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("close"), true,false);
+ cl::_sym_interactive_stream_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("interactive_stream_p"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2047_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_get_output_stream_string = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("get_output_stream_string"), true,false);
+ cl::_sym_streamp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("streamp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2048_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_synonymStreamSymbol = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("synonymStreamSymbol"), true,false);
+ cl::_sym_close = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("close"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2049_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boole_1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_1"), true,false);
+ cl::_sym_get_output_stream_string = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("get_output_stream_string"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2050_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boole_2 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_2"), true,false);
+ cl::_sym_synonymStreamSymbol = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("synonymStreamSymbol"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2051_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boole_and = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_and"), true,false);
+ cl::_sym_boole_1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_1"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2052_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boole_andc1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_andc1"), true,false);
+ cl::_sym_boole_2 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_2"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2053_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boole_andc2 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_andc2"), true,false);
+ cl::_sym_boole_and = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_and"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2054_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boole_c1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_c1"), true,false);
+ cl::_sym_boole_andc1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_andc1"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2055_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boole_c2 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_c2"), true,false);
+ cl::_sym_boole_andc2 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_andc2"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2056_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boole_clr = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_clr"), true,false);
+ cl::_sym_boole_c1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_c1"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2057_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boole_eqv = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_eqv"), true,false);
+ cl::_sym_boole_c2 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_c2"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2058_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boole_ior = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_ior"), true,false);
+ cl::_sym_boole_clr = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_clr"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2059_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boole_nand = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_nand"), true,false);
+ cl::_sym_boole_eqv = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_eqv"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2060_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boole_nor = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_nor"), true,false);
+ cl::_sym_boole_ior = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_ior"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2061_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boole_orc1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_orc1"), true,false);
+ cl::_sym_boole_nand = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_nand"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2062_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boole_orc2 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_orc2"), true,false);
+ cl::_sym_boole_nor = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_nor"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2063_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boole_set = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_set"), true,false);
+ cl::_sym_boole_orc1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_orc1"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2064_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boole_xor = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_xor"), true,false);
+ cl::_sym_boole_orc2 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_orc2"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2065_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_printNotReadableObject = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("printNotReadableObject"), true,false);
+ cl::_sym_boole_set = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_set"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2066_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_provide = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("provide"), true,false);
+ cl::_sym_boole_xor = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole_xor"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2067_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_seriousCondition = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("seriousCondition"), true,false);
+ cl::_sym_printNotReadableObject = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("printNotReadableObject"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2068_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_warn = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("warn"), true,false);
+ cl::_sym_provide = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("provide"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2069_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_programError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("programError"), true,false);
+ cl::_sym_seriousCondition = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("seriousCondition"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2070_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_cellError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("cellError"), true,false);
+ cl::_sym_warn = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("warn"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2071_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_unboundVariable = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("unboundVariable"), true,false);
+ cl::_sym_programError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("programError"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2072_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_unboundSlot = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("unboundSlot"), true,false);
+ cl::_sym_cellError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("cellError"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2073_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_undefinedFunction = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("undefinedFunction"), true,false);
+ cl::_sym_unboundVariable = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("unboundVariable"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2074_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_package_error = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("package_error"), true,false);
+ cl::_sym_unboundSlot = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("unboundSlot"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2075_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_arithmeticError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("arithmeticError"), true,false);
+ cl::_sym_undefinedFunction = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("undefinedFunction"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2076_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_floatingPointOverflow = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("floatingPointOverflow"), true,false);
+ cl::_sym_package_error = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("package_error"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2077_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_floatingPointInexact = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("floatingPointInexact"), true,false);
+ cl::_sym_arithmeticError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("arithmeticError"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2078_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_floatingPointInvalidOperation = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("floatingPointInvalidOperation"), true,false);
+ cl::_sym_floatingPointOverflow = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("floatingPointOverflow"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2079_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_floatingPointUnderflow = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("floatingPointUnderflow"), true,false);
+ cl::_sym_floatingPointInexact = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("floatingPointInexact"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2080_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_divisionByZero = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("divisionByZero"), true,false);
+ cl::_sym_floatingPointInvalidOperation = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("floatingPointInvalidOperation"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2081_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_printNotReadable = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("printNotReadable"), true,false);
+ cl::_sym_floatingPointUnderflow = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("floatingPointUnderflow"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2082_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_streamError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("streamError"), true,false);
+ cl::_sym_divisionByZero = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("divisionByZero"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2083_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_endOfFile = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("endOfFile"), true,false);
+ cl::_sym_printNotReadable = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("printNotReadable"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2084_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_parseError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("parseError"), true,false);
+ cl::_sym_streamError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("streamError"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2085_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_readerError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("readerError"), true,false);
+ cl::_sym_endOfFile = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("endOfFile"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2086_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARrandom_stateSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARrandom_stateSTAR"), true,false);
+ cl::_sym_parseError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("parseError"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2087_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_simpleError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simpleError"), true,false);
+ cl::_sym_readerError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("readerError"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2088_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_storageCondition = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("storageCondition"), true,false);
+ cl::_sym_STARrandom_stateSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARrandom_stateSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2089_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_simpleCondition = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simpleCondition"), true,false);
+ cl::_sym_simpleError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simpleError"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2090_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_simpleWarning = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simpleWarning"), true,false);
+ cl::_sym_storageCondition = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("storageCondition"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2091_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_warning = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("warning"), true,false);
+ cl::_sym_simpleCondition = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simpleCondition"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2092_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_styleWarning = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("styleWarning"), true,false);
+ cl::_sym_simpleWarning = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simpleWarning"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2093_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_asin = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("asin"), true,false);
+ cl::_sym_warning = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("warning"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2094_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_acos = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("acos"), true,false);
+ cl::_sym_styleWarning = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("styleWarning"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2095_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_asinh = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("asinh"), true,false);
+ cl::_sym_asin = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("asin"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2096_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_acosh = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("acosh"), true,false);
+ cl::_sym_acos = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("acos"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2097_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_atanh = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("atanh"), true,false);
+ cl::_sym_asinh = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("asinh"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2098_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_dynamic_extent = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("dynamic_extent"), true,false);
+ cl::_sym_acosh = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("acosh"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2099_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_ftype = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("ftype"), true,false);
+ cl::_sym_atanh = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("atanh"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2100_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boole = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole"), true,false);
+ cl::_sym_dynamic_extent = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("dynamic_extent"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2101_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_callArgumentsLimit = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("callArgumentsLimit"), true,false);
+ cl::_sym_ftype = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("ftype"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2102_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_arrayDimensionLimit = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("arrayDimensionLimit"), true,false);
+ cl::_sym_boole = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boole"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2103_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_arrayTotalSizeLimit = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("arrayTotalSizeLimit"), true,false);
+ cl::_sym_callArgumentsLimit = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("callArgumentsLimit"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2104_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_lambdaParametersLimit = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("lambdaParametersLimit"), true,false);
+ cl::_sym_arrayDimensionLimit = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("arrayDimensionLimit"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2105_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_schar = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("schar"), true,false);
+ cl::_sym_arrayTotalSizeLimit = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("arrayTotalSizeLimit"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2106_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_fixnum = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fixnum"), true,false);
+ cl::_sym_lambdaParametersLimit = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("lambdaParametersLimit"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2107_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_nil = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nil"), true,false);
+ cl::_sym_schar = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("schar"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2108_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_stream_element_type = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("stream_element_type"), true,false);
+ cl::_sym_fixnum = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fixnum"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2109_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_stream_external_format = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("stream_external_format"), true,false);
+ cl::_sym_nil = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nil"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2110_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_open_stream_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("open_stream_p"), true,false);
+ cl::_sym_stream_element_type = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("stream_element_type"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2111_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_write_sequence = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("write_sequence"), true,false);
+ cl::_sym_stream_external_format = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("stream_external_format"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2112_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_read_sequence = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("read_sequence"), true,false);
+ cl::_sym_open_stream_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("open_stream_p"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2113_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_file_string_length = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("file_string_length"), true,false);
+ cl::_sym_write_sequence = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("write_sequence"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2114_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_echo_stream_input_stream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("echo_stream_input_stream"), true,false);
+ cl::_sym_read_sequence = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("read_sequence"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2115_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_echo_stream_output_stream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("echo_stream_output_stream"), true,false);
+ cl::_sym_file_string_length = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("file_string_length"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2116_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_concatenated_stream_streams = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("concatenated_stream_streams"), true,false);
+ cl::_sym_echo_stream_input_stream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("echo_stream_input_stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2117_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_synonym_stream_symbol = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("synonym_stream_symbol"), true,false);
+ cl::_sym_echo_stream_output_stream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("echo_stream_output_stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2118_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_broadcast_stream_streams = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("broadcast_stream_streams"), true,false);
+ cl::_sym_concatenated_stream_streams = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("concatenated_stream_streams"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2119_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_getOutputStreamString = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("getOutputStreamString"), true,false);
+ cl::_sym_synonym_stream_symbol = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("synonym_stream_symbol"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2120_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_elt = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("elt"), true,false);
+ cl::_sym_broadcast_stream_streams = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("broadcast_stream_streams"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2121_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_callNextMethod = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("callNextMethod"), true,false);
+ cl::_sym_getOutputStreamString = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("getOutputStreamString"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2122_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_nextMethodP = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nextMethodP"), true,false);
+ cl::_sym_elt = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("elt"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2123_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_internalTimeUnitsPerSecond = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("internalTimeUnitsPerSecond"), true,false);
+ cl::_sym_callNextMethod = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("callNextMethod"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2124_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_getInternalRealTime = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("getInternalRealTime"), true,false);
+ cl::_sym_nextMethodP = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nextMethodP"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2125_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_getInternalRunTime = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("getInternalRunTime"), true,false);
+ cl::_sym_internalTimeUnitsPerSecond = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("internalTimeUnitsPerSecond"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2126_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_logicalPathnameTranslations = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logicalPathnameTranslations"), true,false);
+ cl::_sym_getInternalRealTime = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("getInternalRealTime"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2127_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_set = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("set"), true,false);
+ cl::_sym_getInternalRunTime = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("getInternalRunTime"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2128_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_restartName = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("restartName"), true,false);
+ cl::_sym_logicalPathnameTranslations = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logicalPathnameTranslations"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2129_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_position = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("position"), true,false);
+ cl::_sym_set = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("set"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2130_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_compileFile = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("compileFile"), true,false);
+ cl::_sym_restartName = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("restartName"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2131_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_first = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("first"), true,false);
+ cl::_sym_position = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("position"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2132_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_float = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("float"), true,false);
+ cl::_sym_compileFile = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("compileFile"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2133_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_logical_pathname = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logical_pathname"), true,false);
+ cl::_sym_first = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("first"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2134_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_pathnamep = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathnamep"), true,false);
+ cl::_sym_float = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("float"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2135_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARloadPathnameSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARloadPathnameSTAR"), true,false);
+ cl::_sym_logical_pathname = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logical_pathname"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2136_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARloadTruenameSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARloadTruenameSTAR"), true,false);
+ cl::_sym_pathnamep = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathnamep"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2137_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_makeArray = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("makeArray"), true,false);
+ cl::_sym_STARloadPathnameSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARloadPathnameSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2138_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_makePathname = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("makePathname"), true,false);
+ cl::_sym_STARloadTruenameSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARloadTruenameSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2139_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_mismatch = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mismatch"), true,false);
+ cl::_sym_makeArray = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("makeArray"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2140_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_SignedByte = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("SignedByte"), true,false);
+ cl::_sym_makePathname = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("makePathname"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2141_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_UnsignedByte = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("UnsignedByte"), true,false);
+ cl::_sym_mismatch = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mismatch"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2142_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Bit = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("Bit"), true,false);
+ cl::_sym_SignedByte = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("SignedByte"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2143_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARdefaultPathnameDefaultsSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARdefaultPathnameDefaultsSTAR"), true,false);
+ cl::_sym_UnsignedByte = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("UnsignedByte"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2144_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_simpleTypeError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simpleTypeError"), true,false);
+ cl::_sym_Bit = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("Bit"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2145_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_MultipleValuesLimit = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("MultipleValuesLimit"), true,false);
+ cl::_sym_STARdefaultPathnameDefaultsSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARdefaultPathnameDefaultsSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2146_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_keywordp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("keywordp"), true,false);
+ cl::_sym_simpleTypeError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simpleTypeError"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2147_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_null = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("null"), true,false);
+ cl::_sym_MultipleValuesLimit = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("MultipleValuesLimit"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2148_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_endp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("endp"), true,false);
+ cl::_sym_keywordp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("keywordp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2149_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_symbolp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("symbolp"), true,false);
+ cl::_sym_null = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("null"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2150_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_atom = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("atom"), true,false);
+ cl::_sym_endp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("endp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2151_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_consp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("consp"), true,false);
+ cl::_sym_symbolp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("symbolp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2152_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_listp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("listp"), true,false);
+ cl::_sym_atom = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("atom"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2153_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_numberp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("numberp"), true,false);
+ cl::_sym_consp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("consp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2154_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_integerp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("integerp"), true,false);
+ cl::_sym_listp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("listp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2155_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_rationalp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("rationalp"), true,false);
+ cl::_sym_numberp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("numberp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2156_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_floatp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("floatp"), true,false);
+ cl::_sym_integerp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("integerp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2157_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_realp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("realp"), true,false);
+ cl::_sym_rationalp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("rationalp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2158_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_complexp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("complexp"), true,false);
+ cl::_sym_floatp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("floatp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2159_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_character = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("character"), true,false);
+ cl::_sym_realp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("realp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2160_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_base_char = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("base_char"), true,false);
+ cl::_sym_complexp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("complexp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2161_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_single_float = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("single_float"), true,false);
+ cl::_sym_character = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("character"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2162_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_characterp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("characterp"), true,false);
+ cl::_sym_base_char = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("base_char"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2163_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_stringp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("stringp"), true,false);
+ cl::_sym_single_float = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("single_float"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2164_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_bit_vector_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("bit_vector_p"), true,false);
+ cl::_sym_characterp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("characterp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2165_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_vectorp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("vectorp"), true,false);
+ cl::_sym_stringp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("stringp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2166_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_simple_vector_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simple_vector_p"), true,false);
+ cl::_sym_bit_vector_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("bit_vector_p"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2167_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_simple_string_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simple_string_p"), true,false);
+ cl::_sym_vectorp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("vectorp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2168_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_simple_bit_vector_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simple_bit_vector_p"), true,false);
+ cl::_sym_simple_vector_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simple_vector_p"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2169_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_arrayp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("arrayp"), true,false);
+ cl::_sym_simple_string_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simple_string_p"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2170_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_packagep = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("packagep"), true,false);
+ cl::_sym_simple_bit_vector_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simple_bit_vector_p"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2171_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_functionp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("functionp"), true,false);
+ cl::_sym_arrayp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("arrayp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2172_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_compiled_function_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("compiled_function_p"), true,false);
+ cl::_sym_packagep = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("packagep"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2173_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_hash_table_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("hash_table_p"), true,false);
+ cl::_sym_functionp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("functionp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2174_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym__DIVIDE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_DIVIDE_"), true,false);
+ cl::_sym_compiled_function_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("compiled_function_p"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2175_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_typep = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("typep"), true,false);
+ cl::_sym_hash_table_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("hash_table_p"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2176_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_type = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("type"), true,false);
+ cl::_sym__DIVIDE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("_DIVIDE_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2177_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_step = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("step"), true,false);
+ cl::_sym_typep = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("typep"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2178_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_speed = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("speed"), true,false);
+ cl::_sym_type = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("type"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2179_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_space = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("space"), true,false);
+ cl::_sym_step = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("step"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2180_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_sin = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("sin"), true,false);
+ cl::_sym_speed = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("speed"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2181_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_safety = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("safety"), true,false);
+ cl::_sym_space = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("space"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2182_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_restart_bind = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("restart_bind"), true,false);
+ cl::_sym_sin = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("sin"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2183_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_restart = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("restart"), true,false);
+ cl::_sym_safety = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("safety"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2184_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_describe = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("describe"), true,false);
+ cl::_sym_restart_bind = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("restart_bind"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2185_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_disassemble = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("disassemble"), true,false);
+ cl::_sym_restart = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("restart"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2186_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_rename_file = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("rename_file"), true,false);
+ cl::_sym_describe = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("describe"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2187_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_random = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("random"), true,false);
+ cl::_sym_disassemble = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("disassemble"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2188_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_optimize = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("optimize"), true,false);
+ cl::_sym_rename_file = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("rename_file"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2189_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_two_way_stream_input_stream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("two_way_stream_input_stream"), true,false);
+ cl::_sym_random = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("random"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2190_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_two_way_stream_output_stream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("two_way_stream_output_stream"), true,false);
+ cl::_sym_optimize = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("optimize"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2191_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_two_way_stream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("two_way_stream"), true,false);
+ cl::_sym_two_way_stream_input_stream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("two_way_stream_input_stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2192_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_make_two_way_stream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("make_two_way_stream"), true,false);
+ cl::_sym_two_way_stream_output_stream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("two_way_stream_output_stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2193_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_make_synonym_stream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("make_synonym_stream"), true,false);
+ cl::_sym_two_way_stream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("two_way_stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2194_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_invoke_restart = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("invoke_restart"), true,false);
+ cl::_sym_make_two_way_stream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("make_two_way_stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2195_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_get = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("get"), true,false);
+ cl::_sym_make_synonym_stream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("make_synonym_stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2196_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_find_restart = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("find_restart"), true,false);
+ cl::_sym_invoke_restart = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("invoke_restart"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2197_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_fill_pointer = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fill_pointer"), true,false);
+ cl::_sym_get = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("get"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2198_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_directory = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("directory"), true,false);
+ cl::_sym_find_restart = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("find_restart"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2199_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_defun = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("defun"), true,false);
+ cl::_sym_fill_pointer = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fill_pointer"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2200_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_debug = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("debug"), true,false);
+ cl::_sym_directory = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("directory"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2201_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_count = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("count"), true,false);
+ cl::_sym_defun = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("defun"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2202_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_compute_restarts = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("compute_restarts"), true,false);
+ cl::_sym_debug = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("debug"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2203_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_write = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("write"), true,false);
+ cl::_sym_count = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("count"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2204_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARreadDefaultFloatFormatSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARreadDefaultFloatFormatSTAR"), true,false);
+ cl::_sym_compute_restarts = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("compute_restarts"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2205_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARprint_baseSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_baseSTAR"), true,false);
+ cl::_sym_write = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("write"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2206_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARprint_levelSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_levelSTAR"), true,false);
+ cl::_sym_STARreadDefaultFloatFormatSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARreadDefaultFloatFormatSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2207_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARprint_lengthSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_lengthSTAR"), true,false);
+ cl::_sym_STARprint_baseSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_baseSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2208_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARprint_radixSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_radixSTAR"), true,false);
+ cl::_sym_STARprint_levelSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_levelSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2209_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARprint_caseSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_caseSTAR"), true,false);
+ cl::_sym_STARprint_lengthSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_lengthSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2210_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARprint_gensymSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_gensymSTAR"), true,false);
+ cl::_sym_STARprint_radixSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_radixSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2211_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARprint_arraySTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_arraySTAR"), true,false);
+ cl::_sym_STARprint_caseSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_caseSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2212_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARprint_readablySTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_readablySTAR"), true,false);
+ cl::_sym_STARprint_gensymSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_gensymSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2213_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARprint_escapeSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_escapeSTAR"), true,false);
+ cl::_sym_STARprint_arraySTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_arraySTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2214_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARprint_circleSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_circleSTAR"), true,false);
+ cl::_sym_STARprint_readablySTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_readablySTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2215_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARprint_linesSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_linesSTAR"), true,false);
+ cl::_sym_STARprint_escapeSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_escapeSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2216_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARprint_right_marginSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_right_marginSTAR"), true,false);
+ cl::_sym_STARprint_circleSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_circleSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2217_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARprint_prettySTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_prettySTAR"), true,false);
+ cl::_sym_STARprint_linesSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_linesSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2218_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARprint_miser_widthSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_miser_widthSTAR"), true,false);
+ cl::_sym_STARprint_right_marginSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_right_marginSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2219_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARprint_pprint_dispatchSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_pprint_dispatchSTAR"), true,false);
+ cl::_sym_STARprint_prettySTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_prettySTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2220_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARdebuggerHookSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARdebuggerHookSTAR"), true,false);
+ cl::_sym_STARprint_miser_widthSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_miser_widthSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2221_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_break = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("break"), true,false);
+ cl::_sym_STARprint_pprint_dispatchSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARprint_pprint_dispatchSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2222_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARbreakOnSignalsSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARbreakOnSignalsSTAR"), true,false);
+ cl::_sym_STARdebuggerHookSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARdebuggerHookSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2223_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_typeError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("typeError"), true,false);
+ cl::_sym_break = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("break"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2224_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_printObject = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("printObject"), true,false);
+ cl::_sym_STARbreakOnSignalsSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARbreakOnSignalsSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2225_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_controlError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("controlError"), true,false);
+ cl::_sym_typeError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("typeError"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2226_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_fileError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fileError"), true,false);
+ cl::_sym_printObject = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("printObject"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2227_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_satisfies = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("satisfies"), true,false);
+ cl::_sym_controlError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("controlError"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2228_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_array_has_fill_pointer_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("array_has_fill_pointer_p"), true,false);
+ cl::_sym_fileError = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fileError"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2229_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_T = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("T"), true,false);
+ cl::_sym_satisfies = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("satisfies"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2230_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_method = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("method"), true,false);
+ cl::_sym_array_has_fill_pointer_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("array_has_fill_pointer_p"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2231_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_generic_function = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("generic_function"), true,false);
+ cl::_sym_T = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("T"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2232_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_cond = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("cond"), true,false);
+ cl::_sym_method = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("method"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2233_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_stream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("stream"), true,false);
+ cl::_sym_generic_function = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("generic_function"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2234_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boolean = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boolean"), true,false);
+ cl::_sym_cond = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("cond"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2235_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_keyword = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("keyword"), true,false);
+ cl::_sym_stream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2236_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_array = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("array"), true,false);
+ cl::_sym_boolean = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boolean"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2237_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_simple_array = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simple_array"), true,false);
+ cl::_sym_keyword = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("keyword"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2238_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_vector = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("vector"), true,false);
+ cl::_sym_array = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("array"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2239_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_simple_vector = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simple_vector"), true,false);
+ cl::_sym_simple_array = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simple_array"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2240_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_input_stream_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("input_stream_p"), true,false);
+ cl::_sym_vector = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("vector"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2241_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_output_stream_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("output_stream_p"), true,false);
+ cl::_sym_simple_vector = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simple_vector"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2242_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARstandard_inputSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARstandard_inputSTAR"), true,false);
+ cl::_sym_input_stream_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("input_stream_p"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2243_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARstandard_outputSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARstandard_outputSTAR"), true,false);
+ cl::_sym_output_stream_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("output_stream_p"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2244_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARerror_outputSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARerror_outputSTAR"), true,false);
+ cl::_sym_STARstandard_inputSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARstandard_inputSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2245_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARtrace_outputSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARtrace_outputSTAR"), true,false);
+ cl::_sym_STARstandard_outputSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARstandard_outputSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2246_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARdebug_ioSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARdebug_ioSTAR"), true,false);
+ cl::_sym_STARerror_outputSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARerror_outputSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2247_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARquery_ioSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARquery_ioSTAR"), true,false);
+ cl::_sym_STARtrace_outputSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARtrace_outputSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2248_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARterminal_ioSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARterminal_ioSTAR"), true,false);
+ cl::_sym_STARdebug_ioSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARdebug_ioSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2249_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARgensym_counterSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARgensym_counterSTAR"), true,false);
+ cl::_sym_STARquery_ioSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARquery_ioSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2250_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_standard_char = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("standard_char"), true,false);
+ cl::_sym_STARterminal_ioSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARterminal_ioSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2251_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_extended_char = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("extended_char"), true,false);
+ cl::_sym_STARgensym_counterSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARgensym_counterSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2252_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_special = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("special"), true,false);
+ cl::_sym_standard_char = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("standard_char"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2253_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_nconc = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nconc"), true,false);
+ cl::_sym_extended_char = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("extended_char"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2254_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_cadr = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("cadr"), true,false);
+ cl::_sym_special = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("special"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2255_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARmacroexpand_hookSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARmacroexpand_hookSTAR"), true,false);
+ cl::_sym_nconc = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nconc"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2256_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARread_baseSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARread_baseSTAR"), true,false);
+ cl::_sym_cadr = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("cadr"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2257_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_compile = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("compile"), true,false);
+ cl::_sym_STARmacroexpand_hookSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARmacroexpand_hookSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2258_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_load = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("load"), true,false);
+ cl::_sym_STARread_baseSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARread_baseSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2259_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_eval = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("eval"), true,false);
+ cl::_sym_compile = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("compile"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2260_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARread_evalSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARread_evalSTAR"), true,false);
+ cl::_sym_load = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("load"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2261_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_define_modify_macro = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("define_modify_macro"), true,false);
+ cl::_sym_eval = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("eval"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2262_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_destructuring_bind = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("destructuring_bind"), true,false);
+ cl::_sym_STARread_evalSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARread_evalSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2263_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_deftype = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("deftype"), true,false);
+ cl::_sym_define_modify_macro = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("define_modify_macro"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2264_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_define_method_combination = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("define_method_combination"), true,false);
+ cl::_sym_destructuring_bind = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("destructuring_bind"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2265_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_defsetf = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("defsetf"), true,false);
+ cl::_sym_deftype = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("deftype"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2266_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_AMPwhole = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("AMPwhole"), true,false);
+ cl::_sym_define_method_combination = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("define_method_combination"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2267_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_AMPenvironment = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("AMPenvironment"), true,false);
+ cl::_sym_defsetf = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("defsetf"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2268_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_AMPoptional = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("AMPoptional"), true,false);
+ cl::_sym_AMPwhole = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("AMPwhole"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2269_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_AMPkey = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("AMPkey"), true,false);
+ cl::_sym_AMPenvironment = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("AMPenvironment"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2270_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_AMPallow_other_keys = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("AMPallow_other_keys"), true,false);
+ cl::_sym_AMPoptional = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("AMPoptional"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2271_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_AMPaux = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("AMPaux"), true,false);
+ cl::_sym_AMPkey = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("AMPkey"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2272_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_AMPrest = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("AMPrest"), true,false);
+ cl::_sym_AMPallow_other_keys = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("AMPallow_other_keys"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2273_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_AMPbody = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("AMPbody"), true,false);
+ cl::_sym_AMPaux = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("AMPaux"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2274_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_integer = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("integer"), true,false);
+ cl::_sym_AMPrest = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("AMPrest"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2275_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_sequence = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("sequence"), true,false);
+ cl::_sym_AMPbody = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("AMPbody"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2276_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_declare = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("declare"), true,false);
+ cl::_sym_integer = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("integer"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2277_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_variable = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("variable"), true,false);
+ cl::_sym_sequence = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("sequence"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2278_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_bit = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("bit"), true,false);
+ cl::_sym_declare = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("declare"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2279_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARreadtableSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARreadtableSTAR"), true,false);
+ cl::_sym_variable = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("variable"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2280_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_and = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("and"), true,false);
+ cl::_sym_bit = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("bit"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2281_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_or = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("or"), true,false);
+ cl::_sym_STARreadtableSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARreadtableSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2282_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_car = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("car"), true,false);
+ cl::_sym_and = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("and"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2283_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_cdr = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("cdr"), true,false);
+ cl::_sym_or = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("or"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2284_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_dotimes = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("dotimes"), true,false);
+ cl::_sym_car = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("car"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2285_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_dolist = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("dolist"), true,false);
+ cl::_sym_cdr = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("cdr"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2286_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_do = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("do"), true,false);
+ cl::_sym_dotimes = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("dotimes"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2287_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_package = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("package"), true,false);
+ cl::_sym_dolist = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("dolist"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2288_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_aref = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("aref"), true,false);
+ cl::_sym_do = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("do"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2289_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_nth = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nth"), true,false);
+ cl::_sym_package = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("package"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2290_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_append = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("append"), true,false);
+ cl::_sym_aref = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("aref"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2291_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_gethash = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("gethash"), true,false);
+ cl::_sym_nth = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nth"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2292_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_hash_table = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("hash_table"), true,false);
+ cl::_sym_append = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("append"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2293_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARfeaturesSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARfeaturesSTAR"), true,false);
+ cl::_sym_gethash = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("gethash"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2294_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARload_printSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARload_printSTAR"), true,false);
+ cl::_sym_hash_table = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("hash_table"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2295_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARload_verboseSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARload_verboseSTAR"), true,false);
+ cl::_sym_STARfeaturesSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARfeaturesSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2296_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_lambda = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("lambda"), true,false);
+ cl::_sym_STARload_printSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARload_printSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2297_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_symbol = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("symbol"), true,false);
+ cl::_sym_STARload_verboseSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARload_verboseSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2298_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARpackageSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARpackageSTAR"), true,false);
+ cl::_sym_lambda = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("lambda"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2299_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARmodulesSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARmodulesSTAR"), true,false);
+ cl::_sym_symbol = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("symbol"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2300_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_progn = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("progn"), true,false);
+ cl::_sym_STARpackageSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARpackageSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2301_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_quote = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("quote"), true,false);
+ cl::_sym_STARmodulesSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARmodulesSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2302_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_function = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("function"), true,false);
+ cl::_sym_progn = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("progn"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2303_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_slot_value = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("slot_value"), true,false);
+ cl::_sym_quote = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("quote"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2304_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_values = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("values"), true,false);
+ cl::_sym_function = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("function"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2305_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_list = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("list"), true,false);
+ cl::_sym_slot_value = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("slot_value"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2306_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_standard_class = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("standard_class"), true,false);
+ cl::_sym_values = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("values"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2307_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_rest = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("rest"), true,false);
+ cl::_sym_list = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("list"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2308_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_most_negative_fixnum = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("most_negative_fixnum"), true,false);
+ cl::_sym_standard_class = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("standard_class"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2309_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_most_positive_fixnum = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("most_positive_fixnum"), true,false);
+ cl::_sym_rest = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("rest"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2310_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_array_rank_limit = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("array_rank_limit"), true,false);
+ cl::_sym_most_negative_fixnum = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("most_negative_fixnum"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2311_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_char_code_limit = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_code_limit"), true,false);
+ cl::_sym_most_positive_fixnum = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("most_positive_fixnum"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2312_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_apropos = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("apropos"), true,false);
+ cl::_sym_array_rank_limit = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("array_rank_limit"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2313_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_export = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("export"), true,false);
+ cl::_sym_char_code_limit = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_code_limit"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2314_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_intern = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("intern"), true,false);
+ cl::_sym_apropos = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("apropos"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2315_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_findClass = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("findClass"), true,false);
+ cl::_sym_export = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("export"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2316_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_error = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("error"), true,false);
+ cl::_sym_intern = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("intern"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2317_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_cerror = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("cerror"), true,false);
+ cl::_sym_findClass = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("findClass"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2318_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_not = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("not"), true,false);
+ cl::_sym_error = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("error"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2319_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_sort = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("sort"), true,false);
+ cl::_sym_cerror = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("cerror"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2320_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_macroexpand_1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("macroexpand_1"), true,false);
+ cl::_sym_not = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("not"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2321_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_macroexpand = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("macroexpand"), true,false);
+ cl::_sym_sort = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("sort"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2322_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_acons = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("acons"), true,false);
+ cl::_sym_macroexpand_1 = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("macroexpand_1"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2323_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_assoc = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("assoc"), true,false);
+ cl::_sym_macroexpand = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("macroexpand"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2324_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_member = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("member"), true,false);
+ cl::_sym_acons = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("acons"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2325_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_find_package = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("find_package"), true,false);
+ cl::_sym_assoc = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("assoc"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2326_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_copyTree = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("copyTree"), true,false);
+ cl::_sym_member = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("member"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2327_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_eq = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("eq"), true,false);
+ cl::_sym_find_package = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("find_package"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2328_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_eql = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("eql"), true,false);
+ cl::_sym_copyTree = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("copyTree"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2329_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_equal = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("equal"), true,false);
+ cl::_sym_eq = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("eq"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2330_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_equalp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("equalp"), true,false);
+ cl::_sym_eql = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("eql"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2331_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_setMacroCharacter = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("setMacroCharacter"), true,false);
+ cl::_sym_equal = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("equal"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2332_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_setDispatchMacroCharacter = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("setDispatchMacroCharacter"), true,false);
+ cl::_sym_equalp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("equalp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2333_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_getDispatchMacroCharacter = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("getDispatchMacroCharacter"), true,false);
+ cl::_sym_setMacroCharacter = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("setMacroCharacter"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2334_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_pathname = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathname"), true,false);
+ cl::_sym_setDispatchMacroCharacter = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("setDispatchMacroCharacter"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2335_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_mergePathnames = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mergePathnames"), true,false);
+ cl::_sym_getDispatchMacroCharacter = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("getDispatchMacroCharacter"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2336_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_wildPathnameP = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("wildPathnameP"), true,false);
+ cl::_sym_pathname = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathname"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2337_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_make_pathname = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("make_pathname"), true,false);
+ cl::_sym_mergePathnames = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("mergePathnames"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2338_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_pathnameHost = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathnameHost"), true,false);
+ cl::_sym_wildPathnameP = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("wildPathnameP"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2339_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_pathnameDevice = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathnameDevice"), true,false);
+ cl::_sym_make_pathname = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("make_pathname"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2340_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_pathnameDirectory = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathnameDirectory"), true,false);
+ cl::_sym_pathnameHost = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathnameHost"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2341_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_pathnameName = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathnameName"), true,false);
+ cl::_sym_pathnameDevice = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathnameDevice"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2342_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_pathnameType = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathnameType"), true,false);
+ cl::_sym_pathnameDirectory = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathnameDirectory"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2343_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_pathnameVersion = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathnameVersion"), true,false);
+ cl::_sym_pathnameName = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathnameName"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2344_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_pathnameMatchP = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathnameMatchP"), true,false);
+ cl::_sym_pathnameType = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathnameType"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2345_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_translatePathname = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("translatePathname"), true,false);
+ cl::_sym_pathnameVersion = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathnameVersion"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2346_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_translateLogicalPathname = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("translateLogicalPathname"), true,false);
+ cl::_sym_pathnameMatchP = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathnameMatchP"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2347_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_namestring = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("namestring"), true,false);
+ cl::_sym_translatePathname = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("translatePathname"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2348_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_parseNamestring = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("parseNamestring"), true,false);
+ cl::_sym_translateLogicalPathname = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("translateLogicalPathname"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2349_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_fileNamestring = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fileNamestring"), true,false);
+ cl::_sym_namestring = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("namestring"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2350_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_directoryNamestring = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("directoryNamestring"), true,false);
+ cl::_sym_parseNamestring = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("parseNamestring"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2351_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_hostNamestring = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("hostNamestring"), true,false);
+ cl::_sym_fileNamestring = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fileNamestring"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2352_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_enoughNamestring = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("enoughNamestring"), true,false);
+ cl::_sym_directoryNamestring = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("directoryNamestring"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2353_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_package_use_list = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("package_use_list"), true,false);
+ cl::_sym_hostNamestring = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("hostNamestring"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2354_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_gentemp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("gentemp"), true,false);
+ cl::_sym_enoughNamestring = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("enoughNamestring"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2355_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_makePackage = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("makePackage"), true,false);
+ cl::_sym_package_use_list = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("package_use_list"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2356_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_listAllPackages = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("listAllPackages"), true,false);
+ cl::_sym_gentemp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("gentemp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2357_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_use_package = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("use_package"), true,false);
+ cl::_sym_makePackage = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("makePackage"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2358_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_unuse_package = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("unuse_package"), true,false);
+ cl::_sym_listAllPackages = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("listAllPackages"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2359_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_package_shadowing_symbols = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("package_shadowing_symbols"), true,false);
+ cl::_sym_use_package = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("use_package"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2360_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_import = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("import"), true,false);
+ cl::_sym_unuse_package = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("unuse_package"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2361_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_shadow = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("shadow"), true,false);
+ cl::_sym_package_shadowing_symbols = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("package_shadowing_symbols"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2362_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_shadowing_import = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("shadowing_import"), true,false);
+ cl::_sym_import = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("import"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2363_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_findSymbol = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("findSymbol"), true,false);
+ cl::_sym_shadow = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("shadow"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2364_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_unintern = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("unintern"), true,false);
+ cl::_sym_shadowing_import = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("shadowing_import"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2365_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_condition = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("condition"), true,false);
+ cl::_sym_findSymbol = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("findSymbol"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2366_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_defvar = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("defvar"), true,false);
+ cl::_sym_unintern = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("unintern"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2367_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_defconstant = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("defconstant"), true,false);
+ cl::_sym_condition = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("condition"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2368_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_defparameter = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("defparameter"), true,false);
+ cl::_sym_defvar = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("defvar"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2369_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_intersection = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("intersection"), true,false);
+ cl::_sym_defconstant = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("defconstant"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2370_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_union = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("union"), true,false);
+ cl::_sym_defparameter = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("defparameter"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2371_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_remove = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("remove"), true,false);
+ cl::_sym_intersection = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("intersection"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2372_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_pprint_dispatch = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pprint_dispatch"), true,false);
+ cl::_sym_union = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("union"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2373_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_fileStream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fileStream"), true,false);
+ cl::_sym_remove = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("remove"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2374_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_make_list = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("make_list"), true,false);
+ cl::_sym_pprint_dispatch = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pprint_dispatch"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2375_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_cons = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("cons"), true,false);
+ cl::_sym_fileStream = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fileStream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2376_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_getf = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("getf"), true,false);
+ cl::_sym_make_list = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("make_list"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2377_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_make_symbol = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("make_symbol"), true,false);
+ cl::_sym_cons = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("cons"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2378_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_symbolName = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("symbolName"), true,false);
+ cl::_sym_getf = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("getf"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2379_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_symbolValue = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("symbolValue"), true,false);
+ cl::_sym_make_symbol = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("make_symbol"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2380_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_symbolPackage = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("symbolPackage"), true,false);
+ cl::_sym_symbolName = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("symbolName"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2381_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_symbolFunction = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("symbolFunction"), true,false);
+ cl::_sym_symbolValue = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("symbolValue"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2382_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_boundp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boundp"), true,false);
+ cl::_sym_symbolPackage = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("symbolPackage"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2383_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_makeCondition = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("makeCondition"), true,false);
+ cl::_sym_symbolFunction = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("symbolFunction"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2384_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_format = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("format"), true,false);
+ cl::_sym_boundp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("boundp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2385_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_documentation = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("documentation"), true,false);
+ cl::_sym_makeCondition = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("makeCondition"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2386_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_copyStructure = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("copyStructure"), true,false);
+ cl::_sym_format = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("format"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2387_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_char_code = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_code"), true,false);
+ cl::_sym_documentation = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("documentation"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2388_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_code_char = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("code_char"), true,false);
+ cl::_sym_copyStructure = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("copyStructure"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2389_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_char_int = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_int"), true,false);
+ cl::_sym_char_code = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_code"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2390_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_name_char = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("name_char"), true,false);
+ cl::_sym_code_char = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("code_char"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2391_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_char_name = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_name"), true,false);
+ cl::_sym_char_int = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_int"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2392_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_alpha_char_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("alpha_char_p"), true,false);
+ cl::_sym_name_char = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("name_char"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2393_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_standard_char_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("standard_char_p"), true,false);
+ cl::_sym_char_name = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_name"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2394_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_charUpcase = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("charUpcase"), true,false);
+ cl::_sym_alpha_char_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("alpha_char_p"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2395_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_charDowncase = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("charDowncase"), true,false);
+ cl::_sym_standard_char_p = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("standard_char_p"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2396_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_char_LT_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_LT_"), true,false);
+ cl::_sym_charUpcase = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("charUpcase"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2397_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_char_GT_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_GT_"), true,false);
+ cl::_sym_charDowncase = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("charDowncase"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2398_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_char_LE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_LE_"), true,false);
+ cl::_sym_char_LT_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_LT_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2399_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_char_GE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_GE_"), true,false);
+ cl::_sym_char_GT_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_GT_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2400_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_char_NE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_NE_"), true,false);
+ cl::_sym_char_LE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_LE_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2401_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_char_EQ_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_EQ_"), true,false);
+ cl::_sym_char_GE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_GE_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2402_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_charLessp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("charLessp"), true,false);
+ cl::_sym_char_NE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_NE_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2403_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_charGreaterp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("charGreaterp"), true,false);
+ cl::_sym_char_EQ_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char_EQ_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2404_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_charNotGreaterp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("charNotGreaterp"), true,false);
+ cl::_sym_charLessp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("charLessp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2405_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_charNotLessp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("charNotLessp"), true,false);
+ cl::_sym_charGreaterp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("charGreaterp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2406_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_charNotEqual = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("charNotEqual"), true,false);
+ cl::_sym_charNotGreaterp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("charNotGreaterp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2407_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_charEqual = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("charEqual"), true,false);
+ cl::_sym_charNotLessp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("charNotLessp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2408_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_digitCharP = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("digitCharP"), true,false);
+ cl::_sym_charNotEqual = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("charNotEqual"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2409_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_string = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string"), true,false);
+ cl::_sym_charEqual = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("charEqual"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2410_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_string_upcase = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_upcase"), true,false);
+ cl::_sym_digitCharP = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("digitCharP"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2411_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_string_downcase = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_downcase"), true,false);
+ cl::_sym_string = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2412_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_nstring_upcase = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nstring_upcase"), true,false);
+ cl::_sym_string_upcase = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_upcase"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2413_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_nstring_downcase = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nstring_downcase"), true,false);
+ cl::_sym_string_downcase = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_downcase"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2414_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_stringTrim = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("stringTrim"), true,false);
+ cl::_sym_nstring_upcase = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nstring_upcase"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2415_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_stringLeftTrim = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("stringLeftTrim"), true,false);
+ cl::_sym_nstring_downcase = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nstring_downcase"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2416_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_stringRightTrim = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("stringRightTrim"), true,false);
+ cl::_sym_stringTrim = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("stringTrim"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2417_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_char = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char"), true,false);
+ cl::_sym_stringLeftTrim = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("stringLeftTrim"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2418_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_string_EQ_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_EQ_"), true,false);
+ cl::_sym_stringRightTrim = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("stringRightTrim"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2419_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_string_NE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_NE_"), true,false);
+ cl::_sym_char = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("char"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2420_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_string_LT_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_LT_"), true,false);
+ cl::_sym_string_EQ_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_EQ_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2421_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_string_GT_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_GT_"), true,false);
+ cl::_sym_string_NE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_NE_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2422_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_string_LE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_LE_"), true,false);
+ cl::_sym_string_LT_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_LT_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2423_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_string_GE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_GE_"), true,false);
+ cl::_sym_string_GT_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_GT_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2424_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_string_equal = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_equal"), true,false);
+ cl::_sym_string_LE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_LE_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2425_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_string_not_equal = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_not_equal"), true,false);
+ cl::_sym_string_GE_ = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_GE_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2426_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_string_lessp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_lessp"), true,false);
+ cl::_sym_string_equal = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_equal"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2427_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_string_greaterp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_greaterp"), true,false);
+ cl::_sym_string_not_equal = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_not_equal"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2428_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_string_not_greaterp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_not_greaterp"), true,false);
+ cl::_sym_string_lessp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_lessp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2429_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_string_not_lessp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_not_lessp"), true,false);
+ cl::_sym_string_greaterp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_greaterp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2430_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_make_string = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("make_string"), true,false);
+ cl::_sym_string_not_greaterp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_not_greaterp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2431_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_parseInteger = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("parseInteger"), true,false);
+ cl::_sym_string_not_lessp = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string_not_lessp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2432_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_make_sequence = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("make_sequence"), true,false);
+ cl::_sym_make_string = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("make_string"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2433_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_reverse = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("reverse"), true,false);
+ cl::_sym_parseInteger = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("parseInteger"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2434_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_nreverse = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nreverse"), true,false);
+ cl::_sym_make_sequence = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("make_sequence"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2435_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_subseq = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("subseq"), true,false);
+ cl::_sym_reverse = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("reverse"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2436_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_copySeq = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("copySeq"), true,false);
+ cl::_sym_nreverse = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("nreverse"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2437_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_length = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("length"), true,false);
+ cl::_sym_subseq = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("subseq"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2438_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_subtypep = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("subtypep"), true,false);
+ cl::_sym_copySeq = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("copySeq"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2439_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_vectorPush = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("vectorPush"), true,false);
+ cl::_sym_length = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("length"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2440_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_vectorPushExtend = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("vectorPushExtend"), true,false);
+ cl::_sym_subtypep = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("subtypep"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2441_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_STARread_suppressSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARread_suppressSTAR"), true,false);
+ cl::_sym_vectorPush = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("vectorPush"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2442_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_RandomState_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("random-state"), true,false);
+ cl::_sym_vectorPushExtend = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("vectorPushExtend"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2443_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_BitVector_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("bit-vector"), true,false);
+ cl::_sym_STARread_suppressSTAR = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("STARread_suppressSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2444_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_SimpleBitVector_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simple-bit-vector"), true,false);
+ cl::_sym_RandomState_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("random-state"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2445_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_BitVectorWithFillPtr_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("bit-vector-with-fill-ptr"), true,false);
+ cl::_sym_BitVector_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("bit-vector"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2446_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_StructureObject_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("structure-object"), true,false);
+ cl::_sym_SimpleBitVector_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("simple-bit-vector"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2447_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_ReadTable_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("readtable"), true,false);
+ cl::_sym_BitVectorWithFillPtr_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("bit-vector-with-fill-ptr"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2448_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Null_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("null"), true,false);
+ cl::_sym_StructureObject_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("structure-object"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2449_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_StandardClass_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("StandardClass"), true,false);
+ cl::_sym_ReadTable_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("readtable"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2450_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_StructureClass_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("structure-class"), true,false);
+ cl::_sym_Null_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("null"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2451_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Pathname_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathname"), true,false);
+ cl::_sym_StandardClass_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("StandardClass"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2452_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_LogicalPathname_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logical-pathname"), true,false);
+ cl::_sym_StructureClass_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("structure-class"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2453_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Character_dummy_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("character"), true,false);
+ cl::_sym_Pathname_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("pathname"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2454_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Stream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("stream"), true,false);
+ cl::_sym_LogicalPathname_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("logical-pathname"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2455_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_FileStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("file-stream"), true,false);
+ cl::_sym_Character_dummy_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("character"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2456_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_StringStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string-stream"), true,false);
+ cl::_sym_Stream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2457_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_SynonymStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("synonym-stream"), true,false);
+ cl::_sym_FileStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("file-stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2458_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_TwoWayStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("two-way-stream"), true,false);
+ cl::_sym_StringStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("string-stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2459_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_BroadcastStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("BroadcastStream"), true,false);
+ cl::_sym_SynonymStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("synonym-stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2460_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_ConcatenatedStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("ConcatenatedStream"), true,false);
+ cl::_sym_TwoWayStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("two-way-stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2461_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_EchoStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("EchoStream"), true,false);
+ cl::_sym_BroadcastStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("BroadcastStream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2462_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Package_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("Package"), true,false);
+ cl::_sym_ConcatenatedStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("ConcatenatedStream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2463_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_T_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("T"), true,false);
+ cl::_sym_EchoStream_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("EchoStream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2464_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Cons_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("Cons"), true,false);
+ cl::_sym_Package_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("Package"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2465_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Number_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("number"), true,false);
+ cl::_sym_T_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("T"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2466_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Real_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("real"), true,false);
+ cl::_sym_Cons_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("Cons"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2467_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Rational_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("rational"), true,false);
+ cl::_sym_Number_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("number"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2468_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Integer_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("integer"), true,false);
+ cl::_sym_Real_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("real"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2469_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Fixnum_dummy_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fixnum"), true,false);
+ cl::_sym_Rational_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("rational"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2470_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Float_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("float"), true,false);
+ cl::_sym_Integer_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("integer"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2471_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_ShortFloat_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("ShortFloat"), true,false);
+ cl::_sym_Fixnum_dummy_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("fixnum"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2472_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_SingleFloat_dummy_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("SingleFloat"), true,false);
+ cl::_sym_Float_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("float"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2473_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_DoubleFloat_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("double-float"), true,false);
+ cl::_sym_ShortFloat_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("ShortFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2474_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_LongFloat_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("LongFloat"), true,false);
+ cl::_sym_SingleFloat_dummy_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("SingleFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2475_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Complex_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("complex"), true,false);
+ cl::_sym_DoubleFloat_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("double-float"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2476_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Ratio_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("ratio"), true,false);
+ cl::_sym_LongFloat_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("LongFloat"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2477_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Bignum_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("Bignum"), true,false);
+ cl::_sym_Complex_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("complex"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2478_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Symbol_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("Symbol"), true,false);
+ cl::_sym_Ratio_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("ratio"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2479_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Function_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("Function"), true,false);
+ cl::_sym_Bignum_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("Bignum"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2480_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_CompiledFunction_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("CompiledFunction"), true,false);
+ cl::_sym_Symbol_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("Symbol"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2481_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_StandardObject_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("standard-object"), true,false);
+ cl::_sym_Function_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("Function"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2482_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Class_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("class"), true,false);
+ cl::_sym_CompiledFunction_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("CompiledFunction"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2483_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Array_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("array"), true,false);
+ cl::_sym_StandardObject_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("standard-object"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2484_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Vector_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("vector"), true,false);
+ cl::_sym_Class_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("class"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2485_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_HashTable_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("HashTable"), true,false);
+ cl::_sym_Array_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("array"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2486_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_String_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("String"), true,false);
+ cl::_sym_Vector_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("vector"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2487_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_Str_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("base-string"), true,false);
+ cl::_sym_HashTable_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("HashTable"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2488_helper(core::BootStrapCoreSymbolMap* symbols) {
- cl::_sym_BuiltInClass_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("BuiltInClass"), true,false);
+ cl::_sym_String_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("String"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2489_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_aSingleGraySymbol = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("aSingleGraySymbol"), false,false);
+ cl::_sym_Str_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("base-string"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2490_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_open_stream_p = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("open_stream_p"), true,true);
+ cl::_sym_BuiltInClass_O = symbols->maybe_allocate_unique_symbol("COMMON-LISP",core::lispify_symbol_name("BuiltInClass"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2491_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_read_byte = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_read_byte"), true,false);
+ gray::_sym_aSingleGraySymbol = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("aSingleGraySymbol"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2492_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_write_byte = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_write_byte"), true,false);
+ gray::_sym_open_stream_p = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("open_stream_p"), true,true);
 }
 NOINLINE void maybe_allocate_one_symbol_2493_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_read_char = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_read_char"), true,false);
+ gray::_sym_stream_read_byte = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_read_byte"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2494_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_read_char_no_hang = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_read_char_no_hang"), true,false);
+ gray::_sym_stream_write_byte = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_write_byte"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2495_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_write_char = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_write_char"), true,false);
+ gray::_sym_stream_read_char = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_read_char"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2496_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_write_string = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_write_string"), true,false);
+ gray::_sym_stream_read_char_no_hang = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_read_char_no_hang"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2497_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_terpri = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_terpri"), true,false);
+ gray::_sym_stream_write_char = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_write_char"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2498_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_fresh_line = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_fresh_line"), true,false);
+ gray::_sym_stream_write_string = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_write_string"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2499_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_read_sequence = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_read_sequence"), true,false);
+ gray::_sym_stream_terpri = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_terpri"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2500_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_write_sequence = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_write_sequence"), true,false);
+ gray::_sym_stream_fresh_line = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_fresh_line"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2501_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_unread_char = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_unread_char"), true,false);
+ gray::_sym_stream_read_sequence = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_read_sequence"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2502_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_peek_char = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_peek_char"), true,false);
+ gray::_sym_stream_write_sequence = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_write_sequence"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2503_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_listen = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_listen"), true,false);
+ gray::_sym_stream_unread_char = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_unread_char"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2504_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_streamClearInput = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("streamClearInput"), true,false);
+ gray::_sym_stream_peek_char = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_peek_char"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2505_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_clear_input = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_clear_input"), true,false);
+ gray::_sym_stream_listen = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_listen"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2506_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_clear_output = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_clear_output"), true,false);
+ gray::_sym_streamClearInput = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("streamClearInput"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2507_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_force_output = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_force_output"), true,false);
+ gray::_sym_stream_clear_input = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_clear_input"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2508_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_finish_output = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_finish_output"), true,false);
+ gray::_sym_stream_clear_output = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_clear_output"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2509_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_streamp = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("streamp"), true,true);
+ gray::_sym_stream_force_output = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_force_output"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2510_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_input_stream_p = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("input_stream_p"), true,true);
+ gray::_sym_stream_finish_output = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_finish_output"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2511_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_output_stream_p = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("output_stream_p"), true,true);
+ gray::_sym_streamp = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("streamp"), true,true);
 }
 NOINLINE void maybe_allocate_one_symbol_2512_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_interactive_p = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_interactive_p"), true,false);
+ gray::_sym_input_stream_p = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("input_stream_p"), true,true);
 }
 NOINLINE void maybe_allocate_one_symbol_2513_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_element_type = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_element_type"), true,true);
+ gray::_sym_output_stream_p = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("output_stream_p"), true,true);
 }
 NOINLINE void maybe_allocate_one_symbol_2514_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_file_position = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_file_position"), true,false);
+ gray::_sym_stream_interactive_p = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_interactive_p"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2515_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_line_column = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_line_column"), true,false);
+ gray::_sym_stream_element_type = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_element_type"), true,true);
 }
 NOINLINE void maybe_allocate_one_symbol_2516_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_stream_advance_to_column = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_advance_to_column"), true,false);
+ gray::_sym_stream_file_position = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_file_position"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2517_helper(core::BootStrapCoreSymbolMap* symbols) {
- gray::_sym_close = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("close"), true,true);
+ gray::_sym_stream_line_column = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_line_column"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2518_helper(core::BootStrapCoreSymbolMap* symbols) {
- clos::_sym_compute_applicable_methods_using_classes = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("compute_applicable_methods_using_classes"), false,false);
+ gray::_sym_stream_advance_to_column = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("stream_advance_to_column"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2519_helper(core::BootStrapCoreSymbolMap* symbols) {
- clos::_sym_compute_effective_method_function = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("compute_effective_method_function"), false,false);
+ gray::_sym_close = symbols->maybe_allocate_unique_symbol("GRAY",core::lispify_symbol_name("close"), true,true);
 }
 NOINLINE void maybe_allocate_one_symbol_2520_helper(core::BootStrapCoreSymbolMap* symbols) {
- clos::_sym_std_compute_applicable_methods = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("std_compute_applicable_methods"), false,false);
+ clos::_sym_compute_applicable_methods_using_classes = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("compute_applicable_methods_using_classes"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2521_helper(core::BootStrapCoreSymbolMap* symbols) {
- clos::_sym_std_compute_effective_method = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("std_compute_effective_method"), false,false);
+ clos::_sym_compute_effective_method_function = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("compute_effective_method_function"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2522_helper(core::BootStrapCoreSymbolMap* symbols) {
- clos::_sym_clearGfunHash = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("clearGfunHash"), false,false);
+ clos::_sym_std_compute_applicable_methods = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("std_compute_applicable_methods"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2523_helper(core::BootStrapCoreSymbolMap* symbols) {
- clos::_sym_setFuncallableInstanceFunction = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("setFuncallableInstanceFunction"), true,false);
+ clos::_sym_std_compute_effective_method = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("std_compute_effective_method"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2524_helper(core::BootStrapCoreSymbolMap* symbols) {
- clos::_sym_standardOptimizedReaderMethod = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("standardOptimizedReaderMethod"), false,false);
+ clos::_sym_clearGfunHash = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("clearGfunHash"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2525_helper(core::BootStrapCoreSymbolMap* symbols) {
- clos::_sym_standardOptimizedWriterMethod = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("standardOptimizedWriterMethod"), false,false);
+ clos::_sym_setFuncallableInstanceFunction = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("setFuncallableInstanceFunction"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2526_helper(core::BootStrapCoreSymbolMap* symbols) {
- clos::_sym_standardOptimizedReaderFunction = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("standardOptimizedReaderFunction"), false,false);
+ clos::_sym_standardOptimizedReaderMethod = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("standardOptimizedReaderMethod"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2527_helper(core::BootStrapCoreSymbolMap* symbols) {
- clos::_sym_standardOptimizedWriterFunction = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("standardOptimizedWriterFunction"), false,false);
+ clos::_sym_standardOptimizedWriterMethod = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("standardOptimizedWriterMethod"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2528_helper(core::BootStrapCoreSymbolMap* symbols) {
- clos::_sym_classp = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("classp"), true,false);
+ clos::_sym_standardOptimizedReaderFunction = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("standardOptimizedReaderFunction"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2529_helper(core::BootStrapCoreSymbolMap* symbols) {
- clos::_sym_aSingleClosSymbol = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("aSingleClosSymbol"), false,false);
+ clos::_sym_standardOptimizedWriterFunction = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("standardOptimizedWriterFunction"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2530_helper(core::BootStrapCoreSymbolMap* symbols) {
- clos::_sym_class_precedence_list = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("class_precedence_list"), true,false);
+ clos::_sym_classp = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("classp"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2531_helper(core::BootStrapCoreSymbolMap* symbols) {
- clos::_sym_FuncallableStandardClass_O = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("FuncallableStandardClass"), true,false);
+ clos::_sym_aSingleClosSymbol = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("aSingleClosSymbol"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2532_helper(core::BootStrapCoreSymbolMap* symbols) {
- clos::_sym_StdClass_O = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("STD-CLASS"), true,false);
+ clos::_sym_class_precedence_list = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("class_precedence_list"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2533_helper(core::BootStrapCoreSymbolMap* symbols) {
- comp::_sym_compileInEnv = symbols->maybe_allocate_unique_symbol("COMPILER",core::lispify_symbol_name("compileInEnv"), true,false);
+ clos::_sym_FuncallableStandardClass_O = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("FuncallableStandardClass"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2534_helper(core::BootStrapCoreSymbolMap* symbols) {
- comp::_sym_compileFormAndEvalWithEnv = symbols->maybe_allocate_unique_symbol("COMPILER",core::lispify_symbol_name("compileFormAndEvalWithEnv"), true,false);
+ clos::_sym_StdClass_O = symbols->maybe_allocate_unique_symbol("CLOS",core::lispify_symbol_name("STD-CLASS"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2535_helper(core::BootStrapCoreSymbolMap* symbols) {
- comp::_sym_STARimplicit_compile_hookSTAR = symbols->maybe_allocate_unique_symbol("COMPILER",core::lispify_symbol_name("STARimplicit_compile_hookSTAR"), true,false);
+ comp::_sym_compileInEnv = symbols->maybe_allocate_unique_symbol("COMPILER",core::lispify_symbol_name("compileInEnv"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2536_helper(core::BootStrapCoreSymbolMap* symbols) {
- comp::_sym_implicit_compile_hook_default = symbols->maybe_allocate_unique_symbol("COMPILER",core::lispify_symbol_name("implicit_compile_hook_default"), true,false);
+ comp::_sym_compileFormAndEvalWithEnv = symbols->maybe_allocate_unique_symbol("COMPILER",core::lispify_symbol_name("compileFormAndEvalWithEnv"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2537_helper(core::BootStrapCoreSymbolMap* symbols) {
- comp::_sym_STARall_functions_for_one_compileSTAR = symbols->maybe_allocate_unique_symbol("COMPILER",core::lispify_symbol_name("STARall_functions_for_one_compileSTAR"), true,false);
+ comp::_sym_STARimplicit_compile_hookSTAR = symbols->maybe_allocate_unique_symbol("COMPILER",core::lispify_symbol_name("STARimplicit_compile_hookSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2538_helper(core::BootStrapCoreSymbolMap* symbols) {
- comp::_sym_aSingleCompilerSymbol = symbols->maybe_allocate_unique_symbol("COMPILER",core::lispify_symbol_name("aSingleCompilerSymbol"), false,false);
+ comp::_sym_implicit_compile_hook_default = symbols->maybe_allocate_unique_symbol("COMPILER",core::lispify_symbol_name("implicit_compile_hook_default"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2539_helper(core::BootStrapCoreSymbolMap* symbols) {
- comp::_sym_STARlowLevelTraceSTAR = symbols->maybe_allocate_unique_symbol("COMPILER",core::lispify_symbol_name("STARlowLevelTraceSTAR"), true,false);
+ comp::_sym_STARall_functions_for_one_compileSTAR = symbols->maybe_allocate_unique_symbol("COMPILER",core::lispify_symbol_name("STARall_functions_for_one_compileSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2540_helper(core::BootStrapCoreSymbolMap* symbols) {
- comp::_sym_STARlowLevelTracePrintSTAR = symbols->maybe_allocate_unique_symbol("COMPILER",core::lispify_symbol_name("STARlowLevelTracePrintSTAR"), true,false);
+ comp::_sym_aSingleCompilerSymbol = symbols->maybe_allocate_unique_symbol("COMPILER",core::lispify_symbol_name("aSingleCompilerSymbol"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2541_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_STARinspectorHookSTAR = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("STARinspectorHookSTAR"), true,false);
+ comp::_sym_STARlowLevelTraceSTAR = symbols->maybe_allocate_unique_symbol("COMPILER",core::lispify_symbol_name("STARlowLevelTraceSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2542_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_integer8 = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("integer8"), false,false);
+ comp::_sym_STARlowLevelTracePrintSTAR = symbols->maybe_allocate_unique_symbol("COMPILER",core::lispify_symbol_name("STARlowLevelTracePrintSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2543_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_byte8 = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("byte8"), false,false);
+ ext::_sym_STARinspectorHookSTAR = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("STARinspectorHookSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2544_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_float_nan_string = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("float_nan_string"), true,false);
+ ext::_sym_integer8 = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("integer8"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2545_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_float_infinity_string = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("float_infinity_string"), true,false);
+ ext::_sym_byte8 = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("byte8"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2546_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_STARdefault_external_formatSTAR = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("STARdefault_external_formatSTAR"), true,false);
+ ext::_sym_float_nan_string = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("float_nan_string"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2547_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_truly_the = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("truly_the"), true,false);
+ ext::_sym_float_infinity_string = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("float_infinity_string"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2548_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_specialVar = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("specialVar"), true,false);
+ ext::_sym_STARdefault_external_formatSTAR = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("STARdefault_external_formatSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2549_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_lexicalVar = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("lexicalVar"), true,false);
+ ext::_sym_truly_the = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("truly_the"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2550_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_stackVar = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("stackVar"), true,false);
+ ext::_sym_specialVar = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("specialVar"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2551_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym__PLUS_processStandardInput_PLUS_ = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("_PLUS_processStandardInput_PLUS_"), true,false);
+ ext::_sym_lexicalVar = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("lexicalVar"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2552_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym__PLUS_processStandardOutput_PLUS_ = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("_PLUS_processStandardOutput_PLUS_"), true,false);
+ ext::_sym_stackVar = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("stackVar"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2553_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym__PLUS_processErrorOutput_PLUS_ = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("_PLUS_processErrorOutput_PLUS_"), true,false);
+ ext::_sym__PLUS_processStandardInput_PLUS_ = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("_PLUS_processStandardInput_PLUS_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2554_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_lambda_block = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("lambda_block"), true,false);
+ ext::_sym__PLUS_processStandardOutput_PLUS_ = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("_PLUS_processStandardOutput_PLUS_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2555_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_system = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("system"), false,false);
+ ext::_sym__PLUS_processErrorOutput_PLUS_ = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("_PLUS_processErrorOutput_PLUS_"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2556_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_setenv = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("setenv"), true,false);
+ ext::_sym_lambda_block = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("lambda_block"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2557_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_getenv = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("getenv"), true,false);
+ ext::_sym_system = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("system"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2558_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_STARloadHooksSTAR = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("STARloadHooksSTAR"), true,false);
+ ext::_sym_setenv = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("setenv"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2559_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_aSingleExtSymbol = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("aSingleExtSymbol"), false,false);
+ ext::_sym_getenv = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("getenv"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2560_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_STARinvokeDebuggerHookSTAR = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("STARinvokeDebuggerHookSTAR"), true,false);
+ ext::_sym_STARloadHooksSTAR = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("STARloadHooksSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2561_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_compiledFunctionName = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("compiledFunctionName"), true,false);
+ ext::_sym_aSingleExtSymbol = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("aSingleExtSymbol"), false,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2562_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_ansi_stream = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("ansi_stream"), true,false);
+ ext::_sym_STARinvokeDebuggerHookSTAR = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("STARinvokeDebuggerHookSTAR"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2563_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_maybeQuote = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("maybeQuote"), true,false);
+ ext::_sym_compiledFunctionName = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("compiledFunctionName"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2564_helper(core::BootStrapCoreSymbolMap* symbols) {
- ext::_sym_annotate = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("annotate"), true,false);
+ ext::_sym_ansi_stream = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("ansi_stream"), true,false);
 }
 NOINLINE void maybe_allocate_one_symbol_2565_helper(core::BootStrapCoreSymbolMap* symbols) {
+ ext::_sym_maybeQuote = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("maybeQuote"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_2566_helper(core::BootStrapCoreSymbolMap* symbols) {
+ ext::_sym_annotate = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("annotate"), true,false);
+}
+NOINLINE void maybe_allocate_one_symbol_2567_helper(core::BootStrapCoreSymbolMap* symbols) {
  ext::_sym_AnsiStream_O = symbols->maybe_allocate_unique_symbol("EXT",core::lispify_symbol_name("AnsiStream"), true,false);
 }
 #endif // ALLOCATE_ALL_SYMBOLS_HELPERS
@@ -15744,6 +15754,8 @@ NOINLINE void maybe_allocate_one_symbol_2565_helper(core::BootStrapCoreSymbolMap
  maybe_allocate_one_symbol_2563_helper(symbols);
  maybe_allocate_one_symbol_2564_helper(symbols);
  maybe_allocate_one_symbol_2565_helper(symbols);
+ maybe_allocate_one_symbol_2566_helper(symbols);
+ maybe_allocate_one_symbol_2567_helper(symbols);
 #endif // ALLOCATE_ALL_SYMBOLS
 #if defined(CorePkg_SYMBOLS)
 DO_SYMBOL(core,_sym_STARwatchDynamicBindingStackSTAR,0,CorePkg,"STARwatchDynamicBindingStackSTAR",true);
@@ -18154,201 +18166,203 @@ DO_SYMBOL(kw,_sym_chartreuse,2372,KeywordPkg,"chartreuse",true);
 DO_SYMBOL(kw,_sym_aquamarine,2373,KeywordPkg,"aquamarine",true);
 DO_SYMBOL(kw,_sym_mediumBlue,2374,KeywordPkg,"mediumBlue",true);
 DO_SYMBOL(kw,_sym_steelBlue,2375,KeywordPkg,"steelBlue",true);
-DO_SYMBOL(kw,_sym_data,2376,KeywordPkg,"data",true);
-DO_SYMBOL(kw,_sym_contents,2377,KeywordPkg,"contents",true);
-DO_SYMBOL(kw,_sym_catchFrame,2378,KeywordPkg,"catchFrame",true);
-DO_SYMBOL(kw,_sym_blockFrame,2379,KeywordPkg,"blockFrame",true);
-DO_SYMBOL(kw,_sym_tagbodyFrame,2380,KeywordPkg,"tagbodyFrame",true);
-DO_SYMBOL(kw,_sym_landingPadFrame,2381,KeywordPkg,"landingPadFrame",true);
-DO_SYMBOL(kw,_sym_splatted,2382,KeywordPkg,"splatted",true);
-DO_SYMBOL(kw,_sym_unbound,2383,KeywordPkg,"unbound",true);
-DO_SYMBOL(kw,_sym_deleted,2384,KeywordPkg,"deleted",true);
-DO_SYMBOL(kw,_sym_rtld_default,2385,KeywordPkg,"rtld_default",true);
-DO_SYMBOL(kw,_sym_rtld_next,2386,KeywordPkg,"rtld_next",true);
-DO_SYMBOL(kw,_sym_rtld_self,2387,KeywordPkg,"rtld_self",true);
-DO_SYMBOL(kw,_sym_rtld_main_only,2388,KeywordPkg,"rtld_main_only",true);
-DO_SYMBOL(kw,_sym_iclass,2389,KeywordPkg,"iclass",true);
-DO_SYMBOL(kw,_sym_next,2390,KeywordPkg,"next",true);
-DO_SYMBOL(kw,_sym_prev,2391,KeywordPkg,"prev",true);
-DO_SYMBOL(kw,_sym_key,2392,KeywordPkg,"key",true);
-DO_SYMBOL(kw,_sym_defaults,2393,KeywordPkg,"defaults",true);
-DO_SYMBOL(kw,_sym_error,2394,KeywordPkg,"error",true);
-DO_SYMBOL(kw,_sym_link,2395,KeywordPkg,"link",true);
-DO_SYMBOL(kw,_sym_broken_link,2396,KeywordPkg,"broken_link",true);
-DO_SYMBOL(kw,_sym_special,2397,KeywordPkg,"special",true);
-DO_SYMBOL(kw,_sym_supersede,2398,KeywordPkg,"supersede",true);
-DO_SYMBOL(kw,_sym_calledFunction,2399,KeywordPkg,"calledFunction",true);
-DO_SYMBOL(kw,_sym_givenNumberOfArguments,2400,KeywordPkg,"givenNumberOfArguments",true);
-DO_SYMBOL(kw,_sym_requiredNumberOfArguments,2401,KeywordPkg,"requiredNumberOfArguments",true);
-DO_SYMBOL(kw,_sym_unrecognizedKeyword,2402,KeywordPkg,"unrecognizedKeyword",true);
-DO_SYMBOL(kw,_sym_body,2403,KeywordPkg,"body",true);
-DO_SYMBOL(kw,_sym_lambda_list_handler,2404,KeywordPkg,"lambda_list_handler",true);
-DO_SYMBOL(kw,_sym_docstring,2405,KeywordPkg,"docstring",true);
-DO_SYMBOL(kw,_sym_arguments,2406,KeywordPkg,"arguments",true);
-DO_SYMBOL(kw,_sym_create,2407,KeywordPkg,"create",true);
-DO_SYMBOL(kw,_sym_append,2408,KeywordPkg,"append",true);
-DO_SYMBOL(kw,_sym_debugStartup,2409,KeywordPkg,"debugStartup",true);
-DO_SYMBOL(kw,_sym_cclasp,2410,KeywordPkg,"cclasp",true);
-DO_SYMBOL(kw,_sym_bclasp,2411,KeywordPkg,"bclasp",true);
-DO_SYMBOL(kw,_sym_load,2412,KeywordPkg,"load",true);
-DO_SYMBOL(kw,_sym_eval,2413,KeywordPkg,"eval",true);
-DO_SYMBOL(kw,_sym_ecl_min,2414,KeywordPkg,"ecl_min",true);
-DO_SYMBOL(kw,_sym_use_mps,2415,KeywordPkg,"use_mps",true);
-DO_SYMBOL(kw,_sym_use_boehmdc,2416,KeywordPkg,"use_boehmdc",true);
-DO_SYMBOL(kw,_sym_use_boehm,2417,KeywordPkg,"use_boehm",true);
-DO_SYMBOL(kw,_sym_cr,2418,KeywordPkg,"cr",true);
-DO_SYMBOL(kw,_sym_lf,2419,KeywordPkg,"lf",true);
-DO_SYMBOL(kw,_sym_littleEndian,2420,KeywordPkg,"littleEndian",true);
-DO_SYMBOL(kw,_sym_bigEndian,2421,KeywordPkg,"bigEndian",true);
-DO_SYMBOL(kw,_sym_crlf,2422,KeywordPkg,"crlf",true);
-DO_SYMBOL(kw,_sym_latin_1,2423,KeywordPkg,"latin_1",true);
-DO_SYMBOL(kw,_sym_ucs_4,2424,KeywordPkg,"ucs_4",true);
-DO_SYMBOL(kw,_sym_passThrough,2425,KeywordPkg,"passThrough",true);
-DO_SYMBOL(kw,_sym_if_does_not_exist,2426,KeywordPkg,"if_does_not_exist",true);
-DO_SYMBOL(kw,_sym_new_version,2427,KeywordPkg,"new_version",true);
-DO_SYMBOL(kw,_sym_rename,2428,KeywordPkg,"rename",true);
-DO_SYMBOL(kw,_sym_rename_and_delete,2429,KeywordPkg,"rename_and_delete",true);
-DO_SYMBOL(kw,_sym_overwrite,2430,KeywordPkg,"overwrite",true);
-DO_SYMBOL(kw,_sym_if_exists,2431,KeywordPkg,"if_exists",true);
-DO_SYMBOL(kw,_sym_probe,2432,KeywordPkg,"probe",true);
-DO_SYMBOL(kw,_sym_FullDebug,2433,KeywordPkg,"FullDebug",true);
-DO_SYMBOL(kw,_sym_LineTablesOnly,2434,KeywordPkg,"LineTablesOnly",true);
-DO_SYMBOL(kw,_sym__uid,2435,KeywordPkg,"_uid",true);
-DO_SYMBOL(kw,_sym_none,2436,KeywordPkg,"none",true);
-DO_SYMBOL(kw,_sym_line,2437,KeywordPkg,"line",true);
-DO_SYMBOL(kw,_sym_full,2438,KeywordPkg,"full",true);
-DO_SYMBOL(kw,_sym_message,2439,KeywordPkg,"message",true);
-DO_SYMBOL(kw,_sym_line_buffered,2440,KeywordPkg,"line_buffered",true);
-DO_SYMBOL(kw,_sym_fully_buffered,2441,KeywordPkg,"fully_buffered",true);
-DO_SYMBOL(kw,_sym_array,2442,KeywordPkg,"array",true);
-DO_SYMBOL(kw,_sym_UnsignedByte,2443,KeywordPkg,"UnsignedByte",true);
-DO_SYMBOL(kw,_sym_test,2444,KeywordPkg,"test",true);
-DO_SYMBOL(kw,_sym_junkAllowed,2445,KeywordPkg,"junkAllowed",true);
-DO_SYMBOL(kw,_sym_absolute,2446,KeywordPkg,"absolute",true);
-DO_SYMBOL(kw,_sym_relative,2447,KeywordPkg,"relative",true);
-DO_SYMBOL(kw,_sym_back,2448,KeywordPkg,"back",true);
-DO_SYMBOL(kw,_sym_operation,2449,KeywordPkg,"operation",true);
-DO_SYMBOL(kw,_sym_operands,2450,KeywordPkg,"operands",true);
-DO_SYMBOL(kw,_sym_escape,2451,KeywordPkg,"escape",true);
-DO_SYMBOL(kw,_sym_capitalize,2452,KeywordPkg,"capitalize",true);
-DO_SYMBOL(kw,_sym_typeError,2453,KeywordPkg,"typeError",true);
-DO_SYMBOL(kw,_sym_datum,2454,KeywordPkg,"datum",true);
-DO_SYMBOL(kw,_sym_expectedType,2455,KeywordPkg,"expectedType",true);
-DO_SYMBOL(kw,_sym_print,2456,KeywordPkg,"print",true);
-DO_SYMBOL(kw,_sym_pathname,2457,KeywordPkg,"pathname",true);
-DO_SYMBOL(kw,_sym_object,2458,KeywordPkg,"object",true);
-DO_SYMBOL(kw,_sym_formatControl,2459,KeywordPkg,"formatControl",true);
-DO_SYMBOL(kw,_sym_formatArguments,2460,KeywordPkg,"formatArguments",true);
-DO_SYMBOL(kw,_sym_stream,2461,KeywordPkg,"stream",true);
-DO_SYMBOL(kw,_sym_package,2462,KeywordPkg,"package",true);
-DO_SYMBOL(kw,_sym_compile_toplevel,2463,KeywordPkg,"compile_toplevel",true);
-DO_SYMBOL(kw,_sym_load_toplevel,2464,KeywordPkg,"load_toplevel",true);
-DO_SYMBOL(kw,_sym_execute,2465,KeywordPkg,"execute",true);
-DO_SYMBOL(kw,_sym_allow_other_keys,2466,KeywordPkg,"allow_other_keys",true);
-DO_SYMBOL(kw,_sym_macro,2467,KeywordPkg,"macro",true);
-DO_SYMBOL(kw,_sym_function,2468,KeywordPkg,"function",true);
-DO_SYMBOL(kw,_sym_invalid_character,2469,KeywordPkg,"invalid_character",true);
-DO_SYMBOL(kw,_sym_brcl,2470,KeywordPkg,"brcl",true);
-DO_SYMBOL(kw,_sym_not,2471,KeywordPkg,"not",true);
-DO_SYMBOL(kw,_sym_and,2472,KeywordPkg,"and",true);
-DO_SYMBOL(kw,_sym_or,2473,KeywordPkg,"or",true);
-DO_SYMBOL(kw,_sym_class,2474,KeywordPkg,"class",true);
-DO_SYMBOL(kw,_sym_instance,2475,KeywordPkg,"instance",true);
-DO_SYMBOL(kw,_sym_output,2476,KeywordPkg,"output",true);
-DO_SYMBOL(kw,_sym_input,2477,KeywordPkg,"input",true);
-DO_SYMBOL(kw,_sym_io,2478,KeywordPkg,"io",true);
-DO_SYMBOL(kw,_sym_default,2479,KeywordPkg,"default",true);
-DO_SYMBOL(kw,_sym_internal,2480,KeywordPkg,"internal",true);
-DO_SYMBOL(kw,_sym_external,2481,KeywordPkg,"external",true);
-DO_SYMBOL(kw,_sym_inherited,2482,KeywordPkg,"inherited",true);
-DO_SYMBOL(kw,_sym_debug,2483,KeywordPkg,"debug",true);
-DO_SYMBOL(kw,_sym_direct_super_classes,2484,KeywordPkg,"direct_super_classes",true);
-DO_SYMBOL(kw,_sym_name,2485,KeywordPkg,"name",true);
-DO_SYMBOL(kw,_sym_changed,2486,KeywordPkg,"changed",true);
-DO_SYMBOL(kw,_sym_address_model_64,2487,KeywordPkg,"address_model_64",true);
-DO_SYMBOL(kw,_sym_target_os_darwin,2488,KeywordPkg,"target_os_darwin",true);
-DO_SYMBOL(kw,_sym_podSymbolMap,2489,KeywordPkg,"podSymbolMap",true);
-DO_SYMBOL(kw,_sym_constituent_character,2490,KeywordPkg,"constituent_character",true);
-DO_SYMBOL(kw,_sym_syntax,2491,KeywordPkg,"syntax",true);
-DO_SYMBOL(kw,_sym_whitespace_character,2492,KeywordPkg,"whitespace_character",true);
-DO_SYMBOL(kw,_sym_single_escape_character,2493,KeywordPkg,"single_escape_character",true);
-DO_SYMBOL(kw,_sym_multiple_escape_character,2494,KeywordPkg,"multiple_escape_character",true);
-DO_SYMBOL(kw,_sym_upcase,2495,KeywordPkg,"upcase",true);
-DO_SYMBOL(kw,_sym_downcase,2496,KeywordPkg,"downcase",true);
-DO_SYMBOL(kw,_sym_preserve,2497,KeywordPkg,"preserve",true);
-DO_SYMBOL(kw,_sym_invert,2498,KeywordPkg,"invert",true);
-DO_SYMBOL(kw,_sym_non_terminating_macro_character,2499,KeywordPkg,"non_terminating_macro_character",true);
-DO_SYMBOL(kw,_sym_terminating_macro_character,2500,KeywordPkg,"terminating_macro_character",true);
-DO_SYMBOL(kw,_sym_macro_function,2501,KeywordPkg,"macro_function",true);
-DO_SYMBOL(kw,_sym_case,2502,KeywordPkg,"case",true);
-DO_SYMBOL(kw,_sym_file,2503,KeywordPkg,"file",true);
-DO_SYMBOL(kw,_sym_unspecific,2504,KeywordPkg,"unspecific",true);
-DO_SYMBOL(kw,_sym_local,2505,KeywordPkg,"local",true);
-DO_SYMBOL(kw,_sym_common,2506,KeywordPkg,"common",true);
-DO_SYMBOL(kw,_sym_wild_inferiors,2507,KeywordPkg,"wild_inferiors",true);
-DO_SYMBOL(kw,_sym_up,2508,KeywordPkg,"up",true);
-DO_SYMBOL(kw,_sym_wild,2509,KeywordPkg,"wild",true);
-DO_SYMBOL(kw,_sym_host,2510,KeywordPkg,"host",true);
-DO_SYMBOL(kw,_sym_device,2511,KeywordPkg,"device",true);
-DO_SYMBOL(kw,_sym_type,2512,KeywordPkg,"type",true);
-DO_SYMBOL(kw,_sym_newest,2513,KeywordPkg,"newest",true);
-DO_SYMBOL(kw,_sym_version,2514,KeywordPkg,"version",true);
-DO_SYMBOL(kw,_sym_directory,2515,KeywordPkg,"directory",true);
-DO_SYMBOL(kw,_sym_supplied,2516,KeywordPkg,"supplied",true);
-DO_SYMBOL(kw,_sym_min,2517,KeywordPkg,"min",true);
-DO_SYMBOL(kw,_sym_max,2518,KeywordPkg,"max",true);
-DO_SYMBOL(kw,_sym_eof,2519,KeywordPkg,"eof",true);
-DO_SYMBOL(kw,_sym_fillPointer,2520,KeywordPkg,"fillPointer",true);
-DO_SYMBOL(kw,_sym_elementType,2521,KeywordPkg,"elementType",true);
-DO_SYMBOL(kw,_sym_adjustable,2522,KeywordPkg,"adjustable",true);
-DO_SYMBOL(kw,_sym_start,2523,KeywordPkg,"start",true);
-DO_SYMBOL(kw,_sym_end,2524,KeywordPkg,"end",true);
+DO_SYMBOL(kw,_sym_m,2376,KeywordPkg,"m",true);
+DO_SYMBOL(kw,_sym_pnts,2377,KeywordPkg,"pnts",true);
+DO_SYMBOL(kw,_sym_data,2378,KeywordPkg,"data",true);
+DO_SYMBOL(kw,_sym_contents,2379,KeywordPkg,"contents",true);
+DO_SYMBOL(kw,_sym_catchFrame,2380,KeywordPkg,"catchFrame",true);
+DO_SYMBOL(kw,_sym_blockFrame,2381,KeywordPkg,"blockFrame",true);
+DO_SYMBOL(kw,_sym_tagbodyFrame,2382,KeywordPkg,"tagbodyFrame",true);
+DO_SYMBOL(kw,_sym_landingPadFrame,2383,KeywordPkg,"landingPadFrame",true);
+DO_SYMBOL(kw,_sym_splatted,2384,KeywordPkg,"splatted",true);
+DO_SYMBOL(kw,_sym_unbound,2385,KeywordPkg,"unbound",true);
+DO_SYMBOL(kw,_sym_deleted,2386,KeywordPkg,"deleted",true);
+DO_SYMBOL(kw,_sym_rtld_default,2387,KeywordPkg,"rtld_default",true);
+DO_SYMBOL(kw,_sym_rtld_next,2388,KeywordPkg,"rtld_next",true);
+DO_SYMBOL(kw,_sym_rtld_self,2389,KeywordPkg,"rtld_self",true);
+DO_SYMBOL(kw,_sym_rtld_main_only,2390,KeywordPkg,"rtld_main_only",true);
+DO_SYMBOL(kw,_sym_iclass,2391,KeywordPkg,"iclass",true);
+DO_SYMBOL(kw,_sym_next,2392,KeywordPkg,"next",true);
+DO_SYMBOL(kw,_sym_prev,2393,KeywordPkg,"prev",true);
+DO_SYMBOL(kw,_sym_key,2394,KeywordPkg,"key",true);
+DO_SYMBOL(kw,_sym_defaults,2395,KeywordPkg,"defaults",true);
+DO_SYMBOL(kw,_sym_error,2396,KeywordPkg,"error",true);
+DO_SYMBOL(kw,_sym_link,2397,KeywordPkg,"link",true);
+DO_SYMBOL(kw,_sym_broken_link,2398,KeywordPkg,"broken_link",true);
+DO_SYMBOL(kw,_sym_special,2399,KeywordPkg,"special",true);
+DO_SYMBOL(kw,_sym_supersede,2400,KeywordPkg,"supersede",true);
+DO_SYMBOL(kw,_sym_calledFunction,2401,KeywordPkg,"calledFunction",true);
+DO_SYMBOL(kw,_sym_givenNumberOfArguments,2402,KeywordPkg,"givenNumberOfArguments",true);
+DO_SYMBOL(kw,_sym_requiredNumberOfArguments,2403,KeywordPkg,"requiredNumberOfArguments",true);
+DO_SYMBOL(kw,_sym_unrecognizedKeyword,2404,KeywordPkg,"unrecognizedKeyword",true);
+DO_SYMBOL(kw,_sym_body,2405,KeywordPkg,"body",true);
+DO_SYMBOL(kw,_sym_lambda_list_handler,2406,KeywordPkg,"lambda_list_handler",true);
+DO_SYMBOL(kw,_sym_docstring,2407,KeywordPkg,"docstring",true);
+DO_SYMBOL(kw,_sym_arguments,2408,KeywordPkg,"arguments",true);
+DO_SYMBOL(kw,_sym_create,2409,KeywordPkg,"create",true);
+DO_SYMBOL(kw,_sym_append,2410,KeywordPkg,"append",true);
+DO_SYMBOL(kw,_sym_debugStartup,2411,KeywordPkg,"debugStartup",true);
+DO_SYMBOL(kw,_sym_cclasp,2412,KeywordPkg,"cclasp",true);
+DO_SYMBOL(kw,_sym_bclasp,2413,KeywordPkg,"bclasp",true);
+DO_SYMBOL(kw,_sym_load,2414,KeywordPkg,"load",true);
+DO_SYMBOL(kw,_sym_eval,2415,KeywordPkg,"eval",true);
+DO_SYMBOL(kw,_sym_ecl_min,2416,KeywordPkg,"ecl_min",true);
+DO_SYMBOL(kw,_sym_use_mps,2417,KeywordPkg,"use_mps",true);
+DO_SYMBOL(kw,_sym_use_boehmdc,2418,KeywordPkg,"use_boehmdc",true);
+DO_SYMBOL(kw,_sym_use_boehm,2419,KeywordPkg,"use_boehm",true);
+DO_SYMBOL(kw,_sym_cr,2420,KeywordPkg,"cr",true);
+DO_SYMBOL(kw,_sym_lf,2421,KeywordPkg,"lf",true);
+DO_SYMBOL(kw,_sym_littleEndian,2422,KeywordPkg,"littleEndian",true);
+DO_SYMBOL(kw,_sym_bigEndian,2423,KeywordPkg,"bigEndian",true);
+DO_SYMBOL(kw,_sym_crlf,2424,KeywordPkg,"crlf",true);
+DO_SYMBOL(kw,_sym_latin_1,2425,KeywordPkg,"latin_1",true);
+DO_SYMBOL(kw,_sym_ucs_4,2426,KeywordPkg,"ucs_4",true);
+DO_SYMBOL(kw,_sym_passThrough,2427,KeywordPkg,"passThrough",true);
+DO_SYMBOL(kw,_sym_if_does_not_exist,2428,KeywordPkg,"if_does_not_exist",true);
+DO_SYMBOL(kw,_sym_new_version,2429,KeywordPkg,"new_version",true);
+DO_SYMBOL(kw,_sym_rename,2430,KeywordPkg,"rename",true);
+DO_SYMBOL(kw,_sym_rename_and_delete,2431,KeywordPkg,"rename_and_delete",true);
+DO_SYMBOL(kw,_sym_overwrite,2432,KeywordPkg,"overwrite",true);
+DO_SYMBOL(kw,_sym_if_exists,2433,KeywordPkg,"if_exists",true);
+DO_SYMBOL(kw,_sym_probe,2434,KeywordPkg,"probe",true);
+DO_SYMBOL(kw,_sym_FullDebug,2435,KeywordPkg,"FullDebug",true);
+DO_SYMBOL(kw,_sym_LineTablesOnly,2436,KeywordPkg,"LineTablesOnly",true);
+DO_SYMBOL(kw,_sym__uid,2437,KeywordPkg,"_uid",true);
+DO_SYMBOL(kw,_sym_none,2438,KeywordPkg,"none",true);
+DO_SYMBOL(kw,_sym_line,2439,KeywordPkg,"line",true);
+DO_SYMBOL(kw,_sym_full,2440,KeywordPkg,"full",true);
+DO_SYMBOL(kw,_sym_message,2441,KeywordPkg,"message",true);
+DO_SYMBOL(kw,_sym_line_buffered,2442,KeywordPkg,"line_buffered",true);
+DO_SYMBOL(kw,_sym_fully_buffered,2443,KeywordPkg,"fully_buffered",true);
+DO_SYMBOL(kw,_sym_array,2444,KeywordPkg,"array",true);
+DO_SYMBOL(kw,_sym_UnsignedByte,2445,KeywordPkg,"UnsignedByte",true);
+DO_SYMBOL(kw,_sym_test,2446,KeywordPkg,"test",true);
+DO_SYMBOL(kw,_sym_junkAllowed,2447,KeywordPkg,"junkAllowed",true);
+DO_SYMBOL(kw,_sym_absolute,2448,KeywordPkg,"absolute",true);
+DO_SYMBOL(kw,_sym_relative,2449,KeywordPkg,"relative",true);
+DO_SYMBOL(kw,_sym_back,2450,KeywordPkg,"back",true);
+DO_SYMBOL(kw,_sym_operation,2451,KeywordPkg,"operation",true);
+DO_SYMBOL(kw,_sym_operands,2452,KeywordPkg,"operands",true);
+DO_SYMBOL(kw,_sym_escape,2453,KeywordPkg,"escape",true);
+DO_SYMBOL(kw,_sym_capitalize,2454,KeywordPkg,"capitalize",true);
+DO_SYMBOL(kw,_sym_typeError,2455,KeywordPkg,"typeError",true);
+DO_SYMBOL(kw,_sym_datum,2456,KeywordPkg,"datum",true);
+DO_SYMBOL(kw,_sym_expectedType,2457,KeywordPkg,"expectedType",true);
+DO_SYMBOL(kw,_sym_print,2458,KeywordPkg,"print",true);
+DO_SYMBOL(kw,_sym_pathname,2459,KeywordPkg,"pathname",true);
+DO_SYMBOL(kw,_sym_object,2460,KeywordPkg,"object",true);
+DO_SYMBOL(kw,_sym_formatControl,2461,KeywordPkg,"formatControl",true);
+DO_SYMBOL(kw,_sym_formatArguments,2462,KeywordPkg,"formatArguments",true);
+DO_SYMBOL(kw,_sym_stream,2463,KeywordPkg,"stream",true);
+DO_SYMBOL(kw,_sym_package,2464,KeywordPkg,"package",true);
+DO_SYMBOL(kw,_sym_compile_toplevel,2465,KeywordPkg,"compile_toplevel",true);
+DO_SYMBOL(kw,_sym_load_toplevel,2466,KeywordPkg,"load_toplevel",true);
+DO_SYMBOL(kw,_sym_execute,2467,KeywordPkg,"execute",true);
+DO_SYMBOL(kw,_sym_allow_other_keys,2468,KeywordPkg,"allow_other_keys",true);
+DO_SYMBOL(kw,_sym_macro,2469,KeywordPkg,"macro",true);
+DO_SYMBOL(kw,_sym_function,2470,KeywordPkg,"function",true);
+DO_SYMBOL(kw,_sym_invalid_character,2471,KeywordPkg,"invalid_character",true);
+DO_SYMBOL(kw,_sym_brcl,2472,KeywordPkg,"brcl",true);
+DO_SYMBOL(kw,_sym_not,2473,KeywordPkg,"not",true);
+DO_SYMBOL(kw,_sym_and,2474,KeywordPkg,"and",true);
+DO_SYMBOL(kw,_sym_or,2475,KeywordPkg,"or",true);
+DO_SYMBOL(kw,_sym_class,2476,KeywordPkg,"class",true);
+DO_SYMBOL(kw,_sym_instance,2477,KeywordPkg,"instance",true);
+DO_SYMBOL(kw,_sym_output,2478,KeywordPkg,"output",true);
+DO_SYMBOL(kw,_sym_input,2479,KeywordPkg,"input",true);
+DO_SYMBOL(kw,_sym_io,2480,KeywordPkg,"io",true);
+DO_SYMBOL(kw,_sym_default,2481,KeywordPkg,"default",true);
+DO_SYMBOL(kw,_sym_internal,2482,KeywordPkg,"internal",true);
+DO_SYMBOL(kw,_sym_external,2483,KeywordPkg,"external",true);
+DO_SYMBOL(kw,_sym_inherited,2484,KeywordPkg,"inherited",true);
+DO_SYMBOL(kw,_sym_debug,2485,KeywordPkg,"debug",true);
+DO_SYMBOL(kw,_sym_direct_super_classes,2486,KeywordPkg,"direct_super_classes",true);
+DO_SYMBOL(kw,_sym_name,2487,KeywordPkg,"name",true);
+DO_SYMBOL(kw,_sym_changed,2488,KeywordPkg,"changed",true);
+DO_SYMBOL(kw,_sym_address_model_64,2489,KeywordPkg,"address_model_64",true);
+DO_SYMBOL(kw,_sym_target_os_darwin,2490,KeywordPkg,"target_os_darwin",true);
+DO_SYMBOL(kw,_sym_podSymbolMap,2491,KeywordPkg,"podSymbolMap",true);
+DO_SYMBOL(kw,_sym_constituent_character,2492,KeywordPkg,"constituent_character",true);
+DO_SYMBOL(kw,_sym_syntax,2493,KeywordPkg,"syntax",true);
+DO_SYMBOL(kw,_sym_whitespace_character,2494,KeywordPkg,"whitespace_character",true);
+DO_SYMBOL(kw,_sym_single_escape_character,2495,KeywordPkg,"single_escape_character",true);
+DO_SYMBOL(kw,_sym_multiple_escape_character,2496,KeywordPkg,"multiple_escape_character",true);
+DO_SYMBOL(kw,_sym_upcase,2497,KeywordPkg,"upcase",true);
+DO_SYMBOL(kw,_sym_downcase,2498,KeywordPkg,"downcase",true);
+DO_SYMBOL(kw,_sym_preserve,2499,KeywordPkg,"preserve",true);
+DO_SYMBOL(kw,_sym_invert,2500,KeywordPkg,"invert",true);
+DO_SYMBOL(kw,_sym_non_terminating_macro_character,2501,KeywordPkg,"non_terminating_macro_character",true);
+DO_SYMBOL(kw,_sym_terminating_macro_character,2502,KeywordPkg,"terminating_macro_character",true);
+DO_SYMBOL(kw,_sym_macro_function,2503,KeywordPkg,"macro_function",true);
+DO_SYMBOL(kw,_sym_case,2504,KeywordPkg,"case",true);
+DO_SYMBOL(kw,_sym_file,2505,KeywordPkg,"file",true);
+DO_SYMBOL(kw,_sym_unspecific,2506,KeywordPkg,"unspecific",true);
+DO_SYMBOL(kw,_sym_local,2507,KeywordPkg,"local",true);
+DO_SYMBOL(kw,_sym_common,2508,KeywordPkg,"common",true);
+DO_SYMBOL(kw,_sym_wild_inferiors,2509,KeywordPkg,"wild_inferiors",true);
+DO_SYMBOL(kw,_sym_up,2510,KeywordPkg,"up",true);
+DO_SYMBOL(kw,_sym_wild,2511,KeywordPkg,"wild",true);
+DO_SYMBOL(kw,_sym_host,2512,KeywordPkg,"host",true);
+DO_SYMBOL(kw,_sym_device,2513,KeywordPkg,"device",true);
+DO_SYMBOL(kw,_sym_type,2514,KeywordPkg,"type",true);
+DO_SYMBOL(kw,_sym_newest,2515,KeywordPkg,"newest",true);
+DO_SYMBOL(kw,_sym_version,2516,KeywordPkg,"version",true);
+DO_SYMBOL(kw,_sym_directory,2517,KeywordPkg,"directory",true);
+DO_SYMBOL(kw,_sym_supplied,2518,KeywordPkg,"supplied",true);
+DO_SYMBOL(kw,_sym_min,2519,KeywordPkg,"min",true);
+DO_SYMBOL(kw,_sym_max,2520,KeywordPkg,"max",true);
+DO_SYMBOL(kw,_sym_eof,2521,KeywordPkg,"eof",true);
+DO_SYMBOL(kw,_sym_fillPointer,2522,KeywordPkg,"fillPointer",true);
+DO_SYMBOL(kw,_sym_elementType,2523,KeywordPkg,"elementType",true);
+DO_SYMBOL(kw,_sym_adjustable,2524,KeywordPkg,"adjustable",true);
+DO_SYMBOL(kw,_sym_start,2525,KeywordPkg,"start",true);
+DO_SYMBOL(kw,_sym_end,2526,KeywordPkg,"end",true);
 #endif // KeywordPkg_SYMBOLS
 #if defined(CompPkg_SYMBOLS)
-DO_SYMBOL(comp,_sym_compileInEnv,2525,CompPkg,"compileInEnv",true);
-DO_SYMBOL(comp,_sym_compileFormAndEvalWithEnv,2526,CompPkg,"compileFormAndEvalWithEnv",true);
-DO_SYMBOL(comp,_sym_STARimplicit_compile_hookSTAR,2527,CompPkg,"STARimplicit_compile_hookSTAR",true);
-DO_SYMBOL(comp,_sym_implicit_compile_hook_default,2528,CompPkg,"implicit_compile_hook_default",true);
-DO_SYMBOL(comp,_sym_STARall_functions_for_one_compileSTAR,2529,CompPkg,"STARall_functions_for_one_compileSTAR",true);
-DO_SYMBOL(comp,_sym_aSingleCompilerSymbol,2530,CompPkg,"aSingleCompilerSymbol",true);
-DO_SYMBOL(comp,_sym_STARlowLevelTraceSTAR,2531,CompPkg,"STARlowLevelTraceSTAR",true);
-DO_SYMBOL(comp,_sym_STARlowLevelTracePrintSTAR,2532,CompPkg,"STARlowLevelTracePrintSTAR",true);
+DO_SYMBOL(comp,_sym_compileInEnv,2527,CompPkg,"compileInEnv",true);
+DO_SYMBOL(comp,_sym_compileFormAndEvalWithEnv,2528,CompPkg,"compileFormAndEvalWithEnv",true);
+DO_SYMBOL(comp,_sym_STARimplicit_compile_hookSTAR,2529,CompPkg,"STARimplicit_compile_hookSTAR",true);
+DO_SYMBOL(comp,_sym_implicit_compile_hook_default,2530,CompPkg,"implicit_compile_hook_default",true);
+DO_SYMBOL(comp,_sym_STARall_functions_for_one_compileSTAR,2531,CompPkg,"STARall_functions_for_one_compileSTAR",true);
+DO_SYMBOL(comp,_sym_aSingleCompilerSymbol,2532,CompPkg,"aSingleCompilerSymbol",true);
+DO_SYMBOL(comp,_sym_STARlowLevelTraceSTAR,2533,CompPkg,"STARlowLevelTraceSTAR",true);
+DO_SYMBOL(comp,_sym_STARlowLevelTracePrintSTAR,2534,CompPkg,"STARlowLevelTracePrintSTAR",true);
 #endif // CompPkg_SYMBOLS
 #if defined(CleavirEnvPkg_SYMBOLS)
-DO_SYMBOL(cleavirEnv,_sym_macroFunction,2533,CleavirEnvPkg,"macroFunction",true);
-DO_SYMBOL(cleavirEnv,_sym_symbolMacroExpansion,2534,CleavirEnvPkg,"symbolMacroExpansion",true);
+DO_SYMBOL(cleavirEnv,_sym_macroFunction,2535,CleavirEnvPkg,"macroFunction",true);
+DO_SYMBOL(cleavirEnv,_sym_symbolMacroExpansion,2536,CleavirEnvPkg,"symbolMacroExpansion",true);
 #endif // CleavirEnvPkg_SYMBOLS
 #if defined(CleavirPrimopsPkg_SYMBOLS)
-DO_SYMBOL(cleavirPrimops,_sym_callWithVariableBound,2535,CleavirPrimopsPkg,"callWithVariableBound",true);
+DO_SYMBOL(cleavirPrimops,_sym_callWithVariableBound,2537,CleavirPrimopsPkg,"callWithVariableBound",true);
 #endif // CleavirPrimopsPkg_SYMBOLS
 #if defined(GrayPkg_SYMBOLS)
-DO_SYMBOL(gray,_sym_aSingleGraySymbol,2536,GrayPkg,"aSingleGraySymbol",true);
-DO_SYMBOL(gray,_sym_open_stream_p,2537,GrayPkg,"open_stream_p",true);
-DO_SYMBOL(gray,_sym_stream_read_byte,2538,GrayPkg,"stream_read_byte",true);
-DO_SYMBOL(gray,_sym_stream_write_byte,2539,GrayPkg,"stream_write_byte",true);
-DO_SYMBOL(gray,_sym_stream_read_char,2540,GrayPkg,"stream_read_char",true);
-DO_SYMBOL(gray,_sym_stream_read_char_no_hang,2541,GrayPkg,"stream_read_char_no_hang",true);
-DO_SYMBOL(gray,_sym_stream_write_char,2542,GrayPkg,"stream_write_char",true);
-DO_SYMBOL(gray,_sym_stream_write_string,2543,GrayPkg,"stream_write_string",true);
-DO_SYMBOL(gray,_sym_stream_terpri,2544,GrayPkg,"stream_terpri",true);
-DO_SYMBOL(gray,_sym_stream_fresh_line,2545,GrayPkg,"stream_fresh_line",true);
-DO_SYMBOL(gray,_sym_stream_read_sequence,2546,GrayPkg,"stream_read_sequence",true);
-DO_SYMBOL(gray,_sym_stream_write_sequence,2547,GrayPkg,"stream_write_sequence",true);
-DO_SYMBOL(gray,_sym_stream_unread_char,2548,GrayPkg,"stream_unread_char",true);
-DO_SYMBOL(gray,_sym_stream_peek_char,2549,GrayPkg,"stream_peek_char",true);
-DO_SYMBOL(gray,_sym_stream_listen,2550,GrayPkg,"stream_listen",true);
-DO_SYMBOL(gray,_sym_streamClearInput,2551,GrayPkg,"streamClearInput",true);
-DO_SYMBOL(gray,_sym_stream_clear_input,2552,GrayPkg,"stream_clear_input",true);
-DO_SYMBOL(gray,_sym_stream_clear_output,2553,GrayPkg,"stream_clear_output",true);
-DO_SYMBOL(gray,_sym_stream_force_output,2554,GrayPkg,"stream_force_output",true);
-DO_SYMBOL(gray,_sym_stream_finish_output,2555,GrayPkg,"stream_finish_output",true);
-DO_SYMBOL(gray,_sym_streamp,2556,GrayPkg,"streamp",true);
-DO_SYMBOL(gray,_sym_input_stream_p,2557,GrayPkg,"input_stream_p",true);
-DO_SYMBOL(gray,_sym_output_stream_p,2558,GrayPkg,"output_stream_p",true);
-DO_SYMBOL(gray,_sym_stream_interactive_p,2559,GrayPkg,"stream_interactive_p",true);
-DO_SYMBOL(gray,_sym_stream_element_type,2560,GrayPkg,"stream_element_type",true);
-DO_SYMBOL(gray,_sym_stream_file_position,2561,GrayPkg,"stream_file_position",true);
-DO_SYMBOL(gray,_sym_stream_line_column,2562,GrayPkg,"stream_line_column",true);
-DO_SYMBOL(gray,_sym_stream_advance_to_column,2563,GrayPkg,"stream_advance_to_column",true);
-DO_SYMBOL(gray,_sym_close,2564,GrayPkg,"close",true);
+DO_SYMBOL(gray,_sym_aSingleGraySymbol,2538,GrayPkg,"aSingleGraySymbol",true);
+DO_SYMBOL(gray,_sym_open_stream_p,2539,GrayPkg,"open_stream_p",true);
+DO_SYMBOL(gray,_sym_stream_read_byte,2540,GrayPkg,"stream_read_byte",true);
+DO_SYMBOL(gray,_sym_stream_write_byte,2541,GrayPkg,"stream_write_byte",true);
+DO_SYMBOL(gray,_sym_stream_read_char,2542,GrayPkg,"stream_read_char",true);
+DO_SYMBOL(gray,_sym_stream_read_char_no_hang,2543,GrayPkg,"stream_read_char_no_hang",true);
+DO_SYMBOL(gray,_sym_stream_write_char,2544,GrayPkg,"stream_write_char",true);
+DO_SYMBOL(gray,_sym_stream_write_string,2545,GrayPkg,"stream_write_string",true);
+DO_SYMBOL(gray,_sym_stream_terpri,2546,GrayPkg,"stream_terpri",true);
+DO_SYMBOL(gray,_sym_stream_fresh_line,2547,GrayPkg,"stream_fresh_line",true);
+DO_SYMBOL(gray,_sym_stream_read_sequence,2548,GrayPkg,"stream_read_sequence",true);
+DO_SYMBOL(gray,_sym_stream_write_sequence,2549,GrayPkg,"stream_write_sequence",true);
+DO_SYMBOL(gray,_sym_stream_unread_char,2550,GrayPkg,"stream_unread_char",true);
+DO_SYMBOL(gray,_sym_stream_peek_char,2551,GrayPkg,"stream_peek_char",true);
+DO_SYMBOL(gray,_sym_stream_listen,2552,GrayPkg,"stream_listen",true);
+DO_SYMBOL(gray,_sym_streamClearInput,2553,GrayPkg,"streamClearInput",true);
+DO_SYMBOL(gray,_sym_stream_clear_input,2554,GrayPkg,"stream_clear_input",true);
+DO_SYMBOL(gray,_sym_stream_clear_output,2555,GrayPkg,"stream_clear_output",true);
+DO_SYMBOL(gray,_sym_stream_force_output,2556,GrayPkg,"stream_force_output",true);
+DO_SYMBOL(gray,_sym_stream_finish_output,2557,GrayPkg,"stream_finish_output",true);
+DO_SYMBOL(gray,_sym_streamp,2558,GrayPkg,"streamp",true);
+DO_SYMBOL(gray,_sym_input_stream_p,2559,GrayPkg,"input_stream_p",true);
+DO_SYMBOL(gray,_sym_output_stream_p,2560,GrayPkg,"output_stream_p",true);
+DO_SYMBOL(gray,_sym_stream_interactive_p,2561,GrayPkg,"stream_interactive_p",true);
+DO_SYMBOL(gray,_sym_stream_element_type,2562,GrayPkg,"stream_element_type",true);
+DO_SYMBOL(gray,_sym_stream_file_position,2563,GrayPkg,"stream_file_position",true);
+DO_SYMBOL(gray,_sym_stream_line_column,2564,GrayPkg,"stream_line_column",true);
+DO_SYMBOL(gray,_sym_stream_advance_to_column,2565,GrayPkg,"stream_advance_to_column",true);
+DO_SYMBOL(gray,_sym_close,2566,GrayPkg,"close",true);
 #endif // GrayPkg_SYMBOLS

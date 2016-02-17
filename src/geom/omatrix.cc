@@ -123,13 +123,13 @@ OMatrix_sp OMatrix_O::clone() const
   return clone;
 }
 
-Matrix OMatrix_O::mul(const Matrix& other) const
+CL_DEFMETHOD Matrix OMatrix_O::mul_matrix(const Matrix& other) const
 {
   Matrix res = this->_Value*other;
   return res;
 };
 
-Vector3 OMatrix_O::mul(const Vector3& vec) const
+CL_DEFMETHOD Vector3 OMatrix_O::mul_v3(const Vector3& vec) const
 {
   Vector3 res = this->_Value*vec;
   return res;
@@ -141,11 +141,11 @@ core::List_sp OMatrix_O::encode() {
   for ( size_t i(0); i<16; ++i ) {
     (*v)[i] = core::clasp_make_double_float(this->_Value[i]);
   }
-  return core::Cons_O::create(_Nil<T_O>(),v);
+  return core::Cons_O::create(core::Cons_O::create(INTERN_(kw,m),v));
 }
 
 void OMatrix_O::decode(core::List_sp c) {
-  core::Vector_sp v = gc::As<core::Vector_sp>(oCdr(c));
+  core::Vector_sp v = gc::As<core::Vector_sp>(oCdr(oCar(c)));
   for ( size_t i(0); i<16; ++i ) {
     this->_Value[i] = core::clasp_to_double((*v)[i]);
   }

@@ -118,6 +118,9 @@ void	RestraintAnchor_O::invertStereochemistryOfRestraint()
 }
 
 
+void RestraintAnchor_O::applyTransform(const Matrix& m) {
+  this->_Pos = (m)*this->_Pos;
+}
 
 
 
@@ -414,6 +417,14 @@ RestraintList_sp RestraintList_O::copyDontRedirectAtoms()
 }
 
 
+void RestraintList_O::applyTransformToRestraints(const Matrix& m)
+{
+  RestraintList_O::iterator it;
+  for ( it=this->_Restraints.begin(); it!=this->_Restraints.end(); it++ )
+  {
+    (*it)->applyTransform(m);
+  }
+}
 
 void	RestraintList_O::redirectAtoms()
 {
