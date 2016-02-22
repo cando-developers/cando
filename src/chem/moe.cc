@@ -787,7 +787,7 @@ void	MoeReadFile::readNextLine()
 	ParaArrayReal*	target;
 	bool		bGotRestraints, bGotFixed, bGotCharges;
 	bool		bGotForceRSm1, bGotForceRSp1, bGotHintLP;
-	RestraintList_sp	aggRestraints;
+        core::VectorObjectsWithFillPtr_sp	aggRestraints;
 	int		aid;
 	int		index_mmTypeId, index_mmTypes;
 	string		str;
@@ -1132,7 +1132,7 @@ void	MoeReadFile::readNextLine()
 		    })
 		    restrainChiral->setAtomA(rsAtom);
 		restrainChiral->setChirality(-1);
-		aggRestraints->addRestraint(restrainChiral);
+		aggRestraints->vectorPushExtend(restrainChiral);
 	    }
 	}
 	if ( bGotForceRSp1 ) {
@@ -1150,7 +1150,7 @@ void	MoeReadFile::readNextLine()
 		    })
 		    restrainChiral->setAtomA(rsAtom);
 		restrainChiral->setChirality(1);
-		aggRestraints->addRestraint(restrainChiral);
+		aggRestraints->vectorPushExtend(restrainChiral);
 	    }
 	}
 
@@ -1206,7 +1206,7 @@ void	MoeReadFile::readNextLine()
 		    restraint->setAtomC(atoms[(*resAtoms)[2]-1]);
 		    restraint->setAtomD(atoms[(*resAtoms)[3]-1]);
 		    restraint->setParameters( (*target)[0], (*target)[1], weight );
-		    aggRestraints->addRestraint(restraint);
+		    aggRestraints->vectorPushExtend(restraint);
 		} else if ( type == "angle" ) 
 		{
 		    RestraintAngle_sp restraint = RestraintAngle_O::create();
@@ -1214,14 +1214,14 @@ void	MoeReadFile::readNextLine()
 		    restraint->setAtomB(atoms[(*resAtoms)[1]-1]);
 		    restraint->setAtomC(atoms[(*resAtoms)[2]-1]);
 		    restraint->setParameters( (*target)[0], (*target)[1], weight );
-		    aggRestraints->addRestraint(restraint);
+		    aggRestraints->vectorPushExtend(restraint);
 		} else if ( type == "distance" ) 
 		{
 		    RestraintDistance_sp restraint = RestraintDistance_O::create();
 		    restraint->setAtomA(atoms[(*resAtoms)[0]-1]);
 		    restraint->setAtomB(atoms[(*resAtoms)[1]-1]);
 		    restraint->setParameters( (*target)[0], (*target)[1], weight );
-		    aggRestraints->addRestraint(restraint);
+		    aggRestraints->vectorPushExtend(restraint);
 		} else {
                     std::cerr << "Unknown restraint type: "<< type;
 		}

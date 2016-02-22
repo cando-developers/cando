@@ -32,9 +32,6 @@
 
 namespace chem
 {
-
-
-    SMART(RestraintList);
     SMART(Atom);
     SMART(Residue);
     SMART(Topology);

@@ -336,64 +336,6 @@ public:
 
 
 
-SMART(RestraintList);
-class RestraintList_O : public core::Vector_O
-{
-    LISP_CLASS(chem,ChemPkg,RestraintList_O,"RestraintList",core::Vector_O);
-
-public:
-//    void	archiveBase(core::ArchiveP node);
-//    void	serialize(serialize::SNode node);
-
-private:
-    gctools::Vec0<Restraint_sp>	_Restraints;
-public:
-    typedef gctools::Vec0<Restraint_sp>::iterator	iterator;
-    typedef gctools::Vec0<Restraint_sp>::const_iterator	const_iterator;
-public:
-    gctools::Vec0<Restraint_sp>::iterator	begin() { return this->_Restraints.begin(); };
-    gctools::Vec0<Restraint_sp>::iterator	end() { return this->_Restraints.end(); };
-    gctools::Vec0<Restraint_sp>::const_iterator	begin() const { return this->_Restraints.begin(); };
-    gctools::Vec0<Restraint_sp>::const_iterator	end() const { return this->_Restraints.end(); };
-
-    virtual gc::Fixnum dimension() const { return this->_Restraints.size(); };
-
-    virtual core::T_sp aset_unsafe(int j, core::T_sp val) { this->_Restraints[j] = val; return val;};
-    virtual core::T_sp aref_unsafe(core::cl_index index) const { return this->_Restraints[index]; };
-
-    INHERIT_SEQUENCE virtual core::T_sp elt(int index) const { return this->_Restraints[index]; };
-    INHERIT_SEQUENCE virtual core::T_sp setf_elt(int index, core::T_sp value) { this->_Restraints[index] = value; };
-
-    core::T_sp elementType() const { return cl::_sym_T_O;}
-    
-    virtual std::vector<core::cl_index> dimensions() const { std::vector<core::cl_index> dims; dims.push_back(this->_Restraints.size()); return dims;};
-	void		clear()	{this->_Restraints.clear(); };
-CL_NAME("addRestraint");
-CL_DEFMETHOD 	void		addRestraint( Restraint_sp r) { this->_Restraints.push_back(r); };
-	int		size()	{return this->_Restraints.size(); };
-CL_NAME("numberOfRestraints");
-CL_DEFMETHOD         int numberOfRestraints() { return this->size();};
-	Restraint_sp	getRestraintIndex(int i) {return this->_Restraints[i]; };
-
-	RestraintList_sp	copyDontRedirectAtoms();
-	void	redirectAtoms();
-
-        void applyTransformToRestraints(const Matrix& m);
-        
-	void	merge(RestraintList_sp rl);
-
-//	RestraintList_O(const RestraintList_O& rl );
-
-
-
-
-    DEFAULT_CTOR_DTOR(RestraintList_O);
-};
-
-
-
-
-
 };
 TRANSLATE(chem::Restraint_O);
 TRANSLATE(chem::RestraintAnchor_O);
@@ -402,5 +344,4 @@ TRANSLATE(chem::RestraintDistance_O);
 TRANSLATE(chem::RestraintAngle_O);
 TRANSLATE(chem::RestraintDihedral_O);
 TRANSLATE(chem::RestraintFixedNonbond_O);
-TRANSLATE(chem::RestraintList_O);
 #endif

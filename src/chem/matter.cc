@@ -49,7 +49,7 @@ void	Matter_O::initialize()
   this->_Id = 1; // UNDEFINED_ID;
   this->_NextContentId = 1;
   this->setContainedByNothing();
-  this->_Restraints = _Nil<RestraintList_O>();
+  this->_Restraints = _Nil<core::T_O>();
   this->_Properties = _Nil<core::T_O>();
 }
 
@@ -69,7 +69,7 @@ Matter_O::Matter_O( const Matter_O& c ) : core::CxxObject_O(c)
   this->name = c.name;
 //	this->containerContainedBy = c.containerContainedBy;
   this->_Properties = core::cl__copy_list(c._Properties);
-  this->_Restraints = _Nil<RestraintList_O>();
+  this->_Restraints = _Nil<T_O>();
 }
 
 //
@@ -97,20 +97,23 @@ CL_DEFMETHOD bool	Matter_O::hasContentWithName(MatterName    sName )
 }
 
 
-void Matter_O::accumulateRestraints(RestraintList_sp allRestraints) const
+void Matter_O::accumulateRestraints(core::VectorObjectsWithFillPtr_sp allRestraints) const
 {_OF();
-  allRestraints->merge(this->_Restraints);
-  for ( const_contentIterator ci=this->begin_contents(); ci!=this->end_contents(); ci++ )
-  {
+  if ( this->_Restraints.notnilp() ) {
+    for ( int i=0,iEnd(this->_Restraints->length()); i<iEnd; ++i ) {
+      allRestraints->vectorPushExtend((*(this->_Restraints))[i]);
+    }
+  }
+  for ( const_contentIterator ci=this->begin_contents(); ci!=this->end_contents(); ci++ ) {
     (*ci)->accumulateRestraints(allRestraints);
   }
 }
 
 
 CL_LISPIFY_NAME("allRestraints");
-CL_DEFMETHOD RestraintList_sp Matter_O::allRestraints() const
+CL_DEFMETHOD core::VectorObjectsWithFillPtr_sp Matter_O::allRestraints() const
 {
-  GC_ALLOCATE(RestraintList_O, allRestraints );
+  core::VectorObjectsWithFillPtr_sp allRestraints = core::VectorObjectsWithFillPtr_O::create();
   this->accumulateRestraints(allRestraints);
   return allRestraints;
 }
@@ -128,9 +131,9 @@ CL_DEFMETHOD void Matter_O::addRestraint(Restraint_sp restraint)
 {_OF();
   if ( this->_Restraints.nilp() )
   {
-    this->_Restraints = RestraintList_O::create();
+    this->_Restraints = core::VectorObjectsWithFillPtr_O::create();
   }
-  this->_Restraints->addRestraint(restraint);
+  this->_Restraints->vectorPushExtend(restraint);
 }
 
 
@@ -614,12 +617,17 @@ CL_DEFMETHOD void	Matter_O::applyTransformToAtoms( const Matrix& m )
   for ( a=this->_contents.begin(); a!=this->_contents.end(); a++ ) {
     (*a)->applyTransformToAtoms(m);
   }
-  if ( this->_Restraints.notnilp() ) {
-    this->_Restraints->applyTransformToRestraints(m);
-  }
+    this->applyTransformToRestraints(m);
 }
 
-
+void Matter_O::applyTransformToRestraints(const Matrix& m)
+{
+  if ( this->_Restraints.notnilp() ) {
+    for ( int i = 0; i<this->_Restraints->length(); ++i ) {
+      gc::As<Restraint_sp>((*(this->_Restraints))[i])->applyTransform(m);
+    }
+  }
+}
 
 
 CL_LISPIFY_NAME("invertStructureAndRestraints");
@@ -640,10 +648,8 @@ void Matter_O::invertStereochemistryOfRestraints()
 	//Then flip any restraints
   if ( this->_Restraints.notnilp() )
   {
-    RestraintList_O::iterator it;
-    for ( it=this->_Restraints->begin(); it!=this->_Restraints->end(); it++ )
-    {
-      (*it)->invertStereochemistryOfRestraint();
+    for ( int i(0), iEnd(this->_Restraints->length()); i<iEnd; ++i ) {
+      gc::As<Restraint_sp>((*(this->_Restraints))[i])->invertStereochemistryOfRestraint();
     }
   }
 }
@@ -1123,23 +1129,29 @@ void Matter_O::copyRestraintsDontRedirectAtoms(Matter_sp orig)
   if ( orig->_Restraints.nilp() ) {
     this->_Restraints = _Nil<core::T_O>();
   } else {
-    this->_Restraints = orig->_Restraints->copyDontRedirectAtoms();
+    this->_Restraints = core::VectorObjectsWithFillPtr_O::create();
+    for ( int i(0), iEnd(orig->_Restraints->length()); i<iEnd; ++i ) {
+      this->_Restraints->vectorPushExtend(gc::As<Restraint_sp>((*(orig->_Restraints))[i])->copyDontRedirectAtoms());
+//    this->_Restraints = orig->_Restraints->copyDontRedirectAtoms();
+    }
   }
 }
 
 
 void Matter_O::redirectRestraintAtoms()
-{_OF();
+{
   if ( this->_Restraints.notnilp() )
   {
-    this->_Restraints->redirectAtoms();
+    for ( int i(0), iEnd(this->_Restraints->length()); i<iEnd; ++i ) {
+      gc::As<Restraint_sp>((*(this->_Restraints))[i])->redirectAtoms();
+    }
   }
 }
 
 
 CL_LISPIFY_NAME("buildAtomIdMap");
 CL_DEFMETHOD AtomIdToAtomMap_sp Matter_O::buildAtomIdMap() const
-{_OF();
+{
   SUBCLASS_MUST_IMPLEMENT();
 }
 

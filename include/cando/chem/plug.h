@@ -77,22 +77,17 @@ CL_DEFMETHOD     core::Symbol_sp	getCap() { return this->_Cap; };
 SMART(RingClosingMate);
 class RingClosingMate_O : public EntityNameSetWithCap_O
 {
-    LISP_CLASS(chem,ChemPkg,RingClosingMate_O,"RingClosingMate",EntityNameSetWithCap_O);
-public:
+  LISP_CLASS(chem,ChemPkg,RingClosingMate_O,"RingClosingMate",EntityNameSetWithCap_O);
+ public:
 //    void	archiveBase(core::ArchiveP node);
 
-public:
+ public:
 //	static  RingClosingMate_sp create(core::Lisp_sp e,CandoDatabase_sp db);
-public:
-
-	core::Symbol_sp getName() const;
-
-	string descriptionOfContents() const;
-
-	RingClosingMate_O( const RingClosingMate_O& ss ); //!< Copy constructor
-
-
-	DEFAULT_CTOR_DTOR(RingClosingMate_O);
+ public:
+  core::Symbol_sp getName() const;
+  string descriptionOfContents() const;
+  RingClosingMate_O( const RingClosingMate_O& ss ); //!< Copy constructor
+  DEFAULT_CTOR_DTOR(RingClosingMate_O);
 };
 
 
@@ -230,12 +225,8 @@ SMART(OutPlug);
 class OutPlug_O : public PlugWithMates_O
 {
     LISP_CLASS(chem,ChemPkg,OutPlug_O,"OutPlug",PlugWithMates_O);
-#if INIT_TO_FACTORIES
  public:
     static OutPlug_sp make(MatterName stubPivotAtom);
-#else
-    DECLARE_INIT();
-#endif
 public:
 //    void	archiveBase(core::ArchiveP node);
 	void	initialize();
@@ -269,23 +260,19 @@ CL_DEFMETHOD 	MatterName getStubPivotAtom() { return this->_StubPivotAtom;};
 SMART(InPlug);
 class InPlug_O : public PlugWithMates_O
 {
-    LISP_CLASS(chem,ChemPkg,InPlug_O,"InPlug",PlugWithMates_O);
-public:
-	void initialize();
-private:
-public:
+  LISP_CLASS(chem,ChemPkg,InPlug_O,"InPlug",PlugWithMates_O);
+ public:
+  void initialize();
+ private:
+ public:
 	/*! Regular InPlugs use the first bonded atom as the root */
-CL_NAME("rootAtomName");
-CL_DEFMETHOD     virtual MatterName rootAtomName() const {return this->_B0;};
+  CL_NAME("rootAtomName");
+  CL_DEFMETHOD     virtual MatterName rootAtomName() const {return this->_B0;};
 
-
-	string descriptionOfContents() const;
-
-	bool getIsIn() { return true;};
-
-	InPlug_O( const InPlug_O& ss ); //!< Copy constructor
-
-	DEFAULT_CTOR_DTOR(InPlug_O);
+  string descriptionOfContents() const;
+  bool getIsIn() { return true;};
+  InPlug_O( const InPlug_O& ss ); //!< Copy constructor
+  DEFAULT_CTOR_DTOR(InPlug_O);
 };
 
 
@@ -298,33 +285,29 @@ SMART(JumpPlug);
 
 class JumpPlug_O : public Plug_O
 {
-    LISP_CLASS(chem,ChemPkg,JumpPlug_O,"JumpPlug",Plug_O);
-#if INIT_TO_FACTORIES
+  LISP_CLASS(chem,ChemPkg,JumpPlug_O,"JumpPlug",Plug_O);
  public:
-    static JumpPlug_sp make(MatterName jumpAtomName);
-#else
-    DECLARE_INIT();
-#endif
-public:
+  static JumpPlug_sp make(MatterName jumpAtomName);
+ public:
 //    void	archiveBase(core::ArchiveP node);
-    void	initialize();
+  void	initialize();
 
-private:
-    MatterName		_JumpAtomName;
-public:
+ private:
+  MatterName		_JumpAtomName;
+ public:
 
     /*! Return the name of the root atom */
-CL_NAME("rootAtomName");
-CL_DEFMETHOD     virtual MatterName rootAtomName() const { return this->_JumpAtomName;};
+  CL_NAME("rootAtomName");
+  CL_DEFMETHOD     virtual MatterName rootAtomName() const { return this->_JumpAtomName;};
 
-	string descriptionOfContents() const;
+  string descriptionOfContents() const;
 
 		//! JumpPlugs are a kind of InPlugs
-	bool getIsIn() { return true;};
+  bool getIsIn() { return true;};
 
-	JumpPlug_O( const JumpPlug_O& ss ); //!< Copy constructor
+  JumpPlug_O( const JumpPlug_O& ss ); //!< Copy constructor
 
-	DEFAULT_CTOR_DTOR(JumpPlug_O);
+  DEFAULT_CTOR_DTOR(JumpPlug_O);
 };
 
 

@@ -25,7 +25,6 @@ namespace chem {
 
 
 SMART(Restraint);
-SMART(RestraintList);
 SMART(Lisp);
 
 class  Aggregate_O : public  Matter_O 

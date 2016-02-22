@@ -41,7 +41,8 @@
 (defun read-psf-atoms (psfin header)
   (let ((num (cdr (assoc :natom header)))
         (atoms (make-hash-table :test #'eql))
-        (residues (make-hash-table :test #'eql)))
+        (residues (make-hash-table :test #'equal))
+        residue)
     (flet ((process-one-atom (line)
              (with-input-from-string (sin line)
                (let ((atomid (read sin))
@@ -52,21 +53,22 @@
                      (atom-type (read sin))
                      (charge (read sin))
                      (mass (read sin)))
-                 (let ((residue (gethash residue-id residues))
+                 (let ((unique-residue-id (format nil "~a-~a" segment-name residue-id))
                        (atom (chem:make-atom atom-name
-                                             (chem:element-from-atom-name-string-case-insensitive (string atom-name)))))
+                                             (chem:element-from-atom-name-string-case-insensitive
+                                              (string atom-name)))))
                    (chem:set-type atom atom-type)
                    (chem:set-charge atom charge)
-                   (unless residue
+                   (unless (setf residue (gethash unique-residue-id residues))
                      (setq residue (chem:make-residue residue-name))
-                     (setf (gethash residue-id residues) residue))
+                     (setf (gethash unique-residue-id residues) residue))
                    (chem:add-atom residue atom)
                    (setf (gethash atomid atoms) atom))))))
       (format t "About to read ~a lines~%" num)
       (dotimes (ln num)
         (let ((line (read-line psfin)))
           (handler-case (process-one-atom line)
-            (error (e) (error "Could not process psf atom entry#~a line <~a> as an atom~%" ln line)))))
+            (error (e) (error "Could not process psf atom entry#~a line <~a> as an atom - error: ~a~%" ln line e)))))
       (values atoms residues))))
 
 (defun read-psf-bonds (psfin header atoms)
@@ -78,6 +80,75 @@
               (atom2 (gethash id2 atoms)))
           (chem:bond-to atom1 atom2 :single-bond))))))
 
+
+(defun create-atoms-to-residues (residues)
+  "* Arguments
+- residues :: A hashtable of residue ids to residues.
+* Description
+Return a hash table that maps atoms to residues that contain them."
+  (let ((a2r (make-hash-table :test #'eq)))
+    (maphash (lambda (ri res)
+               (chem:map-atoms 'vector (lambda (a)
+                                         (setf (gethash a a2r) res))
+                               res))
+             residues)
+    a2r))
+
+
+(defun walk-atom-spanning-tree (atom molecule
+                                atoms-seen
+                                residues-to-molecules
+                                atoms-to-residues)
+  "* Arguments
+- atom :: An atom.
+- molecule :: A molecule.
+- atoms-seen :: A hash-table of atoms to T.
+- residues-to-molecules :: A hash-table of residues to molecules.
+- atoms-to-residues :: A hash-table of atoms to the residues that contain them.
+* Description
+Walk the spanning tree of the ATOM and add the ATOM to ATOMS-SEEN.
+For each atom walked look up the residue in ATOMS-TO-RESIDUES
+and if the residue is not in RESIDUES-TO-MOLECULES add it."
+  (let ((spanning-loop (chem:make-spanning-loop atom)))
+    (loop for a = (chem:next spanning-loop (lambda (a b) t))
+       while a
+       do (unless (gethash a atoms-seen)
+            (setf (gethash a atoms-seen) t)
+            (let ((residue (gethash a atoms-to-residues)))
+              (or residue (error "The residue could not be found for atom: ~a" a))
+              (unless (gethash residue residues-to-molecules)
+                (setf (gethash residue residues-to-molecules) molecule)
+                (chem:add-matter molecule residue)))))))
+
+
+(defun build-molecules-from-atom-connectivity (atoms residues)
+  "* Arguments
+- atoms :: Hash-table of atom ids to atoms.
+- residues :: Hash-table of residue ids to residues.
+* Description
+Return a hash table of molecule-ids to molecules that contains molecules identified by walking the
+spanning trees of the atoms and identifying the residues that belong to
+those atoms."
+  (let ((atoms-seen (make-hash-table :test #'eq))
+        (atoms-to-residues (create-atoms-to-residues residues))
+        (residues-to-molecules (make-hash-table :test #'eq))
+        (molecules (make-hash-table :test #'eql))
+        (molecule-id 0))
+    (maphash (lambda (id atom)
+               (unless (gethash atom atoms-seen)
+                 ;; Start a new molecule
+                 (let ((mol (chem:make-molecule)))
+                   (walk-atom-spanning-tree atom mol
+                                            atoms-seen
+                                            residues-to-molecules
+                                            atoms-to-residues)
+                   (setf (gethash (incf molecule-id) molecules) mol))))
+             atoms)
+    molecules))
+             
+
+
+
 (defun read-psf-molnt (psfin header atoms residues)
   (format t "Reading MOLNT section~%")
   (flet ((create-molecule-hash-table (num)
@@ -85,19 +156,11 @@
              (loop for mi from 1 to num
                 do (let ((mol (chem:make-molecule)))
                      (setf (gethash mi mht) (chem:make-molecule))))
-             mht))
-         (create-atoms-to-residues ()
-           (let ((a2r (make-hash-table :test #'eq)))
-             (maphash (lambda (ri res)
-                        (chem:map-atoms 'vector (lambda (a)
-                                                  (setf (gethash a a2r) res))
-                                        res))
-                      residues)
-             a2r)))
+             mht)))
     (let* ((num-molecules (cdr (assoc :molnt header)))
            (num-atoms (hash-table-count atoms))
            (molecules (create-molecule-hash-table num-molecules))
-           (atoms-to-residues (create-atoms-to-residues))
+           (atoms-to-residues (create-atoms-to-residues residues))
            (residues-to-molecules (make-hash-table :test #'eq)))
       (format t "About to read ~a MOLNT entries~%" num-atoms)
       (dotimes (i num-atoms)
@@ -133,7 +196,6 @@
             atom-header
             nbond-header
             last-header
-            atoms residues
             molnt-header
             molecules)
         (setq header (read-psf-header psfin))
@@ -143,20 +205,37 @@
           (read-psf-atoms psfin atom-header))
         (setq nbond-header (read-psf-header psfin))
         (read-psf-bonds psfin nbond-header atoms)
-        (skip-to-blank-line psfin)      ; NTHETA
+        (read-psf-header psfin) ;NTHETA
+        (format t "Expected NTHETA~%")
         (skip-to-blank-line psfin)
+        (read-psf-header psfin)  ; NPHI
+        (format t "Expected NPHI~%")
         (skip-to-blank-line psfin)
+        (read-psf-header psfin)  ; NIMPHI
+        (format t "Expected NIMPHI~%")
         (skip-to-blank-line psfin)
+        (read-psf-header psfin)  ; NDON
+        (format t "Expected NDON~%")
         (skip-to-blank-line psfin)
+        (read-psf-header psfin)  ; NACC
+        (format t "Expected NACC~%")
         (skip-to-blank-line psfin)
-        (skip-to-blank-line psfin)      ; NACC
-        (skip-to-blank-line psfin)      ; NNB
-        (skip-to-blank-line psfin)      ; weird bank of zeros
-        (skip-to-blank-line psfin)      ; NGRP NST2
+        (read-psf-header psfin)  ; NNB
+        (format t "Expected NNB~%")
+        (skip-to-blank-line psfin)
+        (format t "Skipping bank of zeros~%")
+        (skip-to-blank-line psfin) ; Skip mysterious bank of zeros
+        (read-psf-header psfin) ; NGRP NST2
+        (format t "Expected NGRP NST2~%")
+        (skip-to-blank-line psfin)
         (setq molnt-header (read-psf-header psfin))
-        (setf molecules (read-psf-molnt psfin molnt-header atoms residues))
-        (setq last-header (read-psf-header psfin))
-        (format t "Most recent header: ~a~%" last-header)
+        (format t "Expected MOLNT~%")
+        (setq *atoms* atoms)
+        (setq *residues* residues)
+        (format t "molnt-header = ~a~%" molnt-header)
+        (setf molecules (if molnt-header
+                            (read-psf-molnt psfin molnt-header atoms residues)
+                            (build-molecules-from-atom-connectivity atoms residues)))
         (values atoms (build-aggregate molecules))))))
 
 
@@ -164,19 +243,15 @@
   (let* ((*package* (find-package :keyword)))
     (loop for line = (read-line pdbin nil :eof)
      until (eq line :eof)
-       do (with-input-from-string (sin line)
-            (let ((head (read sin)))
-              (case head
-                (:ATOM
-                 (let ((atomid (read sin))
-                       (dummy (progn
-                                (read sin) ; atom name
-                                (read sin) ; residue name
-                                (read sin) ; residueid
-                                nil))
-                       (pos (geom:make-v3 (read sin) (read sin) (read sin))))
-                   (chem:set-position (gethash atomid atoms) pos)))
-                (otherwise #|nothing|#)))))))
+       do (let ((head (read-from-string line nil nil :start 0 :end (min (length line) 4))))
+            (case head
+              (:ATOM
+               (let ((atomid (read-from-string line t nil :start 4 :end 11))
+                     (pos (geom:make-v3 (read-from-string line t nil :start 30 :end 38)
+                                        (read-from-string line t nil :start 38 :end 46)
+                                        (read-from-string line t nil :start 46 :end 54))))
+                 (chem:set-position (gethash atomid atoms) pos)))
+              (otherwise #|nothing|#))))))
                   
 (defun load-psf-pdb (psf-filename pdb-filename)
   (with-open-file (psfin psf-filename)

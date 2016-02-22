@@ -9,6 +9,5 @@ FORWARD(RestraintDistance);
 FORWARD(RestraintAngle);
 FORWARD(RestraintDihedral);
 FORWARD(RestraintFixedNonbond);
-FORWARD(RestraintList);
 }
 #endif

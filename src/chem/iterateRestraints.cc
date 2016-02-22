@@ -26,13 +26,13 @@ void	IterateRestraints_O::initialize()
 
 void	IterateRestraints_O::_accumulateRestraints(Matter_sp m)
 {
-    RestraintList_sp mine = m->allRestraints();
-    RestraintList_O::iterator it;
-    for ( it=mine->begin(); it!=mine->end(); it++ )
-    {
-	core::Cons_sp one = core::Cons_O::create((*it),this->_Restraints);
-	this->_Restraints = one;
-    }
+  core::VectorObjects_sp mine = m->allRestraints();
+  core::VectorObjects_O::iterator it;
+  for ( it=mine->begin(); it!=mine->end(); it++ )
+  {
+    core::Cons_sp one = core::Cons_O::create((*it),this->_Restraints);
+    this->_Restraints = one;
+  }
 }
 
 

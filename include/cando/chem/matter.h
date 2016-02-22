@@ -55,7 +55,7 @@ namespace chem {
 
 
 
-SMART(RestraintList);
+
 SMART(Alias);
 
 typedef enum	MatterIdsEnum { containerId = MATTER_CLASS,
@@ -119,7 +119,7 @@ class Matter_O : public core::CxxObject_O
   core::List_sp   	_Properties;
  private:
 	/*! Maintain a list of restraints that span this Matter_O object */
-  gc::Nilable<RestraintList_sp>	_Restraints;
+  gc::Nilable<core::VectorObjectsWithFillPtr_sp>	_Restraints;
  private:
 
 	/*! Adjust the size of the contents array */
@@ -128,7 +128,7 @@ class Matter_O : public core::CxxObject_O
   void putMatter( int index, Matter_sp matter );
 
  private:
-  void accumulateRestraints(RestraintList_sp allRestraints) const;
+  void accumulateRestraints(core::VectorObjectsWithFillPtr_sp allRestraints) const;
  public:
 
   friend class Aggregate_O;
@@ -148,8 +148,8 @@ CL_NAME("getId");
 CL_DEFMETHOD   int	getId()	{ return(this->_Id);}
 
 
-	/*! Accumulate all of the restraints in this matter and its contents into a single RestraintList */
-  RestraintList_sp allRestraints() const;
+	/*! Accumulate all of the restraints in this matter and its contents into a single RestraintVector */
+ core::VectorObjectsWithFillPtr_sp allRestraints() const;
 
   void	setTempFileId(int i) {this->_TempFileId = i;};
   int	getTempFileId() { return this->_TempFileId; };
@@ -328,6 +328,8 @@ CL_DEFMETHOD   int		contentSize( ) { return this->_contents.size(); };
 
 
   virtual void	applyTransformToAtoms( const Matrix& m );
+  void applyTransformToRestraints(const Matrix& m);
+  
   virtual bool	testConsistancy(Matter_sp c);
   virtual	string	subMatter() {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
   virtual	int	totalNetResidueCharge();

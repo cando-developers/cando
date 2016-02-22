@@ -891,7 +891,7 @@ CL_DEFMETHOD     void	Atom_O::applyTransformToAtoms( const Matrix& m )
     {
 	this->position = (m)*this->position;
         if ( this->_Restraints.notnilp() ) {
-          this->_Restraints->applyTransformToRestraints(m);
+          this->Base::applyTransformToRestraints(m);
         }
     }
 
@@ -1082,7 +1082,7 @@ CL_DEFMETHOD     string	Atom_O::getConfigurationAsString()
 string	Atom_O::__repr__() const
 {
   stringstream ss;
-  ss << "#<" << this->className() << " \"" << this->name << "/" << _rep_(symbolFromElement(this->_Element)) << "@" << (void*)this << ">";
+  ss << "#<" << this->className() << " " << this->name << "/" << _rep_(symbolFromElement(this->_Element)) << "@" << (void*)this << ">";
   return ss.str();
 }
 

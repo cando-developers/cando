@@ -17,7 +17,6 @@ namespace chem {
 
 
 
-SMART(RestraintList);
 SMART(Residue);
 SMART(Atom);
 SMART(ChemInfo);

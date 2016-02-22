@@ -392,7 +392,7 @@
     class ChemInfo_O;
     class ZMatrixEntry_O;
     class RestraintFixedNonbond_O;
-    class RestraintList_O;
+    class RestraintVector_O;
     class StereoInformation_O;
     class MacroModelFile_O;
     class RestraintChiral_O;
@@ -740,7 +740,7 @@ KIND_LISPALLOC_core__VectorObjectsWithFillPtr_O = 214,
 KIND_LISPALLOC_core__BitVector_O = 215,
 KIND_LISPALLOC_core__BitVectorWithFillPtr_O = 216,
 KIND_LISPALLOC_core__SimpleBitVector_O = 217,
-KIND_LISPALLOC_chem__RestraintList_O = 218,
+KIND_LISPALLOC_chem__RestraintVector_O = 218,
 KIND_LISPALLOC_core__String_O = 219,
 KIND_BOOTSTRAP_core__Str_O = 220,
 KIND_LISPALLOC_core__StrWithFillPtr_O = 221,
@@ -3361,7 +3361,7 @@ template <typename FP> struct Cast<core::Stream_O*,FP> {
       return ((275 <= kindVal) && (kindVal <= 287));
   };
 };
-template <typename FP> struct Cast<chem::RestraintList_O*,FP> {
+template <typename FP> struct Cast<chem::RestraintVector_O*,FP> {
   inline static bool isA(FP client) {
       gctools::Header_s* header = reinterpret_cast<gctools::Header_s*>(ClientPtrToBasePtr(client));
       int kindVal = header->kind();
@@ -6175,9 +6175,9 @@ template <> class gctools::GCKind<core::Stream_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_core__Stream_O ;
 };
-template <> class gctools::GCKind<chem::RestraintList_O> {
+template <> class gctools::GCKind<chem::RestraintVector_O> {
 public:
-  static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_chem__RestraintList_O ;
+  static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_chem__RestraintVector_O ;
 };
 template <> class gctools::GCKind<gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>,gctools::smart_ptr<core::DoubleFloat_O>>>> {
 public:
@@ -7993,9 +7993,9 @@ kind_name_KIND_LISPALLOC_core__SimpleBitVector_O:
 {
 return "KIND_LISPALLOC_core__SimpleBitVector_O";
 }
-kind_name_KIND_LISPALLOC_chem__RestraintList_O:
+kind_name_KIND_LISPALLOC_chem__RestraintVector_O:
 {
-return "KIND_LISPALLOC_chem__RestraintList_O";
+return "KIND_LISPALLOC_chem__RestraintVector_O";
 }
 kind_name_KIND_LISPALLOC_core__String_O:
 {
@@ -9724,7 +9724,7 @@ static void* KIND_NAME_MAP_table[] = { NULL
   /* 215 */ , &&kind_name_KIND_LISPALLOC_core__BitVector_O
   /* 216 */ , &&kind_name_KIND_LISPALLOC_core__BitVectorWithFillPtr_O
   /* 217 */ , &&kind_name_KIND_LISPALLOC_core__SimpleBitVector_O
-  /* 218 */ , &&kind_name_KIND_LISPALLOC_chem__RestraintList_O
+  /* 218 */ , &&kind_name_KIND_LISPALLOC_chem__RestraintVector_O
   /* 219 */ , &&kind_name_KIND_LISPALLOC_core__String_O
   /* 220 */ , &&kind_name_KIND_BOOTSTRAP_core__Str_O
   /* 221 */ , &&kind_name_KIND_LISPALLOC_core__StrWithFillPtr_O
@@ -11388,10 +11388,10 @@ obj_dump_KIND_LISPALLOC_core__SimpleBitVector_O:
     sout << "KIND_LISPALLOC_core__SimpleBitVector_O size[" << (AlignUp(sizeof(type_KIND_LISPALLOC_core__SimpleBitVector_O))+global_alignup_sizeof_header) << "]" ;
 }
 goto BOTTOM;
-obj_dump_KIND_LISPALLOC_chem__RestraintList_O:
+obj_dump_KIND_LISPALLOC_chem__RestraintVector_O:
 {
-    typedef chem::RestraintList_O type_KIND_LISPALLOC_chem__RestraintList_O;
-    sout << "KIND_LISPALLOC_chem__RestraintList_O size[" << (AlignUp(sizeof(type_KIND_LISPALLOC_chem__RestraintList_O))+global_alignup_sizeof_header) << "]" ;
+    typedef chem::RestraintVector_O type_KIND_LISPALLOC_chem__RestraintVector_O;
+    sout << "KIND_LISPALLOC_chem__RestraintVector_O size[" << (AlignUp(sizeof(type_KIND_LISPALLOC_chem__RestraintVector_O))+global_alignup_sizeof_header) << "]" ;
 }
 goto BOTTOM;
 obj_dump_KIND_LISPALLOC_core__String_O:
@@ -14226,7 +14226,7 @@ static void* OBJ_DUMP_MAP_table[] = { NULL
   /* 215 */ , &&obj_dump_KIND_LISPALLOC_core__BitVector_O
   /* 216 */ , &&obj_dump_KIND_LISPALLOC_core__BitVectorWithFillPtr_O
   /* 217 */ , &&obj_dump_KIND_LISPALLOC_core__SimpleBitVector_O
-  /* 218 */ , &&obj_dump_KIND_LISPALLOC_chem__RestraintList_O
+  /* 218 */ , &&obj_dump_KIND_LISPALLOC_chem__RestraintVector_O
   /* 219 */ , &&obj_dump_KIND_LISPALLOC_core__String_O
   /* 220 */ , &&obj_dump_KIND_BOOTSTRAP_core__Str_O
   /* 221 */ , &&obj_dump_KIND_LISPALLOC_core__StrWithFillPtr_O
@@ -15890,10 +15890,10 @@ obj_skip_KIND_LISPALLOC_core__SimpleBitVector_O:
     client = (char*)client + AlignUp(sizeof(type_KIND_LISPALLOC_core__SimpleBitVector_O)) + global_alignup_sizeof_header;
     goto DONE; //return client;
 }
-obj_skip_KIND_LISPALLOC_chem__RestraintList_O:
+obj_skip_KIND_LISPALLOC_chem__RestraintVector_O:
 {
-    typedef chem::RestraintList_O type_KIND_LISPALLOC_chem__RestraintList_O;
-    client = (char*)client + AlignUp(sizeof(type_KIND_LISPALLOC_chem__RestraintList_O)) + global_alignup_sizeof_header;
+    typedef chem::RestraintVector_O type_KIND_LISPALLOC_chem__RestraintVector_O;
+    client = (char*)client + AlignUp(sizeof(type_KIND_LISPALLOC_chem__RestraintVector_O)) + global_alignup_sizeof_header;
     goto DONE; //return client;
 }
 obj_skip_KIND_LISPALLOC_core__String_O:
@@ -18847,7 +18847,7 @@ static void* OBJ_SKIP_table[] = { NULL
   /* 215 */ , &&obj_skip_KIND_LISPALLOC_core__BitVector_O
   /* 216 */ , &&obj_skip_KIND_LISPALLOC_core__BitVectorWithFillPtr_O
   /* 217 */ , &&obj_skip_KIND_LISPALLOC_core__SimpleBitVector_O
-  /* 218 */ , &&obj_skip_KIND_LISPALLOC_chem__RestraintList_O
+  /* 218 */ , &&obj_skip_KIND_LISPALLOC_chem__RestraintVector_O
   /* 219 */ , &&obj_skip_KIND_LISPALLOC_core__String_O
   /* 220 */ , &&obj_skip_KIND_BOOTSTRAP_core__Str_O
   /* 221 */ , &&obj_skip_KIND_LISPALLOC_core__StrWithFillPtr_O
@@ -20511,9 +20511,9 @@ obj_scan_KIND_LISPALLOC_core__SimpleBitVector_O:
   if ( result != MPS_RES_OK ) return result;
 }
 goto TOP;
-obj_scan_KIND_LISPALLOC_chem__RestraintList_O:
+obj_scan_KIND_LISPALLOC_chem__RestraintVector_O:
 {
-  mps_res_t result = gctools::obj_scan_helper<chem::RestraintList_O>(_ss,_mps_zs,_mps_w,_mps_ufs,_mps_wt,client);
+  mps_res_t result = gctools::obj_scan_helper<chem::RestraintVector_O>(_ss,_mps_zs,_mps_w,_mps_ufs,_mps_wt,client);
   if ( result != MPS_RES_OK ) return result;
 }
 goto TOP;
@@ -25635,12 +25635,12 @@ MAYBE_INLINE mps_res_t obj_scan_helper<core::SimpleBitVector_O>(mps_ss_t _ss, mp
     return MPS_RES_OK;
 }
 template <>
-MAYBE_INLINE mps_res_t obj_scan_helper<chem::RestraintList_O>(mps_ss_t _ss, mps_word_t _mps_zs, mps_word_t _mps_w, mps_word_t &_mps_ufs, mps_word_t _mps_wt, mps_addr_t& client)
+MAYBE_INLINE mps_res_t obj_scan_helper<chem::RestraintVector_O>(mps_ss_t _ss, mps_word_t _mps_zs, mps_word_t _mps_w, mps_word_t &_mps_ufs, mps_word_t _mps_wt, mps_addr_t& client)
 {
-    chem::RestraintList_O* obj_gc_safe = reinterpret_cast<chem::RestraintList_O*>(client);
+    chem::RestraintVector_O* obj_gc_safe = reinterpret_cast<chem::RestraintVector_O*>(client);
     TAGGED_POINTER_FIX(obj_gc_safe->_Restraints._Vector._Contents);
-    typedef chem::RestraintList_O type_KIND_LISPALLOC_chem__RestraintList_O;
-    client = (char*)client + AlignUp(sizeof(type_KIND_LISPALLOC_chem__RestraintList_O)) + global_alignup_sizeof_header;
+    typedef chem::RestraintVector_O type_KIND_LISPALLOC_chem__RestraintVector_O;
+    client = (char*)client + AlignUp(sizeof(type_KIND_LISPALLOC_chem__RestraintVector_O)) + global_alignup_sizeof_header;
     return MPS_RES_OK;
 }
 template <>
@@ -28295,7 +28295,7 @@ static void* OBJ_SCAN_table[] = { NULL
   /* 215 */ , &&obj_scan_KIND_LISPALLOC_core__BitVector_O
   /* 216 */ , &&obj_scan_KIND_LISPALLOC_core__BitVectorWithFillPtr_O
   /* 217 */ , &&obj_scan_KIND_LISPALLOC_core__SimpleBitVector_O
-  /* 218 */ , &&obj_scan_KIND_LISPALLOC_chem__RestraintList_O
+  /* 218 */ , &&obj_scan_KIND_LISPALLOC_chem__RestraintVector_O
   /* 219 */ , &&obj_scan_KIND_LISPALLOC_core__String_O
   /* 220 */ , &&obj_scan_KIND_BOOTSTRAP_core__Str_O
   /* 221 */ , &&obj_scan_KIND_LISPALLOC_core__StrWithFillPtr_O
@@ -29959,10 +29959,10 @@ obj_finalize_KIND_LISPALLOC_core__SimpleBitVector_O:
     obj_gc_safe->~SimpleBitVector_O();
     return;
 }
-obj_finalize_KIND_LISPALLOC_chem__RestraintList_O:
+obj_finalize_KIND_LISPALLOC_chem__RestraintVector_O:
 {
-    chem::RestraintList_O* obj_gc_safe = reinterpret_cast<chem::RestraintList_O*>(client);
-    obj_gc_safe->~RestraintList_O();
+    chem::RestraintVector_O* obj_gc_safe = reinterpret_cast<chem::RestraintVector_O*>(client);
+    obj_gc_safe->~RestraintVector_O();
     return;
 }
 obj_finalize_KIND_LISPALLOC_core__String_O:
@@ -32085,7 +32085,7 @@ static void* OBJ_FINALIZE_table[] = { NULL
   /* 215 */ , &&obj_finalize_KIND_LISPALLOC_core__BitVector_O
   /* 216 */ , &&obj_finalize_KIND_LISPALLOC_core__BitVectorWithFillPtr_O
   /* 217 */ , &&obj_finalize_KIND_LISPALLOC_core__SimpleBitVector_O
-  /* 218 */ , &&obj_finalize_KIND_LISPALLOC_chem__RestraintList_O
+  /* 218 */ , &&obj_finalize_KIND_LISPALLOC_chem__RestraintVector_O
   /* 219 */ , &&obj_finalize_KIND_LISPALLOC_core__String_O
   /* 220 */ , &&obj_finalize_KIND_BOOTSTRAP_core__Str_O
   /* 221 */ , &&obj_finalize_KIND_LISPALLOC_core__StrWithFillPtr_O
@@ -33749,10 +33749,10 @@ obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SimpleBitVector_O:
     GCObjectAllocator<core::SimpleBitVector_O>::deallocate_unmanaged_instance(obj_gc_safe);
     return;
 }
-obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestraintList_O:
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestraintVector_O:
 {
-    chem::RestraintList_O* obj_gc_safe = reinterpret_cast<chem::RestraintList_O*>(client);
-    GCObjectAllocator<chem::RestraintList_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    chem::RestraintVector_O* obj_gc_safe = reinterpret_cast<chem::RestraintVector_O*>(client);
+    GCObjectAllocator<chem::RestraintVector_O>::deallocate_unmanaged_instance(obj_gc_safe);
     return;
 }
 obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__String_O:
@@ -35875,7 +35875,7 @@ static void* OBJ_DEALLOCATOR_table[] = { NULL
   /* 215 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__BitVector_O
   /* 216 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__BitVectorWithFillPtr_O
   /* 217 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SimpleBitVector_O
-  /* 218 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestraintList_O
+  /* 218 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_chem__RestraintVector_O
   /* 219 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__String_O
   /* 220 */ , &&obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__Str_O
   /* 221 */ , &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__StrWithFillPtr_O
@@ -36510,7 +36510,7 @@ static void* OBJ_DEALLOCATOR_table[] = { NULL
  SMART_PTR_FIX(llvmo::IntegerType_O::___staticClassSymbol);
  SMART_PTR_FIX(core::WeakHashTable_O::___staticClass);
  SMART_PTR_FIX(chem::RingTest_O::___staticClassSymbol);
- SMART_PTR_FIX(chem::RestraintList_O::___staticClassSymbol);
+ SMART_PTR_FIX(chem::RestraintVector_O::___staticClassSymbol);
  SMART_PTR_FIX(llvmo::ConstantStruct_O::___staticClass);
  SMART_PTR_FIX(chem::FFBaseDb_O::___staticClass);
  TAGGED_POINTER_FIX(core::ValueFrame_O::static_creator);
@@ -36598,7 +36598,7 @@ static void* OBJ_DEALLOCATOR_table[] = { NULL
  SMART_PTR_FIX(core::ValueFrame_O::___staticClassSymbol);
  SMART_PTR_FIX(chem::OneMonomer_O::___staticClass);
  TAGGED_POINTER_FIX(core::WeakKeyHashTable_O::static_creator);
- TAGGED_POINTER_FIX(chem::RestraintList_O::static_creator);
+ TAGGED_POINTER_FIX(chem::RestraintVector_O::static_creator);
  SMART_PTR_FIX(chem::AGVertex_O::___staticClassSymbol);
  TAGGED_POINTER_FIX(chem::PdbMonomerDatabase_O::static_creator);
  SMART_PTR_FIX(core::DoubleFloat_O::___staticClass);
@@ -36806,7 +36806,7 @@ static void* OBJ_DEALLOCATOR_table[] = { NULL
  SMART_PTR_FIX(llvmo::PHINode_O::___staticClassSymbol);
  SMART_PTR_FIX(chem::FullLargeSquareMatrix_O::___staticClass);
  TAGGED_POINTER_FIX(chem::ConformationCollectionEntry_O::static_creator);
- SMART_PTR_FIX(chem::RestraintList_O::___staticClass);
+ SMART_PTR_FIX(chem::RestraintVector_O::___staticClass);
  SMART_PTR_FIX(core::Str_O::___staticClass);
  SMART_PTR_FIX(chem::RestraintDistance_O::___staticClass);
  TAGGED_POINTER_FIX(chem::EnergyStretch_O::static_creator);

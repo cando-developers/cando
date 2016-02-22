@@ -52,7 +52,6 @@ namespace chem {
     SMART(CalculatePosition);
     SMART(Restraint);
     SMART(Alias);
-    SMART(RestraintList);
     SMART(Constitution);
     SMART(Residue);
 
