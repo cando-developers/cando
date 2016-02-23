@@ -59,6 +59,7 @@ This is an open source license for the CANDO software from Temple University, bu
   (setf (gethash "cc" *copyright-notices*) *c++-copyright-notice*)
   (setf (gethash "h" *copyright-notices*) *c++-copyright-notice*)
   (setf (gethash "lsp" *copyright-notices*) *lisp-copyright-notice*)
+  (setf (gethash "lisp" *copyright-notices*) *lisp-copyright-notice*)
   )
 
 (defun read-entire-file (pn)
@@ -117,6 +118,7 @@ If the copyright was removed the return the second value t"
 (defparameter *all-files* (append
                            (directory #P"~/Development/clasp/projects/cando/src/**/*.h")
                            (directory #P"~/Development/clasp/projects/cando/src/**/*.cc")
-                           (directory #P"~/Development/clasp/projects/cando/src/lisp/**/*.lsp")))
+                           (directory #P"~/Development/clasp/projects/cando/src/lisp/**/*.lisp")))
 
 (copywrite-all-files *all-files*)
+
