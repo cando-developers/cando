@@ -1,28 +1,3 @@
-/*
-    File: sourceInfo_inc.h
-*/
-/*
-Open Source License
-Copyright (c) 2016, Christian E. Schafmeister
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
- 
-This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
-*/
-/* -^- */
 #ifdef SOURCE_INFO_HELPERS
 NOINLINE void source_info_1_helper() {
  define_source_info( code_kind, core::magic_name("ast_tooling__testDerivable"), "../../../../src/asttooling/clangTooling.cc", 21777, 431, "" );
@@ -2946,205 +2921,205 @@ NOINLINE void source_info_967_helper() {
  define_source_info( code_kind, core::magic_name("core__make_vector_displaced"), "../../../../src/core/vectorDisplaced.cc", 1409, 45, ""  );
 }
 NOINLINE void source_info_968_helper() {
- define_source_info( code_kind, core::magic_name("UNITS:make-quantity"), "../../src/units/quantity.cc", 4000, 149, "" );
+ define_source_info( code_kind, core::magic_name("UNITS:make-quantity"), "../../src/units/quantity.cc", 5338, 174, "" );
 }
 NOINLINE void source_info_969_helper() {
- define_source_info( code_kind, core::magic_name("UNITS:make-unit"), "../../src/units/unit.cc", 1087, 50, "" );
+ define_source_info( code_kind, core::magic_name("UNITS:make-unit"), "../../src/units/unit.cc", 2421, 75, "" );
 }
 NOINLINE void source_info_970_helper() {
- define_source_info( code_kind, core::magic_name("chem__makeIndexedObjectBag"), "../../src/adapt/indexedObjectBag.cc", 2071, 65, "" );
+ define_source_info( code_kind, core::magic_name("chem__makeIndexedObjectBag"), "../../src/adapt/indexedObjectBag.cc", 2433, 64, "" );
 }
 NOINLINE void source_info_971_helper() {
- define_source_info( code_kind, core::magic_name("GEOM:make-coordinate-array"), "../../src/geom/coordinateArray.cc", 666, 30, "" );
+ define_source_info( code_kind, core::magic_name("GEOM:make-coordinate-array"), "../../src/geom/coordinateArray.cc", 2011, 55, "" );
 }
 NOINLINE void source_info_972_helper() {
- define_source_info( code_kind, core::magic_name("GEOM:make-m4-rotate-z"), "../../src/geom/omatrix.cc", 2530, 113, "" );
+ define_source_info( code_kind, core::magic_name("GEOM:make-m4-rotate-z"), "../../src/geom/omatrix.cc", 3867, 138, "" );
 }
 NOINLINE void source_info_973_helper() {
- define_source_info( code_kind, core::magic_name("GEOM:make-m4-rotate-y"), "../../src/geom/omatrix.cc", 2347, 105, "" );
+ define_source_info( code_kind, core::magic_name("GEOM:make-m4-rotate-y"), "../../src/geom/omatrix.cc", 3684, 130, "" );
 }
 NOINLINE void source_info_974_helper() {
- define_source_info( code_kind, core::magic_name("GEOM:make-m4-rotate-x"), "../../src/geom/omatrix.cc", 2164, 97, "" );
+ define_source_info( code_kind, core::magic_name("GEOM:make-m4-rotate-x"), "../../src/geom/omatrix.cc", 3501, 122, "" );
 }
 NOINLINE void source_info_975_helper() {
- define_source_info( code_kind, core::magic_name("GEOM:make-m4-translate"), "../../src/geom/omatrix.cc", 1980, 89, "" );
+ define_source_info( code_kind, core::magic_name("GEOM:make-m4-translate"), "../../src/geom/omatrix.cc", 3317, 114, "" );
 }
 NOINLINE void source_info_976_helper() {
- define_source_info( code_kind, core::magic_name("GEOM:make-matrix-identity"), "../../src/geom/omatrix.cc", 1809, 81, "" );
+ define_source_info( code_kind, core::magic_name("GEOM:make-matrix-identity"), "../../src/geom/omatrix.cc", 3146, 106, "" );
 }
 NOINLINE void source_info_977_helper() {
- define_source_info( code_kind, core::magic_name("GEOM:make-m4"), "../../src/geom/omatrix.cc", 455, 24, "" );
+ define_source_info( code_kind, core::magic_name("GEOM:make-m4"), "../../src/geom/omatrix.cc", 1792, 49, "" );
 }
 NOINLINE void source_info_978_helper() {
- define_source_info( code_kind, core::magic_name("GEOM:make_v3"), "../../src/geom/ovector3.cc", 1075, 43, "" );
+ define_source_info( code_kind, core::magic_name("GEOM:make_v3"), "../../src/geom/ovector3.cc", 2413, 68, "" );
 }
 NOINLINE void source_info_979_helper() {
- define_source_info( code_kind, core::magic_name("chem__oligomer"), "../../src/chem/candoScript.cc", 28476, 846, "" );
+ define_source_info( code_kind, core::magic_name("chem__oligomer"), "../../src/chem/candoScript.cc", 29817, 871, "" );
 }
 NOINLINE void source_info_980_helper() {
- define_source_info( code_kind, core::magic_name("chem__calculate_point"), "../../src/chem/candoScript.cc", 26064, 791, "" );
+ define_source_info( code_kind, core::magic_name("chem__calculate_point"), "../../src/chem/candoScript.cc", 27405, 816, "" );
 }
 NOINLINE void source_info_981_helper() {
- define_source_info( code_kind, core::magic_name("chem__link"), "../../src/chem/candoScript.cc", 25149, 765, "" );
+ define_source_info( code_kind, core::magic_name("chem__link"), "../../src/chem/candoScript.cc", 26490, 790, "" );
 }
 NOINLINE void source_info_982_helper() {
- define_source_info( code_kind, core::magic_name("chem__monomer"), "../../src/chem/candoScript.cc", 24498, 744, "" );
+ define_source_info( code_kind, core::magic_name("chem__monomer"), "../../src/chem/candoScript.cc", 25839, 769, "" );
 }
 NOINLINE void source_info_983_helper() {
- define_source_info( code_kind, core::magic_name("chem__atom_pos"), "../../src/chem/candoScript.cc", 22587, 687, "" );
+ define_source_info( code_kind, core::magic_name("chem__atom_pos"), "../../src/chem/candoScript.cc", 23928, 712, "" );
 }
 NOINLINE void source_info_984_helper() {
- define_source_info( code_kind, core::magic_name("chem__find_residue"), "../../src/chem/candoScript.cc", 20851, 637, "" );
+ define_source_info( code_kind, core::magic_name("chem__find_residue"), "../../src/chem/candoScript.cc", 22192, 662, "" );
 }
 NOINLINE void source_info_985_helper() {
- define_source_info( code_kind, core::magic_name("chem__save_mol2"), "../../src/chem/candoScript.cc", 18284, 562, "" );
+ define_source_info( code_kind, core::magic_name("chem__save_mol2"), "../../src/chem/candoScript.cc", 19625, 587, "" );
 }
 NOINLINE void source_info_986_helper() {
- define_source_info( code_kind, core::magic_name("chem__load_mol2"), "../../src/chem/candoScript.cc", 17836, 544, "" );
+ define_source_info( code_kind, core::magic_name("chem__load_mol2"), "../../src/chem/candoScript.cc", 19177, 569, "" );
 }
 NOINLINE void source_info_987_helper() {
- define_source_info( code_kind, core::magic_name("chem__make_coordinate_array_from_atom_list"), "../../src/chem/candoScript.cc", 17316, 525, "" );
+ define_source_info( code_kind, core::magic_name("chem__make_coordinate_array_from_atom_list"), "../../src/chem/candoScript.cc", 18657, 550, "" );
 }
 NOINLINE void source_info_988_helper() {
- define_source_info( code_kind, core::magic_name("chem__save_archive_with_auto_set_cando_database"), "../../src/chem/candoScript.cc", 16008, 491, "" );
+ define_source_info( code_kind, core::magic_name("chem__save_archive_with_auto_set_cando_database"), "../../src/chem/candoScript.cc", 17349, 516, "" );
 }
 NOINLINE void source_info_989_helper() {
- define_source_info( code_kind, core::magic_name("chem__create_virtual_atom"), "../../src/chem/candoScript.cc", 10764, 361, "" );
+ define_source_info( code_kind, core::magic_name("chem__create_virtual_atom"), "../../src/chem/candoScript.cc", 12105, 386, "" );
 }
 NOINLINE void source_info_990_helper() {
- define_source_info( code_kind, core::magic_name("chem__bundle_database_path"), "../../src/chem/candoScript.cc", 6390, 224, "" );
+ define_source_info( code_kind, core::magic_name("chem__bundle_database_path"), "../../src/chem/candoScript.cc", 7731, 249, "" );
 }
 NOINLINE void source_info_991_helper() {
- define_source_info( code_kind, core::magic_name("chem__standard_database"), "../../src/chem/candoScript.cc", 5353, 193, "" );
+ define_source_info( code_kind, core::magic_name("chem__standard_database"), "../../src/chem/candoScript.cc", 6694, 218, "" );
 }
 NOINLINE void source_info_992_helper() {
- define_source_info( code_kind, core::magic_name("chem__database"), "../../src/chem/candoScript.cc", 4274, 163, "" );
+ define_source_info( code_kind, core::magic_name("chem__database"), "../../src/chem/candoScript.cc", 5615, 188, "" );
 }
 NOINLINE void source_info_993_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:make-chem-draw"), "../../src/chem/chemdraw.cc", 31978, 987, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:make-chem-draw"), "../../src/chem/chemdraw.cc", 33316, 1012, "" );
 }
 NOINLINE void source_info_994_helper() {
  define_source_info( code_kind, core::magic_name("core__test_add"), "/Users/meister/Development/clasp/include/clasp/core/primitives.h", 4569, 149, R"doc(add two numbers)doc"  );
 }
 NOINLINE void source_info_995_helper() {
- define_source_info( code_kind, core::magic_name("chem__make_read_amber_parameters"), "../../src/chem/readAmberParameters.cc", 448, 20, "" );
+ define_source_info( code_kind, core::magic_name("chem__make_read_amber_parameters"), "../../src/chem/readAmberParameters.cc", 1797, 45, "" );
 }
 NOINLINE void source_info_996_helper() {
- define_source_info( code_kind, core::magic_name("chem__set_monomer_pack"), "../../src/chem/monomerPack.cc", 4503, 146, "" );
+ define_source_info( code_kind, core::magic_name("chem__set_monomer_pack"), "../../src/chem/monomerPack.cc", 5844, 171, "" );
 }
 NOINLINE void source_info_997_helper() {
- define_source_info( code_kind, core::magic_name("chem__extend_aliases"), "../../src/chem/monomerPack.cc", 2873, 103, "" );
+ define_source_info( code_kind, core::magic_name("chem__extend_aliases"), "../../src/chem/monomerPack.cc", 4214, 128, "" );
 }
 NOINLINE void source_info_998_helper() {
- define_source_info( code_kind, core::magic_name("chem__define_monomer_pack"), "../../src/chem/monomerPack.cc", 1648, 56, "" );
+ define_source_info( code_kind, core::magic_name("chem__define_monomer_pack"), "../../src/chem/monomerPack.cc", 2989, 81, "" );
 }
 NOINLINE void source_info_999_helper() {
- define_source_info( code_kind, core::magic_name("chem__parseChimeraAtomSpecs"), "../../src/chem/chimera.cc", 1542, 48, "" );
+ define_source_info( code_kind, core::magic_name("chem__parseChimeraAtomSpecs"), "../../src/chem/chimera.cc", 2879, 73, "" );
 }
 NOINLINE void source_info_1000_helper() {
- define_source_info( code_kind, core::magic_name("chem__alias"), "../../src/chem/alias.cc", 812, 39, "" );
+ define_source_info( code_kind, core::magic_name("chem__alias"), "../../src/chem/alias.cc", 2147, 64, "" );
 }
 NOINLINE void source_info_1001_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:bonds"), "../../src/chem/iterateMatter.cc", 4132, 210, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:bonds"), "../../src/chem/iterateMatter.cc", 5475, 235, "" );
 }
 NOINLINE void source_info_1002_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:residues"), "../../src/chem/iterateMatter.cc", 3830, 195, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:residues"), "../../src/chem/iterateMatter.cc", 5173, 220, "" );
 }
 NOINLINE void source_info_1003_helper() {
- define_source_info( code_kind, core::magic_name("chem__create_for_matter"), "../../src/chem/iterateMatter.cc", 2456, 139, "" );
+ define_source_info( code_kind, core::magic_name("chem__create_for_matter"), "../../src/chem/iterateMatter.cc", 3799, 164, "" );
 }
 NOINLINE void source_info_1004_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:ring-bonds"), "../../src/chem/ringFinder.cc", 26652, 939, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:ring-bonds"), "../../src/chem/ringFinder.cc", 27992, 964, "" );
 }
 NOINLINE void source_info_1005_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:identify-rings"), "../../src/chem/ringFinder.cc", 25766, 908, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:identify-rings"), "../../src/chem/ringFinder.cc", 27106, 933, "" );
 }
 NOINLINE void source_info_1006_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:save-pdb"), "../../src/chem/pdb.cc", 16669, 573, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:save-pdb"), "../../src/chem/pdb.cc", 18002, 598, "" );
 }
 NOINLINE void source_info_1007_helper() {
- define_source_info( code_kind, core::magic_name("chem__load_pdb"), "../../src/chem/pdb.cc", 10318, 332, "" );
+ define_source_info( code_kind, core::magic_name("chem__load_pdb"), "../../src/chem/pdb.cc", 11651, 357, "" );
 }
 NOINLINE void source_info_1008_helper() {
- define_source_info( code_kind, "CHEM:MAKE-SPANNING-LOOP", "../../src/chem/spanningLoop.cc", 740, 32, "" );
+ define_source_info( code_kind, "CHEM:MAKE-SPANNING-LOOP", "../../src/chem/spanningLoop.cc", 2082, 57, "" );
 }
 NOINLINE void source_info_1009_helper() {
- define_source_info( code_kind, core::magic_name("chem__set_oligomer"), "../../src/chem/oligomer.cc", 28670, 1001, "" );
+ define_source_info( code_kind, core::magic_name("chem__set_oligomer"), "../../src/chem/oligomer.cc", 30008, 1026, "" );
 }
 NOINLINE void source_info_1010_helper() {
- define_source_info( code_kind, core::magic_name("chem__oligomer_sequence"), "../../src/chem/oligomer.cc", 26599, 935, "" );
+ define_source_info( code_kind, core::magic_name("chem__oligomer_sequence"), "../../src/chem/oligomer.cc", 27937, 960, "" );
 }
 NOINLINE void source_info_1011_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:make-nvector"), "../../src/chem/nVector.cc", 452, 33, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:make-nvector"), "../../src/chem/nVector.cc", 1789, 58, "" );
 }
 NOINLINE void source_info_1012_helper() {
- define_source_info( code_kind, core::magic_name("chem__atomsInMatterAsObjectSet"), "../../src/chem/mbbCoreTools.cc", 6158, 245, "" );
+ define_source_info( code_kind, core::magic_name("chem__atomsInMatterAsObjectSet"), "../../src/chem/mbbCoreTools.cc", 7500, 270, "" );
 }
 NOINLINE void source_info_1013_helper() {
- define_source_info( code_kind, core::magic_name("chem__atomsWithinSphereAsObjectSet"), "../../src/chem/mbbCoreTools.cc", 5332, 220, "" );
+ define_source_info( code_kind, core::magic_name("chem__atomsWithinSphereAsObjectSet"), "../../src/chem/mbbCoreTools.cc", 6674, 245, "" );
 }
 NOINLINE void source_info_1014_helper() {
- define_source_info( code_kind, core::magic_name("chem__connectAtomsInMatterInCovalentContact"), "../../src/chem/mbbCoreTools.cc", 4641, 199, "" );
+ define_source_info( code_kind, core::magic_name("chem__connectAtomsInMatterInCovalentContact"), "../../src/chem/mbbCoreTools.cc", 5983, 224, "" );
 }
 NOINLINE void source_info_1015_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:otherPlugName"), "../../src/chem/coupling.cc", 3210, 136, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:otherPlugName"), "../../src/chem/coupling.cc", 4548, 161, "" );
 }
 NOINLINE void source_info_1016_helper() {
- define_source_info( code_kind, core::magic_name("chem__is_in_plug_name"), "../../src/chem/coupling.cc", 3086, 130, "" );
+ define_source_info( code_kind, core::magic_name("chem__is_in_plug_name"), "../../src/chem/coupling.cc", 4424, 155, "" );
 }
 NOINLINE void source_info_1017_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:outPlugName"), "../../src/chem/coupling.cc", 2692, 115, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:outPlugName"), "../../src/chem/coupling.cc", 4030, 140, "" );
 }
 NOINLINE void source_info_1018_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:inPlugName"), "../../src/chem/coupling.cc", 2437, 105, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:inPlugName"), "../../src/chem/coupling.cc", 3775, 130, "" );
 }
 NOINLINE void source_info_1019_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:couplingName"), "../../src/chem/coupling.cc", 2032, 94, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:couplingName"), "../../src/chem/coupling.cc", 3370, 119, "" );
 }
 NOINLINE void source_info_1020_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:make-energy-function"), "../../src/chem/energyFunction.cc", 3551, 129, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:make-energy-function"), "../../src/chem/energyFunction.cc", 4895, 154, "" );
 }
 NOINLINE void source_info_1021_helper() {
- define_source_info( code_kind, core::magic_name("chem__map_bonds"), "../../src/chem/loop.cc", 22219, 726, "" );
+ define_source_info( code_kind, core::magic_name("chem__map_bonds"), "../../src/chem/loop.cc", 23553, 751, "" );
 }
 NOINLINE void source_info_1022_helper() {
- define_source_info( code_kind, core::magic_name("chem__map_atoms"), "../../src/chem/loop.cc", 21130, 694, "" );
+ define_source_info( code_kind, core::magic_name("chem__map_atoms"), "../../src/chem/loop.cc", 22464, 719, "" );
 }
 NOINLINE void source_info_1023_helper() {
- define_source_info( code_kind, core::magic_name("chem__map_residues"), "../../src/chem/loop.cc", 19986, 659, "" );
+ define_source_info( code_kind, core::magic_name("chem__map_residues"), "../../src/chem/loop.cc", 21320, 684, "" );
 }
 NOINLINE void source_info_1024_helper() {
- define_source_info( code_kind, core::magic_name("chem__map_molecules"), "../../src/chem/loop.cc", 18821, 625, "" );
+ define_source_info( code_kind, core::magic_name("chem__map_molecules"), "../../src/chem/loop.cc", 20155, 650, "" );
 }
 NOINLINE void source_info_1025_helper() {
- define_source_info( code_kind, core::magic_name("chem__readPdbMonomerConnectivityDatabase"), "../../src/chem/pdbMonomer.cc", 2676, 122, "" );
+ define_source_info( code_kind, core::magic_name("chem__readPdbMonomerConnectivityDatabase"), "../../src/chem/pdbMonomer.cc", 4016, 147, "" );
 }
 NOINLINE void source_info_1026_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:make-minimizer"), "../../src/chem/minimizer.cc", 5026, 178, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:make-minimizer"), "../../src/chem/minimizer.cc", 6365, 203, "" );
 }
 NOINLINE void source_info_1027_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:elementFromAtomNameString"), "../../src/chem/elements.cc", 21650, 557, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:elementFromAtomNameString"), "../../src/chem/elements.cc", 22988, 582, "" );
 }
 NOINLINE void source_info_1028_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:elementFromAtomNameStringCaseInsensitive"), "../../src/chem/elements.cc", 21513, 552, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:elementFromAtomNameStringCaseInsensitive"), "../../src/chem/elements.cc", 22851, 577, "" );
 }
 NOINLINE void source_info_1029_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:vdwRadiusForElement"), "../../src/chem/elements.cc", 18154, 440, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:vdwRadiusForElement"), "../../src/chem/elements.cc", 19492, 465, "" );
 }
 NOINLINE void source_info_1030_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:make-atom"), "../../src/chem/atom.cc", 2493, 104, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:make-atom"), "../../src/chem/atom.cc", 3827, 129, "" );
 }
 NOINLINE void source_info_1031_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:make-residue"), "../../src/chem/residue.cc", 19907, 730, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:make-residue"), "../../src/chem/residue.cc", 21244, 755, "" );
 }
 NOINLINE void source_info_1032_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:make-molecule"), "../../src/chem/molecule.cc", 9389, 358, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:make-molecule"), "../../src/chem/molecule.cc", 10727, 383, "" );
 }
 NOINLINE void source_info_1033_helper() {
- define_source_info( code_kind, core::magic_name("CHEM:make-aggregate"), "../../src/chem/aggregate.cc", 18599, 637, "" );
+ define_source_info( code_kind, core::magic_name("CHEM:make-aggregate"), "../../src/chem/aggregate.cc", 19938, 662, "" );
 }
 NOINLINE void source_info_1034_helper() {
- define_source_info( code_kind, core::magic_name("chem__make_fftypes_db"), "../../src/chem/ffTypesDb.cc", 2355, 97, "" );
+ define_source_info( code_kind, core::magic_name("chem__make_fftypes_db"), "../../src/chem/ffTypesDb.cc", 3188, 97, "" );
 }
 NOINLINE void source_info_1035_helper() {
  define_source_info( code_kind, core::magic_name("cl__listp"), "/Users/meister/Development/clasp/include/clasp/core/predicates.h", 1759, 70, "" );
@@ -3780,55 +3755,55 @@ NOINLINE void source_info_1245_helper() {
  define_source_info( class_kind, core::magic_name("COMMON-LISP:logical-pathname"), "/Users/meister/Development/clasp/include/clasp/core/pathname.h", 5631, 152, "" );
 }
 NOINLINE void source_info_1246_helper() {
- define_source_info( class_kind, core::magic_name("ADAPT:StringSet"), "../../../../projects/cando/include/cando/adapt/stringSet.h", 1543, 55, "" );
+ define_source_info( class_kind, core::magic_name("ADAPT:StringSet"), "../../../../projects/cando/include/cando/adapt/stringSet.h", 1981, 55, "" );
 }
 NOINLINE void source_info_1247_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:asCons"), "../../src/adapt/stringSet.cc", 7465, 289, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:asCons"), "../../src/adapt/stringSet.cc", 7827, 288, "" );
 }
 NOINLINE void source_info_1248_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:cartesianProductInsert"), "../../src/adapt/stringSet.cc", 6996, 272, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:cartesianProductInsert"), "../../src/adapt/stringSet.cc", 7358, 271, "" );
 }
 NOINLINE void source_info_1249_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:relativeComplement"), "../../src/adapt/stringSet.cc", 6529, 256, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:relativeComplement"), "../../src/adapt/stringSet.cc", 6891, 255, "" );
 }
 NOINLINE void source_info_1250_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:StringSetIntersection"), "../../src/adapt/stringSet.cc", 6072, 238, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:StringSetIntersection"), "../../src/adapt/stringSet.cc", 6434, 237, "" );
 }
 NOINLINE void source_info_1251_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:StringSetUnion"), "../../src/adapt/stringSet.cc", 5686, 223, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:StringSetUnion"), "../../src/adapt/stringSet.cc", 6048, 222, "" );
 }
 NOINLINE void source_info_1252_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:setFromString"), "../../src/adapt/stringSet.cc", 5474, 214, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:setFromString"), "../../src/adapt/stringSet.cc", 5836, 213, "" );
 }
 NOINLINE void source_info_1253_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:clear"), "../../src/adapt/stringSet.cc", 4346, 165, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:clear"), "../../src/adapt/stringSet.cc", 4708, 164, "" );
 }
 NOINLINE void source_info_1254_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:containsSubset"), "../../src/adapt/stringSet.cc", 4094, 154, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:containsSubset"), "../../src/adapt/stringSet.cc", 4456, 153, "" );
 }
 NOINLINE void source_info_1255_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:contains"), "../../src/adapt/stringSet.cc", 3942, 146, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:contains"), "../../src/adapt/stringSet.cc", 4304, 145, "" );
 }
 NOINLINE void source_info_1256_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:asString"), "../../src/adapt/stringSet.cc", 2953, 111, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:asString"), "../../src/adapt/stringSet.cc", 3315, 110, "" );
 }
 NOINLINE void source_info_1257_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:insertStringSet"), "../../src/adapt/stringSet.cc", 2093, 73, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:insertStringSet"), "../../src/adapt/stringSet.cc", 2455, 72, "" );
 }
 NOINLINE void source_info_1258_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:insertConsStrings"), "../../src/adapt/stringSet.cc", 1685, 57, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:insertConsStrings"), "../../src/adapt/stringSet.cc", 2047, 56, "" );
 }
 NOINLINE void source_info_1259_helper() {
- define_source_info( method_kind, "ADAPT:cartesianProduct", "../../../../projects/cando/include/cando/adapt/stringSet.h", 3029, 110, "" );
+ define_source_info( method_kind, "ADAPT:cartesianProduct", "../../../../projects/cando/include/cando/adapt/stringSet.h", 3454, 110, "" );
 }
 NOINLINE void source_info_1260_helper() {
- define_source_info( method_kind, "ADAPT:removeAll", "../../../../projects/cando/include/cando/adapt/stringSet.h", 2868, 106, "" );
+ define_source_info( method_kind, "ADAPT:removeAll", "../../../../projects/cando/include/cando/adapt/stringSet.h", 3325, 106, "" );
 }
 NOINLINE void source_info_1261_helper() {
- define_source_info( method_kind, "ADAPT:insert", "../../../../projects/cando/include/cando/adapt/stringSet.h", 2187, 82, "" );
+ define_source_info( method_kind, "ADAPT:insert", "../../../../projects/cando/include/cando/adapt/stringSet.h", 2620, 82, "" );
 }
 NOINLINE void source_info_1262_helper() {
- define_source_info( method_kind, "ADAPT:size", "../../../../projects/cando/include/cando/adapt/stringSet.h", 2003, 77, "" );
+ define_source_info( method_kind, "ADAPT:size", "../../../../projects/cando/include/cando/adapt/stringSet.h", 2423, 77, "" );
 }
 NOINLINE void source_info_1263_helper() {
  define_source_info( class_kind, core::magic_name("COMMON-LISP:HashTable"), "/Users/meister/Development/clasp/include/clasp/core/hashTable.h", 1510, 44, "" );
@@ -3867,187 +3842,187 @@ NOINLINE void source_info_1274_helper() {
  define_source_info( class_kind, core::magic_name("CORE:HashTableEq"), "/Users/meister/Development/clasp/include/clasp/core/hashTableEq.h", 1296, 40, "" );
 }
 NOINLINE void source_info_1275_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Matter"), "../../../../projects/cando/include/cando/chem/matter.h", 1493, 86, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Matter"), "../../../../projects/cando/include/cando/chem/matter.h", 2404, 86, "" );
 }
 NOINLINE void source_info_1276_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:atomWithAtomId"), "../../src/chem/matter.cc", 30628, 1159, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atomWithAtomId"), "../../src/chem/matter.cc", 31964, 1184, "" );
 }
 NOINLINE void source_info_1277_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:buildAtomIdMap"), "../../src/chem/matter.cc", 30494, 1153, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:buildAtomIdMap"), "../../src/chem/matter.cc", 31830, 1178, "" );
 }
 NOINLINE void source_info_1278_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:allProperTorsionsAsCons"), "../../src/chem/matter.cc", 28850, 1093, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allProperTorsionsAsCons"), "../../src/chem/matter.cc", 30186, 1118, "" );
 }
 NOINLINE void source_info_1279_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:allImproperTorsionsAsCons"), "../../src/chem/matter.cc", 27910, 1064, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allImproperTorsionsAsCons"), "../../src/chem/matter.cc", 29246, 1089, "" );
 }
 NOINLINE void source_info_1280_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:allAnglesAsCons"), "../../src/chem/matter.cc", 27232, 1043, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allAnglesAsCons"), "../../src/chem/matter.cc", 28568, 1068, "" );
 }
 NOINLINE void source_info_1281_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:allBondsAsCons"), "../../src/chem/matter.cc", 26671, 1024, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allBondsAsCons"), "../../src/chem/matter.cc", 28007, 1049, "" );
 }
 NOINLINE void source_info_1282_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:allAtomsAsCons"), "../../src/chem/matter.cc", 26260, 1008, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allAtomsAsCons"), "../../src/chem/matter.cc", 27596, 1033, "" );
 }
 NOINLINE void source_info_1283_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:allAtomsOfElementAsList"), "../../src/chem/matter.cc", 24478, 950, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allAtomsOfElementAsList"), "../../src/chem/matter.cc", 25814, 975, "" );
 }
 NOINLINE void source_info_1284_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:aliasAtom"), "../../src/chem/matter.cc", 24240, 938, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:aliasAtom"), "../../src/chem/matter.cc", 25576, 963, "" );
 }
 NOINLINE void source_info_1285_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:aliasAtomOrNil"), "../../src/chem/matter.cc", 23992, 930, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:aliasAtomOrNil"), "../../src/chem/matter.cc", 25328, 955, "" );
 }
 NOINLINE void source_info_1286_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:aliasResidue"), "../../src/chem/matter.cc", 23752, 922, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:aliasResidue"), "../../src/chem/matter.cc", 25088, 947, "" );
 }
 NOINLINE void source_info_1287_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:aliasResidueOrNil"), "../../src/chem/matter.cc", 23388, 907, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:aliasResidueOrNil"), "../../src/chem/matter.cc", 24724, 932, "" );
 }
 NOINLINE void source_info_1288_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:allAtoms"), "../../src/chem/matter.cc", 22630, 875, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allAtoms"), "../../src/chem/matter.cc", 23966, 900, "" );
 }
 NOINLINE void source_info_1289_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:contentsAsCons"), "../../src/chem/matter.cc", 22342, 861, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:contentsAsCons"), "../../src/chem/matter.cc", 23678, 886, "" );
 }
 NOINLINE void source_info_1290_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:boundingBox"), "../../src/chem/matter.cc", 21845, 837, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:boundingBox"), "../../src/chem/matter.cc", 23181, 862, "" );
 }
 NOINLINE void source_info_1291_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:geometricCenter"), "../../src/chem/matter.cc", 21256, 810, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:geometricCenter"), "../../src/chem/matter.cc", 22592, 835, "" );
 }
 NOINLINE void source_info_1292_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setAtomAliasesForResiduesNamed"), "../../src/chem/matter.cc", 19405, 763, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setAtomAliasesForResiduesNamed"), "../../src/chem/matter.cc", 20741, 788, "" );
 }
 NOINLINE void source_info_1293_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setAllAtomMasks"), "../../src/chem/matter.cc", 18687, 734, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setAllAtomMasks"), "../../src/chem/matter.cc", 20023, 759, "" );
 }
 NOINLINE void source_info_1294_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:testConsistancy"), "../../src/chem/matter.cc", 17299, 680, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:testConsistancy"), "../../src/chem/matter.cc", 18635, 705, "" );
 }
 NOINLINE void source_info_1295_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:translateAllAtoms"), "../../src/chem/matter.cc", 16840, 659, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:translateAllAtoms"), "../../src/chem/matter.cc", 18176, 684, "" );
 }
 NOINLINE void source_info_1296_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:invertStructureAndRestraints"), "../../src/chem/matter.cc", 16180, 634, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:invertStructureAndRestraints"), "../../src/chem/matter.cc", 17516, 659, "" );
 }
 NOINLINE void source_info_1297_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:applyTransformToAtoms"), "../../src/chem/matter.cc", 15560, 613, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:applyTransformToAtoms"), "../../src/chem/matter.cc", 16896, 638, "" );
 }
 NOINLINE void source_info_1298_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addMatter"), "../../src/chem/matter.cc", 13688, 546, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addMatter"), "../../src/chem/matter.cc", 15024, 571, "" );
 }
 NOINLINE void source_info_1299_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:contentIndex"), "../../src/chem/matter.cc", 13263, 529, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:contentIndex"), "../../src/chem/matter.cc", 14599, 554, "" );
 }
 NOINLINE void source_info_1300_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:contentIndexWithId"), "../../src/chem/matter.cc", 12823, 508, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:contentIndexWithId"), "../../src/chem/matter.cc", 14159, 533, "" );
 }
 NOINLINE void source_info_1301_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:hasContentWithId"), "../../src/chem/matter.cc", 11193, 443, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasContentWithId"), "../../src/chem/matter.cc", 12529, 468, "" );
 }
 NOINLINE void source_info_1302_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:contentWithId"), "../../src/chem/matter.cc", 10657, 421, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:contentWithId"), "../../src/chem/matter.cc", 11993, 446, "" );
 }
 NOINLINE void source_info_1303_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:contentIndexWithName"), "../../src/chem/matter.cc", 10193, 401, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:contentIndexWithName"), "../../src/chem/matter.cc", 11529, 426, "" );
 }
 NOINLINE void source_info_1304_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:perturbAtomPositions"), "../../src/chem/matter.cc", 9902, 384, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:perturbAtomPositions"), "../../src/chem/matter.cc", 11238, 409, "" );
 }
 NOINLINE void source_info_1305_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:randomizeAtomPositions"), "../../src/chem/matter.cc", 9655, 373, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:randomizeAtomPositions"), "../../src/chem/matter.cc", 10991, 398, "" );
 }
 NOINLINE void source_info_1306_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:fillInImplicitHydrogens"), "../../src/chem/matter.cc", 9405, 363, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:fillInImplicitHydrogens"), "../../src/chem/matter.cc", 10741, 388, "" );
 }
 NOINLINE void source_info_1307_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:makeAllAtomNamesInEachResidueUnique"), "../../src/chem/matter.cc", 9130, 353, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:makeAllAtomNamesInEachResidueUnique"), "../../src/chem/matter.cc", 10466, 378, "" );
 }
 NOINLINE void source_info_1308_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:contentWithName"), "../../src/chem/matter.cc", 8043, 317, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:contentWithName"), "../../src/chem/matter.cc", 9379, 342, "" );
 }
 NOINLINE void source_info_1309_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:connectAllCloseAtoms"), "../../src/chem/matter.cc", 7128, 279, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:connectAllCloseAtoms"), "../../src/chem/matter.cc", 8464, 304, "" );
 }
 NOINLINE void source_info_1310_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:calculateVirtualAtomPositions"), "../../src/chem/matter.cc", 6771, 262, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:calculateVirtualAtomPositions"), "../../src/chem/matter.cc", 8107, 287, "" );
 }
 NOINLINE void source_info_1311_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:firstAtomWithName"), "../../src/chem/matter.cc", 6389, 245, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:firstAtomWithName"), "../../src/chem/matter.cc", 7725, 270, "" );
 }
 NOINLINE void source_info_1312_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:hasProperty"), "../../src/chem/matter.cc", 6199, 237, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasProperty"), "../../src/chem/matter.cc", 7535, 262, "" );
 }
 NOINLINE void source_info_1313_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:Matter-getPropertyOrDefault"), "../../src/chem/matter.cc", 6011, 231, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:Matter-getPropertyOrDefault"), "../../src/chem/matter.cc", 7347, 256, "" );
 }
 NOINLINE void source_info_1314_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:Matter-getProperty"), "../../src/chem/matter.cc", 5527, 219, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:Matter-getProperty"), "../../src/chem/matter.cc", 6863, 244, "" );
 }
 NOINLINE void source_info_1315_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setPropertyTrue"), "../../src/chem/matter.cc", 5337, 213, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setPropertyTrue"), "../../src/chem/matter.cc", 6673, 238, "" );
 }
 NOINLINE void source_info_1316_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setProperty"), "../../src/chem/matter.cc", 5149, 207, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setProperty"), "../../src/chem/matter.cc", 6485, 232, "" );
 }
 NOINLINE void source_info_1317_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:clearProperty"), "../../src/chem/matter.cc", 4983, 201, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:clearProperty"), "../../src/chem/matter.cc", 6319, 226, "" );
 }
 NOINLINE void source_info_1318_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:propertiesAsString"), "../../src/chem/matter.cc", 3797, 157, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:propertiesAsString"), "../../src/chem/matter.cc", 5133, 182, "" );
 }
 NOINLINE void source_info_1319_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addRestraint"), "../../src/chem/matter.cc", 3108, 130, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addRestraint"), "../../src/chem/matter.cc", 4444, 155, "" );
 }
 NOINLINE void source_info_1320_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:clearRestraints"), "../../src/chem/matter.cc", 2949, 122, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:clearRestraints"), "../../src/chem/matter.cc", 4285, 147, "" );
 }
 NOINLINE void source_info_1321_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:allRestraints"), "../../src/chem/matter.cc", 2664, 114, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allRestraints"), "../../src/chem/matter.cc", 4000, 139, "" );
 }
 NOINLINE void source_info_1322_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:hasContentWithName"), "../../src/chem/matter.cc", 1849, 86, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasContentWithName"), "../../src/chem/matter.cc", 3185, 111, "" );
 }
 NOINLINE void source_info_1323_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:containedBy"), "../../src/chem/matter.cc", 917, 40, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:containedBy"), "../../src/chem/matter.cc", 2253, 65, "" );
 }
 NOINLINE void source_info_1324_helper() {
- define_source_info( method_kind, "CHEM:contentSize", "../../../../projects/cando/include/cando/chem/matter.h", 9809, 323, "" );
+ define_source_info( method_kind, "CHEM:contentSize", "../../../../projects/cando/include/cando/chem/matter.h", 10382, 323, "" );
 }
 NOINLINE void source_info_1325_helper() {
- define_source_info( method_kind, "CHEM:contentAt", "../../../../projects/cando/include/cando/chem/matter.h", 9709, 321, "" );
+ define_source_info( method_kind, "CHEM:contentAt", "../../../../projects/cando/include/cando/chem/matter.h", 10347, 321, "" );
 }
 NOINLINE void source_info_1326_helper() {
- define_source_info( method_kind, "CHEM:isAtom", "../../../../projects/cando/include/cando/chem/matter.h", 8810, 288, "" );
+ define_source_info( method_kind, "CHEM:isAtom", "../../../../projects/cando/include/cando/chem/matter.h", 9299, 288, "" );
 }
 NOINLINE void source_info_1327_helper() {
- define_source_info( method_kind, "CHEM:isResidue", "../../../../projects/cando/include/cando/chem/matter.h", 8735, 286, "" );
+ define_source_info( method_kind, "CHEM:isResidue", "../../../../projects/cando/include/cando/chem/matter.h", 9229, 286, "" );
 }
 NOINLINE void source_info_1328_helper() {
- define_source_info( method_kind, "CHEM:isMolecule", "../../../../projects/cando/include/cando/chem/matter.h", 8655, 284, "" );
+ define_source_info( method_kind, "CHEM:isMolecule", "../../../../projects/cando/include/cando/chem/matter.h", 9156, 284, "" );
 }
 NOINLINE void source_info_1329_helper() {
- define_source_info( method_kind, "CHEM:isAggregate", "../../../../projects/cando/include/cando/chem/matter.h", 8573, 282, "" );
+ define_source_info( method_kind, "CHEM:isAggregate", "../../../../projects/cando/include/cando/chem/matter.h", 9065, 282, "" );
 }
 NOINLINE void source_info_1330_helper() {
- define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/matter.h", 7894, 261, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/matter.h", 7989, 261, "" );
 }
 NOINLINE void source_info_1331_helper() {
- define_source_info( method_kind, "CHEM:setName", "../../../../projects/cando/include/cando/chem/matter.h", 7750, 258, "" );
+ define_source_info( method_kind, "CHEM:setName", "../../../../projects/cando/include/cando/chem/matter.h", 7909, 258, "" );
 }
 NOINLINE void source_info_1332_helper() {
- define_source_info( method_kind, "CHEM:numberOfAtoms", "../../../../projects/cando/include/cando/chem/matter.h", 6654, 236, "" );
+ define_source_info( method_kind, "CHEM:numberOfAtoms", "../../../../projects/cando/include/cando/chem/matter.h", 7043, 236, "" );
 }
 NOINLINE void source_info_1333_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getProperties"), "../../../../projects/cando/include/cando/chem/matter.h", 6121, 222, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getProperties"), "../../../../projects/cando/include/cando/chem/matter.h", 6566, 222, "" );
 }
 NOINLINE void source_info_1334_helper() {
- define_source_info( method_kind, "CHEM:matter-copy", "../../../../projects/cando/include/cando/chem/matter.h", 3696, 160, "" );
+ define_source_info( method_kind, "CHEM:matter-copy", "../../../../projects/cando/include/cando/chem/matter.h", 4331, 160, "" );
 }
 NOINLINE void source_info_1335_helper() {
- define_source_info( method_kind, "CHEM:getId", "../../../../projects/cando/include/cando/chem/matter.h", 3300, 148, "" );
+ define_source_info( method_kind, "CHEM:getId", "../../../../projects/cando/include/cando/chem/matter.h", 4011, 148, "" );
 }
 NOINLINE void source_info_1336_helper() {
  define_source_info( class_kind, core::magic_name("CORE:VectorObjects"), "/Users/meister/Development/clasp/include/clasp/core/vectorObjects.h", 1439, 43, "" );
@@ -4125,451 +4100,451 @@ NOINLINE void source_info_1360_helper() {
  define_source_info( method_kind, core::magic_name("CORE:put"), "../../../../src/core/serialize.cc", 10289, 331, "" );
 }
 NOINLINE void source_info_1361_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Atom"), "../../../../projects/cando/include/cando/chem/atom.h", 2990, 136, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Atom"), "../../../../projects/cando/include/cando/chem/atom.h", 3885, 136, "" );
 }
 NOINLINE void source_info_1362_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getResidueContainedBy"), "../../src/chem/atom.cc", 46994, 1722, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getResidueContainedBy"), "../../src/chem/atom.cc", 48328, 1747, "" );
 }
 NOINLINE void source_info_1363_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:isConfigurable"), "../../src/chem/atom.cc", 44470, 1632, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:isConfigurable"), "../../src/chem/atom.cc", 45804, 1657, "" );
 }
 NOINLINE void source_info_1364_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:localSpanningTree"), "../../src/chem/atom.cc", 43866, 1615, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:localSpanningTree"), "../../src/chem/atom.cc", 45200, 1640, "" );
 }
 NOINLINE void source_info_1365_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getNextSpan"), "../../src/chem/atom.cc", 43069, 1591, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getNextSpan"), "../../src/chem/atom.cc", 44403, 1616, "" );
 }
 NOINLINE void source_info_1366_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getBackSpan"), "../../src/chem/atom.cc", 42915, 1583, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getBackSpan"), "../../src/chem/atom.cc", 44249, 1608, "" );
 }
 NOINLINE void source_info_1367_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getValence"), "../../src/chem/atom.cc", 42287, 1553, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getValence"), "../../src/chem/atom.cc", 43621, 1578, "" );
 }
 NOINLINE void source_info_1368_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:inRingSize"), "../../src/chem/atom.cc", 40748, 1484, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:inRingSize"), "../../src/chem/atom.cc", 42082, 1509, "" );
 }
 NOINLINE void source_info_1369_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getBondedHydrogenCount"), "../../src/chem/atom.cc", 40334, 1467, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getBondedHydrogenCount"), "../../src/chem/atom.cc", 41668, 1492, "" );
 }
 NOINLINE void source_info_1370_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getAtomicNumber"), "../../src/chem/atom.cc", 40071, 1454, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAtomicNumber"), "../../src/chem/atom.cc", 41405, 1479, "" );
 }
 NOINLINE void source_info_1371_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getHeavyAtomBondList"), "../../src/chem/atom.cc", 39692, 1435, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getHeavyAtomBondList"), "../../src/chem/atom.cc", 41026, 1460, "" );
 }
 NOINLINE void source_info_1372_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:bondsAsList"), "../../src/chem/atom.cc", 39247, 1417, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:bondsAsList"), "../../src/chem/atom.cc", 40581, 1442, "" );
 }
 NOINLINE void source_info_1373_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:totalBondOrder"), "../../src/chem/atom.cc", 37957, 1385, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:totalBondOrder"), "../../src/chem/atom.cc", 39291, 1410, "" );
 }
 NOINLINE void source_info_1374_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getBondList"), "../../src/chem/atom.cc", 37592, 1367, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getBondList"), "../../src/chem/atom.cc", 38926, 1392, "" );
 }
 NOINLINE void source_info_1375_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:bondedAtomsAsList"), "../../src/chem/atom.cc", 37045, 1342, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:bondedAtomsAsList"), "../../src/chem/atom.cc", 38379, 1367, "" );
 }
 NOINLINE void source_info_1376_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:testConsistancy"), "../../src/chem/atom.cc", 34203, 1241, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:testConsistancy"), "../../src/chem/atom.cc", 35537, 1266, "" );
 }
 NOINLINE void source_info_1377_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:isBondedTo"), "../../src/chem/atom.cc", 33110, 1193, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:isBondedTo"), "../../src/chem/atom.cc", 34444, 1218, "" );
 }
 NOINLINE void source_info_1378_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:isBondedToWithBondOrder"), "../../src/chem/atom.cc", 32511, 1169, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:isBondedToWithBondOrder"), "../../src/chem/atom.cc", 33845, 1194, "" );
 }
 NOINLINE void source_info_1379_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getConfigurationAsString"), "../../src/chem/atom.cc", 28696, 1004, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getConfigurationAsString"), "../../src/chem/atom.cc", 30030, 1029, "" );
 }
 NOINLINE void source_info_1380_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getTempInt"), "../../src/chem/atom.cc", 28573, 998, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getTempInt"), "../../src/chem/atom.cc", 29907, 1023, "" );
 }
 NOINLINE void source_info_1381_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setTempInt"), "../../src/chem/atom.cc", 28420, 991, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setTempInt"), "../../src/chem/atom.cc", 29754, 1016, "" );
 }
 NOINLINE void source_info_1382_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setPositionInNanometers"), "../../src/chem/atom.cc", 28234, 983, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setPositionInNanometers"), "../../src/chem/atom.cc", 29568, 1008, "" );
 }
 NOINLINE void source_info_1383_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getElementAsString"), "../../src/chem/atom.cc", 23930, 908, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getElementAsString"), "../../src/chem/atom.cc", 25264, 933, "" );
 }
 NOINLINE void source_info_1384_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:applyTransformToAtoms"), "../../src/chem/atom.cc", 23505, 890, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:applyTransformToAtoms"), "../../src/chem/atom.cc", 24839, 915, "" );
 }
 NOINLINE void source_info_1385_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:removeAllBonds"), "../../src/chem/atom.cc", 23028, 869, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeAllBonds"), "../../src/chem/atom.cc", 24362, 894, "" );
 }
 NOINLINE void source_info_1386_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:removeBondTo"), "../../src/chem/atom.cc", 22773, 859, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeBondTo"), "../../src/chem/atom.cc", 24107, 884, "" );
 }
 NOINLINE void source_info_1387_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:isBondedToElementHybridizationElementHybridization"), "../../src/chem/atom.cc", 21309, 801, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:isBondedToElementHybridizationElementHybridization"), "../../src/chem/atom.cc", 22643, 826, "" );
 }
 NOINLINE void source_info_1388_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:isBondedToElementHybridization"), "../../src/chem/atom.cc", 20836, 783, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:isBondedToElementHybridization"), "../../src/chem/atom.cc", 22170, 808, "" );
 }
 NOINLINE void source_info_1389_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:hasBondWithOrder"), "../../src/chem/atom.cc", 20547, 770, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasBondWithOrder"), "../../src/chem/atom.cc", 21881, 795, "" );
 }
 NOINLINE void source_info_1390_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:isBondedToElementOrder"), "../../src/chem/atom.cc", 20174, 754, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:isBondedToElementOrder"), "../../src/chem/atom.cc", 21508, 779, "" );
 }
 NOINLINE void source_info_1391_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:bondedNeighborWithName"), "../../src/chem/atom.cc", 19772, 740, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:bondedNeighborWithName"), "../../src/chem/atom.cc", 21106, 765, "" );
 }
 NOINLINE void source_info_1392_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:isBondedToAtomNamed"), "../../src/chem/atom.cc", 19443, 727, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:isBondedToAtomNamed"), "../../src/chem/atom.cc", 20777, 752, "" );
 }
 NOINLINE void source_info_1393_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getNameIndex"), "../../src/chem/atom.cc", 17518, 654, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getNameIndex"), "../../src/chem/atom.cc", 18852, 679, "" );
 }
 NOINLINE void source_info_1394_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:bondToSingle"), "../../src/chem/atom.cc", 17368, 646, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:bondToSingle"), "../../src/chem/atom.cc", 18702, 671, "" );
 }
 NOINLINE void source_info_1395_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:bondTo"), "../../src/chem/atom.cc", 16711, 621, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:bondTo"), "../../src/chem/atom.cc", 18045, 646, "" );
 }
 NOINLINE void source_info_1396_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:createImplicitHydrogenNames"), "../../src/chem/atom.cc", 14083, 515, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:createImplicitHydrogenNames"), "../../src/chem/atom.cc", 15417, 540, "" );
 }
 NOINLINE void source_info_1397_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:numberOfOpenValence"), "../../src/chem/atom.cc", 12350, 470, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:numberOfOpenValence"), "../../src/chem/atom.cc", 13684, 495, "" );
 }
 NOINLINE void source_info_1398_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:coordination"), "../../src/chem/atom.cc", 11709, 453, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:coordination"), "../../src/chem/atom.cc", 13043, 478, "" );
 }
 NOINLINE void source_info_1399_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:numberOfBonds"), "../../src/chem/atom.cc", 11583, 447, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:numberOfBonds"), "../../src/chem/atom.cc", 12917, 472, "" );
 }
 NOINLINE void source_info_1400_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:bondedOrder"), "../../src/chem/atom.cc", 11444, 441, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:bondedOrder"), "../../src/chem/atom.cc", 12778, 466, "" );
 }
 NOINLINE void source_info_1401_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:bondedNeighbor"), "../../src/chem/atom.cc", 11278, 435, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:bondedNeighbor"), "../../src/chem/atom.cc", 12612, 460, "" );
 }
 NOINLINE void source_info_1402_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:atLowerAddressThan"), "../../src/chem/atom.cc", 10193, 390, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atLowerAddressThan"), "../../src/chem/atom.cc", 11527, 415, "" );
 }
 NOINLINE void source_info_1403_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setConfiguration"), "../../src/chem/atom.cc", 9917, 380, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setConfiguration"), "../../src/chem/atom.cc", 11251, 405, "" );
 }
 NOINLINE void source_info_1404_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:calculateStereochemicalConfiguration"), "../../src/chem/atom.cc", 4501, 189, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:calculateStereochemicalConfiguration"), "../../src/chem/atom.cc", 5835, 214, "" );
 }
 NOINLINE void source_info_1405_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:perturbAtomPosition"), "../../src/chem/atom.cc", 3440, 139, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:perturbAtomPosition"), "../../src/chem/atom.cc", 4774, 164, "" );
 }
 NOINLINE void source_info_1406_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:randomizeAtomPosition"), "../../src/chem/atom.cc", 2962, 117, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:randomizeAtomPosition"), "../../src/chem/atom.cc", 4296, 142, "" );
 }
 NOINLINE void source_info_1407_helper() {
- define_source_info( method_kind, "CHEM:getConfiguration", "../../../../projects/cando/include/cando/chem/atom.h", 17935, 512, "" );
+ define_source_info( method_kind, "CHEM:getConfiguration", "../../../../projects/cando/include/cando/chem/atom.h", 18247, 512, "" );
 }
 NOINLINE void source_info_1408_helper() {
- define_source_info( method_kind, "CHEM:getStereochemistryType", "../../../../projects/cando/include/cando/chem/atom.h", 17807, 510, "" );
+ define_source_info( method_kind, "CHEM:getStereochemistryType", "../../../../projects/cando/include/cando/chem/atom.h", 18189, 510, "" );
 }
 NOINLINE void source_info_1409_helper() {
- define_source_info( method_kind, "CHEM:setStereochemistryType", "../../../../projects/cando/include/cando/chem/atom.h", 17581, 505, "" );
+ define_source_info( method_kind, "CHEM:setStereochemistryType", "../../../../projects/cando/include/cando/chem/atom.h", 18000, 505, "" );
 }
 NOINLINE void source_info_1410_helper() {
- define_source_info( method_kind, "CHEM:getRelativePriority", "../../../../projects/cando/include/cando/chem/atom.h", 17275, 499, "" );
+ define_source_info( method_kind, "CHEM:getRelativePriority", "../../../../projects/cando/include/cando/chem/atom.h", 17823, 499, "" );
 }
 NOINLINE void source_info_1411_helper() {
- define_source_info( method_kind, "CHEM:flagsSet", "../../../../projects/cando/include/cando/chem/atom.h", 15017, 438, "" );
+ define_source_info( method_kind, "CHEM:flagsSet", "../../../../projects/cando/include/cando/chem/atom.h", 15336, 438, "" );
 }
 NOINLINE void source_info_1412_helper() {
- define_source_info( method_kind, "CHEM:setNextSpan", "../../../../projects/cando/include/cando/chem/atom.h", 14293, 419, "" );
+ define_source_info( method_kind, "CHEM:setNextSpan", "../../../../projects/cando/include/cando/chem/atom.h", 14451, 419, "" );
 }
 NOINLINE void source_info_1413_helper() {
- define_source_info( method_kind, "CHEM:setBackSpan", "../../../../projects/cando/include/cando/chem/atom.h", 14027, 414, "" );
+ define_source_info( method_kind, "CHEM:setBackSpan", "../../../../projects/cando/include/cando/chem/atom.h", 14015, 414, "" );
 }
 NOINLINE void source_info_1414_helper() {
- define_source_info( method_kind, "CHEM:getBackCount", "../../../../projects/cando/include/cando/chem/atom.h", 13778, 410, "" );
+ define_source_info( method_kind, "CHEM:getBackCount", "../../../../projects/cando/include/cando/chem/atom.h", 13864, 410, "" );
 }
 NOINLINE void source_info_1415_helper() {
- define_source_info( method_kind, "CHEM:setBackCount", "../../../../projects/cando/include/cando/chem/atom.h", 13692, 408, "" );
+ define_source_info( method_kind, "CHEM:setBackCount", "../../../../projects/cando/include/cando/chem/atom.h", 13778, 408, "" );
 }
 NOINLINE void source_info_1416_helper() {
- define_source_info( method_kind, "CHEM:getSeenId", "../../../../projects/cando/include/cando/chem/atom.h", 13613, 406, "" );
+ define_source_info( method_kind, "CHEM:getSeenId", "../../../../projects/cando/include/cando/chem/atom.h", 13694, 406, "" );
 }
 NOINLINE void source_info_1417_helper() {
- define_source_info( method_kind, "CHEM:setSeenId", "../../../../projects/cando/include/cando/chem/atom.h", 13535, 403, "" );
+ define_source_info( method_kind, "CHEM:setSeenId", "../../../../projects/cando/include/cando/chem/atom.h", 13620, 403, "" );
 }
 NOINLINE void source_info_1418_helper() {
- define_source_info( method_kind, "CHEM:getMoeType", "../../../../projects/cando/include/cando/chem/atom.h", 12621, 387, "" );
+ define_source_info( method_kind, "CHEM:getMoeType", "../../../../projects/cando/include/cando/chem/atom.h", 12870, 387, "" );
 }
 NOINLINE void source_info_1419_helper() {
- define_source_info( method_kind, "CHEM:setMoeType", "../../../../projects/cando/include/cando/chem/atom.h", 12531, 385, "" );
+ define_source_info( method_kind, "CHEM:setMoeType", "../../../../projects/cando/include/cando/chem/atom.h", 12780, 385, "" );
 }
 NOINLINE void source_info_1420_helper() {
- define_source_info( method_kind, "CHEM:setMoeIndex", "../../../../projects/cando/include/cando/chem/atom.h", 12445, 383, "" );
+ define_source_info( method_kind, "CHEM:setMoeIndex", "../../../../projects/cando/include/cando/chem/atom.h", 12696, 383, "" );
 }
 NOINLINE void source_info_1421_helper() {
- define_source_info( method_kind, "CHEM:getMoeIndex", "../../../../projects/cando/include/cando/chem/atom.h", 12361, 381, "" );
+ define_source_info( method_kind, "CHEM:getMoeIndex", "../../../../projects/cando/include/cando/chem/atom.h", 12615, 381, "" );
 }
 NOINLINE void source_info_1422_helper() {
- define_source_info( method_kind, "CHEM:setCovalentRadius", "../../../../projects/cando/include/cando/chem/atom.h", 12137, 375, "" );
+ define_source_info( method_kind, "CHEM:setCovalentRadius", "../../../../projects/cando/include/cando/chem/atom.h", 12323, 375, "" );
 }
 NOINLINE void source_info_1423_helper() {
- define_source_info( method_kind, "CHEM:getCovalentRadius", "../../../../projects/cando/include/cando/chem/atom.h", 12032, 373, "" );
+ define_source_info( method_kind, "CHEM:getCovalentRadius", "../../../../projects/cando/include/cando/chem/atom.h", 12219, 373, "" );
 }
 NOINLINE void source_info_1424_helper() {
- define_source_info( method_kind, "CHEM:setVdwRadius", "../../../../projects/cando/include/cando/chem/atom.h", 11934, 371, "" );
+ define_source_info( method_kind, "CHEM:setVdwRadius", "../../../../projects/cando/include/cando/chem/atom.h", 12116, 371, "" );
 }
 NOINLINE void source_info_1425_helper() {
- define_source_info( method_kind, "CHEM:getVdwRadius", "../../../../projects/cando/include/cando/chem/atom.h", 11844, 369, "" );
+ define_source_info( method_kind, "CHEM:getVdwRadius", "../../../../projects/cando/include/cando/chem/atom.h", 12012, 369, "" );
 }
 NOINLINE void source_info_1426_helper() {
- define_source_info( method_kind, "CHEM:setTempFactor", "../../../../projects/cando/include/cando/chem/atom.h", 11749, 367, "" );
+ define_source_info( method_kind, "CHEM:setTempFactor", "../../../../projects/cando/include/cando/chem/atom.h", 11909, 367, "" );
 }
 NOINLINE void source_info_1427_helper() {
- define_source_info( method_kind, "CHEM:getTempFactor", "../../../../projects/cando/include/cando/chem/atom.h", 11656, 365, "" );
+ define_source_info( method_kind, "CHEM:getTempFactor", "../../../../projects/cando/include/cando/chem/atom.h", 11805, 365, "" );
 }
 NOINLINE void source_info_1428_helper() {
- define_source_info( method_kind, "CHEM:setOccupancy", "../../../../projects/cando/include/cando/chem/atom.h", 11562, 363, "" );
+ define_source_info( method_kind, "CHEM:setOccupancy", "../../../../projects/cando/include/cando/chem/atom.h", 11702, 363, "" );
 }
 NOINLINE void source_info_1429_helper() {
- define_source_info( method_kind, "CHEM:getOccupancy", "../../../../projects/cando/include/cando/chem/atom.h", 11472, 361, "" );
+ define_source_info( method_kind, "CHEM:getOccupancy", "../../../../projects/cando/include/cando/chem/atom.h", 11598, 361, "" );
 }
 NOINLINE void source_info_1430_helper() {
- define_source_info( method_kind, "CHEM:setCharge", "../../../../projects/cando/include/cando/chem/atom.h", 11385, 359, "" );
+ define_source_info( method_kind, "CHEM:setCharge", "../../../../projects/cando/include/cando/chem/atom.h", 11495, 359, "" );
 }
 NOINLINE void source_info_1431_helper() {
- define_source_info( method_kind, "CHEM:getCharge", "../../../../projects/cando/include/cando/chem/atom.h", 11304, 357, "" );
+ define_source_info( method_kind, "CHEM:getCharge", "../../../../projects/cando/include/cando/chem/atom.h", 11391, 357, "" );
 }
 NOINLINE void source_info_1432_helper() {
- define_source_info( method_kind, "CHEM:setIonization", "../../../../projects/cando/include/cando/chem/atom.h", 11214, 355, "" );
+ define_source_info( method_kind, "CHEM:setIonization", "../../../../projects/cando/include/cando/chem/atom.h", 11306, 355, "" );
 }
 NOINLINE void source_info_1433_helper() {
- define_source_info( method_kind, "CHEM:getIonization", "../../../../projects/cando/include/cando/chem/atom.h", 11119, 353, "" );
+ define_source_info( method_kind, "CHEM:getIonization", "../../../../projects/cando/include/cando/chem/atom.h", 11224, 353, "" );
 }
 NOINLINE void source_info_1434_helper() {
- define_source_info( method_kind, "CHEM:setMembershipAr5", "../../../../projects/cando/include/cando/chem/atom.h", 11019, 351, "" );
+ define_source_info( method_kind, "CHEM:setMembershipAr5", "../../../../projects/cando/include/cando/chem/atom.h", 11142, 351, "" );
 }
 NOINLINE void source_info_1435_helper() {
- define_source_info( method_kind, "CHEM:getMembershipAr5", "../../../../projects/cando/include/cando/chem/atom.h", 10915, 349, "" );
+ define_source_info( method_kind, "CHEM:getMembershipAr5", "../../../../projects/cando/include/cando/chem/atom.h", 11061, 349, "" );
 }
 NOINLINE void source_info_1436_helper() {
- define_source_info( method_kind, "CHEM:setMembershipAr4", "../../../../projects/cando/include/cando/chem/atom.h", 10812, 347, "" );
+ define_source_info( method_kind, "CHEM:setMembershipAr4", "../../../../projects/cando/include/cando/chem/atom.h", 10914, 347, "" );
 }
 NOINLINE void source_info_1437_helper() {
- define_source_info( method_kind, "CHEM:getMembershipAr4", "../../../../projects/cando/include/cando/chem/atom.h", 10708, 345, "" );
+ define_source_info( method_kind, "CHEM:getMembershipAr4", "../../../../projects/cando/include/cando/chem/atom.h", 10758, 345, "" );
 }
 NOINLINE void source_info_1438_helper() {
- define_source_info( method_kind, "CHEM:setMembershipAr3", "../../../../projects/cando/include/cando/chem/atom.h", 10605, 343, "" );
+ define_source_info( method_kind, "CHEM:setMembershipAr3", "../../../../projects/cando/include/cando/chem/atom.h", 10692, 343, "" );
 }
 NOINLINE void source_info_1439_helper() {
- define_source_info( method_kind, "CHEM:getMembershipAr3", "../../../../projects/cando/include/cando/chem/atom.h", 10501, 341, "" );
+ define_source_info( method_kind, "CHEM:getMembershipAr3", "../../../../projects/cando/include/cando/chem/atom.h", 10604, 341, "" );
 }
 NOINLINE void source_info_1440_helper() {
- define_source_info( method_kind, "CHEM:setMembershipAr2", "../../../../projects/cando/include/cando/chem/atom.h", 10398, 339, "" );
+ define_source_info( method_kind, "CHEM:setMembershipAr2", "../../../../projects/cando/include/cando/chem/atom.h", 10507, 339, "" );
 }
 NOINLINE void source_info_1441_helper() {
- define_source_info( method_kind, "CHEM:getMembershipAr2", "../../../../projects/cando/include/cando/chem/atom.h", 10294, 337, "" );
+ define_source_info( method_kind, "CHEM:getMembershipAr2", "../../../../projects/cando/include/cando/chem/atom.h", 10361, 337, "" );
 }
 NOINLINE void source_info_1442_helper() {
- define_source_info( method_kind, "CHEM:setMembershipAr1", "../../../../projects/cando/include/cando/chem/atom.h", 10191, 335, "" );
+ define_source_info( method_kind, "CHEM:setMembershipAr1", "../../../../projects/cando/include/cando/chem/atom.h", 10261, 335, "" );
 }
 NOINLINE void source_info_1443_helper() {
- define_source_info( method_kind, "CHEM:getMembershipAr1", "../../../../projects/cando/include/cando/chem/atom.h", 10087, 333, "" );
+ define_source_info( method_kind, "CHEM:getMembershipAr1", "../../../../projects/cando/include/cando/chem/atom.h", 10172, 333, "" );
 }
 NOINLINE void source_info_1444_helper() {
- define_source_info( method_kind, "CHEM:setTouched", "../../../../projects/cando/include/cando/chem/atom.h", 9996, 331, "" );
+ define_source_info( method_kind, "CHEM:setTouched", "../../../../projects/cando/include/cando/chem/atom.h", 10086, 331, "" );
 }
 NOINLINE void source_info_1445_helper() {
- define_source_info( method_kind, "CHEM:getTouched", "../../../../projects/cando/include/cando/chem/atom.h", 9914, 329, "" );
+ define_source_info( method_kind, "CHEM:getTouched", "../../../../projects/cando/include/cando/chem/atom.h", 10012, 329, "" );
 }
 NOINLINE void source_info_1446_helper() {
- define_source_info( method_kind, "CHEM:setPosition", "../../../../projects/cando/include/cando/chem/atom.h", 9198, 315, "" );
+ define_source_info( method_kind, "CHEM:setPosition", "../../../../projects/cando/include/cando/chem/atom.h", 9413, 315, "" );
 }
 NOINLINE void source_info_1447_helper() {
- define_source_info( method_kind, "CHEM:getPositionInNanometers", "../../../../projects/cando/include/cando/chem/atom.h", 9028, 312, "" );
+ define_source_info( method_kind, "CHEM:getPositionInNanometers", "../../../../projects/cando/include/cando/chem/atom.h", 9253, 312, "" );
 }
 NOINLINE void source_info_1448_helper() {
- define_source_info( method_kind, "CHEM:getPosition", "../../../../projects/cando/include/cando/chem/atom.h", 8928, 310, "" );
+ define_source_info( method_kind, "CHEM:getPosition", "../../../../projects/cando/include/cando/chem/atom.h", 9173, 310, "" );
 }
 NOINLINE void source_info_1449_helper() {
- define_source_info( method_kind, "CHEM:setSelected", "../../../../projects/cando/include/cando/chem/atom.h", 8839, 308, "" );
+ define_source_info( method_kind, "CHEM:setSelected", "../../../../projects/cando/include/cando/chem/atom.h", 9089, 308, "" );
 }
 NOINLINE void source_info_1450_helper() {
- define_source_info( method_kind, "CHEM:getSelected", "../../../../projects/cando/include/cando/chem/atom.h", 8753, 306, "" );
+ define_source_info( method_kind, "CHEM:getSelected", "../../../../projects/cando/include/cando/chem/atom.h", 9052, 306, "" );
 }
 NOINLINE void source_info_1451_helper() {
- define_source_info( method_kind, "CHEM:setElement", "../../../../projects/cando/include/cando/chem/atom.h", 8536, 300, "" );
+ define_source_info( method_kind, "CHEM:setElement", "../../../../projects/cando/include/cando/chem/atom.h", 8838, 300, "" );
 }
 NOINLINE void source_info_1452_helper() {
- define_source_info( method_kind, "CHEM:getElement", "../../../../projects/cando/include/cando/chem/atom.h", 8362, 296, "" );
+ define_source_info( method_kind, "CHEM:getElement", "../../../../projects/cando/include/cando/chem/atom.h", 8638, 296, "" );
 }
 NOINLINE void source_info_1453_helper() {
- define_source_info( method_kind, "CHEM:setHybridization", "../../../../projects/cando/include/cando/chem/atom.h", 8109, 291, "" );
+ define_source_info( method_kind, "CHEM:setHybridization", "../../../../projects/cando/include/cando/chem/atom.h", 8381, 291, "" );
 }
 NOINLINE void source_info_1454_helper() {
- define_source_info( method_kind, "CHEM:getHybridization", "../../../../projects/cando/include/cando/chem/atom.h", 7949, 288, "" );
+ define_source_info( method_kind, "CHEM:getHybridization", "../../../../projects/cando/include/cando/chem/atom.h", 8249, 288, "" );
 }
 NOINLINE void source_info_1455_helper() {
- define_source_info( method_kind, "CHEM:setType", "../../../../projects/cando/include/cando/chem/atom.h", 7860, 286, "" );
+ define_source_info( method_kind, "CHEM:setType", "../../../../projects/cando/include/cando/chem/atom.h", 8124, 286, "" );
 }
 NOINLINE void source_info_1456_helper() {
- define_source_info( method_kind, "CHEM:getType", "../../../../projects/cando/include/cando/chem/atom.h", 7776, 284, "" );
+ define_source_info( method_kind, "CHEM:getType", "../../../../projects/cando/include/cando/chem/atom.h", 8011, 284, "" );
 }
 NOINLINE void source_info_1457_helper() {
- define_source_info( method_kind, "CHEM:setRingMembershipCount", "../../../../projects/cando/include/cando/chem/atom.h", 7305, 271, "" );
+ define_source_info( method_kind, "CHEM:setRingMembershipCount", "../../../../projects/cando/include/cando/chem/atom.h", 7520, 271, "" );
 }
 NOINLINE void source_info_1458_helper() {
- define_source_info( method_kind, "CHEM:getRingMembershipCount", "../../../../projects/cando/include/cando/chem/atom.h", 7184, 269, "" );
+ define_source_info( method_kind, "CHEM:getRingMembershipCount", "../../../../projects/cando/include/cando/chem/atom.h", 7432, 269, "" );
 }
 NOINLINE void source_info_1459_helper() {
- define_source_info( method_kind, "CHEM:isInRing", "../../../../projects/cando/include/cando/chem/atom.h", 6937, 264, "" );
+ define_source_info( method_kind, "CHEM:isInRing", "../../../../projects/cando/include/cando/chem/atom.h", 7309, 264, "" );
 }
 NOINLINE void source_info_1460_helper() {
- define_source_info( method_kind, "CHEM:testAnyFlags", "../../../../projects/cando/include/cando/chem/atom.h", 6791, 261, "" );
+ define_source_info( method_kind, "CHEM:testAnyFlags", "../../../../projects/cando/include/cando/chem/atom.h", 7205, 261, "" );
 }
 NOINLINE void source_info_1461_helper() {
- define_source_info( method_kind, "CHEM:testAllFlags", "../../../../projects/cando/include/cando/chem/atom.h", 6678, 259, "" );
+ define_source_info( method_kind, "CHEM:testAllFlags", "../../../../projects/cando/include/cando/chem/atom.h", 7158, 259, "" );
 }
 NOINLINE void source_info_1462_helper() {
- define_source_info( method_kind, "CHEM:turnOffFlags", "../../../../projects/cando/include/cando/chem/atom.h", 6542, 256, "" );
+ define_source_info( method_kind, "CHEM:turnOffFlags", "../../../../projects/cando/include/cando/chem/atom.h", 7024, 256, "" );
 }
 NOINLINE void source_info_1463_helper() {
- define_source_info( method_kind, "CHEM:turnOnFlags", "../../../../projects/cando/include/cando/chem/atom.h", 6449, 254, "" );
+ define_source_info( method_kind, "CHEM:turnOnFlags", "../../../../projects/cando/include/cando/chem/atom.h", 6921, 254, "" );
 }
 NOINLINE void source_info_1464_helper() {
- define_source_info( method_kind, "CHEM:resetFlags", "../../../../projects/cando/include/cando/chem/atom.h", 6371, 252, "" );
+ define_source_info( method_kind, "CHEM:resetFlags", "../../../../projects/cando/include/cando/chem/atom.h", 6826, 252, "" );
 }
 NOINLINE void source_info_1465_helper() {
- define_source_info( method_kind, "CHEM:getFlags", "../../../../projects/cando/include/cando/chem/atom.h", 6287, 250, "" );
+ define_source_info( method_kind, "CHEM:getFlags", "../../../../projects/cando/include/cando/chem/atom.h", 6723, 250, "" );
 }
 NOINLINE void source_info_1466_helper() {
- define_source_info( method_kind, "CHEM:setAlias", "../../../../projects/cando/include/cando/chem/atom.h", 6187, 246, "" );
+ define_source_info( method_kind, "CHEM:setAlias", "../../../../projects/cando/include/cando/chem/atom.h", 6574, 246, "" );
 }
 NOINLINE void source_info_1467_helper() {
- define_source_info( method_kind, "CHEM:getAlias", "../../../../projects/cando/include/cando/chem/atom.h", 6099, 244, "" );
+ define_source_info( method_kind, "CHEM:getAlias", "../../../../projects/cando/include/cando/chem/atom.h", 6469, 244, "" );
 }
 NOINLINE void source_info_1468_helper() {
- define_source_info( method_kind, "CHEM:getAtomId", "../../../../projects/cando/include/cando/chem/atom.h", 5976, 239, "" );
+ define_source_info( method_kind, "CHEM:getAtomId", "../../../../projects/cando/include/cando/chem/atom.h", 6338, 239, "" );
 }
 NOINLINE void source_info_1469_helper() {
- define_source_info( method_kind, "CHEM:atomName", "../../../../projects/cando/include/cando/chem/atom.h", 5411, 226, "" );
+ define_source_info( method_kind, "CHEM:atomName", "../../../../projects/cando/include/cando/chem/atom.h", 5969, 226, "" );
 }
 NOINLINE void source_info_1470_helper() {
- define_source_info( method_kind, "CHEM:setIsAromatic", "../../../../projects/cando/include/cando/chem/atom.h", 5241, 221, "" );
+ define_source_info( method_kind, "CHEM:setIsAromatic", "../../../../projects/cando/include/cando/chem/atom.h", 5840, 221, "" );
 }
 NOINLINE void source_info_1471_helper() {
- define_source_info( method_kind, "CHEM:isAromatic", "../../../../projects/cando/include/cando/chem/atom.h", 5136, 219, "" );
+ define_source_info( method_kind, "CHEM:isAromatic", "../../../../projects/cando/include/cando/chem/atom.h", 5804, 219, "" );
 }
 NOINLINE void source_info_1472_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ChemInfoMatch"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 574, 38, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ChemInfoMatch"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 1457, 38, "" );
 }
 NOINLINE void source_info_1473_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:describeClosestMatch"), "../../src/chem/chemInfo.cc", 4456, 166, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:describeClosestMatch"), "../../src/chem/chemInfo.cc", 5015, 166, "" );
 }
 NOINLINE void source_info_1474_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getAtomWithTag"), "../../src/chem/chemInfo.cc", 3950, 150, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAtomWithTag"), "../../src/chem/chemInfo.cc", 4478, 150, "" );
 }
 NOINLINE void source_info_1475_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getAtomWithTagOrNil"), "../../src/chem/chemInfo.cc", 3718, 143, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAtomWithTagOrNil"), "../../src/chem/chemInfo.cc", 4229, 143, "" );
 }
 NOINLINE void source_info_1476_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:ChemInfoMatch-matches"), "../../src/chem/chemInfo.cc", 2307, 91, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:ChemInfoMatch-matches"), "../../src/chem/chemInfo.cc", 2914, 91, "" );
 }
 NOINLINE void source_info_1477_helper() {
- define_source_info( method_kind, "CHEM:tag", "../../../../projects/cando/include/cando/chem/chemInfo.h", 1409, 60, "" );
+ define_source_info( method_kind, "CHEM:tag", "../../../../projects/cando/include/cando/chem/chemInfo.h", 1832, 60, "" );
 }
 NOINLINE void source_info_1478_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:WildElementDict"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 1957, 81, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:WildElementDict"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 2555, 81, "" );
 }
 NOINLINE void source_info_1479_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addWildNameMap"), "../../src/chem/chemInfo.cc", 5476, 201, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addWildNameMap"), "../../src/chem/chemInfo.cc", 6079, 201, "" );
 }
 NOINLINE void source_info_1480_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addWildName"), "../../src/chem/chemInfo.cc", 5262, 195, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addWildName"), "../../src/chem/chemInfo.cc", 5999, 195, "" );
 }
 NOINLINE void source_info_1481_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ChemInfoNode"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 3904, 145, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ChemInfoNode"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 4711, 145, "" );
 }
 NOINLINE void source_info_1482_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ResidueList"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 4310, 160, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ResidueList"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 5098, 160, "" );
 }
 NOINLINE void source_info_1483_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:RootMatchNode"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 4624, 177, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RootMatchNode"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 5454, 177, "" );
 }
 NOINLINE void source_info_1484_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:BondMatchNode"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 5009, 195, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:BondMatchNode"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 5881, 195, "" );
 }
 NOINLINE void source_info_1485_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:AtomOrBondMatchNode"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 5447, 214, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AtomOrBondMatchNode"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 6267, 214, "" );
 }
 NOINLINE void source_info_1486_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:BondListMatchNode"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 5972, 233, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:BondListMatchNode"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 6692, 233, "" );
 }
 NOINLINE void source_info_1487_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Logical"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 7619, 293, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Logical"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 8401, 293, "" );
 }
 NOINLINE void source_info_1488_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:TagSet"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 9284, 343, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:TagSet"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 9813, 343, "" );
 }
 NOINLINE void source_info_1489_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:RingTest"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 10220, 376, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RingTest"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 10852, 376, "" );
 }
 NOINLINE void source_info_1490_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ResidueTest"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 11140, 410, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ResidueTest"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 11818, 410, "" );
 }
 NOINLINE void source_info_1491_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:BondTest"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 12167, 450, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:BondTest"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 12988, 450, "" );
 }
 NOINLINE void source_info_1492_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:AntechamberBondTest"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 13121, 487, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AntechamberBondTest"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 13867, 487, "" );
 }
 NOINLINE void source_info_1493_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:AtomTest"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 16542, 611, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AtomTest"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 17312, 611, "" );
 }
 NOINLINE void source_info_1494_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:AntechamberFocusAtomMatch"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 18982, 685, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AntechamberFocusAtomMatch"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 19488, 685, "" );
 }
 NOINLINE void source_info_1495_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Chain"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 21748, 748, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Chain"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 22372, 748, "" );
 }
 NOINLINE void source_info_1496_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Branch"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 22745, 787, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Branch"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 23478, 787, "" );
 }
 NOINLINE void source_info_1497_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:AfterMatchBondTest"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 24436, 848, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AfterMatchBondTest"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 25159, 848, "" );
 }
 NOINLINE void source_info_1498_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Root"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 25394, 886, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Root"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 26183, 886, "" );
 }
 NOINLINE void source_info_1499_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:SmartsRoot"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 27241, 944, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:SmartsRoot"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 28008, 944, "" );
 }
 NOINLINE void source_info_1500_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:AntechamberRoot"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 28523, 992, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AntechamberRoot"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 29198, 992, "" );
 }
 NOINLINE void source_info_1501_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ChemInfo"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 30895, 1058, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ChemInfo"), "../../../../projects/cando/include/cando/chem/chemInfo.h", 31544, 1058, "" );
 }
 NOINLINE void source_info_1502_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:asSmarts"), "../../src/chem/chemInfo.cc", 56777, 1853, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:asSmarts"), "../../src/chem/chemInfo.cc", 57406, 1853, "" );
 }
 NOINLINE void source_info_1503_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getMatch"), "../../src/chem/chemInfo.cc", 10347, 351, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMatch"), "../../src/chem/chemInfo.cc", 10861, 351, "" );
 }
 NOINLINE void source_info_1504_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:matches"), "../../src/chem/chemInfo.cc", 9354, 321, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:matches"), "../../src/chem/chemInfo.cc", 9852, 321, "" );
 }
 NOINLINE void source_info_1505_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:compileAntechamber"), "../../src/chem/chemInfo.cc", 8559, 299, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:compileAntechamber"), "../../src/chem/chemInfo.cc", 9010, 299, "" );
 }
 NOINLINE void source_info_1506_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:compileSmarts"), "../../src/chem/chemInfo.cc", 7510, 269, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:compileSmarts"), "../../src/chem/chemInfo.cc", 8350, 269, "" );
 }
 NOINLINE void source_info_1507_helper() {
- define_source_info( method_kind, "CHEM:getCode", "../../../../projects/cando/include/cando/chem/chemInfo.h", 32318, 1107, "" );
+ define_source_info( method_kind, "CHEM:getCode", "../../../../projects/cando/include/cando/chem/chemInfo.h", 32869, 1107, "" );
 }
 NOINLINE void source_info_1508_helper() {
- define_source_info( method_kind, "CHEM:compileSucceeded", "../../../../projects/cando/include/cando/chem/chemInfo.h", 32155, 1102, "" );
+ define_source_info( method_kind, "CHEM:compileSucceeded", "../../../../projects/cando/include/cando/chem/chemInfo.h", 32668, 1102, "" );
 }
 NOINLINE void source_info_1509_helper() {
- define_source_info( method_kind, "CHEM:compilerMessage", "../../../../projects/cando/include/cando/chem/chemInfo.h", 31635, 1084, "" );
+ define_source_info( method_kind, "CHEM:compilerMessage", "../../../../projects/cando/include/cando/chem/chemInfo.h", 32302, 1084, "" );
 }
 NOINLINE void source_info_1510_helper() {
  define_source_info( class_kind, core::magic_name("CORE:HashTableEqual"), "/Users/meister/Development/clasp/include/clasp/core/hashTableEqual.h", 1311, 40, "" );
@@ -4590,418 +4565,418 @@ NOINLINE void source_info_1515_helper() {
  define_source_info( method_kind, core::magic_name("CORE:map_size"), "/Users/meister/Development/clasp/include/clasp/core/smallMap.h", 1666, 58, "" );
 }
 NOINLINE void source_info_1516_helper() {
- define_source_info( class_kind, core::magic_name("ADAPT:SymbolSet"), "../../../../projects/cando/include/cando/adapt/symbolSet.h", 1747, 62, "" );
+ define_source_info( class_kind, core::magic_name("ADAPT:SymbolSet"), "../../../../projects/cando/include/cando/adapt/symbolSet.h", 2176, 62, "" );
 }
 NOINLINE void source_info_1517_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:asCons"), "../../src/adapt/symbolSet.cc", 8409, 308, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:asCons"), "../../src/adapt/symbolSet.cc", 8771, 307, "" );
 }
 NOINLINE void source_info_1518_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:cartesianProduct"), "../../src/adapt/symbolSet.cc", 7152, 268, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:cartesianProduct"), "../../src/adapt/symbolSet.cc", 7514, 267, "" );
 }
 NOINLINE void source_info_1519_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:relativeComplement"), "../../src/adapt/symbolSet.cc", 6687, 252, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:relativeComplement"), "../../src/adapt/symbolSet.cc", 7049, 251, "" );
 }
 NOINLINE void source_info_1520_helper() {
- define_source_info( method_kind, core::magic_name("adapt:SymbolSetIntersection"), "../../src/adapt/symbolSet.cc", 6215, 235, "" );
+ define_source_info( method_kind, core::magic_name("adapt:SymbolSetIntersection"), "../../src/adapt/symbolSet.cc", 6577, 234, "" );
 }
 NOINLINE void source_info_1521_helper() {
- define_source_info( method_kind, core::magic_name("adapt:SymbolSetUnion"), "../../src/adapt/symbolSet.cc", 5918, 225, "" );
+ define_source_info( method_kind, core::magic_name("adapt:SymbolSetUnion"), "../../src/adapt/symbolSet.cc", 6280, 224, "" );
 }
 NOINLINE void source_info_1522_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:clear"), "../../src/adapt/symbolSet.cc", 4805, 178, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:clear"), "../../src/adapt/symbolSet.cc", 5167, 177, "" );
 }
 NOINLINE void source_info_1523_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:containsSubset"), "../../src/adapt/symbolSet.cc", 4496, 166, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:containsSubset"), "../../src/adapt/symbolSet.cc", 4858, 165, "" );
 }
 NOINLINE void source_info_1524_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:contains"), "../../src/adapt/symbolSet.cc", 4362, 160, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:contains"), "../../src/adapt/symbolSet.cc", 4724, 159, "" );
 }
 NOINLINE void source_info_1525_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:asString"), "../../src/adapt/symbolSet.cc", 2837, 104, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:asString"), "../../src/adapt/symbolSet.cc", 3199, 103, "" );
 }
 NOINLINE void source_info_1526_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:insertSymbolSet"), "../../src/adapt/symbolSet.cc", 2124, 74, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:insertSymbolSet"), "../../src/adapt/symbolSet.cc", 2486, 73, "" );
 }
 NOINLINE void source_info_1527_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:insertConsSymbols"), "../../src/adapt/symbolSet.cc", 1875, 65, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:insertConsSymbols"), "../../src/adapt/symbolSet.cc", 2237, 64, "" );
 }
 NOINLINE void source_info_1528_helper() {
- define_source_info( method_kind, "ADAPT:removeAll", "../../../../projects/cando/include/cando/adapt/symbolSet.h", 3239, 115, "" );
+ define_source_info( method_kind, "ADAPT:removeAll", "../../../../projects/cando/include/cando/adapt/symbolSet.h", 3696, 115, "" );
 }
 NOINLINE void source_info_1529_helper() {
- define_source_info( method_kind, "ADAPT:insert", "../../../../projects/cando/include/cando/adapt/symbolSet.h", 2543, 91, "" );
+ define_source_info( method_kind, "ADAPT:insert", "../../../../projects/cando/include/cando/adapt/symbolSet.h", 2986, 91, "" );
 }
 NOINLINE void source_info_1530_helper() {
- define_source_info( method_kind, "ADAPT:size", "../../../../projects/cando/include/cando/adapt/symbolSet.h", 2347, 86, "" );
+ define_source_info( method_kind, "ADAPT:size", "../../../../projects/cando/include/cando/adapt/symbolSet.h", 2787, 86, "" );
 }
 NOINLINE void source_info_1531_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Bond"), "../../../../projects/cando/include/cando/chem/bond.h", 355, 32, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Bond"), "../../../../projects/cando/include/cando/chem/bond.h", 1395, 32, "" );
 }
 NOINLINE void source_info_1532_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getOrderAsString"), "../../src/chem/bond.cc", 8939, 325, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOrderAsString"), "../../src/chem/bond.cc", 10273, 350, "" );
 }
 NOINLINE void source_info_1533_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getOtherAtom"), "../../src/chem/bond.cc", 5688, 201, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOtherAtom"), "../../src/chem/bond.cc", 7022, 226, "" );
 }
 NOINLINE void source_info_1534_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:bond-hasProperty"), "../../src/chem/bond.cc", 5505, 193, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:bond-hasProperty"), "../../src/chem/bond.cc", 6839, 218, "" );
 }
 NOINLINE void source_info_1535_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:bond-getProperty"), "../../src/chem/bond.cc", 5236, 183, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:bond-getProperty"), "../../src/chem/bond.cc", 6570, 208, "" );
 }
 NOINLINE void source_info_1536_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:bond-setProperty"), "../../src/chem/bond.cc", 5036, 176, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:bond-setProperty"), "../../src/chem/bond.cc", 6370, 201, "" );
 }
 NOINLINE void source_info_1537_helper() {
- define_source_info( method_kind, "CHEM:setOrder", "../../../../projects/cando/include/cando/chem/bond.h", 1614, 77, "" );
+ define_source_info( method_kind, "CHEM:setOrder", "../../../../projects/cando/include/cando/chem/bond.h", 2152, 77, "" );
 }
 NOINLINE void source_info_1538_helper() {
- define_source_info( method_kind, "CHEM:getOrder", "../../../../projects/cando/include/cando/chem/bond.h", 1407, 72, "" );
+ define_source_info( method_kind, "CHEM:getOrder", "../../../../projects/cando/include/cando/chem/bond.h", 2078, 72, "" );
 }
 NOINLINE void source_info_1539_helper() {
- define_source_info( method_kind, "CHEM:getAtom2", "../../../../projects/cando/include/cando/chem/bond.h", 1319, 69, "" );
+ define_source_info( method_kind, "CHEM:getAtom2", "../../../../projects/cando/include/cando/chem/bond.h", 1982, 69, "" );
 }
 NOINLINE void source_info_1540_helper() {
- define_source_info( method_kind, "CHEM:getAtom1", "../../../../projects/cando/include/cando/chem/bond.h", 1232, 67, "" );
+ define_source_info( method_kind, "CHEM:getAtom1", "../../../../projects/cando/include/cando/chem/bond.h", 1944, 67, "" );
 }
 NOINLINE void source_info_1541_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:BondList"), "../../../../projects/cando/include/cando/chem/bond.h", 3596, 140, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:BondList"), "../../../../projects/cando/include/cando/chem/bond.h", 4319, 140, "" );
 }
 NOINLINE void source_info_1542_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Residue"), "../../../../projects/cando/include/cando/chem/residue.h", 1418, 63, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Residue"), "../../../../projects/cando/include/cando/chem/residue.h", 2245, 63, "" );
 }
 NOINLINE void source_info_1543_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:useAtomCoordinatesToDefineAnchors"), "../../src/chem/residue.cc", 18582, 671, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:useAtomCoordinatesToDefineAnchors"), "../../src/chem/residue.cc", 19919, 696, "" );
 }
 NOINLINE void source_info_1544_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getAtomNamesAsSymbolSet"), "../../src/chem/residue.cc", 15170, 531, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAtomNamesAsSymbolSet"), "../../src/chem/residue.cc", 16507, 556, "" );
 }
 NOINLINE void source_info_1545_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:testIfAllAtomNamesAreUnique"), "../../src/chem/residue.cc", 11622, 430, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:testIfAllAtomNamesAreUnique"), "../../src/chem/residue.cc", 12959, 455, "" );
 }
 NOINLINE void source_info_1546_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:removeAtomDontDeleteBonds"), "../../src/chem/residue.cc", 10174, 386, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeAtomDontDeleteBonds"), "../../src/chem/residue.cc", 11511, 411, "" );
 }
 NOINLINE void source_info_1547_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:containsAtom"), "../../src/chem/residue.cc", 9828, 371, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:containsAtom"), "../../src/chem/residue.cc", 11165, 396, "" );
 }
 NOINLINE void source_info_1548_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:removeAtomDeleteBonds"), "../../src/chem/residue.cc", 9147, 348, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeAtomDeleteBonds"), "../../src/chem/residue.cc", 10484, 373, "" );
 }
 NOINLINE void source_info_1549_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:removeAtomsWithNames"), "../../src/chem/residue.cc", 8738, 333, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeAtomsWithNames"), "../../src/chem/residue.cc", 10075, 358, "" );
 }
 NOINLINE void source_info_1550_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:copy"), "../../src/chem/residue.cc", 8529, 323, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:copy"), "../../src/chem/residue.cc", 9866, 348, "" );
 }
 NOINLINE void source_info_1551_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addMonomerAlias"), "../../src/chem/residue.cc", 3683, 146, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addMonomerAlias"), "../../src/chem/residue.cc", 5020, 171, "" );
 }
 NOINLINE void source_info_1552_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addAtom"), "../../src/chem/residue.cc", 3217, 127, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addAtom"), "../../src/chem/residue.cc", 4554, 152, "" );
 }
 NOINLINE void source_info_1553_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getConstitution"), "../../src/chem/residue.cc", 2781, 108, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getConstitution"), "../../src/chem/residue.cc", 4118, 133, "" );
 }
 NOINLINE void source_info_1554_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:hasConstitution"), "../../src/chem/residue.cc", 1165, 52, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasConstitution"), "../../src/chem/residue.cc", 2502, 77, "" );
 }
 NOINLINE void source_info_1555_helper() {
- define_source_info( method_kind, "CHEM:testResidueConsistancy", "../../../../projects/cando/include/cando/chem/residue.h", 7179, 215, "" );
+ define_source_info( method_kind, "CHEM:testResidueConsistancy", "../../../../projects/cando/include/cando/chem/residue.h", 7467, 215, "" );
 }
 NOINLINE void source_info_1556_helper() {
- define_source_info( method_kind, "CHEM:firstAtom", "../../../../projects/cando/include/cando/chem/residue.h", 6868, 209, "" );
+ define_source_info( method_kind, "CHEM:firstAtom", "../../../../projects/cando/include/cando/chem/residue.h", 7217, 209, "" );
 }
 NOINLINE void source_info_1557_helper() {
- define_source_info( method_kind, "CHEM:hasAtomWithId", "../../../../projects/cando/include/cando/chem/residue.h", 6464, 198, "" );
+ define_source_info( method_kind, "CHEM:hasAtomWithId", "../../../../projects/cando/include/cando/chem/residue.h", 6689, 198, "" );
 }
 NOINLINE void source_info_1558_helper() {
- define_source_info( method_kind, "CHEM:atomWithId", "../../../../projects/cando/include/cando/chem/residue.h", 6335, 196, "" );
+ define_source_info( method_kind, "CHEM:atomWithId", "../../../../projects/cando/include/cando/chem/residue.h", 6592, 196, "" );
 }
 NOINLINE void source_info_1559_helper() {
- define_source_info( method_kind, "CHEM:hasAtomWithName", "../../../../projects/cando/include/cando/chem/residue.h", 6028, 188, "" );
+ define_source_info( method_kind, "CHEM:hasAtomWithName", "../../../../projects/cando/include/cando/chem/residue.h", 6340, 188, "" );
 }
 NOINLINE void source_info_1560_helper() {
- define_source_info( method_kind, "CHEM:atomWithName", "../../../../projects/cando/include/cando/chem/residue.h", 5611, 178, "" );
+ define_source_info( method_kind, "CHEM:atomWithName", "../../../../projects/cando/include/cando/chem/residue.h", 5972, 178, "" );
 }
 NOINLINE void source_info_1561_helper() {
- define_source_info( method_kind, "CHEM:setNetCharge", "../../../../projects/cando/include/cando/chem/residue.h", 4309, 142, "" );
+ define_source_info( method_kind, "CHEM:setNetCharge", "../../../../projects/cando/include/cando/chem/residue.h", 4760, 142, "" );
 }
 NOINLINE void source_info_1562_helper() {
- define_source_info( method_kind, "CHEM:getNetCharge", "../../../../projects/cando/include/cando/chem/residue.h", 4221, 140, "" );
+ define_source_info( method_kind, "CHEM:getNetCharge", "../../../../projects/cando/include/cando/chem/residue.h", 4677, 140, "" );
 }
 NOINLINE void source_info_1563_helper() {
- define_source_info( method_kind, "CHEM:getFileSequenceNumber", "../../../../projects/cando/include/cando/chem/residue.h", 3985, 134, "" );
+ define_source_info( method_kind, "CHEM:getFileSequenceNumber", "../../../../projects/cando/include/cando/chem/residue.h", 4500, 134, "" );
 }
 NOINLINE void source_info_1564_helper() {
- define_source_info( method_kind, "CHEM:setPdbName", "../../../../projects/cando/include/cando/chem/residue.h", 3808, 130, "" );
+ define_source_info( method_kind, "CHEM:setPdbName", "../../../../projects/cando/include/cando/chem/residue.h", 4349, 130, "" );
 }
 NOINLINE void source_info_1565_helper() {
- define_source_info( method_kind, "CHEM:getPdbName", "../../../../projects/cando/include/cando/chem/residue.h", 3720, 128, "" );
+ define_source_info( method_kind, "CHEM:getPdbName", "../../../../projects/cando/include/cando/chem/residue.h", 4246, 128, "" );
 }
 NOINLINE void source_info_1566_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:FFParameter"), "../../../../projects/cando/include/cando/chem/ffBaseDb.h", 2173, 105, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFParameter"), "../../../../projects/cando/include/cando/chem/ffBaseDb.h", 3081, 105, "" );
 }
 NOINLINE void source_info_1567_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:levelDescription"), "../../src/chem/ffBaseDb.cc", 449, 26, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:levelDescription"), "../../src/chem/ffBaseDb.cc", 1787, 51, "" );
 }
 NOINLINE void source_info_1568_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:FFBaseDb"), "../../../../projects/cando/include/cando/chem/ffBaseDb.h", 3015, 134, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFBaseDb"), "../../../../projects/cando/include/cando/chem/ffBaseDb.h", 3638, 134, "" );
 }
 NOINLINE void source_info_1569_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:FFTypesDb"), "../../../../projects/cando/include/cando/chem/ffTypesDb.h", 954, 46, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFTypesDb"), "../../../../projects/cando/include/cando/chem/ffTypesDb.h", 1615, 46, "" );
 }
 NOINLINE void source_info_1570_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:FFTypes-getRule"), "../../src/chem/ffTypesDb.cc", 2125, 88, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:FFTypes-getRule"), "../../src/chem/ffTypesDb.cc", 2861, 88, "" );
 }
 NOINLINE void source_info_1571_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:assignTypes"), "../../src/chem/ffTypesDb.cc", 552, 39, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:assignTypes"), "../../src/chem/ffTypesDb.cc", 1591, 39, "" );
 }
 NOINLINE void source_info_1572_helper() {
- define_source_info( method_kind, "CHEM:FFTypes-numberOfRules", "../../../../projects/cando/include/cando/chem/ffTypesDb.h", 1295, 59, "" );
+ define_source_info( method_kind, "CHEM:FFTypes-numberOfRules", "../../../../projects/cando/include/cando/chem/ffTypesDb.h", 1891, 59, "" );
 }
 NOINLINE void source_info_1573_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Molecule"), "../../../../projects/cando/include/cando/chem/molecule.h", 431, 33, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Molecule"), "../../../../projects/cando/include/cando/chem/molecule.h", 1400, 33, "" );
 }
 NOINLINE void source_info_1574_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getFirstResidueWithName"), "../../src/chem/molecule.cc", 7275, 283, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getFirstResidueWithName"), "../../src/chem/molecule.cc", 8613, 308, "" );
 }
 NOINLINE void source_info_1575_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:numberOfResiduesWithName"), "../../src/chem/molecule.cc", 7046, 275, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:numberOfResiduesWithName"), "../../src/chem/molecule.cc", 8384, 300, "" );
 }
 NOINLINE void source_info_1576_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:copy"), "../../src/chem/molecule.cc", 5876, 232, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:copy"), "../../src/chem/molecule.cc", 7214, 257, "" );
 }
 NOINLINE void source_info_1577_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:moveAllAtomsIntoFirstResidue"), "../../src/chem/molecule.cc", 4559, 179, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:moveAllAtomsIntoFirstResidue"), "../../src/chem/molecule.cc", 5897, 204, "" );
 }
 NOINLINE void source_info_1578_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:removeResidue"), "../../src/chem/molecule.cc", 2933, 132, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeResidue"), "../../src/chem/molecule.cc", 4271, 157, "" );
 }
 NOINLINE void source_info_1579_helper() {
- define_source_info( method_kind, "CHEM:testMoleculeConsistancy", "../../../../projects/cando/include/cando/chem/molecule.h", 2511, 98, "" );
+ define_source_info( method_kind, "CHEM:testMoleculeConsistancy", "../../../../projects/cando/include/cando/chem/molecule.h", 3033, 98, "" );
 }
 NOINLINE void source_info_1580_helper() {
- define_source_info( method_kind, "CHEM:residueCount", "../../../../projects/cando/include/cando/chem/molecule.h", 2144, 90, "" );
+ define_source_info( method_kind, "CHEM:residueCount", "../../../../projects/cando/include/cando/chem/molecule.h", 2650, 90, "" );
 }
 NOINLINE void source_info_1581_helper() {
- define_source_info( method_kind, "CHEM:hasResidueWithId", "../../../../projects/cando/include/cando/chem/molecule.h", 1696, 73, "" );
+ define_source_info( method_kind, "CHEM:hasResidueWithId", "../../../../projects/cando/include/cando/chem/molecule.h", 2080, 73, "" );
 }
 NOINLINE void source_info_1582_helper() {
- define_source_info( method_kind, "CHEM:residueWithId", "../../../../projects/cando/include/cando/chem/molecule.h", 1563, 71, "" );
+ define_source_info( method_kind, "CHEM:residueWithId", "../../../../projects/cando/include/cando/chem/molecule.h", 2071, 71, "" );
 }
 NOINLINE void source_info_1583_helper() {
- define_source_info( method_kind, "CHEM:getResidue", "../../../../projects/cando/include/cando/chem/molecule.h", 1448, 69, "" );
+ define_source_info( method_kind, "CHEM:getResidue", "../../../../projects/cando/include/cando/chem/molecule.h", 2023, 69, "" );
 }
 NOINLINE void source_info_1584_helper() {
- define_source_info( method_kind, "CHEM:firstResidue", "../../../../projects/cando/include/cando/chem/molecule.h", 1339, 67, "" );
+ define_source_info( method_kind, "CHEM:firstResidue", "../../../../projects/cando/include/cando/chem/molecule.h", 1976, 67, "" );
 }
 NOINLINE void source_info_1585_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Aggregate"), "../../../../projects/cando/include/cando/chem/aggregate.h", 390, 32, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Aggregate"), "../../../../projects/cando/include/cando/chem/aggregate.h", 1400, 32, "" );
 }
 NOINLINE void source_info_1586_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:perturbAtomPositions"), "../../src/chem/aggregate.cc", 15625, 540, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:perturbAtomPositions"), "../../src/chem/aggregate.cc", 16964, 565, "" );
 }
 NOINLINE void source_info_1587_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:firstMoleculeName"), "../../src/chem/aggregate.cc", 14797, 507, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:firstMoleculeName"), "../../src/chem/aggregate.cc", 16136, 532, "" );
 }
 NOINLINE void source_info_1588_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:firstMolecule"), "../../src/chem/aggregate.cc", 14549, 498, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:firstMolecule"), "../../src/chem/aggregate.cc", 15888, 523, "" );
 }
 NOINLINE void source_info_1589_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:writeToFile"), "../../src/chem/aggregate.cc", 13760, 469, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:writeToFile"), "../../src/chem/aggregate.cc", 15099, 494, "" );
 }
 NOINLINE void source_info_1590_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:firstMoleculeWithAtomNamed"), "../../src/chem/aggregate.cc", 12633, 420, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:firstMoleculeWithAtomNamed"), "../../src/chem/aggregate.cc", 13972, 445, "" );
 }
 NOINLINE void source_info_1591_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:separateMolecules"), "../../src/chem/aggregate.cc", 11546, 383, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:separateMolecules"), "../../src/chem/aggregate.cc", 12885, 408, "" );
 }
 NOINLINE void source_info_1592_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:removeMolecule"), "../../src/chem/aggregate.cc", 11136, 366, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeMolecule"), "../../src/chem/aggregate.cc", 12475, 391, "" );
 }
 NOINLINE void source_info_1593_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:atomsWithChimeraSpecifications"), "../../src/chem/aggregate.cc", 8169, 304, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atomsWithChimeraSpecifications"), "../../src/chem/aggregate.cc", 9508, 329, "" );
 }
 NOINLINE void source_info_1594_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:atomWithId"), "../../src/chem/aggregate.cc", 6622, 241, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atomWithId"), "../../src/chem/aggregate.cc", 7961, 266, "" );
 }
 NOINLINE void source_info_1595_helper() {
- define_source_info( method_kind, "CHEM:saveAs", "../../../../projects/cando/include/cando/chem/aggregate.h", 3305, 119, "" );
+ define_source_info( method_kind, "CHEM:saveAs", "../../../../projects/cando/include/cando/chem/aggregate.h", 3784, 119, "" );
 }
 NOINLINE void source_info_1596_helper() {
- define_source_info( method_kind, "CHEM:molecules", "../../../../projects/cando/include/cando/chem/aggregate.h", 2561, 98, "" );
+ define_source_info( method_kind, "CHEM:molecules", "../../../../projects/cando/include/cando/chem/aggregate.h", 2926, 98, "" );
 }
 NOINLINE void source_info_1597_helper() {
- define_source_info( method_kind, "CHEM:testAggregateConsistancy", "../../../../projects/cando/include/cando/chem/aggregate.h", 2314, 91, "" );
+ define_source_info( method_kind, "CHEM:testAggregateConsistancy", "../../../../projects/cando/include/cando/chem/aggregate.h", 2721, 91, "" );
 }
 NOINLINE void source_info_1598_helper() {
- define_source_info( method_kind, "CHEM:addMolecule", "../../../../projects/cando/include/cando/chem/aggregate.h", 1588, 73, "" );
+ define_source_info( method_kind, "CHEM:addMolecule", "../../../../projects/cando/include/cando/chem/aggregate.h", 2119, 73, "" );
 }
 NOINLINE void source_info_1599_helper() {
- define_source_info( class_kind, core::magic_name("ADAPT:QDomNode"), "../../../../projects/cando/include/cando/adapt/quickDom.h", 642, 39, "" );
+ define_source_info( class_kind, core::magic_name("ADAPT:QDomNode"), "../../../../projects/cando/include/cando/adapt/quickDom.h", 1979, 64, "" );
 }
 NOINLINE void source_info_1600_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:addChild"), "../../src/adapt/quickDom.cc", 17698, 762, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:addChild"), "../../src/adapt/quickDom.cc", 19036, 787, "" );
 }
 NOINLINE void source_info_1601_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:asString"), "../../src/adapt/quickDom.cc", 17548, 753, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:asString"), "../../src/adapt/quickDom.cc", 18886, 778, "" );
 }
 NOINLINE void source_info_1602_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:hasChildrenWithName"), "../../src/adapt/quickDom.cc", 13553, 582, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:hasChildrenWithName"), "../../src/adapt/quickDom.cc", 14891, 607, "" );
 }
 NOINLINE void source_info_1603_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:onlyChild"), "../../src/adapt/quickDom.cc", 12507, 544, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:onlyChild"), "../../src/adapt/quickDom.cc", 13845, 569, "" );
 }
 NOINLINE void source_info_1604_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:childWithName"), "../../src/adapt/quickDom.cc", 11781, 519, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:childWithName"), "../../src/adapt/quickDom.cc", 13119, 544, "" );
 }
 NOINLINE void source_info_1605_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:dump"), "../../src/adapt/quickDom.cc", 10911, 480, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:dump"), "../../src/adapt/quickDom.cc", 12249, 505, "" );
 }
 NOINLINE void source_info_1606_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:appendToFileName"), "../../src/adapt/quickDom.cc", 6132, 240, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:appendToFileName"), "../../src/adapt/quickDom.cc", 7470, 265, "" );
 }
 NOINLINE void source_info_1607_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:writeToFileName"), "../../src/adapt/quickDom.cc", 5906, 231, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:writeToFileName"), "../../src/adapt/quickDom.cc", 7244, 256, "" );
 }
 NOINLINE void source_info_1608_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:children"), "../../src/adapt/quickDom.cc", 5524, 214, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:children"), "../../src/adapt/quickDom.cc", 6862, 239, "" );
 }
 NOINLINE void source_info_1609_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:isLeaf"), "../../src/adapt/quickDom.cc", 5402, 208, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:isLeaf"), "../../src/adapt/quickDom.cc", 6740, 233, "" );
 }
 NOINLINE void source_info_1610_helper() {
- define_source_info( method_kind, "ADAPT:addAttributeInt", "../../../../projects/cando/include/cando/adapt/quickDom.h", 11838, 383, "" );
+ define_source_info( method_kind, "ADAPT:addAttributeInt", "../../../../projects/cando/include/cando/adapt/quickDom.h", 13175, 408, "" );
 }
 NOINLINE void source_info_1611_helper() {
- define_source_info( method_kind, "ADAPT:addAttributeDoubleScientific", "../../../../projects/cando/include/cando/adapt/quickDom.h", 11092, 361, "" );
+ define_source_info( method_kind, "ADAPT:addAttributeDoubleScientific", "../../../../projects/cando/include/cando/adapt/quickDom.h", 12429, 386, "" );
 }
 NOINLINE void source_info_1612_helper() {
- define_source_info( method_kind, "ADAPT:addAttributeDouble", "../../../../projects/cando/include/cando/adapt/quickDom.h", 10087, 333, "" );
+ define_source_info( method_kind, "ADAPT:addAttributeDouble", "../../../../projects/cando/include/cando/adapt/quickDom.h", 11424, 358, "" );
 }
 NOINLINE void source_info_1613_helper() {
- define_source_info( method_kind, "ADAPT:addAttributeString", "../../../../projects/cando/include/cando/adapt/quickDom.h", 9939, 329, "" );
+ define_source_info( method_kind, "ADAPT:addAttributeString", "../../../../projects/cando/include/cando/adapt/quickDom.h", 11276, 354, "" );
 }
 NOINLINE void source_info_1614_helper() {
- define_source_info( method_kind, "ADAPT:getAttributeIntDefault", "../../../../projects/cando/include/cando/adapt/quickDom.h", 7804, 256, "" );
+ define_source_info( method_kind, "ADAPT:getAttributeIntDefault", "../../../../projects/cando/include/cando/adapt/quickDom.h", 9141, 281, "" );
 }
 NOINLINE void source_info_1615_helper() {
- define_source_info( method_kind, "ADAPT:getAttributeDouble", "../../../../projects/cando/include/cando/adapt/quickDom.h", 6748, 223, "" );
+ define_source_info( method_kind, "ADAPT:getAttributeDouble", "../../../../projects/cando/include/cando/adapt/quickDom.h", 8085, 248, "" );
 }
 NOINLINE void source_info_1616_helper() {
- define_source_info( method_kind, "ADAPT:getAttribute", "../../../../projects/cando/include/cando/adapt/quickDom.h", 4728, 152, "" );
+ define_source_info( method_kind, "ADAPT:getAttribute", "../../../../projects/cando/include/cando/adapt/quickDom.h", 6065, 177, "" );
 }
 NOINLINE void source_info_1617_helper() {
- define_source_info( method_kind, "ADAPT:removeAttribute", "../../../../projects/cando/include/cando/adapt/quickDom.h", 4598, 146, "" );
+ define_source_info( method_kind, "ADAPT:removeAttribute", "../../../../projects/cando/include/cando/adapt/quickDom.h", 5935, 171, "" );
 }
 NOINLINE void source_info_1618_helper() {
- define_source_info( method_kind, "ADAPT:hasAttribute", "../../../../projects/cando/include/cando/adapt/quickDom.h", 4468, 141, "" );
+ define_source_info( method_kind, "ADAPT:hasAttribute", "../../../../projects/cando/include/cando/adapt/quickDom.h", 5805, 166, "" );
 }
 NOINLINE void source_info_1619_helper() {
- define_source_info( method_kind, "ADAPT:numberOfChildren", "../../../../projects/cando/include/cando/adapt/quickDom.h", 4335, 136, "" );
+ define_source_info( method_kind, "ADAPT:numberOfChildren", "../../../../projects/cando/include/cando/adapt/quickDom.h", 5672, 161, "" );
 }
 NOINLINE void source_info_1620_helper() {
- define_source_info( method_kind, "ADAPT:saveAs", "../../../../projects/cando/include/cando/adapt/quickDom.h", 3420, 112, "" );
+ define_source_info( method_kind, "ADAPT:saveAs", "../../../../projects/cando/include/cando/adapt/quickDom.h", 4757, 137, "" );
 }
 NOINLINE void source_info_1621_helper() {
- define_source_info( method_kind, "ADAPT:setCharacters", "../../../../projects/cando/include/cando/adapt/quickDom.h", 3067, 105, "" );
+ define_source_info( method_kind, "ADAPT:setCharacters", "../../../../projects/cando/include/cando/adapt/quickDom.h", 4404, 130, "" );
 }
 NOINLINE void source_info_1622_helper() {
- define_source_info( method_kind, "ADAPT:getCharacters", "../../../../projects/cando/include/cando/adapt/quickDom.h", 2556, 90, "" );
+ define_source_info( method_kind, "ADAPT:getCharacters", "../../../../projects/cando/include/cando/adapt/quickDom.h", 3893, 115, "" );
 }
 NOINLINE void source_info_1623_helper() {
- define_source_info( method_kind, "ADAPT:getLineNumber", "../../../../projects/cando/include/cando/adapt/quickDom.h", 2462, 88, "" );
+ define_source_info( method_kind, "ADAPT:getLineNumber", "../../../../projects/cando/include/cando/adapt/quickDom.h", 3799, 113, "" );
 }
 NOINLINE void source_info_1624_helper() {
- define_source_info( method_kind, "ADAPT:setLocalName", "../../../../projects/cando/include/cando/adapt/quickDom.h", 2016, 78, "" );
+ define_source_info( method_kind, "ADAPT:setLocalName", "../../../../projects/cando/include/cando/adapt/quickDom.h", 3353, 103, "" );
 }
 NOINLINE void source_info_1625_helper() {
- define_source_info( method_kind, "ADAPT:getLocalName", "../../../../projects/cando/include/cando/adapt/quickDom.h", 1923, 76, "" );
+ define_source_info( method_kind, "ADAPT:getLocalName", "../../../../projects/cando/include/cando/adapt/quickDom.h", 3260, 101, "" );
 }
 NOINLINE void source_info_1626_helper() {
- define_source_info( method_kind, "ADAPT:isNamed", "../../../../projects/cando/include/cando/adapt/quickDom.h", 1819, 74, "" );
+ define_source_info( method_kind, "ADAPT:isNamed", "../../../../projects/cando/include/cando/adapt/quickDom.h", 3156, 99, "" );
 }
 NOINLINE void source_info_1627_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:FFStretch"), "../../../../projects/cando/include/cando/chem/ffStretchDb.h", 656, 41, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFStretch"), "../../../../projects/cando/include/cando/chem/ffStretchDb.h", 1996, 66, "" );
 }
 NOINLINE void source_info_1628_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:FFStretchDb"), "../../../../projects/cando/include/cando/chem/ffStretchDb.h", 2319, 102, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFStretchDb"), "../../../../projects/cando/include/cando/chem/ffStretchDb.h", 3659, 127, "" );
 }
 NOINLINE void source_info_1629_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:findTerm"), "../../src/chem/ffStretchDb.cc", 1828, 90, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:findTerm"), "../../src/chem/ffStretchDb.cc", 3169, 115, "" );
 }
 NOINLINE void source_info_1630_helper() {
- define_source_info( method_kind, "CHEM:FFSTRETCH-DB-ADD", "../../src/chem/ffStretchDb.cc", 1472, 78, "" );
+ define_source_info( method_kind, "CHEM:FFSTRETCH-DB-ADD", "../../src/chem/ffStretchDb.cc", 2813, 103, "" );
 }
 NOINLINE void source_info_1631_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:FFVdw"), "../../../../projects/cando/include/cando/chem/ffVdwDb.h", 720, 46, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFVdw"), "../../../../projects/cando/include/cando/chem/ffVdwDb.h", 2056, 71, "" );
 }
 NOINLINE void source_info_1632_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:FFVdwDb"), "../../../../projects/cando/include/cando/chem/ffVdwDb.h", 1363, 72, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFVdwDb"), "../../../../projects/cando/include/cando/chem/ffVdwDb.h", 2699, 97, "" );
 }
 NOINLINE void source_info_1633_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:FFAngle"), "../../../../projects/cando/include/cando/chem/ffAngleDb.h", 757, 42, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFAngle"), "../../../../projects/cando/include/cando/chem/ffAngleDb.h", 2095, 67, "" );
 }
 NOINLINE void source_info_1634_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:FFAngleDb"), "../../../../projects/cando/include/cando/chem/ffAngleDb.h", 2242, 96, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFAngleDb"), "../../../../projects/cando/include/cando/chem/ffAngleDb.h", 3580, 121, "" );
 }
 NOINLINE void source_info_1635_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:FFItor"), "../../../../projects/cando/include/cando/chem/ffItorDb.h", 662, 40, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFItor"), "../../../../projects/cando/include/cando/chem/ffItorDb.h", 1999, 65, "" );
 }
 NOINLINE void source_info_1636_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:FFItorDb"), "../../../../projects/cando/include/cando/chem/ffItorDb.h", 1949, 83, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFItorDb"), "../../../../projects/cando/include/cando/chem/ffItorDb.h", 3286, 108, "" );
 }
 NOINLINE void source_info_1637_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:FFPtor"), "../../../../projects/cando/include/cando/chem/ffPtorDb.h", 640, 43, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFPtor"), "../../../../projects/cando/include/cando/chem/ffPtorDb.h", 1977, 68, "" );
 }
 NOINLINE void source_info_1638_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:FFPtorDb"), "../../../../projects/cando/include/cando/chem/ffPtorDb.h", 2547, 102, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFPtorDb"), "../../../../projects/cando/include/cando/chem/ffPtorDb.h", 3884, 127, "" );
 }
 NOINLINE void source_info_1639_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:FFNonbondCrossTermTable"), "../../../../projects/cando/include/cando/chem/ffNonbondDb.h", 1042, 59, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFNonbondCrossTermTable"), "../../../../projects/cando/include/cando/chem/ffNonbondDb.h", 2382, 84, "" );
 }
 NOINLINE void source_info_1640_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:FFNonbond"), "../../../../projects/cando/include/cando/chem/ffNonbondDb.h", 2606, 112, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFNonbond"), "../../../../projects/cando/include/cando/chem/ffNonbondDb.h", 3946, 137, "" );
 }
 NOINLINE void source_info_1641_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:FFNonbondDb"), "../../../../projects/cando/include/cando/chem/ffNonbondDb.h", 4079, 164, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FFNonbondDb"), "../../../../projects/cando/include/cando/chem/ffNonbondDb.h", 5419, 189, "" );
 }
 NOINLINE void source_info_1642_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:numberOfTypes"), "../../src/chem/ffNonbondDb.cc", 8428, 256, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:numberOfTypes"), "../../src/chem/ffNonbondDb.cc", 9769, 281, "" );
 }
 NOINLINE void source_info_1643_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:findTypeIndex"), "../../src/chem/ffNonbondDb.cc", 7567, 221, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:findTypeIndex"), "../../src/chem/ffNonbondDb.cc", 8908, 246, "" );
 }
 NOINLINE void source_info_1644_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:InfoDb"), "../../../../projects/cando/include/cando/chem/forceField.h", 1278, 58, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:InfoDb"), "../../../../projects/cando/include/cando/chem/forceField.h", 2617, 83, "" );
 }
 NOINLINE void source_info_1645_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ForceField"), "../../../../projects/cando/include/cando/chem/forceField.h", 1869, 80, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ForceField"), "../../../../projects/cando/include/cando/chem/forceField.h", 3208, 105, "" );
 }
 NOINLINE void source_info_1646_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:assignTypes"), "../../src/chem/forceField.cc", 2663, 99, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:assignTypes"), "../../src/chem/forceField.cc", 4003, 124, "" );
 }
 NOINLINE void source_info_1647_helper() {
- define_source_info( method_kind, "CHEM:getVdwDb", "../../../../projects/cando/include/cando/chem/forceField.h", 3452, 127, "" );
+ define_source_info( method_kind, "CHEM:getVdwDb", "../../../../projects/cando/include/cando/chem/forceField.h", 4791, 152, "" );
 }
 NOINLINE void source_info_1648_helper() {
- define_source_info( method_kind, "CHEM:getNonbondDb", "../../../../projects/cando/include/cando/chem/forceField.h", 3358, 125, "" );
+ define_source_info( method_kind, "CHEM:getNonbondDb", "../../../../projects/cando/include/cando/chem/forceField.h", 4697, 150, "" );
 }
 NOINLINE void source_info_1649_helper() {
- define_source_info( method_kind, "CHEM:getPtorDb", "../../../../projects/cando/include/cando/chem/forceField.h", 3270, 123, "" );
+ define_source_info( method_kind, "CHEM:getPtorDb", "../../../../projects/cando/include/cando/chem/forceField.h", 4609, 148, "" );
 }
 NOINLINE void source_info_1650_helper() {
- define_source_info( method_kind, "CHEM:getItorDb", "../../../../projects/cando/include/cando/chem/forceField.h", 3185, 121, "" );
+ define_source_info( method_kind, "CHEM:getItorDb", "../../../../projects/cando/include/cando/chem/forceField.h", 4524, 146, "" );
 }
 NOINLINE void source_info_1651_helper() {
- define_source_info( method_kind, "CHEM:getAngleDb", "../../../../projects/cando/include/cando/chem/forceField.h", 3097, 119, "" );
+ define_source_info( method_kind, "CHEM:getAngleDb", "../../../../projects/cando/include/cando/chem/forceField.h", 4436, 144, "" );
 }
 NOINLINE void source_info_1652_helper() {
- define_source_info( method_kind, "CHEM:getStretchDb", "../../../../projects/cando/include/cando/chem/forceField.h", 3001, 117, "" );
+ define_source_info( method_kind, "CHEM:getStretchDb", "../../../../projects/cando/include/cando/chem/forceField.h", 4340, 142, "" );
 }
 NOINLINE void source_info_1653_helper() {
- define_source_info( method_kind, "CHEM:getTypes", "../../../../projects/cando/include/cando/chem/forceField.h", 2911, 114, "" );
+ define_source_info( method_kind, "CHEM:getTypes", "../../../../projects/cando/include/cando/chem/forceField.h", 4250, 139, "" );
 }
 NOINLINE void source_info_1654_helper() {
  define_source_info( class_kind, core::magic_name("COMMON-LISP:Package"), "/Users/meister/Development/clasp/include/clasp/core/package.h", 1355, 45, "" );
@@ -5010,274 +4985,274 @@ NOINLINE void source_info_1655_helper() {
  define_source_info( method_kind, core::magic_name("core:PackageHashTables"), "../../../../src/core/package.cc", 11385, 357, "" );
 }
 NOINLINE void source_info_1656_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:OligomerPart-Base"), "../../../../projects/cando/include/cando/chem/candoScript.h", 550, 31, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:OligomerPart-Base"), "../../../../projects/cando/include/cando/chem/candoScript.h", 1890, 56, "" );
 }
 NOINLINE void source_info_1657_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:OligomerPart-Monomer"), "../../../../projects/cando/include/cando/chem/candoScript.h", 1034, 47, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:OligomerPart-Monomer"), "../../../../projects/cando/include/cando/chem/candoScript.h", 2374, 72, "" );
 }
 NOINLINE void source_info_1658_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:OligomerPart-Link"), "../../../../projects/cando/include/cando/chem/candoScript.h", 1677, 69, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:OligomerPart-Link"), "../../../../projects/cando/include/cando/chem/candoScript.h", 3017, 94, "" );
 }
 NOINLINE void source_info_1659_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Entity"), "../../../../projects/cando/include/cando/chem/entity.h", 436, 32, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Entity"), "../../../../projects/cando/include/cando/chem/entity.h", 1771, 57, "" );
 }
 NOINLINE void source_info_1660_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:minimalRepresentativeList"), "../../src/chem/entity.cc", 1034, 63, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:minimalRepresentativeList"), "../../src/chem/entity.cc", 2370, 88, "" );
 }
 NOINLINE void source_info_1661_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:constitution"), "../../src/chem/entity.cc", 694, 46, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:constitution"), "../../src/chem/entity.cc", 2030, 71, "" );
 }
 NOINLINE void source_info_1662_helper() {
- define_source_info( method_kind, "CHEM:hasConstitution", "../../../../projects/cando/include/cando/chem/entity.h", 2138, 72, "" );
+ define_source_info( method_kind, "CHEM:hasConstitution", "../../../../projects/cando/include/cando/chem/entity.h", 3473, 97, "" );
 }
 NOINLINE void source_info_1663_helper() {
- define_source_info( method_kind, "CHEM:expandedRepresentativeList", "../../../../projects/cando/include/cando/chem/entity.h", 1603, 63, "" );
+ define_source_info( method_kind, "CHEM:expandedRepresentativeList", "../../../../projects/cando/include/cando/chem/entity.h", 2938, 88, "" );
 }
 NOINLINE void source_info_1664_helper() {
- define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/entity.h", 969, 51, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/entity.h", 2304, 76, "" );
 }
 NOINLINE void source_info_1665_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Monomer"), "../../../../projects/cando/include/cando/chem/monomer.h", 1806, 81, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Monomer"), "../../../../projects/cando/include/cando/chem/monomer.h", 3142, 106, "" );
 }
 NOINLINE void source_info_1666_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:isMonomerContextValid"), "../../src/chem/monomer.cc", 28556, 982, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:isMonomerContextValid"), "../../src/chem/monomer.cc", 29893, 1007, "" );
 }
 NOINLINE void source_info_1667_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:removeCoupling"), "../../src/chem/monomer.cc", 18771, 673, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeCoupling"), "../../src/chem/monomer.cc", 20108, 698, "" );
 }
 NOINLINE void source_info_1668_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:removeCouplingToMonomer"), "../../src/chem/monomer.cc", 16951, 597, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeCouplingToMonomer"), "../../src/chem/monomer.cc", 18288, 622, "" );
 }
 NOINLINE void source_info_1669_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addOutCoupling"), "../../src/chem/monomer.cc", 16555, 586, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addOutCoupling"), "../../src/chem/monomer.cc", 17892, 611, "" );
 }
 NOINLINE void source_info_1670_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setInCoupling"), "../../src/chem/monomer.cc", 16135, 572, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setInCoupling"), "../../src/chem/monomer.cc", 17472, 597, "" );
 }
 NOINLINE void source_info_1671_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addCoupling"), "../../src/chem/monomer.cc", 15393, 548, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addCoupling"), "../../src/chem/monomer.cc", 16730, 573, "" );
 }
 NOINLINE void source_info_1672_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getConstitution"), "../../src/chem/monomer.cc", 13759, 481, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getConstitution"), "../../src/chem/monomer.cc", 15096, 506, "" );
 }
 NOINLINE void source_info_1673_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:hasInCoupling"), "../../src/chem/monomer.cc", 12901, 443, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasInCoupling"), "../../src/chem/monomer.cc", 14238, 468, "" );
 }
 NOINLINE void source_info_1674_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getInCoupling"), "../../src/chem/monomer.cc", 11872, 406, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getInCoupling"), "../../src/chem/monomer.cc", 13209, 431, "" );
 }
 NOINLINE void source_info_1675_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getTopology"), "../../src/chem/monomer.cc", 10754, 358, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getTopology"), "../../src/chem/monomer.cc", 12091, 383, "" );
 }
 NOINLINE void source_info_1676_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getSpecificMonomerContext"), "../../src/chem/monomer.cc", 8953, 301, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getSpecificMonomerContext"), "../../src/chem/monomer.cc", 10290, 326, "" );
 }
 NOINLINE void source_info_1677_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:checkForErrorsAndUnknownContexts"), "../../src/chem/monomer.cc", 8707, 291, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:checkForErrorsAndUnknownContexts"), "../../src/chem/monomer.cc", 10044, 316, "" );
 }
 NOINLINE void source_info_1678_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:throwIfBadConnections"), "../../src/chem/monomer.cc", 8308, 278, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:throwIfBadConnections"), "../../src/chem/monomer.cc", 9645, 303, "" );
 }
 NOINLINE void source_info_1679_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:checkForBadConnections"), "../../src/chem/monomer.cc", 7535, 252, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:checkForBadConnections"), "../../src/chem/monomer.cc", 8872, 277, "" );
 }
 NOINLINE void source_info_1680_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getAliasesAsString"), "../../src/chem/monomer.cc", 7188, 237, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAliasesAsString"), "../../src/chem/monomer.cc", 8525, 262, "" );
 }
 NOINLINE void source_info_1681_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:hasTemporaryResidue"), "../../src/chem/monomer.cc", 5592, 188, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasTemporaryResidue"), "../../src/chem/monomer.cc", 6929, 213, "" );
 }
 NOINLINE void source_info_1682_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setAliasesFromCons"), "../../src/chem/monomer.cc", 5392, 180, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setAliasesFromCons"), "../../src/chem/monomer.cc", 6729, 205, "" );
 }
 NOINLINE void source_info_1683_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:plugNamesAndCouplingsAsCons"), "../../src/chem/monomer.cc", 4257, 140, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:plugNamesAndCouplingsAsCons"), "../../src/chem/monomer.cc", 5594, 165, "" );
 }
 NOINLINE void source_info_1684_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getStatusMessage"), "../../src/chem/monomer.cc", 3866, 134, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getStatusMessage"), "../../src/chem/monomer.cc", 5203, 159, "" );
 }
 NOINLINE void source_info_1685_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getHasError"), "../../src/chem/monomer.cc", 3744, 132, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getHasError"), "../../src/chem/monomer.cc", 5081, 157, "" );
 }
 NOINLINE void source_info_1686_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getGeneralMonomerContext"), "../../src/chem/monomer.cc", 2374, 97, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getGeneralMonomerContext"), "../../src/chem/monomer.cc", 3711, 122, "" );
 }
 NOINLINE void source_info_1687_helper() {
- define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/monomer.h", 8719, 274, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/monomer.h", 10055, 299, "" );
 }
 NOINLINE void source_info_1688_helper() {
- define_source_info( method_kind, "CHEM:getSequenceNumber", "../../../../projects/cando/include/cando/chem/monomer.h", 5953, 191, "" );
+ define_source_info( method_kind, "CHEM:getSequenceNumber", "../../../../projects/cando/include/cando/chem/monomer.h", 7289, 216, "" );
 }
 NOINLINE void source_info_1689_helper() {
- define_source_info( method_kind, "CHEM:getComment", "../../../../projects/cando/include/cando/chem/monomer.h", 5234, 173, "" );
+ define_source_info( method_kind, "CHEM:getComment", "../../../../projects/cando/include/cando/chem/monomer.h", 6570, 198, "" );
 }
 NOINLINE void source_info_1690_helper() {
- define_source_info( method_kind, "CHEM:setComment", "../../../../projects/cando/include/cando/chem/monomer.h", 5140, 171, "" );
+ define_source_info( method_kind, "CHEM:setComment", "../../../../projects/cando/include/cando/chem/monomer.h", 6476, 196, "" );
 }
 NOINLINE void source_info_1691_helper() {
- define_source_info( method_kind, "CHEM:recognizesAlias", "../../../../projects/cando/include/cando/chem/monomer.h", 4906, 161, "" );
+ define_source_info( method_kind, "CHEM:recognizesAlias", "../../../../projects/cando/include/cando/chem/monomer.h", 6242, 186, "" );
 }
 NOINLINE void source_info_1692_helper() {
- define_source_info( method_kind, "CHEM:getTemporaryResidue", "../../../../projects/cando/include/cando/chem/monomer.h", 4425, 149, "" );
+ define_source_info( method_kind, "CHEM:getTemporaryResidue", "../../../../projects/cando/include/cando/chem/monomer.h", 5761, 174, "" );
 }
 NOINLINE void source_info_1693_helper() {
- define_source_info( method_kind, "CHEM:isSelected", "../../../../projects/cando/include/cando/chem/monomer.h", 4239, 145, "" );
+ define_source_info( method_kind, "CHEM:isSelected", "../../../../projects/cando/include/cando/chem/monomer.h", 5575, 170, "" );
 }
 NOINLINE void source_info_1694_helper() {
- define_source_info( method_kind, "CHEM:setSelected", "../../../../projects/cando/include/cando/chem/monomer.h", 4150, 143, "" );
+ define_source_info( method_kind, "CHEM:setSelected", "../../../../projects/cando/include/cando/chem/monomer.h", 5486, 168, "" );
 }
 NOINLINE void source_info_1695_helper() {
- define_source_info( method_kind, "CHEM:getId", "../../../../projects/cando/include/cando/chem/monomer.h", 3970, 139, "" );
+ define_source_info( method_kind, "CHEM:getId", "../../../../projects/cando/include/cando/chem/monomer.h", 5306, 164, "" );
 }
 NOINLINE void source_info_1696_helper() {
- define_source_info( method_kind, "CHEM:setId", "../../../../projects/cando/include/cando/chem/monomer.h", 3886, 137, "" );
+ define_source_info( method_kind, "CHEM:setId", "../../../../projects/cando/include/cando/chem/monomer.h", 5222, 162, "" );
 }
 NOINLINE void source_info_1697_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:OneMonomer"), "../../../../projects/cando/include/cando/chem/monomer.h", 9235, 289, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:OneMonomer"), "../../../../projects/cando/include/cando/chem/monomer.h", 10571, 314, "" );
 }
 NOINLINE void source_info_1698_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:MultiMonomer"), "../../../../projects/cando/include/cando/chem/monomer.h", 9743, 309, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:MultiMonomer"), "../../../../projects/cando/include/cando/chem/monomer.h", 11079, 334, "" );
 }
 NOINLINE void source_info_1699_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getInterestingAtomIndexer"), "../../src/chem/monomer.cc", 29465, 1015, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getInterestingAtomIndexer"), "../../src/chem/monomer.cc", 30802, 1040, "" );
 }
 NOINLINE void source_info_1700_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getOneMonomerWithName"), "../../src/chem/monomer.cc", 29123, 1002, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOneMonomerWithName"), "../../src/chem/monomer.cc", 30460, 1027, "" );
 }
 NOINLINE void source_info_1701_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getOneMonomer"), "../../src/chem/monomer.cc", 25261, 895, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOneMonomer"), "../../src/chem/monomer.cc", 26598, 920, "" );
 }
 NOINLINE void source_info_1702_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setGroupName"), "../../src/chem/monomer.cc", 22500, 800, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setGroupName"), "../../src/chem/monomer.cc", 23837, 825, "" );
 }
 NOINLINE void source_info_1703_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:CandoDatabase"), "../../../../projects/cando/include/cando/chem/candoDatabase.h", 1263, 65, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CandoDatabase"), "../../../../projects/cando/include/cando/chem/candoDatabase.h", 2605, 90, "" );
 }
 NOINLINE void source_info_1704_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:allSpecificMonomerContexts"), "../../src/chem/candoDatabase.cc", 24449, 793, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allSpecificMonomerContexts"), "../../src/chem/candoDatabase.cc", 25792, 818, "" );
 }
 NOINLINE void source_info_1705_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:saveAs"), "../../src/chem/candoDatabase.cc", 22106, 733, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:saveAs"), "../../src/chem/candoDatabase.cc", 23449, 758, "" );
 }
 NOINLINE void source_info_1706_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:recognizesContext"), "../../src/chem/candoDatabase.cc", 21757, 722, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:recognizesContext"), "../../src/chem/candoDatabase.cc", 23100, 747, "" );
 }
 NOINLINE void source_info_1707_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:get"), "../../src/chem/candoDatabase.cc", 21430, 711, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:get"), "../../src/chem/candoDatabase.cc", 22773, 736, "" );
 }
 NOINLINE void source_info_1708_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getMonomerCoordinatesWithKey"), "../../src/chem/candoDatabase.cc", 21145, 700, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomerCoordinatesWithKey"), "../../src/chem/candoDatabase.cc", 22488, 725, "" );
 }
 NOINLINE void source_info_1709_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:recognizesMonomerCoordinatesKey"), "../../src/chem/candoDatabase.cc", 20942, 694, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:recognizesMonomerCoordinatesKey"), "../../src/chem/candoDatabase.cc", 22285, 719, "" );
 }
 NOINLINE void source_info_1710_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:monomerCoordinatesKeysAsCons"), "../../src/chem/candoDatabase.cc", 20419, 675, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:monomerCoordinatesKeysAsCons"), "../../src/chem/candoDatabase.cc", 21762, 700, "" );
 }
 NOINLINE void source_info_1711_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:uniqueMonomerCoordinatesAsCons"), "../../src/chem/candoDatabase.cc", 19698, 654, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:uniqueMonomerCoordinatesAsCons"), "../../src/chem/candoDatabase.cc", 21041, 679, "" );
 }
 NOINLINE void source_info_1712_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addMonomerCoordinates"), "../../src/chem/candoDatabase.cc", 18356, 622, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addMonomerCoordinates"), "../../src/chem/candoDatabase.cc", 19699, 647, "" );
 }
 NOINLINE void source_info_1713_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:constitutionNameForNameOrPdb"), "../../src/chem/candoDatabase.cc", 11433, 389, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:constitutionNameForNameOrPdb"), "../../src/chem/candoDatabase.cc", 12776, 414, "" );
 }
 NOINLINE void source_info_1714_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:constitutionForNameOrPdb"), "../../src/chem/candoDatabase.cc", 11000, 379, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:constitutionForNameOrPdb"), "../../src/chem/candoDatabase.cc", 12343, 404, "" );
 }
 NOINLINE void source_info_1715_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:recognizesNameOrPdb"), "../../src/chem/candoDatabase.cc", 9949, 348, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:recognizesNameOrPdb"), "../../src/chem/candoDatabase.cc", 11292, 373, "" );
 }
 NOINLINE void source_info_1716_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getMonomersForSetOrConstitutionOrMonomerName"), "../../src/chem/candoDatabase.cc", 8579, 297, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomersForSetOrConstitutionOrMonomerName"), "../../src/chem/candoDatabase.cc", 9922, 322, "" );
 }
 NOINLINE void source_info_1717_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:expandEntityNamesToTerminals"), "../../src/chem/candoDatabase.cc", 7660, 269, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:expandEntityNamesToTerminals"), "../../src/chem/candoDatabase.cc", 9003, 294, "" );
 }
 NOINLINE void source_info_1718_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:expandEntityNameToTerminals"), "../../src/chem/candoDatabase.cc", 7408, 262, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:expandEntityNameToTerminals"), "../../src/chem/candoDatabase.cc", 8751, 287, "" );
 }
 NOINLINE void source_info_1719_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getEntity"), "../../src/chem/candoDatabase.cc", 6619, 239, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getEntity"), "../../src/chem/candoDatabase.cc", 7962, 264, "" );
 }
 NOINLINE void source_info_1720_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:recognizesSetOrConstitutionOrMonomerName"), "../../src/chem/candoDatabase.cc", 6433, 233, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:recognizesSetOrConstitutionOrMonomerName"), "../../src/chem/candoDatabase.cc", 7776, 258, "" );
 }
 NOINLINE void source_info_1721_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getRepresentedEntityNameSet"), "../../src/chem/candoDatabase.cc", 6104, 225, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getRepresentedEntityNameSet"), "../../src/chem/candoDatabase.cc", 7447, 250, "" );
 }
 NOINLINE void source_info_1722_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getEntityNameSet"), "../../src/chem/candoDatabase.cc", 5832, 217, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getEntityNameSet"), "../../src/chem/candoDatabase.cc", 7175, 242, "" );
 }
 NOINLINE void source_info_1723_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:recognizesFrameRecognizerName"), "../../src/chem/candoDatabase.cc", 5012, 183, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:recognizesFrameRecognizerName"), "../../src/chem/candoDatabase.cc", 6355, 208, "" );
 }
 NOINLINE void source_info_1724_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addFrameRecognizer"), "../../src/chem/candoDatabase.cc", 4805, 176, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addFrameRecognizer"), "../../src/chem/candoDatabase.cc", 6148, 201, "" );
 }
 NOINLINE void source_info_1725_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:recognizesRepresentedEntityNameSet"), "../../src/chem/candoDatabase.cc", 3666, 138, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:recognizesRepresentedEntityNameSet"), "../../src/chem/candoDatabase.cc", 5009, 163, "" );
 }
 NOINLINE void source_info_1726_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:representedEntityNameSetsAsCons"), "../../src/chem/candoDatabase.cc", 3392, 126, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:representedEntityNameSetsAsCons"), "../../src/chem/candoDatabase.cc", 4735, 151, "" );
 }
 NOINLINE void source_info_1727_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addEntity"), "../../src/chem/candoDatabase.cc", 3031, 114, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addEntity"), "../../src/chem/candoDatabase.cc", 4374, 139, "" );
 }
 NOINLINE void source_info_1728_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:constitutionsAsCons"), "../../src/chem/candoDatabase.cc", 2607, 101, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:constitutionsAsCons"), "../../src/chem/candoDatabase.cc", 3950, 126, "" );
 }
 NOINLINE void source_info_1729_helper() {
- define_source_info( method_kind, "CHEM:recognizesEntityName", "../../../../projects/cando/include/cando/chem/candoDatabase.h", 5821, 203, "" );
+ define_source_info( method_kind, "CHEM:recognizesEntityName", "../../../../projects/cando/include/cando/chem/candoDatabase.h", 7163, 228, "" );
 }
 NOINLINE void source_info_1730_helper() {
- define_source_info( method_kind, "CHEM:getFrameRecognizer", "../../../../projects/cando/include/cando/chem/candoDatabase.h", 4146, 153, "" );
+ define_source_info( method_kind, "CHEM:getFrameRecognizer", "../../../../projects/cando/include/cando/chem/candoDatabase.h", 5488, 178, "" );
 }
 NOINLINE void source_info_1731_helper() {
- define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/candoDatabase.h", 3307, 123, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/candoDatabase.h", 4649, 148, "" );
 }
 NOINLINE void source_info_1732_helper() {
- define_source_info( class_kind, core::magic_name("ADAPT:IndexedObjectBag"), "../../../../projects/cando/include/cando/adapt/indexedObjectBag.h", 1296, 41, "" );
+ define_source_info( class_kind, core::magic_name("ADAPT:IndexedObjectBag"), "../../../../projects/cando/include/cando/adapt/indexedObjectBag.h", 1665, 40, "" );
 }
 NOINLINE void source_info_1733_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:remove_entry"), "../../src/adapt/indexedObjectBag.cc", 1795, 57, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:remove_entry"), "../../src/adapt/indexedObjectBag.cc", 2157, 56, "" );
 }
 NOINLINE void source_info_1734_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:get_entry"), "../../src/adapt/indexedObjectBag.cc", 1631, 51, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:get_entry"), "../../src/adapt/indexedObjectBag.cc", 1993, 50, "" );
 }
 NOINLINE void source_info_1735_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:set_next_available_entry"), "../../src/adapt/indexedObjectBag.cc", 1387, 43, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:set_next_available_entry"), "../../src/adapt/indexedObjectBag.cc", 1749, 42, "" );
 }
 NOINLINE void source_info_1736_helper() {
- define_source_info( class_kind, core::magic_name("ADAPT:ObjectSet"), "../../../../projects/cando/include/cando/adapt/objectSet.h", 1373, 45, "" );
+ define_source_info( class_kind, core::magic_name("ADAPT:ObjectSet"), "../../../../projects/cando/include/cando/adapt/objectSet.h", 1735, 44, "" );
 }
 NOINLINE void source_info_1737_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:addObjectsInCons"), "../../src/adapt/objectSet.cc", 4160, 151, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:addObjectsInCons"), "../../src/adapt/objectSet.cc", 4522, 150, "" );
 }
 NOINLINE void source_info_1738_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:relativeComplement"), "../../src/adapt/objectSet.cc", 2393, 84, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:relativeComplement"), "../../src/adapt/objectSet.cc", 2755, 83, "" );
 }
 NOINLINE void source_info_1739_helper() {
- define_source_info( method_kind, core::magic_name("adapt:objectSetIntersection"), "../../src/adapt/objectSet.cc", 1985, 67, "" );
+ define_source_info( method_kind, core::magic_name("adapt:objectSetIntersection"), "../../src/adapt/objectSet.cc", 2347, 66, "" );
 }
 NOINLINE void source_info_1740_helper() {
- define_source_info( method_kind, core::magic_name("adapt:objectSetUnion"), "../../src/adapt/objectSet.cc", 1732, 59, "" );
+ define_source_info( method_kind, core::magic_name("adapt:objectSetUnion"), "../../src/adapt/objectSet.cc", 2094, 58, "" );
 }
 NOINLINE void source_info_1741_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:asCons"), "../../src/adapt/objectSet.cc", 1531, 50, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:asCons"), "../../src/adapt/objectSet.cc", 1893, 49, "" );
 }
 NOINLINE void source_info_1742_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:addObjects"), "../../src/adapt/objectSet.cc", 1380, 44, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:addObjects"), "../../src/adapt/objectSet.cc", 1742, 43, "" );
 }
 NOINLINE void source_info_1743_helper() {
- define_source_info( method_kind, "ADAPT:size", "../../../../projects/cando/include/cando/adapt/objectSet.h", 1898, 64, "" );
+ define_source_info( method_kind, "ADAPT:size", "../../../../projects/cando/include/cando/adapt/objectSet.h", 2260, 63, "" );
 }
 NOINLINE void source_info_1744_helper() {
- define_source_info( method_kind, "ADAPT:insert", "../../../../projects/cando/include/cando/adapt/objectSet.h", 1737, 61, "" );
+ define_source_info( method_kind, "ADAPT:insert", "../../../../projects/cando/include/cando/adapt/objectSet.h", 2099, 60, "" );
 }
 NOINLINE void source_info_1745_helper() {
- define_source_info( method_kind, "ADAPT:contains", "../../../../projects/cando/include/cando/adapt/objectSet.h", 1640, 59, "" );
+ define_source_info( method_kind, "ADAPT:contains", "../../../../projects/cando/include/cando/adapt/objectSet.h", 2002, 58, "" );
 }
 NOINLINE void source_info_1746_helper() {
  define_source_info( class_kind, core::magic_name("COMMON-LISP:BuiltInClass"), "/Users/meister/Development/clasp/include/clasp/core/builtInClass.h", 1336, 43, "" );
@@ -5331,1855 +5306,1855 @@ NOINLINE void source_info_1762_helper() {
  define_source_info( class_kind, core::magic_name("COMMON-LISP:bit-vector-with-fill-ptr"), "/Users/meister/Development/clasp/include/clasp/core/bitVector.h", 4315, 144, "" );
 }
 NOINLINE void source_info_1763_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:PathMessage"), "../../../../projects/cando/include/cando/chem/ringFinder.h", 475, 27, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:PathMessage"), "../../../../projects/cando/include/cando/chem/ringFinder.h", 1814, 52, "" );
 }
 NOINLINE void source_info_1764_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:AGVertex"), "../../../../projects/cando/include/cando/chem/ringFinder.h", 1480, 68, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AGVertex"), "../../../../projects/cando/include/cando/chem/ringFinder.h", 2819, 93, "" );
 }
 NOINLINE void source_info_1765_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:AGEdge"), "../../../../projects/cando/include/cando/chem/ringFinder.h", 2374, 104, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AGEdge"), "../../../../projects/cando/include/cando/chem/ringFinder.h", 3713, 129, "" );
 }
 NOINLINE void source_info_1766_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:RingFinder"), "../../../../projects/cando/include/cando/chem/ringFinder.h", 2991, 128, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RingFinder"), "../../../../projects/cando/include/cando/chem/ringFinder.h", 4330, 153, "" );
 }
 NOINLINE void source_info_1767_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getAllRingsAsListsOfAtoms"), "../../src/chem/ringFinder.cc", 23519, 831, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAllRingsAsListsOfAtoms"), "../../src/chem/ringFinder.cc", 24859, 856, "" );
 }
 NOINLINE void source_info_1768_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:findRings"), "../../src/chem/ringFinder.cc", 20137, 732, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:findRings"), "../../src/chem/ringFinder.cc", 21477, 757, "" );
 }
 NOINLINE void source_info_1769_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:NVector"), "../../../../projects/cando/include/cando/chem/nVector.h", 413, 31, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:NVector"), "../../../../projects/cando/include/cando/chem/nVector.h", 1749, 56, "" );
 }
 NOINLINE void source_info_1770_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:nvector-dest-x-_PLUS_-y"), "../../src/chem/nVector.cc", 3906, 217, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:nvector-dest-x-_PLUS_-y"), "../../src/chem/nVector.cc", 5243, 242, "" );
 }
 NOINLINE void source_info_1771_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:fill"), "../../src/chem/nVector.cc", 1836, 109, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:fill"), "../../src/chem/nVector.cc", 3173, 134, "" );
 }
 NOINLINE void source_info_1772_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:AbstractLargeSquareMatrix"), "../../../../projects/cando/include/cando/chem/largeSquareMatrix.h", 1134, 50, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AbstractLargeSquareMatrix"), "../../../../projects/cando/include/cando/chem/largeSquareMatrix.h", 2480, 75, "" );
 }
 NOINLINE void source_info_1773_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:FullLargeSquareMatrix"), "../../../../projects/cando/include/cando/chem/largeSquareMatrix.h", 3166, 124, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FullLargeSquareMatrix"), "../../../../projects/cando/include/cando/chem/largeSquareMatrix.h", 4512, 149, "" );
 }
 NOINLINE void source_info_1774_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:SparseLargeSquareMatrix"), "../../../../projects/cando/include/cando/chem/largeSquareMatrix.h", 4969, 177, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:SparseLargeSquareMatrix"), "../../../../projects/cando/include/cando/chem/largeSquareMatrix.h", 6315, 202, "" );
 }
 NOINLINE void source_info_1775_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Alias"), "../../../../projects/cando/include/cando/chem/alias.h", 378, 29, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Alias"), "../../../../projects/cando/include/cando/chem/alias.h", 1712, 54, "" );
 }
 NOINLINE void source_info_1776_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Angle"), "../../../../projects/cando/include/cando/chem/angle.h", 326, 19, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Angle"), "../../../../projects/cando/include/cando/chem/angle.h", 1660, 44, "" );
 }
 NOINLINE void source_info_1777_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:AtomId"), "../../../../projects/cando/include/cando/chem/atomId.h", 1672, 71, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AtomId"), "../../../../projects/cando/include/cando/chem/atomId.h", 3007, 96, "" );
 }
 NOINLINE void source_info_1778_helper() {
- define_source_info( method_kind, "CHEM:asString", "../../../../projects/cando/include/cando/chem/atomId.h", 2091, 84, "" );
+ define_source_info( method_kind, "CHEM:asString", "../../../../projects/cando/include/cando/chem/atomId.h", 3426, 109, "" );
 }
 NOINLINE void source_info_1779_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:AtomIdToAtomMap"), "../../../../projects/cando/include/cando/chem/atomIdMap.h", 6436, 177, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AtomIdToAtomMap"), "../../../../projects/cando/include/cando/chem/atomIdMap.h", 7774, 202, "" );
 }
 NOINLINE void source_info_1780_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:lookup-atom"), "../../src/chem/atomIdMap.cc", 352, 19, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:lookup-atom"), "../../src/chem/atomIdMap.cc", 1691, 44, "" );
 }
 NOINLINE void source_info_1781_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:AtomIndexer"), "../../../../projects/cando/include/cando/chem/atomIndexer.h", 586, 31, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AtomIndexer"), "../../../../projects/cando/include/cando/chem/atomIndexer.h", 1926, 56, "" );
 }
 NOINLINE void source_info_1782_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:MapOfMonomerNamesToAtomIndexers"), "../../../../projects/cando/include/cando/chem/atomIndexer.h", 1830, 83, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:MapOfMonomerNamesToAtomIndexers"), "../../../../projects/cando/include/cando/chem/atomIndexer.h", 3170, 108, "" );
 }
 NOINLINE void source_info_1783_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:AtomReferenceBase"), "../../../../projects/cando/include/cando/chem/atomReference.h", 468, 30, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AtomReferenceBase"), "../../../../projects/cando/include/cando/chem/atomReference.h", 1810, 55, "" );
 }
 NOINLINE void source_info_1784_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:AtomReference"), "../../../../projects/cando/include/cando/chem/atomReference.h", 903, 45, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AtomReference"), "../../../../projects/cando/include/cando/chem/atomReference.h", 2245, 70, "" );
 }
 NOINLINE void source_info_1785_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:AtomTable"), "../../../../projects/cando/include/cando/chem/energyAtomTable.h", 2195, 75, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:AtomTable"), "../../../../projects/cando/include/cando/chem/energyAtomTable.h", 3539, 100, "" );
 }
 NOINLINE void source_info_1786_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addAtomInfo"), "../../src/chem/energyAtomTable.cc", 3884, 128, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addAtomInfo"), "../../src/chem/energyAtomTable.cc", 5229, 153, "" );
 }
 NOINLINE void source_info_1787_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:CDNode"), "../../../../projects/cando/include/cando/chem/chemdraw.h", 1012, 52, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CDNode"), "../../../../projects/cando/include/cando/chem/chemdraw.h", 2349, 77, "" );
 }
 NOINLINE void source_info_1788_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:CDBond"), "../../../../projects/cando/include/cando/chem/chemdraw.h", 2526, 99, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CDBond"), "../../../../projects/cando/include/cando/chem/chemdraw.h", 3863, 124, "" );
 }
 NOINLINE void source_info_1789_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:CDFragment"), "../../../../projects/cando/include/cando/chem/chemdraw.h", 3561, 134, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CDFragment"), "../../../../projects/cando/include/cando/chem/chemdraw.h", 4898, 159, "" );
 }
 NOINLINE void source_info_1790_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:asConstitutionAtoms"), "../../src/chem/chemdraw.cc", 27292, 827, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:asConstitutionAtoms"), "../../src/chem/chemdraw.cc", 28630, 852, "" );
 }
 NOINLINE void source_info_1791_helper() {
- define_source_info( method_kind, "CHEM:getMolecule", "../../../../projects/cando/include/cando/chem/chemdraw.h", 5299, 177, "" );
+ define_source_info( method_kind, "CHEM:getMolecule", "../../../../projects/cando/include/cando/chem/chemdraw.h", 6636, 202, "" );
 }
 NOINLINE void source_info_1792_helper() {
- define_source_info( method_kind, "CHEM:getConstitutionName", "../../../../projects/cando/include/cando/chem/chemdraw.h", 4459, 157, "" );
+ define_source_info( method_kind, "CHEM:getConstitutionName", "../../../../projects/cando/include/cando/chem/chemdraw.h", 5796, 182, "" );
 }
 NOINLINE void source_info_1793_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:CDText"), "../../../../projects/cando/include/cando/chem/chemdraw.h", 5923, 205, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CDText"), "../../../../projects/cando/include/cando/chem/chemdraw.h", 7260, 230, "" );
 }
 NOINLINE void source_info_1794_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ChemDraw"), "../../../../projects/cando/include/cando/chem/chemdraw.h", 6503, 235, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ChemDraw"), "../../../../projects/cando/include/cando/chem/chemdraw.h", 7840, 260, "" );
 }
 NOINLINE void source_info_1795_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getSubSetOfFragments"), "../../src/chem/chemdraw.cc", 38566, 1156, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getSubSetOfFragments"), "../../src/chem/chemdraw.cc", 39904, 1181, "" );
 }
 NOINLINE void source_info_1796_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getFragments"), "../../src/chem/chemdraw.cc", 38217, 1143, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getFragments"), "../../src/chem/chemdraw.cc", 39555, 1168, "" );
 }
 NOINLINE void source_info_1797_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:asAggregate"), "../../src/chem/chemdraw.cc", 37803, 1130, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:asAggregate"), "../../src/chem/chemdraw.cc", 39141, 1155, "" );
 }
 NOINLINE void source_info_1798_helper() {
- define_source_info( method_kind, "CHEM:allFragmentsAsCons", "../../../../projects/cando/include/cando/chem/chemdraw.h", 8038, 279, "" );
+ define_source_info( method_kind, "CHEM:allFragmentsAsCons", "../../../../projects/cando/include/cando/chem/chemdraw.h", 9375, 304, "" );
 }
 NOINLINE void source_info_1799_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:CalculatePosition"), "../../../../projects/cando/include/cando/chem/calculatePosition.h", 349, 23, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CalculatePosition"), "../../../../projects/cando/include/cando/chem/calculatePosition.h", 1695, 48, "" );
 }
 NOINLINE void source_info_1800_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:CalculatePositionUsingInternals"), "../../../../projects/cando/include/cando/chem/calculatePosition.h", 1080, 48, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CalculatePositionUsingInternals"), "../../../../projects/cando/include/cando/chem/calculatePosition.h", 2426, 73, "" );
 }
 NOINLINE void source_info_1801_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:CalculatePositionAlongBond"), "../../../../projects/cando/include/cando/chem/calculatePosition.h", 2277, 86, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CalculatePositionAlongBond"), "../../../../projects/cando/include/cando/chem/calculatePosition.h", 3623, 111, "" );
 }
 NOINLINE void source_info_1802_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:CalculatePositionRelativeToOrigin"), "../../../../projects/cando/include/cando/chem/calculatePosition.h", 3234, 117, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CalculatePositionRelativeToOrigin"), "../../../../projects/cando/include/cando/chem/calculatePosition.h", 4580, 142, "" );
 }
 NOINLINE void source_info_1803_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:CipPrioritizer"), "../../../../projects/cando/include/cando/chem/cipPrioritizer.h", 322, 24, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CipPrioritizer"), "../../../../projects/cando/include/cando/chem/cipPrioritizer.h", 1665, 49, "" );
 }
 NOINLINE void source_info_1804_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:defineStereochemicalConfigurationsForAllAtoms"), "../../src/chem/cipPrioritizer.cc", 14202, 488, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineStereochemicalConfigurationsForAllAtoms"), "../../src/chem/cipPrioritizer.cc", 15546, 513, "" );
 }
 NOINLINE void source_info_1805_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:assignCahnIngoldPrelogPriorityToAtomsRelativePriority"), "../../src/chem/cipPrioritizer.cc", 3326, 165, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:assignCahnIngoldPrelogPriorityToAtomsRelativePriority"), "../../src/chem/cipPrioritizer.cc", 4670, 190, "" );
 }
 NOINLINE void source_info_1806_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Command"), "../../../../projects/cando/include/cando/chem/command.h", 425, 32, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Command"), "../../../../projects/cando/include/cando/chem/command.h", 1761, 57, "" );
 }
 NOINLINE void source_info_1807_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ComplexRestraint"), "../../../../projects/cando/include/cando/chem/complexRestraints.h", 352, 27, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ComplexRestraint"), "../../../../projects/cando/include/cando/chem/complexRestraints.h", 1698, 52, "" );
 }
 NOINLINE void source_info_1808_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:RestrainedExoCyclicAtom"), "../../../../projects/cando/include/cando/chem/complexRestraints.h", 1084, 63, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RestrainedExoCyclicAtom"), "../../../../projects/cando/include/cando/chem/complexRestraints.h", 2430, 88, "" );
 }
 NOINLINE void source_info_1809_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:RestrainedPiBond"), "../../../../projects/cando/include/cando/chem/complexRestraints.h", 2271, 116, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RestrainedPiBond"), "../../../../projects/cando/include/cando/chem/complexRestraints.h", 3617, 141, "" );
 }
 NOINLINE void source_info_1810_helper() {
- define_source_info( method_kind, "CHEM:setPiAtomY", "../../../../projects/cando/include/cando/chem/complexRestraints.h", 3218, 145, "" );
+ define_source_info( method_kind, "CHEM:setPiAtomY", "../../../../projects/cando/include/cando/chem/complexRestraints.h", 4564, 170, "" );
 }
 NOINLINE void source_info_1811_helper() {
- define_source_info( method_kind, "CHEM:getPiAtomY", "../../../../projects/cando/include/cando/chem/complexRestraints.h", 3126, 143, "" );
+ define_source_info( method_kind, "CHEM:getPiAtomY", "../../../../projects/cando/include/cando/chem/complexRestraints.h", 4472, 168, "" );
 }
 NOINLINE void source_info_1812_helper() {
- define_source_info( method_kind, "CHEM:setPiAtomX", "../../../../projects/cando/include/cando/chem/complexRestraints.h", 3031, 141, "" );
+ define_source_info( method_kind, "CHEM:setPiAtomX", "../../../../projects/cando/include/cando/chem/complexRestraints.h", 4377, 166, "" );
 }
 NOINLINE void source_info_1813_helper() {
- define_source_info( method_kind, "CHEM:getPiAtomX", "../../../../projects/cando/include/cando/chem/complexRestraints.h", 2939, 139, "" );
+ define_source_info( method_kind, "CHEM:getPiAtomX", "../../../../projects/cando/include/cando/chem/complexRestraints.h", 4285, 164, "" );
 }
 NOINLINE void source_info_1814_helper() {
- define_source_info( method_kind, "CHEM:setConfiguration", "../../../../projects/cando/include/cando/chem/complexRestraints.h", 2828, 136, "" );
+ define_source_info( method_kind, "CHEM:setConfiguration", "../../../../projects/cando/include/cando/chem/complexRestraints.h", 4174, 161, "" );
 }
 NOINLINE void source_info_1815_helper() {
- define_source_info( method_kind, "CHEM:getConfiguration", "../../../../projects/cando/include/cando/chem/complexRestraints.h", 2715, 134, "" );
+ define_source_info( method_kind, "CHEM:getConfiguration", "../../../../projects/cando/include/cando/chem/complexRestraints.h", 4061, 159, "" );
 }
 NOINLINE void source_info_1816_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ConstitutionBond"), "../../../../projects/cando/include/cando/chem/constitutionAtoms.h", 553, 30, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConstitutionBond"), "../../../../projects/cando/include/cando/chem/constitutionAtoms.h", 1899, 55, "" );
 }
 NOINLINE void source_info_1817_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ConstitutionAtom"), "../../../../projects/cando/include/cando/chem/constitutionAtoms.h", 1353, 58, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConstitutionAtom"), "../../../../projects/cando/include/cando/chem/constitutionAtoms.h", 2699, 83, "" );
 }
 NOINLINE void source_info_1818_helper() {
- define_source_info( method_kind, "CHEM:atomName", "../../../../projects/cando/include/cando/chem/constitutionAtoms.h", 1949, 74, "" );
+ define_source_info( method_kind, "CHEM:atomName", "../../../../projects/cando/include/cando/chem/constitutionAtoms.h", 3295, 99, "" );
 }
 NOINLINE void source_info_1819_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ConstitutionVirtualAtom"), "../../../../projects/cando/include/cando/chem/constitutionAtoms.h", 2399, 86, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConstitutionVirtualAtom"), "../../../../projects/cando/include/cando/chem/constitutionAtoms.h", 3745, 111, "" );
 }
 NOINLINE void source_info_1820_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ConstitutionAtoms"), "../../../../projects/cando/include/cando/chem/constitutionAtoms.h", 3324, 111, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConstitutionAtoms"), "../../../../projects/cando/include/cando/chem/constitutionAtoms.h", 4670, 136, "" );
 }
 NOINLINE void source_info_1821_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:buildResidue"), "../../src/chem/constitutionAtoms.cc", 6411, 244, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:buildResidue"), "../../src/chem/constitutionAtoms.cc", 7758, 269, "" );
 }
 NOINLINE void source_info_1822_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:constitution-atoms-index"), "../../src/chem/constitutionAtoms.cc", 6073, 233, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:constitution-atoms-index"), "../../src/chem/constitutionAtoms.cc", 7420, 258, "" );
 }
 NOINLINE void source_info_1823_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:atomWithId"), "../../src/chem/constitutionAtoms.cc", 5886, 227, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atomWithId"), "../../src/chem/constitutionAtoms.cc", 7233, 252, "" );
 }
 NOINLINE void source_info_1824_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:atomWithName"), "../../src/chem/constitutionAtoms.cc", 5501, 215, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atomWithName"), "../../src/chem/constitutionAtoms.cc", 6848, 240, "" );
 }
 NOINLINE void source_info_1825_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:atomNamesAsSymbolSet"), "../../src/chem/constitutionAtoms.cc", 4834, 188, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atomNamesAsSymbolSet"), "../../src/chem/constitutionAtoms.cc", 6181, 213, "" );
 }
 NOINLINE void source_info_1826_helper() {
- define_source_info( method_kind, "CHEM:setNetCharge", "../../../../projects/cando/include/cando/chem/constitutionAtoms.h", 4543, 145, "" );
+ define_source_info( method_kind, "CHEM:setNetCharge", "../../../../projects/cando/include/cando/chem/constitutionAtoms.h", 5889, 170, "" );
 }
 NOINLINE void source_info_1827_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:CoordinateSystem"), "../../../../projects/cando/include/cando/chem/coordSys.h", 657, 40, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:CoordinateSystem"), "../../../../projects/cando/include/cando/chem/coordSys.h", 1994, 65, "" );
 }
 NOINLINE void source_info_1828_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:sameAs"), "../../src/chem/coordSys.cc", 28526, 943, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:sameAs"), "../../src/chem/coordSys.cc", 29864, 968, "" );
 }
 NOINLINE void source_info_1829_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:copy"), "../../src/chem/coordSys.cc", 28335, 935, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:copy"), "../../src/chem/coordSys.cc", 29673, 960, "" );
 }
 NOINLINE void source_info_1830_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:dump"), "../../src/chem/coordSys.cc", 27481, 915, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:dump"), "../../src/chem/coordSys.cc", 28819, 940, "" );
 }
 NOINLINE void source_info_1831_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:transformWithMatrix"), "../../src/chem/coordSys.cc", 25911, 848, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:transformWithMatrix"), "../../src/chem/coordSys.cc", 27249, 873, "" );
 }
 NOINLINE void source_info_1832_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:defineCanonical"), "../../src/chem/coordSys.cc", 25321, 811, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineCanonical"), "../../src/chem/coordSys.cc", 26659, 836, "" );
 }
 NOINLINE void source_info_1833_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:defineFromCoordinateSystem"), "../../src/chem/coordSys.cc", 25079, 801, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineFromCoordinateSystem"), "../../src/chem/coordSys.cc", 26417, 826, "" );
 }
 NOINLINE void source_info_1834_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:defineRandom"), "../../src/chem/coordSys.cc", 24206, 771, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineRandom"), "../../src/chem/coordSys.cc", 25544, 796, "" );
 }
 NOINLINE void source_info_1835_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:defineForVectorsOriginXDirZDir"), "../../src/chem/coordSys.cc", 23838, 756, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineForVectorsOriginXDirZDir"), "../../src/chem/coordSys.cc", 25176, 781, "" );
 }
 NOINLINE void source_info_1836_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:defineForVectorsOriginZDirXZPlane"), "../../src/chem/coordSys.cc", 23162, 730, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineForVectorsOriginZDirXZPlane"), "../../src/chem/coordSys.cc", 24500, 755, "" );
 }
 NOINLINE void source_info_1837_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:defineForVectorsOriginXDirXYPlane"), "../../src/chem/coordSys.cc", 22464, 707, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineForVectorsOriginXDirXYPlane"), "../../src/chem/coordSys.cc", 23802, 732, "" );
 }
 NOINLINE void source_info_1838_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:defineForVectorsOriginXDirYDir"), "../../src/chem/coordSys.cc", 21849, 685, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineForVectorsOriginXDirYDir"), "../../src/chem/coordSys.cc", 23187, 710, "" );
 }
 NOINLINE void source_info_1839_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:defineForAtomVectors"), "../../src/chem/coordSys.cc", 19237, 599, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineForAtomVectors"), "../../src/chem/coordSys.cc", 20575, 624, "" );
 }
 NOINLINE void source_info_1840_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:defineForAtoms"), "../../src/chem/coordSys.cc", 18168, 570, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineForAtoms"), "../../src/chem/coordSys.cc", 19506, 595, "" );
 }
 NOINLINE void source_info_1841_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:canonical"), "../../src/chem/coordSys.cc", 17685, 552, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:canonical"), "../../src/chem/coordSys.cc", 19023, 577, "" );
 }
 NOINLINE void source_info_1842_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:matrixToCanonical"), "../../src/chem/coordSys.cc", 16839, 518, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:matrixToCanonical"), "../../src/chem/coordSys.cc", 18177, 543, "" );
 }
 NOINLINE void source_info_1843_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:matrixFromCanonical"), "../../src/chem/coordSys.cc", 15952, 485, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:matrixFromCanonical"), "../../src/chem/coordSys.cc", 17290, 510, "" );
 }
 NOINLINE void source_info_1844_helper() {
- define_source_info( method_kind, "CHEM:getZ", "../../../../projects/cando/include/cando/chem/coordSys.h", 1168, 57, "" );
+ define_source_info( method_kind, "CHEM:getZ", "../../../../projects/cando/include/cando/chem/coordSys.h", 2505, 82, "" );
 }
 NOINLINE void source_info_1845_helper() {
- define_source_info( method_kind, "CHEM:getY", "../../../../projects/cando/include/cando/chem/coordSys.h", 1097, 55, "" );
+ define_source_info( method_kind, "CHEM:getY", "../../../../projects/cando/include/cando/chem/coordSys.h", 2434, 80, "" );
 }
 NOINLINE void source_info_1846_helper() {
- define_source_info( method_kind, "CHEM:getX", "../../../../projects/cando/include/cando/chem/coordSys.h", 1026, 53, "" );
+ define_source_info( method_kind, "CHEM:getX", "../../../../projects/cando/include/cando/chem/coordSys.h", 2363, 78, "" );
 }
 NOINLINE void source_info_1847_helper() {
- define_source_info( method_kind, "CHEM:getOrigin", "../../../../projects/cando/include/cando/chem/coordSys.h", 946, 51, "" );
+ define_source_info( method_kind, "CHEM:getOrigin", "../../../../projects/cando/include/cando/chem/coordSys.h", 2283, 76, "" );
 }
 NOINLINE void source_info_1848_helper() {
- define_source_info( method_kind, "CHEM:setOrigin", "../../../../projects/cando/include/cando/chem/coordSys.h", 856, 49, "" );
+ define_source_info( method_kind, "CHEM:setOrigin", "../../../../projects/cando/include/cando/chem/coordSys.h", 2193, 74, "" );
 }
 NOINLINE void source_info_1849_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Coupling"), "../../../../projects/cando/include/cando/chem/coupling.h", 640, 55, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Coupling"), "../../../../projects/cando/include/cando/chem/coupling.h", 1977, 80, "" );
 }
 NOINLINE void source_info_1850_helper() {
- define_source_info( method_kind, "CHEM:doCoupling", "../../../../projects/cando/include/cando/chem/coupling.h", 2239, 101, "" );
+ define_source_info( method_kind, "CHEM:doCoupling", "../../../../projects/cando/include/cando/chem/coupling.h", 3576, 126, "" );
 }
 NOINLINE void source_info_1851_helper() {
- define_source_info( method_kind, "CHEM:Coupling-checkForErrors", "../../../../projects/cando/include/cando/chem/coupling.h", 2006, 96, "" );
+ define_source_info( method_kind, "CHEM:Coupling-checkForErrors", "../../../../projects/cando/include/cando/chem/coupling.h", 3343, 121, "" );
 }
 NOINLINE void source_info_1852_helper() {
- define_source_info( method_kind, "CHEM:throwIfBadConnections", "../../../../projects/cando/include/cando/chem/coupling.h", 1876, 94, "" );
+ define_source_info( method_kind, "CHEM:throwIfBadConnections", "../../../../projects/cando/include/cando/chem/coupling.h", 3213, 119, "" );
 }
 NOINLINE void source_info_1853_helper() {
- define_source_info( method_kind, "CHEM:getHasError", "../../../../projects/cando/include/cando/chem/coupling.h", 1723, 90, "" );
+ define_source_info( method_kind, "CHEM:getHasError", "../../../../projects/cando/include/cando/chem/coupling.h", 3060, 115, "" );
 }
 NOINLINE void source_info_1854_helper() {
- define_source_info( method_kind, "CHEM:setSelected", "../../../../projects/cando/include/cando/chem/coupling.h", 1582, 86, "" );
+ define_source_info( method_kind, "CHEM:setSelected", "../../../../projects/cando/include/cando/chem/coupling.h", 2919, 111, "" );
 }
 NOINLINE void source_info_1855_helper() {
- define_source_info( method_kind, "CHEM:isSelected", "../../../../projects/cando/include/cando/chem/coupling.h", 1497, 84, "" );
+ define_source_info( method_kind, "CHEM:isSelected", "../../../../projects/cando/include/cando/chem/coupling.h", 2834, 109, "" );
 }
 NOINLINE void source_info_1856_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:DirectionalCoupling"), "../../../../projects/cando/include/cando/chem/coupling.h", 2565, 117, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:DirectionalCoupling"), "../../../../projects/cando/include/cando/chem/coupling.h", 3902, 142, "" );
 }
 NOINLINE void source_info_1857_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getOtherSideMonomer"), "../../src/chem/coupling.cc", 10378, 422, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOtherSideMonomer"), "../../src/chem/coupling.cc", 11716, 447, "" );
 }
 NOINLINE void source_info_1858_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setOutMonomer"), "../../src/chem/coupling.cc", 9892, 399, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setOutMonomer"), "../../src/chem/coupling.cc", 11230, 424, "" );
 }
 NOINLINE void source_info_1859_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setInMonomer"), "../../src/chem/coupling.cc", 9701, 392, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setInMonomer"), "../../src/chem/coupling.cc", 11039, 417, "" );
 }
 NOINLINE void source_info_1860_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setName"), "../../src/chem/coupling.cc", 8708, 359, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setName"), "../../src/chem/coupling.cc", 10046, 384, "" );
 }
 NOINLINE void source_info_1861_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getOutMonomerPlugName"), "../../src/chem/coupling.cc", 7936, 320, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOutMonomerPlugName"), "../../src/chem/coupling.cc", 9274, 345, "" );
 }
 NOINLINE void source_info_1862_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getInMonomerPlugName"), "../../src/chem/coupling.cc", 7681, 310, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getInMonomerPlugName"), "../../src/chem/coupling.cc", 9019, 335, "" );
 }
 NOINLINE void source_info_1863_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getOutMonomer"), "../../src/chem/coupling.cc", 7159, 290, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOutMonomer"), "../../src/chem/coupling.cc", 8497, 315, "" );
 }
 NOINLINE void source_info_1864_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getInMonomer"), "../../src/chem/coupling.cc", 6721, 274, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getInMonomer"), "../../src/chem/coupling.cc", 8059, 299, "" );
 }
 NOINLINE void source_info_1865_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:throwIfBadConnections"), "../../src/chem/coupling.cc", 4510, 204, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:throwIfBadConnections"), "../../src/chem/coupling.cc", 5848, 229, "" );
 }
 NOINLINE void source_info_1866_helper() {
- define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/coupling.h", 4697, 179, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/coupling.h", 6034, 204, "" );
 }
 NOINLINE void source_info_1867_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:RingCoupling"), "../../../../projects/cando/include/cando/chem/coupling.h", 5600, 211, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RingCoupling"), "../../../../projects/cando/include/cando/chem/coupling.h", 6937, 236, "" );
 }
 NOINLINE void source_info_1868_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getPlug2"), "../../src/chem/coupling.cc", 19190, 715, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getPlug2"), "../../src/chem/coupling.cc", 20528, 740, "" );
 }
 NOINLINE void source_info_1869_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getPlug1"), "../../src/chem/coupling.cc", 19034, 710, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getPlug1"), "../../src/chem/coupling.cc", 20372, 735, "" );
 }
 NOINLINE void source_info_1870_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getOtherSideMonomer"), "../../src/chem/coupling.cc", 16428, 622, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOtherSideMonomer"), "../../src/chem/coupling.cc", 17766, 647, "" );
 }
 NOINLINE void source_info_1871_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getMonomer2"), "../../src/chem/coupling.cc", 16009, 607, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomer2"), "../../src/chem/coupling.cc", 17347, 632, "" );
 }
 NOINLINE void source_info_1872_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setMonomer2"), "../../src/chem/coupling.cc", 15883, 601, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMonomer2"), "../../src/chem/coupling.cc", 17221, 626, "" );
 }
 NOINLINE void source_info_1873_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getMonomer1"), "../../src/chem/coupling.cc", 15469, 585, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomer1"), "../../src/chem/coupling.cc", 16807, 610, "" );
 }
 NOINLINE void source_info_1874_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setMonomer1"), "../../src/chem/coupling.cc", 15343, 579, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMonomer1"), "../../src/chem/coupling.cc", 16681, 604, "" );
 }
 NOINLINE void source_info_1875_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:EnergyComponent"), "../../../../projects/cando/include/cando/chem/energyComponent.h", 6514, 275, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyComponent"), "../../../../projects/cando/include/cando/chem/energyComponent.h", 7858, 300, "" );
 }
 NOINLINE void source_info_1876_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:debugLogAsString"), "../../src/chem/energyComponent.cc", 1108, 53, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:debugLogAsString"), "../../src/chem/energyComponent.cc", 2453, 78, "" );
 }
 NOINLINE void source_info_1877_helper() {
- define_source_info( method_kind, "CHEM:getEnergy", "../../../../projects/cando/include/cando/chem/energyComponent.h", 8108, 320, "" );
+ define_source_info( method_kind, "CHEM:getEnergy", "../../../../projects/cando/include/cando/chem/energyComponent.h", 9452, 345, "" );
 }
 NOINLINE void source_info_1878_helper() {
- define_source_info( method_kind, "CHEM:getErrorThreshold", "../../../../projects/cando/include/cando/chem/energyComponent.h", 7891, 312, "" );
+ define_source_info( method_kind, "CHEM:getErrorThreshold", "../../../../projects/cando/include/cando/chem/energyComponent.h", 9235, 337, "" );
 }
 NOINLINE void source_info_1879_helper() {
- define_source_info( method_kind, "CHEM:setErrorThreshold", "../../../../projects/cando/include/cando/chem/energyComponent.h", 7780, 310, "" );
+ define_source_info( method_kind, "CHEM:setErrorThreshold", "../../../../projects/cando/include/cando/chem/energyComponent.h", 9124, 335, "" );
 }
 NOINLINE void source_info_1880_helper() {
- define_source_info( method_kind, "CHEM:setDebug_NumberOfTermsToCalculate", "../../../../projects/cando/include/cando/chem/energyComponent.h", 7601, 307, "" );
+ define_source_info( method_kind, "CHEM:setDebug_NumberOfTermsToCalculate", "../../../../projects/cando/include/cando/chem/energyComponent.h", 8945, 332, "" );
 }
 NOINLINE void source_info_1881_helper() {
- define_source_info( method_kind, "CHEM:disableDebug", "../../../../projects/cando/include/cando/chem/energyComponent.h", 7489, 305, "" );
+ define_source_info( method_kind, "CHEM:disableDebug", "../../../../projects/cando/include/cando/chem/energyComponent.h", 8833, 330, "" );
 }
 NOINLINE void source_info_1882_helper() {
- define_source_info( method_kind, "CHEM:enableDebug", "../../../../projects/cando/include/cando/chem/energyComponent.h", 7400, 303, "" );
+ define_source_info( method_kind, "CHEM:enableDebug", "../../../../projects/cando/include/cando/chem/energyComponent.h", 8744, 328, "" );
 }
 NOINLINE void source_info_1883_helper() {
- define_source_info( method_kind, "CHEM:disable", "../../../../projects/cando/include/cando/chem/energyComponent.h", 7319, 301, "" );
+ define_source_info( method_kind, "CHEM:disable", "../../../../projects/cando/include/cando/chem/energyComponent.h", 8663, 326, "" );
 }
 NOINLINE void source_info_1884_helper() {
- define_source_info( method_kind, "CHEM:enable", "../../../../projects/cando/include/cando/chem/energyComponent.h", 7244, 299, "" );
+ define_source_info( method_kind, "CHEM:enable", "../../../../projects/cando/include/cando/chem/energyComponent.h", 8588, 324, "" );
 }
 NOINLINE void source_info_1885_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:EnergyFunction"), "../../../../projects/cando/include/cando/chem/energyFunction.h", 1948, 111, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyFunction"), "../../../../projects/cando/include/cando/chem/energyFunction.h", 3291, 136, "" );
 }
 NOINLINE void source_info_1886_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:disableDebug"), "../../src/chem/energyFunction.cc", 64151, 1897, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:disableDebug"), "../../src/chem/energyFunction.cc", 65495, 1922, "" );
 }
 NOINLINE void source_info_1887_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:enableDebug"), "../../src/chem/energyFunction.cc", 64021, 1891, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:enableDebug"), "../../src/chem/energyFunction.cc", 65365, 1916, "" );
 }
 NOINLINE void source_info_1888_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:debugLogAsString"), "../../src/chem/energyFunction.cc", 63336, 1873, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:debugLogAsString"), "../../src/chem/energyFunction.cc", 64680, 1898, "" );
 }
 NOINLINE void source_info_1889_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getMissingParameters"), "../../src/chem/energyFunction.cc", 63191, 1867, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMissingParameters"), "../../src/chem/energyFunction.cc", 64535, 1892, "" );
 }
 NOINLINE void source_info_1890_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:hasMissingParameters"), "../../src/chem/energyFunction.cc", 63040, 1860, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasMissingParameters"), "../../src/chem/energyFunction.cc", 64384, 1885, "" );
 }
 NOINLINE void source_info_1891_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:summarizeEnergyAsString"), "../../src/chem/energyFunction.cc", 62299, 1839, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:summarizeEnergyAsString"), "../../src/chem/energyFunction.cc", 63643, 1864, "" );
 }
 NOINLINE void source_info_1892_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:summarizeBeyondThresholdInteractionsAsString"), "../../src/chem/energyFunction.cc", 61483, 1819, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:summarizeBeyondThresholdInteractionsAsString"), "../../src/chem/energyFunction.cc", 62827, 1844, "" );
 }
 NOINLINE void source_info_1893_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:calculateEnergyAndForce"), "../../src/chem/energyFunction.cc", 60105, 1770, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:calculateEnergyAndForce"), "../../src/chem/energyFunction.cc", 61449, 1795, "" );
 }
 NOINLINE void source_info_1894_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:calculateEnergy"), "../../src/chem/energyFunction.cc", 59847, 1760, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:calculateEnergy"), "../../src/chem/energyFunction.cc", 61191, 1785, "" );
 }
 NOINLINE void source_info_1895_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:writeCoordinatesAndForceToAtoms"), "../../src/chem/energyFunction.cc", 59499, 1745, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:writeCoordinatesAndForceToAtoms"), "../../src/chem/energyFunction.cc", 60843, 1770, "" );
 }
 NOINLINE void source_info_1896_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:writeForceToAtoms"), "../../src/chem/energyFunction.cc", 58921, 1727, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:writeForceToAtoms"), "../../src/chem/energyFunction.cc", 60265, 1752, "" );
 }
 NOINLINE void source_info_1897_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:writeCoordinatesToAtoms"), "../../src/chem/energyFunction.cc", 58282, 1709, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:writeCoordinatesToAtoms"), "../../src/chem/energyFunction.cc", 59626, 1734, "" );
 }
 NOINLINE void source_info_1898_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:extractCoordinatesFromAtoms"), "../../src/chem/energyFunction.cc", 57644, 1691, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:extractCoordinatesFromAtoms"), "../../src/chem/energyFunction.cc", 58988, 1716, "" );
 }
 NOINLINE void source_info_1899_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addTermsForListOfRestraints"), "../../src/chem/energyFunction.cc", 57294, 1683, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addTermsForListOfRestraints"), "../../src/chem/energyFunction.cc", 58638, 1708, "" );
 }
 NOINLINE void source_info_1900_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:defineForMatter"), "../../src/chem/energyFunction.cc", 40853, 1228, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineForMatter"), "../../src/chem/energyFunction.cc", 42197, 1253, "" );
 }
 NOINLINE void source_info_1901_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:dumpTerms"), "../../src/chem/energyFunction.cc", 33505, 1053, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:dumpTerms"), "../../src/chem/energyFunction.cc", 34849, 1078, "" );
 }
 NOINLINE void source_info_1902_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:evaluateNumericalHessian"), "../../src/chem/energyFunction.cc", 29743, 944, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:evaluateNumericalHessian"), "../../src/chem/energyFunction.cc", 31087, 969, "" );
 }
 NOINLINE void source_info_1903_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:evaluateNumericalForce"), "../../src/chem/energyFunction.cc", 29384, 929, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:evaluateNumericalForce"), "../../src/chem/energyFunction.cc", 30728, 954, "" );
 }
 NOINLINE void source_info_1904_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:calculateNumericalSecondDerivative"), "../../src/chem/energyFunction.cc", 27940, 878, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:calculateNumericalSecondDerivative"), "../../src/chem/energyFunction.cc", 29284, 903, "" );
 }
 NOINLINE void source_info_1905_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:calculateNumericalDerivative"), "../../src/chem/energyFunction.cc", 27458, 862, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:calculateNumericalDerivative"), "../../src/chem/energyFunction.cc", 28802, 887, "" );
 }
 NOINLINE void source_info_1906_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:evaluateEnergyForceFullHessianForDebugging"), "../../src/chem/energyFunction.cc", 26622, 835, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:evaluateEnergyForceFullHessianForDebugging"), "../../src/chem/energyFunction.cc", 27966, 860, "" );
 }
 NOINLINE void source_info_1907_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:evaluateEnergyForceFullHessian"), "../../src/chem/energyFunction.cc", 25940, 812, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:evaluateEnergyForceFullHessian"), "../../src/chem/energyFunction.cc", 27284, 837, "" );
 }
 NOINLINE void source_info_1908_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:evaluateEnergyForce"), "../../src/chem/energyFunction.cc", 25296, 791, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:evaluateEnergyForce"), "../../src/chem/energyFunction.cc", 26640, 816, "" );
 }
 NOINLINE void source_info_1909_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:evaluateEnergy"), "../../src/chem/energyFunction.cc", 24836, 775, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:evaluateEnergy"), "../../src/chem/energyFunction.cc", 26180, 800, "" );
 }
 NOINLINE void source_info_1910_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:energyTermsEnabled"), "../../src/chem/energyFunction.cc", 24153, 741, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:energyTermsEnabled"), "../../src/chem/energyFunction.cc", 25497, 766, "" );
 }
 NOINLINE void source_info_1911_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:checkForBeyondThresholdInteractions"), "../../src/chem/energyFunction.cc", 22846, 703, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:checkForBeyondThresholdInteractions"), "../../src/chem/energyFunction.cc", 24190, 728, "" );
 }
 NOINLINE void source_info_1912_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition"), "../../src/chem/energyFunction.cc", 22408, 685, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition"), "../../src/chem/energyFunction.cc", 23752, 710, "" );
 }
 NOINLINE void source_info_1913_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:energyComponentsAsString"), "../../src/chem/energyFunction.cc", 20147, 637, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:energyComponentsAsString"), "../../src/chem/energyFunction.cc", 21491, 662, "" );
 }
 NOINLINE void source_info_1914_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:evaluateAll"), "../../src/chem/energyFunction.cc", 14388, 474, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:evaluateAll"), "../../src/chem/energyFunction.cc", 15732, 499, "" );
 }
 NOINLINE void source_info_1915_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:countTermsBeyondThreshold"), "../../src/chem/energyFunction.cc", 14110, 457, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:countTermsBeyondThreshold"), "../../src/chem/energyFunction.cc", 15454, 482, "" );
 }
 NOINLINE void source_info_1916_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setupHessianPreconditioner"), "../../src/chem/energyFunction.cc", 12915, 423, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setupHessianPreconditioner"), "../../src/chem/energyFunction.cc", 14259, 448, "" );
 }
 NOINLINE void source_info_1917_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setOptions"), "../../src/chem/energyFunction.cc", 10710, 348, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setOptions"), "../../src/chem/energyFunction.cc", 12054, 373, "" );
 }
 NOINLINE void source_info_1918_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setOption"), "../../src/chem/energyFunction.cc", 9702, 312, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setOption"), "../../src/chem/energyFunction.cc", 11046, 337, "" );
 }
 NOINLINE void source_info_1919_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getNVectorSize"), "../../src/chem/energyFunction.cc", 9326, 287, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getNVectorSize"), "../../src/chem/energyFunction.cc", 10670, 312, "" );
 }
 NOINLINE void source_info_1920_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:useDefaultSettings"), "../../src/chem/energyFunction.cc", 6023, 211, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:useDefaultSettings"), "../../src/chem/energyFunction.cc", 7367, 236, "" );
 }
 NOINLINE void source_info_1921_helper() {
- define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/energyFunction.h", 7418, 254, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/energyFunction.h", 8761, 279, "" );
 }
 NOINLINE void source_info_1922_helper() {
- define_source_info( method_kind, "CHEM:setName", "../../../../projects/cando/include/cando/chem/energyFunction.h", 7327, 252, "" );
+ define_source_info( method_kind, "CHEM:setName", "../../../../projects/cando/include/cando/chem/energyFunction.h", 8670, 277, "" );
 }
 NOINLINE void source_info_1923_helper() {
- define_source_info( method_kind, "CHEM:getMessage", "../../../../projects/cando/include/cando/chem/energyFunction.h", 6960, 239, "" );
+ define_source_info( method_kind, "CHEM:getMessage", "../../../../projects/cando/include/cando/chem/energyFunction.h", 8303, 264, "" );
 }
 NOINLINE void source_info_1924_helper() {
- define_source_info( method_kind, "CHEM:getTotalEnergy", "../../../../projects/cando/include/cando/chem/energyFunction.h", 6582, 227, "" );
+ define_source_info( method_kind, "CHEM:getTotalEnergy", "../../../../projects/cando/include/cando/chem/energyFunction.h", 7925, 252, "" );
 }
 NOINLINE void source_info_1925_helper() {
- define_source_info( method_kind, "CHEM:getFixedNonbondRestraintComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 6154, 217, "" );
+ define_source_info( method_kind, "CHEM:getFixedNonbondRestraintComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 7497, 242, "" );
 }
 NOINLINE void source_info_1926_helper() {
- define_source_info( method_kind, "CHEM:getImproperRestraintComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 5994, 215, "" );
+ define_source_info( method_kind, "CHEM:getImproperRestraintComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 7337, 240, "" );
 }
 NOINLINE void source_info_1927_helper() {
- define_source_info( method_kind, "CHEM:getAnchorRestraintComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 5844, 213, "" );
+ define_source_info( method_kind, "CHEM:getAnchorRestraintComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 7187, 238, "" );
 }
 NOINLINE void source_info_1928_helper() {
- define_source_info( method_kind, "CHEM:getChiralRestraintComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 5696, 211, "" );
+ define_source_info( method_kind, "CHEM:getChiralRestraintComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 7039, 236, "" );
 }
 NOINLINE void source_info_1929_helper() {
- define_source_info( method_kind, "CHEM:getNonbondComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 5572, 209, "" );
+ define_source_info( method_kind, "CHEM:getNonbondComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 6915, 234, "" );
 }
 NOINLINE void source_info_1930_helper() {
- define_source_info( method_kind, "CHEM:getDihedralComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 5453, 207, "" );
+ define_source_info( method_kind, "CHEM:getDihedralComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 6796, 232, "" );
 }
 NOINLINE void source_info_1931_helper() {
- define_source_info( method_kind, "CHEM:getAngleComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 5342, 205, "" );
+ define_source_info( method_kind, "CHEM:getAngleComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 6685, 230, "" );
 }
 NOINLINE void source_info_1932_helper() {
- define_source_info( method_kind, "CHEM:getStretchComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 5198, 202, "" );
+ define_source_info( method_kind, "CHEM:getStretchComponent", "../../../../projects/cando/include/cando/chem/energyFunction.h", 6541, 227, "" );
 }
 NOINLINE void source_info_1933_helper() {
- define_source_info( method_kind, "CHEM:getMatter", "../../../../projects/cando/include/cando/chem/energyFunction.h", 4826, 189, "" );
+ define_source_info( method_kind, "CHEM:getMatter", "../../../../projects/cando/include/cando/chem/energyFunction.h", 6169, 214, "" );
 }
 NOINLINE void source_info_1934_helper() {
- define_source_info( method_kind, "CHEM:atomTable", "../../../../projects/cando/include/cando/chem/energyFunction.h", 4090, 174, "" );
+ define_source_info( method_kind, "CHEM:atomTable", "../../../../projects/cando/include/cando/chem/energyFunction.h", 5433, 199, "" );
 }
 NOINLINE void source_info_1935_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:FrameRecognizer"), "../../../../projects/cando/include/cando/chem/frameRecognizer.h", 407, 24, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:FrameRecognizer"), "../../../../projects/cando/include/cando/chem/frameRecognizer.h", 1751, 49, "" );
 }
 NOINLINE void source_info_1936_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getGroupName"), "../../src/chem/frameRecognizer.cc", 2570, 113, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getGroupName"), "../../src/chem/frameRecognizer.cc", 3915, 138, "" );
 }
 NOINLINE void source_info_1937_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getRecognizerName"), "../../src/chem/frameRecognizer.cc", 2347, 102, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getRecognizerName"), "../../src/chem/frameRecognizer.cc", 3692, 127, "" );
 }
 NOINLINE void source_info_1938_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:depth"), "../../src/chem/frameRecognizer.cc", 2185, 94, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:depth"), "../../src/chem/frameRecognizer.cc", 3530, 119, "" );
 }
 NOINLINE void source_info_1939_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getMatch"), "../../src/chem/frameRecognizer.cc", 1959, 81, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMatch"), "../../src/chem/frameRecognizer.cc", 3304, 106, "" );
 }
 NOINLINE void source_info_1940_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:recognizes"), "../../src/chem/frameRecognizer.cc", 1738, 72, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:recognizes"), "../../src/chem/frameRecognizer.cc", 3083, 97, "" );
 }
 NOINLINE void source_info_1941_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:compileSmarts"), "../../src/chem/frameRecognizer.cc", 386, 19, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:compileSmarts"), "../../src/chem/frameRecognizer.cc", 1731, 44, "" );
 }
 NOINLINE void source_info_1942_helper() {
- define_source_info( method_kind, "CHEM:getSmarts", "../../../../projects/cando/include/cando/chem/frameRecognizer.h", 1562, 65, "" );
+ define_source_info( method_kind, "CHEM:getSmarts", "../../../../projects/cando/include/cando/chem/frameRecognizer.h", 2906, 90, "" );
 }
 NOINLINE void source_info_1943_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ImproperTorsion"), "../../../../projects/cando/include/cando/chem/improperTorsion.h", 523, 21, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ImproperTorsion"), "../../../../projects/cando/include/cando/chem/improperTorsion.h", 1867, 46, "" );
 }
 NOINLINE void source_info_1944_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:MacroModelFile"), "../../../../projects/cando/include/cando/chem/macroModel.h", 530, 37, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:MacroModelFile"), "../../../../projects/cando/include/cando/chem/macroModel.h", 1869, 62, "" );
 }
 NOINLINE void source_info_1945_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:NumericalFunction"), "../../../../projects/cando/include/cando/chem/numericalFunction.h", 608, 40, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:NumericalFunction"), "../../../../projects/cando/include/cando/chem/numericalFunction.h", 1954, 65, "" );
 }
 NOINLINE void source_info_1946_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ReportBase"), "../../../../projects/cando/include/cando/chem/minimizerLog.h", 438, 27, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ReportBase"), "../../../../projects/cando/include/cando/chem/minimizerLog.h", 1779, 52, "" );
 }
 NOINLINE void source_info_1947_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:MessageReport"), "../../../../projects/cando/include/cando/chem/minimizerLog.h", 720, 42, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:MessageReport"), "../../../../projects/cando/include/cando/chem/minimizerLog.h", 2061, 67, "" );
 }
 NOINLINE void source_info_1948_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ForceMatchReport"), "../../../../projects/cando/include/cando/chem/minimizerLog.h", 1094, 59, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ForceMatchReport"), "../../../../projects/cando/include/cando/chem/minimizerLog.h", 2435, 84, "" );
 }
 NOINLINE void source_info_1949_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:StepReport"), "../../../../projects/cando/include/cando/chem/minimizerLog.h", 1429, 79, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StepReport"), "../../../../projects/cando/include/cando/chem/minimizerLog.h", 2770, 104, "" );
 }
 NOINLINE void source_info_1950_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:MinimizerLog"), "../../../../projects/cando/include/cando/chem/minimizerLog.h", 3178, 149, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:MinimizerLog"), "../../../../projects/cando/include/cando/chem/minimizerLog.h", 4519, 174, "" );
 }
 NOINLINE void source_info_1951_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Minimizer"), "../../../../projects/cando/include/cando/chem/minimizer.h", 2259, 97, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Minimizer"), "../../../../projects/cando/include/cando/chem/minimizer.h", 3597, 122, "" );
 }
 NOINLINE void source_info_1952_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:restart"), "../../src/chem/minimizer.cc", 68084, 2326, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:restart"), "../../src/chem/minimizer.cc", 69423, 2351, "" );
 }
 NOINLINE void source_info_1953_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:configurationAsString"), "../../src/chem/minimizer.cc", 67087, 2309, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:configurationAsString"), "../../src/chem/minimizer.cc", 68426, 2334, "" );
 }
 NOINLINE void source_info_1954_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:writeIntermediateResultsToEnergyFunction"), "../../src/chem/minimizer.cc", 65832, 2283, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:writeIntermediateResultsToEnergyFunction"), "../../src/chem/minimizer.cc", 67171, 2308, "" );
 }
 NOINLINE void source_info_1955_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:minimize"), "../../src/chem/minimizer.cc", 63746, 2221, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:minimize"), "../../src/chem/minimizer.cc", 65085, 2246, "" );
 }
 NOINLINE void source_info_1956_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:resetAndMinimize"), "../../src/chem/minimizer.cc", 63592, 2213, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:resetAndMinimize"), "../../src/chem/minimizer.cc", 64931, 2238, "" );
 }
 NOINLINE void source_info_1957_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:minimizeConjugateGradient"), "../../src/chem/minimizer.cc", 61867, 2161, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:minimizeConjugateGradient"), "../../src/chem/minimizer.cc", 63206, 2186, "" );
 }
 NOINLINE void source_info_1958_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:minimizeSteepestDescent"), "../../src/chem/minimizer.cc", 60354, 2113, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:minimizeSteepestDescent"), "../../src/chem/minimizer.cc", 61693, 2138, "" );
 }
 NOINLINE void source_info_1959_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:evaluateEnergyAndForceManyTimes"), "../../src/chem/minimizer.cc", 59852, 2097, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:evaluateEnergyAndForceManyTimes"), "../../src/chem/minimizer.cc", 61191, 2122, "" );
 }
 NOINLINE void source_info_1960_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setEnergyFunction"), "../../src/chem/minimizer.cc", 59662, 2090, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setEnergyFunction"), "../../src/chem/minimizer.cc", 61001, 2115, "" );
 }
 NOINLINE void source_info_1961_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:disablePrintIntermediateResults"), "../../src/chem/minimizer.cc", 59494, 2081, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:disablePrintIntermediateResults"), "../../src/chem/minimizer.cc", 60833, 2106, "" );
 }
 NOINLINE void source_info_1962_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:enablePrintIntermediateResults"), "../../src/chem/minimizer.cc", 59314, 2072, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:enablePrintIntermediateResults"), "../../src/chem/minimizer.cc", 60653, 2097, "" );
 }
 NOINLINE void source_info_1963_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:useDefaultSettings"), "../../src/chem/minimizer.cc", 58288, 2043, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:useDefaultSettings"), "../../src/chem/minimizer.cc", 59627, 2068, "" );
 }
 NOINLINE void source_info_1964_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:throwMinimizerError"), "../../src/chem/minimizer.cc", 22261, 771, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:throwMinimizerError"), "../../src/chem/minimizer.cc", 23600, 796, "" );
 }
 NOINLINE void source_info_1965_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:throwMinimizerStuck"), "../../src/chem/minimizer.cc", 22083, 764, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:throwMinimizerStuck"), "../../src/chem/minimizer.cc", 23422, 789, "" );
 }
 NOINLINE void source_info_1966_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:throwMinimizerExceededMaxSteps"), "../../src/chem/minimizer.cc", 21871, 758, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:throwMinimizerExceededMaxSteps"), "../../src/chem/minimizer.cc", 23210, 783, "" );
 }
 NOINLINE void source_info_1967_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:statusAsString"), "../../src/chem/minimizer.cc", 7041, 245, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:statusAsString"), "../../src/chem/minimizer.cc", 8380, 270, "" );
 }
 NOINLINE void source_info_1968_helper() {
- define_source_info( method_kind, "CHEM:setTruncatedNewtonTolerance", "../../../../projects/cando/include/cando/chem/minimizer.h", 8309, 285, "" );
+ define_source_info( method_kind, "CHEM:setTruncatedNewtonTolerance", "../../../../projects/cando/include/cando/chem/minimizer.h", 9647, 310, "" );
 }
 NOINLINE void source_info_1969_helper() {
- define_source_info( method_kind, "CHEM:setConjugateGradientTolerance", "../../../../projects/cando/include/cando/chem/minimizer.h", 8168, 283, "" );
+ define_source_info( method_kind, "CHEM:setConjugateGradientTolerance", "../../../../projects/cando/include/cando/chem/minimizer.h", 9506, 308, "" );
 }
 NOINLINE void source_info_1970_helper() {
- define_source_info( method_kind, "CHEM:setSteepestDescentTolerance", "../../../../projects/cando/include/cando/chem/minimizer.h", 8029, 281, "" );
+ define_source_info( method_kind, "CHEM:setSteepestDescentTolerance", "../../../../projects/cando/include/cando/chem/minimizer.h", 9367, 306, "" );
 }
 NOINLINE void source_info_1971_helper() {
- define_source_info( method_kind, "CHEM:setMaximumNumberOfTruncatedNewtonSteps", "../../../../projects/cando/include/cando/chem/minimizer.h", 7881, 279, "" );
+ define_source_info( method_kind, "CHEM:setMaximumNumberOfTruncatedNewtonSteps", "../../../../projects/cando/include/cando/chem/minimizer.h", 9219, 304, "" );
 }
 NOINLINE void source_info_1972_helper() {
- define_source_info( method_kind, "CHEM:setMaximumNumberOfConjugateGradientSteps", "../../../../projects/cando/include/cando/chem/minimizer.h", 7718, 277, "" );
+ define_source_info( method_kind, "CHEM:setMaximumNumberOfConjugateGradientSteps", "../../../../projects/cando/include/cando/chem/minimizer.h", 9056, 302, "" );
 }
 NOINLINE void source_info_1973_helper() {
- define_source_info( method_kind, "CHEM:setMaximumNumberOfSteepestDescentSteps", "../../../../projects/cando/include/cando/chem/minimizer.h", 7556, 275, "" );
+ define_source_info( method_kind, "CHEM:setMaximumNumberOfSteepestDescentSteps", "../../../../projects/cando/include/cando/chem/minimizer.h", 8894, 300, "" );
 }
 NOINLINE void source_info_1974_helper() {
- define_source_info( method_kind, "CHEM:getRMSForce", "../../../../projects/cando/include/cando/chem/minimizer.h", 7291, 266, "" );
+ define_source_info( method_kind, "CHEM:getRMSForce", "../../../../projects/cando/include/cando/chem/minimizer.h", 8629, 291, "" );
 }
 NOINLINE void source_info_1975_helper() {
- define_source_info( method_kind, "CHEM:getIteration", "../../../../projects/cando/include/cando/chem/minimizer.h", 7146, 261, "" );
+ define_source_info( method_kind, "CHEM:getIteration", "../../../../projects/cando/include/cando/chem/minimizer.h", 8484, 286, "" );
 }
 NOINLINE void source_info_1976_helper() {
- define_source_info( method_kind, "CHEM:statusMessage", "../../../../projects/cando/include/cando/chem/minimizer.h", 7049, 258, "" );
+ define_source_info( method_kind, "CHEM:statusMessage", "../../../../projects/cando/include/cando/chem/minimizer.h", 8387, 283, "" );
 }
 NOINLINE void source_info_1977_helper() {
- define_source_info( method_kind, "CHEM:status", "../../../../projects/cando/include/cando/chem/minimizer.h", 6959, 256, "" );
+ define_source_info( method_kind, "CHEM:status", "../../../../projects/cando/include/cando/chem/minimizer.h", 8297, 281, "" );
 }
 NOINLINE void source_info_1978_helper() {
- define_source_info( method_kind, "CHEM:getEnergyFunction", "../../../../projects/cando/include/cando/chem/minimizer.h", 6684, 249, "" );
+ define_source_info( method_kind, "CHEM:getEnergyFunction", "../../../../projects/cando/include/cando/chem/minimizer.h", 8022, 274, "" );
 }
 NOINLINE void source_info_1979_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:StatusTracker"), "../../../../projects/cando/include/cando/chem/statusTracker.h", 352, 28, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StatusTracker"), "../../../../projects/cando/include/cando/chem/statusTracker.h", 1694, 53, "" );
 }
 NOINLINE void source_info_1980_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:EntityNameSetBase"), "../../../../projects/cando/include/cando/chem/entityNameSet.h", 896, 42, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EntityNameSetBase"), "../../../../projects/cando/include/cando/chem/entityNameSet.h", 2238, 67, "" );
 }
 NOINLINE void source_info_1981_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getMonomerNamesOrdered"), "../../src/chem/entityNameSet.cc", 11584, 451, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomerNamesOrdered"), "../../src/chem/entityNameSet.cc", 12927, 476, "" );
 }
 NOINLINE void source_info_1982_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:hasInterestingAtomAlias"), "../../src/chem/entityNameSet.cc", 11373, 443, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasInterestingAtomAlias"), "../../src/chem/entityNameSet.cc", 12716, 468, "" );
 }
 NOINLINE void source_info_1983_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getUnrecognizedMonomerNamesOrdered"), "../../src/chem/entityNameSet.cc", 10827, 421, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getUnrecognizedMonomerNamesOrdered"), "../../src/chem/entityNameSet.cc", 12170, 446, "" );
 }
 NOINLINE void source_info_1984_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:recognizesNameOrPdb"), "../../src/chem/entityNameSet.cc", 10186, 398, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:recognizesNameOrPdb"), "../../src/chem/entityNameSet.cc", 11529, 423, "" );
 }
 NOINLINE void source_info_1985_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setMonomerNameOrPdb"), "../../src/chem/entityNameSet.cc", 9078, 357, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMonomerNameOrPdb"), "../../src/chem/entityNameSet.cc", 10421, 382, "" );
 }
 NOINLINE void source_info_1986_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getOnlyMonomerName"), "../../src/chem/entityNameSet.cc", 8700, 342, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOnlyMonomerName"), "../../src/chem/entityNameSet.cc", 10043, 367, "" );
 }
 NOINLINE void source_info_1987_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getMonomerNamesAsString"), "../../src/chem/entityNameSet.cc", 8439, 333, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomerNamesAsString"), "../../src/chem/entityNameSet.cc", 9782, 358, "" );
 }
 NOINLINE void source_info_1988_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getMonomerNames"), "../../src/chem/entityNameSet.cc", 8229, 325, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomerNames"), "../../src/chem/entityNameSet.cc", 9572, 350, "" );
 }
 NOINLINE void source_info_1989_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addMonomerNameNoChecks"), "../../src/chem/entityNameSet.cc", 6675, 258, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addMonomerNameNoChecks"), "../../src/chem/entityNameSet.cc", 8018, 283, "" );
 }
 NOINLINE void source_info_1990_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setGroupNames"), "../../src/chem/entityNameSet.cc", 6513, 251, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setGroupNames"), "../../src/chem/entityNameSet.cc", 7856, 276, "" );
 }
 NOINLINE void source_info_1991_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addMonomerName"), "../../src/chem/entityNameSet.cc", 6075, 235, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addMonomerName"), "../../src/chem/entityNameSet.cc", 7418, 260, "" );
 }
 NOINLINE void source_info_1992_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:contractEntityNames"), "../../src/chem/entityNameSet.cc", 3962, 164, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:contractEntityNames"), "../../src/chem/entityNameSet.cc", 5305, 189, "" );
 }
 NOINLINE void source_info_1993_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:expandToTerminalEntityNames"), "../../src/chem/entityNameSet.cc", 3718, 156, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:expandToTerminalEntityNames"), "../../src/chem/entityNameSet.cc", 5061, 181, "" );
 }
 NOINLINE void source_info_1994_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:expandedNameSet"), "../../src/chem/entityNameSet.cc", 3198, 139, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:expandedNameSet"), "../../src/chem/entityNameSet.cc", 4541, 164, "" );
 }
 NOINLINE void source_info_1995_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getInterestingAtomAliasIndex"), "../../src/chem/entityNameSet.cc", 2830, 122, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getInterestingAtomAliasIndex"), "../../src/chem/entityNameSet.cc", 4173, 147, "" );
 }
 NOINLINE void source_info_1996_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getUnExpandedNames"), "../../src/chem/entityNameSet.cc", 995, 57, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getUnExpandedNames"), "../../src/chem/entityNameSet.cc", 2338, 82, "" );
 }
 NOINLINE void source_info_1997_helper() {
- define_source_info( method_kind, "CHEM:testEntityNameSetBase", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 5081, 164, "" );
+ define_source_info( method_kind, "CHEM:testEntityNameSetBase", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 6423, 189, "" );
 }
 NOINLINE void source_info_1998_helper() {
- define_source_info( method_kind, "CHEM:getInterestingAtomAliasesAsString", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 4642, 148, "" );
+ define_source_info( method_kind, "CHEM:getInterestingAtomAliasesAsString", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 5984, 173, "" );
 }
 NOINLINE void source_info_1999_helper() {
- define_source_info( method_kind, "CHEM:getInterestingAtomNamesForMonomerName", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 4203, 141, "" );
+ define_source_info( method_kind, "CHEM:getInterestingAtomNamesForMonomerName", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 5545, 166, "" );
 }
 NOINLINE void source_info_2000_helper() {
- define_source_info( method_kind, "CHEM:setInterestingAtomNamesForMonomerName", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 3987, 139, "" );
+ define_source_info( method_kind, "CHEM:setInterestingAtomNamesForMonomerName", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 5329, 164, "" );
 }
 NOINLINE void source_info_2001_helper() {
- define_source_info( method_kind, "CHEM:supportsInterestingAtomAliases", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 3856, 137, "" );
+ define_source_info( method_kind, "CHEM:supportsInterestingAtomAliases", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 5198, 162, "" );
 }
 NOINLINE void source_info_2002_helper() {
- define_source_info( method_kind, "CHEM:getMonomerNameWithAtoms", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 1945, 80, "" );
+ define_source_info( method_kind, "CHEM:getMonomerNameWithAtoms", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 3287, 105, "" );
 }
 NOINLINE void source_info_2003_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:EntityNameSet"), "../../../../projects/cando/include/cando/chem/entityNameSet.h", 5486, 180, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EntityNameSet"), "../../../../projects/cando/include/cando/chem/entityNameSet.h", 6828, 205, "" );
 }
 NOINLINE void source_info_2004_helper() {
- define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 6019, 200, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 7361, 225, "" );
 }
 NOINLINE void source_info_2005_helper() {
- define_source_info( method_kind, "CHEM:setName", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 5927, 198, "" );
+ define_source_info( method_kind, "CHEM:setName", "../../../../projects/cando/include/cando/chem/entityNameSet.h", 7269, 223, "" );
 }
 NOINLINE void source_info_2006_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:EntityNameSetWithCap"), "../../../../projects/cando/include/cando/chem/entityNameSet.h", 6270, 211, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EntityNameSetWithCap"), "../../../../projects/cando/include/cando/chem/entityNameSet.h", 7612, 236, "" );
 }
 NOINLINE void source_info_2007_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addGroupName"), "../../src/chem/entityNameSet.cc", 14122, 579, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addGroupName"), "../../src/chem/entityNameSet.cc", 15465, 604, "" );
 }
 NOINLINE void source_info_2008_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:MonomerContext"), "../../../../projects/cando/include/cando/chem/monomerContext.h", 1234, 64, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:MonomerContext"), "../../../../projects/cando/include/cando/chem/monomerContext.h", 2577, 89, "" );
 }
 NOINLINE void source_info_2009_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getNeighbor"), "../../src/chem/monomerContext.cc", 11315, 384, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getNeighbor"), "../../src/chem/monomerContext.cc", 12659, 409, "" );
 }
 NOINLINE void source_info_2010_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getPlugNames"), "../../src/chem/monomerContext.cc", 10970, 371, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getPlugNames"), "../../src/chem/monomerContext.cc", 12314, 396, "" );
 }
 NOINLINE void source_info_2011_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setFocusFromMonomer"), "../../src/chem/monomerContext.cc", 10689, 359, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setFocusFromMonomer"), "../../src/chem/monomerContext.cc", 12033, 384, "" );
 }
 NOINLINE void source_info_2012_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:recognizesMonomerAndEnvironment"), "../../src/chem/monomerContext.cc", 9140, 316, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:recognizesMonomerAndEnvironment"), "../../src/chem/monomerContext.cc", 10484, 341, "" );
 }
 NOINLINE void source_info_2013_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getAllSpecificContexts"), "../../src/chem/monomerContext.cc", 6449, 233, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAllSpecificContexts"), "../../src/chem/monomerContext.cc", 7793, 258, "" );
 }
 NOINLINE void source_info_2014_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getAllSpecificKeys"), "../../src/chem/monomerContext.cc", 5612, 209, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAllSpecificKeys"), "../../src/chem/monomerContext.cc", 6956, 234, "" );
 }
 NOINLINE void source_info_2015_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getKey"), "../../src/chem/monomerContext.cc", 5142, 192, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getKey"), "../../src/chem/monomerContext.cc", 6486, 217, "" );
 }
 NOINLINE void source_info_2016_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addNeighbor"), "../../src/chem/monomerContext.cc", 1964, 87, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addNeighbor"), "../../src/chem/monomerContext.cc", 3308, 112, "" );
 }
 NOINLINE void source_info_2017_helper() {
- define_source_info( method_kind, "CHEM:getFocus", "../../../../projects/cando/include/cando/chem/monomerContext.h", 2277, 99, "" );
+ define_source_info( method_kind, "CHEM:getFocus", "../../../../projects/cando/include/cando/chem/monomerContext.h", 3620, 124, "" );
 }
 NOINLINE void source_info_2018_helper() {
- define_source_info( method_kind, "CHEM:setFocus", "../../../../projects/cando/include/cando/chem/monomerContext.h", 1823, 87, "" );
+ define_source_info( method_kind, "CHEM:setFocus", "../../../../projects/cando/include/cando/chem/monomerContext.h", 3166, 112, "" );
 }
 NOINLINE void source_info_2019_helper() {
  define_source_info( class_kind, core::magic_name("CORE:IntArray"), "/Users/meister/Development/clasp/include/clasp/core/intArray.h", 1241, 43, "" );
 }
 NOINLINE void source_info_2020_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ConformationExplorerEntryStage"), "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 872, 45, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConformationExplorerEntryStage"), "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 2221, 70, "" );
 }
 NOINLINE void source_info_2021_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:extractCoordinatesFromMatter"), "../../src/chem/conformationExplorer.cc", 8493, 256, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:extractCoordinatesFromMatter"), "../../src/chem/conformationExplorer.cc", 9843, 281, "" );
 }
 NOINLINE void source_info_2022_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:writeCoordinatesToMatter"), "../../src/chem/conformationExplorer.cc", 8035, 242, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:writeCoordinatesToMatter"), "../../src/chem/conformationExplorer.cc", 9385, 267, "" );
 }
 NOINLINE void source_info_2023_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setFinalCoordinatesAsMoveableWithinSuperposeEngine"), "../../src/chem/conformationExplorer.cc", 2740, 93, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setFinalCoordinatesAsMoveableWithinSuperposeEngine"), "../../src/chem/conformationExplorer.cc", 4090, 118, "" );
 }
 NOINLINE void source_info_2024_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setFinalCoordinatesAsFixedWithinSuperposeEngine"), "../../src/chem/conformationExplorer.cc", 2381, 84, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setFinalCoordinatesAsFixedWithinSuperposeEngine"), "../../src/chem/conformationExplorer.cc", 3731, 109, "" );
 }
 NOINLINE void source_info_2025_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setSuperposableCoordinatesAsMoveableWithinSuperposeEngine"), "../../src/chem/conformationExplorer.cc", 1975, 74, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setSuperposableCoordinatesAsMoveableWithinSuperposeEngine"), "../../src/chem/conformationExplorer.cc", 3325, 99, "" );
 }
 NOINLINE void source_info_2026_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setSuperposableCoordinatesAsFixedWithinSuperposeEngine"), "../../src/chem/conformationExplorer.cc", 1566, 65, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setSuperposableCoordinatesAsFixedWithinSuperposeEngine"), "../../src/chem/conformationExplorer.cc", 2916, 90, "" );
 }
 NOINLINE void source_info_2027_helper() {
- define_source_info( method_kind, "CHEM:getBinder", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 3343, 108, "" );
+ define_source_info( method_kind, "CHEM:getBinder", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 4692, 133, "" );
 }
 NOINLINE void source_info_2028_helper() {
- define_source_info( method_kind, "CHEM:setComplete", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 3188, 104, "" );
+ define_source_info( method_kind, "CHEM:setComplete", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 4537, 129, "" );
 }
 NOINLINE void source_info_2029_helper() {
- define_source_info( method_kind, "CHEM:isComplete", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 3103, 102, "" );
+ define_source_info( method_kind, "CHEM:isComplete", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 4452, 127, "" );
 }
 NOINLINE void source_info_2030_helper() {
- define_source_info( method_kind, "CHEM:setStageName", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 2998, 99, "" );
+ define_source_info( method_kind, "CHEM:setStageName", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 4347, 124, "" );
 }
 NOINLINE void source_info_2031_helper() {
- define_source_info( method_kind, "CHEM:getStageName", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 2907, 97, "" );
+ define_source_info( method_kind, "CHEM:getStageName", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 4256, 122, "" );
 }
 NOINLINE void source_info_2032_helper() {
- define_source_info( method_kind, "CHEM:setBasedOnStageName", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 2786, 94, "" );
+ define_source_info( method_kind, "CHEM:setBasedOnStageName", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 4135, 119, "" );
 }
 NOINLINE void source_info_2033_helper() {
- define_source_info( method_kind, "CHEM:getBasedOnStageName", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 2674, 92, "" );
+ define_source_info( method_kind, "CHEM:getBasedOnStageName", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 4023, 117, "" );
 }
 NOINLINE void source_info_2034_helper() {
- define_source_info( method_kind, "CHEM:setModel", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 2352, 82, "" );
+ define_source_info( method_kind, "CHEM:setModel", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 3701, 107, "" );
 }
 NOINLINE void source_info_2035_helper() {
- define_source_info( method_kind, "CHEM:getModel", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 2273, 80, "" );
+ define_source_info( method_kind, "CHEM:getModel", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 3622, 105, "" );
 }
 NOINLINE void source_info_2036_helper() {
- define_source_info( method_kind, "CHEM:setExternalInterfaceName", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 2139, 77, "" );
+ define_source_info( method_kind, "CHEM:setExternalInterfaceName", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 3488, 102, "" );
 }
 NOINLINE void source_info_2037_helper() {
- define_source_info( method_kind, "CHEM:getExternalInterfaceName", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 2012, 75, "" );
+ define_source_info( method_kind, "CHEM:getExternalInterfaceName", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 3361, 100, "" );
 }
 NOINLINE void source_info_2038_helper() {
- define_source_info( method_kind, "CHEM:setEnergyKCal", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 1892, 72, "" );
+ define_source_info( method_kind, "CHEM:setEnergyKCal", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 3241, 97, "" );
 }
 NOINLINE void source_info_2039_helper() {
- define_source_info( method_kind, "CHEM:getEnergyKCal", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 1797, 70, "" );
+ define_source_info( method_kind, "CHEM:getEnergyKCal", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 3146, 95, "" );
 }
 NOINLINE void source_info_2040_helper() {
- define_source_info( method_kind, "CHEM:getFinalCoordinates", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 1658, 66, "" );
+ define_source_info( method_kind, "CHEM:getFinalCoordinates", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 3007, 91, "" );
 }
 NOINLINE void source_info_2041_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ConformationExplorerEntry"), "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 4610, 152, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConformationExplorerEntry"), "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 5959, 177, "" );
 }
 NOINLINE void source_info_2042_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getEntryStage"), "../../src/chem/conformationExplorer.cc", 13307, 441, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getEntryStage"), "../../src/chem/conformationExplorer.cc", 14657, 466, "" );
 }
 NOINLINE void source_info_2043_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:hasEntryStageWithName"), "../../src/chem/conformationExplorer.cc", 13008, 429, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasEntryStageWithName"), "../../src/chem/conformationExplorer.cc", 14358, 454, "" );
 }
 NOINLINE void source_info_2044_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getLastCompleteEntryStage"), "../../src/chem/conformationExplorer.cc", 12439, 405, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getLastCompleteEntryStage"), "../../src/chem/conformationExplorer.cc", 13789, 430, "" );
 }
 NOINLINE void source_info_2045_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getOrCreateLastIncompleteEntryStage"), "../../src/chem/conformationExplorer.cc", 11735, 379, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getOrCreateLastIncompleteEntryStage"), "../../src/chem/conformationExplorer.cc", 13085, 404, "" );
 }
 NOINLINE void source_info_2046_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:alreadyHasLastCompleteStage"), "../../src/chem/conformationExplorer.cc", 11415, 370, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:alreadyHasLastCompleteStage"), "../../src/chem/conformationExplorer.cc", 12765, 395, "" );
 }
 NOINLINE void source_info_2047_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getLastEntryStage"), "../../src/chem/conformationExplorer.cc", 11112, 361, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getLastEntryStage"), "../../src/chem/conformationExplorer.cc", 12462, 386, "" );
 }
 NOINLINE void source_info_2048_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:lastEntryStageName"), "../../src/chem/conformationExplorer.cc", 10877, 352, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:lastEntryStageName"), "../../src/chem/conformationExplorer.cc", 12227, 377, "" );
 }
 NOINLINE void source_info_2049_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:createEntryStage"), "../../src/chem/conformationExplorer.cc", 10217, 330, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:createEntryStage"), "../../src/chem/conformationExplorer.cc", 11567, 355, "" );
 }
 NOINLINE void source_info_2050_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setSelectedStage"), "../../src/chem/conformationExplorer.cc", 9875, 319, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setSelectedStage"), "../../src/chem/conformationExplorer.cc", 11225, 344, "" );
 }
 NOINLINE void source_info_2051_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getSelectedStage"), "../../src/chem/conformationExplorer.cc", 9602, 309, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getSelectedStage"), "../../src/chem/conformationExplorer.cc", 10952, 334, "" );
 }
 NOINLINE void source_info_2052_helper() {
- define_source_info( method_kind, "CHEM:getUniqueEntryIndex", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 6419, 191, "" );
+ define_source_info( method_kind, "CHEM:getUniqueEntryIndex", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 7768, 216, "" );
 }
 NOINLINE void source_info_2053_helper() {
- define_source_info( method_kind, "CHEM:hasSelectedStage", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 5934, 182, "" );
+ define_source_info( method_kind, "CHEM:hasSelectedStage", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 7283, 207, "" );
 }
 NOINLINE void source_info_2054_helper() {
- define_source_info( method_kind, "CHEM:getConformationExplorer", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 5438, 171, "" );
+ define_source_info( method_kind, "CHEM:getConformationExplorer", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 6787, 196, "" );
 }
 NOINLINE void source_info_2055_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ConformationExplorer"), "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 7529, 235, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConformationExplorer"), "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 8878, 260, "" );
 }
 NOINLINE void source_info_2056_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:sortByEnergyAscendingForStage"), "../../src/chem/conformationExplorer.cc", 29491, 1036, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:sortByEnergyAscendingForStage"), "../../src/chem/conformationExplorer.cc", 30841, 1061, "" );
 }
 NOINLINE void source_info_2057_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:alignAllConformationsToTheFirstForStage"), "../../src/chem/conformationExplorer.cc", 28202, 998, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:alignAllConformationsToTheFirstForStage"), "../../src/chem/conformationExplorer.cc", 29552, 1023, "" );
 }
 NOINLINE void source_info_2058_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:findClosestMatchingConformation"), "../../src/chem/conformationExplorer.cc", 27230, 962, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:findClosestMatchingConformation"), "../../src/chem/conformationExplorer.cc", 28580, 987, "" );
 }
 NOINLINE void source_info_2059_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getClosestMatchingEntryStage"), "../../src/chem/conformationExplorer.cc", 26224, 935, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getClosestMatchingEntryStage"), "../../src/chem/conformationExplorer.cc", 27574, 960, "" );
 }
 NOINLINE void source_info_2060_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getClosestMatchingEntry"), "../../src/chem/conformationExplorer.cc", 25960, 928, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getClosestMatchingEntry"), "../../src/chem/conformationExplorer.cc", 27310, 953, "" );
 }
 NOINLINE void source_info_2061_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:createEntry"), "../../src/chem/conformationExplorer.cc", 23409, 830, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:createEntry"), "../../src/chem/conformationExplorer.cc", 24759, 855, "" );
 }
 NOINLINE void source_info_2062_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:firstEntry"), "../../src/chem/conformationExplorer.cc", 23213, 819, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:firstEntry"), "../../src/chem/conformationExplorer.cc", 24563, 844, "" );
 }
 NOINLINE void source_info_2063_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getEntry"), "../../src/chem/conformationExplorer.cc", 22967, 810, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getEntry"), "../../src/chem/conformationExplorer.cc", 24317, 835, "" );
 }
 NOINLINE void source_info_2064_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getEntryIndex"), "../../src/chem/conformationExplorer.cc", 22593, 792, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getEntryIndex"), "../../src/chem/conformationExplorer.cc", 23943, 817, "" );
 }
 NOINLINE void source_info_2065_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:saveAs"), "../../src/chem/conformationExplorer.cc", 22265, 780, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:saveAs"), "../../src/chem/conformationExplorer.cc", 23615, 805, "" );
 }
 NOINLINE void source_info_2066_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:sort"), "../../src/chem/conformationExplorer.cc", 21940, 765, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:sort"), "../../src/chem/conformationExplorer.cc", 23290, 790, "" );
 }
 NOINLINE void source_info_2067_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:superposeAllHeavyAtoms"), "../../src/chem/conformationExplorer.cc", 20460, 707, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:superposeAllHeavyAtoms"), "../../src/chem/conformationExplorer.cc", 21810, 732, "" );
 }
 NOINLINE void source_info_2068_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addSuperposeAtom"), "../../src/chem/conformationExplorer.cc", 19672, 679, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addSuperposeAtom"), "../../src/chem/conformationExplorer.cc", 21022, 704, "" );
 }
 NOINLINE void source_info_2069_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:clearSuperposeAtoms"), "../../src/chem/conformationExplorer.cc", 19468, 670, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:clearSuperposeAtoms"), "../../src/chem/conformationExplorer.cc", 20818, 695, "" );
 }
 NOINLINE void source_info_2070_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:entriesAsCons"), "../../src/chem/conformationExplorer.cc", 17209, 582, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:entriesAsCons"), "../../src/chem/conformationExplorer.cc", 18559, 607, "" );
 }
 NOINLINE void source_info_2071_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:appendEntry"), "../../src/chem/conformationExplorer.cc", 16956, 574, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:appendEntry"), "../../src/chem/conformationExplorer.cc", 18306, 599, "" );
 }
 NOINLINE void source_info_2072_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setMatter"), "../../src/chem/conformationExplorer.cc", 16623, 556, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMatter"), "../../src/chem/conformationExplorer.cc", 17973, 581, "" );
 }
 NOINLINE void source_info_2073_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:clearEntries"), "../../src/chem/conformationExplorer.cc", 14942, 505, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:clearEntries"), "../../src/chem/conformationExplorer.cc", 16292, 530, "" );
 }
 NOINLINE void source_info_2074_helper() {
- define_source_info( method_kind, "CHEM:numberOfEntries", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 11440, 348, "" );
+ define_source_info( method_kind, "CHEM:numberOfEntries", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 12789, 373, "" );
 }
 NOINLINE void source_info_2075_helper() {
- define_source_info( method_kind, "CHEM:getMatter", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 9428, 288, "" );
+ define_source_info( method_kind, "CHEM:getMatter", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 10777, 313, "" );
 }
 NOINLINE void source_info_2076_helper() {
- define_source_info( method_kind, "CHEM:getBinder", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 9163, 279, "" );
+ define_source_info( method_kind, "CHEM:getBinder", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 10512, 304, "" );
 }
 NOINLINE void source_info_2077_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ConformationExplorerMatch"), "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 12546, 392, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConformationExplorerMatch"), "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 13895, 417, "" );
 }
 NOINLINE void source_info_2078_helper() {
- define_source_info( method_kind, "CHEM:getClosestMatchIndex", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 13400, 415, "" );
+ define_source_info( method_kind, "CHEM:getClosestMatchIndex", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 14749, 440, "" );
 }
 NOINLINE void source_info_2079_helper() {
- define_source_info( method_kind, "CHEM:getClosestMatchRms", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 13224, 412, "" );
+ define_source_info( method_kind, "CHEM:getClosestMatchRms", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 14573, 437, "" );
 }
 NOINLINE void source_info_2080_helper() {
- define_source_info( method_kind, "CHEM:getMatches", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 13001, 408, "" );
+ define_source_info( method_kind, "CHEM:getMatches", "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 14350, 433, "" );
 }
 NOINLINE void source_info_2081_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:MonomerCoordinates"), "../../../../projects/cando/include/cando/chem/monomerCoordinates.h", 451, 31, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:MonomerCoordinates"), "../../../../projects/cando/include/cando/chem/monomerCoordinates.h", 1798, 56, "" );
 }
 NOINLINE void source_info_2082_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:testExtraction"), "../../src/chem/monomerCoordinates.cc", 7307, 234, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:testExtraction"), "../../src/chem/monomerCoordinates.cc", 8655, 259, "" );
 }
 NOINLINE void source_info_2083_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:defineFromConformationExplorer"), "../../src/chem/monomerCoordinates.cc", 6732, 215, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineFromConformationExplorer"), "../../src/chem/monomerCoordinates.cc", 8080, 240, "" );
 }
 NOINLINE void source_info_2084_helper() {
- define_source_info( method_kind, "CHEM:getContext", "../../../../projects/cando/include/cando/chem/monomerCoordinates.h", 1415, 64, "" );
+ define_source_info( method_kind, "CHEM:getContext", "../../../../projects/cando/include/cando/chem/monomerCoordinates.h", 2762, 89, "" );
 }
 NOINLINE void source_info_2085_helper() {
- define_source_info( method_kind, "CHEM:getComment", "../../../../projects/cando/include/cando/chem/monomerCoordinates.h", 1254, 60, "" );
+ define_source_info( method_kind, "CHEM:getComment", "../../../../projects/cando/include/cando/chem/monomerCoordinates.h", 2601, 85, "" );
 }
 NOINLINE void source_info_2086_helper() {
- define_source_info( method_kind, "CHEM:setComment", "../../../../projects/cando/include/cando/chem/monomerCoordinates.h", 1147, 58, "" );
+ define_source_info( method_kind, "CHEM:setComment", "../../../../projects/cando/include/cando/chem/monomerCoordinates.h", 2494, 83, "" );
 }
 NOINLINE void source_info_2087_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Oligomer"), "../../../../projects/cando/include/cando/chem/oligomer.h", 1025, 62, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Oligomer"), "../../../../projects/cando/include/cando/chem/oligomer.h", 2362, 87, "" );
 }
 NOINLINE void source_info_2088_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:allSpecificMonomerContexts"), "../../src/chem/oligomer.cc", 25964, 913, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allSpecificMonomerContexts"), "../../src/chem/oligomer.cc", 27302, 938, "" );
 }
 NOINLINE void source_info_2089_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:sequenceAsFileName"), "../../src/chem/oligomer.cc", 25556, 900, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:sequenceAsFileName"), "../../src/chem/oligomer.cc", 26894, 925, "" );
 }
 NOINLINE void source_info_2090_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:sequenceAsString"), "../../src/chem/oligomer.cc", 23173, 825, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:sequenceAsString"), "../../src/chem/oligomer.cc", 24511, 850, "" );
 }
 NOINLINE void source_info_2091_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getFirstMonomer"), "../../src/chem/oligomer.cc", 21572, 773, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getFirstMonomer"), "../../src/chem/oligomer.cc", 22910, 798, "" );
 }
 NOINLINE void source_info_2092_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:numberOfSequences"), "../../src/chem/oligomer.cc", 20726, 739, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:numberOfSequences"), "../../src/chem/oligomer.cc", 22064, 764, "" );
 }
 NOINLINE void source_info_2093_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getErrorMessage"), "../../src/chem/oligomer.cc", 17559, 619, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getErrorMessage"), "../../src/chem/oligomer.cc", 18897, 644, "" );
 }
 NOINLINE void source_info_2094_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getMolecule"), "../../src/chem/oligomer.cc", 16432, 580, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMolecule"), "../../src/chem/oligomer.cc", 17770, 605, "" );
 }
 NOINLINE void source_info_2095_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:ringCouple"), "../../src/chem/oligomer.cc", 14912, 526, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:ringCouple"), "../../src/chem/oligomer.cc", 16250, 551, "" );
 }
 NOINLINE void source_info_2096_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:couple"), "../../src/chem/oligomer.cc", 13343, 483, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:couple"), "../../src/chem/oligomer.cc", 14681, 508, "" );
 }
 NOINLINE void source_info_2097_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setVerbose"), "../../src/chem/oligomer.cc", 12898, 466, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setVerbose"), "../../src/chem/oligomer.cc", 14236, 491, "" );
 }
 NOINLINE void source_info_2098_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:throwIfBadConnections"), "../../src/chem/oligomer.cc", 12456, 443, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:throwIfBadConnections"), "../../src/chem/oligomer.cc", 13794, 468, "" );
 }
 NOINLINE void source_info_2099_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:rootMonomer"), "../../src/chem/oligomer.cc", 11756, 413, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:rootMonomer"), "../../src/chem/oligomer.cc", 13094, 438, "" );
 }
 NOINLINE void source_info_2100_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:Oligomer-addCoupling"), "../../src/chem/oligomer.cc", 11410, 401, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:Oligomer-addCoupling"), "../../src/chem/oligomer.cc", 12748, 426, "" );
 }
 NOINLINE void source_info_2101_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:removeLeafMonomer"), "../../src/chem/oligomer.cc", 10383, 372, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeLeafMonomer"), "../../src/chem/oligomer.cc", 11721, 397, "" );
 }
 NOINLINE void source_info_2102_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:updateMultiMonomers"), "../../src/chem/oligomer.cc", 9189, 329, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:updateMultiMonomers"), "../../src/chem/oligomer.cc", 10527, 354, "" );
 }
 NOINLINE void source_info_2103_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:checkForErrors"), "../../src/chem/oligomer.cc", 8481, 301, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:checkForErrors"), "../../src/chem/oligomer.cc", 9819, 326, "" );
 }
 NOINLINE void source_info_2104_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:Oligomer-removeCoupling"), "../../src/chem/oligomer.cc", 8124, 286, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:Oligomer-removeCoupling"), "../../src/chem/oligomer.cc", 9462, 311, "" );
 }
 NOINLINE void source_info_2105_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:removeMonomer"), "../../src/chem/oligomer.cc", 7683, 268, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeMonomer"), "../../src/chem/oligomer.cc", 9021, 293, "" );
 }
 NOINLINE void source_info_2106_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getMonomerWithId"), "../../src/chem/oligomer.cc", 7294, 252, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomerWithId"), "../../src/chem/oligomer.cc", 8632, 277, "" );
 }
 NOINLINE void source_info_2107_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:hasMonomerWithId"), "../../src/chem/oligomer.cc", 6995, 240, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasMonomerWithId"), "../../src/chem/oligomer.cc", 8333, 265, "" );
 }
 NOINLINE void source_info_2108_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addMonomer"), "../../src/chem/oligomer.cc", 6314, 220, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addMonomer"), "../../src/chem/oligomer.cc", 7652, 245, "" );
 }
 NOINLINE void source_info_2109_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:monomersAsCons"), "../../src/chem/oligomer.cc", 4189, 150, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:monomersAsCons"), "../../src/chem/oligomer.cc", 5527, 175, "" );
 }
 NOINLINE void source_info_2110_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:empty"), "../../src/chem/oligomer.cc", 3403, 121, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:empty"), "../../src/chem/oligomer.cc", 4741, 146, "" );
 }
 NOINLINE void source_info_2111_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getLastMultiMonomerChanged"), "../../src/chem/oligomer.cc", 3112, 105, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getLastMultiMonomerChanged"), "../../src/chem/oligomer.cc", 4450, 130, "" );
 }
 NOINLINE void source_info_2112_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:hasLastMultiMonomerChanged"), "../../src/chem/oligomer.cc", 2884, 99, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasLastMultiMonomerChanged"), "../../src/chem/oligomer.cc", 4222, 124, "" );
 }
 NOINLINE void source_info_2113_helper() {
- define_source_info( method_kind, "CHEM:getHasError", "../../../../projects/cando/include/cando/chem/oligomer.h", 4098, 156, "" );
+ define_source_info( method_kind, "CHEM:getHasError", "../../../../projects/cando/include/cando/chem/oligomer.h", 5435, 181, "" );
 }
 NOINLINE void source_info_2114_helper() {
- define_source_info( method_kind, "CHEM:getVerbose", "../../../../projects/cando/include/cando/chem/oligomer.h", 3828, 151, "" );
+ define_source_info( method_kind, "CHEM:getVerbose", "../../../../projects/cando/include/cando/chem/oligomer.h", 5165, 176, "" );
 }
 NOINLINE void source_info_2115_helper() {
- define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/oligomer.h", 3703, 147, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/oligomer.h", 5040, 172, "" );
 }
 NOINLINE void source_info_2116_helper() {
- define_source_info( method_kind, "CHEM:setName", "../../../../projects/cando/include/cando/chem/oligomer.h", 3606, 145, "" );
+ define_source_info( method_kind, "CHEM:setName", "../../../../projects/cando/include/cando/chem/oligomer.h", 4943, 170, "" );
 }
 NOINLINE void source_info_2117_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:OneTypeRule"), "../../../../projects/cando/include/cando/chem/typeAssignmentRules.h", 357, 23, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:OneTypeRule"), "../../../../projects/cando/include/cando/chem/typeAssignmentRules.h", 1705, 48, "" );
 }
 NOINLINE void source_info_2118_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:TypeAssignmentRules"), "../../../../projects/cando/include/cando/chem/typeAssignmentRules.h", 1020, 48, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:TypeAssignmentRules"), "../../../../projects/cando/include/cando/chem/typeAssignmentRules.h", 2368, 73, "" );
 }
 NOINLINE void source_info_2119_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:PdbMonomerConnectivity"), "../../../../projects/cando/include/cando/chem/pdbMonomer.h", 457, 29, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:PdbMonomerConnectivity"), "../../../../projects/cando/include/cando/chem/pdbMonomer.h", 1796, 54, "" );
 }
 NOINLINE void source_info_2120_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:PdbMonomerDatabase"), "../../../../projects/cando/include/cando/chem/pdbMonomer.h", 1507, 58, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:PdbMonomerDatabase"), "../../../../projects/cando/include/cando/chem/pdbMonomer.h", 2846, 83, "" );
 }
 NOINLINE void source_info_2121_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:connectAtoms"), "../../src/chem/pdbMonomer.cc", 9196, 361, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:connectAtoms"), "../../src/chem/pdbMonomer.cc", 10536, 386, "" );
 }
 NOINLINE void source_info_2122_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:PdbReader"), "../../../../projects/cando/include/cando/chem/pdb.h", 1395, 78, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:PdbReader"), "../../../../projects/cando/include/cando/chem/pdb.h", 2727, 103, "" );
 }
 NOINLINE void source_info_2123_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:PdbWriter"), "../../../../projects/cando/include/cando/chem/pdb.h", 1913, 101, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:PdbWriter"), "../../../../projects/cando/include/cando/chem/pdb.h", 3245, 126, "" );
 }
 NOINLINE void source_info_2124_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:close"), "../../src/chem/pdb.cc", 16443, 564, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:close"), "../../src/chem/pdb.cc", 17776, 589, "" );
 }
 NOINLINE void source_info_2125_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:writeModel"), "../../src/chem/pdb.cc", 16164, 556, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:writeModel"), "../../src/chem/pdb.cc", 17497, 581, "" );
 }
 NOINLINE void source_info_2126_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:open"), "../../src/chem/pdb.cc", 15022, 520, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:open"), "../../src/chem/pdb.cc", 16355, 545, "" );
 }
 NOINLINE void source_info_2127_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Mate"), "../../../../projects/cando/include/cando/chem/plug.h", 329, 33, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Mate"), "../../../../projects/cando/include/cando/chem/plug.h", 1662, 58, "" );
 }
 NOINLINE void source_info_2128_helper() {
- define_source_info( method_kind, "CHEM:getCap", "../../../../projects/cando/include/cando/chem/plug.h", 1094, 61, "" );
+ define_source_info( method_kind, "CHEM:getCap", "../../../../projects/cando/include/cando/chem/plug.h", 2427, 86, "" );
 }
 NOINLINE void source_info_2129_helper() {
- define_source_info( method_kind, "CHEM:setCap", "../../../../projects/cando/include/cando/chem/plug.h", 1004, 59, "" );
+ define_source_info( method_kind, "CHEM:setCap", "../../../../projects/cando/include/cando/chem/plug.h", 2337, 84, "" );
 }
 NOINLINE void source_info_2130_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:RingClosingMate"), "../../../../projects/cando/include/cando/chem/plug.h", 1411, 80, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RingClosingMate"), "../../../../projects/cando/include/cando/chem/plug.h", 2744, 105, "" );
 }
 NOINLINE void source_info_2131_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Plug"), "../../../../projects/cando/include/cando/chem/plug.h", 1899, 101, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Plug"), "../../../../projects/cando/include/cando/chem/plug.h", 3232, 126, "" );
 }
 NOINLINE void source_info_2132_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:otherSidePlugName"), "../../src/chem/plug.cc", 5732, 274, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:otherSidePlugName"), "../../src/chem/plug.cc", 7066, 299, "" );
 }
 NOINLINE void source_info_2133_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getConstitution"), "../../src/chem/plug.cc", 5325, 257, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getConstitution"), "../../src/chem/plug.cc", 6659, 282, "" );
 }
 NOINLINE void source_info_2134_helper() {
- define_source_info( method_kind, "CHEM:matesAsCons", "../../../../projects/cando/include/cando/chem/plug.h", 3418, 150, "" );
+ define_source_info( method_kind, "CHEM:matesAsCons", "../../../../projects/cando/include/cando/chem/plug.h", 4751, 175, "" );
 }
 NOINLINE void source_info_2135_helper() {
- define_source_info( method_kind, "CHEM:getPlug", "../../../../projects/cando/include/cando/chem/plug.h", 2934, 136, "" );
+ define_source_info( method_kind, "CHEM:getPlug", "../../../../projects/cando/include/cando/chem/plug.h", 4267, 161, "" );
 }
 NOINLINE void source_info_2136_helper() {
- define_source_info( method_kind, "CHEM:getIsRingClosing", "../../../../projects/cando/include/cando/chem/plug.h", 2845, 133, "" );
+ define_source_info( method_kind, "CHEM:getIsRingClosing", "../../../../projects/cando/include/cando/chem/plug.h", 4178, 158, "" );
 }
 NOINLINE void source_info_2137_helper() {
- define_source_info( method_kind, "CHEM:getIsIn", "../../../../projects/cando/include/cando/chem/plug.h", 2739, 131, "" );
+ define_source_info( method_kind, "CHEM:getIsIn", "../../../../projects/cando/include/cando/chem/plug.h", 4072, 156, "" );
 }
 NOINLINE void source_info_2138_helper() {
- define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/plug.h", 2644, 128, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/plug.h", 3977, 153, "" );
 }
 NOINLINE void source_info_2139_helper() {
- define_source_info( method_kind, "CHEM:setName", "../../../../projects/cando/include/cando/chem/plug.h", 2553, 126, "" );
+ define_source_info( method_kind, "CHEM:setName", "../../../../projects/cando/include/cando/chem/plug.h", 3886, 151, "" );
 }
 NOINLINE void source_info_2140_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:PlugWithMates"), "../../../../projects/cando/include/cando/chem/plug.h", 3659, 164, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:PlugWithMates"), "../../../../projects/cando/include/cando/chem/plug.h", 4992, 189, "" );
 }
 NOINLINE void source_info_2141_helper() {
- define_source_info( method_kind, "CHEM:hasB1", "../../../../projects/cando/include/cando/chem/plug.h", 4687, 198, "" );
+ define_source_info( method_kind, "CHEM:hasB1", "../../../../projects/cando/include/cando/chem/plug.h", 6020, 223, "" );
 }
 NOINLINE void source_info_2142_helper() {
- define_source_info( method_kind, "CHEM:getB1", "../../../../projects/cando/include/cando/chem/plug.h", 4599, 196, "" );
+ define_source_info( method_kind, "CHEM:getB1", "../../../../projects/cando/include/cando/chem/plug.h", 5932, 221, "" );
 }
 NOINLINE void source_info_2143_helper() {
- define_source_info( method_kind, "CHEM:getB0", "../../../../projects/cando/include/cando/chem/plug.h", 4458, 192, "" );
+ define_source_info( method_kind, "CHEM:getB0", "../../../../projects/cando/include/cando/chem/plug.h", 5791, 217, "" );
 }
 NOINLINE void source_info_2144_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:OutPlug"), "../../../../projects/cando/include/cando/chem/plug.h", 5449, 227, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:OutPlug"), "../../../../projects/cando/include/cando/chem/plug.h", 6782, 252, "" );
 }
 NOINLINE void source_info_2145_helper() {
- define_source_info( method_kind, "CHEM:getStubPivotAtom", "../../../../projects/cando/include/cando/chem/plug.h", 5970, 243, "" );
+ define_source_info( method_kind, "CHEM:getStubPivotAtom", "../../../../projects/cando/include/cando/chem/plug.h", 7303, 268, "" );
 }
 NOINLINE void source_info_2146_helper() {
- define_source_info( method_kind, "CHEM:hasStubPivotAtom", "../../../../projects/cando/include/cando/chem/plug.h", 5856, 241, "" );
+ define_source_info( method_kind, "CHEM:hasStubPivotAtom", "../../../../projects/cando/include/cando/chem/plug.h", 7189, 266, "" );
 }
 NOINLINE void source_info_2147_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:InPlug"), "../../../../projects/cando/include/cando/chem/plug.h", 6279, 263, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:InPlug"), "../../../../projects/cando/include/cando/chem/plug.h", 7612, 288, "" );
 }
 NOINLINE void source_info_2148_helper() {
- define_source_info( method_kind, "CHEM:rootAtomName", "../../../../projects/cando/include/cando/chem/plug.h", 6479, 270, "" );
+ define_source_info( method_kind, "CHEM:rootAtomName", "../../../../projects/cando/include/cando/chem/plug.h", 7812, 295, "" );
 }
 NOINLINE void source_info_2149_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:JumpPlug"), "../../../../projects/cando/include/cando/chem/plug.h", 6860, 288, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:JumpPlug"), "../../../../projects/cando/include/cando/chem/plug.h", 8193, 313, "" );
 }
 NOINLINE void source_info_2150_helper() {
- define_source_info( method_kind, "CHEM:rootAtomName", "../../../../projects/cando/include/cando/chem/plug.h", 7174, 301, "" );
+ define_source_info( method_kind, "CHEM:rootAtomName", "../../../../projects/cando/include/cando/chem/plug.h", 8507, 326, "" );
 }
 NOINLINE void source_info_2151_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:RingClosingPlug"), "../../../../projects/cando/include/cando/chem/plug.h", 7550, 319, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RingClosingPlug"), "../../../../projects/cando/include/cando/chem/plug.h", 8883, 344, "" );
 }
 NOINLINE void source_info_2152_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:ringClosingMatesAsCons"), "../../src/chem/plug.cc", 17497, 778, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:ringClosingMatesAsCons"), "../../src/chem/plug.cc", 18831, 803, "" );
 }
 NOINLINE void source_info_2153_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ProperTorsion"), "../../../../projects/cando/include/cando/chem/properTorsion.h", 377, 19, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ProperTorsion"), "../../../../projects/cando/include/cando/chem/properTorsion.h", 1719, 44, "" );
 }
 NOINLINE void source_info_2154_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ReadAmberParameters"), "../../../../projects/cando/include/cando/chem/readAmberParameters.h", 443, 29, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ReadAmberParameters"), "../../../../projects/cando/include/cando/chem/readAmberParameters.h", 1791, 54, "" );
 }
 NOINLINE void source_info_2155_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getForceField"), "../../src/chem/readAmberParameters.cc", 1090, 51, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getForceField"), "../../src/chem/readAmberParameters.cc", 2439, 76, "" );
 }
 NOINLINE void source_info_2156_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:readParameters"), "../../src/chem/readAmberParameters.cc", 911, 43, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:readParameters"), "../../src/chem/readAmberParameters.cc", 2260, 68, "" );
 }
 NOINLINE void source_info_2157_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:readTypes"), "../../src/chem/readAmberParameters.cc", 757, 36, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:readTypes"), "../../src/chem/readAmberParameters.cc", 2106, 61, "" );
 }
 NOINLINE void source_info_2158_helper() {
- define_source_info( method_kind, "CHEM:getTypeRules", "../../../../projects/cando/include/cando/chem/readAmberParameters.h", 1209, 53, "" );
+ define_source_info( method_kind, "CHEM:getTypeRules", "../../../../projects/cando/include/cando/chem/readAmberParameters.h", 2557, 78, "" );
 }
 NOINLINE void source_info_2159_helper() {
- define_source_info( class_kind, core::magic_name("GEOM:V3"), "../../../../projects/cando/include/cando/geom/ovector3.h", 365, 17, "" );
+ define_source_info( class_kind, core::magic_name("GEOM:V3"), "../../../../projects/cando/include/cando/geom/ovector3.h", 1702, 42, "" );
 }
 NOINLINE void source_info_2160_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:setUsingBondAngleDihedral"), "../../src/geom/ovector3.cc", 4713, 200, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:setUsingBondAngleDihedral"), "../../src/geom/ovector3.cc", 6051, 225, "" );
 }
 NOINLINE void source_info_2161_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:setUsingBondAngle"), "../../src/geom/ovector3.cc", 4424, 193, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:setUsingBondAngle"), "../../src/geom/ovector3.cc", 5762, 218, "" );
 }
 NOINLINE void source_info_2162_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:setUsingBond"), "../../src/geom/ovector3.cc", 4253, 187, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:setUsingBond"), "../../src/geom/ovector3.cc", 5591, 212, "" );
 }
 NOINLINE void source_info_2163_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:v3-distance"), "../../src/geom/ovector3.cc", 4106, 181, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:v3-distance"), "../../src/geom/ovector3.cc", 5444, 206, "" );
 }
 NOINLINE void source_info_2164_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:v3-angle"), "../../src/geom/ovector3.cc", 3945, 175, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:v3-angle"), "../../src/geom/ovector3.cc", 5283, 200, "" );
 }
 NOINLINE void source_info_2165_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:dihedral"), "../../src/geom/ovector3.cc", 3758, 169, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:dihedral"), "../../src/geom/ovector3.cc", 5096, 194, "" );
 }
 NOINLINE void source_info_2166_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:v3-normalized"), "../../src/geom/ovector3.cc", 3642, 163, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:v3-normalized"), "../../src/geom/ovector3.cc", 4980, 188, "" );
 }
 NOINLINE void source_info_2167_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:timesScalar"), "../../src/geom/ovector3.cc", 3483, 155, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:timesScalar"), "../../src/geom/ovector3.cc", 4821, 180, "" );
 }
 NOINLINE void source_info_2168_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:add"), "../../src/geom/ovector3.cc", 3046, 140, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:add"), "../../src/geom/ovector3.cc", 4384, 165, "" );
 }
 NOINLINE void source_info_2169_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:dotProduct"), "../../src/geom/ovector3.cc", 2517, 111, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:dotProduct"), "../../src/geom/ovector3.cc", 3855, 136, "" );
 }
 NOINLINE void source_info_2170_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:crossProduct"), "../../src/geom/ovector3.cc", 2343, 104, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:crossProduct"), "../../src/geom/ovector3.cc", 3681, 129, "" );
 }
 NOINLINE void source_info_2171_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:v3-magnitude"), "../../src/geom/ovector3.cc", 2203, 97, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:v3-magnitude"), "../../src/geom/ovector3.cc", 3541, 122, "" );
 }
 NOINLINE void source_info_2172_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:_PLUS_"), "../../src/geom/ovector3.cc", 2052, 90, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:_PLUS_"), "../../src/geom/ovector3.cc", 3390, 115, "" );
 }
 NOINLINE void source_info_2173_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:_MINUS_"), "../../src/geom/ovector3.cc", 1902, 83, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:_MINUS_"), "../../src/geom/ovector3.cc", 3240, 108, "" );
 }
 NOINLINE void source_info_2174_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:sub"), "../../src/geom/ovector3.cc", 1749, 76, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:sub"), "../../src/geom/ovector3.cc", 3087, 101, "" );
 }
 NOINLINE void source_info_2175_helper() {
- define_source_info( method_kind, "GEOM:z", "../../../../projects/cando/include/cando/geom/ovector3.h", 1549, 53, "" );
+ define_source_info( method_kind, "GEOM:z", "../../../../projects/cando/include/cando/geom/ovector3.h", 2886, 78, "" );
 }
 NOINLINE void source_info_2176_helper() {
- define_source_info( method_kind, "GEOM:y", "../../../../projects/cando/include/cando/geom/ovector3.h", 1474, 51, "" );
+ define_source_info( method_kind, "GEOM:y", "../../../../projects/cando/include/cando/geom/ovector3.h", 2811, 76, "" );
 }
 NOINLINE void source_info_2177_helper() {
- define_source_info( method_kind, "GEOM:x", "../../../../projects/cando/include/cando/geom/ovector3.h", 1399, 49, "" );
+ define_source_info( method_kind, "GEOM:x", "../../../../projects/cando/include/cando/geom/ovector3.h", 2736, 74, "" );
 }
 NOINLINE void source_info_2178_helper() {
- define_source_info( method_kind, "GEOM:setAll3", "../../../../projects/cando/include/cando/geom/ovector3.h", 1298, 47, "" );
+ define_source_info( method_kind, "GEOM:setAll3", "../../../../projects/cando/include/cando/geom/ovector3.h", 2635, 72, "" );
 }
 NOINLINE void source_info_2179_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Restraint"), "../../../../projects/cando/include/cando/chem/restraint.h", 589, 42, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Restraint"), "../../../../projects/cando/include/cando/chem/restraint.h", 1927, 67, "" );
 }
 NOINLINE void source_info_2180_helper() {
- define_source_info( method_kind, "CHEM:setActive", "../../../../projects/cando/include/cando/chem/restraint.h", 1142, 59, "" );
+ define_source_info( method_kind, "CHEM:setActive", "../../../../projects/cando/include/cando/chem/restraint.h", 2480, 84, "" );
 }
 NOINLINE void source_info_2181_helper() {
- define_source_info( method_kind, "CHEM:isActive", "../../../../projects/cando/include/cando/chem/restraint.h", 1056, 57, "" );
+ define_source_info( method_kind, "CHEM:isActive", "../../../../projects/cando/include/cando/chem/restraint.h", 2394, 82, "" );
 }
 NOINLINE void source_info_2182_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:RestraintAnchor"), "../../../../projects/cando/include/cando/chem/restraint.h", 1397, 72, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RestraintAnchor"), "../../../../projects/cando/include/cando/chem/restraint.h", 2735, 97, "" );
 }
 NOINLINE void source_info_2183_helper() {
- define_source_info( method_kind, "CHEM:setAtom", "../../../../projects/cando/include/cando/chem/restraint.h", 2268, 105, "" );
+ define_source_info( method_kind, "CHEM:setAtom", "../../../../projects/cando/include/cando/chem/restraint.h", 3606, 130, "" );
 }
 NOINLINE void source_info_2184_helper() {
- define_source_info( method_kind, "CHEM:setAnchorPos", "../../../../projects/cando/include/cando/chem/restraint.h", 2096, 99, "" );
+ define_source_info( method_kind, "CHEM:setAnchorPos", "../../../../projects/cando/include/cando/chem/restraint.h", 3434, 124, "" );
 }
 NOINLINE void source_info_2185_helper() {
- define_source_info( method_kind, "CHEM:restraint-anchor-getWeight", "../../../../projects/cando/include/cando/chem/restraint.h", 2010, 96, "" );
+ define_source_info( method_kind, "CHEM:restraint-anchor-getWeight", "../../../../projects/cando/include/cando/chem/restraint.h", 3348, 121, "" );
 }
 NOINLINE void source_info_2186_helper() {
- define_source_info( method_kind, "CHEM:setWeight", "../../../../projects/cando/include/cando/chem/restraint.h", 1908, 94, "" );
+ define_source_info( method_kind, "CHEM:setWeight", "../../../../projects/cando/include/cando/chem/restraint.h", 3246, 119, "" );
 }
 NOINLINE void source_info_2187_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:RestraintChiral"), "../../../../projects/cando/include/cando/chem/restraint.h", 2803, 126, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RestraintChiral"), "../../../../projects/cando/include/cando/chem/restraint.h", 4141, 151, "" );
 }
 NOINLINE void source_info_2188_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:RestraintDistance"), "../../../../projects/cando/include/cando/chem/restraint.h", 3603, 164, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RestraintDistance"), "../../../../projects/cando/include/cando/chem/restraint.h", 4941, 189, "" );
 }
 NOINLINE void source_info_2189_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:RestraintAngle"), "../../../../projects/cando/include/cando/chem/restraint.h", 4643, 209, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RestraintAngle"), "../../../../projects/cando/include/cando/chem/restraint.h", 5981, 234, "" );
 }
 NOINLINE void source_info_2190_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:RestraintDihedral"), "../../../../projects/cando/include/cando/chem/restraint.h", 5817, 257, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RestraintDihedral"), "../../../../projects/cando/include/cando/chem/restraint.h", 7155, 282, "" );
 }
 NOINLINE void source_info_2191_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:RestraintFixedNonbond"), "../../../../projects/cando/include/cando/chem/restraint.h", 7491, 316, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RestraintFixedNonbond"), "../../../../projects/cando/include/cando/chem/restraint.h", 8829, 341, "" );
 }
 NOINLINE void source_info_2192_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Rotamer"), "../../../../projects/cando/include/cando/chem/rotamer.h", 357, 26, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Rotamer"), "../../../../projects/cando/include/cando/chem/rotamer.h", 1693, 51, "" );
 }
 NOINLINE void source_info_2193_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:SearchStatistics"), "../../../../projects/cando/include/cando/chem/searchStatistics.h", 348, 24, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:SearchStatistics"), "../../../../projects/cando/include/cando/chem/searchStatistics.h", 1693, 49, "" );
 }
 NOINLINE void source_info_2194_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getHits"), "../../src/chem/searchStatistics.cc", 2152, 104, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getHits"), "../../src/chem/searchStatistics.cc", 3498, 129, "" );
 }
 NOINLINE void source_info_2195_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:incrementHits"), "../../src/chem/searchStatistics.cc", 2046, 98, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:incrementHits"), "../../src/chem/searchStatistics.cc", 3392, 123, "" );
 }
 NOINLINE void source_info_2196_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getRejects"), "../../src/chem/searchStatistics.cc", 1926, 91, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getRejects"), "../../src/chem/searchStatistics.cc", 3272, 116, "" );
 }
 NOINLINE void source_info_2197_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:incrementRejects"), "../../src/chem/searchStatistics.cc", 1811, 85, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:incrementRejects"), "../../src/chem/searchStatistics.cc", 3157, 110, "" );
 }
 NOINLINE void source_info_2198_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getBuilds"), "../../src/chem/searchStatistics.cc", 1690, 78, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getBuilds"), "../../src/chem/searchStatistics.cc", 3036, 103, "" );
 }
 NOINLINE void source_info_2199_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:incrementBuilds"), "../../src/chem/searchStatistics.cc", 1335, 67, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:incrementBuilds"), "../../src/chem/searchStatistics.cc", 2681, 92, "" );
 }
 NOINLINE void source_info_2200_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:SpanningLoop"), "../../../../projects/cando/include/cando/chem/spanningLoop.h", 576, 37, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:SpanningLoop"), "../../../../projects/cando/include/cando/chem/spanningLoop.h", 1917, 62, "" );
 }
 NOINLINE void source_info_2201_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:allAtoms"), "../../src/chem/spanningLoop.cc", 9488, 340, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:allAtoms"), "../../src/chem/spanningLoop.cc", 10830, 365, "" );
 }
 NOINLINE void source_info_2202_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:next"), "../../src/chem/spanningLoop.cc", 9104, 329, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:next"), "../../src/chem/spanningLoop.cc", 10446, 354, "" );
 }
 NOINLINE void source_info_2203_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:advanceLoopAndProcess"), "../../src/chem/spanningLoop.cc", 4532, 190, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:advanceLoopAndProcess"), "../../src/chem/spanningLoop.cc", 5874, 215, "" );
 }
 NOINLINE void source_info_2204_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getAtom"), "../../src/chem/spanningLoop.cc", 4379, 184, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAtom"), "../../src/chem/spanningLoop.cc", 5721, 209, "" );
 }
 NOINLINE void source_info_2205_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setTop"), "../../src/chem/spanningLoop.cc", 3650, 152, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setTop"), "../../src/chem/spanningLoop.cc", 4992, 177, "" );
 }
 NOINLINE void source_info_2206_helper() {
- define_source_info( method_kind, "CHEM:advance", "../../../../projects/cando/include/cando/chem/spanningLoop.h", 2119, 92, "" );
+ define_source_info( method_kind, "CHEM:advance", "../../../../projects/cando/include/cando/chem/spanningLoop.h", 3460, 117, "" );
 }
 NOINLINE void source_info_2207_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:SpecificContext"), "../../../../projects/cando/include/cando/chem/specificContext.h", 556, 34, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:SpecificContext"), "../../../../projects/cando/include/cando/chem/specificContext.h", 1900, 59, "" );
 }
 NOINLINE void source_info_2208_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:copy"), "../../src/chem/specificContext.cc", 2835, 122, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:copy"), "../../src/chem/specificContext.cc", 4180, 147, "" );
 }
 NOINLINE void source_info_2209_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:asString"), "../../src/chem/specificContext.cc", 2213, 95, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:asString"), "../../src/chem/specificContext.cc", 3558, 120, "" );
 }
 NOINLINE void source_info_2210_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:popNeighbor"), "../../src/chem/specificContext.cc", 1741, 76, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:popNeighbor"), "../../src/chem/specificContext.cc", 3086, 101, "" );
 }
 NOINLINE void source_info_2211_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:pushNeighbor"), "../../src/chem/specificContext.cc", 1281, 60, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:pushNeighbor"), "../../src/chem/specificContext.cc", 2626, 85, "" );
 }
 NOINLINE void source_info_2212_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setSelfName"), "../../src/chem/specificContext.cc", 1132, 54, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setSelfName"), "../../src/chem/specificContext.cc", 2477, 79, "" );
 }
 NOINLINE void source_info_2213_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:SpecificContextSet"), "../../../../projects/cando/include/cando/chem/specificContext.h", 1511, 76, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:SpecificContextSet"), "../../../../projects/cando/include/cando/chem/specificContext.h", 2855, 101, "" );
 }
 NOINLINE void source_info_2214_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:asCons"), "../../src/chem/specificContext.cc", 5122, 223, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:asCons"), "../../src/chem/specificContext.cc", 6467, 248, "" );
 }
 NOINLINE void source_info_2215_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:asSymbolSetOfKeys"), "../../src/chem/specificContext.cc", 4806, 209, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:asSymbolSetOfKeys"), "../../src/chem/specificContext.cc", 6151, 234, "" );
 }
 NOINLINE void source_info_2216_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addSpecificContext"), "../../src/chem/specificContext.cc", 3977, 173, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addSpecificContext"), "../../src/chem/specificContext.cc", 5322, 198, "" );
 }
 NOINLINE void source_info_2217_helper() {
- define_source_info( method_kind, "CHEM:size", "../../../../projects/cando/include/cando/chem/specificContext.h", 2320, 106, "" );
+ define_source_info( method_kind, "CHEM:size", "../../../../projects/cando/include/cando/chem/specificContext.h", 3664, 131, "" );
 }
 NOINLINE void source_info_2218_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:StereoConfiguration"), "../../../../projects/cando/include/cando/chem/stereochemistry.h", 657, 43, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StereoConfiguration"), "../../../../projects/cando/include/cando/chem/stereochemistry.h", 2001, 68, "" );
 }
 NOINLINE void source_info_2219_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getMoeConfiguration"), "../../src/chem/stereochemistry.cc", 720, 35, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMoeConfiguration"), "../../src/chem/stereochemistry.cc", 2065, 60, "" );
 }
 NOINLINE void source_info_2220_helper() {
- define_source_info( method_kind, "CHEM:setConfiguration", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 1639, 71, "" );
+ define_source_info( method_kind, "CHEM:setConfiguration", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 2983, 96, "" );
 }
 NOINLINE void source_info_2221_helper() {
- define_source_info( method_kind, "CHEM:getConfiguration", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 1518, 69, "" );
+ define_source_info( method_kind, "CHEM:getConfiguration", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 2862, 94, "" );
 }
 NOINLINE void source_info_2222_helper() {
- define_source_info( method_kind, "CHEM:setAtomName", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 1416, 67, "" );
+ define_source_info( method_kind, "CHEM:setAtomName", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 2760, 92, "" );
 }
 NOINLINE void source_info_2223_helper() {
- define_source_info( method_kind, "CHEM:getAtomName", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 1322, 65, "" );
+ define_source_info( method_kind, "CHEM:getAtomName", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 2666, 90, "" );
 }
 NOINLINE void source_info_2224_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Stereoisomer"), "../../../../projects/cando/include/cando/chem/stereochemistry.h", 1937, 89, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Stereoisomer"), "../../../../projects/cando/include/cando/chem/stereochemistry.h", 3281, 114, "" );
 }
 NOINLINE void source_info_2225_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getConfigurationForCenter"), "../../src/chem/stereochemistry.cc", 6312, 220, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getConfigurationForCenter"), "../../src/chem/stereochemistry.cc", 7657, 245, "" );
 }
 NOINLINE void source_info_2226_helper() {
- define_source_info( method_kind, "CHEM:setPdb", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 3285, 128, "" );
+ define_source_info( method_kind, "CHEM:setPdb", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 4629, 153, "" );
 }
 NOINLINE void source_info_2227_helper() {
- define_source_info( method_kind, "CHEM:getPdb", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 3201, 126, "" );
+ define_source_info( method_kind, "CHEM:getPdb", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 4545, 151, "" );
 }
 NOINLINE void source_info_2228_helper() {
- define_source_info( method_kind, "CHEM:setName", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 3112, 124, "" );
+ define_source_info( method_kind, "CHEM:setName", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 4456, 149, "" );
 }
 NOINLINE void source_info_2229_helper() {
- define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 3019, 122, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 4363, 147, "" );
 }
 NOINLINE void source_info_2230_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:StereoInformation"), "../../../../projects/cando/include/cando/chem/stereochemistry.h", 4004, 144, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StereoInformation"), "../../../../projects/cando/include/cando/chem/stereochemistry.h", 5348, 169, "" );
 }
 NOINLINE void source_info_2231_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:validate"), "../../src/chem/stereochemistry.cc", 9705, 326, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:validate"), "../../src/chem/stereochemistry.cc", 11050, 351, "" );
 }
 NOINLINE void source_info_2232_helper() {
- define_source_info( method_kind, "CHEM:stereoisomersAsCons", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 5603, 176, "" );
+ define_source_info( method_kind, "CHEM:stereoisomersAsCons", "../../../../projects/cando/include/cando/chem/stereochemistry.h", 6947, 201, "" );
 }
 NOINLINE void source_info_2233_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:StereoisomerAtom"), "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 633, 34, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StereoisomerAtom"), "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 1979, 59, "" );
 }
 NOINLINE void source_info_2234_helper() {
- define_source_info( method_kind, "CHEM:setAtomType", "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 1656, 59, "" );
+ define_source_info( method_kind, "CHEM:setAtomType", "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 3002, 84, "" );
 }
 NOINLINE void source_info_2235_helper() {
- define_source_info( method_kind, "CHEM:getAtomType", "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 1547, 57, "" );
+ define_source_info( method_kind, "CHEM:getAtomType", "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 2893, 82, "" );
 }
 NOINLINE void source_info_2236_helper() {
- define_source_info( method_kind, "CHEM:setCharge", "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 1461, 55, "" );
+ define_source_info( method_kind, "CHEM:setCharge", "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 2807, 80, "" );
 }
 NOINLINE void source_info_2237_helper() {
- define_source_info( method_kind, "CHEM:getCharge", "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 1374, 53, "" );
+ define_source_info( method_kind, "CHEM:getCharge", "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 2720, 78, "" );
 }
 NOINLINE void source_info_2238_helper() {
- define_source_info( method_kind, "CHEM:atomName", "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 1168, 49, "" );
+ define_source_info( method_kind, "CHEM:atomName", "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 2514, 74, "" );
 }
 NOINLINE void source_info_2239_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:StereoisomerVirtualAtom"), "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 1851, 67, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StereoisomerVirtualAtom"), "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 3197, 92, "" );
 }
 NOINLINE void source_info_2240_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:StereoisomerAtoms"), "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 2652, 88, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StereoisomerAtoms"), "../../../../projects/cando/include/cando/chem/stereoisomerAtoms.h", 3998, 113, "" );
 }
 NOINLINE void source_info_2241_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:stereoisomer-atoms-index"), "../../src/chem/stereoisomerAtoms.cc", 4662, 183, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:stereoisomer-atoms-index"), "../../src/chem/stereoisomerAtoms.cc", 6009, 208, "" );
 }
 NOINLINE void source_info_2242_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:atomWithId"), "../../src/chem/stereoisomerAtoms.cc", 4475, 177, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atomWithId"), "../../src/chem/stereoisomerAtoms.cc", 5822, 202, "" );
 }
 NOINLINE void source_info_2243_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:atomWithName"), "../../src/chem/stereoisomerAtoms.cc", 4090, 165, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atomWithName"), "../../src/chem/stereoisomerAtoms.cc", 5437, 190, "" );
 }
 NOINLINE void source_info_2244_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:atomNamesAsSymbolSet"), "../../src/chem/stereoisomerAtoms.cc", 3493, 140, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:atomNamesAsSymbolSet"), "../../src/chem/stereoisomerAtoms.cc", 4840, 165, "" );
 }
 NOINLINE void source_info_2245_helper() {
- define_source_info( class_kind, core::magic_name("GEOM:CoordinateArray"), "../../../../projects/cando/include/cando/geom/coordinateArray.h", 656, 37, "" );
+ define_source_info( class_kind, core::magic_name("GEOM:CoordinateArray"), "../../../../projects/cando/include/cando/geom/coordinateArray.h", 2000, 62, "" );
 }
 NOINLINE void source_info_2246_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:write-to-stream"), "../../src/geom/coordinateArray.cc", 7228, 314, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:write-to-stream"), "../../src/geom/coordinateArray.cc", 8573, 339, "" );
 }
 NOINLINE void source_info_2247_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:asString"), "../../src/geom/coordinateArray.cc", 5948, 255, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:asString"), "../../src/geom/coordinateArray.cc", 7293, 280, "" );
 }
 NOINLINE void source_info_2248_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:transform"), "../../src/geom/coordinateArray.cc", 5413, 231, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:transform"), "../../src/geom/coordinateArray.cc", 6758, 256, "" );
 }
 NOINLINE void source_info_2249_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:multiplyByScalar"), "../../src/geom/coordinateArray.cc", 4827, 205, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:multiplyByScalar"), "../../src/geom/coordinateArray.cc", 6172, 230, "" );
 }
 NOINLINE void source_info_2250_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:setElement"), "../../src/geom/coordinateArray.cc", 3566, 148, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:setElement"), "../../src/geom/coordinateArray.cc", 4911, 173, "" );
 }
 NOINLINE void source_info_2251_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:getElement"), "../../src/geom/coordinateArray.cc", 3365, 141, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:getElement"), "../../src/geom/coordinateArray.cc", 4710, 166, "" );
 }
 NOINLINE void source_info_2252_helper() {
- define_source_info( method_kind, "GEOM:coordinate-array-append", "../../../../projects/cando/include/cando/geom/coordinateArray.h", 2648, 102, "" );
+ define_source_info( method_kind, "GEOM:coordinate-array-append", "../../../../projects/cando/include/cando/geom/coordinateArray.h", 3992, 127, "" );
 }
 NOINLINE void source_info_2253_helper() {
- define_source_info( method_kind, "GEOM:size", "../../../../projects/cando/include/cando/geom/coordinateArray.h", 2247, 94, "" );
+ define_source_info( method_kind, "GEOM:size", "../../../../projects/cando/include/cando/geom/coordinateArray.h", 3591, 119, "" );
 }
 NOINLINE void source_info_2254_helper() {
- define_source_info( class_kind, core::magic_name("GEOM:CoordinateArrayWithHash"), "../../../../projects/cando/include/cando/geom/coordinateArray.h", 3517, 131, "" );
+ define_source_info( class_kind, core::magic_name("GEOM:CoordinateArrayWithHash"), "../../../../projects/cando/include/cando/geom/coordinateArray.h", 4861, 156, "" );
 }
 NOINLINE void source_info_2255_helper() {
- define_source_info( method_kind, "GEOM:coordinate-array-with-hash-setHash", "../../../../projects/cando/include/cando/geom/coordinateArray.h", 4052, 148, "" );
+ define_source_info( method_kind, "GEOM:coordinate-array-with-hash-setHash", "../../../../projects/cando/include/cando/geom/coordinateArray.h", 5396, 173, "" );
 }
 NOINLINE void source_info_2256_helper() {
- define_source_info( method_kind, "GEOM:coordinate-array-with-hash-gethash", "../../../../projects/cando/include/cando/geom/coordinateArray.h", 3949, 146, "" );
+ define_source_info( method_kind, "GEOM:coordinate-array-with-hash-gethash", "../../../../projects/cando/include/cando/geom/coordinateArray.h", 5293, 171, "" );
 }
 NOINLINE void source_info_2257_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:StructureComparer"), "../../../../projects/cando/include/cando/chem/structureComparer.h", 912, 44, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StructureComparer"), "../../../../projects/cando/include/cando/chem/structureComparer.h", 2258, 69, "" );
 }
 NOINLINE void source_info_2258_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:StructureListEntry"), "../../../../projects/cando/include/cando/chem/structureList.h", 685, 38, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StructureListEntry"), "../../../../projects/cando/include/cando/chem/structureList.h", 2027, 63, "" );
 }
 NOINLINE void source_info_2259_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:StructureList"), "../../../../projects/cando/include/cando/chem/structureList.h", 2435, 93, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:StructureList"), "../../../../projects/cando/include/cando/chem/structureList.h", 3777, 118, "" );
 }
 NOINLINE void source_info_2260_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:SuperposeEngine"), "../../../../projects/cando/include/cando/chem/superposeEngine.h", 1288, 52, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:SuperposeEngine"), "../../../../projects/cando/include/cando/chem/superposeEngine.h", 2632, 77, "" );
 }
 NOINLINE void source_info_2261_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:superpose"), "../../src/chem/superposeEngine.cc", 15869, 483, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:superpose"), "../../src/chem/superposeEngine.cc", 17214, 508, "" );
 }
 NOINLINE void source_info_2262_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setMoveableAllPoints"), "../../src/chem/superposeEngine.cc", 15319, 462, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMoveableAllPoints"), "../../src/chem/superposeEngine.cc", 16664, 487, "" );
 }
 NOINLINE void source_info_2263_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setMoveablePoints"), "../../src/chem/superposeEngine.cc", 14793, 451, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMoveablePoints"), "../../src/chem/superposeEngine.cc", 16138, 476, "" );
 }
 NOINLINE void source_info_2264_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setFixedAllPoints"), "../../src/chem/superposeEngine.cc", 14357, 434, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setFixedAllPoints"), "../../src/chem/superposeEngine.cc", 15702, 459, "" );
 }
 NOINLINE void source_info_2265_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setFixedPoints"), "../../src/chem/superposeEngine.cc", 13625, 413, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setFixedPoints"), "../../src/chem/superposeEngine.cc", 14970, 438, "" );
 }
 NOINLINE void source_info_2266_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:rootMeanSquareDifference"), "../../src/chem/superposeEngine.cc", 13046, 394, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:rootMeanSquareDifference"), "../../src/chem/superposeEngine.cc", 14391, 419, "" );
 }
 NOINLINE void source_info_2267_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getNumberOfMoveablePoints"), "../../src/chem/superposeEngine.cc", 3972, 159, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getNumberOfMoveablePoints"), "../../src/chem/superposeEngine.cc", 5317, 184, "" );
 }
 NOINLINE void source_info_2268_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getNumberOfFixedPoints"), "../../src/chem/superposeEngine.cc", 3819, 152, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getNumberOfFixedPoints"), "../../src/chem/superposeEngine.cc", 5164, 177, "" );
 }
 NOINLINE void source_info_2269_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:debugString"), "../../src/chem/superposeEngine.cc", 1045, 57, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:debugString"), "../../src/chem/superposeEngine.cc", 2390, 82, "" );
 }
 NOINLINE void source_info_2270_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:SuperposeSelectedAtoms"), "../../../../projects/cando/include/cando/chem/superposeEngine.h", 2998, 113, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:SuperposeSelectedAtoms"), "../../../../projects/cando/include/cando/chem/superposeEngine.h", 4342, 138, "" );
 }
 NOINLINE void source_info_2271_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Topology"), "../../../../projects/cando/include/cando/chem/topology.h", 2254, 75, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Topology"), "../../../../projects/cando/include/cando/chem/topology.h", 3591, 100, "" );
 }
 NOINLINE void source_info_2272_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:lookupOrCreateStereoisomerAtoms"), "../../src/chem/topology.cc", 15314, 497, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:lookupOrCreateStereoisomerAtoms"), "../../src/chem/topology.cc", 16652, 522, "" );
 }
 NOINLINE void source_info_2273_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getTemporaryObject"), "../../src/chem/topology.cc", 15115, 489, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getTemporaryObject"), "../../src/chem/topology.cc", 16453, 514, "" );
 }
 NOINLINE void source_info_2274_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setTemporaryObject"), "../../src/chem/topology.cc", 14948, 482, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setTemporaryObject"), "../../src/chem/topology.cc", 16286, 507, "" );
 }
 NOINLINE void source_info_2275_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:plugNamed"), "../../src/chem/topology.cc", 14155, 452, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:plugNamed"), "../../src/chem/topology.cc", 15493, 477, "" );
 }
 NOINLINE void source_info_2276_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:hasPlugNamed"), "../../src/chem/topology.cc", 13673, 437, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasPlugNamed"), "../../src/chem/topology.cc", 15011, 462, "" );
 }
 NOINLINE void source_info_2277_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:matchesContext"), "../../src/chem/topology.cc", 13183, 422, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:matchesContext"), "../../src/chem/topology.cc", 14521, 447, "" );
 }
 NOINLINE void source_info_2278_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:hasFlag"), "../../src/chem/topology.cc", 13027, 415, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasFlag"), "../../src/chem/topology.cc", 14365, 440, "" );
 }
 NOINLINE void source_info_2279_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getConstitution"), "../../src/chem/topology.cc", 9705, 311, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getConstitution"), "../../src/chem/topology.cc", 11043, 336, "" );
 }
 NOINLINE void source_info_2280_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:outPlugsAsCons"), "../../src/chem/topology.cc", 9200, 291, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:outPlugsAsCons"), "../../src/chem/topology.cc", 10538, 316, "" );
 }
 NOINLINE void source_info_2281_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:plugsWithMatesAsCons"), "../../src/chem/topology.cc", 8509, 272, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:plugsWithMatesAsCons"), "../../src/chem/topology.cc", 9847, 297, "" );
 }
 NOINLINE void source_info_2282_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:plugsAsCons"), "../../src/chem/topology.cc", 7911, 254, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:plugsAsCons"), "../../src/chem/topology.cc", 9249, 279, "" );
 }
 NOINLINE void source_info_2283_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getInPlug"), "../../src/chem/topology.cc", 7626, 240, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getInPlug"), "../../src/chem/topology.cc", 8964, 265, "" );
 }
 NOINLINE void source_info_2284_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:properties"), "../../src/chem/topology.cc", 7272, 220, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:properties"), "../../src/chem/topology.cc", 8610, 245, "" );
 }
 NOINLINE void source_info_2285_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getMonomerContext"), "../../src/chem/topology.cc", 6897, 208, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomerContext"), "../../src/chem/topology.cc", 8235, 233, "" );
 }
 NOINLINE void source_info_2286_helper() {
- define_source_info( method_kind, "CHEM:getResidueNetCharge", "../../../../projects/cando/include/cando/chem/topology.h", 5493, 175, "" );
+ define_source_info( method_kind, "CHEM:getResidueNetCharge", "../../../../projects/cando/include/cando/chem/topology.h", 6830, 200, "" );
 }
 NOINLINE void source_info_2287_helper() {
- define_source_info( method_kind, "CHEM:numberOfPlugs", "../../../../projects/cando/include/cando/chem/topology.h", 5074, 163, "" );
+ define_source_info( method_kind, "CHEM:numberOfPlugs", "../../../../projects/cando/include/cando/chem/topology.h", 6411, 188, "" );
 }
 NOINLINE void source_info_2288_helper() {
- define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/topology.h", 4688, 152, "" );
+ define_source_info( method_kind, "CHEM:getName", "../../../../projects/cando/include/cando/chem/topology.h", 6025, 177, "" );
 }
 NOINLINE void source_info_2289_helper() {
- define_source_info( method_kind, "CHEM:suppressTrainers", "../../../../projects/cando/include/cando/chem/topology.h", 4160, 135, "" );
+ define_source_info( method_kind, "CHEM:suppressTrainers", "../../../../projects/cando/include/cando/chem/topology.h", 5497, 160, "" );
 }
 NOINLINE void source_info_2290_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:TrajectoryFrame"), "../../../../projects/cando/include/cando/chem/trajectory.h", 473, 27, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:TrajectoryFrame"), "../../../../projects/cando/include/cando/chem/trajectory.h", 1812, 52, "" );
 }
 NOINLINE void source_info_2291_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Trajectory"), "../../../../projects/cando/include/cando/chem/trajectory.h", 1352, 65, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Trajectory"), "../../../../projects/cando/include/cando/chem/trajectory.h", 2691, 90, "" );
 }
 NOINLINE void source_info_2292_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:applyTrajectoryFrameToMatter"), "../../src/chem/trajectory.cc", 4278, 184, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:applyTrajectoryFrameToMatter"), "../../src/chem/trajectory.cc", 5618, 209, "" );
 }
 NOINLINE void source_info_2293_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getTrajectoryFrame"), "../../src/chem/trajectory.cc", 3710, 164, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getTrajectoryFrame"), "../../src/chem/trajectory.cc", 5050, 189, "" );
 }
 NOINLINE void source_info_2294_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:numberOfTrajectoryFrames"), "../../src/chem/trajectory.cc", 3573, 157, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:numberOfTrajectoryFrames"), "../../src/chem/trajectory.cc", 4913, 182, "" );
 }
 NOINLINE void source_info_2295_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addFrame"), "../../src/chem/trajectory.cc", 3178, 146, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addFrame"), "../../src/chem/trajectory.cc", 4518, 171, "" );
 }
 NOINLINE void source_info_2296_helper() {
- define_source_info( method_kind, "CHEM:getMatter", "../../../../projects/cando/include/cando/chem/trajectory.h", 2371, 102, "" );
+ define_source_info( method_kind, "CHEM:getMatter", "../../../../projects/cando/include/cando/chem/trajectory.h", 3710, 127, "" );
 }
 NOINLINE void source_info_2297_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Twister"), "../../../../projects/cando/include/cando/chem/twister.h", 552, 40, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Twister"), "../../../../projects/cando/include/cando/chem/twister.h", 1888, 65, "" );
 }
 NOINLINE void source_info_2298_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:rotateAbsolute"), "../../src/chem/twister.cc", 5199, 199, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:rotateAbsolute"), "../../src/chem/twister.cc", 6536, 224, "" );
 }
 NOINLINE void source_info_2299_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:rotate"), "../../src/chem/twister.cc", 3665, 163, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:rotate"), "../../src/chem/twister.cc", 5002, 188, "" );
 }
 NOINLINE void source_info_2300_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:defineFixedAndMobile"), "../../src/chem/twister.cc", 3466, 156, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineFixedAndMobile"), "../../src/chem/twister.cc", 4803, 181, "" );
 }
 NOINLINE void source_info_2301_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:defineForBond"), "../../src/chem/twister.cc", 3277, 149, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineForBond"), "../../src/chem/twister.cc", 4614, 174, "" );
 }
 NOINLINE void source_info_2302_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:defineForDihedral"), "../../src/chem/twister.cc", 3078, 140, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:defineForDihedral"), "../../src/chem/twister.cc", 4415, 165, "" );
 }
 NOINLINE void source_info_2303_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addAtom"), "../../src/chem/twister.cc", 1186, 60, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addAtom"), "../../src/chem/twister.cc", 2523, 85, "" );
 }
 NOINLINE void source_info_2304_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setFixedAndMovable"), "../../src/chem/twister.cc", 1016, 53, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setFixedAndMovable"), "../../src/chem/twister.cc", 2353, 78, "" );
 }
 NOINLINE void source_info_2305_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:TwisterDriver"), "../../../../projects/cando/include/cando/chem/twister.h", 1801, 99, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:TwisterDriver"), "../../../../projects/cando/include/cando/chem/twister.h", 3137, 124, "" );
 }
 NOINLINE void source_info_2306_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:perturbConformation"), "../../src/chem/twister.cc", 6967, 259, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:perturbConformation"), "../../src/chem/twister.cc", 8304, 284, "" );
 }
 NOINLINE void source_info_2307_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getTwister"), "../../src/chem/twister.cc", 6778, 252, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getTwister"), "../../src/chem/twister.cc", 8115, 277, "" );
 }
 NOINLINE void source_info_2308_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:addTwister"), "../../src/chem/twister.cc", 6633, 245, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:addTwister"), "../../src/chem/twister.cc", 7970, 270, "" );
 }
 NOINLINE void source_info_2309_helper() {
- define_source_info( method_kind, "CHEM:numberOfTwisters", "../../../../projects/cando/include/cando/chem/twister.h", 2131, 114, "" );
+ define_source_info( method_kind, "CHEM:numberOfTwisters", "../../../../projects/cando/include/cando/chem/twister.h", 3467, 139, "" );
 }
 NOINLINE void source_info_2310_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:VirtualSphere"), "../../../../projects/cando/include/cando/chem/virtualSphere.h", 421, 26, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:VirtualSphere"), "../../../../projects/cando/include/cando/chem/virtualSphere.h", 1763, 51, "" );
 }
 NOINLINE void source_info_2311_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setMouseYAxisWheelChange"), "../../src/chem/virtualSphere.cc", 10579, 420, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMouseYAxisWheelChange"), "../../src/chem/virtualSphere.cc", 11922, 445, "" );
 }
 NOINLINE void source_info_2312_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setMouseXAxisWheelChange"), "../../src/chem/virtualSphere.cc", 9473, 376, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMouseXAxisWheelChange"), "../../src/chem/virtualSphere.cc", 10816, 401, "" );
 }
 NOINLINE void source_info_2313_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setMouseMove"), "../../src/chem/virtualSphere.cc", 6850, 296, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMouseMove"), "../../src/chem/virtualSphere.cc", 8193, 321, "" );
 }
 NOINLINE void source_info_2314_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setMouseStart"), "../../src/chem/virtualSphere.cc", 6287, 276, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setMouseStart"), "../../src/chem/virtualSphere.cc", 7630, 301, "" );
 }
 NOINLINE void source_info_2315_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:dump"), "../../src/chem/virtualSphere.cc", 5229, 246, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:dump"), "../../src/chem/virtualSphere.cc", 6572, 271, "" );
 }
 NOINLINE void source_info_2316_helper() {
- define_source_info( class_kind, core::magic_name("ADAPT:StringList"), "../../../../projects/cando/include/cando/adapt/stringList.h", 1376, 51, "" );
+ define_source_info( class_kind, core::magic_name("ADAPT:StringList"), "../../../../projects/cando/include/cando/adapt/stringList.h", 1738, 50, "" );
 }
 NOINLINE void source_info_2317_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:string-list-append"), "../../src/adapt/stringList.cc", 2445, 97, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:string-list-append"), "../../src/adapt/stringList.cc", 2807, 96, "" );
 }
 NOINLINE void source_info_2318_helper() {
- define_source_info( method_kind, core::magic_name("ADAPT:asString"), "../../src/adapt/stringList.cc", 1478, 56, "" );
+ define_source_info( method_kind, core::magic_name("ADAPT:asString"), "../../src/adapt/stringList.cc", 1840, 55, "" );
 }
 NOINLINE void source_info_2319_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ZMatrixInternal"), "../../../../projects/cando/include/cando/chem/zMatrix.h", 404, 28, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ZMatrixInternal"), "../../../../projects/cando/include/cando/chem/zMatrix.h", 1740, 53, "" );
 }
 NOINLINE void source_info_2320_helper() {
- define_source_info( method_kind, "CHEM:getValue", "../../../../projects/cando/include/cando/chem/zMatrix.h", 1512, 59, "" );
+ define_source_info( method_kind, "CHEM:getValue", "../../../../projects/cando/include/cando/chem/zMatrix.h", 2848, 84, "" );
 }
 NOINLINE void source_info_2321_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ZMatrixBondInternal"), "../../../../projects/cando/include/cando/chem/zMatrix.h", 1801, 73, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ZMatrixBondInternal"), "../../../../projects/cando/include/cando/chem/zMatrix.h", 3137, 98, "" );
 }
 NOINLINE void source_info_2322_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getBondAtomZMatrixName"), "../../src/chem/zMatrix.cc", 2146, 125, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getBondAtomZMatrixName"), "../../src/chem/zMatrix.cc", 3483, 150, "" );
 }
 NOINLINE void source_info_2323_helper() {
- define_source_info( method_kind, "CHEM:getBondAtomIndex", "../../../../projects/cando/include/cando/chem/zMatrix.h", 2303, 86, "" );
+ define_source_info( method_kind, "CHEM:getBondAtomIndex", "../../../../projects/cando/include/cando/chem/zMatrix.h", 3639, 111, "" );
 }
 NOINLINE void source_info_2324_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ZMatrixAngleInternal"), "../../../../projects/cando/include/cando/chem/zMatrix.h", 3081, 112, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ZMatrixAngleInternal"), "../../../../projects/cando/include/cando/chem/zMatrix.h", 4417, 137, "" );
 }
 NOINLINE void source_info_2325_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getAngleAtomZMatrixName"), "../../src/chem/zMatrix.cc", 4494, 228, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAngleAtomZMatrixName"), "../../src/chem/zMatrix.cc", 5831, 253, "" );
 }
 NOINLINE void source_info_2326_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getBondAtomZMatrixName"), "../../src/chem/zMatrix.cc", 4291, 222, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getBondAtomZMatrixName"), "../../src/chem/zMatrix.cc", 5628, 247, "" );
 }
 NOINLINE void source_info_2327_helper() {
- define_source_info( method_kind, "CHEM:getAngleAtomIndex", "../../../../projects/cando/include/cando/chem/zMatrix.h", 3826, 134, "" );
+ define_source_info( method_kind, "CHEM:getAngleAtomIndex", "../../../../projects/cando/include/cando/chem/zMatrix.h", 5162, 159, "" );
 }
 NOINLINE void source_info_2328_helper() {
- define_source_info( method_kind, "CHEM:getBondAtomIndex", "../../../../projects/cando/include/cando/chem/zMatrix.h", 3726, 132, "" );
+ define_source_info( method_kind, "CHEM:getBondAtomIndex", "../../../../projects/cando/include/cando/chem/zMatrix.h", 5062, 157, "" );
 }
 NOINLINE void source_info_2329_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ZMatrixDihedralInternal"), "../../../../projects/cando/include/cando/chem/zMatrix.h", 4747, 162, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ZMatrixDihedralInternal"), "../../../../projects/cando/include/cando/chem/zMatrix.h", 6083, 187, "" );
 }
 NOINLINE void source_info_2330_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getDihedralAtomZMatrixName"), "../../src/chem/zMatrix.cc", 7253, 329, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getDihedralAtomZMatrixName"), "../../src/chem/zMatrix.cc", 8590, 354, "" );
 }
 NOINLINE void source_info_2331_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getAngleAtomZMatrixName"), "../../src/chem/zMatrix.cc", 7042, 323, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAngleAtomZMatrixName"), "../../src/chem/zMatrix.cc", 8379, 348, "" );
 }
 NOINLINE void source_info_2332_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getBondAtomZMatrixName"), "../../src/chem/zMatrix.cc", 6836, 317, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getBondAtomZMatrixName"), "../../src/chem/zMatrix.cc", 8173, 342, "" );
 }
 NOINLINE void source_info_2333_helper() {
- define_source_info( method_kind, "CHEM:getDihedralAtomIndex", "../../../../projects/cando/include/cando/chem/zMatrix.h", 5703, 189, "" );
+ define_source_info( method_kind, "CHEM:getDihedralAtomIndex", "../../../../projects/cando/include/cando/chem/zMatrix.h", 7039, 214, "" );
 }
 NOINLINE void source_info_2334_helper() {
- define_source_info( method_kind, "CHEM:getAngleAtomIndex", "../../../../projects/cando/include/cando/chem/zMatrix.h", 5598, 187, "" );
+ define_source_info( method_kind, "CHEM:getAngleAtomIndex", "../../../../projects/cando/include/cando/chem/zMatrix.h", 6934, 212, "" );
 }
 NOINLINE void source_info_2335_helper() {
- define_source_info( method_kind, "CHEM:getBondAtomIndex", "../../../../projects/cando/include/cando/chem/zMatrix.h", 5498, 185, "" );
+ define_source_info( method_kind, "CHEM:getBondAtomIndex", "../../../../projects/cando/include/cando/chem/zMatrix.h", 6834, 210, "" );
 }
 NOINLINE void source_info_2336_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ZMatrixEntry"), "../../../../projects/cando/include/cando/chem/zMatrix.h", 6667, 218, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ZMatrixEntry"), "../../../../projects/cando/include/cando/chem/zMatrix.h", 8003, 243, "" );
 }
 NOINLINE void source_info_2337_helper() {
- define_source_info( method_kind, "CHEM:getDihedral", "../../../../projects/cando/include/cando/chem/zMatrix.h", 8043, 250, "" );
+ define_source_info( method_kind, "CHEM:getDihedral", "../../../../projects/cando/include/cando/chem/zMatrix.h", 9379, 275, "" );
 }
 NOINLINE void source_info_2338_helper() {
- define_source_info( method_kind, "CHEM:hasDihedral", "../../../../projects/cando/include/cando/chem/zMatrix.h", 7910, 248, "" );
+ define_source_info( method_kind, "CHEM:hasDihedral", "../../../../projects/cando/include/cando/chem/zMatrix.h", 9246, 273, "" );
 }
 NOINLINE void source_info_2339_helper() {
- define_source_info( method_kind, "CHEM:getAngle", "../../../../projects/cando/include/cando/chem/zMatrix.h", 7778, 246, "" );
+ define_source_info( method_kind, "CHEM:getAngle", "../../../../projects/cando/include/cando/chem/zMatrix.h", 9114, 271, "" );
 }
 NOINLINE void source_info_2340_helper() {
- define_source_info( method_kind, "CHEM:hasAngle", "../../../../projects/cando/include/cando/chem/zMatrix.h", 7658, 244, "" );
+ define_source_info( method_kind, "CHEM:hasAngle", "../../../../projects/cando/include/cando/chem/zMatrix.h", 8994, 269, "" );
 }
 NOINLINE void source_info_2341_helper() {
- define_source_info( method_kind, "CHEM:getBond", "../../../../projects/cando/include/cando/chem/zMatrix.h", 7533, 242, "" );
+ define_source_info( method_kind, "CHEM:getBond", "../../../../projects/cando/include/cando/chem/zMatrix.h", 8869, 267, "" );
 }
 NOINLINE void source_info_2342_helper() {
- define_source_info( method_kind, "CHEM:hasBond", "../../../../projects/cando/include/cando/chem/zMatrix.h", 7416, 240, "" );
+ define_source_info( method_kind, "CHEM:hasBond", "../../../../projects/cando/include/cando/chem/zMatrix.h", 8752, 265, "" );
 }
 NOINLINE void source_info_2343_helper() {
- define_source_info( method_kind, "CHEM:getTargetAtomZMatrixName", "../../../../projects/cando/include/cando/chem/zMatrix.h", 7311, 237, "" );
+ define_source_info( method_kind, "CHEM:getTargetAtomZMatrixName", "../../../../projects/cando/include/cando/chem/zMatrix.h", 8647, 262, "" );
 }
 NOINLINE void source_info_2344_helper() {
- define_source_info( method_kind, "CHEM:getAtom", "../../../../projects/cando/include/cando/chem/zMatrix.h", 7218, 235, "" );
+ define_source_info( method_kind, "CHEM:getAtom", "../../../../projects/cando/include/cando/chem/zMatrix.h", 8554, 260, "" );
 }
 NOINLINE void source_info_2345_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ZMatrix"), "../../../../projects/cando/include/cando/chem/zMatrix.h", 8351, 262, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ZMatrix"), "../../../../projects/cando/include/cando/chem/zMatrix.h", 9687, 287, "" );
 }
 NOINLINE void source_info_2346_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:all-zmatrix-atom-names-as-string"), "../../src/chem/zMatrix.cc", 15008, 615, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:all-zmatrix-atom-names-as-string"), "../../src/chem/zMatrix.cc", 16345, 640, "" );
 }
 NOINLINE void source_info_2347_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:zmatrix-entry-with-name"), "../../src/chem/zMatrix.cc", 14604, 603, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:zmatrix-entry-with-name"), "../../src/chem/zMatrix.cc", 15941, 628, "" );
 }
 NOINLINE void source_info_2348_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:entriesAsCons"), "../../src/chem/zMatrix.cc", 14422, 597, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:entriesAsCons"), "../../src/chem/zMatrix.cc", 15759, 622, "" );
 }
 NOINLINE void source_info_2349_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:extractInternals"), "../../src/chem/zMatrix.cc", 13940, 574, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:extractInternals"), "../../src/chem/zMatrix.cc", 15277, 599, "" );
 }
 NOINLINE void source_info_2350_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:get-zmatrix-atom-name-at-index"), "../../src/chem/zMatrix.cc", 8969, 403, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:get-zmatrix-atom-name-at-index"), "../../src/chem/zMatrix.cc", 10306, 428, "" );
 }
 NOINLINE void source_info_2351_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:Constitution"), "../../../../projects/cando/include/cando/chem/constitution.h", 2911, 84, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:Constitution"), "../../../../projects/cando/include/cando/chem/constitution.h", 4252, 109, "" );
 }
 NOINLINE void source_info_2352_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:asGroup"), "../../src/chem/constitution.cc", 16348, 496, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:asGroup"), "../../src/chem/constitution.cc", 17690, 521, "" );
 }
 NOINLINE void source_info_2353_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getTopologyForContext"), "../../src/chem/constitution.cc", 15975, 478, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getTopologyForContext"), "../../src/chem/constitution.cc", 17317, 503, "" );
 }
 NOINLINE void source_info_2354_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:topologyWithName"), "../../src/chem/constitution.cc", 15146, 447, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:topologyWithName"), "../../src/chem/constitution.cc", 16488, 472, "" );
 }
 NOINLINE void source_info_2355_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:simplestTopologyWithPlugNamed"), "../../src/chem/constitution.cc", 14067, 408, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:simplestTopologyWithPlugNamed"), "../../src/chem/constitution.cc", 15409, 433, "" );
 }
 NOINLINE void source_info_2356_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:createResidueForStereoisomerName"), "../../src/chem/constitution.cc", 12988, 366, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:createResidueForStereoisomerName"), "../../src/chem/constitution.cc", 14330, 391, "" );
 }
 NOINLINE void source_info_2357_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:plugsWithMatesAsCons"), "../../src/chem/constitution.cc", 11946, 329, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:plugsWithMatesAsCons"), "../../src/chem/constitution.cc", 13288, 354, "" );
 }
 NOINLINE void source_info_2358_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:topologiesAsCons"), "../../src/chem/constitution.cc", 11330, 313, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:topologiesAsCons"), "../../src/chem/constitution.cc", 12672, 338, "" );
 }
 NOINLINE void source_info_2359_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:stereoisomersAsCons"), "../../src/chem/constitution.cc", 11167, 311, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:stereoisomersAsCons"), "../../src/chem/constitution.cc", 12509, 336, "" );
 }
 NOINLINE void source_info_2360_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getPdbNamesAsStringList"), "../../src/chem/constitution.cc", 9858, 267, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getPdbNamesAsStringList"), "../../src/chem/constitution.cc", 11200, 292, "" );
 }
 NOINLINE void source_info_2361_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getMonomerNameAsStringSet"), "../../src/chem/constitution.cc", 9663, 261, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getMonomerNameAsStringSet"), "../../src/chem/constitution.cc", 11005, 286, "" );
 }
 NOINLINE void source_info_2362_helper() {
- define_source_info( method_kind, "CHEM:getPlugNamed", "../../../../projects/cando/include/cando/chem/constitution.h", 7800, 212, "" );
+ define_source_info( method_kind, "CHEM:getPlugNamed", "../../../../projects/cando/include/cando/chem/constitution.h", 9141, 237, "" );
 }
 NOINLINE void source_info_2363_helper() {
- define_source_info( method_kind, "CHEM:hasPlugNamed", "../../../../projects/cando/include/cando/chem/constitution.h", 7669, 210, "" );
+ define_source_info( method_kind, "CHEM:hasPlugNamed", "../../../../projects/cando/include/cando/chem/constitution.h", 9010, 235, "" );
 }
 NOINLINE void source_info_2364_helper() {
- define_source_info( method_kind, "CHEM:getComment", "../../../../projects/cando/include/cando/chem/constitution.h", 7498, 205, "" );
+ define_source_info( method_kind, "CHEM:getComment", "../../../../projects/cando/include/cando/chem/constitution.h", 8839, 230, "" );
 }
 NOINLINE void source_info_2365_helper() {
- define_source_info( method_kind, "CHEM:setComment", "../../../../projects/cando/include/cando/chem/constitution.h", 7390, 203, "" );
+ define_source_info( method_kind, "CHEM:setComment", "../../../../projects/cando/include/cando/chem/constitution.h", 8731, 228, "" );
 }
 NOINLINE void source_info_2366_helper() {
- define_source_info( method_kind, "CHEM:getConstitutionAtoms", "../../../../projects/cando/include/cando/chem/constitution.h", 6669, 182, "" );
+ define_source_info( method_kind, "CHEM:getConstitutionAtoms", "../../../../projects/cando/include/cando/chem/constitution.h", 8010, 207, "" );
 }
 NOINLINE void source_info_2367_helper() {
- define_source_info( method_kind, "CHEM:setMetaConstitutionName", "../../../../projects/cando/include/cando/chem/constitution.h", 6350, 172, "" );
+ define_source_info( method_kind, "CHEM:setMetaConstitutionName", "../../../../projects/cando/include/cando/chem/constitution.h", 7691, 197, "" );
 }
 NOINLINE void source_info_2368_helper() {
- define_source_info( method_kind, "CHEM:getMetaConstitutionName", "../../../../projects/cando/include/cando/chem/constitution.h", 6219, 170, "" );
+ define_source_info( method_kind, "CHEM:getMetaConstitutionName", "../../../../projects/cando/include/cando/chem/constitution.h", 7560, 195, "" );
 }
 NOINLINE void source_info_2369_helper() {
- define_source_info( method_kind, "CHEM:setConstitutionName", "../../../../projects/cando/include/cando/chem/constitution.h", 6098, 167, "" );
+ define_source_info( method_kind, "CHEM:setConstitutionName", "../../../../projects/cando/include/cando/chem/constitution.h", 7439, 192, "" );
 }
 NOINLINE void source_info_2370_helper() {
- define_source_info( method_kind, "CHEM:constitutionName", "../../../../projects/cando/include/cando/chem/constitution.h", 5984, 165, "" );
+ define_source_info( method_kind, "CHEM:constitutionName", "../../../../projects/cando/include/cando/chem/constitution.h", 7325, 190, "" );
 }
 NOINLINE void source_info_2371_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:EnergyAnchorRestraint"), "../../../../projects/cando/include/cando/chem/energyAnchorRestraint.h", 1581, 76, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyAnchorRestraint"), "../../../../projects/cando/include/cando/chem/energyAnchorRestraint.h", 2931, 101, "" );
 }
 NOINLINE void source_info_2372_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:EnergyAngle"), "../../../../projects/cando/include/cando/chem/energyAngle.h", 2653, 102, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyAngle"), "../../../../projects/cando/include/cando/chem/energyAngle.h", 3993, 127, "" );
 }
 NOINLINE void source_info_2373_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:EnergyChiralRestraint"), "../../../../projects/cando/include/cando/chem/energyChiralRestraint.h", 1929, 93, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyChiralRestraint"), "../../../../projects/cando/include/cando/chem/energyChiralRestraint.h", 3279, 118, "" );
 }
 NOINLINE void source_info_2374_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:EnergyDihedral"), "../../../../projects/cando/include/cando/chem/energyDihedral.h", 3448, 112, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyDihedral"), "../../../../projects/cando/include/cando/chem/energyDihedral.h", 4791, 137, "" );
 }
 NOINLINE void source_info_2375_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:EnergyFixedNonbondRestraint"), "../../../../projects/cando/include/cando/chem/energyFixedNonbond.h", 2200, 91, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyFixedNonbondRestraint"), "../../../../projects/cando/include/cando/chem/energyFixedNonbond.h", 3547, 116, "" );
 }
 NOINLINE void source_info_2376_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:EnergyImproperRestraint"), "../../../../projects/cando/include/cando/chem/energyImproperRestraint.h", 2013, 89, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyImproperRestraint"), "../../../../projects/cando/include/cando/chem/energyImproperRestraint.h", 3365, 114, "" );
 }
 NOINLINE void source_info_2377_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:EnergyNonbond"), "../../../../projects/cando/include/cando/chem/energyNonbond.h", 2493, 102, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyNonbond"), "../../../../projects/cando/include/cando/chem/energyNonbond.h", 3835, 127, "" );
 }
 NOINLINE void source_info_2378_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:EnergyStretch"), "../../../../projects/cando/include/cando/chem/energyStretch.h", 2297, 99, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:EnergyStretch"), "../../../../projects/cando/include/cando/chem/energyStretch.h", 3639, 124, "" );
 }
 NOINLINE void source_info_2379_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:stretchTermBetweenAtoms"), "../../src/chem/energyStretch.cc", 7042, 235, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:stretchTermBetweenAtoms"), "../../src/chem/energyStretch.cc", 8385, 260, "" );
 }
 NOINLINE void source_info_2380_helper() {
  define_source_info( class_kind, core::magic_name("CORE:Iterator"), "/Users/meister/Development/clasp/include/clasp/core/iterator.h", 1223, 41, "" );
@@ -7200,121 +7175,121 @@ NOINLINE void source_info_2385_helper() {
  define_source_info( method_kind, core::magic_name("core:begin"), "/Users/meister/Development/clasp/include/clasp/core/iterator.h", 1915, 63, "" );
 }
 NOINLINE void source_info_2386_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:IterateMatter"), "../../../../projects/cando/include/cando/chem/iterateMatter.h", 339, 27, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:IterateMatter"), "../../../../projects/cando/include/cando/chem/iterateMatter.h", 1681, 52, "" );
 }
 NOINLINE void source_info_2387_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:advance"), "../../src/chem/iterateMatter.cc", 1637, 91, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:advance"), "../../src/chem/iterateMatter.cc", 2980, 116, "" );
 }
 NOINLINE void source_info_2388_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:initTopAndGoal"), "../../src/chem/iterateMatter.cc", 1192, 66, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:initTopAndGoal"), "../../src/chem/iterateMatter.cc", 2535, 91, "" );
 }
 NOINLINE void source_info_2389_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:IterateAtoms"), "../../../../projects/cando/include/cando/chem/iterateMatter.h", 1251, 72, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:IterateAtoms"), "../../../../projects/cando/include/cando/chem/iterateMatter.h", 2593, 97, "" );
 }
 NOINLINE void source_info_2390_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:IterateResidues"), "../../../../projects/cando/include/cando/chem/iterateMatter.h", 1793, 98, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:IterateResidues"), "../../../../projects/cando/include/cando/chem/iterateMatter.h", 3135, 123, "" );
 }
 NOINLINE void source_info_2391_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:IterateBonds"), "../../../../projects/cando/include/cando/chem/iterateMatter.h", 2168, 118, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:IterateBonds"), "../../../../projects/cando/include/cando/chem/iterateMatter.h", 3510, 143, "" );
 }
 NOINLINE void source_info_2392_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getBondOrder"), "../../src/chem/iterateMatter.cc", 4980, 251, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getBondOrder"), "../../src/chem/iterateMatter.cc", 6323, 276, "" );
 }
 NOINLINE void source_info_2393_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getAtom2"), "../../src/chem/iterateMatter.cc", 4850, 245, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAtom2"), "../../src/chem/iterateMatter.cc", 6193, 270, "" );
 }
 NOINLINE void source_info_2394_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getAtom1"), "../../src/chem/iterateMatter.cc", 4724, 239, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getAtom1"), "../../src/chem/iterateMatter.cc", 6067, 264, "" );
 }
 NOINLINE void source_info_2395_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:IterateRestraints"), "../../../../projects/cando/include/cando/chem/iterateRestraints.h", 390, 26, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:IterateRestraints"), "../../../../projects/cando/include/cando/chem/iterateRestraints.h", 1736, 51, "" );
 }
 NOINLINE void source_info_2396_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ConformationCollectionEntry"), "../../../../projects/cando/include/cando/chem/conformationCollection.h", 768, 40, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConformationCollectionEntry"), "../../../../projects/cando/include/cando/chem/conformationCollection.h", 2119, 65, "" );
 }
 NOINLINE void source_info_2397_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:ConformationCollection"), "../../../../projects/cando/include/cando/chem/conformationCollection.h", 2432, 91, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:ConformationCollection"), "../../../../projects/cando/include/cando/chem/conformationCollection.h", 3783, 116, "" );
 }
 NOINLINE void source_info_2398_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:SuperposableConformationCollection"), "../../../../projects/cando/include/cando/chem/superposableConformationCollection.h", 684, 34, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:SuperposableConformationCollection"), "../../../../projects/cando/include/cando/chem/superposableConformationCollection.h", 2047, 59, "" );
 }
 NOINLINE void source_info_2399_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:VirtualAtom"), "../../../../projects/cando/include/cando/chem/virtualAtom.h", 361, 24, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:VirtualAtom"), "../../../../projects/cando/include/cando/chem/virtualAtom.h", 1701, 49, "" );
 }
 NOINLINE void source_info_2400_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:MonomerPack"), "../../../../projects/cando/include/cando/chem/monomerPack.h", 547, 28, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:MonomerPack"), "../../../../projects/cando/include/cando/chem/monomerPack.h", 1887, 53, "" );
 }
 NOINLINE void source_info_2401_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:removeMonomerName"), "../../src/chem/monomerPack.cc", 10712, 339, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:removeMonomerName"), "../../src/chem/monomerPack.cc", 12053, 364, "" );
 }
 NOINLINE void source_info_2402_helper() {
- define_source_info( class_kind, core::magic_name("CHEM:RepresentedEntityNameSet"), "../../../../projects/cando/include/cando/chem/representedEntityNameSet.h", 306, 21, "" );
+ define_source_info( class_kind, core::magic_name("CHEM:RepresentedEntityNameSet"), "../../../../projects/cando/include/cando/chem/representedEntityNameSet.h", 1659, 46, "" );
 }
 NOINLINE void source_info_2403_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:hasRepresentative"), "../../src/chem/representedEntityNameSet.cc", 1857, 69, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:hasRepresentative"), "../../src/chem/representedEntityNameSet.cc", 3211, 94, "" );
 }
 NOINLINE void source_info_2404_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:setRepresentative"), "../../src/chem/representedEntityNameSet.cc", 1688, 63, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:setRepresentative"), "../../src/chem/representedEntityNameSet.cc", 3042, 88, "" );
 }
 NOINLINE void source_info_2405_helper() {
- define_source_info( method_kind, core::magic_name("CHEM:getRepresentative"), "../../src/chem/representedEntityNameSet.cc", 1525, 57, "" );
+ define_source_info( method_kind, core::magic_name("CHEM:getRepresentative"), "../../src/chem/representedEntityNameSet.cc", 2879, 82, "" );
 }
 NOINLINE void source_info_2406_helper() {
- define_source_info( method_kind, "CHEM:testRepresentedEntityNameSet", "../../../../projects/cando/include/cando/chem/representedEntityNameSet.h", 1640, 66, "" );
+ define_source_info( method_kind, "CHEM:testRepresentedEntityNameSet", "../../../../projects/cando/include/cando/chem/representedEntityNameSet.h", 2993, 91, "" );
 }
 NOINLINE void source_info_2407_helper() {
- define_source_info( class_kind, core::magic_name("GEOM:M4"), "../../../../projects/cando/include/cando/geom/omatrix.h", 262, 14, "" );
+ define_source_info( class_kind, core::magic_name("GEOM:M4"), "../../../../projects/cando/include/cando/geom/omatrix.h", 1598, 39, "" );
 }
 NOINLINE void source_info_2408_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:mul_v3"), "../../src/geom/omatrix.cc", 2891, 132, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:mul_v3"), "../../src/geom/omatrix.cc", 4228, 157, "" );
 }
 NOINLINE void source_info_2409_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:mul_matrix"), "../../src/geom/omatrix.cc", 2767, 126, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:mul_matrix"), "../../src/geom/omatrix.cc", 4104, 151, "" );
 }
 NOINLINE void source_info_2410_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:asString"), "../../src/geom/omatrix.cc", 1165, 65, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:asString"), "../../src/geom/omatrix.cc", 2502, 90, "" );
 }
 NOINLINE void source_info_2411_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:setFromString"), "../../src/geom/omatrix.cc", 780, 44, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:setFromString"), "../../src/geom/omatrix.cc", 2117, 69, "" );
 }
 NOINLINE void source_info_2412_helper() {
- define_source_info( method_kind, "GEOM:is3x3Orthogonal", "../../../../projects/cando/include/cando/geom/omatrix.h", 1845, 61, "" );
+ define_source_info( method_kind, "GEOM:is3x3Orthogonal", "../../../../projects/cando/include/cando/geom/omatrix.h", 3181, 86, "" );
 }
 NOINLINE void source_info_2413_helper() {
- define_source_info( method_kind, "GEOM:atRowColPut", "../../../../projects/cando/include/cando/geom/omatrix.h", 1501, 54, "" );
+ define_source_info( method_kind, "GEOM:atRowColPut", "../../../../projects/cando/include/cando/geom/omatrix.h", 2837, 79, "" );
 }
 NOINLINE void source_info_2414_helper() {
- define_source_info( method_kind, "GEOM:atRowColGet", "../../../../projects/cando/include/cando/geom/omatrix.h", 1380, 52, "" );
+ define_source_info( method_kind, "GEOM:atRowColGet", "../../../../projects/cando/include/cando/geom/omatrix.h", 2716, 77, "" );
 }
 NOINLINE void source_info_2415_helper() {
- define_source_info( method_kind, "GEOM:transposed3x3", "../../../../projects/cando/include/cando/geom/omatrix.h", 1268, 49, "" );
+ define_source_info( method_kind, "GEOM:transposed3x3", "../../../../projects/cando/include/cando/geom/omatrix.h", 2604, 74, "" );
 }
 NOINLINE void source_info_2416_helper() {
- define_source_info( method_kind, "GEOM:extract3x3", "../../../../projects/cando/include/cando/geom/omatrix.h", 1161, 47, "" );
+ define_source_info( method_kind, "GEOM:extract3x3", "../../../../projects/cando/include/cando/geom/omatrix.h", 2497, 72, "" );
 }
 NOINLINE void source_info_2417_helper() {
- define_source_info( class_kind, core::magic_name("GEOM:BoundingBox"), "../../../../projects/cando/include/cando/geom/boundingBox.h", 393, 21, "" );
+ define_source_info( class_kind, core::magic_name("GEOM:BoundingBox"), "../../../../projects/cando/include/cando/geom/boundingBox.h", 1733, 46, "" );
 }
 NOINLINE void source_info_2418_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:pad"), "../../src/geom/boundingBox.cc", 3123, 99, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:pad"), "../../src/geom/boundingBox.cc", 4464, 124, "" );
 }
 NOINLINE void source_info_2419_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:getMaxZ"), "../../src/geom/boundingBox.cc", 1278, 39, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:getMaxZ"), "../../src/geom/boundingBox.cc", 2619, 64, "" );
 }
 NOINLINE void source_info_2420_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:getMinZ"), "../../src/geom/boundingBox.cc", 1158, 37, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:getMinZ"), "../../src/geom/boundingBox.cc", 2499, 62, "" );
 }
 NOINLINE void source_info_2421_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:getMaxY"), "../../src/geom/boundingBox.cc", 1038, 35, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:getMaxY"), "../../src/geom/boundingBox.cc", 2379, 60, "" );
 }
 NOINLINE void source_info_2422_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:getMinY"), "../../src/geom/boundingBox.cc", 918, 33, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:getMinY"), "../../src/geom/boundingBox.cc", 2259, 58, "" );
 }
 NOINLINE void source_info_2423_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:getMaxX"), "../../src/geom/boundingBox.cc", 798, 31, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:getMaxX"), "../../src/geom/boundingBox.cc", 2139, 56, "" );
 }
 NOINLINE void source_info_2424_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:getMinX"), "../../src/geom/boundingBox.cc", 678, 29, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:getMinX"), "../../src/geom/boundingBox.cc", 2019, 54, "" );
 }
 NOINLINE void source_info_2425_helper() {
  define_source_info( class_kind, core::magic_name("COMMON-LISP:character"), "/Users/meister/Development/clasp/include/clasp/core/character.h", 1575, 49, "" );
@@ -7362,7 +7337,7 @@ NOINLINE void source_info_2439_helper() {
  define_source_info( class_kind, core::magic_name("CORE:Binder"), "/Users/meister/Development/clasp/include/clasp/core/binder.h", 1541, 52, "" );
 }
 NOINLINE void source_info_2440_helper() {
- define_source_info( class_kind, core::magic_name("GEOM:Color"), "../../../../projects/cando/include/cando/geom/color.h", 339, 22, "" );
+ define_source_info( class_kind, core::magic_name("GEOM:Color"), "../../../../projects/cando/include/cando/geom/color.h", 1673, 47, "" );
 }
 NOINLINE void source_info_2441_helper() {
  define_source_info( class_kind, core::magic_name("CORE:HashTableEql"), "/Users/meister/Development/clasp/include/clasp/core/hashTableEql.h", 1266, 39, "" );
@@ -7485,94 +7460,94 @@ NOINLINE void source_info_2480_helper() {
  define_source_info( method_kind, core::magic_name("CORE:exists"), "../../../../src/core/fileSystem.cc", 16028, 590, "" );
 }
 NOINLINE void source_info_2481_helper() {
- define_source_info( class_kind, core::magic_name("UNITS:Dimension"), "../../../../projects/cando/include/cando/units/dimension.h", 250, 13, "" );
+ define_source_info( class_kind, core::magic_name("UNITS:Dimension"), "../../../../projects/cando/include/cando/units/dimension.h", 1588, 38, "" );
 }
 NOINLINE void source_info_2482_helper() {
- define_source_info( class_kind, core::magic_name("UNITS:Unit"), "../../../../projects/cando/include/cando/units/unit.h", 324, 16, "" );
+ define_source_info( class_kind, core::magic_name("UNITS:Unit"), "../../../../projects/cando/include/cando/units/unit.h", 1657, 41, "" );
 }
 NOINLINE void source_info_2483_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:/"), "../../src/units/unit.cc", 6837, 248, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:/"), "../../src/units/unit.cc", 8171, 273, "" );
 }
 NOINLINE void source_info_2484_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:*"), "../../src/units/unit.cc", 5986, 217, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:*"), "../../src/units/unit.cc", 7320, 242, "" );
 }
 NOINLINE void source_info_2485_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:conversion_factor_to"), "../../src/units/unit.cc", 5384, 197, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:conversion_factor_to"), "../../src/units/unit.cc", 6718, 222, "" );
 }
 NOINLINE void source_info_2486_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:unit_is_compatible"), "../../src/units/unit.cc", 5116, 187, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:unit_is_compatible"), "../../src/units/unit.cc", 6450, 212, "" );
 }
 NOINLINE void source_info_2487_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:test_set_amount"), "../../src/units/unit.cc", 4592, 162, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:test_set_amount"), "../../src/units/unit.cc", 5926, 187, "" );
 }
 NOINLINE void source_info_2488_helper() {
- define_source_info( class_kind, core::magic_name("UNITS:Quantity"), "../../../../projects/cando/include/cando/units/quantity.h", 270, 15, "" );
+ define_source_info( class_kind, core::magic_name("UNITS:Quantity"), "../../../../projects/cando/include/cando/units/quantity.h", 1607, 40, "" );
 }
 NOINLINE void source_info_2489_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:>="), "../../src/units/quantity.cc", 16392, 505, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:>="), "../../src/units/quantity.cc", 17730, 530, "" );
 }
 NOINLINE void source_info_2490_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:>"), "../../src/units/quantity.cc", 15929, 494, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:>"), "../../src/units/quantity.cc", 17267, 519, "" );
 }
 NOINLINE void source_info_2491_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:<="), "../../src/units/quantity.cc", 15464, 482, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:<="), "../../src/units/quantity.cc", 16802, 507, "" );
 }
 NOINLINE void source_info_2492_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:<"), "../../src/units/quantity.cc", 15001, 471, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:<"), "../../src/units/quantity.cc", 16339, 496, "" );
 }
 NOINLINE void source_info_2493_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:isnan"), "../../src/units/quantity.cc", 14675, 454, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:isnan"), "../../src/units/quantity.cc", 16013, 479, "" );
 }
 NOINLINE void source_info_2494_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:sqrt"), "../../src/units/quantity.cc", 14136, 441, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:sqrt"), "../../src/units/quantity.cc", 15474, 466, "" );
 }
 NOINLINE void source_info_2495_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:power"), "../../src/units/quantity.cc", 13595, 429, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:power"), "../../src/units/quantity.cc", 14933, 454, "" );
 }
 NOINLINE void source_info_2496_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:-"), "../../src/units/quantity.cc", 12564, 400, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:-"), "../../src/units/quantity.cc", 13902, 425, "" );
 }
 NOINLINE void source_info_2497_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:+"), "../../src/units/quantity.cc", 11570, 373, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:+"), "../../src/units/quantity.cc", 12908, 398, "" );
 }
 NOINLINE void source_info_2498_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:/"), "../../src/units/quantity.cc", 10186, 340, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:/"), "../../src/units/quantity.cc", 11524, 365, "" );
 }
 NOINLINE void source_info_2499_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:*"), "../../src/units/quantity.cc", 8255, 293, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:*"), "../../src/units/quantity.cc", 9593, 318, "" );
 }
 NOINLINE void source_info_2500_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:size"), "../../src/units/quantity.cc", 8118, 284, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:size"), "../../src/units/quantity.cc", 9456, 309, "" );
 }
 NOINLINE void source_info_2501_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:setElement"), "../../src/units/quantity.cc", 7042, 258, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:setElement"), "../../src/units/quantity.cc", 8380, 283, "" );
 }
 NOINLINE void source_info_2502_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:getElement_in_unit"), "../../src/units/quantity.cc", 6724, 250, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:getElement_in_unit"), "../../src/units/quantity.cc", 8062, 275, "" );
 }
 NOINLINE void source_info_2503_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:value_in_unit"), "../../src/units/quantity.cc", 6005, 227, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:value_in_unit"), "../../src/units/quantity.cc", 7343, 252, "" );
 }
 NOINLINE void source_info_2504_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:quantity_is_compatible"), "../../src/units/quantity.cc", 5455, 212, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:quantity_is_compatible"), "../../src/units/quantity.cc", 6793, 237, "" );
 }
 NOINLINE void source_info_2505_helper() {
- define_source_info( method_kind, core::magic_name("UNITS:rawAsString"), "../../src/units/quantity.cc", 4737, 181, "" );
+ define_source_info( method_kind, core::magic_name("UNITS:rawAsString"), "../../src/units/quantity.cc", 6075, 206, "" );
 }
 NOINLINE void source_info_2506_helper() {
- define_source_info( method_kind, "UNITS:rawUnit", "../../../../projects/cando/include/cando/units/quantity.h", 2892, 93, "" );
+ define_source_info( method_kind, "UNITS:rawUnit", "../../../../projects/cando/include/cando/units/quantity.h", 4229, 118, "" );
 }
 NOINLINE void source_info_2507_helper() {
- define_source_info( method_kind, "UNITS:rawValue", "../../../../projects/cando/include/cando/units/quantity.h", 2775, 89, "" );
+ define_source_info( method_kind, "UNITS:rawValue", "../../../../projects/cando/include/cando/units/quantity.h", 4112, 114, "" );
 }
 NOINLINE void source_info_2508_helper() {
- define_source_info( class_kind, core::magic_name("ADAPT:IterateCons"), "../../../../projects/cando/include/cando/adapt/iterateCons.h", 372, 24, "" );
+ define_source_info( class_kind, core::magic_name("ADAPT:IterateCons"), "../../../../projects/cando/include/cando/adapt/iterateCons.h", 1712, 49, "" );
 }
 NOINLINE void source_info_2509_helper() {
- define_source_info( method_kind, "ADAPT:init", "../../../../projects/cando/include/cando/adapt/iterateCons.h", 717, 41, "" );
+ define_source_info( method_kind, "ADAPT:init", "../../../../projects/cando/include/cando/adapt/iterateCons.h", 2057, 66, "" );
 }
 NOINLINE void source_info_2510_helper() {
- define_source_info( class_kind, core::magic_name("ADAPT:SymbolList"), "../../../../projects/cando/include/cando/adapt/symbolList.h", 1453, 52, "" );
+ define_source_info( class_kind, core::magic_name("ADAPT:SymbolList"), "../../../../projects/cando/include/cando/adapt/symbolList.h", 1815, 51, "" );
 }
 NOINLINE void source_info_2511_helper() {
  define_source_info( class_kind, core::magic_name("CORE:InvocationHistoryFrameIterator"), "/Users/meister/Development/clasp/include/clasp/core/primitives.h", 5016, 165, "" );
@@ -8901,40 +8876,40 @@ NOINLINE void source_info_2952_helper() {
  define_source_info( class_kind, core::magic_name("CORE:SpecialForm"), "/Users/meister/Development/clasp/include/clasp/core/specialForm.h", 1273, 42, "" );
 }
 NOINLINE void source_info_2953_helper() {
- define_source_info( class_kind, core::magic_name("GEOM:OVector2"), "../../../../projects/cando/include/cando/geom/ovector2.h", 273, 14, "" );
+ define_source_info( class_kind, core::magic_name("GEOM:OVector2"), "../../../../projects/cando/include/cando/geom/ovector2.h", 1610, 39, "" );
 }
 NOINLINE void source_info_2954_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:vector2-distance"), "../../src/geom/ovector2.cc", 3101, 123, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:vector2-distance"), "../../src/geom/ovector2.cc", 4439, 148, "" );
 }
 NOINLINE void source_info_2955_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:vector2-angle"), "../../src/geom/ovector2.cc", 2935, 117, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:vector2-angle"), "../../src/geom/ovector2.cc", 4273, 142, "" );
 }
 NOINLINE void source_info_2956_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:normalized"), "../../src/geom/ovector2.cc", 2802, 110, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:normalized"), "../../src/geom/ovector2.cc", 4140, 135, "" );
 }
 NOINLINE void source_info_2957_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:timesScalar"), "../../src/geom/ovector2.cc", 2646, 102, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:timesScalar"), "../../src/geom/ovector2.cc", 3984, 127, "" );
 }
 NOINLINE void source_info_2958_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:add"), "../../src/geom/ovector2.cc", 2165, 86, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:add"), "../../src/geom/ovector2.cc", 3503, 111, "" );
 }
 NOINLINE void source_info_2959_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:dotProduct"), "../../src/geom/ovector2.cc", 1560, 62, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:dotProduct"), "../../src/geom/ovector2.cc", 2898, 87, "" );
 }
 NOINLINE void source_info_2960_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:vector2-magnitude"), "../../src/geom/ovector2.cc", 1421, 54, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:vector2-magnitude"), "../../src/geom/ovector2.cc", 2759, 79, "" );
 }
 NOINLINE void source_info_2961_helper() {
- define_source_info( method_kind, core::magic_name("GEOM:sub"), "../../src/geom/ovector2.cc", 1258, 47, "" );
+ define_source_info( method_kind, core::magic_name("GEOM:sub"), "../../src/geom/ovector2.cc", 2596, 72, "" );
 }
 NOINLINE void source_info_2962_helper() {
- define_source_info( method_kind, "GEOM:y", "../../../../projects/cando/include/cando/geom/ovector2.h", 813, 32, "" );
+ define_source_info( method_kind, "GEOM:y", "../../../../projects/cando/include/cando/geom/ovector2.h", 2150, 57, "" );
 }
 NOINLINE void source_info_2963_helper() {
- define_source_info( method_kind, "GEOM:x", "../../../../projects/cando/include/cando/geom/ovector2.h", 738, 30, "" );
+ define_source_info( method_kind, "GEOM:x", "../../../../projects/cando/include/cando/geom/ovector2.h", 2075, 55, "" );
 }
 NOINLINE void source_info_2964_helper() {
- define_source_info( method_kind, "GEOM:setAll", "../../../../projects/cando/include/cando/geom/ovector2.h", 650, 28, "" );
+ define_source_info( method_kind, "GEOM:setAll", "../../../../projects/cando/include/cando/geom/ovector2.h", 1987, 53, "" );
 }
 NOINLINE void source_info_2965_helper() {
  define_source_info( class_kind, core::magic_name("CORE:SexpLoadArchive"), "/Users/meister/Development/clasp/include/clasp/core/sexpLoadArchive.h", 1304, 40, "" );
@@ -8955,7 +8930,7 @@ NOINLINE void source_info_2970_helper() {
  define_source_info( class_kind, core::magic_name("CORE:VectorDisplaced"), "/Users/meister/Development/clasp/include/clasp/core/vectorDisplaced.h", 1338, 39, "" );
 }
 NOINLINE void source_info_2971_helper() {
- define_source_info( class_kind, core::magic_name("UNITS:NamedUnit"), "../../../../projects/cando/include/cando/units/namedUnit.h", 243, 18, "" );
+ define_source_info( class_kind, core::magic_name("UNITS:NamedUnit"), "../../../../projects/cando/include/cando/units/namedUnit.h", 1581, 43, "" );
 }
 NOINLINE void source_info_2972_helper() {
  define_source_info( class_kind, core::magic_name("CORE:CxxClass"), "/Users/meister/Development/clasp/include/clasp/core/cxxClass.h", 1316, 43, "" );

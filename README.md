@@ -1,9 +1,7 @@
 #CANDO - Computer Aided Nanostructure Design and Optimization
 ============
 
-### FOR REVIEW PURPOSES ONLY - CANDO is currently a lot of trouble to build
-### Please don't disseminate this or publish on this until I get a chance to
-### clean things up.
+### FOR REVIEW PURPOSES ONLY - CANDO is currently a lot of trouble to build. Please don't disseminate this or publish on this until I get a chance to clean things up.
 
 Cando is a computational chemistry environment for
 building and designing functional molecules and materials.
