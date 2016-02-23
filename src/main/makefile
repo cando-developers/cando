@@ -137,10 +137,15 @@ clasp-gc-interface:
 
 compile-commands:
 	$(BUILD) -j$(PJOBS) toolset=$(TOOLSET) link=static program=cando gc=mps-prep release
+	make compile-commands-rest
+
+compile-commands-rest:
 	bjam -j$(PJOBS) toolset=$(TOOLSET) link=static program=cando gc=mps-prep release -n -a |tee >bjam.out
 	-install -d $(CLASP_APP_RESOURCES_DIR)/build-databases
-	echo $(CLASP_HOME)
-	python $(CLASP_HOME)/src/common/buildJSON.py clang bjam.out `$(CLASP_BOEHM) -N -e "(progn (format t \"~a\"(namestring (translate-logical-pathname (ensure-directories-exist #P\"APP-RESOURCES:build-databases;cando_compile_commands.json\")))) (quit))"` # $(CLASP_APP_RESOURCES_DIR)/build-databases/clasp_compile_commands.json
+	clasp_boehm_o -f bclasp \
+		-l $(CLASP_HOME)/src/common/build-json.lisp \
+		-e "(build-json:build-db \"bjam.out\" \"clasp_compile_commands\")" \
+		-e "(quit)"
 
 mps-interface-prep:
 	(make -C $(CLASP_HOME)/src/main boehmdc-release-cxx)
@@ -156,10 +161,10 @@ mps-interface-run:
         -e "(clasp-analyzer:search/generate-code *db*)"
 
 mps-interface-run-boehm:
-	make compile-commands
-	clasp_boehm_o -f bclasp -e "(require :clasp-analyzer)" \
-	-e "(defparameter *db* (clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\"))" \
-        -e "(clasp-analyzer:search/generate-code *db*)"
+	clasp_boehm_o -f bclasp  \
+		-e "(require :clasp-analyzer)" \
+		-e "(time (clasp-analyzer:search/generate-code (clasp-analyzer:setup-clasp-analyzer-compilation-tool-database \"app-resources:build-databases;clasp_compile_commands.json\")))" \
+		-e "(quit)"
 
 mps-interface-test:
 	make compile-commands

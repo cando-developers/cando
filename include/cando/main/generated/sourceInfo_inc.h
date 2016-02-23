@@ -141,58 +141,58 @@ NOINLINE void source_info_47_helper() {
  define_source_info( code_kind, core::magic_name("sockets_internal__ff_socket"), "../../../../src/sockets/sockets.cc", 2874, 96, "ff_socket"  );
 }
 NOINLINE void source_info_48_helper() {
- define_source_info( code_kind, core::magic_name("gctools__next_header_kind"), "../../../../src/gctools/memoryManagement.cc", 5546, 171, R"doc(Return the next available header KIND value and increment the global variable global_next_header_kind)doc"  );
+ define_source_info( code_kind, core::magic_name("gctools__next_header_kind"), "../../../../src/gctools/memoryManagement.cc", 5903, 182, R"doc(Return the next available header KIND value and increment the global variable global_next_header_kind)doc"  );
 }
 NOINLINE void source_info_49_helper() {
- define_source_info( code_kind, core::magic_name("core__telemetry_count"), "../../../../src/gctools/telemetry.cc", 5983, 207, ""  );
+ define_source_info( code_kind, core::magic_name("core__telemetry_count"), "../../../../src/gctools/telemetry.cc", 6046, 208, ""  );
 }
 NOINLINE void source_info_50_helper() {
- define_source_info( code_kind, core::magic_name("core__telemetry_dump"), "../../../../src/gctools/telemetry.cc", 4844, 169, ""  );
+ define_source_info( code_kind, core::magic_name("core__telemetry_dump"), "../../../../src/gctools/telemetry.cc", 4907, 170, ""  );
 }
 NOINLINE void source_info_51_helper() {
- define_source_info( code_kind, core::magic_name("core__telemetry_labels"), "../../../../src/gctools/telemetry.cc", 4540, 159, ""  );
+ define_source_info( code_kind, core::magic_name("core__telemetry_labels"), "../../../../src/gctools/telemetry.cc", 4603, 160, ""  );
 }
 NOINLINE void source_info_52_helper() {
- define_source_info( code_kind, core::magic_name("core__telemetry_follow"), "../../../../src/gctools/telemetry.cc", 3230, 113, ""  );
+ define_source_info( code_kind, core::magic_name("core__telemetry_follow"), "../../../../src/gctools/telemetry.cc", 3293, 114, ""  );
 }
 NOINLINE void source_info_53_helper() {
- define_source_info( code_kind, core::magic_name("core__telemetry_search_labels"), "../../../../src/gctools/telemetry.cc", 2031, 72, ""  );
+ define_source_info( code_kind, core::magic_name("core__telemetry_search_labels"), "../../../../src/gctools/telemetry.cc", 2094, 73, ""  );
 }
 NOINLINE void source_info_54_helper() {
- define_source_info( code_kind, core::magic_name("core__telemetry_search"), "../../../../src/gctools/telemetry.cc", 815, 32, ""  );
+ define_source_info( code_kind, core::magic_name("core__telemetry_search"), "../../../../src/gctools/telemetry.cc", 878, 33, ""  );
 }
 NOINLINE void source_info_55_helper() {
  define_source_info( code_kind, core::magic_name("core__telemetry_open"), "../../../../src/gctools/telemetry.cc", 476, 20, ""  );
 }
 NOINLINE void source_info_56_helper() {
- define_source_info( code_kind, core::magic_name("gctools__debug_allocations"), "../../../../src/gctools/gcFunctions.cc", 20746, 567, "" );
+ define_source_info( code_kind, core::magic_name("gctools__debug_allocations"), "../../../../src/gctools/gcFunctions.cc", 20615, 569, "" );
 }
 NOINLINE void source_info_57_helper() {
- define_source_info( code_kind, core::magic_name("gctools__cleanup"), "../../../../src/gctools/gcFunctions.cc", 20661, 561, "" );
+ define_source_info( code_kind, core::magic_name("gctools__cleanup"), "../../../../src/gctools/gcFunctions.cc", 20530, 563, "" );
 }
 NOINLINE void source_info_58_helper() {
- define_source_info( code_kind, core::magic_name("gctools__garbage_collect"), "../../../../src/gctools/gcFunctions.cc", 20319, 548, "" );
+ define_source_info( code_kind, core::magic_name("gctools__garbage_collect"), "../../../../src/gctools/gcFunctions.cc", 20188, 550, "" );
 }
 NOINLINE void source_info_59_helper() {
- define_source_info( code_kind, core::magic_name("gctools__stack_depth"), "../../../../src/gctools/gcFunctions.cc", 20129, 541, "" );
+ define_source_info( code_kind, core::magic_name("gctools__stack_depth"), "../../../../src/gctools/gcFunctions.cc", 19998, 543, "" );
 }
 NOINLINE void source_info_60_helper() {
- define_source_info( code_kind, core::magic_name("cl__room"), "../../../../src/gctools/gcFunctions.cc", 16632, 463, "room - Return info about the reachable objects.  x can be T, nil, :default - as in ROOM.  marker can be a fixnum (0 - matches everything, any other number/only objects with that marker)"  );
+ define_source_info( code_kind, core::magic_name("cl__room"), "../../../../src/gctools/gcFunctions.cc", 16501, 465, "room - Return info about the reachable objects.  x can be T, nil, :default - as in ROOM.  marker can be a fixnum (0 - matches everything, any other number/only objects with that marker)"  );
 }
 NOINLINE void source_info_61_helper() {
- define_source_info( code_kind, core::magic_name("gctools__alloc_pattern_end"), "../../../../src/gctools/gcFunctions.cc", 15667, 443, "" );
+ define_source_info( code_kind, core::magic_name("gctools__alloc_pattern_end"), "../../../../src/gctools/gcFunctions.cc", 15536, 445, "" );
 }
 NOINLINE void source_info_62_helper() {
- define_source_info( code_kind, core::magic_name("gctools__alloc_pattern_begin"), "../../../../src/gctools/gcFunctions.cc", 14737, 426, "" );
+ define_source_info( code_kind, core::magic_name("gctools__alloc_pattern_begin"), "../../../../src/gctools/gcFunctions.cc", 14606, 428, "" );
 }
 NOINLINE void source_info_63_helper() {
- define_source_info( code_kind, core::magic_name("gctools__gc_marker"), "../../../../src/gctools/gcFunctions.cc", 14150, 404, "" );
+ define_source_info( code_kind, core::magic_name("gctools__gc_marker"), "../../../../src/gctools/gcFunctions.cc", 14019, 406, "" );
 }
 NOINLINE void source_info_64_helper() {
- define_source_info( code_kind, core::magic_name("gctools__monitor_allocations"), "../../../../src/gctools/gcFunctions.cc", 13374, 389, "" );
+ define_source_info( code_kind, core::magic_name("gctools__monitor_allocations"), "../../../../src/gctools/gcFunctions.cc", 13243, 391, "" );
 }
 NOINLINE void source_info_65_helper() {
- define_source_info( code_kind, core::magic_name("gctools__gc_info"), "../../../../src/gctools/gcFunctions.cc", 13095, 379, "" );
+ define_source_info( code_kind, core::magic_name("gctools__gc_info"), "../../../../src/gctools/gcFunctions.cc", 12964, 381, "" );
 }
 NOINLINE void source_info_66_helper() {
  define_source_info( code_kind, core::magic_name("core__hardwired_kinds"), "../../../../src/gctools/gcFunctions.cc", 4844, 152, "Return the header kind for the object"  );
@@ -2999,7 +2999,7 @@ NOINLINE void source_info_993_helper() {
  define_source_info( code_kind, core::magic_name("CHEM:make-chem-draw"), "../../src/chem/chemdraw.cc", 31978, 987, "" );
 }
 NOINLINE void source_info_994_helper() {
- define_source_info( code_kind, core::magic_name("core__test_add"), "/Users/meister/Development/clasp/include/clasp/core/primitives.h", 4569, 149, R"doc(add two numbers)doc"  );
+ define_source_info( code_kind, core::magic_name("core__test_add"), "/home/meister/Dev/clasp/include/clasp/core/primitives.h", 4569, 149, R"doc(add two numbers)doc"  );
 }
 NOINLINE void source_info_995_helper() {
  define_source_info( code_kind, core::magic_name("chem__make_read_amber_parameters"), "../../src/chem/readAmberParameters.cc", 448, 20, "" );
@@ -3122,199 +3122,199 @@ NOINLINE void source_info_1034_helper() {
  define_source_info( code_kind, core::magic_name("chem__make_fftypes_db"), "../../src/chem/ffTypesDb.cc", 2355, 97, "" );
 }
 NOINLINE void source_info_1035_helper() {
- define_source_info( code_kind, core::magic_name("cl__listp"), "/Users/meister/Development/clasp/include/clasp/core/predicates.h", 1759, 70, "" );
+ define_source_info( code_kind, core::magic_name("cl__listp"), "/home/meister/Dev/clasp/include/clasp/core/predicates.h", 1759, 70, "" );
 }
 NOINLINE void source_info_1036_helper() {
- define_source_info( code_kind, core::magic_name("cl__characterp"), "/Users/meister/Development/clasp/include/clasp/core/predicates.h", 1678, 66, "" );
+ define_source_info( code_kind, core::magic_name("cl__characterp"), "/home/meister/Dev/clasp/include/clasp/core/predicates.h", 1678, 66, "" );
 }
 NOINLINE void source_info_1037_helper() {
- define_source_info( code_kind, core::magic_name("cl__consp"), "/Users/meister/Development/clasp/include/clasp/core/predicates.h", 1609, 62, "" );
+ define_source_info( code_kind, core::magic_name("cl__consp"), "/home/meister/Dev/clasp/include/clasp/core/predicates.h", 1609, 62, "" );
 }
 NOINLINE void source_info_1038_helper() {
- define_source_info( code_kind, core::magic_name("cl__atom"), "/Users/meister/Development/clasp/include/clasp/core/predicates.h", 1541, 58, "atom"  );
+ define_source_info( code_kind, core::magic_name("cl__atom"), "/home/meister/Dev/clasp/include/clasp/core/predicates.h", 1541, 58, "atom"  );
 }
 NOINLINE void source_info_1039_helper() {
- define_source_info( code_kind, core::magic_name("cl__endp"), "/Users/meister/Development/clasp/include/clasp/core/predicates.h", 1334, 47, "endp"  );
+ define_source_info( code_kind, core::magic_name("cl__endp"), "/home/meister/Dev/clasp/include/clasp/core/predicates.h", 1334, 47, "endp"  );
 }
 NOINLINE void source_info_1040_helper() {
- define_source_info( code_kind, core::magic_name("core__fixnump"), "/Users/meister/Development/clasp/include/clasp/core/predicates.h", 1200, 39, "" );
+ define_source_info( code_kind, core::magic_name("core__fixnump"), "/home/meister/Dev/clasp/include/clasp/core/predicates.h", 1200, 39, "" );
 }
 NOINLINE void source_info_1041_helper() {
- define_source_info( code_kind, core::magic_name("cl__symbolp"), "/Users/meister/Development/clasp/include/clasp/core/predicates.h", 1118, 35, "" );
+ define_source_info( code_kind, core::magic_name("cl__symbolp"), "/home/meister/Dev/clasp/include/clasp/core/predicates.h", 1118, 35, "" );
 }
 NOINLINE void source_info_1042_helper() {
- define_source_info( code_kind, core::magic_name("CORE:negate"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 34516, 1161, "" );
+ define_source_info( code_kind, core::magic_name("CORE:negate"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 34516, 1161, "" );
 }
 NOINLINE void source_info_1043_helper() {
- define_source_info( code_kind, core::magic_name("CORE:oneMinus"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 33935, 1139, "" );
+ define_source_info( code_kind, core::magic_name("CORE:oneMinus"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 33935, 1139, "" );
 }
 NOINLINE void source_info_1044_helper() {
- define_source_info( code_kind, core::magic_name("CORE:onePlus"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 33586, 1127, "" );
+ define_source_info( code_kind, core::magic_name("CORE:onePlus"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 33586, 1127, "" );
 }
 NOINLINE void source_info_1045_helper() {
- define_source_info( code_kind, core::magic_name("signum","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 32977, 1107, "" );
+ define_source_info( code_kind, core::magic_name("signum","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 32977, 1107, "" );
 }
 NOINLINE void source_info_1046_helper() {
- define_source_info( code_kind, core::magic_name("abs","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 32654, 1097, "" );
+ define_source_info( code_kind, core::magic_name("abs","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 32654, 1097, "" );
 }
 NOINLINE void source_info_1047_helper() {
- define_source_info( code_kind, core::magic_name("oddp","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 32482, 1089, "" );
+ define_source_info( code_kind, core::magic_name("oddp","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 32482, 1089, "" );
 }
 NOINLINE void source_info_1048_helper() {
- define_source_info( code_kind, core::magic_name("evenp","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 32307, 1081, "" );
+ define_source_info( code_kind, core::magic_name("evenp","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 32307, 1081, "" );
 }
 NOINLINE void source_info_1049_helper() {
- define_source_info( code_kind, core::magic_name("minusp","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 32059, 1071, "" );
+ define_source_info( code_kind, core::magic_name("minusp","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 32059, 1071, "" );
 }
 NOINLINE void source_info_1050_helper() {
- define_source_info( code_kind, core::magic_name("plusp","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 31810, 1061, "" );
+ define_source_info( code_kind, core::magic_name("plusp","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 31810, 1061, "" );
 }
 NOINLINE void source_info_1051_helper() {
- define_source_info( code_kind, core::magic_name("Tenth","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 16917, 545, "" );
+ define_source_info( code_kind, core::magic_name("Tenth","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 16917, 545, "" );
 }
 NOINLINE void source_info_1052_helper() {
- define_source_info( code_kind, core::magic_name("Ninth","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 16784, 543, "" );
+ define_source_info( code_kind, core::magic_name("Ninth","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 16784, 543, "" );
 }
 NOINLINE void source_info_1053_helper() {
- define_source_info( code_kind, core::magic_name("Eighth","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 16656, 541, "" );
+ define_source_info( code_kind, core::magic_name("Eighth","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 16656, 541, "" );
 }
 NOINLINE void source_info_1054_helper() {
- define_source_info( code_kind, core::magic_name("Seventh","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 16532, 539, "" );
+ define_source_info( code_kind, core::magic_name("Seventh","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 16532, 539, "" );
 }
 NOINLINE void source_info_1055_helper() {
- define_source_info( code_kind, core::magic_name("Sixth","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 16415, 537, "" );
+ define_source_info( code_kind, core::magic_name("Sixth","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 16415, 537, "" );
 }
 NOINLINE void source_info_1056_helper() {
- define_source_info( code_kind, core::magic_name("Fifth","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 16306, 535, "" );
+ define_source_info( code_kind, core::magic_name("Fifth","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 16306, 535, "" );
 }
 NOINLINE void source_info_1057_helper() {
- define_source_info( code_kind, core::magic_name("Fourth","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 16202, 533, "" );
+ define_source_info( code_kind, core::magic_name("Fourth","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 16202, 533, "" );
 }
 NOINLINE void source_info_1058_helper() {
- define_source_info( code_kind, core::magic_name("Third","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 16104, 531, "" );
+ define_source_info( code_kind, core::magic_name("Third","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 16104, 531, "" );
 }
 NOINLINE void source_info_1059_helper() {
- define_source_info( code_kind, core::magic_name("Second","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 16012, 529, "" );
+ define_source_info( code_kind, core::magic_name("Second","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 16012, 529, "" );
 }
 NOINLINE void source_info_1060_helper() {
- define_source_info( code_kind, core::magic_name("First","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 15926, 527, "" );
+ define_source_info( code_kind, core::magic_name("First","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 15926, 527, "" );
 }
 NOINLINE void source_info_1061_helper() {
- define_source_info( code_kind, core::magic_name("cddddr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 15822, 525, "" );
+ define_source_info( code_kind, core::magic_name("cddddr","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 15822, 525, "" );
 }
 NOINLINE void source_info_1062_helper() {
- define_source_info( code_kind, core::magic_name("cddadr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 15717, 523, "" );
+ define_source_info( code_kind, core::magic_name("cddadr","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 15717, 523, "" );
 }
 NOINLINE void source_info_1063_helper() {
- define_source_info( code_kind, core::magic_name("cdaddr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 15612, 521, "" );
+ define_source_info( code_kind, core::magic_name("cdaddr","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 15612, 521, "" );
 }
 NOINLINE void source_info_1064_helper() {
- define_source_info( code_kind, core::magic_name("cdaadr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 15507, 519, "" );
+ define_source_info( code_kind, core::magic_name("cdaadr","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 15507, 519, "" );
 }
 NOINLINE void source_info_1065_helper() {
- define_source_info( code_kind, core::magic_name("cadddr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 15402, 517, "" );
+ define_source_info( code_kind, core::magic_name("cadddr","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 15402, 517, "" );
 }
 NOINLINE void source_info_1066_helper() {
- define_source_info( code_kind, core::magic_name("cadadr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 15297, 515, "" );
+ define_source_info( code_kind, core::magic_name("cadadr","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 15297, 515, "" );
 }
 NOINLINE void source_info_1067_helper() {
- define_source_info( code_kind, core::magic_name("caaddr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 15192, 513, "" );
+ define_source_info( code_kind, core::magic_name("caaddr","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 15192, 513, "" );
 }
 NOINLINE void source_info_1068_helper() {
- define_source_info( code_kind, core::magic_name("caaadr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 15087, 511, "" );
+ define_source_info( code_kind, core::magic_name("caaadr","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 15087, 511, "" );
 }
 NOINLINE void source_info_1069_helper() {
- define_source_info( code_kind, core::magic_name("cdddar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14982, 509, "" );
+ define_source_info( code_kind, core::magic_name("cdddar","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 14982, 509, "" );
 }
 NOINLINE void source_info_1070_helper() {
- define_source_info( code_kind, core::magic_name("cddaar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14877, 507, "" );
+ define_source_info( code_kind, core::magic_name("cddaar","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 14877, 507, "" );
 }
 NOINLINE void source_info_1071_helper() {
- define_source_info( code_kind, core::magic_name("cdadar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14772, 505, "" );
+ define_source_info( code_kind, core::magic_name("cdadar","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 14772, 505, "" );
 }
 NOINLINE void source_info_1072_helper() {
- define_source_info( code_kind, core::magic_name("cdaaar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14667, 503, "" );
+ define_source_info( code_kind, core::magic_name("cdaaar","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 14667, 503, "" );
 }
 NOINLINE void source_info_1073_helper() {
- define_source_info( code_kind, core::magic_name("caddar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14562, 501, "" );
+ define_source_info( code_kind, core::magic_name("caddar","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 14562, 501, "" );
 }
 NOINLINE void source_info_1074_helper() {
- define_source_info( code_kind, core::magic_name("cadaar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14457, 499, "" );
+ define_source_info( code_kind, core::magic_name("cadaar","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 14457, 499, "" );
 }
 NOINLINE void source_info_1075_helper() {
- define_source_info( code_kind, core::magic_name("caadar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14352, 497, "" );
+ define_source_info( code_kind, core::magic_name("caadar","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 14352, 497, "" );
 }
 NOINLINE void source_info_1076_helper() {
- define_source_info( code_kind, core::magic_name("caaaar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14253, 495, "" );
+ define_source_info( code_kind, core::magic_name("caaaar","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 14253, 495, "" );
 }
 NOINLINE void source_info_1077_helper() {
- define_source_info( code_kind, core::magic_name("cdddr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14155, 493, "" );
+ define_source_info( code_kind, core::magic_name("cdddr","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 14155, 493, "" );
 }
 NOINLINE void source_info_1078_helper() {
- define_source_info( code_kind, core::magic_name("cddar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 14058, 491, "" );
+ define_source_info( code_kind, core::magic_name("cddar","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 14058, 491, "" );
 }
 NOINLINE void source_info_1079_helper() {
- define_source_info( code_kind, core::magic_name("cdadr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13961, 489, "" );
+ define_source_info( code_kind, core::magic_name("cdadr","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 13961, 489, "" );
 }
 NOINLINE void source_info_1080_helper() {
- define_source_info( code_kind, core::magic_name("cdaar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13864, 487, "" );
+ define_source_info( code_kind, core::magic_name("cdaar","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 13864, 487, "" );
 }
 NOINLINE void source_info_1081_helper() {
- define_source_info( code_kind, core::magic_name("caddr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13767, 485, "" );
+ define_source_info( code_kind, core::magic_name("caddr","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 13767, 485, "" );
 }
 NOINLINE void source_info_1082_helper() {
- define_source_info( code_kind, core::magic_name("cadar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13670, 483, "" );
+ define_source_info( code_kind, core::magic_name("cadar","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 13670, 483, "" );
 }
 NOINLINE void source_info_1083_helper() {
- define_source_info( code_kind, core::magic_name("caadr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13573, 481, "" );
+ define_source_info( code_kind, core::magic_name("caadr","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 13573, 481, "" );
 }
 NOINLINE void source_info_1084_helper() {
- define_source_info( code_kind, core::magic_name("caaar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13476, 479, "" );
+ define_source_info( code_kind, core::magic_name("caaar","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 13476, 479, "" );
 }
 NOINLINE void source_info_1085_helper() {
- define_source_info( code_kind, core::magic_name("cddr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13386, 477, "" );
+ define_source_info( code_kind, core::magic_name("cddr","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 13386, 477, "" );
 }
 NOINLINE void source_info_1086_helper() {
- define_source_info( code_kind, core::magic_name("cdar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13297, 475, "" );
+ define_source_info( code_kind, core::magic_name("cdar","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 13297, 475, "" );
 }
 NOINLINE void source_info_1087_helper() {
- define_source_info( code_kind, core::magic_name("cadr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13208, 473, "" );
+ define_source_info( code_kind, core::magic_name("cadr","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 13208, 473, "" );
 }
 NOINLINE void source_info_1088_helper() {
- define_source_info( code_kind, core::magic_name("caar","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 13120, 471, "" );
+ define_source_info( code_kind, core::magic_name("caar","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 13120, 471, "" );
 }
 NOINLINE void source_info_1089_helper() {
- define_source_info( code_kind, core::magic_name("cl__rest"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 12880, 463, "" );
+ define_source_info( code_kind, core::magic_name("cl__rest"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 12880, 463, "" );
 }
 NOINLINE void source_info_1090_helper() {
- define_source_info( code_kind, core::magic_name("cdr","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 12709, 455, "" );
+ define_source_info( code_kind, core::magic_name("cdr","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 12709, 455, "" );
 }
 NOINLINE void source_info_1091_helper() {
- define_source_info( code_kind, core::magic_name("car","COMMON-LISP"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 12508, 447, "" );
+ define_source_info( code_kind, core::magic_name("car","COMMON-LISP"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 12508, 447, "" );
 }
 NOINLINE void source_info_1092_helper() {
- define_source_info( code_kind, core::magic_name("cl__equalp"), "/Users/meister/Development/clasp/include/clasp/core/object.h", 30033, 816, "equalp"  );
+ define_source_info( code_kind, core::magic_name("cl__equalp"), "/home/meister/Dev/clasp/include/clasp/core/object.h", 30033, 816, "equalp"  );
 }
 NOINLINE void source_info_1093_helper() {
- define_source_info( code_kind, core::magic_name("cl__equal"), "/Users/meister/Development/clasp/include/clasp/core/object.h", 29462, 794, "equal"  );
+ define_source_info( code_kind, core::magic_name("cl__equal"), "/home/meister/Dev/clasp/include/clasp/core/object.h", 29462, 794, "equal"  );
 }
 NOINLINE void source_info_1094_helper() {
- define_source_info( code_kind, core::magic_name("cl__eql"), "/Users/meister/Development/clasp/include/clasp/core/object.h", 28953, 774, "eql"  );
+ define_source_info( code_kind, core::magic_name("cl__eql"), "/home/meister/Dev/clasp/include/clasp/core/object.h", 28953, 774, "eql"  );
 }
 NOINLINE void source_info_1095_helper() {
- define_source_info( code_kind, core::magic_name("cl__eq"), "/Users/meister/Development/clasp/include/clasp/core/object.h", 28833, 767, "eq"  );
+ define_source_info( code_kind, core::magic_name("cl__eq"), "/home/meister/Dev/clasp/include/clasp/core/object.h", 28833, 767, "eq"  );
 }
 NOINLINE void source_info_1096_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:T"), "/Users/meister/Development/clasp/include/clasp/core/object.h", 18090, 477, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:T"), "/home/meister/Dev/clasp/include/clasp/core/object.h", 18090, 477, "" );
 }
 NOINLINE void source_info_1097_helper() {
- define_source_info( class_kind, core::magic_name("CORE:CandoException"), "/Users/meister/Development/clasp/include/clasp/core/conditions.h", 1296, 42, "" );
+ define_source_info( class_kind, core::magic_name("CORE:CandoException"), "/home/meister/Dev/clasp/include/clasp/core/conditions.h", 1296, 42, "" );
 }
 NOINLINE void source_info_1098_helper() {
- define_source_info( class_kind, core::magic_name("CORE:VA-LIST"), "/Users/meister/Development/clasp/include/clasp/core/lispList.h", 1607, 54, "" );
+ define_source_info( class_kind, core::magic_name("CORE:VA-LIST"), "/home/meister/Dev/clasp/include/clasp/core/lispList.h", 1607, 54, "" );
 }
 NOINLINE void source_info_1099_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:Cons"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 3044, 125, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:Cons"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 3044, 125, "" );
 }
 NOINLINE void source_info_1100_helper() {
  define_source_info( method_kind, core::magic_name("core:lookup"), "../../../../src/core/cons.cc", 24613, 911, "" );
@@ -3332,52 +3332,52 @@ NOINLINE void source_info_1104_helper() {
  define_source_info( method_kind, core::magic_name("core:exactlyMatches"), "../../../../src/core/cons.cc", 9724, 349, "" );
 }
 NOINLINE void source_info_1105_helper() {
- define_source_info( method_kind, core::magic_name("core:cons-setf-cdr"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 8241, 303, "" );
+ define_source_info( method_kind, core::magic_name("core:cons-setf-cdr"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 8241, 303, "" );
 }
 NOINLINE void source_info_1106_helper() {
- define_source_info( method_kind, core::magic_name("core:cons-setf-car"), "/Users/meister/Development/clasp/include/clasp/core/cons.h", 7157, 260, "" );
+ define_source_info( method_kind, core::magic_name("core:cons-setf-car"), "/home/meister/Dev/clasp/include/clasp/core/cons.h", 7157, 260, "" );
 }
 NOINLINE void source_info_1107_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:number"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 4536, 149, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:number"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 4536, 149, "" );
 }
 NOINLINE void source_info_1108_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:real"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 7115, 227, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:real"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 7115, 227, "" );
 }
 NOINLINE void source_info_1109_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:rational"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 7480, 243, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:rational"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 7480, 243, "" );
 }
 NOINLINE void source_info_1110_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:integer"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 8189, 268, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:integer"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 8189, 268, "" );
 }
 NOINLINE void source_info_1111_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:fixnum"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 9698, 321, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:fixnum"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 9698, 321, "" );
 }
 NOINLINE void source_info_1112_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:float"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 12492, 412, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:float"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 12492, 412, "" );
 }
 NOINLINE void source_info_1113_helper() {
- define_source_info( method_kind, core::magic_name("core:castToInteger"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 12592, 416, "" );
+ define_source_info( method_kind, core::magic_name("core:castToInteger"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 12592, 416, "" );
 }
 NOINLINE void source_info_1114_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:ShortFloat"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 12846, 426, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:ShortFloat"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 12846, 426, "" );
 }
 NOINLINE void source_info_1115_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:SingleFloat"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 14687, 485, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:SingleFloat"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 14687, 485, "" );
 }
 NOINLINE void source_info_1116_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:double-float"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 17050, 562, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:double-float"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 17050, 562, "" );
 }
 NOINLINE void source_info_1117_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:LongFloat"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 19505, 644, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:LongFloat"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 19505, 644, "" );
 }
 NOINLINE void source_info_1118_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:complex"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 21750, 721, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:complex"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 21750, 721, "" );
 }
 NOINLINE void source_info_1119_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:ratio"), "/Users/meister/Development/clasp/include/clasp/core/numbers.h", 24231, 804, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:ratio"), "/home/meister/Dev/clasp/include/clasp/core/numbers.h", 24231, 804, "" );
 }
 NOINLINE void source_info_1120_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:Bignum"), "/Users/meister/Development/clasp/include/clasp/core/bignum.h", 1533, 50, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:Bignum"), "/home/meister/Dev/clasp/include/clasp/core/bignum.h", 1533, 50, "" );
 }
 NOINLINE void source_info_1121_helper() {
  define_source_info( method_kind, core::magic_name("core:fitsSintP"), "../../../../src/core/bignum.cc", 4484, 133, "" );
@@ -3386,10 +3386,10 @@ NOINLINE void source_info_1122_helper() {
  define_source_info( method_kind, core::magic_name("core:asUint64String"), "../../../../src/core/bignum.cc", 4278, 125, "" );
 }
 NOINLINE void source_info_1123_helper() {
- define_source_info( class_kind, core::magic_name("CORE:Pointer"), "/Users/meister/Development/clasp/include/clasp/core/pointer.h", 1179, 36, "" );
+ define_source_info( class_kind, core::magic_name("CORE:Pointer"), "/home/meister/Dev/clasp/include/clasp/core/pointer.h", 1179, 36, "" );
 }
 NOINLINE void source_info_1124_helper() {
- define_source_info( class_kind, core::magic_name("CORE:Environment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 1511, 52, "" );
+ define_source_info( class_kind, core::magic_name("CORE:Environment"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 1511, 52, "" );
 }
 NOINLINE void source_info_1125_helper() {
  define_source_info( method_kind, core::magic_name("CORE:find_tagbody_tag_environment"), "../../../../src/core/environment.cc", 23808, 724, "" );
@@ -3434,28 +3434,28 @@ NOINLINE void source_info_1138_helper() {
  define_source_info( method_kind, core::magic_name("CORE:setRuntimeEnvironment"), "../../../../src/core/environment.cc", 7113, 225, "" );
 }
 NOINLINE void source_info_1139_helper() {
- define_source_info( method_kind, core::magic_name("CORE:push_metadata"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 4925, 122, "" );
+ define_source_info( method_kind, core::magic_name("CORE:push_metadata"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 4925, 122, "" );
 }
 NOINLINE void source_info_1140_helper() {
- define_source_info( method_kind, core::magic_name("CORE:setf_metadata"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 4578, 114, "" );
+ define_source_info( method_kind, core::magic_name("CORE:setf_metadata"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 4578, 114, "" );
 }
 NOINLINE void source_info_1141_helper() {
- define_source_info( method_kind, core::magic_name("CORE:unwindProtectEnvironmentP"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 4004, 99, "" );
+ define_source_info( method_kind, core::magic_name("CORE:unwindProtectEnvironmentP"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 4004, 99, "" );
 }
 NOINLINE void source_info_1142_helper() {
- define_source_info( method_kind, core::magic_name("CORE:functionContainerEnvironmentP"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 3873, 97, "" );
+ define_source_info( method_kind, core::magic_name("CORE:functionContainerEnvironmentP"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 3873, 97, "" );
 }
 NOINLINE void source_info_1143_helper() {
- define_source_info( method_kind, core::magic_name("CORE:lexicalEnvironmentP"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 3748, 95, "" );
+ define_source_info( method_kind, core::magic_name("CORE:lexicalEnvironmentP"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 3748, 95, "" );
 }
 NOINLINE void source_info_1144_helper() {
- define_source_info( class_kind, core::magic_name("CORE:LexicalEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 9975, 244, "" );
+ define_source_info( class_kind, core::magic_name("CORE:LexicalEnvironment"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 9975, 244, "" );
 }
 NOINLINE void source_info_1145_helper() {
- define_source_info( class_kind, core::magic_name("CORE:RuntimeVisibleEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 11518, 294, "" );
+ define_source_info( class_kind, core::magic_name("CORE:RuntimeVisibleEnvironment"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 11518, 294, "" );
 }
 NOINLINE void source_info_1146_helper() {
- define_source_info( class_kind, core::magic_name("CORE:ValueEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 12623, 323, "" );
+ define_source_info( class_kind, core::magic_name("CORE:ValueEnvironment"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 12623, 323, "" );
 }
 NOINLINE void source_info_1147_helper() {
  define_source_info( method_kind, core::magic_name("CORE:valueEnvironment_defineSpecialBinding"), "../../../../src/core/environment.cc", 31605, 965, "" );
@@ -3464,67 +3464,67 @@ NOINLINE void source_info_1148_helper() {
  define_source_info( method_kind, core::magic_name("CORE:valueEnvironment_defineLexicalBinding"), "../../../../src/core/environment.cc", 31079, 951, "" );
 }
 NOINLINE void source_info_1149_helper() {
- define_source_info( class_kind, core::magic_name("CORE:FunctionValueEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 15920, 418, "" );
+ define_source_info( class_kind, core::magic_name("CORE:FunctionValueEnvironment"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 15920, 418, "" );
 }
 NOINLINE void source_info_1150_helper() {
  define_source_info( method_kind, core::magic_name("CORE:bindFunction"), "../../../../src/core/environment.cc", 40663, 1211, "" );
 }
 NOINLINE void source_info_1151_helper() {
- define_source_info( class_kind, core::magic_name("CORE:CompileTimeEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 17745, 483, "" );
+ define_source_info( class_kind, core::magic_name("CORE:CompileTimeEnvironment"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 17745, 483, "" );
 }
 NOINLINE void source_info_1152_helper() {
- define_source_info( class_kind, core::magic_name("CORE:UnwindProtectEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 18294, 501, "" );
+ define_source_info( class_kind, core::magic_name("CORE:UnwindProtectEnvironment"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 18294, 501, "" );
 }
 NOINLINE void source_info_1153_helper() {
- define_source_info( method_kind, core::magic_name("CORE:UnwindProtectEnvironment-cleanupForm"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 18754, 517, "" );
+ define_source_info( method_kind, core::magic_name("CORE:UnwindProtectEnvironment-cleanupForm"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 18754, 517, "" );
 }
 NOINLINE void source_info_1154_helper() {
- define_source_info( class_kind, core::magic_name("CORE:BlockEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 19516, 540, "" );
+ define_source_info( class_kind, core::magic_name("CORE:BlockEnvironment"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 19516, 540, "" );
 }
 NOINLINE void source_info_1155_helper() {
- define_source_info( class_kind, core::magic_name("CORE:CatchEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 20897, 584, "" );
+ define_source_info( class_kind, core::magic_name("CORE:CatchEnvironment"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 20897, 584, "" );
 }
 NOINLINE void source_info_1156_helper() {
- define_source_info( class_kind, core::magic_name("CORE:FunctionContainerEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 21654, 613, "" );
+ define_source_info( class_kind, core::magic_name("CORE:FunctionContainerEnvironment"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 21654, 613, "" );
 }
 NOINLINE void source_info_1157_helper() {
- define_source_info( class_kind, core::magic_name("CORE:TagbodyEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 22878, 650, "" );
+ define_source_info( class_kind, core::magic_name("CORE:TagbodyEnvironment"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 22878, 650, "" );
 }
 NOINLINE void source_info_1158_helper() {
  define_source_info( method_kind, core::magic_name("CORE:addTag"), "../../../../src/core/environment.cc", 48094, 1458, "" );
 }
 NOINLINE void source_info_1159_helper() {
- define_source_info( class_kind, core::magic_name("CORE:MacroletEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 24854, 708, "" );
+ define_source_info( class_kind, core::magic_name("CORE:MacroletEnvironment"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 24854, 708, "" );
 }
 NOINLINE void source_info_1160_helper() {
  define_source_info( method_kind, core::magic_name("CORE:addMacro"), "../../../../src/core/environment.cc", 51522, 1576, "" );
 }
 NOINLINE void source_info_1161_helper() {
- define_source_info( class_kind, core::magic_name("CORE:SymbolMacroletEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 26079, 747, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SymbolMacroletEnvironment"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 26079, 747, "" );
 }
 NOINLINE void source_info_1162_helper() {
  define_source_info( method_kind, core::magic_name("CORE:addSymbolMacro"), "../../../../src/core/environment.cc", 52493, 1601, "" );
 }
 NOINLINE void source_info_1163_helper() {
- define_source_info( class_kind, core::magic_name("CORE:StackValueEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 27469, 789, "" );
+ define_source_info( class_kind, core::magic_name("CORE:StackValueEnvironment"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 27469, 789, "" );
 }
 NOINLINE void source_info_1164_helper() {
- define_source_info( class_kind, core::magic_name("CORE:GlueEnvironment"), "/Users/meister/Development/clasp/include/clasp/core/environment.h", 28846, 831, "" );
+ define_source_info( class_kind, core::magic_name("CORE:GlueEnvironment"), "/home/meister/Dev/clasp/include/clasp/core/environment.h", 28846, 831, "" );
 }
 NOINLINE void source_info_1165_helper() {
- define_source_info( class_kind, core::magic_name("CORE:ActivationFrame"), "/Users/meister/Development/clasp/include/clasp/core/activationFrame.h", 1828, 53, "" );
+ define_source_info( class_kind, core::magic_name("CORE:ActivationFrame"), "/home/meister/Dev/clasp/include/clasp/core/activationFrame.h", 1828, 53, "" );
 }
 NOINLINE void source_info_1166_helper() {
- define_source_info( class_kind, core::magic_name("CORE:ValueFrame"), "/Users/meister/Development/clasp/include/clasp/core/activationFrame.h", 4857, 143, "" );
+ define_source_info( class_kind, core::magic_name("CORE:ValueFrame"), "/home/meister/Dev/clasp/include/clasp/core/activationFrame.h", 4857, 143, "" );
 }
 NOINLINE void source_info_1167_helper() {
- define_source_info( class_kind, core::magic_name("CORE:FunctionFrame"), "/Users/meister/Development/clasp/include/clasp/core/activationFrame.h", 9379, 297, "" );
+ define_source_info( class_kind, core::magic_name("CORE:FunctionFrame"), "/home/meister/Dev/clasp/include/clasp/core/activationFrame.h", 9379, 297, "" );
 }
 NOINLINE void source_info_1168_helper() {
- define_source_info( class_kind, core::magic_name("CORE:TagbodyFrame"), "/Users/meister/Development/clasp/include/clasp/core/activationFrame.h", 12140, 394, "" );
+ define_source_info( class_kind, core::magic_name("CORE:TagbodyFrame"), "/home/meister/Dev/clasp/include/clasp/core/activationFrame.h", 12140, 394, "" );
 }
 NOINLINE void source_info_1169_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:Symbol"), "/Users/meister/Development/clasp/include/clasp/core/symbol.h", 1801, 69, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:Symbol"), "/home/meister/Dev/clasp/include/clasp/core/symbol.h", 1801, 69, "" );
 }
 NOINLINE void source_info_1170_helper() {
  define_source_info( method_kind, core::magic_name("core:fullName"), "../../../../src/core/symbol.cc", 13185, 463, "" );
@@ -3548,10 +3548,10 @@ NOINLINE void source_info_1176_helper() {
  define_source_info( method_kind, core::magic_name("CORE:makunbound"), "../../../../src/core/symbol.cc", 6888, 225, "" );
 }
 NOINLINE void source_info_1177_helper() {
- define_source_info( method_kind, core::magic_name("core:specialp"), "/Users/meister/Development/clasp/include/clasp/core/symbol.h", 3291, 120, "" );
+ define_source_info( method_kind, core::magic_name("core:specialp"), "/home/meister/Dev/clasp/include/clasp/core/symbol.h", 3291, 120, "" );
 }
 NOINLINE void source_info_1178_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:Function"), "/Users/meister/Development/clasp/include/clasp/core/executables.h", 2733, 83, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:Function"), "/home/meister/Dev/clasp/include/clasp/core/executables.h", 2733, 83, "" );
 }
 NOINLINE void source_info_1179_helper() {
  define_source_info( method_kind, core::magic_name("core:functionSourcePos"), "../../../../src/core/executables.cc", 8235, 230, "" );
@@ -3590,19 +3590,19 @@ NOINLINE void source_info_1190_helper() {
  define_source_info( method_kind, core::magic_name("CORE:setf_lambda_list"), "../../../../src/core/executables.cc", 6053, 167, "" );
 }
 NOINLINE void source_info_1191_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:CompiledFunction"), "/Users/meister/Development/clasp/include/clasp/core/executables.h", 5813, 183, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:CompiledFunction"), "/home/meister/Dev/clasp/include/clasp/core/executables.h", 5813, 183, "" );
 }
 NOINLINE void source_info_1192_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:standard-object"), "/Users/meister/Development/clasp/include/clasp/core/standardObject.h", 1409, 48, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:standard-object"), "/home/meister/Dev/clasp/include/clasp/core/standardObject.h", 1409, 48, "" );
 }
 NOINLINE void source_info_1193_helper() {
- define_source_info( class_kind, core::magic_name("CORE:metaobject"), "/Users/meister/Development/clasp/include/clasp/core/metaobject.h", 1498, 50, "" );
+ define_source_info( class_kind, core::magic_name("CORE:metaobject"), "/home/meister/Dev/clasp/include/clasp/core/metaobject.h", 1498, 50, "" );
 }
 NOINLINE void source_info_1194_helper() {
- define_source_info( class_kind, core::magic_name("CORE:specializer"), "/Users/meister/Development/clasp/include/clasp/core/specializer.h", 1425, 47, "" );
+ define_source_info( class_kind, core::magic_name("CORE:specializer"), "/home/meister/Dev/clasp/include/clasp/core/specializer.h", 1425, 47, "" );
 }
 NOINLINE void source_info_1195_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:class"), "/Users/meister/Development/clasp/include/clasp/core/metaClass.h", 2587, 73, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:class"), "/home/meister/Dev/clasp/include/clasp/core/metaClass.h", 2587, 73, "" );
 }
 NOINLINE void source_info_1196_helper() {
  define_source_info( method_kind, core::magic_name("core:direct-superclasses"), "../../../../src/core/metaClass.cc", 16477, 439, "" );
@@ -3611,40 +3611,40 @@ NOINLINE void source_info_1197_helper() {
  define_source_info( method_kind, core::magic_name("core:nameOfClass"), "../../../../src/core/metaClass.cc", 7293, 174, "" );
 }
 NOINLINE void source_info_1198_helper() {
- define_source_info( method_kind, core::magic_name("core:hasCreator"), "/Users/meister/Development/clasp/include/clasp/core/metaClass.h", 6967, 184, "" );
+ define_source_info( method_kind, core::magic_name("core:hasCreator"), "/home/meister/Dev/clasp/include/clasp/core/metaClass.h", 6967, 184, "" );
 }
 NOINLINE void source_info_1199_helper() {
- define_source_info( class_kind, core::magic_name("CORE:WeakHashTable"), "/Users/meister/Development/clasp/include/clasp/core/weakHashTable.h", 1334, 41, "" );
+ define_source_info( class_kind, core::magic_name("CORE:WeakHashTable"), "/home/meister/Dev/clasp/include/clasp/core/weakHashTable.h", 1334, 41, "" );
 }
 NOINLINE void source_info_1200_helper() {
- define_source_info( class_kind, core::magic_name("CORE:WeakKeyHashTable"), "/Users/meister/Development/clasp/include/clasp/core/weakHashTable.h", 1948, 65, "" );
+ define_source_info( class_kind, core::magic_name("CORE:WeakKeyHashTable"), "/home/meister/Dev/clasp/include/clasp/core/weakHashTable.h", 1948, 65, "" );
 }
 NOINLINE void source_info_1201_helper() {
  define_source_info( method_kind, core::magic_name("CORE:weakHashTableSize"), "../../../../src/core/weakHashTable.cc", 2664, 83, "" );
 }
 NOINLINE void source_info_1202_helper() {
- define_source_info( class_kind, core::magic_name("CORE:SourceFileInfo"), "/Users/meister/Development/clasp/include/clasp/core/sourceFileInfo.h", 1416, 43, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SourceFileInfo"), "/home/meister/Dev/clasp/include/clasp/core/sourceFileInfo.h", 1416, 43, "" );
 }
 NOINLINE void source_info_1203_helper() {
  define_source_info( method_kind, core::magic_name("CORE:SourceFileInfo-sourceDebugNamestring"), "../../../../src/core/sourceFileInfo.cc", 11675, 329, "" );
 }
 NOINLINE void source_info_1204_helper() {
- define_source_info( method_kind, core::magic_name("CORE:SourceFileInfo-sourceDebugOffset"), "/Users/meister/Development/clasp/include/clasp/core/sourceFileInfo.h", 2872, 79, "" );
+ define_source_info( method_kind, core::magic_name("CORE:SourceFileInfo-sourceDebugOffset"), "/home/meister/Dev/clasp/include/clasp/core/sourceFileInfo.h", 2872, 79, "" );
 }
 NOINLINE void source_info_1205_helper() {
- define_source_info( method_kind, core::magic_name("CORE:SourceFileInfo-useLineno"), "/Users/meister/Development/clasp/include/clasp/core/sourceFileInfo.h", 2749, 77, "" );
+ define_source_info( method_kind, core::magic_name("CORE:SourceFileInfo-useLineno"), "/home/meister/Dev/clasp/include/clasp/core/sourceFileInfo.h", 2749, 77, "" );
 }
 NOINLINE void source_info_1206_helper() {
- define_source_info( method_kind, core::magic_name("CORE:SourceFileInfo-pathname"), "/Users/meister/Development/clasp/include/clasp/core/sourceFileInfo.h", 2560, 72, "" );
+ define_source_info( method_kind, core::magic_name("CORE:SourceFileInfo-pathname"), "/home/meister/Dev/clasp/include/clasp/core/sourceFileInfo.h", 2560, 72, "" );
 }
 NOINLINE void source_info_1207_helper() {
- define_source_info( class_kind, core::magic_name("CORE:SourcePosInfo"), "/Users/meister/Development/clasp/include/clasp/core/sourceFileInfo.h", 3208, 88, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SourcePosInfo"), "/home/meister/Dev/clasp/include/clasp/core/sourceFileInfo.h", 3208, 88, "" );
 }
 NOINLINE void source_info_1208_helper() {
- define_source_info( class_kind, core::magic_name("CORE:SourceManager"), "/Users/meister/Development/clasp/include/clasp/core/sourceFileInfo.h", 5551, 159, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SourceManager"), "/home/meister/Dev/clasp/include/clasp/core/sourceFileInfo.h", 5551, 159, "" );
 }
 NOINLINE void source_info_1209_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:array"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 1256, 40, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:array"), "/home/meister/Dev/clasp/include/clasp/core/array.h", 1256, 40, "" );
 }
 NOINLINE void source_info_1210_helper() {
  define_source_info( method_kind, core::magic_name("core:array-setf-aref"), "../../../../src/core/array.cc", 7570, 237, "Setter for aref"  );
@@ -3665,52 +3665,52 @@ NOINLINE void source_info_1215_helper() {
  define_source_info( method_kind, core::magic_name("cl:arrayTotalSize"), "../../../../src/core/array.cc", 4731, 140, "" );
 }
 NOINLINE void source_info_1216_helper() {
- define_source_info( method_kind, core::magic_name("core:fill-array-with-elt"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 5145, 145, "" );
+ define_source_info( method_kind, core::magic_name("core:fill-array-with-elt"), "/home/meister/Dev/clasp/include/clasp/core/array.h", 5145, 145, "" );
 }
 NOINLINE void source_info_1217_helper() {
- define_source_info( method_kind, core::magic_name("core:array-fill"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 4900, 137, "" );
+ define_source_info( method_kind, core::magic_name("core:array-fill"), "/home/meister/Dev/clasp/include/clasp/core/array.h", 4900, 137, "" );
 }
 NOINLINE void source_info_1218_helper() {
- define_source_info( method_kind, core::magic_name("core:setf-svref"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 4749, 133, "" );
+ define_source_info( method_kind, core::magic_name("core:setf-svref"), "/home/meister/Dev/clasp/include/clasp/core/array.h", 4749, 133, "" );
 }
 NOINLINE void source_info_1219_helper() {
- define_source_info( method_kind, core::magic_name("cl:svref"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 4649, 131, "" );
+ define_source_info( method_kind, core::magic_name("cl:svref"), "/home/meister/Dev/clasp/include/clasp/core/array.h", 4649, 131, "" );
 }
 NOINLINE void source_info_1220_helper() {
- define_source_info( method_kind, core::magic_name("cl:array-dimension"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 4065, 113, "" );
+ define_source_info( method_kind, core::magic_name("cl:array-dimension"), "/home/meister/Dev/clasp/include/clasp/core/array.h", 4065, 113, "" );
 }
 NOINLINE void source_info_1221_helper() {
- define_source_info( method_kind, core::magic_name("cl:array-elementType"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 3761, 102, "" );
+ define_source_info( method_kind, core::magic_name("cl:array-elementType"), "/home/meister/Dev/clasp/include/clasp/core/array.h", 3761, 102, "" );
 }
 NOINLINE void source_info_1222_helper() {
- define_source_info( method_kind, core::magic_name("cl:array-rank"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 3015, 85, "" );
+ define_source_info( method_kind, core::magic_name("cl:array-rank"), "/home/meister/Dev/clasp/include/clasp/core/array.h", 3015, 85, "" );
 }
 NOINLINE void source_info_1223_helper() {
- define_source_info( method_kind, core::magic_name("cl:rowMajorAref"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 2424, 71, "" );
+ define_source_info( method_kind, core::magic_name("cl:rowMajorAref"), "/home/meister/Dev/clasp/include/clasp/core/array.h", 2424, 71, "" );
 }
 NOINLINE void source_info_1224_helper() {
- define_source_info( method_kind, core::magic_name("core:rowMajorAset"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 2306, 69, "" );
+ define_source_info( method_kind, core::magic_name("core:rowMajorAset"), "/home/meister/Dev/clasp/include/clasp/core/array.h", 2306, 69, "" );
 }
 NOINLINE void source_info_1225_helper() {
- define_source_info( method_kind, core::magic_name("cl:arrayHasFillPointerP"), "/Users/meister/Development/clasp/include/clasp/core/array.h", 1992, 63, "" );
+ define_source_info( method_kind, core::magic_name("cl:arrayHasFillPointerP"), "/home/meister/Dev/clasp/include/clasp/core/array.h", 1992, 63, "" );
 }
 NOINLINE void source_info_1226_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:vector"), "/Users/meister/Development/clasp/include/clasp/core/lispVector.h", 1320, 42, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:vector"), "/home/meister/Dev/clasp/include/clasp/core/lispVector.h", 1320, 42, "" );
 }
 NOINLINE void source_info_1227_helper() {
- define_source_info( method_kind, "CORE:FILL-POINTER-SET", "/Users/meister/Development/clasp/include/clasp/core/lispVector.h", 2748, 85, "" );
+ define_source_info( method_kind, "CORE:FILL-POINTER-SET", "/home/meister/Dev/clasp/include/clasp/core/lispVector.h", 2748, 85, "" );
 }
 NOINLINE void source_info_1228_helper() {
- define_source_info( method_kind, core::magic_name("CORE:adjustableArrayP"), "/Users/meister/Development/clasp/include/clasp/core/lispVector.h", 1656, 58, "" );
+ define_source_info( method_kind, core::magic_name("CORE:adjustableArrayP"), "/home/meister/Dev/clasp/include/clasp/core/lispVector.h", 1656, 58, "" );
 }
 NOINLINE void source_info_1229_helper() {
- define_source_info( class_kind, core::magic_name("CORE:CxxObject"), "/Users/meister/Development/clasp/include/clasp/core/cxxObject.h", 1203, 39, "" );
+ define_source_info( class_kind, core::magic_name("CORE:CxxObject"), "/home/meister/Dev/clasp/include/clasp/core/cxxObject.h", 1203, 39, "" );
 }
 NOINLINE void source_info_1230_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:String"), "/Users/meister/Development/clasp/include/clasp/core/lispString.h", 1233, 39, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:String"), "/home/meister/Dev/clasp/include/clasp/core/lispString.h", 1233, 39, "" );
 }
 NOINLINE void source_info_1231_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:base-string"), "/Users/meister/Development/clasp/include/clasp/core/str.h", 1281, 43, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:base-string"), "/home/meister/Dev/clasp/include/clasp/core/str.h", 1281, 43, "" );
 }
 NOINLINE void source_info_1232_helper() {
  define_source_info( method_kind, core::magic_name("core:split"), "../../../../src/core/str.cc", 8508, 284, "" );
@@ -3743,16 +3743,16 @@ NOINLINE void source_info_1241_helper() {
  define_source_info( method_kind, core::magic_name("core:parse-real"), "../../../../src/core/str.cc", 5144, 172, "" );
 }
 NOINLINE void source_info_1242_helper() {
- define_source_info( method_kind, core::magic_name("core:size"), "/Users/meister/Development/clasp/include/clasp/core/str.h", 2218, 67, "" );
+ define_source_info( method_kind, core::magic_name("core:size"), "/home/meister/Dev/clasp/include/clasp/core/str.h", 2218, 67, "" );
 }
 NOINLINE void source_info_1243_helper() {
- define_source_info( class_kind, core::magic_name("CORE:Record"), "/Users/meister/Development/clasp/include/clasp/core/record.h", 454, 20, "" );
+ define_source_info( class_kind, core::magic_name("CORE:Record"), "/home/meister/Dev/clasp/include/clasp/core/record.h", 456, 20, "" );
 }
 NOINLINE void source_info_1244_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:pathname"), "/Users/meister/Development/clasp/include/clasp/core/pathname.h", 2831, 85, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:pathname"), "/home/meister/Dev/clasp/include/clasp/core/pathname.h", 2831, 85, "" );
 }
 NOINLINE void source_info_1245_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:logical-pathname"), "/Users/meister/Development/clasp/include/clasp/core/pathname.h", 5631, 152, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:logical-pathname"), "/home/meister/Dev/clasp/include/clasp/core/pathname.h", 5631, 152, "" );
 }
 NOINLINE void source_info_1246_helper() {
  define_source_info( class_kind, core::magic_name("ADAPT:StringSet"), "../../../../projects/cando/include/cando/adapt/stringSet.h", 1543, 55, "" );
@@ -3806,7 +3806,7 @@ NOINLINE void source_info_1262_helper() {
  define_source_info( method_kind, "ADAPT:size", "../../../../projects/cando/include/cando/adapt/stringSet.h", 2003, 77, "" );
 }
 NOINLINE void source_info_1263_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:HashTable"), "/Users/meister/Development/clasp/include/clasp/core/hashTable.h", 1510, 44, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:HashTable"), "/home/meister/Dev/clasp/include/clasp/core/hashTable.h", 1510, 44, "" );
 }
 NOINLINE void source_info_1264_helper() {
  define_source_info( method_kind, core::magic_name("core:hashTableAlistAtHash"), "../../../../src/core/hashTable.cc", 30670, 920, "" );
@@ -3830,16 +3830,16 @@ NOINLINE void source_info_1270_helper() {
  define_source_info( method_kind, core::magic_name("CORE:hash-table-count"), "../../../../src/core/hashTable.cc", 15665, 497, "" );
 }
 NOINLINE void source_info_1271_helper() {
- define_source_info( method_kind, core::magic_name("CORE:hash-table-rehash-threshold"), "/Users/meister/Development/clasp/include/clasp/core/hashTable.h", 3898, 110, "" );
+ define_source_info( method_kind, core::magic_name("CORE:hash-table-rehash-threshold"), "/home/meister/Dev/clasp/include/clasp/core/hashTable.h", 3898, 110, "" );
 }
 NOINLINE void source_info_1272_helper() {
- define_source_info( method_kind, core::magic_name("CORE:hash-table-rehash-size"), "/Users/meister/Development/clasp/include/clasp/core/hashTable.h", 3757, 107, "" );
+ define_source_info( method_kind, core::magic_name("CORE:hash-table-rehash-size"), "/home/meister/Dev/clasp/include/clasp/core/hashTable.h", 3757, 107, "" );
 }
 NOINLINE void source_info_1273_helper() {
- define_source_info( method_kind, core::magic_name("CORE:hash-table-test"), "/Users/meister/Development/clasp/include/clasp/core/hashTable.h", 3518, 100, "" );
+ define_source_info( method_kind, core::magic_name("CORE:hash-table-test"), "/home/meister/Dev/clasp/include/clasp/core/hashTable.h", 3518, 100, "" );
 }
 NOINLINE void source_info_1274_helper() {
- define_source_info( class_kind, core::magic_name("CORE:HashTableEq"), "/Users/meister/Development/clasp/include/clasp/core/hashTableEq.h", 1296, 40, "" );
+ define_source_info( class_kind, core::magic_name("CORE:HashTableEq"), "/home/meister/Dev/clasp/include/clasp/core/hashTableEq.h", 1296, 40, "" );
 }
 NOINLINE void source_info_1275_helper() {
  define_source_info( class_kind, core::magic_name("CHEM:Matter"), "../../../../projects/cando/include/cando/chem/matter.h", 1493, 86, "" );
@@ -4025,61 +4025,61 @@ NOINLINE void source_info_1335_helper() {
  define_source_info( method_kind, "CHEM:getId", "../../../../projects/cando/include/cando/chem/matter.h", 3300, 148, "" );
 }
 NOINLINE void source_info_1336_helper() {
- define_source_info( class_kind, core::magic_name("CORE:VectorObjects"), "/Users/meister/Development/clasp/include/clasp/core/vectorObjects.h", 1439, 43, "" );
+ define_source_info( class_kind, core::magic_name("CORE:VectorObjects"), "/home/meister/Dev/clasp/include/clasp/core/vectorObjects.h", 1439, 43, "" );
 }
 NOINLINE void source_info_1337_helper() {
- define_source_info( class_kind, core::magic_name("CORE:VectorObjectsWithFillPtr"), "/Users/meister/Development/clasp/include/clasp/core/vectorObjectsWithFillPtr.h", 1331, 37, "" );
+ define_source_info( class_kind, core::magic_name("CORE:VectorObjectsWithFillPtr"), "/home/meister/Dev/clasp/include/clasp/core/vectorObjectsWithFillPtr.h", 1331, 37, "" );
 }
 NOINLINE void source_info_1338_helper() {
- define_source_info( class_kind, core::magic_name("CORE:SymbolToEnumConverter"), "/Users/meister/Development/clasp/include/clasp/core/symbolToEnumConverter.h", 1304, 43, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SymbolToEnumConverter"), "/home/meister/Dev/clasp/include/clasp/core/symbolToEnumConverter.h", 1304, 43, "" );
 }
 NOINLINE void source_info_1339_helper() {
  define_source_info( method_kind, core::magic_name("CORE:enumIndexForSymbol"), "../../../../src/core/symbolToEnumConverter.cc", 2830, 82, "" );
 }
 NOINLINE void source_info_1340_helper() {
- define_source_info( class_kind, core::magic_name("CORE:SNode"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 1473, 49, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SNode"), "/home/meister/Dev/clasp/include/clasp/core/serialize.h", 1473, 49, "" );
 }
 NOINLINE void source_info_1341_helper() {
- define_source_info( method_kind, core::magic_name("core:setAttributes"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 4725, 120, "" );
+ define_source_info( method_kind, core::magic_name("core:setAttributes"), "/home/meister/Dev/clasp/include/clasp/core/serialize.h", 4725, 120, "" );
 }
 NOINLINE void source_info_1342_helper() {
- define_source_info( method_kind, core::magic_name("core:setVectorSNodes"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 4606, 118, "" );
+ define_source_info( method_kind, core::magic_name("core:setVectorSNodes"), "/home/meister/Dev/clasp/include/clasp/core/serialize.h", 4606, 118, "" );
 }
 NOINLINE void source_info_1343_helper() {
- define_source_info( method_kind, core::magic_name("core:setNodeKind"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 4498, 116, "" );
+ define_source_info( method_kind, core::magic_name("core:setNodeKind"), "/home/meister/Dev/clasp/include/clasp/core/serialize.h", 4498, 116, "" );
 }
 NOINLINE void source_info_1344_helper() {
- define_source_info( method_kind, core::magic_name("core:getVectorSNodes"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 3976, 104, "" );
+ define_source_info( method_kind, core::magic_name("core:getVectorSNodes"), "/home/meister/Dev/clasp/include/clasp/core/serialize.h", 3976, 104, "" );
 }
 NOINLINE void source_info_1345_helper() {
- define_source_info( method_kind, core::magic_name("core:childWithUniqueId"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 3835, 102, "" );
+ define_source_info( method_kind, core::magic_name("core:childWithUniqueId"), "/home/meister/Dev/clasp/include/clasp/core/serialize.h", 3835, 102, "" );
 }
 NOINLINE void source_info_1346_helper() {
- define_source_info( method_kind, core::magic_name("core:getUniqueId"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 3719, 100, "" );
+ define_source_info( method_kind, core::magic_name("core:getUniqueId"), "/home/meister/Dev/clasp/include/clasp/core/serialize.h", 3719, 100, "" );
 }
 NOINLINE void source_info_1347_helper() {
- define_source_info( method_kind, core::magic_name("core:getAttributes"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 3466, 96, "" );
+ define_source_info( method_kind, core::magic_name("core:getAttributes"), "/home/meister/Dev/clasp/include/clasp/core/serialize.h", 3466, 96, "" );
 }
 NOINLINE void source_info_1348_helper() {
- define_source_info( method_kind, core::magic_name("core:getNodeKind"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 3284, 93, "" );
+ define_source_info( method_kind, core::magic_name("core:getNodeKind"), "/home/meister/Dev/clasp/include/clasp/core/serialize.h", 3284, 93, "" );
 }
 NOINLINE void source_info_1349_helper() {
- define_source_info( method_kind, core::magic_name("core:keys"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 2381, 74, "" );
+ define_source_info( method_kind, core::magic_name("core:keys"), "/home/meister/Dev/clasp/include/clasp/core/serialize.h", 2381, 74, "" );
 }
 NOINLINE void source_info_1350_helper() {
- define_source_info( method_kind, core::magic_name("core:object"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 2293, 72, "" );
+ define_source_info( method_kind, core::magic_name("core:object"), "/home/meister/Dev/clasp/include/clasp/core/serialize.h", 2293, 72, "" );
 }
 NOINLINE void source_info_1351_helper() {
- define_source_info( class_kind, core::magic_name("CORE:LeafSNode"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 14836, 450, "" );
+ define_source_info( class_kind, core::magic_name("CORE:LeafSNode"), "/home/meister/Dev/clasp/include/clasp/core/serialize.h", 14836, 450, "" );
 }
 NOINLINE void source_info_1352_helper() {
- define_source_info( class_kind, core::magic_name("CORE:BranchSNode"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 16085, 486, "" );
+ define_source_info( class_kind, core::magic_name("CORE:BranchSNode"), "/home/meister/Dev/clasp/include/clasp/core/serialize.h", 16085, 486, "" );
 }
 NOINLINE void source_info_1353_helper() {
- define_source_info( class_kind, core::magic_name("CORE:Archive"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 18289, 547, "" );
+ define_source_info( class_kind, core::magic_name("CORE:Archive"), "/home/meister/Dev/clasp/include/clasp/core/serialize.h", 18289, 547, "" );
 }
 NOINLINE void source_info_1354_helper() {
- define_source_info( class_kind, core::magic_name("CORE:LoadArchive"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 19011, 576, "" );
+ define_source_info( class_kind, core::magic_name("CORE:LoadArchive"), "/home/meister/Dev/clasp/include/clasp/core/serialize.h", 19011, 576, "" );
 }
 NOINLINE void source_info_1355_helper() {
  define_source_info( method_kind, core::magic_name("CORE:loadArchive-keys"), "../../../../src/core/serialize.cc", 14101, 445, "" );
@@ -4094,7 +4094,7 @@ NOINLINE void source_info_1358_helper() {
  define_source_info( method_kind, core::magic_name("CORE:loadArchive-contains"), "../../../../src/core/serialize.cc", 12966, 412, "" );
 }
 NOINLINE void source_info_1359_helper() {
- define_source_info( class_kind, core::magic_name("CORE:SaveArchive"), "/Users/meister/Development/clasp/include/clasp/core/serialize.h", 20120, 618, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SaveArchive"), "/home/meister/Dev/clasp/include/clasp/core/serialize.h", 20120, 618, "" );
 }
 NOINLINE void source_info_1360_helper() {
  define_source_info( method_kind, core::magic_name("CORE:put"), "../../../../src/core/serialize.cc", 10289, 331, "" );
@@ -4547,10 +4547,10 @@ NOINLINE void source_info_1509_helper() {
  define_source_info( method_kind, "CHEM:compilerMessage", "../../../../projects/cando/include/cando/chem/chemInfo.h", 31635, 1084, "" );
 }
 NOINLINE void source_info_1510_helper() {
- define_source_info( class_kind, core::magic_name("CORE:HashTableEqual"), "/Users/meister/Development/clasp/include/clasp/core/hashTableEqual.h", 1311, 40, "" );
+ define_source_info( class_kind, core::magic_name("CORE:HashTableEqual"), "/home/meister/Dev/clasp/include/clasp/core/hashTableEqual.h", 1311, 40, "" );
 }
 NOINLINE void source_info_1511_helper() {
- define_source_info( class_kind, core::magic_name("CORE:SmallMap"), "/Users/meister/Development/clasp/include/clasp/core/smallMap.h", 1425, 49, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SmallMap"), "/home/meister/Dev/clasp/include/clasp/core/smallMap.h", 1425, 49, "" );
 }
 NOINLINE void source_info_1512_helper() {
  define_source_info( method_kind, core::magic_name("CORE:map_setf"), "../../../../src/core/smallMap.cc", 1760, 63, "" );
@@ -4559,10 +4559,10 @@ NOINLINE void source_info_1513_helper() {
  define_source_info( method_kind, core::magic_name("CORE:map_find"), "../../../../src/core/smallMap.cc", 1544, 54, "" );
 }
 NOINLINE void source_info_1514_helper() {
- define_source_info( method_kind, core::magic_name("CORE:map_capacity"), "/Users/meister/Development/clasp/include/clasp/core/smallMap.h", 1761, 60, "" );
+ define_source_info( method_kind, core::magic_name("CORE:map_capacity"), "/home/meister/Dev/clasp/include/clasp/core/smallMap.h", 1761, 60, "" );
 }
 NOINLINE void source_info_1515_helper() {
- define_source_info( method_kind, core::magic_name("CORE:map_size"), "/Users/meister/Development/clasp/include/clasp/core/smallMap.h", 1666, 58, "" );
+ define_source_info( method_kind, core::magic_name("CORE:map_size"), "/home/meister/Dev/clasp/include/clasp/core/smallMap.h", 1666, 58, "" );
 }
 NOINLINE void source_info_1516_helper() {
  define_source_info( class_kind, core::magic_name("ADAPT:SymbolSet"), "../../../../projects/cando/include/cando/adapt/symbolSet.h", 1747, 62, "" );
@@ -4979,7 +4979,7 @@ NOINLINE void source_info_1653_helper() {
  define_source_info( method_kind, "CHEM:getTypes", "../../../../projects/cando/include/cando/chem/forceField.h", 2911, 114, "" );
 }
 NOINLINE void source_info_1654_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:Package"), "/Users/meister/Development/clasp/include/clasp/core/package.h", 1355, 45, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:Package"), "/home/meister/Dev/clasp/include/clasp/core/package.h", 1355, 45, "" );
 }
 NOINLINE void source_info_1655_helper() {
  define_source_info( method_kind, core::magic_name("core:PackageHashTables"), "../../../../src/core/package.cc", 11385, 357, "" );
@@ -5255,10 +5255,10 @@ NOINLINE void source_info_1745_helper() {
  define_source_info( method_kind, "ADAPT:contains", "../../../../projects/cando/include/cando/adapt/objectSet.h", 1640, 59, "" );
 }
 NOINLINE void source_info_1746_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:BuiltInClass"), "/Users/meister/Development/clasp/include/clasp/core/builtInClass.h", 1336, 43, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:BuiltInClass"), "/home/meister/Dev/clasp/include/clasp/core/builtInClass.h", 1336, 43, "" );
 }
 NOINLINE void source_info_1747_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:bit-vector"), "/Users/meister/Development/clasp/include/clasp/core/bitVector.h", 1391, 45, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:bit-vector"), "/home/meister/Dev/clasp/include/clasp/core/bitVector.h", 1391, 45, "" );
 }
 NOINLINE void source_info_1748_helper() {
  define_source_info( method_kind, core::magic_name("core:lowestIndex"), "../../../../src/core/bitVector.cc", 8099, 313, "" );
@@ -5297,13 +5297,13 @@ NOINLINE void source_info_1759_helper() {
  define_source_info( method_kind, core::magic_name("core:setBit"), "../../../../src/core/bitVector.cc", 4192, 151, "" );
 }
 NOINLINE void source_info_1760_helper() {
- define_source_info( method_kind, core::magic_name("core:isZero"), "/Users/meister/Development/clasp/include/clasp/core/bitVector.h", 2808, 90, "" );
+ define_source_info( method_kind, core::magic_name("core:isZero"), "/home/meister/Dev/clasp/include/clasp/core/bitVector.h", 2808, 90, "" );
 }
 NOINLINE void source_info_1761_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:simple-bit-vector"), "/Users/meister/Development/clasp/include/clasp/core/bitVector.h", 3759, 125, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:simple-bit-vector"), "/home/meister/Dev/clasp/include/clasp/core/bitVector.h", 3759, 125, "" );
 }
 NOINLINE void source_info_1762_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:bit-vector-with-fill-ptr"), "/Users/meister/Development/clasp/include/clasp/core/bitVector.h", 4315, 144, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:bit-vector-with-fill-ptr"), "/home/meister/Dev/clasp/include/clasp/core/bitVector.h", 4315, 144, "" );
 }
 NOINLINE void source_info_1763_helper() {
  define_source_info( class_kind, core::magic_name("CHEM:PathMessage"), "../../../../projects/cando/include/cando/chem/ringFinder.h", 475, 27, "" );
@@ -6074,7 +6074,7 @@ NOINLINE void source_info_2018_helper() {
  define_source_info( method_kind, "CHEM:setFocus", "../../../../projects/cando/include/cando/chem/monomerContext.h", 1823, 87, "" );
 }
 NOINLINE void source_info_2019_helper() {
- define_source_info( class_kind, core::magic_name("CORE:IntArray"), "/Users/meister/Development/clasp/include/clasp/core/intArray.h", 1241, 43, "" );
+ define_source_info( class_kind, core::magic_name("CORE:IntArray"), "/home/meister/Dev/clasp/include/clasp/core/intArray.h", 1241, 43, "" );
 }
 NOINLINE void source_info_2020_helper() {
  define_source_info( class_kind, core::magic_name("CHEM:ConformationExplorerEntryStage"), "../../../../projects/cando/include/cando/chem/conformationExplorer.h", 872, 45, "" );
@@ -7157,22 +7157,22 @@ NOINLINE void source_info_2379_helper() {
  define_source_info( method_kind, core::magic_name("CHEM:stretchTermBetweenAtoms"), "../../src/chem/energyStretch.cc", 7042, 235, "" );
 }
 NOINLINE void source_info_2380_helper() {
- define_source_info( class_kind, core::magic_name("CORE:Iterator"), "/Users/meister/Development/clasp/include/clasp/core/iterator.h", 1223, 41, "" );
+ define_source_info( class_kind, core::magic_name("CORE:Iterator"), "/home/meister/Dev/clasp/include/clasp/core/iterator.h", 1223, 41, "" );
 }
 NOINLINE void source_info_2381_helper() {
- define_source_info( method_kind, core::magic_name("CORE:currentObject"), "/Users/meister/Development/clasp/include/clasp/core/iterator.h", 2351, 80, "" );
+ define_source_info( method_kind, core::magic_name("CORE:currentObject"), "/home/meister/Dev/clasp/include/clasp/core/iterator.h", 2351, 80, "" );
 }
 NOINLINE void source_info_2382_helper() {
- define_source_info( method_kind, core::magic_name("CORE:notDone"), "/Users/meister/Development/clasp/include/clasp/core/iterator.h", 2250, 78, "" );
+ define_source_info( method_kind, core::magic_name("CORE:notDone"), "/home/meister/Dev/clasp/include/clasp/core/iterator.h", 2250, 78, "" );
 }
 NOINLINE void source_info_2383_helper() {
- define_source_info( method_kind, core::magic_name("CORE:isDone"), "/Users/meister/Development/clasp/include/clasp/core/iterator.h", 2136, 73, "" );
+ define_source_info( method_kind, core::magic_name("CORE:isDone"), "/home/meister/Dev/clasp/include/clasp/core/iterator.h", 2136, 73, "" );
 }
 NOINLINE void source_info_2384_helper() {
- define_source_info( method_kind, core::magic_name("CORE:next"), "/Users/meister/Development/clasp/include/clasp/core/iterator.h", 2025, 68, "" );
+ define_source_info( method_kind, core::magic_name("CORE:next"), "/home/meister/Dev/clasp/include/clasp/core/iterator.h", 2025, 68, "" );
 }
 NOINLINE void source_info_2385_helper() {
- define_source_info( method_kind, core::magic_name("core:begin"), "/Users/meister/Development/clasp/include/clasp/core/iterator.h", 1915, 63, "" );
+ define_source_info( method_kind, core::magic_name("core:begin"), "/home/meister/Dev/clasp/include/clasp/core/iterator.h", 1915, 63, "" );
 }
 NOINLINE void source_info_2386_helper() {
  define_source_info( class_kind, core::magic_name("CHEM:IterateMatter"), "../../../../projects/cando/include/cando/chem/iterateMatter.h", 339, 27, "" );
@@ -7292,58 +7292,58 @@ NOINLINE void source_info_2424_helper() {
  define_source_info( method_kind, core::magic_name("GEOM:getMinX"), "../../src/geom/boundingBox.cc", 678, 29, "" );
 }
 NOINLINE void source_info_2425_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:character"), "/Users/meister/Development/clasp/include/clasp/core/character.h", 1575, 49, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:character"), "/home/meister/Dev/clasp/include/clasp/core/character.h", 1575, 49, "" );
 }
 NOINLINE void source_info_2426_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:stream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 9420, 272, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:stream"), "/home/meister/Dev/clasp/include/clasp/core/lispStream.h", 9420, 272, "" );
 }
 NOINLINE void source_info_2427_helper() {
- define_source_info( class_kind, core::magic_name("EXT:AnsiStream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 10589, 314, "" );
+ define_source_info( class_kind, core::magic_name("EXT:AnsiStream"), "/home/meister/Dev/clasp/include/clasp/core/lispStream.h", 10589, 314, "" );
 }
 NOINLINE void source_info_2428_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:file-stream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 10872, 326, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:file-stream"), "/home/meister/Dev/clasp/include/clasp/core/lispStream.h", 10872, 326, "" );
 }
 NOINLINE void source_info_2429_helper() {
- define_source_info( class_kind, core::magic_name("CORE:iofile-stream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 11322, 342, "" );
+ define_source_info( class_kind, core::magic_name("CORE:iofile-stream"), "/home/meister/Dev/clasp/include/clasp/core/lispStream.h", 11322, 342, "" );
 }
 NOINLINE void source_info_2430_helper() {
- define_source_info( class_kind, core::magic_name("CORE:iostream-stream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 12652, 377, "" );
+ define_source_info( class_kind, core::magic_name("CORE:iostream-stream"), "/home/meister/Dev/clasp/include/clasp/core/lispStream.h", 12652, 377, "" );
 }
 NOINLINE void source_info_2431_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:string-stream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 13818, 410, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:string-stream"), "/home/meister/Dev/clasp/include/clasp/core/lispStream.h", 13818, 410, "" );
 }
 NOINLINE void source_info_2432_helper() {
- define_source_info( class_kind, core::magic_name("CORE:string-output-stream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 14382, 425, "" );
+ define_source_info( class_kind, core::magic_name("CORE:string-output-stream"), "/home/meister/Dev/clasp/include/clasp/core/lispStream.h", 14382, 425, "" );
 }
 NOINLINE void source_info_2433_helper() {
- define_source_info( class_kind, core::magic_name("CORE:string-input-stream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 15465, 454, "" );
+ define_source_info( class_kind, core::magic_name("CORE:string-input-stream"), "/home/meister/Dev/clasp/include/clasp/core/lispStream.h", 15465, 454, "" );
 }
 NOINLINE void source_info_2434_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:synonym-stream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 16475, 483, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:synonym-stream"), "/home/meister/Dev/clasp/include/clasp/core/lispStream.h", 16475, 483, "" );
 }
 NOINLINE void source_info_2435_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:two-way-stream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 17359, 515, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:two-way-stream"), "/home/meister/Dev/clasp/include/clasp/core/lispStream.h", 17359, 515, "" );
 }
 NOINLINE void source_info_2436_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:BroadcastStream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 18170, 543, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:BroadcastStream"), "/home/meister/Dev/clasp/include/clasp/core/lispStream.h", 18170, 543, "" );
 }
 NOINLINE void source_info_2437_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:ConcatenatedStream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 18844, 566, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:ConcatenatedStream"), "/home/meister/Dev/clasp/include/clasp/core/lispStream.h", 18844, 566, "" );
 }
 NOINLINE void source_info_2438_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:EchoStream"), "/Users/meister/Development/clasp/include/clasp/core/lispStream.h", 19548, 589, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:EchoStream"), "/home/meister/Dev/clasp/include/clasp/core/lispStream.h", 19548, 589, "" );
 }
 NOINLINE void source_info_2439_helper() {
- define_source_info( class_kind, core::magic_name("CORE:Binder"), "/Users/meister/Development/clasp/include/clasp/core/binder.h", 1541, 52, "" );
+ define_source_info( class_kind, core::magic_name("CORE:Binder"), "/home/meister/Dev/clasp/include/clasp/core/binder.h", 1541, 52, "" );
 }
 NOINLINE void source_info_2440_helper() {
  define_source_info( class_kind, core::magic_name("GEOM:Color"), "../../../../projects/cando/include/cando/geom/color.h", 339, 22, "" );
 }
 NOINLINE void source_info_2441_helper() {
- define_source_info( class_kind, core::magic_name("CORE:HashTableEql"), "/Users/meister/Development/clasp/include/clasp/core/hashTableEql.h", 1266, 39, "" );
+ define_source_info( class_kind, core::magic_name("CORE:HashTableEql"), "/home/meister/Dev/clasp/include/clasp/core/hashTableEql.h", 1266, 39, "" );
 }
 NOINLINE void source_info_2442_helper() {
- define_source_info( class_kind, core::magic_name("CORE:PosixTime"), "/Users/meister/Development/clasp/include/clasp/core/posixTime.h", 1581, 53, "" );
+ define_source_info( class_kind, core::magic_name("CORE:PosixTime"), "/home/meister/Dev/clasp/include/clasp/core/posixTime.h", 1581, 53, "" );
 }
 NOINLINE void source_info_2443_helper() {
  define_source_info( method_kind, core::magic_name("CORE:sub"), "../../../../src/core/posixTime.cc", 3009, 107, "" );
@@ -7352,7 +7352,7 @@ NOINLINE void source_info_2444_helper() {
  define_source_info( method_kind, core::magic_name("CORE:setToLocalTime"), "../../../../src/core/posixTime.cc", 2698, 95, "" );
 }
 NOINLINE void source_info_2445_helper() {
- define_source_info( class_kind, core::magic_name("CORE:PosixTimeDuration"), "/Users/meister/Development/clasp/include/clasp/core/posixTime.h", 2304, 84, "" );
+ define_source_info( class_kind, core::magic_name("CORE:PosixTimeDuration"), "/home/meister/Dev/clasp/include/clasp/core/posixTime.h", 2304, 84, "" );
 }
 NOINLINE void source_info_2446_helper() {
  define_source_info( method_kind, core::magic_name("CORE:toIsoString"), "../../../../src/core/posixTime.cc", 5867, 199, "" );
@@ -7379,7 +7379,7 @@ NOINLINE void source_info_2453_helper() {
  define_source_info( method_kind, core::magic_name("CORE:sub"), "../../../../src/core/posixTime.cc", 4392, 144, "" );
 }
 NOINLINE void source_info_2454_helper() {
- define_source_info( class_kind, core::magic_name("CORE:path"), "/Users/meister/Development/clasp/include/clasp/core/fileSystem.h", 1329, 45, "" );
+ define_source_info( class_kind, core::magic_name("CORE:path"), "/home/meister/Dev/clasp/include/clasp/core/fileSystem.h", 1329, 45, "" );
 }
 NOINLINE void source_info_2455_helper() {
  define_source_info( method_kind, core::magic_name("CORE:exists"), "../../../../src/core/fileSystem.cc", 9057, 320, "" );
@@ -7421,16 +7421,16 @@ NOINLINE void source_info_2467_helper() {
  define_source_info( method_kind, core::magic_name("CORE:last_write_time"), "../../../../src/core/fileSystem.cc", 5904, 196, "" );
 }
 NOINLINE void source_info_2468_helper() {
- define_source_info( method_kind, core::magic_name("CORE:isAbsolute"), "/Users/meister/Development/clasp/include/clasp/core/fileSystem.h", 1868, 69, "" );
+ define_source_info( method_kind, core::magic_name("CORE:isAbsolute"), "/home/meister/Dev/clasp/include/clasp/core/fileSystem.h", 1868, 69, "" );
 }
 NOINLINE void source_info_2469_helper() {
- define_source_info( class_kind, core::magic_name("CORE:DirectoryIterator"), "/Users/meister/Development/clasp/include/clasp/core/fileSystem.h", 3470, 129, "" );
+ define_source_info( class_kind, core::magic_name("CORE:DirectoryIterator"), "/home/meister/Dev/clasp/include/clasp/core/fileSystem.h", 3470, 129, "" );
 }
 NOINLINE void source_info_2470_helper() {
- define_source_info( class_kind, core::magic_name("CORE:RecursiveDirectoryIterator"), "/Users/meister/Development/clasp/include/clasp/core/fileSystem.h", 4577, 169, "" );
+ define_source_info( class_kind, core::magic_name("CORE:RecursiveDirectoryIterator"), "/home/meister/Dev/clasp/include/clasp/core/fileSystem.h", 4577, 169, "" );
 }
 NOINLINE void source_info_2471_helper() {
- define_source_info( class_kind, core::magic_name("CORE:DirectoryEntry"), "/Users/meister/Development/clasp/include/clasp/core/fileSystem.h", 5809, 212, "" );
+ define_source_info( class_kind, core::magic_name("CORE:DirectoryEntry"), "/home/meister/Dev/clasp/include/clasp/core/fileSystem.h", 5809, 212, "" );
 }
 NOINLINE void source_info_2472_helper() {
  define_source_info( method_kind, core::magic_name("CORE:path"), "../../../../src/core/fileSystem.cc", 15566, 564, "" );
@@ -7442,7 +7442,7 @@ NOINLINE void source_info_2474_helper() {
  define_source_info( method_kind, core::magic_name("CORE:fileStatus"), "../../../../src/core/fileSystem.cc", 15132, 548, "" );
 }
 NOINLINE void source_info_2475_helper() {
- define_source_info( class_kind, core::magic_name("CORE:FileStatus"), "/Users/meister/Development/clasp/include/clasp/core/fileSystem.h", 6539, 241, "" );
+ define_source_info( class_kind, core::magic_name("CORE:FileStatus"), "/home/meister/Dev/clasp/include/clasp/core/fileSystem.h", 6539, 241, "" );
 }
 NOINLINE void source_info_2476_helper() {
  define_source_info( method_kind, core::magic_name("CORE:isOther"), "../../../../src/core/fileSystem.cc", 16618, 610, "" );
@@ -7550,7 +7550,7 @@ NOINLINE void source_info_2510_helper() {
  define_source_info( class_kind, core::magic_name("ADAPT:SymbolList"), "../../../../projects/cando/include/cando/adapt/symbolList.h", 1453, 52, "" );
 }
 NOINLINE void source_info_2511_helper() {
- define_source_info( class_kind, core::magic_name("CORE:InvocationHistoryFrameIterator"), "/Users/meister/Development/clasp/include/clasp/core/primitives.h", 5016, 165, "" );
+ define_source_info( class_kind, core::magic_name("CORE:InvocationHistoryFrameIterator"), "/home/meister/Dev/clasp/include/clasp/core/primitives.h", 5016, 165, "" );
 }
 NOINLINE void source_info_2512_helper() {
  define_source_info( method_kind, core::magic_name("CORE:frameIteratorArguments"), "../../../../src/core/primitives.cc", 55911, 1659, "" );
@@ -7565,16 +7565,16 @@ NOINLINE void source_info_2515_helper() {
  define_source_info( method_kind, core::magic_name("CORE:frameIteratorPreviousFrame"), "../../../../src/core/primitives.cc", 54236, 1611, "" );
 }
 NOINLINE void source_info_2516_helper() {
- define_source_info( method_kind, core::magic_name("CORE:frameIteratorIsValid"), "/Users/meister/Development/clasp/include/clasp/core/primitives.h", 6012, 193, "" );
+ define_source_info( method_kind, core::magic_name("CORE:frameIteratorIsValid"), "/home/meister/Dev/clasp/include/clasp/core/primitives.h", 6012, 193, "" );
 }
 NOINLINE void source_info_2517_helper() {
- define_source_info( class_kind, core::magic_name("CORE:Reader"), "/Users/meister/Development/clasp/include/clasp/core/reader.h", 3946, 147, "" );
+ define_source_info( class_kind, core::magic_name("CORE:Reader"), "/home/meister/Dev/clasp/include/clasp/core/reader.h", 3946, 147, "" );
 }
 NOINLINE void source_info_2518_helper() {
- define_source_info( class_kind, core::magic_name("AST-TOOLING:AstVisitor"), "/Users/meister/Development/clasp/include/clasp/asttooling/astVisitor.h", 1369, 41, "" );
+ define_source_info( class_kind, core::magic_name("AST-TOOLING:AstVisitor"), "/home/meister/Dev/clasp/include/clasp/asttooling/astVisitor.h", 1369, 41, "" );
 }
 NOINLINE void source_info_2519_helper() {
- define_source_info( class_kind, core::magic_name("CFFI-SYS:Pointer"), "/Users/meister/Development/clasp/include/clasp/cffi/cffi.h", 1197, 37, "" );
+ define_source_info( class_kind, core::magic_name("CFFI-SYS:Pointer"), "/home/meister/Dev/clasp/include/clasp/cffi/cffi.h", 1197, 37, "" );
 }
 NOINLINE void source_info_2520_helper() {
  define_source_info( method_kind, core::magic_name("CFFI-SYS:inc-pointer"), "../../../../src/cffi/cffi.cc", 14810, 462, "" );
@@ -7589,22 +7589,22 @@ NOINLINE void source_info_2523_helper() {
  define_source_info( method_kind, core::magic_name("CFFI-SYS:PERCENTmem_ref"), "../../../../src/cffi/cffi.cc", 9606, 270, "" );
 }
 NOINLINE void source_info_2524_helper() {
- define_source_info( class_kind, core::magic_name("CLBIND:ClassRegistry"), "/Users/meister/Development/clasp/include/clasp/clbind/class_registry.h", 2460, 65, "" );
+ define_source_info( class_kind, core::magic_name("CLBIND:ClassRegistry"), "/home/meister/Dev/clasp/include/clasp/clbind/class_registry.h", 2460, 65, "" );
 }
 NOINLINE void source_info_2525_helper() {
- define_source_info( class_kind, core::magic_name("CORE:ExternalObject"), "/Users/meister/Development/clasp/include/clasp/core/externalObject.h", 1830, 63, "" );
+ define_source_info( class_kind, core::magic_name("CORE:ExternalObject"), "/home/meister/Dev/clasp/include/clasp/core/externalObject.h", 1830, 63, "" );
 }
 NOINLINE void source_info_2526_helper() {
- define_source_info( method_kind, core::magic_name("CORE:isUndefined"), "/Users/meister/Development/clasp/include/clasp/core/externalObject.h", 2007, 70, "" );
+ define_source_info( method_kind, core::magic_name("CORE:isUndefined"), "/home/meister/Dev/clasp/include/clasp/core/externalObject.h", 2007, 70, "" );
 }
 NOINLINE void source_info_2527_helper() {
- define_source_info( class_kind, core::magic_name("CORE:ForeignData"), "/Users/meister/Development/clasp/include/clasp/core/externalObject.h", 3757, 121, "" );
+ define_source_info( class_kind, core::magic_name("CORE:ForeignData"), "/home/meister/Dev/clasp/include/clasp/core/externalObject.h", 3757, 121, "" );
 }
 NOINLINE void source_info_2528_helper() {
  define_source_info( method_kind, core::magic_name("CORE:freeForeignObject"), "../../../../src/core/externalObject.cc", 2679, 89, "" );
 }
 NOINLINE void source_info_2529_helper() {
- define_source_info( class_kind, core::magic_name("CORE:LambdaListHandler"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 3011, 97, "" );
+ define_source_info( class_kind, core::magic_name("CORE:LambdaListHandler"), "/home/meister/Dev/clasp/include/clasp/core/lambdaListHandler.h", 3011, 97, "" );
 }
 NOINLINE void source_info_2530_helper() {
  define_source_info( method_kind, core::magic_name("CORE:namesOfLexicalVariablesForDebugging"), "../../../../src/core/lambdaListHandler.cc", 44074, 1159, "" );
@@ -7622,40 +7622,40 @@ NOINLINE void source_info_2534_helper() {
  define_source_info( method_kind, core::magic_name("CORE:LambdaListHandler-lambdaList"), "../../../../src/core/lambdaListHandler.cc", 4282, 116, "" );
 }
 NOINLINE void source_info_2535_helper() {
- define_source_info( method_kind, core::magic_name("CORE:classifiedSymbols"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 10021, 238, "" );
+ define_source_info( method_kind, core::magic_name("CORE:classifiedSymbols"), "/home/meister/Dev/clasp/include/clasp/core/lambdaListHandler.h", 10021, 238, "" );
 }
 NOINLINE void source_info_2536_helper() {
- define_source_info( method_kind, core::magic_name("CORE:numberOfLexicalVariables"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 9749, 234, "" );
+ define_source_info( method_kind, core::magic_name("CORE:numberOfLexicalVariables"), "/home/meister/Dev/clasp/include/clasp/core/lambdaListHandler.h", 9749, 234, "" );
 }
 NOINLINE void source_info_2537_helper() {
- define_source_info( method_kind, core::magic_name("CORE:allowOtherKeys"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 9465, 228, "" );
+ define_source_info( method_kind, core::magic_name("CORE:allowOtherKeys"), "/home/meister/Dev/clasp/include/clasp/core/lambdaListHandler.h", 9465, 228, "" );
 }
 NOINLINE void source_info_2538_helper() {
- define_source_info( method_kind, core::magic_name("CORE:numberOfAuxArguments"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 9342, 226, "" );
+ define_source_info( method_kind, core::magic_name("CORE:numberOfAuxArguments"), "/home/meister/Dev/clasp/include/clasp/core/lambdaListHandler.h", 9342, 226, "" );
 }
 NOINLINE void source_info_2539_helper() {
- define_source_info( method_kind, core::magic_name("CORE:numberOfKeyArguments"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 9209, 224, "" );
+ define_source_info( method_kind, core::magic_name("CORE:numberOfKeyArguments"), "/home/meister/Dev/clasp/include/clasp/core/lambdaListHandler.h", 9209, 224, "" );
 }
 NOINLINE void source_info_2540_helper() {
- define_source_info( method_kind, core::magic_name("CORE:numberOfRestArguments"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 8997, 221, "" );
+ define_source_info( method_kind, core::magic_name("CORE:numberOfRestArguments"), "/home/meister/Dev/clasp/include/clasp/core/lambdaListHandler.h", 8997, 221, "" );
 }
 NOINLINE void source_info_2541_helper() {
- define_source_info( method_kind, core::magic_name("CORE:numberOfOptionalArguments"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 8857, 219, "" );
+ define_source_info( method_kind, core::magic_name("CORE:numberOfOptionalArguments"), "/home/meister/Dev/clasp/include/clasp/core/lambdaListHandler.h", 8857, 219, "" );
 }
 NOINLINE void source_info_2542_helper() {
- define_source_info( method_kind, core::magic_name("CORE:numberOfRequiredArguments"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 8706, 217, "" );
+ define_source_info( method_kind, core::magic_name("CORE:numberOfRequiredArguments"), "/home/meister/Dev/clasp/include/clasp/core/lambdaListHandler.h", 8706, 217, "" );
 }
 NOINLINE void source_info_2543_helper() {
- define_source_info( method_kind, core::magic_name("CORE:lambdaListHandlerRequiredLexicalArgumentsOnlyP"), "/Users/meister/Development/clasp/include/clasp/core/lambdaListHandler.h", 8545, 214, "" );
+ define_source_info( method_kind, core::magic_name("CORE:lambdaListHandlerRequiredLexicalArgumentsOnlyP"), "/home/meister/Dev/clasp/include/clasp/core/lambdaListHandler.h", 8545, 214, "" );
 }
 NOINLINE void source_info_2544_helper() {
- define_source_info( class_kind, core::magic_name("CORE:LightUserData"), "/Users/meister/Development/clasp/include/clasp/core/userData.h", 1253, 40, "" );
+ define_source_info( class_kind, core::magic_name("CORE:LightUserData"), "/home/meister/Dev/clasp/include/clasp/core/userData.h", 1253, 40, "" );
 }
 NOINLINE void source_info_2545_helper() {
- define_source_info( class_kind, core::magic_name("CORE:UserData"), "/Users/meister/Development/clasp/include/clasp/core/userData.h", 1937, 70, "" );
+ define_source_info( class_kind, core::magic_name("CORE:UserData"), "/home/meister/Dev/clasp/include/clasp/core/userData.h", 1937, 70, "" );
 }
 NOINLINE void source_info_2546_helper() {
- define_source_info( class_kind, core::magic_name("CORE:LoadTimeValues"), "/Users/meister/Development/clasp/include/clasp/core/loadTimeValues.h", 1352, 38, "" );
+ define_source_info( class_kind, core::magic_name("CORE:LoadTimeValues"), "/home/meister/Dev/clasp/include/clasp/core/loadTimeValues.h", 1352, 38, "" );
 }
 NOINLINE void source_info_2547_helper() {
  define_source_info( method_kind, core::magic_name("CORE:symbols_vectorPushExtend"), "../../../../src/core/loadTimeValues.cc", 8892, 254, "" );
@@ -7664,7 +7664,7 @@ NOINLINE void source_info_2548_helper() {
  define_source_info( method_kind, core::magic_name("CORE:data_vectorPushExtend"), "../../../../src/core/loadTimeValues.cc", 8573, 242, "" );
 }
 NOINLINE void source_info_2549_helper() {
- define_source_info( class_kind, core::magic_name("CORE:MultiStringBuffer"), "/Users/meister/Development/clasp/include/clasp/core/multiStringBuffer.h", 2168, 74, "" );
+ define_source_info( class_kind, core::magic_name("CORE:MultiStringBuffer"), "/home/meister/Dev/clasp/include/clasp/core/multiStringBuffer.h", 2168, 74, "" );
 }
 NOINLINE void source_info_2550_helper() {
  define_source_info( method_kind, core::magic_name("CORE:dump"), "../../../../src/core/multiStringBuffer.cc", 7473, 224, "" );
@@ -7676,13 +7676,13 @@ NOINLINE void source_info_2552_helper() {
  define_source_info( method_kind, core::magic_name("CORE:addString"), "../../../../src/core/multiStringBuffer.cc", 6407, 190, "" );
 }
 NOINLINE void source_info_2553_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:random-state"), "/Users/meister/Development/clasp/include/clasp/core/random.h", 1229, 40, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:random-state"), "/home/meister/Dev/clasp/include/clasp/core/random.h", 1229, 40, "" );
 }
 NOINLINE void source_info_2554_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:readtable"), "/Users/meister/Development/clasp/include/clasp/core/readtable.h", 1332, 45, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:readtable"), "/home/meister/Dev/clasp/include/clasp/core/readtable.h", 1332, 45, "" );
 }
 NOINLINE void source_info_2555_helper() {
- define_source_info( class_kind, core::magic_name("CORE:RegexMatch"), "/Users/meister/Development/clasp/include/clasp/core/regex.h", 1232, 40, "" );
+ define_source_info( class_kind, core::magic_name("CORE:RegexMatch"), "/home/meister/Dev/clasp/include/clasp/core/regex.h", 1232, 40, "" );
 }
 NOINLINE void source_info_2556_helper() {
  define_source_info( method_kind, core::magic_name("CORE:regex-match-part"), "../../../../src/core/regex.cc", 3183, 121, "" );
@@ -7694,13 +7694,13 @@ NOINLINE void source_info_2558_helper() {
  define_source_info( method_kind, core::magic_name("CORE:regex-match-matched"), "../../../../src/core/regex.cc", 2739, 99, "" );
 }
 NOINLINE void source_info_2559_helper() {
- define_source_info( method_kind, core::magic_name("CORE:regex-match-suffix"), "/Users/meister/Development/clasp/include/clasp/core/regex.h", 2094, 67, "" );
+ define_source_info( method_kind, core::magic_name("CORE:regex-match-suffix"), "/home/meister/Dev/clasp/include/clasp/core/regex.h", 2094, 67, "" );
 }
 NOINLINE void source_info_2560_helper() {
- define_source_info( method_kind, core::magic_name("CORE:regex-match-prefix"), "/Users/meister/Development/clasp/include/clasp/core/regex.h", 1942, 63, "" );
+ define_source_info( method_kind, core::magic_name("CORE:regex-match-prefix"), "/home/meister/Dev/clasp/include/clasp/core/regex.h", 1942, 63, "" );
 }
 NOINLINE void source_info_2561_helper() {
- define_source_info( class_kind, core::magic_name("CORE:Regex"), "/Users/meister/Development/clasp/include/clasp/core/regex.h", 2221, 72, "" );
+ define_source_info( class_kind, core::magic_name("CORE:Regex"), "/home/meister/Dev/clasp/include/clasp/core/regex.h", 2221, 72, "" );
 }
 NOINLINE void source_info_2562_helper() {
  define_source_info( method_kind, core::magic_name("CORE:regexSedReplace"), "../../../../src/core/regex.cc", 2419, 91, "" );
@@ -7712,28 +7712,28 @@ NOINLINE void source_info_2564_helper() {
  define_source_info( method_kind, core::magic_name("CORE:regexMatches"), "../../../../src/core/regex.cc", 1967, 76, "" );
 }
 NOINLINE void source_info_2565_helper() {
- define_source_info( class_kind, core::magic_name("CORE:SingleDispatchMethod"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchMethod.h", 1285, 37, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SingleDispatchMethod"), "/home/meister/Dev/clasp/include/clasp/core/singleDispatchMethod.h", 1285, 37, "" );
 }
 NOINLINE void source_info_2566_helper() {
- define_source_info( method_kind, core::magic_name("CORE:singleDispatchMethodDocstring"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchMethod.h", 3555, 87, "" );
+ define_source_info( method_kind, core::magic_name("CORE:singleDispatchMethodDocstring"), "/home/meister/Dev/clasp/include/clasp/core/singleDispatchMethod.h", 3555, 87, "" );
 }
 NOINLINE void source_info_2567_helper() {
- define_source_info( method_kind, core::magic_name("CORE:singleDispatchMethodDeclares"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchMethod.h", 3416, 85, "" );
+ define_source_info( method_kind, core::magic_name("CORE:singleDispatchMethodDeclares"), "/home/meister/Dev/clasp/include/clasp/core/singleDispatchMethod.h", 3416, 85, "" );
 }
 NOINLINE void source_info_2568_helper() {
- define_source_info( method_kind, core::magic_name("CORE:singleDispatchMethodLambdaListHandler"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchMethod.h", 3248, 83, "" );
+ define_source_info( method_kind, core::magic_name("CORE:singleDispatchMethodLambdaListHandler"), "/home/meister/Dev/clasp/include/clasp/core/singleDispatchMethod.h", 3248, 83, "" );
 }
 NOINLINE void source_info_2569_helper() {
- define_source_info( method_kind, core::magic_name("CORE:singleDispatchMethodCode"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchMethod.h", 3106, 81, "" );
+ define_source_info( method_kind, core::magic_name("CORE:singleDispatchMethodCode"), "/home/meister/Dev/clasp/include/clasp/core/singleDispatchMethod.h", 3106, 81, "" );
 }
 NOINLINE void source_info_2570_helper() {
- define_source_info( method_kind, core::magic_name("CORE:singleDispatchMethodReceiverClass"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchMethod.h", 2960, 79, "" );
+ define_source_info( method_kind, core::magic_name("CORE:singleDispatchMethodReceiverClass"), "/home/meister/Dev/clasp/include/clasp/core/singleDispatchMethod.h", 2960, 79, "" );
 }
 NOINLINE void source_info_2571_helper() {
- define_source_info( method_kind, core::magic_name("CORE:singleDispatchMethodName"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchMethod.h", 2823, 77, "" );
+ define_source_info( method_kind, core::magic_name("CORE:singleDispatchMethodName"), "/home/meister/Dev/clasp/include/clasp/core/singleDispatchMethod.h", 2823, 77, "" );
 }
 NOINLINE void source_info_2572_helper() {
- define_source_info( class_kind, core::magic_name("CORE:SmallMultimap"), "/Users/meister/Development/clasp/include/clasp/core/smallMultimap.h", 1477, 51, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SmallMultimap"), "/home/meister/Dev/clasp/include/clasp/core/smallMultimap.h", 1477, 51, "" );
 }
 NOINLINE void source_info_2573_helper() {
  define_source_info( method_kind, core::magic_name("CORE:small_multimap_insert"), "../../../../src/core/smallMultimap.cc", 2241, 69, "" );
@@ -7745,13 +7745,13 @@ NOINLINE void source_info_2575_helper() {
  define_source_info( method_kind, core::magic_name("CORE:small_multimap_describe"), "../../../../src/core/smallMultimap.cc", 1584, 54, "" );
 }
 NOINLINE void source_info_2576_helper() {
- define_source_info( method_kind, core::magic_name("CORE:small_multimap_size"), "/Users/meister/Development/clasp/include/clasp/core/smallMultimap.h", 1731, 59, "" );
+ define_source_info( method_kind, core::magic_name("CORE:small_multimap_size"), "/home/meister/Dev/clasp/include/clasp/core/smallMultimap.h", 1731, 59, "" );
 }
 NOINLINE void source_info_2577_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:structure-object"), "/Users/meister/Development/clasp/include/clasp/core/structureObject.h", 1458, 49, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:structure-object"), "/home/meister/Dev/clasp/include/clasp/core/structureObject.h", 1458, 49, "" );
 }
 NOINLINE void source_info_2578_helper() {
- define_source_info( class_kind, core::magic_name("CORE:WeakKeyMapping"), "/Users/meister/Development/clasp/include/clasp/core/weakKeyMapping.h", 1197, 36, "" );
+ define_source_info( class_kind, core::magic_name("CORE:WeakKeyMapping"), "/home/meister/Dev/clasp/include/clasp/core/weakKeyMapping.h", 1197, 36, "" );
 }
 NOINLINE void source_info_2579_helper() {
  define_source_info( method_kind, core::magic_name("CORE:weakKeyMappingKeyValue"), "../../../../src/core/weakKeyMapping.cc", 2224, 75, "" );
@@ -7760,7 +7760,7 @@ NOINLINE void source_info_2580_helper() {
  define_source_info( method_kind, core::magic_name("CORE:weakKeyMappingValid"), "../../../../src/core/weakKeyMapping.cc", 2031, 69, "" );
 }
 NOINLINE void source_info_2581_helper() {
- define_source_info( class_kind, core::magic_name("CORE:WeakPointer"), "/Users/meister/Development/clasp/include/clasp/core/weakPointer.h", 1182, 36, "" );
+ define_source_info( class_kind, core::magic_name("CORE:WeakPointer"), "/home/meister/Dev/clasp/include/clasp/core/weakPointer.h", 1182, 36, "" );
 }
 NOINLINE void source_info_2582_helper() {
  define_source_info( method_kind, core::magic_name("CORE:weakPointerValue"), "../../../../src/core/weakPointer.cc", 2046, 71, "" );
@@ -7769,31 +7769,31 @@ NOINLINE void source_info_2583_helper() {
  define_source_info( method_kind, core::magic_name("CORE:weakPointerValid"), "../../../../src/core/weakPointer.cc", 1870, 65, "" );
 }
 NOINLINE void source_info_2584_helper() {
- define_source_info( class_kind, core::magic_name("CORE:Instance"), "/Users/meister/Development/clasp/include/clasp/core/instance.h", 4462, 91, "" );
+ define_source_info( class_kind, core::magic_name("CORE:Instance"), "/home/meister/Dev/clasp/include/clasp/core/instance.h", 4462, 91, "" );
 }
 NOINLINE void source_info_2585_helper() {
- define_source_info( class_kind, core::magic_name("CORE:WrappedPointer"), "/Users/meister/Development/clasp/include/clasp/core/wrappedPointer.h", 1331, 41, "" );
+ define_source_info( class_kind, core::magic_name("CORE:WrappedPointer"), "/home/meister/Dev/clasp/include/clasp/core/wrappedPointer.h", 1331, 41, "" );
 }
 NOINLINE void source_info_2586_helper() {
- define_source_info( method_kind, core::magic_name("CORE:validp"), "/Users/meister/Development/clasp/include/clasp/core/wrappedPointer.h", 1675, 53, "" );
+ define_source_info( method_kind, core::magic_name("CORE:validp"), "/home/meister/Dev/clasp/include/clasp/core/wrappedPointer.h", 1675, 53, "" );
 }
 NOINLINE void source_info_2587_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:llvm-context"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 2920, 86, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:llvm-context"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 2920, 86, "" );
 }
 NOINLINE void source_info_2588_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:Linker"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 4083, 133, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:Linker"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 4083, 133, "" );
 }
 NOINLINE void source_info_2589_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:getModule"), "../../../../src/llvmo/llvmoExpose.cc", 4543, 147, "" );
 }
 NOINLINE void source_info_2590_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:Pass"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 5183, 181, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:Pass"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 5183, 181, "" );
 }
 NOINLINE void source_info_2591_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:AttributeSet"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 6447, 238, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:AttributeSet"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 6447, 238, "" );
 }
 NOINLINE void source_info_2592_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:Triple"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 8236, 297, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:Triple"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 8236, 297, "" );
 }
 NOINLINE void source_info_2593_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:getOSAndEnvironmentName"), "../../../../src/llvmo/llvmoExpose.cc", 10440, 294, "" );
@@ -7814,7 +7814,7 @@ NOINLINE void source_info_2598_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:getTriple"), "../../../../src/llvmo/llvmoExpose.cc", 9951, 284, "" );
 }
 NOINLINE void source_info_2599_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:TargetOptions"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 9826, 366, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:TargetOptions"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 9826, 366, "" );
 }
 NOINLINE void source_info_2600_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:setfJITEmitDebugInfoToDisk"), "../../../../src/llvmo/llvmoExpose.cc", 25187, 563, "" );
@@ -7835,22 +7835,22 @@ NOINLINE void source_info_2605_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:NoFramePointerElim"), "../../../../src/llvmo/llvmoExpose.cc", 24353, 537, "" );
 }
 NOINLINE void source_info_2606_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:Target"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 11765, 444, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:Target"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 11765, 444, "" );
 }
 NOINLINE void source_info_2607_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:createTargetMachine"), "../../../../src/llvmo/llvmoExpose.cc", 4716, 165, "" );
 }
 NOINLINE void source_info_2608_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:MCSubtargetInfo"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 13364, 507, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:MCSubtargetInfo"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 13364, 507, "" );
 }
 NOINLINE void source_info_2609_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:TargetSubtargetInfo"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 15125, 569, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:TargetSubtargetInfo"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 15125, 569, "" );
 }
 NOINLINE void source_info_2610_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:getDataLayout"), "../../../../src/llvmo/llvmoExpose.cc", 46083, 1133, "" );
 }
 NOINLINE void source_info_2611_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:TargetMachine"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 19069, 683, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:TargetMachine"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 19069, 683, "" );
 }
 NOINLINE void source_info_2612_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:getSubtargetImpl"), "../../../../src/llvmo/llvmoExpose.cc", 6548, 210, "" );
@@ -7859,25 +7859,25 @@ NOINLINE void source_info_2613_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:addPassesToEmitFileAndRunPassManager"), "../../../../src/llvmo/llvmoExpose.cc", 4880, 176, "" );
 }
 NOINLINE void source_info_2614_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:LLVMTargetMachine"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 20870, 746, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:LLVMTargetMachine"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 20870, 746, "" );
 }
 NOINLINE void source_info_2615_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:LLVMTargetMachine_addPassesToEmitFile"), "../../../../src/llvmo/llvmoExpose.cc", 25411, 576, "" );
 }
 NOINLINE void source_info_2616_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:FunctionPass"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 22434, 794, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:FunctionPass"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 22434, 794, "" );
 }
 NOINLINE void source_info_2617_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:ModulePass"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 23637, 837, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ModulePass"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 23637, 837, "" );
 }
 NOINLINE void source_info_2618_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:ImmutablePass"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 24883, 880, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ImmutablePass"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 24883, 880, "" );
 }
 NOINLINE void source_info_2619_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:PassManagerBase"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 26134, 923, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:PassManagerBase"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 26134, 923, "" );
 }
 NOINLINE void source_info_2620_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:value"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 27804, 988, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:value"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 27804, 988, "" );
 }
 NOINLINE void source_info_2621_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:getType"), "../../../../src/llvmo/llvmoExpose.cc", 26351, 637, "" );
@@ -7892,19 +7892,19 @@ NOINLINE void source_info_2624_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:dump"), "../../../../src/llvmo/llvmoExpose.cc", 26105, 631, "" );
 }
 NOINLINE void source_info_2625_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:metadata"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 30023, 1074, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:metadata"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 30023, 1074, "" );
 }
 NOINLINE void source_info_2626_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:dump"), "../../../../src/llvmo/llvmoExpose.cc", 26486, 647, "" );
 }
 NOINLINE void source_info_2627_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:user"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 32244, 1159, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:user"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 32244, 1159, "" );
 }
 NOINLINE void source_info_2628_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:Attribute"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 32855, 1180, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:Attribute"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 32855, 1180, "" );
 }
 NOINLINE void source_info_2629_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:DataLayout"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 34782, 1245, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DataLayout"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 34782, 1245, "" );
 }
 NOINLINE void source_info_2630_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:DataLayout-getTypeAllocSize"), "../../../../src/llvmo/llvmoExpose.cc", 46455, 1149, "" );
@@ -7913,28 +7913,28 @@ NOINLINE void source_info_2631_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:DataLayoutCopy"), "../../../../src/llvmo/llvmoExpose.cc", 46241, 1140, "" );
 }
 NOINLINE void source_info_2632_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:constant"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 38320, 1345, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:constant"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 38320, 1345, "" );
 }
 NOINLINE void source_info_2633_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:constant-array"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 40326, 1412, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:constant-array"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 40326, 1412, "" );
 }
 NOINLINE void source_info_2634_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:BlockAddress"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 41163, 1439, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:BlockAddress"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 41163, 1439, "" );
 }
 NOINLINE void source_info_2635_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:ConstantDataSequential"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 42009, 1466, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ConstantDataSequential"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 42009, 1466, "" );
 }
 NOINLINE void source_info_2636_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:constant-data-array"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 42883, 1492, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:constant-data-array"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 42883, 1492, "" );
 }
 NOINLINE void source_info_2637_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:ConstantExpr"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 43779, 1519, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ConstantExpr"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 43779, 1519, "" );
 }
 NOINLINE void source_info_2638_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:global-value"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 44630, 1547, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:global-value"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 44630, 1547, "" );
 }
 NOINLINE void source_info_2639_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:GlobalVariable"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 45548, 1577, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:GlobalVariable"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 45548, 1577, "" );
 }
 NOINLINE void source_info_2640_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:setInitializer"), "../../../../src/llvmo/llvmoExpose.cc", 56866, 1529, "" );
@@ -7943,7 +7943,7 @@ NOINLINE void source_info_2641_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:eraseFromParent"), "../../../../src/llvmo/llvmoExpose.cc", 56750, 1527, "" );
 }
 NOINLINE void source_info_2642_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:EXECUTION-ENGINE"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 47124, 1625, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:EXECUTION-ENGINE"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 47124, 1625, "" );
 }
 NOINLINE void source_info_2643_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:getDataLayout"), "../../../../src/llvmo/llvmoExpose.cc", 45897, 1117, "" );
@@ -7967,7 +7967,7 @@ NOINLINE void source_info_2649_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:dependentModuleNames"), "../../../../src/llvmo/llvmoExpose.cc", 43355, 1052, "" );
 }
 NOINLINE void source_info_2650_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:module"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 49101, 1691, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:module"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 49101, 1691, "" );
 }
 NOINLINE void source_info_2651_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:getGlobalList"), "../../../../src/llvmo/llvmoExpose.cc", 42652, 1029, "" );
@@ -8015,13 +8015,13 @@ NOINLINE void source_info_2665_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:dump"), "../../../../src/llvmo/llvmoExpose.cc", 36987, 912, "" );
 }
 NOINLINE void source_info_2666_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:DataLayoutPass"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 52366, 1805, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DataLayoutPass"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 52366, 1805, "" );
 }
 NOINLINE void source_info_2667_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:TargetLibraryInfo"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 54233, 1869, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:TargetLibraryInfo"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 54233, 1869, "" );
 }
 NOINLINE void source_info_2668_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:FUNCTION-PASS-MANAGER"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 60272, 2052, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:FUNCTION-PASS-MANAGER"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 60272, 2052, "" );
 }
 NOINLINE void source_info_2669_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:function-pass-manager-run"), "../../../../src/llvmo/llvmoExpose.cc", 48653, 1244, "" );
@@ -8036,7 +8036,7 @@ NOINLINE void source_info_2672_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:function-pass-manager-add"), "../../../../src/llvmo/llvmoExpose.cc", 48274, 1238, "" );
 }
 NOINLINE void source_info_2673_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:PASS-MANAGER"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 61976, 2107, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:PASS-MANAGER"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 61976, 2107, "" );
 }
 NOINLINE void source_info_2674_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:passManagerRun"), "../../../../src/llvmo/llvmoExpose.cc", 49120, 1266, "" );
@@ -8045,7 +8045,7 @@ NOINLINE void source_info_2675_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:passManagerAdd"), "../../../../src/llvmo/llvmoExpose.cc", 49022, 1264, "" );
 }
 NOINLINE void source_info_2676_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:ENGINEBUILDER"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 63321, 2157, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ENGINEBUILDER"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 63321, 2157, "" );
 }
 NOINLINE void source_info_2677_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:create"), "../../../../src/llvmo/llvmoExpose.cc", 50947, 1332, "" );
@@ -8057,10 +8057,10 @@ NOINLINE void source_info_2679_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:setEngineKind"), "../../../../src/llvmo/llvmoExpose.cc", 49668, 1287, "" );
 }
 NOINLINE void source_info_2680_helper() {
- define_source_info( method_kind, core::magic_name("LLVM-SYS:error_string"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 64054, 2179, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:error_string"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 64054, 2179, "" );
 }
 NOINLINE void source_info_2681_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:PASS-MANAGER-BUILDER"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 65289, 2225, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:PASS-MANAGER-BUILDER"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 65289, 2225, "" );
 }
 NOINLINE void source_info_2682_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:populateLTOPassManager"), "../../../../src/llvmo/llvmoExpose.cc", 52304, 1369, "" );
@@ -8072,16 +8072,16 @@ NOINLINE void source_info_2684_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:populateModulePassManager"), "../../../../src/llvmo/llvmoExpose.cc", 52013, 1365, "" );
 }
 NOINLINE void source_info_2685_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:APFLOAT"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 67245, 2292, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:APFLOAT"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 67245, 2292, "" );
 }
 NOINLINE void source_info_2686_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:APINT"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 68260, 2329, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:APINT"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 68260, 2329, "" );
 }
 NOINLINE void source_info_2687_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:toString"), "../../../../src/llvmo/llvmoExpose.cc", 65922, 1986, "" );
 }
 NOINLINE void source_info_2688_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:IRBuilderBase"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 69746, 2380, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:IRBuilderBase"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 69746, 2380, "" );
 }
 NOINLINE void source_info_2689_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:SetCurrentDebugLocationToLineColumnScope"), "../../../../src/llvmo/llvmoExpose.cc", 68242, 2042, "" );
@@ -8111,10 +8111,10 @@ NOINLINE void source_info_2697_helper() {
  define_source_info( method_kind, core::magic_name("SetInsertPointBasicBlock","LLVM-SYS"), "../../../../src/llvmo/llvmoExpose.cc", 66324, 2003, "" );
 }
 NOINLINE void source_info_2698_helper() {
- define_source_info( method_kind, core::magic_name("LLVM-SYS:CurrentDebugLocation"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 71060, 2420, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:CurrentDebugLocation"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 71060, 2420, "" );
 }
 NOINLINE void source_info_2699_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:IRBUILDER"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 71858, 2451, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:IRBUILDER"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 71858, 2451, "" );
 }
 NOINLINE void source_info_2700_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateGEPArray"), "../../../../src/llvmo/llvmoExpose.cc", 89137, 2394, "" );
@@ -8525,7 +8525,7 @@ NOINLINE void source_info_2835_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:CreateInvoke"), "../../../../src/llvmo/llvmoExpose.cc", 69009, 2062, "" );
 }
 NOINLINE void source_info_2836_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:Instruction"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 73131, 2483, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:Instruction"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 73131, 2483, "" );
 }
 NOINLINE void source_info_2837_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:terminatorInstP"), "../../../../src/llvmo/llvmoExpose.cc", 57361, 1551, "" );
@@ -8537,28 +8537,28 @@ NOINLINE void source_info_2839_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:setMetadata"), "../../../../src/llvmo/llvmoExpose.cc", 57015, 1538, "" );
 }
 NOINLINE void source_info_2840_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:StoreInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 74457, 2531, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:StoreInst"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 74457, 2531, "" );
 }
 NOINLINE void source_info_2841_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:FenceInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 75632, 2574, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:FenceInst"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 75632, 2574, "" );
 }
 NOINLINE void source_info_2842_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:AtomicCmpXchgInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 76823, 2617, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:AtomicCmpXchgInst"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 76823, 2617, "" );
 }
 NOINLINE void source_info_2843_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:AtomicRMWInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 78134, 2660, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:AtomicRMWInst"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 78134, 2660, "" );
 }
 NOINLINE void source_info_2844_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:PHINode"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 79369, 2703, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:PHINode"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 79369, 2703, "" );
 }
 NOINLINE void source_info_2845_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:addIncoming"), "../../../../src/llvmo/llvmoExpose.cc", 57792, 1599, "" );
 }
 NOINLINE void source_info_2846_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:CallInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 80510, 2746, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:CallInst"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 80510, 2746, "" );
 }
 NOINLINE void source_info_2847_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:LandingPadInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 81679, 2789, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:LandingPadInst"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 81679, 2789, "" );
 }
 NOINLINE void source_info_2848_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:addClause"), "../../../../src/llvmo/llvmoExpose.cc", 58211, 1624, "" );
@@ -8570,82 +8570,82 @@ NOINLINE void source_info_2850_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:setCleanup"), "../../../../src/llvmo/llvmoExpose.cc", 58000, 1620, "" );
 }
 NOINLINE void source_info_2851_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:UnaryInstruction"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 82948, 2832, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:UnaryInstruction"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 82948, 2832, "" );
 }
 NOINLINE void source_info_2852_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:AllocaInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 83704, 2854, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:AllocaInst"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 83704, 2854, "" );
 }
 NOINLINE void source_info_2853_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:setAlignment"), "../../../../src/llvmo/llvmoExpose.cc", 58433, 1645, "" );
 }
 NOINLINE void source_info_2854_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:VAArgInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 84904, 2896, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:VAArgInst"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 84904, 2896, "" );
 }
 NOINLINE void source_info_2855_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:LoadInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 86087, 2939, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:LoadInst"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 86087, 2939, "" );
 }
 NOINLINE void source_info_2856_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:TerminatorInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 87261, 2982, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:TerminatorInst"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 87261, 2982, "" );
 }
 NOINLINE void source_info_2857_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:BranchInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 87997, 3004, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:BranchInst"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 87997, 3004, "" );
 }
 NOINLINE void source_info_2858_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:SwitchInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 89196, 3047, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:SwitchInst"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 89196, 3047, "" );
 }
 NOINLINE void source_info_2859_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:addCase"), "../../../../src/llvmo/llvmoExpose.cc", 58827, 1696, "" );
 }
 NOINLINE void source_info_2860_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:IndirectBrInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 90462, 3092, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:IndirectBrInst"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 90462, 3092, "" );
 }
 NOINLINE void source_info_2861_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:addDestination"), "../../../../src/llvmo/llvmoExpose.cc", 59073, 1707, "" );
 }
 NOINLINE void source_info_2862_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:InvokeInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 91725, 3135, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:InvokeInst"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 91725, 3135, "" );
 }
 NOINLINE void source_info_2863_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:ResumeInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 92924, 3178, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ResumeInst"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 92924, 3178, "" );
 }
 NOINLINE void source_info_2864_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:UnreachableInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 94133, 3221, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:UnreachableInst"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 94133, 3221, "" );
 }
 NOINLINE void source_info_2865_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:ReturnInst"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 95412, 3264, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ReturnInst"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 95412, 3264, "" );
 }
 NOINLINE void source_info_2866_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:ConstantFP"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 96605, 3307, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ConstantFP"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 96605, 3307, "" );
 }
 NOINLINE void source_info_2867_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:ConstantInt"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 97692, 3346, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ConstantInt"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 97692, 3346, "" );
 }
 NOINLINE void source_info_2868_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:ConstantStruct"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 98798, 3384, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ConstantStruct"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 98798, 3384, "" );
 }
 NOINLINE void source_info_2869_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:UndefValue"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 99912, 3422, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:UndefValue"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 99912, 3422, "" );
 }
 NOINLINE void source_info_2870_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:ConstantPointerNull"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 101014, 3460, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ConstantPointerNull"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 101014, 3460, "" );
 }
 NOINLINE void source_info_2871_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:MDNode"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 102462, 3506, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:MDNode"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 102462, 3506, "" );
 }
 NOINLINE void source_info_2872_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:MDString"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 103671, 3552, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:MDString"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 103671, 3552, "" );
 }
 NOINLINE void source_info_2873_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:ValueAsMetadata"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 104918, 3600, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ValueAsMetadata"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 104918, 3600, "" );
 }
 NOINLINE void source_info_2874_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:NamedMDNode"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 106260, 3648, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:NamedMDNode"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 106260, 3648, "" );
 }
 NOINLINE void source_info_2875_helper() {
- define_source_info( method_kind, core::magic_name("LLVM-SYS:addOperand"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 106989, 3668, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:addOperand"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 106989, 3668, "" );
 }
 NOINLINE void source_info_2876_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:FUNCTION"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 107876, 3703, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:FUNCTION"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 107876, 3703, "" );
 }
 NOINLINE void source_info_2877_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:literals"), "../../../../src/llvmo/llvmoExpose.cc", 93650, 2547, "" );
@@ -8684,7 +8684,7 @@ NOINLINE void source_info_2888_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:getArgumentList"), "../../../../src/llvmo/llvmoExpose.cc", 92015, 2502, "" );
 }
 NOINLINE void source_info_2889_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:BasicBlock"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 110544, 3785, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:BasicBlock"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 110544, 3785, "" );
 }
 NOINLINE void source_info_2890_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:BasicBlockBack"), "../../../../src/llvmo/llvmoExpose.cc", 94224, 2572, "" );
@@ -8696,7 +8696,7 @@ NOINLINE void source_info_2892_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:getParent"), "../../../../src/llvmo/llvmoExpose.cc", 93813, 2557, "" );
 }
 NOINLINE void source_info_2893_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:Argument"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 111845, 3831, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:Argument"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 111845, 3831, "" );
 }
 NOINLINE void source_info_2894_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:hasByValAttr"), "../../../../src/llvmo/llvmoExpose.cc", 89884, 2413, "" );
@@ -8717,7 +8717,7 @@ NOINLINE void source_info_2899_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:addAttr"), "../../../../src/llvmo/llvmoExpose.cc", 89388, 2403, "" );
 }
 NOINLINE void source_info_2900_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:TYPE"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 113355, 3887, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:TYPE"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 113355, 3887, "" );
 }
 NOINLINE void source_info_2901_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:getSequentialElementType"), "../../../../src/llvmo/llvmoExpose.cc", 95494, 2614, "" );
@@ -8732,76 +8732,76 @@ NOINLINE void source_info_2904_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:type-get-pointer-to"), "../../../../src/llvmo/llvmoExpose.cc", 94995, 2602, "Return a PointerType to the llvm Type"  );
 }
 NOINLINE void source_info_2905_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:FUNCTION-TYPE"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 114928, 3955, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:FUNCTION-TYPE"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 114928, 3955, "" );
 }
 NOINLINE void source_info_2906_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:INTEGER-TYPE"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 116259, 3999, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:INTEGER-TYPE"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 116259, 3999, "" );
 }
 NOINLINE void source_info_2907_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:CompositeType"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 117577, 4043, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:CompositeType"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 117577, 4043, "" );
 }
 NOINLINE void source_info_2908_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:StructType"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 118931, 4087, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:StructType"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 118931, 4087, "" );
 }
 NOINLINE void source_info_2909_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:setBody"), "../../../../src/llvmo/llvmoExpose.cc", 98808, 2722, "" );
 }
 NOINLINE void source_info_2910_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:SequentialType"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 120585, 4137, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:SequentialType"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 120585, 4137, "" );
 }
 NOINLINE void source_info_2911_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:PointerType"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 121968, 4181, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:PointerType"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 121968, 4181, "" );
 }
 NOINLINE void source_info_2912_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:ArrayType"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 123419, 4228, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ArrayType"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 123419, 4228, "" );
 }
 NOINLINE void source_info_2913_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:VectorType"), "/Users/meister/Development/clasp/include/clasp/llvmo/llvmoExpose.h", 124687, 4272, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:VectorType"), "/home/meister/Dev/clasp/include/clasp/llvmo/llvmoExpose.h", 124687, 4272, "" );
 }
 NOINLINE void source_info_2914_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:DebugInfo"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 2422, 74, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DebugInfo"), "/home/meister/Dev/clasp/include/clasp/llvmo/debugInfoExpose.h", 2422, 74, "" );
 }
 NOINLINE void source_info_2915_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:DIDescriptor"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 2868, 88, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DIDescriptor"), "/home/meister/Dev/clasp/include/clasp/llvmo/debugInfoExpose.h", 2868, 88, "" );
 }
 NOINLINE void source_info_2916_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:discope"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 4051, 125, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:discope"), "/home/meister/Dev/clasp/include/clasp/llvmo/debugInfoExpose.h", 4051, 125, "" );
 }
 NOINLINE void source_info_2917_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:diarray"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 4960, 162, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:diarray"), "/home/meister/Dev/clasp/include/clasp/llvmo/debugInfoExpose.h", 4960, 162, "" );
 }
 NOINLINE void source_info_2918_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:ditypearray"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 5762, 194, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:ditypearray"), "/home/meister/Dev/clasp/include/clasp/llvmo/debugInfoExpose.h", 5762, 194, "" );
 }
 NOINLINE void source_info_2919_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:difile"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 6609, 226, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:difile"), "/home/meister/Dev/clasp/include/clasp/llvmo/debugInfoExpose.h", 6609, 226, "" );
 }
 NOINLINE void source_info_2920_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:DISubprogram"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 7525, 262, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DISubprogram"), "/home/meister/Dev/clasp/include/clasp/llvmo/debugInfoExpose.h", 7525, 262, "" );
 }
 NOINLINE void source_info_2921_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:DIType"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 8835, 310, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DIType"), "/home/meister/Dev/clasp/include/clasp/llvmo/debugInfoExpose.h", 8835, 310, "" );
 }
 NOINLINE void source_info_2922_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:DIDerivedType"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 9865, 346, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DIDerivedType"), "/home/meister/Dev/clasp/include/clasp/llvmo/debugInfoExpose.h", 9865, 346, "" );
 }
 NOINLINE void source_info_2923_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:DIBasicType"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 10969, 385, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DIBasicType"), "/home/meister/Dev/clasp/include/clasp/llvmo/debugInfoExpose.h", 10969, 385, "" );
 }
 NOINLINE void source_info_2924_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:DICompositeType"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 12057, 424, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DICompositeType"), "/home/meister/Dev/clasp/include/clasp/llvmo/debugInfoExpose.h", 12057, 424, "" );
 }
 NOINLINE void source_info_2925_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:DISubroutineType"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 13280, 462, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DISubroutineType"), "/home/meister/Dev/clasp/include/clasp/llvmo/debugInfoExpose.h", 13280, 462, "" );
 }
 NOINLINE void source_info_2926_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:DILexicalBlock"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 14518, 501, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DILexicalBlock"), "/home/meister/Dev/clasp/include/clasp/llvmo/debugInfoExpose.h", 14518, 501, "" );
 }
 NOINLINE void source_info_2927_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:DICompileUnit"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 15587, 538, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DICompileUnit"), "/home/meister/Dev/clasp/include/clasp/llvmo/debugInfoExpose.h", 15587, 538, "" );
 }
 NOINLINE void source_info_2928_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:DIBuilder"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugInfoExpose.h", 16617, 575, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DIBuilder"), "/home/meister/Dev/clasp/include/clasp/llvmo/debugInfoExpose.h", 16617, 575, "" );
 }
 NOINLINE void source_info_2929_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:getOrCreateTypeArray"), "../../../../src/llvmo/debugInfoExpose.cc", 6553, 244, "" );
@@ -8837,43 +8837,43 @@ NOINLINE void source_info_2939_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:createCompileUnit"), "../../../../src/llvmo/debugInfoExpose.cc", 3432, 179, "" );
 }
 NOINLINE void source_info_2940_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:DebugLoc"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugLoc.h", 1504, 45, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:DebugLoc"), "/home/meister/Dev/clasp/include/clasp/llvmo/debugLoc.h", 1504, 45, "" );
 }
 NOINLINE void source_info_2941_helper() {
  define_source_info( method_kind, core::magic_name("LLVM-SYS:getScope"), "../../../../src/llvmo/debugLoc.cc", 1698, 55, "" );
 }
 NOINLINE void source_info_2942_helper() {
- define_source_info( method_kind, core::magic_name("LLVM-SYS:getCol"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugLoc.h", 2002, 61, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getCol"), "/home/meister/Dev/clasp/include/clasp/llvmo/debugLoc.h", 2002, 61, "" );
 }
 NOINLINE void source_info_2943_helper() {
- define_source_info( method_kind, core::magic_name("LLVM-SYS:getLine"), "/Users/meister/Development/clasp/include/clasp/llvmo/debugLoc.h", 1900, 59, "" );
+ define_source_info( method_kind, core::magic_name("LLVM-SYS:getLine"), "/home/meister/Dev/clasp/include/clasp/llvmo/debugLoc.h", 1900, 59, "" );
 }
 NOINLINE void source_info_2944_helper() {
- define_source_info( class_kind, core::magic_name("LLVM-SYS:InsertPoint"), "/Users/meister/Development/clasp/include/clasp/llvmo/insertPoint.h", 1434, 44, "" );
+ define_source_info( class_kind, core::magic_name("LLVM-SYS:InsertPoint"), "/home/meister/Dev/clasp/include/clasp/llvmo/insertPoint.h", 1434, 44, "" );
 }
 NOINLINE void source_info_2945_helper() {
- define_source_info( class_kind, core::magic_name("CORE:ArrayDisplaced"), "/Users/meister/Development/clasp/include/clasp/core/arrayDisplaced.h", 1236, 38, "" );
+ define_source_info( class_kind, core::magic_name("CORE:ArrayDisplaced"), "/home/meister/Dev/clasp/include/clasp/core/arrayDisplaced.h", 1236, 38, "" );
 }
 NOINLINE void source_info_2946_helper() {
- define_source_info( class_kind, core::magic_name("CORE:ArrayObjects"), "/Users/meister/Development/clasp/include/clasp/core/arrayObjects.h", 1226, 38, "" );
+ define_source_info( class_kind, core::magic_name("CORE:ArrayObjects"), "/home/meister/Dev/clasp/include/clasp/core/arrayObjects.h", 1226, 38, "" );
 }
 NOINLINE void source_info_2947_helper() {
- define_source_info( class_kind, core::magic_name("CORE:HashTableEqualp"), "/Users/meister/Development/clasp/include/clasp/core/hashTableEqualp.h", 1316, 40, "" );
+ define_source_info( class_kind, core::magic_name("CORE:HashTableEqualp"), "/home/meister/Dev/clasp/include/clasp/core/hashTableEqualp.h", 1316, 40, "" );
 }
 NOINLINE void source_info_2948_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:null"), "/Users/meister/Development/clasp/include/clasp/core/null.h", 1181, 38, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:null"), "/home/meister/Dev/clasp/include/clasp/core/null.h", 1181, 38, "" );
 }
 NOINLINE void source_info_2949_helper() {
- define_source_info( class_kind, core::magic_name("CORE:SingleDispatchEffectiveMethodFunction"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchEffectiveMethodFunction.h", 1370, 37, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SingleDispatchEffectiveMethodFunction"), "/home/meister/Dev/clasp/include/clasp/core/singleDispatchEffectiveMethodFunction.h", 1370, 37, "" );
 }
 NOINLINE void source_info_2950_helper() {
- define_source_info( class_kind, core::magic_name("CORE:single-dispatch-generic-function"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchGenericFunction.h", 3072, 74, "" );
+ define_source_info( class_kind, core::magic_name("CORE:single-dispatch-generic-function"), "/home/meister/Dev/clasp/include/clasp/core/singleDispatchGenericFunction.h", 3072, 74, "" );
 }
 NOINLINE void source_info_2951_helper() {
- define_source_info( method_kind, core::magic_name("CORE:SingleDispatchGenericFunction-methods"), "/Users/meister/Development/clasp/include/clasp/core/singleDispatchGenericFunction.h", 3869, 91, "" );
+ define_source_info( method_kind, core::magic_name("CORE:SingleDispatchGenericFunction-methods"), "/home/meister/Dev/clasp/include/clasp/core/singleDispatchGenericFunction.h", 3869, 91, "" );
 }
 NOINLINE void source_info_2952_helper() {
- define_source_info( class_kind, core::magic_name("CORE:SpecialForm"), "/Users/meister/Development/clasp/include/clasp/core/specialForm.h", 1273, 42, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SpecialForm"), "/home/meister/Dev/clasp/include/clasp/core/specialForm.h", 1273, 42, "" );
 }
 NOINLINE void source_info_2953_helper() {
  define_source_info( class_kind, core::magic_name("GEOM:OVector2"), "../../../../projects/cando/include/cando/geom/ovector2.h", 273, 14, "" );
@@ -8912,7 +8912,7 @@ NOINLINE void source_info_2964_helper() {
  define_source_info( method_kind, "GEOM:setAll", "../../../../projects/cando/include/cando/geom/ovector2.h", 650, 28, "" );
 }
 NOINLINE void source_info_2965_helper() {
- define_source_info( class_kind, core::magic_name("CORE:SexpLoadArchive"), "/Users/meister/Development/clasp/include/clasp/core/sexpLoadArchive.h", 1304, 40, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SexpLoadArchive"), "/home/meister/Dev/clasp/include/clasp/core/sexpLoadArchive.h", 1304, 40, "" );
 }
 NOINLINE void source_info_2966_helper() {
  define_source_info( method_kind, core::magic_name("CORE:parseFromStream"), "../../../../src/core/sexpLoadArchive.cc", 4361, 122, "" );
@@ -8921,43 +8921,43 @@ NOINLINE void source_info_2967_helper() {
  define_source_info( method_kind, core::magic_name("CORE:parseFromObject"), "../../../../src/core/sexpLoadArchive.cc", 4012, 114, "" );
 }
 NOINLINE void source_info_2968_helper() {
- define_source_info( class_kind, core::magic_name("CORE:SexpSaveArchive"), "/Users/meister/Development/clasp/include/clasp/core/sexpSaveArchive.h", 1304, 40, "" );
+ define_source_info( class_kind, core::magic_name("CORE:SexpSaveArchive"), "/home/meister/Dev/clasp/include/clasp/core/sexpSaveArchive.h", 1304, 40, "" );
 }
 NOINLINE void source_info_2969_helper() {
  define_source_info( method_kind, core::magic_name("CORE:sexpSaveArchiveWrite"), "../../../../src/core/sexpSaveArchive.cc", 3666, 109, "" );
 }
 NOINLINE void source_info_2970_helper() {
- define_source_info( class_kind, core::magic_name("CORE:VectorDisplaced"), "/Users/meister/Development/clasp/include/clasp/core/vectorDisplaced.h", 1338, 39, "" );
+ define_source_info( class_kind, core::magic_name("CORE:VectorDisplaced"), "/home/meister/Dev/clasp/include/clasp/core/vectorDisplaced.h", 1338, 39, "" );
 }
 NOINLINE void source_info_2971_helper() {
  define_source_info( class_kind, core::magic_name("UNITS:NamedUnit"), "../../../../projects/cando/include/cando/units/namedUnit.h", 243, 18, "" );
 }
 NOINLINE void source_info_2972_helper() {
- define_source_info( class_kind, core::magic_name("CORE:CxxClass"), "/Users/meister/Development/clasp/include/clasp/core/cxxClass.h", 1316, 43, "" );
+ define_source_info( class_kind, core::magic_name("CORE:CxxClass"), "/home/meister/Dev/clasp/include/clasp/core/cxxClass.h", 1316, 43, "" );
 }
 NOINLINE void source_info_2973_helper() {
- define_source_info( class_kind, core::magic_name("CORE:ForwardReferencedClass"), "/Users/meister/Development/clasp/include/clasp/core/forwardReferencedClass.h", 1545, 43, "" );
+ define_source_info( class_kind, core::magic_name("CORE:ForwardReferencedClass"), "/home/meister/Dev/clasp/include/clasp/core/forwardReferencedClass.h", 1545, 43, "" );
 }
 NOINLINE void source_info_2974_helper() {
- define_source_info( class_kind, core::magic_name("CLOS:STD-CLASS"), "/Users/meister/Development/clasp/include/clasp/core/stdClass.h", 1383, 46, "" );
+ define_source_info( class_kind, core::magic_name("CLOS:STD-CLASS"), "/home/meister/Dev/clasp/include/clasp/core/stdClass.h", 1383, 46, "" );
 }
 NOINLINE void source_info_2975_helper() {
- define_source_info( class_kind, core::magic_name("CORE:base-string-with-fill-ptr"), "/Users/meister/Development/clasp/include/clasp/core/strWithFillPtr.h", 1337, 40, "" );
+ define_source_info( class_kind, core::magic_name("CORE:base-string-with-fill-ptr"), "/home/meister/Dev/clasp/include/clasp/core/strWithFillPtr.h", 1337, 40, "" );
 }
 NOINLINE void source_info_2976_helper() {
  define_source_info( method_kind, core::magic_name("CORE:push-string"), "../../../../src/core/strWithFillPtr.cc", 4625, 161, "" );
 }
 NOINLINE void source_info_2977_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:structure-class"), "/Users/meister/Development/clasp/include/clasp/core/structureClass.h", 1381, 47, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:structure-class"), "/home/meister/Dev/clasp/include/clasp/core/structureClass.h", 1381, 47, "" );
 }
 NOINLINE void source_info_2978_helper() {
- define_source_info( class_kind, core::magic_name("CLBIND:ClassRep"), "/Users/meister/Development/clasp/include/clasp/clbind/class_rep.h", 3260, 92, "" );
+ define_source_info( class_kind, core::magic_name("CLBIND:ClassRep"), "/home/meister/Dev/clasp/include/clasp/clbind/class_rep.h", 3260, 92, "" );
 }
 NOINLINE void source_info_2979_helper() {
- define_source_info( class_kind, core::magic_name("CLOS:FuncallableStandardClass"), "/Users/meister/Development/clasp/include/clasp/core/funcallableStandardClass.h", 1477, 48, "" );
+ define_source_info( class_kind, core::magic_name("CLOS:FuncallableStandardClass"), "/home/meister/Dev/clasp/include/clasp/core/funcallableStandardClass.h", 1477, 48, "" );
 }
 NOINLINE void source_info_2980_helper() {
- define_source_info( class_kind, core::magic_name("COMMON-LISP:StandardClass"), "/Users/meister/Development/clasp/include/clasp/core/standardClass.h", 1411, 48, "" );
+ define_source_info( class_kind, core::magic_name("COMMON-LISP:StandardClass"), "/home/meister/Dev/clasp/include/clasp/core/standardClass.h", 1411, 48, "" );
 }
 #endif // SOURCE_INFO_HELPERS
 #ifdef SOURCE_INFO

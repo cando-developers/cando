@@ -121,7 +121,7 @@ namespace telemetry {
     void core__telemetry_follow(core::T_sp address);
     void core__telemetry_search_labels(core::List_sp labels);
     void core__telemetry_search(core::List_sp addresses);
-    void core__telemetry_open(core::T_sp pathname);
+    void core__telemetry_open(core::T_sp tpathname);
 };
 namespace llvmo {
     void llvm_sys__viewCFG(core::T_sp funcDes, core::T_sp only);
