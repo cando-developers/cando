@@ -35,12 +35,12 @@ sources =
 
 
 exe cando : main.cc $(sources)
-    /internals/gctools//gclib
+    /internals/gctools//lib_boehm
     : <gc>boehmdc
     ;
 
 exe cando : main.cc $(sources)
-    /internals/gctools//gclib
+    /internals/gctools//lib_boehm
     : <gc>boehm
     ;
 
