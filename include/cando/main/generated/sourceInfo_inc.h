@@ -165,10 +165,10 @@ NOINLINE void source_info_55_helper() {
  define_source_info( code_kind, core::magic_name("core__telemetry_open"), "../../../../src/gctools/telemetry.cc", 476, 20, ""  );
 }
 NOINLINE void source_info_56_helper() {
- define_source_info( code_kind, core::magic_name("gctools__debug_allocations"), "../../../../src/gctools/gcFunctions.cc", 24183, 676, "" );
+ define_source_info( code_kind, core::magic_name("gctools__debug_allocations"), "../../../../src/gctools/gcFunctions.cc", 24370, 683, "" );
 }
 NOINLINE void source_info_57_helper() {
- define_source_info( code_kind, core::magic_name("gctools__configuration"), "../../../../src/gctools/gcFunctions.cc", 23881, 665, "" );
+ define_source_info( code_kind, core::magic_name("gctools__configuration"), "../../../../src/gctools/gcFunctions.cc", 24068, 672, "" );
 }
 NOINLINE void source_info_58_helper() {
  define_source_info( code_kind, core::magic_name("gctools__cleanup"), "../../../../src/gctools/gcFunctions.cc", 20553, 565, "" );
