@@ -96,6 +96,7 @@ namespace sockets {
 namespace gctools {
     core::Fixnum gctools__next_header_kind();
     void gctools__debug_allocations(core::T_sp debugOn);
+    void gctools__configuration();
     void gctools__cleanup();
     void gctools__garbage_collect();
     core::T_sp gctools__stack_depth();
@@ -325,7 +326,7 @@ namespace core {
     T_sp cl__use_package(T_sp packages_to_use_desig, T_sp package_desig);
     T_sp cl__list_all_packages();
     T_mv cl__make_package(T_sp package_name_desig, List_sp nick_names, List_sp use_packages);
-    T_mv cl__find_symbol(const string &symbolname, T_sp packageDesig);
+    T_mv cl__find_symbol(Str_sp symbolname, T_sp packageDesig);
     bool cl__unintern(Symbol_sp sym, T_sp packageDesig);
     T_sp cl__package_nicknames(T_sp pkg);
     Package_sp cl__rename_package(T_sp pkg, T_sp newNameDesig, T_sp nickNameDesigs);
@@ -637,7 +638,7 @@ namespace core {
     T_sp core__getpid();
     int core__waitpid(Fixnum_sp pid, Fixnum_sp options);
     T_sp core__fork();
-    SourceManager_sp core__make_source_manager();
+    T_sp core__make_source_manager();
     void core__dump_source_manager(T_sp dumpAll);
     T_sp core__walk_to_find_source_pos_info(T_sp obj, T_sp defaultSpi);
     void core__walk_to_assign_source_pos_info(T_sp obj, SourcePosInfo_sp topInfo, T_sp stream);
@@ -752,7 +753,6 @@ namespace core {
     T_mv cl__maphash(T_sp function_desig, T_sp thash_table);
     Symbol_sp core__hash_table_weakness(T_sp ht);
     T_sp cl__make_hash_table(T_sp test, Fixnum_sp size, Number_sp rehash_size, Real_sp orehash_threshold, Symbol_sp weakness, T_sp debug);
-    void core__debug_hash_table(bool don);
     SmallMultimap_sp core__make_small_multimap();
     SmallMap_sp core__make_small_map();
     void core__print_current_ihs_frame_environment();
@@ -908,6 +908,8 @@ namespace core {
     T_mv core__weak_gethash(T_sp tkey, WeakKeyHashTable_sp ht, T_sp defaultValue);
     WeakKeyHashTable_sp core__make_weak_key_hash_table(Fixnum_sp size);
     VectorDisplaced_sp core__make_vector_displaced(T_sp dim, T_sp elementType, T_sp displacedTo, size_t displacedOffset);
+    inline bool core__sharp_equal_wrapper_p(T_sp o);
+    SharpEqualWrapper_sp make_sharp_equal_wrapper();
     int core__test_add(int x, int y);
     inline bool cl__listp(T_sp obj);
     inline bool cl__characterp(T_sp obj);
@@ -970,6 +972,7 @@ namespace core {
     bool cl__equal(T_sp x, T_sp y);
     bool cl__eql(T_sp x, T_sp y);
     bool cl__eq(T_sp x, T_sp y);
+    size_t core__sizeof_header_and_closure_with_slots(size_t numberOfSlots);
 };
 namespace ext {
     core::T_sp ext__maybeQuote(core::T_sp form);
@@ -1176,2275 +1179,2275 @@ NOINLINE void expose_function_49_helper() {
   expose_function(core::magic_name("gctools__debug_allocations"),true,&gctools::gctools__debug_allocations,"(debugOn)");
 }
 NOINLINE void expose_function_50_helper() {
-  expose_function(core::magic_name("gctools__cleanup"),true,&gctools::gctools__cleanup,"");
+  expose_function(core::magic_name("gctools__configuration"),true,&gctools::gctools__configuration,"");
 }
 NOINLINE void expose_function_51_helper() {
-  expose_function(core::magic_name("gctools__garbage_collect"),true,&gctools::gctools__garbage_collect,"");
+  expose_function(core::magic_name("gctools__cleanup"),true,&gctools::gctools__cleanup,"");
 }
 NOINLINE void expose_function_52_helper() {
-  expose_function(core::magic_name("gctools__stack_depth"),true,&gctools::gctools__stack_depth,"");
+  expose_function(core::magic_name("gctools__garbage_collect"),true,&gctools::gctools__garbage_collect,"");
 }
 NOINLINE void expose_function_53_helper() {
-  expose_function(core::magic_name("cl__room"),true,&gctools::cl__room,"(&optional x (marker 0) msg)");
+  expose_function(core::magic_name("gctools__stack_depth"),true,&gctools::gctools__stack_depth,"");
 }
 NOINLINE void expose_function_54_helper() {
-  expose_function(core::magic_name("gctools__alloc_pattern_end"),true,&gctools::gctools__alloc_pattern_end,"");
+  expose_function(core::magic_name("cl__room"),true,&gctools::cl__room,"(&optional x (marker 0) msg)");
 }
 NOINLINE void expose_function_55_helper() {
-  expose_function(core::magic_name("gctools__alloc_pattern_begin"),true,&gctools::gctools__alloc_pattern_begin,"(pattern)");
+  expose_function(core::magic_name("gctools__alloc_pattern_end"),true,&gctools::gctools__alloc_pattern_end,"");
 }
 NOINLINE void expose_function_56_helper() {
-  expose_function(core::magic_name("gctools__gc_marker"),true,&gctools::gctools__gc_marker,"(&optional marker)");
+  expose_function(core::magic_name("gctools__alloc_pattern_begin"),true,&gctools::gctools__alloc_pattern_begin,"(pattern)");
 }
 NOINLINE void expose_function_57_helper() {
-  expose_function(core::magic_name("gctools__monitor_allocations"),true,&gctools::gctools__monitor_allocations,"(on &key (backtrace-start 0) (backtrace-count 0) (backtrace-depth 6))");
+  expose_function(core::magic_name("gctools__gc_marker"),true,&gctools::gctools__gc_marker,"(&optional marker)");
 }
 NOINLINE void expose_function_58_helper() {
-  expose_function(core::magic_name("gctools__gc_info"),true,&gctools::gctools__gc_info,"(&optional x (marker 0))");
+  expose_function(core::magic_name("gctools__monitor_allocations"),true,&gctools::gctools__monitor_allocations,"(on &key (backtrace-start 0) (backtrace-count 0) (backtrace-depth 6))");
 }
 NOINLINE void expose_function_59_helper() {
-  expose_function(core::magic_name("core__hardwired_kinds"),true,&gctools::core__hardwired_kinds,"");
+  expose_function(core::magic_name("gctools__gc_info"),true,&gctools::gctools__gc_info,"(&optional x (marker 0))");
 }
 NOINLINE void expose_function_60_helper() {
-  expose_function(core::magic_name("core__inherits_from_instance"),true,&gctools::core__inherits_from_instance,"(obj)");
+  expose_function(core::magic_name("core__hardwired_kinds"),true,&gctools::core__hardwired_kinds,"");
 }
 NOINLINE void expose_function_61_helper() {
-  expose_function(core::magic_name("core__header_kind"),true,&gctools::core__header_kind,"");
+  expose_function(core::magic_name("core__inherits_from_instance"),true,&gctools::core__inherits_from_instance,"(obj)");
 }
 NOINLINE void expose_function_62_helper() {
-  expose_function(core::magic_name("gctools__bytes_allocated"),true,&gctools::gctools__bytes_allocated,"");
+  expose_function(core::magic_name("core__header_kind"),true,&gctools::core__header_kind,"");
 }
 NOINLINE void expose_function_63_helper() {
-  expose_function(core::magic_name("gctools__deallocate_unmanaged_instance"),true,&gctools::gctools__deallocate_unmanaged_instance,"(obj)");
+  expose_function(core::magic_name("gctools__bytes_allocated"),true,&gctools::gctools__bytes_allocated,"");
 }
 NOINLINE void expose_function_64_helper() {
-  expose_function(core::magic_name("gctools__bootstrap_kind_p"),true,&gctools::gctools__bootstrap_kind_p,"(name)");
+  expose_function(core::magic_name("gctools__deallocate_unmanaged_instance"),true,&gctools::gctools__deallocate_unmanaged_instance,"(obj)");
 }
 NOINLINE void expose_function_65_helper() {
-  expose_function(core::magic_name("gctools__bootstrap_kind_symbols"),true,&gctools::gctools__bootstrap_kind_symbols,"");
+  expose_function(core::magic_name("gctools__bootstrap_kind_p"),true,&gctools::gctools__bootstrap_kind_p,"(name)");
 }
 NOINLINE void expose_function_66_helper() {
-  expose_function(core::magic_name("gctools__max_bootstrap_kinds"),true,&gctools::gctools__max_bootstrap_kinds,"");
+  expose_function(core::magic_name("gctools__bootstrap_kind_symbols"),true,&gctools::gctools__bootstrap_kind_symbols,"");
 }
 NOINLINE void expose_function_67_helper() {
-  expose_function(core::magic_name("core__telemetry_count"),true,&telemetry::core__telemetry_count,"");
+  expose_function(core::magic_name("gctools__max_bootstrap_kinds"),true,&gctools::gctools__max_bootstrap_kinds,"");
 }
 NOINLINE void expose_function_68_helper() {
-  expose_function(core::magic_name("core__telemetry_dump"),true,&telemetry::core__telemetry_dump,"(&optional (begin 0) end)");
+  expose_function(core::magic_name("core__telemetry_count"),true,&telemetry::core__telemetry_count,"");
 }
 NOINLINE void expose_function_69_helper() {
-  expose_function(core::magic_name("core__telemetry_labels"),true,&telemetry::core__telemetry_labels,"");
+  expose_function(core::magic_name("core__telemetry_dump"),true,&telemetry::core__telemetry_dump,"(&optional (begin 0) end)");
 }
 NOINLINE void expose_function_70_helper() {
-  expose_function(core::magic_name("core__telemetry_follow"),true,&telemetry::core__telemetry_follow,"(address)");
+  expose_function(core::magic_name("core__telemetry_labels"),true,&telemetry::core__telemetry_labels,"");
 }
 NOINLINE void expose_function_71_helper() {
-  expose_function(core::magic_name("core__telemetry_search_labels"),true,&telemetry::core__telemetry_search_labels,"(label &optional (begin 0) end)");
+  expose_function(core::magic_name("core__telemetry_follow"),true,&telemetry::core__telemetry_follow,"(address)");
 }
 NOINLINE void expose_function_72_helper() {
-  expose_function(core::magic_name("core__telemetry_search"),true,&telemetry::core__telemetry_search,"(addresses)");
+  expose_function(core::magic_name("core__telemetry_search_labels"),true,&telemetry::core__telemetry_search_labels,"(label &optional (begin 0) end)");
 }
 NOINLINE void expose_function_73_helper() {
-  expose_function(core::magic_name("core__telemetry_open"),true,&telemetry::core__telemetry_open,"(pathname)");
+  expose_function(core::magic_name("core__telemetry_search"),true,&telemetry::core__telemetry_search,"(addresses)");
 }
 NOINLINE void expose_function_74_helper() {
-  expose_function(core::magic_name("llvm_sys__viewCFG"),true,&llvmo::llvm_sys__viewCFG,"(fn &optional only)");
+  expose_function(core::magic_name("core__telemetry_open"),true,&telemetry::core__telemetry_open,"(pathname)");
 }
 NOINLINE void expose_function_75_helper() {
-  expose_function(core::magic_name("llvm_sys__disassembleSTAR"),true,&llvmo::llvm_sys__disassembleSTAR,"(cf)");
+  expose_function(core::magic_name("llvm_sys__viewCFG"),true,&llvmo::llvm_sys__viewCFG,"(fn &optional only)");
 }
 NOINLINE void expose_function_76_helper() {
-  expose_function(core::magic_name("llvm_sys__getOrCreateExternalGlobal"),true,&llvmo::llvm_sys__getOrCreateExternalGlobal,"(module name type)");
+  expose_function(core::magic_name("llvm_sys__disassembleSTAR"),true,&llvmo::llvm_sys__disassembleSTAR,"(cf)");
 }
 NOINLINE void expose_function_77_helper() {
-  expose_function(core::magic_name("llvm_sys__throwIfMismatchedStructureSizes"),true,&llvmo::llvm_sys__throwIfMismatchedStructureSizes,"(&key tsp tmv ihf)");
+  expose_function(core::magic_name("llvm_sys__getOrCreateExternalGlobal"),true,&llvmo::llvm_sys__getOrCreateExternalGlobal,"(module name type)");
 }
 NOINLINE void expose_function_78_helper() {
-  expose_function(core::magic_name("llvm_sys__cxxDataStructuresInfo"),true,&llvmo::llvm_sys__cxxDataStructuresInfo,"");
+  expose_function(core::magic_name("llvm_sys__throwIfMismatchedStructureSizes"),true,&llvmo::llvm_sys__throwIfMismatchedStructureSizes,"(&key tsp tmv ihf)");
 }
 NOINLINE void expose_function_79_helper() {
-  expose_function(core::magic_name("llvm_sys__mangleSymbolName"),true,&llvmo::llvm_sys__mangleSymbolName,"(name)");
+  expose_function(core::magic_name("llvm_sys__cxxDataStructuresInfo"),true,&llvmo::llvm_sys__cxxDataStructuresInfo,"");
 }
 NOINLINE void expose_function_80_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createBasicAliasAnalysisPass"),true,&llvm::createBasicAliasAnalysisPass,"");
+  expose_function(core::magic_name("llvm_sys__mangleSymbolName"),true,&llvmo::llvm_sys__mangleSymbolName,"(name)");
 }
 NOINLINE void expose_function_81_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createTypeBasedAliasAnalysisPass"),true,&llvm::createTypeBasedAliasAnalysisPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createBasicAliasAnalysisPass"),true,&llvm::createBasicAliasAnalysisPass,"");
 }
 NOINLINE void expose_function_82_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createLowerExpectIntrinsicPass"),true,&llvm::createLowerExpectIntrinsicPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createTypeBasedAliasAnalysisPass"),true,&llvm::createTypeBasedAliasAnalysisPass,"");
 }
 NOINLINE void expose_function_83_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createEarlyCSEPass"),true,&llvm::createEarlyCSEPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createLowerExpectIntrinsicPass"),true,&llvm::createLowerExpectIntrinsicPass,"");
 }
 NOINLINE void expose_function_84_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createCorrelatedValuePropagationPass"),true,&llvm::createCorrelatedValuePropagationPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createEarlyCSEPass"),true,&llvm::createEarlyCSEPass,"");
 }
 NOINLINE void expose_function_85_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createVerifierPass"),true,&llvm::createVerifierPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createCorrelatedValuePropagationPass"),true,&llvm::createCorrelatedValuePropagationPass,"");
 }
 NOINLINE void expose_function_86_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createConstantPropagationPass"),true,&llvm::createConstantPropagationPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createVerifierPass"),true,&llvm::createVerifierPass,"");
 }
 NOINLINE void expose_function_87_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createTailCallEliminationPass"),true,&llvm::createTailCallEliminationPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createConstantPropagationPass"),true,&llvm::createConstantPropagationPass,"");
 }
 NOINLINE void expose_function_88_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createScalarReplAggregatesPass"),true,&llvm::createScalarReplAggregatesPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createTailCallEliminationPass"),true,&llvm::createTailCallEliminationPass,"");
 }
 NOINLINE void expose_function_89_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createSCCPPass"),true,&llvm::createSCCPPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createScalarReplAggregatesPass"),true,&llvm::createScalarReplAggregatesPass,"");
 }
 NOINLINE void expose_function_90_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createReassociatePass"),true,&llvm::createReassociatePass,"");
+  expose_function(core::magic_name("LLVM-SYS:createSCCPPass"),true,&llvm::createSCCPPass,"");
 }
 NOINLINE void expose_function_91_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createPromoteMemoryToRegisterPass"),true,&llvm::createPromoteMemoryToRegisterPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createReassociatePass"),true,&llvm::createReassociatePass,"");
 }
 NOINLINE void expose_function_92_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createMemCpyOptPass"),true,&llvm::createMemCpyOptPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createPromoteMemoryToRegisterPass"),true,&llvm::createPromoteMemoryToRegisterPass,"");
 }
 NOINLINE void expose_function_93_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createLoopUnswitchPass"),true,&llvm::createLoopUnswitchPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createMemCpyOptPass"),true,&llvm::createMemCpyOptPass,"");
 }
 NOINLINE void expose_function_94_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createLoopUnrollPass"),true,&llvm::createLoopUnrollPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createLoopUnswitchPass"),true,&llvm::createLoopUnswitchPass,"");
 }
 NOINLINE void expose_function_95_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createLoopRotatePass"),true,&llvm::createLoopRotatePass,"");
+  expose_function(core::magic_name("LLVM-SYS:createLoopUnrollPass"),true,&llvm::createLoopUnrollPass,"");
 }
 NOINLINE void expose_function_96_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createLoopIdiomPass"),true,&llvm::createLoopIdiomPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createLoopRotatePass"),true,&llvm::createLoopRotatePass,"");
 }
 NOINLINE void expose_function_97_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createLoopDeletionPass"),true,&llvm::createLoopDeletionPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createLoopIdiomPass"),true,&llvm::createLoopIdiomPass,"");
 }
 NOINLINE void expose_function_98_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createLICMPass"),true,&llvm::createLICMPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createLoopDeletionPass"),true,&llvm::createLoopDeletionPass,"");
 }
 NOINLINE void expose_function_99_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createJumpThreadingPass"),true,&llvm::createJumpThreadingPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createLICMPass"),true,&llvm::createLICMPass,"");
 }
 NOINLINE void expose_function_100_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createInstructionCombiningPass"),true,&llvm::createInstructionCombiningPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createJumpThreadingPass"),true,&llvm::createJumpThreadingPass,"");
 }
 NOINLINE void expose_function_101_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createIndVarSimplifyPass"),true,&llvm::createIndVarSimplifyPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createInstructionCombiningPass"),true,&llvm::createInstructionCombiningPass,"");
 }
 NOINLINE void expose_function_102_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createGVNPass"),true,&llvm::createGVNPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createIndVarSimplifyPass"),true,&llvm::createIndVarSimplifyPass,"");
 }
 NOINLINE void expose_function_103_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createDeadStoreEliminationPass"),true,&llvm::createDeadStoreEliminationPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createGVNPass"),true,&llvm::createGVNPass,"");
 }
 NOINLINE void expose_function_104_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createCFGSimplificationPass"),true,&llvm::createCFGSimplificationPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createDeadStoreEliminationPass"),true,&llvm::createDeadStoreEliminationPass,"");
 }
 NOINLINE void expose_function_105_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createAggressiveDCEPass"),true,&llvm::createAggressiveDCEPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createCFGSimplificationPass"),true,&llvm::createCFGSimplificationPass,"");
 }
 NOINLINE void expose_function_106_helper() {
-  expose_function(core::magic_name("LLVM-SYS:InitializeNativeTarget"),true,&llvm::InitializeNativeTarget,"");
+  expose_function(core::magic_name("LLVM-SYS:createAggressiveDCEPass"),true,&llvm::createAggressiveDCEPass,"");
 }
 NOINLINE void expose_function_107_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createMemDepPrinter"),true,&llvm::createMemDepPrinter,"");
+  expose_function(core::magic_name("LLVM-SYS:InitializeNativeTarget"),true,&llvm::InitializeNativeTarget,"");
 }
 NOINLINE void expose_function_108_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createModuleDebugInfoPrinterPass"),true,&llvm::createModuleDebugInfoPrinterPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createMemDepPrinter"),true,&llvm::createMemDepPrinter,"");
 }
 NOINLINE void expose_function_109_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createRegionInfoPass"),true,&llvm::createRegionInfoPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createModuleDebugInfoPrinterPass"),true,&llvm::createModuleDebugInfoPrinterPass,"");
 }
 NOINLINE void expose_function_110_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createInstCountPass"),true,&llvm::createInstCountPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createRegionInfoPass"),true,&llvm::createRegionInfoPass,"");
 }
 NOINLINE void expose_function_111_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createLazyValueInfoPass"),true,&llvm::createLazyValueInfoPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createInstCountPass"),true,&llvm::createInstCountPass,"");
 }
 NOINLINE void expose_function_112_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createScalarEvolutionAliasAnalysisPass"),true,&llvm::createScalarEvolutionAliasAnalysisPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createLazyValueInfoPass"),true,&llvm::createLazyValueInfoPass,"");
 }
 NOINLINE void expose_function_113_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createAAEvalPass"),true,&llvm::createAAEvalPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createScalarEvolutionAliasAnalysisPass"),true,&llvm::createScalarEvolutionAliasAnalysisPass,"");
 }
 NOINLINE void expose_function_114_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createAlwaysInlinerPass"),true,(llvm::Pass * (*)()) & llvm::createAlwaysInlinerPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createAAEvalPass"),true,&llvm::createAAEvalPass,"");
 }
 NOINLINE void expose_function_115_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createFunctionInliningPass"),true,(llvm::Pass * (*)(unsigned, unsigned)) & llvm::createFunctionInliningPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createAlwaysInlinerPass"),true,(llvm::Pass * (*)()) & llvm::createAlwaysInlinerPass,"");
 }
 NOINLINE void expose_function_116_helper() {
-  expose_function(core::magic_name("LLVM-SYS:createAliasAnalysisCounterPass"),true,&llvm::createAliasAnalysisCounterPass,"");
+  expose_function(core::magic_name("LLVM-SYS:createFunctionInliningPass"),true,(llvm::Pass * (*)(unsigned, unsigned)) & llvm::createFunctionInliningPass,"");
 }
 NOINLINE void expose_function_117_helper() {
-  expose_function(core::magic_name("LLVM-SYS:TargetRegistryLookupTarget"),true,&llvmo::TargetRegistryLookupTarget,"(ArchName triple)");
+  expose_function(core::magic_name("LLVM-SYS:createAliasAnalysisCounterPass"),true,&llvm::createAliasAnalysisCounterPass,"");
 }
 NOINLINE void expose_function_118_helper() {
-  expose_function(core::magic_name("LLVM-SYS:finalizeClosure"),true,&llvmo::finalizeClosure,"(oengine func)");
+  expose_function(core::magic_name("LLVM-SYS:TargetRegistryLookupTarget"),true,&llvmo::TargetRegistryLookupTarget,"(ArchName triple)");
 }
 NOINLINE void expose_function_119_helper() {
-  expose_function(core::magic_name("LLVM-SYS:finalizeEngineAndRegisterWithGcAndGetCompiledFunction"),true,&llvmo::finalizeEngineAndRegisterWithGcAndGetCompiledFunction,"(oengine functionName fn activationFrameEnvironment globalRunTimeValueName fileName filePos linenumber lambdaList)");
+  expose_function(core::magic_name("LLVM-SYS:finalizeClosure"),true,&llvmo::finalizeClosure,"(oengine func)");
 }
 NOINLINE void expose_function_120_helper() {
-  expose_function(core::magic_name("LLVM-SYS:pointer-type-get"),true,&llvmo::PointerType_O::get,"(element-type &optional (address-space 0))");
+  expose_function(core::magic_name("LLVM-SYS:finalizeEngineAndRegisterWithGcAndGetCompiledFunction"),true,&llvmo::finalizeEngineAndRegisterWithGcAndGetCompiledFunction,"(oengine functionName fn activationFrameEnvironment globalRunTimeValueName fileName filePos linenumber lambdaList)");
 }
 NOINLINE void expose_function_121_helper() {
-  expose_function(core::magic_name("LLVM-SYS:array-type-get"),true,&llvmo::ArrayType_O::get,"(element-type num-elements)");
+  expose_function(core::magic_name("LLVM-SYS:pointer-type-get"),true,&llvmo::PointerType_O::get,"(element-type &optional (address-space 0))");
 }
 NOINLINE void expose_function_122_helper() {
-  expose_function(core::magic_name("LLVM-SYS:struct-type-get"),true,&llvmo::StructType_O::get,"(context elements isPacked)");
+  expose_function(core::magic_name("LLVM-SYS:array-type-get"),true,&llvmo::ArrayType_O::get,"(element-type num-elements)");
 }
 NOINLINE void expose_function_123_helper() {
-  expose_function(core::magic_name("LLVM-SYS:struct-type-create"),true,&llvmo::StructType_O::make,"(context &key elements name is-packed)");
+  expose_function(core::magic_name("LLVM-SYS:struct-type-get"),true,&llvmo::StructType_O::get,"(context elements isPacked)");
 }
 NOINLINE void expose_function_124_helper() {
-  expose_function(core::magic_name("LLVM-SYS:function-type-get"),true,&llvmo::FunctionType_O::get,"(result &optional params is-var-arg)");
+  expose_function(core::magic_name("LLVM-SYS:struct-type-create"),true,&llvmo::StructType_O::make,"(context &key elements name is-packed)");
 }
 NOINLINE void expose_function_125_helper() {
-  expose_function(core::magic_name("LLVM-SYS:type-get-int64-ptr-ty"),true,&llvm::Type::getInt64PtrTy,"");
+  expose_function(core::magic_name("LLVM-SYS:function-type-get"),true,&llvmo::FunctionType_O::get,"(result &optional params is-var-arg)");
 }
 NOINLINE void expose_function_126_helper() {
-  expose_function(core::magic_name("LLVM-SYS:type-get-int32-ptr-ty"),true,&llvm::Type::getInt32PtrTy,"");
+  expose_function(core::magic_name("LLVM-SYS:type-get-int64-ptr-ty"),true,&llvm::Type::getInt64PtrTy,"");
 }
 NOINLINE void expose_function_127_helper() {
-  expose_function(core::magic_name("LLVM-SYS:type-get-int8-ptr-ty"),true,&llvm::Type::getInt8PtrTy,"");
+  expose_function(core::magic_name("LLVM-SYS:type-get-int32-ptr-ty"),true,&llvm::Type::getInt32PtrTy,"");
 }
 NOINLINE void expose_function_128_helper() {
-  expose_function(core::magic_name("LLVM-SYS:type-get-int64-ty"),true,&llvm::Type::getInt64Ty,"");
+  expose_function(core::magic_name("LLVM-SYS:type-get-int8-ptr-ty"),true,&llvm::Type::getInt8PtrTy,"");
 }
 NOINLINE void expose_function_129_helper() {
-  expose_function(core::magic_name("LLVM-SYS:type-get-int32-ty"),true,&llvm::Type::getInt32Ty,"");
+  expose_function(core::magic_name("LLVM-SYS:type-get-int64-ty"),true,&llvm::Type::getInt64Ty,"");
 }
 NOINLINE void expose_function_130_helper() {
-  expose_function(core::magic_name("LLVM-SYS:type-get-int8-ty"),true,&llvm::Type::getInt8Ty,"");
+  expose_function(core::magic_name("LLVM-SYS:type-get-int32-ty"),true,&llvm::Type::getInt32Ty,"");
 }
 NOINLINE void expose_function_131_helper() {
-  expose_function(core::magic_name("LLVM-SYS:type-get-int1-ty"),true,&llvm::Type::getInt1Ty,"");
+  expose_function(core::magic_name("LLVM-SYS:type-get-int8-ty"),true,&llvm::Type::getInt8Ty,"");
 }
 NOINLINE void expose_function_132_helper() {
-  expose_function(core::magic_name("LLVM-SYS:type-get-void-ty"),true,&llvm::Type::getVoidTy,"");
+  expose_function(core::magic_name("LLVM-SYS:type-get-int1-ty"),true,&llvm::Type::getInt1Ty,"");
 }
 NOINLINE void expose_function_133_helper() {
-  expose_function(core::magic_name("LLVM-SYS:type-get-double-ty"),true,&llvm::Type::getDoubleTy,"");
+  expose_function(core::magic_name("LLVM-SYS:type-get-void-ty"),true,&llvm::Type::getVoidTy,"");
 }
 NOINLINE void expose_function_134_helper() {
-  expose_function(core::magic_name("LLVM-SYS:type-get-float-ty"),true,&llvm::Type::getFloatTy,"");
+  expose_function(core::magic_name("LLVM-SYS:type-get-double-ty"),true,&llvm::Type::getDoubleTy,"");
 }
 NOINLINE void expose_function_135_helper() {
-  expose_function(core::magic_name("type-get-float-ty","LLVM-SYS"),true,&llvm::Type::getFloatTy,"");
+  expose_function(core::magic_name("LLVM-SYS:type-get-float-ty"),true,&llvm::Type::getFloatTy,"");
 }
 NOINLINE void expose_function_136_helper() {
-  expose_function(core::magic_name("LLVM-SYS:basic-block-create"),true,&llvm::BasicBlock::Create,"(context &optional (name \"\") parent basic_block)");
+  expose_function(core::magic_name("type-get-float-ty","LLVM-SYS"),true,&llvm::Type::getFloatTy,"");
 }
 NOINLINE void expose_function_137_helper() {
-  expose_function(core::magic_name("llvm_sys__FunctionCreate"),true,&llvmo::llvm_sys__FunctionCreate,"(tysp linkage nsp modulesp)");
+  expose_function(core::magic_name("LLVM-SYS:basic-block-create"),true,&llvm::BasicBlock::Create,"(context &optional (name \"\") parent basic_block)");
 }
 NOINLINE void expose_function_138_helper() {
-  expose_function(core::magic_name("LLVM-SYS:value-as-metadata-get"),true,&llvmo::ValueAsMetadata_O::get,"(val)");
+  expose_function(core::magic_name("llvm_sys__FunctionCreate"),true,&llvmo::llvm_sys__FunctionCreate,"(tysp linkage nsp modulesp)");
 }
 NOINLINE void expose_function_139_helper() {
-  expose_function(core::magic_name("LLVM-SYS:mdstring-get"),true,&llvmo::MDString_O::get,"(context str)");
+  expose_function(core::magic_name("LLVM-SYS:value-as-metadata-get"),true,&llvmo::ValueAsMetadata_O::get,"(val)");
 }
 NOINLINE void expose_function_140_helper() {
-  expose_function(core::magic_name("LLVM-SYS:mdnode-get"),true,&llvmo::MDNode_O::get,"(context values)");
+  expose_function(core::magic_name("LLVM-SYS:mdstring-get"),true,&llvmo::MDString_O::get,"(context str)");
 }
 NOINLINE void expose_function_141_helper() {
-  expose_function(core::magic_name("LLVM-SYS:make-irbuilder"),true,&llvmo::IRBuilder_O::make,"(context)");
+  expose_function(core::magic_name("LLVM-SYS:mdnode-get"),true,&llvmo::MDNode_O::get,"(context values)");
 }
 NOINLINE void expose_function_142_helper() {
-  expose_function(core::magic_name("LLVM-SYS:makeAPInt64"),true,&llvmo::APInt_O::makeAPInt64,"(value)");
+  expose_function(core::magic_name("LLVM-SYS:make-irbuilder"),true,&llvmo::IRBuilder_O::make,"(context)");
 }
 NOINLINE void expose_function_143_helper() {
-  expose_function(core::magic_name("LLVM-SYS:makeAPInt32"),true,&llvmo::APInt_O::makeAPInt32,"(value)");
+  expose_function(core::magic_name("LLVM-SYS:makeAPInt64"),true,&llvmo::APInt_O::makeAPInt64,"(value)");
 }
 NOINLINE void expose_function_144_helper() {
-  expose_function(core::magic_name("LLVM-SYS:makeAPIntWidth"),true,&llvmo::APInt_O::makeAPIntWidth,"(value width sign)");
+  expose_function(core::magic_name("LLVM-SYS:makeAPInt32"),true,&llvmo::APInt_O::makeAPInt32,"(value)");
 }
 NOINLINE void expose_function_145_helper() {
-  expose_function(core::magic_name("LLVM-SYS:makeAPInt1"),true,&llvmo::APInt_O::makeAPInt1,"(value)");
+  expose_function(core::magic_name("LLVM-SYS:makeAPIntWidth"),true,&llvmo::APInt_O::makeAPIntWidth,"(value width sign)");
 }
 NOINLINE void expose_function_146_helper() {
-  expose_function(core::magic_name("LLVM-SYS:makeAPInt"),true,&llvmo::APInt_O::makeAPInt,"(value)");
+  expose_function(core::magic_name("LLVM-SYS:makeAPInt1"),true,&llvmo::APInt_O::makeAPInt1,"(value)");
 }
 NOINLINE void expose_function_147_helper() {
-  expose_function(core::magic_name("LLVM-SYS:makeAPFloatDouble"),true,&llvmo::APFloat_O::makeAPFloatDouble,"(value)");
+  expose_function(core::magic_name("LLVM-SYS:makeAPInt"),true,&llvmo::APInt_O::makeAPInt,"(value)");
 }
 NOINLINE void expose_function_148_helper() {
-  expose_function(core::magic_name("LLVM-SYS:make-apfloat-float"),true,&llvmo::APFloat_O::makeAPFloatFloat,"(value)");
+  expose_function(core::magic_name("LLVM-SYS:makeAPFloatDouble"),true,&llvmo::APFloat_O::makeAPFloatDouble,"(value)");
 }
 NOINLINE void expose_function_149_helper() {
-  expose_function(core::magic_name("LLVM-SYS:constant-pointer-null-get"),true,&llvm::ConstantPointerNull::get,"");
+  expose_function(core::magic_name("LLVM-SYS:make-apfloat-float"),true,&llvmo::APFloat_O::makeAPFloatFloat,"(value)");
 }
 NOINLINE void expose_function_150_helper() {
-  expose_function(core::magic_name("LLVM-SYS:UNDEF_VALUE-GET"),true,&llvm::UndefValue::get,"");
+  expose_function(core::magic_name("LLVM-SYS:constant-pointer-null-get"),true,&llvm::ConstantPointerNull::get,"");
 }
 NOINLINE void expose_function_151_helper() {
-  expose_function(core::magic_name("LLVM-SYS:CONSTANT-STRUCT-GET"),true,(llvm::Constant *(*)(llvm::StructType *T, llvm::ArrayRef<llvm::Constant *>)) &llvm::ConstantStruct::get,"");
+  expose_function(core::magic_name("LLVM-SYS:UNDEF_VALUE-GET"),true,&llvm::UndefValue::get,"");
 }
 NOINLINE void expose_function_152_helper() {
-  expose_function(core::magic_name("LLVM-SYS:constant-int-get"),true,(llvm::ConstantInt *(*)(llvm::LLVMContext &, const llvm::APInt &)) &llvm::ConstantInt::get,"");
+  expose_function(core::magic_name("LLVM-SYS:CONSTANT-STRUCT-GET"),true,(llvm::Constant *(*)(llvm::StructType *T, llvm::ArrayRef<llvm::Constant *>)) &llvm::ConstantStruct::get,"");
 }
 NOINLINE void expose_function_153_helper() {
-  expose_function(core::magic_name("LLVM-SYS:constantFpGetTypeStringref"),true,(llvm::Constant *(*)(llvm::Type *, llvm::StringRef))&llvm::ConstantFP::get,"");
+  expose_function(core::magic_name("LLVM-SYS:constant-int-get"),true,(llvm::ConstantInt *(*)(llvm::LLVMContext &, const llvm::APInt &)) &llvm::ConstantInt::get,"");
 }
 NOINLINE void expose_function_154_helper() {
-  expose_function(core::magic_name("LLVM-SYS:constantFpGetTypeDouble"),true,(llvm::Constant *(*)(llvm::Type *, double)) &llvm::ConstantFP::get,"");
+  expose_function(core::magic_name("LLVM-SYS:constantFpGetTypeStringref"),true,(llvm::Constant *(*)(llvm::Type *, llvm::StringRef))&llvm::ConstantFP::get,"");
 }
 NOINLINE void expose_function_155_helper() {
-  expose_function(core::magic_name("LLVM-SYS:constantFpGet"),true,(llvm::ConstantFP *(*)(llvm::LLVMContext &, const llvm::APFloat &)) &llvm::ConstantFP::get,"");
+  expose_function(core::magic_name("LLVM-SYS:constantFpGetTypeDouble"),true,(llvm::Constant *(*)(llvm::Type *, double)) &llvm::ConstantFP::get,"");
 }
 NOINLINE void expose_function_156_helper() {
-  expose_function(core::magic_name("LLVM-SYS:make-global-variable"),true,&llvmo::GlobalVariable_O::make,"(module type is-constant linkage initializer name &optional (insert-before nil) (thread-local-mode 'llvm-sys:not-thread-local))");
+  expose_function(core::magic_name("LLVM-SYS:constantFpGet"),true,(llvm::ConstantFP *(*)(llvm::LLVMContext &, const llvm::APFloat &)) &llvm::ConstantFP::get,"");
 }
 NOINLINE void expose_function_157_helper() {
-  expose_function(core::magic_name("LLVM-SYS:constant-expr-get-in-bounds-get-element-ptr"),true,&llvmo::ConstantExpr_O::getInBoundsGetElementPtr,"(constant idxList)");
+  expose_function(core::magic_name("LLVM-SYS:make-global-variable"),true,&llvmo::GlobalVariable_O::make,"(module type is-constant linkage initializer name &optional (insert-before nil) (thread-local-mode 'llvm-sys:not-thread-local))");
 }
 NOINLINE void expose_function_158_helper() {
-  expose_function(core::magic_name("LLVM-SYS:block-address-get"),true,&llvmo::BlockAddress_O::get,"(function basic-block)");
+  expose_function(core::magic_name("LLVM-SYS:constant-expr-get-in-bounds-get-element-ptr"),true,&llvmo::ConstantExpr_O::getInBoundsGetElementPtr,"(constant idxList)");
 }
 NOINLINE void expose_function_159_helper() {
-  expose_function(core::magic_name("LLVM-SYS:constant-array-get"),true,&llvmo::ConstantArray_O::get,"(type values)");
+  expose_function(core::magic_name("LLVM-SYS:block-address-get"),true,&llvmo::BlockAddress_O::get,"(function basic-block)");
 }
 NOINLINE void expose_function_160_helper() {
-  expose_function(core::magic_name("LLVM-SYS:constant-data-array-get-uint32"),true,&llvmo::ConstantDataArray_O::getUInt32,"(type values)");
+  expose_function(core::magic_name("LLVM-SYS:constant-array-get"),true,&llvmo::ConstantArray_O::get,"(type values)");
 }
 NOINLINE void expose_function_161_helper() {
-  expose_function(core::magic_name("LLVM-SYS:PassManagerBuilderSetfSizeLevel"),true,&llvmo::PassManagerBuilderSetfSizeLevel,"(pmb level)");
+  expose_function(core::magic_name("LLVM-SYS:constant-data-array-get-uint32"),true,&llvmo::ConstantDataArray_O::getUInt32,"(type values)");
 }
 NOINLINE void expose_function_162_helper() {
-  expose_function(core::magic_name("LLVM-SYS:PassManagerBuilderSetfOptLevel"),true,&llvmo::PassManagerBuilderSetfOptLevel,"(pmb optLevel)");
+  expose_function(core::magic_name("LLVM-SYS:PassManagerBuilderSetfSizeLevel"),true,&llvmo::PassManagerBuilderSetfSizeLevel,"(pmb level)");
 }
 NOINLINE void expose_function_163_helper() {
-  expose_function(core::magic_name("LLVM-SYS:PassManagerBuilderSetfInliner"),true,&llvmo::PassManagerBuilderSetfInliner,"(pmb inliner)");
+  expose_function(core::magic_name("LLVM-SYS:PassManagerBuilderSetfOptLevel"),true,&llvmo::PassManagerBuilderSetfOptLevel,"(pmb optLevel)");
 }
 NOINLINE void expose_function_164_helper() {
-  expose_function(core::magic_name("make-PassManagerBuilder","LLVM-SYS"),true,&llvmo::PassManagerBuilder_O::make,"");
+  expose_function(core::magic_name("LLVM-SYS:PassManagerBuilderSetfInliner"),true,&llvmo::PassManagerBuilderSetfInliner,"(pmb inliner)");
 }
 NOINLINE void expose_function_165_helper() {
-  expose_function(core::magic_name("make-EngineBuilder","LLVM-SYS"),true,&llvmo::EngineBuilder_O::make,"(module)");
+  expose_function(core::magic_name("make-PassManagerBuilder","LLVM-SYS"),true,&llvmo::PassManagerBuilder_O::make,"");
 }
 NOINLINE void expose_function_166_helper() {
-  expose_function(core::magic_name("makePassManager","LLVM-SYS"),true,&llvmo::PassManager_O::make,"");
+  expose_function(core::magic_name("make-EngineBuilder","LLVM-SYS"),true,&llvmo::EngineBuilder_O::make,"(module)");
 }
 NOINLINE void expose_function_167_helper() {
-  expose_function(core::magic_name("makeFunctionPassManager","LLVM-SYS"),true,&llvmo::FunctionPassManager_O::make,"(module)");
+  expose_function(core::magic_name("makePassManager","LLVM-SYS"),true,&llvmo::PassManager_O::make,"");
 }
 NOINLINE void expose_function_168_helper() {
-  expose_function(core::magic_name("makeTargetLibraryInfo","LLVM-SYS"),true,&llvmo::TargetLibraryInfo_O::make,"(triple)");
+  expose_function(core::magic_name("makeFunctionPassManager","LLVM-SYS"),true,&llvmo::FunctionPassManager_O::make,"(module)");
 }
 NOINLINE void expose_function_169_helper() {
-  expose_function(core::magic_name("makeDataLayoutPass","LLVM-SYS"),true,&llvmo::DataLayoutPass_O::make,"(module)");
+  expose_function(core::magic_name("makeTargetLibraryInfo","LLVM-SYS"),true,&llvmo::TargetLibraryInfo_O::make,"(triple)");
 }
 NOINLINE void expose_function_170_helper() {
-  expose_function(core::magic_name("llvm_sys__module_get_function_list"),true,&llvmo::llvm_sys__module_get_function_list,"(module)");
+  expose_function(core::magic_name("makeDataLayoutPass","LLVM-SYS"),true,&llvmo::DataLayoutPass_O::make,"(module)");
 }
 NOINLINE void expose_function_171_helper() {
-  expose_function(core::magic_name("make-Module","LLVM-SYS"),true,&llvmo::Module_O::make,"(module-name context)");
+  expose_function(core::magic_name("llvm_sys__module_get_function_list"),true,&llvmo::llvm_sys__module_get_function_list,"(module)");
 }
 NOINLINE void expose_function_172_helper() {
-  expose_function(core::magic_name("llvm_sys__valid"),true,&llvmo::llvm_sys__valid,"(value)");
+  expose_function(core::magic_name("make-Module","LLVM-SYS"),true,&llvmo::Module_O::make,"(module-name context)");
 }
 NOINLINE void expose_function_173_helper() {
-  expose_function(core::magic_name("llvm_sys__makeStringGlobal"),true,&llvmo::llvm_sys__makeStringGlobal,"(module svalue)");
+  expose_function(core::magic_name("llvm_sys__valid"),true,&llvmo::llvm_sys__valid,"(value)");
 }
 NOINLINE void expose_function_174_helper() {
-  expose_function(core::magic_name("attributeSetGet","LLVM-SYS"),true,(llvm::AttributeSet (*)(llvm::LLVMContext &, unsigned, llvm::ArrayRef<llvm::Attribute::AttrKind>)) & llvm::AttributeSet::get,"");
+  expose_function(core::magic_name("llvm_sys__makeStringGlobal"),true,&llvmo::llvm_sys__makeStringGlobal,"(module svalue)");
 }
 NOINLINE void expose_function_175_helper() {
-  expose_function(core::magic_name("llvm_sys__valuep"),true,&llvmo::llvm_sys__valuep,"(arg)");
+  expose_function(core::magic_name("attributeSetGet","LLVM-SYS"),true,(llvm::AttributeSet (*)(llvm::LLVMContext &, unsigned, llvm::ArrayRef<llvm::Attribute::AttrKind>)) & llvm::AttributeSet::get,"");
 }
 NOINLINE void expose_function_176_helper() {
-  expose_function(core::magic_name("llvm_sys__parseBitcodeFile"),true,&llvmo::llvm_sys__parseBitcodeFile,"(filename context)");
+  expose_function(core::magic_name("llvm_sys__valuep"),true,&llvmo::llvm_sys__valuep,"(arg)");
 }
 NOINLINE void expose_function_177_helper() {
-  expose_function(core::magic_name("llvm_sys__writeBitcodeToFile"),true,&llvmo::llvm_sys__writeBitcodeToFile,"(module pathname)");
+  expose_function(core::magic_name("llvm_sys__parseBitcodeFile"),true,&llvmo::llvm_sys__parseBitcodeFile,"(filename context)");
 }
 NOINLINE void expose_function_178_helper() {
-  expose_function(core::magic_name("llvm_sys__verifyFunction"),true,&llvmo::llvm_sys__verifyFunction,"(function)");
+  expose_function(core::magic_name("llvm_sys__writeBitcodeToFile"),true,&llvmo::llvm_sys__writeBitcodeToFile,"(module pathname)");
 }
 NOINLINE void expose_function_179_helper() {
-  expose_function(core::magic_name("llvm_sys__verifyModule"),true,&llvmo::llvm_sys__verifyModule,"(module action)");
+  expose_function(core::magic_name("llvm_sys__verifyFunction"),true,&llvmo::llvm_sys__verifyFunction,"(function)");
 }
 NOINLINE void expose_function_180_helper() {
-  expose_function(core::magic_name("llvm_sys__writeIrToFile"),true,&llvmo::llvm_sys__writeIrToFile,"(module path)");
+  expose_function(core::magic_name("llvm_sys__verifyModule"),true,&llvmo::llvm_sys__verifyModule,"(module action)");
 }
 NOINLINE void expose_function_181_helper() {
-  expose_function(core::magic_name("LLVM-SYS:make-target-options"),true,&llvmo::TargetOptions_O::make,"");
+  expose_function(core::magic_name("llvm_sys__writeIrToFile"),true,&llvmo::llvm_sys__writeIrToFile,"(module path)");
 }
 NOINLINE void expose_function_182_helper() {
-  expose_function(core::magic_name("triple-normalize","LLVM-SYS"),true,&llvm::Triple::normalize,"");
+  expose_function(core::magic_name("LLVM-SYS:make-target-options"),true,&llvmo::TargetOptions_O::make,"");
 }
 NOINLINE void expose_function_183_helper() {
-  expose_function(core::magic_name("make-triple","LLVM-SYS"),true,&llvmo::Triple_O::make,"(triple-str)");
+  expose_function(core::magic_name("triple-normalize","LLVM-SYS"),true,&llvm::Triple::normalize,"");
 }
 NOINLINE void expose_function_184_helper() {
-  expose_function(core::magic_name("llvm_sys__link_in_module"),true,&llvmo::llvm_sys__link_in_module,"(linker module)");
+  expose_function(core::magic_name("make-triple","LLVM-SYS"),true,&llvmo::Triple_O::make,"(triple-str)");
 }
 NOINLINE void expose_function_185_helper() {
-  expose_function(core::magic_name("LLVM-SYS:make-linker"),true,&llvmo::Linker_O::make,"(module)");
+  expose_function(core::magic_name("llvm_sys__link_in_module"),true,&llvmo::llvm_sys__link_in_module,"(linker module)");
 }
 NOINLINE void expose_function_186_helper() {
-  expose_function(core::magic_name("LLVM-SYS:get_global_context"),true,&llvmo::LLVMContext_O::get_global_context,"");
+  expose_function(core::magic_name("LLVM-SYS:make-linker"),true,&llvmo::Linker_O::make,"(module)");
 }
 NOINLINE void expose_function_187_helper() {
-  expose_function(core::magic_name("llvm_sys__llvm_value_p"),true,&llvmo::llvm_sys__llvm_value_p,"(o)");
+  expose_function(core::magic_name("LLVM-SYS:get_global_context"),true,&llvmo::LLVMContext_O::get_global_context,"");
 }
 NOINLINE void expose_function_188_helper() {
-  expose_function(core::magic_name("compiler__setAssociatedFuncs"),true,&llvmo::compiler__setAssociatedFuncs,"(cf associatedFuncs)");
+  expose_function(core::magic_name("llvm_sys__llvm_value_p"),true,&llvmo::llvm_sys__llvm_value_p,"(o)");
 }
 NOINLINE void expose_function_189_helper() {
-  expose_function("LLVM-SYS:dw-tag",true,&llvmo::llvm_sys__dwTag,"(tagsym &optional (debug-version llvm-sys:llvmdebug-version8))");
+  expose_function(core::magic_name("compiler__setAssociatedFuncs"),true,&llvmo::compiler__setAssociatedFuncs,"(cf associatedFuncs)");
 }
 NOINLINE void expose_function_190_helper() {
-  expose_function("LLVM-SYS:debug-loc-get",true,&llvmo::DebugLoc_O::get,"(lineno column debugInfo)");
+  expose_function("LLVM-SYS:dw-tag",true,&llvmo::llvm_sys__dwTag,"(tagsym &optional (debug-version llvm-sys:llvmdebug-version8))");
 }
 NOINLINE void expose_function_191_helper() {
-  expose_function(core::magic_name("LLVM-SYS:make-dibuilder"),true,&llvmo::DIBuilder_O::make,"(module)");
+  expose_function("LLVM-SYS:debug-loc-get",true,&llvmo::DebugLoc_O::get,"(lineno column debugInfo)");
 }
 NOINLINE void expose_function_192_helper() {
-  expose_function(core::magic_name("llvm_sys__addGlobalBootFunctionsSizePass"),true,&llvmo::llvm_sys__addGlobalBootFunctionsSizePass,"(passManager)");
+  expose_function(core::magic_name("LLVM-SYS:make-dibuilder"),true,&llvmo::DIBuilder_O::make,"(module)");
 }
 NOINLINE void expose_function_193_helper() {
-  expose_function(core::magic_name("null-pointer","CFFI-SYS"),true,&cffi::Pointer_O::null_pointer,"");
+  expose_function(core::magic_name("llvm_sys__addGlobalBootFunctionsSizePass"),true,&llvmo::llvm_sys__addGlobalBootFunctionsSizePass,"(passManager)");
 }
 NOINLINE void expose_function_194_helper() {
-  expose_function(core::magic_name("make-pointer","CFFI-SYS"),true,&cffi::Pointer_O::make,"(arg)");
+  expose_function(core::magic_name("null-pointer","CFFI-SYS"),true,&cffi::Pointer_O::null_pointer,"");
 }
 NOINLINE void expose_function_195_helper() {
-  expose_function(core::magic_name("cffi_sys__foreign_alloc"),true,&cffi::cffi_sys__foreign_alloc,"(size)");
+  expose_function(core::magic_name("make-pointer","CFFI-SYS"),true,&cffi::Pointer_O::make,"(arg)");
 }
 NOINLINE void expose_function_196_helper() {
-  expose_function(core::magic_name("cffi_sys__PERCENTforeign_type_size"),true,&cffi::cffi_sys__PERCENTforeign_type_size,"(atype)");
+  expose_function(core::magic_name("cffi_sys__foreign_alloc"),true,&cffi::cffi_sys__foreign_alloc,"(size)");
 }
 NOINLINE void expose_function_197_helper() {
-  expose_function(core::magic_name("cffi_sys__PERCENTforeign_type_alignment"),true,&cffi::cffi_sys__PERCENTforeign_type_alignment,"(atype)");
+  expose_function(core::magic_name("cffi_sys__PERCENTforeign_type_size"),true,&cffi::cffi_sys__PERCENTforeign_type_size,"(atype)");
 }
 NOINLINE void expose_function_198_helper() {
-  expose_function(core::magic_name("cffi_sys__foreign_symbol_pointer"),true,&cffi::cffi_sys__foreign_symbol_pointer,"(name)");
+  expose_function(core::magic_name("cffi_sys__PERCENTforeign_type_alignment"),true,&cffi::cffi_sys__PERCENTforeign_type_alignment,"(atype)");
 }
 NOINLINE void expose_function_199_helper() {
-  expose_function(core::magic_name("cffi_sys__PERCENTload_foreign_library"),true,&cffi::cffi_sys__PERCENTload_foreign_library,"(name)");
+  expose_function(core::magic_name("cffi_sys__foreign_symbol_pointer"),true,&cffi::cffi_sys__foreign_symbol_pointer,"(name)");
 }
 NOINLINE void expose_function_200_helper() {
-  expose_function(core::magic_name("cl__get_internal_run_time"),true,&core::cl__get_internal_run_time,"");
+  expose_function(core::magic_name("cffi_sys__PERCENTload_foreign_library"),true,&cffi::cffi_sys__PERCENTload_foreign_library,"(name)");
 }
 NOINLINE void expose_function_201_helper() {
-  expose_function(core::magic_name("cl__get_internal_real_time"),true,&core::cl__get_internal_real_time,"");
+  expose_function(core::magic_name("cl__get_internal_run_time"),true,&core::cl__get_internal_run_time,"");
 }
 NOINLINE void expose_function_202_helper() {
-  expose_function(core::magic_name("make-bit-vector-with-fill-ptr","CORE"),true,&core::BitVectorWithFillPtr_O::make,"(size ptr adjust)");
+  expose_function(core::magic_name("cl__get_internal_real_time"),true,&core::cl__get_internal_real_time,"");
 }
 NOINLINE void expose_function_203_helper() {
-  expose_function(core::magic_name("make-simple-bit-vector","CORE"),true,&core::SimpleBitVector_O::make,"(size)");
+  expose_function(core::magic_name("make-bit-vector-with-fill-ptr","CORE"),true,&core::BitVectorWithFillPtr_O::make,"(size ptr adjust)");
 }
 NOINLINE void expose_function_204_helper() {
-  expose_function(core::magic_name("cl__ensure_directories_exist"),true,&core::cl__ensure_directories_exist,"(pathspec)");
+  expose_function(core::magic_name("make-simple-bit-vector","CORE"),true,&core::SimpleBitVector_O::make,"(size)");
 }
 NOINLINE void expose_function_205_helper() {
-  expose_function(core::magic_name("CORE:make-array-objects"),true,&core::ArrayObjects_O::make,"(desig elementType initialElement adjustable)");
+  expose_function(core::magic_name("cl__ensure_directories_exist"),true,&core::cl__ensure_directories_exist,"(pathspec)");
 }
 NOINLINE void expose_function_206_helper() {
-  expose_function(core::magic_name("CORE:make-load-time-values"),true,&core::LoadTimeValues_O::make,"(dataDimension symbolsDimension)");
+  expose_function(core::magic_name("CORE:make-array-objects"),true,&core::ArrayObjects_O::make,"(desig elementType initialElement adjustable)");
 }
 NOINLINE void expose_function_207_helper() {
-  expose_function(core::magic_name("core__load_time_values_dump_symbols"),true,&core::core__load_time_values_dump_symbols,"(name-or-ltv &optional indices)");
+  expose_function(core::magic_name("CORE:make-load-time-values"),true,&core::LoadTimeValues_O::make,"(dataDimension symbolsDimension)");
 }
 NOINLINE void expose_function_208_helper() {
-  expose_function(core::magic_name("core__load_time_values_dump_values"),true,&core::core__load_time_values_dump_values,"(name-or-ltv &optional indices)");
+  expose_function(core::magic_name("core__load_time_values_dump_symbols"),true,&core::core__load_time_values_dump_symbols,"(name-or-ltv &optional indices)");
 }
 NOINLINE void expose_function_209_helper() {
-  expose_function(core::magic_name("core__load_time_values_ids"),true,&core::core__load_time_values_ids,"");
+  expose_function(core::magic_name("core__load_time_values_dump_values"),true,&core::core__load_time_values_dump_values,"(name-or-ltv &optional indices)");
 }
 NOINLINE void expose_function_210_helper() {
-  expose_function(core::magic_name("core__lookup_load_time_symbol"),true,&core::core__lookup_load_time_symbol,"(name idx)");
+  expose_function(core::magic_name("core__load_time_values_ids"),true,&core::core__load_time_values_ids,"");
 }
 NOINLINE void expose_function_211_helper() {
-  expose_function(core::magic_name("core__lookup_load_time_value"),true,&core::core__lookup_load_time_value,"(name idx)");
+  expose_function(core::magic_name("core__lookup_load_time_symbol"),true,&core::core__lookup_load_time_symbol,"(name idx)");
 }
 NOINLINE void expose_function_212_helper() {
-  expose_function(core::magic_name("core__load_time_value_array"),true,&core::core__load_time_value_array,"(name &optional (data-size 0) (symbol-size 0))");
+  expose_function(core::magic_name("core__lookup_load_time_value"),true,&core::core__lookup_load_time_value,"(name idx)");
 }
 NOINLINE void expose_function_213_helper() {
-  expose_function(core::magic_name("core__set_run_time_values_vector"),true,&core::core__set_run_time_values_vector,"(name)");
+  expose_function(core::magic_name("core__load_time_value_array"),true,&core::core__load_time_value_array,"(name &optional (data-size 0) (symbol-size 0))");
 }
 NOINLINE void expose_function_214_helper() {
-  expose_function(core::magic_name("cl__vector_push_extend"),true,&core::cl__vector_push_extend,"(newElement vector &optional (exension 16))");
+  expose_function(core::magic_name("core__set_run_time_values_vector"),true,&core::core__set_run_time_values_vector,"(name)");
 }
 NOINLINE void expose_function_215_helper() {
-  expose_function(core::magic_name("cl__vector_push"),true,&core::cl__vector_push,"(newElement vector)");
+  expose_function(core::magic_name("cl__vector_push_extend"),true,&core::cl__vector_push_extend,"(newElement vector &optional (exension 16))");
 }
 NOINLINE void expose_function_216_helper() {
-  expose_function(core::magic_name("core__adjust_vector"),true,&core::core__adjust_vector,"(array dimensions initial-element initial-contents)");
+  expose_function(core::magic_name("cl__vector_push"),true,&core::cl__vector_push,"(newElement vector)");
 }
 NOINLINE void expose_function_217_helper() {
-  expose_function(core::magic_name("core__make_vector"),true,&core::core__make_vector,"(element-type dimension &optional adjustable (fill-pointer t) displaced-to displaced-index-offset initial-element initial-contents)");
+  expose_function(core::magic_name("core__adjust_vector"),true,&core::core__adjust_vector,"(array dimensions initial-element initial-contents)");
 }
 NOINLINE void expose_function_218_helper() {
-  expose_function(core::magic_name("cl__vector"),true,&core::cl__vector,"(&rest args)");
+  expose_function(core::magic_name("core__make_vector"),true,&core::core__make_vector,"(element-type dimension &optional adjustable (fill-pointer t) displaced-to displaced-index-offset initial-element initial-contents)");
 }
 NOINLINE void expose_function_219_helper() {
-  expose_function(core::magic_name("core__setf_subseq"),true,&core::core__setf_subseq,"(sequence start end subseq)");
+  expose_function(core::magic_name("cl__vector"),true,&core::cl__vector,"(&rest args)");
 }
 NOINLINE void expose_function_220_helper() {
-  expose_function(core::magic_name("core__elt_set"),true,&core::core__elt_set,"(seq index val)");
+  expose_function(core::magic_name("core__setf_subseq"),true,&core::core__setf_subseq,"(sequence start end subseq)");
 }
 NOINLINE void expose_function_221_helper() {
-  expose_function(core::magic_name("core__setf_elt"),true,&core::core__setf_elt,"(sequence index value)");
+  expose_function(core::magic_name("core__elt_set"),true,&core::core__elt_set,"(seq index val)");
 }
 NOINLINE void expose_function_222_helper() {
-  expose_function(core::magic_name("cl__copy_seq"),true,&core::cl__copy_seq,"(seq)");
+  expose_function(core::magic_name("core__setf_elt"),true,&core::core__setf_elt,"(sequence index value)");
 }
 NOINLINE void expose_function_223_helper() {
-  expose_function(core::magic_name("cl__subseq"),true,&core::cl__subseq,"(sequence start &optional end)");
+  expose_function(core::magic_name("cl__copy_seq"),true,&core::cl__copy_seq,"(seq)");
 }
 NOINLINE void expose_function_224_helper() {
-  expose_function(core::magic_name("cl__nreverse"),true,&core::cl__nreverse,"(seq)");
+  expose_function(core::magic_name("cl__subseq"),true,&core::cl__subseq,"(sequence start &optional end)");
 }
 NOINLINE void expose_function_225_helper() {
-  expose_function(core::magic_name("cl__reverse"),true,&core::cl__reverse,"(seq)");
+  expose_function(core::magic_name("cl__nreverse"),true,&core::cl__nreverse,"(seq)");
 }
 NOINLINE void expose_function_226_helper() {
-  expose_function(core::magic_name("cl__make_sequence"),true,&core::cl__make_sequence,"(type size &key (initial-element nil iesp))");
+  expose_function(core::magic_name("cl__reverse"),true,&core::cl__reverse,"(seq)");
 }
 NOINLINE void expose_function_227_helper() {
-  expose_function(core::magic_name("cl__elt"),true,&core::cl__elt,"(sequence index)");
+  expose_function(core::magic_name("cl__make_sequence"),true,&core::cl__make_sequence,"(type size &key (initial-element nil iesp))");
 }
 NOINLINE void expose_function_228_helper() {
-  expose_function(core::magic_name("cl__length"),true,&core::cl__length,"(arg)");
+  expose_function(core::magic_name("cl__elt"),true,&core::cl__elt,"(sequence index)");
 }
 NOINLINE void expose_function_229_helper() {
-  expose_function(core::magic_name("coerce-to-package","CORE"),true,&core::coerce_to_package,"(obj)");
+  expose_function(core::magic_name("cl__length"),true,&core::cl__length,"(arg)");
 }
 NOINLINE void expose_function_230_helper() {
-  expose_function(core::magic_name("path-designator","CORE"),true,&core::core__path_designator,"(obj)");
+  expose_function(core::magic_name("coerce-to-package","CORE"),true,&core::coerce_to_package,"(obj)");
 }
 NOINLINE void expose_function_231_helper() {
-  expose_function(core::magic_name("cl__parse_integer"),true,&core::cl__parse_integer,"(string &key (start 0) end (radix 10) junk-allowed)");
+  expose_function(core::magic_name("path-designator","CORE"),true,&core::core__path_designator,"(obj)");
 }
 NOINLINE void expose_function_232_helper() {
-  expose_function(core::magic_name("core__schar_set"),true,&core::core__schar_set,"(str index c)");
+  expose_function(core::magic_name("cl__parse_integer"),true,&core::cl__parse_integer,"(string &key (start 0) end (radix 10) junk-allowed)");
 }
 NOINLINE void expose_function_233_helper() {
-  expose_function(core::magic_name("core__char_set"),true,&core::core__char_set,"(str index c)");
+  expose_function(core::magic_name("core__schar_set"),true,&core::core__schar_set,"(str index c)");
 }
 NOINLINE void expose_function_234_helper() {
-  expose_function(core::magic_name("cl__schar"),true,&core::cl__schar,"(str index)");
+  expose_function(core::magic_name("core__char_set"),true,&core::core__char_set,"(str index c)");
 }
 NOINLINE void expose_function_235_helper() {
-  expose_function(core::magic_name("cl__make_string"),true,&core::cl__make_string,"(size &key initial-element (element-type 'character))");
+  expose_function(core::magic_name("cl__schar"),true,&core::cl__schar,"(str index)");
 }
 NOINLINE void expose_function_236_helper() {
-  expose_function(core::magic_name("cl__string_not_lessp"),true,&core::cl__string_not_lessp,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
+  expose_function(core::magic_name("cl__make_string"),true,&core::cl__make_string,"(size &key initial-element (element-type 'character))");
 }
 NOINLINE void expose_function_237_helper() {
-  expose_function(core::magic_name("cl__string_not_greaterp"),true,&core::cl__string_not_greaterp,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
+  expose_function(core::magic_name("cl__string_not_lessp"),true,&core::cl__string_not_lessp,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
 }
 NOINLINE void expose_function_238_helper() {
-  expose_function(core::magic_name("cl__string_greaterp"),true,&core::cl__string_greaterp,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
+  expose_function(core::magic_name("cl__string_not_greaterp"),true,&core::cl__string_not_greaterp,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
 }
 NOINLINE void expose_function_239_helper() {
-  expose_function(core::magic_name("cl__string_lessp"),true,&core::cl__string_lessp,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
+  expose_function(core::magic_name("cl__string_greaterp"),true,&core::cl__string_greaterp,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
 }
 NOINLINE void expose_function_240_helper() {
-  expose_function(core::magic_name("cl__string_not_equal"),true,&core::cl__string_not_equal,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
+  expose_function(core::magic_name("cl__string_lessp"),true,&core::cl__string_lessp,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
 }
 NOINLINE void expose_function_241_helper() {
-  expose_function(core::magic_name("cl__string_equal"),true,&core::cl__string_equal,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
+  expose_function(core::magic_name("cl__string_not_equal"),true,&core::cl__string_not_equal,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
 }
 NOINLINE void expose_function_242_helper() {
-  expose_function(core::magic_name("cl__string_GE_"),true,&core::cl__string_GE_,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
+  expose_function(core::magic_name("cl__string_equal"),true,&core::cl__string_equal,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
 }
 NOINLINE void expose_function_243_helper() {
-  expose_function(core::magic_name("cl__string_LE_"),true,&core::cl__string_LE_,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
+  expose_function(core::magic_name("cl__string_GE_"),true,&core::cl__string_GE_,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
 }
 NOINLINE void expose_function_244_helper() {
-  expose_function(core::magic_name("cl__string_GT_"),true,&core::cl__string_GT_,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
+  expose_function(core::magic_name("cl__string_LE_"),true,&core::cl__string_LE_,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
 }
 NOINLINE void expose_function_245_helper() {
-  expose_function(core::magic_name("cl__string_LT_"),true,&core::cl__string_LT_,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
+  expose_function(core::magic_name("cl__string_GT_"),true,&core::cl__string_GT_,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
 }
 NOINLINE void expose_function_246_helper() {
-  expose_function(core::magic_name("cl__string_NE_"),true,&core::cl__string_NE_,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
+  expose_function(core::magic_name("cl__string_LT_"),true,&core::cl__string_LT_,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
 }
 NOINLINE void expose_function_247_helper() {
-  expose_function(core::magic_name("cl__string_EQ_"),true,&core::cl__string_EQ_,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
+  expose_function(core::magic_name("cl__string_NE_"),true,&core::cl__string_NE_,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
 }
 NOINLINE void expose_function_248_helper() {
-  expose_function(core::magic_name("cl__string"),true,&core::cl__string,"(arg)");
+  expose_function(core::magic_name("cl__string_EQ_"),true,&core::cl__string_EQ_,"(strdes1 strdes2 &key (start1 0) end1 (start2 0) end2)");
 }
 NOINLINE void expose_function_249_helper() {
-  expose_function(core::magic_name("cl__nstring_downcase"),true,&core::cl__nstring_downcase,"(arg)");
+  expose_function(core::magic_name("cl__string"),true,&core::cl__string,"(arg)");
 }
 NOINLINE void expose_function_250_helper() {
-  expose_function(core::magic_name("cl__nstring_upcase"),true,&core::cl__nstring_upcase,"(arg)");
+  expose_function(core::magic_name("cl__nstring_downcase"),true,&core::cl__nstring_downcase,"(arg)");
 }
 NOINLINE void expose_function_251_helper() {
-  expose_function(core::magic_name("cl__string_downcase"),true,&core::cl__string_downcase,"(arg)");
+  expose_function(core::magic_name("cl__nstring_upcase"),true,&core::cl__nstring_upcase,"(arg)");
 }
 NOINLINE void expose_function_252_helper() {
-  expose_function(core::magic_name("cl__char"),true,&core::cl__char,"(str idx)");
+  expose_function(core::magic_name("cl__string_downcase"),true,&core::cl__string_downcase,"(arg)");
 }
 NOINLINE void expose_function_253_helper() {
-  expose_function(core::magic_name("cl__string_upcase"),true,&core::cl__string_upcase,"(arg)");
+  expose_function(core::magic_name("cl__char"),true,&core::cl__char,"(str idx)");
 }
 NOINLINE void expose_function_254_helper() {
-  expose_function(core::magic_name("cl__string_right_trim"),true,&core::cl__string_right_trim,"(charbag str)");
+  expose_function(core::magic_name("cl__string_upcase"),true,&core::cl__string_upcase,"(arg)");
 }
 NOINLINE void expose_function_255_helper() {
-  expose_function(core::magic_name("cl__string_left_trim"),true,&core::cl__string_left_trim,"(charbag str)");
+  expose_function(core::magic_name("cl__string_right_trim"),true,&core::cl__string_right_trim,"(charbag str)");
 }
 NOINLINE void expose_function_256_helper() {
-  expose_function(core::magic_name("cl__string_trim"),true,&core::cl__string_trim,"(charbag str)");
+  expose_function(core::magic_name("cl__string_left_trim"),true,&core::cl__string_left_trim,"(charbag str)");
 }
 NOINLINE void expose_function_257_helper() {
-  expose_function(core::magic_name("cl__code_char"),true,&core::cl__code_char,"(och)");
+  expose_function(core::magic_name("cl__string_trim"),true,&core::cl__string_trim,"(charbag str)");
 }
 NOINLINE void expose_function_258_helper() {
-  expose_function(core::magic_name("cl__char_int"),true,&core::cl__char_int,"(och)");
+  expose_function(core::magic_name("cl__code_char"),true,&core::cl__code_char,"(och)");
 }
 NOINLINE void expose_function_259_helper() {
-  expose_function(core::magic_name("cl__char_code"),true,&core::cl__char_code,"(och)");
+  expose_function(core::magic_name("cl__char_int"),true,&core::cl__char_int,"(och)");
 }
 NOINLINE void expose_function_260_helper() {
-  expose_function(core::magic_name("cl__char_name"),true,&core::cl__char_name,"(och)");
+  expose_function(core::magic_name("cl__char_code"),true,&core::cl__char_code,"(och)");
 }
 NOINLINE void expose_function_261_helper() {
-  expose_function(core::magic_name("cl__name_char"),true,&core::cl__name_char,"(sname)");
+  expose_function(core::magic_name("cl__char_name"),true,&core::cl__char_name,"(och)");
 }
 NOINLINE void expose_function_262_helper() {
-  expose_function(core::magic_name("cl__digit_char_p"),true,&core::cl__digit_char_p,"(c &optional (radix 10))");
+  expose_function(core::magic_name("cl__name_char"),true,&core::cl__name_char,"(sname)");
 }
 NOINLINE void expose_function_263_helper() {
-  expose_function(core::magic_name("cl__alpha_char_p"),true,&core::cl__alpha_char_p,"(ch)");
+  expose_function(core::magic_name("cl__digit_char_p"),true,&core::cl__digit_char_p,"(c &optional (radix 10))");
 }
 NOINLINE void expose_function_264_helper() {
-  expose_function(core::magic_name("cl__standard_char_p"),true,&core::cl__standard_char_p,"(ch)");
+  expose_function(core::magic_name("cl__alpha_char_p"),true,&core::cl__alpha_char_p,"(ch)");
 }
 NOINLINE void expose_function_265_helper() {
-  expose_function(core::magic_name("cl__char_equal"),true,&core::cl__char_equal,"(&rest args)");
+  expose_function(core::magic_name("cl__standard_char_p"),true,&core::cl__standard_char_p,"(ch)");
 }
 NOINLINE void expose_function_266_helper() {
-  expose_function(core::magic_name("cl__char_not_equal"),true,&core::cl__char_not_equal,"(&rest args)");
+  expose_function(core::magic_name("cl__char_equal"),true,&core::cl__char_equal,"(&rest args)");
 }
 NOINLINE void expose_function_267_helper() {
-  expose_function(core::magic_name("cl__char_EQ_"),true,&core::cl__char_EQ_,"(&rest args)");
+  expose_function(core::magic_name("cl__char_not_equal"),true,&core::cl__char_not_equal,"(&rest args)");
 }
 NOINLINE void expose_function_268_helper() {
-  expose_function(core::magic_name("cl__char_NE_"),true,&core::cl__char_NE_,"(&rest args)");
+  expose_function(core::magic_name("cl__char_EQ_"),true,&core::cl__char_EQ_,"(&rest args)");
 }
 NOINLINE void expose_function_269_helper() {
-  expose_function(core::magic_name("cl__char_not_lessp"),true,&core::cl__char_not_lessp,"(&rest args)");
+  expose_function(core::magic_name("cl__char_NE_"),true,&core::cl__char_NE_,"(&rest args)");
 }
 NOINLINE void expose_function_270_helper() {
-  expose_function(core::magic_name("cl__char_not_greaterp"),true,&core::cl__char_not_greaterp,"(&rest args)");
+  expose_function(core::magic_name("cl__char_not_lessp"),true,&core::cl__char_not_lessp,"(&rest args)");
 }
 NOINLINE void expose_function_271_helper() {
-  expose_function(core::magic_name("cl__char_greaterp"),true,&core::cl__char_greaterp,"(&rest args)");
+  expose_function(core::magic_name("cl__char_not_greaterp"),true,&core::cl__char_not_greaterp,"(&rest args)");
 }
 NOINLINE void expose_function_272_helper() {
-  expose_function(core::magic_name("cl__char_lessp"),true,&core::cl__char_lessp,"(&rest args)");
+  expose_function(core::magic_name("cl__char_greaterp"),true,&core::cl__char_greaterp,"(&rest args)");
 }
 NOINLINE void expose_function_273_helper() {
-  expose_function(core::magic_name("cl__char_GE_"),true,&core::cl__char_GE_,"(&rest args)");
+  expose_function(core::magic_name("cl__char_lessp"),true,&core::cl__char_lessp,"(&rest args)");
 }
 NOINLINE void expose_function_274_helper() {
-  expose_function(core::magic_name("cl__char_LE_"),true,&core::cl__char_LE_,"(&rest args)");
+  expose_function(core::magic_name("cl__char_GE_"),true,&core::cl__char_GE_,"(&rest args)");
 }
 NOINLINE void expose_function_275_helper() {
-  expose_function(core::magic_name("cl__char_GT_"),true,&core::cl__char_GT_,"(&rest args)");
+  expose_function(core::magic_name("cl__char_LE_"),true,&core::cl__char_LE_,"(&rest args)");
 }
 NOINLINE void expose_function_276_helper() {
-  expose_function(core::magic_name("cl__char_LT_"),true,&core::cl__char_LT_,"(&rest args)");
+  expose_function(core::magic_name("cl__char_GT_"),true,&core::cl__char_GT_,"(&rest args)");
 }
 NOINLINE void expose_function_277_helper() {
-  expose_function(core::magic_name("cl__char_downcase"),true,&core::cl__char_downcase,"(char)");
+  expose_function(core::magic_name("cl__char_LT_"),true,&core::cl__char_LT_,"(&rest args)");
 }
 NOINLINE void expose_function_278_helper() {
-  expose_function(core::magic_name("cl__char_upcase"),true,&core::cl__char_upcase,"(char)");
+  expose_function(core::magic_name("cl__char_downcase"),true,&core::cl__char_downcase,"(char)");
 }
 NOINLINE void expose_function_279_helper() {
-  expose_function(core::magic_name("cl__alphanumericp"),true,&core::cl__alphanumericp,"(char)");
+  expose_function(core::magic_name("cl__char_upcase"),true,&core::cl__char_upcase,"(char)");
 }
 NOINLINE void expose_function_280_helper() {
-  expose_function(core::magic_name("cl__both_case_p"),true,&core::cl__both_case_p,"(arg)");
+  expose_function(core::magic_name("cl__alphanumericp"),true,&core::cl__alphanumericp,"(char)");
 }
 NOINLINE void expose_function_281_helper() {
-  expose_function(core::magic_name("cl__upper_case_p"),true,&core::cl__upper_case_p,"(arg)");
+  expose_function(core::magic_name("cl__both_case_p"),true,&core::cl__both_case_p,"(arg)");
 }
 NOINLINE void expose_function_282_helper() {
-  expose_function(core::magic_name("cl__lower_case_p"),true,&core::cl__lower_case_p,"(arg)");
+  expose_function(core::magic_name("cl__upper_case_p"),true,&core::cl__upper_case_p,"(arg)");
 }
 NOINLINE void expose_function_283_helper() {
-  expose_function(core::magic_name("core__structure_subtypep"),true,&core::core__structure_subtypep,"(x y)");
+  expose_function(core::magic_name("cl__lower_case_p"),true,&core::cl__lower_case_p,"(arg)");
 }
 NOINLINE void expose_function_284_helper() {
-  expose_function(core::magic_name("core__structurep"),true,&core::core__structurep,"(arg)");
+  expose_function(core::magic_name("core__structure_subtypep"),true,&core::core__structure_subtypep,"(x y)");
 }
 NOINLINE void expose_function_285_helper() {
-  expose_function(core::magic_name("core__structure_set"),true,&core::core__structure_set,"(struct type idx val)");
+  expose_function(core::magic_name("core__structurep"),true,&core::core__structurep,"(arg)");
 }
 NOINLINE void expose_function_286_helper() {
-  expose_function(core::magic_name("core__structure_ref"),true,&core::core__structure_ref,"(obj name idx)");
+  expose_function(core::magic_name("core__structure_set"),true,&core::core__structure_set,"(struct type idx val)");
 }
 NOINLINE void expose_function_287_helper() {
-  expose_function(core::magic_name("cl__copy_structure"),true,&core::cl__copy_structure,"(arg)");
+  expose_function(core::magic_name("core__structure_ref"),true,&core::core__structure_ref,"(obj name idx)");
 }
 NOINLINE void expose_function_288_helper() {
-  expose_function(core::magic_name("core__make_structure"),true,&core::core__make_structure,"(type &rest slot_values)");
+  expose_function(core::magic_name("cl__copy_structure"),true,&core::cl__copy_structure,"(arg)");
 }
 NOINLINE void expose_function_289_helper() {
-  expose_function(core::magic_name("core__ensure_single_dispatch_method"),true,&core::core__ensure_single_dispatch_method,"(gfname receiver-class &key lambda-list-handler declares (docstring \"\") body )");
+  expose_function(core::magic_name("core__make_structure"),true,&core::core__make_structure,"(type &rest slot_values)");
 }
 NOINLINE void expose_function_290_helper() {
-  expose_function(core::magic_name("core__ensure_single_dispatch_generic_function"),true,&core::core__ensure_single_dispatch_generic_function,"(gfname llhandler)");
+  expose_function(core::magic_name("core__ensure_single_dispatch_method"),true,&core::core__ensure_single_dispatch_method,"(gfname receiver-class &key lambda-list-handler declares (docstring \"\") body )");
 }
 NOINLINE void expose_function_291_helper() {
-  expose_function(core::magic_name("core__nread"),true,&core::core__nread,"(sin &optional (eof-error-p t) eof-value)");
+  expose_function(core::magic_name("core__ensure_single_dispatch_generic_function"),true,&core::core__ensure_single_dispatch_generic_function,"(gfname llhandler)");
 }
 NOINLINE void expose_function_292_helper() {
-  expose_function(core::magic_name("core__ensure_documentation"),true,&core::core__ensure_documentation,"(sub-key symbol value)");
+  expose_function(core::magic_name("core__nread"),true,&core::core__nread,"(sin &optional (eof-error-p t) eof-value)");
 }
 NOINLINE void expose_function_293_helper() {
-  expose_function(core::magic_name("ext__annotate"),true,&core::ext__annotate,"(object key sub-key value)");
+  expose_function(core::magic_name("core__ensure_documentation"),true,&core::core__ensure_documentation,"(sub-key symbol value)");
 }
 NOINLINE void expose_function_294_helper() {
-  expose_function(core::magic_name("core__rem_record_field"),true,&core::core__rem_record_field,"(record key sub-key)");
+  expose_function(core::magic_name("ext__annotate"),true,&core::ext__annotate,"(object key sub-key value)");
 }
 NOINLINE void expose_function_295_helper() {
-  expose_function(core::magic_name("core__set_record_field"),true,&core::core__set_record_field,"(record key sub-key value)");
+  expose_function(core::magic_name("core__rem_record_field"),true,&core::core__rem_record_field,"(record key sub-key)");
 }
 NOINLINE void expose_function_296_helper() {
-  expose_function(core::magic_name("core__record_field"),true,&core::core__record_field,"(record key sub-key)");
+  expose_function(core::magic_name("core__set_record_field"),true,&core::core__set_record_field,"(record key sub-key value)");
 }
 NOINLINE void expose_function_297_helper() {
-  expose_function(core::magic_name("core__record_cons"),true,&core::core__record_cons,"(record key sub-key)");
+  expose_function(core::magic_name("core__record_field"),true,&core::core__record_field,"(record key sub-key)");
 }
 NOINLINE void expose_function_298_helper() {
-  expose_function(core::magic_name("core__backquote_remove_tokens"),true,&core::core__backquote_remove_tokens,"(x)");
+  expose_function(core::magic_name("core__record_cons"),true,&core::core__record_cons,"(record key sub-key)");
 }
 NOINLINE void expose_function_299_helper() {
-  expose_function(core::magic_name("core__backquote_attach_conses"),true,&core::core__backquote_attach_conses,"(items result)");
+  expose_function(core::magic_name("core__backquote_remove_tokens"),true,&core::core__backquote_remove_tokens,"(x)");
 }
 NOINLINE void expose_function_300_helper() {
-  expose_function(core::magic_name("core__backquote_attach_append"),true,&core::core__backquote_attach_append,"(op item result)");
+  expose_function(core::magic_name("core__backquote_attach_conses"),true,&core::core__backquote_attach_conses,"(items result)");
 }
 NOINLINE void expose_function_301_helper() {
-  expose_function(core::magic_name("core__backquote_null_or_quoted"),true,&core::core__backquote_null_or_quoted,"(x)");
+  expose_function(core::magic_name("core__backquote_attach_append"),true,&core::core__backquote_attach_append,"(op item result)");
 }
 NOINLINE void expose_function_302_helper() {
-  expose_function(core::magic_name("core__backquote_simplify_args"),true,&core::core__backquote_simplify_args,"(x)");
+  expose_function(core::magic_name("core__backquote_null_or_quoted"),true,&core::core__backquote_null_or_quoted,"(x)");
 }
 NOINLINE void expose_function_303_helper() {
-  expose_function(core::magic_name("core__backquote_simplify"),true,&core::core__backquote_simplify,"(x)");
+  expose_function(core::magic_name("core__backquote_simplify_args"),true,&core::core__backquote_simplify_args,"(x)");
 }
 NOINLINE void expose_function_304_helper() {
-  expose_function(core::magic_name("core__backquote_maptree"),true,&core::core__backquote_maptree,"(op x)");
+  expose_function(core::magic_name("core__backquote_simplify"),true,&core::core__backquote_simplify,"(x)");
 }
 NOINLINE void expose_function_305_helper() {
-  expose_function(core::magic_name("core__backquote_frob"),true,&core::core__backquote_frob,"(x)");
+  expose_function(core::magic_name("core__backquote_maptree"),true,&core::core__backquote_maptree,"(op x)");
 }
 NOINLINE void expose_function_306_helper() {
-  expose_function(core::magic_name("core__backquote_splicing_frob"),true,&core::core__backquote_splicing_frob,"(x)");
+  expose_function(core::magic_name("core__backquote_frob"),true,&core::core__backquote_frob,"(x)");
 }
 NOINLINE void expose_function_307_helper() {
-  expose_function(core::magic_name("core__backquote_bracket"),true,&core::core__backquote_bracket,"(x)");
+  expose_function(core::magic_name("core__backquote_splicing_frob"),true,&core::core__backquote_splicing_frob,"(x)");
 }
 NOINLINE void expose_function_308_helper() {
-  expose_function(core::magic_name("core__backquote_process"),true,&core::core__backquote_process,"(ox)");
+  expose_function(core::magic_name("core__backquote_bracket"),true,&core::core__backquote_bracket,"(x)");
 }
 NOINLINE void expose_function_309_helper() {
-  expose_function(core::magic_name("core__backquote_completely_process"),true,&core::core__backquote_completely_process,"(x)");
+  expose_function(core::magic_name("core__backquote_process"),true,&core::core__backquote_process,"(ox)");
 }
 NOINLINE void expose_function_310_helper() {
-  expose_function(core::magic_name("core__backquote_append"),true,&core::core__backquote_append,"(&rest lists)");
+  expose_function(core::magic_name("core__backquote_completely_process"),true,&core::core__backquote_completely_process,"(x)");
 }
 NOINLINE void expose_function_311_helper() {
-  expose_function(core::magic_name("cl__format"),true,&core::cl__format,"(destination control &rest args)");
+  expose_function(core::magic_name("core__backquote_append"),true,&core::core__backquote_append,"(&rest lists)");
 }
 NOINLINE void expose_function_312_helper() {
-  expose_function(core::magic_name("core__bformat"),true,&core::core__bformat,"(destination control &rest args)");
+  expose_function(core::magic_name("cl__format"),true,&core::cl__format,"(destination control &rest args)");
 }
 NOINLINE void expose_function_313_helper() {
-  expose_function(core::magic_name("core__rem_sysprop"),true,&core::core__rem_sysprop,"(key area)");
+  expose_function(core::magic_name("core__bformat"),true,&core::core__bformat,"(destination control &rest args)");
 }
 NOINLINE void expose_function_314_helper() {
-  expose_function(core::magic_name("core__get_sysprop"),true,&core::core__get_sysprop,"(key area)");
+  expose_function(core::magic_name("core__rem_sysprop"),true,&core::core__rem_sysprop,"(key area)");
 }
 NOINLINE void expose_function_315_helper() {
-  expose_function(core::magic_name("core__put_sysprop"),true,&core::core__put_sysprop,"(key area value)");
+  expose_function(core::magic_name("core__get_sysprop"),true,&core::core__get_sysprop,"(key area)");
 }
 NOINLINE void expose_function_316_helper() {
-  expose_function(core::magic_name("core__iterator_step"),true,&core::core__iterator_step,"(it)");
+  expose_function(core::magic_name("core__put_sysprop"),true,&core::core__put_sysprop,"(key area value)");
 }
 NOINLINE void expose_function_317_helper() {
-  expose_function(core::magic_name("core__iterator_unsafe_element"),true,&core::core__iterator_unsafe_element,"(it)");
+  expose_function(core::magic_name("core__iterator_step"),true,&core::core__iterator_step,"(it)");
 }
 NOINLINE void expose_function_318_helper() {
-  expose_function(core::magic_name("CORE:make-array-displaced"),true,&core::ArrayDisplaced_O::make,"(desig elementType displacedTo displacedIndexOffset)");
+  expose_function(core::magic_name("core__iterator_unsafe_element"),true,&core::core__iterator_unsafe_element,"(it)");
 }
 NOINLINE void expose_function_319_helper() {
-  expose_function(core::magic_name("core__condition_message"),true,&core::core__condition_message,"(c)");
+  expose_function(core::magic_name("CORE:make-array-displaced"),true,&core::ArrayDisplaced_O::make,"(desig elementType displacedTo displacedIndexOffset)");
 }
 NOINLINE void expose_function_320_helper() {
-  expose_function(core::magic_name("cl__make_condition"),true,&core::cl__make_condition,"(type &rest slot-initializations)");
+  expose_function(core::magic_name("core__condition_message"),true,&core::core__condition_message,"(c)");
 }
 NOINLINE void expose_function_321_helper() {
-  expose_function(core::magic_name("cl__make_symbol"),true,&core::cl__make_symbol,"(name)");
+  expose_function(core::magic_name("cl__make_condition"),true,&core::cl__make_condition,"(type &rest slot-initializations)");
 }
 NOINLINE void expose_function_322_helper() {
-  expose_function(core::magic_name("core__symbol_value_address"),true,&core::core__symbol_value_address,"(arg)");
+  expose_function(core::magic_name("cl__make_symbol"),true,&core::cl__make_symbol,"(name)");
 }
 NOINLINE void expose_function_323_helper() {
-  expose_function(core::magic_name("cl__symbol_value"),true,&core::cl__symbol_value,"(arg)");
+  expose_function(core::magic_name("core__symbol_value_address"),true,&core::core__symbol_value_address,"(arg)");
 }
 NOINLINE void expose_function_324_helper() {
-  expose_function(core::magic_name("cl__symbol_name"),true,&core::cl__symbol_name,"(arg)");
+  expose_function(core::magic_name("cl__symbol_value"),true,&core::cl__symbol_value,"(arg)");
 }
 NOINLINE void expose_function_325_helper() {
-  expose_function(core::magic_name("cl__symbol_function"),true,&core::cl__symbol_function,"(arg)");
+  expose_function(core::magic_name("cl__symbol_name"),true,&core::cl__symbol_name,"(arg)");
 }
 NOINLINE void expose_function_326_helper() {
-  expose_function(core::magic_name("cl__symbol_package"),true,&core::cl__symbol_package,"(arg)");
+  expose_function(core::magic_name("cl__symbol_function"),true,&core::cl__symbol_function,"(arg)");
 }
 NOINLINE void expose_function_327_helper() {
-  expose_function(core::magic_name("cl__boundp"),true,&core::cl__boundp,"(arg)");
+  expose_function(core::magic_name("cl__symbol_package"),true,&core::cl__symbol_package,"(arg)");
 }
 NOINLINE void expose_function_328_helper() {
-  expose_function(core::magic_name("core__putprop"),true,&core::core__putprop,"(sym val indicator)");
+  expose_function(core::magic_name("cl__boundp"),true,&core::cl__boundp,"(arg)");
 }
 NOINLINE void expose_function_329_helper() {
-  expose_function(core::magic_name("core__setf_symbol_plist"),true,&core::core__setf_symbol_plist,"(sym plist)");
+  expose_function(core::magic_name("core__putprop"),true,&core::core__putprop,"(sym val indicator)");
 }
 NOINLINE void expose_function_330_helper() {
-  expose_function(core::magic_name("cl__get"),true,&core::cl__get,"(sym indicator &optional default)");
+  expose_function(core::magic_name("core__setf_symbol_plist"),true,&core::core__setf_symbol_plist,"(sym plist)");
 }
 NOINLINE void expose_function_331_helper() {
-  expose_function(core::magic_name("cl__symbol_plist"),true,&core::cl__symbol_plist,"(sym)");
+  expose_function(core::magic_name("cl__get"),true,&core::cl__get,"(sym indicator &optional default)");
 }
 NOINLINE void expose_function_332_helper() {
-  expose_function(core::magic_name("core__alist_asString"),true,&core::core__alist_asString,"(alist)");
+  expose_function(core::magic_name("cl__symbol_plist"),true,&core::cl__symbol_plist,"(sym)");
 }
 NOINLINE void expose_function_333_helper() {
-  expose_function(core::magic_name("core__alist_get"),true,&core::core__alist_get,"(alist key)");
+  expose_function(core::magic_name("core__alist_asString"),true,&core::core__alist_asString,"(alist)");
 }
 NOINLINE void expose_function_334_helper() {
-  expose_function(core::magic_name("core__alist_push"),true,&core::core__alist_push,"(alist key val)");
+  expose_function(core::magic_name("core__alist_get"),true,&core::core__alist_get,"(alist key)");
 }
 NOINLINE void expose_function_335_helper() {
-  expose_function(core::magic_name("core__alist_erase"),true,&core::core__alist_erase,"(alist key)");
+  expose_function(core::magic_name("core__alist_push"),true,&core::core__alist_push,"(alist key val)");
 }
 NOINLINE void expose_function_336_helper() {
-  expose_function(core::magic_name("core__append2"),true,&core::core__append2,"(l1 l2)");
+  expose_function(core::magic_name("core__alist_erase"),true,&core::core__alist_erase,"(alist key)");
 }
 NOINLINE void expose_function_337_helper() {
-  expose_function(core::magic_name("cl__make_list"),true,&core::cl__make_list,"(osize &key initial_element)");
+  expose_function(core::magic_name("core__append2"),true,&core::core__append2,"(l1 l2)");
 }
 NOINLINE void expose_function_338_helper() {
-  expose_function(core::magic_name("cl__rplacd"),true,&core::cl__rplacd,"(c o)");
+  expose_function(core::magic_name("cl__make_list"),true,&core::cl__make_list,"(osize &key initial_element)");
 }
 NOINLINE void expose_function_339_helper() {
-  expose_function(core::magic_name("cl__rplaca"),true,&core::cl__rplaca,"(c o)");
+  expose_function(core::magic_name("cl__rplacd"),true,&core::cl__rplacd,"(c o)");
 }
 NOINLINE void expose_function_340_helper() {
-  expose_function(core::magic_name("cl__cons"),true,&core::cl__cons,"(object1 object2)");
+  expose_function(core::magic_name("cl__rplaca"),true,&core::cl__rplaca,"(c o)");
 }
 NOINLINE void expose_function_341_helper() {
-  expose_function(core::magic_name("core__rem_f"),true,&core::core__rem_f,"(plist indicator)");
+  expose_function(core::magic_name("cl__cons"),true,&core::cl__cons,"(object1 object2)");
 }
 NOINLINE void expose_function_342_helper() {
-  expose_function(core::magic_name("cl__getf"),true,&core::cl__getf,"(plist indicator &optional default-value)");
+  expose_function(core::magic_name("core__rem_f"),true,&core::core__rem_f,"(plist indicator)");
 }
 NOINLINE void expose_function_343_helper() {
-  expose_function(core::magic_name("core__put_f"),true,&core::core__put_f,"(plist value indicator)");
+  expose_function(core::magic_name("cl__getf"),true,&core::cl__getf,"(plist indicator &optional default-value)");
 }
 NOINLINE void expose_function_344_helper() {
-  expose_function(core::magic_name("core__aset"),true,&core::core__aset,"(array &rest indices-value)");
+  expose_function(core::magic_name("core__put_f"),true,&core::core__put_f,"(plist value indicator)");
 }
 NOINLINE void expose_function_345_helper() {
-  expose_function(core::magic_name("core__copy_subarray"),true,&core::core__copy_subarray,"(out outStart in inStart len)");
+  expose_function(core::magic_name("core__aset"),true,&core::core__aset,"(array &rest indices-value)");
 }
 NOINLINE void expose_function_346_helper() {
-  expose_function(core::magic_name("cl__upgraded_array_element_type"),true,&core::cl__upgraded_array_element_type,"(core::type &optional core::env)");
+  expose_function(core::magic_name("core__copy_subarray"),true,&core::core__copy_subarray,"(out outStart in inStart len)");
 }
 NOINLINE void expose_function_347_helper() {
-  expose_function(core::magic_name("cl__array_displacement"),true,&core::cl__array_displacement,"(core::array)");
+  expose_function(core::magic_name("cl__upgraded_array_element_type"),true,&core::cl__upgraded_array_element_type,"(core::type &optional core::env)");
 }
 NOINLINE void expose_function_348_helper() {
-  expose_function(core::magic_name("cl__fill_pointer"),true,&core::cl__fill_pointer,"(vec)");
+  expose_function(core::magic_name("cl__array_displacement"),true,&core::cl__array_displacement,"(core::array)");
 }
 NOINLINE void expose_function_349_helper() {
-  expose_function(core::magic_name("core__calculate_missing_common_lisp_symbols"),true,&core::core__calculate_missing_common_lisp_symbols,"");
+  expose_function(core::magic_name("cl__fill_pointer"),true,&core::cl__fill_pointer,"(vec)");
 }
 NOINLINE void expose_function_350_helper() {
-  expose_function(core::magic_name("cl__package_name"),true,&core::cl__package_name,"(pkg)");
+  expose_function(core::magic_name("core__calculate_missing_common_lisp_symbols"),true,&core::core__calculate_missing_common_lisp_symbols,"");
 }
 NOINLINE void expose_function_351_helper() {
-  expose_function(core::magic_name("cl__package_used_by_list"),true,&core::cl__package_used_by_list,"(pkg)");
+  expose_function(core::magic_name("cl__package_name"),true,&core::cl__package_name,"(pkg)");
 }
 NOINLINE void expose_function_352_helper() {
-  expose_function(core::magic_name("cl__package_use_list"),true,&core::cl__package_use_list,"(package-designator)");
+  expose_function(core::magic_name("cl__package_used_by_list"),true,&core::cl__package_used_by_list,"(pkg)");
 }
 NOINLINE void expose_function_353_helper() {
-  expose_function(core::magic_name("cl__gentemp"),true,&core::cl__gentemp,"(&optional prefix (package *package*))");
+  expose_function(core::magic_name("cl__package_use_list"),true,&core::cl__package_use_list,"(package-designator)");
 }
 NOINLINE void expose_function_354_helper() {
-  expose_function(core::magic_name("cl__shadowing_import"),true,&core::cl__shadowing_import,"(symbol-names-desig &optional (package-desig *package*))");
+  expose_function(core::magic_name("cl__gentemp"),true,&core::cl__gentemp,"(&optional prefix (package *package*))");
 }
 NOINLINE void expose_function_355_helper() {
-  expose_function(core::magic_name("cl__shadow"),true,&core::cl__shadow,"(symbol-names-desig &optional (package_desig *package*))");
+  expose_function(core::magic_name("cl__shadowing_import"),true,&core::cl__shadowing_import,"(symbol-names-desig &optional (package-desig *package*))");
 }
 NOINLINE void expose_function_356_helper() {
-  expose_function(core::magic_name("cl__import"),true,&core::cl__import,"(symbols-desig &optional (package-desig *package*))");
+  expose_function(core::magic_name("cl__shadow"),true,&core::cl__shadow,"(symbol-names-desig &optional (package_desig *package*))");
 }
 NOINLINE void expose_function_357_helper() {
-  expose_function(core::magic_name("cl__package_shadowing_symbols"),true,&core::cl__package_shadowing_symbols,"(package_desig)");
+  expose_function(core::magic_name("cl__import"),true,&core::cl__import,"(symbols-desig &optional (package-desig *package*))");
 }
 NOINLINE void expose_function_358_helper() {
-  expose_function(core::magic_name("cl__delete_package"),true,&core::cl__delete_package,"(packages-to-unuse-desig &optional (package-desig *package*))");
+  expose_function(core::magic_name("cl__package_shadowing_symbols"),true,&core::cl__package_shadowing_symbols,"(package_desig)");
 }
 NOINLINE void expose_function_359_helper() {
-  expose_function(core::magic_name("cl__unuse_package"),true,&core::cl__unuse_package,"(packages-to-unuse-desig &optional (package-desig *package*))");
+  expose_function(core::magic_name("cl__delete_package"),true,&core::cl__delete_package,"(packages-to-unuse-desig &optional (package-desig *package*))");
 }
 NOINLINE void expose_function_360_helper() {
-  expose_function(core::magic_name("cl__use_package"),true,&core::cl__use_package,"(packages-to-use-desig &optional (package-desig *package*))");
+  expose_function(core::magic_name("cl__unuse_package"),true,&core::cl__unuse_package,"(packages-to-unuse-desig &optional (package-desig *package*))");
 }
 NOINLINE void expose_function_361_helper() {
-  expose_function(core::magic_name("cl__list_all_packages"),true,&core::cl__list_all_packages,"");
+  expose_function(core::magic_name("cl__use_package"),true,&core::cl__use_package,"(packages-to-use-desig &optional (package-desig *package*))");
 }
 NOINLINE void expose_function_362_helper() {
-  expose_function(core::magic_name("cl__make_package"),true,&core::cl__make_package,"(package-name &key nicknames (use (list \"CL\")))");
+  expose_function(core::magic_name("cl__list_all_packages"),true,&core::cl__list_all_packages,"");
 }
 NOINLINE void expose_function_363_helper() {
-  expose_function(core::magic_name("cl__find_symbol"),true,&core::cl__find_symbol,"(sym &optional (package *package*))");
+  expose_function(core::magic_name("cl__make_package"),true,&core::cl__make_package,"(package-name &key nicknames (use (list \"CL\")))");
 }
 NOINLINE void expose_function_364_helper() {
-  expose_function(core::magic_name("cl__unintern"),true,&core::cl__unintern,"(symbol &optional (package *package*))");
+  expose_function(core::magic_name("cl__find_symbol"),true,&core::cl__find_symbol,"(sym &optional (package *package*))");
 }
 NOINLINE void expose_function_365_helper() {
-  expose_function(core::magic_name("cl__package_nicknames"),true,&core::cl__package_nicknames,"(pkg)");
+  expose_function(core::magic_name("cl__unintern"),true,&core::cl__unintern,"(symbol &optional (package *package*))");
 }
 NOINLINE void expose_function_366_helper() {
-  expose_function(core::magic_name("cl__rename_package"),true,&core::cl__rename_package,"(package new-name &optional nick-names)");
+  expose_function(core::magic_name("cl__package_nicknames"),true,&core::cl__package_nicknames,"(pkg)");
 }
 NOINLINE void expose_function_367_helper() {
-  expose_function(core::magic_name("CORE:base_string_concatenate"),true,&core::core__base_string_concatenate,"(&va-rest args)");
+  expose_function(core::magic_name("cl__rename_package"),true,&core::cl__rename_package,"(package new-name &optional nick-names)");
 }
 NOINLINE void expose_function_368_helper() {
-  expose_function(core::magic_name("core__search_string"),true,&core::core__search_string,"(str1 start1 end1 str2 start2 end2)");
+  expose_function(core::magic_name("CORE:base_string_concatenate"),true,&core::core__base_string_concatenate,"(&va-rest args)");
 }
 NOINLINE void expose_function_369_helper() {
-  expose_function(core::magic_name("core__logical_pathname_p"),true,&core::core__logical_pathname_p,"(arg)");
+  expose_function(core::magic_name("core__search_string"),true,&core::core__search_string,"(str1 start1 end1 str2 start2 end2)");
 }
 NOINLINE void expose_function_370_helper() {
-  expose_function(core::magic_name("cl__pathnamep"),true,&core::cl__pathnamep,"(arg)");
+  expose_function(core::magic_name("core__logical_pathname_p"),true,&core::core__logical_pathname_p,"(arg)");
 }
 NOINLINE void expose_function_371_helper() {
-  expose_function(core::magic_name("core__proper_list_p"),true,&core::core__proper_list_p,"(arg)");
+  expose_function(core::magic_name("cl__pathnamep"),true,&core::cl__pathnamep,"(arg)");
 }
 NOINLINE void expose_function_372_helper() {
-  expose_function(core::magic_name("core__generic_function_p"),true,&core::core__generic_function_p,"(arg)");
+  expose_function(core::magic_name("core__proper_list_p"),true,&core::core__proper_list_p,"(arg)");
 }
 NOINLINE void expose_function_373_helper() {
-  expose_function(core::magic_name("cl__compiled_function_p"),true,&core::cl__compiled_function_p,"(arg)");
+  expose_function(core::magic_name("core__generic_function_p"),true,&core::core__generic_function_p,"(arg)");
 }
 NOINLINE void expose_function_374_helper() {
-  expose_function(core::magic_name("cl__simple_vector_p"),true,&core::cl__simple_vector_p,"(arg)");
+  expose_function(core::magic_name("cl__compiled_function_p"),true,&core::cl__compiled_function_p,"(arg)");
 }
 NOINLINE void expose_function_375_helper() {
-  expose_function(core::magic_name("cl__simple_bit_vector_p"),true,&core::cl__simple_bit_vector_p,"(arg)");
+  expose_function(core::magic_name("cl__simple_vector_p"),true,&core::cl__simple_vector_p,"(arg)");
 }
 NOINLINE void expose_function_376_helper() {
-  expose_function(core::magic_name("core__external_object_p"),true,&core::core__external_object_p,"(arg)");
+  expose_function(core::magic_name("cl__simple_bit_vector_p"),true,&core::cl__simple_bit_vector_p,"(arg)");
 }
 NOINLINE void expose_function_377_helper() {
-  expose_function(core::magic_name("core__activation_frame_p"),true,&core::core__activation_frame_p,"(arg)");
+  expose_function(core::magic_name("core__external_object_p"),true,&core::core__external_object_p,"(arg)");
 }
 NOINLINE void expose_function_378_helper() {
-  expose_function(core::magic_name("core__single_dispatch_generic_function_p"),true,&core::core__single_dispatch_generic_function_p,"(arg)");
+  expose_function(core::magic_name("core__activation_frame_p"),true,&core::core__activation_frame_p,"(arg)");
 }
 NOINLINE void expose_function_379_helper() {
-  expose_function(core::magic_name("core__arrayp"),true,&core::core__arrayp,"(obj)");
+  expose_function(core::magic_name("core__single_dispatch_generic_function_p"),true,&core::core__single_dispatch_generic_function_p,"(arg)");
 }
 NOINLINE void expose_function_380_helper() {
-  expose_function(core::magic_name("core__structure_object_p"),true,&core::core__structure_object_p,"(arg)");
+  expose_function(core::magic_name("core__arrayp"),true,&core::core__arrayp,"(obj)");
 }
 NOINLINE void expose_function_381_helper() {
-  expose_function(core::magic_name("cl__readtablep"),true,&core::cl__readtablep,"(arg)");
+  expose_function(core::magic_name("core__structure_object_p"),true,&core::core__structure_object_p,"(arg)");
 }
 NOINLINE void expose_function_382_helper() {
-  expose_function(core::magic_name("cl__hash_table_p"),true,&core::cl__hash_table_p,"(arg)");
+  expose_function(core::magic_name("cl__readtablep"),true,&core::cl__readtablep,"(arg)");
 }
 NOINLINE void expose_function_383_helper() {
-  expose_function(core::magic_name("cl__bit_vector_p"),true,&core::cl__bit_vector_p,"(arg)");
+  expose_function(core::magic_name("cl__hash_table_p"),true,&core::cl__hash_table_p,"(arg)");
 }
 NOINLINE void expose_function_384_helper() {
-  expose_function(core::magic_name("core__path_p"),true,&core::core__path_p,"(arg)");
+  expose_function(core::magic_name("cl__bit_vector_p"),true,&core::cl__bit_vector_p,"(arg)");
 }
 NOINLINE void expose_function_385_helper() {
-  expose_function(core::magic_name("cl__keywordp"),true,&core::cl__keywordp,"(obj)");
+  expose_function(core::magic_name("core__path_p"),true,&core::core__path_p,"(arg)");
 }
 NOINLINE void expose_function_386_helper() {
-  expose_function(core::magic_name("cl__integerp"),true,&core::cl__integerp,"(obj)");
+  expose_function(core::magic_name("cl__keywordp"),true,&core::cl__keywordp,"(obj)");
 }
 NOINLINE void expose_function_387_helper() {
-  expose_function(core::magic_name("cl__vectorp"),true,&core::cl__vectorp,"(obj)");
+  expose_function(core::magic_name("cl__integerp"),true,&core::cl__integerp,"(obj)");
 }
 NOINLINE void expose_function_388_helper() {
-  expose_function(core::magic_name("cl__floatp"),true,&core::cl__floatp,"(obj)");
+  expose_function(core::magic_name("cl__vectorp"),true,&core::cl__vectorp,"(obj)");
 }
 NOINLINE void expose_function_389_helper() {
-  expose_function(core::magic_name("cl__realp"),true,&core::cl__realp,"(obj)");
+  expose_function(core::magic_name("cl__floatp"),true,&core::cl__floatp,"(obj)");
 }
 NOINLINE void expose_function_390_helper() {
-  expose_function(core::magic_name("core__single_float_p"),true,&core::core__single_float_p,"(arg)");
+  expose_function(core::magic_name("cl__realp"),true,&core::cl__realp,"(obj)");
 }
 NOINLINE void expose_function_391_helper() {
-  expose_function(core::magic_name("core__short_float_p"),true,&core::core__short_float_p,"(arg)");
+  expose_function(core::magic_name("core__single_float_p"),true,&core::core__single_float_p,"(arg)");
 }
 NOINLINE void expose_function_392_helper() {
-  expose_function(core::magic_name("core__long_float_p"),true,&core::core__long_float_p,"(arg)");
+  expose_function(core::magic_name("core__short_float_p"),true,&core::core__short_float_p,"(arg)");
 }
 NOINLINE void expose_function_393_helper() {
-  expose_function(core::magic_name("cl__rationalp"),true,&core::cl__rationalp,"(obj)");
+  expose_function(core::magic_name("core__long_float_p"),true,&core::core__long_float_p,"(arg)");
 }
 NOINLINE void expose_function_394_helper() {
-  expose_function(core::magic_name("cl__random_state_p"),true,&core::cl__random_state_p,"(arg)");
+  expose_function(core::magic_name("cl__rationalp"),true,&core::cl__rationalp,"(obj)");
 }
 NOINLINE void expose_function_395_helper() {
-  expose_function(core::magic_name("core__ratio_p"),true,&core::core__ratio_p,"(arg)");
+  expose_function(core::magic_name("cl__random_state_p"),true,&core::cl__random_state_p,"(arg)");
 }
 NOINLINE void expose_function_396_helper() {
-  expose_function(core::magic_name("cl__complexp"),true,&core::cl__complexp,"(obj)");
+  expose_function(core::magic_name("core__ratio_p"),true,&core::core__ratio_p,"(arg)");
 }
 NOINLINE void expose_function_397_helper() {
-  expose_function(core::magic_name("cl__numberp"),true,&core::cl__numberp,"(arg)");
+  expose_function(core::magic_name("cl__complexp"),true,&core::cl__complexp,"(obj)");
 }
 NOINLINE void expose_function_398_helper() {
-  expose_function(core::magic_name("core__lambda_list_handler_p"),true,&core::core__lambda_list_handler_p,"(arg)");
+  expose_function(core::magic_name("cl__numberp"),true,&core::cl__numberp,"(arg)");
 }
 NOINLINE void expose_function_399_helper() {
-  expose_function(core::magic_name("core__cxx_instance_p"),true,&core::core__cxx_instance_p,"(arg)");
+  expose_function(core::magic_name("core__lambda_list_handler_p"),true,&core::core__lambda_list_handler_p,"(arg)");
 }
 NOINLINE void expose_function_400_helper() {
-  expose_function(core::magic_name("core__built_in_class_p"),true,&core::core__built_in_class_p,"(arg)");
+  expose_function(core::magic_name("core__cxx_instance_p"),true,&core::core__cxx_instance_p,"(arg)");
 }
 NOINLINE void expose_function_401_helper() {
-  expose_function(core::magic_name("clos__classp"),true,&core::clos__classp,"(obj)");
+  expose_function(core::magic_name("core__built_in_class_p"),true,&core::core__built_in_class_p,"(arg)");
 }
 NOINLINE void expose_function_402_helper() {
-  expose_function(core::magic_name("cl__packagep"),true,&core::cl__packagep,"(arg)");
+  expose_function(core::magic_name("clos__classp"),true,&core::clos__classp,"(obj)");
 }
 NOINLINE void expose_function_403_helper() {
-  expose_function(core::magic_name("core__interpreted_function_p"),true,&core::core__interpreted_function_p,"(arg)");
+  expose_function(core::magic_name("cl__packagep"),true,&core::cl__packagep,"(arg)");
 }
 NOINLINE void expose_function_404_helper() {
-  expose_function(core::magic_name("cl__functionp"),true,&core::cl__functionp,"(arg)");
+  expose_function(core::magic_name("core__interpreted_function_p"),true,&core::core__interpreted_function_p,"(arg)");
 }
 NOINLINE void expose_function_405_helper() {
-  expose_function(core::magic_name("core__double_float_p"),true,&core::core__double_float_p,"(arg)");
+  expose_function(core::magic_name("cl__functionp"),true,&core::cl__functionp,"(arg)");
 }
 NOINLINE void expose_function_406_helper() {
-  expose_function(core::magic_name("core__simple_string_p"),true,&core::core__simple_string_p,"(arg)");
+  expose_function(core::magic_name("core__double_float_p"),true,&core::core__double_float_p,"(arg)");
 }
 NOINLINE void expose_function_407_helper() {
-  expose_function(core::magic_name("cl__stringp"),true,&core::cl__stringp,"(obj)");
+  expose_function(core::magic_name("core__simple_string_p"),true,&core::core__simple_string_p,"(arg)");
 }
 NOINLINE void expose_function_408_helper() {
-  expose_function(core::magic_name("core__bignump"),true,&core::core__bignump,"(obj)");
+  expose_function(core::magic_name("cl__stringp"),true,&core::cl__stringp,"(obj)");
 }
 NOINLINE void expose_function_409_helper() {
-  expose_function(core::magic_name("core__base_char_p"),true,&core::core__base_char_p,"(arg)");
+  expose_function(core::magic_name("core__bignump"),true,&core::core__bignump,"(obj)");
 }
 NOINLINE void expose_function_410_helper() {
-  expose_function(core::magic_name("core__test_val"),true,&core::core__test_val,"(arg)");
+  expose_function(core::magic_name("core__base_char_p"),true,&core::core__base_char_p,"(arg)");
 }
 NOINLINE void expose_function_411_helper() {
-  expose_function(core::magic_name("core__is_array"),true,&core::core__is_array,"(arg)");
+  expose_function(core::magic_name("core__test_val"),true,&core::core__test_val,"(arg)");
 }
 NOINLINE void expose_function_412_helper() {
-  expose_function(core::magic_name("core__is_string"),true,&core::core__is_string,"(arg)");
+  expose_function(core::magic_name("core__is_array"),true,&core::core__is_array,"(arg)");
 }
 NOINLINE void expose_function_413_helper() {
-  expose_function(core::magic_name("core__subclassp"),true,&core::core__subclassp,"(low high)");
+  expose_function(core::magic_name("core__is_string"),true,&core::core__is_string,"(arg)");
 }
 NOINLINE void expose_function_414_helper() {
-  expose_function(core::magic_name("core__allocate_raw_class"),true,&core::core__allocate_raw_class,"(original meta-class slots &optional name)");
+  expose_function(core::magic_name("core__subclassp"),true,&core::core__subclassp,"(low high)");
 }
 NOINLINE void expose_function_415_helper() {
-  expose_function(core::magic_name("core__inherit_default_allocator"),true,&core::core__inherit_default_allocator,"(class directSuperclasses)");
+  expose_function(core::magic_name("core__allocate_raw_class"),true,&core::core__allocate_raw_class,"(original meta-class slots &optional name)");
 }
 NOINLINE void expose_function_416_helper() {
-  expose_function(core::magic_name("cl__reader_error"),true,&core::cl__reader_error,"(sourceFileName lineno functionName fmt fmtargs stream)");
+  expose_function(core::magic_name("core__inherit_default_allocator"),true,&core::core__inherit_default_allocator,"(class directSuperclasses)");
 }
 NOINLINE void expose_function_417_helper() {
-  expose_function(core::magic_name("core__wrong_index"),true,&core::core__wrong_index,"(source-file lineno function narg value type)");
+  expose_function(core::magic_name("cl__reader_error"),true,&core::cl__reader_error,"(sourceFileName lineno functionName fmt fmtargs stream)");
 }
 NOINLINE void expose_function_418_helper() {
-  expose_function(core::magic_name("core__wrong_type_nth_arg"),true,&core::core__wrong_type_nth_arg,"(source-file lineno function narg value type)");
+  expose_function(core::magic_name("core__wrong_index"),true,&core::core__wrong_index,"(source-file lineno function narg value type)");
 }
 NOINLINE void expose_function_419_helper() {
-  expose_function(core::magic_name("core__wrong_type_argument"),true,&core::core__wrong_type_argument,"(source-file lineno function narg value type)");
+  expose_function(core::magic_name("core__wrong_type_nth_arg"),true,&core::core__wrong_type_nth_arg,"(source-file lineno function narg value type)");
 }
 NOINLINE void expose_function_420_helper() {
-  expose_function(core::magic_name("core__signal_simple_error"),true,&core::core__signal_simple_error,"(base-condition continue-message format-control format-args &rest args)");
+  expose_function(core::magic_name("core__wrong_type_argument"),true,&core::core__wrong_type_argument,"(source-file lineno function narg value type)");
 }
 NOINLINE void expose_function_421_helper() {
-  expose_function(core::magic_name("cl__translate_logical_pathname"),true,&core::cl__translate_logical_pathname,"(source &key)");
+  expose_function(core::magic_name("core__signal_simple_error"),true,&core::core__signal_simple_error,"(base-condition continue-message format-control format-args &rest args)");
 }
 NOINLINE void expose_function_422_helper() {
-  expose_function(core::magic_name("cl__translate_pathname"),true,&core::cl__translate_pathname,"(source from to &key ((:case scase) :local))");
+  expose_function(core::magic_name("cl__translate_logical_pathname"),true,&core::cl__translate_logical_pathname,"(source &key)");
 }
 NOINLINE void expose_function_423_helper() {
-  expose_function(core::magic_name("core__pathname_translations"),true,&core::core__pathname_translations,"(&optional (host nil hostp) translation)");
+  expose_function(core::magic_name("cl__translate_pathname"),true,&core::cl__translate_pathname,"(source from to &key ((:case scase) :local))");
 }
 NOINLINE void expose_function_424_helper() {
-  expose_function(core::magic_name("cl__pathname_match_p"),true,&core::cl__pathname_match_p,"(tpath tmask)");
+  expose_function(core::magic_name("core__pathname_translations"),true,&core::core__pathname_translations,"(&optional (host nil hostp) translation)");
 }
 NOINLINE void expose_function_425_helper() {
-  expose_function(core::magic_name("cl__enough_namestring"),true,&core::cl__enough_namestring,"(tpath &optional (defaults (core::safe-default-pathname-defaults)))");
+  expose_function(core::magic_name("cl__pathname_match_p"),true,&core::cl__pathname_match_p,"(tpath tmask)");
 }
 NOINLINE void expose_function_426_helper() {
-  expose_function(core::magic_name("cl__host_namestring"),true,&core::cl__host_namestring,"(tpname)");
+  expose_function(core::magic_name("cl__enough_namestring"),true,&core::cl__enough_namestring,"(tpath &optional (defaults (core::safe-default-pathname-defaults)))");
 }
 NOINLINE void expose_function_427_helper() {
-  expose_function(core::magic_name("cl__directory_namestring"),true,&core::cl__directory_namestring,"(tpname)");
+  expose_function(core::magic_name("cl__host_namestring"),true,&core::cl__host_namestring,"(tpname)");
 }
 NOINLINE void expose_function_428_helper() {
-  expose_function(core::magic_name("cl__file_namestring"),true,&core::cl__file_namestring,"(tpname)");
+  expose_function(core::magic_name("cl__directory_namestring"),true,&core::cl__directory_namestring,"(tpname)");
 }
 NOINLINE void expose_function_429_helper() {
-  expose_function(core::magic_name("cl__pathname_version"),true,&core::cl__pathname_version,"(pname)");
+  expose_function(core::magic_name("cl__file_namestring"),true,&core::cl__file_namestring,"(tpname)");
 }
 NOINLINE void expose_function_430_helper() {
-  expose_function(core::magic_name("cl__pathname_type"),true,&core::cl__pathname_type,"(pname &key ((:case scase) :local))");
+  expose_function(core::magic_name("cl__pathname_version"),true,&core::cl__pathname_version,"(pname)");
 }
 NOINLINE void expose_function_431_helper() {
-  expose_function(core::magic_name("cl__pathname_name"),true,&core::cl__pathname_name,"(pname &key ((:case scase) :local))");
+  expose_function(core::magic_name("cl__pathname_type"),true,&core::cl__pathname_type,"(pname &key ((:case scase) :local))");
 }
 NOINLINE void expose_function_432_helper() {
-  expose_function(core::magic_name("cl__pathname_directory"),true,&core::cl__pathname_directory,"(pname &key ((:case scase) :local))");
+  expose_function(core::magic_name("cl__pathname_name"),true,&core::cl__pathname_name,"(pname &key ((:case scase) :local))");
 }
 NOINLINE void expose_function_433_helper() {
-  expose_function(core::magic_name("cl__pathname_device"),true,&core::cl__pathname_device,"(pname &key ((:case scase) :local))");
+  expose_function(core::magic_name("cl__pathname_directory"),true,&core::cl__pathname_directory,"(pname &key ((:case scase) :local))");
 }
 NOINLINE void expose_function_434_helper() {
-  expose_function(core::magic_name("cl__pathname_host"),true,&core::cl__pathname_host,"(pname &key ((:case scase) :local))");
+  expose_function(core::magic_name("cl__pathname_device"),true,&core::cl__pathname_device,"(pname &key ((:case scase) :local))");
 }
 NOINLINE void expose_function_435_helper() {
-  expose_function(core::magic_name("cl__make_pathname"),true,&core::cl__make_pathname,"(&key (host nil hostp) (device nil devicep) (directory nil directoryp) (name nil namep) (type nil typep) (version nil versionp) ((:case scase) :local) (defaults (core:safe-default-pathname-defaults-host-only)))");
+  expose_function(core::magic_name("cl__pathname_host"),true,&core::cl__pathname_host,"(pname &key ((:case scase) :local))");
 }
 NOINLINE void expose_function_436_helper() {
-  expose_function(core::magic_name("cl__parse_namestring"),true,&core::cl__parse_namestring,"(thing &optional host (defaults (core:safe-default-pathname-defaults)) &key (start 0) end junk-allowed)");
+  expose_function(core::magic_name("cl__make_pathname"),true,&core::cl__make_pathname,"(&key (host nil hostp) (device nil devicep) (directory nil directoryp) (name nil namep) (type nil typep) (version nil versionp) ((:case scase) :local) (defaults (core:safe-default-pathname-defaults-host-only)))");
 }
 NOINLINE void expose_function_437_helper() {
-  expose_function(core::magic_name("cl__namestring"),true,&core::cl__namestring,"(pathname)");
+  expose_function(core::magic_name("cl__parse_namestring"),true,&core::cl__parse_namestring,"(thing &optional host (defaults (core:safe-default-pathname-defaults)) &key (start 0) end junk-allowed)");
 }
 NOINLINE void expose_function_438_helper() {
-  expose_function(core::magic_name("core__coerce_to_filename"),true,&core::core__coerce_to_filename,"(pathname-orig)");
+  expose_function(core::magic_name("cl__namestring"),true,&core::cl__namestring,"(pathname)");
 }
 NOINLINE void expose_function_439_helper() {
-  expose_function(core::magic_name("core__coerce_to_physical_pathname"),true,&core::core__coerce_to_physical_pathname,"(x)");
+  expose_function(core::magic_name("core__coerce_to_filename"),true,&core::core__coerce_to_filename,"(pathname-orig)");
 }
 NOINLINE void expose_function_440_helper() {
-  expose_function(core::magic_name("core__coerce_to_file_pathname"),true,&core::core__coerce_to_file_pathname,"(tpathname)");
+  expose_function(core::magic_name("core__coerce_to_physical_pathname"),true,&core::core__coerce_to_physical_pathname,"(x)");
 }
 NOINLINE void expose_function_441_helper() {
-  expose_function(core::magic_name("cl__wild_pathname_p"),true,&core::cl__wild_pathname_p,"(pathname &optional component)");
+  expose_function(core::magic_name("core__coerce_to_file_pathname"),true,&core::core__coerce_to_file_pathname,"(tpathname)");
 }
 NOINLINE void expose_function_442_helper() {
-  expose_function(core::magic_name("cl__merge_pathnames"),true,&core::cl__merge_pathnames,"(arg &optional (default-pathname (core:safe-default-pathname-defaults)) (default-version :newest))");
+  expose_function(core::magic_name("cl__wild_pathname_p"),true,&core::cl__wild_pathname_p,"(pathname &optional component)");
 }
 NOINLINE void expose_function_443_helper() {
-  expose_function(core::magic_name("cl__pathname"),true,&core::cl__pathname,"(x)");
+  expose_function(core::magic_name("cl__merge_pathnames"),true,&core::cl__merge_pathnames,"(arg &optional (default-pathname (core:safe-default-pathname-defaults)) (default-version :newest))");
 }
 NOINLINE void expose_function_444_helper() {
-  expose_function(core::magic_name("core__safe_default_pathname_defaults_host_only"),true,&core::core__safe_default_pathname_defaults_host_only,"");
+  expose_function(core::magic_name("cl__pathname"),true,&core::cl__pathname,"(x)");
 }
 NOINLINE void expose_function_445_helper() {
-  expose_function(core::magic_name("core__safe_default_pathname_defaults"),true,&core::core__safe_default_pathname_defaults,"");
+  expose_function(core::magic_name("core__safe_default_pathname_defaults_host_only"),true,&core::core__safe_default_pathname_defaults_host_only,"");
 }
 NOINLINE void expose_function_446_helper() {
-  expose_function(core::magic_name("core__float_to_digits"),true,&core::core__float_to_digits,"(digits number position relativep)");
+  expose_function(core::magic_name("core__safe_default_pathname_defaults"),true,&core::core__safe_default_pathname_defaults,"");
 }
 NOINLINE void expose_function_447_helper() {
-  expose_function(core::magic_name("core__sharp_vertical_bar"),true,&core::core__sharp_vertical_bar,"(stream ch num)");
+  expose_function(core::magic_name("core__float_to_digits"),true,&core::core__float_to_digits,"(digits number position relativep)");
 }
 NOINLINE void expose_function_448_helper() {
-  expose_function(core::magic_name("core__sharp_minus"),true,&core::core__sharp_minus,"(stream ch num)");
+  expose_function(core::magic_name("core__sharp_vertical_bar"),true,&core::core__sharp_vertical_bar,"(stream ch num)");
 }
 NOINLINE void expose_function_449_helper() {
-  expose_function(core::magic_name("core__sharp_plus"),true,&core::core__sharp_plus,"(stream ch num)");
+  expose_function(core::magic_name("core__sharp_minus"),true,&core::core__sharp_minus,"(stream ch num)");
 }
 NOINLINE void expose_function_450_helper() {
-  expose_function(core::magic_name("core__reader_feature_p"),true,&core::core__reader_feature_p,"(feature-test)");
+  expose_function(core::magic_name("core__sharp_plus"),true,&core::core__sharp_plus,"(stream ch num)");
 }
 NOINLINE void expose_function_451_helper() {
-  expose_function(core::magic_name("core__sharp_p"),true,&core::core__sharp_p,"(stream ch num)");
+  expose_function(core::magic_name("core__reader_feature_p"),true,&core::core__reader_feature_p,"(feature-test)");
 }
 NOINLINE void expose_function_452_helper() {
-  expose_function(core::magic_name("core__sharp_s"),true,&core::core__sharp_s,"(stream ch num)");
+  expose_function(core::magic_name("core__sharp_p"),true,&core::core__sharp_p,"(stream ch num)");
 }
 NOINLINE void expose_function_453_helper() {
-  expose_function(core::magic_name("core__sharp_a"),true,&core::core__sharp_a,"(stream ch num)");
+  expose_function(core::magic_name("core__sharp_s"),true,&core::core__sharp_s,"(stream ch num)");
 }
 NOINLINE void expose_function_454_helper() {
-  expose_function(core::magic_name("core__sharp_c"),true,&core::core__sharp_c,"(stream ch num)");
+  expose_function(core::magic_name("core__sharp_a"),true,&core::core__sharp_a,"(stream ch num)");
 }
 NOINLINE void expose_function_455_helper() {
-  expose_function(core::magic_name("core__sharp_x"),true,&core::core__sharp_x,"(stream ch num)");
+  expose_function(core::magic_name("core__sharp_c"),true,&core::core__sharp_c,"(stream ch num)");
 }
 NOINLINE void expose_function_456_helper() {
-  expose_function(core::magic_name("core__sharp_o"),true,&core::core__sharp_o,"(stream ch num)");
+  expose_function(core::magic_name("core__sharp_x"),true,&core::core__sharp_x,"(stream ch num)");
 }
 NOINLINE void expose_function_457_helper() {
-  expose_function(core::magic_name("core__sharp_b"),true,&core::core__sharp_b,"(stream ch num)");
+  expose_function(core::magic_name("core__sharp_o"),true,&core::core__sharp_o,"(stream ch num)");
 }
 NOINLINE void expose_function_458_helper() {
-  expose_function(core::magic_name("core__sharp_r"),true,&core::core__sharp_r,"(stream subchar radix)");
+  expose_function(core::magic_name("core__sharp_b"),true,&core::core__sharp_b,"(stream ch num)");
 }
 NOINLINE void expose_function_459_helper() {
-  expose_function(core::magic_name("core__sharp_colon"),true,&core::core__sharp_colon,"(stream ch num)");
+  expose_function(core::magic_name("core__sharp_r"),true,&core::core__sharp_r,"(stream subchar radix)");
 }
 NOINLINE void expose_function_460_helper() {
-  expose_function(core::magic_name("core__sharp_asterisk"),true,&core::core__sharp_asterisk,"(stream ch num)");
+  expose_function(core::magic_name("core__sharp_colon"),true,&core::core__sharp_colon,"(stream ch num)");
 }
 NOINLINE void expose_function_461_helper() {
-  expose_function(core::magic_name("core__sharp_left_parenthesis"),true,&core::core__sharp_left_parenthesis,"(stream ch num)");
+  expose_function(core::magic_name("core__sharp_asterisk"),true,&core::core__sharp_asterisk,"(stream ch num)");
 }
 NOINLINE void expose_function_462_helper() {
-  expose_function(core::magic_name("core__sharp_single_quote"),true,&core::core__sharp_single_quote,"(stream ch num)");
+  expose_function(core::magic_name("core__sharp_left_parenthesis"),true,&core::core__sharp_left_parenthesis,"(stream ch num)");
 }
 NOINLINE void expose_function_463_helper() {
-  expose_function(core::magic_name("core__sharp_dot"),true,&core::core__sharp_dot,"(stream ch num)");
+  expose_function(core::magic_name("core__sharp_single_quote"),true,&core::core__sharp_single_quote,"(stream ch num)");
 }
 NOINLINE void expose_function_464_helper() {
-  expose_function(core::magic_name("core__sharp_backslash"),true,&core::core__sharp_backslash,"(stream ch num)");
+  expose_function(core::magic_name("core__sharp_dot"),true,&core::core__sharp_dot,"(stream ch num)");
 }
 NOINLINE void expose_function_465_helper() {
-  expose_function(core::magic_name("core__dispatch_macro_character"),true,&core::core__dispatch_macro_character,"(sin ch)");
+  expose_function(core::magic_name("core__sharp_backslash"),true,&core::core__sharp_backslash,"(stream ch num)");
 }
 NOINLINE void expose_function_466_helper() {
-  expose_function(core::magic_name("core__reader_skip_semicolon_comment"),true,&core::core__reader_skip_semicolon_comment,"(sin ch)");
+  expose_function(core::magic_name("core__dispatch_macro_character"),true,&core::core__dispatch_macro_character,"(sin ch)");
 }
 NOINLINE void expose_function_467_helper() {
-  expose_function(core::magic_name("core__reader_quote"),true,&core::core__reader_quote,"(sin ch)");
+  expose_function(core::magic_name("core__reader_skip_semicolon_comment"),true,&core::core__reader_skip_semicolon_comment,"(sin ch)");
 }
 NOINLINE void expose_function_468_helper() {
-  expose_function(core::magic_name("core__reader_error_unmatched_close_parenthesis"),true,&core::core__reader_error_unmatched_close_parenthesis,"(sin ch)");
+  expose_function(core::magic_name("core__reader_quote"),true,&core::core__reader_quote,"(sin ch)");
 }
 NOINLINE void expose_function_469_helper() {
-  expose_function(core::magic_name("core__reader_list_allow_consing_dot"),true,&core::core__reader_list_allow_consing_dot,"(sin ch)");
+  expose_function(core::magic_name("core__reader_error_unmatched_close_parenthesis"),true,&core::core__reader_error_unmatched_close_parenthesis,"(sin ch)");
 }
 NOINLINE void expose_function_470_helper() {
-  expose_function(core::magic_name("core__reader_comma_form"),true,&core::core__reader_comma_form,"(sin ch)");
+  expose_function(core::magic_name("core__reader_list_allow_consing_dot"),true,&core::core__reader_list_allow_consing_dot,"(sin ch)");
 }
 NOINLINE void expose_function_471_helper() {
-  expose_function(core::magic_name("core__reader_backquoted_expression"),true,&core::core__reader_backquoted_expression,"(sin ch)");
+  expose_function(core::magic_name("core__reader_comma_form"),true,&core::core__reader_comma_form,"(sin ch)");
 }
 NOINLINE void expose_function_472_helper() {
-  expose_function(core::magic_name("core__reader_double_quote_string"),true,&core::core__reader_double_quote_string,"(stream chr)");
+  expose_function(core::magic_name("core__reader_backquoted_expression"),true,&core::core__reader_backquoted_expression,"(sin ch)");
 }
 NOINLINE void expose_function_473_helper() {
-  expose_function(core::magic_name("cl__set_macro_character"),true,&core::cl__set_macro_character,"(ch func_desig &optional non-terminating-p (readtable *readtable*))");
+  expose_function(core::magic_name("core__reader_double_quote_string"),true,&core::core__reader_double_quote_string,"(stream chr)");
 }
 NOINLINE void expose_function_474_helper() {
-  expose_function(core::magic_name("cl__get_dispatch_macro_character"),true,&core::cl__get_dispatch_macro_character,"(dispChar subChar &optional (readtable *readtable*))");
+  expose_function(core::magic_name("cl__set_macro_character"),true,&core::cl__set_macro_character,"(ch func_desig &optional non-terminating-p (readtable *readtable*))");
 }
 NOINLINE void expose_function_475_helper() {
-  expose_function(core::magic_name("cl__set_dispatch_macro_character"),true,&core::cl__set_dispatch_macro_character,"(dispChar subChar newFunction &optional (readtable *readtable*))");
+  expose_function(core::magic_name("cl__get_dispatch_macro_character"),true,&core::cl__get_dispatch_macro_character,"(dispChar subChar &optional (readtable *readtable*))");
 }
 NOINLINE void expose_function_476_helper() {
-  expose_function(core::magic_name("core__readtable_case_set"),true,&core::core__readtable_case_set,"(readtable mode)");
+  expose_function(core::magic_name("cl__set_dispatch_macro_character"),true,&core::cl__set_dispatch_macro_character,"(dispChar subChar newFunction &optional (readtable *readtable*))");
 }
 NOINLINE void expose_function_477_helper() {
-  expose_function(core::magic_name("cl__readtable_case"),true,&core::cl__readtable_case,"(readtable)");
+  expose_function(core::magic_name("core__readtable_case_set"),true,&core::core__readtable_case_set,"(readtable mode)");
 }
 NOINLINE void expose_function_478_helper() {
-  expose_function(core::magic_name("cl__copy_readtable"),true,&core::cl__copy_readtable,"(&optional (from-readtable cl:*readtable*) to-readtable)");
+  expose_function(core::magic_name("cl__readtable_case"),true,&core::cl__readtable_case,"(readtable)");
 }
 NOINLINE void expose_function_479_helper() {
-  expose_function(core::magic_name("cl__get_macro_character"),true,&core::cl__get_macro_character,"(char &optional readtable)");
+  expose_function(core::magic_name("cl__copy_readtable"),true,&core::cl__copy_readtable,"(&optional (from-readtable cl:*readtable*) to-readtable)");
 }
 NOINLINE void expose_function_480_helper() {
-  expose_function(core::magic_name("cl__make_dispatch_macro_character"),true,&core::cl__make_dispatch_macro_character,"(char &optional non-terminating-p (readtable *readtable*))");
+  expose_function(core::magic_name("cl__get_macro_character"),true,&core::cl__get_macro_character,"(char &optional readtable)");
 }
 NOINLINE void expose_function_481_helper() {
-  expose_function(core::magic_name("cl__set_syntax_from_char"),true,&core::cl__set_syntax_from_char,"(tochar fromchar &optional (toreadtable *readtable*) (fromreadtable nil fromreadtablep))");
+  expose_function(core::magic_name("cl__make_dispatch_macro_character"),true,&core::cl__make_dispatch_macro_character,"(char &optional non-terminating-p (readtable *readtable*))");
 }
 NOINLINE void expose_function_482_helper() {
-  expose_function(core::magic_name("core__make_branch_snode"),true,&core::core__make_branch_snode,"");
+  expose_function(core::magic_name("cl__set_syntax_from_char"),true,&core::cl__set_syntax_from_char,"(tochar fromchar &optional (toreadtable *readtable*) (fromreadtable nil fromreadtablep))");
 }
 NOINLINE void expose_function_483_helper() {
-  expose_function(core::magic_name("core__pointer_address"),true,&core::core__pointer_address,"(arg)");
+  expose_function(core::magic_name("core__make_branch_snode"),true,&core::core__make_branch_snode,"");
 }
 NOINLINE void expose_function_484_helper() {
-  expose_function(core::magic_name("core__pointer_delete"),true,&core::core__pointer_delete,"(arg)");
+  expose_function(core::magic_name("core__pointer_address"),true,&core::core__pointer_address,"(arg)");
 }
 NOINLINE void expose_function_485_helper() {
-  expose_function(core::magic_name("core__pointer_release"),true,&core::core__pointer_release,"(arg)");
+  expose_function(core::magic_name("core__pointer_delete"),true,&core::core__pointer_delete,"(arg)");
 }
 NOINLINE void expose_function_486_helper() {
-  expose_function(core::magic_name("core__make_regex"),true,&core::core__make_regex,"(regex-str)");
+  expose_function(core::magic_name("core__pointer_release"),true,&core::core__pointer_release,"(arg)");
 }
 NOINLINE void expose_function_487_helper() {
-  expose_function(core::magic_name("core__write_ugly_object"),true,&core::core__write_ugly_object,"(obj &optional strm)");
+  expose_function(core::magic_name("core__make_regex"),true,&core::core__make_regex,"(regex-str)");
 }
 NOINLINE void expose_function_488_helper() {
-  expose_function(core::magic_name("core__test_profile_timer"),true,&core::core__test_profile_timer,"(delay)");
+  expose_function(core::magic_name("core__write_ugly_object"),true,&core::core__write_ugly_object,"(obj &optional strm)");
 }
 NOINLINE void expose_function_489_helper() {
-  expose_function(core::magic_name("core__clock_gettime_nanoseconds"),true,&core::core__clock_gettime_nanoseconds,"");
+  expose_function(core::magic_name("core__test_profile_timer"),true,&core::core__test_profile_timer,"(delay)");
 }
 NOINLINE void expose_function_490_helper() {
-  expose_function(core::magic_name("core__deep_copy"),true,&core::core__deep_copy,"(obj)");
+  expose_function(core::magic_name("core__clock_gettime_nanoseconds"),true,&core::core__clock_gettime_nanoseconds,"");
 }
 NOINLINE void expose_function_491_helper() {
-  expose_function(core::magic_name("core__sl_boundp"),true,&core::core__sl_boundp,"(arg)");
+  expose_function(core::magic_name("core__deep_copy"),true,&core::core__deep_copy,"(obj)");
 }
 NOINLINE void expose_function_492_helper() {
-  expose_function(core::magic_name("core__decode"),true,&core::core__decode,"(obj arg)");
+  expose_function(core::magic_name("core__sl_boundp"),true,&core::core__sl_boundp,"(arg)");
 }
 NOINLINE void expose_function_493_helper() {
-  expose_function(core::magic_name("core__encode"),true,&core::core__encode,"(arg)");
+  expose_function(core::magic_name("core__decode"),true,&core::core__decode,"(obj arg)");
 }
 NOINLINE void expose_function_494_helper() {
-  expose_function(core::magic_name("core__is_nil"),true,&core::core__is_nil,"(arg)");
+  expose_function(core::magic_name("core__encode"),true,&core::core__encode,"(arg)");
 }
 NOINLINE void expose_function_495_helper() {
-  expose_function(core::magic_name("core__instancep"),true,&core::core__instancep,"(obj)");
+  expose_function(core::magic_name("core__is_nil"),true,&core::core__is_nil,"(arg)");
 }
 NOINLINE void expose_function_496_helper() {
-  expose_function(core::magic_name("core__instance_ref"),true,&core::core__instance_ref,"(obj idx)");
+  expose_function(core::magic_name("core__instancep"),true,&core::core__instancep,"(obj)");
 }
 NOINLINE void expose_function_497_helper() {
-  expose_function(core::magic_name("core__instance_set"),true,&core::core__instance_set,"(obj idx val)");
+  expose_function(core::magic_name("core__instance_ref"),true,&core::core__instance_ref,"(obj idx)");
 }
 NOINLINE void expose_function_498_helper() {
-  expose_function(core::magic_name("core__instance_sig_set"),true,&core::core__instance_sig_set,"(arg)");
+  expose_function(core::magic_name("core__instance_set"),true,&core::core__instance_set,"(obj idx val)");
 }
 NOINLINE void expose_function_499_helper() {
-  expose_function(core::magic_name("core__instance_sig"),true,&core::core__instance_sig,"(arg)");
+  expose_function(core::magic_name("core__instance_sig_set"),true,&core::core__instance_sig_set,"(arg)");
 }
 NOINLINE void expose_function_500_helper() {
-  expose_function(core::magic_name("core__class_name_as_string"),true,&core::core__class_name_as_string,"(arg)");
+  expose_function(core::magic_name("core__instance_sig"),true,&core::core__instance_sig,"(arg)");
 }
 NOINLINE void expose_function_501_helper() {
-  expose_function(core::magic_name("core__instance_class"),true,&core::core__instance_class,"(arg)");
+  expose_function(core::magic_name("core__class_name_as_string"),true,&core::core__class_name_as_string,"(arg)");
 }
 NOINLINE void expose_function_502_helper() {
-  expose_function(core::magic_name("core__implementation_class"),true,&core::core__implementation_class,"(arg)");
+  expose_function(core::magic_name("core__instance_class"),true,&core::core__instance_class,"(arg)");
 }
 NOINLINE void expose_function_503_helper() {
-  expose_function(core::magic_name("cl__copy_tree"),true,&core::cl__copy_tree,"(arg)");
+  expose_function(core::magic_name("core__implementation_class"),true,&core::core__implementation_class,"(arg)");
 }
 NOINLINE void expose_function_504_helper() {
-  expose_function(core::magic_name("core__low_level_describe"),true,&core::core__low_level_describe,"(arg)");
+  expose_function(core::magic_name("cl__copy_tree"),true,&core::cl__copy_tree,"(arg)");
 }
 NOINLINE void expose_function_505_helper() {
-  expose_function(core::magic_name("core__print_cxx_object"),true,&core::core__print_cxx_object,"(obj stream)");
+  expose_function(core::magic_name("core__low_level_describe"),true,&core::core__low_level_describe,"(arg)");
 }
 NOINLINE void expose_function_506_helper() {
-  expose_function(core::magic_name("core__fieldsp"),true,&core::core__fieldsp,"(obj)");
+  expose_function(core::magic_name("core__print_cxx_object"),true,&core::core__print_cxx_object,"(obj stream)");
 }
 NOINLINE void expose_function_507_helper() {
-  expose_function(core::magic_name("core__load_cxx_object"),true,&core::core__load_cxx_object,"(class-name &rest args)");
+  expose_function(core::magic_name("core__fieldsp"),true,&core::core__fieldsp,"(obj)");
 }
 NOINLINE void expose_function_508_helper() {
-  expose_function(core::magic_name("core__make_cxx_object"),true,&core::core__make_cxx_object,"(class-name &rest args)");
+  expose_function(core::magic_name("core__load_cxx_object"),true,&core::core__load_cxx_object,"(class-name &rest args)");
 }
 NOINLINE void expose_function_509_helper() {
-  expose_function(core::magic_name("core__all_source_files"),true,&core::core__all_source_files,"");
+  expose_function(core::magic_name("core__make_cxx_object"),true,&core::core__make_cxx_object,"(class-name &rest args)");
 }
 NOINLINE void expose_function_510_helper() {
-  expose_function(core::magic_name("CORE:forget_all_single_dispatch_generic_functions"),true,&core::Lisp_O::forget_all_single_dispatch_generic_functions,"");
+  expose_function(core::magic_name("core__all_source_files"),true,&core::core__all_source_files,"");
 }
 NOINLINE void expose_function_511_helper() {
-  expose_function(core::magic_name("CORE:setf_find_single_dispatch_generic_function"),true,&core::Lisp_O::setf_find_single_dispatch_generic_function,"(gf-symbol gf)");
+  expose_function(core::magic_name("CORE:forget_all_single_dispatch_generic_functions"),true,&core::Lisp_O::forget_all_single_dispatch_generic_functions,"");
 }
 NOINLINE void expose_function_512_helper() {
-  expose_function(core::magic_name("CORE:find_single_dispatch_generic_function"),true,&core::Lisp_O::find_single_dispatch_generic_function,"(gf-symbol &optional errorp)");
+  expose_function(core::magic_name("CORE:setf_find_single_dispatch_generic_function"),true,&core::Lisp_O::setf_find_single_dispatch_generic_function,"(gf-symbol gf)");
 }
 NOINLINE void expose_function_513_helper() {
-  expose_function(core::magic_name("cl__not"),true,&core::cl__not,"(arg)");
+  expose_function(core::magic_name("CORE:find_single_dispatch_generic_function"),true,&core::Lisp_O::find_single_dispatch_generic_function,"(gf-symbol &optional errorp)");
 }
 NOINLINE void expose_function_514_helper() {
-  expose_function(core::magic_name("core__repr"),true,&core::core__repr,"(arg)");
+  expose_function(core::magic_name("cl__not"),true,&core::cl__not,"(arg)");
 }
 NOINLINE void expose_function_515_helper() {
-  expose_function(core::magic_name("core__is_sub_class_of"),true,&core::core__is_sub_class_of,"(tag mc)");
+  expose_function(core::magic_name("core__repr"),true,&core::core__repr,"(arg)");
 }
 NOINLINE void expose_function_516_helper() {
-  expose_function(core::magic_name("core__is_assignable_to"),true,&core::core__is_assignable_to,"(tag secondArgument)");
+  expose_function(core::magic_name("core__is_sub_class_of"),true,&core::core__is_sub_class_of,"(tag mc)");
 }
 NOINLINE void expose_function_517_helper() {
-  expose_function(core::magic_name("cl__cerror"),true,&core::cl__cerror,"(cformat eformat &rest arguments)");
+  expose_function(core::magic_name("core__is_assignable_to"),true,&core::core__is_assignable_to,"(tag secondArgument)");
 }
 NOINLINE void expose_function_518_helper() {
-  expose_function(core::magic_name("cl__error"),true,&core::cl__error,"(datum &rest arguments)");
+  expose_function(core::magic_name("cl__cerror"),true,&core::cl__cerror,"(cformat eformat &rest arguments)");
 }
 NOINLINE void expose_function_519_helper() {
-  expose_function(core::magic_name("core__invoke_internal_debugger_from_gdb"),true,&core::core__invoke_internal_debugger_from_gdb,"");
+  expose_function(core::magic_name("cl__error"),true,&core::cl__error,"(datum &rest arguments)");
 }
 NOINLINE void expose_function_520_helper() {
-  expose_function(core::magic_name("core__single_dispatch_generic_function_table"),true,&core::core__single_dispatch_generic_function_table,"");
+  expose_function(core::magic_name("core__invoke_internal_debugger_from_gdb"),true,&core::core__invoke_internal_debugger_from_gdb,"");
 }
 NOINLINE void expose_function_521_helper() {
-  expose_function(core::magic_name("core__invoke_internal_debugger"),true,&core::core__invoke_internal_debugger,"(&optional condition)");
+  expose_function(core::magic_name("core__single_dispatch_generic_function_table"),true,&core::core__single_dispatch_generic_function_table,"");
 }
 NOINLINE void expose_function_522_helper() {
-  expose_function(core::magic_name("core__universal_error_handler"),true,&core::core__universal_error_handler,"(continue-string datum initializers)");
+  expose_function(core::magic_name("core__invoke_internal_debugger"),true,&core::core__invoke_internal_debugger,"(&optional condition)");
 }
 NOINLINE void expose_function_523_helper() {
-  expose_function(core::magic_name("cl__intern"),true,&core::cl__intern,"(symbol_name &optional (package-desig *package*))");
+  expose_function(core::magic_name("core__universal_error_handler"),true,&core::core__universal_error_handler,"(continue-string datum initializers)");
 }
 NOINLINE void expose_function_524_helper() {
-  expose_function(core::magic_name("core__export_to_python"),true,&core::core__export_to_python,"(symbolsDesig)");
+  expose_function(core::magic_name("cl__intern"),true,&core::cl__intern,"(symbol_name &optional (package-desig *package*))");
 }
 NOINLINE void expose_function_525_helper() {
-  expose_function(core::magic_name("cl__export"),true,&core::cl__export,"(symDes &optional (packageDes *package*))");
+  expose_function(core::magic_name("core__export_to_python"),true,&core::core__export_to_python,"(symbolsDesig)");
 }
 NOINLINE void expose_function_526_helper() {
-  expose_function(core::magic_name("core__debug_log_off"),true,&core::core__debug_log_off,"");
+  expose_function(core::magic_name("cl__export"),true,&core::cl__export,"(symDes &optional (packageDes *package*))");
 }
 NOINLINE void expose_function_527_helper() {
-  expose_function(core::magic_name("core__debug_log_on"),true,&core::core__debug_log_on,"");
+  expose_function(core::magic_name("core__debug_log_off"),true,&core::core__debug_log_off,"");
 }
 NOINLINE void expose_function_528_helper() {
-  expose_function(core::magic_name("core__is_top_level_script"),true,&core::core__is_top_level_script,"");
+  expose_function(core::magic_name("core__debug_log_on"),true,&core::core__debug_log_on,"");
 }
 NOINLINE void expose_function_529_helper() {
-  expose_function(core::magic_name("core__set_current_working_directory"),true,&core::core__set_current_working_directory,"(dir)");
+  expose_function(core::magic_name("core__is_top_level_script"),true,&core::core__is_top_level_script,"");
 }
 NOINLINE void expose_function_530_helper() {
-  expose_function(core::magic_name("core__database_dir"),true,&core::core__database_dir,"");
+  expose_function(core::magic_name("core__set_current_working_directory"),true,&core::core__set_current_working_directory,"(dir)");
 }
 NOINLINE void expose_function_531_helper() {
-  expose_function(core::magic_name("core__lisp_code_path"),true,&core::core__lisp_code_path,"(&optional rel-path)");
+  expose_function(core::magic_name("core__database_dir"),true,&core::core__database_dir,"");
 }
 NOINLINE void expose_function_532_helper() {
-  expose_function(core::magic_name("core__library_path"),true,&core::core__library_path,"(&optional rel-path)");
+  expose_function(core::magic_name("core__lisp_code_path"),true,&core::core__lisp_code_path,"(&optional rel-path)");
 }
 NOINLINE void expose_function_533_helper() {
-  expose_function(core::magic_name("core__script_dir"),true,&core::core__script_dir,"");
+  expose_function(core::magic_name("core__library_path"),true,&core::core__library_path,"(&optional rel-path)");
 }
 NOINLINE void expose_function_534_helper() {
-  expose_function(core::magic_name("core__source_line_column"),true,&core::core__source_line_column,"");
+  expose_function(core::magic_name("core__script_dir"),true,&core::core__script_dir,"");
 }
 NOINLINE void expose_function_535_helper() {
-  expose_function(core::magic_name("core__source_file_name"),true,&core::core__source_file_name,"");
+  expose_function(core::magic_name("core__source_line_column"),true,&core::core__source_line_column,"");
 }
 NOINLINE void expose_function_536_helper() {
-  expose_function(core::magic_name("cl__sort"),true,&core::cl__sort,"(sequence predicate)");
+  expose_function(core::magic_name("core__source_file_name"),true,&core::core__source_file_name,"");
 }
 NOINLINE void expose_function_537_helper() {
-  expose_function(core::magic_name("core__sorted"),true,&core::core__sorted,"(unsorted)");
+  expose_function(core::magic_name("cl__sort"),true,&core::cl__sort,"(sequence predicate)");
 }
 NOINLINE void expose_function_538_helper() {
-  expose_function(core::magic_name("cl__apropos"),true,&core::cl__apropos,"(string_desig &optional package_desig)");
+  expose_function(core::magic_name("core__sorted"),true,&core::core__sorted,"(unsorted)");
 }
 NOINLINE void expose_function_539_helper() {
-  expose_function(core::magic_name("cl__macroexpand"),true,&core::cl__macroexpand,"(form &optional env)");
+  expose_function(core::magic_name("cl__apropos"),true,&core::cl__apropos,"(string_desig &optional package_desig)");
 }
 NOINLINE void expose_function_540_helper() {
-  expose_function(core::magic_name("cl__macroexpand_1"),true,&core::cl__macroexpand_1,"(form &optional env)");
+  expose_function(core::magic_name("cl__macroexpand"),true,&core::cl__macroexpand,"(form &optional env)");
 }
 NOINLINE void expose_function_541_helper() {
-  expose_function(core::magic_name("core__mpi_size"),true,&core::core__mpi_size,"");
+  expose_function(core::magic_name("cl__macroexpand_1"),true,&core::cl__macroexpand_1,"(form &optional env)");
 }
 NOINLINE void expose_function_542_helper() {
-  expose_function(core::magic_name("core__mpi_rank"),true,&core::core__mpi_rank,"");
+  expose_function(core::magic_name("core__mpi_size"),true,&core::core__mpi_size,"");
 }
 NOINLINE void expose_function_543_helper() {
-  expose_function(core::magic_name("core__mpi_enabled"),true,&core::core__mpi_enabled,"");
+  expose_function(core::magic_name("core__mpi_rank"),true,&core::core__mpi_rank,"");
 }
 NOINLINE void expose_function_544_helper() {
-  expose_function(core::magic_name("core__select_package"),true,&core::core__select_package,"(package-designator)");
+  expose_function(core::magic_name("core__mpi_enabled"),true,&core::core__mpi_enabled,"");
 }
 NOINLINE void expose_function_545_helper() {
-  expose_function(core::magic_name("cl__find_package"),true,&core::cl__find_package,"(name_desig)");
+  expose_function(core::magic_name("core__select_package"),true,&core::core__select_package,"(package-designator)");
 }
 NOINLINE void expose_function_546_helper() {
-  expose_function(core::magic_name("core__find_file_in_lisp_path"),true,&core::core__find_file_in_lisp_path,"(partialPath)");
+  expose_function(core::magic_name("cl__find_package"),true,&core::cl__find_package,"(name_desig)");
 }
 NOINLINE void expose_function_547_helper() {
-  expose_function(core::magic_name("core__setf_find_class"),true,&core::core__setf_find_class,"(new-value name)");
+  expose_function(core::magic_name("core__find_file_in_lisp_path"),true,&core::core__find_file_in_lisp_path,"(partialPath)");
 }
 NOINLINE void expose_function_548_helper() {
-  expose_function(core::magic_name("cl__find_class"),true,&core::cl__find_class,"(symbol &optional (errorp t) environment)");
+  expose_function(core::magic_name("core__setf_find_class"),true,&core::core__setf_find_class,"(new-value name)");
 }
 NOINLINE void expose_function_549_helper() {
-  expose_function(core::magic_name("core__getline"),true,&core::core__getline,"(&optional (prompt \"\"))");
+  expose_function(core::magic_name("cl__find_class"),true,&core::cl__find_class,"(symbol &optional (errorp t) environment)");
 }
 NOINLINE void expose_function_550_helper() {
-  expose_function(core::magic_name("core__member1"),true,&core::core__member1,"(item list test test-not key)");
+  expose_function(core::magic_name("core__getline"),true,&core::core__getline,"(&optional (prompt \"\"))");
 }
 NOINLINE void expose_function_551_helper() {
-  expose_function(core::magic_name("core__member_test"),true,&core::core__member_test,"(item list &key key test test-not)");
+  expose_function(core::magic_name("core__member1"),true,&core::core__member1,"(item list test test-not key)");
 }
 NOINLINE void expose_function_552_helper() {
-  expose_function(core::magic_name("cl__member"),true,&core::cl__member,"(item list &key key test test-not)");
+  expose_function(core::magic_name("core__member_test"),true,&core::core__member_test,"(item list &key key test test-not)");
 }
 NOINLINE void expose_function_553_helper() {
-  expose_function(core::magic_name("cl__assoc"),true,&core::cl__assoc,"(item alist &key key test test-not)");
+  expose_function(core::magic_name("cl__member"),true,&core::cl__member,"(item list &key key test test-not)");
 }
 NOINLINE void expose_function_554_helper() {
-  expose_function(core::magic_name("cl__acons"),true,&core::cl__acons,"(key datum alist)");
+  expose_function(core::magic_name("cl__assoc"),true,&core::cl__assoc,"(item alist &key key test test-not)");
 }
 NOINLINE void expose_function_555_helper() {
-  expose_function(core::magic_name("core__quit"),true,&core::core__quit,"(&optional (exit-value 0))");
+  expose_function(core::magic_name("cl__acons"),true,&core::cl__acons,"(key datum alist)");
 }
 NOINLINE void expose_function_556_helper() {
-  expose_function(core::magic_name("core__exit"),true,&core::core__exit,"(&optional (exit-value 0))");
+  expose_function(core::magic_name("core__quit"),true,&core::core__quit,"(&optional (exit-value 0))");
 }
 NOINLINE void expose_function_557_helper() {
-  expose_function(core::magic_name("core__setup_stack_monitor"),true,&core::core__setup_stack_monitor,"(&key warn-size sample-size)");
+  expose_function(core::magic_name("core__exit"),true,&core::core__exit,"(&optional (exit-value 0))");
 }
 NOINLINE void expose_function_558_helper() {
-  expose_function(core::magic_name("core__stack_limit"),true,&core::core__stack_limit,"");
+  expose_function(core::magic_name("core__setup_stack_monitor"),true,&core::core__setup_stack_monitor,"(&key warn-size sample-size)");
 }
 NOINLINE void expose_function_559_helper() {
-  expose_function(core::magic_name("core__stack_monitor"),true,&core::core__stack_monitor,"");
+  expose_function(core::magic_name("core__stack_limit"),true,&core::core__stack_limit,"");
 }
 NOINLINE void expose_function_560_helper() {
-  expose_function(core::magic_name("core__stack_used"),true,&core::core__stack_used,"");
+  expose_function(core::magic_name("core__stack_monitor"),true,&core::core__stack_monitor,"");
 }
 NOINLINE void expose_function_561_helper() {
-  expose_function(core::magic_name("core__low_level_repl"),true,&core::core__low_level_repl,"");
+  expose_function(core::magic_name("core__stack_used"),true,&core::core__stack_used,"");
 }
 NOINLINE void expose_function_562_helper() {
-  expose_function(core::magic_name("core__list_of_all_special_operators"),true,&core::core__list_of_all_special_operators,"");
+  expose_function(core::magic_name("core__low_level_repl"),true,&core::core__low_level_repl,"");
 }
 NOINLINE void expose_function_563_helper() {
-  expose_function(core::magic_name("cl__boole"),true,&core::cl__boole,"(op arg1 arg2)");
+  expose_function(core::magic_name("core__list_of_all_special_operators"),true,&core::core__list_of_all_special_operators,"");
 }
 NOINLINE void expose_function_564_helper() {
-  expose_function(core::magic_name("cl__logbitp"),true,&core::cl__logbitp,"(p x)");
+  expose_function(core::magic_name("cl__boole"),true,&core::cl__boole,"(op arg1 arg2)");
 }
 NOINLINE void expose_function_565_helper() {
-  expose_function(core::magic_name("core__bit_array_op"),true,&core::core__bit_array_op,"(op x y &optional r)");
+  expose_function(core::magic_name("cl__logbitp"),true,&core::cl__logbitp,"(p x)");
 }
 NOINLINE void expose_function_566_helper() {
-  expose_function(core::magic_name("cl__write_sequence"),true,&core::cl__write_sequence,"(seq stream &key (start 0) end)");
+  expose_function(core::magic_name("core__bit_array_op"),true,&core::core__bit_array_op,"(op x y &optional r)");
 }
 NOINLINE void expose_function_567_helper() {
-  expose_function(core::magic_name("core__file_column"),true,&core::core__file_column,"(arg)");
+  expose_function(core::magic_name("cl__write_sequence"),true,&core::cl__write_sequence,"(seq stream &key (start 0) end)");
 }
 NOINLINE void expose_function_568_helper() {
-  expose_function(core::magic_name("cl__unread_char"),true,&core::cl__unread_char,"(char &optional strm)");
+  expose_function(core::magic_name("core__file_column"),true,&core::core__file_column,"(arg)");
 }
 NOINLINE void expose_function_569_helper() {
-  expose_function(core::magic_name("cl__finish_output"),true,&core::cl__finish_output,"(&optional strm)");
+  expose_function(core::magic_name("cl__unread_char"),true,&core::cl__unread_char,"(char &optional strm)");
 }
 NOINLINE void expose_function_570_helper() {
-  expose_function(core::magic_name("cl__force_output"),true,&core::cl__force_output,"(&optional strm)");
+  expose_function(core::magic_name("cl__finish_output"),true,&core::cl__finish_output,"(&optional strm)");
 }
 NOINLINE void expose_function_571_helper() {
-  expose_function(core::magic_name("cl__listen"),true,&core::cl__listen,"(&optional dstrm)");
+  expose_function(core::magic_name("cl__force_output"),true,&core::cl__force_output,"(&optional strm)");
 }
 NOINLINE void expose_function_572_helper() {
-  expose_function(core::magic_name("cl__clear_output"),true,&core::cl__clear_output,"(&optional dstrm)");
+  expose_function(core::magic_name("cl__listen"),true,&core::cl__listen,"(&optional dstrm)");
 }
 NOINLINE void expose_function_573_helper() {
-  expose_function(core::magic_name("cl__clear_input"),true,&core::cl__clear_input,"(&optional dstrm)");
+  expose_function(core::magic_name("cl__clear_output"),true,&core::cl__clear_output,"(&optional dstrm)");
 }
 NOINLINE void expose_function_574_helper() {
-  expose_function(core::magic_name("cl__write_char"),true,&core::cl__write_char,"(string &optional output-stream)");
+  expose_function(core::magic_name("cl__clear_input"),true,&core::cl__clear_input,"(&optional dstrm)");
 }
 NOINLINE void expose_function_575_helper() {
-  expose_function(core::magic_name("cl__write_byte"),true,&core::cl__write_byte,"(byte &optional output-stream)");
+  expose_function(core::magic_name("cl__write_char"),true,&core::cl__write_char,"(string &optional output-stream)");
 }
 NOINLINE void expose_function_576_helper() {
-  expose_function(core::magic_name("cl__write_line"),true,&core::cl__write_line,"(string &optional output-stream &key (start 0) end)");
+  expose_function(core::magic_name("cl__write_byte"),true,&core::cl__write_byte,"(byte &optional output-stream)");
 }
 NOINLINE void expose_function_577_helper() {
-  expose_function(core::magic_name("cl__write_string"),true,&core::cl__write_string,"(string &optional output-stream &key (start 0) end)");
+  expose_function(core::magic_name("cl__write_line"),true,&core::cl__write_line,"(string &optional output-stream &key (start 0) end)");
 }
 NOINLINE void expose_function_578_helper() {
-  expose_function(core::magic_name("cl__fresh_line"),true,&core::cl__fresh_line,"(&optional outputStream)");
+  expose_function(core::magic_name("cl__write_string"),true,&core::cl__write_string,"(string &optional output-stream &key (start 0) end)");
 }
 NOINLINE void expose_function_579_helper() {
-  expose_function(core::magic_name("cl__terpri"),true,&core::cl__terpri,"(&optional output-stream)");
+  expose_function(core::magic_name("cl__fresh_line"),true,&core::cl__fresh_line,"(&optional outputStream)");
 }
 NOINLINE void expose_function_580_helper() {
-  expose_function(core::magic_name("cl__read_line"),true,&core::cl__read_line,"(&optional input-stream (eof-error-p t) eof-value recursive-p)");
+  expose_function(core::magic_name("cl__terpri"),true,&core::cl__terpri,"(&optional output-stream)");
 }
 NOINLINE void expose_function_581_helper() {
-  expose_function(core::magic_name("cl__read_from_string"),true,&core::cl__read_from_string,"(content &optional (eof-error-p t) eof-value &key (start 0) end preserve-whitespace)");
+  expose_function(core::magic_name("cl__read_line"),true,&core::cl__read_line,"(&optional input-stream (eof-error-p t) eof-value recursive-p)");
 }
 NOINLINE void expose_function_582_helper() {
-  expose_function(core::magic_name("cl__read_char_no_hang"),true,&core::cl__read_char_no_hang,"(&optional strm (eof_error_p t) eof_value recursive_p)");
+  expose_function(core::magic_name("cl__read_from_string"),true,&core::cl__read_from_string,"(content &optional (eof-error-p t) eof-value &key (start 0) end preserve-whitespace)");
 }
 NOINLINE void expose_function_583_helper() {
-  expose_function(core::magic_name("cl__read_char"),true,&core::cl__read_char,"(&optional strm (eof_error_p t) eof_value recursive_p)");
+  expose_function(core::magic_name("cl__read_char_no_hang"),true,&core::cl__read_char_no_hang,"(&optional strm (eof_error_p t) eof_value recursive_p)");
 }
 NOINLINE void expose_function_584_helper() {
-  expose_function(core::magic_name("cl__peek_char"),true,&core::cl__peek_char,"(&optional peek_type strm (eof_errorp t) eof_value recursivep)");
+  expose_function(core::magic_name("cl__read_char"),true,&core::cl__read_char,"(&optional strm (eof_error_p t) eof_value recursive_p)");
 }
 NOINLINE void expose_function_585_helper() {
-  expose_function(core::magic_name("cl__read_byte"),true,&core::cl__read_byte,"(&optional strm (eof_error_p t) eof_value)");
+  expose_function(core::magic_name("cl__peek_char"),true,&core::cl__peek_char,"(&optional peek_type strm (eof_errorp t) eof_value recursivep)");
 }
 NOINLINE void expose_function_586_helper() {
-  expose_function(core::magic_name("core__input_stream_source_pos_info"),true,&core::core__input_stream_source_pos_info,"(arg)");
+  expose_function(core::magic_name("cl__read_byte"),true,&core::cl__read_byte,"(&optional strm (eof_error_p t) eof_value)");
 }
 NOINLINE void expose_function_587_helper() {
-  expose_function(core::magic_name("core__stream_column"),true,&core::core__stream_column,"(stream)");
+  expose_function(core::magic_name("core__input_stream_source_pos_info"),true,&core::core__input_stream_source_pos_info,"(arg)");
 }
 NOINLINE void expose_function_588_helper() {
-  expose_function(core::magic_name("core__stream_linenumber"),true,&core::core__stream_linenumber,"(stream)");
+  expose_function(core::magic_name("core__stream_column"),true,&core::core__stream_column,"(stream)");
 }
 NOINLINE void expose_function_589_helper() {
-  expose_function(core::magic_name("cl__close"),true,&core::cl__close,"(strm &key abort)");
+  expose_function(core::magic_name("core__stream_linenumber"),true,&core::core__stream_linenumber,"(stream)");
 }
 NOINLINE void expose_function_590_helper() {
-  expose_function(core::magic_name("cl__open"),true,&core::cl__open,"(filename &key (direction :input) (element-type 'base-char) (if-exists nil iesp) (if-does-not-exist nil idnesp) (external-format :default) (cstream T))");
+  expose_function(core::magic_name("cl__close"),true,&core::cl__close,"(strm &key abort)");
 }
 NOINLINE void expose_function_591_helper() {
-  expose_function(core::magic_name("cl__streamp"),true,&core::cl__streamp,"(arg)");
+  expose_function(core::magic_name("cl__open"),true,&core::cl__open,"(filename &key (direction :input) (element-type 'base-char) (if-exists nil iesp) (if-does-not-exist nil idnesp) (external-format :default) (cstream T))");
 }
 NOINLINE void expose_function_592_helper() {
-  expose_function(core::magic_name("cl__interactive_stream_p"),true,&core::cl__interactive_stream_p,"(arg)");
+  expose_function(core::magic_name("cl__streamp"),true,&core::cl__streamp,"(arg)");
 }
 NOINLINE void expose_function_593_helper() {
-  expose_function(core::magic_name("cl__output_stream_p"),true,&core::cl__output_stream_p,"(arg)");
+  expose_function(core::magic_name("cl__interactive_stream_p"),true,&core::cl__interactive_stream_p,"(arg)");
 }
 NOINLINE void expose_function_594_helper() {
-  expose_function(core::magic_name("cl__input_stream_p"),true,&core::cl__input_stream_p,"(strm)");
+  expose_function(core::magic_name("cl__output_stream_p"),true,&core::cl__output_stream_p,"(arg)");
 }
 NOINLINE void expose_function_595_helper() {
-  expose_function(core::magic_name("cl__file_position"),true,&core::cl__file_position,"(file-stream &optional position)");
+  expose_function(core::magic_name("cl__input_stream_p"),true,&core::cl__input_stream_p,"(strm)");
 }
 NOINLINE void expose_function_596_helper() {
-  expose_function(core::magic_name("cl__file_length"),true,&core::cl__file_length,"(strm)");
+  expose_function(core::magic_name("cl__file_position"),true,&core::cl__file_position,"(file-stream &optional position)");
 }
 NOINLINE void expose_function_597_helper() {
-  expose_function(core::magic_name("cl__read_sequence"),true,&core::cl__read_sequence,"(sequence stream &key (start 0) end)");
+  expose_function(core::magic_name("cl__file_length"),true,&core::cl__file_length,"(strm)");
 }
 NOINLINE void expose_function_598_helper() {
-  expose_function(core::magic_name("core__do_write_sequence"),true,&core::core__do_write_sequence,"(seq stream start end)");
+  expose_function(core::magic_name("cl__read_sequence"),true,&core::cl__read_sequence,"(sequence stream &key (start 0) end)");
 }
 NOINLINE void expose_function_599_helper() {
-  expose_function(core::magic_name("core__file_stream_fd"),true,&core::core__file_stream_fd,"(s)");
+  expose_function(core::magic_name("core__do_write_sequence"),true,&core::core__do_write_sequence,"(seq stream start end)");
 }
 NOINLINE void expose_function_600_helper() {
-  expose_function(core::magic_name("core__set_buffering_mode"),true,&core::core__set_buffering_mode,"(stream mode)");
+  expose_function(core::magic_name("core__file_stream_fd"),true,&core::core__file_stream_fd,"(s)");
 }
 NOINLINE void expose_function_601_helper() {
-  expose_function(core::magic_name("cl__synonym_stream_symbol"),true,&core::cl__synonym_stream_symbol,"(s)");
+  expose_function(core::magic_name("core__set_buffering_mode"),true,&core::core__set_buffering_mode,"(stream mode)");
 }
 NOINLINE void expose_function_602_helper() {
-  expose_function(core::magic_name("cl__make_synonym_stream"),true,&core::cl__make_synonym_stream,"(strm1)");
+  expose_function(core::magic_name("cl__synonym_stream_symbol"),true,&core::cl__synonym_stream_symbol,"(s)");
 }
 NOINLINE void expose_function_603_helper() {
-  expose_function(core::magic_name("cl__make_concatenated_stream"),true,&core::cl__make_concatenated_stream,"(&rest ap)");
+  expose_function(core::magic_name("cl__make_synonym_stream"),true,&core::cl__make_synonym_stream,"(strm1)");
 }
 NOINLINE void expose_function_604_helper() {
-  expose_function(core::magic_name("cl__make_echo_stream"),true,&core::cl__make_echo_stream,"(strm1 strm2)");
+  expose_function(core::magic_name("cl__make_concatenated_stream"),true,&core::cl__make_concatenated_stream,"(&rest ap)");
 }
 NOINLINE void expose_function_605_helper() {
-  expose_function(core::magic_name("cl__make_broadcast_stream"),true,&core::cl__make_broadcast_stream,"(&rest ap)");
+  expose_function(core::magic_name("cl__make_echo_stream"),true,&core::cl__make_echo_stream,"(strm1 strm2)");
 }
 NOINLINE void expose_function_606_helper() {
-  expose_function(core::magic_name("cl__two_way_stream_output_stream"),true,&core::cl__two_way_stream_output_stream,"(strm)");
+  expose_function(core::magic_name("cl__make_broadcast_stream"),true,&core::cl__make_broadcast_stream,"(&rest ap)");
 }
 NOINLINE void expose_function_607_helper() {
-  expose_function(core::magic_name("cl__two_way_stream_input_stream"),true,&core::cl__two_way_stream_input_stream,"(strm)");
+  expose_function(core::magic_name("cl__two_way_stream_output_stream"),true,&core::cl__two_way_stream_output_stream,"(strm)");
 }
 NOINLINE void expose_function_608_helper() {
-  expose_function(core::magic_name("cl__make_two_way_stream"),true,&core::cl__make_two_way_stream,"(istrm ostrm)");
+  expose_function(core::magic_name("cl__two_way_stream_input_stream"),true,&core::cl__two_way_stream_input_stream,"(strm)");
 }
 NOINLINE void expose_function_609_helper() {
-  expose_function(core::magic_name("cl__make_string_input_stream"),true,&core::cl__make_string_input_stream,"(strng &optional (istart 0) iend)");
+  expose_function(core::magic_name("cl__make_two_way_stream"),true,&core::cl__make_two_way_stream,"(istrm ostrm)");
 }
 NOINLINE void expose_function_610_helper() {
-  expose_function(core::magic_name("cl__get_output_stream_string"),true,&core::cl__get_output_stream_string,"(strm)");
+  expose_function(core::magic_name("cl__make_string_input_stream"),true,&core::cl__make_string_input_stream,"(strng &optional (istart 0) iend)");
 }
 NOINLINE void expose_function_611_helper() {
-  expose_function(core::magic_name("cl__make_string_output_stream"),true,&core::cl__make_string_output_stream,"(&key (element-type 'character))");
+  expose_function(core::magic_name("cl__get_output_stream_string"),true,&core::cl__get_output_stream_string,"(strm)");
 }
 NOINLINE void expose_function_612_helper() {
-  expose_function(core::magic_name("core__make_string_output_stream_from_string"),true,&core::core__make_string_output_stream_from_string,"(s)");
+  expose_function(core::magic_name("cl__make_string_output_stream"),true,&core::cl__make_string_output_stream,"(&key (element-type 'character))");
 }
 NOINLINE void expose_function_613_helper() {
-  expose_function(core::magic_name("CORE:makeLambdaListHandler"),true,&core::LambdaListHandler_O::makeLambdaListHandler,"(lambda-list &optional declares (context 'core::function))");
+  expose_function(core::magic_name("core__make_string_output_stream_from_string"),true,&core::core__make_string_output_stream_from_string,"(s)");
 }
 NOINLINE void expose_function_614_helper() {
-  expose_function(core::magic_name("core__process_lambda_list"),true,&core::core__process_lambda_list,"(vl context)");
+  expose_function(core::magic_name("CORE:makeLambdaListHandler"),true,&core::LambdaListHandler_O::makeLambdaListHandler,"(lambda-list &optional declares (context 'core::function))");
 }
 NOINLINE void expose_function_615_helper() {
-  expose_function(core::magic_name("core__process_single_dispatch_lambda_list"),true,&core::core__process_single_dispatch_lambda_list,"(lambda-list)");
+  expose_function(core::magic_name("core__process_lambda_list"),true,&core::core__process_lambda_list,"(vl context)");
 }
 NOINLINE void expose_function_616_helper() {
-  expose_function(core::magic_name("core__process_macro_lambda_list"),true,&core::core__process_macro_lambda_list,"(lambda-list)");
+  expose_function(core::magic_name("core__process_single_dispatch_lambda_list"),true,&core::core__process_single_dispatch_lambda_list,"(lambda-list)");
 }
 NOINLINE void expose_function_617_helper() {
-  expose_function(core::magic_name("core__magic_name"),true,&core::core__magic_name,"(name)");
+  expose_function(core::magic_name("core__process_macro_lambda_list"),true,&core::core__process_macro_lambda_list,"(lambda-list)");
 }
 NOINLINE void expose_function_618_helper() {
-  expose_function(core::magic_name("core__lispify_name"),true,&core::core__lispify_name,"(name)");
+  expose_function(core::magic_name("core__magic_name"),true,&core::core__magic_name,"(name)");
 }
 NOINLINE void expose_function_619_helper() {
-  expose_function(core::magic_name("CORE:makeStackValueEnvironment"),true,&core::StackValueEnvironment_O::make,"(parent)");
+  expose_function(core::magic_name("core__lispify_name"),true,&core::core__lispify_name,"(name)");
 }
 NOINLINE void expose_function_620_helper() {
-  expose_function(core::magic_name("CORE:makeSymbolMacroletEnvironment"),true,&core::SymbolMacroletEnvironment_O::make,"(parent)");
+  expose_function(core::magic_name("CORE:makeStackValueEnvironment"),true,&core::StackValueEnvironment_O::make,"(parent)");
 }
 NOINLINE void expose_function_621_helper() {
-  expose_function(core::magic_name("CORE:makeMacroletEnvironment"),true,&core::MacroletEnvironment_O::make,"(parent)");
+  expose_function(core::magic_name("CORE:makeSymbolMacroletEnvironment"),true,&core::SymbolMacroletEnvironment_O::make,"(parent)");
 }
 NOINLINE void expose_function_622_helper() {
-  expose_function(core::magic_name("CORE:makeTagbodyEnvironment"),true,&core::TagbodyEnvironment_O::make,"(parent)");
+  expose_function(core::magic_name("CORE:makeMacroletEnvironment"),true,&core::MacroletEnvironment_O::make,"(parent)");
 }
 NOINLINE void expose_function_623_helper() {
-  expose_function(core::magic_name("CORE:makeFunctionContainerEnvironment"),true,&core::FunctionContainerEnvironment_O::make,"(parent)");
+  expose_function(core::magic_name("CORE:makeTagbodyEnvironment"),true,&core::TagbodyEnvironment_O::make,"(parent)");
 }
 NOINLINE void expose_function_624_helper() {
-  expose_function(core::magic_name("CORE:makeCatchEnvironment"),true,&core::CatchEnvironment_O::make,"(parent)");
+  expose_function(core::magic_name("CORE:makeFunctionContainerEnvironment"),true,&core::FunctionContainerEnvironment_O::make,"(parent)");
 }
 NOINLINE void expose_function_625_helper() {
-  expose_function(core::magic_name("CORE:makeBlockEnvironment"),true,&core::BlockEnvironment_O::make,"(blockSymbol parent)");
+  expose_function(core::magic_name("CORE:makeCatchEnvironment"),true,&core::CatchEnvironment_O::make,"(parent)");
 }
 NOINLINE void expose_function_626_helper() {
-  expose_function(core::magic_name("CORE:makeUnwindProtectEnvironment"),true,&core::UnwindProtectEnvironment_O::make,"(cleanupForm parent)");
+  expose_function(core::magic_name("CORE:makeBlockEnvironment"),true,&core::BlockEnvironment_O::make,"(blockSymbol parent)");
 }
 NOINLINE void expose_function_627_helper() {
-  expose_function(core::magic_name("CORE:makeFunctionValueEnvironment"),true,&core::FunctionValueEnvironment_O::createForEntries,"(numEntries parent)");
+  expose_function(core::magic_name("CORE:makeUnwindProtectEnvironment"),true,&core::UnwindProtectEnvironment_O::make,"(cleanupForm parent)");
 }
 NOINLINE void expose_function_628_helper() {
-  expose_function(core::magic_name("CORE:makeValueEnvironmentForLocallySpecialEntries"),true,&core::ValueEnvironment_O::createForLocallySpecialEntries,"(specials parent)");
+  expose_function(core::magic_name("CORE:makeFunctionValueEnvironment"),true,&core::FunctionValueEnvironment_O::createForEntries,"(numEntries parent)");
 }
 NOINLINE void expose_function_629_helper() {
-  expose_function(core::magic_name("CORE:makeValueEnvironmentForNumberOfEntries"),true,&core::ValueEnvironment_O::createForNumberOfEntries,"(numberOfArguments parent)");
+  expose_function(core::magic_name("CORE:makeValueEnvironmentForLocallySpecialEntries"),true,&core::ValueEnvironment_O::createForLocallySpecialEntries,"(specials parent)");
 }
 NOINLINE void expose_function_630_helper() {
-  expose_function(core::magic_name("CORE:makeValueEnvironment"),true,&core::ValueEnvironment_O::createForLambdaListHandler,"(llh parent)");
+  expose_function(core::magic_name("CORE:makeValueEnvironmentForNumberOfEntries"),true,&core::ValueEnvironment_O::createForNumberOfEntries,"(numberOfArguments parent)");
 }
 NOINLINE void expose_function_631_helper() {
-  expose_function("CORE:CURRENT-VISIBLE-ENVIRONMENT",true,&core::Environment_O::clasp_currentVisibleEnvironment,"(env)");
+  expose_function(core::magic_name("CORE:makeValueEnvironment"),true,&core::ValueEnvironment_O::createForLambdaListHandler,"(llh parent)");
 }
 NOINLINE void expose_function_632_helper() {
-  expose_function(core::magic_name("core__environment_id"),true,&core::core__environment_id,"(env)");
+  expose_function("CORE:CURRENT-VISIBLE-ENVIRONMENT",true,&core::Environment_O::clasp_currentVisibleEnvironment,"(env)");
 }
 NOINLINE void expose_function_633_helper() {
-  expose_function(core::magic_name("core__runtime_environment"),true,&core::core__runtime_environment,"(env)");
+  expose_function(core::magic_name("core__environment_id"),true,&core::core__environment_id,"(env)");
 }
 NOINLINE void expose_function_634_helper() {
-  expose_function(core::magic_name("core__environment_type_list"),true,&core::core__environment_type_list,"(env)");
+  expose_function(core::magic_name("core__runtime_environment"),true,&core::core__runtime_environment,"(env)");
 }
 NOINLINE void expose_function_635_helper() {
-  expose_function(core::magic_name("core__environment_list"),true,&core::core__environment_list,"(env)");
+  expose_function(core::magic_name("core__environment_type_list"),true,&core::core__environment_type_list,"(env)");
 }
 NOINLINE void expose_function_636_helper() {
-  expose_function(core::magic_name("core__environment_activation_frame"),true,&core::core__environment_activation_frame,"(env)");
+  expose_function(core::magic_name("core__environment_list"),true,&core::core__environment_list,"(env)");
 }
 NOINLINE void expose_function_637_helper() {
-  expose_function(core::magic_name("core__lexical_macro_function"),true,&core::core__lexical_macro_function,"(name env)");
+  expose_function(core::magic_name("core__environment_activation_frame"),true,&core::core__environment_activation_frame,"(env)");
 }
 NOINLINE void expose_function_638_helper() {
-  expose_function(core::magic_name("core__lexical_function"),true,&core::core__lexical_function,"(name env)");
+  expose_function(core::magic_name("core__lexical_macro_function"),true,&core::core__lexical_macro_function,"(name env)");
 }
 NOINLINE void expose_function_639_helper() {
-  expose_function(core::magic_name("core__environment_debug_values"),true,&core::core__environment_debug_values,"(frame)");
+  expose_function(core::magic_name("core__lexical_function"),true,&core::core__lexical_function,"(name env)");
 }
 NOINLINE void expose_function_640_helper() {
-  expose_function(core::magic_name("core__environment_debug_names"),true,&core::core__environment_debug_names,"(frame)");
+  expose_function(core::magic_name("core__environment_debug_values"),true,&core::core__environment_debug_values,"(frame)");
 }
 NOINLINE void expose_function_641_helper() {
-  expose_function(core::magic_name("core__environment_length"),true,&core::core__environment_length,"(frame)");
+  expose_function(core::magic_name("core__environment_debug_names"),true,&core::core__environment_debug_names,"(frame)");
 }
 NOINLINE void expose_function_642_helper() {
-  expose_function(core::magic_name("core__classify_return_from_symbol"),true,&core::core__classify_return_from_symbol,"(env sym)");
+  expose_function(core::magic_name("core__environment_length"),true,&core::core__environment_length,"(frame)");
 }
 NOINLINE void expose_function_643_helper() {
-  expose_function(core::magic_name("cl__nreconc"),true,&core::cl__nreconc,"(list tail)");
+  expose_function(core::magic_name("core__classify_return_from_symbol"),true,&core::core__classify_return_from_symbol,"(env sym)");
 }
 NOINLINE void expose_function_644_helper() {
-  expose_function(core::magic_name("cl__revappend"),true,&core::cl__revappend,"(list tail)");
+  expose_function(core::magic_name("cl__nreconc"),true,&core::cl__nreconc,"(list tail)");
 }
 NOINLINE void expose_function_645_helper() {
-  expose_function(core::magic_name("cl__nconc"),true,&core::cl__nconc,"(&rest lists)");
+  expose_function(core::magic_name("cl__revappend"),true,&core::cl__revappend,"(list tail)");
 }
 NOINLINE void expose_function_646_helper() {
-  expose_function(core::magic_name("cl__last"),true,&core::cl__last,"(list &optional (on 1))");
+  expose_function(core::magic_name("cl__nconc"),true,&core::cl__nconc,"(&rest lists)");
 }
 NOINLINE void expose_function_647_helper() {
-  expose_function(core::magic_name("cl__listSTAR"),true,&core::cl__listSTAR,"(&rest objects)");
+  expose_function(core::magic_name("cl__last"),true,&core::cl__last,"(list &optional (on 1))");
 }
 NOINLINE void expose_function_648_helper() {
-  expose_function(core::magic_name("cl__list"),true,&core::cl__list,"(&rest objects)");
+  expose_function(core::magic_name("cl__listSTAR"),true,&core::cl__listSTAR,"(&rest objects)");
 }
 NOINLINE void expose_function_649_helper() {
-  expose_function(core::magic_name("cl__nbutlast"),true,&core::cl__nbutlast,"(list &optional (n 1))");
+  expose_function(core::magic_name("cl__list"),true,&core::cl__list,"(&rest objects)");
 }
 NOINLINE void expose_function_650_helper() {
-  expose_function(core::magic_name("cl__butlast"),true,&core::cl__butlast,"(list &optional (n 1))");
+  expose_function(core::magic_name("cl__nbutlast"),true,&core::cl__nbutlast,"(list &optional (n 1))");
 }
 NOINLINE void expose_function_651_helper() {
-  expose_function(core::magic_name("cl__copy_list"),true,&core::cl__copy_list,"(arg)");
+  expose_function(core::magic_name("cl__butlast"),true,&core::cl__butlast,"(list &optional (n 1))");
 }
 NOINLINE void expose_function_652_helper() {
-  expose_function(core::magic_name("cl__nthcdr"),true,&core::cl__nthcdr,"(idx arg)");
+  expose_function(core::magic_name("cl__copy_list"),true,&core::cl__copy_list,"(arg)");
 }
 NOINLINE void expose_function_653_helper() {
-  expose_function(core::magic_name("cl__nth"),true,&core::cl__nth,"(idx arg)");
+  expose_function(core::magic_name("cl__nthcdr"),true,&core::cl__nthcdr,"(idx arg)");
 }
 NOINLINE void expose_function_654_helper() {
-  expose_function(core::magic_name("cl__rassoc"),true,&core::cl__rassoc,"(item a-list &key test test-not key)");
+  expose_function(core::magic_name("cl__nth"),true,&core::cl__nth,"(idx arg)");
 }
 NOINLINE void expose_function_655_helper() {
-  expose_function(core::magic_name("core__function_source_code"),true,&core::core__function_source_code,"(fn)");
+  expose_function(core::magic_name("cl__rassoc"),true,&core::cl__rassoc,"(item a-list &key test test-not key)");
 }
 NOINLINE void expose_function_656_helper() {
-  expose_function(core::magic_name("cl__function_lambda_expression"),true,&core::cl__function_lambda_expression,"(fn)");
+  expose_function(core::magic_name("core__function_source_code"),true,&core::core__function_source_code,"(fn)");
 }
 NOINLINE void expose_function_657_helper() {
-  expose_function(core::magic_name("core__set_kind"),true,&core::core__set_kind,"(fn kind)");
+  expose_function(core::magic_name("cl__function_lambda_expression"),true,&core::cl__function_lambda_expression,"(fn)");
 }
 NOINLINE void expose_function_658_helper() {
-  expose_function(core::magic_name("core__function_source_pos_info"),true,&core::core__function_source_pos_info,"(function)");
+  expose_function(core::magic_name("core__set_kind"),true,&core::core__set_kind,"(fn kind)");
 }
 NOINLINE void expose_function_659_helper() {
-  expose_function(core::magic_name("core__function_lambda_list"),true,&core::core__function_lambda_list,"(function)");
+  expose_function(core::magic_name("core__function_source_pos_info"),true,&core::core__function_source_pos_info,"(function)");
 }
 NOINLINE void expose_function_660_helper() {
-  expose_function(core::magic_name("core__mkdir"),true,&core::core__mkdir,"(dir mode)");
+  expose_function(core::magic_name("core__function_lambda_list"),true,&core::core__function_lambda_list,"(function)");
 }
 NOINLINE void expose_function_661_helper() {
-  expose_function(core::magic_name("core__unix_get_local_time_zone"),true,&core::core__unix_get_local_time_zone,"");
+  expose_function(core::magic_name("core__mkdir"),true,&core::core__mkdir,"(dir mode)");
 }
 NOINLINE void expose_function_662_helper() {
-  expose_function(core::magic_name("core__unix_daylight_saving_time"),true,&core::core__unix_daylight_saving_time,"(unix-time)");
+  expose_function(core::magic_name("core__unix_get_local_time_zone"),true,&core::core__unix_get_local_time_zone,"");
 }
 NOINLINE void expose_function_663_helper() {
-  expose_function(core::magic_name("cl__directory"),true,&core::cl__directory,"(mask &key (resolve-symlinks t) &allow-other-keys)");
+  expose_function(core::magic_name("core__unix_daylight_saving_time"),true,&core::core__unix_daylight_saving_time,"(unix-time)");
 }
 NOINLINE void expose_function_664_helper() {
-  expose_function(core::magic_name("core__copy_file"),true,&core::core__copy_file,"(orig dest)");
+  expose_function(core::magic_name("cl__directory"),true,&core::cl__directory,"(mask &key (resolve-symlinks t) &allow-other-keys)");
 }
 NOINLINE void expose_function_665_helper() {
-  expose_function(core::magic_name("core__chmod"),true,&core::core__chmod,"(file mode)");
+  expose_function(core::magic_name("core__copy_file"),true,&core::core__copy_file,"(orig dest)");
 }
 NOINLINE void expose_function_666_helper() {
-  expose_function(core::magic_name("core__rmdir"),true,&core::core__rmdir,"(directory)");
+  expose_function(core::magic_name("core__chmod"),true,&core::core__chmod,"(file mode)");
 }
 NOINLINE void expose_function_667_helper() {
-  expose_function(core::magic_name("core__mkstemp"),true,&core::core__mkstemp,"(template)");
+  expose_function(core::magic_name("core__rmdir"),true,&core::core__rmdir,"(directory)");
 }
 NOINLINE void expose_function_668_helper() {
-  expose_function(core::magic_name("cl__user_homedir_pathname"),true,&core::cl__user_homedir_pathname,"(&optional host)");
+  expose_function(core::magic_name("core__mkstemp"),true,&core::core__mkstemp,"(template)");
 }
 NOINLINE void expose_function_669_helper() {
-  expose_function(core::magic_name("cl__file_author"),true,&core::cl__file_author,"(file)");
+  expose_function(core::magic_name("cl__user_homedir_pathname"),true,&core::cl__user_homedir_pathname,"(&optional host)");
 }
 NOINLINE void expose_function_670_helper() {
-  expose_function(core::magic_name("cl__file_write_date"),true,&core::cl__file_write_date,"(pathspec)");
+  expose_function(core::magic_name("cl__file_author"),true,&core::cl__file_author,"(file)");
 }
 NOINLINE void expose_function_671_helper() {
-  expose_function(core::magic_name("cl__probe_file"),true,&core::cl__probe_file,"(filespec)");
+  expose_function(core::magic_name("cl__file_write_date"),true,&core::cl__file_write_date,"(pathspec)");
 }
 NOINLINE void expose_function_672_helper() {
-  expose_function(core::magic_name("cl__delete_file"),true,&core::cl__delete_file,"(file)");
+  expose_function(core::magic_name("cl__probe_file"),true,&core::cl__probe_file,"(filespec)");
 }
 NOINLINE void expose_function_673_helper() {
-  expose_function(core::magic_name("cl__rename_file"),true,&core::cl__rename_file,"(oldn newn &key (if-exists :error))");
+  expose_function(core::magic_name("cl__delete_file"),true,&core::cl__delete_file,"(file)");
 }
 NOINLINE void expose_function_674_helper() {
-  expose_function(core::magic_name("cl__truename"),true,&core::cl__truename,"(orig-pathname)");
+  expose_function(core::magic_name("cl__rename_file"),true,&core::cl__rename_file,"(oldn newn &key (if-exists :error))");
 }
 NOINLINE void expose_function_675_helper() {
-  expose_function(core::magic_name("core__file_truename"),true,&core::core__file_truename,"(pathname filename follow-links)");
+  expose_function(core::magic_name("cl__truename"),true,&core::cl__truename,"(orig-pathname)");
 }
 NOINLINE void expose_function_676_helper() {
-  expose_function(core::magic_name("core__readlink"),true,&core::core__readlink,"(filename)");
+  expose_function(core::magic_name("core__file_truename"),true,&core::core__file_truename,"(pathname filename follow-links)");
 }
 NOINLINE void expose_function_677_helper() {
-  expose_function(core::magic_name("core__file_kind"),true,&core::core__file_kind,"(filename follow-links)");
+  expose_function(core::magic_name("core__readlink"),true,&core::core__readlink,"(filename)");
 }
 NOINLINE void expose_function_678_helper() {
-  expose_function(core::magic_name("core__current_dir"),true,&core::core__current_dir,"");
+  expose_function(core::magic_name("core__file_kind"),true,&core::core__file_kind,"(filename follow-links)");
 }
 NOINLINE void expose_function_679_helper() {
-  expose_function(core::magic_name("ext__chdir"),true,&core::ext__chdir,"(pathname)");
+  expose_function(core::magic_name("core__current_dir"),true,&core::core__current_dir,"");
 }
 NOINLINE void expose_function_680_helper() {
-  expose_function(core::magic_name("core__getppid"),true,&core::core__getppid,"");
+  expose_function(core::magic_name("ext__chdir"),true,&core::ext__chdir,"(pathname)");
 }
 NOINLINE void expose_function_681_helper() {
-  expose_function(core::magic_name("core__getpid"),true,&core::core__getpid,"");
+  expose_function(core::magic_name("core__getppid"),true,&core::core__getppid,"");
 }
 NOINLINE void expose_function_682_helper() {
-  expose_function(core::magic_name("core__waitpid"),true,&core::core__waitpid,"(pid options)");
+  expose_function(core::magic_name("core__getpid"),true,&core::core__getpid,"");
 }
 NOINLINE void expose_function_683_helper() {
-  expose_function(core::magic_name("core__fork"),true,&core::core__fork,"");
+  expose_function(core::magic_name("core__waitpid"),true,&core::core__waitpid,"(pid options)");
 }
 NOINLINE void expose_function_684_helper() {
-  expose_function(core::magic_name("CORE:allocateForeignObject"),true,&core::ForeignData_O::allocateForeignObject,"(kind)");
+  expose_function(core::magic_name("core__fork"),true,&core::core__fork,"");
 }
 NOINLINE void expose_function_685_helper() {
-  expose_function(core::magic_name("core__make_source_manager"),true,&core::core__make_source_manager,"");
+  expose_function(core::magic_name("CORE:allocateForeignObject"),true,&core::ForeignData_O::allocateForeignObject,"(kind)");
 }
 NOINLINE void expose_function_686_helper() {
-  expose_function(core::magic_name("core__dump_source_manager"),true,&core::core__dump_source_manager,"(dumpAll)");
+  expose_function(core::magic_name("core__make_source_manager"),true,&core::core__make_source_manager,"");
 }
 NOINLINE void expose_function_687_helper() {
-  expose_function(core::magic_name("core__walk_to_find_source_pos_info"),true,&core::core__walk_to_find_source_pos_info,"(arg &optional default-spi)");
+  expose_function(core::magic_name("core__dump_source_manager"),true,&core::core__dump_source_manager,"(dumpAll)");
 }
 NOINLINE void expose_function_688_helper() {
-  expose_function(core::magic_name("core__walk_to_assign_source_pos_info"),true,&core::core__walk_to_assign_source_pos_info,"(obj top &optional stream)");
+  expose_function(core::magic_name("core__walk_to_find_source_pos_info"),true,&core::core__walk_to_find_source_pos_info,"(arg &optional default-spi)");
 }
 NOINLINE void expose_function_689_helper() {
-  expose_function(core::magic_name("core__walk_to_find_source_info"),true,&core::core__walk_to_find_source_info,"(arg)");
+  expose_function(core::magic_name("core__walk_to_assign_source_pos_info"),true,&core::core__walk_to_assign_source_pos_info,"(obj top &optional stream)");
 }
 NOINLINE void expose_function_690_helper() {
-  expose_function(core::magic_name("core__source_pos_info_column"),true,&core::core__source_pos_info_column,"(source-pos-info)");
+  expose_function(core::magic_name("core__walk_to_find_source_info"),true,&core::core__walk_to_find_source_info,"(arg)");
 }
 NOINLINE void expose_function_691_helper() {
-  expose_function(core::magic_name("core__source_pos_info_lineno"),true,&core::core__source_pos_info_lineno,"(source-pos-info)");
+  expose_function(core::magic_name("core__source_pos_info_column"),true,&core::core__source_pos_info_column,"(source-pos-info)");
 }
 NOINLINE void expose_function_692_helper() {
-  expose_function(core::magic_name("core__source_pos_info_filepos"),true,&core::core__source_pos_info_filepos,"(source-pos-info)");
+  expose_function(core::magic_name("core__source_pos_info_lineno"),true,&core::core__source_pos_info_lineno,"(source-pos-info)");
 }
 NOINLINE void expose_function_693_helper() {
-  expose_function(core::magic_name("core__source_file_info"),true,&core::core__source_file_info,"(name &optional source-debug-namestring (source-debug-offset 0) (use-lineno t))");
+  expose_function(core::magic_name("core__source_pos_info_filepos"),true,&core::core__source_pos_info_filepos,"(source-pos-info)");
 }
 NOINLINE void expose_function_694_helper() {
-  expose_function(core::magic_name("cl__print"),true,&core::cl__print,"(obj &optional output-stream-desig)");
+  expose_function(core::magic_name("core__source_file_info"),true,&core::core__source_file_info,"(name &optional source-debug-namestring (source-debug-offset 0) (use-lineno t))");
 }
 NOINLINE void expose_function_695_helper() {
-  expose_function(core::magic_name("cl__prin1"),true,&core::cl__prin1,"(obj &optional output-stream-desig)");
+  expose_function(core::magic_name("cl__print"),true,&core::cl__print,"(obj &optional output-stream-desig)");
 }
 NOINLINE void expose_function_696_helper() {
-  expose_function(core::magic_name("cl__princ"),true,&core::cl__princ,"(obj &optional output-stream-desig)");
+  expose_function(core::magic_name("cl__prin1"),true,&core::cl__prin1,"(obj &optional output-stream-desig)");
 }
 NOINLINE void expose_function_697_helper() {
-  expose_function(core::magic_name("cl__pprint"),true,&core::cl__pprint,"(obj &optional stream)");
+  expose_function(core::magic_name("cl__princ"),true,&core::cl__princ,"(obj &optional output-stream-desig)");
 }
 NOINLINE void expose_function_698_helper() {
-  expose_function(core::magic_name("core__print_unreadable_object_function"),true,&core::core__print_unreadable_object_function,"(o stream type id function)");
+  expose_function(core::magic_name("cl__pprint"),true,&core::cl__pprint,"(obj &optional stream)");
 }
 NOINLINE void expose_function_699_helper() {
-  expose_function(core::magic_name("cl__write"),true,&core::cl__write,"(x &key ((:stream strm) nil) (array *print-array*) (base *print-base*) ((:case cas) *print-case*) (circle *print-circle*) (escape *print-escape*) (gensym *print-gensym*) (length *print-length*) (level *print-level*) (lines *print-lines*) (miser_width *print-miser-width*) (pprint_dispatch *print-pprint-dispatch*) (pretty *print-pretty*) (radix *print-radix*) (readably *print-readably*) (right_margin *print-right-margin*))");
+  expose_function(core::magic_name("core__print_unreadable_object_function"),true,&core::core__print_unreadable_object_function,"(o stream type id function)");
 }
 NOINLINE void expose_function_700_helper() {
-  expose_function(core::magic_name("core__write_object"),true,&core::core__write_object,"(obj &optional strm)");
+  expose_function(core::magic_name("cl__write"),true,&core::cl__write,"(x &key ((:stream strm) nil) (array *print-array*) (base *print-base*) ((:case cas) *print-case*) (circle *print-circle*) (escape *print-escape*) (gensym *print-gensym*) (length *print-length*) (level *print-level*) (lines *print-lines*) (miser_width *print-miser-width*) (pprint_dispatch *print-pprint-dispatch*) (pretty *print-pretty*) (radix *print-radix*) (readably *print-readably*) (right_margin *print-right-margin*))");
 }
 NOINLINE void expose_function_701_helper() {
-  expose_function(core::magic_name("make-bignum","CORE"),true,&core::Bignum_O::make,"(string)");
+  expose_function(core::magic_name("core__write_object"),true,&core::core__write_object,"(obj &optional strm)");
 }
 NOINLINE void expose_function_702_helper() {
-  expose_function(core::magic_name("cl__load"),true,&core::cl__load,"(source &key (verbose *load-verbose*) (print *load-print*) (if-does-not-exist :error) (external-format :default) (search-list core::*load-search-list*))");
+  expose_function(core::magic_name("make-bignum","CORE"),true,&core::Bignum_O::make,"(string)");
 }
 NOINLINE void expose_function_703_helper() {
-  expose_function(core::magic_name("core__load_source"),true,&core::core__load_source,"(source &optional verbose print external-format)");
+  expose_function(core::magic_name("cl__load"),true,&core::cl__load,"(source &key (verbose *load-verbose*) (print *load-print*) (if-does-not-exist :error) (external-format :default) (search-list core::*load-search-list*))");
 }
 NOINLINE void expose_function_704_helper() {
-  expose_function(core::magic_name("cl__imagpart"),true,&core::cl__imagpart,"(x)");
+  expose_function(core::magic_name("core__load_source"),true,&core::core__load_source,"(source &optional verbose print external-format)");
 }
 NOINLINE void expose_function_705_helper() {
-  expose_function(core::magic_name("cl__realpart"),true,&core::cl__realpart,"(x)");
+  expose_function(core::magic_name("cl__imagpart"),true,&core::cl__imagpart,"(x)");
 }
 NOINLINE void expose_function_706_helper() {
-  expose_function(core::magic_name("cl__complex"),true,&core::cl__complex,"(r &optional (i 0))");
+  expose_function(core::magic_name("cl__realpart"),true,&core::cl__realpart,"(x)");
 }
 NOINLINE void expose_function_707_helper() {
-  expose_function(core::magic_name("cl__integer_decode_float"),true,&core::cl__integer_decode_float,"(x)");
+  expose_function(core::magic_name("cl__complex"),true,&core::cl__complex,"(r &optional (i 0))");
 }
 NOINLINE void expose_function_708_helper() {
-  expose_function(core::magic_name("cl__float_precision"),true,&core::cl__float_precision,"(Float_sp x)");
+  expose_function(core::magic_name("cl__integer_decode_float"),true,&core::cl__integer_decode_float,"(x)");
 }
 NOINLINE void expose_function_709_helper() {
-  expose_function(core::magic_name("cl__float_digits"),true,&core::cl__float_digits,"(x)");
+  expose_function(core::magic_name("cl__float_precision"),true,&core::cl__float_precision,"(Float_sp x)");
 }
 NOINLINE void expose_function_710_helper() {
-  expose_function(core::magic_name("cl__float_sign"),true,&core::cl__float_sign,"(x &optional (y x yp))");
+  expose_function(core::magic_name("cl__float_digits"),true,&core::cl__float_digits,"(x)");
 }
 NOINLINE void expose_function_711_helper() {
-  expose_function(core::magic_name("cl__scale_float"),true,&core::cl__scale_float,"(x y)");
+  expose_function(core::magic_name("cl__float_sign"),true,&core::cl__float_sign,"(x &optional (y x yp))");
 }
 NOINLINE void expose_function_712_helper() {
-  expose_function(core::magic_name("cl__decode_float"),true,&core::cl__decode_float,"(x)");
+  expose_function(core::magic_name("cl__scale_float"),true,&core::cl__scale_float,"(x y)");
 }
 NOINLINE void expose_function_713_helper() {
-  expose_function(core::magic_name("cl__rem"),true,&core::cl__rem,"(x y)");
+  expose_function(core::magic_name("cl__decode_float"),true,&core::cl__decode_float,"(x)");
 }
 NOINLINE void expose_function_714_helper() {
-  expose_function(core::magic_name("cl__mod"),true,&core::cl__mod,"(x y)");
+  expose_function(core::magic_name("cl__rem"),true,&core::cl__rem,"(x y)");
 }
 NOINLINE void expose_function_715_helper() {
-  expose_function(core::magic_name("cl__round"),true,&core::cl__round,"(x &optional y)");
+  expose_function(core::magic_name("cl__mod"),true,&core::cl__mod,"(x y)");
 }
 NOINLINE void expose_function_716_helper() {
-  expose_function(core::magic_name("cl__truncate"),true,&core::cl__truncate,"(x &optional y)");
+  expose_function(core::magic_name("cl__round"),true,&core::cl__round,"(x &optional y)");
 }
 NOINLINE void expose_function_717_helper() {
-  expose_function(core::magic_name("cl__ceiling"),true,&core::cl__ceiling,"(x &optional y)");
+  expose_function(core::magic_name("cl__truncate"),true,&core::cl__truncate,"(x &optional y)");
 }
 NOINLINE void expose_function_718_helper() {
-  expose_function(core::magic_name("cl__floor"),true,&core::cl__floor,"(x &optional y)");
+  expose_function(core::magic_name("cl__ceiling"),true,&core::cl__ceiling,"(x &optional y)");
 }
 NOINLINE void expose_function_719_helper() {
-  expose_function(core::magic_name("cl__denominator"),true,&core::cl__denominator,"(x)");
+  expose_function(core::magic_name("cl__floor"),true,&core::cl__floor,"(x &optional y)");
 }
 NOINLINE void expose_function_720_helper() {
-  expose_function(core::magic_name("cl__numerator"),true,&core::cl__numerator,"(x)");
+  expose_function(core::magic_name("cl__denominator"),true,&core::cl__denominator,"(x)");
 }
 NOINLINE void expose_function_721_helper() {
-  expose_function(core::magic_name("cl__float"),true,&core::cl__float,"(x &optional y)");
+  expose_function(core::magic_name("cl__numerator"),true,&core::cl__numerator,"(x)");
 }
 NOINLINE void expose_function_722_helper() {
-  expose_function(core::magic_name("core__integer_to_string"),true,&core::core__integer_to_string,"(buffer integer base radix decimalp)");
+  expose_function(core::magic_name("cl__float"),true,&core::cl__float,"(x &optional y)");
 }
 NOINLINE void expose_function_723_helper() {
-  expose_function(core::magic_name("core__bignum_to_string"),true,&core::core__bignum_to_string,"(buffer x base)");
+  expose_function(core::magic_name("core__integer_to_string"),true,&core::core__integer_to_string,"(buffer integer base radix decimalp)");
 }
 NOINLINE void expose_function_724_helper() {
-  expose_function(core::magic_name("cl__lcm"),true,&core::cl__lcm,"(&rest args)");
+  expose_function(core::magic_name("core__bignum_to_string"),true,&core::core__bignum_to_string,"(buffer x base)");
 }
 NOINLINE void expose_function_725_helper() {
-  expose_function(core::magic_name("cl__gcd"),true,&core::cl__gcd,"(&rest nums)");
+  expose_function(core::magic_name("cl__lcm"),true,&core::cl__lcm,"(&rest args)");
 }
 NOINLINE void expose_function_726_helper() {
-  expose_function(core::magic_name("core__num_op_atanh"),true,&core::core__num_op_atanh,"(arg)");
+  expose_function(core::magic_name("cl__gcd"),true,&core::cl__gcd,"(&rest nums)");
 }
 NOINLINE void expose_function_727_helper() {
-  expose_function(core::magic_name("core__num_op_acosh"),true,&core::core__num_op_acosh,"(arg)");
+  expose_function(core::magic_name("core__num_op_atanh"),true,&core::core__num_op_atanh,"(arg)");
 }
 NOINLINE void expose_function_728_helper() {
-  expose_function(core::magic_name("core__num_op_asinh"),true,&core::core__num_op_asinh,"(arg)");
+  expose_function(core::magic_name("core__num_op_acosh"),true,&core::core__num_op_acosh,"(arg)");
 }
 NOINLINE void expose_function_729_helper() {
-  expose_function(core::magic_name("core__num_op_acos"),true,&core::core__num_op_acos,"(arg)");
+  expose_function(core::magic_name("core__num_op_asinh"),true,&core::core__num_op_asinh,"(arg)");
 }
 NOINLINE void expose_function_730_helper() {
-  expose_function(core::magic_name("core__num_op_asin"),true,&core::core__num_op_asin,"(arg)");
+  expose_function(core::magic_name("core__num_op_acos"),true,&core::core__num_op_acos,"(arg)");
 }
 NOINLINE void expose_function_731_helper() {
-  expose_function(core::magic_name("CORE:randomNumberNormal01"),true,&core::randomNumberNormal01,"");
+  expose_function(core::magic_name("core__num_op_asin"),true,&core::core__num_op_asin,"(arg)");
 }
 NOINLINE void expose_function_732_helper() {
-  expose_function(core::magic_name("CORE:randomNumber01"),true,&core::randomNumber01,"");
+  expose_function(core::magic_name("CORE:randomNumberNormal01"),true,&core::randomNumberNormal01,"");
 }
 NOINLINE void expose_function_733_helper() {
-  expose_function(core::magic_name("CORE:seedRandomNumberGeneratorsUsingTime"),true,&core::seedRandomNumberGeneratorsUsingTime,"");
+  expose_function(core::magic_name("CORE:randomNumber01"),true,&core::randomNumber01,"");
 }
 NOINLINE void expose_function_734_helper() {
-  expose_function(core::magic_name("CORE:seedRandomNumberGenerators"),true,&core::seedRandomNumberGenerators,"(i)");
+  expose_function(core::magic_name("CORE:seedRandomNumberGeneratorsUsingTime"),true,&core::seedRandomNumberGeneratorsUsingTime,"");
 }
 NOINLINE void expose_function_735_helper() {
-  expose_function(core::magic_name("cl__get_universal_time"),true,&core::cl__get_universal_time,"");
+  expose_function(core::magic_name("CORE:seedRandomNumberGenerators"),true,&core::seedRandomNumberGenerators,"(i)");
 }
 NOINLINE void expose_function_736_helper() {
-  expose_function(core::magic_name("CORE:general-two-arg-_EQ_"),true,&core::two_arg__EQ_,"");
+  expose_function(core::magic_name("cl__get_universal_time"),true,&core::cl__get_universal_time,"");
 }
 NOINLINE void expose_function_737_helper() {
-  expose_function(core::magic_name("CORE:general-two-arg-_GE_"),true,&core::two_arg__GE_,"");
+  expose_function(core::magic_name("CORE:general-two-arg-_EQ_"),true,&core::two_arg__EQ_,"");
 }
 NOINLINE void expose_function_738_helper() {
-  expose_function(core::magic_name("CORE:general-two-arg-_GT_"),true,&core::two_arg__GT_,"");
+  expose_function(core::magic_name("CORE:general-two-arg-_GE_"),true,&core::two_arg__GE_,"");
 }
 NOINLINE void expose_function_739_helper() {
-  expose_function(core::magic_name("CORE:general-two-arg-_LE_"),true,&core::two_arg__LE_,"");
+  expose_function(core::magic_name("CORE:general-two-arg-_GT_"),true,&core::two_arg__GT_,"");
 }
 NOINLINE void expose_function_740_helper() {
-  expose_function(core::magic_name("CORE:general-two-arg-_LT_"),true,&core::two_arg__LT_,"");
+  expose_function(core::magic_name("CORE:general-two-arg-_LE_"),true,&core::two_arg__LE_,"");
 }
 NOINLINE void expose_function_741_helper() {
-  expose_function(core::magic_name("CORE:general-two-arg-_DIVIDE_"),true,&core::contagen_div,"");
+  expose_function(core::magic_name("CORE:general-two-arg-_LT_"),true,&core::two_arg__LT_,"");
 }
 NOINLINE void expose_function_742_helper() {
-  expose_function(core::magic_name("CORE:general-two-arg-_TIMES_"),true,&core::contagen_mul,"");
+  expose_function(core::magic_name("CORE:general-two-arg-_DIVIDE_"),true,&core::contagen_div,"");
 }
 NOINLINE void expose_function_743_helper() {
-  expose_function(core::magic_name("CORE:general-two-arg-_MINUS_"),true,&core::contagen_sub,"");
+  expose_function(core::magic_name("CORE:general-two-arg-_TIMES_"),true,&core::contagen_mul,"");
 }
 NOINLINE void expose_function_744_helper() {
-  expose_function(core::magic_name("CORE:general-two-arg-_PLUS_"),true,&core::contagen_add,"");
+  expose_function(core::magic_name("CORE:general-two-arg-_MINUS_"),true,&core::contagen_sub,"");
 }
 NOINLINE void expose_function_745_helper() {
-  expose_function(core::magic_name("cl__integer_length"),true,&core::cl__integer_length,"(i)");
+  expose_function(core::magic_name("CORE:general-two-arg-_PLUS_"),true,&core::contagen_add,"");
 }
 NOINLINE void expose_function_746_helper() {
-  expose_function(core::magic_name("core__log1p"),true,&core::core__log1p,"(arg)");
+  expose_function(core::magic_name("cl__integer_length"),true,&core::cl__integer_length,"(i)");
 }
 NOINLINE void expose_function_747_helper() {
-  expose_function(core::magic_name("cl__log"),true,&core::cl__log,"(number &optional base)");
+  expose_function(core::magic_name("core__log1p"),true,&core::core__log1p,"(arg)");
 }
 NOINLINE void expose_function_748_helper() {
-  expose_function(core::magic_name("cl__atan"),true,&core::cl__atan,"(x &optional y)");
+  expose_function(core::magic_name("cl__log"),true,&core::cl__log,"(number &optional base)");
 }
 NOINLINE void expose_function_749_helper() {
-  expose_function(core::magic_name("cl__expt"),true,&core::cl__expt,"(x y)");
+  expose_function(core::magic_name("cl__atan"),true,&core::cl__atan,"(x &optional y)");
 }
 NOINLINE void expose_function_750_helper() {
-  expose_function(core::magic_name("cl__exp"),true,&core::cl__exp,"(x)");
+  expose_function(core::magic_name("cl__expt"),true,&core::cl__expt,"(x y)");
 }
 NOINLINE void expose_function_751_helper() {
-  expose_function(core::magic_name("cl__conjugate"),true,&core::cl__conjugate,"(x)");
+  expose_function(core::magic_name("cl__exp"),true,&core::cl__exp,"(x)");
 }
 NOINLINE void expose_function_752_helper() {
-  expose_function(core::magic_name("cl__tanh"),true,&core::cl__tanh,"(x)");
+  expose_function(core::magic_name("cl__conjugate"),true,&core::cl__conjugate,"(x)");
 }
 NOINLINE void expose_function_753_helper() {
-  expose_function(core::magic_name("cl__cosh"),true,&core::cl__cosh,"(x)");
+  expose_function(core::magic_name("cl__tanh"),true,&core::cl__tanh,"(x)");
 }
 NOINLINE void expose_function_754_helper() {
-  expose_function(core::magic_name("cl__sinh"),true,&core::cl__sinh,"(x)");
+  expose_function(core::magic_name("cl__cosh"),true,&core::cl__cosh,"(x)");
 }
 NOINLINE void expose_function_755_helper() {
-  expose_function(core::magic_name("cl__tan"),true,&core::cl__tan,"(x)");
+  expose_function(core::magic_name("cl__sinh"),true,&core::cl__sinh,"(x)");
 }
 NOINLINE void expose_function_756_helper() {
-  expose_function(core::magic_name("cl__cos"),true,&core::cl__cos,"(x)");
+  expose_function(core::magic_name("cl__tan"),true,&core::cl__tan,"(x)");
 }
 NOINLINE void expose_function_757_helper() {
-  expose_function(core::magic_name("cl__sin"),true,&core::cl__sin,"(x)");
+  expose_function(core::magic_name("cl__cos"),true,&core::cl__cos,"(x)");
 }
 NOINLINE void expose_function_758_helper() {
-  expose_function(core::magic_name("cl__sqrt"),true,&core::cl__sqrt,"(arg)");
+  expose_function(core::magic_name("cl__sin"),true,&core::cl__sin,"(x)");
 }
 NOINLINE void expose_function_759_helper() {
-  expose_function(core::magic_name("core__nan"),true,&core::core__nan,"(num)");
+  expose_function(core::magic_name("cl__sqrt"),true,&core::cl__sqrt,"(arg)");
 }
 NOINLINE void expose_function_760_helper() {
-  expose_function(core::magic_name("cl___EQ_"),true,&core::cl___EQ_,"(&rest args)");
+  expose_function(core::magic_name("core__nan"),true,&core::core__nan,"(num)");
 }
 NOINLINE void expose_function_761_helper() {
-  expose_function(core::magic_name("cl___NE_"),true,&core::cl___NE_,"(&rest args)");
+  expose_function(core::magic_name("cl___EQ_"),true,&core::cl___EQ_,"(&rest args)");
 }
 NOINLINE void expose_function_762_helper() {
-  expose_function(core::magic_name("cl___GE_"),true,&core::cl___GE_,"(&rest args)");
+  expose_function(core::magic_name("cl___NE_"),true,&core::cl___NE_,"(&rest args)");
 }
 NOINLINE void expose_function_763_helper() {
-  expose_function(core::magic_name("cl___LE_"),true,&core::cl___LE_,"(&rest args)");
+  expose_function(core::magic_name("cl___GE_"),true,&core::cl___GE_,"(&rest args)");
 }
 NOINLINE void expose_function_764_helper() {
-  expose_function(core::magic_name("cl___GT_"),true,&core::cl___GT_,"(&rest args)");
+  expose_function(core::magic_name("cl___LE_"),true,&core::cl___LE_,"(&rest args)");
 }
 NOINLINE void expose_function_765_helper() {
-  expose_function(core::magic_name("cl___LT_"),true,&core::cl___LT_,"(&rest args)");
+  expose_function(core::magic_name("cl___GT_"),true,&core::cl___GT_,"(&rest args)");
 }
 NOINLINE void expose_function_766_helper() {
-  expose_function("CORE:TWO-ARG-=",true,&core::two_arg__EQ_,"(x y)");
+  expose_function(core::magic_name("cl___LT_"),true,&core::cl___LT_,"(&rest args)");
 }
 NOINLINE void expose_function_767_helper() {
-  expose_function("CORE:TWO-ARG->=",true,&core::two_arg__GE_,"(x y)");
+  expose_function("CORE:TWO-ARG-=",true,&core::two_arg__EQ_,"(x y)");
 }
 NOINLINE void expose_function_768_helper() {
-  expose_function("CORE:TWO-ARG->",true,&core::two_arg__GT_,"(x y)");
+  expose_function("CORE:TWO-ARG->=",true,&core::two_arg__GE_,"(x y)");
 }
 NOINLINE void expose_function_769_helper() {
-  expose_function("CORE:TWO-ARG-<=",true,&core::two_arg__LE_,"(x y)");
+  expose_function("CORE:TWO-ARG->",true,&core::two_arg__GT_,"(x y)");
 }
 NOINLINE void expose_function_770_helper() {
-  expose_function("CORE:TWO-ARG-<",true,&core::two_arg__LT_,"(x y)");
+  expose_function("CORE:TWO-ARG-<=",true,&core::two_arg__LE_,"(x y)");
 }
 NOINLINE void expose_function_771_helper() {
-  expose_function(core::magic_name("cl___DIVIDE_"),true,&core::cl___DIVIDE_,"(num &rest numbers)");
+  expose_function("CORE:TWO-ARG-<",true,&core::two_arg__LT_,"(x y)");
 }
 NOINLINE void expose_function_772_helper() {
-  expose_function(core::magic_name("cl___MINUS_"),true,&core::cl___MINUS_,"(num &rest numbers)");
+  expose_function(core::magic_name("cl___DIVIDE_"),true,&core::cl___DIVIDE_,"(num &rest numbers)");
 }
 NOINLINE void expose_function_773_helper() {
-  expose_function(core::magic_name("cl___TIMES_"),true,&core::cl___TIMES_,"(&rest numbers)");
+  expose_function(core::magic_name("cl___MINUS_"),true,&core::cl___MINUS_,"(num &rest numbers)");
 }
 NOINLINE void expose_function_774_helper() {
-  expose_function(core::magic_name("cl___PLUS_"),true,&core::cl___PLUS_,"(&rest numbers)");
+  expose_function(core::magic_name("cl___TIMES_"),true,&core::cl___TIMES_,"(&rest numbers)");
 }
 NOINLINE void expose_function_775_helper() {
-  expose_function("CORE:TWO-ARG-/",true,&core::contagen_div,"(na nb)");
+  expose_function(core::magic_name("cl___PLUS_"),true,&core::cl___PLUS_,"(&rest numbers)");
 }
 NOINLINE void expose_function_776_helper() {
-  expose_function("CORE:TWO-ARG-*",true,&core::contagen_mul,"(na nb)");
+  expose_function("CORE:TWO-ARG-/",true,&core::contagen_div,"(na nb)");
 }
 NOINLINE void expose_function_777_helper() {
-  expose_function("CORE:TWO-ARG--",true,&core::contagen_sub,"(na nb)");
+  expose_function("CORE:TWO-ARG-*",true,&core::contagen_mul,"(na nb)");
 }
 NOINLINE void expose_function_778_helper() {
-  expose_function("CORE:TWO-ARG-+",true,&core::contagen_add,"(na nb)");
+  expose_function("CORE:TWO-ARG--",true,&core::contagen_sub,"(na nb)");
 }
 NOINLINE void expose_function_779_helper() {
-  expose_function(core::magic_name("cl__lognor"),true,&core::cl__lognor,"(a b)");
+  expose_function("CORE:TWO-ARG-+",true,&core::contagen_add,"(na nb)");
 }
 NOINLINE void expose_function_780_helper() {
-  expose_function(core::magic_name("cl__lognand"),true,&core::cl__lognand,"(a b)");
+  expose_function(core::magic_name("cl__lognor"),true,&core::cl__lognor,"(a b)");
 }
 NOINLINE void expose_function_781_helper() {
-  expose_function(core::magic_name("cl__lognot"),true,&core::cl__lognot,"(a)");
+  expose_function(core::magic_name("cl__lognand"),true,&core::cl__lognand,"(a b)");
 }
 NOINLINE void expose_function_782_helper() {
-  expose_function(core::magic_name("cl__logorc2"),true,&core::cl__logorc2,"(a b)");
+  expose_function(core::magic_name("cl__lognot"),true,&core::cl__lognot,"(a)");
 }
 NOINLINE void expose_function_783_helper() {
-  expose_function(core::magic_name("cl__logorc1"),true,&core::cl__logorc1,"(a b)");
+  expose_function(core::magic_name("cl__logorc2"),true,&core::cl__logorc2,"(a b)");
 }
 NOINLINE void expose_function_784_helper() {
-  expose_function(core::magic_name("cl__logandc2"),true,&core::cl__logandc2,"(a b)");
+  expose_function(core::magic_name("cl__logorc1"),true,&core::cl__logorc1,"(a b)");
 }
 NOINLINE void expose_function_785_helper() {
-  expose_function(core::magic_name("cl__logandc1"),true,&core::cl__logandc1,"(a b)");
+  expose_function(core::magic_name("cl__logandc2"),true,&core::cl__logandc2,"(a b)");
 }
 NOINLINE void expose_function_786_helper() {
-  expose_function(core::magic_name("cl__logeqv"),true,&core::cl__logeqv,"(&rest integers)");
+  expose_function(core::magic_name("cl__logandc1"),true,&core::cl__logandc1,"(a b)");
 }
 NOINLINE void expose_function_787_helper() {
-  expose_function(core::magic_name("cl__logxor"),true,&core::cl__logxor,"(&rest integers)");
+  expose_function(core::magic_name("cl__logeqv"),true,&core::cl__logeqv,"(&rest integers)");
 }
 NOINLINE void expose_function_788_helper() {
-  expose_function(core::magic_name("cl__logior"),true,&core::cl__logior,"(&rest integers)");
+  expose_function(core::magic_name("cl__logxor"),true,&core::cl__logxor,"(&rest integers)");
 }
 NOINLINE void expose_function_789_helper() {
-  expose_function(core::magic_name("cl__logand"),true,&core::cl__logand,"(&rest integers)");
+  expose_function(core::magic_name("cl__logior"),true,&core::cl__logior,"(&rest integers)");
 }
 NOINLINE void expose_function_790_helper() {
-  expose_function(core::magic_name("cl__max"),true,&core::cl__max,"(max &rest nums)");
+  expose_function(core::magic_name("cl__logand"),true,&core::cl__logand,"(&rest integers)");
 }
 NOINLINE void expose_function_791_helper() {
-  expose_function(core::magic_name("cl__min"),true,&core::cl__min,"(min &rest nums)");
+  expose_function(core::magic_name("cl__max"),true,&core::cl__max,"(max &rest nums)");
 }
 NOINLINE void expose_function_792_helper() {
-  expose_function(core::magic_name("core__fixnum_number_of_bits"),true,&core::core__fixnum_number_of_bits,"");
+  expose_function(core::magic_name("cl__min"),true,&core::cl__min,"(min &rest nums)");
 }
 NOINLINE void expose_function_793_helper() {
-  expose_function(core::magic_name("core__convert_overflow_result_to_bignum"),true,&core::core__convert_overflow_result_to_bignum,"");
+  expose_function(core::magic_name("core__fixnum_number_of_bits"),true,&core::core__fixnum_number_of_bits,"");
 }
 NOINLINE void expose_function_794_helper() {
-  expose_function(core::magic_name("cl__zerop"),true,&core::cl__zerop,"(num)");
+  expose_function(core::magic_name("core__convert_overflow_result_to_bignum"),true,&core::core__convert_overflow_result_to_bignum,"");
 }
 NOINLINE void expose_function_795_helper() {
-  expose_function(core::magic_name("core__hash_table_force_rehash"),true,&core::core__hash_table_force_rehash,"(ht)");
+  expose_function(core::magic_name("cl__zerop"),true,&core::cl__zerop,"(num)");
 }
 NOINLINE void expose_function_796_helper() {
-  expose_function(core::magic_name("cl__gethash"),true,&core::cl__gethash,"(key hash-table &optional default_value)");
+  expose_function(core::magic_name("core__hash_table_force_rehash"),true,&core::core__hash_table_force_rehash,"(ht)");
 }
 NOINLINE void expose_function_797_helper() {
-  expose_function(core::magic_name("cl__remhash"),true,&core::cl__remhash,"(key hashtable)");
+  expose_function(core::magic_name("cl__gethash"),true,&core::cl__gethash,"(key hash-table &optional default_value)");
 }
 NOINLINE void expose_function_798_helper() {
-  expose_function(core::magic_name("core__hash_equalp"),true,&core::core__hash_equalp,"(&rest args)");
+  expose_function(core::magic_name("cl__remhash"),true,&core::cl__remhash,"(key hashtable)");
 }
 NOINLINE void expose_function_799_helper() {
-  expose_function(core::magic_name("core__hash_equal"),true,&core::core__hash_equal,"(&rest args)");
+  expose_function(core::magic_name("core__hash_equalp"),true,&core::core__hash_equalp,"(&rest args)");
 }
 NOINLINE void expose_function_800_helper() {
-  expose_function(core::magic_name("core__hash_eql"),true,&core::core__hash_eql,"(&rest args)");
+  expose_function(core::magic_name("core__hash_equal"),true,&core::core__hash_equal,"(&rest args)");
 }
 NOINLINE void expose_function_801_helper() {
-  expose_function(core::magic_name("core__hash_table_entry_deleted_p"),true,&core::core__hash_table_entry_deleted_p,"(cons)");
+  expose_function(core::magic_name("core__hash_eql"),true,&core::core__hash_eql,"(&rest args)");
 }
 NOINLINE void expose_function_802_helper() {
-  expose_function(core::magic_name("cl__clrhash"),true,&core::cl__clrhash,"(hash_table)");
+  expose_function(core::magic_name("core__hash_table_entry_deleted_p"),true,&core::core__hash_table_entry_deleted_p,"(cons)");
 }
 NOINLINE void expose_function_803_helper() {
-  expose_function(core::magic_name("cl__maphash"),true,&core::cl__maphash,"(function_desig hash_table)");
+  expose_function(core::magic_name("cl__clrhash"),true,&core::cl__clrhash,"(hash_table)");
 }
 NOINLINE void expose_function_804_helper() {
-  expose_function(core::magic_name("core__hash_table_weakness"),true,&core::core__hash_table_weakness,"(ht)");
+  expose_function(core::magic_name("cl__maphash"),true,&core::cl__maphash,"(function_desig hash_table)");
 }
 NOINLINE void expose_function_805_helper() {
-  expose_function(core::magic_name("cl__make_hash_table"),true,&core::cl__make_hash_table,"(&key (test (function eql)) (size 16) (rehash-size 1.5) (rehash_threshold 1.0) weakness debug)");
+  expose_function(core::magic_name("core__hash_table_weakness"),true,&core::core__hash_table_weakness,"(ht)");
 }
 NOINLINE void expose_function_806_helper() {
-  expose_function(core::magic_name("core__debug_hash_table"),true,&core::core__debug_hash_table,"(on)");
+  expose_function(core::magic_name("cl__make_hash_table"),true,&core::cl__make_hash_table,"(&key (test (function eql)) (size 16) (rehash-size 1.5) (rehash_threshold 1.0) weakness debug)");
 }
 NOINLINE void expose_function_807_helper() {
   expose_function(core::magic_name("core__make_small_multimap"),true,&core::core__make_small_multimap,"");
@@ -3927,390 +3930,399 @@ NOINLINE void expose_function_966_helper() {
   expose_function(core::magic_name("core__make_vector_displaced"),true,&core::core__make_vector_displaced,"(dim element-type displaced-to displaced-offset)");
 }
 NOINLINE void expose_function_967_helper() {
-  expose_function(core::magic_name("core__test_add"),true,&core::core__test_add,"(x y)");
+  expose_function(core::magic_name("core__sharp_equal_wrapper_p"),true,&core::core__sharp_equal_wrapper_p,"(o)");
 }
 NOINLINE void expose_function_968_helper() {
-  expose_function(core::magic_name("cl__listp"),true,&core::cl__listp,"(obj)");
+  expose_function(core::magic_name("CORE:make_sharp_equal_wrapper"),true,&core::make_sharp_equal_wrapper,"");
 }
 NOINLINE void expose_function_969_helper() {
-  expose_function(core::magic_name("cl__characterp"),true,&core::cl__characterp,"(obj)");
+  expose_function(core::magic_name("core__test_add"),true,&core::core__test_add,"(x y)");
 }
 NOINLINE void expose_function_970_helper() {
-  expose_function(core::magic_name("cl__consp"),true,&core::cl__consp,"(obj)");
+  expose_function(core::magic_name("cl__listp"),true,&core::cl__listp,"(obj)");
 }
 NOINLINE void expose_function_971_helper() {
-  expose_function(core::magic_name("cl__atom"),true,&core::cl__atom,"(arg)");
+  expose_function(core::magic_name("cl__characterp"),true,&core::cl__characterp,"(obj)");
 }
 NOINLINE void expose_function_972_helper() {
-  expose_function(core::magic_name("cl__endp"),true,&core::cl__endp,"(arg)");
+  expose_function(core::magic_name("cl__consp"),true,&core::cl__consp,"(obj)");
 }
 NOINLINE void expose_function_973_helper() {
-  expose_function(core::magic_name("core__fixnump"),true,&core::core__fixnump,"(arg)");
+  expose_function(core::magic_name("cl__atom"),true,&core::cl__atom,"(arg)");
 }
 NOINLINE void expose_function_974_helper() {
-  expose_function(core::magic_name("cl__symbolp"),true,&core::cl__symbolp,"(obj)");
+  expose_function(core::magic_name("cl__endp"),true,&core::cl__endp,"(arg)");
 }
 NOINLINE void expose_function_975_helper() {
-  expose_function(core::magic_name("CORE:negate"),true,&core::clasp_negate,"(num)");
+  expose_function(core::magic_name("core__fixnump"),true,&core::core__fixnump,"(arg)");
 }
 NOINLINE void expose_function_976_helper() {
-  expose_function(core::magic_name("CORE:oneMinus"),true,&core::clasp_one_minus,"(num)");
+  expose_function(core::magic_name("cl__symbolp"),true,&core::cl__symbolp,"(obj)");
 }
 NOINLINE void expose_function_977_helper() {
-  expose_function(core::magic_name("CORE:onePlus"),true,&core::clasp_one_plus,"(num)");
+  expose_function(core::magic_name("CORE:negate"),true,&core::clasp_negate,"(num)");
 }
 NOINLINE void expose_function_978_helper() {
-  expose_function(core::magic_name("signum","COMMON-LISP"),true,&core::clasp_signum,"(num)");
+  expose_function(core::magic_name("CORE:oneMinus"),true,&core::clasp_one_minus,"(num)");
 }
 NOINLINE void expose_function_979_helper() {
-  expose_function(core::magic_name("abs","COMMON-LISP"),true,&core::clasp_abs,"(num)");
+  expose_function(core::magic_name("CORE:onePlus"),true,&core::clasp_one_plus,"(num)");
 }
 NOINLINE void expose_function_980_helper() {
-  expose_function(core::magic_name("oddp","COMMON-LISP"),true,&core::clasp_oddp,"(num)");
+  expose_function(core::magic_name("signum","COMMON-LISP"),true,&core::clasp_signum,"(num)");
 }
 NOINLINE void expose_function_981_helper() {
-  expose_function(core::magic_name("evenp","COMMON-LISP"),true,&core::clasp_evenp,"(num)");
+  expose_function(core::magic_name("abs","COMMON-LISP"),true,&core::clasp_abs,"(num)");
 }
 NOINLINE void expose_function_982_helper() {
-  expose_function(core::magic_name("minusp","COMMON-LISP"),true,&core::clasp_minusp,"(num)");
+  expose_function(core::magic_name("oddp","COMMON-LISP"),true,&core::clasp_oddp,"(num)");
 }
 NOINLINE void expose_function_983_helper() {
-  expose_function(core::magic_name("plusp","COMMON-LISP"),true,&core::clasp_plusp,"(num)");
+  expose_function(core::magic_name("evenp","COMMON-LISP"),true,&core::clasp_evenp,"(num)");
 }
 NOINLINE void expose_function_984_helper() {
-  expose_function(core::magic_name("Tenth","COMMON-LISP"),true,&core::oTenth,"(o)");
+  expose_function(core::magic_name("minusp","COMMON-LISP"),true,&core::clasp_minusp,"(num)");
 }
 NOINLINE void expose_function_985_helper() {
-  expose_function(core::magic_name("Ninth","COMMON-LISP"),true,&core::oNinth,"(o)");
+  expose_function(core::magic_name("plusp","COMMON-LISP"),true,&core::clasp_plusp,"(num)");
 }
 NOINLINE void expose_function_986_helper() {
-  expose_function(core::magic_name("Eighth","COMMON-LISP"),true,&core::oEighth,"(o)");
+  expose_function(core::magic_name("Tenth","COMMON-LISP"),true,&core::oTenth,"(o)");
 }
 NOINLINE void expose_function_987_helper() {
-  expose_function(core::magic_name("Seventh","COMMON-LISP"),true,&core::oSeventh,"(o)");
+  expose_function(core::magic_name("Ninth","COMMON-LISP"),true,&core::oNinth,"(o)");
 }
 NOINLINE void expose_function_988_helper() {
-  expose_function(core::magic_name("Sixth","COMMON-LISP"),true,&core::oSixth,"(o)");
+  expose_function(core::magic_name("Eighth","COMMON-LISP"),true,&core::oEighth,"(o)");
 }
 NOINLINE void expose_function_989_helper() {
-  expose_function(core::magic_name("Fifth","COMMON-LISP"),true,&core::oFifth,"(o)");
+  expose_function(core::magic_name("Seventh","COMMON-LISP"),true,&core::oSeventh,"(o)");
 }
 NOINLINE void expose_function_990_helper() {
-  expose_function(core::magic_name("Fourth","COMMON-LISP"),true,&core::oFourth,"(o)");
+  expose_function(core::magic_name("Sixth","COMMON-LISP"),true,&core::oSixth,"(o)");
 }
 NOINLINE void expose_function_991_helper() {
-  expose_function(core::magic_name("Third","COMMON-LISP"),true,&core::oThird,"(o)");
+  expose_function(core::magic_name("Fifth","COMMON-LISP"),true,&core::oFifth,"(o)");
 }
 NOINLINE void expose_function_992_helper() {
-  expose_function(core::magic_name("Second","COMMON-LISP"),true,&core::oSecond,"(o)");
+  expose_function(core::magic_name("Fourth","COMMON-LISP"),true,&core::oFourth,"(o)");
 }
 NOINLINE void expose_function_993_helper() {
-  expose_function(core::magic_name("First","COMMON-LISP"),true,&core::oFirst,"(o)");
+  expose_function(core::magic_name("Third","COMMON-LISP"),true,&core::oThird,"(o)");
 }
 NOINLINE void expose_function_994_helper() {
-  expose_function(core::magic_name("cddddr","COMMON-LISP"),true,&core::oCddddr,"(o)");
+  expose_function(core::magic_name("Second","COMMON-LISP"),true,&core::oSecond,"(o)");
 }
 NOINLINE void expose_function_995_helper() {
-  expose_function(core::magic_name("cddadr","COMMON-LISP"),true,&core::oCddadr,"(o)");
+  expose_function(core::magic_name("First","COMMON-LISP"),true,&core::oFirst,"(o)");
 }
 NOINLINE void expose_function_996_helper() {
-  expose_function(core::magic_name("cdaddr","COMMON-LISP"),true,&core::oCdaddr,"(o)");
+  expose_function(core::magic_name("cddddr","COMMON-LISP"),true,&core::oCddddr,"(o)");
 }
 NOINLINE void expose_function_997_helper() {
-  expose_function(core::magic_name("cdaadr","COMMON-LISP"),true,&core::oCdaadr,"(o)");
+  expose_function(core::magic_name("cddadr","COMMON-LISP"),true,&core::oCddadr,"(o)");
 }
 NOINLINE void expose_function_998_helper() {
-  expose_function(core::magic_name("cadddr","COMMON-LISP"),true,&core::oCadddr,"(o)");
+  expose_function(core::magic_name("cdaddr","COMMON-LISP"),true,&core::oCdaddr,"(o)");
 }
 NOINLINE void expose_function_999_helper() {
-  expose_function(core::magic_name("cadadr","COMMON-LISP"),true,&core::oCadadr,"(o)");
+  expose_function(core::magic_name("cdaadr","COMMON-LISP"),true,&core::oCdaadr,"(o)");
 }
 NOINLINE void expose_function_1000_helper() {
-  expose_function(core::magic_name("caaddr","COMMON-LISP"),true,&core::oCaaddr,"(o)");
+  expose_function(core::magic_name("cadddr","COMMON-LISP"),true,&core::oCadddr,"(o)");
 }
 NOINLINE void expose_function_1001_helper() {
-  expose_function(core::magic_name("caaadr","COMMON-LISP"),true,&core::oCaaadr,"(o)");
+  expose_function(core::magic_name("cadadr","COMMON-LISP"),true,&core::oCadadr,"(o)");
 }
 NOINLINE void expose_function_1002_helper() {
-  expose_function(core::magic_name("cdddar","COMMON-LISP"),true,&core::oCdddar,"(o)");
+  expose_function(core::magic_name("caaddr","COMMON-LISP"),true,&core::oCaaddr,"(o)");
 }
 NOINLINE void expose_function_1003_helper() {
-  expose_function(core::magic_name("cddaar","COMMON-LISP"),true,&core::oCddaar,"(o)");
+  expose_function(core::magic_name("caaadr","COMMON-LISP"),true,&core::oCaaadr,"(o)");
 }
 NOINLINE void expose_function_1004_helper() {
-  expose_function(core::magic_name("cdadar","COMMON-LISP"),true,&core::oCdadar,"(o)");
+  expose_function(core::magic_name("cdddar","COMMON-LISP"),true,&core::oCdddar,"(o)");
 }
 NOINLINE void expose_function_1005_helper() {
-  expose_function(core::magic_name("cdaaar","COMMON-LISP"),true,&core::oCdaaar,"(o)");
+  expose_function(core::magic_name("cddaar","COMMON-LISP"),true,&core::oCddaar,"(o)");
 }
 NOINLINE void expose_function_1006_helper() {
-  expose_function(core::magic_name("caddar","COMMON-LISP"),true,&core::oCaddar,"(o)");
+  expose_function(core::magic_name("cdadar","COMMON-LISP"),true,&core::oCdadar,"(o)");
 }
 NOINLINE void expose_function_1007_helper() {
-  expose_function(core::magic_name("cadaar","COMMON-LISP"),true,&core::oCadaar,"(o)");
+  expose_function(core::magic_name("cdaaar","COMMON-LISP"),true,&core::oCdaaar,"(o)");
 }
 NOINLINE void expose_function_1008_helper() {
-  expose_function(core::magic_name("caadar","COMMON-LISP"),true,&core::oCaadar,"(o)");
+  expose_function(core::magic_name("caddar","COMMON-LISP"),true,&core::oCaddar,"(o)");
 }
 NOINLINE void expose_function_1009_helper() {
-  expose_function(core::magic_name("caaaar","COMMON-LISP"),true,&core::oCaaaar,"(o)");
+  expose_function(core::magic_name("cadaar","COMMON-LISP"),true,&core::oCadaar,"(o)");
 }
 NOINLINE void expose_function_1010_helper() {
-  expose_function(core::magic_name("cdddr","COMMON-LISP"),true,&core::oCdddr,"(o)");
+  expose_function(core::magic_name("caadar","COMMON-LISP"),true,&core::oCaadar,"(o)");
 }
 NOINLINE void expose_function_1011_helper() {
-  expose_function(core::magic_name("cddar","COMMON-LISP"),true,&core::oCddar,"(o)");
+  expose_function(core::magic_name("caaaar","COMMON-LISP"),true,&core::oCaaaar,"(o)");
 }
 NOINLINE void expose_function_1012_helper() {
-  expose_function(core::magic_name("cdadr","COMMON-LISP"),true,&core::oCdadr,"(o)");
+  expose_function(core::magic_name("cdddr","COMMON-LISP"),true,&core::oCdddr,"(o)");
 }
 NOINLINE void expose_function_1013_helper() {
-  expose_function(core::magic_name("cdaar","COMMON-LISP"),true,&core::oCdaar,"(o)");
+  expose_function(core::magic_name("cddar","COMMON-LISP"),true,&core::oCddar,"(o)");
 }
 NOINLINE void expose_function_1014_helper() {
-  expose_function(core::magic_name("caddr","COMMON-LISP"),true,&core::oCaddr,"(o)");
+  expose_function(core::magic_name("cdadr","COMMON-LISP"),true,&core::oCdadr,"(o)");
 }
 NOINLINE void expose_function_1015_helper() {
-  expose_function(core::magic_name("cadar","COMMON-LISP"),true,&core::oCadar,"(o)");
+  expose_function(core::magic_name("cdaar","COMMON-LISP"),true,&core::oCdaar,"(o)");
 }
 NOINLINE void expose_function_1016_helper() {
-  expose_function(core::magic_name("caadr","COMMON-LISP"),true,&core::oCaadr,"(o)");
+  expose_function(core::magic_name("caddr","COMMON-LISP"),true,&core::oCaddr,"(o)");
 }
 NOINLINE void expose_function_1017_helper() {
-  expose_function(core::magic_name("caaar","COMMON-LISP"),true,&core::oCaaar,"(o)");
+  expose_function(core::magic_name("cadar","COMMON-LISP"),true,&core::oCadar,"(o)");
 }
 NOINLINE void expose_function_1018_helper() {
-  expose_function(core::magic_name("cddr","COMMON-LISP"),true,&core::oCddr,"(o)");
+  expose_function(core::magic_name("caadr","COMMON-LISP"),true,&core::oCaadr,"(o)");
 }
 NOINLINE void expose_function_1019_helper() {
-  expose_function(core::magic_name("cdar","COMMON-LISP"),true,&core::oCdar,"(o)");
+  expose_function(core::magic_name("caaar","COMMON-LISP"),true,&core::oCaaar,"(o)");
 }
 NOINLINE void expose_function_1020_helper() {
-  expose_function(core::magic_name("cadr","COMMON-LISP"),true,&core::oCadr,"(o)");
+  expose_function(core::magic_name("cddr","COMMON-LISP"),true,&core::oCddr,"(o)");
 }
 NOINLINE void expose_function_1021_helper() {
-  expose_function(core::magic_name("caar","COMMON-LISP"),true,&core::oCaar,"(o)");
+  expose_function(core::magic_name("cdar","COMMON-LISP"),true,&core::oCdar,"(o)");
 }
 NOINLINE void expose_function_1022_helper() {
-  expose_function(core::magic_name("cl__rest"),true,&core::cl__rest,"(obj)");
+  expose_function(core::magic_name("cadr","COMMON-LISP"),true,&core::oCadr,"(o)");
 }
 NOINLINE void expose_function_1023_helper() {
-  expose_function(core::magic_name("cdr","COMMON-LISP"),true,&core::oCdr,"(obj)");
+  expose_function(core::magic_name("caar","COMMON-LISP"),true,&core::oCaar,"(o)");
 }
 NOINLINE void expose_function_1024_helper() {
-  expose_function(core::magic_name("car","COMMON-LISP"),true,&core::oCar,"(obj)");
+  expose_function(core::magic_name("cl__rest"),true,&core::cl__rest,"(obj)");
 }
 NOINLINE void expose_function_1025_helper() {
-  expose_function(core::magic_name("cl__equalp"),true,&core::cl__equalp,"(x y)");
+  expose_function(core::magic_name("cdr","COMMON-LISP"),true,&core::oCdr,"(obj)");
 }
 NOINLINE void expose_function_1026_helper() {
-  expose_function(core::magic_name("cl__equal"),true,&core::cl__equal,"(x y)");
+  expose_function(core::magic_name("car","COMMON-LISP"),true,&core::oCar,"(obj)");
 }
 NOINLINE void expose_function_1027_helper() {
-  expose_function(core::magic_name("cl__eql"),true,&core::cl__eql,"(x y)");
+  expose_function(core::magic_name("cl__equalp"),true,&core::cl__equalp,"(x y)");
 }
 NOINLINE void expose_function_1028_helper() {
-  expose_function(core::magic_name("cl__eq"),true,&core::cl__eq,"(x y)");
+  expose_function(core::magic_name("cl__equal"),true,&core::cl__equal,"(x y)");
 }
 NOINLINE void expose_function_1029_helper() {
-  expose_function(core::magic_name("ext__maybeQuote"),true,&ext::ext__maybeQuote,"(form)");
+  expose_function(core::magic_name("cl__eql"),true,&core::cl__eql,"(x y)");
 }
 NOINLINE void expose_function_1030_helper() {
-  expose_function(core::magic_name("UNITS:make-quantity"),true,&units::Quantity_O::make,"(val unit)");
+  expose_function(core::magic_name("cl__eq"),true,&core::cl__eq,"(x y)");
 }
 NOINLINE void expose_function_1031_helper() {
-  expose_function(core::magic_name("UNITS:make-unit"),true,&units::Unit_O::make,"(args)");
+  expose_function(core::magic_name("core__sizeof_header_and_closure_with_slots"),true,&core::core__sizeof_header_and_closure_with_slots,"(numberOfSlots)");
 }
 NOINLINE void expose_function_1032_helper() {
-  expose_function(core::magic_name("chem__makeIndexedObjectBag"),true,&adapt::chem__makeIndexedObjectBag,"");
+  expose_function(core::magic_name("ext__maybeQuote"),true,&ext::ext__maybeQuote,"(form)");
 }
 NOINLINE void expose_function_1033_helper() {
-  expose_function(core::magic_name("GEOM:make-coordinate-array"),true,&geom::CoordinateArray_O::make,"(fnsize &optional vals)");
+  expose_function(core::magic_name("UNITS:make-quantity"),true,&units::Quantity_O::make,"(val unit)");
 }
 NOINLINE void expose_function_1034_helper() {
-  expose_function(core::magic_name("GEOM:make-m4-rotate-z"),true,&geom::make_m4_rotate_z,"(radians)");
+  expose_function(core::magic_name("UNITS:make-unit"),true,&units::Unit_O::make,"(args)");
 }
 NOINLINE void expose_function_1035_helper() {
-  expose_function(core::magic_name("GEOM:make-m4-rotate-y"),true,&geom::make_m4_rotate_y,"(radians)");
+  expose_function(core::magic_name("chem__makeIndexedObjectBag"),true,&adapt::chem__makeIndexedObjectBag,"");
 }
 NOINLINE void expose_function_1036_helper() {
-  expose_function(core::magic_name("GEOM:make-m4-rotate-x"),true,&geom::make_m4_rotate_x,"(radians)");
+  expose_function(core::magic_name("GEOM:make-coordinate-array"),true,&geom::CoordinateArray_O::make,"(fnsize &optional vals)");
 }
 NOINLINE void expose_function_1037_helper() {
-  expose_function(core::magic_name("GEOM:make-m4-translate"),true,&geom::make_m4_translate,"(pos)");
+  expose_function(core::magic_name("GEOM:make-m4-rotate-z"),true,&geom::make_m4_rotate_z,"(radians)");
 }
 NOINLINE void expose_function_1038_helper() {
-  expose_function(core::magic_name("GEOM:make-matrix-identity"),true,&geom::make_matrix_identity,"");
+  expose_function(core::magic_name("GEOM:make-m4-rotate-y"),true,&geom::make_m4_rotate_y,"(radians)");
 }
 NOINLINE void expose_function_1039_helper() {
-  expose_function("GEOM:MAKE-MATRIX",true,&geom::OMatrix_O::make,"(identity)");
+  expose_function(core::magic_name("GEOM:make-m4-rotate-x"),true,&geom::make_m4_rotate_x,"(radians)");
 }
 NOINLINE void expose_function_1040_helper() {
-  expose_function("GEOM:VEC",true,&geom::OVector3_O::make,"(x y z)");
+  expose_function(core::magic_name("GEOM:make-m4-translate"),true,&geom::make_m4_translate,"(pos)");
 }
 NOINLINE void expose_function_1041_helper() {
-  expose_function(core::magic_name("chem__oligomer"),true,&chem::chem__oligomer,"(oligomerName parts)");
+  expose_function(core::magic_name("GEOM:make-matrix-identity"),true,&geom::make_matrix_identity,"");
 }
 NOINLINE void expose_function_1042_helper() {
-  expose_function(core::magic_name("chem__calculate_point"),true,&chem::chem__calculate_point,"");
+  expose_function("GEOM:MAKE-MATRIX",true,&geom::OMatrix_O::make,"(identity)");
 }
 NOINLINE void expose_function_1043_helper() {
-  expose_function(core::magic_name("chem__link"),true,&chem::chem__link,"(monomer1Id coupling monomer2)");
+  expose_function("GEOM:VEC",true,&geom::OVector3_O::make,"(x y z)");
 }
 NOINLINE void expose_function_1044_helper() {
-  expose_function(core::magic_name("chem__monomer"),true,&chem::chem__monomer,"(monomerId groupName &optional monomerAliases comment)");
+  expose_function(core::magic_name("chem__oligomer"),true,&chem::chem__oligomer,"(oligomerName parts)");
 }
 NOINLINE void expose_function_1045_helper() {
-  expose_function(core::magic_name("chem__atom_pos"),true,&chem::chem__atom_pos,"(&rest args)");
+  expose_function(core::magic_name("chem__calculate_point"),true,&chem::chem__calculate_point,"");
 }
 NOINLINE void expose_function_1046_helper() {
-  expose_function(core::magic_name("chem__find_residue"),true,&chem::chem__find_residue,"(&rest args)");
+  expose_function(core::magic_name("chem__link"),true,&chem::chem__link,"(monomer1Id coupling monomer2)");
 }
 NOINLINE void expose_function_1047_helper() {
-  expose_function(core::magic_name("chem__save_mol2"),true,&chem::chem__save_mol2,"(matter dest-desig &optional use-sybyl-types)");
+  expose_function(core::magic_name("chem__monomer"),true,&chem::chem__monomer,"(monomerId groupName &optional monomerAliases comment)");
 }
 NOINLINE void expose_function_1048_helper() {
-  expose_function(core::magic_name("chem__load_mol2"),true,&chem::chem__load_mol2,"(fileName)");
+  expose_function(core::magic_name("chem__atom_pos"),true,&chem::chem__atom_pos,"(&rest args)");
 }
 NOINLINE void expose_function_1049_helper() {
-  expose_function(core::magic_name("chem__make_coordinate_array_from_atom_list"),true,&chem::chem__make_coordinate_array_from_atom_list,"(atoms)");
+  expose_function(core::magic_name("chem__find_residue"),true,&chem::chem__find_residue,"(&rest args)");
 }
 NOINLINE void expose_function_1050_helper() {
-  expose_function(core::magic_name("chem__save_archive_with_auto_set_cando_database"),true,&chem::chem__save_archive_with_auto_set_cando_database,"");
+  expose_function(core::magic_name("chem__save_mol2"),true,&chem::chem__save_mol2,"(matter dest-desig &optional use-sybyl-types)");
 }
 NOINLINE void expose_function_1051_helper() {
-  expose_function(core::magic_name("chem__create_virtual_atom"),true,&chem::chem__create_virtual_atom,"");
+  expose_function(core::magic_name("chem__load_mol2"),true,&chem::chem__load_mol2,"(fileName)");
 }
 NOINLINE void expose_function_1052_helper() {
-  expose_function(core::magic_name("chem__bundle_database_path"),true,&chem::chem__bundle_database_path,"(pathDesig)");
+  expose_function(core::magic_name("chem__make_coordinate_array_from_atom_list"),true,&chem::chem__make_coordinate_array_from_atom_list,"(atoms)");
 }
 NOINLINE void expose_function_1053_helper() {
-  expose_function(core::magic_name("chem__standard_database"),true,&chem::chem__standard_database,"(pathDesig &optional loadSeed (overbosity 0))");
+  expose_function(core::magic_name("chem__save_archive_with_auto_set_cando_database"),true,&chem::chem__save_archive_with_auto_set_cando_database,"");
 }
 NOINLINE void expose_function_1054_helper() {
-  expose_function(core::magic_name("chem__database"),true,&chem::chem__database,"(fileName &optional (verbosity 0))");
+  expose_function(core::magic_name("chem__create_virtual_atom"),true,&chem::chem__create_virtual_atom,"");
 }
 NOINLINE void expose_function_1055_helper() {
-  expose_function(core::magic_name("CHEM:make-chem-draw"),true,&chem::ChemDraw_O::make,"(stream)");
+  expose_function(core::magic_name("chem__bundle_database_path"),true,&chem::chem__bundle_database_path,"(pathDesig)");
 }
 NOINLINE void expose_function_1056_helper() {
-  expose_function(core::magic_name("chem__make_read_amber_parameters"),true,&chem::chem__make_read_amber_parameters,"");
+  expose_function(core::magic_name("chem__standard_database"),true,&chem::chem__standard_database,"(pathDesig &optional loadSeed (overbosity 0))");
 }
 NOINLINE void expose_function_1057_helper() {
-  expose_function(core::magic_name("chem__set_monomer_pack"),true,&chem::chem__set_monomer_pack,"(pack-name parts &optional atom-aliases)");
+  expose_function(core::magic_name("chem__database"),true,&chem::chem__database,"(fileName &optional (verbosity 0))");
 }
 NOINLINE void expose_function_1058_helper() {
-  expose_function(core::magic_name("chem__extend_aliases"),true,&chem::chem__extend_aliases,"(packName parts atomAliases)");
+  expose_function(core::magic_name("CHEM:make-chem-draw"),true,&chem::ChemDraw_O::make,"(stream)");
 }
 NOINLINE void expose_function_1059_helper() {
-  expose_function(core::magic_name("chem__define_monomer_pack"),true,&chem::chem__define_monomer_pack,"(pack-name parts &optional atom-aliases)");
+  expose_function(core::magic_name("chem__make_read_amber_parameters"),true,&chem::chem__make_read_amber_parameters,"");
 }
 NOINLINE void expose_function_1060_helper() {
-  expose_function(core::magic_name("chem__parseChimeraAtomSpecs"),true,&chem::chem__parseChimeraAtomSpecs,"(spec)");
+  expose_function(core::magic_name("chem__set_monomer_pack"),true,&chem::chem__set_monomer_pack,"(pack-name parts &optional atom-aliases)");
 }
 NOINLINE void expose_function_1061_helper() {
-  expose_function(core::magic_name("chem__alias"),true,&chem::chem__alias,"(monAlias atomAlias)");
+  expose_function(core::magic_name("chem__extend_aliases"),true,&chem::chem__extend_aliases,"(packName parts atomAliases)");
 }
 NOINLINE void expose_function_1062_helper() {
-  expose_function(core::magic_name("CHEM:bonds"),true,&chem::IterateBonds_O::make,"(top)");
+  expose_function(core::magic_name("chem__define_monomer_pack"),true,&chem::chem__define_monomer_pack,"(pack-name parts &optional atom-aliases)");
 }
 NOINLINE void expose_function_1063_helper() {
-  expose_function(core::magic_name("CHEM:residues"),true,&chem::IterateResidues_O::createForMatter,"(matter)");
+  expose_function(core::magic_name("chem__parseChimeraAtomSpecs"),true,&chem::chem__parseChimeraAtomSpecs,"(spec)");
 }
 NOINLINE void expose_function_1064_helper() {
-  expose_function(core::magic_name("chem__create_for_matter"),true,&chem::chem__create_for_matter,"(matter)");
+  expose_function(core::magic_name("chem__alias"),true,&chem::chem__alias,"(monAlias atomAlias)");
 }
 NOINLINE void expose_function_1065_helper() {
-  expose_function(core::magic_name("CHEM:ring-bonds"),true,&chem::RingFinder_O::ringBonds,"(atoms)");
+  expose_function(core::magic_name("CHEM:bonds"),true,&chem::IterateBonds_O::make,"(top)");
 }
 NOINLINE void expose_function_1066_helper() {
-  expose_function(core::magic_name("CHEM:identify-rings"),true,&chem::RingFinder_O::identifyRings,"(matter)");
+  expose_function(core::magic_name("CHEM:residues"),true,&chem::IterateResidues_O::createForMatter,"(matter)");
 }
 NOINLINE void expose_function_1067_helper() {
-  expose_function(core::magic_name("CHEM:save-pdb"),true,&chem::PdbWriter_O::savePdb,"(matter fileName)");
+  expose_function(core::magic_name("chem__create_for_matter"),true,&chem::chem__create_for_matter,"(matter)");
 }
 NOINLINE void expose_function_1068_helper() {
-  expose_function(core::magic_name("chem__load_pdb"),true,&chem::chem__load_pdb,"(fileName)");
+  expose_function(core::magic_name("CHEM:ring-bonds"),true,&chem::RingFinder_O::ringBonds,"(atoms)");
 }
 NOINLINE void expose_function_1069_helper() {
-  expose_function("CHEM:MAKE-SPANNING-LOOP",true,&chem::SpanningLoop_O::make,"(root)");
+  expose_function(core::magic_name("CHEM:identify-rings"),true,&chem::RingFinder_O::identifyRings,"(matter)");
 }
 NOINLINE void expose_function_1070_helper() {
-  expose_function(core::magic_name("chem__set_oligomer"),true,&chem::chem__set_oligomer,"(oligomerName parts)");
+  expose_function(core::magic_name("CHEM:save-pdb"),true,&chem::PdbWriter_O::savePdb,"(matter fileName)");
 }
 NOINLINE void expose_function_1071_helper() {
-  expose_function(core::magic_name("chem__oligomer_sequence"),true,&chem::chem__oligomer_sequence,"(olig)");
+  expose_function(core::magic_name("chem__load_pdb"),true,&chem::chem__load_pdb,"(fileName)");
 }
 NOINLINE void expose_function_1072_helper() {
-  expose_function(core::magic_name("CHEM:make-nvector"),true,&chem::make_nvector,"(sz)");
+  expose_function("CHEM:MAKE-SPANNING-LOOP",true,&chem::SpanningLoop_O::make,"(root)");
 }
 NOINLINE void expose_function_1073_helper() {
-  expose_function(core::magic_name("chem__atomsInMatterAsObjectSet"),true,&chem::chem__atomsInMatterAsObjectSet,"(matter)");
+  expose_function(core::magic_name("chem__set_oligomer"),true,&chem::chem__set_oligomer,"(oligomerName parts)");
 }
 NOINLINE void expose_function_1074_helper() {
-  expose_function(core::magic_name("chem__atomsWithinSphereAsObjectSet"),true,&chem::chem__atomsWithinSphereAsObjectSet,"(matter center radius)");
+  expose_function(core::magic_name("chem__oligomer_sequence"),true,&chem::chem__oligomer_sequence,"(olig)");
 }
 NOINLINE void expose_function_1075_helper() {
-  expose_function(core::magic_name("chem__connectAtomsInMatterInCovalentContact"),true,&chem::chem__connectAtomsInMatterInCovalentContact,"(matter)");
+  expose_function(core::magic_name("CHEM:make-nvector"),true,&chem::make_nvector,"(sz)");
 }
 NOINLINE void expose_function_1076_helper() {
-  expose_function(core::magic_name("CHEM:otherPlugName"),true,&chem::DirectionalCoupling_O::otherPlugName,"(name)");
+  expose_function(core::magic_name("chem__atomsInMatterAsObjectSet"),true,&chem::chem__atomsInMatterAsObjectSet,"(matter)");
 }
 NOINLINE void expose_function_1077_helper() {
-  expose_function(core::magic_name("chem__is_in_plug_name"),true,&chem::chem__is_in_plug_name,"(plugName)");
+  expose_function(core::magic_name("chem__atomsWithinSphereAsObjectSet"),true,&chem::chem__atomsWithinSphereAsObjectSet,"(matter center radius)");
 }
 NOINLINE void expose_function_1078_helper() {
-  expose_function(core::magic_name("CHEM:outPlugName"),true,&chem::DirectionalCoupling_O::outPlugName,"(name)");
+  expose_function(core::magic_name("chem__connectAtomsInMatterInCovalentContact"),true,&chem::chem__connectAtomsInMatterInCovalentContact,"(matter)");
 }
 NOINLINE void expose_function_1079_helper() {
-  expose_function(core::magic_name("CHEM:inPlugName"),true,&chem::DirectionalCoupling_O::inPlugName,"(name)");
+  expose_function(core::magic_name("CHEM:otherPlugName"),true,&chem::DirectionalCoupling_O::otherPlugName,"(name)");
 }
 NOINLINE void expose_function_1080_helper() {
-  expose_function(core::magic_name("CHEM:couplingName"),true,&chem::DirectionalCoupling_O::couplingName,"(name)");
+  expose_function(core::magic_name("chem__is_in_plug_name"),true,&chem::chem__is_in_plug_name,"(plugName)");
 }
 NOINLINE void expose_function_1081_helper() {
-  expose_function(core::magic_name("CHEM:make-energy-function"),true,&chem::EnergyFunction_O::make,"(matter force_field &optional active-atoms)");
+  expose_function(core::magic_name("CHEM:outPlugName"),true,&chem::DirectionalCoupling_O::outPlugName,"(name)");
 }
 NOINLINE void expose_function_1082_helper() {
-  expose_function(core::magic_name("chem__map_bonds"),true,&chem::chem__map_bonds,"(type funcDesig m)");
+  expose_function(core::magic_name("CHEM:inPlugName"),true,&chem::DirectionalCoupling_O::inPlugName,"(name)");
 }
 NOINLINE void expose_function_1083_helper() {
-  expose_function(core::magic_name("chem__map_atoms"),true,&chem::chem__map_atoms,"(type funcDesig m)");
+  expose_function(core::magic_name("CHEM:couplingName"),true,&chem::DirectionalCoupling_O::couplingName,"(name)");
 }
 NOINLINE void expose_function_1084_helper() {
-  expose_function(core::magic_name("chem__map_residues"),true,&chem::chem__map_residues,"(type funcDesig m)");
+  expose_function(core::magic_name("CHEM:make-energy-function"),true,&chem::EnergyFunction_O::make,"(matter force_field &optional active-atoms)");
 }
 NOINLINE void expose_function_1085_helper() {
-  expose_function(core::magic_name("chem__map_molecules"),true,&chem::chem__map_molecules,"(type funcDesig m)");
+  expose_function(core::magic_name("chem__map_bonds"),true,&chem::chem__map_bonds,"(type funcDesig m)");
 }
 NOINLINE void expose_function_1086_helper() {
-  expose_function(core::magic_name("chem__readPdbMonomerConnectivityDatabase"),true,&chem::chem__readPdbMonomerConnectivityDatabase,"(fileName)");
+  expose_function(core::magic_name("chem__map_atoms"),true,&chem::chem__map_atoms,"(type funcDesig m)");
 }
 NOINLINE void expose_function_1087_helper() {
-  expose_function(core::magic_name("CHEM:make-minimizer"),true,&chem::Minimizer_O::make,"(&key matter force_field energy_function)");
+  expose_function(core::magic_name("chem__map_residues"),true,&chem::chem__map_residues,"(type funcDesig m)");
 }
 NOINLINE void expose_function_1088_helper() {
-  expose_function(core::magic_name("CHEM:elementFromAtomNameString"),true,&chem::elementFromAtomNameString,"(name)");
+  expose_function(core::magic_name("chem__map_molecules"),true,&chem::chem__map_molecules,"(type funcDesig m)");
 }
 NOINLINE void expose_function_1089_helper() {
-  expose_function(core::magic_name("CHEM:elementFromAtomNameStringCaseInsensitive"),true,&chem::elementFromAtomNameStringCaseInsensitive,"(name)");
+  expose_function(core::magic_name("chem__readPdbMonomerConnectivityDatabase"),true,&chem::chem__readPdbMonomerConnectivityDatabase,"(fileName)");
 }
 NOINLINE void expose_function_1090_helper() {
-  expose_function(core::magic_name("CHEM:vdwRadiusForElement"),true,&chem::vdwRadiusForElement,"(element)");
+  expose_function(core::magic_name("CHEM:make-minimizer"),true,&chem::Minimizer_O::make,"(&key matter force_field energy_function)");
 }
 NOINLINE void expose_function_1091_helper() {
-  expose_function(core::magic_name("CHEM:make-atom"),true,&chem::Atom_O::make,"(name element)");
+  expose_function(core::magic_name("CHEM:elementFromAtomNameString"),true,&chem::elementFromAtomNameString,"(name)");
 }
 NOINLINE void expose_function_1092_helper() {
-  expose_function(core::magic_name("CHEM:make-residue"),true,&chem::Residue_O::make,"(name)");
+  expose_function(core::magic_name("CHEM:elementFromAtomNameStringCaseInsensitive"),true,&chem::elementFromAtomNameStringCaseInsensitive,"(name)");
 }
 NOINLINE void expose_function_1093_helper() {
-  expose_function(core::magic_name("CHEM:make-molecule"),true,&chem::Molecule_O::make,"(&optional (name nil))");
+  expose_function(core::magic_name("CHEM:vdwRadiusForElement"),true,&chem::vdwRadiusForElement,"(element)");
 }
 NOINLINE void expose_function_1094_helper() {
-  expose_function(core::magic_name("CHEM:make-aggregate"),true,&chem::Aggregate_O::make,"(&optional (name nil))");
+  expose_function(core::magic_name("CHEM:make-atom"),true,&chem::Atom_O::make,"(name element)");
 }
 NOINLINE void expose_function_1095_helper() {
+  expose_function(core::magic_name("CHEM:make-residue"),true,&chem::Residue_O::make,"(name)");
+}
+NOINLINE void expose_function_1096_helper() {
+  expose_function(core::magic_name("CHEM:make-molecule"),true,&chem::Molecule_O::make,"(&optional (name nil))");
+}
+NOINLINE void expose_function_1097_helper() {
+  expose_function(core::magic_name("CHEM:make-aggregate"),true,&chem::Aggregate_O::make,"(&optional (name nil))");
+}
+NOINLINE void expose_function_1098_helper() {
   expose_function(core::magic_name("chem__make_fftypes_db"),true,&chem::chem__make_fftypes_db,"");
 }
 #endif // EXPOSE_FUNCTION_BINDINGS_HELPERS
@@ -5410,4 +5422,7 @@ NOINLINE void expose_function_1095_helper() {
   expose_function_1093_helper();
   expose_function_1094_helper();
   expose_function_1095_helper();
+  expose_function_1096_helper();
+  expose_function_1097_helper();
+  expose_function_1098_helper();
 #endif // EXPOSE_FUNCTION_BINDINGS
