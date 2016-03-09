@@ -39,7 +39,7 @@
 Return POINTS points on a circle of RADIUS where the normal to the circle points along the Z-axis and the points are all offset from the origin by Z."
   (loop for aindex from 0 below points
      for angrad = (* 360.0 (/ (float aindex) points) 0.0174533)
-     collect (geom:make-v3 (* (cos angrad) radius)
+     collect (geom:vec (* (cos angrad) radius)
                                  (* (sin angrad) radius) z)))
 
 

@@ -70,11 +70,11 @@ public:
 	string __str__() ;
 CL_NAME("setAll3");
 CL_DEFMETHOD 	void setAll3(double x, double y, double z) { this->_Value.set(x,y,z); };
-CL_NAME("x");
+CL_NAME("vx");
 CL_DEFMETHOD 	double getX() { return this->_Value.getX(); };
-CL_NAME("y");
+CL_NAME("vy");
 CL_DEFMETHOD 	double getY() { return this->_Value.getY(); };
-CL_NAME("z");
+CL_NAME("vz");
 CL_DEFMETHOD 	double getZ() { return this->_Value.getZ(); };
 	Vector3& value() { return this->_Value;};
 	Vector3	get() { return this->_Value; };

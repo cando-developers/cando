@@ -83,7 +83,7 @@
   (let (selected)
     (chem:map-atoms nil
                     (lambda (a)
-                      (let ((dist (geom:v3-magnitude (geom:sub (chem:get-position a) pos))))
+                      (let ((dist (geom:vlength (geom:sub (chem:get-position a) pos))))
                         (when (< dist radius)
                           (push a selected))))
                     matter)
@@ -93,7 +93,7 @@
   (let (selected)
     (chem:map-atoms nil
                     (lambda (a)
-                      (let ((dist (geom:v3-magnitude (geom:sub (chem:get-position a) pos))))
+                      (let ((dist (geom:vlength (geom:sub (chem:get-position a) pos))))
                         (when (> dist radius)
                           (push a selected))))
                     matter)

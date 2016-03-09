@@ -65,8 +65,8 @@ namespace geom {
     void rotationY(double radians);
     void rotationZ(double radians);
 
-    Matrix mul_matrix(const Matrix& other) const;
-    Vector3 mul_v3(const Vector3& vec) const;
+    Matrix m_TIMES_m(const Matrix& other) const;
+    Vector3 m_TIMES_v(const Vector3& vec) const;
 
 CL_NAME("extract3x3");
 CL_DEFMETHOD     Matrix extract3x3() const { return this->_Value.extract3x3();};

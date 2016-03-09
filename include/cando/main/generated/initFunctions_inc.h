@@ -4143,10 +4143,10 @@ NOINLINE void expose_function_1038_helper() {
   expose_function(core::magic_name("GEOM:make-matrix-identity"),true,&geom::make_matrix_identity,"");
 }
 NOINLINE void expose_function_1039_helper() {
-  expose_function(core::magic_name("GEOM:make-m4"),true,&geom::OMatrix_O::make,"(identity)");
+  expose_function("GEOM:MAKE-MATRIX",true,&geom::OMatrix_O::make,"(identity)");
 }
 NOINLINE void expose_function_1040_helper() {
-  expose_function(core::magic_name("GEOM:make_v3"),true,&geom::OVector3_O::make,"(x y z)");
+  expose_function("GEOM:VEC",true,&geom::OVector3_O::make,"(x y z)");
 }
 NOINLINE void expose_function_1041_helper() {
   expose_function(core::magic_name("chem__oligomer"),true,&chem::chem__oligomer,"(oligomerName parts)");

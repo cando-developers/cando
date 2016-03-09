@@ -272,9 +272,9 @@ those atoms."
             (case head
               (:ATOM
                (let ((atomid (read-from-string line t nil :start 4 :end 11))
-                     (pos (geom:make-v3 (read-from-string line t nil :start 30 :end 38)
-                                        (read-from-string line t nil :start 38 :end 46)
-                                        (read-from-string line t nil :start 46 :end 54))))
+                     (pos (geom:vec (read-from-string line t nil :start 30 :end 38)
+                                    (read-from-string line t nil :start 38 :end 46)
+                                    (read-from-string line t nil :start 46 :end 54))))
                  (chem:set-position (gethash atomid atoms) pos)))
               (otherwise #|nothing|#))))))
                   

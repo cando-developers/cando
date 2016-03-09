@@ -34,7 +34,7 @@
   "Generate points on a circle"
   (loop for aindex from 0 below points
      for angrad = (* 360.0 (/ (float aindex) points) 0.0174533)
-     collect (geom:make-v3 (* (cos angrad) radius)
+     collect (geom:vec (* (cos angrad) radius)
                                  (* (sin angrad) radius) z)))
 
 

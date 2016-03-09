@@ -30,7 +30,7 @@
 (defconstant +default-dihedral-radians+ (* 180.0 0.0174533))
 (defclass atom-node ()
   ((target-atom :initarg target-atom :accessor target-atom)
-   (target-pos :initform (geom:make-v3 0.0 0.0 0.0)
+   (target-pos :initform (geom:vec 0.0 0.0 0.0)
                :initarg :target-pos :accessor target-pos)
    (bond-angstroms :initform +default-bond-angstroms+
                    :initarg :bond-angstroms :accessor bond-angstroms)
@@ -47,13 +47,13 @@
 
 (defun build-from-bond (atom-node)
   (let* ((bond-pos (target-pos (bond-node atom-node))))
-    (geom:set-using-bond (target-pos atom-node) (bond-angstroms atom-node) bond-pos)
+    (geom:v-set-using-bond (target-pos atom-node) (bond-angstroms atom-node) bond-pos)
     (target-pos atom-node)))
 
 (defun build-from-bond-angle (atom-node)
   (let* ((bond-pos (target-pos (bond-node atom-node)))
          (angle-pos (target-pos (angle-node atom-node))))
-    (geom:set-using-bond-angle (target-pos atom-node)
+    (geom:v-set-using-bond-angle (target-pos atom-node)
                                  (bond-angstroms atom-node) bond-pos
                                  (angle-radians atom-node) angle-pos)
     (target-pos atom-node)))
@@ -62,7 +62,7 @@
   (let* ((bond-pos (target-pos (bond-node atom-node)))
          (angle-pos (target-pos (angle-node atom-node)))
          (dihedral-pos (target-pos (dihedral-node atom-node))))
-    (geom:set-using-bond-angle-dihedral (target-pos atom-node)
+    (geom:v-set-using-bond-angle-dihedral (target-pos atom-node)
                                         (bond-angstroms atom-node) bond-pos
                                         (angle-radians atom-node) angle-pos
                                         (dihedral-radians atom-node) dihedral-pos)
@@ -165,12 +165,12 @@
                  (gethash angle-atom active-set)
                  (gethash dihedral-atom active-set))
             (let* ((ta (target-atom node))
-                   (bond-angstroms (geom:v3-distance (chem:get-position ta)
+                   (bond-angstroms (geom:vdistance (chem:get-position ta)
                                                           (chem:get-position bond-atom)))
-                   (angle-radians (geom:v3-angle (chem:get-position ta)
+                   (angle-radians (geom:vangle (chem:get-position ta)
                                                       (chem:get-position bond-atom)
                                                       (chem:get-position angle-atom)))
-                   (dihedral-radians (geom:dihedral (chem:get-position ta) ;
+                   (dihedral-radians (geom:vdihedral (chem:get-position ta) ;
                                                     (chem:get-position bond-atom)
                                                     (chem:get-position angle-atom)
                                                     (chem:get-position dihedral-atom))))

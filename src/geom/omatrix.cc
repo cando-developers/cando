@@ -45,7 +45,7 @@ void OMatrix_O::archiveBase(core::ArchiveP node)
 }
 #endif
 
-CL_LISPIFY_NAME(make-m4);
+CL_NAME("MAKE-MATRIX");
 CL_DEFUN OMatrix_sp OMatrix_O::make(bool identity)
 {
   GC_ALLOCATE_VARIADIC(OMatrix_O,om,identity);
@@ -148,13 +148,15 @@ OMatrix_sp OMatrix_O::clone() const
   return clone;
 }
 
-CL_DEFMETHOD Matrix OMatrix_O::mul_matrix(const Matrix& other) const
+CL_NAME("M*M");
+CL_DEFMETHOD Matrix OMatrix_O::m_TIMES_m(const Matrix& other) const
 {
   Matrix res = this->_Value*other;
   return res;
 };
 
-CL_DEFMETHOD Vector3 OMatrix_O::mul_v3(const Vector3& vec) const
+CL_NAME("M*V")
+CL_DEFMETHOD Vector3 OMatrix_O::m_TIMES_v(const Vector3& vec) const
 {
   Vector3 res = this->_Value*vec;
   return res;

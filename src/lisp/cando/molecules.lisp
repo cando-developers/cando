@@ -26,13 +26,13 @@
 (in-package :cando)
 
 
-(defun scramble-positions (matter &key (center (geom:make-v3 0.0 0.0 0.0)) (width 10.0)
+(defun scramble-positions (matter &key (center (geom:vec 0.0 0.0 0.0)) (width 10.0)
                            &aux (half-width (/ width 2.0)))
   (flet ((scramble-atom (atom)
-           (let ((pos (geom:make-v3
-                       (+ (- (random width) half-width) (geom:x center))
-                       (+ (- (random width) half-width) (geom:y center))
-                       (+ (- (random width) half-width) (geom:z center)))))
+           (let ((pos (geom:vec
+                       (+ (- (random width) half-width) (geom:vx center))
+                       (+ (- (random width) half-width) (geom:vy center))
+                       (+ (- (random width) half-width) (geom:vz center)))))
              (chem:set-position atom pos))))
     (cond
       ((typep matter 'chem:matter)
@@ -296,10 +296,10 @@ Set the stereochemistry of a collection of stereocenters using a function that r
   "Randomly jostle atoms from their current positions"
   (flet ((jostle-atom (atom)
            (let* ((cp (chem:get-position atom))
-                  (pos (geom:make-v3
-                       (+ (- (random width) half-width) (geom:x cp))
-                       (+ (- (random width) half-width) (geom:y cp))
-                       (+ (- (random width) half-width) (geom:z cp)))))
+                  (pos (geom:vec
+                       (+ (- (random width) half-width) (geom:vx cp))
+                       (+ (- (random width) half-width) (geom:vy cp))
+                       (+ (- (random width) half-width) (geom:vz cp)))))
              (chem:set-position atom pos))))
     (cond
       ((typep matter 'chem:matter)
@@ -351,8 +351,8 @@ Set the stereochemistry of a collection of stereocenters using a function that r
   "Generate a list of (points) points around a circle centered on origin"
   (loop for aindex from 0 below points
      for angrad = (* 360.0 (/ (float aindex) points) 0.0174533)
-     collect (geom:make-v3 (* (cos angrad) radius)
-                                 (* (sin angrad) radius) z)))
+     collect (geom:vec (* (cos angrad) radius)
+                       (* (sin angrad) radius) z)))
 
 (defun anchor-stereocenters-to-circle (agg)
   "Create an anchor restraint for every stereocenter to points on a circle"

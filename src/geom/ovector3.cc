@@ -64,7 +64,7 @@ namespace geom {
 
 
 
-CL_LISPIFY_NAME(make_v3);
+CL_NAME("VEC");
 CL_DEFUN OVector3_sp OVector3_O::make(double x, double y, double z)
     {
 	GC_ALLOCATE(OVector3_O,ov);
@@ -97,42 +97,35 @@ string OVector3_O::__str__() {
     return this->__repr__();
 }
 
-CL_LISPIFY_NAME("sub");
+CL_NAME("V-");
 CL_DEFMETHOD     Vector3 OVector3_O::sub(const Vector3& other)
     {
 	Vector3 s = this->_Value.sub(other);
 	return s;
     }
 
-CL_LISPIFY_NAME("_MINUS_");
-CL_DEFMETHOD     Vector3 OVector3_O::_MINUS_(const Vector3& other)
-{
-  Vector3 s = this->_Value.sub(other);
-  return s;
-}
-
-CL_LISPIFY_NAME("_PLUS_");
+CL_NAME("V+");
 CL_DEFMETHOD Vector3 OVector3_O::_PLUS_(const Vector3& other)
 {
   Vector3 s = this->_Value.add(other);
   return s;
 }
 
-CL_LISPIFY_NAME("v3-magnitude");
+CL_NAME("VLENGTH");
 CL_DEFMETHOD     double OVector3_O::magnitude()
     {
 	double l = this->_Value.length();
 	return l;
     }
 
-CL_LISPIFY_NAME("crossProduct");
+CL_LISPIFY_NAME("VCROSS");
 CL_DEFMETHOD     Vector3 OVector3_O::crossProduct(const Vector3& other)
     {
 	Vector3 s = this->_Value.crossProduct(other);
 	return s;
     }
 
-CL_LISPIFY_NAME("dotProduct");
+CL_NAME("VDOT");
 CL_DEFMETHOD     double OVector3_O::dotProduct(const Vector3& other)
     {
 	double d = this->_Value.dotProduct(other);
@@ -140,16 +133,16 @@ CL_DEFMETHOD     double OVector3_O::dotProduct(const Vector3& other)
     }
 
 
-    OVector3_sp OVector3_O::sum(core::List_sp args)
-    {
-	Vector3 sum(0.0,0.0,0.0);
-	while ( args.notnilp() )
-	{
-          OVector3_sp one = gc::As<OVector3_sp>(args);
-	    sum = sum.add(one->get());
-	}
-	return OVector3_O::createFromVector3(sum);
-    }
+OVector3_sp OVector3_O::sum(core::List_sp args)
+{
+  Vector3 sum(0.0,0.0,0.0);
+  while ( args.notnilp() )
+  {
+    OVector3_sp one = gc::As<OVector3_sp>(args);
+    sum = sum.add(one->get());
+  }
+  return OVector3_O::createFromVector3(sum);
+}
 
 
     core::T_sp OVector3_O::deepCopy() const
@@ -161,7 +154,7 @@ CL_DEFMETHOD     double OVector3_O::dotProduct(const Vector3& other)
 
     
     
-CL_LISPIFY_NAME("add");
+CL_NAME("VSUM");
 CL_DEFMETHOD core::T_sp OVector3_O::add(core::List_sp points)
 {
   Vector3 result = Vector3(this->getX(),this->getY(),this->getZ());
@@ -176,7 +169,7 @@ CL_DEFMETHOD core::T_sp OVector3_O::add(core::List_sp points)
 
 
 
-CL_LISPIFY_NAME("timesScalar");
+CL_NAME("V*");
 CL_DEFMETHOD Vector3 OVector3_O::timesScalar(double d)
 {
     Vector3 p = this->_Value.multiplyByScalar(d);
@@ -184,44 +177,44 @@ CL_DEFMETHOD Vector3 OVector3_O::timesScalar(double d)
 }
 
 
-CL_LISPIFY_NAME("v3-normalized");
+CL_NAME("VNORMALIZED");
 CL_DEFMETHOD Vector3 OVector3_O::normalized()
 {
   return this->_Value.normalized();
 }
 
-CL_LISPIFY_NAME("dihedral");
+CL_NAME("VDIHEDRAL");
 CL_DEFMETHOD double	OVector3_O::dihedral( const Vector3& vb, const Vector3& vc, const Vector3& vd )
 {
     return calculateDihedral(this->_Value,vb,vc,vd);
 }
 
-CL_LISPIFY_NAME("v3-angle");
+CL_NAME("VANGLE");
 CL_DEFMETHOD double	OVector3_O::angle( const Vector3& vb, const Vector3& vc)
 {
     return calculateAngle(this->_Value,vb,vc);
 }
 
-CL_LISPIFY_NAME("v3-distance");
+CL_NAME("VDISTANCE");
 CL_DEFMETHOD double	OVector3_O::distance( const Vector3& vb )
 {
     return calculateDistance(this->_Value,vb);
 }
 
-CL_LISPIFY_NAME("setUsingBond");
+CL_LISPIFY_NAME("v_setUsingBond");
 CL_DEFMETHOD void OVector3_O::setUsingBond(double distance, OVector3_sp v)
 {
   this->_Value = buildUsingBond(distance,v->_Value);
 }
 
-CL_LISPIFY_NAME("setUsingBondAngle");
+CL_LISPIFY_NAME("v_setUsingBondAngle");
 CL_DEFMETHOD void OVector3_O::setUsingBondAngle(double bond, OVector3_sp bondPos,
                                      double angle, OVector3_sp anglePos)
 {
   this->_Value = buildUsingBondAngle(bond,bondPos->_Value,angle,anglePos->_Value);
 }
 
-CL_LISPIFY_NAME("setUsingBondAngleDihedral");
+CL_LISPIFY_NAME("v_setUsingBondAngleDihedral");
 CL_DEFMETHOD void OVector3_O::setUsingBondAngleDihedral(double bond, OVector3_sp bondPos,
                                              double angle, OVector3_sp anglePos,
                                              double dihedral, OVector3_sp dihedralPos)
