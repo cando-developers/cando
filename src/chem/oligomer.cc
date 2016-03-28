@@ -808,7 +808,7 @@ CL_DEFMETHOD Monomer_sp	Oligomer_O::getFirstMonomer()
 void Oligomer_O::_fillMonomerAsString(Monomer_sp mon, stringstream& seq)
 {
     seq <<"( ";
-    seq << "monomer '" << mon->getId()->__repr__();
+    seq << "monomer '" << _rep_(mon->getId());
     if ( mon->getGroupName() == mon->getName() )
     {
 	seq << " '" << mon->getGroupName()->symbolName();
@@ -852,7 +852,7 @@ CL_DEFMETHOD string	Oligomer_O::sequenceAsString()
 
     Monomer_sp mon2 = this->rootMonomer();
     stringstream seq;
-    seq << "(Oligomer :name " << this->_Name->__repr__() << " :parts (list " << std::endl;
+    seq << "(Oligomer :name " << _rep_(this->_Name) << " :parts (list " << std::endl;
     this->_fillMonomerAsString(mon2,seq);
     seq << std::endl;
     this->_fillSequenceAsStringForChildren(mon2,seq);
@@ -864,9 +864,9 @@ CL_DEFMETHOD string	Oligomer_O::sequenceAsString()
 	    Monomer_sp mon1 = rc->getMonomer1();
 	    Monomer_sp mon2 = rc->getMonomer2();
 	    seq << "[ ringLink '";
-	    seq << mon1->getId()->__repr__();
+	    seq << _rep_(mon1->getId());
 	    seq <<" '"<<rc->getPlug1() << " ";
-	    seq << mon2->getId()->__repr__();
+	    seq << _rep_(mon2->getId());
 	    seq <<" '"<<rc->getPlug2() << " ";
 	    seq <<" ]"<<std::endl;
 	}

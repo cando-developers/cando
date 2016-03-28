@@ -56,7 +56,6 @@ namespace chem
     public:
 	static Alias_sp make(core::Symbol_sp monomerSym, core::Symbol_sp atomSym);
 #else
-	DECLARE_INIT();
 #endif
     public:
     public:

@@ -258,6 +258,7 @@ public:
 
 template <>
 struct gctools::GCInfo<chem::SparseLargeSquareMatrix_O> {
+  static bool constexpr CanAllocateWithNoArguments = true;
   static bool constexpr NeedsInitialization = true;
   static bool constexpr NeedsFinalization = true;
   static GCInfo_policy constexpr Policy = normal;

@@ -82,7 +82,6 @@ CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
 
     void Unit_O::parseUnitList(double& amountScale, int powers[NumBaseDimensions], core::List_sp list)
     {
-	LOG(BF("Creating unit with arguments[%s]") % lisp->__repr__() );
 //	core::Binder_sp unitDatabase = _lisp->symbol(_sym_UnitsPkg_StarUnitDatabaseStar)->symbolValue().as<core::Binder_O>();
 	core::List_sp dimCur = list;
 	while (dimCur.notnilp())
@@ -101,7 +100,7 @@ CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
 		u->adjustPowersAndAmountScale(power,powers,amountScale);
 	    } else
 	    {
-		SIMPLE_ERROR(BF("Unknown unit[%s]") % odim->__repr__());
+              SIMPLE_ERROR(BF("Unknown unit[%s]") % _rep_(odim));
 	    }
 	    dimCur = core::oCdr(dimCur);
 	}
@@ -158,7 +157,7 @@ CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
 	/*Set the default system as units:*SI* */
 //	core::Binder_sp unitDatabase = _lisp->symbol(_sym_UnitsPkg_StarUnitDatabaseStar)->symbolValue().as<core::Binder_O>();
 	// Repeat this block for multiple symbols
-	{ _BLOCK_TRACEF(BF("Processing unit[%s]") % u->__repr__() );
+      { _BLOCK_TRACEF(BF("Processing unit[%s]") % _rep_(u) );
 	    u->adjustPowersAndAmountScale(power,this->_Powers,amountScale);
 	    this->_Amount *= amountScale;
 	}
@@ -227,7 +226,7 @@ CL_DEFMETHOD     double Unit_O::conversion_factor_to(Unit_sp other, int power) c
 	    return conversion;
 	}
 	SIMPLE_ERROR(BF("Units[%s] are not compatible with Unit[%s]^%d") 
-		     % this->__repr__() % other->__repr__() % power );
+		     % this->__repr__() % _rep_(other) % power );
     }
 
     Unit_sp Unit_O::copyWithoutName() const
@@ -256,14 +255,14 @@ CL_DEFMETHOD     core::T_sp Unit_O::operator*(core::T_sp obj) const
 		    || obj.isA<geom::OVector3_O>()
 		    || obj.isA<core::Array_O>() )
 	{
-	    core::T_sp val = obj->deepCopy();
+          core::T_sp val = obj.as<core::General_O>()->deepCopy();
 	    result = Quantity_O::create(val,this->const_sharedThis<Unit_O>());
 	} else if ( obj.isA<Quantity_O>() )
 	{
 	    SIMPLE_ERROR(BF("Handle Unit*Quantity"));
 	} else
 	{
-	    SIMPLE_ERROR(BF("Handle Unit*XXX where XXX=%s") % obj->__class()->classNameAsString());
+          SIMPLE_ERROR(BF("Handle Unit*XXX where XXX=%s") % core::cl__class_of(obj)->classNameAsString());
 	}
 	return result;
     }
@@ -284,7 +283,7 @@ CL_DEFMETHOD     core::T_sp Unit_O::operator/(core::T_sp obj) const
 	    return result;
 	} else
 	{
-	    SIMPLE_ERROR(BF("Handle Unit/XXX where XXX=%s") % obj->__class()->classNameAsString());
+          SIMPLE_ERROR(BF("Handle Unit/XXX where XXX=%s") % core::cl__class_of(obj)->classNameAsString());
 	}
     }
 

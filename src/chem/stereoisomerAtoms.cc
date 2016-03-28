@@ -48,7 +48,7 @@ namespace chem
 
     StereoisomerAtom_sp StereoisomerAtom_O::create(ConstitutionAtom_sp constitutionAtom )
     {
-	if ( constitutionAtom->isAssignableTo<ConstitutionVirtualAtom_O>() )
+	if ( constitutionAtom.isA<ConstitutionVirtualAtom_O>() )
 	{
 	    ConstitutionVirtualAtom_sp cva = constitutionAtom.as<ConstitutionVirtualAtom_O>();
 	    StereoisomerVirtualAtom_sp tva = StereoisomerVirtualAtom_O::create(cva);

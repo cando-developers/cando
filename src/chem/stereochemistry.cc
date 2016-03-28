@@ -237,7 +237,7 @@ RepresentativeList_sp Stereoisomer_O::expandedRepresentativeList() const
 string Stereoisomer_O::__repr__() const
 {
     stringstream ss;
-    ss << "Stereoisomer-name(" << this->_Name->__repr__() << ")-pdbName(" << this->_Pdb->__repr__() << ")";
+    ss << "Stereoisomer-name(" << _rep_(this->_Name) << ")-pdbName(" << _rep_(this->_Pdb) << ")";
     return ss.str();
 }
 
@@ -436,11 +436,11 @@ StereoInformation_sp StereoInformation_O::make(core::List_sp stereoisomers, core
       {
 	if ( me->_NameOrPdbToStereoisomer.count((*it)->getName()) >0 )
 	  {
-	      SIMPLE_ERROR(BF("Stereoisomer name: "+(*it)->getName()->__repr__()+" has already been defined"));
+            SIMPLE_ERROR(BF("Stereoisomer name: "+_rep_((*it)->getName())+" has already been defined"));
 	  }
 	if ( me->_NameOrPdbToStereoisomer.count((*it)->getPdb()) >0 )
 	  {
-	      SIMPLE_ERROR(BF("Stereoisomer pdb: "+(*it)->getPdb()->__repr__()+" has already been defined"));
+            SIMPLE_ERROR(BF("Stereoisomer pdb: "+_rep_((*it)->getPdb())+" has already been defined"));
 	  }
 	me->_NameOrPdbToStereoisomer.set((*it)->getName(), (*it));
 	me->_NameOrPdbToStereoisomer.set((*it)->getPdb(), (*it));
@@ -463,11 +463,11 @@ StereoInformation_sp StereoInformation_O::make(core::List_sp stereoisomers, core
     {
 	if ( this->_NameOrPdbToStereoisomer.count((*it)->getName()) >0 )
 	{
-	    SIMPLE_ERROR(BF("Stereoisomer name: "+(*it)->getName()->__repr__()+" has already been defined"));
+          SIMPLE_ERROR(BF("Stereoisomer name: "+_rep_((*it)->getName())+" has already been defined"));
 	}
 	if ( this->_NameOrPdbToStereoisomer.count((*it)->getPdb()) >0 )
 	{
-	    SIMPLE_ERROR(BF("Stereoisomer pdb: "+(*it)->getPdb()->__repr__()+" has already been defined"));
+          SIMPLE_ERROR(BF("Stereoisomer pdb: "+_rep_((*it)->getPdb())+" has already been defined"));
 	}
 	this->_NameOrPdbToStereoisomer.set((*it)->getName(), (*it));
 	this->_NameOrPdbToStereoisomer.set((*it)->getPdb(), (*it));

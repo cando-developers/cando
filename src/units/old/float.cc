@@ -58,7 +58,7 @@ namespace units
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	core::Cons_sp args = allargs->cdr();
-	LOG(BF("Initializing Float_O with args[%s]") % args->__repr__() );
+	LOG(BF("Initializing Float_O with args[%s]") % _rep_(args) );
 	double amount = 1.0;
 	Object_sp oamount = args->ocar();
 	if ( oamount->notNil() )
@@ -147,7 +147,7 @@ namespace units
 	{
 	    if ( !this->dimensionsMatch(other) )
 	    {
-		THROW(_lisp->error(BF("Mismatch in dimensions in add - you tried to add[%s] to [%s]") % this->__repr__() % other->__repr__()));
+              THROW(_lisp->error(BF("Mismatch in dimensions in add - you tried to add[%s] to [%s]") % this->__repr__() % _rep_(other)));
 	    }
 	    result->_Amount += other.as<Float_O>()->_Amount;
 	}
@@ -162,7 +162,7 @@ namespace units
 	{
 	    if ( !this->dimensionsMatch(other) )
 	    {
-		THROW(_lisp->error(BF("Mismatch in dimensions in sub - you tried to sub[%s] to [%s]") % this->__repr__() % other->__repr__()));
+              THROW(_lisp->error(BF("Mismatch in dimensions in sub - you tried to sub[%s] to [%s]") % this->__repr__() % _rep_(other)));
 	    }
 	    result->_Amount -= other.as<Float_O>()->_Amount;
 	}

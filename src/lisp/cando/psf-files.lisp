@@ -230,34 +230,36 @@ those atoms."
           (read-psf-atoms psfin atom-header))
         (setq nbond-header (read-psf-header psfin))
         (read-psf-bonds psfin nbond-header atoms)
-        (read-psf-header psfin) ;NTHETA
+        (read-psf-header psfin)         ;NTHETA
         (format t "Expected NTHETA~%")
         (skip-to-blank-line psfin)
-        (read-psf-header psfin)  ; NPHI
+        (read-psf-header psfin)         ; NPHI
         (format t "Expected NPHI~%")
         (skip-to-blank-line psfin)
-        (read-psf-header psfin)  ; NIMPHI
+        (read-psf-header psfin)         ; NIMPHI
         (format t "Expected NIMPHI~%")
         (skip-to-blank-line psfin)
-        (read-psf-header psfin)  ; NDON
+        (read-psf-header psfin)         ; NDON
         (format t "Expected NDON~%")
         (skip-to-blank-line psfin)
-        (read-psf-header psfin)  ; NACC
+        (read-psf-header psfin)         ; NACC
         (format t "Expected NACC~%")
         (skip-to-blank-line psfin)
-        (read-psf-header psfin)  ; NNB
+        (read-psf-header psfin)         ; NNB
         (format t "Expected NNB~%")
         (skip-to-blank-line psfin)
         (format t "Skipping bank of zeros~%")
-        (skip-to-blank-line psfin) ; Skip mysterious bank of zeros
-        (read-psf-header psfin) ; NGRP NST2
+        (skip-to-blank-line psfin)     ; Skip mysterious bank of zeros
+        (read-psf-header psfin)        ; NGRP NST2
         (format t "Expected NGRP NST2~%")
         (skip-to-blank-line psfin)
-        (setq molnt-header (read-psf-header psfin))
-        (format t "Expected MOLNT~%")
-        (setq *atoms* atoms)
-        (setq *residues* residues)
-        (format t "molnt-header = ~a~%" molnt-header)
+        (let ((header (read-psf-header psfin)))
+          (when (eq (car molnt-header) :NCRTERM)
+            (setq molnt-header header)
+            (format t "Expected MOLNT~%")
+            (setq *atoms* atoms)
+            (setq *residues* residues)
+            (format t "molnt-header = ~a~%" molnt-header)))
         (setf molecules (if molnt-header
                             (read-psf-molnt psfin molnt-header atoms residues)
                             (build-molecules-from-atom-connectivity atoms residues)))

@@ -201,7 +201,7 @@ void HighlightedHolder_O::archiveBase(core::ArchiveP node)
     string HighlightedHolder_O::__repr__() const
     {
 	stringstream ss;
-	ss << "HighlightedHolder[" << this->_HeldObject->__repr__() << "]";
+	ss << "HighlightedHolder[" << _rep_(this->_HeldObject) << "]";
 	return ss.str();
     }
 

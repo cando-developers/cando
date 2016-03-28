@@ -44,9 +44,9 @@ namespace kinematics
     /*! @class Wraps an AtomTree and an AtomHandle and provides
       safe, reference counted access to the underlying Atom.
     */
-    class Atom_O : public core::T_O
+    class Atom_O : public core::General_O
     {
-	LISP_CLASS(kinematics,KinPkg,Atom_O,"Atom",core::T_O);
+	LISP_CLASS(kinematics,KinPkg,Atom_O,"Atom",core::General_O);
     private:
 	AtomTree_sp		_AtomTree;
 	RefCountedAtomHandle	_Handle;

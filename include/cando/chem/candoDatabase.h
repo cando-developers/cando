@@ -92,7 +92,6 @@ class CandoDatabase_O : public core::CxxObject_O
  public:
     static CandoDatabase_sp make(core::Symbol_sp name, core::List_sp frameRecognizers, core::List_sp representedEntityNameSets, core::List_sp constitutions);
 #else
-    DECLARE_INIT();
 #endif
 public:
 //    void	archiveBase(core::ArchiveP node);

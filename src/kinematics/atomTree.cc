@@ -268,7 +268,7 @@ namespace kinematics
 	chem::Constitution_sp constitution = oCar(constitutionAndTopology).as<chem::Constitution_O>();
 	chem::Topology_sp topology = oCadr(constitutionAndTopology).as<chem::Topology_O>();
 	{_BLOCK_TRACEF(BF("Building constitution[%s] Topology[%s]")
-		       % constitution->getName()->__repr__() % topology->getName()->__repr__() );
+		       % _rep_(constitution->getName()) % _rep_(topology->getName()) );
 	    chem::ConstitutionAtoms_sp constitutionAtoms = constitution->getConstitutionAtoms();
 	    this->resizeAtoms(moleculeId,residueId,constitutionAtoms->numberOfAtoms());
 	    AtomTemplate_sp atomTemplate = topology->properties()->gethash(_lisp->intern(":atomTemplate")).as<AtomTemplate_O>();
@@ -278,7 +278,7 @@ namespace kinematics
 	    // Write the sub tree described by atomTemplate into the AtomTree
 	    // recursively
 	    ASSERTF(atomTemplate.notnilp(),BF("The AtomTemplate for Topology[%s] is nil")
-		    % topology->getName()->__repr__() );
+		    % _rep_(topology->getName()) );
 	    atomTemplate->writeIntoAtomTree(this->sharedThis<AtomTree_O>(),
 					    moleculeId,
 					    residueId,

@@ -33,6 +33,7 @@ This is an open source license for the CANDO software from Temple University, bu
 // Comment
 #include <clasp/core/common.h>
 #include <clasp/core/exceptions.h>
+#include <clasp/core/lispList.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/chem/bond.h>
 #include <cando/chem/matter.h>
@@ -103,7 +104,7 @@ bool Bond_O::isAtom1(Atom_sp a) const
   ASSERTNOTNULL(this->_Atom2);
   if ( this->_Atom2==a) return false;
   SIMPLE_ERROR(BF("Atom[%s] is neither atom1[%s] or atom2[%s] of bond")
-               % a->__repr__() % this->_Atom1->__repr__() % this->_Atom2->__repr__() );
+               % _rep_(a) % _rep_(this->_Atom1) % _rep_(this->_Atom2) );
 }
 
 

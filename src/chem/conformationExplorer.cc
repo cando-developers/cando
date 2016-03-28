@@ -168,7 +168,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMov
 	    dlAll->append(dlMatter);
 #ifdef DEBUG_ON
 	    core::SymbolVector_sp sv = dlMatter->getFullName();
-	    LOG(BF("At time of creation dlMatter fullName=%s") % sv->__repr__() );
+	    LOG(BF("At time of creation dlMatter fullName=%s") % _rep_(sv) );
 #endif
 	}
 	{
@@ -676,7 +676,7 @@ CL_DEFMETHOD     core::List_sp ConformationExplorer_O::entriesAsCons()
 	    for ( si=this->begin_Entries(); si!=this->end_Entries(); si++ )
 	    {_BLOCK_TRACEF(BF("Rendering entry"));
 		dlEntry = (*si)->rendered(opts);
-		LOG(BF("The name of the Frame entry is[%s]") % dlEntry->getName()->__repr__() );
+		LOG(BF("The name of the Frame entry is[%s]") % _rep_(dlEntry->getName()) );
 		frames->append(dlEntry);
 	    }
 	}
@@ -778,7 +778,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::superposeAllHeavyAtoms()
 	    yStage = y->getEntryStage(this->_StageName);
 	    core::T_sp xValue = xStage->getBinder()->gethash(this->_KeyName);
 	    core::T_sp yValue = yStage->getBinder()->gethash(this->_KeyName);
-	    if ( xValue->operator<(yValue) ) return true;
+	    if ( xValue.as<core::General_O>()->operator<(yValue) ) return true;
 	    return false;
 	}
     };

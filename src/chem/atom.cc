@@ -541,7 +541,7 @@ CL_DEFMETHOD core::List_sp Atom_O::createImplicitHydrogenNames()
 {
   uint addHydrogens = this->numberOfOpenValence();
   string nameSuffix = this->getName()->symbolName()->get().substr(1,9999);
-  core::Cons_sp first = core::Cons_O::create();
+  core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>());
   core::Cons_sp cons = first;
   if ( addHydrogens == 1 )
   {
@@ -654,7 +654,7 @@ CL_DEFMETHOD     Bond_sp Atom_O::bondTo( Atom_sp to, BondOrder o )
 	    if ( (*b)->getOtherAtom(from) == to )
 	    {
 		SIMPLE_ERROR(BF("You tried to form a bond from[%s]-to[%s] but there is already one there!!") 
-				   % this->__repr__() % to->__repr__() );
+                             % this->__repr__() % _rep_(to) );
 	    }
 	}
 	Bond_sp bn = Bond_O::create(from,to,o);

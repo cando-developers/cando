@@ -149,7 +149,7 @@ string FrameRecognizer_O::description() const
     stringstream ss;
     ss << "( " << this->className() << " ";
     ss << _rep_(this->_Name);
-    ss << " :groupName \"" << this->_GroupName->__repr__() << "\"";
+    ss << " :groupName \"" << _rep_(this->_GroupName) << "\"";
     ss << " :smarts " << "\"" << this->_Smarts << "\" )";
     return ss.str();
 }

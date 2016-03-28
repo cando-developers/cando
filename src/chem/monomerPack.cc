@@ -132,7 +132,7 @@ CL_DEFUN core::T_sp chem__extend_aliases(core::Symbol_sp packName, core::List_sp
 	bdb = getCandoDatabase();
 	ASSERTNOTNULL(bdb);
 	if ( !bdb->recognizesMonomerPack(packName) )
-	    SIMPLE_ERROR(BF("monomerPack("+packName->__repr__()+") has not been defined"));
+          SIMPLE_ERROR(BF("monomerPack("+_rep_(packName)+") has not been defined"));
 	MonomerPack_sp monomerPack = bdb->getEntity(packName).as<MonomerPack_O>();
 	monomerPack->extendAliases(atomAliases, parts);
 	return _Nil<core::T_O>();
@@ -252,24 +252,24 @@ void MonomerPack_O::extendAliases( core::List_sp atomAliases, core::List_sp part
       core::List_sp oneExtend = oCar(cur);
       if ( core::cl__length(oneExtend) != 2 )
 	{
-	    SIMPLE_ERROR(BF("Each extendAliases entry must have two elements: "+oneExtend->__repr__() ));
+          SIMPLE_ERROR(BF("Each extendAliases entry must have two elements: %s") % _rep_(oneExtend) );
 	}
 	core::Symbol_sp monomerName = oCar(oneExtend).as<core::Symbol_O>();
 	core::List_sp aliasAtoms = oCadr(oneExtend);
 	extendMonomers->insert(monomerName);
 	if ( !this->_AtomIndexers->recognizesMonomerName(monomerName) )
 	{
-	    SIMPLE_ERROR(BF("MonomerPack("+this->getName()->__repr__()+") does not recognize monomer name("+monomerName->__repr__()+")"));
+          SIMPLE_ERROR(BF("MonomerPack("+_rep_(this->getName())+") does not recognize monomer name("+_rep_(monomerName)+")"));
 	}
 	AtomIndexer_sp indexer = this->_AtomIndexers->getAtomIndexerForMonomerName(monomerName);
 	if ( core::cl__length(aliasAtoms) != numberOfAtomAliases )
 	{
 	    stringstream ss;
 	    ss << "Mismatch between number of alias atoms ";
-	    ss << aliasAtoms->__repr__();
-	    ss << " for monomer(" << monomerName->__repr__();
+	    ss << _rep_(aliasAtoms);
+	    ss << " for monomer(" << _rep_(monomerName);
 	    ss << ") and the number of atom aliases ";
-	    ss << atomAliases->__repr__() ;
+	    ss << _rep_(atomAliases) ;
 	    SIMPLE_ERROR(BF("%s")%ss.str());
 	}
 	indexer->appendConsOfTexts(aliasAtoms);
@@ -278,8 +278,8 @@ void MonomerPack_O::extendAliases( core::List_sp atomAliases, core::List_sp part
     {
 	stringstream ss;
 	ss << "There is a mismatch between the monomers in this extendAliases command in the MonomerPack(" << this->getName() << ")" << std::endl;
-	ss << "extendAliases monomer names: " << extendMonomers->__repr__() <<std::endl;
-	ss << "MonomerPack names: " << this->_EntityNames->__repr__();
+	ss << "extendAliases monomer names: " << _rep_(extendMonomers) <<std::endl;
+	ss << "MonomerPack names: " << _rep_(this->_EntityNames);
 	SIMPLE_ERROR(BF("%s")%ss.str());
     }
 }

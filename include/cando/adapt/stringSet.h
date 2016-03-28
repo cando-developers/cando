@@ -52,7 +52,6 @@ SMART(StringList);
 SMART(StringSet);
  class StringSet_O : public core::CxxObject_O {
    LISP_CLASS(adapt, AdaptPkg, StringSet_O, "StringSet",core::CxxObject_O);
-  DECLARE_INIT();
 
 public:
   void initialize();

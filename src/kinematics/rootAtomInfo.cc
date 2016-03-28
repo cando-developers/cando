@@ -40,8 +40,8 @@ namespace kinematics
 			     chem::Plug_sp plug)
     {
 	LOG(BF("Setting up RootAtomInfo for Constitution[%s] Topology[%s]")
-	    % constitutionName->__repr__()
-	    % topologyName->__repr__() );
+	    % _rep_(constitutionName)
+	    % _rep_(topologyName) );
 	this->_ConstitutionName = constitutionName;
 	this->_TopologyName = topologyName;
 	this->_Bond1Id = UndefinedUnsignedInt;

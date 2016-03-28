@@ -61,7 +61,7 @@ namespace units
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	core::Cons_sp args = allargs->cdr();
-	LOG(BF("Initializing Xyz_O with args[%s]") % args->__repr__() );
+	LOG(BF("Initializing Xyz_O with args[%s]") % _rep_(args) );
 	double amount = 1.0;
 	core::OVector3_sp vamount = args->ocar().as<core::OVector3_O>();
 	/*Set the default system as units:*SI* */
@@ -98,7 +98,7 @@ namespace units
 	    THROW(_lisp->error(BF("You tried to get the amount of the quantity[%s] in terms of units[%s]"
 				  "- cannot get the amount of a Quantity unless you match the units")
 			       % this->__repr__()
-			       % temp->__repr__() ));
+			       % _rep_(temp) ));
 	}
 	return core::OVector3_O::create(this->_Pos.multiplyByScalar(1.0/amountScale),_lisp);
     }
@@ -153,7 +153,7 @@ namespace units
 	{
 	    if ( !this->dimensionsMatch(other) )
 	    {
-		THROW(_lisp->error(BF("Mismatch in dimensions in add - you tried to add[%s] to [%s]") % this->__repr__() % other->__repr__()));
+              THROW(_lisp->error(BF("Mismatch in dimensions in add - you tried to add[%s] to [%s]") % this->__repr__() % _rep_(other)));
 	    }
 	    result->_Pos = result->_Pos +  (other.as<Xyz_O>()->_Pos);
 	}
@@ -168,7 +168,7 @@ namespace units
 	{
 	    if ( !this->dimensionsMatch(other) )
 	    {
-		THROW(_lisp->error(BF("Mismatch in dimensions in sub - you tried to sub[%s] to [%s]") % this->__repr__() % other->__repr__()));
+              THROW(_lisp->error(BF("Mismatch in dimensions in sub - you tried to sub[%s] to [%s]") % this->__repr__() % _rep_(other)));
 	    }
 	    result->_Pos = result->_Pos - other.as<Xyz_O>()->_Pos;
 	}

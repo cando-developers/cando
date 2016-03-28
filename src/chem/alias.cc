@@ -127,7 +127,7 @@ CL_DEFUN core::T_sp chem__alias(core::Symbol_sp monAlias, core::Symbol_sp atomAl
     void Alias_O::sequenceChanged(PointProvider_sp alchemist)
     {
 	this->_AtomId = alchemist->indexOfInterestingAtomWithAlias(this->_MonomerId,this->sharedThis<Alias_O>());
-	LOG(BF("[Alias %s@%s] _MonomerId(%d) _AtomId(%d)") % this->_MonomerAlias->__repr__() % this->_AtomAlias->__repr__() % this->_MonomerId % this->_AtomId  );
+	LOG(BF("[Alias %s@%s] _MonomerId(%d) _AtomId(%d)") % _rep_(this->_MonomerAlias) % _rep_(this->_AtomAlias) % this->_MonomerId % this->_AtomId  );
     }
 
 

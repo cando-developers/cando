@@ -41,7 +41,7 @@ namespace geom {
 #if 0
     core::T_sp Range_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp environ, core::Lisp_sp lisp)
     {
-	LOG(BF("Argument types %s %s") % core::oCar(args)->__class()->classNameAsString() % args->ocadr()->className() );
+      LOG(BF("Argument types %s %s") % core::cl__class_of(core::oCar(args))->classNameAsString() % args->ocadr()->className() );
 	SYMBOL_SC_(GeomPkg,begin);
 	SYMBOL_SC_(GeomPkg,end);
 	SYMBOL_SC_(GeomPkg,step);

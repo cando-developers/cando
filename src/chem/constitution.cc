@@ -79,7 +79,7 @@ namespace chem {
 	      _BLOCK_TRACEF(BF("Adding plug[%s]") % p->getName() );
 	      if ( me->_PlugsByName.count(p->getName())>0 )
 	      {
-		  SIMPLE_ERROR(BF("There is already a plug named: %s") %p->getName()->__repr__() );
+                SIMPLE_ERROR(BF("There is already a plug named: %s") % _rep_(p->getName()) );
 	      }
 	      core::Symbol_sp key = p->getName();
 	      ASSERTF(!key->isKeywordSymbol(),BF("Don't use keyword symbols for plug names"));
@@ -95,7 +95,7 @@ namespace chem {
 	      _BLOCK_TRACEF(BF("Adding topology[%s]@%p") % t->getName() % (void*)(t.get()) );
 	      if ( me->_Topologies.count(t->getName())>0 )
 	      {
-		  SIMPLE_ERROR(BF("There is already a topology named: "+t->getName()->__repr__() ));
+                SIMPLE_ERROR(BF("There is already a topology named: "+ _rep_(t->getName()) ));
 	      }
 	      me->_Topologies.set(t->getName(),t);
 	  }
@@ -125,7 +125,7 @@ namespace chem {
 	    _BLOCK_TRACEF(BF("Adding plug[%s]") % p->getName() );
 	    if ( this->_PlugsByName.count(p->getName())>0 )
 	    {
-		SIMPLE_ERROR(BF("There is already a plug named: "+p->getName()->__repr__() ));
+              SIMPLE_ERROR(BF("There is already a plug named: "+_rep_(p->getName()) ));
 	    }
 	    core::Symbol_sp key = p->getName();
 	    ASSERTF(!key->isKeywordSymbol(),BF("Don't use keyword symbols for plug names"));
@@ -142,7 +142,7 @@ namespace chem {
 	    _BLOCK_TRACEF(BF("Adding topology[%s]@%p") % t->getName() % (void*)(t.get()) );
 	    if ( this->_Topologies.count(t->getName())>0 )
 	    {
-		SIMPLE_ERROR(BF("There is already a topology named: "+t->getName()->__repr__() ));
+              SIMPLE_ERROR(BF("There is already a topology named: "+_rep_(t->getName()) ));
 	    }
 	    this->_Topologies.set(t->getName(),t);
 	}
@@ -180,7 +180,7 @@ void	Constitution_O::makeResidueConsistentWithStereoisomerNamed(Residue_sp res,
     stereoisomerConstitution = getCandoDatabase()->constitutionForNameOrPdb(stereoisomerName);
 
     if (!residueConstitution->isSameAs(stereoisomerConstitution)) {
-	LOG(BF("residueConstitution = %s")%residueConstitution->__repr__());
+      LOG(BF("residueConstitution = %s")%_rep_(residueConstitution));
 	SIMPLE_ERROR(BF("The residue constitution(%s) is different from the "
 				   "stereoisomer(%s) constitution(%s) that you want to change it too")
 		     % residueConstitution->getName() % stereoisomerName % stereoisomerConstitution->getName() );
@@ -299,10 +299,10 @@ CL_DEFMETHOD adapt::StringList_sp Constitution_O::getPdbNamesAsStringList() {
     bool Constitution_O::hasStereoisomerWithName(core::Symbol_sp stereoisomerName)
 {
     gctools::Vec0<Stereoisomer_sp>::iterator	si;
-    LOG(BF("Looking for Stereoisomer with name(%s)") % stereoisomerName->__repr__() );
+    LOG(BF("Looking for Stereoisomer with name(%s)") % _rep_(stereoisomerName) );
     for (si=this->begin_Stereoisomers(); si!=this->end_Stereoisomers(); si++)
     {
-	LOG(BF("Looking at stereoisomer name(%s)") % (*si)->getName()->__repr__() );
+      LOG(BF("Looking at stereoisomer name(%s)") % _rep_((*si)->getName()) );
 	if ( (*si)->getName() == stereoisomerName )
 	{
 	    LOG(BF("Found it!!!!") ); //
@@ -316,10 +316,10 @@ CL_DEFMETHOD adapt::StringList_sp Constitution_O::getPdbNamesAsStringList() {
     Stereoisomer_sp Constitution_O::getStereoisomerWithName(core::Symbol_sp stereoisomerName) const
 {
     const_stereoisomerIterator	si;
-    LOG(BF("Looking for Stereoisomer with name(%s)") % stereoisomerName->__repr__() );
+    LOG(BF("Looking for Stereoisomer with name(%s)") % _rep_(stereoisomerName) );
     for (si=this->begin_Stereoisomers(); si!=this->end_Stereoisomers(); si++)
     {
-	LOG(BF("Looking at stereoisomer name(%s)") % (*si)->getName()->__repr__() );
+      LOG(BF("Looking at stereoisomer name(%s)") % _rep_((*si)->getName()) );
 	if ( (*si)->getName() == stereoisomerName )
 	{
 	    LOG(BF("Found it!!!!") ); //
@@ -439,10 +439,10 @@ tres = _Nil<Topology_O>();
     connects = 9999999;
     for ( ti=this->_Topologies.begin(); ti!=this->_Topologies.end(); ti++ )
     {
-	LOG(BF("Looking for plug[%s]@%p in topology[%s]") % name->__repr__() % name.get() % ti->second->description());
+      LOG(BF("Looking for plug[%s]@%p in topology[%s]") % _rep_(name) % name.get() % ti->second->description());
 	if ( ti->second->hasPlugNamed(name) )
 	{
-	    LOG(BF("Found the plug[%s]") % name->__repr__() );
+          LOG(BF("Found the plug[%s]") % _rep_(name) );
 	    temp = ti->second->numberOfPlugs();
 	    if ( temp < connects )
 	    {
@@ -451,17 +451,17 @@ tres = _Nil<Topology_O>();
 		tres = ti->second;
 	    } else
 	    {
-		LOG(BF("Did not find the plug[%s]") % name->__repr__() );
+              LOG(BF("Did not find the plug[%s]") % _rep_(name) );
 	    }
 	}
     }
 #ifdef	DEBUG_ON
     if ( tres.notnilp() )
     {
-        LOG(BF("simplest topology is named: %s") % tres->getName()->__repr__()  );
+      LOG(BF("simplest topology is named: %s") % _rep_(tres->getName())  );
     } else
     {
-        LOG(BF("there is no topology that has the plug[%s]") % name->__repr__() );
+      LOG(BF("there is no topology that has the plug[%s]") % _rep_(name) );
     }
 #endif
     return tres;
@@ -472,7 +472,7 @@ CL_LISPIFY_NAME("topologyWithName");
 CL_DEFMETHOD     Topology_sp	Constitution_O::topologyWithName(core::Symbol_sp name) const
     {_OF();
 	Topology_sp			tres;
-	ASSERTF(this->_Topologies.contains(name),BF("There is no topology with name[%s] in constitution[%s]") % name->__repr__() % this->getName()->__repr__() );
+	ASSERTF(this->_Topologies.contains(name),BF("There is no topology with name[%s] in constitution[%s]") % _rep_(name) % _rep_(this->getName()) );
 	return this->_Topologies.get(name);
     }
 
@@ -488,7 +488,7 @@ Topology_sp			tres;
 tres = _Nil<Topology_O>();
     for ( ti=this->_Topologies.begin(); ti!=this->_Topologies.end(); ti++ ) 
     {
-	LOG(BF("Checking topology(%s)")% ti->first->__repr__() );
+      LOG(BF("Checking topology(%s)")% _rep_(ti->first) );
 	if ( ti->second->matchesMonomerEnvironment(mon) ) 
 	{
 	    return ti->second;

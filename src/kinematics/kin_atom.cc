@@ -50,7 +50,7 @@ namespace kinematics
     string Atom::asString() const
     {_OF();
 	stringstream ss;
-	ss << "Node[" << this->typeSymbol()->__repr__() << "] RefCount["<<this->_Me.refCount()<<"] id=" << this->_Id.asString() << std::endl;
+	ss << "Node[" << _rep_(this->typeSymbol()) << "] RefCount["<<this->_Me.refCount()<<"] id=" << this->_Id.asString() << std::endl;
 	ss << "Children: ";
 	if ( this->_numberOfChildren() == 0 )
 	{

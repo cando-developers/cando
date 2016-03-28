@@ -239,7 +239,7 @@ CL_LISPIFY_NAME("children");
 CL_DEFMETHOD core::List_sp QDomNode_O::children()
 {
     core::Cons_sp first, cur;
-    first = core::Cons_O::create();
+    first = core::Cons_O::create(_Nil<core::T_O>());
     cur = first;
     for ( QDomNode_O::iterator ci=this->begin_Children(); ci!=this->end_Children(); ci++ )
     {

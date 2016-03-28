@@ -78,7 +78,7 @@ namespace chem
 	node->attributeIfNotDefault("suppressTrainers",this->_SuppressTrainers,false);
 	node->archiveSymbolMap( "topologyPlugs", this->_Plugs );
 	node->archiveSymbolMapIfDefined("stereoisomerAtomProperties",this->_StereoisomerAtomProperties);
-	LOG(BF("About to get core for topology (%s)") % this->_Name->__repr__()  );
+	LOG(BF("About to get core for topology (%s)") % _rep_(this->_Name)  );
 //	node->attributeIfNotNil("atomTreeTemplate",this->_AtomTreeTemplate);
 //	node->attributeIfNotNil("chiList",this->_ChiList);
 	node->attribute("properties",this->_Properties);
@@ -302,8 +302,8 @@ CL_DEFMETHOD     core::List_sp Topology_O::plugsWithMatesAsCons()
 	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
 	{
 	    // skip origin plugs
-	    if ( !i->second->isAssignableTo<PlugWithMates_O>() ) continue;
-	    LOG(BF("Adding plug: %s") % i->second->__repr__() );
+	    if ( !i->second.isA<PlugWithMates_O>() ) continue;
+	    LOG(BF("Adding plug: %s") % _rep_(i->second) );
 	    core::Cons_sp one = core::Cons_O::create(i->second,_Nil<core::T_O>());
 	    cur->setCdr(one);
 	    cur = one;
@@ -351,14 +351,14 @@ CL_DEFMETHOD     Constitution_sp	Topology_O::getConstitution()
     string	Topology_O::description() const
     {
 	stringstream	ss;
-	ss << this->core::T_O::description();
+	ss << this->Base::description();
 	Topology_O* me = const_cast<Topology_O*>(this);
 	ss << " Name(" << me->getName() << ")";
 	ss << " Constitution("<< me->getConstitution()->getName() << ")";
 	ss << " Plugs:";
 	for ( Plugs::const_iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
 	{
-	    ss << (BF("%s@%p ") % i->second->getName()->__repr__() % i->second->getName().get() ).str();
+          ss << (BF("%s@%p ") % _rep_(i->second->getName()) % i->second->getName().get() ).str();
 	}
 	ss << "]";
 	return ss.str();
@@ -370,8 +370,8 @@ CL_DEFMETHOD     Constitution_sp	Topology_O::getConstitution()
 	adapt::SymbolSet_sp myPlugSet = adapt::SymbolSet_O::create();
 	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
 	{
-	    LOG(BF("Looking at plug[%s]") % i->second->getName()->__repr__() );
-	    if (i->second->isAssignableTo<PlugWithMates_O>() )
+          LOG(BF("Looking at plug[%s]") % _rep_(i->second->getName()) );
+	    if (i->second.isA<PlugWithMates_O>() )
 	    {
 		myPlugSet->insert(i->first);
 	    }
@@ -390,15 +390,15 @@ CL_DEFMETHOD     Constitution_sp	Topology_O::getConstitution()
 	uint numPlugsWithMates = 0;
 	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
 	{
-	    LOG(BF("Looking at plug[%s]") % i->second->getName()->__repr__() );
-	    if (!i->second->isAssignableTo<PlugWithMates_O>() )
+          LOG(BF("Looking at plug[%s]") % _rep_(i->second->getName()) );
+	    if (!i->second.isA<PlugWithMates_O>() )
 	    {
 		LOG(BF("It's not a PlugWithMates"));
 		continue;
 	    }
 	    if ( !mon->hasCouplingWithPlugName(i->second->getName()) ) 
 	    {
-		LOG(BF("The monomer doesn't have a coupling with plug name[%s]") % i->second->getName()->__repr__() );
+              LOG(BF("The monomer doesn't have a coupling with plug name[%s]") % _rep_(i->second->getName()) );
 		return false;
 	    }
 	    numPlugsWithMates++;
@@ -421,8 +421,8 @@ CL_DEFMETHOD     Constitution_sp	Topology_O::getConstitution()
 	for ( Plugs::iterator i=this->_Plugs.begin();
 	      i!= this->_Plugs.end(); i++)
 	{
-	    if (!i->second->isAssignableTo<PlugWithMates_O>() ) continue;
-	    if ( i->second->isAssignableTo<RingClosingPlug_O>() )
+	    if (!i->second.isA<PlugWithMates_O>() ) continue;
+	    if ( i->second.isA<RingClosingPlug_O>() )
 	    {
 		missingRingClosingPlug = i->second.as<RingClosingPlug_O>();
 		continue;
@@ -450,7 +450,7 @@ CL_DEFMETHOD     bool	Topology_O::matchesContext(MonomerContext_sp cm)
 	for ( Plugs::iterator i=this->_Plugs.begin();
 	      i!= this->_Plugs.end(); i++)
 	{
-	    if (!i->second->isAssignableTo<PlugWithMates_O>() ) continue;
+	    if (!i->second.isA<PlugWithMates_O>() ) continue;
 	    if ( !cm->hasNeighborWithCouplingName(i->second->getName()) ) return false;
 	    numPlugsWithMates++;
 	}
@@ -462,10 +462,10 @@ CL_LISPIFY_NAME("hasPlugNamed");
 CL_DEFMETHOD     bool	Topology_O::hasPlugNamed(core::Symbol_sp name)
     {_OF();
 #ifdef DEBUG_ON
-	LOG(BF("Looking for plug name[%s@%p]") % name->__repr__() % name.get() );
+      LOG(BF("Looking for plug name[%s@%p]") % _rep_(name) % name.get() );
 	for (Plugs::const_iterator ki=this->_Plugs.begin(); ki!=this->_Plugs.end(); ki++ )
 	{
-	    LOG(BF(" available Symbol key: %s@%p") % ki->first->__repr__() % ki->first.get() );
+          LOG(BF(" available Symbol key: %s@%p") % _rep_(ki->first) % ki->first.get() );
 	}
 #endif
 	bool res = this->_Plugs.contains(name);
@@ -477,7 +477,7 @@ CL_LISPIFY_NAME("plugNamed");
 CL_DEFMETHOD     Plug_sp Topology_O::plugNamed(core::Symbol_sp name)
     {_OF();
 	LOG(BF("Looking for plug name[%s] available keys[%s]")
-	    % name->__repr__()
+	    % _rep_(name)
 	    % adapt::StringSet_O::create_fromKeysOfSymbolMap(this->_Plugs)->asString());
 	bool res = this->_Plugs.contains(name);
 	LOG(BF("Result = %d") % res );
@@ -526,7 +526,7 @@ CL_DEFMETHOD     StereoisomerAtoms_sp Topology_O::lookupOrCreateStereoisomerAtom
 	if ( it==this->_StereoisomerAtomProperties.end() )
 	{
 	    Constitution_sp constitution = this->getConstitution();
-	    ASSERTF(constitution->hasStereoisomerWithName(stereoisomerName),BF("Could not find stereoisomer named[%s] in constitution[%s]") % stereoisomerName->__repr__() % constitution->getName());
+	    ASSERTF(constitution->hasStereoisomerWithName(stereoisomerName),BF("Could not find stereoisomer named[%s] in constitution[%s]") % _rep_(stereoisomerName) % constitution->getName());
 	    ConstitutionAtoms_sp constitutionAtoms = constitution->getConstitutionAtoms();
 	    result = StereoisomerAtoms_O::create(constitutionAtoms);
 	    this->_StereoisomerAtomProperties.set(stereoisomerName,result);

@@ -375,9 +375,9 @@ bool	CDFragment_O::hasProperty(core::Symbol_sp key)
     core::T_sp CDFragment_O::setProperty(core::Symbol_sp key,core::T_sp obj)
     {
       if ( this->hasProperty(key) ) {
-        SIMPLE_ERROR(BF("You have already set the property(%s) it has the value(%s) and you are trying to set it with(%s)") % key->__repr__() % this->_Properties->gethash(key)->__repr__() % obj->__repr__()  );
+        SIMPLE_ERROR(BF("You have already set the property(%s) it has the value(%s) and you are trying to set it with(%s)") % _rep_(key) % _rep_(this->_Properties->gethash(key)) % _rep_(obj)  );
       }
-      LOG(BF("Setting variable(%s) class(%s) to %s") % key % obj->className() % obj->__repr__() );
+      LOG(BF("Setting variable(%s) class(%s) to %s") % key % obj->className() % _rep_(obj) );
       set_property(this->_Properties,key,obj);
       return obj;
     }
@@ -403,7 +403,7 @@ core::Symbol_mv parse_property(const string& propertyValue, CDBond_sp bond, cons
 {
   core::T_sp stream = core::cl__make_string_input_stream(core::Str_O::create(propertyValue),core::clasp_make_fixnum(0),_Nil<core::T_O>());
 //  printf("%s:%d Parsing property string: %s\n", __FILE__, __LINE__, propertyValue.c_str());
-  core::T_sp eof = core::Cons_O::create();
+  core::T_sp eof = core::Cons_O::create(_Nil<core::T_O>());
   core::DynamicScopeManager scope(cl::_sym_STARpackageSTAR,_lisp->findPackage(ChemKwPkg));
   core::T_sp property = core::cl__read(stream,_Nil<core::T_O>(),eof);
   if ( property == eof ) {
@@ -541,7 +541,7 @@ bool CDFragment_O::interpret()
       ASSERT(this->_AtomsToNodes.count(c)>0);
       CDNode_sp fromNode = this->_AtomsToNodes[c];
       core::List_sp hydrogens = c->createImplicitHydrogenNamesOnCarbon();
-      LOG(BF("Creating implicit hydrogens for %s named %s") % c->description() % hydrogens->__repr__()  );
+      LOG(BF("Creating implicit hydrogens for %s named %s") % c->description() % _rep_(hydrogens)  );
       for ( auto ih : hydrogens ) {
         core::Symbol_sp name = gc::As<core::Symbol_sp>(oCar(ih));
         this->createImplicitHydrogen(fromNode,name);
@@ -591,7 +591,7 @@ bool CDFragment_O::interpret()
 	a->setStereochemistryType(n->_StereochemistryType);
 	a->setConfiguration(n->_Configuration);
 	LOG(BF("Just set configuration of atom[%s] to config[%s]")
-		     % a->__repr__() % a->getConfigurationAsString() );
+            % _rep_(a) % a->getConfigurationAsString() );
 	ASSERT(elementIsRealElement(a->getElement()));
 	return a;
     }
@@ -702,7 +702,7 @@ Molecule_sp CDFragment_O::createMolecule()
    if ( !dict->contains(s) )
    {
      stringstream serr;
-     serr << "Fragment(" << this->getConstitutionName()->__repr__() << ") is missing property: " << s->__repr__() << std::endl;
+     serr << "Fragment(" << _rep_(this->getConstitutionName()) << ") is missing property: " << s->__repr__() << std::endl;
      serr << " available property names are: " << std::endl;
      dict->mapHash([&serr](core::T_sp key, core::T_sp val) {
          serr << _rep_(key) << " : " << _rep_(val) << std::endl; } );
@@ -942,7 +942,7 @@ void	CDText_O::parseFromXml(adapt::QDomNode_sp text)
   {
     SIMPLE_ERROR(BF("Error compiling code:\n"+this->_Text));
   }
-  LOG(BF("About to evaluate CDText: %s") % block->__repr__() );
+  LOG(BF("About to evaluate CDText: %s") % _rep_(block) );
   core::List_sp result = core::eval::evaluate(block,_Nil<core::Environment_O>());
   this->_Properties = core::HashTableEq_O::create_default();
   while (result.notnilp()) {
@@ -1131,7 +1131,7 @@ void	ChemDraw_O::parse( core::T_sp strm )
 #if 0
       if ( text->hasProperties() )
       {
-        LOG(BF("Found properties: %s") % text->__repr__() );
+        LOG(BF("Found properties: %s") % _rep_(text) );
         core::HashTableEq_sp properties = text->getProperties();
         if (!properties->contains(INTERN_(kw,name)))
                   {
@@ -1140,7 +1140,7 @@ void	ChemDraw_O::parse( core::T_sp strm )
         core::Symbol_sp constitutionName = properties->gethash(INTERN_(kw,name)).as<core::Symbol_O>();
         if ( !this->_NamedFragments.contains(constitutionName) )
         {
-          SIMPLE_ERROR(BF("Could not find fragment with name("+constitutionName->__repr__()+")"));
+          SIMPLE_ERROR(BF("Could not find fragment with name("+_rep_(constitutionName)+")"));
         }
         CDFragment_sp fragment = this->_NamedFragments.get(constitutionName);
         fragment->addProperties(properties);

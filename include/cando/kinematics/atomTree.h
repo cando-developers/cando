@@ -113,13 +113,13 @@ namespace kinematics
 
 
 
-    class AtomTree_O : public core::T_O
+    class AtomTree_O : public core::General_O
     {
 	friend class Atom_O;
 	friend class Atom;
 	friend class RefCountedAtomHandle;
 	friend class WeakAtomHandle;
-	LISP_CLASS(kinematics,KinPkg,AtomTree_O,"AtomTree",core::T_O);
+	LISP_CLASS(kinematics,KinPkg,AtomTree_O,"AtomTree",core::General_O);
     public:
 	void initialize();
     private:

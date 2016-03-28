@@ -64,9 +64,9 @@ namespace chem
     {
 	stringstream ss;
 	ss << "( " << this->className() ;
-	ss << " :name " << this->_Name->__repr__();
-	ss << " :representative " <<this->_Representative->__repr__();
-	ss << " :entityNames " << this->_EntityNames->__repr__() << " )";
+	ss << " :name " << _rep_(this->_Name);
+	ss << " :representative " <<_rep_(this->_Representative);
+	ss << " :entityNames " << _rep_(this->_EntityNames) << " )";
 	return ss.str();
     }
 
@@ -131,14 +131,14 @@ CL_DEFMETHOD     bool	RepresentedEntityNameSet_O::hasRepresentative()
 	    return this->Base::expandedRepresentativeList();
 	}
 	ASSERTP(bdb->recognizesEntityName(this->_Representative),
-		"candoDatabase does not recognize entity name("+this->_Representative->__repr__()+")");
+		"candoDatabase does not recognize entity name("+_rep_(this->_Representative)+")");
 	obj = bdb->getEntity(this->_Representative);
 	ASSERTF(obj->isTerminalName(),
 		BF("Representatives must always be terminal names, this representative(%s) is NOT")% obj->getName() );
 	objList = RepresentativeList_O::create();
 	GC_COPY(RepresentedEntityNameSet_O, expanded , *this); // = RP_Copy<RepresentedEntityNameSet_O>(this);
 	expanded->expandToTerminalEntityNames();
-	LOG(BF("I have a representative[%s] so I'm created a RepresentedEntityNameSet: %s") % expanded->__repr__() );
+	LOG(BF("I have a representative[%s] so I'm created a RepresentedEntityNameSet: %s") % _rep_(expanded) );
 	objList->vectorPushExtend(expanded);
 	return objList;
     }

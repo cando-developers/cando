@@ -264,7 +264,7 @@ namespace chem
     {
 	stringstream ss;
 	ss << this->Base::descriptionOfContents() << " ";
-	ss << "( Name " << this->_Name->__repr__() << " )";
+	ss << "( Name " << _rep_(this->_Name) << " )";
 	return ss.str();
     }
 
@@ -439,11 +439,11 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
     string PlugWithMates_O::__repr__() const
     {
 	stringstream ss;
-	ss << "( " << this->className() << " '"<< this->getName()->__repr__() << " :mates ";
+	ss << "( " << this->className() << " '"<< _rep_(this->getName()) << " :mates ";
 	ss << "(list ";
 	for ( Mates::const_iterator it=this->_Mates.begin(); it!=this->_Mates.end(); it++ )
 	{
-	    ss << (*it)->__repr__() << " ";
+          ss << _rep_((*it)) << " ";
 	}
 	return ss.str();
     }
@@ -766,7 +766,7 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 	{
 	    if ( this->getName().notnilp() )
 	    {
-		ss << " :name " << this->getName()->__repr__();
+              ss << " :name " << _rep_(this->getName());
 	    }
 	}
 	ss << _rep_(this->_EntityNames);

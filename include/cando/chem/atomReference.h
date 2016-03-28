@@ -72,7 +72,6 @@ namespace chem
     public:
 	static AtomReference_sp make(const string& alias);
 #else
-	DECLARE_INIT();	
 #endif
 //	void archiveBase(core::ArchiveP node);
     private:

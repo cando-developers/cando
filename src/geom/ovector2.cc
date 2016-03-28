@@ -115,7 +115,7 @@ CL_DEFMETHOD     core::T_sp OVector2_O::add(core::List_sp points)
 	for ( auto cur : points ) {
 	    OVector2_sp o = cur->car<OVector2_O>();
 	    result = result.add(o->get());
-	    LOG(BF("Adding %s") % o->__repr__() );
+	    LOG(BF("Adding %s") % _rep_(o) );
 	    LOG(BF("Intermediate result %s") % result.asString() );
 	}
 	return OVector2_O::createFromVector2(result);

@@ -359,7 +359,7 @@ CandoDatabase_sp	bdb;
     {
 	Constitution_sp con = core::oCar(cur).as<Constitution_O>();
 	string stereoisomers = con->getMonomerNamesAsStringList()->asString();
-	lisp->print(BF(" Constitution: %12s -- %s") % con->getName()->__repr__() % stereoisomers );
+	lisp->print(BF(" Constitution: %12s -- %s") % _rep_(con->getName()) % stereoisomers );
     }
     return _Nil<core::T_O>();
 }
@@ -616,14 +616,14 @@ core::Str_sp	atomName;
 	bool foundResidue = false;
 	if ( resIdName )
 	{
-	    LOG(BF("Checking if residue has name(%s) that matches(%s)") % res->getName().c_str() % resIdName->__repr__() );
+          LOG(BF("Checking if residue has name(%s) that matches(%s)") % res->getName().c_str() % _rep_(resIdName) );
 	    if ( resIdName==res->getName() )
 	    {
-	        LOG(BF("Found residue with sequence name: %s") % resIdName->__repr__() );
+              LOG(BF("Found residue with sequence name: %s") % _rep_(resIdName) );
 		foundResidue = true;
 	    } else if ( res->recognizesMonomerAlias(resIdName) )
 	    {
-	        LOG(BF("Found residue with Monomer alias: %s") % resIdName->__repr__() );
+              LOG(BF("Found residue with Monomer alias: %s") % _rep_(resIdName) );
 		foundResidue = true;
 	    }
 	} else if ( resIdSeqNum )
@@ -683,7 +683,7 @@ CL_DEFUN core::T_sp chem__find_residue(core::List_sp args)
     if ( res.nilp() )
     {
 	stringstream serr;
-	serr << "Molecule does not contain residue with identifier: " << residueIdentifier->__repr__().c_str() ;
+	serr << "Molecule does not contain residue with identifier: " << _rep_(residueIdentifier).c_str() ;
 	SIMPLE_ERROR(BF(serr.str()));
     }
     return res;
@@ -884,8 +884,8 @@ CL_DEFUN core::T_sp chem__oligomer(Oligomer_O::NameType::smart_ptr oligomerName,
           OligomerPart_Link_sp link = gc::As<OligomerPart_Link_sp>(oligPart);
 	    core::Symbol_sp	mon1Id = link->_Monomer1Id;
 	    core::Symbol_sp	mon2Id = link->_Monomer2->_MonomerId;
-	    if ( !monomerMap->contains(mon1Id) ) SIMPLE_ERROR(BF("Unknown monomer id: %s")%mon1Id->__repr__());
-	    if ( !monomerMap->contains(mon2Id) ) SIMPLE_ERROR(BF("Unknown monomer id: %s")%mon2Id->__repr__());
+	    if ( !monomerMap->contains(mon1Id) ) SIMPLE_ERROR(BF("Unknown monomer id: %s")%_rep_(mon1Id));
+	    if ( !monomerMap->contains(mon2Id) ) SIMPLE_ERROR(BF("Unknown monomer id: %s")%_rep_(mon2Id));
 	    MultiMonomer_sp mon1 = monomerMap->gethash(mon1Id).as<MultiMonomer_O>();
 	    MultiMonomer_sp mon2 = monomerMap->gethash(mon2Id).as<MultiMonomer_O>();
 	    olig->couple(mon1,link->_Coupling,mon2);

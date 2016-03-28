@@ -254,7 +254,7 @@ uint	ir, ig, ib;
     LOG(BF("Color bytes r(%d)g(%d)b(%d)") % ir % ig % ib );
     this->_Color = (ir<<16)|(ig<<8)|ib;
     LOG(BF("Put into _Color(%d)") % this->_Color );
-    LOG(BF("Color name(%s") % this->_ColorName->__repr__() );
+    LOG(BF("Color name(%s") % _rep_(this->_ColorName) );
 }
 
 
@@ -262,7 +262,7 @@ uint	ir, ig, ib;
 
     void	Color_O::setColorName(core::Symbol_sp name)
 {
-    LOG(BF("Setting color name to %s")% name->__repr__() );
+  LOG(BF("Setting color name to %s")% _rep_(name) );
     this->_ColorName = name;
 }
 

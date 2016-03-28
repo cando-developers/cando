@@ -301,7 +301,7 @@ void AGVertex_O::send()
 	_BLOCK_TRACEF(BF("sending messages to Vertex: %s") % neighbor->description().c_str() );
 	for ( auto msgCur : this->_sendBuffer ) {
 	    PathMessage_sp msg = msgCur->car<PathMessage_O>();
-	    LOG(BF("Sending message: %s") % msg->beep()->__repr__() );
+	    LOG(BF("Sending message: %s") % _rep_(msg->beep()) );
 	    	// If the message most recently came from the neighbor,
 		// don't send it back to them
 	    if ( msg->getLastVertex() == neighbor ) continue;
@@ -342,7 +342,7 @@ void AGVertex_O::receive(uint stage)
   ASSERTP(this->_receiveBuffer.notnilp(),"The receive buffer is empty for atom("+this->_atom->description()+")!");
   for ( auto msgCur : this->_receiveBuffer ) {
     PathMessage_sp msg = msgCur->car<PathMessage_O>();
-    _BLOCK_TRACEF(BF("Stage(%d) Vertex(%s) received bitVector: %s") % stage % this->_atom->getName() % msg->beep()->__repr__() );
+    _BLOCK_TRACEF(BF("Stage(%d) Vertex(%s) received bitVector: %s") % stage % this->_atom->getName() % _rep_(msg->beep()) );
     AGEdge_sp edge = msg->getFirstEdge();
     AGVertex_sp vert = msg->getFirstVertex();
     uint side = edge->getSide(vert);
@@ -655,7 +655,7 @@ public:
     RingFinderVertexMapper() : _Count(0) {};
     int _Count;
     virtual bool mapKeyValue(core::T_sp key, core::T_sp value) {
-	value->dump();
+	//value->dump();
 	this->_Count++;
 	return true;
     }
@@ -783,7 +783,7 @@ CL_DEFMETHOD void RingFinder_O::findRings(int numAtoms)
 void RingFinder_O::addRing(PathMessage_sp ring, uint stage)
 {
     core::SimpleBitVector_sp beep = ring->beep();
-    LOG(BF("Adding ring with beep=%s") % beep->__repr__() );
+    LOG(BF("Adding ring with beep=%s") % _rep_(beep) );
     core::HashGenerator hg;
     clasp_sxhash(beep,hg);
     core::Fixnum_sp hash = core::clasp_make_fixnum(hg.hash());
@@ -862,7 +862,7 @@ CL_DEFMETHOD core::List_sp RingFinder_O::getAllRingsAsListsOfAtoms()
     {
 	core::List_sp oneRing = (*it)->getAtoms();
 	lists = core::Cons_O::create(oneRing,lists);
-	LOG(BF("Ring #%d = size(%d) %s") % ridx % core::cl__length(oneRing) % oneRing->__repr__().c_str()  );
+	LOG(BF("Ring #%d = size(%d) %s") % ridx % core::cl__length(oneRing) % _rep_(oneRing).c_str()  );
 	ridx++;
     }
     return lists;

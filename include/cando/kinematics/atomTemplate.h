@@ -54,9 +54,9 @@ namespace kinematics
 
     FORWARD(AtomTemplate);
     FORWARD(Checkpoint);
-    class Checkpoint_O : public core::T_O
+    class Checkpoint_O : public core::General_O
     {
-	LISP_CLASS(kinematics,KinPkg,Checkpoint_O,"Checkpoint",core::T_O);
+	LISP_CLASS(kinematics,KinPkg,Checkpoint_O,"Checkpoint",core::General_O);
 //	DECLARE_STANDARD_LISP_FUNCTIONS();
 //	DECLARE_ARCHIVE();
 	DEFAULT_CTOR_DTOR(Checkpoint_O);
@@ -121,9 +121,9 @@ namespace kinematics
 
 /*! Builds Atoms within an AtomTree
  */
-    class AtomTemplate_O : public core::T_O
+    class AtomTemplate_O : public core::General_O
     {
-	LISP_CLASS(kinematics,KinPkg,AtomTemplate_O,"AtomTemplate",core::T_O);
+	LISP_CLASS(kinematics,KinPkg,AtomTemplate_O,"AtomTemplate",core::General_O);
 #if INIT_TO_FACTORIES
     public:
 	static AtomTemplate_sp make(const int id, const string& comment, const AtomTemplate_sp parent);
