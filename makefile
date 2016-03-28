@@ -5,6 +5,9 @@ all:
 	make cando-lisp
 	make cando-data
 
+all-boehmdc:
+	make -C src/main boehmdc-release-cxx
+
 cando-lisp:
 	(cd src/lisp; bjam bundle )
 
