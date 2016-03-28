@@ -52,7 +52,7 @@ CL_DEFUN bool chem__verifyThatFieldOfAllEntriesAreEqual(Table_sp table, core::Sy
 	    core::T_sp otherObject = (*it)->read(field);
 	    if ( !firstObject->equal(otherObject) ) 
 	    {
-		LOG(BF("The firstEntry field(%s)/value(%s) is not equal to that of entry(%d)/value(%s)") % field->fullName() % firstObject->__repr__() % idx % otherObject->__repr__() );
+              LOG(BF("The firstEntry field(%s)/value(%s) is not equal to that of entry(%d)/value(%s)") % field->fullName() % _rep_(firstObject) % idx % _rep_(otherObject) );
 		return false;
 	    }
 	}

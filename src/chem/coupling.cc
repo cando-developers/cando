@@ -119,7 +119,7 @@ Oligomer_sp	Coupling_O::getOligomer()
 CL_DEFUN core::Symbol_sp  DirectionalCoupling_O::couplingName(core::Symbol_sp name)
     {
 	string sname = name->symbolNameAsString();
-	LOG(BF("couplingName symbol[%s]  symbolNameAsString[%s]") % name->__repr__() % sname );
+	LOG(BF("couplingName symbol[%s]  symbolNameAsString[%s]") % _rep_(name) % sname );
 	string	rest;
 	if ( sname[0] == IN_PLUG_PREFIX || sname[0] == OUT_PLUG_PREFIX ) {
 	    rest = sname.substr(1,sname.size());
@@ -352,7 +352,7 @@ CL_DEFMETHOD     core::Symbol_sp	DirectionalCoupling_O::getOutMonomerPlugName()
 string	DirectionalCoupling_O::description() const
 {_OF();
 stringstream	ss;
-ss << "DirectionalCoupling( "<< this->getName()->__repr__();
+ ss << "DirectionalCoupling( "<< _rep_(this->getName());
     ss << "@";
     ss << std::hex << this << std::dec;
     ss << " ";
@@ -745,7 +745,7 @@ CL_DEFMETHOD core::Symbol_sp RingCoupling_O::getPlug2()
 string	RingCoupling_O::description() const
 {_OF();
 stringstream	ss;
-ss << "RingCoupling( "<< this->getName()->__repr__();
+ ss << "RingCoupling( "<< _rep_(this->getName());
     ss << "@";
     ss << std::hex << this << std::dec;
     ss << " ";

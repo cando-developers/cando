@@ -163,7 +163,7 @@ void	MonomerCoordinates_O::_defineFromConformationExplorerOrDebug(
 		        coordSys = firstFrame->getCoordinateSystem(focusMonomer);
 		    } catch (core::Condition& e)
 		      {
-			  if ( !e.conditionObject()->isAssignableTo<core::MathException_O>() )
+			  if ( !e.conditionObject().isA<core::MathException_O>() )
 			  {
 			      RETHROW(e.conditionObject());
 			  }
@@ -282,7 +282,7 @@ CL_DEFMETHOD core::List_sp	MonomerCoordinates_O::testExtraction(
         this->_defineFromConformationExplorerOrDebug(topology,conformationExplorer,focusMonomer,true,UndefinedUnsignedInt);
     } catch ( core::Condition& e )
     {
-	if ( !e.conditionObject()->isAssignableTo<core::MathException_O>() )
+	if ( !e.conditionObject().isA<core::MathException_O>() )
 	{
 	    throw;
 //	    RESIMPLE_ERROR(BF("An error was caught in MonomerCoordinates_O::testExtraction - here it is: %s") % e.message() ));

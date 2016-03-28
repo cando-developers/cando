@@ -38,12 +38,12 @@ namespace kinematics
 
 
 
-    class BondId_O : public core::T_O
+    class BondId_O : public core::General_O
 {
     friend class BondedAtomTemplate_O;
     friend class RootBondedAtomTemplate_O;
 
-    LISP_CLASS(kinematics,KinPkg,BondId_O,"BondId",core::T_O);
+    LISP_CLASS(kinematics,KinPkg,BondId_O,"BondId",core::General_O);
 #if INIT_TO_FACTORIES
  public:
     static BondId_sp make();

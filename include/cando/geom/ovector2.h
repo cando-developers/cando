@@ -37,7 +37,6 @@ namespace geom {
     class OVector2_O : public core::CxxObject_O
     {
 	LISP_CLASS(geom,GeomPkg,OVector2_O,"OVector2",core::CxxObject_O);
-DECLARE_INIT()
 public:
 	Vector2	_Value;
 public:

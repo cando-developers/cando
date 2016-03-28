@@ -990,12 +990,12 @@ bool AtomTest_O::matches(Root_sp root, chem::Atom_sp atom) {
       LOG(BF("SAPWildCard")); //
       goto SUCCESS;
   case SAPAromaticElement:
-      LOG(BF("SAPAromaticElement(%s) == expecting(%s)") % atom->getElementAsSymbol()->__repr__() % this->_SymbolArg->__repr__());
+      LOG(BF("SAPAromaticElement(%s) == expecting(%s)") % _rep_(atom->getElementAsSymbol()) % _rep_(this->_SymbolArg));
       if (this->_SymbolArg == atom->getElementAsSymbol() && atom->isAromatic())
         goto SUCCESS;
       break;
   case SAPElement:
-      LOG(BF("SAPElement(%s) == expecting(%s)") % atom->getElementAsSymbol()->__repr__() % this->_SymbolArg->__repr__());
+      LOG(BF("SAPElement(%s) == expecting(%s)") % _rep_(atom->getElementAsSymbol()) % _rep_(this->_SymbolArg));
       if (this->_SymbolArg == atom->getElementAsSymbol())
         goto SUCCESS;
       break;
@@ -1010,7 +1010,7 @@ bool AtomTest_O::matches(Root_sp root, chem::Atom_sp atom) {
         goto SUCCESS;
       break;
   case SAPLambda:
-      LOG(BF("SAPLambda<%s> testing %s") % this->_SymbolArg->__repr__() % atom->description());
+      LOG(BF("SAPLambda<%s> testing %s") % _rep_(this->_SymbolArg) % atom->description());
       if (root->evaluateTest(this->_SymbolArg, atom))
         goto SUCCESS;
       break;
@@ -1695,23 +1695,23 @@ void Root_O::initialize() {
 
 void Root_O::addTest(core::Symbol_sp testSym, core::Function_sp testCode) {
   _OF();
-  LOG(BF("Adding test<%s> with code: %s") % testSym->__repr__() % testCode->__repr__());
+  LOG(BF("Adding test<%s> with code: %s") % _rep_(testSym) % _rep_(testCode));
   this->_Tests->setf_gethash(testSym, testCode);
 }
 
 bool Root_O::evaluateTest(core::Symbol_sp testSym, Atom_sp atom) {
   _OF();
   ASSERTF(testSym.notnilp(), BF("The test symbol was nil! - this should never occur"));
-  LOG(BF("Looking up test with symbol<%s>") % testSym->__repr__());
+  LOG(BF("Looking up test with symbol<%s>") % _rep_(testSym));
   core::T_mv find = this->_Tests->gethash(testSym);
   if (find.second().nilp()) {
-    SIMPLE_ERROR(BF("Could not find named ChemInfo/Smarts test[%s] in Smarts object - available named tests are[%s]") % testSym->__repr__() % this->_Tests->keysAsString());
+    SIMPLE_ERROR(BF("Could not find named ChemInfo/Smarts test[%s] in Smarts object - available named tests are[%s]") % _rep_(testSym) % this->_Tests->keysAsString());
   }
   core::Function_sp testCode = this->_Tests->gethash(find).as<core::Function_O>();
   ASSERTF(testCode.notnilp(), BF("testCode was nil - it should never be"));
   ASSERTF(atom.notnilp(), BF("The atom arg should never be nil"));
   core::List_sp exp = core::Cons_O::createList(testCode, atom);
-  LOG(BF("evaluating test: %s") % exp->__repr__());
+  LOG(BF("evaluating test: %s") % _rep_(exp));
   core::T_sp res = core::eval::evaluate(exp, _Nil<core::T_O>());
   return res.isTrue();
 }

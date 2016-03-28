@@ -144,7 +144,7 @@ string		EnergyAtom::getResidueAndName()
         core::T_mv it = this->_AtomTableIndices->gethash(a);
 	if ( it.second().nilp() ) // it == this->_AtomTableIndices.end() )
 	{
-	    SIMPLE_ERROR(BF("Could not find atom[%s] in AtomTable") % a->__repr__() );
+          SIMPLE_ERROR(BF("Could not find atom[%s] in AtomTable") % _rep_(a) );
 	}
 	return &this->_Atoms[core::clasp_to_fixnum(it)];
     }
@@ -227,12 +227,12 @@ core::Symbol_sp				str1, str2, str3, str4;
 	    while ( loop.advanceLoopAndProcess() ) 
 	    {
 		a1 = loop.getAtom();
-		if ( a1->isAssignableTo<VirtualAtom_O>() ) 
+		if ( a1.isA<VirtualAtom_O>() ) 
 		{
-		    LOG(BF("Skipping virtual atom[%s]") % a1->__repr__() );
+                  LOG(BF("Skipping virtual atom[%s]") % _rep_(a1) );
 		    continue; // skip virtuals
 		}
-		LOG(BF("Setting atom[%s] in AtomTable[%d]") % a1->__repr__() % idx );
+		LOG(BF("Setting atom[%s] in AtomTable[%d]") % _rep_(a1) % idx );
 		this->_AtomTableIndices->setf_gethash(a1,core::clasp_make_fixnum(idx));
 		EnergyAtom ea(forceField,a1,coordinateIndex);
 		{_BLOCK_TRACE("Building spanning tree for atom");
@@ -243,7 +243,7 @@ core::Symbol_sp				str1, str2, str3, str4;
 			bonded = span->getAtom();
 			if ( bonded == a1 ) continue;
 			int backCount = bonded->getBackCount();
-			LOG(BF("Looking at atom[%s] at remove[%d]") % bonded->__repr__() % backCount );
+			LOG(BF("Looking at atom[%s] at remove[%d]") % _rep_(bonded) % backCount );
 			// Once we crawl out 4 bonds we have gone as far as we need
 			if ( backCount >= 4 ) 
 			{
@@ -265,7 +265,7 @@ core::Symbol_sp				str1, str2, str3, str4;
 		    ss.str("");
 		    for ( si = ea._AtomsAtRemove[zr].begin(); si!=ea._AtomsAtRemove[zr].end(); si++ )
 		    {
-			ss << " " << (*si)->__repr__();
+                      ss << " " << _rep_((*si));
 		    }
 		    LOG(BF("Atoms at remove %d = %s") % zr % ss.str() );
 		}

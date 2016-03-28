@@ -46,9 +46,9 @@ namespace kinematics
     FORWARD(AtomTree);
 
     FORWARD(Conformation);
-    class Conformation_O : public core::T_O
+    class Conformation_O : public core::General_O
 {
-    LISP_CLASS(kinematics,KinPkg,Conformation_O,"Conformation",core::T_O);
+    LISP_CLASS(kinematics,KinPkg,Conformation_O,"Conformation",core::General_O);
 #if INIT_TO_FACTORIES
  public:
     static Conformation_sp make(core::List_sp oligomers);

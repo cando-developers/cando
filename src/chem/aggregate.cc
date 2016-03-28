@@ -453,8 +453,8 @@ CL_DEFMETHOD     Molecule_sp Aggregate_O::firstMoleculeWithAtomNamed(MatterName 
 
     void Aggregate_O::addMatter(Matter_sp matter)
     {
-	if ( matter->isAssignableTo<Molecule_O>() ) this->Base::addMatter(matter);
-	if ( matter->isAssignableTo<Aggregate_O>())
+	if ( matter.isA<Molecule_O>() ) this->Base::addMatter(matter);
+	if ( matter.isA<Aggregate_O>())
 	{
 	    for ( Matter_O::contentIterator it=matter->begin_contents(); it!=matter->end_contents(); it++ )
 	    {

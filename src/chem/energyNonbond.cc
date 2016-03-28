@@ -697,7 +697,7 @@ void EnergyNonbond_O::constructFromAtomTable(AtomTable_sp atomTable, ForceField_
                     {
                       if ( atomSet.notnilp() && !inAtomSet(atomSet,iea2->atom()) ) continue;
                       bool in14 = iea1->relatedBy14(iea2->atom());
-                      LOG(BF("Nonbonded interaction between %s - %s in14[%d]") % iea1->atom()->__repr__() % iea2->atom()->__repr__() % in14 );
+                      LOG(BF("Nonbonded interaction between %s - %s in14[%d]") % _rep_(iea1->atom()) % _rep_(iea2->atom()) % in14 );
                       EnergyNonbond energyNonbond;
                       if ( energyNonbond.defineFrom(forceField, in14,
                                                     &(*iea1),&(*iea2),this->sharedThis<EnergyNonbond_O>()) )  {

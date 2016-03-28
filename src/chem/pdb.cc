@@ -334,10 +334,10 @@ namespace chem
 
 Aggregate_sp PdbReader_O::loadPdb(core::T_sp fileName)
 {
-      PdbReader_sp pdb = PdbReader_O::create();
-	Aggregate_sp agg = pdb->parse(fileName);
-	return agg;
-    }
+  PdbReader_sp pdb = PdbReader_O::create();
+  Aggregate_sp agg = pdb->parse(fileName);
+  return agg;
+}
 
 Aggregate_sp PdbReader_O::loadPdbConnectAtoms(core::T_sp fileName)
     {

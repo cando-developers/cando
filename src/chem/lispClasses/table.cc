@@ -168,7 +168,7 @@ namespace chem
 	    {
 		stringstream ss; 
 		ss << this->getTable()->fieldSymbol(idx)->fullName() << " -> ";
-		ss << (*si)->__repr__() << std::endl;
+		ss << _rep_((*si)) << std::endl;
 		geom::RenderInformation_sp info = geom::RenderInformation_O::create(ss.str(),_lisp);
 		dl->append(info);
 	    }
@@ -184,7 +184,7 @@ namespace chem
 	uint idx=0;
 	for ( gctools::Vec0<core::T_sp>::const_iterator fi=this->_Fields.begin(); fi!=this->_Fields.end(); fi++, idx++ )
 	{
-	    ss << this->getTable()->fieldSymbol(idx)->fullName() << " -> " << (*fi)->__repr__() << std::endl;
+          ss << this->getTable()->fieldSymbol(idx)->fullName() << " -> " << _rep_((*fi)) << std::endl;
 	}
 	return ss.str();
     }
@@ -459,7 +459,7 @@ namespace chem
 	    stringstream ss;
 	    ss << "Tables to merge don't have matching fields" << std::endl;
 	    ss << "this: " << this->__repr__() << std::endl;
-	    ss << "other: " << other->__repr__() << std::endl;
+	    ss << "other: " << _rep_(other) << std::endl;
 	    SIMPLE_ERROR(BF("%s")%BF("%s")%ss.str());
 	}
         gctools::Vec0<TableEntry_sp>::iterator it;
@@ -531,7 +531,7 @@ namespace chem
 	uint idx = 0;
 	for (gctools::Vec0<TableEntry_sp>::iterator ei=this->_Entries.begin(); ei!=this->_Entries.end(); ei++,idx++ )
 	{
-	    ss << "entry("<<idx<<"):: " << (*ei)->__repr__();
+          ss << "entry("<<idx<<"):: " << _rep_((*ei));
 	}
 	return ss.str();
     }

@@ -44,6 +44,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/str.h>
 #include <cando/chem/loop.h>
 #include <clasp/core/cons.h>
+#include <clasp/core/lispList.h>
 #include <cando/geom/ovector3.h>
 #include <cando/chem/restraint.h>
 #include <clasp/core/environment.h>
@@ -247,7 +248,7 @@ CL_DEFMETHOD core::T_sp Matter_O::getProperty(core::Symbol_sp prop)
   if (res.unboundp()) {
     stringstream props;
     props << _rep_(this->_Properties);
-    SIMPLE_ERROR(BF("You asked for an unknown property[%s] for matter[%s@%p] - the available properties are[%s]") % prop->__repr__() % this->__repr__() % this % props.str()  );
+    SIMPLE_ERROR(BF("You asked for an unknown property[%s] for matter[%s@%p] - the available properties are[%s]") % _rep_(prop) % this->__repr__() % this % props.str()  );
   }
   return res;
 }
@@ -793,17 +794,17 @@ CL_DEFMETHOD void	Matter_O::setAtomAliasesForResiduesNamed(core::List_sp parts, 
   {
     SIMPLE_ERROR(BF("Needs Aggregate, Molecule or Residue"));
   }
-  LOG(BF("setAtomAliasesForResiduesNamed with parts(%s) atomAliases(%s)") % parts->__repr__().c_str() % atomAliases->__repr__().c_str()  );
+  LOG(BF("setAtomAliasesForResiduesNamed with parts(%s) atomAliases(%s)") % _rep_(parts).c_str() % _rep_(atomAliases).c_str()  );
   gctools::SmallMap<MatterName,core::List_sp> residueNamesToAliasAtoms;
   for ( auto cur : parts ) {
     core::List_sp oneExtend = oCar(cur);
     if ( oneExtend->length() != 2 )
     {
-      SIMPLE_ERROR(BF("Each entry must have two elements: "+oneExtend->__repr__() ));
+      SIMPLE_ERROR(BF("Each entry must have two elements: "+_rep_(oneExtend) ));
     }
     core::Str_sp residueName = oneExtend->car<core::Str_O>();
     core::List_sp aliasAtoms = oCadr(oneExtend);
-    LOG(BF("residueName(%s) aliasAtoms(%s)") % residueName->get().c_str() % aliasAtoms->__repr__().c_str() );
+    LOG(BF("residueName(%s) aliasAtoms(%s)") % residueName->get().c_str() % _rep_(aliasAtoms).c_str() );
     residueNamesToAliasAtoms[residueName->get()] = aliasAtoms;
   }
     	//
@@ -818,7 +819,7 @@ CL_DEFMETHOD void	Matter_O::setAtomAliasesForResiduesNamed(core::List_sp parts, 
     {
       LOG(BF("%s:%d Setting aliases for residue(%s)") % (__FILE__) % (__LINE__) % (res->getName().c_str()) );
       core::List_sp aliasAtoms = residueNamesToAliasAtoms[res->getName()];
-      LOG(BF("setting aliases for residueName(%s) aliasAtoms(%s) atomAliases(%s)") % res->getName().c_str() % aliasAtoms->__repr__().c_str() % atomAliases->__repr__().c_str() );
+      LOG(BF("setting aliases for residueName(%s) aliasAtoms(%s) atomAliases(%s)") % res->getName().c_str() % _rep_(aliasAtoms).c_str() % _rep_(atomAliases).c_str() );
       res->setAliasesForAtoms(aliasAtoms,atomAliases);
     } else
     {

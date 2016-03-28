@@ -99,7 +99,7 @@ adapt::StringList_O::iterator		it;
 
 void	AtomIndexer_O::appendConsOfTexts(core::List_sp sl)
 {
-    LOG(BF("Appending atom names: %s") % sl->__repr__().c_str()  );
+  LOG(BF("Appending atom names: %s") % _rep_(sl).c_str()  );
     for ( auto cur : sl ) {
       this->_Names.push_back(oCar(cur).as<core::Symbol_O>());
     }

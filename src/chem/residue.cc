@@ -647,7 +647,7 @@ contentIterator	aCur;
     for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ )
     {
 	Atom_sp a = (*aCur).as<Atom_O>();
-	LOG(BF("Looking at(%s) for alias(%s)") % (*aCur)->getName().c_str() % alias->__repr__()  );
+	LOG(BF("Looking at(%s) for alias(%s)") % (*aCur)->getName().c_str() % _rep_(alias)  );
         if ( a->getAlias() == alias)
 	{
             return a;
@@ -660,9 +660,9 @@ Atom_sp Residue_O::atomWithAlias(core::Symbol_sp alias)
 {
     Atom_sp a = this->atomWithAliasOrNil(alias);
     if ( a.notnilp() ) return a;
-    LOG(BF("Matter(%s) with %d contents does not contain content with alias(%s)") % this->name.c_str() % this->_contents.size() % alias->__repr__()  );
+    LOG(BF("Matter(%s) with %d contents does not contain content with alias(%s)") % this->name.c_str() % this->_contents.size() % _rep_(alias)  );
     stringstream ss;
-    ss << "residue (" << this->name << ") does not contain atom with alias(" << alias->__repr__() << ")";
+    ss << "residue (" << this->name << ") does not contain atom with alias(" << _rep_(alias) << ")";
     SIMPLE_ERROR(BF(ss.str()));
 }
 

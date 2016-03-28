@@ -44,7 +44,7 @@ namespace units
     {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
-	LOG(BF("Initializing Quantity_O with args[%s]") % args->__repr__() );
+      LOG(BF("Initializing Quantity_O with args[%s]") % _rep_(args) );
 	Object_sp oamount = args->ocar();
 	if ( oamount->isAssignableTo<Float_O>() )
 	{
@@ -71,9 +71,9 @@ namespace units
 	core::Symbol_sp system = _lisp->symbol(_sym_UnitsPkg_StarSISystemStar);
 	core::Binder_sp dimensionDatabase = _lisp->symbol(_sym_UnitsPkg_StarUnitDatabaseStar)->symbolValue().as<core::Binder_O>();
 	// Repeat this block for multiple symbols
-	{ _BLOCK_TRACEF(BF("Processing unit[%s]") % unit->__repr__() );
+	{ _BLOCK_TRACEF(BF("Processing unit[%s]") % _rep_(unit) );
 	    core::Binder_O::iterator it = dimensionDatabase->find(unit);
-	    ASSERTF(it!=dimensionDatabase->end(),BF("Could not find BaseUnit[%s]") % unit->__repr__() );
+	    ASSERTF(it!=dimensionDatabase->end(),BF("Could not find BaseUnit[%s]") % _rep_(unit) );
 	    Dimension_sp dimension = (*it).second.as<Dimension_O>();
 	    dimension->adjustPowersAndAmountScale(power,powers,amountScale);
 	}
@@ -124,12 +124,12 @@ namespace units
 			dimension->adjustPowersAndAmountScale(power,powers,amountScale);
 		    } else
 		    {
-			THROW(_lisp->error(BF("Unknown dimension[%s]") % sdim->__repr__()));
+                      THROW(_lisp->error(BF("Unknown dimension[%s]") % _rep_(sdim)));
 		    }
 		}
 	    } else
 	    {
-		THROW(_lisp->error(BF("Units definition expected symbol or :system but got[%s]") % dimCur->ocar()->__repr__() ));
+              THROW(_lisp->error(BF("Units definition expected symbol or :system but got[%s]") % _rep_(dimCur->ocar()) ));
 	    }
 	    dimCur = dimCur->cdr();
 	}
@@ -143,7 +143,7 @@ namespace units
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	core::Cons_sp args = allargs->cdr();
-	LOG(BF("Initializing Quantity_O with args[%s]") % args->__repr__() );
+	LOG(BF("Initializing Quantity_O with args[%s]") % _rep_(args) );
 	double amount = 1.0;
 	Object_sp oamount = args->ocar();
 	if ( oamount->notNil() )
@@ -196,7 +196,7 @@ namespace units
 				  "- cannot get the amount of a Quantity unless you match the units")
 			       % this->className()
 			       % this->__repr__()
-			       % temp->__repr__() ));
+			       % _rep_(temp) ));
 	}
     }
 
@@ -247,7 +247,7 @@ namespace units
     {_OF();
 	stringstream ss;
 	double amount = 1.0;
-	ss << this->_class()->classNameSymbol()->__repr__()<< "*" <<this->system()->unitsAsString(amount,this->sharedThis<Quantity_O>());
+	ss << _rep_(this->_class()->classNameSymbol())<< "*" <<this->system()->unitsAsString(amount,this->sharedThis<Quantity_O>());
 	return ss.str();
     }
 

@@ -65,7 +65,7 @@ namespace units
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	core::Cons_sp args = allargs->cdr();
-	LOG(BF("Initializing CoordinateArray_O with args[%s]") % args->__repr__() );
+	LOG(BF("Initializing CoordinateArray_O with args[%s]") % _rep_(args) );
 	double amount = 1.0;
 	core::CoordinateArray_sp camount = args->ocar().as<core::CoordinateArray_O>();
 	if ( camount.nilp() )
@@ -182,7 +182,7 @@ namespace units
 	stringstream ss;
 	double amount = 1.0;
 	System_sp system = this->system();
-	ss << this->_class()->classNameSymbol()->__repr__() << "*"<< this->system()->unitsAsString(amount,this->sharedThis<Quantity_O>());
+	ss << _rep_(this->_class()->classNameSymbol()) << "*"<< this->system()->unitsAsString(amount,this->sharedThis<Quantity_O>());
 	return ss.str();
     }
 
@@ -201,7 +201,7 @@ namespace units
 	stringstream ss;
 	for ( int i=0; i<this->size(); i++ )
 	{
-	    ss << Xyz_O::create(this->_Coordinates->getElement(i),this->sharedThis<CoordinateArray_O>(),_lisp)->__repr__() << endl;
+          ss << Xyz_O::create(this->_Coordinates->getElement(i),_rep_(this->asSmartPtr()) << endl;
 	}
 	return ss.str();
     }

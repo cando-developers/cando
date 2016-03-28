@@ -611,7 +611,7 @@ namespace omm
 	    nbm = OpenMM::NonbondedForce::PME;
 	} else
 	{
-	    SIMPLE_ERROR(BF("Illegal NonbondedMethod[%s]") % sym->__repr__() );
+          SIMPLE_ERROR(BF("Illegal NonbondedMethod[%s]") % _rep_(sym) );
 	}
 	this->wrappedPtr()->setNonbondedMethod(nbm);
     }

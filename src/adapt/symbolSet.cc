@@ -216,7 +216,7 @@ void SymbolSet_O::initialize() {
   this->_Symbols = HashTableEq_O::create_default();
 }
 
-SymbolSet_O::SymbolSet_O(const SymbolSet_O &ss) : T_O(ss) {
+SymbolSet_O::SymbolSet_O(const SymbolSet_O &ss) : Base(ss) {
   this->_Symbols = ss._Symbols;
 }
 

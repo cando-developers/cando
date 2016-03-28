@@ -93,8 +93,8 @@ namespace chem
 	for ( Entities::const_iterator it=this->_Entities.begin();
 	      it!=this->_Entities.end(); it++ )
 	{
-//	    if ( it->second->isAssignableToByClassSID(classSID) )
-	    if ( it->second->isAInstanceOf(mc) )
+//	    if ( it->second->isAByClassSID(classSID) )
+          if ( core::cl__class_of(it->second) == mc ) 
 	    {
 		result = core::Cons_O::create(it->second,result);
 	    }
@@ -107,7 +107,7 @@ namespace chem
     {_OF();
 	Entities::const_iterator it = this->_Entities.find(name);
 	if ( it == this->_Entities.end() ) return false;
-	if ( it->second->isAInstanceOf(mc) ) return true;
+	if ( core::cl__class_of(it->second) == mc ) return true;
 	return false;
     }
 
@@ -115,7 +115,7 @@ namespace chem
     {_OF();
 	Entities::iterator it = this->_Entities.find(name);
 	if ( it == this->_Entities.end() ) return false;
-	if ( it->second->__class() == aclass) return true;
+	if ( core::cl__class_of(it->second) == aclass) return true;
 	return false;
     }
 
@@ -139,7 +139,7 @@ CL_LISPIFY_NAME("addEntity");
 CL_DEFMETHOD     Entity_sp CandoDatabase_O::addEntity(Entity_sp entity)
     {
 	this->_Entities.set(entity->getName(),entity);
-	if ( entity->isAssignableTo<Constitution_O>() )
+	if ( entity.isA<Constitution_O>() )
 	{
 	    entity.as<Constitution_O>()->addStereoisomersToCandoDatabase(this->sharedThis<CandoDatabase_O>());
 	}
@@ -170,7 +170,7 @@ CL_DEFMETHOD     bool CandoDatabase_O::recognizesRepresentedEntityNameSet(core::
     {_OF();
 	if ( this->_Entities.count(name) == 0 ) return false;
 	Entity_sp entity = this->_Entities.get(name);
-	return entity->isAssignableTo<MonomerPack_O>();
+	return entity.isA<MonomerPack_O>();
     }
 
 
@@ -264,7 +264,7 @@ CL_LISPIFY_NAME("getEntity");
 CL_DEFMETHOD     Entity_sp CandoDatabase_O::getEntity(core::Symbol_sp nm) const
     {
 	ASSERTF(this->_Entities.contains(nm),
-		BF("CandoDatabase does not contain entity[%s]") % nm->__repr__() );
+		BF("CandoDatabase does not contain entity[%s]") % _rep_(nm) );
 	return this->_Entities.get(nm);
     }
 
@@ -273,12 +273,12 @@ CL_DEFMETHOD     Entity_sp CandoDatabase_O::getEntity(core::Symbol_sp nm) const
     {
 	ASSERTF(this->_Entities.contains(nm),
 		BF("CandoDatabase does not contain entity[%s]")
-		% nm->__repr__() );
+		% _rep_(nm) );
 	Entity_sp entity = this->_Entities.get(nm);
-	if ( entity->__class() != mc )
+	if ( core::cl__class_of(entity) != mc )
 	{
 	    SIMPLE_ERROR(BF("You asked for Entity[%s] of class[%s] and there is one with that name but it has the wrong class[%s]")
-			       % nm->__repr__() % mc->className() % entity->className() );
+                         % _rep_(nm) % mc->className() % entity->className() );
 	}
 	return entity;
     }
@@ -305,7 +305,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp CandoDatabase_O::expandEntityNamesToTermina
 #if 0
     bool	CandoDatabase_O::monomersAreDefinedForSetOrConstitutionOrMonomerName(core::Symbol_sp nm)
     {
-	LOG(BF("looking for(%s)") % nm->__repr__()  );
+      LOG(BF("looking for(%s)") % _rep_(nm)  );
 	EntityNameSet_sp group;
 	if ( this->recognizesEntityNameSetName(nm) )
 	{
@@ -337,7 +337,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp CandoDatabase_O::getMonomersForSetOrConstit
 		  it!=this->_Entities.end();
 		  it++ )
 	    {
-		LOG(BF("Namespace contains name: %s") % it->first->__repr__() );
+              LOG(BF("Namespace contains name: %s") % _rep_(it->first) );
 	    }
 	}
 #endif
@@ -359,7 +359,7 @@ CL_DEFMETHOD     adapt::SymbolSet_sp CandoDatabase_O::getMonomersForSetOrConstit
     { 
 	Entity_sp obj;
 	geom::ObjectList_sp 	ll;
-	LOG(BF("Looking for name(%s)") % nm->__repr__()  );
+	LOG(BF("Looking for name(%s)") % _rep_(nm)  );
 	ASSERT(this->recognizesEntityName(nm));
 	obj = this->getEntity(nm);
 	ll = obj->expandedRepresentativeList();
@@ -404,9 +404,9 @@ CL_LISPIFY_NAME("constitutionForNameOrPdb");
 CL_DEFMETHOD     Constitution_sp	CandoDatabase_O::constitutionForNameOrPdb(core::Symbol_sp name)
     {
 	Entity_sp obj;
-	ASSERTP(this->_Entities.contains(name),"Could not find: "+name->__repr__()+" in Environment");
+	ASSERTP(this->_Entities.contains(name),"Could not find: "+_rep_(name)+" in Environment");
 	obj = this->_Entities.get(name);
-	ASSERTP(obj->hasConstitution(), "The name: "+name->__repr__()+" is not part of a Constitution" );
+	ASSERTP(obj->hasConstitution(), "The name: "+_rep_(name)+" is not part of a Constitution" );
 	return obj->constitution();
     }
 
@@ -421,9 +421,9 @@ CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(c
     core::Symbol_sp CandoDatabase_O::getMonomerNameForNameOrPdb(core::Symbol_sp name)
     {
 	Entity_sp dep;
-	ASSERTP(this->_Entities.contains(name), "Could not find name("+name->__repr__()+") in Environment");
+	ASSERTP(this->_Entities.contains(name), "Could not find name("+_rep_(name)+") in Environment");
 	dep = this->_Entities.get(name);
-	ASSERTP(dep->isTerminalName(), "Asked for MonomerName of non-terminal name("+name->__repr__()+")");
+	ASSERTP(dep->isTerminalName(), "Asked for MonomerName of non-terminal name("+_rep_(name)+")");
 	return dep->getName();
     }
 
@@ -431,9 +431,9 @@ CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(c
     {
 	Entity_sp 			dep;
 	Stereoisomer_sp			si;
-	ASSERTP(this->_Entities.contains(name), "Could not find name("+name->__repr__()+") in Environment");
+	ASSERTP(this->_Entities.contains(name), "Could not find name("+_rep_(name)+") in Environment");
 	dep = this->_Entities.get(name);
-	ASSERTP(dep->isTerminalName(), "Asked for MonomerName of non-terminal name("+name->__repr__()+")");
+	ASSERTP(dep->isTerminalName(), "Asked for MonomerName of non-terminal name("+_rep_(name)+")");
 	si = downcast<Stereoisomer_O>(dep);
 	return si->getPdb();
     }
@@ -576,57 +576,6 @@ CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(c
 	return this->_FinishFragmentMap[nm];
     }
 #endif //]
-
-
-#if 0
-    void	CandoDatabase_O::addSystemRepresentedEntityNameSet(RepresentedEntityNameSet_sp group)
-    {
-	if ( this->recognizesEntityNameSetName(group->getName()) ) {
-	    SIMPLE_ERROR(BF("You tried to create a group with a name that is already used: %s") % group->getName() );
-	}
-	this->_SystemRepresentedEntityNameSets.set(group->getName(),group);
-    }
-
-    void	CandoDatabase_O::defineUserMonomerPack(MonomerPack_sp group)
-    {
-	this->_Entities.set(group->getName(),group);
-	this->_UserMonomerPacks->set(group->getName(),group);
-	this->_WeakLastUserMonomerPackToChange = group;
-    }
-
-
-
-    adapt::StringSet_sp	CandoDatabase_O::allUniqueCouplingNames()
-    {
-	adapt::StringSet_sp			names;
-	Constitutions::value_iterator	mi;
-	Constitution_O::PlugMap::value_iterator	pi;
-	Constitution_sp			cc;
-	core::Symbol_sp			couplingName;
-	names = adapt::StringSet_O::create();
-	names->clear();
-	for ( mi=this->begin_Constitutions();
-	      mi!=this->end_Constitutions(); mi++ ) {
-	    cc = *mi;
-            cc->mapPlugs( [&names] (Plug
-	    for ( pi=cc->begin_Plugs(); pi!=cc->end_Plugs(); pi++ )
-	    {
-		couplingName = DirectionalCoupling_O::couplingName((*pi)->getName());
-		LOG(BF("Adding couplingName: %s") % couplingName->__repr__() );
-		names->insert(couplingName->__repr__());
-	    }
-	}
-	return names;
-    }
-#endif
-
-
-
-
-
-
-
-
 
 
 

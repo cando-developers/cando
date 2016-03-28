@@ -90,7 +90,7 @@ void CoordinateArray_O::fillFromList(core::List_sp vals)
       } else if ( OVector3_sp ovec = obj.asOrNull<OVector3_O>()) {
         this->appendElement(ovec->value());
       } else {
-        SIMPLE_ERROR(BF("Cannot convert value[%s] to Vector3") % obj->__repr__() );
+        SIMPLE_ERROR(BF("Cannot convert value[%s] to Vector3") % _rep_(obj) );
       }
     }
   }
@@ -150,13 +150,13 @@ void CoordinateArray_O::resize(int iElement)
     core::T_sp CoordinateArray_O::setElementObject(uint i,core::T_sp obj)
     {
 	ASSERT_lessThan(i,this->_Points.size() );
-	if ( obj->isAssignableTo<OVector3_O>() )
+	if ( obj.isA<OVector3_O>() )
 	{
 	    OVector3_sp ov = obj.as<OVector3_O>();
 	    this->_Points[i] = ov->get();
 	} else
 	{
-	    SIMPLE_ERROR(BF("setElementObject for CoordinateArray expects an OVector3 - got a %s") % obj->__class()->classNameAsString() );
+          SIMPLE_ERROR(BF("setElementObject for CoordinateArray expects an OVector3 - got a %s") % cl__class_of(obj)->classNameAsString() );
 	}
 	return obj;
     }

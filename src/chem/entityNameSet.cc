@@ -146,7 +146,7 @@ core::List_sp EntityNameSetBase_O::getInterestingAtomAliases()
 CL_LISPIFY_NAME("getInterestingAtomAliasIndex");
 CL_DEFMETHOD     int	EntityNameSetBase_O::getInterestingAtomAliasIndex(Alias_sp alias)
     {
-	SIMPLE_ERROR(BF("Subclass must implement for alias: "+alias->__repr__()));
+      SIMPLE_ERROR(BF("Subclass must implement for alias: "+_rep_(alias)));
     }
 
 #if 0
@@ -223,8 +223,8 @@ CL_DEFMETHOD     void EntityNameSetBase_O::contractEntityNames(adapt::SymbolSet_
           ASSERT(bdb->recognizesEntityName(ni));
           Entity_sp entity = bdb->getEntity(ni);
           RepresentativeList_sp objs = entity->expandedRepresentativeList();
-          LOG(BF("Expanded representative list for entity[%s] is: %s") % entity->__repr__()
-              % objs->__repr__() );
+          LOG(BF("Expanded representative list for entity[%s] is: %s") % _rep_(entity)
+              % _rep_(objs) );
           allRepresentatives->vectorPushExtend(objs);
         } );
       return allRepresentatives;
@@ -266,7 +266,7 @@ CL_DEFMETHOD     void	EntityNameSetBase_O::addMonomerName(core::Symbol_sp nm)
 	bdb = getCandoDatabase();
 	if ( !bdb->recognizesEntityName(nm) )
 	{
-	    SIMPLE_ERROR(BF("Unknown monomer name: "+nm->__repr__()));
+          SIMPLE_ERROR(BF("Unknown monomer name: "+_rep_(nm)));
 	}
 	this->_EntityNames->insert(nm);
     }
@@ -390,12 +390,12 @@ CL_DEFMETHOD     void	EntityNameSetBase_O::setMonomerNameOrPdb(core::Symbol_sp m
 	    core::Symbol_sp full = db->getMonomerNameForNameOrPdb(mn);
 	    this->_EntityNames->clear();
 	    this->_EntityNames->insert(full);
-	    LOG(BF("Added monomer name(%s) to EntityNameSetBase") % mn->__repr__()  );
+	    LOG(BF("Added monomer name(%s) to EntityNameSetBase") % _rep_(mn)  );
 	} else {
 	    stringstream serr;
 	    serr << "setMonomerNameOrPdb"
 		 << " trying to add monomer but it isn't recognized: "
-		 << mn->__repr__();
+		 << _rep_(mn);
 	    LOG(BF("%s") % serr.str() );
 	}
     }
@@ -596,7 +596,7 @@ CL_DEFMETHOD     adapt::StringList_sp	EntityNameSetBase_O::getMonomerNamesOrdere
     string EntityNameSetWithCap_O::description() const
     {
 	stringstream ss;
-	ss << this->className() << "[" << this->getName()->__repr__() << "]";
+	ss << this->className() << "[" << _rep_(this->getName()) << "]";
 	return ss.str();
     }
 

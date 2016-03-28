@@ -353,7 +353,7 @@ CL_DEFMETHOD void	EnergyFunction_O::setOption( core::Symbol_sp option, core::T_s
 #endif
     } else
     {
-	SIMPLE_ERROR(BF("Unknown EnergyFunction setOption keyword[%s]") % option->__repr__() );
+      SIMPLE_ERROR(BF("Unknown EnergyFunction setOption keyword[%s]") % _rep_(option) );
     }
 }
 
@@ -1157,7 +1157,7 @@ void EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator
 		{
 		    Atom_sp a1 = loop.getAtom();
                     if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1))  goto CONT;
-		    if ( a1->isAssignableTo<VirtualAtom_O>() ) continue; // skip virtuals
+		    if ( a1.isA<VirtualAtom_O>() ) continue; // skip virtuals
 		    this->_FixedNonbondRestraint->addFixedAtom(nonbondDb,a1);
 		}
 	    }
@@ -1311,7 +1311,7 @@ int             coordinateIndex;
 	while ( loop.advanceLoopAndProcess() ) 
 	{
 	    a1 = loop.getAtom();
-	    if ( a1->isAssignableTo<VirtualAtom_O>() ) continue; // skip virtuals
+	    if ( a1.isA<VirtualAtom_O>() ) continue; // skip virtuals
 	    LOG(BF( "Atom = %s")% a1->description() );
 	    a1->setAtomTableIndex(this->_AtomTable->getNumberOfAtoms());
 	    EnergyAtom energyAtom(forceField,a1,coordinateIndex);

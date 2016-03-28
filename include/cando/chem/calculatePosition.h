@@ -78,7 +78,6 @@ public:
 						       MatterName dihedralAtomName,
 						       double distance, double angleDegrees, double dihedralDegrees);
 #else
-	DECLARE_INIT();
 #endif
 public: // virtual functions inherited from Object
 	void	initialize();
@@ -113,7 +112,6 @@ public:
     public:
 	static CalculatePositionAlongBond_sp make(MatterName fromAtomName, MatterName toAtomName, double extendDistance);
 #else
-	DECLARE_INIT();
 #endif
 public: // virtual functions inherited from Object
 	void	initialize();
@@ -144,7 +142,6 @@ public:
     public:
 	static CalculatePositionRelativeToOrigin_sp make(MatterName originAtomName, MatterName toAtomName, double extendDistance);
 #else
-	DECLARE_INIT();
 #endif
 public: // virtual functions inherited from Object
 	void	initialize();

@@ -143,7 +143,7 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getGeneralMonomerContext()
 	    //
 	    // Skip RingClosing couplings, they aren't part of the context
 	    //
-	    if ( coupling->isAssignableTo<RingCoupling_O>() ) continue;
+	    if ( coupling.isA<RingCoupling_O>() ) continue;
 	    neighborRecognizer = EntityNameSetWithCap_O::create(); //,db);
 	    neighborMonomer = coupling->getOtherSideMonomer(this->sharedThis<Monomer_O>());
 	    neighborRecognizer->addGroupName(neighborMonomer->getGroupName());
@@ -285,14 +285,14 @@ CL_DEFMETHOD     bool	Monomer_O::checkForBadConnections()
 	{
 	    if ( it->second.nilp() )
 	    {
-		this->addErrorMessage("Coupling with plug("+it->first->__repr__()+") is Null");
+              this->addErrorMessage("Coupling with plug("+_rep_(it->first)+") is Null");
 		badConnections = true;
 		continue;
 	    }
 	    coup = it->second;
 	    if ( !coup->containsMonomer(this->sharedThis<Monomer_O>()) )
 	    {
-		this->addErrorMessage("The coupling through plug("+it->first->__repr__()+") doesn't contain me");
+              this->addErrorMessage("The coupling through plug("+_rep_(it->first)+") doesn't contain me");
 		badConnections = true;
 	    }
 	}
@@ -354,7 +354,7 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getSpecificMonomerContext()
 	    {
 		RingCoupling_sp rc = coupling.as<RingCoupling_O>();
                 (void)rc;
-		LOG(BF("Ignoring out coupling for RingCoupling: %s") % rc->getName()->__repr__() );
+		LOG(BF("Ignoring out coupling for RingCoupling: %s") % _rep_(rc->getName()) );
 	    }
 	}
 	return context;
@@ -492,7 +492,7 @@ CL_DEFMETHOD     bool	Monomer_O::hasInCoupling()
 	{
 	    stringstream ss;
 	    ss << "Constitution(" << con->getName();
-	    ss << ") does not have plug named(" << pn->__repr__() << ")";
+	    ss << ") does not have plug named(" << _rep_(pn) << ")";
 	    ss << "  available plugs(" << con->getPlugNames()->asString() << ")";
 	    SIMPLE_ERROR(BF("%s")%ss.str());
 	}
@@ -512,7 +512,7 @@ CL_DEFMETHOD     Constitution_sp Monomer_O::getConstitution()
 	LOG(BF("status") );
 	nm = this->getName();
 	LOG(BF("status") );
-	LOG(BF("Monomer name (%s)") % nm->__repr__() );
+	LOG(BF("Monomer name (%s)") % _rep_(nm) );
 	return db->constitutionForNameOrPdb(nm);
     }
 
@@ -546,7 +546,7 @@ CL_DEFMETHOD     Constitution_sp Monomer_O::getConstitution()
 	int					count;
 	Coupling_sp				myCoup;
 	bool					foundIt;
-	LOG(BF("Looking for plug name: %s and coupling: %s") % plugName->__repr__() % coup->description() );
+	LOG(BF("Looking for plug name: %s and coupling: %s") % _rep_(plugName) % coup->description() );
 	count = 0;
 	foundIt = false;
 	range = this->_Couplings.equal_range(plugName);
@@ -573,7 +573,7 @@ CL_LISPIFY_NAME("addCoupling");
 CL_DEFMETHOD     void	Monomer_O::addCoupling( core::Symbol_sp plugName,  Coupling_sp coup)
     {
 	LOG(BF("add coupling to %s") % this->description() );
-	LOG(BF("Adding plug(%s) coupling: %s") % plugName->__repr__() % coup->description() );
+	LOG(BF("Adding plug(%s) coupling: %s") % _rep_(plugName) % coup->description() );
 	this->_Couplings.insert2(plugName, coup->sharedThis<Coupling_O>());
 	LOG(BF("After add monomer is %s") % this->description() );
     };
@@ -662,7 +662,7 @@ CL_DEFMETHOD     void	Monomer_O::removeCouplingToMonomer(Monomer_sp mon )
 	    {
 		foundIt = true;
 		isInPlug = DirectionalCoupling_O::isInPlugName(wci->first);
-		LOG(BF("Original plug name: %s") % wci->first->__repr__() );
+		LOG(BF("Original plug name: %s") % _rep_(wci->first) );
 		break;
 	    }
 	}
@@ -679,7 +679,7 @@ CL_DEFMETHOD     void	Monomer_O::removeCouplingToMonomer(Monomer_sp mon )
 	{
 	    plugName = DirectionalCoupling_O::outPlugName(coup->getName());
 	}
-	LOG(BF("Changing plug name to: %s") % plugName->__repr__() );
+	LOG(BF("Changing plug name to: %s") % _rep_(plugName) );
 	this->addCoupling( plugName, coup );
     }
 
@@ -801,15 +801,15 @@ CL_DEFMETHOD     void	Monomer_O::removeCoupling(Coupling_sp coup)
 	this->clearError();
 	if ( !bdb->recognizesSetOrConstitutionOrMonomerName(name) )
 	{
-	    LOG(BF("Illegal group name(%s)") % name->__repr__() );
-	    this->addErrorMessage("Illegal group name: "+name->__repr__());
+          LOG(BF("Illegal group name(%s)") % _rep_(name) );
+          this->addErrorMessage("Illegal group name: "+_rep_(name));
 	    return;
 	}
-	LOG(BF("Legal group name(%s)") % name->__repr__() );
+	LOG(BF("Legal group name(%s)") % _rep_(name) );
 	monomerNames = bdb->expandEntityNameToTerminals(name);
 	LOG(BF("Got %d monomer names") % monomerNames->size() );
 	monomerNames->map( [this] (core::Symbol_sp si) {
-	    LOG(BF("Adding monomer named(%s)") % (si)->__repr__() );
+	    LOG(BF("Adding monomer named(%s)") % _rep_((si)) );
 	    this->addMonomerName(si);
           } );
 	if ( this->_CurrentMonomerIndex >= this->_Monomers.size() )
@@ -920,7 +920,7 @@ CL_LISPIFY_NAME("getOneMonomer");
 CL_DEFMETHOD     OneMonomer_sp	MultiMonomer_O::getOneMonomer() const
     {
 	if ( this->_Monomers.size() < 1 ) {
-	    SIMPLE_ERROR(BF("There are no monomers defined for MultiMonomer group("+this->_GroupName->__repr__()+")"));
+          SIMPLE_ERROR(BF("There are no monomers defined for MultiMonomer group("+_rep_(this->_GroupName)+")"));
 	}
 	LOG(BF("Looking up monomer: %d") % this->_CurrentMonomerIndex  );
 	return this->_Monomers[this->_CurrentMonomerIndex];
@@ -938,7 +938,7 @@ CL_DEFMETHOD     OneMonomer_sp	MultiMonomer_O::getOneMonomer() const
 	Constitution_sp residueConstitution = res->getConstitution();
 	if ( residueConstitution != con )
 	{
-	    SIMPLE_ERROR(BF("Residue created with a different constitution(%s) from the one it was created from constitution(%s)") % residueConstitution->__repr__() % con->__repr__() );
+          SIMPLE_ERROR(BF("Residue created with a different constitution(%s) from the one it was created from constitution(%s)") % _rep_(residueConstitution) % _rep_(con) );
 	}
     	//
 	// WORKING WORKING WORKING
@@ -992,7 +992,7 @@ CL_DEFMETHOD     OneMonomer_sp	MultiMonomer_O::getOneMonomer() const
 	stringstream			ss;
 	ss.str("");
 	ss << "MultiMonomer(";
-	ss << "["<<this->getGroupName()<<" id:" << this->_Id->__repr__() << "]=";
+	ss << "["<<this->getGroupName()<<" id:" << _rep_(this->_Id) << "]=";
 	ss << " plugs: ";
 	Couplings::const_iterator	ci;
 	for ( ci=this->_Couplings.begin(); ci!=this->_Couplings.end(); ci++ ) {
@@ -1122,26 +1122,26 @@ core::List_sp MultiMonomer_O::allAtomAliases()
 	AtomIndexer_sp		atomIndexer;
 	EntityNameSet_sp		entityNameSet;
 	CandoDatabase_sp	bdb;
-	LOG(BF("Checking if %s recognizes alias(%s)") % this->description().c_str() % alias->__repr__().c_str()  );
+	LOG(BF("Checking if %s recognizes alias(%s)") % this->description().c_str() % _rep_(alias).c_str()  );
 	if ( !this->_Aliases->contains(alias->getMonomerAlias()) )
 	{
 	    LOG(BF("It does not") );
 	    LOG(BF("The monomer aliases that it recognizes are: %s") % this->_Aliases->asString().c_str()  );
 	    return false;
 	}
-	LOG(BF("%s does recognize monomer alias(%s)") % this->description().c_str() % alias->__repr__().c_str() );
+	LOG(BF("%s does recognize monomer alias(%s)") % this->description().c_str() % _rep_(alias).c_str() );
 	bdb = getCandoDatabase();
 	if ( bdb->recognizesEntityNameSetName(this->getGroupName()) )
 	{
-	    LOG(BF("Checking if represents a EntityNameSet with interesting atom alias(%s)") % alias->getAtomAlias()->__repr__()  );
+          LOG(BF("Checking if represents a EntityNameSet with interesting atom alias(%s)") % _rep_(alias->getAtomAlias())  );
 	    entityNameSet = bdb->getEntityNameSet(this->getGroupName());
 	    if ( entityNameSet->hasInterestingAtomAlias( alias ) )
 	    {
-		LOG(BF("EntityNameSet does have interesting atom with alias(%s)") % alias->getAtomAlias()->__repr__()  );
+              LOG(BF("EntityNameSet does have interesting atom with alias(%s)") % _rep_(alias->getAtomAlias())  );
 		return true;
 	    } else
 	    {
-		LOG(BF("EntityNameSet does not have interesting atom with alias(%s)") % alias->getAtomAlias()->__repr__()  );
+              LOG(BF("EntityNameSet does not have interesting atom with alias(%s)") % _rep_(alias->getAtomAlias())  );
 	    }
 
 	}

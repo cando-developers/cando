@@ -122,9 +122,9 @@ bool SymbolList_O::contains(Symbol_sp nm) {
 
 int SymbolList_O::indexOf(Symbol_sp nm) {
   
-  LOG(BF("Looking for string(%s)") % nm->__repr__());
+  LOG(BF("Looking for string(%s)") % _rep_(nm));
   for (auto it = this->_Contents.begin(); it != this->_Contents.end(); it++) {
-    LOG(BF("   Looking at SymbolList entry(%s)") % (*it)->__repr__());
+    LOG(BF("   Looking at SymbolList entry(%s)") % _rep_((*it)));
     if ((*it) == nm) {
       LOG(BF("Found Match!!!"));
       return it - this->_Contents.begin();

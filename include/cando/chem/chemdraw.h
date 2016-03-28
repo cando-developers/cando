@@ -232,7 +232,6 @@ class CDText_O : public core::CxxObject_O
  public:
     static CDText_sp make(core::HashTableEq_sp kprops);
 #else
-    DECLARE_INIT();
 #endif
 private:
 	string			_Text;

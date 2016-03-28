@@ -326,7 +326,7 @@ core::List_sp BondedAtomTemplate_O::children() {
 	    if ( bonded == newChild->handle().get())
 	    {
 		stringstream serr;
-		serr << atomTree->__repr__();
+		serr << _rep_(atomTree);
 		LOG(BF("PROBLEM: %s") % serr.str() );
 		SIMPLE_ERROR(BF("You are adding an Atom to itself! - Parent[handle[%d]]@%p Child[handle[%d]]@%p")
 				   % me->handle().holderIndex()

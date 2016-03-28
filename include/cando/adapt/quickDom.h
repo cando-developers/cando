@@ -63,7 +63,6 @@ SMART(QDomNode );
 {
     LISP_CLASS(adapt,AdaptPkg,QDomNode_O,"QDomNode",core::CxxObject_O);
 
-DECLARE_INIT()
 private:
     void	dumpChild( const string& prefix);
     void	dumpChildToStream( std::ostream& o, const string& prefix);

@@ -94,14 +94,14 @@ namespace kinematics
 						 gctools::Nilable<chem::DirectionalCoupling_sp> coupling,
 						 chem::Monomer_sp monomer)
     {
-	LOG(BF("recursivelyBuildChildren on monomer[%s]") % monomer->getName()->__repr__() );
+      LOG(BF("recursivelyBuildChildren on monomer[%s]") % _rep_(monomer->getName()) );
 	this->_Parent = parent;
 	if ( coupling.notnilp() )
 	{
 	    this->_ParentPlugName = coupling->getOutMonomerPlugName();
 	    ASSERTF(chem::DirectionalCoupling_O::isInPlugName(this->_ParentPlugName),
 		    BF("This has to be an inPlugName[%s] - it isnt")
-		    % this->_ParentPlugName->__repr__() );
+		    % _rep_(this->_ParentPlugName) );
 	} else
 	{
           this->_ParentPlugName = _Nil<core::Symbol_O>();
@@ -122,7 +122,7 @@ namespace kinematics
 	    core::Symbol_sp outPlugName = dirCoupling->getInMonomerPlugName();
 	    ASSERTF(chem::DirectionalCoupling_O::isOutPlugName(outPlugName),
 		    BF("Problem - this[%s] should be an OutPlug name but it isnt")
-		    %outPlugName->__repr__() );
+		    %_rep_(outPlugName) );
 	    this->_Children.set(outPlugName,otherMonomerNode);
 	    otherMonomerNode->recursivelyBuildChildren(chainNode,
 						       ringClosingMonomerMap,
@@ -138,7 +138,7 @@ namespace kinematics
 	if ( constitution.nilp() )
 	{
 	    SIMPLE_ERROR(BF("Could not find Constitution for monomer[%s]")
-			       % this->_MonomerName->__repr__() );
+                         % _rep_(this->_MonomerName) );
 	}
 	adapt::SymbolSet_sp myPlugNameSet = adapt::SymbolSet_O::create();
 	if ( this->_ParentPlugName.notnilp() )
@@ -166,7 +166,7 @@ namespace kinematics
 	if ( topology.nilp() )
 	{
 	    SIMPLE_ERROR(BF("No topology could be found for monomer[%s] with plugs[%s]")
-			       % this->_MonomerName->__repr__() % myPlugNameSet->asString() );
+                         % _rep_(this->_MonomerName) % myPlugNameSet->asString() );
 	}
 	return core::Cons_O::createList(constitution,topology);
     }
@@ -174,15 +174,15 @@ namespace kinematics
 
     void MonomerNode_O::describeRecursivelyIntoStringStream(const string& prefix, stringstream& output) const
     {_OF();
-	LOG(BF("Describing %s[%s]") % this->className() % this->_MonomerName->__repr__() );
+      LOG(BF("Describing %s[%s]") % this->className() % _rep_(this->_MonomerName) );
 	output << prefix;
 	if ( this->_ParentPlugName.notnilp() )
 	{
-	    output << this->_ParentPlugName->__repr__() << " ";
+          output << _rep_(this->_ParentPlugName) << " ";
 	}
 	output << this->className()
 	       << "["
-	       << this->_MonomerName->__repr__()
+	       << _rep_(this->_MonomerName)
 	       << "]" << std::endl;
 	for ( adapt::SymbolMap<MonomerNode_O>::const_iterator it=this->_Children.begin();
 	      it!=this->_Children.end(); it++ )
