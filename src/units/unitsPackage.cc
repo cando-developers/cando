@@ -120,7 +120,7 @@ SYMBOL_EXPORT_SC_(UnitsPkg,nm_per_ps);
 
 
 
-    void UnitsExposer::expose(core::Lisp_sp lisp,WhatToExpose what) const
+    void UnitsExposer_O::expose(core::Lisp_sp lisp,WhatToExpose what) const
     {
       switch (what)
       {
@@ -240,10 +240,10 @@ extern "C"
 {
     bool init_libunits()
     {
-	static units::UnitsExposer* unitsPkgP = NULL;
+	static units::UnitsExposer_O* unitsPkgP = NULL;
 	if ( unitsPkgP == NULL )
 	{
-	    unitsPkgP = new units::UnitsExposer(_lisp);
+	    unitsPkgP = new units::UnitsExposer_O(_lisp);
 	    _lisp->installPackage(unitsPkgP);
 	    return true;
 	} else return false;

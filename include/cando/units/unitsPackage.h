@@ -42,10 +42,11 @@ namespace units
 
     extern const char* Units_nicknames[];
 
-    class UnitsExposer : public core::Exposer
+    class UnitsExposer_O : public core::Exposer_O
     {
+      LISP_CLASS(units,UnitsPkg,UnitsExposer_O,"UnitsExposer",core::Exposer_O);
     public:
-    UnitsExposer(core::Lisp_sp lisp) : Exposer(lisp,UnitsPkg,Units_nicknames) {};
+    UnitsExposer_O(core::Lisp_sp lisp) : core::Exposer_O(lisp,UnitsPkg,Units_nicknames) {};
 	virtual void expose(core::Lisp_sp lisp,WhatToExpose what) const;
     };
 

@@ -158,7 +158,7 @@ CL_DEFMETHOD void Molecule_O::removeResidue( Matter_sp a )
 {
   gctools::Vec0<Matter_sp>::iterator	it;
   for ( it=this->getContents().begin(); it!= this->getContents().end(); it++ ) {
-    if ( downcast<Residue_O>(*it) == a ) {
+    if ( (*it).as<Residue_O>() == a ) {
       this->eraseContent(it);
       return;
     }
@@ -244,7 +244,7 @@ void	Molecule_O::redirectAtoms()
 	LOG(BF("Molecule_O::redirectAtoms START") );
 	for ( contentIterator a=this->getContents().begin(); a!=this->getContents().end(); a++ )
 	{
-	    Residue_sp res = downcast<Residue_O>(*a);
+          Residue_sp res = (*a).as<Residue_O>();
 	    res->redirectAtoms();
 	}
 	this->redirectRestraintAtoms();
@@ -276,7 +276,7 @@ CL_DEFMETHOD     Matter_sp Molecule_O::copy()
 	printf( "Molecule: %s at: 0x%lx contains %d residues\n", this->getName().c_str(), this, this->getContents().size() );
 	for ( rit=this->getContents().begin();
 	      rit!=this->getContents().end(); rit++ ) {
-	    res = downcast<Residue_O>(*rit);
+          res = (*rit).as<Residue_O>();
 	    res->dump();
 	}
     }

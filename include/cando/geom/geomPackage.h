@@ -36,10 +36,11 @@ namespace geom
 
     extern const char* Geom_nicknames[];
 
-    class GeomExposer : public core::Exposer
+    class GeomExposer_O : public core::Exposer_O
     {
+      LISP_CLASS(geom,GeomPkg,GeomExposer_O,"GeomExposer",core::Exposer_O);
     public:
-    GeomExposer(core::Lisp_sp lisp) : Exposer(lisp,GeomPkg,Geom_nicknames) {};
+    GeomExposer_O(core::Lisp_sp lisp) : Exposer_O(lisp,GeomPkg,Geom_nicknames) {};
 	virtual void expose(core::Lisp_sp lisp,WhatToExpose what) const;
     };
 

@@ -80,7 +80,7 @@ string 		                        name;
 //        LOG(BF("rawGet = %X") % rawGet );
 //        LOG(BF("castGet = %X") % castGet );
 //        LOG(BF("getting first atom in loop") );
-        atom = downcast<chem::Atom_O>(c);
+        atom = (c).as<chem::Atom_O>();
         LOG(BF("Got atom") );
         LOG(BF("atom name: %s") % atom->getName().c_str() );
         LOG(BF("Assigning type for atom: %s") % atom->description().c_str()  );

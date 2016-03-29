@@ -216,7 +216,7 @@ public:
 	// At this point all restraints must be absolute
     if ( rest.isA<RestraintDistance_O>() )
     {
-	RestraintDistance_sp distRest = downcast<RestraintDistance_O>(rest);
+      RestraintDistance_sp distRest = (rest).as<RestraintDistance_O>();
 	fout << "distance 2 "
 		<< distRest->getAtomA()->getTempFileId() << " "
 		<< distRest->getAtomB()->getTempFileId() << " "
@@ -228,7 +228,7 @@ public:
     }
     if ( rest.isA<RestraintAngle_O>() )
     {
-	RestraintAngle_sp distAngle = downcast<RestraintAngle_O>(rest);
+      RestraintAngle_sp distAngle = (rest).as<RestraintAngle_O>();
 	fout << "angle 3 "
 		<< distAngle->getAtomA()->getTempFileId() << " "
 		<< distAngle->getAtomB()->getTempFileId() << " "
@@ -239,7 +239,7 @@ public:
              << distAngle->getWeight() << std::endl;
 	return;
     }
-    RestraintDihedral_sp distDih = downcast<RestraintDihedral_O>(rest);
+    RestraintDihedral_sp distDih = (rest).as<RestraintDihedral_O>();
     fout << "dihedral 4 "
 	    << distDih->getAtomA()->getTempFileId() << " "
 	    << distDih->getAtomB()->getTempFileId() << " "

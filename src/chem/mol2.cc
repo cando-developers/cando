@@ -748,7 +748,7 @@ AtomInfo	one;
 	out << r->getName()->symbolNameAsString() << "_" << r->getTempFileId() << " ";
 	out << ri->firstAtom << " ";
 	out << "RESIDUE 1 ";
-	out << downcast<Molecule_O>(r->containedBy())->getName()->symbolNameAsString() << " ";
+	out << (r->containedBy()).as<Molecule_O>()->getName()->symbolNameAsString() << " ";
 	out << r->getName()->symbolNameAsString() << " 1";
 	out << std::endl;
 	id++;

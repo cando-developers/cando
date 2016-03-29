@@ -934,7 +934,7 @@ CL_DEFUN core::List_sp RingFinder_O::identifyRings(Matter_sp matter)
 {
     if ( matter.isA<Molecule_O>() )
     {
-        Molecule_sp mol = downcast<Molecule_O>(matter);
+      Molecule_sp mol = (matter).as<Molecule_O>();
 	core::List_sp rings = RingFinder_O::identifyRingsInMolecule(mol);
 	return rings;
     }

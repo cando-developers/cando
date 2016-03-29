@@ -264,7 +264,7 @@ namespace geom
 
 
 
-    void GeomExposer::expose(core::Lisp_sp lisp,WhatToExpose what) const
+    void GeomExposer_O::expose(core::Lisp_sp lisp,WhatToExpose what) const
     {
 	switch (what)
 	{
@@ -312,11 +312,11 @@ extern "C"
 {
     bool ___user_libgeom()
     {
-	static geom::GeomExposer* geomPkgP = NULL;
+	static geom::GeomExposer_O* geomPkgP = NULL;
 	if ( geomPkgP == NULL )
 	{
 	    printf("%s:%d - initializing geom library xxx\n", __FILE__, __LINE__ );
-	    geomPkgP = new geom::GeomExposer(_lisp);
+	    geomPkgP = new geom::GeomExposer_O(_lisp);
 	    _lisp->installPackage(geomPkgP);
 	    return true;
 	} else return false;

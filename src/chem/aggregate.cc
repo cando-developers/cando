@@ -79,7 +79,7 @@ namespace chem {
 	    core::XmlLoadArchive_sp	archive;
 	    archive = core::XmlLoadArchive_O::create();
 	    archive->parse(fileName);
-	    agg = downcast<Aggregate_O>(archive->get("aggregate"));
+	    agg = (archive->get("aggregate")).as<Aggregate_O>();
 	} else {
 	    SIMPLE_ERROR(BF("Cannot read aggregate from unknown fileType: %s") % fileName );
 	}
@@ -348,7 +348,7 @@ CL_DEFMETHOD core::List_sp	Aggregate_O::atomsWithChimeraSpecifications(const str
       if ( mol->getName() == chainSym ) {
         bool foundResidue = false;
         for ( ri = mol->getContents().begin(); ri!=mol->getContents().end(); ri++ ) {
-          res = downcast<Residue_O>(*ri);
+          res = (*ri).as<Residue_O>();
 //          printf("%s:%d res->getFileSequenceNumber()= %d  matches fileSequenceNumber[%d] = %d\n", __FILE__, __LINE__, res->getFileSequenceNumber(), fileSequenceNumber,  res->getFileSequenceNumber()==fileSequenceNumber);
 //          printf("%s:%d     res->getId() = %d\n", __FILE__, __LINE__, res->getId());
           if ( res->getFileSequenceNumber() == fileSequenceNumber ) {
@@ -392,7 +392,7 @@ CL_DEFMETHOD     void Aggregate_O::removeMolecule( Molecule_sp a )
     {_OF();
 	contentIterator	it;
 	for ( it=this->getContents().begin(); it!= this->getContents().end(); it++ ) {
-	    if ( downcast<Molecule_O>(*it) == a ) 
+          if ((*it).as<Molecule_O>() == a ) 
 	    {
 		this->eraseContent(it);
 		return;
@@ -524,7 +524,7 @@ CL_DEFMETHOD     Molecule_sp      Aggregate_O::firstMolecule()
     {
 	Molecule_sp mol;
 //    mol = downcast<Molecule_O>(this->contentAt(0));
-	mol = downcast<Molecule_O>(this->contentAt(0));
+	mol = (this->contentAt(0)).as<Molecule_O>();
 	return mol;
     }
 
@@ -537,7 +537,7 @@ CL_DEFMETHOD     MatterName  Aggregate_O::firstMoleculeName()
 	ASSERTP(this->_contents.size()>0,"Aggregate_O::firstMoleculeName contains no molecules");
 	c = this->contentAt(0);
 	LOG(BF("about to downcast mol") );
-	mol = downcast<Molecule_O>(c);
+	mol = (c).as<Molecule_O>();
 	LOG(BF("about to return name") );
 	return mol->getName();
     }

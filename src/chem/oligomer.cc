@@ -112,7 +112,7 @@ void	Oligomer_O::signalConnectivityChanged()
     switch ( signal )
     {
 	case MultiMonomer_contentsChanged:
-	    monomer = downcast<MultiMonomer_O>(source);
+	    monomer = (source).as<MultiMonomer_O>();
 	    this->checkForErrors();
 	    this->_WeakLastMultiMonomerChanged = monomer;
 	    break;

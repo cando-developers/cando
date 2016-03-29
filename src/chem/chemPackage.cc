@@ -182,7 +182,7 @@ namespace chem
 
 
 
-    void ChemExposer::expose(core::Lisp_sp lisp, WhatToExpose what) const
+    void ChemExposer_O::expose(core::Lisp_sp lisp, WhatToExpose what) const
     {
 	switch (what)
 	{

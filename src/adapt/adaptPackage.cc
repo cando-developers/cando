@@ -264,7 +264,7 @@ namespace adapt
 
 
 
-    void AdaptExposer::expose(core::Lisp_sp lisp,WhatToExpose what) const
+    void AdaptExposer_O::expose(core::Lisp_sp lisp,WhatToExpose what) const
     {
 	switch (what)
 	{
@@ -311,11 +311,11 @@ extern "C"
 {
     bool ___user_libadapt()
     {
-	static adapt::AdaptExposer* adaptPkgP = NULL;
+	static adapt::AdaptExposer_O* adaptPkgP = NULL;
 	if ( adaptPkgP == NULL )
 	{
 	    printf("%s:%d - initializing adapt library xxx\n", __FILE__, __LINE__ );
-	    adaptPkgP = new adapt::AdaptExposer(_lisp);
+	    adaptPkgP = new adapt::AdaptExposer_O(_lisp);
 	    _lisp->installPackage(adaptPkgP);
 	    return true;
 	} else return false;

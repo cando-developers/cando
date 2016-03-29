@@ -662,7 +662,7 @@ bool TagSet_O::matches(Root_sp root, chem::Atom_sp atom) {
     goto FAIL;
   }
   // Now handle setting the tag
-  smartsRoot = downcast<SmartsRoot_O>(root);
+  smartsRoot = (root).as<SmartsRoot_O>();
   smartsRoot->getMatch()->defineAtomTag(atom, this->_RingTag);
   LOG(BF("RingTag (%s) defined atom: %s") % this->_RingTag.c_str() % atom->description().c_str());
   //SUCCESS:
@@ -703,7 +703,7 @@ bool RingTest_O::matches(Root_sp root, chem::Atom_sp atom) {
     goto FAIL;
   }
   // Now handle the ring test
-  smartsRoot = downcast<SmartsRoot_O>(root);
+  smartsRoot = (root).as<SmartsRoot_O>();
   // It does recognize the ring ID so check if the current atom is bonded to it
   // and then have the root forget the atom
   if (!smartsRoot->getMatch()->recognizesAtomTag(this->_RingTag)) {
@@ -762,7 +762,7 @@ bool ResidueTest_O::matches(Root_sp root, chem::Atom_sp atom) {
     goto FAIL;
   }
   // Now handle the ring test
-  smartsRoot = downcast<SmartsRoot_O>(root);
+  smartsRoot = (root).as<SmartsRoot_O>();
   // It does recognize the ring ID so check if the current atom is bonded to it
   // and then have the root forget the atom
   if (!smartsRoot->getMatch()->recognizesAtomTag(this->_RingTag)) {
@@ -1610,7 +1610,7 @@ bool AntechamberBondTest_O::matches(Root_sp root, chem::Atom_sp atom) {
   if (root->type() != antechamberRoot) {
     SIMPLE_ERROR(BF("AntechamberBondTest::matches requires an AntechamberRoot"));
   }
-  acRoot = downcast<AntechamberRoot_O>(root);
+  acRoot = (root).as<AntechamberRoot_O>();
   if (!this->matchBasic(acRoot, atom))
     goto FAIL;
   if (this->_AtomProperties->matches(acRoot, atom))
@@ -1636,7 +1636,7 @@ bool AntechamberBondTest_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond
        << "instead we have" << (unsigned long)(root.get()) << " of type: " << root->type();
     SIMPLE_ERROR(BF("%s") % ss.str());
   }
-  antechamberRoot = downcast<AntechamberRoot_O>(root);
+  antechamberRoot = (root).as<AntechamberRoot_O>();
   if (!this->matchBasic(antechamberRoot, bond->getOtherAtom(from)))
     goto FAIL;
   ANN(this->_AtomProperties);

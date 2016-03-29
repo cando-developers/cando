@@ -242,7 +242,7 @@ void	Trainer_O::write()
 
 ConformationExplorer_sp Trainer_O::getConformationExplorer()
 {_OF();
-    return downcast<ConformationExplorer_O>(this->getData(_lisp->internWithPackageName(ChemPkg,"_ConformationExplorer")));
+  return (this->getData(_lisp->internWithPackageName(ChemPkg,"_ConformationExplorer"))).as<ConformationExplorer_O>();
 };
 void Trainer_O::setConformationExplorer(ConformationExplorer_sp str )
 {_OF();
@@ -353,7 +353,7 @@ Trainer_sp readTrainer(core::Path_sp const& path, core::Lisp_sp lisp)
     trainerPath->path_append(TrainerHeader_O::trainerFileName());
     string fileName = trainerPath->asString();
     a->parse(fileName);
-    job = downcast<Trainer_O>(a->get("job"));
+    job = (a->get("job")).as<Trainer_O>();
     return job;
 }
 #endif
@@ -370,7 +370,7 @@ Trainer_sp readTrainerReplaceDatabase(const string& fileName, CandoDatabase_sp b
 		// When we change databases we will break the link
 		// between the FocusResidue and its constitution
 		// Swap it here
-    Residue_sp focusResidue = safe_downcast<Residue_O>(job->getData("FocusResidue"));
+    Residue_sp focusResidue = (job->getData("FocusResidue")).as<Residue_O>();
     Constitution_sp focusResidueConstitution = focusResidue->getConstitution();
     string constitutionName = focusResidueConstitution->getName();
     chem::CandoDatabase_sp oldTrainerCandoDatabase = job->getCandoDatabase();
@@ -454,7 +454,7 @@ void TrainerOrganizer_O::setTopDirectory(const string& topDir)
 }
 string TrainerOrganizer_O::getTopDirectory()
 {_OF();
-    return (downcast<core::Str_O>(this->_Data->lookup(_lisp->internWithPackageName(ChemPkg,"_TopDirectory"))))->get();
+  return (this->_Data->lookup(_lisp->internWithPackageName(ChemPkg,"_TopDirectory"))).as<core::Str_O>()->get();
 }
 void TrainerOrganizer_O::setCandoDatabaseFileName(const string& str)
 {_OF();
@@ -464,7 +464,7 @@ void TrainerOrganizer_O::setCandoDatabaseFileName(const string& str)
 }
 string TrainerOrganizer_O::getCandoDatabaseFileName()
 {_OF();
-    return (downcast<core::Str_O>(this->_Data->lookup(ChemPkg,"_CandoDatabaseFileName")))->get();
+  return (this->_Data->lookup(ChemPkg,"_CandoDatabaseFileName")).as<core::Str_O>()->get();
 }
 
 
@@ -562,7 +562,7 @@ TrainerOrganizer_sp readTrainerOrganizer(core::Lisp_sp lisp)
     TrainerOrganizer_sp org;
     archive = core::XmlLoadArchive_O::create();
     archive->parse("_organizer.cxml");
-    org = downcast<TrainerOrganizer_O>(archive->get("organizer"));
+    org = (archive->get("organizer")).as<TrainerOrganizer_O>();
     return org;
 }
 

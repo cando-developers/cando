@@ -279,7 +279,7 @@ bool	Loop::nextObjectInAtom()
   bool		done;
   void*		topOrder;
 
-  top = downcast<Atom_O>(this->getCurSubLoopTop());
+  top = (this->getCurSubLoopTop()).as<Atom_O>();
   allowDuplicates = ( (this->goal&ALLOWDUPLICATES) != 0 );
   LOG(BF("Loop::nextObjectInAtom atom name: %s  address=0x%08x") % top->getName().c_str() % top.get() );
   switch ( this->goal&GOALONLY )

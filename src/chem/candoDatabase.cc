@@ -434,7 +434,7 @@ CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(c
 	ASSERTP(this->_Entities.contains(name), "Could not find name("+_rep_(name)+") in Environment");
 	dep = this->_Entities.get(name);
 	ASSERTP(dep->isTerminalName(), "Asked for MonomerName of non-terminal name("+_rep_(name)+")");
-	si = downcast<Stereoisomer_O>(dep);
+	si = (dep).as<Stereoisomer_O>();
 	return si->getPdb();
     }
 
