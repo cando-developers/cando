@@ -42,9 +42,10 @@ namespace kinematics
 
     class KinematicsExposer : public core::Exposer
     {
+      LISP_CLASS(kinematics,KinPkg,KinematicsExposer_O,"KinematicsExposer",core::Exposer_O);
     private:
     public:
-    KinematicsExposer(core::Lisp_sp lisp) : Exposer(lisp,KinPkg) {};
+    KinematicsExposer_O(core::Lisp_sp lisp) : Exposer_O(lisp,KinPkg) {};
         virtual void expose(core::Lisp_sp lisp,WhatToExpose what) const;
     };
 

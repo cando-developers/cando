@@ -74,6 +74,33 @@ int startup(int argc, char *argv[], bool &mpiEnabled, int &mpiRank, int &mpiSize
     core::ThreadInfo mainThreadInfo;
     core::lisp_setThreadLocalInfoPtr(&mainThreadInfo);
 
+#if 1
+   
+    clbind::ClbindExposer_O ClbindPkg(_lisp);
+    llvmo::LlvmoExposer_O llvmopkg(_lisp);
+    cffi::CffiExposer_O cffipkg(_lisp);
+    gctools::GcToolsExposer_O GcToolsPkg(_lisp);
+    sockets::SocketsExposer_O SocketsPkg(_lisp);
+    serveEvent::ServeEventExposer_O ServeEventPkg(_lisp);
+    asttooling::AsttoolingExposer_O AsttoolingPkg(_lisp);
+    geom::GeomExposer_O GeomPkg(_lisp);
+    units::UnitsExposer_O UnitsPkg(_lisp);
+    adapt::AdaptExposer_O AdaptPkg(_lisp);
+    chem::ChemExposer_O ChemPkg(_lisp);
+//    kinematics::KinematicsExposer_O KinPkg(_lisp);
+    lispHolder.startup(argc, argv, "CLASP"); // was "CANDO_APP"
+    _lisp->installPackage(&ClbindPkg);
+    _lisp->installPackage(&llvmopkg);
+    _lisp->installPackage(&cffipkg);
+    _lisp->installPackage(&GcToolsPkg);
+    _lisp->installPackage(&SocketsPkg);
+    _lisp->installPackage(&ServeEventPkg);
+    _lisp->installPackage(&AsttoolingPkg);
+    _lisp->installPackage(&GeomPkg);
+    _lisp->installPackage(&UnitsPkg);
+    _lisp->installPackage(&AdaptPkg);
+    _lisp->installPackage(&ChemPkg);
+#else
     clbind::ClbindExposer ClbindPkg(_lisp);
     llvmo::LlvmoExposer llvmopkg(_lisp);
     cffi::CffiExposer cffipkg(_lisp);
@@ -99,7 +126,8 @@ int startup(int argc, char *argv[], bool &mpiEnabled, int &mpiRank, int &mpiSize
     _lisp->installPackage(&AdaptPkg);
     _lisp->installPackage(&ChemPkg);
 //    _lisp->installPackage(&KinPkg);
-
+#endif
+    
 #ifdef USE_MPI
     mpip::MpiExposer TheMpiPkg(_lisp);
     _lisp->installPackage(&TheMpiPkg);

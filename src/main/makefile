@@ -142,9 +142,9 @@ compile-commands:
 compile-commands-rest:
 	bjam -j$(PJOBS) toolset=$(TOOLSET) link=$(LINK) program=cando gc=mps-prep release -n -a |tee >bjam.out
 	-install -d $(CLASP_APP_RESOURCES_DIR)/build-databases
-	clasp_boehm_o -f bclasp \
+	$(CLASP) -f bclasp \
 		-l $(CLASP_HOME)/src/common/build-json.lisp \
-		-e "(build-json:build-db \"bjam.out\" \"clasp_compile_commands\")" \
+		-e "(build-json:build-db \"bjam.out\" \"cando_compile_commands\")" \
 		-e "(quit)"
 
 mps-interface-prep:
@@ -156,29 +156,14 @@ mps-interface-prep:
 
 mps-interface-run:
 	make compile-commands
-	clasp_boehmdc_o -f bclasp -e "(require :clasp-analyzer)" \
-	-e "(defparameter *db* (clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\"))" \
-        -e "(clasp-analyzer:search/generate-code *db*)"
-
-mps-interface-run-boehm:
-	clasp_boehm_o -f bclasp  \
+	$(CLASP) -f bclasp \
 		-e "(require :clasp-analyzer)" \
-		-e "(time (clasp-analyzer:search/generate-code (clasp-analyzer:setup-clasp-analyzer-compilation-tool-database \"app-resources:build-databases;clasp_compile_commands.json\")))" \
+		-e "(time (clasp-analyzer:search/generate-code (clasp-analyzer:setup-clasp-analyzer-compilation-tool-database \"app-resources:build-databases;cando_compile_commands.json\")))" \
 		-e "(quit)"
-
-mps-interface-test:
-	make compile-commands
-	clasp_boehmdc_o -f bclasp -e "(require :clasp-analyzer)" \
-	-e "(clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\")" \
-        -e "(clasp-analyzer:serial-search-all-then-generate-code-and-quit :test (clasp-analyzer::lsel clasp-analyzer:$$\* \".*mol2\.cc$$\"))"
-
-mps-interface-run-cclasp:
-	make compile-commands
-	clasp_boehm_o -f bclasp -e "(require :clasp-analyzer)" \
-	-e "(defparameter *db* (clasp-analyzer:load-compilation-database \"app-resources:build-databases;cando_compile_commands.json\"))" \
-        -e "(clasp-analyzer:search/generate-code *db*)"
-
 
 mps-interface:
 	make mps-interface-prep
 	make mps-interface-run
+
+mps-interface-mps:
+	(export CLASP=clasp_mps_o; make mps-interface-run)

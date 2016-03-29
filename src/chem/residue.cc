@@ -223,7 +223,7 @@ void	Residue_O::fields( core::Record_sp node )
     { _BLOCK_TRACE("Building bond list");
       for ( aPPCur=this->getContents().begin();
             aPPCur != this->getContents().end(); aPPCur++ ) {
-        a = downcast<Atom_O>(*aPPCur);
+        a = (*aPPCur).as<Atom_O>();
         a->addUniqueIntraResidueBondCopiesToBondList(bondList);
       }
     }
@@ -377,7 +377,7 @@ Atom_sp				aTemp;
     LOG(BF("Residue_O::removeAtomsDeleteBonds| Removing a:%x from r:%x") % &a % this  );
     for ( atom=this->getContents().begin();
 		atom != this->getContents().end(); atom++ ) {
-	aTemp = downcast<Atom_O>(*atom);
+      aTemp = (*atom).as<Atom_O>();
 	if ( aTemp == a ) {
 	    this->eraseContent(atom);
 	    aTemp->removeAllBonds();
@@ -415,7 +415,7 @@ Atom_sp				aTemp;
     LOG(BF("Residue_O::removeAtomsDontDeleteBonds| Removing a:%x from r:%x") % &a % this  );
     for ( atom=this->getContents().begin();
 		atom != this->getContents().end(); atom++ ) {
-	aTemp = downcast<Atom_O>(*atom);
+      aTemp = (*atom).as<Atom_O>();
 	LOG(BF("Looking for atom name: %s in residue with name: %s") % a->getName().c_str() % aTemp->getName().c_str()  );
 	if ( aTemp == a ) {
 	LOG(BF("     erasing") );
@@ -615,7 +615,7 @@ contentIterator	aPPCur;
 Atom_sp				a;
     for ( aPPCur=this->getContents().begin();
 		aPPCur != this->getContents().end(); aPPCur++ ) {
-	a = downcast<Atom_O>(*aPPCur);
+      a = (*aPPCur).as<Atom_O>();
 	a->addUniqueIntraResidueBondsToVectorBonds(bonds);
     }
     return bonds;
@@ -673,7 +673,7 @@ contentIterator	aPPCur;
 Atom_sp				a;
     for ( aPPCur=this->getContents().begin();
 		aPPCur != this->getContents().end(); aPPCur++ ) {
-	a = downcast<Atom_O>(*aPPCur);
+      a = (*aPPCur).as<Atom_O>();
 	if ( a->invalid() ) return true;
     }
     return false;
@@ -700,7 +700,7 @@ contentIterator	aPPCur;
 Atom_sp				a;
     for ( aPPCur=this->getContents().begin();
 		aPPCur != this->getContents().end(); aPPCur++ ) {
-	a = downcast<Atom_O>(*aPPCur);
+      a = (*aPPCur).as<Atom_O>();
 	a->setAnchorPos(a->getPosition());
 	a->setAnchorRestraintOn();
     }

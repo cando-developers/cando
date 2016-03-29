@@ -208,7 +208,7 @@ CL_DEFMETHOD     void SpanningLoop_O::setTop( Atom_sp c )
 CL_LISPIFY_NAME("getAtom");
 CL_DEFMETHOD     Atom_sp	SpanningLoop_O::getAtom()
     {
-	return downcast<Atom_O>(this->currentObject);
+      return (this->currentObject).as<Atom_O>();
     }
 
 CL_LISPIFY_NAME("advanceLoopAndProcess");

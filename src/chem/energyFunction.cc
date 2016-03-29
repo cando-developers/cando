@@ -1104,7 +1104,7 @@ void EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator
         if ( !restraint->isActive() ) goto CONT;
 	if ( restraint.isA<RestraintDihedral_O>() )
 	{
-	    RestraintDihedral_sp dih = downcast<RestraintDihedral_O>(restraint);
+          RestraintDihedral_sp dih = (restraint).as<RestraintDihedral_O>();
 	    EnergyImproperRestraint energyTerm;
             if ( activeAtoms.notnilp() &&
                  (!inAtomSet(activeAtoms,dih->getAtomA())
@@ -1129,7 +1129,7 @@ void EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator
 	    this->_ImproperRestraint->addTerm(energyTerm);
 	} else if ( restraint.isA<RestraintAnchor_O>() )
 	{
-	    RestraintAnchor_sp anchor = downcast<RestraintAnchor_O>(restraint);
+          RestraintAnchor_sp anchor = (restraint).as<RestraintAnchor_O>();
 	    EnergyAnchorRestraint	iterm;
 	    Vector3		anchorPos;
 	    Atom_sp a1 = anchor->getAtom();

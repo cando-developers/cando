@@ -400,7 +400,7 @@ core::XmlLoadArchive_sp	xml;
 
 xml = core::XmlLoadArchive_O::create();
     xml->parse(fn);
-    res = downcast<Structure_Old_List_O>(xml->get("structureList"));
+    res = (xml->get("structureList")).as<Structure_Old_List_O>();
     return res;
 }
 #endif

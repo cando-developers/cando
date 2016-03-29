@@ -44,10 +44,11 @@ namespace chem
     FORWARD(Matter);
     typedef core::Symbol_sp MatterName;
 
-    class ChemExposer : public core::Exposer
+    class ChemExposer_O : public core::Exposer_O
     {
+      LISP_CLASS(chem,ChemPkg,ChemExposer_O,"ChemExposer",core::Exposer_O);
     public:
-    ChemExposer(core::Lisp_sp lisp) : Exposer(lisp,ChemPkg,Chem_nicknames) {};
+    ChemExposer_O(core::Lisp_sp lisp) : Exposer_O(lisp,ChemPkg,Chem_nicknames) {};
         virtual void expose(core::Lisp_sp lisp, WhatToExpose what) const;
     };
 

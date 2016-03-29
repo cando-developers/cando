@@ -106,7 +106,7 @@ double	x,y,z,fx,fy,fz;
 Vector3	v;
     LOG(BF("parsing xml with localName=%s") % xml->getLocalName().c_str() );
     path = xml->getAttributeString("storagePath");
-    this->_Atom = downcast<chem::Atom_O>(parent->getContentForIdPath(path));
+    this->_Atom = (parent->getContentForIdPath(path)).as<chem::Atom_O>();
     ASSERTNOTNULL(this->_Atom);
     this->_CoordinateIndex = xml->getAttributeInt("coordinateIndex");
     x = xml->getAttributeDouble("x");
