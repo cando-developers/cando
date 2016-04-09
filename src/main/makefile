@@ -142,7 +142,7 @@ compile-commands:
 compile-commands-rest:
 	bjam -j$(PJOBS) toolset=$(TOOLSET) link=$(LINK) program=cando gc=mps-prep release -n -a |tee >bjam.out
 	-install -d $(CLASP_APP_RESOURCES_DIR)/build-databases
-	$(CLASP) -f bclasp \
+	clasp_boehmdc_o -f bclasp \
 		-l $(CLASP_HOME)/src/common/build-json.lisp \
 		-e "(build-json:build-db \"bjam.out\" \"cando_compile_commands\")" \
 		-e "(quit)"
@@ -156,7 +156,7 @@ mps-interface-prep:
 
 mps-interface-run:
 	make compile-commands
-	$(CLASP) -f bclasp \
+	clasp_boehmdc_o -f bclasp \
 		-e "(require :clasp-analyzer)" \
 		-e "(time (clasp-analyzer:search/generate-code (clasp-analyzer:setup-clasp-analyzer-compilation-tool-database \"app-resources:build-databases;cando_compile_commands.json\")))" \
 		-e "(quit)"
