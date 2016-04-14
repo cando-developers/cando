@@ -71,8 +71,8 @@ public:
 	string	className()	{ return "EnergyStretch"; };
 public:
 	TermStretch	term;
-        gc::Nilable<Atom_sp>		_Atom1;
-        gc::Nilable<Atom_sp>		_Atom2;
+        Atom_sp		_Atom1;
+        Atom_sp		_Atom2;
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
 	bool		_calcForce;
 	bool		_calcDiagonalHessian;

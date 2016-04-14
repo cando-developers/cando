@@ -110,8 +110,7 @@ impropers = IMPROPERS
 } LoopEnum;
 
 class Loop {
-
-private:
+public:
 	int				goal;
 	bool				initialized;
 	bool				done;

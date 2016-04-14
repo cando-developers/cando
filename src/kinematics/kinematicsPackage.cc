@@ -166,7 +166,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/instance.h>
 #include <clasp/core/metaobject.h>
 #include <clasp/core/null.h>
-#include <clasp/core/singleDispatchEffectiveMethodFunction.h>
 #include <clasp/core/singleDispatchGenericFunction.h>
 #include <clasp/core/specialForm.h>
 #include <clasp/core/lispVector.h>

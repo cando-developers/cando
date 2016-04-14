@@ -42,7 +42,7 @@ namespace chem
 
     class IndirectAtomCoordinateReference
     {
-    private:
+    public:
 	Atom_sp	_SharedAtom;
 	uint	_IndexTimes3;
     public:
