@@ -103,11 +103,7 @@ class	InteractionProblem
 public:
     string _Message;
 	InteractionProblemType	_Type;
-gc::Nilable<Atom_sp>		_Atom1;
-gc::Nilable<Atom_sp>		_Atom2;
-gc::Nilable<Atom_sp>		_Atom3;
-gc::Nilable<Atom_sp>		_Atom4;
-
+        core::List_sp _Atoms;
 	string	message() { return this->_Message;};
 	InteractionProblem() {};
 	virtual ~InteractionProblem() throw() {};

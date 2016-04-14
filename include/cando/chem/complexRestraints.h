@@ -102,7 +102,7 @@ private: // instance variables
 
 private:
     static bool	_LazyInitializedSmarts;
-    static ChemInfo_sp	_AtomExoToSixMemberedRing;
+//    static ChemInfo_sp	_AtomExoToSixMemberedRing;
 private:
     void lazyInitializeSmarts();
 

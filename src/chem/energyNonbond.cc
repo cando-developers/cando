@@ -50,10 +50,6 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
-    EnergyNonbond::EnergyNonbond()
-    {
-    }
-
 
 #ifdef XML_ARCHIVE
     void	EnergyNonbond::archive(core::ArchiveP node)

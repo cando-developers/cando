@@ -66,7 +66,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
-static chem::TypeAssignmentRules_sp	sybylRules;
+chem::TypeAssignmentRules_sp	sybylRules;
 
 
 class	Mol2File 

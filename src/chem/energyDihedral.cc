@@ -46,17 +46,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-    EnergyDihedral::EnergyDihedral()
-{
-  this->_Atom1 = _Nil<core::T_O>();
-  this->_Atom2 = _Nil<core::T_O>();
-  this->_Atom3 = _Nil<core::T_O>();
-  this->_Atom4 = _Nil<core::T_O>();
-}
-
-EnergyDihedral::~EnergyDihedral()
-{
-}
 
 #ifdef XML_ARCHIVE
     void	EnergyDihedral::archive(core::ArchiveP node)
@@ -495,14 +484,11 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 	    if ( EraseLinearDihedral == 0.0 ) {
 	       LOG(BF("Found linear dihedral") );
 	       InteractionProblem problem;
-	       problem._Atom1 = di->_Atom1;
-	       problem._Atom2 = di->_Atom2;
-	       problem._Atom3 = di->_Atom3;
-	       problem._Atom4 = di->_Atom4;
+               problem._Atoms = core::Cons_O::createList(di->_Atom1,di->_Atom2,di->_Atom3,di->_Atom4);
 	       problem._Message = "Found linear dihedral";
 	       problem._Type = linearDihedral;
 	       LOG(BF("%s") % problem._Message.c_str()  );
-	       throw(problem);
+               SIMPLE_ERROR(BF("Found linear dihedral"));
 	    }
 	    #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
 		di->_calcForce = calcForce;

@@ -117,90 +117,89 @@ public:
 
 	Matter_sp			top;
 	Matter_sp			currentObject;
-
 			// Maintain loop stack
 
-	int				curSubLoop;
-	Matter_sp			subLoopTop[MAXLOOPS];
-	Matter_O::contentIterator	subLoopIteratorCur[MAXLOOPS];
-	Matter_O::contentIterator	subLoopIteratorEnd[MAXLOOPS];
+  int				curSubLoop;
+  Matter_sp			subLoopTop[MAXLOOPS];
+  Matter_O::contentIterator	subLoopIteratorCur[MAXLOOPS];
+  Matter_O::contentIterator	subLoopIteratorEnd[MAXLOOPS];
 			// Maintain indices for bonds/angles/dihedrals/impropers
-	int				iIndex0;
-	int				iIndex1;
-	int				iIndex2;
-	int				iIndex3;
-	Atom_sp				atoms[4];
-	BondOrder			bondOrder;
-	Bond_sp				_Bond;
+  int				iIndex0;
+  int				iIndex1;
+  int				iIndex2;
+  int				iIndex3;
+  Atom_sp				atoms[4];
+  BondOrder			bondOrder;
+  Bond_sp				_Bond;
 
 			// Spanning tree stuff
-	Atom_sp				aCurSpan;
-	Atom_sp				aLastSpan;
-	int				iSeenId;
-	int				iMaxDistanceFromRoot;
-	int				iInvisibleCollisions;
-	Atom_sp				aLastCollision;
-	Atom_sp				aInvisibleAtom;
-	AtomFlags			fVisibilityFlags;
-	AtomFlags			fVisibleFlagsOn;
-	AtomFlags			fVisibleFlagsOff;
-	int				iTempInt;
+  Atom_sp				aCurSpan;
+  Atom_sp				aLastSpan;
+  int				iSeenId;
+  int				iMaxDistanceFromRoot;
+  int				iInvisibleCollisions;
+  Atom_sp				aLastCollision;
+  Atom_sp				aInvisibleAtom;
+  AtomFlags			fVisibilityFlags;
+  AtomFlags			fVisibleFlagsOn;
+  AtomFlags			fVisibleFlagsOff;
+  int				iTempInt;
 
-    gctools::Vec0<BondList_sp>		_Impropers;
-	uint				_ImproperIndex;
+  gctools::Vec0<BondList_sp>		_Impropers;
+  uint				_ImproperIndex;
 
-	void	clearAtomIndices();
-	bool	nextObjectInAtom();
+  void	clearAtomIndices();
+  bool	nextObjectInAtom();
 
-	void	pushSubLoop(Matter_sp c);
-	void	popSubLoop()	{this->curSubLoop--;};
-	bool	noSubLoops()	{return(this->curSubLoop<0);};
-	Matter_sp getCurSubLoopTop()	{return(this->subLoopTop[this->curSubLoop]);};
-	Matter_sp getCurSubLoopIteratorCur(){return(*(this->subLoopIteratorCur[this->curSubLoop]));};
-	void	curSubLoopAdvanceIteratorCur(){this->subLoopIteratorCur[this->curSubLoop]++;};
-	bool	curSubLoopIteratorDone(){return(this->subLoopIteratorCur[this->curSubLoop]>=this->subLoopIteratorEnd[this->curSubLoop]);};
+  void	pushSubLoop(Matter_sp c);
+  void	popSubLoop()	{this->curSubLoop--;};
+  bool	noSubLoops()	{return(this->curSubLoop<0);};
+  Matter_sp getCurSubLoopTop()	{return(this->subLoopTop[this->curSubLoop]);};
+  Matter_sp getCurSubLoopIteratorCur(){return(*(this->subLoopIteratorCur[this->curSubLoop]));};
+  void	curSubLoopAdvanceIteratorCur(){this->subLoopIteratorCur[this->curSubLoop]++;};
+  bool	curSubLoopIteratorDone(){return(this->subLoopIteratorCur[this->curSubLoop]>=this->subLoopIteratorEnd[this->curSubLoop]);};
 
-	bool		bLoopAtomVisible(Atom_sp a);
-	bool		bSpanAtomVisible(Atom_sp a, bool* b);
-	Atom_sp		nextSpanningAtom();
-	Matter_sp  nextHierarchyMatter();
+  bool		bLoopAtomVisible(Atom_sp a);
+  bool		bSpanAtomVisible(Atom_sp a, bool* b);
+  Atom_sp		nextSpanningAtom();
+  Matter_sp  nextHierarchyMatter();
 
-public:
+ public:
 
-		Loop();
-		Loop( Matter_sp cont, int over );
+  Loop();
+  Loop( Matter_sp cont, int over );
 
-	void	loopTopGoal( Matter_sp cont, int over );
+  void	loopTopGoal( Matter_sp cont, int over );
 
-	void 	buildListOfImpropersCenteredOn(Atom_sp a);
+  void 	buildListOfImpropersCenteredOn(Atom_sp a);
 
-	void	loopTopAtomGoal( Atom_sp cont, int goal ) { loopTopGoal( cont, goal ); }
-	void	loopTopResidueGoal( Residue_sp cont, int goal ) { loopTopGoal( cont, goal ); }
-	void	loopTopMoleculeGoal( Molecule_sp cont, int goal ) { loopTopGoal( cont, goal ); }
-	void	loopTopAggregateGoal( Aggregate_sp cont, int goal ) { loopTopGoal( cont, goal ); }
+  void	loopTopAtomGoal( Atom_sp cont, int goal ) { loopTopGoal( cont, goal ); }
+  void	loopTopResidueGoal( Residue_sp cont, int goal ) { loopTopGoal( cont, goal ); }
+  void	loopTopMoleculeGoal( Molecule_sp cont, int goal ) { loopTopGoal( cont, goal ); }
+  void	loopTopAggregateGoal( Aggregate_sp cont, int goal ) { loopTopGoal( cont, goal ); }
 
-	void		advanceLoop();
+  void		advanceLoop();
 			// Return TRUE as long as there is something to return
-	bool		advanceLoopAndProcess();
+  bool		advanceLoopAndProcess();
 			// Return TRUE as long as there is something to return
-	bool		advance() { return this->advanceLoopAndProcess(); };
+  bool		advance() { return this->advanceLoopAndProcess(); };
 
-	Matter_sp	getMatter() { return this->currentObject; }
-	Bond_sp		getBond() const { return this->_Bond;};
-	Atom_sp		getAtom() { return this->currentObject.as<Atom_O>(); }
-	Residue_sp	getResidue() { return this->currentObject.as<Residue_O>(); }
-	Molecule_sp	getMolecule() { return this->currentObject.as<Molecule_O>(); }
-	void		getBond( Atom_sp *a1, Atom_sp *a2, BondOrder* o ) {*a1=this->atoms[0];*a2=this->atoms[1];*o=this->bondOrder;}
-	Atom_sp		getBondA1() { return this->atoms[0]; };
-	Atom_sp		getBondA2() { return this->atoms[1]; };
-	Atom_sp		getAtom1() { return this->atoms[0]; };
-	Atom_sp		getAtom2() { return this->atoms[1]; };
-	Atom_sp		getAtom3() { return this->atoms[2]; };
-	Atom_sp		getAtom4() { return this->atoms[3]; };
-	BondOrder	getBondOrder() { return this->bondOrder; };
-	void		getAngle( Atom_sp* a1, Atom_sp* a2, Atom_sp* a3 ) {*a1=this->atoms[0];*a2=this->atoms[1];*a3=this->atoms[2];};
-	void		getProper( Atom_sp* a1, Atom_sp* a2, Atom_sp* a3, Atom_sp* a4 ) {*a1=this->atoms[0];*a2=this->atoms[1];*a3=this->atoms[2];*a4=this->atoms[3];};
-	void		getImproper( Atom_sp* a1, Atom_sp* a2, Atom_sp* a3, Atom_sp* a4 ) {*a1=this->atoms[0];*a2=this->atoms[1];*a3=this->atoms[2];*a4=this->atoms[3];};
+  Matter_sp	getMatter() { return this->currentObject; }
+  Bond_sp		getBond() const { return this->_Bond;};
+  Atom_sp		getAtom() { return this->currentObject.as<Atom_O>(); }
+  Residue_sp	getResidue() { return this->currentObject.as<Residue_O>(); }
+  Molecule_sp	getMolecule() { return this->currentObject.as<Molecule_O>(); }
+  void		getBond( Atom_sp *a1, Atom_sp *a2, BondOrder* o ) {*a1=this->atoms[0];*a2=this->atoms[1];*o=this->bondOrder;}
+  Atom_sp		getBondA1() { return this->atoms[0]; };
+  Atom_sp		getBondA2() { return this->atoms[1]; };
+  Atom_sp		getAtom1() { return this->atoms[0]; };
+  Atom_sp		getAtom2() { return this->atoms[1]; };
+  Atom_sp		getAtom3() { return this->atoms[2]; };
+  Atom_sp		getAtom4() { return this->atoms[3]; };
+  BondOrder	getBondOrder() { return this->bondOrder; };
+  void		getAngle( Atom_sp* a1, Atom_sp* a2, Atom_sp* a3 ) {*a1=this->atoms[0];*a2=this->atoms[1];*a3=this->atoms[2];};
+  void		getProper( Atom_sp* a1, Atom_sp* a2, Atom_sp* a3, Atom_sp* a4 ) {*a1=this->atoms[0];*a2=this->atoms[1];*a3=this->atoms[2];*a4=this->atoms[3];};
+  void		getImproper( Atom_sp* a1, Atom_sp* a2, Atom_sp* a3, Atom_sp* a4 ) {*a1=this->atoms[0];*a2=this->atoms[1];*a3=this->atoms[2];*a4=this->atoms[3];};
 
 
 };

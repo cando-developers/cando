@@ -46,17 +46,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-    EnergyStretch::EnergyStretch( )
-    {
-      this->_Atom1 = _Nil<core::T_O>();
-      this->_Atom2 = _Nil<core::T_O>();
-    }
-
-    EnergyStretch::~EnergyStretch()
-    {
-    }
-
-
 
 #if XML_ARCHIVE
     void	EnergyStretch::archive(core::ArchiveP node)

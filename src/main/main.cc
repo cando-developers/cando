@@ -55,6 +55,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/geomPackage.h>
 #include <cando/units/unitsPackage.h>
 #include <cando/adapt/adaptPackage.h>
+#include <cando/chem/readAmberparameters.h>
 #include <cando/chem/chemPackage.h>
 //#include <cando/kinematics/kinematicsPackage.h>
 
@@ -164,6 +165,15 @@ core__pathname_translations(core::Str_O::create("source-main"), _lisp->_true(), 
 }
 
 int main(int argc, char *argv[]) { // Do not touch debug log until after MPI init
+  if (std::getenv("NOASLR")!=NULL) {
+    srand(1);
+    printf("%s:%d setting srand(1)\n", __FILE__, __LINE__ );
+    printf("%s:%d sizeof(T_O) = %d\n", __FILE__, __LINE__, sizeof(core::T_O));
+    printf("%s:%d sizeof(Cons_O) = %d\n", __FILE__, __LINE__, sizeof(core::Cons_O));
+    printf("%s:%d sizeof_with_header<chem::ReadAmberParameters_O>() = %d\n", __FILE__, __LINE__, gctools::sizeof_with_header<chem::ReadAmberParameters_O>());
+    printf("   Press enter to continue\n");
+    std::cin.get();
+  }
 // Set the stack size
   rlimit rl;
   rl.rlim_max = 16*1024*1024;

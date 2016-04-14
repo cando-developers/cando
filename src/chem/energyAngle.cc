@@ -46,18 +46,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-    EnergyAngle::EnergyAngle()
-{
-  this->_Atom1 = _Nil<core::T_O>();
-  this->_Atom2 = _Nil<core::T_O>();
-  this->_Atom3 = _Nil<core::T_O>();
-}
-
-
-EnergyAngle::~EnergyAngle()
-{
-}
-
 #ifdef XML_ARCHIVE
     void	EnergyAngle::archive(core::ArchiveP node)
 {
@@ -402,10 +390,8 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 		InteractionProblem prob;
 		prob._Type = linearAngle;
 		prob._Message = "Linear angle";
-		prob._Atom1 = ai->_Atom1;
-		prob._Atom2 = ai->_Atom2;
-		prob._Atom3 = ai->_Atom3;
-		throw(prob);
+                prob._Atoms = core::Cons_O::createList(ai->_Atom1,ai->_Atom2,ai->_Atom3);
+		SIMPLE_ERROR(BF("There is a linear angle"));
 	    }
 	    #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
 		ai->_calcForce = calcForce;

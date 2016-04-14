@@ -52,10 +52,13 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/residue.h>
 #include <cando/chem/atom.h>
 
-
+#include <cando/chem/typeAssignmentRules.fwd.h>
 #include <cando/chem/chemPackage.h>
 
 namespace chem {
+
+  extern chem::TypeAssignmentRules_sp	sybylRules;
+
 
 struct AtomInfo {
   Atom_sp		_Atom;

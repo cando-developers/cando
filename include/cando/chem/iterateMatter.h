@@ -61,7 +61,7 @@ static void lisp_initGlobals(core::Lisp_sp lisp);
 public:
 //void	archive(core::ArchiveP node);
 	void	initialize();
-protected:
+public:
 	Matter_sp _Top;
 	int	_Goal;
 	Loop	_Loop;

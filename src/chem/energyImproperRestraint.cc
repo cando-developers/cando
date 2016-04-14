@@ -47,19 +47,6 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
-    EnergyImproperRestraint::EnergyImproperRestraint()
-{
-  this->_Atom1 = _Nil<core::T_O>();
-  this->_Atom2 = _Nil<core::T_O>();
-  this->_Atom3 = _Nil<core::T_O>();
-  this->_Atom4 = _Nil<core::T_O>();
-}
-
-
-EnergyImproperRestraint::~EnergyImproperRestraint()
-{
-}
-
 #ifdef XML_ARCHIVE
     void	EnergyImproperRestraint::archive(core::ArchiveP node)
 {
@@ -347,14 +334,11 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 #include <cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
 	    if ( EraseLinearDihedral == 0.0 ) {
 	       InteractionProblem problem;
-	       problem._Atom1 = iri->_Atom1;
-	       problem._Atom2 = iri->_Atom2;
-	       problem._Atom3 = iri->_Atom3;
-	       problem._Atom4 = iri->_Atom4;
+               problem._Atoms = core::Cons_O::createList(iri->_Atom1,iri->_Atom2,iri->_Atom3,iri->_Atom4);
 	       problem._Message = "Found linear improper restraint";
 	       problem._Type = linearImproperRestraint;
 	       LOG(BF("%s") % problem._Message.c_str()  );
-	       throw(problem);
+	       SIMPLE_ERROR(BF("Found linear improper restraint"));
 	    }
 	    #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
 		iri->_calcForce = calcForce;

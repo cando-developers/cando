@@ -66,7 +66,7 @@ public:
 public:
 	TermAnchorRestraint	term;
 		// Variables
-        gc::Nilable<Atom_sp>      _Atom1;
+        Atom_sp      _Atom1;
 		// Threshold
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
 	bool		_calcForce;
@@ -74,7 +74,7 @@ public:
 	bool		_calcOffDiagonalHessian;
 #include <cando/chem/energy_functions/_AnchorRestraint_debugEvalDeclares.cc>
 #endif
-        gc::Nilable<Atom_sp>	getAtom() { return this->_Atom1; };
+        Atom_sp	getAtom() { return this->_Atom1; };
 	double		getXa() { return this->term.xa; };
 	double		getYa() { return this->term.ya; };
 	double		getZa() { return this->term.za; };

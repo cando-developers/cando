@@ -36,16 +36,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-    FixedNonbondRestraint::FixedNonbondRestraint()
-{
-  this->_FixedAtom = _Nil<core::T_O>();
-}
-
-FixedNonbondRestraint::~FixedNonbondRestraint()
-{
-}
-
-
 #ifdef XML_ARCHIVE
     void	FixedNonbondRestraint::archive(core::ArchiveP node)
 {

@@ -68,10 +68,10 @@ public:
 	string	className()	{ return "EnergyImproperRestraint"; };
 public:
 		// Variables
-        gc::Nilable<Atom_sp>      _Atom1;
-        gc::Nilable<Atom_sp>      _Atom2;
-        gc::Nilable<Atom_sp>      _Atom3;
-        gc::Nilable<Atom_sp>      _Atom4;
+        Atom_sp      _Atom1;
+        Atom_sp      _Atom2;
+        Atom_sp      _Atom3;
+        Atom_sp      _Atom4;
 		// Threshold
 	bool		_AboveThreshold;
 	double		_AboveThreshold_Phi;
@@ -83,10 +83,10 @@ public:
 #include <cando/chem/energy_functions/_ImproperRestraint_debugEvalDeclares.cc>
 #endif
 
-        gc::Nilable<Atom_sp>	getAtom1() { return this->_Atom1; };
-        gc::Nilable<Atom_sp>	getAtom2() { return this->_Atom2; };
-        gc::Nilable<Atom_sp>	getAtom3() { return this->_Atom3; };
-        gc::Nilable<Atom_sp>	getAtom4() { return this->_Atom4; };
+        Atom_sp	getAtom1() { return this->_Atom1; };
+        Atom_sp	getAtom2() { return this->_Atom2; };
+        Atom_sp	getAtom3() { return this->_Atom3; };
+        Atom_sp	getAtom4() { return this->_Atom4; };
 	double	getAngle();
 public:
 //	void	archive(core::ArchiveP node);
@@ -94,8 +94,6 @@ public:
 	adapt::QDomNode_sp	asXml();
 	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
 
-    EnergyImproperRestraint();
-	virtual ~EnergyImproperRestraint();
 };
 
 
