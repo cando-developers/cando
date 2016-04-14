@@ -42,6 +42,7 @@ namespace chem
 
     class IndirectAtomCoordinateReference
     {
+      FRIEND_GC_INTERFACE();
     private:
 	Atom_sp	_SharedAtom;
 	uint	_IndexTimes3;

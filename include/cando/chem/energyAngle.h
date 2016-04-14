@@ -79,9 +79,9 @@ public:
                 // Parameters
 	TermAngle	term;
                 // Variables
-        gc::Nilable<Atom_sp>      	_Atom1;
-        gc::Nilable<Atom_sp>    	_Atom2;
-        gc::Nilable<Atom_sp>		_Atom3;
+        Atom_sp      	_Atom1;
+        Atom_sp    	_Atom2;
+        Atom_sp		_Atom3;
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
 	bool		_calcForce;
 	bool		_calcDiagonalHessian;
@@ -93,9 +93,9 @@ public:
 //	void	archive( core::ArchiveP node );
 
 public:
-        gc::Nilable<Atom_sp>	getAtom1() { return this->_Atom1; };
-        gc::Nilable<Atom_sp>	getAtom2() { return this->_Atom2; };
-        gc::Nilable<Atom_sp>	getAtom3() { return this->_Atom3; };
+        Atom_sp	getAtom1() { return this->_Atom1; };
+        Atom_sp	getAtom2() { return this->_Atom2; };
+        Atom_sp	getAtom3() { return this->_Atom3; };
 	double	getT0()	{return this->term.t0;};
 	double	getT();
 	double	getTheta() {return this->getT();};
@@ -109,8 +109,6 @@ public:
 					AtomTable_sp	atomTable );
         void defineFrom( FFAngle_sp term, EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, double scale);
 	void defineMissing( EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3);
-    EnergyAngle();
-	virtual ~EnergyAngle();
 };
 
 

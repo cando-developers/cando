@@ -31,6 +31,14 @@ boehm-release-cxx-a:
 boehm-debug-cxx:
 	$(BUILD) toolset=$(TOOLSET) -j$(PJOBS) link=$(LINK) program=cando gc=boehm --prefix=$(EXECS)/boehm/debug debug cando_install ;
 
+
+mps-release-cxx:
+	$(BUILD) toolset=$(TOOLSET) -j$(PJOBS) link=$(LINK) program=cando gc=mps --prefix=$(EXECS)/mps/release release cando_install;
+mps-release-cxx-a:
+	$(BUILD) toolset=$(TOOLSET) -j$(PJOBS) link=$(LINK) program=cando gc=mps --prefix=$(EXECS)/mps/release release cando_install -a ;
+mps-debug-cxx:
+	$(BUILD) toolset=$(TOOLSET) -j$(PJOBS) link=$(LINK) program=cando gc=mps --prefix=$(EXECS)/mps/debug debug cando_install ;
+
 executable-symlinks:
 	ln -sf $(EXECS)/boehm/release/bin/cando $(BINDIR)/cando_boehm_o
 	ln -sf $(EXECS)/boehmdc/release/bin/cando $(BINDIR)/cando_boehmdc_o

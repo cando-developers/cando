@@ -49,19 +49,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-    EnergyChiralRestraint::EnergyChiralRestraint()
-{
-  this->_Atom1 = _Nil<core::T_O>();
-  this->_Atom2 = _Nil<core::T_O>();
-  this->_Atom3 = _Nil<core::T_O>();
-  this->_Atom4 = _Nil<core::T_O>();
-}
-
-EnergyChiralRestraint::~EnergyChiralRestraint()
-{
-}
-
-
 #ifdef XML_ARCHIVE
     void	EnergyChiralRestraint::archive(core::ArchiveP node)
 {

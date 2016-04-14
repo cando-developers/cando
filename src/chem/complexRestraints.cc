@@ -222,15 +222,16 @@ void	RestrainedPiBond_O::fillRestraints(Residue_sp residue)
 
 
 bool RestrainedExoCyclicAtom_O::_LazyInitializedSmarts = false;
-ChemInfo_sp RestrainedExoCyclicAtom_O::_AtomExoToSixMemberedRing;
+SYMBOL_EXPORT_SC_(ChemPkg,STARAtomExoToSixMemberedRingSTAR);
 
 void	RestrainedExoCyclicAtom_O::lazyInitializeSmarts()
 {_OF();
     if ( !RestrainedExoCyclicAtom_O::_LazyInitializedSmarts )
     {
 	RestrainedExoCyclicAtom_O::_LazyInitializedSmarts = true;
-	RestrainedExoCyclicAtom_O::_AtomExoToSixMemberedRing = ChemInfo_O::create();
-	bool success = RestrainedExoCyclicAtom_O::_AtomExoToSixMemberedRing->compileSmarts("[*]9[*]1[*]2[*]3[*]4[*]5[*]6[?9]");
+        ChemInfo_sp atomExoToSixMemberedRing = ChemInfo_O::create();
+	bool success = atomExoToSixMemberedRing->compileSmarts("[*]9[*]1[*]2[*]3[*]4[*]5[*]6[?9]");
+        chem::_sym_STARAtomExoToSixMemberedRingSTAR->defparameter(atomExoToSixMemberedRing);
 	if ( !success )
 	{
 	    SIMPLE_ERROR(BF("Error compiling SMARTS code for _AtomExoToSixMemberedRing"));
@@ -283,8 +284,9 @@ void RestrainedExoCyclicAtom_O::fillRestraints(Residue_sp residue )
 	SIMPLE_ERROR(BF("Residue(%s) doesn't have atom with name(%s)") % residue->description() % this->_ExoCyclicAtomName );
     }
     Atom_sp exoCyclicAtom = residue->atomWithName(this->_ExoCyclicAtomName);
-    RestrainedExoCyclicAtom_O::_AtomExoToSixMemberedRing->matches(exoCyclicAtom);
-    ChemInfoMatch_sp match = RestrainedExoCyclicAtom_O::_AtomExoToSixMemberedRing->getMatch();
+    ChemInfo_sp atomExoToSixMemberedRing = gctools::As<ChemInfo_sp>(chem::_sym_STARAtomExoToSixMemberedRingSTAR->symbolValue());
+    atomExoToSixMemberedRing->matches(exoCyclicAtom);
+    ChemInfoMatch_sp match = atomExoToSixMemberedRing->getMatch();
     if ( !match->matches() )
     {
 	SIMPLE_ERROR(BF("In residue(%s) the atom with name(%s) is not exo-cyclic to a six-membered ring") % residue->description() % _rep_(this->_ExoCyclicAtomName) );

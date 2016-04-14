@@ -1,9 +1,15 @@
 
-
 all:
+	make all-mps
+
+all-boehm:
 	make -C src/main boehm-release-cxx
 	make cando-lisp
 	make cando-data
+
+all-mps:
+	make -C src/main mps-release-cxx
+
 
 all-boehmdc:
 	make -C src/main boehmdc-release-cxx

@@ -85,10 +85,10 @@ public:
 //	string		_Type4;
 	bool		_Proper;
                 // Variables
-        gc::Nilable<Atom_sp>      _Atom1;
-        gc::Nilable<Atom_sp>      _Atom2;
-        gc::Nilable<Atom_sp>      _Atom3;
-        gc::Nilable<Atom_sp>      _Atom4;
+        Atom_sp      _Atom1;
+        Atom_sp      _Atom2;
+        Atom_sp      _Atom3;
+        Atom_sp      _Atom4;
 	double		_PhaseRad;
 	TermDihedral	term;
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
@@ -99,10 +99,10 @@ public:
 #endif
 	double		_CalculatedDihedralDeviation;
 
-        gc::Nilable<Atom_sp>		getAtom1() { return this->_Atom1; };
-        gc::Nilable<Atom_sp>		getAtom2() { return this->_Atom2; };
-        gc::Nilable<Atom_sp>		getAtom3() { return this->_Atom3; };
-        gc::Nilable<Atom_sp>		getAtom4() { return this->_Atom4; };
+        Atom_sp		getAtom1() { return this->_Atom1; };
+        Atom_sp		getAtom2() { return this->_Atom2; };
+        Atom_sp		getAtom3() { return this->_Atom3; };
+        Atom_sp		getAtom4() { return this->_Atom4; };
 	double		getDihedral();
 	double		getDihedralDeviation();
 	double		getCalculatedDihedralDeviation() { return this->_CalculatedDihedralDeviation;};
@@ -116,8 +116,6 @@ public:
         void defineFrom( int n, FFPtor_sp term, EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, EnergyAtom *ea4, double scale);
 	void defineMissingProper( EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, EnergyAtom *ea4);
         void defineFrom( int n, FFItor_sp term, EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, EnergyAtom *ea4, double scale);
-    EnergyDihedral();
-	virtual ~EnergyDihedral();
 };
 
 

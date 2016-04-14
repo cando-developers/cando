@@ -10221,8 +10221,8 @@ public:
  {    variable_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::EnergyStretch),term.r0), "term.r0" }, // public: (T T) fixable: NIL good-name: T
  {    variable_field, ctype_int, sizeof(int), offsetof(SAFE_TYPE_MACRO(chem::EnergyStretch),term.I1), "term.I1" }, // public: (T T) fixable: NIL good-name: T
  {    variable_field, ctype_int, sizeof(int), offsetof(SAFE_TYPE_MACRO(chem::EnergyStretch),term.I2), "term.I2" }, // public: (T T) fixable: NIL good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyStretch),_Atom1.theObject), "_Atom1.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyStretch),_Atom2.theObject), "_Atom2.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyStretch),_Atom1.theObject), "_Atom1.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyStretch),_Atom2.theObject), "_Atom2.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
 { container_kind, KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFStretch_O__, sizeof(gctools::GCVector_moveable<gctools::smart_ptr<chem::FFStretch_O>>), 0, "gctools::GCVector_moveable<gctools::smart_ptr<chem::FFStretch_O>>" },
 {  variable_array0, 0, 0, offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<gctools::smart_ptr<chem::FFStretch_O>>),_Data), "_Data" },
 {  variable_capacity, sizeof(gctools::smart_ptr<chem::FFStretch_O>), offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<gctools::smart_ptr<chem::FFStretch_O>>),_End), offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<gctools::smart_ptr<chem::FFStretch_O>>),_Capacity), NULL },
@@ -10241,8 +10241,8 @@ public:
 {  variable_array0, 0, 0, offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<chem::EnergyNonbond>),_Data), "_Data" },
 {  variable_capacity, sizeof(chem::EnergyNonbond), offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<chem::EnergyNonbond>),_End), offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<chem::EnergyNonbond>),_Capacity), NULL },
  {    variable_field, ctype__Bool, sizeof(_Bool), offsetof(SAFE_TYPE_MACRO(chem::EnergyNonbond),_Is14), "_Is14" }, // public: (T) fixable: NIL good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyNonbond),_Atom1.theObject), "_Atom1.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyNonbond),_Atom2.theObject), "_Atom2.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyNonbond),_Atom1.theObject), "_Atom1.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyNonbond),_Atom2.theObject), "_Atom2.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
  {    variable_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::EnergyNonbond),_A), "_A" }, // public: (T) fixable: NIL good-name: T
  {    variable_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::EnergyNonbond),_C), "_C" }, // public: (T) fixable: NIL good-name: T
  {    variable_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::EnergyNonbond),_Charge1), "_Charge1" }, // public: (T) fixable: NIL good-name: T
@@ -10321,7 +10321,7 @@ public:
 { container_kind, KIND_GCVECTOR_gctools__GCVector_moveable_chem__FixedNonbondRestraint_, sizeof(gctools::GCVector_moveable<chem::FixedNonbondRestraint>), 0, "gctools::GCVector_moveable<chem::FixedNonbondRestraint>" },
 {  variable_array0, 0, 0, offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<chem::FixedNonbondRestraint>),_Data), "_Data" },
 {  variable_capacity, sizeof(chem::FixedNonbondRestraint), offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<chem::FixedNonbondRestraint>),_End), offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<chem::FixedNonbondRestraint>),_Capacity), NULL },
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::FixedNonbondRestraint),_FixedAtom.theObject), "_FixedAtom.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::FixedNonbondRestraint),_FixedAtom.theObject), "_FixedAtom.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
  {    variable_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::FixedNonbondRestraint),_FixedCharge), "_FixedCharge" }, // public: (T) fixable: NIL good-name: T
  {    variable_field, ctype_unsigned_int, sizeof(unsigned int), offsetof(SAFE_TYPE_MACRO(chem::FixedNonbondRestraint),_FixedType), "_FixedType" }, // public: (T) fixable: NIL good-name: T
 { container_kind, KIND_GCVECTOR_gctools__GCVector_moveable_gctools__smart_ptr_chem__FFVdw_O__, sizeof(gctools::GCVector_moveable<gctools::smart_ptr<chem::FFVdw_O>>), 0, "gctools::GCVector_moveable<gctools::smart_ptr<chem::FFVdw_O>>" },
@@ -10373,10 +10373,10 @@ public:
 {  variable_array0, 0, 0, offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<chem::EnergyDihedral>),_Data), "_Data" },
 {  variable_capacity, sizeof(chem::EnergyDihedral), offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<chem::EnergyDihedral>),_End), offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<chem::EnergyDihedral>),_Capacity), NULL },
  {    variable_field, ctype__Bool, sizeof(_Bool), offsetof(SAFE_TYPE_MACRO(chem::EnergyDihedral),_Proper), "_Proper" }, // public: (T) fixable: NIL good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyDihedral),_Atom1.theObject), "_Atom1.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyDihedral),_Atom2.theObject), "_Atom2.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyDihedral),_Atom3.theObject), "_Atom3.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyDihedral),_Atom4.theObject), "_Atom4.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyDihedral),_Atom1.theObject), "_Atom1.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyDihedral),_Atom2.theObject), "_Atom2.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyDihedral),_Atom3.theObject), "_Atom3.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyDihedral),_Atom4.theObject), "_Atom4.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
  {    variable_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::EnergyDihedral),_PhaseRad), "_PhaseRad" }, // public: (T) fixable: NIL good-name: T
  {    variable_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::EnergyDihedral),term.sinPhase), "term.sinPhase" }, // public: (T T) fixable: NIL good-name: T
  {    variable_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::EnergyDihedral),term.cosPhase), "term.cosPhase" }, // public: (T T) fixable: NIL good-name: T
@@ -10448,10 +10448,10 @@ public:
 { container_kind, KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyImproperRestraint_, sizeof(gctools::GCVector_moveable<chem::EnergyImproperRestraint>), 0, "gctools::GCVector_moveable<chem::EnergyImproperRestraint>" },
 {  variable_array0, 0, 0, offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<chem::EnergyImproperRestraint>),_Data), "_Data" },
 {  variable_capacity, sizeof(chem::EnergyImproperRestraint), offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<chem::EnergyImproperRestraint>),_End), offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<chem::EnergyImproperRestraint>),_Capacity), NULL },
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyImproperRestraint),_Atom1.theObject), "_Atom1.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyImproperRestraint),_Atom2.theObject), "_Atom2.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyImproperRestraint),_Atom3.theObject), "_Atom3.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyImproperRestraint),_Atom4.theObject), "_Atom4.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyImproperRestraint),_Atom1.theObject), "_Atom1.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyImproperRestraint),_Atom2.theObject), "_Atom2.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyImproperRestraint),_Atom3.theObject), "_Atom3.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyImproperRestraint),_Atom4.theObject), "_Atom4.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
  {    variable_field, ctype__Bool, sizeof(_Bool), offsetof(SAFE_TYPE_MACRO(chem::EnergyImproperRestraint),_AboveThreshold), "_AboveThreshold" }, // public: (T) fixable: NIL good-name: T
  {    variable_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::EnergyImproperRestraint),_AboveThreshold_Phi), "_AboveThreshold_Phi" }, // public: (T) fixable: NIL good-name: T
  {    variable_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::EnergyImproperRestraint),term.K), "term.K" }, // public: (T T) fixable: NIL good-name: T
@@ -10517,10 +10517,10 @@ public:
 { container_kind, KIND_GCVECTOR_gctools__GCVector_moveable_chem__EnergyChiralRestraint_, sizeof(gctools::GCVector_moveable<chem::EnergyChiralRestraint>), 0, "gctools::GCVector_moveable<chem::EnergyChiralRestraint>" },
 {  variable_array0, 0, 0, offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<chem::EnergyChiralRestraint>),_Data), "_Data" },
 {  variable_capacity, sizeof(chem::EnergyChiralRestraint), offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<chem::EnergyChiralRestraint>),_End), offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<chem::EnergyChiralRestraint>),_Capacity), NULL },
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyChiralRestraint),_Atom1.theObject), "_Atom1.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyChiralRestraint),_Atom2.theObject), "_Atom2.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyChiralRestraint),_Atom3.theObject), "_Atom3.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyChiralRestraint),_Atom4.theObject), "_Atom4.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyChiralRestraint),_Atom1.theObject), "_Atom1.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyChiralRestraint),_Atom2.theObject), "_Atom2.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyChiralRestraint),_Atom3.theObject), "_Atom3.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyChiralRestraint),_Atom4.theObject), "_Atom4.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
  {    variable_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::EnergyChiralRestraint),term.K), "term.K" }, // public: (T T) fixable: NIL good-name: T
  {    variable_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::EnergyChiralRestraint),term.CO), "term.CO" }, // public: (T T) fixable: NIL good-name: T
  {    variable_field, ctype_int, sizeof(int), offsetof(SAFE_TYPE_MACRO(chem::EnergyChiralRestraint),term.I1), "term.I1" }, // public: (T T) fixable: NIL good-name: T
@@ -10554,8 +10554,8 @@ public:
 { container_kind, KIND_GCVECTOR_gctools__GCVector_moveable_chem__BeyondThresholdFixedNonbondRestraint_, sizeof(gctools::GCVector_moveable<chem::BeyondThresholdFixedNonbondRestraint>), 0, "gctools::GCVector_moveable<chem::BeyondThresholdFixedNonbondRestraint>" },
 {  variable_array0, 0, 0, offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<chem::BeyondThresholdFixedNonbondRestraint>),_Data), "_Data" },
 {  variable_capacity, sizeof(chem::BeyondThresholdFixedNonbondRestraint), offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<chem::BeyondThresholdFixedNonbondRestraint>),_End), offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<chem::BeyondThresholdFixedNonbondRestraint>),_Capacity), NULL },
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::BeyondThresholdFixedNonbondRestraint),_MobileAtom.theObject), "_MobileAtom.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::BeyondThresholdFixedNonbondRestraint),_FixedAtom.theObject), "_FixedAtom.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::BeyondThresholdFixedNonbondRestraint),_MobileAtom.theObject), "_MobileAtom.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::BeyondThresholdFixedNonbondRestraint),_FixedAtom.theObject), "_FixedAtom.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
  {    variable_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::BeyondThresholdFixedNonbondRestraint),_NonbondDistance), "_NonbondDistance" }, // public: (T) fixable: NIL good-name: T
 { container_kind, KIND_GCVECTOR_gctools__GCVector_moveable_core__OptionalArgument_, sizeof(gctools::GCVector_moveable<core::OptionalArgument>), 0, "gctools::GCVector_moveable<core::OptionalArgument>" },
 {  variable_array0, 0, 0, offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<core::OptionalArgument>),_Data), "_Data" },
@@ -10577,9 +10577,9 @@ public:
  {    variable_field, ctype_int, sizeof(int), offsetof(SAFE_TYPE_MACRO(chem::EnergyAngle),term.I1), "term.I1" }, // public: (T T) fixable: NIL good-name: T
  {    variable_field, ctype_int, sizeof(int), offsetof(SAFE_TYPE_MACRO(chem::EnergyAngle),term.I2), "term.I2" }, // public: (T T) fixable: NIL good-name: T
  {    variable_field, ctype_int, sizeof(int), offsetof(SAFE_TYPE_MACRO(chem::EnergyAngle),term.I3), "term.I3" }, // public: (T T) fixable: NIL good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyAngle),_Atom1.theObject), "_Atom1.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyAngle),_Atom2.theObject), "_Atom2.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyAngle),_Atom3.theObject), "_Atom3.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyAngle),_Atom1.theObject), "_Atom1.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyAngle),_Atom2.theObject), "_Atom2.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyAngle),_Atom3.theObject), "_Atom3.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
 { container_kind, KIND_GCVECTOR_gctools__GCVector_moveable_core__T_O_P_, sizeof(gctools::GCVector_moveable<core::T_O *>), 0, "gctools::GCVector_moveable<core::T_O *>" },
 {  variable_array0, 0, 0, offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<core::T_O *>),_Data), "_Data" },
 {  variable_capacity, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<core::T_O *>),_End), offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<core::T_O *>),_Capacity), NULL },
@@ -10633,7 +10633,7 @@ public:
  {    variable_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::EnergyAnchorRestraint),term.xa), "term.xa" }, // public: (T T) fixable: NIL good-name: T
  {    variable_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::EnergyAnchorRestraint),term.ya), "term.ya" }, // public: (T T) fixable: NIL good-name: T
  {    variable_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::EnergyAnchorRestraint),term.za), "term.za" }, // public: (T T) fixable: NIL good-name: T
- {    variable_field, POINTER_OFFSET, sizeof(NIL), offsetof(SAFE_TYPE_MACRO(chem::EnergyAnchorRestraint),_Atom1.theObject), "_Atom1.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
+ {    variable_field, POINTER_OFFSET, sizeof(core::T_O*), offsetof(SAFE_TYPE_MACRO(chem::EnergyAnchorRestraint),_Atom1.theObject), "_Atom1.theObject" }, // public: (T T) fixable: RAW-TAGGED-POINTER-FIX good-name: T
 { container_kind, KIND_GCVECTOR_gctools__GCVector_moveable_core__KeywordArgument_, sizeof(gctools::GCVector_moveable<core::KeywordArgument>), 0, "gctools::GCVector_moveable<core::KeywordArgument>" },
 {  variable_array0, 0, 0, offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<core::KeywordArgument>),_Data), "_Data" },
 {  variable_capacity, sizeof(core::KeywordArgument), offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<core::KeywordArgument>),_End), offsetof(SAFE_TYPE_MACRO(gctools::GCVector_moveable<core::KeywordArgument>),_Capacity), NULL },
@@ -19248,7 +19248,7 @@ static void* OBJ_DEALLOCATOR_table[] = {
  SMART_PTR_FIX(core::SNode_O::static_creator);
  SMART_PTR_FIX(core::LongFloat_O::static_creator);
  SMART_PTR_FIX(adapt::QDomNode_O::static_class_symbol);
- SMART_PTR_FIX(chem::RestrainedExoCyclicAtom_O::_AtomExoToSixMemberedRing);
+// SMART_PTR_FIX(chem::RestrainedExoCyclicAtom_O::_AtomExoToSixMemberedRing);
  SMART_PTR_FIX(chem::CandoDatabase_O::static_creator);
  SMART_PTR_FIX(geom::OVector2_O::static_class);
  SMART_PTR_FIX(chem::EnergyFixedNonbondRestraint_O::static_creator);
@@ -19751,7 +19751,7 @@ static void* OBJ_DEALLOCATOR_table[] = {
  SMART_PTR_FIX(chem::CDNode_O::static_creator);
  SMART_PTR_FIX(asttooling::MatcherDescriptor_O::static_class_symbol);
  SMART_PTR_FIX(llvmo::MCSubtargetInfo_O::static_class);
- SMART_PTR_FIX(chem::secondaryAmide);
+// SMART_PTR_FIX(chem::secondaryAmide);
  SMART_PTR_FIX(core::SmallMultimap_O::static_class);
  SMART_PTR_FIX(chem::OneMonomer_O::static_class);
  SMART_PTR_FIX(core::SynonymStream_O::static_class_symbol);

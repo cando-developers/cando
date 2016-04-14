@@ -65,7 +65,7 @@ public:
 public:
                 // Parameters
                 // Variables
-        gc::Nilable<Atom_sp>		_FixedAtom;
+        Atom_sp		_FixedAtom;
 	double		_FixedCharge;
 	uint		_FixedType;
 	Vector3		_FixedPosition;
@@ -76,7 +76,7 @@ public:
 	bool		_calcOffDiagonalHessian;
 #include <cando/chem/energy_functions/_FixedNonbond_debugEvalDeclares.cc>
 #endif
-        gc::Nilable<Atom_sp>	getFixedAtom() { return this->_FixedAtom; };
+        Atom_sp	getFixedAtom() { return this->_FixedAtom; };
 	double	getDistance();
 	bool	defineFrom(Atom_sp a);
 
@@ -87,17 +87,14 @@ public:
 	void	parseFromXmlRelativeToContainer( adapt::QDomNode_sp xml, Matter_sp parent );
 	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
 
-    FixedNonbondRestraint();
-	virtual ~FixedNonbondRestraint();
-
 };
 
 class BeyondThresholdFixedNonbondRestraint : public BeyondThresholdEnergyTerm 
 {
-    public:
-  gc::Nilable<Atom_sp>	_MobileAtom;
-  gc::Nilable<Atom_sp>	_FixedAtom;
-	double	_NonbondDistance;
+ public:
+  Atom_sp	_MobileAtom;
+  Atom_sp	_FixedAtom;
+  double	_NonbondDistance;
 };
 
 

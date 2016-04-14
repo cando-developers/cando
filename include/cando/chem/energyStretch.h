@@ -71,8 +71,8 @@ public:
 	string	className()	{ return "EnergyStretch"; };
 public:
 	TermStretch	term;
-        gc::Nilable<Atom_sp>		_Atom1;
-        gc::Nilable<Atom_sp>		_Atom2;
+        Atom_sp		_Atom1;
+        Atom_sp		_Atom2;
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
 	bool		_calcForce;
 	bool		_calcDiagonalHessian;
@@ -81,8 +81,8 @@ public:
 #endif
 
 
-	gc::Nilable<Atom_sp>	getAtom1() {return this->_Atom1;};
-        gc::Nilable<Atom_sp>	getAtom2() {return this->_Atom2;};
+	Atom_sp	getAtom1() {return this->_Atom1;};
+        Atom_sp	getAtom2() {return this->_Atom2;};
 	double	getR0()	{return this->term.r0;};
 	double	getR();
 
@@ -93,8 +93,6 @@ public:
 	void	parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml, AtomTable_sp atomTable );
 
 
-	EnergyStretch();
-	virtual ~EnergyStretch();
 		//! Initialize self from a FFStretch parameter and two EnergyAtom(s)
 	void defineFrom( FFStretch_sp stretch, EnergyAtom *ea1, EnergyAtom *ea2, double scale);
 		//! Handle situation when FFStretch term could not be found for these two atoms
