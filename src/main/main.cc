@@ -55,7 +55,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/geomPackage.h>
 #include <cando/units/unitsPackage.h>
 #include <cando/adapt/adaptPackage.h>
-#include <cando/chem/readAmberparameters.h>
+#include <cando/chem/readAmberParameters.h>
 #include <cando/chem/chemPackage.h>
 //#include <cando/kinematics/kinematicsPackage.h>
 
