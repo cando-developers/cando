@@ -1023,7 +1023,7 @@ core::T_sp Oligomer_O::__init__(core::Function_sp exec, core::List_sp args, core
 #define ARGS_chem__set_oligomer "(oligomerName parts)"
 #define DECL_chem__set_oligomer ""
 #define DOCS_chem__set_oligomer "setOligomer"
-CL_DEFUN core::T_sp chem__set_oligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_sp parts)
+CL_DEFUN core::T_sp chem__set_oligomer(core::Symbol_sp oligomerName, core::List_sp parts)
 {
     Oligomer_sp olig = Oligomer_O::create();
     olig->setName(oligomerName);

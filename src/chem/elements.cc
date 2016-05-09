@@ -462,7 +462,7 @@ uint maxTotalBondOrderForElement(Element element)
   return 4;
 }
 
-CL_DEFUN double vdwRadiusForElement(Element element)
+CL_DEFUN double vdwRadiusForElement(::chem::Element element)
 {
   return atomicInfo[element]._VdwRadius;
 }
@@ -574,12 +574,12 @@ NONE:
 
 
 
-CL_DEFUN Element elementFromAtomNameStringCaseInsensitive(const string& name)
+CL_DEFUN ::chem::Element elementFromAtomNameStringCaseInsensitive(const string& name)
 {
     return elementFromAtomNameStringBasic(name,true);
 }
 
-CL_DEFUN Element elementFromAtomNameString(const string& name)
+CL_DEFUN ::chem::Element elementFromAtomNameString(const string& name)
 {
     return elementFromAtomNameStringBasic(name,false);
 }

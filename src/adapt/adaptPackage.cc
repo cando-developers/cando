@@ -51,7 +51,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/fileSystem.h>
 #include <clasp/core/environment.h>
 #include <clasp/core/externalObject.h>
-#include <clasp/core/executables.h>
 #include <clasp/core/hashTable.h>
 #include <clasp/core/intArray.h>
 #include <clasp/core/primitives.h>

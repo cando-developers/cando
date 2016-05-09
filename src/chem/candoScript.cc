@@ -35,7 +35,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/main/foundation.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/geom/ovector3.h>
-#include <clasp/core/executables.h>
 #include <clasp/core/fileSystem.h>
 //#include "core/xmlLoadArchive.h"
 //#include "core/xmlSaveArchive.h"
@@ -868,7 +867,7 @@ CL_DEFUN core::T_sp chem__calculate_point()
 #define ARGS_chem__oligomer "(oligomerName parts)"
 #define DECL_chem__oligomer ""
 #define DOCS_chem__oligomer "oligomer"
-CL_DEFUN core::T_sp chem__oligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_sp parts)
+CL_DEFUN core::T_sp chem__oligomer(core::Symbol_sp oligomerName, core::List_sp parts)
 {
     Oligomer_sp olig = Oligomer_O::create();
     olig->setName(oligomerName);

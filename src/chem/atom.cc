@@ -126,7 +126,7 @@ namespace chem
 
 
 CL_LISPIFY_NAME(make-atom);
-CL_DEFUN Atom_sp Atom_O::make(MatterName name, Element element)
+CL_DEFUN Atom_sp Atom_O::make(core::Symbol_sp name, chem::Element element)
     {
 	GC_ALLOCATE(Atom_O,atom);
 	atom->setName(name);
@@ -749,7 +749,7 @@ CL_DEFMETHOD     string	Atom_O::getNameIndex()
 
 
 CL_LISPIFY_NAME("isBondedToAtomNamed");
-CL_DEFMETHOD     bool	Atom_O::isBondedToAtomNamed(MatterName name)
+CL_DEFMETHOD     bool	Atom_O::isBondedToAtomNamed(core::Symbol_sp name)
     {
 	VectorBond::iterator	b;
 

@@ -442,7 +442,7 @@ CL_DEFMETHOD     uint Aggregate_O::separateMolecules()
 
 
 CL_LISPIFY_NAME("firstMoleculeWithAtomNamed");
-CL_DEFMETHOD     Molecule_sp Aggregate_O::firstMoleculeWithAtomNamed(MatterName name)
+CL_DEFMETHOD     Molecule_sp Aggregate_O::firstMoleculeWithAtomNamed(core::Symbol_sp name)
     {
 	Atom_sp a = this->firstAtomWithName(name);
 	Residue_sp res = a->containedBy().as<Residue_O>();
@@ -659,7 +659,7 @@ CL_DEFMETHOD     void	Aggregate_O::perturbAtomPositions(double dist)
 #define DOCS_Aggregate_O_make "make Aggregate args: &key name"
 CL_LAMBDA(&optional (name nil));
 CL_LISPIFY_NAME(make-aggregate);
-CL_DEFUN Aggregate_sp Aggregate_O::make(MatterName name)
+CL_DEFUN Aggregate_sp Aggregate_O::make(core::Symbol_sp name)
     {
         GC_ALLOCATE(Aggregate_O,me);
 	me->setName(name);

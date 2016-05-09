@@ -150,9 +150,9 @@ compile-commands:
 compile-commands-rest:
 	bjam -j$(PJOBS) toolset=$(TOOLSET) link=$(LINK) program=cando gc=mps-prep release -n -a |tee >bjam.out
 	-install -d $(CLASP_APP_RESOURCES_DIR)/build-databases
-	clasp_boehmdc_o -f bclasp \
+	$(CLASP) \
 		-l $(CLASP_HOME)/src/common/build-json.lisp \
-		-e "(build-json:build-db \"bjam.out\" \"cando_compile_commands\")" \
+		-e "(build-json:build-db \"bjam.out\" \"$(CLASP_APP_RESOURCES_DIR)/build-databases/cando_compile_commands.json\")" \
 		-e "(quit)"
 
 mps-interface-prep:
@@ -164,14 +164,17 @@ mps-interface-prep:
 
 mps-interface-run:
 	make compile-commands
-	clasp_boehmdc_o -f bclasp \
+	$(CLASP)  \
 		-e "(require :clasp-analyzer)" \
 		-e "(time (clasp-analyzer:search/generate-code (clasp-analyzer:setup-clasp-analyzer-compilation-tool-database \"app-resources:build-databases;cando_compile_commands.json\")))" \
 		-e "(quit)"
 
 mps-interface:
 	make mps-interface-prep
-	make mps-interface-run
+	(export CLASP="clasp_boehmdc_o -f bclasp";make mps-interface-run)
 
 mps-interface-mps:
 	(export CLASP=clasp_mps_o; make mps-interface-run)
+
+mps-interface-boehmdc:
+	(export CLASP="clasp_boehmdc_o -f bclasp"; make mps-interface-run)

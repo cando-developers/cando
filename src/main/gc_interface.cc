@@ -46,7 +46,7 @@ typedef bool _Bool;
 #include <llvm/Support/FormattedStream.h>
 #include <llvm/Support/MathExtras.h>
 #include <llvm/Pass.h>
-#include <llvm/PassManager.h>
+#include <llvm/legacy/PassManager.h>
 #include <llvm/ADT/SmallVector.h>
 #include <llvm/IR/Verifier.h>
 #include "llvm/IR/AssemblyAnnotationWriter.h" // will be llvm/IR

@@ -72,8 +72,6 @@ int startup(int argc, char *argv[], bool &mpiEnabled, int &mpiRank, int &mpiSize
   try {
     // Set the ThreadInfo for the current master thread
     //
-    core::ThreadInfo mainThreadInfo;
-    core::lisp_setThreadLocalInfoPtr(&mainThreadInfo);
 
 #if 1
    

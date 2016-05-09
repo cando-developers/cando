@@ -752,7 +752,7 @@ uint Residue_O::numberOfAtoms()
 
 
 CL_LISPIFY_NAME(make-residue);
-CL_DEFUN Residue_sp Residue_O::make(MatterName name)
+CL_DEFUN Residue_sp Residue_O::make(core::Symbol_sp name)
 {
     GC_ALLOCATE(Residue_O,me);
     me->setName(name);

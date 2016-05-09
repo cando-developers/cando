@@ -380,7 +380,7 @@ CL_DEFMETHOD     Residue_sp	Molecule_O::getFirstResidueWithName(MatterName name)
 #define DOCS_Molecule_O_make "make Molecule args: &key name"
 CL_LAMBDA(&optional (name nil));
 CL_LISPIFY_NAME(make-molecule);
-CL_DEFUN Molecule_sp Molecule_O::make(MatterName name)
+CL_DEFUN Molecule_sp Molecule_O::make(core::Symbol_sp name)
 {
     GC_ALLOCATE(Molecule_O,me);
     me->setName(name);

@@ -34,7 +34,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <set>
 #include <clasp/core/common.h>
 #include <cando/chem/atom.h>
-#include <clasp/core/executables.h>
 #include <cando/chem/chemPackage.h>
 
 
