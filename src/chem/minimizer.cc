@@ -195,10 +195,7 @@ namespace chem
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_Minimizer_O_make "(&key matter force_field energy_function)"
-#define DECL_Minimizer_O_make ""
-#define DOCS_Minimizer_O_make "make minimizer"
-CL_LAMBDA(&key matter force_field energy_function);
+CL_LAMBDA(&key matter force-field energy-function);
 CL_LISPIFY_NAME(make-minimizer);
 CL_DEFUN Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceField_sp> forceField, gc::Nilable<EnergyFunction_sp> givenEnergyFunction)
 {
