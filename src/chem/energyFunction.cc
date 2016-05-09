@@ -149,7 +149,7 @@ void energyFunction_initializeSmarts()
 #define ARGS_EnergyFunction_O_make "(matter force_field &optional active-atoms)"
 #define DECL_EnergyFunction_O_make ""
 #define DOCS_EnergyFunction_O_make "make EnergyFunction"
-CL_LAMBDA(matter force_field &optional active-atoms);
+CL_LAMBDA(matter force-field &optional active-atoms);
 CL_LISPIFY_NAME(make-energy-function);
 CL_DEFUN EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms)
 {
