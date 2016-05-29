@@ -143,17 +143,6 @@ short-compile-boehm:
 clasp-gc-interface:
 	$(CLASP_BOEHM) -l "buildClaspGC.lsp"
 
-compile-commands:
-	$(BUILD) -j$(PJOBS) toolset=$(TOOLSET) link=$(LINK) program=cando gc=mps-prep release
-	make compile-commands-rest
-
-compile-commands-rest:
-	bjam -j$(PJOBS) toolset=$(TOOLSET) link=$(LINK) program=cando gc=mps-prep release -n -a |tee >bjam.out
-	-install -d $(CLASP_APP_RESOURCES_DIR)/build-databases
-	$(CLASP) \
-		-l $(CLASP_HOME)/src/common/build-json.lisp \
-		-e "(build-json:build-db \"bjam.out\" \"$(CLASP_APP_RESOURCES_DIR)/build-databases/cando_compile_commands.json\")" \
-		-e "(quit)"
 
 mps-interface-prep:
 	(make -C $(CLASP_HOME)/src/main boehmdc-release-cxx)
@@ -178,3 +167,25 @@ mps-interface-mps:
 
 mps-interface-boehmdc:
 	(export CLASP="clasp_boehmdc_o -f bclasp"; make mps-interface-run)
+
+compile-commands:
+	$(BUILD) -j$(PJOBS) toolset=$(TOOLSET) link=$(LINK) program=cando gc=mps-prep release
+	make compile-commands-rest
+
+compile-commands-rest:
+	bjam -j$(PJOBS) toolset=$(TOOLSET) link=$(LINK) program=cando gc=mps-prep release -n -a |tee >bjam.out
+	-install -d $(CLASP_APP_RESOURCES_DIR)/build-databases
+	$(CLASP_SBCL) \
+		--load $(CLASP_HOME)/src/common/build-json.lisp \
+		--eval "(build-json:build-db \"bjam.out\" \"$(CLASP_APP_RESOURCES_DIR)/build-databases/cando_compile_commands.json\")" \
+		--eval "(quit)"
+
+redeye:
+	@echo Building mps-prep
+	build -j$(PJOBS) toolset=$(TOOLSET) link=$(LINK) program=cando --prefix=$(CLASP_APP_EXECS)/mps-prep/$(VARIANT) gc=mps-prep release cando_install
+	make compile-commands
+	make dammit-run-redeye
+
+dammit-run-redeye:
+	clasp_boehmdc_o -l "sys:modules;clasp-analyzer;redeye.lisp" -- "$(CLASP_APP_RESOURCES_DIR)/build-databases/cando_compile_commands.json"
+#	make mps-interface-run

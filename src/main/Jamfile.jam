@@ -54,10 +54,27 @@ exe cando : main.cc $(sources)
     : <gc>mps-prep
     ;
 
+
+
+stripped-bitcode cando-intrinsics : /internals/llvmo//intrinsics.cc
+	:
+	<cxxflags>"-flto -emit-llvm" ;
+explicit cando-intrinsics ;
+
+linked-bitcode linked_cando : $(sources) ;
+
+
+
 import package ;
 
+
+
+
+
+
+
 package.install cando_install :
-                : cando
+                : cando cando-intrinsics
                 : /externals//boostAndExpatLibs
                 : 
                 ;

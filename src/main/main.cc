@@ -64,6 +64,10 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/mpip/claspMpi.h>
 #endif
 
+std::string program_name()
+{
+  return "cando";
+}
 
 int startup(int argc, char *argv[], bool &mpiEnabled, int &mpiRank, int &mpiSize) {
   core::LispHolder lispHolder(mpiEnabled, mpiRank, mpiSize);
