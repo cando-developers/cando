@@ -68,6 +68,7 @@ namespace chemkw {
     extern core::Symbol_sp& _sym_parameterized;
     extern core::Symbol_sp& _sym_estimated;
     extern core::Symbol_sp& _sym_rough;
+    extern core::Symbol_sp& _sym_unknown;
 };
 
 namespace translate {
@@ -86,6 +87,8 @@ namespace translate {
 		return (chemkw::_sym_estimated);
 	    case chem::rough:
 		return (chemkw::_sym_rough);
+            case chem::unknown:
+                return (chemkw::_sym_unknown);
 	    };
 	    SIMPLE_ERROR(BF("Illegal ParameterizationLevel"));
 	}

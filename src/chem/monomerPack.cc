@@ -462,6 +462,7 @@ bool	MonomerPack_O::hasInterestingAtomAlias(Alias_sp alias)
   for ( auto ai : this->_InterestingAtomAliases ) {
     if ( core::cl__equal(ai,alias->getAtomAlias()) ) return true;
   }
+  return false;
 }
 
 

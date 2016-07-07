@@ -45,6 +45,7 @@ This is an open source license for the CANDO software from Temple University, bu
 SYMBOL_EXPORT_SC_(ChemKwPkg,parameterized);
 SYMBOL_EXPORT_SC_(ChemKwPkg,estimated);
 SYMBOL_EXPORT_SC_(ChemKwPkg,rough);
+SYMBOL_EXPORT_SC_(ChemKwPkg,unknown);
 
 namespace chem {
 

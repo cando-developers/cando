@@ -24,5 +24,4 @@ This is an open source license for the CANDO software from Temple University, bu
 */
 /* -^- */
 #include <clasp/core/allHeaders.h>
-#include <cffi/allHeaders.h>
 #include <llvmo/allHeaders.h>

@@ -56,6 +56,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
+#include <clasp/core/lispString.h>
 #include <cando/adapt/stringList.fwd.h>
 #include <cando/geom/vector2.h>
 #include <cando/geom/vector3.h>
@@ -107,12 +108,14 @@ namespace chem
     class Constitution_O : public Entity_O
 	{
 	    LISP_CLASS(chem,ChemPkg,Constitution_O,"Constitution",Entity_O);
-#if INIT_TO_FACTORIES
 	public:
-	    static Constitution_sp make(core::Symbol_sp name, const string& comment, core::Symbol_sp metaConstitution, ConstitutionAtoms_sp constitutionAtoms, StereoInformation_sp stereoInformation, core::List_sp plugs, core::List_sp topologies);
-#else
-	    DECLARE_INIT();
-#endif
+	    static Constitution_sp make(core::Symbol_sp name,
+                                        core::String_sp comment,
+                                        core::Symbol_sp metaConstitution,
+                                        ConstitutionAtoms_sp constitutionAtoms,
+                                        StereoInformation_sp stereoInformation,
+                                        core::List_sp plugs,
+                                        core::List_sp topologies);
 	public:
 	    void initialize();
 	public:
@@ -126,7 +129,7 @@ namespace chem
 	    core::Symbol_sp			_Name;
 	    ConstitutionIndex0N			_ConstitutionIndex0N;
 	    core::Symbol_sp			_MetaConstitution;
-	    string				_Comment;
+            core::String_sp			_Comment;
 	    /*! An object that that describes the atoms and bonding within this Constitution.
 	      The index of the atom in the ConstitutionAtoms is used as the atom part of the AtomId 
 	      when refered to using an AtomId object    */
@@ -225,9 +228,9 @@ CL_DEFMETHOD 	    ConstitutionAtoms_sp getConstitutionAtoms() { return this->_Co
 
 
 CL_NAME("setComment");
-CL_DEFMETHOD 	    void	setComment( const string& sName ) { this->_Comment= sName; };
+ CL_DEFMETHOD 	    void	setComment( core::String_sp sName ) { this->_Comment = sName; };
 CL_NAME("getComment");
-CL_DEFMETHOD 	    string	getComment( ) { return this->_Comment; };
+ CL_DEFMETHOD 	    core::String_sp	getComment( ) { return this->_Comment; };
 
 	    Residue_sp	createResidueForStereoisomerName(core::Symbol_sp nameOrPdb);
 

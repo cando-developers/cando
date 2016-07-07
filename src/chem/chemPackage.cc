@@ -26,6 +26,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <clasp/core/package.h>
 #include <clasp/core/pathname.h>
+#include <clasp/core/compiler.h>
 #include <cando/chem/chemPackage.h>
 #include <cando/chem/candoScript.h>
 #include <cando/chem/candoDatabase.h>
@@ -162,6 +163,36 @@ namespace chem
 #endif
 };
 
+#if 0
+void chem_package_initializer()
+{
+//  printf("%s:%d Running chem_packageinitializer\n", __FILE__, __LINE__ );
+                    // Create the CHEM-KW package
+  std::list<std::string> nicknames = { "CK" };
+  std::list<std::string> usePackages = { };
+          // core::Package_sp chemkwpkg = _lisp->makePackage(ChemKwPkg,nicknames,usePackages);
+          // chemkwpkg->setActsLikeKeywordPackage(true);
+
+  core::T_sp pn;
+  char* env = getenv("CANDO_LISP_SOURCE_DIR");
+  if ( env != NULL ) {
+    pn = core::cl__translate_logical_pathname(core::Str_O::create(std::string(env)+"/**/*.*"));
+  } else {
+    pn = core::cl__translate_logical_pathname(core::Str_O::create("APP-RESOURCES:CANDO;**;*.*"));
+  }
+  core::Cons_sp pts = core::Cons_O::createList(core::Str_O::create("cando:**;*.*"),pn);
+  core::Cons_sp ptsList = core::Cons_O::createList(pts);
+  core::core__pathname_translations(core::Str_O::create("CANDO"),_lisp->_true(),ptsList);
+  chem::energyFunction_initializeSmarts();
+  chem::initialize_mol2_type_rules();
+  chem::setupCandoPrimitives(_lisp);
+  chem::initialize_loop();
+  chem::initialize_chimera();
+  chem::initializeElementsAndHybridization();
+}
+
+core::Initializer global_chem_package_initializer(chem_package_initializer);
+#endif
 
 
 
@@ -282,4 +313,12 @@ core::Symbol_sp chemkw_intern(core::Str_sp symName)
   if ( s == "" ) return _Nil<core::Symbol_O>();
   return chemkw_intern(s);
 }
+
+void chem_initializer()
+{
+//    printf("%s:%d Running chem_initializer\n", __FILE__, __LINE__ );
+}
+
+core::Initializer global_ChemInitializer(chem_initializer);
+
 };

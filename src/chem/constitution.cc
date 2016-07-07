@@ -34,6 +34,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/adapt/stringList.h>
 #include <clasp/core/environment.h>
 #include <clasp/core/symbolTable.h>
+#include <clasp/core/str.h>
 #include <cando/chem/constitution.h>
 #include <cando/chem/candoDatabase.h>
 #include <cando/chem/loop.h>
@@ -57,7 +58,7 @@ namespace chem {
 #define ARGS_Constitution_O_make "(name comment meta_constitution constitution_atoms stereo_information plugs topologies)"
 #define DECL_Constitution_O_make ""
 #define DOCS_Constitution_O_make "make Constitution"
-    Constitution_sp Constitution_O::make(core::Symbol_sp name, const string& comment, core::Symbol_sp metaConstitution, ConstitutionAtoms_sp constitutionAtoms, StereoInformation_sp stereoInformation, core::List_sp plugs, core::List_sp topologies)
+Constitution_sp Constitution_O::make(core::Symbol_sp name, core::String_sp comment, core::Symbol_sp metaConstitution, ConstitutionAtoms_sp constitutionAtoms, StereoInformation_sp stereoInformation, core::List_sp plugs, core::List_sp topologies)
   {
       GC_ALLOCATE(Constitution_O, me );
       me->_Name = name;
@@ -719,7 +720,7 @@ bool	Constitution_O::isTopologyValid( Topology_sp cm )
 void	Constitution_O::initialize()
 {_OF();
     this->Base::initialize();
-    this->_Comment = "";
+    this->_Comment = core::Str_O::create("");
     this->_Name = _Nil<core::Symbol_O>();
     this->_ConstitutionAtoms = ConstitutionAtoms_O::create();
     this->_StereoInformation = StereoInformation_O::create();

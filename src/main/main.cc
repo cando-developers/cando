@@ -44,7 +44,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/candoOpenMp.h>
 #include <clasp/core/cons.h>
 #include <clasp/core/commandLineOptions.h>
-#include <clasp/cffi/cffiPackage.h>
 #include <clasp/llvmo/llvmoPackage.h>
 #include <clasp/gctools/gctoolsPackage.h>
 #include <clasp/clbind/clbindPackage.h>

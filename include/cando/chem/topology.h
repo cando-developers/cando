@@ -98,16 +98,10 @@ SMART(Topology);
 class Topology_O : public core::CxxObject_O
 {
     LISP_CLASS(chem,ChemPkg,Topology_O,"Topology",core::CxxObject_O); 
-#if INIT_TO_FACTORIES
 public:
     static Topology_sp make(core::Symbol_sp name, int netCharge, core::HashTableEq_sp properties, core::List_sp curPlugs, ConstitutionAtoms_sp residue ); // , kinematics::AtomTemplate_sp atomTreeTemplate, kinematics::ChiList_sp chiList);
-#else
-    DECLARE_INIT();
-#endif
 public:
     void initialize();
-public:
-//	void	archiveBase(core::ArchiveP node);
 private:
     typedef Plug_sp	plugType;
     typedef Plug_O	plugOType;
@@ -130,31 +124,17 @@ private:	// Do not archive
     Plugs					_Plugs;
 	
 public:
-//    typedef gctools::Vec0<ExtractFragment_sp>::iterator	iterateExtractFragments;
-//	typedef adapt::SymbolMap<ExtractScaffold_O>::iterator	iterateExtractScaffolds;
 protected:
     void setFromMonomer(Monomer_sp mon);
 public:
     void setConstitution(Constitution_sp c);
 public:
-//	Topology_O( Constitution_sp mold);
-
-
-//	/ * ! Return the AtomTreeTemplate * /
-//	kinematics::AtomTemplate_sp atomTreeTemplate() const {return this->_AtomTreeTemplate;};
-
-
     /* You can attach properties to the Topology later */
     core::HashTableEq_sp properties() const;
 
     string description() const;
-
-
-
     Constitution_sp	getConstitution();
-
     MonomerContext_sp getMonomerContext(CandoDatabase_sp bdb);
-
     //! Return if we suppress trainers
 CL_NAME("suppressTrainers");
 CL_DEFMETHOD     bool suppressTrainers() const { return this->_SuppressTrainers;};

@@ -78,7 +78,7 @@ class ReadAmberParameters_O : public core::CxxObject_O
   ReadAmberParameters_O( const ReadAmberParameters_O& ss ); //!< Copy constructor
 
   ReadAmberParameters_O() {
-    printf("%s:%d ReadAmberParameters_O ctor\n");
+    printf("%s:%d ReadAmberParameters_O ctor\n", __FILE__, __LINE__);
   };
 };
 
