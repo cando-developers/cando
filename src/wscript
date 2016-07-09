@@ -1,0 +1,4 @@
+import os
+
+def build(bld):
+    bld.recurse('adapt geom units chem main')

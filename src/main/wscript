@@ -1,0 +1,4 @@
+def build(bld):
+    for name in [
+          'plugin' ]:
+        bld.plugins_source_files.append(bld.path.find_node(name+'.cc'))

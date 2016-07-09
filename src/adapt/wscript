@@ -1,0 +1,13 @@
+def build(bld):
+    for name in [
+            'indexedObjectBag',
+            'adaptPackage',
+            'quickDom',
+            'mySaxInterface',
+            'objectSet',
+            'iterateCons',
+            'stringList',
+            'stringSet',
+            'symbolList',
+            'symbolSet']:
+        bld.plugins_source_files.append(bld.path.find_node(name+'.cc'))

@@ -1,0 +1,24 @@
+def build(bld):
+    for name in [
+            'adaptPackage.fwd.h',
+            'adaptPackage.h',
+            'adapters.h',
+            'indexedObjectBag.h',
+            'iterateCons.fwd.h',
+            'iterateCons.h',
+            'mySaxInterface.h',
+            'objectSet.fwd.h',
+            'objectSet.h',
+            'quickDom.fwd.h',
+            'quickDom.h',
+            'stringList.fwd.h',
+            'stringList.h',
+            'stringSet.fwd.h',
+            'stringSet.h',
+            'symbolList.fwd.h',
+            'symbolList.h',
+            'symbolMap.h',
+            'symbolSet.fwd.h',
+            'symbolSet.h'
+            ]:
+        bld.plugins_include_files.append(bld.path.find_node(name))

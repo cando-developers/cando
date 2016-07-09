@@ -1,0 +1,14 @@
+def build(bld):
+    for name in [
+	    'candoBasePackage',
+	    'ovector3', 
+	    'ovector2',
+	    'color',
+	    'matrix',
+	    'vector2', 
+	    'vector3', 
+	    'vector4', 
+	    'omatrix',
+	    'boundingBox',
+	    'coordinateArray']:
+        bld.plugins_source_files.append(bld.path.find_node(name+'.cc'))

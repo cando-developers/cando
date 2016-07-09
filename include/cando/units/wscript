@@ -1,0 +1,14 @@
+def build(bld):
+    for name in [
+            'dimension.fwd.h',
+            'dimension.h',
+            'kinFoundation.h',
+            'namedUnit.h',
+            'otherPackageClasses.h',
+            'quantity.fwd.h',
+            'quantity.h',
+            'unit.h',
+            'unitsFoundation.h',
+            'unitsPackage.h'
+    ]:
+        bld.plugins_include_files.append(bld.path.find_node(name))

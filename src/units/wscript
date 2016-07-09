@@ -1,0 +1,8 @@
+def build(bld):
+    for name in [
+            'dimension',
+            'unit',
+            'namedUnit',
+            'quantity',
+            'unitsPackage']:
+        bld.plugins_source_files.append(bld.path.find_node(name+'.cc'))
