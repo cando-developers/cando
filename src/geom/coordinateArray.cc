@@ -276,8 +276,7 @@ CL_DEFMETHOD     void CoordinateArray_O::transform( const Matrix& tm )
 	return this->asString();
     }
 
-CL_LISPIFY_NAME("asString");
-CL_DEFMETHOD     string CoordinateArray_O::asString( ) const
+string CoordinateArray_O::asString( ) const
     {
 	int  sz;
 	stringstream	ss;

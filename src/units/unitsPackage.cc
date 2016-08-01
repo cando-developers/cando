@@ -127,7 +127,7 @@ SYMBOL_EXPORT_SC_(UnitsPkg,nm_per_ps);
       case candoClasses:
         {
 	    /*! Use the core package */
-          this->package()->usePackage(lisp->findPackage(CorePkg));
+//          this->package()->usePackage(lisp->findPackage(CorePkg));
 	}
 	break;
       case candoFunctions:

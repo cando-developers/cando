@@ -86,7 +86,7 @@ void	OMatrix_O::setAll(const Matrix& m)
 //string OMatrix_O::asStringFast() { return this->_Value.asStringFast(); }
 
 
-CL_LISPIFY_NAME("asString");
+CL_LISPIFY_NAME("Matrix-asString");
 CL_DEFMETHOD     string OMatrix_O::asString() { return this->_Value.asString(); }
 
 

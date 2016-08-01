@@ -227,50 +227,19 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace geom
 {
-};
-
-
-
-
-namespace geom
-{
-#if 0
-#define EXPOSE_TO_CANDO
-#define Use_GeomPkg
-#define EXTERN_REGISTER
-#include <clasp/core/initClasses.h>
-#undef EXTERN_REGISTER
-#undef Use_GeomPkg
-#undef EXPOSE_TO_CANDO
-#endif
-};
-
-
-
-
-
-namespace geom
-{
-
     const char* Geom_nicknames[] = { "" };
-
-
 #define SYMBOLS_STATIC
   #ifndef SCRAPING
 #include <generated/symbols_scraped_inc.h>
   #endif
-
-
-
     void GeomExposer_O::expose(core::Lisp_sp lisp,WhatToExpose what) const
     {
 	switch (what)
 	{
 	case candoClasses:
 	{
-
 	    /*! Use the core package */
-	    this->package()->usePackage(lisp->findPackage(CorePkg));
+          //this->package()->usePackage(lisp->findPackage(CorePkg));
             initialize_colors();
 	}
 	break;

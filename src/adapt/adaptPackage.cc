@@ -269,7 +269,7 @@ namespace adapt
 	case candoClasses:
 	{
 	    /*! Use the core package */
-	    this->package()->usePackage(lisp->findPackage(CorePkg));
+//	    this->package()->usePackage(lisp->findPackage(CorePkg));
 
 	}
 	break;
