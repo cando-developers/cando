@@ -102,4 +102,12 @@ def build(bld):
             'conformationCollection', 
             'msmarts_Parser',
             'gaff_Parser' ]:
-        bld.plugins_source_files.append(bld.path.find_node(name+'.cc'))
+        source(bld,name)
+
+def source(bld,name):
+    full_name = name+'.cc'
+    node = bld.path.find_node(full_name)
+    assert node != None, "Could not find %s/%s" % ( bld.path.abspath(), full_name )
+    bld.extensions_source_files.append(node)
+
+

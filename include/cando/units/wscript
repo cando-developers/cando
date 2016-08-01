@@ -11,4 +11,4 @@ def build(bld):
             'unitsFoundation.h',
             'unitsPackage.h'
     ]:
-        bld.plugins_include_files.append(bld.path.find_node(name))
+        bld.extensions_include_files.append(bld.path.find_node(name))

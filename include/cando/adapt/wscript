@@ -21,4 +21,4 @@ def build(bld):
             'symbolSet.fwd.h',
             'symbolSet.h'
             ]:
-        bld.plugins_include_files.append(bld.path.find_node(name))
+        bld.extensions_include_files.append(bld.path.find_node(name))

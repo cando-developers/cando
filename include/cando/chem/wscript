@@ -208,4 +208,4 @@ def build(bld):
             'virtualSphere.h',
             'zMatrix.h'
     ]:
-        bld.plugins_include_files.append(bld.path.find_node(name))
+        bld.extensions_include_files.append(bld.path.find_node(name))
