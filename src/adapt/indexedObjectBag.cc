@@ -34,6 +34,8 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace adapt {
 
+using namespace core;
+
 void IndexedObjectBag_O::initialize() {
   this->_Bag = HashTableEq_O::create_default();
 }

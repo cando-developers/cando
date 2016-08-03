@@ -32,7 +32,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/hashTableEq.h>
 #include <cando/adapt/adaptPackage.fwd.h>
 namespace adapt {
-  using namespace core;
 
   SMART(IndexedObjectBag);
 
@@ -42,13 +41,13 @@ namespace adapt {
 
 public:
 GCPRIVATE:
-  gc::Nilable<HashTableEq_sp> _Bag;
-  Fixnum         _NextIndex;
+  gc::Nilable<core::HashTableEq_sp> _Bag;
+  gc::Fixnum         _NextIndex;
 public:
 
-  Fixnum set_next_available_entry(core::T_sp obj);
-  core::T_sp entry(Fixnum index);
-  void remove_entry(Fixnum index);
+  gc::Fixnum set_next_available_entry(core::T_sp obj);
+  core::T_sp entry(gc::Fixnum index);
+  void remove_entry(gc::Fixnum index);
 
  public:
  IndexedObjectBag_O() : _NextIndex(0) {};
