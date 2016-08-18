@@ -681,7 +681,7 @@ CL_DEFMETHOD     MonomerCoordinates_sp	CandoDatabase_O::getMonomerCoordinatesWit
     }
 
 
-CL_LISPIFY_NAME("get");
+CL_LISPIFY_NAME("CandoDatabase-get");
 CL_DEFMETHOD     MonomerCoordinates_sp	CandoDatabase_O::get(MonomerContext_sp context)
     {
         core::Symbol_sp key = context->getKey();

@@ -131,6 +131,7 @@ void	NVector_O::zero()
  *
  *      Fill the vector with a number.
  */
+CL_LISPIFY_NAME(nvector-fill);
 CL_DEFMETHOD void NVector_O::fill( double dValue )
 {
     this->_Values.assign(this->_Size,dValue);

@@ -61,23 +61,54 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
-SMART(MonomerContext);
-SMART(Constitution);
-SMART(ExtractFragment);
-SMART(Plug);
-SMART(CandoDatabase);
-SMART(ExtractScaffold);
-SMART(Atom);
-SMART(Residue);
-SMART(Monomer);
-SMART(RingClosingPlug);
-SMART(ExtractCoreFragment);
+  SMART(MonomerContext);
+  SMART(Constitution);
+  SMART(ExtractFragment);
+  SMART(Plug);
+  SMART(CandoDatabase);
+  SMART(ExtractScaffold);
+  SMART(Atom);
+  SMART(Residue);
+  SMART(Monomer);
+  SMART(RingClosingPlug);
+  SMART(ExtractCoreFragment);
 
-SMART(RequiredPlug);
+  SMART(RequiredPlug);
 
-SMART(FrameBase);
+  SMART(FrameBase);
 
-SMART(Topology);
+  SMART(Topology);
+  SMART(TopologyAtomInfo);
+
+};
+
+
+ template <>
+struct gctools::GCInfo<chem::TopologyAtomInfo_O> {
+  static bool constexpr NeedsInitialization = false;
+  static bool constexpr NeedsFinalization = false;
+  static GCInfo_policy constexpr Policy = normal;
+};
+
+ namespace chem {
+   class TopologyAtomInfo_O : public core::CxxObject_O {
+     LISP_CLASS(chem,ChemPkg,TopologyAtomInfo_O,"TopologyAtomInfo",core::CxxObject_O);
+   private:
+     core::T_sp _fftype;
+     double     _atomicCharge;
+   public:
+   TopologyAtomInfo_O(core::T_sp fftype, double atomicCharge) : _fftype(fftype), _atomicCharge(atomicCharge) {};
+   public:
+     inline CL_DEFMETHOD core::T_sp fftype() const { return this->_fftype; };
+     inline CL_DEFMETHOD double atomicCharge() const { return this->_atomicCharge; };
+   };
+
+   inline CL_DEFUN TopologyAtomInfo_sp make_topology_atom_info(core::T_sp fftype, double atomicCharge) {
+     return gctools::GC<TopologyAtomInfo_O>::allocate(fftype,atomicCharge);
+   }
+ };
+
+
 
 
 /*! @class A Topology describes one way that a Constitution can be connected to other Constitutions.
@@ -90,16 +121,25 @@ SMART(Topology);
   A Topology also contains ExtractScaffold and ExtractFragment objects that know how to extract coordinates 
   from a Residue in the given Topology.
 
+  A Topology also defines a map of atom names to atomic types and atomic charges. Atom types and charges will
+  be topology dependent but the element is not and so the Constitution provides a map of atom names to atomic elements.
+
   Each Topology is uniquely identified within a CandoDatabase by a TopologyIndex0N identifier that ranges
   between 0 and N-(the number of unique Topologys in the database).  This is to facilitate atom based lookups
   that describe the number of bonds between atoms in two interconnected Topologys.
 */
+template <>
+struct gctools::GCInfo<chem::Topology_O> {
+  static bool constexpr NeedsInitialization = false;
+  static bool constexpr NeedsFinalization = false;
+  static GCInfo_policy constexpr Policy = normal;
+};
 
+namespace chem {
 class Topology_O : public core::CxxObject_O
 {
     LISP_CLASS(chem,ChemPkg,Topology_O,"Topology",core::CxxObject_O); 
 public:
-    static Topology_sp make(core::Symbol_sp name, int netCharge, core::HashTableEq_sp properties, core::List_sp curPlugs, ConstitutionAtoms_sp residue ); // , kinematics::AtomTemplate_sp atomTreeTemplate, kinematics::ChiList_sp chiList);
 public:
     void initialize();
 private:
@@ -108,15 +148,14 @@ private:
 public:
     typedef	gctools::SmallMap<core::Symbol_sp,Plug_sp>	Plugs;
 private:
-    Constitution_wp				_WeakConstitution;
+    Constitution_sp				_Constitution;
     core::Symbol_sp				_Name;
     TopologyIndex0N				_TopologyIndex0N;
-//	kinematics::AtomTemplate_sp		_AtomTreeTemplate;
-//	kinematics::ChiList_sp			_ChiList;
-    int					_ResidueNetCharge;
+    int					        _ResidueNetCharge;
     gctools::SmallOrderedSet<core::Symbol_sp> 	_Flags;
     bool					_SuppressTrainers;
-    adapt::SymbolMap<StereoisomerAtoms_O>       	_StereoisomerAtomProperties;
+    core::Vector_sp                             _AtomInfo;
+    adapt::SymbolMap<StereoisomerAtoms_O>      	_StereoisomerAtomProperties;
     core::HashTableEq_sp			_Properties;
 private:	// Do not archive
     core::T_sp				_TemporaryObject;
@@ -133,7 +172,7 @@ public:
     core::HashTableEq_sp properties() const;
 
     string description() const;
-    Constitution_sp	getConstitution();
+    CL_DEFMETHOD Constitution_sp	getConstitution() const { return this->_Constitution; };
     MonomerContext_sp getMonomerContext(CandoDatabase_sp bdb);
     //! Return if we suppress trainers
 CL_NAME("suppressTrainers");
@@ -176,6 +215,8 @@ CL_DEFMETHOD     int	numberOfPlugs() { return this->_Plugs.size(); };
     bool	matchesMonomerEnvironment( Monomer_sp mon );
     RingClosingPlug_sp provideMissingRingClosingPlug( Monomer_sp mon );
 
+    CL_DEFMETHOD core::T_sp atomInfo() const { return this->_AtomInfo; };
+    CL_DEFMETHOD core::T_sp setf_atomInfo(core::Vector_sp ai) { this->_AtomInfo = ai; return ai; };
 CL_NAME("getResidueNetCharge");
 CL_DEFMETHOD     int	getResidueNetCharge() { return this->_ResidueNetCharge; };
     void	setResidueNetCharge(int nc) { this->_ResidueNetCharge = nc; };
@@ -199,9 +240,10 @@ CL_DEFMETHOD     int	getResidueNetCharge() { return this->_ResidueNetCharge; };
       Either return the existing one or create a new one */
     StereoisomerAtoms_sp lookupOrCreateStereoisomerAtoms(core::Symbol_sp stereoisomerName);
 
-    DEFAULT_CTOR_DTOR(Topology_O);
+ Topology_O(core::Symbol_sp name, Constitution_sp constitution, int netCharge) : _Name(name), _Constitution(constitution), _ResidueNetCharge(netCharge) {};
 };
-
+ CL_DOCSTRING(R"doc(Create a topology and return it, after this the topology needs to be added to a constitution)doc");
+ CL_DEFUN Topology_sp make_topology(core::Symbol_sp name, Constitution_sp constitution, int netCharge, core::List_sp plugs );
 
 };
 

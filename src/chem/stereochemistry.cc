@@ -191,7 +191,6 @@ void	Stereoisomer_O::initialize()
     this->Base::initialize();
     this->_Name = _Nil<core::Symbol_O>();
     this->_Pdb = _Nil<core::Symbol_O>();
-    this->_WeakConstitution = _Nil<Constitution_O>();
     this->_Enantiomer = _Nil<core::Symbol_O>();
 }
 
@@ -199,9 +198,7 @@ void	Stereoisomer_O::initialize()
 #ifdef XML_ARCHIVE
     void	Stereoisomer_O::archive(core::ArchiveP node)
 {
-    if ( node->saving() ) this->getConstitution();
     this->Base::archiveBase(node);
-    node->archiveWeakPointer("constitution",this->_WeakConstitution);
     node->attribute("name",this->_Name );
     node->attribute("pdb", this->_Pdb );
     node->attributeIfNotNil("enantiomer", this->_Enantiomer);
@@ -253,19 +250,6 @@ CL_DEFMETHOD core::Symbol_sp Stereoisomer_O::getConfigurationForCenter( core::Sy
 	}
     }
     return chem::_sym_UnknownConfiguration;
-}
-
-Constitution_sp Stereoisomer_O::getConstitution()
-{
-    ASSERTNOTNULL(this->_WeakConstitution);
-    		// If the constitution is undefined then
-		// crawl up the owners to find one
-    if ( this->_WeakConstitution.nilp() )
-    {
-	IMPLEMENT_MEF(BF("Handle ownerWithClass"));
-//	this->_WeakConstitution = this->ownerWithClass<Constitution_O>();
-    }
-    return this->_WeakConstitution;
 }
 
 

@@ -41,13 +41,9 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/constitution.h>
 #include <clasp/core/environment.h>
 #include <clasp/core/binder.h>
-//#include "kinematics/atomTemplate.h"
-//#include "kinematics/chiDihedrals.h"
 #include <cando/chem/constitutionAtoms.h>
 #include <cando/chem/stereoisomerAtoms.h>
 #include <clasp/core/wrappers.h>
-
-
 
 namespace chem
 {
@@ -79,45 +75,27 @@ namespace chem
 	node->archiveSymbolMap( "topologyPlugs", this->_Plugs );
 	node->archiveSymbolMapIfDefined("stereoisomerAtomProperties",this->_StereoisomerAtomProperties);
 	LOG(BF("About to get core for topology (%s)") % _rep_(this->_Name)  );
-//	node->attributeIfNotNil("atomTreeTemplate",this->_AtomTreeTemplate);
-//	node->attributeIfNotNil("chiList",this->_ChiList);
 	node->attribute("properties",this->_Properties);
     }
 #endif
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_Topology_O_make "(name net_charge properties plugs residue)"
-#define DECL_Topology_O_make ""
-#define DOCS_Topology_O_make "make Topology"
-    Topology_sp Topology_O::make(core::Symbol_sp name, int netCharge, core::HashTableEq_sp properties, core::List_sp curPlugs, ConstitutionAtoms_sp residue ) //, kinematics::AtomTemplate_sp atomTreeTemplate, kinematics::ChiList_sp chiList)
-  {
-      GC_ALLOCATE(Topology_O, me );
-    me->_Name = name;
-    me->_ResidueNetCharge = netCharge;
+Topology_sp make_topology(core::Symbol_sp name, Constitution_sp constitution, int netCharge, core::List_sp plugs)
+{
+  Topology_sp me = gctools::GC<Topology_O>::allocate(name,constitution,netCharge);
     //
     // If "plugs" option is outgoing plugs only then we should
     // change the name to "outPlugs"
     //
-    me->_Plugs.clear();
-    core::List_sp curPlug;
-    for ( auto curPlug : curPlugs ) {
-      plugType p = oCar(curPlug).as<plugOType>();
-	me->addPlug(p->getName(),p);
-      }
-#if 0
-    // Here handle the AtomTreeBuilder
-    me->_AtomTreeTemplate = atomTreeTemplate;
-    
-    // Define the order of rotamer dihedrals
-    me->_ChiList = chiList;
-    ASSERTF(me->_AtomTreeTemplate.notnilp(),BF("You must provide the atomTreeTemplate"));
-#endif
-    properties->mapHash( [&me] (core::T_sp key, core::T_sp val) {
-            me->_Properties->setf_gethash(key.as<core::Symbol_O>(),val);
-        } );
-    return me;
-  };
+  me->_Plugs.clear();
+  core::List_sp curPlug;
+  for ( auto curPlug : plugs ) {
+    auto p = core::oCar(curPlug).as<Plug_O>();
+    me->addPlug(p->getName(),p);
+  }
+  return me;
+};
   
 #else
 
@@ -330,24 +308,6 @@ CL_DEFMETHOD     core::List_sp Topology_O::outPlugsAsCons()
 	return first->cdr();
     }
 
-
-
-CL_LISPIFY_NAME("getConstitution");
-CL_DEFMETHOD     Constitution_sp	Topology_O::getConstitution()
-    {_OF();
-	IMPLEMENT_MEF(BF("Handle new way of dealing with owners"));
-#if 0
-	ASSERTNOTNULL(this->_WeakConstitution);
-	if ( this->_WeakConstitution.nilp() )
-	{
-	    // Crawl up the owners chain and look
-	    // for a Constitution
-	    this->_WeakConstitution = this->ownerWithClass<Constitution_O>();
-	}
-	return this->_WeakConstitution;
-#endif
-    } 
-
     string	Topology_O::description() const
     {
 	stringstream	ss;
@@ -492,7 +452,6 @@ CL_DEFMETHOD     Plug_sp Topology_O::plugNamed(core::Symbol_sp name)
     void	Topology_O::initialize()
     {
 	this->Base::initialize();
-	this->_WeakConstitution = _Nil<Constitution_O>();
 	this->_Name = _Nil<core::Symbol_O>();
 	this->_ResidueNetCharge = 0;
 	this->_Plugs.clear();

@@ -786,7 +786,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::superposeAllHeavyAtoms()
 
 
 
-CL_LISPIFY_NAME("sort");
+CL_LISPIFY_NAME("ConformationExplorer-sort");
 CL_DEFMETHOD     void	ConformationExplorer_O::sort(const string& stageName, core::Symbol_sp keyName )
     {
 	OrderStageAndKeyValue comparer;

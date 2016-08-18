@@ -136,15 +136,11 @@ public:
 public:
     typedef	gctools::Vec0<Mate_sp>	Mates;
 private:
-    Constitution_wp		_WeakConstitution;
     /*! Name of plug, prefix of '-' means its an incoming plug
      * prefix of '+' means its an outgoing plug
      */
     core::Symbol_sp			_Name;
 public:
-    Constitution_sp	getConstitution();
-    void	setConstitution(Constitution_sp con);
-
     string descriptionOfContents() const;
 
 CL_NAME("setName");

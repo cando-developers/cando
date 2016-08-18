@@ -111,7 +111,6 @@ namespace chem
 	public:
 	    static Constitution_sp make(core::Symbol_sp name,
                                         core::String_sp comment,
-                                        core::Symbol_sp metaConstitution,
                                         ConstitutionAtoms_sp constitutionAtoms,
                                         StereoInformation_sp stereoInformation,
                                         core::List_sp plugs,
@@ -146,9 +145,6 @@ namespace chem
 	public:
 	    virtual adapt::SymbolSet_sp	expandedNameSet() { return this->getMonomerNamesAsSymbolSet(); };
 	public:
-
-
-
 	    core::List_sp stereoisomersAsCons();
 	    core::List_sp topologiesAsCons();
 	    core::List_sp plugsAsCons();
@@ -203,9 +199,8 @@ CL_DEFMETHOD 	    void	setMetaConstitutionName(core::Symbol_sp tt) {this->_MetaC
 	    /*! Add all of my Stereoisomers as Entities to the CandoDatabase */
 	    void addStereoisomersToCandoDatabase(CandoDatabase_sp db);
 
-
+            CL_DEFMETHOD void add_topology(Topology_sp topology);
 	    RepresentedEntityNameSet_sp	asGroup();
-
 CL_NAME("getConstitutionAtoms");
 CL_DEFMETHOD 	    ConstitutionAtoms_sp getConstitutionAtoms() { return this->_ConstitutionAtoms;};
 

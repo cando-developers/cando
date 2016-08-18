@@ -59,7 +59,7 @@
   (let (atoms)
     (chem:map-atoms nil
                     (lambda (x)
-                      (when (not (eq :eof (getf (chem:get-properties x) prop-name :eof)))
+                      (when (not (eq :eof (getf (chem:properties x) prop-name :eof)))
                         (push x atoms)))
                     matter)
     atoms))
@@ -70,7 +70,7 @@
   (let* ((atoms (atoms-with-property matter prop-name)))
     (format t "atoms-with-property ~a~%" atoms)
     (let* ((atoms-with-props (mapcar (lambda (a) ;associate atom with prop
-                                       (cons a (getf (chem:get-properties a) prop-name)))
+                                       (cons a (getf (chem:properties a) prop-name)))
                                      atoms))
            (sorted (sort atoms-with-props (lambda (x y) ; sort by prop
                                             (let ((px (string (cdr x)))

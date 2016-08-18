@@ -203,7 +203,6 @@ namespace chem
     void	Plug_O::initialize()
     {
 	this->Base::initialize();
-	this->_WeakConstitution = _Nil<Constitution_O>();
 	this->_Name = _Nil<core::Symbol_O>();
     }
 
@@ -253,7 +252,6 @@ namespace chem
     {
 	Mate_sp	rn;
 	LOG(BF("Original %s") % p.description().c_str()  );
-	this->_WeakConstitution = p._WeakConstitution;
 	this->_Name = p._Name;
 	LOG(BF("Copy constructed %s") % this->description().c_str()  );
     }
@@ -266,29 +264,6 @@ namespace chem
 	ss << this->Base::descriptionOfContents() << " ";
 	ss << "( Name " << _rep_(this->_Name) << " )";
 	return ss.str();
-    }
-
-
-
-
-    void	Plug_O::setConstitution(Constitution_sp con)
-    {
-	this->_WeakConstitution = con->sharedThis<Constitution_O>();
-    }
-
-
-
-CL_LISPIFY_NAME("getConstitution");
-CL_DEFMETHOD     Constitution_sp	Plug_O::getConstitution()
-    {_OF();
-	ASSERTNOTNULL(this->_WeakConstitution);
-	if ( this->_WeakConstitution.nilp() )
-	{
-	    // Look for a constitution in the owners
-	    IMPLEMENT_MEF(BF("Handle ownerWithClass"));
-//	    this->_WeakConstitution = this->ownerWithClass<Constitution_O>();
-	}
-	return this->_WeakConstitution;
     }
 
 

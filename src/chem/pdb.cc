@@ -541,7 +541,7 @@ PdbWriter_sp PdbWriter_O::make(core::T_sp fileName)
         core::clasp_write_format(BF("TER\n"), fout );
     }
 
-CL_LISPIFY_NAME("open");
+CL_LISPIFY_NAME("pdb-open");
 CL_DEFMETHOD void PdbWriter_O::open(core::T_sp pathDesignator)
 {_OF();
   this->_Out = core::clasp_openWrite(pathDesignator);
@@ -585,7 +585,7 @@ CL_DEFMETHOD     void PdbWriter_O::writeModel(Matter_sp matter, int model)
         core::clasp_write_format(BF("ENDMDL\n"),this->_Out);
     }
 
-CL_LISPIFY_NAME("close");
+CL_LISPIFY_NAME("pdb-close");
 CL_DEFMETHOD     void PdbWriter_O::close()
     {
       if ( this->_Out.notnilp() ) {

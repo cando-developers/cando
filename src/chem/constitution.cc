@@ -55,25 +55,15 @@ namespace chem {
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_Constitution_O_make "(name comment meta_constitution constitution_atoms stereo_information plugs topologies)"
-#define DECL_Constitution_O_make ""
-#define DOCS_Constitution_O_make "make Constitution"
-Constitution_sp Constitution_O::make(core::Symbol_sp name, core::String_sp comment, core::Symbol_sp metaConstitution, ConstitutionAtoms_sp constitutionAtoms, StereoInformation_sp stereoInformation, core::List_sp plugs, core::List_sp topologies)
+Constitution_sp Constitution_O::make(core::Symbol_sp name, core::String_sp comment, ConstitutionAtoms_sp constitutionAtoms, StereoInformation_sp stereoInformation, core::List_sp plugs, core::List_sp topologies)
   {
       GC_ALLOCATE(Constitution_O, me );
       me->_Name = name;
       me->_Comment = comment;
-      me->_MetaConstitution = metaConstitution;
       me->_ConstitutionAtoms = constitutionAtoms;
-//      IMPLEMENT_MEF(BF("Handle setOwner"));
-//      me->_ConstitutionAtoms->setOwner(me);
       me->_StereoInformation = stereoInformation;
-//      IMPLEMENT_MEF(BF("Handle setOwner"));
-//      me->_StereoInformation->setOwner(me);
       me->_StereoInformation->validate();
       {_BLOCK_TRACE("Adding plugs to Constitution");
-//	  IMPLEMENT_MEF(BF("Handle setOwnerOfAllEntries"));
-//	  plugs->setOwnerOfAllEntries(me);
 	  me->_PlugsByName.clear();
           for ( auto cur : plugs ) {
             Plug_sp p = oCar(cur).as<Plug_O>();
@@ -163,6 +153,11 @@ Constitution_sp Constitution_O::make(core::Symbol_sp name, core::String_sp comme
     }
 
 
+void Constitution_O::add_topology(Topology_sp topology) {
+  // Add the named topology to this constitution
+  this->_Topologies.set(topology->getName(),topology);
+}
+  
 
 
 /*!

@@ -54,7 +54,7 @@
                             (chem:get-type x)
                             (chem:get-configuration x)
                             (chem:get-position x)
-                            (chem:get-properties x)))
+                            (chem:properties x)))
                   matter))
 
 (defun dump-stereocenters (centers)
@@ -331,7 +331,7 @@ Set the stereochemistry of a collection of stereocenters using a function that r
 (defun atoms-to-fix (agg)
   "Return all atoms with the :fix property sorted by the value of that property"
   (let* ((fix-atoms (sort (select:atoms-with-property agg :fix) #'string<
-                          :key (lambda (a) (string (getf (chem:get-properties a) :fix))))))
+                          :key (lambda (a) (string (getf (chem:properties a) :fix))))))
     fix-atoms))
 
 (defun anchor-atom (atom pos &optional (weight 1.0))

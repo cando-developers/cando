@@ -243,7 +243,7 @@ CL_DEFMETHOD   virtual Matter_sp copy() {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
 		 */
   void	setPropertyTrue(core::Symbol_sp propertySymbol);
 
-CL_LISPIFY_NAME("getProperties");
+CL_LISPIFY_NAME("properties");
 CL_DEFMETHOD   core::List_sp getProperties() { return this->_Properties; };
 		/*! Return the value of the property.
 		 * Throw an exception if the property isn't defined.

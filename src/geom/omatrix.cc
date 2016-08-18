@@ -46,9 +46,9 @@ void OMatrix_O::archiveBase(core::ArchiveP node)
 #endif
 
 CL_NAME("MAKE-MATRIX");
-CL_DEFUN OMatrix_sp OMatrix_O::make(bool identity)
+CL_DEFUN OMatrix_sp OMatrix_O::make(bool ident)
 {
-  GC_ALLOCATE_VARIADIC(OMatrix_O,om,identity);
+  GC_ALLOCATE_VARIADIC(OMatrix_O,om,ident);
   return om;
 };
   

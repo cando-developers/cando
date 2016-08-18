@@ -57,47 +57,47 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem
 {
-    SMART(Atom);
-    SMART(Residue);
-    SMART(Topology);
-    SMART(ComplexRestraint);
+  SMART(Atom);
+  SMART(Residue);
+  SMART(Topology);
+  SMART(ComplexRestraint);
 
-    SMART(StereoConfiguration);
-    class StereoConfiguration_O : public core::CxxObject_O
-	{
-	    LISP_CLASS(chem,ChemPkg,StereoConfiguration_O,"StereoConfiguration",core::CxxObject_O);
+  SMART(StereoConfiguration);
+  class StereoConfiguration_O : public core::CxxObject_O
+  {
+    LISP_CLASS(chem,ChemPkg,StereoConfiguration_O,"StereoConfiguration",core::CxxObject_O);
 #if INIT_TO_FACTORIES
-	public:
-	    static StereoConfiguration_sp make(core::Symbol_sp atomName, core::Symbol_sp config);
+  public:
+    static StereoConfiguration_sp make(core::Symbol_sp atomName, core::Symbol_sp config);
 #else
-	    DECLARE_INIT();
+    DECLARE_INIT();
 #endif
-	public:
-	    static void lisp_initGlobals(core::Lisp_sp lisp);
-	public:
+  public:
+    static void lisp_initGlobals(core::Lisp_sp lisp);
+  public:
 //	    void	archive(core::ArchiveP node);
 
-	private:
-	    MatterName	_AtomName;
-            core::Symbol_sp 	_Configuration;
+  private:
+    MatterName	_AtomName;
+    core::Symbol_sp 	_Configuration;
 
-	public:
-	    static	core::List_sp stereochemicalPermutations(uint numberOfCenters);
-	    static	core::List_sp create_multiple(core::List_sp atomNames, core::List_sp configurations);
+  public:
+    static	core::List_sp stereochemicalPermutations(uint numberOfCenters);
+    static	core::List_sp create_multiple(core::List_sp atomNames, core::List_sp configurations);
 
-	public:
-CL_NAME("getAtomName");
-CL_DEFMETHOD 	    MatterName	getAtomName()	{return this->_AtomName;};
-CL_NAME("setAtomName");
-CL_DEFMETHOD 	    void	setAtomName(MatterName n) {this->_AtomName = n;};
-CL_NAME("getConfiguration");
-CL_DEFMETHOD             core::Symbol_sp getConfiguration()	{return this->_Configuration;};
-CL_NAME("setConfiguration");
-CL_DEFMETHOD 	    void	setConfiguration(core::Symbol_sp p) {this->_Configuration = p;};
-	    int		getMoeConfiguration();
+  public:
+    CL_NAME("getAtomName");
+    CL_DEFMETHOD 	    MatterName	getAtomName()	{return this->_AtomName;};
+    CL_NAME("setAtomName");
+    CL_DEFMETHOD 	    void	setAtomName(MatterName n) {this->_AtomName = n;};
+    CL_NAME("getConfiguration");
+    CL_DEFMETHOD             core::Symbol_sp getConfiguration()	{return this->_Configuration;};
+    CL_NAME("setConfiguration");
+    CL_DEFMETHOD 	    void	setConfiguration(core::Symbol_sp p) {this->_Configuration = p;};
+    int		getMoeConfiguration();
 
-	    DEFAULT_CTOR_DTOR(StereoConfiguration_O);
-	};
+    DEFAULT_CTOR_DTOR(StereoConfiguration_O);
+  };
 
 
 
@@ -108,135 +108,129 @@ CL_DEFMETHOD 	    void	setConfiguration(core::Symbol_sp p) {this->_Configuration
 
 /*! Save a monomer name and pdb name pair
  */
-    SMART(Stereoisomer);
-    class Stereoisomer_O : public Entity_O
-	{
-	    LISP_CLASS(chem,ChemPkg,Stereoisomer_O,"Stereoisomer",Entity_O);
+  SMART(Stereoisomer);
+  class Stereoisomer_O : public Entity_O {
+    LISP_CLASS(chem,ChemPkg,Stereoisomer_O,"Stereoisomer",Entity_O);
 #if INIT_TO_FACTORIES
-	public:
-	    static Stereoisomer_sp make(core::Symbol_sp name, core::Symbol_sp pdb, core::List_sp configs);
+  public:
+    static Stereoisomer_sp make(core::Symbol_sp name, core::Symbol_sp pdb, core::List_sp configs);
 #else
-	    DECLARE_INIT();
+    DECLARE_INIT();
 #endif
-	public:
-	    void	initialize();
+  public:
+    void	initialize();
 //	    void	archive(core::ArchiveP node);
 
-	private:
-	    Constitution_wp	_WeakConstitution;
-	    core::Symbol_sp	_Name;
-	    core::Symbol_sp	_Pdb;
-	    core::Symbol_sp	_Enantiomer;
+  private:
+    core::Symbol_sp	_Name;
+    core::Symbol_sp	_Pdb;
+    core::Symbol_sp	_Enantiomer;
 	    // Add configurations here
-            gctools::Vec0<StereoConfiguration_sp>	_Configurations;
-	public:
-	    void lispFinalize();
+    gctools::Vec0<StereoConfiguration_sp>	_Configurations;
+  public:
+    void lispFinalize();
 
-	public:		// local implementations of CandoDatabaseDependent functions
-	    bool	isTerminalName() { return true; };
-	    bool	hasConstitution() { return true; };
-	    Constitution_sp constitution() { return this->getConstitution(); };
-	    adapt::SymbolSet_sp	expandedNameSet();
-	    RepresentativeList_sp expandedRepresentativeList() const;
+  public:		// local implementations of CandoDatabaseDependent functions
+    bool	isTerminalName() { return true; };
+    adapt::SymbolSet_sp	expandedNameSet();
+    RepresentativeList_sp expandedRepresentativeList() const;
 
-            core::Symbol_sp getConfigurationForCenter(core::Symbol_sp centerName );
-	public:
-	    Constitution_sp	getConstitution();
-
-CL_NAME("getName");
-CL_DEFMETHOD 	    core::Symbol_sp	getName() const {return this->_Name;};
-CL_NAME("setName");
-CL_DEFMETHOD 	    void	setName(core::Symbol_sp n) {this->_Name = n;};
-CL_NAME("getPdb");
-CL_DEFMETHOD 	    core::Symbol_sp	getPdb() {return this->_Pdb;};
-CL_NAME("setPdb");
-CL_DEFMETHOD 	    void	setPdb(core::Symbol_sp p) {this->_Pdb = p;};
-	    core::Symbol_sp	getEnantiomer()	{return this->_Enantiomer;};
-	    void	setEnantiomer(core::Symbol_sp p) {this->_Enantiomer = p;};
-	    void	addStereoConfiguration(StereoConfiguration_sp sc) {this->_Configurations.push_back(sc);};
-	    string __repr__() const;
-            gctools::Vec0<StereoConfiguration_sp>::iterator _Configurations_begin() { return this->_Configurations.begin();};
-            gctools::Vec0<StereoConfiguration_sp>::iterator _Configurations_end() { return this->_Configurations.end();};
+    core::Symbol_sp getConfigurationForCenter(core::Symbol_sp centerName );
+  public:
+    CL_NAME("getName");
+    CL_DEFMETHOD 	    core::Symbol_sp	getName() const {return this->_Name;};
+    CL_NAME("setName");
+    CL_DEFMETHOD 	    void	setName(core::Symbol_sp n) {this->_Name = n;};
+    CL_NAME("getPdb");
+    CL_DEFMETHOD 	    core::Symbol_sp	getPdb() {return this->_Pdb;};
+    CL_NAME("setPdb");
+    CL_DEFMETHOD 	    void	setPdb(core::Symbol_sp p) {this->_Pdb = p;};
+    core::Symbol_sp	getEnantiomer()	{return this->_Enantiomer;};
+    void	setEnantiomer(core::Symbol_sp p) {this->_Enantiomer = p;};
+    void	addStereoConfiguration(StereoConfiguration_sp sc) {this->_Configurations.push_back(sc);};
+    string __repr__() const;
+    gctools::Vec0<StereoConfiguration_sp>::iterator _Configurations_begin() { return this->_Configurations.begin();};
+    gctools::Vec0<StereoConfiguration_sp>::iterator _Configurations_end() { return this->_Configurations.end();};
 
 
 
-	    DEFAULT_CTOR_DTOR(Stereoisomer_O);
-	};
+    DEFAULT_CTOR_DTOR(Stereoisomer_O);
+  };
 
-    SMART(StereoInformation);
-    class StereoInformation_O : public core::CxxObject_O
-	{
-	    LISP_CLASS(chem,ChemPkg,StereoInformation_O,"StereoInformation",core::CxxObject_O);
+  SMART(StereoInformation);
+  class StereoInformation_O : public core::CxxObject_O
+  {
+    LISP_CLASS(chem,ChemPkg,StereoInformation_O,"StereoInformation",core::CxxObject_O);
 #if INIT_TO_FACTORIES
-	public:
-	    static StereoInformation_sp make(core::List_sp stereoisomers, core::List_sp restraints);
+  public:
+    static StereoInformation_sp make(core::List_sp stereoisomers, core::List_sp restraints);
 #else
-	    DECLARE_INIT();
+    DECLARE_INIT();
 #endif
-	public:
+  public:
 //	    void	archive(core::ArchiveP node);
-	public:
+  public:
 //	    bool loadFinalize(core::ArchiveP node);
-	private:
-            gctools::Vec0<Stereoisomer_sp>		_Stereoisomers;
-	    adapt::SymbolMap<Stereoisomer_O>	_NameOrPdbToStereoisomer;
-            gctools::Vec0<ComplexRestraint_sp>	_ComplexRestraints;
-	public:
-	public:
-            gctools::Vec0<Stereoisomer_sp>::iterator begin_Stereoisomers() { return this->_Stereoisomers.begin();};
-            gctools::Vec0<Stereoisomer_sp>::iterator end_Stereoisomers() { return this->_Stereoisomers.end();};
+  private:
+    gctools::Vec0<Stereoisomer_sp>		_Stereoisomers;
+    adapt::SymbolMap<Stereoisomer_O>	_NameOrPdbToStereoisomer;
+    gctools::Vec0<ComplexRestraint_sp>	_ComplexRestraints;
+  public:
+  public:
+    gctools::Vec0<Stereoisomer_sp>::iterator begin_Stereoisomers() { return this->_Stereoisomers.begin();};
+    gctools::Vec0<Stereoisomer_sp>::iterator end_Stereoisomers() { return this->_Stereoisomers.end();};
 
-            gctools::Vec0<Stereoisomer_sp>::const_iterator begin_Stereoisomers() const { return this->_Stereoisomers.begin();};
-            gctools::Vec0<Stereoisomer_sp>::const_iterator end_Stereoisomers() const { return this->_Stereoisomers.end();};
+    gctools::Vec0<Stereoisomer_sp>::const_iterator begin_Stereoisomers() const { return this->_Stereoisomers.begin();};
+    gctools::Vec0<Stereoisomer_sp>::const_iterator end_Stereoisomers() const { return this->_Stereoisomers.end();};
 
 
 #if 0
-            gctools::Vec0<O_ProChiralCenter>::iterator begin_ProChiralCenters() { return this->_ProChiralCenters.begin();};
-            gctools::Vec0<O_ProChiralCenter>::iterator end_ProChiralCenters() { return this->_ProChiralCenters.end();};
+    gctools::Vec0<O_ProChiralCenter>::iterator begin_ProChiralCenters() { return this->_ProChiralCenters.begin();};
+    gctools::Vec0<O_ProChiralCenter>::iterator end_ProChiralCenters() { return this->_ProChiralCenters.end();};
 #endif
-            gctools::Vec0<ComplexRestraint_sp>::iterator begin_ComplexRestraints() { return this->_ComplexRestraints.begin();};
-            gctools::Vec0<ComplexRestraint_sp>::iterator end_ComplexRestraints() { return this->_ComplexRestraints.end();};
+    gctools::Vec0<ComplexRestraint_sp>::iterator begin_ComplexRestraints() { return this->_ComplexRestraints.begin();};
+    gctools::Vec0<ComplexRestraint_sp>::iterator end_ComplexRestraints() { return this->_ComplexRestraints.end();};
 
-CL_NAME("stereoisomersAsCons");
-CL_DEFMETHOD 	    core::List_sp stereoisomersAsCons() { return core::Cons_O::createFromVec0(this->_Stereoisomers); };
+    CL_NAME("stereoisomersAsCons");
+    CL_DEFMETHOD 	    core::List_sp stereoisomersAsCons() { return core::Cons_O::createFromVec0(this->_Stereoisomers); };
 
-	    void validate();
+    void validate();
 
-	    void addStereoisomer(Stereoisomer_sp s);
+    void addStereoisomer(Stereoisomer_sp s);
 //    void addProChiralCenter(RPProChiralCenter s);
-	    Stereoisomer_sp	getStereoisomer(core::Symbol_sp nameOrPdb);
+    Stereoisomer_sp	getStereoisomer(core::Symbol_sp nameOrPdb);
 
-	    //! Return true if this Constitution recognize the name or pdb name
-	    bool	recognizesNameOrPdb(core::Symbol_sp nm)
-	    {
-		return ( this->_NameOrPdbToStereoisomer.contains(nm) != 0);
-	    };
+	    //! Return true if this StereoInformation recognizes the name or pdb name
+    bool	recognizesNameOrPdb(core::Symbol_sp nm)
+    {
+      return ( this->_NameOrPdbToStereoisomer.contains(nm) != 0);
+    };
 	    //! The name of the monomer with the nameOrPdb
-	    core::Symbol_sp	nameFromNameOrPdb(core::Symbol_sp np)
-	    {
-		Stereoisomer_sp i;
-                try {i = this->_NameOrPdbToStereoisomer[np];}
-                catch (...) {CELL_ERROR(np);};
-		ASSERTNOTNULL(i);
-		return i->getName();
-	    };
+    core::Symbol_sp	nameFromNameOrPdb(core::Symbol_sp np)
+    {
+      Stereoisomer_sp i;
+      try {i = this->_NameOrPdbToStereoisomer[np];}
+      catch (...) {CELL_ERROR(np);};
+      ASSERTNOTNULL(i);
+      return i->getName();
+    };
 	    //! The pdb_name of the monomer with the nameOrPdb
-	    core::Symbol_sp	pdbFromNameOrPdb(core::Symbol_sp np)
-	    {
-                Stereoisomer_sp i;
-                try {i = this->_NameOrPdbToStereoisomer[np];}
-                catch (...) {CELL_ERROR(np);};
-		ASSERTNOTNULL(i);
-		return i->getPdb();
-	    };
+    core::Symbol_sp	pdbFromNameOrPdb(core::Symbol_sp np)
+    {
+      Stereoisomer_sp i;
+      try {i = this->_NameOrPdbToStereoisomer[np];}
+      catch (...) {CELL_ERROR(np);};
+      ASSERTNOTNULL(i);
+      return i->getPdb();
+    };
 
 	    //! Return the names of Monomers that can be created from this constitution
-	    adapt::StringList_sp getMonomerNamesAsStringList();
-	    adapt::SymbolSet_sp getMonomerNamesAsSymbolSet();
+    adapt::StringList_sp getMonomerNamesAsStringList();
+    adapt::SymbolSet_sp getMonomerNamesAsSymbolSet();
 	    //! Return the pdb names of Monomers that can be created from this constitution
-	    adapt::StringList_sp getPdbNamesAsStringList();
-	    DEFAULT_CTOR_DTOR(StereoInformation_O);
-	};
+    adapt::StringList_sp getPdbNamesAsStringList();
+    DEFAULT_CTOR_DTOR(StereoInformation_O);
+  };
 
 
 };
