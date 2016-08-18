@@ -27,14 +27,15 @@
 
 (progn
   (setf (logical-pathname-translations "cando")
-        '(("**;*.*" "source-dir:plugins;cando;src;lisp;**;*.*"))))
+        '(("**;*.*" "source-dir:extensions;cando;src;lisp;**;*.*"))))
   (require :asdf)
   (let ((central-registry (find-symbol "*CENTRAL-REGISTRY*" :asdf))
         (load-system (find-symbol "LOAD-SYSTEM" :asdf)))
     (setf (symbol-value central-registry)
           (cons (translate-logical-pathname "cando:cando;") (symbol-value central-registry)))
-    (funcall load-system "cando"))
+    #+(or)(funcall load-system "cando"))
   (format t "Done initialization pid = ~a~%" (getpid)))
+(push (translate-logical-pathname "cando:cando;amber;") asdf:*central-registry*)
 
 #+(or)
 (progn

@@ -32,6 +32,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 
+//PACKAGE_USE("COMMON-LISP");
 NAMESPACE_PACKAGE_ASSOCIATION(units,UnitsPkg,"UNITS");
 
 

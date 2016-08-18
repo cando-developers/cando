@@ -25,24 +25,11 @@
 ;; -^-
 (cl:in-package #:common-lisp-user)
 
-(defpackage #:chem
-  (:use #:common-lisp)
-  (:export
-   )
-  )
-
 (defpackage #:chemdraw
   (:use :cl)
   (:export #:load-only-aggregate
            )
   )
-
-(defpackage #:geom
-  (:use #:common-lisp)
-  (:export
-   #:make-v3
-   #:center-of-geometry
-   ))
 
 (defpackage #:cando
   (:use #:common-lisp #:core)
@@ -70,6 +57,12 @@
    #:load-psf-pdb
    #:remove-overlaps
    #:merge-into-one-aggregate
+   ))
+
+(defpackage #:geom
+  (:use #:common-lisp)
+  (:export
+   #:center-of-geometry
    ))
 
 (defpackage #:select
@@ -149,3 +142,15 @@
   (:use #:common-lisp)
   (:export
    #:load-antechamber))
+
+
+(defpackage #:cando-user
+  (:shadowing-import-from :chem "ATOM")
+  (:shadowing-import-from :geom "BOUNDING-BOX")
+  (:shadowing-import-from :common-lisp "+" "-" "/" "*" ">" "<" ">=" "<=" "SQRT")
+  (:shadowing-import-from :chem "SET-ELEMENT" "GET-ELEMENT" "SIZE")
+  (:shadowing-import-from :cando "AS-STRING" "LOAD-MOL2" "SAVE-MOL2")
+  (:use :common-lisp :chem :geom :chemdraw :cando)
+  )
+
+

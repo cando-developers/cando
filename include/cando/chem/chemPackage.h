@@ -32,6 +32,12 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/candoDatabase.fwd.h>
 
 NAMESPACE_PACKAGE_ASSOCIATION(chemkw,ChemKwPkg,"KEYWORD");
+
+// -------------------------------------
+//
+// Set up the CHEM package
+//
+PACKAGE_USE("COMMON-LISP");
 NAMESPACE_PACKAGE_ASSOCIATION(chem,ChemPkg,"CHEM");
 
 

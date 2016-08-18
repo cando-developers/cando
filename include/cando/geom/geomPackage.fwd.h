@@ -27,7 +27,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define geomPackage_fwd_H
 
 
-
+PACKAGE_USE("COMMON-LISP");
 NAMESPACE_PACKAGE_ASSOCIATION(geom,GeomPkg,"GEOM")
 
 
