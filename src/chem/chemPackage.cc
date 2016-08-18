@@ -134,7 +134,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/monomerPack.h>
 #include <cando/chem/representedEntityNameSet.h>
 
-
+SYMBOL_SHADOW_EXPORT_SC_(ChemPkg,atom);
 SYMBOL_EXPORT_SC_(ChemPkg,R);
 SYMBOL_EXPORT_SC_(ChemPkg,S);
 SYMBOL_EXPORT_SC_(ChemPkg,UnknownConfiguration);

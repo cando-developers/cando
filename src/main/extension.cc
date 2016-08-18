@@ -68,7 +68,7 @@ namespace cando {
 
 CL_INITIALIZER void cando_initializer()
 {
-  printf("%s:%d In cando_initializer\n", __FILE__, __LINE__);
+//  printf("%s:%d In cando_initializer\n", __FILE__, __LINE__);
   geom::GeomExposer_O* GeomPkg = new geom::GeomExposer_O(_lisp);
   units::UnitsExposer_O* UnitsPkg = new units::UnitsExposer_O(_lisp);
   adapt::AdaptExposer_O* AdaptPkg = new adapt::AdaptExposer_O(_lisp);
@@ -78,9 +78,9 @@ CL_INITIALIZER void cando_initializer()
   _lisp->installPackage(AdaptPkg);
   _lisp->installPackage(ChemPkg);
   core::Cons_sp features = core::Cons_O::create(_lisp->intern("CANDO",KeywordPkg),cl::_sym_STARfeaturesSTAR->symbolValue());
-  core::List_sp loads = core::_sym_STARplugin_startup_loadsSTAR->symbolValue();
+  core::List_sp loads = core::_sym_STARextension_startup_loadsSTAR->symbolValue();
   loads = core::Cons_O::create(core::Cons_O::createList(cl::_sym_load,core::cl__pathname(core::Str_O::create("source-dir:extensions;cando;src;lisp;start-cando.lisp"))),loads);
-  core::_sym_STARplugin_startup_loadsSTAR->defparameter(loads);
+  core::_sym_STARextension_startup_loadsSTAR->defparameter(loads);
 }
 
 
