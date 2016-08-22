@@ -1866,7 +1866,7 @@ SYMBOL_EXPORT_SC_(ChemPkg,atomNeedsMinimizer);
 
     ConstitutionAtom_sp Atom_O::asConstitutionAtom(ConstitutionAtomIndex0N index)
     {_OF();
-	ConstitutionAtom_sp ca = ConstitutionAtom_O::create(this->getName(),this->_Element,index);
+	ConstitutionAtom_sp ca = makeConstitutionAtom(this->getName(),this->_Element);
 	return ca;
     }
 

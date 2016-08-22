@@ -46,151 +46,119 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem
 {
-
-
-
-    class ConstitutionBond_O : public core::CxxObject_O
-    {
-	friend class ConstitutionAtoms_O;
-	LISP_CLASS(chem,ChemPkg,ConstitutionBond_O,"ConstitutionBond",core::CxxObject_O);
-    public:
-	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
-    public:
-	static ConstitutionBond_sp create(BondOrder order, ConstitutionAtomIndex0N index);
-
-    protected:
+  class ConstitutionBond_O : public core::CxxObject_O
+  {
+    friend class ConstitutionAtoms_O;
+    LISP_CLASS(chem,ChemPkg,ConstitutionBond_O,"ConstitutionBond",core::CxxObject_O);
+  protected:
 	//! The ConstitutionAtomIndex0N of the atom that is bonded to
-	ConstitutionAtomIndex0N	_AtomIndex;
+    ConstitutionAtomIndex0N	_ToAtomIndex;
 	//! The bond order of the bond
-	BondOrder		_BondOrder;
-    public:
-	ConstitutionAtomIndex0N atomIndex() const { return this->_AtomIndex;};
-	DEFAULT_CTOR_DTOR(ConstitutionBond_O);
-    };
+    BondOrder		_BondOrder;
+  public:
+    ConstitutionAtomIndex0N toAtomIndex() const { return this->_ToAtomIndex;};
+    BondOrder bondOrder() const { return this->_BondOrder; };
+  public:
+  ConstitutionBond_O(ConstitutionAtomIndex0N toAtomIndex, BondOrder bo) : _ToAtomIndex(toAtomIndex), _BondOrder(bo) {};
+  };
+
+  CL_DEFUN inline ConstitutionBond_sp makeConstitutionBond(chem::ConstitutionAtomIndex0N index, chem::BondOrder order) {
+    // Allocate a ConstitutionBond_O
+    return gctools::GC<ConstitutionBond_O>::allocate(index,order);
+  }
 
 
+  class ConstitutionAtom_O : public core::CxxObject_O
+  {
+    friend class ConstitutionAtoms_O;
+    friend class TopologyAtom_O;
+    friend class TopologyVirtualAtom_O;
+    friend class StereoisomerAtom_O;
+    friend class StereoisomerVirtualAtom_O;
 
-
-    class ConstitutionAtom_O : public core::CxxObject_O
-    {
-	friend class ConstitutionAtoms_O;
-	friend class TopologyAtom_O;
-	friend class TopologyVirtualAtom_O;
-	friend class StereoisomerAtom_O;
-	friend class StereoisomerVirtualAtom_O;
-
-	LISP_CLASS(chem,ChemPkg,ConstitutionAtom_O,"ConstitutionAtom",core::CxxObject_O);
-    public:
-	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
-    public:
-	/*! Construct a ConstitutionAtom given its uniqueAtomName and its unique ConstitutionAtomIndex0N */
-	static ConstitutionAtom_sp create(MatterName uniqueAtomName, Element element,
-					  ConstitutionAtomIndex0N index );
-    protected:
-	MatterName		_AtomName;
-	Element			_Element;
-	ConstitutionAtomIndex0N	_AtomIndex;
-        gctools::Vec0<ConstitutionBond_sp>	_Bonds;
-    public:
-	string __repr__() const;
-CL_NAME("atomName");
-CL_DEFMETHOD 	MatterName atomName() { return this->_AtomName;};
-	ConstitutionAtomIndex0N atomIndex() const { return this->_AtomIndex;};
-	virtual bool isVirtualAtom() { return false;};
+    LISP_CLASS(chem,ChemPkg,ConstitutionAtom_O,"ConstitutionAtom",core::CxxObject_O);
+  public:
+  protected:
+    MatterName		_AtomName;
+    Element			_Element;
+    gctools::Vec0<ConstitutionBond_sp>	_Bonds;
+  public:
+    string __repr__() const;
+    CL_NAME("atomName");
+    CL_DEFMETHOD 	MatterName atomName() { return this->_AtomName;};
+    virtual bool isVirtualAtom() { return false;};
 	/*! Append a ConstitutionBond_sp to our list of bonds */
-	void addConstitutionBond(ConstitutionBond_sp cb) {_OF(); this->_Bonds.push_back(cb);};
-	DEFAULT_CTOR_DTOR(ConstitutionAtom_O);
-    };
+    void addConstitutionBond(ConstitutionBond_sp cb) {this->_Bonds.push_back(cb);};
+  ConstitutionAtom_O(MatterName atomName, Element element) : _AtomName(atomName), _Element(element) {};
+  };
 
+  CL_DEFUN inline ConstitutionAtom_sp makeConstitutionAtom(chem::MatterName uniqueAtomName, chem::Element element) {
+    return gctools::GC<ConstitutionAtom_O>::allocate(uniqueAtomName,element);
+  }
 
+  class ConstitutionVirtualAtom_O : public ConstitutionAtom_O
+  {
+    LISP_CLASS(chem,ChemPkg,ConstitutionVirtualAtom_O,"ConstitutionVirtualAtom",ConstitutionAtom_O);
+  private:
+    CalculatePosition_sp	_CalculatePositionCode;
+  public:
+    virtual bool isVirtualAtom() { return true;};
 
-    class ConstitutionVirtualAtom_O : public ConstitutionAtom_O
-    {
-	LISP_CLASS(chem,ChemPkg,ConstitutionVirtualAtom_O,"ConstitutionVirtualAtom",ConstitutionAtom_O);
-    public:
-	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
-    private:
-	CalculatePosition_sp	_CalculatePositionCode;
-    public:
-	/*! Construct a ConstitutionVirtualAtom given its uniqueAtomName and its uique ConstitutionAtomIndex0N */
-	static ConstitutionVirtualAtom_sp create(MatterName uniqueAtomName, ConstitutionAtomIndex0N index,
-						 CalculatePosition_sp code );
-	/*! Construct a ConstitutionVirtualAtom given its uniqueAtomName and leave its ConstitutionAtomIndex0N undefined */
-	static ConstitutionVirtualAtom_sp create(MatterName uniqueAtomName, 
-						 CalculatePosition_sp code );
-    public:
-	virtual bool isVirtualAtom() { return true;};
+  public:
+  ConstitutionVirtualAtom_O(MatterName atomname, Element element, CalculatePosition_sp calcPos) :
+    ConstitutionAtom_O(atomname,element), _CalculatePositionCode(calcPos) {};
+  };
 
-	DEFAULT_CTOR_DTOR(ConstitutionVirtualAtom_O);
-    };
+  CL_DEFUN inline ConstitutionVirtualAtom_sp makeConstitutionVirtualAtom(core::Symbol_sp atomName, chem::Element element, chem::CalculatePosition_sp calcPos) {
+    return gctools::GC<ConstitutionVirtualAtom_O>::allocate(atomName,element,calcPos);
+  }
 
-
-
-
-    class ConstitutionAtoms_O : public core::CxxObject_O
-    {
-	friend class StereoisomerAtoms_O;
-	LISP_CLASS(chem,ChemPkg,ConstitutionAtoms_O,"ConstitutionAtoms",core::CxxObject_O);
-
-    public: // virtual functions inherited from Object
-	void	initialize();
-//	void	archiveBase(core::ArchiveP node);
-//	string	__repr__() const;
-
-    private: // instance variables
+  class ConstitutionAtoms_O : public core::CxxObject_O
+  {
+    friend class StereoisomerAtoms_O;
+    LISP_CLASS(chem,ChemPkg,ConstitutionAtoms_O,"ConstitutionAtoms",core::CxxObject_O);
+  private: // instance variables
 	//! A list of ConstitutionAtoms
-        gctools::Vec0<ConstitutionAtom_sp>	_Atoms;
-	int				_NetCharge;
-    public:
-	typedef	gctools::Vec0<ConstitutionAtom_sp>::iterator	iterator;
+    gctools::Vec0<ConstitutionAtom_sp>	_Atoms;
+  public:
+    typedef	gctools::Vec0<ConstitutionAtom_sp>::iterator	iterator;
 	//! Create a ConstitutionAtoms object from a Residue
-	static ConstitutionAtoms_sp create(Residue_sp residue);
-    public:
+    static ConstitutionAtoms_sp createFromResidue(Residue_sp residue);
+  public:
 
 	/*! Return the number of atoms */
-	int numberOfAtoms() const { return this->_Atoms.size();};
+    int numberOfAtoms() const { return this->_Atoms.size();};
 
 	/*! Return the index of the ConstitutionAtom with the given name */
-	int	index(MatterName name) const;
+    int	index(MatterName name) const;
 
 	/*! Return the ConstitutionAtom with the give ConstitutionAtomIndex0N */
-	ConstitutionAtom_sp& operator[](ConstitutionAtomIndex0N idx);
+    ConstitutionAtom_sp& operator[](ConstitutionAtomIndex0N idx);
 
 	//! Return the ConstitutionAtom that has the give name
-	ConstitutionAtom_sp atomWithName(MatterName name);
+    ConstitutionAtom_sp atomWithName(MatterName name);
 
 	/*! Return the ConstitutionAtom at the given index */
-	ConstitutionAtom_sp atomWithId(ConstitutionAtomIndex0N idx) const;
-
-	//! Set the net charge of this collection of atoms
-CL_NAME("setNetCharge");
-CL_DEFMETHOD 	void setNetCharge(int charge) { this->_NetCharge = charge;};
-
+    ConstitutionAtom_sp atomWithId(ConstitutionAtomIndex0N idx) const;
 
 	//! Add a ConstitutionVirtualAtom to us and assign it a ConstitutionAtomIndex0N
-	void addConstitutionVirtualAtom(ConstitutionVirtualAtom_sp cva);
+    void addConstitutionVirtualAtom(ConstitutionVirtualAtom_sp cva);
 
 	//! Return a StringSet of the ConstitutionAtom names
-	adapt::SymbolSet_sp atomNamesAsSymbolSet();
+    adapt::SymbolSet_sp atomNamesAsSymbolSet();
 
-
+#if 0
 	/*! Create a Residue that has all the atoms/bonds and all the necessary atom/bond
 	  properties set properly for this ConstitutionAtoms */
-	Residue_sp buildResidue();
+    Residue_sp buildResidue();
+#endif
+    
+    ConstitutionAtoms_O( const ConstitutionAtoms_O& ss ); //!< Copy constructor
+    DEFAULT_CTOR_DTOR(ConstitutionAtoms_O);
+  };
 
-	ConstitutionAtoms_O( const ConstitutionAtoms_O& ss ); //!< Copy constructor
-	DEFAULT_CTOR_DTOR(ConstitutionAtoms_O);
-    };
-
-
-
-
+  CL_DEFUN inline ConstitutionAtoms_sp makeConstitutionAtoms() {
+    return gctools::GC<ConstitutionAtoms_O>::allocate();
+  }
 };
-TRANSLATE(chem::ConstitutionBond_O);
-TRANSLATE(chem::ConstitutionAtom_O);
-TRANSLATE(chem::ConstitutionVirtualAtom_O);
-TRANSLATE(chem::ConstitutionAtoms_O);
 #endif //]

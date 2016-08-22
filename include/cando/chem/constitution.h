@@ -126,8 +126,6 @@ namespace chem
 	    typedef    	gctools::SmallMap<core::Symbol_sp,Plug_sp> PlugMap; // adapt::SymbolMap<Plug_O>		PlugMap;
 	private:
 	    core::Symbol_sp			_Name;
-	    ConstitutionIndex0N			_ConstitutionIndex0N;
-	    core::Symbol_sp			_MetaConstitution;
             core::String_sp			_Comment;
 	    /*! An object that that describes the atoms and bonding within this Constitution.
 	      The index of the atom in the ConstitutionAtoms is used as the atom part of the AtomId 
@@ -189,12 +187,6 @@ CL_NAME("constitutionName");
 CL_DEFMETHOD 	    core::Symbol_sp	constitutionName() const	{return this->_Name;};
 CL_NAME("setConstitutionName");
 CL_DEFMETHOD 	    void	setConstitutionName(core::Symbol_sp tt) {this->_Name = tt;};
-
-CL_NAME("getMetaConstitutionName");
-CL_DEFMETHOD 	    core::Symbol_sp	getMetaConstitutionName()	{return this->_MetaConstitution;};
-CL_NAME("setMetaConstitutionName");
-CL_DEFMETHOD 	    void	setMetaConstitutionName(core::Symbol_sp tt) {this->_MetaConstitution = tt;};
-
 
 	    /*! Add all of my Stereoisomers as Entities to the CandoDatabase */
 	    void addStereoisomersToCandoDatabase(CandoDatabase_sp db);

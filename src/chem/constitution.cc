@@ -256,7 +256,7 @@ RepresentativeList_sp	Constitution_O::expandedRepresentativeList() const
     if ( candidateTopologies.size() > 1 )
     {
 	stringstream ss;
-	ss << "In Constitution(" << this->constitutionName() << " MetaConstitution(" << this->getMetaConstitutionName() << ")" << std::endl;
+	ss << "In Constitution(" << this->constitutionName() << ")" << std::endl;
 	ss << "there are more than one topologies that match the current monomer environment: " << mon->description() << std::endl;
 	ss << "that are missing a ring closing plug"<<std::endl;
 	SIMPLE_ERROR(BF("%s") % ss.str() );
@@ -386,11 +386,14 @@ Constitution_O::const_stereoisomerIterator Constitution_O::end_Stereoisomers() c
 CL_LISPIFY_NAME("createResidueForStereoisomerName");
 CL_DEFMETHOD     Residue_sp	Constitution_O::createResidueForStereoisomerName(core::Symbol_sp stereoisomerName)
 {
+  IMPLEMENT_MEF(BF("Use the Topology to build the residue"));
+#if 0
     Residue_sp res = this->_ConstitutionAtoms->buildResidue();
     IMPLEMENT_MEF(BF("Handle owners"));
 //    res->setOwner(this->sharedThis<Constitution_O>());
     this->makeResidueConsistentWithStereoisomerNamed(res,stereoisomerName);
     return res;
+#endif
 }
 
 

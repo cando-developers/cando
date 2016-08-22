@@ -340,7 +340,7 @@ ConstitutionBond_sp Bond_O::asConstitutionBond(Atom_sp from, MapAtomsToConstitut
     SIMPLE_ERROR(BF("Could not find atom[%s] in atomMap") % _rep_(to));
   }
   ConstitutionAtomIndex0N index = it->second;
-  ConstitutionBond_sp cb = ConstitutionBond_O::create(this->getOrder(),index);
+  ConstitutionBond_sp cb = makeConstitutionBond(index, this->getOrder());
   return cb;
 }
 

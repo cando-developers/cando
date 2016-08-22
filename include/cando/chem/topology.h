@@ -95,16 +95,18 @@ struct gctools::GCInfo<chem::TopologyAtomInfo_O> {
      LISP_CLASS(chem,ChemPkg,TopologyAtomInfo_O,"TopologyAtomInfo",core::CxxObject_O);
    private:
      core::T_sp _fftype;
-     double     _atomicCharge;
+     double     _AtomicCharge;
+     ConstitutionAtomIndex0N _ConstitutionAtomIndex;
    public:
-   TopologyAtomInfo_O(core::T_sp fftype, double atomicCharge) : _fftype(fftype), _atomicCharge(atomicCharge) {};
+   TopologyAtomInfo_O(core::T_sp fftype, double atomicCharge, ConstitutionAtomIndex0N index ) : _fftype(fftype), _AtomicCharge(atomicCharge), _ConstitutionAtomIndex(index) {};
    public:
      inline CL_DEFMETHOD core::T_sp fftype() const { return this->_fftype; };
-     inline CL_DEFMETHOD double atomicCharge() const { return this->_atomicCharge; };
+     inline CL_DEFMETHOD double atomicCharge() const { return this->_AtomicCharge; };
+     inline CL_DEFMETHOD ConstitutionAtomIndex0N constitutionAtomIndex() const { return this->_ConstitutionAtomIndex; };
    };
 
-   inline CL_DEFUN TopologyAtomInfo_sp make_topology_atom_info(core::T_sp fftype, double atomicCharge) {
-     return gctools::GC<TopologyAtomInfo_O>::allocate(fftype,atomicCharge);
+   inline CL_DEFUN TopologyAtomInfo_sp makeTopologyAtomInfo(core::T_sp fftype, double atomicCharge, chem::ConstitutionAtomIndex0N constitutionAtomIndex) {
+     return gctools::GC<TopologyAtomInfo_O>::allocate(fftype,atomicCharge, constitutionAtomIndex);
    }
  };
 

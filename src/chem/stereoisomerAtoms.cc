@@ -56,7 +56,6 @@ namespace chem
 	}
 	GC_ALLOCATE(StereoisomerAtom_O, ta );
 	ta->_AtomName = constitutionAtom->_AtomName;
-	ta->_AtomIndex = constitutionAtom->_AtomIndex;
 	ta->_Charge = 0.0;
 	ta->_AtomType = _Nil<core::Symbol_O>();
 	return ta;
@@ -104,7 +103,6 @@ namespace chem
     {
 	StereoisomerVirtualAtom_sp ta = StereoisomerVirtualAtom_O::create();
 	ta->_AtomName = atom->_AtomName;
-	ta->_AtomIndex = atom->_AtomIndex;
 	return ta;
     }
 
