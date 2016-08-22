@@ -111,24 +111,18 @@ Set the stereochemistry of a collection of stereocenters using a function that r
       (chem:write-intermediate-results-to-energy-function minimizer))))
 
 (defun configure-minimizer (minimizer
-                            &key max-steepest-descent-steps
-                              max-conjugate-gradient-steps
-                              max-truncated-newton-steps
-                              (steepest-descent-tolerance 2000.0)
-                              (conjugate-gradients-tolerance 0.5)
-                              (truncated-newton-tolerance 0.000001)
-                              )
-  (when max-steepest-descent-steps
-    (chem:set-maximum-number-of-steepest-descent-steps minimizer max-steepest-descent-steps))
-  (when max-conjugate-gradient-steps
-    (chem:set-maximum-number-of-conjugate-gradient-steps minimizer max-conjugate-gradient-steps))
-  (when max-truncated-newton-steps
-    (chem:set-maximum-number-of-truncated-newton-steps minimizer max-truncated-newton-steps))
-  (chem:set-steepest-descent-tolerance minimizer steepest-descent-tolerance)
-  (chem:set-conjugate-gradient-tolerance minimizer conjugate-gradients-tolerance)
-  (chem:set-truncated-newton-tolerance minimizer truncated-newton-tolerance)
-
-  )
+                            &key (max-sd-steps 50)
+                              (max-cg-steps 100)
+                              (max-tn-steps 100)
+                              (sd-tolerance 2000.0)
+                              (cg-tolerance 0.5)
+                              (tn-tolerance 0.000001))
+  (chem:set-maximum-number-of-steepest-descent-steps minimizer max-sd-steps)
+  (chem:set-maximum-number-of-conjugate-gradient-steps minimizer max-cg-steps)
+  (chem:set-maximum-number-of-truncated-newton-steps minimizer max-tn-steps)
+  (chem:set-steepest-descent-tolerance minimizer sd-tolerance)
+  (chem:set-conjugate-gradient-tolerance minimizer cg-tolerance)
+  (chem:set-truncated-newton-tolerance minimizer tn-tolerance))
   
                               
 (defun optimize-structure (matter force-field &optional active-atoms)

@@ -150,6 +150,7 @@
   (:shadowing-import-from :common-lisp "+" "-" "/" "*" ">" "<" ">=" "<=" "SQRT")
   (:shadowing-import-from :chem "SET-ELEMENT" "GET-ELEMENT" "SIZE")
   (:shadowing-import-from :cando "AS-STRING" "LOAD-MOL2" "SAVE-MOL2")
+  (:import-from :energy "MINIMIZE")
   (:use :common-lisp :chem :geom :chemdraw :cando)
   )
 

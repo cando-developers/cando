@@ -42,7 +42,14 @@
   *ff*)
 
 
-(defun minimize (agg &key (restraints-on t) (force-field *ff*))
+(defun minimize (agg &key (restraints-on t)
+                       (force-field *ff*)
+                       (max-sd-steps 1000)
+                       (max-cg-steps 50000)
+                       (max-tn-steps 0)
+                       (sd-tolerance 5000.0)
+                       (cg-tolerance 0.5)
+                       (tn-tolerance 0.00001))
   "Minimize the conformational energy"
     (format t "Got minimizer~%")
   (let* ((energy-func (chem:make-energy-function agg force-field))
@@ -51,9 +58,12 @@
       (let ((restraint-term (chem:get-anchor-restraint-component energy-func)))
         (chem:disable restraint-term)))
     (cando:configure-minimizer minimizer
-                               :max-steepest-descent-steps 1000
-                               :max-conjugate-gradient-steps 50000
-                               :max-truncated-newton-steps 0)
+                               :max-sd-steps max-sd-steps
+                               :max-cg-steps max-cg-steps
+                               :max-tn-steps max-tn-steps
+                               :sd-tolerance sd-tolerance
+                               :cg-tolerance cg-tolerance
+                               :tn-tolerance tn-tolerance)
     (chem:enable-print-intermediate-results minimizer)
     (chem:set-option energy-func 'chem:nonbond-term nil)
     (cando:minimize-no-fail minimizer)
