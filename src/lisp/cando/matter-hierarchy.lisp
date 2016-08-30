@@ -1,5 +1,40 @@
+;;;
+;;; Code to deal with the aggregate/molecule/residue/atom hierarchy
+
 
 (in-package :cando)
+
+
+;;; ------------------------------------------------------------
+;;;
+;;; build-molecules-from-atom-connectivity
+;;;
+(defun build-molecules-from-atom-connectivity (atoms residues)
+  "* Exported
+* Arguments
+- atoms :: Hash-table of atom ids to atoms.
+- residues :: Hash-table of residue ids to residues.
+* Description
+Return a hash table of molecule-ids to molecules that contains molecules identified by walking the
+spanning trees of the atoms and identifying the residues that belong to
+those atoms."
+  (let ((atoms-seen (make-hash-table :test #'eq))
+        (atoms-to-residues (create-atoms-to-residues residues))
+        (residues-to-molecules (make-hash-table :test #'eq))
+        (molecules (make-hash-table :test #'eql))
+        (molecule-id 0))
+    (maphash (lambda (id atom)
+               (unless (gethash atom atoms-seen)
+                 ;; Start a new molecule
+                 (let ((mol (chem:make-molecule)))
+                   (walk-atom-spanning-tree atom mol
+                                            atoms-seen
+                                            residues-to-molecules
+                                            atoms-to-residues)
+                   (setf (gethash (incf molecule-id) molecules) mol))))
+             atoms)
+    molecules))
+             
 
 
 (defun create-atoms-to-residues (residues)
@@ -42,28 +77,3 @@ and if the residue is not in RESIDUES-TO-MOLECULES add it."
                 (chem:add-matter molecule residue)))))))
 
 
-(defun build-molecules-from-atom-connectivity (atoms residues)
-  "* Arguments
-- atoms :: Hash-table of atom ids to atoms.
-- residues :: Hash-table of residue ids to residues.
-* Description
-Return a hash table of molecule-ids to molecules that contains molecules identified by walking the
-spanning trees of the atoms and identifying the residues that belong to
-those atoms."
-  (let ((atoms-seen (make-hash-table :test #'eq))
-        (atoms-to-residues (create-atoms-to-residues residues))
-        (residues-to-molecules (make-hash-table :test #'eq))
-        (molecules (make-hash-table :test #'eql))
-        (molecule-id 0))
-    (maphash (lambda (id atom)
-               (unless (gethash atom atoms-seen)
-                 ;; Start a new molecule
-                 (let ((mol (chem:make-molecule)))
-                   (walk-atom-spanning-tree atom mol
-                                            atoms-seen
-                                            residues-to-molecules
-                                            atoms-to-residues)
-                   (setf (gethash (incf molecule-id) molecules) mol))))
-             atoms)
-    molecules))
-             

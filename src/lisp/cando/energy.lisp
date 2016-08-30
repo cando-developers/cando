@@ -51,7 +51,7 @@
                        (cg-tolerance 0.5)
                        (tn-tolerance 0.00001))
   "Minimize the conformational energy"
-    (format t "Got minimizer~%")
+  (format t "Got minimizer~%")
   (let* ((energy-func (chem:make-energy-function agg force-field))
          (minimizer (chem:make-minimizer :energy-function energy-func)))
     (unless restraints-on
