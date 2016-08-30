@@ -1107,7 +1107,7 @@ CL_DEFMETHOD     string	Atom_O::getConfigurationAsString()
 string	Atom_O::__repr__() const
 {
   stringstream ss;
-  ss << "#<" << this->className() << " " << this->name << "/" << _rep_(symbolFromElement(this->_Element)) << "@" << (void*)this << ">";
+  ss << "#<" << this->className() << " " << this->name << "/" << _rep_(symbolFromElement(this->_Element)) << ">";
   return ss.str();
 }
 

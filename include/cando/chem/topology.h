@@ -150,8 +150,8 @@ private:
 public:
     typedef	gctools::SmallMap<core::Symbol_sp,Plug_sp>	Plugs;
 private:
-    Constitution_sp				_Constitution;
     core::Symbol_sp				_Name;
+    Constitution_sp				_Constitution;
     TopologyIndex0N				_TopologyIndex0N;
     int					        _ResidueNetCharge;
     gctools::SmallOrderedSet<core::Symbol_sp> 	_Flags;
@@ -165,6 +165,10 @@ private:	// Do not archive
     Plugs					_Plugs;
 	
 public:
+CL_LISPIFY_NAME(makeTopologyFromResidue);
+CL_LAMBDA(residue &optional constitution);
+ CL_DOCSTRING("Create a topology from a residue. The constitution may be NIL or a constitution to use to define the atoms");
+ CL_DEF_CLASS_METHOD static Topology_sp makeTopologyFromResidue(chem::Residue_sp residue, core::T_sp constitution);
 protected:
     void setFromMonomer(Monomer_sp mon);
 public:

@@ -81,19 +81,8 @@ void ConstitutionVirtualAtom_O::archiveBase(core::ArchiveP node)
 }
 #endif
 
-
-
-
-
-
-
-
-
-
-
-;
-
-ConstitutionAtoms_sp ConstitutionAtoms_O::createFromResidue(Residue_sp residue)
+CL_LISPIFY_NAME(makeConstitutionAtomsFromResidue);
+CL_DEFUN ConstitutionAtoms_sp ConstitutionAtoms_O::makeConstitutionAtomsFromResidue(Residue_sp residue)
 {
   GC_ALLOCATE(ConstitutionAtoms_O, catoms );
   Matter_O::contentIterator it;

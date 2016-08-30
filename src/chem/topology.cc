@@ -79,7 +79,10 @@ namespace chem
     }
 #endif
 
-#if INIT_TO_FACTORIES
+Topology_sp Topology_O::makeTopologyFromResidue(chem::Residue_sp residue, core::T_sp constitution )
+{
+  IMPLEMENT_MEF(BF("Implement makeTopologyFromResidue"));
+}
 
 Topology_sp make_topology(core::Symbol_sp name, Constitution_sp constitution, int netCharge, core::List_sp plugs)
 {
@@ -96,8 +99,9 @@ Topology_sp make_topology(core::Symbol_sp name, Constitution_sp constitution, in
   }
   return me;
 };
-  
-#else
+
+
+#if 0
 
    core::T_sp Topology_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp env, core::Lisp_sp lisp)
     {

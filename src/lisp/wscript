@@ -1,0 +1,6 @@
+
+
+def build(bld):
+    lisp_source = bld.path.ant_glob("**/*.l*")
+    print("In extensions/cando/src/lisp bld.path = %s" % bld.path)
+    bld.install_files('${PREFIX}/Contents/Resources/source-code/extensions/cando/src/lisp/',lisp_source,relative_trick=True,cwd=bld.path)

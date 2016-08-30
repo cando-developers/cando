@@ -445,7 +445,7 @@ public:
 //
 
 CL_LISPIFY_NAME("setupHessianPreconditioner");
-CL_DEFMETHOD void	EnergyFunction_O::setupHessianPreconditioner(NVector_sp nvPosition,
+CL_DEFMETHOD void EnergyFunction_O::setupHessianPreconditioner(NVector_sp nvPosition,
                                                                      AbstractLargeSquareMatrix_sp m )
 {
 #ifdef ENERGY_FUNCTION_TIMER

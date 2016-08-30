@@ -886,13 +886,15 @@ CL_DEFMETHOD geom::BoundingBox_sp Matter_O::boundingBox(double pad)
 CL_LISPIFY_NAME("contentsAsCons");
 CL_DEFMETHOD core::List_sp Matter_O::contentsAsCons()
 {
-  core::List_sp cur = _Nil<core::T_O>();
+  core::List_sp first = _Nil<core::T_O>();
+  core::List_sp* cur = &first;
   contentIterator	it;
-  for ( it=this->_contents.end()-1; it>=this->_contents.begin(); it-- )
+  for ( it=this->_contents.begin(); it!=this->_contents.end(); ++it )
   {
-    cur = core::Cons_O::create(*it,cur);
+    *cur = core::Cons_O::create(*it,_Nil<core::T_O>());
+    cur = reinterpret_cast<core::List_sp*>(&(reinterpret_cast<core::Cons_O*>(cur)->_Cdr));
   }
-  return cur;
+  return first;
 }
 
 
