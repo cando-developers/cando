@@ -15,6 +15,7 @@
      (:file "geom")
      (:file "anchor")
      (:file "struct")
+     (:file "monomers")
      (:file "molecules")
      (:file "atom-tree")
      (:file "ring-builder")

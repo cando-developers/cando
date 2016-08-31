@@ -58,7 +58,7 @@
    #:load-psf-pdb
    #:remove-overlaps
    #:merge-into-one-aggregate
-   ))
+   #:constitution-from-residue))
 
 (defpackage #:geom
   (:use #:common-lisp)
