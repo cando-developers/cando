@@ -237,11 +237,6 @@ class EntityNameSetWithCap_O : public EntityNameSetBase_O
 public:
     void	initialize();
     string description() const;
-public:
-//    void	archiveBase(core::ArchiveP node);
-public:
-//    static EntityNameSetWithCap_sp create(core::Lisp_sp e,CandoDatabase_sp db);
-public:
 //	virtual void setCandoDatabase(CandoDatabase_sp db);
     /*! Add the group name and immediately expand it to
      * a list of monomers */

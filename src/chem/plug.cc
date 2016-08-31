@@ -43,16 +43,6 @@ namespace chem
 
 
 
-#if 0
-    RingClosingMate_sp RingClosingMate_O::create(CandoDatabase_sp db)
-    {
-	GC_ALLOCATE(RingClosingMate_O, mate );
-//    mate->setCandoDatabase(db);
-	return mate;
-    }
-#endif
-
-
     core::Symbol_sp RingClosingMate_O::getName() const
     {
 	return _lisp->intern("UnnamedRingClosingMate");
@@ -62,15 +52,6 @@ namespace chem
 //
 // Constructor
 //
-
-
-//
-// Copy Constructor
-//
-    RingClosingMate_O::RingClosingMate_O(const RingClosingMate_O& ss) : Base(ss)
-    {
-    }
-
 
 
 
@@ -104,11 +85,6 @@ namespace chem
   __END_DOC
 */
 
-    void Mate_O::initialize()
-    {
-	// nothing 
-    }
-
     core::Symbol_sp Mate_O::getName() const
     {
 	return _Nil<core::Symbol_O>();
@@ -127,17 +103,6 @@ namespace chem
 //
 // Constructor
 //
-
-
-//
-// Copy Constructor
-//
-    Mate_O::Mate_O(const Mate_O& ss) :	Base(ss)
-    {
-	this->_Cap = ss._Cap;
-    }
-
-
 
 
 
@@ -173,40 +138,6 @@ namespace chem
   __END_DOC
 */
 
-#if INIT_TO_FACTORIES
-
-#define ARGS_Mate_O_make "(cap)"
-#define DECL_Mate_O_make ""
-#define DOCS_Mate_O_make "make Mate"
-  Mate_sp Mate_O::make(core::Symbol_sp cap)
-  {
-      GC_ALLOCATE(Mate_O, me );
-    me->_Cap = cap;
-    return me;
-  };
-
-#else
-
-    core::T_sp Mate_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_OF();
-	this->Base::__init__(exec,args,env,lisp);
-	this->_Cap = translate::from_object<core::Symbol_O>::convert(env->lookup(ChemPkg,"cap"));
-	return _Nil<core::T_O>();
-    }
-
-#endif
-
-
-
-
-
-    void	Plug_O::initialize()
-    {
-	this->Base::initialize();
-	this->_Name = _Nil<core::Symbol_O>();
-    }
-
-
 /*
   __BEGIN_DOC(classes.Plug)
   Defines one or two atoms of this monomer that can be plugged into, a plug name and a
@@ -225,37 +156,6 @@ namespace chem
   Outgoing plugs export a frame of reference to the next monomer, use \sa{exportFrame} to define this.
   __END_DOC
 */
-
-#if INIT_TO_FACTORIES
-
-#define ARGS_Plug_O_make "(name)"
-#define DECL_Plug_O_make ""
-#define DOCS_Plug_O_make "make Plug"
-  Plug_sp Plug_O::make(core::Symbol_sp name)
-  {
-      GC_ALLOCATE(Plug_O, me );
-    me->_Name = name;
-    return me;
-  };
-
-#else
-
-    core::T_sp Plug_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_OF();
-	this->_Name = translate::from_object<core::Symbol_O>::convert(env->lookup(ChemPkg,"name"));
-	return _Nil<core::T_O>();
-    }
-
-#endif
-
-    Plug_O::Plug_O(const Plug_O& p) : core::CxxObject_O(p)
-    {
-	Mate_sp	rn;
-	LOG(BF("Original %s") % p.description().c_str()  );
-	this->_Name = p._Name;
-	LOG(BF("Copy constructed %s") % this->description().c_str()  );
-    }
-
 
 
     string	Plug_O::descriptionOfContents() const
@@ -346,69 +246,21 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
   Initialize a PlugWithMates object. PlugWithMatess can have one bond (eg: amide) or two bonds (eg:diketopiperazine).
   __END_DOC
 */
-    void PlugWithMates_O::initialize()
-    {
-	this->Base::initialize();
-    }
 
-#if INIT_TO_FACTORIES
-
-#define ARGS_PlugWithMates_O_make "(bond0 bond1 mates)"
-#define DECL_PlugWithMates_O_make ""
-#define DOCS_PlugWithMates_O_make "make PlugWithMates"
-  PlugWithMates_sp PlugWithMates_O::make(core::Symbol_sp bond0, core::Symbol_sp bond1, core::List_sp mates)
+string	PlugWithMates_O::descriptionOfContents() const
+{
+  stringstream ss;
+  ss << this->Base::descriptionOfContents() << " ";
+  ss << " ( Mates ";
+  ss << "#" << this->_Mates.size() << " ";
+  gctools::Vec0<Mate_sp>::const_iterator vi;
+  for ( vi=this->_Mates.begin(); vi!=this->_Mates.end(); vi++ )
   {
-      GC_ALLOCATE(PlugWithMates_O, me );
-      me->_B0 = bond0;
-      me->_B1 = bond1;
-      core::fillVec0(mates,me->_Mates);
-      return me;
-  };
-
-#else
-
-    core::T_sp PlugWithMates_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_OF();
-	this->Base::__init__(exec,args,env,lisp);
-	this->_B0 = translate::from_object<string>::convert(env->lookup(ChemPkg,"bond0"));
-	this->_B1 = translate::from_object<string>::convert(env->lookup(ChemPkg,"bond1"));
-	core::List_sp mates = translate::from_object<core::List_O>::convert(env->lookup(ChemPkg,"mates"));
-        mates->fillVec0(this->_Mates);
-	return _Nil<core::T_O>();
-    }
-#endif
-
-
-    PlugWithMates_O::PlugWithMates_O(const PlugWithMates_O& p) : Plug_O(p)
-    {
-	LOG(BF("Original %s") % p.description().c_str()  );
-	this->_B0 = p._B0;
-	this->_B1 = p._B1;
-	this->_Mates.clear();
-        gctools::Vec0<Mate_sp>::const_iterator vi;
-	LOG(BF("Copying %d mates") % p._Mates.size()  );
-	for ( vi=p._Mates.begin(); vi!=p._Mates.end(); vi++ ) {
-	    LOG(BF("Copied mate") );
-	    GC_COPY(Mate_O, rn, *vi->get() ); // = RP_Copy<Mate_O>(*vi);
-	    this->_Mates.push_back(rn);
-	}
-	LOG(BF("Copy constructed %s") % this->description().c_str()  );
-    }
-
-    string	PlugWithMates_O::descriptionOfContents() const
-    {
-	stringstream ss;
-	ss << this->Base::descriptionOfContents() << " ";
-	ss << " ( Mates ";
-	ss << "#" << this->_Mates.size() << " ";
-        gctools::Vec0<Mate_sp>::const_iterator vi;
-	for ( vi=this->_Mates.begin(); vi!=this->_Mates.end(); vi++ )
-	{
-	    ss << (*vi)->description() << ", ";
-	}
-	ss << " )";
-	return ss.str();
-    }
+    ss << (*vi)->description() << ", ";
+  }
+  ss << " )";
+  return ss.str();
+}
 
 
     string PlugWithMates_O::__repr__() const
@@ -444,12 +296,6 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 	return false;
     }
 
-    void OutPlug_O::initialize()
-    {
-	this->Base::initialize();
-    }
-
-
 
 /*
   __BEGIN_DOC(classes.OutPlug.!class.OutPlug)
@@ -462,39 +308,6 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
   Outgoing plugs export a frame of reference to the next monomer, use \sa{exportFrame} to define this.
   __END_DOC
 */
-
-#if INIT_TO_FACTORIES
-
-#define ARGS_OutPlug_O_make "(stub_pivot_atom)"
-#define DECL_OutPlug_O_make ""
-#define DOCS_OutPlug_O_make "make OutPlug"
-  OutPlug_sp OutPlug_O::make(MatterName stubPivotAtom)
-  {
-      GC_ALLOCATE(OutPlug_O, me );
-    me->_StubPivotAtom = stubPivotAtom;
-    return me;
-  };
-
-#else
-
-    core::T_sp OutPlug_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_OF();
-	this->Base::__init__(exec,args,env,lisp);
-	this->_StubPivotAtom = translate::from_object<string>::convert(env->lookup(ChemPkg,"stubPivotAtom"));
-	return _Nil<core::T_O>();
-    }
-
-#endif
-
-    OutPlug_O::OutPlug_O(const OutPlug_O& p) : PlugWithMates_O(p)
-    {
-	Mate_sp	rn;
-	LOG(BF("Original %s") % p.description().c_str()  );
-	IMPLEMENT_ME(); // Should the next copy be shallow or deep?
-	LOG(BF("Copy constructed %s") % this->description().c_str()  );
-    }
-
-
 
     string	OutPlug_O::descriptionOfContents() const
     {
@@ -515,12 +328,6 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 
 
 
-    void InPlug_O::initialize()
-    {
-	this->Base::initialize();
-    }
-
-
 /*
   __BEGIN_DOC(classes.InPlug.!class.InPlug)
   \requiredKeyed{name:}{Text::plugName}
@@ -531,36 +338,11 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
   Initialize a InPlug object. InPlugs can have one bond (eg: amide) or two bonds (eg:diketopiperazine).
   __END_DOC
 */
-    InPlug_O::InPlug_O(const InPlug_O& p) : PlugWithMates_O(p)
-    {
-	Mate_sp	rn;
-	LOG(BF("Original %s") % p.description().c_str()  );
-    }
-
-
-
     string	InPlug_O::descriptionOfContents() const
     {
 	return this->Base::descriptionOfContents();
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-    void JumpPlug_O::initialize()
-    {
-	this->Base::initialize();
-	this->_JumpAtomName = _Nil<core::Symbol_O>();
-    }
 
 /*
   __BEGIN_DOC(classes.JumpPlug.!class.JumpPlug)
@@ -571,46 +353,13 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
   __END_DOC
 */
 
-#if INIT_TO_FACTORIES
-
-#define ARGS_JumpPlug_O_make "(jump_atom_name)"
-#define DECL_JumpPlug_O_make ""
-#define DOCS_JumpPlug_O_make "make JumpPlug"
-  JumpPlug_sp JumpPlug_O::make(MatterName jumpAtomName)
-  {
-      GC_ALLOCATE(JumpPlug_O, me );
-    me->_JumpAtomName = jumpAtomName;
-    return me;
-  };
-
-#else
-
-    core::T_sp JumpPlug_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_OF();
-	this->Base::__init__(exec,args,env,lisp);
-	this->_JumpAtomName = translate::from_object<string>::convert(env->lookup(ChemPkg,"jumpAtomName"));
-	return _Nil<core::T_O>();
-    }
-
-#endif
-
-
-    JumpPlug_O::JumpPlug_O(const JumpPlug_O& p) : Plug_O(p)
-    {
-	Mate_sp	rn;
-	this->_JumpAtomName = p._JumpAtomName;
-	LOG(BF("Jumpal %s") % p.description().c_str()  );
-    }
-
-
-
-    string	JumpPlug_O::descriptionOfContents() const
-    {
-	stringstream ss;
-	ss << this->Base::descriptionOfContents() << " ";
-	ss << "JumpAtomName[" << this->_JumpAtomName << "]";
-	return ss.str();
-    }
+string	JumpPlug_O::descriptionOfContents() const
+{
+  stringstream ss;
+  ss << this->Base::descriptionOfContents() << " ";
+  ss << "JumpAtomName[" << this->_JumpAtomName << "]";
+  return ss.str();
+}
 
 
 #ifdef XML_ARCHIVE
@@ -620,25 +369,6 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 	node->attribute("jumpAtom",this->_JumpAtomName);
     }
 #endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    void RingClosingPlug_O::initialize()
-    {
-	this->Base::initialize();
-    }
-
 
 /*
   __BEGIN_DOC(classes.RingClosingPlug.!class.RingClosingPlug)
@@ -655,31 +385,8 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
   __END_DOC
 */
 
-#if INIT_TO_FACTORIES
-
-#define ARGS_RingClosingPlug_O_make "(ring_closing_mates)"
-#define DECL_RingClosingPlug_O_make ""
-#define DOCS_RingClosingPlug_O_make "make RingClosingPlug"
-  RingClosingPlug_sp RingClosingPlug_O::make(core::List_sp ringClosingMates)
-  {
-      GC_ALLOCATE(RingClosingPlug_O, me );
-      core::fillVec0(gc::As<core::Cons_sp>(ringClosingMates),me->_RingClosingMates);
-    return me;
-  };
-
-#else
-
-    core::T_sp RingClosingPlug_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {_OF();
-	this->Base::__init__(exec,args,env,lisp);
-	core::Cons_sp mates = translate::from_object<core::Cons_sp>::convert(env->lookup(ChemPkg,"ringClosingMates"));
-	this->_RingClosingMates.fillFromCons(mates);
-	return _Nil<core::T_O>();
-    }
-
-#endif
-
-    RingClosingPlug_O::RingClosingPlug_O(const RingClosingPlug_O& p) : RingClosingPlug_O::Base(p)
+#if 0
+RingClosingPlug_O::RingClosingPlug_O(const RingClosingPlug_O& p) : RingClosingPlug_O::Base(p)
     {
 	LOG(BF("Original %s") % p.description().c_str()  );
         gctools::Vec0<RingClosingMate_sp>::const_iterator vi;
@@ -691,7 +398,7 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 	}
 	LOG(BF("Copy constructed %s") % this->description().c_str()  );
     }
-
+#endif
 
 
     string	RingClosingPlug_O::descriptionOfContents() const
@@ -699,9 +406,9 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 	stringstream ss, shex;
 	ss << this->Base::descriptionOfContents() << " ";
 	ss << " ( RingClosingMates ";
-	ss << "#" << this->_RingClosingMates.size() << " ";
-        gctools::Vec0<RingClosingMate_sp>::const_iterator vi;
-	for ( vi=this->_RingClosingMates.begin(); vi!=this->_RingClosingMates.end(); vi++ ) {
+	ss << "#" << this->_Mates.size() << " ";
+        gctools::Vec0<Mate_sp>::const_iterator vi;
+	for ( vi=this->_Mates.begin(); vi!=this->_Mates.end(); vi++ ) {
 	    ss << (*vi)->description() << ", ";
 	}
 	ss << " )";
@@ -777,14 +484,14 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
 CL_LISPIFY_NAME("ringClosingMatesAsCons");
 CL_DEFMETHOD     core::List_sp RingClosingPlug_O::ringClosingMatesAsCons()
     {_OF();
-	return core::Cons_O::createFromVec0(this->_RingClosingMates);
+	return core::Cons_O::createFromVec0(this->_Mates);
     }
 
 
     bool RingClosingPlug_O::recognizesRingClosingMate(core::Symbol_sp mateName)
     {_OF();
-        gctools::Vec0<RingClosingMate_sp>::iterator it;
-	for ( it=this->_RingClosingMates.begin(); it!=this->_RingClosingMates.end(); it++ )
+        gctools::Vec0<Mate_sp>::iterator it;
+	for ( it=this->_Mates.begin(); it!=this->_Mates.end(); it++ )
 	{
 	    if ( (*it)->recognizesMonomerName(mateName)) return true;
 	}
