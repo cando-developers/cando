@@ -58,7 +58,13 @@
    #:load-psf-pdb
    #:remove-overlaps
    #:merge-into-one-aggregate
-   #:constitution-from-residue))
+   #:constitution-from-residue
+   #:calculate-hybridization
+   #:build-unbuilt-hydrogens
+   #:progress-advance
+   #:progress-bar
+   #:make-progress-bar
+   #:progress-done))
 
 (defpackage #:geom
   (:use #:common-lisp)

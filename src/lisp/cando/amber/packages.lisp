@@ -25,6 +25,16 @@
 ;; -^-
 (cl:in-package #:common-lisp-user)
 
+(defpackage #:amber.pdb
+  (:use #:common-lisp)
+  (:export
+   #:scanpdb
+   #:loadpdb
+   #:add-pdb-atom-map
+   #:add-pdb-res-map)
+  )
+
+
 (defpackage #:amber.off
   (:use #:common-lisp)
   (:export
@@ -33,6 +43,23 @@
    #:type
    #:fields
    #:read-off-unit-lib
-   )
+   #:read-off-form-lib
+   #:load-forms)
   )
 
+(defpackage #:amber
+  (:use #:common-lisp)
+  (:import-from :amber.pdb
+                #:add-pdb-atom-map
+                #:add-pdb-res-map)
+  (:import-from :amber.off
+                #:load-forms)
+  (:export
+   #:residue-name
+   #:chain-position
+   #:register-variable
+   #:lookup-variable
+   #:add-pdb-atom-map
+   #:add-pdb-res-map
+   #:load-forms)
+  )
