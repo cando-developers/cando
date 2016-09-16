@@ -644,7 +644,7 @@ AtomInfo	one;
     lRes.loopTopGoal(agg,RESIDUES);
     while ( lRes.advanceLoopAndProcess() ) {
 	r = lRes.getResidue();
-	r->setTempFileId(resId);
+	r->setTempInt(resId);
 	oneResOut.res = r;
 	oneResOut.firstAtom = atomId;
 	residueList.push_back(oneResOut);
@@ -652,7 +652,7 @@ AtomInfo	one;
 	loop.loopTopGoal(r,ATOMS);
 	while ( loop.advanceLoopAndProcess() ) {
 	    a = loop.getAtom();
-	    a->setTempFileId(atomId);
+	    a->setTempInt(atomId);
 	    one._Atom = a;
             if ( useSybylTypes ) {
               chem::TypeAssignmentRules_sp sybylRules = gc::As<TypeAssignmentRules_sp>(chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue());
@@ -693,7 +693,7 @@ AtomInfo	one;
     gctools::Vec0<AtomInfo>::iterator	ai;
     for ( ai=atomList.begin(); ai!= atomList.end(); ai++ ) {
 	a = ai->_Atom;
-	out << a->getTempFileId() << " ";
+	out << a->getTempInt() << " ";
 	out << a->getName()->symbolNameAsString() << " ";
 	pos = a->getPosition();
 	out << pos.getX() << " ";
@@ -701,9 +701,9 @@ AtomInfo	one;
 	out << pos.getZ() << " ";
 	LOG(BF("Writing mol2 atom(%s) pos(%s)") % a->description() % a->getPosition().asString() );
 	out << ai->_Type->symbolNameAsString() << " ";
-	out << a->containedBy()->getTempFileId() << " ";
+	out << a->containedBy()->getTempInt() << " ";
 	out << a->containedBy()->getName()->symbolNameAsString() << "_"
-		<< a->containedBy()->getTempFileId() << " ";
+		<< a->containedBy()->getTempInt() << " ";
 	out << std::setiosflags(std::ios::fixed)
             << std::setw(8)
             << std::setprecision(3);
@@ -728,8 +728,8 @@ AtomInfo	one;
 	else if ( o == tripleBond ) orderName = "3";
 	else if ( o == aromaticBond ) orderName = "ar";
 	out << id << " ";
-	out << a1->getTempFileId() << " ";
-	out << a2->getTempFileId() << " ";
+	out << a1->getTempInt() << " ";
+	out << a2->getTempInt() << " ";
 	out << orderName << " ";
 	out << std::endl;
 	id++;
@@ -744,8 +744,8 @@ AtomInfo	one;
     for ( ri=residueList.begin(); ri!=residueList.end(); ri++ ) {
 	r = ri->res;
 //	out << id << " ";
-	out << r->getTempFileId() << " ";
-	out << r->getName()->symbolNameAsString() << "_" << r->getTempFileId() << " ";
+	out << r->getTempInt() << " ";
+	out << r->getName()->symbolNameAsString() << "_" << r->getTempInt() << " ";
 	out << ri->firstAtom << " ";
 	out << "RESIDUE 1 ";
 	out << (r->containedBy()).as<Molecule_O>()->getName()->symbolNameAsString() << " ";

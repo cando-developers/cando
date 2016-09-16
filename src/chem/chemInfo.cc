@@ -608,10 +608,10 @@ core::NullTerminatedEnumAssociation logicalEnum[] = {
     {"", -1}};
 
 void Logical_O::fields(core::Record_sp node) {
-  this->Base::fields(node);
   node->/*pod_*/field(INTERN_(kw, op), this->_Operator);
   node->field(INTERN_(kw, left), this->_Left);
   node->field_if_not_nil(INTERN_(kw, right), this->_Right);
+  this->Base::fields(node);
 }
 
 // --- TagSet  set a tag for the atom
@@ -674,10 +674,10 @@ bool TagSet_O::matches(Root_sp root, chem::Atom_sp atom) {
 }
 
 void TagSet_O::fields(core::Record_sp node) {
-  this->Base::fields(node);
   //    node->attributeEnum( "bond", this->_Bond, bondEnum );
   node->field(INTERN_(kw, ringTag), this->_RingTag);
   node->field(INTERN_(kw, atomTest), this->_AtomTest);
+  this->Base::fields(node);
 }
 
 // ------ RingTest
@@ -725,10 +725,10 @@ bool RingTest_O::matches(Root_sp root, chem::Atom_sp atom) {
 }
 
 void RingTest_O::fields(core::Record_sp node) {
-  this->Base::fields(node);
   node->/*pod_*/field( INTERN_(kw,bond), this->_Bond);
   node->field( INTERN_(kw,ringTag), this->_RingTag);
   node->field( INTERN_(kw,atomTest), this->_AtomTest);
+  this->Base::fields(node);
 }
 
 // ------ ResidueTest
@@ -792,10 +792,10 @@ bool ResidueTest_O::matches(Root_sp root, chem::Atom_sp atom) {
 }
 
 void ResidueTest_O::fields(core::Record_sp node) {
-  this->Base::fields(node);
   node->/*pod_*/field( INTERN_(kw,bond), this->_Bond);
   node->field( INTERN_(kw,ringTag), this->_RingTag);
   node->field( INTERN_(kw,atomTest), this->_AtomTest);
+  this->Base::fields(node);
 }
 
 // ------ BondTest
@@ -887,9 +887,9 @@ bool BondTest_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
 }
 
 void BondTest_O::fields(core::Record_sp node) {
-  this->Base::fields(node);
   node->/*pod_*/field( INTERN_(kw,bond), this->_Bond);
   node->field( INTERN_(kw,atomTest), this->_AtomTest);
+  this->Base::fields(node);
 }
 
 // ------- AtomTest
@@ -1312,12 +1312,12 @@ string AtomTest_O::testName(AtomTestEnum test) const {
 }
 
 void AtomTest_O::fields(core::Record_sp node) {
-  this->Base::fields(node);
   node->/*pod_*/field( INTERN_(kw,test), this->_Test);
   node->/*pod_*/field_if_not_default( INTERN_(kw,int), this->_IntArg, 0);
   node->/*pod_*/field_if_not_default( INTERN_(kw,num), this->_NumArg, 0);
   node->/*pod_*/field_if_not_default( INTERN_(kw,str), this->_StringArg, std::string());
   node->field_if_not_nil( INTERN_(kw,sym), this->_SymbolArg);
+  this->Base::fields(node);
 }
 
 // ------- Chain
@@ -1379,9 +1379,9 @@ bool Chain_O::matches(Root_sp root, chem::Atom_sp from, chem::BondList_sp neighb
 }
 
 void Chain_O::fields(core::Record_sp node) {
-  this->Base::fields(node);
   node->field_if_not_nil( INTERN_(kw,head), this->_Head);
   node->field_if_not_nil( INTERN_(kw,tail), this->_Tail);
+  this->Base::fields(node);
 }
 
 // ------ Branch
@@ -1453,9 +1453,9 @@ bool Branch_O::matches(Root_sp root, chem::Atom_sp from, chem::BondList_sp neigh
 }
 
 void Branch_O::fields(core::Record_sp node) {
-  this->Base::fields(node);
   node->field( INTERN_(kw,left), this->_Left);
   node->field_if_not_nil( INTERN_(kw,right), this->_Right);
+  this->Base::fields(node);
 }
 
 //      AfterMatchBondNode
@@ -1475,10 +1475,10 @@ void AfterMatchBondTest_O::initialize() {
 }
 
 void AfterMatchBondTest_O::fields(core::Record_sp node) {
-  this->Base::fields(node);
   node->field( INTERN_(kw,tag1), this->_AtomTag1);
   node->field( INTERN_(kw,tag2), this->_AtomTag2);
   node->/*pod_*/field( INTERN_(kw,bond), this->_Bond);
+  this->Base::fields(node);
 }
 
 bool AfterMatchBondTest_O::matches(Root_sp root) {
@@ -1499,13 +1499,13 @@ void AntechamberFocusAtomMatch_O::initialize() {
 }
 
 void AntechamberFocusAtomMatch_O::fields(core::Record_sp node) {
-  this->Base::fields(node);
   node->field_if_not_nil( INTERN_(kw,residueNames), this->_ResidueNames);
   node->field_if_not_nil( INTERN_(kw,atomicProperty), this->_AtomicProperty);
   node->/*pod_*/field( INTERN_(kw,atomicNumber), this->_AtomicNumber);
   node->/*pod_*/field( INTERN_(kw,attachedAtoms), this->_NumberOfAttachedAtoms);
   node->/*pod_*/field( INTERN_(kw,attachedHs), this->_NumberOfAttachedHydrogens);
   node->/*pod_*/field( INTERN_(kw,attachedEWGs), this->_NumberOfElectronWithdrawingGroups);
+  this->Base::fields(node);
 }
 
 string AntechamberFocusAtomMatch_O::asSmarts() const {
@@ -1662,11 +1662,11 @@ void AntechamberBondTest_O::initialize() {
 }
 
 void AntechamberBondTest_O::fields(core::Record_sp node) {
-  this->Base::fields(node);
   node->field( INTERN_(kw,element), this->_Element);
   node->/*pod_*/field( INTERN_(kw,neighbors), this->_Neighbors);
   node->field( INTERN_(kw,tag), this->_Tag);
   node->field_if_not_nil( INTERN_(kw,atomProps), this->_AtomProperties);
+  this->Base::fields(node);
 }
 
 // ------- Root
@@ -1717,13 +1717,13 @@ bool Root_O::evaluateTest(core::Symbol_sp testSym, Atom_sp atom) {
 }
 
 void Root_O::fields(core::Record_sp node) {
-  this->Base::fields(node);
   node->field_if_not_nil( INTERN_(kw,firstTest), this->_FirstTest);
   node->field_if_not_nil( INTERN_(kw,chain), this->_Chain);
   node->field_if_not_nil( INTERN_(kw,tests), this->_Tests);
 #ifdef DEBUG_ON
   LOG(BF("After load chain=%s") % this->_Chain->description().c_str());
 #endif
+  this->Base::fields(node);
 }
 
 bool Root_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
@@ -1792,10 +1792,10 @@ void AntechamberRoot_O::initialize() {
 }
 
 void AntechamberRoot_O::fields(core::Record_sp node) {
-  this->Base::fields(node);
   node->field( INTERN_(kw,assignType), this->_AssignType);
   node->field_if_not_nil( INTERN_(kw,afterMatchTests), this->_AfterMatchTests);
   node->field_if_not_nil( INTERN_(kw,wildDict), this->_WildElementDictionary);
+  this->Base::fields(node);
 }
 
 bool AntechamberRoot_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {

@@ -128,7 +128,7 @@ CL_DEFMETHOD 	Matter_sp getMatter() const { return this->_Matter;};
 
 	TrajectoryFrame_sp addFrame(Matter_sp matter);
 
-	core::List_sp trajectoryFramesAsCons();
+	core::List_sp trajectoryFramesAsList();
 
 	uint numberOfTrajectoryFrames();
 

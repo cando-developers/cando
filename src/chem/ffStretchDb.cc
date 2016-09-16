@@ -172,18 +172,18 @@ EstimateStretch	es;
 
 void	FFStretch_O::fields(core::Record_sp node)
 {
-  this->Base::fields(node);
   node->field( INTERN_(kw,type1), this->_Type1 );
   node->field( INTERN_(kw,type2), this->_Type2 );
   node->/*pod_*/field( INTERN_(kw,r0), this->_R0_Nanometer );
   node->/*pod_*/field( INTERN_(kw,kb), this->_Kb_kJPerNanometerSquared );
+  this->Base::fields(node);
 }
 
 void	FFStretchDb_O::fields(core::Record_sp node)
 {
-  this->Base::fields(node);
   node->field( INTERN_(kw,stretches),this->_Terms );
   node->/*pod_*/field( INTERN_(kw,map),this->_Lookup );
+  this->Base::fields(node);
 }
 
 

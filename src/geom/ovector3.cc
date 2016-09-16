@@ -186,19 +186,19 @@ CL_DEFMETHOD Vector3 OVector3_O::normalized()
 CL_NAME("VDIHEDRAL");
 CL_DEFMETHOD double	OVector3_O::dihedral( const Vector3& vb, const Vector3& vc, const Vector3& vd )
 {
-    return calculateDihedral(this->_Value,vb,vc,vd);
+  return geom::calculateDihedral(this->_Value,vb,vc,vd);
 }
 
 CL_NAME("VANGLE");
 CL_DEFMETHOD double	OVector3_O::angle( const Vector3& vb, const Vector3& vc)
 {
-    return calculateAngle(this->_Value,vb,vc);
+  return geom::calculateAngle(this->_Value,vb,vc);
 }
 
 CL_NAME("VDISTANCE");
 CL_DEFMETHOD double	OVector3_O::distance( const Vector3& vb )
 {
-    return calculateDistance(this->_Value,vb);
+  return geom::calculateDistance(this->_Value,vb);
 }
 
 CL_LISPIFY_NAME("v_setUsingBond");

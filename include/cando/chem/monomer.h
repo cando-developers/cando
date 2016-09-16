@@ -188,7 +188,7 @@ CL_DEFMETHOD 	virtual bool recognizesAlias(Alias_sp alias) { return false; };
 	void	initialize();
 
     public:
-	core::List_sp plugNamesAndCouplingsAsCons();
+	core::List_sp plugNamesAndCouplingsAsList();
 
 	adapt::SymbolSet_sp	plugNames() const;
 

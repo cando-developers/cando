@@ -225,26 +225,21 @@ CL_DEFMETHOD bool Bond_O::hasProperty(core::Symbol_sp prop)
 
 CL_LISPIFY_NAME("getOtherAtom");
 CL_DEFMETHOD Atom_sp Bond_O::getOtherAtom(Atom_sp atom) const
-{_OF();
-  ASSERTNOTNULL(this->_Atom1);
-  ASSERTNOTNULL(this->_Atom2);
-  if ( atom.get() == this->_Atom1.get() ) return this->_Atom2;
-  if ( atom.get() == this->_Atom2.get() ) return this->_Atom1;
-  SIMPLE_ERROR(BF("Illegal getOtherAtom because from atom[%s] is not part of bond: %s") % atom->description() % this->description() );
+{
+  if ( atom == this->_Atom1 ) return this->_Atom2;
+  return this->_Atom1;
 }
 
 
 bool Bond_O::isBondBetween(Atom_sp a, Atom_sp b) const
-{_OF();
-  ASSERTNOTNULL(this->_Atom1);
-  ASSERTNOTNULL(this->_Atom2);
-  if ( this->_Atom1.get() == a.get() )
+{
+  if ( this->_Atom1 == a )
   {
-    if ( this->_Atom2.get() == b.get() ) return true;
+    if ( this->_Atom2 == b ) return true;
   }
-  if ( this->_Atom2.get() == a.get() )
+  if ( this->_Atom2 == a )
   {
-    if ( this->_Atom1.get() == b.get() ) return true;
+    if ( this->_Atom1 == b ) return true;
   }
   return false;
 }
@@ -265,7 +260,7 @@ string  Bond_O::description() const
 
 string  Bond_O::describeOther(Atom_sp from) const
 {_OF();
-  ASSERTF(from.get()==this->_Atom1.get()||from.get()==this->_Atom2.get(),BF("describeFrom failed because from atom[%s] is not part of bond: %s") % from->description() % this->description() );
+  ASSERTF(from==this->_Atom1||from==this->_Atom2,BF("describeFrom failed because from atom[%s] is not part of bond: %s") % from->description() % this->description() );
   stringstream    ss;
   ss << "Bond(";
   ss << from->description();
@@ -305,11 +300,11 @@ void Bond_O::redirectToAtomCopies()
   if ( !fa.objectp() ) {
     SIMPLE_ERROR(BF("redirectToAtomCopies _Atom1 is NULL"));
   }
-  LOG(BF("  original from atom@%p") % fa.get() ); //
+  LOG(BF("  original from atom@%p") % fa ); //
   if ( !ta.objectp() ) {
     SIMPLE_ERROR(BF("redirectToAtomCopies _Atom2 is NULL"));
   }
-  LOG(BF("  original   to atom@%p") % ta.get() ); //
+  LOG(BF("  original   to atom@%p") % ta ); //
 #endif
   Atom_wp fc = fa->getCopyAtom();
   ASSERTNOTNULL(fc);
@@ -503,6 +498,14 @@ void	BondList_O::addBond(Bond_sp b)
 {
   this->_Bonds.push_back(b);
 };
+
+bool Bond_O::equalp(core::T_sp b) const {
+  if ( Bond_sp bo = b.asOrNull<Bond_O>() ) {
+    if ( (this->_Atom1 == bo->_Atom1) && (this->_Atom2 == bo->_Atom2) ) return true;
+    if ( (this->_Atom1 == bo->_Atom2) && (this->_Atom2 == bo->_Atom1) ) return true;
+  }
+  return false;
+}
 
 #if 0
 /*! Shallow copy of a bond list */

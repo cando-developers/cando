@@ -38,25 +38,21 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem
 {
-#ifdef XML_ARCHIVE
-void ConstitutionBond_O::archiveBase(core::ArchiveP node)
-{_OF();
-  this->Base::archiveBase(node);
-  node->attribute("ai",this->_AtomIndex);
-  node->attributeSymbolEnumHiddenConverter("bo",this->_BondOrder,_sym__PLUS_bondOrderToSymbolConverter_PLUS_);
-}
-#endif
 
-#ifdef XML_ARCHIVE
-void ConstitutionAtom_O::archiveBase(core::ArchiveP node)
-{_OF();
-  this->Base::archiveBase(node);
-  node->attribute("atomName",this->_AtomName);
-  node->attribute("ci",this->_AtomIndex);
-  node->attributeSymbolEnumHiddenConverter("element",this->_Element,_sym__PLUS_elementToSymbolConverter_PLUS_);
-  node->archiveVector0("bonds",this->_Bonds);
+void ConstitutionBond_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,toatom),this->_ToAtomIndex);
+  node->field(INTERN_(kw,bond_order),this->_BondOrder);
+  this->Base::fields(node);
 }
-#endif
+
+void ConstitutionAtom_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,name),this->_AtomName);
+  node->field(INTERN_(kw,element),this->_Element);
+  node->field(INTERN_(kw,bonds),this->_Bonds);
+  this->Base::fields(node);
+}  
 
 string ConstitutionAtom_O::__repr__() const
 {
@@ -137,14 +133,11 @@ CL_DEFMETHOD     adapt::SymbolSet_sp ConstitutionAtoms_O::atomNamesAsSymbolSet()
   return ss;
 };
 
-#ifdef XML_ARCHIVE
-void ConstitutionAtoms_O::archiveBase(core::ArchiveP n)
+void ConstitutionAtoms_O::fields(core::Record_sp node)
 {
-  this->Base::archiveBase(n);
-  n->attribute("netCharge",this->_NetCharge);
-  n->archiveVector0("atoms",this->_Atoms);
-}
-#endif
+  node->field(INTERN_(kw,atoms),this->_Atoms);
+  this->Base::fields(node);
+}  
 
 
 CL_LISPIFY_NAME("atomWithName");

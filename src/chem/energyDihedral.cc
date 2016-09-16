@@ -127,7 +127,7 @@ double	angle;
     pos2 = this->_Atom2->getPosition();
     pos3 = this->_Atom3->getPosition();
     pos4 = this->_Atom4->getPosition();
-    angle = calculateDihedral( pos1, pos2, pos3, pos4);
+    angle = geom::calculateDihedral( pos1, pos2, pos3, pos4);
     return angle;
 }
 
@@ -139,7 +139,7 @@ double	phi, dev;
     pos2 = this->_Atom2->getPosition();
     pos3 = this->_Atom3->getPosition();
     pos4 = this->_Atom4->getPosition();
-    phi = calculateDihedral( pos1, pos2, pos3, pos4);
+    phi = geom::calculateDihedral( pos1, pos2, pos3, pos4);
     dev = 1.0+cos(this->term.DN*phi-this->_PhaseRad);
     return dev;
 }

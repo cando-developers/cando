@@ -48,45 +48,55 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
-#ifdef XML_ARCHIVE
-    void	Topology_O::archiveBase(core::ArchiveP node)
-    {
-	if ( node->saving() ) this->getConstitution();
-	node->archiveWeakPointer("constitution",this->_WeakConstitution);
-#if PRODUCTION_CODE   // FIXME use "name" only and remove the test for "_key"
-	node->attribute("name",this->_Name);
-#else
-	if ( node->loading() )
-	{
-	    if ( node->hasAttribute("name") )
-	    {
-		node->attribute("name",this->_Name);
-	    } else
-	    {
-		node->attribute("_key",this->_Name);
-	    }
-	} else
-	{
-	    node->attribute("name",this->_Name);
-	}
-#endif
-	node->attributeIfNotDefault("ResidueNetCharge",this->_ResidueNetCharge,0);
-	node->attributeIfNotDefault("suppressTrainers",this->_SuppressTrainers,false);
-	node->archiveSymbolMap( "topologyPlugs", this->_Plugs );
-	node->archiveSymbolMapIfDefined("stereoisomerAtomProperties",this->_StereoisomerAtomProperties);
-	LOG(BF("About to get core for topology (%s)") % _rep_(this->_Name)  );
-	node->attribute("properties",this->_Properties);
-    }
-#endif
-
-Topology_sp Topology_O::makeTopologyFromResidue(chem::Residue_sp residue, core::T_sp constitution )
+void TopologyAtomInfo_O::fields(core::Record_sp node)
 {
-  IMPLEMENT_MEF(BF("Implement makeTopologyFromResidue"));
+  node->field(INTERN_(kw,fftype),this->_fftype);
+  node->field(INTERN_(kw,charge),this->_AtomicCharge);
+  node->field(INTERN_(kw,index),this->_ConstitutionAtomIndex);
+  this->Base::fields(node);
 }
 
-Topology_sp make_topology(core::Symbol_sp name, Constitution_sp constitution, int netCharge, core::List_sp plugs)
+
+void Topology_O::fields(core::Record_sp node)
 {
-  Topology_sp me = gctools::GC<Topology_O>::allocate(name,constitution,netCharge);
+  node->field(INTERN_(kw,name),this->_Name);
+  node->field(INTERN_(kw,constitution),this->_Constitution);
+  node->field(INTERN_(kw,notrainers),this->_SuppressTrainers);
+  node->field(INTERN_(kw,atominfo),this->_AtomInfo);
+  node->field(INTERN_(kw,atomprops),this->_StereoisomerAtomProperties);
+  node->field(INTERN_(kw,properties),this->_Properties);
+  node->field(INTERN_(kw,defaultoutplug),this->_DefaultOutPlugName);
+  node->field(INTERN_(kw,plugs),this->_Plugs);
+  this->Base::fields(node);
+}
+
+
+Topology_mv Topology_O::makeTopologyFromResidue(chem::Residue_sp residue, core::Symbol_sp topologyName,  core::T_sp tconstitution )
+{
+  Constitution_sp constitution;
+  if ( constitution.nilp() ) {
+    SIMPLE_ERROR(BF("The constitution was nil - you need to pass a constitution"));
+  }
+  constitution = gc::As<Constitution_sp>(tconstitution);
+  ConstitutionAtoms_sp ca = constitution->getConstitutionAtoms();
+  Topology_sp topology = Topology_O::make(topologyName, constitution, _Nil<core::T_O>() );
+  core::VectorObjectsWithFillPtr_sp vec = core::VectorObjectsWithFillPtr_O::make(_Nil<core::T_O>(),_Nil<core::T_O>(),residue->numberOfAtoms(),residue->numberOfAtoms(),false,_lisp->_true());
+  int atomIndex = 0;
+  for ( auto ai = residue->begin_atoms(); ai!=residue->end_atoms(); ++ai, ++atomIndex) {
+    Atom_sp atom = *ai;
+    ConstitutionAtomIndex0N constitutionIndex = constitution->getConstitutionAtoms()->index(atom->getName());
+    TopologyAtomInfo_sp tai = TopologyAtomInfo_O::make(atom->getType(),
+                                                       atom->getCharge(),
+                                                       constitutionIndex);
+    vec->setf_elt(atomIndex,tai);
+  }
+  topology->setf_atomInfo(vec);
+  return Values(topology,constitution);
+}
+
+Topology_sp Topology_O::make(core::Symbol_sp name, Constitution_sp constitution, core::List_sp plugs)
+{
+  Topology_sp me = gctools::GC<Topology_O>::allocate(name,constitution);
     //
     // If "plugs" option is outgoing plugs only then we should
     // change the name to "outPlugs"
@@ -101,43 +111,42 @@ Topology_sp make_topology(core::Symbol_sp name, Constitution_sp constitution, in
 };
 
 
-#if 0
-
-   core::T_sp Topology_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+CL_DEFMETHOD Residue_sp Topology_O::build_residue() const
+{
+  Residue_sp res = Residue_O::make(this->getName());
+  gctools::Vec0<Atom_sp> atoms;
+  atoms.resize(this->_AtomInfo->dimension());
+  res->resizeContents(this->_AtomInfo->dimension());
+  ConstitutionAtoms_sp constitutionAtoms = this->_Constitution->getConstitutionAtoms();
+  size_t idx = 0;
+  for ( size_t idx=0, idxEnd(this->_AtomInfo->dimension()); idx<idxEnd; ++idx ) {
+    TopologyAtomInfo_sp ai = gc::As<TopologyAtomInfo_sp>((*this->_AtomInfo)[idx]);
+    Atom_sp atom = Atom_O::create();
+    ConstitutionAtom_sp ca = (*constitutionAtoms)[ai->constitutionAtomIndex()];
+    atom->setName(ca->_AtomName);
+    atom->setElement(ca->_Element);
+    atom->setType(ai->_fftype);
+    atom->setCharge(ai->_AtomicCharge);
+    atom->turnOnFlags(needsBuild);
+    atoms[ai->_ConstitutionAtomIndex] = atom;
+    res->putMatter(idx,atom); // order atoms as in Topology
+  }
+  for ( size_t i=0, iEnd(constitutionAtoms->numberOfAtoms()); i<iEnd; ++i ) {
+    Atom_sp fromAtom = atoms[i];
+    ConstitutionAtom_sp ca = (*constitutionAtoms)[i];
+    for ( auto bi=ca->_Bonds.begin(); bi!=ca->_Bonds.end(); ++bi )
     {
-	this->_Name = translate::from_object<core::Symbol_O>::convert(env->lookup(ChemPkg,"name"));
-	this->_ResidueNetCharge = translate::from_object<int>::convert(env->lookup(ChemPkg,"netCharge"));
-	core::HashTableEq_sp properties = env->lookup(ChemPkg,"properties").as<core::HashTableEq_O>();
-	//
-	// If "plugs" option is outgoing plugs only then we should
-	// change the name to "outPlugs"
-	//
-	core::List_sp curPlug = translate::from_object<core::List_O>::convert(env->lookup(ChemPkg,"plugs"));
-	this->_Plugs.clear();
-	for ( ; curPlug.notnilp(); curPlug = curPlug->cdr() )
-	{
-	    plugType p = curPlug->car<plugOType>();
-	    this->addPlug(p->getName(),p);
-	}
-	ConstitutionAtoms_sp residue = translate::from_object<ConstitutionAtoms_O>::convert(env->lookup(ChemPkg,"constitutionAtoms"));
-#if 0
-	// Here handle the AtomTreeBuilder
-	this->_AtomTreeTemplate = translate::from_object<kinematics::AtomTemplate_O>::convert(env->lookup(Topology_O::Package(),"atomTreeTemplate"));
-
-	// Define the order of rotamer dihedrals
-	this->_ChiList = env->lookup(_lisp->internWithPackageName(ChemPkg,"chiList")).as<kinematics::ChiList_O>();
-	ASSERTF(this->_AtomTreeTemplate.notnilp(),BF("You must provide the atomTreeTemplate"));
-#endif
-	this->_Properties->addAllBindings(properties);
-	return _Nil<core::T_O>();
+      Atom_sp toAtom = atoms[(*bi)->_ToAtomIndex];
+      if ( fromAtom->atLowerUniqueAtomOrderThan(toAtom) ) {
+        BondOrder order = (*bi)->_BondOrder;
+        fromAtom->bondTo(toAtom,order);
+      }
     }
+  }
+  return res;
+}
 
-#endif
 
-    struct OverlappingFragments {
-	uint	_TimesSeen;
-	set<string>	_Fragments;
-    };
 
 #if 0
     void __checkExtractFragment(ExtractFragmentBase_sp extractFrag,adapt::StringSet_sp missingAtomNames, map<string,OverlappingFragments>& overlaps)
@@ -165,7 +174,6 @@ Topology_sp make_topology(core::Symbol_sp name, Constitution_sp constitution, in
 	    }
 	}
     }
-
 
     void Topology_O::throwIfExtractFragmentsAreNotExclusive(ConstitutionAtoms_sp residue)
     {
@@ -210,6 +218,46 @@ Topology_sp make_topology(core::Symbol_sp name, Constitution_sp constitution, in
     }
 #endif
 
+struct OverlappingFragments {
+  uint	_TimesSeen;
+  set<string>	_Fragments;
+};
+
+CL_LISPIFY_NAME(connect_residues);
+CL_DEFUN void connect_residues(Topology_sp prev_topology,
+                               Residue_sp prev_residue,
+                               core::Symbol_sp out_plug_name,
+                               Topology_sp next_topology,
+                               Residue_sp next_residue,
+                               core::Symbol_sp in_plug_name)
+{
+//  printf("%s:%d  prev_topology@%p next_topology@%p\n", __FILE__, __LINE__, prev_topology.raw_(), next_topology.raw_());
+//  printf("%s:%d  prev_residue@%p next_residue@%p\n", __FILE__, __LINE__, prev_residue.raw_(), next_residue.raw_());
+//  printf("%s:%d  out_plug_name = %s    in_plug_name = %s\n", __FILE__, __LINE__, _rep_(out_plug_name).c_str(), _rep_(in_plug_name).c_str() );
+  Plug_sp out_plug = prev_topology->plugNamed(out_plug_name);
+  Plug_sp in_plug = next_topology->plugNamed(in_plug_name);
+  core::Symbol_sp out_plug_atom_name = out_plug->getB0();
+  core::Symbol_sp in_plug_atom_name = in_plug->getB0();
+  if ( out_plug_atom_name.nilp() ) {
+    SIMPLE_ERROR(BF("Could not find b0 in plug %s for topology %s") % _rep_(out_plug) % _rep_(prev_topology));
+  }
+  if ( in_plug_atom_name.nilp() ) {
+    SIMPLE_ERROR(BF("Could not find b0 in plug %s for topology %s") % _rep_(in_plug) % _rep_(next_topology));
+  }
+//  printf("%s:%d  out_plug_atom_name = %s  in_plug_atom_name = %s\n", __FILE__, __LINE__, _rep_(out_plug_atom_name).c_str(), _rep_(in_plug_atom_name).c_str());
+  Atom_sp out_atom = prev_residue->atomWithName(out_plug_atom_name);
+  Atom_sp in_atom = next_residue->atomWithName(in_plug_atom_name);
+//  printf("%s:%d  out_atom = %s  in_atom = %s\n", __FILE__, __LINE__, _rep_(out_atom).c_str(), _rep_(in_atom).c_str());
+  BondOrder bo = in_plug->getBondOrder0();
+  in_atom->bondTo(out_atom, bo);
+  if (in_plug->getB1().notnilp()) {
+    Atom_sp out_atom = prev_residue->atomWithName(out_plug->getB1());
+    Atom_sp in_atom = next_residue->atomWithName(in_plug->getB1());
+    BondOrder bo = in_plug->getBondOrder1();
+    in_atom->bondTo(out_atom, bo);
+  }
+}
+
 
 CL_LISPIFY_NAME("getMonomerContext");
 CL_DEFMETHOD     MonomerContext_sp Topology_O::getMonomerContext(CandoDatabase_sp bdb)
@@ -232,12 +280,8 @@ CL_DEFMETHOD     core::HashTableEq_sp Topology_O::properties() const
 
     bool Topology_O::hasInPlug()
     {
-	DEPRECIATED();
-	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
-	{
-	    if ( i->second->getIsIn() ) return true;
-	}
-	return false;
+      for ( auto i : this->_Plugs ) if ( i.second->getIsIn() ) return true;
+      return false;
     }
 
 
@@ -257,8 +301,8 @@ CL_DEFMETHOD     Topology_O::plugType Topology_O::getInPlug()
     }
 
 
-CL_LISPIFY_NAME("plugsAsCons");
-CL_DEFMETHOD     core::List_sp Topology_O::plugsAsCons()
+CL_LISPIFY_NAME("plugsAsList");
+CL_DEFMETHOD     core::List_sp Topology_O::plugsAsList()
     {_OF();
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
@@ -275,8 +319,8 @@ CL_DEFMETHOD     core::List_sp Topology_O::plugsAsCons()
     }
 
 
-CL_LISPIFY_NAME("plugsWithMatesAsCons");
-CL_DEFMETHOD     core::List_sp Topology_O::plugsWithMatesAsCons()
+CL_LISPIFY_NAME("plugsWithMatesAsList");
+CL_DEFMETHOD     core::List_sp Topology_O::plugsWithMatesAsList()
     {
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
@@ -294,8 +338,8 @@ CL_DEFMETHOD     core::List_sp Topology_O::plugsWithMatesAsCons()
 	return first->cdr();
     }
 
-CL_LISPIFY_NAME("outPlugsAsCons");
-CL_DEFMETHOD     core::List_sp Topology_O::outPlugsAsCons()
+CL_LISPIFY_NAME("outPlugsAsList");
+CL_DEFMETHOD     core::List_sp Topology_O::outPlugsAsList()
     {
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;
@@ -400,12 +444,6 @@ CL_DEFMETHOD     core::List_sp Topology_O::outPlugsAsCons()
 
 
 
-CL_LISPIFY_NAME("hasFlag");
-CL_DEFMETHOD     bool Topology_O::hasFlag(core::Symbol_sp f) const
-    {_OF();
-	return this->_Flags.contains(f);
-    }
-
 
 CL_LISPIFY_NAME("matchesContext");
 CL_DEFMETHOD     bool	Topology_O::matchesContext(MonomerContext_sp cm)
@@ -424,14 +462,7 @@ CL_DEFMETHOD     bool	Topology_O::matchesContext(MonomerContext_sp cm)
 
 CL_LISPIFY_NAME("hasPlugNamed");
 CL_DEFMETHOD     bool	Topology_O::hasPlugNamed(core::Symbol_sp name)
-    {_OF();
-#ifdef DEBUG_ON
-      LOG(BF("Looking for plug name[%s@%p]") % _rep_(name) % name.get() );
-	for (Plugs::const_iterator ki=this->_Plugs.begin(); ki!=this->_Plugs.end(); ki++ )
-	{
-          LOG(BF(" available Symbol key: %s@%p") % _rep_(ki->first) % ki->first.get() );
-	}
-#endif
+    {
 	bool res = this->_Plugs.contains(name);
 	LOG(BF("Result = %d") % res );
 	return res;
@@ -439,14 +470,12 @@ CL_DEFMETHOD     bool	Topology_O::hasPlugNamed(core::Symbol_sp name)
 
 CL_LISPIFY_NAME("plugNamed");
 CL_DEFMETHOD     Plug_sp Topology_O::plugNamed(core::Symbol_sp name)
-    {_OF();
-	LOG(BF("Looking for plug name[%s] available keys[%s]")
-	    % _rep_(name)
-	    % adapt::StringSet_O::create_fromKeysOfSymbolMap(this->_Plugs)->asString());
-	bool res = this->_Plugs.contains(name);
-	LOG(BF("Result = %d") % res );
-	if ( !res ) return _Nil<Plug_O>();
-	return this->_Plugs.get(name);
+    {
+      bool res = this->_Plugs.contains(name);
+      if ( !res ) {
+        SIMPLE_ERROR(BF("Could not find plug with name %s") % _rep_(name));
+      }
+      return this->_Plugs.get(name);
     };
 
 
@@ -457,28 +486,13 @@ CL_DEFMETHOD     Plug_sp Topology_O::plugNamed(core::Symbol_sp name)
     {
 	this->Base::initialize();
 	this->_Name = _Nil<core::Symbol_O>();
-	this->_ResidueNetCharge = 0;
 	this->_Plugs.clear();
-	this->_TemporaryObject = _Nil<core::T_O>();
 	this->_SuppressTrainers = false;
 	this->_Properties = core::HashTableEq_O::create_default();
     }
 
 
 
-CL_LISPIFY_NAME("setTemporaryObject");
-CL_DEFMETHOD     void Topology_O::setTemporaryObject(core::T_sp o)
-    {
-	ASSERTNOTNULL(o);
-	this->_TemporaryObject = o;
-    }
-
-CL_LISPIFY_NAME("getTemporaryObject");
-CL_DEFMETHOD     core::T_sp Topology_O::getTemporaryObject()
-    {
-	ASSERTNOTNULL(this->_TemporaryObject);
-	return this->_TemporaryObject;
-    }
 
 
 CL_LISPIFY_NAME("lookupOrCreateStereoisomerAtoms");

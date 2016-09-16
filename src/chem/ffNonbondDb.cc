@@ -183,7 +183,6 @@ void    FFNonbondDb_O::initialize()
 
 void	FFNonbond_O::fields(core::Record_sp node)
 {
-  this->Base::fields(node);
   node->field(INTERN_(kw,type),this->_Type );
   node->field(INTERN_(kw,radius),this->_Radius_Nanometers);
   node->field(INTERN_(kw,well),this->_Epsilon_kJ);
@@ -195,11 +194,11 @@ void	FFNonbond_O::fields(core::Record_sp node)
   node->field_if_not_default(INTERN_(kw,fcadj),this->_Fcadj,0.0);
   node->field_if_not_default(INTERN_(kw,pbci),this->_Pbci,0.0);
   node->field(INTERN_(kw,da),this->_DonorAcceptor );
+  this->Base::fields(node);
 }
 
 void	FFNonbondDb_O::fields(core::Record_sp node)
 {
-  this->Base::fields(node);
   node->field_if_not_default(INTERN_(kw,eleDielectricValue), this->_EleDielectricValue, 0.0);
   node->field_if_not_default(INTERN_(kw,eleBuffer), this->_EleBuffer, 0.0);
   node->field_if_not_default(INTERN_(kw,eleScale14), this->_EleScale14, 0.0);
@@ -212,6 +211,7 @@ void	FFNonbondDb_O::fields(core::Record_sp node)
   node->field( INTERN_(kw,eleDielectricCode), this->_EleDielectricCode);
   node->field( INTERN_(kw,vdwMixRadius), this->_VdwMixRadius);
   node->field( INTERN_(kw,vdwMixWell), this->_VdwMixWell);
+  this->Base::fields(node);
 }
 
 

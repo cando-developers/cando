@@ -528,12 +528,10 @@ AGEdge_sp AGEdge_O::create(RingFinder_sp graph, Atom_sp atom1, Atom_sp atom2 )
     GC_ALLOCATE(AGEdge_O, edge );
     edge->_graph = graph;
     edge->_id = graph->getNextEdgeId();
-    if ( atom1->atLowerAddressThan(atom2) )
-    {
+    if ( atom1->atLowerUniqueAtomOrderThan(atom2) ) {
 	edge->_vertex1 = graph->vertexForAtom(atom1);
 	edge->_vertex2 = graph->vertexForAtom(atom2);
-    } else
-    {
+    } else {
 	edge->_vertex2 = graph->vertexForAtom(atom1);
 	edge->_vertex1 = graph->vertexForAtom(atom2);
     }

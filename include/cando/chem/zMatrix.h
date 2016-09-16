@@ -320,7 +320,7 @@ CL_DEFMETHOD 	ZMatrixDihedralInternal_sp	getDihedral() {_OF(); ASSERTNOTNULL(thi
 	string getZMatrixAtomNameAtIndex(uint i) const;
 
 	/*! Return the entries as a Cons */
-	core::List_sp entriesAsCons() const;
+	core::List_sp entriesAsList() const;
 
 	const_zMatrixEntryIterator	begin_ZMatrixEntries() const	{ return this->_ZMatrix.begin(); };
 	const_zMatrixEntryIterator	end_ZMatrixEntries() const	{ return this->_ZMatrix.end(); };

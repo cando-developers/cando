@@ -603,8 +603,8 @@ CL_DEFMETHOD     void	ConformationExplorer_O::appendEntry(ConformationExplorerEn
     }
 
 
-CL_LISPIFY_NAME("entriesAsCons");
-CL_DEFMETHOD     core::List_sp ConformationExplorer_O::entriesAsCons()
+CL_LISPIFY_NAME("entriesAsList");
+CL_DEFMETHOD     core::List_sp ConformationExplorer_O::entriesAsList()
     {
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(), _Nil<core::T_O>());
 	core::Cons_sp cur = first;

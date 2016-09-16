@@ -37,7 +37,6 @@ namespace chem {
 
 
 void	FFVdw_O::fields(core::Record_sp node) {
-  this->Base::fields(node);
   node->field(INTERN_(kw,type1),this->_T1);
   node->field(INTERN_(kw,type2),this->_T2);
   node->field(INTERN_(kw,R),this->_R);
@@ -45,12 +44,13 @@ void	FFVdw_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,M),this->_M);
   node->field(INTERN_(kw,N),this->_N);
   node->field(INTERN_(kw,Edep),this->_Edep);
+  this->Base::fields(node);
 };
 
 void FFVdwDb_O::fields(core::Record_sp node)
 {
-  this->Base::fields(node);
   node->field(INTERN_(kw,vdw),this->_Terms);
+  this->Base::fields(node);
 };
 
 

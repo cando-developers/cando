@@ -87,7 +87,7 @@ namespace chem
     }
 
 
-    core::List_sp CandoDatabase_O::entitiesSubClassOfAsCons(core::Class_sp mc)
+    core::List_sp CandoDatabase_O::entitiesSubClassOfAsList(core::Class_sp mc)
     {_OF();
 	core::List_sp result = _Nil<core::T_O>();
 	for ( Entities::const_iterator it=this->_Entities.begin();
@@ -122,10 +122,10 @@ namespace chem
 
 
 
-CL_LISPIFY_NAME("constitutionsAsCons");
-CL_DEFMETHOD     core::List_sp	CandoDatabase_O::constitutionsAsCons() 
+CL_LISPIFY_NAME("constitutionsAsList");
+CL_DEFMETHOD     core::List_sp	CandoDatabase_O::constitutionsAsList() 
     {_OF();
-      return this->entitiesSubClassOfAsCons(core::cl__find_class(Constitution_O::static_classSymbol()));
+      return this->entitiesSubClassOfAsList(core::cl__find_class(Constitution_O::static_classSymbol()));
     };
 
 
@@ -147,10 +147,10 @@ CL_DEFMETHOD     Entity_sp CandoDatabase_O::addEntity(Entity_sp entity)
     }
 
 
-CL_LISPIFY_NAME("representedEntityNameSetsAsCons");
-CL_DEFMETHOD     core::List_sp CandoDatabase_O::representedEntityNameSetsAsCons()
+CL_LISPIFY_NAME("representedEntityNameSetsAsList");
+CL_DEFMETHOD     core::List_sp CandoDatabase_O::representedEntityNameSetsAsList()
     {_OF();
-	return this->entitiesSubClassOfAsCons(core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol()));
+	return this->entitiesSubClassOfAsList(core::cl__find_class(RepresentedEntityNameSet_O::static_classSymbol()));
     }
 
 
@@ -624,8 +624,8 @@ CL_DEFMETHOD     uint CandoDatabase_O::addMonomerCoordinates(MonomerCoordinates_
     }
 
 
-CL_LISPIFY_NAME("uniqueMonomerCoordinatesAsCons");
-CL_DEFMETHOD     core::List_sp CandoDatabase_O::uniqueMonomerCoordinatesAsCons()
+CL_LISPIFY_NAME("uniqueMonomerCoordinatesAsList");
+CL_DEFMETHOD     core::List_sp CandoDatabase_O::uniqueMonomerCoordinatesAsList()
     {
 	core::Cons_sp first, cur;
 	first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
@@ -645,8 +645,8 @@ CL_DEFMETHOD     core::List_sp CandoDatabase_O::uniqueMonomerCoordinatesAsCons()
 	return first->cdr();
     }
 
-CL_LISPIFY_NAME("monomerCoordinatesKeysAsCons");
-CL_DEFMETHOD     core::List_sp CandoDatabase_O::monomerCoordinatesKeysAsCons()
+CL_LISPIFY_NAME("monomerCoordinatesKeysAsList");
+CL_DEFMETHOD     core::List_sp CandoDatabase_O::monomerCoordinatesKeysAsList()
     {
 	core::Cons_sp first, cur;
 	first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());

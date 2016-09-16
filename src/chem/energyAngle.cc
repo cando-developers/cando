@@ -116,7 +116,7 @@ double	angle;
     pos1 = this->_Atom1->getPosition();
     pos2 = this->_Atom2->getPosition();
     pos3 = this->_Atom3->getPosition();
-    angle = calculateAngle( pos1, pos2, pos3 );
+    angle = geom::calculateAngle( pos1, pos2, pos3 );
     return angle;
 }
 

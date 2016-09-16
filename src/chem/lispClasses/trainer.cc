@@ -524,7 +524,7 @@ uint		highestUniqueIndex = 0;
 
 
 
-core::Cons_sp	TrainerOrganizer_O::entriesAsCons()
+core::Cons_sp	TrainerOrganizer_O::entriesAsList()
 {
     core::StringMap<TrainerHeader_O>::iterator	it;
     core::Cons_sp entries, cur, tail;

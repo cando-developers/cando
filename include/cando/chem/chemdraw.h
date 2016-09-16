@@ -299,8 +299,8 @@ public:
 
 
 	core::List_sp getFragments();
-CL_NAME("allFragmentsAsCons");
-CL_DEFMETHOD 	core::List_sp allFragmentsAsCons() { return this->getFragments();};
+CL_NAME("allFragmentsAsList");
+CL_DEFMETHOD 	core::List_sp allFragmentsAsList() { return this->getFragments();};
 	core::List_sp getSubSetOfFragments(adapt::SymbolSet_sp subsetNames );
 
 

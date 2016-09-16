@@ -218,8 +218,8 @@ public:
     {
       RestraintDistance_sp distRest = (rest).as<RestraintDistance_O>();
 	fout << "distance 2 "
-		<< distRest->getAtomA()->getTempFileId() << " "
-		<< distRest->getAtomB()->getTempFileId() << " "
+		<< distRest->getAtomA()->getTempInt() << " "
+		<< distRest->getAtomB()->getTempInt() << " "
 		<< " 2 "
 		<< distRest->getMin() << " "
 		<< distRest->getMax() << " "
@@ -230,9 +230,9 @@ public:
     {
       RestraintAngle_sp distAngle = (rest).as<RestraintAngle_O>();
 	fout << "angle 3 "
-		<< distAngle->getAtomA()->getTempFileId() << " "
-		<< distAngle->getAtomB()->getTempFileId() << " "
-		<< distAngle->getAtomC()->getTempFileId() << " "
+		<< distAngle->getAtomA()->getTempInt() << " "
+		<< distAngle->getAtomB()->getTempInt() << " "
+		<< distAngle->getAtomC()->getTempInt() << " "
 		<< " 2 "
 		<< distAngle->getMin() << " "
 		<< distAngle->getMax() << " "
@@ -241,10 +241,10 @@ public:
     }
     RestraintDihedral_sp distDih = (rest).as<RestraintDihedral_O>();
     fout << "dihedral 4 "
-	    << distDih->getAtomA()->getTempFileId() << " "
-	    << distDih->getAtomB()->getTempFileId() << " "
-	    << distDih->getAtomC()->getTempFileId() << " "
-	    << distDih->getAtomD()->getTempFileId() << " "
+	    << distDih->getAtomA()->getTempInt() << " "
+	    << distDih->getAtomB()->getTempInt() << " "
+	    << distDih->getAtomC()->getTempInt() << " "
+	    << distDih->getAtomD()->getTempInt() << " "
 	    << " 2 "
 	    << distDih->getMinDegrees() << " "
 	    << distDih->getMaxDegrees() << " "
@@ -949,7 +949,7 @@ void	MoeReadFile::readNextLine()
 	    for ( ir=0; ir<numResidues; ir++ ) {
 		LOG(BF("     Creating residue: %d") % ir  );
 		GC_ALLOCATE(Residue_O, res );
-		res->setTempFileId(ir+1);
+		res->setTempInt(ir+1);
 		mol->addMatter(res);
 		LOG(BF("     Added residue to mol") );
 		numAtoms = dynamic_cast<ParaInteger*>(ptResidues.getVector(index_rAtomCount)[tir])->getValue();
@@ -1386,13 +1386,13 @@ void	moeWriteAggregateStream( Aggregate_sp agg, std::ostream& fout)
 		    a = la.getAtom();
 		    count++;
 		    resAtomCount++;
-		    a->setTempFileId(count);
+		    a->setTempInt(count);
 		    LOG(BF("Assigning atom: %lx index: %d") % a.get() % count  );
 		    atoms.push_back(a);
 		};
 		residueAtomCount.push_back(resAtomCount);
 		residueNames.push_back(r->getPdbName());  // PDBNAME
-		r->setTempFileId(resId);
+		r->setTempInt(resId);
 		resId++;
 	    }
 	}
@@ -1419,7 +1419,7 @@ void	moeWriteAggregateStream( Aggregate_sp agg, std::ostream& fout)
 	l.loopTopGoal( Matter_sp(agg), BONDS );
 	while ( l.advanceLoopAndProcess() ) {
 	    l.getBond( &a, &b, &order );
-	    fout << a->getTempFileId() << " " << b->getTempFileId() << std::endl;
+	    fout << a->getTempInt() << " " << b->getTempInt() << std::endl;
 	};
 	fout << "#attr " << count << " ID i aName t aElement t aGeometry t aPosX r aPosY r aPosZ r" << std::endl;
 	fixedCount = 0;
@@ -1427,7 +1427,7 @@ void	moeWriteAggregateStream( Aggregate_sp agg, std::ostream& fout)
 	LOG(BF("Writing atoms") );
 	for ( ai=atoms.begin(); ai!=atoms.end(); ai++ ) {
 	    a = (*ai);
-	    fout << a->getTempFileId() << " ";
+	    fout << a->getTempInt() << " ";
 	    fout << a->getName() << " ";
 	    fout << a->getElement() << " ";
 	    // Sometimes hybridization isn't defined.
@@ -1452,7 +1452,7 @@ void	moeWriteAggregateStream( Aggregate_sp agg, std::ostream& fout)
 	    for ( ai=atoms.begin(); ai!=atoms.end(); ai++ ) {
 		a = (*ai);
 		if ( a->getFlags()&ATOM_FIXED ) {
-		    fout << a->getTempFileId();
+		    fout << a->getTempInt();
 		    if ((ai-atoms.begin())%16!=15 ) fout << " ";
 		    else fout << std::endl;
 		}
@@ -1466,7 +1466,7 @@ void	moeWriteAggregateStream( Aggregate_sp agg, std::ostream& fout)
 	    for ( ai=atoms.begin(); ai!=atoms.end(); ai++ ) {
 		a = (*ai);
 		if ( a->getHintLP() ) {
-		    fout << a->getTempFileId();
+		    fout << a->getTempInt();
 		    if ((ai-atoms.begin())%16!=15 ) fout << " ";
 		    else fout << std::endl;
 		}
@@ -1525,7 +1525,7 @@ void	moeWriteAggregateStream( Aggregate_sp agg, std::ostream& fout)
 		restraint = agg->getRestraints()->getRestraintIndex(i);
 		if ( restraint->getType() == RESTRAINT_CHIRALITY ) {
 		    if ( restraint->getChirality() > 0 ) {
-			fout << restraint->getAtomA()->getTempFileId() << std::endl;
+			fout << restraint->getAtomA()->getTempInt() << std::endl;
 		    }
 		}
 	    }
@@ -1537,7 +1537,7 @@ void	moeWriteAggregateStream( Aggregate_sp agg, std::ostream& fout)
 		restraint = agg->getRestraints()->getRestraintIndex(i);
 		if ( restraint->getType() == RESTRAINT_CHIRALITY ) {
 		    if ( restraint->getChirality() < 0 ) {
-			fout << restraint->getAtomA()->getTempFileId() << std::endl;
+			fout << restraint->getAtomA()->getTempInt() << std::endl;
 		    }
 		}
 	    }

@@ -438,7 +438,7 @@ char			caPart[254], *cPTemp;
 		iOrder = (BondOrder)(atoms[i].bonds[j].iBondOrder);
 		if ( iTo >= 1 ) {
 		    aPTo = atoms[iTo-1].atom;
-		    if ( aPAtom->atLowerAddressThan(aPTo) )
+		    if ( aPAtom->atLowerUniqueAtomOrderThan(aPTo) )
 		    {
 			aPAtom->bondTo(aPTo,iOrder);
 		    }

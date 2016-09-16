@@ -353,7 +353,7 @@ core::T_sp	prim_describeDatabase(core::Function_sp e, core::List_sp args, core::
 core::Str_sp		fileName;
 CandoDatabase_sp	bdb;
     bdb = getCandoDatabase();
-    core::List_sp cur = bdb->constitutionsAsCons();
+    core::List_sp cur = bdb->constitutionsAsList();
     for ( ; cur.notnilp(); cur = cur->cdr() )
     {
 	Constitution_sp con = core::oCar(cur).as<Constitution_O>();

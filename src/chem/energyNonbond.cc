@@ -152,7 +152,7 @@ namespace chem
 	Vector3	pos1, pos2;
 	pos1 = this->_Atom1->getPosition();
 	pos2 = this->_Atom2->getPosition();
-	return calculateDistance(pos1,pos2);
+	return geom::calculateDistance(pos1,pos2);
     }
 
 

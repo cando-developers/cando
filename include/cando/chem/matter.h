@@ -109,14 +109,8 @@ class Matter_O : public core::CxxObject_O
 {
   friend class ConstitutionAtoms_O;
   LISP_CLASS(chem,ChemPkg,Matter_O,"Matter",core::CxxObject_O);
-#if INIT_TO_FACTORIES
  public:
   static Matter_sp make(string name);
-#else
-  DECLARE_INIT();
-#endif
- public:
-  void initialize();
  public:
   bool fieldsp() const { return true; };
   void	fields(core::Record_sp node);
@@ -128,11 +122,11 @@ class Matter_O : public core::CxxObject_O
   typedef	gctools::Vec0<Matter_sp>::iterator		contentIterator;
   typedef	gctools::Vec0<Matter_sp>::const_iterator	const_contentIterator;
  protected:
-  int			_NextContentId;
-  int			_Id;
-  int			_TempFileId;	//!< Use to define temporary index while reading/writing to non XML formats
+//  int			_NextContentId;
+//  int			_Id;
+//  int			_TempFileId;	//!< Use to define temporary index while reading/writing to non XML formats
   MatterName			name;
-  gc::Nilable<Matter_sp>	containerContainedBy;
+  Matter_sp	containerContainedBy;
   MatterVector		_contents;	// KEEP THIS as a vector
 						// A lot depends on residues
 						// maintaining an identical
@@ -145,8 +139,7 @@ class Matter_O : public core::CxxObject_O
  private:
 	/*! Maintain a list of restraints that span this Matter_O object */
   gc::Nilable<core::VectorObjectsWithFillPtr_sp>	_Restraints;
- private:
-
+ public:
 	/*! Adjust the size of the contents array */
   void resizeContents(int sz);
 	/*! Put a child at a particular content index */
@@ -168,16 +161,14 @@ class Matter_O : public core::CxxObject_O
   virtual string __repr__() const;
   virtual char getMatterType() { return MATTER_CLASS; };
 
-  void	setId( int i );
-CL_NAME("getId");
-CL_DEFMETHOD   int	getId()	{ return(this->_Id);}
-
+  CL_NAME("getId");
+  CL_DEFMETHOD   int	getId();
 
 	/*! Accumulate all of the restraints in this matter and its contents into a single RestraintVector */
  core::VectorObjectsWithFillPtr_sp allRestraints() const;
 
-  void	setTempFileId(int i) {this->_TempFileId = i;};
-  int	getTempFileId() { return this->_TempFileId; };
+//  void	setTempFileId(int i) {this->_TempFileId = i;};
+//  int	getTempFileId() { return this->_TempFileId; };
 
  public:
 	/*! Return a deep copy of this Matter */
@@ -260,12 +251,12 @@ core::T_sp getPropertyOrDefault(core::Symbol_sp propertySymbol, core::T_sp defVa
 CL_NAME("numberOfAtoms");
 CL_DEFMETHOD   virtual uint	numberOfAtoms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
 
-  void	setContainedBy(gc::Nilable<Matter_sp> p){this->containerContainedBy= p;};
-  void	setContainedByNothing(){this->containerContainedBy = _Nil<core::T_O>(); };
+  void	setContainedBy(Matter_sp p){this->containerContainedBy= p;};
+  void	setContainedByNothing(){this->containerContainedBy = _Unbound<Matter_O>(); };
 		// Check containedByValid before touching containedBy
-  bool		containedByValid() const {return (this->containerContainedBy.notnilp()); };
-  Matter_sp	containedBy() const	{_G();ASSERTNOTNULL(this->containerContainedBy);return this->containerContainedBy;};
-  Matter_sp	containedBy()	{_G();ASSERTNOTNULL(this->containerContainedBy); return this->containerContainedBy; };
+  bool		containedByValid() const {return !(this->containerContainedBy.unboundp()); };
+  Matter_sp	containedBy() const	{ASSERT(this->containerContainedBy.boundp());return this->containerContainedBy;};
+  Matter_sp	containedBy()	{ASSERT(this->containerContainedBy.boundp()); return this->containerContainedBy; };
   bool		isContainedBy(Matter_sp matter);
   MatterVector&	getContents()	{return(this->_contents);};
   void	eraseContents(); // Empty the contents vector, don't free the memory
@@ -293,15 +284,15 @@ CL_DEFMETHOD   MatterName getName_notConst() { return this->name; };
 
   bool		hasContentWithName(MatterName sName);
   Matter_sp	contentWithName(MatterName sName);
-  Matter_sp	contentWithNameOrNil(MatterName sName);
+  core::T_sp	contentWithNameOrNil(MatterName sName);
   int		contentIndexWithName(MatterName sName);
 
   Matter_sp	contentWithId( int lid );
   bool		hasContentWithId( int lid );
   int		contentIndexWithId( int lid );
 
-  core::List_sp		contentsAsCons();
-  core::List_sp		contents() { return this->contentsAsCons();};
+  core::List_sp		contentsAsList();
+  core::List_sp		contents() { return this->contentsAsList();};
 
 CL_NAME("isAggregate");
 CL_DEFMETHOD   virtual bool	isAggregate() { return false;}
@@ -372,19 +363,19 @@ CL_DEFMETHOD   int		contentSize( ) { return this->_contents.size(); };
 #endif
 
 	/*! Return all atoms as a Cons of atoms. */
-  core::List_sp allAtomsAsCons(bool allowVirtualAtoms) const;
+  core::List_sp allAtomsAsList(bool allowVirtualAtoms) const;
 
 	/*! Return all bonds as Cons of Cons (each entry is a Bond object) */
-  core::List_sp allBondsAsCons(bool allowVirtualAtoms) const;
+  core::List_sp allBondsAsList(bool allowVirtualAtoms) const;
 
 	/*! Return all angles as Cons of Cons (each entry is an Angle) */
-  core::List_sp allAnglesAsCons(bool allowVirtualAtoms) const;
+  core::List_sp allAnglesAsList(bool allowVirtualAtoms) const;
 
 	/*! Return all proper torsions as Cons of Cons (each entry is ProperTorsion) */
-  core::List_sp allProperTorsionsAsCons(bool allowVirtualAtoms) const;
+  core::List_sp allProperTorsionsAsList(bool allowVirtualAtoms) const;
 
 	/*! Return all improper torsions as Cons of Cons (each entry is an ImproperTorsion ) */
-  core::List_sp allImproperTorsionsAsCons(bool allowVirtualAtoms) const;
+  core::List_sp allImproperTorsionsAsList(bool allowVirtualAtoms) const;
 
 	/*! Build a map of AtomIds to Atoms */
   virtual AtomIdToAtomMap_sp buildAtomIdMap() const;
@@ -392,13 +383,18 @@ CL_DEFMETHOD   int		contentSize( ) { return this->_contents.size(); };
 	/*! Return the atom with the AtomId */
   virtual Atom_sp atomWithAtomId(AtomId_sp atomId) const;
 
-
 	/*! Invert the stereochemistry of my immediate restraints */
   void invertStereochemistryOfRestraints();
 
   Matter_O(const Matter_O& c );
-  virtual ~Matter_O() {};
- Matter_O() : name(_Nil<core::Symbol_O>()), _Properties(_Nil<core::T_O>()) {};
+ Matter_O() :
+//_NextContentId(1),
+//    _Id(1),
+//    _TempFileId(0),
+    name(_Nil<core::Symbol_O>()),
+//    containerContainedBy(_Nil<core::T_O>()),
+    _Properties(_Nil<core::T_O>()),
+    _Restraints(_Nil<core::T_O>()) {};
 };
 
 };

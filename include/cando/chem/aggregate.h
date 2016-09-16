@@ -120,7 +120,7 @@ CL_DEFMETHOD     bool		testAggregateConsistancy() {return this->testConsistancy(
 
     /*! Return a Cons with all molecules */
 CL_NAME("molecules");
-CL_DEFMETHOD     core::List_sp molecules() { return this->contentsAsCons(); };
+CL_DEFMETHOD     core::List_sp molecules() { return this->contentsAsList(); };
 
     /*! When a structure is loaded and all the atoms are dumped into the same
      * molecule and same residue then we may want to separate out the molecules

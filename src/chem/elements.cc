@@ -371,7 +371,7 @@ void initializeElementsAndHybridization()
   for ( vector<HybridizationInfo>::iterator hi=hybridizationInfo.begin(); hi!=hybridizationInfo.end(); hi++ )
   {
     core::Symbol_sp sym = chemkw_intern(hi->_HybridizationSymbol);
-    hybridizationConverter->addSymbolEnumPair(sym,_lisp->intern(hi->_HybridizationSymbol),hi->_HybridizationEnum);
+    hybridizationConverter->addSymbolEnumPair(sym,chemkw_intern(hi->_HybridizationSymbol),hi->_HybridizationEnum);
   }
   _sym__PLUS_hybridizationToSymbolConverter_PLUS_->defconstant(hybridizationConverter);
 
@@ -466,6 +466,7 @@ uint maxTotalBondOrderForElement(Element element)
   if ( element == element_O ) return 3;
   if ( element == element_H ) return 1;
   if ( element == element_S ) return 6;
+  if ( element == element_P ) return 6;
   return 4;
 }
 

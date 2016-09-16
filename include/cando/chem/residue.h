@@ -85,13 +85,13 @@ namespace chem {
     {
         friend class Constitution_O;
         friend class Molecule_O;
+        friend	class	Loop;
         LISP_CLASS(chem,ChemPkg,Residue_O,"Residue",Matter_O);
     public:
 	void initialize();
     public:
         bool fieldsp() const { return true; };
         void fields(core::Record_sp node);
-        friend	class	Loop;
     private:
 	bool		_Selected;
 	int		_NetCharge;
@@ -201,6 +201,9 @@ CL_DEFMETHOD 	void	setNetCharge(int nc) { this->_NetCharge = nc; };
 
 CL_NAME("atomWithName");
 CL_DEFMETHOD 	Atom_sp		atomWithName(MatterName sName ) { return this->contentWithName(sName).as<Atom_O>(); };
+ CL_NAME("hasAtomWithName");
+ CL_DEFMETHOD 	bool		hasAtomWithName(MatterName sName ) { return (this->hasContentWithName(sName)); };
+
 	Atom_sp		atomWithAlias(AtomAliasName sName );
 	Atom_sp		atomWithAliasOrNil(AtomAliasName sName );
 
@@ -209,8 +212,6 @@ CL_DEFMETHOD 	Atom_sp		atomWithName(MatterName sName ) { return this->contentWit
 	Residue_sp aliasResidueOrNil(Alias_sp alias) {IMPLEMENT_ME();};
 
 	Vector3		positionOfAtomWithName(MatterName sName );
-CL_NAME("hasAtomWithName");
-CL_DEFMETHOD 	bool		hasAtomWithName(MatterName sName ) { return (this->hasContentWithName(sName)); };
 
 	void setAliasesForAtoms(core::List_sp aliasAtoms, core::List_sp atomAliases);
 

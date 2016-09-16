@@ -325,7 +325,7 @@ CL_DEFMETHOD 	Matter_sp	getMatter() { return this->_Matter;};
 		//! Return the index of the entry
 	unsigned getEntryIndex(ConformationExplorerEntry_sp entry);
 
-	core::List_sp entriesAsCons();
+	core::List_sp entriesAsList();
 
 	virtual void	clearEntries();
 	ConformationExplorerEntry_sp getEntry(unsigned i);

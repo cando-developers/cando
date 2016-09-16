@@ -161,8 +161,8 @@ CL_DEFMETHOD     string	Monomer_O::getStatusMessage() { return this->_Status->ge
     void	Monomer_O::addStatusMessage(const string& s) {this->_Status->addMessage(s);};
     StatusTracker_sp	Monomer_O::getStatusTracker() { return this->_Status;};
 
-CL_LISPIFY_NAME("plugNamesAndCouplingsAsCons");
-CL_DEFMETHOD     core::List_sp	Monomer_O::plugNamesAndCouplingsAsCons()
+CL_LISPIFY_NAME("plugNamesAndCouplingsAsList");
+CL_DEFMETHOD     core::List_sp	Monomer_O::plugNamesAndCouplingsAsList()
     {
 	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
 	core::Cons_sp cur = first;

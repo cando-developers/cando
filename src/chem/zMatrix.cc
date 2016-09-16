@@ -138,7 +138,7 @@ namespace chem
 	double	value;
 	atomNew = this->getAtomNew();
 	atomBond = this->getZMatrix()->_getAtomAtIndex(this->_AtomBond);
-	value = calculateDistance(atomNew->getPosition(),
+	value = geom::calculateDistance(atomNew->getPosition(),
 				  atomBond->getPosition());
 	this->setValue(value);
     }
@@ -225,7 +225,7 @@ CL_DEFMETHOD     string	ZMatrixBondInternal_O::getBondAtomZMatrixName()
 	atomNew = this->getAtomNew();
 	atomBond = this->getZMatrix()->_getAtomAtIndex(this->_AtomBond);
 	atomAngle = this->getZMatrix()->_getAtomAtIndex(this->_AtomAngle);
-	value = calculateAngle(atomNew->getPosition(),
+	value = geom::calculateAngle(atomNew->getPosition(),
 			       atomBond->getPosition(),
 			       atomAngle->getPosition() );
 	this->setValue(value);
@@ -320,7 +320,7 @@ CL_DEFMETHOD     string	ZMatrixAngleInternal_O::getAngleAtomZMatrixName()
 	atomBond = this->getZMatrix()->_getAtomAtIndex(this->_AtomBond);
 	atomAngle = this->getZMatrix()->_getAtomAtIndex(this->_AtomAngle);
 	atomDihedral = this->getZMatrix()->_getAtomAtIndex(this->_AtomDihedral);
-	value = calculateDihedral(atomNew->getPosition(),
+	value = geom::calculateDihedral(atomNew->getPosition(),
 				  atomBond->getPosition(),
 				  atomAngle->getPosition(),
 				  atomDihedral->getPosition());
@@ -618,8 +618,8 @@ CL_DEFMETHOD     void	ZMatrix_O::extractInternals()
 
 
 
-CL_LISPIFY_NAME("entriesAsCons");
-CL_DEFMETHOD     core::List_sp ZMatrix_O::entriesAsCons() const
+CL_LISPIFY_NAME("entriesAsList");
+CL_DEFMETHOD     core::List_sp ZMatrix_O::entriesAsList() const
     {_OF();
 	return core::Cons_O::createFromVec0(this->_ZMatrix);
     };

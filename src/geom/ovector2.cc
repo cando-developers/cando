@@ -141,13 +141,13 @@ CL_DEFMETHOD     Vector2 OVector2_O::normalized()
 CL_LISPIFY_NAME("vector2-angle");
 CL_DEFMETHOD double	OVector2_O::angle( const Vector2& vb, const Vector2& vc)
 {
-    return calculateAngle(this->_Value,vb,vc);
+  return geom::calculate2Angle(this->_Value,vb,vc);
 }
 
 CL_LISPIFY_NAME("vector2-distance");
 CL_DEFMETHOD double	OVector2_O::distance( const Vector2& vb )
 {
-    return calculateDistance(this->_Value,vb);
+    return calculate2Distance(this->_Value,vb);
 }
 
 

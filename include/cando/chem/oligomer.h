@@ -146,7 +146,7 @@ public:	// /////////////////////////////////////////////////////////////////
     bool	hasLastMultiMonomerChanged();
     MultiMonomer_sp getLastMultiMonomerChanged();
 
-    core::List_sp monomersAsCons();
+    core::List_sp monomersAsList();
 
     monomerIterator begin_Monomers() { return this->_Monomers.begin(); };
     monomerIterator end_Monomers() { return this->_Monomers.end(); };

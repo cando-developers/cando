@@ -86,7 +86,7 @@ public:
 	/*! Return true if atom is Atom1, false if its Atom2 and throw an exception if its neither */
   bool isAtom1(Atom_sp atom) const;
 
-
+  virtual bool equalp(core::T_sp obj) const;
 
 CL_NAME("getAtom1");
 CL_DEFMETHOD   Atom_sp getAtom1() const { return this->_Atom1; };

@@ -250,7 +250,7 @@ Aggregate_sp	EntirePdbRec::createAggregate()
         Residue_sp res = Residue_O::create();
         res->setName(ai->_resName);
         res->setPdbName(ai->_resName);
-        res->setId(ai->_resSeq);
+//        res->setId(ai->_resSeq);
         res->setFileSequenceNumber(ai->_resSeq);
         Molecule_sp mol = this->_molecules[ai->_moleculeIdx];
         mol->addMatter(res);

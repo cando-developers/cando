@@ -171,8 +171,8 @@ void Oligomer_O::setCandoDatabase(CandoDatabase_sp bdb)
 #endif
 
 
-CL_LISPIFY_NAME("monomersAsCons");
-CL_DEFMETHOD core::List_sp Oligomer_O::monomersAsCons()
+CL_LISPIFY_NAME("monomersAsList");
+CL_DEFMETHOD core::List_sp Oligomer_O::monomersAsList()
 {
     core::List_sp cons = _Nil<core::T_O>();
     gctools::Vec0<Monomer_sp>::iterator	mi;
@@ -618,9 +618,6 @@ int			residueNetCharge;
 	ASSERT((*mi).notnilp());
     	res = (*mi)->createResidue();
 	topology = (*mi)->getTopology();
-	residueNetCharge = topology->getResidueNetCharge();
-	res->setNetCharge(residueNetCharge);
-	(*mi)->setTempResidue(res);
 	mol->addMatter(res);
     }
     gctools::Vec0<Coupling_sp>::iterator	ci;

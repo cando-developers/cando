@@ -109,12 +109,13 @@ namespace chem
 	{
 	    LISP_CLASS(chem,ChemPkg,Constitution_O,"Constitution",Entity_O);
 	public:
-	    static Constitution_sp make(core::Symbol_sp name,
-                                        core::String_sp comment,
-                                        ConstitutionAtoms_sp constitutionAtoms,
-                                        StereoInformation_sp stereoInformation,
-                                        core::List_sp plugs,
-                                        core::List_sp topologies);
+            CL_LISPIFY_NAME(make_constitution);
+	    CL_DEF_CLASS_METHOD static Constitution_sp make(core::Symbol_sp name,
+                                                            core::String_sp comment,
+                                                            ConstitutionAtoms_sp constitutionAtoms,
+                                                            StereoInformation_sp stereoInformation,
+                                                            core::List_sp plugs,
+                                                            core::List_sp topologies);
 	public:
 	    void initialize();
 	public:
@@ -122,8 +123,8 @@ namespace chem
 
 	    friend class Monomer_O;
 	public:
-	    typedef	gctools::SmallMap<core::Symbol_sp,Topology_sp> TopologyMap; //adapt::SymbolMap<Topology_O>	TopologyMap;
-	    typedef    	gctools::SmallMap<core::Symbol_sp,Plug_sp> PlugMap; // adapt::SymbolMap<Plug_O>		PlugMap;
+	    typedef	adapt::SymbolMap<Topology_O> TopologyMap; //adapt::SymbolMap<Topology_O>	TopologyMap;
+	    typedef    	adapt::SymbolMap<Plug_O> PlugMap; // adapt::SymbolMap<Plug_O>		PlugMap;
 	private:
 	    core::Symbol_sp			_Name;
             core::String_sp			_Comment;
@@ -133,22 +134,23 @@ namespace chem
 	    ConstitutionAtoms_sp		_ConstitutionAtoms;
 	    PlugMap				_PlugsByName;
 	    TopologyMap				_Topologies;
-	    StereoInformation_sp		_StereoInformation;
-	private:
-//	    Residue_sp	loadResidue(adapt::QDomNode_sp node);
-
+            StereoInformation_sp                _StereoInformation;
+        public:
+            bool fieldsp() const { return true; };
+            void fields(core::Record_sp node);
 	public:
 	    typedef gctools::Vec0<Stereoisomer_sp>::iterator	stereoisomerIterator;
 	    typedef gctools::Vec0<Stereoisomer_sp>::const_iterator	const_stereoisomerIterator;
 	public:
 	    virtual adapt::SymbolSet_sp	expandedNameSet() { return this->getMonomerNamesAsSymbolSet(); };
 	public:
-	    core::List_sp stereoisomersAsCons();
-	    core::List_sp topologiesAsCons();
-	    core::List_sp plugsAsCons();
-	    core::List_sp plugsWithMatesAsCons();
+	    core::List_sp stereoisomersAsList();
+	    core::List_sp topologiesAsList();
+	    core::List_sp plugsAsList();
+	    core::List_sp plugsWithMatesAsList();
 
-	    stereoisomerIterator begin_Stereoisomers();
+            
+            stereoisomerIterator begin_Stereoisomers();
 	    stereoisomerIterator end_Stereoisomers();
 
 	    const_stereoisomerIterator begin_Stereoisomers() const;
@@ -219,7 +221,7 @@ CL_NAME("setComment");
 CL_NAME("getComment");
  CL_DEFMETHOD 	    core::String_sp	getComment( ) { return this->_Comment; };
 
-	    Residue_sp	createResidueForStereoisomerName(core::Symbol_sp nameOrPdb);
+ Residue_sp	createResidueForStereoisomerName(core::Symbol_sp nameOrPdb);
 
 CL_NAME("hasPlugNamed");
 CL_DEFMETHOD 	    bool	hasPlugNamed( core::Symbol_sp name) { return this->_PlugsByName.contains(name); };

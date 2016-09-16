@@ -81,7 +81,7 @@ double	EnergyImproperRestraint::getAngle()
     pos2 = this->_Atom2->getPosition();
     pos3 = this->_Atom3->getPosition();
     pos4 = this->_Atom4->getPosition();
-    return calculateDihedral(pos1,pos2,pos3,pos4);
+    return geom::calculateDihedral(pos1,pos2,pos3,pos4);
 }
 
 

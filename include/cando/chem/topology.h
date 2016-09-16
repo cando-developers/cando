@@ -93,21 +93,25 @@ struct gctools::GCInfo<chem::TopologyAtomInfo_O> {
  namespace chem {
    class TopologyAtomInfo_O : public core::CxxObject_O {
      LISP_CLASS(chem,ChemPkg,TopologyAtomInfo_O,"TopologyAtomInfo",core::CxxObject_O);
-   private:
+   public:
      core::T_sp _fftype;
      double     _AtomicCharge;
      ConstitutionAtomIndex0N _ConstitutionAtomIndex;
-   public:
+public:
    TopologyAtomInfo_O(core::T_sp fftype, double atomicCharge, ConstitutionAtomIndex0N index ) : _fftype(fftype), _AtomicCharge(atomicCharge), _ConstitutionAtomIndex(index) {};
+   public:
+     bool fieldsp() const { return true;};
+     void fields(core::Record_sp node);
+   public:
+     CL_LISPIFY_NAME(make_topology_atom_info);
+     CL_DEF_CLASS_METHOD static inline TopologyAtomInfo_sp make(core::T_sp fftype, double atomicCharge, chem::ConstitutionAtomIndex0N constitutionAtomIndex) {
+     return gctools::GC<TopologyAtomInfo_O>::allocate(fftype,atomicCharge, constitutionAtomIndex);
+   }
    public:
      inline CL_DEFMETHOD core::T_sp fftype() const { return this->_fftype; };
      inline CL_DEFMETHOD double atomicCharge() const { return this->_AtomicCharge; };
      inline CL_DEFMETHOD ConstitutionAtomIndex0N constitutionAtomIndex() const { return this->_ConstitutionAtomIndex; };
    };
-
-   inline CL_DEFUN TopologyAtomInfo_sp makeTopologyAtomInfo(core::T_sp fftype, double atomicCharge, chem::ConstitutionAtomIndex0N constitutionAtomIndex) {
-     return gctools::GC<TopologyAtomInfo_O>::allocate(fftype,atomicCharge, constitutionAtomIndex);
-   }
  };
 
 
@@ -126,7 +130,8 @@ struct gctools::GCInfo<chem::TopologyAtomInfo_O> {
   A Topology also defines a map of atom names to atomic types and atomic charges. Atom types and charges will
   be topology dependent but the element is not and so the Constitution provides a map of atom names to atomic elements.
 
-  Each Topology is uniquely identified within a CandoDatabase by a TopologyIndex0N identifier that ranges
+  I'm disabling the following for now - until I see a reason to turn it back on.
+Each Topology is uniquely identified within a CandoDatabase by a TopologyIndex0N identifier that ranges
   between 0 and N-(the number of unique Topologys in the database).  This is to facilitate atom based lookups
   that describe the number of bonds between atoms in two interconnected Topologys.
 */
@@ -147,28 +152,28 @@ public:
 private:
     typedef Plug_sp	plugType;
     typedef Plug_O	plugOType;
-public:
-    typedef	gctools::SmallMap<core::Symbol_sp,Plug_sp>	Plugs;
+    typedef adapt::SymbolMap<Plug_O> Plugs;
 private:
     core::Symbol_sp				_Name;
     Constitution_sp				_Constitution;
-    TopologyIndex0N				_TopologyIndex0N;
-    int					        _ResidueNetCharge;
-    gctools::SmallOrderedSet<core::Symbol_sp> 	_Flags;
     bool					_SuppressTrainers;
     core::Vector_sp                             _AtomInfo;
     adapt::SymbolMap<StereoisomerAtoms_O>      	_StereoisomerAtomProperties;
     core::HashTableEq_sp			_Properties;
-private:	// Do not archive
-    core::T_sp				_TemporaryObject;
+    core::Symbol_sp                             _DefaultOutPlugName;
+    Plugs			_Plugs;
  public:
-    Plugs					_Plugs;
-	
+    bool fieldsp() const { return true;};
+    void fields(core::Record_sp node);
 public:
+    CL_LISPIFY_NAME(make_topology);
+    CL_DOCSTRING(R"doc(Create a topology and return it, after this the topology needs to be added to a constitution)doc");
+    CL_DEF_CLASS_METHOD static Topology_sp make(core::Symbol_sp name, Constitution_sp constitution, core::List_sp plugs );
+    
 CL_LISPIFY_NAME(makeTopologyFromResidue);
-CL_LAMBDA(residue &optional constitution);
+CL_LAMBDA(residue topology_name &optional constitution);
  CL_DOCSTRING("Create a topology from a residue. The constitution may be NIL or a constitution to use to define the atoms");
- CL_DEF_CLASS_METHOD static Topology_sp makeTopologyFromResidue(chem::Residue_sp residue, core::T_sp constitution);
+ CL_DEF_CLASS_METHOD static Topology_mv makeTopologyFromResidue(chem::Residue_sp residue, core::Symbol_sp topologyName, core::T_sp constitution);
 protected:
     void setFromMonomer(Monomer_sp mon);
 public:
@@ -184,18 +189,20 @@ public:
 CL_NAME("suppressTrainers");
 CL_DEFMETHOD     bool suppressTrainers() const { return this->_SuppressTrainers;};
 
+ Residue_sp build_residue() const;
+ 
     //! Return all plugs as a Cons
-    core::List_sp	plugsAsCons();
+    core::List_sp	plugsAsList();
 
     //! Return a Cons of Plugs that have Mates
-    core::List_sp	plugsWithMatesAsCons();
+    core::List_sp	plugsWithMatesAsList();
 
     //! Return a Cons of out plugs
-    core::List_sp	outPlugsAsCons();
+    core::List_sp	outPlugsAsList();
 
     /// @brief Return all of the Incomplete Frames as Cons
     /// @return Cons of Incomplete Frames
-    core::List_sp	incompleteFramesAsCons();
+    core::List_sp	incompleteFramesAsList();
 
     /// @brief Return the name of the Topology
 CL_NAME("getName");
@@ -212,8 +219,13 @@ CL_DEFMETHOD     core::Symbol_sp	getName() const {return (this->_Name);};
 CL_NAME("numberOfPlugs");
 CL_DEFMETHOD     int	numberOfPlugs() { return this->_Plugs.size(); };
 
-    bool	hasInPlug();
-    plugType getInPlug();
+ CL_DEFMETHOD bool	hasInPlug();
+ CL_DEFMETHOD plugType getInPlug();
+
+ CL_DEFMETHOD core::Symbol_sp defaultOutPlugName() const { return this->_DefaultOutPlugName; };
+ CL_DEFMETHOD void setf_default_out_plug_name(core::Symbol_sp outPlugName) {
+   this->_DefaultOutPlugName = outPlugName;
+ }
 
     /*! Return true if this Topology has all of the plugs in (plugSet) */
     bool	hasMatchingPlugsWithMates(adapt::SymbolSet_sp plugSet);
@@ -223,35 +235,34 @@ CL_DEFMETHOD     int	numberOfPlugs() { return this->_Plugs.size(); };
 
     CL_DEFMETHOD core::T_sp atomInfo() const { return this->_AtomInfo; };
     CL_DEFMETHOD core::T_sp setf_atomInfo(core::Vector_sp ai) { this->_AtomInfo = ai; return ai; };
-CL_NAME("getResidueNetCharge");
-CL_DEFMETHOD     int	getResidueNetCharge() { return this->_ResidueNetCharge; };
-    void	setResidueNetCharge(int nc) { this->_ResidueNetCharge = nc; };
-
 
     void mapPlugs(std::function<void(Plug_sp)> );
 
-    core::List_sp extractFragmentsAsCons();
+    core::List_sp extractFragmentsAsList();
 
     void throwIfExtractFragmentsAreNotExclusive(ConstitutionAtoms_sp constitutionAtoms);
 
-    void	addPlug(core::Symbol_sp nm, plugType op ) { this->_Plugs.set(nm, op);};
-
+    CL_DEFMETHOD void addPlug(core::Symbol_sp nm, plugType op ) { this->_Plugs.set(nm, op);};
     bool		hasFlag(core::Symbol_sp f) const;
-
     bool		matchesTopology(Topology_sp cm);
-
     bool		matchesContext(MonomerContext_sp cm);
 
     /*! Return a StereoisomerAtoms_sp object for the stereoisomer name
       Either return the existing one or create a new one */
     StereoisomerAtoms_sp lookupOrCreateStereoisomerAtoms(core::Symbol_sp stereoisomerName);
-
- Topology_O(core::Symbol_sp name, Constitution_sp constitution, int netCharge) : _Name(name), _Constitution(constitution), _ResidueNetCharge(netCharge) {};
-};
- CL_DOCSTRING(R"doc(Create a topology and return it, after this the topology needs to be added to a constitution)doc");
- CL_DEFUN Topology_sp make_topology(core::Symbol_sp name, Constitution_sp constitution, int netCharge, core::List_sp plugs );
-
+    
+ Topology_O() : _Name(_Nil<core::Symbol_O>()), _Constitution(_Unbound<chem::Constitution_O>()) {};
+ Topology_O(core::Symbol_sp name, Constitution_sp constitution) : _Name(name), _Constitution(constitution) {};
 };
 
-TRANSLATE(chem::Topology_O);
+
+ void connect_residues(Topology_sp prev_topology,
+                               Residue_sp prev_residue,
+                               core::Symbol_sp out_plug_name,
+                               Topology_sp next_topology,
+                               Residue_sp next_residue,
+                       core::Symbol_sp in_plug_name);
+
+};
+
 #endif

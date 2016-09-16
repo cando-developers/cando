@@ -126,7 +126,7 @@ private:
 	bool recognizesEntityOfClass(core::Symbol_sp name, core::Class_sp mc);
 
 	/*! Return a Cons of all entities that are of class (classId) */
-	core::List_sp entitiesSubClassOfAsCons(core::Class_sp mc);
+	core::List_sp entitiesSubClassOfAsList(core::Class_sp mc);
 
 
 	/*! Return the entity with the given name and classId and if it doesn't exist throw an exception */
@@ -160,9 +160,9 @@ CL_DEFMETHOD     core::Symbol_sp getName() { return this->_Name; };
 
 
 
-	core::List_sp  representedEntityNameSetsAsCons();
+	core::List_sp  representedEntityNameSetsAsList();
 
-	core::List_sp	constitutionsAsCons();
+	core::List_sp	constitutionsAsList();
 
 
 	bool recognizesNameOrPdb(core::Symbol_sp name);
@@ -274,8 +274,8 @@ public:
 	MonomerCoordinates_sp	getMonomerCoordinatesWithKey(MonomerName key);
 	bool			recognizesMonomerCoordinatesKey(MonomerName key);
 
-	core::List_sp uniqueMonomerCoordinatesAsCons();
-	core::List_sp monomerCoordinatesKeysAsCons();
+	core::List_sp uniqueMonomerCoordinatesAsList();
+	core::List_sp monomerCoordinatesKeysAsList();
 
 	SpecificContextSet_sp allSpecificMonomerContexts();
 

@@ -53,8 +53,6 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
-#if INIT_TO_FACTORIES
-
 Constitution_sp Constitution_O::make(core::Symbol_sp name, core::String_sp comment, ConstitutionAtoms_sp constitutionAtoms, StereoInformation_sp stereoInformation, core::List_sp plugs, core::List_sp topologies)
   {
       GC_ALLOCATE(Constitution_O, me );
@@ -62,7 +60,10 @@ Constitution_sp Constitution_O::make(core::Symbol_sp name, core::String_sp comme
       me->_Comment = comment;
       me->_ConstitutionAtoms = constitutionAtoms;
       me->_StereoInformation = stereoInformation;
-      me->_StereoInformation->validate();
+      stereoInformation->validate();
+      if ( me->_StereoInformation.notnilp() ) {
+        gctools::As<StereoInformation_sp>(me->_StereoInformation)->validate();
+      }
       {_BLOCK_TRACE("Adding plugs to Constitution");
 	  me->_PlugsByName.clear();
           for ( auto cur : plugs ) {
@@ -78,8 +79,6 @@ Constitution_sp Constitution_O::make(core::Symbol_sp name, core::String_sp comme
 	  }
       }
       {_BLOCK_TRACE("Adding topologies to Constitution");
-	  IMPLEMENT_MEF(BF("Handle setOwnerOfAllEntries"));
-//	  topologies->setOwnerOfAllEntries(me);
 	  me->_Topologies.clear();
           for ( auto cur : topologies ) {
             Topology_sp t = oCar(cur).as<Topology_O>();
@@ -94,7 +93,7 @@ Constitution_sp Constitution_O::make(core::Symbol_sp name, core::String_sp comme
       return me;
   };
 
-#else
+#if 0
 
     core::T_sp Constitution_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
 {
@@ -221,6 +220,7 @@ void	Constitution_O::makeResidueConsistentWithStereoisomerNamed(Residue_sp res,
 };
 
 
+
 RepresentativeList_sp	Constitution_O::expandedRepresentativeList() const
 {
     gctools::Vec0<Stereoisomer_sp>::const_iterator	si;
@@ -328,10 +328,8 @@ CL_DEFMETHOD adapt::StringList_sp Constitution_O::getPdbNamesAsStringList() {
 
 
 
-CL_LISPIFY_NAME("stereoisomersAsCons");
-CL_DEFMETHOD core::List_sp Constitution_O::stereoisomersAsCons() { return this->_StereoInformation->stereoisomersAsCons(); };
-CL_LISPIFY_NAME("topologiesAsCons");
-CL_DEFMETHOD core::List_sp Constitution_O::topologiesAsCons() {
+CL_DEFMETHOD core::List_sp Constitution_O::stereoisomersAsList() { return this->_StereoInformation->stereoisomersAsList(); };
+CL_DEFMETHOD core::List_sp Constitution_O::topologiesAsList() {
     core::List_sp result = _Nil<core::T_O>();
     for ( TopologyMap::iterator it = this->_Topologies.begin(); it!=this->_Topologies.end(); ++it ) {
         result = core::Cons_O::create(it->second,result);
@@ -339,15 +337,15 @@ CL_DEFMETHOD core::List_sp Constitution_O::topologiesAsCons() {
     return result;
 }
 
-core::List_sp Constitution_O::plugsAsCons() {
+core::List_sp Constitution_O::plugsAsList() {
     core::List_sp result = _Nil<core::T_O>();
     for ( PlugMap::iterator it = this->_PlugsByName.begin(); it!=this->_PlugsByName.end(); ++it ) {
         result = core::Cons_O::create(it->second,result);
     }
     return result;
 }
-CL_LISPIFY_NAME("plugsWithMatesAsCons");
-CL_DEFMETHOD core::List_sp Constitution_O::plugsWithMatesAsCons()
+
+CL_DEFMETHOD core::List_sp Constitution_O::plugsWithMatesAsList()
 {
     core::List_sp first = _Nil<core::T_O>();
     PlugMap::iterator mi;
@@ -360,6 +358,7 @@ CL_DEFMETHOD core::List_sp Constitution_O::plugsWithMatesAsCons()
     }
     return first;
 }
+
 
 Constitution_O::stereoisomerIterator Constitution_O::begin_Stereoisomers() 
 {
@@ -380,6 +379,7 @@ Constitution_O::const_stereoisomerIterator Constitution_O::end_Stereoisomers() c
 };
 
 
+
 /*!
 	Return a copy of the residue that this constitution defines
 */
@@ -397,10 +397,9 @@ CL_DEFMETHOD     Residue_sp	Constitution_O::createResidueForStereoisomerName(cor
 }
 
 
-    core::Symbol_sp	Constitution_O::nameFromNameOrPdb(core::Symbol_sp nm)
-{ 
-    ASSERTNOTNULL(this->_StereoInformation);
-    return this->_StereoInformation->nameFromNameOrPdb(nm);
+core::Symbol_sp	Constitution_O::nameFromNameOrPdb(core::Symbol_sp nm)
+{
+  return this->_StereoInformation->nameFromNameOrPdb(nm);
 };
 
 
@@ -515,7 +514,7 @@ tres = _Nil<Topology_O>();
 
 
 
-
+#if 0
 CL_LISPIFY_NAME("asGroup");
 CL_DEFMETHOD RepresentedEntityNameSet_sp	Constitution_O::asGroup()
 {
@@ -529,7 +528,7 @@ gctools::Vec0<Stereoisomer_sp>::iterator	si;
     }
     return group;
 }
-
+#endif
 
 
 
@@ -721,7 +720,6 @@ void	Constitution_O::initialize()
     this->_Comment = core::Str_O::create("");
     this->_Name = _Nil<core::Symbol_O>();
     this->_ConstitutionAtoms = ConstitutionAtoms_O::create();
-    this->_StereoInformation = StereoInformation_O::create();
 }
 
 //
@@ -729,7 +727,16 @@ void	Constitution_O::initialize()
 //
 
 
-
+void Constitution_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,name),this->_Name);
+  node->field(INTERN_(kw,comment),this->_Comment);
+  node->field(INTERN_(kw,constitution_atoms),this->_ConstitutionAtoms);
+  node->field(INTERN_(kw,plugs),this->_PlugsByName);
+  node->field(INTERN_(kw,topologies),this->_Topologies);
+  node->field(INTERN_(kw,stereo_information),this->_StereoInformation);
+  this->Base::fields(node);
+}
 
 #ifdef XML_ARCHIVE
 void	Constitution_O::archiveBase(core::ArchiveP node)

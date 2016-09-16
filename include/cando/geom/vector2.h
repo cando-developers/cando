@@ -99,14 +99,12 @@ private:
 
 
 typedef	vector<Vector2>	VectorVector2s;
-
-double	calculateAngle( const Vector2& va,
+double	calculate2Angle( const Vector2& va,
 			const Vector2& vb,
 			const Vector2& vc);
 
-double	calculateDistance( const Vector2& va,
+double	calculate2Distance( const Vector2& va,
 			   const Vector2& vb);
-
 
 
 };

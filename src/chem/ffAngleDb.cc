@@ -54,22 +54,22 @@ namespace chem
 
 void FFAngle_O::fields(core::Record_sp node)
 {
-  this->Base::fields(node);
   node->field(INTERN_(kw,type1),this->_Type1);
   node->field(INTERN_(kw,type2),this->_Type2);
   node->field(INTERN_(kw,type3),this->_Type3);
   node->field(INTERN_(kw,angRad), this->_AngRad);
   node->field(INTERN_(kw,k2),this->_K2__kJPerRadianSquared);
+  this->Base::fields(node);
 }
 
 void	FFAngleDb_O::fields(core::Record_sp node)
 {
-    this->Base::fields(node);
     node->field(INTERN_(kw,angleFunction),this->_AngleFunction);
     node->field(INTERN_(kw,angles),this->_Terms );
     node->field(INTERN_(kw,map),this->_Lookup );
     node->field(INTERN_(kw,zConstants),this->_ZConstants);
     node->field(INTERN_(kw,cConstants),this->_CConstants);
+    this->Base::fields(node);
 }
 
 #if 0 //[

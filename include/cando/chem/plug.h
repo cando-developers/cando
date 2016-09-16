@@ -47,12 +47,16 @@ namespace chem
   {
     LISP_CLASS(chem,ChemPkg,Mate_O,"Mate",EntityNameSetWithCap_O);
   public:
+  Mate_O() : _Cap(_Unbound<core::Symbol_O>()) {};
   Mate_O(core::Symbol_sp cap) : _Cap(cap) {};
   public:
     CL_LISPIFY_NAME(make_mate);
+    CL_LAMBDA(cap);
     CL_DEF_CLASS_METHOD static Mate_sp make(core::Symbol_sp cap) {
       return gctools::GC<Mate_O>::allocate(cap);
     }
+    virtual bool fieldsp() const { return true; };
+    virtual void fields(core::Record_sp node);
   private:
     /*! The cap is the name of a monomer that will cap
      * the current plug.  It should be a member of
@@ -71,13 +75,7 @@ namespace chem
     CL_DEFMETHOD     void	setCap(core::Symbol_sp cc ) {this->_Cap = cc; };
     CL_NAME("getCap");
     CL_DEFMETHOD     core::Symbol_sp	getCap() { return this->_Cap; };
-    string descriptionOfContents() const;
-    string __repr__() const;
   };
-
-
-
-
 
   SMART(RingClosingMate);
   class RingClosingMate_O : public EntityNameSetWithCap_O
@@ -85,13 +83,7 @@ namespace chem
     LISP_CLASS(chem,ChemPkg,RingClosingMate_O,"RingClosingMate",EntityNameSetWithCap_O);
   public:
     core::Symbol_sp getName() const;
-    string descriptionOfContents() const;
   };
-
-
-
-
-
 
   SMART(Plug);
   class Plug_O : public core::CxxObject_O
@@ -105,6 +97,8 @@ namespace chem
       return gctools::GC<Plug_O>::allocate(name);
     }
   public:
+    virtual void fields(core::Record_sp node);
+  public:
     typedef	gctools::Vec0<Mate_sp>	Mates;
   private:
     /*! Name of plug, prefix of '-' means its an incoming plug
@@ -112,23 +106,18 @@ namespace chem
      */
     core::Symbol_sp			_Name;
   public:
-    string descriptionOfContents() const;
-
-    CL_NAME("setName");
-    CL_DEFMETHOD     void	setName(core::Symbol_sp s) { this->_Name = s; };
-    CL_NAME("getName");
+    CL_DEFMETHOD     void setName(core::Symbol_sp s) { this->_Name = s; };
     CL_DEFMETHOD     core::Symbol_sp getName() const { return this->_Name; };
-
-    CL_NAME("getIsIn");
     CL_DEFMETHOD     virtual bool getIsIn() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
-    CL_NAME("getIsRingClosing");
     CL_DEFMETHOD     virtual bool getIsRingClosing() { return false; };
-
-    CL_NAME("getPlug");
-    CL_DEFMETHOD     Plug_sp getPlug() { return this->sharedThis<Plug_O>();};
 
     virtual core::Symbol_sp otherSidePlugName();
     virtual bool hasMates() { return false;};
+
+    CL_DEFMETHOD virtual core::Symbol_sp getB0() const	{ SUBIMP(); };
+    CL_DEFMETHOD virtual core::Symbol_sp getB1() const	{ SUBIMP(); };
+    CL_DEFMETHOD virtual BondOrder getBondOrder0() const { SUBIMP(); };
+    CL_DEFMETHOD virtual BondOrder getBondOrder1() const { SUBIMP(); };
 
     virtual void	addMate(Mate_sp z ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
@@ -136,60 +125,46 @@ namespace chem
     virtual Mates::iterator end_Mates();
 
     virtual int		numberOfMates() { return 0; };
-//    virtual bool	recognizesMateNameOrPdb(const string& name) { return false;};
 
-    CL_NAME("matesAsCons");
-    CL_DEFMETHOD     virtual core::List_sp	matesAsCons() { return _Nil<core::T_O>(); };
+    CL_DEFMETHOD     virtual core::List_sp	matesAsList() { return _Nil<core::T_O>(); };
   };
-
-
-
-
 
   SMART(PlugWithMates);
   class PlugWithMates_O : public Plug_O
   {
     LISP_CLASS(chem,ChemPkg,PlugWithMates_O,"PlugWithMates",Plug_O);
   public:
-  PlugWithMates_O(core::Symbol_sp name, core::List_sp mates, core::Symbol_sp bond0, core::Symbol_sp bond1 ) : Plug_O(name), _B0(bond0), _B1(bond1) {};
+  PlugWithMates_O(core::Symbol_sp name, core::List_sp mates, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1 ) : Plug_O(name), _B0(bond0), _B1(bond1), _BondOrder0(bondOrder0), _BondOrder1(bondOrder1) {};
   public:
     CL_LISPIFY_NAME("make-plug-with-mates");
-    CL_LAMBDA(name mates bond0 &optional bond1);
-    CL_DEF_CLASS_METHOD static PlugWithMates_sp make( core::Symbol_sp name, core::List_sp mates, core::Symbol_sp bond0, core::Symbol_sp bond1 ) {
-      GC_ALLOCATE_VARIADIC(PlugWithMates_O, me, name, mates, bond0, bond1 );
+    CL_LAMBDA("name mates bond0 bond_order0 &optional bond1 (bondorder1 :single-bond)");
+    CL_DEF_CLASS_METHOD static PlugWithMates_sp make( core::Symbol_sp name, core::List_sp mates, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1 ) {
+      PlugWithMates_sp me = gctools::GC<PlugWithMates_O>::allocate(name,mates,bond0,bondOrder0,bond1,bondOrder1);
       core::fillVec0(mates,me->_Mates);
       return me;
     }
-      protected:
+  public:
+    virtual void fields(core::Record_sp node);
+  protected:
     //! Name of atom for first bond
       core::Symbol_sp			_B0;
     //! Name of atom for second bond
     core::Symbol_sp			_B1;
+    BondOrder                           _BondOrder0;
+    BondOrder                           _BondOrder1;
     //! RepresentedEntityNameSets that this plug can plug into
     Mates		_Mates;
   public:
-    string descriptionOfContents() const;
-
     bool getIsIn() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
 
     PlugWithMates_sp getPlugWithMates() { return this->sharedThis<PlugWithMates_O>();};
 
-    void	setB0(core::Symbol_sp s) {this->_B0 = s;};
-    CL_NAME("getB0");
-    CL_DEFMETHOD     core::Symbol_sp	getB0() const	{ return this->_B0; };
-
-    void	setB1(core::Symbol_sp s) {this->_B1 = s;};
-    CL_NAME("getB1");
-    CL_DEFMETHOD     core::Symbol_sp getB1() const	{ return this->_B1; };
-    CL_NAME("hasB1");
-    CL_DEFMETHOD     bool	hasB1() const { return this->_B1.notnilp();};
-
+    core::Symbol_sp getB0() const	{ return this->_B0; };
+    core::Symbol_sp getB1() const	{ return this->_B1; };
+    BondOrder getBondOrder0() const { return this->_BondOrder0; };
+    BondOrder getBondOrder1() const { return this->_BondOrder1; };
+    
     virtual bool hasMates() { return true;};
-
-    string __repr__() const;
-
-
-//	string otherSidePlugWithMatesName();
 
     void	addMate(Mate_sp z ) {this->_Mates.push_back(z);};
 
@@ -199,7 +174,7 @@ namespace chem
     int		numberOfMates() { return this->_Mates.size(); };
     bool	recognizesMateNameOrPdb(core::Symbol_sp name);
 
-    core::List_sp	matesAsCons() { return core::Cons_O::createFromVec0(this->_Mates); };
+    core::List_sp	matesAsList() { return core::Cons_O::createFromVec0(this->_Mates); };
   };
 
 
@@ -209,15 +184,17 @@ namespace chem
   {
     LISP_CLASS(chem,ChemPkg,OutPlug_O,"OutPlug",PlugWithMates_O);
   public:
-  OutPlug_O(core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, core::Symbol_sp bond1) : PlugWithMates_O(name,mates,bond0,bond1), _StubPivotAtom(stubPivotAtom) {};
+  OutPlug_O(core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1) : PlugWithMates_O(name,mates,bond0,bondOrder0,bond1,bondOrder1), _StubPivotAtom(stubPivotAtom) {};
   public:
     CL_LISPIFY_NAME("make-out-plug");
-    CL_LAMBDA(name mates stub_pivot_atom bond0 &optional bond1);
-    CL_DEF_CLASS_METHOD static OutPlug_sp make(core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, core::Symbol_sp bond1) {
-      GC_ALLOCATE_VARIADIC(OutPlug_O, me, name, mates, stubPivotAtom, bond0, bond1 );
+    CL_LAMBDA("name mates stub_pivot_atom bond0 bondorder0 &optional bond1 (bondorder1 :single-bond)");
+    CL_DEF_CLASS_METHOD static OutPlug_sp make(core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1) {
+      GC_ALLOCATE_VARIADIC(OutPlug_O, me, name, mates, stubPivotAtom, bond0, bondOrder0, bond1, bondOrder1);
       return me;
     };
 
+  public:
+    virtual void fields(core::Record_sp node);
   private:
 	/*! This contains the name of the atom that we will force to be the third atom
 	  that defines the Stub of the Bond0 atom */
@@ -229,8 +206,6 @@ namespace chem
     CL_NAME("getStubPivotAtom");
     CL_DEFMETHOD 	MatterName getStubPivotAtom() { return this->_StubPivotAtom;};
 
-    string descriptionOfContents() const;
-
     bool getIsIn() { return false;};
 
   };
@@ -240,22 +215,22 @@ namespace chem
   {
     LISP_CLASS(chem,ChemPkg,InPlug_O,"InPlug",PlugWithMates_O);
   public:
-  InPlug_O( core::Symbol_sp name, core::List_sp mates, core::Symbol_sp bond0, core::Symbol_sp bond1 ) : PlugWithMates_O(name,mates,bond0,bond1) {};
+  InPlug_O( core::Symbol_sp name, core::List_sp mates, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1 ) : PlugWithMates_O(name,mates,bond0,bondOrder0,bond1,bondOrder1) {};
   public:
     CL_LISPIFY_NAME("make-in-plug");
-    CL_LAMBDA(name mates bond0 &optional bond1);
-    CL_DEF_CLASS_METHOD static InPlug_sp make(core::Symbol_sp name, core::List_sp mates, core::Symbol_sp bond0, core::Symbol_sp bond1)  {
-      GC_ALLOCATE_VARIADIC(InPlug_O, me, name, mates, bond0, bond1 );
+    CL_LAMBDA("name mates bond0 bondorder0 &optional bond1 (bondorder1 :single-bond)");
+    CL_DEF_CLASS_METHOD static InPlug_sp make(core::Symbol_sp name, core::List_sp mates, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1)  {
+      GC_ALLOCATE_VARIADIC(InPlug_O, me, name, mates, bond0, bondOrder0, bond1, bondOrder1 );
       return me;
     };
-
+  public:
+    virtual void fields(core::Record_sp node);
   public:
   
 	/*! Regular InPlugs use the first bonded atom as the root */
     CL_NAME("rootAtomName");
     CL_DEFMETHOD     virtual MatterName rootAtomName() const {return this->_B0;};
 
-    string descriptionOfContents() const;
     bool getIsIn() { return true;};
   };
 
@@ -274,10 +249,12 @@ namespace chem
   JumpPlug_O(core::Symbol_sp name, MatterName jumpAtomName ) : Plug_O(name), _JumpAtomName(jumpAtomName) {};
   public:
     CL_LISPIFY_NAME("make-jump-plug");
-    CL_LAMBDA(name);
+    CL_LAMBDA("name");
     CL_DEF_CLASS_METHOD static JumpPlug_sp make(core::Symbol_sp name, MatterName jumpAtomName) {
       return gctools::GC<JumpPlug_O>::allocate(name,jumpAtomName);
     }
+  public:
+    virtual void fields(core::Record_sp node);
   private:
     MatterName		_JumpAtomName;
   public:
@@ -285,8 +262,6 @@ namespace chem
     /*! Return the name of the root atom */
     CL_NAME("rootAtomName");
     CL_DEFMETHOD     virtual MatterName rootAtomName() const { return this->_JumpAtomName;};
-
-    string descriptionOfContents() const;
 
 		//! JumpPlugs are a kind of InPlugs
     bool getIsIn() { return true;};
@@ -301,22 +276,23 @@ namespace chem
   {
     LISP_CLASS(chem,ChemPkg,RingClosingPlug_O,"RingClosingPlug",OutPlug_O);
   public:
-  RingClosingPlug_O( core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, core::Symbol_sp bond1 ) : OutPlug_O(name,mates,stubPivotAtom,bond0,bond1) {};
+  RingClosingPlug_O( core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1 ) : OutPlug_O(name,mates,stubPivotAtom,bond0,bondOrder0,bond1,bondOrder1) {};
   public:
     CL_LISPIFY_NAME("make-ring-closing-plug");
-    CL_LAMBDA(name mates stub_pivot_atom bond0 &optional bond1);
-    CL_DEF_CLASS_METHOD static RingClosingPlug_sp make(core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, core::Symbol_sp bond1) {
-      GC_ALLOCATE_VARIADIC(RingClosingPlug_O, me, name, mates, stubPivotAtom, bond0, bond1 );
+    CL_LAMBDA("name mates stub_pivot_atom bond0 &optional bond1");
+    CL_DEF_CLASS_METHOD static RingClosingPlug_sp make(core::Symbol_sp name, core::List_sp mates, MatterName stubPivotAtom, core::Symbol_sp bond0, BondOrder bondOrder0, core::Symbol_sp bond1, BondOrder bondOrder1) {
+      GC_ALLOCATE_VARIADIC(RingClosingPlug_O, me, name, mates, stubPivotAtom, bond0, bondOrder0, bond1, bondOrder1 );
       core::fillVec0(gc::As<core::List_sp>(mates),me->_Mates);
       return me;
     };
 
   public:
-    string descriptionOfContents() const;
+    virtual void fields(core::Record_sp node);
+  public:
     bool getIsIn() { return false;};
     virtual bool getIsRingClosing() { return true; };
     bool recognizesRingClosingMate(core::Symbol_sp mateName);
-    core::List_sp ringClosingMatesAsCons();
+    core::List_sp ringClosingMatesAsList();
   };
 
 

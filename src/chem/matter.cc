@@ -69,15 +69,6 @@ CL_EXTERN_DEFMETHOD(Matter_O,(Matter_sp(Matter_O::*)() const)&Matter_O::containe
 // Constructor
 //
 
-void	Matter_O::initialize()
-{
-  this->Base::initialize();
-  this->_Id = 1; // UNDEFINED_ID;
-  this->_NextContentId = 1;
-  this->setContainedByNothing();
-  this->_Restraints = _Nil<core::T_O>();
-  this->_Properties = _Nil<core::T_O>();
-}
 
 string Matter_O::__repr__() const
 {
@@ -90,8 +81,8 @@ string Matter_O::__repr__() const
 //
 Matter_O::Matter_O( const Matter_O& c ) : core::CxxObject_O(c)
 {
-  this->_NextContentId = c._NextContentId;
-  this->_Id = c._Id;
+//  this->_NextContentId = c._NextContentId;
+//  this->_Id = c._Id;
   this->name = c.name;
 //	this->containerContainedBy = c.containerContainedBy;
   this->_Properties = core::cl__copy_list(c._Properties);
@@ -176,7 +167,7 @@ void Matter_O::putMatter(int idx, Matter_sp matter)
   ASSERTF(idx>=0 && idx<(int)this->_contents.size(),BF("Illegal putMatter index[%d] must be less than %d") % idx % this->_contents.size());
   this->_contents[idx] = matter;
   matter->setContainedBy(this->sharedThis<Matter_O>());
-  matter->setId(idx);
+//  matter->setId(idx);
 }
 
 CL_LISPIFY_NAME("propertiesAsString");
@@ -322,7 +313,7 @@ CL_DEFMETHOD void Matter_O::connectAllCloseAtoms()
       if ( fabs(ajpos.getY()-aipos.getY()) > 2.0 ) continue;
       if ( fabs(ajpos.getZ()-aipos.getZ()) > 2.0 ) continue;
       if ( (*ai)->isBondedTo(*aj) ) continue;
-      double distSquared = calculateDistanceSquared(aipos,ajpos);
+      double distSquared = geom::calculateDistanceSquared(aipos,ajpos);
       if ( distSquared > 4.0 ) continue;
       (*ai)->bondToSingle(*aj);
     }
@@ -360,17 +351,13 @@ CL_DEFMETHOD Matter_sp   Matter_O::contentWithName(MatterName    sName )
 //
 // contentWithName
 //
-Matter_sp   Matter_O::contentWithNameOrNil(MatterName sName )
+CL_DEFMETHOD core::T_sp   Matter_O::contentWithNameOrNil(MatterName sName )
 {
   contentIterator	aCur;
-
   for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) {
-    LOG(BF("Looking at(%s) for(%s)") % (*aCur)->getName().c_str() % sName.c_str()  );
-    if ( (*aCur)->getName() == sName ) {
-      return( (*aCur) );
-    }
+    if ( (*aCur)->getName() == sName ) return( (*aCur) );
   }
-  return _Nil<Matter_O>();
+  return _Nil<core::T_O>();
 }
 
 
@@ -581,11 +568,13 @@ CL_DEFMETHOD void	Matter_O::addMatter(Matter_sp cp )
 	// A lot depends on Residues maintaining the order of Atoms
 	// throughout the various passes of building databases
   this->_contents.push_back(cp);
+#if 0
   if ( this->_Id == UNDEFINED_ID )
   {
     this->_Id = this->_NextContentId;
     this->_NextContentId++;
   }
+#endif
   LOG(BF("Finished adding") );
 }
 
@@ -597,6 +586,7 @@ CL_DEFMETHOD void	Matter_O::addMatter(Matter_sp cp )
 //
 void	Matter_O::addMatterRetainId(Matter_sp cp )
 {_OF();
+  IMPLEMENT_MEF(BF("Get away from ids"));
   Matter_sp	ctemp;
   LOG(BF("addMatterRetainId to %s adding container %s")
       % this->description()
@@ -608,25 +598,24 @@ void	Matter_O::addMatterRetainId(Matter_sp cp )
 	// A lot depends on Residues maintaining the order of Atoms
 	// throughout the various passes of building databases
   this->_contents.push_back(cp);
+#if 0
   if (this->_NextContentId <= cp->_Id ) 
   {
     this->_NextContentId = cp->_Id+1;
   }
+#endif
   LOG(BF("Finished adding") );
 }
 
-//
-//	setId
-//
-//	Set the id of the contained object and update
-//	nextContentId if it is too small
-//
-void	Matter_O::setId(int i)
-{
-  if ( this->_NextContentId < i ) {
-    this->_NextContentId = i+1;
+
+// getId
+int Matter_O::getId() {
+  if (!this->containedByValid()) return -1;
+  Matter_sp owner = this->containedBy();
+  for ( int i=0,iEnd(this->contentSize()); i<iEnd; ++i ) {
+    if ( owner->_contents[i] == this->asSmartPtr() ) return i;
   }
-  this->_Id = i;
+  SIMPLE_ERROR(BF("Could not find id of matter"));
 }
 
 
@@ -883,8 +872,8 @@ CL_DEFMETHOD geom::BoundingBox_sp Matter_O::boundingBox(double pad)
 }
 
 
-CL_LISPIFY_NAME("contentsAsCons");
-CL_DEFMETHOD core::List_sp Matter_O::contentsAsCons()
+CL_LISPIFY_NAME("contentsAsList");
+CL_DEFMETHOD core::List_sp Matter_O::contentsAsList()
 {
   core::List_sp first = _Nil<core::T_O>();
   core::List_sp* cur = &first;
@@ -996,7 +985,7 @@ CL_DEFMETHOD core::List_sp Matter_O::allAtomsOfElementAsList(Element element)
 void	Matter_O::fields(core::Record_sp node )
 {
   node->field( INTERN_(kw,name), this->name);
-  node->/*pod_*/field_if_not_default( INTERN_(kw,id), this->_Id, 0);
+//  node->/*pod_*/field_if_not_default( INTERN_(kw,id), this->_Id, 0);
   node->field_if_not_nil( INTERN_(kw,restraints),this->_Restraints);
   node->field_if_not_nil( INTERN_(kw,properties),this->_Properties);
   node->field_if_not_empty( INTERN_(kw,contents), this->_contents);
@@ -1032,8 +1021,8 @@ geom::Render_sp Matter_O::rendered(core::List_sp kopts)
 
 
 
-CL_LISPIFY_NAME("allAtomsAsCons");
-CL_DEFMETHOD core::List_sp Matter_O::allAtomsAsCons(bool allowVirtualAtoms ) const
+CL_LISPIFY_NAME("allAtomsAsList");
+CL_DEFMETHOD core::List_sp Matter_O::allAtomsAsList(bool allowVirtualAtoms ) const
 {_OF();
   core::List_sp result = _Nil<core::T_O>();
   Loop l(this->const_sharedThis<Matter_O>(),ATOMS);
@@ -1048,8 +1037,8 @@ CL_DEFMETHOD core::List_sp Matter_O::allAtomsAsCons(bool allowVirtualAtoms ) con
 
 
 
-CL_LISPIFY_NAME("allBondsAsCons");
-CL_DEFMETHOD core::List_sp Matter_O::allBondsAsCons(bool allowVirtualAtoms ) const
+CL_LISPIFY_NAME("allBondsAsList");
+CL_DEFMETHOD core::List_sp Matter_O::allBondsAsList(bool allowVirtualAtoms ) const
 {_OF();
   core::List_sp result = _Nil<core::List_V>();
   Loop l(this->const_sharedThis<Matter_O>(),BONDS);
@@ -1067,8 +1056,8 @@ CL_DEFMETHOD core::List_sp Matter_O::allBondsAsCons(bool allowVirtualAtoms ) con
 
 
 
-CL_LISPIFY_NAME("allAnglesAsCons");
-CL_DEFMETHOD core::List_sp Matter_O::allAnglesAsCons(bool allowVirtualAtoms ) const
+CL_LISPIFY_NAME("allAnglesAsList");
+CL_DEFMETHOD core::List_sp Matter_O::allAnglesAsList(bool allowVirtualAtoms ) const
 {_OF();
   core::List_sp result = _Nil<core::T_O>();
   Loop l(this->const_sharedThis<Matter_O>(),ANGLES);
@@ -1088,8 +1077,8 @@ CL_DEFMETHOD core::List_sp Matter_O::allAnglesAsCons(bool allowVirtualAtoms ) co
 }
 
 
-CL_LISPIFY_NAME("allImproperTorsionsAsCons");
-CL_DEFMETHOD core::List_sp Matter_O::allImproperTorsionsAsCons(bool allowVirtualAtoms ) const
+CL_LISPIFY_NAME("allImproperTorsionsAsList");
+CL_DEFMETHOD core::List_sp Matter_O::allImproperTorsionsAsList(bool allowVirtualAtoms ) const
 {_OF();
   core::List_sp result = _Nil<core::List_V>();
   Loop l(this->const_sharedThis<Matter_O>(),IMPROPERS);
@@ -1117,8 +1106,8 @@ CL_DEFMETHOD core::List_sp Matter_O::allImproperTorsionsAsCons(bool allowVirtual
 
 
 
-CL_LISPIFY_NAME("allProperTorsionsAsCons");
-CL_DEFMETHOD core::List_sp Matter_O::allProperTorsionsAsCons(bool allowVirtualAtoms ) const
+CL_LISPIFY_NAME("allProperTorsionsAsList");
+CL_DEFMETHOD core::List_sp Matter_O::allProperTorsionsAsList(bool allowVirtualAtoms ) const
 {_OF();
   core::List_sp result = _Nil<core::T_O>();
   Loop l(this->const_sharedThis<Matter_O>(),PROPERS);

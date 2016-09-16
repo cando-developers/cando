@@ -50,7 +50,6 @@ namespace chem
 
 void	FFPtor_O::fields(core::Record_sp node)
 {
-  this->Base::fields(node);
   node->field( INTERN_(kw,type1), this->_T1 );
   node->field( INTERN_(kw,type2), this->_T2 );
   node->field( INTERN_(kw,type3), this->_T3 );
@@ -68,13 +67,14 @@ void	FFPtor_O::fields(core::Record_sp node)
   node->field_if_defined(INTERN_(kw,ph4),this->_hasPeriodicity[4],this->_PhaseRads[4]);
   node->field_if_defined(INTERN_(kw,v5) ,this->_hasPeriodicity[5],this->_Vs_kJ[5]);
   node->field_if_defined(INTERN_(kw,ph5),this->_hasPeriodicity[5],this->_PhaseRads[5]);
+  this->Base::fields(node);
 }
 
 void FFPtorDb_O::fields(core::Record_sp node)
 {
-  this->Base::fields(node);
   node->field(INTERN_(kw,ptors),this->_Terms );
   node->field(INTERN_(kw,map),this->_Lookup );
+  this->Base::fields(node);
 }
 
 

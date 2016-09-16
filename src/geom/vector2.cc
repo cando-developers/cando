@@ -45,14 +45,14 @@ namespace geom
 
 
 
-double	calculateDistance( const Vector2& va,
+double	calculate2Distance( const Vector2& va,
 			   const Vector2& vb)
 {
     Vector2 vc = va - vb;
     return vc.length();
 }
 
-double	calculateDistanceSquared( const Vector2& va,
+double	calculate2DistanceSquared( const Vector2& va,
 				  const Vector2& vb)
 {
     Vector2 vc = va - vb;
@@ -62,7 +62,7 @@ double	calculateDistanceSquared( const Vector2& va,
 
 /*! Return the angle in radians
  */
-double calculateAngle( const Vector2& va,
+double calculate2Angle( const Vector2& va,
 			const Vector2& vb,
 		       const Vector2& vc)
 {

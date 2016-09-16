@@ -339,7 +339,7 @@ bool	Loop::nextObjectInAtom()
 
 	    /* Test if the id's are in the right order */
 
-        if ( !top->atLowerAddressThan(aAtom2) && !allowDuplicates )
+        if ( !top->atLowerUniqueAtomOrderThan(aAtom2) && !allowDuplicates )
         {
           goto AINC1;
         }
@@ -396,7 +396,7 @@ bool	Loop::nextObjectInAtom()
         if ( this->iIndex2>=aAtom2->coordination() ) goto TINC2;
         aAtom3 = aAtom2->bondedNeighbor( this->iIndex2 );
 	    /* Test if the id's are in the right order */
-        if ( !top->atLowerAddressThan(aAtom3) && !allowDuplicates )  goto TINC2;
+        if ( !top->atLowerUniqueAtomOrderThan(aAtom3) && !allowDuplicates )  goto TINC2;
 	    /* Test if the atoms are unique */
         if ( top == aAtom2 ) goto TINC1;
         if ( top == aAtom3 ) goto TINC2;

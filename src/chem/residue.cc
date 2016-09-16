@@ -204,7 +204,6 @@ void	Residue_O::addVirtualAtom(MatterName name, CalculatePosition_sp proc)
 
 void	Residue_O::fields( core::Record_sp node )
 {
-  this->Base::fields(node);
   LOG(BF("Status") );
   node->field_if_not_nil( INTERN_(kw,pdbName),this->pdbName);
   node->field( INTERN_(kw,uniqueLabel),this->_UniqueLabel);
@@ -248,6 +247,7 @@ void	Residue_O::fields( core::Record_sp node )
   }
       break;
   }
+  this->Base::fields(node);
 }
 
 
@@ -322,7 +322,6 @@ Matter_sp	Residue_O::copyDontRedirectAtoms()
 	acopy = aorig->copyDontRedirectAtoms().as<Atom_O>();
 	LOG(BF("Copying atom(%s) with %d bonds") % aorig->getName().c_str() % aorig->numberOfBonds()  );
 	rPNew->addMatter((Matter_sp)(acopy));
-	acopy->setId(aorig->getId());
 	LOG(BF("Completed copy for new %s") % acopy->description().c_str()  );
     }
     rPNew->copyRestraintsDontRedirectAtoms(this->asSmartPtr());

@@ -124,39 +124,31 @@ typedef	vector<Vector3>	VectorVector3s;
 
 
 
-double	calculateDihedral( const Vector3& va,
-				const Vector3& vb,
-				const Vector3& vc,
-			   const Vector3& vd );
-
-double	calculateAngle( const Vector3& va,
-				const Vector3& vb,
-			const Vector3& vc );
-
-double	calculateDistance( const Vector3& va,
-			   const Vector3& vb );
-
 /*! Faster than calculateDistance because it doesnt
  * require a square root
  */
-double	calculateDistanceSquared( const Vector3& va,
-				  const Vector3& vb);
+namespace geom {
+  double	calculateDihedral( const Vector3& va,
+                                   const Vector3& vb,
+                                   const Vector3& vc,
+                                   const Vector3& vd );
+  double	calculateAngle( const Vector3& va,
+				const Vector3& vb,
+                                const Vector3& vc );
 
-
-
-Vector3	buildOrigin();
-
-Vector3	buildUsingBond( double distance, const Vector3& vb );
-
+  double	calculateDistance( const Vector3& va,
+                                   const Vector3& vb );
+  double	calculateDistanceSquared( const Vector3& va,
+                                          const Vector3& vb);
+  Vector3	buildOrigin();
+  Vector3	buildUsingBond( double distance, const Vector3& vb );
 //! Build a vector at distance from vb and angle from v
-Vector3 buildUsingBondAngle( double distance, const Vector3& vb,
-			     double angleRad, const Vector3& va );
-
-Vector3 buildUsingBondAngleDihedral( double distance, const Vector3& vc,
-					double angleRad, const Vector3& vb,
-				     double dihedralRad, const Vector3& va );
-
-
+  Vector3 buildUsingBondAngle( double distance, const Vector3& vb,
+                               double angleRad, const Vector3& va );
+  Vector3 buildUsingBondAngleDihedral( double distance, const Vector3& vc,
+                                       double angleRad, const Vector3& vb,
+                                       double dihedralRad, const Vector3& va );
+};
 
 #if defined(OLD_SERIALIZE)
 namespace serialize

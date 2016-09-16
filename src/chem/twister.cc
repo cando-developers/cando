@@ -232,7 +232,7 @@ CL_DEFMETHOD void	Twister_O::rotateAbsolute(double angle)
     Vector3 v3 = this->_Movable->getPosition();
     Vector3 v4 = this->_MovableRef->getPosition();
 
-    double currentAngle = calculateDihedral(v1,v2,v3,v4);
+    double currentAngle = geom::calculateDihedral(v1,v2,v3,v4);
     double delta = angle - currentAngle;
     _lisp->print(BF("current dihedral = %8.3lf  desired dihedral = %8.3lf delta=%8.3lf") % (currentAngle/0.0174533) % (angle/0.0174533) % (delta/0.0174533) );
     this->rotate(delta);
@@ -241,7 +241,7 @@ CL_DEFMETHOD void	Twister_O::rotateAbsolute(double angle)
     v2 = this->_Fixed->getPosition();
     v3 = this->_Movable->getPosition();
     v4 = this->_MovableRef->getPosition();
-    double resultAngle = calculateDihedral(v1,v2,v3,v4);
+    double resultAngle = geom::calculateDihedral(v1,v2,v3,v4);
     _lisp->print(BF("      result dihedral = %8.3lf") % (resultAngle/0.0174533) );
 #endif
 }

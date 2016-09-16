@@ -126,7 +126,7 @@ void Aggregate_O::fields(core::Record_sp node)
     }
 
 
-    Atom_sp Aggregate_O::atomWithAtomId(AtomId_sp atomId) const
+Atom_sp Aggregate_O::atomWithAtomId(AtomId_sp atomId) const
     {_OF();
 	int molId = atomId->moleculeId();
 	if ( molId >=0 && molId <=(int)this->_contents.size() )
@@ -261,7 +261,7 @@ Matter_sp Aggregate_O::copy()
 	}
     }
 
-
+#if 0
 CL_LISPIFY_NAME("atomWithId");
 CL_DEFMETHOD     Atom_sp	Aggregate_O::atomWithId(int id)
     {
@@ -278,7 +278,7 @@ CL_DEFMETHOD     Atom_sp	Aggregate_O::atomWithId(int id)
 	}
 	return Atom_sp();
     }
-
+#endif
 
 
     bool	Aggregate_O::testForVdwOverlap(Aggregate_sp other)

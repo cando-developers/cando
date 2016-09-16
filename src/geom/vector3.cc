@@ -284,120 +284,123 @@ void Vector3::fillFromCons(core::Cons_sp vals)
     
 
 
-double	calculateDistance( const Vector3& va,
-			   const Vector3& vb)
+
+namespace geom {
+CL_DEFUN double	calculateDistance( const Vector3& va,
+                                   const Vector3& vb)
 {
-    Vector3 vc = va - vb;
-    return vc.length();
+  Vector3 vc = va - vb;
+  return vc.length();
 }
 
-double	calculateDistanceSquared( const Vector3& va,
-				  const Vector3& vb)
+CL_DEFUN double	calculateDistanceSquared( const Vector3& va,
+                                          const Vector3& vb)
 {
-    Vector3 vc = va - vb;
-    return vc.dotProduct(vc);
+  Vector3 vc = va - vb;
+  return vc.dotProduct(vc);
 }
 
 
 /*! Return the angle in radians
  */
-double calculateAngle( const Vector3& va,
-			const Vector3& vb,
-		       const Vector3& vc )
+CL_DEFUN double calculateAngle( const Vector3& va,
+                                const Vector3& vb,
+                                const Vector3& vc )
 {
-    Vector3	vab = (va-vb).normalized();
-    Vector3	vcb = (vc-vb).normalized();
-    double ang = acos(vab.dotProduct(vcb));
-    return ang;
+  Vector3	vab = (va-vb).normalized();
+  Vector3	vcb = (vc-vb).normalized();
+  double ang = acos(vab.dotProduct(vcb));
+  return ang;
 }
 
 
 /*! Return the dihedral in radians
  */
-double calculateDihedral( const Vector3& va,
-			const Vector3& vb,
-			const Vector3& vc,
-                          const Vector3& vd)
+CL_DEFUN double calculateDihedral( const Vector3& va,
+                                   const Vector3& vb,
+                                   const Vector3& vc,
+                                   const Vector3& vd)
 {
-    Vector3 vab = (va - vb);
-    Vector3 vcb = (vc - vb);
-    Vector3 vdc = (vd - vc);
-    Vector3 vacCross = (vab.crossProduct(vcb)).normalized();
-    LOG(BF("vacCross = %lf,%lf,%lf") % (vacCross.getX()) % (vacCross.getY()) % (vacCross.getZ() ) );
-    Vector3 vdcCross = (vdc.crossProduct(vcb)).normalized();
-    LOG(BF("vdcCross = %lf,%lf,%lf") % (vdcCross.getX()) % (vdcCross.getY()) % (vdcCross.getZ() ) );
-    Vector3 vCross = vacCross.crossProduct(vdcCross);
-    LOG(BF("vCross = %lf,%lf,%lf") % (vCross.getX()) % (vCross.getY()) % (vCross.getZ() ) );
-    double dih = acos(vacCross.dotProduct(vdcCross));
-    LOG(BF("dih = %lf") % (dih ) );
-    double sgn = (vCross.dotProduct(vcb))<0.0?-1.0:+1.0;
+  Vector3 vab = (va - vb);
+  Vector3 vcb = (vc - vb);
+  Vector3 vdc = (vd - vc);
+  Vector3 vacCross = (vab.crossProduct(vcb)).normalized();
+  LOG(BF("vacCross = %lf,%lf,%lf") % (vacCross.getX()) % (vacCross.getY()) % (vacCross.getZ() ) );
+  Vector3 vdcCross = (vdc.crossProduct(vcb)).normalized();
+  LOG(BF("vdcCross = %lf,%lf,%lf") % (vdcCross.getX()) % (vdcCross.getY()) % (vdcCross.getZ() ) );
+  Vector3 vCross = vacCross.crossProduct(vdcCross);
+  LOG(BF("vCross = %lf,%lf,%lf") % (vCross.getX()) % (vCross.getY()) % (vCross.getZ() ) );
+  double dih = acos(vacCross.dotProduct(vdcCross));
+  LOG(BF("dih = %lf") % (dih ) );
+  double sgn = (vCross.dotProduct(vcb))<0.0?-1.0:+1.0;
 //    if ( enantiomer ) return -dih*sgn;
-    return dih*sgn;
+  return dih*sgn;
 }
 
 
 
 
-Vector3	buildOrigin()
+CL_DEFUN Vector3	buildOrigin()
 {
-    return Vector3(0.0,0.0,0.0);
+  return Vector3(0.0,0.0,0.0);
 }
 
-Vector3	buildUsingBond( double distance, const Vector3& vb )
+CL_DEFUN Vector3	buildUsingBond( double distance, const Vector3& vb )
 {
-Vector3	vTarget;
-    vTarget = Vector3(distance,0.0,0.0);
-    return vTarget+vb;
+  Vector3	vTarget;
+  vTarget = Vector3(distance,0.0,0.0);
+  return vTarget+vb;
 }
 
 //! Build a vector at distance from vb and angle from v
-Vector3 buildUsingBondAngle( double distance, const Vector3& vb,
-			     double angle, const Vector3& va)
+CL_DEFUN Vector3 buildUsingBondAngle( double distance, const Vector3& vb,
+                                      double angle, const Vector3& va)
 {
-Vector3 vd, vdn, vr;
-double	ca, sa;
-    vd = va-vb;
-    vdn = vd.normalized();
-    ca = cos(angle);
-    sa = sin(angle);
-    vr = Vector3(vdn.getX()*cos(angle)+vdn.getY()*sin(angle),
-		-vdn.getX()*sin(angle)+vdn.getY()*cos(angle), 0.0);
-    vr = vr.multiplyByScalar(distance);
-    vr = vr+vb;
-    return vr;
+  Vector3 vd, vdn, vr;
+  double	ca, sa;
+  vd = va-vb;
+  vdn = vd.normalized();
+  ca = cos(angle);
+  sa = sin(angle);
+  vr = Vector3(vdn.getX()*cos(angle)+vdn.getY()*sin(angle),
+               -vdn.getX()*sin(angle)+vdn.getY()*cos(angle), 0.0);
+  vr = vr.multiplyByScalar(distance);
+  vr = vr+vb;
+  return vr;
 }
 
 
-Vector3 buildUsingBondAngleDihedral( double distance, const Vector3& vc,
-					double angle, const Vector3& vb,
-				     double dihedral, const Vector3& va)
+CL_DEFUN Vector3 buildUsingBondAngleDihedral( double distance, const Vector3& vc,
+                                              double angle, const Vector3& vb,
+                                              double dihedral, const Vector3& va)
 {
-    Vector3 bcDir = vb-vc;
-    if ( bcDir.length() == 0.0 ) return Vector3(0.0,0.0,0.0);
-    Vector3 bcDirNorm = bcDir.normalized();
-    Vector3 dPosDist = bcDirNorm.multiplyByScalar(distance);
+  Vector3 bcDir = vb-vc;
+  if ( bcDir.length() == 0.0 ) return Vector3(0.0,0.0,0.0);
+  Vector3 bcDirNorm = bcDir.normalized();
+  Vector3 dPosDist = bcDirNorm.multiplyByScalar(distance);
     //
     // Now find the axis around which to rotate the bond angle
     //	
-    Vector3	abDir = va-vb;
-    if ( abDir.length() == 0.0 ) return Vector3(0.0,0.0,0.0);
-    Vector3 abDirNorm = abDir.normalizedOrZero();
-    Vector3 angleAxis = bcDirNorm.crossProduct(abDirNorm);
-    if ( angleAxis.length() == 0.0 ) return Vector3(0.0,0.0,0.0);
-    Vector3 angleAxisNorm = angleAxis.normalizedOrZero();
-    Matrix angleRotation;
-    angleRotation.rotationAxis(angle,&angleAxisNorm);
-    Vector3 dPosAngle = angleRotation.multiplyByVector3(dPosDist);
+  Vector3	abDir = va-vb;
+  if ( abDir.length() == 0.0 ) return Vector3(0.0,0.0,0.0);
+  Vector3 abDirNorm = abDir.normalizedOrZero();
+  Vector3 angleAxis = bcDirNorm.crossProduct(abDirNorm);
+  if ( angleAxis.length() == 0.0 ) return Vector3(0.0,0.0,0.0);
+  Vector3 angleAxisNorm = angleAxis.normalizedOrZero();
+  Matrix angleRotation;
+  angleRotation.rotationAxis(angle,&angleAxisNorm);
+  Vector3 dPosAngle = angleRotation.multiplyByVector3(dPosDist);
 
 	    //
 	    // Now rotate around the dihedral bond
 	    //
-    Matrix dihedralRotation;
-    dihedralRotation.rotationAxis(-dihedral,&bcDirNorm);
-    Vector3 dPosDihedral = dihedralRotation.multiplyByVector3(dPosAngle);
+  Matrix dihedralRotation;
+  dihedralRotation.rotationAxis(-dihedral,&bcDirNorm);
+  Vector3 dPosDihedral = dihedralRotation.multiplyByVector3(dPosAngle);
 	    //
 	    // Now translate it to atom C
 	    //
-    Vector3 dPos = dPosDihedral.add(vc);
-    return dPos;
+  Vector3 dPos = dPosDihedral.add(vc);
+  return dPos;
 }
+};

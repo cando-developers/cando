@@ -27,6 +27,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_FULL
 
 #include <clasp/core/common.h>
+#include <clasp/core/record.h>
 #include <cando/adapt/adapters.h>
 #include <cando/chem/plug.h>
 #include <cando/chem/candoDatabase.h>
@@ -40,34 +41,16 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem
 {
+core::Symbol_sp RingClosingMate_O::getName() const
+{
+  return _lisp->intern("UnnamedRingClosingMate");
+};
 
+void Mate_O::fields(core::Record_sp node) {
+  node->field(INTERN_(kw,cap),this->_Cap);
+  this->Base::fields(node);
+}
 
-
-    core::Symbol_sp RingClosingMate_O::getName() const
-    {
-	return _lisp->intern("UnnamedRingClosingMate");
-    };
-
-
-//
-// Constructor
-//
-
-
-
-
-    string RingClosingMate_O::descriptionOfContents() const
-    {
-	stringstream ss, shex;
-	return ss.str();
-    }
-
-#ifdef XML_ARCHIVE
-    void	RingClosingMate_O::archiveBase(core::ArchiveP node)
-    {
-	this->Base::archiveBase(node);
-    }
-#endif
 
 /*
   __BEGIN_DOC(classes.RingClosingMate)
@@ -85,41 +68,11 @@ namespace chem
   __END_DOC
 */
 
-    core::Symbol_sp Mate_O::getName() const
-    {
-	return _Nil<core::Symbol_O>();
-    }
+core::Symbol_sp Mate_O::getName() const
+{
+  return _Nil<core::Symbol_O>();
+}
 
-
-#if 0
-    Mate_sp Mate_O::create(CandoDatabase_sp db)
-    {
-	GC_ALLOCATE(Mate_O, mate );
-	mate->setCandoDatabase(db);
-	return mate;
-    }
-#endif
-
-//
-// Constructor
-//
-
-
-
-    string Mate_O::descriptionOfContents() const
-    {
-	stringstream ss, shex;
-	ss << "( Cap "<< this->_Cap<<") ";
-	return ss.str();
-    }
-
-#ifdef XML_ARCHIVE
-    void	Mate_O::archiveBase(core::ArchiveP node)
-    {
-	this->Base::archiveBase(node);
-	node->attribute( "cap", this->_Cap );
-    }
-#endif
 
 /*
   __BEGIN_DOC(classes.Mate)
@@ -157,64 +110,57 @@ namespace chem
   __END_DOC
 */
 
-
-    string	Plug_O::descriptionOfContents() const
-    {
-	stringstream ss;
-	ss << this->Base::descriptionOfContents() << " ";
-	ss << "( Name " << _rep_(this->_Name) << " )";
-	return ss.str();
-    }
-
-
-
+void Plug_O::fields(core::Record_sp node) {
+  node->field(INTERN_(kw,name),this->_Name);
+  this->Base::fields(node);
+}
 
 
 CL_LISPIFY_NAME("otherSidePlugName");
 CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
-    {
-	return DirectionalCoupling_O::otherPlugName(this->_Name);
-    }
+{
+  return DirectionalCoupling_O::otherPlugName(this->_Name);
+}
 
 
 #ifdef XML_ARCHIVE
-    void	Plug_O::archiveBase(core::ArchiveP node)
-    {
-	this->Base::archiveBase(node);
-	if ( node->saving() ) this->getConstitution();
-	node->archiveWeakPointer("constitution",this->_WeakConstitution);
+void	Plug_O::archiveBase(core::ArchiveP node)
+{
+  this->Base::archiveBase(node);
+  if ( node->saving() ) this->getConstitution();
+  node->archiveWeakPointer("constitution",this->_WeakConstitution);
 #if PRODUCTION_CODE   // FIXME use "name" only and remove the test for "_key"
-	node->attribute("name",this->_Name);
+  node->attribute("name",this->_Name);
 #else
-	if ( node->loading() )
-	{
-	    if ( node->hasAttribute("name") )
-	    {
-		node->attribute("name",this->_Name);
-	    } else
-	    {
-		node->attribute("_key",this->_Name);
-	    }
-	} else
-	{
-	    node->attribute("name",this->_Name);
-	}
-#endif
-    }
-#endif
-
-
-    gctools::Vec0<Mate_sp>	_EmptyMateList;
-
-    gctools::Vec0<Mate_sp>::iterator	Plug_O::begin_Mates()
+  if ( node->loading() )
+  {
+    if ( node->hasAttribute("name") )
     {
-	return _EmptyMateList.end();
-    }
-
-    gctools::Vec0<Mate_sp>::iterator	Plug_O::end_Mates()
+      node->attribute("name",this->_Name);
+    } else
     {
-	return _EmptyMateList.end();
+      node->attribute("_key",this->_Name);
     }
+  } else
+  {
+    node->attribute("name",this->_Name);
+  }
+#endif
+}
+#endif
+
+
+gctools::Vec0<Mate_sp>	_EmptyMateList;
+
+gctools::Vec0<Mate_sp>::iterator	Plug_O::begin_Mates()
+{
+  return _EmptyMateList.end();
+}
+
+gctools::Vec0<Mate_sp>::iterator	Plug_O::end_Mates()
+{
+  return _EmptyMateList.end();
+}
 
 
 
@@ -247,54 +193,23 @@ CL_DEFMETHOD     core::Symbol_sp Plug_O::otherSidePlugName()
   __END_DOC
 */
 
-string	PlugWithMates_O::descriptionOfContents() const
+void PlugWithMates_O::fields(core::Record_sp node)
 {
-  stringstream ss;
-  ss << this->Base::descriptionOfContents() << " ";
-  ss << " ( Mates ";
-  ss << "#" << this->_Mates.size() << " ";
-  gctools::Vec0<Mate_sp>::const_iterator vi;
-  for ( vi=this->_Mates.begin(); vi!=this->_Mates.end(); vi++ )
-  {
-    ss << (*vi)->description() << ", ";
-  }
-  ss << " )";
-  return ss.str();
+  node->field(INTERN_(kw,b0),this->_B0);
+  node->field_if_not_nil(INTERN_(kw,b1),this->_B1);
+  node->field(INTERN_(kw,mates),this->_Mates);
+  this->Base::fields(node);
 }
 
-
-    string PlugWithMates_O::__repr__() const
-    {
-	stringstream ss;
-	ss << "( " << this->className() << " '"<< _rep_(this->getName()) << " :mates ";
-	ss << "(list ";
-	for ( Mates::const_iterator it=this->_Mates.begin(); it!=this->_Mates.end(); it++ )
-	{
-          ss << _rep_((*it)) << " ";
-	}
-	return ss.str();
-    }
-
-#ifdef XML_ARCHIVE
-    void	PlugWithMates_O::archiveBase(core::ArchiveP node)
-    {
-	this->Base::archiveBase(node);
-	node->attributeIfNotDefault<string>("b0",this->_B0,"");
-	node->attributeIfNotDefault<string>("b1",this->_B1,"");
-	node->archiveVector0("mates",this->_Mates);
-    }
-#endif
-
-
-
-    bool	PlugWithMates_O::recognizesMateNameOrPdb(core::Symbol_sp name)
-    {
-        gctools::Vec0<Mate_sp>::iterator	mi;
-	for ( mi=this->_Mates.begin(); mi!=this->_Mates.end(); mi++ ) {
-	    if ( (*mi)->recognizesNameOrPdb(name) ) return true;
-	}
-	return false;
-    }
+  
+bool	PlugWithMates_O::recognizesMateNameOrPdb(core::Symbol_sp name)
+{
+  gctools::Vec0<Mate_sp>::iterator	mi;
+  for ( mi=this->_Mates.begin(); mi!=this->_Mates.end(); mi++ ) {
+    if ( (*mi)->recognizesNameOrPdb(name) ) return true;
+  }
+  return false;
+}
 
 
 /*
@@ -309,24 +224,11 @@ string	PlugWithMates_O::descriptionOfContents() const
   __END_DOC
 */
 
-    string	OutPlug_O::descriptionOfContents() const
-    {
-	stringstream ss, shex;
-	ss << this->Base::descriptionOfContents() << " ";
-	return ss.str();
-    }
-
-
-
-#ifdef XML_ARCHIVE
-    void	OutPlug_O::archiveBase(core::ArchiveP node)
-    {
-	this->Base::archiveBase(node);
-	node->attribute("stubPivotAtom",this->_StubPivotAtom);
-    }
-#endif
-
-
+void OutPlug_O::fields(core::Record_sp node)
+{
+  node->field_if_not_nil(INTERN_(kw,stubPivotAtom),this->_StubPivotAtom);
+  this->Base::fields(node);
+}
 
 /*
   __BEGIN_DOC(classes.InPlug.!class.InPlug)
@@ -338,10 +240,10 @@ string	PlugWithMates_O::descriptionOfContents() const
   Initialize a InPlug object. InPlugs can have one bond (eg: amide) or two bonds (eg:diketopiperazine).
   __END_DOC
 */
-    string	InPlug_O::descriptionOfContents() const
-    {
-	return this->Base::descriptionOfContents();
-    }
+void InPlug_O::fields(core::Record_sp node)
+{
+  this->Base::fields(node);
+}
 
 
 /*
@@ -353,22 +255,10 @@ string	PlugWithMates_O::descriptionOfContents() const
   __END_DOC
 */
 
-string	JumpPlug_O::descriptionOfContents() const
-{
-  stringstream ss;
-  ss << this->Base::descriptionOfContents() << " ";
-  ss << "JumpAtomName[" << this->_JumpAtomName << "]";
-  return ss.str();
+void JumpPlug_O::fields(core::Record_sp node) {
+  node->field(INTERN_(kw,jumpAtomName),this->_JumpAtomName);
+  this->Base::fields(node);
 }
-
-
-#ifdef XML_ARCHIVE
-    void	JumpPlug_O::archiveBase(core::ArchiveP node)
-    {
-	this->Base::archiveBase(node);
-	node->attribute("jumpAtom",this->_JumpAtomName);
-    }
-#endif
 
 /*
   __BEGIN_DOC(classes.RingClosingPlug.!class.RingClosingPlug)
@@ -385,118 +275,43 @@ string	JumpPlug_O::descriptionOfContents() const
   __END_DOC
 */
 
+
+void RingClosingPlug_O::fields(core::Record_sp node) {
+  this->Base::fields(node);
+}
+
 #if 0
 RingClosingPlug_O::RingClosingPlug_O(const RingClosingPlug_O& p) : RingClosingPlug_O::Base(p)
-    {
-	LOG(BF("Original %s") % p.description().c_str()  );
-        gctools::Vec0<RingClosingMate_sp>::const_iterator vi;
-	LOG(BF("Copying %d ring closing mates") % p._Mates.size()  );
-	for ( vi=p._RingClosingMates.begin(); vi!=p._RingClosingMates.end(); vi++ ) {
-	    LOG(BF("Copied mate") );
-	    GC_COPY(RingClosingMate_O, rn, *vi->get() ); // = RP_Copy<RingClosingMate_O>(*vi);
-	    this->_RingClosingMates.push_back(rn);
-	}
-	LOG(BF("Copy constructed %s") % this->description().c_str()  );
-    }
+{
+  LOG(BF("Original %s") % p.description().c_str()  );
+  gctools::Vec0<RingClosingMate_sp>::const_iterator vi;
+  LOG(BF("Copying %d ring closing mates") % p._Mates.size()  );
+  for ( vi=p._RingClosingMates.begin(); vi!=p._RingClosingMates.end(); vi++ ) {
+    LOG(BF("Copied mate") );
+    GC_COPY(RingClosingMate_O, rn, *vi->get() ); // = RP_Copy<RingClosingMate_O>(*vi);
+    this->_RingClosingMates.push_back(rn);
+  }
+  LOG(BF("Copy constructed %s") % this->description().c_str()  );
+}
 #endif
 
 
-    string	RingClosingPlug_O::descriptionOfContents() const
-    {
-	stringstream ss, shex;
-	ss << this->Base::descriptionOfContents() << " ";
-	ss << " ( RingClosingMates ";
-	ss << "#" << this->_Mates.size() << " ";
-        gctools::Vec0<Mate_sp>::const_iterator vi;
-	for ( vi=this->_Mates.begin(); vi!=this->_Mates.end(); vi++ ) {
-	    ss << (*vi)->description() << ", ";
-	}
-	ss << " )";
-	return ss.str();
-    }
+CL_LISPIFY_NAME("ringClosingMatesAsList");
+CL_DEFMETHOD     core::List_sp RingClosingPlug_O::ringClosingMatesAsList()
+{_OF();
+  return core::Cons_O::createFromVec0(this->_Mates);
+}
 
 
-#ifdef XML_ARCHIVE
-    void	RingClosingPlug_O::archiveBase(core::ArchiveP node)
-    {
-	this->Base::archiveBase(node);
-	node->archiveVector0("ringCLosingMates",this->_RingClosingMates);
-    }
-#endif
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    string Mate_O::__repr__() const
-    {
-	stringstream ss;
-	ss << "( " << this->className();
-	{
-	    if ( this->getName().notnilp() )
-	    {
-              ss << " :name " << _rep_(this->getName());
-	    }
-	}
-	ss << _rep_(this->_EntityNames);
-	ss << " )";
-	return ss.str();
-
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-CL_LISPIFY_NAME("ringClosingMatesAsCons");
-CL_DEFMETHOD     core::List_sp RingClosingPlug_O::ringClosingMatesAsCons()
-    {_OF();
-	return core::Cons_O::createFromVec0(this->_Mates);
-    }
-
-
-    bool RingClosingPlug_O::recognizesRingClosingMate(core::Symbol_sp mateName)
-    {_OF();
-        gctools::Vec0<Mate_sp>::iterator it;
-	for ( it=this->_Mates.begin(); it!=this->_Mates.end(); it++ )
-	{
-	    if ( (*it)->recognizesMonomerName(mateName)) return true;
-	}
-	return false;
-    }
+bool RingClosingPlug_O::recognizesRingClosingMate(core::Symbol_sp mateName)
+{_OF();
+  gctools::Vec0<Mate_sp>::iterator it;
+  for ( it=this->_Mates.begin(); it!=this->_Mates.end(); it++ )
+  {
+    if ( (*it)->recognizesMonomerName(mateName)) return true;
+  }
+  return false;
+}
 
 
 

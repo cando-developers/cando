@@ -70,7 +70,6 @@ void Molecule_O::fields(core::Record_sp node)
   Atom_sp	a1, a2;
   BondOrder	o;
   Loop lb;
-  this->Base::fields(node);
   switch (node->stage()) {
   case core::Record_O::saving: {
             // Accumulate intraresidue bonds into a vector
@@ -111,6 +110,8 @@ void Molecule_O::fields(core::Record_sp node)
   };
       break;
   }
+  this->Base::fields(node);
+
 }
 
 Molecule_O::Molecule_O(const Molecule_O& mol)

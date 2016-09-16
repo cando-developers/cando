@@ -50,11 +50,14 @@ namespace chem
   {
     friend class ConstitutionAtoms_O;
     LISP_CLASS(chem,ChemPkg,ConstitutionBond_O,"ConstitutionBond",core::CxxObject_O);
-  protected:
+    public:
 	//! The ConstitutionAtomIndex0N of the atom that is bonded to
     ConstitutionAtomIndex0N	_ToAtomIndex;
 	//! The bond order of the bond
     BondOrder		_BondOrder;
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
   public:
     ConstitutionAtomIndex0N toAtomIndex() const { return this->_ToAtomIndex;};
     BondOrder bondOrder() const { return this->_BondOrder; };
@@ -78,10 +81,13 @@ namespace chem
 
     LISP_CLASS(chem,ChemPkg,ConstitutionAtom_O,"ConstitutionAtom",core::CxxObject_O);
   public:
-  protected:
+  public:
     MatterName		_AtomName;
     Element			_Element;
     gctools::Vec0<ConstitutionBond_sp>	_Bonds;
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
   public:
     string __repr__() const;
     CL_NAME("atomName");
@@ -121,13 +127,16 @@ namespace chem
 	//! A list of ConstitutionAtoms
     gctools::Vec0<ConstitutionAtom_sp>	_Atoms;
   public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+  public:
     typedef	gctools::Vec0<ConstitutionAtom_sp>::iterator	iterator;
 	//! Create a ConstitutionAtoms object from a Residue
     static ConstitutionAtoms_sp makeConstitutionAtomsFromResidue(Residue_sp residue);
   public:
 
 	/*! Return the number of atoms */
-    int numberOfAtoms() const { return this->_Atoms.size();};
+    CL_DEFMETHOD int numberOfAtoms() const { return this->_Atoms.size();};
 
 	/*! Return the index of the ConstitutionAtom with the given name */
     int	index(MatterName name) const;
@@ -136,10 +145,10 @@ namespace chem
     ConstitutionAtom_sp& operator[](ConstitutionAtomIndex0N idx);
 
 	//! Return the ConstitutionAtom that has the give name
-    ConstitutionAtom_sp atomWithName(MatterName name);
+    CL_DEFMETHOD ConstitutionAtom_sp atomWithName(MatterName name);
 
 	/*! Return the ConstitutionAtom at the given index */
-    ConstitutionAtom_sp atomWithId(ConstitutionAtomIndex0N idx) const;
+    CL_DEFMETHOD ConstitutionAtom_sp atomWithId(ConstitutionAtomIndex0N idx) const;
 
 	//! Add a ConstitutionVirtualAtom to us and assign it a ConstitutionAtomIndex0N
     void addConstitutionVirtualAtom(ConstitutionVirtualAtom_sp cva);
