@@ -5,6 +5,7 @@
 
 Cando is a computational chemistry environment for
 building and designing functional molecules and materials.
+It's currently being designed to prepare calculations for the Amber molecular dynamics package and to develop modeling tools for the foldamer community.
 
 It runs within the Clasp Common Lisp programming environment (github.com/drmeister/clasp).
 
@@ -13,12 +14,6 @@ It needs to be installed within clasp/projects/cando.
 
 # Building
 
-First build clasp - then to build the cando executable use:
-
-```
-clasp/projects/cando$  make
-```
-
-It will install cando_boehm_o. The cando executable will use the built Common Lisp image of Clasp.
+Please contact me about building Cando.  I'm working hard on developing it and I have limited time to help people build it.
 
 More details coming...
