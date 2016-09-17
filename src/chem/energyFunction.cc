@@ -1752,6 +1752,7 @@ CL_DEFMETHOD void    EnergyFunction_O::writeCoordinatesToAtoms(NVector_sp pos)
 CL_LISPIFY_NAME("writeForceToAtoms");
 CL_DEFMETHOD void    EnergyFunction_O::writeForceToAtoms(NVector_sp force)
 {
+  IMPLEMENT_ME();
   int                             ci;
   double                          x,y,z;
   gctools::Vec0<EnergyAtom>::iterator    ai;
@@ -1762,7 +1763,7 @@ CL_DEFMETHOD void    EnergyFunction_O::writeForceToAtoms(NVector_sp force)
     y = force->getElement(ci+1);
     z = force->getElement(ci+2);
     v.set(x,y,z);
-    ai->atom()->setForce(v);
+//    ai->atom()->setForce(v);
   }
 }
 

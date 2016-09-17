@@ -254,10 +254,8 @@ void	Atom_O::initialize()
   this->flags = ATOM_NEEDS_MINIMIZER;
   this->_Mask = 0;
   this->tempInt = 0;
-  this->_HintLP = false;
   this->_Element = element_Undefined;
   this->_Hybridization = hybridization_undefined;
-  this->seenId = 0;
   this->_Alias = _Nil<core::Symbol_O>();
   this->_Ionization = 0; // neutral
 #if ATOMIC_ANCHOR
@@ -269,11 +267,6 @@ void	Atom_O::initialize()
   this->type= _Nil<core::Symbol_O>();
   this->invalidateBackSpan();
   this->invalidateNextSpan();
-  this->_MembershipAr1 = 0;
-  this->_MembershipAr2 = 0;
-  this->_MembershipAr3 = 0;
-  this->_MembershipAr4 = 0;
-  this->_MembershipAr5 = 0;
   this->_RelativePriority = 0;
   this->_Configuration = undefinedConfiguration;
   this->_StereochemistryType = undefinedCenter;
@@ -329,7 +322,6 @@ Atom_O::Atom_O(const Atom_O& ss) :Matter_O(ss)
   this->_Alias = ss._Alias;
   this->type = ss.type;
   this->_Hybridization = ss._Hybridization;
-  this->_HintLP = ss._HintLP;
   this->flags = ss.flags;
   this->_Mask = ss._Mask;
   this->position = ss.position;
@@ -344,14 +336,9 @@ Atom_O::Atom_O(const Atom_O& ss) :Matter_O(ss)
   this->covalentRadius = ss.covalentRadius;
   this->copyAtom = Atom_wp();
   this->tempInt = ss.tempInt;
-  this->moeIndex = ss.moeIndex;
-  this->moeType = ss.moeType;
+//  this->moeIndex = ss.moeIndex;
+//  this->moeType = ss.moeType;
   this->_Ionization = ss._Ionization;
-  this->_MembershipAr1 = ss._MembershipAr1;
-  this->_MembershipAr2 = ss._MembershipAr2;
-  this->_MembershipAr3 = ss._MembershipAr3;
-  this->_MembershipAr4 = ss._MembershipAr4;
-  this->_MembershipAr5 = ss._MembershipAr5;
   this->_RelativePriority = ss._RelativePriority;
   this->_Configuration = ss._Configuration;
   this->_StereochemistryType = ss._StereochemistryType;
@@ -907,7 +894,6 @@ void	Atom_O::serialize(serialize::SNode snode)
   snode->attributeSymbolEnumHiddenConverterIfNotDefault( "hybrid", this->_Hybridization, _sym__PLUS_hybridizationToSymbolConverter_PLUS_,hybridization_sp3 );
   snode->attributeIfNotNil( "alias", this->_Alias );
   snode->attributeIfNotDefault<uint>( "priority", this->_RelativePriority, 0 );
-  snode->attributeIfNotDefault<bool>( "hintLP", this->_HintLP,false );
   snode->attributeIfNotDefault<double>( "chg", this->charge, 0.0 );
   snode->attributeSymbolEnumHiddenConverterIfNotDefault( "configuration", this->_Configuration, _sym__PLUS_configurationEnumConverter_PLUS_, undefinedConfiguration  );
   snode->attributeSymbolEnumHiddenConverterIfNotDefault( "stereochemistryType", this->_StereochemistryType, _sym__PLUS_stereochemistryTypeConverter_PLUS_, undefinedCenter );
@@ -915,11 +901,6 @@ void	Atom_O::serialize(serialize::SNode snode)
   snode->attributeIfNotDefault<int>( "rings", this->_RingMembershipCount, 0 );
   snode->attributeIfNotDefault<int>( "tempInt", this->tempInt, 0 );
   snode->attributeIfNotDefault<string>( "type", this->typeString, "" );
-  snode->attributeIfNotDefault<int>( "ar1", this->_MembershipAr1, 0 );
-  snode->attributeIfNotDefault<int>( "ar2", this->_MembershipAr2, 0 );
-  snode->attributeIfNotDefault<int>( "ar3", this->_MembershipAr3, 0 );
-  snode->attributeIfNotDefault<int>( "ar4", this->_MembershipAr4, 0 );
-  snode->attributeIfNotDefault<int>( "ar5", this->_MembershipAr5, 0 );
   snode->attributeIfNotDefault<uint>( "mask", this->_Mask, (unsigned int)(0) );
   snode->archivePlainObjectIfDefined<Vector3>( "pos","Vector3",
                                                this->position.isDefined(), this->position );
@@ -935,21 +916,14 @@ void	Atom_O::serialize(serialize::SNode snode)
 void	Atom_O::fields(core::Record_sp node)
 {
   node->field_if_not_nil( INTERN_(kw,alias), this->_Alias );
-  node->/*pod_*/field_if_not_default( INTERN_(kw,flags), this->flags, (uint)0 );
+  node->/*pod_*/field_if_not_default<size_t>( INTERN_(kw,flags), this->flags, 0 );
   node->/*pod_*/field( INTERN_(kw,element), this->_Element);
   node->/*pod_*/field_if_not_default( INTERN_(kw,hybridization), this->_Hybridization,hybridization_sp3 );
-  node->/*pod_*/field_if_not_default( INTERN_(kw,priority), this->_RelativePriority, (uchar)0 );
-  node->/*pod_*/field_if_not_default( INTERN_(kw,hintLP), this->_HintLP,false );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,priority), this->_RelativePriority, 0 );
   node->/*pod_*/field_if_not_default( INTERN_(kw,chg), this->charge, 0.0 );
-  node->/*pod_*/field_if_not_default( INTERN_(kw,ion), this->_Ionization, 0 );
-  node->/*pod_*/field_if_not_default( INTERN_(kw,rings), this->_RingMembershipCount, 0 );
-  node->/*pod_*/field_if_not_default( INTERN_(kw,tempInt), this->tempInt, 0 );
+  node->/*pod_*/field_if_not_default<short>( INTERN_(kw,ion), this->_Ionization, 0 );
   node->field_if_not_nil( INTERN_(kw,type), this->type);
-  node->/*pod_*/field_if_not_default( INTERN_(kw,ar1), this->_MembershipAr1, 0 );
-  node->/*pod_*/field_if_not_default( INTERN_(kw,ar2), this->_MembershipAr2, 0 );
-  node->/*pod_*/field_if_not_default( INTERN_(kw,ar3), this->_MembershipAr3, 0 );
-  node->/*pod_*/field_if_not_default( INTERN_(kw,ar4), this->_MembershipAr4, 0 );
-  node->/*pod_*/field_if_not_default( INTERN_(kw,ar5), this->_MembershipAr5, 0 );
+  node->/*pod_*/field_if_not_default<ushort>( INTERN_(kw,rings), this->_RingMembershipCount, 0 );
   node->/*pod_*/field_if_not_default( INTERN_(kw,mask), this->_Mask, (uint)(0) );
   node->/*pod_*/field_if_not_default( INTERN_(kw,configuration), this->_Configuration, undefinedConfiguration  );
   node->/*pod_*/field_if_not_default( INTERN_(kw,stereochemistryType), this->_StereochemistryType, undefinedCenter );
@@ -969,19 +943,6 @@ CL_DEFMETHOD     void Atom_O::setPositionInNanometers(Vector3 o)
   this->position = angpos;
 }
 
-
-CL_LISPIFY_NAME("setTempInt");
-CL_DEFMETHOD     void Atom_O::setTempInt(int i)
-{
-  LOG(BF("Setting tempInt to %d") % i  );
-  this->tempInt = i;
-}
-
-CL_LISPIFY_NAME("getTempInt");
-CL_DEFMETHOD     int Atom_O::getTempInt()
-{
-  return this->tempInt;
-}
 
 CL_LISPIFY_NAME("getConfigurationAsString");
 CL_DEFMETHOD     string	Atom_O::getConfigurationAsString()

@@ -961,7 +961,8 @@ void	MoeReadFile::readNextLine()
 		tir++;
 		for ( it=0; it<numAtoms; it++ ) {
 		    GC_ALLOCATE(Atom_O, a );
-		    a->setMoeIndex( dynamic_cast<ParaInteger*>(ptAtoms.getVector(index_ID)[ia])->getValue() );
+		    IMPLEMENT_MEF(BF("setMoeIndex"));
+                    //a->setMoeIndex( dynamic_cast<ParaInteger*>(ptAtoms.getVector(index_ID)[ia])->getValue() );
 		    a->setName( chemkw_intern(dynamic_cast<ParaToken*>(ptAtoms .getVector(index_aName)[ia])->getValue() ));
 		    a->setElementFromString( dynamic_cast<ParaToken*>(ptAtoms .getVector(index_aElement)[ia])->getValue() );
 		    a->setHybridizationFromString( dynamic_cast<ParaToken*>(ptAtoms .getVector(index_aGeometry)[ia])->getValue() );
@@ -1052,7 +1053,8 @@ void	MoeReadFile::readNextLine()
 		type = dynamic_cast<ParaToken*>(ptMMTypes.getVector(index_mmTypes)[i])->getValue();
 		LOG(BF("Processing element got type: %s") % type.c_str()  );
 
-		atoms[aid]->setMoeType(chemkw_intern(type));
+                IMPLEMENT_MEF(BF("setMoeType"));
+//		atoms[aid]->setMoeType(chemkw_intern(type));
 	    }
 	    LOG(BF("Done processing MMTypes") );
 	}
@@ -1285,10 +1287,13 @@ void	MoeReadFile::readNextLine()
 	    l.loopTopGoal( agg, ATOMS );
 	    while ( l.advanceLoopAndProcess() ) {
 		a = l.getAtom();
+                IMPLEMENT_MEF(BF("setMoeType"));
+#if 0
 		if ( a->getMoeType().notnilp() ) {
 		    a->setType(a->getMoeType() );
 //		setType( ps, a, a->getMoeType() );
 		}
+#endif
 	    }
 	} else {
 	    SIMPLE_ERROR(BF("moeReadAggregateWithAtomTypesFromFileName-- there were no types in the file" ));

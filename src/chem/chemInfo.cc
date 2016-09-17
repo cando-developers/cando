@@ -1110,23 +1110,23 @@ bool AtomTest_O::matches(Root_sp root, chem::Atom_sp atom) {
       LOG(BF("SAPArLevel"));
       switch (this->_IntArg) {
       case 1:
-          if (atom->getMembershipAr1() != 0)
+          if (atom->getMembershipAr1())
             goto SUCCESS;
           break;
       case 2:
-          if (atom->getMembershipAr2() != 0)
+          if (atom->getMembershipAr2())
             goto SUCCESS;
           break;
       case 3:
-          if (atom->getMembershipAr3() != 0)
+          if (atom->getMembershipAr3())
             goto SUCCESS;
           break;
       case 4:
-          if (atom->getMembershipAr4() != 0)
+          if (atom->getMembershipAr4())
             goto SUCCESS;
           break;
       case 5:
-          if (atom->getMembershipAr5() != 0)
+          if (atom->getMembershipAr5())
             goto SUCCESS;
           break;
       }

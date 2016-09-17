@@ -606,7 +606,8 @@ gctools::Vec0<AtomInfo> atomList;
 gctools::Vec0<ResidueOut> residueList;
 ResidueOut	oneResOut;
 AtomInfo	one;
-
+ core::HashTableEq_sp ht = core::HashTableEq_O::create_default();
+ 
  	//
 	// Count the atoms
 	//
@@ -644,7 +645,7 @@ AtomInfo	one;
     lRes.loopTopGoal(agg,RESIDUES);
     while ( lRes.advanceLoopAndProcess() ) {
 	r = lRes.getResidue();
-	r->setTempInt(resId);
+	ht->setf_gethash(r,core::clasp_make_fixnum(resId));
 	oneResOut.res = r;
 	oneResOut.firstAtom = atomId;
 	residueList.push_back(oneResOut);
@@ -652,7 +653,7 @@ AtomInfo	one;
 	loop.loopTopGoal(r,ATOMS);
 	while ( loop.advanceLoopAndProcess() ) {
 	    a = loop.getAtom();
-	    a->setTempInt(atomId);
+            ht->setf_gethash(a,core::clasp_make_fixnum(atomId));
 	    one._Atom = a;
             if ( useSybylTypes ) {
               chem::TypeAssignmentRules_sp sybylRules = gc::As<TypeAssignmentRules_sp>(chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue());
@@ -693,7 +694,8 @@ AtomInfo	one;
     gctools::Vec0<AtomInfo>::iterator	ai;
     for ( ai=atomList.begin(); ai!= atomList.end(); ai++ ) {
 	a = ai->_Atom;
-	out << a->getTempInt() << " ";
+        int atom_temp_int = ht->gethash(a).unsafe_fixnum();
+	out << atom_temp_int << " ";
 	out << a->getName()->symbolNameAsString() << " ";
 	pos = a->getPosition();
 	out << pos.getX() << " ";
@@ -701,9 +703,10 @@ AtomInfo	one;
 	out << pos.getZ() << " ";
 	LOG(BF("Writing mol2 atom(%s) pos(%s)") % a->description() % a->getPosition().asString() );
 	out << ai->_Type->symbolNameAsString() << " ";
-	out << a->containedBy()->getTempInt() << " ";
+        int residue_temp_int = ht->gethash(a->containedBy()).unsafe_fixnum();
+	out << residue_temp_int << " ";
 	out << a->containedBy()->getName()->symbolNameAsString() << "_"
-		<< a->containedBy()->getTempInt() << " ";
+		<< residue_temp_int << " ";
 	out << std::setiosflags(std::ios::fixed)
             << std::setw(8)
             << std::setprecision(3);
@@ -728,8 +731,10 @@ AtomInfo	one;
 	else if ( o == tripleBond ) orderName = "3";
 	else if ( o == aromaticBond ) orderName = "ar";
 	out << id << " ";
-	out << a1->getTempInt() << " ";
-	out << a2->getTempInt() << " ";
+        int a1_ti = ht->gethash(a1).unsafe_fixnum();
+        int a2_ti = ht->gethash(a2).unsafe_fixnum();
+	out << a1_ti << " ";
+	out << a2_ti << " ";
 	out << orderName << " ";
 	out << std::endl;
 	id++;
@@ -744,8 +749,9 @@ AtomInfo	one;
     for ( ri=residueList.begin(); ri!=residueList.end(); ri++ ) {
 	r = ri->res;
 //	out << id << " ";
-	out << r->getTempInt() << " ";
-	out << r->getName()->symbolNameAsString() << "_" << r->getTempInt() << " ";
+        int r_ti = ht->gethash(r).unsafe_fixnum();
+	out << r_ti << " ";
+	out << r->getName()->symbolNameAsString() << "_" << r_ti << " ";
 	out << ri->firstAtom << " ";
 	out << "RESIDUE 1 ";
 	out << (r->containedBy()).as<Molecule_O>()->getName()->symbolNameAsString() << " ";

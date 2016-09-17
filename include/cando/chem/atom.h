@@ -63,7 +63,7 @@ namespace chem
   SMART(Conformation);
   SMART(Alias);
 
-#define	ATOM_FLAGS		uint
+#define	ATOM_FLAGS		size_t
 #define	ATOMFLAG_OR		1
 #define	ATOMFLAG_AND		2
 #define	ATOMFLAG_ON		3
@@ -111,7 +111,13 @@ namespace chem
 #define InRing                  In3MemberRing|In4MemberRing|In5MemberRing|In6MemberRing|In7MemberRing|In8MemberRing
 #define	TEMP_IN_RING		0x00000400
 #define NEEDS_BUILD             0x00000800
-
+#define MEMBERSHIP_AR1          0x00001000
+#define MEMBERSHIP_AR2          0x00002000
+#define MEMBERSHIP_AR3          0x00004000
+#define MEMBERSHIP_AR4          0x00008000
+#define MEMBERSHIP_AR5          0x00010000
+#define HINT_LP                 0x00020000
+#define LAST_FLAG               0x80000000
 
   typedef enum {  flagOr = ATOMFLAG_OR,
                   flagAnd = ATOMFLAG_AND,
@@ -132,7 +138,14 @@ namespace chem
                   in8MemberRing = In8MemberRing,
                   inRing = InRing,
                   tempInRing = TEMP_IN_RING,
-                  needsBuild = NEEDS_BUILD
+                  needsBuild = NEEDS_BUILD,
+                  MembershipAr1 = MEMBERSHIP_AR1,
+                  MembershipAr2 = MEMBERSHIP_AR2,
+                  MembershipAr3 = MEMBERSHIP_AR3,
+                  MembershipAr4 = MEMBERSHIP_AR4,
+                  MembershipAr5 = MEMBERSHIP_AR5,
+                  HintLp        = HINT_LP,
+                  LastFlag      = LAST_FLAG
   } AtomFlagEnum;
 
 
@@ -181,48 +194,42 @@ namespace chem {
   protected:
     size_t              _UniqueAtomOrder;
     core::Symbol_sp	_Alias;	//!< alias name
-    Element		_Element;
-    Hybridization 	_Hybridization;
-    AtomType	        type;
-    bool		_HintLP;
     ATOM_FLAGS	        flags;
-    StereochemistryType _StereochemistryType;
-    ConfigurationEnum   _Configuration;
-    int		        _RelativePriority;
     Vector3		position;
 //    Vector3		_Force;
 #if ATOMIC_ANCHOR
     AnchorRestraint	_AnchorRestraint;
 #endif
+    AtomType	        type;
     VectorBond	        bonds;
-    int                 _Ionization;
     double		charge;
+	// copy atoms
+    Atom_sp		copyAtom;
+	// Gaff aromaticity flags
+	// Spanning tree stuff
+    gc::Nilable<Atom_sp>		_BackSpan;
+    gc::Nilable<Atom_sp>		_NextSpan;
+
+	// Specific to MOE
+//    MoeType 	moeType;	// type string as read from MOE
+//    int		moeIndex;
+    int		backCount;
+    int		tempInt;
+    int		seenId;
     float		occupancy;
     float		tempFactor;
     float		vdwRadius;
     float		covalentRadius;
+    StereochemistryType _StereochemistryType;
+    ConfigurationEnum   _Configuration;
+    int		        _RelativePriority;
 	// Selection mask
     unsigned int	_Mask;
-	// copy atoms
-    Atom_sp		copyAtom;
+    Element		_Element;
+    Hybridization 	_Hybridization;
 	// Ring membership
-    uchar           _RingMembershipCount;
-	// Gaff aromaticity flags
-    uchar            _MembershipAr1;
-    uchar            _MembershipAr2;
-    uchar            _MembershipAr3;
-    uchar            _MembershipAr4;
-    uchar            _MembershipAr5;
-	// Spanning tree stuff
-    int		seenId;
-    gc::Nilable<Atom_sp>		_BackSpan;
-    gc::Nilable<Atom_sp>		_NextSpan;
-    int		backCount;
-    int		tempInt;
-
-	// Specific to MOE
-    int		moeIndex;
-    MoeType 	moeType;	// type string as read from MOE
+    ushort       _RingMembershipCount;
+    short        _Ionization;
   public:
   public:
     static Atom_sp make(MatterName name, Element element);
@@ -264,8 +271,8 @@ namespace chem {
 
 //    CL_NAME("getAtomId");
 //    CL_DEFMETHOD 	int	getAtomId() { return this->getId(); };
-    int	getTempInt();
-    void	setTempInt(int o);
+    int	getTempInt() { return this->tempInt; };
+    void	setTempInt(int o) { this->tempInt = o;};
 
     CL_NAME("getAlias");
     CL_DEFMETHOD 	core::Symbol_sp	getAlias() { return this->_Alias; };
@@ -322,8 +329,8 @@ namespace chem {
     CL_NAME("setHybridization");
     CL_DEFMETHOD 	void	setHybridization(Hybridization o) { this->_Hybridization = (o); };
     void	setHybridizationFromString(const string& h);
-    bool	getHintLP() { return this->_HintLP; };
-    void	setHintLP(bool o) { this->_HintLP = o; };
+    bool	getHintLP() { return this->testAnyFlags(HintLp); };
+    void	setHintLP(bool o) { if (o) turnOnFlags(HintLp); else turnOffFlags(HintLp); };
     CL_NAME("getElement");
     CL_DEFMETHOD 	Element getElement() const { return this->_Element; };
     string	getElementAsString();
@@ -367,26 +374,16 @@ namespace chem {
     CL_NAME("setTouched");
     CL_DEFMETHOD 	void	setTouched(bool o) { this->touched = o; };
 #endif
-    CL_NAME("getMembershipAr1");
-    CL_DEFMETHOD 	int     getMembershipAr1()	{ return this->_MembershipAr1; };
-    CL_NAME("setMembershipAr1");
-    CL_DEFMETHOD 	void	setMembershipAr1(int c) { this->_MembershipAr1 = c; };
-    CL_NAME("getMembershipAr2");
-    CL_DEFMETHOD 	int     getMembershipAr2()	{ return this->_MembershipAr2; };
-    CL_NAME("setMembershipAr2");
-    CL_DEFMETHOD 	void	setMembershipAr2(int c) { this->_MembershipAr2 = c; };
-    CL_NAME("getMembershipAr3");
-    CL_DEFMETHOD 	int     getMembershipAr3()	{ return this->_MembershipAr3; };
-    CL_NAME("setMembershipAr3");
-    CL_DEFMETHOD 	void	setMembershipAr3(int c) { this->_MembershipAr3 = c; };
-    CL_NAME("getMembershipAr4");
-    CL_DEFMETHOD 	int     getMembershipAr4()	{ return this->_MembershipAr4; };
-    CL_NAME("setMembershipAr4");
-    CL_DEFMETHOD 	void	setMembershipAr4(int c) { this->_MembershipAr4 = c; };
-    CL_NAME("getMembershipAr5");
-    CL_DEFMETHOD 	int     getMembershipAr5()	{ return this->_MembershipAr5; };
-    CL_NAME("setMembershipAr5");
-    CL_DEFMETHOD 	void	setMembershipAr5(int c) { this->_MembershipAr5 = c; };
+    CL_DEFMETHOD 	void setMembershipAr1(bool b) { if (b) turnOnFlags(MembershipAr1); else turnOffFlags(MembershipAr1);};
+    CL_DEFMETHOD 	void setMembershipAr2(bool b) { if (b) turnOnFlags(MembershipAr2); else turnOffFlags(MembershipAr2);};
+    CL_DEFMETHOD 	void setMembershipAr3(bool b) { if (b) turnOnFlags(MembershipAr3); else turnOffFlags(MembershipAr3);};
+    CL_DEFMETHOD 	void setMembershipAr4(bool b) { if (b) turnOnFlags(MembershipAr4); else turnOffFlags(MembershipAr4);};
+    CL_DEFMETHOD 	void setMembershipAr5(bool b) { if (b) turnOnFlags(MembershipAr5); else turnOffFlags(MembershipAr5);};
+    CL_DEFMETHOD 	bool     getMembershipAr1()	{ return testAllFlags(MembershipAr1); };
+    CL_DEFMETHOD 	bool     getMembershipAr2()	{ return testAllFlags(MembershipAr2); };
+    CL_DEFMETHOD 	bool     getMembershipAr3()	{ return testAllFlags(MembershipAr3); };
+    CL_DEFMETHOD 	bool     getMembershipAr4()	{ return testAllFlags(MembershipAr4); };
+    CL_DEFMETHOD 	bool     getMembershipAr5()	{ return testAllFlags(MembershipAr5); };
     CL_NAME("getIonization");
     CL_DEFMETHOD 	int     getIonization()	{ return this->_Ionization; };
     CL_NAME("setIonization");
@@ -415,6 +412,7 @@ namespace chem {
     Residue_sp	getResidueContainedBy();
     Residue_sp	getResidueContainedBy_const() const;
 
+#if 0
     CL_NAME("getMoeIndex");
     CL_DEFMETHOD 	int	getMoeIndex() { return this->moeIndex; };
     CL_NAME("setMoeIndex");
@@ -423,7 +421,7 @@ namespace chem {
     CL_DEFMETHOD 	void	setMoeType(MoeType type) {this->moeType=type;};
     CL_NAME("getMoeType");
     CL_DEFMETHOD 	MoeType	getMoeType() {return this->moeType;};
-
+#endif
 	/*! Return a ConstitutionAtom for this atom and give it the ConstitutionAtomIndex0N (index)
 	  @param index The ConstitutionAtomIndex0N that will be assigned to the new ConstitutionAtom */
     ConstitutionAtom_sp asConstitutionAtom(ConstitutionAtomIndex0N index);
@@ -439,7 +437,6 @@ namespace chem {
 	/*! When a spanning tree has crawled over this atom assign the atom a unique value (seenId) to indicate this */
     CL_NAME("setSeenId");
     CL_DEFMETHOD 	void	setSeenId(int i) {this->seenId=i;};
-
     CL_NAME("getSeenId");
     CL_DEFMETHOD 	int	getSeenId() {return this->seenId;};
     CL_NAME("setBackCount");
@@ -623,7 +620,6 @@ namespace chem {
       _Element(element_Undefined),
       _Hybridization(hybridization_undefined),
       type(_Nil<core::Symbol_O>()),
-      _HintLP(false),
       flags(0),
       _StereochemistryType(undefinedCenter),
       _Configuration(undefinedConfiguration),
@@ -637,18 +633,13 @@ namespace chem {
       _Mask(0),
       copyAtom(_Unbound<chem::Atom_O>()),
       _RingMembershipCount(0),
-      _MembershipAr1(0),
-      _MembershipAr2(0),
-      _MembershipAr3(0),
-      _MembershipAr4(0),
-      _MembershipAr5(0),
       seenId(0),
       _BackSpan(_Nil<core::T_O>()),
       _NextSpan(_Nil<core::T_O>()),
       backCount(0),
-      tempInt(0),
-      moeIndex(0),
-      moeType(_Nil<core::Symbol_O>())
+      tempInt(0)
+//      moeIndex(0),
+//      moeType(_Nil<core::Symbol_O>())
       {};
     virtual ~Atom_O() {};
   };
