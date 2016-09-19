@@ -359,7 +359,7 @@ CL_DEFMETHOD     core::List_sp Topology_O::outPlugsAsList()
     string	Topology_O::description() const
     {
 	stringstream	ss;
-	ss << this->Base::description();
+	ss << "#<TOPOLOGY";
 	Topology_O* me = const_cast<Topology_O*>(this);
 	ss << " Name(" << me->getName() << ")";
 	ss << " Constitution("<< me->getConstitution()->getName() << ")";
@@ -368,7 +368,7 @@ CL_DEFMETHOD     core::List_sp Topology_O::outPlugsAsList()
 	{
           ss << (BF("%s@%p ") % _rep_(i->second->getName()) % i->second->getName().get() ).str();
 	}
-	ss << "]";
+	ss << ">";
 	return ss.str();
     }
 

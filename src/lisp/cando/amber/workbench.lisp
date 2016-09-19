@@ -2,10 +2,25 @@
 (asdf:load-system "amber")
 (use-package :amber :cando-user)
 (load "~/Downloads/chromatinfiber-11million/setup.lisp")
+
+
+(defparameter *1mil-layout* (amber.pdb:scanpdb "~/Downloads/chromatin-1mil/chromsmall.pdb" :progress t))
+(defparameter *1mil* (amber.pdb:loadpdb "~/Downloads/chromatin-1mil/chromsmall.pdb" :layout *1mil-layout* :progress t))
+
+(defparameter *1mil-layout* (amber.pdb:scanpdb "~/Downloads/chromatin-1mil/chrom40.pdb" :progress t))
+(defparameter *1mil* (amber.pdb:loadpdb "~/Downloads/chromatin-1mil/chrom40.pdb" :layout *1mil-layout* :progress t))
+
+
+
+
 (defparameter *all-layout* (amber.pdb:scanpdb "~/Downloads/chromatinfiber-11million/chromnn_400.pdb" :progress t))
 (defparameter *all* (amber.pdb:loadpdb "~/Downloads/chromatinfiber-11million/chromnn_400.pdb" :layout *all-layout* :progress t))
-(chem:contents-as-
-(defparameter *small* (amber.pdb:loadpdb "~/Downloads/chromatinfiber-11million/chromsmall.pdb" :progress t))
+
+
+
+(defparameter *small-layout* (amber.pdb:scanpdb "~/Downloads/4y0y.pdb" :progress t))
+*small-layout*
+
 (cando:chimera *small*)
 (cando:save-mol2 *s* "~/Downloads/chromatinfiber-11million/chromnn.mol2")
 (format t "Done~%")

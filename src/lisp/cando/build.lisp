@@ -81,6 +81,7 @@ Sort the atoms by name in increasing alphabetical order."
             (let* ((sorted-built (sort-atoms-by-name built-atoms)))
               (destructuring-bind (n0 n1 n2)
                   sorted-built
+                (format t "Building from sorted-built: ~a~%" sorted-built)
                 (let* ((used-improper (geom:calculate-dihedral (chem:get-position n0)
                                                                (chem:get-position central)
                                                                (chem:get-position n1)
@@ -102,22 +103,39 @@ Sort the atoms by name in increasing alphabetical order."
                                 (second sorted-built)
                                 1.0 120.0 180.0)))
            (otherwise (error "Handle building hydrogens on sp2 centers with ~a built neighbors" num-built))))
-        (otherwise (warn "Handle building hydrogens on atom with hybridization ~a" hybridization))))))
+        (otherwise (warn "Handle building hydrogens on atom with hybridization ~a" hybridization)))
+      num-hydrogens)))
 
-(defun build-unbuilt-hydrogens (matter)
+(defun build-unbuilt-hydrogens (matter &key progress)
   "* Arguments
 - matter :: chem:matter
+- progress :: boolean
 * Description
 Search the matter for hydrogens that need to be build and build good geometry 
-for them."
-  (let ((heavy-atoms-with-unbuilt-hydrogens 0))
-    (chem:map-atoms
-     nil
-     (lambda (atom)
-       (when (and (eq (chem:get-element atom) :H)
-                  (chem:needs-build atom))
-         (incf heavy-atoms-with-unbuilt-hydrogens)
-         (build-unbuilt-hydrogens-on (chem:bonded-neighbor atom 0))))
-     matter)
-    (warn "There were ~a heavy atoms with unbuilt hydrogens"
-          heavy-atoms-with-unbuilt-hydrogens)))
+for them.  Show progress if progress is T."
+  (let ((number-of-unbuilt-hydrogens
+         (let ((num 0))
+           (chem:map-atoms
+            nil
+            (lambda (atom)
+              (when (and (eq (chem:get-element atom) :H)
+                         (chem:needs-build atom))
+                (incf num)))
+            matter)
+           num)))
+    ;; Now build the hydrogens
+    (let ((bar (make-progress-bar :total number-of-unbuilt-hydrogens
+                                  :message "Hydrogens built"))
+          (built-hydrogens 0))
+      (chem:map-atoms
+       nil
+       (lambda (atom)
+         (when (and (eq (chem:get-element atom) :H)
+                    (chem:needs-build atom))
+           (let ((built (build-unbuilt-hydrogens-on (chem:bonded-neighbor atom 0))))
+             (incf built-hydrogens built))
+           (progress-advance bar built-hydrogens)))
+       matter)
+      (progress-done bar)
+      (when (> built-hydrogens 0)
+        (warn "There were ~a hydrogens built" built-hydrogens)))))
