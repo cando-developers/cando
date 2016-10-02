@@ -786,12 +786,118 @@ CL_DEFUN core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp func
   SIMPLE_ERROR(BF("Illegal return type: %s") % _rep_(result_type));
 };
 
-
-void initialize_loop()
+void validate_result_type(core::Symbol_sp result_type)
 {
-//  af_def(ChemPkg,"map-molecules",&map_molecules);
-//  af_def(ChemPkg,"map-residues",&map_residues);
-//  af_def(ChemPkg,"map-atoms",&map_atoms);
-};  
+  if (result_type.nilp()) return;
+  if (result_type == cl::_sym_list) return;
+  if (result_type == cl::_sym_vector) return;
+  SIMPLE_ERROR(BF("Illegal result type - must be nil, list or vector"));
+}
+
+CL_DOCSTRING("Loop over angles, invoke function for each bond passing the three atoms");
+CL_DEFUN core::T_sp chem__map_angles(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
+{
+  core::Function_sp func = core::coerce::functionDesignator(funcDesig);
+  validate_result_type(result_type);
+  Loop l(m,ANGLES);
+  Atom_sp a1, a2, a3;
+  ql::list list_result;
+  core::VectorObjectsWithFillPtr_sp vector_result;
+  if ( result_type == cl::_sym_vector ) {
+    vector_result = core::VectorObjectsWithFillPtr_O::make(_Nil<core::T_O>(),_Nil<core::T_O>(),16,0,true, cl::_sym_T_O);
+  }
+  while (l.advanceLoopAndProcess()) {
+    a1 = l.getAtom1();
+    a2 = l.getAtom2();
+    a3 = l.getAtom3();
+    core::T_sp val = core::eval::funcall(func,a1,a2,a3);
+    if(result_type.notnilp()) {
+      if (result_type == cl::_sym_list) {
+        list_result << val;
+      } else {
+        vector_result->vectorPushExtend(val);
+      }
+    }
+  }
+  if(result_type.nilp()) {
+    return _Nil<core::T_O>();
+  } else if (result_type == cl::_sym_list) {
+    return list_result.cons();
+  } else {
+    return vector_result;
+  }
+};
+
+CL_DOCSTRING("Loop over dihedrals, invoke function for each bond passing the four atoms");
+CL_DEFUN core::T_sp chem__map_dihedrals(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
+{
+  core::Function_sp func = core::coerce::functionDesignator(funcDesig);
+  validate_result_type(result_type);
+  Loop l(m,DIHEDRALS);
+  Atom_sp a1, a2, a3, a4;
+  ql::list list_result;
+  core::VectorObjectsWithFillPtr_sp vector_result;
+  if ( result_type == cl::_sym_vector ) {
+    vector_result = core::VectorObjectsWithFillPtr_O::make(_Nil<core::T_O>(),_Nil<core::T_O>(),16,0,true, cl::_sym_T_O);
+  }
+  while (l.advanceLoopAndProcess()) {
+    a1 = l.getAtom1();
+    a2 = l.getAtom2();
+    a3 = l.getAtom3();
+    a4 = l.getAtom4();
+    core::T_sp val = core::eval::funcall(func,a1,a2,a3,a4);
+    if(result_type.notnilp()) {
+      if (result_type == cl::_sym_list) {
+        list_result << val;
+      } else {
+        vector_result->vectorPushExtend(val);
+      }
+    }
+  }
+  if(result_type.nilp()) {
+    return _Nil<core::T_O>();
+  } else if (result_type == cl::_sym_list) {
+    return list_result.cons();
+  } else {
+    return vector_result;
+  }
+};
+
+CL_DOCSTRING("Loop over impropers, invoke function for each bond passing the four atoms");
+CL_DEFUN core::T_sp chem__map_impropers(core::Symbol_sp result_type, core::T_sp funcDesig, Matter_sp m)
+{
+  core::Function_sp func = core::coerce::functionDesignator(funcDesig);
+  validate_result_type(result_type);
+  Loop l(m,IMPROPERS);
+  Atom_sp a1, a2, a3, a4;
+  ql::list list_result;
+  core::VectorObjectsWithFillPtr_sp vector_result;
+  if ( result_type == cl::_sym_vector ) {
+    vector_result = core::VectorObjectsWithFillPtr_O::make(_Nil<core::T_O>(),_Nil<core::T_O>(),16,0,true, cl::_sym_T_O);
+  }
+  while (l.advanceLoopAndProcess()) {
+    a1 = l.getAtom1();
+    a2 = l.getAtom2();
+    a3 = l.getAtom3();
+    a4 = l.getAtom4();
+    core::T_sp val = core::eval::funcall(func,a1,a2,a3,a4);
+    if(result_type.notnilp()) {
+      if (result_type == cl::_sym_list) {
+        list_result << val;
+      } else {
+        vector_result->vectorPushExtend(val);
+      }
+    }
+  }
+  if(result_type.nilp()) {
+    return _Nil<core::T_O>();
+  } else if (result_type == cl::_sym_list) {
+    return list_result.cons();
+  } else {
+    return vector_result;
+  }
+};
+
+
 
 };

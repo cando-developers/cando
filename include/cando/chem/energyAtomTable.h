@@ -43,6 +43,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
+#include <clasp/core/nativeVector.fwd.h>
 #include <cando/units/quantity.fwd.h>
 #include <cando/chem/indirectAtomCoordinateReference.h>
 #include <cando/geom/vector3.h>
@@ -67,10 +68,8 @@ public:
     double		_Charge;		//!<Atom charge in electrons
     double		_Mass;			//!<Atom mass in Daltons
     uint		_TypeIndex;		//!<Type index
-
 public:
 	// Temporary variables, not necessary to store
-
 	/*! Sets of all atoms that are bonded to this one at remove 1(bonded),
 	  2(ends of angle) and 3(ends of dihedral) (indexed at 0, 1, 2 respectively */
     gctools::SmallOrderedSet<Atom_sp> _AtomsAtRemove[3]; // s e t<Atom_sp>	_AtomsAtRemove[3];
@@ -97,43 +96,41 @@ EnergyAtom*	_findEnergyAtom(gctools::Vec0<EnergyAtom>& atoms, uint	idx3 );
 SMART(AtomTable);
 class AtomTable_O : public core::CxxObject_O
 {
-    LISP_CLASS(chem,ChemPkg,AtomTable_O,"AtomTable",core::CxxObject_O);
+  LISP_CLASS(chem,ChemPkg,AtomTable_O,"AtomTable",core::CxxObject_O);
 
-public:
+ public:
 //    void	archiveBase(core::ArchiveP node);
 
-public:
-    void initialize();
-private:
-    typedef core::HashTableEq_sp        AtomTable;
-    gctools::Vec0<EnergyAtom>	_Atoms;
-    AtomTable        _AtomTableIndices; // m a p<Atom_sp,uint>	_AtomTableIndices;
-public:
-	typedef gctools::Vec0<EnergyAtom>::iterator iterator;
-public:
-	gctools::Vec0<EnergyAtom>&	getVectorEnergyAtoms() { return this->_Atoms;};
-	uint	getNumberOfAtoms()	{ return this->_Atoms.size();};
-	uint	getNVectorSize()	{ return this->_Atoms.size()*3;};
-	EnergyAtom*	getEnergyAtomPointer(Atom_sp a);
-	EnergyAtom&	energyAtomEntry(uint i) { return this->_Atoms[i]; };
-	EnergyAtom*	findEnergyAtomWithCoordinateIndex(uint i) { return &this->_Atoms[i/3]; };
+ public:
+  void initialize();
+ private:
+  typedef core::HashTableEq_sp        AtomTable;
+  gctools::Vec0<EnergyAtom>	_Atoms;
+  AtomTable        _AtomTableIndices; // m a p<Atom_sp,uint>	_AtomTableIndices;
+ public:
+  typedef gctools::Vec0<EnergyAtom>::iterator iterator;
+ public:
+  gctools::Vec0<EnergyAtom>&	getVectorEnergyAtoms() { return this->_Atoms;};
+  CL_DEFMETHOD uint	getNumberOfAtoms()	{ return this->_Atoms.size();};
+  uint	getNVectorSize()	{ return this->_Atoms.size()*3;};
+  EnergyAtom*	getEnergyAtomPointer(Atom_sp a);
+  EnergyAtom&	energyAtomEntry(uint i) { return this->_Atoms[i]; };
+  EnergyAtom*	findEnergyAtomWithCoordinateIndex(uint i) { return &this->_Atoms[i/3]; };
 
-	void	add(EnergyAtom& aa) { this->_Atoms.push_back(aa);};
+  void	add(EnergyAtom& aa) { this->_Atoms.push_back(aa);};
 
 	/*! Add the info for a single atom and return the coordinate index (index*3) of the atom */
-	int addAtomInfo(Atom_sp atom, units::Quantity_sp charge, units::Quantity_sp mass, int typeIndex );
+  int addAtomInfo(Atom_sp atom, units::Quantity_sp charge, units::Quantity_sp mass, int typeIndex );
 
-	iterator	begin() { return this->_Atoms.begin(); };
-	iterator	end() { return this->_Atoms.end(); };
+  iterator	begin() { return this->_Atoms.begin(); };
+  iterator	end() { return this->_Atoms.end(); };
 
-	void	dumpTerms();
+  void	dumpTerms();
+  void constructFromMatter(Matter_sp matter, ForceField_sp forceField);
 
+  size_t push_back_excluded_atom_indices_and_sort(core::NativeVector_int_sp excludedAtomIndices, uint atomIndex);
 
-	void constructFromMatter(Matter_sp matter, ForceField_sp forceField);
-
-
-
-	DEFAULT_CTOR_DTOR(AtomTable_O);
+  DEFAULT_CTOR_DTOR(AtomTable_O);
 };
 
 

@@ -1,176 +1,118 @@
 (in-package :cando-user)
-(asdf:load-system "amber")
-(use-package :amber :cando-user)
-(load "~/Downloads/chromatinfiber-11million/setup.lisp")
+(progn
+  (asdf:load-system "amber")
+  (use-package :amber :cando-user)
+  (load "~/Downloads/chromatinfiber-11million/setup.lisp"))
+
+(amber:load-off "~/Development/amber/dat/leap/lib/solvents.lib")
 
 
-(defparameter *1mil-layout* (amber.pdb:scanpdb "~/Downloads/chromatin-1mil/chromsmall.pdb" :progress t))
-(defparameter *1mil* (amber.pdb:loadpdb "~/Downloads/chromatin-1mil/chromsmall.pdb" :layout *1mil-layout* :progress t))
+(progn
+  (defparameter *1mil-layout* (amber.pdb:scanpdb "~/Downloads/chromatin-1mil/chromsmall.pdb" :progress t))
+  (defparameter *1mil* (amber.pdb:loadpdb "~/Downloads/chromatin-1mil/chromsmall.pdb" :layout *1mil-layout* :progress t)))
+
+
+(defun setup-amber-force-field ()
+  (let ((parms (chem:make-read-amber-parameters)))
+    (with-open-file (fin "~/Development/amber/dat/leap/parm/parm99.dat")
+      (chem:read-parameters parms fin))
+    (chem:get-force-field parms)))
+(defparameter *amber* (setup-amber-force-field))
+
+
+(progn
+  (defparameter *ef* (core:make-cxx-object 'chem:energy-function))
+  (defparameter *ff* (energy:setup-amber))
+  (chem:generate-standard-energy-function-tables *ef* *1mil* *amber* :show-progress t)
+  (chem:summarize-terms *ef*))
+
+(defparameter *m* (chem:get-missing-parameters *ef*))
+(loop for x in *m*
+   when (typep x 'chem:ffstretch)
+     collect x)
+
+(chem:map-residues
+ nil
+ (lambda (r)
+   (chem:map-atoms
+    nil
+    (lambda (a)
+      (when (eq (chem:get-type a) :c8)
+        (print (list (chem:get-name r) a ))))
+    r))
+   *1mil*)
+
+(print (chem:get-number-of-atoms (chem:atom-table *ef*)))
+(defun excluded-atom-list (ef)
+  (let ((atom-table (chem:atom-table ef))
+        (excluded-atoms-list (core:make-native-vector<int>))
+        (excluded-atoms-num (core:make-native-vector<int>)))
+    (loop for i below (chem:get-number-of-atoms atom-table)
+       for num = (chem:push-back-excluded-atom-indices-and-sort atom-table excluded-atoms-list i)
+       do (core:native-vector<int>-push-back excluded-atoms-num num))
+    (values excluded-atoms-num excluded-atoms-list)))
+(chem:number-of-terms (chem:get-stretch-component *ef*))
+(chem:safe-amber-energy-stretch-term (chem:get-stretch-component *ef*) 99999999)
+
+
+(defvar *ean*)
+(defvar *eal*)
+(time (multiple-value-setq (*ean* *eal*) (excluded-atom-list *ef* )))
+(core:native-vector<int>-size *ean*)
+(core:native-vector<int>-size *eal*)
+
+(loop for x below 100
+   do (format t "~a -> ~a~%" x (core:native-vector<int>-elt *eal* x)))
+
+(defparameter *eal* (core:make-native-vector<int>))
+(chem:push-back-excluded-atom-indices-and-sort (chem:atom-table *ef*) *eal* 1)
+(loop for i below (core:native-vector<int>-size *eal*)
+   collect (core:native-vector<int>-elt *eal* i))
+
+
+(apropos "excluded")
+(print (chem:excluded-atom-list (chem:atom-table *ef*) 0))
+
+(chem:atom-
+(chem:generate-restraint-energy-function-tables *ef* *1mil* *ff* :show-progress t)
+(print "Done")
+
+
+
+(chem:contents-as-list *1mil*)
 
 (defparameter *1mil-layout* (amber.pdb:scanpdb "~/Downloads/chromatin-1mil/chrom40.pdb" :progress t))
 (defparameter *1mil* (amber.pdb:loadpdb "~/Downloads/chromatin-1mil/chrom40.pdb" :layout *1mil-layout* :progress t))
 
 
+;;; -------------
+;;; Test the leap parser
+;;;
+
+(asdf:load-system "amber")
+(amber.leap:load-script #P"~/Development/amber/dat/leap/cmd/leaprc.protein.fb15")
+(apropos "load-script")
 
 
-(defparameter *all-layout* (amber.pdb:scanpdb "~/Downloads/chromatinfiber-11million/chromnn_400.pdb" :progress t))
-(defparameter *all* (amber.pdb:loadpdb "~/Downloads/chromatinfiber-11million/chromnn_400.pdb" :layout *all-layout* :progress t))
+(with-input-from-string (sin "
+loadOff test.lib
+# This is a comment
+
+x = { \"A\"
+      \"B\"
+      \"C\" }
+test = 3
+;asdfas
+x = 4")
+  (loop for x = (amber.leap::leap-parse-one-line sin nil :eof)
+     until (eq x :eof)
+     when x
+     do (print x)))
 
 
+(with-input-from-string (sin "a
+b
+c
+")
+  (read-delimited-list #\r sin))
 
-(defparameter *small-layout* (amber.pdb:scanpdb "~/Downloads/4y0y.pdb" :progress t))
-*small-layout*
-
-(cando:chimera *small*)
-(cando:save-mol2 *s* "~/Downloads/chromatinfiber-11million/chromnn.mol2")
-(format t "Done~%")
-
-
-amber::*objects*
-(defparameter *s* (amber.pdb:scanpdb "~/Downloads/4y0y.pdb" :progress t))
-(defparameter *a* (amber.pdb::loadpdb "~/Downloads/4y0y.pdb"))
-(defparameter *s* 1234)
-*s*
-*package*
-
-cando-user::*s*
-
-amber.pdb::*bar*
-
-(apropos "make-progress-bar")
-
-;; wipe out hydrogens
-(let ((hydrogens (chem:all-atoms-of-element-as-list *a* :h)))
-  (mapc (lambda (h) (chem:setf-needs-build h t)
-                (chem:set-position h (geom:vec 0.0 0.0 0.0)))
-        hydrogens)
-  (format t "There are ~a hydrogens~%" (length hydrogens)))
-(cando::build-unbuilt-hydrogens *a*)
-(cando:chimera *a*)
-
-(/ 1 0.0174533)57.295757
-
-
-
-amber.pdb::*serial-to-atoms*
-(print "Done")
-*a*
-(defparameter *ab* nil)
-(dolist (a (chem:all-atoms-of-element-as-list *a* :h))
-  (when (chem:needs-build a)
-    (setq *ab* a)
-    (format t "Atom that needs build: ~a~%" a)))
-
-(defparameter *ht* (cando::group-unbuilt-hydrogens *a*))
-(maphash (lambda (k v) (print (list k v))) *ht*)
-(defparameter *sl* (chem:make-spanning-loop *ab*))
-(chem:advance-loop-and-process *sl*)
-(chem:get-atom *sl*)
-(apropos "spanning")
-
-
-*seqs*
-(cando:chimera *a*)
-amber:*topologies*
-
-
-
-(defparameter *a* '(1 2 3 4 5))
-(setf (car *a*) 10)
-(setf (car (last *a*)) 99)
-*a*
-
-(with-input-from-string (sin "A B C D        ")
-  (loop for res = (read sin nil :eof)
-     unless (eq res :eof)
-     collect res))
-
-
-
-
-amber.off::*res*
-amber.off::*in-plug-idx*
-*t*
-(progn
-  (defparameter *a* (chem:make-aggregate))
-  (defparameter *m* (chem:make-molecule))
-  (defparameter *r* (chem:build-residue *t*))
-  (chem:add-matter *a* *m*)
-  (chem:add-matter *m* *r*))
-
-(chem:build-residue *t*)
-*r*
-
-*t*
-(cando:as-string (chem:get-constitution *t*))"
-
-
-(let ((*print-readably* t))
-  (core:print-cxx-object *m* t))
-
-(cando:chimera *a*)
-(chem:atom-info *t*)
-  (defparameter *a* (gethash :ALA *off*))
-  (defparameter *r* (chem:content-at (chem:content-at *a* 0) 0)))
-
-(core:encode *r*)
-
-
-(cando::make-topology-from-residue *r*)
-
-
-
-(defparameter *pr* (make-instance 'pdb-reader :stream (open "~/Downloads/chromnn_400.cpptraj.pdb" :direction :input)))
-
-(defparameter *l* (readline (stream *pr*)))
-(parse-line "ATOM  80059  N   ALA    14     -53.432 -44.1623941.690  1.00  0.00           N  " *pr*)(:ATOM 80059 :N :ALA 14 -53.432 -44.162 3941.69)
-(read-from-string (subseq "1 2 3 4" 2 3))
-(read-from-string "1 2 3 4" :start 2 :end 3)
-
-
-
-
-(chem:make-topology-from-residue *r*)
-(loop for v being the hash-value of *off*
-   for x from 0
-     for trans = (geom:make-m4-translate (geom:vec (* x 5) 0 0))
-     do (chem:apply-transform-to-atoms v trans))
-(maphash (lambda (k v) (cando:chimera v) (sleep 0.1)) *off*)
-(defparameter *agg* (gethash :TRP *off*))
-(defparameter *mol* (chem:content-at *agg* 0))
-(defparameter *res* (chem:content-at *mol* 0))
-(chem:atom-with-id (cando:constitution-from-residue *res*) 1)
-
-(chem:c
-
-(apropos "chimera")
-(in-package :amber.off)
-(defparameter *agg* (assemble-hierarchy *read-hierarchy* *residues* *atoms*))
-
-(chem:contents-as-cons *agg*)
-(chem:molecules *agg*)
-
-
-(loop for e across #(10 20 30 40)
-     for i from 0
-     do (print (list i e)))
-
-
-(chem:atomic
-
-
-
-(defvar *data*)
-(with-open-file (fin "~/Development/amber/dat/leap/lib/solvents.lib" :direction :input)
-  (setf *data* (amber.off:read-off-data-block fin nil nil)))
-
-
-(setq *data*
-      (with-open-file (fin "~/Development/amber/dat/leap/lib/all_amino03.lib" :direction :input)
-        (let ((names (amber.off::read-off-lib-header fin)))
-          (amber.off::read-off-unit-parts fin))))
-
-(gethash "atoms" (gethash "PHE" *data*))
-
-
-(make-array 

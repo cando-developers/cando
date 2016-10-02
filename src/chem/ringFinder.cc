@@ -26,6 +26,11 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_FULL
 
 
+/* This file implements the Smallest Set of Smallest Ring (SSSR) finding algorith described
+   by Balducci and Pearlman in  J. Chem. Inf. Comput. Sci. Vol 34, No. 4, 1994
+
+   It works well for small molecules <2048 atoms but not for very large systems.
+*/
 
 /*
 __BEGIN_DOC( candoScript.ringFinder, Ring identification commands and objects)
@@ -578,7 +583,8 @@ uint AGEdge_O::getSide(AGVertex_sp vert)
 }
 
 
-RingFinder_sp RingFinder_O::create(Molecule_sp mol)
+CL_LISPIFY_NAME(make_ring_finder);
+CL_DEF_CLASS_METHOD RingFinder_sp RingFinder_O::make(Molecule_sp mol)
 {
     GC_ALLOCATE(RingFinder_O, graph );
     graph->_vertices = core::HashTable_O::create(cl::_sym_eq);
@@ -683,7 +689,7 @@ uint RingFinder_O::getNumberOfEdges()
     return this->_edges.size();
 }
 
-int RingFinder_O::getNumberOfRingsExpected()
+CL_DEFMETHOD int RingFinder_O::getNumberOfRingsExpected()
 {
     LOG(BF("this->_edges.size() = %d") % this->_edges.size()  );
     LOG(BF("this->_vertices->hashTableCount() = %d") % this->_vertices->hashTableCount()  );
@@ -754,27 +760,30 @@ void RingFinder_O::advanceRingSearch(uint stage)
 CL_LISPIFY_NAME("findRings");
 CL_DEFMETHOD void RingFinder_O::findRings(int numAtoms)
 {
-    ASSERTF(numAtoms>0,BF("You tried to find rings in a molecule with zero atoms"));
-    this->initializeRingSearch();
-    int numberOfRingsExpected = this->getNumberOfRingsExpected();
-    LOG(BF("Number of rings expected = %d") % numberOfRingsExpected  );
-    uint stage = 2;
+  if (numAtoms >2048) {
+    SIMPLE_ERROR(BF("You should not look for rings when there are more than 2048 atoms - the algorithm will blow up memory for %d atoms") % numAtoms );
+  }
+  ASSERTF(numAtoms>0,BF("You tried to find rings in a molecule with zero atoms"));
+  this->initializeRingSearch();
+  int numberOfRingsExpected = this->getNumberOfRingsExpected();
+  LOG(BF("Number of rings expected = %d") % numberOfRingsExpected  );
+  uint stage = 2;
 // if we try more than this many times
     // and don't find all the rings then something is wrong
-    int trigger = numAtoms*2;
-    while ( this->_finalRings.size() < numberOfRingsExpected )
+  int trigger = numAtoms*2;
+  while ( this->_finalRings.size() < numberOfRingsExpected )
+  {
+    LOG(BF("Looking for rings, stage= %d : trigger[%d] : numAtoms[%d] : numberOfRingsExpected[%d]") % stage % trigger % numAtoms % numberOfRingsExpected  );
+    this->advanceRingSearch(stage);
+    LOG(BF("After ring search, number of rings found = %d")
+        % this->_finalRings.size()  );
+    stage++;
+    trigger--;
+    if ( trigger<=0 )
     {
-	LOG(BF("Looking for rings, stage= %d : trigger[%d] : numAtoms[%d] : numberOfRingsExpected[%d]") % stage % trigger % numAtoms % numberOfRingsExpected  );
-        this->advanceRingSearch(stage);
-	LOG(BF("After ring search, number of rings found = %d")
-	    % this->_finalRings.size()  );
-	stage++;
-	trigger--;
-	if ( trigger<=0 )
-	{
-	    SIMPLE_ERROR(BF("We advanced the ring search way beyond the number of times we should have needed to - there are %d atoms and %d rings expected and we advanced the search %d times") % numAtoms % numberOfRingsExpected % stage );
-	}
+      SIMPLE_ERROR(BF("We advanced the ring search way beyond the number of times we should have needed to - there are %d atoms and %d rings expected and we advanced the search %d times") % numAtoms % numberOfRingsExpected % stage );
     }
+  }
 }
 
 
@@ -893,7 +902,7 @@ core::List_sp RingFinder_O::identifyRingsInMolecule(Molecule_sp molecule)
 	    numAtoms++;
 	}
     }
-    RingFinder_sp atomGraph = RingFinder_O::create(molecule);
+    RingFinder_sp atomGraph = RingFinder_O::make(molecule);
     {_BLOCK_TRACE("Looking for rings");
 	atomGraph->findRings(numAtoms);
     }

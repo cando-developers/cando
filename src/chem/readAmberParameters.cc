@@ -31,6 +31,7 @@ This is an open source license for the CANDO software from Temple University, bu
 //#include "core/archive.h"
 #include <clasp/core/numerics.h>
 #include <clasp/core/lispStream.h>
+#include <clasp/core/bformat.h>
 #include <clasp/core/str.h>
 #include <cando/chem/chemInfo.h>
 #include <cando/chem/units.h>
@@ -47,14 +48,6 @@ CL_DEFUN ReadAmberParameters_sp chem__make_read_amber_parameters()
   return ReadAmberParameters_O::create();
 }
 
-
-
-void	ReadAmberParameters_O::initialize()
-{
-    this->Base::initialize();
-    this->_Types = _Nil<FFTypesDb_O>();
-    this->_ForceField = _Nil<ForceField_O>();
-}
 
 
 CL_LISPIFY_NAME("readTypes");
@@ -75,20 +68,12 @@ CL_DEFMETHOD void	ReadAmberParameters_O::readParameters(core::T_sp fin)
 CL_LISPIFY_NAME("getForceField");
 CL_DEFMETHOD ForceField_sp ReadAmberParameters_O::getForceField()
 {
-    if ( this->_Types.nilp() ) {
-	SIMPLE_ERROR(BF("In getForceField this->_Types cannot be nil"));
-    }
-    if ( this->_ForceField.notnilp() )
-    {
-	this->_ForceField->setFFTypeDb(this->_Types);
-    } else
-    if ( this->_ForceField.nilp() )
-    {
-	GC_ALLOCATE(ForceField_O, temp );
-	this->_ForceField = temp;
-    }
-    this->_ForceField->setFFTypeDb(this->_Types);
-    return this->_ForceField;
+  if ( this->_ForceField.unboundp() ) {
+    GC_ALLOCATE(ForceField_O, temp );
+    this->_ForceField = temp;
+  }
+  this->_ForceField->setFFTypeDb(this->_Types);
+  return this->_ForceField;
 }
 
 
@@ -128,11 +113,9 @@ FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(core::T_sp fin)
   {
     ChemInfo_sp typeRule = ChemInfo_O::create();
     typeRule->compileAntechamber(ei->second,wildCardElementDictionary);
-    if ( typeRule->compileSucceeded() )
-    {
+    if ( typeRule->compileSucceeded() ) {
       ffTypesDb->add(typeRule);
-    } else
-    {
+    } else {
       SIMPLE_ERROR(BF("Antechamber compile failed on: "+ei->second+"\n"+typeRule->compilerMessage() ));
     }
   }
@@ -368,21 +351,21 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
     bool done = false;
     string line = core::cl__read_line(fin).as<core::Str_O>()->get();
     vector<string>parts = core::split(line);
+    if (parts.size() == 0) {
+      printf("%s:%d Could not split line: %s\n", __FILE__, __LINE__, line.c_str());
+    }
     string label = parts[0];
     string kindnb = parts[1];
     if ( kindnb != "RE" )
     {
 	SIMPLE_ERROR(BF("Nonbond parameters must be of kindnb=RE this file has kindnb="+kindnb));
     }
-    while ( not done )
-    {
+    while ( 1 ) {
       string line = core::cl__read_line(fin).as<core::Str_O>()->get();
-//      printf("%s:%d:%s line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str()); 
-      if ( line.size() == 0 )
-      {
-        done = true;
-      } else
-      {
+//      printf("%s:%d:%s line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
+      line = core::trimWhiteSpace(line);
+      if ( line.size() == 0 ) break;
+      else {
         LOG(BF("Parsing line|%s|") % line.c_str()  );
         FFNonbond_sp ffNonbond;
         string type = core::trimWhiteSpace(line.substr(0,4));
@@ -391,7 +374,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
           ffNonbond = ffNonbondDb->findType(stype);
         } else
         {
-          SIMPLE_ERROR(BF("Could not find type: "+type));
+          SIMPLE_ERROR(BF("Could not find type: %s") % type);
         }
         string parms = line.substr(5);
         vector<string>parmsParts = core::split(parms);
@@ -409,6 +392,15 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
 }
 
 
+void ReadAmberParameters_O::parseAtomEquivalences(core::T_sp fin)
+{
+  BFORMAT_T(BF("Warning!  Skipping force field atom equivalences\n"));
+  while (1) {
+    string line = core::cl__read_line(fin).as<core::Str_O>()->get();
+    if (line=="") return;
+  }
+}
+
 
 
 ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fin)
@@ -419,10 +411,10 @@ ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fi
     FFAngleDb_sp ffAnglesDb = this->parseAngleDb(fin);
     FFPtorDb_sp ffPtorsDb = this->parsePtorDb(fin);
     FFItorDb_sp ffItorsDb = this->parseItorDb(fin);
+    BFORMAT_T(BF("Warning!  Skipping 10-12 hbond\n"));
     core::cl__read_line(fin); // skp 10-12 hbond
     core::cl__read_line(fin); // blank
-    core::cl__read_line(fin); // skip equivalence
-    core::cl__read_line(fin); // blank
+    this->parseAtomEquivalences(fin);
     this->parseNonbondDb(fin,ffNonbondsDb);
     LOG(BF("All parameters read fine") );
     GC_ALLOCATE(ForceField_O, ff );

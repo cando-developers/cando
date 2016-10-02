@@ -469,6 +469,18 @@ values residue-sequences matrices"
         (disulphides layout))
   layout)
 
+(defun calculate-residue-sequence-number (res-seq i-code)
+  "If i-code is not nil and as a string it is a single digit,
+then multiply res-seq by 10 and add the i-code digit to it."
+  (declare (integer res-seq))
+  (cond
+    ((null i-code)
+     res-seq)
+    ((integerp i-code)
+     (+ (* res-seq 10) i-code))
+    ((digit-char-p (elt (string i-code) 0))
+     (+ (* res-seq 10) (parse-integer (string i-code))))
+    (t res-seq)))
 
 (defun read-and-process-line (reader eof-errorp eof big-z)
   "* Arguments
@@ -510,6 +522,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                        (if cur-top
                            ;; There is a topology - use it
                            (let ((cur-res (chem:build-residue cur-top)))
+                             (chem:set-id cur-res (calculate-residue-sequence-number res-seq i-code))
                              (setf (current-residue reader) cur-res)
                              (let ((prev-res (previous-residue reader)))
                                (chem:add-matter (molecule reader) cur-res)
@@ -542,6 +555,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                             (current-topology reader)))
                      (t                ; Add a new atom to the residue
                       (let ((atom (chem:make-atom atom-name (chem:element-from-atom-name-string (string atom-name)))))
+                        (chem:set-id atom atom-serial)
                         (chem:add-matter (current-residue reader) atom)
                         (chem:set-position atom (geom:vec x y z))
                         (chem:setf-needs-build atom nil)))))))
@@ -562,6 +576,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                   (to connect)))
       ht)))
 (defparameter *serial-to-atoms* nil)
+
 (defun loadpdb (filename &key layout progress)
   (with-open-file (fin filename :direction :input)
     (let* ((layout (or layout (scanpdb filename :progress progress)))
@@ -602,12 +617,14 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                         (chem:needs-build a))
                (incf unbuilt-heavy-atoms)))
            aggregate)
-          (when (> unbuilt-heavy-atoms 0)
-            (error "There are ~a unbuilt heavy atoms" unbuilt-heavy-atoms))
-          (when progress
-            (format t "Building missing hydrogens~%"))
-          (cando:build-unbuilt-hydrogens aggregate)
-          aggregate)))))
+          (if (> unbuilt-heavy-atoms 0)
+              (warn "There are ~a unbuilt heavy atoms - not building hydrogens" unbuilt-heavy-atoms)
+              (progn
+                (when progress
+                  (format t "Building missing hydrogens~%"))
+                (let ((built (cando:build-unbuilt-hydrogens aggregate)))
+                  (format t "Built ~d missing hydrogens~%" built))))
+          (values aggregate layout))))))
 
 
       

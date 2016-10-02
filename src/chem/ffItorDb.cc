@@ -170,76 +170,91 @@ int     i;
 
 
 
-
-
-
+void	FFItorDb_O::initialize()
+{
+    this->Base::initialize();
+}
 
 void	FFItorDb_O::add( FFItor_sp itor )
 {
-core::Symbol_sp          key;
-FFItor_sp        itorOld;
-    if (this->hasExactTerm(itor->_T1,itor->_T2,itor->_T3,itor->_T4) ){
-        itorOld = this->findExactTerm(itor->_T1,itor->_T2,itor->_T3,itor->_T4);
-        itorOld->mergeWith(itor);
-    } else {
-        this->_Terms.push_back(itor);
-        key = keyString(itor->_T1,itor->_T2,itor->_T3,itor->_T4);
+  core::Symbol_sp          key;
+  FFItor_sp        itorOld;
+  core::T_sp titorOld = this->findExactTerm(itor->_T1,itor->_T2,itor->_T3,itor->_T4);
+  if (titorOld.notnilp()) {
+    itorOld = gc::As<FFItor_sp>(titorOld);
+    itorOld->mergeWith(itor);
+  } else {
+    key = keyString(itor->_T1,itor->_T2,itor->_T3,itor->_T4);
+    this->_Parameters->setf_gethash(key,itor);
 #ifdef DEBUG_ON
-	if ( itor->_T3=="c" && itor->_T4=="o" ) {
-	    LOG(BF("FFItorDb::add adding term with key: %s") % key.c_str()  );
-	}
+    if ( itor->_T3=="c" && itor->_T4=="o" ) {
+      LOG(BF("FFItorDb::add adding term with key: %s") % key.c_str()  );
+    }
 #endif
-        this->_Lookup.set(key,itor);
-    }
+  }
 }
 
-bool FFItorDb_O::hasExactTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
+core::T_sp FFItorDb_O::findExactTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
 {
 core::Symbol_sp         key;
-FFItor_sp        itor;
-    key = keyString(t1,t2,t3,t4);
-    if ( this->_Lookup.count(key)!=0 ) return true;
-    return false;
+ core::T_sp itor;
+ key = keyString(t1,t2,t3,t4);
+ itor = this->_Parameters->gethash(key);
+ return itor;
 }
 
-gc::Nilable<FFItor_sp> FFItorDb_O::findExactTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
+// Order the two atoms according to their atom type and atom name
+// If the atom types are the same then order on atom name (alphabetical)
+// If the atom types are different then order on atom type (alphabetical)
+// Atom names and atom types are stored as interned names (Symbols)
+bool ordered(Atom_sp a1, Atom_sp a2) {
+  if (a1->getType() == a2->getType()) {
+    return a1->getName()->symbolNameAsString() < a2->getName()->symbolNameAsString();
+  }
+  return gc::As<core::Symbol_sp>(a1->getType())->symbolNameAsString() < gc::As<core::Symbol_sp>(a2->getType())->symbolNameAsString();
+}
+
+// Sort the three atoms of an improper a1-a2-a3-a4 where a3 is the central atom.
+void FFItorDb_O::improperAtomSort(Atom_sp& a1, Atom_sp& a2, Atom_sp& a4)
 {
-core::Symbol_sp         key;
- gc::Nilable<FFItor_sp>        itor;
-    key = keyString(t1,t2,t3,t4);
-    if ( this->_Lookup.count(key)!=0 ) {
-        return this->_Lookup.get(key);
-    }
-    itor = _Nil<core::T_O>();
-    return itor;
+  Atom_sp ta;
+  if (!ordered(a1,a2)) {ta = a1; a1 = a2; a2 = ta;}
+  if (!ordered(a2,a4)) {ta = a2; a2 = a4; a4 = ta;}
+  if (!ordered(a1,a2)) {ta = a1; a1 = a2; a2 = ta;}
 }
 
-gc::Nilable<FFItor_sp> FFItorDb_O::findBestTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
+CL_DEFUN core::T_mv chem__improperAtomSort(Atom_sp a1, Atom_sp a2, Atom_sp a3)
+{
+  FFItorDb_O::improperAtomSort(a1,a2,a3);
+  return Values(a1,a2,a3);
+}
+
+core::T_sp FFItorDb_O::findBestTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
 {
   core::Symbol_sp        key,key1,key2,key3,key4,bl;
-  gc::Nilable<FFItor_sp>        itor;
+  core::T_sp itor;
   key4 = keyString(t1,t2,t3,t4);
-  if ( this->_Lookup.count(key4)!=0 ) {
-    itor = this->_Lookup.get(key4);
+  itor = this->_Parameters->gethash(key4);
+  if (itor.notnilp()) {
     key = key4;
     goto DONE;
   }
   bl = _Nil<core::Symbol_O>();
   key3 = keyString(bl,t2,t3,t4);
-  if ( this->_Lookup.count(key3)!=0 ) {
-    itor = this->_Lookup.get(key3);
+  itor = this->_Parameters->gethash(key3);
+  if (itor.notnilp()) {
     key = key3;
     goto DONE;
   }
   key2 = keyString(bl,bl,t3,t4);
-  if ( this->_Lookup.count(key2)!=0 ) {
-    itor = this->_Lookup.get(key2);
+  itor = this->_Parameters->gethash(key2);
+  if (itor.notnilp()) {
     key = key2;
     goto DONE;
   }
   key1 = keyString(bl,bl,t3,bl);
-  if ( this->_Lookup.count(key1)!=0 ) {
-    itor = this->_Lookup.get(key1);
+  itor = this->_Parameters->gethash(key1);
+  if (itor.notnilp()) {
     key = key1;
     goto DONE;
   }
@@ -269,14 +284,6 @@ gc::Nilable<FFItor_sp> FFItorDb_O::findBestTerm( core::Symbol_sp t1, core::Symbo
 }
 
 
-bool    FFItorDb_O::hasBestTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
-{
-string          key,bl;
-FFItor_sp        itor;
-    itor = this->findBestTerm(t1,t2,t3,t4);
-    return itor.notnilp();
-}
-
 
 void    FFItorDb_O::cantFind(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
 {_OF();
@@ -289,8 +296,6 @@ void    FFItorDb_O::cantFind(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbo
 
 void FFItorDb_O::fields(core::Record_sp node)
 {
-  node->field(INTERN_(kw,itors),this->_Terms );
-  node->field(INTERN_(kw,map),this->_Lookup );
   this->Base::fields(node);
 }
 

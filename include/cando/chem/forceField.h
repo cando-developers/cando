@@ -80,17 +80,21 @@ class	InfoDb_O;
 SMART(InfoDb);
 class InfoDb_O : public core::CxxObject_O
 {
-    LISP_CLASS(chem,ChemPkg,InfoDb_O,"InfoDb",core::CxxObject_O);
+  LISP_CLASS(chem,ChemPkg,InfoDb_O,"InfoDb",core::CxxObject_O);
 
-public:
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);
-public:
-    adapt::SymbolMap<core::Str_O>	_database;
-public:
-
-    void	addInfo( core::Symbol_sp key, const string& data );
-	DEFAULT_CTOR_DTOR(InfoDb_O);
+ public:
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+ public:
+  adapt::SymbolMap<core::Str_O>	_database;
+ public:
+  void absorb(InfoDb_sp other) {
+    for ( auto it : other->_database ) {
+      this->addInfo(it.first,it.second);
+    }
+  };
+  void	addInfo( core::Symbol_sp key, core::Str_sp data );
+  DEFAULT_CTOR_DTOR(InfoDb_O);
 };
 
 
@@ -102,76 +106,85 @@ public:
 SMART(ForceField);
 class ForceField_O : public core::CxxObject_O
 {
-    LISP_CLASS(chem,ChemPkg,ForceField_O,"ForceField",core::CxxObject_O);
+  LISP_CLASS(chem,ChemPkg,ForceField_O,"ForceField",core::CxxObject_O);
 
-public:
-    void initialize();
-    bool fieldsp() const { return true; };
-    void fields(core::Record_sp node);
-public:
+ public:
+  void initialize();
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+ public:
 //		/*! Read the forceField from a file*/
 //	static ForceField_sp	open_ForceField(const string& fn);
 
-public:
-	string				_Title;
-	string				_Ref;
-    gctools::Vec0<core::Symbol_sp>		_SingleBondMultiBondDistinctions;
-	InfoDb_sp			_Info;
-        gc::Nilable<FFTypesDb_sp>	_Types;
-        gc::Nilable<FFStretchDb_sp>	_Stretches;
-        gc::Nilable<FFAngleDb_sp>	_Angles;
-        gc::Nilable<FFItorDb_sp>	_Itors;
-        gc::Nilable<FFPtorDb_sp>	_Ptors;
-        gc::Nilable<FFNonbondDb_sp>	_Nonbonds;
-        gc::Nilable<FFVdwDb_sp>		_Vdws;
+ public:
+  string				_Title;
+  string				_Ref;
+  gctools::Vec0<core::Symbol_sp>		_SingleBondMultiBondDistinctions;
+  InfoDb_sp			_Info;
+  FFTypesDb_sp	_Types;
+  FFStretchDb_sp	_Stretches;
+  FFAngleDb_sp	_Angles;
+  FFItorDb_sp	_Itors;
+  FFPtorDb_sp	_Ptors;
+  FFNonbondDb_sp	_Nonbonds;
+  FFVdwDb_sp		_Vdws;
 //	bool				_Disable[sizeof(DisableEnum)];
 #if 0
-	RPFFEquivalenceDb		Equivalences;
-	RPFFOutOfPlaneDb		OutOfPlanes;
-	FFStretch_spBendDb		StretchBends;
+  RPFFEquivalenceDb		Equivalences;
+  RPFFOutOfPlaneDb		OutOfPlanes;
+  FFStretch_spBendDb		StretchBends;
 #endif
+ public:
+ ForceField_O() :
+  _Info(_Unbound<InfoDb_O>()),
+    _Types(_Unbound<FFTypesDb_O>()),
+    _Stretches(_Unbound<FFStretchDb_O>()),
+    _Angles(_Unbound<FFAngleDb_O>()),
+    _Itors(_Unbound<FFItorDb_O>()),
+    _Ptors(_Unbound<FFPtorDb_O>()),
+    _Nonbonds(_Unbound<FFNonbondDb_O>()),
+    _Vdws(_Unbound<FFVdwDb_O>())
+    {};
+          
+  void	addSingleBondMultiBondDistinctionType(core::Symbol_sp s) {
+    this->_SingleBondMultiBondDistinctions.push_back(s);
+  };
 
-    void	addSingleBondMultiBondDistinctionType(core::Symbol_sp s) {
-			this->_SingleBondMultiBondDistinctions.push_back(s);
-		};
+  CL_NAME("getTypes");
+  CL_DEFMETHOD 	FFTypesDb_sp	getTypes() { return this->_Types; };
 
-CL_NAME("getTypes");
-CL_DEFMETHOD 	FFTypesDb_sp	getTypes() { return this->_Types; };
+  CL_NAME("getStretchDb");
+  CL_DEFMETHOD 	FFStretchDb_sp getStretchDb() { return this->_Stretches;};
+  CL_NAME("getAngleDb");
+  CL_DEFMETHOD 	FFAngleDb_sp getAngleDb() { return this->_Angles;};
+  CL_NAME("getItorDb");
+  CL_DEFMETHOD 	FFItorDb_sp getItorDb() { return this->_Itors;};
+  CL_NAME("getPtorDb");
+  CL_DEFMETHOD 	FFPtorDb_sp getPtorDb() { return this->_Ptors;};
+  CL_NAME("getNonbondDb");
+  CL_DEFMETHOD 	FFNonbondDb_sp	getNonbondDb() { return this->_Nonbonds; };
+  CL_NAME("getVdwDb");
+  CL_DEFMETHOD 	FFVdwDb_sp getVdwDb() { return this->_Vdws;};
 
-CL_NAME("getStretchDb");
-CL_DEFMETHOD 	FFStretchDb_sp getStretchDb() { return this->_Stretches;};
-CL_NAME("getAngleDb");
-CL_DEFMETHOD 	FFAngleDb_sp getAngleDb() { return this->_Angles;};
-CL_NAME("getItorDb");
-CL_DEFMETHOD 	FFItorDb_sp getItorDb() { return this->_Itors;};
-CL_NAME("getPtorDb");
-CL_DEFMETHOD 	FFPtorDb_sp getPtorDb() { return this->_Ptors;};
-CL_NAME("getNonbondDb");
-CL_DEFMETHOD 	FFNonbondDb_sp	getNonbondDb() { return this->_Nonbonds; };
-CL_NAME("getVdwDb");
-CL_DEFMETHOD 	FFVdwDb_sp getVdwDb() { return this->_Vdws;};
-	
-	void	assignTypes(Matter_sp matter);
-
-	void	setTitle(const string& title);
-	void	setInfoDb( InfoDb_sp Info );
-	void	setFFTypeDb( FFTypesDb_sp Types);
-	void	setFFStretchDb( FFStretchDb_sp Stretches);
-	void	setFFAngleDb( FFAngleDb_sp Angles);
-	void	setFFItorDb( FFItorDb_sp Itors);
-	void	setFFPtorDb( FFPtorDb_sp Ptors);
-	void	setFFNonbondDb(FFNonbondDb_sp Nonbonds );
-	void	setFFVdwDb(FFVdwDb_sp Vdws );
+  void absorb(ForceField_sp other);
+  void	assignTypes(Matter_sp matter);
+  void	setTitle(const string& title);
+  void	setInfoDb( InfoDb_sp Info );
+  void	setFFTypeDb( FFTypesDb_sp Types);
+  void	setFFStretchDb( FFStretchDb_sp Stretches);
+  void	setFFAngleDb( FFAngleDb_sp Angles);
+  void	setFFItorDb( FFItorDb_sp Itors);
+  void	setFFPtorDb( FFPtorDb_sp Ptors);
+  void	setFFNonbondDb(FFNonbondDb_sp Nonbonds );
+  void	setFFVdwDb(FFVdwDb_sp Vdws );
 
 //	void		parseFromMoeStream(istream in);
-	void		parseFromMoeFormatFileName(string name);
+  void		parseFromMoeFormatFileName(string name);
 
 
-	void	pointAllPartsToForceField(ForceField_sp ff);
+  void	pointAllPartsToForceField(ForceField_sp ff);
 
-	void	saveAs(const string& fileName);
-
-	DEFAULT_CTOR_DTOR(ForceField_O);
+  void	saveAs(const string& fileName);
 };
 
 

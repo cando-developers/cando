@@ -151,12 +151,27 @@ public:
     iterator end() { return this->_Terms.end(); };
 //added by G 7.19.2011
 public:
-    virtual int numberOfTerms() { return this->_Terms.size();};
+    virtual size_t numberOfTerms() { return this->_Terms.size();};
     
 
 public:
     void addTerm(const TermType& term);
     virtual void dumpTerms();
+
+    CL_DEFMETHOD core::T_mv safe_amber_energy_dihedral_term(size_t index) {
+      if (index >= this->numberOfTerms() ) {
+        SIMPLE_ERROR(BF("Illegal term index %zu must be less than %zu") % index % this->_Terms.size() );
+      }
+      return Values(core::DoubleFloat_O::create(this->_Terms[index].term.cosPhase), // Note switched order
+                    core::DoubleFloat_O::create(this->_Terms[index].term.sinPhase),
+                    core::DoubleFloat_O::create(this->_Terms[index].term.V),
+                    core::DoubleFloat_O::create(this->_Terms[index].term.DN),
+                    core::make_fixnum(this->_Terms[index].term.I1),
+                    core::make_fixnum(this->_Terms[index].term.I2),
+                    core::make_fixnum(this->_Terms[index].term.I3),
+                    core::make_fixnum(this->_Terms[index].term.I4)
+                    );
+    }
 
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 					    AbstractLargeSquareMatrix_sp m );

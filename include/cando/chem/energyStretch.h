@@ -52,10 +52,6 @@ namespace       chem {
 class EnergyAtom;
 SMART(FFStretch);
 
-inline	string	XmlTag_Stretch() { return "Stretch"; };
-inline	string	XmlTag_EnergyStretch() { return "EnergyStretch"; };
-
-
 struct TermStretch {
 	REAL	kb;	//!< Stretch force constant, this must match Mathematica code!
 	REAL	r0;	//!< Stretch equilibrium distance, this must match Mathematica code!
@@ -137,10 +133,20 @@ public:
     iterator end() { return this->_Terms.end(); };
 	
 public:
-    virtual int numberOfTerms() { return this->_Terms.size();};
+    virtual size_t numberOfTerms() { return this->_Terms.size();};
     void addTerm(const TermType& term);
     virtual void dumpTerms();
 
+    CL_DEFMETHOD core::T_mv safe_amber_energy_stretch_term(size_t index) {
+      if (index >= this->numberOfTerms() ) {
+        SIMPLE_ERROR(BF("Illegal term index %zu must be less than %zu") % index % this->_Terms.size() );
+      }
+      return Values(core::DoubleFloat_O::create(this->_Terms[index].term.kb),
+                    core::DoubleFloat_O::create(this->_Terms[index].term.r0),
+                    core::make_fixnum(this->_Terms[index].term.I1),
+                    core::make_fixnum(this->_Terms[index].term.I2));
+    }
+    
     core::T_sp stretchTermBetweenAtoms(Atom_sp a1, Atom_sp a2);
     
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,

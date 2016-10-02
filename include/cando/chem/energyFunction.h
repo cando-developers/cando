@@ -130,12 +130,8 @@ SMART(EnergyFunction);
 class EnergyFunction_O : public core::CxxObject_O
 {
     LISP_CLASS(chem,ChemPkg,EnergyFunction_O,"EnergyFunction",core::CxxObject_O);
-#if INIT_TO_FACTORIES
  public:
-    static EnergyFunction_sp make(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms=_Nil<core::T_O>());
-#else
-    DECLARE_INIT();
-#endif
+    static EnergyFunction_sp make(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms=_Nil<core::T_O>(), bool progress=false);
 public:
     static void lisp_initGlobals(core::Lisp_sp lisp);
     void initialize();
@@ -179,14 +175,10 @@ public:
     void	_addMissingParameter(FFParameter_sp p) { this->_MissingParameters = core::Cons_O::create(p,this->_MissingParameters);};
     void __createSecondaryAmideRestraints(VectorAtom& nitrogens, core::T_sp activeAtoms );
 
-
-
-
-
     void	flagImproperRestraintsAboveThreshold(NVector_sp nvPosition);
 
 private:
-    void _applyRestraints(ForceField_sp forceField, core::Iterator_sp restraintIterator, core::T_sp activeAtoms );
+    int _applyRestraints(ForceField_sp forceField, core::Iterator_sp restraintIterator, core::T_sp activeAtoms );
     void _applyDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double min, double max, double weight, core::T_sp activeAtoms );
 
 public:
@@ -241,8 +233,8 @@ CL_DEFMETHOD     EnergyFixedNonbondRestraint_sp	getFixedNonbondRestraintComponen
     double getDihedralComponentEnergy(); // { return this->_Dihedral->getEnergy(); };
     double getImproperRestraintComponentEnergy(); // { return this->_ImproperRestraint->getEnergy(); };
 
-    bool	hasMissingParameters();
-    core::List_sp getMissingParameters();
+    CL_DEFMETHOD bool hasMissingParameters();
+    CL_DEFMETHOD core::List_sp getMissingParameters();
 
 CL_NAME("getTotalEnergy");
 CL_DEFMETHOD     double	getTotalEnergy() { return this->_TotalEnergy; };
@@ -255,23 +247,19 @@ CL_DEFMETHOD     double	getTotalEnergy() { return this->_TotalEnergy; };
      */
     void	disableDebug();
 
+    void	summarizeTerms();
     void	dumpTerms();
-CL_NAME("getMessage");
-CL_DEFMETHOD     string	getMessage() { return this->_Message;};
+    CL_DEFMETHOD     string	getMessage() { return this->_Message;};
 
     /*! Print the energy components as a single, multi-line string
      */
     string	energyComponentsAsString();
 
-
     int	compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp pos);
     int	compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition();
 
 
-
-CL_NAME("setName");
 CL_DEFMETHOD     void	setName(const string& nm) { this->_Name = nm; };
-CL_NAME("getName");
 CL_DEFMETHOD     string	getName() { return this->_Name; };
     void		writeForceToAtoms(NVector_sp f);
     EnergyAtom*     getEnergyAtomPointer(Atom_sp a);
@@ -279,7 +267,11 @@ CL_DEFMETHOD     string	getName() { return this->_Name; };
     double		calculateEnergy();
     double		calculateEnergyAndForce();
 
-    void	defineForMatter(Matter_sp agg, ForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>() );
+    void defineForMatter(Matter_sp agg, ForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
+
+    void generateStandardEnergyFunctionTables(Matter_sp agg, ForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
+    void generateNonbondEnergyFunctionTables(Matter_sp agg, ForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
+    void generateRestraintEnergyFunctionTables(Matter_sp agg, ForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
 
 
     /*! Add the restraints to the energy function.
@@ -301,12 +293,11 @@ CL_DEFMETHOD     string	getName() { return this->_Name; };
                                 gc::Nilable<NVector_sp> dvec	);
     double	evaluateEnergy( NVector_sp pos );
     double	evaluateEnergyForce( NVector_sp pos, bool calcForce, NVector_sp force );
-    double	evaluateEnergyForceFullHessian(
-	NVector_sp pos,
-	bool calcForce, NVector_sp force,
-	bool calcDiagonalHessian,
-	bool calcOffDiagonalHessian,
-	AbstractLargeSquareMatrix_sp hessian );
+    double	evaluateEnergyForceFullHessian(NVector_sp pos,
+                                               bool calcForce, NVector_sp force,
+                                               bool calcDiagonalHessian,
+                                               bool calcOffDiagonalHessian,
+                                               AbstractLargeSquareMatrix_sp hessian );
     double	evaluateEnergyForceFullHessianForDebugging();
 
     string	summarizeBeyondThresholdInteractionsAsString();

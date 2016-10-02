@@ -610,12 +610,7 @@ void	Matter_O::addMatterRetainId(Matter_sp cp )
 
 // getId
 int Matter_O::getId() {
-  if (!this->containedByValid()) return -1;
-  Matter_sp owner = this->containedBy();
-  for ( int i=0,iEnd(this->contentSize()); i<iEnd; ++i ) {
-    if ( owner->_contents[i] == this->asSmartPtr() ) return i;
-  }
-  SIMPLE_ERROR(BF("Could not find id of matter"));
+  return this->_Id;
 }
 
 
@@ -880,8 +875,9 @@ CL_DEFMETHOD core::List_sp Matter_O::contentsAsList()
   contentIterator	it;
   for ( it=this->_contents.begin(); it!=this->_contents.end(); ++it )
   {
-    *cur = core::Cons_O::create(*it,_Nil<core::T_O>());
-    cur = reinterpret_cast<core::List_sp*>(&(reinterpret_cast<core::Cons_O*>(cur)->_Cdr));
+    core::Cons_sp one = core::Cons_O::create(*it,_Nil<core::T_O>());
+    *cur = one;
+    cur = reinterpret_cast<core::List_sp*>(&(one->_Cdr));
   }
   return first;
 }
@@ -985,7 +981,7 @@ CL_DEFMETHOD core::List_sp Matter_O::allAtomsOfElementAsList(Element element)
 void	Matter_O::fields(core::Record_sp node )
 {
   node->field( INTERN_(kw,name), this->name);
-//  node->/*pod_*/field_if_not_default( INTERN_(kw,id), this->_Id, 0);
+  node->/*pod_*/field_if_not_default( INTERN_(kw,id), this->_Id, 0);
   node->field_if_not_nil( INTERN_(kw,restraints),this->_Restraints);
   node->field_if_not_nil( INTERN_(kw,properties),this->_Properties);
   node->field_if_not_empty( INTERN_(kw,contents), this->_contents);

@@ -25,6 +25,17 @@
 ;; -^-
 (cl:in-package #:common-lisp-user)
 
+(defpackage #:amber.topology
+  (:use #:common-lisp)
+  (:export
+   #:write-topology))
+
+(defpackage #:amber.leap
+  (:use #:common-lisp)
+  (:export
+   #:load-script
+   ))
+
 (defpackage #:amber.pdb
   (:use #:common-lisp)
   (:export
@@ -43,8 +54,8 @@
    #:type
    #:fields
    #:read-off-unit-lib
-   #:read-off-form-lib
-   #:load-forms)
+   #:read-off-lib
+   #:load-off)
   )
 
 (defpackage #:amber
@@ -53,7 +64,7 @@
                 #:add-pdb-atom-map
                 #:add-pdb-res-map)
   (:import-from :amber.off
-                #:load-forms)
+                #:load-off)
   (:export
    #:residue-name
    #:chain-position
@@ -61,5 +72,5 @@
    #:lookup-variable
    #:add-pdb-atom-map
    #:add-pdb-res-map
-   #:load-forms)
+   #:load-off)
   )

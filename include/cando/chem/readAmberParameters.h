@@ -55,8 +55,6 @@ class ReadAmberParameters_O : public core::CxxObject_O
  private:
   FFTypesDb_sp	_Types;
   ForceField_sp	_ForceField;
- public:
-  void	initialize();
  private:
   FFTypesDb_sp parseTypeRules(core::T_sp fin);
   FFNonbondDb_sp parseFirstNonbondDb(core::T_sp fin);
@@ -66,6 +64,8 @@ class ReadAmberParameters_O : public core::CxxObject_O
   FFItorDb_sp parseItorDb(core::T_sp fin);
   void parseNonbondDb(core::T_sp fin, FFNonbondDb_sp );
   ForceField_sp parseAmberFormattedForceField(core::T_sp strm);
+  void parseAtomEquivalences(core::T_sp fin);
+  
  public:
 
   void readTypes(core::T_sp fin);
@@ -77,9 +77,7 @@ class ReadAmberParameters_O : public core::CxxObject_O
 
   ReadAmberParameters_O( const ReadAmberParameters_O& ss ); //!< Copy constructor
 
-  ReadAmberParameters_O() {
-    printf("%s:%d ReadAmberParameters_O ctor\n", __FILE__, __LINE__);
-  };
+ ReadAmberParameters_O() : _Types(_Unbound<FFTypesDb_O>()), _ForceField(_Unbound<ForceField_O>()) {};
 };
 
 

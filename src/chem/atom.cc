@@ -658,7 +658,7 @@ core::List_sp	Atom_O::getNeighborsByRelativePriority()
   }
   OrderByPriorityAndName orderer;
   core::List_sp ncons = _Nil<core::T_O>();
-  core::sort::quickSort(reversedNeighbors.begin(),reversedNeighbors.end(),orderer);
+  sort::quickSort(reversedNeighbors.begin(),reversedNeighbors.end(),orderer);
 	// At this point the sorted in reverse order
 	// 
 	// Now copy them into a Cons list backwards to get the

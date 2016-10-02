@@ -123,7 +123,7 @@ class Matter_O : public core::CxxObject_O
   typedef	gctools::Vec0<Matter_sp>::const_iterator	const_contentIterator;
  protected:
 //  int			_NextContentId;
-//  int			_Id;
+  int			_Id;
 //  int			_TempFileId;	//!< Use to define temporary index while reading/writing to non XML formats
   MatterName			name;
   Matter_sp	containerContainedBy;
@@ -163,7 +163,7 @@ class Matter_O : public core::CxxObject_O
 
   CL_NAME("getId");
   CL_DEFMETHOD   int	getId();
-
+  CL_DEFMETHOD   void setId(int id) { this->_Id = id; };
 	/*! Accumulate all of the restraints in this matter and its contents into a single RestraintVector */
  core::VectorObjectsWithFillPtr_sp allRestraints() const;
 

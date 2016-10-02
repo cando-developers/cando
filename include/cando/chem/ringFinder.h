@@ -158,7 +158,7 @@ private:
     gctools::Vec0<PathMessage_sp>		_finalRings;
     gctools::Vec0<core::SimpleBitVector_sp>	_gaussian;
 public:
-    static RingFinder_sp create(Molecule_sp mol);
+    static RingFinder_sp make(Molecule_sp mol);
 	/*! Identify the SSSR (Smallest Set of Smallest Rings) for a Matter
 	* and set the ring flags for the atoms
 	* Return the rings as a Cons of Conses that contain the atoms for each ring

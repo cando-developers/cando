@@ -25,7 +25,8 @@ This is an open source license for the CANDO software from Temple University, bu
 /* -^- */
 #define	DEBUG_LEVEL_FULL
 
-
+#include <clasp/core/foundation.h>
+#include <clasp/core/bformat.h>
 #include <cando/chem/energyNonbond.h>
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>
@@ -677,37 +678,38 @@ namespace chem
     }
 
 
-void EnergyNonbond_O::constructFromAtomTable(AtomTable_sp atomTable, ForceField_sp forceField, core::T_sp atomSet)
-    {_OF();
-	{_BLOCK_TRACE("Defining NONBONDED");
-	    if ( atomTable->getNumberOfAtoms() > 2 )
-	    {
-		LOG(BF("Defining NONBONDS") );
-                gctools::Vec0<EnergyAtom>::iterator	iea1;
-                gctools::Vec0<EnergyAtom>::iterator	iea2;
-		for ( iea1 = atomTable->begin();
-		      iea1 != atomTable->end()-1; iea1++ ) { //Was iea1 != atomTable->end()-1
-                  if ( atomSet.notnilp() && !inAtomSet(atomSet,iea1->atom())) continue;
-                  for ( iea2 = iea1+1; iea2 != atomTable->end(); iea2++ ) { // Was iea2 != atomTable->end()
-                    if (!iea1->inBondOrAngle(iea2->atom())) 
-                    {
-                      if ( atomSet.notnilp() && !inAtomSet(atomSet,iea2->atom()) ) continue;
-                      bool in14 = iea1->relatedBy14(iea2->atom());
-                      LOG(BF("Nonbonded interaction between %s - %s in14[%d]") % _rep_(iea1->atom()) % _rep_(iea2->atom()) % in14 );
-                      EnergyNonbond energyNonbond;
-                      if ( energyNonbond.defineFrom(forceField, in14,
-                                                    &(*iea1),&(*iea2),this->sharedThis<EnergyNonbond_O>()) )  {
-                        this->addTerm(energyNonbond);
-                      }
-                    }
-                  }
-		}
-	    } else
-	    {
-		LOG(BF("There are no non-bonds"));
-	    }
-	}
+void EnergyNonbond_O::constructFromAtomTable(AtomTable_sp atomTable, ForceField_sp forceField, core::T_sp atomSet, bool show_progress)
+{
+  {_BLOCK_TRACE("Defining NONBONDED");
+    if ( atomTable->getNumberOfAtoms() > 2 ) {
+      LOG(BF("Defining NONBONDS") );
+      gctools::Vec0<EnergyAtom>::iterator	iea1;
+      gctools::Vec0<EnergyAtom>::iterator	iea2;
+      size_t total_comparisons = atomTable->getNumberOfAtoms()*atomTable->getNumberOfAtoms()/2;
+      if (show_progress) {
+        BFORMAT_T(BF("For nonbonded interactions, about to carry out %zu atom-to-atom comparisons\n") % total_comparisons);
+      }
+      for ( iea1 = atomTable->begin();
+            iea1 != atomTable->end()-1; iea1++ ) { //Was iea1 != atomTable->end()-1
+        if ( atomSet.notnilp() && !inAtomSet(atomSet,iea1->atom())) continue;
+        for ( iea2 = iea1+1; iea2 != atomTable->end(); iea2++ ) { // Was iea2 != atomTable->end()
+          if (!iea1->inBondOrAngle(iea2->atom())) {
+            if ( atomSet.notnilp() && !inAtomSet(atomSet,iea2->atom()) ) continue;
+            bool in14 = iea1->relatedBy14(iea2->atom());
+            LOG(BF("Nonbonded interaction between %s - %s in14[%d]") % _rep_(iea1->atom()) % _rep_(iea2->atom()) % in14 );
+            EnergyNonbond energyNonbond;
+            if ( energyNonbond.defineFrom(forceField, in14,
+                                          &(*iea1),&(*iea2),this->sharedThis<EnergyNonbond_O>()) )  {
+              this->addTerm(energyNonbond);
+            }
+          }
+        }
+      }
+    } else {
+      LOG(BF("There are no non-bonds"));
     }
+  }
+}
 
 
 

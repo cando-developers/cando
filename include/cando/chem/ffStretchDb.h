@@ -43,6 +43,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
+#include <clasp/core/hashTableEq.h>
 #include <cando/chem/bond.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/atom.h>
@@ -103,51 +104,34 @@ namespace       chem {
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
-    inline	string	XmlTag_EstimateStretch() { return "EstimateStretch";};
-
     class	EstimateStretch {
     public:
       core::Symbol_sp		_ti;
       core::Symbol_sp		_tj;
       double		_rij;
       double		_lnKij;
-
-	adapt::QDomNode_sp	asXml();
-	void		parseFromXml(adapt::QDomNode_sp xml);
     };
 
 
-    inline	string	XmlTag_FFStretchDb() { return "FFStretchDb";};
     class	FFStretchDb_O;
-
-
     SMART(FFStretchDb);
-    class FFStretchDb_O : public FFBaseDb_O
+    class FFStretchDb_O : public FFParameterBaseDb_O
     {
-	LISP_CLASS(chem,ChemPkg,FFStretchDb_O,"FFStretchDb",FFBaseDb_O);
-
+	LISP_CLASS(chem,ChemPkg,FFStretchDb_O,"FFStretchDb",FFParameterBaseDb_O);
     public:
         bool fieldsp() const { return true; };
         void	fields(core::Record_sp node);
     public:
-	typedef	gctools::Vec0<FFStretch_sp>::iterator	FFStretch_spIterator;
-        gctools::Vec0<FFStretch_sp>		_Terms;
-	adapt::SymbolMap<FFStretch_O>	        _Lookup;
         gctools::SmallMap<core::Symbol_sp,EstimateStretch>	_EstimateStretch; // Not archived
 
 	void	clearEstimateStretch();
 	void	addEstimateStretch(core::Symbol_sp ti, core::Symbol_sp tj, double rij, double lnKij );
 	void	_addEstimateStretch(const EstimateStretch& es);
 	void	add( FFStretch_sp str );
-	FFStretch_sp	findTerm(chem::Atom_sp a1, chem::Atom_sp a2 );
-//        bool            hasTerm(string t1, string t2);
-//        void            cantFind(string t1, string t2);
+        core::T_sp	findTerm(chem::Atom_sp a1, chem::Atom_sp a2 );
 
-	FFStretch_spIterator	begin() { return this->_Terms.begin(); };
-	FFStretch_spIterator	end() { return this->_Terms.end(); };
-
-	void		initialize();
-
+        void absorbFFStretchDb(FFStretchDb_sp other);
+        
 	DEFAULT_CTOR_DTOR(FFStretchDb_O);
     };
 

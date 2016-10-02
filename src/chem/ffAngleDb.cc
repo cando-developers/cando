@@ -65,45 +65,15 @@ void FFAngle_O::fields(core::Record_sp node)
 void	FFAngleDb_O::fields(core::Record_sp node)
 {
     node->field(INTERN_(kw,angleFunction),this->_AngleFunction);
-    node->field(INTERN_(kw,angles),this->_Terms );
-    node->field(INTERN_(kw,map),this->_Lookup );
     node->field(INTERN_(kw,zConstants),this->_ZConstants);
     node->field(INTERN_(kw,cConstants),this->_CConstants);
     this->Base::fields(node);
 }
 
-#if 0 //[
-void
-adapt::QDomNode_sp	FFAngle_O::asXml()
-{
-    adapt::QDomNode_sp	node;
-    node = adapt::QDomNode_O::create(XmlTag_FFAngle());
-    node->addAttributeString("Type1",this->_Type1 );
-    node->addAttributeString("Type2",this->_Type2 );
-    node->addAttributeString("Type3",this->_Type3 );
-    node->addAttributeDoubleScientific("AngRad",this->_AngRad);
-    node->addAttributeDoubleScientific("K2",this->_K2);
-    return node;
-}
-
-    void	FFAngle_O::parseFromXml( adapt::QDomNode_sp node )
-{
-    this->_Type1 = node->getAttributeString("Type1");
-    this->_Type2 = node->getAttributeString("Type2");
-    this->_Type3 = node->getAttributeString("Type3");
-    this->_AngRad = node->getAttributeDouble("AngRad");
-    this->_K2 = node->getAttributeDouble("K2");
-}
-#endif //]
-
-
-
 
 void	FFAngleDb_O::initialize()
 {
     this->Base::initialize();
-    this->_Terms.clear();
-    this->_Lookup.clear();
     this->_ZConstants.clear();
     this->_CConstants.clear();
 }
@@ -153,11 +123,8 @@ double FFAngle_O::getK2_kJPerRadianSquared() const
 void    FFAngleDb_O::add(FFAngle_sp ang)
 {
     core::Symbol_sp  key;
-    this->_Terms.push_back(ang);
     key = angleKey(ang->_Type1,ang->_Type2,ang->_Type3);
-    this->_Lookup.set(key,ang);
-    key = angleKey(ang->_Type3,ang->_Type2,ang->_Type1);
-    this->_Lookup.set(key,ang);
+    this->_Parameters->setf_gethash(key,ang);
 }
 
 
@@ -170,49 +137,15 @@ core::Symbol_sp		t1, t2, t3;
     t2 = a2->getType();
     t3 = a3->getType();
     key = angleKey(t1,t2,t3);
-    if ( this->_Lookup.count(key) != 0 ) {
-        return this->_Lookup.get(key);
-    }
+    core::T_sp parm;
+    parm = this->_Parameters->gethash(key);
+    if (parm.notnilp()) return parm;
     key = angleKey(t3,t2,t1);
-    if ( this->_Lookup.count(key) != 0 ) {
-        return this->_Lookup.get(key);
-    }
-    if ( t1->symbolName()->get() > t3->symbolName()->get() ) {
-	core::Symbol_sp tt = t1;
-	t1 = t3;
-	t3 = tt;
-    }
+    parm = this->_Parameters->gethash(key);
+    if (parm.notnilp()) return parm;
     match = this->estimateTerm(a1,a2,a3);
     return match;
 }
-
-
-#if 0 //[
-bool    FFAngleDb_O::hasTerm(string t1, string t2, string t3 )
-{
-FFAngle_sp	match;
-string          key;
-    key = angleKey(t1,t2,t3);
-    if ( this->_Lookup.count(key) != 0 ) {
-        return true;
-    }
-    key = angleKey(t3,t2,t1);
-    if ( this->_Lookup.count(key) != 0 ) {
-        return true;
-    }
-    return false;
-}
-
-
-void    FFAngleDb_O::cantFind(string t1, string t2, string t3 )
-{
-    stringstream ss;
-    ss << "PARAMETER_PROBLEM Can't find angle term for ("<<t1<<")-("<<t2<<")-("<<t3<<")";
-    ss << " atoms("<<a1->description()<<") - (" << a2->description()<<")";
-    printf( "%s\n", ss.str().c_str() );
-    //SIMPLE_ERROR(BF("%s")%ss.str());
-}
-#endif //]
 
 
 

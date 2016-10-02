@@ -43,6 +43,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
+#include <clasp/core/hashTableEq.h>
 #include <cando/chem/bond.h>
 #include <cando/geom/vector3.h>
 #include <cando/adapt/symbolMap.h>
@@ -116,18 +117,15 @@ inline	string	XmlTag_FFAngleDb() { return "FFAngleDb";};
 class	FFAngleDb_O;
     typedef	gctools::smart_ptr<FFAngleDb_O>	FFAngleDb_sp;
 SMART(FFAngleDb);
-class FFAngleDb_O : public FFBaseDb_O
+class FFAngleDb_O : public FFParameterBaseDb_O
 {
-    LISP_CLASS(chem,ChemPkg,FFAngleDb_O,"FFAngleDb",FFBaseDb_O);
+    LISP_CLASS(chem,ChemPkg,FFAngleDb_O,"FFAngleDb",FFParameterBaseDb_O);
 
 public:
         bool fieldsp() const { return true; };
         void fields(core::Record_sp node);
 public:
-    typedef	gctools::Vec0<FFAngle_sp>::iterator FFAngle_spIterator;
 	string			_AngleFunction;
-    gctools::Vec0<FFAngle_sp>	_Terms;
-    adapt::SymbolMap<FFAngle_O>          _Lookup;
     adapt::SymbolMap<core::DoubleFloat_O>		_ZConstants;	//<! Angle parameter constants from Wang et al. J. Comput. Chem 25, 1157-1174 (2004)
     adapt::SymbolMap<core::DoubleFloat_O>		_CConstants;	//<! Angle parameter constants from Wang et al. J. Comput. Chem 25, 1157-1174 (2004)
 
@@ -137,10 +135,6 @@ public:
 
     void	addZConstant(core::Symbol_sp element, double value ) { this->_ZConstants.set(element,core::DoubleFloat_O::create(value));};
     void	addCConstant(core::Symbol_sp element, double value ) { this->_CConstants.set(element,core::DoubleFloat_O::create(value));};
-
-	FFAngle_spIterator	begin() {return this->_Terms.begin();};
-	FFAngle_spIterator	end() {return this->_Terms.end();};
-
 
 	FFAngle_sp	findTerm( chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3);
 	FFAngle_sp	estimateTerm( chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3 );

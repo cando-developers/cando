@@ -76,6 +76,13 @@ public:
 public:
     gctools::Vec0<ChemInfo_sp>	_TypeAssignmentRules;
 
+    void absorb(FFBaseDb_sp other) {
+      FFTypesDb_sp other_types_db = gc::As<FFTypesDb_sp>(other);
+      for ( auto it : other_types_db->_TypeAssignmentRules ) {
+        this->add(it);
+      }
+    }
+
     void	add( chem::ChemInfo_sp ci ) {
 	this->_TypeAssignmentRules.push_back(ci);
     }
@@ -96,6 +103,4 @@ CL_DEFMETHOD     int	numberOfRules() { return this->_TypeAssignmentRules.size();
 
 };
 
-
-TRANSLATE(chem::FFTypesDb_O);
 #endif

@@ -60,14 +60,14 @@ void	InfoDb_O::fields(core::Record_sp node)
   node->field(INTERN_(kw,k),this->_database);
 }
 
-    void InfoDb_O::addInfo( core::Symbol_sp key, const string& data )
-    {
-	if ( this->_database.count(key)==0 ) {
-	    this->_database.set(key,core::Str_O::create(data));
-	} else {
-	    this->_database.set(key,core::Str_O::create(this->_database.get(key)->get()+"\n"+data));
-	}
-    };
+void InfoDb_O::addInfo( core::Symbol_sp key, core::Str_sp data )
+{
+  if ( this->_database.count(key)==0 ) {
+    this->_database.set(key,data);
+  } else {
+    this->_database.set(key,core::Str_O::create(this->_database.get(key)->get()+"\n"+data->get()));
+  }
+};
 
 
 
@@ -119,6 +119,19 @@ void	ForceField_O::saveAs(const string& fileName)
     xml->saveAs(fileName);
 }
 #endif
+
+
+CL_DEFMETHOD void ForceField_O::absorb(ForceField_sp other)
+{
+  this->_Info->absorb(other->_Info);
+  this->_Types->absorb(other->_Types);
+  this->_Stretches->absorb(other->_Stretches);
+  this->_Angles->absorb(other->_Angles);
+  this->_Itors->absorb(other->_Itors);
+  this->_Ptors->absorb(other->_Ptors);
+  this->_Nonbonds->absorb(other->_Nonbonds);
+  this->_Vdws->absorb(other->_Vdws);
+}
 
 CL_LISPIFY_NAME("assignTypes");
 CL_DEFMETHOD void	ForceField_O::assignTypes(Matter_sp matter)

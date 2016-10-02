@@ -317,7 +317,7 @@ protected: // instance variables
 //	vector<TermClass>	_Terms;
 //	vector<TermClass>	_BeyondThresholdTerms;
 public:
-	virtual int numberOfTerms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
+	CL_DEFMETHOD virtual size_t numberOfTerms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
 void setScale(double s) {this->_Scale = s; };
 	double getScale() { return this->_Scale ; };
 CL_NAME("enable");

@@ -72,8 +72,6 @@ void	FFPtor_O::fields(core::Record_sp node)
 
 void FFPtorDb_O::fields(core::Record_sp node)
 {
-  node->field(INTERN_(kw,ptors),this->_Terms );
-  node->field(INTERN_(kw,map),this->_Lookup );
   this->Base::fields(node);
 }
 
@@ -81,8 +79,6 @@ void FFPtorDb_O::fields(core::Record_sp node)
 void	FFPtorDb_O::initialize()
 {
     this->Base::initialize();
-    this->_Lookup.clear();
-    this->_Terms.clear();
 }
 
 
@@ -205,77 +201,50 @@ FFPtor_sp        ptorOld;
         _rep_(ptor->_T3).c_str(),
         _rep_(ptor->_T4).c_str() );
 #endif
-    if (this->hasExactTerm(ptor->_T1,ptor->_T2,ptor->_T3,ptor->_T4) ){
-        ptorOld = this->findExactTerm(ptor->_T1,ptor->_T2,ptor->_T3,ptor->_T4);
-        ptorOld->mergeWith(ptor);
-    } else {
-        this->_Terms.push_back(ptor);
-        key = keyString(ptor->_T1,ptor->_T2,ptor->_T3,ptor->_T4);
-        this->_Lookup.set(key,ptor);
-        key = keyString(ptor->_T4,ptor->_T3,ptor->_T2,ptor->_T1);
-        this->_Lookup.set(key,ptor);
-    }
+ core::T_sp tptor = this->findExactTerm(ptor->_T1,ptor->_T2,ptor->_T3,ptor->_T4);
+ if (tptor.notnilp()) {
+   ptorOld = gc::As<FFPtor_sp>(tptor);
+   ptorOld->mergeWith(ptor);
+ } else {
+   key = keyString(ptor->_T1,ptor->_T2,ptor->_T3,ptor->_T4);
+   this->_Parameters->setf_gethash(key,ptor);
+ }
 }
 
-bool FFPtorDb_O::hasExactTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
+
+core::T_sp FFPtorDb_O::findExactTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
 {
 core::Symbol_sp key;
-FFPtor_sp        ptor;
+    core::T_sp parm;
     key = keyString(t1,t2,t3,t4);
-    if ( this->_Lookup.count(key)!=0 ) return true;
+    parm = this->_Parameters->gethash(key);
+    if (parm.notnilp()) return parm;
     key = keyString(t4,t3,t2,t1);
-    if ( this->_Lookup.count(key)!=0 ) return true;
-    return false;
+    parm = this->_Parameters->gethash(key);
+    if (parm.notnilp()) return parm;
+    parm = _Nil<core::T_O>();
+    return parm;
 }
 
-gc::Nilable<FFPtor_sp> FFPtorDb_O::findExactTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
-{
-core::Symbol_sp key;
-FFPtor_sp        ptor;
-    key = keyString(t1,t2,t3,t4);
-    if ( this->_Lookup.count(key)!=0 ) {
-        return this->_Lookup.get(key);
-    }
-    key = keyString(t4,t3,t2,t1);
-    if ( this->_Lookup.count(key)!=0 ) {
-        return this->_Lookup.get(key);
-    }
-    ptor = _Nil<core::T_O>();
-    return ptor;
-}
-
-gc::Nilable<FFPtor_sp> FFPtorDb_O::findBestTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
+core::T_sp FFPtorDb_O::findBestTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
 {
   core::Symbol_sp key,bl;
-  gc::Nilable<FFPtor_sp> ptor;
+  core::T_sp ptor;
   key = keyString(t1,t2,t3,t4);
-  if ( this->_Lookup.count(key)!=0 ) {
-    return this->_Lookup.get(key);
-  }
+  ptor = this->_Parameters->gethash(key);
+  if (ptor.notnilp()) return ptor;
   key = keyString(t4,t3,t2,t1);
-  if ( this->_Lookup.count(key)!=0 ) {
-    return this->_Lookup.get(key);
-  }
+  ptor = this->_Parameters->gethash(key);
+  if (ptor.notnilp()) return ptor;
   bl = _Nil<core::Symbol_O>();
   key = keyString(bl,t2,t3,bl);
-  if ( this->_Lookup.count(key)!=0 ) {
-    return this->_Lookup.get(key);
-  }
+  ptor = this->_Parameters->gethash(key);
+  if (ptor.notnilp()) return ptor;
   key = keyString(bl,t3,t2,bl);
-  if ( this->_Lookup.count(key)!=0 ) {
-    return this->_Lookup.get(key);
-  }
+  ptor = this->_Parameters->gethash(key);
+  if (ptor.notnilp()) return ptor;
   ptor = _Nil<core::T_O>();
   return ptor;
-}
-
-
-bool    FFPtorDb_O::hasBestTerm( core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 )
-{
-string          key,bl;
-FFPtor_sp        ptor;
-    ptor = this->findBestTerm(t1,t2,t3,t4);
-    return ptor.notnilp();
 }
 
 

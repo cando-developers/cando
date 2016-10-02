@@ -186,7 +186,6 @@ void chem_package_initializer()
   chem::energyFunction_initializeSmarts();
   chem::initialize_mol2_type_rules();
   chem::setupCandoPrimitives(_lisp);
-  chem::initialize_loop();
   chem::initialize_chimera();
   chem::initializeElementsAndHybridization();
 }
@@ -246,7 +245,6 @@ namespace chem
 	break;
 	case candoGlobals:
 	{
-            initialize_loop();
             initialize_chimera();
 	    initializeElementsAndHybridization();
 //	    _lisp->defvar(_sym_candoDatabase,cdb);

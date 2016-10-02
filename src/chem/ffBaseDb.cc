@@ -79,18 +79,50 @@ void FFParameter_O::fields(core::Record_sp node)
 }
 
 
-void	FFBaseDb_O::fields(core::Record_sp node)
+void FFBaseDb_O::initialize()
 {
-  //this->Base::fields(node); // T_O
-  node->field( INTERN_(kw,forceField), this->_ForceField );
+      this->Base::initialize();
 }
-
+void FFBaseDb_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,force_field),this->_ForceField);
+  this->Base::fields(node);
+}
 
 void	FFBaseDb_O::setForceField(ForceField_sp ff)
 {
-    ASSERTNOTNULL(ff);
     this->_ForceField = ff;
 };
+
+
+void FFBaseDb_O::absorb(FFBaseDb_sp other) {
+  // inherited classes may overload this function but they need to call this
+  // do nothing
+}
+
+
+
+void FFParameterBaseDb_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,parms),this->_Parameters);
+  this->Base::fields(node);
+}
+
+void FFParameterBaseDb_O::initialize()
+{
+      this->_Parameters = core::HashTableEq_O::create_default();
+      this->Base::initialize();
+}
+
+
+void FFParameterBaseDb_O::absorb(FFBaseDb_sp other) {
+  // inherited classes may overload this function but they need to call this
+  FFParameterBaseDb_sp parm_other = gc::As<FFParameterBaseDb_sp>(other);
+  parm_other->_Parameters->maphash([this] (core::T_sp key, core::T_sp parm) {
+      this->_Parameters->setf_gethash(key,parm);
+    } );
+  this->Base::absorb(other);
+}
 
 
 

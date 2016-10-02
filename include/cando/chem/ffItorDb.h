@@ -56,45 +56,42 @@ namespace       chem
 
 #define	FFItorWildCardCode	-1
 
+  SMART(FFItor);
+  class FFItor_O : public FFParameter_O
+  {
+    LISP_CLASS(chem,ChemPkg,FFItor_O,"FFItor",FFParameter_O);
+  public:
+    static int const IMaxPeriodicity = 6;
+  public:
+    void initialize();
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+  public:
+    core::Symbol_sp         _T1;
+    core::Symbol_sp 	_T2;
+    core::Symbol_sp 	_T3;
+    core::Symbol_sp 	_T4;
+    bool      	_hasPeriodicity[IMaxPeriodicity];
+    double      _Vs_kJ[IMaxPeriodicity];
+    double      _PhaseRads[IMaxPeriodicity];
 
-    inline	string	XmlTag_FFItor() { return "FFItor";};
+    void	setTypes( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4);
 
-    SMART(FFItor);
-    class FFItor_O : public FFParameter_O
-    {
-	LISP_CLASS(chem,ChemPkg,FFItor_O,"FFItor",FFParameter_O);
-    public:
-	static int const IMaxPeriodicity = 6;
-    public:
-	void initialize();
-        bool fieldsp() const { return true; };
-        void fields(core::Record_sp node);
-    public:
-	core::Symbol_sp         _T1;
-	core::Symbol_sp 	_T2;
-	core::Symbol_sp 	_T3;
-	core::Symbol_sp 	_T4;
-	bool      	_hasPeriodicity[IMaxPeriodicity];
-	double      _Vs_kJ[IMaxPeriodicity];
-	double      _PhaseRads[IMaxPeriodicity];
+    bool hasPeriodicity(int period) const;
+    double  getV_kJ(int period) const;
+    double  getV_kCal(int period) const;
+    void    setV_kJ(int period, double v);
+    void    setV_kCal(int period, double v);
+    double  getPhaseRad(int period) const;
+    void    setPhaseRad(int period, double v);
 
-	void	setTypes( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4);
-
-	bool hasPeriodicity(int period) const;
-	double  getV_kJ(int period) const;
-	double  getV_kCal(int period) const;
-	void    setV_kJ(int period, double v);
-	void    setV_kCal(int period, double v);
-	double  getPhaseRad(int period) const;
-	void    setPhaseRad(int period, double v);
-
-	void    mergeWith(FFItor_sp itor);
+    void    mergeWith(FFItor_sp itor);
 
 
-	virtual	string	levelDescription();
-	virtual ParameterType type() { return itor; };
-	DEFAULT_CTOR_DTOR(FFItor_O);
-    };
+    virtual	string	levelDescription();
+    virtual ParameterType type() { return itor; };
+    DEFAULT_CTOR_DTOR(FFItor_O);
+  };
 
 
 
@@ -102,40 +99,31 @@ namespace       chem
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
-    SMART(FFItorDb);
-    class FFItorDb_O : public FFBaseDb_O
-    {
-	LISP_CLASS(chem,ChemPkg,FFItorDb_O,"FFItorDb",FFBaseDb_O);
+  SMART(FFItorDb);
+  class FFItorDb_O : public FFParameterBaseDb_O
+  {
+    LISP_CLASS(chem,ChemPkg,FFItorDb_O,"FFItorDb",FFParameterBaseDb_O);
 
-    public:
-        bool fieldsp() const { return true; };
-        void fields(core::Record_sp node);
-    public:
-	typedef	gctools::Vec0<FFItor_sp>::iterator	FFItor_spIterator;
-        gctools::Vec0<FFItor_sp>		_Terms;
-	adapt::SymbolMap<FFItor_O>		_Lookup;
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+  public:
+    static void improperAtomSort(Atom_sp& a1, Atom_sp& a2, Atom_sp& a4);
+    void initialize();
+  public:
+    void	add( FFItor_sp itor );
 
-	FFItor_spIterator	begin() { return this->_Terms.begin();};
-	FFItor_spIterator	end() { return this->_Terms.end();};
-
-	void	add( FFItor_sp itor );
-
-        gc::Nilable<FFItor_sp> findExactTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
-	bool    hasExactTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
+    core::T_sp findExactTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
 
 	//! Look for exact term then general one
-        gc::Nilable<FFItor_sp> findBestTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
-        bool    hasBestTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
+    core::T_sp findBestTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
 
-        void    cantFind(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 );
+    void    cantFind(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 );
 
 	//! Dump all ptors to stdout that match these types
-	DEFAULT_CTOR_DTOR(FFItorDb_O);
-    };
+    DEFAULT_CTOR_DTOR(FFItorDb_O);
+  };
 
 
 };
-
-TRANSLATE(chem::FFItor_O);
-TRANSLATE(chem::FFItorDb_O);
 #endif

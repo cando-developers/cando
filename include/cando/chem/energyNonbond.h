@@ -148,7 +148,7 @@ public:
     iterator end() { return this->_Terms.end(); };
 //added by G 7.19.2011
 public:
-    virtual int numberOfTerms() { return this->_Terms.size();};
+    virtual size_t numberOfTerms() { return this->_Terms.size();};
 
 
 public:
@@ -193,9 +193,7 @@ public:
     virtual	double	getEnergy();
 
 
-    void constructFromAtomTable(AtomTable_sp atomTable, ForceField_sp forceField, core::T_sp atomSet);
-
-    
+    void constructFromAtomTable(AtomTable_sp atomTable, ForceField_sp forceField, core::T_sp atomSet, bool show_progress);
 
 public:
     EnergyNonbond_O( const EnergyNonbond_O& ss ); //!< Copy constructor

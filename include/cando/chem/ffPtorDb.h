@@ -122,47 +122,25 @@ namespace chem
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
     SMART(FFPtorDb);
-    class FFPtorDb_O : public FFBaseDb_O
+    class FFPtorDb_O : public FFParameterBaseDb_O
     {
-	LISP_CLASS(chem,ChemPkg,FFPtorDb_O,"FFPtorDb",FFBaseDb_O);
+	LISP_CLASS(chem,ChemPkg,FFPtorDb_O,"FFPtorDb",FFParameterBaseDb_O);
 
     public:
         bool fieldsp() const { return true; };
         void fields(core::Record_sp node);
     public:
-	typedef	gctools::Vec0<FFPtor_sp>::iterator	FFPtor_spIterator;
-        gctools::Vec0<FFPtor_sp>        _Terms;
-	adapt::SymbolMap<FFPtor_O>    _Lookup;
-
-	FFPtor_spIterator	begin() { return this->_Terms.begin();};
-	FFPtor_spIterator	end() { return this->_Terms.end();};
-
 	void	setTermFormat( core::VectorStrings vterms );
-
 	void	add( FFPtor_sp ptor );
-
-        gc::Nilable<FFPtor_sp> findExactTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
-	bool    hasExactTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
+        core::T_sp findExactTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
 
 	//! Look for exact term then general one
-        gc::Nilable<FFPtor_sp> findBestTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
-        bool    hasBestTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
-
+        core::T_sp findBestTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
         void    cantFind(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 );
-
-	//! Dump all ptors to stdout that match these types
-//	void	list( string a1, string a2, string a3, string a4 );
-
-
 	void		initialize();
-
-
 	DEFAULT_CTOR_DTOR(FFPtorDb_O);
     };
 
 
 };
-
-TRANSLATE(chem::FFPtor_O);
-TRANSLATE(chem::FFPtorDb_O);
 #endif

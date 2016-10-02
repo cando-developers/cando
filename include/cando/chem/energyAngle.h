@@ -104,6 +104,7 @@ public:
 	double	getTDegrees()	{return this->getT()/0.0174533;};
 	double	getThetaDegrees(){return this->getTDegrees();};
 
+
 	adapt::QDomNode_sp	asXml();
 	void		parseFromXmlUsingAtomTable(adapt::QDomNode_sp xml,
 					AtomTable_sp	atomTable );
@@ -139,7 +140,18 @@ public:
     iterator end() { return this->_Terms.end(); };
 	
 public:
-    virtual int numberOfTerms() { return this->_Terms.size();};
+    virtual size_t numberOfTerms() { return this->_Terms.size();};
+    CL_DEFMETHOD core::T_mv safe_amber_energy_angle_term(size_t index) {
+      if (index >= this->numberOfTerms() ) {
+        SIMPLE_ERROR(BF("Illegal term index %zu must be less than %zu") % index % this->_Terms.size() );
+      }
+      return Values(core::DoubleFloat_O::create(this->_Terms[index].term.kt),
+                    core::DoubleFloat_O::create(this->_Terms[index].term.t0),
+                    core::make_fixnum(this->_Terms[index].term.I1),
+                    core::make_fixnum(this->_Terms[index].term.I2),
+                    core::make_fixnum(this->_Terms[index].term.I3)
+                    );
+    }
 
 public:	// Creation class functions
 

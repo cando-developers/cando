@@ -136,12 +136,16 @@ match what is expected - otherwise signal an error.   Use eof-error-p and eof as
              (atom-type (intern (elt read-atom 1) :keyword))
              (atomic-number (elt read-atom 6))
              (atomic-charge (elt read-atom 7))
-             (atom (chem:make-atom atom-name atomic-number)))
+             (element (cond
+                        ((string= atom-name "EP" :end1 2) :LP)
+                        ((< atomic-number 0)
+                         (chem:element-from-atom-name-string (string atom-name)))
+                        (t (chem:element-for-atomic-number atomic-number))))
+             (atom (chem:make-atom atom-name element)))
         (chem:set-type atom atom-type)
         (chem:set-charge atom atomic-charge)
         (vector-push atom atoms)))
     atoms))
-
 
 (defun assemble-hierarchy (read-hierarchy residues atoms)
   (let ((unit (chem:make-aggregate)))
@@ -186,6 +190,10 @@ match what is expected - otherwise signal an error.   Use eof-error-p and eof as
           (chem:set-position atom pos-vec))))
 
 (defun read-off-unit-with-name (fin expected-name &optional eof-error-p eof)
+  "Read a leap UNIT from an OFF file.
+Return (values chem:aggregate read-residueconnect read-residues).
+The read-residueconnect and read-residues can be used to contruct a chem:topology
+if the caller wants to do that."
   (let ((read-atoms (read-off-unit-part fin expected-name "atoms" eof-error-p eof))
         (read-atoms-pert-info (read-off-unit-part fin expected-name "atomspertinfo" eof-error-p eof))
         (read-bound-box (read-off-unit-part fin expected-name "boundbox" eof-error-p eof))
@@ -225,37 +233,52 @@ match what is expected - otherwise signal an error.   Use eof-error-p and eof as
               (mapc (lambda (id)
                       (chem:add-matter aggregate (gethash id molecule-id-map)))
                     sorted-molecule-ids)
-              (values aggregate read-residueconnect))))))))
+              (values aggregate read-residueconnect read-residues))))))))
 
-(defun read-off-form-lib (fin)
+(defun translate-off-object (unit-name unit residueconnect residues)
+  "If the OFF object is a unit containing a single residue then turn it into a topology.
+Otherwise it's an Aggregate. Return the object."
+  (declare (symbol unit-name)
+           (chem:aggregate unit)
+           (vector residue-connect residues))
+  (if (eq (length residues) 1)
+      (let* ((res (chem:content-at (chem:content-at unit 0) 0))
+             (topology (cando::make-topology-from-residue res))
+             (in-plug-idx (1- (elt (elt residueconnect 0) 0))) ;; connect atoms 1- index
+             (out-plug-idx (1- (elt (elt residueconnect 0) 1)))) ;; connect atoms 1- index
+        (when (>= in-plug-idx 0)
+          (let* ((in-plug-atom (chem:content-at res in-plug-idx))
+                 (in-plug (chem:make-in-plug :-default nil (chem:atom-name in-plug-atom) :single-bond)))
+            (chem:add-plug topology (chem:get-name in-plug) in-plug)))
+        (when (>= out-plug-idx 0)
+          (let* ((out-plug-atom (chem:content-at res out-plug-idx))
+                 (out-plug (chem:make-out-plug  :+default nil nil (chem:atom-name out-plug-atom) :single-bond)))
+            (chem:add-plug topology (chem:get-name out-plug) out-plug)))
+        (warn "translated off object ~a into a chem:topology")
+        topology)
+      unit))
+
+(defun read-off-lib (fin)
+  "Read an OFF library into a hash-table indexed by the name of each object in the OFF file.
+Return the hash-table."
+  (declare (stream fin))
   (let ((index (read-off-lib-index fin))
-        (topology-ht (make-hash-table)))
-    (loop for topology-name in index
-       for (unit residue-connect) = (multiple-value-list (read-off-unit-with-name fin topology-name nil :eof))
+        (object-ht (make-hash-table)))
+    (loop for object-name-str in index
+       for object-name = (intern object-name-str :keyword)
+       for (unit residueconnect residues) = (multiple-value-list (read-off-unit-with-name fin object-name-str nil :eof))
        until (eq unit :eof)
-       do (let* ((res (chem:content-at (chem:content-at unit 0) 0))
-                 (topology (cando::make-topology-from-residue res))
-                 (in-plug-idx (1- (elt (elt residue-connect 0) 0))) ;; connect atoms 1- index
-                 (out-plug-idx (1- (elt (elt residue-connect 0) 1)))) ;; connect atoms 1- index
-            (when (>= in-plug-idx 0)
-              (let* ((in-plug-atom (chem:content-at res in-plug-idx))
-                     (in-plug (chem:make-in-plug :-default nil (chem:atom-name in-plug-atom) :single-bond)))
-                (chem:add-plug topology (chem:get-name in-plug) in-plug)))
-            (when (>= out-plug-idx 0)
-              (let* ((out-plug-atom (chem:content-at res out-plug-idx))
-                     (out-plug (chem:make-out-plug  :+default nil nil (chem:atom-name out-plug-atom) :single-bond)))
-                (chem:add-plug topology (chem:get-name out-plug) out-plug)))
-            (setf (gethash (intern topology-name :keyword) topology-ht) topology)))
-    topology-ht))
+       do (let ((object (translate-off-object object-name unit residueconnect residues)))
+            (setf (gethash object-name object-ht) object)))
+    object-ht))
 
-
-(defun load-forms (filename)
+(defun load-off (filename)
   "* Arguments
 - filename : Pathname
 * Description
 Load the OFF file containing forms into new-leap."
   (with-open-file (fin filename :direction :input)
-    (let ((ht (amber.off:read-off-form-lib fin)))
+    (let ((ht (amber.off:read-off-lib fin)))
       (maphash (lambda (name form)
                  (amber:register-variable name form))
                ht))))

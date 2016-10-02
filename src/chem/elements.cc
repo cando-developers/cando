@@ -428,7 +428,7 @@ Hybridization hybridizationForSymbol(core::Symbol_sp sym)
 /*!
  * Return the symbol associated with the hybridization
  */
-core::Symbol_sp symbolFromHybridization(Hybridization hybridization)
+CL_DEFUN core::Symbol_sp symbolFromHybridization(chem::Hybridization hybridization)
 {
   core::SymbolToEnumConverter_sp hybridizationConverter = _sym__PLUS_hybridizationToSymbolConverter_PLUS_->symbolValue().as<core::SymbolToEnumConverter_O>();
   return hybridizationConverter->symbolForEnum<Hybridization>(hybridization);
@@ -436,20 +436,20 @@ core::Symbol_sp symbolFromHybridization(Hybridization hybridization)
 
 
 
-Hybridization hybridizationForString(const string& sym)
+CL_DEFUN chem::Hybridization hybridizationForString(const string& sym)
 {
   core::SymbolToEnumConverter_sp hybridizationConverter = _sym__PLUS_hybridizationToSymbolConverter_PLUS_->symbolValue().as<core::SymbolToEnumConverter_O>();
   return hybridizationConverter->enumForSymbol<Hybridization>(_lisp->intern(sym));
 }
 
 
-core::Symbol_sp hybridizationSymbolFromHybridization(Hybridization h)
+CL_DEFUN core::Symbol_sp hybridizationSymbolFromHybridization(chem::Hybridization h)
 {
   core::SymbolToEnumConverter_sp hybridizationConverter = _sym__PLUS_hybridizationToSymbolConverter_PLUS_->symbolValue().as<core::SymbolToEnumConverter_O>();
   return hybridizationConverter->symbolForEnum<Hybridization>(h);
 }
 
-core::Symbol_sp	atomicSymbolFromElement(Element h)
+CL_DEFUN core::Symbol_sp atomicSymbolFromElement(chem::Element h)
 {
   core::SymbolToEnumConverter_sp elementConverter = _sym__PLUS_elementToSymbolConverter_PLUS_->symbolValue().as<core::SymbolToEnumConverter_O>();
   return elementConverter->symbolForEnum<Element>(h);
@@ -592,15 +592,15 @@ CL_DEFUN ::chem::Element elementFromAtomNameString(const string& name)
     return elementFromAtomNameStringBasic(name,false);
 }
 
-Element elementForAtomicNumber(int atomicNumber)
+CL_DEFUN chem::Element elementForAtomicNumber(int atomicNumber)
 {
-  if (atomicNumber<1 || atomicNumber>element_MAX || atomicNumberToAtomicInfoIndex[atomicNumber] ==-1 ) {
+  if (atomicNumber<0 || atomicNumber>element_MAX || atomicNumberToAtomicInfoIndex[atomicNumber] ==-1 ) {
     SIMPLE_ERROR(BF("Could not determine element for atomic number %d") % atomicNumber);
   }
   return atomicInfo[atomicNumberToAtomicInfoIndex[atomicNumber]]._ElementEnum;
 }
 
-uint atomicNumberForElement(Element element)
+CL_DEFUN uint atomicNumberForElement(chem::Element element)
 {
     HARD_ASSERT(element>0 && element<element_MAX);
     AtomicInfo& ai = atomicInfo[element];
@@ -608,7 +608,7 @@ uint atomicNumberForElement(Element element)
     return ai._AtomicNumber;
 }
 
-double atomicWeightForElement(Element element)
+CL_DEFUN double atomicWeightForElement(chem::Element element)
 {
     HARD_ASSERT(element>0 && element<element_MAX);
     AtomicInfo& ai = atomicInfo[element];

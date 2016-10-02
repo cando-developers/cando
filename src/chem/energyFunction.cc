@@ -41,6 +41,7 @@ __END_DOC
  */
 
 #include <clasp/core/common.h>
+#include <clasp/core/bformat.h>
 #include <cando/chem/energyFunction.h>
 #include <cando/chem/loop.h>
 #include <cando/adapt/indexedObjectBag.h>
@@ -144,53 +145,20 @@ void energyFunction_initializeSmarts()
 
 
 
-#if INIT_TO_FACTORIES
-
-#define ARGS_EnergyFunction_O_make "(matter force_field &optional active-atoms)"
-#define DECL_EnergyFunction_O_make ""
-#define DOCS_EnergyFunction_O_make "make EnergyFunction"
-CL_LAMBDA(matter force-field &optional active-atoms);
-CL_LISPIFY_NAME(make-energy-function);
-CL_DEFUN EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms)
+CL_LAMBDA(matter force_field &key active_atoms show_progress);
+CL_LISPIFY_NAME(make_energy_function);
+CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress)
 {
   GC_ALLOCATE(EnergyFunction_O, me );
-  if ( matter.notnilp() )
-  {
-    if ( forceField.notnilp() )
-    {
-      me->defineForMatter(matter,forceField,activeAtoms);
-    } else
-    {
+  if ( matter.notnilp() ) {
+    if ( forceField.notnilp() ) {
+      me->defineForMatter(matter,forceField,activeAtoms,show_progress);
+    } else {
       SIMPLE_ERROR(BF("You must provide a forceField if you provide a matter object"));
     }
   }
   return me;
 };
-
-#else
-
-core::T_sp EnergyFunction_O::__init__(core::Function_sp exec, core::Cons_sp args,
-                                      core::Environment_sp env, core::Lisp_sp lisp)
-{_OF();
-  Matter_sp matter = env->lookup(_lisp->internWithPackageName(ChemPkg,"matter")).as<Matter_O>();
-  ForceField_sp forceField = env->lookup(_lisp->internWithPackageName(ChemPkg,"forceField")).as<ForceField_O>();
-  if ( matter.notnilp() )
-  {
-    if ( forceField.notnilp() )
-    {
-      this->defineForMatter(matter,forceField);
-    } else
-    {
-      SIMPLE_ERROR(BF("You must provide a forceField if you provide a matter object"));
-    }
-  }
-  return _Nil<core::T_O>();
-}
-
-#endif
-
-
-
 
 bool inAtomSet(core::T_sp activeSet, Atom_sp a)
 {
@@ -230,6 +198,7 @@ void	EnergyFunction_O::initialize()
   this->setName("");
   this->_Message = "";
   this->useDefaultSettings();
+  this->summarizeTerms();
 }
 
 CL_LISPIFY_NAME("useDefaultSettings");
@@ -446,7 +415,7 @@ public:
 
 CL_LISPIFY_NAME("setupHessianPreconditioner");
 CL_DEFMETHOD void EnergyFunction_O::setupHessianPreconditioner(NVector_sp nvPosition,
-                                                                     AbstractLargeSquareMatrix_sp m )
+                                                               AbstractLargeSquareMatrix_sp m )
 {
 #ifdef ENERGY_FUNCTION_TIMER
 //    _lisp->profiler().timer(core::timerPreconditioner).start();
@@ -1070,7 +1039,13 @@ ForceMatchReport_sp EnergyFunction_O::checkIfAnalyticalForceMatchesNumericalForc
 
 
 
-
+CL_DEFMETHOD void	EnergyFunction_O::summarizeTerms()
+{
+  BFORMAT_T(BF("Number of atom terms: %d\n") % this->_AtomTable->getNumberOfAtoms() );
+  BFORMAT_T(BF("Number of Stretch terms: %d\n") % this->_Stretch->numberOfTerms() );
+  BFORMAT_T(BF("Number of Angle terms: %d\n") % this->_Angle->numberOfTerms() );
+  BFORMAT_T(BF("Number of Dihedral terms: %d\n") % this->_Dihedral->numberOfTerms() );
+};
 
 
 
@@ -1094,8 +1069,9 @@ CL_DEFMETHOD void	EnergyFunction_O::dumpTerms()
 
 
 
-void EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator_sp restraintIterator, core::T_sp activeAtoms )
+int EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator_sp restraintIterator, core::T_sp activeAtoms )
 {
+  int terms = 0;
 #if USE_ALL_ENERGY_COMPONENTS
   restraintIterator->first();
   while ( restraintIterator->notDone() )
@@ -1127,6 +1103,7 @@ void EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator
       energyTerm.term.L = dih->getMinDegrees()*0.0174533;
       energyTerm.term.K = dih->getWeight();
       this->_ImproperRestraint->addTerm(energyTerm);
+      ++terms;
     } else if ( restraint.isA<RestraintAnchor_O>() )
     {
       RestraintAnchor_sp anchor = (restraint).as<RestraintAnchor_O>();
@@ -1143,6 +1120,7 @@ void EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator
       iterm.term.ka = this->_AnchorRestraintWeight;
       iterm.term.I1 = ea1->coordinateIndexTimes3();
       this->_AnchorRestraint->addTerm(iterm);
+      ++terms;
     } else if ( restraint.isA<RestraintFixedNonbond_O>() )
     {
       this->_FixedNonbondRestraint->setupForEvaluation(this->_AtomTable,this->_NonbondCrossTermTable);
@@ -1159,6 +1137,7 @@ void EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator
           if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1))  goto CONT;
           if ( a1.isA<VirtualAtom_O>() ) continue; // skip virtuals
           this->_FixedNonbondRestraint->addFixedAtom(nonbondDb,a1);
+          ++terms;
         }
       }
     } else 
@@ -1169,6 +1148,7 @@ void EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator
     restraintIterator->next();
   }
 #endif
+  return terms;
 }
 
 void EnergyFunction_O::_applyDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double minDegrees, double maxDegrees, double weight, core::T_sp activeAtoms)
@@ -1249,19 +1229,10 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
 
 
 
-
 CL_LISPIFY_NAME("defineForMatter");
-CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms )
+CL_LAMBDA((energy_function !) matter force_field &key active_atoms show_progress);
+CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress )
 {
-  Loop            loop;
-  Atom_sp          a1, a2, a3, a4, aImproperCenter;
-  core::Symbol_sp  t1, t2, t3, t4, t141, t144;
-  EnergyAtom      *eaCenter, *ea1, *ea2, *ea3, *ea4;
-  FFAngle_sp       ffAngle;
-  FFPtor_sp        ffPtor;
-  FFItor_sp        ffItor;
-  FFNonbond_sp	ffNonbond1, ffNonbond2;
-  int             coordinateIndex;
   if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
   {
     SIMPLE_ERROR(BF("You can only define energy functions for Aggregates or Molecules"));
@@ -1283,17 +1254,34 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField
 	// Assign atom types
 	//
   forceField->assignTypes(matter);
-//    printf( "%s:%d dumping xml after assignTypes \n%s\n", __FILE__, __LINE__,matter->asXmlString() );
+  this->generateStandardEnergyFunctionTables(matter,forceField,activeAtoms,show_progress);
+  this->generateNonbondEnergyFunctionTables(matter,forceField,activeAtoms,show_progress);
+  this->generateRestraintEnergyFunctionTables(matter,forceField,activeAtoms,show_progress);
+}
+
+
+CL_LAMBDA((energy_function !) matter force_field &key active_atoms show_progress);
+CL_DOCSTRING("Generate the standard energy function tables. The atom types, and CIP priorities need to be precalculated.");
+CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress )
+{
+  Loop loop;
+  Atom_sp          a1, a2, a3, a4, aImproperCenter;
+  core::Symbol_sp  t1, t2, t3, t4, t141, t144;
+  EnergyAtom      *eaCenter, *ea1, *ea2, *ea3, *ea4;
+  FFPtor_sp        ffPtor;
+  FFItor_sp        ffItor;
+  FFNonbond_sp	ffNonbond1, ffNonbond2;
+  int             coordinateIndex;
 	//
 	// Now create the energy function from all this info
 	//
-
     	//
 	// Define a Nonbond cross term table
 	//
+  if (show_progress) BFORMAT_T(BF("Starting to build standard energy function tables\n"));
   GC_ALLOCATE(FFNonbondCrossTermTable_O, temp );
   this->_NonbondCrossTermTable = temp;
-  this->_NonbondCrossTermTable->fillUsingFFNonbondDb(forceField->getNonbondDb());
+  this->_NonbondCrossTermTable->fillUsingFFNonbondDb(forceField); // forceField->getNonbondDb());
 
     	//
 	// Initialize the energy components
@@ -1306,11 +1294,12 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField
   ASSERTNOTNULL(forceField);
 #if 1
   this->_AtomTable->constructFromMatter(matter,forceField);
+  if (show_progress) BFORMAT_T(BF("Built atom table for %d atoms\n") % this->_AtomTable->getNumberOfAtoms());
 #else
   {_BLOCK_TRACE("Defining ATOMS");
     loop.loopTopGoal(matter,ATOMS);
-    while ( loop.advanceLoopAndProcess() ) 
-    {
+    int atomCount=0;
+    while ( loop.advanceLoopAndProcess() ) {
       a1 = loop.getAtom();
       if ( a1.isA<VirtualAtom_O>() ) continue; // skip virtuals
       LOG(BF( "Atom = %s")% a1->description() );
@@ -1318,14 +1307,17 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField
       EnergyAtom energyAtom(forceField,a1,coordinateIndex);
       this->_AtomTable->add(energyAtom);
       coordinateIndex += 3;
+      ++atomCount;
     }
+    if (show_progress) BFORMAT_T(BF("Built atom table for %d atoms\n") % atomCount);
   }
 #endif
 #ifdef	DEBUG_DEFINE_ENERGY
   lisp->print(BF("%s:%d There were %d atoms") % __FILE__ % __LINE__ % this->_AtomTable.size() );
 #endif
   {_BLOCK_TRACE("Defining STRETCH");
-    ASSERTNOTNULL(forceField->_Stretches);
+    size_t terms = 0;
+    size_t missing_terms = 0;
     loop.loopTopGoal(matter,BONDS);
     while ( loop.advanceLoopAndProcess() ) {
       a1 = loop.getBondA1();
@@ -1339,20 +1331,24 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField
       FFStretch_sp ffStretch = forceField->_Stretches->findTerm(a1,a2);
       if ( ffStretch->level() != parameterized ) {
         this->_addMissingParameter(ffStretch);
+        ++missing_terms;
       }
       if ( ffStretch->level() != unknown ) {
         EnergyStretch   energyStretch;
         energyStretch.defineFrom(ffStretch,ea1,ea2,this->_Stretch->getScale());
         this->_Stretch->addTerm(energyStretch);
+        ++terms;
       }
     }
-
+    if (show_progress) BFORMAT_T(BF("Built stretch table with %d terms added and %d missing terms\n") % terms % missing_terms);
   }
 #ifdef	DEBUG_DEFINE_ENERGY
   lisp->print(BF("%s:%d There were %d stretch terms") % __FILE__ % __LINE__ % this->_Stretch.size() );
 #endif
 #if USE_ALL_ENERGY_COMPONENTS
   {_BLOCK_TRACE("Defining ANGLES");
+    size_t terms = 0;
+    size_t missing_terms = 0;
     loop.loopTopGoal(matter,ANGLES);
     while ( loop.advanceLoopAndProcess() )
     {
@@ -1364,24 +1360,28 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField
       ea1 = this->getEnergyAtomPointer(a1);
       ea2 = this->getEnergyAtomPointer(a2);
       ea3 = this->getEnergyAtomPointer(a3);
-      ffAngle = forceField->_Angles->findTerm(a1,a2,a3);
+      FFAngle_sp ffAngle = forceField->_Angles->findTerm(a1,a2,a3);
       if ( ffAngle->level() != parameterized ) {
         LOG(BF("Missing angle parameter between types: %s-%s-%s") % a1->getType()% a2->getTypeString()% a3->getTypeString() );
         this->_addMissingParameter(ffAngle);
         LOG(BF("Added to missing parameters") );
+        ++missing_terms;
       }
       if ( ffAngle->level() != unknown ) {
         EnergyAngle energyAngle;
         energyAngle.defineFrom(ffAngle,ea1,ea2,ea3,this->_Angle->getScale());
         this->_Angle->addTerm(energyAngle);
+        ++terms;
       }
     }
+    if (show_progress) BFORMAT_T(BF("Built angle table with %d terms and %d missing terms\n") % terms % missing_terms);
   }
   {_BLOCK_TRACE("Defining PROPERS");
     EnergyNonbond energyNonbond;
+    size_t terms = 0;
+    size_t missing_terms = 0;
     loop.loopTopGoal(matter,PROPERS);
-    while ( loop.advanceLoopAndProcess() ) 
-    {
+    while ( loop.advanceLoopAndProcess() ) {
       a1 = loop.getAtom1();
       a2 = loop.getAtom2();
       a3 = loop.getAtom3();
@@ -1399,14 +1399,12 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField
       ea2 = this->getEnergyAtomPointer(a2);
       ea3 = this->getEnergyAtomPointer(a3);
       ea4 = this->getEnergyAtomPointer(a4);
-      if ( forceField->_Ptors->hasBestTerm(t1,t2,t3,t4) ) 
-      {
-        ffPtor = forceField->_Ptors->findBestTerm(t1,t2,t3,t4);
+      core::T_sp tffPtor = forceField->_Ptors->findBestTerm(t1,t2,t3,t4);
+      if (tffPtor.notnilp()) {
+        FFPtor_sp ffPtor = gc::As<FFPtor_sp>(tffPtor);
         int numPtors = 0;
-        for ( int n=1;n<=FFPtor_O::MaxPeriodicity; n++ ) 
-        {
-          if ( ffPtor->hasPeriodicity(n) )
-          {
+        for ( int n=1;n<=FFPtor_O::MaxPeriodicity; n++ ) {
+          if ( ffPtor->hasPeriodicity(n) ) {
             ++numPtors;
             LOG(BF( "Adding proper term for atoms %s-%s-%s-%s types: %s-%s-%s-%s")%
                 ea1->getResidueAndName()
@@ -1418,11 +1416,13 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField
             EnergyDihedral energyDihedral;
             energyDihedral.defineFrom(n,ffPtor,ea1,ea2,ea3,ea4,this->_Dihedral->getScale());
             this->_Dihedral->addTerm(energyDihedral);
+            ++terms;
           }
         }
         if ( numPtors == 0 ) {
           FFPtor_sp ptor = FFPtor_O::create_missing(t1,t2,t3,t4);
           this->_addMissingParameter(ptor);
+          ++missing_terms;
         }
         if (ea1->inBondOrAngle(ea4->atom()) )
         {
@@ -1452,15 +1452,18 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField
 //		ea4->_CloserThan15.insert(ea1->_Atom);
       }
     }
+    if (show_progress) BFORMAT_T(BF("Built dihedral table with %d terms and %d missing terms\n") % terms % missing_terms);
   }
   {_BLOCK_TRACE("Defining IMPROPERS");
     EnergyDihedral energyDihedral;
+    size_t terms = 0;
     loop.loopTopGoal(matter,IMPROPERS);
     while ( loop.advanceLoopAndProcess() ) {
       a1 = loop.getAtom1();
       a2 = loop.getAtom2();
       a3 = loop.getAtom3();
       a4 = loop.getAtom4();
+      FFItorDb_O::improperAtomSort(a1,a2,a4);
       if ( activeAtoms.notnilp() &&
            (!inAtomSet(activeAtoms,a1)
             || !inAtomSet(activeAtoms,a2)
@@ -1474,8 +1477,8 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField
       ea2 = this->getEnergyAtomPointer(a2);
       ea3 = this->getEnergyAtomPointer(a3);
       ea4 = this->getEnergyAtomPointer(a4);
-      if ( forceField->_Itors->hasBestTerm(t1,t2,t3,t4) ) 
-      {
+      core::T_sp itor = forceField->_Itors->findBestTerm(t1,t2,t3,t4);
+      if ( itor.notnilp() ) {
 		    //
 		    // Only one improper per central atom.
 		    // We may not get exactly the same improper as AMBER does
@@ -1483,19 +1486,45 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField
         if ( a3 != aImproperCenter ) {
           ffItor = forceField->_Itors->findBestTerm(t1,t2,t3,t4);
           for ( int n=1;n<=6; n++ ) {
-            if ( ffItor->hasPeriodicity(n) )
-            {
+            if ( ffItor->hasPeriodicity(n) ) {
               energyDihedral.defineFrom(n,ffItor,ea1,ea2,ea3,ea4,this->_Dihedral->getScale());
               this->_Dihedral->addTerm(energyDihedral);
               aImproperCenter = a3;
+              ++terms;
             }
           }
         }
       }
     }
+    if (show_progress) BFORMAT_T(BF("Built improper table for %d terms\n") % terms);
   }
+  this->summarizeTerms();
+}
+
+CL_LAMBDA((energy_function !) matter force_field &key active_atoms show_progress);
+CL_DOCSTRING("Generate the nonbond energy function tables. The atom types, and CIP priorities need to be precalculated.");
+CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress )
+{
         // Nonbonds here!!!!!!!!!!!!!!
-  this->_Nonbond->constructFromAtomTable(this->_AtomTable, forceField, activeAtoms);
+  this->_Nonbond->constructFromAtomTable(this->_AtomTable, forceField, activeAtoms, show_progress);
+  if (show_progress) BFORMAT_T(BF("Built nonbond table for %d terms\n") % this->_Nonbond->numberOfTerms());
+}
+
+
+CL_LAMBDA((energy_function !) matter force_field &key active_atoms show_progress);
+CL_DOCSTRING(R"doc(Generate the restraint energy function tables. The atom types, and CIP priorities need to be precalculated.
+This should be called after generateStandardEnergyFunctionTables.)doc");
+CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress )
+{
+  Loop loop;
+  Atom_sp          a1, a2, a3, a4, aImproperCenter;
+  core::Symbol_sp  t1, t2, t3, t4, t141, t144;
+  EnergyAtom      *eaCenter, *ea1, *ea2, *ea3, *ea4;
+  FFAngle_sp       ffAngle;
+  FFPtor_sp        ffPtor;
+  FFItor_sp        ffItor;
+  FFNonbond_sp	ffNonbond1, ffNonbond2;
+  int             coordinateIndex;
     	//
 	// Setup the atom chiral restraints
 	//
@@ -1633,6 +1662,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField
         LOG(BF("There is no chiral restraint for: %s") % a1->description()  );
       }
     }
+    if (show_progress) BFORMAT_T(BF("Built chiral restraints table for %d terms\n") % this->_ChiralRestraint->numberOfTerms());
   }
 
 	//
@@ -1668,6 +1698,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField
     {
       LOG(BF("There are no atoms"));
     }
+    if (show_progress) BFORMAT_T(BF("Built anchor restraints table for %d terms\n") % this->_AnchorRestraint->numberOfTerms());
   }
 #endif
 	//
@@ -1685,7 +1716,9 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField
         nitrogens.push_back(a);
       }
     }
+    int startTerms = this->_ImproperRestraint->numberOfTerms();
     this->__createSecondaryAmideRestraints(nitrogens,activeAtoms);
+    if (show_progress) BFORMAT_T(BF("Built secondary amide restraints including %d terms\n") % (this->_ImproperRestraint->numberOfTerms() - startTerms));
   } else
   {
     LOG(BF("Skipping Secondary amide restraints because _RestrainSecondaryAmides = %d") % this->_RestrainSecondaryAmides );
@@ -1698,7 +1731,8 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField
 	//
   {_BLOCK_TRACE("Defining force-field restraints");
     IterateRestraints_sp restraintIt = IterateRestraints_O::create(matter);
-    this->_applyRestraints(forceField,restraintIt,activeAtoms);
+    int terms = this->_applyRestraints(forceField,restraintIt,activeAtoms);
+    if (show_progress) BFORMAT_T(BF("Built restraints including %d terms\n") % terms );
   }
   LOG(BF("Done terms") );
 }
@@ -1772,7 +1806,7 @@ CL_LISPIFY_NAME("writeCoordinatesAndForceToAtoms");
 CL_DEFMETHOD void    EnergyFunction_O::writeCoordinatesAndForceToAtoms(NVector_sp pos, NVector_sp force)
 {
   this->writeCoordinatesToAtoms(pos);
-  this->writeForceToAtoms(force);
+//  this->writeForceToAtoms(force);
 }
 
 
@@ -1805,7 +1839,7 @@ CL_DEFMETHOD double EnergyFunction_O::calculateEnergyAndForce( )
   energy = this->evaluateEnergyForce(pos,true,force);
     	// To calculate the force magnitude use force->magnitude();
     	// To calculate the force rmsMagnitude use force->rmsMagnitude();
-  this->writeForceToAtoms(force);
+//  this->writeForceToAtoms(force);
   return energy;
 }
 

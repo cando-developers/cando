@@ -137,5 +137,4 @@ for them.  Show progress if progress is T."
            (progress-advance bar built-hydrogens)))
        matter)
       (progress-done bar)
-      (when (> built-hydrogens 0)
-        (warn "There were ~a hydrogens built" built-hydrogens)))))
+      built-hydrogens)))

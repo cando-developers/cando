@@ -160,20 +160,32 @@ DEFAULT_CTOR_DTOR(FFParameter_O);
 SMART(FFBaseDb);
 class FFBaseDb_O : public core::CxxObject_O {
   LISP_CLASS(chem,ChemPkg,FFBaseDb_O,"FFBaseDb",core::CxxObject_O);
-
  public:
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
+  void initialize();
  public:
   core::T_sp	_ForceField;
  public:
+  virtual void absorb(FFBaseDb_sp other);
   void	setForceField(ForceField_sp ff);
  FFBaseDb_O() : _ForceField(_Nil<core::T_O>()) {};
-  virtual ~FFBaseDb_O() {};
 };
 
+ SMART(FFParameterBaseDb);
+class FFParameterBaseDb_O : public FFBaseDb_O {
+  LISP_CLASS(chem,ChemPkg,FFParameterBaseDb_O,"FFParameterBaseDb",FFBaseDb_O);
+ public:
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+  void initialize();
+ public:
+  core::HashTableEq_sp _Parameters;
+ public:
+  virtual void absorb(FFBaseDb_sp other);
+ FFParameterBaseDb_O() : FFBaseDb_O(), _Parameters(_Unbound<core::HashTableEq_O>()) {};
 };
 
-TRANSLATE(chem::FFParameter_O);
-TRANSLATE(chem::FFBaseDb_O);
+
+};
 #endif

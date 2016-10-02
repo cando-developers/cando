@@ -792,7 +792,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::sort(const string& stageName, core
 	OrderStageAndKeyValue comparer;
 	comparer._StageName = stageName;
 	comparer._KeyName = keyName;
-	core::sort::quickSort(this->_Entries.begin(), this->_Entries.end(), comparer);
+	sort::quickSort(this->_Entries.begin(), this->_Entries.end(), comparer);
     }
 
 
@@ -1062,7 +1062,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::sortByEnergyAscendingForStage(cons
     {
 	OrderByEnergyAscending order;
 	order._StageName = stageName;
-	core::sort::quickSort(this->_Entries.begin(),this->_Entries.end(),order);
+	sort::quickSort(this->_Entries.begin(),this->_Entries.end(),order);
     }
 
     void	ConformationExplorerMatch_O::initialize()

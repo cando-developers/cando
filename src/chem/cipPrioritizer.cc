@@ -233,7 +233,7 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
 	byP.setCipPrioritizer(this->sharedThis<CipPrioritizer_O>());
 	if ( mAtoms.begin() != mAtoms.end() )
 	{
-	    core::sort::quickSort(mAtoms.begin(),mAtoms.end(),byP);
+	    sort::quickSort(mAtoms.begin(),mAtoms.end(),byP);
 	}
 
 	C.clear();
@@ -304,9 +304,9 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
 			}
 		    }
 		    LOG(BF("About to sort %d mys objects") % mys.size()  );
-		    core::sort::quickSort(mys.begin(),mys.end());
+		    sort::quickSort(mys.begin(),mys.end());
 		    LOG(BF("Done sort") );
-		    core::sort::reverse(mys.begin(),mys.end());
+		    sort::reverse(mys.begin(),mys.end());
 		    LOG(BF("Done reverse") );
 		    // print "atom(%s) mys = %s"%(myatom.getName(),str(mys))
 		    this->_s[myatom->getRelativePriority()] = mys;
@@ -377,7 +377,7 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
 			    LOG(BF("    %s") % (*ssi)->description().c_str() );
 			}
 #endif
-			core::sort::quickSort(S.begin(),S.end(),byS);
+			sort::quickSort(S.begin(),S.end(),byS);
 			LOG(BF("done sort") );
 		    }
 //		    int i = 0;
@@ -527,8 +527,7 @@ CL_DEFMETHOD void CipPrioritizer_O::defineStereochemicalConfigurationsForAllAtom
 	    {
 		priority.push_back((*bi)->getOtherAtom(a));
 	    }
-	    core::sort::quickSort(priority.begin(), priority.end(), orderByPriority);
-
+	    sort::quickSort(priority.begin(), priority.end(), orderByPriority);
 	    //  now figure out if they are four different priorities
 	    uint prevPriority = UndefinedUnsignedInt;
 	    int diff = 0;

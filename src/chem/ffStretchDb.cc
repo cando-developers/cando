@@ -75,23 +75,6 @@ void	EstimateStretch::parseFromXml(adapt::QDomNode_sp node)
 }
 #endif
 
-
-
-
-
-
-void	FFStretchDb_O::initialize()
-{
-    this->Base::initialize();
-    this->clearEstimateStretch();
-    this->_Lookup.clear();
-    this->_Terms.clear();
-}
-
-
-
-
-
     core::Symbol_sp stretchKey(core::Symbol_sp t1
                                , core::Symbol_sp t2 )
     {
@@ -103,16 +86,14 @@ CL_NAME(CHEM:FFSTRETCH-DB-ADD);
 CL_DEFMETHOD void    FFStretchDb_O::add(FFStretch_sp term)
 {
     core::Symbol_sp key;
-    this->_Terms.push_back(term);
     key = stretchKey(term->_Type1,term->_Type2);        // forwards
-    this->_Lookup.set(key,term);
-    key = stretchKey(term->_Type2,term->_Type1);        // backwards
-    this->_Lookup.set(key,term);
+    this->_Parameters->setf_gethash(key,term);
 }
 
 
 CL_LISPIFY_NAME("findTerm");
-CL_DEFMETHOD FFStretch_sp	FFStretchDb_O::findTerm(chem::Atom_sp a1, chem::Atom_sp a2)
+CL_DOCSTRING("Return the stretch term or NIL if none was found");
+CL_DEFMETHOD core::T_sp	FFStretchDb_O::findTerm(chem::Atom_sp a1, chem::Atom_sp a2)
 {
   FFStretch_sp	match;
   core::Symbol_sp key;
@@ -120,17 +101,23 @@ CL_DEFMETHOD FFStretch_sp	FFStretchDb_O::findTerm(chem::Atom_sp a1, chem::Atom_s
   t1 = a1->getType();
   t2 = a2->getType();
   LOG(BF("Looking for stretch between types (%s)-(%s)") % t1.c_str() % t2.c_str() );
-  key = stretchKey(t1,t2);
-  if ( this->_Lookup.count(key) != 0 ) {
-    return this->_Lookup.get(key);
-  }
-  key = stretchKey(t2,t1);
-  if ( this->_Lookup.count(key) != 0 ) {
-    return this->_Lookup.get(key);
-  }
+  key = stretchKey(t1,t2); // forwards
+  core::T_sp parm = this->_Parameters->gethash(key);
+  if (parm.notnilp()) return parm;
+  key = stretchKey(t2,t1); // backwards
+  parm = this->_Parameters->gethash(key);
+  if (parm.notnilp()) return parm;
   FFStretch_sp missing = FFStretch_O::create_missing(t1,t2);
   return missing;
 }
+
+
+
+void	FFStretchDb_O::fields(core::Record_sp node)
+{
+  this->Base::fields(node);
+}
+
 
 
 
@@ -170,6 +157,9 @@ EstimateStretch	es;
 
 
 
+
+
+
 void	FFStretch_O::fields(core::Record_sp node)
 {
   node->field( INTERN_(kw,type1), this->_Type1 );
@@ -178,18 +168,6 @@ void	FFStretch_O::fields(core::Record_sp node)
   node->/*pod_*/field( INTERN_(kw,kb), this->_Kb_kJPerNanometerSquared );
   this->Base::fields(node);
 }
-
-void	FFStretchDb_O::fields(core::Record_sp node)
-{
-  node->field( INTERN_(kw,stretches),this->_Terms );
-  node->/*pod_*/field( INTERN_(kw,map),this->_Lookup );
-  this->Base::fields(node);
-}
-
-
-
-
-
 
 
 void FFStretch_O::initialize()

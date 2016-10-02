@@ -116,7 +116,7 @@ public:
     iterator end() { return this->_Terms.end(); };
 //added by G 7.19.2011
 public:
-    virtual int numberOfTerms() { return this->_Terms.size();};
+    virtual size_t numberOfTerms() { return this->_Terms.size();};
 
 
 public:
