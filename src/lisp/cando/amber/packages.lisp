@@ -66,6 +66,8 @@
   (:import-from :amber.off
                 #:load-off)
   (:export
+   #:search-path
+   #:add-path
    #:residue-name
    #:chain-position
    #:register-variable

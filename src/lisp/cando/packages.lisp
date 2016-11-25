@@ -136,6 +136,7 @@
    #:anchor-atoms
    #:on-circle
    #:on-points
+   #:clear-all-atom-restraints
    ))
 
 (defpackage #:struct

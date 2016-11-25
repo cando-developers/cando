@@ -1281,7 +1281,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   if (show_progress) BFORMAT_T(BF("Starting to build standard energy function tables\n"));
   GC_ALLOCATE(FFNonbondCrossTermTable_O, temp );
   this->_NonbondCrossTermTable = temp;
-  this->_NonbondCrossTermTable->fillUsingFFNonbondDb(forceField); // forceField->getNonbondDb());
+  this->_NonbondCrossTermTable->fillUsingFFNonbondDb(forceField->getNonbondDb());
 
     	//
 	// Initialize the energy components

@@ -36,6 +36,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <iomanip>
 #include <clasp/core/foundation.h>
 #include <clasp/core/lisp.h>
+#include <clasp/core/ql.h>
 #include <clasp/core/multipleValues.h>
 #include <clasp/core/str.h>
 #include <clasp/core/fileSystem.h>
@@ -528,6 +529,17 @@ FAILED:
 }
 #endif
 
+CL_DEFMETHOD core::List_sp QDomNode_O::childrenWithName( const string& name ) {
+  ql::list res;
+  VectorQDomNodes::iterator	it;
+  for ( it=this->_children.begin(); it!=this->_children.end(); it++ ) {
+    if ( (*it)->getLocalName() == name ) {
+      res << *it;
+    }
+  }
+  return res.cons();
+}
+  
 VectorQDomNodes QDomNode_O::getChildrenWithName( const string& name ) {
 VectorQDomNodes childs;
 VectorQDomNodes::iterator	it;

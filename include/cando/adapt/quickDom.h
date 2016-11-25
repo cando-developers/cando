@@ -144,6 +144,7 @@ CL_DEFMETHOD     void	saveAs( string fileName ) { this->writeToFileName(fileName
     QDomNode_sp		onlyChild();
 
 
+    core::List_sp	childrenWithName(const string& nm);
     VectorQDomNodes	getChildrenWithName(const string& nm);
     VectorQDomNodes	getChildrenWithNameAndRemoveThem(const string& nm);
     VectorQDomNodes	getChildren()	{return this->_children;};

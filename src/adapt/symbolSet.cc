@@ -119,7 +119,7 @@ void SymbolSet_O::fields(core::Record_sp node) {
     node->field(INTERN_(kw,data), valueVec );
     this->_Symbols->clrhash();
     for ( size_t i(0), iEnd(cl__length(valueVec)); i<iEnd; ++i ) {
-      T_sp key = (*valueVec)[i];
+      T_sp key = valueVec->elt(i);
       this->_Symbols->hash_table_setf_gethash(key,_lisp->_true());
     }
   }
@@ -128,7 +128,7 @@ void SymbolSet_O::fields(core::Record_sp node) {
     Vector_sp valueVec = core__make_vector(cl::_sym_T_O, this->_Symbols->hashTableCount() );
     size_t idx = 0;
     this->_Symbols->mapHash([&idx,&valueVec](T_sp key, T_sp val) {
-        (*valueVec)[idx++] = key;
+        valueVec->setf_elt(idx++,key);
       });
     node->field(INTERN_(kw,data), valueVec);
   }

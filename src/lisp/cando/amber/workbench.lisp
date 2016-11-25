@@ -11,6 +11,7 @@
   (defparameter *1mil-layout* (amber.pdb:scanpdb "~/Downloads/chromatin-1mil/chromsmall.pdb" :progress t))
   (defparameter *1mil* (amber.pdb:loadpdb "~/Downloads/chromatin-1mil/chromsmall.pdb" :layout *1mil-layout* :progress t)))
 
+(cando:chimera *1mil*)
 
 (defun setup-amber-force-field ()
   (let ((parms (chem:make-read-amber-parameters)))
@@ -88,9 +89,21 @@
 ;;; -------------
 ;;; Test the leap parser
 ;;;
-
 (asdf:load-system "amber")
-(amber.leap:load-script #P"~/Development/amber/dat/leap/cmd/leaprc.protein.fb15")
+(progn
+  (amber:add-path #P"/Users/meister/Development/amber/dat/leap/prep/")
+  (amber:add-path #P"/Users/meister/Development/amber/dat/leap/lib/")
+  (amber:add-path #P"/Users/meister/Development/amber/dat/leap/parm/")
+  (amber:add-path #P"/Users/meister/Development/amber/dat/leap/cmd/"))
+
+(amber.leap::source #P"leaprc.protein.fb15")
+(apply 'amber.leap::leap.log-file '(:|leap.log|))
+(amber.leap::leap.log-file '(goof :|foo.test|))
+
+(apropos "system-index")
+(ql-dist::system-index)
+
+(fdefinition 'amber.leap::leap.log-file)
 (apropos "load-script")
 
 

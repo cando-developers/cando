@@ -29,6 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <clasp/core/str.h>
 #include <clasp/core/primitives.h>
+#include <clasp/core/bformat.h>
 #include <cando/adapt/adapters.h>
 #include <cando/adapt/stringSet.h>
 #include <clasp/core/binder.h>
@@ -82,6 +83,7 @@ void CDNode_O::fieldsp(core::Record_sp node)
 }
 #endif
 
+
 std::string CDNode_O::_extractLabel(adapt::QDomNode_sp node)
 {
   string name;
@@ -90,8 +92,13 @@ std::string CDNode_O::_extractLabel(adapt::QDomNode_sp node)
     adapt::QDomNode_sp text = node->childWithName("t");
     if ( text->hasChildrenWithName("s") )
     {
-      adapt::QDomNode_sp xmls = text->childWithName("s");
-      string name = xmls->getData();
+      core::List_sp xmls = text->childrenWithName("s");
+      stringstream ss;
+      for ( auto c : xmls ) {
+        adapt::QDomNode_sp child = gctools::As<adapt::QDomNode_sp>(oCar(c));
+        ss << child->getData();
+      }
+      string name = ss.str();
       return name;
     }
   }
@@ -117,11 +124,12 @@ void CDNode_O::getParsedLabel(string& name, int& ionization) const
   }
   LOG(BF("parsed[%s] into name[%s] ionization[%d]") % this->getLabel() % name % ionization );
 }
-void	CDNode_O::parseFromXml(adapt::QDomNode_sp xml)
+void	CDNode_O::parseFromXml(adapt::QDomNode_sp xml, bool print)
 {_OF();
   this->_Id = xml->getAttributeInt("id");
   this->_Color = xml->getAttributeIntDefault("color",3);
   this->_Label = this->_extractLabel(xml);
+  if (print) BFORMAT_T(BF("CDNode id(%s) color(%s) label(%s)\n") % this->_Id % this->_Color % this->_Label );
   LOG(BF("Parsing CDNode with label: %s") % this->_Label);
   this->_StereochemistryType = undefinedCenter;
   this->_Configuration = undefinedConfiguration;
@@ -134,14 +142,17 @@ void	CDNode_O::parseFromXml(adapt::QDomNode_sp xml)
       string as = xml->getAttributeString("AS");
       if ( as == "S" )
       {
+        if (print) BFORMAT_T(BF("    configuration(S)\n"));
         LOG(BF("Atom has geometry AS=%s") % as );
         this->_Configuration = S_Configuration;
       } else if ( as == "R" )
       {
         LOG(BF("Atom has geometry AS=%s") % as );
+        if (print) BFORMAT_T(BF("    configuration(R)\n"));
         this->_Configuration = R_Configuration;
       } else
       {
+        if (print) BFORMAT_T(BF("    could not determin configuration from AS\n"));
         LOG(BF("Could not interpret geometry AS[%s]") % as );
       }
     }
@@ -200,14 +211,13 @@ BondOrder CDBond_O::getOrderAsBondOrder()
 }
 
 
-void	CDBond_O::parseFromXml(adapt::QDomNode_sp xml)
+void	CDBond_O::parseFromXml(adapt::QDomNode_sp xml, bool print)
 {
   this->_IdBegin = xml->getAttributeInt("B");
   this->_IdEnd = xml->getAttributeInt("E");
   string order = xml->getAttributeStringDefault("Order","1");
   string display = xml->getAttributeStringDefault("Display","");
-  if ( order == "1" )
-  {
+  if ( order == "1" ) {
     if ( display == "Dash" ) {
       this->_Order = singleDashCDBond;
     } else if ( display == "Hash" ) {
@@ -241,6 +251,7 @@ void	CDBond_O::parseFromXml(adapt::QDomNode_sp xml)
          _Nil<core::T_O>());
     this->_Order = unknownCDBond;
   }
+  if (print) BFORMAT_T(BF("CDBond _IdBegin(%s) _IdEnd(%s) order(%s) display(%s)\n") % this->_IdBegin % this->_IdEnd % order % display );
 }
 
 
@@ -283,18 +294,17 @@ void CDFragment_O::createImplicitHydrogen(CDNode_sp fromNode, const std::string&
 #endif
 
 
-void	CDFragment_O::parseFromXml(adapt::QDomNode_sp fragment)
+void	CDFragment_O::parseFromXml(adapt::QDomNode_sp fragment, bool print)
 {
   adapt::QDomNode_O::iterator	it;
   this->_Nodes.clear();
   this->_AtomsToNodes.clear();
-  for ( it=fragment->begin_Children(); it!=fragment->end_Children(); it++ )
-  {
+  if (print) BFORMAT_T(BF("CDFragment - starting\n"));
+  for ( it=fragment->begin_Children(); it!=fragment->end_Children(); it++ ) {
     adapt::QDomNode_sp child = (*it);
-    if ( child->getLocalName() == "n" )
-    {
+    if ( child->getLocalName() == "n" ) {
       GC_ALLOCATE(CDNode_O, node );
-      node->parseFromXml(child);
+      node->parseFromXml(child, print);
       int id = node->getId();
       if ( id > this->_LargestId )
         this->_LargestId = id;
@@ -302,13 +312,11 @@ void	CDFragment_O::parseFromXml(adapt::QDomNode_sp fragment)
       LOG(BF("Processed node label(%s)") % node->getLabel()  );
     }
   }
-  for ( it=fragment->begin_Children(); it!=fragment->end_Children(); it++ )
-  {
+  for ( it=fragment->begin_Children(); it!=fragment->end_Children(); it++ ) {
     adapt::QDomNode_sp child = (*it);
-    if ( child->getLocalName() == "b" )
-    {
+    if ( child->getLocalName() == "b" ) {
       GC_ALLOCATE(CDBond_O, bond );
-      bond->parseFromXml(child);
+      bond->parseFromXml(child,print);
       uint idBegin = bond->getIdBegin();
       uint idEnd = bond->getIdEnd();
       ASSERT(this->_Nodes.count(idBegin)>0);
@@ -322,6 +330,7 @@ void	CDFragment_O::parseFromXml(adapt::QDomNode_sp fragment)
           % bond->getOrderAsString() % nodeBegin->getLabel() % nodeEnd->getLabel()  );
     }
   }
+  if (print) BFORMAT_T(BF("CDFragment - done.\n"));
 }
 
 int CDFragment_O::countNeighbors(CDNode_sp node)
@@ -441,6 +450,7 @@ core::Symbol_mv parse_property(const string& propertyValue, CDBond_sp bond, cons
  */
 bool CDFragment_O::interpret()
 {
+  printf("%s:%d  Interpreting a fragment\n", __FILE__, __LINE__ );
   int nextFragmentNameIndex = 1;
   if ( this->_Bonds.size() == 0 ) {return false;}
   CDBonds::iterator bi;
@@ -635,6 +645,7 @@ void CDFragment_O::createAtomsAndBonds()
       switch (o) {
       case singleDashCDBond:
           bond->setProperty(INTERN_(kw,chemdraw_dashed_bond),_lisp->_true());
+      case wedgeHashCDBond:
       case singleCDBond:
           bond->setOrder(singleBond);
           break;
@@ -878,38 +889,10 @@ string CDFragment_O::__repr__() const
   return ss.str();
 }
 
-#if INIT_TO_FACTORIES
-
-#define ARGS_CDText_O_make "(kprops)"
-#define DECL_CDText_O_make ""
-#define DOCS_CDText_O_make "make CDText"
 CDText_sp CDText_O::make(core::HashTableEq_sp kprops)
 {
   IMPLEMENT_ME();
-#if 0
-  GC_ALLOCATE(CDText_O, me );
-  me->_CDText._Properties = kprops;
-  me->_CDText._Text = "n/a";
-  return me;
-#endif
 };
-
-#else
-
-core::T_sp  CDText_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-{_OF();
-  IMPLEMENT_ME();
-#if 0
-  this->Base::__init__(exec,args,env,lisp);
-  core::Cons_sp props = env->lookup(lisp->internWithPackageName(ChemPkg,"props")).as<core::Cons_O>();
-  core::HashTableEq_sp kprops = env->lookup(lisp->internWithPackageName(ChemPkg,"kprops")).as<core::HashTableEq_O>();
-  this->_Properties = kprops;
-  this->_Text = "n/a";
-  return _Nil<core::T_O>();
-#endif
-}
-
-#endif
 
 void	CDText_O::initialize()
 {
@@ -928,15 +911,22 @@ bool	CDText_O::hasProperties()
 /*!
  * Text blocks should be list of key: value pairs separated by line feeds
  */
-void	CDText_O::parseFromXml(adapt::QDomNode_sp text)
+void	CDText_O::parseFromXml(adapt::QDomNode_sp text, bool print)
 {
-  adapt::QDomNode_sp sub = text->childWithName("s");
-  this->_Text = core::trimWhiteSpace(sub->getData());
+  core::List_sp xmls = text->childrenWithName("s");
+  stringstream ss;
+  for ( auto c : xmls ) {
+    adapt::QDomNode_sp child = gctools::As<adapt::QDomNode_sp>(oCar(c));
+    ss << child->getData();
+  }
+  string name = ss.str();
+  this->_Text = core::trimWhiteSpace(name);
   if ( this->_Text[0] != '(' )
   {
     LOG(BF("Text block is not code") );
     return;
   }
+  if (print) BFORMAT_T(BF("CDText parsed: %s") % this->_Text);
   core::StringInputStream_sp sin = core::cl__make_string_input_stream(core::Str_O::create(this->_Text)
                                                                       ,core::clasp_make_fixnum(0)
                                                                       ,_Nil<core::T_O>());
@@ -946,10 +936,8 @@ void	CDText_O::parseFromXml(adapt::QDomNode_sp text)
 #endif
   core::List_sp block = read_lisp_object(sin,true,_Nil<core::T_O>(),false);
   core::cl__close(sin);
-
   LOG(BF("Parsed text block: %s\n") % this->_Text);
-  if ( block.nilp() )
-  {
+  if ( block.nilp() ) {
     SIMPLE_ERROR(BF("Error compiling code:\n"+this->_Text));
   }
   LOG(BF("About to evaluate CDText: %s") % _rep_(block) );
@@ -961,6 +949,7 @@ void	CDText_O::parseFromXml(adapt::QDomNode_sp text)
     result = oCddr(result);
     if ( chem::_sym__PLUS_validChemdrawKeywords_PLUS_->symbolValue().as<core::HashTable_O>()->gethash(key).notnilp() ) {
       set_property(this->_Properties,key,value);
+      if (print) BFORMAT_T(BF("   setting property %s to %s\n") % core::_rep_(key) % core::_rep_(value));
     } else SIMPLE_ERROR(BF("Illegal chemdraw keyword: %s value: %s") % _rep_(key) % _rep_(value) );
   }
 }
@@ -1013,30 +1002,16 @@ void	ChemDraw_O::initialize()
   Define a ChemDraw object.  Load a cdxml file from \sa{name} and return the ChemDraw object define by it.
   __END_DOC
 */
-#if INIT_TO_FACTORIES
 
-#define ARGS_ChemDraw_O_make "(file_name)"
-#define DECL_ChemDraw_O_make ""
-#define DOCS_ChemDraw_O_make "make ChemDraw"
 CL_LISPIFY_NAME(make-chem-draw);
-CL_DEFUN ChemDraw_sp ChemDraw_O::make(core::T_sp stream)
+CL_LAMBDA(file_name &optional print);
+CL_DOCSTRING("Make a chem:chem-draw object from a string.  If print is T then print info to *standard-output*.");
+CL_DEFUN ChemDraw_sp ChemDraw_O::make(core::T_sp stream, bool print)
 {
   GC_ALLOCATE(ChemDraw_O, me );
-  me->parse(stream); // me->parse(stream);
+  me->parse(stream,print); // me->parse(stream);
   return me;
 };
-
-#else
-
-core::T_sp 	ChemDraw_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-{
-  string fileName = env->lookup(lisp->internWithPackageName(ChemPkg,"fileName")).as<core::Str_O>()->get();
-  LOG(BF("Loading Chemdraw file from: %s") % fileName );
-  this->parseFromFileName(fileName);
-  return _Nil<core::T_O>();
-}
-
-#endif
 
 #ifdef XML_ARCHIVE
 void	ChemDraw_O::archive(core::ArchiveP node)
@@ -1101,8 +1076,63 @@ void	ChemDraw_O::setFragmentProperties(core::List_sp props)
 }
 #endif
 
-void	ChemDraw_O::parse( core::T_sp strm )
+
+
+void ChemDraw_O::parseChild( adapt::QDomNode_sp child, bool print )
 {
+  if (print) BFORMAT_T(BF("ChemDraw_O::parse child of page with name(%s)\n") % child->getLocalName());
+  if ( child->getLocalName() == "fragment" ) {
+    GC_ALLOCATE(CDFragment_O, fragment );
+    fragment->parseFromXml(child,print);
+    if ( fragment->interpret() ) {
+#if 0
+      core::HashTableEq_sp properties = fragment->getProperties();
+      if ( !properties->contains(INTERN_(kw,name)))
+      {
+        SIMPLE_ERROR(BF("Every fragment must have a property(%s) available properties: %s") % _rep_(INTERN_(kw,name)) % properties->keysAsString());
+      }
+      core::Symbol_sp constitutionName = properties->gethash(INTERN_(kw,name)).as<core::Symbol_O>();
+      fragment->setConstitutionName(constitutionName);
+      this->_NamedFragments.set(constitutionName,fragment);
+#endif
+      this->_AllFragments.push_back(fragment);
+    } else {
+      SIMPLE_ERROR(BF("Could not interpret a ChemDraw CDFragment"));
+    }
+  } else if ( child->getLocalName() == "t" ) {
+    GC_ALLOCATE(CDText_O, text );
+    text->parseFromXml(child,print);
+#if 0
+    if ( text->hasProperties() )
+    {
+      LOG(BF("Found properties: %s") % _rep_(text) );
+      core::HashTableEq_sp properties = text->getProperties();
+      if (!properties->contains(INTERN_(kw,name)))
+      {
+        SIMPLE_ERROR(BF("Every properties block must have a property(name:)"));
+      }
+      core::Symbol_sp constitutionName = properties->gethash(INTERN_(kw,name)).as<core::Symbol_O>();
+      if ( !this->_NamedFragments.contains(constitutionName) )
+      {
+        SIMPLE_ERROR(BF("Could not find fragment with name("+_rep_(constitutionName)+")"));
+      }
+      CDFragment_sp fragment = this->_NamedFragments.get(constitutionName);
+      fragment->addProperties(properties);
+    }
+#endif
+  } else if ( child->getLocalName() == "group" ) {
+    if (print) BFORMAT_T(BF("ChemDraw_O::parsing group start...\n"));
+    for ( adapt::QDomNode_O::iterator it=child->begin_Children(); it!=child->end_Children(); it++ ) {
+      this->parseChild(*it,print);
+    }
+    if (print) BFORMAT_T(BF("ChemDraw_O::parsing group done.\n"));
+  }
+}
+
+
+void	ChemDraw_O::parse( core::T_sp strm, bool print )
+{
+  if (print) BFORMAT_T(BF("ChemDraw_O::parse starting\n"));
   adapt::QDomNode_sp xml = adapt::QDomNode_O::parse(strm);
   if ( !xml->hasChildrenWithName("page") )
     SIMPLE_ERROR(BF("Not a cdxml file" ));
@@ -1110,54 +1140,9 @@ void	ChemDraw_O::parse( core::T_sp strm )
   adapt::QDomNode_O::iterator	it;
   this->_NamedFragments.clear();
   for ( it=page->begin_Children(); it!=page->end_Children(); it++ ) {
-    adapt::QDomNode_sp child= (*it);
-    if ( child->getLocalName() == "fragment" )
-    {_BLOCK_TRACE("Processing fragment node");
-      GC_ALLOCATE(CDFragment_O, fragment );
-      fragment->parseFromXml(child);
-      if ( fragment->interpret() ) {
-#if 0
-        core::HashTableEq_sp properties = fragment->getProperties();
-        if ( !properties->contains(INTERN_(kw,name)))
-        {
-          SIMPLE_ERROR(BF("Every fragment must have a property(%s) available properties: %s") % _rep_(INTERN_(kw,name)) % properties->keysAsString());
-        }
-        core::Symbol_sp constitutionName = properties->gethash(INTERN_(kw,name)).as<core::Symbol_O>();
-        fragment->setConstitutionName(constitutionName);
-        this->_NamedFragments.set(constitutionName,fragment);
-#endif
-        this->_AllFragments.push_back(fragment);
-      } else {
-        SIMPLE_ERROR(BF("Could not interpret a ChemDraw CDFragment"));
-      }
-    }
+    this->parseChild(*it,print);
   }
-  for ( it=page->begin_Children(); it!=page->end_Children(); it++ ) {
-    adapt::QDomNode_sp child= (*it);
-    if ( child->getLocalName() == "t" )
-    {_BLOCK_TRACEF(BF("Processing text block"));
-      GC_ALLOCATE(CDText_O, text );
-      text->parseFromXml(child);
-#if 0
-      if ( text->hasProperties() )
-      {
-        LOG(BF("Found properties: %s") % _rep_(text) );
-        core::HashTableEq_sp properties = text->getProperties();
-        if (!properties->contains(INTERN_(kw,name)))
-        {
-          SIMPLE_ERROR(BF("Every properties block must have a property(name:)"));
-        }
-        core::Symbol_sp constitutionName = properties->gethash(INTERN_(kw,name)).as<core::Symbol_O>();
-        if ( !this->_NamedFragments.contains(constitutionName) )
-        {
-          SIMPLE_ERROR(BF("Could not find fragment with name("+_rep_(constitutionName)+")"));
-        }
-        CDFragment_sp fragment = this->_NamedFragments.get(constitutionName);
-        fragment->addProperties(properties);
-      }
-#endif
-    }
-  }
+  if (print) BFORMAT_T(BF("ChemDraw_O::parse done.\n"));
 }
 
 

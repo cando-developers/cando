@@ -101,7 +101,7 @@ class CDNode_O : public core::CxxObject_O
 //	void setLabel(core::Symbol_sp l) { this->_Label = l;};
   Atom_sp	getAtom() const { return this->_Atom;};
   void setAtom(Atom_sp a) { this->_Atom = a;};
-  void	parseFromXml(adapt::QDomNode_sp xml);
+  void	parseFromXml(adapt::QDomNode_sp xml, bool print);
 
   void	bondTo( CDNode_sp neighbor, CDBondOrder order);
 
@@ -144,7 +144,7 @@ public:
 	void	setEndNode(CDNode_sp n) { this->_EndNode = n;};
 	CDNode_sp getEndNode() {_OF(); ANN(this->_EndNode);return this->_EndNode;};
 
-	void	parseFromXml(adapt::QDomNode_sp xml);
+	void	parseFromXml(adapt::QDomNode_sp xml, bool print);
 
 	CDBond_O( const CDBond_O& ss ); //!< Copy constructor
 
@@ -194,7 +194,7 @@ CL_DEFMETHOD     core::Symbol_sp getConstitutionName() { return this->_Constitut
     Atom_sp createOneAtom(CDNode_sp n);
     void	createAtomsAndBonds();
     void	createImplicitHydrogen(CDNode_sp from, const string& name);
-    void	parseFromXml(adapt::QDomNode_sp xml);
+    void	parseFromXml(adapt::QDomNode_sp xml, bool print);
     /*! Return false if the fragment couldn't be interpreted */
     bool	interpret();
 
@@ -204,7 +204,7 @@ CL_DEFMETHOD core::T_sp getMolecule() { return this->_Molecule; };
 
     int countNeighbors(CDNode_sp node);
     void createBonds(bool selectedAtomsOnly);
-Molecule_sp createMolecule();
+    Molecule_sp createMolecule();
     void removeAllBonds();
     void clearAtomSelected();
 
@@ -228,11 +228,8 @@ SMART(CDText );
 class CDText_O : public core::CxxObject_O
 {
     LISP_CLASS(chem,ChemPkg,CDText_O,"CDText",core::CxxObject_O);
-#if INIT_TO_FACTORIES
  public:
     static CDText_sp make(core::HashTableEq_sp kprops);
-#else
-#endif
 private:
 	string			_Text;
 	core::HashTableEq_sp		_Properties;
@@ -240,7 +237,7 @@ public:
 	void	initialize();
 public:
 
-	void	parseFromXml(adapt::QDomNode_sp xml);
+	void	parseFromXml(adapt::QDomNode_sp xml, bool print);
 
 	bool	hasProperties();
 	core::HashTableEq_sp getProperties() { return this->_Properties; };
@@ -257,14 +254,10 @@ SMART(ChemDraw );
 class ChemDraw_O : public core::CxxObject_O
 {
     LISP_CLASS(chem,ChemPkg,ChemDraw_O,"ChemDraw",core::CxxObject_O);
-#if INIT_TO_FACTORIES
  public:
-    static ChemDraw_sp make(core::T_sp stream);
-#else
-    DECLARE_INIT();
-#endif
-    public:
-	static void lisp_initGlobals(core::Lisp_sp lisp);
+    static ChemDraw_sp make(core::T_sp stream, bool print=false);
+ public:
+    static void lisp_initGlobals(core::Lisp_sp lisp);
 public:
     typedef	gctools::Vec0<CDFragment_sp>	Fragments;
 	typedef adapt::SymbolMap<CDFragment_O>	NamedFragments;
@@ -280,7 +273,8 @@ public:
 private:
 	string	_getAtomName(adapt::QDomNode_sp node);
 public:
-        void parse(core::T_sp strm);
+        void parse(core::T_sp strm, bool print);
+        void parseChild(adapt::QDomNode_sp child, bool print);
 
 	/*! Set the properties for the named fragment.
 	  @param fragmentName The name of the fragment whose properties are being set

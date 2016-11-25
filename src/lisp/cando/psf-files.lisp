@@ -27,7 +27,7 @@
 
 (export 'load-psf-pdb)
 
-(defmacro log (fmt &rest fmtargs)
+(defmacro psf-log (fmt &rest fmtargs)
   `(format t ,fmt ,@fmtargs)) 
 
 (defun read-psf-header (fin)

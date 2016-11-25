@@ -441,9 +441,9 @@ core::List_sp CoordinateArray_O::encode() {
   core::Vector_sp v = core::core__make_vector(cl::_sym_DoubleFloat_O,3*this->_Points.size());
   size_t cur(0);
   for ( size_t i(0); i<this->_Points.size(); ++i ) {
-    (*v)[cur++] = core::clasp_make_double_float(this->_Points[i].getX());
-    (*v)[cur++] = core::clasp_make_double_float(this->_Points[i].getY());
-    (*v)[cur++] = core::clasp_make_double_float(this->_Points[i].getZ());
+    v->setf_elt(cur++,core::clasp_make_double_float(this->_Points[i].getX()));
+    v->setf_elt(cur++,core::clasp_make_double_float(this->_Points[i].getY()));
+    v->setf_elt(cur++,core::clasp_make_double_float(this->_Points[i].getZ()));
   }
   return core::Cons_O::createList(core::Cons_O::create(INTERN_(kw,pnts),core::clasp_make_fixnum(this->_Points.size())),
                                   core::Cons_O::create(INTERN_(kw,pnts),v));
@@ -456,9 +456,9 @@ void CoordinateArray_O::decode(core::List_sp c) {
   size_t cur(0);
   for ( size_t i(0); i<this->_Points.size(); ++i ) {
     // TODO: Optimize this if v is a specialized vector of doubles
-    double x = core::clasp_to_double((*v)[cur++]);
-    double y = core::clasp_to_double((*v)[cur++]);
-    double z = core::clasp_to_double((*v)[cur++]);
+    double x = core::clasp_to_double(v->elt(cur++));
+    double y = core::clasp_to_double(v->elt(cur++));
+    double z = core::clasp_to_double(v->elt(cur++));
     Vector3 v3(x,y,z);
     this->_Points[i] = v3;
   }

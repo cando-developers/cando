@@ -1,5 +1,20 @@
 (in-package :amber)
 
+(defparameter *path* nil)
+
+(defun add-path (path)
+  "Add a path to the *path* dynamic variable"
+  (declare (pathname path))
+  (push path *path*))
+
+(defun search-path (filename)
+  "Search the *path* list for a directory that contains filename and return it.  Otherwise return NIL."
+  (declare (pathname filename))
+  (loop for path in (reverse *path*)
+     for full-path = (merge-pathnames filename path)
+     when (probe-file full-path)
+     return it))
+       
 (defparameter *objects* (make-hash-table :test #'equal))
 
 (define-condition object-not-found ()

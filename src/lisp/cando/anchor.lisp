@@ -99,3 +99,9 @@ Generate (* 2 num) points that first go around the circle on the top of the cyli
 
 (defun on-points (atoms points &key (weight 1.0))
   (apply-restraints atoms points weight))
+
+(defun clear-all-atom-restraints (matter)
+  (chem:map-atoms
+   nil
+   (lambda (a) (chem:clear-restraints a))
+   matter))

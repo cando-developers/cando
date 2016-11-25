@@ -286,9 +286,11 @@ Set the stereochemistry of a collection of stereocenters using a function that r
 
 
 
-(defun jostle (matter &optional (width 0.1) &aux (half-width (/ width 2.0)))
+(defun jostle (matter &optional (width 0.1) from-zero &aux (half-width (/ width 2.0)))
   "Randomly jostle atoms from their current positions"
   (flet ((jostle-atom (atom)
+           (when from-zero
+             (chem:set-position atom (geom:vec 0.0 0.0 0.0)))
            (let* ((cp (chem:get-position atom))
                   (pos (geom:vec
                        (+ (- (random width) half-width) (geom:vx cp))

@@ -133,9 +133,9 @@ namespace translate
 	{
           if ( core::Vector_sp vo = o.asOrNull<core::Vector_O>() ) {
             if ( cl__length(vo) == 3 ) {
-              _v.set(core::clasp_to_double((*vo)[0]),
-                     core::clasp_to_double((*vo)[1]),
-                     core::clasp_to_double((*vo)[2]));
+              _v.set(core::clasp_to_double(vo->elt(0)),
+                     core::clasp_to_double(vo->elt(1)),
+                     core::clasp_to_double(vo->elt(2)));
               return;
             } else {
               SIMPLE_ERROR(BF("Vector must have 3 elements"));
@@ -161,9 +161,9 @@ namespace translate
               if ( core::cl__length(vec) != 3 ) {
 		    SIMPLE_ERROR(BF("ovector3 can only have three elements"));
 		}
-	        _v.set(clasp_to_double(gc::As<core::Number_sp>((*vec)[0])),
-		       clasp_to_double(gc::As<core::Number_sp>((*vec)[1])),
-		       clasp_to_double(gc::As<core::Number_sp>((*vec)[2])));
+              _v.set(clasp_to_double(gc::As<core::Number_sp>(vec->elt(0))),
+                     clasp_to_double(gc::As<core::Number_sp>(vec->elt(1))),
+                     clasp_to_double(gc::As<core::Number_sp>(vec->elt(2))));
 	    } else if ( core::List_sp list = o.asOrNull<core::List_V>() ) {
               if ( core::cl__length(list) != 3 ) {
 		    SIMPLE_ERROR(BF("ovector3 can only have three elements"));

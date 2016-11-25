@@ -120,7 +120,7 @@ CL_DEFMETHOD Residue_sp Topology_O::build_residue() const
   ConstitutionAtoms_sp constitutionAtoms = this->_Constitution->getConstitutionAtoms();
   size_t idx = 0;
   for ( size_t idx=0, idxEnd(this->_AtomInfo->dimension()); idx<idxEnd; ++idx ) {
-    TopologyAtomInfo_sp ai = gc::As<TopologyAtomInfo_sp>((*this->_AtomInfo)[idx]);
+    TopologyAtomInfo_sp ai = gc::As<TopologyAtomInfo_sp>(this->_AtomInfo->elt(idx));
     Atom_sp atom = Atom_O::create();
     ConstitutionAtom_sp ca = (*constitutionAtoms)[ai->constitutionAtomIndex()];
     atom->setName(ca->_AtomName);
