@@ -127,7 +127,7 @@ Set the stereochemistry of a collection of stereocenters using a function that r
                               
 (defun optimize-structure (matter force-field &optional active-atoms)
   (let* ((energy-function (chem:make-energy-function matter force-field active-atoms))
-         (min (chem:make-minimizer :energy-function energy-function)))
+         (min (chem:make-minimizer energy-function)))
     (configure-minimizer min
                          :max-steepest-descent-steps 1000
                          :max-conjugate-gradient-steps 50000

@@ -124,7 +124,9 @@
   (:use #:common-lisp)
   (:export
    #:minimize
+   #:minimize-energy-function
    #:setup-amber
+   #:dump-excluded-atom-list
    ))
 
 (defpackage #:anchor

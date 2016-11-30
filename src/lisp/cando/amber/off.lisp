@@ -280,5 +280,5 @@ Load the OFF file containing forms into new-leap."
   (with-open-file (fin filename :direction :input)
     (let ((ht (amber.off:read-off-lib fin)))
       (maphash (lambda (name form)
-                 (amber:register-variable name form))
+                 (leap.core:register-variable name form))
                ht))))

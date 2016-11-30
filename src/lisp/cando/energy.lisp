@@ -45,20 +45,19 @@
   *ff*)
 
 
-(defun minimize (agg &key (restraints-on t)
-                       (force-field *ff*)
-                       (max-sd-steps 1000)
-                       (max-cg-steps 50000)
-                       (max-tn-steps 0)
-                       (sd-tolerance 5000.0)
-                       (cg-tolerance 0.5)
-                       (tn-tolerance 0.00001))
-  "Minimize the conformational energy"
-  (format t "Got minimizer~%")
-  (let* ((energy-func (chem:make-energy-function agg force-field))
-         (minimizer (chem:make-minimizer :energy-function energy-func)))
+
+(defun minimize-energy-function (energy-function &key (restraints-on t)
+                                                   (force-field *ff*)
+                                                   (max-sd-steps 1000)
+                                                   (max-cg-steps 50000)
+                                                   (max-tn-steps 0)
+                                                   (sd-tolerance 5000.0)
+                                                   (cg-tolerance 0.5)
+                                                   (tn-tolerance 0.00001))
+  "Minimize the conformational energy for an energy-function"
+  (let ((minimizer (chem:make-minimizer energy-function)))
     (unless restraints-on
-      (let ((restraint-term (chem:get-anchor-restraint-component energy-func)))
+      (let ((restraint-term (chem:get-anchor-restraint-component energy-function)))
         (chem:disable restraint-term)))
     (cando:configure-minimizer minimizer
                                :max-sd-steps max-sd-steps
@@ -68,7 +67,48 @@
                                :cg-tolerance cg-tolerance
                                :tn-tolerance tn-tolerance)
     (chem:enable-print-intermediate-results minimizer)
-    (chem:set-option energy-func 'chem:nonbond-term nil)
+    (chem:set-option energy-function 'chem:nonbond-term nil)
     (cando:minimize-no-fail minimizer)
-    (chem:set-option energy-func 'chem:nonbond-term t)
+    (chem:set-option energy-function 'chem:nonbond-term t)
     (cando:minimize-no-fail minimizer)))
+
+(defun minimize (agg &rest args
+                 &key (restraints-on t)
+                   (force-field *ff*)
+                   (max-sd-steps 1000)
+                   (max-cg-steps 50000)
+                   (max-tn-steps 0)
+                   (sd-tolerance 5000.0)
+                   (cg-tolerance 0.5)
+                   (tn-tolerance 0.00001))
+  "Minimize the conformational energy for an aggregate"
+  (let ((energy-func (chem:make-energy-function agg force-field :use-excluded-atoms use-excluded-atoms)))
+    (apply #'minimize-energy-function energy-func args)))
+
+
+;;;------------------------------------------------------------
+;;;
+;;; Helper routines for energy-functions
+;;;
+
+(defun excluded-atom-name (excluded-atom-index energy-function)
+  (let ((atom-table (chem:atom-table energy-function)))
+    (chem:elt-atom-name atom-table excluded-atom-index)))
+
+;;; Exported
+(defun dump-excluded-atom-list (energy-function)
+  "Dump the excluded atom list for the nonbond term of the energy-function."
+  (chem:dump-terms (chem:atom-table energy-function))
+  (let* ((nonbond (chem:get-nonbond-component energy-function))
+	 (number-excluded-atoms (chem:number-excluded-atoms nonbond))
+	 (excluded-atom-list (chem:excluded-atom-list nonbond))
+	 (excluded-atom-index-index 0))
+    (loop for numi below (core:native-vector<int>-size number-excluded-atoms)
+       for num = (core:native-vector<int>-elt number-excluded-atoms numi)
+       do (progn
+	    (format t "atom#~a ~a number-excluded-atoms ~a -----------~%" numi (excluded-atom-name numi energy-function) num)
+	    (loop for ei below num
+	       for eaindex = (core:native-vector<int>-elt excluded-atom-list excluded-atom-index-index)
+	       do (progn
+                    (format t "  excluded-atom-list[~a] -> ~a name: ~a~%" excluded-atom-index-index eaindex (excluded-atom-name eaindex energy-function))
+                    (incf excluded-atom-index-index)))))))

@@ -58,7 +58,7 @@
    #:load-off)
   )
 
-(defpackage #:amber
+(defpackage #:leap.core
   (:use #:common-lisp)
   (:import-from :amber.pdb
                 #:add-pdb-atom-map
@@ -66,12 +66,10 @@
   (:import-from :amber.off
                 #:load-off)
   (:export
-   #:search-path
-   #:add-path
+   #:add-path #:search-path
    #:residue-name
    #:chain-position
-   #:register-variable
-   #:lookup-variable
+   #:register-variable #:lookup-variable
    #:add-pdb-atom-map
    #:add-pdb-res-map
    #:load-off)

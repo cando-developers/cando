@@ -299,8 +299,8 @@ create more problems."
     (setf (current-reverse-sequence pdb) nil)))
 
 (defun try-to-assign-form (res layout)
-  (let* ((form (or (amber:lookup-variable (lookup-pdb-res-map (name res) (context res)) nil nil)
-                   (amber:lookup-variable (name res) nil nil))))
+  (let* ((form (or (leap.core:lookup-variable (lookup-pdb-res-map (name res) (context res)) nil nil)
+                   (leap.core:lookup-variable (name res) nil nil))))
     (if form
         (setf (topology res) form)
         (let ((key (layout-unknown-residue-key res)))
