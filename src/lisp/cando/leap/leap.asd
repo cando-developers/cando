@@ -9,7 +9,7 @@
     :serial t
     :components
     ((:file "packages")
-     (:file "foundation")
+     (:file "core")
      (:file "off")
      (:file "leap")
      (:file "pdb")

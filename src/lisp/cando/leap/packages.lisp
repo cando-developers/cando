@@ -25,18 +25,18 @@
 ;; -^-
 (cl:in-package #:common-lisp-user)
 
-(defpackage #:amber.topology
+(defpackage #:leap.topology
   (:use #:common-lisp)
   (:export
    #:write-topology))
 
-(defpackage #:amber.leap
+(defpackage #:leap.commands
   (:use #:common-lisp)
   (:export
    #:load-script
    ))
 
-(defpackage #:amber.pdb
+(defpackage #:leap.pdb
   (:use #:common-lisp)
   (:export
    #:scanpdb
@@ -46,7 +46,7 @@
   )
 
 
-(defpackage #:amber.off
+(defpackage #:leap.off
   (:use #:common-lisp)
   (:export
    #:read-off-data-block
@@ -60,10 +60,10 @@
 
 (defpackage #:leap.core
   (:use #:common-lisp)
-  (:import-from :amber.pdb
+  (:import-from :leap.pdb
                 #:add-pdb-atom-map
                 #:add-pdb-res-map)
-  (:import-from :amber.off
+  (:import-from :leap.off
                 #:load-off)
   (:export
    #:add-path #:search-path

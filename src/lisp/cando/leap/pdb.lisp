@@ -1,4 +1,4 @@
-(in-package :amber.pdb)
+(in-package :leap.pdb)
 
 (defparameter *pdb-res-map* (make-hash-table :test #'equal)
   "Map (residue name . terminus) from pdb files to form names")

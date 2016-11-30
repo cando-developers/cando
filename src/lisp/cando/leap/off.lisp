@@ -1,5 +1,5 @@
 
-(in-package :amber.off)
+(in-package :leap.off)
 
 
 (defclass off-header ()
@@ -278,7 +278,7 @@ Return the hash-table."
 * Description
 Load the OFF file containing forms into new-leap."
   (with-open-file (fin filename :direction :input)
-    (let ((ht (amber.off:read-off-lib fin)))
+    (let ((ht (leap.off:read-off-lib fin)))
       (maphash (lambda (name form)
                  (leap.core:register-variable name form))
                ht))))

@@ -8,8 +8,8 @@
 
 
 (progn
-  (defparameter *1mil-layout* (amber.pdb:scanpdb "~/Downloads/chromatin-1mil/chromsmall.pdb" :progress t))
-  (defparameter *1mil* (amber.pdb:loadpdb "~/Downloads/chromatin-1mil/chromsmall.pdb" :layout *1mil-layout* :progress t)))
+  (defparameter *1mil-layout* (leap.pdb:scanpdb "~/Downloads/chromatin-1mil/chromsmall.pdb" :progress t))
+  (defparameter *1mil* (leap.pdb:loadpdb "~/Downloads/chromatin-1mil/chromsmall.pdb" :layout *1mil-layout* :progress t)))
 
 (cando:chimera *1mil*)
 
@@ -82,8 +82,8 @@
 
 (chem:contents-as-list *1mil*)
 
-(defparameter *1mil-layout* (amber.pdb:scanpdb "~/Downloads/chromatin-1mil/chrom40.pdb" :progress t))
-(defparameter *1mil* (amber.pdb:loadpdb "~/Downloads/chromatin-1mil/chrom40.pdb" :layout *1mil-layout* :progress t))
+(defparameter *1mil-layout* (leap.pdb:scanpdb "~/Downloads/chromatin-1mil/chrom40.pdb" :progress t))
+(defparameter *1mil* (leap.pdb:loadpdb "~/Downloads/chromatin-1mil/chrom40.pdb" :layout *1mil-layout* :progress t))
 
 
 ;;; -------------
@@ -96,14 +96,14 @@
   (amber:add-path #P"/Users/meister/Development/amber/dat/leap/parm/")
   (amber:add-path #P"/Users/meister/Development/amber/dat/leap/cmd/"))
 
-(amber.leap::source #P"leaprc.protein.fb15")
-(apply 'amber.leap::leap.log-file '(:|leap.log|))
-(amber.leap::leap.log-file '(goof :|foo.test|))
+(leap.commands::source #P"leaprc.protein.fb15")
+(apply 'leap.commands::leap.log-file '(:|leap.log|))
+(leap.commands::leap.log-file '(goof :|foo.test|))
 
 (apropos "system-index")
 (ql-dist::system-index)
 
-(fdefinition 'amber.leap::leap.log-file)
+(fdefinition 'leap.commands::leap.log-file)
 (apropos "load-script")
 
 
@@ -117,7 +117,7 @@ x = { \"A\"
 test = 3
 ;asdfas
 x = 4")
-  (loop for x = (amber.leap::leap-parse-one-line sin nil :eof)
+  (loop for x = (leap.commands::leap-parse-one-line sin nil :eof)
      until (eq x :eof)
      when x
      do (print x)))
