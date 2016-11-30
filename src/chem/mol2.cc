@@ -24,7 +24,7 @@ This is an open source license for the CANDO software from Temple University, bu
 */
 /* -^- */
        
-#define DEBUG_LEVEL_FULL
+#define DEBUG_LEVEL_NONE
 
 
 //

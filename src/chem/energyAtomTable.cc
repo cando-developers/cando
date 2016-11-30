@@ -1,3 +1,4 @@
+#define DEBUG_LEVEL_FULL
 /*
     File: energyAtomTable.cc
 */
@@ -23,7 +24,6 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#define DEBUG_LEVEL_FULL
        
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
@@ -31,7 +31,10 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/nativeVector.h>
 #include <clasp/core/ql.h>
+#include <clasp/core/bformat.h>
 #include <clasp/core/sort.h>
+#include <clasp/core/evaluator.h>
+#include <clasp/core/str.h>
 #include <clasp/core/hashTableEq.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/chem/atom.h>
@@ -195,25 +198,28 @@ void	AtomTable_O::archiveBase(core::ArchiveP node)
 
 
 
-void	AtomTable_O::dumpTerms()
+CL_DEFMETHOD void	AtomTable_O::dumpTerms()
 {
   gctools::Vec0<EnergyAtom>::iterator	eai;
   string				as1,as2,as3,as4;
   core::Symbol_sp				str1, str2, str3, str4;
+  int index = 0;
   for ( eai=this->_Atoms.begin(); eai!=this->_Atoms.end(); eai++ ) {
     as1 = atomLabel(eai->atom());
     str1 = eai->atom()->getType();
-    _lisp->print(BF("(TERM 0ATOM %-9s %-9s :charge %8.5lf :mass %8.5lf :typeIndex %d)")
-                 % as1
-                 % _rep_(str1)
-                 % eai->_Charge
-                 % eai->_Mass
-                 % eai->_TypeIndex );
+    BFORMAT_T(BF("(TERM %d ATOM %-9s %-9s :charge %8.5lf :mass %8.5lf :typeIndex %d)\n")
+              % index
+              % as1
+              % _rep_(str1)
+              % eai->_Charge
+              % eai->_Mass
+              % eai->_TypeIndex );
+    index++;
   }
 }
 
 
-void AtomTable_O::constructFromMatter(Matter_sp matter, ForceField_sp forceField)
+void AtomTable_O::constructFromMatter(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms )
 {
   this->_Atoms.clear();
   this->_AtomTableIndices->clrhash();
@@ -226,6 +232,7 @@ void AtomTable_O::constructFromMatter(Matter_sp matter, ForceField_sp forceField
     while ( loop.advanceLoopAndProcess() ) 
     {
       a1 = loop.getAtom();
+      if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1) ) continue;
       if ( a1.isA<VirtualAtom_O>() ) 
       {
         LOG(BF("Skipping virtual atom[%s]") % _rep_(a1) );
@@ -234,7 +241,9 @@ void AtomTable_O::constructFromMatter(Matter_sp matter, ForceField_sp forceField
       LOG(BF("Setting atom[%s] in AtomTable[%d]") % _rep_(a1) % idx );
       this->_AtomTableIndices->setf_gethash(a1,core::clasp_make_fixnum(idx));
       EnergyAtom ea(forceField,a1,coordinateIndex);
+      ea._AtomName = a1->getName();
       {_BLOCK_TRACE("Building spanning tree for atom");
+        LOG(BF("Spanning tree for atom: %s\n") % _rep_(a1->getName()));
         SpanningLoop_sp span = SpanningLoop_O::create(a1);
         Atom_sp bonded;
         while ( span->advance() ) {
@@ -248,7 +257,8 @@ void AtomTable_O::constructFromMatter(Matter_sp matter, ForceField_sp forceField
             break;
           }
           ASSERT(backCount>0 && backCount<=3);
-          ea._AtomsAtRemove[backCount-1].insert(bonded);
+          LOG(BF("Adding atom at remove %d --> %s\n") % (backCount-1) % _rep_(bonded->getName()));
+          ea._AtomsAtRemoveBondAngle14[backCount-1].insert(bonded);
         }
       }
       this->_Atoms.push_back(ea);
@@ -257,9 +267,9 @@ void AtomTable_O::constructFromMatter(Matter_sp matter, ForceField_sp forceField
 #ifdef DEBUG_ON
       stringstream ss;
       gctools::SmallOrderedSet<Atom_sp>::iterator si;
-      for ( int zr = 0; zr<3; zr++ ) {
+      for ( int zr = 0; zr<=EnergyAtom::max_remove; zr++ ) {
         ss.str("");
-        for ( si = ea._AtomsAtRemove[zr].begin(); si!=ea._AtomsAtRemove[zr].end(); si++ ) {
+        for ( si = ea._AtomsAtRemoveBondAngle14[zr].begin(); si!=ea._AtomsAtRemoveBondAngle14[zr].end(); si++ ) {
           ss << " " << _rep_((*si));
         }
         LOG(BF("Atoms at remove %d = %s") % zr % ss.str() );
@@ -272,28 +282,43 @@ void AtomTable_O::constructFromMatter(Matter_sp matter, ForceField_sp forceField
 /*! Fill excludedAtomIndices with the excluded atom list.
 Amber starts counting atoms at 1 so add 1 to every index.
 The atomIndex passed is index0.*/
-CL_DEFMETHOD size_t AtomTable_O::push_back_excluded_atom_indices_and_sort( core::NativeVector_int_sp excludedAtomIndices, uint atomIndex)
+CL_DEFMETHOD size_t AtomTable_O::push_back_excluded_atom_indices_and_sort( core::NativeVector_int_sp excludedAtomIndices, size_t atomIndex)
 {
   size_t start_size = excludedAtomIndices->size();
   EnergyAtom* ea = &(this->_Atoms[atomIndex]);
   uint otherIndex;
-  for ( int ri = 0; ri<3; ++ri ) {
-    for (auto bi = ea->_AtomsAtRemove[ri].begin(); bi!=ea->_AtomsAtRemove[ri].end(); ++bi ) {
+  for ( int ri = 0; ri<=EnergyAtom::max_remove; ++ri ) {
+    for (auto bi = ea->_AtomsAtRemoveBondAngle14[ri].begin(); bi!=ea->_AtomsAtRemoveBondAngle14[ri].end(); ++bi ) {
       otherIndex = this->_AtomTableIndices->gethash(*bi).unsafe_fixnum();
-      // Amber starts counting atom indices from 1 so add 1 to otherIndex
-      if (otherIndex > atomIndex) excludedAtomIndices->push_back(otherIndex+1);
+      // Amber starts counting atom indices from 1 but Clasp starts with 0 
+      if (otherIndex > atomIndex) excludedAtomIndices->push_back(otherIndex);
     }
   }
   size_t end_size = excludedAtomIndices->size();
   if (end_size == start_size ) {
-    // Amber rules are that if there are no excluded atoms then put 0 in the
+    // Amber rules are that if there are no excluded atoms then put -1 in the
     // excluded atom list
-    excludedAtomIndices->push_back(0);
+    excludedAtomIndices->push_back(-1);
     ++end_size;
   }
   // sort the indices in increasing order
   sort::quickSortVec0(excludedAtomIndices->_Vector,start_size,end_size);
   return (end_size - start_size);
+}
+
+
+/*! Calculate the AMBER excluded atom list and return two vectors, one containing the number of 
+excluded atoms for each atom and the second containing the sorted excluded atom list */
+CL_DEFMETHOD core::NativeVector_int_mv AtomTable_O::calculate_excluded_atom_list()
+{
+  core::NativeVector_int_sp number_excluded_atoms = core::NativeVector_int_O::make();
+  core::NativeVector_int_sp excluded_atoms_list = core::NativeVector_int_O::make();
+  size_t num_atoms = this->getNumberOfAtoms();
+  for ( size_t i1=0; i1<num_atoms; ++i1) {
+    size_t num = this->push_back_excluded_atom_indices_and_sort(excluded_atoms_list,i1);
+    number_excluded_atoms->push_back(num);
+  }
+  return Values(number_excluded_atoms,excluded_atoms_list);
 }
 
 };

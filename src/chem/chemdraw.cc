@@ -23,7 +23,7 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#define	DEBUG_LEVEL_FULL
+#define	DEBUG_LEVEL_NONE
 
 #include <string.h>
 #include <clasp/core/common.h>
@@ -45,6 +45,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/lispStream.h>
 #include <clasp/core/lispReader.h>
 #include <clasp/core/symbolTable.h>
+#include <cando/geom/vector3.h>
 #include <cando/chem/spanningLoop.h>
 #include <clasp/core/reader.h>
 #include <cando/chem/cipPrioritizer.h>
@@ -128,6 +129,11 @@ void	CDNode_O::parseFromXml(adapt::QDomNode_sp xml, bool print)
 {_OF();
   this->_Id = xml->getAttributeInt("id");
   this->_Color = xml->getAttributeIntDefault("color",3);
+  std::string pos = xml->getAttributeString("p");
+  std::vector<std::string> posparts = core::split(pos," ");
+  float x = std::stof(posparts[0]);
+  float y = std::stof(posparts[1]);
+  this->_Pos = geom::Vector2(x,y);
   this->_Label = this->_extractLabel(xml);
   if (print) BFORMAT_T(BF("CDNode id(%s) color(%s) label(%s)\n") % this->_Id % this->_Color % this->_Label );
   LOG(BF("Parsing CDNode with label: %s") % this->_Label);
@@ -599,6 +605,10 @@ bool CDFragment_O::interpret()
 Atom_sp CDFragment_O::createOneAtom(CDNode_sp n)
 {_OF();
   Atom_sp a = Atom_O::create();
+  Vector3 pos3;
+  pos3.set(n->_Pos.getX(),n->_Pos.getY(), 0.0 );
+  a->setf_needs_build(false);
+  a->setPosition(pos3);
   a->setContainedBy(_Nil<core::T_O>());
   n->setAtom(a);
   string name;

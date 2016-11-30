@@ -95,7 +95,7 @@ This is an open source license for the CANDO software from Temple University, bu
 /* Copy the first part of user declarations.  */
 #line 69 "msmarts_Parser.yy" /* yacc.c:339  */
 
-#define DEBUG_LEVEL_FULL
+#define DEBUG_LEVEL_NONE
 
 #include<iostream>
 #include<string>

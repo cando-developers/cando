@@ -255,8 +255,8 @@ CL_DEFMETHOD   virtual uint	numberOfAtoms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
   void	setContainedByNothing(){this->containerContainedBy = _Unbound<Matter_O>(); };
 		// Check containedByValid before touching containedBy
   bool		containedByValid() const {return !(this->containerContainedBy.unboundp()); };
-  Matter_sp	containedBy() const	{ASSERT(this->containerContainedBy.boundp());return this->containerContainedBy;};
-  Matter_sp	containedBy()	{ASSERT(this->containerContainedBy.boundp()); return this->containerContainedBy; };
+  Matter_sp	containedBy() const	{ASSERT(!this->containerContainedBy.unboundp());return this->containerContainedBy;};
+  Matter_sp	containedBy()	{ASSERT(!this->containerContainedBy.unboundp()); return this->containerContainedBy; };
   bool		isContainedBy(Matter_sp matter);
   MatterVector&	getContents()	{return(this->_contents);};
   void	eraseContents(); // Empty the contents vector, don't free the memory

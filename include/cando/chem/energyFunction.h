@@ -131,7 +131,7 @@ class EnergyFunction_O : public core::CxxObject_O
 {
     LISP_CLASS(chem,ChemPkg,EnergyFunction_O,"EnergyFunction",core::CxxObject_O);
  public:
-    static EnergyFunction_sp make(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms=_Nil<core::T_O>(), bool progress=false);
+    static EnergyFunction_sp make(Matter_sp matter, ForceField_sp forceField, bool useExcludedAtoms=false, core::T_sp activeAtoms=_Nil<core::T_O>(), bool progress=false);
 public:
     static void lisp_initGlobals(core::Lisp_sp lisp);
     void initialize();
@@ -267,10 +267,10 @@ CL_DEFMETHOD     string	getName() { return this->_Name; };
     double		calculateEnergy();
     double		calculateEnergyAndForce();
 
-    void defineForMatter(Matter_sp agg, ForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
+    void defineForMatter(Matter_sp agg, ForceField_sp forceField, bool useExcludedAtoms, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
 
     void generateStandardEnergyFunctionTables(Matter_sp agg, ForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
-    void generateNonbondEnergyFunctionTables(Matter_sp agg, ForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
+    void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, ForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
     void generateRestraintEnergyFunctionTables(Matter_sp agg, ForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
 
 

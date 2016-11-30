@@ -192,73 +192,16 @@ namespace chem
 #endif
 }
 
-
-#if INIT_TO_FACTORIES
-
-CL_LAMBDA(&key matter force-field energy-function);
+CL_LAMBDA(energy-function);
 CL_LISPIFY_NAME(make-minimizer);
-CL_DEFUN Minimizer_sp Minimizer_O::make(gc::Nilable<Matter_sp> matter, gc::Nilable<ForceField_sp> forceField, gc::Nilable<EnergyFunction_sp> givenEnergyFunction)
+CL_DEFUN Minimizer_sp Minimizer_O::make(EnergyFunction_sp givenEnergyFunction)
 {
   GC_ALLOCATE(Minimizer_O, me );
   bool initialized = false;
-  if ( givenEnergyFunction.nilp() )
-  {
-    if ( matter.notnilp() && forceField.notnilp() )
-    {
-      initialized = true;
-      EnergyFunction_sp ef = EnergyFunction_O::create();
-      ef->defineForMatter(matter,forceField);
-      me->setEnergyFunction(ef);
-    }
-  } else
-  {
-    if ( matter.nilp() && forceField.nilp() )
-    {
-      initialized = true;
-      me->setEnergyFunction(givenEnergyFunction);
-    }
-  }
-  if ( !initialized )
-  {
-    SIMPLE_ERROR(BF("When initializing a Minimizer object you must either provide an (energyFunction) or a (Matter/ForceField) pair"));
-  }
+  initialized = true;
+  me->setEnergyFunction(givenEnergyFunction);
   return me;
 }
-
-#else
-
-    core::T_sp  Minimizer_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-    {
-	this->Base::__init__(exec,args,env,lisp);
-	bool initialized = false;
-	Matter_sp matter = env->lookup(lisp->internWithPackageName(ChemPkg,"matter")).as<Matter_O>();
-	ForceField_sp forceField = env->lookup(lisp->internWithPackageName(ChemPkg,"forceField")).as<ForceField_O>();
-	EnergyFunction_sp givenEnergyFunction = env->lookup(lisp->internWithPackageName(ChemPkg,"energyFunction")).as<EnergyFunction_O>();
-	if ( givenEnergyFunction.nilp() )
-	{
-	    if ( matter.notnilp() && forceField.notnilp() )
-	    {
-		initialized = true;
-		EnergyFunction_sp ef = EnergyFunction_O::create();
-		ef->defineForMatter(matter,forceField);
-		this->setEnergyFunction(ef);
-	    }
-	} else
-	{
-	    if ( matter.nilp() && forceField.nilp() )
-	    {
-		initialized = true;
-		this->setEnergyFunction(givenEnergyFunction);
-	    }
-	}
-	if ( !initialized )
-	{
-	    SIMPLE_ERROR(BF("When initializing a Minimizer object you must either provide an (energyFunction) or a (Matter/ForceField) pair"));
-	}
-	return _Nil<core::T_O>();
-    }
-
-#endif
 
 
 

@@ -70,14 +70,15 @@ public:
     uint		_TypeIndex;		//!<Type index
 public:
 	// Temporary variables, not necessary to store
-	/*! Sets of all atoms that are bonded to this one at remove 1(bonded),
-	  2(ends of angle) and 3(ends of dihedral) (indexed at 0, 1, 2 respectively */
-    gctools::SmallOrderedSet<Atom_sp> _AtomsAtRemove[3]; // s e t<Atom_sp>	_AtomsAtRemove[3];
+	/*! Sets of all atoms that are bonded to this one at remove 0(bonded),
+	  1(ends of angle) and 2(ends of dihedral) (indexed at 0, 1, 2 respectively */
+    static const int max_remove = 2;
+    gctools::SmallOrderedSet<Atom_sp> _AtomsAtRemoveBondAngle14[max_remove+1]; // s e t<Atom_sp>	_AtomsAtRemoveBondAngle14[3];
 public:
 //	void	archive( core::ArchiveP node);
 
-	bool inBondOrAngle(Atom_sp a) { return (this->_AtomsAtRemove[0].contains(a)) || (this->_AtomsAtRemove[1].count(a)>0);};
-	bool relatedBy14(Atom_sp a) { return (this->_AtomsAtRemove[2].contains(a)); };
+	bool inBondOrAngle(Atom_sp a) { return (this->_AtomsAtRemoveBondAngle14[0].contains(a)) || (this->_AtomsAtRemoveBondAngle14[1].count(a)>0);};
+	bool relatedBy14(Atom_sp a) { return (this->_AtomsAtRemoveBondAngle14[2].contains(a)); };
 
     EnergyAtom();
 	EnergyAtom(Atom_sp atom, uint coordinateIndex);
@@ -126,9 +127,25 @@ class AtomTable_O : public core::CxxObject_O
   iterator	end() { return this->_Atoms.end(); };
 
   void	dumpTerms();
-  void constructFromMatter(Matter_sp matter, ForceField_sp forceField);
+  void constructFromMatter(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms );
 
-  size_t push_back_excluded_atom_indices_and_sort(core::NativeVector_int_sp excludedAtomIndices, uint atomIndex);
+  size_t push_back_excluded_atom_indices_and_sort(core::NativeVector_int_sp excludedAtomIndices, size_t atomIndex);
+  /*! Calculate the excluded atom list with atom indices starting at 0.
+      Atoms with no excluded atoms get a -1 in the excluded_atom_list.
+      This is different from AMBER, where it starts counting at 1.
+      To generate an AMBER excluded atom list, add 1 to each entry.
+      Return Values(number_excluded_atoms,excluded_atom_list).
+  */
+  core::NativeVector_int_mv calculate_excluded_atom_list();
+
+  // ------------------------------------------------------------
+  //
+  // Access fields in AtomTable elements directly
+  //
+  CL_DEFMETHOD MatterName elt_atom_name(int index) { return this->_Atoms[index]._AtomName; };
+  CL_DEFMETHOD double elt_charge(int index) { return this->_Atoms[index]._Charge; };
+  CL_DEFMETHOD double elt_mass(int index) { return this->_Atoms[index]._Mass; };
+  CL_DEFMETHOD int elt_type_index(int index) { return this->_Atoms[index]._TypeIndex; };
 
   DEFAULT_CTOR_DTOR(AtomTable_O);
 };

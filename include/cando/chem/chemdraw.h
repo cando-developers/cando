@@ -34,6 +34,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <set>
 #include <clasp/core/common.h>
 #include <clasp/core/holder.h>
+#include <cando/geom/vector2.h>
 #include <cando/chem/bond.fwd.h>
 #include <cando/chem/constitutionAtoms.fwd.h>
 #include <cando/chem/chemPackage.h>
@@ -78,6 +79,7 @@ class CDNode_O : public core::CxxObject_O
  public:
   uint				_Id;
   uint                          _Color;
+  geom::Vector2                 _Pos;
   std::string       		_Label;
   StereochemistryType		_StereochemistryType;
   ConfigurationEnum		_Configuration;

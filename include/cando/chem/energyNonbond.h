@@ -49,18 +49,19 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace       chem {
 
 SMART(EnergyNonbond);
+ SMART(FFNonbondDb);
 SMART(ForceField);
 //SMART(DisplayList);
 SMART(AtomTable);
 
-typedef	struct
+struct TermNonBond
 {
 	double		dQ1Q2;
 	double		dA;
 	double		dC;
 	int		I1; //!< i*3 index into coordinate vector, must match Mathematica code!
 	int		I2; //!< i*3 index into coordinate vector, must match Mathematica code!
-} TermNonBond;
+};
 
 
 inline	string	XmlTag_Nonbond() { return "Nonbond"; };
@@ -97,10 +98,10 @@ public:
         Atom_sp	getAtom2() { return this->_Atom2; };
 	double	getDistance();
 	bool	defineFrom(ForceField_sp	forceField,
-					bool		is14,
-    					EnergyAtom	*iea1,
-    					EnergyAtom	*iea2,
-					EnergyNonbond_sp nb);
+                           bool		is14,
+                           EnergyAtom	*iea1,
+                           EnergyAtom	*iea2,
+                           EnergyNonbond_sp nb);
 
 public:
 //	void	archive(core::ArchiveP node);
@@ -122,83 +123,104 @@ double	_evaluateEnergyOnly_Nonbond(
 
 class EnergyNonbond_O : public EnergyComponent_O
 {
-    LISP_CLASS(chem,ChemPkg,EnergyNonbond_O,"EnergyNonbond",EnergyComponent_O);
-public:
-public: // virtual functions inherited from Object
-    void	initialize();
+  LISP_CLASS(chem,ChemPkg,EnergyNonbond_O,"EnergyNonbond",EnergyComponent_O);
+ public:
+ public: // virtual functions inherited from Object
+  void	initialize();
 //    void	archiveBase(core::ArchiveP node);
 //	string	__repr__() const;
 
-public:
-    typedef EnergyNonbond TermType;
-public: // instance variables
-    double		_DielectricConstant;
-    double		_ScaleVdw;
-    double		_ScaleElectrostatic;
-    double		_EnergyVdw;
-    double		_EnergyElectrostatic;
-    gctools::Vec0<TermType>	_Terms;
-    gctools::Vec0<TermType>	_BeyondThresholdTerms;
-
-public:	// Creation class functions
-
-public:	
-    typedef gctools::Vec0<TermType>::iterator iterator;
-    iterator begin() { return this->_Terms.begin(); };
-    iterator end() { return this->_Terms.end(); };
+ public:
+  typedef EnergyNonbond TermType;
+ public: // instance variables
+  double		_DielectricConstant;
+  double		_ScaleVdw;
+  double		_ScaleElectrostatic;
+  double		_EnergyVdw;
+  double		_EnergyElectrostatic;
+  bool                _UsesExcludedAtoms;
+    // Original way of defining nonbonds with list of nonbond terms
+  gctools::Vec0<TermType>	_Terms;
+  gctools::Vec0<TermType>	_BeyondThresholdTerms;
+    // Correct way of defining nonbonds using excluded atom indices
+  FFNonbondDb_sp        _FFNonbondDb;
+  AtomTable_sp          _AtomTable;
+  core::NativeVector_int_sp   _NumberOfExcludedAtomIndices;
+  core::NativeVector_int_sp   _ExcludedAtomIndices;
+ public:	
+  typedef gctools::Vec0<TermType>::iterator iterator;
+  iterator begin() { return this->_Terms.begin(); };
+  iterator end() { return this->_Terms.end(); };
 //added by G 7.19.2011
-public:
-    virtual size_t numberOfTerms() { return this->_Terms.size();};
+ public:
+  virtual size_t numberOfTerms() { return this->_Terms.size();};
+ public:
+  void	setDielectricConstant(double d) { this->_DielectricConstant = d; };
+  double	getDielectricConstant() { return this->_DielectricConstant; };
+  void	setVdwScale(double d) { this->_ScaleVdw = d; };
+  double	getVdwScale()	{return this->_ScaleVdw; };
+  void	setElectrostaticScale(double d) { this->_ScaleElectrostatic = d; };
+  double	getElectrostaticScale()	{return this->_ScaleElectrostatic; };
 
-
-public:
-    void	setDielectricConstant(double d) { this->_DielectricConstant = d; };
-    double	getDielectricConstant() { return this->_DielectricConstant; };
-
-    void	setVdwScale(double d) { this->_ScaleVdw = d; };
-    double	getVdwScale()	{return this->_ScaleVdw; };
-    void	setElectrostaticScale(double d) { this->_ScaleElectrostatic = d; };
-    double	getElectrostaticScale()	{return this->_ScaleElectrostatic; };
-
-    double	getVdwEnergy() { return this->_EnergyVdw; };
-    double	getElectrostaticEnergy() { return this->_EnergyElectrostatic; };
-
-
-public:
-
-    void addTerm(const TermType& term);
-    virtual void dumpTerms();
-
-    virtual	void	zeroEnergy();
-    virtual void setupHessianPreconditioner(NVector_sp nvPosition,
-					    AbstractLargeSquareMatrix_sp m );
-    virtual	void evaluateAll( NVector_sp 	pos,
-				   bool 		calcForce,
-				   gc::Nilable<NVector_sp> 	force,
-				   bool		calcDiagonalHessian,
-				   bool		calcOffDiagonalHessian,
-				   gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+  double	getVdwEnergy() { return this->_EnergyVdw; };
+  double	getElectrostaticEnergy() { return this->_EnergyElectrostatic; };
+  CL_DEFMETHOD core::NativeVector_int_sp number_excluded_atoms() const { return this->_NumberOfExcludedAtomIndices;}
+  CL_DEFMETHOD core::NativeVector_int_sp excluded_atom_list() const { return this->_ExcludedAtomIndices;}
+ public:
+  void addTerm(const TermType& term);
+  virtual void dumpTerms();
+  virtual	void	zeroEnergy();
+  virtual void setupHessianPreconditioner(NVector_sp nvPosition,
+                                          AbstractLargeSquareMatrix_sp m );
+    
+  virtual	void evaluateAll( NVector_sp 	pos,
+                                  bool 		calcForce,
+                                  gc::Nilable<NVector_sp> 	force,
+                                  bool		calcDiagonalHessian,
+                                  bool		calcOffDiagonalHessian,
+                                  gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
                                   gc::Nilable<NVector_sp>	hdvec,
                                   gc::Nilable<NVector_sp> dvec);
 
-    virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-	NVector_sp pos );
+  void evaluateUsingExcludedAtoms( NVector_sp 	pos,
+                                   bool 		calcForce,
+                                   gc::Nilable<NVector_sp> 	force,
+                                   bool		calcDiagonalHessian,
+                                   bool		calcOffDiagonalHessian,
+                                   gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                   gc::Nilable<NVector_sp>	hdvec,
+                                   gc::Nilable<NVector_sp> dvec);
+  void evaluateTerms( NVector_sp 	pos,
+                      bool 		calcForce,
+                      gc::Nilable<NVector_sp> 	force,
+                      bool		calcDiagonalHessian,
+                      bool		calcOffDiagonalHessian,
+                      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                      gc::Nilable<NVector_sp>	hdvec,
+                      gc::Nilable<NVector_sp> dvec);
 
-    virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
+  virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
+                                                                               NVector_sp pos );
 
-    virtual string	beyondThresholdInteractionsAsString();
+  virtual	int	checkForBeyondThresholdInteractions( stringstream& info, NVector_sp pos );
+
+  virtual string	beyondThresholdInteractionsAsString();
 
 //    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn, core::Lisp_sp );
 
-    virtual	double	getEnergy();
+  virtual	double	getEnergy();
 
 
-    void constructFromAtomTable(AtomTable_sp atomTable, ForceField_sp forceField, core::T_sp atomSet, bool show_progress);
+  void constructFromAtomTable(bool useExcludedAtoms, AtomTable_sp atomTable, ForceField_sp forceField, bool show_progress);
+  void constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, ForceField_sp forceField, bool show_progress);
+  void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress);
+  void constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, ForceField_sp forceField, bool show_progress);
 
-public:
-    EnergyNonbond_O( const EnergyNonbond_O& ss ); //!< Copy constructor
 
-    DEFAULT_CTOR_DTOR(EnergyNonbond_O);
+ public:
+  EnergyNonbond_O( const EnergyNonbond_O& ss ); //!< Copy constructor
+
+ EnergyNonbond_O() : _UsesExcludedAtoms(false) {};
 };
 
 };

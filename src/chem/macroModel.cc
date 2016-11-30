@@ -23,7 +23,7 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#define DEBUG_LEVEL_FULL       
+#define DEBUG_LEVEL_NONE       
 //
 // (C) 2004 Christian E. Schafmeister
 //
@@ -55,13 +55,13 @@ namespace chem
 typedef	struct	{
 	int		iAtom;
 	int		iBondOrder; //	BondOrder	iBondOrder;
-} BondType;
+} MMBondType;
 
 typedef	struct	{
 	Atom_sp		atom;
 	int		iName;
 	int		iType;
-	BondType	bonds[6];
+	MMBondType	bonds[6];
 	double		x,y,z;
 	int		resNum;
 	char		resCode;

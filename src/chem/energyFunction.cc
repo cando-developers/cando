@@ -23,7 +23,7 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#define	DEBUG_LEVEL_FULL
+#define	DEBUG_LEVEL_NONE
 //
 // (C) 2004 Christian E. Schafmeister
 //
@@ -145,14 +145,14 @@ void energyFunction_initializeSmarts()
 
 
 
-CL_LAMBDA(matter force_field &key active_atoms show_progress);
+CL_LAMBDA(matter force_field &key use_excluded_atoms active_atoms show_progress);
 CL_LISPIFY_NAME(make_energy_function);
-CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress)
+CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, ForceField_sp forceField, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress)
 {
   GC_ALLOCATE(EnergyFunction_O, me );
   if ( matter.notnilp() ) {
     if ( forceField.notnilp() ) {
-      me->defineForMatter(matter,forceField,activeAtoms,show_progress);
+      me->defineForMatter(matter,forceField,useExcludedAtoms,activeAtoms,show_progress);
     } else {
       SIMPLE_ERROR(BF("You must provide a forceField if you provide a matter object"));
     }
@@ -1230,8 +1230,8 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
 
 
 CL_LISPIFY_NAME("defineForMatter");
-CL_LAMBDA((energy_function !) matter force_field &key active_atoms show_progress);
-CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress )
+CL_LAMBDA((energy_function !) matter force_field &key use_excluded_atoms active_atoms show_progress );
+CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField_sp forceField, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress )
 {
   if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
   {
@@ -1240,22 +1240,17 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField
 	//
 	// Identify rings
 	//
-  {_BLOCK_TRACEF(BF("Identify rings"));
-//	printf("%s:%d Skipping ring searching FIX ME\n", __FILE__, __LINE__);
-    RingFinder_O::identifyRings(matter);
-  }
+  RingFinder_O::identifyRings(matter);
 	//
 	// Assign relative Cahn-Ingold-Preylog priorities
 	//
-  {_BLOCK_TRACEF(BF("Assign CIP priorities"));
-    CipPrioritizer_O::assignPriorities(matter); 
-  }
+  CipPrioritizer_O::assignPriorities(matter); 
 	// 
 	// Assign atom types
 	//
   forceField->assignTypes(matter);
   this->generateStandardEnergyFunctionTables(matter,forceField,activeAtoms,show_progress);
-  this->generateNonbondEnergyFunctionTables(matter,forceField,activeAtoms,show_progress);
+  this->generateNonbondEnergyFunctionTables(useExcludedAtoms,matter,forceField,activeAtoms,show_progress);
   this->generateRestraintEnergyFunctionTables(matter,forceField,activeAtoms,show_progress);
 }
 
@@ -1272,6 +1267,10 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   FFItor_sp        ffItor;
   FFNonbond_sp	ffNonbond1, ffNonbond2;
   int             coordinateIndex;
+  
+  // Construct atom table - used by all terms
+  this->_AtomTable->constructFromMatter(matter,forceField,activeAtoms);
+  
 	//
 	// Now create the energy function from all this info
 	//
@@ -1292,29 +1291,6 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   this->_eraseMissingParameters();
   coordinateIndex = 0;
   ASSERTNOTNULL(forceField);
-#if 1
-  this->_AtomTable->constructFromMatter(matter,forceField);
-  if (show_progress) BFORMAT_T(BF("Built atom table for %d atoms\n") % this->_AtomTable->getNumberOfAtoms());
-#else
-  {_BLOCK_TRACE("Defining ATOMS");
-    loop.loopTopGoal(matter,ATOMS);
-    int atomCount=0;
-    while ( loop.advanceLoopAndProcess() ) {
-      a1 = loop.getAtom();
-      if ( a1.isA<VirtualAtom_O>() ) continue; // skip virtuals
-      LOG(BF( "Atom = %s")% a1->description() );
-      a1->setAtomTableIndex(this->_AtomTable->getNumberOfAtoms());
-      EnergyAtom energyAtom(forceField,a1,coordinateIndex);
-      this->_AtomTable->add(energyAtom);
-      coordinateIndex += 3;
-      ++atomCount;
-    }
-    if (show_progress) BFORMAT_T(BF("Built atom table for %d atoms\n") % atomCount);
-  }
-#endif
-#ifdef	DEBUG_DEFINE_ENERGY
-  lisp->print(BF("%s:%d There were %d atoms") % __FILE__ % __LINE__ % this->_AtomTable.size() );
-#endif
   {_BLOCK_TRACE("Defining STRETCH");
     size_t terms = 0;
     size_t missing_terms = 0;
@@ -1377,7 +1353,6 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
     if (show_progress) BFORMAT_T(BF("Built angle table with %d terms and %d missing terms\n") % terms % missing_terms);
   }
   {_BLOCK_TRACE("Defining PROPERS");
-    EnergyNonbond energyNonbond;
     size_t terms = 0;
     size_t missing_terms = 0;
     loop.loopTopGoal(matter,PROPERS);
@@ -1503,10 +1478,20 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 
 CL_LAMBDA((energy_function !) matter force_field &key active_atoms show_progress);
 CL_DOCSTRING("Generate the nonbond energy function tables. The atom types, and CIP priorities need to be precalculated.");
-CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress )
+CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress )
 {
+  if (show_progress)
+    BFORMAT_T(BF("Built atom table for %d atoms\n") % this->_AtomTable->getNumberOfAtoms());
+#ifdef	DEBUG_DEFINE_ENERGY
+  lisp->print(BF("%s:%d There were %d atoms") % __FILE__ % __LINE__ % this->_AtomTable.size() );
+#endif
         // Nonbonds here!!!!!!!!!!!!!!
-  this->_Nonbond->constructFromAtomTable(this->_AtomTable, forceField, activeAtoms, show_progress);
+  if (useExcludedAtoms) {
+    this->_Nonbond->constructExcludedAtomListFromAtomTable(this->_AtomTable, forceField, show_progress);
+    this->_Nonbond->construct14InteractionTerms(this->_AtomTable,matter,forceField,activeAtoms,show_progress);
+  } else {
+    this->_Nonbond->constructNonbondTermsFromAtomTable(false,this->_AtomTable, forceField, show_progress);
+  }
   if (show_progress) BFORMAT_T(BF("Built nonbond table for %d terms\n") % this->_Nonbond->numberOfTerms());
 }
 

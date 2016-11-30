@@ -23,7 +23,7 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
- #define	DEBUG_LEVEL_FULL
+ #define	DEBUG_LEVEL_NONE
 //
 // (C) 2004 Christian E. Schafmeister
 //
@@ -388,6 +388,7 @@ void Atom_O::setHybridizationFromString(const string& h)
 void Atom_O::_addHydrogenWithName(MatterName name)
 {
   Atom_sp h = Atom_O::create();
+  h->setf_needs_build(true);
   h->setName(name);
   h->setElement(element_H);
   Residue_sp res = this->getResidueContainedBy();
