@@ -25,6 +25,17 @@
 ;; -^-
 (cl:in-package #:common-lisp-user)
 
+(defpackage #:fortran
+  (:use #:common-lisp)
+  (:shadow #:format #:write)
+  (:export
+   #:with-fortran-output-file
+   #:format
+   #:write
+   #:end-line
+   #:debug-on
+   #:debug))
+
 (defpackage #:leap.topology
   (:use #:common-lisp)
   (:export

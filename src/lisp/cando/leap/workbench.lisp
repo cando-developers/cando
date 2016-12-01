@@ -13,6 +13,18 @@
 
 (cando:chimera *1mil*)
 
+
+;;; ------------------------------------------------------------
+;;;
+;;; Test fortran code
+
+(apply #'open ("/tmp/test.for" :direction :output))
+
+
+
+
+
+
 (defun setup-amber-force-field ()
   (let ((parms (chem:make-read-amber-parameters)))
     (with-open-file (fin "~/Development/amber/dat/leap/parm/parm99.dat")
