@@ -90,24 +90,24 @@ namespace chem {
     void	setOligomer(Oligomer_sp o);
     void	resetOligomer();
     Oligomer_sp	getOligomer();
-    CL_NAME("isSelected");
+    CL_LISPIFY_NAME("isSelected");
     CL_DEFMETHOD 	bool isSelected() { return this->_Selected; };
-    CL_NAME("setSelected");
+    CL_LISPIFY_NAME("setSelected");
     CL_DEFMETHOD 	void setSelected(bool b) { this->_Selected = b; };
 
     void	setHasError(bool b) { this->_HasError = b;};
-    CL_NAME("getHasError");
+    CL_LISPIFY_NAME("getHasError");
     CL_DEFMETHOD 	bool	getHasError() { return this->_HasError; };
 
     virtual bool isRingClosing() { return false; };
-    CL_NAME("throwIfBadConnections");
+    CL_LISPIFY_NAME("throwIfBadConnections");
     CL_DEFMETHOD         virtual void throwIfBadConnections() {_OF();SUBCLASS_MUST_IMPLEMENT();};
-    CL_NAME("Coupling-checkForErrors");
+    CL_LISPIFY_NAME("Coupling-checkForErrors");
     CL_DEFMETHOD         virtual void checkForErrors(core::T_sp errorStream) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
     virtual Monomer_sp getOtherSideMonomer(Monomer_sp mon) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
-    CL_NAME("doCoupling");
+    CL_LISPIFY_NAME("doCoupling");
     CL_DEFMETHOD         virtual void doCoupling(Residue_sp inResidue, Residue_sp outResidue ) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
 
@@ -142,10 +142,10 @@ namespace chem {
     static core::Symbol_sp otherPlugName(core::Symbol_sp plugName);
     static bool isInPlugName(core::Symbol_sp plugName);
     static bool isOutPlugName(core::Symbol_sp plugName) {
-      return plugName->symbolName()->schar(0) == OUT_PLUG_PREFIX;
+      return plugName->symbolName()->rowMajorAref(0).unsafe_character() == OUT_PLUG_PREFIX;
     };
     static bool isPlugName(core::Symbol_sp plugName) {
-      return ((plugName->symbolName()->schar(0) == OUT_PLUG_PREFIX) || (plugName->symbolName()->schar(0) == IN_PLUG_PREFIX) );
+      return ((plugName->symbolName()->rowMajorAref(0).unsafe_character() == OUT_PLUG_PREFIX) || (plugName->symbolName()->rowMajorAref(0).unsafe_character() == IN_PLUG_PREFIX) );
     };
 
   private:
@@ -180,7 +180,7 @@ namespace chem {
 
     string	description() const;
     void	setName( core::Symbol_sp nm);
-    CL_NAME("getName");
+    CL_LISPIFY_NAME("getName");
     CL_DEFMETHOD 	core::Symbol_sp	getName() const {return this->_Name;};
 
     void	couple( Monomer_sp sin, Monomer_sp sout );

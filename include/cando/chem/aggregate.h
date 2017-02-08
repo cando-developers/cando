@@ -94,7 +94,7 @@ public:
     virtual void	transferCoordinates(Matter_sp other);
 
     virtual void addMatter(Matter_sp matter);
-CL_NAME("addMolecule");
+CL_LISPIFY_NAME("addMolecule");
 CL_DEFMETHOD     Aggregate_sp	addMolecule( Molecule_sp a ) {this->addMatter(a); return this->sharedThis<Aggregate_O>();};
     Aggregate_sp	addMoleculeRetainId( Molecule_sp a ) {this->addMatterRetainId(Matter_sp(a)); return this->sharedThis<Aggregate_O>();};
     Molecule_sp      firstMolecule();
@@ -112,14 +112,14 @@ CL_DEFMETHOD     Aggregate_sp	addMolecule( Molecule_sp a ) {this->addMatter(a); 
 //	void		dump();
 
     bool		testForVdwOverlap(Aggregate_sp other);
-CL_NAME("testAggregateConsistancy");
+CL_LISPIFY_NAME("testAggregateConsistancy");
 CL_DEFMETHOD     bool		testAggregateConsistancy() {return this->testConsistancy(Matter_sp());};
 
     virtual uint	numberOfAtoms( );
     virtual bool isAggregate() { return true;};
 
     /*! Return a Cons with all molecules */
-CL_NAME("molecules");
+CL_LISPIFY_NAME("molecules");
 CL_DEFMETHOD     core::List_sp molecules() { return this->contentsAsList(); };
 
     /*! When a structure is loaded and all the atoms are dumped into the same
@@ -140,7 +140,7 @@ CL_DEFMETHOD     core::List_sp molecules() { return this->contentsAsList(); };
 
 
     void		writeToFile(const string& fileName);
-CL_NAME("saveAs");
+CL_LISPIFY_NAME("saveAs");
 CL_DEFMETHOD     void		saveAs(const string& fileName) { _G(); this->writeToFile(fileName);};
 
 

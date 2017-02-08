@@ -32,7 +32,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/bformat.h>
 #include <cando/adapt/adapters.h>
 #include <cando/adapt/stringSet.h>
-#include <clasp/core/binder.h>
 #include <cando/chem/chemdraw.h>
 #include <cando/adapt/quickDom.h>
 #include <cando/chem/matter.h>
@@ -253,7 +252,7 @@ void	CDBond_O::parseFromXml(adapt::QDomNode_sp xml, bool print)
     this->_Order = dativeCDBond;
   } else 
   {
-    Warn(core::Str_O::create((BF("Unknown bond order %s") % this->_Order)),
+    Warn(core::SimpleBaseString_O::make((BF("Unknown bond order %s") % this->_Order).str()),
          _Nil<core::T_O>());
     this->_Order = unknownCDBond;
   }
@@ -1066,7 +1065,7 @@ void ChemDraw_O::setFragmentProperties(core::Symbol_sp name
 #if 0
 void	ChemDraw_O::setFragmentProperties(core::List_sp props)
 {
-  DEPRECIATED();
+  DEPRECATED();
   core::HashTableEq_sp kargs = core::HashTableEq_O::createFromKeywordCons(props,validChemdrawKeywords);
   if ( !kargs->contains(_kw_name) )
   {

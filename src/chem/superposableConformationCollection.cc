@@ -146,7 +146,7 @@ int	SuperposableConformationCollection_O::numberOfSuperposeAtoms()
 
 ConformationCollectionEntry_sp	SuperposableConformationCollection_O::createEntryIfConformationIsNew(Matter_sp matter)
 {
-geom::CoordinateArray_sp			newConf;
+geom::SimpleVectorCoordinate_sp			newConf;
 SuperposeEngine_sp				superposer;
 Matrix					transform;
 ConformationCollectionEntry_sp		entry;
@@ -159,7 +159,7 @@ ConformationCollectionEntry_sp		entry;
     	// Now check if the structure is new or not.
 	// First assemble the superposable coordinates of this conformation
 	//
-    newConf = this->_extractCoordinateArray(matter);
+    newConf = this->_SimpleVectorCoordinate(matter);
 
     {_BLOCK_TRACE("Comparing structure to known structures using superposer");
 
@@ -174,7 +174,7 @@ ConformationCollectionEntry_sp		entry;
 	    superposer->setFixedPoints(this->_SuperposeAtomIndices,newConf);
 	    double rms;
             gctools::Vec0<ConformationCollectionEntry_sp>::iterator	ci;
-	    geom::CoordinateArray_sp				moveable;
+	    geom::SimpleVectorCoordinate_sp				moveable;
 
 		//
 		// Loop through the low-high entry range and compare the structures
@@ -227,8 +227,8 @@ geom::Color_sp				color;
 Matter_sp			matter;
 ConformationCollection_O::entryIterator	si;
 ConformationCollectionEntry_sp	entry;
-geom::CoordinateArray_sp		superposeCoords;
-geom::CoordinateArray_O::iterator	ci;
+geom::SimpleVectorCoordinate_sp		superposeCoords;
+geom::SimpleVectorCoordinate_O::iterator	ci;
 SuperposableConformationCollection_O::superposeAtomIndexIterator	ii;
 frames = geom::FrameList_O::create();
     matter = this->getMatter();

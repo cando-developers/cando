@@ -123,7 +123,7 @@ public:
 
 	AtomIndexer_sp	getAtomIndexerForMonomerName(core::Symbol_sp name) const;
 
-	void set(core::Symbol_sp nm, AtomIndexer_O::smart_ptr ai);
+	void set(core::Symbol_sp nm, AtomIndexer_O::smart_ptr_type ai);
 	void eraseEntryForMonomer(core::Symbol_sp nm);
 
 

@@ -45,11 +45,11 @@ namespace units
 
 
 
-    CoordinateArray_sp CoordinateArray_O::create(core::CoordinateArray_sp coords, core::Symbol_sp dimension, int power, core::Symbol_sp system,core::Lisp_sp lisp)
+    SimpleVectorCoordinate_sp SimpleVectorCoordinate_O::create(core::SimpleVectorCoordinate_sp coords, core::Symbol_sp dimension, int power, core::Symbol_sp system,core::Lisp_sp lisp)
     {
-	CoordinateArray_sp uc = _lisp->create<CoordinateArray_O>();
+	SimpleVectorCoordinate_sp uc = _lisp->create<SimpleVectorCoordinate_O>();
 	/*Set the default system as units:*SI* */
-	core::CoordinateArray_sp camount = coords->copy();
+	core::SimpleVectorCoordinate_sp camount = coords->copy();
 	uc->_System = system;
 	double amountScale = 1.0;
 	uc->parseDimensionSymbols(uc->_Powers,amountScale,dimension,power);
@@ -60,17 +60,17 @@ namespace units
 
 
     /*! If last argument is a System then use that system, otherwise use the default units:*SI* */
-    Object_sp CoordinateArray_O::__init__(::core::Executable_sp exec, ::core::Cons_sp allargs, ::core::Environment_sp env, ::core::Lisp_sp lisp)
+    Object_sp SimpleVectorCoordinate_O::__init__(::core::Executable_sp exec, ::core::Cons_sp allargs, ::core::Environment_sp env, ::core::Lisp_sp lisp)
     {
 //      this->Base::__init__(exec,args,env,lisp);
 //      arg = from_object<XXXX>::convert(env->lookup(this->Package(),"YYY"));
 	core::Cons_sp args = allargs->cdr();
-	LOG(BF("Initializing CoordinateArray_O with args[%s]") % _rep_(args) );
+	LOG(BF("Initializing SimpleVectorCoordinate_O with args[%s]") % _rep_(args) );
 	double amount = 1.0;
-	core::CoordinateArray_sp camount = args->ocar().as<core::CoordinateArray_O>();
+	core::SimpleVectorCoordinate_sp camount = args->ocar().as<core::SimpleVectorCoordinate_O>();
 	if ( camount.nilp() )
 	{
-	    camount = _lisp->create<core::CoordinateArray_O>();
+	    camount = _lisp->create<core::SimpleVectorCoordinate_O>();
 	}
 	/*Set the default system as units:*SI* */
 	this->_System = this->parseDimensionSymbolList(this->_Powers,amount,args->cdr().as<core::Cons_O>(),true);
@@ -79,34 +79,34 @@ namespace units
 	return _lisp->onil();
     }
 
-    void CoordinateArray_O::archiveBase(::core::ArchiveP node)
+    void SimpleVectorCoordinate_O::archiveBase(::core::ArchiveP node)
     {
         this->Base::archiveBase(node);
 	node->archiveObject("coords",this->_Coordinates);
     }
 
 
-    void CoordinateArray_O::initialize()
+    void SimpleVectorCoordinate_O::initialize()
     {_OF();
         this->Base::initialize();
-	this->_Coordinates = core::CoordinateArray_O::create(_lisp);
+	this->_Coordinates = core::SimpleVectorCoordinate_O::create(_lisp);
     }
 
 
-    Object_sp CoordinateArray_O::amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    Object_sp SimpleVectorCoordinate_O::amount_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
     {_OF();
 	int matchPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	double amountScale = 1.0;
 	this->parseDimensionSymbolList(matchPowers,amountScale,args->cdr(),false);
 	this->throwOnPowersMisMatch(matchPowers);
-	core::CoordinateArray_sp ccopy = this->_Coordinates->copy();
+	core::SimpleVectorCoordinate_sp ccopy = this->_Coordinates->copy();
 	ccopy->multiplyBy(1.0/amountScale);
 	return ccopy;
     }
 
 
 
-    Object_sp CoordinateArray_O::getElement_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    Object_sp SimpleVectorCoordinate_O::getElement_matchUnits(core::Executable_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
     {_OF();
 	int matchPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	double amountScale = 1.0;
@@ -118,14 +118,14 @@ namespace units
     }
 
 
-    Xyz_sp CoordinateArray_O::getElement(int i) const
+    Xyz_sp SimpleVectorCoordinate_O::getElement(int i) const
     {_OF();
-	return Xyz_O::create(this->_Coordinates->getElement(i),this->sharedThis<CoordinateArray_O>(),_lisp);
+	return Xyz_O::create(this->_Coordinates->getElement(i),this->sharedThis<SimpleVectorCoordinate_O>(),_lisp);
     }
 
 
 
-    Vector3 CoordinateArray_O::getElement(int i, core::Symbol_sp unit1, int power1)
+    Vector3 SimpleVectorCoordinate_O::getElement(int i, core::Symbol_sp unit1, int power1)
     {_OF();
 	int matchPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	double amountScale = 1.0;
@@ -135,7 +135,7 @@ namespace units
 	return vc;
     }
 
-    Vector3 CoordinateArray_O::getElement(int i, core::Symbol_sp unit1, int power1, core::Symbol_sp unit2, int power2)
+    Vector3 SimpleVectorCoordinate_O::getElement(int i, core::Symbol_sp unit1, int power1, core::Symbol_sp unit2, int power2)
     {_OF();
 	int matchPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	double amountScale = 1.0;
@@ -149,7 +149,7 @@ namespace units
 
 
 
-    Object_sp CoordinateArray_O::amount() const
+    Object_sp SimpleVectorCoordinate_O::amount() const
     {_OF();
 	int zeroPowers[NumBaseDimensions] = {0,0,0,0,0,0,0};
 	if ( this->powersMatch(zeroPowers) )
@@ -162,7 +162,7 @@ namespace units
 
 
 
-    void CoordinateArray_O::append(Xyz_sp xyz)
+    void SimpleVectorCoordinate_O::append(Xyz_sp xyz)
     {_OF();
 	ASSERTF(this->_System==xyz->_System,BF("Systems must match"));
 	this->_Coordinates->append(xyz->_Pos);
@@ -171,13 +171,13 @@ namespace units
 
 
 
-    Object_sp CoordinateArray_O::unsafeAmount() const
+    Object_sp SimpleVectorCoordinate_O::unsafeAmount() const
     {_OF();
 	return this->_Coordinates->copy();
     }
 
 
-    string CoordinateArray_O::__repr__() const
+    string SimpleVectorCoordinate_O::__repr__() const
     {_OF();
 	stringstream ss;
 	double amount = 1.0;
@@ -187,16 +187,16 @@ namespace units
     }
 
 
-    CoordinateArray_sp CoordinateArray_O::copy() const
+    SimpleVectorCoordinate_sp SimpleVectorCoordinate_O::copy() const
     {_OF();
-	CoordinateArray_sp ca = RP_Copy(this);
+	SimpleVectorCoordinate_sp ca = RP_Copy(this);
 	ca->_Coordinates = this->_Coordinates->copy();
 	return ca;
     }
 
 
 
-    string CoordinateArray_O::dump() const
+    string SimpleVectorCoordinate_O::dump() const
     {_OF();
 	stringstream ss;
 	for ( int i=0; i<this->size(); i++ )

@@ -65,7 +65,10 @@ namespace units
 	{
 	    core::Array_sp array = obj.as<core::Array_O>();
 	    core::Array_sp narray = array->deepCopy().as<core::Array_O>();
+            IMPLEMENT_MEF(BF("Handle new arrays"));
+#if 0
 	    narray->multiplyByScalar(conversion);
+#endif
 	    return narray;
 	}
 	SIMPLE_ERROR(BF("Illegal value type[%s] for copyAndScaleValue") % core::cl__class_of(obj)->classNameAsString() );
@@ -77,8 +80,8 @@ namespace units
     {
 	if ( obj.isA<core::Vector_O>() )
 	{
-	    core::Vector_sp vec = obj.as<core::Vector_O>();
-	    core::T_sp element = vec->elt(index);
+          core::Vector_sp vec = gc::As_unsafe<core::Vector_sp>(obj);
+	    core::T_sp element = vec->rowMajorAref(index);
 	    return Quantity_O::copyAndScaleValue(element,conversion);
 	}
 	SIMPLE_ERROR(BF("Illegal value type[%s] for copyAndScaleValueElement") % core::cl__class_of(obj)->classNameAsString() );
@@ -89,8 +92,8 @@ namespace units
     {
 	if ( obj.isA<core::Vector_O>() )
 	{
-	    core::Vector_sp vec = obj.as<core::Vector_O>();
-	    core::T_sp element = vec->elt(index).as<core::General_O>()->deepCopy();
+          core::Vector_sp vec = gc::As_unsafe<core::Vector_sp>(obj);
+          core::T_sp element = vec->rowMajorAref(index).as<core::General_O>()->deepCopy();
 	    return element;
 	}
 	SIMPLE_ERROR(BF("Illegal value type[%s] for copyAndScaleValueElement") % core::cl__class_of(obj)->classNameAsString() );
@@ -104,7 +107,7 @@ namespace units
 	if ( obj.isA<core::Vector_O>() )
 	{
 	    core::Vector_sp vec = obj.as<core::Vector_O>();
-	    vec->setf_elt(index,newVal);
+	    vec->rowMajorAset(index,newVal);
 	} else
 	{
           SIMPLE_ERROR(BF("Illegal value type[%s] for Quantity_O::setValueElement") % core::cl__class_of(obj)->classNameAsString() );

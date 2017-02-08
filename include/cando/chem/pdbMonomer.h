@@ -57,7 +57,7 @@ public:
 //void archiveBase(core::ArchiveP node);
 private:
     core::Symbol_sp           _PdbName;
-    core::VectorObjectsWithFillPtr_sp     _LongNames;
+    core::VectorTNs_sp     _LongNames;
     gctools::Vec0<AtomPair> _BondAtomPairs;
 public:
     typedef gctools::Vec0<AtomPair>::iterator iterator;

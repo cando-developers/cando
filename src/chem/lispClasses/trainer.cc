@@ -33,7 +33,6 @@ This is an open source license for the CANDO software from Temple University, bu
 //#include "core/xmlLoadArchive.h"
 #include "core/bignum.h"
 #include "core/fileSystem.h"
-#include "core/binder.h"
 #include "geom/objectDictionary.h"
 #include "monomerContext.h"
 #include "conformationExplorer.h"

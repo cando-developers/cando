@@ -101,7 +101,7 @@ public:
 public: // Lisp creation
 
 public:
-CL_NAME("getMonomerNameWithAtoms");
+CL_LISPIFY_NAME("getMonomerNameWithAtoms");
 CL_DEFMETHOD     virtual string getMonomerNameWithAtoms(core::Symbol_sp nm) { return "--- no atom names for Entity_O ---"; };
 
     void setOptional(bool b) { this->_Optional = b; };
@@ -158,18 +158,18 @@ CL_DEFMETHOD     virtual string getMonomerNameWithAtoms(core::Symbol_sp nm) { re
     /*! Some subclasses support InterestingAtomAliases
      * This method can be called to figure out which ones do
      */
-CL_NAME("supportsInterestingAtomAliases");
+CL_LISPIFY_NAME("supportsInterestingAtomAliases");
 CL_DEFMETHOD     virtual	bool	supportsInterestingAtomAliases() { return false;};
-CL_NAME("setInterestingAtomNamesForMonomerName");
+CL_LISPIFY_NAME("setInterestingAtomNamesForMonomerName");
 CL_DEFMETHOD     virtual void setInterestingAtomNamesForMonomerName(core::Symbol_sp monomerName, const string& atomIndexerNames) {_OF(); SUBCLASS_MUST_IMPLEMENT();};
-CL_NAME("getInterestingAtomNamesForMonomerName");
+CL_LISPIFY_NAME("getInterestingAtomNamesForMonomerName");
 CL_DEFMETHOD     virtual string getInterestingAtomNamesForMonomerName(core::Symbol_sp nm) { return "";};
     virtual bool hasInterestingAtomAlias(Alias_sp alias);
     virtual int getInterestingAtomAliasIndex(Alias_sp alias);
     virtual AtomIndexer_sp getAtomIndexerForMonomerName(core::Symbol_sp nm) {_OF();SUBCLASS_MUST_IMPLEMENT();};
     virtual core::List_sp getInterestingAtomAliases();
 
-CL_NAME("getInterestingAtomAliasesAsString");
+CL_LISPIFY_NAME("getInterestingAtomAliasesAsString");
 CL_DEFMETHOD     virtual string getInterestingAtomAliasesAsString() { return "";};
 
     adapt::StringList_sp	getMonomerNamesOrdered();
@@ -185,7 +185,7 @@ CL_DEFMETHOD     virtual string getInterestingAtomAliasesAsString() { return "";
     void contractEntityNames(adapt::SymbolSet_sp entityNameSets);
 
 
-CL_NAME("testEntityNameSetBase");
+CL_LISPIFY_NAME("testEntityNameSetBase");
 CL_DEFMETHOD     string	testEntityNameSetBase() { return "testEntityNameSetBase"; };
 
     EntityNameSetBase_O( const EntityNameSetBase_O& emr );
@@ -219,9 +219,9 @@ public:
 protected:
     core::Symbol_sp		_Name;
 public:
-CL_NAME("setName");
+CL_LISPIFY_NAME("setName");
 CL_DEFMETHOD     void setName(core::Symbol_sp nm) { this->_Name = nm;};
-CL_NAME("getName");
+CL_LISPIFY_NAME("getName");
 CL_DEFMETHOD 	core::Symbol_sp getName() const { return this->_Name;};
 	EntityNameSet_O( const EntityNameSet_O& emr );
 

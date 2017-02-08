@@ -27,7 +27,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define coordinateArray_fwd_H
 namespace geom
 {
-FORWARD(CoordinateArray);
-FORWARD(CoordinateArrayWithHash);
+FORWARD(SimpleVectorCoordinate);
+//FORWARD(SimpleVectorCoordinateWithHash);
 }
 #endif

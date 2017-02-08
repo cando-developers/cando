@@ -40,7 +40,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/plug.h>
 #include <cando/chem/constitution.h>
 #include <clasp/core/environment.h>
-#include <clasp/core/binder.h>
 #include <cando/chem/constitutionAtoms.h>
 #include <cando/chem/stereoisomerAtoms.h>
 #include <clasp/core/wrappers.h>
@@ -80,7 +79,7 @@ Topology_mv Topology_O::makeTopologyFromResidue(chem::Residue_sp residue, core::
   constitution = gc::As<Constitution_sp>(tconstitution);
   ConstitutionAtoms_sp ca = constitution->getConstitutionAtoms();
   Topology_sp topology = Topology_O::make(topologyName, constitution, _Nil<core::T_O>() );
-  core::VectorObjectsWithFillPtr_sp vec = core::VectorObjectsWithFillPtr_O::make(_Nil<core::T_O>(),_Nil<core::T_O>(),residue->numberOfAtoms(),residue->numberOfAtoms(),false,_lisp->_true());
+  core::VectorTNs_sp vec = core::VectorTNs_O::make(residue->numberOfAtoms(),_Nil<core::T_O>());
   int atomIndex = 0;
   for ( auto ai = residue->begin_atoms(); ai!=residue->end_atoms(); ++ai, ++atomIndex) {
     Atom_sp atom = *ai;
@@ -88,7 +87,7 @@ Topology_mv Topology_O::makeTopologyFromResidue(chem::Residue_sp residue, core::
     TopologyAtomInfo_sp tai = TopologyAtomInfo_O::make(atom->getType(),
                                                        atom->getCharge(),
                                                        constitutionIndex);
-    vec->setf_elt(atomIndex,tai);
+    vec->rowMajorAset(atomIndex,tai);
   }
   topology->setf_atomInfo(vec);
   return Values(topology,constitution);
@@ -115,12 +114,12 @@ CL_DEFMETHOD Residue_sp Topology_O::build_residue() const
 {
   Residue_sp res = Residue_O::make(this->getName());
   gctools::Vec0<Atom_sp> atoms;
-  atoms.resize(this->_AtomInfo->dimension());
-  res->resizeContents(this->_AtomInfo->dimension());
+  atoms.resize(this->_AtomInfo->arrayTotalSize());
+  res->resizeContents(this->_AtomInfo->arrayTotalSize());
   ConstitutionAtoms_sp constitutionAtoms = this->_Constitution->getConstitutionAtoms();
   size_t idx = 0;
-  for ( size_t idx=0, idxEnd(this->_AtomInfo->dimension()); idx<idxEnd; ++idx ) {
-    TopologyAtomInfo_sp ai = gc::As<TopologyAtomInfo_sp>(this->_AtomInfo->elt(idx));
+  for ( size_t idx=0, idxEnd(this->_AtomInfo->arrayTotalSize()); idx<idxEnd; ++idx ) {
+    TopologyAtomInfo_sp ai = gc::As<TopologyAtomInfo_sp>(this->_AtomInfo->rowMajorAref(idx));
     Atom_sp atom = Atom_O::create();
     ConstitutionAtom_sp ca = (*constitutionAtoms)[ai->constitutionAtomIndex()];
     atom->setName(ca->_AtomName);

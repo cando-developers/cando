@@ -119,16 +119,16 @@ void SymbolSet_O::fields(core::Record_sp node) {
     node->field(INTERN_(kw,data), valueVec );
     this->_Symbols->clrhash();
     for ( size_t i(0), iEnd(cl__length(valueVec)); i<iEnd; ++i ) {
-      T_sp key = valueVec->elt(i);
+      T_sp key = valueVec->rowMajorAref(i);
       this->_Symbols->hash_table_setf_gethash(key,_lisp->_true());
     }
   }
       break;
   case Record_O::saving: {
-    Vector_sp valueVec = core__make_vector(cl::_sym_T_O, this->_Symbols->hashTableCount() );
+    core::SimpleVector_sp valueVec = core::SimpleVector_O::make(this->_Symbols->hashTableCount() );
     size_t idx = 0;
     this->_Symbols->mapHash([&idx,&valueVec](T_sp key, T_sp val) {
-        valueVec->setf_elt(idx++,key);
+        (*valueVec)[idx++] = key;
       });
     node->field(INTERN_(kw,data), valueVec);
   }
@@ -150,7 +150,7 @@ void SymbolSet_O::insertVectorStrings(const VectorStrings &symbolsAsStrings) {
 
 void SymbolSet_O::insertVector(Vector_sp vec) {
   for (int i = 0, iEnd(vec->length()); i < iEnd; ++i) {
-    Symbol_sp sym = gc::As<Symbol_sp>(vec->elt(i));
+    Symbol_sp sym = gc::As<Symbol_sp>(vec->rowMajorAref(i));
     this->insert(sym);
   }
 }

@@ -166,7 +166,7 @@ CL_DEFMETHOD Vector3 OMatrix_O::m_TIMES_v(const Vector3& vec) const
 core::List_sp OMatrix_O::encode() {
   core::Vector_sp v = core::core__make_vector(cl::_sym_DoubleFloat_O,16);
   for ( size_t i(0); i<16; ++i ) {
-    v->setf_elt(i,core::clasp_make_double_float(this->_Value[i]));
+    v->rowMajorAset(i,core::clasp_make_double_float(this->_Value[i]));
   }
   return core::Cons_O::create(core::Cons_O::create(INTERN_(kw,m),v));
 }
@@ -174,7 +174,7 @@ core::List_sp OMatrix_O::encode() {
 void OMatrix_O::decode(core::List_sp c) {
   core::Vector_sp v = gc::As<core::Vector_sp>(oCdr(oCar(c)));
   for ( size_t i(0); i<16; ++i ) {
-    this->_Value[i] = core::clasp_to_double(v->elt(i));
+    this->_Value[i] = core::clasp_to_double(v->rowMajorAref(i));
   }
 }
 

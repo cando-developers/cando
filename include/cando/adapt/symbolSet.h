@@ -81,12 +81,12 @@ public:
 public:
   SymbolSet_sp copy();
 
-CL_NAME("size");
+CL_LISPIFY_NAME("size");
 CL_DEFMETHOD   uint size() const { return this->_Symbols->hashTableSize(); };
   void remove(Symbol_sp s);
   bool contains(Symbol_sp s);
   bool containsSubset(SymbolSet_sp sub);
-CL_NAME("insert");
+CL_LISPIFY_NAME("insert");
 CL_DEFMETHOD   void insert(Symbol_sp s) { this->_Symbols->setf_gethash(s, s); };
   void insertSymbolSet(SymbolSet_sp ss);
   void insertSymbolList(SymbolList_sp ss);
@@ -110,7 +110,7 @@ CL_DEFMETHOD   void insert(Symbol_sp s) { this->_Symbols->setf_gethash(s, s); };
   //! A-B = (x: x E A && not x E B )
   SymbolSet_sp relativeComplement(SymbolSet_sp b);
 
-CL_NAME("removeAll");
+CL_LISPIFY_NAME("removeAll");
 CL_DEFMETHOD   SymbolSet_sp removeAll(SymbolSet_sp b) { return this->relativeComplement(b); };
 
   //! AxB = ("x,y": x E A ; y E B )

@@ -105,7 +105,7 @@ namespace chem
 	int atomId() const { return this->_AtomId.atomId();};
 
 	virtual ~AtomId_O() {};
-CL_NAME("asString");
+CL_LISPIFY_NAME("asString");
 CL_DEFMETHOD 	string asString() const {return this->_AtomId.asString();};
     }; // AtomId_O
 

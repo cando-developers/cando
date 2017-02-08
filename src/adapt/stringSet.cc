@@ -126,15 +126,15 @@ void StringSet_O::archiveBase(ArchiveP node) {
     Vector_sp vec = node->getVectorSNodes();
     this->strs.clear();
     for (int i(0), iEnd(vec->length()); i < iEnd; ++i) {
-      LeafSNode_sp ln = gc::As<LeafSNode_sp>(vec->elt(i));
+      LeafSNode_sp ln = gc::As<LeafSNode_sp>(vec->rowMajorAref(i));
       this->insert(gc::As<Str_sp>(ln->object())->get());
     }
   } else {
-    VectorObjects_sp vec = VectorObjects_O::create(_Nil<T_O>(), this->strs.size(), core::_sym_LeafSNode_O);
+    SimpleVector_sp vec = SimpleVector_O::make(this->strs.size());
     int i(0);
     set<string>::iterator si;
     for (si = this->strs.begin(); si != this->strs.end(); si++) {
-      vec->setf_elt(i, LeafSNode_O::create(Str_O::create(*si)));
+      (*vec)[i] = LeafSNode_O::create(Str_O::create(*si));
       ++i;
     }
     node->setVectorSNodesUnsafe(vec);
@@ -296,16 +296,13 @@ CL_DEFMETHOD List_sp StringSet_O::asCons() const {
   return cur;
 }
 
-Vector_sp StringSet_O::asVector() const {
-  Vector_sp vec = core__make_vector(cl::_sym_Str_O,
-                                   this->strs.size() /* dim */,
-                                   true /* adjustable */,
-                                   clasp_make_fixnum(0) /* fill pointer */);
+core::SimpleVector_sp StringSet_O::asVector() const {
+  core::SimpleVector_sp vec = core::SimpleVector_O::make(this->strs.size());
   int i = 0;
   set<string>::iterator si;
   for (si = this->strs.begin(); si != this->strs.end(); si++) {
-    Str_sp s = Str_O::create(*si);
-    vec->setf_elt(i, s);
+    core::SimpleBaseString_sp s = core::SimpleBaseString_O::make(*si);
+    (*vec)[i] = s;
     ++i;
   }
   return vec;

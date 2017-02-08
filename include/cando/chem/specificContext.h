@@ -127,7 +127,7 @@ public:
 
 	core::List_sp asCons();
 
-CL_NAME("size");
+CL_LISPIFY_NAME("size");
 CL_DEFMETHOD 	uint size() { return this->_KeySets.size(); };
 
 	void add(SpecificContext_sp key);

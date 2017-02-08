@@ -38,6 +38,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <clasp/core/str.h>
 #include <cando/adapt/stringSet.h>
+#include <cando/geom/coordinateArray.h>
 #include <cando/chem/conformationExplorer.h>
 #include <cando/chem/loop.h>
 //#include "core/xmlSaveArchive.h"
@@ -46,12 +47,10 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/color.h>
 #include <cando/chem/superposeEngine.h>
 #include <clasp/core/sort.h>
-#include <clasp/core/binder.h>
 #include <clasp/core/intArray.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
 #include <cando/chem/nVector.h>
-#include <cando/geom/coordinateArray.h>
 #include <clasp/core/numbers.h>
 #include <clasp/core/wrappers.h>
 
@@ -65,7 +64,7 @@ namespace chem
     {
 	this->Base::initialize();
 	this->_Binder = core::HashTableEq_O::create_default();
-	this->_FinalCoordinates = geom::CoordinateArray_O::create();
+	this->_FinalCoordinates = geom::SimpleVectorCoordinate_O::create();
 	this->_WeakConformationExplorerEntry = _Nil<ConformationExplorerEntry_O>();
 	this->_Complete = true;
 	this->_EnergyKCal = 0.0;
@@ -139,7 +138,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMov
 	entryStage->setSuperposableCoordinatesAsFixedWithinSuperposeEngine(superposer);
 	this->setSuperposableCoordinatesAsMoveableWithinSuperposeEngine(superposer);
 	Matrix transform = superposer->superpose();
-	this->_FinalCoordinates->transform(transform);
+	geom__in_place_transform(this->_FinalCoordinates,transform);
     }
 
 
@@ -153,7 +152,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMov
 	geom::DisplayList_sp			dlAll;
 	GrPickableMatter_sp		dlMatter;
 	Matter_sp			matter;
-	geom::CoordinateArray_sp		superposeCoords;
+	geom::SimpleVectorCoordinate_sp		superposeCoords;
 	core::IntArray_O::iterator		ii;
 	explorer = this->getConformationExplorer();
 	dlAll = geom::DisplayList_O::create();
@@ -232,20 +231,20 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMov
 
     void	ConformationExplorerEntryStage_O::setConformationExplorerEntry(ConformationExplorerEntry_sp s)
     {
-	geom::CoordinateArray_sp	ca;
+	geom::SimpleVectorCoordinate_sp	ca;
 	ConformationExplorer_sp	explorer;
 	this->_WeakConformationExplorerEntry = s;
 	explorer = this->getConformationExplorer();
-	ca = geom::CoordinateArray_O::create(explorer->numberOfAllAtoms());
+	ca = geom::SimpleVectorCoordinate_O::make(explorer->numberOfAllAtoms());
 	this->_FinalCoordinates = ca;
     }
 
 
-    void	ConformationExplorerEntryStage_O::setFinalCoordinates(geom::CoordinateArray_sp ac)
+    void	ConformationExplorerEntryStage_O::setFinalCoordinates(geom::SimpleVectorCoordinate_sp ac)
     {
 	ASSERTNOTNULL(ac);
 	LOG(BF("setFinalCoordinates:%s") % (ac->asXmlString().c_str() ) );
-	LOG(BF("The address of the geom::CoordinateArray_sp is in o") );
+	LOG(BF("The address of the geom::SimpleVectorCoordinate_sp is in o") );
 	this->_FinalCoordinates = ac;
     }
 
@@ -259,7 +258,7 @@ CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::setFinalCoordinatesAsMov
 	idx = explorer->indexOfAtom(atom);
 	ASSERTNOTNULL(this->_FinalCoordinates);
 	ASSERT(this->_FinalCoordinates->size() == explorer->numberOfAllAtoms());
-	this->_FinalCoordinates->setElement(idx,pos);
+	(*this->_FinalCoordinates)[idx] = pos;
     }
 
 
@@ -267,7 +266,7 @@ CL_LISPIFY_NAME("writeCoordinatesToMatter");
 CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::writeCoordinatesToMatter(Matter_sp agg)
     {
 	ConformationExplorer_sp			sl;
-	vector<Vector3>::iterator	ci;
+        geom::SimpleVectorCoordinate_O::iterator	ci;
         gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
 	sl = this->getConformationExplorer();
 	for ( ai=sl->begin_AllAtoms(),ci=this->_FinalCoordinates->begin(); ai!=sl->end_AllAtoms(); ai++, ci++ )
@@ -281,12 +280,12 @@ CL_LISPIFY_NAME("extractCoordinatesFromMatter");
 CL_DEFMETHOD     void	ConformationExplorerEntryStage_O::extractCoordinatesFromMatter(Matter_sp matter)
     {
 	ConformationExplorer_sp	sl;
-	vector<Vector3>::iterator	ci;
+        geom::SimpleVectorCoordinate_O::iterator	ci;
 	LOG(BF("About to get ConformationExplorer") );
 	sl = this->getConformationExplorer();
 	LOG(BF("Got ConformationExplorer") );
 	ASSERTNOTNULL(sl);
-	geom::CoordinateArray_sp coords = sl->_extractCoordinateArray(matter);
+	geom::SimpleVectorCoordinate_sp coords = sl->_SimpleVectorCoordinate(matter);
 	ASSERTNOTNULL(coords);
 	this->_FinalCoordinates = coords;
     }
@@ -366,7 +365,7 @@ CL_DEFMETHOD     ConformationExplorerEntryStage_sp	ConformationExplorerEntry_O::
 
     void	ConformationExplorerEntry_O::setConformationExplorer(ConformationExplorer_sp s)
     {
-	geom::CoordinateArray_sp	ca;
+	geom::SimpleVectorCoordinate_sp	ca;
 	this->_WeakConformationExplorer = s;
     }
 
@@ -543,9 +542,9 @@ CL_DEFMETHOD     void ConformationExplorer_O::clearEntries()
 
 
 
-    geom::CoordinateArray_sp ConformationExplorer_O::_extractCoordinateArray(Matter_sp agg)
+    geom::SimpleVectorCoordinate_sp ConformationExplorer_O::_SimpleVectorCoordinate(Matter_sp agg)
     {
-	vector<Vector3>::iterator	ci;
+      geom::SimpleVectorCoordinate_O::iterator	ci;
         gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
 #ifdef	DEBUG_ConformationExplorerEntry
 	this->_Status->addMessage("extractCoordinatesFromMatter");
@@ -553,7 +552,7 @@ CL_DEFMETHOD     void ConformationExplorer_O::clearEntries()
 	LOG(BF("About to get ConformationExplorer"));
 	LOG(BF("About to iterate over atoms and get positions"));
 	uint numberOfAtoms = agg->numberOfAtoms();
-	geom::CoordinateArray_sp coords = geom::CoordinateArray_O::create(numberOfAtoms);
+	geom::SimpleVectorCoordinate_sp coords = geom::SimpleVectorCoordinate_O::make(numberOfAtoms);
 	ASSERTNOTNULL(coords);
 	uint aidx = 0;
 	for ( ai=this->begin_AllAtoms(),ci=coords->begin(); ai!=this->end_AllAtoms(); ai++, ci++ )
@@ -651,8 +650,8 @@ CL_DEFMETHOD     core::List_sp ConformationExplorer_O::entriesAsList()
 	_LINE();
 	ConformationExplorer_O::entryIterator	si;
 	ConformationExplorerEntry_sp	entry;
-	geom::CoordinateArray_sp		superposeCoords;
-	geom::CoordinateArray_O::iterator	ci;
+	geom::SimpleVectorCoordinate_sp		superposeCoords;
+	geom::SimpleVectorCoordinate_O::iterator	ci;
 	_LINE();
 	geom::DisplayList_sp dlAll = geom::DisplayList_O::create();
 	_LINE();
@@ -893,7 +892,7 @@ CL_DEFMETHOD     ConformationExplorerEntry_sp	ConformationExplorer_O::createEntr
 	double					rms;
 	bool					gotBest;
 	SuperposeEngine_sp			superposer;
-	geom::CoordinateArray_sp			matterConf;
+	geom::SimpleVectorCoordinate_sp			matterConf;
 	bestStage = _Nil<ConformationExplorerEntryStage_O>();
 	bestRms = 9.9e99;
 	gotBest = false;
@@ -919,7 +918,7 @@ CL_DEFMETHOD     ConformationExplorerEntry_sp	ConformationExplorer_O::createEntr
 	} else if ( numSuperposeAtoms >= 3 )
 	{
 	    superposer = SuperposeEngine_O::create();
-	    matterConf = this->_extractCoordinateArray(matter);
+	    matterConf = this->_SimpleVectorCoordinate(matter);
 	    superposer->setFixedPoints(this->_SuperposeAtomIndices,matterConf);
 	    uint entryIndex = 0;
 	    entryIterator ei;

@@ -90,7 +90,7 @@ namespace chem
     void fields(core::Record_sp node);
   public:
     string __repr__() const;
-    CL_NAME("atomName");
+    CL_LISPIFY_NAME("atomName");
     CL_DEFMETHOD 	MatterName atomName() { return this->_AtomName;};
     virtual bool isVirtualAtom() { return false;};
 	/*! Append a ConstitutionBond_sp to our list of bonds */

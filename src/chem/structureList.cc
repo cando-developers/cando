@@ -39,6 +39,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <cando/chem/structureList.h>
 #include <cando/chem/loop.h>
+#include <cando/geom/coordinateArray.h>
 #include <cando/chem/superposeEngine.h>
 //#include "core/xmlSaveArchive.h"
 //#include "core/xmlLoadArchive.h"
@@ -64,8 +65,8 @@ void	Structure_Old_ListEntry_O::initialize()
     this->Base::initialize();
     LOG(BF("Created StructureListEntry") );
     this->_Members = 0;
-    this->_AllCoordinates = geom::CoordinateArray_O::create();
-    this->_SuperposeCoordinates = geom::CoordinateArray_O::create();
+    this->_AllCoordinates = geom::SimpleVectorCoordinate_O::create();
+    this->_SuperposeCoordinates = geom::SimpleVectorCoordinate_O::create();
     this->_Data = core::HashTableEq_O::create_default();
 }
 
@@ -92,15 +93,15 @@ void	Structure_Old_ListEntry_O::initialize()
 }
 #endif
 
-void	Structure_Old_ListEntry_O::setAllCoordinates(geom::CoordinateArray_sp ac)
+void	Structure_Old_ListEntry_O::setAllCoordinates(geom::SimpleVectorCoordinate_sp ac)
 {
     ASSERTNOTNULL(ac);
     LOG(BF("setAllCoordinates:%s") % (ac->asXmlString().c_str() ) );
-    LOG(BF("The address of the geom::CoordinateArray_sp is in o") );
+    LOG(BF("The address of the geom::SimpleVectorCoordinate_sp is in o") );
     this->_AllCoordinates = ac;
 }
 
-void	Structure_Old_ListEntry_O::setSuperposeCoordinates(geom::CoordinateArray_sp ac)
+void	Structure_Old_ListEntry_O::setSuperposeCoordinates(geom::SimpleVectorCoordinate_sp ac)
 {
     LOG(BF("setSuperposeCoordinates:%s") % (ac->asXmlString().c_str() ) );
     this->_SuperposeCoordinates = ac;
@@ -132,7 +133,7 @@ void	Structure_Old_List_O::initialize()
 void	Structure_Old_ListEntry_O::writeCoordinatesToMatter(Matter_sp agg)
 {
 Structure_Old_List_sp			sl;
-vector<Vector3>::iterator	ci;
+ geom::SimpleVectorCoordinate_O::iterator	ci;
 gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
     sl = this->getStructureList();
     for ( ai=sl->begin_AllAtoms(),ci=this->_AllCoordinates->begin(); ai!=sl->end_AllAtoms(); ai++, ci++ )
@@ -145,7 +146,7 @@ gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
     void	Structure_Old_ListEntry_O::translateAllCoordinates( const Vector3& offset)
 {
 Structure_Old_List_sp			sl;
-vector<Vector3>::iterator	ci;
+ geom::SimpleVectorCoordinate_O::iterator	ci;
     for ( ci=this->_AllCoordinates->begin(); ci!=this->_AllCoordinates->end(); ci++ )
     {
         *ci = (*ci).add(offset);
@@ -161,7 +162,7 @@ vector<Vector3>::iterator	ci;
 void	Structure_Old_ListEntry_O::extractCoordinatesFromMatter(Matter_sp agg)
 {
 Structure_Old_List_sp			sl;
-vector<Vector3>::iterator	ci;
+ geom::SimpleVectorCoordinate_O::iterator	ci;
 gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
 #ifdef	DEBUG_StructureListEntry
     this->_Status->addMessage("extractCoordinatesFromMatter");
@@ -205,115 +206,115 @@ Atom_sp	a;
  */
 Structure_Old_ListEntry_sp Structure_Old_List_O::createStructureListEntryIfConformationIsNew(Matter_sp matter)
 {
-    gctools::SmallOrderedSet<Atom_sp>::iterator			ai;
-    gctools::SmallOrderedSet<Atom_sp>::iterator			lai;
-geom::CoordinateArray_sp			newConf;
-SuperposeEngine_sp				superposer;
-Matrix					transform;
-uint					i;
-Structure_Old_ListEntry_sp			entry;
-    if ( matter != this->_Matter )
-    {
-        SIMPLE_ERROR(BF("The Matter passed must be the same as the one defined for the StructureList"));
-    }
+  gctools::SmallOrderedSet<Atom_sp>::iterator			ai;
+  gctools::SmallOrderedSet<Atom_sp>::iterator			lai;
+  geom::SimpleVectorCoordinate_sp			newConf;
+  SuperposeEngine_sp				superposer;
+  Matrix					transform;
+  uint					i;
+  Structure_Old_ListEntry_sp			entry;
+  if ( matter != this->_Matter )
+  {
+    SIMPLE_ERROR(BF("The Matter passed must be the same as the one defined for the StructureList"));
+  }
 
-    if ( this->_SuperposeAtoms.size() < 4 )
-    {
-	SIMPLE_ERROR(BF("You must have defined at least three atoms to superpose"));
-    }
-    LOG(BF("Number of superpose atoms = %d") % this->_SuperposeAtoms.size()  );
+  if ( this->_SuperposeAtoms.size() < 4 )
+  {
+    SIMPLE_ERROR(BF("You must have defined at least three atoms to superpose"));
+  }
+  LOG(BF("Number of superpose atoms = %d") % this->_SuperposeAtoms.size()  );
 
 
 	//
     	// Now check if the structure is new or not.
 	// First assemble the superposable coordinates of this conformation
 	//
-    newConf = geom::CoordinateArray_O::create(this->_SuperposeAtoms.size());
-    for ( ai=this->_SuperposeAtoms.begin(), i=0;
-		ai!=this->_SuperposeAtoms.end(); ai++, i++)
-    {
-	LOG(BF("Extracting coordinate for superpose atom(%s)") % (*ai)->getName().c_str()  );
-	newConf->setElement(i,(*ai)->getPosition());
-    }
-    LOG(BF("There are %d superposable atoms") % this->_SuperposeAtoms.size()  );
+  newConf = geom::SimpleVectorCoordinate_O::make(this->_SuperposeAtoms.size());
+  for ( ai=this->_SuperposeAtoms.begin(), i=0;
+        ai!=this->_SuperposeAtoms.end(); ai++, i++)
+  {
+    LOG(BF("Extracting coordinate for superpose atom(%s)") % (*ai)->getName().c_str()  );
+    (*newConf)[i] = (*ai)->getPosition();
+  }
+  LOG(BF("There are %d superposable atoms") % this->_SuperposeAtoms.size()  );
 
-    {_BLOCK_TRACE("Comparing structure to known structures using superposer");
+  {_BLOCK_TRACE("Comparing structure to known structures using superposer");
 
-	LOG(BF("Fixed points at the start of superposer: %s") % (newConf->asXmlString().c_str() ) );
+    LOG(BF("Fixed points at the start of superposer: %s") % (newConf->asXmlString().c_str() ) );
 
-	{_BLOCK_TRACE("Creating and evaluating superposer");
+    {_BLOCK_TRACE("Creating and evaluating superposer");
 
 		//
 		// Now compare this conformation to every one in the database
 		//
-	    superposer = SuperposeEngine_O::create();
-	    superposer->setFixedAllPoints(newConf);
-	    double rms;
-	    geom::CoordinateArray_sp				moveable;
+      superposer = SuperposeEngine_O::create();
+      superposer->setFixedAllPoints(newConf);
+      double rms;
+      geom::SimpleVectorCoordinate_sp				moveable;
 
 		//
 		// Loop through the low-high entry range and compare the structures
 		// If this one is the same as any of those return that we've seen this structure before
 		//
-	    for ( auto ci=this->_Entries.begin(); ci!=this->_Entries.end(); ci++ )
-	    {
-	        moveable = (*ci)->getSuperposeCoordinates();
-		LOG(BF("Moveable points before superpose:%s") % (moveable->asXmlString().c_str() ) );
-		superposer->setMoveableAllPoints(moveable);
-		transform = superposer->superpose();
-		rms = superposer->rootMeanSquareDifference();
-		LOG(BF("The rms difference(%lf) with structure(%d) " "compared to _RmsCutOff(%lf)") % rms % i % this->_RmsCutOff  );
-		if ( rms < this->_RmsCutOff )
-		{
-		    LOG(BF("Found an identical minimum with rms(%lf)") % rms );
-		    LOG(BF("Entry will not be added") );
-		    (*ci)->setMembers((*ci)->getMembers()+1);
-		    Structure_Old_ListEntry_sp zilch;
-		    zilch = _Nil<Structure_Old_ListEntry_O>();
-	    	    LOG(BF("Fixed points at the end of superposer: %s") % (newConf->asXmlString().c_str() ) );
-		    return zilch;
-		}
-		LOG(BF("Moveable points after superpose:%s") % (moveable->asXmlString().c_str() ) );
-	    }
-	    LOG(BF("Fixed points at the end of superposer: %s") % (newConf->asXmlString().c_str() ) );
-	}
+      for ( auto ci=this->_Entries.begin(); ci!=this->_Entries.end(); ci++ )
+      {
+        moveable = (*ci)->getSuperposeCoordinates();
+        LOG(BF("Moveable points before superpose:%s") % (moveable->asXmlString().c_str() ) );
+        superposer->setMoveableAllPoints(moveable);
+        transform = superposer->superpose();
+        rms = superposer->rootMeanSquareDifference();
+        LOG(BF("The rms difference(%lf) with structure(%d) " "compared to _RmsCutOff(%lf)") % rms % i % this->_RmsCutOff  );
+        if ( rms < this->_RmsCutOff )
+        {
+          LOG(BF("Found an identical minimum with rms(%lf)") % rms );
+          LOG(BF("Entry will not be added") );
+          (*ci)->setMembers((*ci)->getMembers()+1);
+          Structure_Old_ListEntry_sp zilch;
+          zilch = _Nil<Structure_Old_ListEntry_O>();
+          LOG(BF("Fixed points at the end of superposer: %s") % (newConf->asXmlString().c_str() ) );
+          return zilch;
+        }
+        LOG(BF("Moveable points after superpose:%s") % (moveable->asXmlString().c_str() ) );
+      }
+      LOG(BF("Fixed points at the end of superposer: %s") % (newConf->asXmlString().c_str() ) );
     }
+  }
 
     	//
 	// Ok, this is a new structure, so insert it into the list
 	//
-    entry = Structure_Old_ListEntry_O::create(this->sharedThis<Structure_Old_List_O>());
-    entry->setMembers(1);
+  entry = Structure_Old_ListEntry_O::create(this->sharedThis<Structure_Old_List_O>());
+  entry->setMembers(1);
 		//
 		// Put all of the atom coordinates into a coordinate array
 		// and put that into the database
 		//
-    newConf = geom::CoordinateArray_O::create(this->_AllAtoms.size());
-    for ( lai=this->_AllAtoms.begin(),i=0;
-		lai!=this->_AllAtoms.end(); lai++, i++)
-    {
-	newConf->setElement(i,(*lai)->getPosition());
-    }
-    entry->setAllCoordinates(newConf);
+  newConf = geom::SimpleVectorCoordinate_O::make(this->_AllAtoms.size());
+  for ( lai=this->_AllAtoms.begin(),i=0;
+        lai!=this->_AllAtoms.end(); lai++, i++)
+  {
+    (*newConf)[i] = (*lai)->getPosition();
+  }
+  entry->setAllCoordinates(newConf);
 		//
 		// Put all of the superpose coordinates into a coordinate array
 		// and put that into the database
 		//
-    newConf = geom::CoordinateArray_O::create(this->_SuperposeAtoms.size());
-    for ( ai=this->_SuperposeAtoms.begin(),i=0;
-		ai!=this->_SuperposeAtoms.end(); ai++, i++)
-    {
-	newConf->setElement(i,(*ai)->getPosition());
-    }
-    LOG(BF("Writing superpose coordinates to entry:%s") % (newConf->asXmlString().c_str() ) );
-    entry->setSuperposeCoordinates(newConf);
-    return entry;
+  newConf = geom::SimpleVectorCoordinate_O::make(this->_SuperposeAtoms.size());
+  for ( ai=this->_SuperposeAtoms.begin(),i=0;
+        ai!=this->_SuperposeAtoms.end(); ai++, i++)
+  {
+    (*newConf)[i] = (*ai)->getPosition();
+  }
+  LOG(BF("Writing superpose coordinates to entry:%s") % (newConf->asXmlString().c_str() ) );
+  entry->setSuperposeCoordinates(newConf);
+  return entry;
 }
 
 uint Structure_Old_List_O::addEntry(Structure_Old_ListEntry_sp entry)
 {
-    this->_Entries.push_back(entry);
-    return 1;
+  this->_Entries.push_back(entry);
+  return 1;
 }
 
 
@@ -430,8 +431,8 @@ RPGrSphereList			grSpheres;
 Matter_sp			matter;
 Structure_Old_List_O::entryIterator	si;
 Structure_Old_ListEntry_sp		entry;
-geom::CoordinateArray_sp		superposeCoords;
-geom::CoordinateArray_O::iterator	ci;
+geom::SimpleVectorCoordinate_sp		superposeCoords;
+geom::SimpleVectorCoordinate_O::iterator	ci;
 frames = geom::FrameList_O::create();
     matter = this->getMatter();
     if ( this->_Entries.size() == 0 )

@@ -71,7 +71,7 @@ class ReadAmberParameters_O : public core::CxxObject_O
   void readTypes(core::T_sp fin);
   void readParameters(core::T_sp fileName);
 
-  CL_NAME("getTypeRules");
+  CL_LISPIFY_NAME("getTypeRules");
   CL_DEFMETHOD     FFTypesDb_sp getTypeRules() { return this->_Types; };
   ForceField_sp getForceField();
 

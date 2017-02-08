@@ -108,7 +108,7 @@ private:
 				MCStringStack& name);
 public:
 
-CL_NAME("setFocus");
+CL_LISPIFY_NAME("setFocus");
 CL_DEFMETHOD 	void	setFocus(EntityNameSetBase_sp n )
 	{
 			this->_Self = n;
@@ -120,7 +120,7 @@ CL_DEFMETHOD 	void	setFocus(EntityNameSetBase_sp n )
 	EntityNameSetBase_sp getNeighbor(core::Symbol_sp plugName) const;
 	adapt::SymbolSet_sp getPlugNames() const;
 
-CL_NAME("getFocus");
+CL_LISPIFY_NAME("getFocus");
 CL_DEFMETHOD 	EntityNameSetBase_sp	getFocus() { return this->_Self; };
 
 	/*! Return true if this MonomerContext recognizes

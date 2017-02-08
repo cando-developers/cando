@@ -29,7 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
     core::Symbol_sp chemkw_intern(const string& symName);
-    core::Symbol_sp chemkw_intern(core::Str_sp symName);
+    core::Symbol_sp chemkw_intern(core::String_sp symName);
 
 
 

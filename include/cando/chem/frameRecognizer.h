@@ -86,7 +86,7 @@ public:	// ----------------------------------------------------------
     void	setRecognizerName(core::Symbol_sp fn);
     core::Symbol_sp	getRecognizerName();
 
-CL_NAME("getSmarts");
+CL_LISPIFY_NAME("getSmarts");
 CL_DEFMETHOD     string	getSmarts()	{ return this->_Smarts;};
     void	compileSmarts(const string& fn);
 

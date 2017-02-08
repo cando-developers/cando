@@ -83,8 +83,8 @@ void	TrajectoryFrame_O::initialize()
 
     void TrajectoryFrame_O::fillFromMatter(gctools::Vec0<Atom_sp>& atomList )
 {
-    this->_Coordinates = geom::CoordinateArray_O::create(atomList.size());
-    geom::CoordinateArray_O::iterator ci;
+    this->_Coordinates = geom::SimpleVectorCoordinate_O::make(atomList.size());
+    geom::SimpleVectorCoordinate_O::iterator ci;
     gctools::Vec0<Atom_sp>::const_iterator ai;
     for ( ai=atomList.begin(), ci = this->_Coordinates->begin(); ai!=atomList.end(); ai++, ci++ )
     {
@@ -97,7 +97,7 @@ void	TrajectoryFrame_O::initialize()
     void	TrajectoryFrame_O::applyToMatter(gctools::Vec0<Atom_sp>& atomList )
 {_OF();
     ASSERT_eq(this->_Coordinates->size(),atomList.size());
-    geom::CoordinateArray_O::iterator ci;
+    geom::SimpleVectorCoordinate_O::iterator ci;
     gctools::Vec0<Atom_sp>::iterator ai;
     for ( ai=atomList.begin(), ci = this->_Coordinates->begin(); ai!=atomList.end(); ai++, ci++ )
     {

@@ -149,7 +149,7 @@ stringstream	ss;
 
 bool DirectionalCoupling_O::isInPlugName(core::Symbol_sp plugName)
 {
-  return plugName->symbolName()->schar(0) == IN_PLUG_PREFIX;
+  return plugName->symbolName()->rowMajorAref(0).unsafe_character() == IN_PLUG_PREFIX;
 };
 
 CL_DEFUN bool chem__is_in_plug_name(core::Symbol_sp plugName)

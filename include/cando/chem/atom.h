@@ -251,14 +251,14 @@ namespace chem {
     inline size_t atLowerUniqueAtomOrderThan(Atom_sp a) const {
       return this->_UniqueAtomOrder < a->_UniqueAtomOrder;
     };
-    CL_NAME("isAromatic");
+    CL_LISPIFY_NAME("isAromatic");
     CL_DEFMETHOD 	bool isAromatic() const { return this->testAnyFlags(Aromatic);};
-    CL_NAME("setIsAromatic");
+    CL_LISPIFY_NAME("setIsAromatic");
     CL_DEFMETHOD 	void setIsAromatic(bool b) { if (b) turnOnFlags(Aromatic); else turnOffFlags(Aromatic);};
 
     virtual	char	getClass()	{return atomId;};
 
-    CL_NAME("atomName");
+    CL_LISPIFY_NAME("atomName");
     CL_DEFMETHOD         core::Symbol_sp atomName() const { return this->getName();};
     virtual bool	equal(core::T_sp obj) const;
     virtual void	transferCoordinates(Matter_sp other);
@@ -269,32 +269,32 @@ namespace chem {
 
     char	getMatterType()	{ return ATOM_CLASS; };
 
-//    CL_NAME("getAtomId");
+//    CL_LISPIFY_NAME("getAtomId");
 //    CL_DEFMETHOD 	int	getAtomId() { return this->getId(); };
     int	getTempInt() { return this->tempInt; };
     void	setTempInt(int o) { this->tempInt = o;};
 
-    CL_NAME("getAlias");
+    CL_LISPIFY_NAME("getAlias");
     CL_DEFMETHOD 	core::Symbol_sp	getAlias() { return this->_Alias; };
-    CL_NAME("setAlias");
+    CL_LISPIFY_NAME("setAlias");
     CL_DEFMETHOD 	void setAlias(core::Symbol_sp alias) { this->_Alias = alias;};
 
 
-    CL_NAME("getFlags");
+    CL_LISPIFY_NAME("getFlags");
     CL_DEFMETHOD 	ATOM_FLAGS	getFlags() { return this->flags; };
-    CL_NAME("resetFlags");
+    CL_LISPIFY_NAME("resetFlags");
     CL_DEFMETHOD 	void	resetFlags() { this->flags = 0; };
-    CL_NAME("turnOnFlags");
+    CL_LISPIFY_NAME("turnOnFlags");
     CL_DEFMETHOD 	void	turnOnFlags(ATOM_FLAGS o) { this->flags |= o; };
-    CL_NAME("turnOffFlags");
+    CL_LISPIFY_NAME("turnOffFlags");
     CL_DEFMETHOD 	void	turnOffFlags(ATOM_FLAGS o) { this->flags &= ~o; };
     void	modifyFlags(int op, ATOM_FLAGS o);
-    CL_NAME("testAllFlags");
+    CL_LISPIFY_NAME("testAllFlags");
     CL_DEFMETHOD 	bool    testAllFlags( ATOM_FLAGS o ) const { return (this->flags&o)==o;};
-    CL_NAME("testAnyFlags");
+    CL_LISPIFY_NAME("testAnyFlags");
     CL_DEFMETHOD 	bool    testAnyFlags( ATOM_FLAGS o ) const { return (this->flags&o)!=0;};
     void	clearAllRingMembershipFlags();
-    CL_NAME("isInRing");
+    CL_LISPIFY_NAME("isInRing");
     CL_DEFMETHOD 	bool    isInRing() const { return (this->flags&inRing)!= 0; };
     CL_DEFMETHOD bool needs_build() const { return (this->flags&needsBuild)!=0;};
     CL_DEFMETHOD void setf_needs_build(bool val) {
@@ -304,9 +304,9 @@ namespace chem {
     bool    inRingSize(int s) const;
     void	setInRingOfSize(int s);
     void	incrementRingMembershipCount() { this->_RingMembershipCount++;};
-    CL_NAME("getRingMembershipCount");
+    CL_LISPIFY_NAME("getRingMembershipCount");
     CL_DEFMETHOD 	int     getRingMembershipCount() { return this->_RingMembershipCount;};
-    CL_NAME("setRingMembershipCount");
+    CL_LISPIFY_NAME("setRingMembershipCount");
     CL_DEFMETHOD 	void    setRingMembershipCount(int r) {this->_RingMembershipCount = r;};
     string	getNameIndex();
     void	setElementFromAtomName();
@@ -319,40 +319,40 @@ namespace chem {
 
     bool	hasAtomNameAttribute(char c);
 
-    CL_NAME("getType");
+    CL_LISPIFY_NAME("getType");
     CL_DEFMETHOD         AtomType getType() { return this->type; };
-    CL_NAME("setType");
+    CL_LISPIFY_NAME("setType");
     CL_DEFMETHOD 	void	setType(AtomType o) { this->type = o; };
-    CL_NAME("getHybridization");
+    CL_LISPIFY_NAME("getHybridization");
     CL_DEFMETHOD         Hybridization getHybridization() { return this->_Hybridization; };
     string getHybridizationAsString();
-    CL_NAME("setHybridization");
+    CL_LISPIFY_NAME("setHybridization");
     CL_DEFMETHOD 	void	setHybridization(Hybridization o) { this->_Hybridization = (o); };
     void	setHybridizationFromString(const string& h);
     bool	getHintLP() { return this->testAnyFlags(HintLp); };
     void	setHintLP(bool o) { if (o) turnOnFlags(HintLp); else turnOffFlags(HintLp); };
-    CL_NAME("getElement");
+    CL_LISPIFY_NAME("GET-ELEMENT");
     CL_DEFMETHOD 	Element getElement() const { return this->_Element; };
     string	getElementAsString();
     core::Symbol_sp	getElementAsSymbol() const;
-    CL_NAME("setElement");
+    CL_LISPIFY_NAME("SET-ELEMENT");
     CL_DEFMETHOD 	void	setElement(Element o) { this->_Element= o; };
     int     getAtomicNumber();
     double	getAtomicWeight();
     int     getValence();
     virtual bool isVirtual() const { return false;};
 #if 0
-    CL_NAME("getSelected");
+    CL_LISPIFY_NAME("getSelected");
     CL_DEFMETHOD 	bool	getSelected() { return this->_selected; };
-    CL_NAME("setSelected");
+    CL_LISPIFY_NAME("setSelected");
     CL_DEFMETHOD 	void	setSelected(bool o) { this->_selected = o; };
 #endif
-    CL_NAME("getPosition");
+    CL_LISPIFY_NAME("getPosition");
     CL_DEFMETHOD 	Vector3 getPosition() { return this->position; };
-    CL_NAME("getPositionInNanometers");
+    CL_LISPIFY_NAME("getPositionInNanometers");
     CL_DEFMETHOD 	Vector3 getPositionInNanometers() { return this->position.inNanometers(); };
     Vector3& getPositionRef() { return this->position; };
-    CL_NAME("setPosition");
+    CL_LISPIFY_NAME("setPosition");
     CL_DEFMETHOD 	void	setPosition(const Vector3& o) { this->position= o; };
     void	setPositionInNanometers(Vector3 o);
 #if 0
@@ -369,9 +369,9 @@ namespace chem {
 	//! Atoms should throw an exception
     void	makeAllAtomNamesInEachResidueUnique();
 #if 0
-    CL_NAME("getTouched");
+    CL_LISPIFY_NAME("getTouched");
     CL_DEFMETHOD 	bool	getTouched() { return this->touched; };
-    CL_NAME("setTouched");
+    CL_LISPIFY_NAME("setTouched");
     CL_DEFMETHOD 	void	setTouched(bool o) { this->touched = o; };
 #endif
     CL_DEFMETHOD 	void setMembershipAr1(bool b) { if (b) turnOnFlags(MembershipAr1); else turnOffFlags(MembershipAr1);};
@@ -384,42 +384,42 @@ namespace chem {
     CL_DEFMETHOD 	bool     getMembershipAr3()	{ return testAllFlags(MembershipAr3); };
     CL_DEFMETHOD 	bool     getMembershipAr4()	{ return testAllFlags(MembershipAr4); };
     CL_DEFMETHOD 	bool     getMembershipAr5()	{ return testAllFlags(MembershipAr5); };
-    CL_NAME("getIonization");
+    CL_LISPIFY_NAME("getIonization");
     CL_DEFMETHOD 	int     getIonization()	{ return this->_Ionization; };
-    CL_NAME("setIonization");
+    CL_LISPIFY_NAME("setIonization");
     CL_DEFMETHOD 	void	setIonization(int c)	{ this->_Ionization = c; };
-    CL_NAME("getCharge");
+    CL_LISPIFY_NAME("getCharge");
     CL_DEFMETHOD 	double	getCharge()	{ return this->charge; };
-    CL_NAME("setCharge");
+    CL_LISPIFY_NAME("setCharge");
     CL_DEFMETHOD 	void	setCharge(double c)	{ this->charge = c; };
-    CL_NAME("getOccupancy");
+    CL_LISPIFY_NAME("getOccupancy");
     CL_DEFMETHOD 	double	getOccupancy()	{ return this->occupancy; };
-    CL_NAME("setOccupancy");
+    CL_LISPIFY_NAME("setOccupancy");
     CL_DEFMETHOD 	void	setOccupancy(double c)	{ this->occupancy = c; };
-    CL_NAME("getTempFactor");
+    CL_LISPIFY_NAME("getTempFactor");
     CL_DEFMETHOD 	double	getTempFactor()	{ return this->tempFactor; };
-    CL_NAME("setTempFactor");
+    CL_LISPIFY_NAME("setTempFactor");
     CL_DEFMETHOD 	void	setTempFactor(double c)	{ this->tempFactor = c; };
-    CL_NAME("getVdwRadius");
+    CL_LISPIFY_NAME("getVdwRadius");
     CL_DEFMETHOD 	double	getVdwRadius()	{ return this->vdwRadius; };
-    CL_NAME("setVdwRadius");
+    CL_LISPIFY_NAME("setVdwRadius");
     CL_DEFMETHOD 	void	setVdwRadius(double c)	{ this->vdwRadius = c; };
-    CL_NAME("getCovalentRadius");
+    CL_LISPIFY_NAME("getCovalentRadius");
     CL_DEFMETHOD 	double	getCovalentRadius()	{ return this->covalentRadius; };
-    CL_NAME("setCovalentRadius");
+    CL_LISPIFY_NAME("setCovalentRadius");
     CL_DEFMETHOD 	void	setCovalentRadius(double c)	{ this->covalentRadius = c; };
     Matter_wp	getMatterContainedBy();
     Residue_sp	getResidueContainedBy();
     Residue_sp	getResidueContainedBy_const() const;
 
 #if 0
-    CL_NAME("getMoeIndex");
+    CL_LISPIFY_NAME("getMoeIndex");
     CL_DEFMETHOD 	int	getMoeIndex() { return this->moeIndex; };
-    CL_NAME("setMoeIndex");
+    CL_LISPIFY_NAME("setMoeIndex");
     CL_DEFMETHOD 	void	setMoeIndex(int o) { this->moeIndex = o; };
-    CL_NAME("setMoeType");
+    CL_LISPIFY_NAME("setMoeType");
     CL_DEFMETHOD 	void	setMoeType(MoeType type) {this->moeType=type;};
-    CL_NAME("getMoeType");
+    CL_LISPIFY_NAME("getMoeType");
     CL_DEFMETHOD 	MoeType	getMoeType() {return this->moeType;};
 #endif
 	/*! Return a ConstitutionAtom for this atom and give it the ConstitutionAtomIndex0N (index)
@@ -435,22 +435,22 @@ namespace chem {
 	// Spanning tree stuff
 
 	/*! When a spanning tree has crawled over this atom assign the atom a unique value (seenId) to indicate this */
-    CL_NAME("setSeenId");
+    CL_LISPIFY_NAME("setSeenId");
     CL_DEFMETHOD 	void	setSeenId(int i) {this->seenId=i;};
-    CL_NAME("getSeenId");
+    CL_LISPIFY_NAME("getSeenId");
     CL_DEFMETHOD 	int	getSeenId() {return this->seenId;};
-    CL_NAME("setBackCount");
+    CL_LISPIFY_NAME("setBackCount");
     CL_DEFMETHOD 	void	setBackCount(int i) {this->backCount=i;};
-    CL_NAME("getBackCount");
+    CL_LISPIFY_NAME("getBackCount");
     CL_DEFMETHOD 	int	getBackCount() {return this->backCount;};
     void	invalidateBackSpan() {this->_BackSpan = _Nil<Atom_O>(); };// = false;
     bool	isBackSpanValid() {_OF();ANN(this->_BackSpan);return this->_BackSpan.notnilp(); };
-    CL_NAME("setBackSpan");
+    CL_LISPIFY_NAME("setBackSpan");
     CL_DEFMETHOD 	void	setBackSpan(Atom_sp a) {this->_BackSpan=a;}//this->validBackSpan=true;
     Atom_sp	getBackSpan();
     void	invalidateNextSpan() {this->_NextSpan = _Nil<Atom_O>(); };
     bool	isNextSpanValid() { return this->_NextSpan.notnilp(); };
-    CL_NAME("setNextSpan");
+    CL_LISPIFY_NAME("setNextSpan");
     CL_DEFMETHOD 	void	setNextSpan(Atom_sp a) {this->_NextSpan=a;};//;this->validNextSpan=true;
     Atom_sp	getNextSpan();
 
@@ -469,7 +469,7 @@ namespace chem {
     Atom_sp	aliasAtomOrNil(Alias_sp alias) {IMPLEMENT_ME();};
     Residue_sp aliasResidueOrNil(Alias_sp alias) {IMPLEMENT_ME();};
 
-    CL_NAME("flagsSet");
+    CL_LISPIFY_NAME("flagsSet");
     CL_DEFMETHOD 	bool	flagsSet(int f)	{return (bool)((this->flags&f)!=0);};
     void	applyTransformToAtoms(const Matrix& m);
     VectorBond& getBonds()		{return this->bonds; };
@@ -530,20 +530,20 @@ namespace chem {
 	//
 	//! If the atom can have a stereochemical configuration return true
     core::List_sp	getNeighborsByRelativePriority();
-    CL_NAME("getRelativePriority");
+    CL_LISPIFY_NAME("getRelativePriority");
     CL_DEFMETHOD 	int	getRelativePriority() { return this->_RelativePriority;};
     void	setRelativePriority(int p) { this->_RelativePriority = p;};
     bool	isConfigurable();
 //	void	setConfigurationInfo(ConfigurationInfo& conf);
     void	setConfiguration(ConfigurationEnum conf);
-    CL_NAME("setStereochemistryType");
+    CL_LISPIFY_NAME("setStereochemistryType");
     CL_DEFMETHOD 	void	setStereochemistryType(StereochemistryType conf) { this->_StereochemistryType = conf;};
 
     virtual bool applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value);
 
-    CL_NAME("getStereochemistryType");
+    CL_LISPIFY_NAME("getStereochemistryType");
     CL_DEFMETHOD 	StereochemistryType getStereochemistryType() { return this->_StereochemistryType; };
-    CL_NAME("getConfiguration");
+    CL_LISPIFY_NAME("getConfiguration");
     CL_DEFMETHOD 	ConfigurationEnum getConfiguration() { return this->_Configuration;};
     string	getConfigurationAsString();
 #if 0

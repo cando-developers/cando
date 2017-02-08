@@ -71,9 +71,9 @@ namespace chem
   public:
 
     core::Symbol_sp getName() const;
-    CL_NAME("setCap");
+    CL_LISPIFY_NAME("setCap");
     CL_DEFMETHOD     void	setCap(core::Symbol_sp cc ) {this->_Cap = cc; };
-    CL_NAME("getCap");
+    CL_LISPIFY_NAME("getCap");
     CL_DEFMETHOD     core::Symbol_sp	getCap() { return this->_Cap; };
   };
 
@@ -201,9 +201,9 @@ namespace chem
     MatterName	_StubPivotAtom;
   public:
 
-    CL_NAME("hasStubPivotAtom");
+    CL_LISPIFY_NAME("hasStubPivotAtom");
     CL_DEFMETHOD     bool hasStubPivotAtom() { return this->_StubPivotAtom.notnilp(); };
-    CL_NAME("getStubPivotAtom");
+    CL_LISPIFY_NAME("getStubPivotAtom");
     CL_DEFMETHOD 	MatterName getStubPivotAtom() { return this->_StubPivotAtom;};
 
     bool getIsIn() { return false;};
@@ -228,7 +228,7 @@ namespace chem
   public:
   
 	/*! Regular InPlugs use the first bonded atom as the root */
-    CL_NAME("rootAtomName");
+    CL_LISPIFY_NAME("rootAtomName");
     CL_DEFMETHOD     virtual MatterName rootAtomName() const {return this->_B0;};
 
     bool getIsIn() { return true;};
@@ -260,7 +260,7 @@ namespace chem
   public:
 
     /*! Return the name of the root atom */
-    CL_NAME("rootAtomName");
+    CL_LISPIFY_NAME("rootAtomName");
     CL_DEFMETHOD     virtual MatterName rootAtomName() const { return this->_JumpAtomName;};
 
 		//! JumpPlugs are a kind of InPlugs

@@ -320,22 +320,22 @@ public:
 	CL_DEFMETHOD virtual size_t numberOfTerms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
 void setScale(double s) {this->_Scale = s; };
 	double getScale() { return this->_Scale ; };
-CL_NAME("enable");
+CL_LISPIFY_NAME("enable");
 CL_DEFMETHOD 	void enable() {this->_Enabled = true; };
-CL_NAME("disable");
+CL_LISPIFY_NAME("disable");
 CL_DEFMETHOD 	void disable() {this->_Enabled = false; };
-CL_NAME("getDebugOn");
+CL_LISPIFY_NAME("getDebugOn");
  CL_DEFMETHOD 	bool getDebugOn() {return this->_DebugEnergy; };
- CL_NAME("enableDebug");
+ CL_LISPIFY_NAME("enableDebug");
 CL_DEFMETHOD 	void enableDebug() {this->_DebugEnergy = true; };
-CL_NAME("disableDebug");
+CL_LISPIFY_NAME("disableDebug");
 CL_DEFMETHOD 	void disableDebug() {this->_DebugEnergy = false; };
-CL_NAME("setDebug_NumberOfTermsToCalculate");
+CL_LISPIFY_NAME("setDebug_NumberOfTermsToCalculate");
 CL_DEFMETHOD 	void setDebug_NumberOfTermsToCalculate(int i) {this->_Debug_NumberOfTermsToCalculate=i;}
 	bool isEnabled() { return this->_Enabled; };
-CL_NAME("setErrorThreshold");
+CL_LISPIFY_NAME("setErrorThreshold");
 CL_DEFMETHOD 	void	setErrorThreshold(double tr) { this->_ErrorThreshold = tr; };
-CL_NAME("getErrorThreshold");
+CL_LISPIFY_NAME("getErrorThreshold");
 CL_DEFMETHOD 	double	getErrorThreshold() { return this->_ErrorThreshold; };
 
 	string summarizeEnergyAsString();
@@ -343,7 +343,7 @@ CL_DEFMETHOD 	double	getErrorThreshold() { return this->_ErrorThreshold; };
 	string debugLogAsString();
 
 public:	// Virtual methods
-CL_NAME("getEnergy");
+CL_LISPIFY_NAME("getEnergy");
 CL_DEFMETHOD     virtual double getEnergy() { return this->_TotalEnergy; };
 
     virtual void zeroEnergy();

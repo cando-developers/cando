@@ -82,7 +82,7 @@ CL_DEFMETHOD bool	Residue_O::hasConstitution()
 
 void	Residue_O::setConstitution(Constitution_sp cc)
 {
-   DEPRECIATED();
+   DEPRECATED();
 #if 0
    ANN(cc);
    CandoDatabase_sp bdb = cc->getCandoDatabase();

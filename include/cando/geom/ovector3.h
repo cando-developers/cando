@@ -68,13 +68,13 @@ public:
 	core::T_sp shallowCopy() const { return this->deepCopy();};
     string __repr__() const;
 	string __str__() ;
-CL_NAME("setAll3");
+CL_LISPIFY_NAME("setAll3");
 CL_DEFMETHOD 	void setAll3(double x, double y, double z) { this->_Value.set(x,y,z); };
-CL_NAME("vx");
+CL_LISPIFY_NAME("vx");
 CL_DEFMETHOD 	double getX() { return this->_Value.getX(); };
-CL_NAME("vy");
+CL_LISPIFY_NAME("vy");
 CL_DEFMETHOD 	double getY() { return this->_Value.getY(); };
-CL_NAME("vz");
+CL_LISPIFY_NAME("vz");
 CL_DEFMETHOD 	double getZ() { return this->_Value.getZ(); };
 	Vector3& value() { return this->_Value;};
 	Vector3	get() { return this->_Value; };
@@ -133,9 +133,9 @@ namespace translate
 	{
           if ( core::Vector_sp vo = o.asOrNull<core::Vector_O>() ) {
             if ( cl__length(vo) == 3 ) {
-              _v.set(core::clasp_to_double(vo->elt(0)),
-                     core::clasp_to_double(vo->elt(1)),
-                     core::clasp_to_double(vo->elt(2)));
+              _v.set(core::clasp_to_double(vo->rowMajorAref(0)),
+                     core::clasp_to_double(vo->rowMajorAref(1)),
+                     core::clasp_to_double(vo->rowMajorAref(2)));
               return;
             } else {
               SIMPLE_ERROR(BF("Vector must have 3 elements"));
@@ -161,9 +161,9 @@ namespace translate
               if ( core::cl__length(vec) != 3 ) {
 		    SIMPLE_ERROR(BF("ovector3 can only have three elements"));
 		}
-              _v.set(clasp_to_double(gc::As<core::Number_sp>(vec->elt(0))),
-                     clasp_to_double(gc::As<core::Number_sp>(vec->elt(1))),
-                     clasp_to_double(gc::As<core::Number_sp>(vec->elt(2))));
+              _v.set(clasp_to_double(gc::As<core::Number_sp>(vec->rowMajorAref(0))),
+                     clasp_to_double(gc::As<core::Number_sp>(vec->rowMajorAref(1))),
+                     clasp_to_double(gc::As<core::Number_sp>(vec->rowMajorAref(2))));
 	    } else if ( core::List_sp list = o.asOrNull<core::List_V>() ) {
               if ( core::cl__length(list) != 3 ) {
 		    SIMPLE_ERROR(BF("ovector3 can only have three elements"));

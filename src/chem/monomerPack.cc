@@ -289,7 +289,7 @@ void MonomerPack_O::extendAliases( core::List_sp atomAliases, core::List_sp part
 
 void	MonomerPack_O::setInterestingAtomNamesForMonomerName(core::Symbol_sp monomerName, const string& atomIndexerNames)
 { 
-adapt::StringSet_O::smart_ptr		monomerNames;
+adapt::StringSet_O::smart_ptr_type	monomerNames;
 CandoDatabase_sp		bdb;
 AtomIndexer_sp			indexer;
 adapt::StringSet_O::iterator		it;
@@ -309,7 +309,7 @@ adapt::StringSet_O::iterator		it;
 void	MonomerPack_O::setInterestingAtomNamesForMonomerNameStringList(
 			core::Symbol_sp monomerName, adapt::StringList_sp names )
 { 
-adapt::StringSet_O::smart_ptr		monomerNames;
+adapt::StringSet_O::smart_ptr_type		monomerNames;
 CandoDatabase_sp		bdb;
 AtomIndexer_sp			indexer;
 adapt::StringSet_O::iterator		it;
@@ -328,7 +328,7 @@ adapt::StringSet_O::iterator		it;
 void	MonomerPack_O::setInterestingAtomNamesForMonomerNameFromCons(
 			core::Symbol_sp monomerName, core::List_sp names )
 { 
-adapt::StringSet_O::smart_ptr		monomerNames;
+adapt::StringSet_O::smart_ptr_type		monomerNames;
 CandoDatabase_sp		bdb;
 AtomIndexer_sp			indexer;
 adapt::StringSet_O::iterator		it;
@@ -414,8 +414,8 @@ AtomIndexer_sp MonomerPack_O::getAtomIndexerForMonomerName(core::Symbol_sp monom
 void	MonomerPack_O::_checkAtomIndexers()
 {
     return; // do nothing for now
-MapOfMonomerNamesToAtomIndexers_O::smart_ptr	ais;
-AtomIndexer_O::smart_ptr			ai;
+MapOfMonomerNamesToAtomIndexers_O::smart_ptr_type	ais;
+AtomIndexer_O::smart_ptr_type			ai;
 MapOfMonomerNamesToAtomIndexers_O::iterator	ii;
 int						mostNumberOfAtoms;
     if ( this->_AtomIndexers.nilp() ) return;

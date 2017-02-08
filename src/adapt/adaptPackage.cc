@@ -43,7 +43,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/clbind/class_registry.h>
 #include <clasp/core/serialize.h>
 #include <clasp/core/array.h>
-#include <clasp/core/binder.h>
 #include <clasp/core/conditions.h>
 #include <clasp/core/character.h>
 #include <clasp/core/cons.h>
@@ -68,7 +67,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/readtable.h>
 #include <clasp/core/reader.h>
 #include <clasp/core/record.h>
-#include <clasp/core/regex.h>
 #include <clasp/core/singleDispatchMethod.h>
 #include <clasp/core/smallMap.h>
 #include <clasp/core/smallMultimap.h>
@@ -157,7 +155,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/virtualSphere.h>
 #include <cando/chem/zMatrix.h>
 #include <clasp/core/activationFrame.h>
-#include <clasp/core/arrayDisplaced.h>
 #include <clasp/core/arrayObjects.h>
 #include <clasp/core/hashTableEq.h>
 #include <clasp/core/hashTableEql.h>
@@ -203,14 +200,11 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/sexpSaveArchive.h>
 #include <clasp/core/specializer.h>
 #include <clasp/core/lispString.h>
-#include <clasp/core/vectorDisplaced.h>
-#include <clasp/core/newVectorObjects.h>
 #include <cando/geom/coordinateArray.h>
 #include <cando/units/namedUnit.h>
 #include <cando/chem/virtualAtom.h>
 #include <clasp/core/metaClass.h>
 #include <clasp/core/str.h>
-#include <clasp/core/newVectorObjectsWithFillPtr.h>
 #include <cando/chem/monomerPack.h>
 #include <cando/chem/representedEntityNameSet.h>
 #include <clasp/core/bignum.h>

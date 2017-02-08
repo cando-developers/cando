@@ -18,11 +18,16 @@
 ;;;
 ;;; Test fortran code
 
+;;; Compile the (defpackage #:fortran) in packages.lisp
+;;; and then compile the fortran.lisp file
+
 (apply #'open ("/tmp/test.for" :direction :output))
 
-
-
-
+(fortran:with-fortran-output-file (fout "/tmp/test.for" :direction :output)
+  (fortran:format 4 "%10d")
+  (dotimes (i 100) (fortran:write i))
+  (fortran:format 4 "%10.3f")
+  (dotimes (i 50) (fortran:write (float (+ i 0.1)))))
 
 
 (defun setup-amber-force-field ()

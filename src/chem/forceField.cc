@@ -60,12 +60,12 @@ void	InfoDb_O::fields(core::Record_sp node)
   node->field(INTERN_(kw,k),this->_database);
 }
 
-void InfoDb_O::addInfo( core::Symbol_sp key, core::Str_sp data )
+void InfoDb_O::addInfo( core::Symbol_sp key, core::String_sp data )
 {
   if ( this->_database.count(key)==0 ) {
     this->_database.set(key,data);
   } else {
-    this->_database.set(key,core::Str_O::create(this->_database.get(key)->get()+"\n"+data->get()));
+    this->_database.set(key,core::SimpleBaseString_O::make(this->_database.get(key)->get_std_string()+"\n"+data->get_std_string()));
   }
 };
 

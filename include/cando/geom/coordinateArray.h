@@ -37,97 +37,134 @@ This is an open source license for the CANDO software from Temple University, bu
  *              Routines to maintain a vector of Vector3's
  */
 
-#ifndef CoordinateArray_H
-#define CoordinateArray_H
+#ifndef SimpleVectorCoordinate_H
+#define SimpleVectorCoordinate_H
 
 #include <vector>
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
-#include <clasp/core/lispVector.h>
-//#include "geom/render.fwd.h"
+#include <clasp/core/array.h>
 #include <cando/geom/geomPackage.fwd.h>
 #include <cando/geom/vector3.h>
+#include <cando/geom/ovector3.h>
 #include <cando/geom/matrix.h>
 #include <clasp/core/lispStream.fwd.h>
 
+
+namespace geom {
+  extern core::Symbol_sp& _sym_OVector3;
+};
+
+
+
+#if 0
+namespace geom {
+  FORWARD(SimpleVectorCoordinate);
+  extern core::Symbol_sp& arr_sym_vector3;
+};
+
+template <>
+struct gctools::GCInfo<geom::SimpleVectorCoordinate_O> {
+  static bool constexpr NeedsInitialization = false;
+  static bool constexpr NeedsFinalization = false;
+  static GCInfo_policy constexpr Policy = atomic;
+};
 
 
 namespace geom
 {
   SMART(DisplayList);
-
-  SMART(CoordinateArray);
-  class CoordinateArray_O : public core::Vector_O
+  SMART(SimpleVectorCoordinate);
+  typedef core::abstract_SimpleVector<SimpleVectorCoordinate_O,Vector3,core::AbstractSimpleVector_O> abstract_SimpleVectorCoordinate;
+  class SimpleVectorCoordinate_O : public abstract_SimpleVectorCoordinate
   {
-    LISP_CLASS(geom,GeomPkg,CoordinateArray_O,"CoordinateArray",core::Vector_O);
+    LISP_CLASS(geom,GeomPkg,SimpleVectorCoordinate_O,"SimpleVectorCoordinate",core::AbstractSimpleVector_O);
   public:
 #if 0
     bool fieldsp() const { return true; };
     void	fields(core::Record_sp node);
 #endif
   public:
-    static CoordinateArray_sp make(gc::Nilable<core::Fixnum_sp> fnsize,core::List_sp vals);
+//    static SimpleVectorCoordinate_sp make(core::T_sp fnsize,core::List_sp vals);
   public:
     void initialize();
   public:
     virtual core::List_sp encode();
     virtual void decode(core::List_sp);
   private:
-    vector<Vector3>	_Points;
-  private:
     void fillFromList(core::List_sp vals);
   public:
-    static CoordinateArray_sp create(uint size)
+    static SimpleVectorCoordinate_sp create(uint size)
     {
-      GC_ALLOCATE(CoordinateArray_O,a);
+      GC_ALLOCATE(SimpleVectorCoordinate_O,a);
       a->resize(size);
       return a;
     }
-    static CoordinateArray_sp create(core::List_sp vertexCons);
-  public:
-    typedef vector<Vector3>::iterator	iterator;
-  public:
+    static SimpleVectorCoordinate_sp create(core::List_sp vertexCons);
 
-    CoordinateArray_O( const CoordinateArray_O& orig );
-
-    virtual std::vector<core::cl_index> dimensions() const {
-      vector<core::cl_index> dims;
-      dims.emplace_back(this->_Points.size());
-      return dims;
+    typedef abstract_SimpleVectorCoordinate TemplatedBase;
+    typedef typename TemplatedBase::leaf_type leaf_type;
+    typedef typename TemplatedBase::value_type value_type;
+    typedef typename TemplatedBase::vector_type vector_type;
+    typedef typename TemplatedBase::iterator iterator;
+    typedef typename TemplatedBase::const_iterator const_iterator;
+    typedef value_type container_value_type;
+  public:
+    static value_type initial_element_from_object(core::T_sp obj, bool supplied) {
+      IMPLEMENT_ME();
     }
+    static value_type from_object(core::T_sp obj) {return gc::As<geom::OVector3_sp>(obj)->get(); }
+    static core::T_sp to_object(const value_type& v) { return geom::OVector3_O::create(v); };
+  public:
+  SimpleVectorCoordinate_O(size_t length, value_type initialElement=value_type(), bool initialElementSupplied=false, size_t initialContentsSize=0, const value_type* initialContents=NULL) : TemplatedBase(length,initialElement,initialElementSupplied,initialContentsSize,initialContents) {};
+    static SimpleVectorCoordinate_sp make(size_t length, value_type initialElement=value_type(), bool initialElementSupplied=false, size_t initialContentsSize=0, const value_type* initialContents=NULL) {
+      auto bs = gctools::GC<SimpleVectorCoordinate_O>::allocate_container(gctools::GCStamp<SimpleVectorCoordinate_O>::TheStamp,
+                                                                          length,length,initialElement,initialElementSupplied,initialContentsSize,initialContents);
+      return bs;
+    }
+  public:
+    // Specific to SimpleVectorCoordinate_O
+//    virtual void __write__(T_sp stream) const final;
+  public:
+    virtual core::T_sp array_type() const final { return cl::_sym_simple_array; };
+    virtual core::T_sp element_type() const override { return geom::_sym_vector3;};
+  public:
+    virtual core::clasp_elttype elttype() const { IMPLEMENT_MEF(BF("Implement elttype")); };
+    virtual core::T_sp arrayElementType() const override { return geom::_sym_vector3; };
+  public:
+    // Implement these methods for simple vectors - some are implemented in parent classes
+    // for convenience if not speed
+    virtual bool equal(core::T_sp other) const override { return this->eq(other);};
+  public:
+    SimpleVectorCoordinate_O( const SimpleVectorCoordinate_O& orig );
 
     INHERIT_SEQUENCE virtual core::T_sp elt(int index) const { return this->getElementObject(index); };
     INHERIT_SEQUENCE virtual core::T_sp setf_elt(int index, core::T_sp value) { return this->setElementObject(index,value); };
 
-    virtual gc::Fixnum dimension() const { return this->_Points.size(); };
+    iterator begin() { return &this->_Data[0];};
+    iterator end() { return &this->_Data[this->_Data._Length]; }
+    const_iterator begin() const { return &this->_Data[0];};
+    const_iterator end() const { return &this->_Data[this->_Data._Length]; }
 
-    iterator	begin();
-    iterator	end();
     void zeroAllCoordinates();
-    void add(CoordinateArray_sp c);
-    void multiplyByScalar(double d);
+    void add(SimpleVectorCoordinate_sp c);
+//    void multiplyByScalar(double d);
 
+    double distanceTo(SimpleVectorCoordinate_sp arr);
 
-	
-
-
-
-    double distanceTo(CoordinateArray_sp arr);
-
-    gc::Fixnum	length() const { return this->size(); };
-CL_NAME("size");
-CL_DEFMETHOD     uint	size() const { return this->_Points.size(); };
     Vector3& getElement(uint i);
     Vector3 value_getElement(uint i);
     core::T_sp getElementObject(uint i) const;
     void	setElement(uint i, Vector3 pos );
     core::T_sp setElementObject(uint i, core::T_sp val);
+#if 0
     void	appendElement(const Vector3& pos) { this->_Points.push_back(pos); };
-CL_NAME("coordinate-array-append");
-CL_DEFMETHOD     void	append(const Vector3& pos) { this->_Points.push_back(pos); };
+    CL_LISPIFY_NAME("coordinate-array-append");
+    CL_DEFMETHOD     void	append(const Vector3& pos) { this->_Points.push_back(pos); };
     void	push_back(const Vector3& pos) { this->_Points.push_back(pos); };
+#endif
     void	resize(int i);
-    void	clear() { this->_Points.clear();};
+//    void	clear() { this->_Points.clear();};
     void	transform(const Matrix& transMatrix);
     void	multiplyBy(double multiplier);
 
@@ -141,19 +178,207 @@ CL_DEFMETHOD     void	append(const Vector3& pos) { this->_Points.push_back(pos);
 //	string parseFromStream(core::Stream_sp stream);
     void writeToStream(string const& info, core::T_sp stream);
 
-    CoordinateArray_sp	copy() const;
+    SimpleVectorCoordinate_sp	copy() const;
     virtual core::T_sp deepCopy() const { return this->copy();};
     virtual core::T_sp shallowCopy() const { return this->copy();};
-    DEFAULT_CTOR_DTOR(CoordinateArray_O);
   };
+};
+
+
+#endif
 
 
 
 
-  SMART(CoordinateArrayWithHash);
-  class CoordinateArrayWithHash_O : public CoordinateArray_O
+
+// ----------------------------------------------------------------------
+// Arrays specialized for Coordinate
+//
+
+namespace geom {
+  FORWARD(SimpleVectorCoordinate);
+};
+template <>
+struct gctools::GCInfo<geom::SimpleVectorCoordinate_O> {
+  static bool constexpr NeedsInitialization = false;
+  static bool constexpr NeedsFinalization = false;
+  static GCInfo_policy constexpr Policy = atomic;
+};
+namespace geom {
+  class SimpleVectorCoordinate_O;
+  typedef core::template_SimpleVector<SimpleVectorCoordinate_O,Vector3,core::AbstractSimpleVector_O> specialized_SimpleVectorCoordinate;
+  class SimpleVectorCoordinate_O : public specialized_SimpleVectorCoordinate {
+    LISP_CLASS(geom, GeomPkg, SimpleVectorCoordinate_O, "SimpleVectorCoordinate",core::AbstractSimpleVector_O);
+    virtual ~SimpleVectorCoordinate_O() {};
+  public:
+    typedef specialized_SimpleVectorCoordinate TemplatedBase;
+    typedef typename TemplatedBase::leaf_type leaf_type;
+    typedef typename TemplatedBase::value_type value_type;
+    typedef typename TemplatedBase::simple_element_type simple_element_type;
+    typedef typename TemplatedBase::vector_type vector_type;
+    typedef typename TemplatedBase::iterator iterator;
+    typedef typename TemplatedBase::const_iterator const_iterator;
+    typedef value_type container_value_type;
+  public:
+    static value_type initial_element_from_object(core::T_sp obj, bool supplied) {
+      if (supplied) {
+        return translate::from_object<Vector3>(obj)._v;
+      }
+      return Vector3(0.0,0.0,0.0);
+    }
+    static value_type from_object(core::T_sp obj) { return translate::from_object<Vector3>(obj)._v; };
+    static core::T_sp to_object(const value_type& v) { return OVector3_O::create(v);};
+  public:
+  SimpleVectorCoordinate_O(size_t length, value_type initialElement=value_type(),
+                           bool initialElementSupplied=false,
+                           size_t initialContentsSize=0,
+                           const value_type* initialContents=NULL)
+    : TemplatedBase(length,initialElement,initialElementSupplied,initialContentsSize,initialContents) {};
+    static SimpleVectorCoordinate_sp make(size_t length,
+                                          value_type initialElement=value_type(),
+                                          bool initialElementSupplied=false,
+                                          size_t initialContentsSize=0,
+                                          const value_type* initialContents=NULL) {
+      auto bs = gctools::GC<SimpleVectorCoordinate_O>::allocate_container(gctools::GCStamp<leaf_type/*SimpleVectorCoordinate_O*/>::TheStamp,
+                                                                          length,length,initialElement,initialElementSupplied,initialContentsSize,initialContents);
+      return bs;
+    }
+    static SimpleVectorCoordinate_sp create(core::List_sp elements) {
+      size_t sz = core::cl__length(elements);
+      size_t i(0);
+      SimpleVectorCoordinate_sp v = make(sz,Vector3(),false,0,NULL);
+      for ( auto cur : elements ) {
+        (*v)[i++] = gc::As<OVector3_sp>(core::oCar(cur))->get();
+      }
+      return v;
+    }
+    
+  public:
+    // Specific to SimpleVectorCoordinate_O
+//    virtual void __write__(T_sp stream) const final;
+  public:
+    virtual core::T_sp array_type() const final { return cl::_sym_simple_array; };
+    virtual core::T_sp element_type() const override { return geom::_sym_OVector3;};
+    virtual core::T_sp arrayElementType() const override { return geom::_sym_OVector3; };
+    virtual core::clasp_elttype elttype() const { return core::clasp_aet_non_standard; };
+  public:
+    Vector3& getElement(size_t i) { return (*this)[i];};
+    const Vector3& getElement(size_t i) const { return (*this)[i];};
+    core::T_sp getElementObject(size_t i) const { return this->rowMajorAref(i); };
+    core::T_sp setElementObject(size_t i, core::T_sp obj) {this->rowMajorAset(i,obj); return obj;};
+    void zeroAllCoordinates();
+    void addPoints(SimpleVectorCoordinate_sp y);
+    double distanceTo(SimpleVectorCoordinate_sp y);
+  };
+};
+
+
+namespace geom {
+  FORWARD(MDArrayCoordinate);
+};
+namespace geom {
+  class MDArrayCoordinate_O : public core::template_Array<MDArrayCoordinate_O,SimpleVectorCoordinate_O,core::MDArray_O> {
+    LISP_CLASS(geom, GeomPkg, MDArrayCoordinate_O, "MDArrayCoordinate",core::MDArray_O);
+    virtual ~MDArrayCoordinate_O() {};
+  public:
+    typedef core::template_Array<MDArrayCoordinate_O,SimpleVectorCoordinate_O,core::MDArray_O> TemplatedBase;
+    typedef typename TemplatedBase::simple_element_type simple_element_type;
+    typedef typename TemplatedBase::simple_type simple_type;
+  public: // make vector
+  MDArrayCoordinate_O(size_t dummy_rank_1,
+                      size_t dimension,
+                      core::T_sp fillPointer,
+                      core::Array_sp data,
+                      bool displacedToP,
+                      core::Fixnum_sp displacedIndexOffset) : TemplatedBase(core::Rank1(),dimension,fillPointer,data,displacedToP,displacedIndexOffset) {};
+    static MDArrayCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement/*=simple_element_type()*/, core::T_sp fillPointer/*=_Nil<T_O>()*/, core::T_sp dataOrDisplacedTo/*=_Nil<T_O>()*/, bool displacedToP/*=false*/, core::Fixnum_sp displacedIndexOffset/*=clasp_make_fixnum(0)*/ ) {
+      LIKELY_if (dataOrDisplacedTo.nilp()) {
+        dataOrDisplacedTo = simple_type::make(dimension,initialElement,true);
+      }
+      MDArrayCoordinate_sp array = gctools::GC<MDArrayCoordinate_O>::allocate_container(gctools::GCStamp<MDArrayCoordinate_O>::TheStamp,1,1,dimension,fillPointer,gc::As_unsafe<core::Array_sp>(dataOrDisplacedTo),displacedToP,displacedIndexOffset);
+      return array;
+    }
+    static MDArrayCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement, core::T_sp fillPointer) {
+      return make_vector(dimension,initialElement,fillPointer,_Nil<T_O>(),false,core::clasp_make_fixnum(0));
+    }
+  public: // make array
+  MDArrayCoordinate_O(size_t rank,
+                  core::List_sp dimensions,
+                  core::Array_sp data,
+                  bool displacedToP,
+                  core::Fixnum_sp displacedIndexOffset) : TemplatedBase(rank,dimensions,data,displacedToP,displacedIndexOffset) {};
+    static MDArrayCoordinate_sp make_multi_dimensional(core::List_sp dim_desig, simple_element_type initialElement, core::T_sp dataOrDisplacedTo, bool displacedToP, core::Fixnum_sp displacedIndexOffset) {
+      ASSERT(dim_desig.consp()||dim_desig.nilp());
+      size_t rank;
+      size_t arrayTotalSize = calculateArrayTotalSizeAndValidateDimensions(dim_desig,rank);
+      LIKELY_if (dataOrDisplacedTo.nilp()) {
+        dataOrDisplacedTo = simple_type::make(arrayTotalSize,initialElement,true);
+      }
+      MDArrayCoordinate_sp array = gctools::GC<MDArrayCoordinate_O>::allocate_container(gctools::GCStamp<MDArrayCoordinate_O>::TheStamp,rank,rank,dim_desig,gc::As<core::Array_sp>(dataOrDisplacedTo),displacedToP,displacedIndexOffset);
+      return array;
+    }
+    size_t vectorPush_Vector3(const Vector3& newElement);
+    size_t vectorPushExtend_Vector3(const Vector3& newElement, size_t extension = 0);
+  public:
+//    virtual bool equalp(T_sp o) const final;
+  };
+};
+
+namespace geom {
+  FORWARD(SimpleMDArrayCoordinate);
+  class SimpleMDArrayCoordinate_O : public core::template_SimpleArray<SimpleMDArrayCoordinate_O,SimpleVectorCoordinate_O,core::SimpleMDArray_O> {
+    LISP_CLASS(geom, GeomPkg, SimpleMDArrayCoordinate_O, "SimpleMDArrayCoordinate",core::SimpleMDArray_O);
+    virtual ~SimpleMDArrayCoordinate_O() {};
+  public:
+    typedef core::template_SimpleArray<SimpleMDArrayCoordinate_O,SimpleVectorCoordinate_O,core::SimpleMDArray_O> TemplatedBase;
+    typedef typename TemplatedBase::simple_element_type simple_element_type;
+    typedef typename TemplatedBase::simple_type simple_type;
+  public: // make vector
+  SimpleMDArrayCoordinate_O(size_t rank1, size_t dimension, core::Array_sp data) : TemplatedBase(dimension,data) {};
+    static SimpleMDArrayCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement/*=_Nil<T_O>()*/, core::T_sp data/*=_Nil<T_O>()*/) {
+      LIKELY_if (data.nilp()) {
+        data = SimpleVectorCoordinate_O::make(dimension,initialElement,true);
+      }
+      SimpleMDArrayCoordinate_sp array = gctools::GC<SimpleMDArrayCoordinate_O>::allocate_container(gctools::GCStamp<SimpleMDArrayCoordinate_O>::TheStamp,1,1,dimension,gc::As_unsafe<core::Array_sp>(data));
+      return array;
+    }
+    static SimpleMDArrayCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement) {
+      return make_vector(dimension,initialElement,_Nil<T_O>());
+    }
+  public: // make array
+  SimpleMDArrayCoordinate_O(size_t rank,
+                  core::List_sp dimensions,
+                  core::Array_sp data) : TemplatedBase(rank,dimensions,data) {};
+    static SimpleMDArrayCoordinate_sp make_multi_dimensional(core::List_sp dim_desig, simple_element_type initialElement, core::T_sp data) {
+      ASSERT(dim_desig.consp()||dim_desig.nilp());
+      size_t rank;
+      size_t arrayTotalSize = calculateArrayTotalSizeAndValidateDimensions(dim_desig,rank);
+      LIKELY_if (data.nilp()) {
+        data = SimpleVectorCoordinate_O::make(arrayTotalSize,initialElement,true);
+      }
+      SimpleMDArrayCoordinate_sp array = gctools::GC<SimpleMDArrayCoordinate_O>::allocate_container(gctools::GCStamp<SimpleMDArrayCoordinate_O>::TheStamp,rank,rank,dim_desig,gc::As<core::Array_sp>(data));
+      return array;
+    }
+  };
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+#if 0
+  SMART(SimpleVectorCoordinateWithHash);
+  class SimpleVectorCoordinateWithHash_O : public SimpleVectorCoordinate_O
   {
-    LISP_CLASS(geom,GeomPkg,CoordinateArrayWithHash_O,"CoordinateArrayWithHash",CoordinateArray_O);
+    LISP_CLASS(geom,GeomPkg,SimpleVectorCoordinateWithHash_O,"SimpleVectorCoordinateWithHash",SimpleVectorCoordinate_O);
 //	DECLARE_SERIALIZE();
   public:
     void initialize();
@@ -162,23 +387,30 @@ CL_DEFMETHOD     void	append(const Vector3& pos) { this->_Points.push_back(pos);
   private:
     uint	_Hash;
   public:
-    static CoordinateArrayWithHash_sp create(uint sz);
+    static SimpleVectorCoordinateWithHash_sp create(uint sz);
   public:
-    CoordinateArrayWithHash_O( const CoordinateArrayWithHash_O& orig );
+    SimpleVectorCoordinateWithHash_O( const SimpleVectorCoordinateWithHash_O& orig );
 
 
-CL_NAME("coordinate-array-with-hash-gethash");
+CL_LISPIFY_NAME("coordinate-array-with-hash-gethash");
 CL_DEFMETHOD     uint getHash() { return this->_Hash;};
-CL_NAME("coordinate-array-with-hash-setHash");
+CL_LISPIFY_NAME("coordinate-array-with-hash-setHash");
 CL_DEFMETHOD     void setHash(uint h) { this->_Hash = h;};
 
-    DEFAULT_CTOR_DTOR(CoordinateArrayWithHash_O);
+    DEFAULT_CTOR_DTOR(SimpleVectorCoordinateWithHash_O);
   };
+#endif
+
+
+
+namespace geom {
+
+  typedef core::Array_O  ArrayCoordinate_O;
+  typedef gc::smart_ptr<ArrayCoordinate_O> ArrayCoordinate_sp;
+  
+  void geom__in_place_transform(ArrayCoordinate_sp array, const Matrix& transform);
+  void geom__in_place__TIMES_scalar(ArrayCoordinate_sp array, double mul);
 
 
 };
-
-
-TRANSLATE(geom::CoordinateArray_O);
-TRANSLATE(geom::CoordinateArrayWithHash_O);
-#endif          /* ifndef CoordinateArray_H */
+#endif          /* ifndef SimpleVectorCoordinate_H */

@@ -264,24 +264,24 @@ public:
 	void throwMinimizerStuck();
 	void throwMinimizerError();
 
-CL_NAME("getEnergyFunction");
+CL_LISPIFY_NAME("getEnergyFunction");
 CL_DEFMETHOD 	EnergyFunction_sp	getEnergyFunction() {_OF(); ASSERTNOTNULL(this->_EnergyFunction); return this->_EnergyFunction; };
 	void	useDefaultSettings();
 
 	void	changeOptions(core::List_sp options);
 
 	MinimizerStatus status()	{return this->_Status;};
-CL_NAME("status");
+CL_LISPIFY_NAME("status");
 CL_DEFMETHOD 	int statusAsInt()	{return (int)(this->_Status);};
-CL_NAME("statusMessage");
+CL_LISPIFY_NAME("statusMessage");
 CL_DEFMETHOD 	string		statusMessage() { return this->_Message.str();};
 
-CL_NAME("getIteration");
+CL_LISPIFY_NAME("getIteration");
 CL_DEFMETHOD 	int	getIteration()	{ return this->_Iteration; };
 	string	statusAsString();
 	string	statusAsShortString();
 
-CL_NAME("getRMSForce");
+CL_LISPIFY_NAME("getRMSForce");
 CL_DEFMETHOD 	double	getRMSForce() { return this->_RMSForce; };
 #ifdef XML_ARCHIVE
 	void	debugStart();
@@ -290,17 +290,17 @@ CL_DEFMETHOD 	double	getRMSForce() { return this->_RMSForce; };
 
 //	void	setStepCallback(core::LispCallback_sp stepCallback);
 
-CL_NAME("setMaximumNumberOfSteepestDescentSteps");
+CL_LISPIFY_NAME("setMaximumNumberOfSteepestDescentSteps");
 CL_DEFMETHOD 	void	setMaximumNumberOfSteepestDescentSteps(int m) {this->_NumberOfSteepestDescentSteps = m;};
-CL_NAME("setMaximumNumberOfConjugateGradientSteps");
+CL_LISPIFY_NAME("setMaximumNumberOfConjugateGradientSteps");
 CL_DEFMETHOD 	void	setMaximumNumberOfConjugateGradientSteps(int m) {this->_NumberOfConjugateGradientSteps= m;};
-CL_NAME("setMaximumNumberOfTruncatedNewtonSteps");
+CL_LISPIFY_NAME("setMaximumNumberOfTruncatedNewtonSteps");
 CL_DEFMETHOD 	void	setMaximumNumberOfTruncatedNewtonSteps(int m) {this->_NumberOfTruncatedNewtonSteps= m;};
-CL_NAME("setSteepestDescentTolerance");
+CL_LISPIFY_NAME("setSteepestDescentTolerance");
 CL_DEFMETHOD 	void	setSteepestDescentTolerance(double m) {this->_SteepestDescentTolerance = m;};
-CL_NAME("setConjugateGradientTolerance");
+CL_LISPIFY_NAME("setConjugateGradientTolerance");
 CL_DEFMETHOD 	void	setConjugateGradientTolerance(double m) {this->_ConjugateGradientTolerance = m;};
-CL_NAME("setTruncatedNewtonTolerance");
+CL_LISPIFY_NAME("setTruncatedNewtonTolerance");
 CL_DEFMETHOD 	void	setTruncatedNewtonTolerance(double m) {this->_TruncatedNewtonTolerance = m;};
 	void	setTruncatedNewtonPreconditioner(PreconditionerType m) {this->_TruncatedNewtonPreconditioner = m;};
 

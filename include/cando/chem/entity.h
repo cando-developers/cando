@@ -72,7 +72,7 @@ class Entity_O : public core::CxxObject_O
   virtual bool	isTerminalName() { return false; };
     		/*! Get the name of this object
 		 */
-  CL_NAME("getName");
+  CL_LISPIFY_NAME("getName");
   CL_DEFMETHOD     virtual core::Symbol_sp	getName() const 	{_OF();SUBCLASS_MUST_IMPLEMENT();};
 
     		/*! Return a list of names that is expanded recursively as much as possible
@@ -84,7 +84,7 @@ class Entity_O : public core::CxxObject_O
     /*! Recursively expand all of the EntityNames within us and accumulate a list of
       RepresentedEntityNameSets that have a representative and a set of Entities that
       that representative represents */
-  CL_NAME("expandedRepresentativeList");
+  CL_LISPIFY_NAME("expandedRepresentativeList");
   CL_DEFMETHOD     virtual RepresentativeList_sp expandedRepresentativeList() const {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
 
     /*! Call expandedRepresentativeList and then combine RepresentedEntityNameSets that
@@ -93,7 +93,7 @@ class Entity_O : public core::CxxObject_O
   RepresentativeList_sp minimalRepresentativeList() const;
 
 		/*! If this object is a Stereoisomer then it has a Constitution otherwise it doesn't */
-  CL_NAME("hasConstitution");
+  CL_LISPIFY_NAME("hasConstitution");
   CL_DEFMETHOD     virtual bool hasConstitution() { return false; };
     		/*! Return the constitution */
   virtual Constitution_sp constitution();

@@ -55,7 +55,6 @@ __END_DOC
 #include <clasp/core/hashTableEq.h>
 #include <cando/chem/virtualAtom.h>
 #include <cando/chem/bond.h>
-#include <clasp/core/vectorObjectsWithFillPtr.h>
 #include <clasp/core/lispDefinitions.h>
 #include <clasp/core/wrappers.h>
 
@@ -120,7 +119,7 @@ PathMessage_sp PathMessage_O::copy()
 
 void PathMessage_O::join(PathMessage_sp other)
 {
-    this->_beep->inPlaceOr(other->_beep);
+  core::SimpleBitVector_inPlaceOr(this->_beep,other->_beep);
 }
 
 AGVertex_sp PathMessage_O::getFirstVertex()
@@ -163,9 +162,9 @@ void PathMessage_O::dump()
     _lisp->print(BF("Ring start: %d:%s end: %d:%s") % firstResidue %  firstName
 		 % lastResidue % lastName );
     _lisp->print(BF("Edges: "));
-    vector<uint>::iterator ei;
-    vector<uint> vals;
-    this->_beep->getOnIndices(vals);
+    vector<size_t>::iterator ei;
+    vector<size_t> vals;
+    core::SimpleBitVector_getOnIndices(this->_beep,vals);
     for ( ei=vals.begin(); ei!=vals.end(); ei++ )
     {
 	AGEdge_sp edge = this->getGraph()->getEdge(*ei);
@@ -183,9 +182,9 @@ void PathMessage_O::dump()
 core::List_sp PathMessage_O::getAtoms()
 {
     gctools::SmallOrderedSet<Atom_sp>	atoms;
-    vector<uint>::iterator ei;
-    vector<uint> edges;
-    this->_beep->getOnIndices(edges);
+    vector<size_t>::iterator ei;
+    vector<size_t> edges;
+    SimpleBitVector_getOnIndices(this->_beep,edges);
     LOG(BF("Number of edges = %d") % edges.size()  );
     for ( ei=edges.begin(); ei!=edges.end(); ei++ )
     {
@@ -828,10 +827,10 @@ bool RingFinder_O::linearlyIndependentRing(PathMessage_sp ring)
 	    //
 	    // figure where to insert the 
 	    //
-    uint left = this->_gaussian[glast]->lowestIndex();
+    uint left = core::SimpleBitVector_lowestIndex(this->_gaussian[glast]);
     for ( uint z = 0; z<glast; z++ )
     {
-	uint gleft = this->_gaussian[z]->lowestIndex();
+      uint gleft = core::SimpleBitVector_lowestIndex(this->_gaussian[z]);
 	if ( gleft > left )
 	{
 		    // swap rows
@@ -842,13 +841,13 @@ bool RingFinder_O::linearlyIndependentRing(PathMessage_sp ring)
 	    left = gleft;
 	} else if ( gleft == left )
 	{
-	    this->_gaussian[glast]->inPlaceXor(this->_gaussian[z]);
-	    left = this->_gaussian[glast]->lowestIndex();
+          core::SimpleBitVector_inPlaceXor(this->_gaussian[glast],this->_gaussian[z]);
+          left = core::SimpleBitVector_lowestIndex(this->_gaussian[glast]);
 	}
     }
 //  for z in self._gaussian:
 //      print "DEBUG:matrix after : ", z.asString()
-    if ( this->_gaussian[glast]->isZero() )
+    if ( core::SimpleBitVector_isZero(this->_gaussian[glast]) )
     {
 	this->_gaussian.pop_back();
 	//print "DEBUG Popped last element"

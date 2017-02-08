@@ -13,9 +13,9 @@
     class OMatrix_O;
     class GeomExposer_O;
     class OVector3_O;
-    class CoordinateArrayWithHash_O;
+    class SimpleVectorCoordinateWithHash_O;
     class Color_O;
-    class CoordinateArray_O;
+    class SimpleVectorCoordinate_O;
  };
  namespace clcenv {
     class Inline_O;
@@ -759,8 +759,8 @@ KIND_LISPALLOC_core__VectorObjectsWithFillPtr_O = 197,
 KIND_LISPALLOC_core__BitVector_O = 198,
 KIND_LISPALLOC_core__SimpleBitVector_O = 199,
 KIND_LISPALLOC_core__BitVectorWithFillPtr_O = 200,
-KIND_LISPALLOC_geom__CoordinateArray_O = 201,
-KIND_LISPALLOC_geom__CoordinateArrayWithHash_O = 202,
+KIND_LISPALLOC_geom__SimpleVectorCoordinate_O = 201,
+KIND_LISPALLOC_geom__SimpleVectorCoordinateWithHash_O = 202,
 KIND_LISPALLOC_core__String_O = 203,
 KIND_BOOTSTRAP_core__Str_O = 204,
 KIND_LISPALLOC_core__StrWithFillPtr_O = 205,
@@ -2096,7 +2096,7 @@ template <typename FP> struct Cast<chem::PdbReader_O*,FP> {
       return (kindVal == 383);
   };
 };
-template <typename FP> struct Cast<geom::CoordinateArray_O*,FP> {
+template <typename FP> struct Cast<geom::SimpleVectorCoordinate_O*,FP> {
   inline static bool isA(FP client) {
       gctools::Header_s* header = reinterpret_cast<gctools::Header_s*>(ClientPtrToBasePtr(client));
       int kindVal = header->kind();
@@ -5176,7 +5176,7 @@ template <typename FP> struct Cast<llvmo::LLVMTargetMachine_O*,FP> {
       return (kindVal == 94);
   };
 };
-template <typename FP> struct Cast<geom::CoordinateArrayWithHash_O*,FP> {
+template <typename FP> struct Cast<geom::SimpleVectorCoordinateWithHash_O*,FP> {
   inline static bool isA(FP client) {
       gctools::Header_s* header = reinterpret_cast<gctools::Header_s*>(ClientPtrToBasePtr(client));
       int kindVal = header->kind();
@@ -5862,9 +5862,9 @@ template <> class gctools::GCKind<chem::PdbReader_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_chem__PdbReader_O ;
 };
-template <> class gctools::GCKind<geom::CoordinateArray_O> {
+template <> class gctools::GCKind<geom::SimpleVectorCoordinate_O> {
 public:
-  static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_geom__CoordinateArray_O ;
+  static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_geom__SimpleVectorCoordinate_O ;
 };
 template <> class gctools::GCKind<clcenv::LexicalVariableInfo_O> {
 public:
@@ -7714,9 +7714,9 @@ template <> class gctools::GCKind<llvmo::LLVMTargetMachine_O> {
 public:
   static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_llvmo__LLVMTargetMachine_O ;
 };
-template <> class gctools::GCKind<geom::CoordinateArrayWithHash_O> {
+template <> class gctools::GCKind<geom::SimpleVectorCoordinateWithHash_O> {
 public:
-  static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_geom__CoordinateArrayWithHash_O ;
+  static gctools::GCKindEnum const Kind = gctools::KIND_LISPALLOC_geom__SimpleVectorCoordinateWithHash_O ;
 };
 template <> class gctools::GCKind<gctools::GCVector_moveable<chem::FixedNonbondRestraint>> {
 public:
@@ -8745,9 +8745,9 @@ public:
 { class_kind, KIND_LISPALLOC_core__BitVectorWithFillPtr_O, sizeof(core::BitVectorWithFillPtr_O), 0, "core::BitVectorWithFillPtr_O" },
 // not-exposing {  fixed_field, ctype_unsigned_long, sizeof(unsigned long), offsetof(SAFE_TYPE_MACRO(core::BitVectorWithFillPtr_O),_fill_ptr), "_fill_ptr" }, // public: (NIL) fixable: NIL good-name: T
 // not-exposing {  fixed_field, ctype__Bool, sizeof(_Bool), offsetof(SAFE_TYPE_MACRO(core::BitVectorWithFillPtr_O),_adjustable), "_adjustable" }, // public: (NIL) fixable: NIL good-name: T
-{ class_kind, KIND_LISPALLOC_geom__CoordinateArray_O, sizeof(geom::CoordinateArray_O), 0, "geom::CoordinateArray_O" },
-{ class_kind, KIND_LISPALLOC_geom__CoordinateArrayWithHash_O, sizeof(geom::CoordinateArrayWithHash_O), 0, "geom::CoordinateArrayWithHash_O" },
-// not-exposing {  fixed_field, ctype_unsigned_int, sizeof(unsigned int), offsetof(SAFE_TYPE_MACRO(geom::CoordinateArrayWithHash_O),_Hash), "_Hash" }, // public: (NIL) fixable: NIL good-name: T
+{ class_kind, KIND_LISPALLOC_geom__SimpleVectorCoordinate_O, sizeof(geom::SimpleVectorCoordinate_O), 0, "geom::SimpleVectorCoordinate_O" },
+{ class_kind, KIND_LISPALLOC_geom__SimpleVectorCoordinateWithHash_O, sizeof(geom::SimpleVectorCoordinateWithHash_O), 0, "geom::SimpleVectorCoordinateWithHash_O" },
+// not-exposing {  fixed_field, ctype_unsigned_int, sizeof(unsigned int), offsetof(SAFE_TYPE_MACRO(geom::SimpleVectorCoordinateWithHash_O),_Hash), "_Hash" }, // public: (NIL) fixable: NIL good-name: T
 { class_kind, KIND_LISPALLOC_core__String_O, sizeof(core::String_O), 0, "core::String_O" },
 { class_kind, KIND_BOOTSTRAP_core__Str_O, sizeof(core::Str_O), 0, "core::Str_O" },
  {  fixed_field, TAGGED_POINTER_OFFSET, sizeof(gctools::tagged_pointer<gctools::GCString_moveable<char>>), offsetof(SAFE_TYPE_MACRO(core::Str_O),_Contents._Contents), "_Contents._Contents" }, // public: (NIL T) fixable: TAGGED-POINTER-FIX good-name: T
@@ -9468,7 +9468,7 @@ public:
  {  fixed_field, TAGGED_POINTER_OFFSET, sizeof(gctools::tagged_pointer<gctools::GCVector_moveable<gctools::smart_ptr<chem::ZMatrixInternal_O>>>), offsetof(SAFE_TYPE_MACRO(chem::ZMatrix_O),_Internals._Vector._Contents), "_Internals._Vector._Contents" }, // public: (NIL T T) fixable: TAGGED-POINTER-FIX good-name: T
 { class_kind, KIND_LISPALLOC_chem__CipPrioritizer_O, sizeof(chem::CipPrioritizer_O), 0, "chem::CipPrioritizer_O" },
 { class_kind, KIND_LISPALLOC_chem__TrajectoryFrame_O, sizeof(chem::TrajectoryFrame_O), 0, "chem::TrajectoryFrame_O" },
- {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::CoordinateArray_O>), offsetof(SAFE_TYPE_MACRO(chem::TrajectoryFrame_O),_Coordinates), "_Coordinates" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
+ {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::SimpleVectorCoordinate_O>), offsetof(SAFE_TYPE_MACRO(chem::TrajectoryFrame_O),_Coordinates), "_Coordinates" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
 { class_kind, KIND_LISPALLOC_chem__AtomIdToAtomMap_O, sizeof(chem::AtomIdToAtomMap_O), 0, "chem::AtomIdToAtomMap_O" },
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<chem::Atom_O>), offsetof(SAFE_TYPE_MACRO(chem::AtomIdToAtomMap_O),_AtomIdMap._DefaultValue), "_AtomIdMap._DefaultValue" }, // public: (NIL T) fixable: SMART-PTR-FIX good-name: T
 { class_kind, KIND_LISPALLOC_chem__ComplexRestraint_O, sizeof(chem::ComplexRestraint_O), 0, "chem::ComplexRestraint_O" },
@@ -9640,7 +9640,7 @@ public:
 { class_kind, KIND_LISPALLOC_geom__OVector3_O, sizeof(geom::OVector3_O), 0, "geom::OVector3_O" },
 { class_kind, KIND_LISPALLOC_chem__ConformationCollectionEntry_O, sizeof(chem::ConformationCollectionEntry_O), 0, "chem::ConformationCollectionEntry_O" },
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<chem::ConformationCollection_O>), offsetof(SAFE_TYPE_MACRO(chem::ConformationCollectionEntry_O),_WeakConformationCollection), "_WeakConformationCollection" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
- {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::CoordinateArray_O>), offsetof(SAFE_TYPE_MACRO(chem::ConformationCollectionEntry_O),_AllCoordinates), "_AllCoordinates" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
+ {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::SimpleVectorCoordinate_O>), offsetof(SAFE_TYPE_MACRO(chem::ConformationCollectionEntry_O),_AllCoordinates), "_AllCoordinates" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<core::HashTableEq_O>), offsetof(SAFE_TYPE_MACRO(chem::ConformationCollectionEntry_O),_Data), "_Data" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
 { class_kind, KIND_LISPALLOC_chem__AtomReferenceBase_O, sizeof(chem::AtomReferenceBase_O), 0, "chem::AtomReferenceBase_O" },
 { class_kind, KIND_LISPALLOC_chem__AtomReference_O, sizeof(chem::AtomReference_O), 0, "chem::AtomReference_O" },
@@ -10531,14 +10531,14 @@ public:
  {  fixed_field, TAGGED_POINTER_OFFSET, sizeof(gctools::tagged_pointer<gctools::GCVector_moveable<chem::EnergyStretch>>), offsetof(SAFE_TYPE_MACRO(chem::EnergyStretch_O),_BeyondThresholdTerms._Vector._Contents), "_BeyondThresholdTerms._Vector._Contents" }, // public: (T T T) fixable: TAGGED-POINTER-FIX good-name: T
 { class_kind, KIND_LISPALLOC_chem__SuperposeEngine_O, sizeof(chem::SuperposeEngine_O), 0, "chem::SuperposeEngine_O" },
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<core::IntArray_O>), offsetof(SAFE_TYPE_MACRO(chem::SuperposeEngine_O),_FixedIndices), "_FixedIndices" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
- {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::CoordinateArray_O>), offsetof(SAFE_TYPE_MACRO(chem::SuperposeEngine_O),_FixedCoordinates), "_FixedCoordinates" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
+ {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::SimpleVectorCoordinate_O>), offsetof(SAFE_TYPE_MACRO(chem::SuperposeEngine_O),_FixedCoordinates), "_FixedCoordinates" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<core::IntArray_O>), offsetof(SAFE_TYPE_MACRO(chem::SuperposeEngine_O),_MoveableIndices), "_MoveableIndices" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
- {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::CoordinateArray_O>), offsetof(SAFE_TYPE_MACRO(chem::SuperposeEngine_O),_MoveableCoordinates), "_MoveableCoordinates" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
+ {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::SimpleVectorCoordinate_O>), offsetof(SAFE_TYPE_MACRO(chem::SuperposeEngine_O),_MoveableCoordinates), "_MoveableCoordinates" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
 { class_kind, KIND_LISPALLOC_chem__SuperposeSelectedAtoms_O, sizeof(chem::SuperposeSelectedAtoms_O), 0, "chem::SuperposeSelectedAtoms_O" },
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<core::IntArray_O>), offsetof(SAFE_TYPE_MACRO(chem::SuperposeSelectedAtoms_O),_FixedIndices), "_FixedIndices" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
- {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::CoordinateArray_O>), offsetof(SAFE_TYPE_MACRO(chem::SuperposeSelectedAtoms_O),_FixedCoordinates), "_FixedCoordinates" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
+ {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::SimpleVectorCoordinate_O>), offsetof(SAFE_TYPE_MACRO(chem::SuperposeSelectedAtoms_O),_FixedCoordinates), "_FixedCoordinates" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<core::IntArray_O>), offsetof(SAFE_TYPE_MACRO(chem::SuperposeSelectedAtoms_O),_MoveableIndices), "_MoveableIndices" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
- {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::CoordinateArray_O>), offsetof(SAFE_TYPE_MACRO(chem::SuperposeSelectedAtoms_O),_MoveableCoordinates), "_MoveableCoordinates" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
+ {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::SimpleVectorCoordinate_O>), offsetof(SAFE_TYPE_MACRO(chem::SuperposeSelectedAtoms_O),_MoveableCoordinates), "_MoveableCoordinates" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<chem::Matter_O>), offsetof(SAFE_TYPE_MACRO(chem::SuperposeSelectedAtoms_O),_Matter), "_Matter" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
  {  fixed_field, TAGGED_POINTER_OFFSET, sizeof(gctools::tagged_pointer<gctools::GCVector_moveable<gctools::smart_ptr<chem::Atom_O>>>), offsetof(SAFE_TYPE_MACRO(chem::SuperposeSelectedAtoms_O),_SuperposeAtoms._Vector._Contents), "_SuperposeAtoms._Vector._Contents" }, // public: (NIL T T) fixable: TAGGED-POINTER-FIX good-name: T
 { class_kind, KIND_LISPALLOC_chem__SpanningLoop_O, sizeof(chem::SpanningLoop_O), 0, "chem::SpanningLoop_O" },
@@ -10606,7 +10606,7 @@ public:
 // not-exposing {  fixed_field, ctype_char, sizeof(char), offsetof(SAFE_TYPE_MACRO(chem::ConformationExplorerEntryStage_O),_StageName.__r_.__first_.NO-NAME.__s.NO-NAME.__lx), "_StageName.__r_.__first_.NO-NAME.__s.NO-NAME.__lx" }, // public: (NIL NIL NIL T T T T) fixable: NIL good-name: T
 // not-exposing {  fixed_field, ctype__Bool, sizeof(_Bool), offsetof(SAFE_TYPE_MACRO(chem::ConformationExplorerEntryStage_O),_Complete), "_Complete" }, // public: (NIL) fixable: NIL good-name: T
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<chem::ConformationExplorerEntry_O>), offsetof(SAFE_TYPE_MACRO(chem::ConformationExplorerEntryStage_O),_WeakConformationExplorerEntry), "_WeakConformationExplorerEntry" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
- {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::CoordinateArray_O>), offsetof(SAFE_TYPE_MACRO(chem::ConformationExplorerEntryStage_O),_FinalCoordinates), "_FinalCoordinates" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
+ {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::SimpleVectorCoordinate_O>), offsetof(SAFE_TYPE_MACRO(chem::ConformationExplorerEntryStage_O),_FinalCoordinates), "_FinalCoordinates" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<core::HashTableEq_O>), offsetof(SAFE_TYPE_MACRO(chem::ConformationExplorerEntryStage_O),_Binder), "_Binder" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
 // not-exposing {  fixed_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::ConformationExplorerEntryStage_O),_EnergyKCal), "_EnergyKCal" }, // public: (NIL) fixable: NIL good-name: T
 // not-exposing {  fixed_field, ctype_unsigned_long, sizeof(unsigned long), offsetof(SAFE_TYPE_MACRO(chem::ConformationExplorerEntryStage_O),_ExternalInterfaceName.__r_.__first_.NO-NAME.__l.__cap_), "_ExternalInterfaceName.__r_.__first_.NO-NAME.__l.__cap_" }, // public: (NIL NIL NIL T T T) fixable: NIL good-name: T
@@ -10629,7 +10629,7 @@ public:
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<chem::Matter_O>), offsetof(SAFE_TYPE_MACRO(chem::StructureComparer_O),_Matter), "_Matter" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
  {  fixed_field, TAGGED_POINTER_OFFSET, sizeof(gctools::tagged_pointer<gctools::GCVector_moveable<gctools::smart_ptr<chem::Atom_O>>>), offsetof(SAFE_TYPE_MACRO(chem::StructureComparer_O),_AllAtoms._Contents), "_AllAtoms._Contents" }, // public: (NIL T) fixable: TAGGED-POINTER-FIX good-name: T
  {  fixed_field, TAGGED_POINTER_OFFSET, sizeof(gctools::tagged_pointer<gctools::GCVector_moveable<gctools::smart_ptr<chem::Atom_O>>>), offsetof(SAFE_TYPE_MACRO(chem::StructureComparer_O),_SuperposeAtoms._Contents), "_SuperposeAtoms._Contents" }, // public: (NIL T) fixable: TAGGED-POINTER-FIX good-name: T
- {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::CoordinateArray_O>), offsetof(SAFE_TYPE_MACRO(chem::StructureComparer_O),_FixedCoordinates), "_FixedCoordinates" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
+ {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::SimpleVectorCoordinate_O>), offsetof(SAFE_TYPE_MACRO(chem::StructureComparer_O),_FixedCoordinates), "_FixedCoordinates" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
 { class_kind, KIND_LISPALLOC_chem__TypeAssignmentRules_O, sizeof(chem::TypeAssignmentRules_O), 0, "chem::TypeAssignmentRules_O" },
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<chem::WildElementDict_O>), offsetof(SAFE_TYPE_MACRO(chem::TypeAssignmentRules_O),_WildElementDict), "_WildElementDict" }, // public: (NIL) fixable: SMART-PTR-FIX good-name: T
  {  fixed_field, TAGGED_POINTER_OFFSET, sizeof(gctools::tagged_pointer<gctools::GCVector_moveable<gctools::smart_ptr<chem::OneTypeRule_O>>>), offsetof(SAFE_TYPE_MACRO(chem::TypeAssignmentRules_O),_Rules._Vector._Contents), "_Rules._Vector._Contents" }, // public: (NIL T T) fixable: TAGGED-POINTER-FIX good-name: T
@@ -11093,8 +11093,8 @@ public:
 // not-exposing {  fixed_field, ctype_double, sizeof(double), offsetof(SAFE_TYPE_MACRO(chem::RestraintAnchor_O),_Weight), "_Weight" }, // public: (NIL) fixable: NIL good-name: T
 { class_kind, KIND_LISPALLOC_chem__Structure_Old_ListEntry_O, sizeof(chem::Structure_Old_ListEntry_O), 0, "chem::Structure_Old_ListEntry_O" },
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<chem::Structure_Old_List_O>), offsetof(SAFE_TYPE_MACRO(chem::Structure_Old_ListEntry_O),_WeakStructureList), "_WeakStructureList" }, // public: (T) fixable: SMART-PTR-FIX good-name: T
- {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::CoordinateArray_O>), offsetof(SAFE_TYPE_MACRO(chem::Structure_Old_ListEntry_O),_AllCoordinates), "_AllCoordinates" }, // public: (T) fixable: SMART-PTR-FIX good-name: T
- {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::CoordinateArray_O>), offsetof(SAFE_TYPE_MACRO(chem::Structure_Old_ListEntry_O),_SuperposeCoordinates), "_SuperposeCoordinates" }, // public: (T) fixable: SMART-PTR-FIX good-name: T
+ {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::SimpleVectorCoordinate_O>), offsetof(SAFE_TYPE_MACRO(chem::Structure_Old_ListEntry_O),_AllCoordinates), "_AllCoordinates" }, // public: (T) fixable: SMART-PTR-FIX good-name: T
+ {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<geom::SimpleVectorCoordinate_O>), offsetof(SAFE_TYPE_MACRO(chem::Structure_Old_ListEntry_O),_SuperposeCoordinates), "_SuperposeCoordinates" }, // public: (T) fixable: SMART-PTR-FIX good-name: T
  {  fixed_field, SMART_PTR_OFFSET, sizeof(gctools::smart_ptr<core::HashTableEq_O>), offsetof(SAFE_TYPE_MACRO(chem::Structure_Old_ListEntry_O),_Data), "_Data" }, // public: (T) fixable: SMART-PTR-FIX good-name: T
  {  fixed_field, ctype_unsigned_int, sizeof(unsigned int), offsetof(SAFE_TYPE_MACRO(chem::Structure_Old_ListEntry_O),_Members), "_Members" }, // public: (T) fixable: NIL good-name: T
 { class_kind, KIND_LISPALLOC_chem__Minimizer_O, sizeof(chem::Minimizer_O), 0, "chem::Minimizer_O" },
@@ -13439,16 +13439,16 @@ obj_finalize_KIND_LISPALLOC_core__BitVectorWithFillPtr_O:
     obj_gc_safe->~BitVectorWithFillPtr_O();
     return;
 }
-obj_finalize_KIND_LISPALLOC_geom__CoordinateArray_O:
+obj_finalize_KIND_LISPALLOC_geom__SimpleVectorCoordinate_O:
 {
-    geom::CoordinateArray_O* obj_gc_safe = reinterpret_cast<geom::CoordinateArray_O*>(client);
-    obj_gc_safe->~CoordinateArray_O();
+    geom::SimpleVectorCoordinate_O* obj_gc_safe = reinterpret_cast<geom::SimpleVectorCoordinate_O*>(client);
+    obj_gc_safe->~SimpleVectorCoordinate_O();
     return;
 }
-obj_finalize_KIND_LISPALLOC_geom__CoordinateArrayWithHash_O:
+obj_finalize_KIND_LISPALLOC_geom__SimpleVectorCoordinateWithHash_O:
 {
-    geom::CoordinateArrayWithHash_O* obj_gc_safe = reinterpret_cast<geom::CoordinateArrayWithHash_O*>(client);
-    obj_gc_safe->~CoordinateArrayWithHash_O();
+    geom::SimpleVectorCoordinateWithHash_O* obj_gc_safe = reinterpret_cast<geom::SimpleVectorCoordinateWithHash_O*>(client);
+    obj_gc_safe->~SimpleVectorCoordinateWithHash_O();
     return;
 }
 obj_finalize_KIND_LISPALLOC_core__String_O:
@@ -15888,8 +15888,8 @@ static void* OBJ_FINALIZE_table[] = {
   /* 198 */ &&obj_finalize_KIND_LISPALLOC_core__BitVector_O,
   /* 199 */ &&obj_finalize_KIND_LISPALLOC_core__SimpleBitVector_O,
   /* 200 */ &&obj_finalize_KIND_LISPALLOC_core__BitVectorWithFillPtr_O,
-  /* 201 */ &&obj_finalize_KIND_LISPALLOC_geom__CoordinateArray_O,
-  /* 202 */ &&obj_finalize_KIND_LISPALLOC_geom__CoordinateArrayWithHash_O,
+  /* 201 */ &&obj_finalize_KIND_LISPALLOC_geom__SimpleVectorCoordinate_O,
+  /* 202 */ &&obj_finalize_KIND_LISPALLOC_geom__SimpleVectorCoordinateWithHash_O,
   /* 203 */ &&obj_finalize_KIND_LISPALLOC_core__String_O,
   /* 204 */ &&obj_finalize_KIND_BOOTSTRAP_core__Str_O,
   /* 205 */ &&obj_finalize_KIND_LISPALLOC_core__StrWithFillPtr_O,
@@ -17492,16 +17492,16 @@ obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__BitVectorWithFillPtr_O:
     GC<core::BitVectorWithFillPtr_O>::deallocate_unmanaged_instance(obj_gc_safe);
     return;
 }
-obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__CoordinateArray_O:
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__SimpleVectorCoordinate_O:
 {
-    geom::CoordinateArray_O* obj_gc_safe = reinterpret_cast<geom::CoordinateArray_O*>(client);
-    GC<geom::CoordinateArray_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    geom::SimpleVectorCoordinate_O* obj_gc_safe = reinterpret_cast<geom::SimpleVectorCoordinate_O*>(client);
+    GC<geom::SimpleVectorCoordinate_O>::deallocate_unmanaged_instance(obj_gc_safe);
     return;
 }
-obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__CoordinateArrayWithHash_O:
+obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__SimpleVectorCoordinateWithHash_O:
 {
-    geom::CoordinateArrayWithHash_O* obj_gc_safe = reinterpret_cast<geom::CoordinateArrayWithHash_O*>(client);
-    GC<geom::CoordinateArrayWithHash_O>::deallocate_unmanaged_instance(obj_gc_safe);
+    geom::SimpleVectorCoordinateWithHash_O* obj_gc_safe = reinterpret_cast<geom::SimpleVectorCoordinateWithHash_O*>(client);
+    GC<geom::SimpleVectorCoordinateWithHash_O>::deallocate_unmanaged_instance(obj_gc_safe);
     return;
 }
 obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__String_O:
@@ -19941,8 +19941,8 @@ static void* OBJ_DEALLOCATOR_table[] = {
   /* 198 */ &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__BitVector_O,
   /* 199 */ &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__SimpleBitVector_O,
   /* 200 */ &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__BitVectorWithFillPtr_O,
-  /* 201 */ &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__CoordinateArray_O,
-  /* 202 */ &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__CoordinateArrayWithHash_O,
+  /* 201 */ &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__SimpleVectorCoordinate_O,
+  /* 202 */ &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_geom__SimpleVectorCoordinateWithHash_O,
   /* 203 */ &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__String_O,
   /* 204 */ &&obj_deallocate_unmanaged_instance_KIND_BOOTSTRAP_core__Str_O,
   /* 205 */ &&obj_deallocate_unmanaged_instance_KIND_LISPALLOC_core__StrWithFillPtr_O,
@@ -20617,7 +20617,7 @@ static void* OBJ_DEALLOCATOR_table[] = {
  SMART_PTR_FIX(chem::BondTest_O::static_creator);
  SMART_PTR_FIX(chem::Entity_O::static_class_symbol);
  SMART_PTR_FIX(llvmo::DIScope_O::static_class);
- SMART_PTR_FIX(geom::CoordinateArrayWithHash_O::static_class);
+ SMART_PTR_FIX(geom::SimpleVectorCoordinateWithHash_O::static_class);
  SMART_PTR_FIX(core::NamedFunction_O::static_class_symbol);
  SMART_PTR_FIX(chem::MessageReport_O::static_class_symbol);
  SMART_PTR_FIX(chem::IterateResidues_O::static_creator);
@@ -21127,7 +21127,7 @@ static void* OBJ_DEALLOCATOR_table[] = {
  SMART_PTR_FIX(adapt::IndexedObjectBag_O::static_creator);
  SMART_PTR_FIX(core::LambdaListHandler_O::static_class);
  SMART_PTR_FIX(core::Creator_O::static_class_symbol);
- SMART_PTR_FIX(geom::CoordinateArrayWithHash_O::static_creator);
+ SMART_PTR_FIX(geom::SimpleVectorCoordinateWithHash_O::static_creator);
  SMART_PTR_FIX(geom::BoundingBox_O::static_class);
  SMART_PTR_FIX(core::BlockEnvironment_O::static_creator);
  SMART_PTR_FIX(core::VaList_dummy_O::static_class);
@@ -21228,7 +21228,7 @@ static void* OBJ_DEALLOCATOR_table[] = {
  SMART_PTR_FIX(core::Pathname_O::static_class_symbol);
  SMART_PTR_FIX(llvmo::DISubprogram_O::static_class);
  SMART_PTR_FIX(core::InterpretedClosure_O::static_class_symbol);
- SMART_PTR_FIX(geom::CoordinateArray_O::static_class);
+ SMART_PTR_FIX(geom::SimpleVectorCoordinate_O::static_class);
  SMART_PTR_FIX(core::Integer_O::static_class_symbol);
  SMART_PTR_FIX(llvmo::Value_O::static_class);
  SMART_PTR_FIX(core::Pathname_O::static_class);
@@ -21430,7 +21430,7 @@ static void* OBJ_DEALLOCATOR_table[] = {
  SMART_PTR_FIX(core::StringInputStream_O::static_class);
  SMART_PTR_FIX(adapt::SymbolSet_O::static_creator);
  SMART_PTR_FIX(chem::Plug_O::static_class_symbol);
- SMART_PTR_FIX(geom::CoordinateArray_O::static_class_symbol);
+ SMART_PTR_FIX(geom::SimpleVectorCoordinate_O::static_class_symbol);
  SMART_PTR_FIX(chem::RepresentedEntityNameSet_O::static_class);
  SMART_PTR_FIX(chem::CipPrioritizer_O::static_class);
  SMART_PTR_FIX(core::LexicalEnvironment_O::static_class);
@@ -21576,7 +21576,7 @@ static void* OBJ_DEALLOCATOR_table[] = {
  SMART_PTR_FIX(chem::Root_O::static_creator);
  SMART_PTR_FIX(core::SmallMultimap_O::static_class_symbol);
  SMART_PTR_FIX(chem::CalculatePositionRelativeToOrigin_O::static_class_symbol);
- SMART_PTR_FIX(geom::CoordinateArrayWithHash_O::static_class_symbol);
+ SMART_PTR_FIX(geom::SimpleVectorCoordinateWithHash_O::static_class_symbol);
  SMART_PTR_FIX(core::SexpSaveArchive_O::static_creator);
  SMART_PTR_FIX(llvmo::DIFile_O::static_class_symbol);
  SMART_PTR_FIX(clcenv::Tag_O::static_class_symbol);
@@ -21626,7 +21626,7 @@ static void* OBJ_DEALLOCATOR_table[] = {
  SMART_PTR_FIX(chem::PdbMonomerDatabase_O::static_class);
  SMART_PTR_FIX(chem::AGVertex_O::static_class_symbol);
  SMART_PTR_FIX(chem::BondMatchNode_O::static_class);
- SMART_PTR_FIX(geom::CoordinateArray_O::static_creator);
+ SMART_PTR_FIX(geom::SimpleVectorCoordinate_O::static_creator);
  SMART_PTR_FIX(chem::MonomerPack_O::static_creator);
  SMART_PTR_FIX(chem::StatusTracker_O::static_class);
  SMART_PTR_FIX(clcenv::FunctionDynamicExtent_O::static_class_symbol);

@@ -27,7 +27,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <string>
 #include <clasp/core/common.h>
-#include <clasp/core/useBoostRegex.h>
 #include <clasp/core/fileSystem.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"

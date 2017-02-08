@@ -82,13 +82,13 @@ uint ArrayedAtom_O::calculateHash()
 }
 
 
-void ArrayedAtom_O::extractFromCoordinateArray(geom::CoordinateArrayWithHash_sp h, uint idx)
+void ArrayedAtom_O::SimpleVectorCoordinate(geom::SimpleVectorCoordinateWithHash_sp h, uint idx)
 {
     ASSERT(this->_Atom.pointerp());
     this->_Atom->setPosition(h->getElement(idx));
 }
 
-void ArrayedAtom_O::writeToCoordinateArray(geom::CoordinateArrayWithHash_sp h, uint idx)
+void ArrayedAtom_O::SimpleVectorCoordinate(geom::SimpleVectorCoordinateWithHash_sp h, uint idx)
 {
     ASSERT(this->_Atom.pointerp());
     h->setElement(idx,this->_Atom->getPosition());
@@ -180,23 +180,23 @@ uint ArrayedResidue_O::calculateHash()
     return hash;
 }
 
-uint ArrayedResidue_O::extractFromCoordinateArray(geom::CoordinateArrayWithHash_sp hash, uint start)
+uint ArrayedResidue_O::SimpleVectorCoordinate(geom::SimpleVectorCoordinateWithHash_sp hash, uint start)
 {
     for ( gctools::Vec0<ArrayedAtom_sp>::iterator it=this->_SortedAtoms.begin();
     	it !=this->_SortedAtoms.end(); it++ )
     {
-	(*it)->extractFromCoordinateArray(hash,start);
+	(*it)->SimpleVectorCoordinate(hash,start);
 	start++;
     }
     return this->_SortedAtoms.size();
 }
 
-uint ArrayedResidue_O::writeToCoordinateArray(geom::CoordinateArrayWithHash_sp hash, uint start)
+uint ArrayedResidue_O::SimpleVectorCoordinate(geom::SimpleVectorCoordinateWithHash_sp hash, uint start)
 {
     for ( gctools::Vec0<ArrayedAtom_sp>::iterator it=this->_SortedAtoms.begin();
     	it !=this->_SortedAtoms.end(); it++ )
     {
-	(*it)->writeToCoordinateArray(hash,start);
+	(*it)->SimpleVectorCoordinate(hash,start);
 	start++;
     }
     return this->_SortedAtoms.size();
@@ -290,17 +290,17 @@ uint	ArrayedMolecule_O::calculateHash()
 
 
 
-geom::CoordinateArrayWithHash_sp ArrayedMolecule_O::createCoordinateArray()
+geom::SimpleVectorCoordinateWithHash_sp ArrayedMolecule_O::SimpleVectorCoordinate()
 {
     uint numberOfAtoms = this->getNumberOfAtoms();
-    geom::CoordinateArrayWithHash_sp ca;
-    ca = geom::CoordinateArrayWithHash_O::create(_lisp,numberOfAtoms);
+    geom::SimpleVectorCoordinateWithHash_sp ca;
+    ca = geom::SimpleVectorCoordinateWithHash_O::create(_lisp,numberOfAtoms);
     ca->setHash(this->_Hash);
     return ca;
 }
 
 
-void ArrayedMolecule_O::extractFromCoordinateArray(geom::CoordinateArrayWithHash_sp h)
+void ArrayedMolecule_O::SimpleVectorCoordinate(geom::SimpleVectorCoordinateWithHash_sp h)
 {
     if ( h->getHash() != this->_Hash )
     {
@@ -314,11 +314,11 @@ void ArrayedMolecule_O::extractFromCoordinateArray(geom::CoordinateArrayWithHash
     for ( gctools::Vec0<ArrayedResidue_sp>::iterator it=this->_SortedResidues.begin();
     		it!=this->_SortedResidues.end(); it++ )
     {
-	start += (*it)->extractFromCoordinateArray(h,start);
+	start += (*it)->SimpleVectorCoordinate(h,start);
     }
 }
 
-void ArrayedMolecule_O::writeToCoordinateArray(geom::CoordinateArrayWithHash_sp h)
+void ArrayedMolecule_O::SimpleVectorCoordinate(geom::SimpleVectorCoordinateWithHash_sp h)
 {
     if ( h->getHash() != this->_Hash )
     {
@@ -332,7 +332,7 @@ void ArrayedMolecule_O::writeToCoordinateArray(geom::CoordinateArrayWithHash_sp 
     for ( gctools::Vec0<ArrayedResidue_sp>::iterator it=this->_SortedResidues.begin();
     		it!=this->_SortedResidues.end(); it++ )
     {
-	start += (*it)->writeToCoordinateArray(h,start);
+	start += (*it)->SimpleVectorCoordinate(h,start);
     }
 }
 

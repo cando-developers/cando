@@ -39,6 +39,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/hashTableEq.h>
 #include <cando/chem/conformationCollection.h>
+#include <cando/geom/coordinateArray.h>
 #include <cando/chem/loop.h>
 //#include "core/xmlSaveArchive.h"
 //#include "core/xmlLoadArchive.h"
@@ -58,7 +59,7 @@ void	ConformationCollectionEntry_O::initialize()
 {
     this->Base::initialize();
     this->_Data = core::HashTableEq_O::create_default();
-    this->_AllCoordinates = geom::CoordinateArray_O::create();
+    this->_AllCoordinates = geom::SimpleVectorCoordinate_O::create();
 }
 
 
@@ -87,18 +88,18 @@ void	ConformationCollectionEntry_O::initialize()
 
 void	ConformationCollectionEntry_O::setConformationCollection(ConformationCollection_sp s)
 {
-geom::CoordinateArray_sp	ca;
+geom::SimpleVectorCoordinate_sp	ca;
     this->_WeakConformationCollection = s;
-    ca = geom::CoordinateArray_O::create(s->numberOfAllAtoms());
+    ca = geom::SimpleVectorCoordinate_O::make(s->numberOfAllAtoms());
     this->_AllCoordinates = ca;
 }
 
 
-void	ConformationCollectionEntry_O::setAllCoordinates(geom::CoordinateArray_sp ac)
+void	ConformationCollectionEntry_O::setAllCoordinates(geom::SimpleVectorCoordinate_sp ac)
 {
     ASSERTNOTNULL(ac);
     LOG(BF("setAllCoordinates:%s") % (ac->asXmlString().c_str() ) );
-    LOG(BF("The address of the geom::CoordinateArray_sp is in o") );
+    LOG(BF("The address of the geom::SimpleVectorCoordinate_sp is in o") );
     this->_AllCoordinates = ac;
 }
 
@@ -107,7 +108,7 @@ void	ConformationCollectionEntry_O::setAllCoordinates(geom::CoordinateArray_sp a
 void	ConformationCollectionEntry_O::writeCoordinatesToMatter(Matter_sp agg)
 {
 ConformationCollection_sp			sl;
-vector<Vector3>::iterator	ci;
+ geom::SimpleVectorCoordinate_O::iterator	ci;
 gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
     sl = this->getConformationCollection();
     for ( ai=sl->begin_AllAtoms(),ci=this->_AllCoordinates->begin(); ai!=sl->end_AllAtoms(); ai++, ci++ )
@@ -128,7 +129,7 @@ vector<Vector3>::iterator	ci;
     sl = this->getConformationCollection();
     LOG(BF("Got ConformationCollection") );
     ASSERTNOTNULL(sl);
-    geom::CoordinateArray_sp coords = sl->_extractCoordinateArray(matter);
+    geom::SimpleVectorCoordinate_sp coords = sl->_SimpleVectorCoordinate(matter);
     ASSERTNOTNULL(coords);
     this->_AllCoordinates = coords;
 }
@@ -151,16 +152,16 @@ void	ConformationCollection_O::clearEntries()
 
 
 
-geom::CoordinateArray_sp ConformationCollection_O::_extractCoordinateArray(Matter_sp agg)
+geom::SimpleVectorCoordinate_sp ConformationCollection_O::_SimpleVectorCoordinate(Matter_sp agg)
 {
-    vector<Vector3>::iterator	ci;
+  geom::SimpleVectorCoordinate_O::iterator	ci;
     gctools::SmallOrderedSet<Atom_sp>::iterator		ai;
 #ifdef	DEBUG_ConformationCollectionEntry
     this->_Status->addMessage("extractCoordinatesFromMatter");
 #endif
     LOG(BF("About to get ConformationCollection") );
     LOG(BF("About to iterate over atoms and get positions") );
-    geom::CoordinateArray_sp coords = geom::CoordinateArray_O::create(this->numberOfAllAtoms());
+    geom::SimpleVectorCoordinate_sp coords = geom::SimpleVectorCoordinate_O::make(this->numberOfAllAtoms());
     ASSERTNOTNULL(coords);
     for ( ai=this->begin_AllAtoms(),ci=coords->begin(); ai!=this->end_AllAtoms(); ai++, ci++ )
     {
@@ -292,8 +293,8 @@ geom::Color_sp				color;
 Matter_sp			matter;
 ConformationCollection_O::entryIterator	si;
 ConformationCollectionEntry_sp	entry;
-geom::CoordinateArray_sp		superposeCoords;
-geom::CoordinateArray_O::iterator	ci;
+geom::SimpleVectorCoordinate_sp		superposeCoords;
+geom::SimpleVectorCoordinate_O::iterator	ci;
 frames = geom::FrameList_O::create();
     matter = this->getMatter();
     for ( si=this->begin_Entries(); si!=this->end_Entries(); si++ )

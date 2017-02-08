@@ -69,8 +69,8 @@ public:
 static Structure_Old_ListEntry_sp	create(Structure_Old_List_sp s);
 public:
 	Structure_Old_List_wp		_WeakStructureList;
-        geom::CoordinateArray_sp	_AllCoordinates;
-        geom::CoordinateArray_sp	_SuperposeCoordinates;
+        geom::SimpleVectorCoordinate_sp	_AllCoordinates;
+        geom::SimpleVectorCoordinate_sp	_SuperposeCoordinates;
     core::HashTableEq_sp 	_Data;
 	uint			_Members;
 
@@ -90,10 +90,10 @@ public:
 
     core::HashTableEq_sp getData() { return this->_Data;};
 
-        void setAllCoordinates(geom::CoordinateArray_sp ac);
-        geom::CoordinateArray_sp getAllCoordinates() { return this->_AllCoordinates; }
-        void setSuperposeCoordinates(geom::CoordinateArray_sp ac);
-        geom::CoordinateArray_sp getSuperposeCoordinates() { return this->_SuperposeCoordinates; }
+        void setAllCoordinates(geom::SimpleVectorCoordinate_sp ac);
+        geom::SimpleVectorCoordinate_sp getAllCoordinates() { return this->_AllCoordinates; }
+        void setSuperposeCoordinates(geom::SimpleVectorCoordinate_sp ac);
+        geom::SimpleVectorCoordinate_sp getSuperposeCoordinates() { return this->_SuperposeCoordinates; }
 
 	void		applyAllCoordinatesToMatter(Matter_sp agg) { IMPLEMENT_ME();};
 	void		applySuperposeCoordinatesToMatter(Matter_sp agg) { IMPLEMENT_ME();};

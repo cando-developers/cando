@@ -39,7 +39,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/adapt/stringSet.fwd.h>
 #include <cando/geom/vector3.h>
 #include <clasp/core/intArray.h>
-
 #include <clasp/core/environment.fwd.h>
 #include <cando/geom/coordinateArray.fwd.h>
 #include <clasp/core/intArray.fwd.h>
@@ -56,7 +55,6 @@ SMART(ConformationExplorerEntry);
 SMART(ConformationExplorerMatch);
 SMART(ConformationExplorer);
 SMART(SuperposeEngine);
-SMART(CoordinateArray);
 SMART(IntArray);
 
 
@@ -77,7 +75,7 @@ private:
 	string				_StageName;
 	bool				_Complete;
 	ConformationExplorerEntry_wp	_WeakConformationExplorerEntry;
-        geom::CoordinateArray_sp	_FinalCoordinates;
+        geom::SimpleVectorCoordinate_sp	_FinalCoordinates;
 	core::HashTableEq_sp			_Binder;
 			//! Energy of the conformation in kCal as calculated by the package/model
 	double				_EnergyKCal;
@@ -86,24 +84,24 @@ private:
 			//! Model is gaff, am1, pm3, b3lyp etc.
 	string				_Model;
 public:
-        void setFinalCoordinates(geom::CoordinateArray_sp ac);
-CL_NAME("getFinalCoordinates");
-CL_DEFMETHOD         geom::CoordinateArray_sp getFinalCoordinates() { return this->_FinalCoordinates; }
+        void setFinalCoordinates(geom::SimpleVectorCoordinate_sp ac);
+CL_LISPIFY_NAME("getFinalCoordinates");
+CL_DEFMETHOD         geom::SimpleVectorCoordinate_sp getFinalCoordinates() { return this->_FinalCoordinates; }
 public:
 
-CL_NAME("getEnergyKCal");
+CL_LISPIFY_NAME("getEnergyKCal");
 CL_DEFMETHOD 	double		getEnergyKCal() { return this->_EnergyKCal; };
-CL_NAME("setEnergyKCal");
+CL_LISPIFY_NAME("setEnergyKCal");
 CL_DEFMETHOD 	void		setEnergyKCal(double energy) { this->_EnergyKCal = energy; };
 
-CL_NAME("getExternalInterfaceName");
+CL_LISPIFY_NAME("getExternalInterfaceName");
 CL_DEFMETHOD 	string		getExternalInterfaceName() { return this->_ExternalInterfaceName;};
-CL_NAME("setExternalInterfaceName");
+CL_LISPIFY_NAME("setExternalInterfaceName");
 CL_DEFMETHOD 	void		setExternalInterfaceName(const string& package) { this->_ExternalInterfaceName = package;};
 
-CL_NAME("getModel");
+CL_LISPIFY_NAME("getModel");
 CL_DEFMETHOD 	string		getModel() { return this->_Model;};
-CL_NAME("setModel");
+CL_LISPIFY_NAME("setModel");
 CL_DEFMETHOD 	void		setModel(const string& package) { this->_Model = package;};
 
 
@@ -113,23 +111,23 @@ CL_DEFMETHOD 	void		setModel(const string& package) { this->_Model = package;};
 	ConformationExplorerEntry_sp	getConformationExplorerEntry();
 	ConformationExplorer_sp	getConformationExplorer();
 
-CL_NAME("getBasedOnStageName");
+CL_LISPIFY_NAME("getBasedOnStageName");
 CL_DEFMETHOD 	string	getBasedOnStageName() { return this->_BasedOnStageName; };
-CL_NAME("setBasedOnStageName");
+CL_LISPIFY_NAME("setBasedOnStageName");
 CL_DEFMETHOD 	void	setBasedOnStageName(const string& key ) { this->_BasedOnStageName = key; };
 
-CL_NAME("getStageName");
+CL_LISPIFY_NAME("getStageName");
 CL_DEFMETHOD 	string	getStageName() { return this->_StageName; };
-CL_NAME("setStageName");
+CL_LISPIFY_NAME("setStageName");
 CL_DEFMETHOD 	void	setStageName(const string& key ) { this->_StageName = key; };
 
-CL_NAME("isComplete");
+CL_LISPIFY_NAME("isComplete");
 CL_DEFMETHOD 	bool	isComplete() { return this->_Complete; };
-CL_NAME("setComplete");
+CL_LISPIFY_NAME("setComplete");
 CL_DEFMETHOD 	void	setComplete(bool b) { this->_Complete = b;};
 
 	void	setConformationExplorerEntry(ConformationExplorerEntry_sp s);
-CL_NAME("getBinder");
+CL_LISPIFY_NAME("getBinder");
 CL_DEFMETHOD 	core::HashTableEq_sp getBinder() { return this->_Binder; };
 
 	void	translateFinalCoordinates(const Vector3& offset);
@@ -192,7 +190,7 @@ private:
 public:
     typedef	gctools::Vec0<ConformationExplorerEntryStage_sp>::iterator	stageIterator;
 public:
-CL_NAME("getConformationExplorer");
+CL_LISPIFY_NAME("getConformationExplorer");
 CL_DEFMETHOD 	ConformationExplorer_sp	getConformationExplorer() {_OF(); ASSERTNOTNULL(this->_WeakConformationExplorer);return this->_WeakConformationExplorer;};
 	void	setConformationExplorer(ConformationExplorer_sp s);
 	core::HashTableEq_sp getBinder() { return this->_Binder; };
@@ -203,7 +201,7 @@ public:
 
 
 		/*! Return true if there is a selected stage */
-CL_NAME("hasSelectedStage");
+CL_LISPIFY_NAME("hasSelectedStage");
 CL_DEFMETHOD 	bool	hasSelectedStage() {_OF(); ASSERTNOTNULL(this->_SelectedStage); return this->_SelectedStage.notnilp(); };
 		/*! Return the selected stage, guaranteed to be one of this entries stages*/
 	ConformationExplorerEntryStage_sp	getSelectedStage();
@@ -212,7 +210,7 @@ CL_DEFMETHOD 	bool	hasSelectedStage() {_OF(); ASSERTNOTNULL(this->_SelectedStage
 
 	adapt::StringSet_sp	getEntryStageNames();
 
-CL_NAME("getUniqueEntryIndex");
+CL_LISPIFY_NAME("getUniqueEntryIndex");
 CL_DEFMETHOD 	int	getUniqueEntryIndex() const { return this->_UniqueEntryIndex;};
 
 	string			lastEntryStageName();
@@ -281,7 +279,7 @@ public:
 	typedef	core::IntArray_O::iterator				superposeAtomIndexIterator;
 
 public:
-	geom::CoordinateArray_sp	_extractCoordinateArray(Matter_sp matter);
+	geom::SimpleVectorCoordinate_sp	_SimpleVectorCoordinate(Matter_sp matter);
 	core::IntArray_sp		_getSuperposeAtomIndices() { return this->_SuperposeAtomIndices;};
 public:
 
@@ -300,7 +298,7 @@ public:
 	uint	numberOfSuperposeAtoms();
 
 public:
-CL_NAME("getBinder");
+CL_LISPIFY_NAME("getBinder");
 CL_DEFMETHOD 	core::HashTableEq_sp	getBinder() { return this->_Binder;};
 
 	void	saveAs(const string& fn);
@@ -309,7 +307,7 @@ CL_DEFMETHOD 	core::HashTableEq_sp	getBinder() { return this->_Binder;};
 		 * compares conformations of
 		 */
 	virtual void	setMatter(Matter_sp agg);
-CL_NAME("getMatter");
+CL_LISPIFY_NAME("getMatter");
 CL_DEFMETHOD 	Matter_sp	getMatter() { return this->_Matter;};
 
 	atomIterator begin_AllAtoms()
@@ -369,7 +367,7 @@ CL_DEFMETHOD 	Matter_sp	getMatter() { return this->_Matter;};
 
 //	void	addConformationExplorer(ConformationExplorer_sp structureList);
 
-CL_NAME("numberOfEntries");
+CL_LISPIFY_NAME("numberOfEntries");
 CL_DEFMETHOD 	uint numberOfEntries() { return this->_Entries.size();};
 	uint numberOfAllAtoms() { return this->_AllAtoms.size();};
 
@@ -429,14 +427,14 @@ public:	// Creation class functions
 public:
 
 	void setMatches(bool b) { this->_Matches = b; };
-CL_NAME("getMatches");
+CL_LISPIFY_NAME("getMatches");
 CL_DEFMETHOD 	bool getMatches() { return this->_Matches; };
 	void setMatchStageName(const string& s) { this->_MatchStageName=s;};
 	string getMatchStageName() { return this->_MatchStageName;};
-CL_NAME("getClosestMatchRms");
+CL_LISPIFY_NAME("getClosestMatchRms");
 CL_DEFMETHOD 	double getClosestMatchRms() { return this->_ClosestMatchRms;};
 	void setClosestMatchRms(double i) { this->_ClosestMatchRms= i;};
-CL_NAME("getClosestMatchIndex");
+CL_LISPIFY_NAME("getClosestMatchIndex");
 CL_DEFMETHOD 	uint getClosestMatchIndex() { return this->_ClosestMatchIndex;};
 	void setClosestMatchIndex(uint i) { this->_ClosestMatchIndex = i;};
 	ConformationExplorerMatch_O( const ConformationExplorerMatch_O& ss ); //!< Copy constructor

@@ -322,7 +322,7 @@ CL_LISPIFY_NAME("getMonomersForSetOrConstitutionOrMonomerName");
 CL_DEFMETHOD     adapt::SymbolSet_sp CandoDatabase_O::getMonomersForSetOrConstitutionOrMonomerName(core::Symbol_sp nm)
     { _OF();
 	// Use expandEntityNameToTerminals
-	DEPRECIATED();
+	DEPRECATED();
 #if 0
 	adapt::SymbolSet_sp	names;
 	Entity_sp obj;

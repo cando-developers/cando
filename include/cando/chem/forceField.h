@@ -86,14 +86,14 @@ class InfoDb_O : public core::CxxObject_O
   bool fieldsp() const { return true; };
   void fields(core::Record_sp node);
  public:
-  adapt::SymbolMap<core::Str_O>	_database;
+  adapt::SymbolMap<core::String_O>	_database;
  public:
   void absorb(InfoDb_sp other) {
     for ( auto it : other->_database ) {
       this->addInfo(it.first,it.second);
     }
   };
-  void	addInfo( core::Symbol_sp key, core::Str_sp data );
+  void	addInfo( core::Symbol_sp key, core::String_sp data );
   DEFAULT_CTOR_DTOR(InfoDb_O);
 };
 
@@ -151,20 +151,20 @@ class ForceField_O : public core::CxxObject_O
     this->_SingleBondMultiBondDistinctions.push_back(s);
   };
 
-  CL_NAME("getTypes");
+  CL_LISPIFY_NAME("getTypes");
   CL_DEFMETHOD 	FFTypesDb_sp	getTypes() { return this->_Types; };
 
-  CL_NAME("getStretchDb");
+  CL_LISPIFY_NAME("getStretchDb");
   CL_DEFMETHOD 	FFStretchDb_sp getStretchDb() { return this->_Stretches;};
-  CL_NAME("getAngleDb");
+  CL_LISPIFY_NAME("getAngleDb");
   CL_DEFMETHOD 	FFAngleDb_sp getAngleDb() { return this->_Angles;};
-  CL_NAME("getItorDb");
+  CL_LISPIFY_NAME("getItorDb");
   CL_DEFMETHOD 	FFItorDb_sp getItorDb() { return this->_Itors;};
-  CL_NAME("getPtorDb");
+  CL_LISPIFY_NAME("getPtorDb");
   CL_DEFMETHOD 	FFPtorDb_sp getPtorDb() { return this->_Ptors;};
-  CL_NAME("getNonbondDb");
+  CL_LISPIFY_NAME("getNonbondDb");
   CL_DEFMETHOD 	FFNonbondDb_sp	getNonbondDb() { return this->_Nonbonds; };
-  CL_NAME("getVdwDb");
+  CL_LISPIFY_NAME("getVdwDb");
   CL_DEFMETHOD 	FFVdwDb_sp getVdwDb() { return this->_Vdws;};
 
   void absorb(ForceField_sp other);

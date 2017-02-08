@@ -87,7 +87,7 @@ public:
 		 */
 //	RepresentedEntityNameSet_sp asUnexpandedRepresentedEntityNameSet();
 
-CL_NAME("testRepresentedEntityNameSet");
+CL_LISPIFY_NAME("testRepresentedEntityNameSet");
 CL_DEFMETHOD 	string	testRepresentedEntityNameSet() { return "testRepresentedEntityNameSet"; };
 //	virtual	string	getGeneralKey();
 

@@ -135,7 +135,7 @@ public:
     void	addTwister(Twister_sp twister);
     Twister_sp	getTwister(uint i);
 
-CL_NAME("numberOfTwisters");
+CL_LISPIFY_NAME("numberOfTwisters");
 CL_DEFMETHOD     uint	numberOfTwisters() { return this->_Twisters.size(); };
 
     void perturbConformation();

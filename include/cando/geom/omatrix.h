@@ -68,21 +68,21 @@ namespace geom {
     Matrix m_TIMES_m(const Matrix& other) const;
     Vector3 m_TIMES_v(const Vector3& vec) const;
 
-CL_NAME("extract3x3");
+CL_LISPIFY_NAME("extract3x3");
 CL_DEFMETHOD     Matrix extract3x3() const { return this->_Value.extract3x3();};
-CL_NAME("transposed3x3");
+CL_LISPIFY_NAME("transposed3x3");
 CL_DEFMETHOD     Matrix transposed3x3() const { return this->_Value.transposed3x3();};
 
-CL_NAME("atRowColGet");
+CL_LISPIFY_NAME("atRowColGet");
 CL_DEFMETHOD     double atRowColGet(int row, int col) { return this->_Value.atRowCol(row,col);};
-CL_NAME("atRowColPut");
+CL_LISPIFY_NAME("atRowColPut");
 CL_DEFMETHOD     void atRowColPut(int row, int col, double v) { return this->_Value.atRowColPut(row,col,v);};
     Matrix getMatrix() { return this->_Value; };
     void setAll(const Matrix& m);
     const Matrix& ref() const { return this->_Value;};
 
 	/*! Return true if the upper 3x3 rotation matrix is orthogonal */
-CL_NAME("is3x3Orthogonal");
+CL_LISPIFY_NAME("is3x3Orthogonal");
 CL_DEFMETHOD     bool is3x3Orthogonal(double tol) const { return this->_Value.is3x3Orthogonal(tol);};
 
     OMatrix_O() {};

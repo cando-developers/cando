@@ -79,13 +79,13 @@ public:
 				uint maximumNumberOfConformations );
 public:
 
-CL_NAME("setComment");
+CL_LISPIFY_NAME("setComment");
 CL_DEFMETHOD 	void setComment(const string& context) { this->_Comment = context; };
-CL_NAME("getComment");
+CL_LISPIFY_NAME("getComment");
 CL_DEFMETHOD 	string getComment() { return this->_Comment; };
 
 	void setContext(MonomerContext_sp context) { this->_Context = context; };
-CL_NAME("getContext");
+CL_LISPIFY_NAME("getContext");
 CL_DEFMETHOD 	MonomerContext_sp getContext() { return this->_Context; };
 
 	void defineFromConformationExplorer( Topology_sp topology,

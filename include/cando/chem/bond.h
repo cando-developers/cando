@@ -88,17 +88,17 @@ public:
 
   virtual bool equalp(core::T_sp obj) const;
 
-CL_NAME("getAtom1");
+CL_LISPIFY_NAME("getAtom1");
 CL_DEFMETHOD   Atom_sp getAtom1() const { return this->_Atom1; };
-CL_NAME("getAtom2");
+CL_LISPIFY_NAME("getAtom2");
 CL_DEFMETHOD   Atom_sp getAtom2() const { return this->_Atom2; };
 
-CL_NAME("getOrder");
+CL_LISPIFY_NAME("getOrder");
 CL_DEFMETHOD   BondOrder getOrder()	{ return this->order; };
   int getOrderAsInt()	{ return this->order; };
   string	getOrderAsString();
   void	setOrder(BondOrder o)	{ this->order=o; };
-CL_NAME("setOrder");
+CL_LISPIFY_NAME("setOrder");
 CL_DEFMETHOD   void	setOrderFromInt(int o)	{ this->order=(BondOrder)(o); };
   Atom_sp	getOtherAtom(Atom_sp atom ) const;
   bool	isInterResidueBond();

@@ -37,7 +37,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/numerics.h>
 #include <cando/chem/candoScript.h>
 #include <cando/adapt/adapters.h>
-#include <clasp/core/binder.h>
 #include <cando/chem/topology.h>
 #include <clasp/core/environment.h>
 #include <cando/chem/monomerContext.h>

@@ -185,9 +185,9 @@ namespace chem
 
 	    core::Symbol_sp	getName() const {return this->constitutionName();};
 
-CL_NAME("constitutionName");
+CL_LISPIFY_NAME("constitutionName");
 CL_DEFMETHOD 	    core::Symbol_sp	constitutionName() const	{return this->_Name;};
-CL_NAME("setConstitutionName");
+CL_LISPIFY_NAME("setConstitutionName");
 CL_DEFMETHOD 	    void	setConstitutionName(core::Symbol_sp tt) {this->_Name = tt;};
 
 	    /*! Add all of my Stereoisomers as Entities to the CandoDatabase */
@@ -195,7 +195,7 @@ CL_DEFMETHOD 	    void	setConstitutionName(core::Symbol_sp tt) {this->_Name = tt
 
             CL_DEFMETHOD void add_topology(Topology_sp topology);
 	    RepresentedEntityNameSet_sp	asGroup();
-CL_NAME("getConstitutionAtoms");
+CL_LISPIFY_NAME("getConstitutionAtoms");
 CL_DEFMETHOD 	    ConstitutionAtoms_sp getConstitutionAtoms() { return this->_ConstitutionAtoms;};
 
 	    Topology_sp	simplestTopologyWithPlugNamed(core::Symbol_sp name);
@@ -216,16 +216,16 @@ CL_DEFMETHOD 	    ConstitutionAtoms_sp getConstitutionAtoms() { return this->_Co
 	    core::Symbol_sp	pdbFromNameOrPdb(core::Symbol_sp nm);
 
 
-CL_NAME("setComment");
+CL_LISPIFY_NAME("setComment");
  CL_DEFMETHOD 	    void	setComment( core::String_sp sName ) { this->_Comment = sName; };
-CL_NAME("getComment");
+CL_LISPIFY_NAME("getComment");
  CL_DEFMETHOD 	    core::String_sp	getComment( ) { return this->_Comment; };
 
  Residue_sp	createResidueForStereoisomerName(core::Symbol_sp nameOrPdb);
 
-CL_NAME("hasPlugNamed");
+CL_LISPIFY_NAME("hasPlugNamed");
 CL_DEFMETHOD 	    bool	hasPlugNamed( core::Symbol_sp name) { return this->_PlugsByName.contains(name); };
-CL_NAME("getPlugNamed");
+CL_LISPIFY_NAME("getPlugNamed");
 CL_DEFMETHOD 	    Plug_sp	getPlugNamed( core::Symbol_sp name) { return this->_PlugsByName[name]; };
 
 //	void	testConsistency( std::ostream& sout );

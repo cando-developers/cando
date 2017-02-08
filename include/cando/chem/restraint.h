@@ -78,9 +78,9 @@ class Restraint_O : public core::CxxObject_O
 
   virtual void invertStereochemistryOfRestraint() {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
-CL_NAME("isActive");
+CL_LISPIFY_NAME("isActive");
 CL_DEFMETHOD   bool isActive() const { return this->_Active; };
-CL_NAME("setActive");
+CL_LISPIFY_NAME("setActive");
 CL_DEFMETHOD   void setActive(bool a) { this->_Active = a; };
 
  virtual void applyTransform(const Matrix& m) {};
@@ -115,18 +115,18 @@ private:
         void	fields(core::Record_sp node);
 public:
 
-CL_NAME("setWeight");
+CL_LISPIFY_NAME("setWeight");
 CL_DEFMETHOD 	void setWeight(double d) { this->_Weight = d; };
-CL_NAME("restraint-anchor-getWeight");
+CL_LISPIFY_NAME("restraint-anchor-getWeight");
 CL_DEFMETHOD 	double getWeight() { return this->_Weight; };
 
-CL_NAME("setAnchorPos");
+CL_LISPIFY_NAME("setAnchorPos");
 CL_DEFMETHOD 	void	setAnchorPos(const Vector3& pos )
 	{
 	    this->_Pos = pos;
 	};
 	Atom_sp	getAtom() {ASSERTNOTNULL(this->_Atom);return this->_Atom;};
-CL_NAME("setAtom");
+CL_LISPIFY_NAME("setAtom");
 CL_DEFMETHOD 	void	setAtom(Atom_sp a) {this->_Atom=a;};
 
 	Vector3 getAnchorPos() { return this->_Pos; };

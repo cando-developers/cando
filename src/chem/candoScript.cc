@@ -31,7 +31,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <clasp/core/str.h>
 #include <cando/adapt/stringSet.h>
-#include <clasp/core/binder.h>
 #include <cando/main/foundation.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/geom/ovector3.h>
@@ -542,14 +541,14 @@ Loads the Tripos ``mol2'' file and returns the Aggregate within it.
 __END_DOC
  */
 
-
+#if 0
 #define ARGS_chem__make_coordinate_array_from_atom_list "(fileName)"
 #define DECL_chem__make_coordinate_array_from_atom_list ""
 #define DOCS_chem__make_coordinate_array_from_atom_list "loadMol2"
-CL_DEFUN geom::CoordinateArray_sp chem__make_coordinate_array_from_atom_list(core::List_sp atoms)
+CL_DEFUN geom::SimpleVectorCoordinate_sp chem__make_coordinate_array_from_atom_list(core::List_sp atoms)
 {
-  int num = core::cl__length(atoms);
-  geom::CoordinateArray_sp coords = geom::CoordinateArray_O::create(num);
+  size_t num = core::cl__length(atoms);
+  geom::SimpleVectorCoordinate_sp coords = geom::SimpleVectorCoordinate_O::make(num);
   int idx(0);
   for ( auto cur : atoms ) {
     Atom_sp a = gc::As<chem::Atom_sp>(oCar(cur));
@@ -559,7 +558,7 @@ CL_DEFUN geom::CoordinateArray_sp chem__make_coordinate_array_from_atom_list(cor
   }
   return coords;
 }
-
+#endif
 
 
 #define ARGS_chem__load_mol2 "(fileName)"

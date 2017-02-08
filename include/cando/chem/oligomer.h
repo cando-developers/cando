@@ -103,10 +103,10 @@ protected:
 
 public:
     typedef core::Symbol_O			NameType;
-    friend core::T_sp chem__set_oligomer(Oligomer_O::NameType::smart_ptr oligomerName, core::List_sp parts);
+    friend core::T_sp chem__set_oligomer(Oligomer_O::NameType::smart_ptr_type oligomerName, core::List_sp parts);
     friend core::T_sp chem__oligomer_sequence(Oligomer_sp olig);
 protected:
-    NameType::smart_ptr			_Name;
+    NameType::smart_ptr_type			_Name;
     gctools::Vec0<Monomer_sp>			_Monomers;
     gctools::Vec0<Coupling_sp>		_Couplings;
 
@@ -166,18 +166,18 @@ public:	// /////////////////////////////////////////////////////////////////
      */
     void		updateMultiMonomers();
 
-CL_NAME("setName");
-CL_DEFMETHOD     void		setName(NameType::smart_ptr nm) { this->_Name = nm;};
-CL_NAME("getName");
-CL_DEFMETHOD     NameType::smart_ptr getName() { return this->_Name;};
+CL_LISPIFY_NAME("setName");
+CL_DEFMETHOD     void		setName(NameType::smart_ptr_type nm) { this->_Name = nm;};
+CL_LISPIFY_NAME("getName");
+CL_DEFMETHOD     NameType::smart_ptr_type getName() { return this->_Name;};
 
     void		setVerbose(bool v);
-CL_NAME("getVerbose");
+CL_LISPIFY_NAME("getVerbose");
 CL_DEFMETHOD     bool		getVerbose() { return this->_Verbose;};
     string		getErrorMessage();
     void		addErrorMessage(const string& s) { core::lisp_write(BF("%s\n") % s, this->_ErrorMessage); this->_HasError=true;};
     bool		checkForErrors();
-CL_NAME("getHasError");
+CL_LISPIFY_NAME("getHasError");
 CL_DEFMETHOD     bool		getHasError() { return this->_HasError; };
 
     //

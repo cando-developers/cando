@@ -123,7 +123,7 @@ double				lowestEnergy, newEnergy;
  */
 void	ConformationalSearchDatabase_O::finishSearch()
 {
-    geom::CoordinateArray_sp			newConf;
+    geom::SimpleVectorCoordinate_sp			newConf;
 double					energy;
 chem::SuperposeEngine_sp			superposer;
 ConformationCollectionEntry_sp		firstEntry, entry;

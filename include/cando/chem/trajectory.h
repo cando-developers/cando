@@ -40,7 +40,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-SMART(CoordinateArray);
+SMART(SimpleVectorCoordinate);
 SMART(Matter);
 SMART(Atom);
 
@@ -64,7 +64,7 @@ public: // virtual functions inherited from Object
 //	string	__repr__() const;
 
 private: // instance variables
-	geom::CoordinateArray_sp	_Coordinates;
+	geom::SimpleVectorCoordinate_sp	_Coordinates;
 
 public:	// Creation class functions
 
@@ -72,7 +72,7 @@ protected:
     void fillFromMatter(gctools::Vec0<Atom_sp>& atomList );
     void applyToMatter(gctools::Vec0<Atom_sp>& atomList );
 public:
-	void setCoordinates(geom::CoordinateArray_sp ca) { this->_Coordinates = ca;};
+	void setCoordinates(geom::SimpleVectorCoordinate_sp ca) { this->_Coordinates = ca;};
 
 	TrajectoryFrame_O( const TrajectoryFrame_O& ss ); //!< Copy constructor
 
@@ -123,7 +123,7 @@ private:
 public:	// Creation class functions
 
 public:
-CL_NAME("getMatter");
+CL_LISPIFY_NAME("getMatter");
 CL_DEFMETHOD 	Matter_sp getMatter() const { return this->_Matter;};
 
 	TrajectoryFrame_sp addFrame(Matter_sp matter);

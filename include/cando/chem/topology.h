@@ -186,7 +186,7 @@ public:
     CL_DEFMETHOD Constitution_sp	getConstitution() const { return this->_Constitution; };
     MonomerContext_sp getMonomerContext(CandoDatabase_sp bdb);
     //! Return if we suppress trainers
-CL_NAME("suppressTrainers");
+CL_LISPIFY_NAME("suppressTrainers");
 CL_DEFMETHOD     bool suppressTrainers() const { return this->_SuppressTrainers;};
 
  Residue_sp build_residue() const;
@@ -205,7 +205,7 @@ CL_DEFMETHOD     bool suppressTrainers() const { return this->_SuppressTrainers;
     core::List_sp	incompleteFramesAsList();
 
     /// @brief Return the name of the Topology
-CL_NAME("getName");
+CL_LISPIFY_NAME("getName");
 CL_DEFMETHOD     core::Symbol_sp	getName() const {return (this->_Name);};
 
     /// @brief Return true if this Topology has a plug named (name)
@@ -216,7 +216,7 @@ CL_DEFMETHOD     core::Symbol_sp	getName() const {return (this->_Name);};
     void setTemporaryObject(core::T_sp o);
     core::T_sp getTemporaryObject();
 
-CL_NAME("numberOfPlugs");
+CL_LISPIFY_NAME("numberOfPlugs");
 CL_DEFMETHOD     int	numberOfPlugs() { return this->_Plugs.size(); };
 
  CL_DEFMETHOD bool	hasInPlug();

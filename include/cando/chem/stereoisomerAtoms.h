@@ -70,17 +70,17 @@ namespace chem
         core::Symbol_sp		_AtomType;
     public:
 	string __repr__() const;
-CL_NAME("atomName");
+CL_LISPIFY_NAME("atomName");
 CL_DEFMETHOD 	MatterName atomName() { return this->_AtomName;};
 	ConstitutionAtomIndex0N atomIndex() const { return this->_AtomIndex;};
 	virtual bool isVirtualAtom() { return false;};
-CL_NAME("getCharge");
+CL_LISPIFY_NAME("getCharge");
 CL_DEFMETHOD 	double getCharge() const { return this->_Charge;};
-CL_NAME("setCharge");
+CL_LISPIFY_NAME("setCharge");
 CL_DEFMETHOD 	void setCharge(double c) { this->_Charge = c;};
-CL_NAME("getAtomType");
+CL_LISPIFY_NAME("getAtomType");
 CL_DEFMETHOD         core::Symbol_sp getAtomType() const { return this->_AtomType;};
-CL_NAME("setAtomType");
+CL_LISPIFY_NAME("setAtomType");
 CL_DEFMETHOD 	void setAtomType(core::Symbol_sp s) { this->_AtomType = s;};
 	DEFAULT_CTOR_DTOR(StereoisomerAtom_O);
     };

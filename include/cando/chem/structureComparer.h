@@ -76,7 +76,7 @@ private:
 	Matter_sp				_Matter;
     gctools::SmallOrderedSet<Atom_sp>				_AllAtoms;
     gctools::SmallOrderedSet<Atom_sp>				_SuperposeAtoms;
-	geom::CoordinateArray_sp			_FixedCoordinates;
+	geom::SimpleVectorCoordinate_sp			_FixedCoordinates;
 private:	// do not archive
 	Matrix					_TransformToFixed;
 

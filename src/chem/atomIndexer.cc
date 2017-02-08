@@ -185,7 +185,7 @@ void	AtomIndexer_O::setIndexAll(bool b)
 }
 #endif
 
-void	MapOfMonomerNamesToAtomIndexers_O::set(core::Symbol_sp nm, AtomIndexer_O::smart_ptr ai)
+void	MapOfMonomerNamesToAtomIndexers_O::set(core::Symbol_sp nm, AtomIndexer_O::smart_ptr_type ai)
 {
     this->_AtomIndexers.set(nm,ai);
 }

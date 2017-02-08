@@ -88,13 +88,13 @@ virtual	char	getClass() { return moleculeId;};
 	virtual bool equal(core::T_sp obj) const;
 virtual void	transferCoordinates(Matter_sp other);
 
-CL_NAME("firstResidue");
+CL_LISPIFY_NAME("firstResidue");
 CL_DEFMETHOD  Residue_sp	firstResidue() {return this->contentAt(0).as<Residue_O>();};
-CL_NAME("getResidue");
+CL_LISPIFY_NAME("getResidue");
 CL_DEFMETHOD  Residue_sp	getResidue(int i) {return this->contentAt(i).as<Residue_O>();};
-CL_NAME("residueWithId");
+CL_LISPIFY_NAME("residueWithId");
 CL_DEFMETHOD  Residue_sp	residueWithId( int lid ) { return this->contentWithId(lid).as<Residue_O>(); };
-CL_NAME("hasResidueWithId");
+CL_LISPIFY_NAME("hasResidueWithId");
 CL_DEFMETHOD 	bool		hasResidueWithId( int lid ) { return this->hasContentWithId(lid); };
 
 	int		numberOfResiduesWithName(MatterName name);
@@ -111,7 +111,7 @@ CL_DEFMETHOD 	bool		hasResidueWithId( int lid ) { return this->hasContentWithId(
 
 	virtual bool isMolecule() { return true;};
 
-CL_NAME("residueCount");
+CL_LISPIFY_NAME("residueCount");
 CL_DEFMETHOD 	int		residueCount() {return (this->_contents.size());};
 
 	void		moveAllAtomsIntoFirstResidue();
@@ -119,7 +119,7 @@ CL_DEFMETHOD 	int		residueCount() {return (this->_contents.size());};
 virtual string	subMatter() { return Residue_O::static_className(); };
  virtual	string	description() const { stringstream ss; ss << "molecule("<<_rep_(this->getName())<<")@"<<std::hex<<this<<std::dec; return ss.str();};
 
-CL_NAME("testMoleculeConsistancy");
+CL_LISPIFY_NAME("testMoleculeConsistancy");
 CL_DEFMETHOD 	bool		testMoleculeConsistancy() {IMPLEMENT_ME();};
 
 	bool	canRender() { return true;}

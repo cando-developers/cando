@@ -95,13 +95,13 @@ public: // Functions here
 	/*! Return the size of the value if it is an array */
 	int size() const;
 
-	/*! Get an element if the Value is a CoordinateArray otherwise throw an exception */
+	/*! Get an element if the Value is a SimpleVectorCoordinate otherwise throw an exception */
 	core::T_sp getElement_in_unit(uint index, Unit_sp other) const;
 
-	/*! Get an element if the Value is a CoordinateArray otherwise throw an exception */
+	/*! Get an element if the Value is a SimpleVectorCoordinate otherwise throw an exception */
 	Quantity_sp getElement(uint index) const;
 
-	/*! Get an element if the Value is a CoordinateArray otherwise throw an exception */
+	/*! Get an element if the Value is a SimpleVectorCoordinate otherwise throw an exception */
 	Vector3 getElement_in_unit_asVector3(uint index, Unit_sp other) const;
 
 	/*! Set an element of the value with a Quantity */
@@ -110,11 +110,11 @@ public: // Functions here
 	string __repr__() const;
 
 	/*! Return the raw value */
-CL_NAME("rawValue");
+CL_LISPIFY_NAME("rawValue");
 CL_DEFMETHOD 	core::T_sp rawValue() const { return this->_Value;};
 	
 	/*! Return the raw unit */
-CL_NAME("rawUnit");
+CL_LISPIFY_NAME("rawUnit");
 CL_DEFMETHOD 	Unit_sp rawUnit() const { return this->_Unit;};
 
 	/*! Return a string representation of the value:unit */

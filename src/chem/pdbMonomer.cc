@@ -207,7 +207,7 @@ CL_DEFUN PdbMonomerDatabase_sp chem__readPdbMonomerConnectivityDatabase(const st
 
     void PdbMonomerConnectivity_O::initialize()
     {
-	this->_LongNames = core::VectorObjectsWithFillPtr_O::create();
+	this->_LongNames = core::VectorTNs_O::create();
     }
 
 #ifdef XML_ARCHIVE

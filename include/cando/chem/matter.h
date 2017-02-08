@@ -138,7 +138,7 @@ class Matter_O : public core::CxxObject_O
   core::List_sp   	_Properties;
  private:
 	/*! Maintain a list of restraints that span this Matter_O object */
-  gc::Nilable<core::VectorObjectsWithFillPtr_sp>	_Restraints;
+  gc::Nilable<core::VectorTNs_sp>	_Restraints;
  public:
 	/*! Adjust the size of the contents array */
   void resizeContents(int sz);
@@ -146,7 +146,7 @@ class Matter_O : public core::CxxObject_O
   void putMatter( int index, Matter_sp matter );
 
  private:
-  void accumulateRestraints(core::VectorObjectsWithFillPtr_sp allRestraints) const;
+  void accumulateRestraints(core::VectorTNs_sp allRestraints) const;
  public:
 
   friend class Aggregate_O;
@@ -161,18 +161,18 @@ class Matter_O : public core::CxxObject_O
   virtual string __repr__() const;
   virtual char getMatterType() { return MATTER_CLASS; };
 
-  CL_NAME("getId");
+  CL_LISPIFY_NAME("getId");
   CL_DEFMETHOD   int	getId();
   CL_DEFMETHOD   void setId(int id) { this->_Id = id; };
 	/*! Accumulate all of the restraints in this matter and its contents into a single RestraintVector */
- core::VectorObjectsWithFillPtr_sp allRestraints() const;
+ core::VectorTNs_sp allRestraints() const;
 
 //  void	setTempFileId(int i) {this->_TempFileId = i;};
 //  int	getTempFileId() { return this->_TempFileId; };
 
  public:
 	/*! Return a deep copy of this Matter */
-CL_NAME("matter-copy");
+CL_LISPIFY_NAME("matter-copy");
 CL_DEFMETHOD   virtual Matter_sp copy() {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
  protected:
 	/*! Internally used to create a copy of this Matter but not redirect Atoms to their copies.
@@ -248,7 +248,7 @@ core::T_sp getPropertyOrDefault(core::Symbol_sp propertySymbol, core::T_sp defVa
 		 */
   bool	hasProperty(core::Symbol_sp propertySymbol );
 
-CL_NAME("numberOfAtoms");
+CL_LISPIFY_NAME("numberOfAtoms");
 CL_DEFMETHOD   virtual uint	numberOfAtoms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
 
   void	setContainedBy(Matter_sp p){this->containerContainedBy= p;};
@@ -270,10 +270,10 @@ CL_DEFMETHOD   virtual uint	numberOfAtoms() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
 
 
 
-CL_NAME("setName");
+CL_LISPIFY_NAME("setName");
 CL_DEFMETHOD   void	setName(MatterName sName) { this->name = sName; };
   MatterName getName() const { return this->name; };
-CL_NAME("getName");
+CL_LISPIFY_NAME("getName");
 CL_DEFMETHOD   MatterName getName_notConst() { return this->name; };
 
   virtual void	addMatter( Matter_sp child );
@@ -294,13 +294,13 @@ CL_DEFMETHOD   MatterName getName_notConst() { return this->name; };
   core::List_sp		contentsAsList();
   core::List_sp		contents() { return this->contentsAsList();};
 
-CL_NAME("isAggregate");
+CL_LISPIFY_NAME("isAggregate");
 CL_DEFMETHOD   virtual bool	isAggregate() { return false;}
-CL_NAME("isMolecule");
+CL_LISPIFY_NAME("isMolecule");
 CL_DEFMETHOD   virtual bool	isMolecule() { return false;}
-CL_NAME("isResidue");
+CL_LISPIFY_NAME("isResidue");
 CL_DEFMETHOD   virtual bool	isResidue() {return false;}
-CL_NAME("isAtom");
+CL_LISPIFY_NAME("isAtom");
 CL_DEFMETHOD   virtual bool 	isAtom() { return false;}
 
 
@@ -333,9 +333,9 @@ CL_DEFMETHOD   virtual bool 	isAtom() { return false;}
 //	int	get_StorageId() { return this->_StorageId; };
 
   int		contentIndex( Matter_sp c);
-CL_NAME("contentAt");
+CL_LISPIFY_NAME("contentAt");
 CL_DEFMETHOD   Matter_sp	contentAt( int i ) { return this->_contents[i]; };
-CL_NAME("contentSize");
+CL_LISPIFY_NAME("contentSize");
 CL_DEFMETHOD   int		contentSize( ) { return this->_contents.size(); };
 
   void	translateAllAtoms(const Vector3& v);

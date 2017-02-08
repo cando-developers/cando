@@ -173,7 +173,7 @@ CL_DEFMETHOD     int ConstitutionAtoms_O::index(MatterName name) const
 CL_LISPIFY_NAME("buildResidue");
 CL_DEFMETHOD     Residue_sp ConstitutionAtoms_O::buildResidue()
 {
-  DEPRECIATED();
+  DEPRECATED();
   Residue_sp res = Residue_O::create();
   gctools::Vec0<Atom_sp> atoms;
   atoms.resize(this->_Atoms.size());

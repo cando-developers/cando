@@ -43,7 +43,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/chemPackage.h>
 
 #include <clasp/core/intArray.fwd.h>
-#include <cando/geom/coordinateArray.fwd.h>// superposeEngine.h wants CoordinateArray needs coordinateArray.fwd.h
+#include <cando/geom/coordinateArray.fwd.h>// superposeEngine.h wants SimpleVectorCoordinate needs coordinateArray.fwd.h
 
 namespace chem
 {
@@ -53,7 +53,6 @@ namespace chem
 
 
 SMART(IntArray);
-SMART(CoordinateArray);
 SMART(Matter);
 SMART(Atom);
 typedef	enum	{ init, gotFixed, gotMoveable } SuperposeEngineStates;
@@ -82,33 +81,33 @@ public:
 	void	initialize();
 //	void	archiveBase(core::ArchiveP node);
 private:
-	core::IntArray_sp		_FixedIndices;
-	geom::CoordinateArray_sp	_FixedCoordinates;
-	core::IntArray_sp		_MoveableIndices;
-	geom::CoordinateArray_sp	_MoveableCoordinates;
+	core::MDArray_size_t_sp		_FixedIndices;
+	geom::MDArrayCoordinate_sp	_FixedCoordinates;
+	core::MDArray_size_t_sp		_MoveableIndices;
+	geom::MDArrayCoordinate_sp	_MoveableCoordinates;
 private://do not archive
 	Matrix			_Transform;
 public:
 	string	debugString();
-	void	setFixedPoints(core::IntArray_sp indices, geom::CoordinateArray_sp fp );
-	void	setMoveablePoints(core::IntArray_sp indices, geom::CoordinateArray_sp mp);
+	void	setFixedPoints(core::MDArray_size_t_sp indices, geom::SimpleVectorCoordinate_sp fp );
+	void	setMoveablePoints(core::MDArray_size_t_sp indices, geom::SimpleVectorCoordinate_sp mp);
 
-	void	setFixedAllPoints(geom::CoordinateArray_sp fp );
-	void	setMoveableAllPoints(geom::CoordinateArray_sp mp);
+	void	setFixedAllPoints(geom::SimpleVectorCoordinate_sp fp );
+	void	setMoveableAllPoints(geom::SimpleVectorCoordinate_sp mp);
 
 	void	eraseMoveablePoints();
 	void	appendMoveablePoint(const Vector3& pos);
 	void	eraseFixedPoints();
 	void	appendFixedPoint(const Vector3& pos);
 
-//	geom::CoordinateArray_sp	getFixedCoordinates();
-	geom::CoordinateArray_sp	getMoveableCoordinates();
+//	geom::SimpleVectorCoordinate_sp	getFixedCoordinates();
+	geom::SimpleVectorCoordinate_sp	getMoveableCoordinates();
 
 //	void	setMoveableIndex(const vector<int> vi);
 	int	getNumberOfFixedPoints();
 	int	getNumberOfMoveablePoints();
 
-//	geom::CoordinateArray_sp	getMoveablePoints() {_OF(); ASSERTNOTNULL(this->_Moveable);return this->_Moveable; };
+//	geom::SimpleVectorCoordinate_sp	getMoveablePoints() {_OF(); ASSERTNOTNULL(this->_Moveable);return this->_Moveable; };
 	Matrix	superpose();
 
 //	double	sumOfSquaresOfDifferences(ScorerState_sp scorerState);
@@ -123,7 +122,7 @@ public:
 	DEFAULT_CTOR_DTOR(SuperposeEngine_O);
 };
 
-inline	geom::CoordinateArray_sp	SuperposeEngine_O::getMoveableCoordinates()
+inline	geom::SimpleVectorCoordinate_sp	SuperposeEngine_O::getMoveableCoordinates()
 {_OF();
     ASSERTNOTNULL(this->_MoveableCoordinates);
     return this->_MoveableCoordinates;
@@ -145,7 +144,7 @@ private:
 	Matter_sp		_Matter;
     gctools::Vec0<Atom_sp>		_SuperposeAtoms;
 private:
-	geom::CoordinateArray_sp extractCoordinates(Matter_sp matter);
+	geom::SimpleVectorCoordinate_sp extractCoordinates(Matter_sp matter);
 public:
 		/*! Set the Matter to superpose
 		 * Initially all _SuperposeAtoms will be empty and

@@ -53,12 +53,12 @@ GCPRIVATE:
   HashTableEq_sp _Set;
 
 public:
-CL_NAME("contains");
+CL_NAME("CONTAINS");
 CL_DEFMETHOD   bool contains(T_sp obj) { return this->_Set->contains(obj); };
-CL_NAME("insert");
+CL_NAME("INSERT");
 CL_DEFMETHOD   void insert(T_sp obj) { this->_Set->setf_gethash(obj, _lisp->_true()); };
   void remove(T_sp obj) { this->_Set->remhash(obj); };
-CL_NAME("size");
+CL_LISPIFY_NAME("size");
 CL_DEFMETHOD   int size() { return this->_Set->hashTableSize(); };
 
   List_sp asCons();

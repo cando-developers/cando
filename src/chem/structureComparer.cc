@@ -77,11 +77,11 @@ Atom_sp	a;
 void	StructureComparer_O::initializeFixedCoordinates()
 {
 int		ia;
-this->_FixedCoordinates = geom::CoordinateArray_O::create(this->_SuperposeAtoms.size());
+this->_FixedCoordinates = geom::SimpleVectorCoordinate_O::make(this->_SuperposeAtoms.size());
 gctools::SmallOrderedSet<Atom_sp>::iterator	oa;
     for ( oa=this->_SuperposeAtoms.begin(),ia=0; oa!=this->_SuperposeAtoms.end(); oa++,ia++ )
     {
-        this->_FixedCoordinates->setElement(ia,(*oa)->getPosition());
+      (*this->_FixedCoordinates)[ia] = (*oa)->getPosition();
     }
 }
 
@@ -116,7 +116,7 @@ double StructureComparer_O::calculateRmsWithMatter(Matter_sp matter)
 SuperposeEngine_sp				superposer;
 Matrix					transform;
 int					i;
-geom::CoordinateArray_sp			moveableCoordinates;
+geom::SimpleVectorCoordinate_sp			moveableCoordinates;
     if ( matter != this->_Matter )
     {
         SIMPLE_ERROR(BF("The Matter passed must be the same as the one defined for the StructureComparer"));
@@ -133,12 +133,12 @@ geom::CoordinateArray_sp			moveableCoordinates;
     	// Now check if the structure is new or not.
 	// First assemble the superposable coordinates of this conformation
 	//
-    moveableCoordinates= geom::CoordinateArray_O::create(this->_SuperposeAtoms.size());
+    moveableCoordinates= geom::SimpleVectorCoordinate_O::make(this->_SuperposeAtoms.size());
     for ( ai=this->_SuperposeAtoms.begin(), i=0;
 		ai!=this->_SuperposeAtoms.end(); ai++, i++)
     {
 	LOG(BF("Extracting coordinate for superpose atom(%s)") % (*ai)->getName().c_str()  );
-	moveableCoordinates->setElement(i,(*ai)->getPosition());
+	(*moveableCoordinates)[i] = (*ai)->getPosition();
     }
     LOG(BF("There are %d superposable atoms") % this->_SuperposeAtoms.size()  );
 

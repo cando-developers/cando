@@ -81,7 +81,7 @@ namespace chem {
     bool hasAtomWithTag(core::Symbol_sp tag );
     chem::Atom_sp getAtomWithTag(core::Symbol_sp tag);
     gc::Nilable<chem::Atom_sp> getAtomWithTagOrNil(core::Symbol_sp tag);
-CL_NAME("tag");
+CL_LISPIFY_NAME("tag");
 CL_DEFMETHOD     chem::Atom_sp tag(core::Symbol_sp tag) { return this->getAtomWithTag(tag);};
     void forgetAtomTag(core::Symbol_sp tag);
 
@@ -1105,7 +1105,7 @@ namespace chem {
   public:
     bool	compileSmarts(const string& code );
     bool	compileAntechamber(const string& code, WildElementDict_sp dict );
-CL_NAME("compilerMessage");
+CL_LISPIFY_NAME("compilerMessage");
 CL_DEFMETHOD     string	compilerMessage() { return this->_CompilerMessage;};
     void defineTests(core::List_sp tests);
 
@@ -1123,12 +1123,12 @@ CL_DEFMETHOD     string	compilerMessage() { return this->_CompilerMessage;};
 	
 
 
-CL_NAME("compileSucceeded");
+CL_LISPIFY_NAME("compileSucceeded");
 CL_DEFMETHOD     bool    compileSucceeded() {_OF(); ASSERTNOTNULL(this->_Root);return this->_Root.notnilp(); };
 
     string asSmarts() const;
 
-CL_NAME("getCode");
+CL_LISPIFY_NAME("getCode");
 CL_DEFMETHOD     string          getCode() { return this->_Code; };
 
     core::Symbol_sp getAssignType() { return this->_Root->getAssignType(); };

@@ -84,7 +84,7 @@ namespace omm
 
     units::Quantity_sp State_O::getPositions() const
     {_OF();
-	core::CoordinateArray_sp pos_in_nm; 
+	core::SimpleVectorCoordinate_sp pos_in_nm; 
 	try
 	{
 	    pos_in_nm = translate::to_object<const std::vector< OpenMM::Vec3 >& >::convert(_lisp,this->_State.getPositions());;
@@ -102,7 +102,7 @@ namespace omm
 
     units::Quantity_sp State_O::getVelocities() const
     {_OF();
-	core::CoordinateArray_sp vel_in_nm_per_ps;
+	core::SimpleVectorCoordinate_sp vel_in_nm_per_ps;
 	try
 	{
 	    vel_in_nm_per_ps = translate::to_object<const std::vector< OpenMM::Vec3 >& >::convert(_lisp,this->_State.getVelocities());
@@ -118,10 +118,10 @@ namespace omm
     };
 
 #if 0
-    core::CoordinateArray_sp State_O::getForces() const
+    core::SimpleVectorCoordinate_sp State_O::getForces() const
     {_OF();
 	// Get the forces in whatever units they come and convert them to SI 
-	core::CoordinateArray_sp res;
+	core::SimpleVectorCoordinate_sp res;
 	try
 	{
 	    res = translate::to_object<const std::vector< OpenMM::Vec3 >& >::convert(_lisp,this->_State.getForces());

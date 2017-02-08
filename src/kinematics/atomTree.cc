@@ -35,7 +35,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/topology.h>
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/evaluator.h>
-#include <clasp/core/binder.h>
 #include <cando/chem/candoDatabase.h>
 #include <cando/kinematics/atomTemplate.h>
 #include <cando/kinematics/stub.h>
@@ -293,7 +292,7 @@ namespace kinematics
 	    {
 		if ( (it->second)->isAssignableTo<chem::OutPlug_O>() )
 		{
-		    chem::OutPlug_O::smart_ptr outPlug = (it->second).as<chem::OutPlug_O>();
+		    chem::OutPlug_O::smart_ptr_type outPlug = (it->second).as<chem::OutPlug_O>();
                     core::Symbol_sp atomB0 = outPlug->getB0();
 		    int  constitutionBond0AtomId = constitutionAtoms->index(atomB0);
 		    chem::AtomId atomId(moleculeId,residueId,constitutionBond0AtomId);

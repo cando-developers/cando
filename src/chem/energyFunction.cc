@@ -172,7 +172,7 @@ bool inAtomSet(core::T_sp activeSet, Atom_sp a)
     return htset->gethash(a).notnilp();
   } else if ( core::Vector_sp vset = activeSet.asOrNull<core::Vector_O>() ) {
     for ( size_t i(0), iEnd(core::cl__length(vset)); i<iEnd; ++i ) {
-      if ( vset->elt(i) == a ) return true;
+      if ( vset->rowMajorAref(i) == a ) return true;
     }
     return false;
   }

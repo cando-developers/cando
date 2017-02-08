@@ -29,7 +29,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/entity.h>
 #include <cando/chem/candoDatabase.h>
 #include <clasp/core/hashTableEq.h>
-#include <clasp/core/binder.h>
 #include <cando/chem/representedEntityNameSet.h>
 #include <cando/chem/constitution.h>
 #include <clasp/core/wrappers.h>
@@ -92,7 +91,7 @@ CL_DEFMETHOD     RepresentativeList_sp Entity_O::minimalRepresentativeList() con
 	SHOUT(BF("   after expandedRepresentativeList: %s") % _rep_(expandedList) );
 	core::HashTableEq_sp binder = core::HashTableEq_O::create_default();
 	for ( int i(0), iEnd(expandedList->length()); i<iEnd; ++i ) {
-	    RepresentedEntityNameSet_sp curNameSet = expandedList->elt(i).as<RepresentedEntityNameSet_O>();
+	    RepresentedEntityNameSet_sp curNameSet = expandedList->rowMajorAref(i).as<RepresentedEntityNameSet_O>();
 	    core::Symbol_sp representor = curNameSet->getRepresentative();
 	    RepresentedEntityNameSet_sp minimalRepresentedEntityNameSet;
             core::T_mv bi = binder->gethash(representor);

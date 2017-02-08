@@ -180,7 +180,7 @@ private:
 
 public:
     void setConstitutionName(core::Symbol_sp n) { this->_ConstitutionName = n;};
-CL_NAME("getConstitutionName");
+CL_LISPIFY_NAME("getConstitutionName");
 CL_DEFMETHOD     core::Symbol_sp getConstitutionName() { return this->_ConstitutionName;};
 
 #if 0
@@ -200,7 +200,7 @@ CL_DEFMETHOD     core::Symbol_sp getConstitutionName() { return this->_Constitut
     /*! Return false if the fragment couldn't be interpreted */
     bool	interpret();
 
-CL_NAME("getMolecule");
+CL_LISPIFY_NAME("getMolecule");
 CL_DEFMETHOD core::T_sp getMolecule() { return this->_Molecule; };
 
 
@@ -295,7 +295,7 @@ public:
 
 
 	core::List_sp getFragments();
-CL_NAME("allFragmentsAsList");
+CL_LISPIFY_NAME("allFragmentsAsList");
 CL_DEFMETHOD 	core::List_sp allFragmentsAsList() { return this->getFragments();};
 	core::List_sp getSubSetOfFragments(adapt::SymbolSet_sp subsetNames );
 

@@ -82,15 +82,15 @@ CL_LISPIFY_NAME("debugString");
 CL_DEFMETHOD     string SuperposeEngine_O::debugString()
     {
 	stringstream ss;
-	for (uint i=0; i<this->_FixedIndices->size(); i++ )
+	for (uint i=0; i<this->_FixedIndices->length(); i++ )
 	{
-	    int idx = this->_FixedIndices->get(i);
-	    ss << "Fixed#" << i << " " << this->_FixedCoordinates->getElement(idx).asString() << std::endl;
+          int idx = (*this->_FixedIndices)[i];
+	    ss << "Fixed#" << i << " " << (*this->_FixedCoordinates)[idx].asString() << std::endl;
 	}
-	for (uint j=0; j<this->_MoveableIndices->size(); j++ )
+	for (uint j=0; j<this->_MoveableIndices->length(); j++ )
 	{
-	    int idx = this->_MoveableIndices->get(j);
-	    ss << "Moveable#" << j << " " << this->_MoveableCoordinates->getElement(idx).asString() << std::endl;
+          int idx = (*this->_MoveableIndices)[j];
+	    ss << "Moveable#" << j << " " << (*this->_MoveableCoordinates)[idx].asString() << std::endl;
 	}
 	return ss.str();
     }
@@ -106,45 +106,40 @@ CL_DEFMETHOD     string SuperposeEngine_O::debugString()
 //
 //	geometricCenterOfPoints
 //
-    Vector3	geometricCenterOfPointsIndirect( core::IntArray_sp indices, geom::CoordinateArray_sp pnts)
+    Vector3	geometricCenterOfPointsIndirect( core::MDArray_size_t_sp indices, geom::SimpleVectorCoordinate_sp pnts)
 { 
     Vector3				pos;
-    core::IntArray_O::iterator		it;
-
     ASSERTP(indices->size()<=pnts->size(),"There must be at least as many indices as coordinates");
     pos.set(0.0,0.0,0.0);
-    if ( indices->size() == 0 ) return pos;
-
-    for ( it=indices->begin();
-	  it!=indices->end();
-	  it++ ) {
-	pos = pos + pnts->getElement(*it);
+    if ( indices->length() == 0 ) return pos;
+    for ( size_t it(0); it<=indices->length(); ++it ) {
+      pos = pos + (*pnts)[(*indices)[it]];
     }
-    pos = pos.multiplyByScalar(1.0/((double)(indices->size())));
+    pos = pos.multiplyByScalar(1.0/((double)(indices->length())));
     return pos;
 }
 
 void SuperposeEngine_O::initialize()
 {
     this->Base::initialize();
-    this->_FixedIndices = core::IntArray_O::create();
-    this->_MoveableIndices = core::IntArray_O::create();
-    this->_FixedCoordinates = geom::CoordinateArray_O::create();
-    this->_MoveableCoordinates = geom::CoordinateArray_O::create();
+    this->_FixedIndices = core::MDArray_size_t_O::create();
+    this->_MoveableIndices = core::MDArray_size_t_O::create();
+    this->_FixedCoordinates = geom::MDArrayCoordinate_O::make_vector(16,Vector3(),core::clasp_make_fixnum(0));
+    this->_MoveableCoordinates = geom::MDArrayCoordinate_O::make_vector(16,Vector3(),core::clasp_make_fixnum(0));
 }
 
 
 
 void	SuperposeEngine_O::eraseMoveablePoints()
 {
-    this->_MoveableIndices->clear();
-    this->_MoveableCoordinates->clear();
+  this->_MoveableIndices->fillPointerSet(0);
+    this->_MoveableCoordinates->fillPointerSet(0);
 }
 
 void	SuperposeEngine_O::eraseFixedPoints()
 {
-    this->_FixedIndices->clear();
-    this->_FixedCoordinates->clear();
+  this->_FixedIndices->fillPointerSet(0);
+  this->_FixedCoordinates->fillPointerSet(0);
 }
 
     void SuperposeEngine_O::appendMoveablePoint(const Vector3& pos)
@@ -152,9 +147,9 @@ void	SuperposeEngine_O::eraseFixedPoints()
     ASSERT(this->_MoveableIndices.notnilp());
     ASSERT(this->_MoveableCoordinates.notnilp());
     LOG(BF("appendMoveablePoint vector: %s") % pos.asString() );
-    int idx = this->_MoveableCoordinates->size();
-    this->_MoveableIndices->append(idx);
-    this->_MoveableCoordinates->push_back(pos);
+    int idx = this->_MoveableCoordinates->length();
+    this->_MoveableIndices->vectorPushExtend_size_t(idx);
+    this->_MoveableCoordinates->vectorPushExtend_Vector3(pos);
     LOG(BF("There are now %d MoveableIndices") % this->_MoveableIndices->size());
     LOG(BF("There are now %d MoveableCoordinates") % this->_MoveableCoordinates->size());
 }
@@ -164,11 +159,11 @@ void	SuperposeEngine_O::eraseFixedPoints()
     ASSERT(this->_FixedIndices.notnilp());
     ASSERT(this->_FixedCoordinates.notnilp());
     LOG(BF("appendFixedPoint vector: %s") % pos.asString() );
-    int idx = this->_FixedCoordinates->size();
-    this->_FixedIndices->append(idx);
-    this->_FixedCoordinates->push_back(pos);
-    LOG(BF("There are now %d FixedIndices") % this->_FixedIndices->size());
-    LOG(BF("There are now %d FixedCoordinates") % this->_FixedCoordinates->size());
+    int idx = this->_FixedCoordinates->length();
+    this->_FixedIndices->vectorPushExtend_size_t(idx);
+    this->_FixedCoordinates->vectorPushExtend_Vector3(pos);
+    LOG(BF("There are now %d FixedIndices") % this->_FixedIndices->length());
+    LOG(BF("There are now %d FixedCoordinates") % this->_FixedCoordinates->length());
 }
 
 
@@ -176,14 +171,14 @@ void	SuperposeEngine_O::eraseFixedPoints()
 CL_LISPIFY_NAME("getNumberOfFixedPoints");
 CL_DEFMETHOD int	SuperposeEngine_O::getNumberOfFixedPoints()
 {
-    return this->_FixedIndices->size();
+    return this->_FixedIndices->length();
 }
 
 
 CL_LISPIFY_NAME("getNumberOfMoveablePoints");
 CL_DEFMETHOD int	SuperposeEngine_O::getNumberOfMoveablePoints()
 {
-    return this->_MoveableIndices->size();
+    return this->_MoveableIndices->length();
 }
 
 
@@ -192,8 +187,6 @@ void	SuperposeEngine_O::doSuperpose()
     VectorVector3s			Sj;
     VectorVector3s			Si;
     VectorVector3s::iterator	itS,itSi,itSj;
-    core::IntArray_O::iterator		iaV;
-    vector<VectorVector3s::iterator>::iterator	ititV;
     Vector3				fixedCenter,vTemp;
     Vector3				moveableCenter;
     Matrix				mat,M, MT, trM, P,evecs,em,trans,rot;
@@ -202,43 +195,43 @@ void	SuperposeEngine_O::doSuperpose()
     double				X0, X1, X2, x0, x1, x2;
     double				l,m,n,s,ll,mm,nn,ss;
     int				fixedIndicesSize, moveableIndicesSize;
-    fixedIndicesSize = this->_FixedIndices->size();
-    moveableIndicesSize = this->_MoveableIndices->size();
+    fixedIndicesSize = this->_FixedIndices->length();
+    moveableIndicesSize = this->_MoveableIndices->length();
     LOG(BF("Moveable indices fixed(%d) moveable(%d)") % fixedIndicesSize % moveableIndicesSize );
     ASSERTP(fixedIndicesSize==moveableIndicesSize,"num. fixed points must equal num. of moveable points");
     ASSERTF(fixedIndicesSize>=3, BF("You must have at least 3 points to superpose and you only have: %d")% fixedIndicesSize );
-    Sj.resize(this->_FixedIndices->size());
-    if ( this->_MoveableIndices->size() < 3 )
+    Sj.resize(this->_FixedIndices->length());
+    if ( this->_MoveableIndices->length() < 3 )
     {
 	SIMPLE_ERROR(BF("Number of MoveableIndices must be greater than 3"));
     }
-    Si.resize(this->_MoveableIndices->size());
-    LOG(BF("this->_FixedIndices->size()=%d") % this->_FixedIndices->size()  );
-    LOG(BF("this->_MoveableIndices->size()=%d") % this->_MoveableIndices->size()  );
+    Si.resize(this->_MoveableIndices->length());
+    LOG(BF("this->_FixedIndices->length()=%d") % this->_FixedIndices->length()  );
+    LOG(BF("this->_MoveableIndices->length()=%d") % this->_MoveableIndices->length()  );
 
     {_BLOCK_TRACE("Calculating geometric center of fixed points");
 	fixedCenter = geometricCenterOfPointsIndirect(this->_FixedIndices,this->_FixedCoordinates);
         LOG(BF( "Translating fixed to fixed geometric center: %s")% 
 	    fixedCenter.asString().c_str() );
-	for ( iaV=this->_FixedIndices->begin(),itS=Sj.begin();
-	      iaV!=this->_FixedIndices->end();
+        VectorVector3s::iterator itS = Sj.begin();
+	for ( size_t iaV(0);
+	      iaV<this->_FixedIndices->length();
 	      iaV++,itS++ ) {
 	    LOG(BF("index=%d   *iaV=%d    pnt=%s") % (iaV-this->_FixedIndices->begin()) 
 		% *iaV % this->_FixedCoordinates->getElement(*iaV).asString().c_str() ); 
-	    *itS = this->_FixedCoordinates->getElement(*iaV) - fixedCenter;
+	    *itS = (*this->_FixedCoordinates)[iaV] - fixedCenter;
 	}
     }
     { _BLOCK_TRACE("Calculating geometricCenterOfPoints of moveable points");
 	moveableCenter.set(0.0,0.0,0.0);
-	for ( iaV=this->_MoveableIndices->begin(); iaV !=this->_MoveableIndices->end(); iaV++ ) {
-	    moveableCenter = this->_MoveableCoordinates->getElement(*iaV) + moveableCenter;
+	for ( size_t iaV(0); iaV<this->_MoveableIndices->length(); ++iaV) {
+          moveableCenter =(*this->_MoveableCoordinates)[(*this->_MoveableIndices)[iaV]] + moveableCenter;
 	}
-	moveableCenter = moveableCenter.multiplyByScalar(1.0/(double)(this->_MoveableIndices->size()));
+	moveableCenter = moveableCenter.multiplyByScalar(1.0/(double)(this->_MoveableIndices->length()));
 	LOG(BF("Translating moveable to moveable geometric center: %s") % moveableCenter.asString().c_str()  );
-	for ( iaV=this->_MoveableIndices->begin(),itS=Si.begin();
-	      itS!=Si.end();
-	      iaV++,itS++ ) {
-	    *itS = this->_MoveableCoordinates->getElement(*iaV) - moveableCenter;
+        auto itS=Si.begin();
+	for ( size_t iaV(0); itS!=Si.end(); iaV++,itS++ ) {
+          *itS = (*this->_MoveableCoordinates)[(*this->_MoveableIndices)[iaV]] - moveableCenter;
 	    LOG(BF("index=%d   *iaV=%d    pnt=%s")
 		% (iaV-this->_MoveableIndices->begin())
 		% *iaV
@@ -339,8 +332,8 @@ void	SuperposeEngine_O::doSuperpose()
 */
 double	SuperposeEngine_O::sumOfSquaresOfDifferences(ScorerState_sp scorerState )
 { 
-    core::IntArray_O::iterator		itFixed;
-    core::IntArray_O::iterator		ititMoved;
+    core::MDArray_size_t_O::iterator		itFixed;
+    core::MDArray_size_t_O::iterator		ititMoved;
     Vector3				moved, diff;
     double				sum;
 
@@ -348,8 +341,8 @@ double	SuperposeEngine_O::sumOfSquaresOfDifferences(ScorerState_sp scorerState )
     ASSERTNOTNULL(this->_FixedIndices);
     LOG_SCORE(scorerState,BF("SuperposeEngine_O::sumOfSquaresOfDifferences{"));
 #if	DEBUG_SCORE_EVALUATION
-    LOG_SCORE(scorerState,BF("There are %d moveable indices")%this->_MoveableIndices->size() );
-    LOG_SCORE(scorerState,BF("There are %d fixed indices")%this->_FixedIndices->size() );
+    LOG_SCORE(scorerState,BF("There are %d moveable indices")%this->_MoveableIndices->length() );
+    LOG_SCORE(scorerState,BF("There are %d fixed indices")%this->_FixedIndices->length() );
     for ( ititMoved = this->_MoveableIndices->begin(),
 	      itFixed = this->_FixedIndices->begin();
 	  itFixed != this->_FixedIndices->end();
@@ -375,20 +368,19 @@ double	SuperposeEngine_O::sumOfSquaresOfDifferences(ScorerState_sp scorerState )
 */
 double	SuperposeEngine_O::sumOfSquaresOfDifferences()
 { 
-    core::IntArray_O::iterator		itFixed;
-    core::IntArray_O::iterator		ititMoved;
-    Vector3				moved, diff;
-    double				sum;
+  size_t		itFixed;
+  size_t 		ititMoved;
+  Vector3				moved, diff;
+  double				sum;
 
     LOG(BF("Dump of coordinates being that I will superpose") );
     ASSERTNOTNULL(this->_MoveableIndices);
     ASSERTNOTNULL(this->_FixedIndices);
 #ifdef	DEBUG_ON
-    LOG(BF("There are %d moveable indices") % this->_MoveableIndices->size()  );
-    LOG(BF("There are %d fixed indices") % this->_FixedIndices->size()  );
-    for ( ititMoved = this->_MoveableIndices->begin(),
-	      itFixed = this->_FixedIndices->begin();
-	  itFixed != this->_FixedIndices->end();
+    LOG(BF("There are %d moveable indices") % this->_MoveableIndices->length()  );
+    LOG(BF("There are %d fixed indices") % this->_FixedIndices->length()  );
+    for ( ititMoved(0), itFixed(0);
+	  itFixed < this->_FixedIndices->length();
 	  ititMoved++, itFixed++ )
     {
 	LOG(BF("Superpose fixed%s with moveable%s")
@@ -396,15 +388,14 @@ double	SuperposeEngine_O::sumOfSquaresOfDifferences()
 	    % this->_MoveableCoordinates->getElement(*ititMoved).asString() );
     }
 #endif
-    ASSERT(this->_FixedIndices->size()!=0);
+    ASSERT(this->_FixedIndices->length()!=0);
     sum = 0.0;
-    for ( ititMoved = this->_MoveableIndices->begin(),
-	      itFixed = this->_FixedIndices->begin();
-	  itFixed != this->_FixedIndices->end();
+    for ( size_t ititMoved(0), itFixed(0);
+	  itFixed < this->_FixedIndices->length();
 	  ititMoved++, itFixed++ ) {
-	moved = this->_Transform.multiplyByVector3(this->_MoveableCoordinates->getElement(*ititMoved));
-	diff = this->_FixedCoordinates->getElement(*itFixed)-moved;
-	sum = sum + diff.dotProduct(diff);
+      moved = this->_Transform.multiplyByVector3((*this->_MoveableCoordinates)[ititMoved]);
+      diff = (*this->_FixedCoordinates)[itFixed]-moved;
+      sum = sum + diff.dotProduct(diff);
     }
     LOG(BF("Calculated sum=%lf") % sum  );
     return sum;
@@ -419,10 +410,10 @@ CL_LISPIFY_NAME("rootMeanSquareDifference");
 CL_DEFMETHOD double	SuperposeEngine_O::rootMeanSquareDifference()
 { 
     double sumOfSquares = this->sumOfSquaresOfDifferences();
-    LOG(BF("Number of moveable indices = %d") % this->_MoveableIndices->size() );
-    ASSERT_gt(this->_MoveableIndices->size(),0);
+    LOG(BF("Number of moveable indices = %d") % this->_MoveableIndices->length() );
+    ASSERT_gt(this->_MoveableIndices->length(),0);
     LOG(BF("sumOfSquares = %lf") % sumOfSquares );
-    double meanSumOfSquares = sumOfSquares/this->_MoveableIndices->size();
+    double meanSumOfSquares = sumOfSquares/this->_MoveableIndices->length();
     LOG(BF("meanSumOfSquares = %lf") % meanSumOfSquares );
     double rms = sqrt(meanSumOfSquares);
     LOG(BF("rms = %lf") % rms );
@@ -435,17 +426,17 @@ CL_DEFMETHOD double	SuperposeEngine_O::rootMeanSquareDifference()
 
 
 CL_LISPIFY_NAME("setFixedPoints");
-CL_DEFMETHOD void	SuperposeEngine_O::setFixedPoints( core::IntArray_sp fi, geom::CoordinateArray_sp fc )
+CL_DEFMETHOD void	SuperposeEngine_O::setFixedPoints( core::MDArray_size_t_sp fi, geom::SimpleVectorCoordinate_sp fc )
 { 
-    LOG(BF("SuperposeEngine_O::setFixedPoints --> number of points=%d") % fc->size()  );
-    if ( !((fi->size()>=3) && ((fi->size()<=fc->size()))) )
+    LOG(BF("SuperposeEngine_O::setFixedPoints --> number of points=%d") % fc->length()  );
+    if ( !((fi->length()>=3) && ((fi->length()<=fc->length()))) )
     {
 	stringstream ss;
-	ss << "In SuperposeEngine setFixedPoints - number of indices fi->size() = ";
-	ss << fi->size() << " must be at least 3"<< std::endl;
-	ss << "Number of coordinates --> fc->size() = ";
-	ss << fc->size() << " must be >= to fi->size(";
-	ss << fi->size() << ")" << std::endl;
+	ss << "In SuperposeEngine setFixedPoints - number of indices fi->length() = ";
+	ss << fi->length() << " must be at least 3"<< std::endl;
+	ss << "Number of coordinates --> fc->length() = ";
+	ss << fc->length() << " must be >= to fi->size(";
+	ss << fi->length() << ")" << std::endl;
 	LOG(BF("%s") % ss.str().c_str()  );
 	SIMPLE_ERROR(BF(ss.str()));
     }
@@ -456,46 +447,48 @@ CL_DEFMETHOD void	SuperposeEngine_O::setFixedPoints( core::IntArray_sp fi, geom:
 
 
 CL_LISPIFY_NAME("setFixedAllPoints");
-CL_DEFMETHOD void	SuperposeEngine_O::setFixedAllPoints( geom::CoordinateArray_sp fc )
+CL_DEFMETHOD void	SuperposeEngine_O::setFixedAllPoints( geom::SimpleVectorCoordinate_sp fc )
 {
-    core::IntArray_O::iterator	ia;
-    uint		ii;
+  size_t ia;
+  size_t ii;
     this->_FixedCoordinates = fc;
-    this->_FixedIndices = core::IntArray_O::create(fc->size());
+    this->_FixedIndices = core::MDArray_size_t_O::make_vector(fc->length());
     ii = 0;
-    for ( ii=0; ii<fc->size(); ii++ )
+    for ( ii=0; ii<fc->length(); ii++ )
     {
-        this->_FixedIndices->put(ii,ii);
-        LOG(BF("setFixedAllPoints index@%d ") % ii  );
+      (*this->_FixedIndices)[ii] = ii;
+      LOG(BF("setFixedAllPoints index@%d ") % ii  );
     }
 }
 
 
 
 CL_LISPIFY_NAME("setMoveablePoints");
-CL_DEFMETHOD void	SuperposeEngine_O::setMoveablePoints( core::IntArray_sp mi, geom::CoordinateArray_sp mc )
+CL_DEFMETHOD void	SuperposeEngine_O::setMoveablePoints( core::MDArray_size_t_sp mi, geom::SimpleVectorCoordinate_sp mc )
 { 
-    VectorVector3s::iterator	cur;
-    LOG(BF("SuperposeEngine_O::setMoveablePoints --> number of points=%d") % mc->size()  );
-    ASSERTP( (mi->size()>=3), "There must be at least three indices" );
-    ASSERTP( mi->size()<=mc->size(), "There must be at least as many coordinates as indices");
+    LOG(BF("SuperposeEngine_O::setMoveablePoints --> number of points=%d") % mc->length()  );
+    ASSERTP( (mi->length()>=3), "There must be at least three indices" );
+    ASSERTP( mi->length()<=mc->length(), "There must be at least as many coordinates as indices");
     this->_MoveableIndices = mi;
+    IMPLEMENT_ME();
+#if 0
     this->_MoveableCoordinates = mc->copy();
+#endif
 }
 
 CL_LISPIFY_NAME("setMoveableAllPoints");
-CL_DEFMETHOD void	SuperposeEngine_O::setMoveableAllPoints( geom::CoordinateArray_sp mc )
+CL_DEFMETHOD void	SuperposeEngine_O::setMoveableAllPoints( geom::SimpleVectorCoordinate_sp mc )
 {
-    core::IntArray_O::iterator	ia;
-    uint		ii;
-    ASSERTF(mc->size()>=3,BF("You must have at least three moveable points and there are only %d") % mc->size() );
-    this->_MoveableCoordinates = mc;
-    this->_MoveableIndices = core::IntArray_O::create(mc->size());
-    for ( ii=0; ii<mc->size(); ii++ )
-    {
-        this->_MoveableIndices->put(ii,ii);
-        LOG(BF("setMoveableAllPoints index@%d ") % ii  );
-    }
+  size_t ia;
+  uint		ii;
+  ASSERTF(mc->length()>=3,BF("You must have at least three moveable points and there are only %d") % mc->length() );
+  this->_MoveableCoordinates = mc;
+  this->_MoveableIndices = core::MDArray_size_t_O::make_vector(mc->length());
+  for ( ii=0; ii<mc->length(); ii++ )
+  {
+    (*this->_MoveableIndices)[ii] = ii;
+    LOG(BF("setMoveableAllPoints index@%d ") % ii  );
+  }
 }
 
 
@@ -577,7 +570,7 @@ void SuperposeSelectedAtoms_O::setMatterWithSelectedAtoms(Matter_sp matter)
 
 
 
-geom::CoordinateArray_sp SuperposeSelectedAtoms_O::extractCoordinates(Matter_sp matter)
+geom::SimpleVectorCoordinate_sp SuperposeSelectedAtoms_O::extractCoordinates(Matter_sp matter)
 {
     if ( !this->_Matter->equal(matter) )
     {
@@ -585,11 +578,11 @@ geom::CoordinateArray_sp SuperposeSelectedAtoms_O::extractCoordinates(Matter_sp 
     }
     this->_Matter->transferCoordinates(matter);
     ASSERT_gt(this->_SuperposeAtoms.size(),0);
-    geom::CoordinateArray_sp coords = geom::CoordinateArray_O::create(this->_SuperposeAtoms.size());
+    geom::SimpleVectorCoordinate_sp coords = geom::SimpleVectorCoordinate_O::make(this->_SuperposeAtoms.size());
     uint idx = 0;
     for (gctools::Vec0<Atom_sp>::iterator ai=this->_SuperposeAtoms.begin(); ai!=this->_SuperposeAtoms.end(); ai++, idx++ )
     {
-	coords->setElement(idx,(*ai)->getPosition());
+      (*coords)[idx] = (*ai)->getPosition();
     }
     return coords;
 }
@@ -601,15 +594,15 @@ Matter_sp SuperposeSelectedAtoms_O::getMatter()
 
 void SuperposeSelectedAtoms_O::copyMatterCoordinatesIntoFixedCoordinates(Matter_sp matter)
 {
-    geom::CoordinateArray_sp ca = this->extractCoordinates(matter);
-    ASSERT_gt(ca->size(),0);
+    geom::SimpleVectorCoordinate_sp ca = this->extractCoordinates(matter);
+    ASSERT_gt(ca->length(),0);
     this->setFixedAllPoints(ca);
 }
 
 void SuperposeSelectedAtoms_O::copyMatterCoordinatesIntoMoveableCoordinates(Matter_sp matter)
 {
-    geom::CoordinateArray_sp ca = this->extractCoordinates(matter);
-    ASSERT_gt(ca->size(),0);
+    geom::SimpleVectorCoordinate_sp ca = this->extractCoordinates(matter);
+    ASSERT_gt(ca->length(),0);
     this->setMoveableAllPoints(ca);
 }
 

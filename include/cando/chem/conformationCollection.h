@@ -68,12 +68,12 @@ public:
 //    void	archive(core::ArchiveP node);
 private:
 	ConformationCollection_wp	_WeakConformationCollection;
-        geom::CoordinateArray_sp		_AllCoordinates;
+        geom::SimpleVectorCoordinate_sp		_AllCoordinates;
 	core::HashTableEq_sp		_Data;
 
 public:
-        void setAllCoordinates(geom::CoordinateArray_sp ac);
-        geom::CoordinateArray_sp getAllCoordinates() { return this->_AllCoordinates; }
+        void setAllCoordinates(geom::SimpleVectorCoordinate_sp ac);
+        geom::SimpleVectorCoordinate_sp getAllCoordinates() { return this->_AllCoordinates; }
 public:
 
 	ConformationCollection_sp	getConformationCollection() {_OF(); ASSERTNOTNULL(this->_WeakConformationCollection);return this->_WeakConformationCollection;};
@@ -136,7 +136,7 @@ public:
     typedef	gctools::SmallOrderedSet<Atom_sp>::iterator	atomIterator;
 
 public:
-	geom::CoordinateArray_sp	_extractCoordinateArray(Matter_sp matter);
+	geom::SimpleVectorCoordinate_sp	_SimpleVectorCoordinate(Matter_sp matter);
 
 public:
 

@@ -149,21 +149,21 @@ namespace chem {
 	 */
 	bool	containsAtom(Atom_sp a);
 
-CL_NAME("getPdbName");
+CL_LISPIFY_NAME("getPdbName");
 CL_DEFMETHOD 	MatterName getPdbName() { return this->pdbName; };
-CL_NAME("setPdbName");
+CL_LISPIFY_NAME("setPdbName");
 CL_DEFMETHOD 	void	setPdbName(MatterName p) { this->pdbName = p;};
 
 	void	setFileSequenceNumber(uint seq) { this->_FileSequenceNumber = seq;};
-CL_NAME("getFileSequenceNumber");
+CL_LISPIFY_NAME("getFileSequenceNumber");
 CL_DEFMETHOD 	uint	getFileSequenceNumber() { return this->_FileSequenceNumber;};
 
 	void	setUniqueLabel(MatterName str) { this->_UniqueLabel = str;};
 	MatterName getUniqueLabel() { return this->_UniqueLabel; };
 
-CL_NAME("getNetCharge");
+CL_LISPIFY_NAME("getNetCharge");
 CL_DEFMETHOD 	int	getNetCharge() { return this->_NetCharge; };
-CL_NAME("setNetCharge");
+CL_LISPIFY_NAME("setNetCharge");
 CL_DEFMETHOD 	void	setNetCharge(int nc) { this->_NetCharge = nc; };
 
 //	void	resetConstitution();
@@ -199,9 +199,9 @@ CL_DEFMETHOD 	void	setNetCharge(int nc) { this->_NetCharge = nc; };
         virtual string	subMatter() { return Atom_O::static_className(); };
         virtual string 	description() const { stringstream ss; ss << "residue("<<_rep_(this->getName())<<")@"<<std::hex<<this<<std::dec; return ss.str();};
 
-CL_NAME("atomWithName");
+CL_LISPIFY_NAME("atomWithName");
 CL_DEFMETHOD 	Atom_sp		atomWithName(MatterName sName ) { return this->contentWithName(sName).as<Atom_O>(); };
- CL_NAME("hasAtomWithName");
+ CL_LISPIFY_NAME("hasAtomWithName");
  CL_DEFMETHOD 	bool		hasAtomWithName(MatterName sName ) { return (this->hasContentWithName(sName)); };
 
 	Atom_sp		atomWithAlias(AtomAliasName sName );
@@ -218,9 +218,9 @@ CL_DEFMETHOD 	Atom_sp		atomWithName(MatterName sName ) { return this->contentWit
 //	bool		hasAtomWithAlias(const string& anAlias);
 //	Atom_sp		atomWithAlias(const string& anAlias);
 
-CL_NAME("atomWithId");
+CL_LISPIFY_NAME("atomWithId");
 CL_DEFMETHOD         Atom_sp		atomWithId( int lid ) { return this->contentWithId(lid).as<Atom_O>(); };
-CL_NAME("hasAtomWithId");
+CL_LISPIFY_NAME("hasAtomWithId");
 CL_DEFMETHOD 	bool		hasAtomWithId( int lid ) { return this->hasContentWithId(lid); };
         adapt::SymbolSet_sp 	getAllUniqueAtomNames();
 
@@ -231,13 +231,13 @@ CL_DEFMETHOD 	bool		hasAtomWithId( int lid ) { return this->hasContentWithId(lid
 
 	void fillInImplicitHydrogens();
 
-CL_NAME("firstAtom");
+CL_LISPIFY_NAME("firstAtom");
  CL_DEFMETHOD 	Atom_sp		firstAtom() { if ( this->contentSize() <= 0 ) { SIMPLE_ERROR(BF("This matter has no contents")); } return this->contentAt(0).as<Atom_O>(); };
 
 	void	makeAllAtomNamesInEachResidueUnique();
 
         void		writeToStream(string prefix, std::ostream& out);
-CL_NAME("testResidueConsistancy");
+CL_LISPIFY_NAME("testResidueConsistancy");
 CL_DEFMETHOD 	bool		testResidueConsistancy()	{return this->testConsistancy(Matter_sp());};
 
 	//! For every atom, turn on the FIXED flag and copy the atom coordinates into the AnchorCoordinates

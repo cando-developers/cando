@@ -183,7 +183,7 @@ private:
 
 public:
 
-CL_NAME("atomTable");
+CL_LISPIFY_NAME("atomTable");
 CL_DEFMETHOD     AtomTable_sp atomTable() const { return this->_AtomTable;};
 
     string	energyTermsEnabled() ;
@@ -198,7 +198,7 @@ CL_DEFMETHOD     AtomTable_sp atomTable() const { return this->_AtomTable;};
 
     ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force );
 
-CL_NAME("getMatter");
+CL_LISPIFY_NAME("getMatter");
 CL_DEFMETHOD     Matter_sp	getMatter() { return this->_Matter;};
 
     void	useDefaultSettings();
@@ -211,22 +211,22 @@ CL_DEFMETHOD     Matter_sp	getMatter() { return this->_Matter;};
     /*! Set the energy function options. List the options as a flat list of keyword/value pairs */
     void	setOptions( core::List_sp options );
 
-CL_NAME("getStretchComponent");
+CL_LISPIFY_NAME("getStretchComponent");
 CL_DEFMETHOD     EnergyStretch_sp	getStretchComponent() { return this->_Stretch; };
 #if USE_ALL_ENERGY_COMPONENTS
-CL_NAME("getAngleComponent");
+CL_LISPIFY_NAME("getAngleComponent");
 CL_DEFMETHOD     EnergyAngle_sp	getAngleComponent() { return this->_Angle; };
-CL_NAME("getDihedralComponent");
+CL_LISPIFY_NAME("getDihedralComponent");
 CL_DEFMETHOD     EnergyDihedral_sp	getDihedralComponent() { return this->_Dihedral; };
-CL_NAME("getNonbondComponent");
+CL_LISPIFY_NAME("getNonbondComponent");
 CL_DEFMETHOD     EnergyNonbond_sp	getNonbondComponent() { return this->_Nonbond; };
-CL_NAME("getChiralRestraintComponent");
+CL_LISPIFY_NAME("getChiralRestraintComponent");
 CL_DEFMETHOD     EnergyChiralRestraint_sp	getChiralRestraintComponent() { return this->_ChiralRestraint; };
-CL_NAME("getAnchorRestraintComponent");
+CL_LISPIFY_NAME("getAnchorRestraintComponent");
 CL_DEFMETHOD     EnergyAnchorRestraint_sp	getAnchorRestraintComponent() { return this->_AnchorRestraint; };
-CL_NAME("getImproperRestraintComponent");
+CL_LISPIFY_NAME("getImproperRestraintComponent");
 CL_DEFMETHOD     EnergyImproperRestraint_sp	getImproperRestraintComponent() { return this->_ImproperRestraint; };
-CL_NAME("getFixedNonbondRestraintComponent");
+CL_LISPIFY_NAME("getFixedNonbondRestraintComponent");
 CL_DEFMETHOD     EnergyFixedNonbondRestraint_sp	getFixedNonbondRestraintComponent() { return this->_FixedNonbondRestraint; };
 #endif
 
@@ -236,7 +236,7 @@ CL_DEFMETHOD     EnergyFixedNonbondRestraint_sp	getFixedNonbondRestraintComponen
     CL_DEFMETHOD bool hasMissingParameters();
     CL_DEFMETHOD core::List_sp getMissingParameters();
 
-CL_NAME("getTotalEnergy");
+CL_LISPIFY_NAME("getTotalEnergy");
 CL_DEFMETHOD     double	getTotalEnergy() { return this->_TotalEnergy; };
     void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian);
 

@@ -97,8 +97,8 @@ namespace chem
 
 
 #define MINIMIZER_ERROR(msg) ERROR(_sym_MinimizerError,core::lisp_createList(kw::_sym_message,core::Str_O::create(msg)))
-#define MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(msg) ERROR(_sym_MinimizerExceededMaxStepsError,core::lisp_createList(kw::_sym_message,core::Str_O::create(msg)))
-#define MINIMIZER_STUCK_ERROR(msg) ERROR(_sym_MinimizerStuckError,core::lisp_createList(kw::_sym_message,core::Str_O::create(msg)))
+#define MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(msg) ERROR(_sym_MinimizerExceededMaxStepsError,core::lisp_createList(kw::_sym_message,core::SimpleBaseString_O::make(msg)))
+#define MINIMIZER_STUCK_ERROR(msg) ERROR(_sym_MinimizerStuckError,core::lisp_createList(kw::_sym_message,core::SimpleBaseString_O::make(msg)))
 
 
 
@@ -722,20 +722,20 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
 CL_LISPIFY_NAME("throwMinimizerExceededMaxSteps");
 CL_DEFMETHOD     void Minimizer_O::throwMinimizerExceededMaxSteps()
     {_OF();
-	MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(BF("test throw of MinimizerExceededMaxSteps"));
+      MINIMIZER_EXCEEDED_MAX_STEPS_ERROR("test throw of MinimizerExceededMaxSteps");
     };
 
 CL_LISPIFY_NAME("throwMinimizerStuck");
 CL_DEFMETHOD     void Minimizer_O::throwMinimizerStuck()
     {_OF();
-	MINIMIZER_STUCK_ERROR(BF("test throw of MinimizerStuck"));
+	MINIMIZER_STUCK_ERROR("test throw of MinimizerStuck");
     };
 
 
 CL_LISPIFY_NAME("throwMinimizerError");
 CL_DEFMETHOD     void Minimizer_O::throwMinimizerError()
     {_OF();
-	MINIMIZER_ERROR(BF("test throw of MinimizerError"));
+	MINIMIZER_ERROR("test throw of MinimizerError");
     };
 
 

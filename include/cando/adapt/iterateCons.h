@@ -62,7 +62,7 @@ public:
     };
 public:
 
-CL_NAME("init");
+CL_NAME("INIT");
 CL_DEFMETHOD     void init(core::List_sp c) { this->_Begin = c; };
 	void first();
 	void next();

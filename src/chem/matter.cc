@@ -114,7 +114,7 @@ CL_DEFMETHOD bool	Matter_O::hasContentWithName(MatterName    sName )
 }
 
 
-void Matter_O::accumulateRestraints(core::VectorObjectsWithFillPtr_sp allRestraints) const
+void Matter_O::accumulateRestraints(core::VectorTNs_sp allRestraints) const
 {_OF();
   if ( this->_Restraints.notnilp() ) {
     for ( int i=0,iEnd(this->_Restraints->length()); i<iEnd; ++i ) {
@@ -128,9 +128,9 @@ void Matter_O::accumulateRestraints(core::VectorObjectsWithFillPtr_sp allRestrai
 
 
 CL_LISPIFY_NAME("allRestraints");
-CL_DEFMETHOD core::VectorObjectsWithFillPtr_sp Matter_O::allRestraints() const
+CL_DEFMETHOD core::VectorTNs_sp Matter_O::allRestraints() const
 {
-  core::VectorObjectsWithFillPtr_sp allRestraints = core::VectorObjectsWithFillPtr_O::create();
+  core::VectorTNs_sp allRestraints = core::VectorTNs_O::create();
   this->accumulateRestraints(allRestraints);
   return allRestraints;
 }
@@ -139,7 +139,7 @@ CL_LISPIFY_NAME("clearRestraints");
 CL_DEFMETHOD void Matter_O::clearRestraints()
 {
   if ( this->_Restraints.notnilp() ) {
-    this->_Restraints->clear();
+    this->_Restraints->fillPointerSet(0);
   }
 }
 
@@ -148,7 +148,7 @@ CL_DEFMETHOD void Matter_O::addRestraint(Restraint_sp restraint)
 {_OF();
   if ( this->_Restraints.nilp() )
   {
-    this->_Restraints = core::VectorObjectsWithFillPtr_O::create();
+    this->_Restraints = core::VectorTNs_O::create();
   }
   this->_Restraints->vectorPushExtend(restraint);
 }
@@ -887,7 +887,7 @@ CL_DEFMETHOD core::List_sp Matter_O::contentsAsList()
 CL_LISPIFY_NAME("allAtoms");
 CL_DEFMETHOD core::Vector_sp	Matter_O::allAtoms()
 {
-  core::VectorObjectsWithFillPtr_sp	atoms = core::VectorObjectsWithFillPtr_O::create();
+  core::VectorTNs_sp	atoms = core::VectorTNs_O::create();
   Loop		la;
   la.loopTopGoal(this->sharedThis<Matter_O>(),ATOMS);
   while ( la.advanceLoopAndProcess() )
@@ -900,7 +900,7 @@ CL_DEFMETHOD core::Vector_sp	Matter_O::allAtoms()
 
 core::Vector_sp	Matter_O::allAtomsOfElement(Element element)
 {
-  core::VectorObjectsWithFillPtr_sp atoms = core::VectorObjectsWithFillPtr_O::create();
+  core::VectorTNs_sp atoms = core::VectorTNs_O::create();
   Loop		la;
   Atom_sp		a;
   la.loopTopGoal(this->sharedThis<Matter_O>(),ATOMS);
@@ -1142,7 +1142,7 @@ void Matter_O::copyRestraintsDontRedirectAtoms(Matter_sp orig)
   if ( orig->_Restraints.nilp() ) {
     this->_Restraints = _Nil<core::T_O>();
   } else {
-    this->_Restraints = core::VectorObjectsWithFillPtr_O::create();
+    this->_Restraints = core::VectorTNs_O::create();
     for ( int i(0), iEnd(orig->_Restraints->length()); i<iEnd; ++i ) {
       this->_Restraints->vectorPushExtend(gc::As<Restraint_sp>((*(orig->_Restraints))[i])->copyDontRedirectAtoms());
 //    this->_Restraints = orig->_Restraints->copyDontRedirectAtoms();

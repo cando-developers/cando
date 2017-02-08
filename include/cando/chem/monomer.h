@@ -158,19 +158,19 @@ namespace chem {
 	/*! Return true if we have a RingClosingOutPlug */
 	bool hasRingClosingOutPlug() const;
 
-CL_NAME("setId");
+CL_LISPIFY_NAME("setId");
 CL_DEFMETHOD 	void	setId(core::Symbol_sp id) { this->_Id = id; };
-CL_NAME("getId");
+CL_LISPIFY_NAME("getId");
 CL_DEFMETHOD 	core::Symbol_sp getId() { return this->_Id; };
 	void		setVerbose(bool b) {this->_Verbose = b;};
 	bool		isVerbose() { return this->_Verbose;};
-CL_NAME("setSelected");
+CL_LISPIFY_NAME("setSelected");
 CL_DEFMETHOD 	void		setSelected(bool b) { this->_Selected = b; };
-CL_NAME("isSelected");
+CL_LISPIFY_NAME("isSelected");
 CL_DEFMETHOD 	bool		isSelected() { return this->_Selected; };
 	Topology_sp	getTopology();
 	RingClosingPlug_sp getMissingRingClosingPlug(Monomer_sp mate);
-CL_NAME("getTemporaryResidue");
+CL_LISPIFY_NAME("getTemporaryResidue");
 CL_DEFMETHOD 	Residue_sp	getTemporaryResidue()
 	{ _G();
 	    ASSERTNOTNULL(this->_TempResidue);
@@ -182,7 +182,7 @@ CL_DEFMETHOD 	Residue_sp	getTemporaryResidue()
         virtual core::List_sp allAtomAliases() {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
         //! Return true if we recognize the alias with the form "![monomerAlias]@[atomAlias]"
-CL_NAME("recognizesAlias");
+CL_LISPIFY_NAME("recognizesAlias");
 CL_DEFMETHOD 	virtual bool recognizesAlias(Alias_sp alias) { return false; };
     public:
 	void	initialize();
@@ -192,9 +192,9 @@ CL_DEFMETHOD 	virtual bool recognizesAlias(Alias_sp alias) { return false; };
 
 	adapt::SymbolSet_sp	plugNames() const;
 
-CL_NAME("setComment");
+CL_LISPIFY_NAME("setComment");
 CL_DEFMETHOD 	void	setComment(const string& s) { this->_Comment = s;};
-CL_NAME("getComment");
+CL_LISPIFY_NAME("getComment");
 CL_DEFMETHOD 	string	getComment() { return this->_Comment; };
 
 	void	setAliasesFromSymbolList(adapt::SymbolList_sp aliases);
@@ -212,7 +212,7 @@ CL_DEFMETHOD 	string	getComment() { return this->_Comment; };
 	void	setPosition2D(const geom::Vector2& pos ) { this->_Position2D = pos;}; //  this->notify(Monomer_changed2D);;
 	geom::Vector2 getPosition2D() { return this->_Position2D; };
 	void	setSequenceNumber(uint idx) { this->_SequenceNumber = idx;};
-CL_NAME("getSequenceNumber");
+CL_LISPIFY_NAME("getSequenceNumber");
 CL_DEFMETHOD 	uint	getSequenceNumber() { return this->_SequenceNumber; };
 
 //	bool	sameAs(Monomer_sp mon) { return this == mon.get(); };
@@ -295,7 +295,7 @@ CL_DEFMETHOD 	uint	getSequenceNumber() { return this->_SequenceNumber; };
 
 
     public:
-CL_NAME("getName");
+CL_LISPIFY_NAME("getName");
 CL_DEFMETHOD         virtual core::Symbol_sp getName() const {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
         virtual core::Symbol_sp getGroupName() const {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
         virtual void setGroupName(core::Symbol_sp name) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
