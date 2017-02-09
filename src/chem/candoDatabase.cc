@@ -40,7 +40,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <set>
 #include <stdio.h>
 #include <clasp/core/common.h>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <cando/adapt/adapters.h>
 #include <clasp/core/environment.h>
 #include <cando/adapt/stringSet.h>

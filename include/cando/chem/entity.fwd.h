@@ -26,7 +26,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #ifndef entity_fwd_H
 #define entity_fwd_H
 
-#include <clasp/core/lispVector.fwd.h>
+#include <clasp/core/array.fwd.h>
 
 namespace  chem
 {

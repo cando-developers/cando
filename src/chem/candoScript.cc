@@ -29,7 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <boost/format.hpp>
 #include <boost/filesystem.hpp>
 #include <clasp/core/common.h>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/main/foundation.h>
 #include <clasp/core/symbolTable.h>

@@ -56,7 +56,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/atomId.fwd.h>
 #include <cando/chem/elements.h>
 #include <clasp/core/hashTable.fwd.h>
-#include <clasp/core/lispVector.h>
 #include <clasp/core/holder.h>
 #include <cando/chem/restraint.fwd.h>
 //#include	"geom/vector3.h"

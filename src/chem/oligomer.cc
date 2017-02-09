@@ -32,7 +32,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <cando/main/foundation.h>
 #include <cando/chem/oligomer.h>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <cando/chem/molecule.h>
 #include <clasp/core/numerics.h>
 #include <cando/chem/candoScript.h>

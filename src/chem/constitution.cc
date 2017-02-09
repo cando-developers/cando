@@ -34,7 +34,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/adapt/stringList.h>
 #include <clasp/core/environment.h>
 #include <clasp/core/symbolTable.h>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <cando/chem/constitution.h>
 #include <cando/chem/candoDatabase.h>
 #include <cando/chem/loop.h>

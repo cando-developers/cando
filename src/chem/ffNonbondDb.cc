@@ -38,7 +38,7 @@ This is an open source license for the CANDO software from Temple University, bu
  */
 #include <clasp/core/foundation.h>
 #include <clasp/core/hashTableEq.h>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <cando/chem/ffNonbondDb.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/units.h>

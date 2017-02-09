@@ -32,7 +32,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <clasp/core/record.h>
 #include <clasp/core/evaluator.h>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/chem/matter.h>
 #include <cando/chem/residue.h>

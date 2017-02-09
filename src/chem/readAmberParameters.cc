@@ -32,7 +32,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/numerics.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/bformat.h>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <cando/chem/chemInfo.h>
 #include <cando/chem/units.h>
 #include <cando/chem/ffTypesDb.h>

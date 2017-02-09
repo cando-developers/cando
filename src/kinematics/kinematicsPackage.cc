@@ -193,7 +193,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/molecule.h>
 #include <cando/chem/residue.h>
 #include <cando/chem/superposableConformationCollection.h>
-#include <clasp/core/bitVector.h>
+#include <clasp/core/array.h>
 #include <clasp/core/sexpLoadArchive.h>
 #include <clasp/core/sexpSaveArchive.h>
 #include <clasp/core/specializer.h>
@@ -202,7 +202,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/units/namedUnit.h>
 #include <cando/chem/virtualAtom.h>
 #include <clasp/core/metaClass.h>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <cando/chem/monomerPack.h>
 #include <cando/chem/representedEntityNameSet.h>
 #include <clasp/core/bignum.h>

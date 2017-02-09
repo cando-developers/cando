@@ -52,7 +52,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 namespace geom {
-  extern core::Symbol_sp& _sym_OVector3;
+  extern core::Symbol_sp& _sym_OVector3_O;
 };
 
 
@@ -118,8 +118,7 @@ namespace geom
   public:
   SimpleVectorCoordinate_O(size_t length, value_type initialElement=value_type(), bool initialElementSupplied=false, size_t initialContentsSize=0, const value_type* initialContents=NULL) : TemplatedBase(length,initialElement,initialElementSupplied,initialContentsSize,initialContents) {};
     static SimpleVectorCoordinate_sp make(size_t length, value_type initialElement=value_type(), bool initialElementSupplied=false, size_t initialContentsSize=0, const value_type* initialContents=NULL) {
-      auto bs = gctools::GC<SimpleVectorCoordinate_O>::allocate_container(gctools::GCStamp<SimpleVectorCoordinate_O>::TheStamp,
-                                                                          length,length,initialElement,initialElementSupplied,initialContentsSize,initialContents);
+      auto bs = gctools::GC<SimpleVectorCoordinate_O>::allocate_container(length,length,initialElement,initialElementSupplied,initialContentsSize,initialContents);
       return bs;
     }
   public:
@@ -239,8 +238,7 @@ namespace geom {
                                           bool initialElementSupplied=false,
                                           size_t initialContentsSize=0,
                                           const value_type* initialContents=NULL) {
-      auto bs = gctools::GC<SimpleVectorCoordinate_O>::allocate_container(gctools::GCStamp<leaf_type/*SimpleVectorCoordinate_O*/>::TheStamp,
-                                                                          length,length,initialElement,initialElementSupplied,initialContentsSize,initialContents);
+      auto bs = gctools::GC<SimpleVectorCoordinate_O>::allocate_container(length,length,initialElement,initialElementSupplied,initialContentsSize,initialContents);
       return bs;
     }
     static SimpleVectorCoordinate_sp create(core::List_sp elements) {
@@ -258,8 +256,8 @@ namespace geom {
 //    virtual void __write__(T_sp stream) const final;
   public:
     virtual core::T_sp array_type() const final { return cl::_sym_simple_array; };
-    virtual core::T_sp element_type() const override { return geom::_sym_OVector3;};
-    virtual core::T_sp arrayElementType() const override { return geom::_sym_OVector3; };
+    virtual core::T_sp element_type() const override { return geom::_sym_OVector3_O;};
+    virtual core::T_sp arrayElementType() const override { return geom::_sym_OVector3_O; };
     virtual core::clasp_elttype elttype() const { return core::clasp_aet_non_standard; };
   public:
     Vector3& getElement(size_t i) { return (*this)[i];};
@@ -295,7 +293,7 @@ namespace geom {
       LIKELY_if (dataOrDisplacedTo.nilp()) {
         dataOrDisplacedTo = simple_type::make(dimension,initialElement,true);
       }
-      MDArrayCoordinate_sp array = gctools::GC<MDArrayCoordinate_O>::allocate_container(gctools::GCStamp<MDArrayCoordinate_O>::TheStamp,1,1,dimension,fillPointer,gc::As_unsafe<core::Array_sp>(dataOrDisplacedTo),displacedToP,displacedIndexOffset);
+      MDArrayCoordinate_sp array = gctools::GC<MDArrayCoordinate_O>::allocate_container(1,1,dimension,fillPointer,gc::As_unsafe<core::Array_sp>(dataOrDisplacedTo),displacedToP,displacedIndexOffset);
       return array;
     }
     static MDArrayCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement, core::T_sp fillPointer) {
@@ -314,7 +312,7 @@ namespace geom {
       LIKELY_if (dataOrDisplacedTo.nilp()) {
         dataOrDisplacedTo = simple_type::make(arrayTotalSize,initialElement,true);
       }
-      MDArrayCoordinate_sp array = gctools::GC<MDArrayCoordinate_O>::allocate_container(gctools::GCStamp<MDArrayCoordinate_O>::TheStamp,rank,rank,dim_desig,gc::As<core::Array_sp>(dataOrDisplacedTo),displacedToP,displacedIndexOffset);
+      MDArrayCoordinate_sp array = gctools::GC<MDArrayCoordinate_O>::allocate_container(rank,rank,dim_desig,gc::As<core::Array_sp>(dataOrDisplacedTo),displacedToP,displacedIndexOffset);
       return array;
     }
     size_t vectorPush_Vector3(const Vector3& newElement);
@@ -339,7 +337,7 @@ namespace geom {
       LIKELY_if (data.nilp()) {
         data = SimpleVectorCoordinate_O::make(dimension,initialElement,true);
       }
-      SimpleMDArrayCoordinate_sp array = gctools::GC<SimpleMDArrayCoordinate_O>::allocate_container(gctools::GCStamp<SimpleMDArrayCoordinate_O>::TheStamp,1,1,dimension,gc::As_unsafe<core::Array_sp>(data));
+      SimpleMDArrayCoordinate_sp array = gctools::GC<SimpleMDArrayCoordinate_O>::allocate_container(1,1,dimension,gc::As_unsafe<core::Array_sp>(data));
       return array;
     }
     static SimpleMDArrayCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement) {
@@ -356,7 +354,7 @@ namespace geom {
       LIKELY_if (data.nilp()) {
         data = SimpleVectorCoordinate_O::make(arrayTotalSize,initialElement,true);
       }
-      SimpleMDArrayCoordinate_sp array = gctools::GC<SimpleMDArrayCoordinate_O>::allocate_container(gctools::GCStamp<SimpleMDArrayCoordinate_O>::TheStamp,rank,rank,dim_desig,gc::As<core::Array_sp>(data));
+      SimpleMDArrayCoordinate_sp array = gctools::GC<SimpleMDArrayCoordinate_O>::allocate_container(rank,rank,dim_desig,gc::As<core::Array_sp>(data));
       return array;
     }
   };

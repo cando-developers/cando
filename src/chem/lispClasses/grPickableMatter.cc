@@ -32,7 +32,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include "aggregate.h"
 #include "loop.h"
 #include "bond.h"
-#include "core/str.h"
+#include "core/array.h"
 #include "geom/color.h"
 #include "geom/symbolTable.h"
 #include "symbolTable.h"

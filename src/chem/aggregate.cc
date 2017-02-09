@@ -38,7 +38,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <iostream>
 #include <fstream>
 #include <iomanip>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/moe.h>
 #include <cando/chem/mol2.h>

@@ -32,7 +32,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include "boost/filesystem/fstream.hpp"
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include "core/str.h"
+#include "core/array.h"
 #include "core/environment.h"
 #include "structureComparer.h"
 #include "superposableConformationCollection.h"

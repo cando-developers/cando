@@ -29,6 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 // (C) 2004 Christian E. Schafmeister
 //
 #include <clasp/core/common.h>
+#include <clasp/core/evaluator.h>
 #include <cando/geom/coordinateArray.h>
 //#include "core/archiveNode.h"
 //#include "core/serializerNode.h"
@@ -45,6 +46,26 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace geom 
 {
+
+SYMBOL_EXPORT_SC_(GeomPkg,vectorPushExtend_Vector3);
+size_t MDArrayCoordinate_O::vectorPushExtend_Vector3(const Vector3& newElement, size_t extension) {
+  unlikely_if (!this->_Flags.fillPointerP()) noFillPointerError(_sym_vectorPushExtend_Vector3,this->asSmartPtr());
+  size_t idx = this->_FillPointerOrLengthOrDummy;
+  unlikely_if (idx >= this->_ArrayTotalSize) {
+    if (extension <= 0) extension = 32;
+    size_t new_size = this->_ArrayTotalSize+extension;
+    unlikely_if (!cl::_sym_adjust_array || !cl::_sym_adjust_array->boundP()) {
+      this->internalAdjustSize_(new_size);
+    } else {
+      core::eval::funcall(cl::_sym_adjust_array,this->asSmartPtr(),_Nil<core::T_O>(),cl::_sym_fill_pointer,core::clasp_make_fixnum(this->_FillPointerOrLengthOrDummy));
+    }
+  }
+  (*this)[idx] = newElement;
+  ++this->_FillPointerOrLengthOrDummy;
+  return idx;
+}
+
+
 
 SYMBOL_EXPORT_SC_(GeomPkg,vector3);
 #if 0

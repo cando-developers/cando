@@ -33,7 +33,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <set>
 #include <clasp/core/common.h>
 #include <clasp/core/cons.h>
-#include <clasp/core/bitVector.h>
+#include <clasp/core/array.h>
 #include <cando/chem/chemPackage.h>
 
 namespace chem {

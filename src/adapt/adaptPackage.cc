@@ -42,7 +42,6 @@ This is an open source license for the CANDO software from Temple University, bu
 //#include <clasp/cffi/cffi.h>
 #include <clasp/clbind/class_registry.h>
 #include <clasp/core/serialize.h>
-#include <clasp/core/array.h>
 #include <clasp/core/conditions.h>
 #include <clasp/core/character.h>
 #include <clasp/core/cons.h>
@@ -155,7 +154,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/virtualSphere.h>
 #include <cando/chem/zMatrix.h>
 #include <clasp/core/activationFrame.h>
-#include <clasp/core/arrayObjects.h>
 #include <clasp/core/hashTableEq.h>
 #include <clasp/core/hashTableEql.h>
 #include <clasp/core/hashTableEqual.h>
@@ -165,7 +163,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/null.h>
 #include <clasp/core/singleDispatchGenericFunction.h>
 #include <clasp/core/specialForm.h>
-#include <clasp/core/lispVector.h>
 #include <cando/geom/boundingBox.h>
 #include <cando/geom/color.h>
 #include <cando/geom/omatrix.h>
@@ -195,16 +192,14 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/molecule.h>
 #include <cando/chem/residue.h>
 #include <cando/chem/superposableConformationCollection.h>
-#include <clasp/core/bitVector.h>
 #include <clasp/core/sexpLoadArchive.h>
 #include <clasp/core/sexpSaveArchive.h>
 #include <clasp/core/specializer.h>
-#include <clasp/core/lispString.h>
+#include <clasp/core/array.h>
 #include <cando/geom/coordinateArray.h>
 #include <cando/units/namedUnit.h>
 #include <cando/chem/virtualAtom.h>
 #include <clasp/core/metaClass.h>
-#include <clasp/core/str.h>
 #include <cando/chem/monomerPack.h>
 #include <cando/chem/representedEntityNameSet.h>
 #include <clasp/core/bignum.h>
@@ -212,7 +207,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/cxxClass.h>
 #include <clasp/core/forwardReferencedClass.h>
 #include <clasp/core/stdClass.h>
-#include <clasp/core/strWithFillPtr.h>
 #include <clasp/core/structureClass.h>
 #include <clasp/clbind/class_rep.h>
 #include <clasp/core/funcallableStandardClass.h>

@@ -36,7 +36,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/adapt/adapters.h>
 #include <cando/chem/residue.h>
 #include <cando/adapt/stringList.h>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <cando/chem/bond.h>
 #include <cando/chem/pdbMonomer.h>
 #include <cando/chem/loop.h>

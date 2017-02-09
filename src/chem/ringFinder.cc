@@ -42,11 +42,11 @@ __END_DOC
 
 
 #include <clasp/core/foundation.h>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <clasp/core/hashTableEql.h>
 #include <clasp/core/hashTableEq.h>
 #include <cando/chem/ringFinder.h>
-#include <clasp/core/bitVector.h>
+#include <clasp/core/array.h>
 #include <cando/chem/atom.h>
 #include <cando/chem/residue.h>
 #include <cando/adapt/adapters.h>

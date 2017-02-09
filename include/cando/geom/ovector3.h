@@ -28,7 +28,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
-#include <clasp/core/lispVector.h>
 #include <clasp/core/numbers.h>
 #include <cando/geom/geomPackage.fwd.h>
 #include <cando/geom/vector3.h>

@@ -39,7 +39,7 @@ This is an open source license for the CANDO software from Temple University, bu
  */
 
 #include <clasp/core/common.h>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <cando/chem/forceField.h>
 //#include "core/archive.h"
 //#include "core/xmlLoadArchive.h"

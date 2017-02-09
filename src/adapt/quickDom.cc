@@ -38,7 +38,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/lisp.h>
 #include <clasp/core/ql.h>
 #include <clasp/core/multipleValues.h>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <clasp/core/fileSystem.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/pathname.h>

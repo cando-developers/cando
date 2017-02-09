@@ -38,7 +38,7 @@ This is an open source license for the CANDO software from Temple University, bu
  *	Maintains a database of stretch types
  */
 #include <clasp/core/foundation.h>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <cando/chem/ffAngleDb.h>
 #include <cando/chem/forceField.h>
 #include <cando/chem/ffStretchDb.h>

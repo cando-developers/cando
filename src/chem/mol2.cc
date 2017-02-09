@@ -57,7 +57,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/symbolTable.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/molecule.h>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <cando/chem/chemPackage.fwd.h>
 #include <cando/chem/aggregate.h>
 #include <cando/chem/chemInfo.h>

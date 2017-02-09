@@ -27,7 +27,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/common.h>
 #include <cando/chem/frameRecognizer.h>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <clasp/core/environment.h>
 #include <clasp/core/wrappers.h>
 

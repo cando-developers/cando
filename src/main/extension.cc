@@ -40,7 +40,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/lisp.h>
 #include <clasp/core/compiler.h>
 #include <clasp/core/evaluator.h>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/candoOpenMp.h>
 #include <clasp/core/cons.h>

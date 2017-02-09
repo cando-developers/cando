@@ -27,7 +27,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include "core/common.h"
 #include "trainer.h"
-#include "core/str.h"
+#include "core/array.h"
 //#include "core/archive.h"
 //#include "core/xmlSaveArchive.h"
 //#include "core/xmlLoadArchive.h"

@@ -41,7 +41,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/matter.h>
 #include <cando/geom/omatrix.h>
 //#include "core/serialize.h"
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <cando/chem/loop.h>
 #include <clasp/core/cons.h>
 #include <clasp/core/lispList.h>

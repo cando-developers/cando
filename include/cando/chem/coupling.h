@@ -41,7 +41,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define COUPLING_H
 
 #include <clasp/core/common.h>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <stdio.h>
 #include <string>
 #include <vector>

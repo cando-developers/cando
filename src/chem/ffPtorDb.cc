@@ -38,7 +38,7 @@ This is an open source license for the CANDO software from Temple University, bu
  */
 #include <cando/chem/ffPtorDb.h>
 //#include "core/archiveNode.h"
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <clasp/core/wrappers.h>
 #include <cando/chem/units.h>
 

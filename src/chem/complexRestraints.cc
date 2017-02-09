@@ -28,7 +28,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/complexRestraints.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <cando/chem/restraint.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/chem/residue.h>

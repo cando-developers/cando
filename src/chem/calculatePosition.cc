@@ -26,7 +26,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <clasp/core/common.h>
-#include <clasp/core/str.h>
+#include <clasp/core/array.h>
 #include <cando/chem/calculatePosition.h>
 #include <cando/chem/residue.h>
 #include <clasp/core/wrappers.h>
