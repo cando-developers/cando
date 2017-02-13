@@ -351,7 +351,7 @@ Aggregate_sp PdbReader_O::loadPdbConnectAtoms(core::T_sp fileName)
 
     
     
-CL_DEFUN core::T_sp chem__load_pdb(core::Str_sp fileName)
+CL_DEFUN core::T_sp chem__load_pdb(core::String_sp fileName)
 {
   Aggregate_sp agg = PdbReader_O::loadPdbConnectAtoms(fileName);
   return agg;
@@ -374,7 +374,7 @@ void	PdbReader_O::archive(core::ArchiveP node)
 Aggregate_sp PdbReader_O::parse(core::T_sp fileName)
 {
   char buffer[1024];
-  string fn = gc::As<core::Str_sp>(core::cl__namestring(fileName))->get();
+  string fn = gc::As<core::String_sp>(core::cl__namestring(fileName))->get_std_tring();
   std::ifstream myfile( fn.c_str() );
   if ( myfile.fail() )
   {

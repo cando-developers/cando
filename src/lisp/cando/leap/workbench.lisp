@@ -1,7 +1,7 @@
 (in-package :cando-user)
 (progn
   (asdf:load-system "amber")
-  (use-package :amber :cando-user)
+  (use-package :leap :cando-user)
   (load "~/Downloads/chromatinfiber-11million/setup.lisp"))
 
 (amber:load-off "~/Development/amber/dat/leap/lib/solvents.lib")

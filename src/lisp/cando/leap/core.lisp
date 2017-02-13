@@ -73,7 +73,7 @@ the list of frcmods and force-field are used to create a merged force-field that
 used to provide parameters.  There is one default force-field called :default.")
 
 (defun add-force-field-or-modification (force-field-or-frcmod &optional (force-field-name :default))
-  (push (gethash force-field-name *force-field-lists*)))
+  (push force-field-or-frcmod (gethash force-field-name *force-field-lists*)))
 
 (defun merged-force-field (&optional (force-field-name :default))
   "Merge the force-field-list with _force-field-name_ and return it."

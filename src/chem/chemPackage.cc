@@ -298,7 +298,7 @@ core::Symbol_sp chemkw_intern(const string& symName)
   if ( symName == "" ) return _Nil<core::Symbol_O>();
   const string trimmed = core::trimWhiteSpace(symName);
   core::Package_sp chemkwPkg = _lisp->findPackage(ChemKwPkg);
-  core::Str_sp strimmed = core::Str_O::create(trimmed);
+  core::SimpleBaseString_sp strimmed = core::SimpleBaseString_O::make(trimmed);
   core::Symbol_sp sym = chemkwPkg->intern(strimmed);
   chemkwPkg->_export2(sym);
   return sym;

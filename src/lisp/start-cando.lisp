@@ -29,18 +29,30 @@
 
 ;;; ASDF is loaded
 
+(defun all-subdirs (dir)
+  (let (dirs)
+    (labels ((trav (d)
+		   (dolist (d (uiop:subdirectories d))
+		     (push d dirs)
+		     (trav d))))
+      (trav dir))
+    dirs))
+
+
+
 (progn
   (setf (logical-pathname-translations "cando")
-        '(("**;*.*" "source-dir:extensions;cando;src;**;*.*")))
-  (let ((central-registry (find-symbol "*CENTRAL-REGISTRY*" :asdf))
-        (load-system (find-symbol "LOAD-SYSTEM" :asdf)))
-    (setf (symbol-value central-registry)
-          (cons (translate-logical-pathname "cando:lisp;cando;") (symbol-value central-registry)))
-    (asdf:load-system "cando")
-    (format t "Done initialization pid = ~a~%" (getpid))))
-(push (translate-logical-pathname "cando:lisp;cando;amber;") asdf:*central-registry*)
+        '(("**;*.*" "source-dir:extensions;cando;src;**;*.*"))))
+
+(let* ((topdir (translate-logical-pathname #P"cando:lisp;cando;"))
+       (dirs (all-subdirs topdir)))
+  (push topdir asdf:*central-registry*)
+  (dolist (dir dirs)
+    (format t "Pushing dir: ~a~%" dir)
+    (push dir asdf:*central-registry*)))
 
 (progn
   (format t "Starting Cando~%")
+  (asdf:load-system "cando")
   (in-package :cando-user)
   (core::tpl))

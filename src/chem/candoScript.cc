@@ -541,11 +541,7 @@ Loads the Tripos ``mol2'' file and returns the Aggregate within it.
 __END_DOC
  */
 
-#if 0
-#define ARGS_chem__make_coordinate_array_from_atom_list "(fileName)"
-#define DECL_chem__make_coordinate_array_from_atom_list ""
-#define DOCS_chem__make_coordinate_array_from_atom_list "loadMol2"
-CL_DEFUN geom::SimpleVectorCoordinate_sp chem__make_coordinate_array_from_atom_list(core::List_sp atoms)
+CL_DEFUN geom::SimpleVectorCoordinate_sp chem__make_simple_vector_coordinate_from_atom_list(core::List_sp atoms)
 {
   size_t num = core::cl__length(atoms);
   geom::SimpleVectorCoordinate_sp coords = geom::SimpleVectorCoordinate_O::make(num);
@@ -553,12 +549,11 @@ CL_DEFUN geom::SimpleVectorCoordinate_sp chem__make_coordinate_array_from_atom_l
   for ( auto cur : atoms ) {
     Atom_sp a = gc::As<chem::Atom_sp>(oCar(cur));
     Vector3 v = a->getPosition();
-    coords->setElement(idx,v);
+    (*coords)[idx] = v;
     ++idx;
   }
   return coords;
 }
-#endif
 
 
 #define ARGS_chem__load_mol2 "(fileName)"
@@ -599,7 +594,6 @@ Residue_sp findResidue(Matter_sp matter, core::T_sp residueIdentifier )
 {
 Molecule_sp molecule;
 core::Fixnum_sp	residueSequenceNumber;
-core::Str_sp	atomName;
 
 	    // downcast the identifer to a Symbol and an Int object
 	    // one of them will be nil and the other will have a value
@@ -661,14 +655,13 @@ CL_DEFUN core::T_sp chem__find_residue(core::List_sp args)
 {
     Molecule_sp molecule;
     core::Fixnum_sp	residueSequenceNumber;
-    core::Str_sp	atomName;
     core::T_sp residueIdentifier;
     if ( core::cl__length(args)==3 ) 
     {
       Aggregate_sp agg = args.asCons()->onth(0).as<Aggregate_O>();
-      core::Str_sp chain = args.asCons()->onth(1).as<core::Str_O>();
+      core::String_sp chain = args.asCons()->onth(1).as<core::String_O>();
       residueIdentifier = args.asCons()->onth(2).as<core::T_O>();
-      molecule = gc::As<Molecule_sp>(agg->contentWithName(chemkw_intern(chain->get())));
+      molecule = gc::As<Molecule_sp>(agg->contentWithName(chemkw_intern(chain->get_std_string())));
     } else if ( core::cl__length(args)==2 ) 
     {
       molecule = args.asCons()->onth(0).as<Molecule_O>();
@@ -716,10 +709,10 @@ CL_DEFUN core::T_sp chem__atom_pos(core::List_sp args)
     if ( core::cl__length(args)==4 ) 
     {
       Aggregate_sp agg = args.asCons()->onth(0).as<Aggregate_O>();
-      core::Str_sp chain = args.asCons()->onth(1).as<core::Str_O>();
+      core::String_sp chain = args.asCons()->onth(1).as<core::String_O>();
       residueIdentifier = args.asCons()->onth(2).as<core::T_O>();
       atomName = args.asCons()->onth(3).as<core::Symbol_O>();
-      molecule = gc::As<Molecule_sp>(agg->contentWithName(chemkw_intern(chain->get())));
+      molecule = gc::As<Molecule_sp>(agg->contentWithName(chemkw_intern(chain->get_std_string())));
     } else if ( core::cl__length(args)==3 ) 
     {
       molecule = args.asCons()->onth(0).as<Molecule_O>();
@@ -764,7 +757,7 @@ CL_DEFUN core::T_sp chem__atom_pos(core::List_sp args)
 #define DECL_chem__monomer ""
 #define DOCS_chem__monomer "monomer"
 CL_LAMBDA(monomerId groupName &optional monomerAliases comment);
-CL_DEFUN core::T_sp chem__monomer(core::Symbol_sp monomerId, core::Symbol_sp groupName, core::List_sp monomerAliases, core::Str_sp comment)
+CL_DEFUN core::T_sp chem__monomer(core::Symbol_sp monomerId, core::Symbol_sp groupName, core::List_sp monomerAliases, core::String_sp comment)
 {
     OligomerPart_Monomer_sp newMon;
     newMon = OligomerPart_Monomer_O::create();
@@ -772,7 +765,7 @@ CL_DEFUN core::T_sp chem__monomer(core::Symbol_sp monomerId, core::Symbol_sp gro
     newMon->_GroupName = groupName;
     newMon->_MonomerAliases = monomerAliases;
     newMon->_Comment = "";
-    if ( comment.notnilp() ) newMon->_Comment = comment->get();
+    if ( comment.notnilp() ) newMon->_Comment = comment->get_std_string();
     return newMon;
 }
 

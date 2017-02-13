@@ -130,7 +130,7 @@ void Matter_O::accumulateRestraints(core::VectorTNs_sp allRestraints) const
 CL_LISPIFY_NAME("allRestraints");
 CL_DEFMETHOD core::VectorTNs_sp Matter_O::allRestraints() const
 {
-  core::VectorTNs_sp allRestraints = core::VectorTNs_O::create();
+  core::VectorTNs_sp allRestraints = core::VectorTNs_O::make(8,_Nil<T_O>(),core::clasp_make_fixnum(0));
   this->accumulateRestraints(allRestraints);
   return allRestraints;
 }
@@ -148,7 +148,7 @@ CL_DEFMETHOD void Matter_O::addRestraint(Restraint_sp restraint)
 {_OF();
   if ( this->_Restraints.nilp() )
   {
-    this->_Restraints = core::VectorTNs_O::create();
+    this->_Restraints = core::VectorTNs_O::make(8,_Nil<T_O>(),core::clasp_make_fixnum(0));
   }
   this->_Restraints->vectorPushExtend(restraint);
 }
@@ -786,7 +786,7 @@ CL_DEFMETHOD void	Matter_O::setAtomAliasesForResiduesNamed(core::List_sp parts, 
     {
       SIMPLE_ERROR(BF("Each entry must have two elements: "+_rep_(oneExtend) ));
     }
-    core::Str_sp residueName = oneExtend->car<core::Str_O>();
+    core::String_sp residueName = oneExtend->car<core::String_O>();
     core::List_sp aliasAtoms = oCadr(oneExtend);
     LOG(BF("residueName(%s) aliasAtoms(%s)") % residueName->get().c_str() % _rep_(aliasAtoms).c_str() );
     residueNamesToAliasAtoms[residueName->get()] = aliasAtoms;
@@ -887,7 +887,7 @@ CL_DEFMETHOD core::List_sp Matter_O::contentsAsList()
 CL_LISPIFY_NAME("allAtoms");
 CL_DEFMETHOD core::Vector_sp	Matter_O::allAtoms()
 {
-  core::VectorTNs_sp	atoms = core::VectorTNs_O::create();
+  core::VectorTNs_sp	atoms = core::VectorTNs_O::make(8,_Nil<T_O>(),core::clasp_make_fixnum(0));
   Loop		la;
   la.loopTopGoal(this->sharedThis<Matter_O>(),ATOMS);
   while ( la.advanceLoopAndProcess() )
@@ -900,7 +900,7 @@ CL_DEFMETHOD core::Vector_sp	Matter_O::allAtoms()
 
 core::Vector_sp	Matter_O::allAtomsOfElement(Element element)
 {
-  core::VectorTNs_sp atoms = core::VectorTNs_O::create();
+  core::VectorTNs_sp atoms = core::VectorTNs_O::make(8,_Nil<T_O>(),core::clasp_make_fixnum(0));
   Loop		la;
   Atom_sp		a;
   la.loopTopGoal(this->sharedThis<Matter_O>(),ATOMS);
@@ -1142,7 +1142,7 @@ void Matter_O::copyRestraintsDontRedirectAtoms(Matter_sp orig)
   if ( orig->_Restraints.nilp() ) {
     this->_Restraints = _Nil<core::T_O>();
   } else {
-    this->_Restraints = core::VectorTNs_O::create();
+    this->_Restraints = core::VectorTNs_O::make(8,_Nil<T_O>(),core::clasp_make_fixnum(0));
     for ( int i(0), iEnd(orig->_Restraints->length()); i<iEnd; ++i ) {
       this->_Restraints->vectorPushExtend(gc::As<Restraint_sp>((*(orig->_Restraints))[i])->copyDontRedirectAtoms());
 //    this->_Restraints = orig->_Restraints->copyDontRedirectAtoms();

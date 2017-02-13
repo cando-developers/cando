@@ -1,6 +1,6 @@
 (in-package :asdf-user)
 
-(defsystem "amber"
+(defsystem "leap"
     :description "Amber related code"
     :version "0.0.1"
     :author "Christian Schafmeister <chris.schaf@verizon.net>"

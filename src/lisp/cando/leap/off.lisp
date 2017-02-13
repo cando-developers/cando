@@ -23,7 +23,7 @@
 (defun parse-off-header (line)
   (unless (char= (elt line 0) #\!)
     (error 'bad-header :line line))
-  (let* ((parts (core:split-at-white-space (subseq line 1)))
+  (let* ((parts (core:split (subseq line 1) " "))
          (name (elt parts 0))
          (type (intern (string-upcase (nth 1 parts)) :keyword))
          (fields (cond

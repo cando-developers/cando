@@ -766,9 +766,9 @@ AtomInfo	one;
 
 void	mol2WriteAggregateToFileName( Aggregate_sp agg, core::T_sp fname, bool useSybylTypes )
 {
-  core::Str_sp sname = gc::As<core::Str_sp>(core::cl__namestring(fname));
+  std::string sname = gc::As<core::String_sp>(core::cl__namestring(fname))->get_std_string();
   std::ofstream	fout;
-  fout.open(sname->get().c_str(),std::ios::out);
+  fout.open(sname.c_str(),std::ios::out);
   mol2WriteAggregateStream( agg, fout, useSybylTypes );
   fout.close();
 }

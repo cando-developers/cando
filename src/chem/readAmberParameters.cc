@@ -132,7 +132,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseFirstNonbondDb(core::T_sp fin)
   while ( not done )
   {
     core::T_mv ol = core::cl__read_line(fin);
-    string line = gc::As<core::Str_sp>(ol)->get();
+    string line = gc::As<core::String_sp>(ol)->get_std_string();
     if ( line.size() == 0 )
     {
       done = true;
