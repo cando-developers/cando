@@ -700,8 +700,13 @@ CL_DEFUN core::T_sp chem__map_residues(core::Symbol_sp result_type, core::T_sp f
     }
     return res.cons();
   }
+<<<<<<< HEAD
   if ( result_type == cl::_sym_vector ) {
     core::VectorTNs_sp vo = core::VectorTNs_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+=======
+  if ( result_type == cl::_sym_Vector_O ) {
+    core::VectorObjectsWithFillPtr_sp vo = core::VectorObjectsWithFillPtr_O::make(_Nil<core::T_O>(),16,0,true, cl::_sym_T_O);
+>>>>>>> Changed how functions are named
     while (l.advanceLoopAndProcess()) {
       a = l.getResidue();
       vo->vectorPushExtend(core::eval::funcall(func,a));
@@ -735,8 +740,13 @@ CL_DEFUN core::T_sp chem__map_atoms(core::Symbol_sp result_type, core::T_sp func
     }
     return res.cons();
   }
+<<<<<<< HEAD
   if ( result_type == cl::_sym_vector ) {
     core::VectorTNs_sp vo = core::VectorTNs_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+=======
+  if ( result_type == cl::_sym_Vector_O ) {
+    core::VectorObjectsWithFillPtr_sp vo = core::VectorObjectsWithFillPtr_O::make(_Nil<core::T_O>(),16,0,true, cl::_sym_T_O);
+>>>>>>> Changed how functions are named
     while (l.advanceLoopAndProcess()) {
       a = l.getAtom();
       vo->vectorPushExtend(core::eval::funcall(func,a));
@@ -772,8 +782,13 @@ CL_DEFUN core::T_sp chem__map_bonds(core::Symbol_sp result_type, core::T_sp func
     }
     return res.cons();
   }
+<<<<<<< HEAD
   if ( result_type == cl::_sym_vector ) {
     core::VectorTNs_sp vo = core::VectorTNs_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+=======
+  if ( result_type == cl::_sym_Vector_O ) {
+    core::VectorObjectsWithFillPtr_sp vo = core::VectorObjectsWithFillPtr_O::make(_Nil<core::T_O>(),16,0,true, cl::_sym_T_O);
+>>>>>>> Changed how functions are named
     while (l.advanceLoopAndProcess()) {
       a1 = l.getBondA1();
       a2 = l.getBondA2();
@@ -803,7 +818,11 @@ CL_DEFUN core::T_sp chem__map_angles(core::Symbol_sp result_type, core::T_sp fun
   ql::list list_result;
   core::VectorTNs_sp vector_result;
   if ( result_type == cl::_sym_vector ) {
+<<<<<<< HEAD
     vector_result = core::VectorTNs_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+=======
+    vector_result = core::VectorObjectsWithFillPtr_O::make(_Nil<core::T_O>(),16,0,true, cl::_sym_T_O);
+>>>>>>> Changed how functions are named
   }
   while (l.advanceLoopAndProcess()) {
     a1 = l.getAtom1();
@@ -837,7 +856,11 @@ CL_DEFUN core::T_sp chem__map_dihedrals(core::Symbol_sp result_type, core::T_sp 
   ql::list list_result;
   core::VectorTNs_sp vector_result;
   if ( result_type == cl::_sym_vector ) {
+<<<<<<< HEAD
     vector_result = core::VectorTNs_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+=======
+    vector_result = core::VectorObjectsWithFillPtr_O::make(_Nil<core::T_O>(),16,0,true, cl::_sym_T_O);
+>>>>>>> Changed how functions are named
   }
   while (l.advanceLoopAndProcess()) {
     a1 = l.getAtom1();
@@ -872,7 +895,11 @@ CL_DEFUN core::T_sp chem__map_impropers(core::Symbol_sp result_type, core::T_sp 
   ql::list list_result;
   core::VectorTNs_sp vector_result;
   if ( result_type == cl::_sym_vector ) {
+<<<<<<< HEAD
     vector_result = core::VectorTNs_O::make(16,_Nil<core::T_O>(),core::clasp_make_fixnum(0));
+=======
+    vector_result = core::VectorObjectsWithFillPtr_O::make(_Nil<core::T_O>(),16,0,true, cl::_sym_T_O);
+>>>>>>> Changed how functions are named
   }
   while (l.advanceLoopAndProcess()) {
     a1 = l.getAtom1();
