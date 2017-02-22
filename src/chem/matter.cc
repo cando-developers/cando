@@ -1174,14 +1174,12 @@ CL_DEFMETHOD Atom_sp Matter_O::atomWithAtomId(AtomId_sp atomId) const
   SUBCLASS_MUST_IMPLEMENT();
 }
 
-
-
-
-
-
-
-
-
-
+#if 0
+CL_LISPIFY_NAME("CHEM:MATTER-COPY");
+CL_DEFUN Matter_sp chem__matter_copy(Matter_sp orig) {
+  Matter_sp copy = orig->copy();
+  return copy;
+}
+#endif
 
 };  // namespace chem

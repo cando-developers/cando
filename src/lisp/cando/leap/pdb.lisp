@@ -205,7 +205,7 @@ If you want to check if it's a big-z file then pass check-big-z = T."
              (when (not (string= s " "))
                (read-from-string s)))))
     (let* ((*package* (find-package :keyword))
-           (head (string-right-trim '(#\space) (subseq line 0 6))))
+           (head (string-right-trim '(#\space) (subseq line 0 (min 6 (length line))))))
       (cond 
         ((string= head "ATOM")
          ;; If we are checking if it's a big-z pdb file then

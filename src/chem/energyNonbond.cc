@@ -54,7 +54,8 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 #define DEBUG_NONBOND_TERM 1
-#define LOG_ENERGY BFORMAT_T
+#define LOG_ENERGY(x)
+//#define LOG_ENERGY BFORMAT_T
 
 namespace chem
 {

@@ -86,8 +86,7 @@ void PathMessage_O::initialize()
     } else 
     {
 	LOG(BF("Copying this->_beep") );
-        core::T_sp sbv = orig._beep->deepCopy();
-        this->_beep = gc::As<core::SimpleBitVector_sp>(sbv);
+        this->_beep = core::SimpleBitVector_copy(orig._beep);
     }
     LOG(BF("Done copy beep") );
     this->_firstVertex = orig._firstVertex;
@@ -813,7 +812,8 @@ void RingFinder_O::addRing(PathMessage_sp ring, uint stage)
 
 bool RingFinder_O::linearlyIndependentRing(PathMessage_sp ring)
 {
-    core::SimpleBitVector_sp beep = ring->beep()->deepCopy().as<core::SimpleBitVector_O>();
+  core::SimpleBitVector_sp orig_sbv = ring->beep();
+  core::SimpleBitVector_sp beep = core::SimpleBitVector_copy(orig_sbv);
 	    //
 	    // Swap rows to make the matrix upper triangular
 	    //

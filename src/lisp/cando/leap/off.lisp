@@ -254,7 +254,7 @@ Otherwise it's an Aggregate. Return the object."
           (let* ((out-plug-atom (chem:content-at res out-plug-idx))
                  (out-plug (chem:make-out-plug  :+default nil nil (chem:atom-name out-plug-atom) :single-bond)))
             (chem:add-plug topology (chem:get-name out-plug) out-plug)))
-        (warn "translated off object ~a into a chem:topology" (chem:get-name res))
+        #++(warn "translated off object ~a into a chem:topology" (chem:get-name res))
         topology)
       unit))
 
