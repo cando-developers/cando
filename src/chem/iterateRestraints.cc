@@ -51,11 +51,9 @@ void	IterateRestraints_O::initialize()
 
 void	IterateRestraints_O::_accumulateRestraints(Matter_sp m)
 {
-  core::SimpleVector_sp mine = m->allRestraints();
-  core::SimpleVector_O::iterator it;
-  for ( it=mine->begin(); it!=mine->end(); it++ )
-  {
-    core::Cons_sp one = core::Cons_O::create((*it),this->_Restraints);
+  core::VectorTNs_sp mine = m->allRestraints();
+  for ( size_t i(0), iEnd(mine->length()); i<iEnd; ++i ) {
+    core::Cons_sp one = core::Cons_O::create((*mine)[i],this->_Restraints);
     this->_Restraints = one;
   }
 }

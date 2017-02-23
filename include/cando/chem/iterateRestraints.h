@@ -45,32 +45,32 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
-    SMART(IterateRestraints );
-    class IterateRestraints_O : public core::Iterator_O
-    {
-	LISP_CLASS(chem,ChemPkg,IterateRestraints_O,"IterateRestraints",core::Iterator_O);
-public:
-	void	initialize();
-private:
-	Matter_sp			_Top;
-	core::List_sp				_Restraints;
-	core::List_sp				_CurRestraint;
-private:
+  SMART(IterateRestraints );
+  class IterateRestraints_O : public core::Iterator_O
+  {
+    LISP_CLASS(chem,ChemPkg,IterateRestraints_O,"IterateRestraints",core::Iterator_O);
+  public:
+    void	initialize();
+  private:
+    Matter_sp			_Top;
+    core::List_sp				_Restraints;
+    core::List_sp				_CurRestraint;
+  private:
     void _accumulateRestraints(Matter_sp m);
 
-public:
+  public:
     static IterateRestraints_sp create(Matter_sp matter);
-public:
-	void initTop(Matter_sp matter);
-	void first();
-	void next();
-	bool isDone();
-	core::T_sp currentObject();
+  public:
+    void initTop(Matter_sp matter);
+    void first();
+    void next();
+    bool isDone();
+    core::T_sp currentObject();
 	
 //	IterateRestraints_O( const IterateRestraints_O& ss ); //!< Copy constructor
 
-	DEFAULT_CTOR_DTOR(IterateRestraints_O);
-    };
+  IterateRestraints_O() : _Top(_Unbound<Matter_O>()), _Restraints(_Nil<T_O>()), _CurRestraint(_Nil<T_O>()) {};
+  };
 
 
 

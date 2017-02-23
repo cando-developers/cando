@@ -198,7 +198,6 @@ void	EnergyFunction_O::initialize()
   this->setName("");
   this->_Message = "";
   this->useDefaultSettings();
-  this->summarizeTerms();
 }
 
 CL_LISPIFY_NAME("useDefaultSettings");
@@ -1074,8 +1073,7 @@ int EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator_
   int terms = 0;
 #if USE_ALL_ENERGY_COMPONENTS
   restraintIterator->first();
-  while ( restraintIterator->notDone() )
-  {
+  while ( restraintIterator->notDone() ) {
     Restraint_sp restraint = restraintIterator->current<Restraint_O>();
     if ( !restraint->isActive() ) goto CONT;
     if ( restraint.isA<RestraintDihedral_O>() )
@@ -1213,7 +1211,6 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
       LOG(BF("Applying a secondary amide restraint between %s and %s") % ax->description() % ay->description()  );
 		    //
 		    // H3(ax2) and O5(ay1) should be trans
-      printf("%s:%d Creating secondary amide restraints around %s - %s\n", __FILE__, __LINE__, _rep_(ax).c_str(), _rep_(ay).c_str() );
       this->_applyDihedralRestraint(ax1,ax,ay,ay1,cisMin,cisMax,weight,activeAtoms);
       LOG(BF("Restrain cis %s - %s - %s -%s") % ax1->description() % ax->description() % ay->description() % ay1->description()  );
       this->_applyDihedralRestraint(ax1,ax,ay,ay2,transMin,transMax,weight,activeAtoms);
