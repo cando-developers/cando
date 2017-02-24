@@ -55,4 +55,5 @@
   (format t "Starting Cando~%")
   (asdf:load-system "cando")
   (in-package :cando-user)
+  (core:process-command-line-load-eval-sequence)
   (core::tpl))
