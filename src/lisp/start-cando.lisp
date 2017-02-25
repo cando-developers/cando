@@ -23,6 +23,8 @@
 ;; This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 
 ;; -^-
+(in-package :common-lisp-user)
+
 (format t "Running start-cando.lisp script~%")
 
 ;;; Load the ASDF package manager

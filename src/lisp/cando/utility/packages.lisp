@@ -4,4 +4,5 @@
   (:use #:common-lisp)
   (:export
    #:mkdir
+   #:set-current-directory
    ))
