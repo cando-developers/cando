@@ -162,6 +162,7 @@
   (:shadowing-import-from :chem "SET-ELEMENT" "GET-ELEMENT" "SIZE")
   (:shadowing-import-from :cando "AS-STRING" "LOAD-MOL2" "SAVE-MOL2")
   (:import-from :core "QUIT")
+  (:import-from :cando-utility #:mkdir)
   (:use :common-lisp :chem :geom :chemdraw :cando)
   )
 

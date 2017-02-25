@@ -25,9 +25,8 @@
 ;; -^-
 (format t "Running start-cando.lisp script~%")
 
+;;; Load the ASDF package manager
 (require :asdf)
-
-;;; ASDF is loaded
 
 (defun all-subdirs (dir)
   (let (dirs)
@@ -38,12 +37,12 @@
       (trav dir))
     dirs))
 
-
-
+;;; Add the cando hostname
 (progn
   (setf (logical-pathname-translations "cando")
         '(("**;*.*" "source-dir:extensions;cando;src;**;*.*"))))
 
+;;; Add directories for ASDF to search for systems
 (let* ((topdir (translate-logical-pathname #P"cando:lisp;cando;"))
        (dirs (all-subdirs topdir)))
   (push topdir asdf:*central-registry*)
@@ -51,9 +50,14 @@
     (format t "Pushing dir: ~a~%" dir)
     (push dir asdf:*central-registry*)))
 
+;;; Setup or startup the Cando system 
+;;; If :setup-cando is in *features* then don't load the cando system
 (progn
-  (format t "Starting Cando~%")
-  (asdf:load-system "cando")
+  (if (member :setup-cando *features*)
+      (format t "Setting up cando without (asdf:loadsystem :cando)~%")
+      (progn
+        (format t "Starting Cando - loading cando system.~%")
+        (asdf:load-system "cando")))
   (in-package :cando-user)
   (core:process-command-line-load-eval-sequence)
   (core::tpl))
