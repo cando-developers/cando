@@ -54,10 +54,11 @@
 ;;; If :setup-cando is in *features* then don't load the cando system
 (progn
   (if (member :setup-cando *features*)
-      (format t "Setting up cando without (asdf:loadsystem :cando)~%")
+      (progn
+        (format t "Setting up cando without (asdf:loadsystem :cando)~%"))
       (progn
         (format t "Starting Cando - loading cando system.~%")
-        (asdf:load-system "cando")))
-  (in-package :cando-user)
+        (asdf:load-system "cando"))
+        (in-package :cando-user))
   (core:process-command-line-load-eval-sequence)
   (core::tpl))
