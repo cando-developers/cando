@@ -58,7 +58,7 @@
         (format t "Setting up cando without (asdf:loadsystem :cando)~%"))
       (progn
         (format t "Starting Cando - loading cando system.~%")
-        (asdf:load-system "cando"))
-        (in-package :cando-user))
+        (asdf:load-system "cando")
+        (in-package :cando-user)))
   (core:process-command-line-load-eval-sequence)
   (core::tpl))
