@@ -1,7 +1,9 @@
 (in-package :inet)
 
 
-(defun download-pdb (accession-code pathname)
+(defun download-pdb (accession-code &optional pathname)
   "Download the PDB file from RCSB and put it in the (pathname)"
-  (let ((url (concatenate 'string "http://files.rcsb.org/download/" accession-code ".pdb1")))
-    (trivial-http:http-download url pathname)))
+  (let ((accession-name (string accession-code)))
+    (unless pathname (setf pathname (concatenate 'string accession-name ".pdb"))) 
+    (let ((url (concatenate 'string "http://files.rcsb.org/download/" accession-name ".pdb1")))
+      (trivial-http:http-download url pathname))))
