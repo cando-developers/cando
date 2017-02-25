@@ -5,4 +5,5 @@
   (:export
    #:mkdir
    #:set-current-directory
+   #:current-directory
    ))

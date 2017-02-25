@@ -6,4 +6,7 @@
 
 (defun set-current-directory (dir)
   (setf *default-pathname-defaults* (uiop:ensure-directory-pathname dir)))
-  
+
+(defun current-directory ()
+  *default-pathname-defaults*)
+
