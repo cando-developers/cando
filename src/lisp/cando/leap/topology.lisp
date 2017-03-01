@@ -9,7 +9,9 @@
                                                      :use-excluded-atoms t))
          (nonbonds (chem:get-nonbond-component energy-function))
          (number-excluded-atoms (chem:number-excluded-atoms nonbonds))
-         (excluded-atom-list (chem:excluded-atom-list nonbonds)))
+         (excluded-atom-list (chem:excluded-atom-list nonbonds))
+         (topology-pathname (merge-pathnames topology-pathname))
+         (coordinate-pathname (merge-pathnames coordinate-pathname)))
     ;; Skip assigning MarkMainChainAtoms and MarkSideChain atoms for now
     ;; see (unitio.c:4889).  This won't mean anything for spiroligomers.
     (with-fortran-file (ftop topology-pathname :direction :output)

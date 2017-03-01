@@ -156,15 +156,6 @@
 
 (defpackage #:cando-user
   (:shadowing-import-from :chem "ATOM")
-  (:shadowing-import-from :geom "BOUNDING-BOX")
-  (:shadowing-import-from :common-lisp "+" "-" "/" "*" ">" "<" ">=" "<=" "SQRT")
-  (:shadowing-import-from :energy "MINIMIZE")
-  (:shadowing-import-from :chem "SET-ELEMENT" "GET-ELEMENT" "SIZE")
-  (:shadowing-import-from :cando "AS-STRING" "LOAD-MOL2" "SAVE-MOL2")
-  (:import-from :core "QUIT")
-  (:import-from :cando-utility #:mkdir #:set-current-directory #:current-directory)
-  (:import-from :inet #:download-pdb)
-  (:use :common-lisp :chem :geom :chemdraw :cando)
   )
 
 

@@ -14,10 +14,12 @@
   (warn "add-atom-types doesn't do anything"))
 
 (defun load-off (filename)
+  (print "In commands:load-off")
   (leap.off:load-off filename))
 
 (defun load-amber-params (filename &optional (force-field-name :default))
-  (let ((parameters (let ((parmreader (chem:make-read-amber-parameters)))
+  (let* ((filename (merge-pathname filename))
+         (parameters (let ((parmreader (chem:make-read-amber-parameters)))
                       (with-open-file (fin filename :direction :input)
                         (chem:read-parameters parms fin)
                         (chem:get-force-field parms)))))

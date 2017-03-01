@@ -40,6 +40,7 @@
     dirs))
 
 ;;; Add the cando hostname
+(format t "Setting CANDO hostname~%")
 (progn
   (setf (logical-pathname-translations "cando")
         '(("**;*.*" "source-dir:extensions;cando;src;**;*.*"))))
@@ -52,16 +53,34 @@
     (format t "Pushing dir: ~a~%" dir)
     (push dir asdf:*central-registry*)))
 
+(make-package :cando)
+
+(let ((amber-home
+       (namestring (uiop:ensure-directory-pathname (or (ext:getenv "AMBERHOME") "/amber/")))))
+  (setf (logical-pathname-translations "amber")
+        (list (list "**;*.*" (concatenate 'string amber-home "/**/*.*"))))
+  (format t "Setting *amber-home* -> ~a~%" amber-home))
+
+(defvar cando::*root-directory*)
+(progn
+  (if (member :docker *features*)
+    (setf cando::*root-directory* (pathname "/src/"))
+    (setf cando::*root-directory* (uiop:ensure-directory-pathname (ext:getenv "HOME"))))
+  (format t "Setting *root-directory* -> ~a~%" cando::*root-directory*))
+
 ;;; Setup or startup the Cando system 
 ;;; If :setup-cando is in *features* then don't load the cando system
+(format t "Starting Cando~%")
 (progn
   (if (member :setup-cando *features*)
       (progn
-        (format t "Setting up cando without (asdf:loadsystem :cando)~%"))
+        (format t "Skipping (asdf:loadsystem :cando)~%"))
       (progn
-        (format t "Starting Cando - loading cando system.~%")
+        (format t "Loading Cando system.~%")
         (load "~/quicklisp/setup.lisp")
         (asdf:load-system "cando")
-        (in-package :cando-user)))
+        (asdf:load-system "leap")
+        (in-package :cando-user)
+        (cl:use-package :leap)))
   (core:process-command-line-load-eval-sequence)
   (core::tpl))

@@ -40,6 +40,7 @@
     (add-atom-types info)))
 
 (defun load-off (filename)
+  (print "In leap.lisp :: load-off")
   (leap.off:load-off filename))
 
 (defun leap.load-off (entry)

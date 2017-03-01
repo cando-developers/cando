@@ -60,6 +60,7 @@
 (defpackage #:leap.off
   (:use #:common-lisp)
   (:export
+   #:bug
    #:read-off-data-block
    #:name
    #:type
@@ -74,20 +75,47 @@
   (:import-from :leap.pdb
                 #:add-pdb-atom-map
                 #:add-pdb-res-map)
-  (:import-from :leap.off
-                #:load-off)
   (:export
    #:add-path #:search-path
    #:residue-name
    #:chain-position
    #:register-variable #:lookup-variable
    #:add-pdb-atom-map
-   #:add-pdb-res-map
-   #:load-off)
+   #:add-pdb-res-map)
   )
 
 (defpackage #:leap
-  (:use #:common-lisp)
+  (:shadowing-import-from :chem "ATOM")
+  (:shadowing-import-from :geom "BOUNDING-BOX")
+  (:shadowing-import-from :common-lisp "+" "-" "/" "*" ">" "<" ">=" "<=" "SQRT")
+  (:shadowing-import-from :energy "MINIMIZE")
+  (:shadowing-import-from :chem "SET-ELEMENT" "GET-ELEMENT" "SIZE")
+  (:shadowing-import-from :cando "AS-STRING" "LOAD-MOL2" "SAVE-MOL2")
+  (:import-from :core "QUIT")
+  (:import-from :cando-utility #:mkdir #:set-current-directory #:current-directory #:directory-files)
+  (:import-from :inet #:download-pdb)
+;;  (:import-from :leap.off #:load-off)
+  (:import-from :leap.pdb
+                #:add-pdb-res-map
+                #:add-pdb-atom-map
+                )
   (:export
-   
-   ))
+   #:atom
+   #:bounding-box
+   #:+ #:- #:/ #:* #:< #:> #:>= #:<= #:sqrt
+   #:minimize
+   #:set-element #:get-element #:size
+   #:as-string #:load-mol2 #:save-mol2
+   #:quit
+   #:mkdir #:set-current-directory #:current-directory #:directory-files
+   #:download-pdb
+;;;   #:load-off
+   #:add-pdb-res-map
+   #:add-pdb-atom-map
+   )
+  (:use :common-lisp :chem :geom :chemdraw :cando))
+
+(import 'leap.off:load-off :leap)
+
+;;;(in-package :leap.off)
+;;;(defun bug () (print "In bug"))

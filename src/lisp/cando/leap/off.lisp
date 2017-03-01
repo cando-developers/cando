@@ -1,6 +1,4 @@
-
 (in-package :leap.off)
-
 
 (defclass off-header ()
   ((name :initarg :name :accessor name)
@@ -272,11 +270,14 @@ Return the hash-table."
             (setf (gethash object-name object-ht) object)))
     object-ht))
 
+(defun bug () (print "In bug"))
+
 (defun load-off (filename)
   "* Arguments
 - filename : Pathname
 * Description
 Load the OFF file containing forms into new-leap."
+  (print "In load-off")
   (with-open-file (fin filename :direction :input)
     (let ((ht (leap.off:read-off-lib fin)))
       (maphash (lambda (name form)

@@ -6,4 +6,5 @@
    #:mkdir
    #:set-current-directory
    #:current-directory
+   #:directory-files
    ))

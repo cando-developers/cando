@@ -11,6 +11,7 @@
     ((:file "packages")
      (:file "core")
      (:file "off")
+;;     (:file "commands")
      (:file "leap")
      (:file "pdb")
      ))

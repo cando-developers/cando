@@ -259,7 +259,7 @@ void	Residue_O::fields( core::Record_sp node )
 string	Residue_O::__repr__() const
 {
     stringstream ss;
-    ss << this->className();
+    ss << "#<" << this->className() << " " << _rep_(this->getName()) << ">";
     return ss.str();
 }
 
