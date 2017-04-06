@@ -184,7 +184,7 @@ void	FFNonbond_O::fields(core::Record_sp node)
 }
 
 
-void FFNonbondDb_O::absorb(FFBaseDb_sp bother)
+void FFNonbondDb_O::forceFieldMerge(FFBaseDb_sp bother)
 {
   FFNonbondDb_sp other = gc::As<FFNonbondDb_sp>(bother);
   if (other->EleDielectricValueDefined) {
@@ -214,7 +214,7 @@ void FFNonbondDb_O::absorb(FFBaseDb_sp bother)
   if (other->VdwMixWellDefined) {
     this->set_VdwMixWell(other->VdwMixWell);
   }
-  this->Base::absorb(other);
+  this->Base::forceFieldMerge(other);
 }
 
 void	FFNonbondDb_O::fields(core::Record_sp node)

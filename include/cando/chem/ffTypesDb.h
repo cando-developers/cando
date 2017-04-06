@@ -76,7 +76,7 @@ public:
 public:
     gctools::Vec0<ChemInfo_sp>	_TypeAssignmentRules;
 
-    void absorb(FFBaseDb_sp other) {
+    void forceFieldMerge(FFBaseDb_sp other) {
       FFTypesDb_sp other_types_db = gc::As<FFTypesDb_sp>(other);
       for ( auto it : other_types_db->_TypeAssignmentRules ) {
         this->add(it);

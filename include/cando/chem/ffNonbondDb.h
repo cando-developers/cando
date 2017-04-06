@@ -249,7 +249,7 @@ namespace chem {
     }
 
   public:
-    void absorb(FFBaseDb_sp other);
+    void forceFieldMerge(FFBaseDb_sp other);
     void add( FFNonbond_sp nonbonded );
     bool hasType( core::Symbol_sp type);
     core::T_sp findType( core::Symbol_sp type );

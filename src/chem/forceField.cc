@@ -121,16 +121,16 @@ void	ForceField_O::saveAs(const string& fileName)
 #endif
 
 
-CL_DEFMETHOD void ForceField_O::absorb(ForceField_sp other)
+CL_DEFMETHOD void ForceField_O::forceFieldMerge(ForceField_sp other)
 {
-  this->_Info->absorb(other->_Info);
-  this->_Types->absorb(other->_Types);
-  this->_Stretches->absorb(other->_Stretches);
-  this->_Angles->absorb(other->_Angles);
-  this->_Itors->absorb(other->_Itors);
-  this->_Ptors->absorb(other->_Ptors);
-  this->_Nonbonds->absorb(other->_Nonbonds);
-  this->_Vdws->absorb(other->_Vdws);
+  this->_Info->forceFieldMerge(other->_Info);
+  this->_Types->forceFieldMerge(other->_Types);
+  this->_Stretches->forceFieldMerge(other->_Stretches);
+  this->_Angles->forceFieldMerge(other->_Angles);
+  this->_Itors->forceFieldMerge(other->_Itors);
+  this->_Ptors->forceFieldMerge(other->_Ptors);
+  this->_Nonbonds->forceFieldMerge(other->_Nonbonds);
+  this->_Vdws->forceFieldMerge(other->_Vdws);
 }
 
 CL_LISPIFY_NAME("assignTypes");

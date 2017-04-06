@@ -88,7 +88,7 @@ class InfoDb_O : public core::CxxObject_O
  public:
   adapt::SymbolMap<core::String_O>	_database;
  public:
-  void absorb(InfoDb_sp other) {
+  void forceFieldMerge(InfoDb_sp other) {
     for ( auto it : other->_database ) {
       this->addInfo(it.first,it.second);
     }
@@ -167,7 +167,7 @@ class ForceField_O : public core::CxxObject_O
   CL_LISPIFY_NAME("getVdwDb");
   CL_DEFMETHOD 	FFVdwDb_sp getVdwDb() { return this->_Vdws;};
 
-  void absorb(ForceField_sp other);
+  void forceFieldMerge(ForceField_sp other);
   void	assignTypes(Matter_sp matter);
   void	setTitle(const string& title);
   void	setInfoDb( InfoDb_sp Info );

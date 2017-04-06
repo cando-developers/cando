@@ -95,7 +95,7 @@ void	FFBaseDb_O::setForceField(ForceField_sp ff)
 };
 
 
-void FFBaseDb_O::absorb(FFBaseDb_sp other) {
+void FFBaseDb_O::forceFieldMerge(FFBaseDb_sp other) {
   // inherited classes may overload this function but they need to call this
   // do nothing
 }
@@ -115,13 +115,13 @@ void FFParameterBaseDb_O::initialize()
 }
 
 
-void FFParameterBaseDb_O::absorb(FFBaseDb_sp other) {
+void FFParameterBaseDb_O::forceFieldMerge(FFBaseDb_sp other) {
   // inherited classes may overload this function but they need to call this
   FFParameterBaseDb_sp parm_other = gc::As<FFParameterBaseDb_sp>(other);
   parm_other->_Parameters->maphash([this] (core::T_sp key, core::T_sp parm) {
       this->_Parameters->setf_gethash(key,parm);
     } );
-  this->Base::absorb(other);
+  this->Base::forceFieldMerge(other);
 }
 
 

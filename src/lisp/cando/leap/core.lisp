@@ -6,6 +6,7 @@
 ;;;
 
 (defvar *path* nil)
+(defvar *default-force-field* nil)
 
 (defun add-path (path)
   "Add a path to the *path* dynamic variable"
@@ -80,7 +81,21 @@ used to provide parameters.  There is one default force-field called :default.")
   (let ((force-field-list (gethash force-field-name *force-field-lists*))
         (reversed-force-field-list (reverse *force-field-list*))
         (merged-force-field (chem:make-force-field)))
-    (dolist (ff force-field-list)
-      (chem:absorb merged-force-field ff))
+    (dolist (ff reversed-force-field-list)
+      (chem:force-field-merge merged-force-field ff))
     merged-force-field))
+
+(defun coerce-to-force-field (force-field-designator)
+  "force-field-designator can be a force-field or a list of force-fields. In the case of a list of force-fields they will be merged and the merged force-field will be returned."
+  (cond
+    ((typeof force-field-designator 'chem:force-field)
+     force-field-designator)
+    ((and (consp force-field-designator)
+          (every (lambda (x) (typeof x 'chem:force-field))))
+     (let ((merged-force-field (chem:make-force-field))
+           (reversed-force-field-list (reverse force-field-designator)))
+       (dolist (ff reversed-force-field-list)
+         (chem:force-field-merge merged-force-field ff))
+       merged-force-field))
+    (error "Unsupported force-field designator ~a" force-field-designator)))
       
