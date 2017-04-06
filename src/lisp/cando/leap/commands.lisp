@@ -17,14 +17,13 @@
   (print "In commands:load-off")
   (leap.off:load-off filename))
 
-(defun load-amber-params (filename &optional (force-field-name :default))
-  (let* ((filename (merge-pathname filename))
-         (parameters (let ((parmreader (chem:make-read-amber-parameters)))
-                      (with-open-file (fin filename :direction :input)
-                        (chem:read-parameters parms fin)
-                        (chem:get-force-field parms)))))
-    (add-force-field-or-modification parameters force-field-name)
-    parameters))
+(defun load-amber-params (filename)
+  "Load an AMBER parameter file from filename and return a chem:force-field object."
+  (let* ((filename (merge-pathname filename)))
+    (let ((parmreader (chem:make-read-amber-parameters)))
+      (with-open-file (fin filename :direction :input)
+        (chem:read-parameters parms fin)
+        (chem:get-force-field parms)))))
 
 (defun source (filename)
   "Load the file of leap commands and execute them one by one.
