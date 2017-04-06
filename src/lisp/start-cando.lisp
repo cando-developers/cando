@@ -78,9 +78,9 @@
       (progn
         (format t "Loading Cando system.~%")
         (load "~/quicklisp/setup.lisp")
-        (asdf:load-system "cando")
-        (asdf:load-system "leap")
-        (in-package :cando-user)
+        (funcall (find-symbol "QUICKLOAD" :ql) "cando")
+        (funcall (find-symbol "QUICKLOAD" :ql) "leap")
+        (setf *package* (find-package :cando-user))
         (cl:use-package :leap)))
   (core:process-command-line-load-eval-sequence)
   (core::tpl))
