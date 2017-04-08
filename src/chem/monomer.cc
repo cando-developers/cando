@@ -152,15 +152,6 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getGeneralMonomerContext()
 	return context;
     }
 
-    void	Monomer_O::clearError()	{_OF();ASSERTNOTNULL(this->_Status);this->_Status->reset();};
-CL_LISPIFY_NAME("getHasError");
-CL_DEFMETHOD     bool	Monomer_O::getHasError()	{ return this->_Status->hasError();};
-CL_LISPIFY_NAME("getStatusMessage");
-CL_DEFMETHOD     string	Monomer_O::getStatusMessage() { return this->_Status->getStatus();};
-    void	Monomer_O::addErrorMessage(const string& s) { this->_Status->addError(s);};
-    void	Monomer_O::addStatusMessage(const string& s) {this->_Status->addMessage(s);};
-    StatusTracker_sp	Monomer_O::getStatusTracker() { return this->_Status;};
-
 CL_LISPIFY_NAME("plugNamesAndCouplingsAsList");
 CL_DEFMETHOD     core::List_sp	Monomer_O::plugNamesAndCouplingsAsList()
     {
@@ -276,6 +267,8 @@ CL_DEFMETHOD     string Monomer_O::getAliasesAsString()
 CL_LISPIFY_NAME("checkForBadConnections");
 CL_DEFMETHOD     bool	Monomer_O::checkForBadConnections()
     {
+      IMPLEMENT_ME();
+#if 0
 	Couplings::iterator	it;
 	Coupling_sp		coup;
 	bool			badConnections;
@@ -297,16 +290,20 @@ CL_DEFMETHOD     bool	Monomer_O::checkForBadConnections()
 	    }
 	}
 	return badConnections;
+#endif
     }
 
 CL_LISPIFY_NAME("throwIfBadConnections");
 CL_DEFMETHOD     void	Monomer_O::throwIfBadConnections()
     {
+      IMPLEMENT_ME();
+#if 0
 	if ( this->checkForBadConnections() )
 	{
 	    LOG(BF("Found bad connections in %s  error: %s") % this->description().c_str() % this->getStatusMessage().c_str()  );
 	    SIMPLE_ERROR(BF("Bad connections for monomer: %s") % this->sharedThis<Monomer_O>()->description());
 	}
+#endif
     }
 
 
@@ -315,10 +312,13 @@ CL_DEFMETHOD     void	Monomer_O::throwIfBadConnections()
 CL_LISPIFY_NAME("checkForErrorsAndUnknownContexts");
 CL_DEFMETHOD     void	Monomer_O::checkForErrorsAndUnknownContexts(CandoDatabase_sp cdb)
     {
+      IMPLEMENT_ME();
+#if 0
 	string			lastPlugName;
 	Coupling_sp		coup;
 	this->clearError();
 	this->checkForBadConnections();
+#endif
     }
 
 
@@ -394,31 +394,15 @@ CL_DEFMETHOD     Topology_sp	Monomer_O::getTopology()
 	return topology;
     }
 
-
-
-
-
-    void	Monomer_O::setOligomer(Oligomer_sp o )
-    {
-	this->_Oligomer = o;
-    };
-
     void Monomer_O::initialize()
     {
 	this->Base::initialize();
-	this->_Oligomer = _Nil<Oligomer_O>();
 	this->_TempResidue = _Nil<Residue_O>();
 //        this->_Couplings = core::HashTableEq_O::create_default();
-	this->setComment("");
 	this->_Id = _Nil<core::Symbol_O>();
 	this->_Aliases = adapt::SymbolSet_O::create();
-	this->_Verbose = false;
 	this->_TemporaryInt = 0;
 	this->_SequenceNumber = 0;
-	this->_Status = StatusTracker_O::create();
-	this->_Status->reset();
-	this->_Selected = false;
-	this->setPosition2D_xy(0.0,0.0);
     }
 
 
@@ -733,6 +717,30 @@ CL_DEFMETHOD     void	Monomer_O::removeCoupling(Coupling_sp coup)
 
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
+
+
+MonoMonomer_sp MonoMonomer_O::make(core::Symbol_sp name)
+{
+  GC_ALLOCATE(MonoMonomer_O, mon);
+  mon->_Name = name;
+  return mon;
+}
+
+void	MonoMonomer_O::_expandGroupName()
+{
+  IMPLEMENT_ME();
+}
+
+Residue_sp MonoMonomer_O::createResidue() {
+  IMPLEMENT_ME();
+}
+
+void MonoMonomer_O::checkForErrorsAndUnknownContexts(CandoDatabase_sp bdb){
+  IMPLEMENT_ME();
+}
+
+
+
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 
@@ -750,11 +758,10 @@ CL_DEFMETHOD     void	Monomer_O::removeCoupling(Coupling_sp coup)
 #define ARGS_MultiMonomer_O_make "(name comment)"
 #define DECL_MultiMonomer_O_make ""
 #define DOCS_MultiMonomer_O_make "make ChemDraw"
-    MultiMonomer_sp MultiMonomer_O::make(core::Symbol_sp name, const string& comment)
+    MultiMonomer_sp MultiMonomer_O::make(core::Symbol_sp name)
   {
       GC_ALLOCATE(MultiMonomer_O, me );
     if ( name.notnilp() ) me->setGroupName(name);
-    if ( comment != "" ) me->setComment(comment);
     return me;
   };
 
@@ -798,12 +805,14 @@ CL_DEFMETHOD     void	Monomer_O::removeCoupling(Coupling_sp coup)
 	name = this->_GroupName;
 	this->_Monomers.clear();
 	bdb = getCandoDatabase();
-	this->clearError();
 	if ( !bdb->recognizesSetOrConstitutionOrMonomerName(name) )
 	{
+          SIMPLE_ERROR(BF("Illegal group name %s") % _rep_(name));
+#if 0
           LOG(BF("Illegal group name(%s)") % _rep_(name) );
           this->addErrorMessage("Illegal group name: "+_rep_(name));
 	    return;
+#endif
 	}
 	LOG(BF("Legal group name(%s)") % _rep_(name) );
 	monomerNames = bdb->expandEntityNameToTerminals(name);
@@ -834,22 +843,20 @@ CL_DEFMETHOD     void	MultiMonomer_O::setGroupName(core::Symbol_sp name)
  */
     void	MultiMonomer_O::checkForErrorsAndUnknownContexts(CandoDatabase_sp cdb)
     {
+      IMPLEMENT_ME();
+#if 0
 	adapt::SymbolSet_sp	allSpecificContextKeys;
 	MonomerContext_sp	context;
 	bool			allContextsRecognized = true;
-	this->addStatusMessage("MultiMonomer_O::checkForErrorsAndUnknownContexts");
 	ASSERTNOTNULLP(cdb,"CandoDatabase is undefined");
 	this->Monomer_O::checkForErrorsAndUnknownContexts(cdb);
-	if ( this->getHasError() ) return;
 	if ( this->numberOfPossibleMonomers() == 0 )
 	{
-	    this->addErrorMessage("This MultiMonomer is empty");
-	    return;
+          SIMPLE_ERROR(BF("Empty MultiMonomer"));
 	}
 	if ( !this->isMonomerContextValid() )
 	{
-	    this->addErrorMessage("The MonomerContext is invalid");
-	    return;
+          SIMPLE_ERROR(BF("The MonomerContext is invalid"));
 	}
 	context = this->getGeneralMonomerContext();
 	allSpecificContextKeys = context->getAllSpecificKeys();
@@ -874,6 +881,7 @@ CL_DEFMETHOD     void	MultiMonomer_O::setGroupName(core::Symbol_sp name)
 		this->addStatusMessage("All contexts are recognized.");
 	    }
 	}
+#endif
     }
 
 

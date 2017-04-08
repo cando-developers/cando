@@ -81,10 +81,7 @@ void Oligomer_O::initialize()
 {_OF();
     this->Base::initialize();
     this->empty();
-    this->_Verbose = false;
-    this->_HasError = false;
     this->_Name = _Nil<NameType>();
-    this->_ErrorMessage = core::clasp_make_string_output_stream();
 }
 
 
@@ -251,12 +248,7 @@ uint		idx;
     idx = this->_Monomers.size();
     monomer->setSequenceNumber(idx);
     this->_Monomers.push_back(monomer);
-    if ( monomer->getHasError() )
-    {
-        this->_HasError = true;
-    }
 //    monomer->connectListener(this->sharedThis<Oligomer_O>(),MultiMonomer_contentsChanged);
-    monomer->setOligomer(this->sharedThis<Oligomer_O>());
     return idx;
 }
 
@@ -324,10 +316,10 @@ CL_DEFMETHOD void	Oligomer_O::removeCoupling(Coupling_sp s)
 CL_LISPIFY_NAME("checkForErrors");
 CL_DEFMETHOD bool	Oligomer_O::checkForErrors()
 {
+  IMPLEMENT_ME();
+#if 0
     gctools::Vec0<Monomer_sp>::iterator	mi;
     gctools::Vec0<Coupling_sp>::iterator	ci;
-    this->_HasError = false;
-    this->_ErrorMessage = core::clasp_make_string_output_stream();
     for ( mi=this->_Monomers.begin(); mi != this->_Monomers.end(); mi++ )
     {
 	if ( (*mi)->getHasError() )
@@ -345,6 +337,7 @@ CL_DEFMETHOD bool	Oligomer_O::checkForErrors()
 	}
     }
     return this->_HasError;
+#endif
 }
 
 
@@ -373,7 +366,6 @@ MultiMonomer_sp	monTo;
     coup->setName(couplingName);
     monTo = MultiMonomer_O::create();
     monTo->setGroupName(representedEntityNameSetName);
-    monTo->setPosition2D(pos);
     coup->setOutMonomer(monTo);
     monTo->setInCoupling(coup);
     	// Now attach it
@@ -481,27 +473,6 @@ CL_DEFMETHOD void	Oligomer_O::throwIfBadConnections()
 
 
 
-
-
-
-
-CL_LISPIFY_NAME("setVerbose");
-CL_DEFMETHOD void	Oligomer_O::setVerbose(bool v)
-{
-    gctools::Vec0<Monomer_sp>::iterator	mi;
-    this->_Verbose = v;
-    LOG(BF("Setting verbosity of monomers") );
-    for ( mi = this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) {
-        ASSERTNOTNULLP(*mi,"Monomer is undefined!!!");
-        LOG(BF("Setting verbosity of monomer: %s") % (*mi)->description().c_str() );
-	(*mi)->setVerbose(v);
-    }
-}
-
-
-
-
-
 CL_LISPIFY_NAME("couple");
 CL_DEFMETHOD DirectionalCoupling_sp	Oligomer_O::couple( Monomer_sp inMon, core::Symbol_sp name, Monomer_sp outMon )
 {_OF();
@@ -604,9 +575,6 @@ CL_DEFMETHOD Molecule_sp Oligomer_O::getMolecule()
 {
 Topology_sp		topology;
 int			residueNetCharge;
-    if ( this->getHasError() ) {
-	SIMPLE_ERROR(BF("The molecule can not be returned, the Oligomer has an error"));
-    }
     Residue_sp			res;
     Molecule_sp 			mol;
     mol = Molecule_O::create();
@@ -634,31 +602,6 @@ int			residueNetCharge;
     return mol;
 }
 
-
-CL_LISPIFY_NAME("getErrorMessage");
-CL_DEFMETHOD string	Oligomer_O::getErrorMessage()
-{
-stringstream			msg;
-gctools::Vec0<Monomer_sp>::iterator	mi;
-gctools::Vec0<Coupling_sp>::iterator	ci;
-    msg.str("");
-    msg << core::cl__get_output_stream_string(this->_ErrorMessage).as<core::Str_O>()->get();
-    msg << "Monomer errors: " << std::endl;
-    LOG(BF("Adding monomer errors") );
-    for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) {
-	if ( (*mi)->getHasError() ) {
-	    msg << (*mi)->getStatusMessage() << std::endl;
-	}
-    }
-    LOG(BF("Adding coupling errors") );
-    for ( ci=this->_Couplings.begin(); ci!=this->_Couplings.end(); ci++ ) {
-	if ( (*ci)->getHasError() ) {
-	    msg << (*mi)->getStatusMessage() << std::endl;
-	}
-    }
-    LOG(BF("Done adding errors") );
-    return msg.str();
-}
 
 
 void Oligomer_O::_gatherMultiMonomers(gctools::Vec0<Monomer_sp>& multiMonomers)

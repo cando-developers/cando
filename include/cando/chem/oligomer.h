@@ -102,11 +102,6 @@ protected:
     gctools::Vec0<Monomer_sp>			_Monomers;
     gctools::Vec0<Coupling_sp>		_Couplings;
 
-    bool				_HasError;
-    bool				_Verbose;
-    core::T_sp 			_ErrorMessage;
-
-
 private:	// Do not archive
 		/*! When one of my MultiMonomers experiences a UserGroupChange
 		 * we will store it here for others to access.
@@ -163,15 +158,7 @@ CL_DEFMETHOD     void		setName(NameType::smart_ptr_type nm) { this->_Name = nm;}
 CL_LISPIFY_NAME("getName");
 CL_DEFMETHOD     NameType::smart_ptr_type getName() { return this->_Name;};
 
-    void		setVerbose(bool v);
-CL_LISPIFY_NAME("getVerbose");
-CL_DEFMETHOD     bool		getVerbose() { return this->_Verbose;};
-    string		getErrorMessage();
-    void		addErrorMessage(const string& s) { core::lisp_write(BF("%s\n") % s, this->_ErrorMessage); this->_HasError=true;};
-    bool		checkForErrors();
-CL_LISPIFY_NAME("getHasError");
-CL_DEFMETHOD     bool		getHasError() { return this->_HasError; };
-
+ bool	checkForErrors();
     //
     //	build piece by piece
     //
