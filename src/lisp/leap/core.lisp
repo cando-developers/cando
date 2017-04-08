@@ -66,7 +66,7 @@ Lookup the object in the *objects*."
 ;;; only merged when the merged force-field is needed.
 ;;; There is a default merged force-field called :default.
 
-(defvar *force-field-lists* (make-hash-table)
+(defvar *force-fields* (make-hash-table)
   "Every time a force field is loaded, it is put into a new list and
 associated with a keyword symbol name.  Every frcmod is loaded it is pushed onto
 a named force-field list.  When parameters are needed a name must be provided and
@@ -74,13 +74,13 @@ the list of frcmods and force-field are used to create a merged force-field that
 used to provide parameters.  There is one default force-field called :default.")
 
 (defun add-force-field-or-modification (force-field-or-frcmod &optional (force-field-name :default))
-  (push force-field-or-frcmod (gethash force-field-name *force-field-lists*)))
+  (push force-field-or-frcmod (gethash force-field-name *force-fields*)))
 
 (defun merged-force-field (&optional (force-field-name :default))
   "Merge the force-field-list with _force-field-name_ and return it."
-  (let ((force-field-list (gethash force-field-name *force-field-lists*))
-        (reversed-force-field-list (reverse *force-field-list*))
-        (merged-force-field (chem:make-force-field)))
+  (let* ((force-field-list (gethash force-field-name *force-fields*))
+         (reversed-force-field-list (reverse force-field-list))
+         (merged-force-field (chem:make-force-field)))
     (dolist (ff reversed-force-field-list)
       (chem:force-field-merge merged-force-field ff))
     merged-force-field))

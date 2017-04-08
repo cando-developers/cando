@@ -61,48 +61,52 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/ffVdwDb.h>
 
 
-
 namespace       chem {
 
-
-extern string	ForceField_XmlName;
-
-
-
-typedef	enum	{ ffStr, ffAng, ffStb, ffOop, ffItor, ffTor, ffVdw, ffEle, ffSol } DisableEnum;
+  typedef	enum	{ ffStr, ffAng, ffStb, ffOop, ffItor, ffTor, ffVdw, ffEle, ffSol } DisableEnum;
 
 
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
-class	InfoDb_O;
-    typedef	gctools::smart_ptr<InfoDb_O>	InfoDb_sp;
-SMART(InfoDb);
-class InfoDb_O : public core::CxxObject_O
-{
-  LISP_CLASS(chem,ChemPkg,InfoDb_O,"InfoDb",core::CxxObject_O);
+  class	InfoDb_O;
+  typedef	gctools::smart_ptr<InfoDb_O>	InfoDb_sp;
+  SMART(InfoDb);
+  class InfoDb_O : public core::CxxObject_O
+  {
+    LISP_CLASS(chem,ChemPkg,InfoDb_O,"InfoDb",core::CxxObject_O);
 
- public:
-  bool fieldsp() const { return true; };
-  void fields(core::Record_sp node);
- public:
-  adapt::SymbolMap<core::String_O>	_database;
- public:
-  void forceFieldMerge(InfoDb_sp other) {
-    for ( auto it : other->_database ) {
-      this->addInfo(it.first,it.second);
-    }
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+  public:
+    adapt::SymbolMap<core::String_O>	_database;
+  public:
+    void forceFieldMerge(InfoDb_sp other) {
+      for ( auto it : other->_database ) {
+        this->addInfo(it.first,it.second);
+      }
+    };
+    void	addInfo( core::Symbol_sp key, core::String_sp data );
+    DEFAULT_CTOR_DTOR(InfoDb_O);
   };
-  void	addInfo( core::Symbol_sp key, core::String_sp data );
-  DEFAULT_CTOR_DTOR(InfoDb_O);
+
 };
 
-
-
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 
+ 
+
+template <>
+struct gctools::GCInfo<chem::ForceField_O> {
+  static bool constexpr NeedsInitialization = true;
+  static bool constexpr NeedsFinalization = false;
+  static GCInfo_policy constexpr Policy = normal;
+};
+
+namespace chem {
 SMART(ForceField);
 class ForceField_O : public core::CxxObject_O
 {
@@ -152,7 +156,7 @@ class ForceField_O : public core::CxxObject_O
   };
 
   CL_LISPIFY_NAME("getTypes");
-  CL_DEFMETHOD 	FFTypesDb_sp	getTypes() { return this->_Types; };
+  CL_DEFMETHOD 	gc::Nilable<FFTypesDb_sp> getTypesOrNil() { return this->_Types; };
 
   CL_LISPIFY_NAME("getStretchDb");
   CL_DEFMETHOD 	FFStretchDb_sp getStretchDb() { return this->_Stretches;};

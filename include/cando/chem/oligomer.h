@@ -85,22 +85,14 @@ SMART(Oligomer);
 class Oligomer_O : public core::CxxObject_O
 {
     LISP_CLASS(chem,ChemPkg,Oligomer_O,"Oligomer",core::CxxObject_O);
-#if INIT_TO_FACTORIES
  public:
     static Oligomer_sp make(core::List_sp parts);
-#else
-    DECLARE_INIT();
-#endif
     friend class Coupling_O;
     friend class DirectionalCoupling_O;
     friend class RingCoupling_O;
 public:
     void initialize();
-//    void	archiveBase(core::ArchiveP node);
-
     friend class AlchemistState_O;
-protected:
-
 public:
     typedef core::Symbol_O			NameType;
     friend core::T_sp chem__set_oligomer(Oligomer_O::NameType::smart_ptr_type oligomerName, core::List_sp parts);
@@ -204,9 +196,8 @@ public:
 
 public:
     // Atomic oligomer modifying routines
-    Monomer_sp	addMultiMonomerAsLeaf( CandoDatabase_sp,
-				       Monomer_sp monFrom, core::Symbol_sp couplingName,
-				       core::Symbol_sp representedEntityNameSetName, geom::Vector2 pos);
+    Monomer_sp	addMultiMonomerAsLeaf(Monomer_sp monFrom, core::Symbol_sp couplingName,
+                                      core::Symbol_sp representedEntityNameSetName, geom::Vector2 pos);
     Monomer_sp	removeLeafMonomer(Monomer_sp monomerToRemove );
 
 

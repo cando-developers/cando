@@ -123,7 +123,7 @@ void    FFPtor_O::setTypes(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_
 bool	FFPtor_O::hasPeriodicity(int idx ) const
 {_OF();
     if ( idx < 1 || idx > MaxPeriodicity ) {
-        SIMPLE_ERROR(BF("Illegal periodicity for hasPeriodicity"));
+        SIMPLE_ERROR(BF("Illegal periodicity (%d) for hasPeriodicity") % idx);
     }
     return this->_hasPeriodicity[idx-1];
 }
@@ -134,7 +134,7 @@ bool	FFPtor_O::hasPeriodicity(int idx ) const
 double  FFPtor_O::getV_kJ(int idx) const
 {_OF();
     if ( idx < 1 || idx > MaxPeriodicity ) {
-        SIMPLE_ERROR(BF("Illegal periodicity for getV"));
+        SIMPLE_ERROR(BF("Illegal periodicity (%d) for getV") % idx);
     }
     return this->_Vs_kJ[idx-1];
 }
@@ -142,7 +142,7 @@ double  FFPtor_O::getV_kJ(int idx) const
 void    FFPtor_O::setV_kJ(int idx, double val)
 {_OF();
     if ( idx < 1 || idx > MaxPeriodicity ) {
-        SIMPLE_ERROR(BF("Illegal periodicity for setV"));
+        SIMPLE_ERROR(BF("Illegal periodicity (%d) for setV") % idx);
     }
     this->_hasPeriodicity[idx-1] = true;
     this->_Vs_kJ[idx-1] = val;
@@ -170,7 +170,7 @@ double  FFPtor_O::getPhaseRad(int idx) const
 void    FFPtor_O::setPhaseRad(int idx, double val)
 {_OF();
     if ( idx < 1 || idx > MaxPeriodicity ) {
-        SIMPLE_ERROR(BF("Illegal periodicity for setPhaseRad"));
+        SIMPLE_ERROR(BF("Illegal periodicity (%d) for setPhaseRad") % idx);
     }
     this->_PhaseRads[idx-1] = val;
 }

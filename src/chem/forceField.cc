@@ -136,9 +136,13 @@ CL_DEFMETHOD void ForceField_O::forceFieldMerge(ForceField_sp other)
 CL_LISPIFY_NAME("assignTypes");
 CL_DEFMETHOD void	ForceField_O::assignTypes(Matter_sp matter)
 {
-FFTypesDb_sp	types;
-    types = this->getTypes();
+  gc::Nilable<FFTypesDb_sp>	types;
+  types = this->getTypesOrNil();
+  if (types.notnilp()) {
     types->assignTypes(matter);
+  } else {
+    SIMPLE_ERROR(BF("Could not assign atom types because the types were NIL"));
+  }
 }
 
 
@@ -155,8 +159,7 @@ void	ForceField_O::setInfoDb( InfoDb_sp Info )
 
 void	ForceField_O::setFFTypeDb( FFTypesDb_sp Types)
 {
-  this->_Types = Types;
-  if (this->_Types.notnilp()) this->_Types->setForceField(this->sharedThis<ForceField_O>());
+  this->_Types->setForceField(this->sharedThis<ForceField_O>());
 }
 
 

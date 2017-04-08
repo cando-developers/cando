@@ -455,7 +455,7 @@ core::Symbol_mv parse_property(const string& propertyValue, CDBond_sp bond, cons
  */
 bool CDFragment_O::interpret()
 {
-  printf("%s:%d  Interpreting a fragment\n", __FILE__, __LINE__ );
+//  printf("%s:%d  Interpreting a fragment\n", __FILE__, __LINE__ );
   int nextFragmentNameIndex = 1;
   if ( this->_Bonds.size() == 0 ) {return false;}
   CDBonds::iterator bi;

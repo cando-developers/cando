@@ -193,7 +193,7 @@ void Matter_O::applyProperty(core::Symbol_sp prop, core::T_sp value)
 {
 //  printf("%s:%d applyProperty %s - %s\n", __FILE__, __LINE__, _rep_(prop).c_str(), _rep_(value).c_str());
   if ( !this->applyPropertyToSlot(prop,value) ) {
-    printf("%s:%d    using setProperty\n",__FILE__, __LINE__);
+//    printf("%s:%d    using setProperty\n",__FILE__, __LINE__);
     this->setProperty(prop,value);
   }
 }

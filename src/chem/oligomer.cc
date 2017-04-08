@@ -363,8 +363,7 @@ Oligomer_O::monomerIterator	mi;
 
 /*! Add a Monomer as a leaf to the indicated monomer
  */
-Monomer_sp	Oligomer_O::addMultiMonomerAsLeaf( CandoDatabase_sp db,
-						   Monomer_sp monFrom, core::Symbol_sp couplingName,
+Monomer_sp	Oligomer_O::addMultiMonomerAsLeaf( Monomer_sp monFrom, core::Symbol_sp couplingName,
 						   core::Symbol_sp representedEntityNameSetName, geom::Vector2 pos )
 {
 DirectionalCoupling_sp 	coup;
@@ -982,8 +981,6 @@ void	Oligomer_O::_assembleFromParts(core::List_sp parts, CandoDatabase_sp bdb)
     }
 }
 
-#if INIT_TO_FACTORIES
-
 #define ARGS_Oligomer_O_make "(parts)"
 #define DECL_Oligomer_O_make ""
 #define DOCS_Oligomer_O_make "make Oligomer"
@@ -997,23 +994,6 @@ Oligomer_sp Oligomer_O::make(core::List_sp parts)
       }
     return me;
   };
-
-#else
-
-core::T_sp Oligomer_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-{_OF();
-    core::List_sp parts = translate::from_object<core::Cons_O>::convert(env->lookup(Pkg(),"parts"));
-    if ( parts.notnilp() )
-    {
-	CandoDatabase_sp bdb = getCandoDatabase(lisp);
-	this->_assembleFromParts(parts,bdb);
-    }
-    return _Nil<core::T_O>();
-}
-
-#endif
-
-
 
 
 #define ARGS_chem__set_oligomer "(oligomerName parts)"
@@ -1030,14 +1010,6 @@ CL_DEFUN core::T_sp chem__set_oligomer(core::Symbol_sp oligomerName, core::List_
 //    lisp->globalEnvironment()->extend(sym,olig);
     return olig;
 }
-
-
-
-
-
-
-
-
 
 
 }; // namespace chem

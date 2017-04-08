@@ -46,7 +46,7 @@
         '(("**;*.*" "source-dir:extensions;cando;src;**;*.*"))))
 
 ;;; Add directories for ASDF to search for systems
-(let* ((topdir (translate-logical-pathname #P"cando:lisp;cando;"))
+(let* ((topdir (translate-logical-pathname #P"cando:lisp;"))
        (dirs (all-subdirs topdir)))
   (push topdir asdf:*central-registry*)
   (dolist (dir dirs)
@@ -78,9 +78,8 @@
       (progn
         (format t "Loading Cando system.~%")
         (load "~/quicklisp/setup.lisp")
-        (funcall (find-symbol "QUICKLOAD" :ql) "cando")
-        (funcall (find-symbol "QUICKLOAD" :ql) "leap")
-        (setf *package* (find-package :cando-user))
-        (cl:use-package :leap)))
+        (funcall (find-symbol "QUICKLOAD" :ql) "cando-user")
+        ;; Ensure that all threads start in the :CANDO-USER package
+        (core:symbol-global-value-set '*package* (find-package :cando-user))))
   (core:process-command-line-load-eval-sequence)
   (core::tpl))

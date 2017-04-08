@@ -149,12 +149,9 @@ namespace chem {
     };
 
   private:
-    gc::Nilable<Monomer_sp>		_InMonomer;
     core::Symbol_sp	_Name;
-    gc::Nilable<Monomer_sp>		_OutMonomer;
-
-  protected:
-
+    Monomer_sp		_InMonomer;
+    Monomer_sp		_OutMonomer;
   public:
     bool		containsMonomer();
     Monomer_sp	getInMonomer();
@@ -201,32 +198,27 @@ namespace chem {
     void	checkForErrors(core::T_sp errorStream);
     void	throwIfBadConnections();
 
-
-    DEFAULT_CTOR_DTOR(DirectionalCoupling_O);
+  DirectionalCoupling_O(core::Symbol_sp name, Monomer_sp in, Monomer_sp out) :
+    _Name(name),
+      _InMonomer(in),
+      _OutMonomer(out) {};
   };
 
-
   typedef	enum	{ NoRingSide, Monomer1Side, Monomer2Side } RingCouplingSide;
-
-
 
   SMART(RingCoupling);
   class RingCoupling_O : public Coupling_O
   {
     LISP_CLASS(chem,ChemPkg,RingCoupling_O,"RingCoupling",Coupling_O);
-
   public:
     friend class O_WeakOligomer;
 //	void	archiveBase(core::ArchiveP node);
     void initialize();
-
-  public:
   private:
-
-    gc::Nilable<Monomer_sp>	_Monomer1;
     core::Symbol_sp		_Plug1;
-    gc::Nilable<Monomer_sp>	_Monomer2;
+    Monomer_sp	                _Monomer1;
     core::Symbol_sp		_Plug2;
+    Monomer_sp	                _Monomer2;
   protected:
 
   public:
@@ -267,7 +259,11 @@ namespace chem {
     Monomer_sp	getOtherSideMonomer(Monomer_sp mon);
 
     void	doCoupling(Residue_sp inResidue, Residue_sp outResidue );
-    DEFAULT_CTOR_DTOR(RingCoupling_O);
+  RingCoupling_O(core::Symbol_sp plug1, Monomer_sp mon1, core::Symbol_sp plug2, Monomer_sp mon2) :
+    _Plug1(plug1),
+      _Monomer1(mon1),
+      _Plug2(plug2),
+      _Monomer2(mon2) {};
   };
 
 

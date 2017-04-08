@@ -785,7 +785,7 @@ CL_DEFMETHOD     void	Monomer_O::removeCoupling(Coupling_sp coup)
     core::Symbol_sp MultiMonomer_O::getName() const
     {_OF();
 	if ( this->_Monomers.size() == 0 ) return _Nil<core::Symbol_O>();
-	return this->getOneMonomer()->getName();
+	return this->getOneMonomer();
     }
 
 
@@ -881,12 +881,8 @@ CL_DEFMETHOD     void	MultiMonomer_O::setGroupName(core::Symbol_sp name)
 
     void	MultiMonomer_O::addMonomerName(core::Symbol_sp name)
     {
-	GC_ALLOCATE(OneMonomer_O, om );
-	om->setName(name);
-	this->_Monomers.push_back(om);
+	this->_Monomers.push_back(name);
     }
-
-
 
 
     void	MultiMonomer_O::randomizeMonomer()
@@ -917,7 +913,7 @@ CL_DEFMETHOD     void	MultiMonomer_O::setGroupName(core::Symbol_sp name)
 
 
 CL_LISPIFY_NAME("getOneMonomer");
-CL_DEFMETHOD     OneMonomer_sp	MultiMonomer_O::getOneMonomer() const
+CL_DEFMETHOD     core::Symbol_sp	MultiMonomer_O::getOneMonomer() const
     {
 	if ( this->_Monomers.size() < 1 ) {
           SIMPLE_ERROR(BF("There are no monomers defined for MultiMonomer group("+_rep_(this->_GroupName)+")"));
@@ -1018,20 +1014,6 @@ CL_DEFMETHOD     bool Monomer_O::isMonomerContextValid()
 	    return false;
 	}
 	return true;
-    }
-
-
-
-
-CL_LISPIFY_NAME("getOneMonomerWithName");
-CL_DEFMETHOD     OneMonomer_sp	MultiMonomer_O::getOneMonomerWithName(core::Symbol_sp name) const
-    {
-	Monomers::const_iterator	mi;
-	for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
-	{
-	    if ( (*mi)->getName() == name ) return *mi;
-	}
-	return _Nil<OneMonomer_O>();
     }
 
 

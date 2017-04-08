@@ -6,7 +6,7 @@
 - smarts-str :: A string
 * Description
 Compile the string into smarts code."
-  (let ((ci (make-cxx-object 'chem:chem-info)))
+  (let ((ci (core:make-cxx-object 'chem:chem-info)))
     (chem:compile-smarts ci smarts-str)
     ci))
 

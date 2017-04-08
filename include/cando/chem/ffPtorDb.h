@@ -67,7 +67,7 @@ namespace chem
     {
 	LISP_CLASS(chem,ChemPkg,FFPtor_O,"FFPtor",FFParameter_O);
     public:
-	static int const MaxPeriodicity = 6;
+	static int const MaxPeriodicity = 8;
     public:
 	void initialize();
         bool fieldsp() const { return true; };

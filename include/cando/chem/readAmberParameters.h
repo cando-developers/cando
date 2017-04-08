@@ -56,14 +56,18 @@ class ReadAmberParameters_O : public core::CxxObject_O
   FFTypesDb_sp	_Types;
   ForceField_sp	_ForceField;
  private:
+  core::T_mv determineParmSetFrcModType(core::T_sp fin);
   FFTypesDb_sp parseTypeRules(core::T_sp fin);
-  FFNonbondDb_sp parseFirstNonbondDb(core::T_sp fin);
+  FFNonbondDb_sp parseMasses(core::T_sp fin, FFNonbondDb_sp);
   FFStretchDb_sp parseStretchDb(core::T_sp fin);
   FFAngleDb_sp parseAngleDb(core::T_sp fin);
   FFPtorDb_sp parsePtorDb(core::T_sp fin);
   FFItorDb_sp parseItorDb(core::T_sp fin);
+  string parseNonbondLabelKindNB(core::T_sp fin);
   void parseNonbondDb(core::T_sp fin, FFNonbondDb_sp );
   ForceField_sp parseAmberFormattedForceField(core::T_sp strm);
+  ForceField_sp parseFrcModFile(core::T_sp strm);
+  ForceField_sp parseAmberFormattedForceFieldOrFrcMod(core::T_sp strm);
   void parseAtomEquivalences(core::T_sp fin);
   
  public:

@@ -73,20 +73,20 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
-    SMART(RepresentedEntityNameSet);
-    SMART(MonomerContext);
-    SMART(CandoDatabase);
-    SMART(Coupling);
-    SMART(Oligomer);
-    SMART(Constitution);
-    SMART(StereoInformation);
-    SMART(Monomer);
-    SMART(Topology);
-    SMART(Plug);
-    SMART(RingClosingPlug);
-    SMART(Stereoisomer);
-    SMART(StereoInformation);
-    SMART(Constitution);
+  SMART(RepresentedEntityNameSet);
+  SMART(MonomerContext);
+  SMART(CandoDatabase);
+  SMART(Coupling);
+  SMART(Oligomer);
+  SMART(Constitution);
+  SMART(StereoInformation);
+  SMART(Monomer);
+  SMART(Topology);
+  SMART(Plug);
+  SMART(RingClosingPlug);
+  SMART(Stereoisomer);
+  SMART(StereoInformation);
+  SMART(Constitution);
 
 
     /*! @class A Constitution is like a Residue but its more general because it describes multiple
@@ -105,144 +105,144 @@ namespace chem
       identifies it within all Constitutions of the CandoDatabase
     */
 
-    class Constitution_O : public Entity_O
-	{
-	    LISP_CLASS(chem,ChemPkg,Constitution_O,"Constitution",Entity_O);
-	public:
-            CL_LISPIFY_NAME(make_constitution);
-	    CL_DEF_CLASS_METHOD static Constitution_sp make(core::Symbol_sp name,
-                                                            core::String_sp comment,
-                                                            ConstitutionAtoms_sp constitutionAtoms,
-                                                            StereoInformation_sp stereoInformation,
-                                                            core::List_sp plugs,
-                                                            core::List_sp topologies);
-	public:
-	    void initialize();
-	public:
+  class Constitution_O : public Entity_O
+  {
+    LISP_CLASS(chem,ChemPkg,Constitution_O,"Constitution",Entity_O);
+  public:
+    CL_LISPIFY_NAME(make_constitution);
+    CL_DEF_CLASS_METHOD static Constitution_sp make(core::Symbol_sp name,
+                                                    core::String_sp comment,
+                                                    ConstitutionAtoms_sp constitutionAtoms,
+                                                    StereoInformation_sp stereoInformation,
+                                                    core::List_sp plugs,
+                                                    core::List_sp topologies);
+  public:
+    void initialize();
+  public:
 //	    void	archiveBase(core::ArchiveP node);
 
-	    friend class Monomer_O;
-	public:
-	    typedef	adapt::SymbolMap<Topology_O> TopologyMap; //adapt::SymbolMap<Topology_O>	TopologyMap;
-	    typedef    	adapt::SymbolMap<Plug_O> PlugMap; // adapt::SymbolMap<Plug_O>		PlugMap;
-	private:
-	    core::Symbol_sp			_Name;
-            core::String_sp			_Comment;
+    friend class Monomer_O;
+  public:
+    typedef	adapt::SymbolMap<Topology_O> TopologyMap; //adapt::SymbolMap<Topology_O>	TopologyMap;
+    typedef    	adapt::SymbolMap<Plug_O> PlugMap; // adapt::SymbolMap<Plug_O>		PlugMap;
+  private:
+    core::Symbol_sp			_Name;
+    core::String_sp			_Comment;
 	    /*! An object that that describes the atoms and bonding within this Constitution.
 	      The index of the atom in the ConstitutionAtoms is used as the atom part of the AtomId 
 	      when refered to using an AtomId object    */
-	    ConstitutionAtoms_sp		_ConstitutionAtoms;
-	    PlugMap				_PlugsByName;
-	    TopologyMap				_Topologies;
-            StereoInformation_sp                _StereoInformation;
-        public:
-            bool fieldsp() const { return true; };
-            void fields(core::Record_sp node);
-	public:
-	    typedef gctools::Vec0<Stereoisomer_sp>::iterator	stereoisomerIterator;
-	    typedef gctools::Vec0<Stereoisomer_sp>::const_iterator	const_stereoisomerIterator;
-	public:
-	    virtual adapt::SymbolSet_sp	expandedNameSet() { return this->getMonomerNamesAsSymbolSet(); };
-	public:
-	    core::List_sp stereoisomersAsList();
-	    core::List_sp topologiesAsList();
-	    core::List_sp plugsAsList();
-	    core::List_sp plugsWithMatesAsList();
+    ConstitutionAtoms_sp		_ConstitutionAtoms;
+    PlugMap				_PlugsByName;
+    TopologyMap				_Topologies;
+    StereoInformation_sp                _StereoInformation;
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+  public:
+    typedef gctools::Vec0<Stereoisomer_sp>::iterator	stereoisomerIterator;
+    typedef gctools::Vec0<Stereoisomer_sp>::const_iterator	const_stereoisomerIterator;
+  public:
+    virtual adapt::SymbolSet_sp	expandedNameSet() { return this->getMonomerNamesAsSymbolSet(); };
+  public:
+    core::List_sp stereoisomersAsList();
+    core::List_sp topologiesAsList();
+    core::List_sp plugsAsList();
+    core::List_sp plugsWithMatesAsList();
 
             
-            stereoisomerIterator begin_Stereoisomers();
-	    stereoisomerIterator end_Stereoisomers();
+    stereoisomerIterator begin_Stereoisomers();
+    stereoisomerIterator end_Stereoisomers();
 
-	    const_stereoisomerIterator begin_Stereoisomers() const;
-	    const_stereoisomerIterator end_Stereoisomers() const;
+    const_stereoisomerIterator begin_Stereoisomers() const;
+    const_stereoisomerIterator end_Stereoisomers() const;
 
-	    TopologyMap::iterator	begin_Topologies() {
-		return this->_Topologies.begin();};
-	    TopologyMap::iterator	end_Topologies() {
-		return this->_Topologies.end();};
+    TopologyMap::iterator	begin_Topologies() {
+      return this->_Topologies.begin();};
+    TopologyMap::iterator	end_Topologies() {
+      return this->_Topologies.end();};
 
-	    PlugMap::iterator begin_Plugs() {
-		return this->_PlugsByName.begin();};
-	    PlugMap::iterator end_Plugs() {
-		return this->_PlugsByName.end();};
+    PlugMap::iterator begin_Plugs() {
+      return this->_PlugsByName.begin();};
+    PlugMap::iterator end_Plugs() {
+      return this->_PlugsByName.end();};
 
 
-	    bool	isSameAs(Constitution_sp& m) { return (this->getName()==m->getName());};
+    bool	isSameAs(Constitution_sp& m) { return (this->getName()==m->getName());};
 
-	    void	makeResidueConsistentWithStereoisomerNamed(Residue_sp res,
-								   core::Symbol_sp stereoisomerName );
+    void	makeResidueConsistentWithStereoisomerNamed(Residue_sp res,
+                                                           core::Symbol_sp stereoisomerName );
 
-	    Topology_sp	getTopologyForContext(MonomerContext_sp c );
+    Topology_sp	getTopologyForContext(MonomerContext_sp c );
 
-	    Topology_sp	getTopologyForMonomerEnvironment(Monomer_sp mon );
+    Topology_sp	getTopologyForMonomerEnvironment(Monomer_sp mon );
 
-	    RingClosingPlug_sp getMissingRingClosingPlug(Monomer_sp mon, Monomer_sp mate);
+    RingClosingPlug_sp getMissingRingClosingPlug(Monomer_sp mon, Monomer_sp mate);
 
-	    RepresentativeList_sp expandedRepresentativeList() const;
+    RepresentativeList_sp expandedRepresentativeList() const;
 
-	    bool hasStereoisomerWithName(core::Symbol_sp stereoisomerName);
-	    Stereoisomer_sp getStereoisomerWithName(core::Symbol_sp stereoisomerName) const;
+    bool hasStereoisomerWithName(core::Symbol_sp stereoisomerName);
+    Stereoisomer_sp getStereoisomerWithName(core::Symbol_sp stereoisomerName) const;
 
-	    core::Symbol_sp	getName() const {return this->constitutionName();};
+    core::Symbol_sp	getName() const {return this->constitutionName();};
 
-CL_LISPIFY_NAME("constitutionName");
-CL_DEFMETHOD 	    core::Symbol_sp	constitutionName() const	{return this->_Name;};
-CL_LISPIFY_NAME("setConstitutionName");
-CL_DEFMETHOD 	    void	setConstitutionName(core::Symbol_sp tt) {this->_Name = tt;};
+    CL_LISPIFY_NAME("constitutionName");
+    CL_DEFMETHOD 	    core::Symbol_sp	constitutionName() const	{return this->_Name;};
+    CL_LISPIFY_NAME("setConstitutionName");
+    CL_DEFMETHOD 	    void	setConstitutionName(core::Symbol_sp tt) {this->_Name = tt;};
 
 	    /*! Add all of my Stereoisomers as Entities to the CandoDatabase */
-	    void addStereoisomersToCandoDatabase(CandoDatabase_sp db);
+    void addStereoisomersToCandoDatabase(CandoDatabase_sp db);
 
-            CL_DEFMETHOD void add_topology(Topology_sp topology);
-	    RepresentedEntityNameSet_sp	asGroup();
-CL_LISPIFY_NAME("getConstitutionAtoms");
-CL_DEFMETHOD 	    ConstitutionAtoms_sp getConstitutionAtoms() { return this->_ConstitutionAtoms;};
+    CL_DEFMETHOD void add_topology(Topology_sp topology);
+    RepresentedEntityNameSet_sp	asGroup();
+    CL_LISPIFY_NAME("getConstitutionAtoms");
+    CL_DEFMETHOD 	    ConstitutionAtoms_sp getConstitutionAtoms() { return this->_ConstitutionAtoms;};
 
-	    Topology_sp	simplestTopologyWithPlugNamed(core::Symbol_sp name);
+    Topology_sp	simplestTopologyWithPlugNamed(core::Symbol_sp name);
 
-	    Topology_sp topologyWithName(core::Symbol_sp name) const;
+    Topology_sp topologyWithName(core::Symbol_sp name) const;
 
 
-	    adapt::StringList_sp getMonomerNamesAsStringList();
-	    adapt::SymbolSet_sp	getMonomerNamesAsSymbolSet();
+    adapt::StringList_sp getMonomerNamesAsStringList();
+    adapt::SymbolSet_sp	getMonomerNamesAsSymbolSet();
 
-	    adapt::SymbolSet_sp	getPlugNames();
+    adapt::SymbolSet_sp	getPlugNames();
 
-	    adapt::StringList_sp getPdbNamesAsStringList();
+    adapt::StringList_sp getPdbNamesAsStringList();
 
 	    //! Return the monomer name for the monomer with the nameOrPdb
-	    core::Symbol_sp	nameFromNameOrPdb(core::Symbol_sp nm);
+    core::Symbol_sp	nameFromNameOrPdb(core::Symbol_sp nm);
 	    //! Return the pdb name for the monomer with the nameOrPdb
-	    core::Symbol_sp	pdbFromNameOrPdb(core::Symbol_sp nm);
+    core::Symbol_sp	pdbFromNameOrPdb(core::Symbol_sp nm);
 
 
-CL_LISPIFY_NAME("setComment");
- CL_DEFMETHOD 	    void	setComment( core::String_sp sName ) { this->_Comment = sName; };
-CL_LISPIFY_NAME("getComment");
- CL_DEFMETHOD 	    core::String_sp	getComment( ) { return this->_Comment; };
+    CL_LISPIFY_NAME("setComment");
+    CL_DEFMETHOD 	    void	setComment( core::String_sp sName ) { this->_Comment = sName; };
+    CL_LISPIFY_NAME("getComment");
+    CL_DEFMETHOD 	    core::String_sp	getComment( ) { return this->_Comment; };
 
- Residue_sp	createResidueForStereoisomerName(core::Symbol_sp nameOrPdb);
+    Residue_sp	createResidueForStereoisomerName(core::Symbol_sp nameOrPdb);
 
-CL_LISPIFY_NAME("hasPlugNamed");
-CL_DEFMETHOD 	    bool	hasPlugNamed( core::Symbol_sp name) { return this->_PlugsByName.contains(name); };
-CL_LISPIFY_NAME("getPlugNamed");
-CL_DEFMETHOD 	    Plug_sp	getPlugNamed( core::Symbol_sp name) { return this->_PlugsByName[name]; };
+    CL_LISPIFY_NAME("hasPlugNamed");
+    CL_DEFMETHOD 	    bool	hasPlugNamed( core::Symbol_sp name) { return this->_PlugsByName.contains(name); };
+    CL_LISPIFY_NAME("getPlugNamed");
+    CL_DEFMETHOD 	    Plug_sp	getPlugNamed( core::Symbol_sp name) { return this->_PlugsByName[name]; };
 
 //	void	testConsistency( std::ostream& sout );
 
 
 //	set<string>	getValidInCouplingRuleNames();
 
-	    bool	recognizesMonomerAndEnvironment(Monomer_sp mon);
+    bool	recognizesMonomerAndEnvironment(Monomer_sp mon);
 
-	    bool	recognizesStereoisomerName(core::Symbol_sp nm );
+    bool	recognizesStereoisomerName(core::Symbol_sp nm );
 
-	    string	description() const;
+    string	description() const;
 
-	    bool hasConstitution() { return true;};
-	    Constitution_sp constitution() { return this->sharedThis<Constitution_O>();};
-	    DEFAULT_CTOR_DTOR(Constitution_O);
-	};
+    bool hasConstitution() { return true;};
+    Constitution_sp constitution() { return this->sharedThis<Constitution_O>();};
+    DEFAULT_CTOR_DTOR(Constitution_O);
+  };
 
 
 };

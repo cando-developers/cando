@@ -149,22 +149,21 @@ namespace chem {
     DonorAcceptorEnum	_DonorAcceptor;
 
   public:
-    void setType(core::Symbol_sp s) {this->_Type=s;};
-    core::Symbol_sp getType() const { return this->_Type;};
-    void setPolarizability(double d) { this->_Polarizability = d;};
-    void setMass(double d) { this->_Mass = d;};
-    void setRadius_Angstroms(double val);
-    void setRadius_Nanometers(double val);
+    CL_DEFMETHOD void setType(core::Symbol_sp s) {this->_Type=s;};
+    CL_DEFMETHOD core::Symbol_sp getType() const { return this->_Type;};
+    CL_DEFMETHOD void setPolarizability(double d) { this->_Polarizability = d;};
+    CL_DEFMETHOD void setMass(double d) { this->_Mass = d;};
+    CL_DEFMETHOD void setRadius_Angstroms(double val);
+    CL_DEFMETHOD void setRadius_Nanometers(double val);
 
-    double getRadius_Angstroms() const;
-    double getRadius_Nanometers() const;
+    CL_DEFMETHOD double getRadius_Angstroms() const;
+    CL_DEFMETHOD double getRadius_Nanometers() const;
 
+    CL_DEFMETHOD void setEpsilon_kJ(double val);
+    CL_DEFMETHOD void setEpsilon_kCal(double val);
 
-    void setEpsilon_kJ(double val);
-    void setEpsilon_kCal(double val);
-
-    double getEpsilon_kJ() const;
-    double getEpsilon_kCal() const;
+    CL_DEFMETHOD double getEpsilon_kJ() const;
+    CL_DEFMETHOD double getEpsilon_kCal() const;
 
     virtual	string	levelDescription();
     virtual ParameterType type() { return nonbond; };
@@ -250,7 +249,8 @@ namespace chem {
 
   public:
     void forceFieldMerge(FFBaseDb_sp other);
-    void add( FFNonbond_sp nonbonded );
+    CL_LISPIFY_NAME(ffNonbondDb-add);
+    CL_DEFMETHOD void add( FFNonbond_sp nonbonded );
     bool hasType( core::Symbol_sp type);
     core::T_sp findType( core::Symbol_sp type );
     FFNonbond_sp   getFFNonbondUsingTypeIndex( uint typeIdx );

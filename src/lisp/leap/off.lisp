@@ -56,7 +56,10 @@
       ((eq first-char #\!)
        (unread-char first-char fin)
        nil)
-      (t (parse-off-data-line (read-line fin eof-error-p eof) header)))))
+      (t (let ((line (read-line fin eof-error-p eof)))
+           (if (eq line eof)
+               eof
+               (parse-off-data-line line header)))))))
 
 (defun read-off-data-block (fin &optional (eof-error-p t) eof)
   (let ((header-line (read-line fin eof-error-p eof)))
@@ -231,19 +234,19 @@ if the caller wants to do that."
               (mapc (lambda (id)
                       (chem:add-matter aggregate (gethash id molecule-id-map)))
                     sorted-molecule-ids)
-              (values aggregate read-residueconnect read-residues))))))))
+              (values aggregate read-connect read-residues))))))))
 
-(defun translate-off-object (unit-name unit residueconnect residues)
+(defun translate-off-object (unit-name unit connect residues)
   "If the OFF object is a unit containing a single residue then turn it into a topology.
 Otherwise it's an Aggregate. Return the object."
   (declare (symbol unit-name)
            (chem:aggregate unit)
-           (vector residue-connect residues))
+           (vector connect residues))
   (if (eq (length residues) 1)
       (let* ((res (chem:content-at (chem:content-at unit 0) 0))
              (topology (cando::make-topology-from-residue res))
-             (in-plug-idx (1- (elt (elt residueconnect 0) 0))) ;; connect atoms 1- index
-             (out-plug-idx (1- (elt (elt residueconnect 0) 1)))) ;; connect atoms 1- index
+             (in-plug-idx (1- (elt (elt connect 0) 0))) ;; connect atoms 1- index
+             (out-plug-idx (1- (elt (elt connect 1) 0)))) ;; connect atoms 1- index
         (when (>= in-plug-idx 0)
           (let* ((in-plug-atom (chem:content-at res in-plug-idx))
                  (in-plug (chem:make-in-plug :-default nil (chem:atom-name in-plug-atom) :single-bond)))
@@ -277,7 +280,6 @@ Return the hash-table."
 - filename : Pathname
 * Description
 Load the OFF file containing forms into new-leap."
-  (print "In load-off")
   (with-open-file (fin filename :direction :input)
     (let ((ht (leap.off:read-off-lib fin)))
       (maphash (lambda (name form)

@@ -32,6 +32,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/numerics.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/bformat.h>
+#include <clasp/core/primitives.h>
+#include <clasp/core/evaluator.h>
 #include <clasp/core/array.h>
 #include <cando/chem/chemInfo.h>
 #include <cando/chem/units.h>
@@ -53,14 +55,14 @@ CL_DEFUN ReadAmberParameters_sp chem__make_read_amber_parameters()
 CL_LISPIFY_NAME("readTypes");
 CL_DEFMETHOD void	ReadAmberParameters_O::readTypes(core::T_sp fin)
 {
-    this->_Types = this->parseTypeRules(fin);
+  this->_Types = this->parseTypeRules(fin);
 }
 
 
 CL_LISPIFY_NAME("readParameters");
 CL_DEFMETHOD void	ReadAmberParameters_O::readParameters(core::T_sp fin)
 {
-    this->_ForceField = this->parseAmberFormattedForceField(fin);
+  this->_ForceField = this->parseAmberFormattedForceFieldOrFrcMod(fin);
 }
 
 
@@ -77,7 +79,44 @@ CL_DEFMETHOD ForceField_sp ReadAmberParameters_O::getForceField()
 }
 
 
+/*! Check if the stream contains a FrcMod file or a regular Amber Parameter file.
+    If it's a FrcMod file then frcmod == T.
+    If it contains a MASS entry then mass == T.
+    if it contains a NONBOND entry then NONBOND == T.
+    Return (values frcmod mass nonbond).
+*/
 
+core::T_mv ReadAmberParameters_O::determineParmSetFrcModType(core::T_sp fin)
+{
+  bool bNew = false;
+  bool bMass = false;
+  bool bNonBond = false;
+  while ( true ) {
+    core::T_mv mv_line = core::cl__read_line(fin,_Nil<T_O>());
+    if ( mv_line.nilp() ) break;
+    string line = mv_line.as<core::Str_O>()->get();
+    LOG(BF("Read line(%s)") % line  );
+    if ( line.size()>=4 && line.substr(0,4) == "MASS") {
+      bNew = true;
+      bMass = true;
+    } else if ( line.size()>=4 && line.substr(0,4) == "BOND") {
+      bNew = true;
+    } else if ( line.size()>=4 && line.substr(0,4) == "ANGL") {
+      bNew = true;
+    } else if ( line.size()>=4 && line.substr(0,4) == "DIHE") {
+      bNew = true;
+    } else if ( line.size()>=4 && line.substr(0,4) == "IMPR") {
+      bNew = true;
+    } else if ( line.size()>=4 && line.substr(0,4) == "HBON") {
+      bNew = true;
+    } else if ( line.size()>=4 && line.substr(0,4) == "NONB") {
+      bNew = true;
+      bNonBond = true;
+    }
+  }
+  clasp_file_position_set(fin,core::clasp_make_fixnum(0));
+  return Values( _lisp->_boolean(bNew),_lisp->_boolean(bMass),_lisp->_boolean(bNonBond));
+}
 
 FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(core::T_sp fin)
 {
@@ -125,65 +164,78 @@ FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(core::T_sp fin)
 
 
 
-FFNonbondDb_sp ReadAmberParameters_O::parseFirstNonbondDb(core::T_sp fin)
+FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp ffNonbondDb )
 {
-  GC_ALLOCATE(FFNonbondDb_O, ffNonbondDb );
+  core::DynamicScopeManager scope(cl::_sym_STARpackageSTAR, _lisp->keywordPackage());
   bool done = false;
-  while ( not done )
-  {
+  while ( not done ) {
     core::T_mv ol = core::cl__read_line(fin);
     string line = gc::As<core::String_sp>(ol)->get_std_string();
-    if ( line.size() == 0 )
-    {
+    if ( line.size() == 0 ) {
       done = true;
     } else {
+      core::T_sp linestream = core::cl__make_string_input_stream(ol,core::make_fixnum(0),_Nil<core::T_O>());
       LOG(BF("Parsing line|%s|") % line.c_str()  );
-      vector<string> parts = core::split(line," \t");
-      string typeName = parts[0];
-      double mass = atof(parts[1].c_str());
-      double polarizability = atof(parts[2].c_str());
-      GC_ALLOCATE(FFNonbond_O, ffNonbond );
-      ffNonbond->setType(chemkw_intern(typeName));
+      printf("%s:%d:%s  line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
+      core::Symbol_sp typeSymbol = gc::As<core::Symbol_sp>(core::cl__read(linestream,_Nil<core::T_O>()));
+      core::T_sp omass = core::cl__read(linestream,_Nil<core::T_O>());
+      core::T_sp maybePolarizability = core::cl__read(linestream,_Nil<core::T_O>());
+      double mass = core::clasp_to_double(omass);
+      double polarizability = 0.0;
+      if ( gc::IsA<core::Float_sp>(maybePolarizability)) {
+        polarizability = core::clasp_to_double(gc::As_unsafe<core::Float_sp>(maybePolarizability));
+      }
+      FFNonbond_sp ffNonbond;
+      core::T_sp nonbond = ffNonbondDb->findType(typeSymbol);
+      bool newp = false;
+      if (nonbond.nilp()) {
+        ffNonbond = gctools::GC<FFNonbond_O>::allocate_with_default_constructor();
+        newp = true;
+      } else if (gc::IsA<FFNonbond_sp>(nonbond)) {
+        ffNonbond = gc::As_unsafe<FFNonbond_sp>(nonbond);
+      } else {
+        SIMPLE_ERROR(BF("Illegal atom type %s") % _rep_(nonbond));
+      }
+      ffNonbond->setType(typeSymbol);
       ffNonbond->setMass(mass);
       ffNonbond->setPolarizability(polarizability);
-      ffNonbondDb->add(ffNonbond);
+      if (newp) ffNonbondDb->add(ffNonbond);
     }
   }
-  core::cl__read_line(fin); // blank line
   return ffNonbondDb;
 }
  
 FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(core::T_sp fin)
 {
     // read stretch terms 
-    GC_ALLOCATE(FFStretchDb_O, ffStretchDb );
-    bool done = false;
-    while ( not done )
+  GC_ALLOCATE(FFStretchDb_O, ffStretchDb );
+  bool done = false;
+  while ( not done )
+  {
+    string line = core::cl__read_line(fin).as<core::Str_O>()->get();
+    if ( line.size() == 0 )
     {
-      string line = core::cl__read_line(fin).as<core::Str_O>()->get();
-	if ( line.size() == 0 )
-	{
-            done = true;
-	} else {
-	    LOG(BF("Parsing line|%s|") % line.c_str()  );
-            string types = line.substr(0,5);
-            vector<string>typeParts = core::split(types,"-");
-            string type1Name = core::trimWhiteSpace(typeParts[0]);
-            string type2Name = core::trimWhiteSpace(typeParts[1]);
-            GC_ALLOCATE(FFStretch_O, ffStretch );
-            ffStretch->_Type1 = chemkw_intern(type1Name);
-            ffStretch->_Type2 = chemkw_intern(type2Name);
-            string parms = line.substr(6);
-            vector<string> parmsParts = core::split(parms);
-	    double kb_kJPerNanometerSquared = kCalPerAngstromSquared_to_kJPerNanometerSquared(atof(parmsParts[0].c_str()));
-            double r0_Nanometer = angstrom_to_nanometer(atof(parmsParts[1].c_str()));
-	    ffStretch->setKb_kJPerNanometerSquared(kb_kJPerNanometerSquared);
-	    ffStretch->setR0_Nanometer(r0_Nanometer);
+      done = true;
+    } else {
+      LOG(BF("Parsing line|%s|") % line.c_str()  );
+      string types = line.substr(0,5);
+      vector<string>typeParts = core::split(types,"-");
+      string type1Name = core::trimWhiteSpace(typeParts[0]);
+      string type2Name = core::trimWhiteSpace(typeParts[1]);
+      GC_ALLOCATE(FFStretch_O, ffStretch );
+      ffStretch->_Type1 = chemkw_intern(type1Name);
+      ffStretch->_Type2 = chemkw_intern(type2Name);
+      string parms = line.substr(6);
+      vector<string> parmsParts = core::split(parms);
+      double kb_kJPerNanometerSquared = kCalPerAngstromSquared_to_kJPerNanometerSquared(atof(parmsParts[0].c_str()));
+      double r0_Nanometer = angstrom_to_nanometer(atof(parmsParts[1].c_str()));
+      ffStretch->setKb_kJPerNanometerSquared(kb_kJPerNanometerSquared);
+      ffStretch->setR0_Nanometer(r0_Nanometer);
 //            print "(%s)-(%s) k=%lf len=%lf"%(ffStretch._Type1,ffStretch._Type2,ffStretch._kb, ffStretch._r0)
-            ffStretchDb->add(ffStretch);
-	}
+      ffStretchDb->add(ffStretch);
     }
-    return ffStretchDb;
+  }
+  return ffStretchDb;
 }
 
 
@@ -192,35 +244,37 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
     //
     // read angle terms 
     //
-    GC_ALLOCATE(FFAngleDb_O, ffAngleDb );
-    bool done = false;
-    while ( not done )
+  GC_ALLOCATE(FFAngleDb_O, ffAngleDb );
+  bool done = false;
+  while ( not done )
+  {
+    string line = core::cl__read_line(fin).as<core::Str_O>()->get();
+    if (line.size()== 0)
     {
-      string line = core::cl__read_line(fin).as<core::Str_O>()->get();
-        if (line.size()== 0)
-	{
-            done = true;
-	} else
-	{
-	    LOG(BF("Parsing line|%s|") % line.c_str()  );
-            string types = line.substr(0,8);
-            vector<string>typeParts = core::split(types,"-");
-            string t1 = core::trimWhiteSpace(typeParts[0]);
-            string t2 = core::trimWhiteSpace(typeParts[1]);
-            string t3 = core::trimWhiteSpace(typeParts[2]);
-            GC_ALLOCATE(FFAngle_O, ffAngle );
-            ffAngle->_Type1 = chemkw_intern(t1);
-            ffAngle->_Type2 = chemkw_intern(t2);
-            ffAngle->_Type3 = chemkw_intern(t3);
-            string parms = line.substr(9);
-            vector<string> parmsParts = core::split(parms);
-            ffAngle->_K2__kJPerRadianSquared = kCalPerRadianSquared_to_kJPerRadianSquared(atof(parmsParts[0].c_str()));
-            ffAngle->_AngRad = core::radians(atof(parmsParts[1].c_str()));
+      done = true;
+    } else
+    {
+      LOG(BF("Parsing line|%s|") % line.c_str()  );
+      string types = line.substr(0,8);
+      vector<string>typeParts = core::split(types,"-");
+      string t1 = core::trimWhiteSpace(typeParts[0]);
+      string t2 = core::trimWhiteSpace(typeParts[1]);
+      string t3 = core::trimWhiteSpace(typeParts[2]);
+      GC_ALLOCATE(FFAngle_O, ffAngle );
+      ffAngle->_Type1 = chemkw_intern(t1);
+      ffAngle->_Type2 = chemkw_intern(t2);
+      ffAngle->_Type3 = chemkw_intern(t3);
+      printf("%s:%d  Parsing line: %s\n", __FILE__, __LINE__, line.c_str());
+      fflush(stdout);
+      string parms = line.substr(9);
+      vector<string> parmsParts = core::split(parms);
+      ffAngle->_K2__kJPerRadianSquared = kCalPerRadianSquared_to_kJPerRadianSquared(atof(parmsParts[0].c_str()));
+      ffAngle->_AngRad = core::radians(atof(parmsParts[1].c_str()));
 //            print "(%s)-(%s)-(%s) k=%lf ang(deg)=%lf"%(ffAngle._Type1,ffAngle._Type2, ffAngle._Type3,ffAngle._K2, ffAngle._AngRad/0.0174533)
-            ffAngleDb->add(ffAngle);
-	}
+      ffAngleDb->add(ffAngle);
     }
-    return ffAngleDb;
+  }
+  return ffAngleDb;
 };
 
 
@@ -287,61 +341,77 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
     //
     // read Itor terms 
     //
-    GC_ALLOCATE(FFItorDb_O, ffItorDb );
-    bool done = false;
-    while (not done )
-    {
-      string line = core::cl__read_line(fin).as<core::Str_O>()->get();
+  GC_ALLOCATE(FFItorDb_O, ffItorDb );
+  bool done = false;
+  while (not done )
+  {
+    string line = core::cl__read_line(fin).as<core::Str_O>()->get();
 //      printf("%s:%d line: %s\n", __FILE__, __LINE__, line.c_str());
-        if (line.size()== 0)
-	{
-            done = true;
-	} else
-	{
-	    LOG(BF("Parsing line|%s|") % line.c_str()  );
-            string types = line.substr(0,12);
-            vector<string>typeParts = core::split(types,"-");
-            string t1 = core::trimWhiteSpace(typeParts[0]);
-            string t2 = core::trimWhiteSpace(typeParts[1]);
-            string t3 = core::trimWhiteSpace(typeParts[2]);
-            string t4 = core::trimWhiteSpace(typeParts[3]);
-            GC_ALLOCATE(FFItor_O, ffItor );
-            core::Symbol_sp st1;
-            if ( t1 != "X" ) {
-              st1 = chemkw_intern(t1);
-            } else {
-              st1 = _Nil<core::T_O>();
-            }
-            core::Symbol_sp st2;
-            if ( t2 != "X" ) {
-              st2 = chemkw_intern(t2);
-            } else {
-              st2 = _Nil<core::T_O>();
-            }
-            core::Symbol_sp st3 = chemkw_intern(t3);
-            core::Symbol_sp st4;
-            if ( t4 != "X" ) {
-              st4 = chemkw_intern(t4);
-            } else {
-              st4 = _Nil<core::T_O>();
-            }
-            ffItor->setTypes(st1,st2,st3,st4);
-            string parms = line.substr(13);
-            vector<string> parmsParts = core::split(parms);
-            double pk = atof(parmsParts[0].c_str());
-            double phaseRad = atof(parmsParts[1].c_str())*0.0174533;
-            int pn = abs(int(atof(parmsParts[2].c_str())));
-	    ASSERTF(pn>=1 && pn<=FFItor_O::IMaxPeriodicity,BF("Illegal pn[%d] must be in [1,%d]")
-		    % pn % FFItor_O::IMaxPeriodicity );
-            ffItor->setV_kCal(pn,pk);
-            ffItor->setPhaseRad(pn,phaseRad);
-            ffItorDb->add(ffItor);
-	}
+    if (line.size()== 0)
+    {
+      done = true;
+    } else
+    {
+      LOG(BF("Parsing line|%s|") % line.c_str()  );
+      string types = line.substr(0,12);
+      vector<string>typeParts = core::split(types,"-");
+      string t1 = core::trimWhiteSpace(typeParts[0]);
+      string t2 = core::trimWhiteSpace(typeParts[1]);
+      string t3 = core::trimWhiteSpace(typeParts[2]);
+      string t4 = core::trimWhiteSpace(typeParts[3]);
+      GC_ALLOCATE(FFItor_O, ffItor );
+      core::Symbol_sp st1;
+      if ( t1 != "X" ) {
+        st1 = chemkw_intern(t1);
+      } else {
+        st1 = _Nil<core::T_O>();
+      }
+      core::Symbol_sp st2;
+      if ( t2 != "X" ) {
+        st2 = chemkw_intern(t2);
+      } else {
+        st2 = _Nil<core::T_O>();
+      }
+      core::Symbol_sp st3 = chemkw_intern(t3);
+      core::Symbol_sp st4;
+      if ( t4 != "X" ) {
+        st4 = chemkw_intern(t4);
+      } else {
+        st4 = _Nil<core::T_O>();
+      }
+      ffItor->setTypes(st1,st2,st3,st4);
+      string parms = line.substr(13);
+      vector<string> parmsParts = core::split(parms);
+      double pk = atof(parmsParts[0].c_str());
+      double phaseRad = atof(parmsParts[1].c_str())*0.0174533;
+      int pn = abs(int(atof(parmsParts[2].c_str())));
+      ASSERTF(pn>=1 && pn<=FFItor_O::IMaxPeriodicity,BF("Illegal pn[%d] must be in [1,%d]")
+              % pn % FFItor_O::IMaxPeriodicity );
+      ffItor->setV_kCal(pn,pk);
+      ffItor->setPhaseRad(pn,phaseRad);
+      ffItorDb->add(ffItor);
     }
-    return ffItorDb;
+  }
+  return ffItorDb;
 }
 
 
+
+string ReadAmberParameters_O::parseNonbondLabelKindNB(core::T_sp fin)
+{
+  string line = core::cl__read_line(fin).as<core::Str_O>()->get();
+  vector<string>parts = core::split(line);
+  if (parts.size() == 0) {
+    printf("%s:%d Could not split line: %s\n", __FILE__, __LINE__, line.c_str());
+  }
+  string label = parts[0];
+  string kindnb = parts[1];
+  if ( kindnb != "RE" )
+  {
+    SIMPLE_ERROR(BF("Nonbond parameters must be of kindnb=RE this file has kindnb="+kindnb));
+  }
+  return kindnb;
+}
 
 /*!
  * This modifies entries in the ffNonbondDb database
@@ -349,17 +419,6 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
 void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonbondDb)
 {
     bool done = false;
-    string line = core::cl__read_line(fin).as<core::Str_O>()->get();
-    vector<string>parts = core::split(line);
-    if (parts.size() == 0) {
-      printf("%s:%d Could not split line: %s\n", __FILE__, __LINE__, line.c_str());
-    }
-    string label = parts[0];
-    string kindnb = parts[1];
-    if ( kindnb != "RE" )
-    {
-	SIMPLE_ERROR(BF("Nonbond parameters must be of kindnb=RE this file has kindnb="+kindnb));
-    }
     while ( 1 ) {
       string line = core::cl__read_line(fin).as<core::Str_O>()->get();
 //      printf("%s:%d:%s line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
@@ -394,7 +453,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
 
 void ReadAmberParameters_O::parseAtomEquivalences(core::T_sp fin)
 {
-  BFORMAT_T(BF("Warning!  Skipping force field atom equivalences\n"));
+  SIMPLE_WARN(BF("Warning!  Skipping force field atom equivalences\n"));
   while (1) {
     string line = core::cl__read_line(fin).as<core::Str_O>()->get();
     if (line=="") return;
@@ -406,15 +465,17 @@ void ReadAmberParameters_O::parseAtomEquivalences(core::T_sp fin)
 ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fin)
 {_OF();
     string line = core::cl__read_line(fin).as<core::Str_O>()->get();
-    FFNonbondDb_sp ffNonbondsDb = this->parseFirstNonbondDb(fin);
+    GC_ALLOCATE(FFNonbondDb_O, ffNonbondsDb );
+    ffNonbondsDb = this->parseMasses(fin,ffNonbondsDb);
     FFStretchDb_sp ffStretchesDb = this->parseStretchDb(fin);
     FFAngleDb_sp ffAnglesDb = this->parseAngleDb(fin);
     FFPtorDb_sp ffPtorsDb = this->parsePtorDb(fin);
     FFItorDb_sp ffItorsDb = this->parseItorDb(fin);
-    BFORMAT_T(BF("Warning!  Skipping 10-12 hbond\n"));
+    SIMPLE_WARN(BF("Warning!  Skipping 10-12 hbond\n"));
     core::cl__read_line(fin); // skp 10-12 hbond
     core::cl__read_line(fin); // blank
     this->parseAtomEquivalences(fin);
+    string kindNb = this->parseNonbondLabelKindNB(fin);
     this->parseNonbondDb(fin,ffNonbondsDb);
     LOG(BF("All parameters read fine") );
     GC_ALLOCATE(ForceField_O, ff );
@@ -500,6 +561,70 @@ ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fi
     ff->_Stretches->addEstimateStretch( chemkw_intern("I"), chemkw_intern("S"), 2.560, 9.161 );
     ff->_Stretches->addEstimateStretch( chemkw_intern("P"), chemkw_intern("S"), 2.120, 8.465 );
     return ff;
+}
+
+ForceField_sp ReadAmberParameters_O::parseFrcModFile(core::T_sp fin) {
+  GC_ALLOCATE(ForceField_O, ff);
+  GC_ALLOCATE(FFNonbondDb_O, nonbondDb);
+  int lastSegment = 0;
+  bool readMasses = false;
+  bool readNonbond = false;
+  core::T_mv mv_title = core::cl__read_line(fin,_Nil<core::T_O>());
+  if (mv_title.notnilp()) {
+    ff->setTitle(mv_title.as<core::Str_O>()->get());
+  }
+  while ( true ) {
+    core::T_mv mv_line = core::cl__read_line(fin,_Nil<T_O>());
+    if ( mv_line.nilp() ) break;
+    string line = mv_line.as<core::Str_O>()->get();
+    LOG(BF("Read line(%s)") % line  );
+    if ( line.size()>=4 && line.substr(0,4) == "MASS") {
+      nonbondDb = this->parseMasses(fin,nonbondDb);
+      lastSegment = 1;
+      readMasses = true;
+    } else if ( line.size()>=4 && line.substr(0,4) == "BOND") {
+      ff->setFFStretchDb(this->parseStretchDb(fin));
+      lastSegment = 2;
+    } else if ( line.size()>=4 && line.substr(0,4) == "ANGL") {
+      ff->setFFAngleDb(this->parseAngleDb(fin));
+      lastSegment = 3;
+    } else if ( line.size()>=4 && line.substr(0,4) == "DIHE") {
+      ff->setFFPtorDb(this->parsePtorDb(fin));
+      lastSegment = 4;
+    } else if ( line.size()>=4 && line.substr(0,4) == "IMPR") {
+      ff->setFFItorDb(this->parseItorDb(fin));
+      lastSegment = 5;
+    } else if ( line.size()>=4 && line.substr(0,4) == "HBON") {
+      SIMPLE_WARN(BF("Skipping HBON FrcMod term"));
+    } else if ( line.size()>=4 && line.substr(0,4) == "NONB") {
+      this->parseNonbondDb(fin,nonbondDb);
+      readNonbond = true;
+      lastSegment = 7;
+    } else {
+      if (line.size()>0) {
+        SIMPLE_WARN(BF("Ignoring %s in FrcMod") % line );
+      }
+    }
+  }
+  if (readMasses&&readNonbond) {
+    ff->setFFNonbondDb(nonbondDb);
+  }
+  return ff;
+}
+
+
+ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceFieldOrFrcMod(core::T_sp strm) {
+  core::T_mv test_mv = this->determineParmSetFrcModType(strm);
+  core::T_sp masses = test_mv.second();
+  core::T_sp nonbond = test_mv.third();
+  if (test_mv.nilp()) {
+    return this->parseAmberFormattedForceField(strm);
+  } else {
+    if (masses.nilp() != nonbond.nilp()) {
+      SIMPLE_ERROR(BF("Modified force field files must contain both a MASS and a NONB entry, or neither"));
+    }
+    return this->parseFrcModFile(strm);
+  }
 }
 
 

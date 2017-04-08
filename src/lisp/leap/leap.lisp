@@ -20,8 +20,17 @@
   (valid-arguments entry 1)
   (let ((filename (pathname (ensure-string (second entry)))))
     (log-file filename)))
-  
-(defun leap.desc (entry)
+
+(defun desc (name)
+  "Print a description of the object with name."
+  (let ((val (leap.core:lookup-variable name)))
+    (format t "~S~%" val)))
+
+(defun object (name)
+  "Return the object with name."
+  (leap.core:lookup-variable name))
+
+(defun leap.desc (entry)a
   (valid-arguments entry 1)
   (let ((var (second entry)))
     (format t "~a~%" var)))
@@ -40,28 +49,37 @@
     (add-atom-types info)))
 
 (defun load-off (filename)
-  (print "In leap.lisp :: load-off")
+  "Load an OFF file. OFF files that contain libraries of objects will create those objects in the environment."
   (leap.off:load-off filename))
+
 
 (defun leap.load-off (entry)
   (valid-arguments entry 1)
   (let ((filename (ensure-path (second entry))))
     (load-off filename)))
 
-(defparameter *loaded-amber-params* nil)
+(defun load-amber-params (filename &optional (force-field :default))
+  (let ((ff (let ((parmreader (chem:make-read-amber-parameters)))
+              (with-open-file (fin filename :direction :input)
+                (chem:read-parameters parmreader fin)
+                (chem:get-force-field parmreader)))))
+    (leap.core:add-force-field-or-modification ff force-field-name)))
 
-(defun load-amber-params (filename)
-  (let ((parameters (let ((parmreader (chem:make-read-amber-parameters)))
-                      (with-open-file (fin filename :direction :input)
-                        (chem:read-parameters parms fin)
-                        (chem:get-force-field parms)))))
-    (push parameters *loaded-amber-params*)
-    parameters))
+(defun leap.load-amber-params (filename)
+  (error "The code below is wrong")
+  (let* ((filename (ensure-path filename)))
+    (push (load-amber-params filename) *default-force-field*)))
 
-(defun leap.load-amber-params (entry)
-  (valid-arguments entry 1)
-  (let* ((filename (ensure-path (second entry))))
-    (load-amber-params filename)))
+
+(defun list-force-fields ()
+  (let ((ffs nil))
+    (maphash (lambda (k v) (push k ffs)) leap.core:*force-fields*)
+    ffs))
+
+(defun list-objects ()
+  (let ((objects nil))
+    (maphash (lambda (k v) (push k objects)) leap.core:*objects*)
+    objects))
 
 (defun source (filename)
   "Load the file of leap commands and execute them one by one.

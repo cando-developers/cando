@@ -45,6 +45,7 @@
   (:use #:common-lisp)
   (:export
    #:load-script
+   #:load-amber-params
    ))
 
 (defpackage #:leap.pdb
@@ -80,6 +81,9 @@
    #:residue-name
    #:chain-position
    #:register-variable #:lookup-variable
+   #:add-force-field-or-modification
+   #:*force-fields*
+   #:*objects*
    #:add-pdb-atom-map
    #:add-pdb-res-map)
   )
@@ -112,10 +116,11 @@
 ;;;   #:load-off
    #:add-pdb-res-map
    #:add-pdb-atom-map
+   #:load-amber-params
+   #:load-off
+   #:list-force-fields
+   #:list-objects
+   #:desc
+   #:object
    )
   (:use :common-lisp :chem :geom :chemdraw :cando))
-
-(import 'leap.off:load-off :leap)
-
-;;;(in-package :leap.off)
-;;;(defun bug () (print "In bug"))

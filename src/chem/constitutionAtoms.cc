@@ -57,9 +57,10 @@ void ConstitutionAtom_O::fields(core::Record_sp node)
 string ConstitutionAtom_O::__repr__() const
 {
   stringstream ss;
-  ss << "( " << this->className() << " ";
+  ss << "(" << this->className() << " ";
   ss << " :atomName \"" << this->_AtomName << "\"";
   ss << " :element " << symbolFromElement(this->_Element);
+  ss << ")";
   return ss.str();
 }
 

@@ -1,8 +1,16 @@
 (in-package :cando-utility)
 
+(defun home/ (path)
+  (if (member :docker *features*)
+      (pathname (format nil "/work/~a" (namestring path)))
+      (let ((env-home (ext:getenv "HOME")))
+        (unless env-home (setf env-home "~"))
+        (pathname (format nil "~a/~a" env-home (namestring path))))))
+
+
 (defun current-directory ()
-  "Return the current directory relative to the users home directory"
-  (enough-namestring *default-pathname-defaults* cando::*root-directory*))
+  "Return the current directory"
+  (ext:getcwd))
 
 (defun mkdir (dir)
   "Create a directory realtive to the users home directory"
@@ -15,10 +23,8 @@
     (merge-pathnames pn-dir cando::*root-directory*)))
   
 (defun set-current-directory (dir)
-  "Set the current directory (relative to the users home directory) to dir."
-  (let ((abs-dir (calculate-directory dir)))
-    (setf *default-pathname-defaults* abs-dir))
-  (current-directory))
+  "Set the current directory"
+  (ext:chdir dir t))
 
 (defun directory-files (&optional dir)
   (unless dir

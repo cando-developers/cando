@@ -31,40 +31,6 @@
            )
   )
 
-(defpackage #:cando
-  (:use #:common-lisp #:core)
-  (:export
-   #:from-string
-   #:as-string
-   #:scramble-positions
-   #:jostle
-   #:gather-stereocenters
-   #:set-stereoisomer
-   #:set-stereoisomer-func
-   #:optimize-structure
-   #:configure-minimizer
-   #:minimize-no-fail
-   #:build-good-geometry-from-random
-   #:build-molecules-from-atom-connectivity
-   #:chimera
-   #:bad-geometry-p
-   #:indexed-pathname
-   #:save-mol2
-   #:load-mol2
-   #:save-cando
-   #:load-cando
-   #:dump-atoms
-   #:load-cdxml-aggregate
-   #:load-psf-pdb
-   #:remove-overlaps
-   #:merge-into-one-aggregate
-   #:constitution-from-residue
-   #:calculate-hybridization
-   #:build-unbuilt-hydrogens
-   #:progress-advance
-   #:progress-bar
-   #:make-progress-bar
-   #:progress-done))
 
 (defpackage #:geom
   (:use #:common-lisp)
@@ -154,8 +120,48 @@
    #:load-antechamber))
 
 
-(defpackage #:cando-user
+(defpackage #:cando
+  (:use #:common-lisp
+        #:cando-utility
+        )
   (:shadowing-import-from :chem "ATOM")
-  )
+  (:import-from :ext #:chdir #:getcwd)
+  (:export
+   #:from-string
+   #:as-string
+   #:scramble-positions
+   #:jostle
+   #:gather-stereocenters
+   #:set-stereoisomer
+   #:set-stereoisomer-func
+   #:optimize-structure
+   #:configure-minimizer
+   #:minimize-no-fail
+   #:build-good-geometry-from-random
+   #:build-molecules-from-atom-connectivity
+   #:chimera
+   #:bad-geometry-p
+   #:indexed-pathname
+   #:save-mol2
+   #:load-mol2
+   #:save-cando
+   #:load-cando
+   #:dump-atoms
+   #:load-cdxml-aggregate
+   #:load-psf-pdb
+   #:remove-overlaps
+   #:merge-into-one-aggregate
+   #:constitution-from-residue
+   #:calculate-hybridization
+   #:build-unbuilt-hydrogens
+   #:progress-advance
+   #:progress-bar
+   #:make-progress-bar
+   #:progress-done
+   #:home/
+   ;;; directory utilities
+   #:set-current-directory
+   #:current-directory
+   ))
 
 
