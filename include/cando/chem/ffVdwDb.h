@@ -103,6 +103,7 @@ public:
     gctools::Vec0<FFVdw_sp>	_Terms;
 
     void	add( FFVdw_sp vdw ) {SUBIMP();};
+        void forceFieldMerge(FFBaseDb_sp other);
 
 	DEFAULT_CTOR_DTOR(FFVdwDb_O);
 };

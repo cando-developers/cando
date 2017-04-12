@@ -59,35 +59,9 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
-
-
-#if 0
-void	Residue_O::resetConstitution()
-{
-    this->_Constitution = _Nil<CandoDatabaseReference_O>();
-};
-#endif
-
 bool Residue_O::applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value ) {
   if ( this->Base::applyPropertyToSlot(prop,value) ) return true;
   return false;
-}
-
-CL_LISPIFY_NAME("hasConstitution");
-CL_DEFMETHOD bool	Residue_O::hasConstitution()
-{
-    IMPLEMENT_MEF(BF("handle ownerWithClass"));
-//    return this->ownerWithClass<Constitution_O>().notnilp();
-};
-
-void	Residue_O::setConstitution(Constitution_sp cc)
-{
-   DEPRECATED();
-#if 0
-   ANN(cc);
-   CandoDatabase_sp bdb = cc->getCandoDatabase();
-   this->_Constitution = CandoDatabaseReference_O::create(bdb,"Constitution="+cc->getName());
-#endif
 }
 
 
@@ -127,25 +101,6 @@ void Residue_O::transferCoordinates(Matter_sp obj)
     }
 }
 
-
-
-CL_LISPIFY_NAME("getConstitution");
-CL_DEFMETHOD Constitution_sp	Residue_O::getConstitution()
-{
-    IMPLEMENT_MEF(BF("Handle ownerWithClass"));
-#if 0
-    // Constitution_sp c = this->ownerWithClass<Constitution_O>();
-#ifdef DEBUG_ON
-    if ( c.nilp() ) 
-    {
-	LOG(BF("Couldn't find my Constitution in my owners, returning nil"));
-	return c;
-    }
-#endif
-    LOG(BF("Found Constitution in our owners, returning it") );
-    return c;
-#endif
-}
 
 
 CL_LISPIFY_NAME("addAtom");

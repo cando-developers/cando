@@ -63,7 +63,7 @@
               (with-open-file (fin filename :direction :input)
                 (chem:read-parameters parmreader fin)
                 (chem:get-force-field parmreader)))))
-    (leap.core:add-force-field-or-modification ff force-field-name)))
+    (leap.core:add-force-field-or-modification ff force-field)))
 
 (defun leap.load-amber-params (filename)
   (error "The code below is wrong")

@@ -42,7 +42,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <clasp/core/array.h>
 #include <cando/adapt/adapters.h>
-#include <clasp/core/environment.h>
+#include <clasp/core/evaluator.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/chem/matter.h>
 #include <clasp/core/symbolTable.h>
@@ -182,7 +182,7 @@ CL_DEFMETHOD     bool CandoDatabase_O::recognizesRepresentedEntityNameSet(core::
     {_OF();
 	if ( resource == chemkw::_sym_constitution )
 	{
-	    return this->constitutionForNameOrPdb(name);
+          return core::eval::funcall(_sym_constitutionForNameOrPdb,this->asSmartPtr(),name);
 	}
 	if ( resource == chemkw::_sym_entity )
 	{
@@ -399,7 +399,7 @@ CL_DEFMETHOD     bool	CandoDatabase_O::recognizesNameOrPdb(core::Symbol_sp nm)
 #endif
 
 
-
+#if 0
 CL_LISPIFY_NAME("constitutionForNameOrPdb");
 CL_DEFMETHOD     Constitution_sp	CandoDatabase_O::constitutionForNameOrPdb(core::Symbol_sp name)
     {
@@ -409,7 +409,9 @@ CL_DEFMETHOD     Constitution_sp	CandoDatabase_O::constitutionForNameOrPdb(core:
 	ASSERTP(obj->hasConstitution(), "The name: "+_rep_(name)+" is not part of a Constitution" );
 	return obj->constitution();
     }
+#endif
 
+#if 0
 CL_LISPIFY_NAME("constitutionNameForNameOrPdb");
 CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(core::Symbol_sp name)
     {
@@ -417,7 +419,8 @@ CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(c
 	con = this->constitutionForNameOrPdb(name);
 	return con->getName();
     }
-
+#endif
+#if 0
     core::Symbol_sp CandoDatabase_O::getMonomerNameForNameOrPdb(core::Symbol_sp name)
     {
 	Entity_sp dep;
@@ -437,7 +440,7 @@ CL_DEFMETHOD     core::Symbol_sp CandoDatabase_O::constitutionNameForNameOrPdb(c
 	si = (dep).as<Stereoisomer_O>();
 	return si->getPdb();
     }
-
+#endif
 
 
 

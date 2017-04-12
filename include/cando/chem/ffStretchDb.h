@@ -130,7 +130,7 @@ namespace       chem {
 	void	add( FFStretch_sp str );
         core::T_sp	findTerm(chem::Atom_sp a1, chem::Atom_sp a2 );
 
-        void forceFieldMergeFFStretchDb(FFStretchDb_sp other);
+        void forceFieldMerge(FFBaseDb_sp other);
         
 	DEFAULT_CTOR_DTOR(FFStretchDb_O);
     };

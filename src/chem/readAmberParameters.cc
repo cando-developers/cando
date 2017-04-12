@@ -74,7 +74,7 @@ CL_DEFMETHOD ForceField_sp ReadAmberParameters_O::getForceField()
     GC_ALLOCATE(ForceField_O, temp );
     this->_ForceField = temp;
   }
-  this->_ForceField->setFFTypeDb(this->_Types);
+  if (!this->_Types.unboundp()) this->_ForceField->setFFTypeDb(this->_Types);
   return this->_ForceField;
 }
 

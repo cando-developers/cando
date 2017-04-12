@@ -165,11 +165,8 @@ class FFBaseDb_O : public core::CxxObject_O {
   void fields(core::Record_sp node);
   void initialize();
  public:
-  core::T_sp	_ForceField;
- public:
   virtual void forceFieldMerge(FFBaseDb_sp other);
-  void	setForceField(ForceField_sp ff);
- FFBaseDb_O() : _ForceField(_Nil<core::T_O>()) {};
+  FFBaseDb_O() {};
 };
 
  SMART(FFParameterBaseDb);
@@ -184,6 +181,7 @@ class FFParameterBaseDb_O : public FFBaseDb_O {
  public:
   virtual void forceFieldMerge(FFBaseDb_sp other);
  FFParameterBaseDb_O() : FFBaseDb_O(), _Parameters(_Unbound<core::HashTableEq_O>()) {};
+  string __repr__() const;
 };
 
 

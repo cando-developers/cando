@@ -156,11 +156,9 @@ namespace chem
 	//! Return a StringSet of the ConstitutionAtom names
     adapt::SymbolSet_sp atomNamesAsSymbolSet();
 
-#if 0
 	/*! Create a Residue that has all the atoms/bonds and all the necessary atom/bond
 	  properties set properly for this ConstitutionAtoms */
-    Residue_sp buildResidue();
-#endif
+//    Residue_sp buildResidue();
     
     ConstitutionAtoms_O( const ConstitutionAtoms_O& ss ); //!< Copy constructor
     DEFAULT_CTOR_DTOR(ConstitutionAtoms_O);

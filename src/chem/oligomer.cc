@@ -23,7 +23,7 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#define	DEBUG_LEVEL_NONE
+#define	DEBUG_LEVEL_FULL
 
 
 //
@@ -33,18 +33,20 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/main/foundation.h>
 #include <cando/chem/oligomer.h>
 #include <clasp/core/array.h>
+#include <clasp/core/hashTableEq.h>
 #include <cando/chem/molecule.h>
 #include <clasp/core/numerics.h>
 #include <cando/chem/candoScript.h>
 #include <cando/adapt/adapters.h>
 #include <cando/chem/topology.h>
-#include <clasp/core/environment.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/monomerContext.h>
 #include <cando/chem/monomer.h>
 #include <cando/chem/coupling.h>
 #include <cando/adapt/adapters.h>
 #include <clasp/core/lispStream.h>
 #include <cando/chem/plug.h>
+#include <cando/chem/constitution.h>
 #include <cando/chem/specificContext.h>
 #include <clasp/core/wrappers.h>
 
@@ -416,8 +418,6 @@ CL_LISPIFY_NAME("Oligomer-addCoupling");
 CL_DEFMETHOD void	Oligomer_O::addCoupling(Coupling_sp c)
 {
     this->_Couplings.push_back(c);
-//    c->connectListener(this->sharedThis<Oligomer_O>(),Coupling_nameChanged);
-    c->setOligomer(this->sharedThis<Oligomer_O>());
 }
 
 
@@ -476,43 +476,42 @@ CL_DEFMETHOD void	Oligomer_O::throwIfBadConnections()
 CL_LISPIFY_NAME("couple");
 CL_DEFMETHOD DirectionalCoupling_sp	Oligomer_O::couple( Monomer_sp inMon, core::Symbol_sp name, Monomer_sp outMon )
 {_OF();
-DirectionalCoupling_sp	coupling;
-bool		foundIn, foundOut;
-gctools::Vec0<Monomer_sp>::iterator	mi;
-    foundIn = false;
-    foundOut = false;
-    for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) 
-    {
-	if ( *mi == inMon ) {
-	    foundIn = true;
-	}
-	if ( *mi == outMon ) {
-	    foundOut = true;
-	}
+  DirectionalCoupling_sp	coupling;
+  bool		foundIn, foundOut;
+  gctools::Vec0<Monomer_sp>::iterator	mi;
+  LOG(BF("Creating a coupling from %s to %s") % _rep_(inMon) % _rep_(outMon));
+  foundIn = false;
+  foundOut = false;
+  for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) 
+  {
+    if ( *mi == inMon ) {
+      foundIn = true;
     }
-    if ( !foundIn ) {
-	SIMPLE_ERROR(BF("Could not find first monomer in oligomer"));
+    if ( *mi == outMon ) {
+      foundOut = true;
     }
-    if ( !foundOut ) {
-	SIMPLE_ERROR(BF("Could not find second monomer in oligomer"));
-    }
-    core::Symbol_sp outMonPlugName = DirectionalCoupling_O::inPlugName(name);
-    if ( outMon->hasCouplingWithPlugName(outMonPlugName) ) {
-	SIMPLE_ERROR(BF("The second monomer already has an in coupling"));
-    }
-    core::Symbol_sp inMonPlugName = DirectionalCoupling_O::outPlugName(name);
-    if ( inMon->hasCouplingWithPlugName(inMonPlugName) ) {
-	SIMPLE_ERROR(BF("The first monomer[%s] already has an out coupling with the name: %s") % inMon->getName() % name );
-    }
-    coupling = DirectionalCoupling_O::create();
-    coupling->setName(name);
-    coupling->setInMonomer(inMon->sharedThis<Monomer_O>());
-    coupling->setOutMonomer(outMon->sharedThis<Monomer_O>());
-    inMon->addCoupling(inMonPlugName,coupling);
-    outMon->addCoupling(outMonPlugName,coupling);
-    this->addCoupling(coupling);
-    LOG(BF("after coupling coupling: %s") % coupling->description().c_str()  );
-    return coupling;
+  }
+  if ( !foundIn ) {
+    SIMPLE_ERROR(BF("Could not find first monomer in oligomer"));
+  }
+  if ( !foundOut ) {
+    SIMPLE_ERROR(BF("Could not find second monomer in oligomer"));
+  }
+  core::Symbol_sp outMonPlugName = DirectionalCoupling_O::inPlugName(name);
+  if ( outMon->hasCouplingWithPlugName(outMonPlugName) ) {
+    SIMPLE_ERROR(BF("The second monomer already has an in coupling"));
+  }
+  core::Symbol_sp inMonPlugName = DirectionalCoupling_O::outPlugName(name);
+  if ( inMon->hasCouplingWithPlugName(inMonPlugName) ) {
+    SIMPLE_ERROR(BF("The first monomer[%s] already has an out coupling with the name: %s") % inMon->getName() % name );
+  }
+  LOG(BF("in/out plug names: %s/%s") % _rep_(inMonPlugName) % _rep_(outMonPlugName));
+  coupling = DirectionalCoupling_O::make(name,inMon,outMon);
+  inMon->addCoupling(inMonPlugName,coupling);
+  outMon->addCoupling(outMonPlugName,coupling);
+  this->addCoupling(coupling);
+  LOG(BF("after coupling coupling: %s") % coupling->description()  );
+  return coupling;
 }
 
 
@@ -578,13 +577,20 @@ int			residueNetCharge;
     Residue_sp			res;
     Molecule_sp 			mol;
     mol = Molecule_O::create();
+    core::HashTableEq_sp monomersToResidues = core::HashTableEq_O::create_default();
     gctools::Vec0<Monomer_sp>::iterator	mi;
-    for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) 
-    {
-	ASSERT((*mi).notnilp());
-    	res = (*mi)->createResidue();
-	topology = (*mi)->getTopology();
-	mol->addMatter(res);
+    core::T_sp db = getCandoDatabase();
+    for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) {
+      Constitution_sp constitution = core::eval::funcall(_sym_constitutionForNameOrPdb,db,(*mi)->getName());
+      Topology_sp topology = constitution->getTopologyForMonomerEnvironment(*mi);
+      LOG(BF("topology: %s") % _rep_(topology));
+      res = topology->build_residue();
+      LOG(BF("res: %s") % _rep_(res));
+      constitution->makeResidueConsistentWithStereoisomerNamed(res,(*mi)->getName());
+      LOG(BF("made res consistent with stereoisomer named res: %s") % _rep_(res));
+      mol->addMatter(res);
+      LOG(BF("Added matter"));
+      monomersToResidues->hash_table_setf_gethash((*mi),res);
     }
     gctools::Vec0<Coupling_sp>::iterator	ci;
     Monomer_sp	mon1, mon2;
@@ -595,8 +601,8 @@ int			residueNetCharge;
 	ASSERT(mon1.notnilp());
 	mon2 = (*ci)->getMonomer2();
 	ASSERT(mon2.notnilp());
-	res1 = mon1->getTemporaryResidue();
-	res2 = mon2->getTemporaryResidue();
+        res1 = gc::As_unsafe<Residue_sp>(monomersToResidues->gethash(mon1));
+        res2 = gc::As_unsafe<Residue_sp>(monomersToResidues->gethash(mon2));
     	(*ci)->doCoupling(res1,res2);
     };
     return mol;

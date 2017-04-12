@@ -23,7 +23,7 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#define	DEBUG_LEVEL_NONE
+#define	DEBUG_LEVEL_FULL
 
 //
 // (C) 2004 Christian E. Schafmeister
@@ -136,13 +136,8 @@ CL_DEFMETHOD void ForceField_O::forceFieldMerge(ForceField_sp other)
 CL_LISPIFY_NAME("assignTypes");
 CL_DEFMETHOD void	ForceField_O::assignTypes(Matter_sp matter)
 {
-  gc::Nilable<FFTypesDb_sp>	types;
-  types = this->getTypesOrNil();
-  if (types.notnilp()) {
-    types->assignTypes(matter);
-  } else {
-    SIMPLE_ERROR(BF("Could not assign atom types because the types were NIL"));
-  }
+  FFTypesDb_sp types = this->getTypes();
+  types->assignTypes(matter);
 }
 
 
@@ -159,40 +154,34 @@ void	ForceField_O::setInfoDb( InfoDb_sp Info )
 
 void	ForceField_O::setFFTypeDb( FFTypesDb_sp Types)
 {
-  this->_Types->setForceField(this->sharedThis<ForceField_O>());
+  this->_Types = Types;
 }
 
 
 void	ForceField_O::setFFStretchDb( FFStretchDb_sp Stretches)
 {
     this->_Stretches = Stretches;
-    if (this->_Stretches.notnilp()) this->_Stretches->setForceField(this->asSmartPtr());
 }
 
 void	ForceField_O::setFFAngleDb( FFAngleDb_sp Angles)
 {
     this->_Angles = Angles;
-    if (this->_Angles.notnilp()) this->_Angles->setForceField(this->asSmartPtr());
 }
 void	ForceField_O::setFFItorDb( FFItorDb_sp Itors)
 {
     this->_Itors = Itors;
-    if (this->_Itors.notnilp()) this->_Itors->setForceField(this->sharedThis<ForceField_O>());
 }
 void	ForceField_O::setFFPtorDb( FFPtorDb_sp Ptors)
 {
     this->_Ptors = Ptors;
-    if (this->_Ptors.notnilp()) this->_Ptors->setForceField(this->sharedThis<ForceField_O>());
 }
 void	ForceField_O::setFFNonbondDb(FFNonbondDb_sp Nonbonds )
 {
     this->_Nonbonds = Nonbonds;
-    if (this->_Nonbonds.notnilp()) this->_Nonbonds->setForceField(this->sharedThis<ForceField_O>());
 }
 void	ForceField_O::setFFVdwDb(FFVdwDb_sp Vdws )
 {
     this->_Vdws = Vdws;
-    if (this->_Vdws.notnilp()) this->_Vdws->setForceField(this->sharedThis<ForceField_O>());
 }
 
 

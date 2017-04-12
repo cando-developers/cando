@@ -167,10 +167,10 @@ CL_DEFMETHOD     core::Symbol_sp getName() { return this->_Name; };
 
 	bool recognizesNameOrPdb(core::Symbol_sp name);
 
-	Constitution_sp	constitutionForNameOrPdb(core::Symbol_sp name);
-	core::Symbol_sp constitutionNameForNameOrPdb(core::Symbol_sp name);
-	core::Symbol_sp getMonomerNameForNameOrPdb(core::Symbol_sp name);
-	core::Symbol_sp getPdbNameForNameOrPdb(core::Symbol_sp name);
+//	Constitution_sp	constitutionForNameOrPdb(core::Symbol_sp name);
+//	core::Symbol_sp constitutionNameForNameOrPdb(core::Symbol_sp name);
+//	core::Symbol_sp getMonomerNameForNameOrPdb(core::Symbol_sp name);
+//	core::Symbol_sp getPdbNameForNameOrPdb(core::Symbol_sp name);
 
 
 CL_LISPIFY_NAME("getFrameRecognizer");

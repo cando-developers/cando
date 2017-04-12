@@ -267,7 +267,7 @@ CL_DEFMETHOD     string	getName() { return this->_Name; };
     double		calculateEnergy();
     double		calculateEnergyAndForce();
 
-    void defineForMatter(Matter_sp agg, ForceField_sp forceField, bool useExcludedAtoms, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
+    void defineForMatter(Matter_sp agg, ForceField_sp forceField, bool useExcludedAtoms, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false, bool assign_types=true );
 
     void generateStandardEnergyFunctionTables(Matter_sp agg, ForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
     void generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp agg, ForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );

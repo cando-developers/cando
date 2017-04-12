@@ -137,7 +137,7 @@ Each Topology is uniquely identified within a CandoDatabase by a TopologyIndex0N
 */
 template <>
 struct gctools::GCInfo<chem::Topology_O> {
-  static bool constexpr NeedsInitialization = false;
+  static bool constexpr NeedsInitialization = true;
   static bool constexpr NeedsFinalization = false;
   static GCInfo_policy constexpr Policy = normal;
 };
@@ -190,6 +190,8 @@ CL_LISPIFY_NAME("suppressTrainers");
 CL_DEFMETHOD     bool suppressTrainers() const { return this->_SuppressTrainers;};
 
  Residue_sp build_residue() const;
+
+ string __repr__() const;
  
     //! Return all plugs as a Cons
     core::List_sp	plugsAsList();
@@ -207,6 +209,8 @@ CL_DEFMETHOD     bool suppressTrainers() const { return this->_SuppressTrainers;
     /// @brief Return the name of the Topology
 CL_LISPIFY_NAME("getName");
 CL_DEFMETHOD     core::Symbol_sp	getName() const {return (this->_Name);};
+CL_LISPIFY_NAME("setName");
+ CL_DEFMETHOD     void setName(core::Symbol_sp n) {this->_Name = n;};
 
     /// @brief Return true if this Topology has a plug named (name)
     bool	hasPlugNamed(core::Symbol_sp name);

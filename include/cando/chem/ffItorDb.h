@@ -120,6 +120,8 @@ namespace       chem
 
     void    cantFind(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 );
 
+    void forceFieldMerge(FFBaseDb_sp bother);
+
 	//! Dump all ptors to stdout that match these types
     DEFAULT_CTOR_DTOR(FFItorDb_O);
   };

@@ -23,7 +23,7 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#define	DEBUG_LEVEL_NONE
+#define	DEBUG_LEVEL_FULL
 
 
 //
@@ -31,6 +31,7 @@ This is an open source license for the CANDO software from Temple University, bu
 //
 
 #include <clasp/core/common.h>
+#include <clasp/core/bformat.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/adapt/adapters.h>
 #include <cando/chem/topology.h>
@@ -109,13 +110,31 @@ Topology_sp Topology_O::make(core::Symbol_sp name, Constitution_sp constitution,
   return me;
 };
 
+string Topology_O::__repr__() const {
+  stringstream ss;
+  ss << "#<TOPOLOGY ";
+  ss << " :name " << _rep_(this->_Name);
+#ifdef USE_BOEHM
+  ss << " @" << (void*)this;
+#endif
+  ss << ">";
+  return ss.str();
+}
+
+
 
 CL_DEFMETHOD Residue_sp Topology_O::build_residue() const
 {
+  LOG(BF("creating residue\n"));
   Residue_sp res = Residue_O::make(this->getName());
+  LOG(BF("created residue\n"));
+  core::Vector_sp atomInfo = this->_AtomInfo;
+  ASSERT(atomInfo.notnilp());
+  size_t numAtoms = atomInfo->arrayTotalSize();
+  LOG(BF("atomInfo->arrayTotalSize() = %d\n") % numAtoms );
   gctools::Vec0<Atom_sp> atoms;
-  atoms.resize(this->_AtomInfo->arrayTotalSize());
-  res->resizeContents(this->_AtomInfo->arrayTotalSize());
+  atoms.resize(numAtoms);
+  res->resizeContents(numAtoms);
   ConstitutionAtoms_sp constitutionAtoms = this->_Constitution->getConstitutionAtoms();
   size_t idx = 0;
   for ( size_t idx=0, idxEnd(this->_AtomInfo->arrayTotalSize()); idx<idxEnd; ++idx ) {
@@ -388,35 +407,33 @@ CL_DEFMETHOD     core::List_sp Topology_O::outPlugsAsList()
 	LOG(BF("Do they match the plugs passed as arguments[%s] --> %d") % plugSet->asString() % match );
 	return match;
     }
-
-
-
     bool	Topology_O::matchesMonomerEnvironment( Monomer_sp mon )
     {
-	LOG(BF("Checking if monomer[%s] matches the topology environment") % mon->description() );
-	uint numPlugsWithMates = 0;
-	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
-	{
-          LOG(BF("Looking at plug[%s]") % _rep_(i->second->getName()) );
-	    if (!i->second.isA<PlugWithMates_O>() )
-	    {
-		LOG(BF("It's not a PlugWithMates"));
-		continue;
-	    }
-	    if ( !mon->hasCouplingWithPlugName(i->second->getName()) ) 
-	    {
-              LOG(BF("The monomer doesn't have a coupling with plug name[%s]") % _rep_(i->second->getName()) );
-		return false;
-	    }
-	    numPlugsWithMates++;
-	}
-	if ( numPlugsWithMates != mon->numberOfCouplings() ) 
-	{
-	    LOG(BF("There is a mismatch with the number of plugs in the topology[%d] and the number of couplings for the monomer[%d]") % numPlugsWithMates % mon->numberOfCouplings() );
-	    return false;
-	}
-	LOG(BF("They match"));
-	return true;
+      LOG(BF("Checking if monomer[%s] matches the topology environment") % mon->description() );
+      uint numPlugsWithMates = 0;
+      LOG(BF("%s:%d monomer->%s  number of plugs: %d\n") % __FILE__ % __LINE__ % _rep_(mon) % this->_Plugs.size());
+      for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
+      {
+        LOG(BF("Looking at plug[%s]") % _rep_(i->second->getName()) );
+        if (!i->second.isA<PlugWithMates_O>() )
+        {
+          LOG(BF("It's not a PlugWithMates"));
+          continue;
+        }
+        if ( !mon->hasCouplingWithPlugName(i->second->getName()) ) 
+        {
+          LOG(BF("The monomer doesn't have a coupling with plug name[%s]") % _rep_(i->second->getName()) );
+          return false;
+        }
+        numPlugsWithMates++;
+      }
+      if ( numPlugsWithMates != mon->numberOfCouplings() ) 
+      {
+        LOG(BF("There is a mismatch with the number of plugs in the topology[%d] and the number of couplings for the monomer[%d]") % numPlugsWithMates % mon->numberOfCouplings() );
+        return false;
+      }
+      LOG(BF("They match"));
+      return true;
     }
 
 
@@ -481,14 +498,13 @@ CL_DEFMETHOD     Plug_sp Topology_O::plugNamed(core::Symbol_sp name)
 
 
 
-    void	Topology_O::initialize()
-    {
-	this->Base::initialize();
-	this->_Name = _Nil<core::Symbol_O>();
-	this->_Plugs.clear();
-	this->_SuppressTrainers = false;
-	this->_Properties = core::HashTableEq_O::create_default();
-    }
+void	Topology_O::initialize()
+{
+  this->Base::initialize();
+  this->_Plugs.clear();
+  this->_SuppressTrainers = false;
+  this->_Properties = core::HashTableEq_O::create_default();
+}
 
 
 

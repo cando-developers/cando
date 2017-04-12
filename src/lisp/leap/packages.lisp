@@ -48,6 +48,11 @@
    #:load-amber-params
    ))
 
+(defpackage #:leap.cando-database
+  (:use #:common-lisp)
+  (:export 
+   ))
+
 (defpackage #:leap.pdb
   (:use #:common-lisp)
   (:export

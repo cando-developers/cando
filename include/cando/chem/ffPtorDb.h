@@ -138,6 +138,7 @@ namespace chem
         core::T_sp findBestTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
         void    cantFind(core::Symbol_sp t1, core::Symbol_sp t2, core::Symbol_sp t3, core::Symbol_sp t4 );
 	void		initialize();
+    void forceFieldMerge(FFBaseDb_sp bother);
 	DEFAULT_CTOR_DTOR(FFPtorDb_O);
     };
 

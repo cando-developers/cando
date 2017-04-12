@@ -24,7 +24,7 @@ This is an open source license for the CANDO software from Temple University, bu
 */
 /* -^- */
        
-#define	DEBUG_LEVEL_NONE
+#define	DEBUG_LEVEL_FULL
 
 
 //
@@ -39,6 +39,7 @@ This is an open source license for the CANDO software from Temple University, bu
  */
 #include <clasp/core/foundation.h>
 #include <clasp/core/array.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/ffAngleDb.h>
 #include <cando/chem/forceField.h>
 #include <cando/chem/ffStretchDb.h>
@@ -128,7 +129,7 @@ void    FFAngleDb_O::add(FFAngle_sp ang)
 }
 
 
-FFAngle_sp FFAngleDb_O::findTerm(chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3 )
+FFAngle_sp FFAngleDb_O::findTerm(FFStretchDb_sp ffstretch, chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3 )
 { 
 FFAngle_sp       match;
 core::Symbol_sp          key;
@@ -143,7 +144,7 @@ core::Symbol_sp		t1, t2, t3;
     key = angleKey(t3,t2,t1);
     parm = this->_Parameters->gethash(key);
     if (parm.notnilp()) return parm;
-    match = this->estimateTerm(a1,a2,a3);
+    match = this->estimateTerm(ffstretch,a1,a2,a3);
     return match;
 }
 
@@ -165,7 +166,7 @@ void	FFAngle_O::initialize()
 
 
 /*! Estimate the angle term according to Wang et al. J. Comput. Chem 25, 1157-1174 (2004) */
-FFAngle_sp	FFAngleDb_O::estimateTerm(chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3 )
+FFAngle_sp	FFAngleDb_O::estimateTerm(FFStretchDb_sp ffstretch, chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3 )
 {
 FFStretch_sp	r12,r32;
 FFAngle_sp	ff_121;
@@ -173,9 +174,6 @@ FFAngle_sp	ff_323;
 double		d, z1, c2, z3, angRad, k;
 core::Symbol_sp		element1, element2, element3;
 core::Symbol_sp		t1, t2, t3;
-ForceField_sp	ff;
-    ASSERTNOTNULL(this->_ForceField);
-    ff = this->_ForceField;
     LOG(BF("status") );
     t1 = a1->getType();
     t2 = a2->getType();
@@ -184,9 +182,8 @@ ForceField_sp	ff;
     // To avoid an std::endless loop of estimating terms just go straight to guess if t1==t3
     if ( t1==t3 ) goto GUESS;
     LOG(BF("status") );
-    LOG(BF("status") );
-    ff_121 = ff->_Angles->findTerm(a1,a2,a1);
-    ff_323 = ff->_Angles->findTerm(a3,a2,a3);
+    ff_121 = this->findTerm(ffstretch,a1,a2,a1);
+    ff_323 = this->findTerm(ffstretch,a3,a2,a3);
     LOG(BF("status") );
     if ( ff_121.nilp() ) goto GUESS;
     LOG(BF("status") );
@@ -197,17 +194,17 @@ ForceField_sp	ff;
     element2 = a2->getElementAsSymbol();
     element3 = a3->getElementAsSymbol();
     LOG(BF("status") );
-    if ( ff->_Angles->_ZConstants.count(element1) == 0 ) goto GUESS;
+    if ( this->_ZConstants.count(element1) == 0 ) goto GUESS;
     LOG(BF("status") );
-    if ( ff->_Angles->_CConstants.count(element2) == 0 ) goto GUESS;
+    if ( this->_CConstants.count(element2) == 0 ) goto GUESS;
     LOG(BF("status") );
-    if ( ff->_Angles->_ZConstants.count(element3) == 0 ) goto GUESS;
+    if ( this->_ZConstants.count(element3) == 0 ) goto GUESS;
     LOG(BF("status") );
-    z1 = ff->_Angles->_ZConstants.get(element1)->get();
-    c2 = ff->_Angles->_CConstants.get(element2)->get();
-    z3 = ff->_Angles->_ZConstants.get(element3)->get();
-    r12 = ff->_Stretches->findTerm(a1,a2);
-    r32 = ff->_Stretches->findTerm(a3,a2);
+    z1 = this->_ZConstants.get(element1)->get();
+    c2 = this->_CConstants.get(element2)->get();
+    z3 = this->_ZConstants.get(element3)->get();
+    r12 = ffstretch->findTerm(a1,a2);
+    r32 = ffstretch->findTerm(a3,a2);
     LOG(BF("status") );
     if ( r12.nilp() ) goto GUESS;
     LOG(BF("status") );
@@ -224,6 +221,7 @@ ForceField_sp	ff;
       angle->_Type3 = t3;
       angle->_AngRad = angRad;
       angle->setK2_kCalPerRadianSquared(k);
+      SIMPLE_WARN(BF("Estimated angle term %s-%s-%s  T0 -> %f degrees K -> %f kCal/rad^2") % _rep_(t1) % _rep_(t2) % _rep_(t3) % (angle->getAngle_Radian()/0.0174533) % angle->getK2_kCalPerRadianSquared());
       return angle;
     }
 GUESS:
@@ -240,7 +238,6 @@ GUESS:
       } else if ( a2->getHybridization() == hybridization_sp ) {
 	angle->_AngRad = 180.0*0.0174533;
       } else {
-	LOG(BF("Unknown hybridization(%s) for: %s") % a2->getHybridization().c_str() % a2->description().c_str() );
 	angle->_AngRad = 109.5*0.0174533;
       }
 		// See Gaff paper for where I get these force constants
@@ -251,6 +248,7 @@ GUESS:
       } else {
 	angle->_K2__kJPerRadianSquared = kCalPerRadianSquared_to_kJPerRadianSquared(70.0);
       }
+      SIMPLE_WARN(BF("Estimated angle term %s-%s-%s  T0 -> %f degrees K -> %f kCal/rad^2") % _rep_(t1) % _rep_(t2) % _rep_(t3) % (angle->getAngle_Radian()/0.0174533) % angle->getK2_kCalPerRadianSquared());
       return angle;
     }
 }
@@ -266,6 +264,15 @@ stringstream	desc;
     return desc.str();
 }
 
+void FFAngleDb_O::forceFieldMerge(FFBaseDb_sp bother)
+{
+  SIMPLE_WARN(BF("Merging angle terms - but terms with different type orders will create duplicates!"));
+  FFAngleDb_sp other = gc::As<FFAngleDb_sp>(bother);
+  other->_Parameters->maphash([this] (core::T_sp key, core::T_sp value) {
+      core::Symbol_sp skey = gc::As<core::Symbol_sp>(key);
+      this->_Parameters->hash_table_setf_gethash(skey,value);
+    } );
+}
 
 
 

@@ -138,16 +138,13 @@ SYMBOL_SHADOW_EXPORT_SC_(ChemPkg,atom);
 SYMBOL_EXPORT_SC_(ChemPkg,R);
 SYMBOL_EXPORT_SC_(ChemPkg,S);
 SYMBOL_EXPORT_SC_(ChemPkg,UnknownConfiguration);
-namespace chemkw {
 
-
-
-};
-
-namespace chem {
-};
-
-
+SYMBOL_EXPORT_SC_(ChemPkg,STARcandoDatabaseSTAR);
+SYMBOL_EXPORT_SC_(ChemPkg,constitutionForNameOrPdb);
+SYMBOL_EXPORT_SC_(ChemPkg,recognizesNameOrPdb);
+SYMBOL_EXPORT_SC_(ChemPkg,getMonomerNameForNameOrPdb);
+SYMBOL_EXPORT_SC_(ChemPkg,monomerNameForNameOrPdb);
+SYMBOL_EXPORT_SC_(ChemPkg,pdbNameForNameOrPdb);
 
 
 namespace chem
@@ -268,10 +265,10 @@ namespace chem
 	}
     }
 
-    CandoDatabase_sp getCandoDatabase()
-    {
-	return _sym_candoDatabase->symbolValue().as<CandoDatabase_O>();
-    }
+core::T_sp getCandoDatabase()
+{
+  return _sym_STARcandoDatabaseSTAR->symbolValue();
+}
 
 
 #if 0

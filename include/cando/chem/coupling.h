@@ -68,18 +68,6 @@ namespace chem {
   class Coupling_O : public core::CxxObject_O //public core::Model_O
   {
     LISP_CLASS(chem,ChemPkg,Coupling_O,"Coupling",core::CxxObject_O);
-    friend class O_WeakOligomer;
-  public:
-    void initialize();
-//	void	archiveBase(core::ArchiveP node);
-  public:
-  public:
-
-  private:
-    gc::Nilable<Oligomer_sp>	_Oligomer;
-    bool			_HasError;
-  private:
-    bool			_Selected;
   public:
     virtual core::Symbol_sp getName() const {_OF();SUBCLASS_MUST_IMPLEMENT();};
     bool		containsMonomer(Monomer_sp mon);
@@ -87,17 +75,6 @@ namespace chem {
     virtual Monomer_sp	getMonomer1_const() const {_OF();SUBCLASS_MUST_IMPLEMENT();};
     virtual Monomer_sp	getMonomer2() {_OF();SUBCLASS_MUST_IMPLEMENT();};
     virtual Monomer_sp	getMonomer2_const() const {_OF();SUBCLASS_MUST_IMPLEMENT();};
-    void	setOligomer(Oligomer_sp o);
-    void	resetOligomer();
-    Oligomer_sp	getOligomer();
-    CL_LISPIFY_NAME("isSelected");
-    CL_DEFMETHOD 	bool isSelected() { return this->_Selected; };
-    CL_LISPIFY_NAME("setSelected");
-    CL_DEFMETHOD 	void setSelected(bool b) { this->_Selected = b; };
-
-    void	setHasError(bool b) { this->_HasError = b;};
-    CL_LISPIFY_NAME("getHasError");
-    CL_DEFMETHOD 	bool	getHasError() { return this->_HasError; };
 
     virtual bool isRingClosing() { return false; };
     CL_LISPIFY_NAME("throwIfBadConnections");
@@ -115,9 +92,6 @@ namespace chem {
   };
 
 
-
-
-
   typedef	enum	{ NoSide, InSide, OutSide } DirectionalCouplingSide;
 
 
@@ -126,10 +100,6 @@ namespace chem {
   {
     LISP_CLASS(chem,ChemPkg,DirectionalCoupling_O,"DirectionalCoupling",Coupling_O);
 
-  public:
-    friend class O_WeakOligomer;
-//	void	archiveBase(core::ArchiveP node);
-    void initialize();
   public:
     static char otherDirectionalCouplingSide( char side);
     	//! Return just the coupling name with the prefix removed
@@ -164,8 +134,6 @@ namespace chem {
     virtual Monomer_sp	getMonomer2() { return this->getOutMonomer();};
     virtual Monomer_sp	getMonomer2_const() const { return this->getOutMonomer_const();};
 
-    void	resetIn();
-    void	resetOut();
     bool	isInCouplingToMonomer(Monomer_sp mon);
     void	setInMonomer_NoSignal(Monomer_sp sin);
     void	setOutMonomer_NoSignal(Monomer_sp sout);
@@ -198,6 +166,13 @@ namespace chem {
     void	checkForErrors(core::T_sp errorStream);
     void	throwIfBadConnections();
 
+
+  public:
+    static DirectionalCoupling_sp make(core::Symbol_sp name, Monomer_sp in, Monomer_sp out) {
+      GC_ALLOCATE_VARIADIC(DirectionalCoupling_O,dc,name,in,out);
+      return dc;
+    }
+  public:
   DirectionalCoupling_O(core::Symbol_sp name, Monomer_sp in, Monomer_sp out) :
     _Name(name),
       _InMonomer(in),
@@ -213,7 +188,6 @@ namespace chem {
   public:
     friend class O_WeakOligomer;
 //	void	archiveBase(core::ArchiveP node);
-    void initialize();
   private:
     core::Symbol_sp		_Plug1;
     Monomer_sp	                _Monomer1;
@@ -269,7 +243,4 @@ namespace chem {
 
 
 };
-TRANSLATE(chem::Coupling_O);
-TRANSLATE(chem::DirectionalCoupling_O);
-TRANSLATE(chem::RingCoupling_O);
 #endif

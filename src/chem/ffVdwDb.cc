@@ -29,6 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <cando/chem/ffVdwDb.h>
 //#include "core/archiveNode.h"
+#include <clasp/core/evaluator.h>
 #include <clasp/core/wrappers.h>
 
 
@@ -53,5 +54,10 @@ void FFVdwDb_O::fields(core::Record_sp node)
   this->Base::fields(node);
 };
 
+
+void FFVdwDb_O::forceFieldMerge(FFBaseDb_sp bother)
+{
+  SIMPLE_WARN(BF("Implement merge of FFVdwDb"));
+}
 
 };

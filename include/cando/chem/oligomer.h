@@ -78,9 +78,6 @@ SMART(CandoDatabase);
 SMART(Oligomer);
 
 
-
-
-
 SMART(Oligomer);
 class Oligomer_O : public core::CxxObject_O
 {

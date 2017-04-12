@@ -170,11 +170,11 @@ CL_DEFMETHOD     int ConstitutionAtoms_O::index(MatterName name) const
   SIMPLE_ERROR(BF("Unknown atom[%s]") % name );
 }
 
+
 #if 0
 CL_LISPIFY_NAME("buildResidue");
 CL_DEFMETHOD     Residue_sp ConstitutionAtoms_O::buildResidue()
 {
-  DEPRECATED();
   Residue_sp res = Residue_O::create();
   gctools::Vec0<Atom_sp> atoms;
   atoms.resize(this->_Atoms.size());
@@ -186,7 +186,7 @@ CL_DEFMETHOD     Residue_sp ConstitutionAtoms_O::buildResidue()
     Atom_sp atom = Atom_O::create();
     atom->setName((*ci)->_AtomName);
     atom->setElement((*ci)->_Element);
-    atoms[(*ci)->_AtomIndex] = atom;
+    atoms[idx] = atom;
     res->putMatter((*ci)->_AtomIndex,atom);
   }
   for ( gctools::Vec0<ConstitutionAtom_sp>::const_iterator ci=this->_Atoms.begin();
@@ -206,7 +206,8 @@ CL_DEFMETHOD     Residue_sp ConstitutionAtoms_O::buildResidue()
   }
   return res;
 }
-// Stuff
 #endif
+
+// Stuff
 
 };

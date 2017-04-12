@@ -23,7 +23,7 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#define	DEBUG_LEVEL_NONE
+#define	DEBUG_LEVEL_FULL
 
 #include <clasp/core/foundation.h>
 #include <clasp/core/bformat.h>
@@ -94,7 +94,8 @@ bool	EnergyNonbond::defineFrom(ForceField_sp	forceField,
                                   EnergyAtom	*iea1,
                                   EnergyAtom	*iea2,
                                   EnergyNonbond_sp energyNonbond)
-{
+{_OF();
+  LOG(BF("defineFrom"));
   FFNonbond_sp				ffNonbond1;
   FFNonbond_sp				ffNonbond2;
   double				epsilonij;
@@ -103,8 +104,13 @@ bool	EnergyNonbond::defineFrom(ForceField_sp	forceField,
   this->_Is14 = is14;
   this->_Atom1 = iea1->atom();
   this->_Atom2 = iea2->atom();
-  ffNonbond1 = forceField->_Nonbonds->findType(iea1->atom()->getType());
-  ffNonbond2 = forceField->_Nonbonds->findType(iea2->atom()->getType());
+  core::Symbol_sp t1 = iea1->atom()->getType();
+  core::Symbol_sp t2 = iea2->atom()->getType();
+  LOG(BF("Defining nonbond between types: %s - %s") % _rep_(t1) % _rep_(t2));
+  ASSERT(forceField->_Nonbonds&&forceField->_Nonbonds.notnilp());
+  LOG(BF("forceField->_Nonbonds @%p   .notnilp()->%d") % forceField->_Nonbonds.raw_() % forceField->_Nonbonds.notnilp());
+  ffNonbond1 = forceField->_Nonbonds->findType(t1);
+  ffNonbond2 = forceField->_Nonbonds->findType(t2);
   ANN(ffNonbond1);
   if ( ffNonbond1.nilp() )
   {

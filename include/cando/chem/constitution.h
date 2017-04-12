@@ -193,6 +193,7 @@ namespace chem
 	    /*! Add all of my Stereoisomers as Entities to the CandoDatabase */
     void addStereoisomersToCandoDatabase(CandoDatabase_sp db);
 
+    string __repr__() const;
     CL_DEFMETHOD void add_topology(Topology_sp topology);
     RepresentedEntityNameSet_sp	asGroup();
     CL_LISPIFY_NAME("getConstitutionAtoms");
@@ -221,12 +222,14 @@ namespace chem
     CL_LISPIFY_NAME("getComment");
     CL_DEFMETHOD 	    core::String_sp	getComment( ) { return this->_Comment; };
 
-    Residue_sp	createResidueForStereoisomerName(core::Symbol_sp nameOrPdb);
+//    Residue_sp	createResidueForStereoisomerName(core::Symbol_sp nameOrPdb);
 
     CL_LISPIFY_NAME("hasPlugNamed");
     CL_DEFMETHOD 	    bool	hasPlugNamed( core::Symbol_sp name) { return this->_PlugsByName.contains(name); };
     CL_LISPIFY_NAME("getPlugNamed");
     CL_DEFMETHOD 	    Plug_sp	getPlugNamed( core::Symbol_sp name) { return this->_PlugsByName[name]; };
+    CL_LISPIFY_NAME("addPlug");
+    CL_DEFMETHOD void addPlug(core::Symbol_sp name, Plug_sp plug) { this->_PlugsByName.insert2(name,plug);};
 
 //	void	testConsistency( std::ostream& sout );
 

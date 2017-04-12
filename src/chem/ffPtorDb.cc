@@ -37,6 +37,7 @@ This is an open source license for the CANDO software from Temple University, bu
  *	Maintains a database of ptor terms
  */
 #include <cando/chem/ffPtorDb.h>
+#include <clasp/core/evaluator.h>
 //#include "core/archiveNode.h"
 #include <clasp/core/array.h>
 #include <clasp/core/wrappers.h>
@@ -258,6 +259,17 @@ stringstream	desc;
 		<< this->_T3 << " "
 		<< this->_T4;
     return desc.str();
+}
+
+
+void FFPtorDb_O::forceFieldMerge(FFBaseDb_sp bother)
+{
+  SIMPLE_WARN(BF("Merging FFPtorDb terms - but terms with different type orders will create duplicates!"));
+  FFPtorDb_sp other = gc::As<FFPtorDb_sp>(bother);
+  other->_Parameters->maphash([this] (core::T_sp key, core::T_sp value) {
+      core::Symbol_sp skey = gc::As<core::Symbol_sp>(key);
+      this->_Parameters->hash_table_setf_gethash(skey,value);
+    } );
 }
 
 };

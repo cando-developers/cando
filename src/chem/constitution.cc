@@ -23,7 +23,7 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#define	DEBUG_LEVEL_NONE
+#define	DEBUG_LEVEL_FULL
 //
 // (C) 2004 Christian E. Schafmeister
 //
@@ -32,7 +32,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/adapt/adapters.h>
 #include <clasp/core/symbol.h>
 #include <cando/adapt/stringList.h>
-#include <clasp/core/environment.h>
+#include <clasp/core/evaluator.h>
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/array.h>
 #include <cando/chem/constitution.h>
@@ -93,57 +93,8 @@ Constitution_sp Constitution_O::make(core::Symbol_sp name, core::String_sp comme
       return me;
   };
 
-#if 0
-
-    core::T_sp Constitution_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-{
-    this->_Name = translate::from_object<core::Symbol_O>::convert(env->lookup(ChemPkg,"name"));
-    this->_Comment = translate::from_object<string>::convert(env->lookup(ChemPkg,"comment"));
-    this->_MetaConstitution = translate::from_object<core::Symbol_O>::convert(env->lookup(ChemPkg,"metaConstitution"));
-    this->_ConstitutionAtoms = translate::from_object<ConstitutionAtoms_O>::convert(env->lookup(ChemPkg,"constitutionAtoms"));
-    this->_ConstitutionAtoms->setOwner(this->sharedThis<Constitution_O>());
-    this->_StereoInformation = translate::from_object<StereoInformation_O>::convert(env->lookup(ChemPkg,"stereoInformation"));
-    this->_StereoInformation->setOwner(this->sharedThis<Constitution_O>());
-    this->_StereoInformation->validate();
-    {_BLOCK_TRACE("Adding plugs to Constitution");
-	core::List_sp c = translate::from_object<core::Cons_O>::convert(env->lookup(ChemPkg,"plugs"));
-	c->setOwnerOfAllEntries(this->sharedThis<Constitution_O>());
-	this->_PlugsByName.clear();
-	for ( ; c.notnilp(); c = c->cdr() )
-	{
-	    Plug_sp p = c->car<Plug_O>();
-	    _BLOCK_TRACEF(BF("Adding plug[%s]") % p->getName() );
-	    if ( this->_PlugsByName.count(p->getName())>0 )
-	    {
-              SIMPLE_ERROR(BF("There is already a plug named: "+_rep_(p->getName()) ));
-	    }
-	    core::Symbol_sp key = p->getName();
-	    ASSERTF(!key->isKeywordSymbol(),BF("Don't use keyword symbols for plug names"));
-	    this->_PlugsByName.set(p->getName(),p);
-	}
-    }
-    {_BLOCK_TRACE("Adding topologies to Constitution");
-	core::List_sp c = translate::from_object<core::List_V>::convert(env->lookup(ChemPkg,"topologies"));
-	c->setOwnerOfAllEntries(this->sharedThis<Constitution_O>());
-	this->_Topologies.clear();
-	for ( ; c.notnilp(); c = c->cdr() )
-	{
-	    Topology_sp t = c->car<Topology_O>();
-	    _BLOCK_TRACEF(BF("Adding topology[%s]@%p") % t->getName() % (void*)(t.get()) );
-	    if ( this->_Topologies.count(t->getName())>0 )
-	    {
-              SIMPLE_ERROR(BF("There is already a topology named: "+_rep_(t->getName()) ));
-	    }
-	    this->_Topologies.set(t->getName(),t);
-	}
-    }
-    return _Nil<core::T_O>();
-}
-
-#endif
-
-    void Constitution_O::addStereoisomersToCandoDatabase(CandoDatabase_sp db)
-    {_OF();
+void Constitution_O::addStereoisomersToCandoDatabase(CandoDatabase_sp db)
+{_OF();
 	for ( stereoisomerIterator si=this->begin_Stereoisomers(); 
 	      si!=this->end_Stereoisomers(); si++ )
 	{
@@ -165,24 +116,19 @@ void Constitution_O::add_topology(Topology_sp topology) {
 void	Constitution_O::makeResidueConsistentWithStereoisomerNamed(Residue_sp res,
 								   core::Symbol_sp stereoisomerName)
 {
-    core::Symbol_sp	fullName, pdbName;
     Stereoisomer_sp				si;
     string					atomName;
-    Constitution_sp				residueConstitution, stereoisomerConstitution;
     Atom_sp					aa;
-    CandoDatabase_sp			bdb;
-    residueConstitution = res->getConstitution();
-    stereoisomerConstitution = getCandoDatabase()->constitutionForNameOrPdb(stereoisomerName);
-
-    if (!residueConstitution->isSameAs(stereoisomerConstitution)) {
-      LOG(BF("residueConstitution = %s")%_rep_(residueConstitution));
-	SIMPLE_ERROR(BF("The residue constitution(%s) is different from the "
-				   "stereoisomer(%s) constitution(%s) that you want to change it too")
-		     % residueConstitution->getName() % stereoisomerName % stereoisomerConstitution->getName() );
+    core::T_sp bdb = getCandoDatabase();
+    Constitution_sp residueConstitution = this->asSmartPtr();
+    Constitution_sp stereoisomerConstitution = gc::As<Constitution_sp>(core::eval::funcall(_sym_constitutionForNameOrPdb, bdb,stereoisomerName));
+    if (residueConstitution!=stereoisomerConstitution) {
+      SIMPLE_ERROR(BF("The residue constitution(%s) is different from the "
+                      "stereoisomer(%s) constitution(%s) that you want to change it too")
+                   % residueConstitution->getName() % stereoisomerName % stereoisomerConstitution->getName() );
     }
-    bdb = getCandoDatabase();
-    fullName = bdb->getMonomerNameForNameOrPdb(stereoisomerName);
-    pdbName = bdb->getPdbNameForNameOrPdb(stereoisomerName);
+    core::Symbol_sp fullName = gc::As<core::Symbol_sp>(core::eval::funcall(_sym_monomerNameForNameOrPdb,bdb,stereoisomerName));
+    core::Symbol_sp pdbName = gc::As<core::Symbol_sp>(core::eval::funcall(_sym_pdbNameForNameOrPdb,bdb,stereoisomerName));
     res->setName(fullName);
     res->setPdbName(pdbName);
     //
@@ -194,7 +140,7 @@ void	Constitution_O::makeResidueConsistentWithStereoisomerNamed(Residue_sp res,
     gctools::Vec0<StereoConfiguration_sp>::iterator	sci;
     for (sci=si->_Configurations_begin();sci!=si->_Configurations_end();sci++){
 	aa = res->atomWithName((*sci)->getAtomName());
-	LOG(BF("Setting the configuration of atom(%s) to(%s)") % aa->description().c_str() % (*sci)->getConfiguration().c_str()  ); //
+	LOG(BF("Setting the configuration of atom(%s) to(%s)") % aa->description().c_str() % _rep_((*sci)->getConfiguration())  ); //
 	if ( (*sci)->getConfiguration() == chemkw::_sym_S ) {
 	    aa->setConfiguration( S_Configuration );
 	} else if ( (*sci)->getConfiguration() == chemkw::_sym_R ) {
@@ -379,22 +325,19 @@ Constitution_O::const_stereoisomerIterator Constitution_O::end_Stereoisomers() c
 };
 
 
-
+#if 0
+// This is all done in oligomer.cc now
 /*!
 	Return a copy of the residue that this constitution defines
 */
 CL_LISPIFY_NAME("createResidueForStereoisomerName");
 CL_DEFMETHOD     Residue_sp	Constitution_O::createResidueForStereoisomerName(core::Symbol_sp stereoisomerName)
 {
-  IMPLEMENT_MEF(BF("Use the Topology to build the residue"));
-#if 0
-    Residue_sp res = this->_ConstitutionAtoms->buildResidue();
-    IMPLEMENT_MEF(BF("Handle owners"));
-//    res->setOwner(this->sharedThis<Constitution_O>());
-    this->makeResidueConsistentWithStereoisomerNamed(res,stereoisomerName);
-    return res;
-#endif
+  Residue_sp res = this->_ConstitutionAtoms->buildResidue();
+  this->makeResidueConsistentWithStereoisomerNamed(res,stereoisomerName);
+  return res;
 }
+#endif
 
 
 core::Symbol_sp	Constitution_O::nameFromNameOrPdb(core::Symbol_sp nm)
@@ -476,24 +419,33 @@ CL_DEFMETHOD     Topology_sp	Constitution_O::topologyWithName(core::Symbol_sp na
 
 
 
+string Constitution_O::__repr__() const {
+  stringstream ss;
+  ss << "#<CONSTITUTION ";
+  ss << " :name " << _rep_(this->_Name);
+#ifdef USE_BOEHM
+  ss << " @" << (void*)this;
+#endif
+  ss << ">";
+  return ss.str();
+}
 
 
 
 Topology_sp	Constitution_O::getTopologyForMonomerEnvironment(Monomer_sp mon )
 {
-    TopologyMap::iterator	ti;
-Topology_sp			tres;
-tres = _Nil<Topology_O>();
-    for ( ti=this->_Topologies.begin(); ti!=this->_Topologies.end(); ti++ ) 
-    {
-      LOG(BF("Checking topology(%s)")% _rep_(ti->first) );
-	if ( ti->second->matchesMonomerEnvironment(mon) ) 
-	{
-	    return ti->second;
-	}
+  LOG(BF("constitution: %s  monomer: %s\n") % this->__repr__() % _rep_(mon));
+  TopologyMap::iterator	ti;
+  Topology_sp tres;
+  for ( ti=this->_Topologies.begin(); ti!=this->_Topologies.end(); ti++ ) 
+  {
+    LOG(BF("Checking topology(%s)")% _rep_(ti->first) );
+    if ( ti->second->matchesMonomerEnvironment(mon) ) {
+      LOG(BF("About to return topology %s") % _rep_(ti->second));
+      return ti->second;
     }
-    LOG(BF("No topology matched the environment"));
-    return tres;
+  }
+  SIMPLE_ERROR(BF("There is no topology for this environment"));
 }
 
 

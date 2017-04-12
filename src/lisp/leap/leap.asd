@@ -11,6 +11,7 @@
     ((:file "packages")
      (:file "core")
      (:file "off")
+     (:file "cando-database")
 ;;     (:file "commands")
      (:file "leap")
      (:file "pdb")

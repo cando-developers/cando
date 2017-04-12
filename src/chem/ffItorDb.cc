@@ -37,6 +37,7 @@ This is an open source license for the CANDO software from Temple University, bu
  */
 #include <clasp/core/common.h>
 #include <clasp/core/array.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/ffItorDb.h>
 //#include "core/archiveNode.h"
 #include <clasp/core/wrappers.h>
@@ -311,6 +312,16 @@ stringstream	desc;
     return desc.str();
 }
 
+
+void FFItorDb_O::forceFieldMerge(FFBaseDb_sp bother)
+{
+  SIMPLE_WARN(BF("Merging FFItorDb terms - but terms with different type orders will create duplicates!"));
+  FFItorDb_sp other = gc::As<FFItorDb_sp>(bother);
+  other->_Parameters->maphash([this] (core::T_sp key, core::T_sp value) {
+      core::Symbol_sp skey = gc::As<core::Symbol_sp>(key);
+      this->_Parameters->hash_table_setf_gethash(skey,value);
+    } );
+}
 
 
 

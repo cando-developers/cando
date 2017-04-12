@@ -156,7 +156,7 @@ class ForceField_O : public core::CxxObject_O
   };
 
   CL_LISPIFY_NAME("getTypes");
-  CL_DEFMETHOD 	gc::Nilable<FFTypesDb_sp> getTypesOrNil() { return this->_Types; };
+  CL_DEFMETHOD FFTypesDb_sp getTypes() { return this->_Types; };
 
   CL_LISPIFY_NAME("getStretchDb");
   CL_DEFMETHOD 	FFStretchDb_sp getStretchDb() { return this->_Stretches;};

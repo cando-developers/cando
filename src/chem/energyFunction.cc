@@ -1227,8 +1227,8 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
 
 
 CL_LISPIFY_NAME("defineForMatter");
-CL_LAMBDA((energy_function !) matter force_field &key use_excluded_atoms active_atoms show_progress );
-CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField_sp forceField, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress )
+CL_LAMBDA((energy_function !) matter force_field &key use_excluded_atoms active_atoms show_progress (assign_types t));
+CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField_sp forceField, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress, bool assign_types )
 {
   if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
   {
@@ -1245,7 +1245,7 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField
 	// 
 	// Assign atom types
 	//
-  forceField->assignTypes(matter);
+  if (assign_types) forceField->assignTypes(matter);
   this->generateStandardEnergyFunctionTables(matter,forceField,activeAtoms,show_progress);
   this->generateNonbondEnergyFunctionTables(useExcludedAtoms,matter,forceField,activeAtoms,show_progress);
   this->generateRestraintEnergyFunctionTables(matter,forceField,activeAtoms,show_progress);
@@ -1333,7 +1333,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
       ea1 = this->getEnergyAtomPointer(a1);
       ea2 = this->getEnergyAtomPointer(a2);
       ea3 = this->getEnergyAtomPointer(a3);
-      FFAngle_sp ffAngle = forceField->_Angles->findTerm(a1,a2,a3);
+      FFAngle_sp ffAngle = forceField->_Angles->findTerm(forceField->_Stretches,a1,a2,a3);
       if ( ffAngle->level() != parameterized ) {
         LOG(BF("Missing angle parameter between types: %s-%s-%s") % a1->getType()% a2->getTypeString()% a3->getTypeString() );
         this->_addMissingParameter(ffAngle);

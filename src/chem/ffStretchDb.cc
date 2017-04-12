@@ -37,6 +37,7 @@ This is an open source license for the CANDO software from Temple University, bu
  *	Maintains a database of stretch types
  */
 #include <clasp/core/common.h>
+#include <clasp/core/evaluator.h>
 #include <clasp/core/array.h>
 #include <cando/chem/ffStretchDb.h>
 #include <cando/chem/units.h>
@@ -228,6 +229,17 @@ stringstream	desc;
     desc << " stretch between types "<<this->_Type1<< " "
 		<< this->_Type2;
     return desc.str();
+}
+
+
+void FFStretchDb_O::forceFieldMerge(FFBaseDb_sp bother)
+{
+  SIMPLE_WARN(BF("Merging stretch terms - but terms with different type orders will create duplicates!"));
+  FFStretchDb_sp other = gc::As<FFStretchDb_sp>(bother);
+  other->_Parameters->maphash([this] (core::T_sp key, core::T_sp value) {
+      core::Symbol_sp skey = gc::As<core::Symbol_sp>(key);
+      this->_Parameters->hash_table_setf_gethash(skey,value);
+    } );
 }
 
 

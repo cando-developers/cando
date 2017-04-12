@@ -63,49 +63,50 @@ void	FFTypesDb_O::initialize()
 CL_LISPIFY_NAME("assignTypes");
 CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
 { 
-chem::Loop    				lAtoms;
-chem::Atom_sp  				atom;
-chem::Matter_sp				c;
-gctools::Vec0<chem::ChemInfo_sp>::iterator  it;
-chem::Molecule_sp                     	mol;
-chem::Residue_sp				res;
-string 		                        name;
-    lAtoms.loopTopGoal(matter,ATOMS);
-    LOG(BF("defined loop") );
-    while ( lAtoms.advanceLoopAndProcess() ) {
-        LOG(BF("Getting container") );
-        c = lAtoms.getMatter();
+  chem::Loop    				lAtoms;
+  chem::Atom_sp  				atom;
+  chem::Matter_sp				c;
+  gctools::Vec0<chem::ChemInfo_sp>::iterator  it;
+  chem::Molecule_sp                     	mol;
+  chem::Residue_sp				res;
+  string 		                        name;
+  if (this->_TypeAssignmentRules.size()==0) return;
+  lAtoms.loopTopGoal(matter,ATOMS);
+  LOG(BF("defined loop") );
+  while ( lAtoms.advanceLoopAndProcess() ) {
+    LOG(BF("Getting container") );
+    c = lAtoms.getMatter();
 //        rawGet = c.get();
 //        castGet = dynamic_cast<chem::Atom_O*>(c.get());
 //        LOG(BF("rawGet = %X") % rawGet );
 //        LOG(BF("castGet = %X") % castGet );
 //        LOG(BF("getting first atom in loop") );
-        atom = (c).as<chem::Atom_O>();
-        LOG(BF("Got atom") );
-        LOG(BF("atom name: %s") % atom->getName().c_str() );
-        LOG(BF("Assigning type for atom: %s") % atom->description().c_str()  );
-	{_BLOCK_TRACE("Testing every type rule");
-	    for ( it=this->_TypeAssignmentRules.begin();
-		    it!=this->_TypeAssignmentRules.end(); it++ ) 
-	    {_BLOCK_TRACEF(BF("Testing rule code(%s)") % (*it)->getCode().c_str() );
+    atom = (c).as<chem::Atom_O>();
+    LOG(BF("Got atom") );
+    LOG(BF("atom name: %s") % atom->getName().c_str() );
+    LOG(BF("Assigning type for atom: %s") % atom->description().c_str()  );
+    {_BLOCK_TRACE("Testing every type rule");
+      for ( it=this->_TypeAssignmentRules.begin();
+            it!=this->_TypeAssignmentRules.end(); it++ ) 
+      {_BLOCK_TRACEF(BF("Testing rule code(%s)") % (*it)->getCode().c_str() );
 //		LOG(BF("as xml: %s") % ((*it)->asXmlString().c_str() ) );
-		if ( (*it)->matches(atom) ) 
-		{
-		    LOG(BF("Rule MATCH!!!") );
-		    break;
-		}
-		LOG(BF("Rule does not match, keep going") );
-	    }
-	} 
-    }
+        if ( (*it)->matches(atom) ) 
+        {
+          LOG(BF("Rule MATCH!!!") );
+          break;
+        }
+        LOG(BF("Rule does not match, keep going") );
+      }
+    } 
+  }
 }
 
 
 void FFTypesDb_O::fields(core::Record_sp node)
-    {	
-      this->FFBaseDb_O::fields(node);
-      node->field(INTERN_(kw,type_rules), this->_TypeAssignmentRules);
-    }
+{	
+  node->field(INTERN_(kw,type_rules), this->_TypeAssignmentRules);
+  this->FFBaseDb_O::fields(node);
+}
 
 
 

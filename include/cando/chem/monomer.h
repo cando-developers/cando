@@ -141,7 +141,7 @@ namespace chem {
       return mon;
     }
   public:
-    virtual Residue_sp	createResidue() {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
+//    virtual Residue_sp	createResidue();
     void setTempResidue(Residue_sp res)
     {
       this->_TempResidue = res;
@@ -159,7 +159,7 @@ namespace chem {
     CL_DEFMETHOD 	void	setId(core::Symbol_sp id) { this->_Id = id; };
     CL_LISPIFY_NAME("getId");
     CL_DEFMETHOD 	core::Symbol_sp getId() { return this->_Id; };
-    Topology_sp	getTopology();
+//    Topology_sp	getTopology();
     RingClosingPlug_sp getMissingRingClosingPlug(Monomer_sp mate);
     CL_LISPIFY_NAME("getTemporaryResidue");
     CL_DEFMETHOD 	Residue_sp	getTemporaryResidue()
@@ -222,9 +222,9 @@ namespace chem {
          */
     void	fixPlugNameForCoupling(Coupling_sp coup);
 
-    void	removeCoupling(Coupling_sp coup);
-    bool	hasCouplingWithPlugName(core::Symbol_sp s);
-    Coupling_sp getCouplingWithPlugName(core::Symbol_sp s);
+    CL_DEFMETHOD void	removeCoupling(Coupling_sp coup);
+    CL_DEFMETHOD bool	hasCouplingWithPlugName(core::Symbol_sp s);
+    CL_DEFMETHOD Coupling_sp getCouplingWithPlugName(core::Symbol_sp s);
         /*! Return true if this monomer has a plug name that points to the coupling
          */
     bool	hasMatchingPlugNameAndCoupling(core::Symbol_sp plugName, Coupling_sp coup);
@@ -235,7 +235,6 @@ namespace chem {
 //	bool	hasOutCouplingWithName(const string& name);
 
     gctools::Vec0<Coupling_sp> getOutCouplings();
-
 
         /*! Return true if the current monomer context is a valid one
          */
@@ -292,10 +291,9 @@ namespace chem {
     virtual uint getMonomerIndex() { return 0; };
     void	_expandGroupName();
   public:
-    Residue_sp createResidue();
-  public:
     virtual void checkForErrorsAndUnknownContexts(CandoDatabase_sp bdb);
 
+    CL_DEFMETHOD void setName(core::Symbol_sp name) { this->_Name = name; };
     virtual core::Symbol_sp getName() const { return this->_Name;};
     core::Symbol_sp getGroupName() const { return this->_GroupName; };
     virtual AtomIndexer_sp getInterestingAtomIndexer() {IMPLEMENT_ME();};
@@ -354,7 +352,6 @@ namespace chem {
     public:
         //!< Add another monomer name
 	void addMonomerName(core::Symbol_sp name);
-	Residue_sp createResidue();
     public:
         virtual void checkForErrorsAndUnknownContexts(CandoDatabase_sp bdb);
 

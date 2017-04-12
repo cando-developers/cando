@@ -214,6 +214,22 @@ void FFNonbondDb_O::forceFieldMerge(FFBaseDb_sp bother)
   if (other->VdwMixWellDefined) {
     this->set_VdwMixWell(other->VdwMixWell);
   }
+  // Merge the terms and overwrite old ones with the same name
+  for ( size_t i(0), iEnd(other->_Terms.size()); i<iEnd; ++i ) {
+    bool new_type = true;
+    for (size_t j(0), jEnd(this->_Terms.size()); j<jEnd; ++j ) {
+      if (this->_Terms[j]->getType() == other->_Terms[i]->getType() ) {
+        this->_Terms[j] = other->_Terms[i];
+        new_type = false;
+        break;
+      }
+    }
+    if (new_type) this->_Terms.push_back(other->_Terms[i]);
+  }
+  this->_Parameters->clrhash();
+  for ( size_t i(0), iEnd(this->_Terms.size()); i<iEnd; ++i ) {
+    this->_Parameters->hash_table_setf_gethash(this->_Terms[i]->getType(),core::make_fixnum(i));
+  }
   this->Base::forceFieldMerge(other);
 }
 
@@ -229,6 +245,7 @@ void	FFNonbondDb_O::fields(core::Record_sp node)
   node->field_if_defined(INTERN_(kw,eleDielectricCode), this->EleDielectricCodeDefined, this->EleDielectricCode);
   node->field_if_defined(INTERN_(kw,vdwMixRadius), this->VdwMixRadiusDefined, this->VdwMixRadius);
   node->field_if_defined(INTERN_(kw,vdwMixWell), this->VdwMixWellDefined, this->VdwMixWell);
+  node->field(INTERN_(kw,terms),this->_Terms);
   this->Base::fields(node);
 }
 
@@ -289,7 +306,7 @@ FFNonbond_sp FFNonbondDb_O::getFFNonbondUsingTypeIndex(uint typeIdx)
 
 
 CL_LISPIFY_NAME("numberOfTypes");
-CL_DEFMETHOD uint FFNonbondDb_O::numberOfTypes()
+CL_DEFMETHOD size_t FFNonbondDb_O::numberOfTypes() const
 {
   return this->_Terms.size();
 }

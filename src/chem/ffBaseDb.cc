@@ -85,15 +85,8 @@ void FFBaseDb_O::initialize()
 }
 void FFBaseDb_O::fields(core::Record_sp node)
 {
-  node->field(INTERN_(kw,force_field),this->_ForceField);
   this->Base::fields(node);
 }
-
-void	FFBaseDb_O::setForceField(ForceField_sp ff)
-{
-    this->_ForceField = ff;
-};
-
 
 void FFBaseDb_O::forceFieldMerge(FFBaseDb_sp other) {
   // inherited classes may overload this function but they need to call this
@@ -124,6 +117,17 @@ void FFParameterBaseDb_O::forceFieldMerge(FFBaseDb_sp other) {
   this->Base::forceFieldMerge(other);
 }
 
+
+
+string FFParameterBaseDb_O::__repr__() const {
+  stringstream ss;
+  ss << "#<" << this->className() << " ";
+#ifdef USE_BOEHM
+  ss << "@" << (void*)this;
+#endif
+  ss << ">";
+  return ss.str();
+}
 
 
 

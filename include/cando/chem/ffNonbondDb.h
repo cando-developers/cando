@@ -129,8 +129,6 @@ namespace chem {
   class FFNonbond_O : public FFParameter_O
   {
     LISP_CLASS(chem,ChemPkg,FFNonbond_O,"FFNonbond",FFParameter_O);
-
-  public:
   public:
     void initialize();
     bool fieldsp() const { return true; };
@@ -251,8 +249,8 @@ namespace chem {
     void forceFieldMerge(FFBaseDb_sp other);
     CL_LISPIFY_NAME(ffNonbondDb-add);
     CL_DEFMETHOD void add( FFNonbond_sp nonbonded );
-    bool hasType( core::Symbol_sp type);
-    core::T_sp findType( core::Symbol_sp type );
+    CL_DEFMETHOD bool hasType( core::Symbol_sp type);
+    CL_DEFMETHOD core::T_sp findType( core::Symbol_sp type );
     FFNonbond_sp   getFFNonbondUsingTypeIndex( uint typeIdx );
     uint findTypeIndex( core::Symbol_sp type );
     uint findTypeIndexOrThrow( core::Symbol_sp type );
@@ -264,7 +262,8 @@ namespace chem {
 
     /*! Return the number of Nonbond atom types
      */
-    uint  numberOfTypes();
+    size_t  numberOfTypes() const;
+
   FFNonbondDb_O() : EleDielectricValueDefined(false),
       EleBufferDefined(false),
       EleScale14Defined(false),

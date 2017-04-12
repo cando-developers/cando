@@ -50,15 +50,6 @@ namespace chem {
 
 
 
-
-void Coupling_O::initialize()
-{
-    this->Base::initialize();
-    this->_Oligomer = _Nil<core::T_O>();
-    this->_HasError = false;
-    this->_Selected = false;
-}
-
 bool	Coupling_O::containsMonomer(Monomer_sp mon)
 {
     LOG(BF("checking if coupling(%s) contains monomer: %s") % this->description().c_str() % mon->description().c_str() );
@@ -80,29 +71,6 @@ bool	Coupling_O::containsMonomer(Monomer_sp mon)
 //    node->attribute("statusMessage", this->_StatusMessage);
 }
 #endif
-
-
-void	Coupling_O::setOligomer(Oligomer_sp o)
-{
-    this->_Oligomer = o->sharedThis<Oligomer_O>();
-};
-
-
-void	Coupling_O::resetOligomer()
-{
-  this->_Oligomer = _Nil<core::T_O>();
-}
-
-Oligomer_sp	Coupling_O::getOligomer()
-{_OF();
-    ASSERTNOTNULL(this->_Oligomer);
-    return this->_Oligomer;
-};
-
-
-
-
-
 
 
 
@@ -172,44 +140,16 @@ CL_DEFUN core::Symbol_sp DirectionalCoupling_O::otherPlugName(core::Symbol_sp na
     };
 
 
-
-
-
-
-
-
-
-
-
-void DirectionalCoupling_O::initialize()
-{
-    this->Base::initialize();
-    this->_InMonomer = _Nil<core::T_O>();
-    this->_OutMonomer = _Nil<core::T_O>();
-    this->_Name = _Nil<core::Symbol_O>();
-}
-
 //
 // Destructor
 //
 
 
-void	DirectionalCoupling_O::resetIn()
+
+void	DirectionalCoupling_O::checkForErrors(core::T_sp statusMessageStream)
 {
-  this->_InMonomer = _Nil<core::T_O>();
-};
-
-
-void	DirectionalCoupling_O::resetOut()
-{
-  this->_OutMonomer = _Nil<core::T_O>();
-};
-
-
-
-
-    void	DirectionalCoupling_O::checkForErrors(core::T_sp statusMessageStream)
-{
+  IMPLEMENT_ME();
+#if 0
     this->setHasError(false);
     ANN(this->_InMonomer);
     if ( this->_InMonomer.nilp() )
@@ -223,54 +163,55 @@ void	DirectionalCoupling_O::resetOut()
         this->setHasError(true);
         core::clasp_write_format(BF("OutMonomer is NULL\n"), statusMessageStream);
     }
+#endif
 }
 
 CL_LISPIFY_NAME("throwIfBadConnections");
 CL_DEFMETHOD void	DirectionalCoupling_O::throwIfBadConnections()
 {
-Monomer_sp	mon;
-DirectionalCoupling_sp	coup;
-    ANN(this->_InMonomer);
-    if ( this->_InMonomer.nilp() )
-    {
-        LOG(BF("InMonomer is undefined") );
-        goto BAD;
-    }
-    mon = this->_InMonomer;
-    LOG(BF("InMonomer is: %s") % mon->description().c_str()  );
-    if ( !mon->hasCouplingWithPlugName(DirectionalCoupling_O::outPlugName(this->getName())))
-    {
-        LOG(BF("InMonomer does not have outPlug with correct name") );
-        goto BAD;
-    }
-    if ( !mon->hasMatchingPlugNameAndCoupling(DirectionalCoupling_O::outPlugName(this->getName()),
-    					this->sharedThis<DirectionalCoupling_O>() ) )
-    {
-        LOG(BF("InMonomers does not have an outPlug that points to us") );
-        goto BAD;
-    }
-    ASSERTNOTNULL(this->_OutMonomer);
-    if ( this->_OutMonomer.nilp() )
-    {
-        LOG(BF("OutMonomer is undefined") );
-        goto BAD;
-    }
-    mon = this->_OutMonomer;
-    LOG(BF("OutMonomer is: %s") % mon->description().c_str()  );
-    if ( !mon->hasCouplingWithPlugName(DirectionalCoupling_O::inPlugName(this->getName())))
-    {
-        LOG(BF("OutMonomer does not have inPlug with correct name") );
-        goto BAD;
-    }
-    if ( !mon->hasMatchingPlugNameAndCoupling(DirectionalCoupling_O::inPlugName(this->getName()),
-    					this->sharedThis<DirectionalCoupling_O>() ) )
-    {
-        LOG(BF("OutMonomers does not have an inPlug that points to us") );
-        goto BAD;
-    }
-    return;
-BAD:
-    SIMPLE_ERROR(BF("Bad coupling %s") % this->sharedThis<DirectionalCoupling_O>()->description() );
+  Monomer_sp	mon;
+  DirectionalCoupling_sp	coup;
+  ANN(this->_InMonomer);
+  if ( this->_InMonomer.nilp() )
+  {
+    LOG(BF("InMonomer is undefined") );
+    goto BAD;
+  }
+  mon = this->_InMonomer;
+  LOG(BF("InMonomer is: %s") % mon->description().c_str()  );
+  if ( !mon->hasCouplingWithPlugName(DirectionalCoupling_O::outPlugName(this->getName())))
+  {
+    LOG(BF("InMonomer does not have outPlug with correct name") );
+    goto BAD;
+  }
+  if ( !mon->hasMatchingPlugNameAndCoupling(DirectionalCoupling_O::outPlugName(this->getName()),
+                                            this->sharedThis<DirectionalCoupling_O>() ) )
+  {
+    LOG(BF("InMonomers does not have an outPlug that points to us") );
+    goto BAD;
+  }
+  ASSERTNOTNULL(this->_OutMonomer);
+  if ( this->_OutMonomer.nilp() )
+  {
+    LOG(BF("OutMonomer is undefined") );
+    goto BAD;
+  }
+  mon = this->_OutMonomer;
+  LOG(BF("OutMonomer is: %s") % mon->description().c_str()  );
+  if ( !mon->hasCouplingWithPlugName(DirectionalCoupling_O::inPlugName(this->getName())))
+  {
+    LOG(BF("OutMonomer does not have inPlug with correct name") );
+    goto BAD;
+  }
+  if ( !mon->hasMatchingPlugNameAndCoupling(DirectionalCoupling_O::inPlugName(this->getName()),
+                                            this->sharedThis<DirectionalCoupling_O>() ) )
+  {
+    LOG(BF("OutMonomers does not have an inPlug that points to us") );
+    goto BAD;
+  }
+  return;
+ BAD:
+  SIMPLE_ERROR(BF("Bad coupling %s") % this->sharedThis<DirectionalCoupling_O>()->description() );
 }
 
 
@@ -466,7 +407,6 @@ PlugWithMates_sp	minPlug, moutPlug;
 Residue_wp	weakInRes, weakOutRes;
 Bond_sp		b;
 Atom_sp		inB0, outB0, inB1, outB1;
-    if ( this->getHasError() ) return;
     min = this->getInMonomer();
     mout = this->getOutMonomer();
     minPlug = min->getPlugNamed(this->getInMonomerPlugName()).as<PlugWithMates_O>();
@@ -561,21 +501,6 @@ SIMPLE_ERROR(BF("I wasn't sure if this was ever called.  Take out this THROW if 
 //    SIGNAL(this,Coupling_connectionsChanged);
 };
 
-
-
-
-
-
-
-void RingCoupling_O::initialize()
-{_OF();
-    this->Base::initialize();
-    this->_Monomer1 = _Nil<core::T_O>();
-    this->_Monomer2 = _Nil<core::T_O>();
-    this->_Plug1 = _Nil<core::Symbol_O>();
-    this->_Plug2 = _Nil<core::Symbol_O>();
-}
-
 #ifdef XML_ARCHIVE
 void RingCoupling_O::archiveBase(core::ArchiveP node)
 {
@@ -654,8 +579,9 @@ CL_DEFMETHOD Monomer_sp	RingCoupling_O::getOtherSideMonomer(Monomer_sp mon)
 
 void	RingCoupling_O::checkForErrors(core::T_sp errorStream)
 {
-    this->setHasError(false);
-    ANN(this->_Monomer1);
+  IMPLEMENT_ME();
+#if 0
+  ANN(this->_Monomer1);
     if ( this->_Monomer1.nilp() )
     {
         this->setHasError(true);
@@ -667,6 +593,7 @@ void	RingCoupling_O::checkForErrors(core::T_sp errorStream)
         this->setHasError(true);
         core::clasp_write_format(BF("Monomer2 is NULL\n"), errorStream);
     }
+#endif
 }
 
 void	RingCoupling_O::throwIfBadConnections()
@@ -775,7 +702,6 @@ PlugWithMates_sp	mon1Plug, mon2Plug;
 Residue_wp	weakInRes, weakOutRes;
 Bond_sp		b;
 Atom_sp		inB0, outB0, inB1, outB1;
-    if ( this->getHasError() ) return;
     mon1 = this->getMonomer1();
     mon2 = this->getMonomer2();
     mon1Plug = mon1->getPlugNamed(this->getPlug1()).as<PlugWithMates_O>();

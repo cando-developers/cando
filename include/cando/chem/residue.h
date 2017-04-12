@@ -166,13 +166,6 @@ CL_DEFMETHOD 	int	getNetCharge() { return this->_NetCharge; };
 CL_LISPIFY_NAME("setNetCharge");
 CL_DEFMETHOD 	void	setNetCharge(int nc) { this->_NetCharge = nc; };
 
-//	void	resetConstitution();
-	bool	hasConstitution();
-	Constitution_sp getConstitution();
-	void	setConstitution(Constitution_sp mm);
-
-//	friend	Residue_sp	Residue();
-
 	int		getTempInt() {return this->tempInt;};
 	void		setTempInt(int j) {this->tempInt = j;};
         adapt::SymbolSet_sp	getAtomNamesAsSymbolSet();

@@ -34,7 +34,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <string>
 #include <clasp/core/common.h>
 #include <cando/adapt/stringSet.h>
-#include <clasp/core/environment.h>
+#include <clasp/core/evaluator.h>
 //#include "core/archiveNode.h"
 #include <cando/adapt/stringList.h>
 #include <cando/adapt/adapters.h>
@@ -381,13 +381,13 @@ CL_DEFMETHOD     core::Symbol_sp EntityNameSetBase_O::getOnlyMonomerName()
 CL_LISPIFY_NAME("setMonomerNameOrPdb");
 CL_DEFMETHOD     void	EntityNameSetBase_O::setMonomerNameOrPdb(core::Symbol_sp mn)
     {
-	CandoDatabase_sp db;
+      core::T_sp db = getCandoDatabase();
 //    this->setName(mn);
 //    LOG(BF("Set name of EntityNameSetBase to: %s") % mn.c_str()  );
-	if ( getCandoDatabase()->recognizesNameOrPdb(mn) ) {
-	    db = getCandoDatabase();
+      core::T_sp found = core::eval::funcall(_sym_recognizesNameOrPdb,getCandoDatabase(),mn);
+	if ( found.isTrue() ) {
 	    LOG(BF("status") );
-	    core::Symbol_sp full = db->getMonomerNameForNameOrPdb(mn);
+	    core::Symbol_sp full = gc::As<core::Symbol_sp>(core::eval::funcall(_sym_getMonomerNameForNameOrPdb, db, mn));
 	    this->_EntityNames->clear();
 	    this->_EntityNames->insert(full);
 	    LOG(BF("Added monomer name(%s) to EntityNameSetBase") % _rep_(mn)  );
@@ -421,14 +421,13 @@ CL_DEFMETHOD     void	EntityNameSetBase_O::setMonomerNameOrPdb(core::Symbol_sp m
 */
 CL_LISPIFY_NAME("recognizesNameOrPdb");
 CL_DEFMETHOD     bool	EntityNameSetBase_O::recognizesNameOrPdb(core::Symbol_sp nm)
-    {
-	CandoDatabase_sp	bdb;
-	bdb = getCandoDatabase();
-	ASSERT(bdb->recognizesNameOrPdb(nm));
-	core::Symbol_sp name = bdb->getMonomerNameForNameOrPdb(nm);
-	adapt::SymbolSet_sp names = this->expandedNameSet();
-	return names->contains(name);
-    }
+{
+  core::T_sp bdb = getCandoDatabase();
+  ASSERT(bdb->recognizesNameOrPdb(nm));
+  core::Symbol_sp name = gc::As<core::Symbol_sp>(core::eval::funcall(_sym_monomerNameForNameOrPdb,bdb,nm));
+  adapt::SymbolSet_sp names = this->expandedNameSet();
+  return names->contains(name);
+}
 
 
 

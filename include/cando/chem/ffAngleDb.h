@@ -56,6 +56,8 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
+  FORWARD(FFStretchDb);
+  
 #define		FFAngleWildCardCode	-1
 
 inline	string	XmlTag_FFAngle() { return "FFAngle";};
@@ -136,10 +138,12 @@ public:
     void	addZConstant(core::Symbol_sp element, double value ) { this->_ZConstants.set(element,core::DoubleFloat_O::create(value));};
     void	addCConstant(core::Symbol_sp element, double value ) { this->_CConstants.set(element,core::DoubleFloat_O::create(value));};
 
-	FFAngle_sp	findTerm( chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3);
-	FFAngle_sp	estimateTerm( chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3 );
+    FFAngle_sp	findTerm( FFStretchDb_sp ffstretch, chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3);
+	FFAngle_sp	estimateTerm( FFStretchDb_sp ffstretch, chem::Atom_sp a1, chem::Atom_sp a2, chem::Atom_sp a3 );
 
 	void	initialize();
+
+        void forceFieldMerge(FFBaseDb_sp bother);
 
 	DEFAULT_CTOR_DTOR(FFAngleDb_O);
 };
