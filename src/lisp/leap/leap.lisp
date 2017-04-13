@@ -30,7 +30,7 @@
   "Return the object with name."
   (leap.core:lookup-variable name))
 
-(defun leap.desc (entry)a
+(defun leap.desc (entry)
   (valid-arguments entry 1)
   (let ((var (second entry)))
     (format t "~a~%" var)))
@@ -63,11 +63,13 @@
               (with-open-file (fin filename :direction :input)
                 (chem:read-parameters parmreader fin)
                 (chem:get-force-field parmreader)))))
-    (leap.core:add-force-field-or-modification ff force-field)))
+    (format t "Adding force field ~a to ~a~%" ff force-field)
+    (leap.core:add-force-field-or-modification ff force-field)
+    ff))
 
-(defun leap.load-amber-params (filename)
-  (error "The code below is wrong")
-  (let* ((filename (ensure-path filename)))
+(defun leap.load-amber-params (entry)
+  (valid-arguments entry 1)
+  (let ((filename (second entry)))
     (push (load-amber-params filename) *default-force-field*)))
 
 
@@ -84,6 +86,7 @@
 (defun source (filename)
   "Load the file of leap commands and execute them one by one.
 Nothing is returned."
+  (format t "In source~%")
   (let ((path (leap.core:search-path filename)))
     (with-open-file (stream path :direction :input)
       (let* ((entire-file (make-string (+ (file-length stream) 2)
@@ -91,6 +94,7 @@ Nothing is returned."
         (read-sequence entire-file stream)
         (with-input-from-string (sin entire-file)
           (loop for entry = (leap-parse-entry sin nil :eof)
+               do (format t "read entry: ~a~%" entry)
              unless (or (null entry) (eq entry :eof))
              do (interpret-leap-entry entry)
              until (eq entry :eof)))))))
@@ -99,7 +103,15 @@ Nothing is returned."
   (valid-arguments entry 1)
   (let* ((filename (ensure-path (second entry))))
     (source filename)))
-  
+
+(defun save-amber-parm (aggregate topology-file-name &optional coordinate-file-name (force-field-name :default))
+  (let* ((top-pathname (merge-pathnames (pathname topology-file-name)))
+         (crd-pathname (if crd-pathname
+                           (merge-pathnames crd-pathname)
+                           (make-pathname :type "crd" :defaults top-pathname))))
+    (leap.topology:save-amber-parm aggregate top-pathname crd-pathname (leap.core:merged-force-field force-field-name))))
+
+
 (defun ensure-string (obj)
   (cond
     ((stringp obj) obj)
@@ -175,6 +187,7 @@ Nothing is returned, it's all side effects."
     (t (let* ((cmd (intern (string-upcase (string (first entry))) :keyword))
               (cmd-assoc (assoc cmd *commands*))
               (cmd-func (cdr cmd-assoc)))
+         (format t "cmd cmd-assoc cmd-func: ~a ~a ~a~%" cmd cmd-assoc cmd-func)
          (if (null cmd-func)
              (error "Illegal function ~a cmd-assoc: ~a  cmd-func: ~a" cmd cmd-assoc cmd-func)
              (progn
@@ -184,6 +197,7 @@ Nothing is returned, it's all side effects."
   "Load the file of leap commands and execute them one by one.
 Nothing is returned."
   (loop for entry = (leap-parse-entry fin eof-error-p eof)
+       do (format t "entry = ~a~%" entry)
      unless (or (null entry) (eq entry eof))
      do (interpret-leap-entry entry)
      until (eq entry eof)))

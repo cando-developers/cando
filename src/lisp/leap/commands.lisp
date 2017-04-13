@@ -4,6 +4,12 @@
 ;;;
 ;;; LEaP commands
 ;;;
+
+(defun set-variable (entry)
+  (let ((variable (first entry))
+        (value (third entry)))
+    (leap.core:register-variable variable value)))
+
     
 (defun log-file (filename)
   (let* ((log-stream (open filename :direction :output :if-exists :supersede))
@@ -29,6 +35,7 @@
   "Load the file of leap commands and execute them one by one.
 Nothing is returned."
   (let ((path (leap.core:search-path filename)))
+    (format t "path = ~a~%" path)
     (with-open-file (stream path :direction :input)
       (let* ((entire-file (make-string (+ (file-length stream) 2)
                                        :initial-element #\newline)))
@@ -44,7 +51,7 @@ Nothing is returned."
          (crd-pathname (if crd-pathname
                            (merge-pathnames crd-pathname)
                            (make-pathname :type "crd" :defaults top-pathname))))
-    (leap.topology:save-amber-parm aggregate top-pathname crd-pathname (leap.core:merge-force-fields force-field-name))))
+    (leap.topology:save-amber-parm aggregate top-pathname crd-pathname (leap.core:merged-force-field force-field-name))))
 
 ;;; ------------------------------------------------------------
 ;;;
@@ -155,7 +162,7 @@ An [expression] is either a command or a number or variable."
 Nothing is returned, it's all side effects."
   (cond
     ((eq (second entry) :=)
-     (set-variable entry))
+     (leap:set-variable entry))
     (t (let* ((cmd (intern (string-upcase (string (first entry))) :keyword))
               (cmd-assoc (assoc cmd *commands*))
               (cmd-func (cdr cmd-assoc)))

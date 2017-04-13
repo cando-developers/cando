@@ -39,7 +39,8 @@
 (defpackage #:leap.topology
   (:use #:common-lisp)
   (:export
-   #:write-topology))
+   #:write-topology
+   #:save-amber-parm))
 
 (defpackage #:leap.commands
   (:use #:common-lisp)
@@ -85,6 +86,7 @@
    #:add-path #:search-path
    #:residue-name
    #:chain-position
+   #:merged-force-field
    #:register-variable #:lookup-variable
    #:add-force-field-or-modification
    #:*force-fields*
@@ -100,7 +102,9 @@
   (:shadowing-import-from :energy "MINIMIZE")
   (:shadowing-import-from :chem "SET-ELEMENT" "GET-ELEMENT" "SIZE")
   (:shadowing-import-from :cando "AS-STRING" "LOAD-MOL2" "SAVE-MOL2")
-  (:import-from :core "QUIT")
+  (:import-from :core #:quit)
+  (:import-from :leap.core
+                #:add-path)
   (:import-from :cando-utility #:mkdir #:set-current-directory #:current-directory #:directory-files)
   (:import-from :inet #:download-pdb)
 ;;  (:import-from :leap.off #:load-off)
@@ -112,6 +116,7 @@
    #:atom
    #:bounding-box
    #:+ #:- #:/ #:* #:< #:> #:>= #:<= #:sqrt
+   #:add-path
    #:minimize
    #:set-element #:get-element #:size
    #:as-string #:load-mol2 #:save-mol2
@@ -127,5 +132,6 @@
    #:list-objects
    #:desc
    #:object
+   #:source
    )
   (:use :common-lisp :chem :geom :chemdraw :cando))
