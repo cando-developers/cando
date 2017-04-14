@@ -4,7 +4,8 @@
 ;;;
 ;;; LEaP commands
 ;;;
-    
+(defvar *out* *standard-output*)
+
 (defun set-variable (entry)
   (let ((variable (first entry))
         (value (third entry)))
@@ -24,7 +25,7 @@
 (defun desc (name)
   "Print a description of the object with name."
   (let ((val (leap.core:lookup-variable name)))
-    (format t "~S~%" val)))
+    (format *out* "~S~%" val)))
 
 (defun object (name)
   "Return the object with name."
@@ -33,7 +34,7 @@
 (defun leap.desc (entry)
   (valid-arguments entry 1)
   (let ((var (second entry)))
-    (format t "~a~%" var)))
+    (format *out* "~a~%" var)))
 
 (defun leap.add-pdb-res-map (entry)
   (valid-arguments entry 1)
@@ -63,7 +64,7 @@
               (with-open-file (fin filename :direction :input)
                 (chem:read-parameters parmreader fin)
                 (chem:get-force-field parmreader)))))
-    (format t "Adding force field ~a to ~a~%" ff force-field)
+    (format *out* "Adding force field ~a to ~a~%" ff force-field)
     (leap.core:add-force-field-or-modification ff force-field)
     ff))
 
@@ -84,9 +85,16 @@
     objects))
 
 (defun source (filename)
+  (let* ((path (leap.core:search-path filename))
+         (entire-file (alexandria:read-file-into-string path))
+         (ast (architecture.builder-protocol:with-builder ('list)
+                (esrap:parse 'leap.parser::leap entire-file))))
+    (format *out* "result -> ~s~%" ast)))
+
+(defun source.old (filename)
   "Load the file of leap commands and execute them one by one.
 Nothing is returned."
-  (format t "In source~%")
+  (format *out* "In source~%")
   (let ((path (leap.core:search-path filename)))
     (with-open-file (stream path :direction :input)
       (let* ((entire-file (make-string (+ (file-length stream) 2)
@@ -94,7 +102,7 @@ Nothing is returned."
         (read-sequence entire-file stream)
         (with-input-from-string (sin entire-file)
           (loop for entry = (leap-parse-entry sin nil :eof)
-               do (format t "read entry: ~a~%" entry)
+               do (format *out* "read entry: ~a~%" entry)
              unless (or (null entry) (eq entry :eof))
              do (interpret-leap-entry entry)
              until (eq entry :eof)))))))
@@ -187,7 +195,7 @@ Nothing is returned, it's all side effects."
     (t (let* ((cmd (intern (string-upcase (string (first entry))) :keyword))
               (cmd-assoc (assoc cmd *commands*))
               (cmd-func (cdr cmd-assoc)))
-         (format t "cmd cmd-assoc cmd-func: ~a ~a ~a~%" cmd cmd-assoc cmd-func)
+         (format *out* "cmd cmd-assoc cmd-func: ~a ~a ~a~%" cmd cmd-assoc cmd-func)
          (if (null cmd-func)
              (error "Illegal function ~a cmd-assoc: ~a  cmd-func: ~a" cmd cmd-assoc cmd-func)
              (progn
@@ -197,7 +205,7 @@ Nothing is returned, it's all side effects."
   "Load the file of leap commands and execute them one by one.
 Nothing is returned."
   (loop for entry = (leap-parse-entry fin eof-error-p eof)
-       do (format t "entry = ~a~%" entry)
+       do (format *out* "entry = ~a~%" entry)
      unless (or (null entry) (eq entry eof))
      do (interpret-leap-entry entry)
      until (eq entry eof)))

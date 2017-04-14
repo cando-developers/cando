@@ -1,4 +1,4 @@
 import os
 
 def build(bld):
-    bld.recurse('adapt geom units chem lisp main')
+    bld.recurse('adapt geom units chem lisp main data')

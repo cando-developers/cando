@@ -107,13 +107,22 @@
 ;;; Test the leap parser
 ;;;
 (asdf:load-system "amber")
-(progn
-  (amber:add-path #P"/Users/meister/Development/amber/dat/leap/prep/")
-  (amber:add-path #P"/Users/meister/Development/amber/dat/leap/lib/")
-  (amber:add-path #P"/Users/meister/Development/amber/dat/leap/parm/")
-  (amber:add-path #P"/Users/meister/Development/amber/dat/leap/cmd/"))
 
-(leap.commands::source #P"leaprc.protein.fb15")
+(leap.core:add-path #P"/Users/meister/Development/amber/dat/leap/prep/")
+
+(find-symbol "ADD-PATH" :leap.core)
+
+
+(progn
+  (add-path #P"/Users/meister/Development/amber/dat/leap/prep/")
+  (add-path #P"/Users/meister/Development/amber/dat/leap/lib/")
+  (add-path #P"/Users/meister/Development/amber/dat/leap/parm/")
+  (add-path #P"/Users/meister/Development/amber/dat/leap/cmd/"))
+
+(source #P"leaprc.protein.fb15")
+
+(defparameter pep (
+
 (apply 'leap.commands::leap.log-file '(:|leap.log|))
 (leap.commands::leap.log-file '(goof :|foo.test|))
 

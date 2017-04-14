@@ -36,6 +36,12 @@
    #:debug-on
    #:debug))
 
+(defpackage #:leap.parser
+  (:use #:cl #:alexandria #:esrap #:parser.common-rules)
+  (:export #:
+  (:documentation
+   "Embryonic parser for the leap file format.  Written by Jan Moringen"))
+
 (defpackage #:leap.topology
   (:use #:common-lisp)
   (:export
