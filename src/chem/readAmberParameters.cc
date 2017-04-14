@@ -176,13 +176,13 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
     } else {
       core::T_sp linestream = core::cl__make_string_input_stream(ol,core::make_fixnum(0),_Nil<core::T_O>());
       LOG(BF("Parsing line|%s|") % line.c_str()  );
-      printf("%s:%d:%s  line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
+//      printf("%s:%d:%s  line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
       core::Symbol_sp typeSymbol = gc::As<core::Symbol_sp>(core::cl__read(linestream,_Nil<core::T_O>()));
       core::T_sp omass = core::cl__read(linestream,_Nil<core::T_O>());
       core::T_sp maybePolarizability = core::cl__read(linestream,_Nil<core::T_O>());
       double mass = core::clasp_to_double(omass);
       double polarizability = 0.0;
-      if ( gc::IsA<core::Float_sp>(maybePolarizability)) {
+      if ( maybePolarizability.fixnump() || gc::IsA<core::Float_sp>(maybePolarizability)) {
         polarizability = core::clasp_to_double(gc::As_unsafe<core::Float_sp>(maybePolarizability));
       }
       FFNonbond_sp ffNonbond;
@@ -264,7 +264,7 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
       ffAngle->_Type1 = chemkw_intern(t1);
       ffAngle->_Type2 = chemkw_intern(t2);
       ffAngle->_Type3 = chemkw_intern(t3);
-      printf("%s:%d  Parsing line: %s\n", __FILE__, __LINE__, line.c_str());
+//      printf("%s:%d  Parsing line: %s\n", __FILE__, __LINE__, line.c_str());
       fflush(stdout);
       string parms = line.substr(9);
       vector<string> parmsParts = core::split(parms);
