@@ -38,7 +38,7 @@
 
 (defpackage #:leap.parser
   (:use #:cl #:alexandria #:esrap #:parser.common-rules)
-  (:export #:
+  (:export )
   (:documentation
    "Embryonic parser for the leap file format.  Written by Jan Moringen"))
 
@@ -46,7 +46,7 @@
   (:use #:common-lisp)
   (:export
    #:write-topology
-   #:save-amber-parm))
+   #:save-amber-parm-format))
 
 (defpackage #:leap.commands
   (:use #:common-lisp)

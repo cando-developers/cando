@@ -71,7 +71,7 @@
 (defun leap.load-amber-params (entry)
   (valid-arguments entry 1)
   (let ((filename (second entry)))
-    (push (load-amber-params filename) *default-force-field*)))
+    (load-amber-params filename)))
 
 
 (defun list-force-fields ()
@@ -112,12 +112,12 @@ Nothing is returned."
   (let* ((filename (ensure-path (second entry))))
     (source filename)))
 
-(defun save-amber-parm (aggregate topology-file-name &optional coordinate-file-name (force-field-name :default))
+(defun save-amber-parm (aggregate topology-file-name &optional crd-pathname (force-field-name :default))
   (let* ((top-pathname (merge-pathnames (pathname topology-file-name)))
          (crd-pathname (if crd-pathname
                            (merge-pathnames crd-pathname)
                            (make-pathname :type "crd" :defaults top-pathname))))
-    (leap.topology:save-amber-parm aggregate top-pathname crd-pathname (leap.core:merged-force-field force-field-name))))
+    (leap.topology:save-amber-parm-format aggregate top-pathname crd-pathname (leap.core:merged-force-field force-field-name))))
 
 
 (defun ensure-string (obj)
