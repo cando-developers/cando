@@ -28,6 +28,7 @@
 (defpackage #:chemdraw
   (:use :cl)
   (:export #:load-only-aggregate
+           #:load-chemdraw
            )
   )
 
