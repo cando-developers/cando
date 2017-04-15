@@ -32,6 +32,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/numerics.h>
 #include <clasp/core/lispStream.h>
 #include <clasp/core/bformat.h>
+#include <clasp/core/readtable.h>
 #include <clasp/core/primitives.h>
 #include <clasp/core/evaluator.h>
 #include <clasp/core/array.h>
@@ -167,6 +168,10 @@ FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(core::T_sp fin)
 FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp ffNonbondDb )
 {
   core::DynamicScopeManager scope(cl::_sym_STARpackageSTAR, _lisp->keywordPackage());
+  core::ReadTable_sp readtable = gctools::As<core::ReadTable_sp>(cl::_sym_STARreadtableSTAR->symbolValue());
+  core::ReadTable_sp copy_readtable = readtable->copyReadTable(_Nil<core::T_O>());
+  copy_readtable->setf_readtable_case(kw::_sym_preserve);
+  scope.bind(cl::_sym_STARreadtableSTAR,copy_readtable);
   bool done = false;
   while ( not done ) {
     core::T_mv ol = core::cl__read_line(fin);
@@ -176,7 +181,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
     } else {
       core::T_sp linestream = core::cl__make_string_input_stream(ol,core::make_fixnum(0),_Nil<core::T_O>());
       LOG(BF("Parsing line|%s|") % line.c_str()  );
-//      printf("%s:%d:%s  line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
+      printf("%s:%d:%s parseMasses line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
       core::Symbol_sp typeSymbol = gc::As<core::Symbol_sp>(core::cl__read(linestream,_Nil<core::T_O>()));
       core::T_sp omass = core::cl__read(linestream,_Nil<core::T_O>());
       core::T_sp maybePolarizability = core::cl__read(linestream,_Nil<core::T_O>());
@@ -199,6 +204,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
       ffNonbond->setType(typeSymbol);
       ffNonbond->setMass(mass);
       ffNonbond->setPolarizability(polarizability);
+      printf("%s:%d Adding nonbond type with name: %s\n", __FILE__, __LINE__, _rep_(typeSymbol).c_str());
       if (newp) ffNonbondDb->add(ffNonbond);
     }
   }
@@ -431,8 +437,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
         core::Symbol_sp stype = chemkw_intern(type);
         if ( ffNonbondDb->hasType(stype) ) {
           ffNonbond = ffNonbondDb->findType(stype);
-        } else
-        {
+        } else {
           SIMPLE_ERROR(BF("Could not find type: %s") % type);
         }
         string parms = line.substr(5);
@@ -487,7 +492,7 @@ ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fi
     ff->setFFItorDb(ffItorsDb);
     ff->setFFNonbondDb(ffNonbondsDb);
     //
-    // parameters from  Antechamberpaper
+    // parameters from  Antechamber paper
     //
     ff->_Angles->addZConstant(chemkw_intern("H"), 0.784);
     ff->_Angles->addZConstant(chemkw_intern("C"), 1.183);
