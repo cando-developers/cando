@@ -72,17 +72,21 @@ void	CDNode_O::initialize()
   this->Base::initialize();
   this->_Atom = _Nil<Atom_O>();
 }
-
 #if 0
-void CDNode_O::fieldsp(core::Record_sp node)
+void CDNode_O::fields(core::Record_sp node)
 {
+  node->field(INTERN_(kw,id),this->_Id);
+  node->field(INTERN_(kw,color),this->_Color);
+  node->field(INTERN_(kw,pos),this->_Pos);
+  node->field(INTERN_(kw,label),this->_Label);
+  node->/*pod_*/field_if_not_default( INTERN_(kw,stereochemistryType), this->_StereochemistryType, undefinedCenter );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,configuration), this->_Configuration, undefinedConfiguration  );
   node->field(INTERN_(kw,atom_properties),this->_AtomProperties);
   node->field(INTERN_(kw,residue_properties),this->_ResidueProperties);
   node->field(INTERN_(kw,molecule_properties),this->_MoleculeProperties);
   this->Base(node);
 }
 #endif
-
 
 std::string CDNode_O::_extractLabel(adapt::QDomNode_sp node)
 {
@@ -178,6 +182,18 @@ void	CDBond_O::initialize()
   this->_BeginNode = _Nil<CDNode_O>();
   this->_EndNode = _Nil<CDNode_O>();
 }
+
+#if 0
+void CDBond_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,idbegin),this->_IdBegin);
+  node->field(INTERN_(kw,idend),this->_IdEnd);
+  node->field(INTERN_(kw,nodebegin),this->_BeginNode);
+  node->field(INTERN_(kw,nodeend),this->_EndNode);
+  node->field(INTERN_(kw,order),this->_Order);
+  this->Base::fields(node);
+}
+#endif
 
 string	CDBond_O::getOrderAsString()
 {

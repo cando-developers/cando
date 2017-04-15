@@ -92,6 +92,11 @@ class CDNode_O : public core::CxxObject_O
   core::List_sp _MoleculeProperties;
  public:
   void	initialize();
+ public:
+#if 0
+  bool fieldsp() const { return true; };
+  void fields(core::Record_sp node);
+#endif
  private:
   std::string	_extractLabel(adapt::QDomNode_sp node);
  public:
@@ -132,6 +137,11 @@ private:
 	CDBondOrder	_Order;
 public:
 	void	initialize();
+ public:
+#if 0
+        bool fieldsp() const { return true; };
+        void fields(core::Record_sp node);
+#endif
 public:
 	string	getOrderAsString();
 	CDBondOrder	getOrder() { return this->_Order; };
@@ -173,6 +183,11 @@ private:
 //    core::HashTableEq_sp		_Properties;
 public:
     void	initialize();
+ public:
+#if 0
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+#endif
 private:
     bool _asKeyedObject(core::Symbol_sp label, core::Symbol_sp& keyword, core::T_sp& obj);
 private:
@@ -237,6 +252,11 @@ private:
 	core::HashTableEq_sp		_Properties;
 public:
 	void	initialize();
+ public:
+#if 0
+        bool fieldsp() const { return true; };
+        void fields(core::Record_sp node);
+#endif
 public:
 
 	void	parseFromXml(adapt::QDomNode_sp xml, bool print);
@@ -269,9 +289,11 @@ private:
 public:
 //	void	archive(core::ArchiveP node);
 	void	initialize();
-private:
-	// instance variables
-public:
+ public:
+#if 0
+        bool fieldsp() const { return true; };
+        void fields(core::Record_sp node);
+#endif
 private:
 	string	_getAtomName(adapt::QDomNode_sp node);
 public:
@@ -313,9 +335,4 @@ CL_DEFMETHOD 	core::List_sp allFragmentsAsList() { return this->getFragments();}
 
 
 };
-TRANSLATE(chem::CDNode_O);
-TRANSLATE(chem::CDBond_O);
-TRANSLATE(chem::CDFragment_O);
-TRANSLATE(chem::CDText_O);
-TRANSLATE(chem::ChemDraw_O);
 #endif //]
