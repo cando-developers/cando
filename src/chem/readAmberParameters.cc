@@ -181,7 +181,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
     } else {
       core::T_sp linestream = core::cl__make_string_input_stream(ol,core::make_fixnum(0),_Nil<core::T_O>());
       LOG(BF("Parsing line|%s|") % line.c_str()  );
-      printf("%s:%d:%s parseMasses line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
+//      printf("%s:%d:%s parseMasses line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
       core::Symbol_sp typeSymbol = gc::As<core::Symbol_sp>(core::cl__read(linestream,_Nil<core::T_O>()));
       core::T_sp omass = core::cl__read(linestream,_Nil<core::T_O>());
       core::T_sp maybePolarizability = core::cl__read(linestream,_Nil<core::T_O>());
@@ -204,7 +204,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
       ffNonbond->setType(typeSymbol);
       ffNonbond->setMass(mass);
       ffNonbond->setPolarizability(polarizability);
-      printf("%s:%d Adding nonbond type with name: %s\n", __FILE__, __LINE__, _rep_(typeSymbol).c_str());
+//      printf("%s:%d Adding nonbond type with name: %s\n", __FILE__, __LINE__, _rep_(typeSymbol).c_str());
       if (newp) ffNonbondDb->add(ffNonbond);
     }
   }
