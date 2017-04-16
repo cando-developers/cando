@@ -132,6 +132,9 @@ FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(core::T_sp fin)
     LOG(BF("Read line(%s)") % line  );
     if ( line.substr(0,8) == "WILDATOM" ) {
       vector<string> names = core::split(line," \t");
+      if (names.size()<2) {
+        SIMPLE_ERROR(BF("Could not interpret %s as a type rule") % line);
+      }
       string wildName = names[1];
       wildCardElementDictionary->addWildName(chemkw_intern(wildName));
       for ( vector<string>::iterator it=names.begin()+1; it!=names.end(); it++ )
@@ -224,8 +227,12 @@ FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(core::T_sp fin)
       done = true;
     } else {
       LOG(BF("Parsing line|%s|") % line.c_str()  );
+//      printf("%s:%d reading line: %s\n", __FILE__, __LINE__, line.c_str());
       string types = line.substr(0,5);
       vector<string>typeParts = core::split(types,"-");
+      if (typeParts.size() <2) {
+        SIMPLE_ERROR(BF("Could not interpret %s as a stretch parameter") % types);
+      }
       string type1Name = core::trimWhiteSpace(typeParts[0]);
       string type2Name = core::trimWhiteSpace(typeParts[1]);
       GC_ALLOCATE(FFStretch_O, ffStretch );
@@ -233,6 +240,9 @@ FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(core::T_sp fin)
       ffStretch->_Type2 = chemkw_intern(type2Name);
       string parms = line.substr(6);
       vector<string> parmsParts = core::split(parms);
+      if (parms.size()<2) {
+        SIMPLE_ERROR(BF("Could not interpret %s as stretch parameter") % parms);
+      }
       double kb_kJPerNanometerSquared = kCalPerAngstromSquared_to_kJPerNanometerSquared(atof(parmsParts[0].c_str()));
       double r0_Nanometer = angstrom_to_nanometer(atof(parmsParts[1].c_str()));
       ffStretch->setKb_kJPerNanometerSquared(kb_kJPerNanometerSquared);
@@ -263,6 +273,9 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
       LOG(BF("Parsing line|%s|") % line.c_str()  );
       string types = line.substr(0,8);
       vector<string>typeParts = core::split(types,"-");
+      if (typeParts.size() <3) {
+        SIMPLE_ERROR(BF("Could not interpret %s as an angle parameter") % types);
+      }
       string t1 = core::trimWhiteSpace(typeParts[0]);
       string t2 = core::trimWhiteSpace(typeParts[1]);
       string t3 = core::trimWhiteSpace(typeParts[2]);
@@ -274,6 +287,9 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
       fflush(stdout);
       string parms = line.substr(9);
       vector<string> parmsParts = core::split(parms);
+      if (parms.size()<2) {
+        SIMPLE_ERROR(BF("Could not interpret %s as an angle parameter") % parms);
+      }
       ffAngle->_K2__kJPerRadianSquared = kCalPerRadianSquared_to_kJPerRadianSquared(atof(parmsParts[0].c_str()));
       ffAngle->_AngRad = core::radians(atof(parmsParts[1].c_str()));
 //            print "(%s)-(%s)-(%s) k=%lf ang(deg)=%lf"%(ffAngle._Type1,ffAngle._Type2, ffAngle._Type3,ffAngle._K2, ffAngle._AngRad/0.0174533)
@@ -303,6 +319,9 @@ FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin)
       LOG(BF("Parsing line|%s|") % line.c_str()  );
       string types = line.substr(0,12);
       vector<string>typeParts = core::split(types,"-");
+      if (typeParts.size() <4) {
+        SIMPLE_ERROR(BF("Could not interpret %s as a dihedral parameter") % types);
+      }
       string t1 = core::trimWhiteSpace(typeParts[0]);
       string t2 = core::trimWhiteSpace(typeParts[1]);
       string t3 = core::trimWhiteSpace(typeParts[2]);
@@ -325,6 +344,9 @@ FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin)
       ffPtor->setTypes(st1,st2,st3,st4);
       string parms = line.substr(13);
       vector<string> parmsParts = core::split(parms);
+      if ( parmsParts.size() < 4) {
+        SIMPLE_ERROR(BF("Could not interpret %s as a dihedral parameter") % parms);
+      }
       double idivf =  atof(parmsParts[0].c_str());
       double pk = atof(parmsParts[1].c_str());
       double phaseRad = atof(parmsParts[2].c_str())*0.0174533;
@@ -361,6 +383,9 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
       LOG(BF("Parsing line|%s|") % line.c_str()  );
       string types = line.substr(0,12);
       vector<string>typeParts = core::split(types,"-");
+      if (types.size()<4) {
+        SIMPLE_ERROR(BF("Could not interpret %s as an itor parameter") % types);
+      }
       string t1 = core::trimWhiteSpace(typeParts[0]);
       string t2 = core::trimWhiteSpace(typeParts[1]);
       string t3 = core::trimWhiteSpace(typeParts[2]);
@@ -388,6 +413,9 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
       ffItor->setTypes(st1,st2,st3,st4);
       string parms = line.substr(13);
       vector<string> parmsParts = core::split(parms);
+      if (parmsParts.size()<3) {
+        SIMPLE_ERROR(BF("Could not interpret %s as an itor parameter") % parms);
+      }
       double pk = atof(parmsParts[0].c_str());
       double phaseRad = atof(parmsParts[1].c_str())*0.0174533;
       int pn = abs(int(atof(parmsParts[2].c_str())));
@@ -407,8 +435,8 @@ string ReadAmberParameters_O::parseNonbondLabelKindNB(core::T_sp fin)
 {
   string line = core::cl__read_line(fin).as<core::Str_O>()->get();
   vector<string>parts = core::split(line);
-  if (parts.size() == 0) {
-    printf("%s:%d Could not split line: %s\n", __FILE__, __LINE__, line.c_str());
+  if (line.size()<2) {
+    SIMPLE_ERROR(BF("Could not interpret %s as a label kindnb") % line);
   }
   string label = parts[0];
   string kindnb = parts[1];
@@ -442,6 +470,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
         }
         string parms = line.substr(5);
         vector<string>parmsParts = core::split(parms);
+        if (parmsParts.size()<2) SIMPLE_ERROR(BF("Could not interpret %s as a nonbond parameter") % parms);
         double radius  = atof(parmsParts[0].c_str());
         double edep = atof(parmsParts[1].c_str());
 //	    print "parseNonbondDb::",
@@ -472,6 +501,7 @@ ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fi
     string line = core::cl__read_line(fin).as<core::Str_O>()->get();
     GC_ALLOCATE(FFNonbondDb_O, ffNonbondsDb );
     ffNonbondsDb = this->parseMasses(fin,ffNonbondsDb);
+    core::cl__read_line(fin); // skp hydrophilic entries
     FFStretchDb_sp ffStretchesDb = this->parseStretchDb(fin);
     FFAngleDb_sp ffAnglesDb = this->parseAngleDb(fin);
     FFPtorDb_sp ffPtorsDb = this->parsePtorDb(fin);
