@@ -60,8 +60,9 @@
     (load-off filename)))
 
 (defun load-amber-params (filename &optional (force-field :default))
-  (let ((ff (let ((parmreader (chem:make-read-amber-parameters)))
-              (with-open-file (fin filename :direction :input)
+  (let* ((fn (ensure-path filename))
+         (ff (let ((parmreader (chem:make-read-amber-parameters)))
+              (with-open-file (fin fn :direction :input)
                 (chem:read-parameters parmreader fin)
                 (chem:get-force-field parmreader)))))
     (format *out* "Adding force field ~a to ~a~%" ff force-field)
@@ -89,6 +90,7 @@
          (entire-file (alexandria:read-file-into-string path))
          (ast (architecture.builder-protocol:with-builder ('list)
                 (esrap:parse 'leap.parser::leap entire-file))))
+    (leap.core:evaluate 'list ast leap.core:*leap-env*)
     (format *out* "result -> ~s~%" ast)))
 
 (defun source.old (filename)
@@ -143,15 +145,24 @@ Nothing is returned."
   (unless (= (length entry) (1+ num))
     (error "Bad arguments for ~a" (car entry))))
 
+
 (defparameter *commands*
-  '((:logfile . leap.log-file)
-    (:desc . leap.desc)
-    (:loadoff . leap.load-off)
-    (:source . leap.source)
-    (:loadamberparams . leap.load-amber-params)
-    (:addpdbresmap . leap.add-pdb-res-map)
-    (:addatomtypes . leap.add-atom-types)
+  '(("logFile" . log-file)
+    ("desc" . desc)
+    ("loadOff" . load-off)
+    ("source" . source)
+    ("loadAmberParams" . load-amber-params)
+    ("addPdbResMap" . leap.pdb:add-pdb-res-map)
+    ("addAtomTypes" . add-atom-types)
     ))
+
+
+(eval-when (:load-toplevel :execute)
+  (dolist (command *commands*)
+    (if (fboundp (cdr command))
+        (setf (leap.core:function-lookup (car command) leap.core:*leap-env*) (cdr command))
+        (error "~a is not a function" (cdr command)))))
+
 
 
 
@@ -162,51 +173,54 @@ Nothing is returned."
 ;;; This uses the Common Lisp reader and it would probably be better
 ;;; to develop a proper parser
 ;;;
-(defun leap-list-reader (stream char)
-  "Read a Leap list delimited by #\} and return it."
-  (let ((*readtable* (copy-readtable)))
-    (set-syntax-from-char #\newline #\space)
-    (read-delimited-list #\} stream t)))
+#++
+(progn
+  (defun leap-list-reader (stream char)
+    "Read a Leap list delimited by #\} and return it."
+    (let ((*readtable* (copy-readtable)))
+      (set-syntax-from-char #\newline #\space)
+      (read-delimited-list #\} stream t)))
 
-(defun leap-parse-entry (stream &optional (eof-error-p t) eof)
-  "Parse a leap command from the stream and return it.
+  (defun leap-parse-entry (stream &optional (eof-error-p t) eof)
+    "Parse a leap command from the stream and return it.
 A leap command can have the form:
 [command] [arg1] [arg2] [arg3] ... #\NEWLINE  - execute command
 [variable] = [expression] #\NEWLINE           - set variable
 [variable] = #\NEWLINE                        - clear variable
 # ... #\NEWLINE                               - comment
 An [expression] is either a command or a number or variable."
-  (if (eq (peek-char nil stream eof-error-p eof) eof)
-      eof
-      (let ((*readtable* (copy-readtable))
-            (*package* (find-package :keyword)))
-        (setf (readtable-case *readtable*) :preserve)
-        (set-macro-character #\{ #'leap-list-reader nil)
-        (set-syntax-from-char #\# #\;)
-        (set-syntax-from-char #\newline #\))
-        (read-delimited-list #\newline stream nil))))
+    (if (eq (peek-char nil stream eof-error-p eof) eof)
+        eof
+        (let ((*readtable* (copy-readtable))
+              (*package* (find-package :keyword)))
+          (setf (readtable-case *readtable*) :preserve)
+          (set-macro-character #\{ #'leap-list-reader nil)
+          (set-syntax-from-char #\# #\;)
+          (set-syntax-from-char #\newline #\))
+          (read-delimited-list #\newline stream nil))))
 
-(defun interpret-leap-entry (entry)
-  "Interpret a leap command or variable assignment. 
+  (defun interpret-leap-entry (entry)
+    "Interpret a leap command or variable assignment. 
 Nothing is returned, it's all side effects."
-  (cond
-    ((eq (second entry) :=)
-     (set-variable entry))
-    (t (let* ((cmd (intern (string-upcase (string (first entry))) :keyword))
-              (cmd-assoc (assoc cmd *commands*))
-              (cmd-func (cdr cmd-assoc)))
-         (format *out* "cmd cmd-assoc cmd-func: ~a ~a ~a~%" cmd cmd-assoc cmd-func)
-         (if (null cmd-func)
-             (error "Illegal function ~a cmd-assoc: ~a  cmd-func: ~a" cmd cmd-assoc cmd-func)
-             (progn
-               (funcall cmd-func entry)))))))
+    (cond
+      ((eq (second entry) :=)
+       (set-variable entry))
+      (t (let* ((cmd (intern (string-upcase (string (first entry))) :keyword))
+                (cmd-assoc (assoc cmd *commands*))
+                (cmd-func (cdr cmd-assoc)))
+           (format *out* "cmd cmd-assoc cmd-func: ~a ~a ~a~%" cmd cmd-assoc cmd-func)
+           (if (null cmd-func)
+               (error "Illegal function ~a cmd-assoc: ~a  cmd-func: ~a" cmd cmd-assoc cmd-func)
+               (progn
+                 (funcall cmd-func entry)))))))
 
-(defun leap-interpreter (fin &optional eof-error-p eof)
-  "Load the file of leap commands and execute them one by one.
+  (defun leap-interpreter (fin &optional eof-error-p eof)
+    "Load the file of leap commands and execute them one by one.
 Nothing is returned."
-  (loop for entry = (leap-parse-entry fin eof-error-p eof)
+    (loop for entry = (leap-parse-entry fin eof-error-p eof)
        do (format *out* "entry = ~a~%" entry)
-     unless (or (null entry) (eq entry eof))
-     do (interpret-leap-entry entry)
-     until (eq entry eof)))
+       unless (or (null entry) (eq entry eof))
+       do (interpret-leap-entry entry)
+       until (eq entry eof)))
 
+  )

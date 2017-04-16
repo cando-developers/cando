@@ -42,6 +42,13 @@
   (:documentation
    "Embryonic parser for the leap file format.  Written by Jan Moringen"))
 
+(defpackage #:leap.interpreter
+  (:use #:cl #:alexandria #:esrap #:parser.common-rules)
+  (:export #:evaluate
+           #:*leap-env*)
+  (:documentation
+   "Embryonic parser for the leap file format.  Written by Jan Moringen"))
+
 (defpackage #:leap.topology
   (:use #:common-lisp)
   (:export
@@ -89,6 +96,10 @@
                 #:add-pdb-atom-map
                 #:add-pdb-res-map)
   (:export
+   #:evaluate
+   #:*leap-env*
+   #:variable-lookup
+   #:function-lookup
    #:add-path #:search-path
    #:residue-name
    #:chain-position

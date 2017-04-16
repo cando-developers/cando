@@ -1,4 +1,4 @@
-(cl:in-package #:leap-parser)
+(cl:in-package #:leap.interpreter)
 
 (defclass leap-environment ()
   ((%functions :initarg  :functions
@@ -56,19 +56,28 @@
 
    ast))
 
-(defparameter *input*
-  (alexandria:read-file-into-string
-   (asdf:system-relative-pathname :leap-parser "examples/test.leap")))
 
-(defparameter *ast*
-  (architecture.builder-protocol:with-builder ('list)
-    (esrap:parse 'leap *input*)))
+(eval-when (:load-toplevel :execute)
+  (defparameter *leap-env* (make-instance 'leap-environment))
+  (dolist (command leap::*commands*)
+    (setf (lookup (car command) :function *leap-env*) (fdefinition (cdr command)))))
 
-(let ((env (make-instance 'leap-environment)))
-  (setf (lookup "logFile" :function env)
-        (lambda (filename)
-          (print (list "logFile" filename)))
-        (lookup "addAtomTypes" :function env)
-        (lambda (types)
-          (print (list "addAtomTypes" types))))
-  (evaluate 'list *ast* env))
+#++
+(progn
+  (defparameter *input* 
+    (alexandria:read-file-into-string
+     (asdf:system-relative-pathname :leap-parser "examples/test.leap")))
+
+  (defparameter *ast*
+    (architecture.builder-protocol:with-builder ('list)
+      (esrap:parse 'leap *input*)))
+
+  (let ((env (make-instance 'leap-environment)))
+    (setf (lookup "logFile" :function env)
+          (lambda (filename)
+            (print (list "logFile" filename)))
+          (lookup "addAtomTypes" :function env)
+          (lambda (types)
+            (print (list "addAtomTypes" types))))
+    (evaluate 'list *ast* env))
+  )

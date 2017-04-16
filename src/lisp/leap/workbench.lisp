@@ -1,3 +1,13 @@
+(add-path "/Users/meister/Development/amber/dat/leap/cmd/")
+(add-path "/Users/meister/Development/amber/dat/leap/lib/")
+(add-path "/Users/meister/Development/amber/dat/leap/dat/")
+(add-path "/Users/meister/Development/amber/dat/leap/parm/")
+(source "leaprc.gaff")
+
+(leap.core:search-path #P"gaff.dat")
+leap.core::*path*
+
+
 (in-package :cando-user)
 (progn
   (asdf:load-system "amber")

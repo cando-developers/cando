@@ -22,6 +22,68 @@
      when (probe-file full-path)
      return it))
 
+;;; --
+;;;
+;;; Leap environment
+
+
+(defclass leap-environment ()
+  ((%functions :initarg  :functions
+               :type     hash-table
+               :reader   %functions
+               :initform (make-hash-table :test #'equalp))
+   (%variables :initarg  :variables
+               :type     hash-table
+               :reader   %variables
+               :initform (make-hash-table :test #'equalp))))
+
+
+(defparameter *leap-env* (make-instance 'leap-environment))
+
+(defun function-lookup (name environment)
+  (or (gethash name (%functions environment))
+      (error "The function ~S is not defined" name)))
+
+(defun (setf function-lookup) (new-value name environment)
+  (setf (gethash name (%functions environment)) new-value))
+
+(defun variable-lookup (name environment &optional errorp error-value)
+  (or (gethash name (%variables environment))
+   (if errorp
+       (error "The variable ~S is not defined" name)
+       error-value)))
+
+(defun (setf variable-lookup) (new-value name environment)
+  (setf (gethash name (%variables environment)) new-value))
+
+(defun evaluate (builder ast environment)
+  (architecture.builder-protocol:walk-nodes
+   builder
+   (lambda (recurse relation relation-args node kind relations
+            &key name value &allow-other-keys)
+     (declare (ignore relation relation-args node relations))
+     (case kind
+       (:literal
+        value)
+       (:list
+        (first (funcall recurse :relations '(:element))))
+       (:function
+        (apply (function-lookup name environment)
+               (first (funcall recurse :relations '(:argument)))))
+       (:assignment
+        (setf (variable-lookup name environment)
+              (first (first (funcall recurse :relations '(:value))))))
+       (t
+        (funcall recurse))))
+
+   ast))
+
+
+
+
+
+
+
 ;;; ------------------------------------------------------------
 ;;;
 ;;; Maintain a hash-table that maps object names to objects
@@ -37,23 +99,14 @@
 - object :: an object
 * Description
 Associate the name with the object"
-  (when (gethash name *objects*)
-    (warn "Overwriting variable ~a" name))
-  (setf (gethash name *objects*) object))
+  (setf (variable-lookup name *leap-env*) object))
 
 (defun lookup-variable (name &optional (errorp t) error-value)
   "* Arguments
 - name : Symbol
 * Description
 Lookup the object in the *objects*."
-  (multiple-value-bind (val found)
-      (gethash name *objects*)
-    (if found
-        val
-        (if errorp
-            (error 'object-not-found :name name)
-            error-value))))
-
+  (variable-lookup name *leap-env* errorp error-value))
 
 ;;; ------------------------------------------------------------
 ;;;

@@ -16,7 +16,8 @@
      (:file "off")
      (:file "cando-database")
 ;     (:file "commands")     ;;; moved to leap
-     (:file "leap")
      (:file "pdb")
      (:file "grammar")
+     (:file "leap")
+;     (:file "interpreter")
      ))
