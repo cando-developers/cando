@@ -93,6 +93,21 @@ Set the stereochemistry of a collection of stereocenters using a function that r
   (when show
     (dump-stereocenters atom-vec)))
 
+(defun set-stereoisomer-mapping (matter atom-name-to-config &key show)
+  "* Arguments
+- matter : The aggregate/molecule/residue that contains the named atoms.
+- atom-name-to-config :: An alist that maps atom names to :r or :s
+* Description
+Set the stereochemistry of a collection of stereocenters using a alist of atom names to stereochemistry."
+  (loop for (name . config) in atom-name-to-config
+     do (let ((atom (chem:first-atom-with-name matter name)))
+          (chem:set-configuration atom config))))
+
+(defun set-stereoisomer-mapping (matter atom-name-to-config)
+  (loop for (name . config) in atom-name-to-config          
+     do (let ((atom (chem:first-atom-with-name matter name)))
+          (format t "Atom name: ~a  atom: ~a config: ~a~%" name atom config)
+          (chem:set-configuration atom config))))
 
 (defun number-of-stereoisomers (chiral-atoms)
   (expt 2 (length chiral-atoms)))

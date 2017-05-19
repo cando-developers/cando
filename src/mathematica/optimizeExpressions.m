@@ -1053,6 +1053,130 @@ writeOutputVariablesForDebugging[pack_]:=Block[
 	
 
 
+(* ::Subtitle:: *)
+(*Helper functions*)
+
+
+Assign[var_,exp_]:=Rule[exp,var];
+
+
+(* Extract the variable name information into a list of rules *)
+ExtractNames[names_] := {
+	Name->names[[1]],
+	XYZ->names[[2]],
+	Index->names[[3]],
+	Offset->names[[4]],
+	Func->If[Length[names]>=5,names[[5]],0]
+};
+
+
+EnergyAccumulate[macroPrefix_,energyName_]:=CCode[macroPrefix<>"_ENERGY_ACCUMULATE("<>ToString[energyName]<>");"];
+
+
+ForceAccumulate[macroPrefix_,nameRules_,forceName_]:= CCode[
+	macroPrefix<>"_FORCE_ACCUMULATE("<>ToString[Index/.nameRules]
+	<>", "<>ToString[Offset/.nameRules]<>", "<>ToString[forceName]<>" );"];
+
+
+AppendGradientAndForce[macroPrefix_,be_,outputs_,rawEnergyFn_,rawNames_] := Module[
+	{i,gradName,zforceName,energyFn,nameInfo,varName,names,deriv},
+	PrintTemporary["About to append Gradient and Force terms"];
+	names = Evaluate[rawNames];
+	energyFn = Evaluate[rawEnergyFn];
+	For[i=1,i<=Length[names],i++,
+		nameInfo = ExtractNames[names[[i]]];
+		varName = Name/.nameInfo;
+		gradName = Symbol["g"<>ToString[varName]];
+		zforceName = Symbol["f"<>ToString[varName]];
+		deriv = D[energyFn,varName];
+		PrintTemporary["Appending force term: "<>ToString[zforceName]];
+		AppendTo[be,Assign[gradName,deriv]];
+		AppendTo[be,Assign[zforceName,-gradName]];
+		AppendTo[outputs,zforceName];
+		AppendTo[be,ForceAccumulate[macroPrefix,nameInfo,zforceName]];
+	];
+];
+SetAttributes[AppendGradientAndForce,HoldAll];
+
+
+HessianAccumulate[macroPrefix_,name1Info_,name2Info_,hessianName_]:= CCode[
+	macroPrefix<>"_HESSIAN_ACCUMULATE("
+	<>ToString[Index/.name1Info]<>", "
+	<>ToString[Offset/.name1Info]<>", "
+	<>ToString[Index/.name2Info]<>", "
+	<>ToString[Offset/.name2Info]<>", "
+	<>ToString[hessianName]<>");"];
+
+
+AppendOneHessianElement[macroPrefix_,be_,outputs_,hessianStructure_,energyFn_,names_,i_,j_]:=Module[
+	{name1Info,name2Info,var1Name,var2Name,hessianName,hess,prefix,zfirstDeriv},
+	name1Info = ExtractNames[names[[i]]];
+	name2Info = ExtractNames[names[[j]]];
+	var1Name = Name/.name1Info;
+	var2Name = Name/.name2Info;
+	If[i==j,prefix="d"(*Diagonal*),prefix="o"];
+	hessianName = Symbol[prefix<>"h"<>ToString[var1Name]<>ToString[var2Name]];
+	zfirstDeriv = D[energyFn,var1Name];
+	hess = D[zfirstDeriv,var2Name];
+	AppendTo[be,Assign[hessianName,hess]];
+	AppendTo[outputs,hessianName];
+	AppendTo[be,HessianAccumulate[macroPrefix,name1Info,name2Info,hessianName]];
+	PrintTemporary["Appended hessian element ("<>ToString[j]
+				<>","<>ToString[i]<>") for variable: "<>ToString[hessianName]];
+	hessianStructure[[i,j]]=Length[outputs];
+	If[i!=j,hessianStructure[[j,i]]=Length[outputs]];
+];
+SetAttributes[AppendOneHessianElement,HoldAll];
+
+
+AppendHessianDiagonalElements[macroPrefix_,be_,outputs_,hessianStructure_,rawEnergyFn_,rawNames_] := Module[
+	{names,energyFn,i},
+	names = Evaluate[rawNames];
+	energyFn = Evaluate[rawEnergyFn];
+	For[i=1,i<=Length[names],i++,
+		AppendOneHessianElement[macroPrefix<>"_DIAGONAL",be,outputs,hessianStructure,energyFn,names,i,i];
+	];
+];
+SetAttributes[AppendHessianDiagonalElements,HoldAll];
+
+
+AppendHessianOffDiagonalElements[macroPrefix_,be_,outputs_,hessianStructure_,rawEnergyFn_,rawNames_] := Module[
+	{energyFn,name1Info,name2Info,var1Name,var2Name,hessianName,col,row,names},
+	names = Evaluate[rawNames];
+	energyFn = Evaluate[rawEnergyFn];
+	For[col=1,col<Length[names],col++,
+		For[row=col+1,row<=Length[names],row++,
+			AppendOneHessianElement[macroPrefix<>"_OFF_DIAGONAL",be,outputs,hessianStructure,energyFn,names,col,row];
+		];
+	];
+];
+SetAttributes[AppendHessianOffDiagonalElements,HoldAll];
+
+
+(* Now do everything *)
+AppendGradientForceAndHessian[macroPrefix_,be_,outputs_,hessianStructure_,rawEnergyFn_,rawVarNames_]:= Module[
+	{energyFn,varNames},
+	energyFn = Evaluate[rawEnergyFn];
+	varNames = Evaluate[rawVarNames];
+	AppendTo[be,CCode["#ifdef "<>macroPrefix<>"_CALC_FORCE //["]];
+	AppendTo[be,CCode["if ( calcForce ) {"] ];
+	AppendGradientAndForce[macroPrefix,be,outputs,energyFn,varNames];
+	AppendTo[be,CCode["#ifdef "<>macroPrefix<>"_CALC_DIAGONAL_HESSIAN //["]];
+	AppendTo[be,CCode["if ( calcDiagonalHessian ) {"]];
+	AppendHessianDiagonalElements[macroPrefix,be,outputs,hessianStructure,energyFn,varNames];
+	AppendTo[be,CCode["#ifdef "<>macroPrefix<>"_CALC_OFF_DIAGONAL_HESSIAN //["]];
+	AppendTo[be, CCode["if ( calcOffDiagonalHessian ) {" ]];
+	AppendHessianOffDiagonalElements[macroPrefix, be, outputs,hessianStructure, energyFn, varNames];
+	AppendTo[be, CCode["} /*if calcOffDiagonalHessian */ "]];
+	AppendTo[be, CCode["#endif /* "<>macroPrefix<>"_CALC_OFF_DIAGONAL_HESSIAN ]*/"]];
+	AppendTo[be,CCode["} /*calcDiagonalHessian */"]];
+	AppendTo[be, CCode["#endif /* "<>macroPrefix<>"_CALC_DIAGONAL_HESSIAN ]*/"]];
+	AppendTo[be,CCode["} /*calcForce */"]];
+	AppendTo[be, CCode["#endif /* "<>macroPrefix<>"_CALC_FORCE ]*/"]];
+];
+SetAttributes[AppendGradientForceAndHessian,HoldAll];
+
+
 EndPackage[]
 
 

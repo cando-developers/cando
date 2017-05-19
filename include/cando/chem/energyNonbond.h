@@ -42,6 +42,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
+#include <clasp/core/array.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/energyComponent.h>
 //#include "geom/render.fwd.h"// energyNonbond.h wants DisplayList needs render.fwd.h
@@ -129,7 +130,6 @@ class EnergyNonbond_O : public EnergyComponent_O
   void	initialize();
 //    void	archiveBase(core::ArchiveP node);
 //	string	__repr__() const;
-
  public:
   typedef EnergyNonbond TermType;
  public: // instance variables
@@ -145,8 +145,8 @@ class EnergyNonbond_O : public EnergyComponent_O
     // Correct way of defining nonbonds using excluded atom indices
   FFNonbondDb_sp        _FFNonbondDb;
   AtomTable_sp          _AtomTable;
-  core::NativeVector_int_sp   _NumberOfExcludedAtomIndices;
-  core::NativeVector_int_sp   _ExcludedAtomIndices;
+  core::MDArray_int32_t_sp   _NumberOfExcludedAtomIndices;
+  core::MDArray_int32_t_sp   _ExcludedAtomIndices;
  public:	
   typedef gctools::Vec0<TermType>::iterator iterator;
   iterator begin() { return this->_Terms.begin(); };
@@ -164,8 +164,8 @@ class EnergyNonbond_O : public EnergyComponent_O
 
   double	getVdwEnergy() { return this->_EnergyVdw; };
   double	getElectrostaticEnergy() { return this->_EnergyElectrostatic; };
-  CL_DEFMETHOD core::NativeVector_int_sp number_excluded_atoms() const { return this->_NumberOfExcludedAtomIndices;}
-  CL_DEFMETHOD core::NativeVector_int_sp excluded_atom_list() const { return this->_ExcludedAtomIndices;}
+  CL_DEFMETHOD core::MDArray_int32_t_sp number_excluded_atoms() const { return this->_NumberOfExcludedAtomIndices;}
+  CL_DEFMETHOD core::MDArray_int32_t_sp excluded_atom_list() const { return this->_ExcludedAtomIndices;}
  public:
   void addTerm(const TermType& term);
   virtual void dumpTerms();

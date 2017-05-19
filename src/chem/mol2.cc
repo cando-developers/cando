@@ -55,6 +55,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/pathname.h>
 #include <cando/adapt/indexedObjectBag.h>
 #include <clasp/core/symbolTable.h>
+#include <clasp/core/bformat.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/molecule.h>
 #include <clasp/core/array.h>
@@ -658,6 +659,7 @@ AtomInfo	one;
             if ( useSybylTypes ) {
               chem::TypeAssignmentRules_sp sybylRules = gc::As<TypeAssignmentRules_sp>(chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue());
               one._Type = sybylRules->calculateType(a);
+              BFORMAT_T(BF("Assigned sybyl type %s to %s\n") % _rep_(one._Type) % _rep_(a));
             } else {
               if ( a->getType() ) {
                 one._Type = a->getType();

@@ -1,5 +1,3 @@
 
-
-
 install:
-	install -c  _*.cc ../chem
+	install -c  _*.cc ../../include/cando/energy-functions/

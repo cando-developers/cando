@@ -129,14 +129,14 @@ class AtomTable_O : public core::CxxObject_O
   void	dumpTerms();
   void constructFromMatter(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms );
 
-  size_t push_back_excluded_atom_indices_and_sort(core::NativeVector_int_sp excludedAtomIndices, size_t atomIndex);
+  size_t push_back_excluded_atom_indices_and_sort(core::MDArray_int32_t_sp excludedAtomIndices, size_t atomIndex);
   /*! Calculate the excluded atom list with atom indices starting at 0.
       Atoms with no excluded atoms get a -1 in the excluded_atom_list.
       This is different from AMBER, where it starts counting at 1.
       To generate an AMBER excluded atom list, add 1 to each entry.
       Return Values(number_excluded_atoms,excluded_atom_list).
   */
-  core::NativeVector_int_mv calculate_excluded_atom_list();
+  core::MDArray_int32_t_mv calculate_excluded_atom_list();
 
   // ------------------------------------------------------------
   //

@@ -132,6 +132,8 @@
    #:as-string
    #:scramble-positions
    #:jostle
+   #:dump-stereocenters
+   #:set-stereoisomer-mapping
    #:gather-stereocenters
    #:set-stereoisomer
    #:set-stereoisomer-func

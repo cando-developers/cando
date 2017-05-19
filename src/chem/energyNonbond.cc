@@ -624,8 +624,8 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
                                                     gc::Nilable<NVector_sp> 	dvec )
 {
   printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  core::NativeVector_int_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
-  core::NativeVector_int_sp excludedAtomIndices = this->_ExcludedAtomIndices;
+  core::MDArray_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
+  core::MDArray_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
   double vdwScale = this->getVdwScale();
   double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
   bool	hasForce = force.notnilp();
@@ -996,8 +996,8 @@ void EnergyNonbond_O::constructExcludedAtomListFromAtomTable(AtomTable_sp atomTa
   this->_UsesExcludedAtoms = true;
   this->_AtomTable = atomTable;
   this->_FFNonbondDb = forceField->getNonbondDb();
-  core::NativeVector_int_mv mv_number_of_excluded_atoms = this->_AtomTable->calculate_excluded_atom_list();
-  core::NativeVector_int_sp excluded_atoms_list = mv_number_of_excluded_atoms.second();
+  core::MDArray_int32_t_mv mv_number_of_excluded_atoms = this->_AtomTable->calculate_excluded_atom_list();
+  core::MDArray_int32_t_sp excluded_atoms_list = mv_number_of_excluded_atoms.second();
   this->_NumberOfExcludedAtomIndices = mv_number_of_excluded_atoms;
   this->_ExcludedAtomIndices = excluded_atoms_list;
 }

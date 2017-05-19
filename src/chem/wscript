@@ -1,5 +1,6 @@
 def build(bld):
     for name in [
+            'rigid_staple',
             'chemInfo',
             'ffTypesDb',
             'ffStretchDb',

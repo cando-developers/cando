@@ -282,41 +282,41 @@ void AtomTable_O::constructFromMatter(Matter_sp matter, ForceField_sp forceField
 /*! Fill excludedAtomIndices with the excluded atom list.
 Amber starts counting atoms at 1 so add 1 to every index.
 The atomIndex passed is index0.*/
-CL_DEFMETHOD size_t AtomTable_O::push_back_excluded_atom_indices_and_sort( core::NativeVector_int_sp excludedAtomIndices, size_t atomIndex)
+CL_DEFMETHOD size_t AtomTable_O::push_back_excluded_atom_indices_and_sort( core::MDArray_int32_t_sp excludedAtomIndices, size_t atomIndex)
 {
-  size_t start_size = excludedAtomIndices->size();
+  size_t start_size = excludedAtomIndices->length();
   EnergyAtom* ea = &(this->_Atoms[atomIndex]);
   uint otherIndex;
   for ( int ri = 0; ri<=EnergyAtom::max_remove; ++ri ) {
     for (auto bi = ea->_AtomsAtRemoveBondAngle14[ri].begin(); bi!=ea->_AtomsAtRemoveBondAngle14[ri].end(); ++bi ) {
       otherIndex = this->_AtomTableIndices->gethash(*bi).unsafe_fixnum();
       // Amber starts counting atom indices from 1 but Clasp starts with 0 
-      if (otherIndex > atomIndex) excludedAtomIndices->push_back(otherIndex);
+      if (otherIndex > atomIndex) excludedAtomIndices->vectorPushExtend(otherIndex);
     }
   }
-  size_t end_size = excludedAtomIndices->size();
+  size_t end_size = excludedAtomIndices->length();
   if (end_size == start_size ) {
     // Amber rules are that if there are no excluded atoms then put -1 in the
     // excluded atom list
-    excludedAtomIndices->push_back(-1);
+    excludedAtomIndices->vectorPushExtend(-1);
     ++end_size;
   }
   // sort the indices in increasing order
-  sort::quickSortVec0(excludedAtomIndices->_Vector,start_size,end_size);
+  sort::quickSortMemory((int32_t*)excludedAtomIndices->rowMajorAddressOfElement_(0),start_size,end_size);
   return (end_size - start_size);
 }
 
 
 /*! Calculate the AMBER excluded atom list and return two vectors, one containing the number of 
 excluded atoms for each atom and the second containing the sorted excluded atom list */
-CL_DEFMETHOD core::NativeVector_int_mv AtomTable_O::calculate_excluded_atom_list()
+CL_DEFMETHOD core::MDArray_int32_t_mv AtomTable_O::calculate_excluded_atom_list()
 {
-  core::NativeVector_int_sp number_excluded_atoms = core::NativeVector_int_O::make();
-  core::NativeVector_int_sp excluded_atoms_list = core::NativeVector_int_O::make();
+  core::MDArray_int32_t_sp number_excluded_atoms = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
+  core::MDArray_int32_t_sp excluded_atoms_list = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
   size_t num_atoms = this->getNumberOfAtoms();
   for ( size_t i1=0; i1<num_atoms; ++i1) {
     size_t num = this->push_back_excluded_atom_indices_and_sort(excluded_atoms_list,i1);
-    number_excluded_atoms->push_back(num);
+    number_excluded_atoms->vectorPushExtend(num);
   }
   return Values(number_excluded_atoms,excluded_atoms_list);
 }
