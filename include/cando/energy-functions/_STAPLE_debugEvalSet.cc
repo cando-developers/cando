@@ -1,0 +1,32 @@
+// SET_EVAL 
+ 	EVAL_SET(ak, ak);
+ 	EVAL_SET(bk, bk);
+ 	EVAL_SET(ck, ck);
+ 	EVAL_SET(dk, dk);
+ 	EVAL_SET(xk, xk);
+ 	EVAL_SET(yk, yk);
+ 	EVAL_SET(zk, zk);
+ 	EVAL_SET(ak, ak);
+ 	EVAL_SET(bk, bk);
+ 	EVAL_SET(ck, ck);
+ 	EVAL_SET(dk, dk);
+ 	EVAL_SET(xk, xk);
+ 	EVAL_SET(yk, yk);
+ 	EVAL_SET(zk, zk);
+ 	EVAL_SET(Energy, Energy);
+ 	EVAL_SET(fak, fak);
+ 	EVAL_SET(fbk, fbk);
+ 	EVAL_SET(fck, fck);
+ 	EVAL_SET(fdk, fdk);
+ 	EVAL_SET(fxk, fxk);
+ 	EVAL_SET(fyk, fyk);
+ 	EVAL_SET(fzk, fzk);
+ 	EVAL_SET(fal, fal);
+ 	EVAL_SET(fbl, fbl);
+ 	EVAL_SET(fcl, fcl);
+ 	EVAL_SET(fdl, fdl);
+ 	EVAL_SET(fxl, fxl);
+ 	EVAL_SET(fyl, fyl);
+ 	EVAL_SET(fzl, fzl);
+ 	EVAL_SET(stapleDeviation, stapleDeviation);
+ 
