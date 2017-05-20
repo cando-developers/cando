@@ -1074,16 +1074,16 @@ void	MoeReadFile::readNextLine()
 		    {
 			bo = doubleBond;
 			atoms[from]->bondTo( atoms[to], bo );
-			DEBUG_ASSERTP(!atoms[from]->invalid(),
+			ASSERTP(!atoms[from]->invalid(),
 				      "Bond I just formed is invalid atom:"+atoms[from]->getName());
-			DEBUG_ASSERTP(!atoms[to]->invalid(),
+			ASSERTP(!atoms[to]->invalid(),
 				      "Bond I just formed is invalid atom:"+atoms[to]->getName());
 		    } else {
 			bo = singleBond;
 			atoms[from]->bondTo( atoms[to], bo );
-			DEBUG_ASSERTP(!atoms[from]->invalid(),
+			ASSERTP(!atoms[from]->invalid(),
 				      "Bond I just formed is invalid atom:"+atoms[from]->getName());
-			DEBUG_ASSERTP(!atoms[to]->invalid(),
+			ASSERTP(!atoms[to]->invalid(),
 				      "Bond I just formed is invalid atom:"+atoms[to]->getName());
 		    }
 		    LOG(BF("Installed bond between atoms: %s - %s") % atoms[from]->description().c_str() % atoms[to]->description().c_str()  );
@@ -1099,9 +1099,9 @@ void	MoeReadFile::readNextLine()
 		    LOG(BF("Read bond between atom indices %d-%d") % from+1 % to+1  );
 		    bo = singleBond;
 		    atoms[from]->bondTo( atoms[to], bo );
-		    DEBUG_ASSERTP(!atoms[from]->invalid(),
+		    ASSERTP(!atoms[from]->invalid(),
 				  "Bond I just formed is invalid atom:"+atoms[from]->getName());
-		    DEBUG_ASSERTP(!atoms[to]->invalid(),
+		    ASSERTP(!atoms[to]->invalid(),
 				  "Bond I just formed is invalid atom:"+atoms[to]->getName());
 		    LOG(BF("Installed bond between atoms: %s - %s") % atoms[from]->description().c_str() % atoms[to]->description().c_str()  );
 		}
@@ -1116,9 +1116,9 @@ void	MoeReadFile::readNextLine()
 		    LOG(BF("Read bond between atom indices %d-%d") % from+1 % to+1  );
 		    bo = doubleBond;
 		    atoms[from]->bondTo( atoms[to], bo );
-		    DEBUG_ASSERTP(!atoms[from]->invalid(),
+		    ASSERTP(!atoms[from]->invalid(),
 				  "Bond I just formed is invalid atom:"+atoms[from]->getName());
-		    DEBUG_ASSERTP(!atoms[to]->invalid(),
+		    ASSERTP(!atoms[to]->invalid(),
 				  "Bond I just formed is invalid atom:"+atoms[to]->getName());
 		    LOG(BF("Installed bond between atoms: %s - %s") % atoms[from]->description().c_str() % atoms[to]->description().c_str()  );
 		}
@@ -1133,9 +1133,9 @@ void	MoeReadFile::readNextLine()
 		    LOG(BF("Read bond between atom indices %d-%d") % from+1 % to+1  );
 		    bo = tripleBond;
 		    atoms[from]->bondTo( atoms[to], bo );
-		    DEBUG_ASSERTP(!atoms[from]->invalid(),
+		    ASSERTP(!atoms[from]->invalid(),
 				  "Bond I just formed is invalid atom:"+atoms[from]->getName());
-		    DEBUG_ASSERTP(!atoms[to]->invalid(),
+		    ASSERTP(!atoms[to]->invalid(),
 				  "Bond I just formed is invalid atom:"+atoms[to]->getName());
 		    LOG(BF("Installed bond between atoms: %s - %s") % atoms[from]->description().c_str() % atoms[to]->description().c_str()  );
 		}
