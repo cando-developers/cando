@@ -45,6 +45,8 @@
   (setf (logical-pathname-translations "cando")
         '(("**;*.*" "source-dir:extensions;cando;src;**;*.*"))))
 
+
+
 ;;; Add directories for ASDF to search for systems
 (let* ((topdir (translate-logical-pathname #P"cando:lisp;"))
        (dirs (all-subdirs topdir)))
@@ -67,6 +69,22 @@
     (setf cando::*root-directory* (pathname "/src/"))
     (setf cando::*root-directory* (uiop:ensure-directory-pathname (ext:getenv "HOME"))))
   (format t "Setting *root-directory* -> ~a~%" cando::*root-directory*))
+
+
+;;; Setup to run slime if we are in a jupyter notebook
+#+jupyter
+(defun ext::start-swank ()
+  ;; Bad!  This is hard-coded to work with docker
+  (load "/home/app/slime/swank-loader.lisp")
+  (let ((swank-loader-init (find-symbol "INIT" "SWANK-LOADER")))
+    (funcall swank-loader-init :delete nil :reload nil :load-contribs nil))
+  (let ((swank-create-server (find-symbol "CREATE-SERVER" "SWANK")))
+    (mp:process-run-function 'swank-main
+                             (lambda () (funcall swank-create-server
+                                                 :port 4005
+                                                 :interface "0.0.0.0")))))
+#+jupyter
+(export 'ext::start-swank :ext)
 
 ;;; Setup or startup the Cando system 
 ;;; If :setup-cando is in *features* then don't load the cando system
