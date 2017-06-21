@@ -315,30 +315,29 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-void	EnergyAngle_O::evaluateAll(
-		chem::NVector_sp 	pos,
-		bool 		calcForce,
-		gc::Nilable<chem::NVector_sp> 	force,
-       		bool		calcDiagonalHessian,
-		bool		calcOffDiagonalHessian,
-		gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
-		gc::Nilable<chem::NVector_sp> hdvec,
-                gc::Nilable<chem::NVector_sp> dvec)
+double EnergyAngle_O::evaluateAll(chem::NVector_sp 	pos,
+                                  bool 		calcForce,
+                                  gc::Nilable<chem::NVector_sp> 	force,
+                                  bool		calcDiagonalHessian,
+                                  bool		calcOffDiagonalHessian,
+                                  gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
+                                  gc::Nilable<chem::NVector_sp> hdvec,
+                                  gc::Nilable<chem::NVector_sp> dvec)
 {
-    if ( this->_DebugEnergy ) 
-    {
-	LOG_ENERGY_CLEAR();
-	LOG_ENERGY(BF("%s {\n")% this->className());
-    }
+  if ( this->_DebugEnergy ) 
+  {
+    LOG_ENERGY_CLEAR();
+    LOG_ENERGY(BF("%s {\n")% this->className());
+  }
 
 //bool	fail = false;
-ANN(force);
-ANN(hessian);
-ANN(hdvec);
-ANN(dvec);
-bool	hasForce = force.notnilp();
-bool	hasHessian = hessian.notnilp();
-bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+  ANN(force);
+  ANN(hessian);
+  ANN(hdvec);
+  ANN(dvec);
+  bool	hasForce = force.notnilp();
+  bool	hasHessian = hessian.notnilp();
+  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 
 
 //
@@ -362,77 +361,73 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 
 
 
-    if ( this->isEnabled() ) 
-    {_BLOCK_TRACE("Angle");
+  if ( this->isEnabled() ) 
+  {_BLOCK_TRACE("Angle");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Angle_termDeclares.cc>
 #pragma clang diagnostic pop
-	fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-	fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-	fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-	double x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0; //,angleScale;
+    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
+    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
+    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
+    double x1,y1,z1,x2,y2,z2,x3,y3,z3,kt,t0; //,angleScale;
 //	double DotAbCb;
-	int I1, I2, I3,i;
-	gctools::Vec0<EnergyAngle>::iterator ai;
-	for ( i=0,ai=this->_Terms.begin();
-		    ai!=this->_Terms.end(); ai++,i++ ) {
-	    #ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-		if ( this->_Debug_NumberOfTermsToCalculate > 0 ) {
-		    if ( i>= this->_Debug_NumberOfTermsToCalculate ) {
-			break;
-		    }
-		}
-	    #endif
+    int I1, I2, I3,i;
+    gctools::Vec0<EnergyAngle>::iterator ai;
+    for ( i=0,ai=this->_Terms.begin();
+          ai!=this->_Terms.end(); ai++,i++ ) {
+#ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
+      if ( this->_Debug_NumberOfTermsToCalculate > 0 ) {
+        if ( i>= this->_Debug_NumberOfTermsToCalculate ) {
+          break;
+        }
+      }
+#endif
 #include	<cando/chem/energy_functions/_Angle_termCode.cc>
-	    if ( IllegalAngle ) {
-//		    EnergyInteractionProblem prob;
-		InteractionProblem prob;
-		prob._Type = linearAngle;
-		prob._Message = "Linear angle";
-                prob._Atoms = core::Cons_O::createList(ai->_Atom1,ai->_Atom2,ai->_Atom3);
-		SIMPLE_ERROR(BF("There is a linear angle"));
-	    }
-	    #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-		ai->_calcForce = calcForce;
-		ai->_calcDiagonalHessian = calcDiagonalHessian;
-		ai->_calcOffDiagonalHessian = calcOffDiagonalHessian;
-		#undef	EVAL_SET
-		#define	EVAL_SET(var,val)	{ ai->eval.var=val;};
+                
+      if ( IllegalAngle ) {
+        ERROR(chem::_sym_LinearAngleError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(ai->_Atom1,ai->_Atom2,ai->_Atom3)));
+      }
+#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
+      ai->_calcForce = calcForce;
+      ai->_calcDiagonalHessian = calcDiagonalHessian;
+      ai->_calcOffDiagonalHessian = calcOffDiagonalHessian;
+#undef	EVAL_SET
+#define	EVAL_SET(var,val)	{ ai->eval.var=val;};
 #include	<cando/chem/energy_functions/_Angle_debugEvalSet.cc>
-	    #endif //]
-	    if ( this->_DebugEnergy ) 
-	    {
-		LOG_ENERGY(BF( "MEISTER angle %d args cando\n")% (i+1) );
-		LOG_ENERGY(BF( "MEISTER angle %d t0 %lf\n")%(i+1) % t0 );
-		LOG_ENERGY(BF( "MEISTER angle %d kt %lf\n")%(i+1) % kt);
-		LOG_ENERGY(BF( "MEISTER angle %d x1 %5.3lf %d\n")%(i+1) % x1 %(I1/3+1) );
-		LOG_ENERGY(BF( "MEISTER angle %d y1 %5.3lf %d\n")%(i+1) % y1 %(I1/3+1) );
-		LOG_ENERGY(BF( "MEISTER angle %d z1 %5.3lf %d\n")%(i+1) % z1 %(I1/3+1) );
-		LOG_ENERGY(BF( "MEISTER angle %d x2 %5.3lf %d\n")%(i+1) % x2 %(I2/3+1) );
-		LOG_ENERGY(BF( "MEISTER angle %d y2 %5.3lf %d\n")%(i+1) % y2 %(I2/3+1) );
-		LOG_ENERGY(BF( "MEISTER angle %d z2 %5.3lf %d\n")%(i+1) % z2 %(I2/3+1) );
-		LOG_ENERGY(BF( "MEISTER angle %d x3 %5.3lf %d\n")%(i+1) % x3 %(I3/3+1) );
-		LOG_ENERGY(BF( "MEISTER angle %d y3 %5.3lf %d\n")%(i+1) % y3 %(I3/3+1) );
-		LOG_ENERGY(BF( "MEISTER angle %d z3 %5.3lf %d\n")%(i+1) % z3 %(I3/3+1) );
-		LOG_ENERGY(BF( "MEISTER angle %d results\n")% (i+1) );
-		LOG_ENERGY(BF( "MEISTER angle %d Energy %lf\n")%(i+1) % Energy );
-		if ( calcForce ) 
-		{
-		    LOG_ENERGY(BF( "MEISTER angle %d fx1 %8.5lf %d\n")%(i+1) % fx1 %(I1/3+1) );
-		    LOG_ENERGY(BF( "MEISTER angle %d fy1 %8.5lf %d\n")%(i+1) % fy1 %(I1/3+1) );
-		    LOG_ENERGY(BF( "MEISTER angle %d fz1 %8.5lf %d\n")%(i+1) % fz1 %(I1/3+1) );
-		    LOG_ENERGY(BF( "MEISTER angle %d fx2 %8.5lf %d\n")%(i+1) % fx2 %(I2/3+1) );
-		    LOG_ENERGY(BF( "MEISTER angle %d fy2 %8.5lf %d\n")%(i+1) % fy2 %(I2/3+1) );
-		    LOG_ENERGY(BF( "MEISTER angle %d fz2 %8.5lf %d\n")%(i+1) % fz2 %(I2/3+1) );
-		    LOG_ENERGY(BF( "MEISTER angle %d fx3 %8.5lf %d\n")%(i+1) % fx3 %(I3/3+1) );
-		    LOG_ENERGY(BF( "MEISTER angle %d fy3 %8.5lf %d\n")%(i+1) % fy3 %(I3/3+1) );
-		    LOG_ENERGY(BF( "MEISTER angle %d fz3 %8.5lf %d\n")%(i+1) % fz3 %(I3/3+1) );
-		}
-		LOG_ENERGY(BF( "MEISTER angle %d stop\n")% (i+1) );
-	    }
+#endif //]
+      if ( this->_DebugEnergy ) 
+      {
+        LOG_ENERGY(BF( "MEISTER angle %d args cando\n")% (i+1) );
+        LOG_ENERGY(BF( "MEISTER angle %d t0 %lf\n")%(i+1) % t0 );
+        LOG_ENERGY(BF( "MEISTER angle %d kt %lf\n")%(i+1) % kt);
+        LOG_ENERGY(BF( "MEISTER angle %d x1 %5.3lf %d\n")%(i+1) % x1 %(I1/3+1) );
+        LOG_ENERGY(BF( "MEISTER angle %d y1 %5.3lf %d\n")%(i+1) % y1 %(I1/3+1) );
+        LOG_ENERGY(BF( "MEISTER angle %d z1 %5.3lf %d\n")%(i+1) % z1 %(I1/3+1) );
+        LOG_ENERGY(BF( "MEISTER angle %d x2 %5.3lf %d\n")%(i+1) % x2 %(I2/3+1) );
+        LOG_ENERGY(BF( "MEISTER angle %d y2 %5.3lf %d\n")%(i+1) % y2 %(I2/3+1) );
+        LOG_ENERGY(BF( "MEISTER angle %d z2 %5.3lf %d\n")%(i+1) % z2 %(I2/3+1) );
+        LOG_ENERGY(BF( "MEISTER angle %d x3 %5.3lf %d\n")%(i+1) % x3 %(I3/3+1) );
+        LOG_ENERGY(BF( "MEISTER angle %d y3 %5.3lf %d\n")%(i+1) % y3 %(I3/3+1) );
+        LOG_ENERGY(BF( "MEISTER angle %d z3 %5.3lf %d\n")%(i+1) % z3 %(I3/3+1) );
+        LOG_ENERGY(BF( "MEISTER angle %d results\n")% (i+1) );
+        LOG_ENERGY(BF( "MEISTER angle %d Energy %lf\n")%(i+1) % Energy );
+        if ( calcForce ) 
+        {
+          LOG_ENERGY(BF( "MEISTER angle %d fx1 %8.5lf %d\n")%(i+1) % fx1 %(I1/3+1) );
+          LOG_ENERGY(BF( "MEISTER angle %d fy1 %8.5lf %d\n")%(i+1) % fy1 %(I1/3+1) );
+          LOG_ENERGY(BF( "MEISTER angle %d fz1 %8.5lf %d\n")%(i+1) % fz1 %(I1/3+1) );
+          LOG_ENERGY(BF( "MEISTER angle %d fx2 %8.5lf %d\n")%(i+1) % fx2 %(I2/3+1) );
+          LOG_ENERGY(BF( "MEISTER angle %d fy2 %8.5lf %d\n")%(i+1) % fy2 %(I2/3+1) );
+          LOG_ENERGY(BF( "MEISTER angle %d fz2 %8.5lf %d\n")%(i+1) % fz2 %(I2/3+1) );
+          LOG_ENERGY(BF( "MEISTER angle %d fx3 %8.5lf %d\n")%(i+1) % fx3 %(I3/3+1) );
+          LOG_ENERGY(BF( "MEISTER angle %d fy3 %8.5lf %d\n")%(i+1) % fy3 %(I3/3+1) );
+          LOG_ENERGY(BF( "MEISTER angle %d fz3 %8.5lf %d\n")%(i+1) % fz3 %(I3/3+1) );
+        }
+        LOG_ENERGY(BF( "MEISTER angle %d stop\n")% (i+1) );
+      }
 		    /* Add the forces */
-	    if ( calcForce ) {
+      if ( calcForce ) {
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
@@ -442,13 +437,14 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx3>10000.0);
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy3>10000.0);
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz3>10000.0);
-	    }
-	}
+      }
     }
-    if ( this->_DebugEnergy ) 
-    {
-	LOG_ENERGY(BF("%s }\n")% this->className());
-    }
+  }
+  if ( this->_DebugEnergy ) 
+  {
+    LOG_ENERGY(BF("%s }\n")% this->className());
+  }
+  return this->_TotalEnergy;
 }
 
 

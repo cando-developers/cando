@@ -409,29 +409,28 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-void	EnergyDihedral_O::evaluateAll(
-		NVector_sp 	pos,
-		bool 		calcForce,
-		gc::Nilable<NVector_sp> 	force,
-       		bool		calcDiagonalHessian,
-		bool		calcOffDiagonalHessian,
-		gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-		gc::Nilable<NVector_sp>	hdvec,
-                gc::Nilable<NVector_sp> dvec)
+double	EnergyDihedral_O::evaluateAll(NVector_sp 	pos,
+                                      bool 		calcForce,
+                                      gc::Nilable<NVector_sp> 	force,
+                                      bool		calcDiagonalHessian,
+                                      bool		calcOffDiagonalHessian,
+                                      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                      gc::Nilable<NVector_sp>	hdvec,
+                                      gc::Nilable<NVector_sp> dvec)
 { 
-    if ( this->_DebugEnergy ) 
-    {
-	LOG_ENERGY_CLEAR();
-	LOG_ENERGY(BF("%s {\n")% this->className());
-    }
+  if ( this->_DebugEnergy ) 
+  {
+    LOG_ENERGY_CLEAR();
+    LOG_ENERGY(BF("%s {\n")% this->className());
+  }
 
-ANN(force);
-ANN(hessian);
-ANN(hdvec);
-ANN(dvec);
-bool	hasForce = force.notnilp();
-bool	hasHessian = hessian.notnilp();
-bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+  ANN(force);
+  ANN(hessian);
+  ANN(hdvec);
+  ANN(dvec);
+  bool	hasForce = force.notnilp();
+  bool	hasHessian = hessian.notnilp();
+  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 
 
 //
@@ -456,93 +455,87 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 
 
 
-    if ( this->isEnabled() ) 
-    {
+  if ( this->isEnabled() ) 
+  {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
 #pragma clang diagnostic pop
-	fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-	fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-	fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-	fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
-	double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,V,DN;
-	double EraseLinearDihedral;
-	int	I1, I2, I3, I4, IN, i;
-	double sinPhase, cosPhase, SinNPhi, CosNPhi;
-        gctools::Vec0<EnergyDihedral>::iterator di;
-	for ( i=0,di=this->_Terms.begin();
-		    di!=this->_Terms.end(); di++,i++ ) {
-	    #ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-		if ( this->_Debug_NumberOfDihedralTermsToCalculate > 0 ) {
-		    if ( i>= this->_Debug_NumberOfDihedralTermsToCalculate ) {
-			break;
-		    }
-		}
-	    #endif
+    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
+    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
+    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
+    fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
+    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,V,DN;
+    double EraseLinearDihedral;
+    int	I1, I2, I3, I4, IN, i;
+    double sinPhase, cosPhase, SinNPhi, CosNPhi;
+    gctools::Vec0<EnergyDihedral>::iterator di;
+    for ( i=0,di=this->_Terms.begin();
+          di!=this->_Terms.end(); di++,i++ ) {
+#ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
+      if ( this->_Debug_NumberOfDihedralTermsToCalculate > 0 ) {
+        if ( i>= this->_Debug_NumberOfDihedralTermsToCalculate ) {
+          break;
+        }
+      }
+#endif
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
-	    if ( EraseLinearDihedral == 0.0 ) {
-	       LOG(BF("Found linear dihedral") );
-	       InteractionProblem problem;
-               problem._Atoms = core::Cons_O::createList(di->_Atom1,di->_Atom2,di->_Atom3,di->_Atom4);
-	       problem._Message = "Found linear dihedral";
-	       problem._Type = linearDihedral;
-	       LOG(BF("%s") % problem._Message.c_str()  );
-               SIMPLE_ERROR(BF("Found linear dihedral"));
-	    }
-	    #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-		di->_calcForce = calcForce;
-		di->_calcDiagonalHessian = calcDiagonalHessian;
-		di->_calcOffDiagonalHessian = calcOffDiagonalHessian;
-		#undef EVAL_SET
-		#define	EVAL_SET(var,val)	{ di->eval.var=val;};
+      if ( EraseLinearDihedral == 0.0 ) {
+        ERROR(chem::_sym_LinearDihedralError,core::Cons_O::createList(kw::_sym_atoms,core::Cons_O::createList(di->_Atom1,di->_Atom2,di->_Atom3,di->_Atom4)));
+      }
+#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
+      di->_calcForce = calcForce;
+      di->_calcDiagonalHessian = calcDiagonalHessian;
+      di->_calcOffDiagonalHessian = calcOffDiagonalHessian;
+#undef EVAL_SET
+#define	EVAL_SET(var,val)	{ di->eval.var=val;};
 #include	<cando/chem/energy_functions/_Dihedral_debugEvalSet.cc>
-	    #endif //]
+#endif //]
 
-	    if ( this->_DebugEnergy ) 
-	    {
-		LOG_ENERGY(BF( "MEISTER dihedral %d args cando\n")% (i+1) );
-		LOG_ENERGY(BF( "MEISTER dihedral %d V %lf\n")% (i+1) % V );
-		LOG_ENERGY(BF( "MEISTER dihedral %d DN %lf\n")% (i+1) % DN );
-		LOG_ENERGY(BF( "MEISTER dihedral %d IN %d\n")% (i+1) % IN );
+      if ( this->_DebugEnergy ) 
+      {
+        LOG_ENERGY(BF( "MEISTER dihedral %d args cando\n")% (i+1) );
+        LOG_ENERGY(BF( "MEISTER dihedral %d V %lf\n")% (i+1) % V );
+        LOG_ENERGY(BF( "MEISTER dihedral %d DN %lf\n")% (i+1) % DN );
+        LOG_ENERGY(BF( "MEISTER dihedral %d IN %d\n")% (i+1) % IN );
 //		    LOG_ENERGY(BF( "MEISTER dihedral %d phase %lf\n")% (i+1) % phase );
-		LOG_ENERGY(BF( "MEISTER dihedral %d sinPhase %lf\n")% (i+1) % sinPhase );
-		LOG_ENERGY(BF( "MEISTER dihedral %d cosPhase %lf\n")% (i+1) % cosPhase );
-		LOG_ENERGY(BF( "MEISTER dihedral %d x1 %5.3lf %d\n")%(i+1) % x1 % (I1/3+1) );
-		LOG_ENERGY(BF( "MEISTER dihedral %d y1 %5.3lf %d\n")%(i+1) % y1 % (I1/3+1) );
-		LOG_ENERGY(BF( "MEISTER dihedral %d z1 %5.3lf %d\n")%(i+1) % z1 % (I1/3+1) );
-		LOG_ENERGY(BF( "MEISTER dihedral %d x2 %5.3lf %d\n")%(i+1) % x2 % (I2/3+1) );
-		LOG_ENERGY(BF( "MEISTER dihedral %d y2 %5.3lf %d\n")%(i+1) % y2 % (I2/3+1) );
-		LOG_ENERGY(BF( "MEISTER dihedral %d z2 %5.3lf %d\n")%(i+1) % z2 % (I2/3+1) );
-		LOG_ENERGY(BF( "MEISTER dihedral %d x3 %5.3lf %d\n")%(i+1) % x3 % (I3/3+1) );
-		LOG_ENERGY(BF( "MEISTER dihedral %d y3 %5.3lf %d\n")%(i+1) % y3 % (I3/3+1) );
-		LOG_ENERGY(BF( "MEISTER dihedral %d z3 %5.3lf %d\n")%(i+1) % z3 % (I3/3+1) );
-		LOG_ENERGY(BF( "MEISTER dihedral %d x4 %5.3lf %d\n")%(i+1) % x4 % (I4/3+1) );
-		LOG_ENERGY(BF( "MEISTER dihedral %d y4 %5.3lf %d\n")%(i+1) % y4 % (I4/3+1) );
-		LOG_ENERGY(BF( "MEISTER dihedral %d z4 %5.3lf %d\n")%(i+1) % z4 % (I4/3+1) );
-		LOG_ENERGY(BF( "MEISTER dihedral %d results\n")% (i+1) );
+        LOG_ENERGY(BF( "MEISTER dihedral %d sinPhase %lf\n")% (i+1) % sinPhase );
+        LOG_ENERGY(BF( "MEISTER dihedral %d cosPhase %lf\n")% (i+1) % cosPhase );
+        LOG_ENERGY(BF( "MEISTER dihedral %d x1 %5.3lf %d\n")%(i+1) % x1 % (I1/3+1) );
+        LOG_ENERGY(BF( "MEISTER dihedral %d y1 %5.3lf %d\n")%(i+1) % y1 % (I1/3+1) );
+        LOG_ENERGY(BF( "MEISTER dihedral %d z1 %5.3lf %d\n")%(i+1) % z1 % (I1/3+1) );
+        LOG_ENERGY(BF( "MEISTER dihedral %d x2 %5.3lf %d\n")%(i+1) % x2 % (I2/3+1) );
+        LOG_ENERGY(BF( "MEISTER dihedral %d y2 %5.3lf %d\n")%(i+1) % y2 % (I2/3+1) );
+        LOG_ENERGY(BF( "MEISTER dihedral %d z2 %5.3lf %d\n")%(i+1) % z2 % (I2/3+1) );
+        LOG_ENERGY(BF( "MEISTER dihedral %d x3 %5.3lf %d\n")%(i+1) % x3 % (I3/3+1) );
+        LOG_ENERGY(BF( "MEISTER dihedral %d y3 %5.3lf %d\n")%(i+1) % y3 % (I3/3+1) );
+        LOG_ENERGY(BF( "MEISTER dihedral %d z3 %5.3lf %d\n")%(i+1) % z3 % (I3/3+1) );
+        LOG_ENERGY(BF( "MEISTER dihedral %d x4 %5.3lf %d\n")%(i+1) % x4 % (I4/3+1) );
+        LOG_ENERGY(BF( "MEISTER dihedral %d y4 %5.3lf %d\n")%(i+1) % y4 % (I4/3+1) );
+        LOG_ENERGY(BF( "MEISTER dihedral %d z4 %5.3lf %d\n")%(i+1) % z4 % (I4/3+1) );
+        LOG_ENERGY(BF( "MEISTER dihedral %d results\n")% (i+1) );
 	//	LOG_ENERGY(BF( "MEISTER dihedral %d Phi %lf (%lf degrees)\n")% (i+1) %
 	//		    	Phi, Phi/0.0174533 );
-		LOG_ENERGY(BF( "MEISTER dihedral %d Energy %lf\n")% (i+1) % Energy);
-		if ( calcForce ) {
-		    LOG_ENERGY(BF( "MEISTER dihedral %d fx1 %8.5lf %d\n")%(i+1) % fx1 % (I1/3+1) );
-		    LOG_ENERGY(BF( "MEISTER dihedral %d fy1 %8.5lf %d\n")%(i+1) % fy1 % (I1/3+1) );
-		    LOG_ENERGY(BF( "MEISTER dihedral %d fz1 %8.5lf %d\n")%(i+1) % fz1 % (I1/3+1) );
-		    LOG_ENERGY(BF( "MEISTER dihedral %d fx2 %8.5lf %d\n")%(i+1) % fx2 % (I2/3+1) );
-		    LOG_ENERGY(BF( "MEISTER dihedral %d fy2 %8.5lf %d\n")%(i+1) % fy2 % (I2/3+1) );
-		    LOG_ENERGY(BF( "MEISTER dihedral %d fz2 %8.5lf %d\n")%(i+1) % fz2 % (I2/3+1) );
-		    LOG_ENERGY(BF( "MEISTER dihedral %d fx3 %8.5lf %d\n")%(i+1) % fx3 % (I3/3+1) );
-		    LOG_ENERGY(BF( "MEISTER dihedral %d fy3 %8.5lf %d\n")%(i+1) % fy3 % (I3/3+1) );
-		    LOG_ENERGY(BF( "MEISTER dihedral %d fz3 %8.5lf %d\n")%(i+1) % fz3 % (I3/3+1) );
-		    LOG_ENERGY(BF( "MEISTER dihedral %d fx4 %8.5lf %d\n")%(i+1) % fx4 % (I4/3+1) );
-		    LOG_ENERGY(BF( "MEISTER dihedral %d fy4 %8.5lf %d\n")%(i+1) % fy4 % (I4/3+1) );
-		    LOG_ENERGY(BF( "MEISTER dihedral %d fz4 %8.5lf %d\n")%(i+1) % fz4 % (I4/3+1) );
-		}
-		LOG_ENERGY(BF( "MEISTER dihedral %d stop\n")% (i+1) );
-	    }
+        LOG_ENERGY(BF( "MEISTER dihedral %d Energy %lf\n")% (i+1) % Energy);
+        if ( calcForce ) {
+          LOG_ENERGY(BF( "MEISTER dihedral %d fx1 %8.5lf %d\n")%(i+1) % fx1 % (I1/3+1) );
+          LOG_ENERGY(BF( "MEISTER dihedral %d fy1 %8.5lf %d\n")%(i+1) % fy1 % (I1/3+1) );
+          LOG_ENERGY(BF( "MEISTER dihedral %d fz1 %8.5lf %d\n")%(i+1) % fz1 % (I1/3+1) );
+          LOG_ENERGY(BF( "MEISTER dihedral %d fx2 %8.5lf %d\n")%(i+1) % fx2 % (I2/3+1) );
+          LOG_ENERGY(BF( "MEISTER dihedral %d fy2 %8.5lf %d\n")%(i+1) % fy2 % (I2/3+1) );
+          LOG_ENERGY(BF( "MEISTER dihedral %d fz2 %8.5lf %d\n")%(i+1) % fz2 % (I2/3+1) );
+          LOG_ENERGY(BF( "MEISTER dihedral %d fx3 %8.5lf %d\n")%(i+1) % fx3 % (I3/3+1) );
+          LOG_ENERGY(BF( "MEISTER dihedral %d fy3 %8.5lf %d\n")%(i+1) % fy3 % (I3/3+1) );
+          LOG_ENERGY(BF( "MEISTER dihedral %d fz3 %8.5lf %d\n")%(i+1) % fz3 % (I3/3+1) );
+          LOG_ENERGY(BF( "MEISTER dihedral %d fx4 %8.5lf %d\n")%(i+1) % fx4 % (I4/3+1) );
+          LOG_ENERGY(BF( "MEISTER dihedral %d fy4 %8.5lf %d\n")%(i+1) % fy4 % (I4/3+1) );
+          LOG_ENERGY(BF( "MEISTER dihedral %d fz4 %8.5lf %d\n")%(i+1) % fz4 % (I4/3+1) );
+        }
+        LOG_ENERGY(BF( "MEISTER dihedral %d stop\n")% (i+1) );
+      }
 			/* Add the forces */
 
-	    if ( calcForce ) {
+      if ( calcForce ) {
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
@@ -555,13 +548,14 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx4>10000.0);
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy4>10000.0);
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz4>10000.0);
-	    }
-	}
+      }
     }
-    if ( this->_DebugEnergy ) 
-    {
-	LOG_ENERGY(BF("%s }\n")% this->className());
-    }
+  }
+  if ( this->_DebugEnergy ) 
+  {
+    LOG_ENERGY(BF("%s }\n")% this->className());
+  }
+  return this->_TotalEnergy;
 }
 
 

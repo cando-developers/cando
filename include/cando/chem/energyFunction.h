@@ -47,6 +47,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <set>
 #include <clasp/core/common.h>
 #include <cando/geom/vector3.h>
+#include <cando/chem/scoringFunction.h>
 #include <cando/chem/atom.h>
 
 
@@ -62,28 +63,28 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace       chem
 {
 
-class EnergyAtom;
+  class EnergyAtom;
 
- SMART(FFParameter);
-SMART(AbstractLargeSquareMatrix);
-SMART(FFNonbondCrossTermTable);
-SMART(QDomNode);
-SMART(Atom);
-SMART(NVector);
-SMART(Matter);
-SMART(ForceField);
-SMART(AtomTable);
-SMART(EnergyStretch);
-SMART(EnergyAngle);
-SMART(EnergyDihedral);
-SMART(EnergyNonbond);
-SMART(EnergyImproperRestraint);
-SMART(EnergyChiralRestraint);
-SMART(EnergyAnchorRestraint);
-SMART(EnergyFixedNonbondRestraint);
+  SMART(FFParameter);
+  SMART(AbstractLargeSquareMatrix);
+  SMART(FFNonbondCrossTermTable);
+  SMART(QDomNode);
+  SMART(Atom);
+  SMART(NVector);
+  SMART(Matter);
+  SMART(ForceField);
+  SMART(AtomTable);
+  SMART(EnergyStretch);
+  SMART(EnergyAngle);
+  SMART(EnergyDihedral);
+  SMART(EnergyNonbond);
+  SMART(EnergyImproperRestraint);
+  SMART(EnergyChiralRestraint);
+  SMART(EnergyAnchorRestraint);
+  SMART(EnergyFixedNonbondRestraint);
 //SMART(DisplayList);
-SMART(Iterator);
-SMART(ForceMatchReport);
+  SMART(Iterator);
+  SMART(ForceMatchReport);
 
 
 
@@ -92,54 +93,37 @@ SMART(ForceMatchReport);
 #define	DefaultAnchorRestraintWeight	10.0
 
 
-//
-// Remove InteractionProblem
-// once we have split up the energy components
-//
-//
-typedef	enum { linearAngle, linearDihedral, linearImproperRestraint, overlappingNonbond } InteractionProblemType;
-class	InteractionProblem 
-{
-public:
-    string _Message;
-	InteractionProblemType	_Type;
-        core::List_sp _Atoms;
-	string	message() { return this->_Message;};
-	InteractionProblem() {};
-	virtual ~InteractionProblem() throw() {};
+ /*! Throw this exception from Cando if you want the minimizer to deal with a bad interaction */
+  class	InteractionCondition 
+  {
+  public:
+    core::Symbol_sp  condition_name;
+    core::List_sp    condition_arguments;
+  };
+
+  FORWARD(EnergyFunction);
 };
 
+template <>
+struct gctools::GCInfo<chem::EnergyFunction_O> {
+  static bool constexpr NeedsInitialization = false;
+  static bool constexpr NeedsFinalization = false;
+  static GCInfo_policy constexpr Policy = normal;
+};
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-SMART(EnergyFunction);
-class EnergyFunction_O : public core::CxxObject_O
-{
-    LISP_CLASS(chem,ChemPkg,EnergyFunction_O,"EnergyFunction",core::CxxObject_O);
- public:
+namespace chem {
+  SMART(EnergyFunction);
+  class EnergyFunction_O : public ScoringFunction_O
+  {
+    LISP_CLASS(chem,ChemPkg,EnergyFunction_O,"EnergyFunction",ScoringFunction_O);
+  public:
     static EnergyFunction_sp make(Matter_sp matter, ForceField_sp forceField, bool useExcludedAtoms=false, core::T_sp activeAtoms=_Nil<core::T_O>(), bool progress=false);
-public:
-    static void lisp_initGlobals(core::Lisp_sp lisp);
+  public:
     void initialize();
-public:
+  public:
 //    void	archive(core::ArchiveP node);
 
-private:
-    string				_Name;
+  private:
     Matter_sp				_Matter;	// Aggregate or Molecule
     /*! Stores cross terms for evaluating nonbond interactions
      */
@@ -169,37 +153,37 @@ private:
     string					_Message;
     double					_DielectricConstant;
     core::List_sp			_MissingParameters;
-public:
-public:
+  public:
+  public:
     void	_eraseMissingParameters() { this->_MissingParameters = _Nil<core::T_O>();};
     void	_addMissingParameter(FFParameter_sp p) { this->_MissingParameters = core::Cons_O::create(p,this->_MissingParameters);};
     void __createSecondaryAmideRestraints(VectorAtom& nitrogens, core::T_sp activeAtoms );
 
     void	flagImproperRestraintsAboveThreshold(NVector_sp nvPosition);
 
-private:
+  private:
     int _applyRestraints(ForceField_sp forceField, core::Iterator_sp restraintIterator, core::T_sp activeAtoms );
     void _applyDihedralRestraint(Atom_sp a1, Atom_sp a2, Atom_sp a3, Atom_sp a4, double min, double max, double weight, core::T_sp activeAtoms );
 
-public:
+  public:
 
-CL_LISPIFY_NAME("atomTable");
-CL_DEFMETHOD     AtomTable_sp atomTable() const { return this->_AtomTable;};
+    CL_LISPIFY_NAME("atomTable");
+    CL_DEFMETHOD     AtomTable_sp atomTable() const { return this->_AtomTable;};
 
     string	energyTermsEnabled() ;
     void	extractCoordinatesFromAtoms(NVector_sp pos);
     void	writeCoordinatesToAtoms(NVector_sp pos);
     void	writeCoordinatesAndForceToAtoms(NVector_sp pos, NVector_sp force);
-    uint	getNVectorSize();
+    size_t	getNVectorSize();
     double	evaluateRaw( NVector_sp pos, NVector_sp force );
-    double	evaluate( NVector_sp pos, NVector_sp force, bool calculateForce );
+//    double	evaluate( NVector_sp pos, NVector_sp force, bool calculateForce );
     adapt::QDomNode_sp	identifyTermsBeyondThreshold();
 //    uint	countBadVdwInteractions(double scaleSumOfVdwRadii, geom::DisplayList_sp displayIn);
 
     ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force );
 
-CL_LISPIFY_NAME("getMatter");
-CL_DEFMETHOD     Matter_sp	getMatter() { return this->_Matter;};
+    CL_LISPIFY_NAME("getMatter");
+    CL_DEFMETHOD     Matter_sp	getMatter() { return this->_Matter;};
 
     void	useDefaultSettings();
 
@@ -211,23 +195,23 @@ CL_DEFMETHOD     Matter_sp	getMatter() { return this->_Matter;};
     /*! Set the energy function options. List the options as a flat list of keyword/value pairs */
     void	setOptions( core::List_sp options );
 
-CL_LISPIFY_NAME("getStretchComponent");
-CL_DEFMETHOD     EnergyStretch_sp	getStretchComponent() { return this->_Stretch; };
+    CL_LISPIFY_NAME("getStretchComponent");
+    CL_DEFMETHOD     EnergyStretch_sp	getStretchComponent() { return this->_Stretch; };
 #if USE_ALL_ENERGY_COMPONENTS
-CL_LISPIFY_NAME("getAngleComponent");
-CL_DEFMETHOD     EnergyAngle_sp	getAngleComponent() { return this->_Angle; };
-CL_LISPIFY_NAME("getDihedralComponent");
-CL_DEFMETHOD     EnergyDihedral_sp	getDihedralComponent() { return this->_Dihedral; };
-CL_LISPIFY_NAME("getNonbondComponent");
-CL_DEFMETHOD     EnergyNonbond_sp	getNonbondComponent() { return this->_Nonbond; };
-CL_LISPIFY_NAME("getChiralRestraintComponent");
-CL_DEFMETHOD     EnergyChiralRestraint_sp	getChiralRestraintComponent() { return this->_ChiralRestraint; };
-CL_LISPIFY_NAME("getAnchorRestraintComponent");
-CL_DEFMETHOD     EnergyAnchorRestraint_sp	getAnchorRestraintComponent() { return this->_AnchorRestraint; };
-CL_LISPIFY_NAME("getImproperRestraintComponent");
-CL_DEFMETHOD     EnergyImproperRestraint_sp	getImproperRestraintComponent() { return this->_ImproperRestraint; };
-CL_LISPIFY_NAME("getFixedNonbondRestraintComponent");
-CL_DEFMETHOD     EnergyFixedNonbondRestraint_sp	getFixedNonbondRestraintComponent() { return this->_FixedNonbondRestraint; };
+    CL_LISPIFY_NAME("getAngleComponent");
+    CL_DEFMETHOD     EnergyAngle_sp	getAngleComponent() { return this->_Angle; };
+    CL_LISPIFY_NAME("getDihedralComponent");
+    CL_DEFMETHOD     EnergyDihedral_sp	getDihedralComponent() { return this->_Dihedral; };
+    CL_LISPIFY_NAME("getNonbondComponent");
+    CL_DEFMETHOD     EnergyNonbond_sp	getNonbondComponent() { return this->_Nonbond; };
+    CL_LISPIFY_NAME("getChiralRestraintComponent");
+    CL_DEFMETHOD     EnergyChiralRestraint_sp	getChiralRestraintComponent() { return this->_ChiralRestraint; };
+    CL_LISPIFY_NAME("getAnchorRestraintComponent");
+    CL_DEFMETHOD     EnergyAnchorRestraint_sp	getAnchorRestraintComponent() { return this->_AnchorRestraint; };
+    CL_LISPIFY_NAME("getImproperRestraintComponent");
+    CL_DEFMETHOD     EnergyImproperRestraint_sp	getImproperRestraintComponent() { return this->_ImproperRestraint; };
+    CL_LISPIFY_NAME("getFixedNonbondRestraintComponent");
+    CL_DEFMETHOD     EnergyFixedNonbondRestraint_sp	getFixedNonbondRestraintComponent() { return this->_FixedNonbondRestraint; };
 #endif
 
     double getDihedralComponentEnergy(); // { return this->_Dihedral->getEnergy(); };
@@ -236,8 +220,8 @@ CL_DEFMETHOD     EnergyFixedNonbondRestraint_sp	getFixedNonbondRestraintComponen
     CL_DEFMETHOD bool hasMissingParameters();
     CL_DEFMETHOD core::List_sp getMissingParameters();
 
-CL_LISPIFY_NAME("getTotalEnergy");
-CL_DEFMETHOD     double	getTotalEnergy() { return this->_TotalEnergy; };
+    CL_LISPIFY_NAME("getTotalEnergy");
+    CL_DEFMETHOD     double	getTotalEnergy() { return this->_TotalEnergy; };
     void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian);
 
     /*! Enable debugging on all energy components
@@ -259,8 +243,6 @@ CL_DEFMETHOD     double	getTotalEnergy() { return this->_TotalEnergy; };
     int	compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition();
 
 
-CL_DEFMETHOD     void	setName(const string& nm) { this->_Name = nm; };
-CL_DEFMETHOD     string	getName() { return this->_Name; };
     void		writeForceToAtoms(NVector_sp f);
     EnergyAtom*     getEnergyAtomPointer(Atom_sp a);
 
@@ -315,18 +297,17 @@ CL_DEFMETHOD     string	getName() { return this->_Name; };
 
     string	debugLogAsString();
 
-    void	dealWithProblem(InteractionProblem& problem);
+    void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments);
     DEFAULT_CTOR_DTOR(EnergyFunction_O);
-};
+  };
 
 
- bool inAtomSet(core::T_sp atomSet, Atom_sp atom);
+  bool inAtomSet(core::T_sp atomSet, Atom_sp atom);
 
 #define	FINITE_DIFFERENCE_TOLERANCE 0.10
-int	_areValuesClose(double numVal, double analVal, const char* funcName, const char* termName, int index );
+  int	_areValuesClose(double numVal, double analVal, const char* funcName, const char* termName, int index );
 
- void energyFunction_initializeSmarts();
+  void energyFunction_initializeSmarts();
 };
 
-TRANSLATE(chem::EnergyFunction_O);
 #endif

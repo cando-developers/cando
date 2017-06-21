@@ -94,8 +94,6 @@ __END_DOC
 
 
 
-
-
 namespace chem
 {
 
@@ -104,7 +102,9 @@ SYMBOL_EXPORT_SC_(ChemPkg,restraintAnchor);
 
 //Maybe use this in place of InteractionError?
 SYMBOL_EXPORT_SC_(ChemPkg,InteractionError);
+/*! LinearAngleError has a argument :atoms (atom1 atom2 atom3) */
 SYMBOL_EXPORT_SC_(ChemPkg,LinearAngleError);
+
 SYMBOL_EXPORT_SC_(ChemPkg,LinearDihedralError);
 SYMBOL_EXPORT_SC_(ChemPkg,LinearImproperRestraintError);
 SYMBOL_EXPORT_SC_(ChemPkg,OverlappingNonbondError);
@@ -276,8 +276,7 @@ void	EnergyFunction_O::archive(core::ArchiveP node)
 
 
 
-CL_LISPIFY_NAME("getNVectorSize");
-CL_DEFMETHOD uint	EnergyFunction_O::getNVectorSize() 
+size_t EnergyFunction_O::getNVectorSize() 
 { 
   return this->_AtomTable->getNVectorSize();
 };
@@ -536,8 +535,7 @@ CL_DEFMETHOD double	EnergyFunction_O::evaluateAll(
   }
 
 ////    _lisp->profiler().pushTimerStates();
-  try {
-    ALL_ENERGY_COMPONENTS(zeroEnergy());
+  ALL_ENERGY_COMPONENTS(zeroEnergy());
 
     if ( hasForce ) force->zero();
     if ( hasHessian ) hessian->zero();
@@ -613,13 +611,6 @@ CL_DEFMETHOD double	EnergyFunction_O::evaluateAll(
 #endif
 
 ////	_lisp->profiler().timer(core::timerEnergy).stop();
-
-  } catch ( InteractionProblem ld ) {
-////        _lisp->profiler().popTimerStates();
-    this->dealWithProblem(ld);
-      //SIMPLE_ERROR(BF("Interaction problem: %s")% ld.message() );
-  }
-////    _lisp->profiler().popTimerStates();
 
     	// More energy terms
   return this->_TotalEnergy;
@@ -1831,36 +1822,16 @@ CL_DEFMETHOD double EnergyFunction_O::calculateEnergyAndForce( )
 
 
 
-void	EnergyFunction_O::dealWithProblem(InteractionProblem& problem)
+void	EnergyFunction_O::dealWithProblem(core::Symbol_sp problem, core::T_sp error_args)
 {_OF();
-#if 1
-  for ( auto cur : problem._Atoms ) {
+  core::List_sp atoms = _Nil<core::T_O>();
+  if ( error_args.consp() && CONS_CAR(error_args) == kw::_sym_atoms ) {
+    atoms = atoms;
+  }
+  for ( auto cur : atoms ) {
     Atom_sp a = gctools::As<Atom_sp>(oCar(cur));
     a->bumpPosition(0.1);
   }
-#else
-  switch ( problem._Type ) {
-  case linearDihedral:
-      problem._Atom1->bumpPosition(0.1);
-      problem._Atom2->bumpPosition(0.1);
-      problem._Atom3->bumpPosition(0.1);
-      problem._Atom4->bumpPosition(0.1);
-      break;
-  case linearImproperRestraint:
-      problem._Atom1->bumpPosition(0.1);
-      problem._Atom2->bumpPosition(0.1);
-      problem._Atom3->bumpPosition(0.1);
-      problem._Atom4->bumpPosition(0.1);
-      break;
-  case linearAngle:
-      problem._Atom1->bumpPosition(0.1);
-      problem._Atom2->bumpPosition(0.1);
-      problem._Atom3->bumpPosition(0.1);
-      break;
-  default:
-      SIMPLE_ERROR(BF("EnergyFunction_O::dealWithProblem>> I am not handling this problem yet"));
-  }
-#endif
 }
 
 

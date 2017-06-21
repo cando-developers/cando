@@ -221,23 +221,18 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-void EnergyAnchorRestraint_O::evaluateAll(
-		NVector_sp 	pos,
-		bool 		calcForce,
-		gc::Nilable<NVector_sp> 	force,
-       		bool		calcDiagonalHessian,
-		bool		calcOffDiagonalHessian,
-		gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-		gc::Nilable<NVector_sp>	hdvec,
-                gc::Nilable<NVector_sp> dvec)
+double EnergyAnchorRestraint_O::evaluateAll( NVector_sp 	pos,
+                                             bool 		calcForce,
+                                             gc::Nilable<NVector_sp> 	force,
+                                             bool		calcDiagonalHessian,
+                                             bool		calcOffDiagonalHessian,
+                                             gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                             gc::Nilable<NVector_sp>	hdvec,
+                                             gc::Nilable<NVector_sp> dvec)
 {
-
-
- bool	hasForce = force.notnilp();
- bool	hasHessian = hessian.notnilp();
- bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
-
-
+  bool	hasForce = force.notnilp();
+  bool	hasHessian = hessian.notnilp();
+  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 //
 // Copy from implementAmberFunction::evaluateAll
 //
@@ -262,52 +257,53 @@ void EnergyAnchorRestraint_O::evaluateAll(
 #define	ANCHOR_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
 
-	if ( this->isEnabled() ) {
+  if ( this->isEnabled() ) {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_AnchorRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-	    double x1,y1,z1,xa,ya,za,ka;
-	    int	I1, i;
-	    gctools::Vec0<EnergyAnchorRestraint>::iterator cri;
-	    for ( i=0,cri=this->_Terms.begin();
-			cri!=this->_Terms.end(); cri++,i++ ) {
-	    	#ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-		    if ( this->_Debug_NumberOfAnchorRestraintTermsToCalculate > 0 ) {
-			if ( i>= this->_Debug_NumberOfAnchorRestraintTermsToCalculate ) {
-			    break;
-			}
-		    }
-	    	#endif
+    double x1,y1,z1,xa,ya,za,ka;
+    int	I1, i;
+    gctools::Vec0<EnergyAnchorRestraint>::iterator cri;
+    for ( i=0,cri=this->_Terms.begin();
+          cri!=this->_Terms.end(); cri++,i++ ) {
+#ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
+      if ( this->_Debug_NumberOfAnchorRestraintTermsToCalculate > 0 ) {
+        if ( i>= this->_Debug_NumberOfAnchorRestraintTermsToCalculate ) {
+          break;
+        }
+      }
+#endif
 
 			    /* Obtain all the parameters necessary to calculate */
 			    /* the amber and forces */
 #include <cando/chem/energy_functions/_AnchorRestraint_termCode.cc>
 
-	        #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-		    cri->_calcForce = calcForce;
-		    cri->_calcDiagonalHessian = calcDiagonalHessian;
-		    cri ->_calcOffDiagonalHessian = calcOffDiagonalHessian;
+#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
+      cri->_calcForce = calcForce;
+      cri->_calcDiagonalHessian = calcDiagonalHessian;
+      cri ->_calcOffDiagonalHessian = calcOffDiagonalHessian;
 			// Now write all of the calculated values into the eval structure
-		    #undef EVAL_SET
-		    #define	EVAL_SET(var,val)	{ cri->eval.var=val;};
+#undef EVAL_SET
+#define	EVAL_SET(var,val)	{ cri->eval.var=val;};
 #include <cando/chem/energy_functions/_AnchorRestraint_debugEvalSet.cc>
-	        #endif //]
+#endif //]
 
 			    /* Add the forces */
 
-		if ( calcForce ) {
+      if ( calcForce ) {
 #if !USE_EXPLICIT_DECLARES
-		    double fx1 = 0.0;
-		    double fy1 = 0.0;
-		    double fz1 = 0.0;
+        double fx1 = 0.0;
+        double fy1 = 0.0;
+        double fz1 = 0.0;
 #endif
 //		    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
 //		    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
 //		    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
-		}
-	    }
-	}
+      }
+    }
+  }
+  return this->_TotalEnergy;
 }
 
 

@@ -264,30 +264,27 @@ bool		calcOffDiagonalHessian = true;
 
 
 
-void	EnergyImproperRestraint_O::evaluateAll(
-		chem::NVector_sp 	pos,
-		bool 		calcForce,
-		gc::Nilable<chem::NVector_sp> 	force,
-       		bool		calcDiagonalHessian,
-		bool		calcOffDiagonalHessian,
-		gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
-		gc::Nilable<chem::NVector_sp>	hdvec,
-                gc::Nilable<chem::NVector_sp> dvec)
+double EnergyImproperRestraint_O::evaluateAll(chem::NVector_sp 	pos,
+                                              bool 		calcForce,
+                                              gc::Nilable<chem::NVector_sp> 	force,
+                                              bool		calcDiagonalHessian,
+                                              bool		calcOffDiagonalHessian,
+                                              gc::Nilable<chem::AbstractLargeSquareMatrix_sp>	hessian,
+                                              gc::Nilable<chem::NVector_sp>	hdvec,
+                                              gc::Nilable<chem::NVector_sp> dvec)
 {
-    if ( this->_DebugEnergy ) 
-    {
-	LOG_ENERGY_CLEAR();
-	LOG_ENERGY(BF("%s {")% this->className());
-    }
-
-ANN(force);
-ANN(hessian);
-ANN(hdvec);
-ANN(dvec);
-bool	hasForce = force.notnilp();
-bool	hasHessian = hessian.notnilp();
-bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
-
+  if ( this->_DebugEnergy ) 
+  {
+    LOG_ENERGY_CLEAR();
+    LOG_ENERGY(BF("%s {")% this->className());
+  }
+  ANN(force);
+  ANN(hessian);
+  ANN(hdvec);
+  ANN(dvec);
+  bool	hasForce = force.notnilp();
+  bool	hasHessian = hessian.notnilp();
+  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 
 //
 // Copy from implementAmberFunction::evaluateAll
@@ -311,93 +308,88 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 #define	IMPROPER_RESTRAINT_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
 #define	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
-    if ( this->isEnabled() ) {
+  if ( this->isEnabled() ) {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-	double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
-	double K,U,L;
-	double EraseLinearDihedral, UShift, PhiShift;
-	bool RestraintActive;
-	int	I1, I2, I3, I4,i;
-        gctools::Vec0<EnergyImproperRestraint>::iterator iri;
-	for ( i=0,iri =this->_Terms.begin();
-		    iri!=this->_Terms.end(); iri++,i++ ) {
-	    #ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-		if ( this->_Debug_NumberOfImproperRestraintTermsToCalculate > 0 ) {
-		    if ( i>= this->_Debug_NumberOfImproperRestraintTermsToCalculate ) {
-			break;
-		    }
-		}
-	    #endif
+    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
+    double K,U,L;
+    double EraseLinearDihedral, UShift, PhiShift;
+    bool RestraintActive;
+    int	I1, I2, I3, I4,i;
+    gctools::Vec0<EnergyImproperRestraint>::iterator iri;
+    for ( i=0,iri =this->_Terms.begin();
+          iri!=this->_Terms.end(); iri++,i++ ) {
+#ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
+      if ( this->_Debug_NumberOfImproperRestraintTermsToCalculate > 0 ) {
+        if ( i>= this->_Debug_NumberOfImproperRestraintTermsToCalculate ) {
+          break;
+        }
+      }
+#endif
 #include <cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
-	    if ( EraseLinearDihedral == 0.0 ) {
-	       InteractionProblem problem;
-               problem._Atoms = core::Cons_O::createList(iri->_Atom1,iri->_Atom2,iri->_Atom3,iri->_Atom4);
-	       problem._Message = "Found linear improper restraint";
-	       problem._Type = linearImproperRestraint;
-	       LOG(BF("%s") % problem._Message.c_str()  );
-	       SIMPLE_ERROR(BF("Found linear improper restraint"));
-	    }
-	    #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-		iri->_calcForce = calcForce;
-		iri->_calcDiagonalHessian = calcDiagonalHessian;
-		iri->_calcOffDiagonalHessian = calcOffDiagonalHessian;
-		#undef EVAL_SET
-		#define EVAL_SET(var,val)	{ iri->eval.var=val;};
+      if ( EraseLinearDihedral == 0.0 ) {
+        ERROR(chem::_sym_LinearImproperRestraintError, core::Cons_O::createList(kw::_sym_atoms, core::Cons_O::createList(iri->_Atom1,iri->_Atom2,iri->_Atom3,iri->_Atom4)));
+      }
+#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
+      iri->_calcForce = calcForce;
+      iri->_calcDiagonalHessian = calcDiagonalHessian;
+      iri->_calcOffDiagonalHessian = calcOffDiagonalHessian;
+#undef EVAL_SET
+#define EVAL_SET(var,val)	{ iri->eval.var=val;};
 #include <cando/chem/energy_functions/_ImproperRestraint_debugEvalSet.cc>
-	    #endif //]
+#endif //]
 
-	    if ( this->_DebugEnergy ) 
-	    {
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d args cando\n")% (i+1) );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d K %lf\n")% (i+1) % K );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d U %lf\n")% (i+1) % U );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d L %lf\n")% (i+1) % L );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d x1 %5.3lf %d\n")%(i+1) % x1 % (I1/3+1) );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d y1 %5.3lf %d\n")%(i+1) % y1 % (I1/3+1) );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d z1 %5.3lf %d\n")%(i+1) % z1 % (I1/3+1) );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d x2 %5.3lf %d\n")%(i+1) % x2 % (I2/3+1) );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d y2 %5.3lf %d\n")%(i+1) % y2 % (I2/3+1) );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d z2 %5.3lf %d\n")%(i+1) % z2 % (I2/3+1) );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d x3 %5.3lf %d\n")%(i+1) % x3 % (I3/3+1) );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d y3 %5.3lf %d\n")%(i+1) % y3 % (I3/3+1) );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d z3 %5.3lf %d\n")%(i+1) % z3 % (I3/3+1) );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d x4 %5.3lf %d\n")%(i+1) % x4 % (I4/3+1) );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d y4 %5.3lf %d\n")%(i+1) % y4 % (I4/3+1) );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d z4 %5.3lf %d\n")%(i+1) % z4 % (I4/3+1) );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d results\n")% (i+1) );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d CosPhi %lf\n")% (i+1) % CosPhi );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d SinPhi %lf\n")% (i+1) % SinPhi );
-		if ( CosPhi>0.1 ) {
-		    Phi = asin(SinPhi);
-		} else {
-		    Phi = acos(CosPhi)*SIGN(SinPhi);
-		}
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d Phi %lf\n")% (i+1) % Phi );
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d Energy %lf\n")% (i+1) % Energy);
-		if ( calcForce ) 
-		{
+      if ( this->_DebugEnergy ) 
+      {
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d args cando\n")% (i+1) );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d K %lf\n")% (i+1) % K );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d U %lf\n")% (i+1) % U );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d L %lf\n")% (i+1) % L );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d x1 %5.3lf %d\n")%(i+1) % x1 % (I1/3+1) );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d y1 %5.3lf %d\n")%(i+1) % y1 % (I1/3+1) );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d z1 %5.3lf %d\n")%(i+1) % z1 % (I1/3+1) );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d x2 %5.3lf %d\n")%(i+1) % x2 % (I2/3+1) );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d y2 %5.3lf %d\n")%(i+1) % y2 % (I2/3+1) );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d z2 %5.3lf %d\n")%(i+1) % z2 % (I2/3+1) );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d x3 %5.3lf %d\n")%(i+1) % x3 % (I3/3+1) );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d y3 %5.3lf %d\n")%(i+1) % y3 % (I3/3+1) );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d z3 %5.3lf %d\n")%(i+1) % z3 % (I3/3+1) );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d x4 %5.3lf %d\n")%(i+1) % x4 % (I4/3+1) );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d y4 %5.3lf %d\n")%(i+1) % y4 % (I4/3+1) );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d z4 %5.3lf %d\n")%(i+1) % z4 % (I4/3+1) );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d results\n")% (i+1) );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d CosPhi %lf\n")% (i+1) % CosPhi );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d SinPhi %lf\n")% (i+1) % SinPhi );
+        if ( CosPhi>0.1 ) {
+          Phi = asin(SinPhi);
+        } else {
+          Phi = acos(CosPhi)*SIGN(SinPhi);
+        }
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d Phi %lf\n")% (i+1) % Phi );
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d Energy %lf\n")% (i+1) % Energy);
+        if ( calcForce ) 
+        {
 //			LOG_ENERGY(BF( "MEISTER improperRestraint %d DePhi %lf\n")% (i+1) % DePhi);
-		    LOG_ENERGY(BF( "MEISTER improperRestraint %d fx1 %8.5lf %d\n")%(i+1) % fx1 % (I1/3+1) );
-		    LOG_ENERGY(BF( "MEISTER improperRestraint %d fy1 %8.5lf %d\n")%(i+1) % fy1 % (I1/3+1) );
-		    LOG_ENERGY(BF( "MEISTER improperRestraint %d fz1 %8.5lf %d\n")%(i+1) % fz1 % (I1/3+1) );
-		    LOG_ENERGY(BF( "MEISTER improperRestraint %d fx2 %8.5lf %d\n")%(i+1) % fx2 % (I2/3+1) );
-		    LOG_ENERGY(BF( "MEISTER improperRestraint %d fy2 %8.5lf %d\n")%(i+1) % fy2 % (I2/3+1) );
-		    LOG_ENERGY(BF( "MEISTER improperRestraint %d fz2 %8.5lf %d\n")%(i+1) % fz2 % (I2/3+1) );
-		    LOG_ENERGY(BF( "MEISTER improperRestraint %d fx3 %8.5lf %d\n")%(i+1) % fx3 % (I3/3+1) );
-		    LOG_ENERGY(BF( "MEISTER improperRestraint %d fy3 %8.5lf %d\n")%(i+1) % fy3 % (I3/3+1) );
-		    LOG_ENERGY(BF( "MEISTER improperRestraint %d fz3 %8.5lf %d\n")%(i+1) % fz3 % (I3/3+1) );
-		    LOG_ENERGY(BF( "MEISTER improperRestraint %d fx4 %8.5lf %d\n")%(i+1) % fx4 % (I4/3+1) );
-		    LOG_ENERGY(BF( "MEISTER improperRestraint %d fy4 %8.5lf %d\n")%(i+1) % fy4 % (I4/3+1) );
-		    LOG_ENERGY(BF( "MEISTER improperRestraint %d fz4 %8.5lf %d\n")%(i+1) % fz4 % (I4/3+1) );
-		}
-		LOG_ENERGY(BF( "MEISTER improperRestraint %d stop\n")% (i+1) );
-	    }
+          LOG_ENERGY(BF( "MEISTER improperRestraint %d fx1 %8.5lf %d\n")%(i+1) % fx1 % (I1/3+1) );
+          LOG_ENERGY(BF( "MEISTER improperRestraint %d fy1 %8.5lf %d\n")%(i+1) % fy1 % (I1/3+1) );
+          LOG_ENERGY(BF( "MEISTER improperRestraint %d fz1 %8.5lf %d\n")%(i+1) % fz1 % (I1/3+1) );
+          LOG_ENERGY(BF( "MEISTER improperRestraint %d fx2 %8.5lf %d\n")%(i+1) % fx2 % (I2/3+1) );
+          LOG_ENERGY(BF( "MEISTER improperRestraint %d fy2 %8.5lf %d\n")%(i+1) % fy2 % (I2/3+1) );
+          LOG_ENERGY(BF( "MEISTER improperRestraint %d fz2 %8.5lf %d\n")%(i+1) % fz2 % (I2/3+1) );
+          LOG_ENERGY(BF( "MEISTER improperRestraint %d fx3 %8.5lf %d\n")%(i+1) % fx3 % (I3/3+1) );
+          LOG_ENERGY(BF( "MEISTER improperRestraint %d fy3 %8.5lf %d\n")%(i+1) % fy3 % (I3/3+1) );
+          LOG_ENERGY(BF( "MEISTER improperRestraint %d fz3 %8.5lf %d\n")%(i+1) % fz3 % (I3/3+1) );
+          LOG_ENERGY(BF( "MEISTER improperRestraint %d fx4 %8.5lf %d\n")%(i+1) % fx4 % (I4/3+1) );
+          LOG_ENERGY(BF( "MEISTER improperRestraint %d fy4 %8.5lf %d\n")%(i+1) % fy4 % (I4/3+1) );
+          LOG_ENERGY(BF( "MEISTER improperRestraint %d fz4 %8.5lf %d\n")%(i+1) % fz4 % (I4/3+1) );
+        }
+        LOG_ENERGY(BF( "MEISTER improperRestraint %d stop\n")% (i+1) );
+      }
 			/* Add the forces */
 
-	    if ( calcForce ) {
+      if ( calcForce ) {
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
@@ -410,29 +402,23 @@ bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx4>10000.0);
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy4>10000.0);
 //		_lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz4>10000.0);
-	    }
-	}
+      }
     }
-    LOG_ENERGY(BF( "ImproperRestraint energy = %lf\n")% (double)(this->_TotalEnergy) );
-    if ( this->_DebugEnergy ) 
-    {
-	LOG_ENERGY(BF("%s }\n")% this->className());
-    }
+  }
+  LOG_ENERGY(BF( "ImproperRestraint energy = %lf\n")% (double)(this->_TotalEnergy) );
+  if ( this->_DebugEnergy ) 
+  {
+    LOG_ENERGY(BF("%s }\n")% this->className());
+  }
+  return this->_TotalEnergy;
 }
 
-
-
-
-
-
-
-void	EnergyImproperRestraint_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-		chem::NVector_sp 	pos)
+void	EnergyImproperRestraint_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(chem::NVector_sp 	pos)
 {
-int	fails = 0;
-bool	calcForce = true;
-bool	calcDiagonalHessian = true;
-bool	calcOffDiagonalHessian = true;
+  int	fails = 0;
+  bool	calcForce = true;
+  bool	calcDiagonalHessian = true;
+  bool	calcOffDiagonalHessian = true;
 
 
 //
@@ -458,25 +444,25 @@ bool	calcOffDiagonalHessian = true;
 #define	IMPROPER_RESTRAINT_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
 
-	if ( this->isEnabled() ) {
-		_BLOCK_TRACE("ImproperRestraintEnergy finiteDifference comparison");
+  if ( this->isEnabled() ) {
+    _BLOCK_TRACE("ImproperRestraintEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_ImproperRestraint_termDeclares.cc>
 #pragma clang diagnostic pop
-	    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
-	    double K,U,L;
-	    double EraseLinearDihedral, UShift, PhiShift;
-	    bool RestraintActive;
-	    int	I1, I2, I3, I4,i;
-            gctools::Vec0<EnergyImproperRestraint>::iterator iri;
-	    for ( i=0,iri =this->_Terms.begin();
-			iri!=this->_Terms.end(); iri++,i++ ) {
+    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4;
+    double K,U,L;
+    double EraseLinearDihedral, UShift, PhiShift;
+    bool RestraintActive;
+    int	I1, I2, I3, I4,i;
+    gctools::Vec0<EnergyImproperRestraint>::iterator iri;
+    for ( i=0,iri =this->_Terms.begin();
+          iri!=this->_Terms.end(); iri++,i++ ) {
 #include <cando/chem/energy_functions/_ImproperRestraint_termCode.cc>
-		int index = i;
+      int index = i;
 #include <cando/chem/energy_functions/_ImproperRestraint_debugFiniteDifference.cc>
-	    }
-	}
+    }
+  }
 
 
 }

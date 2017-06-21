@@ -168,14 +168,14 @@ public:
     virtual	void	zeroEnergy();
 //virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 //				AbstractLargeSquareMatrix_sp m );
-    virtual	void evaluateAll( NVector_sp 	pos,
-				   bool 		calcForce,
-				   gc::Nilable<NVector_sp> 	force,
-				   bool		calcDiagonalHessian,
-				   bool		calcOffDiagonalHessian,
-				   gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                  gc::Nilable<NVector_sp>	hdvec,
-                                  gc::Nilable<NVector_sp> dvec);
+    virtual double evaluateAll( NVector_sp 	pos,
+                                bool 		calcForce,
+                                gc::Nilable<NVector_sp> 	force,
+                                bool		calcDiagonalHessian,
+                                bool		calcOffDiagonalHessian,
+                                gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                gc::Nilable<NVector_sp>	hdvec,
+                                gc::Nilable<NVector_sp> dvec) override;
 
     virtual	void	compareAnalyticalAndNumericalForceAndHessianTermByTerm(
 	NVector_sp pos );

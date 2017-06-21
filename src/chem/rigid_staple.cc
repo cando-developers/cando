@@ -33,7 +33,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/wrappers.h>
 
 namespace chem {
-
+#if 0
 CL_LAMBDA(helix-points interactions pos calc-force force-vec &key debug-energy);
 CL_DEFUN double chem__rigid_staple_evaluate( core::SimpleVectorDouble_sp helix_points,  /* xi, yi, zi */
                                 /* helixk/pos, pointk/helix_points, helixl/pos, pointl/helix_points */
@@ -157,5 +157,5 @@ CL_DEFUN double chem__rigid_staple_evaluate( core::SimpleVectorDouble_sp helix_p
   }
   return totalEnergy;
 }
-
+#endif
 };

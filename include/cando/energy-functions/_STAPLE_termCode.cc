@@ -1,6 +1,6 @@
 // C-code
-	STAPLE_SET_PARAMETER(I1,0);
-	STAPLE_SET_PARAMETER(I2,2);
+	STAPLE_SET_PARAMETER(I1,rigidBodyA);
+	STAPLE_SET_PARAMETER(I2,rigidBodyB);
 	STAPLE_SET_POSITION(ak,I1,0);
 	STAPLE_SET_POSITION(bk,I1,1);
 	STAPLE_SET_POSITION(ck,I1,2);
@@ -15,12 +15,12 @@
 	STAPLE_SET_POSITION(xl,I2,4);
 	STAPLE_SET_POSITION(yl,I2,5);
 	STAPLE_SET_POSITION(zl,I2,6);
-	STAPLE_SET_POINT(xh1,1,0);
-	STAPLE_SET_POINT(yh1,1,1);
-	STAPLE_SET_POINT(zh1,1,2);
-	STAPLE_SET_POINT(xh2,3,0);
-	STAPLE_SET_POINT(yh2,3,1);
-	STAPLE_SET_POINT(zh2,3,2);
+	STAPLE_SET_POINT(xh1,pointA,getX());
+	STAPLE_SET_POINT(yh1,pointA,getY());
+	STAPLE_SET_POINT(zh1,pointA,getZ());
+	STAPLE_SET_POINT(xh2,pointB,getX());
+	STAPLE_SET_POINT(yh2,pointB,getY());
+	STAPLE_SET_POINT(zh2,pointB,getZ());
 	 tx156 = power2(bk); 		/* rule 23 */
 	 tx157 = power2(bl); 		/* rule 24 */
 	 tx158 = power2(ck); 		/* rule 25 */

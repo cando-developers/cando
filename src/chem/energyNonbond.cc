@@ -369,7 +369,7 @@ void	EnergyNonbond_O::setupHessianPreconditioner(
   SIMPLE_ERROR(BF("Nonbond term isn't used when calculating setupHessianPreconditioner but it was called!!!"));
 }
 
-void	EnergyNonbond_O::evaluateAll(NVector_sp 	pos,
+double	EnergyNonbond_O::evaluateAll(NVector_sp 	pos,
                                      bool 		calcForce,
                                      gc::Nilable<NVector_sp> 	force,
                                      bool		calcDiagonalHessian,
@@ -390,6 +390,7 @@ void	EnergyNonbond_O::evaluateAll(NVector_sp 	pos,
     this->evaluateTerms(pos,calcForce,force,calcDiagonalHessian,
                              calcOffDiagonalHessian,hessian,hdvec,dvec);
   }
+  return this->_TotalEnergy;
 }
     
     

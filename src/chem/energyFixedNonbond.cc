@@ -296,35 +296,33 @@ Vector3				v1,v2;
 
 
 
-void	EnergyFixedNonbondRestraint_O::evaluateAll(
-		NVector_sp 	pos,
-		bool 		calcForce,
-		gc::Nilable<NVector_sp> 	force,
-       		bool		calcDiagonalHessian,
-		bool		calcOffDiagonalHessian,
-		gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-		gc::Nilable<NVector_sp>	hdvec,
-                gc::Nilable<NVector_sp> dvec)
+double EnergyFixedNonbondRestraint_O::evaluateAll(NVector_sp 	pos,
+                                                  bool 		calcForce,
+                                                  gc::Nilable<NVector_sp> 	force,
+                                                  bool		calcDiagonalHessian,
+                                                  bool		calcOffDiagonalHessian,
+                                                  gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                  gc::Nilable<NVector_sp>	hdvec,
+                                                  gc::Nilable<NVector_sp> dvec)
 {
-    if ( this->_DebugEnergy ) 
-    {
-	LOG_ENERGY_CLEAR();
-	LOG_ENERGY(BF("%s {\n")% this->className());
-    }
-    if ( this->_Terms.size() == 0 ) return;
-    ASSERTNOTNULL(this->_MobileAtomTable);
-    ASSERT(this->_MobileAtomTable.notnilp());
-    ASSERTNOTNULL(this->_NonbondCrossTermTable);
-    ASSERT(this->_NonbondCrossTermTable.notnilp());
+  if ( this->_DebugEnergy ) 
+  {
+    LOG_ENERGY_CLEAR();
+    LOG_ENERGY(BF("%s {\n")% this->className());
+  }
+  if ( this->_Terms.size() == 0 ) return 0.0;
+  ASSERTNOTNULL(this->_MobileAtomTable);
+  ASSERT(this->_MobileAtomTable.notnilp());
+  ASSERTNOTNULL(this->_NonbondCrossTermTable);
+  ASSERT(this->_NonbondCrossTermTable.notnilp());
 
-
-    ANN(force);
-    ANN(hessian);
-    ANN(hdvec);
-    ANN(dvec);
-    bool	hasForce = force.notnilp();
-    bool	hasHessian = hessian.notnilp();
-    bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
+  ANN(force);
+  ANN(hessian);
+  ANN(hdvec);
+  ANN(dvec);
+  bool	hasForce = force.notnilp();
+  bool	hasHessian = hessian.notnilp();
+  bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 
 
     //
@@ -353,93 +351,94 @@ void	EnergyFixedNonbondRestraint_O::evaluateAll(
 #define	FNONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 
 
-    if ( this->isEnabled() ) 
-    {
+  if ( this->isEnabled() ) 
+  {
 	// If you are going to use openmp here, you need to control access to the force and hessian
 	// arrays so that only one thread updates each element at a time.
-	{
-	    LOG(BF("FixedNonbond component is enabled") );
+    {
+      LOG(BF("FixedNonbond component is enabled") );
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_FixedNonbond_termDeclares.cc>
 #pragma clang diagnostic pop
-	    double x1,y1,z1,xf,yf,zf, dQ1Q2;
-	    uint I1;
-	    {   
+      double x1,y1,z1,xf,yf,zf, dQ1Q2;
+      uint I1;
+      {   
 		//
 		// From here to termCode is the fixedNonbond interaction loop
 		//
-		uint ifixed, imobile;
-		uint fixedNonbondAtoms = this->_Terms.size();
-		uint mobileNonbondAtoms = this->_MobileAtomTable->getNumberOfAtoms();
-		uint i = 0;
-		for ( ifixed = 0; ifixed < fixedNonbondAtoms; ifixed++ )
-		{
-		    FixedNonbondRestraint& fixedAtomEntry = this->_Terms[ifixed];
-		    xf = fixedAtomEntry._FixedPosition.getX();
-		    yf = fixedAtomEntry._FixedPosition.getY();
-		    zf = fixedAtomEntry._FixedPosition.getZ();
-		    double fixedChargeMultiplier = fixedAtomEntry._FixedCharge * this->getElectrostaticScale() / this->_DielectricConstant * ELECTROSTATIC_MODIFIER;
-		    uint fixedTypeMajorIndex = this->_NonbondCrossTermTable->typeMajorIndex(fixedAtomEntry._FixedType);
-		    for ( imobile=0; imobile< mobileNonbondAtoms; imobile++ )
-		    {
-			EnergyAtom& mobileAtomEntry = this->_MobileAtomTable->energyAtomEntry(imobile);
-			I1 = mobileAtomEntry.coordinateIndexTimes3();
-			dQ1Q2 = mobileAtomEntry._Charge * fixedChargeMultiplier;
-			uint crossTermIndex = fixedTypeMajorIndex + mobileAtomEntry._TypeIndex;
-			FFNonbondCrossTerm crossTerm = this->_NonbondCrossTermTable->nonbondCrossTerm(crossTermIndex);
-			double dA = crossTerm._A*this->getVdwScale();
-			double dC = crossTerm._C*this->getVdwScale();
+        uint ifixed, imobile;
+        uint fixedNonbondAtoms = this->_Terms.size();
+        uint mobileNonbondAtoms = this->_MobileAtomTable->getNumberOfAtoms();
+        uint i = 0;
+        for ( ifixed = 0; ifixed < fixedNonbondAtoms; ifixed++ )
+        {
+          FixedNonbondRestraint& fixedAtomEntry = this->_Terms[ifixed];
+          xf = fixedAtomEntry._FixedPosition.getX();
+          yf = fixedAtomEntry._FixedPosition.getY();
+          zf = fixedAtomEntry._FixedPosition.getZ();
+          double fixedChargeMultiplier = fixedAtomEntry._FixedCharge * this->getElectrostaticScale() / this->_DielectricConstant * ELECTROSTATIC_MODIFIER;
+          uint fixedTypeMajorIndex = this->_NonbondCrossTermTable->typeMajorIndex(fixedAtomEntry._FixedType);
+          for ( imobile=0; imobile< mobileNonbondAtoms; imobile++ )
+          {
+            EnergyAtom& mobileAtomEntry = this->_MobileAtomTable->energyAtomEntry(imobile);
+            I1 = mobileAtomEntry.coordinateIndexTimes3();
+            dQ1Q2 = mobileAtomEntry._Charge * fixedChargeMultiplier;
+            uint crossTermIndex = fixedTypeMajorIndex + mobileAtomEntry._TypeIndex;
+            FFNonbondCrossTerm crossTerm = this->_NonbondCrossTermTable->nonbondCrossTerm(crossTermIndex);
+            double dA = crossTerm._A*this->getVdwScale();
+            double dC = crossTerm._C*this->getVdwScale();
 #include	<cando/chem/energy_functions/_FixedNonbond_termCode.cc>
-			#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-			    fixedAtomEntry._calcForce = calcForce;
-			    fixedAtomEntry._calcDiagonalHessian = calcDiagonalHessian;
-			    fixedAtomEntry._calcOffDiagonalHessian = calcOffDiagonalHessian;
-			    #undef EVAL_SET
-			    #define	EVAL_SET(var,val)	{ fixedAtomEntry.eval.var=val;};
+#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
+            fixedAtomEntry._calcForce = calcForce;
+            fixedAtomEntry._calcDiagonalHessian = calcDiagonalHessian;
+            fixedAtomEntry._calcOffDiagonalHessian = calcOffDiagonalHessian;
+#undef EVAL_SET
+#define	EVAL_SET(var,val)	{ fixedAtomEntry.eval.var=val;};
 #include	<cando/chem/energy_functions/_FixedNonbond_debugEvalSet.cc>
-			#endif //]
+#endif //]
 
-			if ( calcForce ) {
+            if ( calcForce ) {
 //			    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fx1>10000.0);
 //			    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fy1>10000.0);
 //			    _lisp->profiler().eventCounter(core::forcesGreaterThan10000).recordCallAndProblem(fz1>10000.0);
-			}
+            }
 
-			if ( this->_DebugEnergy ) 
-			{
-			    LOG_ENERGY(BF( "MEISTER fixed nonbond %d args cando\n")% (i+1) );
-			    LOG_ENERGY(BF( "MEISTER fixed nonbond %d dA %5.3lf\n")% (i+1) % dA );
-			    LOG_ENERGY(BF( "MEISTER fixed nonbond %d dC %5.3lf\n")% (i+1) % dC );
-			    LOG_ENERGY(BF( "MEISTER fixed nonbond %d dQ1Q2 %5.3lf\n")% (i+1) % dQ1Q2 );
-			    LOG_ENERGY(BF( "MEISTER fixed nonbond %d x1 %5.3lf %d\n")% (i+1) % x1 % (I1/3+1) );
-			    LOG_ENERGY(BF( "MEISTER fixed nonbond %d y1 %5.3lf %d\n")% (i+1) % y1 % (I1/3+1) );
-			    LOG_ENERGY(BF( "MEISTER fixed nonbond %d z1 %5.3lf %d\n")% (i+1) % z1 % (I1/3+1) );
-			    LOG_ENERGY(BF( "MEISTER fixed nonbond %d xf %5.3lf %d\n")% (i+1) % xf % (ifixed) );
-			    LOG_ENERGY(BF( "MEISTER fixed nonbond %d yf %5.3lf %d\n")% (i+1) % yf % (ifixed) );
-			    LOG_ENERGY(BF( "MEISTER fixed nonbond %d zf %5.3lf %d\n")% (i+1) % zf % (ifixed) );
-			    LOG_ENERGY(BF( "MEISTER fixed nonbond %d results\n")% (i+1) );
-			    LOG_ENERGY(BF( "MEISTER fixed nonbond %d Efixed nonbond %lf\n")% (i+1) % (Efvdw+Efeel) );
-			    LOG_ENERGY(BF( "MEISTER fixed nonbond %d efvdw %lf\n")% (i+1) % Efvdw);
-			    LOG_ENERGY(BF( "MEISTER fixed nonbond %d efeel %lf\n")% (i+1) % Efeel);
-			    if ( calcForce ) {
-				LOG_ENERGY(BF( "MEISTER fixed nonbond %d fx1 %lf %d\n")% (i+1) % fx1 % (I1/3+1) );
-				LOG_ENERGY(BF( "MEISTER fixed nonbond %d fy1 %lf %d\n")% (i+1) % fy1 % (I1/3+1) );
-				LOG_ENERGY(BF( "MEISTER fixed nonbond %d fz1 %lf %d\n")% (i+1) % fz1 % (I1/3+1) );
-			    }
-			    LOG_ENERGY(BF( "MEISTER fixed nonbond %d stop\n")% (i+1) );
-			}
-			i++;
-		    }
-		}
-	    }
-	}
-    } else {
-	LOG_ENERGY( "FixedNonbond component is not enabled" );
+            if ( this->_DebugEnergy ) 
+            {
+              LOG_ENERGY(BF( "MEISTER fixed nonbond %d args cando\n")% (i+1) );
+              LOG_ENERGY(BF( "MEISTER fixed nonbond %d dA %5.3lf\n")% (i+1) % dA );
+              LOG_ENERGY(BF( "MEISTER fixed nonbond %d dC %5.3lf\n")% (i+1) % dC );
+              LOG_ENERGY(BF( "MEISTER fixed nonbond %d dQ1Q2 %5.3lf\n")% (i+1) % dQ1Q2 );
+              LOG_ENERGY(BF( "MEISTER fixed nonbond %d x1 %5.3lf %d\n")% (i+1) % x1 % (I1/3+1) );
+              LOG_ENERGY(BF( "MEISTER fixed nonbond %d y1 %5.3lf %d\n")% (i+1) % y1 % (I1/3+1) );
+              LOG_ENERGY(BF( "MEISTER fixed nonbond %d z1 %5.3lf %d\n")% (i+1) % z1 % (I1/3+1) );
+              LOG_ENERGY(BF( "MEISTER fixed nonbond %d xf %5.3lf %d\n")% (i+1) % xf % (ifixed) );
+              LOG_ENERGY(BF( "MEISTER fixed nonbond %d yf %5.3lf %d\n")% (i+1) % yf % (ifixed) );
+              LOG_ENERGY(BF( "MEISTER fixed nonbond %d zf %5.3lf %d\n")% (i+1) % zf % (ifixed) );
+              LOG_ENERGY(BF( "MEISTER fixed nonbond %d results\n")% (i+1) );
+              LOG_ENERGY(BF( "MEISTER fixed nonbond %d Efixed nonbond %lf\n")% (i+1) % (Efvdw+Efeel) );
+              LOG_ENERGY(BF( "MEISTER fixed nonbond %d efvdw %lf\n")% (i+1) % Efvdw);
+              LOG_ENERGY(BF( "MEISTER fixed nonbond %d efeel %lf\n")% (i+1) % Efeel);
+              if ( calcForce ) {
+                LOG_ENERGY(BF( "MEISTER fixed nonbond %d fx1 %lf %d\n")% (i+1) % fx1 % (I1/3+1) );
+                LOG_ENERGY(BF( "MEISTER fixed nonbond %d fy1 %lf %d\n")% (i+1) % fy1 % (I1/3+1) );
+                LOG_ENERGY(BF( "MEISTER fixed nonbond %d fz1 %lf %d\n")% (i+1) % fz1 % (I1/3+1) );
+              }
+              LOG_ENERGY(BF( "MEISTER fixed nonbond %d stop\n")% (i+1) );
+            }
+            i++;
+          }
+        }
+      }
     }
-    LOG_ENERGY(BF( "          Vdw energy = %lf\n")% (double)this->_EnergyVdw);
-    LOG_ENERGY(BF( "Electrostatic energy = %lf\n")% (double)this->_EnergyElectrostatic);
-    LOG_ENERGY(BF("%s }\n")% this->className() );
+  } else {
+    LOG_ENERGY( "FixedNonbond component is not enabled" );
+  }
+  LOG_ENERGY(BF( "          Vdw energy = %lf\n")% (double)this->_EnergyVdw);
+  LOG_ENERGY(BF( "Electrostatic energy = %lf\n")% (double)this->_EnergyElectrostatic);
+  LOG_ENERGY(BF("%s }\n")% this->className() );
+  return this->_EnergyVdw+this->_EnergyElectrostatic;
 }
 
 
