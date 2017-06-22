@@ -328,13 +328,13 @@ CL_DEFMETHOD     string	Minimizer_O::statusAsString()
  *
  *	Calculate the position from the nvOrigin+nvDirection*x
  */
-    void	Minimizer_O::getPosition( NVector_sp 	nvResult,
-					  NVector_sp	nvOrigin,
-					  NVector_sp	nvDirection,
-					  double		x )
-    {
-	nvResult->XPlusYTimesScalar(nvOrigin,nvDirection,x);
-    }
+void	Minimizer_O::getPosition( NVector_sp 	nvResult,
+                                  NVector_sp	nvOrigin,
+                                  NVector_sp	nvDirection,
+                                  double		x )
+{
+  XPlusYTimesScalar(nvResult,nvOrigin,nvDirection,x);
+}
 
 
 /*
@@ -404,7 +404,7 @@ CL_DEFMETHOD     string	Minimizer_O::statusAsString()
 			  this->nvP1DSearchDirection, x );
 	*fx = this->_ScoringFunction->evaluateEnergyForce( this->nvP1DSearchTemp1,
 							  true, this->nvP1DSearchTemp2 );
-	*dfx = -(this->nvP1DSearchTemp2)->dotProduct(this->nvP1DSearchDirection);
+	*dfx = -dotProduct(this->nvP1DSearchTemp2,this->nvP1DSearchDirection);
 	return *fx;
     }
 
@@ -652,12 +652,12 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
 					       double fa, double fb, double fc )
     {
 	double lenForce, lenDir, angle, cosAngle;
-	lenForce = nvForce->magnitude();
-	lenDir = nvDir->magnitude();
+	lenForce = magnitude(nvForce);
+	lenDir = magnitude(nvDir);
 	if ( lenForce == 0.0 || lenDir == 0.0 ) {
 	    angle = 200.0;
 	} else {
-	    cosAngle = nvDir->dotProduct(nvForce)/(lenForce*lenDir);
+          cosAngle = dotProduct(nvDir,nvForce)/(lenForce*lenDir);
 	    if ( cosAngle > 1.0 ) cosAngle = 1.0;
 	    if ( cosAngle < -1.0 ) cosAngle = -1.0;
 	    angle = acos(cosAngle);
@@ -672,8 +672,8 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
 	report->_MinBracketSteps = this->_MinBracketSteps;
 	report->_EnergyTermsEnabled = this->_ScoringFunction->energyTermsEnabled();
 	report->_TotalEnergy = this->d1DTotalEnergy(0.0);
-	report->_DirectionMagnitude = nvDir->magnitude();
-	report->_ForceMagnitude = nvForce->magnitude();
+	report->_DirectionMagnitude = magnitude(nvDir);
+	report->_ForceMagnitude = magnitude(nvForce);
 	report->_MinimizerStatus = this->statusAsString();
 	double dxa,dxc;
 	if ( xa < xc ) {
@@ -766,7 +766,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
     void	Minimizer_O::stepReport( StepReport_sp report, double energy, NVector_sp force )
     {_OF();
     ASSERT(report->_Iteration == this->_Iteration);
-    report->_ForceMagnitude = force->magnitude();
+    report->_ForceMagnitude = magnitude(force);
     report->_TotalEnergy = energy;
     report->_IterationMessages = this->_IterationMessages.str();
     }
@@ -800,7 +800,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
     //
 
     this->define1DSearch(nvOrigin,nvDirection,nvTemp1,nvTemp2);
-    double directionMag = nvDirection->magnitude();
+    double directionMag = magnitude(nvDirection);
     if ( directionMag < VERYSMALLSQUARED ) {
 	xb = this->_InitialLineSearchStep;
     } else {
@@ -965,7 +965,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 	LOG(BF("step") );
 //    r->inPlaceTimesScalar(-1.0);
 	//  no preconditioning
-	s->copyIntoMe(force);
+	copyVector(s,force);
 	LOG(BF("Done initialization") );
 #if 0 //[
 	// TODO calculate preconditioner here
@@ -995,8 +995,8 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 	    SIMPLE_ERROR(BF("Unsupported preconditioner"));
 	}
 #endif //]
-	dir->copyIntoMe(s);
-	deltaNew = force->dotProduct(dir);
+	copyVector(dir,s);
+	deltaNew = dotProduct(force,dir);
 	delta0 = deltaNew;
 	eSquaredDelta0 = forceTolerance*delta0;
 	LOG(BF("eSquaredDelta0 = %lf") % (eSquaredDelta0 ) );
@@ -1014,8 +1014,8 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 		//
 		// Absolute gradient test
 		//
-		forceMag = force->magnitude();
-		forceRmsMag = force->rmsMagnitude();
+              forceMag = magnitude(force);
+              forceRmsMag = rmsMagnitude(force);
 		this->_RMSForce = forceRmsMag;
 		if ( forceRmsMag < forceTolerance ) {
 		    if ( this->_PrintIntermediateResults ) {
@@ -1068,14 +1068,14 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 		    // the force (steepest descent dir)
 		    // is less than _xxxDescentTest then copy the force into the search dir
 		    //
-		    dirMag = dir->magnitude();
+		    dirMag = magnitude(dir);
 		    steepestDescent = false;
 		    LOG(BF("Starting descent test") );
 		    if ( forceMag != 0.0 && dirMag != 0.0 ) {
-			cosAngle = force->dotProduct(dir)/(forceMag*dirMag);
+                      cosAngle = dotProduct(force,dir)/(forceMag*dirMag);
 		    } else {
 			LOG(BF("something was zero length Using force") );
-			dir->copyIntoMe(force);
+			copyVector(dir,force);
 			steepestDescent = true;
 		    }
 
@@ -1095,7 +1095,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 			throw(fail);
 		    }
 
-		    x->inPlaceAddTimesScalar( dir, step );
+		    inPlaceAddTimesScalar(x, dir, step );
 
 		    // r = -f'(x)   r == force!!!!
 		    fp = dTotalEnergyForce( x, force );
@@ -1110,7 +1110,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 
 
 		    // Don't use preconditioning
-		    s->copyIntoMe(force);
+		    copyVector(s,force);
 
 #if 0 //[
 		    switch ( preconditioner ) {
@@ -1140,7 +1140,7 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 			break;
 		    }
 #endif //]
-		    dir->copyIntoMe(s);
+		    copyVector(dir,s);
 		    if ( this->_DebugOn )
 		    {
 			ASSERTNOTNULL(this->_Log);
@@ -1243,7 +1243,7 @@ void	Minimizer_O::_conjugateGradient(
 //    r->inPlaceTimesScalar(-1.0);
     // TODO calculate preconditioner here
     // s = M^(-1)r rather than just copying it from r
-  s->copyIntoMe(force);
+  copyVector(s,force);
 #if 0 //[
   switch ( preconditioner ) {
   case noPreconditioner:
@@ -1269,8 +1269,8 @@ void	Minimizer_O::_conjugateGradient(
       SIMPLE_ERROR(BF("Unknown preconditioner option"));
   }
 #endif //]
-  d->copyIntoMe(s);
-  deltaNew = force->dotProduct(d);
+  copyVector(d,s);
+  deltaNew = dotProduct(force,d);
   delta0 = deltaNew;
   eSquaredDelta0 = forceTolerance*delta0;
   LOG(BF("eSquaredDelta0 = %lf") % (eSquaredDelta0 ) );
@@ -1288,8 +1288,8 @@ void	Minimizer_O::_conjugateGradient(
 	    //
 	    // Absolute gradient test
 	    //
-      forceMag = force->magnitude();
-      forceRmsMag = force->rmsMagnitude();
+      forceMag = magnitude(force);
+      forceRmsMag = rmsMagnitude(force);
       this->_RMSForce = forceRmsMag;
       if ( forceRmsMag < forceTolerance ) {
         if ( this->_PrintIntermediateResults ) {
@@ -1354,17 +1354,17 @@ void	Minimizer_O::_conjugateGradient(
 		// the force (steepest descent dir)
 		// is less than _xxxDescentTest then copy the force into the search dir
 		//
-        dirMag = d->magnitude();
+        dirMag = magnitude(d);
         steepestDescent = false;
         LOG(BF("Starting descent test") );
         cosAngle = 0.0;
         if ( forceMag != 0.0 && dirMag != 0.0 ) {
           LOG(BF("forceMag = %lf") % forceMag  );
           LOG(BF("dirMag = %lf") % dirMag  );
-          cosAngle = force->dotProduct(d)/(forceMag*dirMag);
+          cosAngle = dotProduct(force,d)/(forceMag*dirMag);
         } else {
           LOG(BF("some magnitude was zero Using force") );
-          d->copyIntoMe(force);
+          copyVector(d,force);
           steepestDescent = true;
         }
 
@@ -1380,7 +1380,7 @@ void	Minimizer_O::_conjugateGradient(
 
 		// x = x + (step)d
 		// r = -f'(x)   r == force!!!!
-        x->inPlaceAddTimesScalar( d, step );
+        inPlaceAddTimesScalar(x, d, step );
         fp = dTotalEnergyForce( x, force );
 
 
@@ -1394,10 +1394,10 @@ void	Minimizer_O::_conjugateGradient(
         this->validateForce(x,force);
 #endif
         deltaOld = deltaNew;
-        deltaMid = force->dotProduct(s);
+        deltaMid = dotProduct(force,s);
 
 		// No preconditioning
-        s->copyIntoMe(force);
+        copyVector(s,force);
 
 #if 0 //[
 		// Calculate preconditioner M = f''(x)
@@ -1425,15 +1425,15 @@ void	Minimizer_O::_conjugateGradient(
             SIMPLE_ERROR(BF("Unknown preconditioner option"));
         }
 #endif //]
-        deltaNew = force->dotProduct(s);		// deltaNew = r.r
+        deltaNew = dotProduct(force,s);		// deltaNew = r.r
         beta = (deltaNew-deltaMid)/deltaOld;
         k = k + 1;
         if ( k == iRestartSteps || beta <= 0.0 ) {
-          d->copyIntoMe(s);
+          copyVector(d,s);
           k = 0;
           prevStep = 0.0;
         } else {
-          d->XPlusYTimesScalar(s,d,beta);
+          XPlusYTimesScalar(d,s,d,beta);
         }
         if ( this->_DebugOn )
         {
@@ -1535,7 +1535,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
   delta = 10.0e-10;
   forceDotpj = 0.0;	// The initial value of force.pj
   ITpcg = 40;
-  rj->copyIntoMe(force);
+  copyVector(rj,force);
   ASSERT(kk>0);
   crOverk = cr/((float)(kk));
   nk = MIN(crOverk,rmsForceMag);
@@ -1561,9 +1561,9 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     // 2c.
     // set dj = zj
     //
-  dj->copyIntoMe(zj);
+  copyVector(dj,zj);
 
-  rjDotzj = rj->dotProduct(zj);
+  rjDotzj = dotProduct(rj,zj);
   while ( 1 ) 
   { _BLOCK_TRACEF(BF("_truncatedNewtonInnerLoop j=%d") % j );
     // 3. Singularity test
@@ -1579,10 +1579,10 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     // MOVE rjDotzj calculation above this loop because
     // 	its calculated in step 6
     // rjDotzj = rj->dotProduct(zj);
-    djDotqj = dj->dotProduct(qj);
+    djDotqj = dotProduct(dj,qj);
     if ( fabs(rjDotzj) <= delta || fabs(djDotqj) <= delta ) {
       if ( j==1 ) {
-        pj->copyIntoMe(force);
+        copyVector(pj,force);
       }
       if ( this->_DebugOn ) {
         stringstream ss;
@@ -1607,12 +1607,12 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     //      I'm pretty sure that I need to invert the inequality test.
     //
     alphaj = rjDotzj/djDotqj;
-    pjNext->XPlusYTimesScalar(pj,dj,alphaj);
+    XPlusYTimesScalar(pjNext,pj,dj,alphaj);
     LOG(BF("pjNext angle with force=%lf(deg)") % pjNext->angleWithVector(force)/0.0174533 );
-    forceDotpjNext = force->dotProduct(pjNext);
+    forceDotpjNext = dotProduct(force,pjNext);
     if ( forceDotpjNext <= (forceDotpj + delta) ) {
       if ( j == 1 ) {
-        pj->copyIntoMe(force);
+        copyVector(pj,force);
       } else {
 	    // pk->copy(pj);  pk is pj
       }
@@ -1630,11 +1630,11 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     // 	exit inner loop with search direction pk = pjNext
     // }
     //
-    rj->inPlaceAddTimesScalar(qj,-alphaj);
-    rmsRjMag = rj->rmsMagnitude();
+    inPlaceAddTimesScalar(rj,qj,-alphaj);
+    rmsRjMag = rmsMagnitude(rj);
     if ( rmsRjMag < nkTimesRmsForceMag || (j+1)>ITpcg ) {
       LOG(BF("rmsRjMag(%lf) < nkTimesRmsForceMag(%lf)") % rmsRjMag % nkTimesRmsForceMag );
-      pj->copyIntoMe(pjNext);
+      copyVector(pj,pjNext);
       if ( this->_DebugOn ) {
         this->_Log->addMessage("_truncatedNewtonInnerLoop>>Truncation test was true\n" );
       }
@@ -1643,7 +1643,7 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     }
     if ( (j+1)>ITpcg ) {
       LOG(BF("j+1(%d)>ITpcg(%d)") % j+1 % ITpcg );
-      pj->copyIntoMe(pjNext);
+      copyVector(pj,pjNext);
       if ( this->_DebugOn ) {
         this->_Log->addMessage("_truncatedNewtonInnerLoop>>Step limit test was true\n" );
       }
@@ -1659,12 +1659,12 @@ void	Minimizer_O::_truncatedNewtonInnerLoop(
     // j = j + 1 goto step 3
     //
     backSubstituteLDLt(ldlt,zj,rj);
-    rjDotzjNext = rj->dotProduct(zj);
+    rjDotzjNext = dotProduct(rj,zj);
     betaj = rjDotzjNext/rjDotzj;
     rjDotzj = rjDotzjNext;
-    dj->XPlusYTimesScalar(zj,dj,betaj);
+    XPlusYTimesScalar(dj, zj,dj,betaj);
     j = j + 1;
-    pj->copyIntoMe(pjNext);
+    copyVector(pj,pjNext);
   }
  DONE:
   LOG(BF("Exiting inner loop with j = %d") % j );
@@ -1730,7 +1730,7 @@ void	Minimizer_O::_truncatedNewton(
     //
   LOG(BF("Evaluating initial energy and force") );
   energyXkNext = dTotalEnergyForce( xK, forceK );
-  rmsForceMag = forceK->rmsMagnitude();
+  rmsForceMag = rmsMagnitude(forceK);
 
     //
     // Setup the preconditioner and carry out UMC
@@ -1769,13 +1769,13 @@ void	Minimizer_O::_truncatedNewton(
 
       prevAlphaK = alphaK;
       if ( this->_PrintIntermediateResults ) {
-        dirMag = pK->magnitude();
-        forceMag = forceK->magnitude();
+        dirMag = magnitude(pK);
+        forceMag = magnitude(forceK);
         LOG(BF("Starting descent test") );
         if ( forceMag != 0.0 && dirMag != 0.0 ) {
           LOG(BF("forceMag = %lf") % forceMag  );
           LOG(BF("dirMag = %lf") % dirMag  );
-          cosAngle = forceK->dotProduct(pK)/(forceMag*dirMag);
+          cosAngle = dotProduct(forceK,pK)/(forceMag*dirMag);
         } else {
           cosAngle = 0.0;
         }
@@ -1788,7 +1788,7 @@ void	Minimizer_O::_truncatedNewton(
       energyXk = energyXkNext;
       this->lineSearch( &alphaK, &energyXkNext, xK, pK, forceK,
                         zj, qj, kk, stepReport );
-      xKNext->XPlusYTimesScalar(xK,pK,alphaK);
+      XPlusYTimesScalar(xKNext, xK,pK,alphaK);
 	    //
 	    // Evaluate the force at the new position
 	    //
@@ -1814,8 +1814,8 @@ void	Minimizer_O::_truncatedNewton(
         }
         break;
       }
-      delta = xKNext->rmsDistanceFrom(xK);
-      rmsMagXKNext = xKNext->rmsMagnitude();
+      delta = rmsDistanceFrom(xKNext,xK);
+      rmsMagXKNext = rmsMagnitude(xKNext);
       b1bTest=(delta<SQRT_EPSILONF*(1.0+rmsMagXKNext)/100.0);
       if ( b1bTest ) {
         if ( this->_PrintIntermediateResults ) {
@@ -1824,7 +1824,7 @@ void	Minimizer_O::_truncatedNewton(
         break;
       }
 
-      rmsForceMag = forceK->rmsMagnitude();
+      rmsForceMag = rmsMagnitude(forceK);
       if ( rmsForceMag < forceTolerance ) {
         if ( this->_PrintIntermediateResults ) {
           core::clasp_writeln_string((BF( "search complete according to absolute force test" )).str());
@@ -1858,7 +1858,7 @@ void	Minimizer_O::_truncatedNewton(
 	    //
       this->_ScoringFunction->setupHessianPreconditioner(xK,mprecon);
       unconventionalModifiedCholeskyFactorization(mprecon,ldlt,kSum);
-      xK->copyIntoMe(xKNext);
+      copyVector(xK,xKNext);
       kk++;
       this->_Iteration++;
       if ( this->_DebugOn )
@@ -1892,7 +1892,7 @@ void	Minimizer_O::_truncatedNewton(
     this->_ScoringFunction->writeCoordinatesAndForceToAtoms(xK,forceK);
     MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(fail);
   }
-  xK->copyIntoMe(xKNext);
+  copyVector(xK,xKNext);
   dTotalEnergyForce( xK, forceK );
   this->_ScoringFunction->writeCoordinatesAndForceToAtoms(xK,forceK);
   if ( this->_DebugOn )

@@ -160,6 +160,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/energyStretch.h>
 #include <cando/chem/rigidBodyEnergyFunction.h>
 #include <cando/chem/energyRigidBodyStaple.h>
+#include <cando/chem/energyRigidBodyNonbond.h>
 #include <cando/chem/entity.fwd.h>
 #include <cando/chem/entity.h>
 #include <cando/chem/entityNameSet.fwd.h>

@@ -62,7 +62,6 @@ namespace       chem
 //SMART(QDomNode);
   SMART(Atom);
   SMART(Residue);
-  SMART(NVector);
   SMART(ForceField);
   SMART(MinimizerLog);
   SMART(ScoringFunction);

@@ -251,4 +251,7 @@ public:
 };
 
 
+void quaternion_to_matrix(Matrix& matrix, double w, double x, double y, double z, double tx, double ty, double tz );
+void rotation_matrix_to_quaternion(double& w, double& x, double& y, double& z, const Matrix& m);
+
 #endif

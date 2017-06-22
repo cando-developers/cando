@@ -45,6 +45,8 @@ namespace geom {
   public:
         //! Create a 4x4 matrix uninitialized (identity=false) or identity if true
     static OMatrix_sp make(bool identity);
+
+    
   public:
     string __repr__() const;
     string __str__() ;
@@ -60,6 +62,19 @@ namespace geom {
     void setFromStringFast(const string& s);
     string asString();
     string asStringFast();
+
+    CL_DEFMETHOD void set_from_quaternion(double qw, double qx, double qy, double qz, double tx, double ty, double tz) {
+      quaternion_to_matrix(this->_Value,qw,qx,qy,qz,tx,ty,tz);
+    }
+
+    CL_DEFMETHOD core::T_mv rotation_to_quaternion() const {
+      double qw, qx, qy, qz;
+      rotation_matrix_to_quaternion(qw,qx,qy,qz,this->_Value);
+      return Values(core::DoubleFloat_O::create(qw),
+                    core::DoubleFloat_O::create(qx),
+                    core::DoubleFloat_O::create(qy),
+                    core::DoubleFloat_O::create(qz));
+    }
 
     void rotationX(double radians);
     void rotationY(double radians);
@@ -92,9 +107,7 @@ CL_DEFMETHOD     bool is3x3Orthogonal(double tol) const { return this->_Value.is
 
 
 
-
 }; // namespace geom
-TRANSLATE(geom::OMatrix_O);
 
 
 

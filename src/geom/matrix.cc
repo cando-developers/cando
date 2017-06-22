@@ -1284,3 +1284,36 @@ Matrix& ArrayOfMatrices::get(uint i)
     HARD_ASSERT(i<this->_Matrices.size());
     return this->_Matrices[i];
 }
+
+void quaternion_to_matrix(Matrix& matrix, double w, double x, double y, double z, double tx, double ty, double tz ) {
+  double xsq = x*x;
+  double ysq = y*y;
+  double zsq = z*z;
+  matrix.atRowColPut(0,0,1.0-2.0*(ysq+zsq));
+  matrix.atRowColPut(0,1,2.0*(x*y-w*z));
+  matrix.atRowColPut(0,2,2.0*(x*z+w*y));
+  matrix.atRowColPut(0,3,tx);
+  matrix.atRowColPut(1,0,2.0*(x*y+w*z));
+  matrix.atRowColPut(1,1,1.0-2.0*(xsq+ysq));
+  matrix.atRowColPut(1,2,2.0*(y*z+w*x));
+  matrix.atRowColPut(1,3,ty);
+  matrix.atRowColPut(2,0,2.0*(x*z-w*y));
+  matrix.atRowColPut(2,1,2.0*(y*z-w*x));
+  matrix.atRowColPut(2,2,1.0-2.0*(xsq+ysq));
+  matrix.atRowColPut(2,3,tz);
+  matrix.atRowColPut(3,0,0.0);
+  matrix.atRowColPut(3,1,0.0);
+  matrix.atRowColPut(3,2,0.0);
+  matrix.atRowColPut(3,3,1.0);
+}
+                      
+
+void rotation_matrix_to_quaternion(double& w, double& x, double& y, double& z, const Matrix& m)
+{
+  w = sqrt(1.0+m.atRowCol(0,0)+m.atRowCol(1,1)+m.atRowCol(2,2))/2.0;
+  ASSERT(w!=0.0);
+  double wo4 = 1.0/(4.0*w);
+  x = (m.atRowCol(2,1)-m.atRowCol(1,2))*wo4;
+  y = (m.atRowCol(0,2)-m.atRowCol(2,0))*wo4;
+  z = (m.atRowCol(1,0)-m.atRowCol(0,1))*wo4;
+};

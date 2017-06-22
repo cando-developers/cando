@@ -70,7 +70,6 @@ namespace       chem
   SMART(FFNonbondCrossTermTable);
   SMART(QDomNode);
   SMART(Atom);
-  SMART(NVector);
   SMART(Matter);
   SMART(ForceField);
   SMART(AtomTable);

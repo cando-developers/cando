@@ -47,6 +47,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <set>
 #include <clasp/core/common.h>
 #include <cando/geom/vector3.h>
+#include <cando/chem/scoringFunction.h>
 #include <cando/chem/energyRigidBodyComponent.h>
 
 
@@ -68,7 +69,6 @@ namespace       chem
   SMART(FFNonbondCrossTermTable);
   SMART(QDomNode);
   SMART(Atom);
-  SMART(NVector);
   SMART(Matter);
   SMART(ForceField);
   SMART(AtomTable);
@@ -145,7 +145,7 @@ namespace chem {
     double	evaluateEnergyForce( NVector_sp pos, bool calcForce, NVector_sp force );
 
     void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments);
-
+    void normalizePosition(NVector_sp pos);
 
   RigidBodyEnergyFunction_O(size_t number_of_rigid_bodies)
     : _RigidBodies(number_of_rigid_bodies),

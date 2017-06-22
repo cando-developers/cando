@@ -41,72 +41,22 @@ This is an open source license for the CANDO software from Temple University, bu
 #define NVECTOR_H
 
 #include <clasp/core/common.h>
+#include <cando/chem/nVector.fwd.h>
 //#include "core/archiveNode.h"
-
-
-
 #include <cando/chem/chemPackage.h>
 
-
 namespace chem {
-
-  SMART(NVector );
-  class NVector_O : public core::CxxObject_O
-  {
-    LISP_CLASS(chem,ChemPkg,NVector_O,"NVector",core::CxxObject_O);
-
-  public:
-    void initialize();
-  public:
-    static NVector_sp create(uint sz);
-  public:
-    uint     	_Size;
-    vector<double>	_Values;
-    NVector_O( const NVector_O& orig );
-    void	setup(uint sz);
-    void	describe();
-    string	description() const;
-    void	debugDump(const string& name );
-
-    void	copyIntoMe(NVector_sp orig);
-    core::T_sp	deepCopy() const;
-
-    void	zero();		// NVectorZero();
-    void	fill(double d);
-    void	dest_x__PLUS__y( NVector_sp nvX, NVector_sp nvY);		// NVectorAdd(a,x,y)
-		//! this = x + d*sigma
-    void	XPlusYTimesScalar( NVector_sp nvX, NVector_sp nvD, double sigma);
-
-    void	addScalar( NVector_sp nvX, double x);		// NVectorAdd(a,x,y)
-		//!  this += nvY*x;
-    void	inPlaceAddTimesScalar( NVector_sp nvY, double x);	// NVectorAdd(a,x,y)
-    void	sub( NVector_sp nvX, NVector_sp nvY );	// NVectorSub(a,x,y)
-    void	timesScalar( NVector_sp nvX, double dS);
-    double	dotProduct( NVector_sp nvY);
-    double	magnitude();
-    double	rmsDistanceFrom(NVector_sp v);
-    double	rmsMagnitude();
-    double	squared();
-
-		//! Return the angle wrt other
-    double	angleWithVector(NVector_sp other);
-    void		writeMathematica(const string& name);
-//	adapt::QDomNode_sp	termDifferencesAsXml(const string& thisName, NVector_sp other, const string& otherName );
-    double	maxAbsValue();
-    double	minAbsValue();
-    double	maxValue();
-    double	minValue();
-    uint	size()	{ return this->_Size; };
-    double	element(uint i)	{return this->_Values[i];};
-    double	getElement(uint i)	{_G(); ASSERT_lt(i,this->_Values.size());return this->_Values[i];};
-    void	setElement(uint i, double d) { this->_Values[i]=d;};
-    void	addToElement(uint i, double d) { this->_Values[i]+=d;};
-//	void	setValues(int s,double*d) {this->iSize=s;this->dPValues=d;};
-
-    void	inPlaceTimesScalar(double s);
-
-//	void	archive(core::ArchiveP node);
-    DEFAULT_CTOR_DTOR(NVector_O);
-  };
+  double	dotProduct( NVector_sp x, NVector_sp y );
+  double	squared(NVector_sp me);
+  double magnitude(NVector_sp me);
+  double	rmsMagnitude(NVector_sp me);
+  double	angleWithVector(NVector_sp me, NVector_sp other);
+  void	XPlusYTimesScalar( NVector_sp nvResult, NVector_sp nvX, NVector_sp nvD, double sigma);
+  void	copyVector(NVector_sp dest, NVector_sp orig);
+  void	inPlaceAddTimesScalar( NVector_sp nvResult, NVector_sp nvY, double x);	// NVectorAdd(a,x,y)
+  double	rmsDistanceFrom(NVector_sp u, NVector_sp v);
+  
+  
 };
+
 #endif          /* ifndef NVECTOR_H */

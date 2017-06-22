@@ -969,9 +969,9 @@ ForceMatchReport_sp EnergyFunction_O::checkIfAnalyticalForceMatchesNumericalForc
 
   numForce = NVector_O::create(pos->size());
   this->evaluateNumericalForce(pos,numForce,DELTA);
-  dot = numForce->dotProduct(analyticalForce);
-  numericalMag = numForce->magnitude();
-  analyticalMag = analyticalForce->magnitude();
+  dot = dotProduct(numForce,analyticalForce);
+  numericalMag = magnitude(numForce);
+  analyticalMag = magnitude(analyticalForce);
   tempForce = NVector_O::create(pos->size());
     	// Evaluate the force at pos again
   this->evaluateEnergyForce(pos,true,tempForce);

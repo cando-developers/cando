@@ -25,8 +25,9 @@ This is an open source license for the CANDO software from Temple University, bu
 /* -^- */
 #ifndef nVector_fwd_H
 #define nVector_fwd_H
-namespace  chem
-{
-FORWARD(NVector);
-}
+namespace chem {
+  typedef core::SimpleVectorDouble_O NVector_O;
+  typedef core::SimpleVectorDouble_sp NVector_sp;
+};
+
 #endif

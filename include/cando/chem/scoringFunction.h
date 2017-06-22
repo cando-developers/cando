@@ -48,6 +48,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/atom.h>
+#include <cando/chem/nVector.h>
 
 
 
@@ -76,7 +77,6 @@ namespace       chem
   SMART(FFParameter);
   SMART(AbstractLargeSquareMatrix);
   SMART(Atom);
-  SMART(NVector);
   SMART(Matter);
 //SMART(DisplayList);
   SMART(Iterator);

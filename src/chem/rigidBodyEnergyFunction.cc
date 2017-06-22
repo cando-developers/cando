@@ -119,6 +119,7 @@ void RigidBodyEnergyFunction_O::writeCoordinatesAndForceToAtoms(NVector_sp pos, 
 
 
 double	RigidBodyEnergyFunction_O::evaluateRaw( NVector_sp pos, NVector_sp force ) {
+
   IMPLEMENT_ME();
 }
 
@@ -218,6 +219,23 @@ void	RigidBodyEnergyFunction_O::dealWithProblem(core::Symbol_sp error_symbol, co
 };
 
 
+void RigidBodyEnergyFunction_O::normalizePosition(NVector_sp pos)
+{
+  // Normalize the quaternions
+  double* dpos = &(*pos)[0];
+  for ( size_t i(0), iEnd(pos->length()); i<iEnd; i += 7 ) {
+    double qlen = sqrt(dpos[i+0]*dpos[i+0] +
+                       dpos[i+1]*dpos[i+1] +
+                       dpos[i+2]*dpos[i+2] +
+                       dpos[i+3]*dpos[i+3]);
+    ASSERT(qlen!=0.0);
+    double qinvlen = 1.0/qlen;
+    dpos[i+0] *= qinvlen;
+    dpos[i+1] *= qinvlen;
+    dpos[i+2] *= qinvlen;
+    dpos[i+3] *= qinvlen;
+  }
+}
 
 
 

@@ -30,6 +30,139 @@ This is an open source license for the CANDO software from Temple University, bu
 // (C) 2004 Christian E. Schafmeister
 //
 
+#include <clasp/core/foundation.h>
+#include <clasp/core/array.h>
+#include <cando/chem/nVector.h>
+
+namespace chem {
+/*
+ *      dotProduct
+ *
+ *	Author:	Christian Schafmeister (1991)
+ *
+ *      Return the DOT product of two vectors.
+ *      return:  (this) . x
+ */
+double	dotProduct( NVector_sp x, NVector_sp y )
+{
+  double          dDot;
+  ASSERT(x->length()==y->length());
+  dDot = 0.0;
+  double* px = &(*x)[0];
+  double* py = &(*y)[0];
+  for ( size_t i(0), iEnd(x->length()); i<iEnd; ++i ) dDot += px[i]*py[i];
+  return dDot;
+}
+
+
+double	squared(NVector_sp x)
+{
+  double          dDot;
+  dDot = 0.0;
+  double* dp = &(*x)[0];
+  for ( size_t i(0), iEnd(x->length()); i<iEnd; ++i ) {
+    dDot += dp[i]*dp[i];
+  }
+  return(dDot);
+}
+
+double magnitude(NVector_sp me)
+{
+  double  dDot;
+  dDot = squared(me);
+  return(sqrt(dDot));
+}
+
+
+double	rmsMagnitude(NVector_sp me)
+{
+  ASSERT(me->length()>0);
+  double  dDot;
+  dDot = squared(me);
+  dDot /= (double)me->length();
+  return(sqrt(dDot));
+}
+
+
+double	angleWithVector(NVector_sp me, NVector_sp other)
+{
+#define	VERY_SMALL 1.0e-6
+  double	lenThis, lenOther, dot;
+  lenThis = magnitude(me);
+  lenOther = magnitude(other);
+  dot = dotProduct(me->asSmartPtr(),other);
+  if ( fabs(lenThis) > VERY_SMALL && fabs(lenOther)>VERY_SMALL) {
+    dot /= (lenThis*lenOther);
+    if ( dot > 1.0 ) dot = 1.0;
+    if ( dot < -1.0 ) dot = -1.0;
+    return acos(dot);
+  }
+  return 0.0;
+}
+
+void XPlusYTimesScalar( NVector_sp o, NVector_sp x, NVector_sp y, double s )
+{
+ LOG(BF("this->_Values.size() = %d") % o->length() );
+ LOG(BF("x->size() = %d") % x->length() );
+ LOG(BF("y->size() = %d") % y->length() );
+ ASSERTP( o->length() == x->length(),"NVector_O::addTimesScalar>>mismatched length");
+ ASSERT( o->length() == y->length());
+ double* po = &(*o)[0];
+ double* px = &(*x)[0];
+ double* py = &(*y)[0];
+ for ( int i(0),iEnd(o->length()); i<iEnd; ++i ) {
+   po[i] = px[i]+py[i]*s;
+ }
+}
+
+/*
+ *      copyVector
+ *
+ *	Author:	Christian Schafmeister (1991)
+ *
+ *      Copy the contents of nvVector into another.
+ */
+void	copyVector(NVector_sp dest, NVector_sp orig)
+{
+  ASSERTP(dest->length()==orig->length(),"NVector_O::copy>>mismatched length");
+  double* ddest = &(*dest)[0];
+  double* dorig = &(*orig)[0];
+  for ( size_t i(0),iEnd(orig->length()); i<iEnd; ++i ) {
+    ddest[i] = dorig[i];
+  }
+}
+
+void inPlaceAddTimesScalar( NVector_sp result, NVector_sp dir, double s )
+{_OF();
+  ASSERT( result->length() == dir->length());
+  double* presult = &(*result)[0];
+  double* pdir = &(*dir)[0];
+  for ( size_t i(0), iEnd(result->length()); i<iEnd; ++i ) {
+    presult[i] += pdir[i]*s;
+  }
+}
+
+
+double	rmsDistanceFrom(NVector_sp u, NVector_sp v)
+{_OF();
+  ASSERT(u->length() == v->length());
+  double	e, sum;
+  sum = 0.0;
+  double* du = &(*u)[0];
+  double* dv = &(*v)[0];
+  for ( size_t i(0), iEnd(u->length()); i<iEnd; ++i ) {
+    e = du[i]-dv[i];
+    sum += e*e;
+  }
+  sum /= (float)(u->length());
+  return sqrt(sum);
+}
+
+
+};
+
+
+#if 0
 
 /*
  *      File:   nVector.h
@@ -37,7 +170,6 @@ This is an open source license for the CANDO software from Temple University, bu
  *      Description:
  *              Maintain N dimensional vectors.
  */
-
 #include <iostream>
 #include <math.h>
 #include <cando/chem/nVector.h>
@@ -46,21 +178,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 namespace chem {
-
-NVector_sp NVector_O::create(uint sz)
-{
-    GC_ALLOCATE(NVector_O, nv );
-    nv->setup(sz);
-    return nv;
-}
-
-CL_LISPIFY_NAME(make-nvector);
-CL_DEFUN NVector_sp make_nvector(uint sz)
-{
-  return NVector_O::create(sz);
-}
-
-
 
 
 /*
@@ -255,19 +372,6 @@ vector<double>::iterator	resi, xi,yi;
 /*!
  *	this = x + y*s
  */
-void	NVector_O::XPlusYTimesScalar( NVector_sp x, NVector_sp y, double s )
-{
-vector<double>::iterator	resi, xi,yi;
-    LOG(BF("this->_Values.size() = %d") % this->_Values.size() );
-    LOG(BF("x->size() = %d") % x->size() );
-    LOG(BF("y->size() = %d") % y->size() );
-    ASSERTP( this->_Values.size() == x->size(),"NVector_O::addTimesScalar>>mismatched size");
-    ASSERT( this->_Values.size() == y->size());
-    for ( resi = this->_Values.begin(), xi=x->_Values.begin(), yi=y->_Values.begin();
-	    resi!=this->_Values.end(); resi++, xi++, yi++ ) {
-	*resi = *xi+(*yi)*s;
-    }
-}
 
 /*
  *      addScalar
@@ -289,15 +393,6 @@ vector<double>::iterator	resi, xi;
 }
 
 
-void	NVector_O::inPlaceAddTimesScalar( NVector_sp dir, double s )
-{_OF();
-vector<double>::iterator	resi, diri;
-    ASSERT( this->_Values.size() == dir->size());
-    for ( resi = this->_Values.begin(), diri=dir->_Values.begin();
-	    resi!=this->_Values.end(); resi++, diri++ ) {
-	*resi += (*diri)*s;
-    }
-}
 
 
 
@@ -342,169 +437,63 @@ vector<double>::iterator	resi, xi;
 
 
 
-/*
- *      dotProduct
- *
- *	Author:	Christian Schafmeister (1991)
- *
- *      Return the DOT product of two vectors.
- *      return:  (this) . x
- */
-double	NVector_O::dotProduct( NVector_sp x )
-{
-double          dDot;
-vector<double>::iterator	resi,xi;
-    dDot = 0.0;
-    for ( resi=this->_Values.begin(),xi=x->_Values.begin(); resi!=this->_Values.end(); resi++,xi++ ) {
-	dDot += (*resi)*(*xi);
-    }
-    return(dDot);
-}
 
-
-
-double	NVector_O::squared()
-{
-double          dDot;
-vector<double>::iterator	resi;
+  double	NVector_O::squared()
+  {
+    double          dDot;
+    vector<double>::iterator	resi;
     dDot = 0.0;
     for ( resi=this->_Values.begin(); resi!=this->_Values.end(); resi++ ) {
-	dDot += (*resi)*(*resi);
+      dDot += (*resi)*(*resi);
     }
     return(dDot);
-}
+  }
 
 
 
-void	NVector_O::inPlaceTimesScalar( double s)
-{
-vector<double>::iterator	resi;
+  void	NVector_O::inPlaceTimesScalar( double s)
+  {
+    vector<double>::iterator	resi;
     for ( resi=this->_Values.begin(); resi!=this->_Values.end(); resi++ ) {
-	*resi = (*resi)*s;
+      *resi = (*resi)*s;
     }
-}
+  }
 
 #ifdef XML_ARCHIVE
-void	NVector_O::archive(core::ArchiveP node)
-{
+  void	NVector_O::archive(core::ArchiveP node)
+  {
     node->archiveVectorDouble( "vec", this->_Values );
     LOG(BF("size of this->_Values=%d") % this->_Values.size()  );
     if ( node->loading() )
     {
-       this->_Size = this->_Values.size();
+      this->_Size = this->_Values.size();
     }
-}
+  }
 #endif
 
 
-
-
-/*
- *      magnitude
- *
- *	Author:	Christian Schafmeister (1991)
- *
- *      Return the length of the vector.
- */
-double	NVector_O::magnitude()
-{
-double  dDot;
-
-    dDot = this->squared();
-    return(sqrt(dDot));
-}
-
-
-double	NVector_O::rmsMagnitude()
-{
-double  dDot;
-
-    dDot = this->squared();
-    dDot /= (double)this->size();
-    return(sqrt(dDot));
-}
-
-
-#if 0
-/*
- * termDifferencesAsXml
- *
- * List the term-by-term differences and return as an XML object
- */
-adapt::QDomNode_sp	NVector_O::termDifferencesAsXml(const string& thisName, NVector_sp n, const string& otherName)
-{
-    adapt::QDomNode_sp xml = adapt::QDomNode_O::create("Differences");
-    adapt::QDomNode_sp part;
-    uint		i;
-    double	avg;
-    vector<double>::iterator	resi, ni;
-    resi = this->_Values.begin();
-    ni = n->_Values.begin();
-    for ( i=0; i<this->_Size; i++, resi++, ni++ ) {
-	avg = (*resi+*ni)/2.0;
-	if ( avg < 0.0000001 ) continue;
-	if ( fabs(*resi-*ni)/avg > 0.1 ) {
-	    part = adapt::QDomNode_O::create("V");
-	    part->addAttributeInt("i",i);
-	    part->addAttributeDoubleScientific(thisName,*resi);
-	    part->addAttributeDoubleScientific(otherName,*ni);
-	    xml->addChild(part);
-	}
-    }
-    return xml;
-}
-#endif
-
-void	NVector_O::writeMathematica(const string& fileName)
-{
+  void	NVector_O::writeMathematica(const string& fileName)
+  {
     std::ofstream	fout;
-uint		y;
+    uint		y;
     fout.open(fileName.c_str());
     fout << "{" << std::endl;
     fout << std::setiosflags(std::ios::fixed)
          << std::setw(16)
          << std::setprecision(8);
     for ( y = 0; y<this->_Size; y++ ) {
-	if ( y!= 0 ) {
-	    fout << "," << std::endl;
-	}
-	fout << this->element(y);
+      if ( y!= 0 ) {
+        fout << "," << std::endl;
+      }
+      fout << this->element(y);
     }
     fout << "}" << std::endl;
     fout.close();
-}
+  }
 
 
-double	NVector_O::angleWithVector(NVector_sp other)
-{
-#define	VERY_SMALL 1.0e-6
-double	lenThis, lenOther, dot;
-    lenThis = this->magnitude();
-    lenOther = other->magnitude();
-    dot = this->dotProduct(other);
-    if ( fabs(lenThis) > VERY_SMALL && fabs(lenOther)>VERY_SMALL) {
-	dot /= (lenThis*lenOther);
-	if ( dot > 1.0 ) dot = 1.0;
-	if ( dot < -1.0 ) dot = -1.0;
-	return acos(dot);
-    }
-    return 0.0;
-}
 
-
-double	NVector_O::rmsDistanceFrom(NVector_sp v)
-{_OF();
-uint	i;
-double	e, sum;
-    ASSERT(v->size() == this->size() );
-    sum = 0.0;
-    for ( i=0; i<this->size(); i++ ) {
-	e = this->_Values[i]-v->_Values[i];
-	sum += e*e;
-    }
-    sum /= (float)(this->size());
-    return sqrt(sum);
-}
 
 
 };
+#endif
