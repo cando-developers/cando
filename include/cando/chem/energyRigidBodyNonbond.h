@@ -102,7 +102,8 @@ class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
   void zeroEnergy();
 
   void resizeNonbondAtomInfoTable(size_t index) { this->_AtomInfoTable.resize(index); };
-//  void energyRigidBodyNonbondSetTerm(gc::Fixnum index, Atom_sp atom, double radius, 
+//  CL_DEFMETHOD void energyRigidBodyNonbondSetTerm(gc::Fixnum index, Atom_sp atom, double radius, double epsilon, double charge, const Vector3& position);
+  
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m );
     

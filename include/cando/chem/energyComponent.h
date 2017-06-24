@@ -347,7 +347,7 @@ CL_LISPIFY_NAME("getEnergy");
 CL_DEFMETHOD     virtual double getEnergy() { return this->_TotalEnergy; };
 
     virtual void zeroEnergy();
-virtual void dumpTerms() {_OF();SUBCLASS_MUST_IMPLEMENT();};
+CL_DEFMETHOD virtual void dumpTerms() {_OF();SUBCLASS_MUST_IMPLEMENT();};
 
 virtual	double evaluateAll( NVector_sp 	pos,
                             bool 		calcForce,

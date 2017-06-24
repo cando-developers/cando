@@ -58,12 +58,14 @@ public:
 	string	className()	{ return "EnergyRigidBodyStaple"; };
 public:
 	REAL            ks;
+        REAL            r0;
         INT             rigidBodyA;
         Vector3         pointA;
         INT             rigidBodyB;
         Vector3         pointB;
- EnergyRigidBodyStaple(double k, size_t ca, const Vector3& pa, size_t cb, const Vector3& pb) :
+ EnergyRigidBodyStaple(double k, double r, size_t ca, const Vector3& pa, size_t cb, const Vector3& pb) :
         ks(k),
+          r0(r),
           rigidBodyA(ca),
           pointA(pa),
           rigidBodyB(cb),
@@ -96,7 +98,7 @@ class EnergyRigidBodyStaple_O : public EnergyRigidBodyComponent_O
  public:
   CL_DEFMETHOD virtual size_t numberOfTerms() { return this->_Terms.size();};
 
-  CL_DEFMETHOD void energy_rigid_body_staple_add_term(double ks, size_t cylk, const Vector3& pointk, size_t cyll, const Vector3& pointl);
+  CL_DEFMETHOD void energy_rigid_body_staple_add_term(double ks, double r0, size_t cylk, const Vector3& pointk, size_t cyll, const Vector3& pointl);
     
   void addTerm(const TermType& term);
   virtual void dumpTerms();

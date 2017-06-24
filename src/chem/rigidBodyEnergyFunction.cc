@@ -44,6 +44,7 @@ __END_DOC
 #include <clasp/core/bformat.h>
 #include <cando/chem/energyFunction.h>
 #include <cando/chem/loop.h>
+#include <clasp/core/numbers.h>
 #include <cando/adapt/indexedObjectBag.h>
 #include <clasp/core/environment.h>
 #include <cando/chem/minimizerLog.h>
@@ -70,6 +71,7 @@ namespace chem {
 CL_LISPIFY_NAME("CHEM:MAKE-RIGID-BODY-ENERGY-FUNCTION");
 CL_DEFUN RigidBodyEnergyFunction_sp RigidBodyEnergyFunction_O::make(size_t number_of_rigid_bodies) {
   GC_ALLOCATE_VARIADIC(RigidBodyEnergyFunction_O, energy, number_of_rigid_bodies);
+  energy->_SavedCoordinates = NVector_O::create(number_of_rigid_bodies*7);
   return energy;
 }
 
@@ -102,17 +104,17 @@ void RigidBodyEnergyFunction_O::setupHessianPreconditioner( NVector_sp pos, Abst
   IMPLEMENT_ME();
 }
 
-void	RigidBodyEnergyFunction_O::extractCoordinatesFromAtoms(NVector_sp pos)
+void	RigidBodyEnergyFunction_O::loadCoordinates(NVector_sp pos)
 {
   IMPLEMENT_ME();
 }
 
-void RigidBodyEnergyFunction_O::writeCoordinatesToAtoms(NVector_sp pos)
+void RigidBodyEnergyFunction_O::saveCoordinates(NVector_sp pos)
 {
   IMPLEMENT_ME();
 }
 
-void RigidBodyEnergyFunction_O::writeCoordinatesAndForceToAtoms(NVector_sp pos, NVector_sp force)
+void RigidBodyEnergyFunction_O::saveCoordinatesAndForces(NVector_sp pos, NVector_sp force)
 {
   IMPLEMENT_ME();
 }
@@ -218,8 +220,39 @@ void	RigidBodyEnergyFunction_O::dealWithProblem(core::Symbol_sp error_symbol, co
   IMPLEMENT_ME();
 };
 
+void RigidBodyEnergyFunction_O::setPosition(size_t index, double a, double b, double c, double d, double x, double y, double z) {
+  if (index>= this->_RigidBodies) {
+    SIMPLE_ERROR(BF("set-position at index %d out of range <= %d for coordinate") % index % this->_RigidBodies);
+  }
+  double*  p = &(*this->_SavedCoordinates)[0];
+  size_t base = index*7;
+  p[base+0] = a;
+  p[base+1] = b;
+  p[base+2] = c;
+  p[base+3] = d;
+  p[base+4] = x;
+  p[base+5] = y;
+  p[base+6] = z;
+}
+core::T_mv RigidBodyEnergyFunction_O::getPosition(size_t index) {
+  if (index>= this->_RigidBodies) {
+    SIMPLE_ERROR(BF("set-position at index %d out of range <= %d for coordinate") % index % this->_RigidBodies);
+  }
+  double*  p = &(*this->_SavedCoordinates)[0];
+  size_t base = index*7;
+  return Values(core::clasp_make_double_float(p[base+0]),
+                core::clasp_make_double_float(p[base+1]),
+                core::clasp_make_double_float(p[base+2]),
+                core::clasp_make_double_float(p[base+3]),
+                core::clasp_make_double_float(p[base+4]),
+                core::clasp_make_double_float(p[base+5]),
+                core::clasp_make_double_float(p[base+6]) );
+}
 
-void RigidBodyEnergyFunction_O::normalizePosition(NVector_sp pos)
+  
+
+
+void RigidBodyEnergyFunction_O::normalizePosition()
 {
   // Normalize the quaternions
   double* dpos = &(*pos)[0];

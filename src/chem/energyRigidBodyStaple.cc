@@ -37,15 +37,16 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-void EnergyRigidBodyStaple_O::energy_rigid_body_staple_add_term( double ks, size_t rba, const Vector3& pointa, size_t rbb, const Vector3&pointb)
+void EnergyRigidBodyStaple_O::energy_rigid_body_staple_add_term( double ks, double r0, size_t rba, const Vector3& pointa, size_t rbb, const Vector3& pointb)
 {
-  LOG(BF("Defining EnergyRigidBodyStaple with ks=%lf rba=%lu pointa=%s   rbb=%lu  pointb=%s\n")
+  LOG(BF("Defining EnergyRigidBodyStaple with ks=%lf r0=%lf rba=%lu pointa=%s   rbb=%lu  pointb=%s\n")
       % ks
+      % r0
       % rba
       % pointa.asString()
       % rbb
       % pointb.asString());
-  this->_Terms.emplace_back(ks,rba,pointa,rbb,pointb);
+  this->_Terms.emplace_back(ks,r0,rba,pointa,rbb,pointb);
 }
 
 
@@ -157,6 +158,7 @@ void	EnergyRigidBodyStaple_O::setupHessianPreconditioner(
     double fz2 = 0.0;
 #endif
     //    double x1,y1,z1,x2,y2,z2,kxb,r0;
+    double ks, r0;
     int I1, I2;
 //	stretchScale = this->getScale();
     for ( gctools::Vec0<EnergyRigidBodyStaple>::iterator si=this->_Terms.begin();
@@ -191,7 +193,7 @@ double EnergyRigidBodyStaple_O::evaluateAll(
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
-  double        ks;
+  double        ks, r0;
   size_t        rba, rbb;
   double        xh1, yh1, zh1;
   double        xh2, yh2, zh2;
@@ -439,8 +441,9 @@ void	EnergyRigidBodyStaple_O::dumpTerms()
   uint idx;
   for ( idx = 0, esi=this->_Terms.begin(); esi!=this->_Terms.end(); esi++, idx++ )
   {
-    _lisp->print(BF("TERM 1RBST %-8.2lf %-9lu %-8.2lf %-8.2lf %-8.2lf ") 
+    _lisp->print(BF("TERM 1RBST %-8.2lf %-8.2lf %-9lu %-8.2lf %-8.2lf %-8.2lf - %-9lu %-8.2lf %-8.2lf %-8.2lf") 
                  % esi->ks
+                 % esi->r0
                  % esi->rigidBodyA
                  % esi->pointA.getX()
                  % esi->pointA.getY()

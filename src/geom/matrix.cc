@@ -1030,11 +1030,11 @@ void	Matrix::rotationX(double a)
 		// Row 1
     this->atRowColPut( 1, 0,	0.0	);
     this->atRowColPut( 1, 1,	cos(a)	);
-    this->atRowColPut( 1, 2,	sin(a)	);
+    this->atRowColPut( 1, 2,	-sin(a)	);
     this->atRowColPut( 1, 3,	0.0	);
 		// Row 2
     this->atRowColPut( 2, 0,	0.0	);
-    this->atRowColPut( 2, 1,	-sin(a)	);
+    this->atRowColPut( 2, 1,	sin(a)	);
     this->atRowColPut( 2, 2,	cos(a)	);
     this->atRowColPut( 2, 3,	0.0	);
 		// Row 3
@@ -1058,7 +1058,7 @@ void	Matrix::rotationY(double a)
 		// Row 0
     this->atRowColPut( 0, 0,	cos(a)	);
     this->atRowColPut( 0, 1,	0.0	);
-    this->atRowColPut( 0, 2,	-sin(a)	);
+    this->atRowColPut( 0, 2,	sin(a)	);
     this->atRowColPut( 0, 3,	0.0	);
 		// Row 1
     this->atRowColPut( 1, 0,	0.0	);
@@ -1066,7 +1066,7 @@ void	Matrix::rotationY(double a)
     this->atRowColPut( 1, 2,	0.0	);
     this->atRowColPut( 1, 3,	0.0	);
 		// Row 2
-    this->atRowColPut( 2, 0,	sin(a)	);
+    this->atRowColPut( 2, 0,	-sin(a)	);
     this->atRowColPut( 2, 1,	0.0	);
     this->atRowColPut( 2, 2,	cos(a)	);
     this->atRowColPut( 2, 3,	0.0	);
@@ -1088,11 +1088,11 @@ void	Matrix::rotationZ(double a)
 {
 		// Row 0
     this->atRowColPut( 0, 0,	cos(a)	);
-    this->atRowColPut( 0, 1,	sin(a)	);
+    this->atRowColPut( 0, 1,	-sin(a)	);
     this->atRowColPut( 0, 2,	0.0	);
     this->atRowColPut( 0, 3,	0.0	);
 		// Row 1
-    this->atRowColPut( 1, 0,	-sin(a)	);
+    this->atRowColPut( 1, 0,	sin(a)	);
     this->atRowColPut( 1, 1,	cos(a)	);
     this->atRowColPut( 1, 2,	0.0	);
     this->atRowColPut( 1, 3,	0.0	);

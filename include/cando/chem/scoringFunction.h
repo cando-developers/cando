@@ -138,9 +138,9 @@ namespace       chem
     int	compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition();
 #endif
 
-    virtual void	extractCoordinatesFromAtoms(NVector_sp pos) = 0;
-    virtual void	writeCoordinatesToAtoms(NVector_sp pos) = 0;
-    virtual void	writeCoordinatesAndForceToAtoms(NVector_sp pos, NVector_sp force) = 0;
+    virtual void	loadCoordinates(NVector_sp pos) = 0;
+    virtual void	saveCoordinates(NVector_sp pos) = 0;
+    virtual void	saveCoordinatesAndForces(NVector_sp pos, NVector_sp force) = 0;
 
     /*! Add the restraints to the scoring function.
      * This allows restraints to be applied to the system

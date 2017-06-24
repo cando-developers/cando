@@ -75,7 +75,7 @@ void	EnergyRigidBodyNonbond::archive(core::ArchiveP node)
   node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
   node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
   node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include <cando/chem/energy_functions/_Nonbond_debugEvalSerialize.cc>
+#include <cando/energy-functions/_NONBONDRB_debugEvalSerialize.cc>
 #endif //]
 }
 #endif
@@ -192,7 +192,7 @@ adapt::QDomNode_sp	EnergyRigidBodyNonbond::asXml()
   xml->addAttributeBool("calcForce",this->_calcForce );
   xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
   xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
-#include <_Nonbond_debugEvalXml.cc>
+#include <_NONBONDRB_debugEvalXml.cc>
   node->addChild(xml);
 #endif
   node->addAttributeDoubleScientific("dA",this->term.dA);
@@ -248,9 +248,9 @@ double	_evaluateEnergyOnly_Nonbond(double x1, double y1, double z1,
 
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
+#include <cando/energy-functions/_NONBONDRB_termDeclares.cc>
 #pragma clang diagnostic pop
-#include <cando/chem/energy_functions/_Nonbond_termCode.cc>
+#include <cando/energy-functions/_NONBONDRB_termCode.cc>
 
   return Energy;
 }
@@ -318,140 +318,118 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
                                      gc::Nilable<NVector_sp>	hdvec, 
                                      gc::Nilable<NVector_sp> 	dvec )
 {
-  IMPLEMENT_ME(); // use the code below
-#if 0
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-  core::MDArray_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
-  core::MDArray_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
   double vdwScale = this->getVdwScale();
   double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
-#define NONBOND_CALC_FORCE
-#define NONBOND_CALC_DIAGONAL_HESSIAN
-#define NONBOND_CALC_OFF_DIAGONAL_HESSIAN
-#undef	NONBOND_SET_PARAMETER
-#define	NONBOND_SET_PARAMETER(x)	{}
-#undef	NONBOND_SET_POSITION
-#define	NONBOND_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
-#undef	NONBOND_EEEL_ENERGY_ACCUMULATE
-#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {this->_EnergyElectrostatic +=(e);}
-#undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {this->_EnergyVdw+=(e);}
-#undef	NONBOND_ENERGY_ACCUMULATE
-#define	NONBOND_ENERGY_ACCUMULATE(e) {};
-#undef	NONBOND_FORCE_ACCUMULATE
-#undef	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE
-#undef	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	NONBOND_FORCE_ACCUMULATE 		ForceAcc
-#define	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
-#define	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
-  if ( !this->isEnabled() ) return;
+#define NONBONDRB_CALC_FORCE
+#define NONBONDRB_CALC_DIAGONAL_HESSIAN
+#define NONBONDRB_CALC_OFF_DIAGONAL_HESSIAN
+#undef	NONBONDRB_SET_PARAMETER
+#define	NONBONDRB_SET_PARAMETER(x)	{}
+#undef	NONBONDRB_SET_POSITION
+#define	NONBONDRB_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
+#undef	NONBONDRB_SET_POINT
+#define	NONBONDRB_SET_POINT(x,ii,of)	{x=ii._Position.of;}
+#undef	NONBONDRB_EEEL_ENERGY_ACCUMULATE
+#define	NONBONDRB_EEEL_ENERGY_ACCUMULATE(e) {this->_EnergyElectrostatic +=(e);}
+#undef	NONBONDRB_EVDW_ENERGY_ACCUMULATE
+#define	NONBONDRB_EVDW_ENERGY_ACCUMULATE(e) {this->_EnergyVdw+=(e);}
+#undef	NONBONDRB_ENERGY_ACCUMULATE
+#define	NONBONDRB_ENERGY_ACCUMULATE(e) {};
+#undef	NONBONDRB_FORCE_ACCUMULATE
+#undef	NONBONDRB_DIAGONAL_HESSIAN_ACCUMULATE
+#undef	NONBONDRB_OFF_DIAGONAL_HESSIAN_ACCUMULATE
+#define	NONBONDRB_FORCE_ACCUMULATE 		ForceAcc
+#define	NONBONDRB_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
+#define	NONBONDRB_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
+  if ( !this->isEnabled() ) return 0.0;
 	    // If you are going to use openmp here, you need to control access to the force and hessian
 	    // arrays so that only one thread updates each element at a time.
   LOG(BF("Nonbond component is enabled") );
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
+#include <cando/energy-functions/_NONBONDRB_termDeclares.cc>
 #pragma clang diagnostic pop
-  double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
+  double dA,dC,dQ1Q2;
+  double xh1, yh1, zh1;
+  double xh2, yh2, zh2;
+  double ak, bk, ck, dk, xk, yk, zk;
+  double al, bl, cl, dl, xl, yl, zl;
   int	I1, I2;
-  int i = 0;
-  int maxIndex = this->_AtomTable->getNumberOfAtoms()*3;
-  auto iea1_end = this->_AtomTable->end()-1;
-  int index1 = 0;
-  int excludedAtomIndex = 0;
-  for ( auto iea1 = this->_AtomTable->begin(); iea1 != iea1_end; ++iea1, ++index1 ) {
-    LOG(BF("%s ====== top of outer loop - index1 = %d\n") % __FUNCTION__ % index1 );
-    int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
-    LOG(BF("Read numberOfExcludedAtomsRemaining from numberOfExcludedAtoms[%d]= %d\n") % index1 % numberOfExcludedAtomsRemaining);
-          // Skip 0 in excluded atom list that amber requires
-    if (numberOfExcludedAtomsRemaining<0) {
-      ++excludedAtomIndex;
-    }
-    int index2 = index1+1;
-    FFNonbond_sp ffNonbond1 = this->_FFNonbondDb->getFFNonbondUsingTypeIndex(iea1->_TypeIndex);
-    double charge1 = iea1->atom()->getCharge();
-    double electrostatic_scaled_charge1 = charge1*electrostaticScale;
-    for ( auto iea2 = iea1+1; iea2 != this->_AtomTable->end(); iea2++, ++i, ++index2 ) {
-      LOG(BF("    --- top of inner loop   numberOfExcludedAtomsRemaining -> %d    index2 -> %d\n") % numberOfExcludedAtomsRemaining % index2 );
-      if (numberOfExcludedAtomsRemaining>0) {
-        LOG(BF("    excludedAtomIndices[%d] -> %d  index2 -> %d\n") % excludedAtomIndex % (*excludedAtomIndices)[excludedAtomIndex] % index2 );
-        if ((*excludedAtomIndices)[excludedAtomIndex] == index2) {
-          LOG(BF("    Excluding atom %d\n") % index2);
-          ++excludedAtomIndex;
-          --numberOfExcludedAtomsRemaining;
-          continue;
-        }
-      }
-      FFNonbond_sp ffNonbond2 = this->_FFNonbondDb->getFFNonbondUsingTypeIndex(iea2->_TypeIndex);
-      double rStar = ffNonbond1->getRadius_Angstroms()+ffNonbond2->getRadius_Angstroms();
-      double epsilonij = sqrt(ffNonbond1->getEpsilon_kCal()*ffNonbond2->getEpsilon_kCal());
-      double rStar2 = rStar*rStar;
-      double rStar6 = rStar2*rStar2*rStar2;
-      double rStar12 = rStar6*rStar6;
-      dA = epsilonij*rStar12*vdwScale;
-      dC = 2.0*epsilonij*rStar6*vdwScale;
-      double charge2 = iea2->atom()->getCharge();
-      dQ1Q2 = electrostatic_scaled_charge1*charge2;
-      I1 = iea1->coordinateIndexTimes3();
-      I2 = iea2->coordinateIndexTimes3();
-#ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-      if ( this->_Debug_NumberOfNonbondTermsToCalculate > 0 ) {
-        if ( i>= this->_Debug_NumberOfNonbondTermsToCalculate ) {
-          break;
-        }
-      }
-#endif
-#include <cando/chem/energy_functions/_Nonbond_termCode.cc>
+  size_t I1start = 0;
+  for ( size_t iI1 = 0; iI1<(this->_RigidBodyEndAtom->length()-1); ++iI1 ) {
+    size_t I1end = (*this->_RigidBodyEndAtom)[iI1];
+    size_t I2start = I1end;
+    for (size_t iI2 = iI1+1; iI2<this->_RigidBodyEndAtom->length(); ++iI2 ) {
+      size_t I2end = (*this->_RigidBodyEndAtom)[iI2];
+      for ( size_t I1cur = I1start; I1cur<I1end; ++I1cur ) {
+        RigidBodyAtomInfo& ea1 = this->_AtomInfoTable[I1cur];
+        double charge1 = ea1._Charge;
+        double electrostatic_scaled_charge1 = charge1*electrostaticScale;
+        for ( size_t I2cur = I2start; I2cur<I2end; ++I2cur ) {
+          RigidBodyAtomInfo& ea2 = this->_AtomInfoTable[I2cur];
+          double rStar = ea1._Radius+ea2._Radius;
+          double epsilonij = sqrt(ea1._Epsilon*ea2._Epsilon);
+          double rStar2 = rStar*rStar;
+          double rStar6 = rStar2*rStar2*rStar2;
+          double rStar12 = rStar6*rStar6;
+          dA = epsilonij*rStar12*vdwScale;
+          dC = 2.0*epsilonij*rStar6*vdwScale;
+          double charge2 = ea2._Charge;
+          dQ1Q2 = electrostatic_scaled_charge1*charge2;
+          I1 = iI1*7;
+          I2 = iI2*7;
+#include <cando/energy-functions/_NONBONDRB_termCode.cc>
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-      nbi->_calcForce = calcForce;
-      nbi->_calcDiagonalHessian = calcDiagonalHessian;
-      nbi->_calcOffDiagonalHessian = calcOffDiagonalHessian;
+          nbi->_calcForce = calcForce;
+          nbi->_calcDiagonalHessian = calcDiagonalHessian;
+          nbi->_calcOffDiagonalHessian = calcOffDiagonalHessian;
 #undef EVAL_SET
 #define	EVAL_SET(var,val)	{ nbi->eval.var=val;};
-#include <cando/chem/energy_functions/_Nonbond_debugEvalSet.cc>
+#include <cando/energy-functions/_NONBONDRB_debugEvalSet.cc>
 #endif //]
 #ifdef DEBUG_NONBOND_TERM
-      if ( this->_DebugEnergy ) {
-        std::string key;
-        if ( iea1->_AtomName->symbolNameAsString()
-             < iea2->_AtomName->symbolNameAsString() ) {
-          key = iea1->_AtomName->symbolNameAsString()+"-"+iea2->_AtomName->symbolNameAsString();
-        } else {
-          key = iea2->_AtomName->symbolNameAsString()+"-"+iea1->_AtomName->symbolNameAsString();
-        }
-        LOG_ENERGY(BF( "MEISTER nonbond %s args cando\n")% key );
-        LOG_ENERGY(BF( "MEISTER nonbond %s dA %5.3lf\n")% key % dA );
-        LOG_ENERGY(BF( "MEISTER nonbond %s dC %5.3lf\n")% key % dC );
-        LOG_ENERGY(BF( "MEISTER nonbond %s dQ1Q2 %5.3lf\n")% key % dQ1Q2 );
-        LOG_ENERGY(BF( "MEISTER nonbond %s x1 %5.3lf %d\n")% key % x1 % (I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER nonbond %s y1 %5.3lf %d\n")% key % y1 % (I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER nonbond %s z1 %5.3lf %d\n")% key % z1 % (I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER nonbond %s x2 %5.3lf %d\n")% key % x2 % (I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER nonbond %s y2 %5.3lf %d\n")% key % y2 % (I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER nonbond %s z2 %5.3lf %d\n")% key % z2 % (I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER nonbond %s results\n")% key );
-        LOG_ENERGY(BF( "MEISTER nonbond %s evdw %lf\n")% key % Evdw);
-        LOG_ENERGY(BF( "MEISTER nonbond %s eeel %lf\n")% key % Eeel);
-        LOG_ENERGY(BF( "MEISTER nonbond %s Enonbond(evdw+eeel) %lf\n")% key % (Evdw+Eeel) );
-        if ( calcForce ) {
-          LOG_ENERGY(BF( "MEISTER nonbond %s fx1 %lf %d\n")% key % fx1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER nonbond %s fy1 %lf %d\n")% key % fy1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER nonbond %s fz1 %lf %d\n")% key % fz1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER nonbond %s fx2 %lf %d\n")% key % fx2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER nonbond %s fy2 %lf %d\n")% key % fy2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER nonbond %s fz2 %lf %d\n")% key % fz2 % (I2/3+1) );
-        }
-        LOG_ENERGY(BF( "MEISTER nonbond %s stop\n")% key );
-      }
+          if ( this->_DebugEnergy ) {
+            std::string key;
+            if ( ea1._Atom->getName()->symbolNameAsString()
+                 < ea2._Atom->getName()->symbolNameAsString() ) {
+              key = ea1._Atom->getName()->symbolNameAsString()+"-"+ea2._Atom->getName()->symbolNameAsString();
+            } else {
+              key = ea2._Atom->getName()->symbolNameAsString()+"-"+ea1._Atom->getName()->symbolNameAsString();
+            }
+            LOG_ENERGY(BF( "MEISTER nonbond %s args cando\n")% key );
+            LOG_ENERGY(BF( "MEISTER nonbond %s dA %5.3lf\n")% key % dA );
+            LOG_ENERGY(BF( "MEISTER nonbond %s dC %5.3lf\n")% key % dC );
+            LOG_ENERGY(BF( "MEISTER nonbond %s dQ1Q2 %5.3lf\n")% key % dQ1Q2 );
+            LOG_ENERGY(BF( "MEISTER nonbond %s x1 %5.3lf %d\n")% key % x1 % (I1/3+1) );
+            LOG_ENERGY(BF( "MEISTER nonbond %s y1 %5.3lf %d\n")% key % y1 % (I1/3+1) );
+            LOG_ENERGY(BF( "MEISTER nonbond %s z1 %5.3lf %d\n")% key % z1 % (I1/3+1) );
+            LOG_ENERGY(BF( "MEISTER nonbond %s x2 %5.3lf %d\n")% key % x2 % (I2/3+1) );
+            LOG_ENERGY(BF( "MEISTER nonbond %s y2 %5.3lf %d\n")% key % y2 % (I2/3+1) );
+            LOG_ENERGY(BF( "MEISTER nonbond %s z2 %5.3lf %d\n")% key % z2 % (I2/3+1) );
+            LOG_ENERGY(BF( "MEISTER nonbond %s results\n")% key );
+            LOG_ENERGY(BF( "MEISTER nonbond %s evdw %lf\n")% key % Evdw);
+            LOG_ENERGY(BF( "MEISTER nonbond %s eeel %lf\n")% key % Eeel);
+            LOG_ENERGY(BF( "MEISTER nonbond %s Enonbond(evdw+eeel) %lf\n")% key % (Evdw+Eeel) );
+            if ( calcForce ) {
+              LOG_ENERGY(BF( "MEISTER nonbond %s fx1 %lf %d\n")% key % fx1 % (I1/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fy1 %lf %d\n")% key % fy1 % (I1/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fz1 %lf %d\n")% key % fz1 % (I1/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fx2 %lf %d\n")% key % fx2 % (I2/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fy2 %lf %d\n")% key % fy2 % (I2/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fz2 %lf %d\n")% key % fz2 % (I2/3+1) );
+            }
+            LOG_ENERGY(BF( "MEISTER nonbond %s stop\n")% key );
+          }
 #endif
+        }
+      }
     }
   }
   LOG(BF( "Nonbond energy vdw(%lf) electrostatic(%lf)\n")% (double)this->_EnergyVdw % this->_EnergyElectrostatic );
   LOG(BF( "Nonbond energy }\n"));
-#endif
   return this->_TotalEnergy;
 }
     
@@ -491,7 +469,7 @@ ALWAYS_INLINE void _calculate_nonbond_term(EnergyRigidBodyNonbond_O& me, double 
 #define	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
+#include <cando/energy-functions/_NONBONDRB_termDeclares.cc>
 #pragma clang diagnostic pop
   double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
   double rStar = ffNonbond1->getRadius_Angstroms()+ffNonbond2->getRadius_Angstroms();
@@ -517,14 +495,14 @@ ALWAYS_INLINE void _calculate_nonbond_term(EnergyRigidBodyNonbond_O& me, double 
     }
   }
 #endif
-#include <cando/chem/energy_functions/_Nonbond_termCode.cc>
+#include <cando/energy-functions/_NONBONDRB_termCode.cc>
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
   nbi->_calcForce = calcForce;
   nbi->_calcDiagonalHessian = calcDiagonalHessian;
   nbi->_calcOffDiagonalHessian = calcOffDiagonalHessian;
 #undef EVAL_SET
 #define	EVAL_SET(var,val)	{ nbi->eval.var=val;};
-#include <cando/chem/energy_functions/_Nonbond_debugEvalSet.cc>
+#include <cando/energy-functions/_NONBONDRB_debugEvalSet.cc>
 #endif //]
 #ifdef DEBUG_NONBOND_TERM
   if ( me._DebugEnergy ) {
@@ -555,7 +533,6 @@ ALWAYS_INLINE void _calculate_nonbond_term(EnergyRigidBodyNonbond_O& me, double 
 #endif
 }
 #endif
-                                          
 
 
 
@@ -604,16 +581,16 @@ void	EnergyRigidBodyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermB
     _BLOCK_TRACE("NonbondEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
+#include <cando/energy-functions/_NONBONDRB_termDeclares.cc>
 #pragma clang diagnostic pop
     double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
     int	I1, I2,i;
     gctools::Vec0<EnergyRigidBodyNonbond>::iterator nbi;
     for ( i=0,nbi=this->_Terms.begin();
           nbi!=this->_Terms.end(); nbi++,i++ ) {
-#include <cando/chem/energy_functions/_Nonbond_termCode.cc>
+#include <cando/energy-functions/_NONBONDRB_termCode.cc>
       int index = i;
-#include <cando/chem/energy_functions/_Nonbond_debugFiniteDifference.cc>
+#include <cando/energy-functions/_NONBONDRB_debugFiniteDifference.cc>
 
     }
   }

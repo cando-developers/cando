@@ -7,13 +7,13 @@
 	double	xk;
 	double	yk;
 	double	zk;
-	double	ak;
-	double	bk;
-	double	ck;
-	double	dk;
-	double	xk;
-	double	yk;
-	double	zk;
+	double	al;
+	double	bl;
+	double	cl;
+	double	dl;
+	double	xl;
+	double	yl;
+	double	zl;
 	double	Energy;
 	double	fak;
 	double	fbk;
@@ -29,5 +29,6 @@
 	double	fxl;
 	double	fyl;
 	double	fzl;
-	double	stapleDeviation;
+	double	               2     2     2     2           2     2     2     2                                                                                                                        2                                                           2     2     2     2           2     2     2     2                                                                      2                                                                                                                   2     2     2     2           2     2     2     2                2
+-r0 + Sqrt[((ak  + bk  + ck  + dk ) xh1 - (al  + bl  + cl  + dl ) xh2 + xk - xl + (2 bk ck - 2 ak dk) yh1 - (2 bl cl - 2 al dl) yh2 + (2 ak ck + 2 bk dk) zh1 - (2 al cl + 2 bl dl) zh2)  + ((2 bk ck + 2 ak dk) xh1 - (2 bl cl + 2 al dl) xh2 + (ak  - bk  + ck  - dk ) yh1 - (al  - bl  + cl  - dl ) yh2 + yk - yl + (-2 ak bk + 2 ck dk) zh1 - (-2 al bl + 2 cl dl) zh2)  + ((-2 ak ck + 2 bk dk) xh1 - (-2 al cl + 2 bl dl) xh2 + (-2 ak bk + 2 ck dk) yh1 - (-2 al bl + 2 cl dl) yh2 + (ak  - bk  - ck  + dk ) zh1 - (al  - bl  - cl  + dl ) zh2 + zk - zl) ];
 	} eval;

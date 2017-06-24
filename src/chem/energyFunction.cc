@@ -669,7 +669,7 @@ CL_LISPIFY_NAME("compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrent
 CL_DEFMETHOD int	EnergyFunction_O::compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition( )
 {
   NVector_sp pos = NVector_O::create(this->getNVectorSize());
-  this->extractCoordinatesFromAtoms(pos);
+  this->loadCoordinates(pos);
   return this->compareAnalyticalAndNumericalForceAndHessianTermByTerm(pos);
 }
 
@@ -692,7 +692,7 @@ CL_DEFMETHOD uint	EnergyFunction_O::checkForBeyondThresholdInteractions( )
 
   info.str("");
   pos = NVector_O::create(this->getNVectorSize());
-  this->extractCoordinatesFromAtoms(pos);
+  this->loadCoordinates(pos);
   fails = 0;
   fails += this->_Stretch->checkForBeyondThresholdInteractions(info,pos);
 #if USE_ALL_ENERGY_COMPONENTS
@@ -824,7 +824,7 @@ CL_DEFMETHOD double	EnergyFunction_O::evaluateEnergyForceFullHessianForDebugging
   pos = NVector_O::create(this->getNVectorSize());
   force = NVector_O::create(this->getNVectorSize());
   hessian = FullLargeSquareMatrix_O::create(this->getNVectorSize(),SymmetricDiagonalLower);
-  this->extractCoordinatesFromAtoms(pos);
+  this->loadCoordinates(pos);
   energy = this->evaluateAll(pos,
                              true,
                              force,
@@ -1010,7 +1010,7 @@ ForceMatchReport_sp EnergyFunction_O::checkIfAnalyticalForceMatchesNumericalForc
     result << "|analyticalForce| == " << analyticalMag << "  |numericalForce| == "<< numericalMag << std::endl;
     result << "(analyticalForce/|analyticalForce|).(numericalForce/|numericalForce|) = "<< dot << std::endl;
     report->_Message = result.str();
-    this->writeCoordinatesAndForceToAtoms(pos,analyticalForce);
+    this->saveCoordinatesAndForces(pos,analyticalForce);
     goto DONE;
   }
   if ( dot < 0.98 ) {
@@ -1019,7 +1019,7 @@ ForceMatchReport_sp EnergyFunction_O::checkIfAnalyticalForceMatchesNumericalForc
     result << "|analyticalForce| == " << analyticalMag << "  |numericalForce| == "<< numericalMag << std::endl;
     result << "(analyticalForce/|analyticalForce|).(numericalForce/|numericalForce|) = "<< dot << std::endl;
     report->_Message = result.str();
-    this->writeCoordinatesAndForceToAtoms(pos,analyticalForce);
+    this->saveCoordinatesAndForces(pos,analyticalForce);
     goto DONE;
   }
   report->_Message = "Analytical and Numerical forces are virtually identical";
@@ -1720,8 +1720,8 @@ CL_DEFMETHOD void	EnergyFunction_O::addTermsForListOfRestraints(ForceField_sp fo
   this->_applyRestraints(forceField,iterate,activeAtoms);
 }
 
-CL_LISPIFY_NAME("extractCoordinatesFromAtoms");
-CL_DEFMETHOD void	EnergyFunction_O::extractCoordinatesFromAtoms(NVector_sp pos)
+CL_LISPIFY_NAME("loadCoordinates");
+CL_DEFMETHOD void	EnergyFunction_O::loadCoordinates(NVector_sp pos)
 {
   int                             ci;
   gctools::Vec0<EnergyAtom>::iterator    ai;
@@ -1739,7 +1739,7 @@ CL_DEFMETHOD void	EnergyFunction_O::extractCoordinatesFromAtoms(NVector_sp pos)
 
 
 CL_LISPIFY_NAME("writeCoordinatesToAtoms");
-CL_DEFMETHOD void    EnergyFunction_O::writeCoordinatesToAtoms(NVector_sp pos)
+CL_DEFMETHOD void    EnergyFunction_O::saveCoordinates(NVector_sp pos)
 {
   int                             ci;
   double                          x,y,z;
@@ -1775,10 +1775,10 @@ CL_DEFMETHOD void    EnergyFunction_O::writeForceToAtoms(NVector_sp force)
 }
 
 
-CL_LISPIFY_NAME("writeCoordinatesAndForceToAtoms");
-CL_DEFMETHOD void    EnergyFunction_O::writeCoordinatesAndForceToAtoms(NVector_sp pos, NVector_sp force)
+CL_LISPIFY_NAME("saveCoordinatesAndForces");
+CL_DEFMETHOD void    EnergyFunction_O::saveCoordinatesAndForces(NVector_sp pos, NVector_sp force)
 {
-  this->writeCoordinatesToAtoms(pos);
+  this->saveCoordinates(pos);
 //  this->writeForceToAtoms(force);
 }
 
@@ -1795,7 +1795,7 @@ CL_DEFMETHOD double	EnergyFunction_O::calculateEnergy( )
 {
   NVector_sp	pos;
   pos = NVector_O::create(this->getNVectorSize());
-  this->extractCoordinatesFromAtoms(pos);
+  this->loadCoordinates(pos);
   return this->evaluateEnergy(pos);
 }
 
@@ -1808,7 +1808,7 @@ CL_DEFMETHOD double EnergyFunction_O::calculateEnergyAndForce( )
   double		energy;
   pos = NVector_O::create(this->getNVectorSize());
   force = NVector_O::create(this->getNVectorSize());
-  this->extractCoordinatesFromAtoms(pos);
+  this->loadCoordinates(pos);
   energy = this->evaluateEnergyForce(pos,true,force);
     	// To calculate the force magnitude use force->magnitude();
     	// To calculate the force rmsMagnitude use force->rmsMagnitude();
@@ -1929,7 +1929,7 @@ uint	EnergyFunction_O::countBadVdwInteractions(double scaleSumOfVdwRadii, geom::
   uint i = 0;
 #if USE_ALL_ENERGY_COMPONENTS
   pos = NVector_O::create(this->getNVectorSize());
-  this->extractCoordinatesFromAtoms(pos);
+  this->loadCoordinates(pos);
   nbComponent = this->getNonbondComponent();
   i = nbComponent->countBadVdwOverlaps(scaleSumOfVdwRadii,pos,displayIn,displayIn->lisp());
 #endif

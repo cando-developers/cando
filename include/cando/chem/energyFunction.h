@@ -170,9 +170,9 @@ namespace chem {
     CL_DEFMETHOD     AtomTable_sp atomTable() const { return this->_AtomTable;};
 
     string	energyTermsEnabled() ;
-    void	extractCoordinatesFromAtoms(NVector_sp pos);
-    void	writeCoordinatesToAtoms(NVector_sp pos);
-    void	writeCoordinatesAndForceToAtoms(NVector_sp pos, NVector_sp force);
+    void	loadCoordinates(NVector_sp pos);
+    void	saveCoordinates(NVector_sp pos);
+    void	saveCoordinatesAndForces(NVector_sp pos, NVector_sp force);
     size_t	getNVectorSize();
     double	evaluateRaw( NVector_sp pos, NVector_sp force );
 //    double	evaluate( NVector_sp pos, NVector_sp force, bool calculateForce );

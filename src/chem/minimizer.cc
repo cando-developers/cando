@@ -1172,11 +1172,11 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 	    // before throwing this higher
 	    //
           fp = dTotalEnergyForce( x, force );
-          this->_ScoringFunction->writeCoordinatesAndForceToAtoms(x,force);
+          this->_ScoringFunction->saveCoordinatesAndForces(x,force);
           MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(fail);
 	}
 	fp = dTotalEnergyForce( x, force );
-	this->_ScoringFunction->writeCoordinatesAndForceToAtoms(x,force);
+	this->_ScoringFunction->saveCoordinatesAndForces(x,force);
 	LOG(BF("Wrote coordinates and force to atoms") );
 	if ( this->_DebugOn )
 	{
@@ -1462,7 +1462,7 @@ void	Minimizer_O::_conjugateGradient(
 	// before throwing this higher
 	//
     fp = dTotalEnergyForce( x, force );
-    this->_ScoringFunction->writeCoordinatesAndForceToAtoms(x,force);
+    this->_ScoringFunction->saveCoordinatesAndForces(x,force);
     MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(fail);
   } catch (MinimizerCondition_Stuck fail) {
     if ( this->_DebugOn )
@@ -1478,11 +1478,11 @@ void	Minimizer_O::_conjugateGradient(
 	// before throwing this higher
 	//
     fp = dTotalEnergyForce( x, force );
-    this->_ScoringFunction->writeCoordinatesAndForceToAtoms(x,force);
+    this->_ScoringFunction->saveCoordinatesAndForces(x,force);
     MINIMIZER_STUCK_ERROR(fail.message());
   }
   fp = dTotalEnergyForce( x, force );
-  this->_ScoringFunction->writeCoordinatesAndForceToAtoms(x,force);
+  this->_ScoringFunction->saveCoordinatesAndForces(x,force);
   if ( this->_DebugOn )
   {
     if ( stepReport.notnilp() )
@@ -1889,12 +1889,12 @@ void	Minimizer_O::_truncatedNewton(
 	// before throwing this higher
 	//
     dTotalEnergyForce( xK, forceK );
-    this->_ScoringFunction->writeCoordinatesAndForceToAtoms(xK,forceK);
+    this->_ScoringFunction->saveCoordinatesAndForces(xK,forceK);
     MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(fail);
   }
   copyVector(xK,xKNext);
   dTotalEnergyForce( xK, forceK );
-  this->_ScoringFunction->writeCoordinatesAndForceToAtoms(xK,forceK);
+  this->_ScoringFunction->saveCoordinatesAndForces(xK,forceK);
   if ( this->_DebugOn )
   {
     if ( stepReport.notnilp() )
@@ -2055,7 +2055,7 @@ CL_DEFMETHOD     void	Minimizer_O::evaluateEnergyAndForceManyTimes(int numSteps)
     ASSERT(this->_ScoringFunction);
     this->_Iteration = 1;
     pos = NVector_O::create(this->_ScoringFunction->getNVectorSize());
-    this->_ScoringFunction->extractCoordinatesFromAtoms(pos);
+    this->_ScoringFunction->loadCoordinates(pos);
     this->_evaluateEnergyAndForceManyTimes(numSteps,pos);
     }
 
@@ -2078,7 +2078,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimizeSteepestDescent()
     do {
       sawProblem = false;
       try {
-        this->_ScoringFunction->extractCoordinatesFromAtoms(pos);
+        this->_ScoringFunction->loadCoordinates(pos);
         this->_steepestDescent(this->_NumberOfSteepestDescentSteps,pos,
                                this->_SteepestDescentTolerance );
       } catch ( InteractionCondition ic ) {
@@ -2123,7 +2123,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimizeConjugateGradient()
     do {
       sawProblem = false;
       try {
-        this->_ScoringFunction->extractCoordinatesFromAtoms(pos);
+        this->_ScoringFunction->loadCoordinates(pos);
         this->_conjugateGradient(this->_NumberOfConjugateGradientSteps,pos,
                                  this->_ConjugateGradientTolerance );
       } catch ( InteractionCondition ld ) {
@@ -2180,7 +2180,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimize()
 	do {
 	    sawProblem = false;
 	    try {
-		this->_ScoringFunction->extractCoordinatesFromAtoms(pos);
+		this->_ScoringFunction->loadCoordinates(pos);
 		if ( this->_NumberOfSteepestDescentSteps > 0 ) {
 		    this->_steepestDescent( this->_NumberOfSteepestDescentSteps,
 					    pos, this->_SteepestDescentTolerance );
@@ -2228,7 +2228,7 @@ CL_DEFMETHOD void Minimizer_O::writeIntermediateResultsToEnergyFunction()
   if ( this->_Position.nilp() ) {
     SIMPLE_ERROR(BF("There are no intermediate results"));
   }
-  this->_ScoringFunction->writeCoordinatesAndForceToAtoms(this->_Position,this->_Force);
+  this->_ScoringFunction->saveCoordinatesAndForces(this->_Position,this->_Force);
 }
 
 
