@@ -151,50 +151,50 @@ namespace chem
 
 
 
-    string	stringForPreconditionerType(PreconditionerType t)
-    {
-	switch (t)
-	{
-	case noPreconditioner:
-	    return "noPreconditioner";
-	case hessianPreconditioner:
-	    return "hessianPreconditioner";
-	default:
-	    return "-unknown preconditioner-";
-	}
-	return "-unknown preconditioner-";
-    }
+string	stringForPreconditionerType(PreconditionerType t)
+{
+  switch (t)
+  {
+  case noPreconditioner:
+      return "noPreconditioner";
+  case hessianPreconditioner:
+      return "hessianPreconditioner";
+  default:
+      return "-unknown preconditioner-";
+  }
+  return "-unknown preconditioner-";
+}
 
-    string	shortStringForPreconditionerType(PreconditionerType t) {
-	switch (t) {
-	case noPreconditioner:
-	    return "nP";
-	case hessianPreconditioner:
-	    return "hP";
-	default:
-	    return "??";
-	}
-	return "?P";
-    }
-
-
-    PreconditionerType	preconditionerTypeFromString(const string& t )
-    {
-	if ( t=="noPreconditioner" ) return noPreconditioner;
-	if ( t=="hessianPreconditioner" ) return hessianPreconditioner;
-	return unknownPreconditioner;
-    }
+string	shortStringForPreconditionerType(PreconditionerType t) {
+  switch (t) {
+  case noPreconditioner:
+      return "nP";
+  case hessianPreconditioner:
+      return "hP";
+  default:
+      return "??";
+  }
+  return "?P";
+}
 
 
+PreconditionerType	preconditionerTypeFromString(const string& t )
+{
+  if ( t=="noPreconditioner" ) return noPreconditioner;
+  if ( t=="hessianPreconditioner" ) return hessianPreconditioner;
+  return unknownPreconditioner;
+}
 
 
-    const char* minimizerOptions[] = {":showElapsedTime",""};
-    void	Minimizer_O::changeOptions(core::List_sp optionCons)
-    {
-    IMPLEMENT_ME();
+
+
+const char* minimizerOptions[] = {":showElapsedTime",""};
+void	Minimizer_O::changeOptions(core::List_sp optionCons)
+{
+  IMPLEMENT_ME();
 #if 0
-    core::HashTableEq_sp options = core::HashTableEq_O::createFromKeywordCons(optionCons,minimizerOptions);
-    options->setBoolValueIfAvailable(this->_ShowElapsedTime,":showElapsedTime");
+  core::HashTableEq_sp options = core::HashTableEq_O::createFromKeywordCons(optionCons,minimizerOptions);
+  options->setBoolValueIfAvailable(this->_ShowElapsedTime,":showElapsedTime");
 #endif
 }
 
@@ -214,112 +214,112 @@ CL_DEFUN Minimizer_sp Minimizer_O::make(ScoringFunction_sp givenEnergyFunction)
 
 CL_LISPIFY_NAME("statusAsString");
 CL_DEFMETHOD     string	Minimizer_O::statusAsString()
-    {
-	string	status, precon;
-	switch (this->_Status) {
-	case minimizerIdle:
-	    return "minimizerIdle";
-	case minimizerSucceeded:
-	    return "minimizerSucceeded";
-	case minimizerError:
-	    return "minimizerError";
-	case steepestDescentRunning:
-	    status = "steepestDescentRunning";
-	    break;
-	case conjugateGradientRunning:
-	    status = "conjugateGradientRunning";
-	    break;
-	case truncatedNewtonRunning:
-	    status = "truncatedNewtonRunning";
-	    break;
-	default:
-    	    return "unknownMinimizerStatus";
-	}
+{
+  string	status, precon;
+  switch (this->_Status) {
+  case minimizerIdle:
+      return "minimizerIdle";
+  case minimizerSucceeded:
+      return "minimizerSucceeded";
+  case minimizerError:
+      return "minimizerError";
+  case steepestDescentRunning:
+      status = "steepestDescentRunning";
+      break;
+  case conjugateGradientRunning:
+      status = "conjugateGradientRunning";
+      break;
+  case truncatedNewtonRunning:
+      status = "truncatedNewtonRunning";
+      break;
+  default:
+      return "unknownMinimizerStatus";
+  }
 	// Running, append preconditioner
-	status = status + "-" + stringForPreconditionerType(this->_CurrentPreconditioner);
-	return status;
-    }
+  status = status + "-" + stringForPreconditionerType(this->_CurrentPreconditioner);
+  return status;
+}
 
 
 #ifdef XML_ARCHIVE
-    void	Minimizer_O::archiveBase(core::ArchiveP node)
-    {
-	node->attribute("_InitialLineSearchStep",this->_InitialLineSearchStep);
-	node->attribute("_ShowElapsedTime",this->_ShowElapsedTime);
-	node->attribute("_SteepestDescentTolerance",this->_SteepestDescentTolerance);
-	node->attribute("_NumberOfSteepestDescentSteps",this->_NumberOfSteepestDescentSteps);
-	node->attribute("_NumberOfConjugateGradientSteps",this->_NumberOfConjugateGradientSteps);
-	node->attribute("_ConjugateGradientTolerance",this->_ConjugateGradientTolerance);
-	node->attribute("_NumberOfTruncatedNewtonSteps",this->_NumberOfTruncatedNewtonSteps);
-	node->attribute("_TruncatedNewtonTolerance",this->_TruncatedNewtonTolerance);
-	node->attribute("energyFunction",this->_EnergyFunction );
+void	Minimizer_O::archiveBase(core::ArchiveP node)
+{
+  node->attribute("_InitialLineSearchStep",this->_InitialLineSearchStep);
+  node->attribute("_ShowElapsedTime",this->_ShowElapsedTime);
+  node->attribute("_SteepestDescentTolerance",this->_SteepestDescentTolerance);
+  node->attribute("_NumberOfSteepestDescentSteps",this->_NumberOfSteepestDescentSteps);
+  node->attribute("_NumberOfConjugateGradientSteps",this->_NumberOfConjugateGradientSteps);
+  node->attribute("_ConjugateGradientTolerance",this->_ConjugateGradientTolerance);
+  node->attribute("_NumberOfTruncatedNewtonSteps",this->_NumberOfTruncatedNewtonSteps);
+  node->attribute("_TruncatedNewtonTolerance",this->_TruncatedNewtonTolerance);
+  node->attribute("energyFunction",this->_EnergyFunction );
 
 //    node->attribute("_ZZ",this->_ZZ);
-    }
+}
 #endif
 
-    string	Minimizer_O::statusAsShortString()
-    {
-	string	status, precon;
-	switch (this->_Status) {
-	case minimizerIdle:
-	    return "IDLE";
-	case minimizerSucceeded:
-	    return "DONE";
-	case minimizerError:
-	    return "ERR!";
-	case steepestDescentRunning:
-	    status = "SD";
-	    break;
-	case conjugateGradientRunning:
-	    status = "CG";
-	    break;
-	case truncatedNewtonRunning:
-	    status = "TN";
-	    break;
-	default:
-	    return "?st?";
-	}
-	status = status + shortStringForPreconditionerType(this->_CurrentPreconditioner);
-	return status;
-    }
+string	Minimizer_O::statusAsShortString()
+{
+  string	status, precon;
+  switch (this->_Status) {
+  case minimizerIdle:
+      return "IDLE";
+  case minimizerSucceeded:
+      return "DONE";
+  case minimizerError:
+      return "ERR!";
+  case steepestDescentRunning:
+      status = "SD";
+      break;
+  case conjugateGradientRunning:
+      status = "CG";
+      break;
+  case truncatedNewtonRunning:
+      status = "TN";
+      break;
+  default:
+      return "?st?";
+  }
+  status = status + shortStringForPreconditionerType(this->_CurrentPreconditioner);
+  return status;
+}
 
 
 
 #if 0
-    void	Minimizer_O::setStepCallback(core::LispCallback_sp cb)
-    {
-    this->_StepCallback = cb;
-    }
+void	Minimizer_O::setStepCallback(core::LispCallback_sp cb)
+{
+  this->_StepCallback = cb;
+}
 #endif
 
 
 #ifdef XML_ARCHIVE
-    void	Minimizer_O::debugStart()
-    {
-    this->_DebugOn = true;
-    LOG(BF("Status") );
-    this->_Log = MinimizerLog_O::create();
-    LOG(BF("Status") );
-    this->_Log->_Minimizer = this->sharedThis<Minimizer_O>();
-    LOG(BF("Status") );
-    }
+void	Minimizer_O::debugStart()
+{
+  this->_DebugOn = true;
+  LOG(BF("Status") );
+  this->_Log = MinimizerLog_O::create();
+  LOG(BF("Status") );
+  this->_Log->_Minimizer = this->sharedThis<Minimizer_O>();
+  LOG(BF("Status") );
+}
 
 
-    void	Minimizer_O::debugStop(const string& fileName)
-    {
-    LOG(BF("writing minimizer log to (%s)") % fileName.c_str()  );
-    if ( !this->_DebugOn ) return;
-    ASSERTNOTNULL(this->_Log);
-    core::XmlSaveArchive_sp arc;
-    LOG(BF("Creating archive") );
-    arc = core::XmlSaveArchive_O::create();
-    LOG(BF("putting minimizerLog") );
-    arc->put("minimizerLog",this->_Log);
-    LOG(BF("Calling saveAs") );
-    arc->saveAs(fileName);
-    LOG(BF("Done saveAs") );
-    }
+void	Minimizer_O::debugStop(const string& fileName)
+{
+  LOG(BF("writing minimizer log to (%s)") % fileName.c_str()  );
+  if ( !this->_DebugOn ) return;
+  ASSERTNOTNULL(this->_Log);
+  core::XmlSaveArchive_sp arc;
+  LOG(BF("Creating archive") );
+  arc = core::XmlSaveArchive_O::create();
+  LOG(BF("putting minimizerLog") );
+  arc->put("minimizerLog",this->_Log);
+  LOG(BF("Calling saveAs") );
+  arc->saveAs(fileName);
+  LOG(BF("Done saveAs") );
+}
 #endif
 
 
@@ -345,13 +345,13 @@ void	Minimizer_O::getPosition( NVector_sp 	nvResult,
  *      in nvForce (which must be an initialized vector,
  *      but does not need to be filled with zeros).
  */
-    double	Minimizer_O::dTotalEnergy( NVector_sp nvPos )
-    {
-	double          dEnergy;
+double	Minimizer_O::dTotalEnergy( NVector_sp nvPos )
+{
+  double          dEnergy;
 
-	dEnergy = this->_ScoringFunction->evaluateEnergy( nvPos );
-	return(dEnergy);
-    }
+  dEnergy = this->_ScoringFunction->evaluateEnergy( nvPos );
+  return(dEnergy);
+}
 
 
 /*
@@ -364,10 +364,10 @@ void	Minimizer_O::getPosition( NVector_sp 	nvResult,
  *      in nvForce (which must be an initialized vector,
  *      but does not need to be filled with zeros).
  */
-    double	Minimizer_O::dTotalEnergyForce( NVector_sp nvPos, NVector_sp nvForce)
-    {
-	return this->_ScoringFunction->evaluateEnergyForce(nvPos,true,nvForce);
-    }
+double	Minimizer_O::dTotalEnergyForce( NVector_sp nvPos, NVector_sp nvForce)
+{
+  return this->_ScoringFunction->evaluateEnergyForce(nvPos,true,nvForce);
+}
 
 
 /*
@@ -375,16 +375,16 @@ void	Minimizer_O::getPosition( NVector_sp 	nvResult,
  *
  *	Calculate the energy along a 1D coordinate
  */
-    double	Minimizer_O::d1DTotalEnergy( double x )
-    {
+double	Minimizer_O::d1DTotalEnergy( double x )
+{
 #ifdef	DEBUG_ON
 //    this->nvP1DSearchOrigin->debugDump("origin");
 //    LOG(BF("x = %lf") % (x ) );
 //    this->nvP1DSearchDirection->debugDump("direction");
 #endif
-	this->getPosition(this->nvP1DSearchTemp1, this->nvP1DSearchOrigin, this->nvP1DSearchDirection,x);
-	return this->_ScoringFunction->evaluateEnergy(this->nvP1DSearchTemp1);
-    }
+  this->getPosition(this->nvP1DSearchTemp1, this->nvP1DSearchOrigin, this->nvP1DSearchDirection,x);
+  return this->_ScoringFunction->evaluateEnergy(this->nvP1DSearchTemp1);
+}
 
 
 /*
@@ -392,21 +392,21 @@ void	Minimizer_O::getPosition( NVector_sp 	nvResult,
  *
  *	Calculate the energy/derivative along a 1D coordinate
  */
-    double	Minimizer_O::d1DTotalEnergyForce( double x, double* fx, double * dfx )
-    {
+double	Minimizer_O::d1DTotalEnergyForce( double x, double* fx, double * dfx )
+{
 #ifdef	DEBUG_ON
 //    this->nvP1DSearchOrigin->debugDump("origin");
 //    LOG(BF("x = %lf") % (x ) );
 //    this->nvP1DSearchDirection->debugDump("direction");
 #endif
-	this->getPosition(this->nvP1DSearchTemp1,
-			  this->nvP1DSearchOrigin,
-			  this->nvP1DSearchDirection, x );
-	*fx = this->_ScoringFunction->evaluateEnergyForce( this->nvP1DSearchTemp1,
-							  true, this->nvP1DSearchTemp2 );
-	*dfx = -dotProduct(this->nvP1DSearchTemp2,this->nvP1DSearchDirection);
-	return *fx;
-    }
+  this->getPosition(this->nvP1DSearchTemp1,
+                    this->nvP1DSearchOrigin,
+                    this->nvP1DSearchDirection, x );
+  *fx = this->_ScoringFunction->evaluateEnergyForce( this->nvP1DSearchTemp1,
+                                                     true, this->nvP1DSearchTemp2 );
+  *dfx = -dotProduct(this->nvP1DSearchTemp2,this->nvP1DSearchDirection);
+  return *fx;
+}
 
 
 
@@ -421,93 +421,93 @@ void	Minimizer_O::getPosition( NVector_sp 	nvResult,
  *
  *	Start using the values in *ax, *bx;
  */
-    void	Minimizer_O::minBracket(
-	NVector_sp	nvOrigin,
-	NVector_sp	nvDir,
-	double		*dPxa,
-	double		*dPxb,
-	double		*dPxc,
-	double		*dPfa,
-	double		*dPfb,
-	double		*dPfc )
-    {
-    double		xa,xb,xc,fa,fb,fc, temp;
-    double		r,q,u,ulim,fu;
+void	Minimizer_O::minBracket(
+                                NVector_sp	nvOrigin,
+                                NVector_sp	nvDir,
+                                double		*dPxa,
+                                double		*dPxb,
+                                double		*dPxc,
+                                double		*dPfa,
+                                double		*dPfb,
+                                double		*dPfc )
+{
+  double		xa,xb,xc,fa,fb,fc, temp;
+  double		r,q,u,ulim,fu;
 
-    this->_MinBracketSteps = 0;
-    xa = *dPxa;
-    xb = *dPxb;
-    fa = this->d1DTotalEnergy(xa);
-    fb = this->d1DTotalEnergy(xb);
+  this->_MinBracketSteps = 0;
+  xa = *dPxa;
+  xb = *dPxb;
+  fa = this->d1DTotalEnergy(xa);
+  fb = this->d1DTotalEnergy(xb);
     // Make sure that we are going downhill a->b
-    if ( fb > fa ) {
-	SWAP_VALUES( xa, xb, temp );
-	SWAP_VALUES( fa, fb, temp );
-    }
-    xc = xb+GOLD*(xb-xa);
-    fc = this->d1DTotalEnergy(xc);
-    LOG(BF("Start: xa(%lf) xb(%lf) xc(%lf) | fa(%lf) fb(%lf) fc(%lf)") % xa % xb % xc % fa % fb % fc );
-    while ( fb > fc ) {
-	this->_MinBracketSteps++;
-        LOG(BF("Loop:  xa(%lf) xb(%lf) xc(%lf) | fa(%lf) fb(%lf) fc(%lf)")%xa%xb%xc%fa%fb%fc);
-	r = (xb-xa)*(fb-fc);
-	q = (xb-xc)*(fb-fa);
-	u = xb-((xb-xc)*q-(xb-xa)*r)/
-	    (2.0*SIGN(MAX(fabs(q-r),TINY),q-r));
-	ulim = (xb)+GLIMIT*(xc-xb);
-	if (( xb-u)*(u-xc)>0.0) {
-	    fu = this->d1DTotalEnergy(u);
-	    if ( fu<fc ) {
-		xa = xb;
-		xb = u;
-		fa = fb;
-		fb = fu;
-		goto DONE;
-	    } else if ( fu > fb ) {
-		xc = u;
-		fc = fu;
-		goto DONE;
-	    }
-	    u = xc+GOLD*(xc-xb);
-	    fu = this->d1DTotalEnergy(u);
-	} else if ((xc-u)*(u-ulim) > 0.0) {
-	    fu = this->d1DTotalEnergy(u);
-	    if ( fu < fc ) {
-		LEFT_SHIFT_VALUES( xb, xc, u, xc+GOLD*(xc-xb) );
-		LEFT_SHIFT_VALUES( fb, fc, fu, this->d1DTotalEnergy(u));
-	    }
+  if ( fb > fa ) {
+    SWAP_VALUES( xa, xb, temp );
+    SWAP_VALUES( fa, fb, temp );
+  }
+  xc = xb+GOLD*(xb-xa);
+  fc = this->d1DTotalEnergy(xc);
+  LOG(BF("Start: xa(%lf) xb(%lf) xc(%lf) | fa(%lf) fb(%lf) fc(%lf)") % xa % xb % xc % fa % fb % fc );
+  while ( fb > fc ) {
+    this->_MinBracketSteps++;
+    LOG(BF("Loop:  xa(%lf) xb(%lf) xc(%lf) | fa(%lf) fb(%lf) fc(%lf)")%xa%xb%xc%fa%fb%fc);
+    r = (xb-xa)*(fb-fc);
+    q = (xb-xc)*(fb-fa);
+    u = xb-((xb-xc)*q-(xb-xa)*r)/
+      (2.0*SIGN(MAX(fabs(q-r),TINY),q-r));
+    ulim = (xb)+GLIMIT*(xc-xb);
+    if (( xb-u)*(u-xc)>0.0) {
+      fu = this->d1DTotalEnergy(u);
+      if ( fu<fc ) {
+        xa = xb;
+        xb = u;
+        fa = fb;
+        fb = fu;
+        goto DONE;
+      } else if ( fu > fb ) {
+        xc = u;
+        fc = fu;
+        goto DONE;
+      }
+      u = xc+GOLD*(xc-xb);
+      fu = this->d1DTotalEnergy(u);
+    } else if ((xc-u)*(u-ulim) > 0.0) {
+      fu = this->d1DTotalEnergy(u);
+      if ( fu < fc ) {
+        LEFT_SHIFT_VALUES( xb, xc, u, xc+GOLD*(xc-xb) );
+        LEFT_SHIFT_VALUES( fb, fc, fu, this->d1DTotalEnergy(u));
+      }
 	    // Limit parabolic u to maximum allowed value
-	} else if ((u-ulim)*(ulim-xc)>=0.0 ){
-	    u = ulim;
-	    fu = this->d1DTotalEnergy(u);
-	} else {
-	    u = xc+GOLD*(xc-xb);
-	    fu = this->d1DTotalEnergy(u);
-	}
-	LEFT_SHIFT_VALUES( xa, xb, xc, u );
-	LEFT_SHIFT_VALUES( fa, fb, fc, fu );
-    }
-    DONE:
-#ifdef	DEBUG_ON
-    LOG(BF("minBracket  xa(%lf), xb(%lf), xc(%lf)") % xa % xb % xc );
-    if ( fa > fb && fb < fc ) {
-	LOG(BF("fa.GT.fb.LT.fc") );
+    } else if ((u-ulim)*(ulim-xc)>=0.0 ){
+      u = ulim;
+      fu = this->d1DTotalEnergy(u);
     } else {
-	LOG(BF("FAIL! minBracket FAILED!! It's not true that: fa.GT.fb.LT.fc") );
+      u = xc+GOLD*(xc-xb);
+      fu = this->d1DTotalEnergy(u);
     }
-    if ( xc < 0 ) {
-	LOG(BF("ATTN!  xc is less than zero ") );
-    }
+    LEFT_SHIFT_VALUES( xa, xb, xc, u );
+    LEFT_SHIFT_VALUES( fa, fb, fc, fu );
+  }
+ DONE:
+#ifdef	DEBUG_ON
+  LOG(BF("minBracket  xa(%lf), xb(%lf), xc(%lf)") % xa % xb % xc );
+  if ( fa > fb && fb < fc ) {
+    LOG(BF("fa.GT.fb.LT.fc") );
+  } else {
+    LOG(BF("FAIL! minBracket FAILED!! It's not true that: fa.GT.fb.LT.fc") );
+  }
+  if ( xc < 0 ) {
+    LOG(BF("ATTN!  xc is less than zero ") );
+  }
 #endif
-    *dPxa = xa;
-    *dPxb = xb;
-    *dPxc = xc;
-    *dPfa = fa;
-    *dPfb = fb;
-    *dPfc = fc;
-    return;
+  *dPxa = xa;
+  *dPxb = xb;
+  *dPxc = xc;
+  *dPfa = fa;
+  *dPfb = fb;
+  *dPfc = fc;
+  return;
 
-    }
+}
 
 
 /*
@@ -517,259 +517,259 @@ void	Minimizer_O::getPosition( NVector_sp 	nvResult,
  *	Return the function value at the new point and the
  *	new minimum in (xmin)
  */
-    double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
-					double tol,
-					double& lineStep,
-					int&	energyEvals,
-					int&	forceEvals,
-					int&	dbrentSteps
-	)
-    {
-    int	iter, ok1, ok2;
-    double	_a,_b,_d,d1,d2,du,dv,dw,dx,_e=0.0;
-    double	fu,fv,fw,fx,olde,tol1,tol2, u, u1, u2, v,w,x,xm, ft;
-    double	retval;
+double 	Minimizer_O::dbrent(	double ax, double bx, double cx,
+                                double tol,
+                                double& lineStep,
+                                int&	energyEvals,
+                                int&	forceEvals,
+                                int&	dbrentSteps
+                                )
+{
+  int	iter, ok1, ok2;
+  double	_a,_b,_d,d1,d2,du,dv,dw,dx,_e=0.0;
+  double	fu,fv,fw,fx,olde,tol1,tol2, u, u1, u2, v,w,x,xm, ft;
+  double	retval;
 
-    _d = 0.0;
-    energyEvals = 0;
-    forceEvals = 0;
-    dbrentSteps = 0;
-    LOG(BF("Incoming ax bx cx= %lf %lf %lf") % ax % bx % cx );
-    _a = (ax<cx?ax:cx);
-    _b = (ax>cx?ax:cx);
-    LOG(BF("Initial _a _b= %lf %lf") % _a % _b );
-    x = w = v = bx;
+  _d = 0.0;
+  energyEvals = 0;
+  forceEvals = 0;
+  dbrentSteps = 0;
+  LOG(BF("Incoming ax bx cx= %lf %lf %lf") % ax % bx % cx );
+  _a = (ax<cx?ax:cx);
+  _b = (ax>cx?ax:cx);
+  LOG(BF("Initial _a _b= %lf %lf") % _a % _b );
+  x = w = v = bx;
 //
 // Calculate the derivative along the search direction
 //
-    ft = d1DTotalEnergyForce( x, &fx, &dx );
-    forceEvals++;
-    LOG(BF("dbrent: derivative x,fx,dx = %lf %lf %lf") % x % fx % dx  );
-    fw=fv=fx;
-    dw=dv=dx;
-    for (iter=1;iter<=DBRENTITMAX;iter++ ) {
-	dbrentSteps++;
+  ft = d1DTotalEnergyForce( x, &fx, &dx );
+  forceEvals++;
+  LOG(BF("dbrent: derivative x,fx,dx = %lf %lf %lf") % x % fx % dx  );
+  fw=fv=fx;
+  dw=dv=dx;
+  for (iter=1;iter<=DBRENTITMAX;iter++ ) {
+    dbrentSteps++;
 //	LOG(BF("dbrent: iter=%3d  _a, _b= %10.15lf %10.15lf") % iter % _a % _b  );
-	xm=0.5*(_a+_b);
-	tol1=tol*fabs(x)+ZEPS;
-	tol2=2.0*tol1;
-	if (fabs(x-xm) <=(tol2-0.5*(_b-_a))) {	// Stopping criterion
-	    lineStep=x;
-	    retval = fx;
-	    LOG(BF("done due to (fabs(x-xm).LE.(tol2-0.5*(_b-_a)))") );
-	    goto DONE;
-	}
-	if (fabs(_e)>tol1){
-	    d1=2.0*(_b-_a);
-	    d2=d1;
-	    if (dw != dx ) d1=(w-x)*dx/(dx-dw); // Secant method, first on one, then on
-	    if (dv != dx ) d2=(v-x)*dx/(dx-dv); // the other point
+    xm=0.5*(_a+_b);
+    tol1=tol*fabs(x)+ZEPS;
+    tol2=2.0*tol1;
+    if (fabs(x-xm) <=(tol2-0.5*(_b-_a))) {	// Stopping criterion
+      lineStep=x;
+      retval = fx;
+      LOG(BF("done due to (fabs(x-xm).LE.(tol2-0.5*(_b-_a)))") );
+      goto DONE;
+    }
+    if (fabs(_e)>tol1){
+      d1=2.0*(_b-_a);
+      d2=d1;
+      if (dw != dx ) d1=(w-x)*dx/(dx-dw); // Secant method, first on one, then on
+      if (dv != dx ) d2=(v-x)*dx/(dx-dv); // the other point
 	    // Which of these two estimates of d shall we take? We will insist that
 	    // they are within the bracket, and on the side pointed to by the
 	    // derivative at x
-	    u1=x+d1;
-	    u2=x+d2;
-	    ok1=(_a-u1)*(u1-_b)>0.0 && dx*d1 <= 0.0;
-	    ok2=(_a-u2)*(u2-_b)>0.0 && dx*d2 <= 0.0;
-	    olde=_e; // Movement on the lineStep before last
-	    _e=_d;
-	    if (ok1 || ok2) {	// Take only an acceptable d, and if both are acceptable
+      u1=x+d1;
+      u2=x+d2;
+      ok1=(_a-u1)*(u1-_b)>0.0 && dx*d1 <= 0.0;
+      ok2=(_a-u2)*(u2-_b)>0.0 && dx*d2 <= 0.0;
+      olde=_e; // Movement on the lineStep before last
+      _e=_d;
+      if (ok1 || ok2) {	// Take only an acceptable d, and if both are acceptable
 				// then take the smallest one.
-	        if (ok1 && ok2)
-		    _d = (fabs(d1) < fabs(d2) ? d1 : d2 );
-		else if (ok1)
-		    _d = d1;
-		else
-		    _d = d2;
-		if (fabs(_d) <= fabs(0.5*olde)) {
-		    u=x+_d;
-		    if ( u-_a<tol2 || _b-u < tol2 )
-		        _d = SIGN(tol1,xm-x);
-		} else {
-		    _e=(dx>=0.0?_a-x:_b-x); // Bisect, not golden section
+        if (ok1 && ok2)
+          _d = (fabs(d1) < fabs(d2) ? d1 : d2 );
+        else if (ok1)
+          _d = d1;
+        else
+          _d = d2;
+        if (fabs(_d) <= fabs(0.5*olde)) {
+          u=x+_d;
+          if ( u-_a<tol2 || _b-u < tol2 )
+            _d = SIGN(tol1,xm-x);
+        } else {
+          _e=(dx>=0.0?_a-x:_b-x); // Bisect, not golden section
 		    			    // Decide which segment by the sign of the
 					    // derivative
-		    _d=0.5*_e;
-		}
-	    } else {
-	        _e=(dx>=0.0?_a-x:_b-x);
-	        _d=0.5*_e;
-	    }
-	} else {
-	    _e=(dx>=0.0?_a-x:_b-x);
-	    _d=0.5*_e;
-	}
-	if (fabs(_d) >= tol1) {
-	    u=x+_d;
-	    fu=d1DTotalEnergy(u);
-	    energyEvals++;
-	} else {
-	    u = x+SIGN(tol1,_d);
-	    fu=d1DTotalEnergy(u);
-	    energyEvals++;
-	    if ( fu>fx) { // If the minimum lineStep in the downhill direction takes us
+          _d=0.5*_e;
+        }
+      } else {
+        _e=(dx>=0.0?_a-x:_b-x);
+        _d=0.5*_e;
+      }
+    } else {
+      _e=(dx>=0.0?_a-x:_b-x);
+      _d=0.5*_e;
+    }
+    if (fabs(_d) >= tol1) {
+      u=x+_d;
+      fu=d1DTotalEnergy(u);
+      energyEvals++;
+    } else {
+      u = x+SIGN(tol1,_d);
+      fu=d1DTotalEnergy(u);
+      energyEvals++;
+      if ( fu>fx) { // If the minimum lineStep in the downhill direction takes us
 			  // uphill, then we are done
-		lineStep=x;
-		retval = fx;
-		LOG(BF("done due to fu>fx") );
-		goto DONE;
-	    }
-	}
+        lineStep=x;
+        retval = fx;
+        LOG(BF("done due to fu>fx") );
+        goto DONE;
+      }
+    }
 //
 // Calculate the force along the search direction
 //
-	ft = d1DTotalEnergyForce( u, &ft, &du ); // Now housekeeping
-	forceEvals++;
+    ft = d1DTotalEnergyForce( u, &ft, &du ); // Now housekeeping
+    forceEvals++;
 //
-	if (fu<=fx) {
-	    if (u>=x) _a=x; else _b=x;
-	    MOV3( v,fv,dv, w,fw,dw );
-	    MOV3( w,fw,dw, x,fx,dx );
-	    MOV3( x,fx,dx, u,fu,du );
-	} else {
-	    if (u<x ) _a=u; else _b=u;
-	    if (fu<=fw || w==x ) {
-		MOV3( v,fv,dv, w,fw,dw );
-		MOV3( w,fw,dw, u,fu,du );
-	    } else if ( fu<=fv || v == x || v == w ) {
-		MOV3( v,fv,dv, u,fu,du );
-	    }
-	}
+    if (fu<=fx) {
+      if (u>=x) _a=x; else _b=x;
+      MOV3( v,fv,dv, w,fw,dw );
+      MOV3( w,fw,dw, x,fx,dx );
+      MOV3( x,fx,dx, u,fu,du );
+    } else {
+      if (u<x ) _a=u; else _b=u;
+      if (fu<=fw || w==x ) {
+        MOV3( v,fv,dv, w,fw,dw );
+        MOV3( w,fw,dw, u,fu,du );
+      } else if ( fu<=fv || v == x || v == w ) {
+        MOV3( v,fv,dv, u,fu,du );
+      }
     }
-    LOG(BF("dbrent: ERROR Exceeded max iterations") );
-    retval = -1.0;
-    DONE:
-    LOG(BF("dbrent evaluated energy(%d) and force(%d) times") % energyEvals % forceEvals  );
-    return retval;
-    }
+  }
+  LOG(BF("dbrent: ERROR Exceeded max iterations") );
+  retval = -1.0;
+ DONE:
+  LOG(BF("dbrent evaluated energy(%d) and force(%d) times") % energyEvals % forceEvals  );
+  return retval;
+}
 
 
 
 
 void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
-					       NVector_sp nvPos, NVector_sp nvDir, NVector_sp nvForce,
-					       double xa, double xb, double xc,
-					       double fa, double fb, double fc )
-    {
-	double lenForce, lenDir, angle, cosAngle;
-	lenForce = magnitude(nvForce);
-	lenDir = magnitude(nvDir);
-	if ( lenForce == 0.0 || lenDir == 0.0 ) {
-	    angle = 200.0;
-	} else {
-          cosAngle = dotProduct(nvDir,nvForce)/(lenForce*lenDir);
-	    if ( cosAngle > 1.0 ) cosAngle = 1.0;
-	    if ( cosAngle < -1.0 ) cosAngle = -1.0;
-	    angle = acos(cosAngle);
-	}
-	report->_AngleBetweenDirectionAndForceDeg = angle/0.0174533;
-	report->_Xa = xa;
-	report->_Xb = xb;
-	report->_Xc = xc;
-	report->_Fa = fa;
-	report->_Fb = fb;
-	report->_Fc = fc;
-	report->_MinBracketSteps = this->_MinBracketSteps;
-	report->_EnergyTermsEnabled = this->_ScoringFunction->energyTermsEnabled();
-	report->_TotalEnergy = this->d1DTotalEnergy(0.0);
-	report->_DirectionMagnitude = magnitude(nvDir);
-	report->_ForceMagnitude = magnitude(nvForce);
-	report->_MinimizerStatus = this->statusAsString();
-	double dxa,dxc;
-	if ( xa < xc ) {
-	    dxa = xa;
-	    dxc = xc;
-	    report->_Direction = "searchForward";
-	} else {
-	    dxa = xc;
-	    dxc = xa;
-	    report->_Direction = "searchBackward";
-	}
-	double zx, zy;
-	double xmin = dxa;
-	double xinc = (dxc-dxa)/100.0;
-	report->_LineSearchPosition = nvPos->deepCopy().as<NVector_O>();
-	report->_LineSearchDirection = nvDir->deepCopy().as<NVector_O>();
-	report->_TotalEnergyFn = NumericalFunction_O::create("Alpha","Total",xmin,xinc);
-	report->_StretchEnergyFn = NumericalFunction_O::create("Alpha","Stretch",xmin,xinc);
-	report->_AngleEnergyFn = NumericalFunction_O::create("Alpha","Angle",xmin,xinc);
-	report->_DihedralEnergyFn = NumericalFunction_O::create("Alpha","Dihedral",xmin,xinc);
-	report->_NonbondEnergyFn = NumericalFunction_O::create("Alpha","Nonbond",xmin,xinc);
-	report->_ImproperEnergyFn = NumericalFunction_O::create("Alpha","Improper",xmin,xinc);
-	report->_ChiralRestraintEnergyFn = NumericalFunction_O::create("Alpha","ChiralRestraint",xmin,xinc);
-	report->_AnchorRestraintEnergyFn = NumericalFunction_O::create("Alpha","AnchorRestraint",xmin,xinc);
-	report->_FixedNonbondRestraintEnergyFn = NumericalFunction_O::create("Alpha","FixedNonbondRestraint",xmin,xinc);
+                                           NVector_sp nvPos, NVector_sp nvDir, NVector_sp nvForce,
+                                           double xa, double xb, double xc,
+                                           double fa, double fb, double fc )
+{
+  double lenForce, lenDir, angle, cosAngle;
+  lenForce = magnitude(nvForce);
+  lenDir = magnitude(nvDir);
+  if ( lenForce == 0.0 || lenDir == 0.0 ) {
+    angle = 200.0;
+  } else {
+    cosAngle = dotProduct(nvDir,nvForce)/(lenForce*lenDir);
+    if ( cosAngle > 1.0 ) cosAngle = 1.0;
+    if ( cosAngle < -1.0 ) cosAngle = -1.0;
+    angle = acos(cosAngle);
+  }
+  report->_AngleBetweenDirectionAndForceDeg = angle/0.0174533;
+  report->_Xa = xa;
+  report->_Xb = xb;
+  report->_Xc = xc;
+  report->_Fa = fa;
+  report->_Fb = fb;
+  report->_Fc = fc;
+  report->_MinBracketSteps = this->_MinBracketSteps;
+  report->_EnergyTermsEnabled = this->_ScoringFunction->energyTermsEnabled();
+  report->_TotalEnergy = this->d1DTotalEnergy(0.0);
+  report->_DirectionMagnitude = magnitude(nvDir);
+  report->_ForceMagnitude = magnitude(nvForce);
+  report->_MinimizerStatus = this->statusAsString();
+  double dxa,dxc;
+  if ( xa < xc ) {
+    dxa = xa;
+    dxc = xc;
+    report->_Direction = "searchForward";
+  } else {
+    dxa = xc;
+    dxc = xa;
+    report->_Direction = "searchBackward";
+  }
+  double zx, zy;
+  double xmin = dxa;
+  double xinc = (dxc-dxa)/100.0;
+  report->_LineSearchPosition = nvPos->deepCopy().as<NVector_O>();
+  report->_LineSearchDirection = nvDir->deepCopy().as<NVector_O>();
+  report->_TotalEnergyFn = NumericalFunction_O::create("Alpha","Total",xmin,xinc);
+  report->_StretchEnergyFn = NumericalFunction_O::create("Alpha","Stretch",xmin,xinc);
+  report->_AngleEnergyFn = NumericalFunction_O::create("Alpha","Angle",xmin,xinc);
+  report->_DihedralEnergyFn = NumericalFunction_O::create("Alpha","Dihedral",xmin,xinc);
+  report->_NonbondEnergyFn = NumericalFunction_O::create("Alpha","Nonbond",xmin,xinc);
+  report->_ImproperEnergyFn = NumericalFunction_O::create("Alpha","Improper",xmin,xinc);
+  report->_ChiralRestraintEnergyFn = NumericalFunction_O::create("Alpha","ChiralRestraint",xmin,xinc);
+  report->_AnchorRestraintEnergyFn = NumericalFunction_O::create("Alpha","AnchorRestraint",xmin,xinc);
+  report->_FixedNonbondRestraintEnergyFn = NumericalFunction_O::create("Alpha","FixedNonbondRestraint",xmin,xinc);
 
-	for ( zx=dxa;zx<=dxc;zx+=(dxc-dxa)/100.0 ) {
-	    zy = this->d1DTotalEnergy(zx);
-	    report->_TotalEnergyFn->appendValue(zy);
+  for ( zx=dxa;zx<=dxc;zx+=(dxc-dxa)/100.0 ) {
+    zy = this->d1DTotalEnergy(zx);
+    report->_TotalEnergyFn->appendValue(zy);
 #if 0
             // skipping components - it's not general
-	    report->_StretchEnergyFn->appendValue(
-                                                  this->_EnergyFunction->getStretchComponent()->getEnergy());
+    report->_StretchEnergyFn->appendValue(
+                                          this->_EnergyFunction->getStretchComponent()->getEnergy());
 #if USE_ALL_ENERGY_COMPONENTS
-	    report->_AngleEnergyFn->appendValue(
-		this->_EnergyFunction->getAngleComponent()->getEnergy());
-	    report->_DihedralEnergyFn->appendValue(
-		this->_EnergyFunction->getDihedralComponent()->getEnergy());
-	    report->_NonbondEnergyFn->appendValue(
-		this->_EnergyFunction->getNonbondComponent()->getEnergy());
-	    report->_ImproperEnergyFn->appendValue(
-		this->_EnergyFunction->getImproperRestraintComponent()->getEnergy());
-	    report->_ChiralRestraintEnergyFn->appendValue(
-		this->_EnergyFunction->getChiralRestraintComponent()->getEnergy());
-	    report->_AnchorRestraintEnergyFn->appendValue(
-		this->_EnergyFunction->getAnchorRestraintComponent()->getEnergy());
-	    report->_FixedNonbondRestraintEnergyFn->appendValue(
-		this->_EnergyFunction->getFixedNonbondRestraintComponent()->getEnergy());
+    report->_AngleEnergyFn->appendValue(
+                                        this->_EnergyFunction->getAngleComponent()->getEnergy());
+    report->_DihedralEnergyFn->appendValue(
+                                           this->_EnergyFunction->getDihedralComponent()->getEnergy());
+    report->_NonbondEnergyFn->appendValue(
+                                          this->_EnergyFunction->getNonbondComponent()->getEnergy());
+    report->_ImproperEnergyFn->appendValue(
+                                           this->_EnergyFunction->getImproperRestraintComponent()->getEnergy());
+    report->_ChiralRestraintEnergyFn->appendValue(
+                                                  this->_EnergyFunction->getChiralRestraintComponent()->getEnergy());
+    report->_AnchorRestraintEnergyFn->appendValue(
+                                                  this->_EnergyFunction->getAnchorRestraintComponent()->getEnergy());
+    report->_FixedNonbondRestraintEnergyFn->appendValue(
+                                                        this->_EnergyFunction->getFixedNonbondRestraintComponent()->getEnergy());
 #endif
 #endif
-	}
-    };
+  }
+};
 
 #if 0
 CL_LISPIFY_NAME("throwMinimizerExceededMaxSteps");
 CL_DEFMETHOD     void Minimizer_O::throwMinimizerExceededMaxSteps()
-    {_OF();
+{_OF();
       
-      MINIMIZER_EXCEEDED_MAX_STEPS_ERROR("test throw of MinimizerExceededMaxSteps");
-    };
+  MINIMIZER_EXCEEDED_MAX_STEPS_ERROR("test throw of MinimizerExceededMaxSteps");
+};
 #endif
 
 CL_LISPIFY_NAME("throwMinimizerStuck");
 CL_DEFMETHOD     void Minimizer_O::throwMinimizerStuck()
-    {_OF();
-	MINIMIZER_STUCK_ERROR("test throw of MinimizerStuck");
-    };
+{_OF();
+  MINIMIZER_STUCK_ERROR("test throw of MinimizerStuck");
+};
 
 
 CL_LISPIFY_NAME("throwMinimizerError");
 CL_DEFMETHOD     void Minimizer_O::throwMinimizerError()
-    {_OF();
-	MINIMIZER_ERROR("test throw of MinimizerError");
-    };
+{_OF();
+  MINIMIZER_ERROR("test throw of MinimizerError");
+};
 
 
 
 void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, double fMin,
-					     int energyEvals, int forceEvals, int dbrentSteps )
-    {_OF();
-    ASSERT(report->_Iteration == this->_Iteration);
-    report->_DbrentSteps = dbrentSteps;
-    report->_EnergyEvals = energyEvals;
-    report->_ForceEvals = forceEvals;
-    report->_Step = step;
-    report->_FMin = fMin;
-    }
+                                         int energyEvals, int forceEvals, int dbrentSteps )
+{_OF();
+  ASSERT(report->_Iteration == this->_Iteration);
+  report->_DbrentSteps = dbrentSteps;
+  report->_EnergyEvals = energyEvals;
+  report->_ForceEvals = forceEvals;
+  report->_Step = step;
+  report->_FMin = fMin;
+}
 
 
-    void	Minimizer_O::stepReport( StepReport_sp report, double energy, NVector_sp force )
-    {_OF();
-    ASSERT(report->_Iteration == this->_Iteration);
-    report->_ForceMagnitude = magnitude(force);
-    report->_TotalEnergy = energy;
-    report->_IterationMessages = this->_IterationMessages.str();
-    }
+void	Minimizer_O::stepReport( StepReport_sp report, double energy, NVector_sp force )
+{_OF();
+  ASSERT(report->_Iteration == this->_Iteration);
+  report->_ForceMagnitude = magnitude(force);
+  report->_TotalEnergy = energy;
+  report->_IterationMessages = this->_IterationMessages.str();
+}
 
 /*!
  *      Perform a line search of the amber function
@@ -777,139 +777,139 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
  *
  *	Only *dPstep and *dPfnew are updated.
  */
-    void	Minimizer_O::lineSearch(	double	*dPstep,
-						double	*dPfnew,
-						NVector_sp nvOrigin,
-						NVector_sp nvDirection,
-						NVector_sp nvForce,
-						NVector_sp nvTemp1,
-						NVector_sp nvTemp2,
-						int	iteration,
-						StepReport_sp	report )
-    {
-    double	xa, xb, xc;
-    double	fa, fb, fc;
-    double	step = 0.0;
-    int	functionEvals;
+void	Minimizer_O::lineSearch(	double	*dPstep,
+                                        double	*dPfnew,
+                                        NVector_sp nvOrigin,
+                                        NVector_sp nvDirection,
+                                        NVector_sp nvForce,
+                                        NVector_sp nvTemp1,
+                                        NVector_sp nvTemp2,
+                                        int	iteration,
+                                        StepReport_sp	report )
+{
+  double	xa, xb, xc;
+  double	fa, fb, fc;
+  double	step = 0.0;
+  int	functionEvals;
 
-    functionEvals = 0;
-    LOG(BF("Starting") );
+  functionEvals = 0;
+  LOG(BF("Starting") );
 
     //
     // Setup the 1D search origin and direction
     //
 
-    this->define1DSearch(nvOrigin,nvDirection,nvTemp1,nvTemp2);
-    double directionMag = magnitude(nvDirection);
-    if ( directionMag < VERYSMALLSQUARED ) {
-	xb = this->_InitialLineSearchStep;
-    } else {
-	xb = this->_InitialLineSearchStep/directionMag;
-    }
-    xa = 0.0;
+  this->define1DSearch(nvOrigin,nvDirection,nvTemp1,nvTemp2);
+  double directionMag = magnitude(nvDirection);
+  if ( directionMag < VERYSMALLSQUARED ) {
+    xb = this->_InitialLineSearchStep;
+  } else {
+    xb = this->_InitialLineSearchStep/directionMag;
+  }
+  xa = 0.0;
 
     //
     // Bracket the minimum
     //
 
-    this->minBracket( nvOrigin, nvDirection,
-		      &xa, &xb, &xc, &fa, &fb, &fc );
-    LOG(BF("Bracketed minimum") );
-    LOG(BF("xa,xb,xc = %lf %lf %lf ") % xa % xb % xc  );
-    LOG(BF("fa,fb,fc = %lf %lf %lf ") % fa % fb % fc  );
-    if ( this->_DebugOn )
-    {
-	this->lineSearchInitialReport(report,nvOrigin,nvDirection,nvForce,
-				      xa,xb,xc,fa,fb,fc);
-    }
+  this->minBracket( nvOrigin, nvDirection,
+                    &xa, &xb, &xc, &fa, &fb, &fc );
+  LOG(BF("Bracketed minimum") );
+  LOG(BF("xa,xb,xc = %lf %lf %lf ") % xa % xb % xc  );
+  LOG(BF("fa,fb,fc = %lf %lf %lf ") % fa % fb % fc  );
+  if ( this->_DebugOn )
+  {
+    this->lineSearchInitialReport(report,nvOrigin,nvDirection,nvForce,
+                                  xa,xb,xc,fa,fb,fc);
+  }
 
     //
     // Now use the bracketed minimum to find the line minimum
     //
     //
     // THIS IS WHERE YOU ADD DBRENT
-    int energyEvals = 0;
-    int forceEvals = 0;
-    int dbrentSteps = 0;
-    fb = dbrent( xa, xb, xc, TOL, step, energyEvals, forceEvals, dbrentSteps );
-    LOG(BF("brent bracketed step = %lf") % step  );
-    if ( this->_DebugOn )
-    {
-	this->lineSearchFinalReport( report, step, fb, energyEvals,
-				     forceEvals, dbrentSteps );
-    }
+  int energyEvals = 0;
+  int forceEvals = 0;
+  int dbrentSteps = 0;
+  fb = dbrent( xa, xb, xc, TOL, step, energyEvals, forceEvals, dbrentSteps );
+  LOG(BF("brent bracketed step = %lf") % step  );
+  if ( this->_DebugOn )
+  {
+    this->lineSearchFinalReport( report, step, fb, energyEvals,
+                                 forceEvals, dbrentSteps );
+  }
 
-    *dPstep = step;
-    *dPfnew = fb;
-
-
-    LOG(BF("Done") );
-    }
+  *dPstep = step;
+  *dPfnew = fb;
 
 
+  LOG(BF("Done") );
+}
 
-    void	Minimizer_O::_displayIntermediateMessage(
-	double			step,
-	double			fnew,
-	double			forceMag,
-	double			forceRMSMag,
-	double			cosAngle,
-	bool			steepestDescent )
-    {
+
+
+void	Minimizer_O::_displayIntermediateMessage(
+                                                 double			step,
+                                                 double			fnew,
+                                                 double			forceMag,
+                                                 double			forceRMSMag,
+                                                 double			cosAngle,
+                                                 bool			steepestDescent )
+{
 #define	MAX_DISPLAY	1024
-	double		angle;
-	char		buffer[MAX_DISPLAY];
-	stringstream	sout;
-	if ( this->_Iteration%10 == 1 || this->_DebugOn ) 
-	{
-	    sout << "---Stage-";
-	    if ( this->_ShowElapsedTime )
-	    {
-		sout << "Seconds--";
-	    }
-	    sout << "Step-----Alpha---Dir-------------Energy-----------RMSforce";
-	    if ( this->_ScoringFunction->getName() != "" ) 
-	    {
-		sout << "-------Name";
-	    }
-	    sout << std::endl;
-	}
-	sout << BF(" min%4s") % this->statusAsShortString();
-	if ( this->_ShowElapsedTime )
-	{
-#if USE_POSIX_TIME
-	    core::PosixTimeDuration_sp elapsed = core::PosixTimeDuration_O::createDurationSince(this->_StartTime);
-	    sout << BF(" %7ld") % elapsed->totalSeconds();
-#endif
-	}
-	sout << BF(" %5d") % this->_Iteration;
-	sout << BF(" %9.6lf") % step;
-	if ( steepestDescent ) 
-	{
-	    sout << "StDesc";
-	} else 
-	{
-	    if ( cosAngle < -1.0 ) cosAngle = -1.0;
-	    if ( cosAngle > 1.0 ) cosAngle = 1.0;
-	    angle = acos(cosAngle)/0.0174533;
-	    if ( angle < 0.1 ) 
-	    {
-		angle = 0.0;
-	    }
-	    sout << (BF(" %5.1lf") % angle);
-	}
-	sout << (BF(" %18.3lf") % fnew );
-	sout << (BF(" %18.3lf") % forceRMSMag);
-	if ( this->_ScoringFunction->getName() != "" ) 
-	{
-	    sout << BF(" %s") % this->_ScoringFunction->getName();
-	}
-        core::clasp_writeln_string(sout.str());
-	if ( this->_DebugOn ) 
-	{
-	    this->_Log->addMessage(buffer);
-	}
+  double		angle;
+  char		buffer[MAX_DISPLAY];
+  stringstream	sout;
+  if ( this->_Iteration%10 == 1 || this->_DebugOn ) 
+  {
+    sout << "---Stage-";
+    if ( this->_ShowElapsedTime )
+    {
+      sout << "Seconds--";
     }
+    sout << "Step-----Alpha---Dir-------------Energy-----------RMSforce";
+    if ( this->_ScoringFunction->getName() != "" ) 
+    {
+      sout << "-------Name";
+    }
+    sout << std::endl;
+  }
+  sout << BF(" min%4s") % this->statusAsShortString();
+  if ( this->_ShowElapsedTime )
+  {
+#if USE_POSIX_TIME
+    core::PosixTimeDuration_sp elapsed = core::PosixTimeDuration_O::createDurationSince(this->_StartTime);
+    sout << BF(" %7ld") % elapsed->totalSeconds();
+#endif
+  }
+  sout << BF(" %5d") % this->_Iteration;
+  sout << BF(" %9.6lf") % step;
+  if ( steepestDescent ) 
+  {
+    sout << "StDesc";
+  } else 
+  {
+    if ( cosAngle < -1.0 ) cosAngle = -1.0;
+    if ( cosAngle > 1.0 ) cosAngle = 1.0;
+    angle = acos(cosAngle)/0.0174533;
+    if ( angle < 0.1 ) 
+    {
+      angle = 0.0;
+    }
+    sout << (BF(" %5.1lf") % angle);
+  }
+  sout << (BF(" %18.3lf") % fnew );
+  sout << (BF(" %18.3lf") % forceRMSMag);
+  if ( this->_ScoringFunction->getName() != "" ) 
+  {
+    sout << BF(" %s") % this->_ScoringFunction->getName();
+  }
+  core::clasp_writeln_string(sout.str());
+  if ( this->_DebugOn ) 
+  {
+    this->_Log->addMessage(buffer);
+  }
+}
 
 
 
@@ -917,120 +917,118 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 /*!
  * Steepest descent minimizer with or without preconditioning
  */
-    void	Minimizer_O::_steepestDescent( int numSteps,
-					       NVector_sp x,
-					       double forceTolerance )
-    {
-      StepReport_sp	stepReport = StepReport_O::create();
-	int		iRestartSteps;
-	NVector_sp	force, m;
-	NVector_sp	s,dir,tv1,tv2;
-	double		forceMag, forceRmsMag,prevStep;
-	double		delta0, deltaNew;
-	double		eSquaredDelta0;
-	double		step, fnew, dirMag;
-	double		cosAngle = 0.0;
-	bool		steepestDescent;
-	int		innerSteps;
-	int		localSteps, k;
+void	Minimizer_O::_steepestDescent( int numSteps,
+                                       NVector_sp x,
+                                       double forceTolerance )
+{
+  StepReport_sp	stepReport = StepReport_O::create();
+  int		iRestartSteps;
+  NVector_sp	force, m;
+  NVector_sp	s,dir,tv1,tv2;
+  double		forceMag, forceRmsMag,prevStep;
+  double		delta0, deltaNew;
+  double		eSquaredDelta0;
+  double		step, fnew, dirMag;
+  double		cosAngle = 0.0;
+  bool		steepestDescent;
+  int		innerSteps;
+  int		localSteps, k;
 
-	LOG(BF("Checking status") );
-	if ( this->_Status == minimizerError ) return;
-	this->_Status = steepestDescentRunning;
-	this->_CurrentPreconditioner = noPreconditioner;
-	LOG(BF("step") );
+  LOG(BF("Checking status") );
+  if ( this->_Status == minimizerError ) return;
+  this->_Status = steepestDescentRunning;
+  this->_CurrentPreconditioner = noPreconditioner;
+  LOG(BF("step") );
 
-	localSteps = 0;
-	k = 0;
-	step = 0.0;
+  localSteps = 0;
+  k = 0;
+  step = 0.0;
 
-	LOG(BF("step") );
+  LOG(BF("step") );
 	/* Calculate how many conjugate gradient steps can be */
 	/* taken before a restart must be done */
 
-	iRestartSteps = x->size();
+  iRestartSteps = x->size();
 	// Define NVectors
-	force = NVector_O::create(iRestartSteps);
-        this->_Force = force;
-	s = NVector_O::create(iRestartSteps);
-	LOG(BF("step") );
-	dir = NVector_O::create(iRestartSteps);
-	tv1 = NVector_O::create(iRestartSteps);
-	tv2 = NVector_O::create(iRestartSteps);
-	LOG(BF("step") );
+  force = NVector_O::create(iRestartSteps);
+  this->_Force = force;
+  s = NVector_O::create(iRestartSteps);
+  LOG(BF("step") );
+  dir = NVector_O::create(iRestartSteps);
+  tv1 = NVector_O::create(iRestartSteps);
+  tv2 = NVector_O::create(iRestartSteps);
+  LOG(BF("step") );
 	// Done
-	innerSteps = MIN(iRestartSteps,ITMAX);
-	LOG(BF("step") );
-	double fp = this->dTotalEnergyForce( x, force );
-	LOG(BF("step") );
+  innerSteps = MIN(iRestartSteps,ITMAX);
+  LOG(BF("step") );
+  double fp = this->dTotalEnergyForce( x, force );
+  LOG(BF("step") );
 //    r->inPlaceTimesScalar(-1.0);
 	//  no preconditioning
-	copyVector(s,force);
-	LOG(BF("Done initialization") );
+  copyVector(s,force);
+  LOG(BF("Done initialization") );
 #if 0 //[
 	// TODO calculate preconditioner here
 	// s = M^(-1)force rather than just copying it from force
-	switch ( preconditioner )
-	{
-	case noPreconditioner:
-	    s->copy(force);
-	    break;
-	case identityPreconditioner:
-	    m = NVector_O::create(iRestartSteps);
-	    m->fill(1.0);
-	    this->_EnergyFunction->backSubstituteDiagonalPreconditioner(m,s,force);
-	    break;
-	case diagonalPreconditioner:
-	    m = NVector_O::create(iRestartSteps);
-	    this->_EnergyFunction->setupDiagonalPreconditioner(x,m);
-	    LOG(BF("Preconditioner max value: %lf") % m->maxValue() );
-	    LOG(BF("Preconditioner min value: %lf") % m->minValue() );
-	    minVal = m->minValue();
-	    if ( minVal < 0.0 ) {
-		m->addScalar(m,fabs(minVal)+1.0);
-	    }
-	    this->_EnergyFunction->backSubstituteDiagonalPreconditioner(m,s,force);
-	    break;
-	default:
-	    SIMPLE_ERROR(BF("Unsupported preconditioner"));
-	}
+  switch ( preconditioner )
+  {
+  case noPreconditioner:
+      s->copy(force);
+      break;
+  case identityPreconditioner:
+      m = NVector_O::create(iRestartSteps);
+      m->fill(1.0);
+      this->_EnergyFunction->backSubstituteDiagonalPreconditioner(m,s,force);
+      break;
+  case diagonalPreconditioner:
+      m = NVector_O::create(iRestartSteps);
+      this->_EnergyFunction->setupDiagonalPreconditioner(x,m);
+      LOG(BF("Preconditioner max value: %lf") % m->maxValue() );
+      LOG(BF("Preconditioner min value: %lf") % m->minValue() );
+      minVal = m->minValue();
+      if ( minVal < 0.0 ) {
+        m->addScalar(m,fabs(minVal)+1.0);
+      }
+      this->_EnergyFunction->backSubstituteDiagonalPreconditioner(m,s,force);
+      break;
+  default:
+      SIMPLE_ERROR(BF("Unsupported preconditioner"));
+  }
 #endif //]
-	copyVector(dir,s);
-	deltaNew = dotProduct(force,dir);
-	delta0 = deltaNew;
-	eSquaredDelta0 = forceTolerance*delta0;
-	LOG(BF("eSquaredDelta0 = %lf") % (eSquaredDelta0 ) );
-	LOG(BF("forceTolerance = %lf") % (forceTolerance ) );
-	LOG(BF("delta0 = %lf") % (delta0 ) );
-	localSteps = 0;
-	if ( this->_PrintIntermediateResults ) {
-          core::clasp_writeln_string("======= Starting Steepest Descent Minimizer");
-	}
-	try
-	{
-	    while (1) 
-	    { _BLOCK_TRACEF(BF("Step %d") %localSteps);
+  copyVector(dir,s);
+  deltaNew = dotProduct(force,dir);
+  delta0 = deltaNew;
+  eSquaredDelta0 = forceTolerance*delta0;
+  LOG(BF("eSquaredDelta0 = %lf") % (eSquaredDelta0 ) );
+  LOG(BF("forceTolerance = %lf") % (forceTolerance ) );
+  LOG(BF("delta0 = %lf") % (delta0 ) );
+  localSteps = 0;
+  if ( this->_PrintIntermediateResults ) {
+    core::clasp_writeln_string("======= Starting Steepest Descent Minimizer");
+  }
+  try
+  {
+    while (1) 
+    { _BLOCK_TRACEF(BF("Step %d") %localSteps);
 
 		//
 		// Absolute gradient test
 		//
-              forceMag = magnitude(force);
-              forceRmsMag = rmsMagnitude(force);
-		this->_RMSForce = forceRmsMag;
-		if ( forceRmsMag < forceTolerance ) {
-		    if ( this->_PrintIntermediateResults ) {
-                      core::clasp_writeln_string((BF("DONE absolute force test:\nforceRmsMag(%lf).LT.forceTolerance(%lf)") % forceRmsMag % forceTolerance).str() );
-		    }
-		    break;
-		}
+      forceMag = magnitude(force);
+      forceRmsMag = rmsMagnitude(force);
+      this->_RMSForce = forceRmsMag;
+      if ( forceRmsMag < forceTolerance ) {
+        if ( this->_PrintIntermediateResults ) {
+          core::clasp_writeln_string((BF("DONE absolute force test:\nforceRmsMag(%lf).LT.forceTolerance(%lf)") % forceRmsMag % forceTolerance).str() );
+        }
+        break;
+      }
 
-		this->_IterationMessages.str("");
-		if ( localSteps>=numSteps ) {
-                  MinimizerCondition_ExceededNumSteps fail(chem::_sym_steepest_descent,numSteps);
-                  throw(fail);
-		}
-
-
+      this->_IterationMessages.str("");
+      if ( localSteps>=numSteps ) {
+        MinimizerCondition_ExceededNumSteps fail(chem::_sym_steepest_descent,numSteps);
+        throw(fail);
+      }
 //
 // Here we need to implement the three Progress tests
 //
@@ -1045,22 +1043,18 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 // validating the energy function externally
 //
 //
-
-
-
-
 		// ***************************************************
 		// ***************************************************
 		// ***************************************************
 		//
 		// Once all the tests are complete then we start the iteration in earnest
 		//
-		{ // Dont break out of this block unless you THROW a SERIOUS error
-		    if ( this->_DebugOn )
-		    {
-			stepReport = StepReport_O::create();
-			stepReport->_Iteration = this->_Iteration;
-		    }
+      { // Dont break out of this block unless you THROW a SERIOUS error
+        if ( this->_DebugOn )
+        {
+          stepReport = StepReport_O::create();
+          stepReport->_Iteration = this->_Iteration;
+        }
 
 		    //
 		    // Descent test
@@ -1068,137 +1062,135 @@ void Minimizer_O::lineSearchFinalReport( StepReport_sp report, double step, doub
 		    // the force (steepest descent dir)
 		    // is less than _xxxDescentTest then copy the force into the search dir
 		    //
-		    dirMag = magnitude(dir);
-		    steepestDescent = false;
-		    LOG(BF("Starting descent test") );
-		    if ( forceMag != 0.0 && dirMag != 0.0 ) {
-                      cosAngle = dotProduct(force,dir)/(forceMag*dirMag);
-		    } else {
-			LOG(BF("something was zero length Using force") );
-			copyVector(dir,force);
-			steepestDescent = true;
-		    }
+        dirMag = magnitude(dir);
+        steepestDescent = false;
+        LOG(BF("Starting descent test") );
+        if ( forceMag != 0.0 && dirMag != 0.0 ) {
+          cosAngle = dotProduct(force,dir)/(forceMag*dirMag);
+        } else {
+          LOG(BF("something was zero length Using force") );
+          copyVector(dir,force);
+          steepestDescent = true;
+        }
 
 		    //
 		    // Print intermediate status
 		    //
-		    prevStep = step;
-		    if ( this->_PrintIntermediateResults ) {
-			this->_displayIntermediateMessage(step,fnew,forceMag,forceRmsMag,cosAngle,steepestDescent);
-		    }
+        prevStep = step;
+        if ( this->_PrintIntermediateResults ) {
+          this->_displayIntermediateMessage(step,fnew,forceMag,forceRmsMag,cosAngle,steepestDescent);
+        }
 
-		    this->lineSearch( &step, &fnew, x, dir, force, tv1, tv2, localSteps, stepReport );
+        this->lineSearch( &step, &fnew, x, dir, force, tv1, tv2, localSteps, stepReport );
 
 
-		    if ( prevStep == 0.0 && step == 0.0 ) {
-			MinimizerCondition_Stuck fail("Two successive CG steps went nowhere");
-			throw(fail);
-		    }
+        if ( prevStep == 0.0 && step == 0.0 ) {
+          MinimizerCondition_Stuck fail("Two successive CG steps went nowhere");
+          throw(fail);
+        }
 
-		    inPlaceAddTimesScalar(x, dir, step );
+        inPlaceAddTimesScalar(x, dir, step );
 
 		    // r = -f'(x)   r == force!!!!
-		    fp = dTotalEnergyForce( x, force );
-                    if ( this->_DebugOn ) {
-			this->stepReport(stepReport,fp,force);
-		    }
+        fp = dTotalEnergyForce( x, force );
+        if ( this->_DebugOn ) {
+          this->stepReport(stepReport,fp,force);
+        }
 
 
 #ifdef	VALIDATE_FORCE_ON //[
-		    this->validateForce(x,force);
+        this->validateForce(x,force);
 #endif //]
-
-
 		    // Don't use preconditioning
-		    copyVector(s,force);
-
+        copyVector(s,force);
 #if 0 //[
-		    switch ( preconditioner ) {
-		    case noPreconditioner:
-			s->copy(force);
-			break;
-		    case identityPreconditioner:
-			m->fill(1.0);
-			this->_EnergyFunction->backSubstituteDiagonalPreconditioner(m,s,force);
-			break;
-		    case diagonalPreconditioner:
-			LOG(BF("Calculating diagonal preconditioner") );
-			this->_EnergyFunction->setupDiagonalPreconditioner(x,m);
-			LOG(BF("Preconditioner max value: %lf") % m->maxValue()  );
-			LOG(BF("Preconditioner min value: %lf") % m->minValue()  );
-			minVal = m->minValue();
-			if ( minVal < 0.0 ) {
-			    m->addScalar(m,fabs(minVal)+1.0);
-			}
-			this->_EnergyFunction->backSubstituteDiagonalPreconditioner(m,s,force);
+        switch ( preconditioner ) {
+        case noPreconditioner:
+            s->copy(force);
+            break;
+        case identityPreconditioner:
+            m->fill(1.0);
+            this->_EnergyFunction->backSubstituteDiagonalPreconditioner(m,s,force);
+            break;
+        case diagonalPreconditioner:
+            LOG(BF("Calculating diagonal preconditioner") );
+            this->_EnergyFunction->setupDiagonalPreconditioner(x,m);
+            LOG(BF("Preconditioner max value: %lf") % m->maxValue()  );
+            LOG(BF("Preconditioner min value: %lf") % m->minValue()  );
+            minVal = m->minValue();
+            if ( minVal < 0.0 ) {
+              m->addScalar(m,fabs(minVal)+1.0);
+            }
+            this->_EnergyFunction->backSubstituteDiagonalPreconditioner(m,s,force);
 			//		    if ( s->dotProduct(force) < 0 ) {
 			//			s->copy(force);
 			//		    }
-			break;
-		    default:
-			SIMPLE_ERROR(BF("Unsupported preconditioner"));
-			break;
-		    }
+            break;
+        default:
+            SIMPLE_ERROR(BF("Unsupported preconditioner"));
+            break;
+        }
 #endif //]
-		    copyVector(dir,s);
-		    if ( this->_DebugOn )
-		    {
-			ASSERTNOTNULL(this->_Log);
-			this->_Log->addReport(stepReport);
-		    }
-		    localSteps++;
-		    this->_Iteration++;
-		}
+        copyVector(dir,s);
+        if ( this->_DebugOn )
+        {
+          ASSERTNOTNULL(this->_Log);
+          this->_Log->addReport(stepReport);
+        }
+        localSteps++;
+        this->_Iteration++;
+      }
 #if 0
-		if ( this->_StepCallback.notnilp() )
-		{
-		    this->_StepCallback->invoke(this->sharedThis<Minimizer_O>());
-		}
+      if ( this->_StepCallback.notnilp() )
+      {
+        this->_StepCallback->invoke(this->sharedThis<Minimizer_O>());
+      }
 #endif
-	    }
-	} catch (MinimizerCondition_ExceededNumSteps fail) {
-          if ( this->_DebugOn )
-          {
-            ANN(stepReport);
-            if ( stepReport.notnilp() )
-            {
-              stepReport->prematureTermination("ExceededNumSteps");
-              this->_Log->addReport(stepReport);
-            }
-          }
-
+    }
+  } catch (MinimizerCondition_ExceededNumSteps fail) {
+    if ( this->_DebugOn )
+    {
+      ANN(stepReport);
+      if ( stepReport.notnilp() )
+      {
+        stepReport->prematureTermination("ExceededNumSteps");
+        this->_Log->addReport(stepReport);
+      }
+    }
 	    //
 	    // Lets save the current conformation
 	    // before throwing this higher
 	    //
-          fp = dTotalEnergyForce( x, force );
-          this->_ScoringFunction->saveCoordinatesAndForces(x,force);
-          MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(fail);
-	}
-	fp = dTotalEnergyForce( x, force );
-	this->_ScoringFunction->saveCoordinatesAndForces(x,force);
-	LOG(BF("Wrote coordinates and force to atoms") );
-	if ( this->_DebugOn )
-	{
-	    LOG(BF("About to update stepReport") );
-	    ASSERTNOTNULL(stepReport);
-	    if ( stepReport.notnilp() )
-	    {
-		LOG(BF("About to add to stepReport") );
-		stepReport->prematureTermination("Stuck");
-		ASSERTNOTNULL(this->_Log);
-		LOG(BF("About to write report to debugLog") );
-		this->_Log->addReport(stepReport);
-		LOG(BF("Done writing report to debugLog") );
-	    }
-	}
-	LOG(BF("Leaving _steepestDescent") );
+    fp = dTotalEnergyForce( x, force );
+    this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
+    MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(fail);
+  } catch (MinimizerCondition_Stuck fail) {
+    MINIMIZER_STUCK_ERROR(fail.message());
+  }
+
+  fp = dTotalEnergyForce( x, force );
+  this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
+  LOG(BF("Wrote coordinates and force to atoms") );
+  if ( this->_DebugOn )
+  {
+    LOG(BF("About to update stepReport") );
+    ASSERTNOTNULL(stepReport);
+    if ( stepReport.notnilp() )
+    {
+      LOG(BF("About to add to stepReport") );
+      stepReport->prematureTermination("Stuck");
+      ASSERTNOTNULL(this->_Log);
+      LOG(BF("About to write report to debugLog") );
+      this->_Log->addReport(stepReport);
+      LOG(BF("Done writing report to debugLog") );
     }
+  }
+  LOG(BF("Leaving _steepestDescent") );
+}
 
 
 
-void	Minimizer_O::_conjugateGradient(
-                                        int numSteps,
+void	Minimizer_O::_conjugateGradient(int numSteps,
                                         NVector_sp x,
                                         double forceTolerance )
 {
@@ -1310,7 +1302,7 @@ void	Minimizer_O::_conjugateGradient(
           throw(fail);
         }
         if ( prevStep == 0.0 && step == 0.0 ) {
-          ERROR(chem::_sym_MinimizerStuckError,_Nil<core::T_O>());
+          MINIMIZER_STUCK_ERROR("Stuck in conjugate gradients");
         }
       }
 
@@ -1462,7 +1454,7 @@ void	Minimizer_O::_conjugateGradient(
 	// before throwing this higher
 	//
     fp = dTotalEnergyForce( x, force );
-    this->_ScoringFunction->saveCoordinatesAndForces(x,force);
+    this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
     MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(fail);
   } catch (MinimizerCondition_Stuck fail) {
     if ( this->_DebugOn )
@@ -1478,11 +1470,11 @@ void	Minimizer_O::_conjugateGradient(
 	// before throwing this higher
 	//
     fp = dTotalEnergyForce( x, force );
-    this->_ScoringFunction->saveCoordinatesAndForces(x,force);
+    this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
     MINIMIZER_STUCK_ERROR(fail.message());
   }
   fp = dTotalEnergyForce( x, force );
-  this->_ScoringFunction->saveCoordinatesAndForces(x,force);
+  this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(x,force);
   if ( this->_DebugOn )
   {
     if ( stepReport.notnilp() )
@@ -1492,10 +1484,6 @@ void	Minimizer_O::_conjugateGradient(
     }
   }
 }
-
-
-
-
 
 void	Minimizer_O::_truncatedNewtonInnerLoop(
                                                int				kk,
@@ -1786,8 +1774,7 @@ void	Minimizer_O::_truncatedNewton(
       }
 
       energyXk = energyXkNext;
-      this->lineSearch( &alphaK, &energyXkNext, xK, pK, forceK,
-                        zj, qj, kk, stepReport );
+      this->lineSearch( &alphaK, &energyXkNext, xK, pK, forceK, zj, qj, kk, stepReport );
       XPlusYTimesScalar(xKNext, xK,pK,alphaK);
 	    //
 	    // Evaluate the force at the new position
@@ -1867,8 +1854,8 @@ void	Minimizer_O::_truncatedNewton(
         this->_Log->addReport(stepReport);
       }
       if ( kk > numSteps ) {
-          MinimizerCondition_ExceededNumSteps fail(chem::_sym_truncated_newton,numSteps);
-          throw(fail);
+        MinimizerCondition_ExceededNumSteps fail(chem::_sym_truncated_newton,numSteps);
+        throw(fail);
       }
 #if 0
       if ( this->_StepCallback.notnilp() )
@@ -1889,12 +1876,12 @@ void	Minimizer_O::_truncatedNewton(
 	// before throwing this higher
 	//
     dTotalEnergyForce( xK, forceK );
-    this->_ScoringFunction->saveCoordinatesAndForces(xK,forceK);
+    this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(xK,forceK);
     MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(fail);
   }
   copyVector(xK,xKNext);
   dTotalEnergyForce( xK, forceK );
-  this->_ScoringFunction->saveCoordinatesAndForces(xK,forceK);
+  this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(xK,forceK);
   if ( this->_DebugOn )
   {
     if ( stepReport.notnilp() )
@@ -1913,49 +1900,49 @@ void	Minimizer_O::_truncatedNewton(
 
 */
 
-    void	Minimizer_O::_evaluateEnergyAndForceManyTimes( int numSteps,  NVector_sp nvPos )
-    {
+void	Minimizer_O::_evaluateEnergyAndForceManyTimes( int numSteps,  NVector_sp nvPos )
+{
 #define MINSLOPE        0.000001
 #define MINCHANGE       0.01
 
-    NVector_sp         nvDir, nvNewPos, nvNewForce, nvTempPos, nvTempForce;
-    double          dEnergy, dX, dRms;
-    int             iCount;
-    int		iSize;
+  NVector_sp         nvDir, nvNewPos, nvNewForce, nvTempPos, nvTempForce;
+  double          dEnergy, dX, dRms;
+  int             iCount;
+  int		iSize;
 
     /* Create the Direction vector */
-    dRms = 0.0;
-    dX = 1.0;
-    iSize = nvPos->size();
-    nvDir       = NVector_O::create( iSize );
-    nvNewPos    = NVector_O::create( iSize );
-    nvNewForce = NVector_O::create( iSize );
-    nvTempPos   = NVector_O::create( iSize );
-    nvTempForce= NVector_O::create( iSize );
+  dRms = 0.0;
+  dX = 1.0;
+  iSize = nvPos->size();
+  nvDir       = NVector_O::create( iSize );
+  nvNewPos    = NVector_O::create( iSize );
+  nvNewForce = NVector_O::create( iSize );
+  nvTempPos   = NVector_O::create( iSize );
+  nvTempForce= NVector_O::create( iSize );
 
-    iCount = 0;
-    this->_Iteration = 1;
-    do {
-        dEnergy = this->dTotalEnergyForce( nvPos, nvNewForce);
-	if ( iCount % 10000 == 0 ) {
-          core::clasp_writeln_string((BF("Evaluating energy step#%d") % iCount ).str());
-	}
-	iCount++;
-    } while ( iCount < numSteps );
-
-    LOG(BF("Exceeded maximum number of steps") );
-
+  iCount = 0;
+  this->_Iteration = 1;
+  do {
+    dEnergy = this->dTotalEnergyForce( nvPos, nvNewForce);
+    if ( iCount % 10000 == 0 ) {
+      core::clasp_writeln_string((BF("Evaluating energy step#%d") % iCount ).str());
     }
+    iCount++;
+  } while ( iCount < numSteps );
+
+  LOG(BF("Exceeded maximum number of steps") );
+
+}
 
 
-    void	Minimizer_O::validateForce(NVector_sp pos, NVector_sp force)
-    {
-	ForceMatchReport_sp	report;
-	if ( this->_DebugOn ) {
-	    report = this->_ScoringFunction->checkIfAnalyticalForceMatchesNumericalForce(pos,force);
-	    this->_Log->addReport(report);
-	}
-    }
+void	Minimizer_O::validateForce(NVector_sp pos, NVector_sp force)
+{
+  ForceMatchReport_sp	report;
+  if ( this->_DebugOn ) {
+    report = this->_ScoringFunction->checkIfAnalyticalForceMatchesNumericalForce(pos,force);
+    this->_Log->addReport(report);
+  }
+}
 
 
 
@@ -1978,46 +1965,46 @@ void	Minimizer_O::_truncatedNewton(
  *      Create the containers for atoms, bonds, angles, and torsions.
  */
 
-    void	Minimizer_O::initialize()
-    {
-	this->Base::initialize();
+void	Minimizer_O::initialize()
+{
+  this->Base::initialize();
 #ifdef	USE_CALLBACKS
-	this->bFCallback   = NULL;
+  this->bFCallback   = NULL;
 #endif
-	this->_DebugOn = false;
-	this->useDefaultSettings();
-	this->restart();
-        this->_Position = _Nil<core::T_O>();
-        this->_Force = _Nil<core::T_O>();
+  this->_DebugOn = false;
+  this->useDefaultSettings();
+  this->restart();
+  this->_Position = _Nil<core::T_O>();
+  this->_Force = _Nil<core::T_O>();
 //	this->_StepCallback = _Nil<core::LispCallback_O>();
-    }
+}
 
 
 
 CL_LISPIFY_NAME("useDefaultSettings");
 CL_DEFMETHOD     void	Minimizer_O::useDefaultSettings()
-    {
-	this->_InitialLineSearchStep = 0.01;
-	this->_NumberOfSteepestDescentSteps = MAXSTEEPESTDESCENTSTEPS;
-	this->_SteepestDescentTolerance = 2000.0;
-	this->_NumberOfConjugateGradientSteps = MAXCONJUGATEGRADIENTSTEPS;
-	this->_ConjugateGradientTolerance = 10.0;		//	Use this for now, later add TN minimizer and switch to that when this is <10.0
-	this->_NumberOfTruncatedNewtonSteps = MAXTRUNCATEDNEWTONSTEPS;
-	this->_TruncatedNewtonTolerance = 0.00000001;
-	this->_TruncatedNewtonPreconditioner = hessianPreconditioner;
-	this->_PrintIntermediateResults = false;
-	LOG(BF("_PrintIntermediateResults = %d") % this->_PrintIntermediateResults  );
-	this->_ReportEverySteps = -1;
-	this->_Status = minimizerIdle;
-	this->_ShowElapsedTime = true;
+{
+  this->_InitialLineSearchStep = 0.01;
+  this->_NumberOfSteepestDescentSteps = MAXSTEEPESTDESCENTSTEPS;
+  this->_SteepestDescentTolerance = 2000.0;
+  this->_NumberOfConjugateGradientSteps = MAXCONJUGATEGRADIENTSTEPS;
+  this->_ConjugateGradientTolerance = 10.0;		//	Use this for now, later add TN minimizer and switch to that when this is <10.0
+  this->_NumberOfTruncatedNewtonSteps = MAXTRUNCATEDNEWTONSTEPS;
+  this->_TruncatedNewtonTolerance = 0.00000001;
+  this->_TruncatedNewtonPreconditioner = hessianPreconditioner;
+  this->_PrintIntermediateResults = false;
+  LOG(BF("_PrintIntermediateResults = %d") % this->_PrintIntermediateResults  );
+  this->_ReportEverySteps = -1;
+  this->_Status = minimizerIdle;
+  this->_ShowElapsedTime = true;
 #ifdef	USE_CALLBACKS
 #ifdef	USEBOOSTPYTHON
-	this->iPythonCallbackEverySteps = 1;
-	this->POPythonCallback = NULL;
+  this->iPythonCallbackEverySteps = 1;
+  this->POPythonCallback = NULL;
 #endif
 #endif
-	this->_MinGradientMean = MIN_GRADIENT_MEAN;
-    }
+  this->_MinGradientMean = MIN_GRADIENT_MEAN;
+}
 
 
 
@@ -2025,39 +2012,39 @@ CL_DEFMETHOD     void	Minimizer_O::useDefaultSettings()
 
 CL_LISPIFY_NAME("enablePrintIntermediateResults");
 CL_DEFMETHOD     void	Minimizer_O::enablePrintIntermediateResults()
-    {
-    this->_PrintIntermediateResults = true;
-    }
+{
+  this->_PrintIntermediateResults = true;
+}
 
 
 
 
 CL_LISPIFY_NAME("disablePrintIntermediateResults");
 CL_DEFMETHOD     void	Minimizer_O::disablePrintIntermediateResults()
-    {
-    this->_PrintIntermediateResults = false;
-    }
+{
+  this->_PrintIntermediateResults = false;
+}
 
 
 
 
 CL_LISPIFY_NAME("setEnergyFunction");
 CL_DEFMETHOD     void	Minimizer_O::setEnergyFunction(ScoringFunction_sp f)
-    {
-	this->_ScoringFunction = f;
-	this->_Iteration = 1;
-    }
+{
+  this->_ScoringFunction = f;
+  this->_Iteration = 1;
+}
 
 CL_LISPIFY_NAME("evaluateEnergyAndForceManyTimes");
 CL_DEFMETHOD     void	Minimizer_O::evaluateEnergyAndForceManyTimes(int numSteps)
-    {_OF();
-    NVector_sp	pos;
-    ASSERT(this->_ScoringFunction);
-    this->_Iteration = 1;
-    pos = NVector_O::create(this->_ScoringFunction->getNVectorSize());
-    this->_ScoringFunction->loadCoordinates(pos);
-    this->_evaluateEnergyAndForceManyTimes(numSteps,pos);
-    }
+{_OF();
+  NVector_sp	pos;
+  ASSERT(this->_ScoringFunction);
+  this->_Iteration = 1;
+  pos = NVector_O::create(this->_ScoringFunction->getNVectorSize());
+  this->_ScoringFunction->loadCoordinatesIntoVector(pos);
+  this->_evaluateEnergyAndForceManyTimes(numSteps,pos);
+}
 
 
 
@@ -2065,7 +2052,7 @@ CL_LISPIFY_NAME("minimizeSteepestDescent");
 CL_DEFMETHOD     void	Minimizer_O::minimizeSteepestDescent()
 {_OF();
   ASSERT(this->_ScoringFunction);
-    NVector_sp	pos;
+  NVector_sp	pos;
   int		retries;
   bool		sawProblem;
 #if USE_POSIX_TIME
@@ -2078,7 +2065,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimizeSteepestDescent()
     do {
       sawProblem = false;
       try {
-        this->_ScoringFunction->loadCoordinates(pos);
+        this->_ScoringFunction->loadCoordinatesIntoVector(pos);
         this->_steepestDescent(this->_NumberOfSteepestDescentSteps,pos,
                                this->_SteepestDescentTolerance );
       } catch ( InteractionCondition ic ) {
@@ -2123,7 +2110,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimizeConjugateGradient()
     do {
       sawProblem = false;
       try {
-        this->_ScoringFunction->loadCoordinates(pos);
+        this->_ScoringFunction->loadCoordinatesIntoVector(pos);
         this->_conjugateGradient(this->_NumberOfConjugateGradientSteps,pos,
                                  this->_ConjugateGradientTolerance );
       } catch ( InteractionCondition ld ) {
@@ -2157,69 +2144,69 @@ CL_DEFMETHOD     void	Minimizer_O::minimizeConjugateGradient()
 
 CL_LISPIFY_NAME("resetAndMinimize");
 CL_DEFMETHOD     void	Minimizer_O::resetAndMinimize()
-    {
-    this->_Status = minimizerIdle;
-    this->minimize();
-    }
+{
+  this->_Status = minimizerIdle;
+  this->minimize();
+}
 
 
 CL_LISPIFY_NAME("minimize");
 CL_DEFMETHOD     void	Minimizer_O::minimize()
-    {
-    NVector_sp	pos;
-    int		retries;
-    bool		sawProblem;
+{
+  NVector_sp	pos;
+  int		retries;
+  bool		sawProblem;
 #if USE_POSIX_TIME
-    this->_StartTime = core::PosixTime_O::createNow();
+  this->_StartTime = core::PosixTime_O::createNow();
 #endif
-    ASSERT(this->_ScoringFunction);
-    pos = NVector_O::create(this->_ScoringFunction->getNVectorSize());
-    this->_Position = pos;
-    retries = 100;
-    try {
-	do {
-	    sawProblem = false;
-	    try {
-		this->_ScoringFunction->loadCoordinates(pos);
-		if ( this->_NumberOfSteepestDescentSteps > 0 ) {
-		    this->_steepestDescent( this->_NumberOfSteepestDescentSteps,
-					    pos, this->_SteepestDescentTolerance );
-		}
-		if ( this->_NumberOfConjugateGradientSteps > 0 ) {
-		    this->_conjugateGradient( this->_NumberOfConjugateGradientSteps,
-					      pos, this->_ConjugateGradientTolerance );
-		}
-		if ( this->_NumberOfTruncatedNewtonSteps > 0 ) {
-		    this->_truncatedNewton( this->_NumberOfTruncatedNewtonSteps,
-					    pos, this->_TruncatedNewtonTolerance );
-		}
-	    } catch ( InteractionCondition ld ) {
-              this->_ScoringFunction->dealWithProblem(ld.condition_name,ld.condition_arguments);
-		retries--;
-		sawProblem = true;
-		if ( this->_PrintIntermediateResults ) {
-                  core::clasp_writeln_string((BF("Dealt with %s %s") % _rep_(ld.condition_name) % _rep_(ld.condition_arguments)).str());
-		}
-	    }
-	} while ( sawProblem && retries > 0 );
-    } catch ( MinimizerCondition_ExceededNumSteps fail ) {
-	this->_Message.str("");
-	this->_Message<<"Minimizer exceeded max("
-		      << fail._NumberOfSteps<<") number of steps";
-	this->_Status = minimizerError;
-	MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(fail);
-    } catch ( MinimizerCondition_Stuck fail ) {
-	this->_Message.str("");
-	this->_Message<< fail.message();
-	this->_Status = minimizerError;
-	MINIMIZER_STUCK_ERROR(this->_Message.str());
-    }
-    if ( sawProblem ) {
-	this->_Status = minimizerError;
-	this->_Message << "There was a persistant interaction problem";
-	MINIMIZER_ERROR(this->_Message.str());
-    }
-    }
+  ASSERT(this->_ScoringFunction);
+  pos = NVector_O::create(this->_ScoringFunction->getNVectorSize());
+  this->_Position = pos;
+  retries = 100;
+  try {
+    do {
+      sawProblem = false;
+      try {
+        this->_ScoringFunction->loadCoordinatesIntoVector(pos);
+        if ( this->_NumberOfSteepestDescentSteps > 0 ) {
+          this->_steepestDescent( this->_NumberOfSteepestDescentSteps,
+                                  pos, this->_SteepestDescentTolerance );
+        }
+        if ( this->_NumberOfConjugateGradientSteps > 0 ) {
+          this->_conjugateGradient( this->_NumberOfConjugateGradientSteps,
+                                    pos, this->_ConjugateGradientTolerance );
+        }
+        if ( this->_NumberOfTruncatedNewtonSteps > 0 ) {
+          this->_truncatedNewton( this->_NumberOfTruncatedNewtonSteps,
+                                  pos, this->_TruncatedNewtonTolerance );
+        }
+      } catch ( InteractionCondition ld ) {
+        this->_ScoringFunction->dealWithProblem(ld.condition_name,ld.condition_arguments);
+        retries--;
+        sawProblem = true;
+        if ( this->_PrintIntermediateResults ) {
+          core::clasp_writeln_string((BF("Dealt with %s %s") % _rep_(ld.condition_name) % _rep_(ld.condition_arguments)).str());
+        }
+      }
+    } while ( sawProblem && retries > 0 );
+  } catch ( MinimizerCondition_ExceededNumSteps fail ) {
+    this->_Message.str("");
+    this->_Message<<"Minimizer exceeded max("
+                  << fail._NumberOfSteps<<") number of steps";
+    this->_Status = minimizerError;
+    MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(fail);
+  } catch ( MinimizerCondition_Stuck fail ) {
+    this->_Message.str("");
+    this->_Message<< fail.message();
+    this->_Status = minimizerError;
+    MINIMIZER_STUCK_ERROR(this->_Message.str());
+  }
+  if ( sawProblem ) {
+    this->_Status = minimizerError;
+    this->_Message << "There was a persistant interaction problem";
+    MINIMIZER_ERROR(this->_Message.str());
+  }
+}
 
 
 CL_LISPIFY_NAME("writeIntermediateResultsToEnergyFunction");
@@ -2228,50 +2215,50 @@ CL_DEFMETHOD void Minimizer_O::writeIntermediateResultsToEnergyFunction()
   if ( this->_Position.nilp() ) {
     SIMPLE_ERROR(BF("There are no intermediate results"));
   }
-  this->_ScoringFunction->saveCoordinatesAndForces(this->_Position,this->_Force);
+  this->_ScoringFunction->saveCoordinatesAndForcesFromVectors(this->_Position,this->_Force);
 }
 
 
-    adapt::QDomNode_sp	Minimizer_O::asXml()
-    {
-	adapt::QDomNode_sp	xml;
-	xml = adapt::QDomNode_O::create("Minimizer");
-	xml->addAttributeDoubleScientific("InitialLineSearchStep",this->_InitialLineSearchStep);
-	xml->addAttributeInt("MaximumNumberOfSteepestDescentSteps",this->_NumberOfSteepestDescentSteps);
-	xml->addAttributeInt("MaximumNumberOfConjugateGradientSteps",this->_NumberOfConjugateGradientSteps);
-	xml->addAttributeInt("MaximumNumberOfTruncatedNewtonSteps",this->_NumberOfTruncatedNewtonSteps);
-	xml->addAttributeDoubleScientific("SteepestDescentTolerance",this->_SteepestDescentTolerance);
-	xml->addAttributeDoubleScientific("ConjugateGradientTolerance",this->_ConjugateGradientTolerance);
-	xml->addAttributeDoubleScientific("TruncatedNewtonTolerance",this->_TruncatedNewtonTolerance);
-	xml->addAttributeString("TruncatedNewtonPreconditioner",stringForPreconditionerType(this->_TruncatedNewtonPreconditioner));
-	return xml;
-    }
+adapt::QDomNode_sp	Minimizer_O::asXml()
+{
+  adapt::QDomNode_sp	xml;
+  xml = adapt::QDomNode_O::create("Minimizer");
+  xml->addAttributeDoubleScientific("InitialLineSearchStep",this->_InitialLineSearchStep);
+  xml->addAttributeInt("MaximumNumberOfSteepestDescentSteps",this->_NumberOfSteepestDescentSteps);
+  xml->addAttributeInt("MaximumNumberOfConjugateGradientSteps",this->_NumberOfConjugateGradientSteps);
+  xml->addAttributeInt("MaximumNumberOfTruncatedNewtonSteps",this->_NumberOfTruncatedNewtonSteps);
+  xml->addAttributeDoubleScientific("SteepestDescentTolerance",this->_SteepestDescentTolerance);
+  xml->addAttributeDoubleScientific("ConjugateGradientTolerance",this->_ConjugateGradientTolerance);
+  xml->addAttributeDoubleScientific("TruncatedNewtonTolerance",this->_TruncatedNewtonTolerance);
+  xml->addAttributeString("TruncatedNewtonPreconditioner",stringForPreconditionerType(this->_TruncatedNewtonPreconditioner));
+  return xml;
+}
 
 
 CL_LISPIFY_NAME("configurationAsString");
 CL_DEFMETHOD     string	Minimizer_O::configurationAsString()
-    {
-	stringstream	ss;
-	ss.str("");
-	ss << "Minimizer state:"<<std::endl;
-	ss << "InitialLineSearchStep:                 " <<this->_InitialLineSearchStep << std::endl;
-	ss << "MaximumNumberOfSteepestDescentSteps:   "<<this->_NumberOfSteepestDescentSteps << std::endl;
-	ss << "SteepestDescentTolerance:              "<<this->_SteepestDescentTolerance << std::endl;
-	ss << "MaximumNumberOfConjugateGradientSteps: "<<this->_NumberOfConjugateGradientSteps << std::endl;
-	ss << "ConjugateGradientTolerance:            "<<this->_ConjugateGradientTolerance << std::endl;
-	ss << "MaximumNumberOfTruncatedNewtonSteps: "<<this->_NumberOfTruncatedNewtonSteps << std::endl;
-	ss << "TruncatedNewtonTolerance:            "<<this->_TruncatedNewtonTolerance << std::endl;
-	ss << "TruncatedNewtonPreconditioner:       "<<stringForPreconditionerType(this->_TruncatedNewtonPreconditioner)<<std::endl;
-	return ss.str();
-    }
+{
+  stringstream	ss;
+  ss.str("");
+  ss << "Minimizer state:"<<std::endl;
+  ss << "InitialLineSearchStep:                 " <<this->_InitialLineSearchStep << std::endl;
+  ss << "MaximumNumberOfSteepestDescentSteps:   "<<this->_NumberOfSteepestDescentSteps << std::endl;
+  ss << "SteepestDescentTolerance:              "<<this->_SteepestDescentTolerance << std::endl;
+  ss << "MaximumNumberOfConjugateGradientSteps: "<<this->_NumberOfConjugateGradientSteps << std::endl;
+  ss << "ConjugateGradientTolerance:            "<<this->_ConjugateGradientTolerance << std::endl;
+  ss << "MaximumNumberOfTruncatedNewtonSteps: "<<this->_NumberOfTruncatedNewtonSteps << std::endl;
+  ss << "TruncatedNewtonTolerance:            "<<this->_TruncatedNewtonTolerance << std::endl;
+  ss << "TruncatedNewtonPreconditioner:       "<<stringForPreconditionerType(this->_TruncatedNewtonPreconditioner)<<std::endl;
+  return ss.str();
+}
 
 CL_LISPIFY_NAME("restart");
 CL_DEFMETHOD     void	Minimizer_O::restart()
-    {
-	this->_Status = minimizerIdle;
-	this->_Message.str("");
-	this->_Iteration = 1;
-    }
+{
+  this->_Status = minimizerIdle;
+  this->_Message.str("");
+  this->_Iteration = 1;
+}
 
 SYMBOL_EXPORT_SC_(ChemPkg,noPreconditioner);
 SYMBOL_EXPORT_SC_(ChemPkg,hessianPreconditioner);

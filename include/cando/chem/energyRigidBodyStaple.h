@@ -59,17 +59,17 @@ public:
 public:
 	REAL            ks;
         REAL            r0;
-        INT             rigidBodyA;
-        Vector3         pointA;
-        INT             rigidBodyB;
-        Vector3         pointB;
- EnergyRigidBodyStaple(double k, double r, size_t ca, const Vector3& pa, size_t cb, const Vector3& pb) :
+        INT             rigidBodyK;
+        Vector3         pointK;
+        INT             rigidBodyL;
+        Vector3         pointL;
+ EnergyRigidBodyStaple(double k, double r, size_t ck, const Vector3& pk, size_t cl, const Vector3& pl) :
         ks(k),
           r0(r),
-          rigidBodyA(ca),
-          pointA(pa),
-          rigidBodyB(cb),
-          pointB(pb) {};
+          rigidBodyK(ck),
+          pointK(pk),
+          rigidBodyL(cl),
+          pointL(pl) {};
          
 };
 

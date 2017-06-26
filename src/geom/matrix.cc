@@ -156,23 +156,6 @@ double tresh,theta,tau,t,sm,s,h,g,c,b[MAXMATRIX],z[MAXMATRIX];
     THROW_HARD_ERROR(BF("Too many iterations in routine jacobi"));
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Matrix::Matrix()
 {
     this->setToIdentity();
@@ -182,8 +165,6 @@ Matrix::Matrix(bool identity)
 {
     if ( identity ) this->setToIdentity();
 }
-
-
 
 Matrix::~Matrix()
 {
@@ -1289,16 +1270,40 @@ void quaternion_to_matrix(Matrix& matrix, double w, double x, double y, double z
   double xsq = x*x;
   double ysq = y*y;
   double zsq = z*z;
+  double s = 1.0/(w*w+x*x+y*y+z*z);
+  matrix.atRowColPut(0,0,1.0-2.0*s*(ysq+zsq));
+  matrix.atRowColPut(0,1,2.0*s*(x*y-w*z));
+  matrix.atRowColPut(0,2,2.0*s*(x*z+w*y));
+  matrix.atRowColPut(0,3,tx);
+  matrix.atRowColPut(1,0,2.0*s*(x*y+w*z));
+  matrix.atRowColPut(1,1,1.0-2.0*s*(xsq+zsq));
+  matrix.atRowColPut(1,2,2.0*s*(y*z-w*x));
+  matrix.atRowColPut(1,3,ty);
+  matrix.atRowColPut(2,0,2.0*s*(x*z-w*y));
+  matrix.atRowColPut(2,1,2.0*s*(y*z+w*x));
+  matrix.atRowColPut(2,2,1.0-2.0*s*(xsq+ysq));
+  matrix.atRowColPut(2,3,tz);
+  matrix.atRowColPut(3,0,0.0);
+  matrix.atRowColPut(3,1,0.0);
+  matrix.atRowColPut(3,2,0.0);
+  matrix.atRowColPut(3,3,1.0);
+}
+
+// Only use this with normalized quaternions
+void normalized_quaternion_to_matrix(Matrix& matrix, double w, double x, double y, double z, double tx, double ty, double tz ) {
+  double xsq = x*x;
+  double ysq = y*y;
+  double zsq = z*z;
   matrix.atRowColPut(0,0,1.0-2.0*(ysq+zsq));
   matrix.atRowColPut(0,1,2.0*(x*y-w*z));
   matrix.atRowColPut(0,2,2.0*(x*z+w*y));
   matrix.atRowColPut(0,3,tx);
   matrix.atRowColPut(1,0,2.0*(x*y+w*z));
-  matrix.atRowColPut(1,1,1.0-2.0*(xsq+ysq));
-  matrix.atRowColPut(1,2,2.0*(y*z+w*x));
+  matrix.atRowColPut(1,1,1.0-2.0*(xsq+zsq));
+  matrix.atRowColPut(1,2,2.0*(y*z-w*x));
   matrix.atRowColPut(1,3,ty);
   matrix.atRowColPut(2,0,2.0*(x*z-w*y));
-  matrix.atRowColPut(2,1,2.0*(y*z-w*x));
+  matrix.atRowColPut(2,1,2.0*(y*z+w*x));
   matrix.atRowColPut(2,2,1.0-2.0*(xsq+ysq));
   matrix.atRowColPut(2,3,tz);
   matrix.atRowColPut(3,0,0.0);
@@ -1306,7 +1311,7 @@ void quaternion_to_matrix(Matrix& matrix, double w, double x, double y, double z
   matrix.atRowColPut(3,2,0.0);
   matrix.atRowColPut(3,3,1.0);
 }
-                      
+
 
 void rotation_matrix_to_quaternion(double& w, double& x, double& y, double& z, const Matrix& m)
 {

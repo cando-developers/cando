@@ -28,6 +28,9 @@
 
 (define-condition minimizer-error (error)
   ((message :initarg :message
-            :reader minimizer-error-message)))
-(define-condition minimizer-exceeded-max-steps-error (minimizer-error) ())
+            :reader minimizer-error-message)
+   (minimizer :initarg :minimizer
+             :reader minimizer)))
+(define-condition minimizer-exceeded-max-steps-error (minimizer-error)
+  ((number-of-steps :initarg :number-of-steps :accessor number-of-steps)))
 (define-condition minimizer-stuck-error (minimizer-error) ())

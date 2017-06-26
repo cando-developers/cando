@@ -256,6 +256,23 @@ double	_evaluateEnergyOnly_Nonbond(double x1, double y1, double z1,
 }
 #endif
 
+EnergyRigidBodyNonbond_sp EnergyRigidBodyNonbond_O::make(core::Array_sp end_atoms) {
+  if (end_atoms->length()<1) {
+    SIMPLE_ERROR(BF("You must provide a vector of end atom indices with at least one end atom"));
+  }
+  core::SimpleVector_byte32_t_sp sv = core::SimpleVector_byte32_t_O::make(end_atoms->length());
+  // Copy the atom indices
+  size_t istart = 0;
+  for ( size_t i(0), iEnd(end_atoms->length()); i<iEnd; ++i ) {
+    Fixnum f = core::clasp_to_fixnum(end_atoms->rowMajorAref(i));
+    if (istart>=f) {
+      SIMPLE_ERROR(BF("The list of atom indices must be strictly increasing"));
+    }
+    (*sv)[i] = f;
+  }
+  GC_ALLOCATE_VARIADIC(EnergyRigidBodyNonbond_O,nb,sv);
+  return nb;
+}
 
 void	EnergyRigidBodyNonbond_O::zeroEnergy()
 {
@@ -272,34 +289,27 @@ double	EnergyRigidBodyNonbond_O::getEnergy()
   return e;
 }
 
+void EnergyRigidBodyNonbond_O::energyRigidBodyNonbondSetTerm(gc::Fixnum index, Atom_sp atom, double radius, double epsilon, double charge, const Vector3& position) {
+  if (index < 0 || index >= this->_AtomInfoTable.size()) {
+    SIMPLE_ERROR(BF("Index out of range %d - max is %d") % index % this->_AtomInfoTable.size());
+  }
+  RigidBodyAtomInfo info(atom,radius,epsilon,charge,position);
+  this->_AtomInfoTable[index] = info;
+}
 
-#if 0
+
+
 void	EnergyRigidBodyNonbond_O::dumpTerms()
 {
-  gctools::Vec0<EnergyRigidBodyNonbond>::iterator	eni;
-  string				as1,as2,as3,as4;
-  string				str1, str2, str3, str4;
-  for ( eni=this->_Terms.begin(); eni!=this->_Terms.end(); eni++ )
-  {
-    as1 = atomLabel(eni->_Atom1);
-    as2 = atomLabel(eni->_Atom2);
-    if ( as1 < as2 )
-    {
-      str1 = as1;
-      str2 = as2;
-    } else {
-      str2 = as1;
-      str1 = as2;
+  size_t istart = 0;
+  for ( size_t rb = 0; rb<this->_RigidBodyEndAtom->length(); ++rb) {
+    for ( size_t i = istart; i<(*this->_RigidBodyEndAtom)[rb]; ++i ) {
+      RigidBodyAtomInfo& ai = this->_AtomInfoTable[i];
+      BFORMAT_T(BF("I1 = %3d  %s  %lf %lf %lf %s\n") % (rb*7) % _rep_(ai._Atom) % ai._Radius % ai._Epsilon % ai._Charge % ai._Position.asString());
     }
-    if ( eni->_Is14 ) {
-      _lisp->print(BF("TERM 4CALC14 %-9s - %-9s") %	str1 % str2 );
-    }else{
-      _lisp->print(BF("TERM 5NONBOND %-9s - %-9s") %	str1 % str2 );
-    }
+    istart = (*this->_RigidBodyEndAtom)[rb];
   }
-
 }
-#endif
 
 
 void	EnergyRigidBodyNonbond_O::setupHessianPreconditioner(

@@ -86,7 +86,6 @@ SMART(QDomNode);
 SMART(AbstractLargeSquareMatrix);
 
 
-
 #if TURN_ENERGY_FUNCTION_DEBUG_ON == 1
 #define	LOG_ENERGY_CLEAR() {this->_DebugLog.str("");};
 #define LOG_ENERGY(s) {this->_DebugLog << __FILE__ << ":" << __LINE__ << " " << s;}

@@ -61,6 +61,7 @@ __END_DOC
 
 #include <cando/chem/largeSquareMatrix.h>
 #include <cando/chem/chemInfo.h>
+#include <clasp/core/array.h>
 #include <clasp/core/wrappers.h>
 
 
@@ -104,19 +105,23 @@ void RigidBodyEnergyFunction_O::setupHessianPreconditioner( NVector_sp pos, Abst
   IMPLEMENT_ME();
 }
 
-void	RigidBodyEnergyFunction_O::loadCoordinates(NVector_sp pos)
+void	RigidBodyEnergyFunction_O::loadCoordinatesIntoVector(NVector_sp pos)
 {
-  IMPLEMENT_ME();
+  ASSERT(this->_SavedCoordinates && this->_SavedCoordinates->length() == pos->length());
+  core::core__copy_subarray(pos,core::make_fixnum(0),this->_SavedCoordinates,core::make_fixnum(0),core::make_fixnum(pos->length()));
 }
 
-void RigidBodyEnergyFunction_O::saveCoordinates(NVector_sp pos)
+void RigidBodyEnergyFunction_O::saveCoordinatesFromVector(NVector_sp pos)
 {
-  IMPLEMENT_ME();
+  ASSERT(this->_SavedCoordinates && this->_SavedCoordinates->length() == pos->length());
+  core::core__copy_subarray(this->_SavedCoordinates,core::make_fixnum(0),pos,core::make_fixnum(0),core::make_fixnum(pos->length()));
 }
 
-void RigidBodyEnergyFunction_O::saveCoordinatesAndForces(NVector_sp pos, NVector_sp force)
+void RigidBodyEnergyFunction_O::saveCoordinatesAndForcesFromVectors(NVector_sp pos, NVector_sp force)
 {
-  IMPLEMENT_ME();
+  ASSERT(this->_SavedCoordinates && this->_SavedCoordinates->length() == pos->length());
+  this->saveCoordinatesFromVector(pos);
+  // Do the forces
 }
 
 
@@ -163,7 +168,7 @@ double	RigidBodyEnergyFunction_O::evaluateAll( 	NVector_sp pos,
                                                         gc::Nilable<NVector_sp> dvec	)
 {_G()
   bool	hasForce = force.notnilp();
-  bool   hasHessian = hessian.notnilp();
+  bool  hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
 
 #ifdef	DEBUG_ON //[
@@ -206,14 +211,6 @@ double	RigidBodyEnergyFunction_O::evaluateAll( 	NVector_sp pos,
 }
 
 
-double	RigidBodyEnergyFunction_O::evaluateEnergy( NVector_sp pos )
-{
-  IMPLEMENT_ME();
-};
-double	RigidBodyEnergyFunction_O::evaluateEnergyForce( NVector_sp pos, bool calcForce, NVector_sp force )
-{
-  IMPLEMENT_ME();
-};
 
 void	RigidBodyEnergyFunction_O::dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments)
 {
@@ -252,7 +249,7 @@ core::T_mv RigidBodyEnergyFunction_O::getPosition(size_t index) {
   
 
 
-void RigidBodyEnergyFunction_O::normalizePosition()
+void RigidBodyEnergyFunction_O::normalizePosition(NVector_sp pos)
 {
   // Normalize the quaternions
   double* dpos = &(*pos)[0];
@@ -270,6 +267,28 @@ void RigidBodyEnergyFunction_O::normalizePosition()
   }
 }
 
+string RigidBodyEnergyFunction_O::energyComponentsAsString() {
+  stringstream ss;
+  for ( auto cur : this->_Terms ) {
+    EnergyRigidBodyComponent_sp term = gc::As<EnergyRigidBodyComponent_sp>(CONS_CAR(cur));
+    ss << _rep_(core::lisp_instance_class(term)) << " ";
+  }
+  return ss.str();
+}
+ 
 
+void RigidBodyEnergyFunction_O::dumpTerms()
+{
+  for ( auto cur : this->_Terms ) {
+    EnergyRigidBodyComponent_sp term = gc::As<EnergyRigidBodyComponent_sp>(CONS_CAR(cur));
+    term->dumpTerms();
+  }
+}
+    
+
+uint RigidBodyEnergyFunction_O::checkForBeyondThresholdInteractions()
+{
+  return 0;
+}
 
 };

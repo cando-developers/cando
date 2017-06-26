@@ -30,6 +30,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>
 #include <clasp/core/profiler.h>
+#include <clasp/core/bformat.h>
 #include <cando/chem/nVector.h>
 #include <cando/chem/largeSquareMatrix.h>
 #include <clasp/core/wrappers.h>
@@ -118,8 +119,8 @@ void	EnergyRigidBodyStaple_O::setupHessianPreconditioner(
   bool		calcOffDiagonalHessian = true;
   double        ks;
   size_t        rba, rbb;
-  double        xh1, yh1, zh1;
-  double        xh2, yh2, zh2;
+  double        pxk, pyk, pzk;
+  double        pxl, pyl, pzl;
   double        ak, bk, ck, dk, xk, yk, zk;
   double        al, bl, cl, dl, xl, yl, zl;
 #undef	STAPLE_SET_PARAMETER
@@ -149,14 +150,6 @@ void	EnergyRigidBodyStaple_O::setupHessianPreconditioner(
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/energy-functions/_STAPLE_termDeclares.cc>
 #pragma clang diagnostic pop
-#if !USE_EXPLICIT_DECLARES
-    double fx1 = 0.0;
-    double fy1 = 0.0;
-    double fz1 = 0.0;
-    double fx2 = 0.0;
-    double fy2 = 0.0;
-    double fz2 = 0.0;
-#endif
     //    double x1,y1,z1,x2,y2,z2,kxb,r0;
     double ks, r0;
     int I1, I2;
@@ -182,8 +175,8 @@ double EnergyRigidBodyStaple_O::evaluateAll(
 { 
   if ( this->_DebugEnergy ) 
   {
-    LOG_ENERGY_CLEAR();
-    LOG_ENERGY(BF("%s {\n")% this->className());
+    //BFORMAT_T_CLEAR();
+    BFORMAT_T(BF("%s {\n")% this->className());
   }
 
   ANN(force);
@@ -195,8 +188,8 @@ double EnergyRigidBodyStaple_O::evaluateAll(
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
   double        ks, r0;
   size_t        rba, rbb;
-  double        xh1, yh1, zh1;
-  double        xh2, yh2, zh2;
+  double        pxk, pyk, pzk;
+  double        pxl, pyl, pzl;
   double        ak, bk, ck, dk, xk, yk, zk;
   double        al, bl, cl, dl, xl, yl, zl;
   double totalEnergy = 0.0;
@@ -251,27 +244,51 @@ double EnergyRigidBodyStaple_O::evaluateAll(
 #include <cando/energy-functions/_STAPLE_debugEvalSet.cc>
 #endif //]
       if ( this->_DebugEnergy ) {
-        LOG_ENERGY(BF( "MEISTER stretch %d args cando\n")% (i+1) );
-        LOG_ENERGY(BF( "MEISTER stretch %d address %x \n")% (i+1) % (&(*si)) );
-        LOG_ENERGY(BF( "MEISTER stretch %d r0 %5.3lf\n")% (i+1) % r0 );
-        LOG_ENERGY(BF( "MEISTER stretch %d kb %5.1lf\n")% (i+1) % kb );
-        LOG_ENERGY(BF( "MEISTER stretch %d x1 %5.3lf %d\n")% (i+1) % x1 % (I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER stretch %d y1 %5.3lf %d\n")% (i+1) % y1 % (I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER stretch %d z1 %5.3lf %d\n")% (i+1) % z1 % (I1/3+1) );
-        LOG_ENERGY(BF( "MEISTER stretch %d x2 %5.3lf %d\n")% (i+1) % x2 % (I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER stretch %d y2 %5.3lf %d\n")% (i+1) % y2 % (I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER stretch %d z2 %5.3lf %d\n")% (i+1) % z2 % (I2/3+1) );
-        LOG_ENERGY(BF( "MEISTER stretch %d results\n")% (i+1) );
-        LOG_ENERGY(BF( "MEISTER stretch %d Energy %lf\n")% (i+1) % Energy );
+        BFORMAT_T(BF( "MEISTER staple %d args cando\n")% (i+1) );
+        BFORMAT_T(BF( "MEISTER staple %d address %x \n")% (i+1) % (&(*si)) );
+        BFORMAT_T(BF( "MEISTER staple %d r0  %5.3lf\n")% (i+1) % r0 );
+        BFORMAT_T(BF( "MEISTER staple %d ks  %5.1lf\n")% (i+1) % ks );
+        BFORMAT_T(BF( "MEISTER staple %d I1  %4d\n")% (i+1) % I1 );
+        BFORMAT_T(BF( "MEISTER staple %d I2  %4d\n")% (i+1) % I2 );
+        BFORMAT_T(BF( "MEISTER staple %d ak  %5.3lf %d\n")% (i+1) % ak % (I1/7+1) );
+        BFORMAT_T(BF( "MEISTER staple %d bk  %5.3lf %d\n")% (i+1) % bk % (I1/7+1) );
+        BFORMAT_T(BF( "MEISTER staple %d ck  %5.3lf %d\n")% (i+1) % ck % (I1/7+1) );
+        BFORMAT_T(BF( "MEISTER staple %d dk  %5.3lf %d\n")% (i+1) % dk % (I1/7+1) );
+        BFORMAT_T(BF( "MEISTER staple %d xk  %5.3lf %d\n")% (i+1) % xk % (I1/7+1) ); 
+        BFORMAT_T(BF( "MEISTER staple %d yk  %5.3lf %d\n")% (i+1) % yk % (I1/7+1) );
+        BFORMAT_T(BF( "MEISTER staple %d zk  %5.3lf %d\n")% (i+1) % zk % (I1/7+1) ); 
+        BFORMAT_T(BF( "MEISTER staple %d pxk %5.3lf %d\n")% (i+1) % pxk % (I1/7+1) ); 
+        BFORMAT_T(BF( "MEISTER staple %d pyk %5.3lf %d\n")% (i+1) % pyk % (I1/7+1) );
+        BFORMAT_T(BF( "MEISTER staple %d pzk %5.3lf %d\n")% (i+1) % pzk % (I1/7+1) ); 
+        BFORMAT_T(BF( "MEISTER staple %d al  %5.3lf %d\n")% (i+1) % al % (I2/7+1) );
+        BFORMAT_T(BF( "MEISTER staple %d bl  %5.3lf %d\n")% (i+1) % bl % (I2/7+1) );
+        BFORMAT_T(BF( "MEISTER staple %d cl  %5.3lf %d\n")% (i+1) % cl % (I2/7+1) );
+        BFORMAT_T(BF( "MEISTER staple %d dl  %5.3lf %d\n")% (i+1) % dl % (I2/7+1) );
+        BFORMAT_T(BF( "MEISTER staple %d xl  %5.3lf %d\n")% (i+1) % xl % (I2/7+1) ); 
+        BFORMAT_T(BF( "MEISTER staple %d yl  %5.3lf %d\n")% (i+1) % yl % (I2/7+1) );
+        BFORMAT_T(BF( "MEISTER staple %d zl  %5.3lf %d\n")% (i+1) % zl % (I2/7+1) );
+        BFORMAT_T(BF( "MEISTER staple %d pxl %5.3lf %d\n")% (i+1) % pxl % (I2/7+1) ); 
+        BFORMAT_T(BF( "MEISTER staple %d pyl %5.3lf %d\n")% (i+1) % pyl % (I2/7+1) );
+        BFORMAT_T(BF( "MEISTER staple %d pzl %5.3lf %d\n")% (i+1) % pzl % (I2/7+1) ); 
+        BFORMAT_T(BF( "MEISTER staple %d results\n")% (i+1) );
+        BFORMAT_T(BF( "MEISTER staple %d Energy %lf\n")% (i+1) % Energy );
         if ( calcForce ) {
-          LOG_ENERGY(BF( "MEISTER stretch %d fx1 %lf %d\n")% (i+1) % fx1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER stretch %d fy1 %lf %d\n")% (i+1) % fy1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER stretch %d fz1 %lf %d\n")% (i+1) % fz1 % (I1/3+1) );
-          LOG_ENERGY(BF( "MEISTER stretch %d fx2 %lf %d\n")% (i+1) % fx2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER stretch %d fy2 %lf %d\n")% (i+1) % fy2 % (I2/3+1) );
-          LOG_ENERGY(BF( "MEISTER stretch %d fz2 %lf %d\n")% (i+1) % fz2 % (I2/3+1) );
+          BFORMAT_T(BF( "MEISTER staple %d fak  %5.3lf %d\n")% (i+1) % fak % (I1/7+1) );
+          BFORMAT_T(BF( "MEISTER staple %d fbk  %5.3lf %d\n")% (i+1) % fbk % (I1/7+1) );
+          BFORMAT_T(BF( "MEISTER staple %d fck  %5.3lf %d\n")% (i+1) % fck % (I1/7+1) );
+          BFORMAT_T(BF( "MEISTER staple %d fdk  %5.3lf %d\n")% (i+1) % fdk % (I1/7+1) );
+          BFORMAT_T(BF( "MEISTER staple %d fxk  %5.3lf %d\n")% (i+1) % fxk % (I1/7+1) ); 
+          BFORMAT_T(BF( "MEISTER staple %d fyk  %5.3lf %d\n")% (i+1) % fyk % (I1/7+1) );
+          BFORMAT_T(BF( "MEISTER staple %d fzk  %5.3lf %d\n")% (i+1) % fzk % (I1/7+1) ); 
+          BFORMAT_T(BF( "MEISTER staple %d fal  %5.3lf %d\n")% (i+1) % fal % (I2/7+1) );
+          BFORMAT_T(BF( "MEISTER staple %d fbl  %5.3lf %d\n")% (i+1) % fbl % (I2/7+1) );
+          BFORMAT_T(BF( "MEISTER staple %d fcl  %5.3lf %d\n")% (i+1) % fcl % (I2/7+1) );
+          BFORMAT_T(BF( "MEISTER staple %d fdl  %5.3lf %d\n")% (i+1) % fdl % (I2/7+1) );
+          BFORMAT_T(BF( "MEISTER staple %d fxl  %5.3lf %d\n")% (i+1) % fxl % (I2/7+1) ); 
+          BFORMAT_T(BF( "MEISTER staple %d fyl  %5.3lf %d\n")% (i+1) % fyl % (I2/7+1) );
+          BFORMAT_T(BF( "MEISTER staple %d fzl  %5.3lf %d\n")% (i+1) % fzl % (I2/7+1) );
         }
-        LOG_ENERGY(BF( "MEISTER stretch %d stop\n")% (i+1) );
+        BFORMAT_T(BF( "MEISTER staple %d stop\n")% (i+1) );
       }
 		/* Add the forces */
 
@@ -285,7 +302,7 @@ double EnergyRigidBodyStaple_O::evaluateAll(
   }
   if ( this->_DebugEnergy ) 
   {
-    LOG_ENERGY(BF("%s }")% this->className());
+    BFORMAT_T(BF("%s }")% this->className());
   }
   return totalEnergy;
 }
@@ -331,7 +348,7 @@ void	EnergyRigidBodyStaple_O::compareAnalyticalAndNumericalForceAndHessianTermBy
 #define	STAPLE_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
     if ( this->isEnabled() ) {
-      _BLOCK_TRACE("StretchEnergy finiteDifference comparison");
+      _BLOCK_TRACE("StapleEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/energy-functions/_STAPLE_termDeclares.cc>
@@ -399,7 +416,7 @@ int	EnergyRigidBodyStaple_O::checkForBeyondThresholdInteractions(
 #pragma clang diagnostic pop
     fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
     fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-    double x1,y1,z1,x2,y2,z2,kb,r0;
+    double x1,y1,z1,x2,y2,z2,r0;
     int I1, I2,i;
 //	    stretchScale = this->getScale();
     gctools::Vec0<EnergyRigidBodyStaple>::iterator si;
@@ -444,14 +461,14 @@ void	EnergyRigidBodyStaple_O::dumpTerms()
     _lisp->print(BF("TERM 1RBST %-8.2lf %-8.2lf %-9lu %-8.2lf %-8.2lf %-8.2lf - %-9lu %-8.2lf %-8.2lf %-8.2lf") 
                  % esi->ks
                  % esi->r0
-                 % esi->rigidBodyA
-                 % esi->pointA.getX()
-                 % esi->pointA.getY()
-                 % esi->pointA.getZ()
-                 % esi->rigidBodyB
-                 % esi->pointB.getX()
-                 % esi->pointB.getY()
-                 % esi->pointB.getZ() );
+                 % esi->rigidBodyK
+                 % esi->pointK.getX()
+                 % esi->pointK.getY()
+                 % esi->pointK.getZ()
+                 % esi->rigidBodyL
+                 % esi->pointL.getX()
+                 % esi->pointL.getY()
+                 % esi->pointL.getZ() );
   }
 }
 

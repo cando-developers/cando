@@ -115,11 +115,11 @@ namespace chem {
     virtual void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian) override;
 
     /*! Load the coordinates in the ScoringFunction into the position vector */
-    virtual void	loadCoordinates(NVector_sp pos);
+    virtual void	loadCoordinatesIntoVector(NVector_sp pos);
     /*! Save the coordinates in the pos vector into the ScoringFunction */
-    virtual void	saveCoordinates(NVector_sp pos);
+    virtual void	saveCoordinatesFromVector(NVector_sp pos);
     /*! Save the coordinates in the pos vector and forces in force into the ScoringFunction */
-    virtual void	saveCoordinatesAndForces(NVector_sp pos, NVector_sp force);
+    virtual void	saveCoordinatesAndForcesFromVectors(NVector_sp pos, NVector_sp force);
     virtual double	evaluateRaw( NVector_sp pos, NVector_sp force ) ;
 //    virtual double	evaluate( NVector_sp pos, NVector_sp force, bool calculateForce ) ;
     adapt::QDomNode_sp	identifyTermsBeyondThreshold();
@@ -145,19 +145,20 @@ namespace chem {
 				gc::Nilable<NVector_sp> hdvec,
                                 gc::Nilable<NVector_sp> dvec	);
 
-    double	evaluateEnergy( NVector_sp pos );
-    double	evaluateEnergyForce( NVector_sp pos, bool calcForce, NVector_sp force );
-
     void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments);
     CL_LISPIFY_NAME("rigid-body-energy-function-set-position");
     CL_DEFMETHOD void setPosition(size_t index, double a, double b, double c, double d, double x, double y, double z);
+
+    uint checkForBeyondThresholdInteractions();
+    string	energyComponentsAsString();
 
     CL_LISPIFY_NAME("rigid-body-energy-function-get-position");
     CL_DEFMETHOD core::T_mv getPosition(size_t index);
 CL_LISPIFY_NAME("rigid-body-energy-function-normalize-position");
     CL_DEFMETHOD void normalizePosition(NVector_sp pos);
-    CL_DEFMETHOD void normalizePosition(NVector_sp pos);
 
+    void dumpTerms();
+    
   RigidBodyEnergyFunction_O(size_t number_of_rigid_bodies)
     : _RigidBodies(number_of_rigid_bodies),
       _Terms(_Nil<core::T_O>()) {};

@@ -61,6 +61,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/chemPackage.h>
 
 namespace chem {
+  SMART(AbstractLargeSquareMatrix);
   FORWARD(ScoringFunction);
 };
 
@@ -93,8 +94,8 @@ namespace       chem
   {
     LISP_CLASS(chem,ChemPkg,ScoringFunction_O,"ScoringFunction",core::CxxObject_O);
   public:
-        string	    _Name;
-        bool        _Debug;
+    string	    _Name;
+    bool        _Debug;
   public:
 //    void	archive(core::ArchiveP node);
     CL_DEFMETHOD     void	setName(const string& nm) { this->_Name = nm; };
@@ -102,32 +103,41 @@ namespace       chem
 //    void		writeForceToAtoms(NVector_sp f);
 
   public:
-    virtual string	energyTermsEnabled() = 0;
+    CL_LISPIFY_NAME("energyTermsEnabled");
+    CL_DEFMETHOD virtual string	energyTermsEnabled() = 0;
+ 
     CL_DEFMETHOD virtual size_t	getNVectorSize() = 0;
 //    virtual double	evaluate( NVector_sp pos, NVector_sp force, bool calculateForce ) = 0;
 
     virtual ForceMatchReport_sp checkIfAnalyticalForceMatchesNumericalForce( NVector_sp pos, NVector_sp force ) = 0;
 
-    virtual void	useDefaultSettings() = 0;
+    CL_LISPIFY_NAME("useDefaultSettings");
+    CL_DEFMETHOD    virtual void	useDefaultSettings() = 0;
     /*! Set a single options */
-    virtual void	setOption( core::Symbol_sp option, core::T_sp val) = 0;
+    CL_LISPIFY_NAME("setOption");
+    CL_DEFMETHOD     virtual void	setOption( core::Symbol_sp option, core::T_sp val) = 0;
 
 
     /*! Set the scoring function options. List the options as a flat list of keyword/value pairs */
-    virtual void	setOptions( core::List_sp options ) = 0;
+    CL_LISPIFY_NAME("setOptions");
+    CL_DEFMETHOD     virtual void	setOptions( core::List_sp options ) = 0;
 
-    virtual void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian) = 0;
+    CL_LISPIFY_NAME("setupHessianPreconditioner");
+    CL_DEFMETHOD virtual void	setupHessianPreconditioner( NVector_sp pos, AbstractLargeSquareMatrix_sp hessian) = 0;
 
             /*! Enable debugging on all scoring components
      */
+    CL_LISPIFY_NAME("enableDebug");
     CL_DEFMETHOD virtual void	enableDebug() = 0;
     /*! Disable debugging on all scoring components
-     */
+     */ 
+    CL_LISPIFY_NAME("disableDebug");
     CL_DEFMETHOD virtual void	disableDebug() = 0;
 
 
 //    virtual void	summarizeTerms() = 0;
-//    virtual void	dumpTerms() = 0;
+    CL_LISPIFY_NAME("dumpTerms");
+    CL_DEFMETHOD virtual void	dumpTerms() = 0;
 
     /*! Print the scoring components as a single, multi-line string
      */
@@ -135,12 +145,18 @@ namespace       chem
 
 #if 0
     int	compareAnalyticalAndNumericalForceAndHessianTermByTerm(NVector_sp pos);
-    int	compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition();
+    CL_LISPIFY_NAME("compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition");
+    CL_DEFMETHOD int	compareAnalyticalAndNumericalForceAndHessianTermByTermAtCurrentPosition();
 #endif
 
-    virtual void	loadCoordinates(NVector_sp pos) = 0;
-    virtual void	saveCoordinates(NVector_sp pos) = 0;
-    virtual void	saveCoordinatesAndForces(NVector_sp pos, NVector_sp force) = 0;
+    CL_LISPIFY_NAME("energyComponentsAsString");
+    CL_DEFMETHOD virtual string energyComponentsAsString() = 0;
+ 
+    CL_DEFMETHOD virtual void	loadCoordinatesIntoVector(NVector_sp pos) = 0;
+    CL_LISPIFY_NAME("saveCoordinatesFromVector");
+    CL_DEFMETHOD virtual void	saveCoordinatesFromVector(NVector_sp pos) = 0;
+    CL_LISPIFY_NAME("saveCoordinatesAndForcesFromVectors");
+    CL_DEFMETHOD virtual void	saveCoordinatesAndForcesFromVectors(NVector_sp pos, NVector_sp force) = 0;
 
     /*! Add the restraints to the scoring function.
      * This allows restraints to be applied to the system
@@ -150,26 +166,37 @@ namespace       chem
 
 
 #if 0
-    double	calculateNumericalDerivative(NVector_sp pos, double delta, uint i );
-    double	calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j );
+    CL_LISPIFY_NAME("calculateNumericalDerivative");
+    CL_DEFMETHOD double	calculateNumericalDerivative(NVector_sp pos, double delta, uint i );
+    CL_LISPIFY_NAME("calculateNumericalSecondDerivative");
+    CL_DEFMETHOD double	calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j );
 #endif
-    virtual double	evaluateAll( 	NVector_sp pos,
-				bool calcForce,
-				gc::Nilable<NVector_sp> force,
-       				bool calcDiagonalHessian,
-				bool calcOffDiagonalHessian,
-				gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-				gc::Nilable<NVector_sp> hdvec,
-                                gc::Nilable<NVector_sp> dvec	) = 0;
-    virtual double	evaluateEnergy( NVector_sp pos ) = 0;
-    virtual double	evaluateEnergyForce( NVector_sp pos, bool calcForce, NVector_sp force ) = 0;
-#if 0
-    double	evaluateEnergyForceFullHessian(NVector_sp pos,
-                                                bool calcForce, NVector_sp force,
+
+    CL_LISPIFY_NAME("calculateEnergy");
+    CL_DEFMETHOD double calculateEnergy();
+
+    CL_LISPIFY_NAME("calculateEnergyAndForce");
+    CL_DEFMETHOD double calculateEnergyAndForce();
+
+ 
+    CL_LISPIFY_NAME("evaluateAll");
+    CL_DEFMETHOD virtual double	evaluateAll( 	NVector_sp pos,
+                                                bool calcForce,
+                                                gc::Nilable<NVector_sp> force,
                                                 bool calcDiagonalHessian,
                                                 bool calcOffDiagonalHessian,
-                                                AbstractLargeSquareMatrix_sp hessian );
-    double	evaluateEnergyForceFullHessianForDebugging();
+                                                gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                                gc::Nilable<NVector_sp> hdvec,
+                                                gc::Nilable<NVector_sp> dvec	) = 0;
+    virtual double	evaluateEnergy( NVector_sp pos );
+    virtual double	evaluateEnergyForce( NVector_sp pos, bool calcForce, NVector_sp force );
+    virtual double	evaluateEnergyForceFullHessian(NVector_sp pos,
+                                                       bool calcForce, NVector_sp force,
+                                                       bool calcDiagonalHessian,
+                                                       bool calcOffDiagonalHessian,
+                                                       AbstractLargeSquareMatrix_sp hessian );
+    virtual double	evaluateEnergyForceFullHessianForDebugging();
+#if 0
 
     string	summarizeBeyondThresholdInteractionsAsString();
     string	summarizeEnergyAsString();
@@ -177,14 +204,19 @@ namespace       chem
 
 //		adapt::QDomNode_sp	rawAccumulateTermsBeyondThresholdAsXml(uint& count);
 //		adapt::QDomNode_sp	accumulateTermsBeyondThresholdAsXml();
-    uint		countTermsBeyondThreshold();
+    CL_LISPIFY_NAME("countTermsBeyondThreshold");
+    CL_DEFMETHOD uint		countTermsBeyondThreshold();
 
-    void	evaluateNumericalForce(NVector_sp pos, NVector_sp numForce, double delta );
-    void	evaluateNumericalHessian(NVector_sp pos, AbstractLargeSquareMatrix_sp numHessian, bool calcOffDiagonalElements, double delta);
+    CL_LISPIFY_NAME("evaluateNumericalForce");
+    CL_DEFMETHOD void	evaluateNumericalForce(NVector_sp pos, NVector_sp numForce, double delta );
+    CL_LISPIFY_NAME("evaluateNumericalHessian");
+    CL_DEFMETHOD void	evaluateNumericalHessian(NVector_sp pos, AbstractLargeSquareMatrix_sp numHessian, bool calcOffDiagonalElements, double delta);
 
-    uint	checkForBeyondThresholdInteractions();
     string	debugLogAsString();
 #endif
+
+    CL_LISPIFY_NAME("checkForBeyondThresholdInteractions");
+    CL_DEFMETHOD virtual uint	checkForBeyondThresholdInteractions() = 0;
 
     virtual void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments) = 0;
 

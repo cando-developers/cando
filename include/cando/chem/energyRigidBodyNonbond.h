@@ -57,6 +57,13 @@ namespace       chem {
     double     _Epsilon;
     double     _Charge;
     Vector3    _Position;
+    RigidBodyAtomInfo() {};
+  RigidBodyAtomInfo(Atom_sp a, double r, double e, double c, const Vector3& p) :
+    _Atom(a),
+      _Radius(r),
+      _Epsilon(e),
+      _Charge(c),
+      _Position(p) {};
   };
   
 SMART(EnergyRigidBodyNonbond);
@@ -73,6 +80,8 @@ class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
 {
   LISP_CLASS(chem,ChemPkg,EnergyRigidBodyNonbond_O,"EnergyRigidBodyNonbond",EnergyRigidBodyComponent_O);
  public:
+  CL_LISPIFY_NAME("make-energy-rigid-body-nonbond");
+  CL_DEF_CLASS_METHOD static EnergyRigidBodyNonbond_sp make( core::Array_sp end_atoms );
  public: // virtual functions inherited from Object
   void	initialize();
 //    void	archiveBase(core::ArchiveP node);
@@ -83,9 +92,7 @@ class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
   double		_ScaleElectrostatic;
   double		_EnergyVdw;
   double		_EnergyElectrostatic;
-    // Correct way of defining nonbonds using excluded atom indices
-  FFNonbondDb_sp        _FFNonbondDb;
-  core::MDArray_byte32_t_sp    _RigidBodyEndAtom;
+  core::SimpleVector_byte32_t_sp    _RigidBodyEndAtom;
   gctools::Vec0<RigidBodyAtomInfo>  _AtomInfoTable;
  public:
   void	setDielectricConstant(double d) { this->_DielectricConstant = d; };
@@ -97,12 +104,12 @@ class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
 
   double	getVdwEnergy() { return this->_EnergyVdw; };
   double	getElectrostaticEnergy() { return this->_EnergyElectrostatic; };
+  void resizeNonbondAtomInfoTable(size_t index) { this->_AtomInfoTable.resize(index); };
 
  public:
   void zeroEnergy();
 
-  void resizeNonbondAtomInfoTable(size_t index) { this->_AtomInfoTable.resize(index); };
-//  CL_DEFMETHOD void energyRigidBodyNonbondSetTerm(gc::Fixnum index, Atom_sp atom, double radius, double epsilon, double charge, const Vector3& position);
+  CL_DEFMETHOD void energyRigidBodyNonbondSetTerm(gc::Fixnum index, Atom_sp atom, double radius, double epsilon, double charge, const Vector3& position);
   
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m );
@@ -123,10 +130,11 @@ class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
 //    int countBadVdwOverlaps(double scaleSumOfVdwRadii, NVector_sp pos, geom::DisplayList_sp displayIn, core::Lisp_sp );
 
   virtual	double	getEnergy();
+  virtual void dumpTerms();
  public:
-  EnergyRigidBodyNonbond_O( const EnergyRigidBodyNonbond_O& ss ); //!< Copy constructor
-
-  EnergyRigidBodyNonbond_O() {};
+ EnergyRigidBodyNonbond_O(core::SimpleVector_byte32_t_sp end_atoms) : _RigidBodyEndAtom(end_atoms) {
+    this->resizeNonbondAtomInfoTable((*end_atoms)[end_atoms->length()-1]);
+  }
 };
 
 };

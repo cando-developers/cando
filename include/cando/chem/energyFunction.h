@@ -170,9 +170,9 @@ namespace chem {
     CL_DEFMETHOD     AtomTable_sp atomTable() const { return this->_AtomTable;};
 
     string	energyTermsEnabled() ;
-    void	loadCoordinates(NVector_sp pos);
-    void	saveCoordinates(NVector_sp pos);
-    void	saveCoordinatesAndForces(NVector_sp pos, NVector_sp force);
+    void	loadCoordinatesIntoVector(NVector_sp pos);
+    void	saveCoordinatesFromVector(NVector_sp pos);
+    void	saveCoordinatesAndForcesFromVectors(NVector_sp pos, NVector_sp force);
     size_t	getNVectorSize();
     double	evaluateRaw( NVector_sp pos, NVector_sp force );
 //    double	evaluate( NVector_sp pos, NVector_sp force, bool calculateForce );
@@ -245,9 +245,6 @@ namespace chem {
     void		writeForceToAtoms(NVector_sp f);
     EnergyAtom*     getEnergyAtomPointer(Atom_sp a);
 
-    double		calculateEnergy();
-    double		calculateEnergyAndForce();
-
     void defineForMatter(Matter_sp agg, ForceField_sp forceField, bool useExcludedAtoms, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false, bool assign_types=true );
 
     void generateStandardEnergyFunctionTables(Matter_sp agg, ForceField_sp forceField, core::T_sp activeAtomSet=_Nil<core::T_O>(), bool show_progress=false );
@@ -272,14 +269,6 @@ namespace chem {
 				gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
 				gc::Nilable<NVector_sp> hdvec,
                                 gc::Nilable<NVector_sp> dvec	);
-    double	evaluateEnergy( NVector_sp pos );
-    double	evaluateEnergyForce( NVector_sp pos, bool calcForce, NVector_sp force );
-    double	evaluateEnergyForceFullHessian(NVector_sp pos,
-                                               bool calcForce, NVector_sp force,
-                                               bool calcDiagonalHessian,
-                                               bool calcOffDiagonalHessian,
-                                               AbstractLargeSquareMatrix_sp hessian );
-    double	evaluateEnergyForceFullHessianForDebugging();
 
     string	summarizeBeyondThresholdInteractionsAsString();
     string	summarizeEnergyAsString();
