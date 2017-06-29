@@ -208,14 +208,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/representedEntityNameSet.h>
 #include <clasp/core/bignum.h>
 #include <clasp/core/builtInClass.h>
-#include <clasp/core/cxxClass.h>
-#include <clasp/core/forwardReferencedClass.h>
-#include <clasp/core/stdClass.h>
-#include <clasp/core/structureClass.h>
 #include <clasp/clbind/class_rep.h>
-#include <clasp/core/funcallableStandardClass.h>
-#include <clasp/core/standardClass.h>
-
 
 namespace geom
 {
