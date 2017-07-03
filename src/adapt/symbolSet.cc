@@ -92,7 +92,7 @@ string SymbolSet_O::__repr__() const {
   stringstream ss;
   string nm;
   ss.str("");
-  ss << "(" << this->_instanceClass()->classNameAsString() << " ";
+  ss << "(" << this->_instanceClass()->_classNameAsString() << " ";
   this->map([&ss](Symbol_sp s) {
                 ss << _rep_(s) << " ";
   });

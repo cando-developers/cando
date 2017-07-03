@@ -191,7 +191,7 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
       double mass = core::clasp_to_double(omass);
       double polarizability = 0.0;
       if ( maybePolarizability.fixnump() || gc::IsA<core::Float_sp>(maybePolarizability)) {
-        polarizability = core::clasp_to_double(gc::As_unsafe<core::Float_sp>(maybePolarizability));
+        polarizability = core::clasp_to_double(maybePolarizability);
       }
       FFNonbond_sp ffNonbond;
       core::T_sp nonbond = ffNonbondDb->findType(typeSymbol);

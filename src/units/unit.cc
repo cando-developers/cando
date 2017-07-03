@@ -93,9 +93,9 @@ CL_DEFUN Unit_sp Unit_O::make(core::List_sp args)
 		int power = 1;
 		if ( core::oCadr(dimCur).isA<core::Rational_O>() )
 		{
-                  power = core::clasp_to_fixnum(core::oCadr(dimCur).as<core::Rational_O>());
-		    LOG(BF("Got power[%d]") % power);
-		    dimCur = core::oCdr(dimCur);
+                  power = core::clasp_to_fixnum(core::oCadr(dimCur));
+                  LOG(BF("Got power[%d]") % power);
+                  dimCur = core::oCdr(dimCur);
 		}
 		u->adjustPowersAndAmountScale(power,powers,amountScale);
 	    } else
@@ -262,7 +262,7 @@ CL_DEFMETHOD     core::T_sp Unit_O::operator*(core::T_sp obj) const
 	    SIMPLE_ERROR(BF("Handle Unit*Quantity"));
 	} else
 	{
-          SIMPLE_ERROR(BF("Handle Unit*XXX where XXX=%s") % core::cl__class_of(obj)->classNameAsString());
+          SIMPLE_ERROR(BF("Handle Unit*XXX where XXX=%s") % core::cl__class_of(obj)->_classNameAsString());
 	}
 	return result;
     }
@@ -283,7 +283,7 @@ CL_DEFMETHOD     core::T_sp Unit_O::operator/(core::T_sp obj) const
 	    return result;
 	} else
 	{
-          SIMPLE_ERROR(BF("Handle Unit/XXX where XXX=%s") % core::cl__class_of(obj)->classNameAsString());
+          SIMPLE_ERROR(BF("Handle Unit/XXX where XXX=%s") % core::cl__class_of(obj)->_classNameAsString());
 	}
     }
 

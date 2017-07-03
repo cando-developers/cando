@@ -215,9 +215,6 @@ public:
 
     void	signalConnectivityChanged();
 
-    virtual void catchSignal(core::Symbol_sp sig, core::Model_sp source, core::List_sp data );
-    virtual void propagateSignal(core::Symbol_sp signal);
-
     /*!
      * Return every specific monomer context that could be
      * found within this oligomer

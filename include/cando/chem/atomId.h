@@ -122,9 +122,9 @@ namespace translate
 	typedef	const chem::AtomId&		ExpectedType;
 	typedef	chem::AtomId			DeclareType;
 	DeclareType _v;
-    from_object(core::T_sp o) : _v(core::clasp_to_fixnum(gc::As<core::Fixnum_sp>(core::oCar(o))),
-                                   core::clasp_to_fixnum(core::oCadr(o).as<core::Fixnum_I>()),
-                                   core::clasp_to_fixnum(core::oCaddr(o).as<core::Fixnum_I>()))
+    from_object(core::T_sp o) : _v(core::clasp_to_fixnum(core::oCar(o)),
+                                   core::clasp_to_fixnum(core::oCadr(o)),
+                                   core::clasp_to_fixnum(core::oCaddr(o)))
 	{
 #if 0
 	    core::List_sp args = o.as<core::Cons_O>();

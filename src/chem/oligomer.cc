@@ -101,7 +101,8 @@ void	Oligomer_O::signalConnectivityChanged()
 #endif
 
 
-    void Oligomer_O::catchSignal(core::Symbol_sp signal, core::Model_sp source, core::List_sp data)
+#if 0
+void Oligomer_O::catchSignal(core::Symbol_sp signal, core::Model_sp source, core::List_sp data)
 {
     MultiMonomer_sp		monomer;
 //    this->core::Model_O::catchSignal(signal,source,data);
@@ -117,6 +118,7 @@ void	Oligomer_O::signalConnectivityChanged()
     }
 #endif
 }
+#endif
 
 CL_LISPIFY_NAME("hasLastMultiMonomerChanged");
 CL_DEFMETHOD bool	Oligomer_O::hasLastMultiMonomerChanged()
@@ -130,14 +132,6 @@ CL_DEFMETHOD MultiMonomer_sp Oligomer_O::getLastMultiMonomerChanged()
     ASSERTNOTNULL(this->_WeakLastMultiMonomerChanged);
     return this->_WeakLastMultiMonomerChanged;
 };
-
-
-void	Oligomer_O::propagateSignal(core::Symbol_sp signal)
-{
-	// Do nothing
-}
-
-
 
 
 CL_LISPIFY_NAME("empty");

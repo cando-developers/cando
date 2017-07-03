@@ -82,7 +82,7 @@ string RigidBodyEnergyFunction_O::energyTermsEnabled() {
   for ( auto cur : this->_Terms ) {
     EnergyRigidBodyComponent_sp term = gc::As<EnergyRigidBodyComponent_sp>(CONS_CAR(cur));
     if ( termCount ) ss << " ";
-    ss << core::lisp_instance_class(term)->classNameAsString();
+    ss << core::lisp_instance_class(term)->_classNameAsString();
   }
   return ss.str();
 }

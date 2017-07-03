@@ -621,7 +621,7 @@ core::Fixnum_sp	residueSequenceNumber;
 	} else if ( resIdSeqNum )
 	{
 	    LOG(BF("Checking if residue has fileSequenceNumber(%d) that matches(%d)") % res->getFileSequenceNumber() % resIdSeqNum->get()  );
-	    if ( (int)(res->getFileSequenceNumber()) == core::clasp_to_fixnum(gc::As<core::Fixnum_sp>(resIdSeqNum)) )
+	    if ( (int)(res->getFileSequenceNumber()) == resIdSeqNum.unsafe_fixnum())
 	    {
 	        LOG(BF("Found residue with sequence number: %s") % resIdSeqNum->get()  );
 		foundResidue = true;
