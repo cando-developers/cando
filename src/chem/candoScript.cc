@@ -589,7 +589,7 @@ CL_DEFUN std::string chem__aggregate_as_mol2_string(Aggregate_sp matter, bool us
 {
   stringstream ss;
   mol2WriteAggregateStream(matter,ss,useSybylTypes);
-  return ss.str()
+  return ss.str();
 }
 
 /*!

@@ -88,8 +88,7 @@ void	_calculateElementAndHybridization(Atom_sp a);
 string	mol2AtomType(Atom_sp a);
 
 
- void	mol2WriteAggregateStream( Aggregate_sp 	agg, core::T_sp out, bool useSybylTypes);
-string	mol2WriteAggregateReturnAsString( Aggregate_sp agg );
+ void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSybylTypes );
  void	mol2WriteAggregateToFileName( Aggregate_sp a, core::T_sp sFileName, bool useSybylTypes );
 
  void	mol2WriteDumbAggregateToFileName( Aggregate_O& a, core::T_sp sFileName );
