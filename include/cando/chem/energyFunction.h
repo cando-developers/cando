@@ -105,7 +105,7 @@ namespace       chem
 
 template <>
 struct gctools::GCInfo<chem::EnergyFunction_O> {
-  static bool constexpr NeedsInitialization = false;
+  static bool constexpr NeedsInitialization = true;
   static bool constexpr NeedsFinalization = false;
   static GCInfo_policy constexpr Policy = normal;
 };
