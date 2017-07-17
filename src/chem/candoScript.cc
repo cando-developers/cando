@@ -584,6 +584,14 @@ CL_DEFUN core::T_sp chem__save_mol2(Matter_sp matter, core::T_sp destDesig, bool
 }
 
 
+CL_LAMBDA(matter &optional use-sybyl-types);
+CL_DEFUN std::string chem__aggregate_as_mol2_string(Aggregate_sp matter, bool useSybylTypes)
+{
+  stringstream ss;
+  mol2WriteAggregateStream(matter,ss,useSybylTypes);
+  return ss.str()
+}
+
 /*!
  * Look for a residue using an identifier,
  * this looks for residues with a sequence number if the identifier is an int
