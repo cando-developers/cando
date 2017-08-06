@@ -71,11 +71,16 @@
   (format t "Setting *root-directory* -> ~a~%" cando::*root-directory*))
 
 
+
 ;;; Setup to run slime if we are in a jupyter notebook
 #+jupyter
 (defun ext::start-swank ()
   ;; Bad!  This is hard-coded to work with docker
-  (load "/home/app/slime/swank-loader.lisp")
+  (let ((swank-loader (or (probe-file (format nil "~a/~a" (or (ext:getenv "HOME") "/") "/slime/swank-loader.lisp"))
+                          (probe-file (format nil "~a/~a" (or (ext:getenv "SLIME_HOME") "/") "/swank-loader.lisp"))
+                          (error "Cannot find swank - set SLIME_HOME environment variable and try again"))))
+    (format t "swank-loader -> ~a~%" swank-loader)
+    (load swank-loader))
   (let ((swank-loader-init (find-symbol "INIT" "SWANK-LOADER")))
     (funcall swank-loader-init :delete nil :reload nil :load-contribs nil))
   (let ((swank-create-server (find-symbol "CREATE-SERVER" "SWANK")))
@@ -89,6 +94,8 @@
 ;;; Setup or startup the Cando system 
 ;;; If :setup-cando is in *features* then don't load the cando system
 (format t "Starting Cando~%")
+(format t "*features* -> ~a~%" *features*)
+
 (progn
   (if (member :setup-cando *features*)
       (progn
@@ -101,3 +108,4 @@
         (core:symbol-global-value-set '*package* (find-package :cando-user))))
   (core:process-command-line-load-eval-sequence)
   (core::tpl))
+
