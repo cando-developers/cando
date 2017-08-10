@@ -275,11 +275,11 @@ namespace geom {
   FORWARD(MDArrayCoordinate);
 };
 namespace geom {
-  class MDArrayCoordinate_O : public core::template_Array<MDArrayCoordinate_O,SimpleVectorCoordinate_O,core::MDArray_O> {
+  class MDArrayCoordinate_O : public core::template_Array<MDArrayCoordinate_O,SimpleMDArrayCoordinate_O,SimpleVectorCoordinate_O,core::MDArray_O> {
     LISP_CLASS(geom, GeomPkg, MDArrayCoordinate_O, "MDArrayCoordinate",core::MDArray_O);
     virtual ~MDArrayCoordinate_O() {};
   public:
-    typedef core::template_Array<MDArrayCoordinate_O,SimpleVectorCoordinate_O,core::MDArray_O> TemplatedBase;
+    typedef core::template_Array<MDArrayCoordinate_O,SimpleMDArrayCoordinate_O,SimpleVectorCoordinate_O,core::MDArray_O> TemplatedBase;
     typedef typename TemplatedBase::simple_element_type simple_element_type;
     typedef typename TemplatedBase::simple_type simple_type;
   public: // make vector
