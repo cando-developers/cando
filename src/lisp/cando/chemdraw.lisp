@@ -32,7 +32,7 @@
                (error "Could not find file ~a" filename)) :direction :input)
     (chem:make-chem-draw fin)))
 
-(defun load-only-aggregate (filename)
+(defun load-chemdraw-aggregate (filename)
   (let ((cd-only (load-chemdraw filename)))
     (chem:as-aggregate cd-only)))
 

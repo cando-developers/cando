@@ -131,19 +131,6 @@
 (defun number-of-stereoisomers (vector-of-centers)
   (expt 2 (length vector-of-centers)))
 
-;;; Return a full pathname or signal an error if the file does not exist
-(defun ensure-filename (file)
-  (let ((p (probe-file file)))
-    (or p (error "Could not find the file ~a" file))))
-
-;;; Load a structure from a chemdraw file
-(defun load-chemdraw (file &optional name)
-  (let ((cd (with-open-file (fin (ensure-filename file)  :direction :input)
-	      (chem:make-chem-draw fin))))
-    (if name
-	(error "Add code to pull a named structure out of a chemdraw file")
-	(chem:as-aggregate cd))))
-
 #++(defun carboxylic-acid-atoms (matter unique-name)
   (let ((c (chem:first-atom-with-name matter unique-name))
 	(carb (core:make-cxx-object 'chem:chem-info)))
