@@ -345,9 +345,12 @@ Set the stereochemistry of a collection of stereocenters using a alist of atom n
                           :key (lambda (a) (string (getf (chem:properties a) :fix))))))
     fix-atoms))
 
+(defun clear-all-atom-restraints (matter)
+  (chem:map-atoms nil (lambda (a) (chem:clear-restraints a)) matter))
+
 (defun anchor-atom (atom pos &optional (weight 1.0))
   "Clear any restraints on an atom and create an anchor restraint for it"
-  (let ((restraint-anchor (make-cxx-object 'chem:restraint-anchor :atom atom :position pos :weight weight)))
+  (let ((restraint-anchor (core:make-cxx-object 'chem:restraint-anchor :atom atom :position pos :weight weight)))
     (chem:clear-restraints atom)
     (chem:add-restraint atom restraint-anchor)
     restraint-anchor))

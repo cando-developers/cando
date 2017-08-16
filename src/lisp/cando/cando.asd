@@ -27,6 +27,7 @@
      (:file "energy")
      (:file "matter-hierarchy")
      (:file "psf-files")
+     (:file "nglview")
 ;;;     (:file "remove-overlaps")
 ;;;     (:file "matter")
 ;;;     (:file "antique")

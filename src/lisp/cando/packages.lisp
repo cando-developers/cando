@@ -155,6 +155,8 @@
    #:remove-overlaps
    #:merge-into-one-aggregate
    #:constitution-from-residue
+   #:clear-all-atom-restraints
+   #:anchor-atom
    #:calculate-hybridization
    #:build-unbuilt-hydrogens
    #:progress-advance
@@ -162,6 +164,19 @@
    #:make-progress-bar
    #:progress-done
    #:home/
+   ;;; Stuff for nglview demo
+   #:build-hydrogens
+   #:atom-map
+   #:named-atom-map
+   #:anchor-named-atom-map
+   #:cartoon-atom-map
+   #:set-all-stereocenters-to
+   #:load-chemdraw
+   #:center-on
+   #:rotate-x
+   #:rotate-y
+   #:rotate-z
+   #::=
    ;;; directory utilities
    #:set-current-directory
    #:current-directory
