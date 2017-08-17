@@ -25,13 +25,6 @@
 ;; -^-
 (cl:in-package #:common-lisp-user)
 
-(defpackage #:chemdraw
-  (:use :cl)
-  (:export #:load-only-aggregate
-           #:load-chemdraw
-           )
-  )
-
 
 (defpackage #:geom
   (:use #:common-lisp)
@@ -128,12 +121,17 @@
   (:shadowing-import-from :chem "ATOM")
   (:import-from :ext #:chdir #:getcwd)
   (:export
+   #:load-chemdraw
+   #:load-chemdraw-aggregate
    #:from-string
    #:as-string
    #:scramble-positions
    #:jostle
    #:dump-stereocenters
    #:set-stereoisomer-mapping
+   #:stereocenters-sorted-by-name
+   #:calculate-all-stereochemistry
+   #:set-all-stereocenters-to
    #:gather-stereocenters
    #:set-stereoisomer
    #:set-stereoisomer-func
@@ -170,7 +168,6 @@
    #:named-atom-map
    #:anchor-named-atom-map
    #:cartoon-atom-map
-   #:set-all-stereocenters-to
    #:center-on
    #:rotate-x
    #:rotate-y

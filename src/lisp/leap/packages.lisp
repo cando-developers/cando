@@ -151,4 +151,4 @@
    #:object
    #:source
    )
-  (:use :common-lisp :chem :geom :chemdraw :cando))
+  (:use :common-lisp :chem :geom :cando))

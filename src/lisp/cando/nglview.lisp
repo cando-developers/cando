@@ -149,7 +149,7 @@
                 ((consp dest) (geom:vec (first dest) (second dest) (third dest)))
                 (t (error "Convert ~a to vec" dest)))))
     (let ((transform (geom:make-m4-translate 
-                      (geom:v- dest (chem:geometric-center *agg*) ))))
+                      (geom:v- dest (chem:geometric-center matter) ))))
       (chem:apply-transform-to-atoms matter transform))))
 
 (defun rotate-x (matter angle-degrees)

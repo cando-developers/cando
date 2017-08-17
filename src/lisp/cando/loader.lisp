@@ -32,4 +32,3 @@
                    (chem:make-chemdraw fin))))
     (chem:as-aggregate cd-only)))
 
-(apropos "chemdraw")
