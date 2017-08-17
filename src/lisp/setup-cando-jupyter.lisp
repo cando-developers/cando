@@ -1,3 +1,6 @@
 (format t "Starting nglview~%")
 (asdf:load-asd "~/quicklisp/local-projects/cl-jupyter/nglview/nglview.asd")
 (ql:quickload :nglview)
+(use-package :cando :cl-jupyter-user)
+(shadowing-import '(#:atom #:quit #:desc) :leap)
+(use-package :leap :cl-jupyter-user)
