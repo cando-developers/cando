@@ -171,7 +171,6 @@
    #:anchor-named-atom-map
    #:cartoon-atom-map
    #:set-all-stereocenters-to
-   #:load-chemdraw
    #:center-on
    #:rotate-x
    #:rotate-y
