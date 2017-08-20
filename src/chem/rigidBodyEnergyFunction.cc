@@ -87,6 +87,14 @@ string RigidBodyEnergyFunction_O::energyTermsEnabled() {
   return ss.str();
 }
 
+CL_DEFMETHOD void RigidBodyEnergyFunction_O::set_coordinates(NVector_sp pos) {
+  if (pos->length() != this->_RigidBodies*7) {
+    SIMPLE_ERROR(BF("The coordinates you pass do not have enough components - there are %d rigid bodies with 7 (a,b,c,d,x,y,z) coordinates each - total %d are needed") % this->_RigidBodies % (this->_RigidBodies*7));
+  }
+  this->_SavedCoordinates = pos;
+}
+
+
 void RigidBodyEnergyFunction_O::enableDebug() {
   for ( auto cur : this->_Terms ) {
     EnergyRigidBodyComponent_sp term = gc::As<EnergyRigidBodyComponent_sp>(CONS_CAR(cur));

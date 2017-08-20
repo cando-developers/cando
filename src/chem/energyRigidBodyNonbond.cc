@@ -403,11 +403,15 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
 #ifdef DEBUG_NONBOND_TERM
           if ( this->_DebugEnergy ) {
             std::string key;
-            if ( ea1._Atom->getName()->symbolNameAsString()
-                 < ea2._Atom->getName()->symbolNameAsString() ) {
-              key = ea1._Atom->getName()->symbolNameAsString()+"-"+ea2._Atom->getName()->symbolNameAsString();
-            } else {
-              key = ea2._Atom->getName()->symbolNameAsString()+"-"+ea1._Atom->getName()->symbolNameAsString();
+            if (gc::IsA<Atom_sp>(ea1._Atom) && gc::IsA<Atom_sp>(ea2._Atom)) {
+              Atom_sp ea1_atom = gc::As_unsafe<Atom_sp>(ea1._Atom);
+              Atom_sp ea2_atom = gc::As_unsafe<Atom_sp>(ea2._Atom);
+              if ( ea1_atom->getName()->symbolNameAsString()
+                   < ea2_atom->getName()->symbolNameAsString() ) {
+                key = ea1_atom->getName()->symbolNameAsString()+"-"+ea2_atom->getName()->symbolNameAsString();
+              } else {
+                key = ea2_atom->getName()->symbolNameAsString()+"-"+ea1_atom->getName()->symbolNameAsString();
+              }
             }
             LOG_ENERGY(BF( "MEISTER nonbond %s args cando\n")% key );
             LOG_ENERGY(BF( "MEISTER nonbond %s dA %5.3lf\n")% key % dA );

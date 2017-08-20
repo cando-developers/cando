@@ -52,13 +52,13 @@ namespace       chem {
 
 
   struct RigidBodyAtomInfo {
-    Atom_sp    _Atom;
+    core::T_sp    _Atom;  // can be NIL
     double     _Radius;
     double     _Epsilon;
     double     _Charge;
     Vector3    _Position;
     RigidBodyAtomInfo() {};
-  RigidBodyAtomInfo(Atom_sp a, double r, double e, double c, const Vector3& p) :
+  RigidBodyAtomInfo(core::T_sp a, double r, double e, double c, const Vector3& p) :
     _Atom(a),
       _Radius(r),
       _Epsilon(e),

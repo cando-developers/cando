@@ -104,6 +104,8 @@ namespace chem {
   public:
     /*! 4 quaternion and 3 cartesian coordinates for each rigid body */
     virtual size_t getNVectorSize() override { return this->_RigidBodies*7; };
+    CL_DEFMETHOD NVector_sp get_coordinates() const { return this->_SavedCoordinates; };
+    CL_DEFMETHOD void set_coordinates(NVector_sp coords);
 
     virtual void	enableDebug() override;
     /*! Disable debugging on all energy components
