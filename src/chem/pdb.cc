@@ -124,7 +124,7 @@ void AtomPdbRec::write(core::T_sp fout)
   {
     name = " " + this->_name->symbolName()->get();
   }
-  core::clasp_write_format(boost::format( "ATOM%7d %-4s %3s %1s%4d    %8.3f%8.3f%8.3f %5.2f %5.2f           %2s\n" ) % this->_serial % name % this->_resName % this->_chainId % this->_resSeq % this->_x % this->_y % this->_z % this->_occupancy % this->_tempFactor % this->_element, fout);
+  core::clasp_write_string((boost::format( "ATOM%7d %-4s %3s %1s%4d    %8.3f%8.3f%8.3f %5.2f %5.2f           %2s\n" ) % this->_serial % name % this->_resName % this->_chainId % this->_resSeq % this->_x % this->_y % this->_z % this->_occupancy % this->_tempFactor % this->_element).str(), fout);
 }
 
 void	EntirePdbRec::addAtomPdbRec(AtomPdbRec& atom)
@@ -211,7 +211,7 @@ void	ConnectPdbRec::write(core::T_sp stream)
     }
   }
   fout << std::endl;
-  core::clasp_write_format(BF("%s")% fout.str(),stream);
+  core::clasp_write_string(fout.str(),stream);
 }
 
 
@@ -535,7 +535,7 @@ void _writeAtomAndConnectRecords( core::T_sp fout, gctools::Vec0<AtomPdbRec>& pd
   {
     ci->write(fout);
   }
-  core::clasp_write_format(BF("TER\n"), fout );
+  core::clasp_write_string("TER\n", fout );
 }
 
 CL_LISPIFY_NAME("pdb-open");
@@ -577,16 +577,16 @@ void	PdbWriter_O::write(Matter_sp matter)
 CL_LISPIFY_NAME("writeModel");
 CL_DEFMETHOD     void PdbWriter_O::writeModel(Matter_sp matter, int model)
 {_OF();
-  core::clasp_write_format(BF("MODEL     %d\n") % model, this->_Out);
+  core::clasp_write_string((BF("MODEL     %d\n") % model).str(), this->_Out);
   this->write(matter);
-  core::clasp_write_format(BF("ENDMDL\n"),this->_Out);
+  core::clasp_write_string("ENDMDL\n",this->_Out);
 }
 
 CL_LISPIFY_NAME("pdb-close");
 CL_DEFMETHOD     void PdbWriter_O::close()
 {
   if ( this->_Out.notnilp() ) {
-    core::clasp_write_format(BF("END\n"), this->_Out);
+    core::clasp_write_string("END\n", this->_Out);
     core::cl__close(this->_Out);
   }
 }

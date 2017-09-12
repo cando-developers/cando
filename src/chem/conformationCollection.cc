@@ -37,6 +37,7 @@ This is an open source license for the CANDO software from Temple University, bu
  *
  */
 
+#include <clasp/core/foundation.h>
 #include <clasp/core/hashTableEq.h>
 #include <cando/chem/conformationCollection.h>
 #include <cando/geom/coordinateArray.h>

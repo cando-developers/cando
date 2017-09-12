@@ -275,7 +275,7 @@ CL_DEFMETHOD core::List_sp	MonomerCoordinates_O::testExtraction(
     stage->setComplete(true);
     conformationExplorer->appendEntry(entry);
     core::T_sp problems = core::clasp_make_string_output_stream();
-    IMPLEMENT_MEF(BF("The following code catches an exception - figure out how to do it using Conditions"));
+    IMPLEMENT_MEF("The following code catches an exception - figure out how to do it using Conditions");
 #if 0
     TRY()
     {

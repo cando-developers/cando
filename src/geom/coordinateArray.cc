@@ -94,7 +94,7 @@ CL_DEF_CLASS_METHOD SimpleVectorCoordinate_sp SimpleVectorCoordinate_O::make(cor
 
 void ArrayCoordinate_fillFromList(ArrayCoordinate_sp array, core::List_sp vals)
 {
-  IMPLEMENT_MEF(BF("Come up with a loop invariant way of filling array"));
+  IMPLEMENT_MEF("Come up with a loop invariant way of filling array");
 #if 0
   if ( this->size() != 0 ) {
     SIMPLE_ERROR(BF("Coordinate array must be empty to fillFromCons"));

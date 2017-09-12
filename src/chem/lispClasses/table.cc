@@ -54,7 +54,7 @@ namespace chem
     TableEntry_sp TableEntry_O::createWithFields(uint numFields, Table_sp owner, core::Lisp_sp lisp)
     {
 	TableEntry_sp entry = TableEntry_O::create();
-	IMPLEMENT_MEF(BF("handle setOwner"));
+	IMPLEMENT_MEF("handle setOwner");
 //	entry->setOwner(owner);
 	entry->_Fields.resize(numFields,_Nil<core::T_O>());
 	return entry;
@@ -87,7 +87,7 @@ namespace chem
 
     Table_sp TableEntry_O::getTable() const
     {
-	IMPLEMENT_MEF(BF("Handle owner"));
+	IMPLEMENT_MEF("Handle owner");
 //	return this->owner().as<Table_O>();
     }
 

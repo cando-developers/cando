@@ -799,7 +799,7 @@ CL_DEFMETHOD     SpecificContextSet_sp CandoDatabase_O::allSpecificMonomerContex
 	    FrameRecognizer_sp fr = cur->car<FrameRecognizer_O>();
 	    core::Symbol_sp name = fr->getRecognizerName();
 	    me->_frameRecognizers.set(name,fr);
-	    IMPLEMENT_MEF(BF("Handle setOwner"));
+	    IMPLEMENT_MEF("Handle setOwner");
 //	    fr->setOwner(this->sharedThis<CandoDatabase_O>());
 	}
 #if 0

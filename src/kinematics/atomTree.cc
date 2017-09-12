@@ -75,7 +75,7 @@ namespace kinematics
 
     void ExecutableAtomTreeWalkFunctor::operator()(kinematics::Atom_sp atom) const
     {
-      IMPLEMENT_MEF(BF("Improve this"));
+      IMPLEMENT_MEF("Improve this");
 #if 0
 	core::Cons_sp args = core::Cons_O::create(atom);
 	core::ValueFrame_sp frame(core::ValueFrame_O::create(args,_Nil<core::T_O>());

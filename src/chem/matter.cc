@@ -586,7 +586,7 @@ CL_DEFMETHOD void	Matter_O::addMatter(Matter_sp cp )
 //
 void	Matter_O::addMatterRetainId(Matter_sp cp )
 {_OF();
-  IMPLEMENT_MEF(BF("Get away from ids"));
+  IMPLEMENT_MEF("Get away from ids");
   Matter_sp	ctemp;
   LOG(BF("addMatterRetainId to %s adding container %s")
       % this->description()

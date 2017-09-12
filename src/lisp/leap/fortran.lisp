@@ -9,7 +9,7 @@
 
 (defmacro with-fortran-output-file ((ff &rest open-args) &body body)
   `(let* ((*fortran-output-file* (make-fortran-output-file
-                                  :stream (apply #'open ,open-args)
+                                  :stream (apply #'cl:open (list ,@open-args))
                                   :format nil
                                   :per-line nil
                                   :number-on-line nil
@@ -23,23 +23,23 @@
   "Define the format for write commands that will follow"
   (setf (fof-format ff) fmt
         (fof-per-line ff) per-line
-        (fof-on-line ff) 0
+        (fof-number-on-line ff) 0
         (fof-wrote-nothing ff) t))
 
 (defun write (val &optional (ff *fortran-output-file*))
   "Write _val_ using the current format"
   (core:bformat (fof-stream ff) (fof-format ff) val)
-  (incf (fof-on-line ff))
+  (incf (fof-number-on-line ff))
   (setf (fof-wrote-nothing ff) nil)
-  (when (> (fof-on-line ff) (fof-per-line ff))
-    (bformat (fof-stream ff) "\n")
-    (setf (fof-on-line ff) 0)))
+  (when (> (fof-number-on-line ff) (fof-per-line ff))
+    (core:bformat (fof-stream ff) "\n")
+    (setf (fof-number-on-line ff) 0)))
 
 (defun end-line (&optional (ff *fortran-output-file*))
-  (when (or (fof-wrote-nothing ff) (/= (fof-on-line ff) 0))
+  (when (or (fof-wrote-nothing ff) (/= (fof-number-on-line ff) 0))
     (core:bformat (fof-stream ff) "\n"))
   (setf (fof-wrote-nothing ff) t
-        (fof-on-line ff) 0))
+        (fof-number-on-line ff) 0))
 
 (defun debug-on (&optional (ff *fortran-output-file*))
   (setf (fof-debug ff) t))

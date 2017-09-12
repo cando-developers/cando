@@ -134,7 +134,7 @@ void SymbolSet_O::fields(core::Record_sp node) {
   }
       break;
   case Record_O::patching: {
-    IMPLEMENT_MEF(BF("Do patching"));
+    IMPLEMENT_MEF("Do patching");
   }
       break;
   }

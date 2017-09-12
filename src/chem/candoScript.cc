@@ -934,7 +934,7 @@ void	setupCandoPrimitives(core::Lisp_sp env)
 void	setupPythonPrimitives(core::Lisp_sp env)
 {
 
-    IMPLEMENT_MEF(BF("Add python primitives from candoScript.cc"));
+    IMPLEMENT_MEF("Add python primitives from candoScript.cc");
 #if 0
 	// for Mbb package
     boost::python::def_raw(ChemPkg,"saveArchiveWithAutoSetCandoDatabase",&prim_saveArchiveWithAutoSetCandoDatabase,"","",env);

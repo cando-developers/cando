@@ -225,7 +225,7 @@ __END_DOC
 #define DOCS_af_multiStereoisomers "multiStereoisomers"
 core::T_sp af_multiStereoisomers(const string& nameTemplate, core::List_sp centers, core::List_sp configs)
 {
-  IMPLEMENT_MEF(BF("Implement multiStereoisomers"));
+  IMPLEMENT_MEF("Implement multiStereoisomers");
 };
 
 

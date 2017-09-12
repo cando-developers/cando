@@ -65,7 +65,7 @@ namespace units
 	{
 	    core::Array_sp array = obj.as<core::Array_O>();
 	    core::Array_sp narray = array->deepCopy().as<core::Array_O>();
-            IMPLEMENT_MEF(BF("Handle new arrays"));
+            IMPLEMENT_MEF("Handle new arrays");
 #if 0
 	    narray->multiplyByScalar(conversion);
 #endif
