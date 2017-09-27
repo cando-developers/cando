@@ -147,6 +147,10 @@ class EnergyNonbond_O : public EnergyComponent_O
   AtomTable_sp          _AtomTable;
   core::MDArray_int32_t_sp   _NumberOfExcludedAtomIndices;
   core::MDArray_int32_t_sp   _ExcludedAtomIndices;
+  core::MDArray_int32_t_sp   _IAC;
+  core::MDArray_int32_t_sp   _ICO;
+  core::MDArrayDouble_sp     _CN1;
+  core::MDArrayDouble_sp     _CN2;
  public:	
   typedef gctools::Vec0<TermType>::iterator iterator;
   iterator begin() { return this->_Terms.begin(); };
