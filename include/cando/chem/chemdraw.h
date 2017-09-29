@@ -170,6 +170,7 @@ class CDFragment_O : public core::CxxObject_O
 {
     LISP_CLASS(chem,ChemPkg,CDFragment_O,"CDFragment",core::CxxObject_O);
 public:
+    // Declare that gctools::Vec0<CDBond_sp> is managed by GC
     typedef gctools::Vec0<CDBond_sp>	CDBonds;
     typedef gctools::SmallMap<Atom_sp,CDNode_sp> AtomsToBonds; // map<Atom_sp,CDNode_sp>	AtomsToBonds;
     typedef gctools::SmallMap<int,CDNode_sp> IntMappedCDNodes; // typedef map<int,CDNode_sp>		IntMappedCDNodes;

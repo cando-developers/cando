@@ -783,6 +783,7 @@ void	MoeReadFile::readNextLine()
 	ParaTable	ptHintLP;
 	ParaTable	ptTemp;
 	ParaTable	ptCharges;
+        GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::Atom_O>>);
         gctools::Vec0<Atom_sp>	atoms;
 	int		index_ID;
 	int		index_aName;

@@ -89,7 +89,6 @@ public:
 		{ return this->_SuperposeAtoms.end();};
 #endif
 
-
     gctools::SmallOrderedSet<Atom_sp>	getSuperposeAtoms();
 
 	int	numberOfSuperposeAtoms();
