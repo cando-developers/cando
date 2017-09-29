@@ -91,6 +91,15 @@ CL_DEFMETHOD void    FFStretchDb_O::add(FFStretch_sp term)
     this->_Parameters->setf_gethash(key,term);
 }
 
+//  (chem:canonical-stretch-key (chem:get-type atom1) (chem:get-type atom2))
+CL_DEFUN core::Symbol_sp chem__canonicalStretchKey(core::Symbol_sp type1, core::Symbol_sp type2) {
+  std::string type1str = type1->symbolNameAsString();
+  std::string type2str = type2->symbolNameAsString();
+  if (type1str<=type2str) {
+    return chemkw_intern(type1str+"-"+type2str);
+  }
+  return chemkw_intern(type2str+"-"+type1str);
+}
 
 CL_LISPIFY_NAME("findTerm");
 CL_DOCSTRING("Return the stretch term or NIL if none was found");

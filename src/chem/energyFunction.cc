@@ -46,6 +46,7 @@ __END_DOC
 #include <cando/chem/loop.h>
 #include <cando/adapt/indexedObjectBag.h>
 #include <clasp/core/environment.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/minimizerLog.h>
 #include <cando/chem/restraint.h>
 #include <cando/chem/iterateRestraints.h>
@@ -1190,8 +1191,9 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
       a2 = loop.getBondA2();
       if ( activeAtoms.notnilp() &&
            (!inAtomSet(activeAtoms,a1) || !inAtomSet(activeAtoms,a2)) ) continue;
-      t1 = a1->getType();
-      t2 = a2->getType();
+      printf("%s:%d Looking at STRETCH term between %s - %s\n", __FILE__, __LINE__, _rep_(a1).c_str(), _rep_(a2).c_str());
+//      t1 = a1->getType();
+//      t2 = a2->getType();
       ea1 = this->getEnergyAtomPointer(a1);
       ea2 = this->getEnergyAtomPointer(a2);
       FFStretch_sp ffStretch = forceField->_Stretches->findTerm(a1,a2);
@@ -1204,6 +1206,8 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
         energyStretch.defineFrom(ffStretch,ea1,ea2,this->_Stretch->getScale());
         this->_Stretch->addTerm(energyStretch);
         ++terms;
+      } else {
+        SIMPLE_WARN(BF("Could not find stretch parameter between %s and %s") % _rep_(a1) % _rep_(a2));
       }
     }
     if (show_progress) BFORMAT_T(BF("Built stretch table with %d terms added and %d missing terms\n") % terms % missing_terms);

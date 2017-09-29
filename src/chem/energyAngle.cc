@@ -624,5 +624,47 @@ void EnergyAngle_O::archiveBase(core::ArchiveP node)
 }
 #endif
 
+SYMBOL_EXPORT_SC_(KeywordPkg,kt);
+SYMBOL_EXPORT_SC_(KeywordPkg,t0);
+SYMBOL_EXPORT_SC_(KeywordPkg,i1);
+SYMBOL_EXPORT_SC_(KeywordPkg,i2);
+SYMBOL_EXPORT_SC_(KeywordPkg,i3);
+SYMBOL_EXPORT_SC_(KeywordPkg,atom1);
+SYMBOL_EXPORT_SC_(KeywordPkg,atom2);
+SYMBOL_EXPORT_SC_(KeywordPkg,atom3);
+
+CL_DEFMETHOD core::List_sp EnergyAngle_O::extract_vectors_as_alist() const {
+  size_t size = this->_Terms.size();
+  core::SimpleVectorDouble_sp kt_vec = core::SimpleVectorDouble_O::make(size);
+  core::SimpleVectorDouble_sp t0_vec = core::SimpleVectorDouble_O::make(size);
+  core::SimpleVector_int32_t_sp i1_vec = core::SimpleVector_int32_t_O::make(size);
+  core::SimpleVector_int32_t_sp i2_vec = core::SimpleVector_int32_t_O::make(size);
+  core::SimpleVector_int32_t_sp i3_vec = core::SimpleVector_int32_t_O::make(size);
+  core::SimpleVector_sp atom1_vec    = core::SimpleVector_O::make(size);
+  core::SimpleVector_sp atom2_vec    = core::SimpleVector_O::make(size);
+  core::SimpleVector_sp atom3_vec    = core::SimpleVector_O::make(size);
+
+  for (size_t i=0;i<size;++i) {
+    const EnergyAngle& entry = this->_Terms[i];
+    (*kt_vec)[i] = entry.term.kt;
+    (*t0_vec)[i] = entry.term.t0;
+    (*i1_vec)[i] = entry.term.I1;
+    (*i2_vec)[i] = entry.term.I2;
+    (*i3_vec)[i] = entry.term.I3;
+    (*atom1_vec)[i] = entry._Atom1;
+    (*atom2_vec)[i] = entry._Atom2;
+    (*atom3_vec)[i] = entry._Atom3;
+  }
+  return core::Cons_O::createList(core::Cons_O::create(kw::_sym_kt,kt_vec),
+                                  core::Cons_O::create(kw::_sym_t0,t0_vec),
+                                  core::Cons_O::create(kw::_sym_i1,i1_vec),
+                                  core::Cons_O::create(kw::_sym_i2,i2_vec),
+                                  core::Cons_O::create(kw::_sym_i3,i3_vec),
+                                  core::Cons_O::create(kw::_sym_atom1,atom1_vec),
+                                  core::Cons_O::create(kw::_sym_atom2,atom2_vec),
+                                  core::Cons_O::create(kw::_sym_atom3,atom3_vec));
+
+}
+
 
 };

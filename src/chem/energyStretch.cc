@@ -30,6 +30,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>
 #include <clasp/core/profiler.h>
+#include <clasp/core/array.h>
 #include <cando/chem/matter.h>
 #include <cando/chem/bond.h>
 #include <cando/chem/atom.h>
@@ -48,114 +49,114 @@ namespace chem {
 
 
 #if XML_ARCHIVE
-    void	EnergyStretch::archive(core::ArchiveP node)
-    {
-	node->attribute("kb",this->term.kb);
-	node->attribute("r0",this->term.r0);
-	node->attribute("I1",this->term.I1);
-	node->attribute("I2",this->term.I2);
-	node->attribute("a1",this->_Atom1);
-	node->attribute("a2",this->_Atom2);
+void	EnergyStretch::archive(core::ArchiveP node)
+{
+  node->attribute("kb",this->term.kb);
+  node->attribute("r0",this->term.r0);
+  node->attribute("I1",this->term.I1);
+  node->attribute("I2",this->term.I2);
+  node->attribute("a1",this->_Atom1);
+  node->attribute("a2",this->_Atom2);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-	node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
-	node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
-	node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
+  node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
+  node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
+  node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
 #include <cando/chem/energy_functions/_Stretch_debugEvalSerialize.cc>
 #endif //]
-    }
+}
 #endif
 
 
 
-    void EnergyStretch::defineFrom( FFStretch_sp stretch, EnergyAtom *ea1, EnergyAtom *ea2, double scale)
-    {
-	LOG(BF("Defining EnergyStretch with kb=%lf r0=%lf")
-	    % this->term.kb
-	    % this->term.r0  );
+void EnergyStretch::defineFrom( FFStretch_sp stretch, EnergyAtom *ea1, EnergyAtom *ea2, double scale)
+{
+  LOG(BF("Defining EnergyStretch with kb=%lf r0=%lf")
+      % this->term.kb
+      % this->term.r0  );
 //    this->_K3 = stretch->_K3;
 //    this->_K4 = stretch->_K4;
 //    this->_Bci = stretch->_Bci;
-	this->_Atom1 = ea1->atom();
-	this->_Atom2 = ea2->atom();
-	LOG(BF(" Adding stretch between %s - %s")
-	    % this->_Atom1->description() % this->_Atom2->description() );
-	this->term.I1 = ea1->coordinateIndexTimes3();
-	this->term.I2 = ea2->coordinateIndexTimes3();
-	this->term.kb = stretch->getKb_kCalPerAngstromSquared();
-	this->term.r0 = stretch->getR0_Angstrom();
-    }
+  this->_Atom1 = ea1->atom();
+  this->_Atom2 = ea2->atom();
+  LOG(BF(" Adding stretch between %s - %s")
+      % this->_Atom1->description() % this->_Atom2->description() );
+  this->term.I1 = ea1->coordinateIndexTimes3();
+  this->term.I2 = ea2->coordinateIndexTimes3();
+  this->term.kb = stretch->getKb_kCalPerAngstromSquared();
+  this->term.r0 = stretch->getR0_Angstrom();
+}
 
 #if 0
-    adapt::QDomNode_sp	EnergyStretch::asXml()
-    {
-	adapt::QDomNode_sp	node;
-	Vector3	vdiff;
-	node = adapt::QDomNode_O::create(env,"EnergyStretch");
-	node->addAttributeHex("address",(unsigned long)(this));
-	node->addAttributeString("atom1Name",this->_Atom1->getName());
-	node->addAttributeString("atom2Name",this->_Atom2->getName());
+adapt::QDomNode_sp	EnergyStretch::asXml()
+{
+  adapt::QDomNode_sp	node;
+  Vector3	vdiff;
+  node = adapt::QDomNode_O::create(env,"EnergyStretch");
+  node->addAttributeHex("address",(unsigned long)(this));
+  node->addAttributeString("atom1Name",this->_Atom1->getName());
+  node->addAttributeString("atom2Name",this->_Atom2->getName());
 //    node->addAttributeInt("idx1",this->_Atom1->_CoordinateIndex);
 //    node->addAttributeInt("idx2",this->_Atom2->_CoordinateIndex);
-	node->addAttributeInt("I1",this->term.I1);
-	node->addAttributeInt("I2",this->term.I2);
-	node->addAttributeDoubleScientific("r0",this->term.r0);
-	node->addAttributeDoubleScientific("kb",this->term.kb);
+  node->addAttributeInt("I1",this->term.I1);
+  node->addAttributeInt("I2",this->term.I2);
+  node->addAttributeDoubleScientific("r0",this->term.r0);
+  node->addAttributeDoubleScientific("kb",this->term.kb);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-	adapt::QDomNode_sp xml = adapt::QDomNode_O::create(env,"Evaluated");
-	xml->addAttributeBool("calcForce",this->_calcForce );
-	xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
-	xml->addAttributeBool("calcOffDiagonalHessian",
-			      this->_calcOffDiagonalHessian );
+  adapt::QDomNode_sp xml = adapt::QDomNode_O::create(env,"Evaluated");
+  xml->addAttributeBool("calcForce",this->_calcForce );
+  xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
+  xml->addAttributeBool("calcOffDiagonalHessian",
+                        this->_calcOffDiagonalHessian );
 
 
 //#include <cando/chem/energy_functions/_Stretch_debugEvalXml.cc>
 
 
-	node->addChild(xml);
+  node->addChild(xml);
 #endif
-	return node;
-    }
+  return node;
+}
 #endif
 
-    void	EnergyStretch::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml, AtomTable_sp atomTable )
-    {
-	int	i1, i2;
-	i1 = xml->getAttributeInt("idx1");
-	i2 = xml->getAttributeInt("idx2");
-	LOG(BF("parse i1=%d i2=%d") % i1 % i2  );
-	this->_Atom1 = atomTable->findEnergyAtomWithCoordinateIndex(i1)->atom();
-	this->_Atom2 = atomTable->findEnergyAtomWithCoordinateIndex(i2)->atom();
-	LOG(BF("_Atom1 = %d  _Atom2 = %d") % i1 % i2  );
-	this->term.r0 = xml->getAttributeDouble("r0");
-	this->term.kb = xml->getAttributeDouble("kb");
-	this->term.I1 = xml->getAttributeInt("I1");
-	this->term.I2 = xml->getAttributeInt("I2");
-    }
+void	EnergyStretch::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml, AtomTable_sp atomTable )
+{
+  int	i1, i2;
+  i1 = xml->getAttributeInt("idx1");
+  i2 = xml->getAttributeInt("idx2");
+  LOG(BF("parse i1=%d i2=%d") % i1 % i2  );
+  this->_Atom1 = atomTable->findEnergyAtomWithCoordinateIndex(i1)->atom();
+  this->_Atom2 = atomTable->findEnergyAtomWithCoordinateIndex(i2)->atom();
+  LOG(BF("_Atom1 = %d  _Atom2 = %d") % i1 % i2  );
+  this->term.r0 = xml->getAttributeDouble("r0");
+  this->term.kb = xml->getAttributeDouble("kb");
+  this->term.I1 = xml->getAttributeInt("I1");
+  this->term.I2 = xml->getAttributeInt("I2");
+}
 
 
 
-    double	EnergyStretch::getR()
-    {
-	Vector3	pos1, pos2, diff;
-	pos1 = this->getAtom1()->getPosition();
-	pos2 = this->getAtom2()->getPosition();
-	diff = pos1.sub(pos2);
-	return diff.length();
-    }
+double	EnergyStretch::getR()
+{
+  Vector3	pos1, pos2, diff;
+  pos1 = this->getAtom1()->getPosition();
+  pos2 = this->getAtom2()->getPosition();
+  diff = pos1.sub(pos2);
+  return diff.length();
+}
 
 
 
 
-    double	_evaluateEnergyOnly_Stretch (
-	double x1,
-	double y1,
-	double z1,
-	double x2,
-	double y2,
-	double z2,
-	double r0,
-	double kb )
-    {
+double	_evaluateEnergyOnly_Stretch (
+                                     double x1,
+                                     double y1,
+                                     double z1,
+                                     double x2,
+                                     double y2,
+                                     double z2,
+                                     double r0,
+                                     double kb )
+{
 #undef	STRETCH_SET_PARAMETER
 #define	STRETCH_SET_PARAMETER(x)	{}
 #undef	STRETCH_SET_POSITION
@@ -180,28 +181,28 @@ namespace chem {
 #pragma clang diagnostic pop
 
 #if !USE_EXPLICIT_DECLARES
-	double fx1 = 0.0; 
-	double fy1 = 0.0; 
-	double fz1 = 0.0;
-	double fx2 = 0.0;
-	double fy2 = 0.0;
-	double fz2 = 0.0;
+  double fx1 = 0.0; 
+  double fy1 = 0.0; 
+  double fz1 = 0.0;
+  double fx2 = 0.0;
+  double fy2 = 0.0;
+  double fz2 = 0.0;
 #endif
 #include <cando/chem/energy_functions/_Stretch_termCode.cc>
 
-	return Energy;
-    }
+  return Energy;
+}
 
 
 
 
-    void	EnergyStretch_O::setupHessianPreconditioner(
-	NVector_sp nvPosition,
-	AbstractLargeSquareMatrix_sp m )
-    {
-	bool		calcForce = true;
-	bool		calcDiagonalHessian = true;
-	bool		calcOffDiagonalHessian = true;
+void	EnergyStretch_O::setupHessianPreconditioner(
+                                                    NVector_sp nvPosition,
+                                                    AbstractLargeSquareMatrix_sp m )
+{
+  bool		calcForce = true;
+  bool		calcDiagonalHessian = true;
+  bool		calcOffDiagonalHessian = true;
 #undef	STRETCH_SET_PARAMETER
 #define	STRETCH_SET_PARAMETER(x)	{x = si->term.x;}
 #undef	STRETCH_SET_POSITION
@@ -212,38 +213,38 @@ namespace chem {
 #define	STRETCH_FORCE_ACCUMULATE(i,o,v) {}
 #undef	STRETCH_DIAGONAL_HESSIAN_ACCUMULATE
 #define	STRETCH_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {	\
-	    m->addToElement((i1)+(o1),(i2)+(o2),v);		\
-	}
+    m->addToElement((i1)+(o1),(i2)+(o2),v);		\
+  }
 #undef	STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE
 #define	STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {	\
-	    m->addToElement((i1)+(o1),(i2)+(o2),v);			\
-	}
+    m->addToElement((i1)+(o1),(i2)+(o2),v);			\
+  }
 #define STRETCH_CALC_FORCE
 #define STRETCH_CALC_DIAGONAL_HESSIAN
 #define STRETCH_CALC_OFF_DIAGONAL_HESSIAN
 
-	if ( this->isEnabled() ) {
+  if ( this->isEnabled() ) {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Stretch_termDeclares.cc>
 #pragma clang diagnostic pop
 #if !USE_EXPLICIT_DECLARES
-	    double fx1 = 0.0;
-	    double fy1 = 0.0;
-	    double fz1 = 0.0;
-	    double fx2 = 0.0;
-	    double fy2 = 0.0;
-	    double fz2 = 0.0;
+    double fx1 = 0.0;
+    double fy1 = 0.0;
+    double fz1 = 0.0;
+    double fx2 = 0.0;
+    double fy2 = 0.0;
+    double fz2 = 0.0;
 #endif
-	    double x1,y1,z1,x2,y2,z2,kb,r0;
-	    int I1, I2;
+    double x1,y1,z1,x2,y2,z2,kb,r0;
+    int I1, I2;
 //	stretchScale = this->getScale();
-	    for ( gctools::Vec0<EnergyStretch>::iterator si=this->_Terms.begin();
-		  si!=this->_Terms.end(); si++ ) {
+    for ( gctools::Vec0<EnergyStretch>::iterator si=this->_Terms.begin();
+          si!=this->_Terms.end(); si++ ) {
 #include <cando/chem/energy_functions/_Stretch_termCode.cc>
-	    }
-	}
     }
+  }
+}
 
 
 CL_DEFMETHOD core::T_sp EnergyStretch_O::stretchTermBetweenAtoms(Atom_sp x, Atom_sp y)
@@ -433,15 +434,15 @@ void	EnergyStretch_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm( NV
 
 
 
-    int	EnergyStretch_O::checkForBeyondThresholdInteractions(
-	stringstream& info, NVector_sp pos )
-    {_OF();
-	int	fails = 0;
+int	EnergyStretch_O::checkForBeyondThresholdInteractions(
+                                                             stringstream& info, NVector_sp pos )
+{_OF();
+  int	fails = 0;
 //	bool	calcForce = false;
 //	bool	calcDiagonalHessian = false;
 //	bool	calcOffDiagonalHessian = false;
 
-	this->_BeyondThresholdTerms.clear();
+  this->_BeyondThresholdTerms.clear();
 
 #undef STRETCH_CALC_FORCE
 #undef STRETCH_CALC_DIAGONAL_HESSIAN
@@ -459,78 +460,78 @@ void	EnergyStretch_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm( NV
 #undef	STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE
 #define	STRETCH_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
-	if ( this->isEnabled() ) {
-	    _BLOCK_TRACE("StretchEnergy finiteDifference comparison");
+  if ( this->isEnabled() ) {
+    _BLOCK_TRACE("StretchEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Stretch_termDeclares.cc>
 #pragma clang diagnostic pop
-	    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-	    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-	    double x1,y1,z1,x2,y2,z2,kb,r0;
-	    int I1, I2,i;
+    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
+    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
+    double x1,y1,z1,x2,y2,z2,kb,r0;
+    int I1, I2,i;
 //	    stretchScale = this->getScale();
-            gctools::Vec0<EnergyStretch>::iterator si;
-	    for ( i=0,si=this->_Terms.begin();
-		  si!=this->_Terms.end(); si++,i++ ) {
+    gctools::Vec0<EnergyStretch>::iterator si;
+    for ( i=0,si=this->_Terms.begin();
+          si!=this->_Terms.end(); si++,i++ ) {
 		// ************* Evaluate the stretch energy/force/hessian
 		// using code generated by Mathematica ***************
 #include <cando/chem/energy_functions/_Stretch_termCode.cc>
-		ASSERT(r0 != 0.0);
-		if ( fabs(StretchDeviation)/r0 > this->_ErrorThreshold ) {
-		    Atom_sp a1, a2;
-		    a1 = (*si)._Atom1;
-		    a2 = (*si)._Atom2;
-		    info<< "StretchDeviation ";
-		    info<< "value " << fabs(StretchDeviation)/r0 << " ";
-		    info<<"threshold " << this->_ErrorThreshold << " Atoms(";
-		    info << a1->getName() << " ";
-		    info << a2->getName() << ")";
-		    info << std::endl;
-		    this->_BeyondThresholdTerms.push_back(*si);
-		    fails++;
-		}
-	    }
-	}
-	return fails;
+      ASSERT(r0 != 0.0);
+      if ( fabs(StretchDeviation)/r0 > this->_ErrorThreshold ) {
+        Atom_sp a1, a2;
+        a1 = (*si)._Atom1;
+        a2 = (*si)._Atom2;
+        info<< "StretchDeviation ";
+        info<< "value " << fabs(StretchDeviation)/r0 << " ";
+        info<<"threshold " << this->_ErrorThreshold << " Atoms(";
+        info << a1->getName() << " ";
+        info << a2->getName() << ")";
+        info << std::endl;
+        this->_BeyondThresholdTerms.push_back(*si);
+        fails++;
+      }
     }
+  }
+  return fails;
+}
 
 
 
 
-    void	EnergyStretch_O::dumpTerms()
-    {_OF();
-        gctools::Vec0<EnergyStretch>::iterator	esi;
-	string				as1,as2,as3,as4;
-	string				str1, str2, str3, str4;
-	LOG(BF("Dumping EnergyStretch terms"));
-	uint idx;
-	for ( idx = 0, esi=this->_Terms.begin(); esi!=this->_Terms.end(); esi++, idx++ )
-	{
-	    as1 = atomLabel(esi->_Atom1);
-	    as2 = atomLabel(esi->_Atom2);
-	    if ( as1 < as2 ) {
-		str1 = as1;
-		str2 = as2;
-	    } else {
-		str2 = as1;
-		str1 = as2;
-	    }
-	    _lisp->print(BF("TERM 1BND %-9s - %-9s %8.2lf %8.2lf") 
-			 % str1 
-			 % str2
-			 % esi->term.kb
-			 % esi->term.r0 );
-	    LOG(BF("TERM[#%d] 1BND %-9s - %-9s %8.2lf %8.2lf ; I1=%d I2=%d")
-		% idx
-		% str1 
-		% str2
-		% esi->term.kb
-		% esi->term.r0
-		% esi->term.I1
-		% esi->term.I2 );
-	}
+void	EnergyStretch_O::dumpTerms()
+{_OF();
+  gctools::Vec0<EnergyStretch>::iterator	esi;
+  string				as1,as2,as3,as4;
+  string				str1, str2, str3, str4;
+  LOG(BF("Dumping EnergyStretch terms"));
+  uint idx;
+  for ( idx = 0, esi=this->_Terms.begin(); esi!=this->_Terms.end(); esi++, idx++ )
+  {
+    as1 = atomLabel(esi->_Atom1);
+    as2 = atomLabel(esi->_Atom2);
+    if ( as1 < as2 ) {
+      str1 = as1;
+      str2 = as2;
+    } else {
+      str2 = as1;
+      str1 = as2;
     }
+    _lisp->print(BF("TERM 1BND %-9s - %-9s %8.2lf %8.2lf") 
+                 % str1 
+                 % str2
+                 % esi->term.kb
+                 % esi->term.r0 );
+    LOG(BF("TERM[#%d] 1BND %-9s - %-9s %8.2lf %8.2lf ; I1=%d I2=%d")
+        % idx
+        % str1 
+        % str2
+        % esi->term.kb
+        % esi->term.r0
+        % esi->term.I1
+        % esi->term.I2 );
+  }
+}
 
 
 
@@ -541,30 +542,64 @@ void	EnergyStretch_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm( NV
 
 
 
-    void EnergyStretch_O::initialize()
-    {
-	this->Base::initialize();
-	this->setErrorThreshold(0.05);
-    }
+void EnergyStretch_O::initialize()
+{
+  this->Base::initialize();
+  this->setErrorThreshold(0.05);
+}
 
 #ifdef XML_ARCHIVE
-    void EnergyStretch_O::archiveBase(core::ArchiveP node)
-    {
-	this->Base::archiveBase(node);
-	archiveEnergyComponentTerms<EnergyStretch_O,EnergyStretch>(node,*this);
-    }
+void EnergyStretch_O::archiveBase(core::ArchiveP node)
+{
+  this->Base::archiveBase(node);
+  archiveEnergyComponentTerms<EnergyStretch_O,EnergyStretch>(node,*this);
+}
 #endif
 
 
-    void EnergyStretch_O::addTerm(const EnergyStretch& term)
-    {
-	this->_Terms.push_back(term);
-    }
+void EnergyStretch_O::addTerm(const EnergyStretch& term)
+{
+  this->_Terms.push_back(term);
+}
 
-    string EnergyStretch_O::beyondThresholdInteractionsAsString()
-    {
-	return component_beyondThresholdInteractionsAsString<EnergyStretch_O,EnergyStretch>(*this);
-    }
+string EnergyStretch_O::beyondThresholdInteractionsAsString()
+{
+  return component_beyondThresholdInteractionsAsString<EnergyStretch_O,EnergyStretch>(*this);
+}
+
+
+SYMBOL_EXPORT_SC_(KeywordPkg,kb);
+SYMBOL_EXPORT_SC_(KeywordPkg,r0);
+SYMBOL_EXPORT_SC_(KeywordPkg,i1);
+SYMBOL_EXPORT_SC_(KeywordPkg,i2);
+SYMBOL_EXPORT_SC_(KeywordPkg,atom1);
+SYMBOL_EXPORT_SC_(KeywordPkg,atom2);
+
+CL_DEFMETHOD core::List_sp EnergyStretch_O::extract_vectors_as_alist() const {
+  size_t size = this->_Terms.size();
+  printf("%s:%d The number of EnergyStretch terms -> %lu\n", __FILE__, __LINE__, size);
+  core::SimpleVectorDouble_sp kb_vec = core::SimpleVectorDouble_O::make(size);
+  core::SimpleVectorDouble_sp r0_vec = core::SimpleVectorDouble_O::make(size);
+  core::SimpleVector_int32_t_sp i1_vec = core::SimpleVector_int32_t_O::make(size);
+  core::SimpleVector_int32_t_sp i2_vec = core::SimpleVector_int32_t_O::make(size);
+  core::SimpleVector_sp atom1_vec    = core::SimpleVector_O::make(size);
+  core::SimpleVector_sp atom2_vec    = core::SimpleVector_O::make(size);
+  for (size_t i=0;i<size;++i) {
+    const EnergyStretch& entry = this->_Terms[i];
+    (*kb_vec)[i] = entry.term.kb;
+    (*r0_vec)[i] = entry.term.r0;
+    (*i1_vec)[i] = entry.term.I1;
+    (*i2_vec)[i] = entry.term.I2;
+    (*atom1_vec)[i] = entry._Atom1 ;
+    (*atom2_vec)[i] = entry._Atom2;
+  }
+  return core::Cons_O::createList(core::Cons_O::create(kw::_sym_kb,kb_vec),
+                                  core::Cons_O::create(kw::_sym_r0,r0_vec),
+                                  core::Cons_O::create(kw::_sym_i1,i1_vec),
+                                  core::Cons_O::create(kw::_sym_i2,i2_vec),
+                                  core::Cons_O::create(kw::_sym_atom1,atom1_vec),
+                                  core::Cons_O::create(kw::_sym_atom2,atom2_vec));
+};
 
 
 

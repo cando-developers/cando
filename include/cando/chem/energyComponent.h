@@ -337,6 +337,8 @@ CL_DEFMETHOD 	void	setErrorThreshold(double tr) { this->_ErrorThreshold = tr; };
 CL_LISPIFY_NAME("getErrorThreshold");
 CL_DEFMETHOD 	double	getErrorThreshold() { return this->_ErrorThreshold; };
 
+ CL_DEFMETHOD virtual core::List_sp extract_vectors_as_alist() const { SUBCLASS_MUST_IMPLEMENT(); };
+ 
 	string summarizeEnergyAsString();
 	string enabledAsString();
 	string debugLogAsString();

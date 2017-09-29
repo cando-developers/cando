@@ -162,7 +162,7 @@ namespace chem {
 
     CL_DEFMETHOD double getEpsilon_kJ() const;
     CL_DEFMETHOD double getEpsilon_kCal() const;
-
+// get-epsilon-k-cal
     virtual	string	levelDescription();
     virtual ParameterType type() { return nonbond; };
     DEFAULT_CTOR_DTOR(FFNonbond_O);
@@ -251,7 +251,7 @@ namespace chem {
     CL_DEFMETHOD void add( FFNonbond_sp nonbonded );
     CL_DEFMETHOD bool hasType( core::Symbol_sp type);
     CL_DEFMETHOD core::T_sp findType( core::Symbol_sp type );
-    FFNonbond_sp   getFFNonbondUsingTypeIndex( uint typeIdx );
+    CL_DEFMETHOD FFNonbond_sp getFFNonbondUsingTypeIndex( uint typeIdx );
     uint findTypeIndex( core::Symbol_sp type );
     uint findTypeIndexOrThrow( core::Symbol_sp type );
     /*! Return the type index multiplied by the number

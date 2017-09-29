@@ -31,7 +31,7 @@
   (core:bformat (fof-stream ff) (fof-format ff) val)
   (incf (fof-number-on-line ff))
   (setf (fof-wrote-nothing ff) nil)
-  (when (> (fof-number-on-line ff) (fof-per-line ff))
+  (when (>= (fof-number-on-line ff) (fof-per-line ff))
     (core:bformat (fof-stream ff) "\n")
     (setf (fof-number-on-line ff) 0)))
 
@@ -49,7 +49,7 @@
 
 (defun debug (msg &optional (ff *fortran-output-file*))
   (when (fof-debug ff)
-    (core:bformat file "%c%s\n" +fortran-debug-comment-char+ msg)))
+    (core:bformat (fof-stream ff) "%c%s\n" +fortran-debug-comment-char+ msg)))
 
 
 ;;; ------------------------------------------------------------

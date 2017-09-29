@@ -15,6 +15,7 @@
      (:file "core")
      (:file "off")
      (:file "fortran")
+     (:file "topology")
      (:file "cando-database")
 ;     (:file "commands")     ;;; moved to leap
      (:file "pdb")

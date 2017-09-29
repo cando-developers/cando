@@ -1002,8 +1002,43 @@ void EnergyNonbond_O::constructExcludedAtomListFromAtomTable(AtomTable_sp atomTa
   this->_NumberOfExcludedAtomIndices = mv_number_of_excluded_atoms;
   this->_ExcludedAtomIndices = excluded_atoms_list;
 }
+SYMBOL_EXPORT_SC_(KeywordPkg,da);
+SYMBOL_EXPORT_SC_(KeywordPkg,dc);
+SYMBOL_EXPORT_SC_(KeywordPkg,i1);
+SYMBOL_EXPORT_SC_(KeywordPkg,i2);
+SYMBOL_EXPORT_SC_(KeywordPkg,atom1);
+SYMBOL_EXPORT_SC_(KeywordPkg,atom2);
+
+CL_DEFMETHOD core::List_sp EnergyNonbond_O::extract_vectors_as_alist() const{
+  size_t size = this->_Terms.size();
+  core::SimpleVectorDouble_sp da_vec = core::SimpleVectorDouble_O::make(size);
+  core::SimpleVectorDouble_sp dc_vec = core::SimpleVectorDouble_O::make(size);
+  core::SimpleVector_int32_t_sp i1_vec = core::SimpleVector_int32_t_O::make(size);
+  core::SimpleVector_int32_t_sp i2_vec = core::SimpleVector_int32_t_O::make(size);
+  core::SimpleVector_sp atom1_vec = core::SimpleVector_O::make(size);
+  core::SimpleVector_sp atom2_vec = core::SimpleVector_O::make(size);
+  for (size_t i=0; i<size; ++i){
+    const EnergyNonbond& entry = this->_Terms[i];
+    (*da_vec)[i] = entry.term.dA;
+    (*dc_vec)[i] = entry.term.dC;
+    (*i1_vec)[i] = entry.term.I1;
+    (*i2_vec)[i] = entry.term.I2;
+    (*atom1_vec)[i] = entry._Atom1;
+    (*atom2_vec)[i] = entry._Atom2;
+  }
+  return core::Cons_O::createList(core::Cons_O::create(kw::_sym_da, da_vec),
+                                  core::Cons_O::create(kw::_sym_dc, dc_vec),
+                                  core::Cons_O::create(kw::_sym_i1, i1_vec),
+                                  core::Cons_O::create(kw::_sym_i2, i2_vec),
+                                  core::Cons_O::create(kw::_sym_atom1 ,atom1_vec),
+                                  core::Cons_O::create(kw::_sym_atom2 ,atom2_vec));
+}
 
 
+CL_DEFMETHOD FFNonbondDb_sp EnergyNonbond_O::getFFNonbondDb() {
+    if (gc::IsA<FFNonbondDb_sp>(this->_FFNonbondDb)) return this->_FFNonbondDb;
+    SIMPLE_ERROR(BF("The _FFNonbondDb of an EnergyNonbond has not been initialized"));
+  }
 
 
 };

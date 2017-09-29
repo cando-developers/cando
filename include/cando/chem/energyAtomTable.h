@@ -68,6 +68,7 @@ public:
     double		_Charge;		//!<Atom charge in electrons
     double		_Mass;			//!<Atom mass in Daltons
     uint		_TypeIndex;		//!<Type index
+    uint                _AtomicNumber;           //!<Atomic number
 public:
 	// Temporary variables, not necessary to store
 	/*! Sets of all atoms that are bonded to this one at remove 0(bonded),
@@ -121,7 +122,7 @@ class AtomTable_O : public core::CxxObject_O
   void	add(EnergyAtom& aa) { this->_Atoms.push_back(aa);};
 
 	/*! Add the info for a single atom and return the coordinate index (index*3) of the atom */
-  int addAtomInfo(Atom_sp atom, units::Quantity_sp charge, units::Quantity_sp mass, int typeIndex );
+  int addAtomInfo(Atom_sp atom, units::Quantity_sp charge, units::Quantity_sp mass, int typeIndex, uint atomicNumber );
 
   iterator	begin() { return this->_Atoms.begin(); };
   iterator	end() { return this->_Atoms.end(); };
@@ -146,7 +147,7 @@ class AtomTable_O : public core::CxxObject_O
   CL_DEFMETHOD double elt_charge(int index) { return this->_Atoms[index]._Charge; };
   CL_DEFMETHOD double elt_mass(int index) { return this->_Atoms[index]._Mass; };
   CL_DEFMETHOD int elt_type_index(int index) { return this->_Atoms[index]._TypeIndex; };
-
+  CL_DEFMETHOD int elt_atomic_number(int index) { return this->_Atoms[index]._AtomicNumber; };
   DEFAULT_CTOR_DTOR(AtomTable_O);
 };
 

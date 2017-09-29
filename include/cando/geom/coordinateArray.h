@@ -311,6 +311,44 @@ namespace geom {
 
 
 namespace geom {
+  FORWARD(SimpleMDArrayCoordinate);
+  class SimpleMDArrayCoordinate_O : public core::template_SimpleArray<SimpleMDArrayCoordinate_O,SimpleVectorCoordinate_O,core::SimpleMDArray_O> {
+    LISP_CLASS(geom, GeomPkg, SimpleMDArrayCoordinate_O, "SimpleMDArrayCoordinate",core::SimpleMDArray_O);
+    virtual ~SimpleMDArrayCoordinate_O() {};
+  public:
+    typedef core::template_SimpleArray<SimpleMDArrayCoordinate_O,SimpleVectorCoordinate_O,core::SimpleMDArray_O> TemplatedBase;
+    typedef typename TemplatedBase::simple_element_type simple_element_type;
+    typedef typename TemplatedBase::simple_type simple_type;
+  public: // make vector
+  SimpleMDArrayCoordinate_O(size_t rank1, size_t dimension, core::Array_sp data) : TemplatedBase(dimension,data) {};
+    static SimpleMDArrayCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement/*=_Nil<T_O>()*/, core::T_sp data/*=_Nil<T_O>()*/) {
+      LIKELY_if (data.nilp()) {
+        data = SimpleVectorCoordinate_O::make(dimension,initialElement,true);
+      }
+      SimpleMDArrayCoordinate_sp array = gctools::GC<SimpleMDArrayCoordinate_O>::allocate_container(1,1,dimension,gc::As_unsafe<core::Array_sp>(data));
+      return array;
+    }
+    static SimpleMDArrayCoordinate_sp make_vector(size_t dimension, simple_element_type initialElement) {
+      return make_vector(dimension,initialElement,_Nil<T_O>());
+    }
+  public: // make array
+  SimpleMDArrayCoordinate_O(size_t rank,
+                  core::List_sp dimensions,
+                  core::Array_sp data) : TemplatedBase(rank,dimensions,data) {};
+    static SimpleMDArrayCoordinate_sp make_multi_dimensional(core::List_sp dim_desig, simple_element_type initialElement, core::T_sp data) {
+      ASSERT(dim_desig.consp()||dim_desig.nilp());
+      size_t rank;
+      size_t arrayTotalSize = calculateArrayTotalSizeAndValidateDimensions(dim_desig,rank);
+      LIKELY_if (data.nilp()) {
+        data = SimpleVectorCoordinate_O::make(arrayTotalSize,initialElement,true);
+      }
+      SimpleMDArrayCoordinate_sp array = gctools::GC<SimpleMDArrayCoordinate_O>::allocate_container(rank,rank,dim_desig,gc::As<core::Array_sp>(data));
+      return array;
+    }
+  };
+};
+
+namespace geom {
   FORWARD(MDArrayCoordinate);
 };
 namespace geom {
@@ -360,15 +398,6 @@ namespace geom {
 //    virtual bool equalp(T_sp o) const final;
   };
 };
-
-
-
-
-
-
-
-
-
 
 
 

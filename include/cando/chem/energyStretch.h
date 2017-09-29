@@ -96,8 +96,6 @@ public:
 //        void defineFrom( EnergyAtom *ea1, EnergyAtom *ea2);
 };
 
-
-
 double	_evaluateEnergyOnly_Stretch (
 		double x1,
 		double y1,
@@ -108,20 +106,12 @@ double	_evaluateEnergyOnly_Stretch (
 		double r0,
 		double kb );
 
-
-
-
-
-
 class EnergyStretch_O : public EnergyComponent_O
 {
     LISP_CLASS(chem,ChemPkg,EnergyStretch_O,"EnergyStretch",EnergyComponent_O);
 public:
 public: // virtual functions inherited from Object
     void	initialize();
-//    void	archiveBase(core::ArchiveP node);
-//	string	__repr__() const;
-
 public:
     typedef EnergyStretch	TermType;
 public: // instance variables
@@ -146,6 +136,11 @@ public:
                     core::make_fixnum(this->_Terms[index].term.I1),
                     core::make_fixnum(this->_Terms[index].term.I2));
     }
+
+    /*! Extract the components of the energy term into a collection of parallel vectors.
+        The vectors are returned as an alist with keyword keys.
+        The keys are :kb, :r0, :i1, :i2, :atom1 :atom2 */
+    virtual core::List_sp extract_vectors_as_alist() const;
     
     core::T_sp stretchTermBetweenAtoms(Atom_sp a1, Atom_sp a2);
     

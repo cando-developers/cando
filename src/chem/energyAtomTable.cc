@@ -70,6 +70,7 @@ void EnergyAtom::defineForAtom(ForceField_sp forceField, Atom_sp a1, uint coordi
   this->setupBase(a1,coordinateIndex);
   this->_TypeIndex = forceField->getNonbondDb()->findTypeIndex(a1->getType());
   this->_Charge = a1->getCharge();
+  this->_AtomicNumber = a1->getAtomicNumber();
 }
 
 #ifdef XML_ARCHIVE
@@ -152,13 +153,14 @@ EnergyAtom* AtomTable_O::getEnergyAtomPointer(Atom_sp a)
 }
 
 CL_LISPIFY_NAME("addAtomInfo");
-CL_DEFMETHOD     int AtomTable_O::addAtomInfo(Atom_sp atom, units::Quantity_sp charge, units::Quantity_sp mass, int typeIndex )
+CL_DEFMETHOD     int AtomTable_O::addAtomInfo(Atom_sp atom, units::Quantity_sp charge, units::Quantity_sp mass, int typeIndex, uint atomicNumber )
 {_OF();
   int coordinateIndex = this->getNumberOfAtoms()*3;
   EnergyAtom ea(atom,coordinateIndex);
   ea._Charge = charge->value_in_unit_asReal(units::_sym_elementaryCharge->symbolValue().as<units::Unit_O>());
   ea._Mass = mass->value_in_unit_asReal(units::_sym_daltons->symbolValue().as<units::Unit_O>());
   ea._TypeIndex = typeIndex;
+  ea._AtomicNumber = atomicNumber;
   this->add(ea);
   return coordinateIndex;
 }

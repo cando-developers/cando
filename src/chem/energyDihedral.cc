@@ -29,6 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/energyDihedral.h>
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>
+#include <clasp/core/ql.h>
 #include <clasp/core/profiler.h>
 #include <cando/chem/bond.h>
 #include <cando/chem/matter.h>
@@ -48,31 +49,31 @@ namespace chem {
 
 
 #ifdef XML_ARCHIVE
-    void	EnergyDihedral::archive(core::ArchiveP node)
+void	EnergyDihedral::archive(core::ArchiveP node)
 {
 //    node->attribute("_Type1",this->_Type1);
 //    node->attribute("_Type2",this->_Type2);
 //    node->attribute("_Type3",this->_Type3);
 //    node->attribute("_Type4",this->_Type4);
-    node->attribute("_Proper",this->_Proper);
-    node->attribute("_PhaseRad",this->_PhaseRad);
-    node->attribute("sinPhase",this->term.sinPhase);
-    node->attribute("cosPhase",this->term.cosPhase);
-    node->attribute("V",this->term.V);
-    node->attribute("DN",this->term.DN);
-    node->attribute("IN",this->term.IN);
-    node->attribute("I1",this->term.I1);
-    node->attribute("I2",this->term.I2);
-    node->attribute("I3",this->term.I3);
-    node->attribute("I4",this->term.I4);
-    node->attribute("a1",this->_Atom1);
-    node->attribute("a2",this->_Atom2);
-    node->attribute("a3",this->_Atom3);
-    node->attribute("a4",this->_Atom4);
+  node->attribute("_Proper",this->_Proper);
+  node->attribute("_PhaseRad",this->_PhaseRad);
+  node->attribute("sinPhase",this->term.sinPhase);
+  node->attribute("cosPhase",this->term.cosPhase);
+  node->attribute("V",this->term.V);
+  node->attribute("DN",this->term.DN);
+  node->attribute("IN",this->term.IN);
+  node->attribute("I1",this->term.I1);
+  node->attribute("I2",this->term.I2);
+  node->attribute("I3",this->term.I3);
+  node->attribute("I4",this->term.I4);
+  node->attribute("a1",this->_Atom1);
+  node->attribute("a2",this->_Atom2);
+  node->attribute("a3",this->_Atom3);
+  node->attribute("a4",this->_Atom4);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-    node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
-    node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
-    node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
+  node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
+  node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
+  node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
 #include <cando/chem/energy_functions/_Dihedral_debugEvalSerialize.cc>
 #endif //]
 }
@@ -80,103 +81,103 @@ namespace chem {
 
 
 void	sinNPhiCosNPhi(int n, double* sinNPhi, double* cosNPhi,
-			 double sinPhi, double cosPhi )
+                       double sinPhi, double cosPhi )
 {
-    double	sinNm1Phi, cosNm1Phi;
-    if ( n==1 ) {
-	*sinNPhi = sinPhi;
-	*cosNPhi = cosPhi;
-	return;
-    };
-    sinNPhiCosNPhi(n-1,&sinNm1Phi,&cosNm1Phi,sinPhi,cosPhi);
-    *sinNPhi = cosPhi*sinNm1Phi+sinPhi*cosNm1Phi;
-    *cosNPhi = cosPhi*cosNm1Phi-sinPhi*sinNm1Phi;
+  double	sinNm1Phi, cosNm1Phi;
+  if ( n==1 ) {
+    *sinNPhi = sinPhi;
+    *cosNPhi = cosPhi;
     return;
+  };
+  sinNPhiCosNPhi(n-1,&sinNm1Phi,&cosNm1Phi,sinPhi,cosPhi);
+  *sinNPhi = cosPhi*sinNm1Phi+sinPhi*cosNm1Phi;
+  *cosNPhi = cosPhi*cosNm1Phi-sinPhi*sinNm1Phi;
+  return;
 }
 
 
 void EnergyDihedral::defineFrom( int n, FFPtor_sp ffterm , EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, EnergyAtom *ea4, double scale)
 {
 //    this->_Term = term;
-    this->_Proper = true;
+  this->_Proper = true;
 //    this->_Type1 = term->_T1;
 //    this->_Type2 = term->_T2;
 //    this->_Type3 = term->_T3;
 //    this->_Type4 = term->_T4;
-    this->_Atom1 = ea1->atom();
-    this->_Atom2 = ea2->atom();
-    this->_Atom3 = ea3->atom();
-    this->_Atom4 = ea4->atom();
-    this->_PhaseRad = ffterm->getPhaseRad(n);
-    this->term.sinPhase = sin(this->_PhaseRad);
-    this->term.cosPhase = cos(this->_PhaseRad);
-    this->term.V = ffterm->getV_kCal(n)*scale;
-    this->term.DN = n;
-    this->term.IN = n;
-    this->term.I1 = ea1->coordinateIndexTimes3();
-    this->term.I2 = ea2->coordinateIndexTimes3();
-    this->term.I3 = ea3->coordinateIndexTimes3();
-    this->term.I4 = ea4->coordinateIndexTimes3();
+  this->_Atom1 = ea1->atom();
+  this->_Atom2 = ea2->atom();
+  this->_Atom3 = ea3->atom();
+  this->_Atom4 = ea4->atom();
+  this->_PhaseRad = ffterm->getPhaseRad(n);
+  this->term.sinPhase = sin(this->_PhaseRad);
+  this->term.cosPhase = cos(this->_PhaseRad);
+  this->term.V = ffterm->getV_kCal(n)*scale;
+  this->term.DN = n;
+  this->term.IN = n;
+  this->term.I1 = ea1->coordinateIndexTimes3();
+  this->term.I2 = ea2->coordinateIndexTimes3();
+  this->term.I3 = ea3->coordinateIndexTimes3();
+  this->term.I4 = ea4->coordinateIndexTimes3();
 }
 
 double	EnergyDihedral::getDihedral()
 {
-    Vector3	pos1, pos2, pos3, pos4;
-double	angle;
-    pos1 = this->_Atom1->getPosition();
-    pos2 = this->_Atom2->getPosition();
-    pos3 = this->_Atom3->getPosition();
-    pos4 = this->_Atom4->getPosition();
-    angle = geom::calculateDihedral( pos1, pos2, pos3, pos4);
-    return angle;
+  Vector3	pos1, pos2, pos3, pos4;
+  double	angle;
+  pos1 = this->_Atom1->getPosition();
+  pos2 = this->_Atom2->getPosition();
+  pos3 = this->_Atom3->getPosition();
+  pos4 = this->_Atom4->getPosition();
+  angle = geom::calculateDihedral( pos1, pos2, pos3, pos4);
+  return angle;
 }
 
 double	EnergyDihedral::getDihedralDeviation()
 {
-    Vector3	pos1, pos2, pos3, pos4;
-double	phi, dev;
-    pos1 = this->_Atom1->getPosition();
-    pos2 = this->_Atom2->getPosition();
-    pos3 = this->_Atom3->getPosition();
-    pos4 = this->_Atom4->getPosition();
-    phi = geom::calculateDihedral( pos1, pos2, pos3, pos4);
-    dev = 1.0+cos(this->term.DN*phi-this->_PhaseRad);
-    return dev;
+  Vector3	pos1, pos2, pos3, pos4;
+  double	phi, dev;
+  pos1 = this->_Atom1->getPosition();
+  pos2 = this->_Atom2->getPosition();
+  pos3 = this->_Atom3->getPosition();
+  pos4 = this->_Atom4->getPosition();
+  phi = geom::calculateDihedral( pos1, pos2, pos3, pos4);
+  dev = 1.0+cos(this->term.DN*phi-this->_PhaseRad);
+  return dev;
 }
 
 
 void EnergyDihedral::defineFrom( int n, FFItor_sp term , EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, EnergyAtom *ea4, double scale)
 {
 //    this->_Term = term;
-    this->_Proper = false;
+  this->_Proper = false;
 //    this->_Type1 = term->_T1;
 //    this->_Type2 = term->_T2;
 //    this->_Type3 = term->_T3;
 //    this->_Type4 = term->_T4;
-    this->_Atom1 = ea1->atom();
-    this->_Atom2 = ea2->atom();
-    this->_Atom3 = ea3->atom();
-    this->_Atom4 = ea4->atom();
-    this->term.DN = n;
-    this->term.IN = n;
-    this->term.V = term->getV_kCal(n)*scale;
-    this->_PhaseRad = term->getPhaseRad(n);
-    this->term.cosPhase = cos(this->_PhaseRad);
-    this->term.sinPhase = sin(this->_PhaseRad);
-    this->term.I1 = ea1->coordinateIndexTimes3();
-    this->term.I2 = ea2->coordinateIndexTimes3();
-    this->term.I3 = ea3->coordinateIndexTimes3();
-    this->term.I4 = ea4->coordinateIndexTimes3();
+  this->_Atom1 = ea1->atom();
+  this->_Atom2 = ea2->atom();
+  this->_Atom3 = ea3->atom();
+  this->_Atom4 = ea4->atom();
+  this->term.DN = n;
+  this->term.IN = n;
+  this->term.V = term->getV_kCal(n)*scale;
+  this->_PhaseRad = term->getPhaseRad(n);
+  this->term.cosPhase = cos(this->_PhaseRad);
+  this->term.sinPhase = sin(this->_PhaseRad);
+  this->term.I1 = ea1->coordinateIndexTimes3();
+  this->term.I2 = ea2->coordinateIndexTimes3();
+  this->term.I3 = ea3->coordinateIndexTimes3();
+  this->term.I4 = ea4->coordinateIndexTimes3();
 }
 
 #if 0 //[
 void	EnergyDihedral::defineMissingProper( EnergyAtom *ea1, EnergyAtom *ea2, EnergyAtom *ea3, EnergyAtom *ea4 )
 {
-    this->_Proper = true;
+  this->_Proper = true;
 //    this->_Type1 = ea1->_Atom->getType();
 //    this->_Type2 = ea2->_Atom->getType();
-/    this->_Type3 = ea3->_Atom->getType();
-    this->_Type4 = ea4->_Atom->getType();
+  /    this->_Type3 = ea3->_Atom->getType();
+  this->_Type4 = ea4->_Atom->getType();
 }
 #endif //]
 
@@ -184,54 +185,54 @@ void	EnergyDihedral::defineMissingProper( EnergyAtom *ea1, EnergyAtom *ea2, Ener
 #if 0
 adapt::QDomNode_sp	EnergyDihedral::asXml()
 {
-adapt::QDomNode_sp	node;
-Vector3	vdiff;
+  adapt::QDomNode_sp	node;
+  Vector3	vdiff;
 
-    node = adapt::QDomNode_O::create(env,"EnergyDihedral");
-    node->addAttributeBool("proper",this->_Proper );
-    node->addAttributeString("atom1Name",this->_Atom1->getName());
-    node->addAttributeString("atom2Name",this->_Atom2->getName());
-    node->addAttributeString("atom3Name",this->_Atom3->getName());
-    node->addAttributeString("atom4Name",this->_Atom4->getName());
+  node = adapt::QDomNode_O::create(env,"EnergyDihedral");
+  node->addAttributeBool("proper",this->_Proper );
+  node->addAttributeString("atom1Name",this->_Atom1->getName());
+  node->addAttributeString("atom2Name",this->_Atom2->getName());
+  node->addAttributeString("atom3Name",this->_Atom3->getName());
+  node->addAttributeString("atom4Name",this->_Atom4->getName());
 //    node->addAttributeString("atom1Type",this->_Type1 );
 //    node->addAttributeString("atom2Type",this->_Type2 );
 //    node->addAttributeString("atom3Type",this->_Type3 );
 //    node->addAttributeString("atom4Type",this->_Type4 );
-    node->addAttributeInt("I1",this->term.I1);
-    node->addAttributeInt("I2",this->term.I2);
-    node->addAttributeInt("I3",this->term.I3);
-    node->addAttributeInt("I4",this->term.I4);
-    node->addAttributeDoubleScientific("DN",this->term.DN);
-    node->addAttributeInt("IN",this->term.IN);
-    node->addAttributeDoubleScientific("V",this->term.V);
-    node->addAttributeDoubleScientific("PhaseRad",this->_PhaseRad);
+  node->addAttributeInt("I1",this->term.I1);
+  node->addAttributeInt("I2",this->term.I2);
+  node->addAttributeInt("I3",this->term.I3);
+  node->addAttributeInt("I4",this->term.I4);
+  node->addAttributeDoubleScientific("DN",this->term.DN);
+  node->addAttributeInt("IN",this->term.IN);
+  node->addAttributeDoubleScientific("V",this->term.V);
+  node->addAttributeDoubleScientific("PhaseRad",this->_PhaseRad);
 #if TURN_ENERGY_FUNCTION_DEBUG_ON
-    adapt::QDomNode_sp xml = adapt::QDomNode_O::create(env,"Evaluated");
-    xml->addAttributeBool("calcForce",this->_calcForce );
-    xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
-    xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
+  adapt::QDomNode_sp xml = adapt::QDomNode_O::create(env,"Evaluated");
+  xml->addAttributeBool("calcForce",this->_calcForce );
+  xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
+  xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
 #include <_Dihedral_debugEvalXml.cc>
-    node->addChild(xml);
+  node->addChild(xml);
 #endif
-    return node;
+  return node;
 }
 
 void	EnergyDihedral::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
-					AtomTable_sp at )
+                                                   AtomTable_sp at )
 {
-    this->term.I1 = xml->getAttributeInt("I1");
-    this->term.I2 = xml->getAttributeInt("I2");
-    this->term.I3 = xml->getAttributeInt("I3");
-    this->term.I4 = xml->getAttributeInt("I4");
-    this->_Atom1 = at->findEnergyAtomWithCoordinateIndex(this->term.I1)->atom();
-    this->_Atom2 = at->findEnergyAtomWithCoordinateIndex(this->term.I2)->atom();
-    this->_Atom3 = at->findEnergyAtomWithCoordinateIndex(this->term.I3)->atom();
-    this->_Atom4 = at->findEnergyAtomWithCoordinateIndex(this->term.I4)->atom();
-    this->term.DN = xml->getAttributeDouble("DN");
-    this->term.IN = xml->getAttributeInt("IN");
-    this->term.V = xml->getAttributeDouble("V");
-    this->_PhaseRad = xml->getAttributeDouble("PhaseRad");
-    this->_Proper = xml->getAttributeBool("proper");
+  this->term.I1 = xml->getAttributeInt("I1");
+  this->term.I2 = xml->getAttributeInt("I2");
+  this->term.I3 = xml->getAttributeInt("I3");
+  this->term.I4 = xml->getAttributeInt("I4");
+  this->_Atom1 = at->findEnergyAtomWithCoordinateIndex(this->term.I1)->atom();
+  this->_Atom2 = at->findEnergyAtomWithCoordinateIndex(this->term.I2)->atom();
+  this->_Atom3 = at->findEnergyAtomWithCoordinateIndex(this->term.I3)->atom();
+  this->_Atom4 = at->findEnergyAtomWithCoordinateIndex(this->term.I4)->atom();
+  this->term.DN = xml->getAttributeDouble("DN");
+  this->term.IN = xml->getAttributeInt("IN");
+  this->term.V = xml->getAttributeDouble("V");
+  this->_PhaseRad = xml->getAttributeDouble("PhaseRad");
+  this->_Proper = xml->getAttributeBool("proper");
 }
 #endif
 
@@ -240,15 +241,15 @@ void	EnergyDihedral::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
 // Copy this from implementAmberFunction.cc
 //
 double	_evaluateEnergyOnly_Dihedral(
-		double x1, double y1, double z1,
-		double x2, double y2, double z2,
-		double x3, double y3, double z3,
-		double x4, double y4, double z4,
-		double V, double DN, int IN,
-		double cosPhase, double sinPhase )
+                                     double x1, double y1, double z1,
+                                     double x2, double y2, double z2,
+                                     double x3, double y3, double z3,
+                                     double x4, double y4, double z4,
+                                     double V, double DN, int IN,
+                                     double cosPhase, double sinPhase )
 {
-double	EraseLinearDihedral;
-double	SinNPhi, CosNPhi;
+  double	EraseLinearDihedral;
+  double	SinNPhi, CosNPhi;
 
 #undef	DIHEDRAL_SET_PARAMETER
 #define	DIHEDRAL_SET_PARAMETER(x)	{}
@@ -269,95 +270,95 @@ double	SinNPhi, CosNPhi;
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
 #pragma clang diagnostic pop
-	fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-	fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-	fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-	fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
+  fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
+  fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
+  fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
+  fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
 
-    return Energy;
+  return Energy;
 }
 
 
 void EnergyDihedral_O::addTerm(const EnergyDihedral& term)
 {
-    this->_Terms.push_back(term);
+  this->_Terms.push_back(term);
 }
 
 
 string EnergyDihedral_O::beyondThresholdInteractionsAsString()
 {
-    return component_beyondThresholdInteractionsAsString<EnergyDihedral_O,EnergyDihedral>(*this);
+  return component_beyondThresholdInteractionsAsString<EnergyDihedral_O,EnergyDihedral>(*this);
 }
 
 
 
 void	EnergyDihedral_O::dumpTerms()
 {
-    gctools::Vec0<EnergyDihedral>::iterator	edi;
-string				as1,as2,as3,as4;
-string				str1, str2, str3, str4, type;
-    for (edi=this->_Terms.begin();edi!=this->_Terms.end();edi++)
-    {
-	if ( edi->term.V == 0.0 ) continue;
-	if ( edi->_Proper ) {
-	    type = "1PROPER  ";
-	} else {
-	    type = "9IMPROPER";
-	}
-	as1 = atomLabel(edi->_Atom1);
-	as2 = atomLabel(edi->_Atom2);
-	as3 = atomLabel(edi->_Atom3);
-	as4 = atomLabel(edi->_Atom4);
-	if ( edi->_Proper ) {
-	    if ( as1 < as4 ) {
-		str1 = as1;
-		str2 = as2;
-		str3 = as3;
-		str4 = as4;
-	    } else {
-		str4 = as1;
-		str3 = as2;
-		str2 = as3;
-		str1 = as4;
-	    }
-	} else {
-	    stringstream ss;
-	    ss.str("");
-	    ss << as3 << "#Cr";
-	    str1 = ss.str();
-	    ss.str("");
-	    ss << as1 << "#A1";
-	    str2 = ss.str();
-	    ss.str("");
-	    ss << as2 << "#A2";
-	    str3 = ss.str();
-	    ss.str("");
-	    ss << as4 << "#A4";
-	    str4 = ss.str();
-	}
-	_lisp->print(BF("TERM 3DIH %s %-9s - %-9s - %-9s - %-9s %8.2lf %8.2lf %2.0lf")
-			% type
-			% str1
-			% str2
-			% str3
-			% str4
-			% edi->term.V
-			% edi->_PhaseRad
-			% edi->term.DN);
+  gctools::Vec0<EnergyDihedral>::iterator	edi;
+  string				as1,as2,as3,as4;
+  string				str1, str2, str3, str4, type;
+  for (edi=this->_Terms.begin();edi!=this->_Terms.end();edi++)
+  {
+    if ( edi->term.V == 0.0 ) continue;
+    if ( edi->_Proper ) {
+      type = "1PROPER  ";
+    } else {
+      type = "9IMPROPER";
     }
+    as1 = atomLabel(edi->_Atom1);
+    as2 = atomLabel(edi->_Atom2);
+    as3 = atomLabel(edi->_Atom3);
+    as4 = atomLabel(edi->_Atom4);
+    if ( edi->_Proper ) {
+      if ( as1 < as4 ) {
+        str1 = as1;
+        str2 = as2;
+        str3 = as3;
+        str4 = as4;
+      } else {
+        str4 = as1;
+        str3 = as2;
+        str2 = as3;
+        str1 = as4;
+      }
+    } else {
+      stringstream ss;
+      ss.str("");
+      ss << as3 << "#Cr";
+      str1 = ss.str();
+      ss.str("");
+      ss << as1 << "#A1";
+      str2 = ss.str();
+      ss.str("");
+      ss << as2 << "#A2";
+      str3 = ss.str();
+      ss.str("");
+      ss << as4 << "#A4";
+      str4 = ss.str();
+    }
+    _lisp->print(BF("TERM 3DIH %s %-9s - %-9s - %-9s - %-9s %8.2lf %8.2lf %2.0lf")
+                 % type
+                 % str1
+                 % str2
+                 % str3
+                 % str4
+                 % edi->term.V
+                 % edi->_PhaseRad
+                 % edi->term.DN);
+  }
 }
 
 
 
 
 void	EnergyDihedral_O::setupHessianPreconditioner(
-					NVector_sp nvPosition,
-					AbstractLargeSquareMatrix_sp m )
+                                                     NVector_sp nvPosition,
+                                                     AbstractLargeSquareMatrix_sp m )
 {
-bool		calcForce = true;
-bool		calcDiagonalHessian = true;
-bool		calcOffDiagonalHessian = true;
+  bool		calcForce = true;
+  bool		calcDiagonalHessian = true;
+  bool		calcOffDiagonalHessian = true;
 
 //
 // Copy from implementAmberFunction::setupHessianPreconditioner
@@ -374,33 +375,33 @@ bool		calcOffDiagonalHessian = true;
 #define	DIHEDRAL_FORCE_ACCUMULATE(i,o,v) {}
 #undef	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE
 #define	DIHEDRAL_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {\
-	m->addToElement((i1)+(o1),(i2)+(o2),v);\
-}
+    m->addToElement((i1)+(o1),(i2)+(o2),v);\
+  }
 #undef	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE
 #define	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {\
-	m->addToElement((i1)+(o1),(i2)+(o2),v);\
-}
+    m->addToElement((i1)+(o1),(i2)+(o2),v);\
+  }
 #define DIHEDRAL_CALC_FORCE
 #define DIHEDRAL_CALC_DIAGONAL_HESSIAN
 #define DIHEDRAL_CALC_OFF_DIAGONAL_HESSIAN
-    if ( this->isEnabled() ) {
+  if ( this->isEnabled() ) {
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include	<cando/chem/energy_functions/_Dihedral_termDeclares.cc>
 #pragma clang diagnostic pop
-	fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-	fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-	fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-	fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
-	double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,V,DN;
-	double EraseLinearDihedral;
-	int	I1, I2, I3, I4, IN;
-	double sinPhase, cosPhase, SinNPhi, CosNPhi;
-	for ( gctools::Vec0<EnergyDihedral>::iterator di=this->_Terms.begin();
-		    di!=this->_Terms.end(); di++ ) {
+    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
+    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
+    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
+    fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
+    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,V,DN;
+    double EraseLinearDihedral;
+    int	I1, I2, I3, I4, IN;
+    double sinPhase, cosPhase, SinNPhi, CosNPhi;
+    for ( gctools::Vec0<EnergyDihedral>::iterator di=this->_Terms.begin();
+          di!=this->_Terms.end(); di++ ) {
 #include	<cando/chem/energy_functions/_Dihedral_termCode.cc>
-	}
     }
+  }
 
 
 }
@@ -565,12 +566,12 @@ double	EnergyDihedral_O::evaluateAll(NVector_sp 	pos,
 
 
 void	EnergyDihedral_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
-		NVector_sp 	pos)
+                                                                                 NVector_sp 	pos)
 {_OF();
-int	fails = 0;
-bool	calcForce = true;
-bool	calcDiagonalHessian = true;
-bool	calcOffDiagonalHessian = true;
+  int	fails = 0;
+  bool	calcForce = true;
+  bool	calcDiagonalHessian = true;
+  bool	calcOffDiagonalHessian = true;
 
 
 //
@@ -595,119 +596,119 @@ bool	calcOffDiagonalHessian = true;
 
 
 
-	if ( this->isEnabled() ) {
-		_BLOCK_TRACE("DihedralEnergy finiteDifference comparison");
+  if ( this->isEnabled() ) {
+    _BLOCK_TRACE("DihedralEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
 #pragma clang diagnostic pop
-	fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-	fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-	fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-	fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
+    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
+    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
+    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
+    fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
 #if !USE_EXPLICIT_DECLARES
-	double dhx1x1 = 0.0;
-	double ohx1y1 = 0.0;
-	double ohx1z1 = 0.0;
-	double ohx1x2 = 0.0;
-	double ohx1y2 = 0.0;
-	double ohx1z2 = 0.0;
-	double ohx1x3 = 0.0;
-	double ohx1y3 = 0.0;
-	double ohx1z3 = 0.0;
-	double ohx1x4 = 0.0;
-	double ohx1y4 = 0.0;
-	double ohx1z4 = 0.0;
-	double dhy1y1 = 0.0;
-	double ohy1z1 = 0.0;
-	double ohy1x2 = 0.0;
-	double ohy1y2 = 0.0;
-	double ohy1z2 = 0.0;
-	double ohy1x3 = 0.0;
-	double ohy1y3 = 0.0;
-	double ohy1z3 = 0.0;
-	double ohy1x4 = 0.0;
-	double ohy1y4 = 0.0;
-	double ohy1z4 = 0.0;
-	double dhz1z1 = 0.0;
-	double ohz1x2 = 0.0;
-	double ohz1y2 = 0.0;
-	double ohz1z2 = 0.0;
-	double ohz1x3 = 0.0;
-	double ohz1y3 = 0.0;
-	double ohz1z3 = 0.0;
-	double ohz1x4 = 0.0;
-	double ohz1y4 = 0.0;
-	double ohz1z4 = 0.0;
-	double dhx2x2 = 0.0;
-	double ohx2y2 = 0.0;
-	double ohx2z2 = 0.0;
-	double ohx2x3 = 0.0;
-	double ohx2y3 = 0.0;
-	double ohx2z3 = 0.0;
-	double ohx2x4 = 0.0;
-	double ohx2y4 = 0.0;
-	double ohx2z4 = 0.0;
-	double dhy2y2 = 0.0;
-	double ohy2z2 = 0.0;
-	double ohy2x3 = 0.0;
-	double ohy2y3 = 0.0;
-	double ohy2z3 = 0.0;
-	double ohy2x4 = 0.0;
-	double ohy2y4 = 0.0;
-	double ohy2z4 = 0.0;
-	double dhz2z2 = 0.0;
-	double ohz2x3 = 0.0;
-	double ohz2y3 = 0.0;
-	double ohz2z3 = 0.0;
-	double ohz2x4 = 0.0;
-	double ohz2y4 = 0.0;
-	double ohz2z4 = 0.0;
-	double dhx3x3 = 0.0;
-	double ohx3y3 = 0.0;
-	double ohx3z3 = 0.0;
-	double ohx3x4 = 0.0;
-	double ohx3y4 = 0.0;
-	double ohx3z4 = 0.0;
-	double dhy3y3 = 0.0;
-	double ohy3z3 = 0.0;
-	double ohy3x4 = 0.0;
-	double ohy3y4 = 0.0;
-	double ohy3z4 = 0.0;
-	double dhz3z3 = 0.0;
-	double ohz3x4 = 0.0;
-	double ohz3y4 = 0.0;
-	double ohz3z4 = 0.0;
-	double dhx4x4 = 0.0;
-	double ohx4y4 = 0.0;
-	double ohx4z4 = 0.0;
-	double dhy4y4 = 0.0;
-	double ohy4z4 = 0.0;
-	double dhz4z4 = 0.0;
+    double dhx1x1 = 0.0;
+    double ohx1y1 = 0.0;
+    double ohx1z1 = 0.0;
+    double ohx1x2 = 0.0;
+    double ohx1y2 = 0.0;
+    double ohx1z2 = 0.0;
+    double ohx1x3 = 0.0;
+    double ohx1y3 = 0.0;
+    double ohx1z3 = 0.0;
+    double ohx1x4 = 0.0;
+    double ohx1y4 = 0.0;
+    double ohx1z4 = 0.0;
+    double dhy1y1 = 0.0;
+    double ohy1z1 = 0.0;
+    double ohy1x2 = 0.0;
+    double ohy1y2 = 0.0;
+    double ohy1z2 = 0.0;
+    double ohy1x3 = 0.0;
+    double ohy1y3 = 0.0;
+    double ohy1z3 = 0.0;
+    double ohy1x4 = 0.0;
+    double ohy1y4 = 0.0;
+    double ohy1z4 = 0.0;
+    double dhz1z1 = 0.0;
+    double ohz1x2 = 0.0;
+    double ohz1y2 = 0.0;
+    double ohz1z2 = 0.0;
+    double ohz1x3 = 0.0;
+    double ohz1y3 = 0.0;
+    double ohz1z3 = 0.0;
+    double ohz1x4 = 0.0;
+    double ohz1y4 = 0.0;
+    double ohz1z4 = 0.0;
+    double dhx2x2 = 0.0;
+    double ohx2y2 = 0.0;
+    double ohx2z2 = 0.0;
+    double ohx2x3 = 0.0;
+    double ohx2y3 = 0.0;
+    double ohx2z3 = 0.0;
+    double ohx2x4 = 0.0;
+    double ohx2y4 = 0.0;
+    double ohx2z4 = 0.0;
+    double dhy2y2 = 0.0;
+    double ohy2z2 = 0.0;
+    double ohy2x3 = 0.0;
+    double ohy2y3 = 0.0;
+    double ohy2z3 = 0.0;
+    double ohy2x4 = 0.0;
+    double ohy2y4 = 0.0;
+    double ohy2z4 = 0.0;
+    double dhz2z2 = 0.0;
+    double ohz2x3 = 0.0;
+    double ohz2y3 = 0.0;
+    double ohz2z3 = 0.0;
+    double ohz2x4 = 0.0;
+    double ohz2y4 = 0.0;
+    double ohz2z4 = 0.0;
+    double dhx3x3 = 0.0;
+    double ohx3y3 = 0.0;
+    double ohx3z3 = 0.0;
+    double ohx3x4 = 0.0;
+    double ohx3y4 = 0.0;
+    double ohx3z4 = 0.0;
+    double dhy3y3 = 0.0;
+    double ohy3z3 = 0.0;
+    double ohy3x4 = 0.0;
+    double ohy3y4 = 0.0;
+    double ohy3z4 = 0.0;
+    double dhz3z3 = 0.0;
+    double ohz3x4 = 0.0;
+    double ohz3y4 = 0.0;
+    double ohz3z4 = 0.0;
+    double dhx4x4 = 0.0;
+    double ohx4y4 = 0.0;
+    double ohx4z4 = 0.0;
+    double dhy4y4 = 0.0;
+    double ohy4z4 = 0.0;
+    double dhz4z4 = 0.0;
 #endif
-	    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,V,DN;
-	    double EraseLinearDihedral;
-	    int	I1, I2, I3, I4, IN, i;
-	    double sinPhase, cosPhase, SinNPhi, CosNPhi;
-            gctools::Vec0<EnergyDihedral>::iterator di;
-	    for ( i=0,di=this->_Terms.begin();
-			di!=this->_Terms.end(); di++,i++ ) {
+    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,V,DN;
+    double EraseLinearDihedral;
+    int	I1, I2, I3, I4, IN, i;
+    double sinPhase, cosPhase, SinNPhi, CosNPhi;
+    gctools::Vec0<EnergyDihedral>::iterator di;
+    for ( i=0,di=this->_Terms.begin();
+          di!=this->_Terms.end(); di++,i++ ) {
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
-		int index = i;
+      int index = i;
 #include <cando/chem/energy_functions/_Dihedral_debugFiniteDifference.cc>
-	    }
-	}
+    }
+  }
 
 }
 
 
 
 int	EnergyDihedral_O::checkForBeyondThresholdInteractions(
-			stringstream& info, NVector_sp pos )
+                                                              stringstream& info, NVector_sp pos )
 {_OF();
-int	fails = 0;
+  int	fails = 0;
 
-    this->_BeyondThresholdTerms.clear();
+  this->_BeyondThresholdTerms.clear();
 
 //
 // Copy from implementAmberFunction::checkForBeyondThresholdInteractions
@@ -731,52 +732,52 @@ int	fails = 0;
 #define	DIHEDRAL_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
 
 
-	if ( this->isEnabled() ) {
-		_BLOCK_TRACE("DihedralEnergy finiteDifference comparison");
+  if ( this->isEnabled() ) {
+    _BLOCK_TRACE("DihedralEnergy finiteDifference comparison");
 #pragma clang diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Dihedral_termDeclares.cc>
 #pragma clang diagnostic pop
-	fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
-	fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
-	fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
-	fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
-	    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,V,DN;
-	    double EraseLinearDihedral;
-	    int	I1, I2, I3, I4, IN, i;
-	    double sinPhase, cosPhase, SinNPhi, CosNPhi;
-            gctools::Vec0<EnergyDihedral>::iterator di;
-	    for ( i=0,di=this->_Terms.begin();
-			di!=this->_Terms.end(); di++,i++ ) {
+    fx1 = 0.0; fy1 = 0.0; fz1 = 0.0;
+    fx2 = 0.0; fy2 = 0.0; fz2 = 0.0;
+    fx3 = 0.0; fy3 = 0.0; fz3 = 0.0;
+    fx4 = 0.0; fy4 = 0.0; fz4 = 0.0;
+    double x1,y1,z1,x2,y2,z2,x3,y3,z3,x4,y4,z4,V,DN;
+    double EraseLinearDihedral;
+    int	I1, I2, I3, I4, IN, i;
+    double sinPhase, cosPhase, SinNPhi, CosNPhi;
+    gctools::Vec0<EnergyDihedral>::iterator di;
+    for ( i=0,di=this->_Terms.begin();
+          di!=this->_Terms.end(); di++,i++ ) {
 #include <cando/chem/energy_functions/_Dihedral_termCode.cc>
-		if ( fabs(DihedralDeviation)>this->_ErrorThreshold) {
-		    Atom_sp a1, a2, a3, a4;
-		    a1 = (*di)._Atom1;
-		    a2 = (*di)._Atom2;
-		    a3 = (*di)._Atom3;
-		    a4 = (*di)._Atom4;
-		    info<< "DihedralDeviation ";
+      if ( fabs(DihedralDeviation)>this->_ErrorThreshold) {
+        Atom_sp a1, a2, a3, a4;
+        a1 = (*di)._Atom1;
+        a2 = (*di)._Atom2;
+        a3 = (*di)._Atom3;
+        a4 = (*di)._Atom4;
+        info<< "DihedralDeviation ";
 //		    info<< a1->getAbsoluteIdPath() << " ";
 //		    info<< a2->getAbsoluteIdPath() << " ";
 //		    info<< a3->getAbsoluteIdPath() << " ";
 //		    info<< a4->getAbsoluteIdPath() << " ";
-		    info<< "value " << fabs(DihedralDeviation) << " ";
-		    info<<"threshold " << this->_ErrorThreshold;
-		    info << a1->getName() << " ";
-		    info << a2->getName() << " ";
-		    info << a3->getName() << " ";
-		    info << a4->getName() << " ";
-		    info << std::endl;
-		    EnergyDihedral ed = *di;
-		    ed._CalculatedDihedralDeviation = DihedralDeviation;
-		    this->_BeyondThresholdTerms.push_back(ed);
-		    fails++;
-		}
-	    }
-	}
+        info<< "value " << fabs(DihedralDeviation) << " ";
+        info<<"threshold " << this->_ErrorThreshold;
+        info << a1->getName() << " ";
+        info << a2->getName() << " ";
+        info << a3->getName() << " ";
+        info << a4->getName() << " ";
+        info << std::endl;
+        EnergyDihedral ed = *di;
+        ed._CalculatedDihedralDeviation = DihedralDeviation;
+        this->_BeyondThresholdTerms.push_back(ed);
+        fails++;
+      }
+    }
+  }
 
 
-    return fails;
+  return fails;
 }
 
 
@@ -789,17 +790,76 @@ int	fails = 0;
 
 void EnergyDihedral_O::initialize()
 {
-    this->Base::initialize();
-    this->setErrorThreshold(3.0);
+  this->Base::initialize();
+  this->setErrorThreshold(3.0);
 }
 
 #ifdef XML_ARCHIVE
 void EnergyDihedral_O::archiveBase(core::ArchiveP node)
 {
-    this->Base::archiveBase(node);
-    archiveEnergyComponentTerms<EnergyDihedral_O,EnergyDihedral>(node,*this);
+  this->Base::archiveBase(node);
+  archiveEnergyComponentTerms<EnergyDihedral_O,EnergyDihedral>(node,*this);
 }
 #endif
+
+SYMBOL_EXPORT_SC_(KeywordPkg,v);
+SYMBOL_EXPORT_SC_(KeywordPkg,in);
+SYMBOL_EXPORT_SC_(KeywordPkg,phase);
+SYMBOL_EXPORT_SC_(KeywordPkg,i1);
+SYMBOL_EXPORT_SC_(KeywordPkg,i2);
+SYMBOL_EXPORT_SC_(KeywordPkg,i3);
+SYMBOL_EXPORT_SC_(KeywordPkg,i4);
+SYMBOL_EXPORT_SC_(KeywordPkg,proper);
+SYMBOL_EXPORT_SC_(KeywordPkg,atom1);
+SYMBOL_EXPORT_SC_(KeywordPkg,atom2);
+SYMBOL_EXPORT_SC_(KeywordPkg,atom3);
+SYMBOL_EXPORT_SC_(KeywordPkg,atom4);
+
+CL_DEFMETHOD core::List_sp EnergyDihedral_O::extract_vectors_as_alist() const{
+  size_t size = this->_Terms.size();
+  core::SimpleVectorDouble_sp v_vec = core::SimpleVectorDouble_O::make(size);
+  core::SimpleVector_int32_t_sp in_vec = core::SimpleVector_int32_t_O::make(size);
+  core::SimpleVectorDouble_sp phase_vec = core::SimpleVectorDouble_O::make(size);
+  core::SimpleVector_int32_t_sp i1_vec = core::SimpleVector_int32_t_O::make(size);
+  core::SimpleVector_int32_t_sp i2_vec = core::SimpleVector_int32_t_O::make(size);
+  core::SimpleVector_int32_t_sp i3_vec = core::SimpleVector_int32_t_O::make(size);
+  core::SimpleVector_int32_t_sp i4_vec = core::SimpleVector_int32_t_O::make(size);
+  core::SimpleVector_sp proper_vec = core::SimpleVector_O::make(size);
+  core::SimpleVector_sp atom1_vec = core::SimpleVector_O::make(size);
+  core::SimpleVector_sp atom2_vec = core::SimpleVector_O::make(size);
+  core::SimpleVector_sp atom3_vec = core::SimpleVector_O::make(size);
+  core::SimpleVector_sp atom4_vec = core::SimpleVector_O::make(size);
+  for (size_t i=0;i<size;++i){
+    const EnergyDihedral& entry = this->_Terms[i];
+    (*v_vec)[i] = entry.term.V;
+    (*in_vec)[i] = entry.term.IN;
+    (*phase_vec)[i] = entry._PhaseRad;
+    (*i1_vec)[i] = entry.term.I1;
+    (*i2_vec)[i] = entry.term.I2;
+    (*i3_vec)[i] = entry.term.I3;
+    (*i4_vec)[i] = entry.term.I4;
+    (*proper_vec)[i] = _lisp->_boolean(entry._Proper);
+    (*atom1_vec)[i] = entry._Atom1;
+    (*atom2_vec)[i] = entry._Atom2;
+    (*atom3_vec)[i] = entry._Atom3;
+    (*atom4_vec)[i] = entry._Atom4;
+  }
+  ql::list result;
+  result
+    << core::Cons_O::create(kw::_sym_v, v_vec)
+    << core::Cons_O::create(kw::_sym_in, in_vec)
+    << core::Cons_O::create(kw::_sym_phase, phase_vec)
+    << core::Cons_O::create(kw::_sym_i1, i1_vec)
+    << core::Cons_O::create(kw::_sym_i2, i2_vec)
+    << core::Cons_O::create(kw::_sym_i3, i3_vec)
+    << core::Cons_O::create(kw::_sym_i4, i4_vec)
+    << core::Cons_O::create(kw::_sym_proper, proper_vec)
+    << core::Cons_O::create(kw::_sym_atom1, atom1_vec)
+    << core::Cons_O::create(kw::_sym_atom2, atom2_vec)
+    << core::Cons_O::create(kw::_sym_atom3, atom3_vec)
+    << core::Cons_O::create(kw::_sym_atom4, atom4_vec);
+  return result.cons();
+}
 
 
 };
