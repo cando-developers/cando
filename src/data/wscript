@@ -3,4 +3,4 @@
 def build(bld):
     lisp_source = bld.path.ant_glob("**/*")
     print("In extensions/cando/src/data bld.path = %s" % bld.path)
-    bld.install_files('${INSTALL_PATH_PREFIX}/Contents/Resources/source-code/extensions/cando/src/data/',lisp_source,relative_trick=True,cwd=bld.path)
+    bld.install_files('${PREFIX}/lib/clasp/source-code/extensions/cando/src/data/',lisp_source,relative_trick=True,cwd=bld.path)
