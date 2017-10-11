@@ -174,6 +174,8 @@ public:
     }
 
     virtual core::List_sp extract_vectors_as_alist() const;
+    virtual void fill_from_vectors_in_alist(core::List_sp vectors);
+
     
     virtual void setupHessianPreconditioner(NVector_sp nvPosition,
 					    AbstractLargeSquareMatrix_sp m );

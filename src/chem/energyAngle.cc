@@ -666,5 +666,28 @@ CL_DEFMETHOD core::List_sp EnergyAngle_O::extract_vectors_as_alist() const {
 
 }
 
-
+CL_DEFMETHOD void EnergyAngle_O::fill_from_vectors_in_alist(core::List_sp vectors)
+{
+  core::SimpleVectorDouble_sp kt_vec = gc::As<core::SimpleVectorDouble_sp>(safe_alist_lookup(vectors,kw::_sym_kt));
+  core::SimpleVectorDouble_sp t0_vec = gc::As<core::SimpleVectorDouble_sp>(safe_alist_lookup(vectors,kw::_sym_t0));
+  core::SimpleVector_int32_t_sp i1_vec = gc::As<core::SimpleVector_int32_t_sp>(safe_alist_lookup(vectors,kw::_sym_i1));
+  core::SimpleVector_int32_t_sp i2_vec = gc::As<core::SimpleVector_int32_t_sp>(safe_alist_lookup(vectors,kw::_sym_i2));
+  core::SimpleVector_int32_t_sp i3_vec = gc::As<core::SimpleVector_int32_t_sp>(safe_alist_lookup(vectors,kw::_sym_i3));
+  core::SimpleVector_sp atom1_vec = gc::As<core::SimpleVector_sp>(safe_alist_lookup(vectors,kw::_sym_atom1));
+  core::SimpleVector_sp atom2_vec = gc::As<core::SimpleVector_sp>(safe_alist_lookup(vectors,kw::_sym_atom2));
+  core::SimpleVector_sp atom3_vec = gc::As<core::SimpleVector_sp>(safe_alist_lookup(vectors,kw::_sym_atom3));
+  this->_Terms.resize(kt_vec->length());
+  for (size_t i=0, iEnd(kt_vec->length());i<iEnd;++i){
+       EnergyAngle& entry = this->_Terms[i];
+       entry.term.kt = (*kt_vec)[i];
+       entry.term.t0 = (*t0_vec)[i];
+       entry.term.I1 = (*i1_vec)[i];
+       entry.term.I2 = (*i2_vec)[i];
+       entry.term.I3 = (*i3_vec)[i];
+       entry._Atom1 = (*atom1_vec)[i];
+       entry._Atom2 = (*atom2_vec)[i];
+       entry._Atom3 = (*atom3_vec)[i];
+  }
+}
+       
 };

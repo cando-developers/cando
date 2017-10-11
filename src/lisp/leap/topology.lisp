@@ -37,7 +37,13 @@
          (atom1-vector (cdr (assoc :atom1 stretch-vectors)))
          (atom2-vector (cdr (assoc :atom2 stretch-vectors)))
 	 )
-    (format t "Number of stretch terms -> ~a~%" (length kb-vector))
+    (Format t "Number of stretch terms -> ~a~%" (length kb-vector))
+    (format t "kb-vector ~a~%" kb-vector)
+    (format t "r0-vector ~a~%" r0-vector)
+    (format t "i1-vector ~a~%" i1-vector)
+    (format t "i2-vector ~a~%" i2-vector)
+    (format t "atom1-vector ~a~%" atom1-vector)
+    (format t "atom2-vector ~a~%" atom2-vector)
     (multiple-value-bind (j-vec kbj-vec r0j-vec)
 	(collapse-stretch-parameters kb-vector r0-vector atom1-vector atom2-vector)
       (Let ((with-h 0)
@@ -394,7 +400,6 @@
           :keyword))
 
 (defun generate-nonbond-parameters (ffnonbond-db type-index-vector)
-;(defun generate-nonbond-parameters (type-index-vector)
   (let ((iac-vec (make-array 256 :fill-pointer 0 :adjustable t))
         (jnext 1)
         jtemp
@@ -473,8 +478,7 @@
         (generate-nonbond-parameters ffnonbond-db type-index-vector)
       (values ntypes atom-name-vector charge-vector mass-vector atomic-number-vector ico-vec iac-vec local-typej-vec cn1-vec cn2-vec))
     )  
-  )
-                                                                      
+  )    
 
 (defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname force-field)
   (let* ((energy-function (chem:make-energy-function aggregate force-field
@@ -489,12 +493,12 @@
     (fortran:with-fortran-output-file (ftop topology-pathname :direction :output)
       (fortran:debug-on ftop)
       (fortran:debug "-1-")             ;
-      (fortran:format 1 "%-80s")
-      ;;      (fortran:write (core:strftime 81 "%%VERSION  VERSION_STAMP = V0002.000  DATE = %m/%d/%y  %H:%M:%S"))
-      (fortran:write "-----insert the version and time stamp---")
-      (fortran:write "%FLAG TITLE")
-      (fortran:write "%FORMAT(20a4)")
-;      (fortran:write (chem:get-name aggregate))
+      (fortran:fformat 1 "%-80s")
+      ;;      (fortran:fwrite (core:strftime 81 "%%VERSION  VERSION_STAMP = V0002.000  DATE = %m/%d/%y  %H:%M:%S"))
+      (fortran:fwrite "-----insert the version and time stamp---")
+      (fortran:fwrite "%FLAG TITLE")
+      (fortran:fwrite "%FORMAT(20a4)")
+;      (fortran:fwrite (chem:get-name aggregate))
       ;; This function will be very, very long (for Common Lisp)
       ;; To avoid lots of nested scopes we will declare one large scope
       ;;   and declare all of the variables in that scope here at the top
@@ -505,7 +509,7 @@
             nphih mphia iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec #|dihedrals|#
             nhparm
             NPARM  NNB    NRES
-            NBONA    NTHETA NPHIA  NUMBND NUMANG NPTRA
+            nbona    ntheta nphia  NUMBND NUMANG NPTRA
             NATYP    NPHB   IFPERT NBPER  NGPER  NDPER
             MBPER    MGPER  MDPER  IFBOX  NMXRS  IFCAP
             NUMEXTRA NCOPY
@@ -521,391 +525,973 @@
         (multiple-value-setq (ntypes atom-name charge mass atomic-number ico iac local-typej-vec cn1-vec cn2-vec)
           (prepare-amber-energy-nonbond energy-function))
         (setf nhparm 0)
+        (setf nparm 0)
+        (setf nnb (length number-excluded-atoms))
+        (setf nres 0)
+        (setf nbona mbona)
+        (setf ntheta mtheta)
+        (setf nphia mphia)
         (setf numbnd (length kbj-vec))
         (setf numang (length ktj-vec))
         (setf nptra (length vj-vec))
+        (setf natyp 0)
+        (setf nphb 0)
+        (setf ifpert 0)    
+        (setf nbper 0)     
+        (setf ngper 0)     
+        (setf ndper 0)     
+        (setf mbper 0)     
+        (setf mgper 0)    
+        (setf mdper 0)    
+        (setf ifbox 0)     
+        (setf nmxrs 0)     
+        (setf ifcap 0)     
+        (setf numextra 0)  
+        (setf ncopy 0)     
  
         #| dihedrals, nonbonds, others??? |#
         ;; --- Done calculating all of the values
         ;; --- Now write out all of the values
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG POINTERS")
-        (fortran:write "%FORMAT(10I8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG POINTERS")
+        (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-2-")
-        (fortran:format 10 "%8d")
+        (fortran:fformat 10 "%8d")
         ;; NATOM
-        (fortran:write natom)
-        (fortran:write ntypes)
-        (fortran:write nbonh)       ;number of bonds containing hydrogen
-        (fortran:write mbona)       ;number of bonds not containing hydrogen
-        (fortran:write ntheth)      ; number of angles containing hydrogen
-        (fortran:write mtheta)      ; number of angles not containing hydrogen
-        (fortran:write nphih)       ; number of dihedrals containing hydrogen
-        (fortran:write mphia)       ; number of dihedrals not containing hydrogen
-        (fortran:write nhparm)    ; currently not used
-        ;;(fortran:write NPARM)     ; used to determine if addles created prmtop
-        ;;(fortran:write NNB)       ; number of excluded atoms
-        ;;(fortran:write NRES)      ; number of residues
-        ;;(fortran:write NBONA)     ; MBONA + number of constraint bonds
-        ;;(fortran:write NTHETA)    ; MTHETA + number of constraint angles
-        ;;(fortran:write NPHIA)     ; MPHIA + number of constraint dihedrals
-        (fortran:write numbnd)      ; number of unique bond types
-        (fortran:write numang)      ; number of unique angle types
-        (fortran:write nptra)       ; number of unique dihedral types
-        ;;(fortran:write NATYP)     ; number of atom types in parameter file, see SOLTY below
-        ;;(fortran:write NPHB)      ; number of distinct 10-12 hydrogen bond pair types
-        ;;(fortran:write IFPERT)    ; set to 1 if perturbation info is to be read in
-        ;;(fortran:write NBPER)     ; number of bonds to be perturbed
-        ;;(fortran:write NGPER)     ; number of angles to be perturbed
-        ;;(fortran:write NDPER)     ; number of dihedrals to be perturbed
-        ;;(fortran:write MBPER)     ; number of bonds with atoms completely in perturbed group
-        ;;(fortran:write MGPER)     ; number of angles with atoms completely in perturbed group
-        ;;(fortran:write MDPER)     ; number of dihedrals with atoms completely in perturbed groups
-        ;;(fortran:write IFBOX)     ; set to 1 if standard periodic box, 2 when truncated octahedral
-        ;;(fortran:write NMXRS)     ; number of atoms in the largest residue
-        ;;(fortran:write IFCAP)     ; set to 1 if the CAP option from edit was specified
-        ;;(fortran:write NUMEXTRA)  ; number of extra points found in topology
-        ;;(fortran:write NCOPY)     ; number of PIMD slices / number of beads
+        (fortran:fwrite natom)
+        (fortran:fwrite ntypes)
+        (fortran:fwrite nbonh)       ;number of bonds containing hydrogen
+        (fortran:fwrite mbona)       ;number of bonds not containing hydrogen
+        (fortran:fwrite ntheth)      ; number of angles containing hydrogen
+        (fortran:fwrite mtheta)      ; number of angles not containing hydrogen
+        (fortran:fwrite nphih)       ; number of dihedrals containing hydrogen
+        (fortran:fwrite mphia)       ; number of dihedrals not containing hydrogen
+        (fortran:fwrite nhparm)      ; currently not used
+        (fortran:fwrite nparm)       ; used to determine if addles created prmtop
+        (fortran:fwrite nnb)         ; number of excluded atoms
+        (fortran:fwrite nres)        ; number of residues
+        (fortran:fwrite nbona)       ; MBONA + number of constraint bonds
+        (fortran:fwrite ntheta)      ; MTHETA + number of constraint angles
+        (fortran:fwrite nphia)       ; MPHIA + number of constraint dihedrals
+        (fortran:fwrite numbnd)      ; number of unique bond types
+        (fortran:fwrite numang)      ; number of unique angle types
+        (fortran:fwrite nptra)       ; number of unique dihedral types
+        (fortran:fwrite natyp)     ; number of atom types in parameter file, see SOLTY below
+        (fortran:fwrite nphb)      ; number of distinct 10-12 hydrogen bond pair types
+        (fortran:fwrite ifpert)    ; set to 1 if perturbation info is to be read in
+        (fortran:fwrite nbper)     ; number of bonds to be perturbed
+        (fortran:fwrite ngper)     ; number of angles to be perturbed
+        (fortran:fwrite ndper)     ; number of dihedrals to be perturbed
+        (fortran:fwrite mbper)     ; number of bonds with atoms completely in perturbed group
+        (fortran:fwrite mgper)     ; number of angles with atoms completely in perturbed group
+        (fortran:fwrite mdper)     ; number of dihedrals with atoms completely in perturbed groups
+        (fortran:fwrite ifbox)     ; set to 1 if standard periodic box, 2 when truncated octahedral
+        (fortran:fwrite nmxrs)     ; number of atoms in the largest residue
+        (fortran:fwrite ifcap)     ; set to 1 if the CAP option from edit was specified
+        (fortran:fwrite numextra)  ; number of extra points found in topology
+        (fortran:fwrite ncopy)     ; number of PIMD slices / number of beads
         (fortran:end-line)
 
         ;; Next) 
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG ATOM_NAME")
-        (fortran:write "%FORMAT(20a4)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG ATOM_NAME")
+        (fortran:fwrite "%FORMAT(20a4)")
         (fortran:debug "-3-")
-        (fortran:format 20 "%4s")
+        (fortran:fformat 20 "%4s")
         (loop for name across atom-name
-           do (fortran:write name))
+           do (fortran:fwrite name))
         (fortran:end-line)
         ;; write the atom names
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG CHARGE")
-        (fortran:write "%FORMAT(5E16.8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG CHARGE")
+        (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-4-")
-        (fortran:format 5 "%16.8f")
+        (fortran:fformat 5 "%16.8f")
         (loop for ch across charge
-           do (fortran:write ch))
+           do (fortran:fwrite ch))
         (fortran:end-line)
         ;; write the atom charges
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG ATOMIC_NUMBER")
-        (fortran:write "%FORMAT(10I8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG ATOMIC_NUMBER")
+        (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-5-")
-        (fortran:format 10 "%8d")
+        (fortran:fformat 10 "%8d")
         (loop for number across atomic-number
-           do (fortran:write number))
+           do (fortran:fwrite number))
         (fortran:end-line)
         ;; write the atomic number of each atom
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG MASS")
-        (fortran:write "%FORMAT(5E16.8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG MASS")
+        (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-6-")
-        (fortran:format 5 "%16.8f")
+        (fortran:fformat 5 "%16.8f")
         (loop for ma across mass
-           do (fortran:write ma))
+           do (fortran:fwrite ma))
         (fortran:end-line)
         ;; write the atom masses
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG ATOMIC_TYPE_INDEX")
-        (fortran:write "%FORMAT(10I8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG ATOMIC_TYPE_INDEX")
+        (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-7-")
-        (fortran:format 10 "%8d")
+        (fortran:fformat 10 "%8d")
         (loop for ia across iac
-           do (fortran:write ia))
+           do (fortran:fwrite ia))
         (fortran:end-line)
         ;; write the index fot the atom types
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG NUMBER_EXCLUDED_ATOMS")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG NUMBER_EXCLUDED_ATOMS")
         (fortran:end-line)
-        (fortran:write "%FORMAT(10I8)")
+        (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-8-")
-        (fortran:format 10 "%8d")
+        (fortran:fformat 10 "%8d")
+        (loop for na across number-excluded-atoms
+           do (fortran:fwrite na))
         (fortran:end-line)
         ;; write the total number of excluded atoms for atom "i"
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG NONBONDED_PARM_INDEX")
-        (fortran:write "%FORMAT(10I8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG NONBONDED_PARM_INDEX")
+        (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-9-")
-        (fortran:format 10 "%8d")
+        (fortran:fformat 10 "%8d")
         (loop for ic across ico
-           do (fortran:write ic))
+           do (fortran:fwrite ic))
         (fortran:end-line)
         ;; provides the index to the nobon parameter arrays CN1, CN2 and ASOL, BSOL.
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG RESIDUE_LABEL")
-        (fortran:write "%FORMAT(20A4)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG RESIDUE_LABEL")
+        (fortran:fwrite "%FORMAT(20A4)")
         (fortran:debug "-10-")
-        (fortran:format 20 "%4s")
+        (fortran:fformat 20 "%4s")
         (fortran:end-line)
         ;; write the name of each of the residues
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG RESIDUE_POINTER")
-        (fortran:write "%FORMAT(10I8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG RESIDUE_POINTER")
+        (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-11-")
-        (fortran:format 10 "%8d")
+        (fortran:fformat 10 "%8d")
         (fortran:end-line)
         ;; write the atoms in each residue are listed for atom "1" in IPRES(i) to IPRES(i+1)-1
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG BOND_FORCE_CONSTANT")
-        (fortran:write "%FORMAT(5E16.8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG BOND_FORCE_CONSTANT")
+        (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-12-")
-        (fortran:format 5 "%16.8f")
+        (fortran:fformat 5 "%16.8f")
         (loop for kb across kbj-vec
-           do (fortran:write kb))
+           do (fortran:fwrite kb))
         (fortran:end-line)
         
         ;; write the force constant for the bonds of each type
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%BOND_EQUIL_VALUE")
-        (fortran:write "%FORMAT(5E16.8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG BOND_EQUIL_VALUE")
+        (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-13-")
-        (fortran:format 5 "%16.8f")
+        (fortran:fformat 5 "%16.8f")
         (loop for r0 across r0j-vec
-           do (fortran:write r0))
+           do (fortran:fwrite r0))
         (fortran:end-line)
         ;; write the equilibrium bond length for the bonds of each type
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG ANGLE_FORCE_CONSTANT")
-        (fortran:write "%FORMAT(5E16.8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG ANGLE_FORCE_CONSTANT")
+        (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-14-")
-        (fortran:format 5 "%16.8f")
+        (fortran:fformat 5 "%16.8f")
         (loop for kt across ktj-vec
-           do (fortran:write kt))
+           do (fortran:fwrite kt))
         (fortran:end-line)
         ;; write the force constant for the angles of each type
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG ANGLE_EQUIL_VALUE")
-        (fortran:write "%FORMAT(5E16.8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG ANGLE_EQUIL_VALUE")
+        (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-15-")
-        (fortran:format 5 "%16.8f")
+        (fortran:fformat 5 "%16.8f")
         (loop for t0 across t0j-vec
-           do (fortran:write t0))
+           do (fortran:fwrite t0))
         (fortran:end-line)
         ;; write the equilibrium angle for the angles of each type
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG DIHEDRAL_FORCE_CONSTANT")
-        (fortran:write "%FORMAT(5E16.8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG DIHEDRAL_FORCE_CONSTANT")
+        (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-16-")
-        (fortran:format 5 "%16.8f")
+        (fortran:fformat 5 "%16.8f")
         (loop for v0 across vj-vec
-           do (fortran:write v0))
+           do (fortran:fwrite v0))
         (fortran:end-line)
         ;; write the force constant for the dihedral of a given type
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG DIHEDRAL_PERIODICITY")
-        (fortran:write "%FORMAT(5E16.8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG DIHEDRAL_PERIODICITY")
+        (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-17-")
-        (fortran:format 5 "%16.8f")
+        (fortran:fformat 5 "%16.8f")
         (loop for in0 across inj-vec
-           do (fortran:write (float in0)))
+           do (fortran:fwrite (float in0)))
         (fortran:end-line)
         ;; write the periodicity of the dihedral of a given type
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG DIHEDRAL_PHASE")
-        (fortran:write "%FORMAT(5E16.8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG DIHEDRAL_PHASE")
+        (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-18-")
-        (fortran:format 5 "%16.8f")
+        (fortran:fformat 5 "%16.8f")
         (loop for p0 across phasej-vec
-           do (fortran:write p0))
+           do (fortran:fwrite p0))
         (fortran:end-line)
         ;; write the phase of the dihedral of a given type
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG SCEE_SCALE_FACTOR")
-        (fortran:write "%FORMAT(5E16.8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG SCEE_SCALE_FACTOR")
+        (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-19-")
-        (fortran:format 5 "%16.8f")
+        (fortran:fformat 5 "%16.8f")
         (fortran:end-line)
         ;; write the 1-4 electrostatic scaling constant
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG SCNB_SCALE_FACTOR")
-        (fortran:write "%FORMAT(5E16.8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG SCNB_SCALE_FACTOR")
+        (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-20-")
-        (fortran:format 5 "%16.8f")
+        (fortran:fformat 5 "%16.8f")
         (fortran:end-line)
         ;; write the 1-4 vdw scaling constant
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG SOLTY")
-        (fortran:write "%FORMAT(5E16.8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG SOLTY")
+        (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-21-")
-        (fortran:format 5 "%16.8f")
+        (fortran:fformat 5 "%16.8f")
         (fortran:end-line)
         ;; currently unused
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG LENNARD_JONES_ACOEF")
-        (fortran:write "%FORMAT(5E16.8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG LENNARD_JONES_ACOEF")
+        (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-22-")
-        (fortran:format 5 "%16.8f")
+        (fortran:fformat 5 "%16.8f")
         (loop for cn1 across cn1-vec
-           do (fortran:write cn1))
+           do (fortran:fwrite cn1))
         (fortran:end-line)
         ;; write the Lennard Jones r**12 terms for all possible atom type interactions
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG LENNARD_JONES_BCOEF")
-        (fortran:write "%FORMAT(5E16.8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG LENNARD_JONES_BCOEF")
+        (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-23-")
-        (fortran:format 5 "%16.8f")
+        (fortran:fformat 5 "%16.8f")
         (loop for cn2 across cn2-vec
-           do (fortran:write cn2))
+           do (fortran:fwrite cn2))
         (fortran:end-line)
        ;; write the Lennard Jones r**6 terms for all possible atom type interactions
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG BONDS_INC_HYDROGEN")
-        (fortran:write "%FORMAT(10I8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG BONDS_INC_HYDROGEN")
+        (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-24-")
-        (fortran:format 10 "%8d")
+        (fortran:fformat 10 "%8d")
         (loop for i below (length ibh)
            for ibhi = (aref ibh i)
            for jbhi = (aref jbh i)
            for icbhi = (aref icbh i)
-           do (fortran:write ibhi)
-           do (fortran:write jbhi)
-           do (fortran:write icbhi))
+           do (fortran:fwrite ibhi)
+           do (fortran:fwrite jbhi)
+           do (fortran:fwrite icbhi))
         (fortran:end-line)
         
         ;; write IBH, JBH, ICBH
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG BONDS_WITHOUT_HYDROGEN")
-        (fortran:write "%FORMAT(10I8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG BONDS_WITHOUT_HYDROGEN")
+        (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-25-")
-        (fortran:format 10 "%8d")
+        (fortran:fformat 10 "%8d")
         (loop for i below (length ib)
            for ibi = (aref ib i)
            for jbi = (aref jb i)
            for icbi = (aref icb i)
-           do (fortran:write ibi)
-           do (fortran:write jbi)
-           do (fortran:write icbi))
+           do (fortran:fwrite ibi)
+           do (fortran:fwrite jbi)
+           do (fortran:fwrite icbi))
         (fortran:end-line)
         ;; write IB, JB, ICB
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG ANGLES_INC_HYDROGEN")
-        (fortran:write "%FORMAT(10I8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG ANGLES_INC_HYDROGEN")
+        (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-26-")
-        (fortran:format 10 "%8d")
+        (fortran:fformat 10 "%8d")
         (loop for i below (length ith)
            for ithi = (aref ith i)
            for jthi = (aref jth i)
            for kthi = (aref kth i)
            for icthi = (aref icth i)
-           do (fortran:write ithi)
-           do (fortran:write jthi)
-           do (fortran:write kthi)
-           do (fortran:write icthi))
+           do (fortran:fwrite ithi)
+           do (fortran:fwrite jthi)
+           do (fortran:fwrite kthi)
+           do (fortran:fwrite icthi))
         (fortran:end-line)
         ;; write ITH, JTH, KTH, ICTH
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG ANGLES_WITHOUT_HYDROGEN")
-        (fortran:write "%FORMAT(10I8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG ANGLES_WITHOUT_HYDROGEN")
+        (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-27-")
-        (fortran:format 10 "%8d")
+        (fortran:fformat 10 "%8d")
         (loop for i below (length it)
            for iti = (aref it i)
            for jti = (aref jt i)
            for kti = (aref kt1 i)
            for icti = (aref ict i)
-           do (fortran:write iti)
-           do (fortran:write jti)
-           do (fortran:write kti)
-           do (fortran:write icti))
+           do (fortran:fwrite iti)
+           do (fortran:fwrite jti)
+           do (fortran:fwrite kti)
+           do (fortran:fwrite icti))
         (fortran:end-line)
         ;; write IT, JT, KT, ICT
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG DIHEDRALS_INC_HYDROGEN")
-        (fortran:write "%FORMAT(10I8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG DIHEDRALS_INC_HYDROGEN")
+        (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-28-")
-        (fortran:format 10 "%8d")
+        (fortran:fformat 10 "%8d")
         (loop for i below (length iph)
            for iphi = (aref iph i)
            for jphi = (aref jph i)
            for kphi = (aref kph i)
            for lphi = (aref lph i)
            for icphi = (aref icph i)
-           do (fortran:write iphi)
-           do (fortran:write jphi)
-           do (fortran:write kphi)
-           do (fortran:write lphi)
-           do (fortran:write icphi))
+           do (fortran:fwrite iphi)
+           do (fortran:fwrite jphi)
+           do (fortran:fwrite kphi)
+           do (fortran:fwrite lphi)
+           do (fortran:fwrite icphi))
          (fortran:end-line)
        ;; write IPH, JPH, KPH, LPH, ICPH
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG DIHEDRAL_WITHOUT_HYDROGEN")
-        (fortran:write "%FORMAT(10I8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG DIHEDRALS_WITHOUT_HYDROGEN")
+        (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-29-")
-        (fortran:format 10 "%8d")
+        (fortran:fformat 10 "%8d")
         (loop for i below (length ip)
            for ipi = (aref ip i)
            for jpi = (aref jp i)
            for kpi = (aref kp i)
            for lpi = (aref lp i)
            for icpi = (aref icp i)
-           do (fortran:write ipi)
-           do (fortran:write jpi)
-           do (fortran:write kpi)
-           do (fortran:write lpi)
-           do (fortran:write icpi))
+           do (fortran:fwrite ipi)
+           do (fortran:fwrite jpi)
+           do (fortran:fwrite kpi)
+           do (fortran:fwrite lpi)
+           do (fortran:fwrite icpi))
         (fortran:end-line)
         ;; write IP, JP, KP, LP, ICP
 
         ;; Next
-        (fortran:format 1 "%-80s")
-        (fortran:write "%FLAG EXCLUDED_ATOMS_LIST")
-        (fortran:write "%FORMAT(10I8)")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG EXCLUDED_ATOMS_LIST")
+        (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-30-")
-        (fortran:format 10 "%8d")
+        (fortran:fformat 10 "%8d")
         (fortran:end-line)
-        ;; write the excluded atom list
-
-        ;; pick up at unitio.cc:4969
+        (loop for atom across excluded-atom-list
+           do (fortran:fwrite atom))
+        (fortran:end-line)
         ))))
+        ;; write the excluded atom list 
+        ;; pick up at unitio.cc:4969
+
+(defconstant %flag-title "%FLAG TITLE")
+(defconstant %flag-pointers "%FLAG POINTERS")
+(defconstant %flag-atom-name "%FLAG ATOM_NAME")
+(defconstant %flag-charge "%FLAG CHARGE")
+(defconstant %flag-atomic-number "%FLAG ATOMIC_NUMBER")
+(defconstant %flag-mass "%FLAG MASS")
+(defconstant %flag-atomic-type-index "%FLAG ATOMIC_TYPE_INDEX")
+(defconstant %flag-number-excluded-atoms "%FLAG NUMBER_EXCLUDED_ATOMS")
+(defconstant %flag-nonbonded-parm-index "%FLAG NONBONDED_PARM_INDEX")
+(defconstant %flag-residue-label "%FLAG RESIDUE_LABEL")
+(defconstant %flag-residue-pointer "%FLAG RESIDUE_POINTER")
+(defconstant %flag-bond-force-constant "%FLAG BOND_FORCE_CONSTANT")
+(defconstant %flag-bond-equil-value "%FLAG BOND_EQUIL_VALUE")
+(defconstant %flag-angle-force-constant "%FLAG ANGLE_FORCE_CONSTANT")
+(defconstant %flag-angle-equil-value "%FLAG ANGLE_EQUIL_VALUE")
+(defconstant %flag-dihedral-force-constant "%FLAG DIHEDRAL_FORCE_CONSTANT")
+(defconstant %flag-dihedral-periodicity "%FLAG DIHEDRAL_PERIODICITY")
+(defconstant %flag-dihedral-phase "%FLAG DIHEDRAL_PHASE")
+(defconstant %flag-scee-scale-factor "%FLAG SCEE_SCALE_FACTOR")
+(defconstant %flag-scnb-scale-factor "%FLAG SCNB_SCALE_FACTOR")
+(defconstant %flag-solty "%FLAG SOLTY")
+(defconstant %flag-lennard-jones-acoef "%FLAG LENNARD_JONES_ACOEF")
+(defconstant %flag-lennard-jones-bcoef "%FLAG LENNARD_JONES_BCOEF")
+(defconstant %flag-bonds-inc-hydrogen "%FLAG BONDS_INC_HYDROGEN")
+(defconstant %flag-bonds-without-hydrogen "%FLAG BONDS_WITHOUT_HYDROGEN")
+(defconstant %flag-angles-inc-hydrogen "%FLAG ANGLES_INC_HYDROGEN")
+(defconstant %flag-angles-without-hydrogen "%FLAG ANGLES_WITHOUT_HYDROGEN")
+(defconstant %flag-dihedrals-inc-hydrogen "%FLAG DIHEDRALS_INC_HYDROGEN")
+(defconstant %flag-dihedrals-without-hydrogen "%FLAG DIHEDRALS_WITHOUT_HYDROGEN")
+(defconstant %flag-excluded-atoms-list "%FLAG EXCLUDED_ATOMS_LIST")
+
+(defun verify-%flag-line (line)
+  (unless (string-equal line "%FLAG" :start1 0 :end1 5)
+    (error "Expected %FLAG at the start of the line - got: ~s" line)))
+
+(defmacro rlog (fmt &rest args)
+  `(progn
+     (cl:format *debug-io* ,fmt ,@args)
+     (finish-output *debug-io*)))
+
+;(defun read-amber-parm-format (stream)
+;  (let ((fif (fortran:make-fortran-input-file :stream stream))
+(defun read-amber-parm-format (fif)
+  (let (natom ntypes nbonh mbona ntheth mtheta nphih mphia nhparm nparm
+              nnb nres nbona ntheta nphia numbnd numang nptra
+              natyp nphb ifpert nbper ngper ndper
+              mbper mgper mdper ifbox nmxrs ifcap numextra ncopy
+              atom-name charge atomic-number mass atomic-type-index number-excluded-atoms
+              nonbonded-parm-index residue-label residue-pointer
+              bond-force-constant bond-equil-value
+              angle-force-constant  angle-equil-value
+              dihedral-force-constant dihedral-periodicity dihedral-phase
+              scee-scale-factor scnb-scale-factor solty
+              lennard-jones-acoef lennard-jones-bcoef
+              bonds-inc-hydrogen bonds-without-hydrogen
+              angles-inc-hydrogen angles-without-hydrogen
+              dihedrals-inc-hydrogen dihedrals-without-hydrogen
+              excluded-atoms-list)
+    (rlog "Starting read-amber-parm-format~%")
+    (fortran:fread-line fif)     ; Skip the version and timestamp line
+    (fortran:fread-line fif)     ; read the first %FLAG line
+    ;; From here on down - read the input file
+    (loop for line = (fortran:fortran-input-file-look-ahead fif)
+       while line
+       do (rlog "line ~a~%" line)
+       do (verify-%flag-line line)
+       do (cond
+            ((string-equal %flag-title line :end2 (length %flag-title))
+             (fortran:fread-line-or-error fif) ; read %FORMAT(20a4)...
+             (fortran:fread-line-or-error fif) ; read ITITL : title
+             (fortran:fread-line-or-error fif)) ; Read the next %flag line or eof
+            ((string-equal %flag-pointers line :end2 (length %flag-pointers)) ; line is %FLAG POINTERS
+             (fortran:fread-line-or-error fif) ; read %FORMAT(10i8) NATOM ...
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) ; read first line of data
+               (let ((pointers (fortran:fread-vector fif per-line format-char width)))
+                 (setf natom (aref pointers 0) ; natom
+                       ntypes (aref pointers 1)
+                       nbonh (aref pointers 2)
+                       mbona (aref pointers 3)
+                       ntheth (aref pointers 4)
+                       mtheta (aref pointers 5)
+                       nphih (aref pointers 6)
+                       mphia (aref pointers 7)
+                       nhparm (aref pointers 8)
+                       nparm  (aref pointers 9)
+                       nnb  (aref pointers 10)
+                       nres  (aref pointers 11)
+                       nbona  (aref pointers 12)
+                       ntheta  (aref pointers 13)
+                       nphia  (aref pointers 14)
+                       numbnd  (aref pointers 15)
+                       numang  (aref pointers 16)
+                       nptra (aref pointers 17)
+                       natyp  (aref pointers 18)
+                       nphb  (aref pointers 19)
+                       ifpert (aref pointers 20)
+                       nbper (aref pointers 21)
+                       ngper  (aref pointers 22)
+                       ndper  (aref pointers 23)
+                       mbper  (aref pointers 24)
+                       mgper (aref pointers 25)
+                       mdper (aref pointers 26)
+                       ifbox (aref pointers 27)
+                       nmxrs (aref pointers 28)
+                       ifcap (aref pointers 29)
+                       numextra (aref pointers 30)
+                       ncopy (aref pointers 31))))
+             (format t "nparm ~a nnb ~a nres ~a nbona ~a~%" nparm nnb nres nbona))
+            ((string-equal %flag-atom-name line :end2 (length %flag-atom-name))
+             (fortran:fread-line-or-error fif) 
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif)
+               (setf atom-name (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-charge line :end2 (length %flag-charge))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf charge (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-atomic-number line :end2 (length %flag-atomic-number))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf atomic-number (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-mass line :end2 (length %flag-mass))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf mass (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-atomic-type-index line :end2 (length %flag-atomic-type-index))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf atomic-type-index (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-number-excluded-atoms line :end2 (length %flag-number-excluded-atoms))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf number-excluded-atoms (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-nonbonded-parm-index line :end2 (length %flag-nonbonded-parm-index))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf nonbonded-parm-index (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-residue-label line :end2 (length %flag-residue-label))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf residue-label (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-residue-label line :end2 (length %flag-residue-label))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf residue-label (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-residue-pointer line :end2 (length %flag-residue-pointer))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf residue-pointer (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-bond-force-constant line :end2 (length %flag-bond-force-constant))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf bond-force-constant (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-bond-equil-value line :end2 (length %flag-bond-equil-value))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf bond-equil-value (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-angle-force-constant line :end2 (length %flag-angle-force-constant))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf angle-force-constant (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-angle-equil-value line :end2 (length %flag-angle-equil-value))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf angle-equil-value (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-dihedral-force-constant line :end2 (length %flag-dihedral-force-constant))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf dihedral-force-constant (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-dihedral-periodicity line :end2 (length %flag-dihedral-periodicity))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf dihedral-periodicity (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-dihedral-phase line :end2 (length %flag-dihedral-phase))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf dihedral-phase (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-scee-scale-factor line :end2 (length %flag-scee-scale-factor))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf scee-scale-factor (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-scnb-scale-factor line :end2 (length %flag-scnb-scale-factor))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf scnb-scale-factor (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-solty line :end2 (length %flag-solty))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf solty (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-lennard-jones-acoef line :end2 (length %flag-lennard-jones-acoef))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf lennard-jones-acoef (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-lennard-jones-bcoef line :end2 (length %flag-lennard-jones-bcoef))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf lennard-jones-bcoef (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-bonds-inc-hydrogen line :end2 (length %flag-bonds-inc-hydrogen))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf bonds-inc-hydrogen (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-bonds-without-hydrogen line :end2 (length %flag-bonds-without-hydrogen))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf bonds-without-hydrogen (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-angles-inc-hydrogen line :end2 (length %flag-angles-inc-hydrogen))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf angles-inc-hydrogen (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-angles-without-hydrogen line :end2 (length %flag-angles-without-hydrogen))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf angles-without-hydrogen (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-dihedrals-inc-hydrogen line :end2 (length %flag-dihedrals-inc-hydrogen))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf dihedrals-inc-hydrogen (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-dihedrals-without-hydrogen line :end2 (length %flag-dihedrals-without-hydrogen))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf dihedrals-without-hydrogen (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-excluded-atoms-list line :end2 (length %flag-excluded-atoms-list))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf excluded-atoms-list (fortran:fread-vector fif per-line format-char width))))))           
+    (rlog "natom -> ~s~%" natom)
+    (rlog "ntypes -> ~s~%" ntypes)
+    (rlog "nbonh -> ~s~%" nbonh)
+    (rlog "mbona -> ~s~%" mbona)
+    (rlog "ntheth -> ~s~%" ntheth)
+    (rlog "mtheta -> ~s~%" mtheta)
+    (rlog "nphih -> ~s~%" nphih)
+    (rlog "mphia -> ~s~%" mphia)
+    (rlog "nhparm -> ~s~%" nhparm)
+    (rlog "nparm -> ~s~%" nparm)
+    (rlog "nnb -> ~s~%" nnb)
+    (rlog "nres -> ~s~%" nres)
+    (rlog "nbona -> ~s~%" nbona)
+    (rlog "ntheta -> ~s~%" ntheta)
+    (rlog "nphia -> ~s~%" nphia)
+    (rlog "numbnd -> ~s~%" numbnd)
+    (rlog "numang -> ~s~%" numang)
+    (rlog "nptra -> ~s~%" nptra)
+    (rlog "natyp -> ~s~%" natyp)
+    (rlog "nphb -> ~s~%" nphb)
+    (rlog "ifpert -> ~s~%" ifpert)
+    (rlog "nbper -> ~s~%" nbper)
+    (rlog "ngper -> ~s~%" ngper)
+    (rlog "ndper -> ~s~%" ndper)
+    (rlog "mbper -> ~s~%" mbper)
+    (rlog "mgper -> ~s~%" mgper)
+    (rlog "mdper -> ~s~%" mdper)
+    (rlog "ifbox -> ~s~%" ifbox)
+    (rlog "nmxrs -> ~s~%" nmxrs)
+    (rlog "ifcap -> ~s~%" ifcap)
+    (rlog "numextra -> ~s~%" numextra)
+    (rlog "ncopy -> ~s~%" ncopy)
+    (rlog "atom-name -> ~s~%" atom-name)
+    (rlog "charge -> ~s~%" charge)
+    (rlog "atomic-number -> ~s~%" atomic-number)
+    (rlog "mass -> ~s~%" mass)
+    (rlog "atomic-type-index -> ~s~%" atomic-type-index)
+    (rlog "number-excluded-atoms -> ~s~%" number-excluded-atoms)
+    (rlog "nonbonded-parm-index -> ~s~%" nonbonded-parm-index)
+    (rlog "residue-label -> ~s~%" residue-label)
+    (rlog "residue-pointer -> ~s~%" residue-pointer)
+    (rlog "bond-force-constant -> ~s~%" bond-force-constant)
+    (rlog "bond-equil-value -> ~s~%" bond-equil-value)
+    (rlog "angle-force-constant -> ~s~%" angle-force-constant)
+    (rlog "angle-equil-value -> ~s~%" angle-equil-value)
+    (rlog "dihedral-force-constant -> ~s~%" dihedral-force-constant)
+    (rlog "dihedral-periodicity -> ~s~%" dihedral-periodicity)
+    (rlog "dihedral-phase -> ~s~%" dihedral-phase)
+    (rlog "scee-scale-factor -> ~s~%" scee-scale-factor)
+    (rlog "scnb-scale-factor -> ~s~%" scnb-scale-factor)
+    (rlog "solty -> ~s~%" solty)
+    (rlog "lennard-jones-acoef -> ~s~%" lennard-jones-acoef)
+    (rlog "lennard-jones-bcoef -> ~s~%" lennard-jones-bcoef)
+    (rlog "bonds-inc-hydrogen -> ~s~%" bonds-inc-hydrogen)
+    (rlog "bonds-without-hydrogen -> ~s~%" bonds-without-hydrogen)
+    (rlog "angles-inc-hydrogen -> ~s~%" angles-inc-hydrogen)
+    (rlog "angles-without-hydrogen -> ~s~%" angles-without-hydrogen)
+    (rlog "dihedrals-inc-hydrogen -> ~s~%" dihedrals-inc-hydrogen)
+    (rlog "dihedrals-without-hydrogen -> ~s~%" dihedrals-without-hydrogen)
+    (rlog "excluded-atoms-list -> ~s~%" excluded-atoms-list)
+    (let ((energy-stretch (core:make-cxx-object 'chem:energy-stretch))
+          (energy-angle (core:make-cxx-object 'chem:energy-angle))
+          (energy-dihedral (core:make-cxx-object 'chem:energy-dihedral))
+      ;; ... more of these
+          (kbs-vec (make-array (+ nbonh mbona) :element-type 'double-float))
+          (r0s-vec (make-array (+ nbonh mbona) :element-type 'double-float))
+          (i1s-vec (make-array (+ nbonh mbona) :element-type '(signed-byte 32)))
+          (i2s-vec (make-array (+ nbonh mbona) :element-type '(signed-byte 32)))
+          (atom1s-vec (make-array (+ nbonh mbona)))
+          (atom2s-vec (make-array (+ nbonh mbona)))
+          (kta-vec (make-array (+ ntheth mtheta) :element-type 'double-float))
+          (t0a-vec (make-array (+ ntheth mtheta) :element-type 'double-float))
+          (i1a-vec (make-array (+ ntheth mtheta) :element-type '(signed-byte 32)))
+          (i2a-vec (make-array (+ ntheth mtheta) :element-type '(signed-byte 32)))
+          (i3a-vec (make-array (+ ntheth mtheta) :element-type '(signed-byte 32)))
+          (atom1a-vec (make-array (+ ntheth mtheta)))
+          (atom2a-vec (make-array (+ ntheth mtheta)))
+          (atom3a-vec (make-array (+ ntheth mtheta)))
+          (vd-vec (make-array (+ nphih mphia) :element-type 'double-float))
+          (ind-vec (make-array (+ nphih mphia) :element-type '(signed-byte 32)))
+          (phased-vec (make-array (+ nphih mphia):element-type 'double-float))
+          (i1d-vec (make-array (+ nphih mphia) :element-type '(signed-byte 32)))
+          (i2d-vec (make-array (+ nphih mphia) :element-type '(signed-byte 32)))
+          (i3d-vec (make-array (+ nphih mphia) :element-type '(signed-byte 32)))
+          (i4d-vec (make-array (+ nphih mphia) :element-type '(signed-byte 32)))
+          (properd-vec (make-array (+ nphih mphia)))
+          (atom1d-vec (make-array (+ nphih mphia)))
+          (atom2d-vec (make-array (+ nphih mphia)))
+          (atom3d-vec (make-array (+ nphih mphia)))
+          (atom4d-vec (make-array (+ nphih mphia)))
+          (counts 0)
+          (counta 0)
+          (countd 0)
+          stretch-vectors angle-vectors dihedral-vectors
+         )
+      
+      (loop for i from 0 below numbnd
+         do (loop for j from 0 below nbonh
+               for jicbh = (aref bonds-inc-hydrogen (+ (* j 3) 2))
+;               do (rlog "i ~a j ~a jicbh ~a~%" i j jicbh)
+               do (when (= jicbh i)
+                    (setf (aref kbs-vec counts) (aref bond-force-constant i)
+                          (aref r0s-vec counts) (aref bond-equil-value i)
+                          (aref i1s-vec counts) (aref bonds-inc-hydrogen (* j 3))
+                          (aref i2s-vec counts) (aref bonds-inc-hydrogen (+ (* j 3) 1))
+                          (aref atom1s-vec counts) (aref atom-name (/ (aref bonds-inc-hydrogen (* j 3)) 3))
+                          (aref atom2s-vec counts) (aref atom-name (/ (aref bonds-inc-hydrogen (+ (* j 3) 1)) 3)))
+                    (incf counts)))
+         do (loop for j from 0 below mbona
+               for jicb = (aref bonds-without-hydrogen (+ (* j 3) 2))           
+               do (when (= jicb i)
+                    (setf (aref kbs-vec counts) (aref bond-force-constant i)
+                          (aref r0s-vec counts) (aref bond-equil-value i)
+                          (aref i1s-vec counts) (aref bonds-without-hydrogen (* j 3))
+                          (aref i2s-vec counts) (aref bonds-without-hydrogen (+ (* j 3) 1))
+                          (aref atom1s-vec counts) (aref atom-name (/ (aref bonds-without-hydrogen (* j 3)) 3))
+                          (aref atom2s-vec counts) (aref atom-name (/ (aref bonds-without-hydrogen (+ (* j 3) 1)) 3)))
+                    (incf counts))) 
+           )
+      (setf stretch-vectors (acons :kb kbs-vec stretch-vectors))
+      (setf stretch-vectors (acons :r0 r0s-vec stretch-vectors))
+      (setf stretch-vectors (acons :i1 i1s-vec stretch-vectors))
+      (setf stretch-vectors (acons :i2 i2s-vec stretch-vectors))
+      (setf stretch-vectors (acons :atom1 atom1s-vec stretch-vectors))
+      (setf stretch-vectors (acons :atom2 atom2s-vec stretch-vectors))
+      (rlog "stretch-vectors -> ~s~%" stretch-vectors)
+      (chem:fill-from-vectors-in-alist energy-stretch stretch-vectors)
+
+      (loop for i from 0 below numang
+         do (loop for j from 0 below ntheth
+               for jicth = (aref angles-inc-hydrogen (+ (* j 4) 3))
+;               do (rlog "i ~a j ~a jicth ~a~%" i j jicth)
+               do (when (= jicth i)
+                    (setf (aref kta-vec counta) (aref angle-force-constant i)
+                          (aref t0a-vec counta) (aref angle-equil-value i)
+                          (aref i1a-vec counta) (aref angles-inc-hydrogen (* j 4))
+                          (aref i2a-vec counta) (aref angles-inc-hydrogen (+ (* j 4) 1))
+                          (aref i3a-vec counta) (aref angles-inc-hydrogen (+ (* j 4) 2))
+                          (aref atom1a-vec counta) (aref atom-name (/ (aref angles-inc-hydrogen (* j 4)) 3))
+                          (aref atom2a-vec counta) (aref atom-name (/ (aref angles-inc-hydrogen (+ (* j 4) 1)) 3))
+                          (aref atom3a-vec counta) (aref atom-name (/ (aref angles-inc-hydrogen (+ (* j 4) 2)) 3)))
+                    (incf counta)))
+         do (loop for j from 0 below mtheta
+               for jict = (aref angles-without-hydrogen (+ (* j 4) 3))
+               do (when (= jict i)
+                    (setf (aref kta-vec counta) (aref angle-force-constant i)
+                          (aref t0a-vec counta) (aref angle-equil-value i)
+                          (aref i1a-vec counta) (aref angles-without-hydrogen (* j 4))
+                          (aref i2a-vec counta) (aref angles-without-hydrogen (+ (* j 4) 1))
+                          (aref i3a-vec counta) (aref angles-without-hydrogen (+ (* j 4) 2))
+                          (aref atom1a-vec counta) (aref atom-name (/ (aref angles-without-hydrogen (* j 4)) 3))
+                          (aref atom2a-vec counta) (aref atom-name (/ (aref angles-without-hydrogen (+ (* j 4) 1)) 3))
+                          (aref atom3a-vec counta) (aref atom-name (/ (aref angles-without-hydrogen (+ (* j 4) 2)) 3)))
+                    (incf counta))))
+      (setf angle-vectors (acons :kt kta-vec  angle-vectors))
+      (setf angle-vectors (acons :t0 t0a-vec angle-vectors))
+      (setf angle-vectors (acons :i1 i1a-vec angle-vectors))
+      (setf angle-vectors (acons :i2 i2a-vec angle-vectors))
+      (setf angle-vectors (acons :i3 i3a-vec angle-vectors))
+      (setf angle-vectors (acons :atom1 atom1a-vec angle-vectors))
+      (setf angle-vectors (acons :atom2 atom2a-vec angle-vectors))
+      (setf angle-vectors (acons :atom3 atom3a-vec angle-vectors))
+      (rlog "angle-vectors -> ~s~%" angle-vectors)
+      (chem:fill-from-vectors-in-alist energy-angle angle-vectors)
+
+      (loop for i from 0 below nptra
+         do (loop for j from 0 below nphih
+               for jicph = (aref dihedrals-inc-hydrogen (+ (* j 5) 4))
+ ;              do (rlog "i ~a j ~a jicth ~a~%" i j jicph)
+               do (when (= jicph i)
+                    (setf (aref vd-vec countd) (aref dihedral-force-constant i)
+                          (aref ind-vec countd) (round (aref dihedral-periodicity i)) 
+                          (aref phased-vec countd) (aref dihedral-phase i)
+                          (aref i1d-vec countd) (aref dihedrals-inc-hydrogen (* j 5)) 
+                          (aref i2d-vec countd) (aref dihedrals-inc-hydrogen (+ (* j 5) 1))
+                          (aref atom1d-vec countd) (aref atom-name (/ (aref dihedrals-inc-hydrogen (* j 5)) 3))
+                          (aref atom2d-vec countd) (aref atom-name (/ (aref dihedrals-inc-hydrogen (+ (* j 5) 1)) 3)))
+                    (if (< (aref dihedrals-inc-hydrogen (+ (* j 5) 2)) 0)
+                        (setf (aref i3d-vec countd) (- (aref dihedrals-inc-hydrogen (+ (* j 5) 2)))
+                              (aref atom3d-vec countd) (aref atom-name (/ (- (aref dihedrals-inc-hydrogen (+ (* j 5) 2))) 3)))
+                        (setf (aref i3d-vec countd) (aref dihedrals-inc-hydrogen (+ (* j 5) 2))
+                              (aref atom3d-vec countd) (aref atom-name (/ (aref dihedrals-inc-hydrogen (+ (* j 5) 2)) 3))))
+                    (if (< (aref dihedrals-inc-hydrogen (+ (* j 5) 3)) 0)
+                        (setf (aref i4d-vec countd) (- (aref dihedrals-inc-hydrogen (+ (* j 5) 3)))
+                              (aref atom4d-vec countd) (aref atom-name (/ (- (aref dihedrals-inc-hydrogen (+ (* j 5) 3))) 3))
+                              (aref properd-vec countd) "T")
+                        (setf (aref i4d-vec countd) (aref dihedrals-inc-hydrogen (+ (* j 5) 3))
+                              (aref atom4d-vec countd) (aref atom-name (/ (aref dihedrals-inc-hydrogen (+ (* j 5) 3)) 3))))
+                    (incf countd)))
+         do (loop for j from 0 below mphia
+               for jicp = (aref dihedrals-without-hydrogen (+ (* j 5) 4))
+               do (when (= jicp i)
+                    (setf (aref vd-vec countd) (aref dihedral-force-constant i)
+                          (aref ind-vec countd) (round (aref dihedral-periodicity i)) 
+                          (aref phased-vec countd) (aref dihedral-phase i)
+                          (aref i1d-vec countd) (aref dihedrals-without-hydrogen (* j 5)) 
+                          (aref i2d-vec countd) (aref dihedrals-without-hydrogen (+ (* j 5) 1))
+                          (aref atom1d-vec countd) (aref atom-name (/ (aref dihedrals-without-hydrogen (* j 5)) 3))
+                          (aref atom2d-vec countd) (aref atom-name (/ (aref dihedrals-without-hydrogen (+ (* j 5) 1)) 3)))
+                    (if (< (aref dihedrals-without-hydrogen (+ (* j 5) 2)) 0)
+                        (setf (aref i3d-vec countd) (- (aref dihedrals-without-hydrogen (+ (* j 5) 2)))
+                              (aref atom3d-vec countd) (aref atom-name (/ (- (aref dihedrals-without-hydrogen (+ (* j 5) 2))) 3)))
+                        (setf (aref i3d-vec countd) (aref dihedrals-without-hydrogen (+ (* j 5) 2))
+                              (aref atom3d-vec countd) (aref atom-name (/ (aref dihedrals-without-hydrogen (+ (* j 5) 2)) 3))))
+                    (if (< (aref dihedrals-without-hydrogen (+ (* j 5) 3)) 0)
+                        (setf (aref i4d-vec countd) (- (aref dihedrals-without-hydrogen (+ (* j 5) 3)))
+                              (aref atom4d-vec countd) (aref atom-name (/ (- (aref dihedrals-without-hydrogen (+ (* j 5) 3))) 3))
+                              (aref properd-vec countd) "T")
+                        (setf (aref i4d-vec countd) (aref dihedrals-without-hydrogen (+ (* j 5) 3))
+                              (aref atom4d-vec countd) (aref atom-name (/ (aref dihedrals-without-hydrogen (+ (* j 5) 3)) 3))))
+                    (incf countd)))
+           )
+      (setf dihedral-vectors (acons :v vd-vec dihedral-vectors))
+      (setf dihedral-vectors (acons :in ind-vec dihedral-vectors))
+      (setf dihedral-vectors (acons :phase phased-vec dihedral-vectors))
+      (setf dihedral-vectors (acons :i1 i1d-vec dihedral-vectors))
+      (setf dihedral-vectors (acons :i2 i2d-vec dihedral-vectors))
+      (setf dihedral-vectors (acons :i3 i3d-vec dihedral-vectors))
+      (setf dihedral-vectors (acons :i4 i4d-vec dihedral-vectors))
+      (setf dihedral-vectors (acons :proper properd-vec dihedral-vectors))
+      (setf dihedral-vectors (acons :atom1 atom1d-vec dihedral-vectors))
+      (setf dihedral-vectors (acons :atom2 atom2d-vec dihedral-vectors))
+      (setf dihedral-vectors (acons :atom3 atom3d-vec dihedral-vectors))
+      (setf dihedral-vectors (acons :atom4 atom4d-vec dihedral-vectors))
+      (rlog "dihedral-vectors -> ~s~%" dihedral-vectors)
+      (chem::fill-from-vectors-in-alist energy-dihedral dihedral-vectors)
+)))
+
+
+(defstruct stretch-term
+  atom1-name atom2-name atom1-type atom2-type kb r0)
+
+(defun extract-energy-stretch (energy-function)
+  (let* ((energy-stretch (chem:get-stretch-component energy-function))
+         (stretch-vectors (chem:extract-vectors-as-alist energy-stretch))
+         (kb-vector (cdr (assoc :kb stretch-vectors)))
+         (r0-vector (cdr (assoc :r0 stretch-vectors)))
+         (i1-vector (cdr (assoc :i1 stretch-vectors)))
+         (i2-vector (cdr (assoc :i2 stretch-vectors)))
+         (atom1-vector (cdr (assoc :atom1 stretch-vectors)))
+         (atom2-vector (cdr (assoc :atom2 stretch-vectors)))
+	 )
+    (let ((stretches (loop for atom1 across atom1-vector
+                        for atom2 across atom2-vector
+                        for kb across kb-vector
+                        for r0 across r0-vector
+                        for atom1-name = (chem:get-name atom1)
+                        for atom2-name = (chem:get-name atom2)
+                        for atom1-type = (chem:get-type atom1)
+                        for atom2-type = (chem:get-type atom2)
+                        collect (make-stretch-term :atom1-name atom1-name
+                                                   :atom2-name atom2-name
+                                                   :atom1-type atom1-type
+                                                   :atom2-type atom2-type
+                                                   :kb kb
+                                                   :r0 r0))))
+      (loop for stretch in stretches
+         do (when (string> (string (stretch-term-atom1-name stretch))
+                           (string (stretch-term-atom2-name stretch)))
+              (rotatef (stretch-term-atom1-name stretch)
+                       (stretch-term-atom2-name stretch))
+              (rotatef (stretch-term-atom1-type stretch)
+                       (stretch-term-atom2-type stretch))))
+      (flet ((order-stretch (s1 s2)
+               (if (string< (string (stretch-term-atom1-name s1))
+                            (string (stretch-term-atom1-name s2)))
+                   t
+                   (if (string> (string (stretch-term-atom1-name s1))
+                                (string (stretch-term-atom1-name s2)))
+                       nil
+                       (string< (string (stretch-term-atom2-name s1))
+                                (string (stretch-term-atom2-name s2)))))))
+        (sort stretches #'order-stretch)))))

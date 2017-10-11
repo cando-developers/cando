@@ -113,5 +113,16 @@ string EnergyComponent_O::summarizeEnergyAsString()
     return ss.str();
 };
 
+core::T_sp safe_alist_lookup(core::List_sp list, core::T_sp key) {
+  if (list.consp()) {
+    core::T_sp entry = list.unsafe_cons()->assoc(key,_Nil<core::T_O>(),_Nil<core::T_O>(),_Nil<core::T_O>());
+    if (entry.consp()) {
+      return CONS_CDR(entry);
+    }
+  }
+  SIMPLE_ERROR(BF("Could not find %s") % _rep_(key));
+}
+  
+
 
 };

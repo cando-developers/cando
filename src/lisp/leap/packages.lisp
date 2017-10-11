@@ -30,11 +30,18 @@
   (:shadow #:format #:write)
   (:export
    #:with-fortran-output-file
-   #:format
-   #:write
+   #:fformat
+   #:fwrite
    #:end-line
    #:debug-on
-   #:debug))
+   #:debug
+   #:make-fortran-input-file
+   #:fortran-input-file-look-ahead
+   #:fread-line
+   #:fread-line-or-error
+   #:parse-fortran-format-line
+   #:fread-vector
+   ))
 
 (defpackage #:leap.parser
   (:use #:cl #:alexandria #:esrap #:parser.common-rules)

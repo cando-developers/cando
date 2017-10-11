@@ -141,6 +141,7 @@ public:
         The vectors are returned as an alist with keyword keys.
         The keys are :kb, :r0, :i1, :i2, :atom1 :atom2 */
     virtual core::List_sp extract_vectors_as_alist() const;
+    virtual void fill_from_vectors_in_alist(core::List_sp vectors);
     
     core::T_sp stretchTermBetweenAtoms(Atom_sp a1, Atom_sp a2);
     
