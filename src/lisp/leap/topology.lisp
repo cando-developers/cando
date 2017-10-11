@@ -1451,6 +1451,10 @@
 )))
 
 
+;;; The following code is to generate a human readable representation of an energy-function
+;;; with everything sorted so that the terms can be compared side-by-side using something like
+;;; 'ediff'
+
 (defstruct stretch-term
   atom1-name atom2-name atom1-type atom2-type kb r0)
 
