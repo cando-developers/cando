@@ -109,6 +109,8 @@ class AtomTable_O : public core::CxxObject_O
   typedef core::HashTableEq_sp        AtomTable;
   gctools::Vec0<EnergyAtom>	_Atoms;
   AtomTable        _AtomTableIndices; // m a p<Atom_sp,uint>	_AtomTableIndices;
+  core::MDArray_int32_t_sp     _Residues;
+  core::MDArrayT_sp        _ResidueNames;
  public:
   typedef gctools::Vec0<EnergyAtom>::iterator iterator;
  public:
@@ -148,7 +150,9 @@ class AtomTable_O : public core::CxxObject_O
   CL_DEFMETHOD double elt_mass(int index) { return this->_Atoms[index]._Mass; };
   CL_DEFMETHOD int elt_type_index(int index) { return this->_Atoms[index]._TypeIndex; };
   CL_DEFMETHOD int elt_atomic_number(int index) { return this->_Atoms[index]._AtomicNumber; };
-  DEFAULT_CTOR_DTOR(AtomTable_O);
+  core::MDArray_int32_t_sp atom_table_residues() const;
+  core::MDArrayT_sp atom_table_residue_names() const;
+ AtomTable_O() : _Residues(_Unbound<core::MDArray_int32_t_O>()), _ResidueNames(_Unbound<core::MDArrayT_O>()) {};
 };
 
 

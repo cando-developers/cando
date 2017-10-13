@@ -48,12 +48,11 @@ This is an open source license for the CANDO software from Temple University, bu
 //#include "geom/render.fwd.h"// energyNonbond.h wants DisplayList needs render.fwd.h
 
 namespace       chem {
-
-SMART(EnergyNonbond);
- SMART(FFNonbondDb);
-SMART(ForceField);
-//SMART(DisplayList);
-SMART(AtomTable);
+  FORWARD(EnergyFunction); // Declares class EnergyFunction_O {} and EnergyFunction_sp
+  FORWARD(EnergyNonbond);
+  FORWARD(FFNonbondDb);
+  FORWARD(ForceField);
+  FORWARD(AtomTable);
 
 struct TermNonBond
 {
@@ -145,12 +144,19 @@ class EnergyNonbond_O : public EnergyComponent_O
     // Correct way of defining nonbonds using excluded atom indices
   FFNonbondDb_sp        _FFNonbondDb;
   AtomTable_sp          _AtomTable;
+  //  Tables for nonbonded calculation using excluded atoms and the Amber way
+  size_t                     _ntypes;          // ntypes
+  core::SimpleVector_sp      _atom_name_vector;  // atom-name-vector
+  core::MDArrayDouble_sp     _charge_vector;          // charge-vector
+  core::MDArrayDouble_sp     _mass_vector;            // masses
+  core::MDArray_int32_t_sp   _atomic_number_vector;    // vec
+  core::MDArray_int32_t_sp   _ico_vec;             // ico-vec
+  core::MDArray_int32_t_sp   _iac_vec;             // iac-vec
+  core::MDArray_int32_t_sp   _local_typej_vec;      // local-typej-vec
+  core::MDArrayDouble_sp     _cn1_vec;
+  core::MDArrayDouble_sp     _cn2_vec;
   core::MDArray_int32_t_sp   _NumberOfExcludedAtomIndices;
   core::MDArray_int32_t_sp   _ExcludedAtomIndices;
-  core::MDArray_int32_t_sp   _IAC;
-  core::MDArray_int32_t_sp   _ICO;
-  core::MDArrayDouble_sp     _CN1;
-  core::MDArrayDouble_sp     _CN2;
  public:	
   typedef gctools::Vec0<TermType>::iterator iterator;
   iterator begin() { return this->_Terms.begin(); };
@@ -223,6 +229,8 @@ class EnergyNonbond_O : public EnergyComponent_O
   void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress);
   void constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, ForceField_sp forceField, bool show_progress);
 
+  void constructNonbondTermsFromAtomTableUsingExcludedAtoms(EnergyFunction_sp energyFunction,
+                                                            core::T_sp prepareAmberEnergyNonbond );
 
  public:
   EnergyNonbond_O( const EnergyNonbond_O& ss ); //!< Copy constructor

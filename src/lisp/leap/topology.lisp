@@ -457,8 +457,8 @@
          (atom-name-vector (make-array natom))
          (charge-vector (make-array natom :element-type 'double-float))
          (mass-vector (make-array natom :element-type 'double-float))
-         (type-index-vector (make-array natom :element-type 'fixnum))
-         (atomic-number-vector (make-array natom :element-type 'fixnum))
+         (type-index-vector (make-array natom :element-type '(byte 32)))
+         (atomic-number-vector (make-array natom :element-type '(byte 32)))
          (energy-nonbond (chem:get-nonbond-component energy-function))
          (ffnonbond-db (chem:get-ffnonbond-db energy-nonbond)))
     (format t "energy-nonbond -> ~a~%" energy-nonbond)
@@ -476,10 +476,29 @@
                 (aref atomic-number-vector i) atomic-number))
     (multiple-value-bind (ntypes ico-vec iac-vec type-indexj-vec local-typej-vec cn1-vec cn2-vec)
         (generate-nonbond-parameters ffnonbond-db type-index-vector)
-      (values ntypes atom-name-vector charge-vector mass-vector atomic-number-vector ico-vec iac-vec local-typej-vec cn1-vec cn2-vec))
-    )  
-  )    
+      (list (cons :ntypes ntypes)
+            (cons :atom-name-vector atom-name-vector)
+            (cons :charge-vector charge-vector)
+            (cons :mass-vector mass-vector)
+            (cons :atomic-number-vector atomic-number-vector)
+            (cons :ico-vec ico-vec)
+            (cons :iac-vec iac-vec)
+            (cons :local-typej-vec local-typej-vec)
+            (cons :cn1-vec cn1-vec)
+            (cons :cn2-vec cn2-vec)))))
 
+
+(defun prepare-residue (energy-function)
+  (let* ((atom-table (chem:atom-table energy-function))
+         (residue-vector (chem:atom-table-residues atom-table))
+         (residue-name-vector (make-array length.residue-vector))
+         (resid
+    (setf nresidue length.residue-vector)
+    (
+    (rlog "residue ~s~%" residue-vector)))
+
+         
+         
 (defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname force-field)
   (let* ((energy-function (chem:make-energy-function aggregate force-field
                                                      :use-excluded-atoms t))
