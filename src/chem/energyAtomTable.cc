@@ -229,7 +229,7 @@ CL_DEFMETHOD core::MDArray_int32_t_sp AtomTable_O::atom_table_residues() const {
   return this->_Residues;
 }
 
-CL_DEFMETHOD core::SimpleVector_sp AtomTable_O::atom_table_residue_names() const {
+CL_DEFMETHOD core::MDArrayT_sp AtomTable_O::atom_table_residue_names() const {
   printf("%s:%d In :atom_table_residue_names\n", __FILE__, __LINE__ );
   if (this->_ResidueNames.unboundp()) {
     SIMPLE_ERROR(BF("Residue names table is not bound"));

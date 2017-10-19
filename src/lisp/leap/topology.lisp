@@ -483,6 +483,7 @@
             (cons :atomic-number-vector atomic-number-vector)
             (cons :ico-vec ico-vec)
             (cons :iac-vec iac-vec)
+            (cons :atom-type-vector type-indexj-vec)
             (cons :local-typej-vec local-typej-vec)
             (cons :cn1-vec cn1-vec)
             (cons :cn2-vec cn2-vec)))))
@@ -491,17 +492,18 @@
 (defun prepare-residue (energy-function)
   (let* ((atom-table (chem:atom-table energy-function))
          (residue-vector (chem:atom-table-residues atom-table))
-         (residue-name-vector (make-array length.residue-vector))
-         (resid
-    (setf nresidue length.residue-vector)
-    (
-    (rlog "residue ~s~%" residue-vector)))
-
-         
+         (residue-name-vector (chem:atom-table-residue-names atom-table))
+         nresidue)
+    (setf nresidue (length residue-vector))
+    (loop for i from 0 below (length residue-vector)
+       for fresidue = (+ (aref residue-vector i) 1)
+       do (setf (aref residue-vector i) fresidue))
+    (values nresidue residue-vector residue-name-vector)))         
          
 (defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname force-field)
   (let* ((energy-function (chem:make-energy-function aggregate force-field
                                                      :use-excluded-atoms t))
+         (atoms (chem:atom energy-function))
          (nonbonds (chem:get-nonbond-component energy-function))
          (number-excluded-atoms (chem:number-excluded-atoms nonbonds))
          (excluded-atom-list (chem:excluded-atom-list nonbonds))
@@ -521,17 +523,16 @@
       ;; This function will be very, very long (for Common Lisp)
       ;; To avoid lots of nested scopes we will declare one large scope
       ;;   and declare all of the variables in that scope here at the top
-      (let (natom
-            ntypes atom-name charge mass atomic-number ico iac local-typej-vec cn1-vec cn2-vec #|nonbonds|#
+      (let (natom atom-vectors
+            ntypes atom-name charge mass atomic-number ico iac type-indexj-vec local-typej-vec cn1-vec cn2-vec #|nonbonds|#
             nbonh mbona ibh jbh icbh ib jb icb kbj-vec r0j-vec #|stretches|#
             ntheth mtheta ith jth kth icth it jt kt1 ict ktj-vec t0j-vec #|angles|#
             nphih mphia iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec #|dihedrals|#
-            nhparm
-            NPARM  NNB    NRES
+            nhparm nparm  nnb nres residue-vec residue-name-vec
             nbona    ntheta nphia  NUMBND NUMANG NPTRA
             NATYP    NPHB   IFPERT NBPER  NGPER  NDPER
             MBPER    MGPER  MDPER  IFBOX  NMXRS  IFCAP
-            NUMEXTRA NCOPY
+            NUMEXTRA NCOPY ;atom-type-name
             )
         ;; Here we need to calculate all of the values for %FLAG POINTERS
         (setf natom (chem:get-number-of-atoms (chem:atom-table energy-function))) ;total number of atoms
@@ -541,12 +542,25 @@
           (prepare-amber-energy-angle energy-function))
         (multiple-value-setq (nphih mphia iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec)
           (prepare-amber-energy-dihedral energy-function))
-        (multiple-value-setq (ntypes atom-name charge mass atomic-number ico iac local-typej-vec cn1-vec cn2-vec)
-          (prepare-amber-energy-nonbond energy-function))
+;        (multiple-value-setq (ntypes atom-name charge mass atomic-number ico iac local-typej-vec cn1-vec cn2-vec)
+;          (prepare-amber-energy-nonbond energy-function))
+        (multiple-value-setq (nres residue-vec residue-name-vec)
+          (prepare-residue energy-function))
+        (setf atom-vectors (prepare-amber-energy-nonbond energy-function))
+        (setf ntypes (cdr (assoc :ntypes atom-vectors)))
+        (setf atom-name (cdr (assoc :atom-name-vector atom-vectors)))
+        (setf charge (cdr (assoc :charge-vector atom-vectors)))
+        (setf mass (cdr (assoc :mass-vector atom-vectors)))
+        (setf atomic-number (cdr (assoc :atomic-number-vector atom-vectors)))
+        (setf ico (cdr (assoc :ico-vec atom-vectors)))
+        (setf iac (cdr (assoc :iac-vec atom-vectors)))
+        (setf type-indexj-vec (cdr (assoc :atom-type-vector atom-vectors)))
+        (setf local-typej-vec (cdr (assoc :local-typej-vec atom-vectors)))
+        (setf cn1-vec (cdr (assoc :cn1-vec atom-vectors)))
+        (setf cn2-vec (cdr (assoc :cn2-vec atom-vectors)))
         (setf nhparm 0)
         (setf nparm 0)
         (setf nnb (length number-excluded-atoms))
-        (setf nres 0)
         (setf nbona mbona)
         (setf ntheta mtheta)
         (setf nphia mphia)
@@ -566,7 +580,8 @@
         (setf nmxrs 0)     
         (setf ifcap 0)     
         (setf numextra 0)  
-        (setf ncopy 0)     
+        (setf ncopy 0)
+ ;       (setf atom-type-name (chem:get-type atoms))
  
         #| dihedrals, nonbonds, others??? |#
         ;; --- Done calculating all of the values
@@ -618,7 +633,7 @@
         (fortran:debug "-3-")
         (fortran:fformat 20 "%4s")
         (loop for name across atom-name
-           do (fortran:fwrite name))
+           do (fortran:fwrite (string name)))
         (fortran:end-line)
         ;; write the atom names
 
@@ -695,6 +710,8 @@
         (fortran:fwrite "%FORMAT(20A4)")
         (fortran:debug "-10-")
         (fortran:fformat 20 "%4s")
+        (loop for ren across residue-name-vec
+           do (fortran:fwrite (string ren)))
         (fortran:end-line)
         ;; write the name of each of the residues
 
@@ -704,6 +721,8 @@
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-11-")
         (fortran:fformat 10 "%8d")
+        (loop for re across residue-vec
+           do (fortran:fwrite re))
         (fortran:end-line)
         ;; write the atoms in each residue are listed for atom "1" in IPRES(i) to IPRES(i+1)-1
 
@@ -953,6 +972,16 @@
         (loop for atom across excluded-atom-list
            do (fortran:fwrite atom))
         (fortran:end-line)
+        ;; Next
+ ;       (fortran:fformat 1 "%-80s")
+ ;       (fortran:fwrite "%FLAG AMBER_ATOM_TYPE")
+ ;       (fortran:fwrite "%FORMAT(20A4)")
+ ;       (fortran:debug "-31-")
+  ;      (fortran:fformat 20 "%4s")
+  ;      (fortran:end-line)
+  ;      (loop for tname across atom-type-name
+  ;         do (fortran:fwrite tname))
+  ;      (fortran:end-line)
         ))))
         ;; write the excluded atom list 
         ;; pick up at unitio.cc:4969
@@ -987,6 +1016,7 @@
 (defconstant %flag-dihedrals-inc-hydrogen "%FLAG DIHEDRALS_INC_HYDROGEN")
 (defconstant %flag-dihedrals-without-hydrogen "%FLAG DIHEDRALS_WITHOUT_HYDROGEN")
 (defconstant %flag-excluded-atoms-list "%FLAG EXCLUDED_ATOMS_LIST")
+(defconstant %flag-amber-atom-type "%FLAG AMBER_ATOM_TYPE")
 
 (defun verify-%flag-line (line)
   (unless (string-equal line "%FLAG" :start1 0 :end1 5)
@@ -1014,7 +1044,7 @@
               bonds-inc-hydrogen bonds-without-hydrogen
               angles-inc-hydrogen angles-without-hydrogen
               dihedrals-inc-hydrogen dihedrals-without-hydrogen
-              excluded-atoms-list)
+              excluded-atoms-list amber-atom-type)
     (rlog "Starting read-amber-parm-format~%")
     (fortran:fread-line fif)     ; Skip the version and timestamp line
     (fortran:fread-line fif)     ; read the first %FLAG line
@@ -1240,7 +1270,13 @@
              (multiple-value-bind (per-line format-char width decimal)
                  (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
                (fortran:fread-line-or-error fif) 
-               (setf excluded-atoms-list (fortran:fread-vector fif per-line format-char width))))))           
+               (setf excluded-atoms-list (fortran:fread-vector fif per-line format-char width))))
+            ((string-equal %flag-amber-atom-type line :end2 (length %flag-amber-atom-type))
+             (fortran:fread-line-or-error fif)  
+             (multiple-value-bind (per-line format-char width decimal)
+                 (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
+               (fortran:fread-line-or-error fif) 
+               (setf amber-atom-type (fortran:fread-vector fif per-line format-char width))))))           
     (rlog "natom -> ~s~%" natom)
     (rlog "ntypes -> ~s~%" ntypes)
     (rlog "nbonh -> ~s~%" nbonh)
@@ -1301,10 +1337,12 @@
     (rlog "dihedrals-inc-hydrogen -> ~s~%" dihedrals-inc-hydrogen)
     (rlog "dihedrals-without-hydrogen -> ~s~%" dihedrals-without-hydrogen)
     (rlog "excluded-atoms-list -> ~s~%" excluded-atoms-list)
+    (rlog "amber-atom-type -> ~s~%" amber-atom-type)
     (let ((energy-stretch (core:make-cxx-object 'chem:energy-stretch))
           (energy-angle (core:make-cxx-object 'chem:energy-angle))
           (energy-dihedral (core:make-cxx-object 'chem:energy-dihedral))
-      ;; ... more of these
+          (energy-nonbond (core:make-cxx-object 'chem:energy-nonbond))
+          ;; ... more of these
           (kbs-vec (make-array (+ nbonh mbona) :element-type 'double-float))
           (r0s-vec (make-array (+ nbonh mbona) :element-type 'double-float))
           (i1s-vec (make-array (+ nbonh mbona) :element-type '(signed-byte 32)))
@@ -1334,13 +1372,13 @@
           (counts 0)
           (counta 0)
           (countd 0)
-          stretch-vectors angle-vectors dihedral-vectors
-         )
+          stretch-vectors angle-vectors dihedral-vectors nonbond-vectors
+          )
       
       (loop for i from 0 below numbnd
          do (loop for j from 0 below nbonh
                for jicbh = (aref bonds-inc-hydrogen (+ (* j 3) 2))
-;               do (rlog "i ~a j ~a jicbh ~a~%" i j jicbh)
+                                        ;               do (rlog "i ~a j ~a jicbh ~a~%" i j jicbh)
                do (when (= jicbh i)
                     (setf (aref kbs-vec counts) (aref bond-force-constant i)
                           (aref r0s-vec counts) (aref bond-equil-value i)
@@ -1372,7 +1410,7 @@
       (loop for i from 0 below numang
          do (loop for j from 0 below ntheth
                for jicth = (aref angles-inc-hydrogen (+ (* j 4) 3))
-;               do (rlog "i ~a j ~a jicth ~a~%" i j jicth)
+                                        ;               do (rlog "i ~a j ~a jicth ~a~%" i j jicth)
                do (when (= jicth i)
                     (setf (aref kta-vec counta) (aref angle-force-constant i)
                           (aref t0a-vec counta) (aref angle-equil-value i)
@@ -1409,7 +1447,7 @@
       (loop for i from 0 below nptra
          do (loop for j from 0 below nphih
                for jicph = (aref dihedrals-inc-hydrogen (+ (* j 5) 4))
- ;              do (rlog "i ~a j ~a jicth ~a~%" i j jicph)
+                                        ;              do (rlog "i ~a j ~a jicth ~a~%" i j jicph)
                do (when (= jicph i)
                     (setf (aref vd-vec countd) (aref dihedral-force-constant i)
                           (aref ind-vec countd) (round (aref dihedral-periodicity i)) 
@@ -1467,7 +1505,28 @@
       (setf dihedral-vectors (acons :atom4 atom4d-vec dihedral-vectors))
       (rlog "dihedral-vectors -> ~s~%" dihedral-vectors)
       (chem::fill-from-vectors-in-alist energy-dihedral dihedral-vectors)
-)))
+      ;;nonbond
+      (setf nonbond-vectors (acons :atom-name-vector atom-name nonbond-vectors))
+      (setf nonbond-vectors (acons :charge-vector charge nonbond-vectors))
+      (setf nonbond-vectors (acons :mass-vector mass nonbond-vectors))
+      (setf nonbond-vectors (acons :atomic-number-vector atomic-number nonbond-vectors))
+      (setf nonbond-vectors (acons :ico-vec nonbonded-parm-index nonbond-vectors))
+      (setf nonbond-vectors (acons :iac-vec atomic-type-index nonbond-vectors))
+      (setf nonbond-vectors (acons :atom-type-vector amber-atom-type nonbond-vectors))
+      (setf nonbond-vectors (acons :local-typej-vector amber-atom-type nonbond-vectors))
+      (setf nonbond-vectors (acons :cn1-vec lennard-jones-acoef nonbond-vectors))
+      (setf nonbond-vectors (acons :cn2-vec lennard-jones-bcoef nonbond-vectors))
+      (rlog "nonbond-vectors -> ~s~%" nonbond-vectors)
+      (chem::constructNonbondTermsFromAList energy-nonbond nonbond-vectors)
+      ;;
+      ;; Now we have energy-stretch, energy-angle, and energy-dihedral
+      ;;   we want to put them into an energy-function
+      ;;
+      (let ((energy-function (core:make-cxx-object 'chem:energy-function
+                                                   :stretch energy-stretch
+                                                   :angle energy-angle
+                                                   :dihedral energy-dihedral)))
+        energy-function))))
 
 
 ;;; The following code is to generate a human readable representation of an energy-function
@@ -1501,6 +1560,7 @@
                                                    :atom2-type atom2-type
                                                    :kb kb
                                                    :r0 r0))))
+      (rlog "stretch-vectors ~s~%" stretch-vectors) 
       (loop for stretch in stretches
          do (when (string> (string (stretch-term-atom1-name stretch))
                            (string (stretch-term-atom2-name stretch)))
@@ -1517,4 +1577,150 @@
                        nil
                        (string< (string (stretch-term-atom2-name s1))
                                 (string (stretch-term-atom2-name s2)))))))
-        (sort stretches #'order-stretch)))))
+        (sort stretches #'order-stretch)))
+     (rlog "stretch-vectors ~s~%" stretch-vectors)))
+
+(defstruct angle-term
+  atom1-name atom2-name atom3-name atom1-type atom2-type atom3-type kt t0)
+
+(defun extract-energy-angle (energy-function)
+  (let* ((energy-angle (chem:get-angle-component energy-function))
+         (angle-vectors (chem:extract-vectors-as-alist energy-angle))
+         (kt-vector (cdr (assoc :kt angle-vectors)))
+         (t0-vector (cdr (assoc :t0 angle-vectors)))
+         (i1-vector (cdr (assoc :i1 angle-vectors)))
+         (i2-vector (cdr (assoc :i2 angle-vectors)))
+         (i3-vector (cdr (assoc :i3 angle-vectors)))
+         (atom1-vector (cdr (assoc :atom1 angle-vectors)))
+         (atom2-vector (cdr (assoc :atom2 angle-vectors)))
+         (atom3-vector (cdr (assoc :atom3 angle-vectors)))
+         )
+    (let ((angles (loop for atom1 across atom1-vector
+                     for atom2 across atom2-vector
+                     for atom3 across atom3-vector
+                     for kt across kt-vector
+                     for t0 across t0-vector
+                     for atom1-name = (chem:get-name atom1)
+                     for atom2-name = (chem:get-name atom2)
+                     for atom3-name = (chem:get-name atom3)
+                     for atom1-type = (chem:get-type atom1)
+                     for atom2-type = (chem:get-type atom2)
+                     for atom3-type = (chem:get-type atom3)
+                     collect (make-angle-term :atom1-name atom1-name
+                                              :atom2-name atom2-name
+                                              :atom3-name atom3-name
+                                              :atom1-type atom1-type
+                                              :atom2-type atom2-type
+                                              :atom3-type atom3-type
+                                              :kt kt
+                                              :t0 t0))))
+      (rlog "angle-vectors ~s~%" angle-vectors) 
+      (loop for angle in angles
+         do (when (string> (string (angle-term-atom1-name angle))
+                           (string (angle-term-atom3-name angle)))
+              (rotatef (angle-term-atom1-name angle)
+                       (angle-term-atom3-name angle))
+              (rotatef (angle-term-atom1-type angle)
+                       (angle-term-atom3-type angle))))
+      (flet ((order-angle (a1 a2)
+               (if (string< (string (angle-term-atom1-name a1))
+                            (string (angle-term-atom1-name a2)))
+                   t
+                   (if (string< (string (angle-term-atom2-name a1))
+                                (string (angle-term-atom2-name a2)))
+                       t
+                       (if (string> (string (angle-term-atom2-name a1))
+                                    (string (angle-term-atom2-name a2)))
+                           nil
+                           (string< (string (angle-term-atom3-name a1))
+                                    (string (angle-term-atom3-name a2))))))))
+        (sort angles #'order-angle)))
+          (rlog "angle-vectors ~s~%" angle-vectors)))
+
+(defstruct dihedral-term
+  atom1-name atom2-name atom3-name atom4-name atom1-type atom2-type atom3-type atom4-type v in phase proper)
+
+(defun extract-energy-dihedral (energy-function)
+  (let* ((energy-dihedral (chem:get-dihedral-component energy-function))
+         (dihedral-vectors (chem:extract-vectors-as-alist energy-dihedral))
+         (v-vector (cdr (assoc :v dihedral-vectors)))
+         (in-vector (cdr (assoc :in dihedral-vectors)))
+         (phase-vector (cdr (assoc :phase dihedral-vectors)))
+         (proper-vector (cdr (assoc :prpoer dihedral-vectors)))
+         (i1-vector (cdr (assoc :i1 dihedral-vectors)))
+         (i2-vector (cdr (assoc :i2 dihedral-vectors)))
+         (i3-vector (cdr (assoc :i3 dihedral-vectors)))
+         (i4-vector (cdr (assoc :i4 dihedral-vectors)))
+         (atom1-vector (cdr (assoc :i1 dihedral-vectors)))
+         (atom2-vector (cdr (assoc :i2 dihedral-vectors)))
+         (atom3-vector (cdr (assoc :i3 dihedral-vectors)))
+         (atom4-vector (cdr (assoc :i4 dihedral-vectors)))
+         )
+    (let ((dihedrals (loop for atom1 across atom1-vector
+                        for atom2 across atom2-vector
+                        for atom3 across atom3-vector
+                        for atom4 across atom4-vector
+                        for v across v-vector
+                        for in across in-vector
+                        for phase across phase-vector
+                        for proper across proper-vector
+                        for atom1-name = (chem:get-name atom1)
+                        for atom2-name = (chem:get-name atom2)
+                        for atom3-name = (chem:get-name atom3)
+                        for atom4-name = (chem:get-name atom4)
+                        for atom1-type = (chem:get-type atom1)
+                        for atom2-type = (chem:get-type atom2)
+                        for atom3-type = (chem:get-type atom3)
+                        for atom4-type = (chem:get-type atom4)
+                        collect (make-dihedral-term :atom1-name atom1-name
+                                                    :atom2-name atom2-name
+                                                    :atom3-name atom3-name
+                                                    :atom4-name atom4-name
+                                                    :atom1-type atom1-type
+                                                    :atom2-type atom2-type
+                                                    :atom3-type atom3-type
+                                                    :atom4-type atom4-type
+                                                    :v v
+                                                    :in in
+                                                    :phase phase
+                                                    :propeer proper))))
+      (rlog "dihedral-vectors ~s~%" dihedral-vectors) 
+      (loop for dihedral in dihedrals
+         do (when (string> (string (dihedral-term-atom1-name dihedral))
+                           (string (dihedral-term-atom4-name dihedral)))
+              (rotatef (dihedral-term-atom1-name dihedral)
+                       (dihedral-term-atom4-name dihedral))
+              (rotatef (dihedral-term-atom1-type dihedral)
+                       (dihedral-term-atom4-type dihedral))
+              (rotatef (dihedral-term-atom2-name dihedral)
+                       (dihedral-term-atom3-name dihedral))
+              (rotatef (dihedral-term-atom2-type dihedral)
+                       (dihedral-term-atom3-type dihedral))))
+      (flet ((order-dihedral (d1 d2)
+               (if (string< (string (dihedral-term-atom1-name d1))
+                            (string (dihedral-term-atom1-name d2)))
+                   t
+                   (if (string< (string (dihedral-term-atom2-name d1))
+                                (string (dihedral-term-atom2-name d2)))
+                       t
+                       (if (string< (string (dihedral-term-atom3-name d1))
+                                    (string (dihedral-term-atom3-name d2)))
+                           t
+                           (if (string> (string (dihedral-term-atom3-name d1))
+                                        (string (dihedral-term-atom3-name d2)))
+                               nil
+                               (string< (string (dihedral-term-atom4-name d1))
+                                        (stting (dihedral-term-atom4-name d2)))))))))
+        (sort dihedrals #'order-dihedral)))
+    (rlog "dihedral-vectors ~s~%" dihedral-vectors)))
+                              
+                                                    
+                          
+                                       
+                      
+              
+                 
+                              
+              
+                          
+                              

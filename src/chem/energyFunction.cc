@@ -238,6 +238,20 @@ void	EnergyFunction_O::useDefaultSettings()
 
 
 
+void EnergyFunction_O::fields(core::Record_sp node)
+{
+  node->field_if_not_unbound(INTERN_(kw,AtomTable),this->_AtomTable);
+  node->field_if_not_unbound(INTERN_(kw,Stretch),this->_Stretch);
+#if USE_ALL_ENERGY_COMPONENTS
+  node->field_if_not_unbound(INTERN_(kw,Angle),this->_Angle);
+  node->field_if_not_unbound(INTERN_(kw,Dihedral),this->_Dihedral);
+  node->field_if_not_unbound(INTERN_(kw,Nonbond),this->_Nonbond);
+  node->field_if_not_unbound(INTERN_(kw,ImproperRestraint),this->_ImproperRestraint);
+  node->field_if_not_unbound(INTERN_(kw,ChiralRestraint),this->_ChiralRestraint);
+  node->field_if_not_unbound(INTERN_(kw,AnchorRestraint),this->_AnchorRestraint);
+  node->field_if_not_unbound(INTERN_(kw,FixedNonbondRestraint),this->_FixedNonbondRestraint);
+#endif
+}
 
 
 

@@ -1080,14 +1080,18 @@ SYMBOL_EXPORT_SC_(KeywordPkg,mass_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,atomic_number_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,ico_vec);
 SYMBOL_EXPORT_SC_(KeywordPkg,iac_vec);
+SYMBOL_EXPORT_SC_(KeywordPkg,atom_type_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,local_typej_vec);
 SYMBOL_EXPORT_SC_(KeywordPkg,cn1_vec);
 SYMBOL_EXPORT_SC_(KeywordPkg,cn2_vec);
 
-void EnergyNonbond_O::constructNonbondTermsFromAtomTableUsingExcludedAtoms(EnergyFunction_sp energyFunction,
+#if 0
+CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsFromAtomTableUsingExcludedAtoms(EnergyFunction_sp energyFunction,
                                                                            core::T_sp prepareAmberEnergyNonbond )
 {
   core::List_sp values = core::eval::funcall(prepareAmberEnergyNonbond,energyFunction);
+  this->constructNonbondTermsFromAList(values);
+#if 0
   this->_ntypes =               safe_alist_lookup(values,kw::_sym_ntypes);          // ntypes
   this->_atom_name_vector =     safe_alist_lookup(values,kw::_sym_atom_name_vector);  // atom-name-vector
   this->_charge_vector =        safe_alist_lookup(values,kw::_sym_charge_vector);          // charge-vector
@@ -1095,11 +1099,28 @@ void EnergyNonbond_O::constructNonbondTermsFromAtomTableUsingExcludedAtoms(Energ
   this->_atomic_number_vector = safe_alist_lookup(values,kw::_sym_atomic_number_vector);    // vec
   this->_ico_vec =              safe_alist_lookup(values,kw::_sym_ico_vec);             // ico-vec
   this->_iac_vec =              safe_alist_lookup(values,kw::_sym_iac_vec);             // iac-vec
+  this->_atom_type_vector =     safe_alist_lookup(values,kw::_sym_atom_type_vector);      // atom-type-vector
   this->_local_typej_vec =      safe_alist_lookup(values,kw::_sym_local_typej_vec);      // local-typej-vec
   this->_cn1_vec =              safe_alist_lookup(values,kw::_sym_cn1_vec);
   this->_cn2_vec =              safe_alist_lookup(values,kw::_sym_cn2_vec);
+#endif
+}
+#endif
 
-  }
+CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsFromAList(core::List_sp values)
+{
+  this->_ntypes =               safe_alist_lookup(values,kw::_sym_ntypes);          // ntypes
+  this->_atom_name_vector =     safe_alist_lookup(values,kw::_sym_atom_name_vector);  // atom-name-vector
+  this->_charge_vector =        safe_alist_lookup(values,kw::_sym_charge_vector);          // charge-vector
+  this->_mass_vector =          safe_alist_lookup(values,kw::_sym_mass_vector);            // masses
+  this->_atomic_number_vector = safe_alist_lookup(values,kw::_sym_atomic_number_vector);    // vec
+  this->_ico_vec =              safe_alist_lookup(values,kw::_sym_ico_vec);             // ico-vec
+  this->_iac_vec =              safe_alist_lookup(values,kw::_sym_iac_vec);             // iac-vec
+  this->_atom_type_vector =     safe_alist_lookup(values,kw::_sym_atom_type_vector);      // atom-type-vec
+  this->_local_typej_vec =      safe_alist_lookup(values,kw::_sym_local_typej_vec);      // local-typej-vec
+  this->_cn1_vec =              safe_alist_lookup(values,kw::_sym_cn1_vec);
+  this->_cn2_vec =              safe_alist_lookup(values,kw::_sym_cn2_vec);
+}
 
 
 };

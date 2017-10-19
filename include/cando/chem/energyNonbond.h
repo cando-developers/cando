@@ -152,6 +152,7 @@ class EnergyNonbond_O : public EnergyComponent_O
   core::MDArray_int32_t_sp   _atomic_number_vector;    // vec
   core::MDArray_int32_t_sp   _ico_vec;             // ico-vec
   core::MDArray_int32_t_sp   _iac_vec;             // iac-vec
+  core::SimpleVector_sp      _atom_type_vector;    // Amber atom type names
   core::MDArray_int32_t_sp   _local_typej_vec;      // local-typej-vec
   core::MDArrayDouble_sp     _cn1_vec;
   core::MDArrayDouble_sp     _cn2_vec;
@@ -231,6 +232,8 @@ class EnergyNonbond_O : public EnergyComponent_O
 
   void constructNonbondTermsFromAtomTableUsingExcludedAtoms(EnergyFunction_sp energyFunction,
                                                             core::T_sp prepareAmberEnergyNonbond );
+
+  CL_DEFMETHOD void constructNonbondTermsFromAList(core::List_sp values);
 
  public:
   EnergyNonbond_O( const EnergyNonbond_O& ss ); //!< Copy constructor

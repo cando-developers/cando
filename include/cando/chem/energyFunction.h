@@ -121,7 +121,8 @@ namespace chem {
     void initialize();
   public:
 //    void	archive(core::ArchiveP node);
-
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
   private:
     Matter_sp				_Matter;	// Aggregate or Molecule
     /*! Stores cross terms for evaluating nonbond interactions
@@ -286,7 +287,23 @@ namespace chem {
     string	debugLogAsString();
 
     void	dealWithProblem(core::Symbol_sp error_symbol, core::T_sp arguments);
-    DEFAULT_CTOR_DTOR(EnergyFunction_O);
+    
+  EnergyFunction_O() :
+    _Matter(_Unbound<Matter_O>())
+      , _NonbondCrossTermTable(_Unbound<FFNonbondCrossTermTable_O>())
+      , _AtomTable(_Unbound<AtomTable_O>())
+      , _Stretch(_Unbound<EnergyStretch_O>())
+#if USE_ALL_ENERGY_COMPONENTS
+      , _Angle(_Unbound<EnergyAngle_O>())
+      , _Dihedral(_Unbound<EnergyDihedral_O>())
+      , _Nonbond(_Unbound<EnergyNonbond_O>())
+      , _ImproperRestraint(_Unbound<EnergyImproperRestraint_O>())
+      , _ChiralRestraint(_Unbound<EnergyChiralRestraint_O>())
+      , _AnchorRestraint(_Unbound<EnergyAnchorRestraint_O>())
+      , _FixedNonbondRestraint(_Unbound<EnergyFixedNonbondRestraint_O>())
+#endif
+//      , _MissingParameters(_Unbound<core::List_O>())
+    {};
   };
 
 
