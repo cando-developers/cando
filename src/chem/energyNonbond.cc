@@ -667,6 +667,13 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
   auto iea1_end = this->_AtomTable->end()-1;
   int index1 = 0;
   int excludedAtomIndex = 0;
+  int nlocaltype = 0;
+  for (i=0; maxIndex; ++i){
+    if (nlocaltype < (*this->_iac_vec)[i]){
+      nlocaltype = (*this->_iac_vec)[i];
+        }
+  }
+
   for ( auto iea1 = this->_AtomTable->begin(); iea1 != iea1_end; ++iea1, ++index1 ) {
     LOG(BF("%s ====== top of outer loop - index1 = %d\n") % __FUNCTION__ % index1 );
     int numberOfExcludedAtomsRemaining = numberOfExcludedAtoms->operator[](index1);
@@ -676,6 +683,9 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
       ++excludedAtomIndex;
     }
     int index2 = index1+1;
+    if (iea1->_TypeIndex==UNDEF_UINT) {
+      printf("%s:%d iea1->_TypeIndex == UNDEF_UINT remove the old code for calculating nonbonds\n", __FILE__, __LINE__);
+    }
     FFNonbond_sp ffNonbond1 = this->_FFNonbondDb->getFFNonbondUsingTypeIndex(iea1->_TypeIndex);
     double charge1 = iea1->atom()->getCharge();
     double electrostatic_scaled_charge1 = charge1*electrostaticScale;
@@ -701,6 +711,9 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
       // /////////////////////////////////////////////////////////////
       // /////////////////////////////////////////////////////////////
       
+      if (iea2->_TypeIndex==UNDEF_UINT) {
+        printf("%s:%d iea2->_TypeIndex == UNDEF_UINT remove the old code for calculating nonbonds\n", __FILE__, __LINE__);
+      }
       FFNonbond_sp ffNonbond2 = this->_FFNonbondDb->getFFNonbondUsingTypeIndex(iea2->_TypeIndex);
       double rStar = ffNonbond1->getRadius_Angstroms()+ffNonbond2->getRadius_Angstroms();
       double epsilonij = sqrt(ffNonbond1->getEpsilon_kCal()*ffNonbond2->getEpsilon_kCal());
@@ -712,11 +725,10 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
       dC_old = 2.0*epsilonij*rStar6*vdwScale;
       double charge2 = iea2->atom()->getCharge();
       dQ1Q2_old = electrostatic_scaled_charge1*charge2;
-      int localindex1 = (*this->_local_typej_vec)[index1];
-      int localindex2 = (*this->_local_typej_vec)[index2];
-      int nlocaltype = sizeof(*this->_local_typej_vec)/sizeof((*this->_local_typej_vec)[0]);
-      dA = (*this->_cn1_vec)[localindex1*nlocaltype+localindex2+(localindex1*(localindex1-1)/2)];
-      dC = (*this->_cn2_vec)[localindex1*nlocaltype+localindex2+(localindex1*(localindex1-1)/2)];
+      int localindex1 = (*this->_iac_vec)[index1]-1;
+      int localindex2 = (*this->_iac_vec)[index2]-1;
+      dA = (*this->_cn1_vec)[localindex1*nlocaltype+localindex2-(localindex1*(localindex1-1)/2)];
+      dC = (*this->_cn2_vec)[localindex1*nlocaltype+localindex2-(localindex1*(localindex1-1)/2)];
       double charge11 = (*this->_charge_vector)[index1];
       double charge22 = (*this->_charge_vector)[index2];
       double electrostatic_scaled_charge11 = charge11*electrostaticScale;
@@ -1080,7 +1092,6 @@ SYMBOL_EXPORT_SC_(KeywordPkg,mass_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,atomic_number_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,ico_vec);
 SYMBOL_EXPORT_SC_(KeywordPkg,iac_vec);
-SYMBOL_EXPORT_SC_(KeywordPkg,atom_type_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,local_typej_vec);
 SYMBOL_EXPORT_SC_(KeywordPkg,cn1_vec);
 SYMBOL_EXPORT_SC_(KeywordPkg,cn2_vec);
@@ -1099,7 +1110,6 @@ CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsFromAtomTableUsingExclud
   this->_atomic_number_vector = safe_alist_lookup(values,kw::_sym_atomic_number_vector);    // vec
   this->_ico_vec =              safe_alist_lookup(values,kw::_sym_ico_vec);             // ico-vec
   this->_iac_vec =              safe_alist_lookup(values,kw::_sym_iac_vec);             // iac-vec
-  this->_atom_type_vector =     safe_alist_lookup(values,kw::_sym_atom_type_vector);      // atom-type-vector
   this->_local_typej_vec =      safe_alist_lookup(values,kw::_sym_local_typej_vec);      // local-typej-vec
   this->_cn1_vec =              safe_alist_lookup(values,kw::_sym_cn1_vec);
   this->_cn2_vec =              safe_alist_lookup(values,kw::_sym_cn2_vec);
@@ -1116,8 +1126,7 @@ CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsFromAList(core::List_sp 
   this->_atomic_number_vector = safe_alist_lookup(values,kw::_sym_atomic_number_vector);    // vec
   this->_ico_vec =              safe_alist_lookup(values,kw::_sym_ico_vec);             // ico-vec
   this->_iac_vec =              safe_alist_lookup(values,kw::_sym_iac_vec);             // iac-vec
-  this->_atom_type_vector =     safe_alist_lookup(values,kw::_sym_atom_type_vector);      // atom-type-vec
-  this->_local_typej_vec =      safe_alist_lookup(values,kw::_sym_local_typej_vec);      // local-typej-vec
+//  this->_local_typej_vec =      safe_alist_lookup(values,kw::_sym_local_typej_vec);      // local-typej-vec
   this->_cn1_vec =              safe_alist_lookup(values,kw::_sym_cn1_vec);
   this->_cn2_vec =              safe_alist_lookup(values,kw::_sym_cn2_vec);
 }

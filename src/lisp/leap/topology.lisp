@@ -449,12 +449,13 @@
                             (aref cn2-vec curcn) (* 2.0 epsilonij (expt rstar 6.0)))
                       (format t "type1 ~a type2 ~a~%" type1 type2)
                       (incf curcn)))))
-      (values ntypes ico-vec iac-vec type-indexj-vec local-typej-vec cn1-vec cn2-vec))))
+      (values ntypes ico-vec iac-vec local-typej-vec cn1-vec cn2-vec))))
 
 (defun prepare-amber-energy-nonbond (energy-function)
   (let* ((atom-table (chem:atom-table energy-function))
          (natom (chem:get-number-of-atoms atom-table))
          (atom-name-vector (make-array natom))
+         (atom-type-vector (make-array natom))
          (charge-vector (make-array natom :element-type 'double-float))
          (mass-vector (make-array natom :element-type 'double-float))
          (type-index-vector (make-array natom :element-type '(byte 32)))
@@ -465,25 +466,27 @@
     (format t "ffnonbond-db -> ~a~%" ffnonbond-db)
     (loop for i from 0 below natom
        for atom-name = (chem:elt-atom-name atom-table i)
+       for atom-type = (chem:elt-atom-type atom-table i)
        for charge = (chem:elt-charge atom-table i)
        for mass = (chem:elt-mass atom-table i)
        for type-index = (chem:elt-type-index atom-table i)
        for atomic-number = (chem:elt-atomic-number atom-table i)
        do (setf (aref atom-name-vector i) atom-name
+                (aref atom-type-vector i) atom-type
                 (aref charge-vector i) charge
                 (aref mass-vector i) mass
                 (aref type-index-vector i) type-index
                 (aref atomic-number-vector i) atomic-number))
-    (multiple-value-bind (ntypes ico-vec iac-vec type-indexj-vec local-typej-vec cn1-vec cn2-vec)
+    (multiple-value-bind (ntypes ico-vec iac-vec local-typej-vec cn1-vec cn2-vec)
         (generate-nonbond-parameters ffnonbond-db type-index-vector)
       (list (cons :ntypes ntypes)
             (cons :atom-name-vector atom-name-vector)
+            (cons :atom-type-vector atom-type-vector)
             (cons :charge-vector charge-vector)
             (cons :mass-vector mass-vector)
             (cons :atomic-number-vector atomic-number-vector)
             (cons :ico-vec ico-vec)
             (cons :iac-vec iac-vec)
-            (cons :atom-type-vector type-indexj-vec)
             (cons :local-typej-vec local-typej-vec)
             (cons :cn1-vec cn1-vec)
             (cons :cn2-vec cn2-vec)))))
@@ -503,7 +506,6 @@
 (defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname force-field)
   (let* ((energy-function (chem:make-energy-function aggregate force-field
                                                      :use-excluded-atoms t))
-         (atoms (chem:atom energy-function))
          (nonbonds (chem:get-nonbond-component energy-function))
          (number-excluded-atoms (chem:number-excluded-atoms nonbonds))
          (excluded-atom-list (chem:excluded-atom-list nonbonds))
@@ -524,7 +526,7 @@
       ;; To avoid lots of nested scopes we will declare one large scope
       ;;   and declare all of the variables in that scope here at the top
       (let (natom atom-vectors
-            ntypes atom-name charge mass atomic-number ico iac type-indexj-vec local-typej-vec cn1-vec cn2-vec #|nonbonds|#
+            ntypes atom-name atom-type charge mass atomic-number ico iac local-typej-vec cn1-vec cn2-vec #|nonbonds|#
             nbonh mbona ibh jbh icbh ib jb icb kbj-vec r0j-vec #|stretches|#
             ntheth mtheta ith jth kth icth it jt kt1 ict ktj-vec t0j-vec #|angles|#
             nphih mphia iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec #|dihedrals|#
@@ -532,7 +534,7 @@
             nbona    ntheta nphia  NUMBND NUMANG NPTRA
             NATYP    NPHB   IFPERT NBPER  NGPER  NDPER
             MBPER    MGPER  MDPER  IFBOX  NMXRS  IFCAP
-            NUMEXTRA NCOPY ;atom-type-name
+            NUMEXTRA NCOPY
             )
         ;; Here we need to calculate all of the values for %FLAG POINTERS
         (setf natom (chem:get-number-of-atoms (chem:atom-table energy-function))) ;total number of atoms
@@ -549,12 +551,12 @@
         (setf atom-vectors (prepare-amber-energy-nonbond energy-function))
         (setf ntypes (cdr (assoc :ntypes atom-vectors)))
         (setf atom-name (cdr (assoc :atom-name-vector atom-vectors)))
+        (setf atom-type (cdr (assoc :atom-type-vector atom-vectors)))
         (setf charge (cdr (assoc :charge-vector atom-vectors)))
         (setf mass (cdr (assoc :mass-vector atom-vectors)))
         (setf atomic-number (cdr (assoc :atomic-number-vector atom-vectors)))
         (setf ico (cdr (assoc :ico-vec atom-vectors)))
         (setf iac (cdr (assoc :iac-vec atom-vectors)))
-        (setf type-indexj-vec (cdr (assoc :atom-type-vector atom-vectors)))
         (setf local-typej-vec (cdr (assoc :local-typej-vec atom-vectors)))
         (setf cn1-vec (cdr (assoc :cn1-vec atom-vectors)))
         (setf cn2-vec (cdr (assoc :cn2-vec atom-vectors)))
@@ -973,15 +975,15 @@
            do (fortran:fwrite atom))
         (fortran:end-line)
         ;; Next
- ;       (fortran:fformat 1 "%-80s")
- ;       (fortran:fwrite "%FLAG AMBER_ATOM_TYPE")
- ;       (fortran:fwrite "%FORMAT(20A4)")
- ;       (fortran:debug "-31-")
-  ;      (fortran:fformat 20 "%4s")
-  ;      (fortran:end-line)
-  ;      (loop for tname across atom-type-name
-  ;         do (fortran:fwrite tname))
-  ;      (fortran:end-line)
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG AMBER_ATOM_TYPE")
+        (fortran:fwrite "%FORMAT(20A4)")
+        (fortran:debug "-31-")
+        (fortran:fformat 20 "%4s")
+        (fortran:end-line)
+        (loop for type across atom-type
+           do (fortran:fwrite (string type)))
+        (fortran:end-line)
         ))))
         ;; write the excluded atom list 
         ;; pick up at unitio.cc:4969
@@ -1102,7 +1104,11 @@
              (multiple-value-bind (per-line format-char width decimal)
                  (fortran:parse-fortran-format-line (fortran:fortran-input-file-look-ahead fif))
                (fortran:fread-line-or-error fif)
-               (setf atom-name (fortran:fread-vector fif per-line format-char width))))
+               (setf atom-name
+                     (map 'vector
+                          (lambda (string)
+                            (intern string "KEYWORD"))
+                          (fortran:fread-vector fif per-line format-char width)))))
             ((string-equal %flag-charge line :end2 (length %flag-charge))
              (fortran:fread-line-or-error fif)  
              (multiple-value-bind (per-line format-char width decimal)
@@ -1342,6 +1348,7 @@
           (energy-angle (core:make-cxx-object 'chem:energy-angle))
           (energy-dihedral (core:make-cxx-object 'chem:energy-dihedral))
           (energy-nonbond (core:make-cxx-object 'chem:energy-nonbond))
+          (atom-table (core:make-cxx-object 'chem:atom-table))
           ;; ... more of these
           (kbs-vec (make-array (+ nbonh mbona) :element-type 'double-float))
           (r0s-vec (make-array (+ nbonh mbona) :element-type 'double-float))
@@ -1372,7 +1379,7 @@
           (counts 0)
           (counta 0)
           (countd 0)
-          stretch-vectors angle-vectors dihedral-vectors nonbond-vectors
+          stretch-vectors angle-vectors dihedral-vectors nonbond-vectors atom-table-vectors
           )
       
       (loop for i from 0 below numbnd
@@ -1506,27 +1513,39 @@
       (rlog "dihedral-vectors -> ~s~%" dihedral-vectors)
       (chem::fill-from-vectors-in-alist energy-dihedral dihedral-vectors)
       ;;nonbond
+      (setf nonbond-vectors (acons :ntypes ntypes nonbond-vectors))
       (setf nonbond-vectors (acons :atom-name-vector atom-name nonbond-vectors))
       (setf nonbond-vectors (acons :charge-vector charge nonbond-vectors))
       (setf nonbond-vectors (acons :mass-vector mass nonbond-vectors))
       (setf nonbond-vectors (acons :atomic-number-vector atomic-number nonbond-vectors))
       (setf nonbond-vectors (acons :ico-vec nonbonded-parm-index nonbond-vectors))
       (setf nonbond-vectors (acons :iac-vec atomic-type-index nonbond-vectors))
-      (setf nonbond-vectors (acons :atom-type-vector amber-atom-type nonbond-vectors))
-      (setf nonbond-vectors (acons :local-typej-vector amber-atom-type nonbond-vectors))
       (setf nonbond-vectors (acons :cn1-vec lennard-jones-acoef nonbond-vectors))
       (setf nonbond-vectors (acons :cn2-vec lennard-jones-bcoef nonbond-vectors))
       (rlog "nonbond-vectors -> ~s~%" nonbond-vectors)
-      (chem::constructNonbondTermsFromAList energy-nonbond nonbond-vectors)
+      (chem::construct-nonbond-terms-from-aList energy-nonbond nonbond-vectors)
+      ;;atom-table
+      (setf atom-table-vectors (acons :atom-name-vector atom-name atom-table-vectors))
+      (setf atom-table-vectors (acons :atom-type-vector amber-atom-type atom-table-vectors))
+      (setf atom-table-vectors (acons :charge-vector charge atom-table-vectors))
+      (setf atom-table-vectors (acons :mass-vector mass atom-table-vectors))
+      (setf atom-table-vectors (acons :atomic-number-vector atomic-number atom-table-vectors))
+      (rlog "atom-table-vectors -> ~s~%" atom-table-vectors)
+      (dolist (entry atom-table-vectors)
+        (format *debug-io* "entry -> ~s  (type-of (cdr entry)) -> ~s~%" entry (type-of (cdr entry))))
+      (chem::fill-atom-table-from-vectors atom-table atom-table-vectors)
       ;;
       ;; Now we have energy-stretch, energy-angle, and energy-dihedral
       ;;   we want to put them into an energy-function
+      (rlog "atom-table-vectors -> ~s~%" atom-table-vectors)
       ;;
       (let ((energy-function (core:make-cxx-object 'chem:energy-function
                                                    :stretch energy-stretch
                                                    :angle energy-angle
-                                                   :dihedral energy-dihedral)))
-        energy-function))))
+                                                   :dihedral energy-dihedral
+                                                   :nobond energy-nonbond
+                                                   :atomtable atom-table))))
+      )))
 
 
 ;;; The following code is to generate a human readable representation of an energy-function
@@ -1710,7 +1729,7 @@
                                         (string (dihedral-term-atom3-name d2)))
                                nil
                                (string< (string (dihedral-term-atom4-name d1))
-                                        (stting (dihedral-term-atom4-name d2)))))))))
+                                        (string (dihedral-term-atom4-name d2)))))))))
         (sort dihedrals #'order-dihedral)))
     (rlog "dihedral-vectors ~s~%" dihedral-vectors)))
                               

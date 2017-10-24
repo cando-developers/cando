@@ -50,6 +50,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/spanningLoop.h>
 #include <cando/chem/ffNonbondDb.h>
 #include <clasp/core/profiler.h>
+#include <clasp/core/translators.h>
 #include <clasp/core/wrappers.h>
 
 
@@ -356,5 +357,38 @@ CL_DEFMETHOD core::MDArray_int32_t_mv AtomTable_O::calculate_excluded_atom_list(
   }
   return Values(number_excluded_atoms,excluded_atoms_list);
 }
+
+CL_DEFMETHOD core::Symbol_sp AtomTable_O::elt_atom_type(int index) {
+  return this->_Atoms[index]._SharedAtom->getType();
+};
+SYMBOL_EXPORT_SC_(KeywordPkg,atom_name_vector);
+SYMBOL_EXPORT_SC_(KeywordPkg,atom_type_vector);
+SYMBOL_EXPORT_SC_(KeywordPkg,charge_vector);
+SYMBOL_EXPORT_SC_(KeywordPkg,mass_vector);
+SYMBOL_EXPORT_SC_(KeywordPkg,atomic_number_vector);
+
+CL_DEFMETHOD void  AtomTable_O::fill_atom_table_from_vectors(core::List_sp vectors)
+{
+  core::Array_sp atom_name_vec = gc::As<core::Array_sp>(safe_alist_lookup(vectors,kw::_sym_atom_name_vector));
+  core::Array_sp atom_type_vec = gc::As<core::Array_sp>(safe_alist_lookup(vectors,kw::_sym_atom_type_vector));
+  core::Array_sp charge_vec = gc::As<core::Array_sp>(safe_alist_lookup(vectors,kw::_sym_charge_vector));
+  core::Array_sp mass_vec = gc::As<core::Array_sp>(safe_alist_lookup(vectors,kw::_sym_mass_vector));
+  core::Array_sp atomic_number_vec = gc::As<core::Array_sp>(safe_alist_lookup(vectors,kw::_sym_atomic_number_vector));
+  this->_Atoms.resize(atom_name_vec->length());
+
+  for (size_t i = 0, iEnd(atom_name_vec->length()); i<iEnd ;++i)
+  {
+    printf("%s:%d About to set _AtomName with %s\n", __FILE__, __LINE__, _rep_(atom_name_vec->rowMajorAref(i)).c_str());
+    this->_Atoms[i]._AtomName     =  gc::As<core::Symbol_sp>(atom_name_vec->rowMajorAref(i));  // atom-name-vector
+    //    The _TypeIndex is going to go away once we have ensured that the new Common Lisp code
+    // that calculates nonbond terms works.
+//    this->_Atoms[i]._TypeIndex    =  forceField->getNonbondDb()->findTypeIndex((*atom_type_vec)[i]);
+    this->_Atoms[i]._TypeIndex = UNDEF_UINT;
+    this->_Atoms[i]._Charge       =  translate::from_object<double>(charge_vec->rowMajorAref(i))._v;   // charge-vector
+    this->_Atoms[i]._Mass         =  translate::from_object<double>(mass_vec->rowMajorAref(i))._v;                // masses
+    this->_Atoms[i]._AtomicNumber =  translate::from_object<int>(atomic_number_vec->rowMajorAref(i))._v;       // vec
+  }
+}
+
 
 };

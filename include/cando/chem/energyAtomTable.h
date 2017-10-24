@@ -146,6 +146,7 @@ class AtomTable_O : public core::CxxObject_O
   // Access fields in AtomTable elements directly
   //
   CL_DEFMETHOD MatterName elt_atom_name(int index) { return this->_Atoms[index]._AtomName; };
+  CL_DEFMETHOD core::Symbol_sp elt_atom_type(int index);
   CL_DEFMETHOD double elt_charge(int index) { return this->_Atoms[index]._Charge; };
   CL_DEFMETHOD double elt_mass(int index) { return this->_Atoms[index]._Mass; };
   CL_DEFMETHOD int elt_type_index(int index) { return this->_Atoms[index]._TypeIndex; };
@@ -153,6 +154,9 @@ class AtomTable_O : public core::CxxObject_O
   core::MDArray_int32_t_sp atom_table_residues() const;
   core::MDArrayT_sp atom_table_residue_names() const;
  AtomTable_O() : _Residues(_Unbound<core::MDArray_int32_t_O>()), _ResidueNames(_Unbound<core::MDArrayT_O>()) {};
+
+  virtual void fill_atom_table_from_vectors(core::List_sp values);
+  
 };
 
 
