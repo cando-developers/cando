@@ -1794,6 +1794,21 @@ CL_DEFMETHOD string	EnergyFunction_O::debugLogAsString()
   return ss.str();
 }
 
+SYMBOL_EXPORT_SC_(KeywordPkg,atom_table);
+SYMBOL_EXPORT_SC_(KeywordPkg,stretch);
+SYMBOL_EXPORT_SC_(KeywordPkg,angle);
+SYMBOL_EXPORT_SC_(KeywordPkg,dihedral);
+SYMBOL_EXPORT_SC_(KeywordPkg,nonbond);
+
+CL_DEFUN void chem__fill_energy_function_from_alist(EnergyFunction_sp energy, core::List_sp alist)
+{
+  energy->_AtomTable = gc::As<AtomTable_sp>(safe_alist_lookup(alist,kw::_sym_atom_table));
+  energy->_Stretch = gc::As<EnergyStretch_sp>(safe_alist_lookup(alist,kw::_sym_stretch));
+  energy->_Angle = gc::As<EnergyStretch_sp>(safe_alist_lookup(alist,kw::_sym_angle));
+  energy->_Dihedral = gc::As<EnergyStretch_sp>(safe_alist_lookup(alist,kw::_sym_dihedral));
+  energy->_Nonbond = gc::As<EnergyStretch_sp>(safe_alist_lookup(alist,kw::_sym_nonbond));
+}
+
 
 void EnergyFunction_O::enableDebug()
 {

@@ -123,7 +123,7 @@ namespace chem {
 //    void	archive(core::ArchiveP node);
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
-  private:
+  public:
     Matter_sp				_Matter;	// Aggregate or Molecule
     /*! Stores cross terms for evaluating nonbond interactions
      */
