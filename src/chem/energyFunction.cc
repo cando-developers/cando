@@ -1384,6 +1384,8 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   this->summarizeTerms();
 }
 
+SYMBOL_EXPORT_SC_(ChemPkg,prepare_amber_energy_nonbond);
+
 CL_LAMBDA((energy_function !) matter force_field &key active_atoms show_progress);
 CL_DOCSTRING("Generate the nonbond energy function tables. The atom types, and CIP priorities need to be precalculated.");
 CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress )
@@ -1395,6 +1397,10 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
 #endif
         // Nonbonds here!!!!!!!!!!!!!!
   if (useExcludedAtoms) {
+    // The nonbond parameters are calculated in Common Lisp
+    core::List_sp parts = eval::funcall(_sym_prepare_amber_energy_nonbond,this->asSmartPtr());
+    this->_Nonbond->constructNonbondTermsFromAList(parts);
+    // -----------
     this->_Nonbond->constructExcludedAtomListFromAtomTable(this->_AtomTable, forceField, show_progress);
     this->_Nonbond->construct14InteractionTerms(this->_AtomTable,matter,forceField,activeAtoms,show_progress);
   } else {
