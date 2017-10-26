@@ -172,11 +172,9 @@ namespace       chem
     CL_DEFMETHOD double	calculateNumericalSecondDerivative(NVector_sp pos, double delta, uint i, uint j );
 #endif
 
-    CL_LISPIFY_NAME("calculateEnergy");
-    CL_DEFMETHOD double calculateEnergy();
+    double calculateEnergy();
 
-    CL_LISPIFY_NAME("calculateEnergyAndForce");
-    CL_DEFMETHOD double calculateEnergyAndForce();
+    double calculateEnergyAndForce();
 
  
     CL_LISPIFY_NAME("evaluateAll");

@@ -1398,7 +1398,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
         // Nonbonds here!!!!!!!!!!!!!!
   if (useExcludedAtoms) {
     // The nonbond parameters are calculated in Common Lisp
-    core::List_sp parts = eval::funcall(_sym_prepare_amber_energy_nonbond,this->asSmartPtr());
+    core::List_sp parts = core::eval::funcall(_sym_prepare_amber_energy_nonbond,this->asSmartPtr());
     this->_Nonbond->constructNonbondTermsFromAList(parts);
     // -----------
     this->_Nonbond->constructExcludedAtomListFromAtomTable(this->_AtomTable, forceField, show_progress);
@@ -1810,9 +1810,9 @@ CL_DEFUN void chem__fill_energy_function_from_alist(EnergyFunction_sp energy, co
 {
   energy->_AtomTable = gc::As<AtomTable_sp>(safe_alist_lookup(alist,kw::_sym_atom_table));
   energy->_Stretch = gc::As<EnergyStretch_sp>(safe_alist_lookup(alist,kw::_sym_stretch));
-  energy->_Angle = gc::As<EnergyStretch_sp>(safe_alist_lookup(alist,kw::_sym_angle));
-  energy->_Dihedral = gc::As<EnergyStretch_sp>(safe_alist_lookup(alist,kw::_sym_dihedral));
-  energy->_Nonbond = gc::As<EnergyStretch_sp>(safe_alist_lookup(alist,kw::_sym_nonbond));
+  energy->_Angle = gc::As<EnergyAngle_sp>(safe_alist_lookup(alist,kw::_sym_angle));
+  energy->_Dihedral = gc::As<EnergyDihedral_sp>(safe_alist_lookup(alist,kw::_sym_dihedral));
+  energy->_Nonbond = gc::As<EnergyNonbond_sp>(safe_alist_lookup(alist,kw::_sym_nonbond));
 }
 
 

@@ -1565,7 +1565,7 @@
 (defstruct stretch-term
   atom1-name atom2-name atom1-type atom2-type kb r0)
 
-(defun extract-energy-stretch (energy-function)
+#|(defun extract-energy-stretch (energy-function)
   (let* ((energy-stretch (chem:get-stretch-component energy-function))
          (stretch-vectors (chem:extract-vectors-as-alist energy-stretch))
          (kb-vector (cdr (assoc :kb stretch-vectors)))
@@ -1575,6 +1575,7 @@
          (atom1-vector (cdr (assoc :atom1 stretch-vectors)))
          (atom2-vector (cdr (assoc :atom2 stretch-vectors)))
 	 )
+    (rlog "stretch-vectors ~s~%" stretch-vectors)  
     (let ((stretches (loop for atom1 across atom1-vector
                         for atom2 across atom2-vector
                         for kb across kb-vector
@@ -1607,7 +1608,54 @@
                        (string< (string (stretch-term-atom2-name s1))
                                 (string (stretch-term-atom2-name s2)))))))
         (sort stretches #'order-stretch)))
-     (rlog "stretch-vectors ~s~%" stretch-vectors)))
+(rlog "stretch-vectors ~s~%" stretch-vectors))) |#
+
+(defun extract-energy-stretch (energy-function)
+  (let* ((energy-stretch (chem:get-stretch-component energy-function))
+         (stretch-vectors (chem:extract-vectors-as-alist energy-stretch))
+         (kb-vector (cdr (assoc :kb stretch-vectors)))
+         (r0-vector (cdr (assoc :r0 stretch-vectors)))
+         (i1-vector (cdr (assoc :i1 stretch-vectors)))
+         (i2-vector (cdr (assoc :i2 stretch-vectors)))
+         (atom1-vector (cdr (assoc :atom1 stretch-vectors)))
+         (atom2-vector (cdr (assoc :atom2 stretch-vectors)))
+	 )
+    (let ((stretches (loop for atom1 across atom1-vector
+                        for atom2 across atom2-vector
+                        for kb across kb-vector
+                        for r0 across r0-vector
+                        for i1 across i1-vector
+                        for i2 across i2-vector
+                        for atom1-name = atom1
+                        for atom2-name = atom2
+                        for atom1-type = i1
+                        for atom2-type = i2
+                        collect (make-stretch-term :atom1-name atom1-name
+                                                   :atom2-name atom2-name
+                                                   :atom1-type atom1-type
+                                                   :atom2-type atom2-type
+                                                   :kb kb
+                                                   :r0 r0))))
+      (rlog "stretch-vectors ~s~%" stretch-vectors) 
+      (loop for stretch in stretches
+         do (when (string> (string (stretch-term-atom1-name stretch))
+                           (string (stretch-term-atom2-name stretch)))
+              (rotatef (stretch-term-atom1-name stretch)
+                       (stretch-term-atom2-name stretch))
+              (rotatef (stretch-term-atom1-type stretch)
+                       (stretch-term-atom2-type stretch))))
+      (flet ((order-stretch (s1 s2)
+               (if (string< (string (stretch-term-atom1-name s1))
+                            (string (stretch-term-atom1-name s2)))
+                   t
+                   (if (string> (string (stretch-term-atom1-name s1))
+                                (string (stretch-term-atom1-name s2)))
+                       nil
+                       (string< (string (stretch-term-atom2-name s1))
+                                (string (stretch-term-atom2-name s2)))))))
+        (sort stretches #'order-stretch)))
+    (rlog "stretch-vectors ~s~%" stretch-vectors)))
+
 
 (defstruct angle-term
   atom1-name atom2-name atom3-name atom1-type atom2-type atom3-type kt t0)

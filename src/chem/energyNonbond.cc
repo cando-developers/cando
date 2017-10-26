@@ -624,11 +624,22 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
                                                     gc::Nilable<NVector_sp>	hdvec, 
                                                     gc::Nilable<NVector_sp> 	dvec )
 {
-    printf("%s:%d In evaluateUsingExcludedAtoms\n", __FILE__, __LINE__ );
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+  printf("%s:%d In evaluateUsingExcludedAtoms starting starting\n", __FILE__, __LINE__ );
+ // printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+//  #error "I'm an error"
+  printf("%s:%d In evaluateUsingExcludedAtoms this->_iac_vec.raw_() -> %p\n", __FILE__, __LINE__ , this->_iac_vec.raw_());
+  printf("%s:%d In evaluateUsingExcludedAtoms this->_iac_vec.notnilp() -> %d\n", __FILE__, __LINE__ , this->_iac_vec.notnilp());
+  printf("%s:%d In evaluateUsingExcludedAtoms this->_iac_vec.unboundp() -> %d\n", __FILE__, __LINE__ , this->_iac_vec.unboundp());
+  if (!this->_iac_vec) {
+    SIMPLE_ERROR(BF("The nonbonded excluded atoms parameters have not been set up"));
+  }
+  printf("%s:%d In evaluateUsingExcludedAtoms this->_iac_vec->length() -> %lu\n", __FILE__, __LINE__ , this->_iac_vec->length());
   core::MDArray_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   core::MDArray_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   double vdwScale = this->getVdwScale();
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
@@ -652,6 +663,7 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
 #define	NONBOND_FORCE_ACCUMULATE 		ForceAcc
 #define	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
 #define	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   if ( !this->isEnabled() ) return;
 	    // If you are going to use openmp here, you need to control access to the force and hessian
 	    // arrays so that only one thread updates each element at a time.
@@ -660,6 +672,7 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
 #pragma clang diagnostic pop
+  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2,dA_old,dC_old,dQ1Q2_old;
   int	I1, I2;
   int i = 0;
@@ -668,11 +681,15 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
   int index1 = 0;
   int excludedAtomIndex = 0;
   int nlocaltype = 0;
+  nlocaltype = (*this->_iac_vec)[1];
+  printf("%s:%d In evaluateUsingExcludedAtoms\n", __FILE__, __LINE__ );
+
   for (i=0; maxIndex; ++i){
     if (nlocaltype < (*this->_iac_vec)[i]){
       nlocaltype = (*this->_iac_vec)[i];
         }
   }
+  printf("%s:%d In evaluateUsingExcludedAtoms\n", __FILE__, __LINE__ );
 
   for ( auto iea1 = this->_AtomTable->begin(); iea1 != iea1_end; ++iea1, ++index1 ) {
     LOG(BF("%s ====== top of outer loop - index1 = %d\n") % __FUNCTION__ % index1 );
@@ -710,7 +727,7 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
       //
       // /////////////////////////////////////////////////////////////
       // /////////////////////////////////////////////////////////////
-      
+      printf("%s:%d  Evaluating term between %s and %s\n", __FILE__, __LINE__, _rep_(iea1->_AtomName).c_str(), _rep_(iea2->_AtomName).c_str() );
       if (iea2->_TypeIndex==UNDEF_UINT) {
         printf("%s:%d iea2->_TypeIndex == UNDEF_UINT remove the old code for calculating nonbonds\n", __FILE__, __LINE__);
       }
@@ -727,8 +744,10 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
       dQ1Q2_old = electrostatic_scaled_charge1*charge2;
       int localindex1 = (*this->_iac_vec)[index1]-1;
       int localindex2 = (*this->_iac_vec)[index2]-1;
-      dA = (*this->_cn1_vec)[localindex1*nlocaltype+localindex2-(localindex1*(localindex1-1)/2)];
-      dC = (*this->_cn2_vec)[localindex1*nlocaltype+localindex2-(localindex1*(localindex1-1)/2)];
+//      dA = (*this->_cn1_vec)[localindex1*nlocaltype+localindex2-(localindex1*(localindex1-1)/2)];
+//      dC = (*this->_cn2_vec)[localindex1*nlocaltype+localindex2-(localindex1*(localindex1-1)/2)];
+      dA =1.0;
+      dC = 1.0;
       double charge11 = (*this->_charge_vector)[index1];
       double charge22 = (*this->_charge_vector)[index2];
       double electrostatic_scaled_charge11 = charge11*electrostaticScale;
@@ -1119,6 +1138,8 @@ CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsFromAtomTableUsingExclud
 
 CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsFromAList(core::List_sp values)
 {
+  printf("%s:%d:%s    values -> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(values).c_str());
+  
   this->_ntypes =               safe_alist_lookup(values,kw::_sym_ntypes);          // ntypes
   this->_atom_name_vector =     safe_alist_lookup(values,kw::_sym_atom_name_vector);  // atom-name-vector
   this->_charge_vector =        safe_alist_lookup(values,kw::_sym_charge_vector);          // charge-vector

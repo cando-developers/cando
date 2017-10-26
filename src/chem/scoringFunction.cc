@@ -155,7 +155,8 @@ CL_DEFMETHOD double	ScoringFunction_O::evaluateEnergyForceFullHessianForDebuggin
 
 
 
-double	ScoringFunction_O::calculateEnergy( )
+CL_LISPIFY_NAME("calculateEnergy");
+CL_DEFMETHOD double	ScoringFunction_O::calculateEnergy( )
 {
   NVector_sp	pos;
   pos = NVector_O::create(this->getNVectorSize());
@@ -164,7 +165,8 @@ double	ScoringFunction_O::calculateEnergy( )
 }
 
 
-double ScoringFunction_O::calculateEnergyAndForce( )
+CL_LISPIFY_NAME("calculateEnergyAndForce");
+CL_DEFMETHOD double ScoringFunction_O::calculateEnergyAndForce( )
 {
   NVector_sp	pos;
   NVector_sp	force;
