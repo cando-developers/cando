@@ -370,8 +370,18 @@ class EnergyComponent_O : public core::CxxObject_O
 
   DEFAULT_CTOR_DTOR(EnergyComponent_O);
 };
-
-core::T_sp safe_alist_lookup(core::List_sp list, core::T_sp key);
+template <typename SP>
+SP safe_alist_lookup(core::List_sp list, core::T_sp key) {
+  if (list.consp()) {
+    core::T_sp entry = list.unsafe_cons()->assoc(key,_Nil<core::T_O>(),_Nil<core::T_O>(),_Nil<core::T_O>());
+    if (entry.consp()) {
+      return gctools::As<SP>(CONS_CDR(entry));
+    }
+  }
+  SIMPLE_ERROR(BF("Could not find %s") % _rep_(key));
+}
+  
+;
 };
 
 

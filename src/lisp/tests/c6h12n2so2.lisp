@@ -88,7 +88,13 @@
 (energy:setup-amber)
 
 (cando:jostle *met* 80)
-(energy:minimize *agg*)
+(defparameter *me* (energy:minimize *agg*))
+
+
+(leap.topology::save-amber-parm-format *agg* "/tmp/top.dat" "/tmp/crd.dat" energy::*ff*)
+(chem:calculate-energy *me*)
+
+
 
 
 
@@ -130,8 +136,8 @@
 ;;;
 
 
-;(setf *default-pathname-defaults* #P"~/Development/tests/")
-;(progn
-;  (defparameter *fif* (fortran:make-fortran-input-file :stream (open "c6h12n2so3.dat" :direction :input)))
-;  (defparameter *ee* (leap.topology::read-amber-parm-format *fif*)))
+(setf *default-pathname-defaults* #P"~/Development/tests/")
+(progn
+  (defparameter *fif* (fortran:make-fortran-input-file :stream (open "c6h12n2so3.dat" :direction :input)))
+  (defparameter *ee* (leap.topology::read-amber-parm-format *fif*)))
 

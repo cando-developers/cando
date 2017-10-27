@@ -603,12 +603,12 @@ CL_DEFMETHOD core::List_sp EnergyStretch_O::extract_vectors_as_alist() const {
 
 CL_DEFMETHOD void EnergyStretch_O::fill_from_vectors_in_alist(core::List_sp vectors)
 {
-  core::SimpleVectorDouble_sp kb_vec = gc::As<core::SimpleVectorDouble_sp>(safe_alist_lookup(vectors,kw::_sym_kb));
-  core::SimpleVectorDouble_sp r0_vec = gc::As<core::SimpleVectorDouble_sp>(safe_alist_lookup(vectors,kw::_sym_r0));
-  core::SimpleVector_int32_t_sp i1_vec = gc::As<core::SimpleVector_int32_t_sp>(safe_alist_lookup(vectors,kw::_sym_i1));
-  core::SimpleVector_int32_t_sp i2_vec = gc::As<core::SimpleVector_int32_t_sp>(safe_alist_lookup(vectors,kw::_sym_i2));
-  core::SimpleVector_sp atom1_vec = gc::As<core::SimpleVector_sp>(safe_alist_lookup(vectors,kw::_sym_atom1));
-  core::SimpleVector_sp atom2_vec = gc::As<core::SimpleVector_sp>(safe_alist_lookup(vectors,kw::_sym_atom2));
+  core::SimpleVectorDouble_sp kb_vec = (safe_alist_lookup<core::SimpleVectorDouble_sp>(vectors,kw::_sym_kb));
+  core::SimpleVectorDouble_sp r0_vec = (safe_alist_lookup<core::SimpleVectorDouble_sp>(vectors,kw::_sym_r0));
+  core::SimpleVector_int32_t_sp i1_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i1));
+  core::SimpleVector_int32_t_sp i2_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i2));
+  core::SimpleVector_sp atom1_vec = (safe_alist_lookup<core::SimpleVector_sp>(vectors,kw::_sym_atom1));
+  core::SimpleVector_sp atom2_vec = (safe_alist_lookup<core::SimpleVector_sp>(vectors,kw::_sym_atom2));
   this->_Terms.resize(kb_vec->length());
   for (size_t i=0,iEnd(kb_vec->length());i<iEnd;++i) {
     EnergyStretch& entry = this->_Terms[i];

@@ -400,12 +400,12 @@
           :keyword))
 
 (defun generate-nonbond-parameters (ffnonbond-db type-index-vector)
-  (let ((iac-vec (make-array 256 :fill-pointer 0 :adjustable t))
+  (let ((iac-vec (make-array 256 :element-type '(signed-byte 32) :fill-pointer 0 :adjustable t))
         (jnext 1)
         jtemp
         (uniques (make-hash-table :test #'eq))
-        (type-indexj-vec (make-array 256 :element-type 'fixnum :fill-pointer 0 :adjustable t))
-        (local-typej-vec (make-array 256 :element-type 'fixnum :fill-pointer 0 :adjustable t))
+        (type-indexj-vec (make-array 256 :element-type '(signed-byte 32) :fill-pointer 0 :adjustable t))
+        (local-typej-vec (make-array 256 :element-type '(signed-byte 32) :fill-pointer 0 :adjustable t))
         (ntypes 0))
     (loop for i from 0 below (length type-index-vector)
        for index = (aref type-index-vector i)
@@ -418,7 +418,7 @@
                 (vector-push-extend jnext local-typej-vec)
                 (incf jnext))))
     (setf ntypes (length local-typej-vec))
-    (let ((ico-vec (make-array (* ntypes ntypes) :element-type 'fixnum))
+    (let ((ico-vec (make-array (* ntypes ntypes) :element-type '(signed-byte 32)))
 ;          (ffnonbond1 (chem:get-ffnonbond-using-type-index ffnonbond-db type-index1))
           (cn1-vec (make-array (/ (* ntypes (+ ntypes 1)) 2) :element-type 'double-float)) 
           (cn2-vec (make-array (/ (* ntypes (+ ntypes 1)) 2) :element-type 'double-float))
@@ -451,17 +451,17 @@
                       (incf curcn)))))
       (values ntypes ico-vec iac-vec local-typej-vec cn1-vec cn2-vec))))
 
-(defun chem:prepare-amber-energy-nonbond (energy-function)
+(defun chem:prepare-amber-energy-nonbond (energy-function force-field)
   (let* ((atom-table (chem:atom-table energy-function))
          (natom (chem:get-number-of-atoms atom-table))
          (atom-name-vector (make-array natom))
          (atom-type-vector (make-array natom))
          (charge-vector (make-array natom :element-type 'double-float))
          (mass-vector (make-array natom :element-type 'double-float))
-         (type-index-vector (make-array natom :element-type '(byte 32)))
-         (atomic-number-vector (make-array natom :element-type '(byte 32)))
+         (type-index-vector (make-array natom :element-type '(signed-byte 32)))
+         (atomic-number-vector (make-array natom :element-type '(signed-byte 32)))
          (energy-nonbond (chem:get-nonbond-component energy-function))
-         (ffnonbond-db (chem:get-ffnonbond-db energy-nonbond)))
+         (ffnonbond-db (chem:get-nonbond-db force-field)))
     (format t "energy-nonbond -> ~a~%" energy-nonbond)
     (format t "ffnonbond-db -> ~a~%" ffnonbond-db)
     (loop for i from 0 below natom
@@ -480,16 +480,16 @@
     (multiple-value-bind (ntypes ico-vec iac-vec local-typej-vec cn1-vec cn2-vec)
         (generate-nonbond-parameters ffnonbond-db type-index-vector)
       (list (cons :ntypes ntypes)
-            (cons :atom-name-vector atom-name-vector)
-            (cons :atom-type-vector atom-type-vector)
-            (cons :charge-vector charge-vector)
-            (cons :mass-vector mass-vector)
-            (cons :atomic-number-vector atomic-number-vector)
-            (cons :ico-vec ico-vec)
-            (cons :iac-vec iac-vec)
-            (cons :local-typej-vec local-typej-vec)
-            (cons :cn1-vec cn1-vec)
-            (cons :cn2-vec cn2-vec)))))
+            (cons :atom-name-vector (copy-seq atom-name-vector))
+            (cons :atom-type-vector (copy-seq atom-type-vector))
+            (cons :charge-vector (copy-seq charge-vector))
+            (cons :mass-vector (copy-seq mass-vector))
+            (cons :atomic-number-vector (copy-seq atomic-number-vector))
+            (cons :ico-vec (copy-seq ico-vec))
+            (cons :iac-vec (copy-seq iac-vec))
+            (cons :local-typej-vec (copy-seq local-typej-vec))
+            (cons :cn1-vec (copy-seq cn1-vec))
+            (cons :cn2-vec (copy-seq cn2-vec))))))
 
 
 (defun prepare-residue (energy-function)
@@ -510,7 +510,8 @@
          (number-excluded-atoms (chem:number-excluded-atoms nonbonds))
          (excluded-atom-list (chem:excluded-atom-list nonbonds))
          (topology-pathname (merge-pathnames topology-pathname))
-         (coordinate-pathname (merge-pathnames coordinate-pathname)))
+         (coordinate-pathname (merge-pathnames coordinate-pathname))
+         (natom (chem:get-number-of-atoms (chem:atom-table energy-function))))
     ;; Skip assigning MarkMainChainAtoms and MarkSideChain atoms for now
     ;; see (unitio.c:4889).  This won't mean anything for spiroligomers.
     (fortran:with-fortran-output-file (ftop topology-pathname :direction :output)
@@ -521,11 +522,11 @@
       (fortran:fwrite "-----insert the version and time stamp---")
       (fortran:fwrite "%FLAG TITLE")
       (fortran:fwrite "%FORMAT(20a4)")
-;      (fortran:fwrite (chem:get-name aggregate))
+      (fortran:fwrite (string (chem:get-name aggregate)))
       ;; This function will be very, very long (for Common Lisp)
       ;; To avoid lots of nested scopes we will declare one large scope
       ;;   and declare all of the variables in that scope here at the top
-      (let (natom atom-vectors
+      (let (atom-vectors
             ntypes atom-name atom-type charge mass atomic-number ico iac local-typej-vec cn1-vec cn2-vec #|nonbonds|#
             nbonh mbona ibh jbh icbh ib jb icb kbj-vec r0j-vec #|stretches|#
             ntheth mtheta ith jth kth icth it jt kt1 ict ktj-vec t0j-vec #|angles|#
@@ -537,18 +538,17 @@
             NUMEXTRA NCOPY
             )
         ;; Here we need to calculate all of the values for %FLAG POINTERS
-        (setf natom (chem:get-number-of-atoms (chem:atom-table energy-function))) ;total number of atoms
         (multiple-value-setq (nbonh mbona ibh jbh icbh ib jb icb kbj-vec r0j-vec)
           (prepare-amber-energy-stretch energy-function))
         (multiple-value-setq (ntheth mtheta ith jth kth icth it jt kt1 ict ktj-vec t0j-vec)
           (prepare-amber-energy-angle energy-function))
         (multiple-value-setq (nphih mphia iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec)
           (prepare-amber-energy-dihedral energy-function))
-;        (multiple-value-setq (ntypes atom-name charge mass atomic-number ico iac local-typej-vec cn1-vec cn2-vec)
-;          (chem:prepare-amber-energy-nonbond energy-function))
+                                        ;        (multiple-value-setq (ntypes atom-name charge mass atomic-number ico iac local-typej-vec cn1-vec cn2-vec)
+                                        ;          (chem:prepare-amber-energy-nonbond energy-function))
         (multiple-value-setq (nres residue-vec residue-name-vec)
           (prepare-residue energy-function))
-        (setf atom-vectors (chem:prepare-amber-energy-nonbond energy-function))
+        (setf atom-vectors (chem:prepare-amber-energy-nonbond energy-function force-field))
         (setf ntypes (cdr (assoc :ntypes atom-vectors)))
         (setf atom-name (cdr (assoc :atom-name-vector atom-vectors)))
         (setf atom-type (cdr (assoc :atom-type-vector atom-vectors)))
@@ -583,7 +583,7 @@
         (setf ifcap 0)     
         (setf numextra 0)  
         (setf ncopy 0)
- ;       (setf atom-type-name (chem:get-type atoms))
+                                        ;       (setf atom-type-name (chem:get-type atoms))
  
         #| dihedrals, nonbonds, others??? |#
         ;; --- Done calculating all of the values
@@ -596,36 +596,36 @@
         ;; NATOM
         (fortran:fwrite natom)
         (fortran:fwrite ntypes)
-        (fortran:fwrite nbonh)       ;number of bonds containing hydrogen
-        (fortran:fwrite mbona)       ;number of bonds not containing hydrogen
-        (fortran:fwrite ntheth)      ; number of angles containing hydrogen
-        (fortran:fwrite mtheta)      ; number of angles not containing hydrogen
-        (fortran:fwrite nphih)       ; number of dihedrals containing hydrogen
-        (fortran:fwrite mphia)       ; number of dihedrals not containing hydrogen
-        (fortran:fwrite nhparm)      ; currently not used
-        (fortran:fwrite nparm)       ; used to determine if addles created prmtop
-        (fortran:fwrite nnb)         ; number of excluded atoms
-        (fortran:fwrite nres)        ; number of residues
-        (fortran:fwrite nbona)       ; MBONA + number of constraint bonds
-        (fortran:fwrite ntheta)      ; MTHETA + number of constraint angles
-        (fortran:fwrite nphia)       ; MPHIA + number of constraint dihedrals
+        (fortran:fwrite nbonh)    ;number of bonds containing hydrogen
+        (fortran:fwrite mbona) ;number of bonds not containing hydrogen
+        (fortran:fwrite ntheth) ; number of angles containing hydrogen
+        (fortran:fwrite mtheta) ; number of angles not containing hydrogen
+        (fortran:fwrite nphih) ; number of dihedrals containing hydrogen
+        (fortran:fwrite mphia) ; number of dihedrals not containing hydrogen
+        (fortran:fwrite nhparm)         ; currently not used
+        (fortran:fwrite nparm) ; used to determine if addles created prmtop
+        (fortran:fwrite nnb)   ; number of excluded atoms
+        (fortran:fwrite nres)  ; number of residues
+        (fortran:fwrite nbona) ; MBONA + number of constraint bonds
+        (fortran:fwrite ntheta) ; MTHETA + number of constraint angles
+        (fortran:fwrite nphia) ; MPHIA + number of constraint dihedrals
         (fortran:fwrite numbnd)      ; number of unique bond types
         (fortran:fwrite numang)      ; number of unique angle types
         (fortran:fwrite nptra)       ; number of unique dihedral types
-        (fortran:fwrite natyp)     ; number of atom types in parameter file, see SOLTY below
-        (fortran:fwrite nphb)      ; number of distinct 10-12 hydrogen bond pair types
-        (fortran:fwrite ifpert)    ; set to 1 if perturbation info is to be read in
-        (fortran:fwrite nbper)     ; number of bonds to be perturbed
-        (fortran:fwrite ngper)     ; number of angles to be perturbed
-        (fortran:fwrite ndper)     ; number of dihedrals to be perturbed
-        (fortran:fwrite mbper)     ; number of bonds with atoms completely in perturbed group
-        (fortran:fwrite mgper)     ; number of angles with atoms completely in perturbed group
-        (fortran:fwrite mdper)     ; number of dihedrals with atoms completely in perturbed groups
-        (fortran:fwrite ifbox)     ; set to 1 if standard periodic box, 2 when truncated octahedral
-        (fortran:fwrite nmxrs)     ; number of atoms in the largest residue
-        (fortran:fwrite ifcap)     ; set to 1 if the CAP option from edit was specified
-        (fortran:fwrite numextra)  ; number of extra points found in topology
-        (fortran:fwrite ncopy)     ; number of PIMD slices / number of beads
+        (fortran:fwrite natyp) ; number of atom types in parameter file, see SOLTY below
+        (fortran:fwrite nphb) ; number of distinct 10-12 hydrogen bond pair types
+        (fortran:fwrite ifpert) ; set to 1 if perturbation info is to be read in
+        (fortran:fwrite nbper)  ; number of bonds to be perturbed
+        (fortran:fwrite ngper)  ; number of angles to be perturbed
+        (fortran:fwrite ndper)  ; number of dihedrals to be perturbed
+        (fortran:fwrite mbper) ; number of bonds with atoms completely in perturbed group
+        (fortran:fwrite mgper) ; number of angles with atoms completely in perturbed group
+        (fortran:fwrite mdper) ; number of dihedrals with atoms completely in perturbed groups
+        (fortran:fwrite ifbox) ; set to 1 if standard periodic box, 2 when truncated octahedral
+        (fortran:fwrite nmxrs) ; number of atoms in the largest residue
+        (fortran:fwrite ifcap) ; set to 1 if the CAP option from edit was specified
+        (fortran:fwrite numextra) ; number of extra points found in topology
+        (fortran:fwrite ncopy) ; number of PIMD slices / number of beads
         (fortran:end-line)
 
         ;; Next) 
@@ -853,7 +853,7 @@
         (loop for cn2 across cn2-vec
            do (fortran:fwrite cn2))
         (fortran:end-line)
-       ;; write the Lennard Jones r**6 terms for all possible atom type interactions
+        ;; write the Lennard Jones r**6 terms for all possible atom type interactions
 
         ;; Next
         (fortran:fformat 1 "%-80s")
@@ -941,8 +941,8 @@
            do (fortran:fwrite kphi)
            do (fortran:fwrite lphi)
            do (fortran:fwrite icphi))
-         (fortran:end-line)
-       ;; write IPH, JPH, KPH, LPH, ICPH
+        (fortran:end-line)
+        ;; write IPH, JPH, KPH, LPH, ICPH
 
         ;; Next
         (fortran:fformat 1 "%-80s")
@@ -984,9 +984,31 @@
         (loop for type across atom-type
            do (fortran:fwrite (string type)))
         (fortran:end-line)
-        ))))
-        ;; write the excluded atom list 
-        ;; pick up at unitio.cc:4969
+        ))
+    (format *debug-io* "coordinate-pathname -> ~s~%" coordinate-pathname)
+    (fortran:with-fortran-output-file (ftop coordinate-pathname :direction :output :if-exists :supersede)
+      (fortran:debug-on ftop)
+      (fortran:fformat 20 "%4s")
+      (fortran:fwrite (string (chem:get-name aggregate)))
+      (fortran:end-line)
+      (fortran:fformat 1 "%5d")
+      (fortran:fwrite natom)
+      (fortran:fformat 5 "%15.7lf")
+      (fortran:fwrite 0.0)
+      (fortran:fwrite 0.0)
+      (fortran:end-line)
+      (fortran:fformat 6 "%12.7lf")
+      (let ((atom-table (chem:atom-table energy-function)))
+        (loop for i from 0 below natom
+           for atom = (chem:elt-atom atom-table i)
+           for atom-coordinate-index-times3 = (chem:elt-atom-coordinate-index-times3 atom-table i)
+           for pos = (chem:get-position atom)
+           do (format *debug-io* "atom-coordinate-index-times3 -> ~a~%" atom-coordinate-index-times3)
+           do (progn
+                (fortran:fwrite (geom:vx pos))
+                (fortran:fwrite (geom:vy pos))
+                (fortran:fwrite (geom:vz pos)))))
+      (fortran:end-line))))
 
 (defconstant %flag-title "%FLAG TITLE")
 (defconstant %flag-pointers "%FLAG POINTERS")
@@ -1514,14 +1536,14 @@
       (chem::fill-from-vectors-in-alist energy-dihedral dihedral-vectors)
       ;;nonbond
       (setf nonbond-vectors (acons :ntypes ntypes nonbond-vectors))
-      (setf nonbond-vectors (acons :atom-name-vector atom-name nonbond-vectors))
-      (setf nonbond-vectors (acons :charge-vector charge nonbond-vectors))
-      (setf nonbond-vectors (acons :mass-vector mass nonbond-vectors))
-      (setf nonbond-vectors (acons :atomic-number-vector atomic-number nonbond-vectors))
-      (setf nonbond-vectors (acons :ico-vec nonbonded-parm-index nonbond-vectors))
-      (setf nonbond-vectors (acons :iac-vec atomic-type-index nonbond-vectors))
-      (setf nonbond-vectors (acons :cn1-vec lennard-jones-acoef nonbond-vectors))
-      (setf nonbond-vectors (acons :cn2-vec lennard-jones-bcoef nonbond-vectors))
+      (setf nonbond-vectors (acons :atom-name-vector (copy-seq atom-name) nonbond-vectors))
+      (setf nonbond-vectors (acons :charge-vector (copy-seq charge) nonbond-vectors))
+      (setf nonbond-vectors (acons :mass-vector (copy-seq mass) nonbond-vectors))
+      (setf nonbond-vectors (acons :atomic-number-vector (copy-seq atomic-number) nonbond-vectors))
+      (setf nonbond-vectors (acons :ico-vec (copy-seq nonbonded-parm-index) nonbond-vectors))
+      (setf nonbond-vectors (acons :iac-vec (copy-seq atomic-type-index) nonbond-vectors))
+      (setf nonbond-vectors (acons :cn1-vec (copy-seq lennard-jones-acoef) nonbond-vectors))
+      (setf nonbond-vectors (acons :cn2-vec (copy-seq lennard-jones-bcoef) nonbond-vectors))
       (rlog "nonbond-vectors -> ~s~%" nonbond-vectors)
       (chem::construct-nonbond-terms-from-aList energy-nonbond nonbond-vectors)
       ;;atom-table
@@ -1556,6 +1578,17 @@
         (chem:fill-energy-function-from-alist energy-function alist)
         energy-function)
       )))
+
+
+
+(defun read-amber-coordinate-file (fif)
+  (fortran:fread-line fif)     ; Skip the version and timestamp line
+  (let* ((line (fortran:fread-line fif))
+         (results (make-array 3 :element-type 't :adjustable t :fill-pointer 0))
+         (natoms (parse-integer line :start 0 :end 5))
+         (time (fortran::parse-double-float-from-string (subseq line 5 nil) :start 0 :end 15))
+         (temp (fortran::parse-double-float-from-string (subseq line (+ 5 15) nil) :start 0 :end 15)))
+    (fortran:fread-vector fif 6 #\F 12)))
 
 
 ;;; The following code is to generate a human readable representation of an energy-function

@@ -369,11 +369,11 @@ SYMBOL_EXPORT_SC_(KeywordPkg,atomic_number_vector);
 
 CL_DEFMETHOD void  AtomTable_O::fill_atom_table_from_vectors(core::List_sp vectors)
 {
-  core::Array_sp atom_name_vec = gc::As<core::Array_sp>(safe_alist_lookup(vectors,kw::_sym_atom_name_vector));
-  core::Array_sp atom_type_vec = gc::As<core::Array_sp>(safe_alist_lookup(vectors,kw::_sym_atom_type_vector));
-  core::Array_sp charge_vec = gc::As<core::Array_sp>(safe_alist_lookup(vectors,kw::_sym_charge_vector));
-  core::Array_sp mass_vec = gc::As<core::Array_sp>(safe_alist_lookup(vectors,kw::_sym_mass_vector));
-  core::Array_sp atomic_number_vec = gc::As<core::Array_sp>(safe_alist_lookup(vectors,kw::_sym_atomic_number_vector));
+  core::Array_sp atom_name_vec = (safe_alist_lookup<core::Array_sp>(vectors,kw::_sym_atom_name_vector));
+  core::Array_sp atom_type_vec = (safe_alist_lookup<core::Array_sp>(vectors,kw::_sym_atom_type_vector));
+  core::Array_sp charge_vec = (safe_alist_lookup<core::Array_sp>(vectors,kw::_sym_charge_vector));
+  core::Array_sp mass_vec = (safe_alist_lookup<core::Array_sp>(vectors,kw::_sym_mass_vector));
+  core::Array_sp atomic_number_vec = (safe_alist_lookup<core::Array_sp>(vectors,kw::_sym_atomic_number_vector));
   this->_Atoms.resize(atom_name_vec->length());
 
   for (size_t i = 0, iEnd(atom_name_vec->length()); i<iEnd ;++i)

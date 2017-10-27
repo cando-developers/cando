@@ -863,18 +863,18 @@ CL_DEFMETHOD core::List_sp EnergyDihedral_O::extract_vectors_as_alist() const{
 
 CL_DEFMETHOD void EnergyDihedral_O::fill_from_vectors_in_alist(core::List_sp vectors)
 {
-  core::SimpleVectorDouble_sp v_vec = gc::As<core::SimpleVectorDouble_sp>(safe_alist_lookup(vectors,kw::_sym_v));
-  core::SimpleVector_int32_t_sp in_vec = gc::As<core::SimpleVector_int32_t_sp>(safe_alist_lookup(vectors,kw::_sym_in));
-  core::SimpleVectorDouble_sp phase_vec = gc::As<core::SimpleVectorDouble_sp>(safe_alist_lookup(vectors,kw::_sym_phase));
-  core::SimpleVector_int32_t_sp i1_vec = gc::As<core::SimpleVector_int32_t_sp>(safe_alist_lookup(vectors,kw::_sym_i1));
-  core::SimpleVector_int32_t_sp i2_vec = gc::As<core::SimpleVector_int32_t_sp>(safe_alist_lookup(vectors,kw::_sym_i2));
-  core::SimpleVector_int32_t_sp i3_vec = gc::As<core::SimpleVector_int32_t_sp>(safe_alist_lookup(vectors,kw::_sym_i3));
-  core::SimpleVector_int32_t_sp i4_vec = gc::As<core::SimpleVector_int32_t_sp>(safe_alist_lookup(vectors,kw::_sym_i4));
-  core::SimpleVector_sp proper_vec = gc::As<core::SimpleVector_sp>(safe_alist_lookup(vectors,kw::_sym_proper));
-  core::SimpleVector_sp atom1_vec = gc::As<core::SimpleVector_sp>(safe_alist_lookup(vectors,kw::_sym_atom1));
-  core::SimpleVector_sp atom2_vec = gc::As<core::SimpleVector_sp>(safe_alist_lookup(vectors,kw::_sym_atom2));
-  core::SimpleVector_sp atom3_vec = gc::As<core::SimpleVector_sp>(safe_alist_lookup(vectors,kw::_sym_atom3));
-  core::SimpleVector_sp atom4_vec = gc::As<core::SimpleVector_sp>(safe_alist_lookup(vectors,kw::_sym_atom4));
+  core::SimpleVectorDouble_sp v_vec = (safe_alist_lookup<core::SimpleVectorDouble_sp>(vectors,kw::_sym_v));
+  core::SimpleVector_int32_t_sp in_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_in));
+  core::SimpleVectorDouble_sp phase_vec = (safe_alist_lookup<core::SimpleVectorDouble_sp>(vectors,kw::_sym_phase));
+  core::SimpleVector_int32_t_sp i1_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i1));
+  core::SimpleVector_int32_t_sp i2_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i2));
+  core::SimpleVector_int32_t_sp i3_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i3));
+  core::SimpleVector_int32_t_sp i4_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i4));
+  core::SimpleVector_sp proper_vec = (safe_alist_lookup<core::SimpleVector_sp>(vectors,kw::_sym_proper));
+  core::SimpleVector_sp atom1_vec = (safe_alist_lookup<core::SimpleVector_sp>(vectors,kw::_sym_atom1));
+  core::SimpleVector_sp atom2_vec = (safe_alist_lookup<core::SimpleVector_sp>(vectors,kw::_sym_atom2));
+  core::SimpleVector_sp atom3_vec = (safe_alist_lookup<core::SimpleVector_sp>(vectors,kw::_sym_atom3));
+  core::SimpleVector_sp atom4_vec = (safe_alist_lookup<core::SimpleVector_sp>(vectors,kw::_sym_atom4));
   this->_Terms.resize(v_vec->length());
   for (size_t i=0, iEnd(v_vec->length());i<iEnd;++i){
     EnergyDihedral& entry = this->_Terms[i];

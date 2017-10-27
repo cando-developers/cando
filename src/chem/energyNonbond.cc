@@ -635,11 +635,8 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
   }
   printf("%s:%d In evaluateUsingExcludedAtoms this->_iac_vec->length() -> %lu\n", __FILE__, __LINE__ , this->_iac_vec->length());
   core::MDArray_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   core::MDArray_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   double vdwScale = this->getVdwScale();
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
@@ -681,10 +678,9 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
   int index1 = 0;
   int excludedAtomIndex = 0;
   int nlocaltype = 0;
-  nlocaltype = (*this->_iac_vec)[1];
   printf("%s:%d In evaluateUsingExcludedAtoms\n", __FILE__, __LINE__ );
 
-  for (i=0; maxIndex; ++i){
+  for (i=0; i<this->_iac_vec->length(); ++i){
     if (nlocaltype < (*this->_iac_vec)[i]){
       nlocaltype = (*this->_iac_vec)[i];
         }
@@ -744,10 +740,11 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
       dQ1Q2_old = electrostatic_scaled_charge1*charge2;
       int localindex1 = (*this->_iac_vec)[index1]-1;
       int localindex2 = (*this->_iac_vec)[index2]-1;
-//      dA = (*this->_cn1_vec)[localindex1*nlocaltype+localindex2-(localindex1*(localindex1-1)/2)];
-//      dC = (*this->_cn2_vec)[localindex1*nlocaltype+localindex2-(localindex1*(localindex1-1)/2)];
-      dA =1.0;
-      dC = 1.0;
+      dA = (*this->_cn1_vec)[localindex1*nlocaltype+localindex2-(localindex1*(localindex1-1)/2)];
+      dC = (*this->_cn2_vec)[localindex1*nlocaltype+localindex2-(localindex1*(localindex1-1)/2)];
+//      printf("%s:%d localindex1 %d and localindex2 %d\n", __FILE__, __LINE__, localindex1, localindex2);
+//      printf("%s:%d dA_old %lf and dC_old %lf\n", __FILE__, __LINE__, dA, dC);
+//      printf("%s:%d dA     %lf and dC     %lf\n", __FILE__, __LINE__, dA, dC);
       double charge11 = (*this->_charge_vector)[index1];
       double charge22 = (*this->_charge_vector)[index2];
       double electrostatic_scaled_charge11 = charge11*electrostaticScale;
@@ -1139,17 +1136,17 @@ CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsFromAtomTableUsingExclud
 CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsFromAList(core::List_sp values)
 {
   printf("%s:%d:%s    values -> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(values).c_str());
-  
-  this->_ntypes =               safe_alist_lookup(values,kw::_sym_ntypes);          // ntypes
-  this->_atom_name_vector =     safe_alist_lookup(values,kw::_sym_atom_name_vector);  // atom-name-vector
-  this->_charge_vector =        safe_alist_lookup(values,kw::_sym_charge_vector);          // charge-vector
-  this->_mass_vector =          safe_alist_lookup(values,kw::_sym_mass_vector);            // masses
-  this->_atomic_number_vector = safe_alist_lookup(values,kw::_sym_atomic_number_vector);    // vec
-  this->_ico_vec =              safe_alist_lookup(values,kw::_sym_ico_vec);             // ico-vec
-  this->_iac_vec =              safe_alist_lookup(values,kw::_sym_iac_vec);             // iac-vec
+  this->_ntypes =               translate::from_object<size_t>(safe_alist_lookup<core::T_sp>(values,kw::_sym_ntypes))._v;          // ntypes
+  this->_atom_name_vector =     safe_alist_lookup<core::SimpleVector_sp>(values,kw::_sym_atom_name_vector);  // atom-name-vector
+  this->_charge_vector =        safe_alist_lookup<core::SimpleVectorDouble_sp>(values,kw::_sym_charge_vector);          // charge-vector
+  this->_mass_vector =          safe_alist_lookup<core::SimpleVectorDouble_sp>(values,kw::_sym_mass_vector);            // masses
+  this->_atomic_number_vector = safe_alist_lookup<core::SimpleVector_int32_t_sp>(values,kw::_sym_atomic_number_vector);    // vec
+  this->_ico_vec =              safe_alist_lookup<core::SimpleVector_int32_t_sp>(values,kw::_sym_ico_vec);             // ico-vec
+  this->_iac_vec =              safe_alist_lookup<core::SimpleVector_int32_t_sp>(values,kw::_sym_iac_vec);             // iac-vec
 //  this->_local_typej_vec =      safe_alist_lookup(values,kw::_sym_local_typej_vec);      // local-typej-vec
-  this->_cn1_vec =              safe_alist_lookup(values,kw::_sym_cn1_vec);
-  this->_cn2_vec =              safe_alist_lookup(values,kw::_sym_cn2_vec);
+  this->_cn1_vec =              safe_alist_lookup<core::SimpleVectorDouble_sp>(values,kw::_sym_cn1_vec);
+  this->_cn2_vec =              safe_alist_lookup<core::SimpleVectorDouble_sp>(values,kw::_sym_cn2_vec);
+  printf("%s:%d:%s   Exiting\n", __FILE__, __LINE__, __FUNCTION__ );
 }
 
 

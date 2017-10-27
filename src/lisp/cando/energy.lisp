@@ -84,7 +84,8 @@
                    use-excluded-atoms)
   "Minimize the conformational energy for an aggregate"
   (let ((energy-func (chem:make-energy-function agg force-field :use-excluded-atoms use-excluded-atoms)))
-    (apply #'minimize-energy-function energy-func args)))
+    (apply #'minimize-energy-function energy-func args)
+    energy-func))
 
 
 ;;;------------------------------------------------------------
