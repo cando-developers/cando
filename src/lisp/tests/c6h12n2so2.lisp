@@ -103,8 +103,8 @@
 
 ;(foo)
 					
-(defparameter *e* (Chem:make-energy-function *agg* energy::*ff* :use-excluded-atoms t))
-(print (chem:calculate-energy *e*))
+;(defparameter *e* (Chem:make-energy-function *agg* energy::*ff* :use-excluded-atoms t))
+;(print (chem:calculate-energy *e*))
 
 
 
@@ -136,8 +136,11 @@
 ;;;
 
 
-(setf *default-pathname-defaults* #P"~/Development/tests/")
-(progn
-  (defparameter *fif* (fortran:make-fortran-input-file :stream (open "c6h12n2so3.dat" :direction :input)))
-  (defparameter *ee* (leap.topology::read-amber-parm-format *fif*)))
+;(setf *default-pathname-defaults* #P"/tmp/")
+;(progn
+;  (defparameter *fif* (fortran:make-fortran-input-file :stream (open "c6h12n2so3.dat" :direction :input)))
+;  (defparameter *ee* (leap.topology::read-amber-parm-format *fif*)))
 
+(progn
+  (defparameter *topologyfif* (fortran:make-fortran-input-file :stream (open "crd.dat" :direction :input)))
+  (defparameter *topologyee* (leap.topology::read-amber-coordinate-file *topologyfif*)))
