@@ -94,6 +94,7 @@
 (leap.topology::save-amber-parm-format *agg* "/tmp/top.dat" "/tmp/crd.dat" energy::*ff*)
 (chem:calculate-energy *me*)
 
+(format t hallo)
 
 (progn
   (defparameter *fif* (fortran:make-fortran-input-file :stream (open "/tmp/top.dat" :direction :input)))
@@ -103,7 +104,6 @@
   (defparameter *topologyfif* (fortran:make-fortran-input-file :stream (open "/tmp/crd.dat" :direction :input)))
   (defparameter *topologyee* (leap.topology::read-amber-coordinate-file *topologyfif*)))
 
-(l
 
 
 
@@ -144,12 +144,20 @@
 ;;; Test the reader
 ;;;
 
-
-;(setf *default-pathname-defaults* #P"/tmp/")
-;(progn
-;  (defparameter *fif* (fortran:make-fortran-input-file :stream (open "c6h12n2so3.dat" :direction :input)))
-;  (defparameter *ee* (leap.topology::read-amber-parm-format *fif*)))
+(setf *default-pathname-defaults* #P"/tmp/")
+(progn
+  (defparameter *fif* (fortran:make-fortran-input-file :stream (open "top.dat" :direction :input)))
+  (defparameter *ee* (leap.topology::read-amber-parm-format *fif*)))
 
 (progn
   (defparameter *topologyfif* (fortran:make-fortran-input-file :stream (open "crd.dat" :direction :input)))
-  (defparameter *topologyee* (leap.topology::read-amber-coordinate-file *topologyfif*)))
+  (defparameter *coords* (leap.topology::read-amber-coordinate-file *topologyfif*)))
+
+(chem:evaluate-energy *ee* *coords*)
+(chem:calculate-energy *me*)
+
+(chem:get-energy (chem:get-nonbond-component *me*))
+(chem:get-energy (chem:get-nonbond-component *ee*))
+
+(chem:dump-terms (chem:get-stretch-component *ee*))
+|#

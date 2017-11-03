@@ -54,8 +54,8 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 #define DEBUG_NONBOND_TERM 1
-#define LOG_ENERGY(x)
-//#define LOG_ENERGY BFORMAT_T
+//#define LOG_ENERGY(x)
+#define LOG_ENERGY BFORMAT_T
 
 namespace chem
 {
@@ -516,105 +516,6 @@ void	EnergyNonbond_O::evaluateTerms(NVector_sp 	pos,
 
 
 
-#if 0
-ALWAYS_INLINE void _calculate_nonbond_term(EnergyNonbond_O& me, double vdwScale, double electrostatic_scaled_charge1, FFNonbond_sp ffNonbond1, FFNonbond_sp ffNonbond2, AtomTable_O::iterator iea1, AtomTable_O::iterator iea2,
-                                           NVector_sp 	pos,
-                                           bool 		calcForce,
-                                           gc::Nilable<NVector_sp> 	force,
-                                           bool		calcDiagonalHessian,
-                                           bool		calcOffDiagonalHessian,
-                                           gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                           gc::Nilable<NVector_sp>	hdvec, 
-                                           gc::Nilable<NVector_sp> 	dvec )
-{
-#define NONBOND_CALC_FORCE
-#define NONBOND_CALC_DIAGONAL_HESSIAN
-#define NONBOND_CALC_OFF_DIAGONAL_HESSIAN
-#undef	NONBOND_SET_PARAMETER
-#define	NONBOND_SET_PARAMETER(x)	{}
-#undef	NONBOND_SET_POSITION
-#define	NONBOND_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
-#undef	NONBOND_EEEL_ENERGY_ACCUMULATE
-#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {me._EnergyElectrostatic +=(e);}
-#undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {me._EnergyVdw+=(e);}
-#undef	NONBOND_ENERGY_ACCUMULATE
-#define	NONBOND_ENERGY_ACCUMULATE(e) {};
-#undef	NONBOND_FORCE_ACCUMULATE
-#undef	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE
-#undef	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	NONBOND_FORCE_ACCUMULATE 		ForceAcc
-#define	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
-#define	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
-#pragma clang diagnostic pop
-  double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
-  double rStar = ffNonbond1->getRadius_Angstroms()+ffNonbond2->getRadius_Angstroms();
-  // OPTIMIZE: Can I precalculate the square-roots!!!!!!!!
-  double epsilonij = sqrt(ffNonbond1->getEpsilon_kCal()*ffNonbond2->getEpsilon_kCal()); 
-  double rStar6 = pow(rStar,6.0);
-  double rStar12 = rStar*rStar;
-  dA = epsilonij*rStar12*vdwScale;
-  dC = 2.0*epsilonij*rStar6*vdwScale;
-  double charge2 = iea2->atom()->getCharge();
-  dQ1Q2 = electrostatic_scaled_charge1*charge2;
-  LOG(BF( "Calc dQ1Q2 electrostaticScale= %lf")% (double)(electrostaticScale));
-  LOG(BF( "Calc dQ1Q2 Dielectric constant = %lf")% (double)(dielectricConstant));
-  LOG(BF( "Calc dQ1Q2 Charge1 = %lf")% (double)(me._Charge1));
-  LOG(BF( "Calc dQ1Q2 Charge2 = %lf")% (double)(me._Charge2));
-  LOG(BF( "dQ1Q2 = %lf")% (double)(me.term.dQ1Q2));
-  int I1 = iea1->coordinateIndexTimes3();
-  int I2 = iea2->coordinateIndexTimes3();
-#ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-  if ( me._Debug_NumberOfNonbondTermsToCalculate > 0 ) {
-    if ( i>= me._Debug_NumberOfNonbondTermsToCalculate ) {
-      break;
-    }
-  }
-#endif
-#include <cando/chem/energy_functions/_Nonbond_termCode.cc>
-#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-  nbi->_calcForce = calcForce;
-  nbi->_calcDiagonalHessian = calcDiagonalHessian;
-  nbi->_calcOffDiagonalHessian = calcOffDiagonalHessian;
-#undef EVAL_SET
-#define	EVAL_SET(var,val)	{ nbi->eval.var=val;};
-#include <cando/chem/energy_functions/_Nonbond_debugEvalSet.cc>
-#endif //]
-#ifdef DEBUG_NONBOND_TERM
-  if ( me._DebugEnergy ) {
-    LOG_ENERGY(BF( "MEISTER nonbond %d args cando\n")% (i+1) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d dA %5.3lf\n")% (i+1) % (nbi->term.dA) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d dC %5.3lf\n")% (i+1) % (nbi->term.dC) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d dQ1Q2 %5.3lf\n")% (i+1) % (nbi->term.dQ1Q2) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d x1 %5.3lf %d\n")% (i+1) % x1 % (I1/3+1) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d y1 %5.3lf %d\n")% (i+1) % y1 % (I1/3+1) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d z1 %5.3lf %d\n")% (i+1) % z1 % (I1/3+1) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d x2 %5.3lf %d\n")% (i+1) % x2 % (I2/3+1) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d y2 %5.3lf %d\n")% (i+1) % y2 % (I2/3+1) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d z2 %5.3lf %d\n")% (i+1) % z2 % (I2/3+1) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d results\n")% (i+1) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d Enonbond %lf\n")% (i+1) % (Evdw+Eeel) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d evdw %lf\n")% (i+1) % Evdw);
-    LOG_ENERGY(BF( "MEISTER nonbond %d eeel %lf\n")% (i+1) % Eeel);
-    if ( calcForce ) {
-      LOG_ENERGY(BF( "MEISTER nonbond %d fx1 %lf %d\n")% (i+1) % fx1 % (I1/3+1) );
-      LOG_ENERGY(BF( "MEISTER nonbond %d fy1 %lf %d\n")% (i+1) % fy1 % (I1/3+1) );
-      LOG_ENERGY(BF( "MEISTER nonbond %d fz1 %lf %d\n")% (i+1) % fz1 % (I1/3+1) );
-      LOG_ENERGY(BF( "MEISTER nonbond %d fx2 %lf %d\n")% (i+1) % fx2 % (I2/3+1) );
-      LOG_ENERGY(BF( "MEISTER nonbond %d fy2 %lf %d\n")% (i+1) % fy2 % (I2/3+1) );
-      LOG_ENERGY(BF( "MEISTER nonbond %d fz2 %lf %d\n")% (i+1) % fz2 % (I2/3+1) );
-    }
-    LOG(BF( "MEISTER nonbond %d stop\n")% (i+1) );
-  }
-#endif
-}
-#endif
-                                          
-
-
 void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
                                                     bool 		calcForce,
                                                     gc::Nilable<NVector_sp> 	force,
@@ -624,16 +525,10 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
                                                     gc::Nilable<NVector_sp>	hdvec, 
                                                     gc::Nilable<NVector_sp> 	dvec )
 {
-  printf("%s:%d In evaluateUsingExcludedAtoms starting starting\n", __FILE__, __LINE__ );
- // printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
-//  #error "I'm an error"
-  printf("%s:%d In evaluateUsingExcludedAtoms this->_iac_vec.raw_() -> %p\n", __FILE__, __LINE__ , this->_iac_vec.raw_());
-  printf("%s:%d In evaluateUsingExcludedAtoms this->_iac_vec.notnilp() -> %d\n", __FILE__, __LINE__ , this->_iac_vec.notnilp());
-  printf("%s:%d In evaluateUsingExcludedAtoms this->_iac_vec.unboundp() -> %d\n", __FILE__, __LINE__ , this->_iac_vec.unboundp());
+  // printf("%s:%d In evaluateUsingExcludedAtoms starting starting\n", __FILE__, __LINE__ );
   if (!this->_iac_vec) {
     SIMPLE_ERROR(BF("The nonbonded excluded atoms parameters have not been set up"));
   }
-  printf("%s:%d In evaluateUsingExcludedAtoms this->_iac_vec->length() -> %lu\n", __FILE__, __LINE__ , this->_iac_vec->length());
   core::MDArray_int32_t_sp numberOfExcludedAtoms = this->_NumberOfExcludedAtomIndices;
   core::MDArray_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
   double vdwScale = this->getVdwScale();
@@ -669,7 +564,7 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #include <cando/chem/energy_functions/_Nonbond_termDeclares.cc>
 #pragma clang diagnostic pop
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+  // printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2,dA_old,dC_old,dQ1Q2_old;
   int	I1, I2;
   int i = 0;
@@ -678,14 +573,12 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
   int index1 = 0;
   int excludedAtomIndex = 0;
   int nlocaltype = 0;
-  printf("%s:%d In evaluateUsingExcludedAtoms\n", __FILE__, __LINE__ );
 
   for (i=0; i<this->_iac_vec->length(); ++i){
     if (nlocaltype < (*this->_iac_vec)[i]){
       nlocaltype = (*this->_iac_vec)[i];
         }
   }
-  printf("%s:%d In evaluateUsingExcludedAtoms\n", __FILE__, __LINE__ );
 
   for ( auto iea1 = this->_AtomTable->begin(); iea1 != iea1_end; ++iea1, ++index1 ) {
     LOG(BF("%s ====== top of outer loop - index1 = %d\n") % __FUNCTION__ % index1 );
@@ -723,7 +616,7 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
       //
       // /////////////////////////////////////////////////////////////
       // /////////////////////////////////////////////////////////////
-      printf("%s:%d  Evaluating term between %s and %s\n", __FILE__, __LINE__, _rep_(iea1->_AtomName).c_str(), _rep_(iea2->_AtomName).c_str() );
+      // printf("%s:%d  Evaluating term between %s and %s\n", __FILE__, __LINE__, _rep_(iea1->_AtomName).c_str(), _rep_(iea2->_AtomName).c_str() );
       if (iea2->_TypeIndex==UNDEF_UINT) {
         printf("%s:%d iea2->_TypeIndex == UNDEF_UINT remove the old code for calculating nonbonds\n", __FILE__, __LINE__);
       }
@@ -740,15 +633,35 @@ void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVector_sp 	pos,
       dQ1Q2_old = electrostatic_scaled_charge1*charge2;
       int localindex1 = (*this->_iac_vec)[index1]-1;
       int localindex2 = (*this->_iac_vec)[index2]-1;
-      dA = (*this->_cn1_vec)[localindex1*nlocaltype+localindex2-(localindex1*(localindex1-1)/2)];
-      dC = (*this->_cn2_vec)[localindex1*nlocaltype+localindex2-(localindex1*(localindex1-1)/2)];
-//      printf("%s:%d localindex1 %d and localindex2 %d\n", __FILE__, __LINE__, localindex1, localindex2);
-//      printf("%s:%d dA_old %lf and dC_old %lf\n", __FILE__, __LINE__, dA, dC);
-//      printf("%s:%d dA     %lf and dC     %lf\n", __FILE__, __LINE__, dA, dC);
+      if (localindex1 > localindex2)
+      {
+        int i1 = localindex1;
+        int i2 = localindex2;
+        localindex1 = i2;
+        localindex2 = i1;
+      }
+      dA = (*this->_cn1_vec)[localindex1*nlocaltype+localindex2-(localindex1*(localindex1-1)/2)-localindex1];
+      dC = (*this->_cn2_vec)[localindex1*nlocaltype+localindex2-(localindex1*(localindex1-1)/2)-localindex1];
+      printf("%s:%d localindex1 %d and localindex2 %d\n", __FILE__, __LINE__, localindex1, localindex2);
+      printf("%s:%d dA_old %lf and dC_old %lf\n", __FILE__, __LINE__, dA_old, dC_old);
+      printf("%s:%d dA     %lf and dC     %lf\n", __FILE__, __LINE__, dA, dC);
       double charge11 = (*this->_charge_vector)[index1];
       double charge22 = (*this->_charge_vector)[index2];
       double electrostatic_scaled_charge11 = charge11*electrostaticScale;
       dQ1Q2 = electrostatic_scaled_charge11*charge22;
+#ifdef DEBUG_NONBOND_TERM
+      if ( this->_DebugEnergy ) {
+        LOG_ENERGY(BF( "nonbond localindex1 %d\n")% localindex1 );
+        LOG_ENERGY(BF( "nonbond loxcalindex2 %d\n")% localindex2 );
+        LOG_ENERGY(BF( "nonbond dA %5.3lf\n")% dA );
+        LOG_ENERGY(BF( "nonbond dC %5.3lf\n")% dC );
+        LOG_ENERGY(BF( "nonbond dQ1Q2 %5.3lf\n")% dQ1Q2 );
+        LOG_ENERGY(BF( "nonbond dA_old %5.3lf\n")% dA_old );
+        LOG_ENERGY(BF( "nonbond dC_old %5.3lf\n")% dC_old );
+        LOG_ENERGY(BF( "nonbond dQ1Q2_old %5.3lf\n")% dQ1Q2_old );
+        LOG_ENERGY(BF("dA_old %lf dA %lf dC_old %lf dC %lf %s - %s \n")% dA_old % dA % dC_old % dC % _rep_(iea1->atom()) % _rep_(iea2->atom()) );
+      }
+#endif
       ////////////////////////////////////////////////////////////
       //
       // To here
@@ -1021,19 +934,22 @@ void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTab
           // 14s are added separately to the Terms
           if (in14 ) {
             if ( !ignore14s ) {
-              LOG_ENERGY(BF("Nonbonded interaction between %s - %s in14[%d]\n") % _rep_(iea1->atom()) % _rep_(iea2->atom()) % in14 );
+ //             LOG_ENERGY(BF("Nonbonded interaction between %s - %s in14[%d]\n") % _rep_(iea1->atom()) % _rep_(iea2->atom()) % in14 );
               EnergyNonbond energyNonbond;
               if ( energyNonbond.defineFrom(forceField, in14,
                                             &(*iea1),&(*iea2),this->sharedThis<EnergyNonbond_O>()) )  {
                 this->addTerm(energyNonbond);
+                LOG_ENERGY(BF("nonbond  interaction between %s - %s in14[%d] dA %lf\n") % _rep_(iea1->atom()) % _rep_(iea2->atom()) % in14  % energyNonbond.term.dA);                 
               }
             }
           } else {
-            LOG_ENERGY(BF("Nonbonded interaction between %s - %s in14[%d]\n") % _rep_(iea1->atom()) % _rep_(iea2->atom()) % in14 );
+//            LOG_ENERGY(BF("Nonbonded interaction between %s - %s in14[%d]\n") % _rep_(iea1->atom()) % _rep_(iea2->atom()) % in14 );
             EnergyNonbond energyNonbond;
             if ( energyNonbond.defineFrom(forceField, in14,
                                           &(*iea1),&(*iea2),this->sharedThis<EnergyNonbond_O>()) )  {
               this->addTerm(energyNonbond);
+              LOG_ENERGY(BF("nonbond  interaction between %s - %s in14[%d] dA %lf\n") % _rep_(iea1->atom()) % _rep_(iea2->atom()) % in14  % energyNonbond.term.dA);                 
+
             }
           }
         }

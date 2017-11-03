@@ -245,8 +245,8 @@ DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void AtomTable_O::constructFromMatter(Matter_sp
   this->_Atoms.clear();
   this->_AtomTableIndices->clrhash();
 //  this->_Residues = core::MDArray_int32_t_O::make_vector(32,0,core::make_fixnum(0)/*fill-pointer*/);
-  this->_Residues = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
-  this->_ResidueNames = core::MDArrayT_O::make(32,_Nil<core::T_O>(),core::make_fixnum(0));
+  core::MDArray_int32_t_sp residues = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
+  core::MDArrayT_sp residue_names = core::MDArrayT_O::make(32,_Nil<core::T_O>(),core::make_fixnum(0));
   uint idx = 0;
   uint coordinateIndex = 0;
   Loop molecule_loop;
@@ -257,8 +257,8 @@ DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void AtomTable_O::constructFromMatter(Matter_sp
     residue_loop.loopTopGoal(mol,RESIDUES);
     while (residue_loop.advanceLoopAndProcess()) {
       Residue_sp res = residue_loop.getResidue();
-      this->_Residues->vectorPushExtend(idx);
-      this->_ResidueNames->vectorPushExtend(res->getName());
+      residues->vectorPushExtend(idx);
+      residue_names->vectorPushExtend(res->getName());
       {_BLOCK_TRACE("Defining ATOMS");
         Loop loop;
         Atom_sp a1;
@@ -313,7 +313,9 @@ DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void AtomTable_O::constructFromMatter(Matter_sp
       }
     }
   }
-  this->_Residues->vectorPushExtend(idx);
+  residues->vectorPushExtend(idx);
+  this->_Residues = core::eval::funcall(cl::_sym_copySeq,residues);
+  this->_ResidueNames = core::eval::funcall(cl::_sym_copySeq,residue_names);
 }
 
 /*! Fill excludedAtomIndices with the excluded atom list.
@@ -366,6 +368,8 @@ SYMBOL_EXPORT_SC_(KeywordPkg,atom_type_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,charge_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,mass_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,atomic_number_vector);
+SYMBOL_EXPORT_SC_(KeywordPkg,residues);
+SYMBOL_EXPORT_SC_(KeywordPkg,residue_names);
 
 CL_DEFMETHOD void  AtomTable_O::fill_atom_table_from_vectors(core::List_sp vectors)
 {
@@ -374,6 +378,8 @@ CL_DEFMETHOD void  AtomTable_O::fill_atom_table_from_vectors(core::List_sp vecto
   core::Array_sp charge_vec = (safe_alist_lookup<core::Array_sp>(vectors,kw::_sym_charge_vector));
   core::Array_sp mass_vec = (safe_alist_lookup<core::Array_sp>(vectors,kw::_sym_mass_vector));
   core::Array_sp atomic_number_vec = (safe_alist_lookup<core::Array_sp>(vectors,kw::_sym_atomic_number_vector));
+//  this->_Residues = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_residues));
+//  this->_ResidueNames = (safe_alist_lookup<core::SimpleVector_sp>(vectors,kw::_sym_residue_names));
   this->_Atoms.resize(atom_name_vec->length());
 
   for (size_t i = 0, iEnd(atom_name_vec->length()); i<iEnd ;++i)

@@ -391,7 +391,7 @@ CL_DEFMETHOD   int		contentSize( ) { return this->_contents.size(); };
 //    _Id(1),
 //    _TempFileId(0),
     name(_Nil<core::Symbol_O>()),
-//    containerContainedBy(_Nil<core::T_O>()),
+    containerContainedBy(_Unbound<core::T_O>()),
     _Properties(_Nil<core::T_O>()),
     _Restraints(_Nil<core::T_O>()) {};
 };

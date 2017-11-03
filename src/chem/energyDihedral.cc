@@ -804,6 +804,7 @@ void EnergyDihedral_O::archiveBase(core::ArchiveP node)
 
 SYMBOL_EXPORT_SC_(KeywordPkg,v);
 SYMBOL_EXPORT_SC_(KeywordPkg,in);
+SYMBOL_EXPORT_SC_(KeywordPkg,dn);
 SYMBOL_EXPORT_SC_(KeywordPkg,phase);
 SYMBOL_EXPORT_SC_(KeywordPkg,i1);
 SYMBOL_EXPORT_SC_(KeywordPkg,i2);
@@ -865,6 +866,7 @@ CL_DEFMETHOD void EnergyDihedral_O::fill_from_vectors_in_alist(core::List_sp vec
 {
   core::SimpleVectorDouble_sp v_vec = (safe_alist_lookup<core::SimpleVectorDouble_sp>(vectors,kw::_sym_v));
   core::SimpleVector_int32_t_sp in_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_in));
+  core::SimpleVectorDouble_sp dn_vec = (safe_alist_lookup<core::SimpleVectorDouble_sp>(vectors,kw::_sym_dn));
   core::SimpleVectorDouble_sp phase_vec = (safe_alist_lookup<core::SimpleVectorDouble_sp>(vectors,kw::_sym_phase));
   core::SimpleVector_int32_t_sp i1_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i1));
   core::SimpleVector_int32_t_sp i2_vec = (safe_alist_lookup<core::SimpleVector_int32_t_sp>(vectors,kw::_sym_i2));
@@ -880,12 +882,15 @@ CL_DEFMETHOD void EnergyDihedral_O::fill_from_vectors_in_alist(core::List_sp vec
     EnergyDihedral& entry = this->_Terms[i];
     entry.term.V = (*v_vec)[i];
     entry.term.IN = (*in_vec)[i];
+    entry.term.DN = (*dn_vec)[i];
     entry._PhaseRad = (*phase_vec)[i];
+    entry.term.cosPhase = cos((*phase_vec)[i]);
+    entry.term.sinPhase = sin((*phase_vec)[i]);
     entry.term.I1 = (*i1_vec)[i];
     entry.term.I2 = (*i2_vec)[i];
     entry.term.I3 = (*i3_vec)[i];
     entry.term.I4 = (*i4_vec)[i];
-    _lisp->_boolean(entry._Proper) = (*proper_vec)[i];
+    entry._Proper =  ((*proper_vec)[i]).isTrue();
     entry._Atom1 = (*atom1_vec)[i];
     entry._Atom2 = (*atom2_vec)[i];
     entry._Atom3 = (*atom3_vec)[i];

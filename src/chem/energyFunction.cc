@@ -1400,6 +1400,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
 // The nonbond parameters are calculated in Common Lisp
     printf("%s:%d in generateNonbondEnergyFunctionTables\n", __FILE__, __LINE__);
     core::List_sp parts = core::eval::funcall(_sym_prepare_amber_energy_nonbond,this->asSmartPtr(),forceField);
+      printf("%s:%d:%s    parts -> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(parts).c_str());
     printf("%s:%d in generateNonbondEnergyFunctionTables\n", __FILE__, __LINE__);
     this->_Nonbond->constructNonbondTermsFromAList(parts);
     // -----------
@@ -1407,6 +1408,8 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
       
     this->_Nonbond->constructExcludedAtomListFromAtomTable(this->_AtomTable, forceField, show_progress);
     this->_Nonbond->construct14InteractionTerms(this->_AtomTable,matter,forceField,activeAtoms,show_progress);
+    printf("%s:%d:%s    nonbond -> %d\n", __FILE__, __LINE__, __FUNCTION__, _Nonbond->numberOfTerms());
+
   } else {
     this->_Nonbond->constructNonbondTermsFromAtomTable(false,this->_AtomTable, forceField, show_progress);
   }

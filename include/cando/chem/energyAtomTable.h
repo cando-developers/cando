@@ -109,8 +109,8 @@ class AtomTable_O : public core::CxxObject_O
   typedef core::HashTableEq_sp        AtomTable;
   gctools::Vec0<EnergyAtom>	_Atoms;
   AtomTable        _AtomTableIndices; // m a p<Atom_sp,uint>	_AtomTableIndices;
-  core::MDArray_int32_t_sp     _Residues;
-  core::MDArrayT_sp        _ResidueNames;
+  core::SimpleVector_int32_t_sp     _Residues;
+  core::SimpleVector_sp             _ResidueNames;
  public:
   typedef gctools::Vec0<EnergyAtom>::iterator iterator;
  public:
