@@ -1588,7 +1588,8 @@
          (natoms (parse-integer line :start 0 :end 5))
          (time (fortran::read-double-float-from-string (subseq line 5 nil) :start 0 :end 15))
          (temp (fortran::read-double-float-from-string (subseq line (+ 5 15) nil) :start 0 :end 15)))
-    (fortran:fread-vector fif 6 #\F 12)))
+    (fortran:fread-line fif)
+    (copy-seq (fortran:fread-vector fif 6 #\F 12))))
 
 
 ;;; The following code is to generate a human readable representation of an energy-function

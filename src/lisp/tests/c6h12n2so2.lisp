@@ -95,6 +95,15 @@
 (chem:calculate-energy *me*)
 
 
+(progn
+  (defparameter *fif* (fortran:make-fortran-input-file :stream (open "/tmp/top.dat" :direction :input)))
+  (defparameter *ee* (leap.topology::read-amber-parm-format *fif*)))
+
+(progn
+  (defparameter *topologyfif* (fortran:make-fortran-input-file :stream (open "/tmp/crd.dat" :direction :input)))
+  (defparameter *topologyee* (leap.topology::read-amber-coordinate-file *topologyfif*)))
+
+(l
 
 
 

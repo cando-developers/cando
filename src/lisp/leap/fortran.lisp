@@ -62,6 +62,7 @@
   (cond
     ((char-equal format-char #\i) :integer)
     ((or (char-equal format-char #\e)
+         (char-equal format-char #\f)
          (char-equal format-char #\d)) :double-float)
     ((char-equal format-char #\a) :string)
     (t (error "Handle format-char of ~s~%" format-char))))
