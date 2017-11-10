@@ -129,6 +129,8 @@ FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(core::T_sp fin)
     core::T_mv mv_line = core::cl__read_line(fin,_Nil<T_O>());
     if ( mv_line.nilp() ) break;
     string line = mv_line.as<core::Str_O>()->get();
+    if (line.size() == 0) continue;
+    printf("%s:%d:%s Read line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str()); fflush(stdout);
     LOG(BF("Read line(%s)") % line  );
     if ( line.substr(0,8) == "WILDATOM" ) {
       vector<string> names = core::split(line," \t");
@@ -149,14 +151,17 @@ FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(core::T_sp fin)
       entry.first = lineno;
       entry.second = line;
       entries.push_back( entry );
+      printf("%s:%d:%s  pushing entry: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str()); fflush(stdout);
     }
   }
+  printf("%s:%d:%s Done read-line: \n", __FILE__, __LINE__, __FUNCTION__); fflush(stdout);
   vector< pair<uint,string> >::iterator ei;
   for ( ei=entries.begin(); ei!=entries.end(); ei++ )
   {
     ChemInfo_sp typeRule = ChemInfo_O::create();
     typeRule->compileAntechamber(ei->second,wildCardElementDictionary);
     if ( typeRule->compileSucceeded() ) {
+      printf("%s:%d:%s  compileSucceeded for rule: %s\n", __FILE__, __LINE__, __FUNCTION__, ei->second.c_str()); fflush(stdout);
       ffTypesDb->add(typeRule);
     } else {
       SIMPLE_ERROR(BF("Antechamber compile failed on: "+ei->second+"\n"+typeRule->compilerMessage() ));

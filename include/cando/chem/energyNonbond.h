@@ -160,8 +160,8 @@ class EnergyNonbond_O : public EnergyComponent_O
   core::SimpleVectorDouble_sp     _cn1_vec;
   core::SimpleVectorDouble_sp     _cn2_vec;
   // Excluded atom table
-  core::MDArray_int32_t_sp   _NumberOfExcludedAtomIndices;
-  core::MDArray_int32_t_sp   _ExcludedAtomIndices;
+  core::SimpleVector_int32_t_sp   _NumberOfExcludedAtomIndices;
+  core::SimpleVector_int32_t_sp   _ExcludedAtomIndices;
  public:	
   typedef gctools::Vec0<TermType>::iterator iterator;
   iterator begin() { return this->_Terms.begin(); };
@@ -179,8 +179,8 @@ class EnergyNonbond_O : public EnergyComponent_O
 
   double	getVdwEnergy() { return this->_EnergyVdw; };
   double	getElectrostaticEnergy() { return this->_EnergyElectrostatic; };
-  CL_DEFMETHOD core::MDArray_int32_t_sp number_excluded_atoms() const { return this->_NumberOfExcludedAtomIndices;}
-  CL_DEFMETHOD core::MDArray_int32_t_sp excluded_atom_list() const { return this->_ExcludedAtomIndices;}
+  CL_DEFMETHOD core::SimpleVector_int32_t_sp number_excluded_atoms() const { return this->_NumberOfExcludedAtomIndices;}
+  CL_DEFMETHOD core::SimpleVector_int32_t_sp excluded_atom_list() const { return this->_ExcludedAtomIndices;}
  public:
   void addTerm(const TermType& term);
   virtual void dumpTerms();
@@ -237,12 +237,12 @@ class EnergyNonbond_O : public EnergyComponent_O
   void constructNonbondTermsFromAtomTableUsingExcludedAtoms(EnergyFunction_sp energyFunction,
                                                             core::T_sp prepareAmberEnergyNonbond );
 
-  CL_DEFMETHOD void constructNonbondTermsFromAList(core::List_sp values);
-
+  void constructNonbondTermsFromAList(core::List_sp values);
+  void setNonbondExcludedAtomInfo(AtomTable_sp atom_table, core::SimpleVector_int32_t_sp excluded_atoms_list, core::SimpleVector_int32_t_sp number_excluded_atoms);
  public:
   EnergyNonbond_O( const EnergyNonbond_O& ss ); //!< Copy constructor
 
- EnergyNonbond_O() : _UsesExcludedAtoms(false) {};
+ EnergyNonbond_O() : _UsesExcludedAtoms(true) {};
 };
 
 };

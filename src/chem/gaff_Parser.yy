@@ -579,7 +579,7 @@ char	ichar;
 		    return APOperatorAnd;
 		    break;
 	    case '.':
-		    LEXPRINT("APOperatorAnd character");
+		    LEXPRINT("APOperatorOr");
 		    return APOperatorOr;
 		    break;
             case ':':

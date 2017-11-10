@@ -482,7 +482,7 @@ double	EnergyFunction_O::evaluateAll(
                                                       gc::Nilable<NVector_sp>	hdvec,
                                                       gc::Nilable<NVector_sp> dvec)
 {_G()
-
+    printf("%s:%d:%s Entered\n", __FILE__, __LINE__, __FUNCTION__ );
 #if 0 //[
 #define	ForceAcc(i,o,v) {\
     if ( hasForce ) {\
@@ -1398,6 +1398,8 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
         // Nonbonds here!!!!!!!!!!!!!!
   if (useExcludedAtoms) {
 // The nonbond parameters are calculated in Common Lisp
+    printf("atom number \n", this->_AtomTable->getNumberOfAtoms());
+
     printf("%s:%d in generateNonbondEnergyFunctionTables\n", __FILE__, __LINE__);
     core::List_sp parts = core::eval::funcall(_sym_prepare_amber_energy_nonbond,this->asSmartPtr(),forceField);
       printf("%s:%d:%s    parts -> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(parts).c_str());

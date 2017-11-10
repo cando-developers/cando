@@ -602,7 +602,7 @@ void RingFinder_O::defineForMolecule(Molecule_sp mol)
     Atom_sp at = loop.getAtom();
     if ( at.isA<VirtualAtom_O>() ) continue;
     LOG(BF("### Adding atom: %s id:%p to graph") % at->description().c_str() % at.get()  );
-//    printf("%s:%d Adding atom as vertex: %s\n",__FILE__,__LINE__,_rep_(at).c_str());
+    printf("%s:%d Adding atom as vertex: %s\n",__FILE__,__LINE__,_rep_(at).c_str());
     if ( this->_vertices->gethash(at,_Nil<T_O>()).notnilp() )
     {
       SIMPLE_ERROR(BF("Non unique atom id"));
@@ -610,7 +610,7 @@ void RingFinder_O::defineForMolecule(Molecule_sp mol)
     AGVertex_sp vert = AGVertex_O::create(this->sharedThis<RingFinder_O>(),at);
     this->_vertices->hash_table_setf_gethash(at,vert);
   }
-//  printf("%s:%d Number of vertices: %d\n", __FILE__, __LINE__, this->_vertices->hashTableCount());
+  printf("%s:%d Number of vertices: %d\n", __FILE__, __LINE__, this->_vertices->hashTableCount());
   loop.loopTopGoal(mol,BONDS);
   this->_edges.clear();
   while ( loop.advanceLoopAndProcess() )
@@ -901,9 +901,10 @@ core::List_sp RingFinder_O::identifyRingsInMolecule(Molecule_sp molecule)
 	    numAtoms++;
 	}
     }
+    if (numAtoms<3) return _Nil<core::T_O>();
     RingFinder_sp atomGraph = RingFinder_O::make(molecule);
     {_BLOCK_TRACE("Looking for rings");
-	atomGraph->findRings(numAtoms);
+      atomGraph->findRings(numAtoms);
     }
     core::List_sp rings = _Nil<core::T_O>();
     {_BLOCK_TRACE("Assigning ring membership");

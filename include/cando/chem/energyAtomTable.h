@@ -139,7 +139,7 @@ class AtomTable_O : public core::CxxObject_O
       To generate an AMBER excluded atom list, add 1 to each entry.
       Return Values(number_excluded_atoms,excluded_atom_list).
   */
-  core::MDArray_int32_t_mv calculate_excluded_atom_list();
+  CL_DEFMETHOD core::T_mv calculate_excluded_atom_list();
 
   // ------------------------------------------------------------
   //

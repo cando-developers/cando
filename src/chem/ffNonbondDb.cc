@@ -183,6 +183,11 @@ void	FFNonbond_O::fields(core::Record_sp node)
   this->Base::fields(node);
 }
 
+string FFNonbond_O::__repr__() const {
+  stringstream ss;
+  ss << "#<" << cl__class_of(this->asSmartPtr())->_classNameAsString() << " :type " << _rep_(this->_Type) << ">";
+  return ss.str();
+}
 
 void FFNonbondDb_O::forceFieldMerge(FFBaseDb_sp bother)
 {
@@ -278,7 +283,7 @@ CL_DEFMETHOD uint FFNonbondDb_O::findTypeIndex(core::Symbol_sp type)
 {
   core::T_sp index = this->_Parameters->gethash(type);
   if (index.fixnump()) return static_cast<uint>(index.unsafe_fixnum());
-  return UndefinedUnsignedInt;
+  SIMPLE_ERROR(BF("Could not find FFNonbondDb type index for type %s") % _rep_(type));
 }
 
 uint FFNonbondDb_O::findTypeIndexOrThrow(core::Symbol_sp type)

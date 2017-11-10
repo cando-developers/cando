@@ -86,23 +86,21 @@
 *agg*
 
 (energy:setup-amber)
-
+;
 (cando:jostle *met* 80)
-(defparameter *me* (energy:minimize *agg*))
+;(defparameter *me* (energy:minimize *agg*))
+
+;(leap.topology::save-amber-parm-format *agg* "/tmp/top.dat" "/tmp/crd.dat" energy::*ff*)
+;(chem:calculate-energy *me*)
 
 
-(leap.topology::save-amber-parm-format *agg* "/tmp/top.dat" "/tmp/crd.dat" energy::*ff*)
-(chem:calculate-energy *me*)
+;(progn
+;  (defparameter *fif* (fortran:make-fortran-input-file :stream (open "/tmp/top.dat" :direction :input)))
+;  (defparameter *ee* (leap.topology::read-amber-parm-format *fif*)))
 
-(format t hallo)
-
-(progn
-  (defparameter *fif* (fortran:make-fortran-input-file :stream (open "/tmp/top.dat" :direction :input)))
-  (defparameter *ee* (leap.topology::read-amber-parm-format *fif*)))
-
-(progn
-  (defparameter *topologyfif* (fortran:make-fortran-input-file :stream (open "/tmp/crd.dat" :direction :input)))
-  (defparameter *topologyee* (leap.topology::read-amber-coordinate-file *topologyfif*)))
+;(progn
+;  (defparameter *topologyfif* (fortran:make-fortran-input-file :stream (open "/tmp/crd.dat" :direction :input)))
+;  (defparameter *topologyee* (leap.topology::read-amber-coordinate-file *topologyfif*)))
 
 
 
@@ -144,6 +142,7 @@
 ;;; Test the reader
 ;;;
 
+#|
 (setf *default-pathname-defaults* #P"/tmp/")
 (progn
   (defparameter *fif* (fortran:make-fortran-input-file :stream (open "top.dat" :direction :input)))
@@ -153,11 +152,38 @@
   (defparameter *topologyfif* (fortran:make-fortran-input-file :stream (open "crd.dat" :direction :input)))
   (defparameter *coords* (leap.topology::read-amber-coordinate-file *topologyfif*)))
 
-(chem:evaluate-energy *ee* *coords*)
-(chem:calculate-energy *me*)
+
+(chem:evaluate-energy *ee* *coords*)2415.141413817592d0
+
+(chem:evaluate-energy *me* *coords*)2416.849376233198d0
+
+
+
+(chem:calculate-energy *me*) 
 
 (chem:get-energy (chem:get-nonbond-component *me*))
 (chem:get-energy (chem:get-nonbond-component *ee*))
 
 (chem:dump-terms (chem:get-stretch-component *ee*))
+
+
+
+
+(setf *default-pathname-defaults* #P"/Users/tuj24515/Development/tutorial/B0/")
+(progn
+  (defparameter *fif* (fortran:make-fortran-input-file :stream (open "prmtop" :direction :input)))
+  (defparameter *ae* (leap.topology::read-amber-parm-format *fif*)))
+
+*ae*
+
+(progn
+  (defparameter *crdfif* (fortran:make-fortran-input-file :stream (open "01_Min.rst" :direction :input)))
+  (defparameter *coords* (leap.topology::read-amber-coordinate-file *crdfif*)))
+
+(chem:evaluate-energy *ae* *coords*)
+
+(chem:get-energy (chem:get-stretch-component *ae*))
+(chem:get-energy (chem:get-angle-component *ae*))
+(chem:get-energy (chem:get-dihedral-component *ae*))
+(chem:get-energy (chem:get-nonbond-component *ae*))
 |#

@@ -345,11 +345,14 @@ CL_DEFMETHOD size_t AtomTable_O::push_back_excluded_atom_indices_and_sort( core:
   return (end_size - start_size);
 }
 
+SYMBOL_EXPORT_SC_(ClPkg,copy_seq);
 
 /*! Calculate the AMBER excluded atom list and return two vectors, one containing the number of 
 excluded atoms for each atom and the second containing the sorted excluded atom list */
-CL_DEFMETHOD core::MDArray_int32_t_mv AtomTable_O::calculate_excluded_atom_list()
+CL_DEFMETHOD core::T_mv AtomTable_O::calculate_excluded_atom_list()
 {
+  printf("%s:%d In calculate_excludec_atom_list\n", __FILE__, __LINE__ );
+
   core::MDArray_int32_t_sp number_excluded_atoms = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
   core::MDArray_int32_t_sp excluded_atoms_list = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
   size_t num_atoms = this->getNumberOfAtoms();
@@ -357,7 +360,9 @@ CL_DEFMETHOD core::MDArray_int32_t_mv AtomTable_O::calculate_excluded_atom_list(
     size_t num = this->push_back_excluded_atom_indices_and_sort(excluded_atoms_list,i1);
     number_excluded_atoms->vectorPushExtend(num);
   }
-  return Values(number_excluded_atoms,excluded_atoms_list);
+  core::T_sp t_number_excluded_atoms = core::eval::funcall(cl::_sym_copy_seq,number_excluded_atoms);
+  core::T_sp t_excluded_atoms_list = core::eval::funcall(cl::_sym_copy_seq,excluded_atoms_list);
+  return Values(t_number_excluded_atoms, t_excluded_atoms_list);
 }
 
 CL_DEFMETHOD core::Symbol_sp AtomTable_O::elt_atom_type(int index) {

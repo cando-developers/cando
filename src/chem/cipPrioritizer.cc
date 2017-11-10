@@ -231,7 +231,7 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
 
 	OrderByP byP;
 	byP.setCipPrioritizer(this->sharedThis<CipPrioritizer_O>());
-	if ( mAtoms.begin() != mAtoms.end() )
+	if ( mAtoms.size()>1 ) 
 	{
 	    sort::quickSort(mAtoms.begin(),mAtoms.end(),byP);
 	}
@@ -304,10 +304,12 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
 			}
 		    }
 		    LOG(BF("About to sort %d mys objects") % mys.size()  );
-		    sort::quickSort(mys.begin(),mys.end());
-		    LOG(BF("Done sort") );
-		    sort::reverse(mys.begin(),mys.end());
-		    LOG(BF("Done reverse") );
+		    if (mys.size()>1) {
+                      sort::quickSort(mys.begin(),mys.end());
+                      LOG(BF("Done sort") );
+                      sort::reverse(mys.begin(),mys.end());
+                      LOG(BF("Done reverse") );
+                    }
 		    // print "atom(%s) mys = %s"%(myatom.getName(),str(mys))
 		    this->_s[myatom->getRelativePriority()] = mys;
 		}
@@ -377,7 +379,7 @@ CL_DEFMETHOD void CipPrioritizer_O::assignCahnIngoldPrelogPriorityToAtomsRelativ
 			    LOG(BF("    %s") % (*ssi)->description().c_str() );
 			}
 #endif
-			sort::quickSort(S.begin(),S.end(),byS);
+			if (S.size()>1) sort::quickSort(S.begin(),S.end(),byS);
 			LOG(BF("done sort") );
 		    }
 //		    int i = 0;

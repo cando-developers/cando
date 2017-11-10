@@ -1,5 +1,5 @@
 
-include	$(CLASP_HOME)/makefile.inc
+#include	$(CLASP_HOME)/makefile.inc
 
 PARSER_NEEDS = _msmarts_Parser.cc _gaff_Parser.cc 
 M4_NEEDS = initClasses.inc

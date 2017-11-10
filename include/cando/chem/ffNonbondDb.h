@@ -147,6 +147,8 @@ namespace chem {
     DonorAcceptorEnum	_DonorAcceptor;
 
   public:
+    string __repr__() const;
+   
     CL_DEFMETHOD void setType(core::Symbol_sp s) {this->_Type=s;};
     CL_DEFMETHOD core::Symbol_sp getType() const { return this->_Type;};
     CL_DEFMETHOD void setPolarizability(double d) { this->_Polarizability = d;};
