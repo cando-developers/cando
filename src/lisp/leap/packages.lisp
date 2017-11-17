@@ -137,6 +137,8 @@
                 #:add-pdb-atom-map
                 )
   (:export
+   #:*leap-system*
+   #:setup-amber
    #:atom
    #:bounding-box
    #:+ #:- #:/ #:* #:< #:> #:>= #:<= #:sqrt

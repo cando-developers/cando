@@ -85,7 +85,6 @@
   (:export
    #:minimize
    #:minimize-energy-function
-   #:setup-amber
    #:dump-excluded-atom-list
    ))
 

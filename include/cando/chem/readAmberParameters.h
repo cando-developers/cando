@@ -61,19 +61,19 @@ class ReadAmberParameters_O : public core::CxxObject_O
   FFNonbondDb_sp parseMasses(core::T_sp fin, FFNonbondDb_sp);
   FFStretchDb_sp parseStretchDb(core::T_sp fin);
   FFAngleDb_sp parseAngleDb(core::T_sp fin);
-  FFPtorDb_sp parsePtorDb(core::T_sp fin);
+  FFPtorDb_sp parsePtorDb(core::T_sp fin, core::T_sp system);
   FFItorDb_sp parseItorDb(core::T_sp fin);
   string parseNonbondLabelKindNB(core::T_sp fin);
   void parseNonbondDb(core::T_sp fin, FFNonbondDb_sp );
-  ForceField_sp parseAmberFormattedForceField(core::T_sp strm);
-  ForceField_sp parseFrcModFile(core::T_sp strm);
-  ForceField_sp parseAmberFormattedForceFieldOrFrcMod(core::T_sp strm);
+  ForceField_sp parseAmberFormattedForceField(core::T_sp strm, core::T_sp system);
+  ForceField_sp parseFrcModFile(core::T_sp strm, core::T_sp system);
+  ForceField_sp parseAmberFormattedForceFieldOrFrcMod(core::T_sp strm, core::T_sp system);
   void parseAtomEquivalences(core::T_sp fin);
   
  public:
 
   void readTypes(core::T_sp fin);
-  void readParameters(core::T_sp fileName);
+  void readParameters(core::T_sp fileName, core::T_sp system);
 
   CL_LISPIFY_NAME("getTypeRules");
   CL_DEFMETHOD     FFTypesDb_sp getTypeRules() { return this->_Types; };

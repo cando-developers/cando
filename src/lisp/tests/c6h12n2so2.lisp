@@ -85,24 +85,17 @@
 
 *agg*
 
-(energy:setup-amber)
+(leap:setup-amber)
+(time (defparameter *glycam* (leap.commands:load-amber-params (probe-file #P"~/Development/amber16/dat/leap/parm/GLYCAM_06EPb.dat"))))
+*glycam*
+
+(probe-file #P"~/Development/amber16/dat/leap/parm/GLYCAM_06EPb.dat")
 ;
 (cando:jostle *met* 80)
-;(defparameter *me* (energy:minimize *agg*))
+(defparameter *me* (energy:minimize *agg*))
 
-;(leap.topology::save-amber-parm-format *agg* "/tmp/top.dat" "/tmp/crd.dat" energy::*ff*)
-;(chem:calculate-energy *me*)
-
-
-;(progn
-;  (defparameter *fif* (fortran:make-fortran-input-file :stream (open "/tmp/top.dat" :direction :input)))
-;  (defparameter *ee* (leap.topology::read-amber-parm-format *fif*)))
-
-;(progn
-;  (defparameter *topologyfif* (fortran:make-fortran-input-file :stream (open "/tmp/crd.dat" :direction :input)))
-;  (defparameter *topologyee* (leap.topology::read-amber-coordinate-file *topologyfif*)))
-
-
+(leap.topology::save-amber-parm-format *agg* "/tmp/top.dat" "/tmp/crd.dat" energy::*ff*)
+(chem:calculate-energy *me*)
 
 
 ;(defun foo ()
@@ -138,7 +131,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
+;;;q
 ;;; Test the reader
 ;;;
 
@@ -166,6 +159,12 @@
 
 (chem:dump-terms (chem:get-stretch-component *ee*))
 
+(unwind-protect
+     (progn
+       (chem:enable-debug (chem:get-nonbond-component *ee*))
+       (chem:calculate-energy *ee*))
+  (chem:disable-debug (chem:get-nonbond-component *ee*)))
+
 
 
 
@@ -186,4 +185,7 @@
 (chem:get-energy (chem:get-angle-component *ae*))
 (chem:get-energy (chem:get-dihedral-component *ae*))
 (chem:get-energy (chem:get-nonbond-component *ae*))
+
+
+
 |#

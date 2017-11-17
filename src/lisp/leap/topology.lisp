@@ -424,22 +424,13 @@
           (cn2-vec (make-array (/ (* ntypes (+ ntypes 1)) 2) :element-type 'double-float))
           (type1 0)
           (type2 0)
-          (cur 0)
           (curcn 0)
           (rstar 0)
           (epsilonij 0))
-      (loop for i from 0 below ntypes
-         for iaci = (- (aref local-typej-vec i) 1)
-         do (loop for j from 0 below ntypes
-               for iacj = (aref local-typej-vec j)
-               for icox = (* ntypes (+ iaci iacj))
-               do  (progn
-                     (setf (aref ico-vec cur) icox)
-                     (incf cur))))
       (format *debug-io* "In generate-nonbond-parameters type-indexj-vec -> ~s~%" type-indexj-vec)
-      (loop for i from 0 below (length type-indexj-vec)
+      (loop for i from 0 below ntypes
          for type1 = (aref type-indexj-vec i)
-         do (loop for j from 0 below (length type-indexj-vec)
+         do (loop for j from 0 below ntypes
                for type2 = (aref type-indexj-vec j)
                do (when (<= i j)
                     (format *debug-io* "In generate-nonbond-parameters i->~a j->~a type1->~a type2->~a~%" i j type1 type2)
@@ -448,7 +439,10 @@
                       (setf rstar (+ (chem:get-radius-angstroms ffnonbond1) (chem:get-radius-angstroms ffnonbond2))
                             epsilonij (sqrt (* (chem:get-epsilon-k-cal ffnonbond1) (chem:get-epsilon-k-cal ffnonbond2)))
                             (aref cn1-vec curcn) (* epsilonij (expt rstar 12.0))
-                            (aref cn2-vec curcn) (* 2.0 epsilonij (expt rstar 6.0)))
+                            (aref cn2-vec curcn) (* 2.0 epsilonij (expt rstar 6.0))
+                            (aref ico-vec (+ (* ntypes i) j)) (+ curcn 1))
+                      (if (< i j)
+                          (setf (aref ico-vec (+ (* ntypes j) i)) (+ curcn 1)))
                       (format t "type1 ~a type2 ~a~%" type1 type2)
                       (incf curcn)))))
       (values ntypes ico-vec iac-vec local-typej-vec cn1-vec cn2-vec))))
@@ -503,7 +497,7 @@
          (residue-vector (chem:atom-table-residues atom-table))
          (residue-name-vector (chem:atom-table-residue-names atom-table))
          nresidue)
-    (setf nresidue (length residue-vector))
+    (setf nresidue (- (length residue-vector) 1))
     (loop for i from 0 below (length residue-vector)
        for fresidue = (+ (aref residue-vector i) 1)
        do (setf (aref residue-vector i) fresidue))
@@ -521,7 +515,6 @@
     ;; Skip assigning MarkMainChainAtoms and MarkSideChain atoms for now
     ;; see (unitio.c:4889).  This won't mean anything for spiroligomers.
     (fortran:with-fortran-output-file (ftop topology-pathname :direction :output)
-      (fortran:debug-on ftop)
       (fortran:debug "-1-")             ;
       (fortran:fformat 1 "%-80s")
       ;;      (fortran:fwrite (core:strftime 81 "%%VERSION  VERSION_STAMP = V0002.000  DATE = %m/%d/%y  %H:%M:%S"))
@@ -568,7 +561,7 @@
         (setf cn2-vec (cdr (assoc :cn2-vec atom-vectors)))
         (setf nhparm 0)
         (setf nparm 0)
-        (setf nnb (length number-excluded-atoms))
+        (setf nnb (length excluded-atom-list))
         (setf nbona mbona)
         (setf ntheta mtheta)
         (setf nphia mphia)
@@ -639,7 +632,7 @@
         (fortran:fwrite "%FLAG ATOM_NAME")
         (fortran:fwrite "%FORMAT(20a4)")
         (fortran:debug "-3-")
-        (fortran:fformat 20 "%4s")
+        (fortran:fformat 20 "%-4s")
         (loop for name across atom-name
            do (fortran:fwrite (string name)))
         (fortran:end-line)
@@ -717,7 +710,7 @@
         (fortran:fwrite "%FLAG RESIDUE_LABEL")
         (fortran:fwrite "%FORMAT(20A4)")
         (fortran:debug "-10-")
-        (fortran:fformat 20 "%4s")
+        (fortran:fformat 20 "%-4s")
         (loop for ren across residue-name-vec
            do (fortran:fwrite (string ren)))
         (fortran:end-line)
@@ -729,8 +722,8 @@
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-11-")
         (fortran:fformat 10 "%8d")
-        (loop for re across residue-vec
-           do (fortran:fwrite re))
+        (loop for re from 0 below (- (length residue-vec) 1)
+           do (fortran:fwrite (aref residue-vec re)))
         (fortran:end-line)
         ;; write the atoms in each residue are listed for atom "1" in IPRES(i) to IPRES(i+1)-1
 
@@ -976,25 +969,22 @@
         (fortran:fwrite "%FORMAT(10I8)")
         (fortran:debug "-30-")
         (fortran:fformat 10 "%8d")
-        (fortran:end-line)
         (loop for atom across excluded-atom-list
-           do (fortran:fwrite atom))
+           do (fortran:fwrite (+ atom 1)))
         (fortran:end-line)
         ;; Next
         (fortran:fformat 1 "%-80s")
         (fortran:fwrite "%FLAG AMBER_ATOM_TYPE")
         (fortran:fwrite "%FORMAT(20A4)")
         (fortran:debug "-31-")
-        (fortran:fformat 20 "%4s")
-        (fortran:end-line)
+        (fortran:fformat 20 "%-4s")
         (loop for type across atom-type
            do (fortran:fwrite (string type)))
         (fortran:end-line)
         ))
     (format *debug-io* "coordinate-pathname -> ~s~%" coordinate-pathname)
     (fortran:with-fortran-output-file (ftop coordinate-pathname :direction :output :if-exists :supersede)
-      (fortran:debug-on ftop)
-      (fortran:fformat 20 "%4s")
+      (fortran:fformat 20 "%-4s")
       (fortran:fwrite (string (chem:get-name aggregate)))
       (fortran:end-line)
 ;      (fortran:fformat 1 "%5d")
@@ -1002,7 +992,7 @@
 ;      (fortran:fformat 5 "%15.7lf")
 ;      (fortran:fwrite 0.0)
 ;      (fortran:fwrite 0.0)
-      (fortran:fwrite (format nil  "~5d~15,7f~15,7f~%" natom 0.0 0.0))
+      (fortran:fwrite (format nil  " ~5d~%" natom))
       (fortran:fformat 6 "%12.7lf")
       (let ((atom-table (chem:atom-table energy-function)))
         (loop for i from 0 below natom
@@ -1588,6 +1578,9 @@
       (setf nonbond-vectors (acons :cn2-vec (copy-seq lennard-jones-bcoef) nonbond-vectors))
       (rlog "nonbond-vectors -> ~s~%" nonbond-vectors)
       (chem:construct-nonbond-terms-from-aList energy-nonbond nonbond-vectors)
+      (loop for i from 0 below (length excluded-atoms-list)
+         for atom = (- (aref excluded-atoms-list i) 1)
+          do (setf (aref excluded-atoms-list i) atom))
       (chem:set-nonbond-excluded-atom-info energy-nonbond atom-table (copy-seq excluded-atoms-list) (copy-seq number-excluded-atoms))
       ;;
       ;; Now we have energy-stretch, energy-angle, and energy-dihedral

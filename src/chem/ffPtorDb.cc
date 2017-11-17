@@ -56,18 +56,20 @@ void	FFPtor_O::fields(core::Record_sp node)
   node->field( INTERN_(kw,type3), this->_T3 );
   node->field( INTERN_(kw,type4), this->_T4 );
   ASSERT(MaxPeriodicity==6);
-  node->field_if_defined(INTERN_(kw,v0) ,this->_hasPeriodicity[0],this->_Vs_kJ[0]);
-  node->field_if_defined(INTERN_(kw,ph0),this->_hasPeriodicity[0],this->_PhaseRads[0]);
-  node->field_if_defined(INTERN_(kw,v1) ,this->_hasPeriodicity[1],this->_Vs_kJ[1]);
-  node->field_if_defined(INTERN_(kw,ph1),this->_hasPeriodicity[1],this->_PhaseRads[1]);
-  node->field_if_defined(INTERN_(kw,v2) ,this->_hasPeriodicity[2],this->_Vs_kJ[2]);
-  node->field_if_defined(INTERN_(kw,ph2),this->_hasPeriodicity[2],this->_PhaseRads[2]);
-  node->field_if_defined(INTERN_(kw,v3) ,this->_hasPeriodicity[3],this->_Vs_kJ[3]);
-  node->field_if_defined(INTERN_(kw,ph3),this->_hasPeriodicity[3],this->_PhaseRads[3]);
-  node->field_if_defined(INTERN_(kw,v4) ,this->_hasPeriodicity[4],this->_Vs_kJ[4]);
-  node->field_if_defined(INTERN_(kw,ph4),this->_hasPeriodicity[4],this->_PhaseRads[4]);
-  node->field_if_defined(INTERN_(kw,v5) ,this->_hasPeriodicity[5],this->_Vs_kJ[5]);
-  node->field_if_defined(INTERN_(kw,ph5),this->_hasPeriodicity[5],this->_PhaseRads[5]);
+  node->field_if_defined(INTERN_(kw,v0) ,this->_HasPeriodicity[0],this->_Vs_kJ[0]);
+  node->field_if_defined(INTERN_(kw,ph0),this->_HasPeriodicity[0],this->_PhaseRads[0]);
+  node->field_if_defined(INTERN_(kw,v1) ,this->_HasPeriodicity[1],this->_Vs_kJ[1]);
+  node->field_if_defined(INTERN_(kw,ph1),this->_HasPeriodicity[1],this->_PhaseRads[1]);
+  node->field_if_defined(INTERN_(kw,v2) ,this->_HasPeriodicity[2],this->_Vs_kJ[2]);
+  node->field_if_defined(INTERN_(kw,ph2),this->_HasPeriodicity[2],this->_PhaseRads[2]);
+  node->field_if_defined(INTERN_(kw,v3) ,this->_HasPeriodicity[3],this->_Vs_kJ[3]);
+  node->field_if_defined(INTERN_(kw,ph3),this->_HasPeriodicity[3],this->_PhaseRads[3]);
+  node->field_if_defined(INTERN_(kw,v4) ,this->_HasPeriodicity[4],this->_Vs_kJ[4]);
+  node->field_if_defined(INTERN_(kw,ph4),this->_HasPeriodicity[4],this->_PhaseRads[4]);
+  node->field_if_defined(INTERN_(kw,v5) ,this->_HasPeriodicity[5],this->_Vs_kJ[5]);
+  node->field_if_defined(INTERN_(kw,ph5),this->_HasPeriodicity[5],this->_PhaseRads[5]);
+  node->field_if_defined(INTERN_(kw,scee),this->_HasScee,this->_Scee);
+  node->field_if_defined(INTERN_(kw,scnb),this->_HasScnb,this->_Scnb);
   this->Base::fields(node);
 }
 
@@ -105,7 +107,7 @@ void FFPtor_O::initialize()
     this->_T4 = _Nil<core::Symbol_O>();
     for ( i=0; i<MaxPeriodicity; i++ )
     {
-	this->_hasPeriodicity[i] = false;
+	this->_HasPeriodicity[i] = false;
 	this->_Vs_kJ[i] = 0.0;
 	this->_PhaseRads[i] = 0.0;
     }
@@ -126,7 +128,7 @@ bool	FFPtor_O::hasPeriodicity(int idx ) const
     if ( idx < 1 || idx > MaxPeriodicity ) {
         SIMPLE_ERROR(BF("Illegal periodicity (%d) for hasPeriodicity") % idx);
     }
-    return this->_hasPeriodicity[idx-1];
+    return this->_HasPeriodicity[idx-1];
 }
 
 
@@ -140,27 +142,27 @@ double  FFPtor_O::getV_kJ(int idx) const
     return this->_Vs_kJ[idx-1];
 }
 
-void    FFPtor_O::setV_kJ(int idx, double val)
+CL_DEFMETHOD void    FFPtor_O::setV_kJ(int idx, double val)
 {_OF();
     if ( idx < 1 || idx > MaxPeriodicity ) {
         SIMPLE_ERROR(BF("Illegal periodicity (%d) for setV") % idx);
     }
-    this->_hasPeriodicity[idx-1] = true;
+    this->_HasPeriodicity[idx-1] = true;
     this->_Vs_kJ[idx-1] = val;
 }
 
-double FFPtor_O::getV_kCal(int idx) const
+CL_DEFMETHOD double FFPtor_O::getV_kCal(int idx) const
 {_OF();
     return kJ_to_kCal(this->getV_kJ(idx));
 }
 
-void FFPtor_O::setV_kCal(int idx, double val)
+CL_DEFMETHOD void FFPtor_O::setV_kCal(int idx, double val)
 {_OF();
     this->setV_kJ(idx,kCal_to_kJ(val));
 }
 
 
-double  FFPtor_O::getPhaseRad(int idx) const
+CL_DEFMETHOD double  FFPtor_O::getPhaseRad(int idx) const
 {_OF();
     if ( idx < 1 || idx > MaxPeriodicity ) {
         SIMPLE_ERROR(BF("Illegal periodicity[%d] for getPhaseRad - must be in [1,%d]") % idx % MaxPeriodicity );
@@ -168,7 +170,7 @@ double  FFPtor_O::getPhaseRad(int idx) const
     return this->_PhaseRads[idx-1];
 }
 
-void    FFPtor_O::setPhaseRad(int idx, double val)
+CL_DEFMETHOD void    FFPtor_O::setPhaseRad(int idx, double val)
 {_OF();
     if ( idx < 1 || idx > MaxPeriodicity ) {
         SIMPLE_ERROR(BF("Illegal periodicity (%d) for setPhaseRad") % idx);
@@ -181,8 +183,8 @@ void    FFPtor_O::mergeWith(FFPtor_sp ptor)
 {
 int     i;
     for ( i=0; i<MaxPeriodicity; i++ ) {
-	if ( ptor->_hasPeriodicity[i] ) {
-            this->_hasPeriodicity[i] = ptor->_hasPeriodicity[i];
+	if ( ptor->_HasPeriodicity[i] ) {
+            this->_HasPeriodicity[i] = ptor->_HasPeriodicity[i];
             this->_Vs_kJ[i] = ptor->_Vs_kJ[i];
             this->_PhaseRads[i] = ptor->_PhaseRads[i];
         }
@@ -210,6 +212,10 @@ FFPtor_sp        ptorOld;
    key = keyString(ptor->_T1,ptor->_T2,ptor->_T3,ptor->_T4);
    this->_Parameters->setf_gethash(key,ptor);
  }
+}
+
+CL_DEFMETHOD void FFPtorDb_O::addFFPtor(FFPtor_sp obj) {
+  this->add(obj);
 }
 
 

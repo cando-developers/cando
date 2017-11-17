@@ -3,7 +3,8 @@
 (defconstant +fortran-debug-comment-char+ #\=)
 
 (defstruct (fortran-output-file (:conc-name fof-))
-  stream format per-line number-on-line wrote-nothing debug)
+  stream format per-line number-on-line wrote-nothing
+  (debug nil))
 
 (defvar *fortran-output-file* nil)
 

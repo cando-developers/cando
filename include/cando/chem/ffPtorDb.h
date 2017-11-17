@@ -93,9 +93,14 @@ namespace chem
         }
           
     public:
-	bool		_hasPeriodicity[MaxPeriodicity];	// 6 terms can be stored
+	bool		_HasPeriodicity[MaxPeriodicity];	// 6 terms can be stored
 	double		_Vs_kJ[MaxPeriodicity];		// 6 V terms
         double          _PhaseRads[MaxPeriodicity]; 	// 6 phase terms
+        bool            _HasScee;
+        double          _Scee;
+        bool            _HasScnb;
+        double          _Scnb;
+        string          _Comment;
 
 	void	setTypes( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4);
 	int	maxPeriodicity() const { return MaxPeriodicity; };
@@ -108,11 +113,23 @@ namespace chem
         double  getPhaseRad(int period) const;
         void    setPhaseRad(int period, double pr);
 
-        void    mergeWith(FFPtor_sp ptor);
+        CL_DEFMETHOD void    setScee(double s) { this->_HasScee = true; this->_Scee = s;}
+        CL_DEFMETHOD void    setScnb(double s) { this->_HasScnb = true; this->_Scnb = s;}
+        CL_DEFMETHOD void    setHasScee(bool b) { this->_HasScee = b; }; 
+        CL_DEFMETHOD void    setHasScnb(bool b) { this->_HasScnb = b; };
+        CL_DEFMETHOD double  getScee() const { return this->_Scee; };
+        CL_DEFMETHOD double  getScnb() const { return this->_Scnb; };
+        CL_DEFMETHOD bool    getHasScee() const { return this->_HasScee;};
+        CL_DEFMETHOD bool    getHasScnb() const { return this->_HasScnb;};
+
+        CL_DEFMETHOD string  ptorComment() const { return this->_Comment; };
+        CL_DEFMETHOD void    setPtorComment(const string& s) { this->_Comment = s; };
+        
+       void    mergeWith(FFPtor_sp ptor);
 
 	virtual	ParameterType	type() { return ptor;};
 	virtual	string		levelDescription();
-	DEFAULT_CTOR_DTOR(FFPtor_O);
+    FFPtor_O() : _HasScee(false), _Scee(-1.0), _HasScnb(false), _Scnb(-1.0), _Comment("") {};
     };
 
 
@@ -132,6 +149,7 @@ namespace chem
     public:
 	void	setTermFormat( core::VectorStrings vterms );
 	void	add( FFPtor_sp ptor );
+	void	addFFPtor( FFPtor_sp ptor );
         core::T_sp findExactTerm( core::Symbol_sp a1, core::Symbol_sp a2, core::Symbol_sp a3, core::Symbol_sp a4 );
 
 	//! Look for exact term then general one

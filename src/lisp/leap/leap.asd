@@ -13,6 +13,7 @@
     :components
     ((:file "packages")
      (:file "core")
+     (:file "chem")
      (:file "off")
      (:file "fortran")
      (:file "topology")

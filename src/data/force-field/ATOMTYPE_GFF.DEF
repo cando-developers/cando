@@ -203,7 +203,7 @@ ATD  s6    *   16  6   &
 ATD  Li    *   3   & 
 ATD  Be    *   4   & 
 ATD  B     *   5   & 
-ATD  Na    *   11  & 
+ATD  na    *   11  & 
 ATD  Mg    *   12  & 
 ATD  Al    *   13  & 
 ATD  Si    *   14  & 

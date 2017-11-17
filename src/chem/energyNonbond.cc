@@ -511,7 +511,7 @@ __attribute__((optnone)) void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVecto
                                                     gc::Nilable<NVector_sp>	hdvec, 
                                                     gc::Nilable<NVector_sp> 	dvec )
 {
-  printf("%s:%d In evaluateUsingExcludedAtoms starting\n", __FILE__, __LINE__ );
+  printf("%s:%d In evaluateUsingExcludedAtoms starting this->_DebugEnergy -> %d\n", __FILE__, __LINE__, this->_DebugEnergy );
   if (!this->_iac_vec) {
     SIMPLE_ERROR(BF("The nonbonded excluded atoms parameters have not been set up"));
   }
@@ -519,6 +519,7 @@ __attribute__((optnone)) void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVecto
   core::SimpleVector_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
   double vdwScale = this->getVdwScale();
   double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
+  printf("%s:%d electrostaticcharge %lf\n", __FILE__, __LINE__, electrostaticScale );
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
@@ -587,21 +588,17 @@ __attribute__((optnone)) void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVecto
         }
       }
       //   cn1i    (*this->_cn1_vec)[cn1i]
-      int localindex1 = (*this->_iac_vec)[index1]-1;
-      int localindex2 = (*this->_iac_vec)[index2]-1;
-      if (localindex1 > localindex2)
-      {
-        int i1 = localindex1;
-        int i2 = localindex2;
-        localindex1 = i2;
-        localindex2 = i1;
-      }
-      dA = (*this->_cn1_vec)[localindex1*nlocaltype+localindex2-(localindex1*(localindex1-1)/2)-localindex1];
-      dC = (*this->_cn2_vec)[localindex1*nlocaltype+localindex2-(localindex1*(localindex1-1)/2)-localindex1];
+      int localindex1 = (*this->_iac_vec)[index1];
+      int localindex2 = (*this->_iac_vec)[index2];
+      dA = (*this->_cn1_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
+      dC = (*this->_cn2_vec)[(*this->_ico_vec)[nlocaltype*(localindex1-1)+localindex2-1]-1];
 //      printf("%s:%d localindex1 %d and localindex2 %d\n", __FILE__, __LINE__, localindex1, localindex2);
 //      printf("%s:%d dA     %lf and dC     %lf\n", __FILE__, __LINE__, dA, dC);
       double charge22 = (*this->_charge_vector)[index2];
-      dQ1Q2 = electrostatic_scaled_charge11*charge22;
+//      dQ1Q2 = electrostatic_scaled_charge11*charge22;
+      dQ1Q2 = charge11*charge22;
+//      printf("%s:%d charge1     %lf and charge2     %lf\n", __FILE__, __LINE__, charge11, charge22);
+//      printf("%s:%d electrostaticScale     %lf and dQ1Q2     %lf\n", __FILE__, __LINE__, electrostaticScale, dQ1Q2);
 #ifdef DEBUG_NONBOND_TERM
       if ( this->_DebugEnergy ) {
         LOG_ENERGY(BF( "nonbond localindex1 %d\n")% localindex1 );

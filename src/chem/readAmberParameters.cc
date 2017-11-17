@@ -61,9 +61,9 @@ CL_DEFMETHOD void	ReadAmberParameters_O::readTypes(core::T_sp fin)
 
 
 CL_LISPIFY_NAME("readParameters");
-CL_DEFMETHOD void	ReadAmberParameters_O::readParameters(core::T_sp fin)
+CL_DEFMETHOD void	ReadAmberParameters_O::readParameters(core::T_sp fin, core::T_sp system)
 {
-  this->_ForceField = this->parseAmberFormattedForceFieldOrFrcMod(fin);
+  this->_ForceField = this->parseAmberFormattedForceFieldOrFrcMod(fin, system);
 }
 
 
@@ -306,8 +306,10 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
 
 
 
-FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin)
+FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin, core::T_sp system)
 {
+  return gc::As<FFPtorDb_sp>(core::eval::funcall(chem::_sym_parse_ptor_db,fin,system));
+  #if 0
     //
     // read Ptor terms 
     //
@@ -363,6 +365,7 @@ FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin)
     }
   }
   return ffPtorDb;
+  #endif
 }
 
 
@@ -460,7 +463,7 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
     bool done = false;
     while ( 1 ) {
       string line = core::cl__read_line(fin).as<core::Str_O>()->get();
-//      printf("%s:%d:%s line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
+      printf("%s:%d:%s line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
       line = core::trimWhiteSpace(line);
       if ( line.size() == 0 ) break;
       else {
@@ -500,8 +503,9 @@ void ReadAmberParameters_O::parseAtomEquivalences(core::T_sp fin)
 }
 
 
+SYMBOL_EXPORT_SC_(ChemPkg,parse_ptor_db);
 
-ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fin)
+ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fin, core::T_sp system)
 {_OF();
     string line = core::cl__read_line(fin).as<core::Str_O>()->get();
     GC_ALLOCATE(FFNonbondDb_O, ffNonbondsDb );
@@ -509,7 +513,7 @@ ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fi
     core::cl__read_line(fin); // skp hydrophilic entries
     FFStretchDb_sp ffStretchesDb = this->parseStretchDb(fin);
     FFAngleDb_sp ffAnglesDb = this->parseAngleDb(fin);
-    FFPtorDb_sp ffPtorsDb = this->parsePtorDb(fin);
+    FFPtorDb_sp ffPtorsDb = this->parsePtorDb(fin,system); //gc::As<FFPtorDb_sp>(core::eval::funcall(chem::_sym_parse_ptor_db,fin,system));
     FFItorDb_sp ffItorsDb = this->parseItorDb(fin);
     SIMPLE_WARN(BF("Warning!  Skipping 10-12 hbond\n"));
     core::cl__read_line(fin); // skp 10-12 hbond
@@ -603,7 +607,7 @@ ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fi
     return ff;
 }
 
-ForceField_sp ReadAmberParameters_O::parseFrcModFile(core::T_sp fin) {
+ForceField_sp ReadAmberParameters_O::parseFrcModFile(core::T_sp fin, core::T_sp system) {
   GC_ALLOCATE(ForceField_O, ff);
   GC_ALLOCATE(FFNonbondDb_O, nonbondDb);
   int lastSegment = 0;
@@ -629,7 +633,7 @@ ForceField_sp ReadAmberParameters_O::parseFrcModFile(core::T_sp fin) {
       ff->setFFAngleDb(this->parseAngleDb(fin));
       lastSegment = 3;
     } else if ( line.size()>=4 && line.substr(0,4) == "DIHE") {
-      ff->setFFPtorDb(this->parsePtorDb(fin));
+      ff->setFFPtorDb(this->parsePtorDb(fin,system));
       lastSegment = 4;
     } else if ( line.size()>=4 && line.substr(0,4) == "IMPR") {
       ff->setFFItorDb(this->parseItorDb(fin));
@@ -653,17 +657,17 @@ ForceField_sp ReadAmberParameters_O::parseFrcModFile(core::T_sp fin) {
 }
 
 
-ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceFieldOrFrcMod(core::T_sp strm) {
+ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceFieldOrFrcMod(core::T_sp strm, core::T_sp system) {
   core::T_mv test_mv = this->determineParmSetFrcModType(strm);
   core::T_sp masses = test_mv.second();
   core::T_sp nonbond = test_mv.third();
   if (test_mv.nilp()) {
-    return this->parseAmberFormattedForceField(strm);
+    return this->parseAmberFormattedForceField(strm,system);
   } else {
     if (masses.nilp() != nonbond.nilp()) {
       SIMPLE_ERROR(BF("Modified force field files must contain both a MASS and a NONB entry, or neither"));
     }
-    return this->parseFrcModFile(strm);
+    return this->parseFrcModFile(strm,system);
   }
 }
 

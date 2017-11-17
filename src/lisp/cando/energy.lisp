@@ -31,19 +31,6 @@
 (defparameter *ff* nil
   "Store the force-field")
 
-(defun setup-amber ()
-  (let ((*default-pathname-defaults*
-         (translate-logical-pathname #P"cando:data;force-field;")))
-    (defparameter *parms*
-      (let ((parms (chem:make-read-amber-parameters)))
-        (with-open-file (fin "ATOMTYPE_GFF.DEF" :direction :input)
-          (chem:read-types parms fin))
-        (with-open-file (fin "gaff.dat" :direction :input)
-          (chem:read-parameters parms fin)
-          parms)))
-    (defparameter *ff* (chem:get-force-field *parms*)))
-  *ff*)
-
 
 
 (defun minimize-energy-function (energy-function &key (restraints-on t)
@@ -114,3 +101,6 @@
 	       do (progn
                     (format t "  excluded-atom-list[~a] -> ~a name: ~a~%" excluded-atom-index-index eaindex (excluded-atom-name eaindex energy-function))
                     (incf excluded-atom-index-index)))))))
+
+
+

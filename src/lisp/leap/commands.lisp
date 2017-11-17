@@ -25,11 +25,11 @@
 
 (defun load-amber-params (filename)
   "Load an AMBER parameter file from filename and return a chem:force-field object."
-  (let* ((filename (merge-pathname filename)))
+  (let* ((filename (merge-pathnames filename)))
     (let ((parmreader (chem:make-read-amber-parameters)))
       (with-open-file (fin filename :direction :input)
-        (chem:read-parameters parms fin)
-        (chem:get-force-field parms)))))
+        (chem:read-parameters parmreader fin leap:*leap-system*)
+        (chem:get-force-field parmreader)))))
 
 (defun source (filename)
   "Load the file of leap commands and execute them one by one.
