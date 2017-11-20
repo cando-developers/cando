@@ -1004,6 +1004,13 @@
                 (fortran:fwrite (geom:vx pos))
                 (fortran:fwrite (geom:vy pos))
                 (fortran:fwrite (geom:vz pos)))))
+      ;; write out the solvent box
+      (let ((solvent-box (chem:matter-get-property aggregate :solvent-box)))
+        (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
+          (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))
+        (fortran:fwrite (float (first solvent-box)))
+        (fortran:fwrite (float (second solvent-box)))
+        (fortran:fwrite (float (third solvent-box))))
       (fortran:end-line))))
 
 (defconstant %flag-title "%FLAG TITLE")
