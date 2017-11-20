@@ -71,7 +71,7 @@ namespace chem
 #define ARGS_ExternalInterface_O_make "(file_name)"
 #define DECL_ExternalInterface_O_make ""
 #define DOCS_ExternalInterface_O_make "make ExternalInterface"
-  ExternalInterface_sp ExternalInterface_O::make(ConformationExplorer_wp conformationExplorer, string stageName)
+  ExternalInterface_sp ExternalInterface_O::make(ConformationExplorer_sp conformationExplorer, string stageName)
   {
       GC_ALLOCATE(ExternalInterface_O, me );
     me->_WeakConformationExplorer = conformationExplorer;

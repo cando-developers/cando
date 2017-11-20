@@ -139,7 +139,7 @@ void Bond_O::addYourselfToCopiedAtoms()
 //
 bool	Bond_O::isInterResidueBond()
 {
-  Matter_wp	wfromCont, wtoCont;
+  Matter_sp	wfromCont, wtoCont;
   Matter_sp	fromCont, toCont;
   Atom_sp a1 = this->_Atom1;
   ASSERTP(a1.objectp(), "Bond_O::isInterResidueBond from atom is undefined!");
@@ -306,10 +306,10 @@ void Bond_O::redirectToAtomCopies()
   }
   LOG(BF("  original   to atom@%p") % ta ); //
 #endif
-  Atom_wp fc = fa->getCopyAtom();
+  Atom_sp fc = fa->getCopyAtom();
   ASSERTNOTNULL(fc);
   LOG(BF("    new from %s") % fc->description() );
-  Atom_wp tc = ta->getCopyAtom();
+  Atom_sp tc = ta->getCopyAtom();
   ASSERTNOTNULL(tc);
   LOG(BF("    new   to %s") % tc->description() );
   this->_Atom1 = fc;

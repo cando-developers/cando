@@ -408,7 +408,7 @@ namespace chem {
     CL_DEFMETHOD 	double	getCovalentRadius()	{ return this->covalentRadius; };
     CL_LISPIFY_NAME("setCovalentRadius");
     CL_DEFMETHOD 	void	setCovalentRadius(double c)	{ this->covalentRadius = c; };
-    Matter_wp	getMatterContainedBy();
+    Matter_sp	getMatterContainedBy();
     Residue_sp	getResidueContainedBy();
     Residue_sp	getResidueContainedBy_const() const;
 
@@ -581,7 +581,7 @@ namespace chem {
     string __repr__() const;
 
     void setConformation(Conformation_sp b);
-    Conformation_wp getWeakConformation();
+    Conformation_sp getWeakConformation();
 
     void setAtomHolderIndex(uint i);
     uint getAtomHolderIndex();

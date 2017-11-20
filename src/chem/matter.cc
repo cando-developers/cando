@@ -716,7 +716,7 @@ CL_DEFMETHOD bool	Matter_O::testConsistancy(const Matter_sp parentShouldBe )
 void	Matter_O::reparent(Matter_sp	newParent)
 {_OF();
   Matter_sp			oldParent;
-  Matter_wp			wctemp;
+  Matter_sp			wctemp;
 
 //    oldParent = this->containedBy();
   this->setContainedBy(newParent);

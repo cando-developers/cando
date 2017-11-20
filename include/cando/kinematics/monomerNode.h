@@ -58,7 +58,7 @@ public:
 	void initialize();
 protected:	// instance variables here
 	/*! Store the parent ChainNode to this one */
-	MonomerNode_wp		_Parent;
+	MonomerNode_sp		_Parent;
 	/*! Store the name of the plug to the parent */
 	core::Symbol_sp		_ParentPlugName;
 	/*! Store the monomerId/residueId of this MonomerNode */

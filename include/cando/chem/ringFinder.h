@@ -92,7 +92,7 @@ class AGVertex_O : public core::CxxObject_O
 {
     LISP_CLASS(chem,ChemPkg,AGVertex_O,"AGVertex",core::CxxObject_O);
 private:
-    RingFinder_wp		_graph;
+    RingFinder_sp		_graph;
     Atom_sp			_atom;
     gctools::Vec0<AGEdge_sp> 		_edges;
     uint			_seenId;
@@ -128,7 +128,7 @@ class AGEdge_O : public core::CxxObject_O
 {
     LISP_CLASS(chem,ChemPkg,AGEdge_O,"AGEdge",core::CxxObject_O);
 private:
-    RingFinder_wp		_graph;
+    RingFinder_sp		_graph;
     uint			_id;
     AGVertex_sp		_vertex1;
     AGVertex_sp		_vertex2;

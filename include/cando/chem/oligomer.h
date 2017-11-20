@@ -103,7 +103,7 @@ private:	// Do not archive
 		/*! When one of my MultiMonomers experiences a UserGroupChange
 		 * we will store it here for others to access.
 		 */
-    MultiMonomer_wp	_WeakLastMultiMonomerChanged;
+    MultiMonomer_sp	_WeakLastMultiMonomerChanged;
 
 
 #ifdef	USEBOOSTPYTHON

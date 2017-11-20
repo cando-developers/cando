@@ -55,7 +55,7 @@ public:
 //	void	archiveBase(core::ArchiveP node);
 //	bool	loadFinalize(core::ArchiveP node);
 private:
-//	CandoDatabase_wp	_WeakCandoDatabase;
+//	CandoDatabase_sp	_WeakCandoDatabase;
 public:
 
 

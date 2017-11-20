@@ -67,7 +67,7 @@ class ConformationCollectionEntry_O : public core::CxxObject_O
 public:
 //    void	archive(core::ArchiveP node);
 private:
-	ConformationCollection_wp	_WeakConformationCollection;
+	ConformationCollection_sp	_WeakConformationCollection;
         geom::SimpleVectorCoordinate_sp		_AllCoordinates;
 	core::HashTableEq_sp		_Data;
 

@@ -55,7 +55,7 @@ namespace chem
 	void initialize();
 //	void	archiveBase(core::ArchiveP node);
     private:
-	ZMatrix_wp	_WeakZMatrix;
+	ZMatrix_sp	_WeakZMatrix;
 	string		_InternalName;
 	bool		_Constrain;
 	uint	_AtomNew;

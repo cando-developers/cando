@@ -115,7 +115,7 @@ void	VirtualAtom_O::calculatePosition()
 {
     ASSERTNOTNULL(this->_CalculatePosition);
 //    ASSERTNOTNULL(this->_Environment);
-    Matter_wp wmres = this->containedBy();
+    Matter_sp wmres = this->containedBy();
     ASSERTNOTNULL(wmres);
     Matter_sp mres = wmres;
     ASSERT(mres.notnilp());

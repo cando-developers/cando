@@ -155,7 +155,7 @@ public:
 //    void	serialize(serialize::SNode node);
 
 private:
-	Atom_wp		_A;
+	Atom_sp		_A;
 	int		_Chirality;	// S=1,R=-1
 
 public:
@@ -194,8 +194,8 @@ public:
 //    void	serialize(serialize::SNode node);
 
 private:
-	Atom_wp		_A;
-	Atom_wp		_B;
+	Atom_sp		_A;
+	Atom_sp		_B;
 	double		_Min;
 	double		_Max;
 	double		_Weight;
@@ -237,9 +237,9 @@ public:
 //    void	serialize(serialize::SNode node);
 
 private:
-	Atom_wp		_A;
-	Atom_wp		_B;
-	Atom_wp		_C;
+	Atom_sp		_A;
+	Atom_sp		_B;
+	Atom_sp		_C;
 	double		_MinRad;
 	double		_MaxRad;
 	double		_Weight;
@@ -286,10 +286,10 @@ public:
 //    void	serialize(serialize::SNode node);
 
 protected:
-	Atom_wp		_A;
-	Atom_wp		_B;
-	Atom_wp		_C;
-	Atom_wp		_D;
+	Atom_sp		_A;
+	Atom_sp		_B;
+	Atom_sp		_C;
+	Atom_sp		_D;
 		/*! I think these should be between 0 and 360
 		 * But look at stereochemistry.cc line 211 transMin/transMax
 		 * and cisMin/cisMax are between -180 and 180

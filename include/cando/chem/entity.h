@@ -61,7 +61,7 @@ class Entity_O : public core::CxxObject_O
 //	void	archiveBase(core::ArchiveP node);
 ////	bool	loadFinalize(core::ArchiveP node);
  private:
-//	CandoDatabase_wp	_WeakCandoDatabase;
+//	CandoDatabase_sp	_WeakCandoDatabase;
  public:
 
   virtual string __repr__() const;

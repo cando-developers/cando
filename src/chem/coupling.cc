@@ -404,7 +404,7 @@ void	DirectionalCoupling_O::doCoupling(Residue_sp inResidue, Residue_sp outResid
 {
 Monomer_sp	min, mout;
 PlugWithMates_sp	minPlug, moutPlug;
-Residue_wp	weakInRes, weakOutRes;
+Residue_sp	weakInRes, weakOutRes;
 Bond_sp		b;
 Atom_sp		inB0, outB0, inB1, outB1;
     min = this->getInMonomer();
@@ -699,7 +699,7 @@ void	RingCoupling_O::doCoupling(Residue_sp inResidue, Residue_sp outResidue )
 {
 Monomer_sp	mon1, mon2;
 PlugWithMates_sp	mon1Plug, mon2Plug;
-Residue_wp	weakInRes, weakOutRes;
+Residue_sp	weakInRes, weakOutRes;
 Bond_sp		b;
 Atom_sp		inB0, outB0, inB1, outB1;
     mon1 = this->getMonomer1();

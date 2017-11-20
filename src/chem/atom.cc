@@ -334,7 +334,7 @@ Atom_O::Atom_O(const Atom_O& ss) :Matter_O(ss)
   this->tempFactor = ss.tempFactor;
   this->vdwRadius = ss.vdwRadius;
   this->covalentRadius = ss.covalentRadius;
-  this->copyAtom = Atom_wp();
+  this->copyAtom = Atom_sp();
   this->tempInt = ss.tempInt;
 //  this->moeIndex = ss.moeIndex;
 //  this->moeType = ss.moeType;
@@ -808,9 +808,9 @@ void Atom_O::makeAllAtomNamesInEachResidueUnique()
 void Atom_O::basicRemoveBondTo(Atom_sp a)
 {_OF();
   VectorBond::iterator	b;
-  Bond_wp				bb;
-  Atom_wp				aa;
-  Atom_wp				wpa;
+  Bond_sp				bb;
+  Atom_sp				aa;
+  Atom_sp				wpa;
   for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ )
   {
     if ( (*b)->getOtherAtom(this->sharedThis<Atom_O>()) == a )
@@ -1404,7 +1404,7 @@ CL_DEFMETHOD     int     Atom_O::getBondedHydrogenCount()
 {_OF();
   VectorBond::iterator	b;
   int                             hs;
-  Atom_wp				weakAtomTo;
+  Atom_sp				weakAtomTo;
   hs=0;
   Atom_sp me = this->sharedThis<Atom_O>();
   for (b=this->bonds.begin();b!=this->bonds.end(); b++ )
@@ -1635,10 +1635,10 @@ string	Atom_O::getConfigurationPriorityLowest()
 }
 #endif
 
-Matter_wp	Atom_O::getMatterContainedBy()
+Matter_sp	Atom_O::getMatterContainedBy()
 {_OF();
-  Matter_wp	containedBy;
-  Residue_wp	wpresidue;
+  Matter_sp	containedBy;
+  Residue_sp	wpresidue;
   Residue_sp	residue;
   ASSERTNOTNULL(this->containedBy());
   containedBy = this->containedBy();

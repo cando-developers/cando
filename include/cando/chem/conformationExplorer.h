@@ -74,7 +74,7 @@ private:
 	string				_BasedOnStageName;
 	string				_StageName;
 	bool				_Complete;
-	ConformationExplorerEntry_wp	_WeakConformationExplorerEntry;
+	ConformationExplorerEntry_sp	_WeakConformationExplorerEntry;
         geom::SimpleVectorCoordinate_sp	_FinalCoordinates;
 	core::HashTableEq_sp			_Binder;
 			//! Energy of the conformation in kCal as calculated by the package/model
@@ -177,7 +177,7 @@ public:
 //    void	archiveBase(core::ArchiveP node);
 	void	initialize();
 private:
-	ConformationExplorer_wp				_WeakConformationExplorer;
+	ConformationExplorer_sp				_WeakConformationExplorer;
     gctools::Vec0<ConformationExplorerEntryStage_sp>		_Stages;
 		/*!One stage in the list of stages is selected
 		 * for extraction of MonomerCoordinates or for writing out

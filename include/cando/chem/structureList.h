@@ -68,7 +68,7 @@ public:
 public:
 static Structure_Old_ListEntry_sp	create(Structure_Old_List_sp s);
 public:
-	Structure_Old_List_wp		_WeakStructureList;
+	Structure_Old_List_sp		_WeakStructureList;
         geom::SimpleVectorCoordinate_sp	_AllCoordinates;
         geom::SimpleVectorCoordinate_sp	_SuperposeCoordinates;
     core::HashTableEq_sp 	_Data;
