@@ -25,10 +25,10 @@
 
 (defun load-amber-params (filename)
   "Load an AMBER parameter file from filename and return a chem:force-field object."
-  (let* ((filename (merge-pathnames filename)))
+  (let* ((filename (leap.core:search-path filename)))
     (let ((parmreader (chem:make-read-amber-parameters)))
       (with-open-file (fin filename :direction :input)
-        (chem:read-parameters parmreader fin leap:*leap-system*)
+        (chem:read-parameters parmreader fin leap:*amber-system*)
         (chem:get-force-field parmreader)))))
 
 (defun source (filename)
@@ -51,7 +51,15 @@ Nothing is returned."
          (crd-pathname (if crd-pathname
                            (merge-pathnames crd-pathname)
                            (make-pathname :type "crd" :defaults top-pathname))))
-    (leap.topology:save-amber-parm aggregate top-pathname crd-pathname (leap.core:merged-force-field force-field-name))))
+    (leap.topology:save-amber-parm-format aggregate top-pathname crd-pathname (leap.core:merged-force-field force-field-name))))
+
+(defun load-amber-type-rules (filename)
+  (let ((path (leap.core:search-path filename)))
+    (let ((parms (chem:make-read-amber-parameters)))
+      (with-open-file (fin path :direction :input)
+        (chem:read-types parms fin))
+      parms)))
+
 
 ;;; ------------------------------------------------------------
 ;;;

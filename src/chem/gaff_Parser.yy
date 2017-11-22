@@ -7,7 +7,7 @@
 //
 //
 %{
-#define DEBUG_LEVEL_NONE
+#define DEBUG_LEVEL_FULL
 #include <string.h>
 #include <iostream>
 #include <string>
@@ -56,11 +56,11 @@ int	gaff_lex(YYSTYPE* yylval, YYLTYPE* yylloc, gaff_SParserParam* data);
 
 // %define api.prefix {gaff_}
 // %n a m e - p r e f i x ="gaff_"
-%define api.pure
+%define api.pure full
 %locations
 %lex-param {gaff_SParserParam* data}
 %parse-param {gaff_SParserParam* data}
-
+%define parse.trace
 
 
 

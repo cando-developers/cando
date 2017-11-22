@@ -1,33 +1,8 @@
-/*
-    File: gaff_Parser.cc
-*/
-/*
-Open Source License
-Copyright (c) 2016, Christian E. Schafmeister
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
- 
-This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
-*/
-/* -^- */
-/* A Bison parser, made by GNU Bison 3.0.2.  */
+/* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -69,13 +44,13 @@ This is an open source license for the CANDO software from Temple University, bu
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.2"
+#define YYBISON_VERSION "3.0.4"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
 
 /* Pure parsers.  */
-#define YYPURE 1
+#define YYPURE 2
 
 /* Push parsers.  */
 #define YYPUSH 0
@@ -165,7 +140,7 @@ int	gaff_lex(YYSTYPE* yylval, YYLTYPE* yylloc, gaff_SParserParam* data);
 # define YY_GAFF_GAFF_PARSER_HH_INCLUDED
 /* Debug traces.  */
 #ifndef YYDEBUG
-# define YYDEBUG 0
+# define YYDEBUG 1
 #endif
 #if YYDEBUG
 extern int gaff_debug;
@@ -1545,46 +1520,46 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 143 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 143 "gaff_Parser.yy" /* yacc.c:1661  */
     { data->expression = (yyvsp[0].antechamberRoot)->value(); LOG(BF("Got AntechamberMatch tree=%0X") % (yyvsp[0].antechamberRoot) ); }
-#line 1526 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1526 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 3:
-#line 157 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 157 "gaff_Parser.yy" /* yacc.c:1661  */
     {
 		    _BLOCK_TRACE("Got antechamber line");
                     chem::AntechamberFocusAtomMatch_sp focus;
                     focus = chem::AntechamberFocusAtomMatch_O::create( (yyvsp[-8].residueList)->value(), (yyvsp[-7].ival), (yyvsp[-6].ival), (yyvsp[-5].ival), (yyvsp[-4].ival), (yyvsp[-3].logical)->value() );
                     (yyval.antechamberRoot) = chem::createHolder<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create(chem::chemkw_intern(std::string((yyvsp[-9].carr))),focus,(yyvsp[-2].bondListMatchNode)->value(),(yyvsp[-1].afterMatchBondTest)->value())); 
                 }
-#line 1537 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1537 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 4:
-#line 172 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 172 "gaff_Parser.yy" /* yacc.c:1661  */
     {
 		    _BLOCK_TRACE("Got antechamber line");
                     chem::AntechamberFocusAtomMatch_sp focus;
                     focus = chem::AntechamberFocusAtomMatch_O::create( (yyvsp[-7].residueList)->value(), (yyvsp[-6].ival), (yyvsp[-5].ival), (yyvsp[-4].ival), (yyvsp[-3].ival), (yyvsp[-2].logical)->value() );
                     (yyval.antechamberRoot) = chem::createHolder<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create(chem::chemkw_intern(std::string((yyvsp[-8].carr))),focus,(yyvsp[-1].bondListMatchNode)->value())); 
                 }
-#line 1548 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1548 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 5:
-#line 186 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 186 "gaff_Parser.yy" /* yacc.c:1661  */
     {
 		    _BLOCK_TRACE("Got antechamber line");
                     chem::AntechamberFocusAtomMatch_sp focus;
                     focus = chem::AntechamberFocusAtomMatch_O::create( (yyvsp[-6].residueList)->value(), (yyvsp[-5].ival), (yyvsp[-4].ival), (yyvsp[-3].ival), (yyvsp[-2].ival), (yyvsp[-1].logical)->value() );
                     (yyval.antechamberRoot) = chem::createHolder<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create(chem::chemkw_intern(std::string((yyvsp[-7].carr))),focus)); 
                 }
-#line 1559 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1559 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 6:
-#line 199 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 199 "gaff_Parser.yy" /* yacc.c:1661  */
     {
 		    _BLOCK_TRACE("Got antechamber line");
                     chem::AntechamberFocusAtomMatch_sp focus;
@@ -1592,341 +1567,341 @@ yyreduce:
                     focus = chem::AntechamberFocusAtomMatch_O::create( (yyvsp[-5].residueList)->value(), (yyvsp[-4].ival), (yyvsp[-3].ival), (yyvsp[-2].ival), (yyvsp[-1].ival), temp );
                     (yyval.antechamberRoot) = chem::createHolder<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create(chem::chemkw_intern(std::string((yyvsp[-6].carr))),focus)); 
                 }
-#line 1571 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1571 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 7:
-#line 212 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 212 "gaff_Parser.yy" /* yacc.c:1661  */
     {
 		    _BLOCK_TRACE("Got antechamber line");
                     chem::AntechamberFocusAtomMatch_sp focus;
                     focus = chem::AntechamberFocusAtomMatch_O::create( (yyvsp[-4].residueList)->value(), (yyvsp[-3].ival), (yyvsp[-2].ival), (yyvsp[-1].ival), -1);
                     (yyval.antechamberRoot) = chem::createHolder<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create(chem::chemkw_intern(std::string((yyvsp[-5].carr))),focus)); 
                 }
-#line 1582 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1582 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 8:
-#line 223 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 223 "gaff_Parser.yy" /* yacc.c:1661  */
     {
 		    _BLOCK_TRACE("Got antechamber line");
                     chem::AntechamberFocusAtomMatch_sp focus;
 		    focus = chem::AntechamberFocusAtomMatch_O::create( (yyvsp[-3].residueList)->value(), (yyvsp[-2].ival), (yyvsp[-1].ival), -1, -1);
                     (yyval.antechamberRoot) = chem::createHolder<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create(chem::chemkw_intern(std::string((yyvsp[-4].carr))),focus));
                 }
-#line 1593 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1593 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 9:
-#line 233 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 233 "gaff_Parser.yy" /* yacc.c:1661  */
     {
 		    _BLOCK_TRACE("Got antechamber line");
                     chem::AntechamberFocusAtomMatch_sp focus;
                     focus = chem::AntechamberFocusAtomMatch_O::create( (yyvsp[-2].residueList)->value(), (yyvsp[-1].ival), -1, -1, -1 );
                     (yyval.antechamberRoot) = chem::createHolder<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create(chem::chemkw_intern(std::string((yyvsp[-3].carr))),focus)); 
                 }
-#line 1604 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1604 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 10:
-#line 242 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 242 "gaff_Parser.yy" /* yacc.c:1661  */
     {
 		    _BLOCK_TRACE("Got antechamber line");
                     chem::AntechamberFocusAtomMatch_sp focus;
                     focus = chem::AntechamberFocusAtomMatch_O::create( (yyvsp[-1].residueList)->value(), -1, -1, -1, -1);
                     (yyval.antechamberRoot) = chem::createHolder<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create(chem::chemkw_intern(std::string((yyvsp[-2].carr))),focus)); 
                 }
-#line 1615 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1615 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 11:
-#line 250 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 250 "gaff_Parser.yy" /* yacc.c:1661  */
     {
 		    _BLOCK_TRACE("Got antechamber line");
                     gc::Nilable<chem::AtomOrBondMatchNode_sp> focus = _Nil<core::T_O>();
                     (yyval.antechamberRoot) = chem::createHolder<chem::AntechamberRoot_O>(chem::AntechamberRoot_O::create(chem::chemkw_intern(std::string((yyvsp[-1].carr))),focus));
                 }
-#line 1625 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1625 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 12:
-#line 258 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 258 "gaff_Parser.yy" /* yacc.c:1661  */
     { strcpy((yyval.carr),(yyvsp[0].carr)); }
-#line 1631 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1631 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 13:
-#line 259 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 259 "gaff_Parser.yy" /* yacc.c:1661  */
     { stringstream ss; ss << (yyvsp[-2].carr) << "." << (yyvsp[0].ival); strcpy((yyval.carr),ss.str().c_str()); }
-#line 1637 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1637 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 14:
-#line 260 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 260 "gaff_Parser.yy" /* yacc.c:1661  */
     { stringstream ss; ss << (yyvsp[-3].carr) << "." << (yyvsp[-1].ival) << (yyvsp[0].carr); strcpy((yyval.carr),ss.str().c_str()); }
-#line 1643 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1643 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 15:
-#line 261 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 261 "gaff_Parser.yy" /* yacc.c:1661  */
     { stringstream ss; ss << (yyvsp[-2].carr) << "." << (yyvsp[0].carr); strcpy((yyval.carr),ss.str().c_str()); }
-#line 1649 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1649 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 16:
-#line 265 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 265 "gaff_Parser.yy" /* yacc.c:1661  */
     { strcpy((yyval.carr),(yyvsp[0].carr)); }
-#line 1655 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1655 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 17:
-#line 266 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 266 "gaff_Parser.yy" /* yacc.c:1661  */
     { strcpy((yyval.carr),(yyvsp[0].carr)); }
-#line 1661 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1661 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 18:
-#line 273 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 273 "gaff_Parser.yy" /* yacc.c:1661  */
     { (yyval.residueList) = chem::createHolder<chem::ResidueList_O>(chem::ResidueList_O::create()); }
-#line 1667 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1667 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 19:
-#line 278 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 278 "gaff_Parser.yy" /* yacc.c:1661  */
     { (yyval.ival) = -1; }
-#line 1673 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1673 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 20:
-#line 279 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 279 "gaff_Parser.yy" /* yacc.c:1661  */
     { (yyval.ival) = (yyvsp[0].ival); }
-#line 1679 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1679 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 21:
-#line 283 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 283 "gaff_Parser.yy" /* yacc.c:1661  */
     { (yyval.ival) = -1; }
-#line 1685 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1685 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 22:
-#line 284 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 284 "gaff_Parser.yy" /* yacc.c:1661  */
     { (yyval.ival) = (yyvsp[0].ival); }
-#line 1691 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1691 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 23:
-#line 288 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 288 "gaff_Parser.yy" /* yacc.c:1661  */
     { (yyval.ival) = -1; }
-#line 1697 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1697 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 24:
-#line 289 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 289 "gaff_Parser.yy" /* yacc.c:1661  */
     { (yyval.ival) = (yyvsp[0].ival); }
-#line 1703 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1703 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 25:
-#line 293 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 293 "gaff_Parser.yy" /* yacc.c:1661  */
     { (yyval.ival) = -1; }
-#line 1709 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1709 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 26:
-#line 294 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 294 "gaff_Parser.yy" /* yacc.c:1661  */
     { (yyval.ival) = (yyvsp[0].ival); }
-#line 1715 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1715 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 27:
-#line 298 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 298 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); (yyval.logical) = chem::createHolder<chem::Logical_O>(); }
-#line 1721 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1721 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 28:
-#line 299 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 299 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); 
 		LOG(BF("Got bracketedAtomicProperty") ); // vp0(( "Got bracketedAtomicProperty" ));
 		(yyval.logical) = chem::createHolder<chem::Logical_O>((yyvsp[-1].logical)->value()); }
-#line 1729 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1729 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 29:
-#line 306 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 306 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); (yyval.bondListMatchNode) = chem::createHolder<chem::BondListMatchNode_O>(); }
-#line 1735 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1735 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 30:
-#line 307 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 307 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); (yyval.bondListMatchNode) = chem::createHolder<chem::BondListMatchNode_O>((yyvsp[0].bondListMatchNode)->value()); }
-#line 1741 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1741 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 31:
-#line 313 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 313 "gaff_Parser.yy" /* yacc.c:1661  */
     {_BT(); (yyval.afterMatchBondTest) = chem::createHolder<chem::AfterMatchBondTest_O>(chem::AfterMatchBondTest_O::create( chem::chemkw_intern(std::string((yyvsp[-4].carr))), chem::chemkw_intern(std::string((yyvsp[-2].carr))), (yyvsp[0].benum) )); }
-#line 1747 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1747 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 32:
-#line 317 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 317 "gaff_Parser.yy" /* yacc.c:1661  */
     {_BT(); (yyval.logical) = chem::createHolder<chem::Logical_O>(chem::Logical_O::create( chem::logIdentity, (yyvsp[0].atomTest)->value() )); }
-#line 1753 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1753 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 33:
-#line 318 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 318 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT();(yyval.logical) = chem::createHolder<chem::Logical_O>(chem::Logical_O::create(chem::logHighPrecedenceAnd, (yyvsp[-2].logical)->value(), (yyvsp[0].logical)->value() )); }
-#line 1759 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1759 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 34:
-#line 319 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 319 "gaff_Parser.yy" /* yacc.c:1661  */
     {_BT(); (yyval.logical) = chem::createHolder<chem::Logical_O>(chem::Logical_O::create(chem::logOr, (yyvsp[-2].logical)->value(), (yyvsp[0].logical)->value() )); }
-#line 1765 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1765 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 35:
-#line 322 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 322 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); (yyval.atomTest) = chem::createHolder<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPInBond, (yyvsp[0].benum), 1)); }
-#line 1771 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1771 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 36:
-#line 323 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 323 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); (yyval.atomTest) = chem::createHolder<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPInBond, (yyvsp[0].benum), (yyvsp[-1].ival))); }
-#line 1777 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1777 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 37:
-#line 324 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 324 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); (yyval.atomTest) = chem::createHolder<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPNotBondedToPrevious,(yyvsp[-1].benum))); }
-#line 1783 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1783 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 38:
-#line 325 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 325 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); (yyval.atomTest) = chem::createHolder<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPBondedToPrevious,(yyvsp[-1].benum))); }
-#line 1789 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1789 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 39:
-#line 326 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 326 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); (yyval.atomTest) = chem::createHolder<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPArLevel, (yyvsp[0].ival) )); }
-#line 1795 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1795 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 40:
-#line 327 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 327 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); (yyval.atomTest) = chem::createHolder<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPRingSize, 1 )); }
-#line 1801 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1801 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 41:
-#line 328 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 328 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); (yyval.atomTest) = chem::createHolder<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPRingSize, (yyvsp[0].ival) )); }
-#line 1807 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1807 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 42:
-#line 329 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 329 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); (yyval.atomTest) = chem::createHolder<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPRingSize, (yyvsp[0].ival), (yyvsp[-2].ival) )); }
-#line 1813 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1813 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 43:
-#line 330 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 330 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); (yyval.atomTest) = chem::createHolder<chem::AtomTest_O>(chem::AtomTest_O::create(chem::SAPNoRing)); }
-#line 1819 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1819 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 44:
-#line 334 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 334 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); (yyval.bondListMatchNode)=(yyvsp[-1].bondListMatchNode); }
-#line 1825 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1825 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 45:
-#line 337 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 337 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); (yyval.bondListMatchNode) = chem::createHolder<chem::BondListMatchNode_O>((yyvsp[0].bondListMatchNode)->value()); }
-#line 1831 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1831 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 46:
-#line 338 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 338 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); (yyval.bondListMatchNode) = chem::createHolder<chem::BondListMatchNode_O>(chem::Branch_O::create((yyvsp[-2].bondListMatchNode)->value(),(yyvsp[0].bondListMatchNode)->value())); }
-#line 1837 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1837 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 47:
-#line 342 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 342 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT();(yyval.bondListMatchNode) = chem::createHolder<chem::BondListMatchNode_O>(chem::Chain_O::create((yyvsp[0].antechamberBondTest)->value()));}
-#line 1843 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1843 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 48:
-#line 343 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 343 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); (yyval.bondListMatchNode) = chem::createHolder<chem::BondListMatchNode_O>(chem::Chain_O::create((yyvsp[-1].antechamberBondTest)->value(),(yyvsp[0].bondListMatchNode)->value())); }
-#line 1849 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1849 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 49:
-#line 351 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 351 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); 
                     (yyval.antechamberBondTest) = chem::createHolder<chem::AntechamberBondTest_O>(chem::AntechamberBondTest_O::create(chem::chemkw_intern(std::string((yyvsp[-3].carr))),(yyvsp[-2].ival),(yyvsp[-1].logical)->value(),chem::chemkw_intern(std::string((yyvsp[0].carr))))); 
                 }
-#line 1857 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1857 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 50:
-#line 356 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 356 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); 
                     (yyval.antechamberBondTest) = chem::createHolder<chem::AntechamberBondTest_O>(chem::AntechamberBondTest_O::create(chem::chemkw_intern(std::string((yyvsp[-2].carr))), -1, (yyvsp[-1].logical)->value(), chem::chemkw_intern(std::string((yyvsp[0].carr)))));
                 }
-#line 1865 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1865 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 51:
-#line 362 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 362 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); strcpy((yyval.carr),(yyvsp[0].carr)); }
-#line 1871 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1871 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 52:
-#line 363 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 363 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); strcpy((yyval.carr),(yyvsp[0].carr)); }
-#line 1877 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1877 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 53:
-#line 366 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 366 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); (yyval.logical) = chem::createHolder<chem::Logical_O>(); }
-#line 1883 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1883 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 54:
-#line 367 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 367 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); (yyval.logical) = chem::createHolder<chem::Logical_O>((yyvsp[-1].logical)->value()); }
-#line 1889 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1889 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 55:
-#line 371 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 371 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); strcpy((yyval.carr),""); }
-#line 1895 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1895 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 56:
-#line 372 "gaff_Parser.yy" /* yacc.c:1646  */
+#line 372 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); strcpy((yyval.carr),(yyvsp[-1].carr)); }
-#line 1901 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1901 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
 
-#line 1905 "gaff_Parser.cc" /* yacc.c:1646  */
+#line 1905 "gaff_Parser.cc" /* yacc.c:1661  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2365,7 +2340,7 @@ char	ichar;
 		    return APOperatorAnd;
 		    break;
 	    case '.':
-		    LEXPRINT("APOperatorAnd character");
+		    LEXPRINT("APOperatorOr");
 		    return APOperatorOr;
 		    break;
             case ':':
@@ -2552,7 +2527,7 @@ char	ichar;
 chem::AntechamberRoot_sp gaff_compile(const string& input, 
 				chem::WildElementDict_sp dict,
 				stringstream& errorStream)
-{
+{_G();
     gaff_SParserParam p;
     stringstream sin(input);
     p.expression = chem::AntechamberRoot_O::create();
@@ -2566,3 +2541,8 @@ chem::AntechamberRoot_sp gaff_compile(const string& input,
     }
     return p.expression;
 }
+
+
+
+    
+

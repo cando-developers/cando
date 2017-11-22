@@ -316,7 +316,7 @@
     (let ((indices (if (check-if-dihedrals-are-ordered proper-vector i1-vector i2-vector i3-vector i4-vector in-vector)
                        (make-indices (length v-vector))
                        (sort-dihedrals proper-vector i1-vector i2-vector i3-vector i4-vector in-vector)))))
-      (let (proper-prev i1prev i2prev i3prev i4prev)
+    (let (proper-prev i1prev i2prev i3prev i4prev)
         (loop for x below (length v-vector)
            for properx = (aref proper-vector x)
            for i1x = (aref i1-vector x)
@@ -496,12 +496,18 @@
   (let* ((atom-table (chem:atom-table energy-function))
          (residue-vector (chem:atom-table-residues atom-table))
          (residue-name-vector (chem:atom-table-residue-names atom-table))
-         nresidue)
+         (atoms-per-molecule (chem:atom-table-atoms-per-molecule atom-table))
+         (nresidue 0)
+         (nmxrs 0))
     (setf nresidue (- (length residue-vector) 1))
     (loop for i from 0 below (length residue-vector)
        for fresidue = (+ (aref residue-vector i) 1)
        do (setf (aref residue-vector i) fresidue))
-    (values nresidue residue-vector residue-name-vector)))         
+    (loop for i from 0 below nresidue
+       for inmxrs = (- (aref residue-vector (+ i 1)) (aref residue-vector i))
+       do (if (> inmxrs nmxrs)
+              (setf nmxrs inmxrs)))
+    (values nresidue nmxrs residue-vector residue-name-vector atoms-per-molecule)))         
          
 (defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname force-field)
   (let* ((energy-function (chem:make-energy-function aggregate force-field
@@ -533,7 +539,7 @@
             nhparm nparm  nnb nres residue-vec residue-name-vec
             nbona    ntheta nphia  NUMBND NUMANG NPTRA
             NATYP    NPHB   IFPERT NBPER  NGPER  NDPER
-            MBPER    MGPER  MDPER  IFBOX  NMXRS  IFCAP
+            MBPER    MGPER  MDPER  IFBOX  nmxrs  IFCAP
             NUMEXTRA NCOPY
             )
         ;; Here we need to calculate all of the values for %FLAG POINTERS
@@ -545,7 +551,7 @@
           (prepare-amber-energy-dihedral energy-function))
                                         ;        (multiple-value-setq (ntypes atom-name charge mass atomic-number ico iac local-typej-vec cn1-vec cn2-vec)
                                         ;          (chem:prepare-amber-energy-nonbond energy-function))
-        (multiple-value-setq (nres residue-vec residue-name-vec)
+        (multiple-value-setq (nres nmxrs residue-vec residue-name-vec)
           (prepare-residue energy-function))
         (setf atom-vectors (chem:prepare-amber-energy-nonbond energy-function force-field))
         (setf ntypes (cdr (assoc :ntypes atom-vectors)))
@@ -577,8 +583,7 @@
         (setf mbper 0)     
         (setf mgper 0)    
         (setf mdper 0)    
-        (setf ifbox 0)     
-        (setf nmxrs 0)     
+        (setf ifbox 1)     
         (setf ifcap 0)     
         (setf numextra 0)  
         (setf ncopy 0)
@@ -972,15 +977,125 @@
         (loop for atom across excluded-atom-list
            do (fortran:fwrite (+ atom 1)))
         (fortran:end-line)
+        ;; write excluded atoms list
+
         ;; Next
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG HBOND_ACOEF")
+        (fortran:fwrite "%FORMAT(5E16.8)")
+        (fortran:debug "-31-")
+        (fortran:fformat 5 "%16.8f")
+        (fortran:end-line)
+        ;;This term has been dropped from most modern force fields.
+
+        ;; Next
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG HBOND_BCOEF")
+        (fortran:fwrite "%FORMAT(5E16.8)")
+        (fortran:debug "-32-")
+        (fortran:fformat 5 "%16.8f")
+        (fortran:end-line)
+        ;;This term has been dropped from most modern force fields.
+
+        ;; Next
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG HBCUT")
+        (fortran:fwrite "%FORMAT(5E16.8)")
+        (fortran:debug "-33-")
+        (fortran:fformat 5 "%16.8f")
+        (fortran:end-line)
+        ;;no longer used for anything.
+
+        ;;next
         (fortran:fformat 1 "%-80s")
         (fortran:fwrite "%FLAG AMBER_ATOM_TYPE")
         (fortran:fwrite "%FORMAT(20A4)")
-        (fortran:debug "-31-")
+        (fortran:debug "-34-")
         (fortran:fformat 20 "%-4s")
         (loop for type across atom-type
            do (fortran:fwrite (string type)))
         (fortran:end-line)
+
+        ;;next
+;        (fortran:fformat 1 "%-80s")
+;        (fortran:fwrite "%FLAG TREE_CHAIN_CLASSIFICATION")
+;        (fortran:fwrite "%FORMAT(20A4)")
+;        (fortran:debug "-35-")
+;        (fortran:fformat 20 "%-4s")
+
+;        (fortran:end-line)
+
+        ;;next
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG JOIN_ARRAY")
+        (fortran:fwrite "%FORMAT(10I8)")
+        (fortran:debug "-36-")
+        (fortran:fformat 10 "%8d")
+        (loop repeat natom
+           do (fortran:fwrite "0"))
+        (fortran:end-line)
+        ;;This section is no longer used and is currently just filled with zeros.
+
+        ;;next
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG IROTAT")
+        (fortran:fwrite "%FORMAT(10I8)")
+        (fortran:debug "-37-")
+        (fortran:fformat 10 "%8d")
+        (loop repeat natom
+           do (fortran:fwrite "0"))
+        (fortran:end-line)
+        ;;This section is not used and is currently just filled with zeros.
+
+        ;;next
+;        (fortran:fformat 1 "%-80s")
+;        (fortran:fwrite "%FLAG SOLVENT_POINTERS")
+;        (fortran:fwrite "%FORMAT(3I8)")
+;        (fortran:debug "-38-")
+;        (fortran:fformat 3 "%8d")
+
+;        (fortran:end-line)
+;        (fortran:fformat 1 "%-80s")
+;        (fortran:fwrite "%FLAG ATOMS_PER_MOLECULE")
+;        (fortran:fwrite "%FORMAT(10I8)")
+;        (fortran:debug "-39-")
+;        (fortran:fformat 5 "%16.8f")
+
+;        (fortran:end-line)
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG BOX_DIMENSIONS")
+        (fortran:fwrite "%FORMAT(5E16.8)")
+        (fortran:debug "-40-")
+        (fortran:fformat 5 "%16.8f")
+        (let ((solvent-box (chem:matter-get-property aggregate :solvent-box)))
+          (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
+            (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))
+          (fortran:fwrite (float (first solvent-box)))
+          (fortran:fwrite (float (second solvent-box)))
+          (fortran:fwrite (float (third solvent-box)))) 
+        (fortran:end-line)
+        
+;        (fortran:fformat 1 "%-80s")
+;        (fortran:fwrite "%FLAG RADIUS_SET")
+;        (fortran:fwrite "%FORMAT(1a80)")
+;        (fortran:debug "-41-")
+;        (fortran:fformat 5 "%16.8f")
+
+;        (fortran:end-line)
+;        (fortran:fformat 1 "%-80s")
+;        (fortran:fwrite "%FLAG RADII")
+;        (fortran:fwrite "%FORMAT(5E16.8)")
+;        (fortran:debug "-42-")
+;        (fortran:fformat 5 "%16.8f")
+
+;        (fortran:end-line)
+;        (fortran:fformat 1 "%-80s")
+;        (fortran:fwrite "%FLAG SCREEN")
+;        (fortran:fwrite "%FORMAT(5E16.8)")
+;        (fortran:debug "-43-")
+;        (fortran:fformat 5 "%16.8f")
+
+;        (fortran:end-line)
         ))
     (format *debug-io* "coordinate-pathname -> ~s~%" coordinate-pathname)
     (fortran:with-fortran-output-file (ftop coordinate-pathname :direction :output :if-exists :supersede)

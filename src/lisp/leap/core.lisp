@@ -121,7 +121,7 @@ Lookup the object in the *objects*."
 
 (defvar *force-fields* (make-hash-table)
   "Every time a force field is loaded, it is put into a new list and
-associated with a keyword symbol name.  Every frcmod is loaded it is pushed onto
+associated with a keyword symbol name.  As every frcmod is loaded it is pushed onto
 a named force-field list.  When parameters are needed a name must be provided and
 the list of frcmods and force-field are used to create a merged force-field that is
 used to provide parameters.  There is one default force-field called :default.")

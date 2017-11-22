@@ -11,7 +11,7 @@
 (chem:set-position *a1* '(0.0 0.0 0.0))
 (chem:set-position *a2* '(3.0 0.0 0.0))
 (chem:add-matter *res1* *a1*)
-(chem:add-matter *res1* *a2*)
+(chem:add-matter *res2* *a2*)
 (chem:add-matter *mol1* *res1*)
 (chem:add-matter *mol2* *res2*)
 
@@ -19,7 +19,7 @@
 (chem:add-matter *agg* *mol1*)
 (chem:add-matter *agg* *mol2*)                                                                         
 (chem:set-property *agg* :solvent-box '(20.0 30.0 40.0))
-(leap:setup-amber)
+(energy::setup-amber)
 
 energy::*ff*
 

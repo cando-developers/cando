@@ -1320,6 +1320,7 @@ uint Atom_O::maxTotalBondOrder()
 CL_LISPIFY_NAME("totalBondOrder");
 CL_DEFMETHOD     uint Atom_O::totalBondOrder()
 {
+  if (this->getElement() == element_H) return 1;
   if (this->getHybridization() == hybridization_sp3) return 4;
   if (this->getHybridization() == hybridization_sp2) return 3;
   if (this->getHybridization() == hybridization_sp) return 2;

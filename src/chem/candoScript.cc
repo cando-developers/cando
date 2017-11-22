@@ -894,12 +894,10 @@ CL_DEFUN core::T_sp chem__oligomer(core::Symbol_sp oligomerName, core::List_sp p
 }
 
 
-
-
-
-
-
-
+extern "C" int gaff_debug;
+CL_DEFUN void chem__set_gaff_debug(bool on) {
+  gaff_debug = on;
+}
 
 
 

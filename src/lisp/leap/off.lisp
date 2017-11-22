@@ -284,8 +284,9 @@ Return the hash-table."
 - filename : Pathname
 * Description
 Load the OFF file containing forms into new-leap."
-  (with-open-file (fin filename :direction :input)
-    (let ((ht (leap.off:read-off-lib fin)))
-      (maphash (lambda (name form)
-                 (leap.core:register-variable name form))
-               ht))))
+  (let ((absolute-filename (leap.core:search-path filename)))
+    (with-open-file (fin absolute-filename :direction :input)
+      (let ((ht (leap.off:read-off-lib fin)))
+        (maphash (lambda (name form)
+                   (leap.core:register-variable name form))
+                 ht)))))

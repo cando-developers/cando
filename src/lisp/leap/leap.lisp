@@ -63,7 +63,7 @@
   (let* ((fn (ensure-path filename))
          (ff (let ((parmreader (chem:make-read-amber-parameters)))
               (with-open-file (fin fn :direction :input)
-                (chem:read-parameters parmreader fin leap:*leap-system*)
+                (chem:read-parameters parmreader fin leap:*amber-system*)
                 (chem:get-force-field parmreader)))))
     (format *out* "Adding force field ~a to ~a~%" ff force-field)
     (leap.core:add-force-field-or-modification ff force-field)

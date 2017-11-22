@@ -111,6 +111,7 @@ class AtomTable_O : public core::CxxObject_O
   AtomTable        _AtomTableIndices; // m a p<Atom_sp,uint>	_AtomTableIndices;
   core::SimpleVector_int32_t_sp     _Residues;
   core::SimpleVector_sp             _ResidueNames;
+  core::SimpleVector_int32_t_sp     _AtomsPerMolecule;
  public:
   typedef gctools::Vec0<EnergyAtom>::iterator iterator;
  public:
@@ -155,7 +156,8 @@ class AtomTable_O : public core::CxxObject_O
   CL_DEFMETHOD int elt_atomic_number(int index) { return this->_Atoms[index]._AtomicNumber; };
   core::MDArray_int32_t_sp atom_table_residues() const;
   core::MDArrayT_sp atom_table_residue_names() const;
- AtomTable_O() : _Residues(_Unbound<core::MDArray_int32_t_O>()), _ResidueNames(_Unbound<core::MDArrayT_O>()) {};
+  core::MDArray_int32_t_sp atom_table_atoms_per_molecule() const;
+ AtomTable_O() : _Residues(_Unbound<core::MDArray_int32_t_O>()), _ResidueNames(_Unbound<core::MDArrayT_O>()), _AtomsPerMolecule(_Unbound<core::MDArray_int32_t_O>()) {};
 
   virtual void fill_atom_table_from_vectors(core::List_sp values);
   

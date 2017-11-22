@@ -238,6 +238,14 @@ CL_DEFMETHOD core::MDArrayT_sp AtomTable_O::atom_table_residue_names() const {
   return this->_ResidueNames;
 }
 
+CL_DEFMETHOD core::MDArray_int32_t_sp AtomTable_O::atom_table_atoms_per_molecule() const {
+  printf("%s:%d In :atom_table_per_molecule\n", __FILE__, __LINE__ );
+  if (this->_AtomsPerMolecule.unboundp()) {
+    SIMPLE_ERROR(BF("atoms per molecule table is not bound"));
+  }
+  return this->_AtomsPerMolecule;
+}
+
 
 DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void AtomTable_O::constructFromMatter(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms )
 {
@@ -247,12 +255,14 @@ DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void AtomTable_O::constructFromMatter(Matter_sp
 //  this->_Residues = core::MDArray_int32_t_O::make_vector(32,0,core::make_fixnum(0)/*fill-pointer*/);
   core::MDArray_int32_t_sp residues = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
   core::MDArrayT_sp residue_names = core::MDArrayT_O::make(32,_Nil<core::T_O>(),core::make_fixnum(0));
+  core::MDArray_int32_t_sp atoms_per_molecule = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
   uint idx = 0;
   uint coordinateIndex = 0;
   Loop molecule_loop;
   molecule_loop.loopTopGoal(matter,MOLECULES);
   while (molecule_loop.advanceLoopAndProcess()) {
     Molecule_sp mol = molecule_loop.getMolecule();
+    atoms_per_molecule->vectorPushExtend(idx);
     Loop residue_loop;
     residue_loop.loopTopGoal(mol,RESIDUES);
     while (residue_loop.advanceLoopAndProcess()) {
@@ -314,8 +324,10 @@ DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void AtomTable_O::constructFromMatter(Matter_sp
     }
   }
   residues->vectorPushExtend(idx);
+  atoms_per_molecule->vectorPushExtend(idx);
   this->_Residues = core::eval::funcall(cl::_sym_copySeq,residues);
   this->_ResidueNames = core::eval::funcall(cl::_sym_copySeq,residue_names);
+  this->_AtomsPerMolecule = core::eval::funcall(cl::_sym_copySeq,atoms_per_molecule);
 }
 
 /*! Fill excludedAtomIndices with the excluded atom list.
@@ -375,6 +387,7 @@ SYMBOL_EXPORT_SC_(KeywordPkg,mass_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,atomic_number_vector);
 SYMBOL_EXPORT_SC_(KeywordPkg,residues);
 SYMBOL_EXPORT_SC_(KeywordPkg,residue_names);
+SYMBOL_EXPORT_SC_(KeywordPkg,atoms_per_molecule);
 
 CL_DEFMETHOD void  AtomTable_O::fill_atom_table_from_vectors(core::List_sp vectors)
 {

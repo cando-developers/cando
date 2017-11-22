@@ -26,10 +26,23 @@
 (in-package :energy)
 
 
+(defparameter *ff* nil)
+(export '*ff*)
 
 
-(defparameter *ff* nil
-  "Store the force-field")
+(defun setup-amber ()
+  (let ((*default-pathname-defaults*
+         (translate-logical-pathname #P"cando:data;force-field;")))
+    (defparameter *parms*
+      (let ((parms (chem:make-read-amber-parameters)))
+        (with-open-file (fin "ATOMTYPE_GFF.DEF" :direction :input)
+          (chem:read-types parms fin))
+        (with-open-file (fin "gaff.dat" :direction :input)
+          (chem:read-parameters parms fin (symbol-value (find-symbol "*AMBER-SYSTEM*" :leap)))
+          parms)))
+    (setf *ff* (chem:get-force-field *parms*)))
+  *ff*)
+
 
 
 

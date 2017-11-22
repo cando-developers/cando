@@ -1,28 +1,18 @@
 
+
 (in-package :leap)
 
-(defclass leap-system () ())
-(defparameter *leap-system* (make-instance 'leap-system))
 
+;;(defparameter *ff* nil)
+;;(export '*ff*)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; Define the amber-system class for leap specific force field configuration
+;;;
 
-(defun setup-amber ()
-  (let ((*default-pathname-defaults*
-         (translate-logical-pathname #P"cando:data;force-field;")))
-    (defparameter *parms*
-      (let ((parms (chem:make-read-amber-parameters)))
-        (with-open-file (fin "ATOMTYPE_GFF.DEF" :direction :input)
-          (chem:read-types parms fin))
-        (with-open-file (fin "gaff.dat" :direction :input)
-          (chem:read-parameters parms fin *leap-system*)
-          parms)))
-    (defparameter *ff* (chem:get-force-field *parms*)))
-  *ff*)
-
-
-
-
-
+(defclass amber-system () ())
+(defparameter *amber-system* (make-instance 'amber-system))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -30,7 +20,7 @@
 ;;; Provide force field readers
 ;;;
 
-(defmethod chem:parse-ptor-db (stream-in (system leap-system))
+(defmethod chem:parse-ptor-db (stream-in (system amber-system))
   (let ((ffptordb (core:make-cxx-object 'chem:ffptor-db))
         ptor)
     (loop for line = (read-line stream-in nil :eof)

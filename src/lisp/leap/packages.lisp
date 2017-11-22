@@ -137,7 +137,7 @@
                 #:add-pdb-atom-map
                 )
   (:export
-   #:*leap-system*
+   #:*amber-system*
    #:setup-amber
    #:atom
    #:bounding-box
@@ -153,6 +153,7 @@
    #:add-pdb-res-map
    #:add-pdb-atom-map
    #:load-amber-params
+   #:load-amber-type-rules
    #:load-off
    #:list-force-fields
    #:list-objects

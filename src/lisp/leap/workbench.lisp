@@ -43,7 +43,7 @@ leap.core::*path*
 (defun setup-amber-force-field ()
   (let ((parms (chem:make-read-amber-parameters)))
     (with-open-file (fin "~/Development/amber/dat/leap/parm/parm99.dat")
-      (chem:read-parameters parms fin leap:*leap-system*))
+      (chem:read-parameters parms fin leap:*amber-system*))
     (chem:get-force-field parms)))
 (defparameter *amber* (setup-amber-force-field))
 
