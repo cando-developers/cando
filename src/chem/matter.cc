@@ -85,7 +85,7 @@ Matter_O::Matter_O( const Matter_O& c ) : core::CxxObject_O(c)
 //  this->_Id = c._Id;
   this->name = c.name;
 //	this->containerContainedBy = c.containerContainedBy;
-  this->_Properties = core::cl__copy_list(c._Properties);
+  this->_Properties = c._Properties; // You can't call allocators in ctors core::cl__copy_list(c._Properties);
   this->_Restraints = _Nil<T_O>();
 }
 

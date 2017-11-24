@@ -23,7 +23,11 @@
 ;; This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 
 ;; -^-
+(eval-when (:load-toplevel :execute :compile-toplevel)
+  (setq core::*echo-repl-read* t))
+
 (in-package :common-lisp-user)
+
 
 (format t "Running start-cando.lisp script~%")
 
@@ -33,9 +37,9 @@
 (defun all-subdirs (dir)
   (let (dirs)
     (labels ((trav (d)
-		   (dolist (d (uiop:subdirectories d))
-		     (push d dirs)
-		     (trav d))))
+               (dolist (d (uiop:subdirectories d))
+                 (push d dirs)
+                 (trav d))))
       (trav dir))
     dirs))
 
@@ -44,8 +48,6 @@
 (progn
   (setf (logical-pathname-translations "cando")
         '(("**;*.*" "source-dir:extensions;cando;src;**;*.*"))))
-
-
 
 ;;; Add directories for ASDF to search for systems
 (let* ((topdir (translate-logical-pathname #P"cando:lisp;"))
@@ -58,7 +60,7 @@
 (make-package :cando)
 
 (let ((amber-home
-       (namestring (uiop:ensure-directory-pathname (or (ext:getenv "AMBERHOME") "/amber/")))))
+        (namestring (uiop:ensure-directory-pathname (or (ext:getenv "AMBERHOME") "/amber/")))))
   (setf (logical-pathname-translations "amber")
         (list (list "**;*.*" (concatenate 'string amber-home "/**/*.*"))))
   (format t "Setting *amber-home* -> ~a~%" amber-home))
@@ -66,8 +68,8 @@
 (defvar cando::*root-directory*)
 (progn
   (if (member :docker *features*)
-    (setf cando::*root-directory* (pathname "/src/"))
-    (setf cando::*root-directory* (uiop:ensure-directory-pathname (ext:getenv "HOME"))))
+      (setf cando::*root-directory* (pathname "/src/"))
+      (setf cando::*root-directory* (uiop:ensure-directory-pathname (ext:getenv "HOME"))))
   (format t "Setting *root-directory* -> ~a~%" cando::*root-directory*))
 
 
@@ -96,6 +98,7 @@
 (format t "Starting Cando~%")
 (format t "*features* -> ~a~%" *features*)
 
+#-cando-jupyter
 (progn
   (if (member :setup-cando *features*)
       (progn
@@ -108,4 +111,3 @@
         (core:symbol-global-value-set '*package* (find-package :cando-user))))
   (core:process-command-line-load-eval-sequence)
   (core::tpl))
-

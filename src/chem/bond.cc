@@ -90,7 +90,7 @@ Bond_O::Bond_O(const Bond_O& bb)  : core::CxxObject_O(bb)
   this->order = bb.order;
   this->_Atom1 = bb._Atom1;
   this->_Atom2 = bb._Atom2;
-  this->_Properties = core::cl__copy_list(bb._Properties);
+  this->_Properties = bb._Properties; // You can't call allocators from ctors core::cl__copy_list(bb._Properties);
   LOG(BF("copy _Atom1=%s _Atom2=%s")
       % this->_Atom1->description()
       % this->_Atom2->description() );

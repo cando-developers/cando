@@ -1420,7 +1420,11 @@ bool Branch_O::matches(Root_sp root, chem::Atom_sp from, chem::BondList_sp neigh
     leftBondList->addBond(*bi);
     LOG(BF("Constructed left bond list"));
     LOG(BF("Left bond list = %s") % leftBondList->describeOthers(from));
-    GC_COPY(chem::BondList_O, rightBondList, *neighbors); // = RP_Copy<BondList_O>(neighbors);
+    BondList_sp rightBondList = BondList_O::create();
+    for ( auto bi = (*neighbors).begin(); bi!=(*neighbors).end(); ++bi ) {
+      rightBondList->addBond(*bi);
+    }
+//    GC_COPY(chem::BondList_O, rightBondList, *neighbors); // = RP_Copy<BondList_O>(neighbors);
     LOG(BF("Right bond list after copy = %s") % rightBondList->describeOthers(from));
     rightBondList->removeBond(*bi);
     LOG(BF("copied neighbors into right bond list and removed left bond"));

@@ -128,6 +128,8 @@ CL_DEFMETHOD     adapt::SymbolSet_sp	EntityNameSetBase_O::getUnExpandedNames()
 
     EntityNameSetBase_O::EntityNameSetBase_O( const EntityNameSetBase_O& emr ) : Base(emr)
     {
+      DEPRECATED();
+      // This will fail in MPS because it calls an allocator
 	this->_Optional = emr._Optional;
 	GC_COPY(adapt::SymbolSet_O, symset , *emr._EntityNames); // = RP_Copy<adapt::SymbolSet_O>(emr._EntityNames);
 	this->_EntityNames = symset;

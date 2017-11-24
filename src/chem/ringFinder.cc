@@ -79,15 +79,7 @@ void PathMessage_O::initialize()
     this->_graph = orig._graph;
     LOG(BF("About to copy beep") );
     LOG(BF(" beep.nilp() = %d") % orig._beep.nilp()  );
-    if ( orig._beep.nilp() ) 
-    {
-	this->_beep = _Nil<core::T_O>();
-	LOG(BF("Setting this->_beep to nil") );
-    } else 
-    {
-	LOG(BF("Copying this->_beep") );
-        this->_beep = core::SimpleBitVector_copy(orig._beep);
-    }
+    this->_beep = orig._beep; // shallow copy because we can't allocate in ctor
     LOG(BF("Done copy beep") );
     this->_firstVertex = orig._firstVertex;
     this->_firstEdge = orig._firstEdge;
@@ -111,6 +103,11 @@ PathMessage_sp	PathMessage_O::create(RingFinder_sp graph, AGVertex_sp firstVerte
 PathMessage_sp PathMessage_O::copy()
 {
     GC_COPY(PathMessage_O, pm , *this); // = RP_Copy<PathMessage_O>(this);
+    if (this->_beep.nilp()) {
+      pm->_beep = _Nil<core::T_O>();
+    } else {
+      pm->_beep = core::SimpleBitVector_copy(this->_beep);
+    }
     return pm;
 }
 

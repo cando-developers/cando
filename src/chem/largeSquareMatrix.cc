@@ -237,6 +237,8 @@ void FullLargeSquareMatrix_O::setup(uint dim, TriangleType type)
 FullLargeSquareMatrix_O::FullLargeSquareMatrix_O(const FullLargeSquareMatrix_O& orig)
 	: AbstractLargeSquareMatrix_O(orig)
 {
+  DEPRECATED();
+  // This will fail because it calls an allocator Schafmeister Nov 2017
     this->_ActiveElements = orig._ActiveElements;
     this->_Values.assign(orig._Values.begin(),orig._Values.end());
 }
@@ -380,6 +382,8 @@ void	SparseLargeSquareMatrix_O::setup(uint dim, TriangleType type)
 SparseLargeSquareMatrix_O::SparseLargeSquareMatrix_O(const SparseLargeSquareMatrix_O& orig)
 	: AbstractLargeSquareMatrix_O(orig)
 {
+  DEPRECATED();
+  // THis will fail because it calls an allocator
     this->_InsertionIsComplete = orig._InsertionIsComplete;
     this->_RowStartEntries = orig._RowStartEntries;
     this->_RowStarts.assign(orig._RowStarts.begin(),orig._RowStarts.end());

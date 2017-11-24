@@ -212,14 +212,6 @@ void SimpleVectorCoordinate_O::fields(core::Record_sp node)
 
 
 #if 0
-SimpleVectorCoordinate_sp SimpleVectorCoordinate_O::copy() const
-{
-  GC_COPY(SimpleVectorCoordinate_O,na,*this);
-  return na;
-}
-#endif
-
-#if 0
 CL_LISPIFY_NAME("write-to-stream");
 CL_DEFMETHOD     void SimpleVectorCoordinate_O::writeToStream(string const& info, core::T_sp sout)
 {_OF();
