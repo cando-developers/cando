@@ -70,7 +70,7 @@
 /* Copy the first part of user declarations.  */
 #line 9 "gaff_Parser.yy" /* yacc.c:339  */
 
-#define DEBUG_LEVEL_NONE
+#define DEBUG_LEVEL_FULL
 #include <string.h>
 #include <iostream>
 #include <string>
@@ -1832,26 +1832,26 @@ yyreduce:
 
   case 46:
 #line 338 "gaff_Parser.yy" /* yacc.c:1661  */
-    { _BT(); (yyval.bondListMatchNode) = chem::createHolder<chem::BondListMatchNode_O>(chem::Branch_O::create((yyvsp[-2].bondListMatchNode)->value(),(yyvsp[0].bondListMatchNode)->value())); }
+    { _BT(); (yyval.bondListMatchNode) = chem::createHolder<chem::BondListMatchNode_O>(chem::Branch_O::create_left_right((yyvsp[-2].bondListMatchNode)->value(),(yyvsp[0].bondListMatchNode)->value())); }
 #line 1837 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 47:
 #line 342 "gaff_Parser.yy" /* yacc.c:1661  */
-    { _BT();(yyval.bondListMatchNode) = chem::createHolder<chem::BondListMatchNode_O>(chem::Chain_O::create((yyvsp[0].antechamberBondTest)->value()));}
+    { _BT();(yyval.bondListMatchNode) = chem::createHolder<chem::BondListMatchNode_O>(chem::Chain_O::create_head((yyvsp[0].antechamberBondTest)->value()));}
 #line 1843 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 48:
 #line 343 "gaff_Parser.yy" /* yacc.c:1661  */
-    { _BT(); (yyval.bondListMatchNode) = chem::createHolder<chem::BondListMatchNode_O>(chem::Chain_O::create((yyvsp[-1].antechamberBondTest)->value(),(yyvsp[0].bondListMatchNode)->value())); }
+    { _BT(); (yyval.bondListMatchNode) = chem::createHolder<chem::BondListMatchNode_O>(chem::Chain_O::create_head_tail((yyvsp[-1].antechamberBondTest)->value(),(yyvsp[0].bondListMatchNode)->value())); }
 #line 1849 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 49:
 #line 351 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); 
-                    (yyval.antechamberBondTest) = chem::createHolder<chem::AntechamberBondTest_O>(chem::AntechamberBondTest_O::create(chem::chemkw_intern(std::string((yyvsp[-3].carr))),(yyvsp[-2].ival),(yyvsp[-1].logical)->value(),chem::chemkw_intern(std::string((yyvsp[0].carr))))); 
+                    (yyval.antechamberBondTest) = chem::createHolder<chem::AntechamberBondTest_O>(chem::AntechamberBondTest_O::create_args(chem::chemkw_intern(std::string((yyvsp[-3].carr))),(yyvsp[-2].ival),(yyvsp[-1].logical)->value(),chem::chemkw_intern(std::string((yyvsp[0].carr))))); 
                 }
 #line 1857 "gaff_Parser.cc" /* yacc.c:1661  */
     break;
@@ -1859,7 +1859,7 @@ yyreduce:
   case 50:
 #line 356 "gaff_Parser.yy" /* yacc.c:1661  */
     { _BT(); 
-                    (yyval.antechamberBondTest) = chem::createHolder<chem::AntechamberBondTest_O>(chem::AntechamberBondTest_O::create(chem::chemkw_intern(std::string((yyvsp[-2].carr))), -1, (yyvsp[-1].logical)->value(), chem::chemkw_intern(std::string((yyvsp[0].carr)))));
+                    (yyval.antechamberBondTest) = chem::createHolder<chem::AntechamberBondTest_O>(chem::AntechamberBondTest_O::create_args(chem::chemkw_intern(std::string((yyvsp[-2].carr))), -1, (yyvsp[-1].logical)->value(), chem::chemkw_intern(std::string((yyvsp[0].carr)))));
                 }
 #line 1865 "gaff_Parser.cc" /* yacc.c:1661  */
     break;

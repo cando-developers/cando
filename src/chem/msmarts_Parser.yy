@@ -223,19 +223,19 @@ chemInfo:	/* empty */ { $$ = new Hold<chem::SmartsRoot_O>(); }
 
 chain: bondAtomTest chain 
     { _lisp_BLOCK_TRACE("chain:bondAtomTest chain");
-	$$ = new Hold<chem::BondListMatchNode_O>(chem::Chain_O::create( $1->value(), $2->value())); 
+	$$ = new Hold<chem::BondListMatchNode_O>(chem::Chain_O::create_head_tail( $1->value(), $2->value())); 
     }
 | branch chain	   
     { _lisp_BLOCK_TRACE("chain: branch chain");
-	$$ = new Hold<chem::BondListMatchNode_O>(chem::Branch_O::create( $1->value(), $2->value())); 
+	$$ = new Hold<chem::BondListMatchNode_O>(chem::Branch_O::create_left_right( $1->value(), $2->value())); 
     }
 | bondAtomTest	   
     { _lisp_BLOCK_TRACE("chain: bondAtomTest");
-	$$ = new Hold<chem::BondListMatchNode_O>(chem::Chain_O::create( $1->value())); 
+	$$ = new Hold<chem::BondListMatchNode_O>(chem::Chain_O::create_head( $1->value())); 
     }
 | branch  
     { _lisp_BLOCK_TRACE("chain: branch");
-	$$ = new Hold<chem::BondListMatchNode_O>(chem::Branch_O::create( $1->value())); 
+	$$ = new Hold<chem::BondListMatchNode_O>(chem::Branch_O::create_left( $1->value())); 
     } /* handle C(C=O) */
 ;
 

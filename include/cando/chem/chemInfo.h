@@ -521,8 +521,10 @@ namespace chem {
     gc::Nilable<AtomOrBondMatchNode_sp>	_AtomProperties;
     core::Symbol_sp                   _Tag;
   public:
-    static AntechamberBondTest_sp create( core::Symbol_sp element, int neighbors,
-                                          AtomOrBondMatchNode_sp props, core::Symbol_sp tag )
+    CL_LAMBDA(element neighbors props tag);
+    CL_LISPIFY_NAME("make-antechamber-bond-test");
+    CL_DEF_CLASS_METHOD static AntechamberBondTest_sp create_args( core::Symbol_sp element, int neighbors,
+                                                              AtomOrBondMatchNode_sp props, core::Symbol_sp tag )
     {_G();
       GC_ALLOCATE(AntechamberBondTest_O, obj ); // RP_Create<AntechamberBondTest_O>(lisp);
       obj->_Element = element;
@@ -784,17 +786,20 @@ namespace chem {
     virtual uint depth() const;
     virtual string asSmarts() const;
 		//! Second argument can be NULL
-    static Chain_sp create( BondMatchNode_sp head, gc::Nilable<BondListMatchNode_sp> tail ) {
+    CL_LAMBDA(head tail);
+    CL_LISPIFY_NAME("make-chain.head.tail");
+    CL_DEF_CLASS_METHOD static Chain_sp create_head_tail( BondMatchNode_sp head, BondListMatchNode_sp tail ) {
       GC_ALLOCATE(Chain_O, obj ); // RP_Create<Chain_O>(lisp);
       obj->_Head = head;
       obj->_Tail = tail;
       return obj;
     }
-    static Chain_sp create( BondMatchNode_sp head )
+    CL_LAMBDA(head);
+    CL_LISPIFY_NAME("make-chain.head");
+    CL_DEF_CLASS_METHOD static Chain_sp create_head( BondMatchNode_sp head )
     {
-      return create(head,_Nil<core::T_O>());
+      return create_head_tail(head,_Nil<core::T_O>());
     }
-
 
   public:
 
@@ -822,7 +827,9 @@ namespace chem {
     virtual uint depth() const;
     virtual string asSmarts() const;
 		//! Second argument can be NULL
-    static Branch_sp create( BondListMatchNode_sp left, BondListMatchNode_sp right ) 
+    CL_LAMBDA(left right);
+    CL_LISPIFY_NAME("make-branch.left.right");
+    CL_DEF_CLASS_METHOD static Branch_sp create_left_right( BondListMatchNode_sp left, BondListMatchNode_sp right )
     {
       _G();
       GC_ALLOCATE(Branch_O, obj ); // RP_Create<Branch_O>(lisp);
@@ -830,15 +837,15 @@ namespace chem {
       obj->_Right = right;
       return obj;
     }
-
-    static Branch_sp create( BondListMatchNode_sp left ) {
+    CL_LAMBDA(left);
+    CL_LISPIFY_NAME("make-branch.left");
+    CL_DEF_CLASS_METHOD static Branch_sp create_left( BondListMatchNode_sp left ) {
       _G();
       GC_ALLOCATE(Branch_O, obj ); // RP_Create<Branch_O>(lisp);
       obj->_Left = left;
       obj->_Right = _Nil<core::T_O>();
       return obj;
     }
-
   public:
 
 

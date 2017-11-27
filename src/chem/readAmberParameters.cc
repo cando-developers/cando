@@ -521,6 +521,7 @@ ForceField_sp ReadAmberParameters_O::parseAmberFormattedForceField(core::T_sp fi
     this->parseAtomEquivalences(fin);
     string kindNb = this->parseNonbondLabelKindNB(fin);
     this->parseNonbondDb(fin,ffNonbondsDb);
+    printf("%s:%d Returned from this->parseNonbondDb\n", __FILE__, __LINE__ );
     LOG(BF("All parameters read fine") );
     GC_ALLOCATE(ForceField_O, ff );
     ff->setTitle(line);

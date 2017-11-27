@@ -335,12 +335,12 @@ branches: APOpenParenthesis branchesList APCloseParenthesis { _BT(); $$=$2; }
         ;
 
 branchesList:    chain { _BT(); $$ = chem::createHolder<chem::BondListMatchNode_O>($1->value()); }
-        | branchesList APOperatorAnd chain { _BT(); $$ = chem::createHolder<chem::BondListMatchNode_O>(chem::Branch_O::create($1->value(),$3->value())); }
+        | branchesList APOperatorAnd chain { _BT(); $$ = chem::createHolder<chem::BondListMatchNode_O>(chem::Branch_O::create_left_right($1->value(),$3->value())); }
         ;
 
 
-chain: chemicalEnvironmentAtom { _BT();$$ = chem::createHolder<chem::BondListMatchNode_O>(chem::Chain_O::create($1->value()));}
-        | chemicalEnvironmentAtom branches { _BT(); $$ = chem::createHolder<chem::BondListMatchNode_O>(chem::Chain_O::create($1->value(),$2->value())); }
+chain: chemicalEnvironmentAtom { _BT();$$ = chem::createHolder<chem::BondListMatchNode_O>(chem::Chain_O::create_head($1->value()));}
+        | chemicalEnvironmentAtom branches { _BT(); $$ = chem::createHolder<chem::BondListMatchNode_O>(chem::Chain_O::create_head_tail($1->value(),$2->value())); }
         ;
 
 
@@ -349,12 +349,12 @@ chemicalEnvironmentAtom:
                 APNumber 
                 bracketedAtomPropertyOrNull 
                 tagNameOrNull { _BT(); 
-                    $$ = chem::createHolder<chem::AntechamberBondTest_O>(chem::AntechamberBondTest_O::create(chem::chemkw_intern(std::string($1)),$2,$3->value(),chem::chemkw_intern(std::string($4)))); 
+                    $$ = chem::createHolder<chem::AntechamberBondTest_O>(chem::AntechamberBondTest_O::create_args(chem::chemkw_intern(std::string($1)),$2,$3->value(),chem::chemkw_intern(std::string($4)))); 
                 }
         | element 
                 bracketedAtomPropertyOrNull 
                 tagNameOrNull { _BT(); 
-                    $$ = chem::createHolder<chem::AntechamberBondTest_O>(chem::AntechamberBondTest_O::create(chem::chemkw_intern(std::string($1)), -1, $2->value(), chem::chemkw_intern(std::string($3))));
+                    $$ = chem::createHolder<chem::AntechamberBondTest_O>(chem::AntechamberBondTest_O::create_args(chem::chemkw_intern(std::string($1)), -1, $2->value(), chem::chemkw_intern(std::string($3))));
                 }
         ;
 

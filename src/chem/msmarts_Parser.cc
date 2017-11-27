@@ -1,33 +1,8 @@
-/*
-    File: msmarts_Parser.cc
-*/
-/*
-Open Source License
-Copyright (c) 2016, Christian E. Schafmeister
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
- 
-This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
-*/
-/* -^- */
-/* A Bison parser, made by GNU Bison 3.0.2.  */
+/* A Bison parser, made by GNU Bison 3.0.4.  */
 
 /* Bison implementation for Yacc-like parsers in C
 
-   Copyright (C) 1984, 1989-1990, 2000-2013 Free Software Foundation, Inc.
+   Copyright (C) 1984, 1989-1990, 2000-2015 Free Software Foundation, Inc.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
@@ -69,7 +44,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define YYBISON 1
 
 /* Bison version.  */
-#define YYBISON_VERSION "3.0.2"
+#define YYBISON_VERSION "3.0.4"
 
 /* Skeleton name.  */
 #define YYSKELETON_NAME "yacc.c"
@@ -95,7 +70,7 @@ This is an open source license for the CANDO software from Temple University, bu
 /* Copy the first part of user declarations.  */
 #line 69 "msmarts_Parser.yy" /* yacc.c:339  */
 
-#define DEBUG_LEVEL_NONE
+#define DEBUG_LEVEL_FULL
 
 #include<iostream>
 #include<string>
@@ -1572,611 +1547,611 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 208 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 208 "msmarts_Parser.yy" /* yacc.c:1661  */
     { _lisp_BLOCK_TRACE("input: chemInfo");
 	    data->expression = (yyvsp[0].smartsRoot)->value(); 
 	}
-#line 1555 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1555 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 3:
-#line 212 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 212 "msmarts_Parser.yy" /* yacc.c:1661  */
     { (yyval.smartsRoot) = new Hold<chem::SmartsRoot_O>(); }
-#line 1561 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1561 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 4:
-#line 214 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 214 "msmarts_Parser.yy" /* yacc.c:1661  */
     { _lisp_BLOCK_TRACE("chemInfo: atomTest");
 		    (yyval.smartsRoot) = new Hold<chem::SmartsRoot_O>(chem::SmartsRoot_O::create((yyvsp[0].atomOrBondMatchNode)->value())); 
 		}
-#line 1569 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1569 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 5:
-#line 218 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 218 "msmarts_Parser.yy" /* yacc.c:1661  */
     { _lisp_BLOCK_TRACE("chemInfo:atomTest chain");
 		    (yyval.smartsRoot) = new Hold<chem::SmartsRoot_O>(chem::SmartsRoot_O::create((yyvsp[-1].atomOrBondMatchNode)->value(),(yyvsp[0].bondListMatchNode)->value())); 
 		}
-#line 1577 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1577 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 6:
-#line 225 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 225 "msmarts_Parser.yy" /* yacc.c:1661  */
     { _lisp_BLOCK_TRACE("chain:bondAtomTest chain");
-	(yyval.bondListMatchNode) = new Hold<chem::BondListMatchNode_O>(chem::Chain_O::create( (yyvsp[-1].bondTest)->value(), (yyvsp[0].bondListMatchNode)->value())); 
+	(yyval.bondListMatchNode) = new Hold<chem::BondListMatchNode_O>(chem::Chain_O::create_head_tail( (yyvsp[-1].bondTest)->value(), (yyvsp[0].bondListMatchNode)->value())); 
     }
-#line 1585 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1585 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 7:
-#line 229 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 229 "msmarts_Parser.yy" /* yacc.c:1661  */
     { _lisp_BLOCK_TRACE("chain: branch chain");
-	(yyval.bondListMatchNode) = new Hold<chem::BondListMatchNode_O>(chem::Branch_O::create( (yyvsp[-1].bondListMatchNode)->value(), (yyvsp[0].bondListMatchNode)->value())); 
+	(yyval.bondListMatchNode) = new Hold<chem::BondListMatchNode_O>(chem::Branch_O::create_left_right( (yyvsp[-1].bondListMatchNode)->value(), (yyvsp[0].bondListMatchNode)->value())); 
     }
-#line 1593 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1593 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 8:
-#line 233 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 233 "msmarts_Parser.yy" /* yacc.c:1661  */
     { _lisp_BLOCK_TRACE("chain: bondAtomTest");
-	(yyval.bondListMatchNode) = new Hold<chem::BondListMatchNode_O>(chem::Chain_O::create( (yyvsp[0].bondTest)->value())); 
+	(yyval.bondListMatchNode) = new Hold<chem::BondListMatchNode_O>(chem::Chain_O::create_head( (yyvsp[0].bondTest)->value())); 
     }
-#line 1601 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1601 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 9:
-#line 237 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 237 "msmarts_Parser.yy" /* yacc.c:1661  */
     { _lisp_BLOCK_TRACE("chain: branch");
-	(yyval.bondListMatchNode) = new Hold<chem::BondListMatchNode_O>(chem::Branch_O::create( (yyvsp[0].bondListMatchNode)->value())); 
+	(yyval.bondListMatchNode) = new Hold<chem::BondListMatchNode_O>(chem::Branch_O::create_left( (yyvsp[0].bondListMatchNode)->value())); 
     }
-#line 1609 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1609 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 10:
-#line 243 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 243 "msmarts_Parser.yy" /* yacc.c:1661  */
     { _lisp_BLOCK_TRACE("bondAtomTest:APBond atomTest");
 			    (yyval.bondTest) = new Hold<chem::BondTest_O>(chem::BondTest_O::create( (yyvsp[-1].benum), (yyvsp[0].atomOrBondMatchNode)->value())); 
 			}
-#line 1617 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1617 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 11:
-#line 247 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 247 "msmarts_Parser.yy" /* yacc.c:1661  */
     { _lisp_BLOCK_TRACE("bondAtomTest: atomTest");
 			    (yyval.bondTest) = new Hold<chem::BondTest_O>(chem::BondTest_O::create( chem::SABSingleOrAromaticBond, (yyvsp[0].atomOrBondMatchNode)->value())); 
 			}
-#line 1625 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1625 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 12:
-#line 268 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 268 "msmarts_Parser.yy" /* yacc.c:1661  */
     { _lisp_BLOCK_TRACE("acyclicAtomTest: APOpenBracket logOp APCloseBracket");
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>((yyvsp[-1].logical)->value());
 	}
-#line 1633 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1633 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 13:
-#line 272 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 272 "msmarts_Parser.yy" /* yacc.c:1661  */
     { _lisp_BLOCK_TRACE("acyclicAtomTest: APOrganicElement");
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>((chem::AtomTest_O::create(chem::SAPElement, chem::chemkw_intern((yyvsp[0].eval))))); 
 	}
-#line 1641 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1641 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 14:
-#line 277 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 277 "msmarts_Parser.yy" /* yacc.c:1661  */
     { _lisp_BLOCK_TRACE("acyclicAtomTest: APAromaticOrganicElement");
 	    string elementName = (yyvsp[0].eval);
 	    elementName[0] = toupper(elementName[0]);
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>((chem::AtomTest_O::create(chem::SAPAromaticElement, chem::chemkw_intern(elementName)))); 
 	}
-#line 1651 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1651 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 15:
-#line 284 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 284 "msmarts_Parser.yy" /* yacc.c:1661  */
     {
 	    (yyval.atomOrBondMatchNode)=new Hold<chem::AtomOrBondMatchNode_O>(
 				chem::AtomTest_O::create(chem::SAPAliphatic));
 	}
-#line 1660 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1660 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 16:
-#line 290 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 290 "msmarts_Parser.yy" /* yacc.c:1661  */
     {
 	    (yyval.atomOrBondMatchNode)=new Hold<chem::AtomOrBondMatchNode_O>(
 				chem::AtomTest_O::create(chem::SAPAromatic));
 	}
-#line 1669 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1669 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 17:
-#line 297 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 297 "msmarts_Parser.yy" /* yacc.c:1661  */
     { _lisp_BLOCK_TRACE("acyclicAtomTest: recursiveChemInfo");
 	    		    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>((yyvsp[0].root)->value()); 
 			}
-#line 1677 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1677 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 18:
-#line 303 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 303 "msmarts_Parser.yy" /* yacc.c:1661  */
     { _lisp_BLOCK_TRACEF(BF("atomTest: acyclicAtomTest APNumber   // atomTag==(%s)  ") % ((yyvsp[0].cval)));
 	(yyval.atomOrBondMatchNode)=new Hold<chem::AtomOrBondMatchNode_O>(chem::TagSet_O::create((yyvsp[-1].atomOrBondMatchNode)->value(),chem::chemkw_intern(std::string((yyvsp[0].cval)))));
     }
-#line 1685 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1685 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 19:
-#line 307 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 307 "msmarts_Parser.yy" /* yacc.c:1661  */
     { _lisp_BLOCK_TRACE("atomTest: acyclicAtomTest");
 	(yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>((yyvsp[0].atomOrBondMatchNode)->value()); 
     }
-#line 1693 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1693 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 20:
-#line 311 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 311 "msmarts_Parser.yy" /* yacc.c:1661  */
     { (yyval.bondListMatchNode) = new Hold<chem::BondListMatchNode_O>((yyvsp[-1].bondListMatchNode)->value()); }
-#line 1699 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1699 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 21:
-#line 338 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 338 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 		(yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>(
 				chem::AtomTest_O::create(chem::SAPWildCard)); 
 	}
-#line 1708 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1708 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 22:
-#line 349 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 349 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 		(yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( 
 				chem::AtomTest_O::create( chem::SAPDegree, 1)); 
 	}
-#line 1717 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1717 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 23:
-#line 355 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 355 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 		(yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( 
 			chem::AtomTest_O::create( chem::SAPDegree,(yyvsp[0].ival))); 
 	}
-#line 1726 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1726 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 24:
-#line 367 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 367 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 		(yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>(
 				chem::AtomTest_O::create( chem::SAPAM1_BCC_x, 0));
 	}
-#line 1735 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1735 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 25:
-#line 378 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 378 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 		(yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>(
 				chem::AtomTest_O::create( chem::SAPAM1_BCC_y, 0));
 	}
-#line 1744 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1744 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 26:
-#line 390 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 390 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 		(yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>(
 				chem::AtomTest_O::create( chem::SAPTotalHCount, 1));
 	}
-#line 1753 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1753 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 27:
-#line 395 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 395 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 		(yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>(
 				chem::AtomTest_O::create( chem::SAPTotalHCount, (yyvsp[0].ival)));
 	}
-#line 1762 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1762 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 28:
-#line 406 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 406 "msmarts_Parser.yy" /* yacc.c:1661  */
     {
 		(yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( 
 			chem::AtomTest_O::create( chem::SAPImplicitHCount, 1)); 
 	}
-#line 1771 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1771 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 29:
-#line 411 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 411 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 		(yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>(
 					chem::AtomTest_O::create( 
 						chem::SAPImplicitHCount, (yyvsp[0].ival)));
 	}
-#line 1781 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1781 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 30:
-#line 423 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 423 "msmarts_Parser.yy" /* yacc.c:1661  */
     {
 		(yyval.atomOrBondMatchNode)=new Hold<chem::AtomOrBondMatchNode_O>(
 					chem::AtomTest_O::create(chem::SAPRingTest,(yyvsp[0].cval)));
 	}
-#line 1790 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1790 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 31:
-#line 435 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 435 "msmarts_Parser.yy" /* yacc.c:1661  */
     {
 	    (yyval.atomOrBondMatchNode)=new Hold<chem::AtomOrBondMatchNode_O>(
 				chem::AtomTest_O::create(chem::SAPAliphatic));
 	}
-#line 1799 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1799 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 32:
-#line 446 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 446 "msmarts_Parser.yy" /* yacc.c:1661  */
     {
 	    (yyval.atomOrBondMatchNode)=new Hold<chem::AtomOrBondMatchNode_O>(
 				chem::AtomTest_O::create(chem::SAPAromatic));
 	}
-#line 1808 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1808 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 33:
-#line 458 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 458 "msmarts_Parser.yy" /* yacc.c:1661  */
     {
 	    string symStr((yyvsp[0].cval));
 	    core::Symbol_sp sym = _lisp->intern(symStr);
 	    (yyval.atomOrBondMatchNode)=new Hold<chem::AtomOrBondMatchNode_O>(
 				chem::AtomTest_O::create(chem::SAPLambda,sym));
 	}
-#line 1819 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1819 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 34:
-#line 472 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 472 "msmarts_Parser.yy" /* yacc.c:1661  */
     {
 		(yyval.atomOrBondMatchNode)=new Hold<chem::AtomOrBondMatchNode_O>(
 					chem::AtomTest_O::create(chem::SAPResidueTest,(yyvsp[0].cval)));
 	}
-#line 1828 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1828 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 35:
-#line 484 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 484 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPRingMembershipCount, 1)); 
 	}
-#line 1836 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1836 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 36:
-#line 488 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 488 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPRingMembershipCount, (yyvsp[0].ival)));
 	}
-#line 1844 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1844 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 37:
-#line 499 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 499 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPRingSize, 1)); 
 	}
-#line 1852 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1852 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 38:
-#line 503 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 503 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPRingSize, (yyvsp[0].ival)));
 	}
-#line 1860 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1860 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 39:
-#line 512 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 512 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPValence, 1)); 
 	}
-#line 1868 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1868 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 40:
-#line 516 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 516 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPValence, (yyvsp[0].ival)));
 	}
-#line 1876 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1876 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 41:
-#line 526 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 526 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPConnectivity, 1)); 
 	}
-#line 1884 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1884 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 42:
-#line 530 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 530 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPConnectivity, (yyvsp[0].ival)));
 	}
-#line 1892 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1892 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 43:
-#line 536 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 536 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPGroupNumber, (yyvsp[0].ival))); 
 	}
-#line 1900 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1900 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 44:
-#line 540 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 540 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPElectronegativeElement)); 
 	}
-#line 1908 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1908 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 45:
-#line 544 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 544 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPHeavyAtomTotalBond, 1)); 
 	}
-#line 1916 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1916 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 46:
-#line 548 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 548 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPHeavyAtomTotalBond, (yyvsp[0].ival))); 
 	}
-#line 1924 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1924 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 47:
-#line 561 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 561 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPNegativeCharge, (yyvsp[0].ival)));
 	}
-#line 1932 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1932 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 48:
-#line 565 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 565 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPNegativeCharge, -1));
 	}
-#line 1940 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1940 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 49:
-#line 575 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 575 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPNegativeCharge, -2));
 	}
-#line 1948 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1948 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 50:
-#line 584 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 584 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPNegativeCharge, -3));
 	}
-#line 1956 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1956 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 51:
-#line 600 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 600 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPPositiveCharge, (yyvsp[0].ival)));
 	}
-#line 1964 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1964 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 52:
-#line 604 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 604 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPPositiveCharge, 1));
 	}
-#line 1972 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1972 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 53:
-#line 613 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 613 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPPositiveCharge, 2));
 	}
-#line 1980 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1980 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 54:
-#line 622 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 622 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPPositiveCharge, 3));
 	}
-#line 1988 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1988 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 55:
-#line 626 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 626 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPTransitionMetal, (yyvsp[0].ival))); 
 	}
-#line 1996 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 1996 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 56:
-#line 630 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 630 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPAromaticPiElectron , (yyvsp[0].ival)));
 	}
-#line 2004 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2004 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 57:
-#line 634 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 634 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPPiBondOrbital)); 
 	}
-#line 2012 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2012 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 58:
-#line 643 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 643 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPAtomicNumber, (yyvsp[0].ival)));
 	}
-#line 2020 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2020 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 59:
-#line 647 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 647 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPChiralityAntiClockwise));
 	}
-#line 2028 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2028 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 60:
-#line 651 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 651 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPChiralityClockwise));
 	}
-#line 2036 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2036 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 61:
-#line 660 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 660 "msmarts_Parser.yy" /* yacc.c:1661  */
     {
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPAtomicMass, (yyvsp[0].ival)));
 	}
-#line 2044 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2044 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 62:
-#line 664 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 664 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPElement, chem::chemkw_intern((yyvsp[0].eval)) )); 
 	}
-#line 2052 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2052 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 63:
-#line 668 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 668 "msmarts_Parser.yy" /* yacc.c:1661  */
     { _lisp_BLOCK_TRACE("atomPrimitiveTest: APAromaticOrganicElement");
 	    string elementName = (yyvsp[0].eval);
 	    elementName[0] = toupper(elementName[0]);
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPAromaticElement, chem::chemkw_intern(elementName) )); 
 	}
-#line 2062 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2062 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 64:
-#line 674 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 674 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPElement, chem::chemkw_intern((yyvsp[0].eval)) )); 
 	}
-#line 2070 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2070 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 65:
-#line 678 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 678 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPLonePair, 1)); 
 	}
-#line 2078 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2078 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 66:
-#line 682 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 682 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>( chem::AtomTest_O::create( chem::SAPLonePair, (yyvsp[0].ival)));
 	}
-#line 2086 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2086 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 67:
-#line 691 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 691 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.atomOrBondMatchNode) = new Hold<chem::AtomOrBondMatchNode_O>((yyvsp[0].root)->value()); 
 	}
-#line 2094 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2094 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 68:
-#line 768 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 768 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.logical) = new Hold<chem::Logical_O>(
 	    		chem::Logical_O::create( chem::logIdentity, (yyvsp[0].atomOrBondMatchNode)->value() )); 
 	}
-#line 2103 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2103 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 69:
-#line 778 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 778 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.logical) = new Hold<chem::Logical_O>(
 	    		chem::Logical_O::create( chem::logNot, (yyvsp[0].logical)->value() )); 
 	}
-#line 2112 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2112 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 70:
-#line 788 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 788 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.logical) = new Hold<chem::Logical_O>(
 	    		chem::Logical_O::create( chem::logHighPrecedenceAnd, (yyvsp[-2].logical)->value(), (yyvsp[0].logical)->value() )); 
 	}
-#line 2121 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2121 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 71:
-#line 798 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 798 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.logical) = new Hold<chem::Logical_O>(
 	    		chem::Logical_O::create( chem::logOr, (yyvsp[-2].logical)->value(), (yyvsp[0].logical)->value() )); 
 	}
-#line 2130 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2130 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 72:
-#line 809 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 809 "msmarts_Parser.yy" /* yacc.c:1661  */
     { 
 	    (yyval.logical) = new Hold<chem::Logical_O>(
 	    		chem::Logical_O::create( chem::logLowPrecedenceAnd, (yyvsp[-2].logical)->value(), (yyvsp[0].logical)->value() )); 
 	}
-#line 2139 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2139 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 73:
-#line 815 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 815 "msmarts_Parser.yy" /* yacc.c:1661  */
     { (yyval.root) = new Hold<chem::Root_O>((yyvsp[-1].smartsRoot)->value()); }
-#line 2145 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2145 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
   case 74:
-#line 818 "msmarts_Parser.yy" /* yacc.c:1646  */
+#line 818 "msmarts_Parser.yy" /* yacc.c:1661  */
     { (yyval.ival) = atoi((yyvsp[0].cval)); }
-#line 2151 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2151 "msmarts_Parser.cc" /* yacc.c:1661  */
     break;
 
 
-#line 2155 "msmarts_Parser.cc" /* yacc.c:1646  */
+#line 2155 "msmarts_Parser.cc" /* yacc.c:1661  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2930,7 +2905,7 @@ return 0;
 
 
 chem::SmartsRoot_sp smarts_compile(const string& input, stringstream& errorStream)
-{
+{_G();
     msmarts_SParserParam p;
     stringstream sin(input);
     p.lisp = _lisp;
@@ -2950,3 +2925,6 @@ void msmarts_error(YYLTYPE* yyloc, msmarts_SParserParam* data, const char* messa
 {
     *(data->msmartsErrorStream) << "Error: " << message << endl;
 }
+    
+
+
