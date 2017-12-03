@@ -44,7 +44,7 @@
    ))
 
 (defpackage #:leap.parser
-  (:use #:cl #:alexandria #:esrap #:parser.common-rules)
+  (:use #:cl #:alexandria #:esrap #:parser.common-rules #:PARSER.COMMON-RULES.OPERATORS)
   (:export )
   (:documentation
    "Embryonic parser for the leap file format.  Written by Jan Moringen"))
@@ -61,6 +61,11 @@
   (:export
    #:write-topology
    #:save-amber-parm-format))
+
+(defpackage #:leap.antechamber-type-definition-parser
+  (:use #:common-lisp #:esrap #:parser.common-rules #:PARSER.COMMON-RULES.OPERATORS)
+  (:export
+   #:antechamber-line))
 
 (defpackage #:leap.commands
   (:use #:common-lisp)

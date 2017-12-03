@@ -599,7 +599,7 @@ void RingFinder_O::defineForMolecule(Molecule_sp mol)
     Atom_sp at = loop.getAtom();
     if ( at.isA<VirtualAtom_O>() ) continue;
     LOG(BF("### Adding atom: %s id:%p to graph") % at->description().c_str() % at.get()  );
-    printf("%s:%d Adding atom as vertex: %s\n",__FILE__,__LINE__,_rep_(at).c_str());
+//    printf("%s:%d Adding atom as vertex: %s\n",__FILE__,__LINE__,_rep_(at).c_str());
     if ( this->_vertices->gethash(at,_Nil<T_O>()).notnilp() )
     {
       SIMPLE_ERROR(BF("Non unique atom id"));

@@ -353,7 +353,7 @@ double	EnergyNonbond_O::evaluateAll(NVector_sp 	pos,
                                      gc::Nilable<NVector_sp>	hdvec, 
                                      gc::Nilable<NVector_sp> 	dvec )
 {
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+//  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   if (this->_UsesExcludedAtoms) {
     // Evaluate the nonbonds using the excluded atom list
     this->evaluateUsingExcludedAtoms(pos,calcForce,force,calcDiagonalHessian,
@@ -380,7 +380,7 @@ __attribute__((optnone)) void	EnergyNonbond_O::evaluateTerms(NVector_sp 	pos,
                                      gc::Nilable<NVector_sp>	hdvec, 
                                      gc::Nilable<NVector_sp> 	dvec )
 {
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+//  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   ANN(force);
   ANN(hessian);
   ANN(hdvec);
@@ -429,7 +429,7 @@ __attribute__((optnone)) void	EnergyNonbond_O::evaluateTerms(NVector_sp 	pos,
       for ( i=0;i<nonBondTerms; i++ )
       {
         nbi = firstElement+i;
-        printf("%s:%d:%s i %d \n", __FILE__, __LINE__, __FUNCTION__,i );
+//        printf("%s:%d:%s i %d \n", __FILE__, __LINE__, __FUNCTION__,i );
 
 #ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
         if ( this->_Debug_NumberOfNonbondTermsToCalculate > 0 ) {
@@ -495,7 +495,7 @@ __attribute__((optnone)) void	EnergyNonbond_O::evaluateTerms(NVector_sp 	pos,
   } else {
     LOG(BF("Nonbond component is not enabled"));
   }
-  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw, this->_EnergyElectrostatic );
+//  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw, this->_EnergyElectrostatic );
   LOG(BF( "Nonbond energy vdw(%lf) electrostatic(%lf)\n")% (double)this->_EnergyVdw % this->_EnergyElectrostatic );
   LOG(BF("Nonbond energy }\n"));
 }
@@ -511,7 +511,7 @@ __attribute__((optnone)) void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVecto
                                                     gc::Nilable<NVector_sp>	hdvec, 
                                                     gc::Nilable<NVector_sp> 	dvec )
 {
-  printf("%s:%d In evaluateUsingExcludedAtoms starting this->_DebugEnergy -> %d\n", __FILE__, __LINE__, this->_DebugEnergy );
+//  printf("%s:%d In evaluateUsingExcludedAtoms starting this->_DebugEnergy -> %d\n", __FILE__, __LINE__, this->_DebugEnergy );
   if (!this->_iac_vec) {
     SIMPLE_ERROR(BF("The nonbonded excluded atoms parameters have not been set up"));
   }
@@ -519,7 +519,7 @@ __attribute__((optnone)) void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVecto
   core::SimpleVector_int32_t_sp excludedAtomIndices = this->_ExcludedAtomIndices;
   double vdwScale = this->getVdwScale();
   double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
-  printf("%s:%d electrostaticcharge %lf\n", __FILE__, __LINE__, electrostaticScale );
+//  printf("%s:%d electrostaticcharge %lf\n", __FILE__, __LINE__, electrostaticScale );
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
@@ -542,7 +542,7 @@ __attribute__((optnone)) void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVecto
 #define	NONBOND_FORCE_ACCUMULATE 		ForceAcc
 #define	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
 #define	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
-  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
+//  printf("%s:%d:%s Entering\n", __FILE__, __LINE__, __FUNCTION__ );
   if ( !this->isEnabled() ) return;
 	    // If you are going to use openmp here, you need to control access to the force and hessian
 	    // arrays so that only one thread updates each element at a time.
@@ -674,7 +674,7 @@ __attribute__((optnone)) void	EnergyNonbond_O::evaluateUsingExcludedAtoms(NVecto
 #endif
     }
   }
-  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw,  this->_EnergyElectrostatic );
+//  printf( "Nonbond energy vdw(%lf) electrostatic(%lf)\n", (double)this->_EnergyVdw,  this->_EnergyElectrostatic );
   LOG(BF( "Nonbond energy vdw(%lf) electrostatic(%lf)\n")% (double)this->_EnergyVdw % this->_EnergyElectrostatic );
   LOG(BF( "Nonbond energy }\n"));
 }

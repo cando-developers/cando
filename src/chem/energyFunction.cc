@@ -482,7 +482,9 @@ double	EnergyFunction_O::evaluateAll(
                                                       gc::Nilable<NVector_sp>	hdvec,
                                                       gc::Nilable<NVector_sp> dvec)
 {_G()
+#ifdef DEBUG_ENERGY_FUNCTION
     printf("%s:%d:%s Entered\n", __FILE__, __LINE__, __FUNCTION__ );
+#endif
 #if 0 //[
 #define	ForceAcc(i,o,v) {\
     if ( hasForce ) {\

@@ -7,6 +7,7 @@ def configure(cfg):
     cfg.extensions_stlib += cfg.env.STLIB_EXPAT
     cfg.extensions_stlib += cfg.env.STLIB_Z
     cfg.define("BUILD_EXTENSION",1)   # add this whenever building an extension
+#    cfg.define("DEBUG_ENERGY_FUNCTION",1)
     
 def build(bld):
     cando_project_headers_name = "include/cando/main/project_headers.h"

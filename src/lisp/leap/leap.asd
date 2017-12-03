@@ -8,12 +8,14 @@
     :depends-on ( :alexandria
                   (:version :esrap "0.15")
                   :parser.common-rules
+                  :PARSER.COMMON-RULES.OPERATORS
                   :architecture.builder-protocol)
     :serial t
     :components
     ((:file "packages")
      (:file "core")
      (:file "chem")
+     (:file "antechamber-type-definition-parser")
      (:file "off")
      (:file "fortran")
      (:file "topology")

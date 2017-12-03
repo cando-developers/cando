@@ -142,7 +142,13 @@ int startup(int argc, char *argv[], bool &mpiEnabled, int &mpiRank, int &mpiSize
       SIMPLE_ERROR(BF("USE_MPI is true but mpiEnabled is false!!!!"));
     }
 #endif
-    core::Cons_sp features = core::Cons_O::create(INTERN_(kw,cando),cl::_sym_STARfeaturesSTAR->symbolValue());
+    core::List_sp features = gc::As<List_sp>(cl::_sym_STARfeaturesSTAR->symbolValue());
+    features = core::Cons_O::create(INTERN_(kw,cando),features);
+#ifdef DEBUG_ENERGY_FUNCTION
+    features = core::Cons_O::create(INTERN_(kw,debug_energy_function),features);
+#endif
+    cl::_sym_STARfeaturesSTAR->setf_symbolValue(features);
+    
     _lisp->run();
   } catch (core::DynamicGo &failedGo) {
     printf("%s:%d A DynamicGo was thrown but not caught frame[%lu] tag[%lu]\n", __FILE__, __LINE__, failedGo.getFrame(), failedGo.index());

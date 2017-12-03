@@ -1,3 +1,79 @@
+;;;
+;;; Test antechamber atom type definition parser
+;;;
+(in-package :leap.antechamber-type-definition-parser)
+
+(defparameter *antechamber-builder* (make-instance 'leap.antechamber-type-definition-parser::builder))
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'atomic-test "RG3"))
+
+(architecture.builder-protocol:with-builder *antechamber-builder* (esrap:parse 'atomic-test "NG"))
+
+(architecture.builder-protocol:with-builder *antechamber-builder* (esrap:parse 'atomic-test "2RG6"))
+
+(architecture.builder-protocol:with-builder *antechamber-builder* (esrap:parse 'atomic-test "AR1"))
+
+(core:encode (architecture.builder-protocol:with-builder *antechamber-builder* (esrap:parse 'log-op "RG5,AR2.AR1")))
+
+
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'log-op "RG6,RG5,RG4.RG3"))
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'log-op "RG6,RG5,RG4.RG3"))
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'log-op "RG6,RG5"))
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'atomic-test "RG6"))
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'log-op "RG6,RG5"))
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'bracketed-atom-property-or-null "[RG6,RG5]"))
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'atomic-test "NG"))
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'chemical-environment-atom "C[RG6,RG5]<aa>"))
+
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'bracketed-atomic-property/s "[RG5]    "))
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'chain.chemical-environment-atom "C"))
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'branches "(C3,C3,N3(H))"))
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'chain "C"))
+
+
+
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'antechamber-line...chemical-environment "CN    *   6   3   *   *   [RG5,RG6,AR1.AR2.AR3]   	(C3,C3,N3(H))		"))
+
+
+(esrap:parse 'antechamber-line...bond-definitions "H5    *   1   1   *   2   *                        (XX[AR1.AR2.AR3])")
+
+(apropos "focus-number-of")
+
+(make-instance 'leap.antechamber-type-definition-parser::builder)
+(let ((architecture.builder-protocol:*builder* (make-instance 'leap.antechamber-type-definition-parser::builder)))
+  (esrap:parse 'log-op.and "RG5,RG4"))
+
+
+(core::make-cxx-object 'chem:logical :op :log-identity :left (chem:make-atom-test-ar-level 3))
+
+
 (add-path "/Users/meister/Development/amber/dat/leap/cmd/")
 (add-path "/Users/meister/Development/amber/dat/leap/lib/")
 (add-path "/Users/meister/Development/amber/dat/leap/dat/")
@@ -101,7 +177,6 @@ leap.core::*path*
 (apropos "excluded")
 (print (chem:excluded-atom-list (chem:atom-table *ef*) 0))
 
-(chem:atom-
 (chem:generate-restraint-energy-function-tables *ef* *1mil* *ff* :show-progress t)
 (print "Done")
 

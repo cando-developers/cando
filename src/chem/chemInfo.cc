@@ -609,11 +609,22 @@ core::NullTerminatedEnumAssociation logicalEnum[] = {
 
 void Logical_O::fields(core::Record_sp node) {
   node->/*pod_*/field(INTERN_(kw, op), this->_Operator);
-  node->field(INTERN_(kw, left), this->_Left);
+  node->field_if_not_nil(INTERN_(kw, left), this->_Left);
   node->field_if_not_nil(INTERN_(kw, right), this->_Right);
   this->Base::fields(node);
 }
 
+string Logical_O::__repr__() const {
+  stringstream ss;
+  ss << "#<LOGICAL :op ";
+  for ( int i=0; logicalEnum[i]._Enum != -1; ++i ) {
+      if (logicalEnum[i]._Enum == this->_Operator) {
+          ss << logicalEnum[i]._Key;
+      }
+  }
+      ss << ">";
+            return ss.str();
+}
 // --- TagSet  set a tag for the atom
 
 core::NullTerminatedEnumAssociation bondEnum[] = {

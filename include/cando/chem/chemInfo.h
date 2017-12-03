@@ -356,8 +356,13 @@ namespace chem {
     virtual	ChemInfoType	type() { return logical; };
     virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
     virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
+    CL_DEFMETHOD core::T_sp getLeft() const { return this->_Left; };
+    CL_DEFMETHOD core::T_sp getRight() const { return this->_Right; };
+    CL_DEFMETHOD void setLeft(AtomOrBondMatchNode_sp val) { this->_Left = val; };
+    CL_DEFMETHOD void setRight(AtomOrBondMatchNode_sp val) { this->_Right = val; };
     virtual uint depth() const;
     virtual string asSmarts() const;
+    virtual string __repr__() const;
   Logical_O() : _Operator(logAlwaysTrue) {};
     virtual ~Logical_O() {};
   };
@@ -679,10 +684,52 @@ namespace chem {
       return create( t, 0, 0, el,_Nil<core::Symbol_O>());
     };
     static AtomTest_sp create( AtomTestEnum t, core::Symbol_sp sym)
-    {_G();
+    {
       LOG(BF("Create an AtomTest with a symbol argument: %s") % sym->__repr__() );
       return create( t, 0, 0, NULL, sym );
     }
+    // Special makers
+    CL_LISPIFY_NAME(make-atom-test-in-bond1);
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_in_bond1(int bond)
+    {
+      return create( SAPInBond, bond, 1);
+    }
+    CL_LISPIFY_NAME(make-atom-test-in-bond);
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_in_bond(int bond, int num)
+    {
+      return create( SAPInBond, bond, num);
+    }
+    CL_LISPIFY_NAME(make-atom-test-not-bonded-to-previous);
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_not_bonded_to_previous(int bond)
+    {
+      return create( SAPNotBondedToPrevious, bond );
+    }
+    CL_LISPIFY_NAME(make-atom-test-bonded-to-previous);
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_bonded_to_previous(int bond)
+    {
+      return create( SAPBondedToPrevious, bond );
+    }
+    CL_LISPIFY_NAME(make-atom-test-ar-level);
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_ar_level(int arLevel)
+    {
+      return create( SAPArLevel, arLevel );
+    }
+    CL_LISPIFY_NAME(make-atom-test-ring-size);
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_ring_size(int size)
+    {
+      return create( SAPRingSize, size );
+    }
+    CL_LISPIFY_NAME(make-atom-test-ring-size2);
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_ring_size2(int size, int num)
+    {
+      return create( SAPRingSize, num, size );
+    }
+    CL_LISPIFY_NAME(make-atom-test-no-ring-membership);
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_no_ring_membership()
+    {
+      return create( SAPNoRing);
+    }
+    
 
   public:
     AtomTestEnum	myType() { return this->_Test; };
@@ -1011,13 +1058,6 @@ namespace chem {
     DEFAULT_CTOR_DTOR(SmartsRoot_O);
   };
 
-
-
-
-
-
-
-
   SMART(AntechamberRoot);
   class AntechamberRoot_O : public Root_O
   {
@@ -1035,13 +1075,12 @@ namespace chem {
   public:
     static AntechamberRoot_sp create( core::Symbol_sp assignType,
                                       AtomOrBondMatchNode_sp node,
-                                      gc::Nilable<BondListMatchNode_sp> bl,
-                                      gc::Nilable<RootMatchNode_sp> amt) 
+                                      BondListMatchNode_sp bl,
+                                      RootMatchNode_sp amt) 
     {_G();
       GC_ALLOCATE(AntechamberRoot_O, obj ); // RP_Create<AntechamberRoot_O>(lisp);
       obj->_FirstTest = node;
       obj->_Chain = bl;
-      ANN(obj->_Chain);
       obj->_AssignType = assignType;
       obj->_AfterMatchTests = amt;
       obj->_WildElementDictionary = _Nil<core::T_O>();
