@@ -456,6 +456,7 @@
          (mass-vector (make-array natom :element-type 'double-float))
          (type-index-vector (make-array natom :element-type '(signed-byte 32)))
          (atomic-number-vector (make-array natom :element-type '(signed-byte 32)))
+         (atom-radius-vector (make-array natom :element-type 'double-float))
          (energy-nonbond (chem:get-nonbond-component energy-function))
          (ffnonbond-db (chem:get-nonbond-db force-field)))
     (format t "energy-nonbond -> ~a~%" energy-nonbond)
@@ -467,16 +468,20 @@
        for mass = (chem:elt-mass atom-table i)
        for type-index = (chem:elt-type-index atom-table i)
        for atomic-number = (chem:elt-atomic-number atom-table i)
+       for ffnonbondi = (chem:get-ffnonbond-using-type-index ffnonbond-db type-index)
+       for atom-radius = (chem:get-radius-angstroms ffnonbondi)
        do (setf (aref atom-name-vector i) atom-name
                 (aref atom-type-vector i) atom-type
                 (aref charge-vector i) charge
                 (aref mass-vector i) mass
                 (aref type-index-vector i) type-index
-                (aref atomic-number-vector i) atomic-number))
-    (format t "atom-name-vector -> ~s~%" atom-name-vector)
-    (format t "atom-type-vector -> ~s~%" atom-type-vector)
-    (format t "charge-vector -> ~s~%" charge-vector)
-    (format t "type-index-vector -> ~s~%" type-index-vector)
+                (aref atomic-number-vector i) atomic-number
+                (aref atom-radius-vector i) atom-radius))
+;    (format t "atom-name-vector -> ~s~%" atom-name-vector)
+;    (format t "atom-type-vector -> ~s~%" atom-type-vector)
+;    (format t "charge-vector -> ~s~%" charge-vector)
+;    (format t "type-index-vector -> ~s~%" type-index-vector)
+;    (format t "atom-radius-vector -> ~s~%" atom-radius-vector)
     (multiple-value-bind (ntypes ico-vec iac-vec local-typej-vec cn1-vec cn2-vec)
         (generate-nonbond-parameters ffnonbond-db type-index-vector)
       (list (cons :ntypes ntypes)
@@ -485,6 +490,7 @@
             (cons :charge-vector (copy-seq charge-vector))
             (cons :mass-vector (copy-seq mass-vector))
             (cons :atomic-number-vector (copy-seq atomic-number-vector))
+            (cons :atom-radius-vector (copy-seq atom-radius-vector))
             (cons :ico-vec (copy-seq ico-vec))
             (cons :iac-vec (copy-seq iac-vec))
             (cons :local-typej-vec (copy-seq local-typej-vec))
@@ -496,9 +502,12 @@
   (let* ((atom-table (chem:atom-table energy-function))
          (residue-vector (chem:atom-table-residues atom-table))
          (residue-name-vector (chem:atom-table-residue-names atom-table))
-         (atoms-per-molecule (chem:atom-table-atoms-per-molecule atom-table))
+         (molecule-vector (chem:atom-table-atoms-per-molecule atom-table))
+         (atoms-per-molecule (make-array 256 :element-type '(signed-byte 32) :fill-pointer 0 :adjustable t))
+         (nmolecule 0)
          (nresidue 0)
          (nmxrs 0))
+    (setf nmolecule (- (length molecule-vector) 1))
     (setf nresidue (- (length residue-vector) 1))
     (loop for i from 0 below (length residue-vector)
        for fresidue = (+ (aref residue-vector i) 1)
@@ -507,7 +516,29 @@
        for inmxrs = (- (aref residue-vector (+ i 1)) (aref residue-vector i))
        do (if (> inmxrs nmxrs)
               (setf nmxrs inmxrs)))
-    (values nresidue nmxrs residue-vector residue-name-vector atoms-per-molecule)))         
+    (loop for i from 0 below nmolecule
+         for natom = (- (aref molecule-vector (+ i 1)) (aref molecule-vector i))
+       do (vector-push-extend natom atoms-per-molecule))
+    (values nresidue nmxrs residue-vector residue-name-vector atoms-per-molecule)))
+
+;; for now, hardwire the Bondi radii
+(defun prepare-generalized-born (atomic-number-vector)
+  (let ((generalized-born-screen (make-array (length atomic-number-vector)))
+        (atomic-number 0)
+        (screen 0))
+    (loop for i from 0 below (length atomic-number-vector)
+       for atomic-number = (aref atomic-number-vector i)
+       do (case atomic-number (1 (setf screen 0.85))
+                (6 (setf screen 0.72))
+                (7 (setf screen 0.79))
+                (8 (setf screen 0.85))
+                (9 (setf screen 0.88))
+                (15 (setf screen 0.86))
+                (16 (setf screen 0.96))
+                (otherwise  (setf screen 0.8)))
+       do (setf (aref generalized-born-screen i) screen))
+    (values generalized-born-screen)))
+    
          
 (defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname force-field)
   (let* ((energy-function (chem:make-energy-function aggregate force-field
@@ -524,7 +555,9 @@
       (fortran:debug "-1-")             ;
       (fortran:fformat 1 "%-80s")
       ;;      (fortran:fwrite (core:strftime 81 "%%VERSION  VERSION_STAMP = V0002.000  DATE = %m/%d/%y  %H:%M:%S"))
-      (fortran:fwrite "-----insert the version and time stamp---")
+;;;;      (fortran:fwrite "-----insert the version and time stamp---")
+      ;;; temporary!!!
+      (fortran:fwrite "%VERSION  VERSION_STAMP = V0001.000  DATE = 12/04/17  10:32:47")
       (fortran:fwrite "%FLAG TITLE")
       (fortran:fwrite "%FORMAT(20a4)")
       (fortran:fwrite (string (chem:get-name aggregate)))
@@ -532,11 +565,11 @@
       ;; To avoid lots of nested scopes we will declare one large scope
       ;;   and declare all of the variables in that scope here at the top
       (let (atom-vectors
-            ntypes atom-name atom-type charge mass atomic-number ico iac local-typej-vec cn1-vec cn2-vec #|nonbonds|#
+            ntypes atom-name atom-type charge mass atomic-number atom-radius ico iac local-typej-vec cn1-vec cn2-vec #|nonbonds|#
             nbonh mbona ibh jbh icbh ib jb icb kbj-vec r0j-vec #|stretches|#
             ntheth mtheta ith jth kth icth it jt kt1 ict ktj-vec t0j-vec #|angles|#
             nphih mphia iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec #|dihedrals|#
-            nhparm nparm  nnb nres residue-vec residue-name-vec
+            nhparm nparm  nnb nres residue-vec residue-name-vec atoms-per-molecule generalized-born-screen
             nbona    ntheta nphia  NUMBND NUMANG NPTRA
             NATYP    NPHB   IFPERT NBPER  NGPER  NDPER
             MBPER    MGPER  MDPER  IFBOX  nmxrs  IFCAP
@@ -551,7 +584,7 @@
           (prepare-amber-energy-dihedral energy-function))
                                         ;        (multiple-value-setq (ntypes atom-name charge mass atomic-number ico iac local-typej-vec cn1-vec cn2-vec)
                                         ;          (chem:prepare-amber-energy-nonbond energy-function))
-        (multiple-value-setq (nres nmxrs residue-vec residue-name-vec)
+        (multiple-value-setq (nres nmxrs residue-vec residue-name-vec atoms-per-molecule)
           (prepare-residue energy-function))
         (setf atom-vectors (chem:prepare-amber-energy-nonbond energy-function force-field))
         (setf ntypes (cdr (assoc :ntypes atom-vectors)))
@@ -560,11 +593,13 @@
         (setf charge (cdr (assoc :charge-vector atom-vectors)))
         (setf mass (cdr (assoc :mass-vector atom-vectors)))
         (setf atomic-number (cdr (assoc :atomic-number-vector atom-vectors)))
+        (setf atom-radius (cdr (assoc :atom-radius-vector atom-vectors)))
         (setf ico (cdr (assoc :ico-vec atom-vectors)))
         (setf iac (cdr (assoc :iac-vec atom-vectors)))
         (setf local-typej-vec (cdr (assoc :local-typej-vec atom-vectors)))
         (setf cn1-vec (cdr (assoc :cn1-vec atom-vectors)))
         (setf cn2-vec (cdr (assoc :cn2-vec atom-vectors)))
+        (setf generalized-born-screen (prepare-generalized-born atomic-number))
         (setf nhparm 0)
         (setf nparm 0)
         (setf nnb (length excluded-atom-list))
@@ -816,6 +851,9 @@
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-19-")
         (fortran:fformat 5 "%16.8f")
+        ;;; temporary!!!
+        (loop repeat nptra
+           do (fortran:fwrite "1.20000000"))
         (fortran:end-line)
         ;; write the 1-4 electrostatic scaling constant
 
@@ -825,6 +863,9 @@
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-20-")
         (fortran:fformat 5 "%16.8f")
+        ;;; temporary!!!
+        (loop repeat nptra
+           do (fortran:fwrite "2.00000000"))
         (fortran:end-line)
         ;; write the 1-4 vdw scaling constant
 
@@ -1017,13 +1058,15 @@
         (fortran:end-line)
 
         ;;next
-;        (fortran:fformat 1 "%-80s")
-;        (fortran:fwrite "%FLAG TREE_CHAIN_CLASSIFICATION")
-;        (fortran:fwrite "%FORMAT(20A4)")
-;        (fortran:debug "-35-")
-;        (fortran:fformat 20 "%-4s")
-
-;        (fortran:end-line)
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG TREE_CHAIN_CLASSIFICATION")
+        (fortran:fwrite "%FORMAT(20A4)")
+        (fortran:debug "-35-")
+        (fortran:fformat 20 "%-4s")
+        (loop repeat natom
+           do (fortran:fwrite "M"))
+        (fortran:end-line)
+        ;; We are not considering protein/DNA thing, so just put "main chain" for all atoms.
 
         ;;next
         (fortran:fformat 1 "%-80s")
@@ -1048,20 +1091,27 @@
         ;;This section is not used and is currently just filled with zeros.
 
         ;;next
-;        (fortran:fformat 1 "%-80s")
-;        (fortran:fwrite "%FLAG SOLVENT_POINTERS")
-;        (fortran:fwrite "%FORMAT(3I8)")
-;        (fortran:debug "-38-")
-;        (fortran:fformat 3 "%8d")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG SOLVENT_POINTERS")
+        (fortran:fwrite "%FORMAT(3I8)")
+        (fortran:debug "-38-")
+        (fortran:fformat 3 "%8d")
+        ;;;temporary!!!
+        (fortran:fwrite "3") 
+        (fortran:fwrite "1") 
+        (fortran:fwrite "2") 
+        (fortran:end-line)
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG ATOMS_PER_MOLECULE")
+        (fortran:fwrite "%FORMAT(10I8)")
+        (fortran:debug "-39-")
+        (fortran:fformat 10 "%8d")
+        (loop for natom across atoms-per-molecule
+           do (fortran:fwrite natom))
+        (fortran:end-line)
+        ;; number of atoms per molecule
 
-;        (fortran:end-line)
-;        (fortran:fformat 1 "%-80s")
-;        (fortran:fwrite "%FLAG ATOMS_PER_MOLECULE")
-;        (fortran:fwrite "%FORMAT(10I8)")
-;        (fortran:debug "-39-")
-;        (fortran:fformat 5 "%16.8f")
-
-;        (fortran:end-line)
+        ;;next
         (fortran:fformat 1 "%-80s")
         (fortran:fwrite "%FLAG BOX_DIMENSIONS")
         (fortran:fwrite "%FORMAT(5E16.8)")
@@ -1070,32 +1120,41 @@
         (let ((solvent-box (chem:matter-get-property aggregate :solvent-box)))
           (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
             (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))
+          (fortran:fwrite "90.0000000") ;box angle
           (fortran:fwrite (float (first solvent-box)))
           (fortran:fwrite (float (second solvent-box)))
           (fortran:fwrite (float (third solvent-box)))) 
         (fortran:end-line)
-        
-;        (fortran:fformat 1 "%-80s")
-;        (fortran:fwrite "%FLAG RADIUS_SET")
-;        (fortran:fwrite "%FORMAT(1a80)")
-;        (fortran:debug "-41-")
-;        (fortran:fformat 5 "%16.8f")
 
-;        (fortran:end-line)
-;        (fortran:fformat 1 "%-80s")
-;        (fortran:fwrite "%FLAG RADII")
-;        (fortran:fwrite "%FORMAT(5E16.8)")
-;        (fortran:debug "-42-")
-;        (fortran:fformat 5 "%16.8f")
+        ;;next
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG RADIUS_SET")
+        (fortran:fwrite "%FORMAT(1a80)")
+        (fortran:debug "-41-")
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "modified Bondi radii (mbondi)") ;default in leap
+        (fortran:end-line)
 
-;        (fortran:end-line)
-;        (fortran:fformat 1 "%-80s")
-;        (fortran:fwrite "%FLAG SCREEN")
-;        (fortran:fwrite "%FORMAT(5E16.8)")
-;        (fortran:debug "-43-")
-;        (fortran:fformat 5 "%16.8f")
+        ;;next
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG RADII")
+        (fortran:fwrite "%FORMAT(5E16.8)")
+        (fortran:debug "-42-")
+        (fortran:fformat 5 "%16.8f")
+        (loop for radius across atom-radius
+           do (fortran:fwrite radius))
+        (fortran:end-line)
+        ;;Generalized Born intrinsic dielectric radii
 
-;        (fortran:end-line)
+        ;;next
+        (fortran:fformat 1 "%-80s")
+        (fortran:fwrite "%FLAG SCREEN")
+        (fortran:fwrite "%FORMAT(5E16.8)")
+        (fortran:debug "-43-")
+        (fortran:fformat 5 "%16.8f")
+        (loop for screen across generalized-born-screen
+           do (fortran:fwrite screen))
+        (fortran:end-line)
         ))
     (format *debug-io* "coordinate-pathname -> ~s~%" coordinate-pathname)
     (fortran:with-fortran-output-file (ftop coordinate-pathname :direction :output :if-exists :supersede)
@@ -1125,7 +1184,10 @@
           (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))
         (fortran:fwrite (float (first solvent-box)))
         (fortran:fwrite (float (second solvent-box)))
-        (fortran:fwrite (float (third solvent-box))))
+        (fortran:fwrite (float (third solvent-box)))
+        (fortran:fwrite "90.0000000") ;box angle
+        (fortran:fwrite "90.0000000") 
+        (fortran:fwrite "90.0000000"))
       (fortran:end-line))))
 
 (defconstant %flag-title "%FLAG TITLE")

@@ -10,5 +10,6 @@ Minimize
   ncyc=0,
   ntpr=5,
   ntwx=0,
-  cut=20.0,
+  cut=1000.0,
  /
+ 

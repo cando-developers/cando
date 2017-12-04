@@ -32,6 +32,7 @@ energy::*ff*
 
 energy::*ff*
 
+(setf *default-pathname-defaults* #P"/Users/tuj24515/Development/clasp/extensions/cando/src/lisp/tests/tiny/")
 (leap.topology::save-amber-parm-format *agg* "clcl_cando.top" "clcl_cando.crd" energy::*ff*)
 
 

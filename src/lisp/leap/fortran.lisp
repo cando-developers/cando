@@ -139,12 +139,13 @@
        do (fread-line fif eof-error-p eof-value))
     result))
 
-(defun read-double-float-from-string (raw-string &key (start 0) end)
-  (let* ((trimmed (string-trim " " raw-string))
-         (space-pos (position #\space trimmed))
-         (string (if space-pos
-                     (subseq trimmed 0 space-pos)
-                     trimmed)))
+;(defun read-double-float-from-string (raw-string &key (start 0) end)
+;  (let* ((trimmed (string-trim " " raw-string))
+;         (space-pos (position #\space trimmed))
+;         (string (if space-pos
+;                     (subseq trimmed 0 space-pos)
+;                     trimmed)))
+(defun read-double-float-from-string (string &key (start 0) end)
     (let ((float-start (position-if (lambda (c) (char/= c #\space)) string :start start :end end))
           (float-end (or end (length string)))
           (has-period (position #\. string :start start :end end))
@@ -162,7 +163,7 @@
             (setf exponent (parse-integer string :start (1+ has-exponent-char) :end float-end)))
         (setf exponent (- exponent (length sig-y)))
         (setf significand-str (concatenate 'string sig-x sig-y))
-        (* (float (parse-integer significand-str) 1.0D0) (expt 10.0d0 exponent))))))
+        (* (float (parse-integer significand-str) 1.0D0) (expt 10.0d0 exponent)))))
 
 (defun parse-double-float-line (line result width)
   (loop for start = 0 then end
