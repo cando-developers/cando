@@ -1,0 +1,24 @@
+Heat
+ &cntrl
+  imin=0,
+  ntx=1,
+  irest=0,
+  nstlim=10000,
+  dt=0.002,
+  ntf=2,
+  ntc=2,
+  tempi=0.0,
+  temp0=300.0,
+  ntpr=100,
+  ntwx=100,
+  cut=8.0,
+  ntb=1,
+  ntp=0,
+  ntt=3,
+  gamma_ln=2.0,
+  nmropt=1,
+  ig=-1,
+ /
+&wt type='TEMP0', istep1=0, istep2=9000, value1=0.0, value2=300.0 /
+&wt type='TEMP0', istep1=9001, istep2=10000, value1=300.0, value2=300.0 /
+&wt type='END' /
