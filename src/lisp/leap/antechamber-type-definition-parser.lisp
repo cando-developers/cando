@@ -25,7 +25,15 @@
 
 (esrap:defrule antechamber-line
     (or antechamber-line...bond-definitions
-        antechamber-line...chemical-environment))
+        antechamber-line...chemical-environment
+        antechamber-line...bracketed-atomic-property
+        antechamber-line...focus-number-of-electron-withdrawing-atoms
+        antechamber-line...focus-number-of-attached-hydrogen-atoms
+        antechamber-line...focus-number-of-attached-atoms
+        antechamber-line...focus-atomic-number
+        antechamber-line...residue-list
+        antechamber-line...residue-list
+        antechamber-line...type-name))
 
 (esrap:defrule antechamber-line...bond-definitions
     (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms bracketed-atomic-property/s chemical-environment/s bond-definitions/s)
@@ -43,9 +51,8 @@
                                                                :after-match-tests bond-definitions))))
 
 (esrap:defrule antechamber-line...chemical-environment
-    (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms bracketed-atomic-property/s chemical-environment/s)
+    (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms bracketed-atomic-property/s chemical-environment/?s)
   (:destructure (type-name residue-list focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms bracketed-atomic-property chemical-environment)
-                (format t "About to make antechamber-focus-atom-match  atomic-property: ~s  chemical-environment: ~s~%" bracketed-atomic-property chemical-environment)
                 (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
                                                    :residue-names residue-list
                                                    :atomic-number focus-atomic-number
@@ -56,6 +63,83 @@
                   (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
                                                                :first-test focus
                                                                :chain chemical-environment))))
+
+(esrap:defrule antechamber-line...bracketed-atomic-property
+    (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms bracketed-atomic-property/?s)
+  (:destructure (type-name residue-list focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms bracketed-atomic-property)
+                (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
+                                                   :residue-names residue-list
+                                                   :atomic-number focus-atomic-number
+                                                   :attached-atoms focus-number-of-attached-atoms
+                                                   :attached-hs focus-number-of-attached-hydrogen-atoms
+                                                   :attached-ewgs focus-number-of-electron-withdrawing-atoms
+                                                   :atomic-property bracketed-atomic-property)))
+                  (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
+                                                               :first-test focus))))
+
+(esrap:defrule antechamber-line...focus-number-of-electron-withdrawing-atoms
+    (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms)
+  (:destructure (type-name residue-list focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms)
+                (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
+                                                   :residue-names residue-list
+                                                   :atomic-number focus-atomic-number
+                                                   :attached-atoms focus-number-of-attached-atoms
+                                                   :attached-hs focus-number-of-attached-hydrogen-atoms
+                                                   :attached-ewgs focus-number-of-electron-withdrawing-atoms)))
+                  (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
+                                                               :first-test focus))))
+
+(esrap:defrule antechamber-line...focus-number-of-attached-hydrogen-atoms
+    (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms)
+  (:destructure (type-name residue-list focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms)
+                (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
+                                                   :residue-names residue-list
+                                                   :atomic-number focus-atomic-number
+                                                   :attached-atoms focus-number-of-attached-atoms
+                                                   :attached-hs focus-number-of-attached-hydrogen-atoms
+                                                   :attached-ewgs -1)))
+                  (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
+                                                               :first-test focus))))
+
+(esrap:defrule antechamber-line...focus-number-of-attached-atoms
+    (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms)
+  (:destructure (type-name residue-list focus-atomic-number focus-number-of-attached-atoms)
+                (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
+                                                   :residue-names residue-list
+                                                   :atomic-number focus-atomic-number
+                                                   :attached-atoms focus-number-of-attached-atoms
+                                                   :attached-hs -1
+                                                   :attached-ewgs -1)))
+                  (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
+                                                               :first-test focus))))
+
+(esrap:defrule antechamber-line...focus-atomic-number
+    (and type-name/s residue-list/s focus-atomic-number)
+  (:destructure (type-name residue-list focus-atomic-number)
+                (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
+                                                   :residue-names residue-list
+                                                   :atomic-number focus-atomic-number
+                                                   :attached-atoms -1
+                                                   :attached-hs -1
+                                                   :attached-ewgs -1)))
+                  (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
+                                                               :first-test focus))))
+
+(esrap:defrule antechamber-line...residue-list
+    (and type-name/s residue-list/s)
+  (:destructure (type-name residue-list)
+                (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
+                                                   :residue-names residue-list)))
+                  (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
+                                                               :first-test focus))))
+
+(esrap:defrule antechamber-line...type-name
+    (and type-name/s residue-list/s)
+  (:destructure (type-name)
+                (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match)))
+                  (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
+                                                               :first-test focus))))
+
 
 (defmacro defrule-wild-card-or-number (name)
   (let ((option1-name (gensym))
@@ -87,7 +171,7 @@
 (esrap:defrule bracketed-atomic-property.log-op
     (and "[" log-op "]")
   (:lambda (x)
-    (list (second x))))
+    (second x)))
 
 (parser.common-rules:defrule/s chemical-environment
     (or chemical-environment.wild-card
@@ -100,7 +184,8 @@
 
 (esrap:defrule chemical-environment.branches
     (and branches)
-  (:destructure (b)))
+  (:destructure (b)
+                b))
 
 (parser.common-rules:defrule/s bond-definitions
     (and ap-tag ":" ap-tag ":" ap-bond)
@@ -161,7 +246,10 @@
         "Pd" "Ag" "Cd" "In" "Sn" "Sb" "Te" "Xe" "Cs" "Ba" "La" "Ce" "Pr" "Nd" "Pm" "Sm" "Eu"
         "Gd" "Tb" "Dy" "Ho" "Er" "Tm" "Yb" "Lu" "Hf" "Ta" "Re" "Os" "Ir" "Pt" "Au" "Hg" "Tl"
         "Pb" "Bi" "Po" "At" "Rn" "Fr" "Ra" "Ac" "Th" "Pa" "Np" "Pu" "Am" "Cm" "Bk" "Cf" "Es"
-        "Fm" "Md" "No" "Lr" "H" "W" "U" "B" "C" "N" "O" "F" "P" "S" "K" "V" "I" "Y"))
+        "Fm" "Md" "No" "Lr"
+        "XA" "XB" "XC" "XD" "XE" "XF" "XG" "XH" "XI" "XJ" "XK" "XL"
+        "XM" "XN" "XO" "XP" "XQ" "XR" "XS" "XT" "XU" "XV" "XW" "XX" "XY" "XZ"
+        "H" "W" "U" "B" "C" "N" "O" "F" "P" "S" "K" "V" "I" "Y"))
 
 (parser.common-rules:defrule/s terminator
   "&")

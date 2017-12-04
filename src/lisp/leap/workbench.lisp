@@ -59,10 +59,16 @@
 
 
 (architecture.builder-protocol:with-builder *antechamber-builder*
-  (esrap:parse 'antechamber-line...chemical-environment "CN    *   6   3   *   *   [RG5,RG6,AR1.AR2.AR3]   	(C3,C3,N3(H))		"))
+  (esrap:parse 'antechamber-line "CN    *   6   3   *   *   [RG5,RG6,AR1.AR2.AR3]   	(C3,C3,N3(H))		"))
 
 
-(esrap:parse 'antechamber-line...bond-definitions "H5    *   1   1   *   2   *                        (XX[AR1.AR2.AR3])")
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'antechamber-line "H5    *   1   1   *   2   *                        (XX[AR1.AR2.AR3])"))
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'antechamber-line "H5    *   1   "))
+
+(apropos "bracketed-atomic-property")
 
 (apropos "focus-number-of")
 
