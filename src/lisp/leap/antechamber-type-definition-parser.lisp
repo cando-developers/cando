@@ -14,6 +14,8 @@
 
 ;;; Lexical stuff and reserved words
 
+(defvar *wild-dict*)
+
 (esrap:defrule skippable
     (+ (or parser.common-rules:shell-style-comment
            parser.common-rules:whitespace)))
@@ -471,3 +473,25 @@
       (chem:set-left left right))
   left)
 
+
+#||
+(defun read-antechamber-type-rules (stream)
+  "* Arguments
+- filename : A pathname
+* Description
+Read the contents of the filename into memory and return a buffer-stream on it."
+  (let ((data (make-string (file-length stream)))
+        (wild-dict (make-hash :test #'equal)))
+    (read-sequence data stream)
+    (with-input-from-string (sin data)
+      (loop for line in (read-line sin nil :eof)
+            for line-len = (length line)
+            until (eq line :eof)
+            do (cond
+                 ((and (> line-len #.(length "WILDATOM"))
+                       (string= "WILDATOM" line :start2 0 :end2 #.(length "WILDATOM")))
+                  (multiple-value-bind (wild-atom atoms)
+                      (setf (gethash wild-atom wild-dict) atoms)))
+                 ((and (> line-len #.(length "ATD"))
+                       (string= "ATD" line :start2 0 :end2 #.(length "ATD")))
+||#
