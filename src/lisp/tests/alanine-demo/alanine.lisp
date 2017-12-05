@@ -36,7 +36,6 @@
 
 (read-sander-output "01_Min_cando.out")
 			   
-  (read-sequence 
 
 
 
