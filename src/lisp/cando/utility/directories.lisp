@@ -20,7 +20,7 @@
   (let ((pn-dir (pathname (uiop:ensure-directory-pathname dir))))
     (unless (eq :relative (car (pathname-directory pn-dir)))
       (error "Only relative directories are allowed"))
-    (merge-pathnames pn-dir cando::*root-directory*)))
+    (merge-pathnames pn-dir)))
   
 (defun set-current-directory (dir)
   "Set the current directory"
