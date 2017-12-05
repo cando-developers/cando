@@ -25,7 +25,6 @@ This is an open source license for the CANDO software from Temple University, bu
 /* -^- */
 #define	DEBUG_LEVEL_NONE
 #include <clasp/core/common.h>
-#include <cando/main/foundation.h>
 #include <cando/chem/iterateMatter.h>
 #include <clasp/core/symbolTable.h>
 //#include "core/archiveNode.h"

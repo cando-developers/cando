@@ -220,17 +220,18 @@ namespace chem
           std::list<std::string> usePackages = { };
           // core::Package_sp chemkwpkg = _lisp->makePackage(ChemKwPkg,nicknames,usePackages);
           // chemkwpkg->setActsLikeKeywordPackage(true);
-
+#if 0
           core::T_sp pn;
           char* env = getenv("CANDO_LISP_SOURCE_DIR");
           if ( env != NULL ) {
             pn = core::cl__translate_logical_pathname(core::Str_O::create(std::string(env)+"/**/*.*"));
           } else {
-            pn = core::cl__translate_logical_pathname(core::Str_O::create("APP-RESOURCES:CANDO;**;*.*"));
+            pn = core::cl__translate_logical_pathname(core::Str_O::create("SOURCE-DIR:EXTENSIONS;CANDO;**;*.*"));
           }
           core::Cons_sp pts = core::Cons_O::createList(core::Str_O::create("cando:**;*.*"),pn);
           core::Cons_sp ptsList = core::Cons_O::createList(pts);
           core::core__pathname_translations(core::Str_O::create("CANDO"),_lisp->_true(),ptsList);
+#endif
           energyFunction_initializeSmarts();
           initialize_mol2_type_rules();
 	}

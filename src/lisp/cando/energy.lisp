@@ -32,7 +32,7 @@
 
 (defun setup-amber ()
   (let ((*default-pathname-defaults*
-         (translate-logical-pathname #P"cando:data;force-field;")))
+         (translate-logical-pathname #P"source-dir:extensions;cando;src;data;force-field;")))
     (defparameter *parms*
       (let ((parms (chem:make-read-amber-parameters)))
         (with-open-file (fin "ATOMTYPE_GFF.DEF" :direction :input)

@@ -82,9 +82,11 @@ CL_INITIALIZER void cando_initializer()
   _lisp->installPackage(AdaptPkg);
   _lisp->installPackage(ChemPkg);
   core::Cons_sp features = core::Cons_O::create(_lisp->intern("CANDO",KeywordPkg),cl::_sym_STARfeaturesSTAR->symbolValue());
+#if 0
   core::List_sp loads = core::_sym_STARextension_startup_loadsSTAR->symbolValue();
   loads = core::Cons_O::create(core::Cons_O::createList(cl::_sym_load,core::cl__pathname(core::Str_O::create("source-dir:extensions;cando;src;lisp;start-cando.lisp"))),loads);
   core::_sym_STARextension_startup_loadsSTAR->defparameter(loads);
+#endif
 }
 
 

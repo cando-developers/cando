@@ -42,7 +42,6 @@
    #:parse-fortran-format-line
    #:fread-vector
    ))
-
 (defpackage #:leap.parser
   (:use #:cl #:alexandria #:esrap #:parser.common-rules #:PARSER.COMMON-RULES.OPERATORS)
   (:export )
@@ -134,7 +133,7 @@
   (:import-from :core #:quit)
   (:import-from :leap.core
                 #:add-path)
-  (:import-from :cando-utility #:mkdir #:set-current-directory #:current-directory #:directory-files)
+;;;  (:import-from :cando-utility #:mkdir #:set-current-directory #:current-directory #:directory-files)
   (:import-from :inet #:download-pdb)
 ;;  (:import-from :leap.off #:load-off)
   (:import-from :leap.pdb
@@ -152,7 +151,7 @@
    #:set-element #:get-element #:size
    #:as-string #:load-mol2 #:save-mol2
    #:quit
-   #:mkdir #:set-current-directory #:current-directory #:directory-files
+;;;   #:mkdir #:set-current-directory #:current-directory #:directory-files
    #:download-pdb
 ;;;   #:load-off
    #:add-pdb-res-map
@@ -164,6 +163,5 @@
    #:list-objects
    #:desc
    #:object
-   #:source
-   )
-  (:use :common-lisp :chem :geom :cando))
+   #:source)
+  (:use :common-lisp :chem :geom))

@@ -30,7 +30,6 @@ This is an open source license for the CANDO software from Temple University, bu
 // (C) 2004 Christian E. Schafmeister
 //
 
-#include <cando/main/foundation.h>
 #include <cando/chem/oligomer.h>
 #include <clasp/core/array.h>
 #include <clasp/core/hashTableEq.h>

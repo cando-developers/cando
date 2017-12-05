@@ -31,7 +31,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <clasp/core/array.h>
 #include <cando/adapt/stringSet.h>
-#include <cando/main/foundation.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/geom/ovector3.h>
 #include <clasp/core/fileSystem.h>

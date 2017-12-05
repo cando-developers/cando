@@ -26,7 +26,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 #include <clasp/core/common.h>
 #include <clasp/core/array.h>
-#include <cando/main/foundation.h>
 #include <cando/chem/pdb.h>
 #include <clasp/core/pathname.h>
 #include <cando/chem/chemPackage.fwd.h>
