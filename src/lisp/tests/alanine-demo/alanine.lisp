@@ -1,7 +1,7 @@
 ;;;Build ACE-ALA-NME
 
 ;;Load alanine from chemdraw
-
+(ext:chdir "~/Development/clasp/extensions/cando/src/lisp/tests/alanine-demo/" t)
 (defparameter *chemagg* (cando:load-chemdraw-aggregate "alanine2.cdxml"))
 (defparameter *stereocenters* (cando:gather-stereocenters *chemagg*))
 (cando:set-stereoisomer-func *stereocenters* (lambda (c) :S))
@@ -37,7 +37,26 @@
 (read-sander-output "01_Min_cando.out")
 			   
 
-
+;;; Use (ext::start-swank)    to start
+;;; Then in emacs:     slime-connect
+(progn
+  (defparameter *started-swank* nil)
+  (defun ext::start-swank ()
+    ;; Bad!  This is hard-coded to work with docker
+    (if *started-swank*
+        (format t "Swank is already running~%")
+        (progn
+          (let ((swank-loader (probe-file "~/Development/slime/swank-loader.lisp")))
+            (format t "swank-loader -> ~a~%" swank-loader)
+            (load swank-loader))
+          (let ((swank-loader-init (find-symbol "INIT" "SWANK-LOADER")))
+            (funcall swank-loader-init :delete nil :reload nil :load-contribs nil))
+          (let ((swank-create-server (find-symbol "CREATE-SERVER" "SWANK")))
+            (mp:process-run-function 'swank-main
+                                     (lambda () (funcall swank-create-server
+                                                         :port 4005
+                                                         :interface "0.0.0.0")))
+            (setf *started-swank* t))))))
 
 
    
