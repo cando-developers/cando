@@ -75,7 +75,9 @@ string sabToString(BondEnum sabType) {
   case SABSingleOrAromaticBond:
       return "";
   case SABDoubleOrAromaticBond:
-      return "=aromatic";
+      return "=double-or-aromatic";
+  case SABTripleOrAromaticBond:
+      return "=triple-or-aromatic";
   case SABDelocalizedBond:
       return "deloc";
   case SABDoubleBond:
@@ -632,6 +634,7 @@ core::NullTerminatedEnumAssociation bondEnum[] = {
     {"SABSingleBond", SABSingleBond},
     {"SABSingleOrAromaticBond", SABSingleOrAromaticBond},
     {"SABDoubleOrAromaticBond", SABDoubleOrAromaticBond},
+    {"SABTripleOrAromaticBond", SABTripleOrAromaticBond},
     {"SABDelocalizedBond", SABDelocalizedBond},
     {"SABDoubleBond", SABDoubleBond},
     {"SABTripleBond", SABTripleBond},
@@ -828,6 +831,11 @@ bool _matchBondTypes(BondEnum be, chem::BondOrder bo) {
   case SABDoubleOrAromaticBond:
       LOG(BF("SMARTS BondEnum = SABDoubleOrAromaticBond"));
       if (!(bo == chem::doubleBond || bo == chem::aromaticBond))
+        goto nomatch;
+      break;
+  case SABTripleOrAromaticBond:
+      LOG(BF("SMARTS BondEnum = SABTripleOrAromaticBond"));
+      if (!(bo == chem::tripleBond || bo == chem::aromaticBond))
         goto nomatch;
       break;
   case SABDoubleBond:
@@ -1906,6 +1914,7 @@ SYMBOL_EXPORT_SC_(KeywordPkg,SABNoBond);
 SYMBOL_EXPORT_SC_(KeywordPkg,SABSingleBond);
 SYMBOL_EXPORT_SC_(KeywordPkg,SABSingleOrAromaticBond);
 SYMBOL_EXPORT_SC_(KeywordPkg,SABDoubleOrAromaticBond);
+SYMBOL_EXPORT_SC_(KeywordPkg,SABTripleOrAromaticBond);
 SYMBOL_EXPORT_SC_(KeywordPkg,SABDelocalizedBond);
 SYMBOL_EXPORT_SC_(KeywordPkg,SABDoubleBond);
 SYMBOL_EXPORT_SC_(KeywordPkg,SABTripleBond);
@@ -1921,6 +1930,7 @@ CL_VALUE_ENUM(kw::_sym_SABNoBond, SABNoBond );
 CL_VALUE_ENUM(kw::_sym_SABSingleBond, SABSingleBond);
 CL_VALUE_ENUM(kw::_sym_SABSingleOrAromaticBond, SABSingleOrAromaticBond);
 CL_VALUE_ENUM(kw::_sym_SABDoubleOrAromaticBond, SABDoubleOrAromaticBond);
+CL_VALUE_ENUM(kw::_sym_SABTripleOrAromaticBond, SABTripleOrAromaticBond);
 CL_VALUE_ENUM(kw::_sym_SABDelocalizedBond, SABDelocalizedBond);
 CL_VALUE_ENUM(kw::_sym_SABDoubleBond, SABDoubleBond);
 CL_VALUE_ENUM(kw::_sym_SABTripleBond, SABTripleBond);

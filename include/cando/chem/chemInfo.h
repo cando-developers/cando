@@ -141,6 +141,7 @@ CL_DEFMETHOD     chem::Atom_sp tag(core::Symbol_sp tag) { return this->getAtomWi
       SABSingleBond,
       SABSingleOrAromaticBond,
       SABDoubleOrAromaticBond,
+      SABTripleOrAromaticBond,
       SABDelocalizedBond,
       SABDoubleBond,
       SABTripleBond,
@@ -174,7 +175,7 @@ namespace chem {
     void	fields(core::Record_sp node);
   public:
     virtual uint depth() const;
-    virtual string asSmarts() const {_OF();SUBCLASS_MUST_IMPLEMENT();};
+    CL_DEFMETHOD virtual string asSmarts() const {_OF();SUBCLASS_MUST_IMPLEMENT();};
     DEFAULT_CTOR_DTOR(ChemInfoNode_O);
   };
 
@@ -690,22 +691,22 @@ namespace chem {
     }
     // Special makers
     CL_LISPIFY_NAME(make-atom-test-in-bond1);
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_in_bond1(int bond)
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_in_bond1(BondEnum bond)
     {
-      return create( SAPInBond, bond, 1);
+      return create( SAPInBond, /*(int)*/bond, 1);
     }
     CL_LISPIFY_NAME(make-atom-test-in-bond);
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_in_bond(int bond, int num)
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_in_bond(BondEnum bond, int num)
     {
-      return create( SAPInBond, bond, num);
+      return create( SAPInBond, /*(int)*/bond, num);
     }
     CL_LISPIFY_NAME(make-atom-test-not-bonded-to-previous);
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_not_bonded_to_previous(int bond)
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_not_bonded_to_previous(BondEnum bond)
     {
       return create( SAPNotBondedToPrevious, bond );
     }
     CL_LISPIFY_NAME(make-atom-test-bonded-to-previous);
-    CL_DEF_CLASS_METHOD static AtomTest_sp create_bonded_to_previous(int bond)
+    CL_DEF_CLASS_METHOD static AtomTest_sp create_bonded_to_previous(BondEnum bond)
     {
       return create( SAPBondedToPrevious, bond );
     }

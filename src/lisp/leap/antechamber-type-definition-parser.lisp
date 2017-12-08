@@ -24,8 +24,13 @@
     (* (or parser.common-rules:shell-style-comment
            parser.common-rules:whitespace)))
 
-
 (esrap:defrule antechamber-line
+    (and atd/s antechamber-line-no-amp "&")
+  (:destructure (atd result ampersand)
+                (declare (ignore atd ampersand))
+                result))
+
+(esrap:defrule antechamber-line-no-amp
     (or antechamber-line...bond-definitions
         antechamber-line...chemical-environment
         antechamber-line...bracketed-atomic-property
@@ -136,7 +141,7 @@
                                                                :first-test focus))))
 
 (esrap:defrule antechamber-line...type-name
-    (and type-name/s residue-list/s)
+    (and type-name/s)
   (:destructure (type-name)
                 (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match)))
                   (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
@@ -236,8 +241,7 @@
   "*")
 
 (parser.common-rules:defrule/s number
-    (and (esrap:character-ranges (#\1 #\9))
-         (* (esrap:character-ranges (#\0 #\9))))
+    (+ (esrap:character-ranges (#\0 #\9)))
   (:lambda (x)
     (parse-integer (esrap:text x))))
 
@@ -285,9 +289,9 @@
 
 (esrap:defrule atomic-test
     (or atomic-test.number.bond
-        atomic-test.bond
         atomic-test.bond.not-bonded-to-previous
         atomic-test.bond.bonded-to-previous
+        atomic-test.bond
         atomic-test.antechamber-arlevel
         atomic-test.antechamber-ring-membership
         atomic-test.number.antechamber-ring-membership
@@ -305,13 +309,21 @@
     (and ap-bond ap-not-bonded-to-previous)
   (:destructure (bond not-bonded-to-previous)
                 (declare (ignore not-bonded-to-previous))
+                (format *debug-io* "In atomic-test.bond.not-bonded-to-previous~%")
                 (chem:make-atom-test-not-bonded-to-previous bond)))
+
+(esrap:defrule ap-not-bonded-to-previous
+    "''")
 
 (esrap:defrule atomic-test.bond.bonded-to-previous
     (and ap-bond ap-bonded-to-previous)
   (:destructure (bond bonded-to-previous)
                 (declare (ignore bonded-to-previous))
+                (format *debug-io* "In atomic-test.bond.bonded-to-previous~%")
                 (chem:make-atom-test-bonded-to-previous bond)))
+
+(esrap:defrule ap-bonded-to-previous
+    "'")
 
 (esrap:defrule atomic-test.antechamber-arlevel
     (and ap-antechamber-arlevel)
@@ -474,24 +486,27 @@
   left)
 
 
-#||
 (defun read-antechamber-type-rules (stream)
   "* Arguments
 - filename : A pathname
 * Description
 Read the contents of the filename into memory and return a buffer-stream on it."
   (let ((data (make-string (file-length stream)))
-        (wild-dict (make-hash :test #'equal)))
+        (wild-dict (make-hash-table :test #'equal))
+        wild-atom atoms)
     (read-sequence data stream)
     (with-input-from-string (sin data)
-      (loop for line in (read-line sin nil :eof)
-            for line-len = (length line)
-            until (eq line :eof)
-            do (cond
-                 ((and (> line-len #.(length "WILDATOM"))
-                       (string= "WILDATOM" line :start2 0 :end2 #.(length "WILDATOM")))
-                  (multiple-value-bind (wild-atom atoms)
-                      (setf (gethash wild-atom wild-dict) atoms)))
-                 ((and (> line-len #.(length "ATD"))
-                       (string= "ATD" line :start2 0 :end2 #.(length "ATD")))
-||#
+      (loop for line = (read-line sin nil :eof)
+           for lineno from 1
+         do (format *debug-io* "line#~a: ~a~%" lineno line)
+         for line-len = (if (stringp line) (length line) 0)
+         until (eq line :eof)
+         do (cond
+              ((and (> line-len #.(length "WILDATOM"))
+                    (string= "WILDATOM" line :start2 0 :end2 #.(length "WILDATOM")))
+               (multiple-value-bind (wild-atom atoms)
+                   (setf (gethash wild-atom wild-dict) atoms)))
+              ((and (> line-len #.(length "ATD"))
+                    (string= "ATD" line :start2 0 :end2 #.(length "ATD")))
+               (let ((result (esrap:parse 'antechamber-line (string-trim '(#\space #\tab) line))))
+                 (format *debug-io* "|~a| -> ~a~%" line result))))))))
