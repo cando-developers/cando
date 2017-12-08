@@ -10,6 +10,8 @@
 
 (chem:set-position *a1* '(0.0 0.0 0.0))
 (chem:set-position *a2* '(3.0 0.0 0.0))
+(chem:set-charge *a1* '1.0)
+(chem:set-charge *a2* '1.0)
 (chem:add-matter *res1* *a1*)
 (chem:add-matter *res2* *a2*)
 (chem:add-matter *mol1* *res1*)

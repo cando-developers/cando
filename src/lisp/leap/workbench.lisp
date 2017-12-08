@@ -16,6 +16,11 @@
 
 (core:encode (architecture.builder-protocol:with-builder *antechamber-builder* (esrap:parse 'log-op "RG5,AR2.AR1")))
 
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (defparameter *a* (esrap:parse 'antechamber-line "ATD  cc    *   6   3   *   *   [sb,db,AR2]       (C3(C3))	&")))
+
+(chem:as-smarts *a*)
+*a*
 
 
 (architecture.builder-protocol:with-builder *antechamber-builder*
@@ -55,18 +60,54 @@
 (architecture.builder-protocol:with-builder *antechamber-builder*
   (esrap:parse 'chain "C"))
 
+(architecture.builder-protocol:with-builder *antechamber-builder*
+ (esrap:parse 'antechamber-line "ATD  cp    *   6   3   *   *   [AR1,1RG6]       (XX[AR1],XX[AR1],XX[AR1]) &"))
 
 
 
 (architecture.builder-protocol:with-builder *antechamber-builder*
-  (esrap:parse 'antechamber-line "CN    *   6   3   *   *   [RG5,RG6,AR1.AR2.AR3]   	(C3,C3,N3(H))		"))
+  (esrap:parse 'antechamber-line "ATD  DU    &"))
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'atomic-test.number.bond "0DL"))
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'number "0"))
 
 
 (architecture.builder-protocol:with-builder *antechamber-builder*
-  (esrap:parse 'antechamber-line "H5    *   1   1   *   2   *                        (XX[AR1.AR2.AR3])"))
+  (esrap:parse 'chemical-environment/s "(XB2(XB2))  "))
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (let ((fin (open "~/Development/clasp/extensions/cando/src/data/force-field/ATOMTYPE_GFF.DEF")))
+    (read-antechamber-type-rules fin)))
+
+
+
+
+
+
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'antechamber-line "H5    *   1   1   *   2   *                        (XX[AR1.AR2.AR3])   &"))
 
 (architecture.builder-protocol:with-builder *antechamber-builder*
   (esrap:parse 'antechamber-line "H5    *   1   "))
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'antechamber-line "pc    *   15  2   *   *   [sb,db,AR2]       (XD3[sb',db])	&"))
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'bracketed-atom-property-or-null "SB"))
+
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (esrap:parse 'leap.antechamber-type-definition-parser::log-op "SB"))
+
+(chem:make-atom-test-bonded-to-previous :SABSINGLE-OR-AROMATIC-BOND)
+
+
+
+
 
 (apropos "bracketed-atomic-property")
 
