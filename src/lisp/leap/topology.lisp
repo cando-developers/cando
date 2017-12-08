@@ -313,6 +313,14 @@
          (atom3-vector (cdr (assoc :atom3 dihedral-vectors)))
          (atom4-vector (cdr (assoc :atom4 dihedral-vectors)))
          )
+    (format t "v-vector ~s~%" v-vector)
+    (format t "in-vector ~s~%" in-vector)
+    (format t "phase-vector ~s~%" phase-vector)
+    (format t "i1-vector ~s~%" i1-vector)
+    (format t "i2-vector ~s~%" i2-vector)
+    (format t "i3-vector ~s~%" i3-vector)
+    (format t "i4-vector ~s~%" i4-vector)
+    (format t "proper-vector ~s~%" proper-vector)
     (let ((indices (if (check-if-dihedrals-are-ordered proper-vector i1-vector i2-vector i3-vector i4-vector in-vector)
                        (make-indices (length v-vector))
                        (sort-dihedrals proper-vector i1-vector i2-vector i3-vector i4-vector in-vector)))))
@@ -554,7 +562,7 @@
     (fortran:with-fortran-output-file (ftop topology-pathname :direction :output)
       (fortran:debug "-1-")             ;
       (fortran:fformat 1 "%-80s")
-      ;;      (fortran:fwrite (core:strftime 81 "%%VERSION  VERSION_STAMP = V0002.000  DATE = %m/%d/%y  %H:%M:%S"))
+;;            (fortran:fwrite (core:strftime 81 "%%VERSION  VERSION_STAMP = V0002.000  DATE = %m/%d/%y  %H:%M:%S"))
 ;;;;      (fortran:fwrite "-----insert the version and time stamp---")
       ;;; temporary!!!
       (fortran:fwrite "%VERSION  VERSION_STAMP = V0001.000  DATE = 12/04/17  10:32:47")

@@ -45,6 +45,8 @@
               (setf ptor nil))))
     ffptordb))
 
+(defconstant +degrees-to-radians+ 0.0174533)
+
 (defun parse-ptor-line (line)
   (let* ((atom1 (intern (string-trim " " (subseq line 0 2)) :keyword))
         (atom2 (intern (string-trim " " (subseq line 3 5)) :keyword))
@@ -54,7 +56,7 @@
         (barrier-str (string-trim " " (subseq line 15 30)))
         (barrier (progn
                    (fortran::read-double-float-from-string barrier-str)))
-        (phase (fortran::read-double-float-from-string (string-trim " " (subseq line 30 45))))
+        (phase (* (fortran::read-double-float-from-string (string-trim " " (subseq line 30 45))) +degrees-to-radians+))
         (periodicity (fortran::read-double-float-from-string (string-trim " " (subseq line 45 (min 60 (length line))))))
         (comment (if (> (length line) 60) (subseq line 60) ""))
         (scee -1.0)
