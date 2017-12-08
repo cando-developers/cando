@@ -16,8 +16,13 @@
 
 (core:encode (architecture.builder-protocol:with-builder *antechamber-builder* (esrap:parse 'log-op "RG5,AR2.AR1")))
 
+;;; This works
 (architecture.builder-protocol:with-builder *antechamber-builder*
-  (defparameter *a* (esrap:parse 'antechamber-line "ATD  cc    *   6   3   *   *   [sb,db,AR2]       (C3(C3))	&")))
+  (defparameter *a* (esrap:parse 'antechamber-line "ATD  cx    *   6   4   *   *   [RG3]            &")))
+
+;;; This doesn't work
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (defparameter *a* (esrap:parse 'antechamber-line "ATD  cx    &")))
 
 (chem:as-smarts *a*)
 *a*
@@ -78,18 +83,48 @@
 (architecture.builder-protocol:with-builder *antechamber-builder*
   (esrap:parse 'chemical-environment/s "(XB2(XB2))  "))
 
+(defparameter *new-rules*
+  (architecture.builder-protocol:with-builder *antechamber-builder*
+    (let ((fin (open "~/Development/clasp/extensions/cando/src/data/force-field/ATOMTYPE_GFF.DEF")))
+      (read-antechamber-type-rules fin))))
+
+
+(length *new-rules*)
+
+(energy::setup-amber)
+energy::*ff*
+
+
+(defun old-rules (force-field)
+  (let* ((types (chem:get-types force-field))
+         result)
+    (dotimes (idx (chem:fftypes-number-of-rules types))
+      (push (chem:fftypes-get-rule types idx) result))
+    (nreverse result)))
+
+(defparameter *old-rules* (old-rules energy::*ff*))
+
+(defparameter *new-rules-smarts* (mapcar #'chem:as-smarts *new-rules*))
+(print *new-rules-smarts*)
+(defparameter *old-rules-smarts* (mapcar #'chem:as-smarts *old-rules*))
+
+(mapc #'print *new-rules-smarts*)
+(mapc #'print *old-rules-smarts*)
+(print *old-rules-smarts*)
+
+(car *old-rules*)
+
+(print "Hello")
+
+
+
+(print *new-rules-smarts*)
+
+
+
+
 (architecture.builder-protocol:with-builder *antechamber-builder*
-  (let ((fin (open "~/Development/clasp/extensions/cando/src/data/force-field/ATOMTYPE_GFF.DEF")))
-    (read-antechamber-type-rules fin)))
-
-
-
-
-
-
-
-(architecture.builder-protocol:with-builder *antechamber-builder*
-  (esrap:parse 'antechamber-line "H5    *   1   1   *   2   *                        (XX[AR1.AR2.AR3])   &"))
+  (esrap:parse 'antechamber-line "ATD  cx    *   6   4   *   *   [RG3]            &"))
 
 (architecture.builder-protocol:with-builder *antechamber-builder*
   (esrap:parse 'antechamber-line "H5    *   1   "))
@@ -98,7 +133,7 @@
   (esrap:parse 'antechamber-line "pc    *   15  2   *   *   [sb,db,AR2]       (XD3[sb',db])	&"))
 
 (architecture.builder-protocol:with-builder *antechamber-builder*
-  (esrap:parse 'bracketed-atom-property-or-null "SB"))
+  (esrap:parse 'atomic-test.antechamber-ring-membership "RG3"))
 
 (architecture.builder-protocol:with-builder *antechamber-builder*
   (esrap:parse 'leap.antechamber-type-definition-parser::log-op "SB"))
