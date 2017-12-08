@@ -1150,6 +1150,8 @@ namespace chem {
 //	static core::T_sp prim_ChemInfo(core::Function_sp e, core::List_sp args, core::Environment_sp environ, core: );
 
   public:
+    CL_LISPIFY_NAME(ChemInfo-getRoot);
+    CL_DEFMETHOD Root_sp getRoot() const {return this->_Root;};
     bool	compileSmarts(const string& code );
     bool	compileAntechamber(const string& code, WildElementDict_sp dict );
 CL_LISPIFY_NAME("compilerMessage");

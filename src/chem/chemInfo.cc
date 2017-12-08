@@ -1532,7 +1532,17 @@ void AntechamberFocusAtomMatch_O::fields(core::Record_sp node) {
 }
 
 string AntechamberFocusAtomMatch_O::asSmarts() const {
-  return "{AntechamberFocusAtomMatch}";
+  stringstream ss;
+  ss << "{AntechamberFocusAtomMatch ";
+  ss << _rep_(this->_ResidueNames) << "|";
+  if (this->_AtomicProperty.notnilp()) {
+    ss << this->_AtomicProperty->asSmarts() << "|";
+  }
+  ss << this->_AtomicNumber << "|";
+  ss << this->_NumberOfAttachedAtoms << "|";
+  ss << this->_NumberOfAttachedHydrogens << "|";
+  ss << this->_NumberOfElectronWithdrawingGroups << "}";
+  return ss.str();
 }
 
 bool AntechamberFocusAtomMatch_O::matches(Root_sp root, chem::Atom_sp atom) {
@@ -1647,7 +1657,12 @@ bool AntechamberBondTest_O::matches(Root_sp root, chem::Atom_sp atom) {
 }
 
 string AntechamberBondTest_O::asSmarts() const {
-  return "{AntechamberBondTest}";
+  stringstream ss;
+  ss << "{AntechamberBondTest";
+  ss << _rep_(this->_Element) << "|";
+  ss << (this->_Neighbors) <<"|";
+  ss << this->_AtomProperties->asSmarts() << "}";
+  return ss.str();
 }
 
 bool AntechamberBondTest_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
@@ -1702,9 +1717,13 @@ uint Root_O::depth() const {
 }
 
 string Root_O::asSmarts() const {
-  _OF();
   stringstream ss;
-  ss << this->_FirstTest->asSmarts() << "(" << this->_Chain->asSmarts() << ")";
+  if (this->_FirstTest.notnilp()) {
+    ss << this->_FirstTest->asSmarts();
+  }
+  if (this->_Chain.notnilp()) {
+    ss << "(" << this->_Chain->asSmarts() << ")";
+  }
   return ss.str();
 }
 

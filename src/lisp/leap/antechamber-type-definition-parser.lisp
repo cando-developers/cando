@@ -39,7 +39,6 @@
         antechamber-line...focus-number-of-attached-atoms
         antechamber-line...focus-atomic-number
         antechamber-line...residue-list
-        antechamber-line...residue-list
         antechamber-line...type-name))
 
 (esrap:defrule antechamber-line...bond-definitions
@@ -295,7 +294,9 @@
         atomic-test.antechamber-arlevel
         atomic-test.antechamber-ring-membership
         atomic-test.number.antechamber-ring-membership
-        atomic-test.antechamber-no-ring-membership))
+        atomic-test.antechamber-no-ring-membership)
+  (:lambda (value)
+                (core:make-cxx-object 'chem:logical :op :log-identity :left value)))
 
 (esrap:defrule atomic-test.bond
   ap-bond
@@ -309,7 +310,6 @@
     (and ap-bond ap-not-bonded-to-previous)
   (:destructure (bond not-bonded-to-previous)
                 (declare (ignore not-bonded-to-previous))
-                (format *debug-io* "In atomic-test.bond.not-bonded-to-previous~%")
                 (chem:make-atom-test-not-bonded-to-previous bond)))
 
 (esrap:defrule ap-not-bonded-to-previous
@@ -319,7 +319,6 @@
     (and ap-bond ap-bonded-to-previous)
   (:destructure (bond bonded-to-previous)
                 (declare (ignore bonded-to-previous))
-                (format *debug-io* "In atomic-test.bond.bonded-to-previous~%")
                 (chem:make-atom-test-bonded-to-previous bond)))
 
 (esrap:defrule ap-bonded-to-previous
@@ -332,7 +331,7 @@
 (esrap:defrule atomic-test.antechamber-ring-membership
   ap-antechamber-ring-membership
   (:lambda (size)
-    (chem:make-atom-test-ring-size 1)))
+    (chem:make-atom-test-ring-size size)))
 
 (esrap:defrule atomic-test.number.antechamber-ring-membership
     (and number ap-antechamber-ring-membership)
@@ -493,12 +492,13 @@
 Read the contents of the filename into memory and return a buffer-stream on it."
   (let ((data (make-string (file-length stream)))
         (wild-dict (make-hash-table :test #'equal))
-        wild-atom atoms)
+        wild-atom atoms
+        type-rules)
     (read-sequence data stream)
     (with-input-from-string (sin data)
       (loop for line = (read-line sin nil :eof)
-           for lineno from 1
-         do (format *debug-io* "line#~a: ~a~%" lineno line)
+         for lineno from 1
+;;;         do (format *debug-io* "line#~a: ~a~%" lineno line)
          for line-len = (if (stringp line) (length line) 0)
          until (eq line :eof)
          do (cond
@@ -509,4 +509,5 @@ Read the contents of the filename into memory and return a buffer-stream on it."
               ((and (> line-len #.(length "ATD"))
                     (string= "ATD" line :start2 0 :end2 #.(length "ATD")))
                (let ((result (esrap:parse 'antechamber-line (string-trim '(#\space #\tab) line))))
-                 (format *debug-io* "|~a| -> ~a~%" line result))))))))
+                 (push result type-rules))))))
+    (nreverse type-rules)))
