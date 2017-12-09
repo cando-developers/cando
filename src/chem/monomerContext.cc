@@ -340,7 +340,7 @@ core::Symbol_sp MonomerContext_O::getFirstSpecificKey()
 CL_LISPIFY_NAME("recognizesMonomerAndEnvironment");
 CL_DEFMETHOD     bool	MonomerContext_O::recognizesMonomerAndEnvironment(Monomer_sp mon)
     {
-      IMPLEMENT_MEF("Handle new symbol names and monomer couplings are supposed to be a multimap!!!!!!");
+      IMPLEMENT_MEF(BF("Handle new symbol names and monomer couplings are supposed to be a multimap!!!!!!"));
 #if 0
 	NeighborMap::iterator	ti;
 	Coupling_sp			coup;
