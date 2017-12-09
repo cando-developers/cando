@@ -32,9 +32,9 @@ def build_extension(cfg):
     clasp_executable = "%s/build/clasp" % root
     command = [ clasp_executable, \
                 "-l", "source-dir:extensions;cando;src;lisp;build-cando.lisp",
-                "-e", "(asdf:make :build-cando :verbose t :print t)",
+                "-e", "(asdf:make :build-cando :print t)",
                 "-l", "source-dir:extensions;cando;src;lisp;build-cando-jupyter.lisp",
-                "-e", "(asdf:make :build-cando-jupyter :verbose t :print t)",
+                "-e", "(asdf:make :build-cando-jupyter :print t)",
                 "-e", "(core:quit)"
     ]
     call(command)
