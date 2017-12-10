@@ -12,3 +12,4 @@
 (asdf:load-asd (merge-pathnames #P"leap/leap.asd" *load-pathname*))
 (asdf:load-asd (merge-pathnames #P"cando-user/cando-user.asd" *load-pathname*))
 (asdf:load-asd (merge-pathnames #P"build-cando.asd" *load-pathname*))
+(ql:quickload "build-cando")
