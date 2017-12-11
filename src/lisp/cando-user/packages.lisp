@@ -30,6 +30,7 @@
   (:use #:common-lisp
         #:cando
         #:leap)
+  (:export #:start-swank)
   )
 
 

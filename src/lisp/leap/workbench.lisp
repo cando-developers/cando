@@ -36,6 +36,18 @@
             (format fout "~a~%" (chem:as-smarts rule)))
           *old-rules*)))
 
+
+(progn
+  (defparameter *new-amber-rules*
+    (architecture.builder-protocol:with-builder *antechamber-builder*
+      (let ((fin (open (merge-pathnames #P"~/Development/amber16/dat/antechamber/ATOMTYPE_AMBER.DEF" #P"source-dir:"))))
+        (read-antechamber-type-rules fin))))
+  ;; Read the rules with the old parser
+  (with-open-file (fout "/tmp/new-amber-rules.txt" :direction :output :if-exists :supersede)
+    (mapc (lambda (rule)
+            (format fout "~a~%" (chem:as-smarts rule)))
+          *new-amber-rules*)))
+
 (with-open-file
     
 (defparameter *new-rules-smarts* (mapcar #'chem:as-smarts *new-rules*))

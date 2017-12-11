@@ -108,6 +108,13 @@ Associate the name with the object"
 Lookup the object in the *objects*."
   (variable-lookup name *leap-env* errorp error-value))
 
+
+(defun leap-lookup-variable-reader-macro (stream char)
+  (let* ((*package* (find-package :keyword))
+         (var-name (read stream t nil t)))
+    `(lookup-variable ',var-name)))
+
+
 ;;; ------------------------------------------------------------
 ;;;
 ;;; Maintain a hash-table of named force-field-lists that are merged when

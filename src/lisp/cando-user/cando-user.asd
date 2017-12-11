@@ -7,4 +7,5 @@
     :licence "LGPL-3.0"
     :depends-on (:cando :leap)
     :serial t
-    :components ((:file "packages")))
+    :components ((:file "packages")
+                 (:file "start-swank")))
