@@ -5,6 +5,14 @@
 
 (defparameter *antechamber-builder* (make-instance 'leap.antechamber-type-definition-parser::builder))
 
+
+;;; This test was broken - the 1RG6 got the numbers out of order
+(architecture.builder-protocol:with-builder *antechamber-builder*
+  (defparameter *a* (esrap:parse 'antechamber-line"ATD  cp    *   6   3   *   *   [AR1,1RG6]       (XX[AR1],XX[AR1],XX[AR1]) &")))
+
+
+
+
 (architecture.builder-protocol:with-builder *antechamber-builder*
   (esrap:parse 'atomic-test "RG3"))
 
@@ -20,6 +28,11 @@
 (architecture.builder-protocol:with-builder *antechamber-builder*
   (defparameter *a* (esrap:parse 'antechamber-line "ATD  cx    *   6   4   *   *   [RG3]            &")))
 
+
+
+*a*
+
+energy:*ff*
 ;;; This doesn't work
 (architecture.builder-protocol:with-builder *antechamber-builder*
   (defparameter *a* (esrap:parse 'antechamber-line "ATD  cx    &")))
@@ -85,7 +98,7 @@
 
 (defparameter *new-rules*
   (architecture.builder-protocol:with-builder *antechamber-builder*
-    (let ((fin (open "~/Development/clasp/extensions/cando/src/data/force-field/ATOMTYPE_GFF.DEF")))
+    (let ((fin (open (merge-pathnames #P"extensions/cando/src/data/force-field/ATOMTYPE_GFF.DEF" #P"source-dir:"))))
       (read-antechamber-type-rules fin))))
 
 

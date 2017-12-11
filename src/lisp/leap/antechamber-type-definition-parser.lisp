@@ -335,7 +335,7 @@
 
 (esrap:defrule atomic-test.number.antechamber-ring-membership
     (and number ap-antechamber-ring-membership)
-  (:destructure (num size) (chem:make-atom-test-ring-size2 size num)))
+  (:destructure (num size) (chem:make-atom-test-ring-size2 num size)))
 
 (esrap:defrule atomic-test.antechamber-no-ring-membership
     (and ap-antechamber-no-ring-membership)
