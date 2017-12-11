@@ -435,7 +435,7 @@
           (curcn 0)
           (rstar 0)
           (epsilonij 0))
-      (format *debug-io* "In generate-nonbond-parameters type-indexj-vec -> ~s~%" type-indexj-vec)
+;;      (format *debug-io* "In generate-nonbond-parameters type-indexj-vec -> ~s~%" type-indexj-vec)
       (loop for i from 0 below ntypes
          for type1 = (aref type-indexj-vec i)
          do (loop for j from 0 below ntypes

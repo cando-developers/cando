@@ -1207,7 +1207,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
       a2 = loop.getBondA2();
       if ( activeAtoms.notnilp() &&
            (!inAtomSet(activeAtoms,a1) || !inAtomSet(activeAtoms,a2)) ) continue;
-      printf("%s:%d Looking at STRETCH term between %s - %s\n", __FILE__, __LINE__, _rep_(a1).c_str(), _rep_(a2).c_str());
+//      printf("%s:%d Looking at STRETCH term between %s - %s\n", __FILE__, __LINE__, _rep_(a1).c_str(), _rep_(a2).c_str());
 //      t1 = a1->getType();
 //      t2 = a2->getType();
       ea1 = this->getEnergyAtomPointer(a1);
@@ -1402,13 +1402,13 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
 // The nonbond parameters are calculated in Common Lisp
 //    printf("atom number: %d\n", this->_AtomTable->getNumberOfAtoms());
 
-    printf("%s:%d in generateNonbondEnergyFunctionTables\n", __FILE__, __LINE__);
+//    printf("%s:%d in generateNonbondEnergyFunctionTables\n", __FILE__, __LINE__);
     core::List_sp parts = core::eval::funcall(_sym_prepare_amber_energy_nonbond,this->asSmartPtr(),forceField);
-      printf("%s:%d:%s    parts -> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(parts).c_str());
-    printf("%s:%d in generateNonbondEnergyFunctionTables\n", __FILE__, __LINE__);
+//      printf("%s:%d:%s    parts -> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(parts).c_str());
+//    printf("%s:%d in generateNonbondEnergyFunctionTables\n", __FILE__, __LINE__);
     this->_Nonbond->constructNonbondTermsFromAList(parts);
     // -----------
-    printf("%s:%d in generateNonbondEnergyFunctionTables\n", __FILE__, __LINE__);
+//    printf("%s:%d in generateNonbondEnergyFunctionTables\n", __FILE__, __LINE__);
       
     this->_Nonbond->constructExcludedAtomListFromAtomTable(this->_AtomTable, forceField, show_progress);
     this->_Nonbond->construct14InteractionTerms(this->_AtomTable,matter,forceField,activeAtoms,show_progress);

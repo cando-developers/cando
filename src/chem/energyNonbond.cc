@@ -989,7 +989,7 @@ SYMBOL_EXPORT_SC_(KeywordPkg,atom_table);
 
 CL_DEFMETHOD void EnergyNonbond_O::constructNonbondTermsFromAList(core::List_sp values)
 {
-  printf("%s:%d:%s    values -> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(values).c_str());
+//  printf("%s:%d:%s    values -> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(values).c_str());
   this->_ntypes =               translate::from_object<size_t>(safe_alist_lookup<core::T_sp>(values,kw::_sym_ntypes))._v;          // ntypes
   this->_atom_name_vector =     safe_alist_lookup<core::SimpleVector_sp>(values,kw::_sym_atom_name_vector);  // atom-name-vector
   this->_charge_vector =        safe_alist_lookup<core::SimpleVectorDouble_sp>(values,kw::_sym_charge_vector);          // charge-vector
