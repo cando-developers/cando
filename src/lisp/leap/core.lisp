@@ -71,8 +71,10 @@
         (apply (function-lookup name environment)
                (first (funcall recurse :relations '(:argument)))))
        (:assignment
-        (setf (variable-lookup name environment)
-              (first (first (funcall recurse :relations '(:value))))))
+        (let ((value (first (first (funcall recurse :relations '(:value))))))
+          (if (symbolp value)
+              (setf (variable-lookup name environment) (lookup-variable value))
+              (setf (variable-lookup name environment) value))))
        (t
         (funcall recurse))))
 

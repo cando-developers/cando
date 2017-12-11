@@ -90,8 +90,8 @@
          (entire-file (alexandria:read-file-into-string path))
          (ast (architecture.builder-protocol:with-builder ('list)
                 (esrap:parse 'leap.parser::leap entire-file))))
-    (leap.core:evaluate 'list ast leap.core:*leap-env*)
-    (format *out* "result -> ~s~%" ast)))
+    (leap.core:evaluate 'list ast leap.core:*leap-env*))
+  t)
 
 (defun source.old (filename)
   "Load the file of leap commands and execute them one by one.

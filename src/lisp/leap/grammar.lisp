@@ -150,7 +150,11 @@
 
 (defrule/s variable-name
     (+ (character-ranges (#\a #\z) (#\A #\Z) (#\0 #\9) #\. #\_))
-  (:text t))
+  (:lambda (chars)
+    (let ((str (esrap:text chars)))
+      (if (position #\. str)
+          str
+          (intern (esrap:text chars) :keyword)))))
 
 ;;; Expression
 

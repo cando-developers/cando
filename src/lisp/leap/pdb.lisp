@@ -122,6 +122,7 @@ odd atom name maps only to the last standard atom name it was mapped to."
 
 
 (defun find-pdb-residue (layout res-seq chain-id)
+  (declare (optimize (debug 3)))
   (block found
     (loop for seq in (sequences layout)
        do (loop for res in seq
@@ -253,11 +254,12 @@ If you want to check if it's a big-z file then pass check-big-z = T."
                      until (eq serial :eof)
                      collect serial))))
         ((string= head "SSBOND")
+         (format *trace-output* "pdb.lisp::parse-line  head == ~a~%" head)
          (list :ssbond
                (read-one-char line 15)
-               (read-from-string line t nil :start 17 :end 21)
+               (parse-integer (string-trim '(#\space #\tab) (subseq line 17 21)))
                (read-one-char line 29)
-               (read-from-string line t nil :start 31 :end 35)))
+               (parse-integer (string-trim '(#\space #\tab) (subseq line 31 35)))))
         (t nil)))))
 
 
@@ -456,6 +458,7 @@ values residue-sequences matrices"
       (warn "No topology was found for ~a~%" key))))
 
 (defun finish-layout (layout)
+  (declare (optimize (debug 3)))
   ;; Reverse the matrices
   (setf (matrices layout) (nreverse (matrices layout)))
   ;; Form the disulfide bonds
@@ -483,6 +486,7 @@ then multiply res-seq by 10 and add the i-code digit to it."
     (t res-seq)))
 
 (defun read-and-process-line (reader eof-errorp eof big-z)
+  (declare (optimize (debug 3)))
   "* Arguments
 - reader : pdb-atom-reader
 - eof-errorp : boolean
@@ -498,6 +502,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
         (let ((line-data (parse-line line reader t big-z)))
           (when line-data
             ;;          (format t "Reading line: ~a~%" line-data)
+            (format *debug-io* "pdb.lisp read-and-process-line line-data -> ~s~%" line-data)
             (case (car line-data)
               (:atom
                (destructuring-bind (head atom-serial atom-name alt-loc residue-name chain-id res-seq i-code x y z)
