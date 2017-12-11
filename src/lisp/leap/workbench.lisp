@@ -11,6 +11,42 @@
   (defparameter *a* (esrap:parse 'antechamber-line"ATD  cp    *   6   3   *   *   [AR1,1RG6]       (XX[AR1],XX[AR1],XX[AR1]) &")))
 
 
+;;; Compare new parser to old parsr
+
+(progn
+  (defparameter *new-rules*
+    (architecture.builder-protocol:with-builder *antechamber-builder*
+      (let ((fin (open (merge-pathnames #P"extensions/cando/src/data/force-field/ATOMTYPE_GFF.DEF" #P"source-dir:"))))
+        (read-antechamber-type-rules fin))))
+  ;; Read the rules with the old parser
+  (energy::setup-amber)
+  (defun old-rules (force-field)
+    (let* ((types (chem:get-types force-field))
+           result)
+      (dotimes (idx (chem:fftypes-number-of-rules types))
+        (push (chem:fftypes-get-rule types idx) result))
+      (nreverse result)))
+  (defparameter *old-rules* (old-rules energy::*ff*))
+  (with-open-file (fout "/tmp/new-rules.txt" :direction :output :if-exists :supersede)
+    (mapc (lambda (rule)
+            (format fout "~a~%" (chem:as-smarts rule)))
+          *new-rules*))
+  (with-open-file (fout "/tmp/old-rules.txt" :direction :output :if-exists :supersede)
+    (mapc (lambda (rule)
+            (format fout "~a~%" (chem:as-smarts rule)))
+          *old-rules*)))
+
+(with-open-file
+    
+(defparameter *new-rules-smarts* (mapcar #'chem:as-smarts *new-rules*))
+(print *new-rules-smarts*)
+(defparameter *old-rules-smarts* (mapcar #'chem:as-smarts *old-rules*))
+
+(mapc #'print *new-rules-smarts*)
+(mapc #'print *old-rules-smarts*)
+(print *old-rules-smarts*)
+
+
 
 
 (architecture.builder-protocol:with-builder *antechamber-builder*
@@ -96,34 +132,6 @@ energy:*ff*
 (architecture.builder-protocol:with-builder *antechamber-builder*
   (esrap:parse 'chemical-environment/s "(XB2(XB2))  "))
 
-(defparameter *new-rules*
-  (architecture.builder-protocol:with-builder *antechamber-builder*
-    (let ((fin (open (merge-pathnames #P"extensions/cando/src/data/force-field/ATOMTYPE_GFF.DEF" #P"source-dir:"))))
-      (read-antechamber-type-rules fin))))
-
-
-(length *new-rules*)
-
-(energy::setup-amber)
-energy::*ff*
-
-
-(defun old-rules (force-field)
-  (let* ((types (chem:get-types force-field))
-         result)
-    (dotimes (idx (chem:fftypes-number-of-rules types))
-      (push (chem:fftypes-get-rule types idx) result))
-    (nreverse result)))
-
-(defparameter *old-rules* (old-rules energy::*ff*))
-
-(defparameter *new-rules-smarts* (mapcar #'chem:as-smarts *new-rules*))
-(print *new-rules-smarts*)
-(defparameter *old-rules-smarts* (mapcar #'chem:as-smarts *old-rules*))
-
-(mapc #'print *new-rules-smarts*)
-(mapc #'print *old-rules-smarts*)
-(print *old-rules-smarts*)
 
 (car *old-rules*)
 
