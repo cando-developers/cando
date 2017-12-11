@@ -31,6 +31,7 @@
         #:cando
         #:leap)
   (:export #:start-swank)
+  (:export #:cl-jupyter-kernel-start)
   )
 
 

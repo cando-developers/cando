@@ -120,7 +120,8 @@
    #:*force-fields*
    #:*objects*
    #:add-pdb-atom-map
-   #:add-pdb-res-map)
+   #:add-pdb-res-map
+   #:leap-lookup-variable-reader-macro)
   )
 
 (defpackage #:leap

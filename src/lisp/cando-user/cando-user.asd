@@ -8,4 +8,5 @@
     :depends-on (:cando :leap)
     :serial t
     :components ((:file "packages")
-                 (:file "start-swank")))
+                 (:file "start-swank")
+                 (:file "cl-jupyter")))
