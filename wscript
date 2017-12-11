@@ -31,6 +31,7 @@ def build_extension(cfg):
     root = cfg.path.search_node("../../")
     clasp_executable = "%s/build/clasp" % root
     command = [ clasp_executable, \
+                "-f", "use-human-readable-bitcode",
                 "-l", "source-dir:extensions;cando;src;lisp;build-cando.lisp",
                 "-e", "(asdf:make :build-cando :print t)",
                 "-l", "source-dir:extensions;cando;src;lisp;build-cando-jupyter.lisp",
