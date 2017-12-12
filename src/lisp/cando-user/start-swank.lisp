@@ -7,7 +7,11 @@
     (if *started-swank*
         (format t "Swank is already running~%")
         (progn
-          (let ((swank-loader (probe-file "~/Development/slime/swank-loader.lisp")))
+          (let* ((slime-home (cond
+                               ((and (ext:getenv "SLIME_HOME") (probe-file (pathname (ext:getenv "SLIME_HOME")))))
+                               ((probe-file #P"/home/app/slime/"))
+                               (t "Could not determine directory for slime - set SLIME_HOME")))
+                 (swank-loader (probe-file (merge-pathnames "swank-loader.lisp" slime-home))))
             (format t "swank-loader -> ~a~%" swank-loader)
             (load swank-loader))
           (let ((swank-loader-init (find-symbol "INIT" "SWANK-LOADER")))
