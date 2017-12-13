@@ -43,6 +43,17 @@
     (setf *ff* (chem:get-force-field *parms*)))
   *ff*)
 
+(defun setup-amber ()
+  (let ((parms (chem:make-read-amber-parameters)))
+    (with-open-file (fin "amber:dat;antechamber;ATOMTYPE_AMBER.DEF" :direction :input)
+      (let ((type-rules (leap.antechamber-type-definition-parser:read-antechamber-type-rules fin)))
+        (chem:set-type-rules parms type-rules)))
+    (with-open-file (fin "amber:dat;leap;parm;parm10.dat" :direction :input)
+      (chem:read-parameters parms fin (symbol-value (find-symbol "*AMBER-SYSTEM*" :leap)))
+      parms))
+  (setf *ff* (chem:get-force-field *parms*))
+  *ff*)
+
 
 (defun minimize-energy-function (energy-function &key (restraints-on t)
                                                    (force-field *ff*)

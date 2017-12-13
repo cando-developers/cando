@@ -1,3 +1,4 @@
+
 /*
     File: readAmberParameters.h
 */
@@ -77,6 +78,7 @@ class ReadAmberParameters_O : public core::CxxObject_O
 
   CL_LISPIFY_NAME("getTypeRules");
   CL_DEFMETHOD     FFTypesDb_sp getTypeRules() { return this->_Types; };
+  CL_DEFMETHOD     void setTypeRules(FFTypesDb_sp types) { this->_Types = types; };
   ForceField_sp getForceField();
 
   ReadAmberParameters_O( const ReadAmberParameters_O& ss ); //!< Copy constructor

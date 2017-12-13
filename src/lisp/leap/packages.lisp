@@ -64,7 +64,8 @@
 (defpackage #:leap.antechamber-type-definition-parser
   (:use #:common-lisp #:esrap #:parser.common-rules #:PARSER.COMMON-RULES.OPERATORS)
   (:export
-   #:antechamber-line))
+   #:antechamber-line
+   #:read-antechamber-type-rules))
 
 (defpackage #:leap.commands
   (:use #:common-lisp)

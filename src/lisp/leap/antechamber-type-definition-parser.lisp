@@ -1,13 +1,4 @@
 
-
-
-
-
-
-
-
-
-
 (in-package :leap.antechamber-type-definition-parser)
 
 ;;; Utilities
@@ -446,8 +437,8 @@
   )
 
 (esrap:defrule ap-antechamber-no-ring-membership
-  "NG"
-  (:constant "NG"))
+  "NR"
+  (:constant "NR"))
 
 (defrules-simple ap-antechamber-arlevel
     ("AR1" 1)
@@ -490,24 +481,27 @@
 - filename : A pathname
 * Description
 Read the contents of the filename into memory and return a buffer-stream on it."
-  (let ((data (make-string (file-length stream)))
+  (let ((builder (make-instance 'builder))
+        (data (make-string (file-length stream)))
         (wild-dict (make-hash-table :test #'equal))
         wild-atom atoms
         type-rules)
     (read-sequence data stream)
-    (with-input-from-string (sin data)
-      (loop for line = (read-line sin nil :eof)
-         for lineno from 1
+    (architecture.builder-protocol:with-builder builder
+      (with-input-from-string (sin data)
+        (loop for line = (read-line sin nil :eof)
+              for lineno from 1
 ;;;         do (format *debug-io* "line#~a: ~a~%" lineno line)
-         for line-len = (if (stringp line) (length line) 0)
-         until (eq line :eof)
-         do (cond
-              ((and (> line-len #.(length "WILDATOM"))
-                    (string= "WILDATOM" line :start2 0 :end2 #.(length "WILDATOM")))
-               (multiple-value-bind (wild-atom atoms)
-                   (setf (gethash wild-atom wild-dict) atoms)))
-              ((and (> line-len #.(length "ATD"))
-                    (string= "ATD" line :start2 0 :end2 #.(length "ATD")))
-               (let ((result (esrap:parse 'antechamber-line (string-trim '(#\space #\tab) line))))
-                 (push result type-rules))))))
+              for line-len = (if (stringp line) (length line) 0)
+              until (eq line :eof)
+              do (format *debug-io* "Line: ~a~%" line)
+              do (cond
+                   ((and (> line-len #.(length "WILDATOM"))
+                         (string= "WILDATOM" line :start2 0 :end2 #.(length "WILDATOM")))
+                    (multiple-value-bind (wild-atom atoms)
+                        (setf (gethash wild-atom wild-dict) atoms)))
+                   ((and (> line-len #.(length "ATD"))
+                         (string= "ATD" line :start2 0 :end2 #.(length "ATD")))
+                    (let ((result (esrap:parse 'antechamber-line (string-trim '(#\space #\tab) line))))
+                      (push result type-rules)))))))
     (nreverse type-rules)))
