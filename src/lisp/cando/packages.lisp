@@ -172,6 +172,9 @@
    #:rotate-y
    #:rotate-z
    #::=
+   #:unbuilt-atoms
+   #:count-unbuilt-atoms
+   #:simple-build-unbuilt-atoms
    ;;; directory utilities
    #:set-current-directory
    #:current-directory

@@ -7,7 +7,7 @@
 (cando:set-stereoisomer-func *stereocenters* (lambda (c) :S))
 (chem:set-property *chemagg* :solvent-box '(50.0 50.0 50.0))
 (cando:save-mol2 *chemagg* "alanine2.mol2")
-(energy::setup-amber)
+(energy::setup-gaff)
 (cando:jostle *chemagg*)
 (energy:minimize *chemagg*)
 (leap.topology::save-amber-parm-format *chemagg* "alanine_cando.top" "alanine_cando.crd" energy::*ff*)

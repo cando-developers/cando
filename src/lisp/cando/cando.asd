@@ -19,6 +19,7 @@
      (:file "anchor")
      (:file "struct")
      (:file "monomers")
+     (:file "modeling")
      (:file "constitution")
      (:file "molecules")
      (:file "atom-tree")

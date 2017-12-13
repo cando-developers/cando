@@ -296,18 +296,19 @@ create more problems."
     (when assign-tail
       (let ((tail-residue (car (current-reverse-sequence pdb))))
         (setf (context tail-residue) :tail)
-        (try-to-assign-form tail-residue (layout pdb))))
+        (try-to-assign-topology tail-residue (layout pdb))))
     (push (nreverse (current-reverse-sequence pdb)) (reversed-sequences pdb))
     (setf (current-reverse-sequence pdb) nil)))
 
-(defun try-to-assign-form (res layout)
-  (let* ((form (or (leap.core:lookup-variable (lookup-pdb-res-map (name res) (context res)) nil nil)
+(defun try-to-assign-topology (res layout)
+  (let* ((topology (or (leap.core:lookup-variable (lookup-pdb-res-map (name res) (context res)) nil nil)
                    (leap.core:lookup-variable (name res) nil nil))))
-    (if form
-        (setf (topology res) form)
+    (if topology
+        (setf (topology res) topology)
         (let ((key (layout-unknown-residue-key res)))
+          (warn "Could not immediately identify topology for ~a" key)
           (unless (gethash key (unknown-residues layout))
-            (warn "Could not identify form for ~a" key)
+            (warn "Could not identify topology for ~a" key)
             (setf (gethash key (unknown-residues layout)) t))))))
         
 (defun pdb-scanner-read-line (pdb eof-errorp eof)
@@ -361,7 +362,7 @@ MTRIX- Used to build a list of matrices."
                    (unless (gethash residue-name (seen-residues (layout pdb)))
                      (format t "Creating hash-table for ~a~%" residue-name)
                      (setf (gethash residue-name (seen-residues (layout pdb))) (make-hash-table)))
-                   (try-to-assign-form new-residue (layout pdb))
+                   (try-to-assign-topology new-residue (layout pdb))
                    (when (previous-residue pdb)
                      (setf (atom-serial-last (previous-residue pdb)) (previous-atom-serial pdb)))
                    (push new-residue (current-reverse-sequence pdb))
@@ -467,8 +468,15 @@ values residue-sequences matrices"
                                         (chain-id1 dis)))
                 (res2 (find-pdb-residue layout (res-seq2 dis)
                                         (chain-id2 dis))))
-            (setf (topology res1) (lookup-pdb-res-map :CYX (context res1))
-                  (topology res2) (lookup-pdb-res-map :CYX (context res2)))))
+            (let ((top1 (lookup-pdb-res-map :CYX (context res1)))
+                  (top2 (lookup-pdb-res-map :CYX (context res2))))
+              ;; If CYX topologies are available - use those
+              (when top1 (setf (topology res1) top1))
+              (when top2 (setf (topology res2) top2))
+              (unless (topology res1)
+                (warn "Could not identify a proper CYX residue for the first half of disulphide bond ~a" dis))
+              (unless (topology res2)
+                (warn "Could not identify a proper CYX residue for the second half of disulphide bond ~a" dis)))))
         (disulphides layout))
   layout)
 
@@ -502,7 +510,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
         (let ((line-data (parse-line line reader t big-z)))
           (when line-data
             ;;          (format t "Reading line: ~a~%" line-data)
-            (format *debug-io* "pdb.lisp read-and-process-line line-data -> ~s~%" line-data)
+            #+(or)(format *debug-io* "pdb.lisp read-and-process-line line-data -> ~s~%" line-data)
             (case (car line-data)
               (:atom
                (destructuring-bind (head atom-serial atom-name alt-loc residue-name chain-id res-seq i-code x y z)
@@ -631,8 +639,6 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                   (format t "Built ~d missing hydrogens~%" built))))
           (values aggregate layout))))))
 
-
-      
 
 #|
 (defun read-line (pdb-atom-reader)
