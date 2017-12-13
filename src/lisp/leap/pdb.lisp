@@ -360,7 +360,7 @@ MTRIX- Used to build a list of matrices."
                                                     :context context-guess
                                                     :atom-serial-first atom-serial)))
                    (unless (gethash residue-name (seen-residues (layout pdb)))
-                     (format t "Creating hash-table for ~a~%" residue-name)
+                     ;;(format t "Creating hash-table for ~a~%" residue-name)
                      (setf (gethash residue-name (seen-residues (layout pdb))) (make-hash-table)))
                    (try-to-assign-topology new-residue (layout pdb))
                    (when (previous-residue pdb)
