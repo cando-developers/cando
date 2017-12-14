@@ -29,7 +29,7 @@
 (defparameter *ff* nil)
 (export '*ff*)
 
-
+#||
 (defun setup-gaff ()
   (let ((*default-pathname-defaults*
          (translate-logical-pathname #P"source-dir:extensions;cando;src;data;force-field;")))
@@ -53,7 +53,7 @@
       parms))
   (setf *ff* (chem:get-force-field *parms*))
   *ff*)
-
+||#
 
 (defun minimize-energy-function (energy-function &key (restraints-on t)
                                                    (force-field *ff*)
