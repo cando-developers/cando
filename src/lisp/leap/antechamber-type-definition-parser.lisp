@@ -505,3 +505,9 @@ Read the contents of the filename into memory and return a buffer-stream on it."
                     (let ((result (esrap:parse 'antechamber-line (string-trim '(#\space #\tab) line))))
                       (push result type-rules)))))))
     (nreverse type-rules)))
+
+
+(defgeneric chem:compile-antechamber-type-rule (system rule-string &optional wild-element-dict))
+
+(defmethod chem:compile-antechamber-type-rule ((system null) rule-string &optional wild-element-dict)
+  (esrap:parse 'antechamber-line (string-trim '(#\space #\tab) rule-string)))

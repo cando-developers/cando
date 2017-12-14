@@ -643,6 +643,13 @@ AtomInfo	one;
     LOG(BF("Assigning ID to every atom") );
     uint atomId = 1;
     uint resId = 1;
+    chem::TypeAssignmentRules_sp sybylRules;
+    if (useSybylTypes) {
+      if (chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue().nilp()) {
+        initialize_mol2_type_rules(); // Sets _sym_STARsybyl_type_assignment_rulesSTAR
+      }
+      sybylRules = gc::As<TypeAssignmentRules_sp>(chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue());
+    }
     lRes.loopTopGoal(agg,RESIDUES);
     while ( lRes.advanceLoopAndProcess() ) {
 	r = lRes.getResidue();
@@ -657,7 +664,7 @@ AtomInfo	one;
             ht->setf_gethash(a,core::clasp_make_fixnum(atomId));
 	    one._Atom = a;
             if ( useSybylTypes ) {
-              chem::TypeAssignmentRules_sp sybylRules = gc::As<TypeAssignmentRules_sp>(chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue());
+              ASSERT(sybylRules);
               one._Type = sybylRules->calculateType(a);
               //BFORMAT_T(BF("Assigned sybyl type %s to %s\n") % _rep_(one._Type) % _rep_(a));
             } else {
@@ -829,8 +836,6 @@ void	initialize_mol2_type_rules()
   wilds->addWildName(chemkw::_sym_XD);
   wilds->addWildNameMap(chemkw::_sym_XD,chemkw::_sym_S);
   wilds->addWildNameMap(chemkw::_sym_XD,chemkw::_sym_P);
-  chem::TypeAssignmentRules_sp sybylRules = chem::TypeAssignmentRules_O::create();
-  sybylRules->setWildElementDict(wilds);
   const char*	sybylTypeRules[] = {
       "ATD  C.3   *   6   4   &",
       "ATD  C.cat *   6   3   *   *   *  		(N3,N3,N3)  &",
@@ -901,16 +906,19 @@ void	initialize_mol2_type_rules()
       ""
   };
 
+  chem::TypeAssignmentRules_sp sybylRules = chem::TypeAssignmentRules_O::create();
+  sybylRules->setWildElementDict(wilds);
   _sym_STARparserNodeHolderSTAR->defparameter(adapt::IndexedObjectBag_O::create());
   for ( uint i=0; strlen(sybylTypeRules[i])>0; i++ )
   {
     const char* typeRuleString = sybylTypeRules[i];
     chem::OneTypeRule_sp rule = chem::OneTypeRule_O::create();
     chem::ChemInfo_sp match = chem::ChemInfo_O::create();
-    match->compileAntechamber(typeRuleString,wilds);
-    rule->setAssignTypeName(match->getAssignType());
-    rule->setCode(match);
-    sybylRules->appendRule(rule);
+    if (match->compileAntechamber(typeRuleString,wilds)) {
+      rule->setAssignTypeName(match->getAssignType());
+      rule->setCode(match);
+      sybylRules->appendRule(rule);
+    }
   }
   SYMBOL_EXPORT_SC_(ChemPkg,STARsybyl_type_assignment_rulesSTAR);
   chem::_sym_STARsybyl_type_assignment_rulesSTAR->defparameter(sybylRules);

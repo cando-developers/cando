@@ -322,14 +322,22 @@ void ChemInfo_O::defineTests(core::List_sp tests) {
     this->_Root->addTest(testSymbol, testCode);
   }
 }
+
+
+SYMBOL_EXPORT_SC_(ChemPkg,compile_antechamber_type_rule);
 CL_LISPIFY_NAME("compileAntechamber");
-CL_DEFMETHOD bool ChemInfo_O::compileAntechamber(const string &code, WildElementDict_sp dict) {
-  
+CL_DEFMETHOD
+/*! This function invokes chem:compile-antechamber-type-rule
+  chem:compile-antechamber-type-rule is a generic function with the lambda list.
+  (system string &optional wild-element-dict)  */
+bool ChemInfo_O::compileAntechamber(const string &code, WildElementDict_sp dict) {
+  if (!chem::_sym_compile_antechamber_type_rule->fboundp()) return false;
   AntechamberRoot_sp root;
   LOG(BF("Compiling code: %s") % code.c_str());
   this->_Code = code;
   stringstream serr;
-  root = ::gaff_compile(code, dict, serr);
+  core::SimpleBaseString_sp scode = core::SimpleBaseString_O::make(code);
+  root = core::eval::funcall(chem::_sym_compile_antechamber_type_rule->symbolFunction(),_Nil<core::T_O>(),scode,dict);
   this->_Root = gc::As<Root_sp>(root);
   if (root.nilp()) {
     LOG(BF("root was null"));
