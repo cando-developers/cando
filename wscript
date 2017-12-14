@@ -1,3 +1,4 @@
+from subprocess import call
 import waflib.Task
 import os
 
@@ -20,11 +21,13 @@ def build(bld):
     bld.extensions_gcinterface_include_files.append(cando_project_headers)
     bld.extensions_include_dirs.append("extensions/cando/include")
     bld.extensions_include_dirs.append("extensions/cando/include/cando/main")
+    bld.extensions_lisp_files = []
     bld.recurse('include')
     bld.recurse('src')
+    print("extensions/cando extensions_lisp_files -> %s" % bld.extensions_lisp_files)
     if (bld.stage_val>=4):
         bld_extensions = build_extension(env=bld.env)
-        bld_extensions.set_inputs([bld.cclasp_executable,bld.asdf_fasl])
+        bld_extensions.set_inputs([bld.cclasp_executable,bld.asdf_fasl_cclasp]+bld.extensions_lisp_files)
         bld_extensions.set_outputs([bld.path.parent.parent.find_or_declare("fasl/cando.fasb"),
                                     bld.path.parent.parent.find_or_declare("fasl/cando-jupyter.fasb")])
         bld.install_files('${PREFIX}/lib/clasp/', bld_extensions.outputs, relative_trick = True, cwd = bld.path.parent.parent)   #source
@@ -43,3 +46,32 @@ class build_extension(waflib.Task.Task):
         print("build_extension cmd -> %s" % cmd)
         print("build_extension outputs -> %s" % self.outputs)
         return self.exec_command(cmd)
+
+
+    
+def grovel(cfg):
+    print("In extensions/cando grovel")
+    print("     clasp -> %s" % cfg.path.abspath())
+    iclasp_boehm = cfg.path.parent.parent.find_node("build/boehm/iclasp-boehm").abspath()
+    print("     cfg.path.abspath() -> %s" % iclasp_boehm)
+    command = [ iclasp_boehm,
+                "-i", "app-fasl:bclasp-boehm-image.fasl",
+                "-N",
+                "-e", "(load \"source-dir:extensions;cando;src;lisp;build-cando-jupyter.lisp\")",
+                "-l", "sys:kernel;asdf-system-groveler.lisp",
+                "-e", "(format t \"build-cando: ~a~%\" (asdf-system-groveler:determine-complete-set-of-asdf-source-files-absolute-path :build-cando))",
+                "-e", "(core:quit)" ]
+    print(" command: %s" % command)
+    call(command)
+    # clasp_executable = "%s/build/clasp" % root
+    # command = [ clasp_executable, \
+    #             "-l", "source-dir:extensions;cando;src;lisp;build-cando.lisp",
+    #             "-e", "(asdf:make :build-cando :print t)",
+    #             "-l", "source-dir:extensions;cando;src;lisp;build-cando-jupyter.lisp",
+    #             "-e", "(asdf:make :build-cando-jupyter :print t)",
+    #             "-e", "(core:quit)"
+    # ]
+    # call(command)
+
+
+
