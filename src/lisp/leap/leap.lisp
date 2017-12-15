@@ -1,5 +1,22 @@
 (in-package :leap)
 
+
+;;; ----------------------------------------------------------------------
+;;;
+;;; Quick and dirty setup-gaff
+;;;
+
+(defun setup-gaff ()
+  (let ((*default-pathname-defaults*
+          (translate-logical-pathname #P"source-dir:extensions;cando;src;data;force-field;"))
+        (parms (chem:make-read-amber-parameters)))
+    (with-open-file (fin "ATOMTYPE_GFF.DEF" :direction :input)
+      (chem:read-types parms fin))
+    (with-open-file (fin "gaff.dat" :direction :input)
+      (chem:read-parameters parms fin (symbol-value (find-symbol "*AMBER-SYSTEM*" :leap))))
+    (setf energy:*ff* (chem:get-force-field parms))
+    energy:*ff*))
+
 ;;; ----------------------------------------------------------------------
 ;;;
 ;;; LEaP commands

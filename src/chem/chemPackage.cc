@@ -181,7 +181,6 @@ void chem_package_initializer()
   core::Cons_sp ptsList = core::Cons_O::createList(pts);
   core::core__pathname_translations(core::Str_O::create("CANDO"),_lisp->_true(),ptsList);
   chem::energyFunction_initializeSmarts();
-  chem::initialize_mol2_type_rules();
   chem::setupCandoPrimitives(_lisp);
   chem::initialize_chimera();
   chem::initializeElementsAndHybridization();
@@ -233,7 +232,6 @@ namespace chem
           core::core__pathname_translations(core::Str_O::create("CANDO"),_lisp->_true(),ptsList);
 #endif
           energyFunction_initializeSmarts();
-          initialize_mol2_type_rules();
 	}
 	break;
 	case candoFunctions:

@@ -509,5 +509,8 @@ Read the contents of the filename into memory and return a buffer-stream on it."
 
 (defgeneric chem:compile-antechamber-type-rule (system rule-string &optional wild-element-dict))
 
+(defparameter *antechamber-builder* (make-instance 'leap.antechamber-type-definition-parser::builder))
+
 (defmethod chem:compile-antechamber-type-rule ((system null) rule-string &optional wild-element-dict)
-  (esrap:parse 'antechamber-line (string-trim '(#\space #\tab) rule-string)))
+  (architecture.builder-protocol:with-builder *antechamber-builder*
+    (esrap:parse 'antechamber-line (string-trim '(#\space #\tab) rule-string))))

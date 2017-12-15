@@ -29,31 +29,20 @@
 (defparameter *ff* nil)
 (export '*ff*)
 
-#||
+#|
 (defun setup-gaff ()
   (let ((*default-pathname-defaults*
-         (translate-logical-pathname #P"source-dir:extensions;cando;src;data;force-field;")))
-    (defparameter *parms*
-      (let ((parms (chem:make-read-amber-parameters)))
-        (with-open-file (fin "ATOMTYPE_GFF.DEF" :direction :input)
-          (chem:read-types parms fin))
-        (with-open-file (fin "gaff.dat" :direction :input)
-          (chem:read-parameters parms fin (symbol-value (find-symbol "*AMBER-SYSTEM*" :leap)))
-          parms)))
-    (setf *ff* (chem:get-force-field *parms*)))
+          (translate-logical-pathname #P"source-dir:extensions;cando;src;data;force-field;"))
+        (parms (chem:make-read-amber-parameters)))
+    (let ((*
+    (with-open-file (fin "ATOMTYPE_GFF.DEF" :direction :input)
+      (chem:read-types parms fin))
+    (with-open-file (fin "gaff.dat" :direction :input)
+      (chem:read-parameters parms fin (symbol-value (find-symbol "*AMBER-SYSTEM*" :leap))))
+    (setf *ff* (chem:get-force-field parms)))
   *ff*)
+      |#
 
-(defun setup-amber ()
-  (let ((parms (chem:make-read-amber-parameters)))
-    (with-open-file (fin "amber:dat;antechamber;ATOMTYPE_AMBER.DEF" :direction :input)
-      (let ((type-rules (leap.antechamber-type-definition-parser:read-antechamber-type-rules fin)))
-        (chem:set-type-rules parms type-rules)))
-    (with-open-file (fin "amber:dat;leap;parm;parm10.dat" :direction :input)
-      (chem:read-parameters parms fin (symbol-value (find-symbol "*AMBER-SYSTEM*" :leap)))
-      parms))
-  (setf *ff* (chem:get-force-field *parms*))
-  *ff*)
-||#
 
 (defun minimize-energy-function (energy-function &key (restraints-on t)
                                                    (force-field *ff*)
