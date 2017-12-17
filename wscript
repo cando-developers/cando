@@ -45,32 +45,8 @@ class build_extension(waflib.Task.Task):
         print("build_extension cmd -> %s" % cmd)
         print("build_extension outputs -> %s" % self.outputs)
         return self.exec_command(cmd)
-
-
-    
-def grovel(cfg):
-    print("In extensions/cando grovel")
-    print("     clasp -> %s" % cfg.path.abspath())
-    iclasp_boehm = cfg.path.parent.parent.find_node("build/boehm/iclasp-boehm").abspath()
-    print("     cfg.path.abspath() -> %s" % iclasp_boehm)
-    command = [ iclasp_boehm,
-                "-i", "app-fasl:bclasp-boehm-image.fasl",
-                "-N",
-                "-e", "(load \"source-dir:extensions;cando;src;lisp;build-cando-jupyter.lisp\")",
-                "-l", "sys:kernel;asdf-system-groveler.lisp",
-                "-e", "(format t \"build-cando: ~a~%\" (asdf-system-groveler:determine-complete-set-of-asdf-source-files-absolute-path :build-cando))",
-                "-e", "(core:quit)" ]
-    print(" command: %s" % command)
-    call(command)
-    # clasp_executable = "%s/build/clasp" % root
-    # command = [ clasp_executable, \
-    #             "-l", "source-dir:extensions;cando;src;lisp;build-cando.lisp",
-    #             "-e", "(asdf:make :build-cando :print t)",
-    #             "-l", "source-dir:extensions;cando;src;lisp;build-cando-jupyter.lisp",
-    #             "-e", "(asdf:make :build-cando-jupyter :print t)",
-    #             "-e", "(core:quit)"
-    # ]
-    # call(command)
-
-
-
+    def exec_command(self, cmd, **kw):
+        kw['stdout'] = sys.stdout
+        return super(build_extension, self).exec_command(cmd, **kw)
+    def keyword(self):
+        return 'build extensions using... '
