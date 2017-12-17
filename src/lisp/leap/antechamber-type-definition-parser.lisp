@@ -15,6 +15,15 @@
     (* (or parser.common-rules:shell-style-comment
            parser.common-rules:whitespace)))
 
+(parser.common-rules:defrule/s wildatom
+  "WILDATOM")
+
+(esrap:defrule wild-atom-line
+    (and wildatom/s wild-element/s (+ wild-element/?s))
+  (:destructure (wa wild-element elements)
+                (declare (ignore wa))
+                (list* wild-element elements)))
+  
 (esrap:defrule antechamber-line
     (and atd/s antechamber-line-no-amp "&")
   (:destructure (atd result ampersand)
@@ -235,17 +244,39 @@
   (:lambda (x)
     (parse-integer (esrap:text x))))
 
-
-(esrap:defrule ap-element
+(esrap:defrule ap-element-2-char
     (or "He" "Li" "Be" "Ne" "Na" "Mg" "Al" "Si" "Cl" "Ar" "Ca" "Sc" "Ti" "Cr" "Mn" "Fe" "Co"
         "Ni" "Cu" "Zn" "Ga" "Ge" "As" "Se" "Br" "Kr" "Rb" "Sr" "Zr" "Nb" "Mo" "Tc" "Ru" "Rh"
         "Pd" "Ag" "Cd" "In" "Sn" "Sb" "Te" "Xe" "Cs" "Ba" "La" "Ce" "Pr" "Nd" "Pm" "Sm" "Eu"
         "Gd" "Tb" "Dy" "Ho" "Er" "Tm" "Yb" "Lu" "Hf" "Ta" "Re" "Os" "Ir" "Pt" "Au" "Hg" "Tl"
         "Pb" "Bi" "Po" "At" "Rn" "Fr" "Ra" "Ac" "Th" "Pa" "Np" "Pu" "Am" "Cm" "Bk" "Cf" "Es"
-        "Fm" "Md" "No" "Lr"
-        "XA" "XB" "XC" "XD" "XE" "XF" "XG" "XH" "XI" "XJ" "XK" "XL"
-        "XM" "XN" "XO" "XP" "XQ" "XR" "XS" "XT" "XU" "XV" "XW" "XX" "XY" "XZ"
-        "H" "W" "U" "B" "C" "N" "O" "F" "P" "S" "K" "V" "I" "Y"))
+        "Fm" "Md" "No" "Lr"))
+
+(esrap:defrule ap-element-1-char
+    (or "H" "W" "U" "B" "C" "N" "O" "F" "P" "S" "K" "V" "I" "Y"))
+
+(esrap:defrule ap-element
+    (or ap-element-2-char
+        ap-element-1-char))
+
+(parser.common-rules:defrule/s element
+    (or ap-element-2-char
+        ap-element-1-char))
+
+
+(esrap:defrule ap-wild-element
+    (or "XA" "XB" "XC" "XD" "XE" "XF" "XG" "XH" "XI" "XJ" "XK" "XL"
+        "XM" "XN" "XO" "XP" "XQ" "XR" "XS" "XT" "XU" "XV" "XW" "XX" "XY" "XZ"))
+
+(esrap:defrule ap-element-wild
+    (or ap-element-2-char
+        ap-wild-element
+        ap-element-1-char))
+
+(parser.common-rules:defrule/s wild-element
+    (or ap-element-2-char
+        ap-wild-element
+        ap-element-1-char))
 
 (parser.common-rules:defrule/s terminator
   "&")
@@ -364,17 +395,17 @@
         chemical-environment-atom.element.bracketed-atom-property-or-null.tag-name-or-null))
 
 (esrap:defrule chemical-environment-atom.element.number.bracketed-atom-property-or-null.tag-name-or-null
-    (and ap-element number bracketed-atom-property-or-null tag-name-or-null)
+    (and ap-element-wild number bracketed-atom-property-or-null tag-name-or-null)
   (:destructure (element number property tag)
                 (chem:make-antechamber-bond-test (intern element :keyword) number property (intern tag :keyword))))
 
 (esrap:defrule chemical-environment-atom.element.bracketed-atom-property-or-null.tag-name-or-null
-    (and ap-element bracketed-atom-property-or-null tag-name-or-null)
+    (and ap-element-wild bracketed-atom-property-or-null tag-name-or-null)
   (:destructure (element property tag)
                 (chem:make-antechamber-bond-test (intern element :keyword) -1 property (intern tag :keyword))))
 
 (esrap:defrule element
-    (or ap-element
+    (or ap-element-wild
         ap-element-wild-card)
   (:function first))
 
@@ -483,9 +514,9 @@
 Read the contents of the filename into memory and return a buffer-stream on it."
   (let ((builder (make-instance 'builder))
         (data (make-string (file-length stream)))
-        (wild-dict (make-hash-table :test #'equal))
+        (wild-dict (core:make-cxx-object 'chem:wild-element-dict))
         wild-atom atoms
-        type-rules)
+        (type-rules (core:make-cxx-object 'chem:type-assignment-rules)))
     (read-sequence data stream)
     (architecture.builder-protocol:with-builder builder
       (with-input-from-string (sin data)
@@ -498,13 +529,19 @@ Read the contents of the filename into memory and return a buffer-stream on it."
               do (cond
                    ((and (> line-len #.(length "WILDATOM"))
                          (string= "WILDATOM" line :start2 0 :end2 #.(length "WILDATOM")))
-                    (multiple-value-bind (wild-atom atoms)
-                        (setf (gethash wild-atom wild-dict) atoms)))
+                    (let* ((wild-atom-entry (esrap:parse 'wild-atom-line (string-trim '(#\space #\tab) line)))
+                           (wild-atom (intern (car wild-atom-entry) :keyword)))
+                      (chem:add-wild-name wild-dict wild-atom)
+                      (dolist (e (cdr wild-atom-entry))
+                        (chem:add-wild-name-map wild-dict wild-atom (intern e :keyword)))))
                    ((and (> line-len #.(length "ATD"))
                          (string= "ATD" line :start2 0 :end2 #.(length "ATD")))
-                    (let ((result (esrap:parse 'antechamber-line (string-trim '(#\space #\tab) line))))
-                      (push result type-rules)))))))
-    (nreverse type-rules)))
+                    (let* ((root (esrap:parse 'antechamber-line (string-trim '(#\space #\tab) line)))
+                           (chem-info (core:make-cxx-object 'chem:chem-info :root root))
+                           (one-rule (core:make-cxx-object 'chem:one-type-rule :type (chem:get-assign-type root) :rule chem-info)))
+                      (chem:append-rule type-rules one-rule)))))))
+    (chem:set-wild-element-dict type-rules wild-dict)
+    type-rules))
 
 
 (defgeneric chem:compile-antechamber-type-rule (system rule-string &optional wild-element-dict))
@@ -514,3 +551,5 @@ Read the contents of the filename into memory and return a buffer-stream on it."
 (defmethod chem:compile-antechamber-type-rule ((system null) rule-string &optional wild-element-dict)
   (architecture.builder-protocol:with-builder *antechamber-builder*
     (esrap:parse 'antechamber-line (string-trim '(#\space #\tab) rule-string))))
+
+

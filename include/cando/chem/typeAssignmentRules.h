@@ -42,55 +42,57 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-    SMART(OneTypeRule );
-    class OneTypeRule_O : public core::CxxObject_O
-    {
-	LISP_CLASS(chem,ChemPkg,OneTypeRule_O,"OneTypeRule",core::CxxObject_O);
-public:
+  SMART(OneTypeRule );
+  class OneTypeRule_O : public core::CxxObject_O
+  {
+    LISP_CLASS(chem,ChemPkg,OneTypeRule_O,"OneTypeRule",core::CxxObject_O);
+  public:
 //	void	archive(core::ArchiveP node);
-	void	initialize();
-private:
-	core::Symbol_sp _AssignTypeName;
-	ChemInfo_sp	_Match;
-public:
-public:
+    void	initialize();
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+  public:
+    core::Symbol_sp _AssignTypeName;
+    ChemInfo_sp	_Match;
+  public:
+    void setAssignTypeName(core::Symbol_sp nm) { this->_AssignTypeName = nm;};
+    core::Symbol_sp  getAssignTypeName()	{return this->_AssignTypeName;};
+    void setCode(ChemInfo_sp code) { this->_Match = code; };
 
-	void setAssignTypeName(core::Symbol_sp nm) { this->_AssignTypeName = nm;};
-	core::Symbol_sp  getAssignTypeName()	{return this->_AssignTypeName;};
-	void setCode(ChemInfo_sp code) { this->_Match = code; };
-
-	bool testMatch(Atom_sp a);
+    bool testMatch(Atom_sp a);
 
 
-	OneTypeRule_O( const OneTypeRule_O& ss ); //!< Copy constructor
+    OneTypeRule_O( const OneTypeRule_O& ss ); //!< Copy constructor
 
-	DEFAULT_CTOR_DTOR(OneTypeRule_O);
-    };
+    DEFAULT_CTOR_DTOR(OneTypeRule_O);
+  };
 
-    SMART(TypeAssignmentRules );
-    class TypeAssignmentRules_O : public core::CxxObject_O
-    {
-	LISP_CLASS(chem,ChemPkg,TypeAssignmentRules_O,"TypeAssignmentRules",core::CxxObject_O);
-public:
+  SMART(TypeAssignmentRules );
+  class TypeAssignmentRules_O : public core::CxxObject_O
+  {
+    LISP_CLASS(chem,ChemPkg,TypeAssignmentRules_O,"TypeAssignmentRules",core::CxxObject_O);
+  public:
 //	void	archive(core::ArchiveP node);
-	void	initialize();
-private:
-	WildElementDict_sp	_WildElementDict;
-        gctools::Vec0<OneTypeRule_sp>	_Rules;
-public:
-public:
+    void	initialize();
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+  private:
+    WildElementDict_sp	_WildElementDict;
+    core::MDArrayT_sp _Rules;
+  public:
+  public:
 
-	void setWildElementDict(WildElementDict_sp dict) { this->_WildElementDict = dict;};
-	WildElementDict_sp getWildElementDict(WildElementDict_sp dict) { return this->_WildElementDict;};
+    CL_DEFMETHOD void setWildElementDict(WildElementDict_sp dict) { this->_WildElementDict = dict;};
+    WildElementDict_sp getWildElementDict(WildElementDict_sp dict) { return this->_WildElementDict;};
 
-	void appendRule(OneTypeRule_sp rule) { this->_Rules.push_back(rule);};
+    CL_DEFMETHOD void appendRule(OneTypeRule_sp rule) { this->_Rules->vectorPushExtend(rule);};
 
-	core::Symbol_sp calculateType(Atom_sp a);
+    core::Symbol_sp calculateType(Atom_sp a);
 
-	TypeAssignmentRules_O( const TypeAssignmentRules_O& ss ); //!< Copy constructor
+    TypeAssignmentRules_O( const TypeAssignmentRules_O& ss ); //!< Copy constructor
 
-	DEFAULT_CTOR_DTOR(TypeAssignmentRules_O);
-    };
+    DEFAULT_CTOR_DTOR(TypeAssignmentRules_O);
+  };
 
 
 

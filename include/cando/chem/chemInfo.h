@@ -1101,7 +1101,7 @@ namespace chem {
       gc::Nilable<RootMatchNode_sp> amt = _Nil<core::T_O>();
       return create( assignType, node, bl, amt );
     };
-    core::Symbol_sp getAssignType() { return this->_AssignType;};
+    CL_DEFMETHOD core::Symbol_sp getAssignType() { return this->_AssignType;};
   public:
 
 

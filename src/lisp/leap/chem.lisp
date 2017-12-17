@@ -87,5 +87,14 @@
         (values atom1 atom2 atom3 atom4 barrier phase periodicity scee scnb comment)))))
 
 
+;;; ------------------------------------------------------------
+;;;
+;;; Initialize sybyl type rules
+;;;
+
+(defun chem:initialize-sybyl-type-rules ()
+  (setf chem:*sybyl-type-assignment-rules*
+        (with-open-file (fin #P"source-dir:extensions;cando;src;data;force-field;ATOMTYPE_SYBYL.DEF" :direction :input)
+          (leap.antechamber-type-definition-parser:read-antechamber-type-rules fin))))
 
 

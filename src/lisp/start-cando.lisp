@@ -57,22 +57,13 @@
     (format t "Pushing dir: ~a~%" dir)
     (push dir asdf:*central-registry*)))
 
-(make-package :cando)
+;;;(make-package :cando)
 
 (let ((amber-home
         (namestring (uiop:ensure-directory-pathname (or (ext:getenv "AMBERHOME") "/amber/")))))
   (setf (logical-pathname-translations "amber")
         (list (list "**;*.*" (concatenate 'string amber-home "/**/*.*"))))
   (format t "Setting *amber-home* -> ~a~%" amber-home))
-
-(defvar cando::*root-directory*)
-(progn
-  (if (member :docker *features*)
-      (setf cando::*root-directory* (pathname "/src/"))
-      (setf cando::*root-directory* (uiop:ensure-directory-pathname (ext:getenv "HOME"))))
-  (format t "Setting *root-directory* -> ~a~%" cando::*root-directory*))
-
-
 
 ;;; Setup to run slime if we are in a jupyter notebook
 #+jupyter
@@ -115,5 +106,5 @@
         (funcall (find-symbol "QUICKLOAD" :ql) "cando-user")
         ;; Ensure that all threads start in the :CANDO-USER package
         (core:symbol-global-value-set '*package* (find-package :cando-user))))
-  (core:process-command-line-load-eval-sequence)
-  (core::tpl))
+  #+(or)(core:process-command-line-load-eval-sequence)
+  #+(or)(core::tpl))

@@ -56,6 +56,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/adapt/indexedObjectBag.h>
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/bformat.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/loop.h>
 #include <cando/chem/molecule.h>
 #include <clasp/core/array.h>
@@ -594,7 +595,8 @@ void	mol2ReadAggregateFromFileName( Aggregate_sp aggregate, core::T_sp sFileName
 
 
 
-
+SYMBOL_EXPORT_SC_(ChemPkg,initialize_sybyl_type_rules);
+SYMBOL_EXPORT_SC_(ChemPkg,STARsybyl_type_assignment_rulesSTAR);
 
 void	mol2WriteAggregateStream( Aggregate_sp agg, std::ostream &out, bool useSybylTypes )
 {
@@ -645,8 +647,12 @@ AtomInfo	one;
     uint resId = 1;
     chem::TypeAssignmentRules_sp sybylRules;
     if (useSybylTypes) {
-      if (chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue().nilp()) {
-        initialize_mol2_type_rules(); // Sets _sym_STARsybyl_type_assignment_rulesSTAR
+      if (!chem::_sym_STARsybyl_type_assignment_rulesSTAR->boundP()) {
+        if (chem::_sym_initialize_sybyl_type_rules->fboundp()) {
+          core::eval::funcall(chem::_sym_initialize_sybyl_type_rules);
+        } else {
+          SIMPLE_ERROR(BF("chem:initialize-sybyl-type-rules has no function bound to it"));
+        }
       }
       sybylRules = gc::As<TypeAssignmentRules_sp>(chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue());
     }
@@ -801,8 +807,10 @@ void	mol2WriteMatterToFileName(Matter_sp matter, core::T_sp fileName, bool useSy
 
 
 
+#if 0
 void	initialize_mol2_type_rules()
 {
+  printf("%s:%d  In initialize_mol2_type_rules\n",__FILE__, __LINE__);
   LOG(BF("Initializing sybyl types") );
   GC_ALLOCATE(chem::WildElementDict_O,wilds);
 	// WILDATOM XX C N O S P
@@ -922,8 +930,8 @@ void	initialize_mol2_type_rules()
   }
   SYMBOL_EXPORT_SC_(ChemPkg,STARsybyl_type_assignment_rulesSTAR);
   chem::_sym_STARsybyl_type_assignment_rulesSTAR->defparameter(sybylRules);
-
 }
+#endif
 
 
 

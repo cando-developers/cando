@@ -29,6 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/typeAssignmentRules.h>
 //#include "core/archiveNode.h"
 //#include "core/archive.h"
+#include <clasp/core/record.h>
 #include <clasp/core/wrappers.h>
 
 
@@ -56,35 +57,35 @@ bool	OneTypeRule_O::testMatch(Atom_sp atom)
     return this->_Match->matches(atom);
 }
 
-
-
+void    OneTypeRule_O::fields(core::Record_sp node)
+{
+  node->field( INTERN_(kw,type), this->_AssignTypeName );
+  node->field( INTERN_(kw,rule), this->_Match);
+}
 
 void	TypeAssignmentRules_O::initialize()
 {
     this->Base::initialize();
     this->_WildElementDict = _Nil<WildElementDict_O>();
+    this->_Rules = core::MDArrayT_O::make(0,_Nil<T_O>(),core::make_fixnum(0));
 }
-
-#ifdef XML_ARCHIVE
-    void	TypeAssignmentRules_O::archive(core::ArchiveP node)
-{
-    node->attribute("WildElementDict",this->_WildElementDict);
-    node->archiveVector0("Rules",this->_Rules);
-}
-#endif
-
 
 core::Symbol_sp TypeAssignmentRules_O::calculateType(Atom_sp a)
 {
-    for ( gctools::Vec0<OneTypeRule_sp>::iterator it=this->_Rules.begin();
-    		it!=this->_Rules.end(); it++ )
-    {
-	if ( (*it)->testMatch(a) )
-	{
-	    return (*it)->getAssignTypeName();
-	}
+  for ( size_t idx(0), idxEnd(this->_Rules->length()); idx<idxEnd; ++idx) {
+    OneTypeRule_sp oneRule = gc::As<OneTypeRule_sp>((*this->_Rules)[idx]);
+      if ( oneRule->testMatch(a)) {
+        return oneRule->getAssignTypeName();
+      }
     }
     return chemkw_intern("UNASSIGNED-TYPE");
+}
+
+
+void  TypeAssignmentRules_O::fields(core::Record_sp node)
+{
+  node->field( INTERN_(kw,wild_element_dict), this->_WildElementDict );
+  node->field( INTERN_(kw,rules), this->_Rules);
 }
 
 
