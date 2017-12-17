@@ -442,7 +442,7 @@
          do (loop for j from 0 below ntypes
                for type2 = (aref type-indexj-vec j)
                do (when (<= i j)
-                    (format *debug-io* "In generate-nonbond-parameters i->~a j->~a type1->~a type2->~a~%" i j type1 type2)
+;;;                    (format *debug-io* "In generate-nonbond-parameters i->~a j->~a type1->~a type2->~a~%" i j type1 type2)
                     (let ((ffnonbond1 (chem:get-ffnonbond-using-type-index ffnonbond-db type1))
                           (ffnonbond2 (chem:get-ffnonbond-using-type-index ffnonbond-db type2)))
                       (setf rstar (+ (chem:get-radius-angstroms ffnonbond1) (chem:get-radius-angstroms ffnonbond2))
@@ -452,7 +452,7 @@
                             (aref ico-vec (+ (* ntypes i) j)) (+ curcn 1))
                       (if (< i j)
                           (setf (aref ico-vec (+ (* ntypes j) i)) (+ curcn 1)))
-                      (format t "type1 ~a type2 ~a~%" type1 type2)
+;;;                      (format t "type1 ~a type2 ~a~%" type1 type2)
                       (incf curcn)))))
       (values ntypes ico-vec iac-vec local-typej-vec cn1-vec cn2-vec))))
 

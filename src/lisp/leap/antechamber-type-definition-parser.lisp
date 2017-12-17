@@ -525,7 +525,6 @@ Read the contents of the filename into memory and return a buffer-stream on it."
 ;;;         do (format *debug-io* "line#~a: ~a~%" lineno line)
               for line-len = (if (stringp line) (length line) 0)
               until (eq line :eof)
-              do (format *debug-io* "Line: ~a~%" line)
               do (cond
                    ((and (> line-len #.(length "WILDATOM"))
                          (string= "WILDATOM" line :start2 0 :end2 #.(length "WILDATOM")))
