@@ -468,8 +468,8 @@
          (atom-radius-vector (make-array natom :element-type 'double-float))
          (energy-nonbond (chem:get-nonbond-component energy-function))
          (ffnonbond-db (chem:get-nonbond-db force-field)))
-    (format t "energy-nonbond -> ~a~%" energy-nonbond)
-    (format t "ffnonbond-db -> ~a~%" ffnonbond-db)
+;;;    (format t "energy-nonbond -> ~a~%" energy-nonbond)
+;;;    (format t "ffnonbond-db -> ~a~%" ffnonbond-db)
     (loop for i from 0 below natom
        for atom-name = (chem:elt-atom-name atom-table i)
        for atom-type = (chem:elt-atom-type atom-table i)
