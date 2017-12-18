@@ -65,30 +65,7 @@
         (list (list "**;*.*" (concatenate 'string amber-home "/**/*.*"))))
   (format t "Setting *amber-home* -> ~a~%" amber-home))
 
-;;; Setup to run slime if we are in a jupyter notebook
-#+jupyter
-(defparameter *started-swank* nil)
-#+jupyter
-(defun ext::start-swank ()
-  ;; Bad!  This is hard-coded to work with docker
-  (if *started-swank*
-      (format t "Swank is already running~%")
-      (progn
-        (let ((swank-loader (or (probe-file (format nil "~a/~a" (or (ext:getenv "HOME") "/") "/slime/swank-loader.lisp"))
-                                (probe-file (format nil "~a/~a" (or (ext:getenv "SLIME_HOME") "/") "/swank-loader.lisp"))
-                                (error "Cannot find swank - set SLIME_HOME environment variable and try again"))))
-          (format t "swank-loader -> ~a~%" swank-loader)
-          (load swank-loader))
-        (let ((swank-loader-init (find-symbol "INIT" "SWANK-LOADER")))
-          (funcall swank-loader-init :delete nil :reload nil :load-contribs nil))
-        (let ((swank-create-server (find-symbol "CREATE-SERVER" "SWANK")))
-          (mp:process-run-function 'swank-main
-                                   (lambda () (funcall swank-create-server
-                                                       :port 4005
-                                                       :interface "0.0.0.0")))
-          (setf *started-swank* t)))))
-#+jupyter
-(export 'ext::start-swank :ext)
+#+cando-jupyter(load "source-dir:extensions;cando;src;lisp;build-cando-jupyter.lisp")
 
 ;;; Setup or startup the Cando system 
 ;;; If :setup-cando is in *features* then don't load the cando system
