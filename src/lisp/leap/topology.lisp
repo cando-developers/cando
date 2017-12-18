@@ -1165,7 +1165,7 @@
            do (fortran:fwrite screen))
         (fortran:end-line)
         ))
-    (format *debug-io* "coordinate-pathname -> ~s~%" coordinate-pathname)
+;;;    (format *debug-io* "coordinate-pathname -> ~s~%" coordinate-pathname)
     (fortran:with-fortran-output-file (ftop coordinate-pathname :direction :output :if-exists :supersede)
       (fortran:fformat 20 "%-4s")
       (fortran:fwrite (string (chem:get-name aggregate)))
@@ -1182,7 +1182,7 @@
            for atom = (chem:elt-atom atom-table i)
            for atom-coordinate-index-times3 = (chem:elt-atom-coordinate-index-times3 atom-table i)
            for pos = (chem:get-position atom)
-           do (format *debug-io* "atom-coordinate-index-times3 -> ~a~%" atom-coordinate-index-times3)
+;;;           do (format *debug-io* "atom-coordinate-index-times3 -> ~a~%" atom-coordinate-index-times3)
            do (progn
                 (fortran:fwrite (geom:vx pos))
                 (fortran:fwrite (geom:vy pos))
