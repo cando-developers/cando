@@ -362,11 +362,9 @@ CL_DEFMETHOD bool ChemInfo_O::matches(chem::Atom_sp a) {
   LOG(BF("Starting ChemInfo::matches process with atom: %s") % a->description());
   LOG(BF("The local atom environment(depth=%d) is:\n%s") % this->depth() % a->localEnvironment(4));
   LOG(BF("The pattern to match is smarts[%s]") % this->_Code);
-  //    LOG(BF("The XML version of the pattern to match is:\n%s") % this->asXmlString() );
   this->_Root->createNewMatch();
   if (!this->_Root->matches(this->_Root, a))
     goto FAIL;
-  //SUCCESS:
   LOG(BF("SUCCESS!"));
   this->_Root->getMatch()->throwIfInvalid();
   this->_Root->getMatch()->setMatches(true);

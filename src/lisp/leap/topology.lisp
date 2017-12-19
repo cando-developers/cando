@@ -1805,10 +1805,10 @@
          ;; Read format FORMAT(I5,5E15.7) NATOM,TIME,TEMP
          (natoms (parse-integer line :start 0 :end 5))
          (time (if (>= (length line) 15)
-                   (fortran::read-double-float-from-string (subseq line 5 nil) :start 0 :end 15)
+                   (fortran::parse-double-float (subseq line 5 nil) :start 0 :end 15)
                    nil))
          (temp (if (>= (length line) 35)
-                   (fortran::read-double-float-from-string (subseq line (+ 5 15) nil) :start 0 :end 15)
+                   (fortran::parse-double-float (subseq line (+ 5 15) nil) :start 0 :end 15)
                    nil)))
     (fortran:fread-line fif) 
     (copy-seq (fortran:fread-vector fif 6 #\F 12))))

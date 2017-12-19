@@ -8,10 +8,13 @@
 (defvar *path* nil)
 (defvar *default-force-field* nil)
 
+(defun clear-path ()
+  (setf *path* nil))
+
 (defun add-path (path)
   "Add a path to the *path* dynamic variable"
   (declare (pathname path))
-  (push path *path*))
+  (push (translate-logical-pathname path) *path*))
 
 (defun search-path (filename)
   "Search the *path* list for a directory that contains filename and return it.

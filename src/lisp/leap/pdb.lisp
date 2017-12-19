@@ -121,10 +121,10 @@ odd atom name maps only to the last standard atom name it was mapped to."
    (to :initarg :to :reader to)))
 
 
-(defun find-pdb-residue (layout res-seq chain-id)
+(defun find-pdb-residue (scanner res-seq chain-id)
   (declare (optimize (debug 3)))
   (block found
-    (loop for seq in (sequences layout)
+    (loop for seq in (sequences scanner)
        do (loop for res in seq
              when (and (= res-seq (res-seq res))
                        (eq chain-id (chain-id res)))
@@ -136,7 +136,7 @@ odd atom name maps only to the last standard atom name it was mapped to."
    (current-i-code :initform nil :initarg :current-i-code :accessor current-i-code)))
 
 
-(defclass layout ()
+(defclass scanner ()
   ((big-z :accessor big-z) ; If the pdb file has an extra big z coordinate
    (seen-residues :initform (make-hash-table) :accessor seen-residues)
    (sequences :initform nil :accessor sequences)
@@ -145,7 +145,7 @@ odd atom name maps only to the last standard atom name it was mapped to."
    (unknown-residues :initform (make-hash-table :test #'equal) :accessor unknown-residues)
    (connects :initform nil :accessor connects)))
 
-(defun layout-unknown-residue-key (res)
+(defun scanner-unknown-residue-key (res)
   (cons (name res) (context res)))
 
 (defclass pdb-scanner (pdb-reader)
@@ -155,7 +155,7 @@ odd atom name maps only to the last standard atom name it was mapped to."
                              :documentation "Accumulate the current sequence in reverse order")
    (reversed-sequences :initform nil :accessor reversed-sequences
                        :documentation "A list of sequences (proper order) in pushed in reverse order")
-   (layout :initarg :layout :reader layout))
+   (scanner :initarg :scanner :reader scanner))
   (:documentation " Keep track of sequence and matrix info while scanning a PDB file"))
 
 (defclass pdb-atom-reader (pdb-reader)
@@ -296,21 +296,23 @@ create more problems."
     (when assign-tail
       (let ((tail-residue (car (current-reverse-sequence pdb))))
         (setf (context tail-residue) :tail)
-        (try-to-assign-topology tail-residue (layout pdb))))
+        (try-to-assign-topology tail-residue (scanner pdb))))
     (push (nreverse (current-reverse-sequence pdb)) (reversed-sequences pdb))
     (setf (current-reverse-sequence pdb) nil)))
 
-(defun try-to-assign-topology (res layout)
+(defun try-to-assign-topology (res scanner)
   (let* ((topology (or (leap.core:lookup-variable (lookup-pdb-res-map (name res) (context res)) nil nil)
                    (leap.core:lookup-variable (name res) nil nil))))
     (if topology
         (setf (topology res) topology)
-        (let ((key (layout-unknown-residue-key res)))
+        (let ((key (scanner-unknown-residue-key res)))
           (warn "Could not immediately identify topology for ~a" key)
-          (unless (gethash key (unknown-residues layout))
+          (unless (gethash key (unknown-residues scanner))
             (warn "Could not identify topology for ~a" key)
-            (setf (gethash key (unknown-residues layout)) t))))))
-        
+            (setf (gethash key (unknown-residues scanner)) t))))))
+
+(defgeneric scan (system field scanner line))
+
 (defun pdb-scanner-read-line (pdb eof-errorp eof)
   "* Arguments
 - pdb : A pdb-scanner
@@ -322,7 +324,7 @@ ATOM - used to build a list of residues and whether they are :first :main :last.
 TER  - Used to identify the ends of chains.
 MTRIX- Used to build a list of matrices."
   (let* ((line (read-line (stream pdb) eof-errorp eof))
-         (layout (layout pdb))
+         (scanner (scanner pdb))
          (check-big-z t))
     (unless (eq line eof)
       (multiple-value-bind (line-data big-z)
@@ -331,11 +333,11 @@ MTRIX- Used to build a list of matrices."
           #+(or)(format t "Read:  ~a~%" line-data)
           (case (car line-data)
             (:atom
-             (if (and check-big-z (slot-boundp layout 'big-z))
-                 (unless (eq (big-z layout) big-z)
+             (if (and check-big-z (slot-boundp scanner 'big-z))
+                 (unless (eq (big-z scanner) big-z)
                    (error "The big-z status of the PDB file changed"))
                  (progn
-                   (setf (big-z layout) big-z
+                   (setf (big-z scanner) big-z
                          check-big-z nil) ; only check big-z the first ATOM record
                    (when big-z (warn "This is a BIG-Z PDB file (The Z-coordinate contains an extra digit)"))))
              (destructuring-bind (head atom-serial atom-name alt-loc residue-name chain-id res-seq i-code)
@@ -359,16 +361,16 @@ MTRIX- Used to build a list of matrices."
                                                     :name residue-name
                                                     :context context-guess
                                                     :atom-serial-first atom-serial)))
-                   (unless (gethash residue-name (seen-residues (layout pdb)))
+                   (unless (gethash residue-name (seen-residues (scanner pdb)))
                      ;;(format t "Creating hash-table for ~a~%" residue-name)
-                     (setf (gethash residue-name (seen-residues (layout pdb))) (make-hash-table)))
-                   (try-to-assign-topology new-residue (layout pdb))
+                     (setf (gethash residue-name (seen-residues (scanner pdb))) (make-hash-table)))
+                   (try-to-assign-topology new-residue (scanner pdb))
                    (when (previous-residue pdb)
                      (setf (atom-serial-last (previous-residue pdb)) (previous-atom-serial pdb)))
                    (push new-residue (current-reverse-sequence pdb))
                    ;; Set things up for the next new residue
                    (setf (previous-residue pdb) new-residue)))
-               (let ((ht (gethash residue-name (seen-residues (layout pdb)))))
+               (let ((ht (gethash residue-name (seen-residues (scanner pdb)))))
                  (unless ht (error "Could not find ht for ~a" residue-name))
                  (setf (gethash atom-name ht) t))
                ;; Now set things up for the next atom record
@@ -382,14 +384,14 @@ MTRIX- Used to build a list of matrices."
                                     :chain-id1 chain-id1
                                     :res-seq1 res-seq1
                                     :chain-id2 chain-id2
-                                    :res-seq2 res-seq2) (disulphides layout))))
+                                    :res-seq2 res-seq2) (disulphides scanner))))
             (:conect
              (destructuring-bind (head from &rest to)
                  line-data
                (push (make-instance 'connect
                                     :from from
                                     :to to)
-                     (connects layout))))
+                     (connects scanner))))
             (:mtrix1
              (destructuring-bind (head serial x y z t)
                  line-data
@@ -398,11 +400,11 @@ MTRIX- Used to build a list of matrices."
                  (geom:at-row-col-put matrix 0 1 y)
                  (geom:at-row-col-put matrix 0 2 z)
                  (geom:at-row-col-put matrix 0 3 t)
-                 (push matrix (matrices layout)))))
+                 (push matrix (matrices scanner)))))
             (:mtrix2
              (destructuring-bind (head serial x y z t)
                  line-data
-               (let ((matrix (car (matrices layout))))
+               (let ((matrix (car (matrices scanner))))
                  (geom:at-row-col-put matrix 1 0 x)
                  (geom:at-row-col-put matrix 1 1 y)
                  (geom:at-row-col-put matrix 1 2 z)
@@ -410,7 +412,7 @@ MTRIX- Used to build a list of matrices."
             (:mtrix3
              (destructuring-bind (head serial x y z t)
                  line-data
-               (let ((matrix (car (matrices layout))))
+               (let ((matrix (car (matrices scanner))))
                  (geom:at-row-col-put matrix 2 0 x)
                  (geom:at-row-col-put matrix 2 1 y)
                  (geom:at-row-col-put matrix 2 2 z)
@@ -418,7 +420,7 @@ MTRIX- Used to build a list of matrices."
             (otherwise nil)))))
     line))
   
-(defun scanpdb (filename &key progress)
+(defun scan-pdb (filename &key progress)
   "* Arguments
 - filename : A pathname
 * Description
@@ -428,7 +430,7 @@ values residue-sequences matrices"
   (with-open-file (fin filename :direction :input)
     (let ((pdb-scanner (make-instance 'pdb-scanner
                                       :stream fin
-                                      :layout (make-instance 'layout)))
+                                      :scanner (make-instance 'scanner)))
           (bar (cando:make-progress-bar :message "Scanned" :total (file-length fin) :divisions 100 :on progress)))
       (restart-case
           (progn
@@ -445,28 +447,28 @@ values residue-sequences matrices"
             (pop (current-reverse-sequence pdb-scanner)))
           (finish-previous-sequence pdb-scanner nil)))
       (let* ((sequences (nreverse (reversed-sequences pdb-scanner)))
-             (layout (layout pdb-scanner)))
-        (setf (sequences layout) sequences)
-        (finish-layout layout)
-        layout))))
+             (scanner (scanner pdb-scanner)))
+        (setf (sequences scanner) sequences)
+        (finish-scanner scanner)
+        scanner))))
 
-(defun warn-of-unknown-topology (res layout)
+(defun warn-of-unknown-topology (res scanner)
   (let* ((name (name res))
          (context (context res))
          (key (cons name context)))
-    (unless (gethash key (unknown-residues layout))
-      (setf (gethash key (unknown-residues layout)) t)
+    (unless (gethash key (unknown-residues scanner))
+      (setf (gethash key (unknown-residues scanner)) t)
       (warn "No topology was found for ~a~%" key))))
 
-(defun finish-layout (layout)
+(defun finish-scanner (scanner)
   (declare (optimize (debug 3)))
   ;; Reverse the matrices
-  (setf (matrices layout) (nreverse (matrices layout)))
+  (setf (matrices scanner) (nreverse (matrices scanner)))
   ;; Form the disulfide bonds
   (mapc (lambda (dis)
-          (let ((res1 (find-pdb-residue layout (res-seq1 dis)
+          (let ((res1 (find-pdb-residue scanner (res-seq1 dis)
                                         (chain-id1 dis)))
-                (res2 (find-pdb-residue layout (res-seq2 dis)
+                (res2 (find-pdb-residue scanner (res-seq2 dis)
                                         (chain-id2 dis))))
             (let ((top1 (lookup-pdb-res-map :CYX (context res1)))
                   (top2 (lookup-pdb-res-map :CYX (context res2))))
@@ -477,8 +479,8 @@ values residue-sequences matrices"
                 (warn "Could not identify a proper CYX residue for the first half of disulphide bond ~a" dis))
               (unless (topology res2)
                 (warn "Could not identify a proper CYX residue for the second half of disulphide bond ~a" dis)))))
-        (disulphides layout))
-  layout)
+        (disulphides scanner))
+  scanner)
 
 (defun calculate-residue-sequence-number (res-seq i-code)
   "If i-code is not nil and as a string it is a single digit,
@@ -580,31 +582,31 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
               (otherwise nil)))
           line))))
 
-(defun connect-atoms-hash-table (layout)
-  (when (connects layout)
+(defun connect-atoms-hash-table (scanner)
+  (when (connects scanner)
     (let ((ht (make-hash-table :test #'eql)))
-      (loop for connect in (connects layout)
+      (loop for connect in (connects scanner)
          do (setf (gethash (from connect) ht) :from)
          do (mapc (lambda (to) (setf (gethash to ht) :to))
                   (to connect)))
       ht)))
 (defparameter *serial-to-atoms* nil)
 
-(defun loadpdb (filename &key layout progress)
+(defun load-pdb (filename &key scanner progress)
   (with-open-file (fin filename :direction :input)
-    (let* ((layout (or layout (scanpdb filename :progress progress)))
-           (serial-to-atoms (connect-atoms-hash-table layout)))
+    (let* ((scanner (or scanner (scan-pdb filename :progress progress)))
+           (serial-to-atoms (connect-atoms-hash-table scanner)))
       (setq *serial-to-atoms* serial-to-atoms)
       (let ((pdb-atom-reader (make-instance 'pdb-atom-reader :stream fin
                                             :sequences (mapcar (lambda (seq)
                                                                  (copy-list seq))
-                                                               (sequences layout))
-                                            :connect-atoms (connects layout)
+                                                               (sequences scanner))
+                                            :connect-atoms (connects scanner)
                                             :serial-to-atom serial-to-atoms)))
         (let ((bar (cando:make-progress-bar :message "Load pdb" :total (file-length fin) :divisions 100 :on progress)))
           (restart-case
               (progn
-                (loop for x = (read-and-process-line pdb-atom-reader nil :eof (big-z layout))
+                (loop for x = (read-and-process-line pdb-atom-reader nil :eof (big-z scanner))
                    do (cando:progress-advance bar (file-position fin))
                    until (eq x :eof))
                 (when progress (format t "Loaded pdb~%")))
@@ -612,7 +614,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
               :report "Ran out of sequence while filling residues"
               (format t "Continuing with partial sequence~%")))
           (cando:progress-done bar))
-        (loop for connect in (connects layout)
+        (loop for connect in (connects scanner)
            for from-atom = (gethash (from connect) serial-to-atoms)
            for to-atoms = (mapcar (lambda (c) (gethash c serial-to-atoms)) (to connect))
            do (mapc (lambda (to-atom)
@@ -637,7 +639,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                   (format t "Building missing hydrogens~%"))
                 (let ((built (cando:build-unbuilt-hydrogens aggregate)))
                   (format t "Built ~d missing hydrogens~%" built))))
-          (values aggregate layout))))))
+          (values aggregate scanner))))))
 
 
 #|
