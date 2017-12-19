@@ -243,7 +243,7 @@ stringstream	desc;
 
 void FFStretchDb_O::forceFieldMerge(FFBaseDb_sp bother)
 {
-  SIMPLE_WARN(BF("Merging stretch terms - but terms with different type orders will create duplicates!"));
+//  SIMPLE_WARN(BF("Merging stretch terms - but terms with different type orders will create duplicates!"));
   FFStretchDb_sp other = gc::As<FFStretchDb_sp>(bother);
   other->_Parameters->maphash([this] (core::T_sp key, core::T_sp value) {
       core::Symbol_sp skey = gc::As<core::Symbol_sp>(key);

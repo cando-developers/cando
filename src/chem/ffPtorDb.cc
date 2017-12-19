@@ -270,7 +270,7 @@ stringstream	desc;
 
 void FFPtorDb_O::forceFieldMerge(FFBaseDb_sp bother)
 {
-  SIMPLE_WARN(BF("Merging FFPtorDb terms - but terms with different type orders will create duplicates!"));
+  //SIMPLE_WARN(BF("Merging FFPtorDb terms - but terms with different type orders will create duplicates!"));
   FFPtorDb_sp other = gc::As<FFPtorDb_sp>(bother);
   other->_Parameters->maphash([this] (core::T_sp key, core::T_sp value) {
       core::Symbol_sp skey = gc::As<core::Symbol_sp>(key);

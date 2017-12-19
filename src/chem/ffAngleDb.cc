@@ -266,7 +266,7 @@ stringstream	desc;
 
 void FFAngleDb_O::forceFieldMerge(FFBaseDb_sp bother)
 {
-  SIMPLE_WARN(BF("Merging angle terms - but terms with different type orders will create duplicates!"));
+  //SIMPLE_WARN(BF("Merging angle terms - but terms with different type orders will create duplicates!"));
   FFAngleDb_sp other = gc::As<FFAngleDb_sp>(bother);
   other->_Parameters->maphash([this] (core::T_sp key, core::T_sp value) {
       core::Symbol_sp skey = gc::As<core::Symbol_sp>(key);
