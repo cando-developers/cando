@@ -172,16 +172,17 @@ class ForceField_O : public core::CxxObject_O
   CL_DEFMETHOD 	FFVdwDb_sp getVdwDb() { return this->_Vdws;};
 
   void forceFieldMerge(ForceField_sp other);
-  void	assignTypes(Matter_sp matter);
-  void	setTitle(const string& title);
-  void	setInfoDb( InfoDb_sp Info );
-  void	setFFTypeDb( FFTypesDb_sp Types);
-  void	setFFStretchDb( FFStretchDb_sp Stretches);
-  void	setFFAngleDb( FFAngleDb_sp Angles);
-  void	setFFItorDb( FFItorDb_sp Itors);
-  void	setFFPtorDb( FFPtorDb_sp Ptors);
-  void	setFFNonbondDb(FFNonbondDb_sp Nonbonds );
-  void	setFFVdwDb(FFVdwDb_sp Vdws );
+  CL_DEFMETHOD  void	assignTypes(Matter_sp matter);
+  CL_DEFMETHOD  void	setTitle(const string& title);
+  CL_DEFMETHOD void	setInfoDb( InfoDb_sp Info );
+  CL_LISPIFY_NAME("setTypeDb");
+  CL_DEFMETHOD  void	setFFTypeDb( FFTypesDb_sp Types);
+  CL_DEFMETHOD  void	setFFStretchDb( FFStretchDb_sp Stretches);
+  CL_DEFMETHOD  void	setFFAngleDb( FFAngleDb_sp Angles);
+  CL_DEFMETHOD  void	setFFItorDb( FFItorDb_sp Itors);
+  CL_DEFMETHOD  void	setFFPtorDb( FFPtorDb_sp Ptors);
+  CL_DEFMETHOD  void	setFFNonbondDb(FFNonbondDb_sp Nonbonds );
+  CL_DEFMETHOD  void	setFFVdwDb(FFVdwDb_sp Vdws );
 
 //	void		parseFromMoeStream(istream in);
   void		parseFromMoeFormatFileName(string name);

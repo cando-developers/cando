@@ -165,5 +165,6 @@
    #:list-objects
    #:desc
    #:object
+   #:load-atom-type-rules
    #:source)
   (:use :common-lisp :chem :geom))

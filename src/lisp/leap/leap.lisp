@@ -102,6 +102,14 @@
     (maphash (lambda (k v) (push k objects)) leap.core:*objects*)
     objects))
 
+(defun load-atom-type-rules (filename &optional (force-field :default))
+  (let* ((path (leap.core:search-path filename))
+         (type-rules (with-open-file (fin path)
+                       (leap.antechamber-type-definition-parser::read-antechamber-type-rules fin)))
+         (ff (core:make-cxx-object 'chem:force-field)))
+    (chem:set-type-db ff type-rules)
+    (leap.core:add-force-field-or-modification ff force-field)))
+  
 (defun source (filename)
   (let* ((path (leap.core:search-path filename))
          (entire-file (alexandria:read-file-into-string path))
