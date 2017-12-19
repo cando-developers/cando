@@ -60,6 +60,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/loop.h>
 #include <cando/chem/molecule.h>
 #include <clasp/core/array.h>
+#include <cando/chem/ffTypesDb.h>
 #include <cando/chem/chemPackage.fwd.h>
 #include <cando/chem/aggregate.h>
 #include <cando/chem/chemInfo.h>
@@ -68,7 +69,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
-chem::TypeAssignmentRules_sp	sybylRules;
+//chem::TypeAssignmentRules_sp	sybylRules;
 
 
 class	Mol2File 
@@ -645,7 +646,7 @@ AtomInfo	one;
     LOG(BF("Assigning ID to every atom") );
     uint atomId = 1;
     uint resId = 1;
-    chem::TypeAssignmentRules_sp sybylRules;
+    chem::FFTypesDb_sp sybylRules;
     if (useSybylTypes) {
       if (!chem::_sym_STARsybyl_type_assignment_rulesSTAR->boundP()) {
         if (chem::_sym_initialize_sybyl_type_rules->fboundp()) {
@@ -654,7 +655,7 @@ AtomInfo	one;
           SIMPLE_ERROR(BF("chem:initialize-sybyl-type-rules has no function bound to it"));
         }
       }
-      sybylRules = gc::As<TypeAssignmentRules_sp>(chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue());
+      sybylRules = gc::As<FFTypesDb_sp>(chem::_sym_STARsybyl_type_assignment_rulesSTAR->symbolValue());
     }
     lRes.loopTopGoal(agg,RESIDUES);
     while ( lRes.advanceLoopAndProcess() ) {
@@ -671,7 +672,7 @@ AtomInfo	one;
 	    one._Atom = a;
             if ( useSybylTypes ) {
               ASSERT(sybylRules);
-              one._Type = sybylRules->calculateType(a);
+              one._Type = sybylRules->assignType(a);
               //BFORMAT_T(BF("Assigned sybyl type %s to %s\n") % _rep_(one._Type) % _rep_(a));
             } else {
               if ( a->getType() ) {

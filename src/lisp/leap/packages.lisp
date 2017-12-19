@@ -40,6 +40,7 @@
    #:fread-line
    #:fread-line-or-error
    #:parse-fortran-format-line
+   #:parse-double-float
    #:fread-vector
    ))
 (defpackage #:leap.parser
@@ -82,8 +83,8 @@
 (defpackage #:leap.pdb
   (:use #:common-lisp)
   (:export
-   #:scanpdb
-   #:loadpdb
+   #:scan-pdb
+   #:load-pdb
    #:add-pdb-atom-map
    #:add-pdb-res-map)
   )
@@ -112,7 +113,9 @@
    #:*leap-env*
    #:variable-lookup
    #:function-lookup
-   #:add-path #:search-path
+   #:clear-path
+   #:add-path
+   #:search-path
    #:residue-name
    #:chain-position
    #:merged-force-field

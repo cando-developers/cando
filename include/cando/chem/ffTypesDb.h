@@ -83,15 +83,17 @@ public:
       }
     }
 
-    void	add( chem::ChemInfo_sp ci ) {
+    CL_LISPIFY_NAME("FFTypesDb-add");
+    CL_DEFMETHOD void	add( chem::ChemInfo_sp ci ) {
 	this->_TypeAssignmentRules.push_back(ci);
     }
 
-CL_LISPIFY_NAME("FFTypes-numberOfRules");
+CL_LISPIFY_NAME("FFTypesDb-numberOfRules");
 CL_DEFMETHOD     int	numberOfRules() { return this->_TypeAssignmentRules.size();};
     chem::ChemInfo_sp	getRule(uint index);
 
     void    assignTypes( chem::Matter_sp matter );
+    core::Symbol_sp    assignType( chem::Atom_sp atom );
     void	initialize();
 
 

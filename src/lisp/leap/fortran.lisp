@@ -139,38 +139,34 @@
        do (fread-line fif eof-error-p eof-value))
     result))
 
-;(defun read-double-float-from-string (raw-string &key (start 0) end)
-;  (let* ((trimmed (string-trim " " raw-string))
-;         (space-pos (position #\space trimmed))
-;         (string (if space-pos
-;                     (subseq trimmed 0 space-pos)
-;                     trimmed)))
-(defun read-double-float-from-string (string &key (start 0) end)
-    (let ((float-start (position-if (lambda (c) (char/= c #\space)) string :start start :end end))
-          (float-end (or end (length string)))
-          (has-period (position #\. string :start start :end end))
-          (has-exponent-char (position-if (lambda (c) (or (char-equal #\E c) (char-equal #\D c))) string :start start :end end)))
-      (let ((significand-end (or has-exponent-char float-end))
-            sig-x
-            (sig-y "0000000000")
-            significand
-            (exponent 0))
-        (if has-period
-            (setf sig-x (subseq string float-start has-period)
-                  Sig-y (concatenate 'string (subseq string (1+ has-period) significand-end) sig-y))
-            (setf sig-x (subseq string float-start significand-end)))
-        (if has-exponent-char
-            (setf exponent (parse-integer string :start (1+ has-exponent-char) :end float-end)))
-        (setf exponent (- exponent (length sig-y)))
-        (setf significand-str (concatenate 'string sig-x sig-y))
-        (* (float (parse-integer significand-str) 1.0D0) (expt 10.0d0 exponent)))))
+;;;parse a double-float in the string starting at start end ending at end.
+;;;  Allow whitespace at the start end end of the string
+(defun parse-double-float (string &key (start 0) end)
+  (let ((float-start (position-if (lambda (c) (and (char/= c #\space) (char/= c #\tab))) string :start start :end end))
+        (float-end (or end (length string)))
+        (has-period (position #\. string :start start :end end))
+        (has-exponent-char (position-if (lambda (c) (or (char-equal #\E c) (char-equal #\D c))) string :start start :end end)))
+    (let ((significand-end (or has-exponent-char float-end))
+          sig-x
+          (sig-y "0000000000")
+          significand
+          (exponent 0))
+      (if has-period
+          (setf sig-x (subseq string float-start has-period)
+                Sig-y (concatenate 'string (subseq string (1+ has-period) significand-end) sig-y))
+          (setf sig-x (subseq string float-start significand-end)))
+      (if has-exponent-char
+          (setf exponent (parse-integer string :start (1+ has-exponent-char) :end float-end)))
+      (setf exponent (- exponent (length sig-y)))
+      (setf significand-str (concatenate 'string sig-x sig-y))
+      (* (float (parse-integer significand-str) 1.0D0) (expt 10.0d0 exponent)))))
 
 (defun parse-double-float-line (line result width)
   (loop for start = 0 then end
      for end = (+ start width)
      until (< (length line) end)
      do (let* ((val-pos (position-if (lambda (c) (char/= c #\space)) line :start start :end end))
-               (val (read-double-float-from-string line :start start :end end)))
+               (val (parse-double-float line :start start :end end)))
           (vector-push-extend val result))))
 
 (defun fread-double-float-vector (fif per-line width &optional eof-error-p eof-value)

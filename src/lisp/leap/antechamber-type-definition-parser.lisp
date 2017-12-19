@@ -5,7 +5,7 @@
 
 ;;; Lexical stuff and reserved words
 
-(defvar *wild-dict*)
+(defvar *wild-dict* (core:make-cxx-object 'chem:wild-element-dict))
 
 (esrap:defrule skippable
     (+ (or parser.common-rules:shell-style-comment
@@ -54,7 +54,8 @@
                   (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
                                                                :first-test focus
                                                                :chain chemical-environment
-                                                               :after-match-tests bond-definitions))))
+                                                               :after-match-tests bond-definitions
+                                                               :wild-dict *wild-dict*))))
 
 (esrap:defrule antechamber-line...chemical-environment
     (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms bracketed-atomic-property/s chemical-environment/?s)
@@ -68,7 +69,8 @@
                                                    :atomic-property bracketed-atomic-property)))
                   (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
                                                                :first-test focus
-                                                               :chain chemical-environment))))
+                                                               :chain chemical-environment
+                                                               :wild-dict *wild-dict*))))
 
 (esrap:defrule antechamber-line...bracketed-atomic-property
     (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms bracketed-atomic-property/?s)
@@ -81,7 +83,8 @@
                                                    :attached-ewgs focus-number-of-electron-withdrawing-atoms
                                                    :atomic-property bracketed-atomic-property)))
                   (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
-                                                               :first-test focus))))
+                                                               :first-test focus
+                                                               :wild-dict *wild-dict*))))
 
 (esrap:defrule antechamber-line...focus-number-of-electron-withdrawing-atoms
     (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms focus-number-of-electron-withdrawing-atoms)
@@ -93,7 +96,8 @@
                                                    :attached-hs focus-number-of-attached-hydrogen-atoms
                                                    :attached-ewgs focus-number-of-electron-withdrawing-atoms)))
                   (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
-                                                               :first-test focus))))
+                                                               :first-test focus
+                                                               :wild-dict *wild-dict*))))
 
 (esrap:defrule antechamber-line...focus-number-of-attached-hydrogen-atoms
     (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms focus-number-of-attached-hydrogen-atoms)
@@ -105,7 +109,8 @@
                                                    :attached-hs focus-number-of-attached-hydrogen-atoms
                                                    :attached-ewgs -1)))
                   (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
-                                                               :first-test focus))))
+                                                               :first-test focus
+                                                               :wild-dict *wild-dict*))))
 
 (esrap:defrule antechamber-line...focus-number-of-attached-atoms
     (and type-name/s residue-list/s focus-atomic-number focus-number-of-attached-atoms)
@@ -117,7 +122,8 @@
                                                    :attached-hs -1
                                                    :attached-ewgs -1)))
                   (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
-                                                               :first-test focus))))
+                                                               :first-test focus
+                                                               :wild-dict *wild-dict*))))
 
 (esrap:defrule antechamber-line...focus-atomic-number
     (and type-name/s residue-list/s focus-atomic-number)
@@ -129,7 +135,8 @@
                                                    :attached-hs -1
                                                    :attached-ewgs -1)))
                   (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
-                                                               :first-test focus))))
+                                                               :first-test focus
+                                                               :wild-dict *wild-dict*))))
 
 (esrap:defrule antechamber-line...residue-list
     (and type-name/s residue-list/s)
@@ -137,14 +144,16 @@
                 (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match
                                                    :residue-names residue-list)))
                   (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
-                                                               :first-test focus))))
+                                                               :first-test focus
+                                                               :wild-dict *wild-dict*))))
 
 (esrap:defrule antechamber-line...type-name
     (and type-name/s)
   (:destructure (type-name)
                 (let ((focus (core:make-cxx-object 'chem:antechamber-focus-atom-match)))
                   (core:make-cxx-object 'chem:antechamber-root :assign-type (intern type-name :keyword)
-                                                               :first-test focus))))
+                                                               :first-test focus
+                                                               :wild-dict *wild-dict*))))
 
 
 (defmacro defrule-wild-card-or-number (name)
@@ -516,7 +525,7 @@ Read the contents of the filename into memory and return a buffer-stream on it."
         (data (make-string (file-length stream)))
         (wild-dict (core:make-cxx-object 'chem:wild-element-dict))
         wild-atom atoms
-        (type-rules (core:make-cxx-object 'chem:type-assignment-rules)))
+        (type-rules (core:make-cxx-object 'chem:fftypes-db)))
     (read-sequence data stream)
     (architecture.builder-protocol:with-builder builder
       (with-input-from-string (sin data)
@@ -535,11 +544,10 @@ Read the contents of the filename into memory and return a buffer-stream on it."
                         (chem:add-wild-name-map wild-dict wild-atom (intern e :keyword)))))
                    ((and (> line-len #.(length "ATD"))
                          (string= "ATD" line :start2 0 :end2 #.(length "ATD")))
-                    (let* ((root (esrap:parse 'antechamber-line (string-trim '(#\space #\tab) line)))
-                           (chem-info (core:make-cxx-object 'chem:chem-info :root root))
-                           (one-rule (core:make-cxx-object 'chem:one-type-rule :type (chem:get-assign-type root) :rule chem-info)))
-                      (chem:append-rule type-rules one-rule)))))))
-    (chem:set-wild-element-dict type-rules wild-dict)
+                    (let* ((*wild-dict* wild-dict)
+                           (root (esrap:parse 'antechamber-line (string-trim '(#\space #\tab) line)))
+                           (chem-info (core:make-cxx-object 'chem:chem-info :root root)))
+                      (chem:fftypes-db-add type-rules chem-info)))))))
     type-rules))
 
 

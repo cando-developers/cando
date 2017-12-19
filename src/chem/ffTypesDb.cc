@@ -59,6 +59,26 @@ void	FFTypesDb_O::initialize()
 }
 
 
+CL_LISPIFY_NAME("assignType");
+CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom) {
+  LOG(BF("Got atom") );
+  LOG(BF("atom name: %s") % atom->getName().c_str() );
+  LOG(BF("Assigning type for atom: %s") % atom->description().c_str()  );
+  {_BLOCK_TRACE("Testing every type rule");
+    for ( auto it=this->_TypeAssignmentRules.begin();
+          it!=this->_TypeAssignmentRules.end(); it++ ) 
+    {_BLOCK_TRACEF(BF("Testing rule code(%s)") % (*it)->getCode().c_str() );
+//		LOG(BF("as xml: %s") % ((*it)->asXmlString().c_str() ) );
+      if ( (*it)->matches(atom) ) {
+        LOG(BF("Rule MATCH!!!") );
+        return atom->getType();
+      }
+      LOG(BF("Rule does not match, keep going") );
+    }
+  }
+  return _Nil<core::T_O>();
+}
+
 
 CL_LISPIFY_NAME("assignTypes");
 CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
@@ -82,22 +102,7 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
 //        LOG(BF("castGet = %X") % castGet );
 //        LOG(BF("getting first atom in loop") );
     atom = (c).as<chem::Atom_O>();
-    LOG(BF("Got atom") );
-    LOG(BF("atom name: %s") % atom->getName().c_str() );
-    LOG(BF("Assigning type for atom: %s") % atom->description().c_str()  );
-    {_BLOCK_TRACE("Testing every type rule");
-      for ( it=this->_TypeAssignmentRules.begin();
-            it!=this->_TypeAssignmentRules.end(); it++ ) 
-      {_BLOCK_TRACEF(BF("Testing rule code(%s)") % (*it)->getCode().c_str() );
-//		LOG(BF("as xml: %s") % ((*it)->asXmlString().c_str() ) );
-        if ( (*it)->matches(atom) ) 
-        {
-          LOG(BF("Rule MATCH!!!") );
-          break;
-        }
-        LOG(BF("Rule does not match, keep going") );
-      }
-    } 
+    this->assignType(atom);
   }
 }
 
