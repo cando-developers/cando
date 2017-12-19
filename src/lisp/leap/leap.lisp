@@ -106,6 +106,7 @@
   (let* ((path (leap.core:search-path filename))
          (type-rules (with-open-file (fin path)
                        (leap.antechamber-type-definition-parser::read-antechamber-type-rules fin)))
+         (fftypedb (core:make-cxx-object 'chem:fftypes-db :type-rules type-rules))
          (ff (core:make-cxx-object 'chem:force-field)))
     (chem:set-type-db ff type-rules)
     (leap.core:add-force-field-or-modification ff force-field)))
