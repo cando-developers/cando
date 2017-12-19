@@ -75,12 +75,21 @@ public:
     void fields(core::Record_sp node);
 public:
     gctools::Vec0<ChemInfo_sp>	_TypeAssignmentRules;
-
+    /*! New rules take precedence over old rules and the first rule that matches
+        is the one that is used, so new rules need to be prepended to the array. */
     void forceFieldMerge(FFBaseDb_sp other) {
       FFTypesDb_sp other_types_db = gc::As<FFTypesDb_sp>(other);
+      size_t new_size = other_types_db->_TypeAssignmentRules.size() + this->_TypeAssignmentRules.size();
+      gctools::Vec0<ChemInfo_sp> newRules;
+      newRules.reserve(new_size);
+      size_t idx;
       for ( auto it : other_types_db->_TypeAssignmentRules ) {
-        this->add(it);
+        newRules.push_back(it);
       }
+      for ( auto it : this->_TypeAssignmentRules ) {
+        newRules.push_back(it);
+      }
+      this->_TypeAssignmentRules.swap(newRules);
     }
 
     CL_LISPIFY_NAME("FFTypesDb-add");
@@ -95,7 +104,6 @@ CL_DEFMETHOD     int	numberOfRules() { return this->_TypeAssignmentRules.size();
     void    assignTypes( chem::Matter_sp matter );
     core::Symbol_sp    assignType( chem::Atom_sp atom );
     void	initialize();
-
 
     DEFAULT_CTOR_DTOR(FFTypesDb_O);
 };
