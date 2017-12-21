@@ -96,7 +96,9 @@
 
 (defun chem:initialize-sybyl-type-rules ()
   (setf chem:*sybyl-type-assignment-rules*
-        (with-open-file (fin #P"source-dir:extensions;cando;src;data;force-field;ATOMTYPE_SYBYL.DEF" :direction :input)
+        (with-open-file (fin (merge-pathnames "ATOMTYPE_SYBYL.DEF"
+                                              (translate-logical-pathname #P"source-dir:extensions;cando;src;data;force-field;"))
+                             :direction :input)
           (leap.antechamber-type-definition-parser:read-antechamber-type-rules fin))))
 
 
