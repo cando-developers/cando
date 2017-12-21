@@ -141,6 +141,15 @@ CL_DEFMETHOD void	ForceField_O::assignTypes(Matter_sp matter)
 }
 
 
+string ForceField_O::__repr__() const {
+  stringstream ss;
+  ss << "#<FORCE-FIELD ";
+  ss << this->_Title;
+  ss << ">";
+  return ss.str();
+}
+  
+
 
 void	ForceField_O::setTitle(const string& title)
 {

@@ -191,6 +191,7 @@ class ForceField_O : public core::CxxObject_O
   void	pointAllPartsToForceField(ForceField_sp ff);
 
   void	saveAs(const string& fileName);
+  string __repr__() const;
 };
 
 
