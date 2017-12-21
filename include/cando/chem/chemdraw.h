@@ -214,7 +214,7 @@ CL_DEFMETHOD     core::Symbol_sp getConstitutionName() { return this->_Constitut
     void	createImplicitHydrogen(CDNode_sp from, const string& name);
     void	parseFromXml(adapt::QDomNode_sp xml, bool print);
     /*! Return false if the fragment couldn't be interpreted */
-    bool	interpret();
+    bool	interpret(bool verbose);
 
 CL_LISPIFY_NAME("getMolecule");
 CL_DEFMETHOD core::T_sp getMolecule() { return this->_Molecule; };

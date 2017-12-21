@@ -120,8 +120,8 @@
   (:shadowing-import-from :chem "ATOM")
   (:import-from :ext #:chdir #:getcwd)
   (:export
-   #:load-chemdraw
-   #:load-chemdraw-aggregate
+   #:load-chem-draw
+   #:load-chem-draw-aggregate
    #:from-string
    #:as-string
    #:scramble-positions

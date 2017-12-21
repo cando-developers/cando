@@ -26,13 +26,13 @@
 (in-package :cando)
 ;;; Load a single aggregate from a cdxml file
 ;;; Return it
-(defun load-chemdraw (filename)
+(defun load-chem-draw (filename &key verbose)
   (with-open-file
       (fin (or (probe-file (merge-pathnames filename))
                (error "Could not find file ~a" filename)) :direction :input)
     (chem:make-chem-draw fin)))
 
-(defun load-chemdraw-aggregate (filename)
-  (let ((cd-only (load-chemdraw filename)))
+(defun load-chem-draw-aggregate (filename &key verbose)
+  (let ((cd-only (load-chem-draw filename :verbose verbose)))
     (chem:as-aggregate cd-only)))
 
