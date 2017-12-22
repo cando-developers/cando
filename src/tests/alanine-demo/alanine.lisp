@@ -1,16 +1,33 @@
 ;;;Build ACE-ALA-NME
 
 ;;Load alanine from chemdraw
+#|
 (ext:chdir "~/Development/clasp/extensions/cando/src/lisp/tests/alanine-demo/" t)
+(leap.core:add-path "/Users/tuj24515/Development/amber16/dat/leap/cmd/")
+(leap.core:add-path "~/Development/amber16/dat/leap/lib/")
+(leap.core:add-path "~/Development/amber16/dat/leap/parm/")
+(leap.core:add-path "~/Development/amber16/dat/leap/prep/")
+(leap.core:add-path "~/Development/amber16/dat/antechamber/")
+(leap:load-atom-type-rules "ATOMTYPE_AMBER.DEF")
+(leap:source "leaprc.protein.ff14SB")
+
+
 (defparameter *chemagg* (cando:load-chemdraw-aggregate "alanine2.cdxml"))
 (defparameter *stereocenters* (cando:gather-stereocenters *chemagg*))
 (cando:set-stereoisomer-func *stereocenters* (lambda (c) :S))
 (chem:set-property *chemagg* :solvent-box '(50.0 50.0 50.0))
+(:= *ff* (leap.core::merged-force-field))
+(chem:assign-types (chem:get-types *ff*) *chemagg*)
+(chem:map-atoms 'list (lambda (a) (chem:get-type a)) *chemagg*)
 (cando:save-mol2 *chemagg* "alanine2.mol2")
-(energy::setup-amber)
+;(energy::setup-amber)
 (cando:jostle *chemagg*)
 (energy:minimize *chemagg*)
-(leap.topology::save-amber-parm-format *chemagg* "alanine_cando.top" "alanine_cando.crd" energy::*ff*)
+
+(chem:set-type *c3* 'CX)
+(leap.topology::save-amber-parm-format *chemagg* "alanine_chemdraw.top" "alanine_chemdraw.crd" *ff*)
+
+
 (ext:system "~/Development/amber16/bin/sander -O -i 01_Min.in -o 01_Min_cando.out -p alanine_cando.top -c alanine_cando.crd")
 
 (defun read-sander-output (filename)
@@ -62,7 +79,7 @@
    
 
 ;;; Build it like leap
-#|
+
 (add-path "/Users/tuj24515/Development/amber16/dat/antechamber/")
 (add-path "/Users/tuj24515/Development/amber16/dat/leap/prep/")
 (add-path "/Users/tuj24515/Development/amber16/dat/leap/lib/")
@@ -158,9 +175,36 @@
 (chem:bond-to *c6* *h10* :single-bond)
 (chem:bond-to *c6* *h11* :single-bond)
 (chem:bond-to *c6* *h12* :single-bond)
+
+(chem:set-type *c3* :CX)
 (defparameter *agg* (chem:make-aggregate))
 (chem:add-matter *agg* *met*)
 (chem:set-property *agg* :solvent-box '(20.0 30.0 40.0))
+
+(leap.core:add-path "/Users/tuj24515/Development/amber16/dat/leap/cmd/")
+(leap.core:add-path "~/Development/amber16/dat/leap/lib/")
+(leap.core:add-path "~/Development/amber16/dat/leap/parm/")
+(leap.core:add-path "~/Development/amber16/dat/leap/prep/")
+(leap.core:add-path "~/Development/amber16/dat/antechamber/")
+
+(leap:load-atom-type-rules "ATOMTYPE_AMBER.DEF")
+(leap:source "leaprc.protein.ff14SB")
+(:= energy:*ff* (leap.core::merged-force-field))
+(chem:assign-types (chem:get-types energy:*ff*) *agg*)
+(apropos "energy:*ff*")
+
+
+
+
+(cando:jostle *agg*)
+(energy:minimize *agg*)
+
+(leap.topology::save-amber-parm-format *agg* "alanine_cando.top" "alanine_cando.crd" energy:*ff*)
+
+
+
+
+
 
 (energy::setup-amber)
 
@@ -168,7 +212,7 @@
 
 (cando:jostle *met* 20)
 (defparameter *me* (energy:minimize *agg*))
-(setf *default-pathname-defaults* #P"/Users/tuj24515/Development/clasp/extensions/cando/src/lisp/tests/alanine/")
+(setf *default-pathname-defaults* #P"/Users/tuj24515/Development/clasp/extensions/cando/src/tests/alanine-demo/")
 (leap.topology::save-amber-parm-format *agg* "alanine_cando.top" "alanine_cando.crd" energy::*ff*)
 
 

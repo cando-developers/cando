@@ -82,11 +82,11 @@
 (chem:bond-to *n2* *h12* :single-bond)
 (defparameter *agg* (chem:make-aggregate))
 (chem:add-matter *agg* *met*)
-
+(chem:set-property *agg* :solvent-box '(20.0 30.0 40.0))
 *agg*
 
 (leap:setup-amber)
-(time (defparameter *glycam* (leap.commands:load-amber-params (probe-file #P"~/Development/amber16/dat/leap/parm/GLYCAM_06EPb.dat"))))
+(time (defparameter *glycam* (leap:load-amber-params (probe-file #P"~/Development/amber16/dat/leap/parm/GLYCAM_06EPb.dat"))))
 *glycam*
 
 (probe-file #P"~/Development/amber16/dat/leap/parm/GLYCAM_06EPb.dat")
@@ -94,7 +94,7 @@
 (cando:jostle *met* 80)
 (defparameter *me* (energy:minimize *agg*))
 
-(leap.topology::save-amber-parm-format *agg* "/tmp/top.dat" "/tmp/crd.dat" energy::*ff*)
+(leap.topology::save-amber-parm-format *agg* "/tmp/top.dat" "/tmp/crd.dat" *ff*)
 (chem:calculate-energy *me*)
 
 
