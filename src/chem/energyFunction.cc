@@ -146,14 +146,14 @@ void energyFunction_initializeSmarts()
 
 
 
-CL_LAMBDA(matter force_field &key use_excluded_atoms active_atoms show_progress);
+CL_LAMBDA(matter force_field &key use_excluded_atoms active_atoms show_progress (assign_types t));
 CL_LISPIFY_NAME(make_energy_function);
-CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, ForceField_sp forceField, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress)
+CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, ForceField_sp forceField, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress, bool assign_types)
 {
   GC_ALLOCATE(EnergyFunction_O, me );
   if ( matter.notnilp() ) {
     if ( forceField.notnilp() ) {
-      me->defineForMatter(matter,forceField,useExcludedAtoms,activeAtoms,show_progress);
+      me->defineForMatter(matter,forceField,useExcludedAtoms,activeAtoms,show_progress,assign_types);
     } else {
       SIMPLE_ERROR(BF("You must provide a forceField if you provide a matter object"));
     }
@@ -1280,6 +1280,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
       t2 = a2->getType();
       t3 = a3->getType();
       t4 = a4->getType();
+      BFORMAT_T(BF("atoms types: %s-%s-%s-%s \n") % t1 % t2 % t3 % t4);
       ea1 = this->getEnergyAtomPointer(a1);
       ea2 = this->getEnergyAtomPointer(a2);
       ea3 = this->getEnergyAtomPointer(a3);
@@ -1291,7 +1292,14 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
         for ( int n=1;n<=FFPtor_O::MaxPeriodicity; n++ ) {
           if ( ffPtor->hasPeriodicity(n) ) {
             ++numPtors;
-            LOG(BF( "Adding proper term for atoms %s-%s-%s-%s types: %s-%s-%s-%s")%
+//            LOG(BF( "Adding proper term for atoms %s-%s-%s-%s types: %s-%s-%s-%s")%
+//                ea1->getResidueAndName()
+//                % ea2->getResidueAndName()
+//                % ea3->getResidueAndName()
+//                % ea4->getResidueAndName()
+//                % t1 % t2 % t3 % t4
+//                );
+             BFORMAT_T(BF( "Adding proper term for atoms %s-%s-%s-%s types: %s-%s-%s-%s /n")%
                 ea1->getResidueAndName()
                 % ea2->getResidueAndName()
                 % ea3->getResidueAndName()
@@ -1319,7 +1327,8 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
             t141 = t4;
             t144 = t1;
           }
-          LOG(BF("Defining 1-4 interaction %-9s- %-9s   ") % t1 % t4 );
+//          LOG(BF("Defining 1-4 interaction %-9s- %-9s   ") % t1 % t4 );
+          BFORMAT_T(BF("Defining 1-4 interaction %-9s- %-9s   \n") % t1 % t4 );
 #endif
         } else {
 #ifdef	DEBUG_ON
@@ -1330,14 +1339,16 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
             t141 = t4;
             t144 = t1;
           }
-          LOG(BF("Ignoring 1-4 interaction %-9s- %-9s    ") % t1 % t4 );
+//          LOG(BF("Ignoring 1-4 interaction %-9s- %-9s    ") % t1 % t4 );
+          BFORMAT_T(BF("Ignoring 1-4 interaction %-9s- %-9s    \n") % t1 % t4 );
 #endif
         }
 //		ea1->_CloserThan15.insert(ea4->_Atom);
 //		ea4->_CloserThan15.insert(ea1->_Atom);
       }
     }
-    if (show_progress) BFORMAT_T(BF("Built dihedral table with %d terms and %d missing terms\n") % terms % missing_terms);
+//    if (show_progress) BFORMAT_T(BF("Built dihedral table with %d terms and %d missing terms\n") % terms % missing_terms);
+   BFORMAT_T(BF("Built dihedral table with %d terms and %d missing terms\n") % terms % missing_terms);
   }
   {_BLOCK_TRACE("Defining IMPROPERS");
     EnergyDihedral energyDihedral;

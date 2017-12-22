@@ -549,9 +549,10 @@
     (values generalized-born-screen)))
     
          
-(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname force-field)
+(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname force-field &key assign-types))
   (let* ((energy-function (chem:make-energy-function aggregate force-field
-                                                     :use-excluded-atoms t))
+                                                     :use-excluded-atoms t
+                                                     :assign-types assign-types))
          (nonbonds (chem:get-nonbond-component energy-function))
          (number-excluded-atoms (chem:number-excluded-atoms nonbonds))
          (excluded-atom-list (chem:excluded-atom-list nonbonds))
