@@ -176,10 +176,12 @@
 (chem:bond-to *c6* *h11* :single-bond)
 (chem:bond-to *c6* *h12* :single-bond)
 
-(chem:set-type *c3* :CX)
 (defparameter *agg* (chem:make-aggregate))
 (chem:add-matter *agg* *met*)
 (chem:set-property *agg* :solvent-box '(20.0 30.0 40.0))
+
+(chem:assign-types energy:*ff* *agg*)
+(chem:set-type *c3* :CX)
 
 (leap.core:add-path "/Users/tuj24515/Development/amber16/dat/leap/cmd/")
 (leap.core:add-path "~/Development/amber16/dat/leap/lib/")
@@ -199,7 +201,7 @@
 (cando:jostle *agg*)
 (energy:minimize *agg*)
 
-(leap.topology::save-amber-parm-format *agg* "alanine_cando.top" "alanine_cando.crd" energy:*ff*)
+(leap.topology::save-amber-parm-format *agg* "alanine_cando.top" "alanine_cando.crd" energy:*ff* :assign-types nil)
 
 
 
