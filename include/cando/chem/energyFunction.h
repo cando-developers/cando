@@ -116,7 +116,7 @@ namespace chem {
   {
     LISP_CLASS(chem,ChemPkg,EnergyFunction_O,"EnergyFunction",ScoringFunction_O);
   public:
-    static EnergyFunction_sp make(Matter_sp matter, ForceField_sp forceField, bool useExcludedAtoms=false, core::T_sp activeAtoms=_Nil<core::T_O>(), bool progress=false);
+static EnergyFunction_sp make(Matter_sp matter, ForceField_sp forceField, bool useExcludedAtoms=false, core::T_sp activeAtoms=_Nil<core::T_O>(), bool progress=false, bool assign_types=false);
   public:
     void initialize();
   public:

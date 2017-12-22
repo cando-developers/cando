@@ -79,9 +79,10 @@
                    (sd-tolerance 5000.0)
                    (cg-tolerance 0.5)
                    (tn-tolerance 0.00001)
-                   (use-excluded-atoms t))
+                   (use-excluded-atoms t)
+                   assign-types)
   "Minimize the conformational energy for an aggregate"
-  (let ((energy-func (chem:make-energy-function agg force-field :use-excluded-atoms use-excluded-atoms)))
+  (let ((energy-func (chem:make-energy-function agg force-field :use-excluded-atoms use-excluded-atoms :assign-types assign-types)))
     (apply #'minimize-energy-function energy-func args)
     energy-func))
 
