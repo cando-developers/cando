@@ -219,12 +219,13 @@
        for type4 = (chem:get-type atom4)
        for in = (aref in-vec i)
        for proper = (aref proper-vec i)
-       for key = (if proper
-                     (canonical-dihedral-key type1 type2 type3 type4 in)
-                     (canonical-improper-key atom1 atom2 atom3 atom4))
+;       for key = (if proper
+;                     (canonical-dihedral-key type1 type2 type3 type4 in)
+;                     (canonical-improper-key atom1 atom2 atom3 atom4))
        for vi = (aref v-vec i)
        for ini = (aref in-vec i)
        for phasei = (aref phase-vec i)
+       for key = (intern (format nil "~f-~d-~f" vi ini phasei) :keyword) 
        do (format t "atom1: ~a atom2: ~a atom3: ~a atom4 ~a key: ~a vi: ~a ini ~a phase ~a~% " atom1 atom2 atom3 atom4 key vi ini phasei)
        do (if (setf jtemp (gethash key uniques))
               (vector-push-extend jtemp j-vec)
@@ -418,10 +419,16 @@
         (ntypes 0))
     (loop for i from 0 below (length type-index-vector)
        for index = (aref type-index-vector i)
-       do (if (setf jtemp (gethash index uniques))
+       for ffnonbond = (chem:get-ffnonbond-using-type-index ffnonbond-db index)
+       for epsilon = (chem:get-epsilon-k-cal ffnonbond)
+       for rm =  (chem:get-radius-angstroms ffnonbond)
+       for key = (intern (format nil "~f-~f" epsilon rm) :keyword) 
+       do (if (setf jtemp (gethash key uniques))        
+;       do (if (setf jtemp (gethash index uniques))
               (vector-push-extend jtemp iac-vec)
               (progn
-                (setf (gethash index uniques) jnext)
+;                (setf (gethash index uniques) jnext)
+                (setf (gethash key uniques) jnext)
                 (vector-push-extend jnext iac-vec)
                 (vector-push-extend index type-indexj-vec)
                 (vector-push-extend jnext local-typej-vec)
@@ -549,7 +556,7 @@
     (values generalized-born-screen)))
     
          
-(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname force-field &key assign-types))
+(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname force-field &key assign-types)
   (let* ((energy-function (chem:make-energy-function aggregate force-field
                                                      :use-excluded-atoms t
                                                      :assign-types assign-types))

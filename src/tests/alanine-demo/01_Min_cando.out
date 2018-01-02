@@ -3,7 +3,7 @@
           Amber 16 SANDER                              2016
           -------------------------------------------------------
 
-| Run on 12/21/2017 at 17:26:28
+| Run on 12/22/2017 at 15:46:14
 
 |   Executable path: /Users/tuj24515/Development/amber16/bin/sander
 | Working directory: /Users/tuj24515/Development/clasp/extensions/cando/src/tests/alanine-demo
@@ -56,23 +56,23 @@ Minimize
 |Largest sphere to fit in unit cell has radius =    31.511
 | New format PARM file being parsed.
 | Version =    1.000 Date = 12/04/17 Time = 10:32:47
- NATOM  =      22 NTYPES =       7 NBONH =      12 MBONA  =       9
- NTHETH =      25 MTHETA =      11 NPHIH =      43 MPHIA  =      18
+ NATOM  =      22 NTYPES =       8 NBONH =      12 MBONA  =       9
+ NTHETH =      25 MTHETA =      11 NPHIH =      43 MPHIA  =      24
  NHPARM =       0 NPARM  =       0 NNB   =      99 NRES   =       3
- NBONA  =       9 NTHETA =      11 NPHIA =      18 NUMBND =      11
- NUMANG =      22 NPTRA  =      43 NATYP =       0 NPHB   =       0
+ NBONA  =       9 NTHETA =      11 NPHIA =      24 NUMBND =      11
+ NUMANG =      21 NPTRA  =      47 NATYP =       0 NPHB   =       0
  IFBOX  =       1 NMXRS  =      10 IFCAP =       0 NEXTRA =       0
  NCOPY  =       0
 
 
 |     Memory Use     Allocated
-|     Real                6036
+|     Real                6052
 |     Hollerith             71
-|     Integer            23602
+|     Integer            23863
 |     Max Pairs            231
 |     nblistReal           264
-|     nblist Int        924296
-|       Total             3753 kbytes
+|     nblist Int        924297
+|       Total             3754 kbytes
 
 | Note: 1-4 EEL scale factors are being read from the topology file.
 
@@ -122,7 +122,7 @@ ACE
 
  Number of triangulated 3-point waters found:        0
 
-     Sum of charges from parm topology file =   0.00000000
+     Sum of charges from parm topology file =  -0.00000000
      Forcing neutrality...
 
 --------------------------------------------------------------------------------
@@ -139,11 +139,11 @@ ACE
 
 
    NSTEP       ENERGY          RMS            GMAX         NAME    NUMBER
-      1       2.5306E+01     6.2306E+00     2.0357E+01     O           6
+      1       3.8311E+01     1.9375E+01     8.1453E+01     HA         10
 
- BOND    =        0.0206  ANGLE   =        0.3620  DIHED      =        7.2040
- VDWAALS =        2.8120  EEL     =        0.0000  HBOND      =        0.0000
- 1-4 VDW =       14.9075  1-4 EEL =        0.0000  RESTRAINT  =        0.0000
+ BOND    =        0.0206  ANGLE   =        0.3620  DIHED      =        9.6440
+ VDWAALS =        2.8120  EEL     =      -80.1238  HBOND      =        0.0000
+ 1-4 VDW =       56.6605  1-4 EEL =       48.9355  RESTRAINT  =        0.0000
 
 
   Maximum number of minimization cycles reached.
@@ -154,43 +154,36 @@ ACE
 
 
    NSTEP       ENERGY          RMS            GMAX         NAME    NUMBER
-      1       2.5306E+01     6.2306E+00     2.0357E+01     O           6
+      1       3.8311E+01     1.9375E+01     8.1453E+01     HA         10
 
- BOND    =        0.0206  ANGLE   =        0.3620  DIHED      =        7.2040
- VDWAALS =        2.8120  EEL     =        0.0000  HBOND      =        0.0000
- 1-4 VDW =       14.9075  1-4 EEL =        0.0000  RESTRAINT  =        0.0000
+ BOND    =        0.0206  ANGLE   =        0.3620  DIHED      =        9.6440
+ VDWAALS =        2.8120  EEL     =      -80.1238  HBOND      =        0.0000
+ 1-4 VDW =       56.6605  1-4 EEL =       48.9355  RESTRAINT  =        0.0000
 
 --------------------------------------------------------------------------------
    5.  TIMINGS
 --------------------------------------------------------------------------------
 
-|    Read coords time           0.00 ( 0.20% of Total)
-|    Fast Water setup           0.00 ( 0.01% of Total)
-|                Build the list             0.00 (86.08% of List )
-|                Other                      0.00 (13.92% of List )
-|             List time                  0.00 (45.99% of Nonbo)
-|                   Short_ene time             0.00 (98.75% of Direc)
-|                   Other                      0.00 ( 1.25% of Direc)
-|                Direct Ewald time          0.00 (96.32% of Ewald)
-|                Virial junk                0.00 ( 0.29% of Ewald)
-|                Start synchronizatio       0.00 ( 0.62% of Ewald)
-|                Other                      0.00 ( 2.77% of Ewald)
-|             Ewald time                 0.00 (53.70% of Nonbo)
-|             IPS excludes               0.00 ( 0.16% of Nonbo)
-|             Other                      0.00 ( 0.16% of Nonbo)
-|          Nonbond force              0.00 (89.43% of Force)
-|          Bond/Angle/Dihedral        0.00 ( 9.10% of Force)
-|          Other                      0.00 ( 1.47% of Force)
+|    Read coords time           0.00 ( 4.69% of Total)
+|    Fast Water setup           0.00 ( 0.27% of Total)
+|                Build the list             0.00 (93.86% of List )
+|                Other                      0.00 ( 6.14% of List )
+|             List time                  0.00 (74.49% of Nonbo)
+|             Ewald time                 0.00 (25.24% of Nonbo)
+|             Other                      0.00 ( 0.27% of Nonbo)
+|          Nonbond force              0.00 (84.50% of Force)
+|          Bond/Angle/Dihedral        0.00 (13.82% of Force)
+|          Other                      0.00 ( 1.67% of Force)
 |       Force time                 0.00 (100.0% of Runmd)
-|    Runmd Time                 0.00 ( 0.65% of Total)
-|    Other                      0.10 (99.13% of Total)
-| Total time                 0.10 (94.41% of ALL  )
+|    Runmd Time                 0.00 (11.33% of Total)
+|    Other                      0.00 (83.71% of Total)
+| Total time                 0.00 (98.72% of ALL  )
 
 | Number of list builds   :          1
 
 | Highest rstack allocated:         70
 | Highest istack allocated:         14
-|           Job began  at 17:26:28.003  on 12/21/2017
-|           Setup done at 17:26:28.114  on 12/21/2017
-|           Run   done at 17:26:28.115  on 12/21/2017
+|           Job began  at 15:46:14.393  on 12/22/2017
+|           Setup done at 15:46:14.396  on 12/22/2017
+|           Run   done at 15:46:14.397  on 12/22/2017
 |     wallclock() was called      58 times

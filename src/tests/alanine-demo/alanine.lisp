@@ -180,8 +180,6 @@
 (chem:add-matter *agg* *met*)
 (chem:set-property *agg* :solvent-box '(20.0 30.0 40.0))
 
-(chem:assign-types energy:*ff* *agg*)
-(chem:set-type *c3* :CX)
 
 (leap.core:add-path "/Users/tuj24515/Development/amber16/dat/leap/cmd/")
 (leap.core:add-path "~/Development/amber16/dat/leap/lib/")
@@ -192,9 +190,9 @@
 (leap:load-atom-type-rules "ATOMTYPE_AMBER.DEF")
 (leap:source "leaprc.protein.ff14SB")
 (:= energy:*ff* (leap.core::merged-force-field))
-(chem:assign-types (chem:get-types energy:*ff*) *agg*)
-(apropos "energy:*ff*")
 
+(chem:assign-types energy:*ff* *agg*)
+(chem:set-type *c3* :CX)
 
 
 
@@ -204,13 +202,15 @@
 (leap.topology::save-amber-parm-format *agg* "alanine_cando.top" "alanine_cando.crd" energy:*ff* :assign-types nil)
 
 
-
+#|
 
 
 
 (energy::setup-amber)
 
-(apropos "*ff*")
+(chem:assign-types (chem:get-types energy:*ff*) *agg*)
+(apropos "energy:*ff*")
+
 
 (cando:jostle *met* 20)
 (defparameter *me* (energy:minimize *agg*))
