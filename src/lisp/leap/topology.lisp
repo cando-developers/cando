@@ -571,9 +571,9 @@
     (fortran:with-fortran-output-file (ftop topology-pathname :direction :output)
       (fortran:debug "-1-")             ;
       (fortran:fformat 1 "%-80s")
-;;            (fortran:fwrite (core:strftime 81 "%%VERSION  VERSION_STAMP = V0002.000  DATE = %m/%d/%y  %H:%M:%S"))
+      ;;            (fortran:fwrite (core:strftime 81 "%%VERSION  VERSION_STAMP = V0002.000  DATE = %m/%d/%y  %H:%M:%S"))
 ;;;;      (fortran:fwrite "-----insert the version and time stamp---")
-      ;;; temporary!!!
+;;; temporary!!!
       (fortran:fwrite "%VERSION  VERSION_STAMP = V0001.000  DATE = 12/04/17  10:32:47")
       (fortran:fwrite "%FLAG TITLE")
       (fortran:fwrite "%FORMAT(20a4)")
@@ -691,7 +691,7 @@
         (fortran:debug "-3-")
         (fortran:fformat 20 "%-4s")
         (loop for name across atom-name
-           do (fortran:fwrite (string name)))
+              do (fortran:fwrite (string name)))
         (fortran:end-line)
         ;; write the atom names
 
@@ -702,7 +702,7 @@
         (fortran:debug "-4-")
         (fortran:fformat 5 "%16.8f")
         (loop for ch across charge
-           do (fortran:fwrite ch))
+              do (fortran:fwrite ch))
         (fortran:end-line)
         ;; write the atom charges
 
@@ -713,7 +713,7 @@
         (fortran:debug "-5-")
         (fortran:fformat 10 "%8d")
         (loop for number across atomic-number
-           do (fortran:fwrite number))
+              do (fortran:fwrite number))
         (fortran:end-line)
         ;; write the atomic number of each atom
 
@@ -724,7 +724,7 @@
         (fortran:debug "-6-")
         (fortran:fformat 5 "%16.8f")
         (loop for ma across mass
-           do (fortran:fwrite ma))
+              do (fortran:fwrite ma))
         (fortran:end-line)
         ;; write the atom masses
 
@@ -735,7 +735,7 @@
         (fortran:debug "-7-")
         (fortran:fformat 10 "%8d")
         (loop for ia across iac
-           do (fortran:fwrite ia))
+              do (fortran:fwrite ia))
         (fortran:end-line)
         ;; write the index fot the atom types
 
@@ -747,7 +747,7 @@
         (fortran:debug "-8-")
         (fortran:fformat 10 "%8d")
         (loop for na across number-excluded-atoms
-           do (fortran:fwrite na))
+              do (fortran:fwrite na))
         (fortran:end-line)
         ;; write the total number of excluded atoms for atom "i"
 
@@ -758,7 +758,7 @@
         (fortran:debug "-9-")
         (fortran:fformat 10 "%8d")
         (loop for ic across ico
-           do (fortran:fwrite ic))
+              do (fortran:fwrite ic))
         (fortran:end-line)
         ;; provides the index to the nobon parameter arrays CN1, CN2 and ASOL, BSOL.
 
@@ -769,7 +769,7 @@
         (fortran:debug "-10-")
         (fortran:fformat 20 "%-4s")
         (loop for ren across residue-name-vec
-           do (fortran:fwrite (string ren)))
+              do (fortran:fwrite (string ren)))
         (fortran:end-line)
         ;; write the name of each of the residues
 
@@ -780,7 +780,7 @@
         (fortran:debug "-11-")
         (fortran:fformat 10 "%8d")
         (loop for re from 0 below (- (length residue-vec) 1)
-           do (fortran:fwrite (aref residue-vec re)))
+              do (fortran:fwrite (aref residue-vec re)))
         (fortran:end-line)
         ;; write the atoms in each residue are listed for atom "1" in IPRES(i) to IPRES(i+1)-1
 
@@ -791,7 +791,7 @@
         (fortran:debug "-12-")
         (fortran:fformat 5 "%16.8f")
         (loop for kb across kbj-vec
-           do (fortran:fwrite kb))
+              do (fortran:fwrite kb))
         (fortran:end-line)
         
         ;; write the force constant for the bonds of each type
@@ -803,7 +803,7 @@
         (fortran:debug "-13-")
         (fortran:fformat 5 "%16.8f")
         (loop for r0 across r0j-vec
-           do (fortran:fwrite r0))
+              do (fortran:fwrite r0))
         (fortran:end-line)
         ;; write the equilibrium bond length for the bonds of each type
 
@@ -814,7 +814,7 @@
         (fortran:debug "-14-")
         (fortran:fformat 5 "%16.8f")
         (loop for kt across ktj-vec
-           do (fortran:fwrite kt))
+              do (fortran:fwrite kt))
         (fortran:end-line)
         ;; write the force constant for the angles of each type
 
@@ -825,7 +825,7 @@
         (fortran:debug "-15-")
         (fortran:fformat 5 "%16.8f")
         (loop for t0 across t0j-vec
-           do (fortran:fwrite t0))
+              do (fortran:fwrite t0))
         (fortran:end-line)
         ;; write the equilibrium angle for the angles of each type
 
@@ -836,7 +836,7 @@
         (fortran:debug "-16-")
         (fortran:fformat 5 "%16.8f")
         (loop for v0 across vj-vec
-           do (fortran:fwrite v0))
+              do (fortran:fwrite v0))
         (fortran:end-line)
         ;; write the force constant for the dihedral of a given type
 
@@ -847,7 +847,7 @@
         (fortran:debug "-17-")
         (fortran:fformat 5 "%16.8f")
         (loop for in0 across inj-vec
-           do (fortran:fwrite (float in0)))
+              do (fortran:fwrite (float in0)))
         (fortran:end-line)
         ;; write the periodicity of the dihedral of a given type
 
@@ -858,7 +858,7 @@
         (fortran:debug "-18-")
         (fortran:fformat 5 "%16.8f")
         (loop for p0 across phasej-vec
-           do (fortran:fwrite p0))
+              do (fortran:fwrite p0))
         (fortran:end-line)
         ;; write the phase of the dihedral of a given type
 
@@ -868,9 +868,9 @@
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-19-")
         (fortran:fformat 5 "%16.8f")
-        ;;; temporary!!!
+;;; temporary!!!
         (loop repeat nptra
-           do (fortran:fwrite "1.20000000"))
+              do (fortran:fwrite "1.20000000"))
         (fortran:end-line)
         ;; write the 1-4 electrostatic scaling constant
 
@@ -880,9 +880,9 @@
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-20-")
         (fortran:fformat 5 "%16.8f")
-        ;;; temporary!!!
+;;; temporary!!!
         (loop repeat nptra
-           do (fortran:fwrite "2.00000000"))
+              do (fortran:fwrite "2.00000000"))
         (fortran:end-line)
         ;; write the 1-4 vdw scaling constant
 
@@ -902,7 +902,7 @@
         (fortran:debug "-22-")
         (fortran:fformat 5 "%16.8f")
         (loop for cn1 across cn1-vec
-           do (fortran:fwrite cn1))
+              do (fortran:fwrite cn1))
         (fortran:end-line)
         ;; write the Lennard Jones r**12 terms for all possible atom type interactions
 
@@ -913,7 +913,7 @@
         (fortran:debug "-23-")
         (fortran:fformat 5 "%16.8f")
         (loop for cn2 across cn2-vec
-           do (fortran:fwrite cn2))
+              do (fortran:fwrite cn2))
         (fortran:end-line)
         ;; write the Lennard Jones r**6 terms for all possible atom type interactions
 
@@ -924,12 +924,12 @@
         (fortran:debug "-24-")
         (fortran:fformat 10 "%8d")
         (loop for i below (length ibh)
-           for ibhi = (aref ibh i)
-           for jbhi = (aref jbh i)
-           for icbhi = (aref icbh i)
-           do (fortran:fwrite ibhi)
-           do (fortran:fwrite jbhi)
-           do (fortran:fwrite icbhi))
+              for ibhi = (aref ibh i)
+              for jbhi = (aref jbh i)
+              for icbhi = (aref icbh i)
+              do (fortran:fwrite ibhi)
+              do (fortran:fwrite jbhi)
+              do (fortran:fwrite icbhi))
         (fortran:end-line)
         
         ;; write IBH, JBH, ICBH
@@ -941,12 +941,12 @@
         (fortran:debug "-25-")
         (fortran:fformat 10 "%8d")
         (loop for i below (length ib)
-           for ibi = (aref ib i)
-           for jbi = (aref jb i)
-           for icbi = (aref icb i)
-           do (fortran:fwrite ibi)
-           do (fortran:fwrite jbi)
-           do (fortran:fwrite icbi))
+              for ibi = (aref ib i)
+              for jbi = (aref jb i)
+              for icbi = (aref icb i)
+              do (fortran:fwrite ibi)
+              do (fortran:fwrite jbi)
+              do (fortran:fwrite icbi))
         (fortran:end-line)
         ;; write IB, JB, ICB
 
@@ -957,14 +957,14 @@
         (fortran:debug "-26-")
         (fortran:fformat 10 "%8d")
         (loop for i below (length ith)
-           for ithi = (aref ith i)
-           for jthi = (aref jth i)
-           for kthi = (aref kth i)
-           for icthi = (aref icth i)
-           do (fortran:fwrite ithi)
-           do (fortran:fwrite jthi)
-           do (fortran:fwrite kthi)
-           do (fortran:fwrite icthi))
+              for ithi = (aref ith i)
+              for jthi = (aref jth i)
+              for kthi = (aref kth i)
+              for icthi = (aref icth i)
+              do (fortran:fwrite ithi)
+              do (fortran:fwrite jthi)
+              do (fortran:fwrite kthi)
+              do (fortran:fwrite icthi))
         (fortran:end-line)
         ;; write ITH, JTH, KTH, ICTH
 
@@ -975,14 +975,14 @@
         (fortran:debug "-27-")
         (fortran:fformat 10 "%8d")
         (loop for i below (length it)
-           for iti = (aref it i)
-           for jti = (aref jt i)
-           for kti = (aref kt1 i)
-           for icti = (aref ict i)
-           do (fortran:fwrite iti)
-           do (fortran:fwrite jti)
-           do (fortran:fwrite kti)
-           do (fortran:fwrite icti))
+              for iti = (aref it i)
+              for jti = (aref jt i)
+              for kti = (aref kt1 i)
+              for icti = (aref ict i)
+              do (fortran:fwrite iti)
+              do (fortran:fwrite jti)
+              do (fortran:fwrite kti)
+              do (fortran:fwrite icti))
         (fortran:end-line)
         ;; write IT, JT, KT, ICT
 
@@ -993,16 +993,16 @@
         (fortran:debug "-28-")
         (fortran:fformat 10 "%8d")
         (loop for i below (length iph)
-           for iphi = (aref iph i)
-           for jphi = (aref jph i)
-           for kphi = (aref kph i)
-           for lphi = (aref lph i)
-           for icphi = (aref icph i)
-           do (fortran:fwrite iphi)
-           do (fortran:fwrite jphi)
-           do (fortran:fwrite kphi)
-           do (fortran:fwrite lphi)
-           do (fortran:fwrite icphi))
+              for iphi = (aref iph i)
+              for jphi = (aref jph i)
+              for kphi = (aref kph i)
+              for lphi = (aref lph i)
+              for icphi = (aref icph i)
+              do (fortran:fwrite iphi)
+              do (fortran:fwrite jphi)
+              do (fortran:fwrite kphi)
+              do (fortran:fwrite lphi)
+              do (fortran:fwrite icphi))
         (fortran:end-line)
         ;; write IPH, JPH, KPH, LPH, ICPH
 
@@ -1013,16 +1013,16 @@
         (fortran:debug "-29-")
         (fortran:fformat 10 "%8d")
         (loop for i below (length ip)
-           for ipi = (aref ip i)
-           for jpi = (aref jp i)
-           for kpi = (aref kp i)
-           for lpi = (aref lp i)
-           for icpi = (aref icp i)
-           do (fortran:fwrite ipi)
-           do (fortran:fwrite jpi)
-           do (fortran:fwrite kpi)
-           do (fortran:fwrite lpi)
-           do (fortran:fwrite icpi))
+              for ipi = (aref ip i)
+              for jpi = (aref jp i)
+              for kpi = (aref kp i)
+              for lpi = (aref lp i)
+              for icpi = (aref icp i)
+              do (fortran:fwrite ipi)
+              do (fortran:fwrite jpi)
+              do (fortran:fwrite kpi)
+              do (fortran:fwrite lpi)
+              do (fortran:fwrite icpi))
         (fortran:end-line)
         ;; write IP, JP, KP, LP, ICP
 
@@ -1033,7 +1033,7 @@
         (fortran:debug "-30-")
         (fortran:fformat 10 "%8d")
         (loop for atom across excluded-atom-list
-           do (fortran:fwrite (+ atom 1)))
+              do (fortran:fwrite (+ atom 1)))
         (fortran:end-line)
         ;; write excluded atoms list
 
@@ -1071,7 +1071,7 @@
         (fortran:debug "-34-")
         (fortran:fformat 20 "%-4s")
         (loop for type across atom-type
-           do (fortran:fwrite (string type)))
+              do (fortran:fwrite (string type)))
         (fortran:end-line)
 
         ;;next
@@ -1081,7 +1081,7 @@
         (fortran:debug "-35-")
         (fortran:fformat 20 "%-4s")
         (loop repeat natom
-           do (fortran:fwrite "M"))
+              do (fortran:fwrite "M"))
         (fortran:end-line)
         ;; We are not considering protein/DNA thing, so just put "main chain" for all atoms.
 
@@ -1092,7 +1092,7 @@
         (fortran:debug "-36-")
         (fortran:fformat 10 "%8d")
         (loop repeat natom
-           do (fortran:fwrite "0"))
+              do (fortran:fwrite "0"))
         (fortran:end-line)
         ;;This section is no longer used and is currently just filled with zeros.
 
@@ -1103,7 +1103,7 @@
         (fortran:debug "-37-")
         (fortran:fformat 10 "%8d")
         (loop repeat natom
-           do (fortran:fwrite "0"))
+              do (fortran:fwrite "0"))
         (fortran:end-line)
         ;;This section is not used and is currently just filled with zeros.
 
@@ -1113,7 +1113,7 @@
         (fortran:fwrite "%FORMAT(3I8)")
         (fortran:debug "-38-")
         (fortran:fformat 3 "%8d")
-        ;;;temporary!!!
+;;;temporary!!!
         (fortran:fwrite "3") 
         (fortran:fwrite "1") 
         (fortran:fwrite "2") 
@@ -1124,7 +1124,7 @@
         (fortran:debug "-39-")
         (fortran:fformat 10 "%8d")
         (loop for natom across atoms-per-molecule
-           do (fortran:fwrite natom))
+              do (fortran:fwrite natom))
         (fortran:end-line)
         ;; number of atoms per molecule
 
@@ -1159,7 +1159,7 @@
         (fortran:debug "-42-")
         (fortran:fformat 5 "%16.8f")
         (loop for radius across atom-radius
-           do (fortran:fwrite radius))
+              do (fortran:fwrite radius))
         (fortran:end-line)
         ;;Generalized Born intrinsic dielectric radii
 
@@ -1170,7 +1170,7 @@
         (fortran:debug "-43-")
         (fortran:fformat 5 "%16.8f")
         (loop for screen across generalized-born-screen
-           do (fortran:fwrite screen))
+              do (fortran:fwrite screen))
         (fortran:end-line)
         ))
 ;;;    (format *debug-io* "coordinate-pathname -> ~s~%" coordinate-pathname)
@@ -1178,23 +1178,23 @@
       (fortran:fformat 20 "%-4s")
       (fortran:fwrite (string (chem:get-name aggregate)))
       (fortran:end-line)
-;      (fortran:fformat 1 "%5d")
-;      (fortran:fwrite natom)
-;      (fortran:fformat 5 "%15.7lf")
-;      (fortran:fwrite 0.0)
-;      (fortran:fwrite 0.0)
+                                        ;      (fortran:fformat 1 "%5d")
+                                        ;      (fortran:fwrite natom)
+                                        ;      (fortran:fformat 5 "%15.7lf")
+                                        ;      (fortran:fwrite 0.0)
+                                        ;      (fortran:fwrite 0.0)
       (fortran:fwrite (format nil  " ~5d~%" natom))
       (fortran:fformat 6 "%12.7lf")
       (let ((atom-table (chem:atom-table energy-function)))
         (loop for i from 0 below natom
-           for atom = (chem:elt-atom atom-table i)
-           for atom-coordinate-index-times3 = (chem:elt-atom-coordinate-index-times3 atom-table i)
-           for pos = (chem:get-position atom)
+              for atom = (chem:elt-atom atom-table i)
+              for atom-coordinate-index-times3 = (chem:elt-atom-coordinate-index-times3 atom-table i)
+              for pos = (chem:get-position atom)
 ;;;           do (format *debug-io* "atom-coordinate-index-times3 -> ~a~%" atom-coordinate-index-times3)
-           do (progn
-                (fortran:fwrite (geom:vx pos))
-                (fortran:fwrite (geom:vy pos))
-                (fortran:fwrite (geom:vz pos)))))
+              do (progn
+                   (fortran:fwrite (geom:vx pos))
+                   (fortran:fwrite (geom:vy pos))
+                   (fortran:fwrite (geom:vz pos)))))
       ;; write out the solvent box
       (let ((solvent-box (chem:matter-get-property aggregate :solvent-box)))
         (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
@@ -1202,7 +1202,7 @@
         (fortran:fwrite (float (first solvent-box)))
         (fortran:fwrite (float (second solvent-box)))
         (fortran:fwrite (float (third solvent-box)))
-        (fortran:fwrite "90.0000000") ;box angle
+        (fortran:fwrite "90.0000000")   ;box angle
         (fortran:fwrite "90.0000000") 
         (fortran:fwrite "90.0000000"))
       (fortran:end-line))))
