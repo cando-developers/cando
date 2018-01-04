@@ -2054,8 +2054,82 @@
                                         (string (dihedral-term-atom4-name d2)))))))))
         (sort dihedrals #'order-dihedral)))
     (rlog "dihedral-vectors ~s~%" dihedral-vectors)))
+#|
                               
-                                                    
+(defun tool-center-unity-radii (energy-function force-field)
+  (let* ((atom-table (chem:atom-table energy-function))
+         (natom (chem:get-number-of-atoms atom-table))
+         (atom-radius-vector (make-array natom :element-type 'double-float))
+         (energy-nonbond (chem:get-nonbond-component energy-function))
+         (ffnonbond-db (chem:get-nonbond-db force-field))
+         (dx 0)
+         (dy 0)
+         (dz 0)
+         (dxmax 0)
+         (dymax 0)
+         (dzmax 0)
+         (dxmin 0)
+         (dymin 0)
+         (dzmin 0))
+    (loop for i from 0 below natom
+       for atom = (chem:elt-atom atom-table i)
+       for type-index = (chem:elt-type-index atom-table i)
+       for pos = (chem:get-position atom)
+       for ffnonbondi = (chem:get-ffnonbond-using-type-index ffnonbond-db type-index)
+       for atom-radius = (chem:get-radius-angstroms ffnonbondi)
+       do (setf dx (+ (geom:vx pos) atom-radius)
+                dy (+ (geom:vy pos) atom-radius)
+                dz (+ (geom:vz pos) atom-radius))
+       do (if (= i 0)
+              (progn
+                (setf dxmax dx
+                      dymax dy
+                      dzmax dz))
+              (progn
+                (if (> dx dxmax)
+                    (setf dxmax dx))
+                (if (> dy dymax)
+                    (setf dymax dy))
+                (if (> dz dzmax)
+                    (setf dzmax dz))))
+       do (setf dx (+ (geom:vx pos) atom-radius)
+                dy (+ (geom:vy pos) atom-radius)
+                dz (+ (geom:vz pos) atom-radius))
+         
+       do (if (= i 0)
+              (progn
+                (setf dxmin dx
+                      dymin dy
+                      dzmin dz))
+              (progn
+                (if (< dx dxmin)
+                    (setf dxmin dx))
+                (if (< dy dymin)
+                    (setf dymin dy))
+                (if (< dz dzmin)
+                    (setf dzmin dz)))))
+    (setf dx (+ dxmin (* 0.5 (- dxmax dxmin)))
+          dy (+ dymin (* 0.5 (- dymax dymin)))
+          dz (+ dzmin (* 0.5 (- dzmax dymin))))
+    (values dx dy dz (- dxmax dxmin) (- dymax dymin) (- dzmax  dzmin ))))
+         
+
+        
+(defun tool-solvate-and-shell (energy-function force-field)
+  (let ((solvent-box (chem:matter-get-property aggregate :solvent-box))
+        xbox ybox zbox xwidth ywidth zwidth)
+    (multiple-value-setq (dx dy dz xbox ybox zbox)
+      (tool-center-unity-radii energy-function force-field))
+    (if (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
+        (error "Solvent-box property must be a list of length three numbers"))
+    (setf xwidth (first solvent-box))
+    (setf ywidth (second solvent-box))
+    (setf zwidth (third solvent-box)))
+
+    (if (or (/= xbox ybox)
+            (/= ybox zbox))
+        (setf temp 
+|#                                                    
                           
                                        
                       
