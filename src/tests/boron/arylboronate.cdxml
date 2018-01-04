@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE CDXML SYSTEM "http://www.cambridgesoft.com/xml/cdxml.dtd" >
+<CDXML
+ CreationProgram="ChemDraw 12.0.3.1216"
+ Name="Untitled Document-1"
+ BoundingBox="41.52 206.07 157.44 301.58"
+ WindowPosition="0 0"
+ WindowSize="0 0"
+ WindowIsZoomed="yes"
+ FractionalWidths="yes"
+ InterpretChemically="yes"
+ ShowAtomQuery="yes"
+ ShowAtomStereo="no"
+ ShowAtomEnhancedStereo="yes"
+ ShowAtomNumber="no"
+ ShowBondQuery="yes"
+ ShowBondRxn="yes"
+ ShowBondStereo="no"
+ ShowTerminalCarbonLabels="no"
+ ShowNonTerminalCarbonLabels="no"
+ HideImplicitHydrogens="no"
+ LabelFont="21"
+ LabelSize="10"
+ LabelFace="96"
+ CaptionFont="20"
+ CaptionSize="12"
+ HashSpacing="2.7"
+ MarginWidth="2"
+ LineWidth="1"
+ BoldWidth="4"
+ BondLength="30"
+ BondSpacing="12"
+ ChainAngle="120"
+ LabelJustification="Auto"
+ CaptionJustification="Left"
+ AminoAcidTermini="HOH"
+ ShowSequenceTermini="yes"
+ ShowSequenceBonds="yes"
+ PrintMargins="36 36 36 36"
+ MacPrintInfo="00030000004800480000000002DE0240FFEEFFEE030602520367052803FC00020000004800480000000002D802280001000000640000000100030303000000017FFF000100010000000000000000000000006808001901900000000000200000000000000000000000000000000000000000000000000000"
+ color="0"
+ bgcolor="1"
+><colortable>
+<color r="1" g="1" b="1"/>
+<color r="0" g="0" b="0"/>
+<color r="1" g="0" b="0"/>
+<color r="1" g="1" b="0"/>
+<color r="0" g="1" b="0"/>
+<color r="0" g="1" b="1"/>
+<color r="0" g="0" b="1"/>
+<color r="1" g="0" b="1"/>
+</colortable><fonttable>
+<font id="20" charset="x-mac-roman" name="Times"/>
+<font id="21" charset="x-mac-roman" name="Helvetica"/>
+</fonttable><page
+ id="139"
+ BoundingBox="0 0 540 720"
+ HeaderPosition="36"
+ FooterPosition="36"
+ PrintTrimMarks="yes"
+ HeightPages="1"
+ WidthPages="1"
+><fragment
+ id="113"
+ BoundingBox="41.52 206.07 157.44 301.58"
+><n
+ id="110"
+ p="42.02 256"
+ Z="42"
+ AS="N"
+/><n
+ id="112"
+ p="42.02 286"
+ Z="44"
+ AS="N"
+/><n
+ id="114"
+ p="68 301"
+ Z="46"
+ AS="N"
+/><n
+ id="116"
+ p="93.98 286"
+ Z="48"
+ AS="N"
+/><n
+ id="118"
+ p="93.98 256"
+ Z="50"
+/><n
+ id="120"
+ p="68 241"
+ Z="52"
+ AS="N"
+/><n
+ id="128"
+ p="119.96 241"
+ Z="60"
+ Element="5"
+ NumHydrogens="0"
+ NeedsClean="yes"
+><t
+ p="117.19 244.6"
+ BoundingBox="117.19 236.2 123.84 244.6"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="10" face="96">B</s></t></n><n
+ id="132"
+ p="145.94 256"
+ Z="62"
+ Element="8"
+ NumHydrogens="1"
+ NeedsClean="yes"
+ AS="N"
+><t
+ p="142.44 259.7"
+ BoundingBox="142.44 251.07 157.44 259.7"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="10" face="96">OH</s></t></n><n
+ id="136"
+ p="119.96 211"
+ Z="64"
+ Element="8"
+ NumHydrogens="1"
+ NeedsClean="yes"
+ AS="N"
+><t
+ p="116.46 214.7"
+ BoundingBox="116.46 206.07 131.46 214.7"
+ LabelJustification="Left"
+ LabelAlignment="Left"
+><s font="21" size="10" face="96">OH</s></t></n><b
+ id="122"
+ Z="54"
+ B="110"
+ E="112"
+ Order="2"
+ BondCircularOrdering="127 0 0 123"
+/><b
+ id="123"
+ Z="55"
+ B="112"
+ E="114"
+ BS="N"
+/><b
+ id="124"
+ Z="56"
+ B="114"
+ E="116"
+ Order="2"
+ BondCircularOrdering="123 0 0 125"
+/><b
+ id="125"
+ Z="57"
+ B="116"
+ E="118"
+ BS="N"
+/><b
+ id="126"
+ Z="58"
+ B="118"
+ E="120"
+ Order="2"
+ BondCircularOrdering="125 129 0 127"
+/><b
+ id="127"
+ Z="59"
+ B="120"
+ E="110"
+ BS="N"
+/><b
+ id="129"
+ Z="61"
+ B="118"
+ E="128"
+ BS="N"
+/><b
+ id="133"
+ Z="63"
+ B="128"
+ E="132"
+ BS="N"
+/><b
+ id="137"
+ Z="65"
+ B="128"
+ E="136"
+ BS="N"
+/></fragment></page></CDXML>
