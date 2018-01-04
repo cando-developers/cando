@@ -273,13 +273,14 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
     if (line.size()== 0)
     {
       done = true;
-    } else
+    } else 
     {
+      line = core::trimWhiteSpace(line);
       LOG(BF("Parsing line|%s|") % line.c_str()  );
       string types = line.substr(0,8);
       vector<string>typeParts = core::split(types,"-");
       if (typeParts.size() <3) {
-        SIMPLE_ERROR(BF("Could not interpret %s as an angle parameter") % types);
+        SIMPLE_ERROR(BF("Could not interpret %s as an angle parameter - full line: %s") % types % line);
       }
       string t1 = core::trimWhiteSpace(typeParts[0]);
       string t2 = core::trimWhiteSpace(typeParts[1]);
