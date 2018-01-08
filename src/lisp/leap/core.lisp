@@ -138,6 +138,9 @@ a named force-field list.  When parameters are needed a name must be provided an
 the list of frcmods and force-field are used to create a merged force-field that is
 used to provide parameters.  There is one default force-field called :default.")
 
+(defun clear-force-field (&optional (force-field-name :default))
+  (setf (gethash force-field-name *force-fields*) nil))
+
 (defun add-force-field-or-modification (force-field-or-frcmod &optional (force-field-name :default))
   (push force-field-or-frcmod (gethash force-field-name *force-fields*)))
 

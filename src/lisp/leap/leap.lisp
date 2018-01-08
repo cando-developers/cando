@@ -92,6 +92,8 @@
   (let ((filename (second entry)))
     (load-amber-params filename)))
 
+(defun clear-force-field (&optional (ff :default))
+  (leap.core:clear-force-field ff))
 
 (defun list-force-fields ()
   (let ((ffs nil))

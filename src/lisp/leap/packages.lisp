@@ -120,6 +120,7 @@
    #:chain-position
    #:merged-force-field
    #:register-variable #:lookup-variable
+   #:clear-force-field
    #:add-force-field-or-modification
    #:*force-fields*
    #:*objects*
@@ -164,6 +165,7 @@
    #:load-amber-params
    #:load-amber-type-rules
    #:load-off
+   #:clear-force-field
    #:list-force-fields
    #:list-objects
    #:desc
