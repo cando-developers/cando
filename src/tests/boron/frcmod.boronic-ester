@@ -1,27 +1,31 @@
-test
+Boronic ester parameters for gaff
 
 MASS
 b  10.81         0.000               Boron
 
 BOND
-ca-b   160.00   1.610
-b -o   350.00   1.490
+c2-b   160.00   1.610
+b -oh  350.00   1.490
+b -os  350.00   1.490
 
 ANGL
-oh-b -oh     60.00    109.50   Methane, Ethane KNK
-ca-b -oh     35.00    109.50   Methanol, Propanol KNK
-b -oh-ho     35.00    109.50   Methanol, Propanol KNK
-ca-ca-b      70.00    130.00   Ethane KNK 
-b -oh-c3     50.00    113.00   Propanol KNK
+oh-b -oh     60.00    109.50
+oh-b -os     60.00    109.50
+c2-b -oh     35.00    109.50
+c2-b -os     35.00    109.50
+b -oh-ho     35.00    109.50
+c2-c2-b      70.00    130.00
+b -os-c3     50.00    113.00
 
 DIHE
-
-oh-b -ca-X    1    0.10        180.000           6.000                   Parameter in the paper conflicts with this oh-b -ca-X    1    0.02          0.000           6.000
-X -b -oh-ho   1    0.20          0.000           3.000
-X -b -oh-c3   1    0.10        180.000           3.000
-X -c3-oh-b    1    0.01          0.000           3.000
+oh-b -c2-c2   1    0.100       180.000           6.
+oh-b -c2-ha   1    0.020         0.000           6.
+os-b -c2-c2   1    0.100       180.000           6.
+os-b -c2-ha   1    0.020         0.000           6.
+c2-b -oh-ho   1    0.200         0.000           3.
+c2-b -os-c3   1    0.100       180.000           3.
+c3-c3-oh-b    1    0.010         0.000           3.
 
 NONB
   b           1.9800  0.0340
 
-END
