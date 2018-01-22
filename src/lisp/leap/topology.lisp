@@ -554,8 +554,26 @@
                 (otherwise  (setf screen 0.8)))
        do (setf (aref generalized-born-screen i) screen))
     (values generalized-born-screen)))
-    
-         
+
+(defun solvent-pointers (aggregate)
+  (let ((residue-count 0)
+        (molecule-count 0))
+    (chem:map-residues
+     nil
+     (lambda (r)
+       (unless (string= (chem:get-name r) "WAT")
+                (incf residue-count)))
+     aggregate)
+    (chem:map-molecules
+     nil
+     (lambda (r)
+       (incf molecule-count))
+     aggregate)
+    (format t "residue-count ~a~%" residue-count)
+    (format t "molecule-count ~a~%" molecule-count)
+    (values residue-count molecule-count)
+    ))
+
 (defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname force-field &key assign-types)
   (let* ((energy-function (chem:make-energy-function aggregate force-field
                                                      :use-excluded-atoms t
@@ -587,6 +605,7 @@
             ntheth mtheta ith jth kth icth it jt kt1 ict ktj-vec t0j-vec #|angles|#
             nphih mphia iph jph kph lph icph ip jp kp lp icp vj-vec inj-vec phasej-vec #|dihedrals|#
             nhparm nparm  nnb nres residue-vec residue-name-vec atoms-per-molecule generalized-born-screen
+            residue-count molecule-count
             nbona    ntheta nphia  NUMBND NUMANG NPTRA
             NATYP    NPHB   IFPERT NBPER  NGPER  NDPER
             MBPER    MGPER  MDPER  IFBOX  nmxrs  IFCAP
@@ -603,6 +622,8 @@
                                         ;          (chem:prepare-amber-energy-nonbond energy-function))
         (multiple-value-setq (nres nmxrs residue-vec residue-name-vec atoms-per-molecule)
           (prepare-residue energy-function))
+        (multiple-value-setq (residue-count molecule-count)
+          (solvent-pointers aggregate))
         (setf atom-vectors (chem:prepare-amber-energy-nonbond energy-function force-field))
         (setf ntypes (cdr (assoc :ntypes atom-vectors)))
         (setf atom-name (cdr (assoc :atom-name-vector atom-vectors)))
@@ -1114,8 +1135,8 @@
         (fortran:debug "-38-")
         (fortran:fformat 3 "%8d")
 ;;;temporary!!!
-        (fortran:fwrite "3") 
-        (fortran:fwrite "1") 
+        (fortran:fwrite residue-count) 
+        (fortran:fwrite molecule-count) 
         (fortran:fwrite "2") 
         (fortran:end-line)
         (fortran:fformat 1 "%-80s")
@@ -1134,7 +1155,7 @@
         (fortran:fwrite "%FORMAT(5E16.8)")
         (fortran:debug "-40-")
         (fortran:fformat 5 "%16.8f")
-        (let ((solvent-box (chem:matter-get-property aggregate :solvent-box)))
+        (let ((solvent-box (chem:matter-get-property aggregate :bounding-box)))
           (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
             (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))
           (fortran:fwrite "90.0000000") ;box angle
@@ -1196,7 +1217,7 @@
                    (fortran:fwrite (geom:vy pos))
                    (fortran:fwrite (geom:vz pos)))))
       ;; write out the solvent box
-      (let ((solvent-box (chem:matter-get-property aggregate :solvent-box)))
+      (let ((solvent-box (chem:matter-get-property aggregate :bounding-box)))
         (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
           (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))
         (fortran:fwrite (float (first solvent-box)))
@@ -2054,88 +2075,5 @@
                                         (string (dihedral-term-atom4-name d2)))))))))
         (sort dihedrals #'order-dihedral)))
     (rlog "dihedral-vectors ~s~%" dihedral-vectors)))
-#|
-                              
-(defun tool-center-unity-radii (energy-function force-field)
-  (let* ((atom-table (chem:atom-table energy-function))
-         (natom (chem:get-number-of-atoms atom-table))
-         (atom-radius-vector (make-array natom :element-type 'double-float))
-         (energy-nonbond (chem:get-nonbond-component energy-function))
-         (ffnonbond-db (chem:get-nonbond-db force-field))
-         (dx 0)
-         (dy 0)
-         (dz 0)
-         (dxmax 0)
-         (dymax 0)
-         (dzmax 0)
-         (dxmin 0)
-         (dymin 0)
-         (dzmin 0))
-    (loop for i from 0 below natom
-       for atom = (chem:elt-atom atom-table i)
-       for type-index = (chem:elt-type-index atom-table i)
-       for pos = (chem:get-position atom)
-       for ffnonbondi = (chem:get-ffnonbond-using-type-index ffnonbond-db type-index)
-       for atom-radius = (chem:get-radius-angstroms ffnonbondi)
-       do (setf dx (+ (geom:vx pos) atom-radius)
-                dy (+ (geom:vy pos) atom-radius)
-                dz (+ (geom:vz pos) atom-radius))
-       do (if (= i 0)
-              (progn
-                (setf dxmax dx
-                      dymax dy
-                      dzmax dz))
-              (progn
-                (if (> dx dxmax)
-                    (setf dxmax dx))
-                (if (> dy dymax)
-                    (setf dymax dy))
-                (if (> dz dzmax)
-                    (setf dzmax dz))))
-       do (setf dx (+ (geom:vx pos) atom-radius)
-                dy (+ (geom:vy pos) atom-radius)
-                dz (+ (geom:vz pos) atom-radius))
-         
-       do (if (= i 0)
-              (progn
-                (setf dxmin dx
-                      dymin dy
-                      dzmin dz))
-              (progn
-                (if (< dx dxmin)
-                    (setf dxmin dx))
-                (if (< dy dymin)
-                    (setf dymin dy))
-                (if (< dz dzmin)
-                    (setf dzmin dz)))))
-    (setf dx (+ dxmin (* 0.5 (- dxmax dxmin)))
-          dy (+ dymin (* 0.5 (- dymax dymin)))
-          dz (+ dzmin (* 0.5 (- dzmax dymin))))
-    (values dx dy dz (- dxmax dxmin) (- dymax dymin) (- dzmax  dzmin ))))
-         
 
-        
-(defun tool-solvate-and-shell (energy-function force-field)
-  (let ((solvent-box (chem:matter-get-property aggregate :solvent-box))
-        xbox ybox zbox xwidth ywidth zwidth)
-    (multiple-value-setq (dx dy dz xbox ybox zbox)
-      (tool-center-unity-radii energy-function force-field))
-    (if (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
-        (error "Solvent-box property must be a list of length three numbers"))
-    (setf xwidth (first solvent-box))
-    (setf ywidth (second solvent-box))
-    (setf zwidth (third solvent-box)))
-
-    (if (or (/= xbox ybox)
-            (/= ybox zbox))
-        (setf temp 
-|#                                                    
-                          
-                                       
-                      
-              
-                 
-                              
-              
-                          
                               

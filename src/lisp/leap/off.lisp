@@ -234,6 +234,12 @@ if the caller wants to do that."
               (mapc (lambda (id)
                       (chem:add-matter aggregate (gethash id molecule-id-map)))
                     sorted-molecule-ids)
+              ;; If there is a bounding box then use it
+              (when (> (elt (elt read-bound-box 0) 0) 0)
+                (let ((xbox (elt (elt read-bound-box 2) 0))
+                      (ybox (elt (elt read-bound-box 3) 0))
+                      (zbox (elt (elt read-bound-box 4) 0)))
+                  (chem:set-property aggregate :bounding-box (list xbox ybox zbox))))
               (values aggregate read-connect read-residues))))))))
 
 (defun translate-off-object (unit-name unit connect residues)
@@ -286,7 +292,10 @@ Return the hash-table."
 Load the OFF file containing forms into new-leap."
   (let ((absolute-filename (leap.core:search-path filename)))
     (with-open-file (fin absolute-filename :direction :input)
-      (let ((ht (leap.off:read-off-lib fin)))
+      (let ((ht (leap.off:read-off-lib fin))
+            names)
         (maphash (lambda (name form)
-                   (leap.core:register-variable name form))
-                 ht)))))
+                   (leap.core:register-variable name form)
+                   (push name names))
+                 ht)
+        (nreverse names)))))

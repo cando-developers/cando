@@ -178,7 +178,7 @@
 
 (defparameter *agg* (chem:make-aggregate))
 (chem:add-matter *agg* *met*)
-(chem:set-property *agg* :solvent-box '(20.0 30.0 40.0))
+(chem:set-property *agg* :bounding-box '(20.0 30.0 40.0))
 
 
 (leap.core:add-path "/Users/tuj24515/Development/amber16/dat/leap/cmd/")
@@ -197,7 +197,7 @@
 
 
 (cando:jostle *agg*)
-(energy:minimize *agg*)
+(defparameter *me* (energy:minimize *agg*))
 
 (leap.topology::save-amber-parm-format *agg* "alanine_cando.top" "alanine_cando.crd" energy:*ff* :assign-types nil)
 

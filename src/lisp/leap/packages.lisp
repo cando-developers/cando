@@ -173,3 +173,9 @@
    #:load-atom-type-rules
    #:source)
   (:use :common-lisp :chem :geom))
+
+(defpackage #:leap.solvate
+  (:use #:common-lisp)
+  (:export
+   #:tool-solvate-and-shell)
+  )
