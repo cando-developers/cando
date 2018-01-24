@@ -589,7 +589,7 @@
     (fortran:with-fortran-output-file (ftop topology-pathname :direction :output)
       (fortran:debug "-1-")             ;
       (fortran:fformat 1 "%-80s")
-      ;;            (fortran:fwrite (core:strftime 81 "%%VERSION  VERSION_STAMP = V0002.000  DATE = %m/%d/%y  %H:%M:%S"))
+;;                  (fortran:fwrite (core:strftime 81 "%%VERSION  VERSION_STAMP = V0002.000  DATE = %m/%d/%y  %H:%M:%S"))
 ;;;;      (fortran:fwrite "-----insert the version and time stamp---")
 ;;; temporary!!!
       (fortran:fwrite "%VERSION  VERSION_STAMP = V0001.000  DATE = 12/04/17  10:32:47")
@@ -655,8 +655,10 @@
         (setf ndper 0)     
         (setf mbper 0)     
         (setf mgper 0)    
-        (setf mdper 0)    
-        (setf ifbox 1)     
+        (setf mdper 0)
+        (if (chem:has-property aggregate :bounding-box)
+            (setf ifbox 1)
+            (setf ifbox 0))
         (setf ifcap 0)     
         (setf numextra 0)  
         (setf ncopy 0)
@@ -1129,40 +1131,42 @@
         ;;This section is not used and is currently just filled with zeros.
 
         ;;next
-        (fortran:fformat 1 "%-80s")
-        (fortran:fwrite "%FLAG SOLVENT_POINTERS")
-        (fortran:fwrite "%FORMAT(3I8)")
-        (fortran:debug "-38-")
-        (fortran:fformat 3 "%8d")
+        (if (chem:has-property aggregate :bounding-box)
+            (progn
+              (fortran:fformat 1 "%-80s")
+              (fortran:fwrite "%FLAG SOLVENT_POINTERS")
+              (fortran:fwrite "%FORMAT(3I8)")
+              (fortran:debug "-38-")
+              (fortran:fformat 3 "%8d")
 ;;;temporary!!!
-        (fortran:fwrite residue-count) 
-        (fortran:fwrite molecule-count) 
-        (fortran:fwrite "2") 
-        (fortran:end-line)
-        (fortran:fformat 1 "%-80s")
-        (fortran:fwrite "%FLAG ATOMS_PER_MOLECULE")
-        (fortran:fwrite "%FORMAT(10I8)")
-        (fortran:debug "-39-")
-        (fortran:fformat 10 "%8d")
-        (loop for natom across atoms-per-molecule
-              do (fortran:fwrite natom))
-        (fortran:end-line)
-        ;; number of atoms per molecule
-
-        ;;next
-        (fortran:fformat 1 "%-80s")
-        (fortran:fwrite "%FLAG BOX_DIMENSIONS")
-        (fortran:fwrite "%FORMAT(5E16.8)")
-        (fortran:debug "-40-")
-        (fortran:fformat 5 "%16.8f")
-        (let ((solvent-box (chem:matter-get-property aggregate :bounding-box)))
-          (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
-            (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))
-          (fortran:fwrite "90.0000000") ;box angle
-          (fortran:fwrite (float (first solvent-box)))
-          (fortran:fwrite (float (second solvent-box)))
-          (fortran:fwrite (float (third solvent-box)))) 
-        (fortran:end-line)
+              (fortran:fwrite residue-count) 
+              (fortran:fwrite molecule-count) 
+              (fortran:fwrite "2") 
+              (fortran:end-line)
+              (fortran:fformat 1 "%-80s")
+              (fortran:fwrite "%FLAG ATOMS_PER_MOLECULE")
+              (fortran:fwrite "%FORMAT(10I8)")
+              (fortran:debug "-39-")
+              (fortran:fformat 10 "%8d")
+              (loop for natom across atoms-per-molecule
+                 do (fortran:fwrite natom))
+              (fortran:end-line)
+              ;; number of atoms per molecule
+              
+              ;;next
+              (fortran:fformat 1 "%-80s")
+              (fortran:fwrite "%FLAG BOX_DIMENSIONS")
+              (fortran:fwrite "%FORMAT(5E16.8)")
+              (fortran:debug "-40-")
+              (fortran:fformat 5 "%16.8f")
+              (let ((solvent-box (chem:matter-get-property aggregate :bounding-box)))
+                (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
+                  (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))
+                (fortran:fwrite "90.0000000") ;box angle
+                (fortran:fwrite (float (first solvent-box)))
+                (fortran:fwrite (float (second solvent-box)))
+                (fortran:fwrite (float (third solvent-box)))) 
+              (fortran:end-line)))
 
         ;;next
         (fortran:fformat 1 "%-80s")
@@ -1217,15 +1221,16 @@
                    (fortran:fwrite (geom:vy pos))
                    (fortran:fwrite (geom:vz pos)))))
       ;; write out the solvent box
-      (let ((solvent-box (chem:matter-get-property aggregate :bounding-box)))
-        (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
-          (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))
-        (fortran:fwrite (float (first solvent-box)))
-        (fortran:fwrite (float (second solvent-box)))
-        (fortran:fwrite (float (third solvent-box)))
-        (fortran:fwrite "90.0000000")   ;box angle
-        (fortran:fwrite "90.0000000") 
-        (fortran:fwrite "90.0000000"))
+      (if (chem:has-property aggregate :bounding-box)
+          (let ((solvent-box (chem:matter-get-property aggregate :bounding-box)))
+            (unless (and solvent-box (listp solvent-box) (= (length solvent-box) 3))
+              (error "There must be a solvent-box property in the aggregate properties and it must be a list of length three numbers"))
+            (fortran:fwrite (float (first solvent-box)))
+            (fortran:fwrite (float (second solvent-box)))
+            (fortran:fwrite (float (third solvent-box)))
+            (fortran:fwrite "90.0000000")   ;box angle
+            (fortran:fwrite "90.0000000") 
+            (fortran:fwrite "90.0000000")))
       (fortran:end-line))))
 
 (defconstant %flag-title "%FLAG TITLE")

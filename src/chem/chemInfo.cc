@@ -323,6 +323,15 @@ void ChemInfo_O::defineTests(core::List_sp tests) {
   }
 }
 
+string ChemInfo_O::descriptionOfContents() const {
+  if (this->_Root.nilp()) {
+    return "NIL";
+  }
+  stringstream ss;
+  ss << this->_Root->descriptionOfContents();
+  return ss.str();
+}
+
 
 SYMBOL_EXPORT_SC_(ChemPkg,compile_antechamber_type_rule);
 CL_LISPIFY_NAME("compileAntechamber");
@@ -1844,6 +1853,12 @@ void AntechamberRoot_O::fields(core::Record_sp node) {
   node->field_if_not_nil( INTERN_(kw,afterMatchTests), this->_AfterMatchTests);
   node->field_if_not_nil( INTERN_(kw,wildDict), this->_WildElementDictionary);
   this->Base::fields(node);
+}
+
+string AntechamberRoot_O::descriptionOfContents() const {
+  stringstream ss;
+  ss << " :assign-type " << _rep_(this->_AssignType);
+  return ss.str();
 }
 
 bool AntechamberRoot_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {

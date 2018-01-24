@@ -48,8 +48,6 @@ namespace chem {
 
   SMART(BoundFrame);
 
-  extern string	ChemInfo_XmlName;
-
   SMART(Root);
   SMART(AntechamberRoot);
   class	ChemInfoNode_O;
@@ -1116,7 +1114,8 @@ namespace chem {
     virtual	bool		matches( Root_sp root, chem::Atom_sp atom );
     virtual	bool		matches( Root_sp root, chem::Atom_sp from, chem::Bond_sp bond );
 
-
+    string descriptionOfContents() const;
+    
     DEFAULT_CTOR_DTOR(AntechamberRoot_O);
   };
 
@@ -1158,6 +1157,7 @@ CL_LISPIFY_NAME("compilerMessage");
 CL_DEFMETHOD     string	compilerMessage() { return this->_CompilerMessage;};
     void defineTests(core::List_sp tests);
 
+    string descriptionOfContents() const;
     bool	matches(chem::Atom_sp atom);
     ChemInfoMatch_sp getMatch();
 
