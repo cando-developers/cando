@@ -1,6 +1,6 @@
 (in-package :asdf-user)
 
-(defsystem "crystal"
+(defsystem "geometry"
     :description "Crystallography manipulations"
     :version "0.0.1"
     :author "Christian Schafmeister <chris.schaf@verizon.net>"
