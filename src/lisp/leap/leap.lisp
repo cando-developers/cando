@@ -122,22 +122,6 @@
     (leap.core:evaluate 'list ast leap.core:*leap-env*))
   t)
 
-(defun source.old (filename)
-  "Load the file of leap commands and execute them one by one.
-Nothing is returned."
-  (format *out* "In source~%")
-  (let ((path (leap.core:search-path filename)))
-    (with-open-file (stream path :direction :input)
-      (let* ((entire-file (make-string (+ (file-length stream) 2)
-                                       :initial-element #\newline)))
-        (read-sequence entire-file stream)
-        (with-input-from-string (sin entire-file)
-          (loop for entry = (leap-parse-entry sin nil :eof)
-               do (format *out* "read entry: ~a~%" entry)
-             unless (or (null entry) (eq entry :eof))
-             do (interpret-leap-entry entry)
-             until (eq entry :eof)))))))
-
 (defun leap.source (entry)
   (valid-arguments entry 1)
   (let* ((filename (ensure-path (second entry))))
@@ -183,6 +167,7 @@ Nothing is returned."
     ("loadAmberParams" . load-amber-params)
     ("addPdbResMap" . leap.pdb:add-pdb-res-map)
     ("addAtomTypes" . add-atom-types)
+;;    ("solvateBox" . solvate-box)
     ))
 
 
@@ -192,9 +177,9 @@ Nothing is returned."
         (setf (leap.core:function-lookup (car command) leap.core:*leap-env*) (cdr command))
         (error "~a is not a function" (cdr command)))))
 
-
-
-
+;;(defun solvate-box (solute solvent width-list 
+;;
+;;)
 ;;; ----------------------------------------------------------------------
 ;;;
 ;;; Implement a simple leap script parser

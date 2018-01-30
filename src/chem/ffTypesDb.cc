@@ -40,6 +40,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/loop.h>
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/wrappers.h>
+#include <clasp/core/bformat.h>
 
 
 
@@ -60,7 +61,8 @@ void	FFTypesDb_O::initialize()
 
 
 CL_LISPIFY_NAME("assignType");
-CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom) {
+CL_LAMBDA((types_db !) atom &key verbose)
+CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom, bool verbose) {
   LOG(BF("Got atom") );
   LOG(BF("atom name: %s") % atom->getName().c_str() );
   LOG(BF("Assigning type for atom: %s") % atom->description().c_str()  );
@@ -71,7 +73,10 @@ CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom) {
 //		LOG(BF("as xml: %s") % ((*it)->asXmlString().c_str() ) );
       if ( (*it)->matches(atom) ) {
         LOG(BF("Rule MATCH!!!") );
+        if (verbose) BFORMAT_T(BF("Matched %s\n") % _rep_(*it));
         return atom->getType();
+      } else {
+        if (verbose) BFORMAT_T(BF("Did not match %s\n") % _rep_(*it));
       }
       LOG(BF("Rule does not match, keep going") );
     }
@@ -102,7 +107,7 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
 //        LOG(BF("castGet = %X") % castGet );
 //        LOG(BF("getting first atom in loop") );
     atom = (c).as<chem::Atom_O>();
-    this->assignType(atom);
+    this->assignType(atom,false);
   }
 }
 

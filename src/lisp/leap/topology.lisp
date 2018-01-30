@@ -590,9 +590,13 @@
       (fortran:debug "-1-")             ;
       (fortran:fformat 1 "%-80s")
 ;;                  (fortran:fwrite (core:strftime 81 "%%VERSION  VERSION_STAMP = V0002.000  DATE = %m/%d/%y  %H:%M:%S"))
-;;;;      (fortran:fwrite "-----insert the version and time stamp---")
 ;;; temporary!!!
-      (fortran:fwrite "%VERSION  VERSION_STAMP = V0001.000  DATE = 12/04/17  10:32:47")
+    (multiple-value-bind (second minute hour date month year)
+                  (get-decoded-time)
+      (fortran:fwrite (format
+                       nil
+                       "%VERSION  VERSION_STAMP = V0001.000  DATE = ~2,'0d/~2,'0d/~2,'0d  ~2,'0d:~2,'0d:~2,'0d"
+                       month date (- year 2000) hour minute second)))
       (fortran:fwrite "%FLAG TITLE")
       (fortran:fwrite "%FORMAT(20a4)")
       (fortran:fwrite (string (chem:get-name aggregate)))

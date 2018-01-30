@@ -102,7 +102,7 @@ CL_DEFMETHOD     int	numberOfRules() { return this->_TypeAssignmentRules.size();
     chem::ChemInfo_sp	getRule(uint index);
 
     void    assignTypes( chem::Matter_sp matter );
-    core::Symbol_sp    assignType( chem::Atom_sp atom );
+    core::Symbol_sp    assignType( chem::Atom_sp atom, bool verbose=false );
     void	initialize();
 
     DEFAULT_CTOR_DTOR(FFTypesDb_O);
