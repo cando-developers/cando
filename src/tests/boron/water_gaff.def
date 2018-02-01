@@ -1,0 +1,91 @@
+# Please go to the end to see rules of defining an atom  
+
+============================================================================================
+                        Defination begin
+============================================================================================
+--------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------- 
+ f1  f2    f3  f4  f5  f6  f7  f8      		f9          
+-------------------------------------------------------------------------------------------- 
+//tip3p_water
+ATD  hw    *   1   2   1   &
+ATD  ow    *   8   2   2   &
+--------------------------------------------------------------------------------------------
+============================================================================================
+
+
+
+
+============================================================================================
+			Field descriptions
+============================================================================================
+f1  ATD, which stands for atom type defination, ATD should always in the first three columns 
+f2  Atom type name, can be letters or numbers   
+f3  Residue names, which means this description is only applied to atoms in special residues
+f4  Atomic number 
+f5  Number of attached atoms 
+f6  Number of attached hydrogen atoms
+f7  For hydrogen, number of the electron-withdrawal atoms connected to the atom that the 
+    hydrogen attached
+f8  atomic property
+f9  Chemical enviornment definations
+
+
+============================================================================================
+			Specific symbols
+============================================================================================
+*  Ignore this field
+&  End of defination 
+.  "or" operation in the ring and aromatity descriptions 
+
+
+============================================================================================
+			Predefined words
+============================================================================================
+EW   Electron-withdraw atom
+AA   Amino acid residue
+NA   Nucleric acid
+BIO  AA + NA
+
+AR1  Pure aromatic atom (such as benzene and pyridine)
+AR2  Atom in a planar ring, usually the ring has two continous single bonds and at least two 
+     double bonds
+AR3  Atom in a planar ring, which has one or several double bonds formed between non-ring atoms
+     and the ring atoms
+AR4  Atom other than AR1, AR2, AR3 and AR5. 
+AR5  Pure aliphatic atom in a ring, which is made of sp3 carbon
+
+RG   Ring (from 3-membered to nine-membered)
+RG3  3-membered ring 
+RG4  4-membered ring 
+RG5  5-membered ring 
+RG6  6-membered ring 
+RG7  7-membered ring 
+RG8  8-membered ring 
+RG9  9-membered ring 
+NR   non-ring atom
+
+SB   Single bond
+DB   Double bond
+TB   Triple bond
+AB   Aromatic bond
+DL   Delocalized bond (9 in AM1-BCC)
+sb   Single bond, including aromtaic single, delocalized bond (9 in AM1-BCC) 
+db   Double bond, including aromatic double
+tb   Triple bond
+ 
+'    Bond type (SB sb etc) followed by ' means the current atom forms this kind of bond with the 
+     immediately precessor in a chain of atoms
+     For example, (XD3[SB',db]) means the current atom XD3 has a double bond with the atom in 
+     defination 
+''   Bond type (SB sb etc) followed by '' means the current atom does not form this kind of bond 
+     with the immediately precessor in a chain of atoms
+============================================================================================
+			Miscellaneous
+============================================================================================
+1. maximum line length is 500 characters
+2. no space in the atomic property string
+3. no space in the chemical environment string 
+4. no filed missing before &
+5. the defination order is crucial, special atom types should defined before the more general 
+   ones
