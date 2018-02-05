@@ -178,16 +178,15 @@ void	RestraintChiral_O::invertStereochemistryOfRestraint()
 
 
 
-
-
-RestraintDistance_O::RestraintDistance_O(const RestraintDistance_O& old) : Restraint_O(old)
+void	RestraintDistance_O::fields(core::Record_sp node)
 {
-  this->_A = old._A;
-  this->_B = old._B;
-  this->_Min = old._Min;
-  this->_Max = old._Max;
-  this->_Weight = old._Weight;
-}
+//  this->Base::fields(node); // don't invoke parent fields
+  node->field_if_not_nil( INTERN_(kw,a), this->_A );
+  node->field_if_not_nil( INTERN_(kw,b), this->_B );
+  node->/*pod_*/field_if_not_default( INTERN_(kw,r0), this->_R0, 0.0);
+  node->/*pod_*/field_if_not_default( INTERN_(kw,k), this->_K, 0.0);
+};
+
 
 Restraint_sp	RestraintDistance_O::copyDontRedirectAtoms()
 {

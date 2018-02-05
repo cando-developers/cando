@@ -186,45 +186,52 @@ public:
 SMART(RestraintDistance);
 class RestraintDistance_O : public Restraint_O
 {
-    LISP_CLASS(chem,ChemPkg,RestraintDistance_O,"RestraintDistance",Restraint_O);
+  LISP_CLASS(chem,ChemPkg,RestraintDistance_O,"RestraintDistance",Restraint_O);
 
+ public:
+  bool fieldsp() const { return true; };
+  void	fields(core::Record_sp node);
 
-public:
+ public:
 //    void	archiveBase(core::ArchiveP node);
 //    void	serialize(serialize::SNode node);
 
-private:
-	Atom_sp		_A;
-	Atom_sp		_B;
-	double		_Min;
-	double		_Max;
-	double		_Weight;
+ public:
+  Atom_sp		_A;
+  Atom_sp		_B;
+#if 0
+  double		_Min;
+  double		_Max;
+  double		_Weight;
+#endif
+  double          _K;
+  double          _R0;
 
-public:
-
-
-	void	setParameters(double mn,double mx, double wt ) {
-			this->_Min=mn;
-			this->_Max=mx;
-			this->_Weight=wt;
-	};
-	Atom_sp	getAtomA() {_OF();ASSERTNOTNULL(this->_A);return this->_A;};
-	void	setAtomA(Atom_sp a) {this->_A=a;};
-	Atom_sp	getAtomB() {_OF();ASSERTNOTNULL(this->_B);return this->_B;};
-	void	setAtomB(Atom_sp a) {this->_B=a;};
-
-	double	getMin() {return this->_Min;};
-	double	getMax() {return this->_Max;};
-	double	getWeight() {return this->_Weight;};
-
-	Restraint_sp	copyDontRedirectAtoms();
-	void redirectAtoms();
-
-    	void invertStereochemistryOfRestraint() { /* Nothing */ };
+ public:
 
 
-	RestraintDistance_O(const RestraintDistance_O& old);
-	DEFAULT_CTOR_DTOR(RestraintDistance_O);
+#if 0
+  void	setParameters(double ouble mn,double mx, double wt ) {
+    this->_Min=mn;
+    this->_Max=mx;
+    this->_Weight=wt;
+  };
+#endif
+  Atom_sp	getAtomA() {_OF();ASSERTNOTNULL(this->_A);return this->_A;};
+  void	setAtomA(Atom_sp a) {this->_A=a;};
+  Atom_sp	getAtomB() {_OF();ASSERTNOTNULL(this->_B);return this->_B;};
+  void	setAtomB(Atom_sp a) {this->_B=a;};
+
+#if 0
+  double	getMin() {return this->_Min;};
+  double	getMax() {return this->_Max;};
+  double	getWeight() {return this->_Weight;};
+#endif
+        
+  Restraint_sp	copyDontRedirectAtoms();
+  void redirectAtoms();
+
+  void invertStereochemistryOfRestraint() { /* Nothing */ };
 };
 
 

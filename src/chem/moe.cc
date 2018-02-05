@@ -216,6 +216,8 @@ public:
 	// At this point all restraints must be absolute
     if ( rest.isA<RestraintDistance_O>() )
     {
+      SIMPLE_ERROR(BF("Add support for distance restraints"));
+#if 0
       RestraintDistance_sp distRest = (rest).as<RestraintDistance_O>();
 	fout << "distance 2 "
 		<< distRest->getAtomA()->getTempInt() << " "
@@ -225,6 +227,7 @@ public:
 		<< distRest->getMax() << " "
              << distRest->getWeight() << std::endl;
 	return;
+#endif
     }
     if ( rest.isA<RestraintAngle_O>() )
     {
@@ -1245,11 +1248,14 @@ void	MoeReadFile::readNextLine()
 		    aggRestraints->vectorPushExtend(restraint);
 		} else if ( type == "distance" ) 
 		{
-		    RestraintDistance_sp restraint = RestraintDistance_O::create();
+                  SIMPLE_ERROR(BF("Add support for distance restraints"));
+#if 0
+                  RestraintDistance_sp restraint = RestraintDistance_O::create();
 		    restraint->setAtomA(atoms[(*resAtoms)[0]-1]);
 		    restraint->setAtomB(atoms[(*resAtoms)[1]-1]);
 		    restraint->setParameters( (*target)[0], (*target)[1], weight );
 		    aggRestraints->vectorPushExtend(restraint);
+#endif
 		} else {
                     std::cerr << "Unknown restraint type: "<< type;
 		}

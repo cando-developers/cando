@@ -1048,9 +1048,20 @@ int EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator_
           ++terms;
         }
       }
-    } else 
-    {
-      IMPLEMENT_ME(); // Implement other types of restraints
+    } else if ( restraint.isA<RestraintDistance_O>() ) {
+      RestraintDistance_sp rd = gc::As_unsafe<RestraintDistance_sp>(restraint);
+      EnergyAtom* ea1 = this->getEnergyAtomPointer(rd->_A);
+      EnergyAtom* ea2 = this->getEnergyAtomPointer(rd->_B);
+      EnergyStretch   energyStretch;
+      energyStretch._Atom1 = rd->_A;
+      energyStretch._Atom2 = rd->_B;
+      energyStretch.term.I1 = ea1->coordinateIndexTimes3();
+      energyStretch.term.I2 = ea2->coordinateIndexTimes3();
+      energyStretch.term.kb = rd->_K;
+      energyStretch.term.r0 = rd->_R0;
+      this->_Stretch->addTerm(energyStretch);
+    } else {
+      SIMPLE_ERROR(BF("Handle restraint: %s") % _rep_(restraint));
     }
   CONT:
     restraintIterator->next();
@@ -1280,7 +1291,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
       t2 = a2->getType();
       t3 = a3->getType();
       t4 = a4->getType();
-      BFORMAT_T(BF("atoms types: %s-%s-%s-%s \n") % t1 % t2 % t3 % t4);
+//      BFORMAT_T(BF("atoms types: %s-%s-%s-%s \n") % t1 % t2 % t3 % t4);
       ea1 = this->getEnergyAtomPointer(a1);
       ea2 = this->getEnergyAtomPointer(a2);
       ea3 = this->getEnergyAtomPointer(a3);
@@ -1299,13 +1310,15 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 //                % ea4->getResidueAndName()
 //                % t1 % t2 % t3 % t4
 //                );
-             BFORMAT_T(BF( "Adding proper term for atoms %s-%s-%s-%s types: %s-%s-%s-%s /n")%
+#if 0
+            BFORMAT_T(BF( "Adding proper term for atoms %s-%s-%s-%s types: %s-%s-%s-%s /n")%
                 ea1->getResidueAndName()
                 % ea2->getResidueAndName()
                 % ea3->getResidueAndName()
                 % ea4->getResidueAndName()
                 % t1 % t2 % t3 % t4
                 );
+#endif
             EnergyDihedral energyDihedral;
             energyDihedral.defineFrom(n,ffPtor,ea1,ea2,ea3,ea4,this->_Dihedral->getScale());
             this->_Dihedral->addTerm(energyDihedral);
