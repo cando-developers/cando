@@ -159,7 +159,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/hashTableEqual.h>
 #include <clasp/core/hashTableEqualp.h>
 #include <clasp/core/instance.h>
-#include <clasp/core/metaobject.h>
 #include <clasp/core/null.h>
 #include <clasp/core/singleDispatchGenericFunction.h>
 #include <clasp/core/specialForm.h>
@@ -194,7 +193,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/superposableConformationCollection.h>
 #include <clasp/core/sexpLoadArchive.h>
 #include <clasp/core/sexpSaveArchive.h>
-#include <clasp/core/specializer.h>
 #include <clasp/core/array.h>
 #include <cando/geom/coordinateArray.h>
 #include <cando/units/namedUnit.h>
