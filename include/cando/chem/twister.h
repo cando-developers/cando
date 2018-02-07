@@ -138,7 +138,7 @@ public:
 CL_LISPIFY_NAME("numberOfTwisters");
 CL_DEFMETHOD     uint	numberOfTwisters() { return this->_Twisters.size(); };
 
-    void perturbConformation();
+CL_DEFMETHOD   void perturbConformation();
     string description() const;
 
 

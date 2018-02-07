@@ -161,7 +161,7 @@ private:
     adapt::SymbolMap<StereoisomerAtoms_O>      	_StereoisomerAtomProperties;
     core::HashTableEq_sp			_Properties;
     core::Symbol_sp                             _DefaultOutPlugName;
-    Plugs			_Plugs;
+    Plugs			                _Plugs;
  public:
     bool fieldsp() const { return true;};
     void fields(core::Record_sp node);

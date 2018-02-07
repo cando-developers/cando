@@ -208,7 +208,7 @@ If you want to check if it's a big-z file then pass check-big-z = T."
     (let* ((*package* (find-package :keyword))
            (head (string-right-trim '(#\space) (subseq line 0 (min 6 (length line))))))
       (cond 
-        ((string= head "ATOM")
+        ((or (string= head "ATOM") (string= head "HETATM"))
          ;; If we are checking if it's a big-z pdb file then
          ;; test if the 52nd char is #\. - if it is - it's a big-z file
          (when check-big-z
@@ -217,7 +217,7 @@ If you want to check if it's a big-z file then pass check-big-z = T."
              (format t "(elt line 52) = ~a~%" (elt line 52))
              (setf big-z t)))
          (values
-          (list* :atom
+          (list* (if (string= head "ATOM") :atom :hetatm)
                  (parse-integer line :start 6 :end 12) ; atom-serial
                  (let ((*readtable* *quote-readtable*))
                    (intern (string-trim '(#\space) (subseq line 12 16)) :keyword)) ; atom-name
@@ -248,11 +248,10 @@ If you want to check if it's a big-z file then pass check-big-z = T."
                (read-from-string line t nil :start 59 :end 60)))
         ((string= head "CONECT")
          (list* :conect
-                (read-from-string line t nil :start 6 :end 11)
-                (with-input-from-string (sin (subseq line 12))
-                  (loop for serial = (read sin nil :eof)
-                     until (eq serial :eof)
-                     collect serial))))
+                (parse-integer line :start 7 :end 11)
+                (loop for (start . end) in '((12 . 16) (17 . 21 ) (22 . 26 ) (27 . 31 ) (32 . 36 ) (37 . 41 ) (42 . 46 ) (47 . 51 ) (52 . 56 ) (57 . 61 ))
+                   until (> start (length line))
+                     collect (parse-integer line :start start :end end :junk-allowed t))))
         ((string= head "SSBOND")
          (format *trace-output* "pdb.lisp::parse-line  head == ~a~%" head)
          (list :ssbond
@@ -332,7 +331,7 @@ MTRIX- Used to build a list of matrices."
         (when line-data
           #+(or)(format t "Read:  ~a~%" line-data)
           (case (car line-data)
-            (:atom
+            ((:atom :hetatm)
              (if (and check-big-z (slot-boundp scanner 'big-z))
                  (unless (eq (big-z scanner) big-z)
                    (error "The big-z status of the PDB file changed"))
@@ -514,7 +513,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
             ;;          (format t "Reading line: ~a~%" line-data)
             #+(or)(format *debug-io* "pdb.lisp read-and-process-line line-data -> ~s~%" line-data)
             (case (car line-data)
-              (:atom
+              ((:atom :hetatm)
                (destructuring-bind (head atom-serial atom-name alt-loc residue-name chain-id res-seq i-code x y z)
                    line-data
                  (when (null (molecule reader))
