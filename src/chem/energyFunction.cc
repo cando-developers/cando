@@ -146,17 +146,13 @@ void energyFunction_initializeSmarts()
 
 
 
-CL_LAMBDA(matter force_field &key use_excluded_atoms active_atoms show_progress (assign_types t));
+CL_LAMBDA(matter force_field_system &key use_excluded_atoms active_atoms show_progress (assign_types t));
 CL_LISPIFY_NAME(make_energy_function);
-CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, ForceField_sp forceField, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress, bool assign_types)
+CL_DEF_CLASS_METHOD EnergyFunction_sp EnergyFunction_O::make(Matter_sp matter, core::T_sp forceFieldSystem, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress, bool assign_types)
 {
   GC_ALLOCATE(EnergyFunction_O, me );
   if ( matter.notnilp() ) {
-    if ( forceField.notnilp() ) {
-      me->defineForMatter(matter,forceField,useExcludedAtoms,activeAtoms,show_progress,assign_types);
-    } else {
-      SIMPLE_ERROR(BF("You must provide a forceField if you provide a matter object"));
-    }
+    me->defineForMatter(matter,forceFieldSystem,useExcludedAtoms,activeAtoms,show_progress,assign_types);
   }
   return me;
 };
@@ -473,14 +469,14 @@ uint	EnergyFunction_O::countTermsBeyondThreshold()
 //
 
 double	EnergyFunction_O::evaluateAll(
-                                                      NVector_sp 	pos,
-                                                      bool 		calcForce,
-                                                      gc::Nilable<NVector_sp> 	force,
-                                                      bool		calcDiagonalHessian,
-                                                      bool		calcOffDiagonalHessian,
-                                                      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                                      gc::Nilable<NVector_sp>	hdvec,
-                                                      gc::Nilable<NVector_sp> dvec)
+                                      NVector_sp 	pos,
+                                      bool 		calcForce,
+                                      gc::Nilable<NVector_sp> 	force,
+                                      bool		calcDiagonalHessian,
+                                      bool		calcOffDiagonalHessian,
+                                      gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
+                                      gc::Nilable<NVector_sp>	hdvec,
+                                      gc::Nilable<NVector_sp> dvec)
 {_G()
 #ifdef DEBUG_ENERGY_FUNCTION
     printf("%s:%d:%s Entered\n", __FILE__, __LINE__, __FUNCTION__ );
@@ -978,7 +974,7 @@ void	EnergyFunction_O::dumpTerms()
 
 
 
-int EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator_sp restraintIterator, core::T_sp activeAtoms )
+int EnergyFunction_O::_applyRestraints(FFNonbondDb_sp nonbondDb, core::Iterator_sp restraintIterator, core::T_sp activeAtoms )
 {
   int terms = 0;
 #if USE_ALL_ENERGY_COMPONENTS
@@ -1034,7 +1030,6 @@ int EnergyFunction_O::_applyRestraints(ForceField_sp forceField, core::Iterator_
       this->_FixedNonbondRestraint->setupForEvaluation(this->_AtomTable,this->_NonbondCrossTermTable);
       RestraintFixedNonbond_sp fixedNonbond = restraint.as<RestraintFixedNonbond_O>();
       Matter_sp matter = fixedNonbond->getMatter();
-      FFNonbondDb_sp nonbondDb = forceField->getNonbondDb();
 //	    EnergyAtom	energyAtom(_lisp);
       Loop loop;
       {_BLOCK_TRACE("Defining FixedNonbond ATOMS");
@@ -1144,12 +1139,12 @@ void EnergyFunction_O::__createSecondaryAmideRestraints(gctools::Vec0<Atom_sp>& 
   }
 }
 
-
-
+SYMBOL_EXPORT_SC_(ChemPkg,lookup_force_field_for_molecule);
+SYMBOL_EXPORT_SC_(ChemPkg,lookup_nonbond_force_field_for_aggregate);
 
 CL_LISPIFY_NAME("defineForMatter");
-CL_LAMBDA((energy_function !) matter force_field &key use_excluded_atoms active_atoms show_progress (assign_types t));
-CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField_sp forceField, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress, bool assign_types )
+CL_LAMBDA((energy_function !) matter system &key use_excluded_atoms active_atoms show_progress (assign_types t));
+CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, core::T_sp system, bool useExcludedAtoms, core::T_sp activeAtoms, bool show_progress, bool assign_types )
 {
   if ( !(matter.isA<Aggregate_O>() || matter.isA<Molecule_O>() ) )
   {
@@ -1166,10 +1161,19 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, ForceField
 	// 
 	// Assign atom types
 	//
-  if (assign_types) forceField->assignTypes(matter);
-  this->generateStandardEnergyFunctionTables(matter,forceField,activeAtoms,show_progress);
-  this->generateNonbondEnergyFunctionTables(useExcludedAtoms,matter,forceField,activeAtoms,show_progress);
-  this->generateRestraintEnergyFunctionTables(matter,forceField,activeAtoms,show_progress);
+  Loop moleculeLoop;
+  moleculeLoop.loopTopGoal(matter,MOLECULES);
+  while (moleculeLoop.advanceLoopAndProcess() ) {
+    Molecule_sp molecule = moleculeLoop.getMolecule();
+    ForceField_sp forceField = gc::As<ForceField_sp>(core::eval::funcall(chem::_sym_lookup_force_field_for_molecule,molecule,system));
+    if (assign_types) forceField->assignTypes(matter);
+    this->generateStandardEnergyFunctionTables(matter,forceField,activeAtoms,show_progress);
+  }
+  {
+    FFNonbondDb_sp nonbondForceField = gc::As<FFNonbondDb_sp>(core::eval::funcall(chem::_sym_lookup_nonbond_force_field_for_aggregate,matter,system));
+    this->generateNonbondEnergyFunctionTables(useExcludedAtoms,matter,nonbondForceField,activeAtoms,show_progress);
+    this->generateRestraintEnergyFunctionTables(matter,nonbondForceField,activeAtoms,show_progress);
+  }
 }
 
 
@@ -1448,7 +1452,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
 CL_LAMBDA((energy_function !) matter force_field &key active_atoms show_progress);
 CL_DOCSTRING(R"doc(Generate the restraint energy function tables. The atom types, and CIP priorities need to be precalculated.
 This should be called after generateStandardEnergyFunctionTables.)doc");
-CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress )
+CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter_sp matter, FFNonbondDb_sp ffNonbond, core::T_sp activeAtoms, bool show_progress )
 {
   Loop loop;
   Atom_sp          a1, a2, a3, a4, aImproperCenter;
@@ -1665,7 +1669,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateRestraintEnergyFunctionTables(Matter
 	//
   {_BLOCK_TRACE("Defining force-field restraints");
     IterateRestraints_sp restraintIt = IterateRestraints_O::create(matter);
-    int terms = this->_applyRestraints(forceField,restraintIt,activeAtoms);
+    int terms = this->_applyRestraints(ffNonbond,restraintIt,activeAtoms);
     if (show_progress) BFORMAT_T(BF("Built restraints including %d terms\n") % terms );
   }
   LOG(BF("Done terms") );
