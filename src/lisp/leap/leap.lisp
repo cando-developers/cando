@@ -113,7 +113,16 @@
     (chem:set-title ff filename)
     (chem:set-type-db ff fftypedb)
     (leap.core:add-force-field-or-modification ff force-field)))
-  
+
+(defun assign-atom-types (matter &optional system)
+  (chem:map-molecules
+   nil
+   (lambda (molecule)
+     (let* ((force-field (chem:lookup-force-field-for-molecule molecule system))
+            (type-rules (chem:get-types force-field)))
+       (chem:assign-types type-rules molecule)))
+   matter))
+
 (defun source (filename)
   (let* ((path (leap.core:search-path filename))
          (entire-file (alexandria:read-file-into-string path))

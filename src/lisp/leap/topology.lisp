@@ -574,8 +574,8 @@
     (values residue-count molecule-count)
     ))
 
-(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname force-field &key assign-types)
-  (let* ((energy-function (chem:make-energy-function aggregate force-field
+(defun save-amber-parm-format (aggregate topology-pathname coordinate-pathname &key system assign-types)
+  (let* ((energy-function (chem:make-energy-function aggregate system
                                                      :use-excluded-atoms t
                                                      :assign-types assign-types))
          (nonbonds (chem:get-nonbond-component energy-function))
@@ -628,7 +628,7 @@
           (prepare-residue energy-function))
         (multiple-value-setq (residue-count molecule-count)
           (solvent-pointers aggregate))
-        (setf atom-vectors (chem:prepare-amber-energy-nonbond energy-function force-field))
+        (setf atom-vectors (chem:prepare-amber-energy-nonbond energy-function system))
         (setf ntypes (cdr (assoc :ntypes atom-vectors)))
         (setf atom-name (cdr (assoc :atom-name-vector atom-vectors)))
         (setf atom-type (cdr (assoc :atom-type-vector atom-vectors)))

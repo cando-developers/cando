@@ -102,3 +102,12 @@
           (leap.antechamber-type-definition-parser:read-antechamber-type-rules fin))))
 
 
+
+(defmethod chem:lookup-force-field-for-molecule (molecule (system null))
+  (leap.core::merged-force-field :default))
+
+
+(defmethod chem:lookup-nonbond-force-field-for-aggregate (aggregate (system null))
+  (chem:get-nonbond-db (leap.core::merged-force-field :default)))
+
+  

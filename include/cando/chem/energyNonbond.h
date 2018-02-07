@@ -51,7 +51,6 @@ namespace       chem {
   FORWARD(EnergyFunction); // Declares class EnergyFunction_O {} and EnergyFunction_sp
   FORWARD(EnergyNonbond);
   FORWARD(FFNonbondDb);
-  FORWARD(ForceField);
   FORWARD(AtomTable);
 
 struct TermNonBond
@@ -97,7 +96,7 @@ public:
         Atom_sp	getAtom1() { return this->_Atom1; };
         Atom_sp	getAtom2() { return this->_Atom2; };
 	double	getDistance();
-	bool	defineFrom(ForceField_sp	forceField,
+	bool	defineFrom(FFNonbondDb_sp	forceField,
                            bool		is14,
                            EnergyAtom	*iea1,
                            EnergyAtom	*iea2,
@@ -229,10 +228,10 @@ class EnergyNonbond_O : public EnergyComponent_O
   virtual	double	getEnergy();
   FFNonbondDb_sp getFFNonbondDb();
 
-  void constructFromAtomTable(bool useExcludedAtoms, AtomTable_sp atomTable, ForceField_sp forceField, bool show_progress);
-  void constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, ForceField_sp forceField, bool show_progress);
-  void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress);
-  void constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, ForceField_sp forceField, bool show_progress);
+  void constructFromAtomTable(bool useExcludedAtoms, AtomTable_sp atomTable, FFNonbondDb_sp forceField, bool show_progress);
+  void constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, FFNonbondDb_sp forceField, bool show_progress);
+  void construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, FFNonbondDb_sp forceField, core::T_sp activeAtoms, bool show_progress);
+  void constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, FFNonbondDb_sp forceField, bool show_progress);
 
   void constructNonbondTermsFromAtomTableUsingExcludedAtoms(EnergyFunction_sp energyFunction,
                                                             core::T_sp prepareAmberEnergyNonbond );

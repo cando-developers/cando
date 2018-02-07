@@ -64,7 +64,7 @@ namespace chem
 // Return true if we could fill the energyNonbond term
 // otherwise false usually if we don't recognize one of the atom types like DU
 //
-bool	EnergyNonbond::defineFrom(ForceField_sp	forceField,
+bool	EnergyNonbond::defineFrom(FFNonbondDb_sp	forceField,
                                   bool		is14,
                                   EnergyAtom	*iea1,
                                   EnergyAtom	*iea2,
@@ -82,10 +82,10 @@ bool	EnergyNonbond::defineFrom(ForceField_sp	forceField,
   core::Symbol_sp t1 = iea1->atom()->getType();
   core::Symbol_sp t2 = iea2->atom()->getType();
   LOG(BF("Defining nonbond between types: %s - %s") % _rep_(t1) % _rep_(t2));
-  ASSERT(forceField->_Nonbonds&&forceField->_Nonbonds.notnilp());
-  LOG(BF("forceField->_Nonbonds @%p   .notnilp()->%d") % forceField->_Nonbonds.raw_() % forceField->_Nonbonds.notnilp());
-  ffNonbond1 = forceField->_Nonbonds->findType(t1);
-  ffNonbond2 = forceField->_Nonbonds->findType(t2);
+  ASSERT(forceField&&forceField.notnilp());
+  LOG(BF("forceField @%p   .notnilp()->%d") % forceField.raw_() % forceField.notnilp());
+  ffNonbond1 = forceField->findType(t1);
+  ffNonbond2 = forceField->findType(t2);
   ANN(ffNonbond1);
   if ( ffNonbond1.nilp() )
   {
@@ -839,9 +839,9 @@ string EnergyNonbond_O::beyondThresholdInteractionsAsString()
 }
 
 
-void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress)
+void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter_sp matter, FFNonbondDb_sp forceField, core::T_sp activeAtoms, bool show_progress)
 {
-    {
+  {
     EnergyNonbond energyNonbond;
     Loop loop;
     loop.loopTopGoal(matter,PROPERS);
@@ -862,7 +862,7 @@ void EnergyNonbond_O::construct14InteractionTerms(AtomTable_sp atomTable, Matter
   }
 }
 
-void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, ForceField_sp forceField, bool show_progress)
+void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTable_sp atomTable, FFNonbondDb_sp forceField, bool show_progress)
 {
       printf("%s:%d In :constructNonbondTermsFromAtomTable\n", __FILE__, __LINE__ );
 
@@ -914,7 +914,7 @@ void EnergyNonbond_O::constructNonbondTermsFromAtomTable(bool ignore14s, AtomTab
   }
 }
 
-void EnergyNonbond_O::constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, ForceField_sp forceField, bool show_progress)
+void EnergyNonbond_O::constructExcludedAtomListFromAtomTable(AtomTable_sp atomTable, FFNonbondDb_sp forceField, bool show_progress)
 {
   printf("%s:%d In :constructExcludedATomListFromAtomTable\n", __FILE__, __LINE__ );
   
@@ -924,7 +924,7 @@ void EnergyNonbond_O::constructExcludedAtomListFromAtomTable(AtomTable_sp atomTa
   //
   this->_UsesExcludedAtoms = true;
   this->_AtomTable = atomTable;
-  this->_FFNonbondDb = forceField->getNonbondDb();
+  this->_FFNonbondDb = forceField;
   core::SimpleVector_int32_t_mv mv_number_of_excluded_atoms = this->_AtomTable->calculate_excluded_atom_list();
   core::SimpleVector_int32_t_sp excluded_atoms_list = mv_number_of_excluded_atoms.second();
   this->_NumberOfExcludedAtomIndices = mv_number_of_excluded_atoms;

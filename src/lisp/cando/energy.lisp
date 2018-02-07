@@ -72,7 +72,7 @@
 
 (defun minimize (agg &rest args
                  &key (restraints-on t)
-                   (force-field *ff*)
+                   (system nil)
                    (max-sd-steps 1000)
                    (max-cg-steps 50000)
                    (max-tn-steps 0)
@@ -82,7 +82,7 @@
                    (use-excluded-atoms t)
                    assign-types)
   "Minimize the conformational energy for an aggregate"
-  (let ((energy-func (chem:make-energy-function agg force-field :use-excluded-atoms use-excluded-atoms :assign-types assign-types)))
+  (let ((energy-func (chem:make-energy-function agg system :use-excluded-atoms use-excluded-atoms :assign-types assign-types)))
     (apply #'minimize-energy-function energy-func args)
     energy-func))
 

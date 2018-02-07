@@ -171,6 +171,7 @@
    #:desc
    #:object
    #:load-atom-type-rules
+   #:assign-atom-types
    #:source)
   (:use :common-lisp :chem :geom))
 

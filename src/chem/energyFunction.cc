@@ -1416,10 +1416,11 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 
 SYMBOL_EXPORT_SC_(ChemPkg,prepare_amber_energy_nonbond);
 
-CL_LAMBDA((energy_function !) matter force_field &key active_atoms show_progress);
+CL_LAMBDA((energy_function !) matter &key system active_atoms show_progress);
 CL_DOCSTRING("Generate the nonbond energy function tables. The atom types, and CIP priorities need to be precalculated.");
-CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress )
+CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp matter, FFNonbondDb_sp system, core::T_sp activeAtoms, bool show_progress )
 {
+  FFNonbondDb_sp nonbondForceField = gc::As<FFNonbondDb_sp>(core::eval::funcall(chem::_sym_lookup_nonbond_force_field_for_aggregate,matter,system));
   if (show_progress)
     BFORMAT_T(BF("Built atom table for %d atoms\n") % this->_AtomTable->getNumberOfAtoms());
 #ifdef	DEBUG_DEFINE_ENERGY
@@ -1431,19 +1432,19 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
 //    printf("atom number: %d\n", this->_AtomTable->getNumberOfAtoms());
 
 //    printf("%s:%d in generateNonbondEnergyFunctionTables\n", __FILE__, __LINE__);
-    core::List_sp parts = core::eval::funcall(_sym_prepare_amber_energy_nonbond,this->asSmartPtr(),forceField);
+    core::List_sp parts = core::eval::funcall(_sym_prepare_amber_energy_nonbond,this->asSmartPtr(),system);
 //      printf("%s:%d:%s    parts -> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(parts).c_str());
 //    printf("%s:%d in generateNonbondEnergyFunctionTables\n", __FILE__, __LINE__);
     this->_Nonbond->constructNonbondTermsFromAList(parts);
     // -----------
 //    printf("%s:%d in generateNonbondEnergyFunctionTables\n", __FILE__, __LINE__);
       
-    this->_Nonbond->constructExcludedAtomListFromAtomTable(this->_AtomTable, forceField, show_progress);
-    this->_Nonbond->construct14InteractionTerms(this->_AtomTable,matter,forceField,activeAtoms,show_progress);
+    this->_Nonbond->constructExcludedAtomListFromAtomTable(this->_AtomTable, nonbondForceField, show_progress);
+    this->_Nonbond->construct14InteractionTerms(this->_AtomTable,matter,nonbondForceField,activeAtoms,show_progress);
 //    printf("%s:%d:%s    nonbond -> %d\n", __FILE__, __LINE__, __FUNCTION__, _Nonbond->numberOfTerms());
 
   } else {
-    this->_Nonbond->constructNonbondTermsFromAtomTable(false,this->_AtomTable, forceField, show_progress);
+    this->_Nonbond->constructNonbondTermsFromAtomTable(false,this->_AtomTable, nonbondForceField, show_progress);
   }
   if (show_progress) BFORMAT_T(BF("Built nonbond table for %d terms\n") % this->_Nonbond->numberOfTerms());
 }

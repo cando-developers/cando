@@ -140,8 +140,8 @@ Set the stereochemistry of a collection of stereocenters using a alist of atom n
   (chem:set-truncated-newton-tolerance minimizer tn-tolerance))
   
                               
-(defun optimize-structure (matter force-field &optional active-atoms)
-  (let* ((energy-function (chem:make-energy-function matter force-field active-atoms))
+(defun optimize-structure (matter &optional active-atoms system)
+  (let* ((energy-function (chem:make-energy-function matter system active-atoms))
          (min (chem:make-minimizer energy-function)))
     (configure-minimizer min
                          :max-steepest-descent-steps 1000
@@ -207,10 +207,10 @@ Set the stereochemistry of a collection of stereocenters using a alist of atom n
       (ext:system cmd))))
 
     
-(defun bad-geometry-p (agg force-field)
+(defun bad-geometry-p (agg &optional system)
   "Return true if there are any beyond-threshold force field interactions"
   (let ((energy-function (chem:make-energy-function agg force-field)))
-    (let ((fails (chem:check-for-beyond-threshold-interactions energy-function)))
+    (let ((fails (chem:check-for-beyond-threshold-interactions system)))
       (if (> fails 0)
           fails
           nil))))
