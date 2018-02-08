@@ -1580,7 +1580,8 @@ bool AntechamberFocusAtomMatch_O::matches(Root_sp root, chem::Atom_sp atom) {
   }
   if (this->_NumberOfElectronWithdrawingGroups >= 0) {
     if (atom->numberOfBonds() != 1) {
-      SIMPLE_ERROR(BF("Testing NumberOfElectronWithdrawingGroups must have one bond"));
+      SIMPLE_WARN(BF("Testing NumberOfElectronWithdrawingGroups must have one bond - test %s") % _rep_(this->asSmartPtr()));
+      goto FAIL;
     }
     neighbor = atom->bondedNeighbor(0);
     int cnt = 0;

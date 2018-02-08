@@ -249,7 +249,7 @@ CL_DEFMETHOD core::MDArray_int32_t_sp AtomTable_O::atom_table_atoms_per_molecule
 
 DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void AtomTable_O::constructFromMatter(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms )
 {
-  printf("%s:%d In constructFromMatter\n", __FILE__, __LINE__ );
+//  printf("%s:%d In constructFromMatter\n", __FILE__, __LINE__ );
   this->_Atoms.clear();
   this->_AtomTableIndices->clrhash();
 //  this->_Residues = core::MDArray_int32_t_O::make_vector(32,0,core::make_fixnum(0)/*fill-pointer*/);

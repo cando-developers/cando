@@ -158,8 +158,8 @@
       (if has-exponent-char
           (setf exponent (parse-integer string :start (1+ has-exponent-char) :end float-end)))
       (setf exponent (- exponent (length sig-y)))
-      (setf significand-str (concatenate 'string sig-x sig-y))
-      (* (float (parse-integer significand-str) 1.0D0) (expt 10.0d0 exponent)))))
+      (let ((significand-str (concatenate 'string sig-x sig-y)))
+        (* (float (parse-integer significand-str) 1.0D0) (expt 10.0d0 exponent))))))
 
 (defun parse-double-float-line (line result width)
   (loop for start = 0 then end

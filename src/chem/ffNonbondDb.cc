@@ -388,5 +388,8 @@ string	FFNonbond_O::levelDescription()
   return desc.str();
 }
 
+CL_DEFUN FFNonbondDb_sp chem__make_ffnonbond_db() {
+  return FFNonbondDb_O::create();
+}
 
 };

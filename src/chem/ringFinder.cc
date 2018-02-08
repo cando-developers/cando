@@ -607,7 +607,7 @@ void RingFinder_O::defineForMolecule(Molecule_sp mol)
     AGVertex_sp vert = AGVertex_O::create(this->sharedThis<RingFinder_O>(),at);
     this->_vertices->hash_table_setf_gethash(at,vert);
   }
-  printf("%s:%d Number of vertices: %d\n", __FILE__, __LINE__, this->_vertices->hashTableCount());
+//  printf("%s:%d Number of vertices: %d\n", __FILE__, __LINE__, this->_vertices->hashTableCount());
   loop.loopTopGoal(mol,BONDS);
   this->_edges.clear();
   while ( loop.advanceLoopAndProcess() )

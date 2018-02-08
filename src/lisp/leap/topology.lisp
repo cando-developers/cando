@@ -463,7 +463,7 @@
                       (incf curcn)))))
       (values ntypes ico-vec iac-vec local-typej-vec cn1-vec cn2-vec))))
 
-(defun chem:prepare-amber-energy-nonbond (energy-function force-field)
+(defun chem:prepare-amber-energy-nonbond (energy-function ffnonbond-db)
   (let* ((atom-table (chem:atom-table energy-function))
          (natom (chem:get-number-of-atoms atom-table))
          (atom-name-vector (make-array natom))
@@ -473,8 +473,7 @@
          (type-index-vector (make-array natom :element-type '(signed-byte 32)))
          (atomic-number-vector (make-array natom :element-type '(signed-byte 32)))
          (atom-radius-vector (make-array natom :element-type 'double-float))
-         (energy-nonbond (chem:get-nonbond-component energy-function))
-         (ffnonbond-db (chem:get-nonbond-db force-field)))
+         (energy-nonbond (chem:get-nonbond-component energy-function)))
 ;;;    (format t "energy-nonbond -> ~a~%" energy-nonbond)
 ;;;    (format t "ffnonbond-db -> ~a~%" ffnonbond-db)
     (loop for i from 0 below natom
@@ -628,7 +627,9 @@
           (prepare-residue energy-function))
         (multiple-value-setq (residue-count molecule-count)
           (solvent-pointers aggregate))
-        (setf atom-vectors (chem:prepare-amber-energy-nonbond energy-function system))
+        (setf atom-vectors (chem:prepare-amber-energy-nonbond
+                            energy-function
+                            (chem:lookup-nonbond-force-field-for-aggregate aggregate system)))
         (setf ntypes (cdr (assoc :ntypes atom-vectors)))
         (setf atom-name (cdr (assoc :atom-name-vector atom-vectors)))
         (setf atom-type (cdr (assoc :atom-type-vector atom-vectors)))

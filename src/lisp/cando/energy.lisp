@@ -45,7 +45,7 @@
 
 
 (defun minimize-energy-function (energy-function &key (restraints-on t)
-                                                   (force-field *ff*)
+                                                   system
                                                    (max-sd-steps 1000)
                                                    (max-cg-steps 50000)
                                                    (max-tn-steps 0)
@@ -72,7 +72,7 @@
 
 (defun minimize (agg &rest args
                  &key (restraints-on t)
-                   (system nil)
+                   system
                    (max-sd-steps 1000)
                    (max-cg-steps 50000)
                    (max-tn-steps 0)

@@ -104,10 +104,21 @@
 
 
 (defmethod chem:lookup-force-field-for-molecule (molecule (system null))
-  (leap.core::merged-force-field :default))
-
+  (let ((force-field (chem:matter-get-property-or-default
+                      molecule :force-field :default)))
+    (leap.core::merged-force-field :default)))
 
 (defmethod chem:lookup-nonbond-force-field-for-aggregate (aggregate (system null))
-  (chem:get-nonbond-db (leap.core::merged-force-field :default)))
-
-  
+  (let* ((force-field-names (chem:map-molecules
+                             'list
+                             (lambda (molecule)
+                               (chem:matter-get-property-or-default
+                                molecule :force-field :default))
+                             aggregate))
+         (unique (remove-duplicates force-fields)))
+    (let ((nbmerged (chem:make-ffnonbond-db)))
+      (mapc (lambda (force-field-name)
+              (let ((force-field (leap.core:merged-force-field force-field-name)))
+                (chem:force-field-merge nbmerged (chem:get-nonbond-db force-field))))
+            force-field-names)
+      nbmerged)))

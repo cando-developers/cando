@@ -85,6 +85,8 @@
   (:export
    #:scan-pdb
    #:load-pdb
+   #:sequences
+   #:build-sequence
    #:add-pdb-atom-map
    #:add-pdb-res-map)
   )
@@ -119,6 +121,7 @@
    #:residue-name
    #:chain-position
    #:merged-force-field
+   #:force-fields
    #:register-variable #:lookup-variable
    #:clear-force-field
    #:add-force-field-or-modification
@@ -138,7 +141,8 @@
   (:shadowing-import-from :cando "AS-STRING" "LOAD-MOL2" "SAVE-MOL2")
   (:import-from :core #:quit)
   (:import-from :leap.core
-                #:add-path)
+                #:add-path
+                #:force-fields)
 ;;;  (:import-from :cando-utility #:mkdir #:set-current-directory #:current-directory #:directory-files)
   (:import-from :inet #:download-pdb)
 ;;  (:import-from :leap.off #:load-off)

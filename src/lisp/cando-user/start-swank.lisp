@@ -12,7 +12,7 @@
                                ((probe-file #P"/home/app/slime/"))
                                (t "Could not determine directory for slime - set SLIME_HOME")))
                  (swank-loader (probe-file (merge-pathnames "swank-loader.lisp" slime-home))))
-            (format t "swank-loader -> ~a~%" swank-loader)
+            ;; (format t "swank-loader -> ~a~%" swank-loader)
             (load swank-loader))
           (let ((swank-loader-init (find-symbol "INIT" "SWANK-LOADER")))
             (funcall swank-loader-init :delete nil :reload nil :load-contribs nil))

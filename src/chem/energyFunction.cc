@@ -1365,7 +1365,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
       }
     }
 //    if (show_progress) BFORMAT_T(BF("Built dihedral table with %d terms and %d missing terms\n") % terms % missing_terms);
-   BFORMAT_T(BF("Built dihedral table with %d terms and %d missing terms\n") % terms % missing_terms);
+//   BFORMAT_T(BF("Built dihedral table with %d terms and %d missing terms\n") % terms % missing_terms);
   }
   {_BLOCK_TRACE("Defining IMPROPERS");
     EnergyDihedral energyDihedral;
@@ -1411,16 +1411,14 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
     }
     if (show_progress) BFORMAT_T(BF("Built improper table for %d terms\n") % terms);
   }
-  this->summarizeTerms();
+//  this->summarizeTerms();
 }
 
 SYMBOL_EXPORT_SC_(ChemPkg,prepare_amber_energy_nonbond);
 
-CL_LAMBDA((energy_function !) matter &key system active_atoms show_progress);
 CL_DOCSTRING("Generate the nonbond energy function tables. The atom types, and CIP priorities need to be precalculated.");
-CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp matter, FFNonbondDb_sp system, core::T_sp activeAtoms, bool show_progress )
+CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool useExcludedAtoms, Matter_sp matter, FFNonbondDb_sp nonbondForceField, core::T_sp activeAtoms, bool show_progress )
 {
-  FFNonbondDb_sp nonbondForceField = gc::As<FFNonbondDb_sp>(core::eval::funcall(chem::_sym_lookup_nonbond_force_field_for_aggregate,matter,system));
   if (show_progress)
     BFORMAT_T(BF("Built atom table for %d atoms\n") % this->_AtomTable->getNumberOfAtoms());
 #ifdef	DEBUG_DEFINE_ENERGY
@@ -1432,7 +1430,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateNonbondEnergyFunctionTables(bool use
 //    printf("atom number: %d\n", this->_AtomTable->getNumberOfAtoms());
 
 //    printf("%s:%d in generateNonbondEnergyFunctionTables\n", __FILE__, __LINE__);
-    core::List_sp parts = core::eval::funcall(_sym_prepare_amber_energy_nonbond,this->asSmartPtr(),system);
+    core::List_sp parts = core::eval::funcall(_sym_prepare_amber_energy_nonbond,this->asSmartPtr(),nonbondForceField);
 //      printf("%s:%d:%s    parts -> %s\n", __FILE__, __LINE__, __FUNCTION__, _rep_(parts).c_str());
 //    printf("%s:%d in generateNonbondEnergyFunctionTables\n", __FILE__, __LINE__);
     this->_Nonbond->constructNonbondTermsFromAList(parts);

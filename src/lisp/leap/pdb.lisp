@@ -279,7 +279,9 @@ otherwise signal an error."
       (if errorp
           (error "Ran out of sequence information")
           (return-from pop-sequence-pdb-residue error-val)))
-    (pop (car (sequences pdb-atom-reader)))))
+    (let* ((residue (pop (car (sequences pdb-atom-reader))))
+           (last-sequence (null (sequences pdb-atom-reader))))
+      (values residue (length (car (sequences pdb-atom-reader)))))))
 
 (defun finish-previous-sequence (pdb &optional (assign-tail t))
   "* Arguments
@@ -419,7 +421,7 @@ MTRIX- Used to build a list of matrices."
             (otherwise nil)))))
     line))
   
-(defun scan-pdb (filename &key progress)
+(defun scan-pdb (filename &key progress system)
   "* Arguments
 - filename : A pathname
 * Description
@@ -449,7 +451,7 @@ values residue-sequences matrices"
              (scanner (scanner pdb-scanner)))
         (setf (sequences scanner) sequences)
         (finish-scanner scanner)
-        scanner))))
+        (build-sequence scanner system)))))
 
 (defun warn-of-unknown-topology (res scanner)
   (let* ((name (name res))
@@ -522,7 +524,8 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                  (when (new-residue-p res-seq i-code reader)
                    (setf (current-residue-number reader) res-seq
                          (current-i-code reader) i-code)
-                   (let ((pdb-residue (pop-sequence-pdb-residue reader nil nil)))
+                   (multiple-value-bind (pdb-residue num-remaining-residues)
+                       (pop-sequence-pdb-residue reader nil nil)
                      (unless pdb-residue
                        (invoke-restart 'ran-out-of-sequence))
                      (setf (previous-topology reader) (current-topology reader)
@@ -550,7 +553,9 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                            ;; There is no topology, create an empty residue
                            (let ((cur-res (chem:make-residue residue-name)))
                              (setf (current-residue reader) cur-res)
-                             (chem:add-matter (molecule reader) cur-res) cur-res)))))
+                             (chem:add-matter (molecule reader) cur-res) cur-res)))
+                     (when (= num-remaining-residues 0)
+                       (setf (molecule reader) nil))))
                  (let ((atom (or (chem:content-with-name-or-nil (current-residue reader) atom-name)
                                  (chem:content-with-name-or-nil (current-residue reader) (gethash atom-name *pdb-atom-map*)))))
                    (cond
@@ -572,7 +577,8 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                         (chem:set-id atom atom-serial)
                         (chem:add-matter (current-residue reader) atom)
                         (chem:set-position atom (geom:vec x y z))
-                        (chem:setf-needs-build atom nil)))))))
+                        (chem:setf-needs-build atom nil)
+                        (setf (gethash atom-serial (serial-to-atom reader)) atom)))))))
               (:ter (setf (molecule reader) nil
                           (current-residue reader) nil
                           (current-topology reader) nil
@@ -589,11 +595,19 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
          do (mapc (lambda (to) (setf (gethash to ht) :to))
                   (to connect)))
       ht)))
+
+
+(defgeneric build-sequence (scanner system))
+
+(defmethod build-sequence (scanner system)
+  scanner)
+
 (defparameter *serial-to-atoms* nil)
 
-(defun load-pdb (filename &key scanner progress)
+(defun load-pdb (filename &key scanner progress system)
   (with-open-file (fin filename :direction :input)
-    (let* ((scanner (or scanner (scan-pdb filename :progress progress)))
+    (let* ((scanner (or scanner
+                        (build-sequence (scan-pdb filename :progress progress) system)))
            (serial-to-atoms (connect-atoms-hash-table scanner)))
       (setq *serial-to-atoms* serial-to-atoms)
       (let ((pdb-atom-reader (make-instance 'pdb-atom-reader :stream fin
@@ -602,7 +616,8 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                                                                (sequences scanner))
                                             :connect-atoms (connects scanner)
                                             :serial-to-atom serial-to-atoms)))
-        (let ((bar (cando:make-progress-bar :message "Load pdb" :total (file-length fin) :divisions 100 :on progress)))
+        (let ((bar (cando:make-progress-bar :message "Load pdb" :total (file-length fin) :divisions 100 :on progress))
+              (atom-table (make-hash-table :test #'eql)))
           (restart-case
               (progn
                 (loop for x = (read-and-process-line pdb-atom-reader nil :eof (big-z scanner))

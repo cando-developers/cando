@@ -155,3 +155,8 @@ used to provide parameters.  There is one default force-field called :default.")
             (chem:force-field-merge merged-force-field ff))
           merged-force-field))))
 
+
+(defun force-fields ()
+  (maphash (lambda (name parts)
+             (format t "~a ~a~%" name parts))
+           *force-fields*))
