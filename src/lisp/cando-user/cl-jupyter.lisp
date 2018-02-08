@@ -1,9 +1,30 @@
 (in-package :cando-user)
 
+(defun show (matter)
+  (cond
+    ((typep matter 'chem:aggregate)
+     (funcall (find-symbol "SHOW-AGGREGATE" :nglv) matter))
+    ((typep matter 'chem:molecule)
+     (let ((agg (chem:make-aggregate nil)))
+       (chem:add-matter agg matter)
+       (funcall (find-symbol "SHOW-AGGREGATE" :nglv) agg)))
+    ((typep matter 'chem:residue)
+     (let ((agg (chem:make-aggregate nil))
+           (mol (chem:make-molecule nil)))
+       (chem:add-matter agg mol)
+       (chem:add-matter mol matter)
+       (funcall (find-symbol "SHOW-AGGREGATE" :nglv) agg)))
+    (t (error "You cannot show a ~a" matter))))
+
+(defun repr (widget representation &optional (selection "all"))
+  (funcall (find-symbol "ADD-REPRESENTATION" :nglv) widget representation :selection selection))
+
 (defun cl-jupyter-kernel-start ()
   (let ((amber-home
-          (namestring (or (uiop:ensure-directory-pathname (ext:getenv "AMBERHOME"))
-                          (uiop:ensure-directory-pathname "/home/app/amber16-data/")))))
+          (namestring (or (if (ext:getenv "AMBERHOME")
+                              (uiop/pathname:ensure-directory-pathname (ext:getenv "AMBERHOME"))
+                              nil)
+                          (uiop/pathname:ensure-directory-pathname "/home/app/amber16-data/")))))
     (setf (logical-pathname-translations "amber")
           (list (list "**;*.*" (concatenate 'string amber-home "/**/*.*"))))
     (format t "Setting amber host pathname translation -> ~a~%" amber-home))

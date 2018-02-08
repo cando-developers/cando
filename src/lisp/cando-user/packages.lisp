@@ -32,7 +32,9 @@
         #:leap
         #:leap.pdb)
   (:export #:start-swank)
-  (:export #:cl-jupyter-kernel-start)
+  (:export #:cl-jupyter-kernel-start
+           #:show
+           #:repr)
   )
 
 

@@ -115,7 +115,7 @@
                                (chem:matter-get-property-or-default
                                 molecule :force-field :default))
                              aggregate))
-         (unique (remove-duplicates force-fields)))
+         (unique (remove-duplicates force-field-names)))
     (let ((nbmerged (chem:make-ffnonbond-db)))
       (mapc (lambda (force-field-name)
               (let ((force-field (leap.core:merged-force-field force-field-name)))

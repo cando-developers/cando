@@ -163,6 +163,7 @@ odd atom name maps only to the last standard atom name it was mapped to."
    (previous-residue :initarg :previous-residue :accessor previous-residue)
    (previous-topology :initarg :previous-topology :accessor previous-topology)
    (aggregate :initform (chem:make-aggregate) :reader aggregate)
+   (finish-molecule :initform nil :accessor finish-molecule)
    (molecule :initform nil :initarg :molecule :accessor molecule)
    (current-residue :initform nil :initarg :current-residue :accessor current-residue)
    (current-topology :initform nil :initarg :current-topology :accessor current-topology)
@@ -272,16 +273,10 @@ If you want to check if it's a big-z file then pass check-big-z = T."
 Pop and return the next residue in the sequence.
 If we run out of residues and errorp is NIL then return error-val
 otherwise signal an error."
-  (let ((sequence (car (sequences pdb-atom-reader))))
-    (unless (car (sequences pdb-atom-reader))
-      (pop (sequences pdb-atom-reader)))
-    (unless (car (sequences pdb-atom-reader))
-      (if errorp
-          (error "Ran out of sequence information")
-          (return-from pop-sequence-pdb-residue error-val)))
-    (let* ((residue (pop (car (sequences pdb-atom-reader))))
-           (last-sequence (null (sequences pdb-atom-reader))))
-      (values residue (length (car (sequences pdb-atom-reader)))))))
+  (unless (car (sequences pdb-atom-reader))
+    (pop (sequences pdb-atom-reader))
+    (return-from pop-sequence-pdb-residue error-val))
+  (pop (car (sequences pdb-atom-reader))))
 
 (defun finish-previous-sequence (pdb &optional (assign-tail t))
   "* Arguments
@@ -518,16 +513,18 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
               ((:atom :hetatm)
                (destructuring-bind (head atom-serial atom-name alt-loc residue-name chain-id res-seq i-code x y z)
                    line-data
-                 (when (null (molecule reader))
-                   (setf (molecule reader) (chem:make-molecule nil))
-                   (chem:add-matter (aggregate reader) (molecule reader)))
+                 
                  (when (new-residue-p res-seq i-code reader)
                    (setf (current-residue-number reader) res-seq
                          (current-i-code reader) i-code)
-                   (multiple-value-bind (pdb-residue num-remaining-residues)
-                       (pop-sequence-pdb-residue reader nil nil)
+                   (let ((pdb-residue (pop-sequence-pdb-residue reader nil nil)))
+                     (format t "popped residue: ~a~%" pdb-residue)
                      (unless pdb-residue
-                       (invoke-restart 'ran-out-of-sequence))
+                       (setf (molecule reader) (chem:make-molecule nil))
+                       (format t "Starting a new molecule~%")
+                       (setf pdb-residue (pop-sequence-pdb-residue reader nil nil))
+                       (format t "popped first residue: ~a~%" pdb-residue)
+                       (chem:add-matter (aggregate reader) (molecule reader)))
                      (setf (previous-topology reader) (current-topology reader)
                            (previous-residue reader) (current-residue reader)
                            (current-topology reader) (topology pdb-residue))
@@ -554,8 +551,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                            (let ((cur-res (chem:make-residue residue-name)))
                              (setf (current-residue reader) cur-res)
                              (chem:add-matter (molecule reader) cur-res) cur-res)))
-                     (when (= num-remaining-residues 0)
-                       (setf (molecule reader) nil))))
+                     ))
                  (let ((atom (or (chem:content-with-name-or-nil (current-residue reader) atom-name)
                                  (chem:content-with-name-or-nil (current-residue reader) (gethash atom-name *pdb-atom-map*)))))
                    (cond
@@ -579,12 +575,14 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                         (chem:set-position atom (geom:vec x y z))
                         (chem:setf-needs-build atom nil)
                         (setf (gethash atom-serial (serial-to-atom reader)) atom)))))))
-              (:ter (setf (molecule reader) nil
-                          (current-residue reader) nil
-                          (current-topology reader) nil
-                          (current-residue-number reader) nil
-                          (current-i-code reader) nil))
+              (:ter nil)
               (otherwise nil)))
+          #+(or)(when (finish-molecule reader)
+                  (setf (molecule reader) nil
+                        (current-residue reader) nil
+                        (current-topology reader) nil
+                        (current-residue-number reader) nil
+                        (current-i-code reader) nil))
           line))))
 
 (defun connect-atoms-hash-table (scanner)
@@ -620,6 +618,8 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
               (atom-table (make-hash-table :test #'eql)))
           (restart-case
               (progn
+                (setf (molecule pdb-atom-reader) (chem:make-molecule nil))
+                (chem:add-matter (aggregate pdb-atom-reader) (molecule pdb-atom-reader))
                 (loop for x = (read-and-process-line pdb-atom-reader nil :eof (big-z scanner))
                    do (cando:progress-advance bar (file-position fin))
                    until (eq x :eof))
