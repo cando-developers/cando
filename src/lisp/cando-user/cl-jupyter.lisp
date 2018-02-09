@@ -22,9 +22,9 @@
 (defun cl-jupyter-kernel-start ()
   (let ((amber-home
           (namestring (or (if (ext:getenv "AMBERHOME")
-                              (uiop/pathname:ensure-directory-pathname (ext:getenv "AMBERHOME"))
+                              (probe-file (ext:getenv "AMBERHOME"))
                               nil)
-                          (uiop/pathname:ensure-directory-pathname "/home/app/amber16-data/")))))
+                          (probe-file "/home/app/amber16-data/")))))
     (setf (logical-pathname-translations "amber")
           (list (list "**;*.*" (concatenate 'string amber-home "/**/*.*"))))
     (format t "Setting amber host pathname translation -> ~a~%" amber-home))
