@@ -1166,8 +1166,8 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, core::T_sp
   while (moleculeLoop.advanceLoopAndProcess() ) {
     Molecule_sp molecule = moleculeLoop.getMolecule();
     ForceField_sp forceField = gc::As<ForceField_sp>(core::eval::funcall(chem::_sym_lookup_force_field_for_molecule,molecule,system));
-    if (assign_types) forceField->assignTypes(matter);
-    this->generateStandardEnergyFunctionTables(matter,forceField,activeAtoms,show_progress);
+    if (assign_types) forceField->assignTypes(molecule);
+    this->generateStandardEnergyFunctionTables(molecule,forceField,activeAtoms,show_progress);
   }
   {
     FFNonbondDb_sp nonbondForceField = gc::As<FFNonbondDb_sp>(core::eval::funcall(chem::_sym_lookup_nonbond_force_field_for_aggregate,matter,system));
@@ -1177,9 +1177,9 @@ CL_DEFMETHOD void EnergyFunction_O::defineForMatter(Matter_sp matter, core::T_sp
 }
 
 
-CL_LAMBDA((energy_function !) matter force_field &key active_atoms show_progress);
+CL_LAMBDA((energy_function !) molecule force_field &key active_atoms show_progress);
 CL_DOCSTRING("Generate the standard energy function tables. The atom types, and CIP priorities need to be precalculated.");
-CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress )
+CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_sp molecule, ForceField_sp forceField, core::T_sp activeAtoms, bool show_progress )
 {
   Loop loop;
   Atom_sp          a1, a2, a3, a4, aImproperCenter;
@@ -1191,7 +1191,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   int             coordinateIndex;
   
   // Construct atom table - used by all terms
-  this->_AtomTable->constructFromMatter(matter,forceField,activeAtoms);
+  this->_AtomTable->constructFromMatter(molecule,forceField,activeAtoms);
   
 	//
 	// Now create the energy function from all this info
@@ -1208,7 +1208,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
 	// Initialize the energy components
 	//
   ALL_ENERGY_COMPONENTS(initialize());
-  this->_Matter= matter;
+//  this->_Matter= matter;
   this->_DielectricConstant = 80.0;
   this->_eraseMissingParameters();
   coordinateIndex = 0;
@@ -1216,7 +1216,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   {_BLOCK_TRACE("Defining STRETCH");
     size_t terms = 0;
     size_t missing_terms = 0;
-    loop.loopTopGoal(matter,BONDS);
+    loop.loopTopGoal(molecule,BONDS);
     while ( loop.advanceLoopAndProcess() ) {
       a1 = loop.getBondA1();
       a2 = loop.getBondA2();
@@ -1250,7 +1250,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   {_BLOCK_TRACE("Defining ANGLES");
     size_t terms = 0;
     size_t missing_terms = 0;
-    loop.loopTopGoal(matter,ANGLES);
+    loop.loopTopGoal(molecule,ANGLES);
     while ( loop.advanceLoopAndProcess() )
     {
       a1 = loop.getAtom1();
@@ -1280,7 +1280,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   {_BLOCK_TRACE("Defining PROPERS");
     size_t terms = 0;
     size_t missing_terms = 0;
-    loop.loopTopGoal(matter,PROPERS);
+    loop.loopTopGoal(molecule,PROPERS);
     while ( loop.advanceLoopAndProcess() ) {
       a1 = loop.getAtom1();
       a2 = loop.getAtom2();
@@ -1370,7 +1370,7 @@ CL_DEFMETHOD void EnergyFunction_O::generateStandardEnergyFunctionTables(Matter_
   {_BLOCK_TRACE("Defining IMPROPERS");
     EnergyDihedral energyDihedral;
     size_t terms = 0;
-    loop.loopTopGoal(matter,IMPROPERS);
+    loop.loopTopGoal(molecule,IMPROPERS);
     while ( loop.advanceLoopAndProcess() ) {
       a1 = loop.getAtom1();
       a2 = loop.getAtom2();

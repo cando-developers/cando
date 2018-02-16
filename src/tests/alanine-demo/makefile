@@ -10,3 +10,6 @@ leap-run-no-box:
 
 cando-water-run:
 	$(HOME)/Development/amber16/bin/sander -O -i 01_Min.in -o 01_Min_chemagg_water.out -p chemagg_water.top -c chemagg_water.crd
+
+cando-chemdraw-run:
+	$(HOME)/Development/amber16/bin/sander -O -i 01_Min.in -o 01_Min_chemagg.out -p chemagg.top -c chemagg.crd

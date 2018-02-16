@@ -140,6 +140,13 @@ string		EnergyAtom::getResidueAndName()
 void AtomTable_O::initialize()
 {
   this->_AtomTableIndices = core::HashTableEq_O::create_default();
+  core::MDArray_int32_t_sp residues = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
+  core::MDArrayT_sp residue_names = core::MDArrayT_O::make(32,_Nil<core::T_O>(),core::make_fixnum(0));
+  core::MDArray_int32_t_sp atoms_per_molecule = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
+//  atoms_per_molecule->vectorPushExtend(0);
+  this->_Residues = residues;
+  this->_ResidueNames = residue_names;
+  this->_AtomsPerMolecule = atoms_per_molecule;
 }
 
 
@@ -227,7 +234,7 @@ CL_DEFMETHOD core::MDArray_int32_t_sp AtomTable_O::atom_table_residues() const {
   if (this->_Residues.unboundp()) {
     SIMPLE_ERROR(BF("Residues table is not bound"));
   }
-  return this->_Residues;
+  return core::eval::funcall(cl::_sym_copySeq,this->_Residues);
 }
 
 CL_DEFMETHOD core::MDArrayT_sp AtomTable_O::atom_table_residue_names() const {
@@ -235,7 +242,7 @@ CL_DEFMETHOD core::MDArrayT_sp AtomTable_O::atom_table_residue_names() const {
   if (this->_ResidueNames.unboundp()) {
     SIMPLE_ERROR(BF("Residue names table is not bound"));
   }
-  return this->_ResidueNames;
+  return core::eval::funcall(cl::_sym_copySeq,this->_ResidueNames);
 }
 
 CL_DEFMETHOD core::MDArray_int32_t_sp AtomTable_O::atom_table_atoms_per_molecule() const {
@@ -243,91 +250,76 @@ CL_DEFMETHOD core::MDArray_int32_t_sp AtomTable_O::atom_table_atoms_per_molecule
   if (this->_AtomsPerMolecule.unboundp()) {
     SIMPLE_ERROR(BF("atoms per molecule table is not bound"));
   }
-  return this->_AtomsPerMolecule;
+  return core::eval::funcall(cl::_sym_copySeq,this->_AtomsPerMolecule);
 }
 
 
-DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void AtomTable_O::constructFromMatter(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms )
+DONT_OPTIMIZE_WHEN_DEBUG_RELEASE void AtomTable_O::constructFromMatter(Matter_sp mol, ForceField_sp forceField, core::T_sp activeAtoms )
 {
-//  printf("%s:%d In constructFromMatter\n", __FILE__, __LINE__ );
-  this->_Atoms.clear();
-  this->_AtomTableIndices->clrhash();
-//  this->_Residues = core::MDArray_int32_t_O::make_vector(32,0,core::make_fixnum(0)/*fill-pointer*/);
-  core::MDArray_int32_t_sp residues = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
-  core::MDArrayT_sp residue_names = core::MDArrayT_O::make(32,_Nil<core::T_O>(),core::make_fixnum(0));
-  core::MDArray_int32_t_sp atoms_per_molecule = core::MDArray_int32_t_O::make_vector_with_fill_pointer(32,0,0);
-  uint idx = 0;
-  uint coordinateIndex = 0;
-  Loop molecule_loop;
-  molecule_loop.loopTopGoal(matter,MOLECULES);
-  while (molecule_loop.advanceLoopAndProcess()) {
-    Molecule_sp mol = molecule_loop.getMolecule();
-    atoms_per_molecule->vectorPushExtend(idx);
-    Loop residue_loop;
-    residue_loop.loopTopGoal(mol,RESIDUES);
-    while (residue_loop.advanceLoopAndProcess()) {
-      Residue_sp res = residue_loop.getResidue();
-      residues->vectorPushExtend(idx);
-      residue_names->vectorPushExtend(res->getName());
-      {_BLOCK_TRACE("Defining ATOMS");
-        Loop loop;
-        Atom_sp a1;
-        loop.loopTopGoal(res,ATOMS);
-        while ( loop.advanceLoopAndProcess() ) 
+  uint idx = this->_Atoms.size();
+  uint coordinateIndex = idx*3;
+  
+  Loop residue_loop;
+  residue_loop.loopTopGoal(mol,RESIDUES);
+  while (residue_loop.advanceLoopAndProcess()) {
+    Residue_sp res = residue_loop.getResidue();
+    _Residues->vectorPushExtend(idx);
+    _ResidueNames->vectorPushExtend(res->getName());
+    {_BLOCK_TRACE("Defining ATOMS");
+      Loop loop;
+      Atom_sp a1;
+      loop.loopTopGoal(res,ATOMS);
+      while ( loop.advanceLoopAndProcess() ) 
+      {
+        a1 = loop.getAtom();
+        if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1) ) continue;
+        if ( a1.isA<VirtualAtom_O>() ) 
         {
-          a1 = loop.getAtom();
-          if ( activeAtoms.notnilp() && !inAtomSet(activeAtoms,a1) ) continue;
-          if ( a1.isA<VirtualAtom_O>() ) 
-          {
-            LOG(BF("Skipping virtual atom[%s]") % _rep_(a1) );
-            continue; // skip virtuals
-          }
-          LOG(BF("Setting atom[%s] in AtomTable[%d]") % _rep_(a1) % idx );
-          this->_AtomTableIndices->setf_gethash(a1,core::clasp_make_fixnum(idx));
-          EnergyAtom ea(forceField,a1,coordinateIndex);
-          ea._AtomName = a1->getName();
-          {_BLOCK_TRACE("Building spanning tree for atom");
-            LOG(BF("Spanning tree for atom: %s\n") % _rep_(a1->getName()));
-            SpanningLoop_sp span = SpanningLoop_O::create(a1);
-            Atom_sp bonded;
-            while ( span->advance() ) {
-              bonded = span->getAtom();
-              if ( bonded == a1 ) continue;
-              int backCount = bonded->getBackCount();
-              LOG(BF("Looking at atom[%s] at remove[%d]") % _rep_(bonded) % backCount );
-			// Once we crawl out 4 bonds we have gone as far as we need
-              if ( backCount >= 4 ) {
-                LOG(BF("Hit remove of 4 - terminating spanning loop"));
-                break;
-              }
-              ASSERT(backCount>0 && backCount<=3);
-              LOG(BF("Adding atom at remove %d --> %s\n") % (backCount-1) % _rep_(bonded->getName()));
-              ea._AtomsAtRemoveBondAngle14[backCount-1].insert(bonded);
-            }
-          }
-          this->_Atoms.push_back(ea);
-          idx++;
-          coordinateIndex += 3;
-#ifdef DEBUG_ON
-          stringstream ss;
-          gctools::SmallOrderedSet<Atom_sp>::iterator si;
-          for ( int zr = 0; zr<=EnergyAtom::max_remove; zr++ ) {
-            ss.str("");
-            for ( si = ea._AtomsAtRemoveBondAngle14[zr].begin(); si!=ea._AtomsAtRemoveBondAngle14[zr].end(); si++ ) {
-              ss << " " << _rep_((*si));
-            }
-            LOG(BF("Atoms at remove %d = %s") % zr % ss.str() );
-          }
-#endif
+          LOG(BF("Skipping virtual atom[%s]") % _rep_(a1) );
+          continue; // skip virtuals
         }
+        LOG(BF("Setting atom[%s] in AtomTable[%d]") % _rep_(a1) % idx );
+        this->_AtomTableIndices->setf_gethash(a1,core::clasp_make_fixnum(idx));
+        EnergyAtom ea(forceField,a1,coordinateIndex);
+        ea._AtomName = a1->getName();
+        {_BLOCK_TRACE("Building spanning tree for atom");
+          LOG(BF("Spanning tree for atom: %s\n") % _rep_(a1->getName()));
+          SpanningLoop_sp span = SpanningLoop_O::create(a1);
+          Atom_sp bonded;
+          while ( span->advance() ) {
+            bonded = span->getAtom();
+            if ( bonded == a1 ) continue;
+            int backCount = bonded->getBackCount();
+            LOG(BF("Looking at atom[%s] at remove[%d]") % _rep_(bonded) % backCount );
+			// Once we crawl out 4 bonds we have gone as far as we need
+            if ( backCount >= 4 ) {
+              LOG(BF("Hit remove of 4 - terminating spanning loop"));
+              break;
+            }
+            ASSERT(backCount>0 && backCount<=3);
+            LOG(BF("Adding atom at remove %d --> %s\n") % (backCount-1) % _rep_(bonded->getName()));
+            ea._AtomsAtRemoveBondAngle14[backCount-1].insert(bonded);
+          }
+        }
+        this->_Atoms.push_back(ea);
+        idx++;
+        coordinateIndex += 3;
+#ifdef DEBUG_ON
+        stringstream ss;
+        gctools::SmallOrderedSet<Atom_sp>::iterator si;
+        for ( int zr = 0; zr<=EnergyAtom::max_remove; zr++ ) {
+          ss.str("");
+          for ( si = ea._AtomsAtRemoveBondAngle14[zr].begin(); si!=ea._AtomsAtRemoveBondAngle14[zr].end(); si++ ) {
+            ss << " " << _rep_((*si));
+          }
+          LOG(BF("Atoms at remove %d = %s") % zr % ss.str() );
+        }
+#endif
       }
     }
   }
-  residues->vectorPushExtend(idx);
-  atoms_per_molecule->vectorPushExtend(idx);
-  this->_Residues = core::eval::funcall(cl::_sym_copySeq,residues);
-  this->_ResidueNames = core::eval::funcall(cl::_sym_copySeq,residue_names);
-  this->_AtomsPerMolecule = core::eval::funcall(cl::_sym_copySeq,atoms_per_molecule);
+  this->_Residues->vectorPushExtend(idx);
+  this->_AtomsPerMolecule->vectorPushExtend(idx);
 }
 
 /*! Fill excludedAtomIndices with the excluded atom list.

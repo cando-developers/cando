@@ -109,9 +109,9 @@ class AtomTable_O : public core::CxxObject_O
   typedef core::HashTableEq_sp        AtomTable;
   gctools::Vec0<EnergyAtom>	_Atoms;
   AtomTable        _AtomTableIndices; // m a p<Atom_sp,uint>	_AtomTableIndices;
-  core::SimpleVector_int32_t_sp     _Residues;
-  core::SimpleVector_sp             _ResidueNames;
-  core::SimpleVector_int32_t_sp     _AtomsPerMolecule;
+  core::MDArray_int32_t_sp     _Residues;
+  core::MDArrayT_sp             _ResidueNames;
+  core::MDArray_int32_t_sp      _AtomsPerMolecule;
  public:
   typedef gctools::Vec0<EnergyAtom>::iterator iterator;
  public:
@@ -131,7 +131,7 @@ class AtomTable_O : public core::CxxObject_O
   iterator	end() { return this->_Atoms.end(); };
 
   void	dumpTerms();
-  void constructFromMatter(Matter_sp matter, ForceField_sp forceField, core::T_sp activeAtoms );
+  void constructFromMatter(Matter_sp mol, ForceField_sp forceField, core::T_sp activeAtoms );
 
   size_t push_back_excluded_atom_indices_and_sort(core::MDArray_int32_t_sp excludedAtomIndices, size_t atomIndex);
   /*! Calculate the excluded atom list with atom indices starting at 0.
