@@ -72,6 +72,10 @@
           (float (geom:vy c) 1.0s0)
           (float (geom:vz c) 1.0s0)))
 
+(defun arrow (from-vec to-vec &optional (radius 0.2))
+  (let ((from-coord (coord-to-vector from-vec))
+        (to-coord (coord-to-vector to-vec)))
+    (vector "arrow" from-coord to-coord #(1 0 1) radius)))
 (defun cartoon-atom-map-arrows (atom-map from-matter to-matter)
   (let (arrows)
     (loop for pair in atom-map
