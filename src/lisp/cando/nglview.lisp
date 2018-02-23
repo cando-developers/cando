@@ -170,3 +170,22 @@
 
 (defmacro := (a b)
   `(defparameter ,a ,b))
+
+(defun distance-two-positions (p1 p2)
+  (geom:vlength (geom:v- p1 p2)))
+
+(defun picked-atoms (viewer agg num)
+    (loop for picked in (reverse (subseq (safe-pick-history viewer) 0 num))
+           collect (let* ((atom (cdr (assoc "atom" picked :test #'string=)))
+                           (x (cdr (assoc "x" atom :test #'string=)))
+                           (y (cdr (assoc "y" atom :test #'string=)))
+                           (z (cdr (assoc "z" atom :test #'string=)))
+                           (pos (geom:vec x y z))
+                            resulta)
+                         (chem:map-atoms nil (lambda (a) 
+                                 (when (< (distance-two-positions pos (chem:get-position a)) 0.01) 
+                                     (setf resulta a))) agg)
+                        resulta)))
+
+
+

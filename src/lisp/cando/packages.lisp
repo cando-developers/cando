@@ -173,6 +173,8 @@
    #:rotate-y
    #:rotate-z
    #::=
+   #:distance-two-positions
+   #:picked-atoms
    #:unbuilt-atoms
    #:count-unbuilt-atoms
    #:simple-build-unbuilt-atoms
