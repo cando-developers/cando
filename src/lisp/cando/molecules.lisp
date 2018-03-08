@@ -277,8 +277,33 @@ Set the stereochemistry of a collection of stereocenters using a alist of atom n
             (setf (gethash k rms-results) (chem:root-mean-square-difference superposer)))
           )))
     rms-results))
-
-
+#|
+(defun superpose-one-test (agg-fixed agg-moveable)
+  (let ((selected-atoms (core:make-cxx-object 'chem:superpose-selected-atoms))
+        (superposer (core:make-cxx-object 'chem:superpose-engine)))
+    (chem:set-matter-with-selected-atoms selected-atoms agg-fixed)
+    (let ((coords-fixed (chem:extract-coordinates selected-atoms agg-fixed)))
+      (chem:set-matter-with-selected-atoms selected-atoms agg-moveable)
+       (let ((coords-moveable (chem:extract-coordinates selected-atoms agg-moveable)))
+        (chem:set-fixed-all-points superposer coords-fixed)
+        (chem:set-moveable-all-points superposer coords-moveable)
+        (format t "fixed-points ~a~%" (chem:get-number-of-fixed-points superposer))
+        (format t "moveable-points ~a~%" (chem:get-number-of-moveable-points superposer))
+         (let ((transform (chem:superpose superposer)))
+          (chem:apply-transform-to-atoms agg-moveable transform))))))
+|#
+    
+(defun superpose-one-test2 (agg-fixed agg-moveable)
+  (let ((selected-atoms (core:make-cxx-object 'chem:superpose-selected-atoms))
+        (superposer (core:make-cxx-object 'chem:superpose-engine)))
+    (chem:set-matter-with-selected-atoms selected-atoms agg-fixed)
+    (chem:copy-matter-coordinates-into-moveable-coordinates selected-atoms agg-fixed)
+    (chem:set-matter-with-selected-atoms selected-atoms agg-moveable)
+    (chem:copy-matter-coordinates-into-fixed-coordinates selected-atoms agg-moveable)
+    (format t "fixed-points ~a~%" (chem:get-number-of-fixed-points superposer))
+    (format t "moveable-points ~a~%" (chem:get-number-of-moveable-points superposer))
+        (let ((transform (chem:superpose superposer)))
+           (chem:apply-transform-to-atoms agg-moveable transform))))
 
 (defun gnuplot-data (data)
   (with-open-file (fout "/tmp/gnuplot_temp.xy" :direction :output)

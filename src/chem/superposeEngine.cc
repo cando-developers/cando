@@ -122,8 +122,10 @@ CL_DEFMETHOD     string SuperposeEngine_O::debugString()
 void SuperposeEngine_O::initialize()
 {
     this->Base::initialize();
-    this->_FixedIndices = core::MDArray_size_t_O::create();
-    this->_MoveableIndices = core::MDArray_size_t_O::create();
+//    this->_FixedIndices = core::MDArray_size_t_O::make_vector(16,0,core::clasp_make_fixnum(0));
+//    this->_MoveableIndices = core::MDArray_size_t_O::make_vector(16,0,core::clasp_make_fixnum(0));
+    this->_FixedIndices = core::MDArray_size_t_O::make_vector(16);
+    this->_MoveableIndices = core::MDArray_size_t_O::make_vector(16);
     this->_FixedCoordinates = geom::MDArrayCoordinate_O::make_vector(16,Vector3(),core::clasp_make_fixnum(0));
     this->_MoveableCoordinates = geom::MDArrayCoordinate_O::make_vector(16,Vector3(),core::clasp_make_fixnum(0));
 }
@@ -197,6 +199,7 @@ void	SuperposeEngine_O::doSuperpose()
     int				fixedIndicesSize, moveableIndicesSize;
     fixedIndicesSize = this->_FixedIndices->length();
     moveableIndicesSize = this->_MoveableIndices->length();
+    printf("Moveable indices fixed(%d) moveable(%d)", fixedIndicesSize, moveableIndicesSize);
     LOG(BF("Moveable indices fixed(%d) moveable(%d)") % fixedIndicesSize % moveableIndicesSize );
     ASSERTP(fixedIndicesSize==moveableIndicesSize,"num. fixed points must equal num. of moveable points");
     ASSERTF(fixedIndicesSize>=3, BF("You must have at least 3 points to superpose and you only have: %d")% fixedIndicesSize );
@@ -211,13 +214,14 @@ void	SuperposeEngine_O::doSuperpose()
 
     {_BLOCK_TRACE("Calculating geometric center of fixed points");
 	fixedCenter = geometricCenterOfPointsIndirect(this->_FixedIndices,this->_FixedCoordinates);
+        printf("Translating fixed to fixed geometric center: %s", fixedCenter.asString().c_str());
         LOG(BF( "Translating fixed to fixed geometric center: %s")% 
 	    fixedCenter.asString().c_str() );
         VectorVector3s::iterator itS = Sj.begin();
 	for ( size_t iaV(0);
 	      iaV<this->_FixedIndices->length();
 	      iaV++,itS++ ) {
-	    LOG(BF("index=%d   *iaV=%d    pnt=%s") % (iaV-this->_FixedIndices->begin()) 
+          LOG(BF("index=%d   *iaV=%d    pnt=%s") % (iaV-this->_FixedIndices->begin()) 
 		% *iaV % this->_FixedCoordinates->getElement(*iaV).asString().c_str() ); 
 	    *itS = (*this->_FixedCoordinates)[iaV] - fixedCenter;
 	}
@@ -228,6 +232,7 @@ void	SuperposeEngine_O::doSuperpose()
           moveableCenter =(*this->_MoveableCoordinates)[(*this->_MoveableIndices)[iaV]] + moveableCenter;
 	}
 	moveableCenter = moveableCenter.multiplyByScalar(1.0/(double)(this->_MoveableIndices->length()));
+        printf("Translating moveable to moveable geometric center: %s", moveableCenter.asString().c_str()  );
 	LOG(BF("Translating moveable to moveable geometric center: %s") % moveableCenter.asString().c_str()  );
         auto itS=Si.begin();
 	for ( size_t iaV(0); itS!=Si.end(); iaV++,itS++ ) {
@@ -555,22 +560,23 @@ void SuperposeSelectedAtoms_O::updateSuperposeAtoms()
     ASSERT_gt(this->_SuperposeAtoms.size(),0);
 }
 
-
-void SuperposeSelectedAtoms_O::setMatter(Matter_sp matter)
+CL_LISPIFY_NAME("setSuperposeMatter");
+CL_DEFMETHOD void SuperposeSelectedAtoms_O::setMatter(Matter_sp matter)
 {
     this->_Matter = matter->copy();
     this->_SuperposeAtoms.clear();
 }
 
-void SuperposeSelectedAtoms_O::setMatterWithSelectedAtoms(Matter_sp matter)
+CL_LISPIFY_NAME("setMatterWithSelectedAtoms");
+CL_DEFMETHOD void SuperposeSelectedAtoms_O::setMatterWithSelectedAtoms(Matter_sp matter)
 {
     this->setMatter(matter);
     this->updateSuperposeAtoms();
 }
 
 
-
-geom::SimpleVectorCoordinate_sp SuperposeSelectedAtoms_O::extractCoordinates(Matter_sp matter)
+CL_LISPIFY_NAME("extractCoordinates");
+CL_DEFMETHOD geom::SimpleVectorCoordinate_sp SuperposeSelectedAtoms_O::extractCoordinates(Matter_sp matter)
 {
     if ( !this->_Matter->equal(matter) )
     {
@@ -587,19 +593,22 @@ geom::SimpleVectorCoordinate_sp SuperposeSelectedAtoms_O::extractCoordinates(Mat
     return coords;
 }
 
-Matter_sp SuperposeSelectedAtoms_O::getMatter()
+CL_LISPIFY_NAME("getSuperposeMatter");
+CL_DEFMETHOD Matter_sp SuperposeSelectedAtoms_O::getMatter()
 {
     return this->_Matter;
 }
 
-void SuperposeSelectedAtoms_O::copyMatterCoordinatesIntoFixedCoordinates(Matter_sp matter)
+CL_LISPIFY_NAME("copyMatterCoordinatesIntoFixedCoordinates");
+CL_DEFMETHOD void SuperposeSelectedAtoms_O::copyMatterCoordinatesIntoFixedCoordinates(Matter_sp matter)
 {
     geom::SimpleVectorCoordinate_sp ca = this->extractCoordinates(matter);
     ASSERT_gt(ca->length(),0);
     this->setFixedAllPoints(ca);
 }
 
-void SuperposeSelectedAtoms_O::copyMatterCoordinatesIntoMoveableCoordinates(Matter_sp matter)
+CL_LISPIFY_NAME("copyMatterCoordinatesIntoMoveableCoordinates");
+CL_DEFMETHOD void SuperposeSelectedAtoms_O::copyMatterCoordinatesIntoMoveableCoordinates(Matter_sp matter)
 {
     geom::SimpleVectorCoordinate_sp ca = this->extractCoordinates(matter);
     ASSERT_gt(ca->length(),0);
