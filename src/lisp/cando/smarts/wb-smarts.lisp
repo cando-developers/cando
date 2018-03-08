@@ -100,7 +100,7 @@
                     n))
 
 
-(defparameter *p* (make-cxx-object 'chem:chem-info))
+(defparameter *p* (core:make-cxx-object 'chem:chem-info))
 (chem:compile-smarts *p* "N")
 (format t "Matches: ~a~%" (chem:matches *p* *n*))
 (chem:get-code *p*)
