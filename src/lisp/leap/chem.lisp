@@ -106,6 +106,7 @@
 (defmethod chem:lookup-force-field-for-molecule (molecule (system null))
   (let ((force-field (chem:matter-get-property-or-default
                       molecule :force-field :default)))
+;;    (leap.core::merged-force-field force-field)))
     (leap.core::merged-force-field :default)))
 
 (defmethod chem:lookup-nonbond-force-field-for-aggregate (aggregate (system null))
