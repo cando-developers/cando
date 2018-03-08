@@ -672,7 +672,8 @@ AtomInfo	one;
 	    one._Atom = a;
             if ( useSybylTypes ) {
               ASSERT(sybylRules);
-              one._Type = sybylRules->assignType(a);
+              core::T_sp type = core::eval::funcall(_sym_assignType,sybylRules,a);
+              one._Type = gc::As<core::Symbol_sp>(type);
               //BFORMAT_T(BF("Assigned sybyl type %s to %s\n") % _rep_(one._Type) % _rep_(a));
             } else {
               if ( a->getType() ) {

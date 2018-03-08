@@ -60,6 +60,8 @@ void	FFTypesDb_O::initialize()
 }
 
 
+SYMBOL_EXPORT_SC_(ChemPkg,assignType);
+
 CL_LISPIFY_NAME("assignType");
 CL_LAMBDA((types_db !) atom &key verbose)
 CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom, bool verbose) {
