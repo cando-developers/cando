@@ -378,4 +378,17 @@ CL_DEFUN void geom__in_place_mul_scalar(ArrayCoordinate_sp array, double mul) {
   }
 };
 
+CL_DEFUN core::T_sp geom__unit_vectors()
+{
+  Vector3 v;
+  SimpleVectorCoordinate_sp a = SimpleVectorCoordinate_O::make(0,v,true,0,NULL);
+  v.set(1.0,0.0,0.0);
+  a->getElement(0) = v;
+  v.set(0.0,1.0,0.0);
+  a->getElement(1) = v;
+  v.set(0.0,0.0,1.0);
+  a->getElement(2) = v;
+  return a;
+}
+
 };
