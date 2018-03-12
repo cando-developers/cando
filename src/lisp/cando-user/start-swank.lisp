@@ -1,8 +1,8 @@
 (in-package :cando-user)
 
 (progn
-  (defparameter *started-swank* nil)
-  (defun start-swank ()
+  (defvar *started-swank* nil)
+  (defun start-swank (&optional (port 4005))
     ;; Bad!  This is hard-coded to work with docker
     (if *started-swank*
         (format t "Swank is already running~%")
@@ -19,6 +19,6 @@
           (let ((swank-create-server (find-symbol "CREATE-SERVER" "SWANK")))
             (mp:process-run-function 'swank-main
                                      (lambda () (funcall swank-create-server
-                                                         :port 4005
+                                                         :port port
                                                          :interface "0.0.0.0")))
             (setf *started-swank* t))))))
