@@ -1,7 +1,7 @@
 
 (in-package :cando)
 
-(defun safe-pick-history (widget)
+(defun pick-history (widget)
   (funcall (find-symbol "PICK-HISTORY" :NGLV) widget))
 
 (defun safe-add-shape (widget parts &key name)
@@ -30,7 +30,7 @@
     (with-output-to-string (sout)
   (mapcar (lambda (a) 
                   (format sout ".~a "(cdr (assoc "atomname" (cdr (car a)) :test #'equal)))) 
-          (subseq (safe-pick-history widget) 0 n))))
+          (subseq (pick-history widget) 0 n))))
 
 
 (defun pick-property (pick property)
@@ -45,9 +45,9 @@
     atom))
 
 (defun atom-map (widget n matter-from matter-to)
-  (unless (>= (length (safe-pick-history widget)) (* 2 n))
+  (unless (>= (length (pick-history widget)) (* 2 n))
     (error "There aren't enough atoms selected to create a map for ~a pairs." n))
-  (let ((map (loop for (pick-to pick-from) on (safe-pick-history widget) by #'cddr
+  (let ((map (loop for (pick-to pick-from) on (pick-history widget) by #'cddr
                    for atom-from = (atom-with-name matter-from (intern (pick-property pick-from "atomname") :keyword))
                    for atom-to = (atom-with-name matter-to (intern (pick-property pick-to "atomname") :keyword))
                    collect (cons atom-from atom-to))))
@@ -174,8 +174,8 @@
 (defun distance-two-positions (p1 p2)
   (geom:vlength (geom:v- p1 p2)))
 
-(defun picked-atoms (viewer agg num)
-    (loop for picked in (reverse (subseq (safe-pick-history viewer) 0 num))
+(defun picked-atoms (history agg num)
+    (loop for picked in (reverse (subseq history 0 num))
            collect (let* ((atom (cdr (assoc "atom" picked :test #'string=)))
                            (x (cdr (assoc "x" atom :test #'string=)))
                            (y (cdr (assoc "y" atom :test #'string=)))
@@ -186,6 +186,4 @@
                                  (when (< (distance-two-positions pos (chem:get-position a)) 0.01) 
                                      (setf resulta a))) agg)
                         resulta)))
-
-
 
