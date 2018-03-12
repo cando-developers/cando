@@ -239,14 +239,14 @@ Set the stereochemistry of a collection of stereocenters using a alist of atom n
   (let ((atoms (chem:atoms-with-chimera-specifications agg atomspec)))
     (chem:make-simple-vector-coordinate-from-atom-list atoms)))
 
-(defun superpose-one (agg-fixed agg-moveable atomspec)
-  (let ((coords-fixed (simple-vector-coordinate-for-atomspec agg-fixed atomspec))
-        (coords-moveable (simple-vector-coordinate-for-atomspec agg-moveable atomspec))
+(defun superpose-one (&key fixed-atoms moveable-matter moveable-atoms)
+  (let ((coords-fixed (chem:make-simple-vector-coordinate-from-atom-list fixed-atoms))
+        (coords-moveable (chem:make-simple-vector-coordinate-from-atom-list moveable-atoms))
         (superposer (core:make-cxx-object 'chem:superpose-engine)))
     (chem:set-fixed-all-points superposer coords-fixed)
     (chem:set-moveable-all-points superposer coords-moveable)
     (let ((transform (chem:superpose superposer)))
-      (chem:apply-transform-to-atoms agg-moveable transform))))
+      (chem:apply-transform-to-atoms moveable-matter transform))))
 
 (defun superpose-all (aggs atomspec)
   (let* ((fixed-agg (car aggs))

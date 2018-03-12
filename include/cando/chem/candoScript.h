@@ -38,7 +38,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 #include <cando/chem/chemPackage.h>
-
+#include <cando/geom/coordinateArray.h>
 
 namespace chem {
 
@@ -108,6 +108,8 @@ public:
 
 extern void setCandoDatabase(CandoDatabase_sp bdb);
 
+
+geom::SimpleVectorCoordinate_sp chem__make_simple_vector_coordinate_from_atom_list(core::List_sp atoms);
 
 
 

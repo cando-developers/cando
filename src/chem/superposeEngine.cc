@@ -50,32 +50,14 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/superposeEngine.h>
 #include <clasp/core/intArray.h>
 #include <clasp/core/wrappers.h>
+#include <cando/chem/candoScript.h>
+#include <cando/geom/vector3.h>
 
 
 namespace chem
 {
 
-    SYMBOL_EXPORT_SC_(ChemPkg,superpose);
-
-
-
-
-
-
-
-
-
-#ifdef XML_ARCHIVE
-    void	SuperposeEngine_O::archiveBase(core::ArchiveP node)
-{
-    this->Base::archiveBase(node);
-    node->attribute("fixedIndices",this->_FixedIndices);
-    node->attribute("fixedCoordinates",this->_FixedCoordinates);
-    node->attribute("moveableIndices",this->_MoveableIndices);
-    node->attribute("moveableCoordinates",this->_MoveableCoordinates);
-}
-#endif
-
+SYMBOL_EXPORT_SC_(ChemPkg,superpose);
 
 
 CL_LISPIFY_NAME("debugString");
@@ -94,30 +76,6 @@ CL_DEFMETHOD     string SuperposeEngine_O::debugString()
 	}
 	return ss.str();
     }
-
-
-
-
-
-
-
-
-
-//
-//	geometricCenterOfPoints
-//
-    Vector3	geometricCenterOfPointsIndirect( core::MDArray_size_t_sp indices, geom::SimpleVectorCoordinate_sp pnts)
-{ 
-    Vector3				pos;
-    ASSERTP(indices->size()<=pnts->size(),"There must be at least as many indices as coordinates");
-    pos.set(0.0,0.0,0.0);
-    if ( indices->length() == 0 ) return pos;
-    for ( size_t it(0); it<=indices->length(); ++it ) {
-      pos = pos + (*pnts)[(*indices)[it]];
-    }
-    pos = pos.multiplyByScalar(1.0/((double)(indices->length())));
-    return pos;
-}
 
 void SuperposeEngine_O::initialize()
 {
@@ -199,7 +157,7 @@ void	SuperposeEngine_O::doSuperpose()
     int				fixedIndicesSize, moveableIndicesSize;
     fixedIndicesSize = this->_FixedIndices->length();
     moveableIndicesSize = this->_MoveableIndices->length();
-    printf("Moveable indices fixed(%d) moveable(%d)", fixedIndicesSize, moveableIndicesSize);
+    printf("Moveable indices fixed(%d) moveable(%d)\n", fixedIndicesSize, moveableIndicesSize);
     LOG(BF("Moveable indices fixed(%d) moveable(%d)") % fixedIndicesSize % moveableIndicesSize );
     ASSERTP(fixedIndicesSize==moveableIndicesSize,"num. fixed points must equal num. of moveable points");
     ASSERTF(fixedIndicesSize>=3, BF("You must have at least 3 points to superpose and you only have: %d")% fixedIndicesSize );
@@ -213,8 +171,12 @@ void	SuperposeEngine_O::doSuperpose()
     LOG(BF("this->_MoveableIndices->length()=%d") % this->_MoveableIndices->length()  );
 
     {_BLOCK_TRACE("Calculating geometric center of fixed points");
-	fixedCenter = geometricCenterOfPointsIndirect(this->_FixedIndices,this->_FixedCoordinates);
-        printf("Translating fixed to fixed geometric center: %s", fixedCenter.asString().c_str());
+	fixedCenter.set(0.0,0.0,0.0);
+	for ( size_t iaV(0); iaV<this->_FixedIndices->length(); ++iaV) {
+          fixedCenter = (*this->_FixedCoordinates)[(*this->_FixedIndices)[iaV]] + fixedCenter;
+	}
+	fixedCenter = fixedCenter.multiplyByScalar(1.0/(double)(this->_FixedIndices->length()));
+        printf("%s:%d fixed geometric center: %s\n", __FILE__, __LINE__, fixedCenter.asString().c_str());
         LOG(BF( "Translating fixed to fixed geometric center: %s")% 
 	    fixedCenter.asString().c_str() );
         VectorVector3s::iterator itS = Sj.begin();
@@ -456,14 +418,16 @@ CL_DEFMETHOD void	SuperposeEngine_O::setFixedAllPoints( geom::SimpleVectorCoordi
 {
   size_t ia;
   size_t ii;
-    this->_FixedCoordinates = fc;
-    this->_FixedIndices = core::MDArray_size_t_O::make_vector(fc->length());
-    ii = 0;
-    for ( ii=0; ii<fc->length(); ii++ )
-    {
-      (*this->_FixedIndices)[ii] = ii;
-      LOG(BF("setFixedAllPoints index@%d ") % ii  );
-    }
+  this->_FixedCoordinates = geom::MDArrayCoordinate_O::make_vector(fc->length(),Vector3(),core::make_fixnum(fc->length()));
+  this->_FixedIndices = core::MDArray_size_t_O::make_vector(fc->length());
+  ii = 0;
+  for ( ii=0; ii<fc->length(); ii++ )
+  {
+    (*this->_FixedCoordinates)[ii] = (*fc)[ii];
+    (*this->_FixedIndices)[ii] = ii;
+//    printf("%s:%d Set fixed coordinate[%zu] -> %lf, %lf, %lf\n", __FILE__, __LINE__, ii, (*fc)[ii].getX(), (*fc)[ii].getY(), (*fc)[ii].getZ());
+    LOG(BF("setFixedAllPoints index@%d ") % ii  );
+  }
 }
 
 
@@ -487,12 +451,14 @@ CL_DEFMETHOD void	SuperposeEngine_O::setMoveableAllPoints( geom::SimpleVectorCoo
   size_t ia;
   uint		ii;
   ASSERTF(mc->length()>=3,BF("You must have at least three moveable points and there are only %d") % mc->length() );
-  this->_MoveableCoordinates = mc;
+  this->_MoveableCoordinates = geom::MDArrayCoordinate_O::make_vector(mc->length(),Vector3(),core::make_fixnum(mc->length()));
   this->_MoveableIndices = core::MDArray_size_t_O::make_vector(mc->length());
   for ( ii=0; ii<mc->length(); ii++ )
   {
+    (*this->_MoveableCoordinates)[ii] = (*mc)[ii];
     (*this->_MoveableIndices)[ii] = ii;
     LOG(BF("setMoveableAllPoints index@%d ") % ii  );
+//    printf("%s:%d Set moveable coordinate[%d] -> %lf, %lf, %lf\n", __FILE__, __LINE__, ii, (*mc)[ii].getX(), (*mc)[ii].getY(), (*mc)[ii].getZ());
   }
 }
 
@@ -613,6 +579,29 @@ CL_DEFMETHOD void SuperposeSelectedAtoms_O::copyMatterCoordinatesIntoMoveableCoo
     geom::SimpleVectorCoordinate_sp ca = this->extractCoordinates(matter);
     ASSERT_gt(ca->length(),0);
     this->setMoveableAllPoints(ca);
+}
+
+
+CL_DEFUN void chem__superpose_one(Matter_sp moveable_matter, core::List_sp moveable_atoms, core::List_sp fixed_atoms)
+{
+  size_t num_moveable = core::cl__length(moveable_atoms);
+  size_t num_fixed = core::cl__length(fixed_atoms);
+  if (num_moveable<3) {
+    SIMPLE_ERROR(BF("There must be at least 3 moveable atoms - %d were passed") % num_moveable);
+  }
+  if (num_fixed<3) {
+    SIMPLE_ERROR(BF("There must be at least 3 fixed atoms - %d were passed") % num_fixed);
+  }
+  if (num_moveable != num_fixed) {
+    SIMPLE_ERROR(BF("The number of moveable points %d must match the number of fixed points") % num_moveable % num_fixed);
+  }
+  geom::SimpleVectorCoordinate_sp coords_fixed = chem__make_simple_vector_coordinate_from_atom_list(fixed_atoms);
+  geom::SimpleVectorCoordinate_sp coords_moveable = chem__make_simple_vector_coordinate_from_atom_list(moveable_atoms);
+  SuperposeEngine_sp engine = SuperposeEngine_O::create();
+  engine->setFixedAllPoints(coords_fixed);
+  engine->setMoveableAllPoints(coords_moveable);
+  Matrix transform = engine->superpose();
+  moveable_matter->applyTransformToAtoms(transform);
 }
 
 };
