@@ -226,38 +226,6 @@ namespace geom {
   };
 };
 
-
-
-
-#if 0
-  SMART(SimpleVectorCoordinateWithHash);
-  class SimpleVectorCoordinateWithHash_O : public SimpleVectorCoordinate_O
-  {
-    LISP_CLASS(geom,GeomPkg,SimpleVectorCoordinateWithHash_O,"SimpleVectorCoordinateWithHash",SimpleVectorCoordinate_O);
-//	DECLARE_SERIALIZE();
-  public:
-    void initialize();
-  public:
-//	void	archiveBase(core::ArchiveP node);
-  private:
-    uint	_Hash;
-  public:
-    static SimpleVectorCoordinateWithHash_sp create(uint sz);
-  public:
-    SimpleVectorCoordinateWithHash_O( const SimpleVectorCoordinateWithHash_O& orig );
-
-
-CL_LISPIFY_NAME("coordinate-array-with-hash-gethash");
-CL_DEFMETHOD     uint getHash() { return this->_Hash;};
-CL_LISPIFY_NAME("coordinate-array-with-hash-setHash");
-CL_DEFMETHOD     void setHash(uint h) { this->_Hash = h;};
-
-    DEFAULT_CTOR_DTOR(SimpleVectorCoordinateWithHash_O);
-  };
-#endif
-
-
-
 namespace geom {
 
   typedef core::Array_O  ArrayCoordinate_O;
