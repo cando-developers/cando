@@ -125,6 +125,7 @@
    #:from-string
    #:as-string
    #:scramble-positions
+   #:pick-history
    #:jostle
    #:dump-stereocenters
    #:set-stereoisomer-using-number
