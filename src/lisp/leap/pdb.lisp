@@ -300,7 +300,9 @@ create more problems."
   (let* ((topology (or (leap.core:lookup-variable (lookup-pdb-res-map (name res) (context res)) nil nil)
                    (leap.core:lookup-variable (name res) nil nil))))
     (if topology
-        (setf (topology res) topology)
+        (progn
+          (assert (not (symbolp topology)))
+          (setf (topology res) topology))
         (let ((key (scanner-unknown-residue-key res)))
           (warn "Could not immediately identify topology for ~a" key)
           (unless (gethash key (unknown-residues scanner))
@@ -374,6 +376,7 @@ MTRIX- Used to build a list of matrices."
             (:ter
              (finish-previous-sequence pdb))
             (:ssbond
+             (format t ":ssbond for ~a~%" line-data)
              (destructuring-bind (head chain-id1 res-seq1 chain-id2 res-seq2)
                  line-data
                (push (make-instance 'disulphide
@@ -466,8 +469,10 @@ values residue-sequences matrices"
                                         (chain-id1 dis)))
                 (res2 (find-pdb-residue scanner (res-seq2 dis)
                                         (chain-id2 dis))))
-            (let ((top1 (lookup-pdb-res-map :CYX (context res1)))
-                  (top2 (lookup-pdb-res-map :CYX (context res2))))
+            (let* ((top1-name (lookup-pdb-res-map :CYX (context res1)))
+                   (top2-name (lookup-pdb-res-map :CYX (context res2)))
+                   (top1 (leap.core:lookup-variable top1-name nil nil))
+                   (top2 (leap.core:lookup-variable top2-name nil nil)))
               ;; If CYX topologies are available - use those
               (when top1 (setf (topology res1) top1))
               (when top2 (setf (topology res2) top2))
@@ -513,7 +518,6 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
               ((:atom :hetatm)
                (destructuring-bind (head atom-serial atom-name alt-loc residue-name chain-id res-seq i-code x y z)
                    line-data
-                 
                  (when (new-residue-p res-seq i-code reader)
                    (setf (current-residue-number reader) res-seq
                          (current-i-code reader) i-code)
@@ -522,6 +526,8 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                      (unless pdb-residue
                        (setf (molecule reader) (chem:make-molecule nil))
                        (format t "Starting a new molecule~%")
+                       (setf (current-residue reader) nil)
+                       (setf (current-topology reader) nil)
                        (setf pdb-residue (pop-sequence-pdb-residue reader nil nil))
                        (format t "popped first residue: ~a~%" pdb-residue)
                        (chem:add-matter (aggregate reader) (molecule reader)))
@@ -550,8 +556,7 @@ Pass big-z parse-line to tell it how to process the z-coordinate."
                            ;; There is no topology, create an empty residue
                            (let ((cur-res (chem:make-residue residue-name)))
                              (setf (current-residue reader) cur-res)
-                             (chem:add-matter (molecule reader) cur-res) cur-res)))
-                     ))
+                             (chem:add-matter (molecule reader) cur-res) cur-res)))))
                  (let ((atom (or (chem:content-with-name-or-nil (current-residue reader) atom-name)
                                  (chem:content-with-name-or-nil (current-residue reader) (gethash atom-name *pdb-atom-map*)))))
                    (cond
