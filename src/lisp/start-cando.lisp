@@ -23,11 +23,12 @@
 ;; This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 
 ;; -^-
+#+(or)
 (eval-when (:load-toplevel :execute :compile-toplevel)
+  (format t "Turning on core:*echo-repl-read* in start-cando.lisp~%")
   (setq core::*echo-repl-read* t))
 
 (in-package :common-lisp-user)
-
 
 (format t "Running start-cando.lisp script~%")
 
@@ -56,6 +57,10 @@
   (dolist (dir dirs)
     (format t "Pushing dir: ~a~%" dir)
     (push dir asdf:*central-registry*)))
+
+(progn
+  (format t "Pushing dir: ~a~%" *default-pathname-defaults*)
+  (push *default-pathname-defaults* asdf:*central-registry*))
 
 ;;;(make-package :cando)
 
