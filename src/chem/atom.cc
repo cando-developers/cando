@@ -566,8 +566,8 @@ gc::Nilable<Atom_sp> Atom_O::lowestPriorityNeighborThatIsnt(gc::Nilable<Atom_sp>
 
 
 
-
-Bond_sp Atom_O::getBondTo(Atom_sp a)
+CL_LISPIFY_NAME("getBondTo")
+CL_DEFMETHOD Bond_sp Atom_O::getBondTo(Atom_sp a)
 {_OF();
   VectorBond::iterator	b;
   for ( b=this->bonds.begin();b!=this->bonds.end() ; b++ )

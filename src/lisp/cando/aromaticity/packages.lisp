@@ -27,4 +27,6 @@
 (defpackage #:aromaticity
   (:use #:common-lisp)
   (:export
+   #:is-aromatic
+   #:identify-aromatic-rings
    ))
