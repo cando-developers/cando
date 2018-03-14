@@ -83,7 +83,7 @@
           (values per-line format-char width nil)))))
 
           
-(defconstant %format "%format")
+(defvar %format "%format")
 (defun parse-fortran-format-line (line)
   (if (string-equal %format line :end2 (length %format))
       (let ((format-end (position #\) line :start 7)))
