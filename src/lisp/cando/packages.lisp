@@ -79,6 +79,25 @@
    )
   )
 
+(defpackage #:fortran
+  (:use #:common-lisp)
+  (:shadow #:format #:write)
+  (:export
+   #:with-fortran-output-file
+   #:fformat
+   #:fwrite
+   #:end-line
+   #:debug-on
+   #:debug
+   #:make-fortran-input-file
+   #:fortran-input-file-look-ahead
+   #:fread-line
+   #:fread-line-or-error
+   #:parse-fortran-format-line
+   #:parse-double-float
+   #:fread-vector
+   ))
+
 
 (defpackage #:energy
   (:use #:common-lisp)

@@ -19,7 +19,6 @@
    (:file "chem")
    (:file "antechamber-type-definition-parser")
    (:file "off")
-   (:file "fortran")
    (:file "topology")
    (:file "solvate")
    (:file "cando-database")

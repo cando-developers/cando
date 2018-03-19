@@ -3,7 +3,7 @@
 
 (in-package :charges)
 
-
+(defvar *rr* 1)
 
 (defvar *am1-bcc-raw-data*
   '((110111 0.0000)
@@ -88,6 +88,7 @@
     ))
 
 (defvar *am1-bcc-parameters* (make-hash-table :test #'eql))
+
 ;(loop for pair in *am1-bcc-table*
 ;                  (setf (gethash (car pair) *am1-bcc-parameters*) (second pair)))
 
@@ -234,7 +235,7 @@
        ((chem:matches *cx3=norp* a) (set-am1-bcc-type a 13))
        ((chem:matches *cx3=oors* a)  (set-am1-bcc-type a 14))
        (t
-	(error "Could not assign type for %s" (description a)))))
+	(error "Could not assign type"))))
      (t
       (cond
        ((chem:matches *cx3-ox2_cx3~nx2* a) (set-am1-bcc-type a 17))
@@ -297,6 +298,7 @@
    nil
    (lambda (a)
      (let ((ae (chem:get-element a)))
+       (format t "atom name ~a~%" (chem:get-name a))
        (cond
 	 ((eq ae :C) (apply-carbon-atom-types a))
 	 ((eq ae :N) (apply-nitrogen-atom-types a))
@@ -337,17 +339,21 @@
 
 (defun lookup-am1-bcc-correction (a1 bond a2)
   (let* ((key-sign (lookup-am1-bcc-key a1 bond a2))
+         (bcc-correction 0.0)
 	 (key (car key-sign))
 	 (sign (cadr key-sign)))
     (format t "key ~a sign ~a~%" key sign)
-    (setf *am1-bcc-parameters* key)
+    (loop for pair in *am1-bcc-raw-data*
+       do (when (= (car pair) key)
+            (setf bcc-correction (second pair))))
+    (setf *am1-bcc-parameters* bcc-correction)
    #+(or) (* (get *am1-bcc-parameters* key) sign)))
 
 ;;
 ;; Given a molecule (mol) assign the Am1Bcc atom and bond types
 ;; these type values are put into the 'am1-bcc-type property for each
 ;; atom and bond
-(defun calculate-am1-bcc-corrections (mol)
+(defun calculate-bcc-corrections (mol)
   "Return an ObjectMap from Atoms to Am1Bcc charge corrections"
   (let ((all-rings (aromaticity:identify-aromatic-rings mol))
 	(correction-map (make-hash-table)))
@@ -383,7 +389,7 @@
 (defun calculate-am1-bcc-charges (atoms-to-am1-charges atoms-to-bcc-corrections)
   "Combine Am1 charges with Bcc corrections and return an ObjectMap of atoms to am1bcc charges"
   (let ((atoms-to-am1-bcc-charges (make-hash-table)))
-    (map-hash (lambda (atom am1charge)
+    (maphash (lambda (atom am1charge)
 		(let ((bcc-correction (gethash atom atoms-to-bcc-corrections)))
 		  (setf (gethash atom atoms-to-am1-bcc-charges) (+ am1charge bcc-correction))))
 		atoms-to-am1-charges)

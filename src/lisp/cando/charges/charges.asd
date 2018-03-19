@@ -10,6 +10,6 @@
     :components
     ((:file "packages")
      (:file "am1bcc")
-     ;;     (:file "sqm-interface")
+     (:file "sqm-interface")
      ;;     (:file "bcc")
      ))
