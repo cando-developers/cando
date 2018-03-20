@@ -110,8 +110,8 @@ void Molecule_O::fields(core::Record_sp node)
   };
       break;
   }
+  node->field_if_not_unbound(INTERN_(kw,type),this->_Type);
   this->Base::fields(node);
-
 }
 
 Molecule_O::Molecule_O(const Molecule_O& mol)

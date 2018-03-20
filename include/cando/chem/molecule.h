@@ -49,56 +49,57 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
-class	Loop;
+  class	Loop;
 
-SMART(Molecule);
-class Molecule_O : public Matter_O
-{
+  SMART(Molecule);
+  class Molecule_O : public Matter_O
+  {
     friend class Aggregate_O;
     LISP_CLASS(chem,ChemPkg,Molecule_O,"Molecule",Matter_O);
-public:
-	void initialize();
-        bool fieldsp() const { return true; };
-        void fields(core::Record_sp node);
-friend	class	Loop;
+  public:
+    core::Symbol_sp _Type;
+  public:
+    void initialize();
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+    friend	class	Loop;
 
 
-public:
+  public:
     static Molecule_sp make(MatterName name);
 
-private:
-	void	duplicate(const Molecule_O* m );
-public:
+  private:
+    void	duplicate(const Molecule_O* m );
+  public:
+    CL_DEFMETHOD core::Symbol_sp molecule_type() { return this->_Type; };
+    CL_DEFMETHOD core::Symbol_sp setf_molecule_type(core::Symbol_sp type) { this->_Type = type; return type; };
+  
+    char	getMatterType() { return MOLECULE_CLASS; };
+    virtual	char	getClass() { return moleculeId;};
 
-	char	getMatterType() { return MOLECULE_CLASS; };
-virtual	char	getClass() { return moleculeId;};
-
-	Molecule_O(const Molecule_O& mol );
-
-
-
+    Molecule_O(const Molecule_O& mol );
 
     virtual string __repr__() const;
 
-	contentIterator begin_residues() { return this->_contents.begin(); };
-	contentIterator end_residues() {return this->_contents.end(); };
-	const_contentIterator begin_residues() const { return this->_contents.begin(); };
-	const_contentIterator end_residues() const {return this->_contents.end(); };
+    contentIterator begin_residues() { return this->_contents.begin(); };
+    contentIterator end_residues() {return this->_contents.end(); };
+    const_contentIterator begin_residues() const { return this->_contents.begin(); };
+    const_contentIterator end_residues() const {return this->_contents.end(); };
 
-	virtual bool equal(core::T_sp obj) const;
-virtual void	transferCoordinates(Matter_sp other);
+    virtual bool equal(core::T_sp obj) const;
+    virtual void	transferCoordinates(Matter_sp other);
 
-CL_LISPIFY_NAME("firstResidue");
-CL_DEFMETHOD  Residue_sp	firstResidue() {return this->contentAt(0).as<Residue_O>();};
-CL_LISPIFY_NAME("getResidue");
-CL_DEFMETHOD  Residue_sp	getResidue(int i) {return this->contentAt(i).as<Residue_O>();};
-CL_LISPIFY_NAME("residueWithId");
-CL_DEFMETHOD  Residue_sp	residueWithId( int lid ) { return this->contentWithId(lid).as<Residue_O>(); };
-CL_LISPIFY_NAME("hasResidueWithId");
-CL_DEFMETHOD 	bool		hasResidueWithId( int lid ) { return this->hasContentWithId(lid); };
+    CL_LISPIFY_NAME("firstResidue");
+    CL_DEFMETHOD  Residue_sp	firstResidue() {return this->contentAt(0).as<Residue_O>();};
+    CL_LISPIFY_NAME("getResidue");
+    CL_DEFMETHOD  Residue_sp	getResidue(int i) {return this->contentAt(i).as<Residue_O>();};
+    CL_LISPIFY_NAME("residueWithId");
+    CL_DEFMETHOD  Residue_sp	residueWithId( int lid ) { return this->contentWithId(lid).as<Residue_O>(); };
+    CL_LISPIFY_NAME("hasResidueWithId");
+    CL_DEFMETHOD 	bool		hasResidueWithId( int lid ) { return this->hasContentWithId(lid); };
 
-	int		numberOfResiduesWithName(MatterName name);
-	Residue_sp	getFirstResidueWithName(MatterName name);
+    int		numberOfResiduesWithName(MatterName name);
+    Residue_sp	getFirstResidueWithName(MatterName name);
     VectorResidue	getResiduesWithName(MatterName name);
 
     
@@ -109,51 +110,44 @@ CL_DEFMETHOD 	bool		hasResidueWithId( int lid ) { return this->hasContentWithId(
 
 
 
-	virtual bool isMolecule() { return true;};
+    virtual bool isMolecule() { return true;};
 
-CL_LISPIFY_NAME("residueCount");
-CL_DEFMETHOD 	int		residueCount() {return (this->_contents.size());};
+    CL_LISPIFY_NAME("residueCount");
+    CL_DEFMETHOD 	int		residueCount() {return (this->_contents.size());};
 
-	void		moveAllAtomsIntoFirstResidue();
+    void		moveAllAtomsIntoFirstResidue();
 
-virtual string	subMatter() { return Residue_O::static_className(); };
- virtual	string	description() const { stringstream ss; ss << "molecule("<<_rep_(this->getName())<<")@"<<std::hex<<this<<std::dec; return ss.str();};
+    virtual string	subMatter() { return Residue_O::static_className(); };
+    virtual	string	description() const { stringstream ss; ss << "molecule("<<_rep_(this->getName())<<")@"<<std::hex<<this<<std::dec; return ss.str();};
 
-CL_LISPIFY_NAME("testMoleculeConsistancy");
-CL_DEFMETHOD 	bool		testMoleculeConsistancy() {IMPLEMENT_ME();};
+    CL_LISPIFY_NAME("testMoleculeConsistancy");
+    CL_DEFMETHOD 	bool		testMoleculeConsistancy() {IMPLEMENT_ME();};
 
-	bool	canRender() { return true;}
+    bool	canRender() { return true;}
 #ifdef RENDER
-	geom::Render_sp	rendered(core::List_sp options);
+    geom::Render_sp	rendered(core::List_sp options);
 #endif
 
-        virtual bool applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value);
+    virtual bool applyPropertyToSlot(core::Symbol_sp prop, core::T_sp value);
 
-	virtual uint	numberOfAtoms( );
+    virtual uint	numberOfAtoms( );
 
 	/*! Build a map of AtomIds to Atoms */
-	virtual AtomIdToAtomMap_sp buildAtomIdMap() const;
+    virtual AtomIdToAtomMap_sp buildAtomIdMap() const;
 
     virtual Atom_sp atomWithAtomId(AtomId_sp atomId) const;
 
+  Molecule_O() : Base(), _Type(_Unbound<core::Symbol_O>()) {};
 
-public:
+  public:
     virtual Matter_sp	copy();
     
-protected:
+  protected:
     virtual Matter_sp copyDontRedirectAtoms();
-	virtual void redirectAtoms();
+    virtual void redirectAtoms();
 
 
-
-	DEFAULT_CTOR_DTOR(Molecule_O);
-};
-
-
-//extern Molecule_sp	new_Molecule_sp();
-//extern Molecule_sp	_copy_Molecule_sp(Molecule_O*);
-
+  };
 
 };
-TRANSLATE(chem::Molecule_O);
 #endif

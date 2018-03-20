@@ -687,6 +687,9 @@ AtomInfo	one;
 	}
     }
 
+#if 0
+    // Don't change the names of molecules
+    
 	//
 	// Set the name of every molecule to the chainID.
 	//
@@ -701,7 +704,7 @@ AtomInfo	one;
 	chainId++;
         if ( chainId > 'Z' ) chainId = 'A'; // recycle chain ids
     }
-
+#endif
 	//
 	// Write out the atoms
 	//

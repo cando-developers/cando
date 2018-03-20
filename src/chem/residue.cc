@@ -160,6 +160,7 @@ void	Residue_O::addVirtualAtom(MatterName name, CalculatePosition_sp proc)
 void	Residue_O::fields( core::Record_sp node )
 {
   LOG(BF("Status") );
+  node->field_if_not_unbound(INTERN_(kw,type),this->_Type);
   node->field_if_not_nil( INTERN_(kw,pdbName),this->pdbName);
   node->field( INTERN_(kw,uniqueLabel),this->_UniqueLabel);
   node->/*pod_*/field_if_not_default( INTERN_(kw,NetCharge),this->_NetCharge,0);
