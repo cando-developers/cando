@@ -68,14 +68,11 @@ qm-charge : The overall charge of the molecule"
   (let ((correction-map (make-hash-table))
         (count 0))
     (multiple-value-bind (atom-number-vec element-vec charge-vec)
-        (generate-charge-atoms-array pathname) 
-      (chem:map-atoms
-       nil
-       (lambda (a)
-         (if (eq (chem:get-element a) (aref element-vec count))
-             (setf (gethash a correction-map) (aref charge-vec count))
-             (error "Mismatch atom name ~a element ~a element ~a" (chem:get-name a) (chem:get-element a) (aref atom-number-vec count)))
-         (incf count))
-       mol)
+        (generate-charge-atoms-array pathname)
+      (loop for a in atom-order
+        do  (if (eq (chem:get-element a) (aref element-vec count))
+                (setf (gethash a correction-map) (aref charge-vec count))
+                (error "Mismatch atom name ~a element ~a element ~a" (chem:get-name a) (chem:get-element a) (aref element-vec count)))
+        do  (incf count))
       correction-map)))
 
