@@ -14,21 +14,23 @@ qm-charge : The overall charge of the molecule"
   (format fout " /~%"))
 
 (defun write-sqm-molecule (fout molecule)
-  (chem:map-atoms
-   nil
-   (lambda (atom)
-     (let ((position (chem:get-position atom))
-           (atom-name (cond
-                        ((eq :ZA (chem:get-name atom)) :CA)
-                        ((eq :ZB (chem:get-name atom)) :H)
-                        (t (chem:get-name atom)))))
-       (format fout "~2d ~a ~12,6f ~12,6f ~12,6f~%"
-               (chem:atomic-number-for-element (chem:get-element atom))
-               atom-name
-               (geom:vx position)
-               (geom:vy position)
-               (geom:vz position))))
-   molecule))
+  (let ((atom-order (chem:map-atoms
+                'list
+                (lambda (atom)
+                  (let ((position (chem:get-position atom))
+                        (atom-name (cond
+                                     ((eq :ZA (chem:get-name atom)) :CA)
+                                     ((eq :ZB (chem:get-name atom)) :H)
+                                     (t (chem:get-name atom)))))
+                    (format fout "~2d ~a ~12,6f ~12,6f ~12,6f~%"
+                            (chem:atomic-number-for-element (chem:get-element atom))
+                            atom-name
+                            (geom:vx position)
+                            (geom:vy position)
+                            (geom:vz position)))
+                  atom)
+                molecule)))
+    atom-order))
 
 (defun write-sqm-calculation (fout molecule &key (qm-theory :am1) (qm-charge 0) (maxcyc 9999))
   (write-sqm-header fout qm-theory qm-charge maxcyc)
@@ -62,7 +64,7 @@ qm-charge : The overall charge of the molecule"
 ;    (format t " number ~a element ~a charge ~a~%" atom-number element mulliken-charge)
     (values atom-number element mulliken-charge)))
 
-(defun generate-am1-correction (pathname mol)
+(defun generate-am1-correction (pathname atom-order)
   (let ((correction-map (make-hash-table))
         (count 0))
     (multiple-value-bind (atom-number-vec element-vec charge-vec)
