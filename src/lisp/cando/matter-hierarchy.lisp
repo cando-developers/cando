@@ -77,3 +77,111 @@ and if the residue is not in RESIDUES-TO-MOLECULES add it."
                 (chem:add-matter molecule residue)))))))
 
 
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; maybe-split-molecule
+;;;
+;;; Walk a spanning tree of the atoms in a molecule and split it
+;;; into separate molecules and return them in a list.
+
+(defun maybe-split-molecules-in-aggregate (aggregate)
+  "* Arguments
+- aggregate :: An aggregate.
+* Description
+Break up the molecules in the aggregate into a list of molecules using spanning trees and return that list.
+"
+  (let ((atoms-to-residues (make-hash-table))
+        (residues-to-molecules (make-hash-table))
+        (atoms-seen (make-hash-table))
+        molecules
+        atoms)
+    (chem:map-residues
+     nil
+     (lambda (residue)
+       (chem:map-atoms
+        nil
+        (lambda (atom)
+          (setf (gethash atom atoms-to-residues) residue)
+          (push atom atoms))
+        residue))
+     aggregate)
+    (loop for atom in atoms
+          when (not (gethash atom atoms-seen))
+            do (push (span-across-molecule-from-atom atom atoms-seen residues-to-molecules atoms-to-residues) molecules))
+;;; Remove the molecules in the aggregate
+    (let ((mols (chem:map-molecules 'list #'identity aggregate)))
+      (loop for mol in mols
+            do (chem:remove-molecule aggregate mol)))
+    ;; Add the new molecules
+    (loop for mol in molecules
+          do (chem:add-matter aggregate mol))
+    aggregate))
+
+
+(defun span-across-molecule-from-atom (atom
+                                       atoms-seen
+                                       residues-to-molecules
+                                       atoms-to-residues)
+  (let ((new-molecule (chem:make-molecule))
+        (spanning-tree (chem:make-spanning-loop atom))
+        residues)
+    (loop
+      (if (chem:advance-loop-and-process spanning-tree)
+          (let* ((atom (chem:get-atom spanning-tree))
+                 (residue (gethash atom atoms-to-residues))
+                 (residue-molecule (gethash residue residues-to-molecules)))
+            (setf (gethash atom atoms-seen) atom)
+            (unless residue-molecule
+              (push residue residues)
+              (setf (gethash residue residues-to-molecules) new-molecule)))
+          (return nil)))
+    (let ((residue-list (sort residues #'< :key #'chem:get-id)))
+      (loop for res in residue-list
+            do (chem:add-matter new-molecule res)))
+    (when (= (chem:content-size new-molecule) 1)
+      (chem:set-name new-molecule (chem:get-name (chem:content-at new-molecule 0))))
+    new-molecule))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; Remove molecules of a particular type
+;;;
+
+(defun remove-molecules (aggregate molecule-type)
+  (let (molecules)
+    (do-molecules (molecule aggregate)
+      (when (eq (chem:molecule-type molecule) 'cando:solvent)
+        (push molecule molecules)))
+    (loop for molecule in molecules
+          do (chem:remove-molecule aggregate molecule))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; Loops for molecules, residues, atoms
+;;;
+
+
+(defmacro do-molecules ((molecule-var matter) &body body)
+  `(chem:map-molecules
+    nil
+    (lambda (,molecule-var)
+      ,@body)
+    ,matter))
+
+(defmacro do-residues ((residue-var matter) &body body)
+  `(chem:map-residues
+    nil
+    (lambda (,residue-var)
+      ,@body)
+    ,matter))
+
+(defmacro do-atoms ((atom-var matter) &body body)
+  `(chem:map-atoms
+    nil
+    (lambda (,atom-var)
+      ,@body)
+    ,matter))
