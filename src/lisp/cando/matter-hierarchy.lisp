@@ -146,18 +146,6 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
     new-molecule))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;
-;;; Remove molecules of a particular type
-;;;
-
-(defun remove-molecules (aggregate molecule-type)
-  (let (molecules)
-    (do-molecules (molecule aggregate)
-      (when (eq (chem:molecule-type molecule) 'cando:solvent)
-        (push molecule molecules)))
-    (loop for molecule in molecules
-          do (chem:remove-molecule aggregate molecule))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
@@ -185,3 +173,18 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
     (lambda (,atom-var)
       ,@body)
     ,matter))
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; Remove molecules of a particular type
+;;;
+
+(defun remove-molecules (aggregate molecule-type)
+  (let (molecules)
+    (do-molecules (molecule aggregate)
+      (when (eq (chem:molecule-type molecule) 'cando:solvent)
+        (push molecule molecules)))
+    (loop for molecule in molecules
+          do (chem:remove-molecule aggregate molecule))))
