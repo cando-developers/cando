@@ -139,8 +139,14 @@
   (:shadowing-import-from :chem "ATOM")
   (:import-from :ext #:chdir #:getcwd)
   (:export
+   #:protein
+   #:ligand
+   #:ion
+   #:solvent
+   #:molecule-type
    #:load-chem-draw
    #:load-chem-draw-aggregate
+   #:maybe-split-molecules-in-aggregate
    #:from-string
    #:as-string
    #:scramble-positions
@@ -201,6 +207,10 @@
    ;;; directory utilities
    #:set-current-directory
    #:current-directory
+   #:remove-molecules
+   #:do-molecules
+   #:do-residues
+   #:do-atoms
    ))
 
 
