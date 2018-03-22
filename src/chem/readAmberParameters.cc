@@ -93,7 +93,7 @@ core::T_mv ReadAmberParameters_O::determineParmSetFrcModType(core::T_sp fin)
   bool bMass = false;
   bool bNonBond = false;
   while ( true ) {
-    core::T_mv mv_line = core::cl__read_line(fin,_Nil<T_O>());
+    core::T_mv mv_line = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
     if ( mv_line.nilp() ) break;
     string line = mv_line.as<core::Str_O>()->get();
     LOG(BF("Read line(%s)") % line  );
@@ -126,7 +126,7 @@ FFTypesDb_sp ReadAmberParameters_O::parseTypeRules(core::T_sp fin)
   uint lineno = 1;
   vector< pair< uint, string> > entries;
   while ( true ) {
-    core::T_mv mv_line = core::cl__read_line(fin,_Nil<T_O>());
+    core::T_mv mv_line = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
     if ( mv_line.nilp() ) break;
     string line = mv_line.as<core::Str_O>()->get();
     if (line.size() == 0) continue;
@@ -182,38 +182,42 @@ FFNonbondDb_sp ReadAmberParameters_O::parseMasses(core::T_sp fin, FFNonbondDb_sp
   scope.bind(cl::_sym_STARreadtableSTAR,copy_readtable);
   bool done = false;
   while ( not done ) {
-    core::T_mv ol = core::cl__read_line(fin);
-    string line = gc::As<core::String_sp>(ol)->get_std_string();
-    if ( line.size() == 0 ) {
-      done = true;
+    core::T_mv ol = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
+    if (ol.nilp()) {
+      break;
     } else {
-      core::T_sp linestream = core::cl__make_string_input_stream(ol,core::make_fixnum(0),_Nil<core::T_O>());
-      LOG(BF("Parsing line|%s|") % line.c_str()  );
-//      printf("%s:%d:%s parseMasses line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
-      core::Symbol_sp typeSymbol = gc::As<core::Symbol_sp>(core::cl__read(linestream,_Nil<core::T_O>()));
-      core::T_sp omass = core::cl__read(linestream,_Nil<core::T_O>());
-      core::T_sp maybePolarizability = core::cl__read(linestream,_Nil<core::T_O>());
-      double mass = core::clasp_to_double(omass);
-      double polarizability = 0.0;
-      if ( maybePolarizability.fixnump() || gc::IsA<core::Float_sp>(maybePolarizability)) {
-        polarizability = core::clasp_to_double(maybePolarizability);
-      }
-      FFNonbond_sp ffNonbond;
-      core::T_sp nonbond = ffNonbondDb->findType(typeSymbol);
-      bool newp = false;
-      if (nonbond.nilp()) {
-        ffNonbond = gctools::GC<FFNonbond_O>::allocate_with_default_constructor();
-        newp = true;
-      } else if (gc::IsA<FFNonbond_sp>(nonbond)) {
-        ffNonbond = gc::As_unsafe<FFNonbond_sp>(nonbond);
+      string line = core::trimWhiteSpace(gc::As<core::String_sp>(ol)->get_std_string());
+      if ( line.size() == 0 ) {
+        done = true;
       } else {
-        SIMPLE_ERROR(BF("Illegal atom type %s") % _rep_(nonbond));
-      }
-      ffNonbond->setType(typeSymbol);
-      ffNonbond->setMass(mass);
-      ffNonbond->setPolarizability(polarizability);
+        core::T_sp linestream = core::cl__make_string_input_stream(ol,core::make_fixnum(0),_Nil<core::T_O>());
+        LOG(BF("Parsing line|%s|") % line.c_str()  );
+//      printf("%s:%d:%s parseMasses line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
+        core::Symbol_sp typeSymbol = gc::As<core::Symbol_sp>(core::cl__read(linestream,_Nil<core::T_O>()));
+        core::T_sp omass = core::cl__read(linestream,_Nil<core::T_O>());
+        core::T_sp maybePolarizability = core::cl__read(linestream,_Nil<core::T_O>());
+        double mass = core::clasp_to_double(omass);
+        double polarizability = 0.0;
+        if ( maybePolarizability.fixnump() || gc::IsA<core::Float_sp>(maybePolarizability)) {
+          polarizability = core::clasp_to_double(maybePolarizability);
+        }
+        FFNonbond_sp ffNonbond;
+        core::T_sp nonbond = ffNonbondDb->findType(typeSymbol);
+        bool newp = false;
+        if (nonbond.nilp()) {
+          ffNonbond = gctools::GC<FFNonbond_O>::allocate_with_default_constructor();
+          newp = true;
+        } else if (gc::IsA<FFNonbond_sp>(nonbond)) {
+          ffNonbond = gc::As_unsafe<FFNonbond_sp>(nonbond);
+        } else {
+          SIMPLE_ERROR(BF("Illegal atom type %s") % _rep_(nonbond));
+        }
+        ffNonbond->setType(typeSymbol);
+        ffNonbond->setMass(mass);
+        ffNonbond->setPolarizability(polarizability);
 //      printf("%s:%d Adding nonbond type with name: %s\n", __FILE__, __LINE__, _rep_(typeSymbol).c_str());
-      if (newp) ffNonbondDb->add(ffNonbond);
+        if (newp) ffNonbondDb->add(ffNonbond);
+      }
     }
   }
   return ffNonbondDb;
@@ -226,7 +230,9 @@ FFStretchDb_sp ReadAmberParameters_O::parseStretchDb(core::T_sp fin)
   bool done = false;
   while ( not done )
   {
-    string line = core::cl__read_line(fin).as<core::Str_O>()->get();
+    core::T_sp tline = core::cl__read_line(fin,_Nil<core::T_O>(),_Nil<core::T_O>());
+    if (tline.nilp()) break;
+    string line = tline.as<core::Str_O>()->get();
     if ( line.size() == 0 )
     {
       done = true;
@@ -269,7 +275,9 @@ FFAngleDb_sp ReadAmberParameters_O::parseAngleDb(core::T_sp fin)
   bool done = false;
   while ( not done )
   {
-    string line = core::cl__read_line(fin).as<core::Str_O>()->get();
+    core::T_sp tline = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
+    if (tline.nilp()) break;
+    string line = tline.as<core::Str_O>()->get();
     if (line.size()== 0)
     {
       done = true;
@@ -318,7 +326,9 @@ FFPtorDb_sp ReadAmberParameters_O::parsePtorDb(core::T_sp fin, core::T_sp system
   bool done = false;
   while (not done )
   {
-    string line = core::cl__read_line(fin).as<core::Str_O>()->get();
+    core::T_sp tline = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
+    if (tline.nilp()) break;
+    string line = tline.as<core::Str_O>()->get();
     if (line.size()== 0)
     {
       done = true;
@@ -382,7 +392,9 @@ FFItorDb_sp ReadAmberParameters_O::parseItorDb(core::T_sp fin)
   bool done = false;
   while (not done )
   {
-    string line = core::cl__read_line(fin).as<core::Str_O>()->get();
+    core::T_sp tline = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
+    if (tline.nilp()) break;
+    string line = tline.as<core::Str_O>()->get();
 //      printf("%s:%d line: %s\n", __FILE__, __LINE__, line.c_str());
     if (line.size()== 0)
     {
@@ -463,7 +475,9 @@ void ReadAmberParameters_O::parseNonbondDb(core::T_sp fin, FFNonbondDb_sp ffNonb
 {
     bool done = false;
     while ( 1 ) {
-      string line = core::cl__read_line(fin).as<core::Str_O>()->get();
+      core::T_sp tline = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
+      if (tline.nilp()) break;
+      string line = tline.as<core::Str_O>()->get();
 //      printf("%s:%d:%s line: %s\n", __FILE__, __LINE__, __FUNCTION__, line.c_str());
       line = core::trimWhiteSpace(line);
       if ( line.size() == 0 ) break;
@@ -498,7 +512,9 @@ void ReadAmberParameters_O::parseAtomEquivalences(core::T_sp fin)
 {
   SIMPLE_WARN(BF("Warning!  Skipping force field atom equivalences\n"));
   while (1) {
-    string line = core::cl__read_line(fin).as<core::Str_O>()->get();
+    core::T_sp tline = core::cl__read_line(fin,_Nil<T_O>(),_Nil<T_O>());
+    if (tline.nilp()) break;
+    string line = tline.as<core::Str_O>()->get();
     if (line=="") return;
   }
 }
