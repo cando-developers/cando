@@ -217,7 +217,8 @@
 (defvar *cx3=c* (smarts:make-chem-info :smarts "[C&X3]=C"))
 (defvar *cx3=norp* (smarts:make-chem-info :smarts "[C&X3]=[N,P]"))
 (defvar *cx3=oors* (smarts:make-chem-info :smarts "[C&X3]=[O,S]"))
-(defvar *cx3-ox2_cx3~nx2* (smarts:make-chem-info :smarts "[$([c&X3]-[o&X2]),$([c&X3]~[n&X2])]"))
+(defvar *cx3-ox2_cx3-nx2* (smarts:make-chem-info :smarts "[$([c&X3]-[o&X2]),$([c&X3]~[n&X2])]"))
+
 #|
 (defun make-chem-info (&key smarts)
   (let ((ci (core:make-cxx-object 'chem:chem-info)))
@@ -238,7 +239,7 @@
 	(error "Could not assign type"))))
      (t
       (cond
-       ((chem:matches *cx3-ox2_cx3~nx2* a) (set-am1-bcc-type a 17))
+       ((chem:matches *cx3-ox2_cx3-nx2* a) (set-am1-bcc-type a 17))
        (t (set-am1-bcc-type a 16)))))))
 
 
