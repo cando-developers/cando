@@ -184,7 +184,20 @@ Break up the molecules in the aggregate into a list of molecules using spanning 
 (defun remove-molecules (aggregate molecule-type)
   (let (molecules)
     (do-molecules (molecule aggregate)
-      (when (eq (chem:molecule-type molecule) 'cando:solvent)
+      (when (eq (chem:molecule-type molecule) molecule-type)
         (push molecule molecules)))
     (loop for molecule in molecules
           do (chem:remove-molecule aggregate molecule))))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;
+;;; combine molecules into a new aggregate
+;;;
+(defun combine (&rest aggregates)
+  "Combine the contents of the aggregates into a new aggregate and return that"
+  (let ((new-agg (chem:make-aggregate)))
+    (loop for agg in aggregates
+          do (do-molecules (mol agg)
+               (chem:add-matter new-agg mol)))
+    new-agg))

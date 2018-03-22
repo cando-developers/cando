@@ -207,10 +207,11 @@
    ;;; directory utilities
    #:set-current-directory
    #:current-directory
-   #:remove-molecules
    #:do-molecules
    #:do-residues
    #:do-atoms
+   #:remove-molecules
+   #:combine
    ))
 
 
