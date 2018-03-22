@@ -244,6 +244,7 @@ Residue_O::Residue_O(const Residue_O& res)
     this->_FileSequenceNumber = res._FileSequenceNumber;
     this->_MonomerAliases = res._MonomerAliases;
     this->_UniqueLabel = res._UniqueLabel;
+    this->_Type = res._Type;
 }
 
 
