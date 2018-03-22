@@ -29,4 +29,5 @@
   (:export
    #:calculate-am1-bcc-corrections
    #:write-sqm-calculation
+   #:read-am1-charges
    ))
