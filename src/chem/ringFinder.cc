@@ -755,10 +755,14 @@ void RingFinder_O::advanceRingSearch(uint stage)
 CL_LISPIFY_NAME("findRings");
 CL_DEFMETHOD void RingFinder_O::findRings(int numAtoms)
 {
+#if 0
   if (numAtoms >2048) {
     SIMPLE_ERROR(BF("You should not look for rings when there are more than 2048 atoms - the algorithm will blow up memory for %d atoms") % numAtoms );
   }
-  ASSERTF(numAtoms>0,BF("You tried to find rings in a molecule with zero atoms"));
+#endif
+  if (numAtoms==0) {
+    SIMPLE_ERROR(BF("You tried to find rings in a molecule with zero atoms"));
+  }
   this->initializeRingSearch();
   int numberOfRingsExpected = this->getNumberOfRingsExpected();
   LOG(BF("Number of rings expected = %d") % numberOfRingsExpected  );
@@ -766,8 +770,8 @@ CL_DEFMETHOD void RingFinder_O::findRings(int numAtoms)
 // if we try more than this many times
     // and don't find all the rings then something is wrong
   int trigger = numAtoms*2;
-  while ( this->_finalRings.size() < numberOfRingsExpected )
-  {
+  for (int numSteps = 0; numSteps<10; ++numSteps ) {
+//  while ( this->_finalRings.size() < numberOfRingsExpected ) {
     LOG(BF("Looking for rings, stage= %d : trigger[%d] : numAtoms[%d] : numberOfRingsExpected[%d]") % stage % trigger % numAtoms % numberOfRingsExpected  );
     this->advanceRingSearch(stage);
     LOG(BF("After ring search, number of rings found = %d")
