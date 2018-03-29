@@ -26,7 +26,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #define DEBUG_LEVEL_NONE
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
-#include <clasp/core/builtInClass.h>
 #include <clasp/core/lisp.h>
 #include <cando/kinematics/atomTemplate.h>
 #include <cando/kinematics/atomTree.h>
@@ -69,9 +68,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/smallMap.h>
 #include <clasp/core/smallMultimap.h>
 #include <clasp/core/sourceFileInfo.h>
-#include <clasp/core/standardObject.h>
 #include <clasp/core/lispStream.h>
-#include <clasp/core/structureObject.h>
 #include <clasp/core/symbolToEnumConverter.h>
 #include <clasp/core/symbol.h>
 #include <clasp/core/lispList.h>
@@ -204,15 +201,11 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/monomerPack.h>
 #include <cando/chem/representedEntityNameSet.h>
 #include <clasp/core/bignum.h>
-#include <clasp/core/builtInClass.h>
 #include <clasp/core/cxxClass.h>
-#include <clasp/core/forwardReferencedClass.h>
 #include <clasp/core/stdClass.h>
 #include <clasp/core/strWithFillPtr.h>
-#include <clasp/core/structureClass.h>
 #include <clasp/clbind/class_rep.h>
 #include <clasp/core/funcallableStandardClass.h>
-#include <clasp/core/standardClass.h>
 
 
 namespace kinematics {

@@ -93,7 +93,6 @@ typedef bool _Bool;
 #include <clasp/core/array.h>
 #include <clasp/core/smallMultimap.h>
 #include <clasp/core/funcallableStandardClass.h>
-#include <clasp/core/structureClass.h>
 //#include "core/symbolVector.h"
 #include <clasp/core/hashTable.h>
 #include <clasp/core/hashTableEq.h>
@@ -113,9 +112,6 @@ typedef bool _Bool;
 #include <clasp/core/package.h>
 #include <clasp/core/character.h>
 #include <clasp/core/reader.h>
-#include <clasp/core/structureObject.h>
-#include <clasp/core/forwardReferencedClass.h>
-#include <clasp/core/standardClass.h>
 #include <clasp/core/readtable.h>
 #include <clasp/core/arrayObjects.h>
 #include <clasp/core/intArray.h>

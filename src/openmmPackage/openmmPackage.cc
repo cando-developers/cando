@@ -31,7 +31,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <lisp.h>
 #include <clasp/core/corePackage.h>
 #include <core/vector3.h>
-#include <clasp/core/builtInClass.h>
 #include <cando/openmmPackage/openmmPackage.h>
 #include <cando/openmmPackage/serializer.h>
 #include <cando/openmmPackage/openmmExpose.h>

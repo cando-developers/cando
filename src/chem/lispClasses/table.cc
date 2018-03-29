@@ -29,7 +29,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include "table.h"
 //#include "core/archiveNode.h"
 #include "core/metaClass.h"
-#include "core/builtInClass.h"
 #include "core/hashTableEq.h"
 //#include "core/archive.h"
 #include "core/environment.h"

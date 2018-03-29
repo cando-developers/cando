@@ -30,9 +30,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/package.h>
 #include <clasp/core/environment.h>
 #include <cando/adapt/adaptPackage.h>
-#include <clasp/core/builtInClass.h>
-
-
 #include <cando/adapt/indexedObjectBag.h>
 #include <cando/adapt/objectSet.h>
 #include <cando/adapt/stringList.h>
@@ -54,7 +51,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/primitives.h>
 #include <clasp/core/iterator.h>
 #include <clasp/core/lambdaListHandler.h>
-#include <clasp/core/userData.h>
 #include <clasp/core/loadTimeValues.h>
 #include <clasp/core/multiStringBuffer.h>
 #include <clasp/core/numbers.h>
@@ -70,9 +66,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/smallMap.h>
 #include <clasp/core/smallMultimap.h>
 #include <clasp/core/sourceFileInfo.h>
-#include <clasp/core/standardObject.h>
 #include <clasp/core/lispStream.h>
-#include <clasp/core/structureObject.h>
 #include <clasp/core/symbolToEnumConverter.h>
 #include <clasp/core/symbol.h>
 #include <clasp/core/lispList.h>
@@ -201,7 +195,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/monomerPack.h>
 #include <cando/chem/representedEntityNameSet.h>
 #include <clasp/core/bignum.h>
-#include <clasp/core/builtInClass.h>
 #include <clasp/clbind/class_rep.h>
 
 namespace adapt

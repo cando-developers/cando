@@ -33,7 +33,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/elements.h>
 #include <cando/adapt/indexedObjectBag.h>
 #include <cando/chem/mbbCoreTools.h>
-#include <clasp/core/builtInClass.h>
 #include <cando/chem/ringFinder.h>
 #include <cando/chem/largeSquareMatrix.h>
 #include <cando/chem/alias.h>

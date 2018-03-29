@@ -32,7 +32,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/symbolTable.h>
 #include <cando/units/unit.h>
 #include <cando/units/quantity.h>
-#include <clasp/core/builtInClass.h>
 #include <cando/units/namedUnit.h>
 #include <clasp/core/environment.h>
 #include <cando/units/unitsPackage.h>
