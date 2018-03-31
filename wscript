@@ -25,7 +25,7 @@ def build(bld):
     bld.extensions_lisp_files = []
     bld.recurse('include')
     bld.recurse('src')
-    if (bld.stage_val>=4):
+    if (bld.stage_val>=5):
         bld_extensions = build_extension(env=bld.env)
         bld_extensions.set_inputs([bld.iclasp_executable,bld.cclasp_fasl,bld.asdf_fasl_cclasp]+bld.extensions_lisp_files)
         bld_extensions.set_outputs([bld.path.parent.parent.find_or_declare("fasl/cando.fasb"),
