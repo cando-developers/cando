@@ -27,7 +27,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	TURN_DEBUG_OFF
 #include <clasp/core/common.h>
 #include <cando/chem/linearAlgebra.h>
-#include <clasp/core/profiler.h>
 
 
 namespace chem {

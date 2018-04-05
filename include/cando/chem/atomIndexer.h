@@ -36,7 +36,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
-#include <clasp/core/holder.h>
 #include <cando/adapt/symbolSet.h>
 #include <cando/adapt/stringSet.fwd.h>
 #include <cando/adapt/stringList.fwd.h>

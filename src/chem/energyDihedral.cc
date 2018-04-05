@@ -30,7 +30,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>
 #include <clasp/core/ql.h>
-#include <clasp/core/profiler.h>
 #include <cando/chem/bond.h>
 #include <cando/chem/matter.h>
 #include <cando/chem/atom.h>

@@ -34,7 +34,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
 #include <cando/geom/geomPackage.fwd.h>
-#include <clasp/core/holder.h>
 
 namespace geom {
 

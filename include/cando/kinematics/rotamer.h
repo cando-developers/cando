@@ -28,7 +28,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/common.h>
 #include <cando/kinematics/kinematicsPackage.h>
-#include <clasp/core/holder.h>
 
 namespace kinematics
 {

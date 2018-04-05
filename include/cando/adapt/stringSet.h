@@ -36,7 +36,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <set>
 #include <clasp/core/foundation.h>
 #include <clasp/core/object.h>
-#include <clasp/core/holder.h>
 #include <clasp/core/cons.h>
 #include <cando/adapt/adaptPackage.fwd.h>
 namespace adapt {

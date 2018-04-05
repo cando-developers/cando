@@ -49,7 +49,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/loop.h>
 #include <cando/chem/spanningLoop.h>
 #include <cando/chem/ffNonbondDb.h>
-#include <clasp/core/profiler.h>
 #include <clasp/core/translators.h>
 #include <clasp/core/wrappers.h>
 

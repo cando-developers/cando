@@ -30,7 +30,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/common.h>
 #include <cando/geom/vector3.h>
 #include <cando/adapt/symbolMap.h>
-#include <clasp/core/holder.h>
 #include <cando/chem/plug.h>
 #include <cando/chem/constitutionAtoms.h>
 #include <cando/kinematics/kinematicsPackage.h>

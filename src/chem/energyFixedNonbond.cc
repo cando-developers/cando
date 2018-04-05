@@ -29,7 +29,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/energyFixedNonbond.h>
 #include <cando/chem/energyAtomTable.h>
 #include <cando/chem/energyFunction.h>
-#include <clasp/core/profiler.h>
 #include <cando/chem/ffNonbondDb.h>
 #include <cando/chem/largeSquareMatrix.h>
 #include <clasp/core/wrappers.h>

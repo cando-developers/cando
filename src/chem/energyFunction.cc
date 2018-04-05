@@ -87,7 +87,6 @@ __END_DOC
 #define	PARMDEBUG	1
 #endif
 
-#include <clasp/core/profiler.h>
 
 #ifdef	darwin
 #include <xmmintrin.h>

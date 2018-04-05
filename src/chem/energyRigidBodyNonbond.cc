@@ -29,7 +29,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/bformat.h>
 #include <cando/chem/energyRigidBodyNonbond.h>
 #include <cando/chem/rigidBodyEnergyFunction.h>
-#include <clasp/core/profiler.h>
 #include <clasp/core/array.h>
 #include <clasp/core/evaluator.h>
 #include <cando/geom/color.h>

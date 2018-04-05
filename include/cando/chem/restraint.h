@@ -47,7 +47,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/geom/matrix.h>
 #include <cando/geom/vector3.h>
 #include <clasp/core/sequence.h>
-#include <clasp/core/holder.h>
 
 
 #include <cando/chem/chemPackage.h>

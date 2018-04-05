@@ -32,7 +32,6 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/common.h>
 #include <cando/chem/entityNameSet.h>
-#include <clasp/core/holder.h>
 #include <cando/chem/chemPackage.h>
 
 

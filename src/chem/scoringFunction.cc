@@ -61,7 +61,6 @@ __END_DOC
 #include <cando/chem/chemInfo.h>
 #include <clasp/core/wrappers.h>
 
-#include <clasp/core/profiler.h>
 
 #ifdef	darwin
 #include <xmmintrin.h>

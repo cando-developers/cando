@@ -33,7 +33,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
-#include <clasp/core/holder.h>
 //#include "geom/objectDictionary.fwd.h"
 #include <cando/chem/chemPackage.h>
 #include <cando/geom/coordinateArray.fwd.h>
