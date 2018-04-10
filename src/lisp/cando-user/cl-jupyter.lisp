@@ -23,7 +23,7 @@
   (let ((amber-home
           (namestring (or (if (ext:getenv "AMBERHOME")
                               (probe-file (ext:getenv "AMBERHOME"))
-                              nil)
+                              "/usr/local/amber/")
                           (probe-file "/home/app/amber16-data/")))))
     (setf (logical-pathname-translations "amber")
           (list (list "**;*.*" (concatenate 'string amber-home "/**/*.*"))))
