@@ -171,10 +171,10 @@ class EnergyNonbond_O : public EnergyComponent_O
  public:
   void	setDielectricConstant(double d) { this->_DielectricConstant = d; };
   double	getDielectricConstant() { return this->_DielectricConstant; };
-  void	setVdwScale(double d) { this->_ScaleVdw = d; };
-  double	getVdwScale()	{return this->_ScaleVdw; };
-  void	setElectrostaticScale(double d) { this->_ScaleElectrostatic = d; };
-  double	getElectrostaticScale()	{return this->_ScaleElectrostatic; };
+  CL_DEFMETHOD void setVdwScale(double d) { this->_ScaleVdw = d; };
+  CL_DEFMETHOD double	getVdwScale()	{return this->_ScaleVdw; };
+  CL_DEFMETHOD void	setElectrostaticScale(double d) { this->_ScaleElectrostatic = d; };
+  CL_DEFMETHOD double	getElectrostaticScale()	{return this->_ScaleElectrostatic; };
 
   double	getVdwEnergy() { return this->_EnergyVdw; };
   double	getElectrostaticEnergy() { return this->_EnergyElectrostatic; };
