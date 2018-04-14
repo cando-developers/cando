@@ -11,4 +11,4 @@
   :components ()
   :build-operation asdf:monolithic-compile-bundle-op
   :build-pathname #.(merge-pathnames #P"cando-jupyter.fasb" (translate-logical-pathname "app-fasl:"))
-  :depends-on (:cando-user :cl-jupyter :nglview))
+  :depends-on (:cffi :cando-user :cl-jupyter :nglview))
