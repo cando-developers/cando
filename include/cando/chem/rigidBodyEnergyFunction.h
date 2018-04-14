@@ -1,5 +1,5 @@
 /*
-    File: energyFunction.h
+    File: rigidBodyEnergyFunction.h
 */
 /*
 Open Source License

@@ -51,8 +51,13 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace       chem {
 
 
+  struct RigidBodyNonbondCrossTerm {
+    double      dA;
+    double      dC;
+
   struct RigidBodyAtomInfo {
     core::T_sp    _Atom;  // can be NIL
+    size_t     _TypeIndex;
     double     _Radius;
     double     _Epsilon;
     double     _Charge;
@@ -131,6 +136,7 @@ class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
 
   virtual	double	getEnergy();
   virtual void dumpTerms();
+  core::List_sp parts_as_list(NVector_sp pos);
  public:
  EnergyRigidBodyNonbond_O(core::SimpleVector_byte32_t_sp end_atoms) : _RigidBodyEndAtom(end_atoms) {
     this->resizeNonbondAtomInfoTable((*end_atoms)[end_atoms->length()-1]);

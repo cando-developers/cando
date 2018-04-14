@@ -99,6 +99,8 @@
     (safe-add-shape widget (coerce shape 'vector) :name "arrows")
     nil))
 
+
+
 ;;; Set the stereoisomer using a list of (atom-name config) pairs
 ;;; Example:  (set-stereoisomer-mapping *agg* '((:C1 :R) (:C2 :S))
 (defun set-stereoisomer-mapping (matter atom-name-to-config)

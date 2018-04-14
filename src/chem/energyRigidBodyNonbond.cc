@@ -54,206 +54,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
-#ifdef XML_ARCHIVE
-void	EnergyRigidBodyNonbond::archive(core::ArchiveP node)
-{
-  node->attribute("_Is14",this->_Is14);
-  node->attribute("_A",this->_A);
-  node->attribute("_C",this->_C);
-  node->attribute("_Charge1",this->_Charge1);
-  node->attribute("_Charge2",this->_Charge2);
-  node->attribute("_RStar",this->_RStar);
-  node->attribute("dQ1Q2",this->term.dQ1Q2);
-  node->attribute("dA",this->term.dA);
-  node->attribute("dC",this->term.dC);
-  node->attribute("I1",this->term.I1);
-  node->attribute("I2",this->term.I2);
-  node->attribute("a1",this->_Atom1);
-  node->attribute("a2",this->_Atom2);
-#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-  node->attributeIfDefined("calcForce",this->_calcForce,this->_calcForce);
-  node->attributeIfDefined("calcDiagonalHessian",this->_calcDiagonalHessian,this->_calcDiagonalHessian);
-  node->attributeIfDefined("calcOffDiagonalHessian",this->_calcOffDiagonalHessian,this->_calcOffDiagonalHessian);
-#include <cando/energy-functions/_NONBONDRB_debugEvalSerialize.cc>
-#endif //]
-}
-#endif
 
-#if 0
-//
-// Return true if we could fill the energyNonbond term
-// otherwise false usually if we don't recognize one of the atom types like DU
-//
-bool	EnergyRigidBodyNonbond::defineFrom(ForceField_sp	forceField,
-                                  bool		is14,
-                                  EnergyAtom	*iea1,
-                                  EnergyAtom	*iea2,
-                                  EnergyRigidBodyNonbond_sp energyNonbond)
-{_OF();
-  LOG(BF("defineFrom"));
-  FFNonbond_sp				ffNonbond1;
-  FFNonbond_sp				ffNonbond2;
-  double				epsilonij;
-  double				vdwScale;
-  double				electrostaticScale;
-  this->_Is14 = is14;
-  this->_Atom1 = iea1->atom();
-  this->_Atom2 = iea2->atom();
-  core::Symbol_sp t1 = iea1->atom()->getType();
-  core::Symbol_sp t2 = iea2->atom()->getType();
-  LOG(BF("Defining nonbond between types: %s - %s") % _rep_(t1) % _rep_(t2));
-  ASSERT(forceField->_Nonbonds&&forceField->_Nonbonds.notnilp());
-  LOG(BF("forceField->_Nonbonds @%p   .notnilp()->%d") % forceField->_Nonbonds.raw_() % forceField->_Nonbonds.notnilp());
-  ffNonbond1 = forceField->_Nonbonds->findType(t1);
-  ffNonbond2 = forceField->_Nonbonds->findType(t2);
-  ANN(ffNonbond1);
-  if ( ffNonbond1.nilp() )
-  {
-//     	SIMPLE_ERROR(BF("Unknown force field type(",iea1->_Atom->getType().c_str(),") for non-bonded interaction"));
-    return false;
-  }
-  ANN(ffNonbond2);
-  if ( ffNonbond2.nilp() )
-  {
-//     	SIMPLE_ERROR(BF("Unknown force field type(",iea2->_Atom->getType().c_str(),") for non-bonded interaction"));
-    return false;
-  }
-  if ( is14 ) {
-    vdwScale = 1.0/2.0*energyNonbond->getVdwScale();
-    electrostaticScale = energyNonbond->getElectrostaticScale()*1.0/1.2;
-  } else
-  {
-    vdwScale = energyNonbond->getVdwScale();
-    electrostaticScale = energyNonbond->getElectrostaticScale();
-  }
-  LOG(BF( "vdwScale = %lf")% (double)(vdwScale) );
-  LOG(BF( "electrostaticScale = %lf")% (double)(electrostaticScale) );
-  LOG(BF( " is14=%d")% is14 );
-  {_BLOCK_TRACE("Calculating nonbond parameters");
-    this->_RStar = ffNonbond1->getRadius_Angstroms()+ffNonbond2->getRadius_Angstroms();
-    epsilonij = sqrt(ffNonbond1->getEpsilon_kCal()*ffNonbond2->getEpsilon_kCal());
-    this->_A = epsilonij*pow(this->_RStar,12.0);
-    this->_C = 2.0*epsilonij*pow(this->_RStar,6.0);
-    this->term.dA = this->_A*vdwScale;
-    this->term.dC = this->_C*vdwScale;
-  }
-  {_BLOCK_TRACE("Calculating electrostatic parameters");
-    electrostaticScale *= ELECTROSTATIC_MODIFIER;
-    this->_Charge1 = iea1->atom()->getCharge();
-    this->_Charge2 = iea2->atom()->getCharge();
-    this->term.dQ1Q2 = electrostaticScale*(this->_Charge1*this->_Charge2)/energyNonbond->getDielectricConstant();
-    LOG(BF( "Calc dQ1Q2 electrostaticScale= %lf")% (double)(electrostaticScale));
-    LOG(BF( "Calc dQ1Q2 Dielectric constant = %lf")% (double)(energyNonbond->getDielectricConstant()));
-    LOG(BF( "Calc dQ1Q2 Charge1 = %lf")% (double)(this->_Charge1));
-    LOG(BF( "Calc dQ1Q2 Charge2 = %lf")% (double)(this->_Charge2));
-    LOG(BF( "dQ1Q2 = %lf")% (double)(this->term.dQ1Q2));
-  }
-  this->term.I1 = iea1->coordinateIndexTimes3();
-  this->term.I2 = iea2->coordinateIndexTimes3();
-  return true;
-}
-#endif
-
-#if 0
-double	EnergyRigidBodyNonbond::getDistance()
-{
-  Vector3	pos1, pos2;
-  pos1 = this->_Atom1->getPosition();
-  pos2 = this->_Atom2->getPosition();
-  return geom::calculateDistance(pos1,pos2);
-}
-#endif
-
-#if 0
-adapt::QDomNode_sp	EnergyRigidBodyNonbond::asXml()
-{
-  adapt::QDomNode_sp	node;
-  Vector3	vdiff;
-
-  node = adapt::QDomNode_O::create(lisp,"EnergyRigidBodyNonbond");
-  node->addAttributeString("atom1Name",this->_Atom1->getName());
-  node->addAttributeString("atom2Name",this->_Atom2->getName());
-  node->addAttributeInt("I1",this->term.I1);
-  node->addAttributeInt("I2",this->term.I2);
-  node->addAttributeBool("is14",this->_Is14);
-  node->addAttributeString("atom1Type",this->_Atom1->getType());
-  node->addAttributeString("atom2Type",this->_Atom2->getType());
-  node->addAttributeDoubleScientific("RStar",this->_RStar);
-  node->addAttributeDoubleScientific("A",this->_A);
-  node->addAttributeDoubleScientific("C",this->_C);
-  node->addAttributeDoubleScientific("Charge1",this->_Charge1);
-  node->addAttributeDoubleScientific("Charge2",this->_Charge2);
-//    vdiff = this->_Atom1->_Atom->getPosition() - this->_Atom2->_Atom->getPosition();
-//    diff = vdiff.length();
-//    node->addAttributeDouble("_r",diff,5,2);
-#if TURN_ENERGY_FUNCTION_DEBUG_ON
-  adapt::QDomNode_sp xml = adapt::QDomNode_O::create(lisp,"Evaluated");
-  xml->addAttributeBool("calcForce",this->_calcForce );
-  xml->addAttributeBool("calcDiagonalHessian",this->_calcDiagonalHessian );
-  xml->addAttributeBool("calcOffDiagonalHessian",this->_calcOffDiagonalHessian );
-#include <_NONBONDRB_debugEvalXml.cc>
-  node->addChild(xml);
-#endif
-  node->addAttributeDoubleScientific("dA",this->term.dA);
-  node->addAttributeDoubleScientific("dC",this->term.dC);
-  node->addAttributeDoubleScientific("dQ1Q2",this->term.dQ1Q2);
-  return node;
-}
-
-void	EnergyRigidBodyNonbond::parseFromXmlUsingAtomTable(adapt::QDomNode_sp	xml,
-                                                  AtomTable_sp at)
-{
-  this->term.dA = xml->getAttributeDouble("dA");
-  this->term.dC = xml->getAttributeDouble("dC");
-  this->term.dQ1Q2 = xml->getAttributeDouble("dQ1Q2");
-  this->_RStar = xml->getAttributeDouble("RStar");
-  this->_A = xml->getAttributeDouble("A");
-  this->_C = xml->getAttributeDouble("C");
-  this->_Charge1 = xml->getAttributeDouble("Charge1");
-  this->_Charge2 = xml->getAttributeDouble("Charge2");
-  this->term.I1 = xml->getAttributeInt("I1");
-  this->term.I2 = xml->getAttributeInt("I2");
-  this->_Is14 = xml->getAttributeBool("is14");
-  this->_Atom1 = at->findEnergyAtomWithCoordinateIndex(this->term.I1)->atom();
-  this->_Atom2 = at->findEnergyAtomWithCoordinateIndex(this->term.I2)->atom();
-}
-#endif
-
-
-
-#if 0
-double	_evaluateEnergyOnly_Nonbond(double x1, double y1, double z1,
-                                    double x2, double y2, double z2,
-                                    double dA, double dC, double dQ1Q2)
-{
-#undef	NONBOND_SET_PARAMETER
-#define	NONBOND_SET_PARAMETER(x)	{}
-#undef	NONBOND_SET_POSITION
-#define	NONBOND_SET_POSITION(x,ii,of)	{}
-#undef	NONBOND_ENERGY_ACCUMULATE
-#define	NONBOND_ENERGY_ACCUMULATE(e) {}
-#undef	NONBOND_FORCE_ACCUMULATE
-#define	NONBOND_FORCE_ACCUMULATE(i,o,v) {}
-#undef	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE
-#define	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE(i1,o1,i2,o2,v) {}
-#undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(x) {}
-#undef	NONBOND_EEEL_ENERGY_ACCUMULATE
-#define	NONBOND_EEEL_ENERGY_ACCUMULATE(x) {}
-
-#undef	NONBOND_CALC_FORCE	// Don't calculate FORCE or HESSIAN
-
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/energy-functions/_NONBONDRB_termDeclares.cc>
-#pragma clang diagnostic pop
-#include <cando/energy-functions/_NONBONDRB_termCode.cc>
-
-  return Energy;
-}
-#endif
 
 EnergyRigidBodyNonbond_sp EnergyRigidBodyNonbond_O::make(core::Array_sp end_atoms) {
   if (end_atoms->length()<1) {
@@ -310,6 +111,45 @@ void	EnergyRigidBodyNonbond_O::dumpTerms()
   }
 }
 
+CL_DEFMETHOD core::List_sp EnergyRigidBodyNonbond_O::parts_as_list(NVector_sp pos)
+{
+  ql::list result;
+  size_t istart = 0;
+#undef	NONBOND_POSITION_RB_SET_PARAMETER
+#define	NONBOND_POSITION_RB_SET_PARAMETER(x)	{}
+#undef	NONBOND_POSITION_RB_SET_POSITION
+#define	NONBOND_POSITION_RB_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
+#undef	NONBOND_POSITION_RB_SET_POINT
+#define	NONBOND_POSITION_RB_SET_POINT(x,ii,of)	{x=ii._Position.of;}
+#pragma clang diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#include <cando/energy-functions/_NONBOND_POSITIONS_termDeclares.cc>
+#pragma clang diagnostic pop
+  double am, bm, cm, dm, xm, ym, zm;
+  double pxm, pym, pzm;
+  int	I1;
+  size_t I1start = 0;
+  printf("%s:%d   _RigidBodyEndAtom->length() -> %lu\n", __FILE__, __LINE__, this->_RigidBodyEndAtom->length());
+  for ( size_t iI1 = 0; iI1<this->_RigidBodyEndAtom->length(); ++iI1 ) {
+    printf("%s:%d    iI1 = %lu\n", __FILE__, __LINE__, iI1);
+    ql::list helix;
+    size_t I1end = (*this->_RigidBodyEndAtom)[iI1];
+    printf("%s:%d    iI1 = %lu  I1start-> %lu I1end -> %lu\n", __FILE__, __LINE__, iI1, I1start, I1end);
+    for ( size_t I1cur = I1start; I1cur<I1end; ++I1cur ) {
+      RigidBodyAtomInfo& ea1 = this->_AtomInfoTable[I1cur];
+      I1 = iI1*7;
+#include <cando/energy-functions/_NONBOND_POSITIONS_termCode.cc>
+      helix << core::Cons_O::createList(core::DoubleFloat_O::create(plabmx),
+                                        core::DoubleFloat_O::create(plabmy),
+                                        core::DoubleFloat_O::create(plabmz),
+                                        core::DoubleFloat_O::create(ea1._Radius));
+    }
+    I1start = I1end;
+    result << helix.cons();
+  }
+  return result.cons();
+}
+
 
 void	EnergyRigidBodyNonbond_O::setupHessianPreconditioner(
                                                     NVector_sp nvPosition,
@@ -329,6 +169,8 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
 {
   double vdwScale = this->getVdwScale();
   double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
+  this->_EnergyElectrostatic = 0.0;
+  this->_EnergyVdw = 0.0;
   bool	hasForce = force.notnilp();
   bool	hasHessian = hessian.notnilp();
   bool	hasHdAndD = (hdvec.notnilp())&&(dvec.notnilp());
@@ -362,10 +204,10 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
 #include <cando/energy-functions/_NONBONDRB_termDeclares.cc>
 #pragma clang diagnostic pop
   double dA,dC,dQ1Q2;
-  double xh1, yh1, zh1;
-  double xh2, yh2, zh2;
-  double ak, bk, ck, dk, xk, yk, zk;
-  double al, bl, cl, dl, xl, yl, zl;
+  double am, bm, cm, dm, xm, ym, zm;
+  double pxm, pym, pzm;
+  double an, bn, cn, dn, xn, yn, zn;
+  double pxn, pyn, pzn;
   int	I1, I2;
   size_t I1start = 0;
   for ( size_t iI1 = 0; iI1<(this->_RigidBodyEndAtom->length()-1); ++iI1 ) {
@@ -391,6 +233,10 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
           I1 = iI1*7;
           I2 = iI2*7;
 #include <cando/energy-functions/_NONBONDRB_termCode.cc>
+#if 0
+          printf("    %s:%d coordinate offsets %d - %d\n", __FILE__, __LINE__, I1, I2 );
+          printf("      dA -> %lf   dC -> %lf  dQ1Q2 -> %lf  Energy -> %lf\n", dA, dC, dQ1Q2, Energy );
+#endif
 #if TURN_ENERGY_FUNCTION_DEBUG_ON //[
           nbi->_calcForce = calcForce;
           nbi->_calcDiagonalHessian = calcDiagonalHessian;
@@ -443,6 +289,12 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
   }
   LOG(BF( "Nonbond energy vdw(%lf) electrostatic(%lf)\n")% (double)this->_EnergyVdw % this->_EnergyElectrostatic );
   LOG(BF( "Nonbond energy }\n"));
+  this->_TotalEnergy = this->_EnergyVdw+this->_EnergyElectrostatic;
+#if 0
+  printf("%s:%d NonbondRigidBody    EnergyVdw -> %lf\n", __FILE__, __LINE__, this->_EnergyVdw );
+  printf("%s:%d NonbondRigidBody    EnergyElectrostatic -> %lf\n", __FILE__, __LINE__, this->_EnergyElectrostatic );
+  printf("%s:%d NonbondRigidBody    TotalEnergy -> %lf\n", __FILE__, __LINE__, this->_TotalEnergy );
+#endif
   return this->_TotalEnergy;
 }
     

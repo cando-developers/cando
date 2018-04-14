@@ -365,6 +365,7 @@ double	EnergyNonbond_O::evaluateAll(NVector_sp 	pos,
     this->evaluateTerms(pos,calcForce,force,calcDiagonalHessian,
                              calcOffDiagonalHessian,hessian,hdvec,dvec);
   }
+  this->_TotalEnergy = this->_EnergyVdw+this->_EnergyElectrostatic;
   return this->_TotalEnergy;
 }
     

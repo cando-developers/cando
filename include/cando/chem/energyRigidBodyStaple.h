@@ -120,6 +120,7 @@ class EnergyRigidBodyStaple_O : public EnergyRigidBodyComponent_O
 
   virtual string	beyondThresholdInteractionsAsString() {IMPLEMENT_ME();};
 
+  core::List_sp parts_as_list(NVector_sp pos);
 
  public:
   EnergyRigidBodyStaple_O( const EnergyRigidBodyStaple_O& ss ); //!< Copy constructor

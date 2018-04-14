@@ -178,6 +178,7 @@ namespace       chem
 
  
     CL_LISPIFY_NAME("evaluateAll");
+    CL_LAMBDA(pos &optional calc-force force calc-diagonal-hessian calc-off-diagonal-hessian hessian hdvec dvec);
     CL_DEFMETHOD virtual double	evaluateAll( 	NVector_sp pos,
                                                 bool calcForce,
                                                 gc::Nilable<NVector_sp> force,
