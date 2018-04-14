@@ -221,10 +221,10 @@ void	NVector_O::copyIntoMe(NVector_sp orig)
 }
 
 
-core::T_sp	NVector_O::deepCopy() const
+core::T_sp copy_nvector(NVector_sp orig ) const
 { 
-    GC_COPY(NVector_O, vv, *this->const_sharedThis<NVector_O>() ); // = RP_Copy<NVector_O>(this->const_sharedThis<NVector_O>());
-    return vv;
+  GC_COPY(NVector_O, vv, orig );
+  return vv;
 }
 
 /*

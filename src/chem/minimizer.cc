@@ -688,8 +688,8 @@ void Minimizer_O::lineSearchInitialReport( StepReport_sp report,
   double zx, zy;
   double xmin = dxa;
   double xinc = (dxc-dxa)/100.0;
-  report->_LineSearchPosition = nvPos->deepCopy().as<NVector_O>();
-  report->_LineSearchDirection = nvDir->deepCopy().as<NVector_O>();
+  report->_LineSearchPosition = copy_nvector(nvPos);
+  report->_LineSearchDirection = copy_nvector(nvDir);
   report->_TotalEnergyFn = NumericalFunction_O::create("Alpha","Total",xmin,xinc);
   report->_StretchEnergyFn = NumericalFunction_O::create("Alpha","Stretch",xmin,xinc);
   report->_AngleEnergyFn = NumericalFunction_O::create("Alpha","Angle",xmin,xinc);

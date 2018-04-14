@@ -255,8 +255,12 @@ CL_DEFMETHOD     core::T_sp Unit_O::operator*(core::T_sp obj) const
 		    || obj.isA<geom::OVector3_O>()
 		    || obj.isA<core::Array_O>() )
 	{
+          FIX_ME();
+#if 0
+          // why am I copying objects?
           core::T_sp val = obj.as<core::General_O>()->deepCopy();
-	    result = Quantity_O::create(val,this->const_sharedThis<Unit_O>());
+          result = Quantity_O::create(val,this->const_sharedThis<Unit_O>());
+#endif
 	} else if ( obj.isA<Quantity_O>() )
 	{
 	    SIMPLE_ERROR(BF("Handle Unit*Quantity"));

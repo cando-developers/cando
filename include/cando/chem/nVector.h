@@ -55,7 +55,7 @@ namespace chem {
   void	copyVector(NVector_sp dest, NVector_sp orig);
   void	inPlaceAddTimesScalar( NVector_sp nvResult, NVector_sp nvY, double x);	// NVectorAdd(a,x,y)
   double	rmsDistanceFrom(NVector_sp u, NVector_sp v);
-  
+  NVector_sp  copy_nvector(NVector_sp original);
   
 };
 

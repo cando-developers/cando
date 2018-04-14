@@ -64,12 +64,12 @@ namespace units
 	} else if ( obj.isA<core::Array_O>() )
 	{
 	    core::Array_sp array = obj.as<core::Array_O>();
-	    core::Array_sp narray = array->deepCopy().as<core::Array_O>();
-            IMPLEMENT_MEF("Handle new arrays");
+	    //core::Array_sp narray = array->deepCopy().as<core::Array_O>();
+            FIX_ME();
 #if 0
 	    narray->multiplyByScalar(conversion);
-#endif
 	    return narray;
+#endif
 	}
 	SIMPLE_ERROR(BF("Illegal value type[%s] for copyAndScaleValue") % core::cl__class_of(obj)->_classNameAsString() );
     }
@@ -93,8 +93,12 @@ namespace units
 	if ( obj.isA<core::Vector_O>() )
 	{
           core::Vector_sp vec = gc::As_unsafe<core::Vector_sp>(obj);
-          core::T_sp element = vec->rowMajorAref(index).as<core::General_O>()->deepCopy();
-	    return element;
+          FIX_ME();  // implement copy of object?
+#if 0
+          // Why am I copying objects?
+          //core::T_sp element = vec->rowMajorAref(index).as<core::General_O>()->deepCopy();
+          return element;
+#endif
 	}
 	SIMPLE_ERROR(BF("Illegal value type[%s] for copyAndScaleValueElement") % core::cl__class_of(obj)->_classNameAsString() );
     }
@@ -488,7 +492,9 @@ CL_DEFMETHOD     bool Quantity_O::isnan() const
     core::T_sp Quantity_O::deepCopy() const
     {_OF();
 	/* units are immutable so we don't need to copy them */
-      return Quantity_O::create(this->_Value.as<core::General_O>()->deepCopy(),this->_Unit);
+      IMPLEMENT_ME();
+      // Implement deepCopy
+      // return Quantity_O::create(this->_Value.as<core::General_O>()->deepCopy(),this->_Unit);
     }
 
 

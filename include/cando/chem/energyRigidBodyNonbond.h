@@ -54,7 +54,8 @@ namespace       chem {
   struct RigidBodyNonbondCrossTerm {
     double      dA;
     double      dC;
-
+  };
+  
   struct RigidBodyAtomInfo {
     core::T_sp    _Atom;  // can be NIL
     size_t     _TypeIndex;
