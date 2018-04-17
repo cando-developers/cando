@@ -129,12 +129,9 @@ CL_DEFMETHOD core::List_sp EnergyRigidBodyNonbond_O::parts_as_list(NVector_sp po
   double pxm, pym, pzm;
   int	I1;
   size_t I1start = 0;
-  printf("%s:%d   _RigidBodyEndAtom->length() -> %lu\n", __FILE__, __LINE__, this->_RigidBodyEndAtom->length());
   for ( size_t iI1 = 0; iI1<this->_RigidBodyEndAtom->length(); ++iI1 ) {
-    printf("%s:%d    iI1 = %lu\n", __FILE__, __LINE__, iI1);
     ql::list helix;
     size_t I1end = (*this->_RigidBodyEndAtom)[iI1];
-    printf("%s:%d    iI1 = %lu  I1start-> %lu I1end -> %lu\n", __FILE__, __LINE__, iI1, I1start, I1end);
     for ( size_t I1cur = I1start; I1cur<I1end; ++I1cur ) {
       RigidBodyAtomInfo& ea1 = this->_AtomInfoTable[I1cur];
       I1 = iI1*7;
