@@ -1,4 +1,4 @@
-#CANDO - Computer Aided Nanostructure Design and Optimization
+CANDO - Computer Aided Nanostructure Design and Optimization
 ============
 
 Cando is a computational chemistry environment for
@@ -10,8 +10,11 @@ It needs to be installed within the clasp/extensions directory using:
 
 ```
 cd clasp/extensions
-git clone http://drmeister/cando.git
+git clone https://github.com/drmeister/cando.git
 ```
+
+This will result in Cando being installed within the Clasp source tree at clasp/extensions/cando
+
 
 
 # Building
