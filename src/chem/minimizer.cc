@@ -44,6 +44,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/symbolTable.h>
 #include <clasp/core/lispStream.h>
+#include <clasp/core/evaluator.h>
 #include <cando/chem/largeSquareMatrix.h>
 #include <cando/chem/minimizer.h>
 #include <iostream>
@@ -94,8 +95,8 @@ SYMBOL_EXPORT_SC_(ChemPkg,steepest_descent);
 SYMBOL_EXPORT_SC_(ChemPkg,conjugate_gradient);
 SYMBOL_EXPORT_SC_(ChemPkg,truncated_newton);
 
-SYMBOL_EXPORT_SC_(ChemPkg,MinimizerExceededMaxStepsError);
-SYMBOL_EXPORT_SC_(ChemPkg,MinimizerStuckError);
+SYMBOL_EXPORT_SC_(ChemPkg,MinimizerExceededMaxSteps);
+SYMBOL_EXPORT_SC_(ChemPkg,MinimizerStuck);
 SYMBOL_EXPORT_SC_(ChemPkg,MinimizerError);
 
 namespace chem
@@ -103,8 +104,8 @@ namespace chem
 
 
 #define MINIMIZER_ERROR(msg) ERROR(_sym_MinimizerError,core::lisp_createList(kw::_sym_message,core::Str_O::create(msg)))
-#define MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(msg) ERROR(_sym_MinimizerExceededMaxStepsError,core::lisp_createList(kw::_sym_minimizer,msg._Minimizer, kw::_sym_number_of_steps, core::make_fixnum(msg._NumberOfSteps)));
-#define MINIMIZER_STUCK_ERROR(msg) ERROR(_sym_MinimizerStuckError,core::lisp_createList(kw::_sym_message,core::SimpleBaseString_O::make(msg)))
+#define MINIMIZER_EXCEEDED_MAX_STEPS_ERROR(msg) ERROR(_sym_MinimizerExceededMaxSteps,core::lisp_createList(kw::_sym_minimizer,msg._Minimizer, kw::_sym_number_of_steps, core::make_fixnum(msg._NumberOfSteps)));
+#define MINIMIZER_STUCK_ERROR(msg) ERROR(_sym_MinimizerStuck,core::lisp_createList(kw::_sym_message,core::SimpleBaseString_O::make(msg)))
 
 
 
@@ -867,7 +868,7 @@ void	Minimizer_O::_displayIntermediateMessage(
     {
       sout << "Seconds--";
     }
-    sout << "Step-----Alpha---Dir-------------Energy-----------RMSforce";
+    sout << "Step-log(Alpha)--Dir-------------Energy-----------RMSforce";
     if ( this->_ScoringFunction->getName() != "" ) 
     {
       sout << "-------Name";
@@ -883,7 +884,7 @@ void	Minimizer_O::_displayIntermediateMessage(
 #endif
   }
   sout << BF(" %5d") % this->_Iteration;
-  sout << BF(" %9.6lf") % step;
+  sout << BF(" %9.2lf") % log(step);
   if ( steepestDescent ) 
   {
     sout << "StDesc";
@@ -1010,7 +1011,8 @@ void	Minimizer_O::_steepestDescent( int numSteps,
   {
     while (1) 
     { _BLOCK_TRACEF(BF("Step %d") %localSteps);
-
+      if (this->_StepCallback.notnilp()) core::eval::funcall(this->_StepCallback,x);
+        
 		//
 		// Absolute gradient test
 		//
@@ -1275,6 +1277,7 @@ void	Minimizer_O::_conjugateGradient(int numSteps,
   }
   try {
     while (1) {
+      if (this->_StepCallback.notnilp()) core::eval::funcall(this->_StepCallback,x);
 
 
 	    //
@@ -1736,6 +1739,7 @@ void	Minimizer_O::_truncatedNewton(
     LOG(BF("Starting loop") );
     while ( 1 ) {
 
+      if (this->_StepCallback.notnilp()) core::eval::funcall(this->_StepCallback,xK);
 
       if ( this->_DebugOn )
       {
@@ -2047,7 +2051,7 @@ CL_DEFMETHOD     void	Minimizer_O::evaluateEnergyAndForceManyTimes(int numSteps)
 }
 
 
-
+#if 0
 CL_LISPIFY_NAME("minimizeSteepestDescent");
 CL_DEFMETHOD     void	Minimizer_O::minimizeSteepestDescent()
 {_OF();
@@ -2090,8 +2094,10 @@ CL_DEFMETHOD     void	Minimizer_O::minimizeSteepestDescent()
     MINIMIZER_ERROR(this->_Message.str());
   }
 }
+#endif
 
 
+#if 0
 
 CL_LISPIFY_NAME("minimizeConjugateGradient");
 CL_DEFMETHOD     void	Minimizer_O::minimizeConjugateGradient()
@@ -2140,7 +2146,7 @@ CL_DEFMETHOD     void	Minimizer_O::minimizeConjugateGradient()
     MINIMIZER_ERROR(this->_Message.str());
   }
 }
-
+#endif
 
 CL_LISPIFY_NAME("resetAndMinimize");
 CL_DEFMETHOD     void	Minimizer_O::resetAndMinimize()

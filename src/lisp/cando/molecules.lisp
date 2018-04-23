@@ -114,16 +114,30 @@ Set the stereochemistry of a collection of stereocenters using a alist of atom n
 
 ;; Recover from minimization problems using Common Lisp restarts
 (defun minimize-no-fail (minimizer)
+  (format t "minimize-no-fail~%")
   (restart-case
-      (handler-case
-          (chem:minimize minimizer)
-        (chem:minimizer-error (c)
-          (warn "The minimizer reported: ~a" c)
-          (invoke-restart 'skip-rest-of-minimization)))
+      (handler-bind
+          ((chem:minimizer-error (lambda (c)
+                                  (warn "The minimizer reported: ~a" c)
+                                  (invoke-restart 'skip-rest-of-minimization))))
+        (chem:minimize minimizer))
     ;; skip-rest-of-minimization can also be triggered by the user from the debugger
     (skip-rest-of-minimization ()
       :report "Skip the rest of the current minimization - continue processing"
+      (format t "Saving intermediate results~%")
       (chem:write-intermediate-results-to-energy-function minimizer))))
+
+
+(defun minimizer-obey-interrupt (minimizer)
+  (restart-case
+      (handler-bind
+          ((ext:unix-signal-received (lambda (c) (print "Done") (invoke-restart 'skip-rest))))
+        (chem:minimize minimizer))
+    (skip-rest ()
+      :report "Skip rest of minimization"
+      (chem:write-intermediate-results-to-energy-function minimizer)
+      (print "Skipping rest of minimization") )))
+
 
 (defun configure-minimizer (minimizer
                             &key (max-sd-steps 50)

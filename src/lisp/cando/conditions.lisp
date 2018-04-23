@@ -27,10 +27,22 @@
 
 
 (define-condition minimizer-error (error)
-  ((message :initarg :message
-            :reader minimizer-error-message)
-   (minimizer :initarg :minimizer
-             :reader minimizer)))
-(define-condition minimizer-exceeded-max-steps-error (minimizer-error)
+  ((minimizer :initarg :minimizer
+              :reader minimizer)
+   (coordinates :initarg :coordinates :reader coordinates)))
+
+(define-condition minimizer-exceeded-max-steps (minimizer-error)
   ((number-of-steps :initarg :number-of-steps :accessor number-of-steps)))
-(define-condition minimizer-stuck-error (minimizer-error) ())
+
+(defun make-minimizer-exceeded-max-steps (minimizer coordinates number-of-steps)
+  (make-condition 'minimizer-exceeded-max-steps
+                  :minimizer minimizer
+                  :coordinates coordinates
+                  :number-of-steps number-of-steps))
+
+(define-condition minimizer-stuck (minimizer-error) ())
+
+(defun make-minimizer-stuck (minimizer coordinates number-of-steps)
+  (make-condition 'minimizer-stuck
+                  :minimizer minimizer
+                  :coordinates coordinates))

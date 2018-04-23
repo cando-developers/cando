@@ -68,7 +68,6 @@ namespace       chem
   SMART(SparseLargeSquareMatrix);
   SMART(StepReport);
   SMART(PosixTime);
-  SMART(LispCallback);
 
 #define	CALLBACK_ERROR	0
 #define	CALLBACK_CONT	1
@@ -162,7 +161,7 @@ namespace       chem
     gc::Nilable<NVector_sp> _Force;
 
   private:	// Do not serialize
-//	core::LispCallback_sp		_StepCallback;
+    core::T_sp          _StepCallback;
 
   public:
     void lineSearchInitialReport( StepReport_sp report,
@@ -282,7 +281,7 @@ namespace       chem
     CL_LISPIFY_NAME("getRMSForce");
     CL_DEFMETHOD 	double	getRMSForce() { return this->_RMSForce; };
 
-//	void	setStepCallback(core::LispCallback_sp stepCallback);
+    CL_DEFMETHOD void	setStepCallback(core::T_sp stepCallback) { this->_StepCallback = stepCallback;};
 
     CL_LISPIFY_NAME("setMaximumNumberOfSteepestDescentSteps");
     CL_DEFMETHOD 	void	setMaximumNumberOfSteepestDescentSteps(int m) {this->_NumberOfSteepestDescentSteps = m;};
@@ -317,7 +316,7 @@ namespace       chem
 
     adapt::QDomNode_sp	asXml();
 
-    DEFAULT_CTOR_DTOR(Minimizer_O);
+  Minimizer_O() : _StepCallback(_Nil<core::T_O>()) {};
   };
 
   extern core::Symbol_sp& _sym__PLUS_minimizerStatusConverter_PLUS_;
