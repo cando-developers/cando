@@ -49,7 +49,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #define DEBUG_NONBOND_TERM 1
 #define LOG_ENERGY(x)
-//#define LOG_ENERGY BFORMAT_T
+#define LOG_ENERGY BFORMAT_T
 
 namespace chem
 {
@@ -206,17 +206,19 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
   double an, bn, cn, dn, xn, yn, zn;
   double pxn, pyn, pzn;
   int	I1, I2;
+  size_t interactions = 0;
   size_t I1start = 0;
-  for ( size_t iI1 = 0; iI1<(this->_RigidBodyEndAtom->length()-1); ++iI1 ) {
-    size_t I1end = (*this->_RigidBodyEndAtom)[iI1];
-    size_t I2start = I1end;
-    for (size_t iI2 = iI1+1; iI2<this->_RigidBodyEndAtom->length(); ++iI2 ) {
-      size_t I2end = (*this->_RigidBodyEndAtom)[iI2];
+  for ( size_t iHelix1 = 0; iHelix1<(this->_RigidBodyEndAtom->length()-1); ++iHelix1 ) {
+    size_t I1end = (*this->_RigidBodyEndAtom)[iHelix1];
+    for (size_t iHelix2 = iHelix1+1; iHelix2<this->_RigidBodyEndAtom->length(); ++iHelix2 ) {
+      size_t I2start = (*this->_RigidBodyEndAtom)[iHelix2-1];
+      size_t I2end = (*this->_RigidBodyEndAtom)[iHelix2];
       for ( size_t I1cur = I1start; I1cur<I1end; ++I1cur ) {
         RigidBodyAtomInfo& ea1 = this->_AtomInfoTable[I1cur];
         double charge1 = ea1._Charge;
         double electrostatic_scaled_charge1 = charge1*electrostaticScale;
         for ( size_t I2cur = I2start; I2cur<I2end; ++I2cur ) {
+          ++interactions;
           RigidBodyAtomInfo& ea2 = this->_AtomInfoTable[I2cur];
           double rStar = ea1._Radius+ea2._Radius;
           double epsilonij = sqrt(ea1._Epsilon*ea2._Epsilon);
@@ -227,8 +229,8 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
           dC = 2.0*epsilonij*rStar6*vdwScale;
           double charge2 = ea2._Charge;
           dQ1Q2 = electrostatic_scaled_charge1*charge2;
-          I1 = iI1*7;
-          I2 = iI2*7;
+          I1 = iHelix1*7;
+          I2 = iHelix2*7;
 #include <cando/energy-functions/_NONBONDRB_termCode.cc>
 #if 0
           printf("    %s:%d coordinate offsets %d - %d\n", __FILE__, __LINE__, I1, I2 );
@@ -256,26 +258,37 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
               }
             }
             LOG_ENERGY(BF( "MEISTER nonbond %s args cando\n")% key );
+            LOG_ENERGY(BF( "MEISTER nonbond %s iHelix1->%3d iHelix2->%3d  I1Cur->%3d I2Cur->%3d\n")% key % iHelix1 % iHelix2 % I1cur % I2cur );
             LOG_ENERGY(BF( "MEISTER nonbond %s dA %5.3lf\n")% key % dA );
             LOG_ENERGY(BF( "MEISTER nonbond %s dC %5.3lf\n")% key % dC );
             LOG_ENERGY(BF( "MEISTER nonbond %s dQ1Q2 %5.3lf\n")% key % dQ1Q2 );
+#if 0
             LOG_ENERGY(BF( "MEISTER nonbond %s x1 %5.3lf %d\n")% key % x1 % (I1/3+1) );
             LOG_ENERGY(BF( "MEISTER nonbond %s y1 %5.3lf %d\n")% key % y1 % (I1/3+1) );
             LOG_ENERGY(BF( "MEISTER nonbond %s z1 %5.3lf %d\n")% key % z1 % (I1/3+1) );
             LOG_ENERGY(BF( "MEISTER nonbond %s x2 %5.3lf %d\n")% key % x2 % (I2/3+1) );
             LOG_ENERGY(BF( "MEISTER nonbond %s y2 %5.3lf %d\n")% key % y2 % (I2/3+1) );
             LOG_ENERGY(BF( "MEISTER nonbond %s z2 %5.3lf %d\n")% key % z2 % (I2/3+1) );
+#endif
             LOG_ENERGY(BF( "MEISTER nonbond %s results\n")% key );
-            LOG_ENERGY(BF( "MEISTER nonbond %s evdw %lf\n")% key % Evdw);
-            LOG_ENERGY(BF( "MEISTER nonbond %s eeel %lf\n")% key % Eeel);
-            LOG_ENERGY(BF( "MEISTER nonbond %s Enonbond(evdw+eeel) %lf\n")% key % (Evdw+Eeel) );
+            LOG_ENERGY(BF( "MEISTER nonbond %s EnergyVdw %lf\n")% key % EnergyVdw);
+            LOG_ENERGY(BF( "MEISTER nonbond %s EnergyElectrostatic %lf\n")% key % EnergyElectrostatic);
+            LOG_ENERGY(BF( "MEISTER nonbond %s Enonbond(EnergyVdw+EnergyElectrostatic) %lf\n")% key % (EnergyVdw+EnergyElectrostatic) );
             if ( calcForce ) {
-              LOG_ENERGY(BF( "MEISTER nonbond %s fx1 %lf %d\n")% key % fx1 % (I1/3+1) );
-              LOG_ENERGY(BF( "MEISTER nonbond %s fy1 %lf %d\n")% key % fy1 % (I1/3+1) );
-              LOG_ENERGY(BF( "MEISTER nonbond %s fz1 %lf %d\n")% key % fz1 % (I1/3+1) );
-              LOG_ENERGY(BF( "MEISTER nonbond %s fx2 %lf %d\n")% key % fx2 % (I2/3+1) );
-              LOG_ENERGY(BF( "MEISTER nonbond %s fy2 %lf %d\n")% key % fy2 % (I2/3+1) );
-              LOG_ENERGY(BF( "MEISTER nonbond %s fz2 %lf %d\n")% key % fz2 % (I2/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fam %lf %d\n")% key % fam % (I1cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fbm %lf %d\n")% key % fbm % (I1cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fcm %lf %d\n")% key % fcm % (I1cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fdm %lf %d\n")% key % fdm % (I1cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fxm %lf %d\n")% key % fxm % (I1cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fym %lf %d\n")% key % fym % (I1cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fzm %lf %d\n")% key % fzm % (I1cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fan %lf %d\n")% key % fan % (I2cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fbn %lf %d\n")% key % fbn % (I2cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fcn %lf %d\n")% key % fcn % (I2cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fdn %lf %d\n")% key % fdn % (I2cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fxn %lf %d\n")% key % fxn % (I2cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fyn %lf %d\n")% key % fyn % (I2cur/3+1) );
+              LOG_ENERGY(BF( "MEISTER nonbond %s fzn %lf %d\n")% key % fzn % (I2cur/3+1) );
             }
             LOG_ENERGY(BF( "MEISTER nonbond %s stop\n")% key );
           }
@@ -283,10 +296,17 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
         }
       }
     }
+    I1start = I1end;
   }
   LOG(BF( "Nonbond energy vdw(%lf) electrostatic(%lf)\n")% (double)this->_EnergyVdw % this->_EnergyElectrostatic );
   LOG(BF( "Nonbond energy }\n"));
   this->_TotalEnergy = this->_EnergyVdw+this->_EnergyElectrostatic;
+#ifdef DEBUG_NONBOND_TERM
+  if ( this->_DebugEnergy ) {
+    LOG_ENERGY(BF( "MEISTER nonbond interactions -> %d\n") % interactions);
+  }
+#endif
+  
 #if 0
   printf("%s:%d NonbondRigidBody    EnergyVdw -> %lf\n", __FILE__, __LINE__, this->_EnergyVdw );
   printf("%s:%d NonbondRigidBody    EnergyElectrostatic -> %lf\n", __FILE__, __LINE__, this->_EnergyElectrostatic );
@@ -295,112 +315,6 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
   return this->_TotalEnergy;
 }
     
-    
-
-
-
-#if 0
-ALWAYS_INLINE void _calculate_nonbond_term(EnergyRigidBodyNonbond_O& me, double vdwScale, double electrostatic_scaled_charge1, FFNonbond_sp ffNonbond1, FFNonbond_sp ffNonbond2, AtomTable_O::iterator iea1, AtomTable_O::iterator iea2,
-                                           NVector_sp 	pos,
-                                           bool 		calcForce,
-                                           gc::Nilable<NVector_sp> 	force,
-                                           bool		calcDiagonalHessian,
-                                           bool		calcOffDiagonalHessian,
-                                           gc::Nilable<AbstractLargeSquareMatrix_sp>	hessian,
-                                           gc::Nilable<NVector_sp>	hdvec, 
-                                           gc::Nilable<NVector_sp> 	dvec )
-{
-#define NONBOND_CALC_FORCE
-#define NONBOND_CALC_DIAGONAL_HESSIAN
-#define NONBOND_CALC_OFF_DIAGONAL_HESSIAN
-#undef	NONBOND_SET_PARAMETER
-#define	NONBOND_SET_PARAMETER(x)	{}
-#undef	NONBOND_SET_POSITION
-#define	NONBOND_SET_POSITION(x,ii,of)	{x=pos->element(ii+of);}
-#undef	NONBOND_EEEL_ENERGY_ACCUMULATE
-#define	NONBOND_EEEL_ENERGY_ACCUMULATE(e) {me._EnergyElectrostatic +=(e);}
-#undef	NONBOND_EVDW_ENERGY_ACCUMULATE
-#define	NONBOND_EVDW_ENERGY_ACCUMULATE(e) {me._EnergyVdw+=(e);}
-#undef	NONBOND_ENERGY_ACCUMULATE
-#define	NONBOND_ENERGY_ACCUMULATE(e) {};
-#undef	NONBOND_FORCE_ACCUMULATE
-#undef	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE
-#undef	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE
-#define	NONBOND_FORCE_ACCUMULATE 		ForceAcc
-#define	NONBOND_DIAGONAL_HESSIAN_ACCUMULATE 	DiagHessAcc
-#define	NONBOND_OFF_DIAGONAL_HESSIAN_ACCUMULATE OffDiagHessAcc
-#pragma clang diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-variable"
-#include <cando/energy-functions/_NONBONDRB_termDeclares.cc>
-#pragma clang diagnostic pop
-  double x1,y1,z1,x2,y2,z2,dA,dC,dQ1Q2;
-  double rStar = ffNonbond1->getRadius_Angstroms()+ffNonbond2->getRadius_Angstroms();
-  // OPTIMIZE: Can I precalculate the square-roots!!!!!!!!
-  double epsilonij = sqrt(ffNonbond1->getEpsilon_kCal()*ffNonbond2->getEpsilon_kCal()); 
-  double rStar6 = pow(rStar,6.0);
-  double rStar12 = rStar*rStar;
-  dA = epsilonij*rStar12*vdwScale;
-  dC = 2.0*epsilonij*rStar6*vdwScale;
-  double charge2 = iea2->atom()->getCharge();
-  dQ1Q2 = electrostatic_scaled_charge1*charge2;
-  LOG(BF( "Calc dQ1Q2 electrostaticScale= %lf")% (double)(electrostaticScale));
-  LOG(BF( "Calc dQ1Q2 Dielectric constant = %lf")% (double)(dielectricConstant));
-  LOG(BF( "Calc dQ1Q2 Charge1 = %lf")% (double)(me._Charge1));
-  LOG(BF( "Calc dQ1Q2 Charge2 = %lf")% (double)(me._Charge2));
-  LOG(BF( "dQ1Q2 = %lf")% (double)(me.term.dQ1Q2));
-  int I1 = iea1->coordinateIndexTimes3();
-  int I2 = iea2->coordinateIndexTimes3();
-#ifdef	DEBUG_CONTROL_THE_NUMBER_OF_TERMS_EVALAUTED
-  if ( me._Debug_NumberOfNonbondTermsToCalculate > 0 ) {
-    if ( i>= me._Debug_NumberOfNonbondTermsToCalculate ) {
-      break;
-    }
-  }
-#endif
-#include <cando/energy-functions/_NONBONDRB_termCode.cc>
-#if TURN_ENERGY_FUNCTION_DEBUG_ON //[
-  nbi->_calcForce = calcForce;
-  nbi->_calcDiagonalHessian = calcDiagonalHessian;
-  nbi->_calcOffDiagonalHessian = calcOffDiagonalHessian;
-#undef EVAL_SET
-#define	EVAL_SET(var,val)	{ nbi->eval.var=val;};
-#include <cando/energy-functions/_NONBONDRB_debugEvalSet.cc>
-#endif //]
-#ifdef DEBUG_NONBOND_TERM
-  if ( me._DebugEnergy ) {
-    LOG_ENERGY(BF( "MEISTER nonbond %d args cando\n")% (i+1) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d dA %5.3lf\n")% (i+1) % (nbi->term.dA) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d dC %5.3lf\n")% (i+1) % (nbi->term.dC) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d dQ1Q2 %5.3lf\n")% (i+1) % (nbi->term.dQ1Q2) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d x1 %5.3lf %d\n")% (i+1) % x1 % (I1/3+1) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d y1 %5.3lf %d\n")% (i+1) % y1 % (I1/3+1) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d z1 %5.3lf %d\n")% (i+1) % z1 % (I1/3+1) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d x2 %5.3lf %d\n")% (i+1) % x2 % (I2/3+1) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d y2 %5.3lf %d\n")% (i+1) % y2 % (I2/3+1) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d z2 %5.3lf %d\n")% (i+1) % z2 % (I2/3+1) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d results\n")% (i+1) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d Enonbond %lf\n")% (i+1) % (Evdw+Eeel) );
-    LOG_ENERGY(BF( "MEISTER nonbond %d evdw %lf\n")% (i+1) % Evdw);
-    LOG_ENERGY(BF( "MEISTER nonbond %d eeel %lf\n")% (i+1) % Eeel);
-    if ( calcForce ) {
-      LOG_ENERGY(BF( "MEISTER nonbond %d fx1 %lf %d\n")% (i+1) % fx1 % (I1/3+1) );
-      LOG_ENERGY(BF( "MEISTER nonbond %d fy1 %lf %d\n")% (i+1) % fy1 % (I1/3+1) );
-      LOG_ENERGY(BF( "MEISTER nonbond %d fz1 %lf %d\n")% (i+1) % fz1 % (I1/3+1) );
-      LOG_ENERGY(BF( "MEISTER nonbond %d fx2 %lf %d\n")% (i+1) % fx2 % (I2/3+1) );
-      LOG_ENERGY(BF( "MEISTER nonbond %d fy2 %lf %d\n")% (i+1) % fy2 % (I2/3+1) );
-      LOG_ENERGY(BF( "MEISTER nonbond %d fz2 %lf %d\n")% (i+1) % fz2 % (I2/3+1) );
-    }
-    LOG(BF( "MEISTER nonbond %d stop\n")% (i+1) );
-  }
-#endif
-}
-#endif
-
-
-
-
-
-
 void	EnergyRigidBodyNonbond_O::compareAnalyticalAndNumericalForceAndHessianTermByTerm(
                                                                                 NVector_sp 	pos)
 {_OF();
