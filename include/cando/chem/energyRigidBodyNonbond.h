@@ -54,18 +54,21 @@ namespace       chem {
   struct RigidBodyNonbondCrossTerm {
     double      dA;
     double      dC;
+  RigidBodyNonbondCrossTerm(double a, double c) : dA(a), dC(c) {};
+  RigidBodyNonbondCrossTerm() : dA(0.0), dC(0.0) {};
   };
+
   
   struct RigidBodyAtomInfo {
-    core::T_sp    _Atom;  // can be NIL
-    size_t     _TypeIndex;
-    double     _Radius;
-    double     _Epsilon;
-    double     _Charge;
-    Vector3    _Position;
+    core::T_sp    _Object;  // can be NIL
+    size_t         _TypeIndex;
+    double         _Radius;
+    double         _Epsilon;
+    double         _Charge;
+    Vector3        _Position;
     RigidBodyAtomInfo() {};
   RigidBodyAtomInfo(core::T_sp a, double r, double e, double c, const Vector3& p) :
-    _Atom(a),
+    _Object(a),
       _Radius(r),
       _Epsilon(e),
       _Charge(c),
@@ -100,7 +103,12 @@ class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
   double		_EnergyElectrostatic;
   core::SimpleVector_byte32_t_sp    _RigidBodyEndAtom;
   gctools::Vec0<RigidBodyAtomInfo>  _AtomInfoTable;
+  size_t               _NumberOfTypes;
+  std::vector<RigidBodyNonbondCrossTerm>  _CrossTerms;
  public:
+  RigidBodyNonbondCrossTerm& crossTerm(size_t xi, size_t yi) { return this->_CrossTerms[this->_NumberOfTypes*xi+yi]; };
+ public:
+  void initializeCrossTerms(bool verbose);
   void	setDielectricConstant(double d) { this->_DielectricConstant = d; };
   double	getDielectricConstant() { return this->_DielectricConstant; };
   void	setVdwScale(double d) { this->_ScaleVdw = d; };
@@ -115,7 +123,7 @@ class EnergyRigidBodyNonbond_O : public EnergyRigidBodyComponent_O
  public:
   void zeroEnergy();
 
-  CL_DEFMETHOD void energyRigidBodyNonbondSetTerm(gc::Fixnum index, Atom_sp atom, double radius, double epsilon, double charge, const Vector3& position);
+  CL_DEFMETHOD void energyRigidBodyNonbondSetTerm(gc::Fixnum index, core::T_sp object, double radius, double epsilon, double charge, const Vector3& position);
   
   virtual void setupHessianPreconditioner(NVector_sp nvPosition,
                                           AbstractLargeSquareMatrix_sp m );

@@ -46,16 +46,74 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/largeSquareMatrix.h>
 #include <clasp/core/wrappers.h>
 
-
+#if 0
 #define DEBUG_NONBOND_TERM 1
 #define LOG_ENERGY(x)
 #define LOG_ENERGY BFORMAT_T
+#endif
 
 namespace chem
 {
 
+struct TypeParameters {
+  double _Radius;
+  double _Epsilon;
+  TypeParameters(double radius, double epsilon) : _Radius(radius), _Epsilon(epsilon) {};
+};
 
+bool operator<(const TypeParameters& l, const TypeParameters& r) {
+  return (l._Radius<r._Radius || (l._Radius==r._Radius && l._Epsilon<r._Epsilon));
+}
 
+CL_DEFMETHOD void EnergyRigidBodyNonbond_O::initializeCrossTerms(bool verbose)
+{
+  typedef std::map<TypeParameters,size_t> double_pair_map;
+  double_pair_map types;
+  std::vector<TypeParameters> typeParameters;
+  size_t next_type_index = 0;
+  for ( size_t i=0; i<this->_AtomInfoTable.size(); ++i ) {
+    RigidBodyAtomInfo& info = this->_AtomInfoTable[i];
+    TypeParameters key(info._Radius,info._Epsilon);
+    double_pair_map::iterator it = types.find(key);
+    if (it == types.end()) {
+      types[key] = next_type_index;
+      this->_AtomInfoTable[i]._TypeIndex = next_type_index;
+      typeParameters.push_back(key);
+      next_type_index++;
+    } else {
+      this->_AtomInfoTable[i]._TypeIndex = it->second;
+    }
+  }
+  this->_NumberOfTypes = next_type_index;
+  if (verbose) {
+    BFORMAT_T(BF("There are %d types\n") % this->_NumberOfTypes);
+  }
+  this->_CrossTerms.resize(next_type_index*next_type_index);
+  double vdwScale = this->getVdwScale();
+  for ( size_t xi=0; xi<next_type_index; xi++ ) {
+    for (size_t yi=xi; yi<next_type_index; yi++ ) {
+      TypeParameters& ea1 = typeParameters[xi];
+      TypeParameters& ea2 = typeParameters[yi];
+      double rStar = ea1._Radius+ea2._Radius;
+      double epsilonij = sqrt(ea1._Epsilon*ea2._Epsilon);
+      double rStar2 = rStar*rStar;
+      double rStar6 = rStar2*rStar2*rStar2;
+      double rStar12 = rStar6*rStar6;
+      double dA = epsilonij*rStar12*vdwScale;
+      double dC = 2.0*epsilonij*rStar6*vdwScale;
+      RigidBodyNonbondCrossTerm crossTerm(dA,dC);
+      if (verbose) {
+        BFORMAT_T(BF("Cross term for types %d - %d\n") % xi % yi );
+        BFORMAT_T(BF("    type: %d   radius-> %f   epsilon-> %f\n") % xi % ea1._Radius % ea1._Epsilon);
+        BFORMAT_T(BF("    type: %d   radius-> %f   epsilon-> %f\n") % yi % ea2._Radius % ea2._Epsilon);
+        BFORMAT_T(BF("    dA -> %f      dC -> %f\n") % dA % dC );
+      }
+      this->crossTerm(xi,yi) = crossTerm;
+      this->crossTerm(yi,xi) = crossTerm;
+    }
+  }
+}
+          
 EnergyRigidBodyNonbond_sp EnergyRigidBodyNonbond_O::make(core::Array_sp end_atoms) {
   if (end_atoms->length()<1) {
     SIMPLE_ERROR(BF("You must provide a vector of end atom indices with at least one end atom"));
@@ -89,7 +147,7 @@ double	EnergyRigidBodyNonbond_O::getEnergy()
   return e;
 }
 
-void EnergyRigidBodyNonbond_O::energyRigidBodyNonbondSetTerm(gc::Fixnum index, Atom_sp atom, double radius, double epsilon, double charge, const Vector3& position) {
+ void EnergyRigidBodyNonbond_O::energyRigidBodyNonbondSetTerm(gc::Fixnum index, core::T_sp atom, double radius, double epsilon, double charge, const Vector3& position) {
   if (index < 0 || index >= this->_AtomInfoTable.size()) {
     SIMPLE_ERROR(BF("Index out of range %d - max is %d") % index % this->_AtomInfoTable.size());
   }
@@ -105,7 +163,7 @@ void	EnergyRigidBodyNonbond_O::dumpTerms()
   for ( size_t rb = 0; rb<this->_RigidBodyEndAtom->length(); ++rb) {
     for ( size_t i = istart; i<(*this->_RigidBodyEndAtom)[rb]; ++i ) {
       RigidBodyAtomInfo& ai = this->_AtomInfoTable[i];
-      BFORMAT_T(BF("I1 = %3d  %s  %lf %lf %lf %s\n") % (rb*7) % _rep_(ai._Atom) % ai._Radius % ai._Epsilon % ai._Charge % ai._Position.asString());
+      BFORMAT_T(BF("I1 = %3d  %s  %lf %lf %lf %s\n") % (rb*7) % _rep_(ai._Object) % ai._Radius % ai._Epsilon % ai._Charge % ai._Position.asString());
     }
     istart = (*this->_RigidBodyEndAtom)[rb];
   }
@@ -164,6 +222,7 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
                                      gc::Nilable<NVector_sp>	hdvec, 
                                      gc::Nilable<NVector_sp> 	dvec )
 {
+  if (this->_CrossTerms.size() == 0 ) this->initializeCrossTerms(false);
   double vdwScale = this->getVdwScale();
   double electrostaticScale = this->getElectrostaticScale()*ELECTROSTATIC_MODIFIER/this->getDielectricConstant();
   this->_EnergyElectrostatic = 0.0;
@@ -220,6 +279,10 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
         for ( size_t I2cur = I2start; I2cur<I2end; ++I2cur ) {
           ++interactions;
           RigidBodyAtomInfo& ea2 = this->_AtomInfoTable[I2cur];
+          RigidBodyNonbondCrossTerm& crossTerm = this->crossTerm(ea1._TypeIndex,ea2._TypeIndex);
+          dA = crossTerm.dA;
+          dC = crossTerm.dC;
+#if 0          
           double rStar = ea1._Radius+ea2._Radius;
           double epsilonij = sqrt(ea1._Epsilon*ea2._Epsilon);
           double rStar2 = rStar*rStar;
@@ -227,6 +290,7 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
           double rStar12 = rStar6*rStar6;
           dA = epsilonij*rStar12*vdwScale;
           dC = 2.0*epsilonij*rStar6*vdwScale;
+#endif
           double charge2 = ea2._Charge;
           dQ1Q2 = electrostatic_scaled_charge1*charge2;
           I1 = iHelix1*7;
@@ -247,16 +311,7 @@ double	EnergyRigidBodyNonbond_O::evaluateAll(NVector_sp 	pos,
 #ifdef DEBUG_NONBOND_TERM
           if ( this->_DebugEnergy ) {
             std::string key;
-            if (gc::IsA<Atom_sp>(ea1._Atom) && gc::IsA<Atom_sp>(ea2._Atom)) {
-              Atom_sp ea1_atom = gc::As_unsafe<Atom_sp>(ea1._Atom);
-              Atom_sp ea2_atom = gc::As_unsafe<Atom_sp>(ea2._Atom);
-              if ( ea1_atom->getName()->symbolNameAsString()
-                   < ea2_atom->getName()->symbolNameAsString() ) {
-                key = ea1_atom->getName()->symbolNameAsString()+"-"+ea2_atom->getName()->symbolNameAsString();
-              } else {
-                key = ea2_atom->getName()->symbolNameAsString()+"-"+ea1_atom->getName()->symbolNameAsString();
-              }
-            }
+            key = _rep_(ea1._Object)+"-"+_rep_(ea2._Object);
             LOG_ENERGY(BF( "MEISTER nonbond %s args cando\n")% key );
             LOG_ENERGY(BF( "MEISTER nonbond %s iHelix1->%3d iHelix2->%3d  I1Cur->%3d I2Cur->%3d\n")% key % iHelix1 % iHelix2 % I1cur % I2cur );
             LOG_ENERGY(BF( "MEISTER nonbond %s dA %5.3lf\n")% key % dA );
