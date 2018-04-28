@@ -132,7 +132,7 @@ namespace chem
   public:
     typedef	gctools::Vec0<ConstitutionAtom_sp>::iterator	iterator;
 	//! Create a ConstitutionAtoms object from a Residue
-    static ConstitutionAtoms_sp makeConstitutionAtomsFromResidue(Residue_sp residue);
+    static ConstitutionAtoms_sp makeConstitutionAtomsFromResidue(Residue_sp residue, bool verbose=false);
   public:
 
 	/*! Return the number of atoms */

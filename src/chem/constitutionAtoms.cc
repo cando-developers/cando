@@ -26,6 +26,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <clasp/core/common.h>
+#include <clasp/core/bformat.h>
 #include <cando/adapt/stringSet.h>
 #include <cando/adapt/adapters.h>
 #include <cando/chem/constitutionAtoms.h>
@@ -79,7 +80,8 @@ void ConstitutionVirtualAtom_O::archiveBase(core::ArchiveP node)
 #endif
 
 CL_LISPIFY_NAME(makeConstitutionAtomsFromResidue);
-CL_DEFUN ConstitutionAtoms_sp ConstitutionAtoms_O::makeConstitutionAtomsFromResidue(Residue_sp residue)
+CL_LAMBDA(residue &optional verbose);
+CL_DEFUN ConstitutionAtoms_sp ConstitutionAtoms_O::makeConstitutionAtomsFromResidue(Residue_sp residue, bool verbose)
 {
   GC_ALLOCATE(ConstitutionAtoms_O, catoms );
   Matter_O::contentIterator it;
@@ -92,6 +94,7 @@ CL_DEFUN ConstitutionAtoms_sp ConstitutionAtoms_O::makeConstitutionAtomsFromResi
       ConstitutionAtom_sp catom = atom->asConstitutionAtom(index);
       catoms->_Atoms.push_back(catom);
       atomToIndexMap[atom] = index;
+      if (verbose) BFORMAT_T(BF("Atom %s index: %d\n") % _rep_(atom) % index);
     }
   }
   {_BLOCK_TRACE("Then define the bonds for each atom using the indices");

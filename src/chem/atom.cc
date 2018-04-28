@@ -1790,8 +1790,12 @@ void	Atom_O::defineConstitutionAtomBonding(ConstitutionAtom_sp consAtom, MapAtom
   Atom_sp me = this->sharedThis<Atom_O>();
   for ( bi=this->bonds.begin(); bi!=this->bonds.end(); bi++ )
   {
-    ConstitutionBond_sp cb = (*bi)->asConstitutionBond(me,atomMap);
-    consAtom->addConstitutionBond(cb);
+    Atom_sp otherAtom = (*bi)->getOtherAtom(me);
+    if (atomMap.find(otherAtom) != atomMap.end()) {
+    // Only use atoms in the same residue
+      ConstitutionBond_sp cb = (*bi)->asConstitutionBond(me,atomMap);
+      consAtom->addConstitutionBond(cb);
+    }
   }
 }
 
