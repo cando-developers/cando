@@ -84,8 +84,7 @@
                 (chem:get-force-field parmreader)))))
     (chem:set-title ff filename)
     (format *out* "Adding force field ~a to ~a~%" ff force-field)
-    (leap.core:add-force-field-or-modification ff force-field)
-    ff))
+    (leap.core:add-force-field-or-modification ff force-field)))
 
 (defun leap.load-amber-params (entry)
   (valid-arguments entry 1)
