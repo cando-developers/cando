@@ -334,14 +334,36 @@ Aggregate_sp	EntirePdbRec::createAggregate()
 Aggregate_sp PdbReader_O::loadPdb(core::T_sp fileName)
 {
   PdbReader_sp pdb = PdbReader_O::create();
-  Aggregate_sp agg = pdb->parse(fileName);
+  core::T_sp stream = cl__open(fileName,
+                               kw::_sym_input,
+                               cl::_sym_character,
+                               _Nil<T_O>(), false,
+                               _Nil<T_O>(), false,
+                               kw::_sym_default,
+                               _Nil<T_O>());
+  Aggregate_sp agg = pdb->parse(stream);
+  return agg;
+}
+
+Aggregate_sp PdbReader_O::loadPdbFromStreamConnectAtoms(core::T_sp stream)
+{
+  PdbReader_sp pdb = PdbReader_O::create();
+  Aggregate_sp agg = pdb->parse(stream);
+  chem__connectAtomsInMatterInCovalentContact(agg);
   return agg;
 }
 
 Aggregate_sp PdbReader_O::loadPdbConnectAtoms(core::T_sp fileName)
 {
   PdbReader_sp pdb = PdbReader_O::create();
-  Aggregate_sp agg = pdb->parse(fileName);
+  core::T_sp stream = cl__open(fileName,
+                               kw::_sym_input,
+                               cl::_sym_character,
+                               _Nil<T_O>(), false,
+                               _Nil<T_O>(), false,
+                               kw::_sym_default,
+                               _Nil<T_O>());
+  Aggregate_sp agg = pdb->parse(stream);
   chem__connectAtomsInMatterInCovalentContact(agg);
   return agg;
 }
@@ -353,6 +375,12 @@ Aggregate_sp PdbReader_O::loadPdbConnectAtoms(core::T_sp fileName)
 CL_DEFUN core::T_sp chem__load_pdb(core::String_sp fileName)
 {
   Aggregate_sp agg = PdbReader_O::loadPdbConnectAtoms(fileName);
+  return agg;
+}
+
+CL_DEFUN core::T_sp chem__load_pdb_from_stream(core::T_sp stream)
+{
+  Aggregate_sp agg = PdbReader_O::loadPdbFromStreamConnectAtoms(stream);
   return agg;
 }
 
@@ -370,32 +398,24 @@ void	PdbReader_O::archive(core::ArchiveP node)
 
 
 
-Aggregate_sp PdbReader_O::parse(core::T_sp fileName)
+Aggregate_sp PdbReader_O::parse(core::T_sp stream)
 {
   char buffer[1024];
-  string fn = gc::As<core::String_sp>(core::cl__namestring(fileName))->get_std_string();
-  std::ifstream myfile( fn.c_str() );
-  if ( myfile.fail() )
-  {
-    SIMPLE_ERROR(BF("File not found: %s") %fileName);
-  }
   EntirePdbRec pdbRec;
   int moleculeIdx = 0;
   {_BLOCK_TRACE("Parsing file");
-    while ( !myfile.eof() )
-    {
-      myfile.getline(buffer,1023);
-      string oneLine = buffer;
+    while ( true ) {
+      core::T_mv line = cl__read_line(stream,_Nil<core::T_O>(),_Nil<core::T_O>(),_Nil<core::T_O>());
+      if (line.nilp()) break;
+      string oneLine = gc::As<core::String_sp>(line)->get_std_string();
       LOG(BF("PDB line |%s|") % oneLine.c_str()  );
       string recordName = pdb_substr(oneLine,1,6);
-      if ( recordName == "ATOM" )
-      {
+      if ( recordName == "ATOM" ) {
         AtomPdbRec atomRec;
         atomRec.parse(oneLine);
         atomRec._moleculeIdx = moleculeIdx;
         pdbRec.addAtomPdbRec(atomRec);
-      } else if ( recordName == "HETATM" )
-      {
+      } else if ( recordName == "HETATM" ) {
         AtomPdbRec atomRec;
         atomRec.parse(oneLine);
         atomRec._moleculeIdx = moleculeIdx;

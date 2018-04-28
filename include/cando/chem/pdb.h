@@ -108,9 +108,10 @@ public:
     public:
 	static Aggregate_sp loadPdb(core::T_sp fileName);
 	static Aggregate_sp loadPdbConnectAtoms(core::T_sp fileName);
+        static Aggregate_sp loadPdbFromStreamConnectAtoms(core::T_sp stream);
     public:
 
-	Aggregate_sp	parse(core::T_sp fileName);
+	Aggregate_sp	parse(core::T_sp stream);
 
 	PdbReader_O( const PdbReader_O& ss ); //!< Copy constructor
 
