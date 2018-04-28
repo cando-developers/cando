@@ -158,7 +158,8 @@
    #:object
    #:load-atom-type-rules
    #:assign-atom-types
-   #:source)
+   #:source
+   #:easy-gaff)
   (:use :common-lisp :chem :geom))
 
 (defpackage #:leap.solvate

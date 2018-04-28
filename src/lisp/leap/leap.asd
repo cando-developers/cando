@@ -25,6 +25,7 @@
                                         ;     (:file "commands")     ;;; moved to leap
    (:file "pdb")
    (:file "grammar")
+   (:file "easy")
    (:file "leap")
                                         ;     (:file "interpreter")
    ))
