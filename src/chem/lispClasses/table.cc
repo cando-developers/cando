@@ -233,7 +233,7 @@ namespace chem
 	    }
 	    node->archiveVectorStrings("symbolNames",symbolNames);
 	    core::VectorStrings classNames;
-	    for ( gctools::Vec0<core::Class_sp>::iterator ci=this->_FieldClasses.begin(); ci!=this->_FieldClasses.end(); ci++ )
+	    for ( gctools::Vec0<core::Instance_sp>::iterator ci=this->_FieldClasses.begin(); ci!=this->_FieldClasses.end(); ci++ )
 	    {
 		classNames.push_back((*ci)->instanceClassName());
 	    }
@@ -253,7 +253,7 @@ namespace chem
 	    {
 		core::Symbol_sp fieldSymbol = _lisp->intern(*si);
 		this->_FieldSymbols.push_back(fieldSymbol);
-		core::Class_sp mc = _lisp->classFromClassName(*ci);
+		core::Instance_sp mc = _lisp->classFromClassName(*ci);
 		if ( mc.nilp() )
 		{
 		    core::Symbol_sp classSymbol = _lisp->intern(*ci);
@@ -297,7 +297,7 @@ namespace chem
 	return (this->_FieldIndices->gethash(fieldSymbol).second().notnilp());
     }
 
-    core::Class_sp Table_O::fieldClass(core::Symbol_sp fieldSymbol)
+    core::Instance_sp Table_O::fieldClass(core::Symbol_sp fieldSymbol)
     {
 	if ( this->hasField(fieldSymbol) )
 	{
@@ -307,7 +307,7 @@ namespace chem
     }
 
 
-    void Table_O::appendField(core::Symbol_sp fieldSymbol, core::Class_sp fieldClass )
+    void Table_O::appendField(core::Symbol_sp fieldSymbol, core::Instance_sp fieldClass )
     {
 	if ( this->_FieldIndices.count(fieldSymbol) != 0 )
 	{
@@ -324,7 +324,7 @@ namespace chem
     }
 
 
-    void Table_O::insertField(core::Symbol_sp positionSymbol, core::Symbol_sp fieldSymbol, core::Class_sp fieldClass )
+    void Table_O::insertField(core::Symbol_sp positionSymbol, core::Symbol_sp fieldSymbol, core::Instance_sp fieldClass )
     {
 	uint pos = this->indexOfField(positionSymbol);
 	this->_FieldSymbols.insert(this->_FieldSymbols.begin()+pos,fieldSymbol);
@@ -440,7 +440,7 @@ namespace chem
     {
 	if ( this->_FieldSymbols.size() != other->_FieldSymbols.size() ) return false;
         gctools::Vec0<core::Symbol_sp>::iterator	ms,os;
-        gctools::Vec0<core::Class_sp>::iterator mc,oc;
+        gctools::Vec0<core::Instance_sp>::iterator mc,oc;
 	for ( ms=this->_FieldSymbols.begin(), os = other->_FieldSymbols.begin(), 
 		  mc = this->_FieldClasses.begin(), oc = other->_FieldClasses.begin();
 	      ms < this->_FieldSymbols.end(); ms++, os++, mc++, oc++ )
@@ -497,7 +497,7 @@ namespace chem
 	}
 	sout << std::endl;
 	sout << "Classes: ";
-	for ( gctools::Vec0<core::Class_sp>::const_iterator mi = this->_FieldClasses.begin(); mi!=this->_FieldClasses.end(); mi++ )
+	for ( gctools::Vec0<core::Instance_sp>::const_iterator mi = this->_FieldClasses.begin(); mi!=this->_FieldClasses.end(); mi++ )
 	{
 	    sout << " " << (*mi)->instanceClassName();
 	}

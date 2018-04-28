@@ -87,7 +87,7 @@ namespace chem
     }
 
 
-    core::List_sp CandoDatabase_O::entitiesSubClassOfAsList(core::Class_sp mc)
+    core::List_sp CandoDatabase_O::entitiesSubClassOfAsList(core::Instance_sp mc)
     {_OF();
 	core::List_sp result = _Nil<core::T_O>();
 	for ( Entities::const_iterator it=this->_Entities.begin();
@@ -103,7 +103,7 @@ namespace chem
     }
 
 
-    bool CandoDatabase_O::recognizesEntitySubClassOf(core::Symbol_sp name, core::Class_sp mc)
+    bool CandoDatabase_O::recognizesEntitySubClassOf(core::Symbol_sp name, core::Instance_sp mc)
     {_OF();
 	Entities::const_iterator it = this->_Entities.find(name);
 	if ( it == this->_Entities.end() ) return false;
@@ -111,7 +111,7 @@ namespace chem
 	return false;
     }
 
-    bool CandoDatabase_O::recognizesEntityOfClass(core::Symbol_sp name, core::Class_sp aclass)
+    bool CandoDatabase_O::recognizesEntityOfClass(core::Symbol_sp name, core::Instance_sp aclass)
     {_OF();
 	Entities::iterator it = this->_Entities.find(name);
 	if ( it == this->_Entities.end() ) return false;
@@ -269,7 +269,7 @@ CL_DEFMETHOD     Entity_sp CandoDatabase_O::getEntity(core::Symbol_sp nm) const
     }
 
 
-    Entity_sp CandoDatabase_O::getEntityOfClass(core::Symbol_sp nm, core::Class_sp mc)
+    Entity_sp CandoDatabase_O::getEntityOfClass(core::Symbol_sp nm, core::Instance_sp mc)
     {
 	ASSERTF(this->_Entities.contains(nm),
 		BF("CandoDatabase does not contain entity[%s]")

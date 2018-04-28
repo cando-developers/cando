@@ -294,7 +294,7 @@ core::HashTableEq_sp readTrainerHeader(core::Path_sp path, core::Lisp_sp lisp )
     }
     vector<string> parts;
     uint lineCount = 0;
-    core::Class_sp trainerHeaderClass = lisp->classFromClassName(TrainerHeader_O::static_className());
+    core::Instance_sp trainerHeaderClass = lisp->classFromClassName(TrainerHeader_O::static_className());
     string search = trainerHeaderClass->getPackagedName();
     while ( !fin.eof() )
     {

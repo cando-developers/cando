@@ -106,33 +106,33 @@ namespace omm
 
 
     template <>
-    core::MetaClass_sp metaClassForOmmClass<OpenMM::Platform>(core::Lisp_sp lisp)
+    core::Instance_sp metaClassForOmmClass<OpenMM::Platform>(core::Lisp_sp lisp)
     {
 	return lisp->classFromClassSID(Platform_O::static_classSID());
     }
 
     template <>
-    core::MetaClass_sp metaClassForOmmClass<OpenMM::LangevinIntegrator>(core::Lisp_sp lisp)
+    core::Instance_sp metaClassForOmmClass<OpenMM::LangevinIntegrator>(core::Lisp_sp lisp)
     {
 	return lisp->classFromClassSID(LangevinIntegrator_O::static_classSID());
     }
 
     template <>
-    core::MetaClass_sp metaClassForOmmClass<OpenMM::VerletIntegrator>(core::Lisp_sp lisp)
+    core::Instance_sp metaClassForOmmClass<OpenMM::VerletIntegrator>(core::Lisp_sp lisp)
     {
 	return lisp->classFromClassSID(VerletIntegrator_O::static_classSID());
     }
 
 
     template <>
-    core::MetaClass_sp metaClassForOmmClass<OpenMM::System>(core::Lisp_sp lisp)
+    core::Instance_sp metaClassForOmmClass<OpenMM::System>(core::Lisp_sp lisp)
     {
 	return lisp->classFromClassSID(System_O::static_classSID());
     }
 
 
     
-    core::ExternalObject_sp wrap_ommObject(void* ptr, core::MetaClass_sp mc, core::Lisp_sp lisp)
+    core::ExternalObject_sp wrap_ommObject(void* ptr, core::Instance_sp mc, core::Lisp_sp lisp)
     {
 	if ( ptr == NULL ) return lisp->nil<core::ExternalObject_O>();
 	if ( !lisp->hiddenBinder()->contains(_sym_OmmObjectWrappers)) 
@@ -261,14 +261,14 @@ namespace omm
 
     Platform_sp Context_O::getPlatform()
     {_OF();
-	core::MetaClass_sp mc = metaClassForOmmClass<OpenMM::Platform>(_lisp);
+	core::Instance_sp mc = metaClassForOmmClass<OpenMM::Platform>(_lisp);
 	Platform_sp platform = wrap_ommObject(&(this->_externalContext->getPlatform()),mc,_lisp).as<Platform_O>();
 	return platform;
     }
 
     System_sp Context_O::getSystem() const
     {_OF();
-	core::MetaClass_sp mc = metaClassForOmmClass<OpenMM::System>(_lisp);
+	core::Instance_sp mc = metaClassForOmmClass<OpenMM::System>(_lisp);
 	System_sp system = wrap_ommObject(&(this->_externalContext->getSystem()),mc,_lisp).as<System_O>();
 	return system;
     }
@@ -281,7 +281,7 @@ namespace omm
 	    OpenMM::LangevinIntegrator* subInt = dynamic_cast<OpenMM::LangevinIntegrator*>(integrator);
 	    if ( subInt != NULL )
 	    {	
-		core::MetaClass_sp mc = metaClassForOmmClass<OpenMM::LangevinIntegrator>(_lisp);
+		core::Instance_sp mc = metaClassForOmmClass<OpenMM::LangevinIntegrator>(_lisp);
 		LangevinIntegrator_sp result = wrap_ommObject(subInt,mc,_lisp).as<LangevinIntegrator_O>();
 		return result;
 	    }
@@ -290,7 +290,7 @@ namespace omm
 	    OpenMM::VerletIntegrator* subInt = dynamic_cast<OpenMM::VerletIntegrator*>(integrator);
 	    if ( subInt != NULL )
 	    {	
-		core::MetaClass_sp mc = metaClassForOmmClass<OpenMM::VerletIntegrator>(_lisp);
+		core::Instance_sp mc = metaClassForOmmClass<OpenMM::VerletIntegrator>(_lisp);
 		VerletIntegrator_sp result = wrap_ommObject(subInt,mc,_lisp).as<VerletIntegrator_O>();
 		return result;
 	    }

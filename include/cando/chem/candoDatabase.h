@@ -118,22 +118,22 @@ public:
 private:
 	/*! Return true if the entity with the name (name) is recognized and is a subclass of classId
 	 */
-	bool recognizesEntitySubClassOf(core::Symbol_sp name, core::Class_sp mc);
+	bool recognizesEntitySubClassOf(core::Symbol_sp name, core::Instance_sp mc);
 
 	/*! Return true if the entity with the name (name) is recognized and of classId
 	 */
-	bool recognizesEntityOfClass(core::Symbol_sp name, core::Class_sp mc);
+	bool recognizesEntityOfClass(core::Symbol_sp name, core::Instance_sp mc);
 
 	/*! Return a Cons of all entities that are of class (classId) */
-	core::List_sp entitiesSubClassOfAsList(core::Class_sp mc);
+	core::List_sp entitiesSubClassOfAsList(core::Instance_sp mc);
 
 
 	/*! Return the entity with the given name and classId and if it doesn't exist throw an exception */
-	Entity_sp getEntitySubClassOf(core::Symbol_sp name, core::Class_sp mc);
+	Entity_sp getEntitySubClassOf(core::Symbol_sp name, core::Instance_sp mc);
  
 
 	/*! Return the entity with the given name and classId */
-	Entity_sp getEntityOfClass(core::Symbol_sp name, core::Class_sp mc );
+	Entity_sp getEntityOfClass(core::Symbol_sp name, core::Instance_sp mc );
 
 
 public:

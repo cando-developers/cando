@@ -36,10 +36,8 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/adapt/symbolSet.h>
 #include <clasp/core/object.h>
 #include <clasp/asttooling/astVisitor.h>
-//#include <clasp/cffi/cffi.h>
 #include <clasp/clbind/class_registry.h>
 #include <clasp/core/serialize.h>
-#include <clasp/core/conditions.h>
 #include <clasp/core/character.h>
 #include <clasp/core/cons.h>
 #include <clasp/core/cxxObject.h>

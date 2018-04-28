@@ -40,7 +40,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/clbind/class_registry.h>
 #include <clasp/core/serialize.h>
 #include <clasp/core/array.h>
-#include <clasp/core/conditions.h>
 #include <clasp/core/character.h>
 #include <clasp/core/cons.h>
 #include <clasp/core/cxxObject.h>
