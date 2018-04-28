@@ -549,7 +549,7 @@ Read the contents of the filename into memory and return a buffer-stream on it."
                            (chem-info (core:make-cxx-object 'chem:chem-info :root root)))
                       (chem:fftypes-db-add type-rules chem-info)))
                    (t
-                    (format *debug-io* "Unhandled line: ~a~%" line))))))
+                    #+(or)(format *debug-io* "Unhandled line: ~a~%" line))))))
     type-rules))
 
 
