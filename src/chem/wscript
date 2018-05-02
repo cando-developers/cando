@@ -106,7 +106,8 @@ def build(bld):
             'conformationExplorer', 
             'conformationCollection', 
             'msmarts_Parser',
-            'gaff_Parser' ]:
+            'gaff_Parser',
+            'octree' ]:
         source(bld,name)
 
 def source(bld,name):

@@ -92,8 +92,8 @@ namespace chem {
   public:
     bool fieldsp() const { return true; };
     void fields(core::Record_sp node);
-  private:
     core::Symbol_sp    _Type;
+  private:
     bool	_Selected;
     int		_NetCharge;
     int		tempInt;

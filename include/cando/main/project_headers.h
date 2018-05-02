@@ -287,6 +287,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/virtualSphere.fwd.h>
 #include <cando/chem/virtualSphere.h>
 #include <cando/chem/zMatrix.h>
+#include <cando/chem/octree.h>
 
 #include <cando/geom/boundingBox.fwd.h>
 #include <cando/geom/boundingBox.h>
@@ -401,6 +402,7 @@ GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::TrajectoryFr
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::Twister_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::ZMatrixEntry_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::ZMatrixInternal_O>>);
+GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::OctNode_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<clbind::ClassRep_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<core::Cons_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<core::List_V>>);
@@ -685,5 +687,7 @@ class Vector3;
     class StepReport_O;
     class AtomIdToAtomMap_O;
     class FFVdwDb_O;
+    class OctNode_O;
+    class Octree_O;
  };
 #endif // GC_INTERFACE_FORWARD

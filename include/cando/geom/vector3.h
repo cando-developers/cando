@@ -60,6 +60,9 @@ public:
 
 	double const& operator[](uint x) const { return this->coords[x];};
 
+	double& getX() { return this->coords[0]; }
+	double& getY() { return this->coords[1]; }
+	double& getZ() { return this->coords[2]; }
 	double getX() const { return this->coords[0]; }
 	double getY() const { return this->coords[1]; }
 	double getZ() const { return this->coords[2]; }

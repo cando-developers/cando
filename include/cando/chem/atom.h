@@ -191,7 +191,7 @@ namespace chem {
     void fields(core::Record_sp node);
   public:
     typedef VectorBond::iterator bondIterator;
-  protected:
+  public:
     size_t              _UniqueAtomOrder;
     core::Symbol_sp	_Alias;	//!< alias name
     ATOM_FLAGS	        flags;
@@ -215,6 +215,7 @@ namespace chem {
 //    int		moeIndex;
     int		backCount;
     int		tempInt;
+    double      dAtomTemp; // a temporary double value - terrible idea
     int		seenId;
     float		occupancy;
     float		tempFactor;

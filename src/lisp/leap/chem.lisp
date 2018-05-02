@@ -123,3 +123,8 @@
                 (chem:force-field-merge nbmerged (chem:get-nonbond-db force-field))))
             force-field-names)
       nbmerged)))
+
+(defmethod chem:lookup-atom-properties-radius (atom &optional (force-field-name :default))
+ ;; "Return (values atom-radius radius-is-default-t-nil)"
+  (values 1.5 t)
+  )
