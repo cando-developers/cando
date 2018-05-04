@@ -211,7 +211,8 @@ if the caller wants to do that."
         (read-velocities (read-off-unit-part fin expected-name "velocities" eof-error-p eof)))
     (let ((atoms (assemble-atoms read-atoms)))
       (set-positions read-positions atoms)
-      (form-bonds read-connectivity atoms)
+      (when read-connectivity
+        (form-bonds read-connectivity atoms))
       (let ((residues (assemble-residues read-residues)))
         ;; Assemble the hierarchy but ignore the returned aggregate
         ;; because it doesn't have molecules, only residues
