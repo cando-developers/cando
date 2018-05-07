@@ -27,7 +27,7 @@ def build(bld):
     bld.recurse('src')
     if (bld.stage_val>=5):
         bld_extensions = build_extension(env=bld.env)
-        bld_extensions.set_inputs([bld.iclasp_executable,bld.cclasp_fasl,bld.asdf_fasl_cclasp]+bld.extensions_lisp_files)
+        bld_extensions.set_inputs([bld.cclasp_executable,bld.cclasp_fasl,bld.asdf_fasl_cclasp]+bld.extensions_lisp_files)
         bld_extensions.set_outputs([bld.path.parent.parent.find_or_declare("fasl/cando.fasb"),
                                     bld.path.parent.parent.find_or_declare("fasl/cando-jupyter.fasb")])
         bld.install_files('${PREFIX}/lib/clasp/', bld_extensions.outputs, relative_trick = True, cwd = bld.path.parent.parent)   #source
