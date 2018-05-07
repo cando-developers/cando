@@ -29,6 +29,17 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <cando/adapt/indexedObjectBag.h>
 
+namespace core {
+  typedef struct {
+    int first_line;
+    int first_column;
+    int last_line;
+    int last_column;
+  } LispParserPos;
+
+
+};
+
 
 namespace chem {
   extern core::Symbol_sp& _sym_STARparserNodeHolderSTAR;
