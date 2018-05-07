@@ -79,10 +79,14 @@ void ConstitutionVirtualAtom_O::archiveBase(core::ArchiveP node)
 }
 #endif
 
+
+  
+
 CL_LISPIFY_NAME(makeConstitutionAtomsFromResidue);
 CL_LAMBDA(residue &optional verbose);
 CL_DEFUN ConstitutionAtoms_sp ConstitutionAtoms_O::makeConstitutionAtomsFromResidue(Residue_sp residue, bool verbose)
 {
+  residue->ensureAllAtomNamesAreUnique();
   GC_ALLOCATE(ConstitutionAtoms_O, catoms );
   Matter_O::contentIterator it;
   ConstitutionAtomIndex0N index = 0;

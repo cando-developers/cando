@@ -69,29 +69,12 @@ void	MonomerCoordinates_O::initialize()
 #endif
 
 
-#if INIT_TO_FACTORIES
-
-#define ARGS_MonomerCoordinates_O_make "(context)"
-#define DECL_MonomerCoordinates_O_make ""
-#define DOCS_MonomerCoordinates_O_make "make MonomerCoordinates"
   MonomerCoordinates_sp MonomerCoordinates_O::make(MonomerContext_sp context)
   {
       GC_ALLOCATE(MonomerCoordinates_O, me );
     me->setContext(context);
     return me;
   };
-
-#else
-
-core::T_sp MonomerCoordinates_O::__init__(core::Function_sp exec, core::List_sp args, core::Environment_sp env, core::Lisp_sp lisp)
-{
-    MonomerContext_sp context = translate::from_object<MonomerContext_O>::convert(env->lookup(Pkg(),"context"));
-    this->setContext(context);
-    return _Nil<core::T_O>();
-}
-
-#endif
-
 
 
 

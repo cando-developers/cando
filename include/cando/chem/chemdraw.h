@@ -215,6 +215,7 @@ CL_DEFMETHOD     core::Symbol_sp getConstitutionName() { return this->_Constitut
     /*! Return false if the fragment couldn't be interpreted */
     bool	interpret(bool verbose);
 
+    void uniqifyResidueAtomNames(Molecule_sp mol, bool verbose=false);
 CL_LISPIFY_NAME("getMolecule");
 CL_DEFMETHOD core::T_sp getMolecule() { return this->_Molecule; };
 

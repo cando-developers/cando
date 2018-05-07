@@ -43,6 +43,7 @@ This is an open source license for the CANDO software from Temple University, bu
 //#include "core/serialize.h"
 //#include <cando/chem/candoDatabaseReference.h>
 #include <cando/adapt/stringSet.h>
+#include <cando/chem/loop.h>
 #include <cando/adapt/symbolSet.h>
 #include <cando/chem/restraint.h>
 #include <cando/chem/virtualAtom.h>
@@ -407,39 +408,86 @@ contentIterator	aCur;
 }
 
 
-CL_LISPIFY_NAME("testIfAllAtomNamesAreUnique");
-CL_DEFMETHOD bool Residue_O::testIfAllAtomNamesAreUnique(core::T_sp problemStream)
+
+void Residue_O::ensureAllAtomNamesAreUnique() const
 {
-    FIX_ME();
-#if 0
-    set<string> uniqueNames;
-    contentIterator	aCur;
-    bool allUnique = true;
-    for ( aCur=this->_contents.begin();aCur!=this->_contents.end(); aCur++ ) 
-    {
-	Atom_sp atom = (*aCur).as<Atom_O>();
-	if ( uniqueNames.count(atom->getName()) == 0 )
-	{
-	    uniqueNames.insert(atom->getName());
-	} else
-	{
-	    problems->writeln("Atom with name(" +atom->getName() + ") is not unique");
-	    allUnique = false;
-	}
+  core::HashTableEq_sp names = core::HashTableEq_O::create_default();
+  Loop lAtoms(this->asSmartPtr(),ATOMS);
+  while (lAtoms.advanceLoopAndProcess()) {
+    Atom_sp atom = lAtoms.getAtom();
+    if (names->gethash(atom->getName()).notnilp()) {
+      SIMPLE_ERROR(BF("To define a constitution from a residue - all atom names must be unique - but the name %s was found to be duplicated") % _rep_(atom->getName()));
     }
-    return allUnique;
-#endif
+    names->setf_gethash(atom->getName(),atom);
+  }
 }
 
 
 
 
+#if 0
+void CDFragment_O::uniqifyResidueAtomNames(Molecule_sp mol, bool verbose)
+{
+  Loop lResidues(mol,RESIDUES);
+  size_t idx = 0;
+  while (lResidues.advanceLoopAndProcess()) {
+    Residue_sp res = lResidues.getResidue();
+    Loop lAtoms(res,ATOMS);
+    core::HashTableEq_sp namesToIndices = core::HashTableEq_O::create_default();
+    while (lAtoms.advanceLoopAndProcess()) {
+      Atom_sp atom = lAtoms.getAtom();
+      if (namesToIndices->gethash(atom->getName()).notnilp()) {
+        size_t nameTries = 0;
+        core::Symbol_sp sym;
+        do {
+          stringstream ss;
+          ss << atom->getName()->symbolNameAsString() << "_" << idx;
+          sym = chemkw_intern(ss.str());
+          if (namesToIndices->gethash(sym).nilp()) break;
+        } while (++nameTries<1024);
+        if (nameTries>=1024) {
+          SIMPLE_ERROR(BF("Tried to uniqify an atom name more than 1024 times"));
+        }
+        atom->setName(sym);
+        namesToIndices->setf_gethash(sym,sym);
+      } else {
+        namesToIndices->setf_gethash(atom->getName(),atom->getName());
+      }
+    }
+  }
+}
+#endif
 /*!
  * Make all the atom names unique by suffixing the non-unique ones with
  * a number so that the combination of name+number is unique.
  */
 void Residue_O::makeAllAtomNamesInEachResidueUnique()
-{_OF();
+{
+  Loop lAtoms(this->asSmartPtr(),ATOMS);
+  core::HashTableEq_sp namesToIndices = core::HashTableEq_O::create_default();
+  size_t index = 0;
+  while (lAtoms.advanceLoopAndProcess()) {
+    Atom_sp atom = lAtoms.getAtom();
+    if (namesToIndices->gethash(atom->getName()).notnilp()) {
+      size_t nameTries = 0;
+      core::Symbol_sp sym;
+      do {
+        stringstream ss;
+        ss << atom->getName()->symbolNameAsString() << '_' << index;
+        sym = chemkw_intern(ss.str());
+        if (namesToIndices->gethash(sym).nilp()) break;
+        index++;
+      } while (++nameTries<1024);
+      if (nameTries>=1024) {
+        SIMPLE_ERROR(BF("Tried to uniqify an atom name more than 1024 times"));
+      }
+      atom->setName(sym);
+      namesToIndices->setf_gethash(sym,sym);
+    } else {
+      namesToIndices->setf_gethash(atom->getName(),atom->getName());
+    }
+  }
+#if 0
     contentIterator ai;
     adapt::SymbolSet_sp allNames = adapt::SymbolSet_O::create();
     adapt::SymbolSet_sp allNamesAccumulate = adapt::SymbolSet_O::create();
@@ -486,6 +534,7 @@ void Residue_O::makeAllAtomNamesInEachResidueUnique()
                 }
             }
         } );
+#endif
 }
 
 

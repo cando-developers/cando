@@ -596,9 +596,12 @@ CL_DEFMETHOD     adapt::StringList_sp	EntityNameSetBase_O::getMonomerNamesOrdere
 
     string EntityNameSetWithCap_O::description() const
     {
+      IMPLEMENT_ME();
+      #if 0
 	stringstream ss;
 	ss << this->className() << "[" << _rep_(this->getName()) << "]";
 	return ss.str();
+        #endif
     }
 
 CL_LISPIFY_NAME("addGroupName");

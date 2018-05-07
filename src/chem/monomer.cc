@@ -63,6 +63,32 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
+CL_LISPIFY_NAME("CHEM:NAME");
+CL_LAMBDA(value isoname);
+CL_DOCSTRING("isoname-name-set");
+CL_DEFUN_SETF core::Symbol_sp chem__isoname_name_set(core::Symbol_sp name, Isoname_sp isoname)
+{
+  isoname->_Name = name;
+  return name;
+}
+
+CL_LISPIFY_NAME("CHEM:ISOMER");
+CL_LAMBDA(value isoname);
+CL_DOCSTRING("isoname-isomer-set");
+CL_DEFUN_SETF Fixnum chem__isoname_isomer_set(Fixnum isomer, Isoname_sp isoname)
+{
+  isoname->_Isomer = isomer;
+  return isomer;
+}
+
+
+void Isoname_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,name),this->_Name);
+  node->field_if_not_default(INTERN_(kw,isomer),this->_Isomer,(Fixnum)0);
+  this->Base::fields(node);
+}
+
 
 
 #if 0
@@ -129,6 +155,41 @@ Residue_sp Monomer_O::createResidue()
 #endif
 
 
+
+void Monomer_O::fields(core::Record_sp node)
+{
+  node->field_if_not_nil(INTERN_(kw,id),this->_Id);
+  node->field(INTERN_(kw,seqnum),this->_SequenceNumber);
+  gctools::Vec0<core::T_sp> pairs;
+  switch (node->stage()) {
+  case core::Record_O::saving:
+    {
+	    // Accumulate intraresidue bonds into a vector
+      for ( Monomer_O::Couplings::iterator ci = this->_Couplings.begin(); ci!=this->_Couplings.end();ci++ ) {
+        pairs.push_back(core::Cons_O::create(ci->first,ci->second));
+      }
+      node->field_if_not_empty(INTERN_(kw,couplings),pairs);
+    }
+    break;
+  case core::Record_O::initializing:
+  case core::Record_O::loading:
+    {
+      this->_Couplings.clear();
+      node->field_if_not_empty( INTERN_(kw,couplings), pairs);
+      for (size_t i=0; i<pairs.size(); i++ ) {
+        core::T_sp pair = pairs[i];
+        this->_Couplings.insert2(gc::As<core::Symbol_sp>(oCar(pair)),gc::As<Coupling_sp>(oCdr(pair)));
+      }
+    }
+    break;
+  case core::Record_O::patching: {
+    // Nothing should need to be done
+  }
+      break;
+  }
+  this->Base::fields(node);
+}
+  
 
 #ifdef XML_ARCHIVE
 void	Monomer_O::archiveBase(core::ArchiveP node)
@@ -457,19 +518,19 @@ void Monomer_O::initialize()
 
 
 CL_LISPIFY_NAME("getInCoupling");
-CL_DEFMETHOD     DirectionalCoupling_sp	Monomer_O::getInCoupling()
+CL_DEFMETHOD     Coupling_sp	Monomer_O::getInCoupling()
 {
   Monomer_O::Couplings::iterator	it;
-  DirectionalCoupling_sp			coup;
-  for ( it=this->_Couplings.begin(); it!=this->_Couplings.end(); it++ ) {
-    if ( DirectionalCoupling_O::isInPlugName(it->first) )
-    {
-      ASSERTNOTNULL(it->second);
-      coup = it->second.as<DirectionalCoupling_O>();
-      return coup;
+  for ( it=this->_Couplings.begin(); it!=this->_Couplings.end(); it++ ) 
+  {
+    ASSERTNOTNULL(it->second);
+    Coupling_sp coup = it->second;
+    if (gc::IsA<DirectionalCoupling_sp>(coup)) {
+      DirectionalCoupling_sp dc = gc::As_unsafe<DirectionalCoupling_sp>(coup);
+      if ( dc->isInCouplingToMonomer(this->sharedThis<Monomer_O>()) ) return it->second;
     }
   }
-  return _Nil<DirectionalCoupling_O>();
+  SIMPLE_ERROR(BF("There is no in coupling"));
 };
 
 
@@ -483,9 +544,8 @@ core::Symbol_sp Monomer_O::getInCouplingName()
   {
     ASSERTNOTNULL(it->second);
     Coupling_sp coup = it->second;
-    if ( coup.isA<DirectionalCoupling_O>() )
-    {
-      DirectionalCoupling_sp dc = coup.as<DirectionalCoupling_O>();
+    if (gc::IsA<DirectionalCoupling_sp>(coup)) {
+      DirectionalCoupling_sp dc = gc::As_unsafe<DirectionalCoupling_sp>(coup);
       if ( dc->isInCouplingToMonomer(this->sharedThis<Monomer_O>()) ) return it->first;
     }
   }
@@ -496,11 +556,16 @@ core::Symbol_sp Monomer_O::getInCouplingName()
 CL_LISPIFY_NAME("hasInCoupling");
 CL_DEFMETHOD     bool	Monomer_O::hasInCoupling()
 {
-  Coupling_sp	coup;
-  coup = this->getInCoupling();
-  return (coup.notnilp() );
+  Monomer_O::Couplings::iterator	it;
+  for ( it=this->_Couplings.begin(); it!=this->_Couplings.end(); it++ ) {
+    Coupling_sp coup = it->second;
+    if (gc::IsA<DirectionalCoupling_sp>(coup)) {
+      DirectionalCoupling_sp dc = gc::As_unsafe<DirectionalCoupling_sp>(coup);
+      if ( dc->isInCouplingToMonomer(this->sharedThis<Monomer_O>()) ) return true;
+    }
+  }
+  return false;
 };
-
 
 bool	Monomer_O::hasOutCouplings()
 {
@@ -751,7 +816,22 @@ void	OneMonomer_O::archiveBase(core::ArchiveP node )
 //---------------------------------------------------------------------
 
 
-MonoMonomer_sp MonoMonomer_O::make(core::Symbol_sp name)
+void MonoMonomer_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,name),this->_Name);
+  node->field(INTERN_(kw,groupName),this->_GroupName);
+  this->Base::fields(node);
+}
+
+
+void MonoMonomer_O::setMonomerIndex(uint i) {
+  if (i!=0) {
+    SIMPLE_ERROR(BF("set-monomer-index of a MONO-MONOMER was passed the non-zero value of %d") % i);
+  }
+}
+
+
+MonoMonomer_sp MonoMonomer_O::makeMonoMonomer(core::Symbol_sp name)
 {
   GC_ALLOCATE(MonoMonomer_O, mon);
   mon->_Name = name;
@@ -767,11 +847,29 @@ void MonoMonomer_O::checkForErrorsAndUnknownContexts(CandoDatabase_sp bdb){
   IMPLEMENT_ME();
 }
 
+string MonoMonomer_O::__repr__() const {
+  stringstream ss;
+  ss << "#<MONO-MONOMER :monomer " << _rep_(this->getName()) << ">";
+  return ss.str();
+}
 
 
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 
+
+string MultiMonomer_O::__repr__() const {
+  stringstream ss;
+  ss << "#<MULTI-MONOMER :index " << this->_CurrentMonomerIndex << " :monomer " << _rep_(this->getName()) << ">";
+  return ss.str();
+}
+void MultiMonomer_O::fields(core::Record_sp node)
+{
+  node->field(INTERN_(kw,index),this->_CurrentMonomerIndex);
+  node->field(INTERN_(kw,monomers),this->_Monomers);
+  node->field(INTERN_(kw,groupName),this->_GroupName);
+  this->Base::fields(node);
+}
 
 void MultiMonomer_O::initialize()
 {
@@ -781,46 +879,27 @@ void MultiMonomer_O::initialize()
 }
 
 
-#if INIT_TO_FACTORIES
-
-#define ARGS_MultiMonomer_O_make "(name comment)"
-#define DECL_MultiMonomer_O_make ""
-#define DOCS_MultiMonomer_O_make "make ChemDraw"
-MultiMonomer_sp MultiMonomer_O::make(core::Symbol_sp name)
+MultiMonomer_sp MultiMonomer_O::makeMultiMonomer(core::Symbol_sp name)
 {
   GC_ALLOCATE(MultiMonomer_O, me );
   if ( name.notnilp() ) me->setGroupName(name);
   return me;
 };
 
-#else
-
-core::T_sp MultiMonomer_O::__init__(core::Function_sp exec, core::List_sp args,
-                                    core::Environment_sp env, core::Lisp_sp lisp)
-{
-  core::Symbol_sp name = translate::from_object<core::Symbol_O>::convert(env->lookup(Package(),"name"));
-  if ( name.notnilp() ) this->setGroupName(name);
-  string comment = translate::from_object<string>::convert(env->lookup(Package(),"comment"));
-  if ( comment != "" ) this->setComment(comment);
-  return _Nil<core::T_O>();
-}
-
-#endif
-#ifdef XML_ARCHIVE
-void	MultiMonomer_O::archiveBase(core::ArchiveP node)
-{
-  this->Monomer_O::archiveBase(node);
-  node->attribute("currentMonomerIndex",this->_CurrentMonomerIndex );
-  node->attribute("groupName",this->_GroupName);
-  node->archiveVector0("monomers",this->_Monomers);
-}
-#endif
-
-
 core::Symbol_sp MultiMonomer_O::getName() const
 {_OF();
-  if ( this->_Monomers.size() == 0 ) return _Nil<core::Symbol_O>();
-  return this->getOneMonomer();
+  if ( this->_Monomers.size() == 0 ) {
+    SIMPLE_ERROR(BF("There are no monomers"));
+  }
+  return this->getOneMonomer()->_Name;
+}
+
+Fixnum MultiMonomer_O::getIsomer() const
+{_OF();
+  if ( this->_Monomers.size() == 0 ) {
+    SIMPLE_ERROR(BF("There are no monomers"));
+  }
+  return this->getOneMonomer()->_Isomer;
 }
 
 
@@ -915,7 +994,7 @@ void	MultiMonomer_O::checkForErrorsAndUnknownContexts(CandoDatabase_sp cdb)
 
 
 
-void	MultiMonomer_O::addMonomerName(core::Symbol_sp name)
+CL_DEFMETHOD void	MultiMonomer_O::addMonomerName(core::Symbol_sp name)
 {
   this->_Monomers.push_back(name);
 }
@@ -949,7 +1028,7 @@ void	MultiMonomer_O::randomizeMonomer()
 
 
 CL_LISPIFY_NAME("getOneMonomer");
-CL_DEFMETHOD     core::Symbol_sp	MultiMonomer_O::getOneMonomer() const
+CL_DEFMETHOD     Isoname_sp	MultiMonomer_O::getOneMonomer() const
 {
   if ( this->_Monomers.size() < 1 ) {
     SIMPLE_ERROR(BF("There are no monomers defined for MultiMonomer group("+_rep_(this->_GroupName)+")"));

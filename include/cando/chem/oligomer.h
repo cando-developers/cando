@@ -83,6 +83,9 @@ class Oligomer_O : public core::CxxObject_O
 {
     LISP_CLASS(chem,ChemPkg,Oligomer_O,"Oligomer",core::CxxObject_O);
  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+ public:    
     static Oligomer_sp make(core::List_sp parts);
     friend class Coupling_O;
     friend class DirectionalCoupling_O;
@@ -91,12 +94,11 @@ public:
     void initialize();
     friend class AlchemistState_O;
 public:
-    typedef core::Symbol_O			NameType;
-    friend core::T_sp chem__set_oligomer(Oligomer_O::NameType::smart_ptr_type oligomerName, core::List_sp parts);
+    friend core::T_sp chem__set_oligomer(core::Symbol_sp oligomerName, core::List_sp parts);
     friend core::T_sp chem__oligomer_sequence(Oligomer_sp olig);
 protected:
-    NameType::smart_ptr_type			_Name;
-    gctools::Vec0<Monomer_sp>			_Monomers;
+    core::Symbol_sp			_Name;
+    gctools::Vec0<Monomer_sp>     	_Monomers;
     gctools::Vec0<Coupling_sp>		_Couplings;
 
 private:	// Do not archive
@@ -131,6 +133,7 @@ public:	// /////////////////////////////////////////////////////////////////
     MultiMonomer_sp getLastMultiMonomerChanged();
 
     core::List_sp monomersAsList();
+    core::List_sp couplingsAsList();
 
     monomerIterator begin_Monomers() { return this->_Monomers.begin(); };
     monomerIterator end_Monomers() { return this->_Monomers.end(); };
@@ -151,9 +154,9 @@ public:	// /////////////////////////////////////////////////////////////////
     void		updateMultiMonomers();
 
 CL_LISPIFY_NAME("setName");
-CL_DEFMETHOD     void		setName(NameType::smart_ptr_type nm) { this->_Name = nm;};
+CL_DEFMETHOD     void		setName(core::Symbol_sp nm) { this->_Name = nm;};
 CL_LISPIFY_NAME("getName");
-CL_DEFMETHOD     NameType::smart_ptr_type getName() { return this->_Name;};
+CL_DEFMETHOD     core::Symbol_sp getName() { return this->_Name;};
 
  bool	checkForErrors();
     //
@@ -171,6 +174,7 @@ public:
       be in the Oligomer */
 //	RingCoupling_sp	ringCouple(Monomer_sp mon1, const string& plug1, Monomer_sp mon2, const string& plug2 );
     RingCoupling_sp	ringCouple(Monomer_sp mon1, Monomer_sp mon2 );
+    RingCoupling_sp	ringCoupleWithPlugNames(Monomer_sp mon1, core::Symbol_sp plug1name,  Monomer_sp mon2, core::Symbol_sp plug2name );
 
     void	expandMonomerListToNeighbors(gctools::SmallOrderedSet<Monomer_sp>& monomers); // s e t<Monomer_sp>& monomers);
     void	checkMonomersAndNeighborsForErrors(CandoDatabase_sp bdb, gctools::SmallOrderedSet<Monomer_sp>& monomers ); // s e t<Monomer_sp> monomers);
@@ -204,7 +208,7 @@ public:
 
     void	firstSequence();
     bool	incrementSequence();
-    void	gotoSequence(const Bignum& idx);
+    void	gotoSequence(core::Integer_sp idx);
     Bignum currentSequenceIndex();
     Bignum numberOfSequences();
 

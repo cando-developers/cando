@@ -75,6 +75,12 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
+void Oligomer_O::fields(core::Record_sp node)
+{
+  node->field_if_not_nil( INTERN_(kw,name),this->_Name);
+  node->field_if_not_empty( INTERN_(kw,monomers), this->_Monomers);
+  node->field_if_not_empty( INTERN_(kw,couplings), this->_Couplings);
+}
 
 
 
@@ -82,7 +88,7 @@ void Oligomer_O::initialize()
 {_OF();
     this->Base::initialize();
     this->empty();
-    this->_Name = _Nil<NameType>();
+    this->_Name = _Nil<core::Symbol_O>();
 }
 
 
@@ -165,16 +171,30 @@ void Oligomer_O::setCandoDatabase(CandoDatabase_sp bdb)
 CL_LISPIFY_NAME("monomersAsList");
 CL_DEFMETHOD core::List_sp Oligomer_O::monomersAsList()
 {
-    core::List_sp cons = _Nil<core::T_O>();
-    gctools::Vec0<Monomer_sp>::iterator	mi;
-    for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
-    {
-	cons = core::Cons_O::create(*mi,cons);
-    }
-    return cons;
+  core::List_sp cons = _Nil<core::T_O>();
+  gctools::Vec0<Monomer_sp>::iterator	mi;
+  for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
+  {
+    cons = core::Cons_O::create(*mi,cons);
+  }
+  return cons;
 }
 
-    void	Oligomer_O::expandMonomerListToNeighbors(gctools::SmallOrderedSet<Monomer_sp>& monomers)
+CL_LISPIFY_NAME("couplings-as-list");
+CL_DEFMETHOD core::List_sp Oligomer_O::couplingsAsList()
+{
+  core::List_sp cons = _Nil<core::T_O>();
+  gctools::Vec0<Coupling_sp>::iterator	mi;
+  for ( mi=this->_Couplings.begin(); mi!=this->_Couplings.end(); mi++ )
+  {
+    cons = core::Cons_O::create(*mi,cons);
+  }
+  return cons;
+}
+
+
+
+void	Oligomer_O::expandMonomerListToNeighbors(gctools::SmallOrderedSet<Monomer_sp>& monomers)
 {
     gctools::SmallOrderedSet<Monomer_sp>				expanded;
     gctools::SmallOrderedSet<Monomer_sp>::iterator		mi;
@@ -420,30 +440,23 @@ Oligomer._State can be anything. */
 CL_LISPIFY_NAME("rootMonomer");
 CL_DEFMETHOD Monomer_sp	Oligomer_O::rootMonomer()
 {
-Monomer_sp	sub;
-DirectionalCoupling_sp	coupling;
-	// _State can be anything
-coupling = _Nil<DirectionalCoupling_O>();
-    sub = this->_Monomers[0];
-    do {
-        LOG(BF("Looking at monomer: %s") % sub->description().c_str()  );
-	if ( sub->hasInCoupling() )
-	{
-	    LOG(BF("    It has an in-coupling") );
-	    coupling = sub->getInCoupling();
-	    if ( coupling.nilp() ) 
-	    {
-	        LOG(BF("     But its Nil") );
-		break;
-	    }
-	    sub = coupling->getInMonomer();
-	} else
-	{
-	    coupling = _Nil<DirectionalCoupling_O>();
-	}
-	ANN(coupling);
-    } while ( coupling.notnilp() );
-    return sub;
+  Monomer_sp	sub;
+  Coupling_sp	coupling;
+  coupling = _Unbound<Coupling_O>();
+  sub = this->_Monomers[0];
+  do {
+    LOG(BF("Looking at monomer: %s") % sub->description().c_str()  );
+    if ( sub->hasInCoupling()) {
+      LOG(BF("    It has an in-coupling") );
+      coupling = sub->getInCoupling();
+      if ( !gc::IsA<DirectionalCoupling_sp>(coupling)) {
+        LOG(BF("     But its not a directional") );
+        break;
+      }
+      sub = gc::As_unsafe<DirectionalCoupling_sp>(coupling)->getInMonomer();
+    } else break;
+  } while (!coupling.unboundp());
+  return sub;
 }
 
 
@@ -468,7 +481,7 @@ CL_DEFMETHOD void	Oligomer_O::throwIfBadConnections()
 
 CL_LISPIFY_NAME("couple");
 CL_DEFMETHOD DirectionalCoupling_sp	Oligomer_O::couple( Monomer_sp inMon, core::Symbol_sp name, Monomer_sp outMon )
-{_OF();
+{
   DirectionalCoupling_sp	coupling;
   bool		foundIn, foundOut;
   gctools::Vec0<Monomer_sp>::iterator	mi;
@@ -508,7 +521,6 @@ CL_DEFMETHOD DirectionalCoupling_sp	Oligomer_O::couple( Monomer_sp inMon, core::
 }
 
 
-CL_LISPIFY_NAME("ringCouple");
 CL_DEFMETHOD RingCoupling_sp	Oligomer_O::ringCouple( Monomer_sp mon1, Monomer_sp mon2 )
 {_OF();
 RingCoupling_sp	coupling;
@@ -557,6 +569,32 @@ gctools::Vec0<Monomer_sp>::iterator	mi;
     mon2->addCoupling(mon2PlugName,coupling);
     this->addCoupling(coupling);
     return coupling;
+}
+
+CL_DEFMETHOD RingCoupling_sp	Oligomer_O::ringCoupleWithPlugNames( Monomer_sp mon1, core::Symbol_sp plug1name, Monomer_sp mon2, core::Symbol_sp plug2name )
+{
+  RingCoupling_sp	coupling;
+  bool		found1, found2;
+  gctools::Vec0<Monomer_sp>::iterator	mi;
+  found1 = false;
+  found2 = false;
+  for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) {
+    if ( *mi == mon1 ) {
+      found1 = true;
+    }
+    if ( *mi == mon2 ) {
+      found2 = true;
+    }
+  }
+  if ( !found1 ) 
+    SIMPLE_ERROR(BF("Could not find monomer1 in oligomer"));
+  if ( !found2 ) 
+    SIMPLE_ERROR(BF("Could not find monomer2 in oligomer"));
+  coupling = RingCoupling_O::make(mon1->sharedThis<Monomer_O>(),plug1name,mon2->sharedThis<Monomer_O>(),plug2name);
+  mon1->addCoupling(plug1name,coupling);
+  mon2->addCoupling(plug2name,coupling);
+  this->addCoupling(coupling);
+  return coupling;
 }
 
 
@@ -648,37 +686,38 @@ uint				iperturb;
 }
 
 
-void	Oligomer_O::gotoSequence(const Bignum& idx)
+CL_DEFMETHOD void	Oligomer_O::gotoSequence(core::Integer_sp index)
 {
-vector<int>	digits, bases;
-gctools::Vec0<Monomer_sp>::iterator	mi;
-vector<int>::iterator	di;
-    for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
-    {
-        bases.push_back((*mi)->numberOfPossibleMonomers());
-    }
-    digits = core::bignumToMixedBaseDigits(idx,bases);
-    for ( mi=this->_Monomers.begin(),di=digits.begin();
-    		mi!=this->_Monomers.end(); mi++,di++ )
-    {
-        (*mi)->setMonomerIndex(*di);
-    }
+  vector<int>	digits, bases;
+  gctools::Vec0<Monomer_sp>::iterator	mi;
+  vector<int>::iterator	di;
+  Bignum idx = core::clasp_to_mpz(index);
+  for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ )
+  {
+    bases.push_back((*mi)->numberOfPossibleMonomers());
+  }
+  digits = core::bignumToMixedBaseDigits(idx,bases);
+  for ( mi=this->_Monomers.begin(),di=digits.begin();
+        mi!=this->_Monomers.end(); mi++,di++ )
+  {
+    (*mi)->setMonomerIndex(*di);
+  }
 }
 
 
 /*!
  * Set all MultiMonomers to their first monomer.
  */
-void	Oligomer_O::firstSequence()
+CL_DEFMETHOD void	Oligomer_O::firstSequence()
 {
     gctools::Vec0<Monomer_sp>	multiMonomers;
-    this->gotoSequence(0);
+    this->gotoSequence(core::Integer_O::create(0));
 }
 
 
 /*! Convert the current sequence into an index
  */
-Bignum Oligomer_O::currentSequenceIndex()
+CL_DEFMETHOD Bignum Oligomer_O::currentSequenceIndex()
 {
 vector<int>	digits, bases;
 gctools::Vec0<Monomer_sp>::iterator	mi;
@@ -715,7 +754,7 @@ Bignum				numSeq;
  * Increment the monomer sequence.
  * Return true if it incremented, return false if it overflowed
  */
-bool Oligomer_O::incrementSequence()
+CL_DEFMETHOD bool Oligomer_O::incrementSequence()
 {
     gctools::Vec0<Monomer_sp>::iterator	mi;
 long unsigned int numSeq;
@@ -750,7 +789,7 @@ void Oligomer_O::_fillMonomerAsString(Monomer_sp mon, stringstream& seq)
     {
 	seq << " '" << mon->getGroupName()->symbolName();
     } else {
-	seq << " (GroupPart :group '" << mon->getGroupName()->symbolName() <<" :part '" <<mon->getName()->symbolName() << ")";
+      seq << " (GroupPart :group '" << mon->getGroupName()->symbolName() <<" :part '" <<mon->getName()->symbolName() << " :isomer " << mon->getIsomer() <<  ")";
     }
     adapt::SymbolSet_sp aliases = mon->getMonomerAliases();
     if ( aliases->size() > 0 )
@@ -786,30 +825,29 @@ void Oligomer_O::_fillSequenceAsStringForChildren(Monomer_sp rootMonomer, string
 CL_LISPIFY_NAME("sequenceAsString");
 CL_DEFMETHOD string	Oligomer_O::sequenceAsString()
 {
-
-    Monomer_sp mon2 = this->rootMonomer();
-    stringstream seq;
-    seq << "(Oligomer :name " << _rep_(this->_Name) << " :parts (list " << std::endl;
-    this->_fillMonomerAsString(mon2,seq);
-    seq << std::endl;
-    this->_fillSequenceAsStringForChildren(mon2,seq);
-    for (gctools::Vec0<Coupling_sp>::iterator ci=this->_Couplings.begin(); ci!=this->_Couplings.end(); ci++ )
+  Monomer_sp mon2 = this->rootMonomer();
+  stringstream seq;
+  seq << "(Oligomer :name " << _rep_(this->_Name) << " :parts (list " << std::endl;
+  this->_fillMonomerAsString(mon2,seq);
+  seq << std::endl;
+  this->_fillSequenceAsStringForChildren(mon2,seq);
+  for (gctools::Vec0<Coupling_sp>::iterator ci=this->_Couplings.begin(); ci!=this->_Couplings.end(); ci++ )
+  {
+    if ( (*ci).isA<RingCoupling_O>() )
     {
-	if ( (*ci).isA<RingCoupling_O>() )
-	{
-	    RingCoupling_sp rc = (*ci).as<RingCoupling_O>();
-	    Monomer_sp mon1 = rc->getMonomer1();
-	    Monomer_sp mon2 = rc->getMonomer2();
-	    seq << "[ ringLink '";
-	    seq << _rep_(mon1->getId());
-	    seq <<" '"<<rc->getPlug1() << " ";
-	    seq << _rep_(mon2->getId());
-	    seq <<" '"<<rc->getPlug2() << " ";
-	    seq <<" ]"<<std::endl;
-	}
+      RingCoupling_sp rc = (*ci).as<RingCoupling_O>();
+      Monomer_sp mon1 = rc->getMonomer1();
+      Monomer_sp mon2 = rc->getMonomer2();
+      seq << "[ ringLink '";
+      seq << _rep_(mon1->getId());
+      seq <<" '"<<rc->getPlug1() << " ";
+      seq << _rep_(mon2->getId());
+      seq <<" '"<<rc->getPlug2() << " ";
+      seq <<" ]"<<std::endl;
     }
-    seq << "))"<<std::endl;
-    return seq.str();
+  }
+  seq << "))"<<std::endl;
+  return seq.str();
 }
 
 

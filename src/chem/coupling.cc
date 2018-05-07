@@ -49,6 +49,9 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem {
 
 
+void Coupling_O::fields(core::Record_sp node)
+{
+}
 
 bool	Coupling_O::containsMonomer(Monomer_sp mon)
 {
@@ -72,7 +75,23 @@ bool	Coupling_O::containsMonomer(Monomer_sp mon)
 }
 #endif
 
+void DirectionalCoupling_O::fields(core::Record_sp node)
+{
+  node->field( INTERN_(kw,name), this->_Name);
+  node->field( INTERN_(kw,in), this->_InMonomer);
+  node->field( INTERN_(kw,out), this->_OutMonomer);
+}
 
+
+CL_DEFMETHOD core::T_sp DirectionalCoupling_O::getInPlugName() const
+{
+  return DirectionalCoupling_O::inPlugName(this->_Name);
+}
+
+CL_DEFMETHOD core::T_sp DirectionalCoupling_O::getOutPlugName() const
+{
+  return DirectionalCoupling_O::outPlugName(this->_Name);
+}
 
     char DirectionalCoupling_O::otherDirectionalCouplingSide(char s)
 {
@@ -95,23 +114,38 @@ CL_DEFUN core::Symbol_sp  DirectionalCoupling_O::couplingName(core::Symbol_sp na
 	return chemkw_intern(rest);
     }
 
+
 CL_DEFUN core::Symbol_sp DirectionalCoupling_O::inPlugName(core::Symbol_sp name)
-    {
-	stringstream	ss;
-	ss.str("");
-	ss << IN_PLUG_PREFIX;
-	ss << DirectionalCoupling_O::couplingName(name)->symbolNameAsString();
-	return chemkw_intern(ss.str());
-    };
+{
+  string sname = name->symbolNameAsString();
+  size_t pos = sname.find('>');
+  string rname;
+  if (pos!=std::string::npos) {
+    rname = sname.substr(pos+1,sname.size());
+  } else {
+    stringstream	ss;
+    ss << IN_PLUG_PREFIX;
+    ss << DirectionalCoupling_O::couplingName(name)->symbolNameAsString();
+    rname = ss.str();
+  }
+  return chemkw_intern(rname);
+};
 
 
 CL_DEFUN core::Symbol_sp DirectionalCoupling_O::outPlugName(core::Symbol_sp name)
 {
-stringstream	ss;
-    ss.str("");
+  string sname = name->symbolNameAsString();
+  size_t pos = sname.find('>');
+  string rname;
+  if (pos!=std::string::npos) {
+    rname = sname.substr(0,pos);
+  } else {
+    stringstream	ss;
     ss << OUT_PLUG_PREFIX;
     ss << DirectionalCoupling_O::couplingName(name)->symbolNameAsString();
-    return chemkw_intern(ss.str());
+    rname = ss.str();
+  }
+  return chemkw_intern(rname);
 };
 
 
@@ -512,6 +546,13 @@ void RingCoupling_O::archiveBase(core::ArchiveP node)
 }
 #endif
 
+void RingCoupling_O::fields(core::Record_sp node)
+{
+  node->field( INTERN_(kw,plug1), this->_Plug1);
+  node->field( INTERN_(kw,monomer1), this->_Monomer1);
+  node->field( INTERN_(kw,plug2), this->_Plug2);
+  node->field( INTERN_(kw,monomer2), this->_Monomer2);
+}
 
 
     core::Symbol_sp RingCoupling_O::getName() const
@@ -657,12 +698,12 @@ void RingCoupling_O::setPlug2(core::Symbol_sp p)
 CL_LISPIFY_NAME("getPlug1");
 CL_DEFMETHOD core::Symbol_sp RingCoupling_O::getPlug1()
 {_OF();
-    return DirectionalCoupling_O::outPlugName(this->_Plug1);
+    return this->_Plug1;
 }
 CL_LISPIFY_NAME("getPlug2");
 CL_DEFMETHOD core::Symbol_sp RingCoupling_O::getPlug2()
 {_OF();
-    return DirectionalCoupling_O::outPlugName(this->_Plug2);
+    return this->_Plug2;
 }
 
 string	RingCoupling_O::description() const

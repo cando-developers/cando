@@ -69,6 +69,9 @@ namespace chem {
   {
     LISP_CLASS(chem,ChemPkg,Coupling_O,"Coupling",core::CxxObject_O);
   public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+  public:
     virtual core::Symbol_sp getName() const {_OF();SUBCLASS_MUST_IMPLEMENT();};
     bool		containsMonomer(Monomer_sp mon);
     virtual Monomer_sp	getMonomer1() {_OF();SUBCLASS_MUST_IMPLEMENT();};
@@ -100,6 +103,9 @@ namespace chem {
   {
     LISP_CLASS(chem,ChemPkg,DirectionalCoupling_O,"DirectionalCoupling",Coupling_O);
 
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
   public:
     static char otherDirectionalCouplingSide( char side);
     	//! Return just the coupling name with the prefix removed
@@ -134,6 +140,8 @@ namespace chem {
     virtual Monomer_sp	getMonomer2() { return this->getOutMonomer();};
     virtual Monomer_sp	getMonomer2_const() const { return this->getOutMonomer_const();};
 
+    core::T_sp  getInPlugName() const;
+    core::T_sp  getOutPlugName() const;
     bool	isInCouplingToMonomer(Monomer_sp mon);
     void	setInMonomer_NoSignal(Monomer_sp sin);
     void	setOutMonomer_NoSignal(Monomer_sp sout);
@@ -186,8 +194,8 @@ namespace chem {
   {
     LISP_CLASS(chem,ChemPkg,RingCoupling_O,"RingCoupling",Coupling_O);
   public:
-    friend class O_WeakOligomer;
-//	void	archiveBase(core::ArchiveP node);
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
   private:
     core::Symbol_sp		_Plug1;
     Monomer_sp	                _Monomer1;
@@ -233,7 +241,14 @@ namespace chem {
     Monomer_sp	getOtherSideMonomer(Monomer_sp mon);
 
     void	doCoupling(Residue_sp inResidue, Residue_sp outResidue );
-  RingCoupling_O(core::Symbol_sp plug1, Monomer_sp mon1, core::Symbol_sp plug2, Monomer_sp mon2) :
+
+  public:
+    static RingCoupling_sp make(Monomer_sp mon1, core::Symbol_sp plug1Name, Monomer_sp mon2, core::Symbol_sp plug2Name) {
+      GC_ALLOCATE_VARIADIC(RingCoupling_O,dc,mon1,plug1Name,mon2,plug2Name);
+      return dc;
+    }
+
+  RingCoupling_O(Monomer_sp mon1, core::Symbol_sp plug1, Monomer_sp mon2, core::Symbol_sp plug2 ) :
     _Plug1(plug1),
       _Monomer1(mon1),
       _Plug2(plug2),

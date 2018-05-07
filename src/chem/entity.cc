@@ -77,7 +77,7 @@ CL_DEFMETHOD Constitution_sp Entity_O::constitution()
     string Entity_O::__repr__() const
     {
 	stringstream ss;
-	ss << "[" << this->className() << "/name=" << _rep_(this->getName()) << "]";
+	ss << "[" << this->className() << "/name=" << this->__repr__() << "]";
 	return ss.str();
     }
 

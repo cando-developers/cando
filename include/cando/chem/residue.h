@@ -154,6 +154,8 @@ namespace chem {
 	 */
     bool	containsAtom(Atom_sp a);
 
+    void ensureAllAtomNamesAreUnique() const;
+    
     CL_LISPIFY_NAME("getPdbName");
     CL_DEFMETHOD 	MatterName getPdbName() { return this->pdbName; };
     CL_LISPIFY_NAME("setPdbName");

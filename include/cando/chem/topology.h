@@ -111,6 +111,7 @@ public:
      inline CL_DEFMETHOD core::T_sp fftype() const { return this->_fftype; };
      inline CL_DEFMETHOD double atomicCharge() const { return this->_AtomicCharge; };
      inline CL_DEFMETHOD ConstitutionAtomIndex0N constitutionAtomIndex() const { return this->_ConstitutionAtomIndex; };
+     string __repr__() const;
    };
  };
 
@@ -261,10 +262,10 @@ CL_DEFMETHOD     int	numberOfPlugs() { return this->_Plugs.size(); };
 
 
  void connect_residues(Topology_sp prev_topology,
-                               Residue_sp prev_residue,
-                               core::Symbol_sp out_plug_name,
-                               Topology_sp next_topology,
-                               Residue_sp next_residue,
+                       Residue_sp prev_residue,
+                       core::Symbol_sp out_plug_name,
+                       Topology_sp next_topology,
+                       Residue_sp next_residue,
                        core::Symbol_sp in_plug_name);
 
 };

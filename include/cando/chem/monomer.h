@@ -98,8 +98,28 @@ namespace chem {
   changed2D - sent if Position2D or Selected changes
   changed - sent if contents change
 */
-
-
+  FORWARD(Isoname);
+  class Isoname_O : public core::CxxObject_O {
+    LISP_CLASS(chem,ChemPkg,Isoname_O,"Isoname",core::CxxObject_O);
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+  public:
+    core::Symbol_sp  _Name;
+    Fixnum           _Isomer;
+    Fixnum           _MaxIsomers;
+  public:
+    CL_DEF_CLASS_METHOD static Monomer_sp make_isoname(core::Symbol_sp name, Fixnum max_isomer, Fixnum isomer) {
+      GC_ALLOCATE_VARIADIC(Isoname_O,isoname,name,max_isomer,isomer);
+      return isoname;
+    }
+    CL_DEFMETHOD core::Symbol_sp name() const { return this->_Name; };
+    CL_DEFMETHOD Fixnum isomer() const { return this->_Isomer; };
+    CL_DEFMETHOD Fixnum max_isomers() const { return this->_MaxIsomers; };
+  Isoname_O(core::Symbol_sp name, Fixnum max_isomers, Fixnum isomer ) : _Name(name), _MaxIsomers(max_isomers), _Isomer(isomer) {};
+  Isoname_O(core::Symbol_sp name) : _Name(name), _Isomer(0) {};
+  };
+  
 
   class Monomer_O : public Entity_O
   {
@@ -113,11 +133,9 @@ namespace chem {
   public:
     typedef gctools::SmallMultimap<core::Symbol_sp,Coupling_sp,core::SymbolComparer> Couplings;
   public:
-//	void	archiveBase(core::ArchiveP node);
-  protected: // archive
-        /*! When a monomer is defined using "monomer" and "link..monomer" commands the Id is
-         * used to uniquely refer to the monomer
-         */
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+  public:
     core::Symbol_sp			_Id;
     uint				_SequenceNumber;
   public: // archive
@@ -227,7 +245,7 @@ namespace chem {
         /*! Return true if this monomer has a plug name that points to the coupling
          */
     bool	hasMatchingPlugNameAndCoupling(core::Symbol_sp plugName, Coupling_sp coup);
-    DirectionalCoupling_sp getInCoupling();
+    Coupling_sp getInCoupling();
     core::Symbol_sp getInCouplingName();
     bool	hasInCoupling();
     bool	hasOutCouplings();
@@ -264,7 +282,9 @@ namespace chem {
 
   public:
     CL_LISPIFY_NAME("getName");
-    CL_DEFMETHOD         virtual core::Symbol_sp getName() const {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
+    CL_DEFMETHOD virtual Isoname_sp isoname() const { SUBCLASS_MUST_IMPLEMENT(); };
+    CL_DEFMETHOD virtual core::Symbol_sp getName() const {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
+    CL_DEFMETHOD virtual Fixnum getIsomer() const { SUBCLASS_MUST_IMPLEMENT();};
     virtual core::Symbol_sp getGroupName() const {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
     virtual void setGroupName(core::Symbol_sp name) {_OF(); SUBCLASS_MUST_IMPLEMENT(); };
     Constitution_sp getConstitution();
@@ -278,13 +298,16 @@ namespace chem {
   {
     LISP_CLASS(chem,ChemPkg,MonoMonomer_O,"MonoMonomer",Monomer_O);
   public:
-    static MonoMonomer_sp make(core::Symbol_sp name);
+    CL_DEF_CLASS_METHOD static MonoMonomer_sp makeMonoMonomer(core::Symbol_sp name);
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
   public:
 //	void	archiveBase(core::ArchiveP n);
     friend class	AlchemistState_O;
   private:
-    core::Symbol_sp                 _Name;
-    core::Symbol_sp			_GroupName;
+    Isoname_sp     _Name;
+    core::Symbol_sp	_GroupName;
         //! When a residue gets created, temporarily point to it
   protected:	// accessible to AlchemistState
     virtual uint getMonomerIndex() { return 0; };
@@ -292,19 +315,22 @@ namespace chem {
   public:
     virtual void checkForErrorsAndUnknownContexts(CandoDatabase_sp bdb);
 
+    string __repr__() const;
+    virtual void setMonomerIndex(uint i);
     CL_DEFMETHOD void setName(core::Symbol_sp name) { this->_Name = name; };
-    virtual core::Symbol_sp getName() const { return this->_Name;};
+    virtual core::Symbol_sp getName() const { return this->_Name->_Name;};
+    virtual Fixnum getIsomer() const { return this->_Name->_Isomer; };
     core::Symbol_sp getGroupName() const { return this->_GroupName; };
     virtual AtomIndexer_sp getInterestingAtomIndexer() {IMPLEMENT_ME();};
     void setGroupName(core::Symbol_sp groupName) { this->_GroupName = groupName; };
-    core::Symbol_sp	getOneMonomer() const { return this->_Name;};
+    Isoname_sp	getOneMonomer() const { return this->_Name;};
     uint numberOfPossibleMonomers() { return 1; };
     virtual core::List_sp allAtomAliases() { IMPLEMENT_ME(); };
 
         //! Return true if we recognize the alias with the form ";[monomerAlias]@[atomAlias]"
     virtual bool recognizesAlias(Alias_sp alias) {IMPLEMENT_ME(); };
   public:
-    DEFAULT_CTOR_DTOR(MonoMonomer_O);
+  MonoMonomer_O() : _Name(_Nil<core::Symbol_O>()), _GroupName(_Nil<core::Symbol_O>()) {};
   };
 
 };
@@ -319,90 +345,79 @@ struct gctools::GCInfo<chem::MultiMonomer_O> {
 
 namespace chem {
 
-    FORWARD(MultiMonomer);
-    class MultiMonomer_O : public Monomer_O
-    {
-        LISP_CLASS(chem,ChemPkg,MultiMonomer_O,"MultiMonomer",Monomer_O);
-#if INIT_TO_FACTORIES
-    public:
-        static MultiMonomer_sp make(core::Symbol_sp name);
-#else
-        DECLARE_INIT();
-#endif
-    public:
-	void initialize();
-    public:
+  FORWARD(MultiMonomer);
+  class MultiMonomer_O : public Monomer_O
+  {
+    LISP_CLASS(chem,ChemPkg,MultiMonomer_O,"MultiMonomer",Monomer_O);
+  public:
+    CL_DEF_CLASS_METHOD static MultiMonomer_sp makeMultiMonomer(core::Symbol_sp name);
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+  public:
+    void initialize();
+  public:
 //	void	archiveBase(core::ArchiveP n);
-	friend class	AlchemistState_O;
-    public:
-        typedef gctools::Vec0<core::Symbol_sp>	Monomers;
-    private:
-	mutable uint			_CurrentMonomerIndex;
-	core::Symbol_sp			_GroupName;
-	Monomers			_Monomers;
+    friend class	AlchemistState_O;
+  public:
+    typedef gctools::Vec0<Isoname_sp>	Monomers;
+  private:
+    mutable uint			_CurrentMonomerIndex;
+    core::Symbol_sp			_GroupName;
+    Monomers			_Monomers;
         //! When a residue gets created, temporarily point to it
-
-    protected:	// accessible to AlchemistState
-	virtual uint getMonomerIndex() { return this->_CurrentMonomerIndex; };
-	virtual void setMonomerIndex(uint i) { this->_CurrentMonomerIndex = i; };
-	void	_expandGroupName();
-
-
-    public:
+  protected:	// accessible to AlchemistState
+    virtual uint getMonomerIndex() { return this->_CurrentMonomerIndex; };
+    virtual void setMonomerIndex(uint i) { this->_CurrentMonomerIndex = i; };
+    void	_expandGroupName();
+  public:
         //!< Add another monomer name
-	void addMonomerName(core::Symbol_sp name);
-    public:
-        virtual void checkForErrorsAndUnknownContexts(CandoDatabase_sp bdb);
-
-        virtual core::Symbol_sp getName() const;
-        core::Symbol_sp getGroupName() const { return this->_GroupName; };
-        virtual AtomIndexer_sp getInterestingAtomIndexer();
-        void setGroupName(core::Symbol_sp groupName);
-        core::Symbol_sp	getOneMonomer() const;
-        string description() const;
-        uint numberOfPossibleMonomers() { return this->_Monomers.size(); };
-        void randomizeMonomer();
-        bool incrementMonomerIndex();
-
-        virtual core::List_sp allAtomAliases();
-
+    void addMonomerName(core::Symbol_sp name);
+  public:
+    string __repr__() const;
+    virtual void checkForErrorsAndUnknownContexts(CandoDatabase_sp bdb);
+    virtual core::Symbol_sp getName() const;
+    virtual Fixnum getIsomer() const;
+    core::Symbol_sp getGroupName() const { return this->_GroupName; };
+    virtual AtomIndexer_sp getInterestingAtomIndexer();
+    void setGroupName(core::Symbol_sp groupName);
+    Isoname_sp	getOneMonomer() const;
+    string description() const;
+    uint numberOfPossibleMonomers() { return this->_Monomers.size(); };
+    void randomizeMonomer();
+    bool incrementMonomerIndex();
+    virtual core::List_sp allAtomAliases();
         //! Return true if we recognize the alias with the form ";[monomerAlias]@[atomAlias]"
-        virtual bool recognizesAlias(Alias_sp alias);
-
-
-    public:
-
-
-    public:
-
-        DEFAULT_CTOR_DTOR(MultiMonomer_O);
-    };
+    virtual bool recognizesAlias(Alias_sp alias);
+  public:
+  MultiMonomer_O() : _CurrentMonomerIndex(0), _GroupName(_Nil<core::Symbol_O>()) {};
+  };
 
 
 
 
 
 #if 0
-    extern MultiMonomer_sp create_MultiMonomer(CandoDatabase_sp bdb);
+  extern MultiMonomer_sp create_MultiMonomer(CandoDatabase_sp bdb);
 
-    inline MultiMonomer_sp create_MultiMonomer(CandoDatabase_sp bdb, const string& name, const string& comment )
-    {
-        MultiMonomer_sp mon;
-        mon = create_MultiMonomer(bdb);
-        mon->setGroupName(name);
-        mon->setComment(comment);
-        return mon;
-    }
+  inline MultiMonomer_sp create_MultiMonomer(CandoDatabase_sp bdb, const string& name, const string& comment )
+  {
+    MultiMonomer_sp mon;
+    mon = create_MultiMonomer(bdb);
+    mon->setGroupName(name);
+    mon->setComment(comment);
+    return mon;
+  }
     // Thin wrappers
-    inline MultiMonomer_sp create_MultiMonomer1(CandoDatabase_sp bdb)
-    {
-        return create_MultiMonomer(bdb);
-    }
+  inline MultiMonomer_sp create_MultiMonomer1(CandoDatabase_sp bdb)
+  {
+    return create_MultiMonomer(bdb);
+  }
     // Thin wrappers
-    inline MultiMonomer_sp create_MultiMonomer2(CandoDatabase_sp bdb, const string& name, const string& comment)
-    {
-        return create_MultiMonomer(bdb,name,comment);
-    }
+  inline MultiMonomer_sp create_MultiMonomer2(CandoDatabase_sp bdb, const string& name, const string& comment)
+  {
+    return create_MultiMonomer(bdb,name,comment);
+  }
 #endif
 };
 

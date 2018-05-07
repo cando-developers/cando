@@ -45,6 +45,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/lispReader.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/geom/vector3.h>
+#include <cando/chem/loop.h>
 #include <cando/chem/spanningLoop.h>
 #include <clasp/core/reader.h>
 #include <cando/chem/cipPrioritizer.h>
@@ -465,6 +466,8 @@ core::Symbol_mv parse_property(const string& propertyValue, CDBond_sp bond, cons
 
 
 
+
+
 /*!
  * Look for edges that specify properties and move them into the CDNodes that
 * they target
@@ -575,6 +578,9 @@ bool CDFragment_O::interpret(bool verbose)
     CipPrioritizer_sp cip = CipPrioritizer_O::create();
     cip->defineStereochemicalConfigurationsForAllAtoms(mol);
   }
+
+  this->_Molecule->makeAllAtomNamesInEachResidueUnique();
+
 #if 0    
 
   Residue_sp res = this->getEntireResidue();

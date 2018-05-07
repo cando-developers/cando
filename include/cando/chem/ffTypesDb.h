@@ -44,6 +44,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <vector>
 #include <set>
 #include <clasp/core/common.h>
+#include <clasp/core/hashTable.fwd.h>
 #include <cando/chem/bond.h>
 #include <cando/geom/vector3.h>
 #include <cando/chem/atom.h>
@@ -101,6 +102,8 @@ CL_LISPIFY_NAME("FFTypesDb-numberOfRules");
 CL_DEFMETHOD     int	numberOfRules() { return this->_TypeAssignmentRules.size();};
     chem::ChemInfo_sp	getRule(uint index);
 
+    core::HashTableEq_sp atomTypes(chem::Matter_sp matter);
+    
     void    assignTypes( chem::Matter_sp matter );
     core::Symbol_sp    assignType( chem::Atom_sp atom, bool verbose=false );
     void	initialize();

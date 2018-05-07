@@ -138,12 +138,15 @@ CL_DEFMETHOD     core::List_sp	CandoDatabase_O::constitutionsAsList()
 CL_LISPIFY_NAME("addEntity");
 CL_DEFMETHOD     Entity_sp CandoDatabase_O::addEntity(Entity_sp entity)
     {
+      IMPLEMENT_ME();
+      #if 0
 	this->_Entities.set(entity->getName(),entity);
 	if ( entity.isA<Constitution_O>() )
 	{
 	    entity.as<Constitution_O>()->addStereoisomersToCandoDatabase(this->sharedThis<CandoDatabase_O>());
 	}
 	return entity;
+#endif
     }
 
 

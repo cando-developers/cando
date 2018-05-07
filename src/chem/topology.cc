@@ -48,6 +48,21 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
+string TopologyAtomInfo_O::__repr__() const
+{
+  stringstream ss;
+  ss <<  "#<TOPOLOGY-ATOM-INFO :index "
+     << this->_ConstitutionAtomIndex;
+  ss << " :charge " << this->_AtomicCharge;
+  ss << " :fftype " << _rep_(this->_fftype);
+  ss << ">";
+  return ss.str();
+}
+       
+       
+                                           
+                                          
+                                          
 void TopologyAtomInfo_O::fields(core::Record_sp node)
 {
   node->field(INTERN_(kw,fftype),this->_fftype);
@@ -146,15 +161,21 @@ CL_DEFMETHOD Residue_sp Topology_O::build_residue() const
     atom->setType(ai->_fftype);
     atom->setCharge(ai->_AtomicCharge);
     atom->turnOnFlags(needsBuild);
+//    printf("%s:%d  Creating atom@%d -> %s\n", __FILE__, __LINE__, ai->_ConstitutionAtomIndex, _rep_(atom).c_str());
     atoms[ai->_ConstitutionAtomIndex] = atom;
     res->putMatter(idx,atom); // order atoms as in Topology
   }
   for ( size_t i=0, iEnd(constitutionAtoms->numberOfAtoms()); i<iEnd; ++i ) {
     Atom_sp fromAtom = atoms[i];
     ConstitutionAtom_sp ca = (*constitutionAtoms)[i];
+//    printf("%s:%d @%zu fromAtom -> %s\n", __FILE__, __LINE__, i, _rep_(fromAtom).c_str());
     for ( auto bi=ca->_Bonds.begin(); bi!=ca->_Bonds.end(); ++bi )
     {
+      if ((*bi)->_ToAtomIndex>=atoms.size()) {
+        SIMPLE_ERROR(BF("Atom index %d out of bounds (num-atoms %d)") % (*bi)->_ToAtomIndex % atoms.size());
+      }
       Atom_sp toAtom = atoms[(*bi)->_ToAtomIndex];
+//      printf("%s:%d     @%d toAtom -> %s\n", __FILE__, __LINE__, (*bi)->_ToAtomIndex, _rep_(toAtom).c_str());
       if ( fromAtom->atLowerUniqueAtomOrderThan(toAtom) ) {
         BondOrder order = (*bi)->_BondOrder;
         fromAtom->bondTo(toAtom,order);

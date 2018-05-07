@@ -188,6 +188,7 @@
    #:make-progress-bar
    #:progress-done
    #:home/
+   #:make-topology-from-residue
    ;;; Stuff for nglview demo
    #:build-hydrogens
    #:atom-map
