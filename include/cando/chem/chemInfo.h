@@ -1066,7 +1066,7 @@ namespace chem {
   public:
     bool fieldsp() const { return true; };
     void	fields(core::Record_sp node);
-  protected:
+  public:
     core::Symbol_sp          _AssignType;
     gc::Nilable<RootMatchNode_sp>         _AfterMatchTests;
     gc::Nilable<WildElementDict_sp>       _WildElementDictionary;
@@ -1137,8 +1137,7 @@ namespace chem {
   public:
     bool fieldsp() const { return true; };
     void	fields(core::Record_sp node);
-
-  private:
+  public:
     string		_Code;
     gc::Nilable<Root_sp> _Root;
     string		_CompilerMessage;

@@ -1791,7 +1791,6 @@ bool Root_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp bond) {
 };
 
 bool Root_O::matches(Root_sp root, chem::Atom_sp atom) {
-  _OF();
   chem::BondList_sp nextBonds;
   bool matches;
   matches = false;
@@ -1867,7 +1866,6 @@ bool AntechamberRoot_O::matches(Root_sp root, chem::Atom_sp from, chem::Bond_sp 
 };
 
 bool AntechamberRoot_O::matches(Root_sp root, chem::Atom_sp atom) {
-  
   chem::BondList_sp nextBonds;
   bool matches;
   matches = false;
@@ -1880,7 +1878,8 @@ bool AntechamberRoot_O::matches(Root_sp root, chem::Atom_sp atom) {
       goto FAIL;
     }
   }
-  atom->setType(this->_AssignType);
+  printf("%s:%d This is where I was assigning the type\n", __FILE__, __LINE__ );
+//  atom->setType(this->_AssignType);
   LOG(BF("Matched and assigned type(%s)") % this->_AssignType.c_str());
   //SUCCESS:
   LOG(BF("SUCCESS!"));

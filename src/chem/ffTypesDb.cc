@@ -35,6 +35,8 @@ This is an open source license for the CANDO software from Temple University, bu
  *	rules.
  */
 #include <clasp/core/foundation.h>
+#include <clasp/core/hashTable.h>
+#include <clasp/core/hashTableEq.h>
 #include <clasp/core/record.h>
 #include <cando/chem/ffTypesDb.h>
 #include <cando/chem/loop.h>
@@ -73,17 +75,19 @@ CL_DEFMETHOD core::Symbol_sp FFTypesDb_O::assignType(chem::Atom_sp atom, bool ve
           it!=this->_TypeAssignmentRules.end(); it++ ) 
     {_BLOCK_TRACEF(BF("Testing rule code(%s)") % (*it)->getCode().c_str() );
 //		LOG(BF("as xml: %s") % ((*it)->asXmlString().c_str() ) );
-      if ( (*it)->matches(atom) ) {
+      ChemInfo_sp cheminfo = gc::As<ChemInfo_sp>(*it);
+      if ( cheminfo->matches(atom)) {
+        AntechamberRoot_sp antechamberRoot = gc::As<AntechamberRoot_sp>(cheminfo->_Root);
         LOG(BF("Rule MATCH!!!") );
-        if (verbose) BFORMAT_T(BF("Matched %s\n") % _rep_(*it));
-        return atom->getType();
+        if (verbose) BFORMAT_T(BF("Matched %s\n") % _rep_(cheminfo));
+        return antechamberRoot->_AssignType;
       } else {
-        if (verbose) BFORMAT_T(BF("Did not match %s\n") % _rep_(*it));
+        if (verbose) BFORMAT_T(BF("Did not match %s\n") % _rep_(cheminfo));
       }
       LOG(BF("Rule does not match, keep going") );
     }
   }
-  return _Nil<core::T_O>();
+  return _Nil<core::Symbol_O>();
 }
 
 
@@ -109,8 +113,28 @@ CL_DEFMETHOD void    FFTypesDb_O::assignTypes(chem::Matter_sp matter)
 //        LOG(BF("castGet = %X") % castGet );
 //        LOG(BF("getting first atom in loop") );
     atom = (c).as<chem::Atom_O>();
-    this->assignType(atom,false);
+    core::Symbol_sp type = this->assignType(atom,false);
+    atom->setType(type);
   }
+}
+
+
+CL_DOCSTRING("Return the atom types as a hash-table with the atoms as keys and types as values");
+CL_DEFMETHOD core::HashTableEq_sp    FFTypesDb_O::atomTypes(chem::Matter_sp matter)
+{ 
+  chem::Loop    				lAtoms;
+  chem::Atom_sp  				atom;
+  core::HashTableEq_sp atomTypes = core::HashTableEq_O::create_default();
+  if (this->_TypeAssignmentRules.size()==0)  return atomTypes;
+  lAtoms.loopTopGoal(matter,ATOMS);
+  LOG(BF("defined loop") );
+  while ( lAtoms.advanceLoopAndProcess() ) {
+    LOG(BF("Getting container") );
+    atom = lAtoms.getAtom();
+    core::Symbol_sp type = this->assignType(atom,false);
+    atomTypes->setf_gethash(atom,type);
+  }
+  return atomTypes;
 }
 
 
