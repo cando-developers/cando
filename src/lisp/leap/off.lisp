@@ -84,17 +84,14 @@
           (map 'list (lambda (x) (elt x 0)) body))
         (error "Could not read off file ~a" fin))))
 
-(defun read-off-unit-part (fin &optional expected-unit-name expected-part (eof-error-p t) eof)
+(defun read-off-unit-part (fin &optional (eof-error-p t) eof)
   "* Arguments
 fin : A Stream
-expected-unit-name : A string
-expected-part : A string
 eof-error-p : bool
 eof : An object
 * Description
 Read the enntry of the unit from fin.  
-If expected-unit-name and expected-part are provided then check that the read parts
-match what is expected - otherwise signal an error.   Use eof-error-p and eof as in read."
+Use eof-error-p and eof as in read."
   (flet ((my-split (string &key (delimiterp #'(lambda (x) (eq x #\.))))
            (loop :for beg = (position-if-not delimiterp string)
               :then (position-if-not delimiterp string :start (1+ end))
@@ -103,23 +100,13 @@ match what is expected - otherwise signal an error.   Use eof-error-p and eof as
               :while end)))
     (multiple-value-bind (header body)
         (read-off-data-block fin eof-error-p eof)
-      (when header 
+      (if header 
         (let* ((header-parts (my-split (name header)))
                (unit-name (second header-parts))
                (unit-part (fourth header-parts)))
-          (when expected-unit-name
-            (unless (equal unit-name expected-unit-name)
-              (error 'wrong-off-unit-name
-                     :header (name header)
-                     :unit-name unit-name
-                     :expected-unit-name expected-unit-name)))
-          (when expected-part
-            (unless (equal unit-part expected-part)
-              (error 'wrong-off-unit-part
-                     :header (name header)
-                     :unit-part unit-part
-                     :expected-part expected-part)))
-          (values body unit-name unit-part))))))
+          (values body unit-name unit-part))
+        (values) ; Return nothing if we hit the eof
+        ))))
 
 (defun assemble-residues (read-residues)
   (let ((residues (make-array (length read-residues) :adjustable nil :fill-pointer 0)))
@@ -190,25 +177,39 @@ match what is expected - otherwise signal an error.   Use eof-error-p and eof as
      do (let ((pos-vec (geom:vec (elt position 0) (elt position 1) (elt position 2))))
           (chem:set-position atom pos-vec))))
 
-(defun read-off-unit-with-name (fin expected-name &optional eof-error-p eof)
+(defun read-entire-off-file (fin &optional eof-error-p eof)
+  (let ((result (make-hash-table :test #'equal)))
+    (loop for part = (multiple-value-list (read-off-unit-part fin eof-error-p eof))
+          if part
+            do (destructuring-bind (body unit-name unit-part)
+                   part
+                 (let ((part-hash-table (gethash unit-name result)))
+                   (unless part-hash-table
+                     (setf part-hash-table (make-hash-table :test #'equal)))
+                   (setf (gethash unit-part part-hash-table) body)))
+          else
+            do (return-from read-entire-off-file result))))
+
+
+(defun read-off-unit-with-name (entry-parts expected-name)
   "Read a leap UNIT from an OFF file.
 Return (values chem:aggregate read-residueconnect read-residues).
 The read-residueconnect and read-residues can be used to contruct a chem:topology
 if the caller wants to do that."
-  (let ((read-atoms (read-off-unit-part fin expected-name "atoms" eof-error-p eof))
-        (read-atoms-pert-info (read-off-unit-part fin expected-name "atomspertinfo" eof-error-p eof))
-        (read-bound-box (read-off-unit-part fin expected-name "boundbox" eof-error-p eof))
-        (read-childsequence (read-off-unit-part fin expected-name "childsequence" eof-error-p eof))
-        (read-connect (read-off-unit-part fin expected-name "connect" eof-error-p eof))
-        (read-connectivity (read-off-unit-part fin expected-name "connectivity" eof-error-p eof))
-        (read-hierarchy (read-off-unit-part fin expected-name "hierarchy" eof-error-p eof))
-        (read-name (read-off-unit-part fin expected-name "name" eof-error-p eof))
-        (read-positions (read-off-unit-part fin expected-name "positions" eof-error-p eof))
-        (read-residueconnect (read-off-unit-part fin expected-name "residueconnect" eof-error-p eof))
-        (read-residues (read-off-unit-part fin expected-name "residues" eof-error-p eof))
-        (read-residuesPdbSequenceNumber (read-off-unit-part fin expected-name "residuesPdbSequenceNumber" eof-error-p eof))
-        (read-solventcap (read-off-unit-part fin expected-name "solventcap" eof-error-p eof))
-        (read-velocities (read-off-unit-part fin expected-name "velocities" eof-error-p eof)))
+  (let ((read-atoms (gethash "atoms" entry-parts))
+        (read-atoms-pert-info (gethash "atomspertinfo" entry-parts))
+        (read-bound-box (gethash "boundbox" entry-parts))
+        (read-childsequence (gethash "childsequence" entry-parts))
+        (read-connect (gethash "connect" entry-parts))
+        (read-connectivity (gethash "connectivity" entry-parts))
+        (read-hierarchy (gethash "hierarchy" entry-parts))
+        (read-name (gethash "name" entry-parts))
+        (read-positions (gethash "positions" entry-parts))
+        (read-residueconnect (gethash "residueconnect" entry-parts))
+        (read-residues (gethash "residues" entry-parts))
+        (read-residuesPdbSequenceNumber (gethash "residuesPdbSequenceNumber" entry-parts))
+        (read-solventcap (gethash "solventcap" entry-parts))
+        (read-velocities (gethash "velocities" entry-parts)))
     (let ((atoms (assemble-atoms read-atoms)))
       (set-positions read-positions atoms)
       (when read-connectivity
@@ -275,13 +276,15 @@ Otherwise it's an Aggregate. Return the object."
 Return the hash-table."
   (declare (stream fin))
   (let ((index (read-off-lib-index fin))
+        (entry-parts (read-entire-off-file fin))
         (object-ht (make-hash-table)))
-    (loop for object-name-str in index
-       for object-name = (intern object-name-str :keyword)
-       for (unit residueconnect residues) = (multiple-value-list (read-off-unit-with-name fin object-name-str nil :eof))
-       until (eq unit :eof)
-       do (let ((object (translate-off-object object-name unit residueconnect residues)))
-            (setf (gethash object-name object-ht) object)))
+    (maphash (lambda (entry-name-string entry-parts)
+               (let ((entry-name (intern entry-name-string :keywrod)))
+                 (multiple-value-bind (unit residue-connect residues)
+                     (read-off-unit-with-name entry-parts entry-name)
+                   (let ((object (translate-off-object entry-name unit residue-connect residues)))
+                     (setf (gethash entry-name object-ht) object)))))
+             entry-parts)
     object-ht))
 
 (defun bug () (print "In bug"))
