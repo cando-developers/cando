@@ -41,7 +41,7 @@ namespace kinematics
 {
 
 
-    class KinematicsExposer : public core::Exposer
+    class KinematicsExposer_O : public core::Exposer_O
     {
       LISP_CLASS(kinematics,KinPkg,KinematicsExposer_O,"KinematicsExposer",core::Exposer_O);
     private:

@@ -231,18 +231,7 @@ namespace kinematics
 
     void AtomTree_O::updateAtomIdMap(const chem::AtomId& atomId, const WeakAtomHandle& atomHandle )
     {_OF();
-	try
-	{
 	    this->_AtomMap[atomId] = atomHandle;
-	}
-	catch (core::HardError& err)
-	{
-	    SIMPLE_ERROR(BF("%s") % err.message());
-	}
-	catch (...)
-	{
-	    throw;
-	}
     }
 
 
@@ -290,9 +279,9 @@ namespace kinematics
 	    chem::Topology_O::Plugs::iterator it;
 	    for ( it=topology->_Plugs.begin(); it!=topology->_Plugs.end(); it++ )
 	    {
-		if ( (it->second)->isAssignableTo<chem::OutPlug_O>() )
+              if ( gc::IsA<chem::OutPlug_sp>(it->second) )
 		{
-		    chem::OutPlug_O::smart_ptr_type outPlug = (it->second).as<chem::OutPlug_O>();
+                  chem::OutPlug_O::smart_ptr_type outPlug = gc::As_unsafe<chem::OutPlug_sp>(it->second);
                     core::Symbol_sp atomB0 = outPlug->getB0();
 		    int  constitutionBond0AtomId = constitutionAtoms->index(atomB0);
 		    chem::AtomId atomId(moleculeId,residueId,constitutionBond0AtomId);

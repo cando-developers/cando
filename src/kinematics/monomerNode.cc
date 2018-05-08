@@ -26,7 +26,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <clasp/core/common.h>
-#include <clasp/core/environment.h>
+#include <clasp/core/evaluator.h>
 #include <cando/adapt/symbolSet.h>
 #include <cando/chem/monomer.h>
 #include <cando/chem/coupling.h>
@@ -132,44 +132,44 @@ namespace kinematics
     }
 
 
-    core::List_sp MonomerNode_O::identifyConstitutionAndTopology(chem::CandoDatabase_sp db)
-    {_OF();
-	chem::Constitution_sp constitution = db->constitutionForNameOrPdb(this->_MonomerName);
-	if ( constitution.nilp() )
-	{
-	    SIMPLE_ERROR(BF("Could not find Constitution for monomer[%s]")
-                         % _rep_(this->_MonomerName) );
-	}
-	adapt::SymbolSet_sp myPlugNameSet = adapt::SymbolSet_O::create();
-	if ( this->_ParentPlugName.notnilp() )
-	{
-	    myPlugNameSet->insert(this->_ParentPlugName);
-	}
-	for ( adapt::SymbolMap<MonomerNode_O>::iterator it=this->_Children.begin();
-	      it!=this->_Children.end(); it++ )
-	{
-	    myPlugNameSet->insert(it->first);
-	}
-	chem::Topology_sp topology = _Nil<chem::Topology_O>();
-	chem::Constitution_O::TopologyMap::iterator it;
-	{_BLOCK_TRACEF(BF("Looking for Topology with plugs: %s") % myPlugNameSet->asString() );
-	    for ( it= constitution->begin_Topologies();
-		  it!=constitution->end_Topologies(); it++ )
-	    {
-		if ( (it->second)->hasMatchingPlugsWithMates(myPlugNameSet))
-		{
-		    topology = it->second;
-		    break;
-		}
-	    }
-	}
-	if ( topology.nilp() )
-	{
-	    SIMPLE_ERROR(BF("No topology could be found for monomer[%s] with plugs[%s]")
-                         % _rep_(this->_MonomerName) % myPlugNameSet->asString() );
-	}
-	return core::Cons_O::createList(constitution,topology);
+core::List_sp MonomerNode_O::identifyConstitutionAndTopology(chem::CandoDatabase_sp db)
+{
+  chem::Constitution_sp constitution  = gc::As<chem::Constitution_sp>(core::eval::funcall(chem::_sym_constitutionForNameOrPdb,db,this->monomerName()));
+  if ( constitution.nilp() )
+  {
+    SIMPLE_ERROR(BF("Could not find Constitution for monomer[%s]")
+                 % _rep_(this->_MonomerName) );
+  }
+  adapt::SymbolSet_sp myPlugNameSet = adapt::SymbolSet_O::create();
+  if ( this->_ParentPlugName.notnilp() )
+  {
+    myPlugNameSet->insert(this->_ParentPlugName);
+  }
+  for ( adapt::SymbolMap<MonomerNode_O>::iterator it=this->_Children.begin();
+        it!=this->_Children.end(); it++ )
+  {
+    myPlugNameSet->insert(it->first);
+  }
+  chem::Topology_sp topology = _Nil<chem::Topology_O>();
+  chem::Constitution_O::TopologyMap::iterator it;
+  {_BLOCK_TRACEF(BF("Looking for Topology with plugs: %s") % myPlugNameSet->asString() );
+    for ( it= constitution->begin_Topologies();
+          it!=constitution->end_Topologies(); it++ )
+    {
+      if ( (it->second)->hasMatchingPlugsWithMates(myPlugNameSet))
+      {
+        topology = it->second;
+        break;
+      }
     }
+  }
+  if ( topology.nilp() )
+  {
+    SIMPLE_ERROR(BF("No topology could be found for monomer[%s] with plugs[%s]")
+                 % _rep_(this->_MonomerName) % myPlugNameSet->asString() );
+  }
+  return core::Cons_O::createList(constitution,topology);
+}
 
 
     void MonomerNode_O::describeRecursivelyIntoStringStream(const string& prefix, stringstream& output) const

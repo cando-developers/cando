@@ -26,6 +26,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <clasp/core/common.h>
+#include <cando/kinematics/kinematicsPackage.h>
 #include <clasp/core/environment.h>
 #include <cando/kinematics/conformation.h>
 #include <cando/kinematics/foldTree.h>
@@ -39,15 +40,22 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
+SYMBOL_EXPORT_SC_(KinPkg,KinPkg_resizeMoleculesEvent);
+SYMBOL_EXPORT_SC_(KinPkg,KinPkg_buildMoleculeUsingOligomerEvent);
+SYMBOL_EXPORT_SC_(ChemKwPkg,newValue);
+SYMBOL_EXPORT_SC_(ChemKwPkg,oldValue);
+SYMBOL_EXPORT_SC_(ChemKwPkg,moleculeId);
+SYMBOL_EXPORT_SC_(ChemKwPkg,residueId);
+
 // ----------------------------------------------------------------------
 //
-
+#if 0
     EXPOSE_CLASS_AND_GLOBALS(kinematics,Conformation_O);
 
     void Conformation_O::lisp_initGlobals(core::Lisp_sp lisp)
     {
     }
-
+#endif
 
 
 

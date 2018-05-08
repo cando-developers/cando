@@ -26,6 +26,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <clasp/core/common.h>
+#include <clasp/core/evaluator.h>
 #include <cando/kinematics/atomTemplate.h>
 #include <cando/chem/plug.h>
 #include <clasp/core/environment.h>
@@ -82,10 +83,9 @@ namespace kinematics
     void Checkpoint_O::setupDelayedBondedAtom(DelayedBondedAtom* atom) const
     {_OF();
 	chem::CandoDatabase_sp cdb = chem::getCandoDatabase();
-	chem::Constitution_sp constitution = cdb->constitutionForNameOrPdb(this->_ConstitutionName);
+        chem::Constitution_sp constitution  = gc::As<chem::Constitution_sp>(core::eval::funcall(chem::_sym_constitutionForNameOrPdb,cdb,this->_ConstitutionName));
 	chem::ConstitutionAtoms_sp constitutionAtoms = constitution->getConstitutionAtoms();
-	chem::ConstitutionAtom_sp constitutionAtom = constitutionAtoms->atomWithName(this->atomName());
-	atom->_DelayAtomId = constitutionAtom->atomIndex();
+        atom->_DelayAtomId = constitutionAtoms->index(this->atomName());
     }
 
 

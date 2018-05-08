@@ -150,11 +150,11 @@ class Topology_O : public core::CxxObject_O
 public:
 public:
     void initialize();
-private:
+public:
     typedef Plug_sp	plugType;
     typedef Plug_O	plugOType;
     typedef adapt::SymbolMap<Plug_O> Plugs;
-private:
+public:
     core::Symbol_sp				_Name;
     Constitution_sp				_Constitution;
     bool					_SuppressTrainers;

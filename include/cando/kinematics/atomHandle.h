@@ -59,8 +59,6 @@ namespace kinematics
     WeakAtomHandle() : _Tree(NULL), _HolderIndex(Undef) {};
     WeakAtomHandle(AtomTree_O* tree, uint handleIndex) : _Tree(tree),_HolderIndex(handleIndex) {};
 
-	core::Lisp_sp lisp() const;
-
 	/*! Return the AtomTree_sp for this WeakAtomHandle */
 	AtomTree_sp atomTree() const;
 

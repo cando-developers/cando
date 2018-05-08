@@ -149,7 +149,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/virtualSphere.h>
 #include <cando/chem/zMatrix.h>
 #include <clasp/core/activationFrame.h>
-#include <clasp/core/arrayObjects.h>
+#include <clasp/core/array.h>
 #include <clasp/core/hashTableEq.h>
 #include <clasp/core/hashTableEql.h>
 #include <clasp/core/hashTableEqual.h>
@@ -158,7 +158,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/null.h>
 #include <clasp/core/singleDispatchGenericFunction.h>
 #include <clasp/core/specialForm.h>
-#include <clasp/core/lispVector.h>
 #include <cando/geom/boundingBox.h>
 #include <cando/geom/color.h>
 #include <cando/geom/omatrix.h>
@@ -191,7 +190,6 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/array.h>
 #include <clasp/core/sexpLoadArchive.h>
 #include <clasp/core/sexpSaveArchive.h>
-#include <clasp/core/lispString.h>
 #include <cando/geom/coordinateArray.h>
 #include <cando/units/namedUnit.h>
 #include <cando/chem/virtualAtom.h>
@@ -200,11 +198,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/monomerPack.h>
 #include <cando/chem/representedEntityNameSet.h>
 #include <clasp/core/bignum.h>
-#include <clasp/core/cxxClass.h>
-#include <clasp/core/stdClass.h>
-#include <clasp/core/strWithFillPtr.h>
 #include <clasp/clbind/class_rep.h>
-#include <clasp/core/funcallableStandardClass.h>
 
 
 namespace kinematics {
@@ -252,7 +246,7 @@ namespace kinematics
 
 
 
-    void KinematicsExposer::expose(core::Lisp_sp lisp,core::Exposer::WhatToExpose what) const
+    void KinematicsExposer_O::expose(core::Lisp_sp lisp,core::Exposer_O::WhatToExpose what) const
     {
 	switch (what)
 	{
@@ -307,10 +301,10 @@ extern "C"
 {
     bool init_libkinematics()
     {
-	static kinematics::KinematicsExposer* kinematicsPkgP = NULL;
+	static kinematics::KinematicsExposer_O* kinematicsPkgP = NULL;
 	if ( kinematicsPkgP == NULL )
 	{
-	    kinematicsPkgP = new kinematics::KinematicsExposer(_lisp);
+	    kinematicsPkgP = new kinematics::KinematicsExposer_O(_lisp);
 	    _lisp->installPackage(kinematicsPkgP);
 	    return true;
 	} else return false;
