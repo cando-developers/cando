@@ -64,29 +64,30 @@ time_t	time_start;
  *  globals used for octree evaluation
  */
 
-double          	dGridSize;
-double          	dShellRadius;
-int             	iColorMethod;
+//double          	dGridSize;
+//double          	dShellRadius;
+//int             	iColorMethod;
 
-int             	iTreeGridPoints, iNodeCount;
-float           	fVolume;
-gctools::Vec0<int>	PiDensities;
-gctools::Vec0<double> 	PdHalfEdges, PdHalfDiagonals;
+//int             	iTreeGridPoints,
+//int                     iNodeCount;
+//float           	fVolume;
+//gctools::Vec0<int>	PiDensities;
+//gctools::Vec0<double> 	PdHalfEdges, PdHalfDiagonals;
 
-int             	iDistanceCharge;
-int             	iChargeAtoms;
-double          	dCutRadius;
-gctools::Vec0<float>	PfCharges;
-gctools::Vec0<Atom_sp>	PaChargeAtoms;
-float           	fMinCharge, fMaxCharge;
-Vector3	                vMinCharge, vMaxCharge;
+//int             	iDistanceCharge;
+//int             	iChargeAtoms;
+//double          	dCutRadius;
+//gctools::Vec0<float>	PfCharges;
+//gctools::Vec0<Atom_sp>	PaChargeAtoms;
+//float           	fMinCharge, fMaxCharge;
+//Vector3	                vMinCharge, vMaxCharge;
 
-Vector3          	vNewPoint;
-double           	dDeleteRadius;
-float           	fNewCharge;
+//Vector3          	vNewPoint;
+//double           	dDeleteRadius;
+//float           	fNewCharge;
 
-Atom_sp          	aClosestAtom;
-double          	dClosestDistance;
+//Atom_sp          	aClosestAtom;
+//double          	dClosestDistance;
 
 //FILE	                *fChargeFile;
 //core::T_sp              stream;
@@ -173,7 +174,7 @@ double  x, y, z;
 }
 
 //static void Octree_O::dumpNode( OctNode_sp PonNode )
-void Octree_O::dumpNode( OctNode_sp PonNode, size_t iMaxDepth )
+void Octree_O::dumpNode( OctNode_sp PonNode)
 {
   int	i;
   fprintf(stderr, "@");
@@ -182,7 +183,7 @@ void Octree_O::dumpNode( OctNode_sp PonNode, size_t iMaxDepth )
   fprintf(stderr, "%d %d %f %f %f\n", 
           PonNode->iDepth, PonNode->iStatus,
           PonNode->vCorner.getX(), PonNode->vCorner.getY(), PonNode->vCorner.getZ());
-  if ( PonNode->iDepth == iMaxDepth  &&  PonNode->iStatus == OCT_PARTIAL) {
+  if ( PonNode->iDepth == this->_iMaxDepth  &&  PonNode->iStatus == OCT_PARTIAL) {
     fprintf(stderr, " bad node\n");
 #if (!defined WIN32)
 		//kill(0,5);
@@ -198,42 +199,41 @@ void Octree_O::dumpNode( OctNode_sp PonNode, size_t iMaxDepth )
     }
 //	if ( PonNode->PonChildren != NULL ) {
     if ( PonNode->PonChildren[i].notnilp() ) {
-      if ( PonNode->iDepth >= iMaxDepth ) {
+      if ( PonNode->iDepth >= this->_iMaxDepth ) {
         fprintf(stderr, "children too deep\n");
 #if (!defined WIN32)
 			//kill(0,5);
 #endif
       }
 	//	for (i=0; i<8; i++) 
-      dumpNode( PonNode->PonChildren[i], iMaxDepth );
+      dumpNode( PonNode->PonChildren[i]);
     }
   }
 }
 
-void Octree_O::dumpOctree( Octree_sp octTree )
+void Octree_O::dumpOctree()// Octree_sp octTree )
 {
-  size_t iMaxDepth = octTree->_iMaxDepth;
-  dumpNode( octTree->onHead, iMaxDepth);
+  dumpNode( this->onHead);
 }
 
 /*************************************************************************
  *************************************************************************/
 
 //static OctNode_sp Octree_O::PonMakeChildren( PonNode_sp ponNode, int iDepth, int iStatus )
-void Octree_O::PonMakeChildren(OctNode_sp ponNode, int iDepth, int iStatus )
+void Octree_O::PonMakeChildren(OctNode_sp ponNode, int iDepth, int iStatus, size_t& iNodeCount )
 {
 //OctNode_sp      PonChildren[8];
   int	       	i;
-  double		dHalfEdge = PdHalfEdges[iDepth-1];
+  double		dHalfEdge = this->PdHalfEdges[iDepth-1];
 
   for (i=0; i<8; i++) {
     ponNode->PonChildren[i] = OctNode_O::create();
-  ponNode->PonChildren[i]->iStatus = iStatus;
-  ponNode->PonChildren[i]->iDepth = iDepth;
-  ponNode->PonChildren[i]->iAtoms = 0;
-  ponNode->PonChildren[i]->vCorner = ponNode->vCorner;
-  ponNode->PonChildren[i]->iNodeNum = iNodeCount++;
-
+    ponNode->PonChildren[i]->iStatus = iStatus;
+    ponNode->PonChildren[i]->iDepth = iDepth;
+    ponNode->PonChildren[i]->iAtoms = 0;
+    ponNode->PonChildren[i]->vCorner = ponNode->vCorner;
+    ponNode->PonChildren[i]->iNodeNum = iNodeCount++;
+    
   }
     
 	/*
@@ -326,7 +326,7 @@ void Octree_O::PonMakeChildren(OctNode_sp ponNode, int iDepth, int iStatus )
 }
 
 //static int Octree_O::dFinalCheck( OctNode_sp PonNode, int iAtoms, Atom_sp PaAtomList )
-int Octree_O::dFinalCheck( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList )
+int Octree_O::dFinalCheck( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList, double dShellRadius )
 {
   int	i;
   Atom_sp PaAtom;
@@ -409,7 +409,7 @@ void Octree_O::DestroyOctant( OctNode_sp PonNode, int iStatus )
   
 }
 //static int Octree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, Atom_sp *PaAtomList )
-int Octree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList, size_t iMaxDepth )
+int Octree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList, double dShellRadius )
 {
   int	         	i, iPartialIn, iPartialOut, iIncluded, iExcluded, iNewAtoms;
   Atom_sp	        PaAtom;
@@ -427,8 +427,8 @@ int Octree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<A
 	 *	has been reached.
 	 */
 
-  if ( PonNode->iDepth == iMaxDepth ) 
-    return( dFinalCheck( PonNode, iAtoms, PaAtomList ) );
+  if ( PonNode->iDepth == this->_iMaxDepth ) 
+    return( dFinalCheck( PonNode, iAtoms, PaAtomList, dShellRadius ) );
   
 	/*
 	 *  At less than maximum depth. Evaluate whole box with respect 
@@ -438,12 +438,12 @@ int Octree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<A
 	 *	it will be divided into 8 and the parts evaluated.
 	 */
   
-  dHalfEdge = PdHalfEdges[PonNode->iDepth];
+  dHalfEdge = this->PdHalfEdges[PonNode->iDepth];
   vCenter = PonNode->vCorner;
   vCenter.getX() += dHalfEdge;
   vCenter.getY() += dHalfEdge;
   vCenter.getZ() += dHalfEdge;
-  dHalfDiagonal = PdHalfDiagonals[PonNode->iDepth];
+  dHalfDiagonal = this->PdHalfDiagonals[PonNode->iDepth];
   
 	/*
 	 *  Get memory for list of atoms overlapping this cube, which 
@@ -583,7 +583,7 @@ int Octree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<A
 	 */
 //	PonChildren = PonMakeChildren( &PonNode->vCorner, 
 //					PonNode->iDepth + 1, OCT_UNKNOWN );
-  PonMakeChildren(PonNode,PonNode->iDepth + 1, OCT_UNKNOWN );
+  PonMakeChildren(PonNode,PonNode->iDepth + 1, OCT_UNKNOWN, this->iNodeCount );
   
 	/*
 	 *  Recurse on sub-boxes, keeping track of their status.
@@ -592,7 +592,7 @@ int Octree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<A
   iExcluded = 0;
   for (i=0; i<8; i++) {
     switch (this->iBuildShellOctant( PonNode->PonChildren[i], 
-                                     iNewAtoms, PaNewAtoms, iMaxDepth ) ) {
+                                     iNewAtoms, PaNewAtoms, dShellRadius ) ) {
     case OCT_INCLUDED:
         iIncluded++;
         break;
@@ -647,8 +647,9 @@ int Octree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<A
 	/*
 	 *  Remaining case: some children included, others not.
 	 */
-  fVolume += iIncluded * dHalfEdge * dHalfEdge * dHalfEdge;
-  iTreeGridPoints += iIncluded * PiDensities[PonNode->iDepth+1]; 
+  this->fVolume += iIncluded * dHalfEdge * dHalfEdge * dHalfEdge;
+//  iTreeGridPoints += iIncluded * PiDensities[PonNode->iDepth+1]; 
+  this->iTreePoints += iIncluded * this->PiDensities[PonNode->iDepth+1]; 
   PonNode->iStatus = OCT_PARTIAL;
   return(OCT_PARTIAL);
 }
@@ -658,7 +659,7 @@ int Octree_O::iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<A
  *	the bottom nodes of the tree.
  */
 //static int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, Atom_sp *PaAtomList )
-int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList, size_t iMaxDepth )
+int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList)
 {
   int		         i, iIncluded, iExcluded; 
   Atom_sp		 PaAtom;
@@ -678,12 +679,12 @@ int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec
 	 *	Use center of box + half length of diagonal for test.
 	 */
   
-  dHalfEdge = PdHalfEdges[PonNode->iDepth];
+  dHalfEdge = this->PdHalfEdges[PonNode->iDepth];
   vCenter = PonNode->vCorner;
   vCenter.getX() += dHalfEdge;
   vCenter.getY() += dHalfEdge;
   vCenter.getZ() += dHalfEdge;
-  dCenterRadiusSq = PdHalfDiagonals[PonNode->iDepth];
+  dCenterRadiusSq = this->PdHalfDiagonals[PonNode->iDepth];
   dCenterRadiusSq += 3; /* TODO - arbitrary.. */
 	/* dCenterRadiusSq *= dCenterRadiusSq; */
   
@@ -739,8 +740,9 @@ int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec
 	 *	has been reached or if the density is adequate for 
 	 *	linear search.
 	 */
-  if ( PonNode->iDepth == iMaxDepth || ( iNewAtoms && iNewAtoms < 10 )) {
-    iTreeGridPoints += PiDensities[PonNode->iDepth]; 
+  if ( PonNode->iDepth == this->_iMaxDepth || ( iNewAtoms && iNewAtoms < 10 )) {
+//    iTreeGridPoints += PiDensities[PonNode->iDepth]; 
+    this->iTreePoints += this->PiDensities[PonNode->iDepth]; 
     PonNode->iStatus = OCT_INCLUDED;
     return(OCT_INCLUDED);
   }
@@ -748,7 +750,7 @@ int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec
 	/*
 	 *  Create sub-boxes for recursion.
 	 */
-  PonMakeChildren( PonNode, PonNode->iDepth + 1, OCT_UNKNOWN );
+  PonMakeChildren( PonNode, PonNode->iDepth + 1, OCT_UNKNOWN, this->iNodeCount );
   //PonNode->PonChildren = PonChildren;
   
 	/*
@@ -757,9 +759,8 @@ int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec
   iIncluded = 0;
   iExcluded = 0;
   for (i=0; i<8; i++) {
-    printf("%s:%d:%s Entered\n", __FILE__, __LINE__, __FUNCTION__ );
     switch (iBuildInteriorOctant( PonChildren[i], 
-                                  iNewAtoms, PaNewAtoms, iMaxDepth ) ) {
+                                  iNewAtoms, PaNewAtoms ) ) {
       
     case OCT_INCLUDED:
         iIncluded++;	/* for debug tracking */
@@ -799,7 +800,7 @@ int Octree_O::iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec
 SYMBOL_EXPORT_SC_(KeywordPkg,solvent);
 SYMBOL_EXPORT_SC_(ChemPkg,lookup_atom_properties_radius);
 //CL_DEFMETHOD Octree_sp Octree_O::octOctTreeCreate(Aggregate_sp uUnit, int iType, double dGridSpace, double dAddExtent, double dShellExtent,
-CL_DEFMETHOD Octree_sp Octree_O::octOctTreeCreate(Aggregate_sp uUnit, int iType, double dGridSpace, double dAddExtent, double dShellExtent,
+CL_DEFMETHOD void Octree_O::octOctTreeCreate(Aggregate_sp uUnit, int iType, double dGridSpace, double dAddExtent, double dShellExtent,
                                              int iIncludeSolvent, bool bVerbose )
 {
  // Octree_sp		  octTree;
@@ -811,7 +812,7 @@ CL_DEFMETHOD Octree_sp Octree_O::octOctTreeCreate(Aggregate_sp uUnit, int iType,
   Residue_sp		  rRes;
   size_t                   imd;
   int	          	i, j, iAtoms, iDefaultedRadius, iBuild;
-  double		dMaxRadius, dCharge;
+  double		dMaxRadius, dCharge, dShellRadius;
   double		dTx, dTy, dTz, dTmax, dTmp, volumePercentage;
 
   ASSERT(uUnit && uUnit.notnilp());
@@ -819,7 +820,7 @@ CL_DEFMETHOD Octree_sp Octree_O::octOctTreeCreate(Aggregate_sp uUnit, int iType,
 	/*
 	 *  Set globals.
 	 */
-  dGridSize = dGridSpace;
+//  dGridSize = dGridSpace;
   dShellRadius = dShellExtent;	/* shell: clearance beyond inner shell*/
 
 	/*
@@ -1025,14 +1026,14 @@ return(octTree);
 	 *	requested grid resolution by dividing longest edge in
 	 *	half until it is less than dGridSize.
 	 */
-  for (dTmp=dTmax, imd=0; dTmp>dGridSize; imd++, dTmp/=2.0);
+  for (dTmp=dTmax, imd=0; dTmp>this->dGridSize; imd++, dTmp/=2.0);
  // octTree->iMaxDepth = iMaxDepth;
   this->_iMaxDepth = imd;
 
 	/*  
 	 *  Scale box up to modulo grid size 
 	 */
-  for (dTmax=dGridSize, i=0; i<imd; i++, dTmax*=2.0);
+  for (dTmax=this->dGridSize, i=0; i<imd; i++, dTmax*=2.0);
 
 	/*
 	 *  Just for fun, calc the new max corner
@@ -1045,20 +1046,20 @@ return(octTree);
 	 *  Set up arrays (indexed by depth) of edge size & half-diagonals 
 	 *	to save recalculation
 	 */
-  PdHalfEdges.resize(imd+1,0.0); // MALLOC( PdHalfEdges, double *, (iMaxDepth+1) * sizeof(double) );
+//  PdHalfEdges.resize(imd+1,0.0); // MALLOC( PdHalfEdges, double *, (iMaxDepth+1) * sizeof(double) );
 //  octTree->PdHalfEdges = PdHalfEdges;
-  this->PdHalfEdges = PdHalfEdges;
-  PdHalfDiagonals.resize(imd+1,0.0); // MALLOC( PdHalfDiagonals, double *, (iMaxDepth+1) * sizeof(double) );
+  this->PdHalfEdges.resize(imd+1,0.0);
+//  PdHalfDiagonals.resize(imd+1,0.0); // MALLOC( PdHalfDiagonals, double *, (iMaxDepth+1) * sizeof(double) );
 //  octTree->PdHalfDiagonals = PdHalfDiagonals;
-  this->PdHalfDiagonals = PdHalfDiagonals;
+  this->PdHalfDiagonals.resize(imd+1,0.0);
 
   for (dTmp=dTmax/2.0, i=0; i<=imd; dTmp/=2.0, i++) {
-    PdHalfEdges[i] = dTmp;
+    this->PdHalfEdges[i] = dTmp;
 		/* diagonal = sqrt( 3 * side^2 ) */
-    PdHalfDiagonals[i] = sqrt( 3.0 * (dTmp * dTmp) );
+    this->PdHalfDiagonals[i] = sqrt( 3.0 * (dTmp * dTmp) );
     if(bVerbose){
-      BFORMAT_T(BF("PdHalfEdges:        %5.2f\n") % PdHalfEdges[i] );
-      BFORMAT_T(BF("PdHalfDiagonals:     %5.2f Angstrom.\n") % PdHalfDiagonals[i] );
+      BFORMAT_T(BF("PdHalfEdges:        %5.2f\n") % this->PdHalfEdges[i] );
+      BFORMAT_T(BF("PdHalfDiagonals:     %5.2f Angstrom.\n") % this->PdHalfDiagonals[i] );
     }
 
   }
@@ -1067,16 +1068,16 @@ return(octTree);
 	 *  Set up array (indexed by depth) of points per box, used
 	 *	for rejuggling charge array when splitting boxes.
 	 */
-  PiDensities.resize(imd+1,0.0); // MALLOC( PiDensities, int *, (iMaxDepth+1) * sizeof(int) );
+ // PiDensities.resize(imd+1,0.0); // MALLOC( PiDensities, int *, (iMaxDepth+1) * sizeof(int) );
 //  octTree->PiDensities = PiDensities;
-  this->PiDensities = PiDensities;
+  this->PiDensities.resize(imd+1,0.0);
   for (i=imd, j=1; i>-1; i--, j*=8)
-    PiDensities[i] = j;
+     this->PiDensities[i] = j;
   
   if (bVerbose) {
     BFORMAT_T(BF("   sized:\t\t\t      %5.2f %5.2f %5.2f\n") % vMaxCorner.getX() % vMaxCorner.getY() % vMaxCorner.getZ());
     BFORMAT_T(BF("   edge:        %5.2f\n") % dTmax );
-    BFORMAT_T(BF("Resolution:     %5.2f Angstrom.\n") % dGridSize );
+    BFORMAT_T(BF("Resolution:     %5.2f Angstrom.\n") % this->dGridSize );
     BFORMAT_T(BF("Tree depth: %d\n") % imd);
   }
 	/*
@@ -1102,18 +1103,18 @@ return(octTree);
 	/*
 	 *  Build octree recursively.
 	 */
-  iTreeGridPoints = 0;
-  fVolume = 0.0;
-  iNodeCount = 0;
+//  iTreeGridPoints = 0;
+  this->fVolume = 0.0;
+  this->iNodeCount = 0;
 //  time_start = time((time_t *) 0);
 
   switch ( iType ) {
   case OCT_SHELL:
-      iBuild = iBuildShellOctant( this->onHead, iAtoms, vaAtoms, imd ); //PaAtoms );
+      iBuild = iBuildShellOctant( this->onHead, iAtoms, vaAtoms, dShellRadius ); //PaAtoms );
       break;
   case OCT_INTERIOR_SOLUTE:
   case OCT_INTERIOR_SOLVENT:
-      iBuild = iBuildInteriorOctant( this->onHead, iAtoms, vaAtoms, imd ); //PaAtoms );
+      iBuild = iBuildInteriorOctant( this->onHead, iAtoms, vaAtoms ); //PaAtoms );
       break;
   default:
       SIMPLE_ERROR(BF("bad switch\n"));
@@ -1121,13 +1122,13 @@ return(octTree);
 //      exit(1);
   }
 //  octTree->iTreePoints = iTreeGridPoints;	/* global */
-  this->iTreePoints = iTreeGridPoints;	/* global */
+//  this->iTreePoints = iTreeGridPoints;	/* global */
 
 //  printf( "grid build: %ld sec\n", 
 //        time((time_t *)0) - time_start );
   if (bVerbose) {
-   volumePercentage = 100 * fVolume / ( dTmax * dTmax * dTmax );
-    BFORMAT_T(BF( "Volume = %5.2f of box, grid points %d\n") % volumePercentage % iTreeGridPoints );
+   volumePercentage = 100 * this->fVolume / ( dTmax * dTmax * dTmax );
+   BFORMAT_T(BF( "Volume = %5.2f of box, grid points %d\n") % volumePercentage % this->iTreePoints ); //iTreeGridPoints );
   }
 #ifdef OCTDEBUG
   printf(stderr, "depth  r_inc   r_inex  r_out  multin  multout \n");
@@ -1150,8 +1151,8 @@ return(octTree);
   for (i=0; i<iAtoms; i++)
     vaAtoms[i]->dAtomTemp -= dAddExtent; //AtomTempDoubleIncrement( *PaAtoms, -dAddExtent );
 
-  return(this->asSmartPtr());
-
+  //return(this->asSmartPtr());
+  return;
 }
 
 /*************************************************************************
@@ -1174,7 +1175,7 @@ BuildShellOctant: Build octree for shell around a list of atoms.
 /*************************************************************************
  *************************************************************************/
 
-void Octree_O::OctTreeDestroy( Octree_sp PoctTree )
+void Octree_O::OctTreeDestroy()// Octree_sp PoctTree )
 {
 	/*
 	 *  Free top-level things.
@@ -1193,11 +1194,12 @@ void Octree_O::OctTreeDestroy( Octree_sp PoctTree )
 	/*
 	 *  Set global and recursively delete the tree.
 	 */
-  size_t imd = PoctTree->_iMaxDepth;
+  //size_t imd = PoctTree->_iMaxDepth;
   //DestroyOctant( PoctTree->onHead, OCT_UNKNOWN );
 	//FREE( *PoctTree );
 	//*PoctTree = NULL;
-  PoctTree = _Nil<core::T_O>();
+  this->asSmartPtr()  = _Nil<core::T_O>();
+//  PoctTree = _Nil<core::T_O>();
   return;
 }
 
@@ -1207,10 +1209,10 @@ void Octree_O::OctTreeDestroy( Octree_sp PoctTree )
  *************************************************************************/
 
 //static void Octree_O::OctNodeInitCharges( OctNode_sp PonNode )
-void Octree_O::OctNodeInitCharges( OctNode_sp PonNode, size_t iMaxDepth)
+void Octree_O::OctNodeInitCharges( OctNode_sp PonNode, int iDistanceCharge)
 {
   int	i, j, k, l, pfccount;
-  int 	ct = iMaxDepth - PonNode->iDepth + 1;
+  int 	ct = this->_iMaxDepth - PonNode->iDepth + 1;
   int	iCompCharge;
   Vector3	vPoint;
   Atom_sp	PaAtom;
@@ -1218,7 +1220,7 @@ void Octree_O::OctNodeInitCharges( OctNode_sp PonNode, size_t iMaxDepth)
   
   if ( PonNode->iStatus == OCT_PARTIAL ) {
     for (i=0; i<8; i++)
-      this->OctNodeInitCharges( PonNode->PonChildren[i], iMaxDepth);
+      this->OctNodeInitCharges( PonNode->PonChildren[i], iDistanceCharge);
     return;
   }
 
@@ -1237,18 +1239,18 @@ void Octree_O::OctNodeInitCharges( OctNode_sp PonNode, size_t iMaxDepth)
   vPoint.getX() = PonNode->vCorner.getX();
 
   pfccount = 0;
-  for (i=0; i<ct; i++, vPoint.getX()+=dGridSize) {
+  for (i=0; i<ct; i++, vPoint.getX()+=this->dGridSize) {
     vPoint.getY() = PonNode->vCorner.getY();
-    for (j=0; j<ct; j++, vPoint.getY()+=dGridSize) {
+    for (j=0; j<ct; j++, vPoint.getY()+=this->dGridSize) {
       vPoint.getZ() = PonNode->vCorner.getZ();
-      for (k=0; k<ct; k++, vPoint.getZ()+=dGridSize) {
+      for (k=0; k<ct; k++, vPoint.getZ()+=this->dGridSize) {
 			/*
 			 *  Got point: loop over atoms, accumulating charge.
 			 */
-        PfCharges[pfccount] = 0.0;
+        this->_PfCharges[pfccount] = 0.0;
         iCompCharge = 1;
-        for (l=0; l<iChargeAtoms; l++) {
-        PaAtom = PaChargeAtoms[l];
+        for (l=0; l< this->vaAtoms.size(); l++){ //iChargeAtoms; l++) {
+          PaAtom = this->vaAtoms[l] ;//PaChargeAtoms[l];
           double 	dX, dY, dZ;
           
 				//dX = vPoint.getX() - vAtomPosition(*PaAtom).getX();
@@ -1263,7 +1265,7 @@ void Octree_O::OctNodeInitCharges( OctNode_sp PonNode, size_t iMaxDepth)
           d = dX + dY + dZ;
           if ( iDistanceCharge )
             d = sqrt(d);
-          PfCharges[pfccount] += PaAtom->charge / d;
+          this->_PfCharges[pfccount] += PaAtom->charge / d;
 				//if ( d < dAtomTemp(PaAtom) )
           if ( d < PaAtom->dAtomTemp )
             iCompCharge = 0;
@@ -1273,12 +1275,12 @@ void Octree_O::OctNodeInitCharges( OctNode_sp PonNode, size_t iMaxDepth)
 				 *  Keep track of max, min charges and 
 				 *	their locations.
 				 */
-          if ( PfCharges[pfccount] > fMaxCharge ) {
-            fMaxCharge = PfCharges[pfccount];
-            vMaxCharge = vPoint;
-          } else if ( PfCharges[pfccount] < fMinCharge ) {
-            fMinCharge = PfCharges[pfccount];
-            vMinCharge = vPoint;
+          if ( this->_PfCharges[pfccount] > this->fMaxCharge ) {
+            this->fMaxCharge = this->_PfCharges[pfccount];
+            this->vMaxCharge = vPoint;
+          } else if ( this->_PfCharges[pfccount] < this->fMinCharge ) {
+            this->fMinCharge = this->_PfCharges[pfccount];
+            this->vMinCharge = vPoint;
           }
         }
         pfccount++;
@@ -1286,8 +1288,8 @@ void Octree_O::OctNodeInitCharges( OctNode_sp PonNode, size_t iMaxDepth)
     }
   }
 
-  for (l=0; l<PfCharges.size(); l++) {
-    PonNode->_PfCharges.push_back(PfCharges[l]);
+  for (l=0; l<this->_PfCharges.size(); l++) {
+    PonNode->_PfCharges.push_back(this->_PfCharges[l]);
   }
 
   
@@ -1295,18 +1297,18 @@ void Octree_O::OctNodeInitCharges( OctNode_sp PonNode, size_t iMaxDepth)
 }
 //CL_DEFMETHOD void Octree_O::OctTreeInitCharges( Octree_sp octTree, int iAtomOption, int iDielectric, double dCutDist,
 //                         Vector3& vMin, Vector3& vMax )
-CL_DEFMETHOD core::T_mv Octree_O::OctTreeInitCharges( Octree_sp octTree, int iAtomOption, int iDielectric, double dCutDist)
+CL_DEFMETHOD core::T_mv Octree_O::OctTreeInitCharges( /*Octree_sp octTree,*/ int iAtomOption, int iDielectric, double dCutDist)
 {
-  int	i;
+  int	i, iDistanceCharge, iChargeAtoms;
   Atom_sp	PaAtom;
   
-  if ( octTree->iType != OCT_SHELL ) {
+  if ( this->iType != OCT_SHELL ) {
     SIMPLE_ERROR(BF("InitCharges: wrong tree type\n"));
 //    printf(( "InitCharges: wrong tree type\n" ));
 //    exit(1);
   }
 
-  if ( !octTree->iTreePoints ) {
+  if ( !this->iTreePoints ) {
     SIMPLE_ERROR(BF("InitCharges: no grid (?)\n"));
 //    printf(( "InitCharges: no grid (?)\n" ));
 //    exit(1);
@@ -1319,23 +1321,21 @@ CL_DEFMETHOD core::T_mv Octree_O::OctTreeInitCharges( Octree_sp octTree, int iAt
 	 *  Get the memory for the charges and note the dielectric.
 	 */
   
-  PfCharges.resize(octTree->iTreePoints,0.0); // MALLOC( PfCharges, float *, octTree->iTreePoints * sizeof(float) );
-  octTree->_PfCharges = PfCharges;
-  octTree->iDielectric = iDielectric;
+  this->_PfCharges.resize(this->iTreePoints,0.0); // MALLOC( PfCharges, float *, octTree->iTreePoints * sizeof(float) );
+  this->iDielectric = iDielectric;
 
 	/*
 	 *  Set up globals for node descent.
 	 */
   if ( iAtomOption == AT_OCTREE ) {
-    iChargeAtoms = octTree->vaAtoms.size(); //iVarArrayElementCount( octTree->vaAtoms );
-    PaChargeAtoms = octTree->vaAtoms; //PVAI( octTree->vaAtoms, ATOM, 0 );
+    iChargeAtoms = this->vaAtoms.size(); //iVarArrayElementCount( octTree->vaAtoms );
+    //PaChargeAtoms = this->vaAtoms; //PVAI( octTree->vaAtoms, ATOM, 0 );
   } else
     SIMPLE_ERROR(BF("iAtomOption != AT_OCTREE"));
     //exit(1);
-  fMaxCharge = -FLT_MAX;
-  fMinCharge = FLT_MAX;
-  size_t iMaxDepth = octTree->_iMaxDepth;
-  dGridSize = octTree->dGridSize;
+  this->fMaxCharge = -FLT_MAX;
+  this->fMinCharge = FLT_MAX;
+  //dGridSize = octTree->dGridSize;
 
   
   if ( iDielectric == DIEL_R2 ) {
@@ -1350,13 +1350,13 @@ CL_DEFMETHOD core::T_mv Octree_O::OctTreeInitCharges( Octree_sp octTree, int iAt
 		//PaAtom = PVAI( octTree->vaAtoms, ATOM, 0 );
     for (i=0; i<iChargeAtoms; i++ ){ //, PaAtom++) {
 /* TODO - chargeatoms not necc whole set */
-      octTree->vaAtoms[i]->dAtomTemp += dCutDist; //AtomTempDoubleIncrement( *PaAtom, dCutDist );
-      octTree->vaAtoms[i]->dAtomTemp *= octTree->vaAtoms[i]->dAtomTemp; //	AtomTempDoubleSquare( *PaAtom );
+      this->vaAtoms[i]->dAtomTemp += dCutDist; //AtomTempDoubleIncrement( *PaAtom, dCutDist );
+      this->vaAtoms[i]->dAtomTemp *= this->vaAtoms[i]->dAtomTemp; //	AtomTempDoubleSquare( *PaAtom );
     }
   } else {
 		//PaAtom = PVAI( octTree->vaAtoms, ATOM, 0 );
     for (i=0; i<iChargeAtoms; i++ ){ //, PaAtom++)
-      octTree->vaAtoms[i]->dAtomTemp += dCutDist; // AtomTempDoubleIncrement( *PaAtom, dCutDist );
+      this->vaAtoms[i]->dAtomTemp += dCutDist; // AtomTempDoubleIncrement( *PaAtom, dCutDist );
     }
   }
 
@@ -1364,7 +1364,7 @@ CL_DEFMETHOD core::T_mv Octree_O::OctTreeInitCharges( Octree_sp octTree, int iAt
 	/*
 	 *  Descend the octree.
 	 */
-  octTree->OctNodeInitCharges( octTree->onHead, iMaxDepth);
+  this->OctNodeInitCharges( this->onHead, iDistanceCharge);
 // vMin = vMinCharge;
 // vMax = vMaxCharge;
 
@@ -1374,16 +1374,16 @@ CL_DEFMETHOD core::T_mv Octree_O::OctTreeInitCharges( Octree_sp octTree, int iAt
   if ( iDielectric == DIEL_R2 ) { 
 		//PaAtom = PVaAI( octTree->vaAtoms, ATOM, 0 );
     for (i=0; i<iChargeAtoms; i++ ){ //, PaAtom++) {
-      octTree->vaAtoms[i]->dAtomTemp = sqrt(octTree->vaAtoms[i]->dAtomTemp); //AtomTempDoubleSquareRoot( *PaAtom );
-      octTree->vaAtoms[i]->dAtomTemp += -dCutDist; //AtomTempDoubleIncrement( *PaAtom, -dCutDist );
+      this->vaAtoms[i]->dAtomTemp = sqrt(this->vaAtoms[i]->dAtomTemp); //AtomTempDoubleSquareRoot( *PaAtom );
+      this->vaAtoms[i]->dAtomTemp += -dCutDist; //AtomTempDoubleIncrement( *PaAtom, -dCutDist );
     }
   } else {
 		//PaAtom = PVAI( octTree->vaAtoms, ATOM, 0 );
     for (i=0; i<iChargeAtoms; i++) //, PaAtom++)
-      octTree->vaAtoms[i]->dAtomTemp += -dCutDist; //AtomTempDoubleIncrement( *PaAtom, -dCutDist );
+      this->vaAtoms[i]->dAtomTemp += -dCutDist; //AtomTempDoubleIncrement( *PaAtom, -dCutDist );
   }
   printf( "charges: %ld sec\n", time((time_t *) 0) - time_start);
-  return Values(geom::OVector3_O::create(vMinCharge),geom::OVector3_O::create(vMaxCharge));
+  return Values(geom::OVector3_O::create(this->vMinCharge),geom::OVector3_O::create(this->vMaxCharge));
 }
 
 
@@ -1391,15 +1391,14 @@ CL_DEFMETHOD core::T_mv Octree_O::OctTreeInitCharges( Octree_sp octTree, int iAt
  *************************************************************************/
 
 //static void Octree_O::OctNodePrintGrid( OctNode_sp *PonNode )
-CL_DEFMETHOD void Octree_O::OctNodePrintGrid( OctNode_sp PonNode, size_t iMaxDepth )
+CL_DEFMETHOD void Octree_O::OctNodePrintGrid( OctNode_sp PonNode, int iColor)
 {
   Vector3	vPoint;
   int	i, j, k, ct, ccharge;
   float	PfCharge;
-  iNodeCount++;
   if ( PonNode->iStatus == OCT_PARTIAL ) {
     for (i=0; i<8; i++) 
-      this->OctNodePrintGrid( PonNode->PonChildren[i], iMaxDepth );
+      this->OctNodePrintGrid( PonNode->PonChildren[i], iColor );
     return;
   }
   if ( PonNode->iStatus == OCT_EXCLUDED )
@@ -1410,20 +1409,20 @@ CL_DEFMETHOD void Octree_O::OctNodePrintGrid( OctNode_sp PonNode, size_t iMaxDep
 	 */
 
   ccharge = 0;
-  ct = iMaxDepth - PonNode->iDepth + 1;
+  ct = this->_iMaxDepth - PonNode->iDepth + 1;
   vPoint.getX() = PonNode->vCorner.getX();
-  for (i=0; i<ct; i++, vPoint.getX()+=dGridSize) {
+  for (i=0; i<ct; i++, vPoint.getX()+=this->dGridSize) {
     vPoint.getY() = PonNode->vCorner.getY();
-    for (j=0; j<ct; j++, vPoint.getY()+=dGridSize) {
+    for (j=0; j<ct; j++, vPoint.getY()+=this->dGridSize) {
       vPoint.getZ() = PonNode->vCorner.getZ();
-      for (k=0; k<ct; k++, vPoint.getZ()+=dGridSize) {
+      for (k=0; k<ct; k++, vPoint.getZ()+=this->dGridSize) {
         PfCharge = PonNode->_PfCharges[ccharge];
 //        switch ( iColorMethod ) {
 //        case COLOR_RANGE:
 //            fprintf(fChargeFile, ".color %d\n",
 //                   (int)floor( 5 + 60 *
-//                               (PfCharge-fMinCharge) / 
-//                               (fMaxCharge-fMinCharge) ) );
+//                               (PfCharge-this->fMinCharge) / 
+//                               (this->fMaxCharge-this->fMinCharge) ) );
 //            fprintf(fChargeFile, ".dot %f %f %f\n",
 //                   vPoint.getX(), vPoint.getY(), vPoint.getZ());
 //            break;
@@ -1455,12 +1454,12 @@ CL_DEFMETHOD void Octree_O::OctNodePrintGrid( OctNode_sp PonNode, size_t iMaxDep
 //        default:
 //            fprintf(fChargeFile, ".color white\n");
 //        }
-        switch ( iColorMethod ) {
+        switch ( iColor ) {//switch ( iColorMethod ) {
         case COLOR_RANGE:
             BFORMAT_T(BF(".color %d\n") % 
                       (int)floor( 5 + 60 *
-                                  (PfCharge-fMinCharge) / 
-                                  (fMaxCharge-fMinCharge) ) );
+                                  (PfCharge-this->fMinCharge) / 
+                                  (this->fMaxCharge-this->fMinCharge) ) );
             BFORMAT_T(BF(".dot %f %f %f\n") % 
                       vPoint.getX() % vPoint.getY() % vPoint.getZ());
             break;
@@ -1475,7 +1474,7 @@ CL_DEFMETHOD void Octree_O::OctNodePrintGrid( OctNode_sp PonNode, size_t iMaxDep
                       vPoint.getX() % vPoint.getY() % vPoint.getZ());
             break;
         case COLOR_DEPTH:
-            if ( PonNode->iDepth == iMaxDepth ){
+            if ( PonNode->iDepth == this->_iMaxDepth ){
               BFORMAT_T(BF(".color white\n"));
             }else if ( PonNode->iDepth % 2 ){
               BFORMAT_T(BF(".color red\n"));
@@ -1543,7 +1542,7 @@ CL_DEFMETHOD void Octree_O::OctNodePrintGrid( OctNode_sp PonNode, size_t iMaxDep
 static int	boxct[8];
 
 //static void Octree_O::SplitIncludedNode( OctNode_sp PonNode )
-void Octree_O::SplitIncludedNode( OctNode_sp PonNode, size_t iMaxDepth )
+void Octree_O::SplitIncludedNode( OctNode_sp PonNode)
 {
   int		          i, j, k, nchild, ct, ct2, ccharge;
   gctools::Vec0<float>    PfTmpCharges;
@@ -1561,7 +1560,7 @@ void Octree_O::SplitIncludedNode( OctNode_sp PonNode, size_t iMaxDepth )
 	/*
 	 *  Subdivide this node: set up children array
 	 */
-  PonMakeChildren(PonNode, PonNode->iDepth + 1, OCT_INCLUDED );
+    PonMakeChildren(PonNode, PonNode->iDepth + 1, OCT_INCLUDED, this->iNodeCount );
   
 	/*
 	 *  copy the parent's charges to a temp array
@@ -1582,7 +1581,7 @@ void Octree_O::SplitIncludedNode( OctNode_sp PonNode, size_t iMaxDepth )
 	 */
   for (i=0; i<8; i++) {
     for (j=0; j<PonNode->_PfCharges.size(); j++){
-      PonNode->PonChildren[i]->_PfCharges.push_back(PonNode->_PfCharges[j] + i * PiDensities[PonNode->iDepth+1]);
+      PonNode->PonChildren[i]->_PfCharges.push_back(PonNode->_PfCharges[j] + i * this->PiDensities[PonNode->iDepth+1]);
     }
   }
 
@@ -1622,7 +1621,7 @@ void Octree_O::SplitIncludedNode( OctNode_sp PonNode, size_t iMaxDepth )
 	/*
 	 *  total points in parent node
 	 */
-  ct = iMaxDepth - PonNode->iDepth + 1;
+  ct = this->_iMaxDepth - PonNode->iDepth + 1;
   ct2 = ct / 2;
   
 	/*
@@ -1655,7 +1654,7 @@ void Octree_O::SplitIncludedNode( OctNode_sp PonNode, size_t iMaxDepth )
 	//FREE( PfTmpCharges );
 }
 //static int Octree_O::OctNodeDeleteSphere( OctNode_sp PonNode )
-int Octree_O::OctNodeDeleteSphere( OctNode_sp PonNode, size_t iMaxDepth )
+int Octree_O::OctNodeDeleteSphere( OctNode_sp PonNode,  double dDeleteRadius )
 {
   int		i, iIncluded, iExcluded;
   double	d, dHalfEdge, dHalfDiagonal;
@@ -1671,8 +1670,8 @@ int Octree_O::OctNodeDeleteSphere( OctNode_sp PonNode, size_t iMaxDepth )
 	/*
 	 *  If resolution reached, check corner only.
 	 */
-  if ( PonNode->iDepth == iMaxDepth ) {
-    d = dDistance( PonNode->vCorner, vNewPoint );
+  if ( PonNode->iDepth == this->_iMaxDepth ) {
+    d = dDistance( PonNode->vCorner, this->vNewPoint );
     if ( d < dDeleteRadius ) {
 #ifdef OCTDEBUG
       printf(subtractions, ".dot %f %f %f\n", 
@@ -1687,13 +1686,13 @@ int Octree_O::OctNodeDeleteSphere( OctNode_sp PonNode, size_t iMaxDepth )
 	/*
 	 *  consider whole box from center
 	 */
-  dHalfEdge = PdHalfEdges[PonNode->iDepth];
+  dHalfEdge = this->PdHalfEdges[PonNode->iDepth];
   vCenter = PonNode->vCorner;
   vCenter.getX() += dHalfEdge;
   vCenter.getY() += dHalfEdge;
   vCenter.getZ() += dHalfEdge;
-  d = dDistance( vCenter, vNewPoint );
-  dHalfDiagonal = PdHalfDiagonals[PonNode->iDepth];
+  d = dDistance( vCenter, this->vNewPoint );
+  dHalfDiagonal = this->PdHalfDiagonals[PonNode->iDepth];
 
 	/*
 	 *  if box completely outside sphere, leave it alone.
@@ -1707,7 +1706,7 @@ int Octree_O::OctNodeDeleteSphere( OctNode_sp PonNode, size_t iMaxDepth )
   if ( d + dHalfDiagonal < dDeleteRadius ) {
 #ifdef SUB_DBG
     XYZ	point;
-    int     j, k, ct = iMaxDepth - oct->depth + 1;
+    int     j, k, ct = this->_iMaxDepth - oct->depth + 1;
     
     point.X = corner->X;
     for (i=0; i<ct; i++) {
@@ -1717,11 +1716,11 @@ int Octree_O::OctNodeDeleteSphere( OctNode_sp PonNode, size_t iMaxDepth )
         for (k=0; k<ct; k++) {
           printf(subtractions, ".dot %f %f %f\n",
                  point.X, point.Y, point.Z);
-          point.Z += dGridSize;
+          point.Z += this->dGridSize;
         }
-        point.Y += dGridSize;
+        point.Y += this->dGridSize;
       }
-      point.X += dGridSize;
+      point.X += this->dGridSize;
     }
 #endif
     //DestroyOctant( PonNode, OCT_EXCLUDED );
@@ -1733,7 +1732,7 @@ int Octree_O::OctNodeDeleteSphere( OctNode_sp PonNode, size_t iMaxDepth )
 	 */
   
   if ( PonNode->iStatus == OCT_INCLUDED )
-    SplitIncludedNode( PonNode, iMaxDepth );
+    SplitIncludedNode( PonNode);
   
 	/*
 	 *  Evaluate children.
@@ -1743,7 +1742,7 @@ int Octree_O::OctNodeDeleteSphere( OctNode_sp PonNode, size_t iMaxDepth )
   iExcluded = 0;
   for (i=0; i<8; i++) {
     PonChildren[i] = PonNode->PonChildren[i];
-    switch ( OctNodeDeleteSphere(PonChildren[i], iMaxDepth ) ) {
+    switch ( OctNodeDeleteSphere(PonChildren[i], dDeleteRadius ) ) {
     case OCT_INCLUDED:
         iIncluded++;	/* for debug tracking */
         break;
@@ -1778,24 +1777,23 @@ int Octree_O::OctNodeDeleteSphere( OctNode_sp PonNode, size_t iMaxDepth )
   PonNode->iStatus = OCT_PARTIAL;
   return(OCT_PARTIAL);
 }
-CL_DEFMETHOD void Octree_O::OctTreeDeleteSphere( Octree_sp octTree, Vector3 vPoint, double dRadius )
+CL_DEFMETHOD void Octree_O::OctTreeDeleteSphere( /*Octree_sp octTree,*/ Vector3 vPoint, double dRadius )
 {
   
 	/*
 	 *  Set up globals for this octree.
 	 */
   
-  size_t iMaxDepth = octTree->_iMaxDepth;
-  PiDensities = octTree->PiDensities;
-  vNewPoint = vPoint;
-  dDeleteRadius = dRadius;
-  dGridSize = octTree->dGridSize;
+//  PiDensities = octTree->PiDensities;
+  this->vNewPoint = vPoint;
+  double dDeleteRadius = dRadius;
+//  dGridSize = octTree->dGridSize;
   
 	/*
 	 *  Delete recursively.
 	 */
 
-  OctNodeDeleteSphere( octTree->onHead, iMaxDepth );
+  OctNodeDeleteSphere( this->onHead,  dDeleteRadius  );
   return;
 }
 
@@ -1805,7 +1803,7 @@ CL_DEFMETHOD void Octree_O::OctTreeDeleteSphere( Octree_sp octTree, Vector3 vPoi
  *************************************************************************/
 
 //static void Octree_O::OctNodeUpdateCharge( OctNode_sp *PonNode, int iParentAtoms, Atom_sp *PaParentAtoms )
-CL_DEFMETHOD void Octree_O::OctNodeUpdateCharge( OctNode_sp PonNode, int iParentAtoms, gctools::Vec0<Atom_sp> PaParentAtoms, size_t iMaxDepth )
+CL_DEFMETHOD void Octree_O::OctNodeUpdateCharge( OctNode_sp PonNode, int iParentAtoms, gctools::Vec0<Atom_sp> PaParentAtoms,  int iDistanceCharge )
 {
   Vector3         	vPoint;
   double          	d;
@@ -1824,7 +1822,7 @@ CL_DEFMETHOD void Octree_O::OctNodeUpdateCharge( OctNode_sp PonNode, int iParent
   if ( PonNode->iStatus == OCT_PARTIAL ) {
     for (i=0; i<8; i++)
       this->OctNodeUpdateCharge( PonNode->PonChildren[i],
-                                 PonNode->iAtoms, PonNode->PaAtomList, iMaxDepth );
+                                 PonNode->iAtoms, PonNode->PaAtomList, iDistanceCharge );
     return;
   }
 
@@ -1835,7 +1833,6 @@ CL_DEFMETHOD void Octree_O::OctNodeUpdateCharge( OctNode_sp PonNode, int iParent
   if ( PonNode->iStatus == OCT_EXCLUDED )
     return;
   
-    printf("%s:%d:%s Entered\n", __FILE__, __LINE__, __FUNCTION__ );
     
 	/*
 	 *  Included, do whole thing
@@ -1854,28 +1851,28 @@ CL_DEFMETHOD void Octree_O::OctNodeUpdateCharge( OctNode_sp PonNode, int iParent
     iAtoms = iParentAtoms;
   }
   
-  ct = iMaxDepth - PonNode->iDepth + 1;
+  ct = this->_iMaxDepth - PonNode->iDepth + 1;
   ccharge = 0;
   vPoint.getX() = PonNode->vCorner.getX();
-  for (i=0; i<ct; i++, vPoint.getX()+=dGridSize) {
+  for (i=0; i<ct; i++, vPoint.getX()+=this->dGridSize) {
     vPoint.getY() = PonNode->vCorner.getY();
-    for (j=0; j<ct; j++, vPoint.getY()+=dGridSize) {
+    for (j=0; j<ct; j++, vPoint.getY()+=this->dGridSize) {
       vPoint.getZ() = PonNode->vCorner.getZ();
-      for (k=0; k<ct; k++, vPoint.getZ()+=dGridSize) {
+      for (k=0; k<ct; k++, vPoint.getZ()+=this->dGridSize) {
         PfCharge = PonNode->_PfCharges[ccharge];
         double 	dX, dY, dZ;
         
-        dX = vNewPoint.getX() - vPoint.getX();
+        dX = this->vNewPoint.getX() - vPoint.getX();
         dX = dX * dX;
-        dY = vNewPoint.getY() - vPoint.getY();
+        dY = this->vNewPoint.getY() - vPoint.getY();
         dY = dY * dY;
-        dZ = vNewPoint.getZ() - vPoint.getZ();
+        dZ = this->vNewPoint.getZ() - vPoint.getZ();
         dZ = dZ * dZ;
         d = dX + dY + dZ;
         if ( iDistanceCharge )
           d = sqrt(d);
 
-        PfCharge += fNewCharge / d;
+        PfCharge += this->fNewCharge / d;
 			/*
 			 *  Look at neighboring atoms to make sure
 			 *	this point is valid for min/max check.
@@ -1900,12 +1897,12 @@ CL_DEFMETHOD void Octree_O::OctNodeUpdateCharge( OctNode_sp PonNode, int iParent
           }
         }
         if ( iCompOk ) {
-          if (PfCharge > fMaxCharge ) {
-            fMaxCharge = PfCharge;
+          if (PfCharge > this->fMaxCharge ) {
+            this->fMaxCharge = PfCharge;
             vMaxCharge = vPoint;
-          } else if (PfCharge < fMinCharge ) {
-            fMinCharge = PfCharge;
-            vMinCharge = vPoint;
+          } else if (PfCharge < this->fMinCharge ) {
+            this->fMinCharge = PfCharge;
+            this->vMinCharge = vPoint;
           }
         } else {
 				/* HACK to ensure printgrid coloring ok */
@@ -1919,16 +1916,17 @@ CL_DEFMETHOD void Octree_O::OctNodeUpdateCharge( OctNode_sp PonNode, int iParent
 }
 //CL_DEFMETHOD void Octree_O::OctTreeUpdateCharge( Octree_sp octTree, Vector3 vNewPoint, float fCharge, double dCutDist,
 //                          Vector3 vMax, Vector3 vMin )
-CL_DEFMETHOD core::T_mv Octree_O::OctTreeUpdateCharge( Octree_sp octTree, Vector3 vNewPoint, float fCharge, double dCutDist)
+CL_DEFMETHOD core::T_mv Octree_O::OctTreeUpdateCharge( /*Octree_sp octTree,*/ Vector3 vNewPoint, float fCharge, double dCutDist)
 {
   Atom_sp	PaAtom;
-  int	i;
-  if ( octTree->iType != OCT_SHELL ) {
+  int	i, iDistanceCharge;
+  int iChargeAtoms = this->vaAtoms.size();
+  if ( this->iType != OCT_SHELL ) {
     SIMPLE_ERROR(BF("UpdateCharge: wrong tree type\n"));
 //    printf( "UpdateCharge: wrong tree type\n" );
 //    exit(1);
   }
-  if ( octTree->_PfCharges.size()==0 ) {//( !octTree->PfCharges ) {
+  if ( this->_PfCharges.size()==0 ) {//( !octTree->PfCharges ) {
     SIMPLE_ERROR(BF("UpdateCharge: charges not initted\n"));
 //    printf( "UpdateCharge: charges not initted\n" );
 //    exit(1);
@@ -1937,13 +1935,12 @@ CL_DEFMETHOD core::T_mv Octree_O::OctTreeUpdateCharge( Octree_sp octTree, Vector
 	/*
 	 *  Set up globals for octree.
 	 */
-//  vNewPoint = PvNewPoint;
-  fNewCharge = fCharge;
-  fMaxCharge = -FLT_MAX;
-  fMinCharge = FLT_MAX;
-  size_t iMaxDepth = octTree->_iMaxDepth;
-  dGridSize = octTree->dGridSize;
-  if ( octTree->iDielectric == DIEL_R2 )
+  this->vNewPoint = vNewPoint;
+  this->fNewCharge = fCharge;
+  this->fMaxCharge = -FLT_MAX;
+  this->fMinCharge = FLT_MAX;
+//  dGridSize = octTree->dGridSize;
+  if ( this->iDielectric == DIEL_R2 )
     iDistanceCharge = 0;
   else
     iDistanceCharge = 1;
@@ -1953,15 +1950,15 @@ CL_DEFMETHOD core::T_mv Octree_O::OctTreeUpdateCharge( Octree_sp octTree, Vector
 	 */
 	//PaAtom = PVAI( octTree->vaAtoms, ATOM, 0 );
   for (i=0; i<iChargeAtoms; i++){ // , PaAtom++) {
-    octTree->vaAtoms[i]->dAtomTemp += dCutDist; // AtomTempDoubleIncrement( *PaAtom, dCutDist );
-    octTree->vaAtoms[i]->dAtomTemp *= octTree->vaAtoms[i]->dAtomTemp; //AtomTempDoubleSquare( *PaAtom );
+    this->vaAtoms[i]->dAtomTemp += dCutDist; // AtomTempDoubleIncrement( *PaAtom, dCutDist );
+    this->vaAtoms[i]->dAtomTemp *= this->vaAtoms[i]->dAtomTemp; //AtomTempDoubleSquare( *PaAtom );
   }
   
 	/*
 	 *  Descend octree.
 	 */
-  octTree->OctNodeUpdateCharge( octTree->onHead, iChargeAtoms, 
-                                octTree->vaAtoms, iMaxDepth) ; //PVAI( octTree->vaAtoms, ATOM, 0 ) );
+  this->OctNodeUpdateCharge( this->onHead, iChargeAtoms, 
+                                this->vaAtoms, iDistanceCharge) ; //PVAI( octTree->vaAtoms, ATOM, 0 ) );
 //  vMin = vMinCharge;
 //  vMax = vMaxCharge;
 	/*
@@ -1969,10 +1966,10 @@ CL_DEFMETHOD core::T_mv Octree_O::OctTreeUpdateCharge( Octree_sp octTree, Vector
 	 */
 	//PaAtom = PVAI( octTree->vaAtoms, ATOM, 0 );
   for (i=0; i<iChargeAtoms; i++ ){ //, PaAtom++) {
-    octTree->vaAtoms[i]->dAtomTemp = sqrt(octTree->vaAtoms[i]->dAtomTemp); // AtomTempDoubleSquareRoot( *PaAtom );
-    octTree->vaAtoms[i]->dAtomTemp += -dCutDist; // AtomTempDoubleIncrement( *PaAtom, -dCutDist );
+    this->vaAtoms[i]->dAtomTemp = sqrt(this->vaAtoms[i]->dAtomTemp); // AtomTempDoubleSquareRoot( *PaAtom );
+    this->vaAtoms[i]->dAtomTemp += -dCutDist; // AtomTempDoubleIncrement( *PaAtom, -dCutDist );
   }
-    return Values(geom::OVector3_O::create(vMinCharge),geom::OVector3_O::create(vMaxCharge));
+    return Values(geom::OVector3_O::create(this->vMinCharge),geom::OVector3_O::create(this->vMaxCharge));
 //  return;
 }
 
@@ -2006,13 +2003,13 @@ int Octree_O::OctNodeCheckSolvent( OctNode_sp PonNode )
 	 *  See if newpoint is in minimally box-enclosing sphere
 	 */
   
-  dHalfEdge = PdHalfEdges[PonNode->iDepth];
+  dHalfEdge = this->PdHalfEdges[PonNode->iDepth];
   vCenter = PonNode->vCorner;
   vCenter.getX() += dHalfEdge;
   vCenter.getY() += dHalfEdge;
   vCenter.getZ() += dHalfEdge;
-  d = dDistance( vCenter, vNewPoint );
-  dHalfDiagonal = PdHalfDiagonals[PonNode->iDepth];
+  d = dDistance( vCenter, this->vNewPoint );
+  dHalfDiagonal = this->PdHalfDiagonals[PonNode->iDepth];
   
   if ( d > dHalfDiagonal ) {
     return(0);
@@ -2045,14 +2042,14 @@ VP0(("final? \n"));
 */
     for (i=0; i<PonNode->iAtoms; i++) {
       PaAtom = PonNode->PaAtomList[i];
-      d = dDistanceSq( vNewPoint,
+      d = dDistanceSq( this->vNewPoint,
                        PaAtom->getPosition() );
 /*
 VP0(("d= %f \n", d));
 */
       if ( d < dClosestDistance ) {
-        aClosestAtom = PaAtom;
-        dClosestDistance = d;
+        this->aClosestAtom = PaAtom;
+        this->dClosestDistance = d;
       }
     }
     return(1);
@@ -2070,10 +2067,10 @@ VP0(("d= %f \n", d));
 
 
 
-Residue_sp Octree_O::rOctTreeCheckSolvent( Octree_sp octTree, Vector3 vPoint )
+Residue_sp Octree_O::rOctTreeCheckSolvent( /*Octree_sp octTree,*/ Vector3 vPoint )
 {
   //Atom_sp	PaAtom;
-  if ( octTree->iType != OCT_INTERIOR_SOLVENT ) {
+  if ( this->iType != OCT_INTERIOR_SOLVENT ) {
     SIMPLE_ERROR(BF("CheckSolvent: wrong octree type\n"));
 //    printf( "CheckSolvent: wrong octree type\n" );
 //    exit(1);
@@ -2081,9 +2078,8 @@ Residue_sp Octree_O::rOctTreeCheckSolvent( Octree_sp octTree, Vector3 vPoint )
 	/*
 	 *  Set up globals for octree.
 	 */
-  vNewPoint = vPoint;
-  size_t iMaxDepth = octTree->_iMaxDepth;
-  dGridSize = octTree->dGridSize;
+  this->vNewPoint = vPoint;
+//  dGridSize = octTree->dGridSize;
   
 	/*
 	 *  Initialize closest atom for comparison.
@@ -2091,14 +2087,14 @@ Residue_sp Octree_O::rOctTreeCheckSolvent( Octree_sp octTree, Vector3 vPoint )
   
 	//PaAtom = PVAI( octTree->vaAtoms, ATOM, 0 ); 
   //PaAtom = octTree->vaAtoms[0]; 
-  aClosestAtom = octTree->vaAtoms[0]; //*PaAtom;
-  dClosestDistance = octTree->dDistanceSq( vNewPoint,
-                                  aClosestAtom->getPosition());
+  this->aClosestAtom = this->vaAtoms[0]; //*PaAtom;
+  this->dClosestDistance = this->dDistanceSq( this->vNewPoint,
+                                  this->aClosestAtom->getPosition());
   
 	/*
 	 *  Descend octree.
 	 */
-  if (!octTree->OctNodeCheckSolvent( octTree->onHead ) ) {
+  if (!this->OctNodeCheckSolvent( this->onHead ) ) {
     printf("Completely out of solvent bounding area\n");
 //		return(NULL);
     return(_Nil<core::T_O>());
@@ -2107,9 +2103,9 @@ Residue_sp Octree_O::rOctTreeCheckSolvent( Octree_sp octTree, Vector3 vPoint )
 	/*
 	 *  Check if closest atom overlaps at all.
 	 */
-  if ( dClosestDistance < 9.0 ) {	/* HACK - approx ion+wat */
-    vPoint = vNewPoint;
-    return gc::As<Residue_sp>(aClosestAtom->containedBy());
+  if ( this->dClosestDistance < 9.0 ) {	/* HACK - approx ion+wat */
+    vPoint = this->vNewPoint;
+    return gc::As<Residue_sp>(this->aClosestAtom->containedBy());
     //return gc::As_unsafe<Residue_sp>(aClosestAtom->containedBy());
     // return( (Residue_sp) cContainerWithin( aClosestAtom ) );
   }

@@ -167,3 +167,9 @@
   (:export
    #:tool-solvate-and-shell)
   )
+
+(defpackage #:leap.add-ions
+  (:use #:common-lisp)
+  (:export
+   #:add-ions)
+  )

@@ -186,7 +186,8 @@ Use eof-error-p and eof as in read."
                  (let ((part-hash-table (gethash unit-name result)))
                    (unless part-hash-table
                      (setf part-hash-table (make-hash-table :test #'equal)))
-                   (setf (gethash unit-part part-hash-table) body)))
+                   (setf (gethash unit-part part-hash-table) body)
+                   (setf (gethash unit-name result) part-hash-table)))
           else
             do (return-from read-entire-off-file result))))
 
@@ -276,15 +277,15 @@ Otherwise it's an Aggregate. Return the object."
 Return the hash-table."
   (declare (stream fin))
   (let ((index (read-off-lib-index fin))
-        (entry-parts (read-entire-off-file fin))
+        (entire-file (read-entire-off-file fin))
         (object-ht (make-hash-table)))
     (maphash (lambda (entry-name-string entry-parts)
-               (let ((entry-name (intern entry-name-string :keywrod)))
+               (let ((entry-name (intern entry-name-string :keyword)))
                  (multiple-value-bind (unit residue-connect residues)
                      (read-off-unit-with-name entry-parts entry-name)
                    (let ((object (translate-off-object entry-name unit residue-connect residues)))
                      (setf (gethash entry-name object-ht) object)))))
-             entry-parts)
+             entire-file)
     object-ht))
 
 (defun bug () (print "In bug"))

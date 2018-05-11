@@ -75,7 +75,17 @@ namespace chem {
   int                           _iMaxDepth;
   int                           iTreePoints;
   int                           iDielectric;
+  size_t                        iNodeCount;
+  float                         fVolume;
   double                        dGridSize;
+  float                 	fNewCharge;
+  float                         fMinCharge;
+  float                         fMaxCharge;
+  Vector3                       vMinCharge;
+  Vector3                       vMaxCharge;
+  Vector3                       vNewPoint;
+  Atom_sp                	aClosestAtom;
+  double                	dClosestDistance;
   gctools::Vec0<int>            PiDensities;
   gctools::Vec0<float>          _PfCharges;       /* float to save space */
   gctools::Vec0<double>         PdHalfEdges;
@@ -86,43 +96,43 @@ namespace chem {
   double dDistanceSq( Vector3 Pv1, Vector3 Pv2 );
   double dDistance( Vector3 Pv1, Vector3 Pv2 );
   //static void dumpNode( OctNode_sp PonNode );
-  void dumpNode( OctNode_sp PonNode, size_t iMaxDepth );
-  void dumpOctree( Octree_sp octTree );
+  void dumpNode( OctNode_sp PonNode);
+  void dumpOctree();
   //static OctNode_sp PonMakeChildren( Vector3& vCorner, int iDepth, int iStatus );
   //static int dFinalCheck( OctNode_sp PonNode, int iAtoms, Atom_sp PaAtomList );
   //static void DestroyOctant( OctNode_sp PonNode, int iStatus );
   //static int iBuildShellOctant( OctNode_sp PonNode, int iAtoms, Atom_sp *PaAtomList );
   //static int iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, Atom_sp *PaAtomList );
   //OctNode_sp PonMakeChildren( Vector3& vCorner, int iDepth, int iStatus );
-  void PonMakeChildren(OctNode_sp ponNode, int iDepth, int iStatus );
-  int dFinalCheck( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList );
+  void PonMakeChildren(OctNode_sp ponNode, int iDepth, int iStatus, size_t& iNodeCount );
+  int dFinalCheck( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList, double dShellRadius  );
   void DestroyOctant( OctNode_sp PonNode, int iStatus );
-  int iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList, size_t iMaxDepth );
-  int iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList, size_t iMaxDepth );
-  void OctTreeDestroy( Octree_sp PoctTree );
+  int iBuildShellOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList,  double dShellRadius );
+  int iBuildInteriorOctant( OctNode_sp PonNode, int iAtoms, gctools::Vec0<Atom_sp> PaAtomList );
+  void OctTreeDestroy();// Octree_sp PoctTree );
   //static void OctNodeInitCharges( OctNode_sp *PonNode );
   //static void OctNodePrintGrid( OctNode_sp *PonNode );
   //static void SplitIncludedNode( OctNode_sp PonNode );
   //static int OctNodeDeleteSphere( OctNode_sp PonNode );
   //static void OctNodeUpdateCharge( OctNode_sp *PonNode, int iParentAtoms, Atom_sp *PaParentAtoms );
   //static int OctNodeCheckSolvent( OctNode_sp PonNode );
-  void OctNodeInitCharges( OctNode_sp PonNode, size_t iMaxDepth);
-  void OctNodePrintGrid( OctNode_sp PonNode, size_t iMaxDepth );
-  void SplitIncludedNode( OctNode_sp PonNode, size_t iMaxDepth );
-  int OctNodeDeleteSphere( OctNode_sp PonNode, size_t iMaxDepth );
-  void OctNodeUpdateCharge( OctNode_sp PonNode, int iParentAtoms, gctools::Vec0<Atom_sp> PaParentAtoms, size_t iMaxDepth );
+  void OctNodeInitCharges( OctNode_sp PonNode, int iDistanceCharge);
+  void OctNodePrintGrid( OctNode_sp PonNode, int iColor );
+  void SplitIncludedNode( OctNode_sp PonNode );
+  int OctNodeDeleteSphere( OctNode_sp PonNode, double dDeleteRadius  );
+  void OctNodeUpdateCharge( OctNode_sp PonNode, int iParentAtoms, gctools::Vec0<Atom_sp> PaParentAtoms, int iDistanceCharge );
   int OctNodeCheckSolvent( OctNode_sp PonNode );
-  Octree_sp octOctTreeCreate(Aggregate_sp uUnit, int iType, double dGridSpace, 
+  void octOctTreeCreate(Aggregate_sp uUnit, int iType, double dGridSpace, 
 			double dAddExtent, double dShellExtent, int iIncludeSolvent, bool bVerbose);
-  core::T_mv OctTreeInitCharges(Octree_sp octTree, int iAtomOption, int iDielectric, 
+  core::T_mv OctTreeInitCharges(/*Octree_sp octTree,*/ int iAtomOption, int iDielectric, 
                            double dCutDist);	
   void OctTreeDescribe();	/* ( Octree_sp ) */
-  void OctTreeDeleteSphere(Octree_sp octTree, Vector3 vPoint, double dRadius);
-  core::T_mv OctTreeUpdateCharge(Octree_sp octTree, Vector3 vNewPoint, 
+  void OctTreeDeleteSphere(/*Octree_sp octTree, */ Vector3 vPoint, double dRadius);
+  core::T_mv OctTreeUpdateCharge(/*Octree_sp octTree,*/ Vector3 vNewPoint, 
                             float fCharge, double dCutDist);
-  Residue_sp rOctTreeCheckSolvent(Octree_sp octTree, Vector3 vPoint);
+  Residue_sp rOctTreeCheckSolvent(/*Octree_sp octTree,*/ Vector3 vPoint);
   
-  void OctTreePrintGrid(Octree_sp octTree, core::T_sp stream, int iColor);
+//  void OctTreePrintGrid(Octree_sp octTree, core::T_sp stream, int iColor);
 
   };
 

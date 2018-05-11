@@ -214,6 +214,8 @@ void    _defineAtomicInfoMapIfNotDefined()
   set_atomic_info(element_Th,"Th","Thorium",90,232.0381);
   set_atomic_info(element_Pa,"Pa","Protactinium",91,231.03588);
   set_atomic_info(element_U,"U","Uranium",92,238.02891);
+  set_atomic_info(element_Pu,"Pu","Plutonium",94,244.0);
+  set_atomic_info(element_Ra,"Ra","Radium",88,226.0);
   SET_VDW_RADIUS(element_H, 1.09);
   SET_VDW_RADIUS(element_D, 1.09);
   SET_VDW_RADIUS(element_T, 1.09);
@@ -319,6 +321,7 @@ void    _defineAtomicInfoMapIfNotDefined()
   SET_COVALENT_RADIUS(element_Th,2.06);
   SET_COVALENT_RADIUS(element_Pa,2.00);
   SET_COVALENT_RADIUS(element_U,1.96);
+  SET_COVALENT_RADIUS(element_Pu,1.87);
 
   hybridizationInfo.resize(((int)(hybridization_MAX)));
   hybridizationInfo[hybridization_undefined]._HybridizationEnum = hybridization_undefined;
