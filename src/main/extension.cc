@@ -70,6 +70,13 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace cando {
 
+CL_PRE_GC_STARTUP void cando_initialize_gc()
+{
+  printf("%s:%d In cando_initialize_gc() do something to initialize the GC\n", __FILE__, __LINE__ );
+}
+
+
+
 CL_INITIALIZER void cando_initializer()
 {
 //  printf("%s:%d In cando_initializer\n", __FILE__, __LINE__);
