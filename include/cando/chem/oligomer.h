@@ -64,8 +64,6 @@ namespace chem {
 
 SMART(CandoDatabase);
 SMART(Oligomer);
-SMART(Monomer);
-SMART(MultiMonomer);
 SMART(Coupling);
 SMART(SpecificContextSet);
 SMART(DirectionalCoupling);
@@ -73,6 +71,7 @@ SMART(RingCoupling);
 SMART(Atom);
 SMART(Residue);
 SMART(Molecule);
+SMART(Monomer);
 SMART(ObjectSet);
 SMART(CandoDatabase);
 SMART(Oligomer);
@@ -100,18 +99,11 @@ protected:
     core::Symbol_sp			_Name;
     gctools::Vec0<Monomer_sp>     	_Monomers;
     gctools::Vec0<Coupling_sp>		_Couplings;
-
+    Monomer_sp	_LastMonomerChanged;
 private:	// Do not archive
 		/*! When one of my MultiMonomers experiences a UserGroupChange
 		 * we will store it here for others to access.
 		 */
-    MultiMonomer_sp	_WeakLastMultiMonomerChanged;
-
-
-#ifdef	USEBOOSTPYTHON
-    boost::python::object			pythonObject;
-#endif
-
     void	sequenceOutMonomers( Monomer_sp sub );
     void	sequenceAllMonomers();
     string	stateAsString(uint state);
@@ -130,7 +122,7 @@ public:
 public:	// /////////////////////////////////////////////////////////////////
 
     bool	hasLastMultiMonomerChanged();
-    MultiMonomer_sp getLastMultiMonomerChanged();
+    Monomer_sp getLastMultiMonomerChanged();
 
     core::List_sp monomersAsList();
     core::List_sp couplingsAsList();

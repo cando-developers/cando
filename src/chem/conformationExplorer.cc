@@ -777,7 +777,7 @@ CL_DEFMETHOD     void	ConformationExplorer_O::superposeAllHeavyAtoms()
 	    yStage = y->getEntryStage(this->_StageName);
 	    core::T_sp xValue = xStage->getBinder()->gethash(this->_KeyName);
 	    core::T_sp yValue = yStage->getBinder()->gethash(this->_KeyName);
-	    if ( xValue.as<core::General_O>()->operator<(yValue) ) return true;
+	    if ( core::clasp_number_compare(xValue.as<core::Number_O>(),yValue.as<core::Number_O>())) return true;
 	    return false;
 	}
     };

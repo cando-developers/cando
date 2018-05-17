@@ -109,16 +109,16 @@ void	Oligomer_O::signalConnectivityChanged()
 #if 0
 void Oligomer_O::catchSignal(core::Symbol_sp signal, core::Model_sp source, core::List_sp data)
 {
-    MultiMonomer_sp		monomer;
+    Monomer_sp		monomer;
 //    this->core::Model_O::catchSignal(signal,source,data);
     IMPLEMENT_ME();
 #if 0
     switch ( signal )
     {
-	case MultiMonomer_contentsChanged:
-	    monomer = (source).as<MultiMonomer_O>();
+	case Monomer_contentsChanged:
+	    monomer = (source).as<Monomer_O>();
 	    this->checkForErrors();
-	    this->_WeakLastMultiMonomerChanged = monomer;
+	    this->_LastMonomerChanged = monomer;
 	    break;
     }
 #endif
@@ -128,14 +128,14 @@ void Oligomer_O::catchSignal(core::Symbol_sp signal, core::Model_sp source, core
 CL_LISPIFY_NAME("hasLastMultiMonomerChanged");
 CL_DEFMETHOD bool	Oligomer_O::hasLastMultiMonomerChanged()
 {_OF();
-    ASSERTNOTNULL(this->_WeakLastMultiMonomerChanged);
-    return this->_WeakLastMultiMonomerChanged.notnilp();
+    ASSERTNOTNULL(this->_LastMonomerChanged);
+    return this->_LastMonomerChanged.notnilp();
 }
 CL_LISPIFY_NAME("getLastMultiMonomerChanged");
-CL_DEFMETHOD MultiMonomer_sp Oligomer_O::getLastMultiMonomerChanged()
+CL_DEFMETHOD Monomer_sp Oligomer_O::getLastMultiMonomerChanged()
 {_OF();
-    ASSERTNOTNULL(this->_WeakLastMultiMonomerChanged);
-    return this->_WeakLastMultiMonomerChanged;
+    ASSERTNOTNULL(this->_LastMonomerChanged);
+    return this->_LastMonomerChanged;
 };
 
 
@@ -263,7 +263,7 @@ uint		idx;
     idx = this->_Monomers.size();
     monomer->setSequenceNumber(idx);
     this->_Monomers.push_back(monomer);
-//    monomer->connectListener(this->sharedThis<Oligomer_O>(),MultiMonomer_contentsChanged);
+//    monomer->connectListener(this->sharedThis<Oligomer_O>(),Monomer_contentsChanged);
     return idx;
 }
 
@@ -375,12 +375,12 @@ Monomer_sp	Oligomer_O::addMultiMonomerAsLeaf( Monomer_sp monFrom, core::Symbol_s
 						   core::Symbol_sp representedEntityNameSetName, geom::Vector2 pos )
 {
 DirectionalCoupling_sp 	coup;
-MultiMonomer_sp	monTo;
+Monomer_sp	monTo;
 
     coup = DirectionalCoupling_O::create();
     coup->setName(couplingName);
-    monTo = MultiMonomer_O::create();
-    monTo->setGroupName(representedEntityNameSetName);
+    monTo = Monomer_O::create();
+//    monTo->setGroupName(representedEntityNameSetName);
     coup->setOutMonomer(monTo);
     monTo->setInCoupling(coup);
     	// Now attach it
@@ -509,7 +509,7 @@ CL_DEFMETHOD DirectionalCoupling_sp	Oligomer_O::couple( Monomer_sp inMon, core::
   }
   core::Symbol_sp inMonPlugName = DirectionalCoupling_O::outPlugName(name);
   if ( inMon->hasCouplingWithPlugName(inMonPlugName) ) {
-    SIMPLE_ERROR(BF("The first monomer[%s] already has an out coupling with the name: %s") % inMon->getName() % name );
+    SIMPLE_ERROR(BF("The first monomer[%s] already has an out coupling with the name: %s") % inMon->monomerName() % name );
   }
   LOG(BF("in/out plug names: %s/%s") % _rep_(inMonPlugName) % _rep_(outMonPlugName));
   coupling = DirectionalCoupling_O::make(name,inMon,outMon);
@@ -612,12 +612,12 @@ int			residueNetCharge;
     gctools::Vec0<Monomer_sp>::iterator	mi;
     core::T_sp db = getCandoDatabase();
     for ( mi=this->_Monomers.begin(); mi!=this->_Monomers.end(); mi++ ) {
-      Constitution_sp constitution = core::eval::funcall(_sym_constitutionForNameOrPdb,db,(*mi)->getName());
+      Constitution_sp constitution = core::eval::funcall(_sym_constitutionForNameOrPdb,db,(*mi)->monomerName());
       Topology_sp topology = constitution->getTopologyForMonomerEnvironment(*mi);
       LOG(BF("topology: %s") % _rep_(topology));
       res = topology->build_residue();
       LOG(BF("res: %s") % _rep_(res));
-      constitution->makeResidueConsistentWithStereoisomerNamed(res,(*mi)->getName());
+      constitution->makeResidueConsistentWithStereoisomerNamed(res,(*mi)->monomerName());
       LOG(BF("made res consistent with stereoisomer named res: %s") % _rep_(res));
       mol->addMatter(res);
       LOG(BF("Added matter"));
@@ -785,17 +785,23 @@ void Oligomer_O::_fillMonomerAsString(Monomer_sp mon, stringstream& seq)
 {
     seq <<"( ";
     seq << "monomer '" << _rep_(mon->getId());
-    if ( mon->getGroupName() == mon->getName() )
+#if 1
+    seq << " ( :part '" <<mon->monomerName()->symbolName() << " :isomer " << mon->getIsomer() <<  ")";
+#else
+    if ( mon->getGroupName() == mon->monomerName() )
     {
 	seq << " '" << mon->getGroupName()->symbolName();
     } else {
-      seq << " (GroupPart :group '" << mon->getGroupName()->symbolName() <<" :part '" <<mon->getName()->symbolName() << " :isomer " << mon->getIsomer() <<  ")";
+      seq << " (GroupPart :group '" << mon->getGroupName()->symbolName() <<" :part '" <<mon->monomerName()->symbolName() << " :isomer " << mon->getIsomer() <<  ")";
     }
+#endif
+#if 0
     adapt::SymbolSet_sp aliases = mon->getMonomerAliases();
     if ( aliases->size() > 0 )
     {
 	seq << " :aliases '(" << aliases->asString() << " ) ";
     }
+#endif
     seq <<" )";
 }
 
@@ -861,7 +867,7 @@ void Oligomer_O::_fillSequenceAsFileNameForChildren(Monomer_sp rootMonomer, stri
     {
 //        Monomer_sp mon1 = (*oci)->getMonomer1();
         Monomer_sp mon2 = (*oci)->getMonomer2();
-	seq <<"-" << mon2->getName()->symbolName();
+	seq <<"-" << mon2->monomerName()->symbolName();
     }
     for ( oci=outCouplings.begin(); oci!=outCouplings.end(); oci++ )
     {
@@ -871,7 +877,7 @@ void Oligomer_O::_fillSequenceAsFileNameForChildren(Monomer_sp rootMonomer, stri
     }
 }
 
-
+#if 0
 adapt::ObjectSet_sp Oligomer_O::getAllAliases()
 {
     adapt::ObjectSet_sp aliases = adapt::ObjectSet_O::create();
@@ -883,7 +889,9 @@ adapt::ObjectSet_sp Oligomer_O::getAllAliases()
     }
     return aliases;
 }
+#endif
 
+#if 0
 adapt::SymbolSet_sp Oligomer_O::allMonomerAliases()
 {
     adapt::SymbolSet_sp aliases = adapt::SymbolSet_O::create();
@@ -895,6 +903,8 @@ adapt::SymbolSet_sp Oligomer_O::allMonomerAliases()
     }
     return aliases;
 }
+#endif
+
 
 CL_LISPIFY_NAME("sequenceAsFileName");
 CL_DEFMETHOD string	Oligomer_O::sequenceAsFileName()
@@ -902,7 +912,7 @@ CL_DEFMETHOD string	Oligomer_O::sequenceAsFileName()
 
     Monomer_sp mon2 = this->rootMonomer();
     stringstream seq;
-    seq << mon2->getName()->symbolName();
+    seq << mon2->monomerName()->symbolName();
     this->_fillSequenceAsFileNameForChildren(mon2,seq);
 //    seq << "_" << this->getName()->symbolName();
     string name = core::stripCharacters(seq.str(),"()");
@@ -944,7 +954,7 @@ void	Oligomer_O::_assembleFromParts(core::List_sp parts, CandoDatabase_sp bdb)
     core::HashTableEq_sp monomerMap = core::HashTableEq_O::create_default();
     for ( auto p : parts ) {
 	OligomerPart_Base_sp oligPart = p->car<OligomerPart_Base_O>();
-	MultiMonomer_sp mon = oligPart->createMonomer(bdb);
+	Monomer_sp mon = oligPart->createMonomer(bdb);
 	this->addMonomer(mon);
 	monomerMap->setf_gethash(mon->getId(), mon);
 	if ( oligPart.isA<OligomerPart_Link_O>() )
@@ -954,8 +964,8 @@ void	Oligomer_O::_assembleFromParts(core::List_sp parts, CandoDatabase_sp bdb)
 	    core::Symbol_sp	mon2Id = link->_Monomer2->_MonomerId;
 	    if ( !monomerMap->contains(mon1Id) ) SIMPLE_ERROR(BF("Unknown monomer id: %s")%mon1Id);
 	    if ( !monomerMap->contains(mon2Id) ) SIMPLE_ERROR(BF("Unknown monomer id: %s")%mon2Id);
-	    MultiMonomer_sp mon1 = monomerMap->gethash(mon1Id).as<MultiMonomer_O>();
-	    MultiMonomer_sp mon2 = monomerMap->gethash(mon2Id).as<MultiMonomer_O>();
+	    Monomer_sp mon1 = monomerMap->gethash(mon1Id).as<Monomer_O>();
+	    Monomer_sp mon2 = monomerMap->gethash(mon2Id).as<Monomer_O>();
 	    this->couple(mon1,link->_Coupling,mon2);
 	}
     }

@@ -54,8 +54,8 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace chem {
 
-  SMART(Monomer);
   SMART(Coupling);
+  FORWARD(Monomer);
   SMART(Plug);
   SMART(Oligomer);
   SMART(EntityNameSet);

@@ -70,11 +70,6 @@ class Entity_O : public core::CxxObject_O
 		 * For instance monomer groups can be expanded to every monomer within them.
 		 */
   virtual bool	isTerminalName() { return false; };
-    		/*! Get the name of this object
-		 */
-  CL_LISPIFY_NAME("getName");
-  CL_DEFMETHOD     virtual core::Symbol_sp	getName() const 	{_OF();SUBCLASS_MUST_IMPLEMENT();};
-
     		/*! Return a list of names that is expanded recursively as much as possible
 		 */
   virtual adapt::SymbolSet_sp	expandedNameSet() {_OF(); SUBCLASS_MUST_IMPLEMENT();};
