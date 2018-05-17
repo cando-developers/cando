@@ -50,7 +50,7 @@ namespace kinematics
 	}
     };
 
-    void Jump::fromStubs(Stub const& stub1, Stub const& stub2, core::Lisp_sp lisp)
+    void Jump::fromStubs(Stub const& stub1, Stub const& stub2)
     {
 	Matrix	toCanonical = stub1.getTransform().invertTransform();
 	Matrix fromCanonical = stub2.getTransform();

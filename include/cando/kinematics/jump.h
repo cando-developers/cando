@@ -81,7 +81,7 @@ namespace kinematics
 	Vector3		_C2nCenter;
     public:
 	/*! Calculate the Jump from the stubs */
-	void fromStubs(Stub const& stub1, Stub const& stub2, core::Lisp_sp lisp);
+	void fromStubs(Stub const& stub1, Stub const& stub2);
 
 	/*! Dump my transform */
 	string asString() const { return this->_Transform.asStringFormatted();};

@@ -49,15 +49,12 @@ namespace kinematics
 	class Pool
     {
     private:
-	core::Lisp_sp	_Lisp;
 	string		_Comment;
 	uint		_FirstUnusedMember;
 	vector<T>	_Pool;
 	T		_Empty;
     public:
 	int size() const { return this->_Pool.size(); };
-	core::Lisp_sp lisp() const {return _Lisp;};
-
 	/*! Index into the pool */
 	T& operator[](uint i) { return this->_Pool[i];};
 
@@ -123,7 +120,7 @@ namespace kinematics
 	    return ss.str();
 	}
 	// ctor
-    Pool(core::Lisp_sp lisp, const string& comment) : _Lisp(lisp),_Comment(comment), _FirstUnusedMember(UndefinedUnsignedInt) {};
+    Pool(const string& comment) : _Comment(comment), _FirstUnusedMember(UndefinedUnsignedInt) {};
 
     };
 

@@ -105,7 +105,7 @@ namespace kinematics
     private:
 	core::Function_sp	_Callback;
     public:
-	ExecutableAtomTreeWalkFunctor(core::Function_sp callback,core::Lisp_sp lisp) :
+	ExecutableAtomTreeWalkFunctor(core::Function_sp callback) :
 	AtomTreeWalkFunctor(lisp), _Callback(callback) {};
 	void operator()(kinematics::Atom_sp atom) const;
     };

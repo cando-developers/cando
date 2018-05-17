@@ -47,12 +47,9 @@ namespace kinematics
 
     class AtomTreeWalkFunctor
     {
-    protected:
-	core::Lisp_sp	_Lisp;
     public:
-    AtomTreeWalkFunctor(core::Lisp_sp lisp) : _Lisp(lisp) {};
+    AtomTreeWalkFunctor() : {};
 
-	core::Lisp_sp lisp() const { return this->_Lisp;};
 	virtual void operator()(kinematics::Atom_sp atom) const;
     };
 

@@ -42,11 +42,6 @@ namespace kinematics
 
 
 
-    core::Lisp_sp Atom::lisp() const
-    {
-	return this->_Me.lisp();
-    }
-
     string Atom::asString() const
     {_OF();
 	stringstream ss;

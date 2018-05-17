@@ -115,9 +115,6 @@ namespace kinematics
 	void __setAtomHandle(const WeakAtomHandle& handle) { this->_Me = handle;};
 
 
-	/*! Return the lisp object */
-	core::Lisp_sp lisp() const;
-
 	chem::AtomId id() const { return this->_Id;};
 	virtual core::Symbol_sp typeSymbol() const;
 	virtual string asString() const;
