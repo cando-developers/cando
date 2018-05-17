@@ -76,9 +76,10 @@ void Topology_O::fields(core::Record_sp node)
 {
   node->field(INTERN_(kw,name),this->_Name);
   node->field(INTERN_(kw,constitution),this->_Constitution);
-  node->field(INTERN_(kw,notrainers),this->_SuppressTrainers);
   node->field(INTERN_(kw,atominfo),this->_AtomInfo);
-  node->field(INTERN_(kw,atomprops),this->_StereoisomerAtomProperties);
+  node->field(INTERN_(kw,stereoisomer_coding), this->_StereoisomerCoding);
+  node->field(INTERN_(kw,num_stereoisomers), this->_NumberOfStereoisomers);
+  node->field(INTERN_(kw,stereo_atom_props),this->_StereoisomerAtomProperties);
   node->field(INTERN_(kw,properties),this->_Properties);
   node->field(INTERN_(kw,defaultoutplug),this->_DefaultOutPlugName);
   node->field(INTERN_(kw,plugs),this->_Plugs);
@@ -188,73 +189,73 @@ CL_DEFMETHOD Residue_sp Topology_O::build_residue() const
 
 
 #if 0
-    void __checkExtractFragment(ExtractFragmentBase_sp extractFrag,adapt::StringSet_sp missingAtomNames, map<string,OverlappingFragments>& overlaps)
+void __checkExtractFragment(ExtractFragmentBase_sp extractFrag,adapt::StringSet_sp missingAtomNames, map<string,OverlappingFragments>& overlaps)
+{
+
+  Fragment_sp frag = extractFrag->getFragment();
+  adapt::StringSet_sp atomNames = frag->getAtomNames();
+  for ( adapt::StringSet_O::iterator ni = atomNames->begin(); ni!=atomNames->end(); ni++ )
+  {
+    if ( missingAtomNames->contains(*ni) )
     {
-
-	Fragment_sp frag = extractFrag->getFragment();
-	adapt::StringSet_sp atomNames = frag->getAtomNames();
-	for ( adapt::StringSet_O::iterator ni = atomNames->begin(); ni!=atomNames->end(); ni++ )
-	{
-	    if ( missingAtomNames->contains(*ni) )
-	    {
-		missingAtomNames->remove(*ni);
-	    }
-	    if ( overlaps.count(*ni)==0 )
-	    {
-		OverlappingFragments over;
-		over._TimesSeen = 1;
-		over._Fragments.insert(frag->getName());
-		overlaps[*ni] = over;
-	    } else
-	    {
-		OverlappingFragments& over = overlaps[*ni];
-		over._TimesSeen = over._TimesSeen + 1;
-		over._Fragments.insert(frag->getName());
-	    }
-	}
+      missingAtomNames->remove(*ni);
     }
-
-    void Topology_O::throwIfExtractFragmentsAreNotExclusive(ConstitutionAtoms_sp residue)
+    if ( overlaps.count(*ni)==0 )
     {
-	uint numAtoms;
-	map<string,OverlappingFragments>	overlaps;
-	adapt::StringSet_sp missingAtomNames = residue->atomNamesAsStringSet();
-
-	__checkExtractFragment(this->_ExtractCoreFragment,missingAtomNames,overlaps);
-	for ( gctools::Vec0<ExtractFragment_sp>::iterator it=this->_ExtractFragments.begin();
-	      it!=this->_ExtractFragments.end(); it++ )
-	{
-	    __checkExtractFragment((*it),missingAtomNames,overlaps);
-	}
-	if ( missingAtomNames->size() != 0 )
-	{
-	    stringstream ss;
-	    ss << "The Topology " << this->getName() << " ExtractFragments do not include all atoms" << std::endl;
-	    ss << " of the Constitution.  The following atom names are missing: " << missingAtomNames->asString();
-	    SIMPLE_ERROR(BF("%s")%ss.str());
-	}
-	stringstream so;
-	bool sawOverlaps = false;
-	for( map<string,OverlappingFragments>::iterator oi = overlaps.begin(); oi!=overlaps.end(); oi++ )
-	{
-	    if ( oi->second._TimesSeen > 1 )
-	    {
-		sawOverlaps = true;
-		so << "Multiple references for atom(" <<oi->first<<") in fragments: ";
-		for ( set<string>::iterator si=oi->second._Fragments.begin(); si!=oi->second._Fragments.end();si++ )
-		{
-		    so << *si << " ";
-		}
-	    }
-	}
-	if ( sawOverlaps )
-	{
-	    stringstream se;
-	    se << "In definition of Topology(" << this->getName() << ") there were overlapping ExtractFragment definitions"<<std::endl;
-	    se << so.str();
-	    SIMPLE_ERROR(BF(se.str()));
-	}
+      OverlappingFragments over;
+      over._TimesSeen = 1;
+      over._Fragments.insert(frag->getName());
+      overlaps[*ni] = over;
+    } else
+    {
+      OverlappingFragments& over = overlaps[*ni];
+      over._TimesSeen = over._TimesSeen + 1;
+      over._Fragments.insert(frag->getName());
     }
+  }
+}
+
+void Topology_O::throwIfExtractFragmentsAreNotExclusive(ConstitutionAtoms_sp residue)
+{
+  uint numAtoms;
+  map<string,OverlappingFragments>	overlaps;
+  adapt::StringSet_sp missingAtomNames = residue->atomNamesAsStringSet();
+
+  __checkExtractFragment(this->_ExtractCoreFragment,missingAtomNames,overlaps);
+  for ( gctools::Vec0<ExtractFragment_sp>::iterator it=this->_ExtractFragments.begin();
+        it!=this->_ExtractFragments.end(); it++ )
+  {
+    __checkExtractFragment((*it),missingAtomNames,overlaps);
+  }
+  if ( missingAtomNames->size() != 0 )
+  {
+    stringstream ss;
+    ss << "The Topology " << this->getName() << " ExtractFragments do not include all atoms" << std::endl;
+    ss << " of the Constitution.  The following atom names are missing: " << missingAtomNames->asString();
+    SIMPLE_ERROR(BF("%s")%ss.str());
+  }
+  stringstream so;
+  bool sawOverlaps = false;
+  for( map<string,OverlappingFragments>::iterator oi = overlaps.begin(); oi!=overlaps.end(); oi++ )
+  {
+    if ( oi->second._TimesSeen > 1 )
+    {
+      sawOverlaps = true;
+      so << "Multiple references for atom(" <<oi->first<<") in fragments: ";
+      for ( set<string>::iterator si=oi->second._Fragments.begin(); si!=oi->second._Fragments.end();si++ )
+      {
+        so << *si << " ";
+      }
+    }
+  }
+  if ( sawOverlaps )
+  {
+    stringstream se;
+    se << "In definition of Topology(" << this->getName() << ") there were overlapping ExtractFragment definitions"<<std::endl;
+    se << so.str();
+    SIMPLE_ERROR(BF(se.str()));
+  }
+}
 #endif
 
 struct OverlappingFragments {
@@ -300,220 +301,220 @@ CL_DEFUN void connect_residues(Topology_sp prev_topology,
 
 CL_LISPIFY_NAME("getMonomerContext");
 CL_DEFMETHOD     MonomerContext_sp Topology_O::getMonomerContext(CandoDatabase_sp bdb)
-    {
-	MonomerContext_sp context = MonomerContext_O::create();
-	EntityNameSet_sp selfSet = EntityNameSet_O::create();
-	Constitution_sp constitution = this->getConstitution();
-        (void)constitution;
-	context->setFocus(selfSet);
-	IMPLEMENT_ME();
-    }
+{
+  MonomerContext_sp context = MonomerContext_O::create();
+  EntityNameSet_sp selfSet = EntityNameSet_O::create();
+  Constitution_sp constitution = this->getConstitution();
+  (void)constitution;
+  context->setFocus(selfSet);
+  IMPLEMENT_ME();
+}
 
 
 CL_LISPIFY_NAME("properties");
 CL_DEFMETHOD     core::HashTableEq_sp Topology_O::properties() const
-    {_OF();
-	return this->_Properties;
-    }
+{_OF();
+  return this->_Properties;
+}
 
 
-    bool Topology_O::hasInPlug()
-    {
-      for ( auto i : this->_Plugs ) if ( i.second->getIsIn() ) return true;
-      return false;
-    }
+bool Topology_O::hasInPlug()
+{
+  for ( auto i : this->_Plugs ) if ( i.second->getIsIn() ) return true;
+  return false;
+}
 
 
 
 
 CL_LISPIFY_NAME("getInPlug");
 CL_DEFMETHOD     Topology_O::plugType Topology_O::getInPlug()
+{
+  for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
+  {
+    if ( i->second->getIsIn() ) 
     {
-	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
-	{
-	    if ( i->second->getIsIn() ) 
-	    {
-		return i->second;
-	    }
-	}
-	return _Nil<plugOType>();
+      return i->second;
     }
+  }
+  return _Nil<plugOType>();
+}
 
 
 CL_LISPIFY_NAME("plugsAsList");
 CL_DEFMETHOD     core::List_sp Topology_O::plugsAsList()
-    {_OF();
-	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
-	core::Cons_sp cur = first;
-	LOG(BF("The number of plugs = %d") % this->_Plugs.size()  );
-	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
-	{
-	    LOG(BF("Adding plug: %s") % i->second->getName());
-	    core::Cons_sp one = core::Cons_O::create(i->second,_Nil<core::T_O>());
-	    cur->setCdr(one);
-	    cur = one;
-	}
-	LOG(BF("Returning the plugs"));
-	return first->cdr();
-    }
+{_OF();
+  core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+  core::Cons_sp cur = first;
+  LOG(BF("The number of plugs = %d") % this->_Plugs.size()  );
+  for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
+  {
+    LOG(BF("Adding plug: %s") % i->second->getName());
+    core::Cons_sp one = core::Cons_O::create(i->second,_Nil<core::T_O>());
+    cur->setCdr(one);
+    cur = one;
+  }
+  LOG(BF("Returning the plugs"));
+  return first->cdr();
+}
 
 
 CL_LISPIFY_NAME("plugsWithMatesAsList");
 CL_DEFMETHOD     core::List_sp Topology_O::plugsWithMatesAsList()
-    {
-	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
-	core::Cons_sp cur = first;
-	LOG(BF("The number of plugs = %d") % this->_Plugs.size()  );
-	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
-	{
+{
+  core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+  core::Cons_sp cur = first;
+  LOG(BF("The number of plugs = %d") % this->_Plugs.size()  );
+  for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
+  {
 	    // skip origin plugs
-	    if ( !i->second.isA<PlugWithMates_O>() ) continue;
-	    LOG(BF("Adding plug: %s") % _rep_(i->second) );
-	    core::Cons_sp one = core::Cons_O::create(i->second,_Nil<core::T_O>());
-	    cur->setCdr(one);
-	    cur = one;
-	}
-	LOG(BF("Returning the plugs") );
-	return first->cdr();
-    }
+    if ( !i->second.isA<PlugWithMates_O>() ) continue;
+    LOG(BF("Adding plug: %s") % _rep_(i->second) );
+    core::Cons_sp one = core::Cons_O::create(i->second,_Nil<core::T_O>());
+    cur->setCdr(one);
+    cur = one;
+  }
+  LOG(BF("Returning the plugs") );
+  return first->cdr();
+}
 
 CL_LISPIFY_NAME("outPlugsAsList");
 CL_DEFMETHOD     core::List_sp Topology_O::outPlugsAsList()
+{
+  core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
+  core::Cons_sp cur = first;
+  for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
+  {
+    Plug_sp plug = i->second;
+    if ( !plug->getIsIn() )
     {
-	core::Cons_sp first = core::Cons_O::create(_Nil<core::T_O>(),_Nil<core::T_O>());
-	core::Cons_sp cur = first;
-	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
-	{
-	    Plug_sp plug = i->second;
-	    if ( !plug->getIsIn() )
-	    {
-		core::Cons_sp one = core::Cons_O::create(i->second,_Nil<core::T_O>());
-		cur->setCdr(one);
-		cur = one;
-	    }
-	}
-	return first->cdr();
+      core::Cons_sp one = core::Cons_O::create(i->second,_Nil<core::T_O>());
+      cur->setCdr(one);
+      cur = one;
     }
+  }
+  return first->cdr();
+}
 
-    string	Topology_O::description() const
+string	Topology_O::description() const
+{
+  stringstream	ss;
+  ss << "#<TOPOLOGY";
+  Topology_O* me = const_cast<Topology_O*>(this);
+  ss << " Name(" << me->getName() << ")";
+  ss << " Constitution("<< me->getConstitution()->getName() << ")";
+  ss << " Plugs:";
+  for ( Plugs::const_iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
+  {
+    ss << (BF("%s@%p ") % _rep_(i->second->getName()) % i->second->getName().get() ).str();
+  }
+  ss << ">";
+  return ss.str();
+}
+
+
+bool Topology_O::hasMatchingPlugsWithMates(adapt::SymbolSet_sp plugSet)
+{
+  adapt::SymbolSet_sp myPlugSet = adapt::SymbolSet_O::create();
+  for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
+  {
+    LOG(BF("Looking at plug[%s]") % _rep_(i->second->getName()) );
+    if (i->second.isA<PlugWithMates_O>() )
     {
-	stringstream	ss;
-	ss << "#<TOPOLOGY";
-	Topology_O* me = const_cast<Topology_O*>(this);
-	ss << " Name(" << me->getName() << ")";
-	ss << " Constitution("<< me->getConstitution()->getName() << ")";
-	ss << " Plugs:";
-	for ( Plugs::const_iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
-	{
-          ss << (BF("%s@%p ") % _rep_(i->second->getName()) % i->second->getName().get() ).str();
-	}
-	ss << ">";
-	return ss.str();
+      myPlugSet->insert(i->first);
     }
-
-
-    bool Topology_O::hasMatchingPlugsWithMates(adapt::SymbolSet_sp plugSet)
+  }
+  LOG(BF("Topology plugs are: %s") % myPlugSet->asString() );
+  bool match = plugSet->equal(myPlugSet);
+  LOG(BF("Do they match the plugs passed as arguments[%s] --> %d") % plugSet->asString() % match );
+  return match;
+}
+bool	Topology_O::matchesMonomerEnvironment( Monomer_sp mon )
+{
+  LOG(BF("Checking if monomer[%s] matches the topology environment") % mon->description() );
+  uint numPlugsWithMates = 0;
+  LOG(BF("%s:%d monomer->%s  number of plugs: %d\n") % __FILE__ % __LINE__ % _rep_(mon) % this->_Plugs.size());
+  for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
+  {
+    LOG(BF("Looking at plug[%s]") % _rep_(i->second->getName()) );
+    if (!i->second.isA<PlugWithMates_O>() )
     {
-	adapt::SymbolSet_sp myPlugSet = adapt::SymbolSet_O::create();
-	for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
-	{
-          LOG(BF("Looking at plug[%s]") % _rep_(i->second->getName()) );
-	    if (i->second.isA<PlugWithMates_O>() )
-	    {
-		myPlugSet->insert(i->first);
-	    }
-	}
-	LOG(BF("Topology plugs are: %s") % myPlugSet->asString() );
-	bool match = plugSet->equal(myPlugSet);
-	LOG(BF("Do they match the plugs passed as arguments[%s] --> %d") % plugSet->asString() % match );
-	return match;
+      LOG(BF("It's not a PlugWithMates"));
+      continue;
     }
-    bool	Topology_O::matchesMonomerEnvironment( Monomer_sp mon )
+    if ( !mon->hasCouplingWithPlugName(i->second->getName()) ) 
     {
-      LOG(BF("Checking if monomer[%s] matches the topology environment") % mon->description() );
-      uint numPlugsWithMates = 0;
-      LOG(BF("%s:%d monomer->%s  number of plugs: %d\n") % __FILE__ % __LINE__ % _rep_(mon) % this->_Plugs.size());
-      for ( Plugs::iterator i=this->_Plugs.begin(); i!= this->_Plugs.end(); i++)
-      {
-        LOG(BF("Looking at plug[%s]") % _rep_(i->second->getName()) );
-        if (!i->second.isA<PlugWithMates_O>() )
-        {
-          LOG(BF("It's not a PlugWithMates"));
-          continue;
-        }
-        if ( !mon->hasCouplingWithPlugName(i->second->getName()) ) 
-        {
-          LOG(BF("The monomer doesn't have a coupling with plug name[%s]") % _rep_(i->second->getName()) );
-          return false;
-        }
-        numPlugsWithMates++;
-      }
-      if ( numPlugsWithMates != mon->numberOfCouplings() ) 
-      {
-        LOG(BF("There is a mismatch with the number of plugs in the topology[%d] and the number of couplings for the monomer[%d]") % numPlugsWithMates % mon->numberOfCouplings() );
-        return false;
-      }
-      LOG(BF("They match"));
-      return true;
+      LOG(BF("The monomer doesn't have a coupling with plug name[%s]") % _rep_(i->second->getName()) );
+      return false;
     }
+    numPlugsWithMates++;
+  }
+  if ( numPlugsWithMates != mon->numberOfCouplings() ) 
+  {
+    LOG(BF("There is a mismatch with the number of plugs in the topology[%d] and the number of couplings for the monomer[%d]") % numPlugsWithMates % mon->numberOfCouplings() );
+    return false;
+  }
+  LOG(BF("They match"));
+  return true;
+}
 
 
 
-    RingClosingPlug_sp Topology_O::provideMissingRingClosingPlug( Monomer_sp mon )
+RingClosingPlug_sp Topology_O::provideMissingRingClosingPlug( Monomer_sp mon )
+{
+  RingClosingPlug_sp missingRingClosingPlug = _Nil<RingClosingPlug_O>();
+  uint numPlugsWithMates = 0;
+  for ( Plugs::iterator i=this->_Plugs.begin();
+        i!= this->_Plugs.end(); i++)
+  {
+    if (!i->second.isA<PlugWithMates_O>() ) continue;
+    if ( i->second.isA<RingClosingPlug_O>() )
     {
-	RingClosingPlug_sp missingRingClosingPlug = _Nil<RingClosingPlug_O>();
-	uint numPlugsWithMates = 0;
-	for ( Plugs::iterator i=this->_Plugs.begin();
-	      i!= this->_Plugs.end(); i++)
-	{
-	    if (!i->second.isA<PlugWithMates_O>() ) continue;
-	    if ( i->second.isA<RingClosingPlug_O>() )
-	    {
-		missingRingClosingPlug = i->second.as<RingClosingPlug_O>();
-		continue;
-	    }
-	    if ( !mon->hasCouplingWithPlugName(i->second->getName()) ) return _Nil<RingClosingPlug_O>();
-	    numPlugsWithMates++;
-	}
-	if ( numPlugsWithMates != mon->numberOfCouplings() ) return _Nil<RingClosingPlug_O>();
-	return missingRingClosingPlug;
+      missingRingClosingPlug = i->second.as<RingClosingPlug_O>();
+      continue;
     }
+    if ( !mon->hasCouplingWithPlugName(i->second->getName()) ) return _Nil<RingClosingPlug_O>();
+    numPlugsWithMates++;
+  }
+  if ( numPlugsWithMates != mon->numberOfCouplings() ) return _Nil<RingClosingPlug_O>();
+  return missingRingClosingPlug;
+}
 
 
 
 
 CL_LISPIFY_NAME("matchesContext");
 CL_DEFMETHOD     bool	Topology_O::matchesContext(MonomerContext_sp cm)
-    {
-	uint numPlugsWithMates = 0;
-	for ( Plugs::iterator i=this->_Plugs.begin();
-	      i!= this->_Plugs.end(); i++)
-	{
-	    if (!i->second.isA<PlugWithMates_O>() ) continue;
-	    if ( !cm->hasNeighborWithCouplingName(i->second->getName()) ) return false;
-	    numPlugsWithMates++;
-	}
-	if ( numPlugsWithMates != cm->numberOfNeighbors() ) return false;
-	return true;
-    }
+{
+  uint numPlugsWithMates = 0;
+  for ( Plugs::iterator i=this->_Plugs.begin();
+        i!= this->_Plugs.end(); i++)
+  {
+    if (!i->second.isA<PlugWithMates_O>() ) continue;
+    if ( !cm->hasNeighborWithCouplingName(i->second->getName()) ) return false;
+    numPlugsWithMates++;
+  }
+  if ( numPlugsWithMates != cm->numberOfNeighbors() ) return false;
+  return true;
+}
 
 CL_LISPIFY_NAME("hasPlugNamed");
 CL_DEFMETHOD     bool	Topology_O::hasPlugNamed(core::Symbol_sp name)
-    {
-	bool res = this->_Plugs.contains(name);
-	LOG(BF("Result = %d") % res );
-	return res;
-    };
+{
+  bool res = this->_Plugs.contains(name);
+  LOG(BF("Result = %d") % res );
+  return res;
+};
 
 CL_LISPIFY_NAME("plugNamed");
 CL_DEFMETHOD     Plug_sp Topology_O::plugNamed(core::Symbol_sp name)
-    {
-      bool res = this->_Plugs.contains(name);
-      if ( !res ) {
-        SIMPLE_ERROR(BF("Could not find plug with name %s") % _rep_(name));
-      }
-      return this->_Plugs.get(name);
-    };
+{
+  bool res = this->_Plugs.contains(name);
+  if ( !res ) {
+    SIMPLE_ERROR(BF("Could not find plug with name %s") % _rep_(name));
+  }
+  return this->_Plugs.get(name);
+};
 
 
 
@@ -523,42 +524,38 @@ void	Topology_O::initialize()
 {
   this->Base::initialize();
   this->_Plugs.clear();
-  this->_SuppressTrainers = false;
+  this->_StereoisomerCoding = kw::_sym_absolute;
+  this->_NumberOfStereoisomers = 1;
   this->_Properties = core::HashTableEq_O::create_default();
 }
 
 
+SYMBOL_EXPORT_SC_(KeywordPkg,coded);
+SYMBOL_EXPORT_SC_(KeywordPkg,absolute);
+
+CL_DEFMETHOD void Topology_O::setStereoisomerAtoms(core::Symbol_sp coding, core::List_sp stereoisomer_atoms) {
+  this->_StereoisomerCoding = coding;
+  this->_StereoisomerAtomProperties.clear();
+  for ( auto tentry : stereoisomer_atoms ) {
+    StereoisomerAtoms_sp entry = gc::As<StereoisomerAtoms_sp>(tentry);
+    this->_StereoisomerAtomProperties.push_back(entry);
+  }
+}
 
 
 
-CL_LISPIFY_NAME("lookupOrCreateStereoisomerAtoms");
-CL_DEFMETHOD     StereoisomerAtoms_sp Topology_O::lookupOrCreateStereoisomerAtoms(core::Symbol_sp stereoisomerName)
-    {_OF();
-	adapt::SymbolMap<StereoisomerAtoms_O>::iterator it= this->_StereoisomerAtomProperties.find(stereoisomerName);
-	StereoisomerAtoms_sp result;
-	if ( it==this->_StereoisomerAtomProperties.end() )
-	{
-	    Constitution_sp constitution = this->getConstitution();
-	    ASSERTF(constitution->hasStereoisomerWithName(stereoisomerName),BF("Could not find stereoisomer named[%s] in constitution[%s]") % _rep_(stereoisomerName) % constitution->getName());
-	    ConstitutionAtoms_sp constitutionAtoms = constitution->getConstitutionAtoms();
-	    result = StereoisomerAtoms_O::create(constitutionAtoms);
-	    this->_StereoisomerAtomProperties.set(stereoisomerName,result);
-	} else
-	{
-	    result = this->_StereoisomerAtomProperties.get(stereoisomerName);
-	}
-	return result;
-    }
-
-//
-// Destructor
-//
-
-
-
-
-
-
+CL_LISPIFY_NAME("lookupStereoisomerAtoms");
+CL_DOCSTRING("Return (values stereoisomer-atoms coded-or-absolute isomer)")
+CL_DEFMETHOD core::T_mv Topology_O::lookupStereoisomerAtoms(Fixnum isomer)
+{
+  if (this->_StereoisomerCoding == kw::_sym_coded) {
+    return Values(this->_StereoisomerAtomProperties[isomer],this->_StereoisomerCoding,core::make_fixnum(isomer));
+  }
+  if (this->_StereoisomerAtomProperties.size() < 1 ) {
+    return Values(this->_StereoisomerAtomProperties[0],this->_StereoisomerCoding,core::make_fixnum(isomer));
+  }
+  return Values(_Nil<core::T_O>(),this->_StereoisomerCoding,core::make_fixnum(isomer));
+}
 
 
 };

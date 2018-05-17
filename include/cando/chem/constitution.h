@@ -74,20 +74,20 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace chem
 {
 
-  SMART(RepresentedEntityNameSet);
-  SMART(MonomerContext);
-  SMART(CandoDatabase);
-  SMART(Coupling);
-  SMART(Oligomer);
-  SMART(Constitution);
-  SMART(StereoInformation);
-  SMART(Monomer);
-  SMART(Topology);
-  SMART(Plug);
-  SMART(RingClosingPlug);
-  SMART(Stereoisomer);
-  SMART(StereoInformation);
-  SMART(Constitution);
+  FORWARD(RepresentedEntityNameSet);
+  FORWARD(MonomerContext);
+  FORWARD(CandoDatabase);
+  FORWARD(Coupling);
+  FORWARD(Oligomer);
+  FORWARD(Constitution);
+  FORWARD(StereoInformation);
+  FORWARD(Topology);
+  FORWARD(Plug);
+FORWARD(Monomer);
+  FORWARD(RingClosingPlug);
+  FORWARD(Stereoisomer);
+  FORWARD(StereoInformation);
+  FORWARD(Constitution);
 
 
     /*! @class A Constitution is like a Residue but its more general because it describes multiple

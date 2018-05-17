@@ -155,73 +155,6 @@ Residue_sp Monomer_O::createResidue()
 #endif
 
 
-
-void Monomer_O::fields(core::Record_sp node)
-{
-  node->field_if_not_nil(INTERN_(kw,id),this->_Id);
-  node->field(INTERN_(kw,seqnum),this->_SequenceNumber);
-  gctools::Vec0<core::T_sp> pairs;
-  switch (node->stage()) {
-  case core::Record_O::saving:
-    {
-	    // Accumulate intraresidue bonds into a vector
-      for ( Monomer_O::Couplings::iterator ci = this->_Couplings.begin(); ci!=this->_Couplings.end();ci++ ) {
-        pairs.push_back(core::Cons_O::create(ci->first,ci->second));
-      }
-      node->field_if_not_empty(INTERN_(kw,couplings),pairs);
-    }
-    break;
-  case core::Record_O::initializing:
-  case core::Record_O::loading:
-    {
-      this->_Couplings.clear();
-      node->field_if_not_empty( INTERN_(kw,couplings), pairs);
-      for (size_t i=0; i<pairs.size(); i++ ) {
-        core::T_sp pair = pairs[i];
-        this->_Couplings.insert2(gc::As<core::Symbol_sp>(oCar(pair)),gc::As<Coupling_sp>(oCdr(pair)));
-      }
-    }
-    break;
-  case core::Record_O::patching: {
-    // Nothing should need to be done
-  }
-      break;
-  }
-  this->Base::fields(node);
-}
-  
-
-#ifdef XML_ARCHIVE
-void	Monomer_O::archiveBase(core::ArchiveP node)
-{
-  this->Base::archiveBase(node);
-  node->archiveWeakPointer("oligomer",this->_WeakOligomer);
-  node->archiveWeakPointer("tempResidue",this->_TempResidue);
-  node->archiveWeakSymbolMultiMap<Coupling_O>("couplings",this->_WeakCouplings);
-  node->attribute("comment", this->_Comment);
-  node->attributeIfNotNil("id", this->_Id);
-  node->attributeIfNotNil("aliases", this->_Aliases);
-  node->attribute("verbose", this->_Verbose);
-  node->attributeIfNotDefault("tempInt", this->_TemporaryInt,0);
-  node->attribute("sequenceNumber",this->_SequenceNumber);
-  node->attributeIfNotNil("status",this->_Status);
-  node->archivePlainObject<geom::Vector2>( "pos2","Vector2",
-                                           this->_Position2D );
-  node->attribute("selected",this->_Selected );
-  if ( node->loading() )
-  {
-    if ( this->_Status.nilp() )	
-    {
-      this->_Status = StatusTracker_O::create();
-    }
-  }
-}
-#endif
-
-
-
-//HERE HERE HERE   copy this and make it general
-
 CL_LISPIFY_NAME("getGeneralMonomerContext");
 CL_DEFMETHOD     MonomerContext_sp Monomer_O::getGeneralMonomerContext()
 {
@@ -239,7 +172,7 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getGeneralMonomerContext()
   db = getCandoDatabase();
   context = MonomerContext_O::create();
   selfRecognizer = EntityNameSetWithCap_O::create(); //,db);
-  selfRecognizer->addGroupName(this->getGroupName());
+//  selfRecognizer->addGroupName(this->getGroupName());
   context->setFocus(selfRecognizer);
   for ( ci=this->_Couplings.begin(); ci!=this->_Couplings.end(); ci++ )
   {
@@ -250,7 +183,7 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getGeneralMonomerContext()
     if ( coupling.isA<RingCoupling_O>() ) continue;
     neighborRecognizer = EntityNameSetWithCap_O::create(); //,db);
     neighborMonomer = coupling->getOtherSideMonomer(this->sharedThis<Monomer_O>());
-    neighborRecognizer->addGroupName(neighborMonomer->getGroupName());
+//    neighborRecognizer->addGroupName(neighborMonomer->getGroupName());
     context->addNeighbor(ci->first,neighborRecognizer);
   }
   return context;
@@ -296,13 +229,14 @@ adapt::SymbolSet_sp Monomer_O::plugNames() const
 }
 
 
+#if 0
 CL_LISPIFY_NAME("setAliasesFromCons");
 CL_DEFMETHOD     void	Monomer_O::setAliasesFromCons(core::List_sp aliases)
 {
   this->_Aliases->clear();
   this->_Aliases->insertConsSymbols(aliases);
 }
-
+#endif
 
 CL_LISPIFY_NAME("hasTemporaryResidue");
 CL_DEFMETHOD     bool Monomer_O::hasTemporaryResidue()
@@ -353,20 +287,24 @@ void Monomer_O::setAliasesFromString(const string& s)
 #endif
 
 
+#if 0
 CL_LISPIFY_NAME("getAliasesAsString");
 CL_DEFMETHOD     string Monomer_O::getAliasesAsString()
 {_OF();
   ASSERTNOTNULL(this->_Aliases);
   return this->_Aliases->asString();
 };
+#endif
 
 
-
+#if 0
 void	Monomer_O::setAliasesFromSymbolList(adapt::SymbolList_sp aliases)
 {
   this->_Aliases->clear();
   this->_Aliases->insertSymbolList(aliases);
 }
+#endif
+
 
 CL_LISPIFY_NAME("checkForBadConnections");
 CL_DEFMETHOD     bool	Monomer_O::checkForBadConnections()
@@ -413,18 +351,6 @@ CL_DEFMETHOD     void	Monomer_O::throwIfBadConnections()
 
 
 
-CL_LISPIFY_NAME("checkForErrorsAndUnknownContexts");
-CL_DEFMETHOD     void	Monomer_O::checkForErrorsAndUnknownContexts(CandoDatabase_sp cdb)
-{
-  IMPLEMENT_ME();
-#if 0
-  string			lastPlugName;
-  Coupling_sp		coup;
-  this->clearError();
-  this->checkForBadConnections();
-#endif
-}
-
 
 CL_LISPIFY_NAME("getSpecificMonomerContext");
 CL_DEFMETHOD     MonomerContext_sp Monomer_O::getSpecificMonomerContext()
@@ -443,7 +369,7 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getSpecificMonomerContext()
   db = getCandoDatabase();
   context = MonomerContext_O::create();
   selfRecognizer = EntityNameSet_O::create();
-  selfRecognizer->setMonomerNameOrPdb(this->getName());
+  selfRecognizer->setMonomerNameOrPdb(this->monomerName());
   context->setFocus(selfRecognizer);
   for ( ci=this->_Couplings.begin(); ci!=this->_Couplings.end(); ci++ )
   {
@@ -452,7 +378,7 @@ CL_DEFMETHOD     MonomerContext_sp Monomer_O::getSpecificMonomerContext()
     {
       neighborRecognizer = EntityNameSet_O::create();
       neighborMonomer = coupling->getOtherSideMonomer(this->sharedThis<Monomer_O>());
-      neighborRecognizer->setMonomerNameOrPdb(neighborMonomer->getName());
+      neighborRecognizer->setMonomerNameOrPdb(neighborMonomer->monomerName());
       context->addNeighbor(ci->first,neighborRecognizer);
     } else
     {
@@ -474,7 +400,7 @@ RingClosingPlug_sp Monomer_O::getMissingRingClosingPlug(Monomer_sp mate)
   MonomerContext_sp	context;
   Topology_sp		topology;
   bdb = getCandoDatabase();
-  constitution = core::eval::funcall(_sym_constitutionForNameOrPdb,bdb,this->getName());
+  constitution = core::eval::funcall(_sym_constitutionForNameOrPdb,bdb,this->monomerName());
   return constitution->getMissingRingClosingPlug(this->sharedThis<Monomer_O>(),mate);
 }
 
@@ -495,17 +421,6 @@ CL_DEFMETHOD     Topology_sp	Monomer_O::getTopology()
   ASSERT(constitution.notnilp());
   topology = constitution->getTopologyForMonomerEnvironment(this->sharedThis<Monomer_O>());
   return topology;
-}
-
-void Monomer_O::initialize()
-{
-  this->Base::initialize();
-  this->_TempResidue = _Nil<Residue_O>();
-//        this->_Couplings = core::HashTableEq_O::create_default();
-  this->_Id = _Nil<core::Symbol_O>();
-  this->_Aliases = adapt::SymbolSet_O::create();
-  this->_TemporaryInt = 0;
-  this->_SequenceNumber = 0;
 }
 
 
@@ -577,7 +492,7 @@ Plug_sp	Monomer_O::getPlugNamed(core::Symbol_sp pn)
 {
   Constitution_sp con;
   Plug_sp		plug;
-  con = core::eval::funcall(_sym_constitutionForNameOrPdb,getCandoDatabase(),this->getName());
+  con = core::eval::funcall(_sym_constitutionForNameOrPdb,getCandoDatabase(),this->monomerName());
   ASSERTNOTNULL(con);
   if ( !con->hasPlugNamed(pn) )
   {
@@ -597,7 +512,7 @@ CL_LISPIFY_NAME("getConstitution");
 CL_DEFMETHOD     Constitution_sp Monomer_O::getConstitution() {
   core::T_sp db = getCandoDatabase();
   LOG(BF("status") );
-  core::Symbol_sp nm = this->getName();
+  core::Symbol_sp nm = this->monomerName();
   LOG(BF("status") );
   LOG(BF("Monomer name (%s)") % _rep_(nm) );
   return core::eval::funcall(_sym_constitutionForNameOrPdb,db,nm);
@@ -801,18 +716,7 @@ CL_DEFMETHOD     void	Monomer_O::removeCoupling(Coupling_sp coup)
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
-
-#ifdef XML_ARCHIVE
-void	OneMonomer_O::archiveBase(core::ArchiveP node )
-{
-  node->attribute("name",this->_Name);
-}
-#endif
-
-//---------------------------------------------------------------------
-//---------------------------------------------------------------------
-
-
+#if 0
 void MonoMonomer_O::fields(core::Record_sp node)
 {
   node->field(INTERN_(kw,name),this->_Name);
@@ -849,49 +753,85 @@ string MonoMonomer_O::__repr__() const {
   ss << "#<MONO-MONOMER :monomer " << _rep_(this->getName()) << ">";
   return ss.str();
 }
-
+#endif
 
 //---------------------------------------------------------------------
 //---------------------------------------------------------------------
 
 
-string MultiMonomer_O::__repr__() const {
+string Monomer_O::__repr__() const {
   stringstream ss;
-  ss << "#<MULTI-MONOMER :index " << this->_CurrentMonomerIndex << " :monomer " << _rep_(this->getName()) << ">";
+  ss << "#<MONOMER :index " << this->_CurrentMonomerIndex << " :monomer " << _rep_(this->monomerName()) << ">";
   return ss.str();
 }
-void MultiMonomer_O::fields(core::Record_sp node)
+void Monomer_O::fields(core::Record_sp node)
 {
+  node->field_if_not_nil(INTERN_(kw,id),this->_Id);
+  node->field(INTERN_(kw,seqnum),this->_SequenceNumber);
+  gctools::Vec0<core::T_sp> pairs;
+  switch (node->stage()) {
+  case core::Record_O::saving:
+    {
+	    // Accumulate intraresidue bonds into a vector
+      for ( Monomer_O::Couplings::iterator ci = this->_Couplings.begin(); ci!=this->_Couplings.end();ci++ ) {
+        pairs.push_back(core::Cons_O::create(ci->first,ci->second));
+      }
+      node->field_if_not_empty(INTERN_(kw,couplings),pairs);
+    }
+    break;
+  case core::Record_O::initializing:
+  case core::Record_O::loading:
+    {
+      this->_Couplings.clear();
+      node->field_if_not_empty( INTERN_(kw,couplings), pairs);
+      for (size_t i=0; i<pairs.size(); i++ ) {
+        core::T_sp pair = pairs[i];
+        this->_Couplings.insert2(gc::As<core::Symbol_sp>(oCar(pair)),gc::As<Coupling_sp>(oCdr(pair)));
+      }
+    }
+    break;
+  case core::Record_O::patching: {
+    // Nothing should need to be done
+  }
+      break;
+  }
   node->field(INTERN_(kw,index),this->_CurrentMonomerIndex);
   node->field(INTERN_(kw,monomers),this->_Monomers);
-  node->field(INTERN_(kw,groupName),this->_GroupName);
+//  node->field(INTERN_(kw,groupName),this->_GroupName);
   this->Base::fields(node);
 }
 
-void MultiMonomer_O::initialize()
+void Monomer_O::initialize()
 {
   this->Base::initialize();
+  this->_TempResidue = _Nil<Residue_O>();
+//        this->_Couplings = core::HashTableEq_O::create_default();
+  this->_Id = _Nil<core::Symbol_O>();
+//  this->_Aliases = adapt::SymbolSet_O::create();
+  this->_TemporaryInt = 0;
+  this->_SequenceNumber = 0;
   this->_Monomers.clear();
   this->_CurrentMonomerIndex = -1;
 }
 
 
-MultiMonomer_sp MultiMonomer_O::makeMultiMonomer(core::Symbol_sp name)
+Monomer_sp Monomer_O::makeMonomer()
 {
-  GC_ALLOCATE(MultiMonomer_O, me );
-  if ( name.notnilp() ) me->setGroupName(name);
+  GC_ALLOCATE(Monomer_O, me );
   return me;
 };
 
-core::Symbol_sp MultiMonomer_O::getName() const
+core::Symbol_sp Monomer_O::monomerName() const
 {_OF();
   if ( this->_Monomers.size() == 0 ) {
     SIMPLE_ERROR(BF("There are no monomers"));
   }
-  return this->getOneMonomer()->_Name;
+  core::Symbol_sp name = this->getOneMonomer()->_Name;
+//  printf("%s:%d In Monomer_O::getName() -> %s name->className() -> %s\n", __FILE__, __LINE__, _rep_(name).c_str(), name->className().c_str());
+  return name;
 }
 
-Fixnum MultiMonomer_O::getIsomer() const
+Fixnum Monomer_O::getIsomer() const
 {_OF();
   if ( this->_Monomers.size() == 0 ) {
     SIMPLE_ERROR(BF("There are no monomers"));
@@ -899,53 +839,11 @@ Fixnum MultiMonomer_O::getIsomer() const
   return this->getOneMonomer()->_Isomer;
 }
 
-
-void	MultiMonomer_O::_expandGroupName()
-{
-  adapt::SymbolSet_sp		monomerNames;
-  CandoDatabase_sp	bdb;
-  core::Symbol_sp			name;
-
-  name = this->_GroupName;
-  this->_Monomers.clear();
-  bdb = getCandoDatabase();
-  if ( !bdb->recognizesSetOrConstitutionOrMonomerName(name) )
-  {
-    SIMPLE_ERROR(BF("Illegal group name %s") % _rep_(name));
-#if 0
-    LOG(BF("Illegal group name(%s)") % _rep_(name) );
-    this->addErrorMessage("Illegal group name: "+_rep_(name));
-    return;
-#endif
-  }
-  LOG(BF("Legal group name(%s)") % _rep_(name) );
-  monomerNames = bdb->expandEntityNameToTerminals(name);
-  LOG(BF("Got %d monomer names") % monomerNames->size() );
-  monomerNames->map( [this] (core::Symbol_sp si) {
-      LOG(BF("Adding monomer named(%s)") % _rep_((si)) );
-      this->addMonomerName(si);
-    } );
-  if ( this->_CurrentMonomerIndex >= this->_Monomers.size() )
-  {
-    this->_CurrentMonomerIndex = 0;
-  }
-}
-
-
-
-
-CL_LISPIFY_NAME("setGroupName");
-CL_DEFMETHOD     void	MultiMonomer_O::setGroupName(core::Symbol_sp name)
-{
-  CandoDatabase_sp	bdb;
-  this->_GroupName = name;
-  this->_expandGroupName();
-}
-
 /*! Check for errors and if any of the specific MonomerContexts that
  * this Monomer represents are not found in the CandoDatabase
  */
-void	MultiMonomer_O::checkForErrorsAndUnknownContexts(CandoDatabase_sp cdb)
+CL_LISPIFY_NAME("checkForErrorsAndUnknownContexts");
+CL_DEFMETHOD     void	Monomer_O::checkForErrorsAndUnknownContexts(CandoDatabase_sp cdb)
 {
   IMPLEMENT_ME();
 #if 0
@@ -991,13 +889,13 @@ void	MultiMonomer_O::checkForErrorsAndUnknownContexts(CandoDatabase_sp cdb)
 
 
 
-CL_DEFMETHOD void	MultiMonomer_O::addMonomerName(core::Symbol_sp name)
+CL_DEFMETHOD void	Monomer_O::addIsoname(Isoname_sp name)
 {
   this->_Monomers.push_back(name);
 }
 
 
-void	MultiMonomer_O::randomizeMonomer()
+void	Monomer_O::randomizeMonomer()
 {
   ASSERT(this->_Monomers.size()>=1);
   if ( this->_Monomers.size()==1 )
@@ -1025,11 +923,9 @@ void	MultiMonomer_O::randomizeMonomer()
 
 
 CL_LISPIFY_NAME("getOneMonomer");
-CL_DEFMETHOD     Isoname_sp	MultiMonomer_O::getOneMonomer() const
+CL_DEFMETHOD     Isoname_sp	Monomer_O::getOneMonomer() const
 {
-  if ( this->_Monomers.size() < 1 ) {
-    SIMPLE_ERROR(BF("There are no monomers defined for MultiMonomer group("+_rep_(this->_GroupName)+")"));
-  }
+  ASSERT(this->_Monomers.size());
   LOG(BF("Looking up monomer: %d") % this->_CurrentMonomerIndex  );
   return this->_Monomers[this->_CurrentMonomerIndex];
 };
@@ -1038,12 +934,12 @@ CL_DEFMETHOD     Isoname_sp	MultiMonomer_O::getOneMonomer() const
 
 
 
-string MultiMonomer_O::description() const
+string Monomer_O::description() const
 {//
   stringstream			ss;
   ss.str("");
-  ss << "MultiMonomer(";
-  ss << "["<<this->getGroupName()<<" id:" << _rep_(this->_Id) << "]=";
+  ss << "Monomer(";
+  ss << "[" <<" id:" << _rep_(this->_Id) << "]=";
   ss << " plugs: ";
   Couplings::const_iterator	ci;
   for ( ci=this->_Couplings.begin(); ci!=this->_Couplings.end(); ci++ ) {
@@ -1072,9 +968,9 @@ CL_DEFMETHOD     bool Monomer_O::isMonomerContextValid()
 }
 
 
-
+#if 0
 CL_LISPIFY_NAME("getInterestingAtomIndexer");
-CL_DEFMETHOD     AtomIndexer_sp	MultiMonomer_O::getInterestingAtomIndexer()
+CL_DEFMETHOD     AtomIndexer_sp	Monomer_O::getInterestingAtomIndexer()
 {
   AtomIndexer_sp		atomIndexer;
   EntityNameSet_sp		entityNameSet;
@@ -1085,17 +981,17 @@ CL_DEFMETHOD     AtomIndexer_sp	MultiMonomer_O::getInterestingAtomIndexer()
     entityNameSet = bdb->getEntityNameSet(this->getGroupName());
     if ( entityNameSet->supportsInterestingAtomAliases() )
     {
-      atomIndexer = entityNameSet->getAtomIndexerForMonomerName(this->getName());
+      atomIndexer = entityNameSet->getAtomIndexerForMonomerName(this->monomerName());
       return atomIndexer;
     }
   }
   atomIndexer = AtomIndexer_O::create();
   return atomIndexer;
 }
+#endif
 
-
-
-core::List_sp MultiMonomer_O::allAtomAliases()
+#if 0
+core::List_sp Monomer_O::allAtomAliases()
 {
   EntityNameSet_sp		entityNameSet;
   CandoDatabase_sp	bdb;
@@ -1116,7 +1012,7 @@ core::List_sp MultiMonomer_O::allAtomAliases()
   LOG(BF("Returning with nothing"));
   return _Nil<core::T_O>();
 }
-
+#endif
 
 
 class AliasWrapper : public adapt::SymbolSetCartesianProductWrapper
@@ -1129,7 +1025,7 @@ public:
   }
 };
 
-
+#if 0
 adapt::ObjectSet_sp Monomer_O::getAllAliases()
 {
   ASSERTNOTNULL(this->_Aliases);
@@ -1137,7 +1033,7 @@ adapt::ObjectSet_sp Monomer_O::getAllAliases()
   {
     if ( core::cl__length(this->allAtomAliases()) != 0 )
     {
-      SIMPLE_ERROR(BF("The monomer[%s] doesn't have monomer aliases but it has atom aliases(%s) - this should never happen") % this->getName() % _rep_(this->allAtomAliases()) );
+      SIMPLE_ERROR(BF("The monomer[%s] doesn't have monomer aliases but it has atom aliases(%s) - this should never happen") % this->monomerName() % _rep_(this->allAtomAliases()) );
     }
     return _Nil<adapt::ObjectSet_O>();
   }
@@ -1149,12 +1045,12 @@ adapt::ObjectSet_sp Monomer_O::getAllAliases()
   adapt::ObjectSet_sp allAliases = this->_Aliases->cartesianProductWrapped(atomAliases,wrapper);
   return allAliases;
 }
+#endif
 
 
 
-
-
-bool MultiMonomer_O::recognizesAlias(Alias_sp alias)
+#if 0
+bool Monomer_O::recognizesAlias(Alias_sp alias)
 {
   AtomIndexer_sp		atomIndexer;
   EntityNameSet_sp		entityNameSet;
@@ -1185,11 +1081,11 @@ bool MultiMonomer_O::recognizesAlias(Alias_sp alias)
   LOG(BF("Fail,does not recognize alias") );
   return false;
 }
+#endif
 
 
 
-
-bool MultiMonomer_O::incrementMonomerIndex()
+bool Monomer_O::incrementMonomerIndex()
 {
   this->_CurrentMonomerIndex++;
   if ( this->_CurrentMonomerIndex == this->_Monomers.size() )

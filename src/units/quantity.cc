@@ -507,7 +507,8 @@ CL_DEFMETHOD     bool Quantity_O::operator<(core::T_sp other) const
 	if ( other.isA<Quantity_O>() )
 	{
 	    Quantity_sp qother = other.as<Quantity_O>();
-	    return this->_Value.as<core::General_O>()->operator<(qother->value_in_unit(this->_Unit,1));
+            return core::clasp_number_compare(this->_Value.as<core::Number_O>(),qother->value_in_unit(this->_Unit,1).as<core::Number_O>()) < 0;
+//	    return this->_Value.as<core::General_O>()->operator<(qother->value_in_unit(this->_Unit,1));
 	}
 	SIMPLE_ERROR(BF("You cannot compare a Quantity with value of class[%s] to an object of class[%s]") % core::cl__class_of(this->_Value)->_classNameAsString() % core::cl__class_of(other)->_classNameAsString() );
     }
@@ -518,7 +519,8 @@ CL_DEFMETHOD     bool Quantity_O::operator<=(core::T_sp other) const
 	if ( other.isA<Quantity_O>() )
 	{
 	    Quantity_sp qother = other.as<Quantity_O>();
-	    return this->_Value.as<core::General_O>()->operator<=(qother->value_in_unit(this->_Unit,1));
+            return core::clasp_number_compare(this->_Value.as<core::Number_O>(),qother->value_in_unit(this->_Unit,1).as<core::Number_O>()) <= 0;
+//	    return this->_Value.as<core::General_O>()->operator<=(qother->value_in_unit(this->_Unit,1));
 	}
 	SIMPLE_ERROR(BF("You cannot compare a Quantity with value of class[%s] to an object of class[%s]") % core::cl__class_of(this->_Value)->_classNameAsString() % core::cl__class_of(other)->_classNameAsString() );
     }
@@ -530,7 +532,8 @@ CL_DEFMETHOD     bool Quantity_O::operator>(core::T_sp other) const
 	if ( other.isA<Quantity_O>() )
 	{
 	    Quantity_sp qother = other.as<Quantity_O>();
-	    return this->_Value.as<core::General_O>()->operator>(qother->value_in_unit(this->_Unit,1));
+            return core::clasp_number_compare(this->_Value.as<core::Number_O>(),qother->value_in_unit(this->_Unit,1).as<core::Number_O>()) > 0;
+//	    return this->_Value.as<core::General_O>()->operator>(qother->value_in_unit(this->_Unit,1));
 	}
 	SIMPLE_ERROR(BF("You cannot compare a Quantity with value of class[%s] to an object of class[%s]") % core::cl__class_of(this->_Value)->_classNameAsString() % core::cl__class_of(other)->_classNameAsString() );
     }
@@ -541,7 +544,8 @@ CL_DEFMETHOD     bool Quantity_O::operator>=(core::T_sp other) const
 	if ( other.isA<Quantity_O>() )
 	{
 	    Quantity_sp qother = other.as<Quantity_O>();
-	    return this->_Value.as<core::General_O>()->operator>=(qother->value_in_unit(this->_Unit,1));
+            return core::clasp_number_compare(this->_Value.as<core::Number_O>(),qother->value_in_unit(this->_Unit,1).as<core::Number_O>()) >= 0;
+//	    return this->_Value.as<core::General_O>()->operator>=(qother->value_in_unit(this->_Unit,1));
 	}
 	SIMPLE_ERROR(BF("You cannot compare a Quantity with value of class[%s] to an object of class[%s]") % core::cl__class_of(this->_Value)->_classNameAsString() % core::cl__class_of(other)->_classNameAsString() );
     }

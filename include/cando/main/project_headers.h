@@ -424,9 +424,7 @@ GC_MANAGED_TYPE(gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Sy
 #endif
 
 
-
-
-
+GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::StereoisomerAtoms_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<adapt::QDomNode_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::AGEdge_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<chem::Atom_O>>);
@@ -598,7 +596,6 @@ class Vector3;
     class EnergyAngle_O;
     class ResidueTest_O;
     class SpecificContext_O;
-    class MonoMonomer_O;
     class EnergyRigidBodyStaple;
     class AtomOrBondMatchNode_O;
     class AntechamberFocusAtomMatch_O;
@@ -640,7 +637,6 @@ class Vector3;
     class AtomInfo;
     class Molecule_O;
     class RingTest_O;
-    class MultiMonomer_O;
     class EnergyDihedral_O;
     class RootMatchNode_O;
     class Minimizer_O;

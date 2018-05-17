@@ -869,7 +869,7 @@ void	Minimizer_O::_displayIntermediateMessage(
       sout << "Seconds--";
     }
     sout << "Step-log(Alpha)--Dir-------------Energy-----------RMSforce";
-    if ( this->_ScoringFunction->getName() != "" ) 
+    if ( this->_ScoringFunction->scoringFunctionName() != "" ) 
     {
       sout << "-------Name";
     }
@@ -901,9 +901,9 @@ void	Minimizer_O::_displayIntermediateMessage(
   }
   sout << (BF(" %18.3lf") % fnew );
   sout << (BF(" %18.3lf") % forceRMSMag);
-  if ( this->_ScoringFunction->getName() != "" ) 
+  if ( this->_ScoringFunction->scoringFunctionName() != "" ) 
   {
-    sout << BF(" %s") % this->_ScoringFunction->getName();
+    sout << BF(" %s") % this->_ScoringFunction->scoringFunctionName();
   }
   core::clasp_writeln_string(sout.str());
   if ( this->_DebugOn ) 

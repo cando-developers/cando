@@ -69,7 +69,6 @@ namespace chem
   SMART(ExtractScaffold);
   SMART(Atom);
   SMART(Residue);
-  SMART(Monomer);
   SMART(RingClosingPlug);
   SMART(ExtractCoreFragment);
 
@@ -146,115 +145,112 @@ struct gctools::GCInfo<chem::Topology_O> {
 namespace chem {
 class Topology_O : public core::CxxObject_O
 {
-    LISP_CLASS(chem,ChemPkg,Topology_O,"Topology",core::CxxObject_O); 
-public:
-public:
-    void initialize();
-public:
-    typedef Plug_sp	plugType;
-    typedef Plug_O	plugOType;
-    typedef adapt::SymbolMap<Plug_O> Plugs;
-public:
-    core::Symbol_sp				_Name;
-    Constitution_sp				_Constitution;
-    bool					_SuppressTrainers;
-    core::Vector_sp                             _AtomInfo;
-    adapt::SymbolMap<StereoisomerAtoms_O>      	_StereoisomerAtomProperties;
-    core::HashTableEq_sp			_Properties;
-    core::Symbol_sp                             _DefaultOutPlugName;
-    Plugs			                _Plugs;
+  LISP_CLASS(chem,ChemPkg,Topology_O,"Topology",core::CxxObject_O); 
  public:
-    bool fieldsp() const { return true;};
-    void fields(core::Record_sp node);
-public:
-    CL_LISPIFY_NAME(make_topology);
-    CL_DOCSTRING(R"doc(Create a topology and return it, after this the topology needs to be added to a constitution)doc");
-    CL_DEF_CLASS_METHOD static Topology_sp make(core::Symbol_sp name, Constitution_sp constitution, core::List_sp plugs );
+ public:
+  void initialize();
+ private:
+  typedef Plug_sp	plugType;
+  typedef Plug_O	plugOType;
+  typedef adapt::SymbolMap<Plug_O> Plugs;
+ private:
+  core::Symbol_sp				_Name;
+  Constitution_sp				_Constitution;
+  core::Vector_sp                             _AtomInfo;
+  core::Symbol_sp                             _StereoisomerCoding; // kw::_sym_absolute or kw::_sym_coded
+  Fixnum                                      _NumberOfStereoisomers;
+  gctools::Vec0<StereoisomerAtoms_sp>         _StereoisomerAtomProperties;
+  core::HashTableEq_sp			      _Properties;
+  core::Symbol_sp                             _DefaultOutPlugName;
+  Plugs			                      _Plugs;
+ public:
+  bool fieldsp() const { return true;};
+  void fields(core::Record_sp node);
+ public:
+  CL_LISPIFY_NAME(make_topology);
+  CL_DOCSTRING(R"doc(Create a topology and return it, after this the topology needs to be added to a constitution)doc");
+  CL_DEF_CLASS_METHOD static Topology_sp make(core::Symbol_sp name, Constitution_sp constitution, core::List_sp plugs );
     
-CL_LISPIFY_NAME(makeTopologyFromResidue);
-CL_LAMBDA(residue topology_name &optional constitution);
- CL_DOCSTRING("Create a topology from a residue. The constitution may be NIL or a constitution to use to define the atoms");
- CL_DEF_CLASS_METHOD static Topology_mv makeTopologyFromResidue(chem::Residue_sp residue, core::Symbol_sp topologyName, core::T_sp constitution);
-protected:
-    void setFromMonomer(Monomer_sp mon);
-public:
-    void setConstitution(Constitution_sp c);
-public:
+  CL_LISPIFY_NAME(makeTopologyFromResidue);
+  CL_LAMBDA(residue topology_name &optional constitution);
+  CL_DOCSTRING("Create a topology from a residue. The constitution may be NIL or a constitution to use to define the atoms");
+  CL_DEF_CLASS_METHOD static Topology_mv makeTopologyFromResidue(chem::Residue_sp residue, core::Symbol_sp topologyName, core::T_sp constitution);
+ protected:
+  void setFromMonomer(Monomer_sp mon);
+ public:
+  void setConstitution(Constitution_sp c);
+ public:
     /* You can attach properties to the Topology later */
-    core::HashTableEq_sp properties() const;
+  core::HashTableEq_sp properties() const;
 
-    string description() const;
-    CL_DEFMETHOD Constitution_sp	getConstitution() const { return this->_Constitution; };
-    MonomerContext_sp getMonomerContext(CandoDatabase_sp bdb);
-    //! Return if we suppress trainers
-CL_LISPIFY_NAME("suppressTrainers");
-CL_DEFMETHOD     bool suppressTrainers() const { return this->_SuppressTrainers;};
+  string description() const;
+  CL_DEFMETHOD Constitution_sp	getConstitution() const { return this->_Constitution; };
+  MonomerContext_sp getMonomerContext(CandoDatabase_sp bdb);
 
- Residue_sp build_residue() const;
+  Residue_sp build_residue() const;
 
- string __repr__() const;
+  string __repr__() const;
  
     //! Return all plugs as a Cons
-    core::List_sp	plugsAsList();
+  core::List_sp	plugsAsList();
 
     //! Return a Cons of Plugs that have Mates
-    core::List_sp	plugsWithMatesAsList();
+  core::List_sp	plugsWithMatesAsList();
 
     //! Return a Cons of out plugs
-    core::List_sp	outPlugsAsList();
+  core::List_sp	outPlugsAsList();
 
     /// @brief Return all of the Incomplete Frames as Cons
     /// @return Cons of Incomplete Frames
-    core::List_sp	incompleteFramesAsList();
+  core::List_sp	incompleteFramesAsList();
 
     /// @brief Return the name of the Topology
-CL_LISPIFY_NAME("getName");
-CL_DEFMETHOD     core::Symbol_sp	getName() const {return (this->_Name);};
-CL_LISPIFY_NAME("setName");
- CL_DEFMETHOD     void setName(core::Symbol_sp n) {this->_Name = n;};
+  CL_LISPIFY_NAME("getName");
+  CL_DEFMETHOD     core::Symbol_sp	getName() const {return (this->_Name);};
+  CL_LISPIFY_NAME("setName");
+  CL_DEFMETHOD     void setName(core::Symbol_sp n) {this->_Name = n;};
 
     /// @brief Return true if this Topology has a plug named (name)
-    bool	hasPlugNamed(core::Symbol_sp name);
+  bool	hasPlugNamed(core::Symbol_sp name);
     /// @brief Return the Plug with the name
-    Plug_sp	plugNamed(core::Symbol_sp name);
+  Plug_sp	plugNamed(core::Symbol_sp name);
 
-    void setTemporaryObject(core::T_sp o);
-    core::T_sp getTemporaryObject();
+  void setTemporaryObject(core::T_sp o);
+  core::T_sp getTemporaryObject();
 
-CL_LISPIFY_NAME("numberOfPlugs");
-CL_DEFMETHOD     int	numberOfPlugs() { return this->_Plugs.size(); };
+  CL_LISPIFY_NAME("numberOfPlugs");
+  CL_DEFMETHOD     int	numberOfPlugs() { return this->_Plugs.size(); };
 
- CL_DEFMETHOD bool	hasInPlug();
- CL_DEFMETHOD plugType getInPlug();
+  CL_DEFMETHOD bool	hasInPlug();
+  CL_DEFMETHOD plugType getInPlug();
 
- CL_DEFMETHOD core::Symbol_sp defaultOutPlugName() const { return this->_DefaultOutPlugName; };
- CL_DEFMETHOD void setf_default_out_plug_name(core::Symbol_sp outPlugName) {
-   this->_DefaultOutPlugName = outPlugName;
- }
+  CL_DEFMETHOD core::Symbol_sp defaultOutPlugName() const { return this->_DefaultOutPlugName; };
+  CL_DEFMETHOD void setf_default_out_plug_name(core::Symbol_sp outPlugName) {
+    this->_DefaultOutPlugName = outPlugName;
+  }
 
     /*! Return true if this Topology has all of the plugs in (plugSet) */
-    bool	hasMatchingPlugsWithMates(adapt::SymbolSet_sp plugSet);
+  bool	hasMatchingPlugsWithMates(adapt::SymbolSet_sp plugSet);
 
-    bool	matchesMonomerEnvironment( Monomer_sp mon );
-    RingClosingPlug_sp provideMissingRingClosingPlug( Monomer_sp mon );
+  bool	matchesMonomerEnvironment( Monomer_sp mon );
+  RingClosingPlug_sp provideMissingRingClosingPlug( Monomer_sp mon );
 
-    CL_DEFMETHOD core::T_sp atomInfo() const { return this->_AtomInfo; };
-    CL_DEFMETHOD core::T_sp setf_atomInfo(core::Vector_sp ai) { this->_AtomInfo = ai; return ai; };
+  CL_DEFMETHOD core::T_sp atomInfo() const { return this->_AtomInfo; };
+  CL_DEFMETHOD core::T_sp setf_atomInfo(core::Vector_sp ai) { this->_AtomInfo = ai; return ai; };
 
-    void mapPlugs(std::function<void(Plug_sp)> );
+  void mapPlugs(std::function<void(Plug_sp)> );
 
-    core::List_sp extractFragmentsAsList();
+  core::List_sp extractFragmentsAsList();
 
-    void throwIfExtractFragmentsAreNotExclusive(ConstitutionAtoms_sp constitutionAtoms);
+  void throwIfExtractFragmentsAreNotExclusive(ConstitutionAtoms_sp constitutionAtoms);
 
-    CL_DEFMETHOD void addPlug(core::Symbol_sp nm, plugType op ) { this->_Plugs.set(nm, op);};
-    bool		hasFlag(core::Symbol_sp f) const;
-    bool		matchesTopology(Topology_sp cm);
-    bool		matchesContext(MonomerContext_sp cm);
+  CL_DEFMETHOD void addPlug(core::Symbol_sp nm, plugType op ) { this->_Plugs.set(nm, op);};
+  bool		hasFlag(core::Symbol_sp f) const;
+  bool		matchesTopology(Topology_sp cm);
+  bool		matchesContext(MonomerContext_sp cm);
 
-    /*! Return a StereoisomerAtoms_sp object for the stereoisomer name
-      Either return the existing one or create a new one */
-    StereoisomerAtoms_sp lookupOrCreateStereoisomerAtoms(core::Symbol_sp stereoisomerName);
+  void setStereoisomerAtoms(core::Symbol_sp coding, core::List_sp stereoisomer_atoms);
+  core::T_mv lookupStereoisomerAtoms(Fixnum index);
     
  Topology_O() : _Name(_Nil<core::Symbol_O>()), _Constitution(_Unbound<chem::Constitution_O>()) {};
  Topology_O(core::Symbol_sp name, Constitution_sp constitution) : _Name(name), _Constitution(constitution) {};

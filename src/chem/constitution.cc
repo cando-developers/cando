@@ -192,7 +192,7 @@ RepresentativeList_sp	Constitution_O::expandedRepresentativeList() const
 	plug = (ti->second)->provideMissingRingClosingPlug(mon);
 	if ( plug.notnilp() ) 
 	{
-	    if ( plug->recognizesRingClosingMate(mate->getName()) )
+	    if ( plug->recognizesRingClosingMate(mate->monomerName()) )
 	    {
 		candidateTopologies.insert(ti->second);
 		missing = plug;
