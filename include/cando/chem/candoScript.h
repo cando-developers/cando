@@ -45,7 +45,7 @@ namespace chem {
 extern	void	setupCandoPrimitives(core::Lisp_sp);
 extern	void	setupPythonPrimitives(core::Lisp_sp);
 
-SMART(MultiMonomer);
+ FORWARD(Monomer);
 SMART(CandoDatabase);
 SMART(OligomerPart_Base);
 /*! A simple object to store and create a monomer within an oligomer
@@ -58,7 +58,7 @@ class OligomerPart_Base_O : public core::CxxObject_O
 public:
 //    void archiveBase(core::ArchiveP node);
 public:
-	virtual MultiMonomer_sp createMonomer(CandoDatabase_sp bdb) {_OF();SUBCLASS_MUST_IMPLEMENT();};
+	virtual Monomer_sp createMonomer(CandoDatabase_sp bdb) {_OF();SUBCLASS_MUST_IMPLEMENT();};
 	DEFAULT_CTOR_DTOR(OligomerPart_Base_O);
 };
 
@@ -80,7 +80,7 @@ public:	// Leave everything exposed to simplify getting values in and out
 	string	_Comment;
 public:
 public:
-    virtual MultiMonomer_sp createMonomer(CandoDatabase_sp bdb);
+    virtual Monomer_sp createMonomer(CandoDatabase_sp bdb);
     DEFAULT_CTOR_DTOR(OligomerPart_Monomer_O);
 };
 
@@ -101,7 +101,7 @@ public:	// Leave everything exposed to simplify getting values in and out
 	OligomerPart_Monomer_sp	_Monomer2;
 public:
 public:
-    virtual MultiMonomer_sp createMonomer(CandoDatabase_sp bdb);
+    virtual Monomer_sp createMonomer(CandoDatabase_sp bdb);
     DEFAULT_CTOR_DTOR(OligomerPart_Link_O);
 };
 

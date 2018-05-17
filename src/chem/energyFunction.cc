@@ -191,7 +191,7 @@ void	EnergyFunction_O::initialize()
   this->_ImproperRestraint = EnergyImproperRestraint_O::create();
   this->_FixedNonbondRestraint = EnergyFixedNonbondRestraint_O::create();
 #endif
-  this->setName("");
+  this->setScoringFunctionName("");
   this->_Message = "";
   this->useDefaultSettings();
 }

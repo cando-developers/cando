@@ -134,13 +134,13 @@ void setCandoDatabase(CandoDatabase_sp bdb, core::Lisp_sp lisp)
 
 
 
-MultiMonomer_sp	OligomerPart_Monomer_O::createMonomer(CandoDatabase_sp bdb)
+Monomer_sp	OligomerPart_Monomer_O::createMonomer(CandoDatabase_sp bdb)
 {
-    MultiMonomer_sp mon = MultiMonomer_O::create();
-    mon->setId(this->_MonomerId);
-    mon->setGroupName(this->_GroupName);
-    mon->setAliasesFromCons(this->_MonomerAliases);
-    return mon;
+  Monomer_sp mon = Monomer_O::create();
+  mon->setId(this->_MonomerId);
+//  mon->setGroupName(this->_GroupName);
+//  mon->setAliasesFromCons(this->_MonomerAliases);
+  return mon;
 }
 
 
@@ -157,7 +157,7 @@ void	OligomerPart_Link_O::archive(core::ArchiveP node)
 
 
 
-MultiMonomer_sp	OligomerPart_Link_O::createMonomer(CandoDatabase_sp bdb)
+Monomer_sp	OligomerPart_Link_O::createMonomer(CandoDatabase_sp bdb)
 {
     return this->_Monomer2->createMonomer(bdb);
 }
@@ -874,7 +874,7 @@ CL_DEFUN core::T_sp chem__oligomer(core::Symbol_sp oligomerName, core::List_sp p
     CandoDatabase_sp bdb = getCandoDatabase();
     for ( auto p : parts ) {
 	OligomerPart_Base_sp oligPart = p->car<OligomerPart_Base_O>();
-	MultiMonomer_sp mon = oligPart->createMonomer(bdb);
+	Monomer_sp mon = oligPart->createMonomer(bdb);
 	olig->addMonomer(mon);
 	monomerMap->setf_gethash(mon->getId(), mon);
 	if ( oligPart.isA<OligomerPart_Link_O>() )
@@ -884,8 +884,8 @@ CL_DEFUN core::T_sp chem__oligomer(core::Symbol_sp oligomerName, core::List_sp p
 	    core::Symbol_sp	mon2Id = link->_Monomer2->_MonomerId;
 	    if ( !monomerMap->contains(mon1Id) ) SIMPLE_ERROR(BF("Unknown monomer id: %s")%_rep_(mon1Id));
 	    if ( !monomerMap->contains(mon2Id) ) SIMPLE_ERROR(BF("Unknown monomer id: %s")%_rep_(mon2Id));
-	    MultiMonomer_sp mon1 = monomerMap->gethash(mon1Id).as<MultiMonomer_O>();
-	    MultiMonomer_sp mon2 = monomerMap->gethash(mon2Id).as<MultiMonomer_O>();
+	    Monomer_sp mon1 = monomerMap->gethash(mon1Id).as<Monomer_O>();
+	    Monomer_sp mon2 = monomerMap->gethash(mon2Id).as<Monomer_O>();
 	    olig->couple(mon1,link->_Coupling,mon2);
 	}
     }

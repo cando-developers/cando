@@ -57,9 +57,7 @@ namespace chem {
 SMART(Aggregate);
 SMART(Entity);
 SMART(SpecificContextSet);
-SMART(Monomer);
 SMART(ScorerVirtualMachine);
-SMART(MultiMonomer);
 FORWARD(Residue);
 SMART(RepresentedEntityNameSet);
 SMART(MonomerPack);
