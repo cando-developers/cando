@@ -36,48 +36,44 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
-    void JumpAtom::_insertChild(int idx, const RefCountedAtomHandle& c)
+    void JumpJoint_O::_insertChild(int idx, Joint_sp c)
     {
-	RefCountedAtomHandle empty;
+	Joint_sp empty;
 	this->_Children.insert(this->_Children.begin()+idx,empty);
 	this->_Children[idx] = c;
     }
 
 
-    void JumpAtom::_appendChild(const RefCountedAtomHandle& c)
+    void JumpJoint_O::_appendChild(Joint_sp c)
     {
-	RefCountedAtomHandle empty;
+	Joint_sp empty;
 	int idx = this->_Children.size();
 	this->_Children.push_back(empty);
 	this->_Children[idx] = c;
     }
 
 
-    void JumpAtom::_releaseChild(int idx)
+    void JumpJoint_O::_releaseChild(int idx)
     {
-	this->_Children[idx].reset();
+	this->_Children[idx].reset_();
 	this->_Children.erase(this->_Children.begin()+idx);
     }
 
 
-    void JumpAtom::_releaseAllChildren()
+    void JumpJoint_O::_releaseAllChildren()
     {
-	for ( int i=0; i<this->_numberOfChildren(); i++ )
-	{
-	    this->_Children[i].reset();
-	}
 	this->_Children.clear();
     }
 
 
 
-    void JumpAtom::updateInternalCoords(Stub& stub,
+    void JumpJoint_O::updateInternalCoords(Stub& stub,
 					bool const recursive,
 	AtomTree_sp at)
     {_OF();
 	ASSERTF(stub.isOrthogonal(1e-3),BF("The incoming stub is not orthogonal"));
 	Stub newStub(this->getStub(at));
-	this->_Jump.fromStubs(stub,newStub,_lisp);
+	this->_Jump.fromStubs(stub,newStub);
 	LOG(BF("Incoming stub:\n%s") % stub.asString() );
 	LOG(BF("My new Stub:\n%s") % newStub.asString() );
 	LOG(BF("Jump:\n%s") % this->_Jump.asString());
@@ -92,30 +88,33 @@ namespace kinematics
 
 
 
-    RefCountedAtomHandle JumpAtom::stubAtom1() const
+    Joint_sp JumpJoint_O::stubAtom1() const
     {
-	return ( this->stubDefined() ? this->atomHandle() : this->parent() );
+      if (this->stubDefined()) {
+        return this->asSmartPtr();
+      }
+      return this->parent();
     }
 
-    RefCountedAtomHandle JumpAtom::stubAtom2() const
+    Joint_sp JumpJoint_O::stubAtom2() const
     {
 	if ( this->stubDefined() )
 	{
 	    return this->getNonJumpAtom(0);
 	} else
 	{
-	    return this->parent().get()->stubAtom2();
+	    return this->parent()->stubAtom2();
 	}
     }
 
-    RefCountedAtomHandle JumpAtom::stubAtom3(AtomTree_sp at) const
+    Joint_sp JumpJoint_O::stubAtom3(AtomTree_sp at) const
     {_OF();
 	if ( this->stubDefined() )
 	{
-	    RefCountedAtomHandle first(this->getNonJumpAtom(0));
-	    ASSERT(first.isDefined());
-	    RefCountedAtomHandle second(first.get()->getNonJumpAtom(0));
-	    if ( second.isDefined() )
+	    Joint_sp first(this->getNonJumpAtom(0));
+	    ASSERT(first.boundp());
+	    Joint_sp second(first->getNonJumpAtom(0));
+	    if ( second.boundp() )
 	    {
 		return second;
 	    } else
@@ -124,19 +123,19 @@ namespace kinematics
 	    }
 	} else
 	{
-	    return this->parent().get()->stubAtom3(at);
+	    return this->parent()->stubAtom3(at);
 	}
     }
 
-    bool JumpAtom::keepDofFixed(DofType dof) const
+    bool JumpJoint_O::keepDofFixed(DofType dof) const
     {
-	return (this->parent().isDefined());
+	return (this->parent().boundp());
     }
 
 
 
     /*! Update the external coordinates using the input stub */
-    void JumpAtom::updateXyzCoords(Stub& stub,AtomTree_sp at)
+    void JumpJoint_O::updateXyzCoords(Stub& stub,AtomTree_sp at)
     {_OF();
 	ASSERTF(stub.isOrthogonal(1e-3),BF("Stub is not orthogonal - stub:\n%s") % stub.asString());
 	Stub newStub;
@@ -151,15 +150,15 @@ namespace kinematics
 
 
 
-    void JumpAtom::updateXyzCoords(AtomTree_sp at)
+    void JumpJoint_O::updateXyzCoords(AtomTree_sp at)
     {
 	Stub stub(this->getInputStub(at));
-	this->JumpAtom::updateXyzCoords(stub,at);
+	this->JumpJoint_O::updateXyzCoords(stub,at);
     }
 
 
 
-    double JumpAtom::dof(DofType const& dof) const
+    double JumpJoint_O::dof(DofType const& dof) const
     {_OF();
 	if ( dof.isRigidBodyDof() )
 	{
@@ -169,7 +168,7 @@ namespace kinematics
     }
 
 
-    core::Symbol_sp JumpAtom::typeSymbol() const {_OF(); return _sym_jump;};
+    core::Symbol_sp JumpJoint_O::typeSymbol() const {_OF(); return _sym_jump;};
 
 
 

@@ -44,7 +44,6 @@ namespace kinematics
     FORWARD(MonomerNode);
 class MonomerNode_O : public MonomerBaseNode_O
 {
-    friend class AtomTree_O;
     LISP_CLASS(kinematics,KinPkg,MonomerNode_O,"MonomerNode",MonomerBaseNode_O);
 #if INIT_TO_FACTORIES
  public:
@@ -56,7 +55,7 @@ class MonomerNode_O : public MonomerBaseNode_O
     DEFAULT_CTOR_DTOR(MonomerNode_O);
 public:
 	void initialize();
-protected:	// instance variables here
+public:	// instance variables here
 	/*! Store the parent ChainNode to this one */
 	MonomerNode_sp		_Parent;
 	/*! Store the name of the plug to the parent */

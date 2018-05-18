@@ -90,11 +90,11 @@ namespace kinematics
 		  sigmas = sigmas->cdr(),
 		  indices = indices->cdr() )
 	{
-	    this->_Dihedrals.push_back(dihedrals->car<core::DoubleFloat_O>()->get());
-	    this->_Sigmas.push_back(sigmas->car<core::DoubleFloat_O>()->get());
+	    this->_Dihedrals.push_back(dihedrals->car<core::DoubleFloat_O>());
+	    this->_Sigmas.push_back(sigmas->car<core::DoubleFloat_O>());
 	    if ( indices->ocar().notnilp() )
 	    {
-		this->_Indices.push_back(indices->car<core::Fixnum_O>()->get());
+		this->_Indices.push_back(indices->car<core::Fixnum_O>());
 	    } else
 	    {
 		this->_Indices.push_back(0);

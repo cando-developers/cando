@@ -327,12 +327,10 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/kinematics/aggregateNode.h>
 #include <cando/kinematics/atom.fwd.h>
 #include <cando/kinematics/atom.h>
-#include <cando/kinematics/atomHandle.h>
 #include <cando/kinematics/atomTemplate.fwd.h>
 #include <cando/kinematics/atomTemplate.h>
 #include <cando/kinematics/atomTree.fwd.h>
 #include <cando/kinematics/atomTree.h>
-#include <cando/kinematics/atomo.h>
 #include <cando/kinematics/bondId.fwd.h>
 #include <cando/kinematics/bondId.h>
 #include <cando/kinematics/bondedAtom.h>
@@ -418,6 +416,7 @@ GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::AtomTe
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::MonomerNode_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::ChainNode_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::Rotamer_O>>);
+GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::Joint_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::ChiDihedral_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<gctools::smart_ptr<kinematics::BackboneDependentRotamerSet_O>>);
 GC_MANAGED_TYPE(gctools::GCVector_moveable<std::pair<gctools::smart_ptr<core::Symbol_O>, gctools::smart_ptr<kinematics::MonomerNode_O> > > );

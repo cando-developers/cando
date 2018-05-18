@@ -110,8 +110,8 @@ namespace kinematics
     FORWARD(BackboneDependentRotamerSet);
     class BackboneDependentRotamerSet_O : public RotamerSetBase_O
     {
-	friend class BackboneDependentRotamerLibrary_O;
 	LISP_CLASS(kinematics,KinPkg,BackboneDependentRotamerSet_O,"BackboneDependentRotamerSet",RotamerSetBase_O);
+	friend class BackboneDependentRotamerLibrary_O;
 #if INIT_TO_FACTORIES
     public:
 	static BackboneDependentRotamerSet_sp make(const int phi, const int psi);

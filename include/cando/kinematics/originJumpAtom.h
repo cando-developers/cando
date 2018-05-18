@@ -23,8 +23,8 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#ifndef	kinematics_originJumpAtom_H
-#define kinematics_originJumpAtom_H
+#ifndef	kinematics_originJumpJoint_H
+#define kinematics_originJumpJoint_H
 
 #include <clasp/core/foundation.h>
 #include <cando/kinematics/atom.h>
@@ -35,36 +35,34 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
-    class OriginJumpAtom : public JumpAtom
-    {
-    public:
-	static const NodeType nodeType = originJumpAtom;
-    protected:
-    public:
+  FORWARD(OriginJumpJoint);
+  class OriginJumpJoint_O : public JumpJoint_O {
+    LISP_CLASS(kinematics,KinPkg,OriginJumpJoint_O,"OriginJumpAtom",JumpJoint_O);
+  public:
+    static const NodeType nodeType = originJumpAtom;
+  public:
 	/*! Empty ctor */
-	OriginJumpAtom() {};
-
-    OriginJumpAtom(const chem::AtomId& atomId,const string& comment) : JumpAtom(atomId,comment) {};
+  OriginJumpJoint_O(const chem::AtomId& atomId,const string& comment) : JumpJoint_O(atomId,comment) {};
 
 
 
-	virtual core::Symbol_sp typeSymbol() const;
+    virtual core::Symbol_sp typeSymbol() const;
 
 
 	/*! The stubAtoms of an OriginJumpAtom are all myself */
-	RefCountedAtomHandle stubAtom1() const { return this->_Me;};
-	RefCountedAtomHandle stubAtom2() const { return this->_Me;};
-	RefCountedAtomHandle stubAtom3(AtomTree_sp at) const { return this->_Me;};
+    Joint_sp stubAtom1() const { return this->asSmartPtr();};
+    Joint_sp stubAtom2() const { return this->asSmartPtr();};
+    Joint_sp stubAtom3(AtomTree_sp at) const { return this->asSmartPtr();};
 
 	/*! Update the internal coordinates */
-	virtual void updateInternalCoords(Stub& stub,
-					  bool const recursive,
-					  AtomTree_sp at);
+    virtual void updateInternalCoords(Stub& stub,
+                                      bool const recursive,
+                                      AtomTree_sp at);
 
 
 
 
-    };
+  };
 
 
 

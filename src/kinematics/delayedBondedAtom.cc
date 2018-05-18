@@ -38,15 +38,15 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
-    RefCountedAtomHandle DelayedBondedAtom::stubAtom3(AtomTree_sp tree) const
+    Joint_sp DelayedBondedJoint_O::stubAtom3(AtomTree_sp tree) const
     {
 	if ( this->_DelayType == delayForFollowingResidueBond1 )
 	{
 //	    chem::ConstitutionAtomIndex0N id = this->_DelayAtomId;
 	    chem::AtomId bond0Id(this->_Id.moleculeId(),this->_Id.residueId(),this->_DelayAtomId);
-	    RefCountedAtomHandle outBond0 = tree->lookup(bond0Id);
+	    Joint_sp outBond0 = tree->lookup(bond0Id);
 	    int idx = outBond0.get()->firstNonJumpChildIndex();
-	    RefCountedAtomHandle nextResidueBond0 = outBond0.get()->child(idx);
+	    Joint_sp nextResidueBond0 = outBond0.get()->child(idx);
 	    chem::AtomId nextResidueBond0AtomId = nextResidueBond0.get()->id();
 	    ASSERTF(bond0Id.residueId() != nextResidueBond0AtomId.residueId(),
 		    BF("The atom that is supposed to be in the next residue has the same residueId[%d]")
@@ -63,13 +63,13 @@ namespace kinematics
 	    // Delay is for InternalResidueAtom
 //	    chem::ConstitutionAtomIndex0N id = this->_DelayAtomId;
 	    chem::AtomId bond0Id(this->_Id.moleculeId(),this->_Id.residueId(),this->_DelayAtomId);
-	    RefCountedAtomHandle outBond0 = tree->lookup(bond0Id);
+	    Joint_sp outBond0 = tree->lookup(bond0Id);
 	    return outBond0;
 	}
     }
 
 
-    core::Symbol_sp DelayedBondedAtom::typeSymbol() const {_OF(); return _sym_delayed;};
+    core::Symbol_sp DelayedBondedJoint_O::typeSymbol() const {_OF(); return _sym_delayed;};
 
 
 

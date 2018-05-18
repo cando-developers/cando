@@ -106,7 +106,7 @@ namespace kinematics
 	{
           this->_ParentPlugName = _Nil<core::Symbol_O>();
 	}
-	this->_MonomerName = monomer->getName();
+	this->_MonomerName = monomer->monomerName();
 	this->_Topology = monomer->getTopology();
 	this->_ConformationIndex = 0;
 	for ( chem::Monomer_O::Couplings::const_iterator it=monomer->_Couplings.begin();

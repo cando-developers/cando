@@ -40,8 +40,9 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/kinematics/stub.h>
 #include <cando/kinematics/monomerNode.h>
 #include <cando/kinematics/chainNode.h>
-#include <cando/kinematics/atomo.h>
 #include <cando/kinematics/atom.h>
+#include <cando/kinematics/originJumpAtom.h>
+#include <cando/kinematics/rootBondedAtom.h>
 #include <cando/kinematics/atomTree.h>
 
 namespace kinematics
@@ -68,12 +69,12 @@ namespace kinematics
     };
 
 
-    void AtomTreeWalkFunctor::operator()(kinematics::Atom_sp atom) const
+    void AtomTreeWalkFunctor::operator()(kinematics::Joint_sp atom) const
     {
 	THROW_HARD_ERROR(BF("Subclass of AtomTreeWalkFunctor must define operator()"));
     }
 
-    void ExecutableAtomTreeWalkFunctor::operator()(kinematics::Atom_sp atom) const
+    void ExecutableAtomTreeWalkFunctor::operator()(kinematics::Joint_sp atom) const
     {
       IMPLEMENT_MEF("Improve this");
 #if 0
@@ -93,27 +94,20 @@ namespace kinematics
 
     void AtomTree_O::initialize()
     {
-	this->_AtomHolders.resize(16);
-	this->_JumpAtoms.resize(16);
-	this->_OriginJumpAtoms.resize(4);
-	this->_BondedAtoms.resize(16);
-	this->_RootBondedAtoms.resize(16);
-	this->_DelayedBondedAtoms.resize(32);
 	chem::AtomId id;
 	this->_Root = this->newOriginJumpAtom(id,"-root-");
     }
 
 
-    RefCountedAtomHandle AtomTree_O::lookup(const chem::AtomId& atomId) const
+    Joint_sp AtomTree_O::lookup(const chem::AtomId& atomId) const
     {
-	RefCountedAtomHandle handle = this->_AtomMap[atomId];
-	return handle;
+	Joint_sp atom = this->_AtomMap[atomId];
+	return atom;
     }
 
-    Atom_sp AtomTree_O::atomTreeLookupAtomid(const chem::AtomId& atomId) const
+    Joint_sp AtomTree_O::atomTreeLookupAtomid(const chem::AtomId& atomId) const
     {
-	RefCountedAtomHandle handle = this->lookup(atomId);
-	return Atom_O::create(handle);
+      return this->lookup(atomId);
     }
 
 
@@ -138,98 +132,46 @@ namespace kinematics
 	this->_AtomMap.resize(mol,res,numAtoms);
     };
 
-
-
-
-    Atom_sp AtomTree_O::root() const
-    {
-	return this->_Root;
-    }
-
-
-
-    Atom_sp AtomTree_O::_initializeNewAtom(uint holderIndex, const chem::AtomId& atomId )
+    Joint_sp AtomTree_O::_initializeNewAtom(Joint_sp atom, const chem::AtomId& atomId )
     {_OF();
 	AtomTree_sp tree = this->sharedThis<AtomTree_O>();
-	Atom_sp atom = Atom_O::create(tree,holderIndex);
-	if ( atomId.isDefined() ) this->updateAtomIdMap(atomId,atom->handle());
-	atom->handle().get()->__setAtomHandle(atom->handle());
-	LOG(BF("AFTER_ALLOC AtomTree:%s") % this->__repr__());
+	if ( atomId.isDefined() ) this->updateAtomIdMap(atomId,atom);
 	return atom;
     }
 
 
-
-
-    Atom_sp AtomTree_O::newJumpAtom(const chem::AtomId& atomId, const string& comment)
+    Joint_sp AtomTree_O::newJumpAtom(const chem::AtomId& atomId, const string& comment)
     {_OF();
-	return this->_newAtom<JumpAtom>(this->_JumpAtoms,atomId,comment);
+	return this->_newAtom<JumpJoint_O>(atomId,comment);
     };
 
-    Atom_sp AtomTree_O::newOriginJumpAtom(const chem::AtomId& atomId,const string& comment)
+    Joint_sp AtomTree_O::newOriginJumpAtom(const chem::AtomId& atomId,const string& comment)
     {_OF();
-	return this->_newAtom<OriginJumpAtom>(this->_OriginJumpAtoms,atomId,comment);
+	return this->_newAtom<OriginJumpJoint_O>(atomId,comment);
     };
 
 
-    Atom_sp AtomTree_O::newBondedAtom(const chem::AtomId& atomId, const string& comment)
+    Joint_sp AtomTree_O::newBondedAtom(const chem::AtomId& atomId, const string& comment)
     {_OF();
-	return this->_newAtom<BondedAtom>(this->_BondedAtoms,atomId,comment);
+	return this->_newAtom<BondedJoint_O>(atomId,comment);
     };
 
-    Atom_sp AtomTree_O::newRootBondedAtom(const chem::AtomId& atomId, const string& comment,
+    Joint_sp AtomTree_O::newRootBondedAtom(const chem::AtomId& atomId, const string& comment,
 					  core::Symbol_sp constitutionName,
 					  core::Symbol_sp topologyName,
 					  chem::Plug_sp inPlug)
     {_OF();
-	Atom_sp atom = this->_newAtom<RootBondedAtom>(this->_RootBondedAtoms,atomId,comment);
-	RootBondedAtom* rootAtom = dynamic_cast<RootBondedAtom*>(atom->get());
-	rootAtom->setup(constitutionName,topologyName,inPlug);
+	RootBondedJoint_sp atom = this->_newAtom<RootBondedJoint_O>(atomId,comment);
+	atom->setup(constitutionName,topologyName,inPlug);
 	return atom;
     };
 
-    Atom_sp AtomTree_O::newDelayedBondedAtom(const chem::AtomId& atomId,const string& comment)
+    Joint_sp AtomTree_O::newDelayedBondedAtom(const chem::AtomId& atomId,const string& comment)
     {_OF();
-	return this->_newAtom<DelayedBondedAtom>(this->_DelayedBondedAtoms,atomId,comment);
+	return this->_newAtom<DelayedBondedJoint_O>(atomId,comment);
     };
 
-
-
-
-    void AtomTree_O::releaseHandle(RefCountedAtomHandle& handle)
-    {_OF();
-	// Delete all of the children of the node pointed to by this handle
-	Atom* atom = handle.get();
-	atom->_releaseAllChildren();
-	if ( handle.holder()->_Type == bondedAtom )
-	{
-	    this->_BondedAtoms.release(handle.holder()->_NodeIndex);
-	} else if ( handle.holder()->_Type == rootBondedAtom )
-	{
-	    this->_RootBondedAtoms.release(handle.holder()->_NodeIndex);
-	} else if ( handle.holder()->_Type == delayedBondedAtom )
-	{
-	    this->_DelayedBondedAtoms.release(handle.holder()->_NodeIndex);
-	} else if ( handle.holder()->_Type == jumpAtom )
-	{
-	    this->_JumpAtoms.release(handle.holder()->_NodeIndex);
-	} else if ( handle.holder()->_Type == originJumpAtom )
-	{
-	    this->_OriginJumpAtoms.release(handle.holder()->_NodeIndex);
-	} else
-	{
-	    SIMPLE_ERROR(BF("Unknown handle type"));
-	}
-	AtomHolder* holder = handle.holder();
-	holder->_Type = unused;
-	handle.holder()->_NodeIndex = UndefinedUnsignedInt;
-	this->_AtomHolders.release(handle.holderIndex());
-	LOG(BF("RELEASED %s") % this->__repr__() );
-    }
-
-
-
-    void AtomTree_O::updateAtomIdMap(const chem::AtomId& atomId, const WeakAtomHandle& atomHandle )
+    void AtomTree_O::updateAtomIdMap(const chem::AtomId& atomId, Joint_sp atomHandle )
     {_OF();
 	    this->_AtomMap[atomId] = atomHandle;
     }
@@ -249,7 +191,7 @@ namespace kinematics
 					      int residueId,
 					      chem::CandoDatabase_sp db,
 					      MonomerNode_sp monomerNode,
-					      Atom_sp parent,
+					      Joint_sp parent,
 					      bool rootNode)
     {_OF();
 	core::List_sp constitutionAndTopology = monomerNode->identifyConstitutionAndTopology(db);
@@ -285,9 +227,7 @@ namespace kinematics
                     core::Symbol_sp atomB0 = outPlug->getB0();
 		    int  constitutionBond0AtomId = constitutionAtoms->index(atomB0);
 		    chem::AtomId atomId(moleculeId,residueId,constitutionBond0AtomId);
-		    RefCountedAtomHandle bond0AtomHandle =
-			RefCountedAtomHandle(this->_AtomMap[atomId]);
-		    Atom_sp bond0Parent = Atom_O::create(bond0AtomHandle);
+		    Joint_sp bond0Parent = this->_AtomMap[atomId];
 		    MonomerNode_sp nextMonomerNode = monomerNode->_Children.get(outPlug->getName());
 		    int nextResidueId = nextMonomerNode->_MonomerId;
 		    ASSERT(nextResidueId<(int)this->_AtomMap[moleculeId].size());
@@ -322,7 +262,7 @@ namespace kinematics
     string AtomTree_O::asString() const
     {_OF();
 	stringstream ss;
-	Atom* root = this->_Root->get();
+	Joint_sp root = this->_Root;
 	root->recursiveDumpChildrenIntoStringStream("", ss);
 	return ss.str();
     }
@@ -333,35 +273,20 @@ namespace kinematics
     {_OF();
 	stringstream ss;
 	ss << (BF("Dump of AtomTree")).str() << std::endl;
-	ss << (BF("    Unused list start=%d")
-	       % this->_AtomHolders.firstUnusedMember() ).str() << std::endl;;
-	for ( int i=0; i<this->_AtomHolders.size(); i++ )
-	{
-	    AtomHolder const & holder = this->_AtomHolders[i];
-	    ss << (BF("[%d] = refCount[%d] type[%s] nodeIndex[%d]")
-		   % i
-		   % holder.refCount()
-		   % holder.typeAsString()
-		   % holder.nodeIndex() ).str() << std::endl;
-	}
-	ss << this->_JumpAtoms.dump() << std::endl;
-	ss << this->_OriginJumpAtoms.dump() << std::endl;
-	ss << this->_BondedAtoms.dump() << std::endl;
-	ss << this->_RootBondedAtoms.dump() << std::endl;
-	ss << this->_DelayedBondedAtoms.dump() << std::endl;
+        ss << "IMPLEMENT_ME";
 	return ss.str();
     }
 
 
     void AtomTree_O::walkTree(AtomTreeWalkFunctor& functor)
     {_OF();
-	OriginJumpAtom* originJumpAtom = dynamic_cast<OriginJumpAtom*>(this->_Root->get());
+      OriginJumpJoint_sp originJumpAtom = gc::As<OriginJumpJoint_sp>(this->_Root);
 	originJumpAtom->walkChildren(functor);
     }
 
     void AtomTree_O::walk(core::Function_sp exec)
     {_OF();
-	ExecutableAtomTreeWalkFunctor functor(exec,_lisp);
+	ExecutableAtomTreeWalkFunctor functor(exec);
 	this->walkTree(functor);
     }
 
@@ -369,14 +294,14 @@ namespace kinematics
     {_OF();
 	ASSERTF(this->_Root.notnilp(),BF("The Root atom is nil - this should never happen"));
 	Stub defaultStub;
-	this->_Root->get()->updateInternalCoords(defaultStub,true,this->sharedThis<AtomTree_O>());
+	this->_Root->updateInternalCoords(defaultStub,true,this->sharedThis<AtomTree_O>());
     }
 
 
-    void AtomTree_O::walkResidue( int residueId, Atom_sp const& root, core::Function_sp exec)
+    void AtomTree_O::walkResidue( int residueId, Joint_sp const& root, core::Function_sp exec)
     {_OF();
-	ExecutableAtomTreeWalkFunctor functor(exec,_lisp);
-	root->get()->walkResidueTree(residueId,functor);
+	ExecutableAtomTreeWalkFunctor functor(exec);
+	root->walkResidueTree(residueId,functor);
     }
 
 

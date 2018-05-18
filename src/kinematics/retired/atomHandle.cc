@@ -190,7 +190,7 @@ namespace kinematics
     {
 	this->_Tree = handle._Tree;
 	this->_HolderIndex = handle._HolderIndex;
-	if ( this->isDefined() )
+	if ( this->boundp() )
 	{
 	    this->incrementRefCount();
 	}

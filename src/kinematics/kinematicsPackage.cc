@@ -227,24 +227,20 @@ namespace kinematics
 {
 
 
-    SYMBOL_SC_(KinPkg,dihedrals);
-    SYMBOL_SC_(KinPkg,sigmas);
-    SYMBOL_SC_(KinPkg,indices);
-    SYMBOL_SC_(KinPkg,count);
-    SYMBOL_SC_(KinPkg,probability);
-    SYMBOL_SC_(KinPkg,phi);
-    SYMBOL_SC_(KinPkg,psi);
-    SYMBOL_SC_(KinPkg,rotamer);
-    SYMBOL_SC_(KinPkg,atom);
-    SYMBOL_SC_(KinPkg,bonded);
-    SYMBOL_SC_(KinPkg,delayed);
-    SYMBOL_SC_(KinPkg,jump);
-    SYMBOL_SC_(KinPkg,origin);
-    SYMBOL_SC_(KinPkg,rootBonded);
-
-
-
-
+    SYMBOL_EXPORT_SC_(KinPkg,dihedrals);
+    SYMBOL_EXPORT_SC_(KinPkg,sigmas);
+    SYMBOL_EXPORT_SC_(KinPkg,indices);
+    SYMBOL_EXPORT_SC_(KinPkg,count);
+    SYMBOL_EXPORT_SC_(KinPkg,probability);
+    SYMBOL_EXPORT_SC_(KinPkg,phi);
+    SYMBOL_EXPORT_SC_(KinPkg,psi);
+    SYMBOL_EXPORT_SC_(KinPkg,rotamer);
+    SYMBOL_EXPORT_SC_(KinPkg,atom);
+    SYMBOL_EXPORT_SC_(KinPkg,bonded);
+    SYMBOL_EXPORT_SC_(KinPkg,delayed);
+    SYMBOL_EXPORT_SC_(KinPkg,jump);
+    SYMBOL_EXPORT_SC_(KinPkg,origin);
+    SYMBOL_EXPORT_SC_(KinPkg,rootBonded);
 
     void KinematicsExposer_O::expose(core::Lisp_sp lisp,core::Exposer_O::WhatToExpose what) const
     {

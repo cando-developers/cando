@@ -37,17 +37,15 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/atomId.h>
 #include <cando/kinematics/bondId.h>
 
-
+#if 0
 namespace kinematics
 {
-
     class Atom;
 
 
     class RefCountedAtomHandle;
 
-    class WeakAtomHandle
-    {
+    class WeakAtomHandle {
     public:
 	static const uint Undef = UndefinedUnsignedInt;
     protected:
@@ -70,7 +68,7 @@ namespace kinematics
 	bool isDefined() const { return this->_HolderIndex != Undef;};
 
 	/*! Assignment operator */
-	WeakAtomHandle& operator=(const WeakAtomHandle& other)
+	WeakAtomHandle& operator=(Joint_sp other)
 	{
 	    this->_Tree = other._Tree;
 	    this->_HolderIndex = other._HolderIndex;
@@ -143,7 +141,7 @@ namespace kinematics
 
 	RefCountedAtomHandle(const WeakAtomHandle& handle);
 
-	RefCountedAtomHandle(const RefCountedAtomHandle& handle);
+	RefCountedAtomHandle(Joint_sp handle);
 
 	/*! Return a RefCountedAtomHandle for an undefined atom */
 	static RefCountedAtomHandle undefined()
@@ -154,14 +152,14 @@ namespace kinematics
 
 
 	/*! Comparison operator */
-	bool operator==(const RefCountedAtomHandle& h) const
+	bool operator==(Joint_sp h) const
 	{
 	    if ( this->_Tree != h._Tree ) return false;
 	    return (this->_HolderIndex == h._HolderIndex);
 	}
 
 
-	RefCountedAtomHandle& operator=(const RefCountedAtomHandle& other)
+	RefCountedAtomHandle& operator=(Joint_sp other)
 	    {
 		// Ignore self assignments
 		if ( this->_Tree == other._Tree && this->_HolderIndex == other._HolderIndex ) return *this;
@@ -197,6 +195,6 @@ namespace kinematics
 
 
 };
-
+#endif
 
 #endif

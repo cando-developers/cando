@@ -29,7 +29,7 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
-    FORWARD(Atom);
+    FORWARD(Joint);
 
 };
 #endif

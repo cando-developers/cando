@@ -28,12 +28,12 @@ This is an open source license for the CANDO software from Temple University, bu
 
 #include <clasp/core/foundation.h>
 #include <cando/geom/vector3.h>
+#include <cando/kinematics/kinematicsPackage.h>
 #include <cando/kinematics/atomTree.fwd.h>
 #include <cando/kinematics/dofType.h>
 #include <cando/kinematics/stub.fwd.h>
 #include <cando/kinematics/atom.fwd.h>
 #include <cando/chem/atomId.h>
-#include <cando/kinematics/atomHandle.h>
 #include <cando/kinematics/pool.h>
 
 
@@ -57,15 +57,14 @@ namespace kinematics
   children is enforced as JumpAtoms | BondedAtom atoms.
  */
 
-    class Atom : public PoolMember
+    class Joint_O : public core::CxxObject_O
     {
-	friend class Atom_O;
+	LISP_CLASS(kinematics,KinPkg,Joint_O,"Joint",core::CxxObject_O);
 	friend class AtomTree_O;
 	friend class BondedAtom;
     protected:
-	WeakAtomHandle	_Me;
 	//! Point to the parent atom (also used to contruct linked list of unused PoolMembers)
-	WeakAtomHandle	_Parent;
+	Joint_sp 	_Parent;
 	chem::AtomId	_Id;
 	Vector3		_Position;
 #if DEBUG_KIN_ATOM
@@ -77,32 +76,32 @@ namespace kinematics
 	  -1 when my dofs have not changed since the last update_coords
 	*/
 	int		_DofRefoldIndex;
-    protected:
+    public:
 	/*! Bonded atoms can have different numbers of children wrt JumpAtoms */
  	virtual int _maxNumberOfChildren() const = 0;
 	/*! Return the current number of children */
 	virtual int _numberOfChildren() const = 0;
 	/*! Return a reference to the indexed child */
-	virtual RefCountedAtomHandle& _child(int idx) = 0;
+	virtual Joint_sp _child(int idx) = 0;
 	/*! Return a reference to the indexed child */
-	virtual RefCountedAtomHandle const& _child(int idx) const = 0;
+	virtual Joint_sp _child(int idx) const = 0;
 	/*! Set a value of a child */
-	virtual void _setChild(int idx,const RefCountedAtomHandle& atom) = 0;
+	virtual void _setChild(int idx, Joint_sp atom) = 0;
 	/*! Delete the child at the given index */
 	virtual void _releaseChild(int idx) = 0;
 	/*! Insert the child at the given index - this does the
 	  work of opening up a space and putting the new value in */
-	virtual void _insertChild(int idx, const RefCountedAtomHandle& atom) = 0;
+	virtual void _insertChild(int idx, Joint_sp atom) = 0;
 	/*! Insert the child at the given index - this does the work
 	  of opening up a space and putting the new value in */
-	virtual void _appendChild(const RefCountedAtomHandle& atom) = 0;
+	virtual void _appendChild(Joint_sp atom) = 0;
 
 	/*! Destructors need to delete all Children */
   	virtual void _releaseAllChildren() = 0;
     public:
 
-	Atom() : _Parent(), _Id() {};
-	Atom(const chem::AtomId& atomId, const string& comment) :
+    Joint_O() : _Parent(_Unbound<Joint_O>()), _Id() {};
+	Joint_O(const chem::AtomId& atomId, const string& comment) :
 	    _Parent(),
 	    _Id(atomId)
 #if DEBUG_KIN_ATOM
@@ -110,33 +109,24 @@ namespace kinematics
 #endif
 	{};
 
-	RefCountedAtomHandle atomHandle() const { return this->_Me;};
-	/*! Set the AtomHandle */
-	void __setAtomHandle(const WeakAtomHandle& handle) { this->_Me = handle;};
-
-
 	chem::AtomId id() const { return this->_Id;};
 	virtual core::Symbol_sp typeSymbol() const;
 	virtual string asString() const;
 
-	virtual void setNextUnusedMember(uint idx) { this->_Parent.setNextUnusedMember(idx);};
-	virtual uint nextUnusedMember() const { return this->_Parent.getNextUnusedMember();};
-
 	/*! Set the parent, the parent is a weak reference so we don't get reference cycles */
+	void setParent(Joint_sp parent) { this->_Parent = parent;};
 
-	void setParent(const RefCountedAtomHandle& parent) { this->_Parent = parent;};
-
-	/*! Return a RefCountedAtomHandle for the parent */
-	RefCountedAtomHandle parent() const { return this->_Parent; };
+	/*! Return a Joint_sp for the parent */
+	Joint_sp parent() const { return this->_Parent; };
 
 	/*! Insert the child before the (before) index. */
-	void insertChild( int before, RefCountedAtomHandle& child );
+	void insertChild( int before, Joint_sp child );
 
 	/*! Insert the child.
 	  If the child is a JumpAtom then put it as the first child.
 	  If it's a Bonded atom then put it before all the existing BondedAtoms.
 	*/
-	void insertChild(RefCountedAtomHandle& child);
+	void insertChild(Joint_sp child);
 
 	
 	/*! Return the index of the first non-jump child */
@@ -147,15 +137,19 @@ namespace kinematics
 	  If the child is a JumpAtom then put it before all the other non-JumpAtoms.
 	  If it is a Bonded atom then put it at the end.
 	*/
-	void appendChild(RefCountedAtomHandle& handle);
+	void appendChild(Joint_sp handle);
 
 	/*! Erase the child from the Children using the index into the _Children array */
 	void erase(int idx );
 
+        void eraseChild(Joint_sp child);
+        int indexOfChild(Joint_sp child);
 
-	RefCountedAtomHandle& child(int idx) { return this->_child(idx);};
+
+
+	Joint_sp child(int idx) { return this->_child(idx);};
 	/*! Return a reference to the indexed child */
-	RefCountedAtomHandle const& child(int idx) const { return this->_child(idx);};
+	Joint_sp child(int idx) const { return this->_child(idx);};
 
 
 	/*! Root nodes will return RootAtomInfo structures */
@@ -173,9 +167,10 @@ namespace kinematics
 	/*! Return true if this atom is a JumpAtom (or subclass) */
 	virtual bool isJump() const { return false;};
 
+        chem::AtomId atomId() const { return this->_Id; };
 
 	/*! Return the i(th) non-jump atom */
-	RefCountedAtomHandle getNonJumpAtom(int idx) const;
+	Joint_sp getNonJumpAtom(int idx) const;
 
 	/*! Return true if the stub is defined */
 	virtual bool stubDefined() const;
@@ -191,63 +186,63 @@ namespace kinematics
 	void position(const Vector3& pos) { this->_Position = pos;};
 
 	/*! Return the input stub atom */
-	inline RefCountedAtomHandle inputStubAtom0() const
+	inline Joint_sp inputStubAtom0() const
 	{_OF();
-	    ASSERTF(this->parent().isDefined(),BF("Parent isn't defined"));
+	    ASSERTF(this->parent().boundp(),BF("Parent isn't defined"));
 	    return this->parent();
 	}
 
 	/*! Return the input stub atom */
-	inline RefCountedAtomHandle inputStubAtom1() const
+	inline Joint_sp inputStubAtom1() const
 	{_OF();
-	    ASSERTF(this->parent().isDefined(),BF("Parent isn't defined"));
+	    ASSERTF(this->parent().boundp(),BF("Parent isn't defined"));
 	    return this->parent().get()->stubAtom1();
 	}
 
 	/*! Return the input stub atom */
-	inline RefCountedAtomHandle inputStubAtom2() const
+	inline Joint_sp inputStubAtom2() const
 	{_OF();
-	    ASSERTF(this->parent().isDefined(),BF("Parent isn't defined"));
+	    ASSERTF(this->parent().boundp(),BF("Parent isn't defined"));
 	    return this->parent().get()->stubAtom2();
 	}
 
 
 	/*! Return the previous child to this one */
-	RefCountedAtomHandle previousChild(const RefCountedAtomHandle& child) const;
+	Joint_sp previousChild(Joint_sp child) const;
 
 	/*! Return the previous sibling of this atom */
-	RefCountedAtomHandle previousSibling() const
+	Joint_sp previousSibling() const
 	{
-	    if ( this->parent().isDefined() )
+          if ( this->parent().boundp() )
 	    {
-		return this->parent().get()->previousChild(this->atomHandle());
+		return this->parent()->previousChild(this->asSmartPtr());
 	    } else
 	    {
-		return RefCountedAtomHandle::undefined();
+              return Joint_sp();
 	    }
 	}
 
 
 	/*! Return the input stub atom3
 	  It is either its parents stubAtom3 or its previous sibling */
-	RefCountedAtomHandle inputStubAtom3(AtomTree_sp at) const;
+	Joint_sp inputStubAtom3(AtomTree_sp at) const;
 
 
 
 	/*! Return the stubAtom1 */
-	virtual RefCountedAtomHandle stubAtom1() const = 0;
+	virtual Joint_sp stubAtom1() const = 0;
 
 	/*! Return the id of stubAtom */
 	chem::AtomId stubAtom1Id() const { return this->stubAtom1().get()->id();};
 
 	/*! Return the stubAtom2 */
-	virtual RefCountedAtomHandle stubAtom2() const = 0;
+	virtual Joint_sp stubAtom2() const = 0;
 
 	/*! Return the id of stubAtom */
 	chem::AtomId stubAtom2Id() const { return this->stubAtom2().get()->id();};
 
 	/*! Return the stubAtom3 */
-	virtual RefCountedAtomHandle stubAtom3(AtomTree_sp tree) const = 0;
+	virtual Joint_sp stubAtom3(AtomTree_sp tree) const = 0;
 
 	/*! Return the id of stubAtom */
 	chem::AtomId stubAtom3Id(AtomTree_sp at) const { return this->stubAtom3(at).get()->id();};

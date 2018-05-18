@@ -29,12 +29,12 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <clasp/core/foundation.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/kinematics/atomTree.h>
-#include <cando/kinematics/atomo.h>
 #include <cando/kinematics/stub.h>
 #include <cando/kinematics/atom.h>
 
 namespace kinematics
 {
+FORWARD(JumpAtom);
 
 #define	ASSERT_VALID_HANDLE(tree,handle)				\
     ASSERTF((int)handle<tree->numberOfEntries(),BF("The handle[%d] is out of range (0->%d]") % handle % tree->numberOfEntries()); \
@@ -42,21 +42,19 @@ namespace kinematics
 
 
 
-    string Atom::asString() const
+    string Joint_O::asString() const
     {_OF();
 	stringstream ss;
-	ss << "Node[" << _rep_(this->typeSymbol()) << "] RefCount["<<this->_Me.refCount()<<"] id=" << this->_Id.asString() << std::endl;
+	ss << "Node[" << _rep_(this->typeSymbol()) << "]  id=" << this->_Id.asString() << std::endl;
 	ss << "Children: ";
 	if ( this->_numberOfChildren() == 0 )
 	{
 	    ss << "-none-";
-	} else
-	{
+	} else {
 	    for ( int i=0; i<(int)this->_numberOfChildren(); i++ )
 	    {
-		Atom_sp atom = Atom_O::create(this->_child(i));
-		ss << " [" << atom->handle().holderIndex() << "]";
-		ss << atom->handle().holder()->typeAsString();
+		Joint_sp atom = this->_child(i);
+		ss << _rep_(atom);
 	    }
 	}
 	ss << std::endl;
@@ -65,39 +63,65 @@ namespace kinematics
     }
 
 
-    void Atom::insertChild(int before, RefCountedAtomHandle& child )
+    void Joint_O::insertChild(int before, Joint_sp child )
     {_OF();
 	ASSERTF(child.get() != this,BF("Circular atom reference"));
 	this->_insertChild(before,child);
-	child.get()->setParent(this->_Me);
+	child.get()->setParent(this->asSmartPtr());
     }
 
-    void Atom::appendChild(RefCountedAtomHandle& child)
+    void Joint_O::appendChild(Joint_sp child)
     {_OF();
 	ASSERTF(child.get() != this,BF("Circular atom reference this@%p child@%p")
 		% this % (child.get()));
-	if ( child.isJump() )
+	if ( gc::IsA<JumpJoint_sp>(child) )
 	{
 	    int idx = this->firstNonJumpChildIndex();
 	    this->_insertChild(idx,child);
-	    child.get()->setParent(this->_Me);
+	    child.get()->setParent(this->asSmartPtr());
 	    return;
 	}
 	this->_appendChild(child);
-	child.get()->setParent(this->_Me);
+	child.get()->setParent(this->asSmartPtr());
+    }
+
+    void Joint_O::eraseChild(Joint_sp child)
+    {_OF();
+      Joint_sp atom = this->asSmartPtr();
+	for (int i=0; i<atom->_numberOfChildren(); i++ )
+	{
+          if (child == atom->_child(i))
+          {
+            atom->_releaseChild(i);
+            return;
+          }
+	}
+	SIMPLE_ERROR(BF("Could not find child"));
+    }
+
+
+    int Joint_O::indexOfChild(Joint_sp child)
+    {_OF();
+      Joint_sp atom = this->asSmartPtr();
+	for (int i=0; i<atom->_numberOfChildren(); i++ )
+	{
+          if (child == atom->_child(i)) return i;
+	}
+	SIMPLE_ERROR(BF("Could not find child"));
     }
 
 
 
-    void Atom::insertChild(RefCountedAtomHandle& child)
+
+    void Joint_O::insertChild(Joint_sp child)
     {_OF();
 	ASSERTF(child.get() != this,BF("Circular atom reference"));
 	LOG(BF("Inserting child of type: %s") % child.holder()->typeAsString() );
-	if ( child.isJump() )
+	if ( gc::IsA<JumpJoint_sp>(child) )
 	{
 	    LOG(BF("It's a jump, inserting it at the start"));
 	    this->_insertChild(0,child);
-	    child.get()->setParent(this->_Me);
+	    child.get()->setParent(this->asSmartPtr());
 	} else
 	{
 	    LOG(BF("It's a non-jump atom"));
@@ -106,7 +130,7 @@ namespace kinematics
 	    {
 		IMPLEMENT_ME(); // Really? Is the below just for debugging?
 #ifdef DEBUG_ON
-		RefCountedAtomHandle& firstNonJumpHandle = this->_child(firstNonJumpIndex);
+		Joint_sp firstNonJumpHandle = this->_child(firstNonJumpIndex);
 		LOG(BF("The current firstNonJumpHandle is of type: %s")
 		    % firstNonJumpHandle.holder()->typeAsString());
 		{
@@ -121,16 +145,16 @@ namespace kinematics
 	}
     }
 
-    RootAtomInfo const* Atom::rootAtomInfo() const
+    RootAtomInfo const* Joint_O::rootAtomInfo() const
     {
 	THROW_HARD_ERROR(BF("rootAtomInfo is not available for non-root atoms"));
     }
 
-    int Atom::firstNonJumpChildIndex() const
+    int Joint_O::firstNonJumpChildIndex() const
     {_OF();
 	for ( int i=0; i<this->_numberOfChildren(); i++ )
 	{
-	    if ( !this->_child(i).isJump() ) return i;
+          if ( !gc::IsA<JumpJoint_sp>(this->_child(i)) ) return i;
 	}
 	return this->_numberOfChildren();
     }
@@ -138,7 +162,7 @@ namespace kinematics
 
 
 
-    void Atom::recursiveDumpChildrenIntoStringStream(const string& prefix, stringstream& out)
+    void Joint_O::recursiveDumpChildrenIntoStringStream(const string& prefix, stringstream& out)
     {_OF();
 	out << prefix << this->typeSymbol() << "/";
 	out << this->_Id.asString() << " ";
@@ -149,15 +173,15 @@ namespace kinematics
 	string newPrefix = prefix + " ";
 	for ( int i=0; i<this->_numberOfChildren(); i++ )
 	{
-	    Atom* child = this->_child(i).get();
+	    Joint_sp child = this->_child(i);
 	    child->recursiveDumpChildrenIntoStringStream(newPrefix,out);
 	}
     }
 
 
-    bool Atom::stubDefined() const
+    bool Joint_O::stubDefined() const
     {
-	// Inspired by rosetta::Atom_::stub_defined()
+	// Inspired by rosetta::Joint_::stub_defined()
 	// We have to handle a couple of cases
 	//
 	// note -- in counting dependent atoms, exclude JumpAtoms
@@ -173,11 +197,11 @@ namespace kinematics
 	//	   use myself, my first atom and his first atom
 	//	b) otherwise, use myself, my first atom, my second atom
 	//
-	if ( this->isJump() )
+      if ( gc::IsA<JumpJoint_sp>(this->asSmartPtr()))
 	{
-	    RefCountedAtomHandle first = this->getNonJumpAtom(0);
-	    if ( first.isDefined() &&
-		 (first.get()->getNonJumpAtom(0).isDefined() || this->getNonJumpAtom(1).isDefined() ))
+	    Joint_sp first = this->getNonJumpAtom(0);
+	    if ( first.boundp() &&
+		 (first->getNonJumpAtom(0) || this->getNonJumpAtom(1).boundp() ))
 	    {
 		return true;
 	    } else
@@ -189,16 +213,16 @@ namespace kinematics
     }
 
 
-    RefCountedAtomHandle Atom::getNonJumpAtom(int offset) const
+    Joint_sp Joint_O::getNonJumpAtom(int offset) const
     {
 	int idx = this->firstNonJumpChildIndex();
 	idx += offset;
-	if ( idx >= this->_numberOfChildren() ) return RefCountedAtomHandle::undefined();
+	if ( idx >= this->_numberOfChildren() ) return _Unbound<Joint_O>();
 	return this->_child(idx);
     }
 
 
-    RefCountedAtomHandle Atom::previousChild(const RefCountedAtomHandle& ch) const
+    Joint_sp Joint_O::previousChild(Joint_sp ch) const
     {_OF();
 	int num = this->_numberOfChildren();
 	int ii;
@@ -212,7 +236,7 @@ namespace kinematics
 	}
 	if ( ii == 0 )
 	{
-	    return RefCountedAtomHandle::undefined();
+          return _Unbound<Joint_O>();
 	}
 	return this->_child(ii-1);
     }
@@ -221,14 +245,17 @@ namespace kinematics
     /*! See file:///Users/meister/Development/rosetta3.3/rosetta_source/html/core+numeric+protocols/dc/db0/_atom___8hh-source.html#l00475
       For definition
     */
-    RefCountedAtomHandle Atom::inputStubAtom3(AtomTree_sp at) const
+    Joint_sp Joint_O::inputStubAtom3(AtomTree_sp at) const
     {_OF();
-	ASSERTF(this->parent().isDefined(),BF("The parent isn't defined"));
-	RefCountedAtomHandle sibling = this->previousSibling();
-	if ( this->isJump() || sibling.notDefined() || sibling.get()->isJump() ||
-	     (this->parent().get()->isJump() && sibling.get()->id() == this->parent().get()->stubAtom2Id() ) )
+	ASSERTF(this->parent().boundp(),BF("The parent isn't defined"));
+	Joint_sp sibling = this->previousSibling();
+	if ( gc::IsA<JumpJoint_sp>(this->asSmartPtr())
+             || sibling.unboundp()
+             || gc::IsA<JumpJoint_sp>(sibling)
+             || (gc::IsA<JumpJoint_sp>(this->parent())
+                 && sibling->id() == this->parent()->stubAtom2Id() ) )
 	{
-	    return this->parent().get()->stubAtom3(at);
+	    return this->parent()->stubAtom3(at);
 	} else
 	{
 	    return sibling;
@@ -237,7 +264,7 @@ namespace kinematics
 
 
 
-    Stub Atom::getStub(AtomTree_sp at) const
+    Stub Joint_O::getStub(AtomTree_sp at) const
     {_OF();
 	LOG(BF("Getting stub for atom[%s]") % this->asString() );
 	LOG(BF("stubAtom1(): %s") % this->stubAtom1().get()->asString() );
@@ -251,9 +278,9 @@ namespace kinematics
     };
 
 
-    Stub Atom::getInputStub(AtomTree_sp at) const
+    Stub Joint_O::getInputStub(AtomTree_sp at) const
     {_OF();
-	if ( this->parent().isDefined() )
+	if ( this->parent().boundp() )
 	{
 	    return Stub(
 		this->inputStubAtom0().get()->position(),
@@ -266,35 +293,33 @@ namespace kinematics
 	}
     }
 
-    void Atom::walkChildren(const AtomTreeWalkFunctor& functor)
+    void Joint_O::walkChildren(const AtomTreeWalkFunctor& functor)
     {_OF();
 	LOG(BF("There are %d children") % this->_numberOfChildren() );
 	for ( int i=0; i<this->_numberOfChildren(); i++ )
 	{
-	    RefCountedAtomHandle handle = this->_child(i);
-	    Atom_sp child = Atom_O::create(handle);
+	    Joint_sp child = this->_child(i);
 	    functor(child);
-	    child->get()->walkChildren(functor);
+	    child->walkChildren(functor);
 	}
     }
 
 
 
-    void Atom::walkResidueTree(int residueId, const AtomTreeWalkFunctor& functor)
+    void Joint_O::walkResidueTree(int residueId, const AtomTreeWalkFunctor& functor)
     {_OF();
 	LOG(BF("There are %d children") % this->_numberOfChildren() );
 	for ( int i=0; i<this->_numberOfChildren(); i++ )
 	{
-	    RefCountedAtomHandle handle = this->_child(i);
-	    Atom_sp child = Atom_O::create(handle);
+	    Joint_sp child = this->_child(i);
 	    if ( child->atomId().residueId() != residueId ) continue;
 	    functor(child);
-	    child->get()->walkResidueTree(residueId,functor);
+	    child->walkResidueTree(residueId,functor);
 	}
     }
 
 
-    void Atom::updateXyzCoords(AtomTree_sp at)
+    void Joint_O::updateXyzCoords(AtomTree_sp at)
     {_OF();
 	Stub stub(this->getInputStub(at));
 	this->updateXyzCoords(stub,at);
@@ -303,7 +328,7 @@ namespace kinematics
 
 
     SYMBOL_SC_(KinPkg,atom);
-    core::Symbol_sp Atom::typeSymbol() const {_OF(); return _sym_atom;};
+    core::Symbol_sp Joint_O::typeSymbol() const {_OF(); return _sym_atom;};
     
 
 

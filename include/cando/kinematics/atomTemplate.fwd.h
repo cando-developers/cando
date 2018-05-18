@@ -33,8 +33,8 @@ namespace kinematics
 {
     FORWARD(AtomTemplate);
     FORWARD(CheckpointBase);
-    FORWARD(CheckpointAtom);
-    FORWARD(CheckpointOutPlugAtom);
+    FORWARD(CheckpointJoint);
+    FORWARD(CheckpointOutPlugJoint);
     FORWARD(BondedAtomTemplate);
     FORWARD(DelayedBondedAtomTemplate);
     FORWARD(RootBondedAtomTemplate);

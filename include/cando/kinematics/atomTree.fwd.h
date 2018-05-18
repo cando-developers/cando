@@ -42,15 +42,12 @@ namespace kinematics
 
     class AtomHolder;
     FORWARD(AtomTree);
-    FORWARD(Atom);
+    FORWARD(Joint);
 
 
-    class AtomTreeWalkFunctor
-    {
+    class AtomTreeWalkFunctor {
     public:
-    AtomTreeWalkFunctor() : {};
-
-	virtual void operator()(kinematics::Atom_sp atom) const;
+	virtual void operator()(kinematics::Joint_sp atom) const;
     };
 
 

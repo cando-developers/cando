@@ -40,8 +40,6 @@ namespace kinematics
 
     class ChainNode_O : public MonomerBaseNode_O
     {
-	friend class AtomTree_O;
-	friend class Conformation_O;
 	LISP_CLASS(kinematics,KinPkg,ChainNode_O,"ChainNode",MonomerBaseNode_O);
 #if INIT_TO_FACTORIES
     public:
@@ -53,7 +51,7 @@ namespace kinematics
 	DEFAULT_CTOR_DTOR(ChainNode_O);
     public:
 	void initialize();
-    private:	// instance variables here
+    public:	// instance variables here
 	/*! Store the root MonomerNode */
 	MonomerNode_sp		_RootMonomerNode;
 	/*! monomerId index into the MonomerNodes */

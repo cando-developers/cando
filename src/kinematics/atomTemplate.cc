@@ -33,9 +33,9 @@ This is an open source license for the CANDO software from Temple University, bu
 #include <cando/chem/candoDatabase.h>
 #include <cando/chem/constitution.h>
 #include <cando/chem/constitutionAtoms.h>
-#include <cando/kinematics/atomo.h>
 #include <cando/kinematics/bondedAtom.h>
 #include <cando/kinematics/atomTree.h>
+#include <cando/kinematics/delayedBondedAtom.h>
 #include <clasp/core/wrappers.h>
 
 
@@ -80,7 +80,7 @@ namespace kinematics
 
 
 
-    void Checkpoint_O::setupDelayedBondedAtom(DelayedBondedAtom* atom) const
+    void Checkpoint_O::setupDelayedBondedAtom(DelayedBondedJoint_sp atom) const
     {_OF();
 	chem::CandoDatabase_sp cdb = chem::getCandoDatabase();
         chem::Constitution_sp constitution  = gc::As<chem::Constitution_sp>(core::eval::funcall(chem::_sym_constitutionForNameOrPdb,cdb,this->_ConstitutionName));
@@ -99,19 +99,19 @@ namespace kinematics
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_CheckpointAtom_O_make "(atom-name)"
-#define DECL_CheckpointAtom_O_make ""
-#define DOCS_CheckpointAtom_O_make "make CheckpointAtom"
-CheckpointAtom_sp CheckpointAtom_O::make(core::Symbol_sp atomName)
+#define ARGS_CheckpointJoint_O_make "(atom-name)"
+#define DECL_CheckpointJoint_O_make ""
+#define DOCS_CheckpointJoint_O_make "make CheckpointAtom"
+CheckpointJoint_sp CheckpointJoint_O::make(core::Symbol_sp atomName)
     {
-        GC_ALLOCATE(CheckpointAtom_O, me );
+        GC_ALLOCATE(CheckpointJoint_O, me );
 	me->_AtomName = atomName;
 	return me;
     };
 
 #else
 
-    core::T_sp CheckpointAtom_O::__init__(core::Function_sp exec, core::Cons_sp args,
+    core::T_sp CheckpointJoint_O::__init__(core::Function_sp exec, core::Cons_sp args,
 					 core::Environment_sp env, core::Lisp_sp lisp)
     {
 	this->Base::__init__(exec,args,env,lisp);
@@ -123,7 +123,7 @@ CheckpointAtom_sp CheckpointAtom_O::make(core::Symbol_sp atomName)
 #endif
 
 #ifdef XML_ARCHIVE
-    void CheckpointAtom_O::archiveBase(core::ArchiveP node)
+    void CheckpointJoint_O::archiveBase(core::ArchiveP node)
     {
         this->Base::archiveBase(node);
 	// Archive other instance variables here
@@ -133,7 +133,7 @@ CheckpointAtom_sp CheckpointAtom_O::make(core::Symbol_sp atomName)
 
 
 
-    void CheckpointAtom_O::setupDelayedBondedAtom(DelayedBondedAtom* atom) const
+    void CheckpointJoint_O::setupDelayedBondedAtom(DelayedBondedJoint_sp atom) const
     {_OF();
 	this->Base::setupDelayedBondedAtom(atom);
 	atom->_DelayType = delayForInternalResidueAtom;
@@ -149,12 +149,12 @@ CheckpointAtom_sp CheckpointAtom_O::make(core::Symbol_sp atomName)
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_CheckpointOutPlugAtom_O_make "(out-plug)"
-#define DECL_CheckpointOutPlugAtom_O_make ""
-#define DOCS_CheckpointOutPlugAtom_O_make "make CheckpointOutPlugAtom"
-  CheckpointOutPlugAtom_sp CheckpointOutPlugAtom_O::make(const chem::OutPlug_sp& outPlug)
+#define ARGS_CheckpointOutPlugJoint_O_make "(out-plug)"
+#define DECL_CheckpointOutPlugJoint_O_make ""
+#define DOCS_CheckpointOutPlugJoint_O_make "make CheckpointOutPlugAtom"
+  CheckpointOutPlugJoint_sp CheckpointOutPlugJoint_O::make(const chem::OutPlug_sp& outPlug)
     {
-        GC_ALLOCATE(CheckpointOutPlugAtom_O, me );
+        GC_ALLOCATE(CheckpointOutPlugJoint_O, me );
 	me->_Plug = outPlug;
 	ASSERTF(me->_Plug.notnilp(),BF("You must provide outPlug argument"));
 	return me;
@@ -162,7 +162,7 @@ CheckpointAtom_sp CheckpointAtom_O::make(core::Symbol_sp atomName)
 
 #else
 
-    core::T_sp CheckpointOutPlugAtom_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
+    core::T_sp CheckpointOutPlugJoint_O::__init__(core::Function_sp exec, core::Cons_sp args, core::Environment_sp env, core::Lisp_sp lisp)
     {
 	this->Base::__init__(exec,args,env,lisp);
 	this->_Plug = translate::from_object<chem::OutPlug_O>::convert(env->lookup(this->Package(),"outPlug"));
@@ -173,7 +173,7 @@ CheckpointAtom_sp CheckpointAtom_O::make(core::Symbol_sp atomName)
 #endif
 
 #ifdef XML_ARCHIVE
-    void CheckpointOutPlugAtom_O::archiveBase(core::ArchiveP node)
+    void CheckpointOutPlugJoint_O::archiveBase(core::ArchiveP node)
     {
         this->Base::archiveBase(node);
 	// Archive other instance variables here
@@ -182,7 +182,7 @@ CheckpointAtom_sp CheckpointAtom_O::make(core::Symbol_sp atomName)
 #endif
 
 
-    void CheckpointOutPlugAtom_O::setupDelayedBondedAtom(DelayedBondedAtom* atom) const
+    void CheckpointOutPlugJoint_O::setupDelayedBondedAtom(DelayedBondedJoint_sp atom) const
     {_OF();
 	this->Base::setupDelayedBondedAtom(atom);
 	atom->_DelayType = delayForFollowingResidueBond1;
@@ -304,7 +304,7 @@ core::List_sp BondedAtomTemplate_O::children() {
 }
 
 
-    void BondedAtomTemplate_O::addChildren(Atom_sp& me,
+    void BondedAtomTemplate_O::addChildren(Joint_sp me,
 					   uint moleculeId,
 					   uint residueId,
 					   const AtomTree_sp& atomTree,
@@ -314,33 +314,28 @@ core::List_sp BondedAtomTemplate_O::children() {
 	for ( ChildList::iterator it=this->_Children.begin(); it!=this->_Children.end(); it++ )
 	{
 	    LOG(BF("About to write child[%s]") % (*it)->comment() );
-	    Atom_sp newChild = (*it)->writeIntoAtomTree(atomTree,
+	    Joint_sp newChild = (*it)->writeIntoAtomTree(atomTree,
 							moleculeId,
 							residueId,
 							incoming,
 							outgoing);
-	    LOG(BF("Child returned with handle[%d]") % newChild->handle().holderIndex() );
+	    LOG(BF("Child returned with handle[%d]") % newChild.holderIndex() );
 	    /* In case the Array was moved by writeIntoAtomTree we get bonded again */
-	    Atom* bonded = me->get();
-	    ASSERTF(bonded!=NULL,BF("The dereferenced pointer is NULL - this should not happen"));
-	    if ( bonded == newChild->handle().get())
+	    Joint_sp bonded = me;
+	    ASSERTF(bonded,BF("The dereferenced pointer is NULL - this should not happen"));
+	    if ( bonded == newChild)
 	    {
 		stringstream serr;
 		serr << _rep_(atomTree);
 		LOG(BF("PROBLEM: %s") % serr.str() );
-		SIMPLE_ERROR(BF("You are adding an Atom to itself! - Parent[handle[%d]]@%p Child[handle[%d]]@%p")
-				   % me->handle().holderIndex()
-				   % me->get()
-				   % newChild->handle().holderIndex()
-				   % newChild->get()
-			  );
+		SIMPLE_ERROR(BF("You are adding an Atom to itself!"));
 	    }
-	    bonded->appendChild(newChild->handle());
+	    bonded->appendChild(newChild);
 	}
     }
 
 
-    Atom_sp BondedAtomTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTree,
+    Joint_sp BondedAtomTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTree,
 						    uint moleculeId,
 						    uint residueId,
 						    const BondId_sp& incoming,
@@ -348,9 +343,9 @@ core::List_sp BondedAtomTemplate_O::children() {
 						    bool rootNode)
     {
 	chem::AtomId atomId(moleculeId,residueId,this->_Id);
-	Atom_sp ownedBonded = atomTree->newBondedAtom(atomId,this->_Comment);
+	Joint_sp ownedBonded = atomTree->newBondedAtom(atomId,this->_Comment);
 	this->addChildren(ownedBonded,moleculeId,residueId,atomTree,incoming,outgoing);
-	if ( this->outPlug() )
+	if ( this->outPlug().boundp() )
 	{
 	    this->setupOutPlugAtomTree(ownedBonded,
 				       atomTree,
@@ -365,24 +360,24 @@ core::List_sp BondedAtomTemplate_O::children() {
 
 
 
-    void BondedAtomTemplate_O::extractInternalCoords(Atom_sp const& atom)
+    void BondedAtomTemplate_O::extractInternalCoords(Joint_sp const& atom)
     {
-	this->_Distance = atom->get()->dof(DofType::distance);
-	this->_Theta = atom->get()->dof(DofType::theta);
-	this->_Phi = atom->get()->dof(DofType::phi);
+	this->_Distance = atom->dof(DofType::distance);
+	this->_Theta = atom->dof(DofType::theta);
+	this->_Phi = atom->dof(DofType::phi);
     }
 
 
 
 
-    void BondedAtomTemplate_O::setupOutPlugAtomTree(Atom_sp owned,
+    void BondedAtomTemplate_O::setupOutPlugAtomTree(Joint_sp owned,
 						    const AtomTree_sp& atomTree,
 						    uint moleculeId,
 						    uint residueId,
 						    const BondId_sp& incoming,
 						    const PlugNamesToBondIdMap& outgoing )
     {_OF();
-	if ( this->_OutPlug.nilp() )
+	if ( this->_OutPlug.boundp() )
 	{
 	    LOG(BF("There is no outplug defined - returning"));
 	    return;
@@ -393,11 +388,11 @@ core::List_sp BondedAtomTemplate_O::children() {
 	if ( findOutPlug != outgoing.end() )
 	{
 	    BondId_sp bondId = findOutPlug->second;
-	    if ( bondId->_Child->handle().isDefined() )
+	    if ( bondId->_Child.boundp() )
 	    {
 		// Attach the next residues root atom to this Bond0 atom
 		owned->insertChild(bondId->_Child);
-		if ( bondId->_Parent->handle().isDefined() )
+		if ( bondId->_Parent.boundp() )
 		{
 		    bondId->_Parent->eraseChild(bondId->_Child);
 		}
@@ -445,7 +440,7 @@ core::List_sp BondedAtomTemplate_O::children() {
 
 
 
-    Atom_sp DelayedBondedAtomTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTree,
+    Joint_sp DelayedBondedAtomTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTree,
 							   uint moleculeId,
 							   uint residueId,
 							   const BondId_sp& incoming,
@@ -453,10 +448,10 @@ core::List_sp BondedAtomTemplate_O::children() {
 							   bool rootNode)
     {
 	chem::AtomId atomId(moleculeId,residueId,this->_Id);
-	Atom_sp ownedBonded = atomTree->newDelayedBondedAtom(atomId,this->_Comment);
-	this->_Checkpoint->setupDelayedBondedAtom(dynamic_cast<DelayedBondedAtom*>(ownedBonded->get()));
+	Joint_sp ownedBonded = atomTree->newDelayedBondedAtom(atomId,this->_Comment);
+	this->_Checkpoint->setupDelayedBondedAtom(gc::As<DelayedBondedJoint_sp>(ownedBonded));
 	this->addChildren(ownedBonded,moleculeId,residueId,atomTree,incoming,outgoing);
-	if ( this->outPlug() )
+	if ( this->outPlug().boundp() )
 	{
 	    this->setupOutPlugAtomTree(ownedBonded,
 				       atomTree,
@@ -523,7 +518,7 @@ core::List_sp BondedAtomTemplate_O::children() {
 
 
 
-Atom_sp RootBondedAtomTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTree,
+Joint_sp RootBondedAtomTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTree,
 						    uint moleculeId,
 						    uint residueId,
 						    const BondId_sp& incoming,
@@ -534,13 +529,13 @@ Atom_sp RootBondedAtomTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTree,
     chem::AtomId atomId(moleculeId,residueId,this->_Id);
     // The type of the Atom to write depends on what the incoming atom is
     // If it isJump then make this a JumpAtom otherwise make this a BondedAtom
-    Atom_sp incomingParent = incoming->_Parent;
-    if ( incomingParent->handle().notDefined() )
+    Joint_sp incomingParent = incoming->_Parent;
+    if ( incomingParent.unboundp())
     {	
 	SIMPLE_ERROR(BF("The incoming parent has to be defined - it is not "));
     }
-    Atom_sp owned;
-    if (incomingParent->handle().isJump() && rootNode )
+    Joint_sp owned;
+    if (gc::IsA<JumpJoint_sp>(incomingParent) && rootNode )
     {
 	owned = atomTree->newJumpAtom(atomId,this->_Comment);
     } else
@@ -561,11 +556,11 @@ Atom_sp RootBondedAtomTemplate_O::writeIntoAtomTree(const AtomTree_sp& atomTree,
     // Detach the old Atom that we are replacing - this should cause a flurry of handle releases
     // as the children ref-counts are decremented to zero and they are deleted
     //
-    if ( incoming->_Child->handle().isDefined() )
+    if ( incoming->_Child.boundp() )
     {
 	incomingParent->eraseChild(incoming->_Child);
     }
-    if ( this->outPlug() )
+    if ( this->outPlug().boundp() )
     {
 	this->setupOutPlugAtomTree(owned,
 				   atomTree,

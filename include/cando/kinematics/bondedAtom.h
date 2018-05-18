@@ -23,8 +23,8 @@ THE SOFTWARE.
 This is an open source license for the CANDO software from Temple University, but it is not the only one. Contact Temple University at mailto:techtransfer@temple.edu if you would like a different license.
 */
 /* -^- */
-#ifndef	kinematics_bondedAtom_H
-#define kinematics_bondedAtom_H
+#ifndef	kinematics_bondedJoint_H
+#define kinematics_bondedJoint_H
 
 #include <clasp/core/foundation.h>
 #include <cando/kinematics/kinFoundation.h>
@@ -36,51 +36,55 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
-    class BondedAtom : public Atom
+    class BondedJoint_O : public Joint_O
     {
+	LISP_CLASS(kinematics,KinPkg,BondedJoint_O,"BondedAtom",Joint_O);
+    public:
+        void initialize();
     public:
 	static const NodeType nodeType = bondedAtom;
 	static const int MaxChildren = 5;
     protected:
 	int		_NumberOfChildren;
-	RefCountedAtomHandle	_Children[MaxChildren];
+        // _Children have the value 0x0 if unbound
+	Joint_sp	_Children[MaxChildren];
 	Real		_Phi;
 	Real		_Theta;
 	Real		_Distance;
 	bool		_DofChangePropagatesToYoungerSiblings;
-    private:
+    public:
 	/*! Bonded atoms can have different numbers of children wrt JumpAtoms */
 	virtual int _maxNumberOfChildren() const { return MaxChildren;};
 	/*! Return the current number of children */
 	virtual int _numberOfChildren() const {return this->_NumberOfChildren;};
 	/*! Return a reference to the indexed child */
-	virtual RefCountedAtomHandle& _child(int idx) {return this->_Children[idx];};
-	virtual RefCountedAtomHandle const& _child(int idx) const {return this->_Children[idx];};
+	virtual Joint_sp _child(int idx) {return this->_Children[idx];};
+	virtual Joint_sp _child(int idx) const {return this->_Children[idx];};
 	/*! Set a child */
-	virtual void _setChild(int idx, const RefCountedAtomHandle& h) { this->_Children[idx] = h; };
+	virtual void _setChild(int idx, Joint_sp h) { this->_Children[idx] = h; };
 	/*! Delete the child at the given index */
 	virtual void _releaseChild(int idx);
 	/*! Insert the child at the given index - this does the work of opening up a space and putting the new value in */
-	virtual void _insertChild(int idx, const RefCountedAtomHandle& c );
+	virtual void _insertChild(int idx, Joint_sp c );
 	/*! Insert the child at the given index - this does the work of opening up a space and putting the new value in */
-	virtual void _appendChild(const RefCountedAtomHandle& c) {this->_Children[this->_NumberOfChildren++] = c; };
+	virtual void _appendChild(Joint_sp c) {this->_Children[this->_NumberOfChildren++] = c; };
 	/*! Delete all of the children for the destructor */
 	virtual void _releaseAllChildren();
 
     public:
-    BondedAtom() : Atom(), _NumberOfChildren(0) {};
-    BondedAtom(const chem::AtomId& atomId, const string& comment) : Atom(atomId,comment), _NumberOfChildren(0) {};
+    BondedJoint_O() : Joint_O(), _NumberOfChildren(0) {};
+    BondedJoint_O(const chem::AtomId& atomId, const string& comment) : Joint_O(atomId,comment), _NumberOfChildren(0) {};
 
 	virtual core::Symbol_sp typeSymbol() const;
 
 	/*! Return the stubAtom1 */
-	virtual RefCountedAtomHandle stubAtom1() const { return this->atomHandle();}
+	virtual Joint_sp stubAtom1() const { return this->asSmartPtr();}
 
 	/*! Return the stubAtom2 */
-	virtual RefCountedAtomHandle stubAtom2() const { return this->parent();};
+	virtual Joint_sp stubAtom2() const { return this->parent();};
 
 	/*! Return the stubAtom3 */
-	virtual RefCountedAtomHandle stubAtom3(AtomTree_sp tree) const;
+	virtual Joint_sp stubAtom3(AtomTree_sp tree) const;
 
 	/*! Update the internal coordinates */
 	virtual void updateInternalCoords(Stub& stub,

@@ -39,7 +39,7 @@ namespace kinematics
 
 
 
-    BondId_sp BondId_O::create(Atom_sp parent, Atom_sp child)
+    BondId_sp BondId_O::create(Joint_sp parent, Joint_sp child)
     {
 	GC_ALLOCATE(BondId_O, bondId );
 	bondId->_Parent = parent;
