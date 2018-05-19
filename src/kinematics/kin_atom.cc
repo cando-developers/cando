@@ -27,7 +27,7 @@ This is an open source license for the CANDO software from Temple University, bu
 
 
 #include <clasp/core/foundation.h>
-#include <cando/geom/vector3.h>
+#include <cando/geom/ovector3.h>
 #include <clasp/core/record.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/chem/atomId.h>
@@ -46,7 +46,7 @@ FORWARD(JumpAtom);
 void Joint_O::fields(core::Record_sp node) {
   node->field(INTERN_(kw,parent),this->_Parent);
   node->field(INTERN_(kw,id),this->_Id);
-//  node->field_if_not_default(INTERN_(kw,pos),this->_Position, Vector3());
+  node->field_if_not_default(INTERN_(kw,pos),this->_Position, Vector3());
 }
 
 

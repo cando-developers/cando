@@ -117,21 +117,12 @@ CheckpointJoint_sp CheckpointJoint_O::make(core::Symbol_sp atomName)
 
 #endif
 
-#ifdef XML_ARCHIVE
-    void CheckpointJoint_O::archiveBase(core::ArchiveP node)
-    {
-        this->Base::archiveBase(node);
-	// Archive other instance variables here
-	node->attribute("AtomName",this->_AtomName);
-    }
-#endif
-
 
 
     void CheckpointJoint_O::setupDelayedBondedAtom(DelayedBondedJoint_sp atom) const
     {_OF();
 	this->Base::setupDelayedBondedAtom(atom);
-	atom->_DelayType = delayForInternalResidueAtom;
+	atom->_DelayType = kw::_sym_delayForInternalResidueAtom;
     }
 
 
@@ -178,7 +169,7 @@ CL_LISPIFY_NAME(make-checkpoint-out-plug-joint);
     void CheckpointOutPlugJoint_O::setupDelayedBondedAtom(DelayedBondedJoint_sp atom) const
     {_OF();
 	this->Base::setupDelayedBondedAtom(atom);
-	atom->_DelayType = delayForFollowingResidueBond1;
+	atom->_DelayType = kw::_sym_delayForFollowingResidueBond1;
     }
 
 

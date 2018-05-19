@@ -40,6 +40,8 @@ namespace kinematics
     {
 	LISP_CLASS(kinematics,KinPkg,BondedJoint_O,"BondedAtom",Joint_O);
     public:
+        bool fieldsp() { return true; };
+        void fields(core::Record_sp node); 
         void initialize();
     public:
 	static const NodeType nodeType = bondedAtom;

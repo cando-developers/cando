@@ -39,6 +39,22 @@ This is an open source license for the CANDO software from Temple University, bu
 
 namespace kinematics
 {
+void BondedJoint_O::fields(core::Record_sp record) {
+  record->field(INTERN_(kw,num_children),this->_NumberOfChildren);
+  static_assert(BondedJoint_O::MaxChildren==5);
+  record->field_if_not_unbound(INTERN_(kw,child0),this->_Children[0]);
+  record->field_if_not_unbound(INTERN_(kw,child1),this->_Children[1]);
+  record->field_if_not_unbound(INTERN_(kw,child2),this->_Children[2]);
+  record->field_if_not_unbound(INTERN_(kw,child3),this->_Children[3]);
+  record->field_if_not_unbound(INTERN_(kw,child4),this->_Children[4]);
+  record->field(INTERN_(kw,phi),this->_Phi);
+  record->field(INTERN_(kw,theta),this->_Theta);
+  record->field(INTERN_(kw,distance),this->_Distance);
+  record->field(INTERN_(kw,dof_propagates),this->_DofChangePropagatesToYoungerSiblings);
+  this->Base::fields(record);
+}
+
+
 void BondedJoint_O::initialize() {
   for (int i=0; i<MaxChildren; ++i ) {
     this->_Children[i].reset_();

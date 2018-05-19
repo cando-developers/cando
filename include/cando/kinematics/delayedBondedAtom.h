@@ -46,13 +46,16 @@ namespace kinematics
 	static const NodeType nodeType = delayedBondedAtom;
     public:
 	//! Store information that describes what atom this needs to build its children
-	DelayType	_DelayType;
+        core::Symbol_sp 	_DelayType;
 	/*! Store the index of the atom that we are delaying for if
 	  it is in the same Residue or if we are delaying for the incoming Bond1 atom
 	  in the next residue then store the index of the atom in our Residue that
 	  connects to the next residue */
 	chem::ConstitutionAtomIndex0N	_DelayAtomId;
     public:
+        bool fieldsp() const { return true; };
+        void fields(core::Record_sp node);
+        
     DelayedBondedJoint_O() : BondedJoint_O() {};
     DelayedBondedJoint_O(const chem::AtomId& atomId,const string& comment) : BondedJoint_O(atomId,comment) {};
 
