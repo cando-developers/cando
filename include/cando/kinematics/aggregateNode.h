@@ -42,7 +42,9 @@ class AggregateNode_O : public MonomerBaseNode_O
 //    DECLARE_ARCHIVE();
     DEFAULT_CTOR_DTOR(AggregateNode_O);
 public:
-	void initialize();
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+    void initialize();
 public:	// Functions here
 	/*! Resize the number of molecules */
 	void resizeChains(int numChains);

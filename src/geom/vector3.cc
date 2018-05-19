@@ -253,7 +253,7 @@ double	Vector3::angleToVectorAboutNormal(const Vector3& toVector, const Vector3&
     }
 
 
-
+#if 0
 void	Vector3::archive(core::ArchiveP node)
 {
     node->attribute("x",this->coords[0]);
@@ -261,6 +261,7 @@ void	Vector3::archive(core::ArchiveP node)
     node->attribute("z",this->coords[2]);
     LOG(BF("Serialized vector@%X = %lf, %lf, %lf") % this % this->coords[0] % this->coords[1] % this->coords[2]  );
 };
+#endif
 
 #if 0
 void Vector3::serialize(core::SerializerNode node)

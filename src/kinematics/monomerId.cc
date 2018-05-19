@@ -52,10 +52,8 @@ namespace kinematics
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_MonomerId_O_make "(chain monomer)"
-#define DECL_MonomerId_O_make ""
-#define DOCS_MonomerId_O_make "make MonomerId"
-  MonomerId_sp MonomerId_O::make(const int chain, const int monomer)
+CL_LISPIFY_NAME(make-MonomerId);
+MonomerId_sp MonomerId_O::make(const int chain, const int monomer)
     {
 	GC_ALLOCATE(MonomerId_O, me );
       me->_MonomerId._Chain = chain;

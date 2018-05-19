@@ -55,10 +55,8 @@ namespace kinematics
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_MonomerNode_O_make "()"
-#define DECL_MonomerNode_O_make ""
-#define DOCS_MonomerNode_O_make "make MonomerNode"
-  MonomerNode_sp MonomerNode_O::make()
+CL_LISPIFY_NAME(make-MonomerNode);
+MonomerNode_sp MonomerNode_O::make()
     {
       IMPLEMENT_ME();
     };

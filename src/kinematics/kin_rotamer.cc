@@ -42,10 +42,8 @@ namespace kinematics
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_Rotamer_O_make "(dihedrals sigmas indicies probability count)"
-#define DECL_Rotamer_O_make ""
-#define DOCS_Rotamer_O_make "make Rotamer"
-  Rotamer_sp Rotamer_O::make(core::List_sp dihedrals, core::List_sp sigmas, core::List_sp indices, const double probability, const int count)
+CL_LISPIFY_NAME(make-Rotamer);
+Rotamer_sp Rotamer_O::make(core::List_sp dihedrals, core::List_sp sigmas, core::List_sp indices, const double probability, const int count)
     {
 	GC_ALLOCATE(Rotamer_O, me );
       me->_Count = count;
@@ -157,9 +155,7 @@ namespace kinematics
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_RotamerSetBase_O_make "()"
-#define DECL_RotamerSetBase_O_make ""
-#define DOCS_RotamerSetBase_O_make "make RotamerSetBase"
+CL_LISPIFY_NAME(make-ChiDihedral);
   RotamerSetBase_sp RotamerSetBase_O::make()
     {
       IMPLEMENT_ME();
@@ -235,10 +231,8 @@ core::List_sp RotamerSetBase_O::asList() const
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_RotamerSet_O_make "(RotamerSet)"
-#define DECL_RotamerSet_O_make ""
-#define DOCS_RotamerSet_O_make "make RotamerSet"
-  RotamerSet_sp RotamerSet_O::make()
+CL_LISPIFY_NAME(make-RotamerSet)
+RotamerSet_sp RotamerSet_O::make()
     {
       IMPLEMENT_ME();
     };
@@ -282,10 +276,8 @@ core::List_sp RotamerSetBase_O::asList() const
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_BackboneDependentRotamerSet_O_make "(phi psi)"
-#define DECL_BackboneDependentRotamerSet_O_make ""
-#define DOCS_BackboneDependentRotamerSet_O_make "make BackboneDependentRotamerSet"
-  BackboneDependentRotamerSet_sp BackboneDependentRotamerSet_O::make(const int phi, const int psi)
+CL_LISPIFY_NAME(make-BackboneDependentRotamerSet);
+BackboneDependentRotamerSet_sp BackboneDependentRotamerSet_O::make(const int phi, const int psi)
     {
         GC_ALLOCATE(BackboneDependentRotamerSet_O, me );
 	me->_Phi = phi;
@@ -321,10 +313,8 @@ core::List_sp RotamerSetBase_O::asList() const
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_BackboneDependentRotamerLibrary_O_make "(phi-step phi-start phi-count psi-step psi-start psi-count)"
-#define DECL_BackboneDependentRotamerLibrary_O_make ""
-#define DOCS_BackboneDependentRotamerLibrary_O_make "make BackboneDependentRotamerLibrary"
-  BackboneDependentRotamerLibrary_sp BackboneDependentRotamerLibrary_O::make(const int phiStep, const int phiStart, const int phiCount, const int psiStep, const int psiStart, const int psiCount)
+CL_LISPIFY_NAME(make-BackboneDependentRotamerLibrary);
+BackboneDependentRotamerLibrary_sp BackboneDependentRotamerLibrary_O::make(const int phiStep, const int phiStart, const int phiCount, const int psiStep, const int psiStart, const int psiCount)
     {
 	GC_ALLOCATE(BackboneDependentRotamerLibrary_O, me );
       me->_PhiStep = phiStep;

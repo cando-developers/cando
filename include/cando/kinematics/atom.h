@@ -77,6 +77,9 @@ namespace kinematics
 	*/
 	int		_DofRefoldIndex;
     public:
+        bool fieldsp() const { return true; };
+        void fields(core::Record_sp node);
+    public:
 	/*! Bonded atoms can have different numbers of children wrt JumpAtoms */
  	virtual int _maxNumberOfChildren() const = 0;
 	/*! Return the current number of children */

@@ -98,7 +98,6 @@ public:
 	void	setIsDefined(bool isDef) { if ( !isDef ) { this->set(0.0,0.0,0.0); }; };
 		//! A Vector3 is defined if any of its coordinates are not zero
     bool	isDefined() { return ( this->coords[0]!=0.0 || this->coords[1]!=0.0 || this->coords[2]!=0.0 ); };
-    void	archive( core::ArchiveP node );
 
 	Vector3	normalized() const;
 		//! Normalize the vector and if it is zero then return a zero vector

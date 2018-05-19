@@ -94,7 +94,7 @@ namespace kinematics
 	LISP_CLASS(kinematics,KinPkg,CheckpointOutPlugJoint_O,"CheckpointOutPlugAtom",Checkpoint_O);
 #if INIT_TO_FACTORIES
     public:
-	static CheckpointOutPlugJoint_sp make(const chem::OutPlug_sp& outPlug);
+	static CheckpointOutPlugJoint_sp make(chem::OutPlug_sp outPlug);
 #endif
     public:
 //	DECLARE_STANDARD_LISP_FUNCTIONS();
@@ -176,7 +176,7 @@ namespace kinematics
 	LISP_CLASS(kinematics,KinPkg,BondedAtomTemplate_O,"BondedAtomTemplate",AtomTemplate_O);
 #if INIT_TO_FACTORIES
     public:
-	static BondedAtomTemplate_sp make(const chem::OutPlug_sp& outPlug);
+	static BondedAtomTemplate_sp make(chem::OutPlug_sp outPlug);
 #endif
     public:
 //	DECLARE_STANDARD_LISP_FUNCTIONS();
@@ -276,7 +276,7 @@ namespace kinematics
 	LISP_CLASS(kinematics,KinPkg,RootBondedAtomTemplate_O,"RootBondedAtomTemplate",BondedAtomTemplate_O);
 #if INIT_TO_FACTORIES
     public:
-	static RootBondedAtomTemplate_sp make(const core::Symbol_sp& constitutionName, const core::Symbol_sp topologyName, const chem::Plug_sp& inPlug);
+	static RootBondedAtomTemplate_sp make(core::Symbol_sp constitutionName, core::Symbol_sp topologyName, chem::Plug_sp inPlug);
 #endif
     public:
 //	DECLARE_STANDARD_LISP_FUNCTIONS();

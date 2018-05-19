@@ -111,6 +111,8 @@ namespace kinematics
     {
 	LISP_CLASS(kinematics,KinPkg,AtomTree_O,"AtomTree",core::General_O);
     public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
 	void initialize();
     public:
 	//! The root of the tree

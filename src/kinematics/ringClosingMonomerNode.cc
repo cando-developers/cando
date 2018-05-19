@@ -49,10 +49,8 @@ namespace kinematics
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_RingClosingMonomerNode_O_make "()"
-#define DECL_RingClosingMonomerNode_O_make ""
-#define DOCS_RingClosingMonomerNode_O_make "make RingClosingMonomerNode"
-  RingClosingMonomerNode_sp RingClosingMonomerNode_O::make()
+CL_LISPIFY_NAME(make-RingClosingMonomerNode);
+RingClosingMonomerNode_sp RingClosingMonomerNode_O::make()
     {
       IMPLEMENT_ME();
     };

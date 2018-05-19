@@ -27,7 +27,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define _kinematicsConformation_H
 
 #include <clasp/core/common.h>
-//#include <core/model.h>
+#include <clasp/core/record.h>
 #include <cando/chem/oligomer.fwd.h>
 #include <clasp/core/symbolTable.h>
 #include <cando/kinematics/kinematicsPackage.h>
@@ -35,64 +35,59 @@ This is an open source license for the CANDO software from Temple University, bu
 namespace kinematics
 {
 
-    SYMBOL_SC_(KinPkg,resizeMoleculesEvent);
-    SYMBOL_SC_(KinPkg,buildMoleculeUsingOligomerEvent);
-    SYMBOL_EXPORT_SC_(KeywordPkg,newValue);
-    SYMBOL_EXPORT_SC_(KeywordPkg,oldValue);
-    SYMBOL_EXPORT_SC_(KeywordPkg,moleculeId);
-    SYMBOL_EXPORT_SC_(KeywordPkg,residueId);
+  SYMBOL_SC_(KinPkg,resizeMoleculesEvent);
+  SYMBOL_SC_(KinPkg,buildMoleculeUsingOligomerEvent);
+  SYMBOL_EXPORT_SC_(KeywordPkg,newValue);
+  SYMBOL_EXPORT_SC_(KeywordPkg,oldValue);
+  SYMBOL_EXPORT_SC_(KeywordPkg,moleculeId);
+  SYMBOL_EXPORT_SC_(KeywordPkg,residueId);
 
-    FORWARD(FoldTree);
-    FORWARD(AtomTree);
+  FORWARD(FoldTree);
+  FORWARD(AtomTree);
 
-    FORWARD(Conformation);
-    class Conformation_O : public core::General_O
-{
+  FORWARD(Conformation);
+  class Conformation_O : public core::General_O
+  {
     LISP_CLASS(kinematics,KinPkg,Conformation_O,"Conformation",core::General_O);
-#if INIT_TO_FACTORIES
- public:
+  public:
     static Conformation_sp make(core::List_sp oligomers);
-#else
-    DECLARE_INIT();
-#endif
-//    DECLARE_ARCHIVE();
     DEFAULT_CTOR_DTOR(Conformation_O);
-public:
-	void initialize();
-	static void lisp_initGlobals(core::Lisp_sp lisp);
-public:
+  public:
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+    void initialize();
+  public:
 	/*! Create the Conformation based on a single Oligomer */
-	static Conformation_sp create(chem::Oligomer_sp oligomer);
-
-private:
+    static Conformation_sp create(chem::Oligomer_sp oligomer);
+  private:
 #if 0
 	/*! Add an Alchemist to the Conformation and return its MoleculeId */
-	int addAlchemists(core::Cons_sp alchemists);
+    int addAlchemists(core::Cons_sp alchemists);
 #endif
 	/*! Build the AtomTree that will build the Alchemists */
-	void buildAtomTree();
-public:	// Functions here
+    void buildAtomTree();
+  public:	// Functions here
 	/*! Return the number of molecules */
-	int numberOfMolecules() const;
+    int numberOfMolecules() const;
 	/*! Resize the number of Molecules
 	  @signal kin:resizeMoleculesEvent :data ( :newValue newNumberOfMolecules :oldValue oldNumberOfMolecules) */
-	void resizeMolecules(int numMolecules);
+    void resizeMolecules(int numMolecules);
 
 	/*! Build a molecule as specified by the Oligomer.
 	 It will use the first Monomer of each MultiMonomer as a starting point.
 	@signal kin:rebuiltMolecule :data ( moleculeId ) */
-	void buildMoleculeUsingOligomer(int moleculeId, chem::Oligomer_sp oligomer);
+    void buildMoleculeUsingOligomer(int moleculeId, chem::Oligomer_sp oligomer);
 
-	FoldTree_sp getFoldTree() const { return this->_FoldTree;};
-	AtomTree_sp getAtomTree() const { return this->_AtomTree;};
+    FoldTree_sp getFoldTree() const { return this->_FoldTree;};
+    AtomTree_sp getAtomTree() const { return this->_AtomTree;};
 
-private:
+  private:
 	// instance variables here
 	/*! Store the FoldTree */
-	FoldTree_sp				_FoldTree;
+    FoldTree_sp				_FoldTree;
 	/*! Store the AtomTree */
-	AtomTree_sp				_AtomTree;
-};
+    AtomTree_sp				_AtomTree;
+  };
 
 }; /* kinematics */
 

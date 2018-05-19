@@ -26,7 +26,10 @@ This is an open source license for the CANDO software from Temple University, bu
 #define	DEBUG_LEVEL_NONE
 
 #include <clasp/core/common.h>
+
+#include <clasp/core/record.h>
 #include <clasp/core/environment.h>
+#include <cando/kinematics/kinematicsPackage.h>
 #include <cando/kinematics/chainNode.h>
 #include <cando/kinematics/aggregateNode.h>
 #include <clasp/core/wrappers.h>
@@ -37,15 +40,11 @@ namespace kinematics
 //
 
 
-
-
-#ifdef XML_ARCHIVE
-    void AggregateNode_O::archiveBase(core::ArchiveP node)
-    {
-        this->Base::archiveBase(node);
-	// Archive other instance variables here
-    }
-#endif
+void AggregateNode_O::fields(core::Record_sp node)
+{
+  this->Base::fields(node);
+  node->field_if_not_empty(INTERN_(kw,chains),this->_Chains);
+}
 
 
     void AggregateNode_O::initialize()

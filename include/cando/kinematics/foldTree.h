@@ -27,6 +27,7 @@ This is an open source license for the CANDO software from Temple University, bu
 #define _kinematicsFoldTree_H
 
 #include <clasp/core/common.h>
+#include <clasp/core/record.h>
 #include <cando/kinematics/chainNode.fwd.h>
 #include <cando/kinematics/monomerIdMap.h>
 #include <cando/kinematics/kinematicsPackage.h>
@@ -41,16 +42,15 @@ FORWARD(FoldTree);
 class FoldTree_O : public core::General_O
 {
     LISP_CLASS(kinematics,KinPkg,FoldTree_O,"FoldTree",core::General_O);
-#if INIT_TO_FACTORIES
  public:
     static FoldTree_sp make();
-#else
-    DECLARE_INIT();
-#endif
 //    DECLARE_ARCHIVE();
     DEFAULT_CTOR_DTOR(FoldTree_O);
 public:
-	void initialize();
+    
+    bool fieldsp() const { return true; };
+    void fields(core::Record_sp node);
+    void initialize();
 public:
 
 	/*! allocate a number of ChainNodes */

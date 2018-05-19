@@ -49,260 +49,257 @@ namespace kinematics
 {
 
 
-    string AtomHolder::typeAsString() const
-    {
-	switch (this->_Type)
-	{
-	case unused:
-	    return "unused";
-	case jumpAtom:
-	    return "jump";
-	case originJumpAtom:
-	    return "origin";
-	case bondedAtom:
-	    return "bonded";
-	case delayedBondedAtom:
-	    return "delayed";
-	default:
-	    return "unknown";
-	};
-    };
+string AtomHolder::typeAsString() const
+{
+  switch (this->_Type)
+  {
+  case unused:
+      return "unused";
+  case jumpAtom:
+      return "jump";
+  case originJumpAtom:
+      return "origin";
+  case bondedAtom:
+      return "bonded";
+  case delayedBondedAtom:
+      return "delayed";
+  default:
+      return "unknown";
+  };
+};
 
 
-    void AtomTreeWalkFunctor::operator()(kinematics::Joint_sp atom) const
-    {
-	THROW_HARD_ERROR(BF("Subclass of AtomTreeWalkFunctor must define operator()"));
-    }
+void AtomTreeWalkFunctor::operator()(kinematics::Joint_sp atom) const
+{
+  THROW_HARD_ERROR(BF("Subclass of AtomTreeWalkFunctor must define operator()"));
+}
 
-    void ExecutableAtomTreeWalkFunctor::operator()(kinematics::Joint_sp atom) const
-    {
-      IMPLEMENT_MEF("Improve this");
+void ExecutableAtomTreeWalkFunctor::operator()(kinematics::Joint_sp atom) const
+{
+  IMPLEMENT_MEF("Improve this");
 #if 0
-	core::Cons_sp args = core::Cons_O::create(atom);
-	core::ValueFrame_sp frame(core::ValueFrame_O::create(args,_Nil<core::T_O>());
-	core::eval::apply(this->_Callback,frame);
+  core::Cons_sp args = core::Cons_O::create(atom);
+  core::ValueFrame_sp frame(core::ValueFrame_O::create(args,_Nil<core::T_O>()));
+  core::eval::apply(this->_Callback,frame);
 //	this->_Callback->evaluate(args,_lisp->nil<core::Environment_O>(),this->lisp());
 #endif
-    }
+}
+
+void AtomTree_O::fields(core::Record_sp node) {
+  node->field(INTERN_(kw,root),this->_Root);
+};
+
+void AtomTree_O::initialize()
+{
+  chem::AtomId id;
+  this->_Root = this->newOriginJumpAtom(id,"-root-");
+}
 
 
+Joint_sp AtomTree_O::lookup(const chem::AtomId& atomId) const
+{
+  Joint_sp atom = this->_AtomMap[atomId];
+  return atom;
+}
+
+Joint_sp AtomTree_O::atomTreeLookupAtomid(const chem::AtomId& atomId) const
+{
+  return this->lookup(atomId);
+}
 
 
-    
-
-
-
-    void AtomTree_O::initialize()
-    {
-	chem::AtomId id;
-	this->_Root = this->newOriginJumpAtom(id,"-root-");
-    }
-
-
-    Joint_sp AtomTree_O::lookup(const chem::AtomId& atomId) const
-    {
-	Joint_sp atom = this->_AtomMap[atomId];
-	return atom;
-    }
-
-    Joint_sp AtomTree_O::atomTreeLookupAtomid(const chem::AtomId& atomId) const
-    {
-      return this->lookup(atomId);
-    }
-
-
-    void AtomTree_O::resizeMolecules(int numMolecules)
-    {_OF();
-	LOG(BF("Resizing AtomTree to %d molecules") % numMolecules);
+void AtomTree_O::resizeMolecules(int numMolecules)
+{_OF();
+  LOG(BF("Resizing AtomTree to %d molecules") % numMolecules);
 //	int originalNumMolecules = this->_AtomMap.numberOfMolecules();
-	this->_AtomMap.resize(numMolecules);
-    };
+  this->_AtomMap.resize(numMolecules);
+};
 
-    void AtomTree_O::resizeResidues(int mol, int numResidues)
-    {_OF();
-	LOG(BF("Resizing AtomTree to %d residues in moleculeId[%d]") % numResidues % mol );
-	this->_AtomMap.resize(mol,numResidues);
-    };
+void AtomTree_O::resizeResidues(int mol, int numResidues)
+{_OF();
+  LOG(BF("Resizing AtomTree to %d residues in moleculeId[%d]") % numResidues % mol );
+  this->_AtomMap.resize(mol,numResidues);
+};
 
-    void AtomTree_O::resizeAtoms(int mol, int res, int numAtoms)
-    {_OF();
-	LOG(BF("Resizing AtomTree to %d atoms in residue[%d] moleculeId[%d]")
-	    % numAtoms 
-	    % res % mol );
-	this->_AtomMap.resize(mol,res,numAtoms);
-    };
+void AtomTree_O::resizeAtoms(int mol, int res, int numAtoms)
+{_OF();
+  LOG(BF("Resizing AtomTree to %d atoms in residue[%d] moleculeId[%d]")
+      % numAtoms 
+      % res % mol );
+  this->_AtomMap.resize(mol,res,numAtoms);
+};
 
-    Joint_sp AtomTree_O::_initializeNewAtom(Joint_sp atom, const chem::AtomId& atomId )
-    {_OF();
-	AtomTree_sp tree = this->sharedThis<AtomTree_O>();
-	if ( atomId.isDefined() ) this->updateAtomIdMap(atomId,atom);
-	return atom;
-    }
-
-
-    Joint_sp AtomTree_O::newJumpAtom(const chem::AtomId& atomId, const string& comment)
-    {_OF();
-	return this->_newAtom<JumpJoint_O>(atomId,comment);
-    };
-
-    Joint_sp AtomTree_O::newOriginJumpAtom(const chem::AtomId& atomId,const string& comment)
-    {_OF();
-	return this->_newAtom<OriginJumpJoint_O>(atomId,comment);
-    };
+Joint_sp AtomTree_O::_initializeNewAtom(Joint_sp atom, const chem::AtomId& atomId )
+{_OF();
+  AtomTree_sp tree = this->sharedThis<AtomTree_O>();
+  if ( atomId.isDefined() ) this->updateAtomIdMap(atomId,atom);
+  return atom;
+}
 
 
-    Joint_sp AtomTree_O::newBondedAtom(const chem::AtomId& atomId, const string& comment)
-    {_OF();
-	return this->_newAtom<BondedJoint_O>(atomId,comment);
-    };
+Joint_sp AtomTree_O::newJumpAtom(const chem::AtomId& atomId, const string& comment)
+{_OF();
+  return this->_newAtom<JumpJoint_O>(atomId,comment);
+};
 
-    Joint_sp AtomTree_O::newRootBondedAtom(const chem::AtomId& atomId, const string& comment,
-					  core::Symbol_sp constitutionName,
-					  core::Symbol_sp topologyName,
-					  chem::Plug_sp inPlug)
-    {_OF();
-	RootBondedJoint_sp atom = this->_newAtom<RootBondedJoint_O>(atomId,comment);
-	atom->setup(constitutionName,topologyName,inPlug);
-	return atom;
-    };
+Joint_sp AtomTree_O::newOriginJumpAtom(const chem::AtomId& atomId,const string& comment)
+{_OF();
+  return this->_newAtom<OriginJumpJoint_O>(atomId,comment);
+};
 
-    Joint_sp AtomTree_O::newDelayedBondedAtom(const chem::AtomId& atomId,const string& comment)
-    {_OF();
-	return this->_newAtom<DelayedBondedJoint_O>(atomId,comment);
-    };
 
-    void AtomTree_O::updateAtomIdMap(const chem::AtomId& atomId, Joint_sp atomHandle )
-    {_OF();
-	    this->_AtomMap[atomId] = atomHandle;
-    }
+Joint_sp AtomTree_O::newBondedAtom(const chem::AtomId& atomId, const string& comment)
+{_OF();
+  return this->_newAtom<BondedJoint_O>(atomId,comment);
+};
+
+Joint_sp AtomTree_O::newRootBondedAtom(const chem::AtomId& atomId, const string& comment,
+                                       core::Symbol_sp constitutionName,
+                                       core::Symbol_sp topologyName,
+                                       chem::Plug_sp inPlug)
+{_OF();
+  RootBondedJoint_sp atom = this->_newAtom<RootBondedJoint_O>(atomId,comment);
+  atom->setup(constitutionName,topologyName,inPlug);
+  return atom;
+};
+
+Joint_sp AtomTree_O::newDelayedBondedAtom(const chem::AtomId& atomId,const string& comment)
+{_OF();
+  return this->_newAtom<DelayedBondedJoint_O>(atomId,comment);
+};
+
+void AtomTree_O::updateAtomIdMap(const chem::AtomId& atomId, Joint_sp atomHandle )
+{_OF();
+  this->_AtomMap[atomId] = atomHandle;
+}
 
 
 
 #if 0
-    void AtomTree_O::replaceMonomerSubTree(const BondId_sp& incoming, const map<core::Symbol_sp,const BondId_sp>& outgoing, const AtomTemplate_sp& newSubTreeTemplate )
-    {_OF();
-	newSubTreeTemplate->writeIntoAtomTree(this->sharedThis<AtomTree_O>(),incoming,outgoing);
-    }
+void AtomTree_O::replaceMonomerSubTree(const BondId_sp& incoming, const map<core::Symbol_sp,const BondId_sp>& outgoing, const AtomTemplate_sp& newSubTreeTemplate )
+{_OF();
+  newSubTreeTemplate->writeIntoAtomTree(this->sharedThis<AtomTree_O>(),incoming,outgoing);
+}
 #endif
 
 
 
-    void AtomTree_O::recursivelyBuildMolecule(int moleculeId,
-					      int residueId,
-					      chem::CandoDatabase_sp db,
-					      MonomerNode_sp monomerNode,
-					      Joint_sp parent,
-					      bool rootNode)
-    {_OF();
-	core::List_sp constitutionAndTopology = monomerNode->identifyConstitutionAndTopology(db);
-	chem::Constitution_sp constitution = oCar(constitutionAndTopology).as<chem::Constitution_O>();
-	chem::Topology_sp topology = oCadr(constitutionAndTopology).as<chem::Topology_O>();
-	{_BLOCK_TRACEF(BF("Building constitution[%s] Topology[%s]")
-		       % _rep_(constitution->getName()) % _rep_(topology->getName()) );
-	    chem::ConstitutionAtoms_sp constitutionAtoms = constitution->getConstitutionAtoms();
-	    this->resizeAtoms(moleculeId,residueId,constitutionAtoms->numberOfAtoms());
-	    AtomTemplate_sp atomTemplate = topology->properties()->gethash(_lisp->intern(":atomTemplate")).as<AtomTemplate_O>();
-	    BondId_sp incoming = BondId_O::create(parent,_Nil<core::T_O>());
-	    AtomTemplate_O::PlugNamesToBondIdMap outgoing;
+void AtomTree_O::recursivelyBuildMolecule(int moleculeId,
+                                          int residueId,
+                                          chem::CandoDatabase_sp db,
+                                          MonomerNode_sp monomerNode,
+                                          Joint_sp parent,
+                                          bool rootNode)
+{_OF();
+  core::List_sp constitutionAndTopology = monomerNode->identifyConstitutionAndTopology(db);
+  chem::Constitution_sp constitution = oCar(constitutionAndTopology).as<chem::Constitution_O>();
+  chem::Topology_sp topology = oCadr(constitutionAndTopology).as<chem::Topology_O>();
+  {_BLOCK_TRACEF(BF("Building constitution[%s] Topology[%s]")
+                 % _rep_(constitution->getName()) % _rep_(topology->getName()) );
+    chem::ConstitutionAtoms_sp constitutionAtoms = constitution->getConstitutionAtoms();
+    this->resizeAtoms(moleculeId,residueId,constitutionAtoms->numberOfAtoms());
+    AtomTemplate_sp atomTemplate = topology->properties()->gethash(_lisp->intern(":atomTemplate")).as<AtomTemplate_O>();
+    BondId_sp incoming = BondId_O::create(parent,_Nil<core::T_O>());
+    AtomTemplate_O::PlugNamesToBondIdMap outgoing;
 	    //
 	    // Write the sub tree described by atomTemplate into the AtomTree
 	    // recursively
-	    ASSERTF(atomTemplate.notnilp(),BF("The AtomTemplate for Topology[%s] is nil")
-		    % _rep_(topology->getName()) );
-	    atomTemplate->writeIntoAtomTree(this->sharedThis<AtomTree_O>(),
-					    moleculeId,
-					    residueId,
-					    incoming,
-					    outgoing,
-					    rootNode);
+    ASSERTF(atomTemplate.notnilp(),BF("The AtomTemplate for Topology[%s] is nil")
+            % _rep_(topology->getName()) );
+    atomTemplate->writeIntoAtomTree(this->sharedThis<AtomTree_O>(),
+                                    moleculeId,
+                                    residueId,
+                                    incoming,
+                                    outgoing,
+                                    rootNode);
 	    // Now loop over all the OutPlugs and
 	    // create their children and connect them to our OutPlug atoms
 	    //
-	    chem::Topology_O::Plugs::iterator it;
-	    for ( it=topology->_Plugs.begin(); it!=topology->_Plugs.end(); it++ )
-	    {
-              if ( gc::IsA<chem::OutPlug_sp>(it->second) )
-		{
-                  chem::OutPlug_O::smart_ptr_type outPlug = gc::As_unsafe<chem::OutPlug_sp>(it->second);
-                    core::Symbol_sp atomB0 = outPlug->getB0();
-		    int  constitutionBond0AtomId = constitutionAtoms->index(atomB0);
-		    chem::AtomId atomId(moleculeId,residueId,constitutionBond0AtomId);
-		    Joint_sp bond0Parent = this->_AtomMap[atomId];
-		    MonomerNode_sp nextMonomerNode = monomerNode->_Children.get(outPlug->getName());
-		    int nextResidueId = nextMonomerNode->_MonomerId;
-		    ASSERT(nextResidueId<(int)this->_AtomMap[moleculeId].size());
-		    this->recursivelyBuildMolecule(moleculeId,nextResidueId,db,nextMonomerNode,bond0Parent);
-		}
-	    }
-	}	
+    chem::Topology_O::Plugs::iterator it;
+    for ( it=topology->_Plugs.begin(); it!=topology->_Plugs.end(); it++ )
+    {
+      if ( gc::IsA<chem::OutPlug_sp>(it->second) )
+      {
+        chem::OutPlug_O::smart_ptr_type outPlug = gc::As_unsafe<chem::OutPlug_sp>(it->second);
+        core::Symbol_sp atomB0 = outPlug->getB0();
+        int  constitutionBond0AtomId = constitutionAtoms->index(atomB0);
+        chem::AtomId atomId(moleculeId,residueId,constitutionBond0AtomId);
+        Joint_sp bond0Parent = this->_AtomMap[atomId];
+        MonomerNode_sp nextMonomerNode = monomerNode->_Children.get(outPlug->getName());
+        int nextResidueId = nextMonomerNode->_MonomerId;
+        ASSERT(nextResidueId<(int)this->_AtomMap[moleculeId].size());
+        this->recursivelyBuildMolecule(moleculeId,nextResidueId,db,nextMonomerNode,bond0Parent);
+      }
     }
+  }	
+}
 					
 
 
 
-    void AtomTree_O::buildMoleculeUsingChainNode(int moleculeId, ChainNode_sp chainNode, chem::Oligomer_sp oligomer )
-    {_OF();
-	ASSERTF(moleculeId<this->numberOfMolecules(),BF("Illegal moleculeId[%d]") % moleculeId );
-	int numResidues = oligomer->numberOfMonomers();
-	this->resizeResidues(moleculeId,numResidues);
-	MonomerNode_sp monomerNode = chainNode->_RootMonomerNode;
-	chem::CandoDatabase_sp db = chem::_sym_candoDatabase->symbolValue().as<chem::CandoDatabase_O>();
-	ASSERTF(this->_Root.notnilp(),BF("The Root of the AtomTree cannot be nil"));
-	LOG(BF("Building moleculeId[%d]") % moleculeId);
-	this->recursivelyBuildMolecule(moleculeId,
-				       monomerNode->_MonomerId,
-				       db,
-				       monomerNode,
-				       this->_Root,
-				       true);
-    }
+void AtomTree_O::buildMoleculeUsingChainNode(int moleculeId, ChainNode_sp chainNode, chem::Oligomer_sp oligomer )
+{_OF();
+  ASSERTF(moleculeId<this->numberOfMolecules(),BF("Illegal moleculeId[%d]") % moleculeId );
+  int numResidues = oligomer->numberOfMonomers();
+  this->resizeResidues(moleculeId,numResidues);
+  MonomerNode_sp monomerNode = chainNode->_RootMonomerNode;
+  chem::CandoDatabase_sp db = chem::_sym_candoDatabase->symbolValue().as<chem::CandoDatabase_O>();
+  ASSERTF(this->_Root.notnilp(),BF("The Root of the AtomTree cannot be nil"));
+  LOG(BF("Building moleculeId[%d]") % moleculeId);
+  this->recursivelyBuildMolecule(moleculeId,
+                                 monomerNode->_MonomerId,
+                                 db,
+                                 monomerNode,
+                                 this->_Root,
+                                 true);
+}
 
 
 
-    string AtomTree_O::asString() const
-    {_OF();
-	stringstream ss;
-	Joint_sp root = this->_Root;
-	root->recursiveDumpChildrenIntoStringStream("", ss);
-	return ss.str();
-    }
+string AtomTree_O::asString() const
+{_OF();
+  stringstream ss;
+  Joint_sp root = this->_Root;
+  root->recursiveDumpChildrenIntoStringStream("", ss);
+  return ss.str();
+}
 
 
 
-    string AtomTree_O::__repr__() const
-    {_OF();
-	stringstream ss;
-	ss << (BF("Dump of AtomTree")).str() << std::endl;
-        ss << "IMPLEMENT_ME";
-	return ss.str();
-    }
+string AtomTree_O::__repr__() const
+{_OF();
+  stringstream ss;
+  ss << (BF("Dump of AtomTree")).str() << std::endl;
+  ss << "IMPLEMENT_ME";
+  return ss.str();
+}
 
 
-    void AtomTree_O::walkTree(AtomTreeWalkFunctor& functor)
-    {_OF();
-      OriginJumpJoint_sp originJumpAtom = gc::As<OriginJumpJoint_sp>(this->_Root);
-	originJumpAtom->walkChildren(functor);
-    }
+void AtomTree_O::walkTree(AtomTreeWalkFunctor& functor)
+{_OF();
+  OriginJumpJoint_sp originJumpAtom = gc::As<OriginJumpJoint_sp>(this->_Root);
+  originJumpAtom->walkChildren(functor);
+}
 
-    void AtomTree_O::walk(core::Function_sp exec)
-    {_OF();
-	ExecutableAtomTreeWalkFunctor functor(exec);
-	this->walkTree(functor);
-    }
+void AtomTree_O::walk(core::Function_sp exec)
+{_OF();
+  ExecutableAtomTreeWalkFunctor functor(exec);
+  this->walkTree(functor);
+}
 
-    void AtomTree_O::updateInternalCoords()
-    {_OF();
-	ASSERTF(this->_Root.notnilp(),BF("The Root atom is nil - this should never happen"));
-	Stub defaultStub;
-	this->_Root->updateInternalCoords(defaultStub,true,this->sharedThis<AtomTree_O>());
-    }
+void AtomTree_O::updateInternalCoords()
+{_OF();
+  ASSERTF(this->_Root.notnilp(),BF("The Root atom is nil - this should never happen"));
+  Stub defaultStub;
+  this->_Root->updateInternalCoords(defaultStub,true,this->sharedThis<AtomTree_O>());
+}
 
 
-    void AtomTree_O::walkResidue( int residueId, Joint_sp const& root, core::Function_sp exec)
-    {_OF();
-	ExecutableAtomTreeWalkFunctor functor(exec);
-	root->walkResidueTree(residueId,functor);
-    }
+void AtomTree_O::walkResidue( int residueId, Joint_sp const& root, core::Function_sp exec)
+{_OF();
+  ExecutableAtomTreeWalkFunctor functor(exec);
+  root->walkResidueTree(residueId,functor);
+}
 
 
 

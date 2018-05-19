@@ -52,9 +52,6 @@ namespace kinematics
 #if INIT_TO_FACTORIES
 
 
-#define ARGS_Checkpoint_O_make "(constitution-name topology-name)"
-#define DECL_Checkpoint_O_make ""
-#define DOCS_Checkpoint_O_make "make Checkpoint args: constitution-name topology-name"
     Checkpoint_sp Checkpoint_O::make(const core::Symbol_sp& constitutionName,
 				     const core::Symbol_sp& topologyName )
     {
@@ -99,9 +96,7 @@ namespace kinematics
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_CheckpointJoint_O_make "(atom-name)"
-#define DECL_CheckpointJoint_O_make ""
-#define DOCS_CheckpointJoint_O_make "make CheckpointAtom"
+CL_LISPIFY_NAME("make-checkpoint-joint");
 CheckpointJoint_sp CheckpointJoint_O::make(core::Symbol_sp atomName)
     {
         GC_ALLOCATE(CheckpointJoint_O, me );
@@ -149,10 +144,8 @@ CheckpointJoint_sp CheckpointJoint_O::make(core::Symbol_sp atomName)
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_CheckpointOutPlugJoint_O_make "(out-plug)"
-#define DECL_CheckpointOutPlugJoint_O_make ""
-#define DOCS_CheckpointOutPlugJoint_O_make "make CheckpointOutPlugAtom"
-  CheckpointOutPlugJoint_sp CheckpointOutPlugJoint_O::make(const chem::OutPlug_sp& outPlug)
+CL_LISPIFY_NAME(make-checkpoint-out-plug-joint);
+  CheckpointOutPlugJoint_sp CheckpointOutPlugJoint_O::make(chem::OutPlug_sp outPlug)
     {
         GC_ALLOCATE(CheckpointOutPlugJoint_O, me );
 	me->_Plug = outPlug;
@@ -197,10 +190,8 @@ CheckpointJoint_sp CheckpointJoint_O::make(core::Symbol_sp atomName)
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_AtomTemplate_O_make "(id comment parent)"
-#define DECL_AtomTemplate_O_make ""
-#define DOCS_AtomTemplate_O_make "make AtomTemplate"
-  AtomTemplate_sp AtomTemplate_O::make(const int id, const string& comment, const AtomTemplate_sp parent)
+CL_LISPIFY_NAME("make-atom-template");
+  AtomTemplate_sp AtomTemplate_O::make(const int id, const string& comment, AtomTemplate_sp parent)
     {
         GC_ALLOCATE(AtomTemplate_O, me );
 	me->_Id = id;
@@ -260,10 +251,8 @@ gc::Nilable<AtomTemplate_sp> AtomTemplate_O::parent() const
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_BondedAtomTemplate_O_make "(out-plug)"
-#define DECL_BondedAtomTemplate_O_make ""
-#define DOCS_BondedAtomTemplate_O_make "make BondedAtomTemplate"
-  BondedAtomTemplate_sp BondedAtomTemplate_O::make(const chem::OutPlug_sp& outPlug)
+CL_LISPIFY_NAME(make-bonded-atom-template);
+  BondedAtomTemplate_sp BondedAtomTemplate_O::make(chem::OutPlug_sp outPlug)
   {
       GC_ALLOCATE(BondedAtomTemplate_O, me );
     me->_OutPlug = outPlug;
@@ -408,10 +397,8 @@ core::List_sp BondedAtomTemplate_O::children() {
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_DelayedBondedAtomTemplate_O_make "(checkpoint)"
-#define DECL_DelayedBondedAtomTemplate_O_make ""
-#define DOCS_DelayedBondedAtomTemplate_O_make "make DelayedBondedAtomTemplate"
-    DelayedBondedAtomTemplate_sp DelayedBondedAtomTemplate_O::make(const Checkpoint_sp& checkpoint)
+CL_LISPIFY_NAME(make-DelayedBondedAtomTemplate);
+DelayedBondedAtomTemplate_sp DelayedBondedAtomTemplate_O::make(const Checkpoint_sp& checkpoint)
     {
         GC_ALLOCATE(DelayedBondedAtomTemplate_O, me );
 	me->_Checkpoint = checkpoint;
@@ -475,10 +462,8 @@ core::List_sp BondedAtomTemplate_O::children() {
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_RootBondedAtomTemplate_O_make "(constitution-name topology-name in-plug)"
-#define DECL_RootBondedAtomTemplate_O_make ""
-#define DOCS_RootBondedAtomTemplate_O_make "make RootBondedAtomTemplate"
-  RootBondedAtomTemplate_sp RootBondedAtomTemplate_O::make(const core::Symbol_sp& constitutionName, const core::Symbol_sp topologyName, const chem::Plug_sp& inPlug)
+CL_LISPIFY_NAME(make-RootBondedAtomTemplate);
+  RootBondedAtomTemplate_sp RootBondedAtomTemplate_O::make(core::Symbol_sp constitutionName, const core::Symbol_sp topologyName, chem::Plug_sp inPlug)
   {
       GC_ALLOCATE(RootBondedAtomTemplate_O, me );
     me->_ConstitutionName = constitutionName;

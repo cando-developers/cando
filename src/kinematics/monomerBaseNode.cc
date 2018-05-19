@@ -41,10 +41,8 @@ namespace kinematics
 
 #if INIT_TO_FACTORIES
 
-#define ARGS_MonomerBaseNode_O_make "()"
-#define DECL_MonomerBaseNode_O_make ""
-#define DOCS_MonomerBaseNode_O_make "make MonomerBaseNode"
-  MonomerBaseNode_sp MonomerBaseNode_O::make()
+CL_LISPIFY_NAME(make-MonomerBaseNode);
+MonomerBaseNode_sp MonomerBaseNode_O::make()
     {
       IMPLEMENT_ME();
     };
